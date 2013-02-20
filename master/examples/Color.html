@@ -1,0 +1,9474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>Color - Cesium Documentation</title>
+    
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/node-dark.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <script src="javascript/all.js"></script>
+    <!-- Syntax Highlighting -->
+    <link rel="stylesheet" href="styles/shCore.css" media="all"></link>
+    <link rel="stylesheet" href="styles/shThemeDefault.css" media="all"></link>
+    <script src="javascript/shCore.js"></script>
+    <script src="javascript/shBrushJScript.js"></script>
+</head>
+
+<body>
+
+<div class="nav">
+    <div class="menu">
+        <a href="http://cesium.agi.com/"><img src="images/CesiumLogo.jpg" class="menuLogo"/></a>
+        <div class="rightLinks indexLinks">
+            <a href="index.html">top</a>
+        </div>
+        <div class="indexLinks">
+            <a id="allLink">all</a>
+            <a id="jsIndexLink">js</a>
+            <a id="glslIndexLink">glsl</a>
+        </div>
+        <div class="divider"></div>
+        <form name="filterForm" method="get" onsubmit="return false;">
+            <input type="text" name="classFilter" class="classFilter" id="ClassFilter" placeholder="Filter"></input>
+            <input type="hidden" id="filterType" value="all"/>
+        </form>
+        <ul id="ClassList"><div id="classItems"><li><a href="AnimationCollection.html">AnimationCollection</a></li><li><a href="AnimationController.html">AnimationController</a></li><li><a href="ArcGisMapServerImageryProvider.html">ArcGisMapServerImageryProvider</a></li><li><a href="AxisAlignedBoundingBox.html">AxisAlignedBoundingBox</a></li><li><a href="Billboard.html">Billboard</a></li><li><a href="BillboardCollection.html">BillboardCollection</a></li><li><a href="BingMapsImageryProvider.html">BingMapsImageryProvider</a></li><li><a href="BoundingRectangle.html">BoundingRectangle</a></li><li><a href="BoundingSphere.html">BoundingSphere</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="Camera.html">Camera</a></li><li><a href="CameraController.html">CameraController</a></li><li><a href="CameraEventAggregator.html">CameraEventAggregator</a></li><li><a href="Cartesian2.html">Cartesian2</a></li><li><a href="Cartesian3.html">Cartesian3</a></li><li><a href="Cartesian4.html">Cartesian4</a></li><li><a href="Cartographic.html">Cartographic</a></li><li><a href="CatmullRomSpline.html">CatmullRomSpline</a></li><li><a href="CentralBody.html">CentralBody</a></li><li><a href="CesiumViewerWidget.html">CesiumViewerWidget</a></li><li><a href="Clock.html">Clock</a></li><li><a href="Color.html">Color</a></li><li><a href="Command.html">Command</a></li><li><a href="CommandLists.html">CommandLists</a></li><li><a href="ComplexConicSensorVolume.html">ComplexConicSensorVolume</a></li><li><a href="CompositeDynamicObjectCollection.html">CompositeDynamicObjectCollection</a></li><li><a href="CompositePrimitive.html">CompositePrimitive</a></li><li><a href="Context.html">Context</a></li><li><a href="CubeMap.html">CubeMap</a></li><li><a href="CubeMapFace.html">CubeMapFace</a></li><li><a href="CustomSensorVolume.html">CustomSensorVolume</a></li><li><a href="DefaultProxy.html">DefaultProxy</a></li><li><a href="Deferred.html">Deferred</a></li><li><a href="DeveloperError.html">DeveloperError</a></li><li><a href="DiscardMissingTileImagePolicy.html">DiscardMissingTileImagePolicy</a></li><li><a href="DynamicBillboard.html">DynamicBillboard</a></li><li><a href="DynamicBillboardVisualizer.html">DynamicBillboardVisualizer</a></li><li><a href="DynamicColorMaterial.html">DynamicColorMaterial</a></li><li><a href="DynamicCone.html">DynamicCone</a></li><li><a href="DynamicConeVisualizer.html">DynamicConeVisualizer</a></li><li><a href="DynamicConeVisualizerUsingCustomSensor.html">DynamicConeVisualizerUsingCustomSensor</a></li><li><a href="DynamicDirectionsProperty.html">DynamicDirectionsProperty</a></li><li><a href="DynamicEllipsoid.html">DynamicEllipsoid</a></li><li><a href="DynamicEllipsoidVisualizer.html">DynamicEllipsoidVisualizer</a></li><li><a href="DynamicImageMaterial.html">DynamicImageMaterial</a></li><li><a href="DynamicLabel.html">DynamicLabel</a></li><li><a href="DynamicLabelVisualizer.html">DynamicLabelVisualizer</a></li><li><a href="DynamicMaterialProperty.html">DynamicMaterialProperty</a></li><li><a href="DynamicObject.html">DynamicObject</a></li><li><a href="DynamicObjectCollection.html">DynamicObjectCollection</a></li><li><a href="DynamicPath.html">DynamicPath</a></li><li><a href="DynamicPathVisualizer.html">DynamicPathVisualizer</a></li><li><a href="DynamicPoint.html">DynamicPoint</a></li><li><a href="DynamicPointVisualizer.html">DynamicPointVisualizer</a></li><li><a href="DynamicPolygon.html">DynamicPolygon</a></li><li><a href="DynamicPolygonVisualizer.html">DynamicPolygonVisualizer</a></li><li><a href="DynamicPolyline.html">DynamicPolyline</a></li><li><a href="DynamicPolylineVisualizer.html">DynamicPolylineVisualizer</a></li><li><a href="DynamicPositionProperty.html">DynamicPositionProperty</a></li><li><a href="DynamicProperty.html">DynamicProperty</a></li><li><a href="DynamicPyramid.html">DynamicPyramid</a></li><li><a href="DynamicPyramidVisualizer.html">DynamicPyramidVisualizer</a></li><li><a href="DynamicVertexPositionsProperty.html">DynamicVertexPositionsProperty</a></li><li><a href="Ellipsoid.html">Ellipsoid</a></li><li><a href="EllipsoidalOccluder.html">EllipsoidalOccluder</a></li><li><a href="EllipsoidPrimitive.html">EllipsoidPrimitive</a></li><li><a href="EllipsoidTangentPlane.html">EllipsoidTangentPlane</a></li><li><a href="EncodedCartesian3.html">EncodedCartesian3</a></li><li><a href="Enumeration.html">Enumeration</a></li><li><a href="Event.html">Event</a></li><li><a href="Extent.html">Extent</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="FrameState.html">FrameState</a></li><li><a href="FrustumCommands.html">FrustumCommands</a></li><li><a href="GeographicProjection.html">GeographicProjection</a></li><li><a href="GeographicTilingScheme.html">GeographicTilingScheme</a></li><li><a href="GregorianDate.html">GregorianDate</a></li><li><a href="HermiteSpline.html">HermiteSpline</a></li><li><a href="ImageryLayer.html">ImageryLayer</a></li><li><a href="ImageryLayerCollection.html">ImageryLayerCollection</a></li><li><a href="ImageryProvider.html">ImageryProvider</a></li><li><a href="Interval.html">Interval</a></li><li><a href="JulianDate.html">JulianDate</a></li><li><a href="Label.html">Label</a></li><li><a href="LabelCollection.html">LabelCollection</a></li><li><a href="LeapSecond.html">LeapSecond</a></li><li><a href="Material.html">Material</a></li><li><a href="Matrix2.html">Matrix2</a></li><li><a href="Matrix3.html">Matrix3</a></li><li><a href="Matrix4.html">Matrix4</a></li><li><a href="NeverTileDiscardPolicy.html">NeverTileDiscardPolicy</a></li><li><a href="Occluder.html">Occluder</a></li><li><a href="OpenStreetMapImageryProvider.html">OpenStreetMapImageryProvider</a></li><li><a href="OrientationInterpolator.html">OrientationInterpolator</a></li><li><a href="OrthographicFrustum.html">OrthographicFrustum</a></li><li><a href="PerformanceDisplay.html">PerformanceDisplay</a></li><li><a href="PerspectiveFrustum.html">PerspectiveFrustum</a></li><li><a href="PerspectiveOffCenterFrustum.html">PerspectiveOffCenterFrustum</a></li><li><a href="PickFramebuffer.html">PickFramebuffer</a></li><li><a href="Polygon.html">Polygon</a></li><li><a href="Polyline.html">Polyline</a></li><li><a href="PolylineCollection.html">PolylineCollection</a></li><li><a href="Promise.html">Promise</a></li><li><a href="Quaternion.html">Quaternion</a></li><li><a href="Queue.html">Queue</a></li><li><a href="Ray.html">Ray</a></li><li><a href="RectangularPyramidSensorVolume.html">RectangularPyramidSensorVolume</a></li><li><a href="ReferenceProperty.html">ReferenceProperty</a></li><li><a href="RequestErrorEvent.html">RequestErrorEvent</a></li><li><a href="RuntimeError.html">RuntimeError</a></li><li><a href="Scene.html">Scene</a></li><li><a href="SceneTransitioner.html">SceneTransitioner</a></li><li><a href="ScreenSpaceCameraController.html">ScreenSpaceCameraController</a></li><li><a href="ScreenSpaceEventHandler.html">ScreenSpaceEventHandler</a></li><li><a href="SensorVolumeCollection.html">SensorVolumeCollection</a></li><li><a href="ShaderCache.html">ShaderCache</a></li><li><a href="ShaderProgram.html">ShaderProgram</a></li><li><a href="SingleTileImageryProvider.html">SingleTileImageryProvider</a></li><li><a href="SkyAtmosphere.html">SkyAtmosphere</a></li><li><a href="SkyBox.html">SkyBox</a></li><li><a href="Spherical.html">Spherical</a></li><li><a href="TaskProcessor.html">TaskProcessor</a></li><li><a href="Texture.html">Texture</a></li><li><a href="Texture2DPool.html">Texture2DPool</a></li><li><a href="TextureAtlas.html">TextureAtlas</a></li><li><a href="TextureAtlasBuilder.html">TextureAtlasBuilder</a></li><li><a href="TileDiscardPolicy.html">TileDiscardPolicy</a></li><li><a href="TileMapServiceImageryProvider.html">TileMapServiceImageryProvider</a></li><li><a href="TilingScheme.html">TilingScheme</a></li><li><a href="TimeInterval.html">TimeInterval</a></li><li><a href="TimeIntervalCollection.html">TimeIntervalCollection</a></li><li><a href="Uniform.html">Uniform</a></li><li><a href="UniformArray.html">UniformArray</a></li><li><a href="UniformState.html">UniformState</a></li><li><a href="VertexArray.html">VertexArray</a></li><li><a href="VertexArrayFacade.html">VertexArrayFacade</a></li><li><a href="ViewportQuad.html">ViewportQuad</a></li><li><a href="VisualizerCollection.html">VisualizerCollection</a></li><li><a href="WebMapServiceImageryProvider.html">WebMapServiceImageryProvider</a></li><li><a href="WebMercatorProjection.html">WebMercatorProjection</a></li><li><a href="WebMercatorTilingScheme.html">WebMercatorTilingScheme</a></li><li><a href="binarySearch.html">binarySearch</a></li><li><a href="BingMapsStyle.html">BingMapsStyle</a></li><li><a href="BlendEquation.html">BlendEquation</a></li><li><a href="BlendFunction.html">BlendFunction</a></li><li><a href="BlendingState.html">BlendingState</a></li><li><a href="BoxTessellator.html">BoxTessellator</a></li><li><a href="BufferUsage.html">BufferUsage</a></li><li><a href="CameraColumbusViewMode.html">CameraColumbusViewMode</a></li><li><a href="CameraEventType.html">CameraEventType</a></li><li><a href="CameraFlightPath.html">CameraFlightPath</a></li><li><a href="CesiumMath.html">CesiumMath</a></li><li><a href="ClockRange.html">ClockRange</a></li><li><a href="ClockStep.html">ClockStep</a></li><li><a href="combine.html">combine</a></li><li><a href="computeSunPosition.html">computeSunPosition</a></li><li><a href="createGuid.html">createGuid</a></li><li><a href="createTaskProcessorWorker.html">createTaskProcessorWorker</a></li><li><a href="CubeMapEllipsoidTessellator.html">CubeMapEllipsoidTessellator</a></li><li><a href="CubicRealPolynomial.html">CubicRealPolynomial</a></li><li><a href="CullFace.html">CullFace</a></li><li><a href="CzmlBoolean.html">CzmlBoolean</a></li><li><a href="CzmlCartesian2.html">CzmlCartesian2</a></li><li><a href="CzmlCartesian3.html">CzmlCartesian3</a></li><li><a href="CzmlCartographic.html">CzmlCartographic</a></li><li><a href="CzmlColor.html">CzmlColor</a></li><li><a href="CzmlDefaults.html">CzmlDefaults</a></li><li><a href="CzmlHorizontalOrigin.html">CzmlHorizontalOrigin</a></li><li><a href="CzmlImage.html">CzmlImage</a></li><li><a href="CzmlLabelStyle.html">CzmlLabelStyle</a></li><li><a href="CzmlNumber.html">CzmlNumber</a></li><li><a href="CzmlString.html">CzmlString</a></li><li><a href="CzmlUnitCartesian3.html">CzmlUnitCartesian3</a></li><li><a href="CzmlUnitQuaternion.html">CzmlUnitQuaternion</a></li><li><a href="CzmlUnitSpherical.html">CzmlUnitSpherical</a></li><li><a href="CzmlVerticalOrigin.html">CzmlVerticalOrigin</a></li><li><a href="defaultValue.html">defaultValue</a></li><li><a href="DepthFunction.html">DepthFunction</a></li><li><a href="destroyObject.html">destroyObject</a></li><li><a href="ExtentTessellator.html">ExtentTessellator</a></li><li><a href="FAR.html">FAR</a></li><li><a href="FeatureDetection.html">FeatureDetection</a></li><li><a href="freezeObject.html">freezeObject</a></li><li><a href="Fullscreen.html">Fullscreen</a></li><li><a href="getImagePixels.html">getImagePixels</a></li><li><a href="HermitePolynomialApproximation.html">HermitePolynomialApproximation</a></li><li><a href="HorizontalOrigin.html">HorizontalOrigin</a></li><li><a href="IndexDatatype.html">IndexDatatype</a></li><li><a href="Intersect.html">Intersect</a></li><li><a href="IntersectionTests.html">IntersectionTests</a></li><li><a href="Iso8601.html">Iso8601</a></li><li><a href="jsonp.html">jsonp</a></li><li><a href="KeyboardEventModifier.html">KeyboardEventModifier</a></li><li><a href="LabelStyle.html">LabelStyle</a></li><li><a href="LagrangePolynomialApproximation.html">LagrangePolynomialApproximation</a></li><li><a href="LinearApproximation.html">LinearApproximation</a></li><li><a href="loadArrayBuffer.html">loadArrayBuffer</a></li><li><a href="loadCubeMap.html">loadCubeMap</a></li><li><a href="loadImage.html">loadImage</a></li><li><a href="loadJson.html">loadJson</a></li><li><a href="loadText.html">loadText</a></li><li><a href="loadXML.html">loadXML</a></li><li><a href="MeshFilters.html">MeshFilters</a></li><li><a href="MipmapHint.html">MipmapHint</a></li><li><a href="PixelDatatype.html">PixelDatatype</a></li><li><a href="PixelFormat.html">PixelFormat</a></li><li><a href="PlaneTessellator.html">PlaneTessellator</a></li><li><a href="pointInsideTriangle2D.html">pointInsideTriangle2D</a></li><li><a href="PolygonPipeline.html">PolygonPipeline</a></li><li><a href="PolylinePipeline.html">PolylinePipeline</a></li><li><a href="PrimitiveType.html">PrimitiveType</a></li><li><a href="processCzml.html">processCzml</a></li><li><a href="Projections.html">Projections</a></li><li><a href="QuadraticRealPolynomial.html">QuadraticRealPolynomial</a></li><li><a href="QuarticRealPolynomial.html">QuarticRealPolynomial</a></li><li><a href="RenderbufferFormat.html">RenderbufferFormat</a></li><li><a href="requestAnimationFrame.html">requestAnimationFrame</a></li><li><a href="SceneMode.html">SceneMode</a></li><li><a href="ScreenSpaceEventType.html">ScreenSpaceEventType</a></li><li><a href="Shapes.html">Shapes</a></li><li><a href="StencilFunction.html">StencilFunction</a></li><li><a href="StencilOperation.html">StencilOperation</a></li><li><a href="TextureMagnificationFilter.html">TextureMagnificationFilter</a></li><li><a href="TextureMinificationFilter.html">TextureMinificationFilter</a></li><li><a href="TextureWrap.html">TextureWrap</a></li><li><a href="TimeConstants.html">TimeConstants</a></li><li><a href="TimeStandard.html">TimeStandard</a></li><li><a href="Tipsify.html">Tipsify</a></li><li><a href="Transforms.html">Transforms</a></li><li><a href="TridiagonalSystemSolver.html">TridiagonalSystemSolver</a></li><li><a href="UniformDatatype.html">UniformDatatype</a></li><li><a href="VertexLayout.html">VertexLayout</a></li><li><a href="VerticalOrigin.html">VerticalOrigin</a></li><li><a href="Visibility.html">Visibility</a></li><li><a href="WindingOrder.html">WindingOrder</a></li><li><a href="ComponentDatatype.html">ComponentDatatype</a></li></div><div id="glslItems"><li><a href="czm_cellular.html">czm_cellular</a></li><li><a href="czm_columbusView.html">czm_columbusView</a></li><li><a href="czm_columbusViewMorph.html">czm_columbusViewMorph</a></li><li><a href="czm_complement.html">czm_complement</a></li><li><a href="czm_cone.html">czm_cone</a></li><li><a href="czm_coneContainsPoint.html">czm_coneContainsPoint</a></li><li><a href="czm_degreesPerRadian.html">czm_degreesPerRadian</a></li><li><a href="czm_eastNorthUpToEyeCoordinates.html">czm_eastNorthUpToEyeCoordinates</a></li><li><a href="czm_ellipsoid.html">czm_ellipsoid</a></li><li><a href="czm_ellipsoidContainsPoint.html">czm_ellipsoidContainsPoint</a></li><li><a href="czm_ellipsoidNew.html">czm_ellipsoidNew</a></li><li><a href="czm_ellipsoidSilhouetteCone.html">czm_ellipsoidSilhouetteCone</a></li><li><a href="czm_ellipsoidSilhouetteConeNew.html">czm_ellipsoidSilhouetteConeNew</a></li><li><a href="czm_ellipsoidSilhouetteConeNormal.html">czm_ellipsoidSilhouetteConeNormal</a></li><li><a href="czm_ellipsoidSilhouetteHalfspace.html">czm_ellipsoidSilhouetteHalfspace</a></li><li><a href="czm_ellipsoidSilhouetteHalfspaceNew.html">czm_ellipsoidSilhouetteHalfspaceNew</a></li><li><a href="czm_ellipsoidWgs84TextureCoordinates.html">czm_ellipsoidWgs84TextureCoordinates</a></li><li><a href="czm_emptyRaySegment.html">czm_emptyRaySegment</a></li><li><a href="czm_encodedCameraPositionMCHigh.html">czm_encodedCameraPositionMCHigh</a></li><li><a href="czm_encodedCameraPositionMCLow.html">czm_encodedCameraPositionMCLow</a></li><li><a href="czm_entireFrustum.html">czm_entireFrustum</a></li><li><a href="czm_epsilon1.html">czm_epsilon1</a></li><li><a href="czm_epsilon2.html">czm_epsilon2</a></li><li><a href="czm_epsilon3.html">czm_epsilon3</a></li><li><a href="czm_epsilon4.html">czm_epsilon4</a></li><li><a href="czm_epsilon5.html">czm_epsilon5</a></li><li><a href="czm_epsilon6.html">czm_epsilon6</a></li><li><a href="czm_epsilon7.html">czm_epsilon7</a></li><li><a href="czm_equalsEpsilon.html">czm_equalsEpsilon</a></li><li><a href="czm_eyeOffset.html">czm_eyeOffset</a></li><li><a href="czm_eyeToWindowCoordinates.html">czm_eyeToWindowCoordinates</a></li><li><a href="czm_frameNumber.html">czm_frameNumber</a></li><li><a href="czm_fullRaySegment.html">czm_fullRaySegment</a></li><li><a href="czm_geodeticSurfaceNormal.html">czm_geodeticSurfaceNormal</a></li><li><a href="czm_getDefaultMaterial.html">czm_getDefaultMaterial</a></li><li><a href="czm_getWgs84EllipsoidEC.html">czm_getWgs84EllipsoidEC</a></li><li><a href="czm_halfspace.html">czm_halfspace</a></li><li><a href="czm_infiniteProjection.html">czm_infiniteProjection</a></li><li><a href="czm_infinity.html">czm_infinity</a></li><li><a href="czm_insertAt.html">czm_insertAt</a></li><li><a href="czm_intersection.html">czm_intersection</a></li><li><a href="czm_inverseModel.html">czm_inverseModel</a></li><li><a href="czm_inverseModelView.html">czm_inverseModelView</a></li><li><a href="czm_inverseNormal.html">czm_inverseNormal</a></li><li><a href="czm_inverseProjection.html">czm_inverseProjection</a></li><li><a href="czm_inverseView.html">czm_inverseView</a></li><li><a href="czm_inverseViewRotation.html">czm_inverseViewRotation</a></li><li><a href="czm_isEmpty.html">czm_isEmpty</a></li><li><a href="czm_isFull.html">czm_isFull</a></li><li><a href="czm_latitudeToWebMercatorFraction.html">czm_latitudeToWebMercatorFraction</a></li><li><a href="czm_luminance.html">czm_luminance</a></li><li><a href="czm_material.html">czm_material</a></li><li><a href="czm_materialInput.html">czm_materialInput</a></li><li><a href="czm_model.html">czm_model</a></li><li><a href="czm_modelToWindowCoordinates.html">czm_modelToWindowCoordinates</a></li><li><a href="czm_modelView.html">czm_modelView</a></li><li><a href="czm_modelViewInfiniteProjection.html">czm_modelViewInfiniteProjection</a></li><li><a href="czm_modelViewProjection.html">czm_modelViewProjection</a></li><li><a href="czm_modelViewProjectionRelativeToEye.html">czm_modelViewProjectionRelativeToEye</a></li><li><a href="czm_modelViewRelativeToEye.html">czm_modelViewRelativeToEye</a></li><li><a href="czm_moonDirectionEC.html">czm_moonDirectionEC</a></li><li><a href="czm_morphing.html">czm_morphing</a></li><li><a href="czm_multiplyWithColorBalance.html">czm_multiplyWithColorBalance</a></li><li><a href="czm_normal.html">czm_normal</a></li><li><a href="czm_oneOverPi.html">czm_oneOverPi</a></li><li><a href="czm_oneOverTwoPi.html">czm_oneOverTwoPi</a></li><li><a href="czm_phong.html">czm_phong</a></li><li><a href="czm_pi.html">czm_pi</a></li><li><a href="czm_piOverFour.html">czm_piOverFour</a></li><li><a href="czm_piOverSix.html">czm_piOverSix</a></li><li><a href="czm_piOverThree.html">czm_piOverThree</a></li><li><a href="czm_piOverTwo.html">czm_piOverTwo</a></li><li><a href="czm_pointAlongRay.html">czm_pointAlongRay</a></li><li><a href="czm_projection.html">czm_projection</a></li><li><a href="czm_quadraticRealPolynomialRealRoots.html">czm_quadraticRealPolynomialRealRoots</a></li><li><a href="czm_quadraticRoots.html">czm_quadraticRoots</a></li><li><a href="czm_radiansPerDegree.html">czm_radiansPerDegree</a></li><li><a href="czm_ray.html">czm_ray</a></li><li><a href="czm_rayConeIntersectionInterval.html">czm_rayConeIntersectionInterval</a></li><li><a href="czm_rayConeIntersectNormal.html">czm_rayConeIntersectNormal</a></li><li><a href="czm_rayEllipsoidIntersectionInterval.html">czm_rayEllipsoidIntersectionInterval</a></li><li><a href="czm_rayEllipsoidSilhouetteConeIntersectionInterval.html">czm_rayEllipsoidSilhouetteConeIntersectionInterval</a></li><li><a href="czm_rayEllipsoidSilhouetteHalfspaceIntersectionInterval.html">czm_rayEllipsoidSilhouetteHalfspaceIntersectionInterval</a></li><li><a href="czm_rayHalfspaceIntersectionInterval.html">czm_rayHalfspaceIntersectionInterval</a></li><li><a href="czm_raySegment.html">czm_raySegment</a></li><li><a href="czm_raySegmentCollection.html">czm_raySegmentCollection</a></li><li><a href="czm_raySegmentCollectionCapacity.html">czm_raySegmentCollectionCapacity</a></li><li><a href="czm_raySegmentCollectionNew.html">czm_raySegmentCollectionNew</a></li><li><a href="czm_raySphereIntersectionInterval.html">czm_raySphereIntersectionInterval</a></li><li><a href="czm_removeAt.html">czm_removeAt</a></li><li><a href="czm_scene2D.html">czm_scene2D</a></li><li><a href="czm_scene3D.html">czm_scene3D</a></li><li><a href="czm_snoise.html">czm_snoise</a></li><li><a href="czm_sphere.html">czm_sphere</a></li><li><a href="czm_sphereNormal.html">czm_sphereNormal</a></li><li><a href="global.html#czm_subtraction">czm_subtraction</a></li><li><a href="czm_sunDirectionEC.html">czm_sunDirectionEC</a></li><li><a href="czm_sunDirectionWC.html">czm_sunDirectionWC</a></li><li><a href="czm_temeToPseudoFixed.html">czm_temeToPseudoFixed</a></li><li><a href="czm_threePiOver2.html">czm_threePiOver2</a></li><li><a href="czm_translateRelativeToEye.html">czm_translateRelativeToEye</a></li><li><a href="czm_transpose.html">czm_transpose</a></li><li><a href="czm_twoPi.html">czm_twoPi</a></li><li><a href="czm_view.html">czm_view</a></li><li><a href="czm_viewerPositionWC.html">czm_viewerPositionWC</a></li><li><a href="czm_viewport.html">czm_viewport</a></li><li><a href="czm_viewportOrthographic.html">czm_viewportOrthographic</a></li><li><a href="czm_viewportTransformation.html">czm_viewportTransformation</a></li><li><a href="czm_viewProjection.html">czm_viewProjection</a></li><li><a href="czm_viewRotation.html">czm_viewRotation</a></li><li><a href="czm_webMercatorMaxLatitude.html">czm_webMercatorMaxLatitude</a></li><li><a href="czm_windowToEyeCoordinates.html">czm_windowToEyeCoordinates</a></li></div></ul>
+    </div>
+</div>
+<div class="nav navStatic"></div>
+
+<div id="main">
+    
+    <h1 class="page-title">Color</h1>
+    
+    
+
+<section>
+    
+<header>
+    <h2>
+    Color
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <h4 class="name" id="Color"><span class="type-signature"></span>new Color</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        A color, specified using red, green, blue, and alpha values,which range from <code>0</code> (no intensity) to <code>1.0</code> (full intensity).
+    </p>
+    
+    
+	
+	
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>red</code></td>
+            
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    1.0
+                
+                </td>
+            
+            
+            <td class="description last">The red component.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>green</code></td>
+            
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    1.0
+                
+                </td>
+            
+            
+            <td class="description last">The green component.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>blue</code></td>
+            
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    1.0
+                
+                </td>
+            
+            
+            <td class="description last">The blue component.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>alpha</code></td>
+            
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    1.0
+                
+                </td>
+            
+            
+            <td class="description last">The alpha component.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 42</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	
+	<div class="hr"></div>
+</dd>
+
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="alpha"><span class="type-signature"></span>alpha<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The alpha component.
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 58</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="blue"><span class="type-signature"></span>blue<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The blue component.
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 54</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="green"><span class="type-signature"></span>green<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The green component.
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 50</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="red"><span class="type-signature"></span>red<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The red component.
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 46</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="ALICEBLUE"><span class="type-signature">&lt;static, constant> </span>ALICEBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #F0F8FF<span class="colorSwath" style="background: #F0F8FF;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 322</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="ANTIQUEWHITE"><span class="type-signature">&lt;static, constant> </span>ANTIQUEWHITE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FAEBD7<span class="colorSwath" style="background: #FAEBD7;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 331</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="AQUA"><span class="type-signature">&lt;static, constant> </span>AQUA<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #00FFFF<span class="colorSwath" style="background: #00FFFF;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 340</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="AQUAMARINE"><span class="type-signature">&lt;static, constant> </span>AQUAMARINE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #7FFFD4<span class="colorSwath" style="background: #7FFFD4;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 349</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="AZURE"><span class="type-signature">&lt;static, constant> </span>AZURE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #F0FFFF<span class="colorSwath" style="background: #F0FFFF;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 358</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="BEIGE"><span class="type-signature">&lt;static, constant> </span>BEIGE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #F5F5DC<span class="colorSwath" style="background: #F5F5DC;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 367</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="BISQUE"><span class="type-signature">&lt;static, constant> </span>BISQUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFE4C4<span class="colorSwath" style="background: #FFE4C4;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 376</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="BLACK"><span class="type-signature">&lt;static, constant> </span>BLACK<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #000000<span class="colorSwath" style="background: #000000;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 385</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="BLANCHEDALMOND"><span class="type-signature">&lt;static, constant> </span>BLANCHEDALMOND<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFEBCD<span class="colorSwath" style="background: #FFEBCD;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 394</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="BLUE"><span class="type-signature">&lt;static, constant> </span>BLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #0000FF<span class="colorSwath" style="background: #0000FF;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 403</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="BLUEVIOLET"><span class="type-signature">&lt;static, constant> </span>BLUEVIOLET<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #8A2BE2<span class="colorSwath" style="background: #8A2BE2;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 412</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="BROWN"><span class="type-signature">&lt;static, constant> </span>BROWN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #A52A2A<span class="colorSwath" style="background: #A52A2A;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 421</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="BURLYWOOD"><span class="type-signature">&lt;static, constant> </span>BURLYWOOD<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #DEB887<span class="colorSwath" style="background: #DEB887;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 430</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="CADETBLUE"><span class="type-signature">&lt;static, constant> </span>CADETBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #5F9EA0<span class="colorSwath" style="background: #5F9EA0;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 439</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="CHARTREUSE"><span class="type-signature">&lt;static, constant> </span>CHARTREUSE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #7FFF00<span class="colorSwath" style="background: #7FFF00;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 447</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="CHOCOLATE"><span class="type-signature">&lt;static, constant> </span>CHOCOLATE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #D2691E<span class="colorSwath" style="background: #D2691E;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 456</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="CORAL"><span class="type-signature">&lt;static, constant> </span>CORAL<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FF7F50<span class="colorSwath" style="background: #FF7F50;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 465</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="CORNFLOWERBLUE"><span class="type-signature">&lt;static, constant> </span>CORNFLOWERBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #6495ED<span class="colorSwath" style="background: #6495ED;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 474</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="CORNSILK"><span class="type-signature">&lt;static, constant> </span>CORNSILK<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFF8DC<span class="colorSwath" style="background: #FFF8DC;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 483</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="CRIMSON"><span class="type-signature">&lt;static, constant> </span>CRIMSON<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #DC143C<span class="colorSwath" style="background: #DC143C;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 492</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="CYAN"><span class="type-signature">&lt;static, constant> </span>CYAN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #00FFFF<span class="colorSwath" style="background: #00FFFF;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 501</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKBLUE"><span class="type-signature">&lt;static, constant> </span>DARKBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #00008B<span class="colorSwath" style="background: #00008B;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 510</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKCYAN"><span class="type-signature">&lt;static, constant> </span>DARKCYAN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #008B8B<span class="colorSwath" style="background: #008B8B;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 519</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKGOLDENROD"><span class="type-signature">&lt;static, constant> </span>DARKGOLDENROD<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #B8860B<span class="colorSwath" style="background: #B8860B;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 528</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKGRAY"><span class="type-signature">&lt;static, constant> </span>DARKGRAY<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #A9A9A9<span class="colorSwath" style="background: #A9A9A9;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 537</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKGREEN"><span class="type-signature">&lt;static, constant> </span>DARKGREEN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #006400<span class="colorSwath" style="background: #006400;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 546</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKGREY"><span class="type-signature">&lt;static, constant> </span>DARKGREY<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #A9A9A9<span class="colorSwath" style="background: #A9A9A9;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 555</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKKHAKI"><span class="type-signature">&lt;static, constant> </span>DARKKHAKI<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #BDB76B<span class="colorSwath" style="background: #BDB76B;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 564</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKMAGENTA"><span class="type-signature">&lt;static, constant> </span>DARKMAGENTA<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #8B008B<span class="colorSwath" style="background: #8B008B;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 573</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKOLIVEGREEN"><span class="type-signature">&lt;static, constant> </span>DARKOLIVEGREEN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #556B2F<span class="colorSwath" style="background: #556B2F;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 582</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKORANGE"><span class="type-signature">&lt;static, constant> </span>DARKORANGE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FF8C00<span class="colorSwath" style="background: #FF8C00;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 591</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKORCHID"><span class="type-signature">&lt;static, constant> </span>DARKORCHID<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #9932CC<span class="colorSwath" style="background: #9932CC;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 600</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKRED"><span class="type-signature">&lt;static, constant> </span>DARKRED<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #8B0000<span class="colorSwath" style="background: #8B0000;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 609</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKSALMON"><span class="type-signature">&lt;static, constant> </span>DARKSALMON<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #E9967A<span class="colorSwath" style="background: #E9967A;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 618</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKSEAGREEN"><span class="type-signature">&lt;static, constant> </span>DARKSEAGREEN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #8FBC8F<span class="colorSwath" style="background: #8FBC8F;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 627</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKSLATEBLUE"><span class="type-signature">&lt;static, constant> </span>DARKSLATEBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #483D8B<span class="colorSwath" style="background: #483D8B;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 636</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKSLATEGRAY"><span class="type-signature">&lt;static, constant> </span>DARKSLATEGRAY<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #2F4F4F<span class="colorSwath" style="background: #2F4F4F;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 645</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKSLATEGREY"><span class="type-signature">&lt;static, constant> </span>DARKSLATEGREY<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #2F4F4F<span class="colorSwath" style="background: #2F4F4F;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 654</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKTURQUOISE"><span class="type-signature">&lt;static, constant> </span>DARKTURQUOISE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #00CED1<span class="colorSwath" style="background: #00CED1;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 663</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DARKVIOLET"><span class="type-signature">&lt;static, constant> </span>DARKVIOLET<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #9400D3<span class="colorSwath" style="background: #9400D3;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 672</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DEEPPINK"><span class="type-signature">&lt;static, constant> </span>DEEPPINK<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FF1493<span class="colorSwath" style="background: #FF1493;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 681</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DEEPSKYBLUE"><span class="type-signature">&lt;static, constant> </span>DEEPSKYBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #00BFFF<span class="colorSwath" style="background: #00BFFF;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 690</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DIMGRAY"><span class="type-signature">&lt;static, constant> </span>DIMGRAY<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #696969<span class="colorSwath" style="background: #696969;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 699</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DIMGREY"><span class="type-signature">&lt;static, constant> </span>DIMGREY<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #696969<span class="colorSwath" style="background: #696969;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 708</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DODGERBLUE"><span class="type-signature">&lt;static, constant> </span>DODGERBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #1E90FF<span class="colorSwath" style="background: #1E90FF;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 717</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="FIREBRICK"><span class="type-signature">&lt;static, constant> </span>FIREBRICK<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #B22222<span class="colorSwath" style="background: #B22222;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 726</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="FLORALWHITE"><span class="type-signature">&lt;static, constant> </span>FLORALWHITE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFFAF0<span class="colorSwath" style="background: #FFFAF0;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 735</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="FORESTGREEN"><span class="type-signature">&lt;static, constant> </span>FORESTGREEN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #228B22<span class="colorSwath" style="background: #228B22;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 744</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="FUSCHIA"><span class="type-signature">&lt;static, constant> </span>FUSCHIA<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FF00FF<span class="colorSwath" style="background: #FF00FF;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 753</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="GAINSBORO"><span class="type-signature">&lt;static, constant> </span>GAINSBORO<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #DCDCDC<span class="colorSwath" style="background: #DCDCDC;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 762</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="GHOSTWHITE"><span class="type-signature">&lt;static, constant> </span>GHOSTWHITE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #F8F8FF<span class="colorSwath" style="background: #F8F8FF;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 771</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="GOLD"><span class="type-signature">&lt;static, constant> </span>GOLD<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFD700<span class="colorSwath" style="background: #FFD700;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 780</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="GOLDENROD"><span class="type-signature">&lt;static, constant> </span>GOLDENROD<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #DAA520<span class="colorSwath" style="background: #DAA520;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 789</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="GRAY"><span class="type-signature">&lt;static, constant> </span>GRAY<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #808080<span class="colorSwath" style="background: #808080;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 798</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="GREEN"><span class="type-signature">&lt;static, constant> </span>GREEN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #008000<span class="colorSwath" style="background: #008000;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 807</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="GREENYELLOW"><span class="type-signature">&lt;static, constant> </span>GREENYELLOW<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #ADFF2F<span class="colorSwath" style="background: #ADFF2F;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 816</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="GREY"><span class="type-signature">&lt;static, constant> </span>GREY<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #808080<span class="colorSwath" style="background: #808080;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 825</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="HONEYDEW"><span class="type-signature">&lt;static, constant> </span>HONEYDEW<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #F0FFF0<span class="colorSwath" style="background: #F0FFF0;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 834</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="HOTPINK"><span class="type-signature">&lt;static, constant> </span>HOTPINK<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FF69B4<span class="colorSwath" style="background: #FF69B4;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 843</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="INDIANRED"><span class="type-signature">&lt;static, constant> </span>INDIANRED<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #CD5C5C<span class="colorSwath" style="background: #CD5C5C;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 852</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="INDIGO"><span class="type-signature">&lt;static, constant> </span>INDIGO<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #4B0082<span class="colorSwath" style="background: #4B0082;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 861</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="IVORY"><span class="type-signature">&lt;static, constant> </span>IVORY<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFFFF0<span class="colorSwath" style="background: #FFFFF0;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 870</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="KHAKI"><span class="type-signature">&lt;static, constant> </span>KHAKI<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #F0E68C<span class="colorSwath" style="background: #F0E68C;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 879</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LAVENDAR_BLUSH"><span class="type-signature">&lt;static, constant> </span>LAVENDAR_BLUSH<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFF0F5<span class="colorSwath" style="background: #FFF0F5;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 897</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LAVENDER"><span class="type-signature">&lt;static, constant> </span>LAVENDER<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #E6E6FA<span class="colorSwath" style="background: #E6E6FA;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 888</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LAWNGREEN"><span class="type-signature">&lt;static, constant> </span>LAWNGREEN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #7CFC00<span class="colorSwath" style="background: #7CFC00;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 906</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LEMONCHIFFON"><span class="type-signature">&lt;static, constant> </span>LEMONCHIFFON<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFFACD<span class="colorSwath" style="background: #FFFACD;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 915</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LIGHTBLUE"><span class="type-signature">&lt;static, constant> </span>LIGHTBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #ADD8E6<span class="colorSwath" style="background: #ADD8E6;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 924</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LIGHTCORAL"><span class="type-signature">&lt;static, constant> </span>LIGHTCORAL<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #F08080<span class="colorSwath" style="background: #F08080;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 933</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LIGHTCYAN"><span class="type-signature">&lt;static, constant> </span>LIGHTCYAN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #E0FFFF<span class="colorSwath" style="background: #E0FFFF;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 942</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LIGHTGOLDENRODYELLOW"><span class="type-signature">&lt;static, constant> </span>LIGHTGOLDENRODYELLOW<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FAFAD2<span class="colorSwath" style="background: #FAFAD2;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 951</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LIGHTGRAY"><span class="type-signature">&lt;static, constant> </span>LIGHTGRAY<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #D3D3D3<span class="colorSwath" style="background: #D3D3D3;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 960</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LIGHTGREEN"><span class="type-signature">&lt;static, constant> </span>LIGHTGREEN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #90EE90<span class="colorSwath" style="background: #90EE90;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 969</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LIGHTGREY"><span class="type-signature">&lt;static, constant> </span>LIGHTGREY<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #D3D3D3<span class="colorSwath" style="background: #D3D3D3;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 978</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LIGHTPINK"><span class="type-signature">&lt;static, constant> </span>LIGHTPINK<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFB6C1<span class="colorSwath" style="background: #FFB6C1;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 987</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LIGHTSEAGREEN"><span class="type-signature">&lt;static, constant> </span>LIGHTSEAGREEN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #20B2AA<span class="colorSwath" style="background: #20B2AA;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 996</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LIGHTSKYBLUE"><span class="type-signature">&lt;static, constant> </span>LIGHTSKYBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #87CEFA<span class="colorSwath" style="background: #87CEFA;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1005</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LIGHTSLATEGRAY"><span class="type-signature">&lt;static, constant> </span>LIGHTSLATEGRAY<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #778899<span class="colorSwath" style="background: #778899;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1014</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LIGHTSLATEGREY"><span class="type-signature">&lt;static, constant> </span>LIGHTSLATEGREY<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #778899<span class="colorSwath" style="background: #778899;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1023</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LIGHTSTEELBLUE"><span class="type-signature">&lt;static, constant> </span>LIGHTSTEELBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #B0C4DE<span class="colorSwath" style="background: #B0C4DE;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1032</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LIGHTYELLOW"><span class="type-signature">&lt;static, constant> </span>LIGHTYELLOW<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFFFE0<span class="colorSwath" style="background: #FFFFE0;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1041</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LIME"><span class="type-signature">&lt;static, constant> </span>LIME<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #00FF00<span class="colorSwath" style="background: #00FF00;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1050</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LIMEGREEN"><span class="type-signature">&lt;static, constant> </span>LIMEGREEN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #32CD32<span class="colorSwath" style="background: #32CD32;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1059</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="LINEN"><span class="type-signature">&lt;static, constant> </span>LINEN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FAF0E6<span class="colorSwath" style="background: #FAF0E6;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1068</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="MAGENTA"><span class="type-signature">&lt;static, constant> </span>MAGENTA<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FF00FF<span class="colorSwath" style="background: #FF00FF;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1077</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="MAROON"><span class="type-signature">&lt;static, constant> </span>MAROON<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #800000<span class="colorSwath" style="background: #800000;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1086</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="MEDIUMAQUAMARINE"><span class="type-signature">&lt;static, constant> </span>MEDIUMAQUAMARINE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #66CDAA<span class="colorSwath" style="background: #66CDAA;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1095</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="MEDIUMBLUE"><span class="type-signature">&lt;static, constant> </span>MEDIUMBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #0000CD<span class="colorSwath" style="background: #0000CD;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1104</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="MEDIUMORCHID"><span class="type-signature">&lt;static, constant> </span>MEDIUMORCHID<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #BA55D3<span class="colorSwath" style="background: #BA55D3;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1113</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="MEDIUMPURPLE"><span class="type-signature">&lt;static, constant> </span>MEDIUMPURPLE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #9370DB<span class="colorSwath" style="background: #9370DB;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1122</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="MEDIUMSEAGREEN"><span class="type-signature">&lt;static, constant> </span>MEDIUMSEAGREEN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #3CB371<span class="colorSwath" style="background: #3CB371;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1131</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="MEDIUMSLATEBLUE"><span class="type-signature">&lt;static, constant> </span>MEDIUMSLATEBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #7B68EE<span class="colorSwath" style="background: #7B68EE;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1140</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="MEDIUMSPRINGGREEN"><span class="type-signature">&lt;static, constant> </span>MEDIUMSPRINGGREEN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #00FA9A<span class="colorSwath" style="background: #00FA9A;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1149</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="MEDIUMTURQUOISE"><span class="type-signature">&lt;static, constant> </span>MEDIUMTURQUOISE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #48D1CC<span class="colorSwath" style="background: #48D1CC;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1158</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="MEDIUMVIOLETRED"><span class="type-signature">&lt;static, constant> </span>MEDIUMVIOLETRED<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #C71585<span class="colorSwath" style="background: #C71585;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1167</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="MIDNIGHTBLUE"><span class="type-signature">&lt;static, constant> </span>MIDNIGHTBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #191970<span class="colorSwath" style="background: #191970;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1176</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="MINTCREAM"><span class="type-signature">&lt;static, constant> </span>MINTCREAM<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #F5FFFA<span class="colorSwath" style="background: #F5FFFA;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1185</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="MISTYROSE"><span class="type-signature">&lt;static, constant> </span>MISTYROSE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFE4E1<span class="colorSwath" style="background: #FFE4E1;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1194</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="MOCCASIN"><span class="type-signature">&lt;static, constant> </span>MOCCASIN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFE4B5<span class="colorSwath" style="background: #FFE4B5;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1203</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="NAVAJOWHITE"><span class="type-signature">&lt;static, constant> </span>NAVAJOWHITE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFDEAD<span class="colorSwath" style="background: #FFDEAD;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1212</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="NAVY"><span class="type-signature">&lt;static, constant> </span>NAVY<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #000080<span class="colorSwath" style="background: #000080;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1221</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="OLDLACE"><span class="type-signature">&lt;static, constant> </span>OLDLACE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FDF5E6<span class="colorSwath" style="background: #FDF5E6;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1230</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="OLIVE"><span class="type-signature">&lt;static, constant> </span>OLIVE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #808000<span class="colorSwath" style="background: #808000;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1239</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="OLIVEDRAB"><span class="type-signature">&lt;static, constant> </span>OLIVEDRAB<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #6B8E23<span class="colorSwath" style="background: #6B8E23;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1248</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="ORANGE"><span class="type-signature">&lt;static, constant> </span>ORANGE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFA500<span class="colorSwath" style="background: #FFA500;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1257</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="ORANGERED"><span class="type-signature">&lt;static, constant> </span>ORANGERED<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FF4500<span class="colorSwath" style="background: #FF4500;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1266</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="ORCHID"><span class="type-signature">&lt;static, constant> </span>ORCHID<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #DA70D6<span class="colorSwath" style="background: #DA70D6;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1275</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="PALEGOLDENROD"><span class="type-signature">&lt;static, constant> </span>PALEGOLDENROD<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #EEE8AA<span class="colorSwath" style="background: #EEE8AA;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1284</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="PALEGREEN"><span class="type-signature">&lt;static, constant> </span>PALEGREEN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #98FB98<span class="colorSwath" style="background: #98FB98;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1293</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="PALETURQUOISE"><span class="type-signature">&lt;static, constant> </span>PALETURQUOISE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #AFEEEE<span class="colorSwath" style="background: #AFEEEE;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1302</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="PALEVIOLETRED"><span class="type-signature">&lt;static, constant> </span>PALEVIOLETRED<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #DB7093<span class="colorSwath" style="background: #DB7093;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1311</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="PAPAYAWHIP"><span class="type-signature">&lt;static, constant> </span>PAPAYAWHIP<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFEFD5<span class="colorSwath" style="background: #FFEFD5;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1320</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="PEACHPUFF"><span class="type-signature">&lt;static, constant> </span>PEACHPUFF<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFDAB9<span class="colorSwath" style="background: #FFDAB9;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1329</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="PERU"><span class="type-signature">&lt;static, constant> </span>PERU<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #CD853F<span class="colorSwath" style="background: #CD853F;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1338</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="PINK"><span class="type-signature">&lt;static, constant> </span>PINK<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFC0CB<span class="colorSwath" style="background: #FFC0CB;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1347</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="PLUM"><span class="type-signature">&lt;static, constant> </span>PLUM<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #DDA0DD<span class="colorSwath" style="background: #DDA0DD;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1356</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="POWDERBLUE"><span class="type-signature">&lt;static, constant> </span>POWDERBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #B0E0E6<span class="colorSwath" style="background: #B0E0E6;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1365</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="PURPLE"><span class="type-signature">&lt;static, constant> </span>PURPLE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #800080<span class="colorSwath" style="background: #800080;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1374</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="RED"><span class="type-signature">&lt;static, constant> </span>RED<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FF0000<span class="colorSwath" style="background: #FF0000;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1383</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="ROSYBROWN"><span class="type-signature">&lt;static, constant> </span>ROSYBROWN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #BC8F8F<span class="colorSwath" style="background: #BC8F8F;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1392</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="ROYALBLUE"><span class="type-signature">&lt;static, constant> </span>ROYALBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #4169E1<span class="colorSwath" style="background: #4169E1;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1401</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SADDLEBROWN"><span class="type-signature">&lt;static, constant> </span>SADDLEBROWN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #8B4513<span class="colorSwath" style="background: #8B4513;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1410</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SALMON"><span class="type-signature">&lt;static, constant> </span>SALMON<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FA8072<span class="colorSwath" style="background: #FA8072;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1419</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SANDYBROWN"><span class="type-signature">&lt;static, constant> </span>SANDYBROWN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #F4A460<span class="colorSwath" style="background: #F4A460;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1428</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SEAGREEN"><span class="type-signature">&lt;static, constant> </span>SEAGREEN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #2E8B57<span class="colorSwath" style="background: #2E8B57;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1437</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SEASHELL"><span class="type-signature">&lt;static, constant> </span>SEASHELL<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFF5EE<span class="colorSwath" style="background: #FFF5EE;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1446</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SIENNA"><span class="type-signature">&lt;static, constant> </span>SIENNA<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #A0522D<span class="colorSwath" style="background: #A0522D;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1455</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SILVER"><span class="type-signature">&lt;static, constant> </span>SILVER<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #C0C0C0<span class="colorSwath" style="background: #C0C0C0;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1464</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SKYBLUE"><span class="type-signature">&lt;static, constant> </span>SKYBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #87CEEB<span class="colorSwath" style="background: #87CEEB;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1473</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SLATEBLUE"><span class="type-signature">&lt;static, constant> </span>SLATEBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #6A5ACD<span class="colorSwath" style="background: #6A5ACD;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1482</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SLATEGRAY"><span class="type-signature">&lt;static, constant> </span>SLATEGRAY<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #708090<span class="colorSwath" style="background: #708090;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1491</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SLATEGREY"><span class="type-signature">&lt;static, constant> </span>SLATEGREY<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #708090<span class="colorSwath" style="background: #708090;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1500</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SNOW"><span class="type-signature">&lt;static, constant> </span>SNOW<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFFAFA<span class="colorSwath" style="background: #FFFAFA;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1509</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SPRINGGREEN"><span class="type-signature">&lt;static, constant> </span>SPRINGGREEN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #00FF7F<span class="colorSwath" style="background: #00FF7F;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1518</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="STEELBLUE"><span class="type-signature">&lt;static, constant> </span>STEELBLUE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #4682B4<span class="colorSwath" style="background: #4682B4;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1527</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="TAN"><span class="type-signature">&lt;static, constant> </span>TAN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #D2B48C<span class="colorSwath" style="background: #D2B48C;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1536</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="TEAL"><span class="type-signature">&lt;static, constant> </span>TEAL<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #008080<span class="colorSwath" style="background: #008080;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1545</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="THISTLE"><span class="type-signature">&lt;static, constant> </span>THISTLE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #D8BFD8<span class="colorSwath" style="background: #D8BFD8;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1554</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="TOMATO"><span class="type-signature">&lt;static, constant> </span>TOMATO<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FF6347<span class="colorSwath" style="background: #FF6347;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1563</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="TURQUOISE"><span class="type-signature">&lt;static, constant> </span>TURQUOISE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #40E0D0<span class="colorSwath" style="background: #40E0D0;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1572</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="VIOLET"><span class="type-signature">&lt;static, constant> </span>VIOLET<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #EE82EE<span class="colorSwath" style="background: #EE82EE;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1581</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="WHEAT"><span class="type-signature">&lt;static, constant> </span>WHEAT<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #F5DEB3<span class="colorSwath" style="background: #F5DEB3;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1590</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="WHITE"><span class="type-signature">&lt;static, constant> </span>WHITE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFFFFF<span class="colorSwath" style="background: #FFFFFF;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1599</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="WHITESMOKE"><span class="type-signature">&lt;static, constant> </span>WHITESMOKE<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #F5F5F5<span class="colorSwath" style="background: #F5F5F5;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1608</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="YELLOW"><span class="type-signature">&lt;static, constant> </span>YELLOW<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #FFFF00<span class="colorSwath" style="background: #FFFF00;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1617</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="YELLOWGREEN"><span class="type-signature">&lt;static, constant> </span>YELLOWGREEN<span class="type-signature"> :<a href="Color.html">Color</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        An immutable Color instance initialized to CSS color #9ACD32<span class="colorSwath" style="background: #9ACD32;"></span>
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 1626</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        </dl>
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="clone"><span class="type-signature"></span>clone</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        Returns a duplicate of a Color instance.
+    </p>
+    
+    
+	
+	
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>result</code></td>
+            
+            
+            <td class="type">
+            
+                        <a href="Color.html">Color</a>
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">The object to store the result in, if undefined a new instance will be created.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+	
+	
+		<span class="param-type"><a href="Color.html">Color</a></span> 
+		
+		 The modified result parameter or a new instance if result was undefined.
+</div>
+
+        
+    
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 259</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="equals"><span class="type-signature"></span>equals</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        Returns true if this Color equals other.
+    </p>
+    
+    
+	
+	
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>other</code></td>
+            
+            
+            <td class="type">
+            
+                        <a href="Color.html">Color</a>
+                        
+                    
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">The Color to compare for equality.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+	
+	
+		<span class="param-type">Boolean</span> 
+		
+		 <code>true</code> if the Colors are equal; otherwise, <code>false</code>.
+</div>
+
+        
+    
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 270</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="equalsEpsilon"><span class="type-signature"></span>equalsEpsilon</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        Returns <code>true</code> if this Color equals other componentwise within the specified epsilon.
+    </p>
+    
+    
+	
+	
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>other</code></td>
+            
+            
+            <td class="type">
+            
+                        <a href="Color.html">Color</a>
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">The Color to compare for equality.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>epsilon</code></td>
+            
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    0.0
+                
+                </td>
+            
+            
+            <td class="description last">The epsilon to use for equality testing.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+	
+	
+		<span class="param-type">Boolean</span> 
+		
+		 <code>true</code> if the Colors are equal within the specified epsilon; otherwise, <code>false</code>.
+</div>
+
+        
+    
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 282</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="toCssColorString"><span class="type-signature"></span>toCssColorString</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        Creates a string containing the CSS color value for this color.
+    </p>
+    
+    
+	
+	
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+	
+	
+		<span class="param-type">String</span> 
+		
+		 The CSS equivalent of this color.
+</div>
+
+        
+    
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 308</li></ul></dd>
+	
+    -->
+    
+	
+	
+	<h5>See:</h5>
+	<ul class="see-list">
+		<li><a href="http://www.w3.org/TR/css3-color/#rgba-color">CSS RGBA color values</a></li>
+	</ul>
+	
+	
+	
+</dl>
+
+	
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="toString"><span class="type-signature"></span>toString</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        Creates a string representing this Color in the format '(red, green, blue, alpha)'.
+    </p>
+    
+    
+	
+	
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+	
+	
+		<span class="param-type">String</span> 
+		
+		 A string representing this Color in the format '(red, green, blue, alpha)'.
+</div>
+
+        
+    
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 297</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="byteToFloat"><span class="type-signature">&lt;static> </span>byteToFloat</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        Converts a 'byte' color component in the range of 0 to 255 intoa 'float' color component range of 0 to 1.0.
+    </p>
+    
+    
+	
+	
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>number</code></td>
+            
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">The number to be converted.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+	
+	
+		<span class="param-type">number</span> 
+		
+		 The converted number.
+</div>
+
+        
+    
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 199</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="clone"><span class="type-signature">&lt;static> </span>clone</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        Duplicates a Color.
+    </p>
+    
+    
+	
+	
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+            
+            <td class="type">
+            
+                        <a href="Color.html">Color</a>
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">The Color to duplicate.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>result</code></td>
+            
+            
+            <td class="type">
+            
+                        <a href="Color.html">Color</a>
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">The object to store the result in, if undefined a new instance will be created.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+	
+	
+		<span class="param-type"><a href="Color.html">Color</a></span> 
+		
+		 The modified result parameter or a new instance if result was undefined.
+</div>
+
+        
+    
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 223</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="equals"><span class="type-signature">&lt;static> </span>equals</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        Returns true if the first Color equals the second color.
+    </p>
+    
+    
+	
+	
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>left</code></td>
+            
+            
+            <td class="type">
+            
+                        <a href="Color.html">Color</a>
+                        
+                    
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">The first Color to compare for equality.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>right</code></td>
+            
+            
+            <td class="type">
+            
+                        <a href="Color.html">Color</a>
+                        
+                    
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">The second Color to compare for equality.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+	
+	
+		<span class="param-type">Boolean</span> 
+		
+		 <code>true</code> if the Colors are equal; otherwise, <code>false</code>.
+</div>
+
+        
+    
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 242</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="floatToByte"><span class="type-signature">&lt;static> </span>floatToByte</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        Converts a 'float' color component in the range of 0 to 1.0 intoa 'byte' color component range of 0 to 255.
+    </p>
+    
+    
+	
+	
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>number</code></td>
+            
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">The number to be converted.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+	
+	
+		<span class="param-type">number</span> 
+		
+		 The converted number.
+</div>
+
+        
+    
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 211</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="fromBytes"><span class="type-signature">&lt;static> </span>fromBytes</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        Creates a new Color specified using red, green, blue, and alpha valuesthat are in the range of 0 to 255, converting them internally to arange of 0.0 to 1.0.
+    </p>
+    
+    
+	
+	
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>red</code></td>
+            
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    255
+                
+                </td>
+            
+            
+            <td class="description last">The red component.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>green</code></td>
+            
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    255
+                
+                </td>
+            
+            
+            <td class="description last">The green component.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>blue</code></td>
+            
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    255
+                
+                </td>
+            
+            
+            <td class="description last">The blue component.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>alpha</code></td>
+            
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    255
+                
+                </td>
+            
+            
+            <td class="description last">The alpha component.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+	
+	
+		<span class="param-type"><a href="Color.html">Color</a></span> 
+		
+		 A new color instance.
+</div>
+
+        
+    
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 73</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="fromCssColorString"><span class="type-signature">&lt;static> </span>fromCssColorString</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        Creates a Color instance from a CSS color value.
+    </p>
+    
+    
+	
+	
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+            
+            <td class="type">
+            
+                        String
+                        
+                    
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">The CSS color value in #rgb, #rrggbb, rgb(), rgba(), hsl(), or hsla() format.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+    
+    
+    <h5>Throws:</h5>
+    
+            
+<div class="param-desc">
+    
+		
+		<span class="param-type"><a href="DeveloperError.html">DeveloperError</a></span> 
+		
+	: color is required.
+</div>
+
+
+        
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+	
+	
+		<span class="param-type"><a href="Color.html">Color</a></span> 
+		
+		 The color object, or undefined if the string was not a valid CSS color.
+</div>
+
+        
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="code brush: js">var cesiumBlue = Color.fromCssColorString('#67ADDF');var green = Color.fromCssColorString('green');</pre>
+
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 144</li></ul></dd>
+	
+    -->
+    
+	
+	
+	<h5>See:</h5>
+	<ul class="see-list">
+		<li><a href="http://www.w3.org/TR/css3-color">CSS color values</a></li>
+	</ul>
+	
+	
+	
+</dl>
+
+	
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="fromHsl"><span class="type-signature">&lt;static> </span>fromHsl</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        Creates a Color instance from hue, saturation, and lightness.
+    </p>
+    
+    
+	
+	
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>hue</code></td>
+            
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+            
+            <td class="description last">The hue angle 0...1</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>saturation</code></td>
+            
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+            
+            <td class="description last">The saturation value 0...1</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>lightness</code></td>
+            
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+            
+            <td class="description last">The lightness value 0...1</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>alpha</code></td>
+            
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    1.0
+                
+                </td>
+            
+            
+            <td class="description last">The alpha component 0...1</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+	
+	
+		<span class="param-type"><a href="Color.html">Color</a></span> 
+		
+		 The color object.
+</div>
+
+        
+    
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Core/Color.js, line 93</li></ul></dd>
+	
+    -->
+    
+	
+	
+	<h5>See:</h5>
+	<ul class="see-list">
+		<li><a href="http://www.w3.org/TR/css3-color/#hsl-color">CSS color values</a></li>
+	</ul>
+	
+	
+	
+</dl>
+
+	
+	<div class="hr"></div>
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
+
+
+    <footer>
+        Documentation generated by <a href="https://github.com/micmath/jsdoc">JSDoc 3</a> on Fri Jan 18 2013 11:21:13 GMT-0500 (EST)
+    </footer>
+</div>
+
+<br clear="both">
+
+<script type="text/javascript">
+    codeview.classFilter.Init();
+    
+    if (window.frameElement) {
+        document.body.className = "embedded";
+        var ele = document.createElement('a');
+        ele.className = "popout";
+        ele.target = "_blank";
+        ele.href = window.location.href;
+        ele.innerHTML = "&raquo;";
+        ele.title = "Pop out";
+        document.getElementById('main').appendChild(ele);
+    }
+    var searchTerm = (document.URL.split('='))[1];
+    var show = (document.URL.split('='))[2];
+    
+    if (show) {
+       document.getElementById("filterType").value = show;
+    } 
+    
+    if(searchTerm){
+        searchTerm = searchTerm.split('&')[0] || '';
+        document.filterForm.classFilter.value = searchTerm;
+    }
+    else {
+        searchTerm="";
+    }
+    codeview.filter(searchTerm);
+    
+    SyntaxHighlighter.all();
+</script>
+<script src="javascript/indexLinks.js"></script>
+</body>
+</html>

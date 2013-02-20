@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>BlendFunction - Cesium Documentation</title>
+    
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/node-dark.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <script src="javascript/all.js"></script>
+    <!-- Syntax Highlighting -->
+    <link rel="stylesheet" href="styles/shCore.css" media="all"></link>
+    <link rel="stylesheet" href="styles/shThemeDefault.css" media="all"></link>
+    <script src="javascript/shCore.js"></script>
+    <script src="javascript/shBrushJScript.js"></script>
+</head>
+
+<body>
+
+<div class="nav">
+    <div class="menu">
+        <a href="http://cesium.agi.com/"><img src="images/CesiumLogo.jpg" class="menuLogo"/></a>
+        <div class="rightLinks indexLinks">
+            <a href="index.html">top</a>
+        </div>
+        <div class="indexLinks">
+            <a id="allLink">all</a>
+            <a id="jsIndexLink">js</a>
+            <a id="glslIndexLink">glsl</a>
+        </div>
+        <div class="divider"></div>
+        <form name="filterForm" method="get" onsubmit="return false;">
+            <input type="text" name="classFilter" class="classFilter" id="ClassFilter" placeholder="Filter"></input>
+            <input type="hidden" id="filterType" value="all"/>
+        </form>
+        <ul id="ClassList"><div id="classItems"><li><a href="AnimationCollection.html">AnimationCollection</a></li><li><a href="AnimationController.html">AnimationController</a></li><li><a href="ArcGisMapServerImageryProvider.html">ArcGisMapServerImageryProvider</a></li><li><a href="AxisAlignedBoundingBox.html">AxisAlignedBoundingBox</a></li><li><a href="Billboard.html">Billboard</a></li><li><a href="BillboardCollection.html">BillboardCollection</a></li><li><a href="BingMapsImageryProvider.html">BingMapsImageryProvider</a></li><li><a href="BoundingRectangle.html">BoundingRectangle</a></li><li><a href="BoundingSphere.html">BoundingSphere</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="Camera.html">Camera</a></li><li><a href="CameraController.html">CameraController</a></li><li><a href="CameraEventAggregator.html">CameraEventAggregator</a></li><li><a href="Cartesian2.html">Cartesian2</a></li><li><a href="Cartesian3.html">Cartesian3</a></li><li><a href="Cartesian4.html">Cartesian4</a></li><li><a href="Cartographic.html">Cartographic</a></li><li><a href="CatmullRomSpline.html">CatmullRomSpline</a></li><li><a href="CentralBody.html">CentralBody</a></li><li><a href="CesiumViewerWidget.html">CesiumViewerWidget</a></li><li><a href="Clock.html">Clock</a></li><li><a href="Color.html">Color</a></li><li><a href="Command.html">Command</a></li><li><a href="CommandLists.html">CommandLists</a></li><li><a href="ComplexConicSensorVolume.html">ComplexConicSensorVolume</a></li><li><a href="CompositeDynamicObjectCollection.html">CompositeDynamicObjectCollection</a></li><li><a href="CompositePrimitive.html">CompositePrimitive</a></li><li><a href="Context.html">Context</a></li><li><a href="CubeMap.html">CubeMap</a></li><li><a href="CubeMapFace.html">CubeMapFace</a></li><li><a href="CustomSensorVolume.html">CustomSensorVolume</a></li><li><a href="DefaultProxy.html">DefaultProxy</a></li><li><a href="Deferred.html">Deferred</a></li><li><a href="DeveloperError.html">DeveloperError</a></li><li><a href="DiscardMissingTileImagePolicy.html">DiscardMissingTileImagePolicy</a></li><li><a href="DynamicBillboard.html">DynamicBillboard</a></li><li><a href="DynamicBillboardVisualizer.html">DynamicBillboardVisualizer</a></li><li><a href="DynamicColorMaterial.html">DynamicColorMaterial</a></li><li><a href="DynamicCone.html">DynamicCone</a></li><li><a href="DynamicConeVisualizer.html">DynamicConeVisualizer</a></li><li><a href="DynamicConeVisualizerUsingCustomSensor.html">DynamicConeVisualizerUsingCustomSensor</a></li><li><a href="DynamicDirectionsProperty.html">DynamicDirectionsProperty</a></li><li><a href="DynamicEllipsoid.html">DynamicEllipsoid</a></li><li><a href="DynamicEllipsoidVisualizer.html">DynamicEllipsoidVisualizer</a></li><li><a href="DynamicImageMaterial.html">DynamicImageMaterial</a></li><li><a href="DynamicLabel.html">DynamicLabel</a></li><li><a href="DynamicLabelVisualizer.html">DynamicLabelVisualizer</a></li><li><a href="DynamicMaterialProperty.html">DynamicMaterialProperty</a></li><li><a href="DynamicObject.html">DynamicObject</a></li><li><a href="DynamicObjectCollection.html">DynamicObjectCollection</a></li><li><a href="DynamicPath.html">DynamicPath</a></li><li><a href="DynamicPathVisualizer.html">DynamicPathVisualizer</a></li><li><a href="DynamicPoint.html">DynamicPoint</a></li><li><a href="DynamicPointVisualizer.html">DynamicPointVisualizer</a></li><li><a href="DynamicPolygon.html">DynamicPolygon</a></li><li><a href="DynamicPolygonVisualizer.html">DynamicPolygonVisualizer</a></li><li><a href="DynamicPolyline.html">DynamicPolyline</a></li><li><a href="DynamicPolylineVisualizer.html">DynamicPolylineVisualizer</a></li><li><a href="DynamicPositionProperty.html">DynamicPositionProperty</a></li><li><a href="DynamicProperty.html">DynamicProperty</a></li><li><a href="DynamicPyramid.html">DynamicPyramid</a></li><li><a href="DynamicPyramidVisualizer.html">DynamicPyramidVisualizer</a></li><li><a href="DynamicVertexPositionsProperty.html">DynamicVertexPositionsProperty</a></li><li><a href="Ellipsoid.html">Ellipsoid</a></li><li><a href="EllipsoidalOccluder.html">EllipsoidalOccluder</a></li><li><a href="EllipsoidPrimitive.html">EllipsoidPrimitive</a></li><li><a href="EllipsoidTangentPlane.html">EllipsoidTangentPlane</a></li><li><a href="EncodedCartesian3.html">EncodedCartesian3</a></li><li><a href="Enumeration.html">Enumeration</a></li><li><a href="Event.html">Event</a></li><li><a href="Extent.html">Extent</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="FrameState.html">FrameState</a></li><li><a href="FrustumCommands.html">FrustumCommands</a></li><li><a href="GeographicProjection.html">GeographicProjection</a></li><li><a href="GeographicTilingScheme.html">GeographicTilingScheme</a></li><li><a href="GregorianDate.html">GregorianDate</a></li><li><a href="HermiteSpline.html">HermiteSpline</a></li><li><a href="ImageryLayer.html">ImageryLayer</a></li><li><a href="ImageryLayerCollection.html">ImageryLayerCollection</a></li><li><a href="ImageryProvider.html">ImageryProvider</a></li><li><a href="Interval.html">Interval</a></li><li><a href="JulianDate.html">JulianDate</a></li><li><a href="Label.html">Label</a></li><li><a href="LabelCollection.html">LabelCollection</a></li><li><a href="LeapSecond.html">LeapSecond</a></li><li><a href="Material.html">Material</a></li><li><a href="Matrix2.html">Matrix2</a></li><li><a href="Matrix3.html">Matrix3</a></li><li><a href="Matrix4.html">Matrix4</a></li><li><a href="NeverTileDiscardPolicy.html">NeverTileDiscardPolicy</a></li><li><a href="Occluder.html">Occluder</a></li><li><a href="OpenStreetMapImageryProvider.html">OpenStreetMapImageryProvider</a></li><li><a href="OrientationInterpolator.html">OrientationInterpolator</a></li><li><a href="OrthographicFrustum.html">OrthographicFrustum</a></li><li><a href="PerformanceDisplay.html">PerformanceDisplay</a></li><li><a href="PerspectiveFrustum.html">PerspectiveFrustum</a></li><li><a href="PerspectiveOffCenterFrustum.html">PerspectiveOffCenterFrustum</a></li><li><a href="PickFramebuffer.html">PickFramebuffer</a></li><li><a href="Polygon.html">Polygon</a></li><li><a href="Polyline.html">Polyline</a></li><li><a href="PolylineCollection.html">PolylineCollection</a></li><li><a href="Promise.html">Promise</a></li><li><a href="Quaternion.html">Quaternion</a></li><li><a href="Queue.html">Queue</a></li><li><a href="Ray.html">Ray</a></li><li><a href="RectangularPyramidSensorVolume.html">RectangularPyramidSensorVolume</a></li><li><a href="ReferenceProperty.html">ReferenceProperty</a></li><li><a href="RequestErrorEvent.html">RequestErrorEvent</a></li><li><a href="RuntimeError.html">RuntimeError</a></li><li><a href="Scene.html">Scene</a></li><li><a href="SceneTransitioner.html">SceneTransitioner</a></li><li><a href="ScreenSpaceCameraController.html">ScreenSpaceCameraController</a></li><li><a href="ScreenSpaceEventHandler.html">ScreenSpaceEventHandler</a></li><li><a href="SensorVolumeCollection.html">SensorVolumeCollection</a></li><li><a href="ShaderCache.html">ShaderCache</a></li><li><a href="ShaderProgram.html">ShaderProgram</a></li><li><a href="SingleTileImageryProvider.html">SingleTileImageryProvider</a></li><li><a href="SkyAtmosphere.html">SkyAtmosphere</a></li><li><a href="SkyBox.html">SkyBox</a></li><li><a href="Spherical.html">Spherical</a></li><li><a href="TaskProcessor.html">TaskProcessor</a></li><li><a href="Texture.html">Texture</a></li><li><a href="Texture2DPool.html">Texture2DPool</a></li><li><a href="TextureAtlas.html">TextureAtlas</a></li><li><a href="TextureAtlasBuilder.html">TextureAtlasBuilder</a></li><li><a href="TileDiscardPolicy.html">TileDiscardPolicy</a></li><li><a href="TileMapServiceImageryProvider.html">TileMapServiceImageryProvider</a></li><li><a href="TilingScheme.html">TilingScheme</a></li><li><a href="TimeInterval.html">TimeInterval</a></li><li><a href="TimeIntervalCollection.html">TimeIntervalCollection</a></li><li><a href="Uniform.html">Uniform</a></li><li><a href="UniformArray.html">UniformArray</a></li><li><a href="UniformState.html">UniformState</a></li><li><a href="VertexArray.html">VertexArray</a></li><li><a href="VertexArrayFacade.html">VertexArrayFacade</a></li><li><a href="ViewportQuad.html">ViewportQuad</a></li><li><a href="VisualizerCollection.html">VisualizerCollection</a></li><li><a href="WebMapServiceImageryProvider.html">WebMapServiceImageryProvider</a></li><li><a href="WebMercatorProjection.html">WebMercatorProjection</a></li><li><a href="WebMercatorTilingScheme.html">WebMercatorTilingScheme</a></li><li><a href="binarySearch.html">binarySearch</a></li><li><a href="BingMapsStyle.html">BingMapsStyle</a></li><li><a href="BlendEquation.html">BlendEquation</a></li><li><a href="BlendFunction.html">BlendFunction</a></li><li><a href="BlendingState.html">BlendingState</a></li><li><a href="BoxTessellator.html">BoxTessellator</a></li><li><a href="BufferUsage.html">BufferUsage</a></li><li><a href="CameraColumbusViewMode.html">CameraColumbusViewMode</a></li><li><a href="CameraEventType.html">CameraEventType</a></li><li><a href="CameraFlightPath.html">CameraFlightPath</a></li><li><a href="CesiumMath.html">CesiumMath</a></li><li><a href="ClockRange.html">ClockRange</a></li><li><a href="ClockStep.html">ClockStep</a></li><li><a href="combine.html">combine</a></li><li><a href="computeSunPosition.html">computeSunPosition</a></li><li><a href="createGuid.html">createGuid</a></li><li><a href="createTaskProcessorWorker.html">createTaskProcessorWorker</a></li><li><a href="CubeMapEllipsoidTessellator.html">CubeMapEllipsoidTessellator</a></li><li><a href="CubicRealPolynomial.html">CubicRealPolynomial</a></li><li><a href="CullFace.html">CullFace</a></li><li><a href="CzmlBoolean.html">CzmlBoolean</a></li><li><a href="CzmlCartesian2.html">CzmlCartesian2</a></li><li><a href="CzmlCartesian3.html">CzmlCartesian3</a></li><li><a href="CzmlCartographic.html">CzmlCartographic</a></li><li><a href="CzmlColor.html">CzmlColor</a></li><li><a href="CzmlDefaults.html">CzmlDefaults</a></li><li><a href="CzmlHorizontalOrigin.html">CzmlHorizontalOrigin</a></li><li><a href="CzmlImage.html">CzmlImage</a></li><li><a href="CzmlLabelStyle.html">CzmlLabelStyle</a></li><li><a href="CzmlNumber.html">CzmlNumber</a></li><li><a href="CzmlString.html">CzmlString</a></li><li><a href="CzmlUnitCartesian3.html">CzmlUnitCartesian3</a></li><li><a href="CzmlUnitQuaternion.html">CzmlUnitQuaternion</a></li><li><a href="CzmlUnitSpherical.html">CzmlUnitSpherical</a></li><li><a href="CzmlVerticalOrigin.html">CzmlVerticalOrigin</a></li><li><a href="defaultValue.html">defaultValue</a></li><li><a href="DepthFunction.html">DepthFunction</a></li><li><a href="destroyObject.html">destroyObject</a></li><li><a href="ExtentTessellator.html">ExtentTessellator</a></li><li><a href="FAR.html">FAR</a></li><li><a href="FeatureDetection.html">FeatureDetection</a></li><li><a href="freezeObject.html">freezeObject</a></li><li><a href="Fullscreen.html">Fullscreen</a></li><li><a href="getImagePixels.html">getImagePixels</a></li><li><a href="HermitePolynomialApproximation.html">HermitePolynomialApproximation</a></li><li><a href="HorizontalOrigin.html">HorizontalOrigin</a></li><li><a href="IndexDatatype.html">IndexDatatype</a></li><li><a href="Intersect.html">Intersect</a></li><li><a href="IntersectionTests.html">IntersectionTests</a></li><li><a href="Iso8601.html">Iso8601</a></li><li><a href="jsonp.html">jsonp</a></li><li><a href="KeyboardEventModifier.html">KeyboardEventModifier</a></li><li><a href="LabelStyle.html">LabelStyle</a></li><li><a href="LagrangePolynomialApproximation.html">LagrangePolynomialApproximation</a></li><li><a href="LinearApproximation.html">LinearApproximation</a></li><li><a href="loadArrayBuffer.html">loadArrayBuffer</a></li><li><a href="loadCubeMap.html">loadCubeMap</a></li><li><a href="loadImage.html">loadImage</a></li><li><a href="loadJson.html">loadJson</a></li><li><a href="loadText.html">loadText</a></li><li><a href="loadXML.html">loadXML</a></li><li><a href="MeshFilters.html">MeshFilters</a></li><li><a href="MipmapHint.html">MipmapHint</a></li><li><a href="PixelDatatype.html">PixelDatatype</a></li><li><a href="PixelFormat.html">PixelFormat</a></li><li><a href="PlaneTessellator.html">PlaneTessellator</a></li><li><a href="pointInsideTriangle2D.html">pointInsideTriangle2D</a></li><li><a href="PolygonPipeline.html">PolygonPipeline</a></li><li><a href="PolylinePipeline.html">PolylinePipeline</a></li><li><a href="PrimitiveType.html">PrimitiveType</a></li><li><a href="processCzml.html">processCzml</a></li><li><a href="Projections.html">Projections</a></li><li><a href="QuadraticRealPolynomial.html">QuadraticRealPolynomial</a></li><li><a href="QuarticRealPolynomial.html">QuarticRealPolynomial</a></li><li><a href="RenderbufferFormat.html">RenderbufferFormat</a></li><li><a href="requestAnimationFrame.html">requestAnimationFrame</a></li><li><a href="SceneMode.html">SceneMode</a></li><li><a href="ScreenSpaceEventType.html">ScreenSpaceEventType</a></li><li><a href="Shapes.html">Shapes</a></li><li><a href="StencilFunction.html">StencilFunction</a></li><li><a href="StencilOperation.html">StencilOperation</a></li><li><a href="TextureMagnificationFilter.html">TextureMagnificationFilter</a></li><li><a href="TextureMinificationFilter.html">TextureMinificationFilter</a></li><li><a href="TextureWrap.html">TextureWrap</a></li><li><a href="TimeConstants.html">TimeConstants</a></li><li><a href="TimeStandard.html">TimeStandard</a></li><li><a href="Tipsify.html">Tipsify</a></li><li><a href="Transforms.html">Transforms</a></li><li><a href="TridiagonalSystemSolver.html">TridiagonalSystemSolver</a></li><li><a href="UniformDatatype.html">UniformDatatype</a></li><li><a href="VertexLayout.html">VertexLayout</a></li><li><a href="VerticalOrigin.html">VerticalOrigin</a></li><li><a href="Visibility.html">Visibility</a></li><li><a href="WindingOrder.html">WindingOrder</a></li><li><a href="ComponentDatatype.html">ComponentDatatype</a></li></div><div id="glslItems"><li><a href="czm_cellular.html">czm_cellular</a></li><li><a href="czm_columbusView.html">czm_columbusView</a></li><li><a href="czm_columbusViewMorph.html">czm_columbusViewMorph</a></li><li><a href="czm_complement.html">czm_complement</a></li><li><a href="czm_cone.html">czm_cone</a></li><li><a href="czm_coneContainsPoint.html">czm_coneContainsPoint</a></li><li><a href="czm_degreesPerRadian.html">czm_degreesPerRadian</a></li><li><a href="czm_eastNorthUpToEyeCoordinates.html">czm_eastNorthUpToEyeCoordinates</a></li><li><a href="czm_ellipsoid.html">czm_ellipsoid</a></li><li><a href="czm_ellipsoidContainsPoint.html">czm_ellipsoidContainsPoint</a></li><li><a href="czm_ellipsoidNew.html">czm_ellipsoidNew</a></li><li><a href="czm_ellipsoidSilhouetteCone.html">czm_ellipsoidSilhouetteCone</a></li><li><a href="czm_ellipsoidSilhouetteConeNew.html">czm_ellipsoidSilhouetteConeNew</a></li><li><a href="czm_ellipsoidSilhouetteConeNormal.html">czm_ellipsoidSilhouetteConeNormal</a></li><li><a href="czm_ellipsoidSilhouetteHalfspace.html">czm_ellipsoidSilhouetteHalfspace</a></li><li><a href="czm_ellipsoidSilhouetteHalfspaceNew.html">czm_ellipsoidSilhouetteHalfspaceNew</a></li><li><a href="czm_ellipsoidWgs84TextureCoordinates.html">czm_ellipsoidWgs84TextureCoordinates</a></li><li><a href="czm_emptyRaySegment.html">czm_emptyRaySegment</a></li><li><a href="czm_encodedCameraPositionMCHigh.html">czm_encodedCameraPositionMCHigh</a></li><li><a href="czm_encodedCameraPositionMCLow.html">czm_encodedCameraPositionMCLow</a></li><li><a href="czm_entireFrustum.html">czm_entireFrustum</a></li><li><a href="czm_epsilon1.html">czm_epsilon1</a></li><li><a href="czm_epsilon2.html">czm_epsilon2</a></li><li><a href="czm_epsilon3.html">czm_epsilon3</a></li><li><a href="czm_epsilon4.html">czm_epsilon4</a></li><li><a href="czm_epsilon5.html">czm_epsilon5</a></li><li><a href="czm_epsilon6.html">czm_epsilon6</a></li><li><a href="czm_epsilon7.html">czm_epsilon7</a></li><li><a href="czm_equalsEpsilon.html">czm_equalsEpsilon</a></li><li><a href="czm_eyeOffset.html">czm_eyeOffset</a></li><li><a href="czm_eyeToWindowCoordinates.html">czm_eyeToWindowCoordinates</a></li><li><a href="czm_frameNumber.html">czm_frameNumber</a></li><li><a href="czm_fullRaySegment.html">czm_fullRaySegment</a></li><li><a href="czm_geodeticSurfaceNormal.html">czm_geodeticSurfaceNormal</a></li><li><a href="czm_getDefaultMaterial.html">czm_getDefaultMaterial</a></li><li><a href="czm_getWgs84EllipsoidEC.html">czm_getWgs84EllipsoidEC</a></li><li><a href="czm_halfspace.html">czm_halfspace</a></li><li><a href="czm_infiniteProjection.html">czm_infiniteProjection</a></li><li><a href="czm_infinity.html">czm_infinity</a></li><li><a href="czm_insertAt.html">czm_insertAt</a></li><li><a href="czm_intersection.html">czm_intersection</a></li><li><a href="czm_inverseModel.html">czm_inverseModel</a></li><li><a href="czm_inverseModelView.html">czm_inverseModelView</a></li><li><a href="czm_inverseNormal.html">czm_inverseNormal</a></li><li><a href="czm_inverseProjection.html">czm_inverseProjection</a></li><li><a href="czm_inverseView.html">czm_inverseView</a></li><li><a href="czm_inverseViewRotation.html">czm_inverseViewRotation</a></li><li><a href="czm_isEmpty.html">czm_isEmpty</a></li><li><a href="czm_isFull.html">czm_isFull</a></li><li><a href="czm_latitudeToWebMercatorFraction.html">czm_latitudeToWebMercatorFraction</a></li><li><a href="czm_luminance.html">czm_luminance</a></li><li><a href="czm_material.html">czm_material</a></li><li><a href="czm_materialInput.html">czm_materialInput</a></li><li><a href="czm_model.html">czm_model</a></li><li><a href="czm_modelToWindowCoordinates.html">czm_modelToWindowCoordinates</a></li><li><a href="czm_modelView.html">czm_modelView</a></li><li><a href="czm_modelViewInfiniteProjection.html">czm_modelViewInfiniteProjection</a></li><li><a href="czm_modelViewProjection.html">czm_modelViewProjection</a></li><li><a href="czm_modelViewProjectionRelativeToEye.html">czm_modelViewProjectionRelativeToEye</a></li><li><a href="czm_modelViewRelativeToEye.html">czm_modelViewRelativeToEye</a></li><li><a href="czm_moonDirectionEC.html">czm_moonDirectionEC</a></li><li><a href="czm_morphing.html">czm_morphing</a></li><li><a href="czm_multiplyWithColorBalance.html">czm_multiplyWithColorBalance</a></li><li><a href="czm_normal.html">czm_normal</a></li><li><a href="czm_oneOverPi.html">czm_oneOverPi</a></li><li><a href="czm_oneOverTwoPi.html">czm_oneOverTwoPi</a></li><li><a href="czm_phong.html">czm_phong</a></li><li><a href="czm_pi.html">czm_pi</a></li><li><a href="czm_piOverFour.html">czm_piOverFour</a></li><li><a href="czm_piOverSix.html">czm_piOverSix</a></li><li><a href="czm_piOverThree.html">czm_piOverThree</a></li><li><a href="czm_piOverTwo.html">czm_piOverTwo</a></li><li><a href="czm_pointAlongRay.html">czm_pointAlongRay</a></li><li><a href="czm_projection.html">czm_projection</a></li><li><a href="czm_quadraticRealPolynomialRealRoots.html">czm_quadraticRealPolynomialRealRoots</a></li><li><a href="czm_quadraticRoots.html">czm_quadraticRoots</a></li><li><a href="czm_radiansPerDegree.html">czm_radiansPerDegree</a></li><li><a href="czm_ray.html">czm_ray</a></li><li><a href="czm_rayConeIntersectionInterval.html">czm_rayConeIntersectionInterval</a></li><li><a href="czm_rayConeIntersectNormal.html">czm_rayConeIntersectNormal</a></li><li><a href="czm_rayEllipsoidIntersectionInterval.html">czm_rayEllipsoidIntersectionInterval</a></li><li><a href="czm_rayEllipsoidSilhouetteConeIntersectionInterval.html">czm_rayEllipsoidSilhouetteConeIntersectionInterval</a></li><li><a href="czm_rayEllipsoidSilhouetteHalfspaceIntersectionInterval.html">czm_rayEllipsoidSilhouetteHalfspaceIntersectionInterval</a></li><li><a href="czm_rayHalfspaceIntersectionInterval.html">czm_rayHalfspaceIntersectionInterval</a></li><li><a href="czm_raySegment.html">czm_raySegment</a></li><li><a href="czm_raySegmentCollection.html">czm_raySegmentCollection</a></li><li><a href="czm_raySegmentCollectionCapacity.html">czm_raySegmentCollectionCapacity</a></li><li><a href="czm_raySegmentCollectionNew.html">czm_raySegmentCollectionNew</a></li><li><a href="czm_raySphereIntersectionInterval.html">czm_raySphereIntersectionInterval</a></li><li><a href="czm_removeAt.html">czm_removeAt</a></li><li><a href="czm_scene2D.html">czm_scene2D</a></li><li><a href="czm_scene3D.html">czm_scene3D</a></li><li><a href="czm_snoise.html">czm_snoise</a></li><li><a href="czm_sphere.html">czm_sphere</a></li><li><a href="czm_sphereNormal.html">czm_sphereNormal</a></li><li><a href="global.html#czm_subtraction">czm_subtraction</a></li><li><a href="czm_sunDirectionEC.html">czm_sunDirectionEC</a></li><li><a href="czm_sunDirectionWC.html">czm_sunDirectionWC</a></li><li><a href="czm_temeToPseudoFixed.html">czm_temeToPseudoFixed</a></li><li><a href="czm_threePiOver2.html">czm_threePiOver2</a></li><li><a href="czm_translateRelativeToEye.html">czm_translateRelativeToEye</a></li><li><a href="czm_transpose.html">czm_transpose</a></li><li><a href="czm_twoPi.html">czm_twoPi</a></li><li><a href="czm_view.html">czm_view</a></li><li><a href="czm_viewerPositionWC.html">czm_viewerPositionWC</a></li><li><a href="czm_viewport.html">czm_viewport</a></li><li><a href="czm_viewportOrthographic.html">czm_viewportOrthographic</a></li><li><a href="czm_viewportTransformation.html">czm_viewportTransformation</a></li><li><a href="czm_viewProjection.html">czm_viewProjection</a></li><li><a href="czm_viewRotation.html">czm_viewRotation</a></li><li><a href="czm_webMercatorMaxLatitude.html">czm_webMercatorMaxLatitude</a></li><li><a href="czm_windowToEyeCoordinates.html">czm_windowToEyeCoordinates</a></li></div></ul>
+    </div>
+</div>
+<div class="nav navStatic"></div>
+
+<div id="main">
+    
+    <h1 class="page-title">BlendFunction</h1>
+    
+    
+
+<section>
+    
+<header>
+    <h2>
+    BlendFunction
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <h4 class="name" id="BlendFunction">BlendFunction</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        DOC_TBA
+    </p>
+    
+    
+	
+	
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 10</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	
+	<div class="hr"></div>
+</dd>
+
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="CONSTANT_ALPHA"><span class="type-signature">&lt;static, constant> </span>CONSTANT_ALPHA<span class="type-signature"> :<a href="Enumeration.html">Enumeration</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        DOC_TBA
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 113</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="CONSTANT_COLOR"><span class="type-signature">&lt;static, constant> </span>CONSTANT_COLOR<span class="type-signature"> :<a href="Enumeration.html">Enumeration</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        DOC_TBA
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 97</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DESTINATION_ALPHA"><span class="type-signature">&lt;static, constant> </span>DESTINATION_ALPHA<span class="type-signature"> :<a href="Enumeration.html">Enumeration</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        DOC_TBA
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 81</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="DESTINATION_COLOR"><span class="type-signature">&lt;static, constant> </span>DESTINATION_COLOR<span class="type-signature"> :<a href="Enumeration.html">Enumeration</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        DOC_TBA
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 49</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="ONE"><span class="type-signature">&lt;static, constant> </span>ONE<span class="type-signature"> :<a href="Enumeration.html">Enumeration</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        DOC_TBA
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 25</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="ONE_MINUS_CONSTANT_ALPHA"><span class="type-signature">&lt;static, constant> </span>ONE_MINUS_CONSTANT_ALPHA<span class="type-signature"> :<a href="Enumeration.html">Enumeration</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        DOC_TBA
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 121</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="ONE_MINUS_CONSTANT_COLOR"><span class="type-signature">&lt;static, constant> </span>ONE_MINUS_CONSTANT_COLOR<span class="type-signature"> :<a href="Enumeration.html">Enumeration</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        DOC_TBA
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 105</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="ONE_MINUS_DESTINATION_ALPHA"><span class="type-signature">&lt;static, constant> </span>ONE_MINUS_DESTINATION_ALPHA<span class="type-signature"> :<a href="Enumeration.html">Enumeration</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        DOC_TBA
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 89</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="ONE_MINUS_DESTINATION_COLOR"><span class="type-signature">&lt;static, constant> </span>ONE_MINUS_DESTINATION_COLOR<span class="type-signature"> :<a href="Enumeration.html">Enumeration</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        DOC_TBA
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 57</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="ONE_MINUS_SOURCE_ALPHA"><span class="type-signature">&lt;static, constant> </span>ONE_MINUS_SOURCE_ALPHA<span class="type-signature"> :<a href="Enumeration.html">Enumeration</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        DOC_TBA
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 73</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="ONE_MINUS_SOURCE_COLOR"><span class="type-signature">&lt;static, constant> </span>ONE_MINUS_SOURCE_COLOR<span class="type-signature"> :<a href="Enumeration.html">Enumeration</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        DOC_TBA
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 41</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SOURCE_ALPHA"><span class="type-signature">&lt;static, constant> </span>SOURCE_ALPHA<span class="type-signature"> :<a href="Enumeration.html">Enumeration</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        DOC_TBA
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 65</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SOURCE_ALPHA_SATURATE"><span class="type-signature">&lt;static, constant> </span>SOURCE_ALPHA_SATURATE<span class="type-signature"> :<a href="Enumeration.html">Enumeration</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        DOC_TBA
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 129</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SOURCE_COLOR"><span class="type-signature">&lt;static, constant> </span>SOURCE_COLOR<span class="type-signature"> :<a href="Enumeration.html">Enumeration</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        DOC_TBA
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 33</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="ZERO"><span class="type-signature">&lt;static, constant> </span>ZERO<span class="type-signature"> :<a href="Enumeration.html">Enumeration</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        DOC_TBA
+    </div>
+    
+        
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 17</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	<div class="hr"></div>
+</dd>
+
+        </dl>
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="validate"><span class="type-signature">&lt;static> </span>validate</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <p class="description">
+        DOC_TBA
+    </p>
+    
+    
+	
+	
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>blendFunction</code></td>
+            
+            
+            <td class="type">
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+        
+    
+    
+	
+	
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>../../Source/Renderer/BlendFunction.js, line 138</li></ul></dd>
+	
+    -->
+    
+	
+	
+	
+	
+</dl>
+
+	
+	<div class="hr"></div>
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
+
+
+    <footer>
+        Documentation generated by <a href="https://github.com/micmath/jsdoc">JSDoc 3</a> on Fri Jan 18 2013 11:20:36 GMT-0500 (EST)
+    </footer>
+</div>
+
+<br clear="both">
+
+<script type="text/javascript">
+    codeview.classFilter.Init();
+    
+    if (window.frameElement) {
+        document.body.className = "embedded";
+        var ele = document.createElement('a');
+        ele.className = "popout";
+        ele.target = "_blank";
+        ele.href = window.location.href;
+        ele.innerHTML = "&raquo;";
+        ele.title = "Pop out";
+        document.getElementById('main').appendChild(ele);
+    }
+    var searchTerm = (document.URL.split('='))[1];
+    var show = (document.URL.split('='))[2];
+    
+    if (show) {
+       document.getElementById("filterType").value = show;
+    } 
+    
+    if(searchTerm){
+        searchTerm = searchTerm.split('&')[0] || '';
+        document.filterForm.classFilter.value = searchTerm;
+    }
+    else {
+        searchTerm="";
+    }
+    codeview.filter(searchTerm);
+    
+    SyntaxHighlighter.all();
+</script>
+<script src="javascript/indexLinks.js"></script>
+</body>
+</html>

@@ -4,8 +4,6 @@ goog.require('goog.debug.Logger.Level');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
-goog.require('ol.View2D');
 goog.require('ol.overlay.Overlay');
 goog.require('ol.source.MapQuestOpenAerial');
 
@@ -19,15 +17,11 @@ if (goog.DEBUG) {
 var layer = new ol.layer.TileLayer({
   source: new ol.source.MapQuestOpenAerial()
 });
-
 var map = new ol.Map({
+  center: new ol.Coordinate(0, 0),
   layers: new ol.Collection([layer]),
-  renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
-  view: new ol.View2D({
-    center: new ol.Coordinate(0, 0),
-    zoom: 2
-  })
+  zoom: 2
 });
 
 // Vienna label

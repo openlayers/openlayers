@@ -21,6 +21,12 @@
           padding: 0 0.5em 0.5em 0.5em;
           border-radius: 4px;
       }
+      #geolocation {
+          background-color: white;
+          border: 1px solid #222;
+          border-radius: 10px 10px 10px 0;
+          padding: 3px;
+      }
       @media only screen and (max-width: 600px) {
         #text {
           display: none;
@@ -31,6 +37,7 @@
   </head>
   <body>
     <div id="map">
+      <div id="geolocation" style="display: none">you are here</div>
       <div id="text">
         <h1 id="title">Full-screen example</h1>
         <div id="shortdesc">Example of a full-screen map.</div>
