@@ -1,6 +1,10 @@
+goog.provide('ol.style.Line');
 goog.provide('ol.style.LiteralLine');
 
+goog.require('ol.Expression');
+goog.require('ol.ExpressionLiteral');
 goog.require('ol.style.LiteralSymbolizer');
+goog.require('ol.style.Symbolizer');
 
 
 /**
@@ -8,14 +12,14 @@ goog.require('ol.style.LiteralSymbolizer');
  *            strokeWidth: (number),
  *            opacity: (number)}}
  */
-ol.style.LiteralLineConfig;
+ol.style.LiteralLineOptions;
 
 
 
 /**
  * @constructor
  * @implements {ol.style.LiteralSymbolizer}
- * @param {ol.style.LiteralLineConfig} config Symbolizer properties.
+ * @param {ol.style.LiteralLineOptions} config Symbolizer properties.
  */
 ol.style.LiteralLine = function(config) {
 
@@ -29,3 +33,83 @@ ol.style.LiteralLine = function(config) {
   this.opacity = config.opacity;
 
 };
+
+
+/**
+ * @typedef {{strokeStyle: (string|ol.Expression),
+ *            strokeWidth: (number|ol.Expression),
+ *            opacity: (number|ol.Expression)}}
+ */
+ol.style.LineOptions;
+
+
+
+/**
+ * @constructor
+ * @implements {ol.style.Symbolizer}
+ * @param {ol.style.LineOptions} options Symbolizer properties.
+ */
+ol.style.Line = function(options) {
+
+  /**
+   * @type {ol.Expression}
+   * @private
+   */
+  this.strokeStyle_ = !goog.isDef(options.strokeStyle) ?
+      new ol.ExpressionLiteral(ol.style.LineDefaults.strokeStyle) :
+      (options.strokeStyle instanceof ol.Expression) ?
+          options.strokeStyle : new ol.ExpressionLiteral(options.strokeStyle);
+
+  /**
+   * @type {ol.Expression}
+   * @private
+   */
+  this.strokeWidth_ = !goog.isDef(options.strokeWidth) ?
+      new ol.ExpressionLiteral(ol.style.LineDefaults.strokeWidth) :
+      (options.strokeWidth instanceof ol.Expression) ?
+          options.strokeWidth : new ol.ExpressionLiteral(options.strokeWidth);
+
+  /**
+   * @type {ol.Expression}
+   * @private
+   */
+  this.opacity_ = !goog.isDef(options.opacity) ?
+      new ol.ExpressionLiteral(ol.style.LineDefaults.opacity) :
+      (options.opacity instanceof ol.Expression) ?
+          options.opacity : new ol.ExpressionLiteral(options.opacity);
+
+};
+
+
+/**
+ * @inheritDoc
+ * @return {ol.style.LiteralLine} Literal line symbolizer.
+ */
+ol.style.Line.prototype.createLiteral = function(feature) {
+  var attrs = feature.getAttributes();
+
+  var strokeStyle = this.strokeStyle_.evaluate(feature, attrs);
+  goog.asserts.assertString(strokeStyle, 'strokeStyle must be a string');
+
+  var strokeWidth = this.strokeWidth_.evaluate(feature, attrs);
+  goog.asserts.assertNumber(strokeWidth, 'strokeWidth must be a number');
+
+  var opacity = this.opacity_.evaluate(feature, attrs);
+  goog.asserts.assertNumber(opacity, 'opacity must be a number');
+
+  return new ol.style.LiteralLine({
+    strokeStyle: strokeStyle,
+    strokeWidth: strokeWidth,
+    opacity: opacity
+  });
+};
+
+
+/**
+ * @type {ol.style.LiteralLine}
+ */
+ol.style.LineDefaults = new ol.style.LiteralLine({
+  strokeStyle: '#696969',
+  strokeWidth: 1.5,
+  opacity: 0.75
+});
