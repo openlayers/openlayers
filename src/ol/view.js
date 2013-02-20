@@ -23,6 +23,8 @@ ol.ViewHint = {
  */
 ol.View = function() {
 
+  goog.base(this);
+
   /**
    * @private
    * @type {Array.<number>}

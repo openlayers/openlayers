@@ -59,6 +59,46 @@ ol.source.TileSource.prototype.expireCache = goog.abstractMethod;
 
 
 /**
+ * Look for loaded tiles over a given tile range and zoom level.  Adds
+ * properties to the provided lookup representing key/tile pairs for already
+ * loaded tiles.
+ *
+ * @param {Object.<number, Object.<string, ol.Tile>>} loadedTilesByZ A lookup of
+ *     loaded tiles by zoom level.
+ * @param {function(ol.Tile): boolean} isLoaded A function to determine if a
+ *     tile is fully loaded.
+ * @param {number} z Zoom level.
+ * @param {ol.TileRange} tileRange Tile range.
+ * @return {boolean} The tile range is fully covered with loaded tiles.
+ */
+ol.source.TileSource.prototype.findLoadedTiles = function(loadedTilesByZ,
+    isLoaded, z, tileRange) {
+  // FIXME this could be more efficient about filling partial holes
+  var fullyCovered = true;
+  var tile, tileCoord, tileCoordKey, x, y;
+  for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
+    for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+      tileCoord = new ol.TileCoord(z, x, y);
+      tileCoordKey = tileCoord.toString();
+      if (loadedTilesByZ[z] && loadedTilesByZ[z][tileCoordKey]) {
+        continue;
+      }
+      tile = this.getTile(tileCoord);
+      if (isLoaded(tile)) {
+        if (!loadedTilesByZ[z]) {
+          loadedTilesByZ[z] = {};
+        }
+        loadedTilesByZ[z][tileCoordKey] = tile;
+      } else {
+        fullyCovered = false;
+      }
+    }
+  }
+  return fullyCovered;
+};
+
+
+/**
  * @inheritDoc
  */
 ol.source.TileSource.prototype.getResolutions = function() {

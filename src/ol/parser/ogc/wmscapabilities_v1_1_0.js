@@ -15,7 +15,7 @@ ol.parser.ogc.WMSCapabilities_v1_1_0 = function() {
       var srs = this.getChildValue(node);
       var values = srs.split(/ +/);
       for (var i = 0, len = values.length; i < len; i++) {
-        obj.srs[values[i]] = true;
+        obj['srs'][values[i]] = true;
       }
     }
   });

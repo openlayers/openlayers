@@ -12,7 +12,7 @@ ol.parser.ogc.WMSCapabilities_v1_1_1 = function() {
   this.version = '1.1.1';
   goog.object.extend(this.readers['http://www.opengis.net/wms'], {
     'SRS': function(node, obj) {
-      obj.srs[this.getChildValue(node)] = true;
+      obj['srs'][this.getChildValue(node)] = true;
     }
   });
 };
