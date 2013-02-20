@@ -18,9 +18,9 @@ ol.geom.Point = function(coordinates) {
   goog.base(this);
 
   /**
-   * @type {Float64Array}
+   * @type {Array}
    */
-  this.coordinates = new Float64Array(coordinates);
+  this.coordinates = coordinates;
 
   /**
    * @type {number}

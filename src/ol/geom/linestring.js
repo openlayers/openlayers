@@ -24,12 +24,16 @@ ol.geom.LineString = function(coordinates) {
       length = count * dimension;
 
   /**
-   * @type {Float64Array}
+   * @type {Array}
    */
-  this.coordinates = new Float64Array(length);
-  for (var i = 0; i < count; ++i) {
+  this.coordinates = new Array(length);
+  var i, offset, j;
+  for (i = 0; i < count; ++i) {
     goog.asserts.assert(coordinates[i].length === dimension);
-    this.coordinates.set(coordinates[i], i * dimension);
+    offset = i * dimension;
+    for (j = 0; j < dimension; ++j) {
+      this.coordinates[offset + j] = coordinates[i][j];
+    }
   }
 
   /**

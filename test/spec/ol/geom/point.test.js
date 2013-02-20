@@ -20,9 +20,8 @@ describe('ol.geom.Point', function() {
 
   describe('#coordinates', function() {
 
-    it('is a Float64Array', function() {
+    it('is an array', function() {
       var point = new ol.geom.Point([10, 20]);
-      expect(point.coordinates).toBeA(Float64Array);
 
       expect(point.coordinates.length).toBe(2);
       expect(point.coordinates[0]).toBe(10);

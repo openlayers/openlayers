@@ -1,3 +1,5 @@
+goog.provide('ol.test.geom.LinearRing');
+
 describe('ol.geom.LinearRing', function() {
 
   describe('constructor', function() {
@@ -17,9 +19,8 @@ describe('ol.geom.LinearRing', function() {
 
   describe('#coordinates', function() {
 
-    it('is a Float64Array', function() {
+    it('is an array', function() {
       var ring = new ol.geom.LinearRing([[10, 20], [30, 40]]);
-      expect(ring.coordinates).toBeA(Float64Array);
 
       expect(ring.coordinates.length).toBe(4);
       expect(ring.coordinates[0]).toBe(10);
@@ -47,3 +48,4 @@ describe('ol.geom.LinearRing', function() {
 
 });
 
+goog.require('ol.geom.LinearRing');

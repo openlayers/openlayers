@@ -20,9 +20,8 @@ describe('ol.geom.LineString', function() {
 
   describe('#coordinates', function() {
 
-    it('is a Float64Array', function() {
+    it('is an array', function() {
       var line = new ol.geom.LineString([[10, 20], [30, 40]]);
-      expect(line.coordinates).toBeA(Float64Array);
 
       expect(line.coordinates.length).toBe(4);
       expect(line.coordinates[0]).toBe(10);
