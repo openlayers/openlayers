@@ -45,9 +45,10 @@ ol.webgl.getContext = function(canvas, opt_attributes) {
 
 
 /**
- * @return {boolean} Is supported.
+ * @const
+ * @type {boolean} Is supported.
  */
-ol.webgl.isSupported = function() {
+ol.webgl.SUPPORTED = (function() {
   if (!('WebGLRenderingContext' in goog.global)) {
     return false;
   }
@@ -57,4 +58,4 @@ ol.webgl.isSupported = function() {
   } catch (e) {
     return false;
   }
-};
+})();

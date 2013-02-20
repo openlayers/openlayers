@@ -58,11 +58,11 @@ goog.require('ol.interaction.condition');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Map');
-goog.require('ol.renderer.canvas.isSupported');
+goog.require('ol.renderer.canvas.SUPPORTED');
 goog.require('ol.renderer.dom.Map');
-goog.require('ol.renderer.dom.isSupported');
+goog.require('ol.renderer.dom.SUPPORTED');
 goog.require('ol.renderer.webgl.Map');
-goog.require('ol.renderer.webgl.isSupported');
+goog.require('ol.renderer.webgl.SUPPORTED');
 
 
 /**
@@ -664,6 +664,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
     var view2DState = view2D.getView2DState();
     frameState = {
       animate: false,
+      attributions: {},
       backgroundColor: goog.isDef(backgroundColor) ?
           backgroundColor : new ol.Color(255, 255, 255, 1),
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
@@ -857,17 +858,17 @@ ol.Map.createOptionsInternal = function(mapOptions) {
   for (i = 0; i < rendererHints.length; ++i) {
     rendererHint = rendererHints[i];
     if (rendererHint == ol.RendererHint.CANVAS) {
-      if (ol.ENABLE_CANVAS && ol.renderer.canvas.isSupported()) {
+      if (ol.ENABLE_CANVAS && ol.renderer.canvas.SUPPORTED) {
         rendererConstructor = ol.renderer.canvas.Map;
         break;
       }
     } else if (rendererHint == ol.RendererHint.DOM) {
-      if (ol.ENABLE_DOM && ol.renderer.dom.isSupported()) {
+      if (ol.ENABLE_DOM && ol.renderer.dom.SUPPORTED) {
         rendererConstructor = ol.renderer.dom.Map;
         break;
       }
     } else if (rendererHint == ol.RendererHint.WEBGL) {
-      if (ol.ENABLE_WEBGL && ol.renderer.webgl.isSupported()) {
+      if (ol.ENABLE_WEBGL && ol.renderer.webgl.SUPPORTED) {
         rendererConstructor = ol.renderer.webgl.Map;
         break;
       }

@@ -1,5 +1,5 @@
 goog.provide('ol.renderer.canvas.Renderer');
-goog.provide('ol.renderer.canvas.isSupported');
+goog.provide('ol.renderer.canvas.SUPPORTED');
 
 goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
@@ -17,9 +17,10 @@ goog.require('ol.style.SymbolizerLiteral');
 
 
 /**
- * @return {boolean} Is supported.
+ * @const
+ * @type {boolean} Is supported.
  */
-ol.renderer.canvas.isSupported = ol.canvas.isSupported;
+ol.renderer.canvas.SUPPORTED = ol.canvas.SUPPORTED;
 
 
 
@@ -291,4 +292,3 @@ ol.renderer.canvas.Renderer.renderShape = function(shape) {
   }
   return canvas;
 };
-

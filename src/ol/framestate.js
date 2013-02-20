@@ -6,6 +6,7 @@ goog.provide('ol.PostRenderFunction');
 goog.provide('ol.PreRenderFunction');
 
 goog.require('goog.vec.Mat4');
+goog.require('ol.Attribution');
 goog.require('ol.Color');
 goog.require('ol.Extent');
 goog.require('ol.Size');
@@ -18,6 +19,7 @@ goog.require('ol.layer.LayerState');
 
 /**
  * @typedef {{animate: boolean,
+ *            attributions: Object.<string, ol.Attribution>,
  *            backgroundColor: ol.Color,
  *            coordinateToPixelMatrix: goog.vec.Mat4.Number,
  *            extent: (null|ol.Extent),

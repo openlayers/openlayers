@@ -16,6 +16,12 @@ ol.ENABLE_PROJ4JS = true;
 
 
 /**
+ * @const {boolean} Have Proj4js.
+ */
+ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof Proj4js == 'object';
+
+
+/**
  * @enum {string}
  */
 ol.ProjectionUnits = {
@@ -30,8 +36,9 @@ ol.ProjectionUnits = {
  * @param {string} code Code.
  * @param {ol.ProjectionUnits} units Units.
  * @param {ol.Extent} extent Extent.
+ * @param {string=} opt_axis Axis order.
  */
-ol.Projection = function(code, units, extent) {
+ol.Projection = function(code, units, extent, opt_axis) {
 
   /**
    * @private
@@ -50,6 +57,12 @@ ol.Projection = function(code, units, extent) {
    * @type {ol.Extent}
    */
   this.extent_ = extent;
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.axis_ = opt_axis || 'enu';
 
 };
 
@@ -75,6 +88,14 @@ ol.Projection.prototype.getExtent = function() {
  */
 ol.Projection.prototype.getUnits = function() {
   return this.units_;
+};
+
+
+/**
+ * @return {string} Axis.
+ */
+ol.Projection.prototype.getAxis = function() {
+  return this.axis_;
 };
 
 
@@ -253,7 +274,7 @@ ol.Projection.addTransform = function(source, destination, transformFn) {
  */
 ol.Projection.getFromCode = function(code) {
   var projection = ol.Projection.projections_[code];
-  if (ol.Projection.isProj4jsSupported() && !goog.isDef(projection)) {
+  if (ol.HAVE_PROJ4JS && !goog.isDef(projection)) {
     projection = ol.Projection.getProj4jsProjectionFromCode_(code);
   }
   if (!goog.isDef(projection)) {
@@ -319,7 +340,7 @@ ol.Projection.getTransform = function(source, destination) {
       goog.object.containsKey(transforms[sourceCode], destinationCode)) {
     transform = transforms[sourceCode][destinationCode];
   }
-  if (ol.Projection.isProj4jsSupported() && !goog.isDef(transform)) {
+  if (ol.HAVE_PROJ4JS && !goog.isDef(transform)) {
     var proj4jsSource;
     if (source instanceof ol.Proj4jsProjection) {
       proj4jsSource = source;
@@ -370,14 +391,6 @@ ol.Projection.getTransformFromCodes = function(sourceCode, destinationCode) {
   var source = ol.Projection.getFromCode(sourceCode);
   var destination = ol.Projection.getFromCode(destinationCode);
   return ol.Projection.getTransform(source, destination);
-};
-
-
-/**
- * @return {boolean} True if Proj4js is available and enabled.
- */
-ol.Projection.isProj4jsSupported = function() {
-  return ol.ENABLE_PROJ4JS && 'Proj4js' in goog.global;
 };
 
 
@@ -528,6 +541,7 @@ ol.Projection.EPSG_4326_EXTENT_ = new ol.Extent(-180, -90, 180, 90);
  */
 ol.Projection.EPSG_4326_LIKE_CODES_ = [
   'CRS:84',
+  'urn:ogc:def:crs:OGC:1.3:CRS84',
   'EPSG:4326',
   'urn:ogc:def:crs:EPSG:6.6:4326'
 ];
@@ -545,7 +559,9 @@ ol.Projection.EPSG_4326_LIKE_PROJECTIONS = goog.array.map(
       return new ol.Projection(
           code,
           ol.ProjectionUnits.DEGREES,
-          ol.Projection.EPSG_4326_EXTENT_);
+          ol.Projection.EPSG_4326_EXTENT_,
+          code === 'CRS:84' || code === 'urn:ogc:def:crs:OGC:1.3:CRS84' ?
+              'enu' : 'neu');
     });
 
 
