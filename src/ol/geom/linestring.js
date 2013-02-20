@@ -10,11 +10,13 @@ goog.require('ol.geom.GeometryType');
 
 /**
  * @constructor
- * @implements {ol.geom.Geometry}
+ * @extends {ol.geom.Geometry}
  * @param {ol.geom.CoordinateArray} coordinates Coordinates array (e.g.
  *    [[x0, y0], [x1, y1]]).
  */
 ol.geom.LineString = function(coordinates) {
+
+  goog.base(this);
 
   // assume the same dimension for all coordinates
   var dimension = coordinates[0].length,
@@ -43,6 +45,7 @@ ol.geom.LineString = function(coordinates) {
   this.bounds_ = null;
 
 };
+goog.inherits(ol.geom.LineString, ol.geom.Geometry);
 
 
 /**

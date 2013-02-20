@@ -10,10 +10,12 @@ goog.require('ol.geom.GeometryType');
 
 /**
  * @constructor
- * @implements {ol.geom.Geometry}
+ * @extends {ol.geom.Geometry}
  * @param {ol.geom.Coordinate} coordinates Coordinates array (e.g. [x, y]).
  */
 ol.geom.Point = function(coordinates) {
+
+  goog.base(this);
 
   /**
    * @type {Float64Array}
@@ -33,6 +35,7 @@ ol.geom.Point = function(coordinates) {
   this.bounds_ = null;
 
 };
+goog.inherits(ol.geom.Point, ol.geom.Geometry);
 
 
 /**

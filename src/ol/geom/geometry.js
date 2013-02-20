@@ -7,7 +7,7 @@ goog.provide('ol.geom.GeometryType');
 
 
 /**
- * @interface
+ * @constructor
  */
 ol.geom.Geometry = function() {};
 
@@ -30,7 +30,7 @@ ol.geom.Geometry.prototype.getBounds = goog.abstractMethod;
  * Get the geometry type.
  * @return {ol.geom.GeometryType} The geometry type.
  */
-ol.geom.Geometry.prototype.getType = function() {};
+ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 
 
 /**

@@ -7,6 +7,7 @@ describe('ol.geom.MultiPoint', function() {
     it('creates a multi-point from an array', function() {
       var multi = new ol.geom.MultiPoint([[10, 20], [30, 40]]);
       expect(multi).toBeA(ol.geom.MultiPoint);
+      expect(multi).toBeA(ol.geom.Geometry);
     });
 
     it('throws when given with insufficient dimensions', function() {
@@ -59,4 +60,5 @@ describe('ol.geom.MultiPoint', function() {
 
 });
 
+goog.require('ol.geom.Geometry');
 goog.require('ol.geom.MultiPoint');

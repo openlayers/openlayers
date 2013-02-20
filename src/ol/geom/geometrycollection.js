@@ -10,9 +10,11 @@ goog.require('ol.geom.GeometryType');
  * A collection of geometries.  This constructor should not called.  Instead
  * create one of the fixed type collections.
  * @constructor
- * @implements {ol.geom.Geometry}
+ * @extends {ol.geom.Geometry}
  */
 ol.geom.GeometryCollection = function() {
+
+  goog.base(this);
 
   /**
    * @type {Array.<ol.geom.Geometry>}
@@ -31,6 +33,7 @@ ol.geom.GeometryCollection = function() {
   this.bounds = null;
 
 };
+goog.inherits(ol.geom.GeometryCollection, ol.geom.Geometry);
 
 
 /**

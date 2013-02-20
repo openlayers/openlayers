@@ -14,6 +14,7 @@ describe('ol.geom.MultiPolygon', function() {
         [outer1, inner1a, inner1b],
         [outer2]]);
       expect(multi).toBeA(ol.geom.MultiPolygon);
+      expect(multi).toBeA(ol.geom.Geometry);
     });
 
     it('throws when given with insufficient dimensions', function() {
@@ -72,4 +73,5 @@ describe('ol.geom.MultiPolygon', function() {
 
 });
 
+goog.require('ol.geom.Geometry');
 goog.require('ol.geom.MultiPolygon');

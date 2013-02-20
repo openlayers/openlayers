@@ -11,6 +11,7 @@ describe('ol.geom.Polygon', function() {
     it('creates a polygon from an array', function() {
       var poly = new ol.geom.Polygon([outer, inner1, inner2]);
       expect(poly).toBeA(ol.geom.Polygon);
+      expect(poly).toBeA(ol.geom.Geometry);
     });
 
     it('throws when given mismatched dimension', function() {
@@ -64,4 +65,5 @@ describe('ol.geom.Polygon', function() {
 
 });
 
+goog.require('ol.geom.Geometry');
 goog.require('ol.geom.Polygon');

@@ -9,6 +9,7 @@ describe('ol.geom.MultiLineString', function() {
         [[10, 20], [30, 40]],
         [[20, 30], [40, 50]]]);
       expect(multi).toBeA(ol.geom.MultiLineString);
+      expect(multi).toBeA(ol.geom.Geometry);
     });
 
     it('throws when given with insufficient dimensions', function() {
@@ -69,4 +70,5 @@ describe('ol.geom.MultiLineString', function() {
 
 });
 
+goog.require('ol.geom.Geometry');
 goog.require('ol.geom.MultiLineString');

@@ -7,6 +7,7 @@ describe('ol.geom.LineString', function() {
     it('creates a linestring from an array', function() {
       var line = new ol.geom.LineString([[10, 20], [30, 40]]);
       expect(line).toBeA(ol.geom.LineString);
+      expect(line).toBeA(ol.geom.Geometry);
     });
 
     it('throws when given mismatched dimension', function() {
@@ -62,4 +63,5 @@ describe('ol.geom.LineString', function() {
 
 });
 
+goog.require('ol.geom.Geometry');
 goog.require('ol.geom.LineString');

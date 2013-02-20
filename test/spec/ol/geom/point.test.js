@@ -7,6 +7,7 @@ describe('ol.geom.Point', function() {
     it('creates a point from an array', function() {
       var point = new ol.geom.Point([10, 20]);
       expect(point).toBeA(ol.geom.Point);
+      expect(point).toBeA(ol.geom.Geometry);
     });
 
     it('throws when given with insufficient dimensions', function() {
@@ -60,4 +61,5 @@ describe('ol.geom.Point', function() {
 
 });
 
+goog.require('ol.geom.Geometry');
 goog.require('ol.geom.Point');

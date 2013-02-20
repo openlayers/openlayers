@@ -11,11 +11,13 @@ goog.require('ol.geom.LinearRing');
 
 /**
  * @constructor
- * @implements {ol.geom.Geometry}
+ * @extends {ol.geom.Geometry}
  * @param {Array.<ol.geom.CoordinateArray>} coordinates Array of rings.  First
  *    is outer, any remaining are inner.
  */
 ol.geom.Polygon = function(coordinates) {
+
+  goog.base(this);
 
   var numRings = coordinates.length,
       dimension;
@@ -46,6 +48,7 @@ ol.geom.Polygon = function(coordinates) {
   this.bounds_ = null;
 
 };
+goog.inherits(ol.geom.Polygon, ol.geom.Geometry);
 
 
 /**
