@@ -21,7 +21,7 @@ Run the [Plovr](http://plovr.com/) web server with:
 
     $ ./build.py serve
 
-Windows users should run `build serve` instead.
+Windows users should run `build.py serve` instead.
 
 Then, either open one of the example html files from the `examples` directory directly in your browser, or start a simple webserver, for example:
 
@@ -31,7 +31,20 @@ and explore the `examples/` directory, for example by opening
 <http://localhost:8000/examples/side-by-side.html>.
 
 You can turn off compilation by appending `?mode=RAW` to the URL, for example
-<http://localhost:8000/examples/side-by-side.html?mode=RAW>.
+<http://localhost:8000/examples/side-by-side.html?mode=RAW>. (By default mode is `ADVANCED`.)
+
+The examples can also be run against the `ol.js` standalone lib, without Plovr,
+just like the examples [hosted](http://openlayers.github.com/ol3/master/examples/)
+on GitHub. You will want to run the examples against the standalone lib to verify
+that will work correctly when copied on GitHub (as GitHub pages). Start by executing
+the `hostexamples` build target:
+
+    $ ./build.py hostexamples
+    
+This will build `ol.js` and `ol.css`, creates the examples index page, and copy everything to
+`build/gh-pages/<branch_name>/`, where `<branch_name>` is the name of the local checked
+out Git branch. You can now open the `build/gh-pages/<branch_name>examples` directory
+in the browser, for example: <http://localhost:8000/build/gh-pages/master/examples/side-by-side.html>.
 
 ## Run tests
 
