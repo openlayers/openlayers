@@ -1,4 +1,6 @@
-describe('ol.io.geojson', function() {
+goog.provide('ol.test.parser.geojson');
+
+describe('ol.parser.geojson', function() {
 
   var data = {
     'type': 'FeatureCollection',
@@ -72,7 +74,7 @@ describe('ol.io.geojson', function() {
         coordinates: [10, 20]
       });
 
-      var obj = ol.io.geojson.read(str);
+      var obj = ol.parser.geojson.read(str);
       expect(obj).toBeA(ol.geom.Point);
       expect(obj.coordinates[0]).toBe(10);
       expect(obj.coordinates[1]).toBe(20);
@@ -84,7 +86,7 @@ describe('ol.io.geojson', function() {
         coordinates: [[10, 20], [30, 40]]
       });
 
-      var obj = ol.io.geojson.read(str);
+      var obj = ol.parser.geojson.read(str);
       expect(obj).toBeA(ol.geom.LineString);
       expect(obj.coordinates[0]).toBe(10);
       expect(obj.coordinates[1]).toBe(20);
@@ -101,7 +103,7 @@ describe('ol.io.geojson', function() {
             coordinates: [outer, inner1, inner2]
           });
 
-      var obj = ol.io.geojson.read(str);
+      var obj = ol.parser.geojson.read(str);
       expect(obj).toBeA(ol.geom.Polygon);
       expect(obj.rings.length).toBe(3);
       expect(obj.rings[0]).toBeA(ol.geom.LinearRing);
@@ -118,7 +120,7 @@ describe('ol.io.geojson', function() {
         ]
       });
 
-      var array = ol.io.geojson.read(str);
+      var array = ol.parser.geojson.read(str);
       expect(array.length).toBe(2);
       expect(array[0]).toBeA(ol.geom.Point);
       expect(array[1]).toBeA(ol.geom.LineString);
@@ -126,7 +128,7 @@ describe('ol.io.geojson', function() {
 
     it('parses feature collection', function() {
       var str = JSON.stringify(data),
-          array = ol.io.geojson.read(str);
+          array = ol.parser.geojson.read(str);
 
       expect(array.length).toBe(2);
 
@@ -146,3 +148,5 @@ describe('ol.io.geojson', function() {
   });
 
 });
+
+goog.require('ol.parser.geojson');

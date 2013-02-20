@@ -1,4 +1,4 @@
-goog.provide('ol.io.geojson');
+goog.provide('ol.parser.geojson');
 
 goog.require('ol.Feature');
 goog.require('ol.geom.Geometry');
@@ -17,10 +17,10 @@ goog.require('ol.geom.Polygon');
  *    ol.geom.Geometry|Array.<ol.geom.Geometry>} Parsed geometry or array
  *    of geometries.
  */
-ol.io.geojson.read = function(str) {
+ol.parser.geojson.read = function(str) {
   // TODO: add options and accept projection
   var json = /** @type {GeoJSONObject} */ (JSON.parse(str));
-  return ol.io.geojson.parse_(json);
+  return ol.parser.geojson.parse_(json);
 };
 
 
@@ -31,43 +31,43 @@ ol.io.geojson.read = function(str) {
  *    of geometries.
  * @private
  */
-ol.io.geojson.parse_ = function(json) {
+ol.parser.geojson.parse_ = function(json) {
   var result;
   switch (json.type) {
     case 'FeatureCollection':
-      result = ol.io.geojson.parseFeatureCollection_(
+      result = ol.parser.geojson.parseFeatureCollection_(
           /** @type {GeoJSONFeatureCollection} */ (json));
       break;
     case 'Feature':
-      result = ol.io.geojson.parseFeature_(
+      result = ol.parser.geojson.parseFeature_(
           /** @type {GeoJSONFeature} */ (json));
       break;
     case 'GeometryCollection':
-      result = ol.io.geojson.parseGeometryCollection_(
+      result = ol.parser.geojson.parseGeometryCollection_(
           /** @type {GeoJSONGeometryCollection} */ (json));
       break;
     case 'Point':
-      result = ol.io.geojson.parsePoint_(
+      result = ol.parser.geojson.parsePoint_(
           /** @type {GeoJSONGeometry} */ (json));
       break;
     case 'LineString':
-      result = ol.io.geojson.parseLineString_(
+      result = ol.parser.geojson.parseLineString_(
           /** @type {GeoJSONGeometry} */ (json));
       break;
     case 'Polygon':
-      result = ol.io.geojson.parsePolygon_(
+      result = ol.parser.geojson.parsePolygon_(
           /** @type {GeoJSONGeometry} */ (json));
       break;
     case 'MultiPoint':
-      result = ol.io.geojson.parseMultiPoint_(
+      result = ol.parser.geojson.parseMultiPoint_(
           /** @type {GeoJSONGeometry} */ (json));
       break;
     case 'MultiLineString':
-      result = ol.io.geojson.parseMultiLineString_(
+      result = ol.parser.geojson.parseMultiLineString_(
           /** @type {GeoJSONGeometry} */ (json));
       break;
     case 'MultiPolygon':
-      result = ol.io.geojson.parseMultiPolygon_(
+      result = ol.parser.geojson.parseMultiPolygon_(
           /** @type {GeoJSONGeometry} */ (json));
       break;
     default:
@@ -82,11 +82,11 @@ ol.io.geojson.parse_ = function(json) {
  * @return {ol.Feature} Parsed feature.
  * @private
  */
-ol.io.geojson.parseFeature_ = function(json) {
+ol.parser.geojson.parseFeature_ = function(json) {
   var geomJson = json.geometry,
       geometry = null;
   if (geomJson) {
-    geometry = /** @type {ol.geom.Geometry} */ (ol.io.geojson.parse_(
+    geometry = /** @type {ol.geom.Geometry} */ (ol.parser.geojson.parse_(
         /** @type {GeoJSONGeometry} */ (geomJson)));
   }
   var feature = new ol.Feature();
@@ -101,14 +101,14 @@ ol.io.geojson.parseFeature_ = function(json) {
  * @return {Array.<ol.Feature>} Parsed array of features.
  * @private
  */
-ol.io.geojson.parseFeatureCollection_ = function(json) {
+ol.parser.geojson.parseFeatureCollection_ = function(json) {
   var features = json.features,
       len = features.length,
       result = new Array(len),
       i;
 
   for (i = 0; i < len; ++i) {
-    result[i] = ol.io.geojson.parse_(
+    result[i] = ol.parser.geojson.parse_(
         /** @type {GeoJSONFeature} */ (features[i]));
   }
   return result;
@@ -120,14 +120,14 @@ ol.io.geojson.parseFeatureCollection_ = function(json) {
  * @return {Array.<ol.geom.Geometry>} Parsed array of geometries.
  * @private
  */
-ol.io.geojson.parseGeometryCollection_ = function(json) {
+ol.parser.geojson.parseGeometryCollection_ = function(json) {
   var geometries = json.geometries,
       len = geometries.length,
       result = new Array(len),
       i;
 
   for (i = 0; i < len; ++i) {
-    result[i] = ol.io.geojson.parse_(
+    result[i] = ol.parser.geojson.parse_(
         /** @type {GeoJSONGeometry} */ (geometries[i]));
   }
   return result;
@@ -139,7 +139,7 @@ ol.io.geojson.parseGeometryCollection_ = function(json) {
  * @return {ol.geom.LineString} Parsed linestring.
  * @private
  */
-ol.io.geojson.parseLineString_ = function(json) {
+ol.parser.geojson.parseLineString_ = function(json) {
   return new ol.geom.LineString(json.coordinates);
 };
 
@@ -149,7 +149,7 @@ ol.io.geojson.parseLineString_ = function(json) {
  * @return {ol.geom.MultiLineString} Parsed multi-linestring.
  * @private
  */
-ol.io.geojson.parseMultiLineString_ = function(json) {
+ol.parser.geojson.parseMultiLineString_ = function(json) {
   return new ol.geom.MultiLineString(json.coordinates);
 };
 
@@ -159,7 +159,7 @@ ol.io.geojson.parseMultiLineString_ = function(json) {
  * @return {ol.geom.MultiPoint} Parsed multi-point.
  * @private
  */
-ol.io.geojson.parseMultiPoint_ = function(json) {
+ol.parser.geojson.parseMultiPoint_ = function(json) {
   return new ol.geom.MultiPoint(json.coordinates);
 };
 
@@ -169,7 +169,7 @@ ol.io.geojson.parseMultiPoint_ = function(json) {
  * @return {ol.geom.MultiPolygon} Parsed multi-polygon.
  * @private
  */
-ol.io.geojson.parseMultiPolygon_ = function(json) {
+ol.parser.geojson.parseMultiPolygon_ = function(json) {
   return new ol.geom.MultiPolygon(json.coordinates);
 };
 
@@ -179,7 +179,7 @@ ol.io.geojson.parseMultiPolygon_ = function(json) {
  * @return {ol.geom.Point} Parsed multi-point.
  * @private
  */
-ol.io.geojson.parsePoint_ = function(json) {
+ol.parser.geojson.parsePoint_ = function(json) {
   return new ol.geom.Point(json.coordinates);
 };
 
@@ -189,6 +189,6 @@ ol.io.geojson.parsePoint_ = function(json) {
  * @return {ol.geom.Polygon} Parsed polygon.
  * @private
  */
-ol.io.geojson.parsePolygon_ = function(json) {
+ol.parser.geojson.parsePolygon_ = function(json) {
   return new ol.geom.Polygon(json.coordinates);
 };
