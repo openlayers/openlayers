@@ -39,6 +39,13 @@ ol.ObjectProperty = {
  */
 ol.Object = function(opt_values) {
   goog.base(this);
+
+  /**
+   * @private
+   * @type {Object.<string, *>}
+   */
+  this.values_ = {};
+
   if (goog.isDef(opt_values)) {
     this.setValues(opt_values);
   }
@@ -91,7 +98,8 @@ ol.Object.getAccessors = function(obj) {
  * @return {string} Changed name.
  */
 ol.Object.getChangedEventType = function(key) {
-  return ol.Object.changedEventTypeCache_[key] ||
+  return ol.Object.changedEventTypeCache_.hasOwnProperty(key) ?
+      ol.Object.changedEventTypeCache_[key] :
       (ol.Object.changedEventTypeCache_[key] = key.toLowerCase() + '_changed');
 };
 
@@ -101,7 +109,8 @@ ol.Object.getChangedEventType = function(key) {
  * @return {string} Getter name.
  */
 ol.Object.getGetterName = function(key) {
-  return ol.Object.getterNameCache_[key] ||
+  return ol.Object.getterNameCache_.hasOwnProperty(key) ?
+      ol.Object.getterNameCache_[key] :
       (ol.Object.getterNameCache_[key] = 'get' + ol.Object.capitalize(key));
 };
 
@@ -121,7 +130,8 @@ ol.Object.getListeners = function(obj) {
  * @return {string} Setter name.
  */
 ol.Object.getSetterName = function(key) {
-  return ol.Object.setterNameCache_[key] ||
+  return ol.Object.setterNameCache_.hasOwnProperty(key) ?
+      ol.Object.setterNameCache_[key] :
       (ol.Object.setterNameCache_[key] = 'set' + ol.Object.capitalize(key));
 };
 
@@ -161,20 +171,34 @@ ol.Object.prototype.changed = goog.nullFunction;
  * @return {*} Value.
  */
 ol.Object.prototype.get = function(key) {
+  var value;
   var accessors = ol.Object.getAccessors(this);
-  if (goog.object.containsKey(accessors, key)) {
+  if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
     var target = accessor.target;
     var targetKey = accessor.key;
     var getterName = ol.Object.getGetterName(targetKey);
     if (target[getterName]) {
-      return target[getterName]();
+      value = target[getterName]();
     } else {
-      return target.get(targetKey);
+      value = target.get(targetKey);
     }
-  } else {
-    return this[key];
+  } else if (this.values_.hasOwnProperty(key)) {
+    value = this.values_[key];
   }
+  return value;
+};
+
+
+/**
+ * Get a list of object property names.
+ * @return {Array.<string>} List of property names.
+ */
+ol.Object.prototype.getKeys = function() {
+  var keys = goog.object.getKeys(ol.Object.getAccessors(this)).concat(
+      goog.object.getKeys(this.values_));
+  goog.array.removeDuplicates(keys);
+  return keys;
 };
 
 
@@ -183,7 +207,7 @@ ol.Object.prototype.get = function(key) {
  */
 ol.Object.prototype.notify = function(key) {
   var accessors = ol.Object.getAccessors(this);
-  if (goog.object.containsKey(accessors, key)) {
+  if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
     var target = accessor.target;
     var targetKey = accessor.key;
@@ -211,7 +235,7 @@ ol.Object.prototype.notifyInternal_ = function(key) {
  */
 ol.Object.prototype.set = function(key, value) {
   var accessors = ol.Object.getAccessors(this);
-  if (goog.object.containsKey(accessors, key)) {
+  if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
     var target = accessor.target;
     var targetKey = accessor.key;
@@ -222,7 +246,7 @@ ol.Object.prototype.set = function(key, value) {
       target.set(targetKey, value);
     }
   } else {
-    this[key] = value;
+    this.values_[key] = value;
     this.notifyInternal_(key);
   }
 };
@@ -232,14 +256,16 @@ ol.Object.prototype.set = function(key, value) {
  * @param {Object.<string, *>} options Options.
  */
 ol.Object.prototype.setOptions = function(options) {
-  goog.object.forEach(options, function(value, key) {
-    var setterName = ol.Object.getSetterName(key);
+  var key, value, setterName;
+  for (key in options) {
+    value = options[key];
+    setterName = ol.Object.getSetterName(key);
     if (this[setterName]) {
       this[setterName](value);
     } else {
       this.set(key, value);
     }
-  }, this);
+  }
 };
 
 
@@ -261,7 +287,7 @@ ol.Object.prototype.unbind = function(key) {
     var value = this.get(key);
     var accessors = ol.Object.getAccessors(this);
     delete accessors[key];
-    this[key] = value;
+    this.values_[key] = value;
   }
 };
 
@@ -270,9 +296,7 @@ ol.Object.prototype.unbind = function(key) {
  * Removes all bindings.
  */
 ol.Object.prototype.unbindAll = function() {
-  var listeners = ol.Object.getListeners(this);
-  var keys = goog.object.getKeys(listeners);
-  goog.array.forEach(keys, function(key) {
+  for (var key in ol.Object.getListeners(this)) {
     this.unbind(key);
-  }, this);
+  }
 };
