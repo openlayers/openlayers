@@ -1,6 +1,7 @@
 goog.provide('ol.ImageUrlFunction');
 goog.provide('ol.ImageUrlFunctionType');
 
+goog.require('goog.uri.utils');
 goog.require('ol.Extent');
 goog.require('ol.Size');
 
