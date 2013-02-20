@@ -1,3 +1,5 @@
+gooog.require('ol.test.geom.Polygon');
+
 describe('ol.geom.Polygon', function() {
 
   var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]],
@@ -62,3 +64,4 @@ describe('ol.geom.Polygon', function() {
 
 });
 
+goog.require('ol.geom.Polygon');

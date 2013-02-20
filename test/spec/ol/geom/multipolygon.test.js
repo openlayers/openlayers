@@ -1,3 +1,5 @@
+goog.provide('ol.test.geom.MultiPolygon');
+
 describe('ol.geom.MultiPolygon', function() {
 
   var outer1 = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]],
@@ -9,8 +11,8 @@ describe('ol.geom.MultiPolygon', function() {
 
     it('creates a multi-linestring from an array', function() {
       var multi = new ol.geom.MultiPolygon([
-          [outer1, inner1a, inner1b],
-          [outer2]]);
+        [outer1, inner1a, inner1b],
+        [outer2]]);
       expect(multi).toBeA(ol.geom.MultiPolygon);
     });
 
@@ -26,8 +28,8 @@ describe('ol.geom.MultiPolygon', function() {
 
     it('is an array of polygons', function() {
       var multi = new ol.geom.MultiPolygon([
-          [outer1, inner1a, inner1b],
-          [outer2]]);
+        [outer1, inner1a, inner1b],
+        [outer2]]);
 
       expect(multi.components.length).toBe(2);
       expect(multi.components[0]).toBeA(ol.geom.Polygon);
@@ -41,8 +43,8 @@ describe('ol.geom.MultiPolygon', function() {
 
     it('can be 2', function() {
       var multi = new ol.geom.MultiPolygon([
-          [outer1, inner1a, inner1b],
-          [outer2]]);
+        [outer1, inner1a, inner1b],
+        [outer2]]);
       expect(multi.dimension).toBe(2);
     });
 
@@ -57,8 +59,8 @@ describe('ol.geom.MultiPolygon', function() {
 
     it('returns the bounding extent', function() {
       var multi = new ol.geom.MultiPolygon([
-          [outer1, inner1a, inner1b],
-          [outer2]]);
+        [outer1, inner1a, inner1b],
+        [outer2]]);
       var bounds = multi.getBounds();
       expect(bounds.minX).toBe(0);
       expect(bounds.minY).toBe(0);
@@ -70,3 +72,4 @@ describe('ol.geom.MultiPolygon', function() {
 
 });
 
+goog.require('ol.geom.MultiPolygon');

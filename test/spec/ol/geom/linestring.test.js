@@ -1,3 +1,5 @@
+goog.provide('ol.test.geom.LineString');
+
 describe('ol.geom.LineString', function() {
 
   describe('constructor', function() {
@@ -60,3 +62,4 @@ describe('ol.geom.LineString', function() {
 
 });
 
+goog.require('ol.geom.LineString');

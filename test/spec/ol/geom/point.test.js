@@ -1,3 +1,5 @@
+goog.provide('ol.test.geom.Point');
+
 describe('ol.geom.Point', function() {
 
   describe('constructor', function() {
@@ -58,3 +60,4 @@ describe('ol.geom.Point', function() {
 
 });
 
+goog.require('ol.geom.Point');

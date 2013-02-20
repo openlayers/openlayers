@@ -1,3 +1,5 @@
+goog.provide('ol.test.geom.MultiPoint');
+
 describe('ol.geom.MultiPoint', function() {
 
   describe('constructor', function() {
@@ -57,3 +59,4 @@ describe('ol.geom.MultiPoint', function() {
 
 });
 
+goog.require('ol.geom.MultiPoint');
