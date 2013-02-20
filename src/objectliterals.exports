@@ -130,7 +130,6 @@
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.urls Array.<string>|undefined
 
 @exportObjectLiteral ol.tilegrid.TileGridOptions
-@exportObjectLiteralProperty ol.tilegrid.TileGridOptions.extent ol.Extent|undefined
 @exportObjectLiteralProperty ol.tilegrid.TileGridOptions.origin ol.Coordinate|undefined
 @exportObjectLiteralProperty ol.tilegrid.TileGridOptions.origins Array.<ol.Coordinate>|undefined
 @exportObjectLiteralProperty ol.tilegrid.TileGridOptions.resolutions !Array.<number>
