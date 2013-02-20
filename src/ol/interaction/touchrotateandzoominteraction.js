@@ -102,7 +102,7 @@ ol.interaction.TouchRotateAndZoom.prototype.handleTouchMove =
   centroid.y -= viewportPosition.y;
   var anchor = map.getCoordinateFromPixel(centroid);
 
-  // scale
+  // scale, bypass the resolution constraint
   view.zoom_(map, view.getResolution() * scaleDelta, anchor);
 
   // rotate
@@ -118,7 +118,10 @@ ol.interaction.TouchRotateAndZoom.prototype.handleTouchMove =
 ol.interaction.TouchRotateAndZoom.prototype.handleTouchEnd =
     function(mapBrowserEvent) {
   if (this.targetTouches.length < 2) {
-    var view = mapBrowserEvent.map.getView();
+    var map = mapBrowserEvent.map;
+    var view = map.getView();
+    // take the resolution constraint into account
+    view.zoomToResolution(map, view.getResolution());
     view.setHint(ol.ViewHint.PANNING, -1);
     return false;
   } else {
