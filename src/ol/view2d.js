@@ -4,6 +4,7 @@
 goog.provide('ol.View2D');
 goog.provide('ol.View2DProperty');
 
+goog.require('goog.fx.easing');
 goog.require('ol.Constraints');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
@@ -312,12 +313,22 @@ ol.View2D.prototype.zoom_ = function(map, resolution, opt_anchor) {
  */
 ol.View2D.prototype.zoom = function(map, delta, opt_anchor, opt_duration) {
   var currentResolution = this.getResolution();
-  if (goog.isDef(currentResolution) && goog.isDef(opt_duration)) {
+  var currentCenter = this.getCenter();
+  if (goog.isDef(currentResolution) && goog.isDef(currentCenter) &&
+      goog.isDef(opt_duration)) {
     map.requestRenderFrame();
     map.addPreRenderFunction(ol.animation.zoom({
       resolution: currentResolution,
-      duration: opt_duration
+      duration: opt_duration,
+      easing: goog.fx.easing.easeOut
     }));
+    if (goog.isDef(opt_anchor)) {
+      map.addPreRenderFunction(ol.animation.pan({
+        source: currentCenter,
+        duration: opt_duration,
+        easing: goog.fx.easing.easeOut
+      }));
+    }
   }
   var resolution = this.constraints_.resolution(currentResolution, delta);
   this.zoom_(map, resolution, opt_anchor);
