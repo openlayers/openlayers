@@ -8,6 +8,12 @@ goog.require('ol.View2D');
 goog.require('ol.interaction.Interaction');
 
 
+/**
+ * @define {number} Zoom duration.
+ */
+ol.interaction.ZOOM_DURATION = 200;
+
+
 
 /**
  * @constructor
@@ -43,7 +49,7 @@ ol.interaction.MouseWheelZoom.prototype.handleMapBrowserEvent =
     var view = map.getView();
     goog.asserts.assert(view instanceof ol.View2D);
     map.requestRenderFrame();
-    view.zoom(map, delta, anchor);
+    view.zoom(map, delta, anchor, ol.interaction.ZOOM_DURATION);
     mapBrowserEvent.preventDefault();
     mouseWheelEvent.preventDefault();
   }
