@@ -52,6 +52,29 @@ describe('ol.Feature', function() {
 
   });
 
+  describe('#getAttributes()', function() {
+
+    it('returns an object with all attributes', function() {
+      var point = new ol.geom.Point([15, 30]);
+      var feature = new ol.Feature({
+        foo: 'bar',
+        ten: 10,
+        loc: point
+      });
+
+      var attributes = feature.getAttributes();
+
+      var keys = goog.object.getKeys(attributes);
+      expect(keys.sort()).toEqual(['foo', 'loc', 'ten']);
+
+      expect(attributes.foo).toBe('bar');
+      expect(attributes.loc).toBe(point);
+      expect(attributes.ten).toBe(10);
+    });
+
+  });
+
+
   describe('#getGeometry()', function() {
 
     var point = new ol.geom.Point([15, 30]);
@@ -157,5 +180,6 @@ describe('ol.Feature', function() {
 });
 
 
+goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
