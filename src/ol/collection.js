@@ -93,7 +93,7 @@ goog.inherits(ol.Collection, ol.Object);
  * Remove all elements from the collection.
  */
 ol.Collection.prototype.clear = function() {
-  while (this[ol.CollectionProperty.LENGTH]) {
+  while (this.getLength() > 0) {
     this.pop();
   }
 };
@@ -187,7 +187,7 @@ ol.Collection.prototype.removeAt = function(index) {
  * @param {*} elem Element.
  */
 ol.Collection.prototype.setAt = function(index, elem) {
-  var n = this[ol.CollectionProperty.LENGTH];
+  var n = this.getLength();
   if (index < n) {
     var prev = this.array_[index];
     this.array_[index] = elem;
