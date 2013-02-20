@@ -22,14 +22,30 @@ describe('ol.source.Vector', function() {
 
     beforeEach(function() {
       features = [
-        new ol.Feature(new ol.geom.Point([16.0, 48.0])),
-        new ol.Feature(new ol.geom.Point([16.1, 48.1])),
-        new ol.Feature(new ol.geom.Point([16.2, 48.2])),
-        new ol.Feature(new ol.geom.Point([16.3, 48.3])),
-        new ol.Feature(new ol.geom.LineString([[16.4, 48.4], [16.5, 48.5]])),
-        new ol.Feature(new ol.geom.LineString([[16.6, 48.6], [16.7, 48.7]])),
-        new ol.Feature(new ol.geom.LineString([[16.8, 48.8], [16.9, 48.9]])),
-        new ol.Feature(new ol.geom.LineString([[17.0, 49.0], [17.1, 49.1]]))
+        new ol.Feature({
+          g: new ol.geom.Point([16.0, 48.0])
+        }),
+        new ol.Feature({
+          g: new ol.geom.Point([16.1, 48.1])
+        }),
+        new ol.Feature({
+          g: new ol.geom.Point([16.2, 48.2])
+        }),
+        new ol.Feature({
+          g: new ol.geom.Point([16.3, 48.3])
+        }),
+        new ol.Feature({
+          g: new ol.geom.LineString([[16.4, 48.4], [16.5, 48.5]])
+        }),
+        new ol.Feature({
+          g: new ol.geom.LineString([[16.6, 48.6], [16.7, 48.7]])
+        }),
+        new ol.Feature({
+          g: new ol.geom.LineString([[16.8, 48.8], [16.9, 48.9]])
+        }),
+        new ol.Feature({
+          g: new ol.geom.LineString([[17.0, 49.0], [17.1, 49.1]])
+        })
       ];
       vectorSource = new ol.source.Vector({
         projection: ol.Projection.getFromCode('EPSG:4326')
@@ -71,8 +87,7 @@ describe('ol.source.Vector', function() {
       expect(subset2.length).toEqual(0);
     });
 
-    it('can handle any query using the filter\'s evaluate function',
-        function() {
+    it('can handle query using the filter\'s evaluate function', function() {
       var filter = new ol.filter.Logical([geomFilter, extentFilter],
           ol.filter.LogicalOperator.OR);
       spyOn(filter, 'evaluate').andCallThrough();

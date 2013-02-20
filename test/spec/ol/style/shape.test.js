@@ -30,7 +30,7 @@ describe('ol.style.Shape', function() {
         opacity: new ol.Expression('opacityAttr')
       });
 
-      var feature = new ol.Feature(undefined, {
+      var feature = new ol.Feature({
         sizeAttr: 42,
         opacityAttr: 0.4
       });

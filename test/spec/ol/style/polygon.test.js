@@ -30,7 +30,7 @@ describe('ol.style.Polygon', function() {
         fillStyle: new ol.Expression('fillAttr')
       });
 
-      var feature = new ol.Feature(undefined, {
+      var feature = new ol.Feature({
         value: 42,
         fillAttr: '#ff0000'
       });

@@ -21,9 +21,9 @@ describe('ol.filter.Extent', function() {
   describe('#evaluate()', function() {
 
     it('returns true if a feature intersects, false if not', function() {
-      expect(filter.evaluate(new ol.Feature(new ol.geom.Point([44, 89]))))
+      expect(filter.evaluate(new ol.Feature({g: new ol.geom.Point([44, 89])})))
           .toBe(true);
-      expect(filter.evaluate(new ol.Feature(new ol.geom.Point([46, 91]))))
+      expect(filter.evaluate(new ol.Feature({g: new ol.geom.Point([46, 91])})))
           .toBe(false);
     });
 

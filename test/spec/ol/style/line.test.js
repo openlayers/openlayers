@@ -30,7 +30,7 @@ describe('ol.style.Line', function() {
         strokeWidth: ol.Expression('widthAttr')
       });
 
-      var feature = new ol.Feature(undefined, {
+      var feature = new ol.Feature({
         value: 42,
         widthAttr: 1.5
       });

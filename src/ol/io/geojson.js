@@ -84,12 +84,15 @@ ol.io.geojson.parse_ = function(json) {
  */
 ol.io.geojson.parseFeature_ = function(json) {
   var geomJson = json.geometry,
-      geometry;
+      geometry = null;
   if (geomJson) {
     geometry = /** @type {ol.geom.Geometry} */ (ol.io.geojson.parse_(
         /** @type {GeoJSONGeometry} */ (geomJson)));
   }
-  return new ol.Feature(geometry, json.properties);
+  var feature = new ol.Feature();
+  feature.setGeometry(geometry);
+  feature.setValues(json.properties);
+  return feature;
 };
 
 

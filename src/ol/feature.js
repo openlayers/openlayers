@@ -8,18 +8,17 @@ goog.require('ol.geom.Geometry');
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {ol.geom.Geometry=} opt_geometry Geometry.
  * @param {Object=} opt_values Attributes.
  */
-ol.Feature = function(opt_geometry, opt_values) {
+ol.Feature = function(opt_values) {
 
   goog.base(this, opt_values);
 
   /**
+   * @type {string|undefined}
    * @private
-   * @type {ol.geom.Geometry}
    */
-  this.geometry_ = goog.isDef(opt_geometry) ? opt_geometry : null;
+  this.geometryName_;
 
 };
 goog.inherits(ol.Feature, ol.Object);
@@ -47,7 +46,22 @@ ol.Feature.prototype.getAttributes = function() {
  * @return {ol.geom.Geometry} The geometry (or null if none).
  */
 ol.Feature.prototype.getGeometry = function() {
-  return this.geometry_;
+  return goog.isDef(this.geometryName_) ?
+      /** @type {ol.geom.Geometry} */ (this.get(this.geometryName_)) :
+      null;
+};
+
+
+/**
+ * @inheritDoc
+ * @param {string} key Key.
+ * @param {*} value Value.
+ */
+ol.Feature.prototype.set = function(key, value) {
+  if (!goog.isDef(this.geometryName_) && (value instanceof ol.geom.Geometry)) {
+    this.geometryName_ = key;
+  }
+  goog.base(this, 'set', key, value);
 };
 
 
@@ -55,5 +69,15 @@ ol.Feature.prototype.getGeometry = function() {
  * @param {ol.geom.Geometry} geometry The geometry.
  */
 ol.Feature.prototype.setGeometry = function(geometry) {
-  this.geometry_ = geometry;
+  if (!goog.isDef(this.geometryName_)) {
+    this.geometryName_ = ol.Feature.DEFAULT_GEOMETRY;
+  }
+  this.set(this.geometryName_, geometry);
 };
+
+
+/**
+ * @const
+ * @type {string}
+ */
+ol.Feature.DEFAULT_GEOMETRY = 'geometry';
