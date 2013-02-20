@@ -133,6 +133,22 @@ describe('ol.Feature', function() {
       expect(feature.getGeometry()).toBe(point);
     });
 
+    it('can be used to set attributes with arbitrary names', function() {
+
+      var feature = new ol.Feature();
+
+      feature.set('toString', 'string');
+      expect(feature.get('toString')).toBe('string');
+      expect(typeof feature.toString).toBe('function');
+
+      feature.set('getGeometry', 'x');
+      expect(feature.get('getGeometry')).toBe('x');
+
+      feature.set('geom', new ol.geom.Point([1, 2]));
+      expect(feature.getGeometry()).toBeA(ol.geom.Point);
+
+    });
+
   });
 
   describe('#setGeometry()', function() {
