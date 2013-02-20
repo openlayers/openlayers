@@ -27,7 +27,7 @@ source.addFeatures([
   }),
   new ol.Feature({
     g: new ol.geom.LineString([[-10000000, 10000000], [10000000, -10000000]])
-  },
+  }),
   new ol.Feature({g: new ol.geom.Point([-10000000, 5000000])})
 ]);
 
