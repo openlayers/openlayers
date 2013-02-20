@@ -359,10 +359,8 @@ ol.View2D.createConstraints_ = function(view2DOptions) {
       maxResolution = Math.max(
           projectionExtent.maxX - projectionExtent.minX,
           projectionExtent.maxY - projectionExtent.minY) / ol.DEFAULT_TILE_SIZE;
-      // number of steps we want between two data resolutions
-      var numSteps = 4;
-      numZoomLevels = 29 * numSteps;
-      zoomFactor = Math.exp(Math.log(2) / numSteps);
+      numZoomLevels = 29;
+      zoomFactor = 2;
     }
     resolutionConstraint = ol.ResolutionConstraint.createSnapToPower(
         zoomFactor, maxResolution, numZoomLevels - 1);

@@ -121,7 +121,7 @@ describe('ol.Map', function() {
           var interactions = ol.Map.createInteractions_(options);
           expect(interactions.getLength()).toEqual(1);
           expect(interactions.getAt(0)).toBeA(ol.interaction.DblClickZoom);
-          expect(interactions.getAt(0).delta_).toEqual(4);
+          expect(interactions.getAt(0).delta_).toEqual(1);
         });
       });
 
