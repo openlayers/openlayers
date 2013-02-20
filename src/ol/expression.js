@@ -1,4 +1,5 @@
 goog.provide('ol.Expression');
+goog.provide('ol.ExpressionLiteral');
 
 
 
@@ -40,4 +41,30 @@ ol.Expression.prototype.evaluate = function(opt_thisArg, opt_scope) {
 
   var evaluator = new Function(names.join(','), 'return ' + this.source_);
   return evaluator.apply(thisArg, values);
+};
+
+
+
+/**
+ * @constructor
+ * @extends {ol.Expression}
+ * @param {*} value Literal value.
+ */
+ol.ExpressionLiteral = function(value) {
+
+  /**
+   * @type {*}
+   * @private
+   */
+  this.value_ = value;
+
+};
+goog.inherits(ol.ExpressionLiteral, ol.Expression);
+
+
+/**
+ * @inheritDoc
+ */
+ol.ExpressionLiteral.prototype.evaluate = function(opt_thisArg, opt_scope) {
+  return this.value_;
 };
