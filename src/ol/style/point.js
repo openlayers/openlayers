@@ -1,16 +1,16 @@
-goog.provide('ol.style.LiteralPoint');
 goog.provide('ol.style.Point');
+goog.provide('ol.style.PointLiteral');
 
-goog.require('ol.style.LiteralSymbolizer');
 goog.require('ol.style.Symbolizer');
+goog.require('ol.style.SymbolizerLiteral');
 
 
 
 /**
  * @constructor
- * @implements {ol.style.LiteralSymbolizer}
+ * @implements {ol.style.SymbolizerLiteral}
  */
-ol.style.LiteralPoint = function() {};
+ol.style.PointLiteral = function() {};
 
 
 

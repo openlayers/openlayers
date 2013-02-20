@@ -1,10 +1,10 @@
 goog.provide('ol.style.Line');
-goog.provide('ol.style.LiteralLine');
+goog.provide('ol.style.LineLiteral');
 
 goog.require('ol.Expression');
 goog.require('ol.ExpressionLiteral');
-goog.require('ol.style.LiteralSymbolizer');
 goog.require('ol.style.Symbolizer');
+goog.require('ol.style.SymbolizerLiteral');
 
 
 /**
@@ -12,16 +12,16 @@ goog.require('ol.style.Symbolizer');
  *            strokeWidth: (number),
  *            opacity: (number)}}
  */
-ol.style.LiteralLineOptions;
+ol.style.LineLiteralOptions;
 
 
 
 /**
  * @constructor
- * @implements {ol.style.LiteralSymbolizer}
- * @param {ol.style.LiteralLineOptions} config Symbolizer properties.
+ * @implements {ol.style.SymbolizerLiteral}
+ * @param {ol.style.LineLiteralOptions} config Symbolizer properties.
  */
-ol.style.LiteralLine = function(config) {
+ol.style.LineLiteral = function(config) {
 
   /** @type {string} */
   this.strokeStyle = config.strokeStyle;
@@ -83,7 +83,7 @@ ol.style.Line = function(options) {
 
 /**
  * @inheritDoc
- * @return {ol.style.LiteralLine} Literal line symbolizer.
+ * @return {ol.style.LineLiteral} Literal line symbolizer.
  */
 ol.style.Line.prototype.createLiteral = function(feature) {
   var attrs = feature.getAttributes();
@@ -97,7 +97,7 @@ ol.style.Line.prototype.createLiteral = function(feature) {
   var opacity = this.opacity_.evaluate(feature, attrs);
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
-  return new ol.style.LiteralLine({
+  return new ol.style.LineLiteral({
     strokeStyle: strokeStyle,
     strokeWidth: strokeWidth,
     opacity: opacity
@@ -106,9 +106,9 @@ ol.style.Line.prototype.createLiteral = function(feature) {
 
 
 /**
- * @type {ol.style.LiteralLine}
+ * @type {ol.style.LineLiteral}
  */
-ol.style.LineDefaults = new ol.style.LiteralLine({
+ol.style.LineDefaults = new ol.style.LineLiteral({
   strokeStyle: '#696969',
   strokeWidth: 1.5,
   opacity: 0.75

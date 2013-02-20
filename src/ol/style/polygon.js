@@ -1,10 +1,10 @@
-goog.provide('ol.style.LiteralPolygon');
 goog.provide('ol.style.Polygon');
+goog.provide('ol.style.PolygonLiteral');
 
 goog.require('ol.Expression');
 goog.require('ol.ExpressionLiteral');
-goog.require('ol.style.LiteralSymbolizer');
 goog.require('ol.style.Symbolizer');
+goog.require('ol.style.SymbolizerLiteral');
 
 
 /**
@@ -13,16 +13,16 @@ goog.require('ol.style.Symbolizer');
  *            strokeWidth: (number),
  *            opacity: (number)}}
  */
-ol.style.LiteralPolygonOptions;
+ol.style.PolygonLiteralOptions;
 
 
 
 /**
  * @constructor
- * @implements {ol.style.LiteralSymbolizer}
- * @param {ol.style.LiteralPolygonOptions} config Symbolizer properties.
+ * @implements {ol.style.SymbolizerLiteral}
+ * @param {ol.style.PolygonLiteralOptions} config Symbolizer properties.
  */
-ol.style.LiteralPolygon = function(config) {
+ol.style.PolygonLiteral = function(config) {
 
   /** @type {string} */
   this.fillStyle = config.fillStyle;
@@ -97,7 +97,7 @@ ol.style.Polygon = function(options) {
 
 /**
  * @inheritDoc
- * @return {ol.style.LiteralPolygon} Literal shape symbolizer.
+ * @return {ol.style.PolygonLiteral} Literal shape symbolizer.
  */
 ol.style.Polygon.prototype.createLiteral = function(feature) {
   var attrs = feature.getAttributes();
@@ -114,7 +114,7 @@ ol.style.Polygon.prototype.createLiteral = function(feature) {
   var opacity = this.opacity_.evaluate(feature, attrs);
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
-  return new ol.style.LiteralPolygon({
+  return new ol.style.PolygonLiteral({
     fillStyle: fillStyle,
     strokeStyle: strokeStyle,
     strokeWidth: strokeWidth,
@@ -124,9 +124,9 @@ ol.style.Polygon.prototype.createLiteral = function(feature) {
 
 
 /**
- * @type {ol.style.LiteralPolygon}
+ * @type {ol.style.PolygonLiteral}
  */
-ol.style.PolygonDefaults = new ol.style.LiteralPolygon({
+ol.style.PolygonDefaults = new ol.style.PolygonLiteral({
   fillStyle: '#ffffff',
   strokeStyle: '#696969',
   strokeWidth: 1.5,

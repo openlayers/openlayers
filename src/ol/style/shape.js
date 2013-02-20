@@ -1,11 +1,11 @@
-goog.provide('ol.style.LiteralShape');
 goog.provide('ol.style.Shape');
+goog.provide('ol.style.ShapeLiteral');
 goog.provide('ol.style.ShapeType');
 
 goog.require('ol.Expression');
 goog.require('ol.ExpressionLiteral');
-goog.require('ol.style.LiteralPoint');
 goog.require('ol.style.Point');
+goog.require('ol.style.PointLiteral');
 
 
 /**
@@ -24,16 +24,16 @@ ol.style.ShapeType = {
  *            strokeWidth: (number),
  *            opacity: (number)}}
  */
-ol.style.LiteralShapeOptions;
+ol.style.ShapeLiteralOptions;
 
 
 
 /**
  * @constructor
- * @extends {ol.style.LiteralPoint}
- * @param {ol.style.LiteralShapeOptions} config Symbolizer properties.
+ * @extends {ol.style.PointLiteral}
+ * @param {ol.style.ShapeLiteralOptions} config Symbolizer properties.
  */
-ol.style.LiteralShape = function(config) {
+ol.style.ShapeLiteral = function(config) {
 
   /** @type {string} */
   this.type = config.type;
@@ -54,7 +54,7 @@ ol.style.LiteralShape = function(config) {
   this.opacity = config.opacity;
 
 };
-goog.inherits(ol.style.LiteralShape, ol.style.LiteralPoint);
+goog.inherits(ol.style.ShapeLiteral, ol.style.PointLiteral);
 
 
 /**
@@ -133,7 +133,7 @@ ol.style.Shape = function(options) {
 
 /**
  * @inheritDoc
- * @return {ol.style.LiteralShape} Literal shape symbolizer.
+ * @return {ol.style.ShapeLiteral} Literal shape symbolizer.
  */
 ol.style.Shape.prototype.createLiteral = function(feature) {
   var attrs = feature.getAttributes();
@@ -153,7 +153,7 @@ ol.style.Shape.prototype.createLiteral = function(feature) {
   var opacity = this.opacity_.evaluate(feature, attrs);
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
-  return new ol.style.LiteralShape({
+  return new ol.style.ShapeLiteral({
     type: this.type_,
     size: size,
     fillStyle: fillStyle,
@@ -165,9 +165,9 @@ ol.style.Shape.prototype.createLiteral = function(feature) {
 
 
 /**
- * @type {ol.style.LiteralShape}
+ * @type {ol.style.ShapeLiteral}
  */
-ol.style.ShapeDefaults = new ol.style.LiteralShape({
+ol.style.ShapeDefaults = new ol.style.ShapeLiteral({
   type: ol.style.ShapeType.CIRCLE,
   size: 5,
   fillStyle: '#ffffff',

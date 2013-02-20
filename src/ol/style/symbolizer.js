@@ -1,5 +1,5 @@
-goog.provide('ol.style.LiteralSymbolizer');
 goog.provide('ol.style.Symbolizer');
+goog.provide('ol.style.SymbolizerLiteral');
 
 goog.require('ol.Feature');
 
@@ -8,7 +8,7 @@ goog.require('ol.Feature');
 /**
  * @interface
  */
-ol.style.LiteralSymbolizer = function() {};
+ol.style.SymbolizerLiteral = function() {};
 
 
 
@@ -20,6 +20,6 @@ ol.style.Symbolizer = function() {};
 
 /**
  * @param {ol.Feature} feature Feature for evaluating expressions.
- * @return {ol.style.LiteralSymbolizer} Literal symbolizer.
+ * @return {ol.style.SymbolizerLiteral} Literal symbolizer.
  */
 ol.style.Symbolizer.prototype.createLiteral = function(feature) {};

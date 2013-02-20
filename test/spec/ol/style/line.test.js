@@ -36,7 +36,7 @@ describe('ol.style.Line', function() {
       });
 
       var literal = symbolizer.createLiteral(feature);
-      expect(literal).toBeA(ol.style.LiteralLine);
+      expect(literal).toBeA(ol.style.LineLiteral);
       expect(literal.opacity).toBe(42 / 100);
       expect(literal.strokeWidth).toBe(1.5);
     });
@@ -48,4 +48,4 @@ describe('ol.style.Line', function() {
 goog.require('ol.Expression');
 goog.require('ol.Feature');
 goog.require('ol.style.Line');
-goog.require('ol.style.LiteralLine');
+goog.require('ol.style.LineLiteral');

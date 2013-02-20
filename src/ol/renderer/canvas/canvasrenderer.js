@@ -8,12 +8,12 @@ goog.require('ol.Pixel');
 goog.require('ol.canvas');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
-goog.require('ol.style.LiteralLine');
-goog.require('ol.style.LiteralPoint');
-goog.require('ol.style.LiteralPolygon');
-goog.require('ol.style.LiteralShape');
-goog.require('ol.style.LiteralSymbolizer');
+goog.require('ol.style.LineLiteral');
+goog.require('ol.style.PointLiteral');
+goog.require('ol.style.PolygonLiteral');
+goog.require('ol.style.ShapeLiteral');
 goog.require('ol.style.ShapeType');
+goog.require('ol.style.SymbolizerLiteral');
 
 
 /**
@@ -72,25 +72,25 @@ ol.renderer.canvas.Renderer = function(canvas, transform, opt_offset) {
 /**
  * @param {ol.geom.GeometryType} type Geometry type.
  * @param {Array.<ol.Feature>} features Array of features.
- * @param {ol.style.LiteralSymbolizer} symbolizer Symbolizer.
+ * @param {ol.style.SymbolizerLiteral} symbolizer Symbolizer.
  */
 ol.renderer.canvas.Renderer.prototype.renderFeaturesByGeometryType =
     function(type, features, symbolizer) {
   switch (type) {
     case ol.geom.GeometryType.POINT:
-      goog.asserts.assert(symbolizer instanceof ol.style.LiteralPoint);
+      goog.asserts.assert(symbolizer instanceof ol.style.PointLiteral);
       this.renderPointFeatures_(
-          features, /** @type {ol.style.LiteralPoint} */ (symbolizer));
+          features, /** @type {ol.style.PointLiteral} */ (symbolizer));
       break;
     case ol.geom.GeometryType.LINESTRING:
-      goog.asserts.assert(symbolizer instanceof ol.style.LiteralLine);
+      goog.asserts.assert(symbolizer instanceof ol.style.LineLiteral);
       this.renderLineStringFeatures_(
-          features, /** @type {ol.style.LiteralLine} */ (symbolizer));
+          features, /** @type {ol.style.LineLiteral} */ (symbolizer));
       break;
     case ol.geom.GeometryType.POLYGON:
-      goog.asserts.assert(symbolizer instanceof ol.style.LiteralPolygon);
+      goog.asserts.assert(symbolizer instanceof ol.style.PolygonLiteral);
       this.renderPolygonFeatures_(
-          features, /** @type {ol.style.LiteralPolygon} */ (symbolizer));
+          features, /** @type {ol.style.PolygonLiteral} */ (symbolizer));
       break;
     default:
       throw new Error('Rendering not implemented for geometry type: ' + type);
@@ -100,7 +100,7 @@ ol.renderer.canvas.Renderer.prototype.renderFeaturesByGeometryType =
 
 /**
  * @param {Array.<ol.Feature>} features Array of line features.
- * @param {ol.style.LiteralLine} symbolizer Line symbolizer.
+ * @param {ol.style.LineLiteral} symbolizer Line symbolizer.
  * @private
  */
 ol.renderer.canvas.Renderer.prototype.renderLineStringFeatures_ =
@@ -135,7 +135,7 @@ ol.renderer.canvas.Renderer.prototype.renderLineStringFeatures_ =
 
 /**
  * @param {Array.<ol.Feature>} features Array of point features.
- * @param {ol.style.LiteralPoint} symbolizer Point symbolizer.
+ * @param {ol.style.PointLiteral} symbolizer Point symbolizer.
  * @private
  */
 ol.renderer.canvas.Renderer.prototype.renderPointFeatures_ =
@@ -144,7 +144,7 @@ ol.renderer.canvas.Renderer.prototype.renderPointFeatures_ =
   var context = this.context_,
       canvas, i, ii, coords, vec;
 
-  if (symbolizer instanceof ol.style.LiteralShape) {
+  if (symbolizer instanceof ol.style.ShapeLiteral) {
     canvas = ol.renderer.canvas.Renderer.renderShape(symbolizer);
   } else {
     throw new Error('Unsupported symbolizer: ' + symbolizer);
@@ -166,7 +166,7 @@ ol.renderer.canvas.Renderer.prototype.renderPointFeatures_ =
 
 /**
  * @param {Array.<ol.Feature>} features Array of polygon features.
- * @param {ol.style.LiteralPolygon} symbolizer Polygon symbolizer.
+ * @param {ol.style.PolygonLiteral} symbolizer Polygon symbolizer.
  * @private
  */
 ol.renderer.canvas.Renderer.prototype.renderPolygonFeatures_ =
@@ -237,7 +237,7 @@ ol.renderer.canvas.Renderer.prototype.renderPolygonFeatures_ =
 
 
 /**
- * @param {ol.style.LiteralShape} circle Shape symbolizer.
+ * @param {ol.style.ShapeLiteral} circle Shape symbolizer.
  * @return {!HTMLCanvasElement} Canvas element.
  * @private
  */
@@ -279,7 +279,7 @@ ol.renderer.canvas.Renderer.renderCircle_ = function(circle) {
 
 
 /**
- * @param {ol.style.LiteralShape} shape Shape symbolizer.
+ * @param {ol.style.ShapeLiteral} shape Shape symbolizer.
  * @return {!HTMLCanvasElement} Canvas element.
  */
 ol.renderer.canvas.Renderer.renderShape = function(shape) {

@@ -14,9 +14,9 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.Renderer');
-goog.require('ol.style.LiteralLine');
-goog.require('ol.style.LiteralPolygon');
-goog.require('ol.style.LiteralShape');
+goog.require('ol.style.LineLiteral');
+goog.require('ol.style.PolygonLiteral');
+goog.require('ol.style.ShapeLiteral');
 goog.require('ol.style.ShapeType');
 goog.require('ol.tilegrid.TileGrid');
 
@@ -118,7 +118,7 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
   // TODO: implement layer.setStyle(style) where style is a set of rules
   // and a rule has a filter and array of symbolizers
   var symbolizers = {};
-  symbolizers[ol.geom.GeometryType.POINT] = new ol.style.LiteralShape({
+  symbolizers[ol.geom.GeometryType.POINT] = new ol.style.ShapeLiteral({
     type: ol.style.ShapeType.CIRCLE,
     size: 10,
     fillStyle: '#ffcc99',
@@ -126,12 +126,12 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
     strokeWidth: 2,
     opacity: 0.75
   });
-  symbolizers[ol.geom.GeometryType.LINESTRING] = new ol.style.LiteralLine({
+  symbolizers[ol.geom.GeometryType.LINESTRING] = new ol.style.LineLiteral({
     strokeStyle: '#ff9933',
     strokeWidth: 2,
     opacity: 1
   });
-  symbolizers[ol.geom.GeometryType.POLYGON] = new ol.style.LiteralPolygon({
+  symbolizers[ol.geom.GeometryType.POLYGON] = new ol.style.PolygonLiteral({
     fillStyle: '#ffcc99',
     strokeStyle: '#ff9933',
     strokeWidth: 2,

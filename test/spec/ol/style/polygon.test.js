@@ -36,7 +36,7 @@ describe('ol.style.Polygon', function() {
       });
 
       var literal = symbolizer.createLiteral(feature);
-      expect(literal).toBeA(ol.style.LiteralPolygon);
+      expect(literal).toBeA(ol.style.PolygonLiteral);
       expect(literal.opacity).toBe(42 / 100);
       expect(literal.fillStyle).toBe('#ff0000');
     });
@@ -48,4 +48,4 @@ describe('ol.style.Polygon', function() {
 goog.require('ol.Expression');
 goog.require('ol.Feature');
 goog.require('ol.style.Polygon');
-goog.require('ol.style.LiteralPolygon');
+goog.require('ol.style.PolygonLiteral');

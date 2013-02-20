@@ -36,7 +36,7 @@ describe('ol.style.Shape', function() {
       });
 
       var literal = symbolizer.createLiteral(feature);
-      expect(literal).toBeA(ol.style.LiteralShape);
+      expect(literal).toBeA(ol.style.ShapeLiteral);
       expect(literal.size).toBe(42);
       expect(literal.opacity).toBe(0.4);
     });
@@ -48,4 +48,4 @@ describe('ol.style.Shape', function() {
 goog.require('ol.Expression');
 goog.require('ol.Feature');
 goog.require('ol.style.Shape');
-goog.require('ol.style.LiteralShape');
+goog.require('ol.style.ShapeLiteral');
