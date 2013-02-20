@@ -15,18 +15,18 @@ ol.parser.ogc.WMSCapabilities_v1_3_0 = function() {
       this.readChildNodes(node, obj);
     },
     'LayerLimit': function(node, obj) {
-      obj.layerLimit = parseInt(this.getChildValue(node), 10);
+      obj['layerLimit'] = parseInt(this.getChildValue(node), 10);
     },
     'MaxWidth': function(node, obj) {
-      obj.maxWidth = parseInt(this.getChildValue(node), 10);
+      obj['maxWidth'] = parseInt(this.getChildValue(node), 10);
     },
     'MaxHeight': function(node, obj) {
-      obj.maxHeight = parseInt(this.getChildValue(node), 10);
+      obj['maxHeight'] = parseInt(this.getChildValue(node), 10);
     },
     'BoundingBox': function(node, obj) {
       var bbox = bboxreader.apply(this, arguments);
-      bbox.srs = node.getAttribute('CRS');
-      obj.bbox[bbox.srs] = bbox;
+      bbox['srs'] = node.getAttribute('CRS');
+      obj['bbox'][bbox['srs']] = bbox;
     },
     'CRS': function(node, obj) {
       // CRS is the synonym of SRS
@@ -34,8 +34,8 @@ ol.parser.ogc.WMSCapabilities_v1_3_0 = function() {
     },
     'EX_GeographicBoundingBox': function(node, obj) {
       // replacement of LatLonBoundingBox
-      obj.llbbox = [];
-      this.readChildNodes(node, obj.llbbox);
+      obj['llbbox'] = [];
+      this.readChildNodes(node, obj['llbbox']);
     },
     'westBoundLongitude': function(node, obj) {
       obj[0] = this.getChildValue(node);
@@ -50,10 +50,10 @@ ol.parser.ogc.WMSCapabilities_v1_3_0 = function() {
       obj[3] = this.getChildValue(node);
     },
     'MinScaleDenominator': function(node, obj) {
-      obj.maxScale = parseFloat(this.getChildValue(node)).toPrecision(16);
+      obj['maxScale'] = parseFloat(this.getChildValue(node)).toPrecision(16);
     },
     'MaxScaleDenominator': function(node, obj) {
-      obj.minScale = parseFloat(this.getChildValue(node)).toPrecision(16);
+      obj['minScale'] = parseFloat(this.getChildValue(node)).toPrecision(16);
     },
     'Dimension': function(node, obj) {
       // dimension has extra attributes: default, multipleValues,
@@ -61,27 +61,27 @@ ol.parser.ogc.WMSCapabilities_v1_3_0 = function() {
       // also contains the values.
       var name = node.getAttribute('name').toLowerCase();
       var dim = {
-        name: name,
-        units: node.getAttribute('units'),
-        unitsymbol: node.getAttribute('unitSymbol'),
-        nearestVal: node.getAttribute('nearestValue') === '1',
-        multipleVal: node.getAttribute('multipleValues') === '1',
+        'name': name,
+        'units': node.getAttribute('units'),
+        'unitsymbol': node.getAttribute('unitSymbol'),
+        'nearestVal': node.getAttribute('nearestValue') === '1',
+        'multipleVal': node.getAttribute('multipleValues') === '1',
         'default': node.getAttribute('default') || '',
-        current: node.getAttribute('current') === '1',
-        values: this.getChildValue(node).split(',')
+        'current': node.getAttribute('current') === '1',
+        'values': this.getChildValue(node).split(',')
       };
       // Theoretically there can be more dimensions with the same
       // name, but with a different unit. Until we meet such a case,
       // let's just keep the same structure as the WMS 1.1
       // GetCapabilities parser uses. We will store the last
       // one encountered.
-      obj.dimensions[dim.name] = dim;
+      obj['dimensions'][dim['name']] = dim;
     },
     'Keyword': function(node, obj) {
-      var keyword = {value: this.getChildValue(node),
-        vocabulary: node.getAttribute('vocabulary')};
-      if (obj.keywords) {
-        obj.keywords.push(keyword);
+      var keyword = {'value': this.getChildValue(node),
+        'vocabulary': node.getAttribute('vocabulary')};
+      if (obj['keywords']) {
+        obj['keywords'].push(keyword);
       }
     }
   });
@@ -91,9 +91,9 @@ ol.parser.ogc.WMSCapabilities_v1_3_0 = function() {
       readers.UserDefinedSymbolization.apply(this, arguments);
       // add the two extra attributes
       var value = node.getAttribute('InlineFeature');
-      obj['userSymbols'].inlineFeature = parseInt(value, 10) == 1;
+      obj['userSymbols']['inlineFeature'] = parseInt(value, 10) == 1;
       value = node.getAttribute('RemoteWCS');
-      obj['userSymbols'].remoteWCS = parseInt(value, 10) == 1;
+      obj['userSymbols']['remoteWCS'] = parseInt(value, 10) == 1;
     },
     'DescribeLayer': function(node, obj) {
       var readers = this.readers['http://www.opengis.net/wms'];
