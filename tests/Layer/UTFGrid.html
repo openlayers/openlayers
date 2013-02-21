@@ -68,6 +68,8 @@
         got = layer.createBackBuffer();
       } catch (e) {
         got = e;
+      } finally {
+        tearDown();
       }
       t.eq(got, undefined, "createBackBuffer returns undefined");
     }
