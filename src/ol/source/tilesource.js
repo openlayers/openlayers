@@ -133,7 +133,7 @@ ol.source.TileSource.prototype.useLowResolutionTiles = function(z, extent) {
     tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        this.useTile(new ol.TileCoord(z, x, y));
+        this.useTile(z + '/' + x + '/' + y);
       }
     }
   }
@@ -142,6 +142,6 @@ ol.source.TileSource.prototype.useLowResolutionTiles = function(z, extent) {
 
 /**
  * Marks a tile coord as being used, without triggering a load.
- * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {string} tileCoordKey Tile coordinate key.
  */
 ol.source.TileSource.prototype.useTile = goog.nullFunction;
