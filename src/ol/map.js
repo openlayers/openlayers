@@ -1014,10 +1014,7 @@ ol.Map.createInteractions_ = function(mapOptions) {
   var mouseWheelZoom = goog.isDef(mapOptions.mouseWheelZoom) ?
       mapOptions.mouseWheelZoom : true;
   if (mouseWheelZoom) {
-    var mouseWheelZoomDelta =
-        goog.isDef(mapOptions.mouseWheelZoomDelta) ?
-            mapOptions.mouseWheelZoomDelta : 1;
-    interactions.push(new ol.interaction.MouseWheelZoom(mouseWheelZoomDelta));
+    interactions.push(new ol.interaction.MouseWheelZoom());
   }
 
   var shiftDragZoom = goog.isDef(mapOptions.shiftDragZoom) ?
