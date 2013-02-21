@@ -199,6 +199,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
+  this.useLowResolutionTiles(tileSource, z, frameState.extent);
   this.scheduleExpireCache(frameState, tileSource);
 
   var transform = this.transform_;
