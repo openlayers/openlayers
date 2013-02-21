@@ -69,7 +69,7 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
     tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
   }
 
-  function tileCoordTransform(tileCoord) {
+  var tileCoordTransform = function(tileCoord) {
     if (tileGrid.getResolutions().length <= tileCoord.z) {
       return null;
     }
@@ -90,7 +90,7 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
       return null;
     }
     return new ol.TileCoord(tileCoord.z, x, tileCoord.y);
-  }
+  };
 
   goog.base(this, {
     attributions: tiledWMSOptions.attributions,
