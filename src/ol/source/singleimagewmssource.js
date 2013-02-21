@@ -38,11 +38,13 @@ ol.source.SingleImageWMS = function(options) {
   baseParams[version >= '1.3' ? 'CRS' : 'SRS'] = projection.getCode();
   goog.object.extend(baseParams, options.params);
 
+  var axisOrientation = projection.getAxisOrientation();
   var imageUrlFunction;
   if (options.url) {
     var url = goog.uri.utils.appendParamsFromMap(
         options.url, baseParams);
-    imageUrlFunction = ol.ImageUrlFunction.createBboxParam(url);
+    imageUrlFunction =
+        ol.ImageUrlFunction.createBboxParam(url, axisOrientation);
   } else {
     imageUrlFunction =
         ol.ImageUrlFunction.nullImageUrlFunction;
