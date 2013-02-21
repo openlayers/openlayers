@@ -1,2 +1,3 @@
 @exportSymbol ol.Extent
-
+@exportProperty ol.Extent.prototype.getHeight
+@exportProperty ol.Extent.prototype.getWidth

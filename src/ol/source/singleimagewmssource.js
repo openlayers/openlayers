@@ -1,5 +1,6 @@
 goog.provide('ol.source.SingleImageWMS');
 
+goog.require('goog.uri.utils');
 goog.require('ol.Extent');
 goog.require('ol.Image');
 goog.require('ol.ImageUrlFunction');
