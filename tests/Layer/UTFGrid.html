@@ -58,6 +58,19 @@
         layer.destroy();
 
     }
+
+    function test_createBackBuffer(t) {
+      t.plan(1);
+      setUp();
+
+      var got;
+      try {
+        got = layer.createBackBuffer();
+      } catch (e) {
+        got = e;
+      }
+      t.eq(got, undefined, "createBackBuffer returns undefined");
+    }
     
     function test_clone(t) {
         t.plan(3);
