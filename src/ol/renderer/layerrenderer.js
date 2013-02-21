@@ -14,7 +14,6 @@ goog.require('ol.TileState');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerProperty');
 goog.require('ol.layer.LayerState');
-goog.require('ol.source.Source');
 goog.require('ol.source.TileSource');
 
 
@@ -222,24 +221,24 @@ ol.renderer.Layer.prototype.updateAttributions =
 /**
  * @protected
  * @param {Object.<string, Object.<string, ol.TileRange>>} usedTiles Used tiles.
- * @param {ol.source.Source} source Source.
+ * @param {ol.source.TileSource} tileSource Tile source.
  * @param {number} z Z.
  * @param {ol.TileRange} tileRange Tile range.
  */
 ol.renderer.Layer.prototype.updateUsedTiles =
-    function(usedTiles, source, z, tileRange) {
+    function(usedTiles, tileSource, z, tileRange) {
   // FIXME should we use tilesToDrawByZ instead?
-  var sourceKey = goog.getUid(source).toString();
+  var tileSourceKey = goog.getUid(tileSource).toString();
   var zKey = z.toString();
-  if (sourceKey in usedTiles) {
-    if (zKey in usedTiles[sourceKey]) {
-      usedTiles[sourceKey][zKey].extend(tileRange);
+  if (tileSourceKey in usedTiles) {
+    if (zKey in usedTiles[tileSourceKey]) {
+      usedTiles[tileSourceKey][zKey].extend(tileRange);
     } else {
-      usedTiles[sourceKey][zKey] = tileRange;
+      usedTiles[tileSourceKey][zKey] = tileRange;
     }
   } else {
-    usedTiles[sourceKey] = {};
-    usedTiles[sourceKey][zKey] = tileRange;
+    usedTiles[tileSourceKey] = {};
+    usedTiles[tileSourceKey][zKey] = tileRange;
   }
 };
 
@@ -247,15 +246,15 @@ ol.renderer.Layer.prototype.updateUsedTiles =
 /**
  * @protected
  * @param {Object.<string, Object.<string, boolean>>} wantedTiles Wanted tiles.
- * @param {ol.source.Source} source Source.
+ * @param {ol.source.TileSource} tileSource Tile source.
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  */
 ol.renderer.Layer.prototype.updateWantedTiles =
-    function(wantedTiles, source, tileCoord) {
-  var sourceKey = goog.getUid(source).toString();
+    function(wantedTiles, tileSource, tileCoord) {
+  var tileSourceKey = goog.getUid(tileSource).toString();
   var coordKey = tileCoord.toString();
-  if (!(sourceKey in wantedTiles)) {
-    wantedTiles[sourceKey] = {};
+  if (!(tileSourceKey in wantedTiles)) {
+    wantedTiles[tileSourceKey] = {};
   }
-  wantedTiles[sourceKey][coordKey] = true;
+  wantedTiles[tileSourceKey][coordKey] = true;
 };
