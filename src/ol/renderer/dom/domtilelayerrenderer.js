@@ -217,7 +217,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
-  this.useLowResolutionTiles(tileSource, z, frameState.extent);
+  tileSource.useLowResolutionTiles(z, frameState.extent);
   this.scheduleExpireCache(frameState, tileSource);
 
 };

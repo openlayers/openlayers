@@ -3,7 +3,6 @@ goog.provide('ol.renderer.Layer');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.Attribution');
-goog.require('ol.Extent');
 goog.require('ol.FrameState');
 goog.require('ol.Image');
 goog.require('ol.ImageState');
@@ -258,26 +257,4 @@ ol.renderer.Layer.prototype.updateWantedTiles =
     wantedTiles[tileSourceKey] = {};
   }
   wantedTiles[tileSourceKey][coordKey] = true;
-};
-
-
-/**
- * @protected
- * @param {ol.source.TileSource} tileSource Tile source.
- * @param {number} z Z.
- * @param {ol.Extent} extent Extent.
- */
-ol.renderer.Layer.prototype.useLowResolutionTiles =
-    function(tileSource, z, extent) {
-  var tileGrid = tileSource.getTileGrid();
-  var tileRange, x, y, zKey;
-  // FIXME this should loop up to tileGrid's minZ when implemented
-  for (; z >= 0; --z) {
-    tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
-    for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
-      for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        tileSource.useTile(new ol.TileCoord(z, x, y));
-      }
-    }
-  }
 };
