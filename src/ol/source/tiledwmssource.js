@@ -52,19 +52,22 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
   baseParams[version >= '1.3' ? 'CRS' : 'SRS'] = projection.getCode();
   goog.object.extend(baseParams, tiledWMSOptions.params);
 
+  var axisOrientation = projection.getAxisOrientation();
   var tileUrlFunction;
   if (tiledWMSOptions.urls) {
     var tileUrlFunctions = goog.array.map(
         tiledWMSOptions.urls, function(url) {
           url = goog.uri.utils.appendParamsFromMap(url, baseParams);
-          return ol.TileUrlFunction.createBboxParam(url, tileGrid);
+          return ol.TileUrlFunction.createBboxParam(
+              url, tileGrid, axisOrientation);
         });
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         tileUrlFunctions);
   } else if (tiledWMSOptions.url) {
     var url = goog.uri.utils.appendParamsFromMap(
         tiledWMSOptions.url, baseParams);
-    tileUrlFunction = ol.TileUrlFunction.createBboxParam(url, tileGrid);
+    tileUrlFunction =
+        ol.TileUrlFunction.createBboxParam(url, tileGrid, axisOrientation);
   } else {
     tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
   }
