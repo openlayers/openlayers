@@ -5,9 +5,7 @@
   color: #eeeeee;
   bottom: 0;
   right: 0;
-  background: #130085; /* @alternate */
   background: rgba(0,60,136,0.3);
-  filter: alpha(opacity=30);
   font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
   padding: 2px 4px;
 }
@@ -60,14 +58,10 @@
   height: 22px;
   width: 22px;
   line-height: 19px;
-  background: #130085; /* @alternate */
   background: rgba(0,60,136,0.5);
-  filter: alpha(opacity=80);
 }
 .ol-zoom a:hover {
-  background: #130085; /* @alternate */
   background: rgba(0,60,136,0.7);
-  filter: alpha(opacity=100);
 }
 @media only screen and (max-width:600px) {
   .ol-zoom a:hover {
