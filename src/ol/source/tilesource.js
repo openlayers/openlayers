@@ -119,3 +119,10 @@ ol.source.TileSource.prototype.getTile = goog.abstractMethod;
 ol.source.TileSource.prototype.getTileGrid = function() {
   return this.tileGrid;
 };
+
+
+/**
+ * Marks a tile coord as being used, without triggering a load.
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ */
+ol.source.TileSource.prototype.useTile = goog.nullFunction;
