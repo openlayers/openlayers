@@ -6,8 +6,8 @@
  * This loader is used for the hosted examples. It is used in place of the
  * development loader (examples/loader.js).
  *
- * ol.css and ol.js are built with Plovr/Closure, based build/ol.json.
- * (`make build` should build them). They are located in the ../build/
+ * ol.css and ol.js are built with Plovr/Closure, based on build/ol.json.
+ * (`build.py build` builds them). They are located in the ../build/
  * directory, relatively to this script.
  *
  * The script should be named loader.js. So it needs to be renamed to
