@@ -102,16 +102,16 @@ describe('ol.tilegrid.TileGrid', function() {
       expect(grid).toBeA(ol.tilegrid.TileGrid);
 
       var resolutions = grid.getResolutions();
-      expect(resolutions.length).toBe(19);
+      expect(resolutions.length).toBe(23);
     });
 
     it('accepts a number of zoom levels', function() {
       var projection = ol.Projection.getFromCode('EPSG:3857');
-      var grid = ol.tilegrid.createForProjection(projection, 22);
+      var grid = ol.tilegrid.createForProjection(projection, 18);
       expect(grid).toBeA(ol.tilegrid.TileGrid);
 
       var resolutions = grid.getResolutions();
-      expect(resolutions.length).toBe(23);
+      expect(resolutions.length).toBe(19);
     });
 
     it('accepts a big number of zoom levels', function() {
