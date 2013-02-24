@@ -7,6 +7,7 @@ goog.require('ol.FrameState');
 goog.require('ol.Image');
 goog.require('ol.ImageState');
 goog.require('ol.Object');
+goog.require('ol.Projection');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
@@ -15,6 +16,7 @@ goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerProperty');
 goog.require('ol.layer.LayerState');
 goog.require('ol.source.TileSource');
+goog.require('ol.tilegrid.TileGrid');
 
 
 
@@ -257,4 +259,25 @@ ol.renderer.Layer.prototype.updateWantedTiles =
     wantedTiles[tileSourceKey] = {};
   }
   wantedTiles[tileSourceKey][coordKey] = true;
+};
+
+
+/**
+ * @protected
+ * @param {ol.source.TileSource} tileSource Tile source.
+ * @param {ol.Projection} projection Fallback projection if source does not have
+ *     one already.
+ * @return {ol.tilegrid.TileGrid} The source's tile grid or a new tile grid.
+ */
+ol.renderer.Layer.prototype.getTileGrid = function(tileSource, projection) {
+  var sourceProjection = tileSource.getProjection();
+  if (goog.isNull(sourceProjection)) {
+    tileSource.setProjection(projection);
+  }
+  var tileGrid = tileSource.getTileGrid();
+  if (goog.isNull(tileGrid)) {
+    tileGrid = ol.tilegrid.createForProjection(tileSource.getProjection());
+    tileSource.setTileGrid(tileGrid);
+  }
+  return tileGrid;
 };
