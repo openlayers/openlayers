@@ -254,7 +254,6 @@ ol.Projection.createProjection = function(projection, defaultCode) {
  * @param {ol.TransformFunction} transformFn Transform.
  */
 ol.Projection.addTransform = function(source, destination, transformFn) {
-  var projections = ol.Projection.projections_;
   var sourceCode = source.getCode();
   var destinationCode = destination.getCode();
   var transforms = ol.Projection.transforms_;
