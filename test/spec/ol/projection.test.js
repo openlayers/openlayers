@@ -2,6 +2,27 @@ goog.provide('ol.test.Projection');
 
 describe('ol.Projection', function() {
 
+  beforeEach(function() {
+    spyOn(ol.Projection, 'addTransform').andCallThrough();
+  });
+
+  afterEach(function() {
+    var argsForCall = ol.Projection.addTransform.argsForCall;
+    for (var i = 0, ii = argsForCall.length; i < ii; ++i) {
+      try {
+        ol.Projection.removeTransform.apply(
+            ol.Projection, argsForCall[i].splice(0, 2));
+      } catch (error) {
+        if (error instanceof goog.asserts.AssertionError) {
+          // The removeTransform function may have been called explicitly by the
+          // tests, so we pass.
+        } else {
+          throw error;
+        }
+      }
+    }
+  });
+
   describe('projection equivalence', function() {
 
     function _testAllEquivalent(codes) {
@@ -125,12 +146,45 @@ describe('ol.Projection', function() {
 
   });
 
+  describe('ol.Projection.getTransform()', function() {
+
+    var sm = ol.Projection.getFromCode('GOOGLE');
+    var gg = ol.Projection.getFromCode('EPSG:4326');
+
+    it('returns a transform function', function() {
+      var transform = ol.Projection.getTransform(sm, gg);
+      expect(typeof transform).toBe('function');
+
+      var coordinate = transform(new ol.Coordinate(-12000000, 5000000));
+
+      expect(coordinate.x).toRoughlyEqual(-107.79783409434258, 1e-9);
+      expect(coordinate.y).toRoughlyEqual(40.91627447067577, 1e-9);
+    });
+
+  });
+
+
   describe('ol.Projection.getTransformFromCodes()', function() {
+
+    it('returns a function', function() {
+      var transform = ol.Projection.getTransformFromCodes(
+          'GOOGLE', 'EPSG:4326');
+      expect(typeof transform).toBe('function');
+    });
 
     it('returns a transform function', function() {
       var transform = ol.Projection.getTransformFromCodes(
           'GOOGLE', 'EPSG:4326');
       expect(typeof transform).toBe('function');
+
+      var coordinate = transform(
+          new ol.Coordinate(-626172.13571216376, 6887893.4928337997));
+
+      expect(coordinate.x).toRoughlyEqual(-5.625, 1e-9);
+      expect(coordinate.y).toRoughlyEqual(52.4827802220782, 1e-9);
+
+    });
+
   });
 
   describe('ol.Projection.removeTransform()', function() {
@@ -158,4 +212,6 @@ describe('ol.Projection', function() {
 
 goog.require('goog.array');
 goog.require('ol.Coordinate');
+goog.require('ol.Extent');
 goog.require('ol.Projection');
+goog.require('ol.ProjectionUnits');
