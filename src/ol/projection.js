@@ -354,7 +354,7 @@ ol.Projection.getTransform = function(source, destination) {
       proj4jsDestination = destination;
     } else {
       proj4jsDestination =
-          ol.Projection.getProj4jsProjectionFromCode_(source.getCode());
+          ol.Projection.getProj4jsProjectionFromCode_(destination.getCode());
     }
     var destinationProj4jsProj = proj4jsDestination.getProj4jsProj();
     transform =
