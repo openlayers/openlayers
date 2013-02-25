@@ -128,7 +128,6 @@ describe('ol.Projection', function() {
   describe('ol.Projection.getTransformFromCodes()', function() {
 
     it('returns a transform function', function() {
-      debugger;
       var transform = ol.Projection.getTransformFromCodes(
           'GOOGLE', 'EPSG:4326');
       expect(typeof transform).toBe('function');
