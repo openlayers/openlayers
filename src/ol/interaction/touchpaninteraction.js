@@ -87,6 +87,7 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
     }
     return false;
   } else {
+    this.lastCentroid = null;
     return true;
   }
 };
