@@ -131,6 +131,25 @@ describe('ol.Projection', function() {
       var transform = ol.Projection.getTransformFromCodes(
           'GOOGLE', 'EPSG:4326');
       expect(typeof transform).toBe('function');
+  });
+
+  describe('ol.Projection.removeTransform()', function() {
+
+    var extent = new ol.Extent(-180, -90, 180, 90);
+    var units = ol.ProjectionUnits.DEGREES;
+
+    it('removes functions cached by addTransform', function() {
+      var foo = new ol.Projection('foo', units, extent);
+      var bar = new ol.Projection('bar', units, extent);
+      var transform = function() {};
+      ol.Projection.addTransform(foo, bar, transform);
+      expect(ol.Projection.transforms_).not.toBeUndefined();
+      expect(ol.Projection.transforms_.foo).not.toBeUndefined();
+      expect(ol.Projection.transforms_.foo.bar).toBe(transform);
+
+      var removed = ol.Projection.removeTransform(foo, bar);
+      expect(removed).toBe(transform);
+      expect(ol.Projection.transforms_.foo).toBeUndefined();
     });
 
   });
