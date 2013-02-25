@@ -15,8 +15,8 @@ goog.require('ol.TileState');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerProperty');
 goog.require('ol.layer.LayerState');
+goog.require('ol.source.Source');
 goog.require('ol.source.TileSource');
-goog.require('ol.tilegrid.TileGrid');
 
 
 
@@ -264,20 +264,19 @@ ol.renderer.Layer.prototype.updateWantedTiles =
 
 /**
  * @protected
- * @param {ol.source.TileSource} tileSource Tile source.
- * @param {ol.Projection} projection Fallback projection if source does not have
- *     one already.
- * @return {ol.tilegrid.TileGrid} The source's tile grid or a new tile grid.
+ * @param {ol.source.Source} source Source.
+ * @param {ol.Projection} projection Preferred projection.
  */
-ol.renderer.Layer.prototype.getTileGrid = function(tileSource, projection) {
-  var sourceProjection = tileSource.getProjection();
-  if (goog.isNull(sourceProjection)) {
-    tileSource.setProjection(projection);
+ol.renderer.Layer.prototype.negotiateSourceProjection =
+    function(source, projection) {
+  if (goog.isNull(source.getProjection())) {
+    source.setProjection(projection);
   }
-  var tileGrid = tileSource.getTileGrid();
-  if (goog.isNull(tileGrid)) {
-    tileGrid = ol.tilegrid.createForProjection(tileSource.getProjection());
-    tileSource.setTileGrid(tileGrid);
+  if (source instanceof ol.source.TileSource) {
+    var tileGrid = source.getTileGrid();
+    if (goog.isNull(tileGrid)) {
+      tileGrid = ol.tilegrid.createForProjection(source.getProjection());
+      source.setTileGrid(tileGrid);
+    }
   }
-  return tileGrid;
 };

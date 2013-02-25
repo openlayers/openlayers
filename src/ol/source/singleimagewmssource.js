@@ -4,7 +4,6 @@ goog.require('goog.uri.utils');
 goog.require('ol.Extent');
 goog.require('ol.Image');
 goog.require('ol.ImageUrlFunction');
-goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.source.ImageSource');
 
@@ -17,44 +16,18 @@ goog.require('ol.source.ImageSource');
  */
 ol.source.SingleImageWMS = function(options) {
 
-  var projection = ol.Projection.createProjection(
-      options.projection, 'EPSG:3857');
-  var projectionExtent = projection.getExtent();
-
-  var extent = goog.isDef(options.extent) ?
-      options.extent : projectionExtent;
-
-  var version = goog.isDef(options.version) ?
-      options.version : '1.3';
-
-  var baseParams = {
-    'SERVICE': 'WMS',
-    'VERSION': version,
-    'REQUEST': 'GetMap',
-    'STYLES': '',
-    'FORMAT': 'image/png',
-    'TRANSPARENT': true
-  };
-  baseParams[version >= '1.3' ? 'CRS' : 'SRS'] = projection.getCode();
-  goog.object.extend(baseParams, options.params);
-
-  var imageUrlFunction;
-  if (options.url) {
-    var url = goog.uri.utils.appendParamsFromMap(
-        options.url, baseParams);
-    imageUrlFunction = ol.ImageUrlFunction.createBboxParam(url);
-  } else {
-    imageUrlFunction =
-        ol.ImageUrlFunction.nullImageUrlFunction;
-  }
+  /**
+   * @private
+   * @type {ol.source.SingleImageWMSOptions}
+   */
+  this.options_ = options;
 
   goog.base(this, {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
-    extent: extent,
-    projection: projection,
-    resolutions: options.resolutions,
-    imageUrlFunction: imageUrlFunction
+    extent: options.extent,
+    projection: options.projection,
+    resolutions: options.resolutions
   });
 
   /**
@@ -79,6 +52,28 @@ goog.inherits(ol.source.SingleImageWMS, ol.source.ImageSource);
  */
 ol.source.SingleImageWMS.prototype.getImage =
     function(extent, resolution) {
+  var options = this.options_;
+  if (goog.isDef(options.url) &&
+      this.imageUrlFunction === ol.ImageUrlFunction.nullImageUrlFunction) {
+    var version = goog.isDef(options.version) ?
+        options.version : '1.3.0';
+
+    var baseParams = {
+      'SERVICE': 'WMS',
+      'VERSION': version,
+      'REQUEST': 'GetMap',
+      'STYLES': '',
+      'FORMAT': 'image/png',
+      'TRANSPARENT': true
+    };
+    baseParams[version >= '1.3' ? 'CRS' : 'SRS'] =
+        this.getProjection().getCode();
+    goog.object.extend(baseParams, options.params);
+
+    var url = goog.uri.utils.appendParamsFromMap(options.url, baseParams);
+    this.imageUrlFunction = ol.ImageUrlFunction.createBboxParam(url);
+  }
+
   resolution = this.findNearestResolution(resolution);
 
   var image = this.image_;
