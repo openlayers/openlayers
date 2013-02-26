@@ -9,14 +9,16 @@ goog.require('goog.uri.utils');
 goog.require('ol.Extent');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.source.IWMS');
 goog.require('ol.source.ImageTileSource');
-goog.require('ol.tilegrid.TileGrid');
+goog.require('ol.source.wms');
 
 
 
 /**
  * @constructor
  * @extends {ol.source.ImageTileSource}
+ * @implements {ol.source.IWMS}
  * @param {ol.source.TiledWMSOptions} options options.
  */
 ol.source.TiledWMS = function(options) {
@@ -40,40 +42,48 @@ goog.inherits(ol.source.TiledWMS, ol.source.ImageTileSource);
 
 
 /**
- * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @inheritDoc
  */
-ol.source.ImageTileSource.prototype.setTileGrid = function(tileGrid) {
+ol.source.TiledWMS.prototype.setProjection = function(projection) {
+  goog.base(this, 'setProjection', projection);
+  if (goog.isNull(this.tileGrid)) {
+    this.setTileGrid(ol.tilegrid.createForProjection(projection));
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.TiledWMS.prototype.setTileGrid = function(tileGrid) {
   goog.base(this, 'setTileGrid', tileGrid);
+  this.updateUrlFunction();
+};
 
-  var options = this.options_;
-  var version = goog.isDef(options.version) ? options.version : '1.3.0';
 
-  var baseParams = {
-    'SERVICE': 'WMS',
-    'VERSION': version,
-    'REQUEST': 'GetMap',
-    'STYLES': '',
-    'FORMAT': 'image/png',
-    'TRANSPARENT': true
-  };
-  var projection = this.getProjection(),
-      projectionExtent = projection.getExtent(),
-      tileSize = tileGrid.getTileSize();
-  baseParams['WIDTH'] = tileSize.width;
-  baseParams['HEIGHT'] = tileSize.height;
-  baseParams[version >= '1.3' ? 'CRS' : 'SRS'] = projection.getCode();
-  goog.object.extend(baseParams, options.params);
+/**
+ * @inheritDoc
+ */
+ol.source.TiledWMS.prototype.updateUrlFunction = function(opt_params) {
+  var params = goog.isDef(opt_params) ? opt_params : {};
+  goog.object.extend(params, ol.source.wms.getBaseParams(this));
+  var tileSize = this.tileGrid.getTileSize();
+  params['WIDTH'] = tileSize.width;
+  params['HEIGHT'] = tileSize.height;
 
   var tileUrlFunction;
+  var options = this.options_,
+      tileGrid = this.tileGrid,
+      projectionExtent = this.getProjection().getExtent();
   if (options.urls) {
     var tileUrlFunctions = goog.array.map(options.urls, function(url) {
-      url = goog.uri.utils.appendParamsFromMap(url, baseParams);
+      url = goog.uri.utils.appendParamsFromMap(url, params);
       return ol.TileUrlFunction.createBboxParam(url, tileGrid);
     });
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         tileUrlFunctions);
   } else if (options.url) {
-    var url = goog.uri.utils.appendParamsFromMap(options.url, baseParams);
+    var url = goog.uri.utils.appendParamsFromMap(options.url, params);
     tileUrlFunction = ol.TileUrlFunction.createBboxParam(url, tileGrid);
   } else {
     tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;

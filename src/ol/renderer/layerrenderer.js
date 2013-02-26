@@ -15,7 +15,6 @@ goog.require('ol.TileState');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerProperty');
 goog.require('ol.layer.LayerState');
-goog.require('ol.source.Source');
 goog.require('ol.source.TileSource');
 
 
@@ -264,19 +263,13 @@ ol.renderer.Layer.prototype.updateWantedTiles =
 
 /**
  * @protected
- * @param {ol.source.Source} source Source.
+ * @param {ol.layer.Layer} layer Layer.
  * @param {ol.Projection} projection Preferred projection.
  */
-ol.renderer.Layer.prototype.negotiateSourceProjection =
-    function(source, projection) {
+ol.renderer.Layer.prototype.negotiateProjection =
+    function(layer, projection) {
+  var source = layer.getSource();
   if (goog.isNull(source.getProjection())) {
     source.setProjection(projection);
-  }
-  if (source instanceof ol.source.TileSource) {
-    var tileGrid = source.getTileGrid();
-    if (goog.isNull(tileGrid)) {
-      tileGrid = ol.tilegrid.createForProjection(source.getProjection());
-      source.setTileGrid(tileGrid);
-    }
   }
 };

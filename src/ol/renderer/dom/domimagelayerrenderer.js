@@ -62,10 +62,10 @@ ol.renderer.dom.ImageLayer.prototype.renderFrame =
 
   var image = this.image_;
   var imageLayer = this.getImageLayer();
+
+  this.negotiateProjection(imageLayer, view2DState.projection);
+
   var imageSource = imageLayer.getImageSource();
-
-  this.negotiateSourceProjection(imageSource, view2DState.projection);
-
   var hints = frameState.viewHints;
 
   if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.PANNING]) {
