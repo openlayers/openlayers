@@ -40,11 +40,11 @@ for (var i = 0; i < 10; ++i) {
 }
 */
 
-var extent = new ol.Extent(420000, 30000, 900000, 350000);
 var layers = new ol.Collection([
   new ol.layer.TileLayer({
     source: new ol.source.TiledWMS({
       url: 'http://wms.geo.admin.ch/',
+      extent: new ol.Extent(420000, 30000, 900000, 350000),
       attributions: [new ol.Attribution(
           '&copy; ' +
           '<a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">' +
@@ -52,8 +52,7 @@ var layers = new ol.Collection([
       params: {
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
         'FORMAT': 'image/jpeg'
-      },
-      extent: extent
+      }
     })
   }),
   new ol.layer.ImageLayer({
@@ -64,8 +63,7 @@ var layers = new ol.Collection([
           '&copy; ' +
           '<a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">' +
           'National parks / geo.admin.ch</a>')],
-      params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
-      extent: extent
+      params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'}
     })
   })
 ]);
