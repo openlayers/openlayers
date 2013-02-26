@@ -78,7 +78,6 @@ ol.source.ImageTileSource.prototype.setTileGrid = function(tileGrid) {
   } else {
     tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
   }
-  this.tileUrlFunction = tileUrlFunction;
   var extent = goog.isDef(options.extent) ? options.extent : projectionExtent;
 
   var tileCoordTransform = function(tileCoord) {
@@ -104,4 +103,6 @@ ol.source.ImageTileSource.prototype.setTileGrid = function(tileGrid) {
     return new ol.TileCoord(tileCoord.z, x, tileCoord.y);
   };
 
+  this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
+      tileCoordTransform, tileUrlFunction);
 };
