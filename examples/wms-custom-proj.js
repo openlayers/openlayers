@@ -24,10 +24,13 @@ if (goog.DEBUG) {
 var epsg21781 = new ol.Projection('EPSG:21781', ol.ProjectionUnits.METERS,
     // Validity extent from http://spatialreference.org
     new ol.Extent(485869.5728, 76443.1884, 837076.5648, 299941.7864));
-ol.Projection.addProjection(epsg21781);
+//ol.Projection.addProjection(epsg21781);
 
-// We give the single image source a set of resolutions. This prevents the
-// source from requesting images of arbitrary resolutions.
+// We could give the single image source a set of resolutions. This prevents the
+// source from requesting images of arbitrary resolutions. To try this,
+// uncomment the block below, and the resolutions line in the SingleImageWMS
+// source below.
+/*
 var projectionExtent = epsg21781.getExtent();
 var maxResolution = Math.max(projectionExtent.getWidth(),
     projectionExtent.getHeight()) / 256;
@@ -35,6 +38,7 @@ var resolutions = new Array(10);
 for (var i = 0; i < 10; ++i) {
   resolutions[i] = maxResolution / Math.pow(2.0, i);
 }
+*/
 
 var extent = new ol.Extent(420000, 30000, 900000, 350000);
 var layers = new ol.Collection([
@@ -49,20 +53,19 @@ var layers = new ol.Collection([
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
         'FORMAT': 'image/jpeg'
       },
-      projection: epsg21781,
       extent: extent
     })
   }),
   new ol.layer.ImageLayer({
     source: new ol.source.SingleImageWMS({
       url: 'http://wms.geo.admin.ch/',
+      //resolutions: resolutions,
       attributions: [new ol.Attribution(
           '&copy; ' +
           '<a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">' +
           'National parks / geo.admin.ch</a>')],
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
-      projection: epsg21781,
-      resolutions: resolutions
+      extent: extent
     })
   })
 ]);
