@@ -965,7 +965,8 @@ ol.Map.createInteractions_ = function(mapOptions) {
   var touchPan = goog.isDef(mapOptions.touchPan) ?
       mapOptions.touchPan : true;
   if (touchPan) {
-    interactions.push(new ol.interaction.TouchPan());
+    interactions.push(new ol.interaction.TouchPan(
+        new ol.Kinetic(-0.005, 0.05, 100)));
   }
 
   var touchRotate = goog.isDef(mapOptions.touchRotate) ?
