@@ -1,0 +1,5 @@
+@exportSymbol ol.easing
+@exportProperty ol.easing.linear
+@exportProperty ol.easing.upAndDown
+@exportProperty ol.easing.elastic
+@exportProperty ol.easing.bounce
