@@ -131,7 +131,7 @@ keyboardInteraction.addCallback('l', function() {
   view.setCenter(LONDON);
 });
 keyboardInteraction.addCallback('L', function() {
-  var start = goog.now();
+  var start = +new Date();
   var duration = 5000;
   var bounce = ol.animation.bounce({
     resolution: 2 * view.getResolution(),
@@ -166,7 +166,7 @@ keyboardInteraction.addCallback('m', function() {
   view.setCenter(MOSCOW);
 });
 keyboardInteraction.addCallback('M', function() {
-  var start = goog.now();
+  var start = +new Date();
   var duration = 5000;
   var bounce = ol.animation.bounce({
     resolution: 2 * view.getResolution(),

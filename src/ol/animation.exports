@@ -2,3 +2,4 @@
 @exportProperty ol.animation.bounce
 @exportProperty ol.animation.pan
 @exportProperty ol.animation.rotate
+@exportProperty ol.animation.zoom
