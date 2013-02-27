@@ -537,6 +537,10 @@ ol.Map.prototype.handlePostRender = function() {
     postRenderFunctions[i](this, this.frameState_);
   }
   postRenderFunctions.length = 0;
+  if (this.isIdle()) {
+    this.dispatchEvent(
+        new ol.MapEvent(ol.MapEventType.IDLE, this, this.frameState_));
+  }
 };
 
 
@@ -598,6 +602,16 @@ ol.Map.prototype.isDef = function() {
   var view = this.getView();
   return goog.isDef(view) && view.isDef() &&
       goog.isDefAndNotNull(this.getSize());
+};
+
+
+/**
+ * @return {boolean} No animation is progress and all tiles loaded.
+ */
+ol.Map.prototype.isIdle = function() {
+  var frameState = this.frameState_;
+  return !goog.isNull(frameState) &&
+      !frameState.animate && goog.object.isEmpty(frameState.wantedTiles);
 };
 
 
