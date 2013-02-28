@@ -267,6 +267,31 @@ ol.Projection.addTransform = function(source, destination, transformFn) {
 
 
 /**
+ * Unregisters the conversion function to convert coordinates from the source
+ * projection to the destination projection.  This method is used to clean up
+ * cached transforms during testing.
+ *
+ * @param {ol.Projection} source Source projection.
+ * @param {ol.Projection} destination Destination projection.
+ * @return {ol.TransformFunction} transformFn The unregistered transform.
+ */
+ol.Projection.removeTransform = function(source, destination) {
+  var sourceCode = source.getCode();
+  var destinationCode = destination.getCode();
+  var transforms = ol.Projection.transforms_;
+  goog.asserts.assert(sourceCode in transforms);
+  goog.asserts.assert(destinationCode in transforms[sourceCode]);
+  var transform = transforms[sourceCode][destinationCode];
+  delete transforms[sourceCode][destinationCode];
+  var keys = goog.object.getKeys(transforms[sourceCode]);
+  if (keys.length == 0) {
+    delete transforms[sourceCode];
+  }
+  return transform;
+};
+
+
+/**
  * @param {string} code Code which is a combination of authority and identifier
  *   such as “EPSG:4326”.
  * @return {ol.Projection} Projection.
