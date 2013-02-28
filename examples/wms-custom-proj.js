@@ -24,7 +24,6 @@ if (goog.DEBUG) {
 var epsg21781 = new ol.Projection('EPSG:21781', ol.ProjectionUnits.METERS,
     // Validity extent from http://spatialreference.org
     new ol.Extent(485869.5728, 76443.1884, 837076.5648, 299941.7864));
-//ol.Projection.addProjection(epsg21781);
 
 // We could give the single image source a set of resolutions. This prevents the
 // source from requesting images of arbitrary resolutions. To try this,
