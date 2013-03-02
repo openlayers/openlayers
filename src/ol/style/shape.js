@@ -58,6 +58,19 @@ goog.inherits(ol.style.ShapeLiteral, ol.style.PointLiteral);
 
 
 /**
+ * @inheritDoc
+ */
+ol.style.ShapeLiteral.prototype.equals = function(shapeLiteral) {
+  return this.type == shapeLiteral.type &&
+      this.size == shapeLiteral.size &&
+      this.fillStyle == shapeLiteral.fillStyle &&
+      this.strokeStyle == shapeLiteral.strokeStyle &&
+      this.strokeWidth == shapeLiteral.strokeWidth &&
+      this.opacity == shapeLiteral.opacity;
+};
+
+
+/**
  * @typedef {{type: (ol.style.ShapeType),
  *            size: (number|ol.Expression),
  *            fillStyle: (string|ol.Expression),

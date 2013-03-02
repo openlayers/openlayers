@@ -42,6 +42,17 @@ goog.inherits(ol.style.PolygonLiteral, ol.style.SymbolizerLiteral);
 
 
 /**
+ * @inheritDoc
+ */
+ol.style.PolygonLiteral.prototype.equals = function(polygonLiteral) {
+  return this.fillStyle == polygonLiteral.fillStyle &&
+      this.strokeStyle == polygonLiteral.strokeStyle &&
+      this.strokeWidth == polygonLiteral.strokeWidth &&
+      this.opacity == polygonLiteral.opacity;
+};
+
+
+/**
  * @typedef {{fillStyle: (string|ol.Expression),
  *            strokeStyle: (string|ol.Expression),
  *            strokeWidth: (number|ol.Expression),

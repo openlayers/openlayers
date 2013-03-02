@@ -38,6 +38,16 @@ goog.inherits(ol.style.LineLiteral, ol.style.SymbolizerLiteral);
 
 
 /**
+ * @inheritDoc
+ */
+ol.style.LineLiteral.prototype.equals = function(lineLiteral) {
+  return this.strokeStyle == lineLiteral.strokeStyle &&
+      this.strokeWidth == lineLiteral.strokeWidth &&
+      this.opacity == lineLiteral.opacity;
+};
+
+
+/**
  * @typedef {{strokeStyle: (string|ol.Expression),
  *            strokeWidth: (number|ol.Expression),
  *            opacity: (number|ol.Expression)}}

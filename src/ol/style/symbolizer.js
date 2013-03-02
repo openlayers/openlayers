@@ -11,6 +11,14 @@ goog.require('ol.Feature');
 ol.style.SymbolizerLiteral = function() {};
 
 
+/**
+ * @param {ol.style.SymbolizerLiteral} symbolizerLiteral Symbolizer literal to
+ *     compare to.
+ * @return {boolean} Is the passed symbolizer literal equal to this instance?
+ */
+ol.style.SymbolizerLiteral.prototype.equals = goog.abstractMethod;
+
+
 
 /**
  * @constructor

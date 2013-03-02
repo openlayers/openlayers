@@ -14,10 +14,6 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.Renderer');
-goog.require('ol.style.LineLiteral');
-goog.require('ol.style.PolygonLiteral');
-goog.require('ol.style.ShapeLiteral');
-goog.require('ol.style.ShapeType');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -115,31 +111,6 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
   this.dirty_ = false;
 
 
-  // TODO: implement layer.setStyle(style) where style is a set of rules
-  // and a rule has a filter and array of symbolizers
-  var symbolizers = {};
-  symbolizers[ol.geom.GeometryType.POINT] = new ol.style.ShapeLiteral({
-    type: ol.style.ShapeType.CIRCLE,
-    size: 10,
-    fillStyle: '#ffcc99',
-    strokeStyle: '#ff9933',
-    strokeWidth: 2,
-    opacity: 0.75
-  });
-  symbolizers[ol.geom.GeometryType.LINESTRING] = new ol.style.LineLiteral({
-    strokeStyle: '#ff9933',
-    strokeWidth: 2,
-    opacity: 1
-  });
-  symbolizers[ol.geom.GeometryType.POLYGON] = new ol.style.PolygonLiteral({
-    fillStyle: '#ffcc99',
-    strokeStyle: '#ff9933',
-    strokeWidth: 2,
-    opacity: 0.5
-  });
-  // TODO: remove this
-  this.symbolizers_ = symbolizers;
-
   /**
    * @private
    * @type {boolean}
@@ -195,7 +166,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var view2DState = frameState.view2DState,
       resolution = view2DState.resolution,
       extent = frameState.extent,
-      source = this.getVectorLayer().getVectorSource(),
+      layer = this.getVectorLayer(),
+      source = layer.getVectorSource(),
       tileGrid = this.tileGrid_;
 
   if (goog.isNull(tileGrid)) {
@@ -295,7 +267,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   // render features by geometry type
   var filters = this.geometryFilters_,
       numFilters = filters.length,
-      i, geomFilter, extentFilter, type, features, symbolizer;
+      i, geomFilter, extentFilter, type, features,
+      groups, group, j, numGroups;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tileCoord = new ol.TileCoord(z, x, y);
@@ -312,10 +285,13 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
           features = source.getFeatures(new ol.filter.Logical(
               [geomFilter, extentFilter], ol.filter.LogicalOperator.AND));
           if (features.length) {
-            // TODO: layer.getSymbolizerLiterals(features) or similar
-            symbolizer = this.symbolizers_[type];
-            sketchCanvasRenderer.renderFeaturesByGeometryType(
-                type, features, symbolizer);
+            groups = layer.groupFeaturesBySymbolizerLiteral(features);
+            numGroups = groups.length;
+            for (j = 0; j < numGroups; ++j) {
+              group = groups[j];
+              sketchCanvasRenderer.renderFeaturesByGeometryType(type,
+                  group[0], group[1]);
+            }
           }
         }
       }
