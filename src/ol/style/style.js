@@ -56,16 +56,18 @@ ol.style.Style.prototype.apply = function(feature) {
  *     the feature.
  */
 ol.style.Style.applyDefaultStyle = function(feature) {
-  var type = feature.getGeometry().getType();
+  var type = feature.getGeometry().getType(),
+      symbolizerLiterals = [];
   if (type === ol.geom.GeometryType.POINT ||
       type === ol.geom.GeometryType.MULTIPOINT) {
-    return [ol.style.ShapeDefaults];
+    symbolizerLiterals.push(ol.style.ShapeDefaults);
   } else if (type === ol.geom.GeometryType.LINESTRING ||
       type === ol.geom.GeometryType.MULTILINESTRING) {
-    return [ol.style.LineDefaults];
+    symbolizerLiterals.push(ol.style.LineDefaults);
   } else if (type === ol.geom.GeometryType.LINEARRING ||
       type === ol.geom.GeometryType.POLYGON ||
       type === ol.geom.GeometryType.MULTIPOLYGON) {
-    return [ol.style.PolygonDefaults];
+    symbolizerLiterals.push(ol.style.PolygonDefaults);
   }
+  return symbolizerLiterals;
 };
