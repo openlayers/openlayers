@@ -18,10 +18,11 @@ ol.style.LineLiteralOptions;
 
 /**
  * @constructor
- * @implements {ol.style.SymbolizerLiteral}
+ * @extends {ol.style.SymbolizerLiteral}
  * @param {ol.style.LineLiteralOptions} config Symbolizer properties.
  */
 ol.style.LineLiteral = function(config) {
+  goog.base(this);
 
   /** @type {string} */
   this.strokeStyle = config.strokeStyle;
@@ -33,6 +34,7 @@ ol.style.LineLiteral = function(config) {
   this.opacity = config.opacity;
 
 };
+goog.inherits(ol.style.LineLiteral, ol.style.SymbolizerLiteral);
 
 
 /**
@@ -46,10 +48,11 @@ ol.style.LineOptions;
 
 /**
  * @constructor
- * @implements {ol.style.Symbolizer}
+ * @extends {ol.style.Symbolizer}
  * @param {ol.style.LineOptions} options Symbolizer properties.
  */
 ol.style.Line = function(options) {
+  goog.base(this);
 
   /**
    * @type {ol.Expression}
@@ -79,6 +82,7 @@ ol.style.Line = function(options) {
           options.opacity : new ol.ExpressionLiteral(options.opacity);
 
 };
+goog.inherits(ol.style.Line, ol.style.Symbolizer);
 
 
 /**

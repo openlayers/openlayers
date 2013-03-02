@@ -6,14 +6,14 @@ goog.require('ol.Feature');
 
 
 /**
- * @interface
+ * @constructor
  */
 ol.style.SymbolizerLiteral = function() {};
 
 
 
 /**
- * @interface
+ * @constructor
  */
 ol.style.Symbolizer = function() {};
 
@@ -22,4 +22,4 @@ ol.style.Symbolizer = function() {};
  * @param {ol.Feature} feature Feature for evaluating expressions.
  * @return {ol.style.SymbolizerLiteral} Literal symbolizer.
  */
-ol.style.Symbolizer.prototype.createLiteral = function(feature) {};
+ol.style.Symbolizer.prototype.createLiteral = goog.abstractMethod;
