@@ -7,6 +7,7 @@
 @exportProperty ol.Projection.transformWithCodes
 @exportProperty ol.Projection.prototype.getCode
 @exportProperty ol.Projection.prototype.getExtent
+@exportProperty ol.Projection.prototype.getResolutions
 @exportProperty ol.Projection.prototype.getUnits
 
 @exportSymbol ol.ProjectionUnits

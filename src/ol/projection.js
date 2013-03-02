@@ -84,6 +84,26 @@ ol.Projection.prototype.getExtent = function() {
 
 
 /**
+ * @param {number=} opt_length Length for the resolutions array. Default is 19.
+ * @param {number=} opt_tileSize Tile size.
+ * @return {!Array.<number>} Resolutions array.
+ */
+ol.Projection.prototype.getResolutions = function(opt_length, opt_tileSize) {
+  var length = goog.isDef(opt_length) ? opt_length : 19;
+  var tileSize = goog.isDef(opt_tileSize) ?
+      opt_tileSize : ol.DEFAULT_TILE_SIZE;
+  var resolutions = new Array(length);
+  var maxResolution = Math.max(
+      this.extent_.maxX - this.extent_.minX,
+      this.extent_.maxY - this.extent_.minY) / tileSize;
+  for (var i = 0; i < length; ++i) {
+    resolutions[i] = maxResolution / Math.pow(2.0, i);
+  }
+  return resolutions;
+};
+
+
+/**
  * @return {ol.ProjectionUnits} Units.
  */
 ol.Projection.prototype.getUnits = function() {
