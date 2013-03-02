@@ -32,6 +32,6 @@ ol.filter.Extent.prototype.getExtent = function() {
 /**
  * @inheritDoc
  */
-ol.filter.Extent.prototype.evaluate = function(feature) {
+ol.filter.Extent.prototype.applies = function(feature) {
   return feature.getGeometry().getBounds().intersects(this.extent_);
 };

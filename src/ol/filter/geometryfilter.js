@@ -25,7 +25,7 @@ ol.filter.Geometry = function(type) {
 /**
  * @inheritDoc
  */
-ol.filter.Geometry.prototype.evaluate = function(feature) {
+ol.filter.Geometry.prototype.applies = function(feature) {
   var geometry = feature.getGeometry();
   return goog.isNull(geometry) ? false : geometry.getType() === this.type_;
 };

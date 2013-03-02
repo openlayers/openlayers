@@ -57,17 +57,17 @@ describe('ol.source.Vector', function() {
     var extentFilter = new ol.filter.Extent(new ol.Extent(16, 48, 16.3, 48.3));
 
     it('can filter by geometry type using its GeometryType index', function() {
-      spyOn(geomFilter, 'evaluate');
+      spyOn(geomFilter, 'applies');
       var lineStrings = vectorSource.getFeatures(geomFilter);
-      expect(geomFilter.evaluate).not.toHaveBeenCalled();
+      expect(geomFilter.applies).not.toHaveBeenCalled();
       expect(lineStrings.length).toEqual(4);
       expect(lineStrings).toContain(features[4]);
     });
 
     it('can filter by extent using its RTree', function() {
-      spyOn(extentFilter, 'evaluate');
+      spyOn(extentFilter, 'applies');
       var subset = vectorSource.getFeatures(extentFilter);
-      expect(extentFilter.evaluate).not.toHaveBeenCalled();
+      expect(extentFilter.applies).not.toHaveBeenCalled();
       expect(subset.length).toEqual(4);
       expect(subset).not.toContain(features[7]);
     });
@@ -77,22 +77,22 @@ describe('ol.source.Vector', function() {
           ol.filter.LogicalOperator.AND);
       var filter2 = new ol.filter.Logical([extentFilter, geomFilter],
           ol.filter.LogicalOperator.AND);
-      spyOn(filter1, 'evaluate');
-      spyOn(filter2, 'evaluate');
+      spyOn(filter1, 'applies');
+      spyOn(filter2, 'applies');
       var subset1 = vectorSource.getFeatures(filter1);
       var subset2 = vectorSource.getFeatures(filter2);
-      expect(filter1.evaluate).not.toHaveBeenCalled();
-      expect(filter2.evaluate).not.toHaveBeenCalled();
+      expect(filter1.applies).not.toHaveBeenCalled();
+      expect(filter2.applies).not.toHaveBeenCalled();
       expect(subset1.length).toEqual(0);
       expect(subset2.length).toEqual(0);
     });
 
-    it('can handle query using the filter\'s evaluate function', function() {
+    it('can handle query using the filter\'s applies function', function() {
       var filter = new ol.filter.Logical([geomFilter, extentFilter],
           ol.filter.LogicalOperator.OR);
-      spyOn(filter, 'evaluate').andCallThrough();
+      spyOn(filter, 'applies').andCallThrough();
       var subset = vectorSource.getFeatures(filter);
-      expect(filter.evaluate).toHaveBeenCalled();
+      expect(filter.applies).toHaveBeenCalled();
       expect(subset.length).toEqual(8);
     });
 

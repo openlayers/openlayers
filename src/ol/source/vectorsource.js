@@ -128,7 +128,7 @@ ol.source.FeatureCache.prototype.getFeaturesObject_ = function(opt_filter) {
       features = {};
       for (i in candidates) {
         feature = candidates[i];
-        if (opt_filter.evaluate(feature) === true) {
+        if (opt_filter.applies(feature) === true) {
           features[i] = feature;
         }
       }

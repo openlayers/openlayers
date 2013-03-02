@@ -30,14 +30,14 @@ ol.filter.Logical = function(filters, operator) {
 /**
  * @inheritDoc
  */
-ol.filter.Logical.prototype.evaluate = function(feature) {
+ol.filter.Logical.prototype.applies = function(feature) {
   var filters = this.filters_,
       i = 0, ii = filters.length,
       operator = this.operator,
       start = operator(true, false),
       result = start;
   while (result === start && i < ii) {
-    result = operator(result, filters[i].evaluate(feature));
+    result = operator(result, filters[i].applies(feature));
     ++i;
   }
   return result;
