@@ -23,7 +23,6 @@ ol.tilegrid.XYZ = function(xyzOptions) {
   }
 
   goog.base(this, {
-    extent: ol.Projection.EPSG_3857_EXTENT,
     origin: new ol.Coordinate(-ol.Projection.EPSG_3857_HALF_SIZE,
                               ol.Projection.EPSG_3857_HALF_SIZE),
     resolutions: resolutions,
