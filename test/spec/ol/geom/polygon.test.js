@@ -1,4 +1,4 @@
-gooog.require('ol.test.geom.Polygon');
+goog.provide('ol.test.geom.Polygon');
 
 describe('ol.geom.Polygon', function() {
 
@@ -18,6 +18,16 @@ describe('ol.geom.Polygon', function() {
       expect(function() {
         var poly = new ol.geom.Polygon([[[10, 20], [30, 40, 50]]]);
       }).toThrow();
+    });
+
+    it('accepts shared vertices', function() {
+      var vertices = new ol.geom.SharedVertices();
+      var p1 = new ol.geom.Polygon([outer], vertices);
+      var p2 = new ol.geom.Polygon([outer, inner1], vertices);
+      var p3 = new ol.geom.Polygon([outer, inner2], vertices);
+      expect(p1.getCoordinates()).toEqual([outer]);
+      expect(p2.getCoordinates()).toEqual([outer, inner1]);
+      expect(p3.getCoordinates()).toEqual([outer, inner2]);
     });
 
   });
@@ -62,8 +72,17 @@ describe('ol.geom.Polygon', function() {
 
   });
 
+  describe('#getCoordinates()', function() {
+
+    it('returns an array', function() {
+      var poly = new ol.geom.Polygon([outer, inner1, inner2]);
+      expect(poly.getCoordinates()).toEqual([outer, inner1, inner2]);
+    });
+
+  });
 
 });
 
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.Polygon');
+goog.require('ol.geom.SharedVertices');

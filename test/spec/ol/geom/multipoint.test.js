@@ -58,6 +58,15 @@ describe('ol.geom.MultiPoint', function() {
 
   });
 
+  describe('#getCoordinates', function() {
+
+    it('returns an array', function() {
+      var multi = new ol.geom.MultiPoint([[10, 20], [30, 40]]);
+      expect(multi.getCoordinates()).toEqual([[10, 20], [30, 40]]);
+    });
+
+  });
+
 });
 
 goog.require('ol.geom.Geometry');

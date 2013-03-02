@@ -68,6 +68,19 @@ describe('ol.geom.MultiLineString', function() {
 
   });
 
+  describe('#getCoordinates', function() {
+
+    it('returns an array', function() {
+      var coordinates = [
+        [[10, 20], [30, 40]],
+        [[20, 30], [40, 50]]
+      ];
+      var multi = new ol.geom.MultiLineString(coordinates);
+      expect(multi.getCoordinates()).toEqual(coordinates);
+    });
+
+  });
+
 });
 
 goog.require('ol.geom.Geometry');

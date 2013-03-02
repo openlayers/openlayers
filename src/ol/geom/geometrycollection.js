@@ -1,65 +1,43 @@
 goog.provide('ol.geom.GeometryCollection');
 
-goog.require('ol.Extent');
+goog.require('ol.geom.AbstractCollection');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 
 
 
 /**
- * A collection of geometries.  This constructor should not called.  Instead
- * create one of the fixed type collections.
+ * A mixed collection of geometries.  Used one of the fixed type multi-part
+ * constructors for collections of the same type.
+ *
  * @constructor
- * @extends {ol.geom.Geometry}
+ * @extends {ol.geom.AbstractCollection}
+ * @param {Array.<ol.geom.Geometry>} geometries Array of geometries.
  */
-ol.geom.GeometryCollection = function() {
-
+ol.geom.GeometryCollection = function(geometries) {
   goog.base(this);
 
   /**
    * @type {Array.<ol.geom.Geometry>}
    */
-  this.components = null;
+  this.components = geometries;
+
+  var dimension = 0;
+  for (var i = 0, ii = geometries.length; i < ii; ++i) {
+    if (goog.isDef(dimension)) {
+      dimension = geometries[i].dimension;
+    } else {
+      goog.asserts.assert(dimension == geometries[i].dimension);
+    }
+  }
 
   /**
    * @type {number}
    */
-  this.dimension;
-
-  /**
-   * @type {ol.Extent}
-   * @protected
-   */
-  this.bounds = null;
+  this.dimension = dimension;
 
 };
-goog.inherits(ol.geom.GeometryCollection, ol.geom.Geometry);
-
-
-/**
- * @inheritDoc
- */
-ol.geom.GeometryCollection.prototype.getBounds = function() {
-  if (goog.isNull(this.bounds)) {
-    var minX,
-        minY = minX = Number.POSITIVE_INFINITY,
-        maxX,
-        maxY = maxX = Number.NEGATIVE_INFINITY,
-        components = this.components,
-        len = components.length,
-        bounds, i;
-
-    for (i = 0; i < len; ++i) {
-      bounds = components[i].getBounds();
-      minX = Math.min(bounds.minX, minX);
-      minY = Math.min(bounds.minY, minY);
-      maxX = Math.max(bounds.maxX, maxX);
-      maxY = Math.max(bounds.maxY, maxY);
-    }
-    this.bounds = new ol.Extent(minX, minY, maxX, maxY);
-  }
-  return this.bounds;
-};
+goog.inherits(ol.geom.GeometryCollection, ol.geom.AbstractCollection);
 
 
 /**

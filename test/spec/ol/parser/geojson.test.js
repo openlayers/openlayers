@@ -76,8 +76,7 @@ describe('ol.parser.geojson', function() {
 
       var obj = ol.parser.geojson.read(str);
       expect(obj).toBeA(ol.geom.Point);
-      expect(obj.coordinates[0]).toBe(10);
-      expect(obj.coordinates[1]).toBe(20);
+      expect(obj.getCoordinates()).toEqual([10, 20]);
     });
 
     it('parses linestring', function() {
@@ -88,10 +87,7 @@ describe('ol.parser.geojson', function() {
 
       var obj = ol.parser.geojson.read(str);
       expect(obj).toBeA(ol.geom.LineString);
-      expect(obj.coordinates[0]).toBe(10);
-      expect(obj.coordinates[1]).toBe(20);
-      expect(obj.coordinates[2]).toBe(30);
-      expect(obj.coordinates[3]).toBe(40);
+      expect(obj.getCoordinates()).toEqual([[10, 20], [30, 40]]);
     });
 
     it('parses polygon', function() {

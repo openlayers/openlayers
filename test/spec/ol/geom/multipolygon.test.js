@@ -71,6 +71,20 @@ describe('ol.geom.MultiPolygon', function() {
 
   });
 
+  describe('#getCoordinates', function() {
+
+    it('returns an array', function() {
+      var coordinates = [
+        [outer1, inner1a, inner1b],
+        [outer2]
+      ];
+      var multi = new ol.geom.MultiPolygon(coordinates);
+      expect(multi.getCoordinates()).toEqual(coordinates);
+    });
+
+  });
+
+
 });
 
 goog.require('ol.geom.Geometry');

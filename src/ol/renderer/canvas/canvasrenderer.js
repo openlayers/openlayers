@@ -8,6 +8,9 @@ goog.require('ol.Pixel');
 goog.require('ol.canvas');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
 goog.require('ol.style.LineLiteral');
 goog.require('ol.style.PointLiteral');
 goog.require('ol.style.PolygonLiteral');
@@ -108,20 +111,18 @@ ol.renderer.canvas.Renderer.prototype.renderLineStringFeatures_ =
     function(features, symbolizer) {
 
   var context = this.context_,
-      i, ii, line, coords, dim, j, jj, x, y;
+      i, ii, line, dim, j, jj, x, y;
 
   context.globalAlpha = symbolizer.opacity;
   context.strokeStyle = symbolizer.strokeStyle;
   context.lineWidth = symbolizer.strokeWidth * this.inverseScale_;
   context.beginPath();
-
   for (i = 0, ii = features.length; i < ii; ++i) {
-    line = features[i].getGeometry();
+    line = /** @type {ol.geom.LineString} */ features[i].getGeometry();
     dim = line.dimension;
-    coords = line.coordinates;
-    for (j = 0, jj = coords.length; j < jj; j += dim) {
-      x = coords[j];
-      y = coords[j + 1];
+    for (j = 0, jj = line.getCount(); j < jj; ++j) {
+      x = line.get(j, 0);
+      y = line.get(j, 1);
       if (j === 0) {
         context.moveTo(x, y);
       } else {
@@ -143,7 +144,7 @@ ol.renderer.canvas.Renderer.prototype.renderPointFeatures_ =
     function(features, symbolizer) {
 
   var context = this.context_,
-      canvas, i, ii, coords, vec;
+      canvas, i, ii, point, vec;
 
   if (symbolizer instanceof ol.style.ShapeLiteral) {
     canvas = ol.renderer.canvas.Renderer.renderShape(symbolizer);
@@ -156,9 +157,9 @@ ol.renderer.canvas.Renderer.prototype.renderPointFeatures_ =
   context.setTransform(1, 0, 0, 1, -mid, -mid);
   context.globalAlpha = 1;
   for (i = 0, ii = features.length; i < ii; ++i) {
-    coords = features[i].getGeometry().coordinates;
+    point = /** @type {ol.geom.Point} */ features[i].getGeometry();
     vec = goog.vec.Mat4.multVec3(
-        this.transform_, [coords[0], coords[1], 0], []);
+        this.transform_, [point.get(0), point.get(1), 0], []);
     context.drawImage(canvas, vec[0], vec[1]);
   }
   context.restore();
@@ -176,7 +177,7 @@ ol.renderer.canvas.Renderer.prototype.renderPolygonFeatures_ =
   var context = this.context_,
       strokeStyle = symbolizer.strokeStyle,
       fillStyle = symbolizer.fillStyle,
-      i, ii, poly, rings, numRings, coords, dim, j, jj, x, y;
+      i, ii, poly, rings, numRings, ring, dim, j, jj, x, y;
 
   context.globalAlpha = symbolizer.opacity;
   if (strokeStyle) {
@@ -196,7 +197,7 @@ ol.renderer.canvas.Renderer.prototype.renderPolygonFeatures_ =
    */
   context.beginPath();
   for (i = 0, ii = features.length; i < ii; ++i) {
-    poly = features[i].getGeometry();
+    poly = /** @type {ol.geom.Polygon} */ features[i].getGeometry();
     dim = poly.dimension;
     rings = poly.rings;
     numRings = rings.length;
@@ -205,10 +206,10 @@ ol.renderer.canvas.Renderer.prototype.renderPolygonFeatures_ =
       // TODO: use sketch canvas to render outer and punch holes for inner rings
       throw new Error('Rendering holes not implemented');
     } else {
-      coords = rings[0].coordinates;
-      for (j = 0, jj = coords.length; j < jj; j += dim) {
-        x = coords[j];
-        y = coords[j + 1];
+      ring = rings[0];
+      for (j = 0, jj = ring.getCount(); j < jj; ++j) {
+        x = ring.get(j, 0);
+        y = ring.get(j, 1);
         if (j === 0) {
           context.moveTo(x, y);
         } else {

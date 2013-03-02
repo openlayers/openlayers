@@ -17,20 +17,6 @@ describe('ol.geom.LinearRing', function() {
 
   });
 
-  describe('#coordinates', function() {
-
-    it('is an array', function() {
-      var ring = new ol.geom.LinearRing([[10, 20], [30, 40]]);
-
-      expect(ring.coordinates.length).toBe(4);
-      expect(ring.coordinates[0]).toBe(10);
-      expect(ring.coordinates[1]).toBe(20);
-      expect(ring.coordinates[2]).toBe(30);
-      expect(ring.coordinates[3]).toBe(40);
-    });
-
-  });
-
   describe('#dimension', function() {
 
     it('can be 2', function() {
@@ -45,6 +31,14 @@ describe('ol.geom.LinearRing', function() {
 
   });
 
+  describe('#getCoordinates()', function() {
+
+    it('is an array', function() {
+      var ring = new ol.geom.LinearRing([[10, 20], [30, 40]]);
+      expect(ring.getCoordinates()).toEqual([[10, 20], [30, 40]]);
+    });
+
+  });
 
 });
 
