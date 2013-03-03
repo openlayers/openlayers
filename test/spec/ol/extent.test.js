@@ -52,17 +52,17 @@ describe('ol.Extent', function() {
         expect(extent.containsCoordinate(
             new ol.Coordinate(3, 1))).toBeFalsy();
         expect(extent.containsCoordinate(
-              new ol.Coordinate(3, 5))).toBeFalsy();
+            new ol.Coordinate(3, 5))).toBeFalsy();
         expect(extent.containsCoordinate(
-              new ol.Coordinate(4, 1))).toBeFalsy();
+            new ol.Coordinate(4, 1))).toBeFalsy();
         expect(extent.containsCoordinate(
-              new ol.Coordinate(4, 2))).toBeFalsy();
+            new ol.Coordinate(4, 2))).toBeFalsy();
         expect(extent.containsCoordinate(
-              new ol.Coordinate(4, 3))).toBeFalsy();
+            new ol.Coordinate(4, 3))).toBeFalsy();
         expect(extent.containsCoordinate(
-              new ol.Coordinate(4, 4))).toBeFalsy();
+            new ol.Coordinate(4, 4))).toBeFalsy();
         expect(extent.containsCoordinate(
-              new ol.Coordinate(4, 5))).toBeFalsy();
+            new ol.Coordinate(4, 5))).toBeFalsy();
       });
     });
   });
