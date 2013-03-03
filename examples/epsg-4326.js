@@ -4,10 +4,10 @@ goog.require('goog.debug.Logger.Level');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
-goog.require('ol.Projection');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
+goog.require('ol.projection');
 goog.require('ol.source.TiledWMS');
 
 
@@ -16,7 +16,7 @@ if (goog.DEBUG) {
   goog.debug.Logger.getLogger('ol').setLevel(goog.debug.Logger.Level.INFO);
 }
 
-var epsg4326 = ol.Projection.getFromCode('EPSG:4326');
+var epsg4326 = ol.projection.getFromCode('EPSG:4326');
 
 // We give the single image source a set of resolutions. This prevents the
 // source from requesting images of arbitrary resolutions.

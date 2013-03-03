@@ -15,6 +15,7 @@ goog.require('ol.RotationConstraint');
 goog.require('ol.Size');
 goog.require('ol.View');
 goog.require('ol.animation');
+goog.require('ol.projection');
 
 
 /**
@@ -46,7 +47,7 @@ ol.View2D = function(opt_view2DOptions) {
   var values = {};
   values[ol.View2DProperty.CENTER] = goog.isDef(view2DOptions.center) ?
       view2DOptions.center : null;
-  values[ol.View2DProperty.PROJECTION] = ol.Projection.createProjection(
+  values[ol.View2DProperty.PROJECTION] = ol.projection.createProjection(
       view2DOptions.projection, 'EPSG:3857');
   if (goog.isDef(view2DOptions.resolution)) {
     values[ol.View2DProperty.RESOLUTION] = view2DOptions.resolution;
@@ -353,7 +354,7 @@ ol.View2D.createConstraints_ = function(view2DOptions) {
       numZoomLevels = view2DOptions.numZoomLevels;
       zoomFactor = view2DOptions.zoomFactor;
     } else {
-      var projectionExtent = ol.Projection.createProjection(
+      var projectionExtent = ol.projection.createProjection(
           view2DOptions.projection, 'EPSG:3857').getExtent();
       maxResolution = Math.max(
           projectionExtent.maxX - projectionExtent.minX,

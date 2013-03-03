@@ -7,9 +7,9 @@ goog.require('goog.array');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
 goog.require('ol.Extent');
-goog.require('ol.Projection');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.projection');
 goog.require('ol.source.ImageTileSource');
 
 
@@ -20,7 +20,7 @@ goog.require('ol.source.ImageTileSource');
  * @param {ol.source.TiledWMSOptions} tiledWMSOptions options.
  */
 ol.source.TiledWMS = function(tiledWMSOptions) {
-  var projection = ol.Projection.createProjection(
+  var projection = ol.projection.createProjection(
       tiledWMSOptions.projection, 'EPSG:3857');
   var projectionExtent = projection.getExtent();
 

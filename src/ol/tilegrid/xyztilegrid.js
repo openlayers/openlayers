@@ -3,6 +3,7 @@ goog.provide('ol.tilegrid.XYZ');
 goog.require('ol.Coordinate');
 goog.require('ol.Size');
 goog.require('ol.TileRange');
+goog.require('ol.projection');
 goog.require('ol.projection.EPSG3857');
 goog.require('ol.tilegrid.TileGrid');
 

@@ -58,6 +58,7 @@ goog.require('ol.interaction.TouchPan');
 goog.require('ol.interaction.TouchRotateAndZoom');
 goog.require('ol.interaction.condition');
 goog.require('ol.layer.Layer');
+goog.require('ol.projection');
 goog.require('ol.projection.addCommonProjections');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Map');

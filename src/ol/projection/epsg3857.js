@@ -5,6 +5,7 @@ goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');
+goog.require('ol.projection');
 
 
 

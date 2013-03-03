@@ -12,6 +12,7 @@ goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.ImageLayer');
 goog.require('ol.layer.TileLayer');
+goog.require('ol.projection');
 goog.require('ol.source.SingleImageWMS');
 goog.require('ol.source.TiledWMS');
 
@@ -24,7 +25,7 @@ if (goog.DEBUG) {
 var epsg21781 = new ol.Projection('EPSG:21781', ol.ProjectionUnits.METERS,
     // Validity extent from http://spatialreference.org
     new ol.Extent(485869.5728, 76443.1884, 837076.5648, 299941.7864));
-ol.Projection.addProjection(epsg21781);
+ol.projection.addProjection(epsg21781);
 
 // We give the single image source a set of resolutions. This prevents the
 // source from requesting images of arbitrary resolutions.

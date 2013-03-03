@@ -3,6 +3,7 @@ goog.provide('ol.projection.EPSG4326');
 goog.require('ol.Extent');
 goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');
+goog.require('ol.projection');
 
 
 

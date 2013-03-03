@@ -69,7 +69,7 @@ describe('ol.TileUrlFunction', function() {
       });
     });
     it('creates expected URL', function() {
-      var epsg3857 = ol.Projection.getFromCode('EPSG:3857');
+      var epsg3857 = ol.projection.getFromCode('EPSG:3857');
       var tileUrlFunction = ol.TileUrlFunction.createBboxParam(
          'http://wms?foo=bar', tileGrid, epsg3857.getAxisOrientation());
       var tileCoord = new ol.TileCoord(1, 0, 0);
@@ -79,7 +79,7 @@ describe('ol.TileUrlFunction', function() {
       expect(tileUrl).toEqual(expected);
     });
     it('creates expected URL respecting axis orientation', function() {
-      var epsg4326 = ol.Projection.getFromCode('EPSG:4326');
+      var epsg4326 = ol.projection.getFromCode('EPSG:4326');
       var tileUrlFunction = ol.TileUrlFunction.createBboxParam(
          'http://wms?foo=bar', tileGrid, epsg4326.getAxisOrientation());
       var tileCoord = new ol.TileCoord(1, 0, 0);
@@ -93,4 +93,5 @@ describe('ol.TileUrlFunction', function() {
 
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.projection');
 goog.require('ol.tilegrid.XYZ');
