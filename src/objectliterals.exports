@@ -57,6 +57,12 @@
 @exportObjectLiteralProperty ol.control.AttributionOptions.map ol.Map|undefined
 @exportObjectLiteralProperty ol.control.AttributionOptions.target Element|undefined
 
+@exportObjectLiteral ol.control.ScaleLineOptions
+@exportObjectLiteralProperty ol.control.ScaleLineOptions.map ol.Map|undefined
+@exportObjectLiteralProperty ol.control.ScaleLineOptions.minimumWidth number|undefined
+@exportObjectLiteralProperty ol.control.ScaleLineOptions.target Element|undefined
+@exportObjectLiteralProperty ol.control.ScaleLineOptions.units ol.control.ScaleLineUnits|undefined
+
 @exportObjectLiteral ol.control.MousePositionOptions
 @exportObjectLiteralProperty ol.control.MousePositionOptions.coordinateFormat ol.CoordinateFormatType|undefined
 @exportObjectLiteralProperty ol.control.MousePositionOptions.map ol.Map|undefined
