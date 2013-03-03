@@ -138,7 +138,6 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   /** @type {Object.<number, boolean>} */
   var newTileLayerZKeys = {};
 
-  var tileSize = tileGrid.getTileSize();
   var iz, tileCoordKey, tileCoordOrigin, tileLayerZ, tileLayerZKey, tilesToDraw;
   for (iz = 0; iz < zs.length; ++iz) {
     tileLayerZKey = zs[iz];
