@@ -4,6 +4,7 @@ goog.require('goog.array');
 goog.require('ol.Extent');
 goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');
+goog.require('ol.math');
 goog.require('ol.projection');
 
 
@@ -127,4 +128,13 @@ ol.projection.EPSG3857.toEPSG4326 = function(input, opt_output, opt_dimension) {
         Math.exp(input[i + 1] / ol.projection.EPSG3857.RADIUS)) / Math.PI - 90;
   }
   return output;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.projection.EPSG3857.prototype.getPointResolution =
+    function(resolution, point) {
+  return resolution / ol.math.cosh(point.y / ol.projection.EPSG3857.RADIUS);
 };
