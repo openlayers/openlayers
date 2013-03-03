@@ -10,6 +10,7 @@ goog.require('ol.Projection');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
+goog.require('ol.projection');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');
 
@@ -36,7 +37,7 @@ ol.source.XYZOptions;
 ol.source.XYZ = function(xyzOptions) {
 
   var projection = xyzOptions.projection ||
-      ol.Projection.getFromCode('EPSG:3857');
+      ol.projection.getFromCode('EPSG:3857');
 
   /**
    * @type {ol.TileUrlFunctionType}

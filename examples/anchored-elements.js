@@ -5,10 +5,10 @@ goog.require('ol.AnchoredElement');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
-goog.require('ol.Projection');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
+goog.require('ol.projection');
 goog.require('ol.source.MapQuestOpenAerial');
 
 
@@ -35,7 +35,7 @@ var map = new ol.Map({
 // Vienna label
 var vienna = new ol.AnchoredElement({
   map: map,
-  position: ol.Projection.transformWithCodes(
+  position: ol.projection.transformWithCodes(
       new ol.Coordinate(16.3725, 48.208889), 'EPSG:4326', 'EPSG:3857'),
   element: document.getElementById('vienna')
 });
@@ -49,7 +49,7 @@ map.addEventListener('click', function(evt) {
   var coordinate = evt.getCoordinate();
   popup.getElement().innerHTML =
       'Welcome to ol3. The location you clicked was<br>' +
-      ol.Coordinate.toStringHDMS(ol.Projection.transformWithCodes(
+      ol.Coordinate.toStringHDMS(ol.projection.transformWithCodes(
           coordinate, 'EPSG:3857', 'EPSG:4326'));
   popup.setPosition(coordinate);
 });

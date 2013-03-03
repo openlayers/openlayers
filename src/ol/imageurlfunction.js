@@ -14,16 +14,16 @@ ol.ImageUrlFunctionType;
 
 /**
  * @param {string} baseUrl Base URL (may have query data).
+ * @param {string} axisOrientation Axis orientation.
  * @return {ol.ImageUrlFunctionType} Image URL function.
  */
-ol.ImageUrlFunction.createBboxParam = function(baseUrl) {
+ol.ImageUrlFunction.createBboxParam = function(baseUrl, axisOrientation) {
   return function(extent, size) {
-    // FIXME Projection dependant axis order.
-    var bboxValue = [
-      extent.minX, extent.minY, extent.maxX, extent.maxY
-    ].join(',');
+    var bboxValues = axisOrientation.substr(0, 2) == 'ne' ?
+        [extent.minY, extent.minX, extent.maxY, extent.maxX] :
+        [extent.minX, extent.minY, extent.maxX, extent.maxY];
     return goog.uri.utils.appendParams(baseUrl,
-        'BBOX', bboxValue,
+        'BBOX', bboxValues.join(','),
         'HEIGHT', size.height,
         'WIDTH', size.width);
   };

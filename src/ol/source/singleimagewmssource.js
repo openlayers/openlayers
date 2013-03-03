@@ -4,8 +4,8 @@ goog.require('goog.uri.utils');
 goog.require('ol.Extent');
 goog.require('ol.Image');
 goog.require('ol.ImageUrlFunction');
-goog.require('ol.Projection');
 goog.require('ol.Size');
+goog.require('ol.projection');
 goog.require('ol.source.ImageSource');
 
 
@@ -17,7 +17,7 @@ goog.require('ol.source.ImageSource');
  */
 ol.source.SingleImageWMS = function(options) {
 
-  var projection = ol.Projection.createProjection(
+  var projection = ol.projection.createProjection(
       options.projection, 'EPSG:3857');
   var projectionExtent = projection.getExtent();
 
@@ -38,11 +38,13 @@ ol.source.SingleImageWMS = function(options) {
   baseParams[version >= '1.3' ? 'CRS' : 'SRS'] = projection.getCode();
   goog.object.extend(baseParams, options.params);
 
+  var axisOrientation = projection.getAxisOrientation();
   var imageUrlFunction;
   if (options.url) {
     var url = goog.uri.utils.appendParamsFromMap(
         options.url, baseParams);
-    imageUrlFunction = ol.ImageUrlFunction.createBboxParam(url);
+    imageUrlFunction =
+        ol.ImageUrlFunction.createBboxParam(url, axisOrientation);
   } else {
     imageUrlFunction =
         ol.ImageUrlFunction.nullImageUrlFunction;
