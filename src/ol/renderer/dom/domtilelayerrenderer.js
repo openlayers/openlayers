@@ -292,7 +292,7 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile) {
   if (tileCoordKey in this.tiles_) {
     return;
   }
-  var tileSize = this.tileGrid_.getTileSize();
+  var tileSize = this.tileGrid_.getTileSize(tileCoord.z);
   var image = tile.getImage(this);
   var style = image.style;
   style.position = 'absolute';

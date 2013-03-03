@@ -299,7 +299,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   } else {
 
     var tileRangeSize = tileRange.getSize();
-    var tileSize = tileGrid.getTileSize();
+    var tileSize = tileGrid.getTileSize(z);
 
     var maxDimension = Math.max(
         tileRangeSize.width * tileSize.width,

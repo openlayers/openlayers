@@ -46,9 +46,6 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
     'FORMAT': 'image/png',
     'TRANSPARENT': true
   };
-  var tileSize = tileGrid.getTileSize();
-  baseParams['WIDTH'] = tileSize.width;
-  baseParams['HEIGHT'] = tileSize.height;
   baseParams[version >= '1.3' ? 'CRS' : 'SRS'] = projection.getCode();
   goog.object.extend(baseParams, tiledWMSOptions.params);
 

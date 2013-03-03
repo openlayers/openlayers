@@ -33,7 +33,7 @@ ol.DebugTile_ = function(tileCoord, tileGrid) {
    * @private
    * @type {ol.Size}
    */
-  this.tileSize_ = tileGrid.getTileSize();
+  this.tileSize_ = tileGrid.getTileSize(tileCoord.z);
 
   /**
    * @private
