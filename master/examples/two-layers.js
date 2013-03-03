@@ -2,10 +2,10 @@ goog.require('ol.BingMapsStyle');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
-goog.require('ol.Projection');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
+goog.require('ol.projection');
 goog.require('ol.source.BingMaps');
 goog.require('ol.source.TileJSON');
 
@@ -29,7 +29,7 @@ var webglMap = new ol.Map({
   renderer: ol.RendererHint.WEBGL,
   target: 'webglMap',
   view: new ol.View2D({
-    center: ol.Projection.transformWithCodes(
+    center: ol.projection.transformWithCodes(
         new ol.Coordinate(-77.93255, 37.9555), 'EPSG:4326', 'EPSG:3857'),
     zoom: 5
   })
@@ -50,6 +50,8 @@ var canvasMap = new ol.Map({
 canvasMap.bindTo('layers', webglMap);
 canvasMap.bindTo('view', webglMap);
 
-goog.events.listen(goog.dom.getElement('canvas-export'), 'click', function(e) {
+// Handle clicks on the "canvas-export" element.
+var element = document.getElementById('canvas-export');
+element.addEventListener('click', function(e) {
   e.target.href = canvasMap.getRenderer().getCanvas().toDataURL('image/jpeg');
-});
+}, false);
