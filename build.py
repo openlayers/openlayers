@@ -95,7 +95,7 @@ def report_sizes(t):
 virtual('all', 'build-all', 'build', 'examples', 'precommit')
 
 
-virtual('precommit', 'lint', 'build-all', 'test', 'build', 'build-examples', 'doc')
+virtual('precommit', 'lint', 'build-all', 'test', 'build', 'build-examples', 'check-examples', 'doc')
 
 
 virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js')
@@ -354,6 +354,17 @@ def hostexamples(t):
     t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js', 'build/ol.css', 'build/gh-pages/%(BRANCH)s/build/')
     t.cp('examples/example-list.html', 'build/gh-pages/%(BRANCH)s/examples/index.html')
     t.cp('examples/example-list.js', 'examples/example-list.xml', 'examples/Jugl.js', 'build/gh-pages/%(BRANCH)s/examples/')
+
+
+@target('check-examples', 'hostexamples', phony=True)
+def check_examples(t):
+    directory = 'build/gh-pages/%(BRANCH)s/'
+    examples = ['build/gh-pages/%(BRANCH)s/' + e for e in EXAMPLES]
+    all_examples = examples + \
+        [e + '?mode=simple' for e in examples] + \
+        [e + '?mode=whitespace' for e in examples]
+    for example in all_examples:
+        t.run('%(PHANTOMJS)s', 'bin/check-example.js', example)
 
 
 @target(PROJ4JS, PROJ4JS_ZIP)
