@@ -108,6 +108,59 @@ describe('ol.tilegrid.TileGrid', function() {
     });
   });
 
+  describe('create with multiple tileSizes', function() {
+    it('does not throw an exception', function() {
+      expect(function() {
+        return new ol.tilegrid.TileGrid({
+          resolutions: [100, 50, 25, 10],
+          extent: extent,
+          tileSizes: [tileSize, tileSize, tileSize, tileSize],
+          origin: origin
+        });
+      }).not.toThrow();
+    });
+  });
+
+  describe('create with both tileSize and multiple tileSizes', function() {
+    it('throws an exception', function() {
+      expect(function() {
+        return new ol.tilegrid.TileGrid({
+          resolutions: [100, 50, 25, 10],
+          extent: extent,
+          tileSizes: [tileSize, tileSize, tileSize, tileSize],
+          tileSize: tileSize,
+          origin: origin
+        });
+      }).toThrow();
+    });
+  });
+
+  describe('create with too few tileSizes', function() {
+    it('throws an exception', function() {
+      expect(function() {
+        return new ol.tilegrid.TileGrid({
+          resolutions: [100, 50, 25, 10],
+          extent: extent,
+          tileSizes: [tileSize, tileSize, tileSize],
+          origin: origin
+        });
+      }).toThrow();
+    });
+  });
+
+  describe('create with too many tileSizes', function() {
+    it('throws an exception', function() {
+      expect(function() {
+        return new ol.tilegrid.TileGrid({
+          resolutions: [100, 50, 25, 10],
+          extent: extent,
+          tileSizes: [tileSize, tileSize, tileSize, tileSize, tileSize],
+          origin: origin
+        });
+      }).toThrow();
+    });
+  });
+
   describe('createForProjection', function() {
 
     it('allows easier creation of a tile grid', function() {
