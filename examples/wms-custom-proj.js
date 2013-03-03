@@ -1,6 +1,3 @@
-goog.require('goog.debug.Console');
-goog.require('goog.debug.Logger');
-goog.require('goog.debug.Logger.Level');
 goog.require('ol.Attribution');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
@@ -16,11 +13,6 @@ goog.require('ol.projection');
 goog.require('ol.source.SingleImageWMS');
 goog.require('ol.source.TiledWMS');
 
-
-if (goog.DEBUG) {
-  goog.debug.Console.autoInstall();
-  goog.debug.Logger.getLogger('ol').setLevel(goog.debug.Logger.Level.INFO);
-}
 
 var epsg21781 = new ol.Projection('EPSG:21781', ol.ProjectionUnits.METERS,
     // Validity extent from http://spatialreference.org
