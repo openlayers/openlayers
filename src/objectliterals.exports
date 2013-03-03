@@ -10,6 +10,8 @@
 @exportObjectLiteralProperty ol.MapOptions.mouseWheelZoomDelta number|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderer ol.RendererHint|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderers Array.<ol.RendererHint>|undefined
+@exportObjectLiteralProperty ol.MapOptions.scaleLineControl boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.scaleLineUnits ol.control.ScaleLineUnits|undefined
 @exportObjectLiteralProperty ol.MapOptions.shiftDragZoom boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.target Element|string
 @exportObjectLiteralProperty ol.MapOptions.touchPan boolean|undefined

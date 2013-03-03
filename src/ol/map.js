@@ -45,6 +45,7 @@ goog.require('ol.View');
 goog.require('ol.View2D');
 goog.require('ol.control.Attribution');
 goog.require('ol.control.Control');
+goog.require('ol.control.ScaleLine');
 goog.require('ol.control.Zoom');
 goog.require('ol.interaction.DblClickZoom');
 goog.require('ol.interaction.DragPan');
@@ -923,6 +924,16 @@ ol.Map.createControls_ = function(mapOptions) {
       mapOptions.attributionControl : true;
   if (attributionControl) {
     controls.push(new ol.control.Attribution({}));
+  }
+
+  var scaleLineControl = goog.isDef(mapOptions.scaleLineControl) ?
+      mapOptions.scaleLineControl : false;
+  if (scaleLineControl) {
+    var scaleLineUnits = goog.isDef(mapOptions.scaleLineUnits) ?
+        mapOptions.scaleLineUnits : undefined;
+    controls.push(new ol.control.ScaleLine({
+      units: scaleLineUnits
+    }));
   }
 
   var zoomControl = goog.isDef(mapOptions.zoomControl) ?
