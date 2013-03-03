@@ -56,18 +56,21 @@ ol.style.Style.prototype.apply = function(feature) {
  *     the feature.
  */
 ol.style.Style.applyDefaultStyle = function(feature) {
-  var type = feature.getGeometry().getType(),
+  var geometry = feature.getGeometry(),
       symbolizerLiterals = [];
-  if (type === ol.geom.GeometryType.POINT ||
-      type === ol.geom.GeometryType.MULTIPOINT) {
-    symbolizerLiterals.push(ol.style.ShapeDefaults);
-  } else if (type === ol.geom.GeometryType.LINESTRING ||
-      type === ol.geom.GeometryType.MULTILINESTRING) {
-    symbolizerLiterals.push(ol.style.LineDefaults);
-  } else if (type === ol.geom.GeometryType.LINEARRING ||
-      type === ol.geom.GeometryType.POLYGON ||
-      type === ol.geom.GeometryType.MULTIPOLYGON) {
-    symbolizerLiterals.push(ol.style.PolygonDefaults);
+  if (!goog.isNull(geometry)) {
+    var type = geometry.getType();
+    if (type === ol.geom.GeometryType.POINT ||
+        type === ol.geom.GeometryType.MULTIPOINT) {
+      symbolizerLiterals.push(ol.style.ShapeDefaults);
+    } else if (type === ol.geom.GeometryType.LINESTRING ||
+        type === ol.geom.GeometryType.MULTILINESTRING) {
+      symbolizerLiterals.push(ol.style.LineDefaults);
+    } else if (type === ol.geom.GeometryType.LINEARRING ||
+        type === ol.geom.GeometryType.POLYGON ||
+        type === ol.geom.GeometryType.MULTIPOLYGON) {
+      symbolizerLiterals.push(ol.style.PolygonDefaults);
+    }
   }
   return symbolizerLiterals;
 };
