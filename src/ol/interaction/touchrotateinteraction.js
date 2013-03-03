@@ -103,7 +103,7 @@ ol.interaction.TouchRotate.prototype.handleTouchEnd =
   if (this.targetTouches.length < 2) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
-    view.setHint(ol.ViewHint.PANNING, -1);
+    view.setHint(ol.ViewHint.INTERACTING, -1);
     return false;
   } else {
     return true;
@@ -121,7 +121,7 @@ ol.interaction.TouchRotate.prototype.handleTouchStart =
     this.lastAngle_ = undefined;
     this.rotating_ = false;
     this.rotationDelta_ = 0.0;
-    view.setHint(ol.ViewHint.PANNING, 1);
+    view.setHint(ol.ViewHint.INTERACTING, 1);
     return true;
   } else {
     return false;

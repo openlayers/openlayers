@@ -74,7 +74,7 @@ ol.interaction.TouchZoom.prototype.handleTouchEnd =
     var view = map.getView();
     // take the resolution constraint into account
     view.zoomToResolution(map, view.getResolution());
-    view.setHint(ol.ViewHint.PANNING, -1);
+    view.setHint(ol.ViewHint.INTERACTING, -1);
     return false;
   } else {
     return true;
@@ -90,7 +90,7 @@ ol.interaction.TouchZoom.prototype.handleTouchStart =
   if (this.targetTouches.length >= 2) {
     var view = mapBrowserEvent.map.getView();
     this.lastDistance_ = undefined;
-    view.setHint(ol.ViewHint.PANNING, 1);
+    view.setHint(ol.ViewHint.INTERACTING, 1);
     return true;
   } else {
     return false;
