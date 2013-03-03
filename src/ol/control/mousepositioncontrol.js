@@ -178,8 +178,9 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
     var map = this.getMap();
     var coordinate = map.getCoordinateFromPixel(pixel);
     if (!goog.isNull(coordinate)) {
-      var output = this.transform_([coordinate.x, coordinate.y]);
-      coordinate = new ol.Coordinate(output[0], output[1]);
+      var vertex = [coordinate.x, coordinate.y];
+      vertex = this.transform_(vertex, vertex);
+      coordinate = new ol.Coordinate(vertex[0], vertex[1]);
       if (goog.isDef(this.coordinateFormat_)) {
         html = this.coordinateFormat_(coordinate);
       } else {

@@ -458,6 +458,14 @@ ol.projection.getTransformFromCodes = function(sourceCode, destinationCode) {
  * @return {Array.<number>} Input coordinate array (same array as input).
  */
 ol.projection.identityTransform = function(input, opt_output, opt_dimension) {
+  if (goog.isDef(opt_output) && input !== opt_output) {
+    // TODO: consider making this a warning instead
+    goog.asserts.assert(false, 'This should not be used internally.');
+    for (var i = 0, ii = input.length; i < ii; ++i) {
+      opt_output[i] = input[i];
+    }
+    input = opt_output;
+  }
   return input;
 };
 
@@ -470,7 +478,16 @@ ol.projection.identityTransform = function(input, opt_output, opt_dimension) {
  *     values).
  */
 ol.projection.cloneTransform = function(input, opt_output, opt_dimension) {
-  return input.slice();
+  var output;
+  if (goog.isDef(opt_output)) {
+    for (var i = 0, ii = input.length; i < ii; ++i) {
+      opt_output[i] = input[i];
+    }
+    output = opt_output;
+  } else {
+    output = input.slice();
+  }
+  return output;
 };
 
 
