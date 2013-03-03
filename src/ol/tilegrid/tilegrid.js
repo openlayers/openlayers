@@ -310,23 +310,14 @@ ol.tilegrid.TileGrid.prototype.getZForResolution = function(resolution) {
  */
 ol.tilegrid.createForProjection =
     function(projection, opt_maxZoom, opt_tileSize) {
-  var projectionExtent = projection.getExtent();
-  var size = Math.max(
-      projectionExtent.maxX - projectionExtent.minX,
-      projectionExtent.maxY - projectionExtent.minY);
   var maxZoom = goog.isDef(opt_maxZoom) ?
       opt_maxZoom : 18;
   var tileSize = goog.isDef(opt_tileSize) ?
       opt_tileSize : new ol.Size(ol.DEFAULT_TILE_SIZE, ol.DEFAULT_TILE_SIZE);
-  var resolutions = new Array(maxZoom + 1);
   goog.asserts.assert(tileSize.width == tileSize.height);
-  size = size / tileSize.width;
-  for (var z = 0, zz = resolutions.length; z < zz; ++z) {
-    resolutions[z] = size / Math.pow(2, z);
-  }
   return new ol.tilegrid.TileGrid({
-    origin: projectionExtent.getTopLeft(),
-    resolutions: resolutions,
+    origin: projection.getExtent().getTopLeft(),
+    resolutions: projection.getResolutions(maxZoom + 1, tileSize.width),
     tileSize: tileSize
   });
 };
