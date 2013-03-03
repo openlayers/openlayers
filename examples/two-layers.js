@@ -50,6 +50,13 @@ var canvasMap = new ol.Map({
 canvasMap.bindTo('layers', webglMap);
 canvasMap.bindTo('view', webglMap);
 
-goog.events.listen(goog.dom.getElement('canvas-export'), 'click', function(e) {
+// Handle clicks on the "canvas-export" element.
+var element = document.getElementById('canvas-export');
+var exportMap = function(e) {
   e.target.href = canvasMap.getRenderer().getCanvas().toDataURL('image/jpeg');
-});
+};
+if ('addEventListener' in element) {
+  element.addEventListener('click', exportMap, false);
+} else {
+  element.attachEvent('onclick', exportMap);
+}
