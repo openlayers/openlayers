@@ -241,6 +241,28 @@ def build_lint_src_timestamp(t):
     t.touch()
 
 
+def _strip_comments(lines):
+    # FIXME this is a horribe hack, we should use a proper JavaScript parser here
+    in_comment = False
+    for line in lines:
+        if in_comment:
+            index = line.find('*/')
+            if index != -1:
+                in_comment = False
+                yield line[index + 2:]
+        else:
+            index = line.find('/*')
+            if index != -1:
+                yield line[:index]
+                in_comment = True
+            else:
+                index = line.find('//')
+                if index != -1:
+                    yield line[:index]
+                else:
+                    yield line
+
+
 @target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC)
 def build_check_requires_timestamp(t):
     unused_count = 0
@@ -279,7 +301,7 @@ def build_check_requires_timestamp(t):
         requires = set()
         uses = set()
         lineno = 0
-        for line in open(filename):
+        for line in _strip_comments(open(filename)):
             lineno += 1
             m = re.match(r'goog.provide\(\'(.*)\'\);', line)
             if m:
