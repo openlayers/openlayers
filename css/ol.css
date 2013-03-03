@@ -63,14 +63,17 @@
 .ol-zoom a:hover {
   background: rgba(0,60,136,0.7);
 }
-@media only screen and (max-width:600px) {
-  .ol-zoom a:hover {
-    background: rgba(0,60,136,0.5);
-  }
-}
+
 .ol-zoom-in {
   border-radius: 2px 2px 0 0;
 }
+.ol-zoom-in:before {
+  content: "+";
+}
+
 .ol-zoom-out {
   border-radius: 0 0 2px 2px;
+}
+.ol-zoom-out:before {
+  content: "\2212";
 }
