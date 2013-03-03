@@ -30,13 +30,13 @@ ol.control.Zoom = function(zoomOptions) {
   var inElement = goog.dom.createDom(goog.dom.TagName.A, {
     'href': '#zoomIn',
     'class': 'ol-zoom-in'
-  }, '+');
+  });
   goog.events.listen(inElement, eventType, this.handleIn_, false, this);
 
   var outElement = goog.dom.createDom(goog.dom.TagName.A, {
     'href': '#zoomOut',
     'class': 'ol-zoom-out'
-  }, '\u2212');
+  });
   goog.events.listen(outElement, eventType, this.handleOut_, false, this);
 
   var element = goog.dom.createDom(
