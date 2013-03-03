@@ -68,7 +68,7 @@ describe('ol.parser.GeoJSON', function() {
     ]
   };
 
-  describe('read()', function() {
+  describe('#read()', function() {
 
     it('parses point', function() {
       var str = JSON.stringify({
@@ -143,6 +143,68 @@ describe('ol.parser.GeoJSON', function() {
       expect(secondGeom).toBeA(ol.geom.LineString);
     });
 
+    it('parses countries.json', function() {
+      afterLoadText('spec/ol/parser/geojson/countries.json', function(text) {
+        var result = parser.read(text);
+        expect(result.length).toBe(179);
+
+        var first = result[0];
+        expect(first).toBeA(ol.Feature);
+        expect(first.get('name')).toBe('Afghanistan');
+        var firstGeom = first.getGeometry();
+        expect(firstGeom).toBeA(ol.geom.Polygon);
+        expect(firstGeom.getBounds().equals(
+            new ol.Extent(60.52843, 29.318572, 75.158028, 38.486282)))
+            .toBe(true);
+
+        var last = result[178];
+        expect(last).toBeA(ol.Feature);
+        expect(last.get('name')).toBe('Zimbabwe');
+        var lastGeom = last.getGeometry();
+        expect(lastGeom).toBeA(ol.geom.Polygon);
+        expect(lastGeom.getBounds().equals(
+            new ol.Extent(25.264226, -22.271612, 32.849861, -15.507787)))
+            .toBe(true);
+      });
+    });
+
+    it('parses countries.json with shared vertices', function() {
+      afterLoadText('spec/ol/parser/geojson/countries.json', function(text) {
+        var pointVertices = new ol.geom.SharedVertices();
+        var lineVertices = new ol.geom.SharedVertices();
+        var polygonVertices = new ol.geom.SharedVertices();
+
+        var result = parser.read(text, {
+          pointVertices: pointVertices,
+          lineVertices: lineVertices,
+          polygonVertices: polygonVertices
+        });
+        expect(result.length).toBe(179);
+
+        expect(pointVertices.coordinates.length).toBe(0);
+        expect(lineVertices.coordinates.length).toBe(0);
+        expect(polygonVertices.coordinates.length).toBe(21344);
+
+        var first = result[0];
+        expect(first).toBeA(ol.Feature);
+        expect(first.get('name')).toBe('Afghanistan');
+        var firstGeom = first.getGeometry();
+        expect(firstGeom).toBeA(ol.geom.Polygon);
+        expect(firstGeom.getBounds().equals(
+            new ol.Extent(60.52843, 29.318572, 75.158028, 38.486282)))
+            .toBe(true);
+
+        var last = result[178];
+        expect(last).toBeA(ol.Feature);
+        expect(last.get('name')).toBe('Zimbabwe');
+        var lastGeom = last.getGeometry();
+        expect(lastGeom).toBeA(ol.geom.Polygon);
+        expect(lastGeom.getBounds().equals(
+            new ol.Extent(25.264226, -22.271612, 32.849861, -15.507787)))
+            .toBe(true);
+      });
+    });
+
   });
 
 });
@@ -152,4 +214,5 @@ goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
+goog.require('ol.geom.SharedVertices');
 goog.require('ol.parser.GeoJSON');
