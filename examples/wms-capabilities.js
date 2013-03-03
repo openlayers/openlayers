@@ -1,7 +1,7 @@
 goog.require('ol.parser.ogc.WMSCapabilities');
 
 var parser = new ol.parser.ogc.WMSCapabilities(), result;
-var url = '../test/spec/ol/parser/ogc/xml/wmscapabilities_v1_3_0/ogcsample.xml';
+var url = 'data/ogcsample.xml';
 
 var xhr = new XMLHttpRequest();
 xhr.open('GET', url, true);

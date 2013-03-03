@@ -8,6 +8,8 @@
 /build/ol.css
 /build/ol.js
 /build/ol-all.js
+/build/ol-simple.js
+/build/ol-whitespace.js
 /build/src
 /build/phantomjs-*-windows
 /build/phantomjs-*-windows.zip

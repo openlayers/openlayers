@@ -2,6 +2,7 @@
 @exportProperty ol.Map.prototype.addPreRenderFunction
 @exportProperty ol.Map.prototype.addPreRenderFunctions
 @exportProperty ol.Map.prototype.getInteractions
+@exportProperty ol.Map.prototype.getRenderer
 
 @exportSymbol ol.RendererHint
 @exportProperty ol.RendererHint.CANVAS
