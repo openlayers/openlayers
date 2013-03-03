@@ -20,6 +20,12 @@ ol.Feature = function(opt_values) {
    */
   this.geometryName_;
 
+  /**
+   * @type {Array.<ol.style.Symbolizer>}
+   * @private
+   */
+  this.symbolizers_ = null;
+
 };
 goog.inherits(ol.Feature, ol.Object);
 
@@ -51,6 +57,22 @@ ol.Feature.prototype.getGeometry = function() {
 
 
 /**
+ * @return {Array.<ol.style.SymbolizerLiteral>} Symbolizer literals.
+ */
+ol.Feature.prototype.getSymbolizerLiterals = function() {
+  var symbolizerLiterals = null;
+  if (!goog.isNull(this.symbolizers_)) {
+    var numSymbolizers = this.symbolizers_.length;
+    symbolizerLiterals = new Array(numSymbolizers);
+    for (var i = 0; i < numSymbolizers; ++i) {
+      symbolizerLiterals[i] = this.symbolizers_[i].createLiteral(this);
+    }
+  }
+  return symbolizerLiterals;
+};
+
+
+/**
  * @inheritDoc
  * @param {string} key Key.
  * @param {*} value Value.
@@ -71,6 +93,15 @@ ol.Feature.prototype.setGeometry = function(geometry) {
     this.geometryName_ = ol.Feature.DEFAULT_GEOMETRY;
   }
   this.set(this.geometryName_, geometry);
+};
+
+
+/**
+ * @param {Array.<ol.style.Symbolizer>} symbolizers Symbolizers for this
+ *     features. If set, these take precedence over layer style.
+ */
+ol.Feature.prototype.setSymbolizers = function(symbolizers) {
+  this.symbolizers_ = symbolizers;
 };
 
 

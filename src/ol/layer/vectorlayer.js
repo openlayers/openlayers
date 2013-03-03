@@ -42,16 +42,21 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
   var uniqueLiterals = {},
       featuresBySymbolizer = [],
       style = this.style_,
-      feature, literals, literal, uniqueLiteral, key;
-  for (var i = 0, ii = features.length; i < ii; ++i) {
+      numFeatures = features.length,
+      i, j, l, feature, literals, numLiterals, literal, uniqueLiteral, key;
+  for (i = 0; i < numFeatures; ++i) {
     feature = features[i];
-    literals = goog.isNull(style) ?
-        ol.style.Style.applyDefaultStyle(feature) :
-        style.apply(feature);
-    for (var j = 0, jj = literals.length; j < jj; ++j) {
+    literals = feature.getSymbolizerLiterals();
+    if (goog.isNull(literals)) {
+      literals = goog.isNull(style) ?
+          ol.style.Style.applyDefaultStyle(feature) :
+          style.apply(feature);
+    }
+    numLiterals = literals.length;
+    for (j = 0; j < numLiterals; ++j) {
       literal = literals[j];
-      for (var l in uniqueLiterals) {
-        uniqueLiteral = featuresBySymbolizer[uniqueLiterals[key]][1];
+      for (l in uniqueLiterals) {
+        uniqueLiteral = featuresBySymbolizer[uniqueLiterals[l]][1];
         if (literal.equals(uniqueLiteral)) {
           literal = uniqueLiteral;
           break;
