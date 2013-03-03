@@ -98,7 +98,7 @@ virtual('all', 'build-all', 'build', 'examples', 'precommit')
 virtual('precommit', 'lint', 'build-all', 'test', 'build', 'build-examples', 'doc')
 
 
-virtual('build', 'build/ol.css', 'build/ol.js')
+virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js')
 
 
 virtual('todo', 'fixme')
@@ -112,6 +112,18 @@ def build_ol_css(t):
 @target('build/ol.js', PLOVR_JAR, SRC, EXTERNAL_SRC, 'base.json', 'build/ol.json')
 def build_ol_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol.json')
+    report_sizes(t)
+
+
+@target('build/ol-simple.js', PLOVR_JAR, SRC, EXTERNAL_SRC, 'base.json', 'build/ol.json', 'build/ol-simple.json')
+def build_ol_js(t):
+    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol-simple.json')
+    report_sizes(t)
+
+
+@target('build/ol-whitespace.js', PLOVR_JAR, SRC, EXTERNAL_SRC, 'base.json', 'build/ol.json', 'build/ol-whitespace.json')
+def build_ol_js(t):
+    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol-whitespace.json')
     report_sizes(t)
 
 
@@ -337,7 +349,7 @@ def hostexamples(t):
     t.makedirs('build/gh-pages/%(BRANCH)s/build')
     t.cp(EXAMPLES, (path.replace('.html', '.js') for path in EXAMPLES), 'examples/style.css', 'build/gh-pages/%(BRANCH)s/examples/')
     t.cp('build/loader_hosted_examples.js', 'build/gh-pages/%(BRANCH)s/examples/loader.js')
-    t.cp('build/ol.js', 'build/ol.css', 'build/gh-pages/%(BRANCH)s/build/')
+    t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js', 'build/ol.css', 'build/gh-pages/%(BRANCH)s/build/')
     t.cp('examples/example-list.html', 'build/gh-pages/%(BRANCH)s/examples/index.html')
     t.cp('examples/example-list.js', 'examples/example-list.xml', 'examples/Jugl.js', 'build/gh-pages/%(BRANCH)s/examples/')
 
