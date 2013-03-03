@@ -1,5 +1,15 @@
 {
 
+  // If ambiguate-properties and disambiguate-properties are set to true
+  // we get function names like "ol_control_Control_prototype$setMap" in
+  // the compiled code when using the SIMPLE compilation. It looks like
+  // "ambiguate-properties" and  "disambiguate-properties" are only
+  // appropriate for ADVANCED compilation.
+
+  "ambiguate-properties": false,
+
+  "disambiguate-properties": false,
+
   "id": "ol-simple",
 
   "externs": [
