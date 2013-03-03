@@ -84,8 +84,8 @@ describe('ol.Extent', function() {
     });
 
     it('takes arbitrary function', function() {
-      var transformFn = function(coordinate) {
-        return new ol.Coordinate(-coordinate.x, -coordinate.y);
+      var transformFn = function(input) {
+        return [-input[0], -input[1], -input[2], -input[3]];
       };
       var sourceExtent = new ol.Extent(-15, -30, 45, 60);
       var destinationExtent = sourceExtent.transform(transformFn);

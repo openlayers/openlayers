@@ -8,6 +8,7 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.style');
+goog.require('ol.Coordinate');
 goog.require('ol.CoordinateFormatType');
 goog.require('ol.MapEvent');
 goog.require('ol.MapEventType');
@@ -177,7 +178,8 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
     var map = this.getMap();
     var coordinate = map.getCoordinateFromPixel(pixel);
     if (!goog.isNull(coordinate)) {
-      coordinate = this.transform_(coordinate);
+      var output = this.transform_([coordinate.x, coordinate.y]);
+      coordinate = new ol.Coordinate(output[0], output[1]);
       if (goog.isDef(this.coordinateFormat_)) {
         html = this.coordinateFormat_(coordinate);
       } else {

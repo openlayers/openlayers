@@ -1,9 +1,11 @@
 goog.provide('ol.TransformFunction');
 
-goog.require('ol.Coordinate');
-
 
 /**
- * @typedef {function(ol.Coordinate): ol.Coordinate}
+ * A transform function accepts an array of input coordinate values and an
+ * optional dimension (default should be 2).  The function transforms the
+ * coordinate values and returns an array of the same length as the input.
+ *
+ * @typedef {function(Array.<number>, number=): Array.<number>}
  */
 ol.TransformFunction;

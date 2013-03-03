@@ -155,10 +155,22 @@ describe('ol.projection', function() {
       var transform = ol.projection.getTransform(sm, gg);
       expect(typeof transform).toBe('function');
 
-      var coordinate = transform(new ol.Coordinate(-12000000, 5000000));
+      var output = transform([-12000000, 5000000]);
 
-      expect(coordinate.x).toRoughlyEqual(-107.79783409434258, 1e-9);
-      expect(coordinate.y).toRoughlyEqual(40.91627447067577, 1e-9);
+      expect(output[0]).toRoughlyEqual(-107.79783409434258, 1e-9);
+      expect(output[1]).toRoughlyEqual(40.91627447067577, 1e-9);
+    });
+
+    it('works for longer arrays', function() {
+      var transform = ol.projection.getTransform(sm, gg);
+      expect(typeof transform).toBe('function');
+
+      var output = transform([-12000000, 5000000, -12000000, 5000000]);
+
+      expect(output[0]).toRoughlyEqual(-107.79783409434258, 1e-9);
+      expect(output[1]).toRoughlyEqual(40.91627447067577, 1e-9);
+      expect(output[2]).toRoughlyEqual(-107.79783409434258, 1e-9);
+      expect(output[3]).toRoughlyEqual(40.91627447067577, 1e-9);
     });
 
   });
@@ -177,14 +189,54 @@ describe('ol.projection', function() {
           'GOOGLE', 'EPSG:4326');
       expect(typeof transform).toBe('function');
 
-      var coordinate = transform(
-          new ol.Coordinate(-626172.13571216376, 6887893.4928337997));
+      var output = transform([-626172.13571216376, 6887893.4928337997]);
 
-      expect(coordinate.x).toRoughlyEqual(-5.625, 1e-9);
-      expect(coordinate.y).toRoughlyEqual(52.4827802220782, 1e-9);
+      expect(output[0]).toRoughlyEqual(-5.625, 1e-9);
+      expect(output[1]).toRoughlyEqual(52.4827802220782, 1e-9);
 
     });
 
+    it('works for longer arrays of coordinate values', function() {
+      var transform = ol.projection.getTransformFromCodes(
+          'GOOGLE', 'EPSG:4326');
+      expect(typeof transform).toBe('function');
+
+      var output = transform([
+        -626172.13571216376, 6887893.4928337997,
+        -12000000, 5000000,
+        -626172.13571216376, 6887893.4928337997
+      ]);
+
+      expect(output[0]).toRoughlyEqual(-5.625, 1e-9);
+      expect(output[1]).toRoughlyEqual(52.4827802220782, 1e-9);
+      expect(output[2]).toRoughlyEqual(-107.79783409434258, 1e-9);
+      expect(output[3]).toRoughlyEqual(40.91627447067577, 1e-9);
+      expect(output[4]).toRoughlyEqual(-5.625, 1e-9);
+      expect(output[5]).toRoughlyEqual(52.4827802220782, 1e-9);
+    });
+
+    it('accepts a dimension', function() {
+      var transform = ol.projection.getTransformFromCodes(
+          'GOOGLE', 'EPSG:4326');
+      expect(typeof transform).toBe('function');
+
+      var dimension = 3;
+      var output = transform([
+        -626172.13571216376, 6887893.4928337997, 100,
+        -12000000, 5000000, 200,
+        -626172.13571216376, 6887893.4928337997, 300
+      ], dimension);
+
+      expect(output[0]).toRoughlyEqual(-5.625, 1e-9);
+      expect(output[1]).toRoughlyEqual(52.4827802220782, 1e-9);
+      expect(output[2]).toBe(100);
+      expect(output[3]).toRoughlyEqual(-107.79783409434258, 1e-9);
+      expect(output[4]).toRoughlyEqual(40.91627447067577, 1e-9);
+      expect(output[5]).toBe(200);
+      expect(output[6]).toRoughlyEqual(-5.625, 1e-9);
+      expect(output[7]).toRoughlyEqual(52.4827802220782, 1e-9);
+      expect(output[8]).toBe(300);
+    });
   });
 
   describe('ol.projection.removeTransform()', function() {
@@ -195,7 +247,7 @@ describe('ol.projection', function() {
     it('removes functions cached by addTransform', function() {
       var foo = new ol.Projection('foo', units, extent);
       var bar = new ol.Projection('bar', units, extent);
-      var transform = function() {};
+      var transform = function(intput, dimension) {return input};
       ol.projection.addTransform(foo, bar, transform);
       expect(ol.projection.transforms_).not.toBeUndefined();
       expect(ol.projection.transforms_.foo).not.toBeUndefined();

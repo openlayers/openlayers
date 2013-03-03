@@ -76,11 +76,12 @@ ol.Geolocation.prototype.disposeInternal = function() {
 ol.Geolocation.prototype.handleProjectionChanged_ = function() {
   var projection = this.getProjection();
   if (goog.isDefAndNotNull(projection)) {
-    this.transformCoords_ = ol.projection.getTransform(
+    this.transformFn_ = ol.projection.getTransform(
         ol.projection.getFromCode('EPSG:4326'), projection);
     if (!goog.isNull(this.position_)) {
+      var output = this.transformFn_([this.position_.x, this.position_.y]);
       this.set(ol.GeolocationProperty.POSITION,
-          this.transformCoords_(this.position_));
+          new ol.Coordinate(output[0], output[1]));
     }
   }
 };
@@ -108,8 +109,9 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   this.set(ol.GeolocationProperty.HEADING, goog.isNull(coords.heading) ?
       undefined : goog.math.toRadians(coords.heading));
   this.position_ = new ol.Coordinate(coords.longitude, coords.latitude);
+  var output = this.transformFn_([coords.longitude, coords.latitude]);
   this.set(ol.GeolocationProperty.POSITION,
-      this.transformCoords_(this.position_));
+      new ol.Coordinate(output[0], output[1]));
   this.set(ol.GeolocationProperty.SPEED,
       goog.isNull(coords.speed) ? undefined : coords.speed);
 };
@@ -230,7 +232,8 @@ goog.exportProperty(
 
 /**
  * @private
- * @param {ol.Coordinate} coordinate Coordinate.
- * @return {ol.Coordinate} Coordinate.
+ * @param {Array.<number>} input Input coordinate values.
+ * @param {number=} opt_dimension Dimension (default is 2).
+ * @return {Array.<number>} Output coordinate values.
  */
-ol.Geolocation.prototype.transformCoords_ = goog.functions.identity;
+ol.Geolocation.prototype.transformFn_ = goog.functions.identity;
