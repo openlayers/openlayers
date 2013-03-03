@@ -9,7 +9,7 @@ describe('ol.source.Vector', function() {
 
     it('works', function() {
       vectorSource = new ol.source.Vector({
-        projection: ol.Projection.getFromCode('EPSG:4326')
+        projection: ol.projection.getFromCode('EPSG:4326')
       });
       vectorSource.addFeatures([new ol.Feature()]);
       expect(vectorSource.getFeatures().length).toEqual(1);
@@ -48,7 +48,7 @@ describe('ol.source.Vector', function() {
         })
       ];
       vectorSource = new ol.source.Vector({
-        projection: ol.Projection.getFromCode('EPSG:4326')
+        projection: ol.projection.getFromCode('EPSG:4326')
       });
       vectorSource.addFeatures(features);
     });

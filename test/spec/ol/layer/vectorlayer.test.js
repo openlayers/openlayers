@@ -7,7 +7,7 @@ describe('ol.layer.Vector', function() {
     it('groups equal symbolizers', function() {
       var layer = new ol.layer.Vector({
         source: new ol.source.Vector({
-          projection: ol.Projection.getFromCode('EPSG:4326')
+          projection: ol.projection.getFromCode('EPSG:4326')
         }),
         style: new ol.style.Style({
           rules: [

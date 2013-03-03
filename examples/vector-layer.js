@@ -2,13 +2,13 @@ goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Feature');
 goog.require('ol.Map');
-goog.require('ol.Projection');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.Vector');
+goog.require('ol.projection');
 goog.require('ol.source.MapQuestOpenAerial');
 goog.require('ol.source.Vector');
 
@@ -18,7 +18,7 @@ var raster = new ol.layer.TileLayer({
 });
 
 var source = new ol.source.Vector({
-  projection: ol.Projection.getFromCode('EPSG:3857')
+  projection: ol.projection.getFromCode('EPSG:3857')
 });
 
 source.addFeatures([

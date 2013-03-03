@@ -29,7 +29,7 @@ describe('ol.style.Style', function() {
     });
 
   });
-  
+
   describe('ol.style.Style.applyDefaultStyle()', function() {
     var feature = new ol.Feature();
 
