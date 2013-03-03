@@ -2,6 +2,7 @@
 @exportProperty ol.Projection.prototype.getAxisOrientation
 @exportProperty ol.Projection.prototype.getCode
 @exportProperty ol.Projection.prototype.getExtent
+@exportProperty ol.Projection.prototype.getPointResolution
 @exportProperty ol.Projection.prototype.getUnits
 
 @exportSymbol ol.ProjectionUnits

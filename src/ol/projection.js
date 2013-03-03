@@ -8,6 +8,7 @@ goog.require('goog.object');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.TransformFunction');
+goog.require('ol.sphere.NORMAL');
 
 
 /**
@@ -86,6 +87,14 @@ ol.Projection.prototype.getExtent = function() {
 
 
 /**
+ * @param {number} resolution Resolution.
+ * @param {ol.Coordinate} point Point.
+ * @return {number} Point resolution.
+ */
+ol.Projection.prototype.getPointResolution = goog.abstractMethod;
+
+
+/**
  * @return {ol.ProjectionUnits} Units.
  */
 ol.Projection.prototype.getUnits = function() {
@@ -121,8 +130,47 @@ ol.Proj4jsProjection_ = function(code, proj4jsProj) {
    */
   this.proj4jsProj_ = proj4jsProj;
 
+  /**
+   * @private
+   * @type {?ol.TransformFunction}
+   */
+  this.toEPSG4326_ = null;
+
 };
 goog.inherits(ol.Proj4jsProjection_, ol.Projection);
+
+
+/**
+ * @inheritDoc
+ */
+ol.Proj4jsProjection_.prototype.getPointResolution =
+    function(resolution, point) {
+  if (this.getUnits() == ol.ProjectionUnits.DEGREES) {
+    return resolution;
+  } else {
+    // Estimate point resolution by transforming the center pixel to EPSG:4326,
+    // measuring its width and height on the normal sphere, and taking the
+    // average of the width and height.
+    if (goog.isNull(this.toEPSG4326_)) {
+      this.toEPSG4326_ = ol.projection.getTransform(
+          this, ol.projection.getProj4jsProjectionFromCode_('EPSG:4326'));
+    }
+    var vertices = [
+      point.x - resolution / 2, point.y,
+      point.x + resolution / 2, point.y,
+      point.x, point.y - resolution / 2,
+      point.x, point.y + resolution / 2
+    ];
+    vertices = this.toEPSG4326_(vertices, vertices, 2);
+    var width = ol.sphere.NORMAL.haversineDistance(
+        new ol.Coordinate(vertices[0], vertices[1]),
+        new ol.Coordinate(vertices[2], vertices[3]));
+    var height = ol.sphere.NORMAL.haversineDistance(
+        new ol.Coordinate(vertices[4], vertices[5]),
+        new ol.Coordinate(vertices[6], vertices[7]));
+    return (width + height) / 2;
+  }
+};
 
 
 /**

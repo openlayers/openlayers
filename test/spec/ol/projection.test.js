@@ -144,6 +144,36 @@ describe('ol.projection', function() {
       expect(point.y).toRoughlyEqual(200146.976, 1);
     });
 
+    it('numerically estimates point scale at the equator', function() {
+      var googleProjection = ol.projection.getFromCode('GOOGLE');
+      expect(googleProjection.getPointResolution(1, new ol.Coordinate(0, 0))).
+          toRoughlyEqual(1, 1e-1);
+    });
+
+    it('numerically estimates point scale at various latitudes', function() {
+      var epsg3857Projection = ol.projection.getFromCode('EPSG:3857');
+      var googleProjection = ol.projection.getFromCode('GOOGLE');
+      var point, y;
+      for (y = -20; y <= 20; ++y) {
+        point = new ol.Coordinate(0, 1000000 * y);
+        expect(googleProjection.getPointResolution(1, point)).toRoughlyEqual(
+            epsg3857Projection.getPointResolution(1, point), 1e-1);
+      }
+    });
+
+    it('numerically estimates point scale at various points', function() {
+      var epsg3857Projection = ol.projection.getFromCode('EPSG:3857');
+      var googleProjection = ol.projection.getFromCode('GOOGLE');
+      var point, x, y;
+      for (x = -20; x <= 20; ++x) {
+        for (y = -20; y <= 20; ++y) {
+          point = new ol.Coordinate(1000000 * x, 1000000 * y);
+          expect(googleProjection.getPointResolution(1, point)).toRoughlyEqual(
+              epsg3857Projection.getPointResolution(1, point), 1e-1);
+        }
+      }
+    });
+
   });
 
   describe('ol.projection.getTransform()', function() {
