@@ -1,6 +1,8 @@
-goog.provide('ol.test.parser.geojson');
+goog.provide('ol.test.parser.GeoJSON');
 
-describe('ol.parser.geojson', function() {
+describe('ol.parser.GeoJSON', function() {
+
+  var parser = new ol.parser.GeoJSON();
 
   var data = {
     'type': 'FeatureCollection',
@@ -74,7 +76,7 @@ describe('ol.parser.geojson', function() {
         coordinates: [10, 20]
       });
 
-      var obj = ol.parser.geojson.read(str);
+      var obj = parser.read(str);
       expect(obj).toBeA(ol.geom.Point);
       expect(obj.getCoordinates()).toEqual([10, 20]);
     });
@@ -85,7 +87,7 @@ describe('ol.parser.geojson', function() {
         coordinates: [[10, 20], [30, 40]]
       });
 
-      var obj = ol.parser.geojson.read(str);
+      var obj = parser.read(str);
       expect(obj).toBeA(ol.geom.LineString);
       expect(obj.getCoordinates()).toEqual([[10, 20], [30, 40]]);
     });
@@ -99,7 +101,7 @@ describe('ol.parser.geojson', function() {
             coordinates: [outer, inner1, inner2]
           });
 
-      var obj = ol.parser.geojson.read(str);
+      var obj = parser.read(str);
       expect(obj).toBeA(ol.geom.Polygon);
       expect(obj.rings.length).toBe(3);
       expect(obj.rings[0]).toBeA(ol.geom.LinearRing);
@@ -116,7 +118,7 @@ describe('ol.parser.geojson', function() {
         ]
       });
 
-      var array = ol.parser.geojson.read(str);
+      var array = parser.read(str);
       expect(array.length).toBe(2);
       expect(array[0]).toBeA(ol.geom.Point);
       expect(array[1]).toBeA(ol.geom.LineString);
@@ -124,7 +126,7 @@ describe('ol.parser.geojson', function() {
 
     it('parses feature collection', function() {
       var str = JSON.stringify(data),
-          array = ol.parser.geojson.read(str);
+          array = parser.read(str);
 
       expect(array.length).toBe(2);
 
@@ -145,4 +147,9 @@ describe('ol.parser.geojson', function() {
 
 });
 
-goog.require('ol.parser.geojson');
+goog.require('ol.Feature');
+goog.require('ol.geom.LinearRing');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
+goog.require('ol.parser.GeoJSON');

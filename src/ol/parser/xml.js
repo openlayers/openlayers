@@ -1,9 +1,12 @@
 goog.provide('ol.parser.XML');
 
+goog.require('ol.parser.Parser');
+
 
 
 /**
  * @constructor
+ * @extends {ol.parser.Parser}
  */
 ol.parser.XML = function() {
   this.regExes = {
@@ -13,6 +16,7 @@ ol.parser.XML = function() {
     trimComma: (/\s*,\s*/g)
   };
 };
+goog.inherits(ol.parser.XML, ol.parser.Parser);
 
 
 /**
