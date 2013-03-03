@@ -215,6 +215,21 @@ describe('ol.projection', function() {
       expect(output[5]).toRoughlyEqual(52.4827802220782, 1e-9);
     });
 
+    it('accepts an optional destination array', function() {
+      var transform = ol.projection.getTransformFromCodes(
+          'EPSG:3857', 'EPSG:4326');
+      var input = [-12000000, 5000000];
+      var output = [];
+
+      var got = transform(input, output);
+      expect(got).toBe(output);
+
+      expect(output[0]).toRoughlyEqual(-107.79783409434258, 1e-9);
+      expect(output[1]).toRoughlyEqual(40.91627447067577, 1e-9);
+
+      expect(input).toEqual([-12000000, 5000000]);
+    });
+
     it('accepts a dimension', function() {
       var transform = ol.projection.getTransformFromCodes(
           'GOOGLE', 'EPSG:4326');
@@ -225,7 +240,7 @@ describe('ol.projection', function() {
         -626172.13571216376, 6887893.4928337997, 100,
         -12000000, 5000000, 200,
         -626172.13571216376, 6887893.4928337997, 300
-      ], dimension);
+      ], undefined, dimension);
 
       expect(output[0]).toRoughlyEqual(-5.625, 1e-9);
       expect(output[1]).toRoughlyEqual(52.4827802220782, 1e-9);
@@ -247,7 +262,7 @@ describe('ol.projection', function() {
     it('removes functions cached by addTransform', function() {
       var foo = new ol.Projection('foo', units, extent);
       var bar = new ol.Projection('bar', units, extent);
-      var transform = function(intput, dimension) {return input};
+      var transform = function(input, output, dimension) {return input};
       ol.projection.addTransform(foo, bar, transform);
       expect(ol.projection.transforms_).not.toBeUndefined();
       expect(ol.projection.transforms_.foo).not.toBeUndefined();

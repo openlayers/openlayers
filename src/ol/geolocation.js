@@ -233,6 +233,7 @@ goog.exportProperty(
 /**
  * @private
  * @param {Array.<number>} input Input coordinate values.
+ * @param {Array.<number>=} opt_output Output array of coordinate values.
  * @param {number=} opt_dimension Dimension (default is 2).
  * @return {Array.<number>} Output coordinate values.
  */

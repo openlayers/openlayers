@@ -73,18 +73,22 @@ ol.projection.EPSG3857.PROJECTIONS = goog.array.map(
  * Transformation from EPSG:4326 to EPSG:3857.
  *
  * @param {Array.<number>} input Input array of coordinate values.
+ * @param {Array.<number>=} opt_output Output array of coordinate values.
  * @param {number=} opt_dimension Dimension (default is 2).
  * @return {Array.<number>} Output array of coordinate values.
  */
-ol.projection.EPSG3857.fromEPSG4326 = function(input, opt_dimension) {
+ol.projection.EPSG3857.fromEPSG4326 = function(
+    input, opt_output, opt_dimension) {
   var length = input.length,
-      dimension = goog.isDef(opt_dimension) ? opt_dimension : 2,
-      output;
-  if (dimension > 2) {
-    // preserve values beyond second dimension
-    output = input.slice();
-  } else {
-    output = new Array(length);
+      dimension = opt_dimension > 1 ? opt_dimension : 2,
+      output = opt_output;
+  if (!goog.isDef(output)) {
+    if (dimension > 2) {
+      // preserve values beyond second dimension
+      output = input.slice();
+    } else {
+      output = new Array(length);
+    }
   }
   goog.asserts.assert(output.length % dimension === 0);
   for (var i = 0; i < length; i += dimension) {
@@ -100,18 +104,21 @@ ol.projection.EPSG3857.fromEPSG4326 = function(input, opt_dimension) {
  * Transformation from EPSG:3857 to EPSG:4326.
  *
  * @param {Array.<number>} input Input array of coordinate values.
+ * @param {Array.<number>=} opt_output Output array of coordinate values.
  * @param {number=} opt_dimension Dimension (default is 2).
  * @return {Array.<number>} Output array of coordinate values.
  */
-ol.projection.EPSG3857.toEPSG4326 = function(input, opt_dimension) {
+ol.projection.EPSG3857.toEPSG4326 = function(input, opt_output, opt_dimension) {
   var length = input.length,
-      dimension = goog.isDef(opt_dimension) ? opt_dimension : 2,
-      output;
-  if (dimension > 2) {
-    // preserve values beyond second dimension
-    output = input.slice();
-  } else {
-    output = new Array(length);
+      dimension = opt_dimension > 1 ? opt_dimension : 2,
+      output = opt_output;
+  if (!goog.isDef(output)) {
+    if (dimension > 2) {
+      // preserve values beyond second dimension
+      output = input.slice();
+    } else {
+      output = new Array(length);
+    }
   }
   goog.asserts.assert(output.length % dimension === 0);
   for (var i = 0; i < length; i += dimension) {

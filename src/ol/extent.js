@@ -109,9 +109,9 @@ ol.Extent.prototype.getTopRight = function() {
  */
 ol.Extent.prototype.transform = function(transformFn) {
   var input = [this.minX, this.minY, this.maxX, this.maxY];
-  var output = transformFn(input, 2);
-  return new ol.Extent(Math.min(output[0], output[2]),
-      Math.min(output[1], output[3]),
-      Math.max(output[0], output[2]),
-      Math.max(output[1], output[3]));
+  input = transformFn(input, input, 2);
+  return new ol.Extent(Math.min(input[0], input[2]),
+      Math.min(input[1], input[3]),
+      Math.max(input[0], input[2]),
+      Math.max(input[1], input[3]));
 };
