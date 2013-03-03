@@ -13,7 +13,8 @@ xhr.open('GET', url, true);
 xhr.onload = function() {
   if (xhr.status == 200) {
     result = parser.read(xhr.responseXML);
-    document.getElementById('log').innerHTML = window.JSON.stringify(result);
+    document.getElementById('log').innerHTML =
+        window.JSON.stringify(result, undefined, 2);
   }
 };
 xhr.send();
