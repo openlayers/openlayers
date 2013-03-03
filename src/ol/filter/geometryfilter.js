@@ -8,10 +8,11 @@ goog.require('ol.geom.GeometryType');
 
 /**
  * @constructor
- * @implements {ol.filter.Filter}
+ * @extends {ol.filter.Filter}
  * @param {ol.geom.GeometryType} type The geometry type.
  */
 ol.filter.Geometry = function(type) {
+  goog.base(this);
 
   /**
    * @type {ol.geom.GeometryType}
@@ -20,6 +21,7 @@ ol.filter.Geometry = function(type) {
   this.type_ = type;
 
 };
+goog.inherits(ol.filter.Geometry, ol.filter.Filter);
 
 
 /**

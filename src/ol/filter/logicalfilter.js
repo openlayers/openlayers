@@ -7,11 +7,12 @@ goog.require('ol.filter.Filter');
 
 /**
  * @constructor
- * @implements {ol.filter.Filter}
+ * @extends {ol.filter.Filter}
  * @param {Array.<ol.filter.Filter>} filters Filters to and-combine.
  * @param {!ol.filter.LogicalOperator} operator Operator.
  */
 ol.filter.Logical = function(filters, operator) {
+  goog.base(this);
 
   /**
    * @type {Array.<ol.filter.Filter>}
@@ -25,6 +26,7 @@ ol.filter.Logical = function(filters, operator) {
   this.operator = operator;
 
 };
+goog.inherits(ol.filter.Logical, ol.filter.Filter);
 
 
 /**

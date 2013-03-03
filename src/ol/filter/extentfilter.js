@@ -7,10 +7,11 @@ goog.require('ol.filter.Filter');
 
 /**
  * @constructor
- * @implements {ol.filter.Filter}
+ * @extends {ol.filter.Filter}
  * @param {ol.Extent} extent The extent.
  */
 ol.filter.Extent = function(extent) {
+  goog.base(this);
 
   /**
    * @type {ol.Extent}
@@ -19,6 +20,7 @@ ol.filter.Extent = function(extent) {
   this.extent_ = extent;
 
 };
+goog.inherits(ol.filter.Extent, ol.filter.Filter);
 
 
 /**
