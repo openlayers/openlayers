@@ -6,7 +6,6 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('ol.BrowserFeature');
 goog.require('ol.control.Control');
 
 
@@ -24,20 +23,23 @@ ol.control.ZOOM_DURATION = 250;
  */
 ol.control.Zoom = function(zoomOptions) {
 
-  var eventType = ol.BrowserFeature.HAS_TOUCH ?
-      goog.events.EventType.TOUCHEND : goog.events.EventType.CLICK;
-
   var inElement = goog.dom.createDom(goog.dom.TagName.A, {
     'href': '#zoomIn',
     'class': 'ol-zoom-in'
   });
-  goog.events.listen(inElement, eventType, this.handleIn_, false, this);
+  goog.events.listen(inElement, [
+    goog.events.EventType.TOUCHEND,
+    goog.events.EventType.CLICK
+  ], this.handleIn_, false, this);
 
   var outElement = goog.dom.createDom(goog.dom.TagName.A, {
     'href': '#zoomOut',
     'class': 'ol-zoom-out'
   });
-  goog.events.listen(outElement, eventType, this.handleOut_, false, this);
+  goog.events.listen(outElement, [
+    goog.events.EventType.TOUCHEND,
+    goog.events.EventType.CLICK
+  ], this.handleOut_, false, this);
 
   var element = goog.dom.createDom(
       goog.dom.TagName.DIV, 'ol-zoom ol-unselectable', inElement, outElement);
