@@ -93,9 +93,9 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   var tilesToDrawByZ = {};
   tilesToDrawByZ[z] = {};
 
-  function isLoaded(tile) {
+  var isLoaded = function(tile) {
     return !goog.isNull(tile) && tile.getState() == ol.TileState.LOADED;
-  }
+  };
   var findLoadedTiles = goog.bind(tileSource.findLoadedTiles, tileSource,
       tilesToDrawByZ, isLoaded);
 
@@ -217,6 +217,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
+  tileSource.useLowResolutionTiles(z, frameState.extent);
   this.scheduleExpireCache(frameState, tileSource);
 
 };

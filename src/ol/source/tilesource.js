@@ -119,3 +119,29 @@ ol.source.TileSource.prototype.getTile = goog.abstractMethod;
 ol.source.TileSource.prototype.getTileGrid = function() {
   return this.tileGrid;
 };
+
+
+/**
+ * @param {number} z Z.
+ * @param {ol.Extent} extent Extent.
+ */
+ol.source.TileSource.prototype.useLowResolutionTiles = function(z, extent) {
+  var tileGrid = this.getTileGrid();
+  var tileRange, x, y, zKey;
+  // FIXME this should loop up to tileGrid's minZ when implemented
+  for (; z >= 0; --z) {
+    tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+    for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
+      for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+        this.useTile(z + '/' + x + '/' + y);
+      }
+    }
+  }
+};
+
+
+/**
+ * Marks a tile coord as being used, without triggering a load.
+ * @param {string} tileCoordKey Tile coordinate key.
+ */
+ol.source.TileSource.prototype.useTile = goog.nullFunction;

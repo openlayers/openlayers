@@ -109,3 +109,14 @@ ol.source.ImageTileSource.prototype.getTile = function(tileCoord) {
 ol.source.ImageTileSource.prototype.getTileCoordUrl = function(tileCoord) {
   return this.tileUrlFunction(tileCoord);
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.ImageTileSource.prototype.useTile = function(tileCoord) {
+  var key = tileCoord.toString();
+  if (this.tileCache_.containsKey(key)) {
+    this.tileCache_.get(key);
+  }
+};

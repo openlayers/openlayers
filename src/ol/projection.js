@@ -254,7 +254,6 @@ ol.Projection.createProjection = function(projection, defaultCode) {
  * @param {ol.TransformFunction} transformFn Transform.
  */
 ol.Projection.addTransform = function(source, destination, transformFn) {
-  var projections = ol.Projection.projections_;
   var sourceCode = source.getCode();
   var destinationCode = destination.getCode();
   var transforms = ol.Projection.transforms_;
@@ -264,6 +263,31 @@ ol.Projection.addTransform = function(source, destination, transformFn) {
   goog.asserts.assert(
       !goog.object.containsKey(transforms[sourceCode], destinationCode));
   transforms[sourceCode][destinationCode] = transformFn;
+};
+
+
+/**
+ * Unregisters the conversion function to convert coordinates from the source
+ * projection to the destination projection.  This method is used to clean up
+ * cached transforms during testing.
+ *
+ * @param {ol.Projection} source Source projection.
+ * @param {ol.Projection} destination Destination projection.
+ * @return {ol.TransformFunction} transformFn The unregistered transform.
+ */
+ol.Projection.removeTransform = function(source, destination) {
+  var sourceCode = source.getCode();
+  var destinationCode = destination.getCode();
+  var transforms = ol.Projection.transforms_;
+  goog.asserts.assert(sourceCode in transforms);
+  goog.asserts.assert(destinationCode in transforms[sourceCode]);
+  var transform = transforms[sourceCode][destinationCode];
+  delete transforms[sourceCode][destinationCode];
+  var keys = goog.object.getKeys(transforms[sourceCode]);
+  if (keys.length == 0) {
+    delete transforms[sourceCode];
+  }
+  return transform;
 };
 
 
@@ -354,7 +378,7 @@ ol.Projection.getTransform = function(source, destination) {
       proj4jsDestination = destination;
     } else {
       proj4jsDestination =
-          ol.Projection.getProj4jsProjectionFromCode_(source.getCode());
+          ol.Projection.getProj4jsProjectionFromCode_(destination.getCode());
     }
     var destinationProj4jsProj = proj4jsDestination.getProj4jsProj();
     transform =

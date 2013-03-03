@@ -77,7 +77,9 @@ describe('ol.Map', function() {
         dragPan: false,
         keyboard: false,
         mouseWheelZoom: false,
-        shiftDragZoom: false
+        shiftDragZoom: false,
+        touchPan: false,
+        touchRotateZoom: false
       };
     });
 
