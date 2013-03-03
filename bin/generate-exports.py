@@ -203,7 +203,11 @@ def main(argv):
                 symbol = Symbol(name, True, export_as)
                 objects[name] = symbol
                 if not export_as:
-                    requires.add(name)
+                    components = m.group('name').split('.')
+                    if re.match(r'[A-Z]', components[-1]):
+                        requires.add(name)
+                    else:
+                        requires.add('.'.join(components[:-1]))
                 continue
             raise RuntimeError(line)
 
