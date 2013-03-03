@@ -86,6 +86,14 @@ ol.Projection.prototype.getExtent = function() {
 
 
 /**
+ * @param {number} resolution Resolution.
+ * @param {ol.Coordinate} point Point.
+ * @return {number} Point resolution.
+ */
+ol.Projection.prototype.getPointResolution = goog.abstractMethod;
+
+
+/**
  * @return {ol.ProjectionUnits} Units.
  */
 ol.Projection.prototype.getUnits = function() {
