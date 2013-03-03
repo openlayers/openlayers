@@ -107,8 +107,9 @@ ol.Projection.prototype.getAxisOrientation = function() {
  * @extends {ol.Projection}
  * @param {string} code Code.
  * @param {Proj4js.Proj} proj4jsProj Proj4js projection.
+ * @private
  */
-ol.Proj4jsProjection = function(code, proj4jsProj) {
+ol.Proj4jsProjection_ = function(code, proj4jsProj) {
 
   var units = /** @type {ol.ProjectionUnits} */ (proj4jsProj.units);
 
@@ -121,20 +122,20 @@ ol.Proj4jsProjection = function(code, proj4jsProj) {
   this.proj4jsProj_ = proj4jsProj;
 
 };
-goog.inherits(ol.Proj4jsProjection, ol.Projection);
+goog.inherits(ol.Proj4jsProjection_, ol.Projection);
 
 
 /**
  * @return {Proj4js.Proj} Proj4js projection.
  */
-ol.Proj4jsProjection.prototype.getProj4jsProj = function() {
+ol.Proj4jsProjection_.prototype.getProj4jsProj = function() {
   return this.proj4jsProj_;
 };
 
 
 /**
  * @private
- * @type {Object.<string, ol.Proj4jsProjection>}
+ * @type {Object.<string, ol.Proj4jsProjection_>}
  */
 ol.projection.proj4jsProjections_ = {};
 
@@ -195,9 +196,10 @@ ol.projection.addEquivalentTransforms =
 
 
 /**
- * @param {ol.Proj4jsProjection} proj4jsProjection Proj4js projection.
+ * @param {ol.Proj4jsProjection_} proj4jsProjection Proj4js projection.
+ * @private
  */
-ol.projection.addProj4jsProjection = function(proj4jsProjection) {
+ol.projection.addProj4jsProjection_ = function(proj4jsProjection) {
   var proj4jsProjections = ol.projection.proj4jsProjections_;
   var code = proj4jsProjection.getCode();
   goog.asserts.assert(!goog.object.containsKey(proj4jsProjections, code));
@@ -324,14 +326,14 @@ ol.projection.getFromCode = function(code) {
 /**
  * @param {string} code Code.
  * @private
- * @return {ol.Proj4jsProjection} Proj4js projection.
+ * @return {ol.Proj4jsProjection_} Proj4js projection.
  */
 ol.projection.getProj4jsProjectionFromCode_ = function(code) {
   var proj4jsProjections = ol.projection.proj4jsProjections_;
   var proj4jsProjection = proj4jsProjections[code];
   if (!goog.isDef(proj4jsProjection)) {
     var proj4jsProj = new Proj4js.Proj(code);
-    proj4jsProjection = new ol.Proj4jsProjection(code, proj4jsProj);
+    proj4jsProjection = new ol.Proj4jsProjection_(code, proj4jsProj);
     proj4jsProjections[code] = proj4jsProjection;
   }
   return proj4jsProjection;
@@ -378,7 +380,7 @@ ol.projection.getTransform = function(source, destination) {
   }
   if (ol.HAVE_PROJ4JS && !goog.isDef(transform)) {
     var proj4jsSource;
-    if (source instanceof ol.Proj4jsProjection) {
+    if (source instanceof ol.Proj4jsProjection_) {
       proj4jsSource = source;
     } else {
       proj4jsSource =
@@ -386,7 +388,7 @@ ol.projection.getTransform = function(source, destination) {
     }
     var sourceProj4jsProj = proj4jsSource.getProj4jsProj();
     var proj4jsDestination;
-    if (destination instanceof ol.Proj4jsProjection) {
+    if (destination instanceof ol.Proj4jsProjection_) {
       proj4jsDestination = destination;
     } else {
       proj4jsDestination =
