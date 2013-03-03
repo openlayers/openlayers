@@ -501,8 +501,9 @@ ol.projection.cloneTransform = function(input, opt_output, opt_dimension) {
  */
 ol.projection.transform = function(point, source, destination) {
   var transformFn = ol.projection.getTransform(source, destination);
-  var output = transformFn([point.x, point.y]);
-  return new ol.Coordinate(output[0], output[1]);
+  var vertex = [point.x, point.y];
+  vertex = transformFn(vertex, vertex, 2);
+  return new ol.Coordinate(vertex[0], vertex[1]);
 };
 
 
@@ -516,6 +517,7 @@ ol.projection.transformWithCodes =
     function(point, sourceCode, destinationCode) {
   var transformFn = ol.projection.getTransformFromCodes(
       sourceCode, destinationCode);
-  var output = transformFn([point.x, point.y]);
-  return new ol.Coordinate(output[0], output[1]);
+  var vertex = [point.x, point.y];
+  vertex = transformFn(vertex, vertex, 2);
+  return new ol.Coordinate(vertex[0], vertex[1]);
 };
