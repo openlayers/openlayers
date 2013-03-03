@@ -122,6 +122,14 @@ ol.source.TileSource.prototype.getTileGrid = function() {
 
 
 /**
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ */
+ol.source.TileSource.prototype.setTileGrid = function(tileGrid) {
+  this.tileGrid = tileGrid;
+};
+
+
+/**
  * @param {number} z Z.
  * @param {ol.Extent} extent Extent.
  */

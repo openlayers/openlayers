@@ -81,6 +81,9 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   var view2DState = frameState.view2DState;
 
   var tileLayer = this.getTileLayer();
+
+  this.negotiateProjection(tileLayer, view2DState.projection);
+
   var tileSource = tileLayer.getTileSource();
   var tileSourceKey = goog.getUid(tileSource).toString();
   var tileGrid = tileSource.getTileGrid();

@@ -7,67 +7,88 @@ goog.require('goog.array');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
 goog.require('ol.Extent');
-goog.require('ol.Projection');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.source.IWMS');
 goog.require('ol.source.ImageTileSource');
+goog.require('ol.source.wms');
 
 
 
 /**
  * @constructor
  * @extends {ol.source.ImageTileSource}
- * @param {ol.source.TiledWMSOptions} tiledWMSOptions options.
+ * @implements {ol.source.IWMS}
+ * @param {ol.source.TiledWMSOptions} options options.
  */
-ol.source.TiledWMS = function(tiledWMSOptions) {
-  var projection = ol.Projection.createProjection(
-      tiledWMSOptions.projection, 'EPSG:3857');
-  var projectionExtent = projection.getExtent();
+ol.source.TiledWMS = function(options) {
 
-  var extent = goog.isDef(tiledWMSOptions.extent) ?
-      tiledWMSOptions.extent : projectionExtent;
+  /**
+   * @private
+   * @type {ol.source.TiledWMSOptions}
+   */
+  this.options_ = options;
 
-  var version = goog.isDef(tiledWMSOptions.version) ?
-      tiledWMSOptions.version : '1.3';
+  goog.base(this, {
+    attributions: options.attributions,
+    crossOrigin: options.crossOrigin,
+    extent: options.extent,
+    projection: options.projection,
+    tileGrid: options.tileGrid
+  });
 
-  var tileGrid;
-  if (goog.isDef(tiledWMSOptions.tileGrid)) {
-    tileGrid = tiledWMSOptions.tileGrid;
-  } else {
-    tileGrid = ol.tilegrid.createForProjection(projection,
-        tiledWMSOptions.maxZoom);
+};
+goog.inherits(ol.source.TiledWMS, ol.source.ImageTileSource);
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.TiledWMS.prototype.setProjection = function(projection) {
+  goog.base(this, 'setProjection', projection);
+  if (goog.isNull(this.tileGrid)) {
+    this.setTileGrid(ol.tilegrid.createForProjection(projection));
   }
+};
 
-  var baseParams = {
-    'SERVICE': 'WMS',
-    'VERSION': version,
-    'REQUEST': 'GetMap',
-    'STYLES': '',
-    'FORMAT': 'image/png',
-    'TRANSPARENT': true
-  };
-  var tileSize = tileGrid.getTileSize();
-  baseParams['WIDTH'] = tileSize.width;
-  baseParams['HEIGHT'] = tileSize.height;
-  baseParams[version >= '1.3' ? 'CRS' : 'SRS'] = projection.getCode();
-  goog.object.extend(baseParams, tiledWMSOptions.params);
+
+/**
+ * @inheritDoc
+ */
+ol.source.TiledWMS.prototype.setTileGrid = function(tileGrid) {
+  goog.base(this, 'setTileGrid', tileGrid);
+  this.updateUrlFunction();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.TiledWMS.prototype.updateUrlFunction = function(opt_params) {
+  var params = goog.isDef(opt_params) ? opt_params : {};
+  goog.object.extend(params, ol.source.wms.getBaseParams(this));
+  var tileSize = this.tileGrid.getTileSize();
+  params['WIDTH'] = tileSize.width;
+  params['HEIGHT'] = tileSize.height;
 
   var tileUrlFunction;
-  if (tiledWMSOptions.urls) {
-    var tileUrlFunctions = goog.array.map(
-        tiledWMSOptions.urls, function(url) {
-          url = goog.uri.utils.appendParamsFromMap(url, baseParams);
-          return ol.TileUrlFunction.createBboxParam(url, tileGrid);
-        });
+  var options = this.options_,
+      tileGrid = this.tileGrid,
+      projectionExtent = this.getProjection().getExtent();
+  if (options.urls) {
+    var tileUrlFunctions = goog.array.map(options.urls, function(url) {
+      url = goog.uri.utils.appendParamsFromMap(url, params);
+      return ol.TileUrlFunction.createBboxParam(url, tileGrid);
+    });
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         tileUrlFunctions);
-  } else if (tiledWMSOptions.url) {
-    var url = goog.uri.utils.appendParamsFromMap(
-        tiledWMSOptions.url, baseParams);
+  } else if (options.url) {
+    var url = goog.uri.utils.appendParamsFromMap(options.url, params);
     tileUrlFunction = ol.TileUrlFunction.createBboxParam(url, tileGrid);
   } else {
     tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
   }
+  var extent = goog.isDef(options.extent) ? options.extent : projectionExtent;
 
   var tileCoordTransform = function(tileCoord) {
     if (tileGrid.getResolutions().length <= tileCoord.z) {
@@ -92,15 +113,6 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
     return new ol.TileCoord(tileCoord.z, x, tileCoord.y);
   };
 
-  goog.base(this, {
-    attributions: tiledWMSOptions.attributions,
-    crossOrigin: tiledWMSOptions.crossOrigin,
-    extent: extent,
-    tileGrid: tileGrid,
-    projection: projection,
-    tileUrlFunction: ol.TileUrlFunction.withTileCoordTransform(
-        tileCoordTransform, tileUrlFunction)
-  });
-
+  this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
+      tileCoordTransform, tileUrlFunction);
 };
-goog.inherits(ol.source.TiledWMS, ol.source.ImageTileSource);

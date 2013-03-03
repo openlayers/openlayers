@@ -315,7 +315,7 @@ ol.tilegrid.createForProjection =
       projectionExtent.maxX - projectionExtent.minX,
       projectionExtent.maxY - projectionExtent.minY);
   var maxZoom = goog.isDef(opt_maxZoom) ?
-      opt_maxZoom : 18;
+      opt_maxZoom : 22;
   var tileSize = goog.isDef(opt_tileSize) ?
       opt_tileSize : new ol.Size(ol.DEFAULT_TILE_SIZE, ol.DEFAULT_TILE_SIZE);
   var resolutions = new Array(maxZoom + 1);

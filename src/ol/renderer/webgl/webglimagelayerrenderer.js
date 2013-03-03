@@ -155,8 +155,10 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
   var image = this.image_;
   var texture = this.texture_;
   var imageLayer = this.getImageLayer();
-  var imageSource = imageLayer.getImageSource();
 
+  this.negotiateProjection(imageLayer, view2DState.projection);
+
+  var imageSource = imageLayer.getImageSource();
   var hints = frameState.viewHints;
 
   if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.PANNING]) {

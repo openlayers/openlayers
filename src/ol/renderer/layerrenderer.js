@@ -7,6 +7,7 @@ goog.require('ol.FrameState');
 goog.require('ol.Image');
 goog.require('ol.ImageState');
 goog.require('ol.Object');
+goog.require('ol.Projection');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
@@ -257,4 +258,18 @@ ol.renderer.Layer.prototype.updateWantedTiles =
     wantedTiles[tileSourceKey] = {};
   }
   wantedTiles[tileSourceKey][coordKey] = true;
+};
+
+
+/**
+ * @protected
+ * @param {ol.layer.Layer} layer Layer.
+ * @param {ol.Projection} projection Preferred projection.
+ */
+ol.renderer.Layer.prototype.negotiateProjection =
+    function(layer, projection) {
+  var source = layer.getSource();
+  if (goog.isNull(source.getProjection())) {
+    source.setProjection(projection);
+  }
 };
