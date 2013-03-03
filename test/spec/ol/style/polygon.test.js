@@ -1,5 +1,30 @@
 goog.provide('ol.test.style.Polygon');
 
+describe('ol.style.PolygonLiteral', function() {
+
+  describe('#equals()', function() {
+
+    it('identifies equal literals', function() {
+      var literal = new ol.style.PolygonLiteral({
+        strokeWidth: 3,
+        fillStyle: '#BADA55'
+      });
+      var equalLiteral = new ol.style.PolygonLiteral({
+        fillStyle: '#BADA55',
+        strokeWidth: 3
+      });
+      var differentLiteral = new ol.style.PolygonLiteral({
+        fillStyle: '#013',
+        strokeWidth: 3
+      });
+      expect(literal.equals(equalLiteral)).toBe(true);
+      expect(literal.equals(differentLiteral)).toBe(false);
+    });
+
+  });
+
+});
+
 describe('ol.style.Polygon', function() {
 
   describe('constructor', function() {

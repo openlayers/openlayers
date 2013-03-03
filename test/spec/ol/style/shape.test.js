@@ -1,5 +1,30 @@
 goog.provide('ol.test.style.Shape');
 
+describe('ol.style.ShapeLiteral', function() {
+
+  describe('#equals()', function() {
+
+    it('identifies equal literals', function() {
+      var literal = new ol.style.ShapeLiteral({
+        size: 4,
+        fillStyle: '#BADA55'
+      });
+      var equalLiteral = new ol.style.ShapeLiteral({
+        fillStyle: '#BADA55',
+        size: 4
+      });
+      var differentLiteral = new ol.style.ShapeLiteral({
+        fillStyle: '#013',
+        size: 4
+      });
+      expect(literal.equals(equalLiteral)).toBe(true);
+      expect(literal.equals(differentLiteral)).toBe(false);
+    });
+
+  });
+
+});
+
 describe('ol.style.Shape', function() {
 
   describe('constructor', function() {

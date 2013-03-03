@@ -1,5 +1,30 @@
 goog.provide('ol.test.style.Line');
 
+describe('ol.style.LineLiteral', function() {
+
+  describe('#equals()', function() {
+
+    it('identifies equal literals', function() {
+      var literal = new ol.style.LineLiteral({
+        strokeWidth: 3,
+        strokeStyle: '#BADA55'
+      });
+      var equalLiteral = new ol.style.LineLiteral({
+        strokeStyle: '#BADA55',
+        strokeWidth: 3
+      });
+      var differentLiteral = new ol.style.LineLiteral({
+        strokeStyle: '#013',
+        strokeWidth: 3
+      });
+      expect(literal.equals(equalLiteral)).toBe(true);
+      expect(literal.equals(differentLiteral)).toBe(false);
+    });
+
+  });
+
+});
+
 describe('ol.style.Line', function() {
 
   describe('constructor', function() {
