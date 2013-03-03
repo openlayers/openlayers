@@ -4,7 +4,6 @@ goog.require('goog.debug.Logger.Level');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
-goog.require('ol.Projection');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.animation');
@@ -12,6 +11,7 @@ goog.require('ol.control.MousePosition');
 goog.require('ol.easing');
 goog.require('ol.interaction.Keyboard');
 goog.require('ol.layer.TileLayer');
+goog.require('ol.projection');
 goog.require('ol.source.MapQuestOpenAerial');
 
 
@@ -21,9 +21,9 @@ if (goog.DEBUG) {
 }
 
 
-var LONDON = ol.Projection.transformWithCodes(
+var LONDON = ol.projection.transformWithCodes(
     new ol.Coordinate(-0.12755, 51.507222), 'EPSG:4326', 'EPSG:3857');
-var MOSCOW = ol.Projection.transformWithCodes(
+var MOSCOW = ol.projection.transformWithCodes(
     new ol.Coordinate(37.6178, 55.7517), 'EPSG:4326', 'EPSG:3857');
 
 var layer = new ol.layer.TileLayer({
@@ -44,7 +44,7 @@ var domMap = new ol.Map({
 
 var domMousePosition = new ol.control.MousePosition({
   coordinateFormat: ol.Coordinate.toStringHDMS,
-  projection: ol.Projection.getFromCode('EPSG:4326'),
+  projection: ol.projection.getFromCode('EPSG:4326'),
   target: document.getElementById('domMousePosition'),
   undefinedHTML: '&nbsp;'
 });
@@ -61,7 +61,7 @@ if (webglMap !== null) {
 
 var webglMousePosition = new ol.control.MousePosition({
   coordinateFormat: ol.Coordinate.toStringHDMS,
-  projection: ol.Projection.getFromCode('EPSG:4326'),
+  projection: ol.projection.getFromCode('EPSG:4326'),
   target: document.getElementById('webglMousePosition'),
   undefinedHTML: '&nbsp;'
 });
@@ -78,7 +78,7 @@ if (canvasMap !== null) {
 
 var canvasMousePosition = new ol.control.MousePosition({
   coordinateFormat: ol.Coordinate.toStringHDMS,
-  projection: ol.Projection.getFromCode('EPSG:4326'),
+  projection: ol.projection.getFromCode('EPSG:4326'),
   target: document.getElementById('canvasMousePosition'),
   undefinedHtml: '&nbsp;'
 });

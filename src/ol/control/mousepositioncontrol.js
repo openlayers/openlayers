@@ -15,6 +15,7 @@ goog.require('ol.Pixel');
 goog.require('ol.Projection');
 goog.require('ol.TransformFunction');
 goog.require('ol.control.Control');
+goog.require('ol.projection');
 
 
 
@@ -71,7 +72,7 @@ ol.control.MousePosition = function(mousePositionOptions) {
    * @private
    * @type {ol.TransformFunction}
    */
-  this.transform_ = ol.Projection.identityTransform;
+  this.transform_ = ol.projection.identityTransform;
 
   /**
    * @private
@@ -166,10 +167,10 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
   if (!goog.isNull(pixel)) {
     if (this.renderedProjection_ != this.mapProjection_) {
       if (goog.isDef(this.projection_)) {
-        this.transform_ = ol.Projection.getTransform(
+        this.transform_ = ol.projection.getTransform(
             this.mapProjection_, this.projection_);
       } else {
-        this.transform_ = ol.Projection.identityTransform;
+        this.transform_ = ol.projection.identityTransform;
       }
       this.renderedProjection_ = this.mapProjection_;
     }

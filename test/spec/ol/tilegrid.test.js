@@ -97,7 +97,7 @@ describe('ol.tilegrid.TileGrid', function() {
   describe('createForProjection', function() {
 
     it('allows easier creation of a tile grid', function() {
-      var projection = ol.Projection.getFromCode('EPSG:3857');
+      var projection = ol.projection.getFromCode('EPSG:3857');
       var grid = ol.tilegrid.createForProjection(projection);
       expect(grid).toBeA(ol.tilegrid.TileGrid);
 
@@ -106,7 +106,7 @@ describe('ol.tilegrid.TileGrid', function() {
     });
 
     it('accepts a number of zoom levels', function() {
-      var projection = ol.Projection.getFromCode('EPSG:3857');
+      var projection = ol.projection.getFromCode('EPSG:3857');
       var grid = ol.tilegrid.createForProjection(projection, 22);
       expect(grid).toBeA(ol.tilegrid.TileGrid);
 
@@ -115,7 +115,7 @@ describe('ol.tilegrid.TileGrid', function() {
     });
 
     it('accepts a big number of zoom levels', function() {
-      var projection = ol.Projection.getFromCode('EPSG:3857');
+      var projection = ol.projection.getFromCode('EPSG:3857');
       var grid = ol.tilegrid.createForProjection(projection, 23);
       expect(grid).toBeA(ol.tilegrid.TileGrid);
 
@@ -570,4 +570,5 @@ goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.Size');
 goog.require('ol.TileCoord');
+goog.require('ol.projection');
 goog.require('ol.tilegrid.TileGrid');

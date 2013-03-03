@@ -9,7 +9,7 @@ describe('ol.layer.Layer', function() {
     beforeEach(function() {
       layer = new ol.layer.Layer({
         source: new ol.source.Source({
-          projection: ol.Projection.getFromCode('EPSG:4326')
+          projection: ol.projection.getFromCode('EPSG:4326')
         })
       });
     });
@@ -53,7 +53,7 @@ describe('ol.layer.Layer', function() {
     it('accepts options', function() {
       var layer = new ol.layer.Layer({
         source: new ol.source.Source({
-          projection: ol.Projection.getFromCode('EPSG:4326')
+          projection: ol.projection.getFromCode('EPSG:4326')
         }),
         brightness: 0.5,
         contrast: 10,
@@ -82,7 +82,7 @@ describe('ol.layer.Layer', function() {
     beforeEach(function() {
       layer = new ol.layer.Layer({
         source: new ol.source.Source({
-          projection: ol.Projection.getFromCode('EPSG:4326')
+          projection: ol.projection.getFromCode('EPSG:4326')
         })
       });
     });
@@ -120,7 +120,7 @@ describe('ol.layer.Layer', function() {
     beforeEach(function() {
       layer = new ol.layer.Layer({
         source: new ol.source.Source({
-          projection: ol.Projection.getFromCode('EPSG:4326')
+          projection: ol.projection.getFromCode('EPSG:4326')
         })
       });
     });
@@ -154,7 +154,7 @@ describe('ol.layer.Layer', function() {
     beforeEach(function() {
       layer = new ol.layer.Layer({
         source: new ol.source.Source({
-          projection: ol.Projection.getFromCode('EPSG:4326')
+          projection: ol.projection.getFromCode('EPSG:4326')
         })
       });
     });
@@ -193,7 +193,7 @@ describe('ol.layer.Layer', function() {
     beforeEach(function() {
       layer = new ol.layer.Layer({
         source: new ol.source.Source({
-          projection: ol.Projection.getFromCode('EPSG:4326')
+          projection: ol.projection.getFromCode('EPSG:4326')
         })
       });
     });
@@ -227,7 +227,7 @@ describe('ol.layer.Layer', function() {
     beforeEach(function() {
       layer = new ol.layer.Layer({
         source: new ol.source.Source({
-          projection: ol.Projection.getFromCode('EPSG:4326')
+          projection: ol.projection.getFromCode('EPSG:4326')
         })
       });
     });
@@ -259,7 +259,7 @@ describe('ol.layer.Layer', function() {
     it('sets visible property', function() {
       var layer = new ol.layer.Layer({
         source: new ol.source.Source({
-          projection: ol.Projection.getFromCode('EPSG:4326')
+          projection: ol.projection.getFromCode('EPSG:4326')
         })
       });
 
@@ -275,3 +275,5 @@ describe('ol.layer.Layer', function() {
   });
 
 });
+
+goog.require('ol.projection');
