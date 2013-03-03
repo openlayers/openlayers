@@ -6,6 +6,7 @@
  */
 
 
+
 /**
  * @constructor
  */
@@ -22,6 +23,7 @@ GeoJSONObject.prototype.type;
  * @type {!GeoJSONCRS|undefined}
  */
 GeoJSONObject.prototype.crs;
+
 
 
 /**
@@ -52,6 +54,7 @@ var GeoJSONGeometry = function() {};
 GeoJSONGeometry.prototype.coordinates;
 
 
+
 /**
  * @constructor
  * @extends {GeoJSONObject}
@@ -63,6 +66,7 @@ var GeoJSONGeometryCollection = function() {};
  * @type {!Array.<GeoJSONGeometry>}
  */
 GeoJSONGeometryCollection.prototype.geometries;
+
 
 
 /**
@@ -102,5 +106,3 @@ GeoJSONFeatureCollection.prototype.features;
  * @type {!Array.<number>|undefined}
  */
 GeoJSONFeatureCollection.prototype.bbox;
-
-
