@@ -6,11 +6,11 @@ goog.require('goog.array');
 goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
-goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.projection');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');
 
@@ -36,7 +36,7 @@ ol.BingMapsStyle = {
 ol.source.BingMaps = function(bingMapsOptions) {
 
   goog.base(this, {
-    projection: ol.Projection.getFromCode('EPSG:3857')
+    projection: ol.projection.getFromCode('EPSG:3857')
   });
 
   /**
@@ -123,8 +123,8 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                 };
               })));
 
-  var transform = ol.Projection.getTransform(
-      ol.Projection.getFromCode('EPSG:4326'), this.getProjection());
+  var transform = ol.projection.getTransform(
+      ol.projection.getFromCode('EPSG:4326'), this.getProjection());
   var attributions = goog.array.map(
       resource.imageryProviders,
       function(imageryProvider) {

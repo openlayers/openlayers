@@ -55,6 +55,12 @@ Proj4js.Proj = function(srsCode, opt_callback) {};
 /**
  * @type {string}
  */
+Proj4js.Proj.prototype.axis;
+
+
+/**
+ * @type {string}
+ */
 Proj4js.Proj.prototype.title;
 
 

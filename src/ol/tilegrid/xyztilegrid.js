@@ -1,9 +1,10 @@
 goog.provide('ol.tilegrid.XYZ');
 
 goog.require('ol.Coordinate');
-goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.TileRange');
+goog.require('ol.projection');
+goog.require('ol.projection.EPSG3857');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -17,14 +18,14 @@ ol.tilegrid.XYZ = function(xyzOptions) {
 
   var resolutions = new Array(xyzOptions.maxZoom + 1);
   var z;
-  var size = 2 * ol.Projection.EPSG_3857_HALF_SIZE / ol.DEFAULT_TILE_SIZE;
+  var size = 2 * ol.projection.EPSG3857.HALF_SIZE / ol.DEFAULT_TILE_SIZE;
   for (z = 0; z <= xyzOptions.maxZoom; ++z) {
     resolutions[z] = size / Math.pow(2, z);
   }
 
   goog.base(this, {
-    origin: new ol.Coordinate(-ol.Projection.EPSG_3857_HALF_SIZE,
-                              ol.Projection.EPSG_3857_HALF_SIZE),
+    origin: new ol.Coordinate(-ol.projection.EPSG3857.HALF_SIZE,
+                              ol.projection.EPSG3857.HALF_SIZE),
     resolutions: resolutions,
     tileSize: new ol.Size(ol.DEFAULT_TILE_SIZE, ol.DEFAULT_TILE_SIZE)
   });

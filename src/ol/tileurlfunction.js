@@ -73,19 +73,20 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
 /**
  * @param {string} baseUrl Base URL (may have query data).
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @param {string} axisOrientation Axis orientation.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
-ol.TileUrlFunction.createBboxParam = function(baseUrl, tileGrid) {
+ol.TileUrlFunction.createBboxParam =
+    function(baseUrl, tileGrid, axisOrientation) {
   return function(tileCoord) {
     if (goog.isNull(tileCoord)) {
       return undefined;
     } else {
       var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
-      // FIXME Projection dependant axis order.
-      var bboxValue = [
-        tileExtent.minX, tileExtent.minY, tileExtent.maxX, tileExtent.maxY
-      ].join(',');
-      return goog.uri.utils.appendParam(baseUrl, 'BBOX', bboxValue);
+      var bboxValues = axisOrientation.substr(0, 2) == 'ne' ?
+          [tileExtent.minY, tileExtent.minX, tileExtent.maxY, tileExtent.maxX] :
+          [tileExtent.minX, tileExtent.minY, tileExtent.maxX, tileExtent.maxY];
+      return goog.uri.utils.appendParam(baseUrl, 'BBOX', bboxValues.join(','));
     }
   };
 };

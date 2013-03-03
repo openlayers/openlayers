@@ -9,6 +9,7 @@ goog.require('goog.math');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
 goog.require('ol.Projection');
+goog.require('ol.projection');
 
 
 /**
@@ -75,8 +76,8 @@ ol.Geolocation.prototype.disposeInternal = function() {
 ol.Geolocation.prototype.handleProjectionChanged_ = function() {
   var projection = this.getProjection();
   if (goog.isDefAndNotNull(projection)) {
-    this.transformCoords_ = ol.Projection.getTransform(
-        ol.Projection.getFromCode('EPSG:4326'), projection);
+    this.transformCoords_ = ol.projection.getTransform(
+        ol.projection.getFromCode('EPSG:4326'), projection);
     if (!goog.isNull(this.position_)) {
       this.set(ol.GeolocationProperty.POSITION,
           this.transformCoords_(this.position_));
