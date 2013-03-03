@@ -1,0 +1,24 @@
+{
+
+  "id": "ol-simple",
+
+  "externs": [
+    "externs/bingmaps.js",
+    "externs/proj4js.js",
+    "externs/tilejson.js"
+  ],
+
+  "inherits": "ol.json",
+
+  "inputs": [
+    "build/src/internal/src/requireall.js",
+    "build/src/internal/src/types.js"
+  ],
+
+  "mode": "SIMPLE",
+
+  // Note: we can't have a (function(){%output%})() output wrapper with
+  // WHITESPACE and SIMPLE modes. See this link for explanations:
+  // https://groups.google.com/forum/#!topic/plovr/gQyZEa2NpsU
+  "output-wrapper": "%output%"
+}
