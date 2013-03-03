@@ -58,6 +58,9 @@ ol.tilegrid.TileGrid = function(tileGridOptions) {
     this.origins_ = tileGridOptions.origins;
     goog.asserts.assert(this.origins_.length == this.resolutions_.length);
   }
+  goog.asserts.assert(
+      (goog.isNull(this.origin_) && !goog.isNull(this.origins_)) ||
+      (!goog.isNull(this.origin_) && goog.isNull(this.origins_)));
 
   /**
    * @private

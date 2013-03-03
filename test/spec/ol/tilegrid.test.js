@@ -68,6 +68,20 @@ describe('ol.tilegrid.TileGrid', function() {
     });
   });
 
+  describe('create with both origin and multiple origins', function() {
+    it('throws an exception', function() {
+      expect(function() {
+        return new ol.tilegrid.TileGrid({
+          resolutions: [100, 50, 25, 10],
+          extent: extent,
+          origins: [origin, origin, origin, origin],
+          origin: origin,
+          tileSize: tileSize
+        });
+      }).toThrow();
+    });
+  });
+
   describe('create with too few origins', function() {
     it('throws an exception', function() {
       expect(function() {
