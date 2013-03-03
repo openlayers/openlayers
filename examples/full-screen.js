@@ -1,7 +1,3 @@
-goog.require('goog.debug.Console');
-goog.require('goog.debug.Logger');
-goog.require('goog.debug.Logger.Level');
-goog.require('goog.style');
 goog.require('ol.AnchoredElement');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
@@ -11,12 +7,6 @@ goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.source.MapQuestOpenAerial');
-
-
-if (goog.DEBUG) {
-  goog.debug.Console.autoInstall();
-  goog.debug.Logger.getLogger('ol').setLevel(goog.debug.Logger.Level.INFO);
-}
 
 
 var layer = new ol.layer.TileLayer({
@@ -41,4 +31,9 @@ var marker = new ol.AnchoredElement({
   element: element
 });
 marker.bindTo('position', geolocation);
-goog.style.showElement(element, true);
+
+// This is silly: gjslint generates a "No docs found for member
+// 'element.style.display'" without the auto-executing function.
+(function() {
+  element.style.display = 'block';
+})();

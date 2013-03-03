@@ -348,6 +348,8 @@ def hostexamples(t):
     t.makedirs('build/gh-pages/%(BRANCH)s/examples')
     t.makedirs('build/gh-pages/%(BRANCH)s/build')
     t.cp(EXAMPLES, (path.replace('.html', '.js') for path in EXAMPLES), 'examples/style.css', 'build/gh-pages/%(BRANCH)s/examples/')
+    t.rm_rf('build/gh-pages/%(BRANCH)s/examples/data')
+    t.cp_r('examples/data', 'build/gh-pages/%(BRANCH)s/examples/data')
     t.cp('build/loader_hosted_examples.js', 'build/gh-pages/%(BRANCH)s/examples/loader.js')
     t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js', 'build/ol.css', 'build/gh-pages/%(BRANCH)s/build/')
     t.cp('examples/example-list.html', 'build/gh-pages/%(BRANCH)s/examples/index.html')
