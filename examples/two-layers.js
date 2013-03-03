@@ -52,11 +52,6 @@ canvasMap.bindTo('view', webglMap);
 
 // Handle clicks on the "canvas-export" element.
 var element = document.getElementById('canvas-export');
-var exportMap = function(e) {
+element.addEventListener('click', function(e) {
   e.target.href = canvasMap.getRenderer().getCanvas().toDataURL('image/jpeg');
-};
-if ('addEventListener' in element) {
-  element.addEventListener('click', exportMap, false);
-} else {
-  element.attachEvent('onclick', exportMap);
-}
+}, false);
