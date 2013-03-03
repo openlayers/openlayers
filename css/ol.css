@@ -67,6 +67,13 @@
 .ol-zoom-in {
   border-radius: 2px 2px 0 0;
 }
+.ol-zoom-in:before {
+  content: "+";
+}
+
 .ol-zoom-out {
   border-radius: 0 0 2px 2px;
+}
+.ol-zoom-out:before {
+  content: "\2212";
 }
