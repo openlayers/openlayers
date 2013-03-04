@@ -55,8 +55,7 @@ ol.control.ScaleLine = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.minimumWidth_ = goog.isDef(options.minimumWidth) ?
-      options.minimumWidth : 64;
+  this.minWidth_ = goog.isDef(options.minWidth) ? options.minWidth : 64;
 
   /**
    * @private
@@ -195,7 +194,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function(frameState) {
 
   }
 
-  var nominalCount = this.minimumWidth_ * pointResolution;
+  var nominalCount = this.minWidth_ * pointResolution;
   var suffix = '';
   if (this.units_ == ol.control.ScaleLineUnits.DEGREES) {
     if (nominalCount < 1 / 60) {
@@ -247,13 +246,13 @@ ol.control.ScaleLine.prototype.updateElement_ = function(frameState) {
   }
 
   var i = 3 * Math.floor(
-      Math.log(this.minimumWidth_ * pointResolution) / Math.log(10));
+      Math.log(this.minWidth_ * pointResolution) / Math.log(10));
   var count, width;
   while (true) {
     count = ol.control.ScaleLine.LEADING_DIGITS[i % 3] *
         Math.pow(10, Math.floor(i / 3));
     width = Math.round(count / pointResolution);
-    if (width >= this.minimumWidth_) {
+    if (width >= this.minWidth_) {
       break;
     }
     ++i;

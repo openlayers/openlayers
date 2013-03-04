@@ -61,7 +61,7 @@
 
 @exportObjectLiteral ol.control.ScaleLineOptions
 @exportObjectLiteralProperty ol.control.ScaleLineOptions.map ol.Map|undefined
-@exportObjectLiteralProperty ol.control.ScaleLineOptions.minimumWidth number|undefined
+@exportObjectLiteralProperty ol.control.ScaleLineOptions.minWidth number|undefined
 @exportObjectLiteralProperty ol.control.ScaleLineOptions.target Element|undefined
 @exportObjectLiteralProperty ol.control.ScaleLineOptions.units ol.control.ScaleLineUnits|undefined
 
