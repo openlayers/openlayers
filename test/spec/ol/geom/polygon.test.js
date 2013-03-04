@@ -84,5 +84,6 @@ describe('ol.geom.Polygon', function() {
 });
 
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SharedVertices');

@@ -59,8 +59,11 @@ describe('ol.style.Style', function() {
 
 });
 
+goog.require('ol.Feature');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.filter.Filter');
+goog.require('ol.style.Rule');
+goog.require('ol.style.Shape');
 goog.require('ol.style.Style');

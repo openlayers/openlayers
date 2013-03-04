@@ -71,3 +71,4 @@ describe('ol.geom.MultiPoint', function() {
 
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.Point');

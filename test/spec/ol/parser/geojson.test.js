@@ -218,6 +218,7 @@ describe('ol.parser.GeoJSON', function() {
 
 });
 
+goog.require('ol.Extent');
 goog.require('ol.Feature');
 goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.LineString');

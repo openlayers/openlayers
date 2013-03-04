@@ -82,3 +82,13 @@ describe('ol.layer.Vector', function() {
   });
 
 });
+
+goog.require('ol.Expression');
+goog.require('ol.Feature');
+goog.require('ol.geom.LineString');
+goog.require('ol.projection');
+goog.require('ol.layer.Vector');
+goog.require('ol.source.Vector');
+goog.require('ol.style.Line');
+goog.require('ol.style.Rule');
+goog.require('ol.style.Style');

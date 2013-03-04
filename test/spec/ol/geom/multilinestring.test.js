@@ -14,7 +14,7 @@ describe('ol.geom.MultiLineString', function() {
 
     it('throws when given with insufficient dimensions', function() {
       expect(function() {
-        var multi = new ol.geom.MultiPoint([1]);
+        var multi = new ol.geom.MultiLineString([1]);
       }).toThrow();
     });
 
@@ -84,4 +84,5 @@ describe('ol.geom.MultiLineString', function() {
 });
 
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');

@@ -89,3 +89,4 @@ describe('ol.geom.MultiPolygon', function() {
 
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.Polygon');

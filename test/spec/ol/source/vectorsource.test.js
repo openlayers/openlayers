@@ -100,7 +100,10 @@ describe('ol.source.Vector', function() {
 
 });
 
+goog.require('ol.Extent');
+goog.require('ol.Feature');
 goog.require('ol.Projection');
+goog.require('ol.filter.Extent');
 goog.require('ol.filter.Geometry');
 goog.require('ol.filter.Logical');
 goog.require('ol.filter.LogicalOperator');
@@ -108,3 +111,4 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.LineString');
 goog.require('ol.source.Vector');
+goog.require('ol.projection');
