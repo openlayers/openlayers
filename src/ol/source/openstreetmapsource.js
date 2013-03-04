@@ -18,6 +18,7 @@ ol.source.OpenStreetMap = function() {
 
   goog.base(this, {
     attributions: [attribution],
+    opaque: true,
     maxZoom: 18,
     url: 'http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'
   });

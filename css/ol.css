@@ -28,6 +28,24 @@
   width: 100%;
   height: 100%;
 }
+.ol-scale-line {
+  background: rgba(0,60,136,0.3);
+  border-radius: 4px;
+  bottom: 8px;
+  left: 8px;
+  padding: 2px;
+  position: absolute;
+}
+.ol-scale-line-inner {
+  border: 1px solid #eeeeee;
+  border-top: none;
+  color: #eeeeee;
+  font-size: 10px;
+  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+  text-align: center;
+  margin: 1px;
+  padding: 0px 2px;
+}
 .ol-viewport .ol-unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;

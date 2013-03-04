@@ -229,15 +229,15 @@ def serve_precommit(t):
     t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'build/ol-all.json', 'test/test.json')
 
 
-virtual('lint', 'build/lint-src-timestamp', 'build/lint-spec-timestamp', 'build/check-requires-timestamp')
+virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp')
 
 
-@target('build/lint-src-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC, precious=True)
+@target('build/lint-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC, SPEC, precious=True)
 def build_lint_src_timestamp(t):
     limited_doc_files = [path
                          for path in ifind('externs', 'build/src/external/externs')
                          if path.endswith('.js')]
-    t.run('%(GJSLINT)s', '--strict', '--limited_doc_files=%s' % (','.join(limited_doc_files),), t.newer(SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC))
+    t.run('%(GJSLINT)s', '--strict', '--limited_doc_files=%s' % (','.join(limited_doc_files),), t.newer(t.dependencies))
     t.touch()
 
 
@@ -263,7 +263,7 @@ def _strip_comments(lines):
                     yield line
 
 
-@target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC)
+@target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC, SPEC)
 def build_check_requires_timestamp(t):
     unused_count = 0
     all_provides = set()
@@ -273,7 +273,8 @@ def build_check_requires_timestamp(t):
         require_linenos = {}
         uses = set()
         lineno = 0
-        for line in open(filename):
+        lines = open(filename).readlines()
+        for line in lines:
             lineno += 1
             m = re.match(r'goog.provide\(\'(.*)\'\);', line)
             if m:
@@ -283,6 +284,7 @@ def build_check_requires_timestamp(t):
             if m:
                 require_linenos[m.group(1)] = lineno
                 continue
+        for line in lines:
             for require in require_linenos.iterkeys():
                 if require in line:
                     uses.add(require)
@@ -326,12 +328,6 @@ def build_check_requires_timestamp(t):
             missing_count += len(missing_requires)
     if unused_count or missing_count:
         t.error('%d unused goog.requires, %d missing goog.requires' % (unused_count, missing_count))
-    t.touch()
-
-
-@target('build/lint-spec-timestamp', SPEC, precious=True)
-def build_lint_spec_timestamp(t):
-    t.run('%(GJSLINT)s', t.newer(SPEC))
     t.touch()
 
 

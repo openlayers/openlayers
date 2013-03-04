@@ -1,0 +1,9 @@
+@exportClass ol.control.ScaleLine ol.control.ScaleLineOptions
+@exportProperty ol.control.ScaleLine.prototype.setMap
+
+@exportSymbol ol.control.ScaleLineUnits
+@exportProperty ol.control.ScaleLineUnits.DEGREES
+@exportProperty ol.control.ScaleLineUnits.IMPERIAL
+@exportProperty ol.control.ScaleLineUnits.NAUTICAL
+@exportProperty ol.control.ScaleLineUnits.METRIC
+@exportProperty ol.control.ScaleLineUnits.US

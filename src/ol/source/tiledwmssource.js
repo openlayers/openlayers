@@ -38,7 +38,8 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
   } else {
     tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
   }
-
+  var transparent = goog.isDef(tiledWMSOptions.transparent) ?
+      tiledWMSOptions.transparent : true;
   var extent = tiledWMSOptions.extent;
 
   var tileCoordTransform = function(tileCoord, tileGrid, projection) {
@@ -70,6 +71,7 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
     crossOrigin: tiledWMSOptions.crossOrigin,
     extent: extent,
     tileGrid: tiledWMSOptions.tileGrid,
+    opaque: !transparent,
     projection: tiledWMSOptions.projection,
     tileUrlFunction: ol.TileUrlFunction.withTileCoordTransform(
         tileCoordTransform, tileUrlFunction)

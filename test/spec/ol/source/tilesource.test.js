@@ -268,12 +268,13 @@ describe('ol.test.source.MockTileSource', function() {
 });
 
 goog.require('goog.object');
-
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
+goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileState');
 goog.require('ol.projection');
+goog.require('ol.source.Source');
 goog.require('ol.source.TileSource');
 goog.require('ol.tilegrid.TileGrid');

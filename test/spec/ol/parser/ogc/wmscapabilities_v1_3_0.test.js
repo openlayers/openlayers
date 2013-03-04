@@ -100,8 +100,8 @@ describe('ol.parser.ogc.wmscapabilities_v1_3_0', function() {
         expect(elevation['default']).toEqual('0');
         expect(elevation.nearestVal).toBeTruthy();
         expect(elevation.multipleVal).toBeFalsy();
-        expect(elevation.values).toEqual(['0', '1000', '3000', '5000',
-            '10000']);
+        expect(elevation.values).toEqual(
+            ['0', '1000', '3000', '5000', '10000']);
         expect(contactinfo).toBeTruthy();
         expect(personPrimary).toBeTruthy();
         expect(personPrimary.person).toEqual('Jeff Smith');
