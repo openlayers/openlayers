@@ -71,12 +71,12 @@ ol.style.ShapeLiteral.prototype.equals = function(shapeLiteral) {
 
 
 /**
- * @typedef {{type: (ol.style.ShapeType),
- *            size: (number|ol.Expression),
- *            fillStyle: (string|ol.Expression),
- *            strokeStyle: (string|ol.Expression),
- *            strokeWidth: (number|ol.Expression),
- *            opacity: (number|ol.Expression)}}
+ * @typedef {{type: (ol.style.ShapeType|undefined),
+ *            size: (number|ol.Expression|undefined),
+ *            fillStyle: (string|ol.Expression|undefined),
+ *            strokeStyle: (string|ol.Expression|undefined),
+ *            strokeWidth: (number|ol.Expression|undefined),
+ *            opacity: (number|ol.Expression|undefined)}}
  */
 ol.style.ShapeOptions;
 

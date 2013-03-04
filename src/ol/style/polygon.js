@@ -53,10 +53,10 @@ ol.style.PolygonLiteral.prototype.equals = function(polygonLiteral) {
 
 
 /**
- * @typedef {{fillStyle: (string|ol.Expression),
- *            strokeStyle: (string|ol.Expression),
- *            strokeWidth: (number|ol.Expression),
- *            opacity: (number|ol.Expression)}}
+ * @typedef {{fillStyle: (string|ol.Expression|undefined),
+ *            strokeStyle: (string|ol.Expression|undefined),
+ *            strokeWidth: (number|ol.Expression|undefined),
+ *            opacity: (number|ol.Expression|undefined)}}
  */
 ol.style.PolygonOptions;
 

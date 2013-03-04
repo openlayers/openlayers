@@ -48,9 +48,9 @@ ol.style.LineLiteral.prototype.equals = function(lineLiteral) {
 
 
 /**
- * @typedef {{strokeStyle: (string|ol.Expression),
- *            strokeWidth: (number|ol.Expression),
- *            opacity: (number|ol.Expression)}}
+ * @typedef {{strokeStyle: (string|ol.Expression|undefined),
+ *            strokeWidth: (number|ol.Expression|undefined),
+ *            opacity: (number|ol.Expression|undefined)}}
  */
 ol.style.LineOptions;
 
