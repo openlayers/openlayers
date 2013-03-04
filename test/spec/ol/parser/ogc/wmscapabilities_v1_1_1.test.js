@@ -57,8 +57,8 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         expect(getfeatureinfo.post.href).toEqual(post);
         expect(capability.layers).toBeTruthy();
         expect(capability.layers.length).toEqual(22);
-        var infoFormats = ['text/plain', 'text/html',
-            'application/vnd.ogc.gml'];
+        var infoFormats =
+            ['text/plain', 'text/html', 'application/vnd.ogc.gml'];
         expect(layer.infoFormats).toEqual(infoFormats);
         expect(layer.name).toEqual('tiger:tiger_roads');
         expect(layer.prefix).toEqual('tiger');
@@ -66,13 +66,13 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         var abstr = 'Highly simplified road layout of Manhattan in New York..';
         expect(layer['abstract']).toEqual(abstr);
         var bbox = [-74.08769307536667, 40.660618924633326,
-            -73.84653192463333, 40.90178007536667];
+          -73.84653192463333, 40.90178007536667];
         expect(layer.llbbox).toEqual(bbox);
         expect(layer.styles.length).toEqual(1);
         expect(layer.styles[0].name).toEqual('tiger_roads');
         var legend = 'http://publicus.opengeo.org:80/geoserver/wms/' +
-          'GetLegendGraphic?VERSION=1.0.0&FORMAT=image/png&WIDTH=20&' +
-          'HEIGHT=20&LAYER=tiger:tiger_roads';
+            'GetLegendGraphic?VERSION=1.0.0&FORMAT=image/png&WIDTH=20&' +
+            'HEIGHT=20&LAYER=tiger:tiger_roads';
         expect(layer.styles[0].legend.href).toEqual(legend);
         expect(layer.styles[0].legend.format).toEqual('image/png');
         expect(layer.queryable).toBeTruthy();
@@ -168,28 +168,28 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         expect(elevation['default']).toEqual('0');
         expect(elevation.nearestVal).toBeTruthy();
         expect(elevation.multipleVal).toBeFalsy();
-        expect(elevation.values).toEqual(['0', '1000', '3000', '5000',
-            '10000']);
+        expect(elevation.values).toEqual(
+            ['0', '1000', '3000', '5000', '10000']);
       });
     });
   });
 
   describe('test contact info', function() {
-     it('Test contact info', function() {
-       var obj, service, contactinfo, personPrimary, addr;
-       runs(function() {
-         var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/' +
-             'ogcsample.xml';
-         goog.net.XhrIo.send(url, function(e) {
-           var xhr = e.target;
-           obj = parser.read(xhr.getResponseXml());
-           service = obj.service;
-           contactinfo = service.contactInformation;
-           personPrimary = contactinfo.personPrimary;
-           addr = contactinfo.contactAddress;
-         });
-       });
-       waitsFor(function() {
+    it('Test contact info', function() {
+      var obj, service, contactinfo, personPrimary, addr;
+      runs(function() {
+        var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/' +
+            'ogcsample.xml';
+        goog.net.XhrIo.send(url, function(e) {
+          var xhr = e.target;
+          obj = parser.read(xhr.getResponseXml());
+          service = obj.service;
+          contactinfo = service.contactInformation;
+          personPrimary = contactinfo.personPrimary;
+          addr = contactinfo.contactAddress;
+        });
+      });
+      waitsFor(function() {
         return (obj !== undefined);
       }, 'XHR timeout', 1000);
       runs(function() {

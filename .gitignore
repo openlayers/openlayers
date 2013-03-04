@@ -3,8 +3,7 @@
 /build/gh-pages
 /build/check-requires-timestamp
 /build/jsdoc-*-timestamp
-/build/lint-spec-timestamp
-/build/lint-src-timestamp
+/build/lint-timestamp
 /build/ol.css
 /build/ol.js
 /build/ol-all.js

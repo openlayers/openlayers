@@ -3,10 +3,10 @@ goog.provide('ol.test.parser.ogc.WMSCapabilities');
 describe('test WMSCapabilities', function() {
   describe('test getVersion', function() {
     var snippet = '<WMS_Capabilities version="1.3.0" ' +
-      'xmlns="http://www.opengis.net/wms"><Service></Service>' +
-      '</WMS_Capabilities>';
+        'xmlns="http://www.opengis.net/wms"><Service></Service>' +
+        '</WMS_Capabilities>';
     var snippet2 = '<WMS_Capabilities xmlns="http://www.opengis.net/wms">' +
-      '<Service></Service></WMS_Capabilities>';
+        '<Service></Service></WMS_Capabilities>';
     it('Version taken from document', function() {
       var parser = new ol.parser.ogc.WMSCapabilities();
       var data = parser.read(snippet);
@@ -28,7 +28,7 @@ describe('test WMSCapabilities', function() {
       expect(version).toEqual('1.3.0');
     });
     var msg = 'defaultVersion returned if no version specified in options ' +
-      'and no version on the format';
+        'and no version on the format';
     it(msg, function() {
       var version = parser.getVersion(null);
       expect(version).toEqual('1.1.1');

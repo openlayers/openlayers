@@ -325,15 +325,16 @@ describe('ol.Ellipsoid', function() {
 
     it('returns the same distances as Chris Veness\'s reference implementation',
         function() {
-      var e, i, v;
-      for (i = 0; i < expected.length; ++i) {
-        e = expected[i];
-        v = ol.ellipsoid.WGS84.vincenty(e.c1, e.c2, 1e-12, 100);
-        expect(v.distance).toRoughlyEqual(e.vincentyDistance, 1e-8);
-        expect(v.finalBearing).toRoughlyEqual(e.vincentyFinalBearing, 1e-9);
-        expect(v.initialBearing).toRoughlyEqual(e.vincentyInitialBearing, 1e-9);
-      }
-    });
+          var e, i, v;
+          for (i = 0; i < expected.length; ++i) {
+            e = expected[i];
+            v = ol.ellipsoid.WGS84.vincenty(e.c1, e.c2, 1e-12, 100);
+            expect(v.distance).toRoughlyEqual(e.vincentyDistance, 1e-8);
+            expect(v.finalBearing).toRoughlyEqual(e.vincentyFinalBearing, 1e-9);
+            expect(v.initialBearing).toRoughlyEqual(
+                e.vincentyInitialBearing, 1e-9);
+          }
+        });
 
   });
 
@@ -341,14 +342,14 @@ describe('ol.Ellipsoid', function() {
 
     it('returns the same distances as Chris Veness\'s reference implementation',
         function() {
-      var e, i, vincentyDistance;
-      for (i = 0; i < expected.length; ++i) {
-        e = expected[i];
-        vincentyDistance =
-            ol.ellipsoid.WGS84.vincentyDistance(e.c1, e.c2, 1e-12, 100);
-        expect(vincentyDistance).toRoughlyEqual(e.vincentyDistance, 1e-8);
-      }
-    });
+          var e, i, vincentyDistance;
+          for (i = 0; i < expected.length; ++i) {
+            e = expected[i];
+            vincentyDistance =
+                ol.ellipsoid.WGS84.vincentyDistance(e.c1, e.c2, 1e-12, 100);
+            expect(vincentyDistance).toRoughlyEqual(e.vincentyDistance, 1e-8);
+          }
+        });
 
   });
 
@@ -356,15 +357,15 @@ describe('ol.Ellipsoid', function() {
 
     it('returns the same distances as Chris Veness\'s reference implementation',
         function() {
-      var e, i, vincentyFinalBearing;
-      for (i = 0; i < expected.length; ++i) {
-        e = expected[i];
-        vincentyFinalBearing =
-            ol.ellipsoid.WGS84.vincentyFinalBearing(e.c1, e.c2, 1e-12, 100);
-        expect(vincentyFinalBearing).toRoughlyEqual(
-            e.vincentyFinalBearing, 1e-9);
-      }
-    });
+          var e, i, vincentyFinalBearing;
+          for (i = 0; i < expected.length; ++i) {
+            e = expected[i];
+            vincentyFinalBearing =
+                ol.ellipsoid.WGS84.vincentyFinalBearing(e.c1, e.c2, 1e-12, 100);
+            expect(vincentyFinalBearing).toRoughlyEqual(
+                e.vincentyFinalBearing, 1e-9);
+          }
+        });
 
   });
 
@@ -372,15 +373,15 @@ describe('ol.Ellipsoid', function() {
 
     it('returns the same distances as Chris Veness\'s reference implementation',
         function() {
-      var e, i, vincentyInitialBearing;
-      for (i = 0; i < expected.length; ++i) {
-        e = expected[i];
-        vincentyInitialBearing =
-            ol.ellipsoid.WGS84.vincentyInitialBearing(e.c1, e.c2, 1e-12, 100);
-        expect(vincentyInitialBearing).toRoughlyEqual(
-            e.vincentyInitialBearing, 1e-9);
-      }
-    });
+          var e, i, vincentyInitialBearing;
+          for (i = 0; i < expected.length; ++i) {
+            e = expected[i];
+            vincentyInitialBearing = ol.ellipsoid.WGS84.vincentyInitialBearing(
+                e.c1, e.c2, 1e-12, 100);
+            expect(vincentyInitialBearing).toRoughlyEqual(
+                e.vincentyInitialBearing, 1e-9);
+          }
+        });
 
   });
 
