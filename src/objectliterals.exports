@@ -96,7 +96,7 @@
 @exportObjectLiteral ol.source.BingMapsOptions
 @exportObjectLiteralProperty ol.source.BingMapsOptions.culture string|undefined
 @exportObjectLiteralProperty ol.source.BingMapsOptions.key string
-@exportObjectLiteralProperty ol.source.BingMapsOptions.style ol.BingMapsStyle
+@exportObjectLiteralProperty ol.source.BingMapsOptions.style string
 
 @exportObjectLiteral ol.source.DebugTileSourceOptions
 @exportObjectLiteralProperty ol.source.DebugTileSourceOptions.extent ol.Extent|undefined
