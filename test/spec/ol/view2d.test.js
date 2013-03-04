@@ -18,21 +18,21 @@ describe('ol.View2D', function() {
 
       describe('with maxResolution, numZoomLevels, and zoomFactor options',
           function() {
-        it('gives a correct resolution constraint function', function() {
-          var options = {
-            maxResolution: 81,
-            numZoomLevels: 4,
-            zoomFactor: 3
-          };
-          var fn = ol.View2D.createConstraints_(options).resolution;
-          expect(fn(82, 0)).toEqual(81);
-          expect(fn(81, 0)).toEqual(81);
-          expect(fn(27, 0)).toEqual(27);
-          expect(fn(9, 0)).toEqual(9);
-          expect(fn(3, 0)).toEqual(3);
-          expect(fn(2, 0)).toEqual(3);
-        });
-      });
+            it('gives a correct resolution constraint function', function() {
+              var options = {
+                maxResolution: 81,
+                numZoomLevels: 4,
+                zoomFactor: 3
+              };
+              var fn = ol.View2D.createConstraints_(options).resolution;
+              expect(fn(82, 0)).toEqual(81);
+              expect(fn(81, 0)).toEqual(81);
+              expect(fn(27, 0)).toEqual(27);
+              expect(fn(9, 0)).toEqual(9);
+              expect(fn(3, 0)).toEqual(3);
+              expect(fn(2, 0)).toEqual(3);
+            });
+          });
 
       describe('with resolutions', function() {
         it('gives a correct resolution constraint function', function() {

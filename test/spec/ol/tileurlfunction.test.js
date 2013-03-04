@@ -51,8 +51,8 @@ describe('ol.TileUrlFunction', function() {
   describe('createFromTileUrlFunctions', function() {
     it('creates expected URL', function() {
       var tileUrl = ol.TileUrlFunction.createFromTileUrlFunctions([
-          ol.TileUrlFunction.createFromTemplate('a'),
-          ol.TileUrlFunction.createFromTemplate('b')
+        ol.TileUrlFunction.createFromTemplate('a'),
+        ol.TileUrlFunction.createFromTemplate('b')
       ]);
       var tileUrl1 = tileUrl(new ol.TileCoord(1, 0, 0));
       var tileUrl2 = tileUrl(new ol.TileCoord(1, 0, 1));
@@ -71,7 +71,7 @@ describe('ol.TileUrlFunction', function() {
     it('creates expected URL', function() {
       var epsg3857 = ol.projection.getFromCode('EPSG:3857');
       var tileUrlFunction = ol.TileUrlFunction.createBboxParam(
-         'http://wms?foo=bar', tileGrid, epsg3857.getAxisOrientation());
+          'http://wms?foo=bar', tileGrid, epsg3857.getAxisOrientation());
       var tileCoord = new ol.TileCoord(1, 0, 0);
       var tileUrl = tileUrlFunction(tileCoord);
       var expected = 'http://wms?foo=bar&BBOX=-20037508.342789244' +
@@ -82,7 +82,7 @@ describe('ol.TileUrlFunction', function() {
     it('creates expected URL respecting axis orientation', function() {
       var epsg4326 = ol.projection.getFromCode('EPSG:4326');
       var tileUrlFunction = ol.TileUrlFunction.createBboxParam(
-         'http://wms?foo=bar', tileGrid, epsg4326.getAxisOrientation());
+          'http://wms?foo=bar', tileGrid, epsg4326.getAxisOrientation());
       var tileCoord = new ol.TileCoord(1, 0, 0);
       var tileUrl = tileUrlFunction(tileCoord);
       var expected = 'http://wms?foo=bar&BBOX=20037508.342789244' +

@@ -229,15 +229,15 @@ def serve_precommit(t):
     t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'build/ol-all.json', 'test/test.json')
 
 
-virtual('lint', 'build/lint-src-timestamp', 'build/lint-spec-timestamp', 'build/check-requires-timestamp')
+virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp')
 
 
-@target('build/lint-src-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC, precious=True)
+@target('build/lint-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC, SPEC, precious=True)
 def build_lint_src_timestamp(t):
     limited_doc_files = [path
                          for path in ifind('externs', 'build/src/external/externs')
                          if path.endswith('.js')]
-    t.run('%(GJSLINT)s', '--strict', '--limited_doc_files=%s' % (','.join(limited_doc_files),), t.newer(SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC))
+    t.run('%(GJSLINT)s', '--strict', '--limited_doc_files=%s' % (','.join(limited_doc_files),), t.newer(t.dependencies))
     t.touch()
 
 
@@ -328,12 +328,6 @@ def build_check_requires_timestamp(t):
             missing_count += len(missing_requires)
     if unused_count or missing_count:
         t.error('%d unused goog.requires, %d missing goog.requires' % (unused_count, missing_count))
-    t.touch()
-
-
-@target('build/lint-spec-timestamp', SPEC, precious=True)
-def build_lint_spec_timestamp(t):
-    t.run('%(GJSLINT)s', t.newer(SPEC))
     t.touch()
 
 
