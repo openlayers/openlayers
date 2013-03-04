@@ -333,7 +333,7 @@ def build_check_requires_timestamp(t):
 
 @target('build/lint-spec-timestamp', SPEC, precious=True)
 def build_lint_spec_timestamp(t):
-    t.run('%(GJSLINT)s', t.newer(SPEC))
+    t.run('%(GJSLINT)s', '--strict', t.newer(SPEC))
     t.touch()
 
 
