@@ -259,8 +259,28 @@ goog.exportProperty(
  * @param {ol.Map} map Map.
  * @param {number|undefined} rotation Rotation.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ * @param {number=} opt_duration Duration.
  */
-ol.View2D.prototype.rotate = function(map, rotation, opt_anchor) {
+ol.View2D.prototype.rotate =
+    function(map, rotation, opt_anchor, opt_duration) {
+  var currentRotation = this.getRotation();
+  var currentCenter = this.getCenter();
+  if (goog.isDef(currentRotation) && goog.isDef(currentCenter) &&
+      goog.isDef(opt_duration)) {
+    map.requestRenderFrame();
+    map.addPreRenderFunction(ol.animation.rotate({
+      rotation: currentRotation,
+      duration: opt_duration,
+      easing: goog.fx.easing.easeOut
+    }));
+    if (goog.isDef(opt_anchor)) {
+      map.addPreRenderFunction(ol.animation.pan({
+        source: currentCenter,
+        duration: opt_duration,
+        easing: goog.fx.easing.easeOut
+      }));
+    }
+  }
   rotation = this.constraints_.rotation(rotation, 0);
   this.rotateNoConstraint(map, rotation, opt_anchor);
 };
