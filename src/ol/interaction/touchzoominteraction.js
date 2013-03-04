@@ -8,6 +8,12 @@ goog.require('ol.ViewHint');
 goog.require('ol.interaction.Touch');
 
 
+/**
+ * @define {number} Animation duration.
+ */
+ol.interaction.TOUCHZOOM_ANIMATION_DURATION = 250;
+
+
 
 /**
  * @constructor
@@ -73,7 +79,8 @@ ol.interaction.TouchZoom.prototype.handleTouchEnd =
     var map = mapBrowserEvent.map;
     var view = map.getView();
     // take the resolution constraint into account
-    view.zoom(map, view.getResolution());
+    view.zoom(map, view.getResolution(), undefined,
+        ol.interaction.TOUCHZOOM_ANIMATION_DURATION);
     view.setHint(ol.ViewHint.INTERACTING, -1);
     return false;
   } else {
