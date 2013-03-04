@@ -111,7 +111,7 @@ ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
   goog.asserts.assert(view instanceof ol.View2D);
 
   map.requestRenderFrame();
-  view.zoom(map, -delta, this.lastAnchor_,
+  view.zoomByDelta(map, -delta, this.lastAnchor_,
       ol.interaction.MOUSEWHEELZOOM_ANIMATION_DURATION);
 
   this.delta_ = 0;
