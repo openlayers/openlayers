@@ -1,4 +1,3 @@
-goog.provide('ol.BingMapsStyle');
 goog.provide('ol.source.BingMaps');
 
 goog.require('goog.Uri');
@@ -13,18 +12,6 @@ goog.require('ol.TileUrlFunction');
 goog.require('ol.projection');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');
-
-
-/**
- * @enum {string}
- */
-ol.BingMapsStyle = {
-  AERIAL: 'Aerial',
-  AERIAL_WITH_LABELS: 'AerialWithLabels',
-  ROAD: 'Road',
-  ORDNANCE_SURVEY: 'OrdnanceSurvey',
-  COLLINS_BART: 'CollinsBart'
-};
 
 
 
