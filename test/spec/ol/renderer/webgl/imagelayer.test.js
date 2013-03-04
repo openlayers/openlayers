@@ -1,7 +1,7 @@
 goog.provide('ol.test.renderer.webgl.ImageLayer');
 
 describe('ol.renderer.webgl.ImageLayer', function() {
-  describe('updateVertexCoordMatrix_', function() {
+  describe('updateProjectionMatrix_', function() {
     var map;
     var renderer;
     var canvasWidth;
@@ -41,9 +41,9 @@ describe('ol.renderer.webgl.ImageLayer', function() {
 
     it('produces a correct matrix', function() {
 
-      renderer.updateVertexCoordMatrix_(canvasWidth, canvasHeight,
+      renderer.updateProjectionMatrix_(canvasWidth, canvasHeight,
           viewCenter, viewResolution, viewRotation, imageExtent);
-      var matrix = renderer.getVertexCoordMatrix();
+      var matrix = renderer.getProjectionMatrix();
 
       var input;
       var output = goog.vec.Vec4.createNumber();
