@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>OpenLayers: Class: ol.Attribution</title>
+    <title>OpenLayers: Class: ol.interaction.TouchRotate</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: ol.Attribution</h1>
+    <h1 class="page-title">Class: ol.interaction.TouchRotate</h1>
     
     
 
@@ -27,7 +27,7 @@
     
 <header>
     <h2>
-    ol.Attribution
+    ol.interaction.TouchRotate
     </h2>
     
 </header>  
@@ -39,7 +39,7 @@
     
         
 <dt>
-    <h4 class="name" id="Attribution"><span class="type-signature"></span>new Attribution</h4>
+    <h4 class="name" id="TouchRotate"><span class="type-signature"></span>new TouchRotate</h4>
     
     
 </dt>
@@ -79,42 +79,13 @@
 	
         <tr>
             
-                <td class="name"><code>html</code></td>
+                <td class="name"><code>threshold</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">string</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">HTML.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>tileRanges</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object.&lt;string, Array.&lt;ol.TileRange>>=</span>
+<span class="param-type">number=</span>
 
 
             
@@ -132,7 +103,8 @@
             
             
             
-            <td class="description last">(Optional) Tile ranges.</td>
+            <td class="description last">(Optional) Minimal angle to start a rotation.
+    Default to 0.3 (radian).</td>
         </tr>
 	
 	
@@ -162,7 +134,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>attribution.js, line 12</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>touchrotateinteraction.js, line 18</li></ul></dd>
 	
     
     
@@ -186,6 +158,11 @@
     </div>
     
     
+        <h3 class="subsection-title">Extends</h3>
+        
+        <ul>
+            <li><a href="ol.interaction.Touch.html">ol.interaction.Touch</a></li>
+        </ul>
     
     
     
@@ -195,6 +172,62 @@
     
     
     
+    
+    
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt class="protected">
+    <h4 class="name" id="targetTouches"><span class="type-signature">&lt;protected> </span>targetTouches<span class="type-signature"> :Array.&lt;Object></span></h4>
+    
+    
+</dt>
+<dd class="protected">
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.interaction.Touch.html#targetTouches">ol.interaction.Touch#targetTouches</a>
+	</li></dd>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>touchinteraction.js, line 36</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
     
     
     
@@ -203,7 +236,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="getHTML"><span class="type-signature"></span>getHTML</h4>
+    <h4 class="name" id="handleMapBrowserEvent"><span class="type-signature"></span>handleMapBrowserEvent</h4>
     
     
 </dt>
@@ -226,6 +259,11 @@
 	
 
 	
+	<dt class="inherited-from">Inherited From:</dt>
+	<dd class="inherited-from"><ul class="dummy"><li>
+		<a href="ol.interaction.Touch.html#handleMapBrowserEvent">ol.interaction.Touch#handleMapBrowserEvent</a>
+	</li></dd>
+	
 	
 	
 	
@@ -239,7 +277,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>attribution.js, line 32</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>touchinteraction.js, line 106</li></ul></dd>
 	
     
     
@@ -255,28 +293,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    HTML.
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">string</span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>
@@ -284,7 +300,7 @@
         
             
 <dt>
-    <h4 class="name" id="intersectsAnyTileRange"><span class="type-signature"></span>intersectsAnyTileRange</h4>
+    <h4 class="name" id="handleTouchEnd"><span class="type-signature"></span>handleTouchEnd</h4>
     
     
 </dt>
@@ -296,54 +312,6 @@
     
     
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>tileRanges</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object.&lt;string, ol.TileRange></span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Tile ranges.</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
     
     
     
@@ -368,7 +336,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>attribution.js, line 41</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>touchrotateinteraction.js, line 101</li></ul></dd>
 	
     
     
@@ -384,28 +352,124 @@
     
     
     
-    <h5>Returns:</h5>
     
-            
-<div class="param-desc">
-    Intersects any tile range.
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">boolean</span>
-
-
-	</dd>
-</dl>
+    
+</dd>
 
         
+            
+<dt>
+    <h4 class="name" id="handleTouchMove"><span class="type-signature"></span>handleTouchMove</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>touchrotateinteraction.js, line 53</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="handleTouchStart"><span class="type-signature"></span>handleTouchStart</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>touchrotateinteraction.js, line 117</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
     
     
 </dd>
@@ -434,7 +498,7 @@ items from the cache is the responsibility of the user.</a></li><li><a href="ol.
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Mon Mar 04 2013 10:24:18 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> on Mon Mar 04 2013 10:24:23 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>
