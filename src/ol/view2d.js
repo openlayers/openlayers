@@ -263,26 +263,8 @@ goog.exportProperty(
  */
 ol.View2D.prototype.rotate =
     function(map, rotation, opt_anchor, opt_duration) {
-  var currentRotation = this.getRotation();
-  var currentCenter = this.getCenter();
-  if (goog.isDef(currentRotation) && goog.isDef(currentCenter) &&
-      goog.isDef(opt_duration)) {
-    map.requestRenderFrame();
-    map.addPreRenderFunction(ol.animation.rotate({
-      rotation: currentRotation,
-      duration: opt_duration,
-      easing: goog.fx.easing.easeOut
-    }));
-    if (goog.isDef(opt_anchor)) {
-      map.addPreRenderFunction(ol.animation.pan({
-        source: currentCenter,
-        duration: opt_duration,
-        easing: goog.fx.easing.easeOut
-      }));
-    }
-  }
   rotation = this.constraints_.rotation(rotation, 0);
-  this.rotateNoConstraint(map, rotation, opt_anchor);
+  this.rotateNoConstraint(map, rotation, opt_anchor, opt_duration);
 };
 
 
@@ -290,23 +272,45 @@ ol.View2D.prototype.rotate =
  * @param {ol.Map} map Map.
  * @param {number|undefined} rotation Rotation.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ * @param {number=} opt_duration Duration.
  */
-ol.View2D.prototype.rotateNoConstraint = function(map, rotation, opt_anchor) {
-  if (goog.isDefAndNotNull(opt_anchor)) {
-    var anchor = opt_anchor;
-    var oldCenter = /** @type {!ol.Coordinate} */ (this.getCenter());
-    var center = new ol.Coordinate(
-        oldCenter.x - anchor.x,
-        oldCenter.y - anchor.y);
-    center.rotate(rotation - this.getRotation());
-    center.x += anchor.x;
-    center.y += anchor.y;
-    map.withFrozenRendering(function() {
-      this.setCenter(center);
+ol.View2D.prototype.rotateNoConstraint =
+    function(map, rotation, opt_anchor, opt_duration) {
+  if (goog.isDefAndNotNull(rotation)) {
+    var currentRotation = this.getRotation();
+    var currentCenter = this.getCenter();
+    if (goog.isDef(currentRotation) && goog.isDef(currentCenter) &&
+        goog.isDef(opt_duration)) {
+      map.requestRenderFrame();
+      map.addPreRenderFunction(ol.animation.rotate({
+        rotation: currentRotation,
+        duration: opt_duration,
+        easing: goog.fx.easing.easeOut
+      }));
+      if (goog.isDef(opt_anchor)) {
+        map.addPreRenderFunction(ol.animation.pan({
+          source: currentCenter,
+          duration: opt_duration,
+          easing: goog.fx.easing.easeOut
+        }));
+      }
+    }
+    if (goog.isDefAndNotNull(opt_anchor)) {
+      var anchor = opt_anchor;
+      var oldCenter = /** @type {!ol.Coordinate} */ (this.getCenter());
+      var center = new ol.Coordinate(
+          oldCenter.x - anchor.x,
+          oldCenter.y - anchor.y);
+      center.rotate(rotation - this.getRotation());
+      center.x += anchor.x;
+      center.y += anchor.y;
+      map.withFrozenRendering(function() {
+        this.setCenter(center);
+        this.setRotation(rotation);
+      }, this);
+    } else {
       this.setRotation(rotation);
-    }, this);
-  } else {
-    this.setRotation(rotation);
+    }
   }
 };
 
@@ -315,10 +319,12 @@ ol.View2D.prototype.rotateNoConstraint = function(map, rotation, opt_anchor) {
  * @param {ol.Map} map Map.
  * @param {number|undefined} resolution Resolution to go to.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ * @param {number=} opt_duration Duration.
  */
-ol.View2D.prototype.zoom = function(map, resolution, opt_anchor) {
+ol.View2D.prototype.zoom =
+    function(map, resolution, opt_anchor, opt_duration) {
   resolution = this.constraints_.resolution(resolution, 0);
-  this.zoomNoConstraint(map, resolution, opt_anchor);
+  this.zoomNoConstraint(map, resolution, opt_anchor, opt_duration);
 };
 
 
@@ -331,25 +337,8 @@ ol.View2D.prototype.zoom = function(map, resolution, opt_anchor) {
 ol.View2D.prototype.zoomByDelta =
     function(map, delta, opt_anchor, opt_duration) {
   var currentResolution = this.getResolution();
-  var currentCenter = this.getCenter();
-  if (goog.isDef(currentResolution) && goog.isDef(currentCenter) &&
-      goog.isDef(opt_duration)) {
-    map.requestRenderFrame();
-    map.addPreRenderFunction(ol.animation.zoom({
-      resolution: currentResolution,
-      duration: opt_duration,
-      easing: goog.fx.easing.easeOut
-    }));
-    if (goog.isDef(opt_anchor)) {
-      map.addPreRenderFunction(ol.animation.pan({
-        source: currentCenter,
-        duration: opt_duration,
-        easing: goog.fx.easing.easeOut
-      }));
-    }
-  }
   var resolution = this.constraints_.resolution(currentResolution, delta);
-  this.zoomNoConstraint(map, resolution, opt_anchor);
+  this.zoomNoConstraint(map, resolution, opt_anchor, opt_duration);
 };
 
 
@@ -357,21 +346,43 @@ ol.View2D.prototype.zoomByDelta =
  * @param {ol.Map} map Map.
  * @param {number|undefined} resolution Resolution to go to.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ * @param {number=} opt_duration Duration.
  */
-ol.View2D.prototype.zoomNoConstraint = function(map, resolution, opt_anchor) {
-  if (goog.isDefAndNotNull(resolution) && goog.isDefAndNotNull(opt_anchor)) {
-    var anchor = opt_anchor;
-    var oldCenter = /** @type {!ol.Coordinate} */ (this.getCenter());
-    var oldResolution = this.getResolution();
-    var x = anchor.x - resolution * (anchor.x - oldCenter.x) / oldResolution;
-    var y = anchor.y - resolution * (anchor.y - oldCenter.y) / oldResolution;
-    var center = new ol.Coordinate(x, y);
-    map.withFrozenRendering(function() {
-      this.setCenter(center);
+ol.View2D.prototype.zoomNoConstraint =
+    function(map, resolution, opt_anchor, opt_duration) {
+  if (goog.isDefAndNotNull(resolution)) {
+    var currentResolution = this.getResolution();
+    var currentCenter = this.getCenter();
+    if (goog.isDef(currentResolution) && goog.isDef(currentCenter) &&
+        goog.isDef(opt_duration)) {
+      map.requestRenderFrame();
+      map.addPreRenderFunction(ol.animation.zoom({
+        resolution: currentResolution,
+        duration: opt_duration,
+        easing: goog.fx.easing.easeOut
+      }));
+      if (goog.isDef(opt_anchor)) {
+        map.addPreRenderFunction(ol.animation.pan({
+          source: currentCenter,
+          duration: opt_duration,
+          easing: goog.fx.easing.easeOut
+        }));
+      }
+    }
+    if (goog.isDefAndNotNull(opt_anchor)) {
+      var anchor = opt_anchor;
+      var oldCenter = /** @type {!ol.Coordinate} */ (this.getCenter());
+      var oldResolution = this.getResolution();
+      var x = anchor.x - resolution * (anchor.x - oldCenter.x) / oldResolution;
+      var y = anchor.y - resolution * (anchor.y - oldCenter.y) / oldResolution;
+      var center = new ol.Coordinate(x, y);
+      map.withFrozenRendering(function() {
+        this.setCenter(center);
+        this.setResolution(resolution);
+      }, this);
+    } else {
       this.setResolution(resolution);
-    }, this);
-  } else {
-    this.setResolution(resolution);
+    }
   }
 };
 
