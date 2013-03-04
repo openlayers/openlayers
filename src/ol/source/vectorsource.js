@@ -10,9 +10,8 @@ goog.require('ol.filter.Geometry');
 goog.require('ol.filter.Logical');
 goog.require('ol.filter.LogicalOperator');
 goog.require('ol.geom.GeometryType');
-goog.require('ol.source.TileSource');
+goog.require('ol.source.Source');
 goog.require('ol.structs.RTree');
-goog.require('ol.tilegrid.TileGrid');
 
 
 
@@ -177,8 +176,7 @@ ol.source.FeatureCache.prototype.getFeaturesByIds_ = function(ids) {
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            extent: (ol.Extent|undefined),
- *            projection: (ol.Projection|undefined),
- *            tileGrid: (ol.tilegrid.TileGrid|undefined)}}
+ *            projection: (ol.Projection|undefined)}}
  */
 ol.source.VectorOptions;
 
@@ -186,7 +184,7 @@ ol.source.VectorOptions;
 
 /**
  * @constructor
- * @extends {ol.source.TileSource}
+ * @extends {ol.source.Source}
  * @param {ol.source.VectorOptions} options Source options.
  */
 ol.source.Vector = function(options) {
@@ -194,8 +192,7 @@ ol.source.Vector = function(options) {
   goog.base(this, {
     attributions: options.attributions,
     extent: options.extent,
-    projection: options.projection,
-    tileGrid: options.tileGrid
+    projection: options.projection
   });
 
   /**
@@ -205,15 +202,7 @@ ol.source.Vector = function(options) {
   this.featureCache_ = new ol.source.FeatureCache();
 
 };
-goog.inherits(ol.source.Vector, ol.source.TileSource);
-
-
-/**
- * @param {ol.tilegrid.TileGrid} tileGrid tile grid.
- */
-ol.source.Vector.prototype.setTileGrid = function(tileGrid) {
-  this.tileGrid = tileGrid;
-};
+goog.inherits(ol.source.Vector, ol.source.Source);
 
 
 /**
