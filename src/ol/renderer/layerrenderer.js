@@ -258,3 +258,20 @@ ol.renderer.Layer.prototype.updateWantedTiles =
   }
   wantedTiles[tileSourceKey][coordKey] = true;
 };
+
+
+/**
+ * @param {function(ol.Tile): boolean} isLoadedFunction Function to
+ *     determine if the tile is loaded.
+ * @param {ol.source.TileSource} tileSource Tile source.
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @param {ol.Projection} projection Projection.
+ * @return {function(ol.TileCoord): ol.Tile} Returns a tile if it is loaded.
+ */
+ol.renderer.Layer.prototype.createGetTileIfLoadedFunction =
+    function(isLoadedFunction, tileSource, tileGrid, projection) {
+  return function(tileCoord) {
+    var tile = tileSource.getTile(tileCoord, tileGrid, projection);
+    return isLoadedFunction(tile) ? tile : null;
+  };
+};

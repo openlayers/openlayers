@@ -1,11 +1,9 @@
 goog.provide('ol.source.SingleImageWMS');
 
-goog.require('goog.uri.utils');
 goog.require('ol.Extent');
 goog.require('ol.Image');
 goog.require('ol.ImageUrlFunction');
 goog.require('ol.Size');
-goog.require('ol.projection');
 goog.require('ol.source.ImageSource');
 
 
@@ -16,45 +14,16 @@ goog.require('ol.source.ImageSource');
  * @param {ol.source.SingleImageWMSOptions} options Options.
  */
 ol.source.SingleImageWMS = function(options) {
-
-  var projection = ol.projection.createProjection(
-      options.projection, 'EPSG:3857');
-  var projectionExtent = projection.getExtent();
-
-  var extent = goog.isDef(options.extent) ?
-      options.extent : projectionExtent;
-
-  var version = goog.isDef(options.version) ?
-      options.version : '1.3';
-
-  var baseParams = {
-    'SERVICE': 'WMS',
-    'VERSION': version,
-    'REQUEST': 'GetMap',
-    'STYLES': '',
-    'FORMAT': 'image/png',
-    'TRANSPARENT': true
-  };
-  baseParams[version >= '1.3' ? 'CRS' : 'SRS'] = projection.getCode();
-  goog.object.extend(baseParams, options.params);
-
-  var axisOrientation = projection.getAxisOrientation();
-  var imageUrlFunction;
-  if (options.url) {
-    var url = goog.uri.utils.appendParamsFromMap(
-        options.url, baseParams);
-    imageUrlFunction =
-        ol.ImageUrlFunction.createBboxParam(url, axisOrientation);
-  } else {
-    imageUrlFunction =
-        ol.ImageUrlFunction.nullImageUrlFunction;
-  }
+  var imageUrlFunction = goog.isDef(options.url) ?
+      ol.ImageUrlFunction.createWMSParams(
+          options.url, options.params, options.version) :
+      ol.ImageUrlFunction.nullImageUrlFunction;
 
   goog.base(this, {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
-    extent: extent,
-    projection: projection,
+    extent: options.extent,
+    projection: options.projection,
     resolutions: options.resolutions,
     imageUrlFunction: imageUrlFunction
   });
@@ -80,7 +49,7 @@ goog.inherits(ol.source.SingleImageWMS, ol.source.ImageSource);
  * @inheritDoc
  */
 ol.source.SingleImageWMS.prototype.getImage =
-    function(extent, resolution) {
+    function(extent, resolution, projection) {
   resolution = this.findNearestResolution(resolution);
 
   var image = this.image_;
@@ -97,6 +66,6 @@ ol.source.SingleImageWMS.prototype.getImage =
   var height = extent.getHeight() / resolution;
   var size = new ol.Size(width, height);
 
-  this.image_ = this.createImage(extent, resolution, size);
+  this.image_ = this.createImage(extent, resolution, size, projection);
   return this.image_;
 };

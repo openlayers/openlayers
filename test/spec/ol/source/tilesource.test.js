@@ -14,10 +14,6 @@ describe('ol.source.TileSource', function() {
 
   describe('#findLoadedTiles()', function() {
 
-    function isLoaded(tile) {
-      return !goog.isNull(tile) && tile.getState() === ol.TileState.LOADED;
-    }
-
     it('adds no tiles if none are already loaded', function() {
       // a source with no loaded tiles
       var source = new ol.test.source.MockTileSource({});
@@ -25,7 +21,13 @@ describe('ol.source.TileSource', function() {
       var loadedTilesByZ = {};
       var grid = source.getTileGrid();
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 3);
-      source.findLoadedTiles(loadedTilesByZ, isLoaded, 3, range);
+
+      function getTileIfLoaded(tileCoord) {
+        var tile = source.getTile(tileCoord, null, null);
+        return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
+            tile : null;
+      }
+      source.findLoadedTiles(loadedTilesByZ, getTileIfLoaded, 3, range);
 
       var keys = goog.object.getKeys(loadedTilesByZ);
       expect(keys.length).toBe(0);
@@ -41,7 +43,13 @@ describe('ol.source.TileSource', function() {
       var loadedTilesByZ = {};
       var grid = source.getTileGrid();
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 0);
-      source.findLoadedTiles(loadedTilesByZ, isLoaded, 0, range);
+
+      function getTileIfLoaded(tileCoord) {
+        var tile = source.getTile(tileCoord, null, null);
+        return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
+            tile : null;
+      }
+      source.findLoadedTiles(loadedTilesByZ, getTileIfLoaded, 0, range);
       var keys = goog.object.getKeys(loadedTilesByZ);
       expect(keys.length).toBe(1);
       var tile = loadedTilesByZ['0']['0/0/0'];
@@ -59,7 +67,13 @@ describe('ol.source.TileSource', function() {
       var loadedTilesByZ = {};
       var grid = source.getTileGrid();
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 1);
-      source.findLoadedTiles(loadedTilesByZ, isLoaded, 1, range);
+
+      function getTileIfLoaded(tileCoord) {
+        var tile = source.getTile(tileCoord, null, null);
+        return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
+            tile : null;
+      }
+      source.findLoadedTiles(loadedTilesByZ, getTileIfLoaded, 1, range);
       var keys = goog.object.getKeys(loadedTilesByZ);
       expect(keys.length).toBe(1);
       var tile = loadedTilesByZ['1']['1/0/0'];
@@ -79,7 +93,13 @@ describe('ol.source.TileSource', function() {
       var loadedTilesByZ = {};
       var grid = source.getTileGrid();
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 1);
-      var loaded = source.findLoadedTiles(loadedTilesByZ, isLoaded, 1, range);
+      function getTileIfLoaded(tileCoord) {
+        var tile = source.getTile(tileCoord, null, null);
+        return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
+            tile : null;
+      }
+      var loaded = source.findLoadedTiles(
+          loadedTilesByZ, getTileIfLoaded, 1, range);
       expect(loaded).toBe(true);
     });
 
@@ -98,7 +118,14 @@ describe('ol.source.TileSource', function() {
       };
       var grid = source.getTileGrid();
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 1);
-      var loaded = source.findLoadedTiles(loadedTilesByZ, isLoaded, 1, range);
+
+      function getTileIfLoaded(tileCoord) {
+        var tile = source.getTile(tileCoord, null, null);
+        return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
+            tile : null;
+      }
+      var loaded = source.findLoadedTiles(
+          loadedTilesByZ, getTileIfLoaded, 1, range);
       expect(loaded).toBe(true);
     });
 
@@ -114,7 +141,14 @@ describe('ol.source.TileSource', function() {
       var loadedTilesByZ = {};
       var grid = source.getTileGrid();
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 1);
-      var loaded = source.findLoadedTiles(loadedTilesByZ, isLoaded, 1, range);
+
+      function getTileIfLoaded(tileCoord) {
+        var tile = source.getTile(tileCoord, null, null);
+        return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
+            tile : null;
+      }
+      var loaded = source.findLoadedTiles(
+          loadedTilesByZ, getTileIfLoaded, 1, range);
       expect(loaded).toBe(false);
     });
 
@@ -132,7 +166,14 @@ describe('ol.source.TileSource', function() {
       };
       var grid = source.getTileGrid();
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 1);
-      var loaded = source.findLoadedTiles(loadedTilesByZ, isLoaded, 1, range);
+
+      function getTileIfLoaded(tileCoord) {
+        var tile = source.getTile(tileCoord, null, null);
+        return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
+            tile : null;
+      }
+      var loaded = source.findLoadedTiles(
+          loadedTilesByZ, getTileIfLoaded, 1, range);
       expect(loaded).toBe(false);
     });
 

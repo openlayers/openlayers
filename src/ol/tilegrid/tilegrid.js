@@ -20,6 +20,12 @@ goog.require('ol.array');
 ol.DEFAULT_TILE_SIZE = 256;
 
 
+/**
+ * @define {number} Default maximum zoom for default tile grids.
+ */
+ol.DEFAULT_MAX_ZOOM = 42;
+
+
 
 /**
  * @constructor
@@ -89,8 +95,7 @@ ol.tilegrid.TileGrid = function(tileGridOptions) {
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {function(this: T, number, ol.TileRange): boolean} callback
- *     Callback.
+ * @param {function(this: T, number, ol.TileRange): boolean} callback Callback.
  * @param {T=} opt_obj Object.
  * @template T
  */
@@ -328,7 +333,21 @@ ol.tilegrid.TileGrid.prototype.getZForResolution = function(resolution) {
 
 /**
  * @param {ol.Projection} projection Projection.
- * @param {number=} opt_maxZoom Maximum zoom level (optional). Default is 18.
+ * @return {ol.tilegrid.TileGrid} Default tile grid for the passed projection.
+ */
+ol.tilegrid.getForProjection = function(projection) {
+  var tileGrid = projection.getDefaultTileGrid();
+  if (goog.isNull(tileGrid)) {
+    tileGrid = ol.tilegrid.createForProjection(projection);
+    projection.setDefaultTileGrid(tileGrid);
+  }
+  return tileGrid;
+};
+
+
+/**
+ * @param {ol.Projection} projection Projection.
+ * @param {number=} opt_maxZoom Maximum zoom level.
  * @param {ol.Size=} opt_tileSize Tile size.
  * @return {ol.tilegrid.TileGrid} TileGrid instance.
  */
@@ -339,7 +358,7 @@ ol.tilegrid.createForProjection =
       projectionExtent.maxX - projectionExtent.minX,
       projectionExtent.maxY - projectionExtent.minY);
   var maxZoom = goog.isDef(opt_maxZoom) ?
-      opt_maxZoom : 18;
+      opt_maxZoom : ol.DEFAULT_MAX_ZOOM;
   var tileSize = goog.isDef(opt_tileSize) ?
       opt_tileSize : new ol.Size(ol.DEFAULT_TILE_SIZE, ol.DEFAULT_TILE_SIZE);
   var resolutions = new Array(maxZoom + 1);

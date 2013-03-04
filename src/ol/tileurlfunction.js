@@ -3,13 +3,14 @@ goog.provide('ol.TileUrlFunctionType');
 
 goog.require('goog.array');
 goog.require('goog.math');
-goog.require('goog.uri.utils');
 goog.require('ol.TileCoord');
+goog.require('ol.source.wms');
 goog.require('ol.tilegrid.TileGrid');
 
 
 /**
- * @typedef {function(ol.TileCoord): (string|undefined)}
+ * @typedef {function(ol.TileCoord, ol.tilegrid.TileGrid, ol.Projection):
+ *     (string|undefined)}
  */
 ol.TileUrlFunctionType;
 
@@ -59,12 +60,12 @@ ol.TileUrlFunction.createFromTemplates = function(templates) {
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
 ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
-  return function(tileCoord) {
+  return function(tileCoord, tileGrid, projection) {
     if (goog.isNull(tileCoord)) {
       return undefined;
     } else {
       var index = goog.math.modulo(tileCoord.hash(), tileUrlFunctions.length);
-      return tileUrlFunctions[index](tileCoord);
+      return tileUrlFunctions[index](tileCoord, tileGrid, projection);
     }
   };
 };
@@ -72,25 +73,20 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
 
 /**
  * @param {string} baseUrl Base URL (may have query data).
- * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
- * @param {string} axisOrientation Axis orientation.
+ * @param {Object.<string, string|number>} params WMS parameters.
+ * @param {string=} opt_version WMS version.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
-ol.TileUrlFunction.createBboxParam =
-    function(baseUrl, tileGrid, axisOrientation) {
-  return function(tileCoord) {
+ol.TileUrlFunction.createWMSParams =
+    function(baseUrl, params, opt_version) {
+  return function(tileCoord, tileGrid, projection) {
     if (goog.isNull(tileCoord)) {
       return undefined;
     } else {
-      var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
-      var bboxValues = axisOrientation.substr(0, 2) == 'ne' ?
-          [tileExtent.minY, tileExtent.minX, tileExtent.maxY, tileExtent.maxX] :
-          [tileExtent.minX, tileExtent.minY, tileExtent.maxX, tileExtent.maxY];
-      var tileSize = tileGrid.getTileSize(tileCoord.z);
-      return goog.uri.utils.appendParams(baseUrl,
-          'BBOX', bboxValues.join(','),
-          'HEIGHT', tileSize.height,
-          'WIDTH', tileSize.width);
+      var size = tileGrid.getTileSize();
+      var extent = tileGrid.getTileCoordExtent(tileCoord);
+      return ol.source.wms.getUrl(
+          baseUrl, params, extent, size, projection, opt_version);
     }
   };
 };
@@ -106,18 +102,19 @@ ol.TileUrlFunction.nullTileUrlFunction = function(tileCoord) {
 
 
 /**
- * @param {function(ol.TileCoord): ol.TileCoord} transformFn
- *     Transform.function.
+ * @param {function(ol.TileCoord, ol.tilegrid.TileGrid, ol.Projection):
+ *     ol.TileCoord} transformFn Transform.function.
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
 ol.TileUrlFunction.withTileCoordTransform =
     function(transformFn, tileUrlFunction) {
-  return function(tileCoord) {
+  return function(tileCoord, tileGrid, projection) {
     if (goog.isNull(tileCoord)) {
       return undefined;
     } else {
-      return tileUrlFunction(transformFn(tileCoord));
+      return tileUrlFunction(
+          transformFn(tileCoord, tileGrid, projection), tileGrid, projection);
     }
   };
 };

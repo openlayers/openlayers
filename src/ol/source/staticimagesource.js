@@ -19,6 +19,7 @@ ol.source.StaticImage = function(options) {
   var imageExtent = options.imageExtent;
   var imageSize = options.imageSize;
   var imageResolution = imageExtent.getHeight() / imageSize.height;
+  var projection = goog.isDef(options.projection) ? options.projection : null;
 
   goog.base(this, {
     attributions: options.attributions,
@@ -33,7 +34,8 @@ ol.source.StaticImage = function(options) {
    * @private
    * @type {ol.Image}
    */
-  this.image_ = this.createImage(imageExtent, imageResolution, imageSize);
+  this.image_ = this.createImage(
+      imageExtent, imageResolution, imageSize, projection);
 
 };
 goog.inherits(ol.source.StaticImage, ol.source.ImageSource);
@@ -42,7 +44,8 @@ goog.inherits(ol.source.StaticImage, ol.source.ImageSource);
 /**
  * @inheritDoc
  */
-ol.source.StaticImage.prototype.getImage = function(extent, resolution) {
+ol.source.StaticImage.prototype.getImage =
+    function(extent, resolution, projection) {
   if (extent.intersects(this.image_.getExtent())) {
     return this.image_;
   }
@@ -55,7 +58,7 @@ ol.source.StaticImage.prototype.getImage = function(extent, resolution) {
  * @return {ol.ImageUrlFunctionType} Function.
  */
 ol.source.StaticImage.createImageFunction = function(url) {
-  return function(extent, size) {
+  return function(extent, size, projection) {
     return url;
   };
 };
