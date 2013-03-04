@@ -95,3 +95,31 @@
 .ol-zoom-out:before {
   content: "\2212";
 }
+
+.ol-zoomslider {
+  position: absolute;
+  top: 67px;
+  left: 8px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+  width: 28px;
+  height: 200px;
+  outline: none;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+}
+.ol-zoomslider-thumb {
+  position: absolute;
+  display: block;
+  padding: 0;
+  margin: 2px;
+  background: #130085; /* @alternate */
+  background: rgba(0,60,136,0.5);
+  filter: alpha(opacity=80);
+  border-radius: 2px;
+  outline: none;
+  overflow: hidden;
+  height: 20px;
+  width: 24px;
+}
