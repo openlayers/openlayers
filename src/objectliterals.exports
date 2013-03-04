@@ -114,8 +114,11 @@
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.version string|undefined
 
 @exportObjectLiteral ol.source.StamenOptions
-@exportObjectLiteralProperty ol.source.StamenOptions.flavor string|undefined
-@exportObjectLiteralProperty ol.source.StamenOptions.provider string
+@exportObjectLiteralProperty ol.source.StamenOptions.layer string
+@exportObjectLiteralProperty ol.source.StamenOptions.minZoom number|undefined
+@exportObjectLiteralProperty ol.source.StamenOptions.maxZoom number|undefined
+@exportObjectLiteralProperty ol.source.StamenOptions.opaque boolean|undefined
+@exportObjectLiteralProperty ol.source.StamenOptions.url string|undefined
 
 @exportObjectLiteral ol.source.StaticImageOptions
 @exportObjectLiteralProperty ol.source.StaticImageOptions.attributions Array.<ol.Attribution>|undefined
