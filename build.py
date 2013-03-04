@@ -263,7 +263,7 @@ def _strip_comments(lines):
                     yield line
 
 
-@target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC)
+@target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC, SPEC)
 def build_check_requires_timestamp(t):
     unused_count = 0
     all_provides = set()
