@@ -133,6 +133,7 @@
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.crossOrigin null|string|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.extent ol.Extent|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.tileGrid ol.tilegrid.TileGrid|undefined
+@exportObjectLiteralProperty ol.source.TiledWMSOptions.transparent boolean|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.maxZoom number|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.projection ol.Projection|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.url string|undefined

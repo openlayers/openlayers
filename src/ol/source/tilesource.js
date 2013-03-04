@@ -15,6 +15,7 @@ goog.require('ol.tilegrid.TileGrid');
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            extent: (ol.Extent|undefined),
+ *            opaque: (boolean|undefined),
  *            projection: (ol.Projection|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined)}}
  */
@@ -34,6 +35,13 @@ ol.source.TileSource = function(tileSourceOptions) {
     extent: tileSourceOptions.extent,
     projection: tileSourceOptions.projection
   });
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.opaque_ = goog.isDef(tileSourceOptions.opaque) ?
+      tileSourceOptions.opaque : false;
 
   /**
    * @protected
@@ -95,6 +103,14 @@ ol.source.TileSource.prototype.findLoadedTiles = function(loadedTilesByZ,
     }
   }
   return fullyCovered;
+};
+
+
+/**
+ * @return {boolean} Opaque.
+ */
+ol.source.TileSource.prototype.getOpaque = function() {
+  return this.opaque_;
 };
 
 
