@@ -262,6 +262,16 @@ goog.exportProperty(
  */
 ol.View2D.prototype.rotate = function(map, rotation, opt_anchor) {
   rotation = this.constraints_.rotation(rotation, 0);
+  this.rotateNoConstraint(map, rotation, opt_anchor);
+};
+
+
+/**
+ * @param {ol.Map} map Map.
+ * @param {number|undefined} rotation Rotation.
+ * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ */
+ol.View2D.prototype.rotateNoConstraint = function(map, rotation, opt_anchor) {
   if (goog.isDefAndNotNull(opt_anchor)) {
     var anchor = opt_anchor;
     var oldCenter = /** @type {!ol.Coordinate} */ (this.getCenter());
