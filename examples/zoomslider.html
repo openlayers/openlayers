@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <style type="text/css">
+.map {
+  width: 400px;
+  height: 400px;
+  border: thin solid #cccccc;
+  margin: 1em;
+  float: left;
+}
+#docs {
+  clear: both;
+}
+
+/**
+ * The zoomslider in the second map shall be placed between the zoom-in and
+ * zoom-out buttons.
+ */
+#map2 .ol-zoom a.ol-zoom-out {
+  margin-top: 202px;
+}
+#map2 .ol-zoomslider {
+  background-color: transparent;
+  top: 34px;
+  left: 9px;
+  width: 24px;
+}
+#map2 .ol-zoomslider-handle {
+  border-radius: 2px;
+  width: 24px;
+  height: 12px;
+}
+
+/**
+ * The zoomslider in the third map shall be horizontal, placed in the top-right
+ * corner, smaller and orange.
+ */
+#map3 .ol-zoomslider {
+  top: 8px;
+  left: 188px;
+  background-color: rgba(255,69,0,0.2);
+  width: 200px;
+  height: 15px;
+  padding: 0;
+  box-shadow: 0 0 5px rgb(255,69,0);
+  border-radius: 20px;
+}
+
+#map3 .ol-zoomslider:hover {
+  background-color: rgba(255,69,0,0.3);
+}
+
+#map3 .ol-zoomslider-handle {
+  height: 15px;
+  width: 15px;
+  margin: 0;
+  filter: none;
+  background-color: rgba(255,69,0,0.6);
+  border-radius: 20px;
+}
+#map3 a.ol-zoomslider-handle:hover {
+  background-color: rgba(255,69,0,0.7);
+}
+
+/* #drag-container {
+  height: 200px;
+  width: 20px;
+  border: 1px solid rgb(0,0,255);
+  background-color: rgba(0,0,255,0.3);
+}
+
+#drag-handle {
+  width: 16px;
+  height: 16px;
+  margin: 1px;
+  background-color: rgba(255,0,0,0.6);
+  border: 1px solid rgb(255,0,0);
+  position: absolute;
+} */
+    </style>
+    <title>ol3 ZoomSlider demo</title>
+  </head>
+  <body>
+    <h1 id="title">ZoomSlider control</h1>
+
+    <div id="map1" class="map"></div>
+    <div id="map2" class="map"></div>
+    <div id="map3" class="map"></div>
+
+    <div id="docs">
+      <p>See the
+      <a href="zoomslider.js" target="_blank">zoomslider.js source</a>
+      to see how this is done.</p>
+    </div>
+    
+    <div id="tags">zoom, zoomslider, slider, style, styling, css, control</div>
+    
+    <!-- <div id="drag-container">
+      <div id="drag-handle"></div>
+    </div> -->
+    
+    <script src="loader.js?id=zoomslider" type="text/javascript"></script>
+  </body>
+</html>

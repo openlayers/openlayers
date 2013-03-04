@@ -77,6 +77,11 @@
 @exportObjectLiteralProperty ol.control.ZoomOptions.map ol.Map|undefined
 @exportObjectLiteralProperty ol.control.ZoomOptions.target Element|undefined
 
+@exportObjectLiteral ol.control.ZoomSliderOptions
+@exportObjectLiteralProperty ol.control.ZoomSliderOptions.map ol.Map|undefined
+@exportObjectLiteralProperty ol.control.ZoomSliderOptions.maxResolution number|undefined
+@exportObjectLiteralProperty ol.control.ZoomSliderOptions.minResolution number|undefined
+
 @exportObjectLiteral ol.layer.LayerOptions
 @exportObjectLiteralProperty ol.layer.LayerOptions.brightness number|undefined
 @exportObjectLiteralProperty ol.layer.LayerOptions.contrast number|undefined
