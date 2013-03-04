@@ -1,5 +1,4 @@
 // FIXME works for View2D only
-// FIXME opt_kinetic param
 goog.provide('ol.interaction.TouchPan');
 
 goog.require('goog.asserts');
@@ -16,16 +15,17 @@ goog.require('ol.interaction.Touch');
 /**
  * @constructor
  * @extends {ol.interaction.Touch}
+ * @param {ol.Kinetic=} opt_kinetic Kinetic object.
  */
-ol.interaction.TouchPan = function() {
+ol.interaction.TouchPan = function(opt_kinetic) {
 
   goog.base(this);
 
   /**
    * @private
-   * @type {ol.Kinetic}
+   * @type {ol.Kinetic|undefined}
    */
-  this.kinetic_ = new ol.Kinetic(-0.005, 0.05, 100);
+  this.kinetic_ = opt_kinetic;
 
   /**
    * @private
@@ -49,7 +49,9 @@ ol.interaction.TouchPan.prototype.handleTouchMove = function(mapBrowserEvent) {
   goog.asserts.assert(this.targetTouches.length >= 1);
   var centroid = ol.interaction.Touch.centroid(this.targetTouches);
   if (!goog.isNull(this.lastCentroid)) {
-    this.kinetic_.update(centroid.x, centroid.y);
+    if (this.kinetic_) {
+      this.kinetic_.update(centroid.x, centroid.y);
+    }
     var deltaX = this.lastCentroid.x - centroid.x;
     var deltaY = centroid.y - this.lastCentroid.y;
     var view = mapBrowserEvent.map.getView();
@@ -71,8 +73,8 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
   var map = mapBrowserEvent.map;
   var view = map.getView();
   if (this.targetTouches.length == 0) {
-    view.setHint(ol.ViewHint.PANNING, -1);
-    if (this.kinetic_.end()) {
+    view.setHint(ol.ViewHint.INTERACTING, -1);
+    if (this.kinetic_ && this.kinetic_.end()) {
       var distance = this.kinetic_.getDistance();
       var angle = this.kinetic_.getAngle();
       var center = view.getCenter();
@@ -87,6 +89,7 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
     }
     return false;
   } else {
+    this.lastCentroid = null;
     return true;
   }
 };
@@ -107,8 +110,10 @@ ol.interaction.TouchPan.prototype.handleTouchStart =
       view.setCenter(mapBrowserEvent.frameState.view2DState.center);
       this.kineticPreRenderFn_ = null;
     }
-    this.kinetic_.begin();
-    view.setHint(ol.ViewHint.PANNING, 1);
+    if (this.kinetic_) {
+      this.kinetic_.begin();
+    }
+    view.setHint(ol.ViewHint.INTERACTING, 1);
     return true;
   } else {
     return false;

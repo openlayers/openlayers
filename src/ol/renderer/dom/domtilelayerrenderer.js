@@ -199,7 +199,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
       }
     } else {
       if (!frameState.viewHints[ol.ViewHint.ANIMATING] &&
-          !frameState.viewHints[ol.ViewHint.PANNING]) {
+          !frameState.viewHints[ol.ViewHint.INTERACTING]) {
         tileLayerZ.removeTilesOutsideExtent(frameState.extent);
       }
     }
