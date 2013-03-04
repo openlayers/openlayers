@@ -180,12 +180,12 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   }
 
   // set up transform for the layer canvas to be drawn to the map canvas
-  var tileSize = tileGrid.getTileSize(),
-      z = tileGrid.getZForResolution(resolution),
+  var z = tileGrid.getZForResolution(resolution),
       tileResolution = tileGrid.getResolution(z),
       tileRange = tileGrid.getTileRangeForExtentAndResolution(
           extent, tileResolution),
       tileRangeExtent = tileGrid.getTileRangeExtent(z, tileRange),
+      tileSize = tileGrid.getTileSize(z),
       sketchOrigin = tileRangeExtent.getTopLeft(),
       transform = this.transform_;
 
