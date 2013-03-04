@@ -85,6 +85,7 @@ ol.source.Stamen = function(stamenOptions) {
   goog.base(this, {
     attributions: [attribution],
     maxZoom: config.maxZoom,
+    opaque: false,
     url: 'http://{a-d}.tile.stamen.com/' + layer + '/{z}/{x}/{y}.' + config.type
   });
 

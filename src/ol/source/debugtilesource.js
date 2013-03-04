@@ -90,6 +90,7 @@ ol.source.DebugTileSource = function(options) {
 
   goog.base(this, {
     extent: options.extent,
+    opaque: false,
     projection: options.projection,
     tileGrid: options.tileGrid
   });

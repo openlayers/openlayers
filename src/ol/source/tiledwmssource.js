@@ -27,6 +27,9 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
   var extent = goog.isDef(tiledWMSOptions.extent) ?
       tiledWMSOptions.extent : projectionExtent;
 
+  var transparent = goog.isDef(tiledWMSOptions.transparent) ?
+      tiledWMSOptions.transparent : true;
+
   var version = goog.isDef(tiledWMSOptions.version) ?
       tiledWMSOptions.version : '1.3';
 
@@ -44,7 +47,7 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
     'REQUEST': 'GetMap',
     'STYLES': '',
     'FORMAT': 'image/png',
-    'TRANSPARENT': true
+    'TRANSPARENT': transparent
   };
   baseParams[version >= '1.3' ? 'CRS' : 'SRS'] = projection.getCode();
   goog.object.extend(baseParams, tiledWMSOptions.params);
@@ -97,6 +100,7 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
     crossOrigin: tiledWMSOptions.crossOrigin,
     extent: extent,
     tileGrid: tileGrid,
+    opaque: !transparent,
     projection: projection,
     tileUrlFunction: ol.TileUrlFunction.withTileCoordTransform(
         tileCoordTransform, tileUrlFunction)
