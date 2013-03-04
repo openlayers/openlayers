@@ -387,6 +387,6 @@ ol.View2D.createConstraints_ = function(view2DOptions) {
         zoomFactor, maxResolution, numZoomLevels - 1);
   }
   // FIXME rotation constraint is not configurable at the moment
-  var rotationConstraint = ol.RotationConstraint.none;
+  var rotationConstraint = ol.RotationConstraint.createSnapToZero();
   return new ol.Constraints(resolutionConstraint, rotationConstraint);
 };
