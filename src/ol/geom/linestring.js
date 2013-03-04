@@ -99,23 +99,30 @@ ol.geom.LineString.prototype.getCount = function() {
  */
 ol.geom.LineString.prototype.getBounds = function() {
   if (goog.isNull(this.bounds_)) {
-    var minX,
-        minY = minX = Number.POSITIVE_INFINITY,
-        maxX,
-        maxY = maxX = Number.NEGATIVE_INFINITY,
+    var minX, minY = minX = Number.POSITIVE_INFINITY,
+        maxX, maxY = maxX = Number.NEGATIVE_INFINITY,
+        dimension = this.dimension,
         vertices = this.vertices,
         id = this.sharedId_,
         count = vertices.getCount(id),
-        dimension = this.dimension,
+        start = vertices.getStart(id),
+        end = start + (count * dimension),
+        coordinates = vertices.coordinates,
         x, y, i;
 
-    for (i = 0; i < count; ++i) {
-      x = vertices.get(id, i, 0);
-      y = vertices.get(id, i, 1);
-      minX = Math.min(minX, x);
-      minY = Math.min(minY, y);
-      maxX = Math.max(maxX, x);
-      maxY = Math.max(maxY, y);
+    for (i = start; i < end; i += dimension) {
+      x = coordinates[i];
+      y = coordinates[i + 1];
+      if (x < minX) {
+        minX = x;
+      } else if (x > maxX) {
+        maxX = x;
+      }
+      if (y < minY) {
+        minY = y;
+      } else if (y > maxY) {
+        maxY = y;
+      }
     }
     this.bounds_ = new ol.Extent(minX, minY, maxX, maxY);
   }
