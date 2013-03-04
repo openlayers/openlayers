@@ -263,7 +263,7 @@ def _strip_comments(lines):
                     yield line
 
 
-@target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC)
+@target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC, SPEC)
 def build_check_requires_timestamp(t):
     unused_count = 0
     all_provides = set()
@@ -273,7 +273,8 @@ def build_check_requires_timestamp(t):
         require_linenos = {}
         uses = set()
         lineno = 0
-        for line in open(filename):
+        lines = open(filename).readlines()
+        for line in lines:
             lineno += 1
             m = re.match(r'goog.provide\(\'(.*)\'\);', line)
             if m:
@@ -283,6 +284,7 @@ def build_check_requires_timestamp(t):
             if m:
                 require_linenos[m.group(1)] = lineno
                 continue
+        for line in lines:
             for require in require_linenos.iterkeys():
                 if require in line:
                     uses.add(require)

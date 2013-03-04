@@ -68,3 +68,6 @@ describe('ol.TileQueue', function() {
   });
 });
 
+goog.require('ol.Coordinate');
+goog.require('ol.Tile');
+goog.require('ol.TileQueue');
