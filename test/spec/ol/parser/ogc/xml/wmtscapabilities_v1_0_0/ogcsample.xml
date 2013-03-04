@@ -74,7 +74,9 @@
             </ows:WGS84BoundingBox>
             <ows:Identifier>coastlines</ows:Identifier>
             <ResourceURL format="image/png" resourceType="tile"
-                         template="http://www.example.com/wmts/coastlines/{TileMatrix}/{TileRow}/{TileCol}.png" />
+                         template="http://a.example.com/wmts/coastlines/{TileMatrix}/{TileRow}/{TileCol}.png" />
+            <ResourceURL format="image/png" resourceType="tile"
+                         template="http://b.example.com/wmts/coastlines/{TileMatrix}/{TileRow}/{TileCol}.png" />
             <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
                          template="http://www.example.com/wmts/coastlines/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml" />
             <Style isDefault="true">

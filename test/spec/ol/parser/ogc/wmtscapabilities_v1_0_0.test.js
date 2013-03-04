@@ -105,26 +105,24 @@ describe('ol.parser.ogc.wmtscapabilities_v1_0_0', function() {
         expect(wgs84Bbox.maxX).toEqual(180.0);
         expect(wgs84Bbox.minY).toEqual(-90.0);
         expect(wgs84Bbox.maxY).toEqual(90.0);
-        expect(layer.resourceUrl.tile.format).toEqual('image/png');
-        var tpl = 'http://www.example.com/wmts/coastlines/{TileMatrix}/' +
-            '{TileRow}/{TileCol}.png';
-        expect(layer.resourceUrl.tile.template).toEqual(tpl);
-        var format = 'application/gml+xml; version=3.1';
-        expect(layer.resourceUrl.FeatureInfo.format).toEqual(format);
-        tpl = 'http://www.example.com/wmts/coastlines/{TileMatrixSet}/' +
-          '{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml';
-        expect(layer.resourceUrl.FeatureInfo.template).toEqual(tpl);
-        expect(layer.resourceUrls[0].format).toEqual('image/png');
-        expect(layer.resourceUrls[0].resourceType).toEqual('tile');
-        tpl = 'http://www.example.com/wmts/coastlines/{TileMatrix}/' +
+        expect(layer.resourceUrls.hasOwnProperty('tile')).toBeTruthy();
+        var format = 'image/png';
+        expect(layer.resourceUrls.tile.hasOwnProperty(format)).toBeTruthy();
+        expect(layer.resourceUrls.tile[format].length).toEqual(2);
+        var tpl = 'http://a.example.com/wmts/coastlines/{TileMatrix}/' +
           '{TileRow}/{TileCol}.png';
-        expect(layer.resourceUrls[0].template).toEqual(tpl);
+        expect(layer.resourceUrls.tile[format][0]).toEqual(tpl);
+        tpl = 'http://b.example.com/wmts/coastlines/{TileMatrix}/' +
+          '{TileRow}/{TileCol}.png';
+        expect(layer.resourceUrls.tile[format][1]).toEqual(tpl);
+        expect(layer.resourceUrls.hasOwnProperty('FeatureInfo')).toBeTruthy();
         format = 'application/gml+xml; version=3.1';
-        expect(layer.resourceUrls[1].format).toEqual(format);
-        expect(layer.resourceUrls[1].resourceType).toEqual('FeatureInfo');
+        expect(layer.resourceUrls.FeatureInfo.hasOwnProperty(format))
+            .toBeTruthy();
+        expect(layer.resourceUrls.FeatureInfo[format].length).toEqual(1);
         tpl = 'http://www.example.com/wmts/coastlines/{TileMatrixSet}/' +
           '{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml';
-        expect(layer.resourceUrls[1].template).toEqual(tpl);
+        expect(layer.resourceUrls.FeatureInfo[format][0]).toEqual(tpl);
         expect(dimensions.length).toEqual(1);
         expect(dimensions[0].title).toEqual('Time');
         expect(dimensions[0]['abstract']).toEqual('Monthly datasets');

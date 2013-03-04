@@ -94,17 +94,19 @@ ol.parser.ogc.WMTSCapabilities_v1_0_0 = function() {
         obj['matrixHeight'] = parseInt(this.getChildValue(node), 10);
       },
       'ResourceURL': function(node, obj) {
-        obj['resourceUrl'] = obj['resourceUrl'] || {};
         var resourceType = node.getAttribute('resourceType');
+        var format = node.getAttribute('format');
+        var template = node.getAttribute('template');
         if (!obj['resourceUrls']) {
-          obj['resourceUrls'] = [];
+          obj['resourceUrls'] = {};
         }
-        var resourceUrl = obj['resourceUrl'][resourceType] = {
-          'format': node.getAttribute('format'),
-          'template': node.getAttribute('template'),
-          'resourceType': resourceType
-        };
-        obj['resourceUrls'].push(resourceUrl);
+        if (!obj['resourceUrls'][resourceType]) {
+          obj['resourceUrls'][resourceType] = {};
+        }
+        if (!obj['resourceUrls'][resourceType][format]) {
+          obj['resourceUrls'][resourceType][format] = [];
+        }
+        obj['resourceUrls'][resourceType][format].push(template);
       },
       'WSDL': function(node, obj) {
         obj['wsdl'] = {};
