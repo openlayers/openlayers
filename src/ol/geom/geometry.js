@@ -28,7 +28,7 @@ ol.geom.Geometry.prototype.dimension;
 
 
 /**
- * Get the rectangular 2D evelope for this geoemtry.
+ * Get the rectangular 2D envelope for this geoemtry.
  * @return {ol.Extent} The bounding rectangular envelope.
  */
 ol.geom.Geometry.prototype.getBounds = goog.abstractMethod;
