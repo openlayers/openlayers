@@ -174,6 +174,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   var currentZ, i, scale, tileCoordKey, tileExtent, tilesToDraw;
   for (i = 0; i < zs.length; ++i) {
     currentZ = zs[i];
+    tileSize = tileGrid.getTileSize(currentZ);
     tilesToDraw = tilesToDrawByZ[currentZ];
     if (currentZ == z) {
       for (tileCoordKey in tilesToDraw) {
