@@ -130,4 +130,5 @@ describe('ol.source.XYZ', function() {
 goog.require('ol.Coordinate');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.tilegrid.XYZ');
 goog.require('ol.source.XYZ');

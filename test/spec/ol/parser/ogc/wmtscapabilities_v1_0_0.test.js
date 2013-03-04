@@ -178,4 +178,5 @@ describe('ol.parser.ogc.wmtscapabilities_v1_0_0', function() {
 });
 
 goog.require('goog.net.XhrIo');
+goog.require('ol.Extent');
 goog.require('ol.parser.ogc.WMTSCapabilities');

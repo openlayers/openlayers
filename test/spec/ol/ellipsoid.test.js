@@ -388,4 +388,5 @@ describe('ol.Ellipsoid', function() {
 
 
 goog.require('ol.Coordinate');
+goog.require('ol.Ellipsoid');
 goog.require('ol.ellipsoid.WGS84');
