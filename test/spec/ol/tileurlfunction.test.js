@@ -75,7 +75,8 @@ describe('ol.TileUrlFunction', function() {
       var tileCoord = new ol.TileCoord(1, 0, 0);
       var tileUrl = tileUrlFunction(tileCoord);
       var expected = 'http://wms?foo=bar&BBOX=-20037508.342789244' +
-                     '%2C20037508.342789244%2C0%2C40075016.68557849';
+                     '%2C20037508.342789244%2C0%2C40075016.68557849' +
+                     '&HEIGHT=256&WIDTH=256';
       expect(tileUrl).toEqual(expected);
     });
     it('creates expected URL respecting axis orientation', function() {
@@ -85,7 +86,8 @@ describe('ol.TileUrlFunction', function() {
       var tileCoord = new ol.TileCoord(1, 0, 0);
       var tileUrl = tileUrlFunction(tileCoord);
       var expected = 'http://wms?foo=bar&BBOX=20037508.342789244' +
-          '%2C-20037508.342789244%2C40075016.68557849%2C0';
+          '%2C-20037508.342789244%2C40075016.68557849%2C0' +
+          '&HEIGHT=256&WIDTH=256';
       expect(tileUrl).toEqual(expected);
     });
   });
