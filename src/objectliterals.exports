@@ -10,10 +10,13 @@
 @exportObjectLiteralProperty ol.MapOptions.mouseWheelZoomDelta number|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderer ol.RendererHint|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderers Array.<ol.RendererHint>|undefined
+@exportObjectLiteralProperty ol.MapOptions.scaleLineControl boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.scaleLineUnits ol.control.ScaleLineUnits|undefined
 @exportObjectLiteralProperty ol.MapOptions.shiftDragZoom boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.target Element|string
 @exportObjectLiteralProperty ol.MapOptions.touchPan boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.touchRotateZoom boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.touchRotate boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.touchZoom boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.view ol.IView|undefined
 @exportObjectLiteralProperty ol.MapOptions.zoomControl boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.zoomDelta number|undefined
@@ -57,6 +60,12 @@
 @exportObjectLiteralProperty ol.control.AttributionOptions.map ol.Map|undefined
 @exportObjectLiteralProperty ol.control.AttributionOptions.target Element|undefined
 
+@exportObjectLiteral ol.control.ScaleLineOptions
+@exportObjectLiteralProperty ol.control.ScaleLineOptions.map ol.Map|undefined
+@exportObjectLiteralProperty ol.control.ScaleLineOptions.minWidth number|undefined
+@exportObjectLiteralProperty ol.control.ScaleLineOptions.target Element|undefined
+@exportObjectLiteralProperty ol.control.ScaleLineOptions.units ol.control.ScaleLineUnits|undefined
+
 @exportObjectLiteral ol.control.MousePositionOptions
 @exportObjectLiteralProperty ol.control.MousePositionOptions.coordinateFormat ol.CoordinateFormatType|undefined
 @exportObjectLiteralProperty ol.control.MousePositionOptions.map ol.Map|undefined
@@ -87,7 +96,7 @@
 @exportObjectLiteral ol.source.BingMapsOptions
 @exportObjectLiteralProperty ol.source.BingMapsOptions.culture string|undefined
 @exportObjectLiteralProperty ol.source.BingMapsOptions.key string
-@exportObjectLiteralProperty ol.source.BingMapsOptions.style ol.BingMapsStyle
+@exportObjectLiteralProperty ol.source.BingMapsOptions.style string
 
 @exportObjectLiteral ol.source.DebugTileSourceOptions
 @exportObjectLiteralProperty ol.source.DebugTileSourceOptions.extent ol.Extent|undefined
@@ -134,6 +143,7 @@
 @exportObjectLiteralProperty ol.tilegrid.TileGridOptions.origins Array.<ol.Coordinate>|undefined
 @exportObjectLiteralProperty ol.tilegrid.TileGridOptions.resolutions !Array.<number>
 @exportObjectLiteralProperty ol.tilegrid.TileGridOptions.tileSize ol.Size|undefined
+@exportObjectLiteralProperty ol.tilegrid.TileGridOptions.tileSizes Array.<ol.Size>|undefined
 
 @exportObjectLiteral ol.tilegrid.XYZOptions
 @exportObjectLiteralProperty ol.tilegrid.XYZOptions.maxZoom number

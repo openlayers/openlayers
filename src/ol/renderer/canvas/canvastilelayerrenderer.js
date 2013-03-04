@@ -91,8 +91,8 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   var tileSource = tileLayer.getTileSource();
   var tileSourceKey = goog.getUid(tileSource).toString();
   var tileGrid = tileSource.getTileGrid();
-  var tileSize = tileGrid.getTileSize();
   var z = tileGrid.getZForResolution(view2DState.resolution);
+  var tileSize = tileGrid.getTileSize(z);
   var tileResolution = tileGrid.getResolution(z);
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
       frameState.extent, tileResolution);
@@ -174,6 +174,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   var currentZ, i, scale, tileCoordKey, tileExtent, tilesToDraw;
   for (i = 0; i < zs.length; ++i) {
     currentZ = zs[i];
+    tileSize = tileGrid.getTileSize(currentZ);
     tilesToDraw = tilesToDrawByZ[currentZ];
     if (currentZ == z) {
       for (tileCoordKey in tilesToDraw) {

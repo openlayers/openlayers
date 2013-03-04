@@ -1,10 +1,10 @@
 goog.provide('ol.projection.EPSG3857');
 
 goog.require('goog.array');
-goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');
+goog.require('ol.math');
 goog.require('ol.projection');
 
 
@@ -73,26 +73,68 @@ ol.projection.EPSG3857.PROJECTIONS = goog.array.map(
 /**
  * Transformation from EPSG:4326 to EPSG:3857.
  *
- * @param {ol.Coordinate} point Point.
- * @return {ol.Coordinate} Point.
+ * @param {Array.<number>} input Input array of coordinate values.
+ * @param {Array.<number>=} opt_output Output array of coordinate values.
+ * @param {number=} opt_dimension Dimension (default is 2).
+ * @return {Array.<number>} Output array of coordinate values.
  */
-ol.projection.EPSG3857.fromEPSG4326 = function(point) {
-  var x = ol.projection.EPSG3857.RADIUS * Math.PI * point.x / 180;
-  var y = ol.projection.EPSG3857.RADIUS *
-      Math.log(Math.tan(Math.PI * (point.y + 90) / 360));
-  return new ol.Coordinate(x, y);
+ol.projection.EPSG3857.fromEPSG4326 = function(
+    input, opt_output, opt_dimension) {
+  var length = input.length,
+      dimension = opt_dimension > 1 ? opt_dimension : 2,
+      output = opt_output;
+  if (!goog.isDef(output)) {
+    if (dimension > 2) {
+      // preserve values beyond second dimension
+      output = input.slice();
+    } else {
+      output = new Array(length);
+    }
+  }
+  goog.asserts.assert(output.length % dimension === 0);
+  for (var i = 0; i < length; i += dimension) {
+    output[i] = ol.projection.EPSG3857.RADIUS * Math.PI * input[i] / 180;
+    output[i + 1] = ol.projection.EPSG3857.RADIUS *
+        Math.log(Math.tan(Math.PI * (input[i + 1] + 90) / 360));
+  }
+  return output;
 };
 
 
 /**
  * Transformation from EPSG:3857 to EPSG:4326.
  *
- * @param {ol.Coordinate} point Point.
- * @return {ol.Coordinate} Point.
+ * @param {Array.<number>} input Input array of coordinate values.
+ * @param {Array.<number>=} opt_output Output array of coordinate values.
+ * @param {number=} opt_dimension Dimension (default is 2).
+ * @return {Array.<number>} Output array of coordinate values.
  */
-ol.projection.EPSG3857.toEPSG4326 = function(point) {
-  var x = 180 * point.x / (ol.projection.EPSG3857.RADIUS * Math.PI);
-  var y = 360 * Math.atan(
-      Math.exp(point.y / ol.projection.EPSG3857.RADIUS)) / Math.PI - 90;
-  return new ol.Coordinate(x, y);
+ol.projection.EPSG3857.toEPSG4326 = function(input, opt_output, opt_dimension) {
+  var length = input.length,
+      dimension = opt_dimension > 1 ? opt_dimension : 2,
+      output = opt_output;
+  if (!goog.isDef(output)) {
+    if (dimension > 2) {
+      // preserve values beyond second dimension
+      output = input.slice();
+    } else {
+      output = new Array(length);
+    }
+  }
+  goog.asserts.assert(output.length % dimension === 0);
+  for (var i = 0; i < length; i += dimension) {
+    output[i] = 180 * input[i] / (ol.projection.EPSG3857.RADIUS * Math.PI);
+    output[i + 1] = 360 * Math.atan(
+        Math.exp(input[i + 1] / ol.projection.EPSG3857.RADIUS)) / Math.PI - 90;
+  }
+  return output;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.projection.EPSG3857.prototype.getPointResolution =
+    function(resolution, point) {
+  return resolution / ol.math.cosh(point.y / ol.projection.EPSG3857.RADIUS);
 };

@@ -145,7 +145,7 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.vertexCoordMatrix_ = goog.vec.Mat4.createNumberIdentity();
+  this.projectionMatrix_ = goog.vec.Mat4.createNumberIdentity();
 
   /**
    * @private
@@ -246,8 +246,8 @@ ol.renderer.webgl.TileLayer.prototype.getTexture = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.TileLayer.prototype.getVertexCoordMatrix = function() {
-  return this.vertexCoordMatrix_;
+ol.renderer.webgl.TileLayer.prototype.getProjectionMatrix = function() {
+  return this.projectionMatrix_;
 };
 
 
@@ -299,7 +299,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   } else {
 
     var tileRangeSize = tileRange.getSize();
-    var tileSize = tileGrid.getTileSize();
+    var tileSize = tileGrid.getTileSize(z);
 
     var maxDimension = Math.max(
         tileRangeSize.width * tileSize.width,

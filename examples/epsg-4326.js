@@ -1,20 +1,13 @@
-goog.require('goog.debug.Console');
-goog.require('goog.debug.Logger');
-goog.require('goog.debug.Logger.Level');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
+goog.require('ol.control.ScaleLineUnits');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.projection');
 goog.require('ol.source.TiledWMS');
 
-
-if (goog.DEBUG) {
-  goog.debug.Console.autoInstall();
-  goog.debug.Logger.getLogger('ol').setLevel(goog.debug.Logger.Level.INFO);
-}
 
 var epsg4326 = ol.projection.getFromCode('EPSG:4326');
 
@@ -47,6 +40,8 @@ var map = new ol.Map({
   layers: layers,
   // The OSgeo server does not set cross origin headers, so we cannot use WebGL
   renderers: [ol.RendererHint.CANVAS, ol.RendererHint.DOM],
+  scaleLineControl: true,
+  scaleLineUnits: ol.control.ScaleLineUnits.DEGREES,
   target: 'map',
   view: new ol.View2D({
     projection: epsg4326,

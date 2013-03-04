@@ -79,7 +79,8 @@ describe('ol.Map', function() {
         mouseWheelZoom: false,
         shiftDragZoom: false,
         touchPan: false,
-        touchRotateZoom: false
+        touchRotate: false,
+        touchZoom: false
       };
     });
 
@@ -245,6 +246,9 @@ goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
+goog.require('ol.RendererHints');
 goog.require('ol.View2D');
+goog.require('ol.interaction.DblClickZoom');
+goog.require('ol.interaction.MouseWheelZoom');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.source.XYZ');

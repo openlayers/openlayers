@@ -276,4 +276,6 @@ describe('ol.layer.Layer', function() {
 
 });
 
+goog.require('ol.layer.Layer');
 goog.require('ol.projection');
+goog.require('ol.source.Source');

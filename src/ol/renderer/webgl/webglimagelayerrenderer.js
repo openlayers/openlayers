@@ -45,7 +45,7 @@ ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.vertexCoordMatrix_ = goog.vec.Mat4.createNumber();
+  this.projectionMatrix_ = goog.vec.Mat4.createNumber();
 
 };
 goog.inherits(ol.renderer.webgl.ImageLayer, ol.renderer.webgl.Layer);
@@ -118,8 +118,8 @@ ol.renderer.webgl.ImageLayer.prototype.getTexture = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.getVertexCoordMatrix = function() {
-  return this.vertexCoordMatrix_;
+ol.renderer.webgl.ImageLayer.prototype.getProjectionMatrix = function() {
+  return this.projectionMatrix_;
 };
 
 
@@ -159,7 +159,7 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
 
   var hints = frameState.viewHints;
 
-  if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.PANNING]) {
+  if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING]) {
     var image_ = imageSource.getImage(frameState.extent, viewResolution);
     if (!goog.isNull(image_)) {
       var imageState = image_.getState();
@@ -187,7 +187,7 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
 
     var canvas = this.getMapRenderer().getCanvas();
 
-    this.updateVertexCoordMatrix_(canvas.width, canvas.height,
+    this.updateProjectionMatrix_(canvas.width, canvas.height,
         viewCenter, viewResolution, viewRotation, image.getExtent());
 
     // Translate and scale to flip the Y coord.
@@ -213,24 +213,24 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
  * @param {number} viewRotation View rotation.
  * @param {ol.Extent} imageExtent Image extent.
  */
-ol.renderer.webgl.ImageLayer.prototype.updateVertexCoordMatrix_ =
+ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ =
     function(canvasWidth, canvasHeight, viewCenter,
         viewResolution, viewRotation, imageExtent) {
 
   var canvasExtentWidth = canvasWidth * viewResolution;
   var canvasExtentHeight = canvasHeight * viewResolution;
 
-  var vertexCoordMatrix = this.vertexCoordMatrix_;
-  goog.vec.Mat4.makeIdentity(vertexCoordMatrix);
-  goog.vec.Mat4.scale(vertexCoordMatrix,
+  var projectionMatrix = this.projectionMatrix_;
+  goog.vec.Mat4.makeIdentity(projectionMatrix);
+  goog.vec.Mat4.scale(projectionMatrix,
       2 / canvasExtentWidth, 2 / canvasExtentHeight, 1);
-  goog.vec.Mat4.rotateZ(vertexCoordMatrix, -viewRotation);
-  goog.vec.Mat4.translate(vertexCoordMatrix,
+  goog.vec.Mat4.rotateZ(projectionMatrix, -viewRotation);
+  goog.vec.Mat4.translate(projectionMatrix,
       imageExtent.minX - viewCenter.x,
       imageExtent.minY - viewCenter.y,
       0);
-  goog.vec.Mat4.scale(vertexCoordMatrix,
+  goog.vec.Mat4.scale(projectionMatrix,
       imageExtent.getWidth() / 2, imageExtent.getHeight() / 2, 1);
-  goog.vec.Mat4.translate(vertexCoordMatrix, 1, 1, 0);
+  goog.vec.Mat4.translate(projectionMatrix, 1, 1, 0);
 
 };

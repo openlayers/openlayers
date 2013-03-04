@@ -31,6 +31,7 @@ ol.interaction.Touch = function() {
 
   /**
    * @type {Array.<Object>}
+   * @protected
    */
   this.targetTouches = [];
 

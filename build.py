@@ -95,7 +95,7 @@ def report_sizes(t):
 virtual('all', 'build-all', 'build', 'examples', 'precommit')
 
 
-virtual('precommit', 'lint', 'build-all', 'test', 'build', 'build-examples', 'doc')
+virtual('precommit', 'lint', 'build-all', 'test', 'build', 'build-examples', 'check-examples', 'doc')
 
 
 virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js')
@@ -263,7 +263,7 @@ def _strip_comments(lines):
                     yield line
 
 
-@target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC)
+@target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC, SPEC)
 def build_check_requires_timestamp(t):
     unused_count = 0
     all_provides = set()
@@ -273,7 +273,8 @@ def build_check_requires_timestamp(t):
         require_linenos = {}
         uses = set()
         lineno = 0
-        for line in open(filename):
+        lines = open(filename).readlines()
+        for line in lines:
             lineno += 1
             m = re.match(r'goog.provide\(\'(.*)\'\);', line)
             if m:
@@ -283,6 +284,7 @@ def build_check_requires_timestamp(t):
             if m:
                 require_linenos[m.group(1)] = lineno
                 continue
+        for line in lines:
             for require in require_linenos.iterkeys():
                 if require in line:
                     uses.add(require)
@@ -376,6 +378,17 @@ def hostexamples(t):
     t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js', 'build/ol.css', 'build/gh-pages/%(BRANCH)s/build/')
     t.cp('examples/example-list.html', 'build/gh-pages/%(BRANCH)s/examples/index.html')
     t.cp('examples/example-list.js', 'examples/example-list.xml', 'examples/Jugl.js', 'build/gh-pages/%(BRANCH)s/examples/')
+
+
+@target('check-examples', 'hostexamples', phony=True)
+def check_examples(t):
+    directory = 'build/gh-pages/%(BRANCH)s/'
+    examples = ['build/gh-pages/%(BRANCH)s/' + e for e in EXAMPLES]
+    all_examples = examples + \
+        [e + '?mode=simple' for e in examples] + \
+        [e + '?mode=whitespace' for e in examples]
+    for example in all_examples:
+        t.run('%(PHANTOMJS)s', 'bin/check-example.js', example)
 
 
 @target(PROJ4JS, PROJ4JS_ZIP)

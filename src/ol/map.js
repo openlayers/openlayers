@@ -45,6 +45,7 @@ goog.require('ol.View');
 goog.require('ol.View2D');
 goog.require('ol.control.Attribution');
 goog.require('ol.control.Control');
+goog.require('ol.control.ScaleLine');
 goog.require('ol.control.Zoom');
 goog.require('ol.interaction.DblClickZoom');
 goog.require('ol.interaction.DragPan');
@@ -55,7 +56,8 @@ goog.require('ol.interaction.KeyboardPan');
 goog.require('ol.interaction.KeyboardZoom');
 goog.require('ol.interaction.MouseWheelZoom');
 goog.require('ol.interaction.TouchPan');
-goog.require('ol.interaction.TouchRotateAndZoom');
+goog.require('ol.interaction.TouchRotate');
+goog.require('ol.interaction.TouchZoom');
 goog.require('ol.interaction.condition');
 goog.require('ol.layer.Layer');
 goog.require('ol.projection');
@@ -925,6 +927,16 @@ ol.Map.createControls_ = function(mapOptions) {
     controls.push(new ol.control.Attribution({}));
   }
 
+  var scaleLineControl = goog.isDef(mapOptions.scaleLineControl) ?
+      mapOptions.scaleLineControl : false;
+  if (scaleLineControl) {
+    var scaleLineUnits = goog.isDef(mapOptions.scaleLineUnits) ?
+        mapOptions.scaleLineUnits : undefined;
+    controls.push(new ol.control.ScaleLine({
+      units: scaleLineUnits
+    }));
+  }
+
   var zoomControl = goog.isDef(mapOptions.zoomControl) ?
       mapOptions.zoomControl : true;
   if (zoomControl) {
@@ -966,13 +978,20 @@ ol.Map.createInteractions_ = function(mapOptions) {
   var touchPan = goog.isDef(mapOptions.touchPan) ?
       mapOptions.touchPan : true;
   if (touchPan) {
-    interactions.push(new ol.interaction.TouchPan());
+    interactions.push(new ol.interaction.TouchPan(
+        new ol.Kinetic(-0.005, 0.05, 100)));
   }
 
-  var touchRotateZoom = goog.isDef(mapOptions.touchRotateZoom) ?
-      mapOptions.touchRotateZoom : true;
-  if (touchRotateZoom) {
-    interactions.push(new ol.interaction.TouchRotateAndZoom());
+  var touchRotate = goog.isDef(mapOptions.touchRotate) ?
+      mapOptions.touchRotate : true;
+  if (touchRotate) {
+    interactions.push(new ol.interaction.TouchRotate());
+  }
+
+  var touchZoom = goog.isDef(mapOptions.touchZoom) ?
+      mapOptions.touchZoom : true;
+  if (touchZoom) {
+    interactions.push(new ol.interaction.TouchZoom());
   }
 
   var dragPan = goog.isDef(mapOptions.dragPan) ?

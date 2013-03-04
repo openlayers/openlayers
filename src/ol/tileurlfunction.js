@@ -86,7 +86,11 @@ ol.TileUrlFunction.createBboxParam =
       var bboxValues = axisOrientation.substr(0, 2) == 'ne' ?
           [tileExtent.minY, tileExtent.minX, tileExtent.maxY, tileExtent.maxX] :
           [tileExtent.minX, tileExtent.minY, tileExtent.maxX, tileExtent.maxY];
-      return goog.uri.utils.appendParam(baseUrl, 'BBOX', bboxValues.join(','));
+      var tileSize = tileGrid.getTileSize(tileCoord.z);
+      return goog.uri.utils.appendParams(baseUrl,
+          'BBOX', bboxValues.join(','),
+          'HEIGHT', tileSize.height,
+          'WIDTH', tileSize.width);
     }
   };
 };

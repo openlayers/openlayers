@@ -80,7 +80,7 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  view.setHint(ol.ViewHint.PANNING, -1);
+  view.setHint(ol.ViewHint.INTERACTING, -1);
 
   if (this.kinetic_ && this.kinetic_.end()) {
     var distance = this.kinetic_.getDistance();
@@ -111,7 +111,7 @@ ol.interaction.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
     }
     var map = mapBrowserEvent.map;
     map.requestRenderFrame();
-    map.getView().setHint(ol.ViewHint.PANNING, 1);
+    map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     return true;
   } else {
     return false;
