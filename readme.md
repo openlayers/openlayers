@@ -5,7 +5,13 @@
 
 ## Hosted Examples
 
-The examples are hosted on GitHub (as GitHub pages). See http://openlayers.github.com/ol3/master/examples/.
+The examples are hosted on GitHub (as GitHub pages): http://openlayers.github.com/ol3/master/examples/.
+
+By default the examples use the `ol.js` script, which is compiled using Closure Compiler's ADVANVCED mode.
+By appending `?mode=simple` or `?mode=whitespace` to the URL you can make the example page load `ol-simple.js`
+or `ol-whitespace.js` instead of `ol.js`. As their names suggest it, `ol-simple.js` and `ol-whitespace.js`
+are compiled using the SIMPLE and WHITESPACE modes, respectively. For example:
+http://openlayers.github.com/ol3/master/examples/full-screen.html?mode=simple.
 
 ## Build OpenLayers 3
 
