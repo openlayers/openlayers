@@ -90,7 +90,7 @@ ol.interaction.TouchRotate.prototype.handleTouchMove =
 
   // rotate
   if (this.rotating_) {
-    view.rotate(map, view.getRotation() + rotationDelta, anchor);
+    view.rotateNoConstraint(map, view.getRotation() + rotationDelta, anchor);
   }
 };
 
@@ -103,6 +103,9 @@ ol.interaction.TouchRotate.prototype.handleTouchEnd =
   if (this.targetTouches.length < 2) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
+    if (this.rotating_) {
+      view.rotate(map, view.getRotation());
+    }
     view.setHint(ol.ViewHint.INTERACTING, -1);
     return false;
   } else {
