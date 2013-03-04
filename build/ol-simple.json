@@ -3,7 +3,9 @@
   "id": "ol-simple",
 
   "externs": [
+    "//json.js",
     "externs/bingmaps.js",
+    "externs/geojson.js",
     "externs/proj4js.js",
     "externs/tilejson.js"
   ],
