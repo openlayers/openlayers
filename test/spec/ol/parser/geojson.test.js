@@ -174,11 +174,20 @@ describe('ol.parser.GeoJSON', function() {
         var lineVertices = new ol.geom.SharedVertices();
         var polygonVertices = new ol.geom.SharedVertices();
 
-        var result = parser.read(text, {
-          pointVertices: pointVertices,
-          lineVertices: lineVertices,
-          polygonVertices: polygonVertices
-        });
+        var lookup = {
+          'point': pointVertices,
+          'linestring': lineVertices,
+          'polygon': polygonVertices,
+          'multipoint': pointVertices,
+          'multilinstring': lineVertices,
+          'multipolygon': polygonVertices
+        };
+
+        var callback = function(feature, type) {
+          return lookup[type];
+        }
+
+        var result = parser.readFeaturesFromString(text, {callback: callback});
         expect(result.length).toBe(179);
 
         expect(pointVertices.coordinates.length).toBe(0);
