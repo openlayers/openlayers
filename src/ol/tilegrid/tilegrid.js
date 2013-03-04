@@ -58,6 +58,19 @@ ol.tilegrid.TileGrid = function(tileGridOptions) {
     this.origins_ = tileGridOptions.origins;
     goog.asserts.assert(this.origins_.length == this.resolutions_.length);
   }
+  goog.asserts.assert(
+      (goog.isNull(this.origin_) && !goog.isNull(this.origins_)) ||
+      (!goog.isNull(this.origin_) && goog.isNull(this.origins_)));
+
+  /**
+   * @private
+   * @type {Array.<ol.Size>}
+   */
+  this.tileSizes_ = null;
+  if (goog.isDef(tileGridOptions.tileSizes)) {
+    this.tileSizes_ = tileGridOptions.tileSizes;
+    goog.asserts.assert(this.tileSizes_.length == this.resolutions_.length);
+  }
 
   /**
    * @private
@@ -65,7 +78,11 @@ ol.tilegrid.TileGrid = function(tileGridOptions) {
    */
   this.tileSize_ = goog.isDef(tileGridOptions.tileSize) ?
       tileGridOptions.tileSize :
-      new ol.Size(ol.DEFAULT_TILE_SIZE, ol.DEFAULT_TILE_SIZE);
+      goog.isNull(this.tileSizes_) ?
+          new ol.Size(ol.DEFAULT_TILE_SIZE, ol.DEFAULT_TILE_SIZE) : null;
+  goog.asserts.assert(
+      (goog.isNull(this.tileSize_) && !goog.isNull(this.tileSizes_)) ||
+      (!goog.isNull(this.tileSize_) && goog.isNull(this.tileSizes_)));
 
 };
 
@@ -114,7 +131,7 @@ ol.tilegrid.TileGrid.prototype.getOrigin = function(z) {
 ol.tilegrid.TileGrid.prototype.getPixelBoundsForTileCoordAndResolution =
     function(tileCoord, resolution) {
   var scale = resolution / this.getResolution(tileCoord.z);
-  var tileSize = this.getTileSize();
+  var tileSize = this.getTileSize(tileCoord.z);
   tileSize = new ol.Size(tileSize.width / scale,
                          tileSize.height / scale);
   var minX, maxX, minY, maxY;
@@ -152,7 +169,7 @@ ol.tilegrid.TileGrid.prototype.getResolutions = function() {
 ol.tilegrid.TileGrid.prototype.getTileRangeExtent = function(z, tileRange) {
   var origin = this.getOrigin(z);
   var resolution = this.getResolution(z);
-  var tileSize = this.tileSize_;
+  var tileSize = this.getTileSize(z);
   var minX = origin.x + tileRange.minX * tileSize.width * resolution;
   var minY = origin.y + tileRange.minY * tileSize.height * resolution;
   var maxX = origin.x + (tileRange.maxX + 1) * tileSize.width * resolution;
@@ -194,7 +211,7 @@ ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndZ = function(extent, z) {
 ol.tilegrid.TileGrid.prototype.getTileCoordCenter = function(tileCoord) {
   var origin = this.getOrigin(tileCoord.z);
   var resolution = this.getResolution(tileCoord.z);
-  var tileSize = this.tileSize_;
+  var tileSize = this.getTileSize(tileCoord.z);
   var x = origin.x + (tileCoord.x + 0.5) * tileSize.width * resolution;
   var y = origin.y + (tileCoord.y + 0.5) * tileSize.height * resolution;
   return new ol.Coordinate(x, y);
@@ -208,7 +225,7 @@ ol.tilegrid.TileGrid.prototype.getTileCoordCenter = function(tileCoord) {
 ol.tilegrid.TileGrid.prototype.getTileCoordExtent = function(tileCoord) {
   var origin = this.getOrigin(tileCoord.z);
   var resolution = this.getResolution(tileCoord.z);
-  var tileSize = this.tileSize_;
+  var tileSize = this.getTileSize(tileCoord.z);
   var minX = origin.x + tileCoord.x * tileSize.width * resolution;
   var minY = origin.y + tileCoord.y * tileSize.height * resolution;
   var maxX = minX + tileSize.width * resolution;
@@ -246,7 +263,7 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution_ = function(
   var z = this.getZForResolution(resolution);
   var scale = resolution / this.getResolution(z);
   var origin = this.getOrigin(z);
-  var tileSize = this.getTileSize();
+  var tileSize = this.getTileSize(z);
 
   var x = scale * (coordinate.x - origin.x) / (resolution * tileSize.width);
   var y = scale * (coordinate.y - origin.y) / (resolution * tileSize.height);
@@ -286,10 +303,17 @@ ol.tilegrid.TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
 
 
 /**
+ * @param {number} z Z.
  * @return {ol.Size} Tile size.
  */
-ol.tilegrid.TileGrid.prototype.getTileSize = function() {
-  return this.tileSize_;
+ol.tilegrid.TileGrid.prototype.getTileSize = function(z) {
+  if (!goog.isNull(this.tileSize_)) {
+    return this.tileSize_;
+  } else {
+    goog.asserts.assert(!goog.isNull(this.tileSizes_));
+    goog.asserts.assert(0 <= z && z < this.tileSizes_.length);
+    return this.tileSizes_[z];
+  }
 };
 
 
