@@ -11,7 +11,7 @@ goog.require('ol.Object');
  */
 ol.ViewHint = {
   ANIMATING: 0,
-  PANNING: 1
+  INTERACTING: 1
 };
 
 

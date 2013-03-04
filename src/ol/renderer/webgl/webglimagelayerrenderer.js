@@ -159,7 +159,7 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
 
   var hints = frameState.viewHints;
 
-  if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.PANNING]) {
+  if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING]) {
     var image_ = imageSource.getImage(frameState.extent, viewResolution);
     if (!goog.isNull(image_)) {
       var imageState = image_.getState();
