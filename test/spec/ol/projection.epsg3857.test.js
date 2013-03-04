@@ -46,4 +46,5 @@ describe('ol.projection.EPSG3857', function() {
 
 
 goog.require('ol.Coordinate');
+goog.require('ol.projection');
 goog.require('ol.projection.EPSG3857');

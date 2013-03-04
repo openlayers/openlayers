@@ -187,3 +187,5 @@ describe('ol.structs.LRUCache', function() {
   });
 
 });
+
+goog.require('ol.structs.LRUCache');
