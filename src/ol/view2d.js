@@ -282,26 +282,13 @@ ol.View2D.prototype.rotate = function(map, rotation, opt_anchor) {
 
 
 /**
- * @private
  * @param {ol.Map} map Map.
  * @param {number|undefined} resolution Resolution to go to.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  */
-ol.View2D.prototype.zoom_ = function(map, resolution, opt_anchor) {
-  if (goog.isDefAndNotNull(resolution) && goog.isDefAndNotNull(opt_anchor)) {
-    var anchor = opt_anchor;
-    var oldCenter = /** @type {!ol.Coordinate} */ (this.getCenter());
-    var oldResolution = this.getResolution();
-    var x = anchor.x - resolution * (anchor.x - oldCenter.x) / oldResolution;
-    var y = anchor.y - resolution * (anchor.y - oldCenter.y) / oldResolution;
-    var center = new ol.Coordinate(x, y);
-    map.withFrozenRendering(function() {
-      this.setCenter(center);
-      this.setResolution(resolution);
-    }, this);
-  } else {
-    this.setResolution(resolution);
-  }
+ol.View2D.prototype.zoom = function(map, resolution, opt_anchor) {
+  resolution = this.constraints_.resolution(resolution, 0);
+  this.zoomNoConstraint(map, resolution, opt_anchor);
 };
 
 
@@ -311,7 +298,8 @@ ol.View2D.prototype.zoom_ = function(map, resolution, opt_anchor) {
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
-ol.View2D.prototype.zoom = function(map, delta, opt_anchor, opt_duration) {
+ol.View2D.prototype.zoomByDelta =
+    function(map, delta, opt_anchor, opt_duration) {
   var currentResolution = this.getResolution();
   var currentCenter = this.getCenter();
   if (goog.isDef(currentResolution) && goog.isDef(currentCenter) &&
@@ -331,7 +319,7 @@ ol.View2D.prototype.zoom = function(map, delta, opt_anchor, opt_duration) {
     }
   }
   var resolution = this.constraints_.resolution(currentResolution, delta);
-  this.zoom_(map, resolution, opt_anchor);
+  this.zoomNoConstraint(map, resolution, opt_anchor);
 };
 
 
@@ -340,9 +328,21 @@ ol.View2D.prototype.zoom = function(map, delta, opt_anchor, opt_duration) {
  * @param {number|undefined} resolution Resolution to go to.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  */
-ol.View2D.prototype.zoomToResolution = function(map, resolution, opt_anchor) {
-  resolution = this.constraints_.resolution(resolution, 0);
-  this.zoom_(map, resolution, opt_anchor);
+ol.View2D.prototype.zoomNoConstraint = function(map, resolution, opt_anchor) {
+  if (goog.isDefAndNotNull(resolution) && goog.isDefAndNotNull(opt_anchor)) {
+    var anchor = opt_anchor;
+    var oldCenter = /** @type {!ol.Coordinate} */ (this.getCenter());
+    var oldResolution = this.getResolution();
+    var x = anchor.x - resolution * (anchor.x - oldCenter.x) / oldResolution;
+    var y = anchor.y - resolution * (anchor.y - oldCenter.y) / oldResolution;
+    var center = new ol.Coordinate(x, y);
+    map.withFrozenRendering(function() {
+      this.setCenter(center);
+      this.setResolution(resolution);
+    }, this);
+  } else {
+    this.setResolution(resolution);
+  }
 };
 
 

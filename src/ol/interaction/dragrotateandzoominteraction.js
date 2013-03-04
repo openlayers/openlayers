@@ -66,7 +66,7 @@ ol.interaction.DragRotateAndZoom.prototype.handleDrag =
   this.lastAngle_ = theta;
   if (goog.isDef(this.lastMagnitude_)) {
     var resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
-    view.zoomToResolution(map, resolution);
+    view.zoom(map, resolution);
   }
   this.lastMagnitude_ = magnitude;
 };
