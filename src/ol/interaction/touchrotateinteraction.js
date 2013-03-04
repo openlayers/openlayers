@@ -8,6 +8,14 @@ goog.require('ol.ViewHint');
 goog.require('ol.interaction.Touch');
 
 
+/**
+ * @define {number} Animation duration.
+ */
+ol.interaction.TOUCHROTATE_ANIMATION_DURATION = 250;
+
+
+
+/**
 
 /**
  * @constructor
@@ -104,7 +112,8 @@ ol.interaction.TouchRotate.prototype.handleTouchEnd =
     var map = mapBrowserEvent.map;
     var view = map.getView();
     if (this.rotating_) {
-      view.rotate(map, view.getRotation());
+      view.rotate(map, view.getRotation(), undefined,
+          ol.interaction.TOUCHROTATE_ANIMATION_DURATION);
     }
     view.setHint(ol.ViewHint.INTERACTING, -1);
     return false;

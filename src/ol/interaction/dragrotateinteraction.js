@@ -6,6 +6,12 @@ goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
 
 
+/**
+ * @define {number} Animation duration.
+ */
+ol.interaction.DRAGROTATE_ANIMATION_DURATION = 250;
+
+
 
 /**
  * @constructor
@@ -62,7 +68,8 @@ ol.interaction.DragRotate.prototype.handleDragEnd = function(mapBrowserEvent) {
   // FIXME supports View2D only
   var view = map.getView();
   goog.asserts.assert(view instanceof ol.View2D);
-  view.rotate(map, view.getRotation());
+  view.rotate(map, view.getRotation(), undefined,
+      ol.interaction.DRAGROTATE_ANIMATION_DURATION);
   view.setHint(ol.ViewHint.INTERACTING, -1);
 };
 
