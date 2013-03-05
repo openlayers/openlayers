@@ -363,15 +363,21 @@ def jsdoc_BRANCH_timestamp(t):
 
 @target('hostexamples', 'build', 'examples', phony=True)
 def hostexamples(t):
-    t.makedirs('build/gh-pages/%(BRANCH)s/examples')
-    t.makedirs('build/gh-pages/%(BRANCH)s/build')
-    t.cp(EXAMPLES, (path.replace('.html', '.js') for path in EXAMPLES), 'examples/style.css', 'build/gh-pages/%(BRANCH)s/examples/')
-    t.rm_rf('build/gh-pages/%(BRANCH)s/examples/data')
-    t.cp_r('examples/data', 'build/gh-pages/%(BRANCH)s/examples/data')
-    t.cp('build/loader_hosted_examples.js', 'build/gh-pages/%(BRANCH)s/examples/loader.js')
-    t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js', 'build/ol.css', 'build/gh-pages/%(BRANCH)s/build/')
-    t.cp('examples/example-list.html', 'build/gh-pages/%(BRANCH)s/examples/index.html')
-    t.cp('examples/example-list.js', 'examples/example-list.xml', 'examples/Jugl.js', 'build/gh-pages/%(BRANCH)s/examples/')
+    examples_dir = 'build/gh-pages/%(BRANCH)s/examples'
+    build_dir = 'build/gh-pages/%(BRANCH)s/build'
+    t.rm_rf(examples_dir)
+    t.makedirs(examples_dir)
+    t.rm_rf(build_dir)
+    t.makedirs(build_dir)
+    t.cp(EXAMPLES, (path.replace('.html', '.js') for path in EXAMPLES),
+        'examples/style.css', examples_dir)
+    t.cp_r('examples/data', examples_dir + '/data')
+    t.cp('build/loader_hosted_examples.js', examples_dir + '/loader.js')
+    t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js',
+        'build/ol.css', build_dir)
+    t.cp('examples/example-list.html', examples_dir + '/index.html')
+    t.cp('examples/example-list.js', 'examples/example-list.xml',
+        'examples/Jugl.js', examples_dir)
 
 
 @target('check-examples', 'hostexamples', phony=True)
