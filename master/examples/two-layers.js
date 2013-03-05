@@ -1,4 +1,3 @@
-goog.require('ol.BingMapsStyle');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
@@ -14,7 +13,7 @@ var layers = new ol.Collection([
   new ol.layer.TileLayer({
     source: new ol.source.BingMaps({
       key: 'AgtFlPYDnymLEe9zJ5PCkghbNiFZE9aAtTy3mPaEnEBXqLHtFuTcKoZ-miMC3w7R',
-      style: ol.BingMapsStyle.AERIAL
+      style: 'Aerial'
     })
   }),
   new ol.layer.TileLayer({

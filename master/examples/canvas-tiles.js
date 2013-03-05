@@ -41,3 +41,10 @@ var domMap = new ol.Map({
 });
 domMap.bindTo('layers', webglMap);
 domMap.bindTo('view', webglMap);
+
+var canvasMap = new ol.Map({
+  renderer: ol.RendererHint.DOM,
+  target: 'canvasMap'
+});
+canvasMap.bindTo('layers', webglMap);
+canvasMap.bindTo('view', webglMap);

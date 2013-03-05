@@ -15,6 +15,7 @@ var layer = new ol.layer.TileLayer({
 var map = new ol.Map({
   layers: new ol.Collection([layer]),
   renderers: ol.RendererHints.createFromQueryData(),
+  scaleLineControl: true,
   target: 'map',
   view: new ol.View2D({
     center: new ol.Coordinate(0, 0),
