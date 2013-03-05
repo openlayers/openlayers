@@ -59,6 +59,7 @@ EXAMPLES_SRC = [path
                 for path in ifind('examples')
                 if path.endswith('.js')
                 if not path.endswith('.combined.js')
+                if not path.startswith('examples/bootstrap')
                 if path != 'examples/Jugl.js'
                 if path != 'examples/example-list.js']
 
