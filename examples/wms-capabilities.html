@@ -1,53 +1,46 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <link rel="stylesheet" href="style.css" type="text/css">
-    <style type="text/css">
-      html, body, #map {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-      }
-      #log {
-        position: absolute;
-        top: 130px;
-        font-size: 12px;
-      }
-      #text {
-          position: absolute;
-          top: 8px;
-          right: 8px;
-          z-index: 20000;
-          background-color: white;
-          padding: 0 0.5em 0.5em 0.5em;
-          border-radius: 4px;
-      }
-      @media only screen and (max-width: 600px) {
-        #text {
-          display: none;
-        }
-      }
-    </style>
-    <title>wms capabilities example</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="examples.css" type="text/css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.min.css" type="text/css">
+    <title>WMS GetCapabilities parsing example</title>
   </head>
   <body>
-    <pre id="log"></pre>
-    <div id="map">
-      <div id="text">
-        <h1 id="title">WMS GetCapabilities parsing example</h1>
-        <div id="shortdesc">Example of parsing a WMS GetCapabilities response.</div>
-        <div id="docs">
-          <p>See the
-          <a href="wms-capabilities.js" target="_blank">wms-capabilities.js source</a>
-          to see how this is done.</p>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="examples-list.html">OpenLayers 3 Examples</a>
         </div>
       </div>
     </div>
-    <div id="tags">wms, capabilities, getcapabilities</div>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+
+        <div class="span4">
+          <h4 id="title">WMS GetCapabilities parsing example</h4>
+          <p id="shortdesc">Example of parsing a WMS GetCapabilities response.</p>
+          <div id="docs">
+            <p>See the <a href="wms-capabilities.js" target="_blank">wms-capabilities.js source</a> to see how this is done.</p>
+          </div>
+          <div id="tags">wms, capabilities, getcapabilities</div>
+        </div>
+
+        <div class="span8">
+          <pre id="log"></pre>
+        </div>
+
+      </div>
+
+    </div>
+
     <script src="loader.js?id=wms-capabilities" type="text/javascript"></script>
+
   </body>
 </html>
