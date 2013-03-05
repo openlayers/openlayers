@@ -7,7 +7,6 @@ goog.require('ol.ImageTile');
 goog.require('ol.Projection');
 goog.require('ol.Tile');
 goog.require('ol.TileCache');
-goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
 goog.require('ol.source.TileSource');
@@ -86,12 +85,15 @@ ol.source.ImageTileSource.prototype.expireCache = function(usedTiles) {
 /**
  * @inheritDoc
  */
-ol.source.ImageTileSource.prototype.getTile = function(tileCoord) {
+ol.source.ImageTileSource.prototype.getTile =
+    function(tileCoord, tileGrid, projection) {
   var key = tileCoord.toString();
   if (this.tileCache_.containsKey(key)) {
     return /** @type {ol.Tile} */ (this.tileCache_.get(key));
   } else {
-    var tileUrl = this.getTileCoordUrl(tileCoord);
+    goog.asserts.assert(tileGrid);
+    goog.asserts.assert(projection);
+    var tileUrl = this.tileUrlFunction(tileCoord, tileGrid, projection);
     var tile;
     if (goog.isDef(tileUrl)) {
       tile = new ol.ImageTile(tileCoord, tileUrl, this.crossOrigin_);
@@ -101,15 +103,6 @@ ol.source.ImageTileSource.prototype.getTile = function(tileCoord) {
     }
     return tile;
   }
-};
-
-
-/**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @return {string|undefined} Tile URL.
- */
-ol.source.ImageTileSource.prototype.getTileCoordUrl = function(tileCoord) {
-  return this.tileUrlFunction(tileCoord);
 };
 
 

@@ -38,7 +38,8 @@ ol.source.Source = function(sourceOptions) {
    * @type {ol.Extent}
    */
   this.extent_ = goog.isDef(sourceOptions.extent) ?
-      sourceOptions.extent : sourceOptions.projection.getExtent();
+      sourceOptions.extent : goog.isDef(sourceOptions.projection) ?
+          sourceOptions.projection.getExtent() : null;
 
   /**
    * @private

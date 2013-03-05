@@ -2,7 +2,7 @@ goog.provide('ol.test.source.XYZ');
 
 describe('ol.source.XYZ', function() {
 
-  describe('getTileCoordUrl', function() {
+  describe('tileUrlFunction', function() {
 
     var xyzTileSource, tileGrid;
 
@@ -18,59 +18,59 @@ describe('ol.source.XYZ', function() {
       var coordinate = new ol.Coordinate(829330.2064098881, 5933916.615134273);
       var tileUrl;
 
-      tileUrl = xyzTileSource.getTileCoordUrl(
+      tileUrl = xyzTileSource.tileUrlFunction(
           tileGrid.getTileCoordForCoordAndZ(coordinate, 0));
       expect(tileUrl).toEqual('0/0/0');
 
-      tileUrl = xyzTileSource.getTileCoordUrl(
+      tileUrl = xyzTileSource.tileUrlFunction(
           tileGrid.getTileCoordForCoordAndZ(coordinate, 1));
       expect(tileUrl).toEqual('1/1/0');
 
-      tileUrl = xyzTileSource.getTileCoordUrl(
+      tileUrl = xyzTileSource.tileUrlFunction(
           tileGrid.getTileCoordForCoordAndZ(coordinate, 2));
       expect(tileUrl).toEqual('2/2/1');
 
-      tileUrl = xyzTileSource.getTileCoordUrl(
+      tileUrl = xyzTileSource.tileUrlFunction(
           tileGrid.getTileCoordForCoordAndZ(coordinate, 3));
       expect(tileUrl).toEqual('3/4/2');
 
-      tileUrl = xyzTileSource.getTileCoordUrl(
+      tileUrl = xyzTileSource.tileUrlFunction(
           tileGrid.getTileCoordForCoordAndZ(coordinate, 4));
       expect(tileUrl).toEqual('4/8/5');
 
-      tileUrl = xyzTileSource.getTileCoordUrl(
+      tileUrl = xyzTileSource.tileUrlFunction(
           tileGrid.getTileCoordForCoordAndZ(coordinate, 5));
       expect(tileUrl).toEqual('5/16/11');
 
-      tileUrl = xyzTileSource.getTileCoordUrl(
+      tileUrl = xyzTileSource.tileUrlFunction(
           tileGrid.getTileCoordForCoordAndZ(coordinate, 6));
       expect(tileUrl).toEqual('6/33/22');
     });
 
     describe('wrap x', function() {
       it('returns the expected URL', function() {
-        var tileUrl = xyzTileSource.getTileCoordUrl(
+        var tileUrl = xyzTileSource.tileUrlFunction(
             new ol.TileCoord(6, -31, -23));
         expect(tileUrl).toEqual('6/33/22');
 
-        tileUrl = xyzTileSource.getTileCoordUrl(new ol.TileCoord(6, 33, -23));
+        tileUrl = xyzTileSource.tileUrlFunction(new ol.TileCoord(6, 33, -23));
         expect(tileUrl).toEqual('6/33/22');
 
-        tileUrl = xyzTileSource.getTileCoordUrl(new ol.TileCoord(6, 97, -23));
+        tileUrl = xyzTileSource.tileUrlFunction(new ol.TileCoord(6, 97, -23));
         expect(tileUrl).toEqual('6/33/22');
       });
     });
 
     describe('crop y', function() {
       it('returns the expected URL', function() {
-        var tileUrl = xyzTileSource.getTileCoordUrl(
+        var tileUrl = xyzTileSource.tileUrlFunction(
             new ol.TileCoord(6, 33, -87));
         expect(tileUrl).toBeUndefined();
 
-        tileUrl = xyzTileSource.getTileCoordUrl(new ol.TileCoord(6, 33, -23));
+        tileUrl = xyzTileSource.tileUrlFunction(new ol.TileCoord(6, 33, -23));
         expect(tileUrl).toEqual('6/33/22');
 
-        tileUrl = xyzTileSource.getTileCoordUrl(new ol.TileCoord(6, 33, 41));
+        tileUrl = xyzTileSource.tileUrlFunction(new ol.TileCoord(6, 33, 41));
         expect(tileUrl).toBeUndefined();
       });
     });

@@ -67,6 +67,12 @@ ol.Projection = function(code, units, extent, opt_axisOrientation) {
   this.axisOrientation_ = goog.isDef(opt_axisOrientation) ?
       opt_axisOrientation : 'enu';
 
+  /**
+   * @private
+   * @type {ol.tilegrid.TileGrid}
+   */
+  this.defaultTileGrid_ = null;
+
 };
 
 
@@ -107,6 +113,22 @@ ol.Projection.prototype.getUnits = function() {
  */
 ol.Projection.prototype.getAxisOrientation = function() {
   return this.axisOrientation_;
+};
+
+
+/**
+ * @return {ol.tilegrid.TileGrid} The default tile grid.
+ */
+ol.Projection.prototype.getDefaultTileGrid = function() {
+  return this.defaultTileGrid_;
+};
+
+
+/**
+ * @param {ol.tilegrid.TileGrid} tileGrid The default tile grid.
+ */
+ol.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
+  this.defaultTileGrid_ = tileGrid;
 };
 
 

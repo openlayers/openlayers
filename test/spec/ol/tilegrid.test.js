@@ -169,16 +169,16 @@ describe('ol.tilegrid.TileGrid', function() {
       expect(grid).toBeA(ol.tilegrid.TileGrid);
 
       var resolutions = grid.getResolutions();
-      expect(resolutions.length).toBe(19);
+      expect(resolutions.length).toBe(ol.DEFAULT_MAX_ZOOM + 1);
     });
 
     it('accepts a number of zoom levels', function() {
       var projection = ol.projection.getFromCode('EPSG:3857');
-      var grid = ol.tilegrid.createForProjection(projection, 22);
+      var grid = ol.tilegrid.createForProjection(projection, 18);
       expect(grid).toBeA(ol.tilegrid.TileGrid);
 
       var resolutions = grid.getResolutions();
-      expect(resolutions.length).toBe(23);
+      expect(resolutions.length).toBe(19);
     });
 
     it('accepts a big number of zoom levels', function() {
@@ -188,6 +188,28 @@ describe('ol.tilegrid.TileGrid', function() {
 
       var resolutions = grid.getResolutions();
       expect(resolutions.length).toBe(24);
+    });
+
+  });
+
+  describe('getForProjection', function() {
+
+    it('gets the default tile grid for a projection', function() {
+      var projection = ol.projection.getFromCode('EPSG:3857');
+      var grid = ol.tilegrid.getForProjection(projection);
+      expect(grid).toBeA(ol.tilegrid.TileGrid);
+
+      var resolutions = grid.getResolutions();
+      expect(resolutions.length).toBe(ol.DEFAULT_MAX_ZOOM + 1);
+      expect(grid.getTileSize().toString()).toBe('(256 x 256)');
+    });
+
+    it('stores the default tile grid on a projection', function() {
+      var projection = ol.projection.getFromCode('EPSG:3857');
+      var grid = ol.tilegrid.getForProjection(projection);
+      var gridAgain = ol.tilegrid.getForProjection(projection);
+
+      expect(grid).toBe(gridAgain);
     });
 
   });
