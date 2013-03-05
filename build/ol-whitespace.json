@@ -31,5 +31,7 @@
   // Note: we can't have a (function(){%output%})() output wrapper with
   // WHITESPACE and SIMPLE modes. See this link for explanations:
   // https://groups.google.com/forum/#!topic/plovr/gQyZEa2NpsU
-  "output-wrapper": "%output%"
+  "output-wrapper": "%output%",
+
+  "pretty-print": true
 }
