@@ -34,7 +34,7 @@ describe('ol.filter.Geometry', function() {
 
     it('works for multi-linestring', function() {
       var filter = new ol.filter.Geometry(
-            ol.filter.GeometryType.MULTILINESTRING);
+          ol.filter.GeometryType.MULTILINESTRING);
       expect(filter.getType()).toBe(ol.filter.GeometryType.MULTILINESTRING);
     });
 

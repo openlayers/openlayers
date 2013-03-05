@@ -34,7 +34,7 @@ ol.geom.LineString = function(coordinates, opt_shared) {
   this.vertices = vertices;
 
   /**
-   * @type {string}
+   * @type {number}
    * @private
    */
   this.sharedId_ = vertices.add(coordinates);
@@ -142,7 +142,7 @@ ol.geom.LineString.prototype.getType = function() {
 
 /**
  * Get the identifier used to mark this line in the shared vertices structure.
- * @return {string} The identifier.
+ * @return {number} The identifier.
  */
 ol.geom.LineString.prototype.getSharedId = function() {
   return this.sharedId_;

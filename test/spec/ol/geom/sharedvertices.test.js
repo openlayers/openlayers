@@ -43,8 +43,24 @@ describe('ol.geom.SharedVertices', function() {
     it('returns an identifier for coordinate access', function() {
       var vertices = new ol.geom.SharedVertices();
       var id = vertices.add([[1, 2], [3, 4]]);
-      expect(typeof id).toBe('string');
+      expect(typeof id).toBe('number');
     });
+
+    it('returns the index of the added vertices', function() {
+      var vertices = new ol.geom.SharedVertices();
+
+      var first = vertices.add([[1, 2]]);
+      var second = vertices.add([[3, 4], [5, 6]]);
+      var third = vertices.add([[7, 8], [9, 10], [11, 12]]);
+
+      expect(vertices.coordinates).toEqual(
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+
+      expect(first).toBe(0);
+      expect(second).toBe(1);
+      expect(third).toBe(2);
+    });
+
   });
 
   describe('#get()', function() {
@@ -98,6 +114,17 @@ describe('ol.geom.SharedVertices', function() {
     });
   });
 
+  describe('#getCounts()', function() {
+    it('returns the counts array', function() {
+      var vertices = new ol.geom.SharedVertices();
+      var first = vertices.add([[2, 3], [3, 4], [4, 5]]);
+      var second = vertices.add([[5, 6], [6, 6]]);
+      var third = vertices.add([[7, 8]]);
+
+      expect(vertices.getCounts()).toEqual([3, 2, 1]);
+    });
+  });
+
   describe('#getDimension()', function() {
     it('returns 2 by default', function() {
       var vertices = new ol.geom.SharedVertices();
@@ -123,69 +150,49 @@ describe('ol.geom.SharedVertices', function() {
   });
 
   describe('#getStart()', function() {
-    it('returns the start of the identified vertex array', function() {
+    it('returns the start index of an identified vertex array', function() {
       var vertices = new ol.geom.SharedVertices();
-      var first = vertices.add([[1, 2]]);
-      var second = vertices.add([[3, 4], [5, 6]]);
-      var third = vertices.add([[7, 8], [9, 10], [11, 12]]);
+      var first = vertices.add([[2, 3], [4, 5], [6, 7]]);
+      var second = vertices.add([[8, 9], [10, 11]]);
+      var third = vertices.add([[12, 13]]);
 
       expect(vertices.coordinates).toEqual(
-          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+          [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+      //   0  1  2  3  4  5  6  7   8   9  10  11
+
       expect(vertices.getStart(first)).toBe(0);
-      expect(vertices.getStart(second)).toBe(2);
-      expect(vertices.getStart(third)).toBe(6);
+      expect(vertices.getStart(second)).toBe(6);
+      expect(vertices.getStart(third)).toBe(10);
     });
   });
 
-  describe('#remove()', function() {
-    it('removes a vertex array', function() {
+  describe('#getStarts()', function() {
+    it('returns the counts array', function() {
+      var vertices = new ol.geom.SharedVertices();
+      var first = vertices.add([[2, 3], [3, 4], [4, 5]]);
+      var second = vertices.add([[5, 6], [6, 6]]);
+      var third = vertices.add([[7, 8]]);
+
+      expect(vertices.getStarts()).toEqual([0, 6, 10]);
+    });
+  });
+
+  describe('#coordinates', function() {
+    it('is a flat array of all coordinate values', function() {
       var vertices = new ol.geom.SharedVertices();
       var first = vertices.add([[1, 2], [3, 4]]);
       var second = vertices.add([[5, 6]]);
       var third = vertices.add([[7, 8], [9, 10], [11, 12]]);
-
-      expect(vertices.remove(second)).toEqual([[5, 6]]);
-      expect(vertices.coordinates).toEqual([1, 2, 3, 4, 7, 8, 9, 10, 11, 12]);
-
-      expect(vertices.remove(first)).toEqual([[1, 2], [3, 4]]);
-      expect(vertices.coordinates).toEqual([7, 8, 9, 10, 11, 12]);
-
-      expect(vertices.remove(third)).toEqual([[7, 8], [9, 10], [11, 12]]);
-      expect(vertices.coordinates).toEqual([]);
+      expect(vertices.coordinates).toEqual(
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
     });
 
-    it('adjusts returned vertices by offset', function() {
-
-      var vertices = new ol.geom.SharedVertices({offset: [10, 20]});
-      var first = vertices.add([[1, 2]]);
-      var second = vertices.add([[3, 4]]);
-      var third = vertices.add([[5, 6]]);
-
-      expect(vertices.remove(second)).toEqual([[3, 4]]);
-      expect(vertices.coordinates).toEqual([-9, -18, -5, -14]);
-
-      expect(vertices.remove(third)).toEqual([[5, 6]]);
-      expect(vertices.coordinates).toEqual([-9, -18]);
-
-      expect(vertices.remove(first)).toEqual([[1, 2]]);
-      expect(vertices.coordinates).toEqual([]);
-    });
-
-  });
-
-  describe('#coordinates', function() {
     it('is not reassigned', function() {
       var vertices = new ol.geom.SharedVertices();
       var first = vertices.add([[1, 2], [3, 4]]);
       var coordinates = vertices.coordinates;
 
       var second = vertices.add([[5, 6]]);
-      expect(vertices.coordinates).toBe(coordinates);
-
-      vertices.remove(first);
-      expect(vertices.coordinates).toBe(coordinates);
-
-      vertices.remove(second);
       expect(vertices.coordinates).toBe(coordinates);
     });
   });

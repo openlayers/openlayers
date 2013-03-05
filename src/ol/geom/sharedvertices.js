@@ -20,18 +20,24 @@ ol.geom.SharedVerticesOptions;
  * @param {ol.geom.SharedVerticesOptions=} opt_options Shared vertices options.
  */
 ol.geom.SharedVertices = function(opt_options) {
-  var options = goog.isDef(opt_options) ? opt_options : {};
-
-  /**
-   * @type {number}
-   * @private
-   */
-  this.counter_ = 0;
+  var options = opt_options ? opt_options : {};
 
   /**
    * @type {Array.<number>}
    */
   this.coordinates = [];
+
+  /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.starts_ = [];
+
+  /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.counts_ = [];
 
   /**
    * Number of dimensions per vertex.  Default is 2.
@@ -49,25 +55,13 @@ ol.geom.SharedVertices = function(opt_options) {
   goog.asserts.assert(goog.isNull(this.offset_) ||
       this.offset_.length === this.dimension_);
 
-  /**
-   * @type {Object}
-   * @private
-   */
-  this.lookup_ = {};
-
-  /**
-   * @type {Array.<string>}
-   * @private
-   */
-  this.ids_ = [];
-
 };
 
 
 /**
  * Adds a vertex array to the shared coordinate array.
  * @param {ol.geom.VertexArray} vertices Array of vertices.
- * @return {string} Index used to reference the added vertex array.
+ * @return {number} Index used to reference the added vertex array.
  */
 ol.geom.SharedVertices.prototype.add = function(vertices) {
   var start = this.coordinates.length;
@@ -87,28 +81,23 @@ ol.geom.SharedVertices.prototype.add = function(vertices) {
       }
     }
   }
-  var id = this.getId_();
-  var idIndex = this.ids_.push(id) - 1;
-  this.lookup_[id] = {
-    idIndex: idIndex,
-    start: start,
-    count: count
-  };
-  return id;
+  var length = this.starts_.push(start);
+  this.counts_.push(count);
+  return length - 1;
 };
 
 
 /**
- * @param {string} id The vertex array identifier (returned by add).
+ * @param {number} id The vertex array identifier (returned by add).
  * @param {number} index The vertex index.
  * @param {number} dim The coordinate dimension.
  * @return {number} The coordinate value.
  */
 ol.geom.SharedVertices.prototype.get = function(id, index, dim) {
+  goog.asserts.assert(id < this.starts_.length);
   goog.asserts.assert(dim <= this.dimension_);
-  goog.asserts.assert(this.lookup_.hasOwnProperty(id));
-  goog.asserts.assert(index < this.lookup_[id].count);
-  var start = this.lookup_[id].start;
+  goog.asserts.assert(index < this.counts_[id]);
+  var start = this.starts_[id];
   var value = this.coordinates[start + (index * this.dimension_) + dim];
   if (this.offset_) {
     value += this.offset_[dim];
@@ -118,22 +107,23 @@ ol.geom.SharedVertices.prototype.get = function(id, index, dim) {
 
 
 /**
- * @param {string} id The vertex array identifier (returned by add).
+ * @param {number} id The vertex array identifier (returned by add).
  * @return {number} The number of vertices in the referenced array.
  */
 ol.geom.SharedVertices.prototype.getCount = function(id) {
-  goog.asserts.assert(this.lookup_.hasOwnProperty(id));
-  return this.lookup_[id].count;
+  goog.asserts.assert(id < this.counts_.length);
+  return this.counts_[id];
 };
 
 
 /**
- * Gets an identifier that is unique for this instance.
- * @return {string} Identifier.
- * @private
+ * Get the array of counts.  The index returned by the add method can be used
+ * to look up the number of vertices.
+ *
+ * @return {Array.<number>} The counts array.
  */
-ol.geom.SharedVertices.prototype.getId_ = function() {
-  return String(++this.counter_);
+ol.geom.SharedVertices.prototype.getCounts = function() {
+  return this.counts_;
 };
 
 
@@ -154,42 +144,20 @@ ol.geom.SharedVertices.prototype.getOffset = function() {
 
 
 /**
- * @param {string} id The vertex array identifier (returned by add).
+ * @param {number} id The vertex array identifier (returned by add).
  * @return {number} The start index in the shared vertices array.
  */
 ol.geom.SharedVertices.prototype.getStart = function(id) {
-  goog.asserts.assert(this.lookup_.hasOwnProperty(id));
-  return this.lookup_[id].start;
+  goog.asserts.assert(id < this.starts_.length);
+  return this.starts_[id];
 };
 
 
 /**
- * @param {number} id The vertex array identifier (returned by add).
- * @return {ol.geom.VertexArray} The removed vertex array.
+ * Get the array of start indexes.
+ * @return {Array.<number>} The starts array.
  */
-ol.geom.SharedVertices.prototype.remove = function(id) {
-  goog.asserts.assert(this.lookup_.hasOwnProperty(id));
-  var info = this.lookup_[id];
-  var dimension = this.dimension_;
-  var length = info.count * dimension;
-  var removed = this.coordinates.splice(info.start, length);
-  var offset = this.offset_;
-  var array = new Array(info.count);
-  var vertex;
-  for (var i = 0; i < info.count; ++i) {
-    vertex = new Array(dimension);
-    for (var j = 0; j < dimension; ++j) {
-      vertex[j] = removed[(i * dimension) + j] + (offset ? offset[j] : 0);
-    }
-    array[i] = vertex;
-  }
-  delete this.lookup_[id];
-  this.ids_.splice(info.idIndex, 1);
-  var afterInfo;
-  for (var k = info.idIndex, kk = this.ids_.length; k < kk; ++k) {
-    afterInfo = this.lookup_[this.ids_[k]];
-    afterInfo.idIndex -= 1;
-    afterInfo.start -= length;
-  }
-  return array;
+ol.geom.SharedVertices.prototype.getStarts = function() {
+  return this.starts_;
 };
+
