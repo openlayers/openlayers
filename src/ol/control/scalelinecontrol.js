@@ -168,11 +168,13 @@ ol.control.ScaleLine.prototype.updateElement_ = function(frameState) {
     this.toEPSG4326_ = null;
     cosLatitude = Math.cos(goog.math.toRadians(center.y));
     pointResolution *= Math.PI * cosLatitude * ol.sphere.NORMAL.radius / 180;
+    projectionUnits = ol.ProjectionUnits.METERS;
 
-  } else if (projectionUnits == ol.ProjectionUnits.METERS &&
+  } else if ((projectionUnits == ol.ProjectionUnits.FEET ||
+      projectionUnits == ol.ProjectionUnits.METERS) &&
       this.units_ == ol.control.ScaleLineUnits.DEGREES) {
 
-    // Convert pointResolution from meters to degrees
+    // Convert pointResolution from meters or feet to degrees
     if (goog.isNull(this.toEPSG4326_)) {
       this.toEPSG4326_ = ol.projection.getTransform(
           projection, ol.projection.getFromCode('EPSG:4326'));
@@ -180,19 +182,25 @@ ol.control.ScaleLine.prototype.updateElement_ = function(frameState) {
     var vertex = [center.x, center.y];
     vertex = this.toEPSG4326_(vertex, vertex, 2);
     cosLatitude = Math.cos(goog.math.toRadians(vertex[1]));
-    pointResolution *= 180 / (Math.PI * cosLatitude * ol.sphere.NORMAL.radius);
+    var radius = ol.sphere.NORMAL.radius;
+    if (projectionUnits == ol.ProjectionUnits.FEET) {
+      radius /= 0.3048;
+    }
+    pointResolution *= 180 / (Math.PI * cosLatitude * radius);
+    projectionUnits = ol.ProjectionUnits.DEGREES;
 
   } else {
 
     this.toEPSG4326_ = null;
-    goog.asserts.assert(
-        ((this.units_ == ol.control.ScaleLineUnits.METRIC ||
-          this.units_ == ol.control.ScaleLineUnits.IMPERIAL) &&
-         projectionUnits == ol.ProjectionUnits.METERS) ||
-        (this.units_ == ol.control.ScaleLineUnits.DEGREES &&
-         projectionUnits == ol.ProjectionUnits.DEGREES));
 
   }
+
+  goog.asserts.assert(
+      ((this.units_ == ol.control.ScaleLineUnits.METRIC ||
+        this.units_ == ol.control.ScaleLineUnits.IMPERIAL) &&
+       projectionUnits == ol.ProjectionUnits.METERS) ||
+      (this.units_ == ol.control.ScaleLineUnits.DEGREES &&
+       projectionUnits == ol.ProjectionUnits.DEGREES));
 
   var nominalCount = this.minWidth_ * pointResolution;
   var suffix = '';
