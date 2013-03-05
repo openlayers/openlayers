@@ -4,6 +4,7 @@ goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.control.ScaleLineUnits');
+goog.require('ol.control.defaults');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.projection');
 goog.require('ol.source.TiledWMS');
@@ -24,11 +25,15 @@ var layers = new ol.Collection([
 ]);
 
 var map = new ol.Map({
+  controls: ol.control.defaults({
+    scaleLine: true,
+    scaleLineOptions: /** @type {ol.control.ScaleLineOptions} */ ({
+      units: ol.control.ScaleLineUnits.DEGREES
+    })
+  }),
   layers: layers,
   // The OSgeo server does not set cross origin headers, so we cannot use WebGL
   renderers: [ol.RendererHint.CANVAS, ol.RendererHint.DOM],
-  scaleLineControl: true,
-  scaleLineUnits: ol.control.ScaleLineUnits.DEGREES,
   target: 'map',
   view: new ol.View2D({
     projection: ol.projection.getFromCode('EPSG:4326'),
