@@ -1,9 +1,9 @@
 /**
- Jasmine Reporter that outputs test results to the browser console. 
+ Jasmine Reporter that outputs test results to the browser console.
  Useful for running in a headless environment such as PhantomJs, ZombieJs etc.
 
  Usage:
- // From your html file that loads jasmine:  
+ // From your html file that loads jasmine:
  jasmine.getEnv().addReporter(new jasmine.ConsoleReporter());
  jasmine.getEnv().execute();
 */
@@ -23,7 +23,7 @@
     var color_code = this.color_map[color];
     return "\033[" + color_code + "m" + text + "\033[0m";
   }
-  
+
   var ConsoleReporter = function() {
     if (!console || !console.log) { throw "console isn't present!"; }
     this.status = this.statuses.stopped;
