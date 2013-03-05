@@ -19,9 +19,11 @@ ol.control.ZOOM_DURATION = 250;
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.ZoomOptions} zoomOptions Zoom options.
+ * @param {ol.control.ZoomOptions=} opt_options Options.
  */
-ol.control.Zoom = function(zoomOptions) {
+ol.control.Zoom = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   var inElement = goog.dom.createDom(goog.dom.TagName.A, {
     'href': '#zoomIn',
@@ -46,15 +48,15 @@ ol.control.Zoom = function(zoomOptions) {
 
   goog.base(this, {
     element: element,
-    map: zoomOptions.map,
-    target: zoomOptions.target
+    map: options.map,
+    target: options.target
   });
 
   /**
    * @type {number}
    * @private
    */
-  this.delta_ = goog.isDef(zoomOptions.delta) ? zoomOptions.delta : 1;
+  this.delta_ = goog.isDef(options.delta) ? options.delta : 1;
 
 };
 goog.inherits(ol.control.Zoom, ol.control.Control);
