@@ -9,8 +9,6 @@ goog.require('ol.projection');
 goog.require('ol.source.TiledWMS');
 
 
-var epsg4326 = ol.projection.getFromCode('EPSG:4326');
-
 var layers = new ol.Collection([
   new ol.layer.TileLayer({
     source: new ol.source.TiledWMS({
@@ -20,8 +18,7 @@ var layers = new ol.Collection([
         'VERSION': '1.1.1',
         'LAYERS': 'basic',
         'FORMAT': 'image/jpeg'
-      },
-      projection: epsg4326
+      }
     })
   })
 ]);
@@ -34,7 +31,7 @@ var map = new ol.Map({
   scaleLineUnits: ol.control.ScaleLineUnits.DEGREES,
   target: 'map',
   view: new ol.View2D({
-    projection: epsg4326,
+    projection: ol.projection.getFromCode('EPSG:4326'),
     center: new ol.Coordinate(0, 0),
     zoom: 2
   })
