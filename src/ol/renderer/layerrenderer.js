@@ -185,7 +185,7 @@ ol.renderer.Layer.prototype.handleTileChange_ = function(event) {
 
 
 /**
- * Listen once to titileKey, le change event.
+ * Listen once to tileKey, le change event.
  * @param {ol.Tile} tile Tile.
  * @protected
  */
