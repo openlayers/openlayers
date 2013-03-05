@@ -8,6 +8,12 @@ goog.require('ol.View2D');
 goog.require('ol.interaction.Interaction');
 
 
+/**
+ * @define {number} Animation duration.
+ */
+ol.interaction.DBLCLICKZOOM_ANIMATION_DURATION = 250;
+
+
 
 /**
  * @constructor
@@ -41,7 +47,8 @@ ol.interaction.DblClickZoom.prototype.handleMapBrowserEvent =
     // FIXME works for View2D only
     var view = map.getView();
     goog.asserts.assert(view instanceof ol.View2D);
-    view.zoomByDelta(map, delta, anchor);
+    view.zoomByDelta(map, delta, anchor,
+        ol.interaction.DBLCLICKZOOM_ANIMATION_DURATION);
     mapBrowserEvent.preventDefault();
     browserEvent.preventDefault();
   }
