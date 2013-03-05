@@ -19,19 +19,6 @@ var epsg21781 = new ol.Projection('EPSG:21781', ol.ProjectionUnits.METERS,
     new ol.Extent(485869.5728, 76443.1884, 837076.5648, 299941.7864));
 ol.projection.addProjection(epsg21781);
 
-// We could give the single image source a set of resolutions. This prevents the
-// source from requesting images of arbitrary resolutions. To try it, uncomment
-// the block below and the resolutions option in the SingleImageWMS config.
-/*
-var projectionExtent = epsg21781.getExtent();
-var maxResolution = Math.max(projectionExtent.getWidth(),
-    projectionExtent.getHeight()) / 256;
-var resolutions = new Array(10);
-for (var i = 0; i < 10; ++i) {
-  resolutions[i] = maxResolution / Math.pow(2.0, i);
-}
-*/
-
 var extent = new ol.Extent(420000, 30000, 900000, 350000);
 var layers = new ol.Collection([
   new ol.layer.TileLayer({
@@ -50,7 +37,6 @@ var layers = new ol.Collection([
   }),
   new ol.layer.ImageLayer({
     source: new ol.source.SingleImageWMS({
-      //resolutions: resolutions,
       url: 'http://wms.geo.admin.ch/',
       attributions: [new ol.Attribution(
           '&copy; ' +

@@ -85,28 +85,11 @@ describe('ol.Map', function() {
     });
 
     describe('create mousewheel interaction', function() {
-
-      beforeEach(function() {
+      it('creates mousewheel interaction', function() {
         options.mouseWheelZoom = true;
-      });
-
-      describe('default mouseWheelZoomDelta', function() {
-        it('create mousewheel interaction with default delta', function() {
-          var interactions = ol.Map.createInteractions_(options);
-          expect(interactions.getLength()).toEqual(1);
-          expect(interactions.getAt(0)).toBeA(ol.interaction.MouseWheelZoom);
-          expect(interactions.getAt(0).delta_).toEqual(1);
-        });
-      });
-
-      describe('set mouseWheelZoomDelta', function() {
-        it('create mousewheel interaction with set delta', function() {
-          options.mouseWheelZoomDelta = 7;
-          var interactions = ol.Map.createInteractions_(options);
-          expect(interactions.getLength()).toEqual(1);
-          expect(interactions.getAt(0)).toBeA(ol.interaction.MouseWheelZoom);
-          expect(interactions.getAt(0).delta_).toEqual(7);
-        });
+        var interactions = ol.Map.createInteractions_(options);
+        expect(interactions.getLength()).toEqual(1);
+        expect(interactions.getAt(0)).toBeA(ol.interaction.MouseWheelZoom);
       });
     });
 
@@ -121,11 +104,11 @@ describe('ol.Map', function() {
           var interactions = ol.Map.createInteractions_(options);
           expect(interactions.getLength()).toEqual(1);
           expect(interactions.getAt(0)).toBeA(ol.interaction.DblClickZoom);
-          expect(interactions.getAt(0).delta_).toEqual(4);
+          expect(interactions.getAt(0).delta_).toEqual(1);
         });
       });
 
-      describe('set mouseWheelZoomDelta', function() {
+      describe('set zoomDelta', function() {
         it('create double click interaction with set delta', function() {
           options.zoomDelta = 7;
           var interactions = ol.Map.createInteractions_(options);
