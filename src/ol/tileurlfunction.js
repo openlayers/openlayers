@@ -83,7 +83,7 @@ ol.TileUrlFunction.createWMSParams =
     if (goog.isNull(tileCoord)) {
       return undefined;
     } else {
-      var size = tileGrid.getTileSize();
+      var size = tileGrid.getTileSize(tileCoord.z);
       var extent = tileGrid.getTileCoordExtent(tileCoord);
       return ol.source.wms.getUrl(
           baseUrl, params, extent, size, projection, opt_version);
