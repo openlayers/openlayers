@@ -28,6 +28,7 @@ ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof Proj4js == 'object';
  */
 ol.ProjectionUnits = {
   DEGREES: 'degrees',
+  FEET: 'ft',
   METERS: 'm'
 };
 
@@ -190,7 +191,13 @@ ol.Proj4jsProjection_.prototype.getPointResolution =
     var height = ol.sphere.NORMAL.haversineDistance(
         new ol.Coordinate(vertices[4], vertices[5]),
         new ol.Coordinate(vertices[6], vertices[7]));
-    return (width + height) / 2;
+    var pointResolution = (width + height) / 2;
+    if (this.getUnits() == ol.ProjectionUnits.FEET) {
+      // The radius of the normal sphere is defined in meters, so we must
+      // convert back to feet.
+      pointResolution /= 0.3048;
+    }
+    return pointResolution;
   }
 };
 
