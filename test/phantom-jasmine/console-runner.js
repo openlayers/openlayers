@@ -86,12 +86,69 @@
     }
   };
 
+  /**
+   * Will hold the title of the current 'group'.
+   */
+  proto.lastTitle = "";
+
+  /**
+   * Pads given string up to a target length with a given character on either
+   * the left or right side.
+   */
+  proto.pad = function(str, len, char, side){
+    var str = str + "",
+        whichSide = side || 'left',
+        buff = "",
+        padChar = char || " ",
+        padded = "",
+        iterEnd = len - str.length;
+
+    while(buff.length < iterEnd) {
+      buff += padChar;
+    }
+    if (side === 'left') {
+      padded = buff + str;
+    } else {
+      padded = str + buff;
+    }
+    // we still need a substring when we are called with e.g. " . " as char.
+    return padded.substring(0, len);
+  }
+
+  /**
+   * Pads given string up to a target length with a given character on the right
+   * side.
+   */
+  proto.padRight = function(str, len, char){
+    return this.pad(str, len, char, 'right');
+  }
+
+  /**
+   * Pads given string up to a target length with a given character on the right
+   * side.
+   */
+  proto.padLeft = function(str, len, char){
+    return this.pad(str, len, char, 'left');
+  }
+
   proto.reportSuiteResults = function(suite) {
     if (!suite.parentSuite) { return; }
+    // determine title from full name (wo/ own description)
+    var title = suite.getFullName().replace(new RegExp(suite.description + "$"), "");
+    if (this.lastTitle !== title) {
+      // when title differs, we have a new 'group'
+      this.log("\n" + title);
+    }
+    // always set current title
+    this.lastTitle = title;
+
     var results = suite.results();
     var failed = results.totalCount - results.passedCount;
-    var color = (failed > 0)? "red" : "green";
-    this.log(suite.description + ": " + results.passedCount + " of " + results.totalCount + " passed.", color);
+    var color = (failed > 0) ? "red" : "green";
+    var logStr = " " + this.padRight(suite.description + " ", 60, '.') +
+        this.padLeft(results.passedCount, 4) + "/" +
+        this.padRight(results.totalCount, 4) + " ok";
+    this.log(logStr, color);
   };
 
   proto.log = function(str, color) {
