@@ -13,27 +13,13 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.source.Source');
 
 
-/**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *            extent: (ol.Extent|undefined),
- *            projection: (ol.Projection|undefined)}}
- */
-ol.source.VectorOptions;
-
-
 
 /**
  * @constructor
  * @extends {ol.source.Source}
- * @param {ol.source.VectorOptions} options Source options.
+ * @param {ol.source.SourceOptions} options Source options.
  */
 ol.source.Vector = function(options) {
-
-  goog.base(this, {
-    attributions: options.attributions,
-    extent: options.extent,
-    projection: options.projection
-  });
-
+  goog.base(this, options);
 };
 goog.inherits(ol.source.Vector, ol.source.Source);

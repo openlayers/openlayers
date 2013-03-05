@@ -1,0 +1,3 @@
+@exportClass ol.layer.Vector ol.layer.LayerOptions
+
+@exportProperty ol.layer.Vector.prototype.addFeatures

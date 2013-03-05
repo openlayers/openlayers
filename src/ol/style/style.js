@@ -6,12 +6,6 @@ goog.require('ol.style.Rule');
 goog.require('ol.style.SymbolizerLiteral');
 
 
-/**
- * @typedef {{rules: (Array.<ol.style.Rule>)}}
- */
-ol.style.StyleOptions;
-
-
 
 /**
  * @constructor

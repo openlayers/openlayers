@@ -111,6 +111,11 @@
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.resolutions Array.<number>|undefined
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.url string|undefined
 
+@exportObjectLiteral ol.source.SourceOptions
+@exportObjectLiteralProperty ol.source.SourceOptions.attributions Array.<ol.Attribution>|undefined
+@exportObjectLiteralProperty ol.source.SourceOptions.extent ol.Extent|undefined
+@exportObjectLiteralProperty ol.source.SourceOptions.projection ol.Projection|undefined
+
 @exportObjectLiteral ol.source.StamenOptions
 @exportObjectLiteralProperty ol.source.StamenOptions.layer string
 @exportObjectLiteralProperty ol.source.StamenOptions.minZoom number|undefined
@@ -137,6 +142,32 @@
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.projection ol.Projection|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.url string|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.urls Array.<string>|undefined
+
+@exportObjectLiteral ol.style.LineOptions
+@exportObjectLiteralProperty ol.style.LineOptions.strokeStyle string|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.LineOptions.strokeWidth number|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.LineOptions.opacity number|ol.Expression|undefined
+
+@exportObjectLiteral ol.style.PolygonOptions
+@exportObjectLiteralProperty ol.style.PolygonOptions.fillStyle string|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.PolygonOptions.strokeStyle string|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.PolygonOptions.strokeWidth number|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.PolygonOptions.opacity number|ol.Expression|undefined
+
+@exportObjectLiteral ol.style.RuleOptions
+@exportObjectLiteralProperty ol.style.RuleOptions.filter ol.filter.Filter|undefined
+@exportObjectLiteralProperty ol.style.RuleOptions.symbolizers Array.<ol.style.Symbolizer>|undefined
+
+@exportObjectLiteral ol.style.ShapeOptions
+@exportObjectLiteralProperty ol.style.ShapeOptions.type ol.style.ShapeType|undefined
+@exportObjectLiteralProperty ol.style.ShapeOptions.size number|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.ShapeOptions.fillStyle string|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.ShapeOptions.strokeStyle string|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.ShapeOptions.strokeWidth number|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.ShapeOptions.opacity number|ol.Expression|undefined
+
+@exportObjectLiteral ol.style.StyleOptions
+@exportObjectLiteralProperty ol.style.StyleOptions.rules Array.<ol.style.Rule>
 
 @exportObjectLiteral ol.tilegrid.TileGridOptions
 @exportObjectLiteralProperty ol.tilegrid.TileGridOptions.origin ol.Coordinate|undefined

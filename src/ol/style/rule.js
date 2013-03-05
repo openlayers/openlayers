@@ -5,13 +5,6 @@ goog.require('ol.filter.Filter');
 goog.require('ol.style.Symbolizer');
 
 
-/**
- * @typedef {{filter: (ol.filter.Filter),
- *            symbolizers: (Array.<ol.style.Symbolizer>)}}
- */
-ol.style.RuleOptions;
-
-
 
 /**
  * @constructor

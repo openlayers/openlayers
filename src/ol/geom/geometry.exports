@@ -1,0 +1,6 @@
+@exportSymbol ol.geom.Point
+@exportSymbol ol.geom.LineString
+@exportSymbol ol.geom.Polygon
+@exportSymbol ol.geom.MultiPoint
+@exportSymbol ol.geom.MultiLineString
+@exportSymbol ol.geom.MultiPolygon
