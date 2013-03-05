@@ -941,7 +941,7 @@ ol.Map.createControls_ = function(mapOptions) {
       mapOptions.zoomControl : true;
   if (zoomControl) {
     var zoomDelta = goog.isDef(mapOptions.zoomDelta) ?
-        mapOptions.zoomDelta : 4;
+        mapOptions.zoomDelta : 1;
     controls.push(new ol.control.Zoom({
       delta: zoomDelta
     }));
@@ -971,7 +971,7 @@ ol.Map.createInteractions_ = function(mapOptions) {
       mapOptions.doubleClickZoom : true;
   if (doubleClickZoom) {
     var zoomDelta = goog.isDef(mapOptions.zoomDelta) ?
-        mapOptions.zoomDelta : 4;
+        mapOptions.zoomDelta : 1;
     interactions.push(new ol.interaction.DblClickZoom(zoomDelta));
   }
 
@@ -1014,10 +1014,7 @@ ol.Map.createInteractions_ = function(mapOptions) {
   var mouseWheelZoom = goog.isDef(mapOptions.mouseWheelZoom) ?
       mapOptions.mouseWheelZoom : true;
   if (mouseWheelZoom) {
-    var mouseWheelZoomDelta =
-        goog.isDef(mapOptions.mouseWheelZoomDelta) ?
-            mapOptions.mouseWheelZoomDelta : 1;
-    interactions.push(new ol.interaction.MouseWheelZoom(mouseWheelZoomDelta));
+    interactions.push(new ol.interaction.MouseWheelZoom());
   }
 
   var shiftDragZoom = goog.isDef(mapOptions.shiftDragZoom) ?

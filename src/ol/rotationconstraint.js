@@ -37,3 +37,23 @@ ol.RotationConstraint.createSnapToN = function(n) {
     }
   };
 };
+
+
+/**
+ * @param {number=} opt_tolerance Tolerance.
+ * @return {ol.RotationConstraintType} Rotation constraint.
+ */
+ol.RotationConstraint.createSnapToZero = function(opt_tolerance) {
+  var tolerance = opt_tolerance || 0.1;
+  return function(rotation, delta) {
+    if (goog.isDef(rotation)) {
+      if (Math.abs(rotation + delta) <= tolerance) {
+        return 0;
+      } else {
+        return rotation + delta;
+      }
+    } else {
+      return undefined;
+    }
+  };
+};

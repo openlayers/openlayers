@@ -8,6 +8,14 @@ goog.require('ol.ViewHint');
 goog.require('ol.interaction.Touch');
 
 
+/**
+ * @define {number} Animation duration.
+ */
+ol.interaction.TOUCHROTATE_ANIMATION_DURATION = 250;
+
+
+
+/**
 
 /**
  * @constructor
@@ -90,7 +98,8 @@ ol.interaction.TouchRotate.prototype.handleTouchMove =
 
   // rotate
   if (this.rotating_) {
-    view.rotate(map, view.getRotation() + rotationDelta, anchor);
+    view.rotateWithoutConstraints(map, view.getRotation() + rotationDelta,
+        anchor);
   }
 };
 
@@ -103,6 +112,10 @@ ol.interaction.TouchRotate.prototype.handleTouchEnd =
   if (this.targetTouches.length < 2) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
+    if (this.rotating_) {
+      view.rotate(map, view.getRotation(), undefined,
+          ol.interaction.TOUCHROTATE_ANIMATION_DURATION);
+    }
     view.setHint(ol.ViewHint.INTERACTING, -1);
     return false;
   } else {

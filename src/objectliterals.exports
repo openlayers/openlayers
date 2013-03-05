@@ -7,7 +7,6 @@
 @exportObjectLiteralProperty ol.MapOptions.keyboardPanOffset number|undefined
 @exportObjectLiteralProperty ol.MapOptions.layers ol.Collection|undefined
 @exportObjectLiteralProperty ol.MapOptions.mouseWheelZoom boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.mouseWheelZoomDelta number|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderer ol.RendererHint|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderers Array.<ol.RendererHint>|undefined
 @exportObjectLiteralProperty ol.MapOptions.scaleLineControl boolean|undefined
