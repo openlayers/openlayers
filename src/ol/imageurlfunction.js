@@ -15,14 +15,13 @@ ol.ImageUrlFunctionType;
 /**
  * @param {string} baseUrl Base URL (may have query data).
  * @param {Object.<string, string|number>} params WMS parameters.
- * @param {string=} opt_version WMS version.
  * @return {ol.ImageUrlFunctionType} Image URL function.
  */
 ol.ImageUrlFunction.createWMSParams =
-    function(baseUrl, params, opt_version) {
+    function(baseUrl, params) {
   return function(extent, size, projection) {
     return ol.source.wms.getUrl(
-        baseUrl, params, extent, size, projection, opt_version);
+        baseUrl, params, extent, size, projection);
   };
 };
 
