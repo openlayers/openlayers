@@ -264,7 +264,7 @@ goog.exportProperty(
 ol.View2D.prototype.rotate =
     function(map, rotation, opt_anchor, opt_duration) {
   rotation = this.constraints_.rotation(rotation, 0);
-  this.rotateNoConstraint(map, rotation, opt_anchor, opt_duration);
+  this.rotateWithoutConstraints(map, rotation, opt_anchor, opt_duration);
 };
 
 
@@ -274,7 +274,7 @@ ol.View2D.prototype.rotate =
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
-ol.View2D.prototype.rotateNoConstraint =
+ol.View2D.prototype.rotateWithoutConstraints =
     function(map, rotation, opt_anchor, opt_duration) {
   if (goog.isDefAndNotNull(rotation)) {
     var currentRotation = this.getRotation();
@@ -324,7 +324,7 @@ ol.View2D.prototype.rotateNoConstraint =
 ol.View2D.prototype.zoom =
     function(map, resolution, opt_anchor, opt_duration) {
   resolution = this.constraints_.resolution(resolution, 0);
-  this.zoomNoConstraint(map, resolution, opt_anchor, opt_duration);
+  this.zoomWithoutConstraints(map, resolution, opt_anchor, opt_duration);
 };
 
 
@@ -338,7 +338,7 @@ ol.View2D.prototype.zoomByDelta =
     function(map, delta, opt_anchor, opt_duration) {
   var currentResolution = this.getResolution();
   var resolution = this.constraints_.resolution(currentResolution, delta);
-  this.zoomNoConstraint(map, resolution, opt_anchor, opt_duration);
+  this.zoomWithoutConstraints(map, resolution, opt_anchor, opt_duration);
 };
 
 
@@ -348,7 +348,7 @@ ol.View2D.prototype.zoomByDelta =
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
-ol.View2D.prototype.zoomNoConstraint =
+ol.View2D.prototype.zoomWithoutConstraints =
     function(map, resolution, opt_anchor, opt_duration) {
   if (goog.isDefAndNotNull(resolution)) {
     var currentResolution = this.getResolution();

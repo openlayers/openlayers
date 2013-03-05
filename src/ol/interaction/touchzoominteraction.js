@@ -65,7 +65,7 @@ ol.interaction.TouchZoom.prototype.handleTouchMove =
   var anchor = map.getCoordinateFromPixel(centroid);
 
   // scale, bypass the resolution constraint
-  view.zoomNoConstraint(map, view.getResolution() * scaleDelta, anchor);
+  view.zoomWithoutConstraints(map, view.getResolution() * scaleDelta, anchor);
 
 };
 

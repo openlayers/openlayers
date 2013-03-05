@@ -53,7 +53,7 @@ ol.interaction.DragRotate.prototype.handleDrag = function(mapBrowserEvent) {
     // FIXME supports View2D only
     goog.asserts.assert(view instanceof ol.View2D);
     map.requestRenderFrame();
-    view.rotateNoConstraint(map, view.getRotation() - delta);
+    view.rotateWithoutConstraints(map, view.getRotation() - delta);
   }
   this.lastAngle_ = theta;
 };
