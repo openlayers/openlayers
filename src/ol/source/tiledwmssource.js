@@ -21,25 +21,24 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
   if (goog.isDef(tiledWMSOptions.tileGrid)) {
     tileGrid = tiledWMSOptions.tileGrid;
   }
-  var version = tiledWMSOptions.version;
 
   var tileUrlFunction;
   if (tiledWMSOptions.urls) {
     var tileUrlFunctions = goog.array.map(
         tiledWMSOptions.urls, function(url) {
           return ol.TileUrlFunction.createWMSParams(
-              url, tiledWMSOptions.params, version);
+              url, tiledWMSOptions.params);
         });
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         tileUrlFunctions);
   } else if (tiledWMSOptions.url) {
     tileUrlFunction = ol.TileUrlFunction.createWMSParams(
-        tiledWMSOptions.url, tiledWMSOptions.params, version);
+        tiledWMSOptions.url, tiledWMSOptions.params);
   } else {
     tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
   }
-  var transparent = goog.isDef(tiledWMSOptions.transparent) ?
-      tiledWMSOptions.transparent : true;
+  var transparent = goog.isDef(tiledWMSOptions.params['TRANSPARENT']) ?
+      tiledWMSOptions.params['TRANSPARENT'] : true;
   var extent = tiledWMSOptions.extent;
 
   var tileCoordTransform = function(tileCoord, tileGrid, projection) {
