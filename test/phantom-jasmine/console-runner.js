@@ -13,16 +13,16 @@
     throw "jasmine library isn't loaded!";
   }
 
-  var ANSI = {}
+  var ANSI = {};
   ANSI.color_map = {
       "green" : 32,
       "red"   : 31
-  }
+  };
 
   ANSI.colorize_text = function(text, color) {
     var color_code = this.color_map[color];
     return "\033[" + color_code + "m" + text + "\033[0m";
-  }
+  };
 
   var ConsoleReporter = function() {
     if (!console || !console.log) { throw "console isn't present!"; }
@@ -79,7 +79,7 @@
     var resultText = spec.suite.description + " : " + spec.description;
     this.log(resultText, "red");
 
-    var items = spec.results().getItems()
+    var items = spec.results().getItems();
     for (var i = 0; i < items.length; i++) {
       var trace = items[i].trace.stack || items[i].trace;
       this.log(trace, "red");
@@ -95,8 +95,8 @@
    * Pads given string up to a target length with a given character on either
    * the left or right side.
    */
-  proto.pad = function(str, len, char, side){
-    var str = str + "",
+  proto.pad = function(string, len, char, side){
+    var str = string + "",
         whichSide = side || 'left',
         buff = "",
         padChar = char || " ",
@@ -113,7 +113,7 @@
     }
     // we still need a substring when we are called with e.g. " . " as char.
     return padded.substring(0, len);
-  }
+  };
 
   /**
    * Pads given string up to a target length with a given character on the right
@@ -121,7 +121,7 @@
    */
   proto.padRight = function(str, len, char){
     return this.pad(str, len, char, 'right');
-  }
+  };
 
   /**
    * Pads given string up to a target length with a given character on the right
@@ -129,7 +129,7 @@
    */
   proto.padLeft = function(str, len, char){
     return this.pad(str, len, char, 'left');
-  }
+  };
 
   proto.reportSuiteResults = function(suite) {
     if (!suite.parentSuite) { return; }
@@ -152,8 +152,8 @@
   };
 
   proto.log = function(str, color) {
-    var text = (color != undefined)? ANSI.colorize_text(str, color) : str;
-    console.log(text)
+    var text = (color)? ANSI.colorize_text(str, color) : str;
+    console.log(text);
   };
 
   jasmine.ConsoleReporter = ConsoleReporter;
