@@ -15,6 +15,7 @@ goog.require('ol.tilegrid.TileGrid');
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            extent: (ol.Extent|undefined),
+ *            opaque: (boolean|undefined),
  *            projection: (ol.Projection|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined)}}
  */
@@ -34,6 +35,13 @@ ol.source.TileSource = function(tileSourceOptions) {
     extent: tileSourceOptions.extent,
     projection: tileSourceOptions.projection
   });
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.opaque_ = goog.isDef(tileSourceOptions.opaque) ?
+      tileSourceOptions.opaque : false;
 
   /**
    * @protected
@@ -65,14 +73,14 @@ ol.source.TileSource.prototype.expireCache = goog.abstractMethod;
  *
  * @param {Object.<number, Object.<string, ol.Tile>>} loadedTilesByZ A lookup of
  *     loaded tiles by zoom level.
- * @param {function(ol.Tile): boolean} isLoaded A function to determine if a
- *     tile is fully loaded.
+ * @param {function(ol.TileCoord): ol.Tile} getTileIfLoaded A function that
+ *     returns the tile only if it is fully loaded.
  * @param {number} z Zoom level.
  * @param {ol.TileRange} tileRange Tile range.
  * @return {boolean} The tile range is fully covered with loaded tiles.
  */
 ol.source.TileSource.prototype.findLoadedTiles = function(loadedTilesByZ,
-    isLoaded, z, tileRange) {
+    getTileIfLoaded, z, tileRange) {
   // FIXME this could be more efficient about filling partial holes
   var fullyCovered = true;
   var tile, tileCoord, tileCoordKey, x, y;
@@ -83,8 +91,8 @@ ol.source.TileSource.prototype.findLoadedTiles = function(loadedTilesByZ,
       if (loadedTilesByZ[z] && loadedTilesByZ[z][tileCoordKey]) {
         continue;
       }
-      tile = this.getTile(tileCoord);
-      if (isLoaded(tile)) {
+      tile = getTileIfLoaded(tileCoord);
+      if (!goog.isNull(tile)) {
         if (!loadedTilesByZ[z]) {
           loadedTilesByZ[z] = {};
         }
@@ -99,6 +107,14 @@ ol.source.TileSource.prototype.findLoadedTiles = function(loadedTilesByZ,
 
 
 /**
+ * @return {boolean} Opaque.
+ */
+ol.source.TileSource.prototype.getOpaque = function() {
+  return this.opaque_;
+};
+
+
+/**
  * @inheritDoc
  */
 ol.source.TileSource.prototype.getResolutions = function() {
@@ -108,6 +124,8 @@ ol.source.TileSource.prototype.getResolutions = function() {
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.tilegrid.TileGrid=} opt_tileGrid Tile grid.
+ * @param {ol.Projection=} opt_projection Projection.
  * @return {ol.Tile} Tile.
  */
 ol.source.TileSource.prototype.getTile = goog.abstractMethod;
@@ -124,9 +142,10 @@ ol.source.TileSource.prototype.getTileGrid = function() {
 /**
  * @param {number} z Z.
  * @param {ol.Extent} extent Extent.
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  */
-ol.source.TileSource.prototype.useLowResolutionTiles = function(z, extent) {
-  var tileGrid = this.getTileGrid();
+ol.source.TileSource.prototype.useLowResolutionTiles =
+    function(z, extent, tileGrid) {
   var tileRange, x, y, zKey;
   // FIXME this should loop up to tileGrid's minZ when implemented
   for (; z >= 0; --z) {

@@ -28,6 +28,7 @@ ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof Proj4js == 'object';
  */
 ol.ProjectionUnits = {
   DEGREES: 'degrees',
+  FEET: 'ft',
   METERS: 'm'
 };
 
@@ -66,6 +67,12 @@ ol.Projection = function(code, units, extent, opt_axisOrientation) {
    */
   this.axisOrientation_ = goog.isDef(opt_axisOrientation) ?
       opt_axisOrientation : 'enu';
+
+  /**
+   * @private
+   * @type {ol.tilegrid.TileGrid}
+   */
+  this.defaultTileGrid_ = null;
 
 };
 
@@ -107,6 +114,22 @@ ol.Projection.prototype.getUnits = function() {
  */
 ol.Projection.prototype.getAxisOrientation = function() {
   return this.axisOrientation_;
+};
+
+
+/**
+ * @return {ol.tilegrid.TileGrid} The default tile grid.
+ */
+ol.Projection.prototype.getDefaultTileGrid = function() {
+  return this.defaultTileGrid_;
+};
+
+
+/**
+ * @param {ol.tilegrid.TileGrid} tileGrid The default tile grid.
+ */
+ol.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
+  this.defaultTileGrid_ = tileGrid;
 };
 
 
@@ -168,7 +191,13 @@ ol.Proj4jsProjection_.prototype.getPointResolution =
     var height = ol.sphere.NORMAL.haversineDistance(
         new ol.Coordinate(vertices[4], vertices[5]),
         new ol.Coordinate(vertices[6], vertices[7]));
-    return (width + height) / 2;
+    var pointResolution = (width + height) / 2;
+    if (this.getUnits() == ol.ProjectionUnits.FEET) {
+      // The radius of the normal sphere is defined in meters, so we must
+      // convert back to feet.
+      pointResolution /= 0.3048;
+    }
+    return pointResolution;
   }
 };
 

@@ -110,10 +110,10 @@ describe('ol.parser.ogc.wmtscapabilities_v1_0_0', function() {
         expect(layer.resourceUrls.tile.hasOwnProperty(format)).toBeTruthy();
         expect(layer.resourceUrls.tile[format].length).toEqual(2);
         var tpl = 'http://a.example.com/wmts/coastlines/{TileMatrix}/' +
-          '{TileRow}/{TileCol}.png';
+            '{TileRow}/{TileCol}.png';
         expect(layer.resourceUrls.tile[format][0]).toEqual(tpl);
         tpl = 'http://b.example.com/wmts/coastlines/{TileMatrix}/' +
-          '{TileRow}/{TileCol}.png';
+            '{TileRow}/{TileCol}.png';
         expect(layer.resourceUrls.tile[format][1]).toEqual(tpl);
         expect(layer.resourceUrls.hasOwnProperty('FeatureInfo')).toBeTruthy();
         format = 'application/gml+xml; version=3.1';
@@ -121,7 +121,7 @@ describe('ol.parser.ogc.wmtscapabilities_v1_0_0', function() {
             .toBeTruthy();
         expect(layer.resourceUrls.FeatureInfo[format].length).toEqual(1);
         tpl = 'http://www.example.com/wmts/coastlines/{TileMatrixSet}/' +
-          '{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml';
+            '{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml';
         expect(layer.resourceUrls.FeatureInfo[format][0]).toEqual(tpl);
         expect(dimensions.length).toEqual(1);
         expect(dimensions[0].title).toEqual('Time');
