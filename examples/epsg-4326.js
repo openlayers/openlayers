@@ -16,8 +16,8 @@ var layers = new ol.Collection([
     source: new ol.source.TiledWMS({
       url: 'http://vmap0.tiles.osgeo.org/wms/vmap0',
       crossOrigin: null,
-      version: '1.1.1',
       params: {
+        'VERSION': '1.1.1',
         'LAYERS': 'basic',
         'FORMAT': 'image/jpeg'
       },

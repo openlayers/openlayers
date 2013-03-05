@@ -8,6 +8,12 @@ goog.require('ol.ViewHint');
 goog.require('ol.interaction.Touch');
 
 
+/**
+ * @define {number} Animation duration.
+ */
+ol.interaction.TOUCHZOOM_ANIMATION_DURATION = 250;
+
+
 
 /**
  * @constructor
@@ -59,7 +65,7 @@ ol.interaction.TouchZoom.prototype.handleTouchMove =
   var anchor = map.getCoordinateFromPixel(centroid);
 
   // scale, bypass the resolution constraint
-  view.zoom_(map, view.getResolution() * scaleDelta, anchor);
+  view.zoomWithoutConstraints(map, view.getResolution() * scaleDelta, anchor);
 
 };
 
@@ -73,7 +79,8 @@ ol.interaction.TouchZoom.prototype.handleTouchEnd =
     var map = mapBrowserEvent.map;
     var view = map.getView();
     // take the resolution constraint into account
-    view.zoomToResolution(map, view.getResolution());
+    view.zoom(map, view.getResolution(), undefined,
+        ol.interaction.TOUCHZOOM_ANIMATION_DURATION);
     view.setHint(ol.ViewHint.INTERACTING, -1);
     return false;
   } else {

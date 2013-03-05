@@ -49,6 +49,16 @@ describe('ol.View2D', function() {
       });
 
     });
+
+    describe('create rotation constraint', function() {
+      it('gives a correct rotation constraint function', function() {
+        var options = {};
+        var fn = ol.View2D.createConstraints_(options).rotation;
+        expect(fn(0.01, 0)).toEqual(0);
+        expect(fn(0.15, 0)).toEqual(0.15);
+      });
+    });
+
   });
 });
 

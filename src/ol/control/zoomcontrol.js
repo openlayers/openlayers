@@ -70,7 +70,8 @@ ol.control.Zoom.prototype.handleIn_ = function(browserEvent) {
   var map = this.getMap();
   map.requestRenderFrame();
   // FIXME works for View2D only
-  map.getView().zoom(map, this.delta_, undefined, ol.control.ZOOM_DURATION);
+  map.getView().zoomByDelta(map, this.delta_, undefined,
+      ol.control.ZOOM_DURATION);
 };
 
 
@@ -84,5 +85,6 @@ ol.control.Zoom.prototype.handleOut_ = function(browserEvent) {
   var map = this.getMap();
   map.requestRenderFrame();
   // FIXME works for View2D only
-  map.getView().zoom(map, -this.delta_, undefined, ol.control.ZOOM_DURATION);
+  map.getView().zoomByDelta(map, -this.delta_, undefined,
+      ol.control.ZOOM_DURATION);
 };

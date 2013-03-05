@@ -243,24 +243,24 @@ def build_lint_src_timestamp(t):
 
 def _strip_comments(lines):
     # FIXME this is a horribe hack, we should use a proper JavaScript parser here
-    in_comment = False
+    in_multiline_comment = False
+    lineno = 0
     for line in lines:
-        if in_comment:
+        lineno += 1
+        if in_multiline_comment:
             index = line.find('*/')
             if index != -1:
-                in_comment = False
-                yield line[index + 2:]
-        else:
+                in_multiline_comment = False
+                line = line[index + 2:]
+        if not in_multiline_comment:
+            line = re.sub(r'//[^\n]*', '', line)
+            line = re.sub(r'/\*.*?\*/', '', line)
             index = line.find('/*')
             if index != -1:
-                yield line[:index]
-                in_comment = True
+                yield lineno, line[:index]
+                in_multiline_comment = True
             else:
-                index = line.find('//')
-                if index != -1:
-                    yield line[:index]
-                else:
-                    yield line
+                yield lineno, line
 
 
 @target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC, SPEC)
@@ -272,10 +272,8 @@ def build_check_requires_timestamp(t):
             continue
         require_linenos = {}
         uses = set()
-        lineno = 0
         lines = open(filename).readlines()
-        for line in lines:
-            lineno += 1
+        for lineno, line in _strip_comments(lines):
             m = re.match(r'goog.provide\(\'(.*)\'\);', line)
             if m:
                 all_provides.add(m.group(1))
@@ -284,7 +282,7 @@ def build_check_requires_timestamp(t):
             if m:
                 require_linenos[m.group(1)] = lineno
                 continue
-        for line in lines:
+        for lineno, line in _strip_comments(lines):
             for require in require_linenos.iterkeys():
                 if require in line:
                     uses.add(require)
@@ -302,9 +300,7 @@ def build_check_requires_timestamp(t):
         provides = set()
         requires = set()
         uses = set()
-        lineno = 0
-        for line in _strip_comments(open(filename)):
-            lineno += 1
+        for lineno, line in _strip_comments(open(filename)):
             m = re.match(r'goog.provide\(\'(.*)\'\);', line)
             if m:
                 provides.add(m.group(1))
@@ -363,24 +359,30 @@ def jsdoc_BRANCH_timestamp(t):
 
 @target('hostexamples', 'build', 'examples', phony=True)
 def hostexamples(t):
-    t.makedirs('build/gh-pages/%(BRANCH)s/examples')
-    t.makedirs('build/gh-pages/%(BRANCH)s/build')
-    t.cp(EXAMPLES, (path.replace('.html', '.js') for path in EXAMPLES), 'examples/style.css', 'build/gh-pages/%(BRANCH)s/examples/')
-    t.rm_rf('build/gh-pages/%(BRANCH)s/examples/data')
-    t.cp_r('examples/data', 'build/gh-pages/%(BRANCH)s/examples/data')
-    t.cp('build/loader_hosted_examples.js', 'build/gh-pages/%(BRANCH)s/examples/loader.js')
-    t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js', 'build/ol.css', 'build/gh-pages/%(BRANCH)s/build/')
-    t.cp('examples/example-list.html', 'build/gh-pages/%(BRANCH)s/examples/index.html')
-    t.cp('examples/example-list.js', 'examples/example-list.xml', 'examples/Jugl.js', 'build/gh-pages/%(BRANCH)s/examples/')
+    examples_dir = 'build/gh-pages/%(BRANCH)s/examples'
+    build_dir = 'build/gh-pages/%(BRANCH)s/build'
+    t.rm_rf(examples_dir)
+    t.makedirs(examples_dir)
+    t.rm_rf(build_dir)
+    t.makedirs(build_dir)
+    t.cp(EXAMPLES, (path.replace('.html', '.js') for path in EXAMPLES),
+        'examples/style.css', examples_dir)
+    t.cp_r('examples/data', examples_dir + '/data')
+    t.cp('build/loader_hosted_examples.js', examples_dir + '/loader.js')
+    t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js',
+        'build/ol.css', build_dir)
+    t.cp('examples/example-list.html', examples_dir + '/index.html')
+    t.cp('examples/example-list.js', 'examples/example-list.xml',
+        'examples/Jugl.js', examples_dir)
 
 
 @target('check-examples', 'hostexamples', phony=True)
 def check_examples(t):
     directory = 'build/gh-pages/%(BRANCH)s/'
     examples = ['build/gh-pages/%(BRANCH)s/' + e for e in EXAMPLES]
-    all_examples = examples + \
+    all_examples = [e + '?mode=whitespace' for e in examples] + \
         [e + '?mode=simple' for e in examples] + \
-        [e + '?mode=whitespace' for e in examples]
+        examples
     for example in all_examples:
         t.run('%(PHANTOMJS)s', 'bin/check-example.js', example)
 

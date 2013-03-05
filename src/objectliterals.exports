@@ -7,7 +7,6 @@
 @exportObjectLiteralProperty ol.MapOptions.keyboardPanOffset number|undefined
 @exportObjectLiteralProperty ol.MapOptions.layers ol.Collection|undefined
 @exportObjectLiteralProperty ol.MapOptions.mouseWheelZoom boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.mouseWheelZoomDelta number|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderer ol.RendererHint|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderers Array.<ol.RendererHint>|undefined
 @exportObjectLiteralProperty ol.MapOptions.scaleLineControl boolean|undefined
@@ -111,11 +110,13 @@
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.projection ol.Projection|undefined
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.resolutions Array.<number>|undefined
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.url string|undefined
-@exportObjectLiteralProperty ol.source.SingleImageWMSOptions.version string|undefined
 
 @exportObjectLiteral ol.source.StamenOptions
-@exportObjectLiteralProperty ol.source.StamenOptions.flavor string|undefined
-@exportObjectLiteralProperty ol.source.StamenOptions.provider string
+@exportObjectLiteralProperty ol.source.StamenOptions.layer string
+@exportObjectLiteralProperty ol.source.StamenOptions.minZoom number|undefined
+@exportObjectLiteralProperty ol.source.StamenOptions.maxZoom number|undefined
+@exportObjectLiteralProperty ol.source.StamenOptions.opaque boolean|undefined
+@exportObjectLiteralProperty ol.source.StamenOptions.url string|undefined
 
 @exportObjectLiteral ol.source.StaticImageOptions
 @exportObjectLiteralProperty ol.source.StaticImageOptions.attributions Array.<ol.Attribution>|undefined
@@ -129,11 +130,9 @@
 @exportObjectLiteral ol.source.TiledWMSOptions
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.attributions Array.<ol.Attribution>|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.params Object
-@exportObjectLiteralProperty ol.source.TiledWMSOptions.version string|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.crossOrigin null|string|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.extent ol.Extent|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.tileGrid ol.tilegrid.TileGrid|undefined
-@exportObjectLiteralProperty ol.source.TiledWMSOptions.transparent boolean|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.maxZoom number|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.projection ol.Projection|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.url string|undefined

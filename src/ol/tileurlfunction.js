@@ -74,11 +74,10 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
 /**
  * @param {string} baseUrl Base URL (may have query data).
  * @param {Object.<string, string|number>} params WMS parameters.
- * @param {string=} opt_version WMS version.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
 ol.TileUrlFunction.createWMSParams =
-    function(baseUrl, params, opt_version) {
+    function(baseUrl, params) {
   return function(tileCoord, tileGrid, projection) {
     if (goog.isNull(tileCoord)) {
       return undefined;
@@ -86,7 +85,7 @@ ol.TileUrlFunction.createWMSParams =
       var size = tileGrid.getTileSize(tileCoord.z);
       var extent = tileGrid.getTileCoordExtent(tileCoord);
       return ol.source.wms.getUrl(
-          baseUrl, params, extent, size, projection, opt_version);
+          baseUrl, params, extent, size, projection);
     }
   };
 };
