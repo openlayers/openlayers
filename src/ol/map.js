@@ -43,10 +43,7 @@ goog.require('ol.Tile');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
 goog.require('ol.View2D');
-goog.require('ol.control.Attribution');
-goog.require('ol.control.Control');
-goog.require('ol.control.ScaleLine');
-goog.require('ol.control.Zoom');
+goog.require('ol.control.defaults');
 goog.require('ol.interaction.DblClickZoom');
 goog.require('ol.interaction.DragPan');
 goog.require('ol.interaction.DragRotate');
@@ -292,15 +289,15 @@ ol.Map = function(mapOptions) {
   // this gives the map an initial size
   this.handleBrowserWindowResize();
 
-  /** @type {Array.<ol.control.Control>} */
-  var controls = mapOptionsInternal.controls;
-  goog.array.forEach(controls,
-      /**
-       * @param {ol.control.Control} control Control.
-       */
-      function(control) {
-        control.setMap(this);
-      }, this);
+  if (goog.isDef(mapOptionsInternal.controls)) {
+    goog.array.forEach(mapOptionsInternal.controls,
+        /**
+         * @param {ol.control.Control} control Control.
+         */
+        function(control) {
+          control.setMap(this);
+        }, this);
+  }
 
 };
 goog.inherits(ol.Map, ol.Object);
@@ -881,10 +878,8 @@ ol.Map.createOptionsInternal = function(mapOptions) {
     }
   }
 
-  /**
-   * @type {Array.<ol.control.Control>}
-   */
-  var controls = ol.Map.createControls_(mapOptions);
+  var controls = goog.isDef(mapOptions.controls) ?
+      mapOptions.controls : ol.control.defaults();
 
   /**
    * @type {ol.Collection}
@@ -909,45 +904,6 @@ ol.Map.createOptionsInternal = function(mapOptions) {
     values: values
   };
 
-};
-
-
-/**
- * @private
- * @param {ol.MapOptions} mapOptions Map options.
- * @return {Array.<ol.control.Control>} Controls.
- */
-ol.Map.createControls_ = function(mapOptions) {
-  /** @type {Array.<ol.control.Control>} */
-  var controls = [];
-
-  var attributionControl = goog.isDef(mapOptions.attributionControl) ?
-      mapOptions.attributionControl : true;
-  if (attributionControl) {
-    controls.push(new ol.control.Attribution({}));
-  }
-
-  var scaleLineControl = goog.isDef(mapOptions.scaleLineControl) ?
-      mapOptions.scaleLineControl : false;
-  if (scaleLineControl) {
-    var scaleLineUnits = goog.isDef(mapOptions.scaleLineUnits) ?
-        mapOptions.scaleLineUnits : undefined;
-    controls.push(new ol.control.ScaleLine({
-      units: scaleLineUnits
-    }));
-  }
-
-  var zoomControl = goog.isDef(mapOptions.zoomControl) ?
-      mapOptions.zoomControl : true;
-  if (zoomControl) {
-    var zoomDelta = goog.isDef(mapOptions.zoomDelta) ?
-        mapOptions.zoomDelta : 1;
-    controls.push(new ol.control.Zoom({
-      delta: zoomDelta
-    }));
-  }
-
-  return controls;
 };
 
 

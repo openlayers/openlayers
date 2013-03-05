@@ -1,5 +1,5 @@
 @exportObjectLiteral ol.MapOptions
-@exportObjectLiteralProperty ol.MapOptions.attributionControl boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.controls Array.<ol.control.Control>|undefined
 @exportObjectLiteralProperty ol.MapOptions.doubleClickZoom boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.dragPan boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.interactions ol.Collection|undefined
@@ -9,16 +9,12 @@
 @exportObjectLiteralProperty ol.MapOptions.mouseWheelZoom boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderer ol.RendererHint|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderers Array.<ol.RendererHint>|undefined
-@exportObjectLiteralProperty ol.MapOptions.scaleLineControl boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.scaleLineUnits ol.control.ScaleLineUnits|undefined
 @exportObjectLiteralProperty ol.MapOptions.shiftDragZoom boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.target Element|string
 @exportObjectLiteralProperty ol.MapOptions.touchPan boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.touchRotate boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.touchZoom boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.view ol.IView|undefined
-@exportObjectLiteralProperty ol.MapOptions.zoomControl boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.zoomDelta number|undefined
 
 @exportObjectLiteral ol.View2DOptions
 @exportObjectLiteralProperty ol.View2DOptions.center ol.Coordinate|undefined
@@ -58,6 +54,14 @@
 @exportObjectLiteral ol.control.AttributionOptions
 @exportObjectLiteralProperty ol.control.AttributionOptions.map ol.Map|undefined
 @exportObjectLiteralProperty ol.control.AttributionOptions.target Element|undefined
+
+@exportObjectLiteral ol.control.DefaultsOptions
+@exportObjectLiteralProperty ol.control.DefaultsOptions.attribution boolean|undefined
+@exportObjectLiteralProperty ol.control.DefaultsOptions.attributionOptions ol.control.AttributionOptions|undefined
+@exportObjectLiteralProperty ol.control.DefaultsOptions.scaleLine boolean|undefined
+@exportObjectLiteralProperty ol.control.DefaultsOptions.scaleLineOptions ol.control.ScaleLineOptions|undefined
+@exportObjectLiteralProperty ol.control.DefaultsOptions.zoom boolean|undefined
+@exportObjectLiteralProperty ol.control.DefaultsOptions.zoomOptions ol.control.ZoomOptions|undefined
 
 @exportObjectLiteral ol.control.ScaleLineOptions
 @exportObjectLiteralProperty ol.control.ScaleLineOptions.map ol.Map|undefined
