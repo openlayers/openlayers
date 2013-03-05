@@ -35,21 +35,27 @@ ol.style.ShapeLiteralOptions;
  */
 ol.style.ShapeLiteral = function(config) {
 
-  /** @type {string} */
+  goog.asserts.assertString(config.type, 'type must be a string');
+  /** @type {ol.style.ShapeType} */
   this.type = config.type;
 
+  goog.asserts.assertNumber(config.size, 'size must be a number');
   /** @type {number} */
   this.size = config.size;
 
+  goog.asserts.assertString(config.fillStyle, 'fillStyle must be a string');
   /** @type {string} */
   this.fillStyle = config.fillStyle;
 
+  goog.asserts.assertString(config.strokeStyle, 'strokeStyle must be a string');
   /** @type {string} */
   this.strokeStyle = config.strokeStyle;
 
+  goog.asserts.assertNumber(config.strokeWidth, 'strokeWidth must be a number');
   /** @type {number} */
   this.strokeWidth = config.strokeWidth;
 
+  goog.asserts.assertNumber(config.opacity, 'opacity must be a number');
   /** @type {number} */
   this.opacity = config.opacity;
 
@@ -68,17 +74,6 @@ ol.style.ShapeLiteral.prototype.equals = function(shapeLiteral) {
       this.strokeWidth == shapeLiteral.strokeWidth &&
       this.opacity == shapeLiteral.opacity;
 };
-
-
-/**
- * @typedef {{type: (ol.style.ShapeType|undefined),
- *            size: (number|ol.Expression|undefined),
- *            fillStyle: (string|ol.Expression|undefined),
- *            strokeStyle: (string|ol.Expression|undefined),
- *            strokeWidth: (number|ol.Expression|undefined),
- *            opacity: (number|ol.Expression|undefined)}}
- */
-ol.style.ShapeOptions;
 
 
 

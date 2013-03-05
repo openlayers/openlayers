@@ -7,15 +7,21 @@ describe('ol.style.PolygonLiteral', function() {
     it('identifies equal literals', function() {
       var literal = new ol.style.PolygonLiteral({
         strokeWidth: 3,
-        fillStyle: '#BADA55'
+        strokeStyle: '#013',
+        fillStyle: '#BADA55',
+        opacity: 1
       });
       var equalLiteral = new ol.style.PolygonLiteral({
         fillStyle: '#BADA55',
-        strokeWidth: 3
+        strokeStyle: '#013',
+        strokeWidth: 3,
+        opacity: 1
       });
       var differentLiteral = new ol.style.PolygonLiteral({
         fillStyle: '#013',
-        strokeWidth: 3
+        strokeStyle: '#013',
+        strokeWidth: 3,
+        opacity: 1
       });
       expect(literal.equals(equalLiteral)).toBe(true);
       expect(literal.equals(differentLiteral)).toBe(false);

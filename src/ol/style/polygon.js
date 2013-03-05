@@ -25,15 +25,19 @@ ol.style.PolygonLiteralOptions;
 ol.style.PolygonLiteral = function(config) {
   goog.base(this);
 
+  goog.asserts.assertString(config.fillStyle, 'fillStyle must be a string');
   /** @type {string} */
   this.fillStyle = config.fillStyle;
 
+  goog.asserts.assertString(config.strokeStyle, 'strokeStyle must be a string');
   /** @type {string} */
   this.strokeStyle = config.strokeStyle;
 
+  goog.asserts.assertNumber(config.strokeWidth, 'strokeWidth must be a number');
   /** @type {number} */
   this.strokeWidth = config.strokeWidth;
 
+  goog.asserts.assertNumber(config.opacity, 'opacity must be a number');
   /** @type {number} */
   this.opacity = config.opacity;
 
@@ -50,15 +54,6 @@ ol.style.PolygonLiteral.prototype.equals = function(polygonLiteral) {
       this.strokeWidth == polygonLiteral.strokeWidth &&
       this.opacity == polygonLiteral.opacity;
 };
-
-
-/**
- * @typedef {{fillStyle: (string|ol.Expression|undefined),
- *            strokeStyle: (string|ol.Expression|undefined),
- *            strokeWidth: (number|ol.Expression|undefined),
- *            opacity: (number|ol.Expression|undefined)}}
- */
-ol.style.PolygonOptions;
 
 
 

@@ -6,16 +6,28 @@ describe('ol.style.ShapeLiteral', function() {
 
     it('identifies equal literals', function() {
       var literal = new ol.style.ShapeLiteral({
+        type: ol.style.ShapeType.CIRCLE,
         size: 4,
-        fillStyle: '#BADA55'
+        fillStyle: '#BADA55',
+        strokeStyle: '#013',
+        strokeWidth: 3,
+        opacity: 1
       });
       var equalLiteral = new ol.style.ShapeLiteral({
+        type: ol.style.ShapeType.CIRCLE,
+        size: 4,
         fillStyle: '#BADA55',
-        size: 4
+        strokeStyle: '#013',
+        strokeWidth: 3,
+        opacity: 1
       });
       var differentLiteral = new ol.style.ShapeLiteral({
+        type: ol.style.ShapeType.CIRCLE,
+        size: 4,
         fillStyle: '#013',
-        size: 4
+        strokeStyle: '#013',
+        strokeWidth: 3,
+        opacity: 1
       });
       expect(literal.equals(equalLiteral)).toBe(true);
       expect(literal.equals(differentLiteral)).toBe(false);
@@ -74,3 +86,4 @@ goog.require('ol.Expression');
 goog.require('ol.Feature');
 goog.require('ol.style.Shape');
 goog.require('ol.style.ShapeLiteral');
+goog.require('ol.style.ShapeType');

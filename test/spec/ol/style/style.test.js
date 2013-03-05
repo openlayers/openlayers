@@ -5,6 +5,7 @@ describe('ol.style.Style', function() {
   describe('#apply()', function() {
 
     it('applies a style to a feature', function() {
+
       var style = new ol.style.Style({
         rules: [
           new ol.style.Rule({
@@ -39,8 +40,10 @@ describe('ol.style.Style', function() {
 
     it('returns an array with the Shape default for points', function() {
       feature.setGeometry(new ol.geom.Point([0, 0]));
-      expect(ol.style.Style.applyDefaultStyle(feature)[0]
-          .equals(ol.style.ShapeDefaults)).toBe(true);
+      var symbolizers = ol.style.Style.applyDefaultStyle(feature);
+      expect(symbolizers.length).toBe(1);
+      expect(symbolizers[0]).toBeA(ol.style.ShapeLiteral);
+      expect(symbolizers[0].equals(ol.style.ShapeDefaults)).toBe(true);
     });
 
     it('returns an array with the Line default for lines', function() {
@@ -66,4 +69,5 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.filter.Filter');
 goog.require('ol.style.Rule');
 goog.require('ol.style.Shape');
+goog.require('ol.style.ShapeLiteral');
 goog.require('ol.style.Style');

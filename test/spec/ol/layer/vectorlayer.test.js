@@ -6,7 +6,7 @@ describe('ol.layer.Vector', function() {
 
     it('allows adding features', function() {
       var layer = new ol.layer.Vector({
-        new ol.source.Vector({})
+        source: new ol.source.Vector({})
       });
       layer.addFeatures([new ol.Feature(), new ol.Feature()]);
       expect(layer.getFeatures().length).toEqual(2);

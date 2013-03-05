@@ -24,12 +24,15 @@ ol.style.LineLiteralOptions;
 ol.style.LineLiteral = function(config) {
   goog.base(this);
 
+  goog.asserts.assertString(config.strokeStyle, 'strokeStyle must be a string');
   /** @type {string} */
   this.strokeStyle = config.strokeStyle;
 
+  goog.asserts.assertNumber(config.strokeWidth, 'strokeWidth must be a number');
   /** @type {number} */
   this.strokeWidth = config.strokeWidth;
 
+  goog.asserts.assertNumber(config.opacity, 'opacity must be a number');
   /** @type {number} */
   this.opacity = config.opacity;
 
@@ -45,14 +48,6 @@ ol.style.LineLiteral.prototype.equals = function(lineLiteral) {
       this.strokeWidth == lineLiteral.strokeWidth &&
       this.opacity == lineLiteral.opacity;
 };
-
-
-/**
- * @typedef {{strokeStyle: (string|ol.Expression|undefined),
- *            strokeWidth: (number|ol.Expression|undefined),
- *            opacity: (number|ol.Expression|undefined)}}
- */
-ol.style.LineOptions;
 
 
 
