@@ -17,11 +17,13 @@ var raster = new ol.layer.TileLayer({
   source: new ol.source.MapQuestOpenAerial()
 });
 
-var source = new ol.source.Vector({
-  projection: ol.projection.getFromCode('EPSG:3857')
+var vector = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    projection: ol.projection.getFromCode('EPSG:3857')
+  })
 });
 
-source.addFeatures([
+vector.addFeatures([
   new ol.Feature({
     g: new ol.geom.LineString([[-10000000, -10000000], [10000000, 10000000]])
   }),
@@ -31,9 +33,6 @@ source.addFeatures([
   new ol.Feature({g: new ol.geom.Point([-10000000, 5000000])})
 ]);
 
-var vector = new ol.layer.Vector({
-  source: source
-});
 
 var map = new ol.Map({
   layers: new ol.Collection([raster, vector]),

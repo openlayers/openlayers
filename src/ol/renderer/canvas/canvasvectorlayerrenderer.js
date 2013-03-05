@@ -167,11 +167,10 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       resolution = view2DState.resolution,
       extent = frameState.extent,
       layer = this.getVectorLayer(),
-      source = layer.getVectorSource(),
       tileGrid = this.tileGrid_;
 
   if (goog.isNull(tileGrid)) {
-    // lazy tile source creation to match the view projection
+    // lazy tile grid creation to match the view projection
     tileGrid = ol.tilegrid.createForProjection(
         view2DState.projection,
         22, // should be no harm in going big here - ideally, it would be ∞
@@ -282,7 +281,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         for (i = 0; i < numFilters; ++i) {
           geomFilter = filters[i];
           type = geomFilter.getType();
-          features = source.getFeatures(new ol.filter.Logical(
+          features = layer.getFeatures(new ol.filter.Logical(
               [geomFilter, extentFilter], ol.filter.LogicalOperator.AND));
           if (features.length) {
             groups = layer.groupFeaturesBySymbolizerLiteral(features);

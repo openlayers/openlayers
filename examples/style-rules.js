@@ -15,11 +15,46 @@ goog.require('ol.style.Rule');
 goog.require('ol.style.Style');
 
 
-var source = new ol.source.Vector({
-  projection: ol.projection.getFromCode('EPSG:3857')
+var style = new ol.style.Style({rules: [
+  new ol.style.Rule({
+    filter: new ol.filter.Filter(function(feature) {
+      return feature.get('where') == 'outer';
+    }),
+    symbolizers: [
+      new ol.style.Line({
+        strokeStyle: new ol.Expression('color'),
+        strokeWidth: 4,
+        opacity: 1
+      })
+    ]
+  }),
+  new ol.style.Rule({
+    filter: new ol.filter.Filter(function(feature) {
+      return feature.get('where') == 'inner';
+    }),
+    symbolizers: [
+      new ol.style.Line({
+        strokeStyle: '#013',
+        strokeWidth: 4,
+        opacity: 1
+      }),
+      new ol.style.Line({
+        strokeStyle: new ol.Expression('color'),
+        strokeWidth: 2,
+        opacity: 1
+      })
+    ]
+  })
+]});
+
+var vector = new ol.layer.Vector({
+  style: style,
+  source: new ol.source.Vector({
+    projection: ol.projection.getFromCode('EPSG:3857')
+  })
 });
 
-source.addFeatures([
+vector.addFeatures([
   new ol.Feature({
     g: new ol.geom.LineString([[-10000000, -10000000], [10000000, 10000000]]),
     'color': '#BADA55',
@@ -52,44 +87,6 @@ source.addFeatures([
   })
 ]);
 
-var style = new ol.style.Style({
-  rules: [
-    new ol.style.Rule({
-      filter: new ol.filter.Filter(function(feature) {
-        return feature.get('where') == 'outer';
-      }),
-      symbolizers: [
-        new ol.style.Line({
-          strokeStyle: new ol.Expression('color'),
-          strokeWidth: 4,
-          opacity: 1
-        })
-      ]
-    }),
-    new ol.style.Rule({
-      filter: new ol.filter.Filter(function(feature) {
-        return feature.get('where') == 'inner';
-      }),
-      symbolizers: [
-        new ol.style.Line({
-          strokeStyle: '#013',
-          strokeWidth: 4,
-          opacity: 1
-        }),
-        new ol.style.Line({
-          strokeStyle: new ol.Expression('color'),
-          strokeWidth: 2,
-          opacity: 1
-        })
-      ]
-    })
-  ]
-});
-
-var vector = new ol.layer.Vector({
-  source: source,
-  style: style
-});
 
 var map = new ol.Map({
   layers: new ol.Collection([vector]),
