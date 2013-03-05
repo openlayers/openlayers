@@ -243,24 +243,24 @@ def build_lint_src_timestamp(t):
 
 def _strip_comments(lines):
     # FIXME this is a horribe hack, we should use a proper JavaScript parser here
-    in_comment = False
+    in_multiline_comment = False
+    lineno = 0
     for line in lines:
-        if in_comment:
+        lineno += 1
+        if in_multiline_comment:
             index = line.find('*/')
             if index != -1:
-                in_comment = False
-                yield line[index + 2:]
-        else:
+                in_multiline_comment = False
+                line = line[index + 2:]
+        if not in_multiline_comment:
+            line = re.sub(r'//[^\n]*', '', line)
+            line = re.sub(r'/\*.*?\*/', '', line)
             index = line.find('/*')
             if index != -1:
-                yield line[:index]
-                in_comment = True
+                yield lineno, line[:index]
+                in_multiline_comment = True
             else:
-                index = line.find('//')
-                if index != -1:
-                    yield line[:index]
-                else:
-                    yield line
+                yield lineno, line
 
 
 @target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC, SPEC)
@@ -272,10 +272,8 @@ def build_check_requires_timestamp(t):
             continue
         require_linenos = {}
         uses = set()
-        lineno = 0
         lines = open(filename).readlines()
-        for line in lines:
-            lineno += 1
+        for lineno, line in _strip_comments(lines):
             m = re.match(r'goog.provide\(\'(.*)\'\);', line)
             if m:
                 all_provides.add(m.group(1))
@@ -284,7 +282,7 @@ def build_check_requires_timestamp(t):
             if m:
                 require_linenos[m.group(1)] = lineno
                 continue
-        for line in lines:
+        for lineno, line in _strip_comments(lines):
             for require in require_linenos.iterkeys():
                 if require in line:
                     uses.add(require)
@@ -302,9 +300,7 @@ def build_check_requires_timestamp(t):
         provides = set()
         requires = set()
         uses = set()
-        lineno = 0
-        for line in _strip_comments(open(filename)):
-            lineno += 1
+        for lineno, line in _strip_comments(open(filename)):
             m = re.match(r'goog.provide\(\'(.*)\'\);', line)
             if m:
                 provides.add(m.group(1))
