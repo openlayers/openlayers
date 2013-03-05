@@ -60,6 +60,7 @@ EXAMPLES_SRC = [path
                 if path.endswith('.js')
                 if not path.endswith('.combined.js')
                 if not path.startswith('examples/bootstrap')
+                if not path.startswith('examples/font-awesome')
                 if path != 'examples/Jugl.js'
                 if path != 'examples/example-list.js']
 
@@ -370,6 +371,7 @@ def hostexamples(t):
         'examples/examples.css', examples_dir)
     t.cp_r('examples/data', examples_dir + '/data')
     t.cp_r('examples/bootstrap', examples_dir + '/bootstrap')
+    t.cp_r('examples/font-awesome', examples_dir + '/font-awesome')
     t.cp('build/loader_hosted_examples.js', examples_dir + '/loader.js')
     t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js',
         'build/ol.css', build_dir)
