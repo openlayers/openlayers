@@ -98,7 +98,8 @@ ol.interaction.TouchRotate.prototype.handleTouchMove =
 
   // rotate
   if (this.rotating_) {
-    view.rotateNoConstraint(map, view.getRotation() + rotationDelta, anchor);
+    view.rotateWithoutConstraints(map, view.getRotation() + rotationDelta,
+        anchor);
   }
 };
 
