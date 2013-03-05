@@ -109,8 +109,12 @@ goog.inherits(ol.style.Polygon, ol.style.Symbolizer);
  * @inheritDoc
  * @return {ol.style.PolygonLiteral} Literal shape symbolizer.
  */
-ol.style.Polygon.prototype.createLiteral = function(feature) {
-  var attrs = feature.getAttributes();
+ol.style.Polygon.prototype.createLiteral = function(opt_feature) {
+  var attrs,
+      feature = opt_feature;
+  if (goog.isDef(feature)) {
+    attrs = feature.getAttributes();
+  }
 
   var fillStyle = this.fillStyle_.evaluate(feature, attrs);
   goog.asserts.assertString(fillStyle, 'fillStyle must be a string');

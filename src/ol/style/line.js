@@ -94,8 +94,12 @@ goog.inherits(ol.style.Line, ol.style.Symbolizer);
  * @inheritDoc
  * @return {ol.style.LineLiteral} Literal line symbolizer.
  */
-ol.style.Line.prototype.createLiteral = function(feature) {
-  var attrs = feature.getAttributes();
+ol.style.Line.prototype.createLiteral = function(opt_feature) {
+  var attrs,
+      feature = opt_feature;
+  if (goog.isDef(feature)) {
+    attrs = feature.getAttributes();
+  }
 
   var strokeStyle = this.strokeStyle_.evaluate(feature, attrs);
   goog.asserts.assertString(strokeStyle, 'strokeStyle must be a string');

@@ -27,7 +27,7 @@ ol.style.Symbolizer = function() {};
 
 
 /**
- * @param {ol.Feature} feature Feature for evaluating expressions.
+ * @param {ol.Feature=} opt_feature Feature for evaluating expressions.
  * @return {ol.style.SymbolizerLiteral} Literal symbolizer.
  */
 ol.style.Symbolizer.prototype.createLiteral = goog.abstractMethod;

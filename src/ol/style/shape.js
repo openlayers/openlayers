@@ -143,8 +143,12 @@ ol.style.Shape = function(options) {
  * @inheritDoc
  * @return {ol.style.ShapeLiteral} Literal shape symbolizer.
  */
-ol.style.Shape.prototype.createLiteral = function(feature) {
-  var attrs = feature.getAttributes();
+ol.style.Shape.prototype.createLiteral = function(opt_feature) {
+  var attrs,
+      feature = opt_feature;
+  if (goog.isDef(feature)) {
+    attrs = feature.getAttributes();
+  }
 
   var size = this.size_.evaluate(feature, attrs);
   goog.asserts.assertNumber(size, 'size must be a number');
