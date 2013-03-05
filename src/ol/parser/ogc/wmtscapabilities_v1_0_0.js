@@ -12,6 +12,8 @@ goog.require('ol.projection');
  * @extends {ol.parser.XML}
  */
 ol.parser.ogc.WMTSCapabilities_v1_0_0 = function() {
+  this.defaultNamespaceURI = 'http://www.opengis.net/wtms/1.0';
+  this.errorProperty = 'serviceIdentification';
   this.readers = {
     'http://www.opengis.net/wmts/1.0': {
       'Capabilities': function(node, obj) {
