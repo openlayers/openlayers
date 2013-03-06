@@ -2,6 +2,7 @@ goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
+goog.require('ol.control.ScaleLine');
 goog.require('ol.control.ScaleLineUnits');
 goog.require('ol.control.defaults');
 goog.require('ol.layer.TileLayer');
@@ -24,13 +25,11 @@ var layers = [
 ];
 
 var map = new ol.Map({
-  controls: ol.control.defaults({
-    scaleLine: true,
-    // FIXME The typecast here is only needed if the example is compiled
-    scaleLineOptions: /** @type {ol.control.ScaleLineOptions} */ ({
+  controls: ol.control.defaults({}, [
+    new ol.control.ScaleLine({
       units: ol.control.ScaleLineUnits.DEGREES
     })
-  }),
+  ]),
   layers: layers,
   // The OSgeo server does not set cross origin headers, so we cannot use WebGL
   renderers: [ol.RendererHint.CANVAS, ol.RendererHint.DOM],
