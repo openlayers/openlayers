@@ -87,7 +87,7 @@ describe('ol.Map', function() {
     describe('create mousewheel interaction', function() {
       it('creates mousewheel interaction', function() {
         options.mouseWheelZoom = true;
-        var interactions = ol.Map.createInteractions_(options);
+        var interactions = ol.interaction.defaults(options);
         expect(interactions.getLength()).toEqual(1);
         expect(interactions.getAt(0)).toBeA(ol.interaction.MouseWheelZoom);
       });
@@ -101,7 +101,7 @@ describe('ol.Map', function() {
 
       describe('default zoomDelta', function() {
         it('create double click interaction with default delta', function() {
-          var interactions = ol.Map.createInteractions_(options);
+          var interactions = ol.interaction.defaults(options);
           expect(interactions.getLength()).toEqual(1);
           expect(interactions.getAt(0)).toBeA(ol.interaction.DblClickZoom);
           expect(interactions.getAt(0).delta_).toEqual(1);
@@ -111,7 +111,7 @@ describe('ol.Map', function() {
       describe('set zoomDelta', function() {
         it('create double click interaction with set delta', function() {
           options.zoomDelta = 7;
-          var interactions = ol.Map.createInteractions_(options);
+          var interactions = ol.interaction.defaults(options);
           expect(interactions.getLength()).toEqual(1);
           expect(interactions.getAt(0)).toBeA(ol.interaction.DblClickZoom);
           expect(interactions.getAt(0).delta_).toEqual(7);
@@ -233,5 +233,6 @@ goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.interaction.DblClickZoom');
 goog.require('ol.interaction.MouseWheelZoom');
+goog.require('ol.interaction.defaults');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.source.XYZ');

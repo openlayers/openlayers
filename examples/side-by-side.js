@@ -5,6 +5,7 @@ goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.animation');
 goog.require('ol.control.MousePosition');
+goog.require('ol.control.defaults');
 goog.require('ol.easing');
 goog.require('ol.interaction.Keyboard');
 goog.require('ol.layer.TileLayer');
@@ -26,22 +27,28 @@ var view = new ol.View2D({
   zoom: 1
 });
 
-var domMap = new ol.Map({
-  layers: new ol.Collection([layer]),
-  renderer: ol.RendererHint.DOM,
-  target: 'domMap',
-  view: view
-});
-
 var domMousePosition = new ol.control.MousePosition({
   coordinateFormat: ol.Coordinate.toStringHDMS,
   projection: ol.projection.getFromCode('EPSG:4326'),
   target: document.getElementById('domMousePosition'),
   undefinedHTML: '&nbsp;'
 });
-domMousePosition.setMap(domMap);
+var domMap = new ol.Map({
+  controls: ol.control.defaults({}, [domMousePosition]),
+  layers: new ol.Collection([layer]),
+  renderer: ol.RendererHint.DOM,
+  target: 'domMap',
+  view: view
+});
 
+var webglMousePosition = new ol.control.MousePosition({
+  coordinateFormat: ol.Coordinate.toStringHDMS,
+  projection: ol.projection.getFromCode('EPSG:4326'),
+  target: document.getElementById('webglMousePosition'),
+  undefinedHTML: '&nbsp;'
+});
 var webglMap = new ol.Map({
+  controls: ol.control.defaults({}, [webglMousePosition]),
   renderer: ol.RendererHint.WEBGL,
   target: 'webglMap'
 });
@@ -50,22 +57,6 @@ if (webglMap !== null) {
   webglMap.bindTo('view', domMap);
 }
 
-var webglMousePosition = new ol.control.MousePosition({
-  coordinateFormat: ol.Coordinate.toStringHDMS,
-  projection: ol.projection.getFromCode('EPSG:4326'),
-  target: document.getElementById('webglMousePosition'),
-  undefinedHTML: '&nbsp;'
-});
-webglMousePosition.setMap(webglMap);
-
-var canvasMap = new ol.Map({
-  renderer: ol.RendererHint.CANVAS,
-  target: 'canvasMap'
-});
-if (canvasMap !== null) {
-  canvasMap.bindTo('layers', domMap);
-  canvasMap.bindTo('view', domMap);
-}
 
 var canvasMousePosition = new ol.control.MousePosition({
   coordinateFormat: ol.Coordinate.toStringHDMS,
@@ -73,7 +64,15 @@ var canvasMousePosition = new ol.control.MousePosition({
   target: document.getElementById('canvasMousePosition'),
   undefinedHtml: '&nbsp;'
 });
-canvasMousePosition.setMap(canvasMap);
+var canvasMap = new ol.Map({
+  controls: ol.control.defaults({}, [canvasMousePosition]),
+  renderer: ol.RendererHint.CANVAS,
+  target: 'canvasMap'
+});
+if (canvasMap !== null) {
+  canvasMap.bindTo('layers', domMap);
+  canvasMap.bindTo('view', domMap);
+}
 
 var keyboardInteraction = new ol.interaction.Keyboard();
 keyboardInteraction.addCallback('0', function() {
