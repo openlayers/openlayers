@@ -160,3 +160,8 @@
 @exportObjectLiteralProperty ol.ProjectionOptions.extent ol.Extent
 @exportObjectLiteralProperty ol.ProjectionOptions.axisOrientation string|undefined
 @exportObjectLiteralProperty ol.ProjectionOptions.global boolean|undefined
+
+@exportObjectLiteral ol.Proj4jsProjectionOptions
+@exportObjectLiteralProperty ol.Proj4jsProjectionOptions.code string
+@exportObjectLiteralProperty ol.Proj4jsProjectionOptions.extent ol.Extent
+@exportObjectLiteralProperty ol.Proj4jsProjectionOptions.global boolean|undefined
