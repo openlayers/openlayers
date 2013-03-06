@@ -117,13 +117,13 @@ def build_ol_js(t):
     report_sizes(t)
 
 
-@target('build/ol-simple.js', PLOVR_JAR, SRC, EXTERNAL_SRC, 'base.json', 'build/ol.json', 'build/ol-simple.json')
+@target('build/ol-simple.js', PLOVR_JAR, SRC, INTERNAL_SRC, 'base.json', 'build/ol.json', 'build/ol-simple.json')
 def build_ol_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol-simple.json')
     report_sizes(t)
 
 
-@target('build/ol-whitespace.js', PLOVR_JAR, SRC, EXTERNAL_SRC, 'base.json', 'build/ol.json', 'build/ol-whitespace.json')
+@target('build/ol-whitespace.js', PLOVR_JAR, SRC, INTERNAL_SRC, 'base.json', 'build/ol.json', 'build/ol-whitespace.json')
 def build_ol_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol-whitespace.json')
     report_sizes(t)
