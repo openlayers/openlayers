@@ -4,6 +4,8 @@
 @exportProperty ol.Projection.prototype.getExtent
 @exportProperty ol.Projection.prototype.getPointResolution
 @exportProperty ol.Projection.prototype.getUnits
+@exportProperty ol.Projection.prototype.getMetersPerUnit
+@exportProperty ol.Projection.prototype.isGlobal
 
 @exportSymbol ol.ProjectionUnits
 @exportProperty ol.ProjectionUnits.DEGREES

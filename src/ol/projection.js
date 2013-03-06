@@ -50,8 +50,10 @@ ol.METERS_PER_UNIT[ol.ProjectionUnits.METERS] = 1;
  * @param {ol.ProjectionUnits} units Units.
  * @param {ol.Extent} extent Extent.
  * @param {string=} opt_axisOrientation Axis orientation.
+ * @param {boolean=} opt_global Wether the projection is global.
  */
-ol.Projection = function(code, units, extent, opt_axisOrientation) {
+ol.Projection =
+    function(code, units, extent, opt_axisOrientation, opt_global) {
 
   /**
    * @private
@@ -77,6 +79,13 @@ ol.Projection = function(code, units, extent, opt_axisOrientation) {
    */
   this.axisOrientation_ = goog.isDef(opt_axisOrientation) ?
       opt_axisOrientation : 'enu';
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.global_ = goog.isDef(opt_global) ?
+      opt_global : false;
 
   /**
    * @private
@@ -140,6 +149,14 @@ ol.Projection.prototype.getMetersPerUnit = function() {
  */
 ol.Projection.prototype.getAxisOrientation = function() {
   return this.axisOrientation_;
+};
+
+
+/**
+ * @return {boolean} Wether the projection is global.
+ */
+ol.Projection.prototype.isGlobal = function() {
+  return this.global_;
 };
 
 
