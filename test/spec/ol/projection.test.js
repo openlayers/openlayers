@@ -221,7 +221,6 @@ describe('ol.projection', function() {
 
   });
 
-
   describe('ol.projection.getTransformFromCodes()', function() {
 
     it('returns a function', function() {
@@ -317,6 +316,15 @@ describe('ol.projection', function() {
       var removed = ol.projection.removeTransform(foo, bar);
       expect(removed).toBe(transform);
       expect(ol.projection.transforms_.foo).toBeUndefined();
+    });
+
+  });
+
+  describe('ol.Projection.prototype.getMetersPerUnit()', function() {
+
+    it('returns value in meters', function() {
+      var epsg4326 = ol.projection.getFromCode('EPSG:4326');
+      expect(epsg4326.getMetersPerUnit()).toEqual(111194.87428468118);
     });
 
   });
