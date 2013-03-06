@@ -293,6 +293,16 @@ goog.inherits(ol.Map, ol.Object);
 
 
 /**
+ * @param {ol.layer.Layer} layer Layer.
+ */
+ol.Map.prototype.addLayer = function(layer) {
+  var layers = this.getLayers();
+  goog.asserts.assert(goog.isDef(layers));
+  layers.push(layer);
+};
+
+
+/**
  * @param {ol.PreRenderFunction} preRenderFunction Pre-render function.
  */
 ol.Map.prototype.addPreRenderFunction = function(preRenderFunction) {
@@ -620,6 +630,18 @@ ol.Map.prototype.requestRenderFrame = function() {
 
 
 /**
+ * @param {ol.layer.Layer} layer Layer.
+ * @return {ol.layer.Layer|undefined} The removed layer or undefined if the
+ *     layer was not found.
+ */
+ol.Map.prototype.removeLayer = function(layer) {
+  var layers = this.getLayers();
+  goog.asserts.assert(goog.isDef(layers));
+  return /** @type {ol.layer.Layer|undefined} */ (layers.remove(layer));
+};
+
+
+/**
  * @param {number} time Time.
  * @private
  */
@@ -823,8 +845,18 @@ ol.Map.createOptionsInternal = function(mapOptions) {
    */
   var values = {};
 
-  values[ol.MapProperty.LAYERS] = goog.isDef(mapOptions.layers) ?
-      mapOptions.layers : new ol.Collection();
+  var layers;
+  if (goog.isDef(mapOptions.layers)) {
+    if (goog.isArray(mapOptions.layers)) {
+      layers = new ol.Collection(goog.array.clone(mapOptions.layers));
+    } else {
+      goog.asserts.assert(mapOptions.layers instanceof ol.Collection);
+      layers = mapOptions.layers;
+    }
+  } else {
+    layers = new ol.Collection();
+  }
+  values[ol.MapProperty.LAYERS] = layers;
 
   values[ol.MapProperty.VIEW] = goog.isDef(mapOptions.view) ?
       mapOptions.view : new ol.View2D();

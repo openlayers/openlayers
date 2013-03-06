@@ -1,4 +1,3 @@
-goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
@@ -10,7 +9,7 @@ goog.require('ol.source.OpenStreetMap');
 goog.require('ol.tilegrid.XYZ');
 
 
-var layers = new ol.Collection([
+var layers = [
   new ol.layer.TileLayer({
     source: new ol.source.OpenStreetMap()
   }),
@@ -22,7 +21,7 @@ var layers = new ol.Collection([
       })
     })
   })
-]);
+];
 
 var webglMap = new ol.Map({
   view: new ol.View2D({

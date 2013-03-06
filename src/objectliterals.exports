@@ -1,7 +1,7 @@
 @exportObjectLiteral ol.MapOptions
 @exportObjectLiteralProperty ol.MapOptions.controls Array.<ol.control.Control>|undefined
 @exportObjectLiteralProperty ol.MapOptions.interactions ol.Collection|undefined
-@exportObjectLiteralProperty ol.MapOptions.layers ol.Collection|undefined
+@exportObjectLiteralProperty ol.MapOptions.layers Array.<ol.layer.Layer>|ol.Collection|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderer ol.RendererHint|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderers Array.<ol.RendererHint>|undefined
 @exportObjectLiteralProperty ol.MapOptions.target Element|string

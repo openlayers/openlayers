@@ -1,4 +1,3 @@
-goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
@@ -9,7 +8,7 @@ goog.require('ol.source.BingMaps');
 goog.require('ol.source.TileJSON');
 
 
-var layers = new ol.Collection([
+var layers = [
   new ol.layer.TileLayer({
     source: new ol.source.BingMaps({
       key: 'AgtFlPYDnymLEe9zJ5PCkghbNiFZE9aAtTy3mPaEnEBXqLHtFuTcKoZ-miMC3w7R',
@@ -21,7 +20,7 @@ var layers = new ol.Collection([
       uri: 'http://api.tiles.mapbox.com/v3/mapbox.va-quake-aug.jsonp'
     })
   })
-]);
+];
 
 var webglMap = new ol.Map({
   layers: layers,
