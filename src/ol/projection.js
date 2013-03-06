@@ -104,6 +104,14 @@ ol.Projection.prototype.getExtent = function() {
 
 
 /**
+ * @param {ol.Extent} extent Extent.
+ */
+ol.Projection.prototype.setExtent = function(extent) {
+  this.extent_ = extent;
+};
+
+
+/**
  * @param {number} resolution Resolution.
  * @param {ol.Coordinate} point Point.
  * @return {number} Point resolution.
