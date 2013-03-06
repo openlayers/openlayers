@@ -18,10 +18,7 @@ goog.require('ol.Object');
  */
 ol.CollectionEventType = {
   ADD: 'add',
-  INSERT_AT: 'insert_at',
-  REMOVE: 'remove',
-  REMOVE_AT: 'remove_at',
-  SET_AT: 'set_at'
+  REMOVE: 'remove'
 };
 
 
@@ -31,12 +28,9 @@ ol.CollectionEventType = {
  * @extends {goog.events.Event}
  * @param {ol.CollectionEventType} type Type.
  * @param {*=} opt_elem Element.
- * @param {number=} opt_index Index.
- * @param {*=} opt_prev Value.
  * @param {Object=} opt_target Target.
  */
-ol.CollectionEvent =
-    function(type, opt_elem, opt_index, opt_prev, opt_target) {
+ol.CollectionEvent = function(type, opt_elem, opt_target) {
 
   goog.base(this, type, opt_target);
 
@@ -44,16 +38,6 @@ ol.CollectionEvent =
    * @type {*}
    */
   this.elem = opt_elem;
-
-  /**
-   * @type {number|undefined}
-   */
-  this.index = opt_index;
-
-  /**
-   * @type {*}
-   */
-  this.prev = opt_prev;
 
 };
 goog.inherits(ol.CollectionEvent, goog.events.Event);
@@ -151,10 +135,8 @@ ol.Collection.prototype.getLength = function() {
 ol.Collection.prototype.insertAt = function(index, elem) {
   goog.array.insertAt(this.array_, elem, index);
   this.updateLength_();
-  this.dispatchEvent(new ol.CollectionEvent(
-      ol.CollectionEventType.ADD, elem, undefined, undefined, this));
-  this.dispatchEvent(new ol.CollectionEvent(
-      ol.CollectionEventType.INSERT_AT, elem, index, undefined, this));
+  this.dispatchEvent(
+      new ol.CollectionEvent(ol.CollectionEventType.ADD, elem, this));
 };
 
 
@@ -178,6 +160,22 @@ ol.Collection.prototype.push = function(elem) {
 
 
 /**
+ * Removes the first occurence of elem from the collection.
+ * @param {*} elem Element.
+ * @return {*} The removed element or undefined if elem was not found.
+ */
+ol.Collection.prototype.remove = function(elem) {
+  var i;
+  for (i = 0; i < this.array_.length; ++i) {
+    if (this.array_[i] === elem) {
+      return this.removeAt(i);
+    }
+  }
+  return undefined;
+};
+
+
+/**
  * @param {number} index Index.
  * @return {*} Value.
  */
@@ -185,10 +183,8 @@ ol.Collection.prototype.removeAt = function(index) {
   var prev = this.array_[index];
   goog.array.removeAt(this.array_, index);
   this.updateLength_();
-  this.dispatchEvent(new ol.CollectionEvent(
-      ol.CollectionEventType.REMOVE, prev, undefined, undefined, this));
-  this.dispatchEvent(new ol.CollectionEvent(ol.CollectionEventType.REMOVE_AT,
-      undefined, index, prev, this));
+  this.dispatchEvent(
+      new ol.CollectionEvent(ol.CollectionEventType.REMOVE, prev, this));
   return prev;
 };
 
@@ -202,12 +198,10 @@ ol.Collection.prototype.setAt = function(index, elem) {
   if (index < n) {
     var prev = this.array_[index];
     this.array_[index] = elem;
-    this.dispatchEvent(new ol.CollectionEvent(ol.CollectionEventType.SET_AT,
-        elem, index, prev, this));
-    this.dispatchEvent(new ol.CollectionEvent(ol.CollectionEventType.REMOVE,
-        prev, undefined, undefined, this));
-    this.dispatchEvent(new ol.CollectionEvent(ol.CollectionEventType.ADD,
-        elem, undefined, undefined, this));
+    this.dispatchEvent(
+        new ol.CollectionEvent(ol.CollectionEventType.REMOVE, prev, this));
+    this.dispatchEvent(
+        new ol.CollectionEvent(ol.CollectionEventType.ADD, elem, this));
   } else {
     var j;
     for (j = n; j < index; ++j) {
