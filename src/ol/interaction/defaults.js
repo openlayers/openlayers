@@ -18,10 +18,11 @@ goog.require('ol.interaction.condition');
 
 /**
  * @param {ol.interaction.DefaultOptions=} opt_options Options.
- * @param {...ol.interaction.Interaction} var_args Further interactions.
+ * @param {Array.<ol.interaction.Interaction>=} opt_interactions Additional
+ *     interactions.
  * @return {ol.Collection} Interactions.
  */
-ol.interaction.defaults = function(opt_options, var_args) {
+ol.interaction.defaults = function(opt_options, opt_interactions) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
@@ -91,9 +92,8 @@ ol.interaction.defaults = function(opt_options, var_args) {
         new ol.interaction.DragZoom(ol.interaction.condition.shiftKeyOnly));
   }
 
-  var i;
-  for (i = 1; i < arguments.length; ++i) {
-    interactions.push(arguments[i]);
+  if (goog.isDef(opt_interactions)) {
+    interactions.extend(opt_interactions);
   }
 
   return interactions;
