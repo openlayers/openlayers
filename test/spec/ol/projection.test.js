@@ -308,7 +308,7 @@ describe('ol.projection', function() {
 
     it('returns value in meters', function() {
       var epsg4326 = ol.projection.getFromCode('EPSG:4326');
-      expect(epsg4326.getMetersPerUnit()).toEqual(111317.09969219835);
+      expect(epsg4326.getMetersPerUnit()).toEqual(111194.87428468118);
     });
 
   });
