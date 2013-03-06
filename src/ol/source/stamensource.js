@@ -74,6 +74,16 @@ ol.source.StamenProviderConfig = {
 };
 
 
+/**
+ * @const {Array.<ol.Attribution>}
+ */
+ol.source.STAMEN_ATTRIBUTIONS = [new ol.Attribution(
+    'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under ' +
+    '<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. ' +
+    'Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under ' +
+    '<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.')];
+
+
 
 /**
  * @constructor
@@ -81,14 +91,6 @@ ol.source.StamenProviderConfig = {
  * @param {ol.source.StamenOptions} options Options.
  */
 ol.source.Stamen = function(options) {
-
-  var attribution = new ol.Attribution(
-      'Map tiles by <a href="http://stamen.com">Stamen Design</a>, ' +
-      'under ' +
-      '<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. ' +
-      'Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, ' +
-      'under ' +
-      '<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.');
 
   var i = options.layer.indexOf('-');
   var provider = i == -1 ? options.layer : options.layer.slice(0, i);
@@ -103,7 +105,7 @@ ol.source.Stamen = function(options) {
       layerConfig.extension;
 
   goog.base(this, {
-    attributions: [attribution],
+    attributions: ol.source.STAMEN_ATTRIBUTIONS,
     maxZoom: providerConfig.maxZoom,
     // FIXME uncomment the following when tilegrid supports minZoom
     //minZoom: providerConfig.minZoom,
