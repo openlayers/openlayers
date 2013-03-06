@@ -235,6 +235,17 @@ describe('ol.collection', function() {
       });
     });
   });
+
+  describe('extending a collection', function() {
+    it('adds elements to end of the collection', function() {
+      collection.extend([1, 2]);
+      expect(collection.getLength()).toEqual(2);
+      expect(goog.array.equals(collection.getArray(), [1, 2])).toBeTruthy();
+      expect(collection.getAt(0)).toEqual(1);
+      expect(collection.getAt(1)).toEqual(2);
+    });
+  });
+
 });
 
 goog.require('goog.array');

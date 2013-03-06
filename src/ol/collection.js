@@ -100,6 +100,17 @@ ol.Collection.prototype.clear = function() {
 
 
 /**
+ * @param {Array} arr Array.
+ */
+ol.Collection.prototype.extend = function(arr) {
+  var i;
+  for (i = 0; i < arr.length; ++i) {
+    this.push(arr[i]);
+  }
+};
+
+
+/**
  * @param {Function} f Function.
  * @param {Object=} opt_obj Object.
  */
