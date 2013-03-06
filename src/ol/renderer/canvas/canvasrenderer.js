@@ -244,7 +244,8 @@ ol.renderer.canvas.Renderer.prototype.renderPolygonFeatures_ =
  * @private
  */
 ol.renderer.canvas.Renderer.renderCircle_ = function(circle) {
-  var size = circle.size + (2 * circle.strokeWidth) + 1,
+  var strokeWidth = circle.strokeWidth || 0,
+      size = circle.size + (2 * strokeWidth) + 1,
       mid = size / 2,
       canvas = /** @type {HTMLCanvasElement} */
           (goog.dom.createElement(goog.dom.TagName.CANVAS)),
@@ -260,11 +261,11 @@ ol.renderer.canvas.Renderer.renderCircle_ = function(circle) {
   context.globalAlpha = circle.opacity;
 
   if (fillStyle) {
-    context.fillStyle = circle.fillStyle;
+    context.fillStyle = fillStyle;
   }
   if (strokeStyle) {
-    context.lineWidth = circle.strokeWidth;
-    context.strokeStyle = circle.strokeStyle;
+    context.lineWidth = strokeWidth;
+    context.strokeStyle = strokeStyle;
   }
 
   context.beginPath();

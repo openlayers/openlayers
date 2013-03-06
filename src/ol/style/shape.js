@@ -19,9 +19,9 @@ ol.style.ShapeType = {
 /**
  * @typedef {{type: (ol.style.ShapeType),
  *            size: (number),
- *            fillStyle: (string),
- *            strokeStyle: (string),
- *            strokeWidth: (number),
+ *            fillStyle: (string|undefined),
+ *            strokeStyle: (string|undefined),
+ *            strokeWidth: (number|undefined),
  *            opacity: (number)}}
  */
 ol.style.ShapeLiteralOptions;
@@ -43,17 +43,30 @@ ol.style.ShapeLiteral = function(config) {
   /** @type {number} */
   this.size = config.size;
 
-  goog.asserts.assertString(config.fillStyle, 'fillStyle must be a string');
-  /** @type {string} */
+  if (goog.isDef(config.fillStyle)) {
+    goog.asserts.assertString(config.fillStyle, 'fillStyle must be a string');
+  }
+  /** @type {string|undefined} */
   this.fillStyle = config.fillStyle;
 
-  goog.asserts.assertString(config.strokeStyle, 'strokeStyle must be a string');
-  /** @type {string} */
+  /** @type {string|undefined} */
   this.strokeStyle = config.strokeStyle;
+  if (goog.isDef(this.strokeStyle)) {
+    goog.asserts.assertString(
+        this.strokeStyle, 'strokeStyle must be a string');
+  }
 
-  goog.asserts.assertNumber(config.strokeWidth, 'strokeWidth must be a number');
-  /** @type {number} */
+  /** @type {number|undefined} */
   this.strokeWidth = config.strokeWidth;
+  if (goog.isDef(this.strokeWidth)) {
+    goog.asserts.assertNumber(
+        this.strokeWidth, 'strokeWidth must be a number');
+  }
+
+  goog.asserts.assert(
+      goog.isDef(this.fillStyle) ||
+      (goog.isDef(this.strokeStyle) && goog.isDef(this.strokeWidth)),
+      'Either fillStyle or strokeStyle and strokeWidth must be set');
 
   goog.asserts.assertNumber(config.opacity, 'opacity must be a number');
   /** @type {number} */
@@ -88,8 +101,8 @@ ol.style.Shape = function(options) {
    * @type {ol.style.ShapeType}
    * @private
    */
-  this.type_ = /** @type {ol.style.ShapeType} */ goog.isDef(options.type) ?
-      options.type : ol.style.ShapeDefaults.type;
+  this.type_ = /** @type {ol.style.ShapeType} */ (goog.isDef(options.type) ?
+      options.type : ol.style.ShapeDefaults.type);
 
   /**
    * @type {ol.Expression}
@@ -104,28 +117,45 @@ ol.style.Shape = function(options) {
    * @type {ol.Expression}
    * @private
    */
-  this.fillStyle_ = !goog.isDef(options.fillStyle) ?
-      new ol.ExpressionLiteral(ol.style.ShapeDefaults.fillStyle) :
+  this.fillStyle_ = !goog.isDefAndNotNull(options.fillStyle) ?
+      null :
       (options.fillStyle instanceof ol.Expression) ?
           options.fillStyle : new ol.ExpressionLiteral(options.fillStyle);
 
-  /**
-   * @type {ol.Expression}
-   * @private
-   */
-  this.strokeStyle_ = !goog.isDef(options.strokeStyle) ?
-      new ol.ExpressionLiteral(ol.style.ShapeDefaults.strokeStyle) :
-      (options.strokeStyle instanceof ol.Expression) ?
-          options.strokeStyle : new ol.ExpressionLiteral(options.strokeStyle);
+  // stroke handling - if any stroke property is supplied, use defaults
+  var strokeStyle = null,
+      strokeWidth = null;
+
+  if (goog.isDefAndNotNull(options.strokeStyle) ||
+      goog.isDefAndNotNull(options.strokeWidth)) {
+
+    strokeStyle = !goog.isDefAndNotNull(options.strokeStyle) ?
+        new ol.ExpressionLiteral(ol.style.ShapeDefaults.strokeStyle) :
+        (options.strokeStyle instanceof ol.Expression) ?
+            options.strokeStyle : new ol.ExpressionLiteral(options.strokeStyle);
+
+    strokeWidth = !goog.isDef(options.strokeWidth) ?
+        new ol.ExpressionLiteral(ol.style.ShapeDefaults.strokeWidth) :
+        (options.strokeWidth instanceof ol.Expression) ?
+            options.strokeWidth : new ol.ExpressionLiteral(options.strokeWidth);
+  }
 
   /**
    * @type {ol.Expression}
    * @private
    */
-  this.strokeWidth_ = !goog.isDef(options.strokeWidth) ?
-      new ol.ExpressionLiteral(ol.style.ShapeDefaults.strokeWidth) :
-      (options.strokeWidth instanceof ol.Expression) ?
-          options.strokeWidth : new ol.ExpressionLiteral(options.strokeWidth);
+  this.strokeStyle_ = strokeStyle;
+
+  /**
+   * @type {ol.Expression}
+   * @private
+   */
+  this.strokeWidth_ = strokeWidth;
+
+  // one of stroke or fill can be null, both null is user error
+  goog.asserts.assert(!goog.isNull(this.fillStyle_) ||
+      !(goog.isNull(this.strokeStyle_) && goog.isNull(this.strokeWidth_)),
+      'Stroke or fill properties must be provided');
 
   /**
    * @type {ol.Expression}
@@ -153,14 +183,22 @@ ol.style.Shape.prototype.createLiteral = function(opt_feature) {
   var size = this.size_.evaluate(feature, attrs);
   goog.asserts.assertNumber(size, 'size must be a number');
 
-  var fillStyle = this.fillStyle_.evaluate(feature, attrs);
-  goog.asserts.assertString(fillStyle, 'fillStyle must be a string');
+  var fillStyle = goog.isNull(this.fillStyle_) ?
+      undefined : this.fillStyle_.evaluate(feature, attrs);
+  goog.asserts.assert(!goog.isDef(fillStyle) || goog.isString(fillStyle));
 
-  var strokeStyle = this.strokeStyle_.evaluate(feature, attrs);
-  goog.asserts.assertString(strokeStyle, 'strokeStyle must be a string');
+  var strokeStyle = goog.isNull(this.strokeStyle_) ?
+      undefined : this.strokeStyle_.evaluate(feature, attrs);
+  goog.asserts.assert(!goog.isDef(strokeStyle) || goog.isString(strokeStyle));
 
-  var strokeWidth = this.strokeWidth_.evaluate(feature, attrs);
-  goog.asserts.assertNumber(strokeWidth, 'strokeWidth must be a number');
+  var strokeWidth = goog.isNull(this.strokeWidth_) ?
+      undefined : this.strokeWidth_.evaluate(feature, attrs);
+  goog.asserts.assert(!goog.isDef(strokeWidth) || goog.isNumber(strokeWidth));
+
+  goog.asserts.assert(
+      goog.isDef(fillStyle) ||
+      (goog.isDef(strokeStyle) && goog.isDef(strokeWidth)),
+      'either fill style or strokeStyle and strokeWidth must be defined');
 
   var opacity = this.opacity_.evaluate(feature, attrs);
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
@@ -168,9 +206,10 @@ ol.style.Shape.prototype.createLiteral = function(opt_feature) {
   return new ol.style.ShapeLiteral({
     type: this.type_,
     size: size,
-    fillStyle: fillStyle,
-    strokeStyle: strokeStyle,
-    strokeWidth: strokeWidth,
+    // TODO: check if typecast can be avoided here
+    fillStyle: /** @type {string|undefined} */ (fillStyle),
+    strokeStyle: /** @type {string|undefined} */ (strokeStyle),
+    strokeWidth: /** @type {number|undefined} */ (strokeWidth),
     opacity: opacity
   });
 };
