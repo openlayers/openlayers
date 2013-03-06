@@ -4,16 +4,13 @@ goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.projection');
-goog.require('ol.source.BingMaps');
+goog.require('ol.source.OpenStreetMap');
 goog.require('ol.source.TileJSON');
 
 
 var layers = [
   new ol.layer.TileLayer({
-    source: new ol.source.BingMaps({
-      key: 'AgtFlPYDnymLEe9zJ5PCkghbNiFZE9aAtTy3mPaEnEBXqLHtFuTcKoZ-miMC3w7R',
-      style: 'Aerial'
-    })
+    source: new ol.source.OpenStreetMap()
   }),
   new ol.layer.TileLayer({
     source: new ol.source.TileJSON({
