@@ -1,4 +1,5 @@
 goog.provide('ol.Projection');
+goog.provide('ol.ProjectionLike');
 goog.provide('ol.ProjectionUnits');
 goog.provide('ol.projection');
 
@@ -21,6 +22,12 @@ ol.ENABLE_PROJ4JS = true;
  * @const {boolean} Have Proj4js.
  */
 ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof Proj4js == 'object';
+
+
+/**
+ * @typedef {ol.Projection|string|undefined}
+ */
+ol.ProjectionLike;
 
 
 /**
@@ -422,20 +429,29 @@ ol.projection.removeTransform = function(source, destination) {
 
 
 /**
- * @param {string} code Code which is a combination of authority and identifier
- *   such as “EPSG:4326”.
+ * @param {ol.ProjectionLike} projectionLike Either a code string which is a
+ *     combination of authority and identifier such as “EPSG:4326”, or an
+ *     existing projection object, or undefined.
  * @return {ol.Projection} Projection.
  */
-ol.projection.get = function(code) {
-  var projection = ol.projection.projections_[code];
-  if (ol.HAVE_PROJ4JS && !goog.isDef(projection)) {
-    projection = ol.projection.getProj4jsProjectionFromCode_({
-      code: code,
-      extent: null
-    });
-  }
-  if (!goog.isDef(projection)) {
-    goog.asserts.assert(goog.isDef(projection));
+ol.projection.get = function(projectionLike) {
+  var projection;
+  if (projectionLike instanceof ol.Projection) {
+    projection = projectionLike;
+  } else if (goog.isString(projectionLike)) {
+    var code = projectionLike;
+    projection = ol.projection.projections_[code];
+    if (ol.HAVE_PROJ4JS && !goog.isDef(projection)) {
+      projection = ol.projection.getProj4jsProjectionFromCode_({
+        code: code,
+        extent: null
+      });
+    }
+    if (!goog.isDef(projection)) {
+      goog.asserts.assert(goog.isDef(projection));
+      projection = null;
+    }
+  } else {
     projection = null;
   }
   return projection;

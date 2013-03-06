@@ -11,7 +11,7 @@
 @exportObjectLiteralProperty ol.View2DOptions.center ol.Coordinate|undefined
 @exportObjectLiteralProperty ol.View2DOptions.maxResolution number|undefined
 @exportObjectLiteralProperty ol.View2DOptions.numZoomLevels number|undefined
-@exportObjectLiteralProperty ol.View2DOptions.projection ol.Projection|string|undefined
+@exportObjectLiteralProperty ol.View2DOptions.projection ol.ProjectionLike
 @exportObjectLiteralProperty ol.View2DOptions.resolution number|undefined
 @exportObjectLiteralProperty ol.View2DOptions.resolutions Array.<number>|undefined
 @exportObjectLiteralProperty ol.View2DOptions.rotation number|undefined
@@ -61,7 +61,7 @@
 @exportObjectLiteral ol.control.MousePositionOptions
 @exportObjectLiteralProperty ol.control.MousePositionOptions.coordinateFormat ol.CoordinateFormatType|undefined
 @exportObjectLiteralProperty ol.control.MousePositionOptions.map ol.Map|undefined
-@exportObjectLiteralProperty ol.control.MousePositionOptions.projection ol.Projection|undefined
+@exportObjectLiteralProperty ol.control.MousePositionOptions.projection ol.ProjectionLike
 @exportObjectLiteralProperty ol.control.MousePositionOptions.target Element|undefined
 @exportObjectLiteralProperty ol.control.MousePositionOptions.undefinedHTML string|undefined
 
@@ -103,7 +103,7 @@
 
 @exportObjectLiteral ol.source.DebugTileSourceOptions
 @exportObjectLiteralProperty ol.source.DebugTileSourceOptions.extent ol.Extent|undefined
-@exportObjectLiteralProperty ol.source.DebugTileSourceOptions.projection ol.Projection|undefined
+@exportObjectLiteralProperty ol.source.DebugTileSourceOptions.projection ol.ProjectionLike
 @exportObjectLiteralProperty ol.source.DebugTileSourceOptions.tileGrid ol.tilegrid.TileGrid|undefined
 
 @exportObjectLiteral ol.source.SingleImageWMSOptions
@@ -111,7 +111,7 @@
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.crossOrigin null|string|undefined
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.extent ol.Extent|undefined
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.params Object.<string,*>
-@exportObjectLiteralProperty ol.source.SingleImageWMSOptions.projection ol.Projection|undefined
+@exportObjectLiteralProperty ol.source.SingleImageWMSOptions.projection ol.ProjectionLike
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.resolutions Array.<number>|undefined
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.url string|undefined
 
@@ -128,7 +128,7 @@
 @exportObjectLiteralProperty ol.source.StaticImageOptions.extent ol.Extent|undefined
 @exportObjectLiteralProperty ol.source.StaticImageOptions.imageExtent ol.Extent|undefined
 @exportObjectLiteralProperty ol.source.StaticImageOptions.imageSize ol.Size|undefined
-@exportObjectLiteralProperty ol.source.StaticImageOptions.projection ol.Projection|undefined
+@exportObjectLiteralProperty ol.source.StaticImageOptions.projection ol.ProjectionLike
 @exportObjectLiteralProperty ol.source.StaticImageOptions.url string|undefined
 
 @exportObjectLiteral ol.source.TiledWMSOptions
@@ -138,7 +138,7 @@
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.extent ol.Extent|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.tileGrid ol.tilegrid.TileGrid|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.maxZoom number|undefined
-@exportObjectLiteralProperty ol.source.TiledWMSOptions.projection ol.Projection|undefined
+@exportObjectLiteralProperty ol.source.TiledWMSOptions.projection ol.ProjectionLike
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.url string|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.urls Array.<string>|undefined
 
