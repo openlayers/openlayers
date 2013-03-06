@@ -3,27 +3,28 @@ goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
+goog.require('ol.projection');
 goog.require('ol.source.Stamen');
 
 
-var layers = [
-  new ol.layer.TileLayer({
-    source: new ol.source.Stamen({
-      layer: 'watercolor'
-    })
-  }),
-  new ol.layer.TileLayer({
-    source: new ol.source.Stamen({
-      layer: 'terrain-labels'
-    })
-  })
-];
 var map = new ol.Map({
-  layers: layers,
+  layers: [
+    new ol.layer.TileLayer({
+      source: new ol.source.Stamen({
+        layer: 'watercolor'
+      })
+    }),
+    new ol.layer.TileLayer({
+      source: new ol.source.Stamen({
+        layer: 'terrain-labels'
+      })
+    })
+  ],
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: new ol.View2D({
-    center: new ol.Coordinate(0, 0),
-    zoom: 3
+    center: ol.projection.transformWithCodes(
+        new ol.Coordinate(-122.416667, 37.783333), 'EPSG:4326', 'EPSG:3857'),
+    zoom: 12
   })
 });
