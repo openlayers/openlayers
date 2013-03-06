@@ -20,6 +20,7 @@ goog.require('goog.events.KeyHandler');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.MouseWheelHandler.EventType');
+goog.require('goog.style');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
 goog.require('ol.Color');
@@ -556,8 +557,8 @@ ol.Map.prototype.handleBackgroundColorChanged_ = function() {
  * @protected
  */
 ol.Map.prototype.handleBrowserWindowResize = function() {
-  var size = new ol.Size(this.target_.clientWidth, this.target_.clientHeight);
-  this.setSize(size);
+  var size = goog.style.getSize(this.target_);
+  this.setSize(new ol.Size(size.width, size.height));
 };
 
 
