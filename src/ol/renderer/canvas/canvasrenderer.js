@@ -185,7 +185,7 @@ ol.renderer.canvas.Renderer.prototype.renderPointFeatures_ =
     point = /** @type {ol.geom.Point} */ features[i].getGeometry();
     vec = goog.vec.Mat4.multVec3(
         this.transform_, [point.get(0), point.get(1), 0], []);
-    context.drawImage(content, vec[0], vec[1]);
+    context.drawImage(content, vec[0], vec[1], content.width, content.height);
   }
   context.restore();
 
@@ -355,8 +355,10 @@ ol.renderer.canvas.Renderer.renderIcon = function(icon, opt_callback) {
       image.height = height;
     } else if (goog.isDef(width)) {
       image.height = width / image.width * image.height;
+      image.width = width;
     } else if (goog.isDef(height)) {
       image.width = height / image.height * image.width;
+      image.height = height;
     }
   }
   return deferred ? null : image;
