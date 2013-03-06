@@ -33,6 +33,16 @@ ol.ProjectionUnits = {
 };
 
 
+/**
+ * @const {Object.<ol.ProjectionUnits, number>} Meters per unit lookup table.
+ */
+ol.METERS_PER_UNIT = {};
+ol.METERS_PER_UNIT[ol.ProjectionUnits.DEGREES] =
+    2 * Math.PI * ol.sphere.NORMAL.radius / 360;
+ol.METERS_PER_UNIT[ol.ProjectionUnits.FEET] = 0.3048;
+ol.METERS_PER_UNIT[ol.ProjectionUnits.METERS] = 1;
+
+
 
 /**
  * @constructor
@@ -106,6 +116,14 @@ ol.Projection.prototype.getPointResolution = goog.abstractMethod;
  */
 ol.Projection.prototype.getUnits = function() {
   return this.units_;
+};
+
+
+/**
+ * @return {number} Meters.
+ */
+ol.Projection.prototype.getMetersPerUnit = function() {
+  return ol.METERS_PER_UNIT[this.units_];
 };
 
 
