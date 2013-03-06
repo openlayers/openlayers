@@ -71,6 +71,12 @@ Proj4js.Proj.prototype.units;
 
 
 /**
+ * @type {string}
+ */
+Proj4js.Proj.prototype.srsCode;
+
+
+/**
  * @nosideeffects
  * @param {Proj4js.Proj} source
  * @param {Proj4js.Proj} dest
