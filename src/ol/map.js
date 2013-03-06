@@ -823,8 +823,18 @@ ol.Map.createOptionsInternal = function(mapOptions) {
    */
   var values = {};
 
-  values[ol.MapProperty.LAYERS] = goog.isDef(mapOptions.layers) ?
-      mapOptions.layers : new ol.Collection();
+  var layers;
+  if (goog.isDef(mapOptions.layers)) {
+    if (goog.isArray(mapOptions.layers)) {
+      layers = new ol.Collection(goog.array.clone(mapOptions.layers));
+    } else {
+      goog.asserts.assert(mapOptions.layers instanceof ol.Collection);
+      layers = mapOptions.layers;
+    }
+  } else {
+    layers = new ol.Collection();
+  }
+  values[ol.MapProperty.LAYERS] = layers;
 
   values[ol.MapProperty.VIEW] = goog.isDef(mapOptions.view) ?
       mapOptions.view : new ol.View2D();
