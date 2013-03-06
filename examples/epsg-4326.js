@@ -1,4 +1,3 @@
-goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
@@ -10,7 +9,7 @@ goog.require('ol.projection');
 goog.require('ol.source.TiledWMS');
 
 
-var layers = new ol.Collection([
+var layers = [
   new ol.layer.TileLayer({
     source: new ol.source.TiledWMS({
       url: 'http://vmap0.tiles.osgeo.org/wms/vmap0',
@@ -22,7 +21,7 @@ var layers = new ol.Collection([
       }
     })
   })
-]);
+];
 
 var map = new ol.Map({
   controls: ol.control.defaults({

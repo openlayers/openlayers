@@ -1,4 +1,3 @@
-goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
@@ -15,7 +14,7 @@ var map = new ol.Map({
   controls: ol.control.defaults({
     scaleLine: true
   }),
-  layers: new ol.Collection([layer]),
+  layers: [layer],
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: new ol.View2D({

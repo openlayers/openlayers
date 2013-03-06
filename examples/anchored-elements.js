@@ -1,5 +1,4 @@
 goog.require('ol.AnchoredElement');
-goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
@@ -14,7 +13,7 @@ var layer = new ol.layer.TileLayer({
 });
 
 var map = new ol.Map({
-  layers: new ol.Collection([layer]),
+  layers: [layer],
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: new ol.View2D({
