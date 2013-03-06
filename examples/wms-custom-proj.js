@@ -1,5 +1,4 @@
 goog.require('ol.Attribution');
-goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.Map');
@@ -20,7 +19,7 @@ var epsg21781 = new ol.Projection('EPSG:21781', ol.ProjectionUnits.METERS,
 ol.projection.addProjection(epsg21781);
 
 var extent = new ol.Extent(420000, 30000, 900000, 350000);
-var layers = new ol.Collection([
+var layers = [
   new ol.layer.TileLayer({
     source: new ol.source.TiledWMS({
       url: 'http://wms.geo.admin.ch/',
@@ -45,7 +44,7 @@ var layers = new ol.Collection([
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'}
     })
   })
-]);
+];
 
 var map = new ol.Map({
   layers: layers,
