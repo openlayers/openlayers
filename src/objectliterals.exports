@@ -1,19 +1,10 @@
 @exportObjectLiteral ol.MapOptions
 @exportObjectLiteralProperty ol.MapOptions.controls Array.<ol.control.Control>|undefined
-@exportObjectLiteralProperty ol.MapOptions.doubleClickZoom boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.dragPan boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.interactions ol.Collection|undefined
-@exportObjectLiteralProperty ol.MapOptions.keyboard boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.keyboardPanOffset number|undefined
 @exportObjectLiteralProperty ol.MapOptions.layers ol.Collection|undefined
-@exportObjectLiteralProperty ol.MapOptions.mouseWheelZoom boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderer ol.RendererHint|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderers Array.<ol.RendererHint>|undefined
-@exportObjectLiteralProperty ol.MapOptions.shiftDragZoom boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.target Element|string
-@exportObjectLiteralProperty ol.MapOptions.touchPan boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.touchRotate boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.touchZoom boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.view ol.IView|undefined
 
 @exportObjectLiteral ol.View2DOptions
@@ -80,6 +71,17 @@
 @exportObjectLiteralProperty ol.control.ZoomOptions.delta number|undefined
 @exportObjectLiteralProperty ol.control.ZoomOptions.map ol.Map|undefined
 @exportObjectLiteralProperty ol.control.ZoomOptions.target Element|undefined
+
+@exportObjectLiteral ol.interaction.DefaultOptions
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.doubleClickZoom boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.dragPan boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.keyboard boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.keyboardPanOffset number|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.mouseWheelZoom boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.shiftDragZoom boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.touchPan boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.touchRotate boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.touchZoom boolean|undefined
 
 @exportObjectLiteral ol.layer.LayerOptions
 @exportObjectLiteralProperty ol.layer.LayerOptions.brightness number|undefined
