@@ -7,6 +7,7 @@
 
 @exportSymbol ol.ProjectionUnits
 @exportProperty ol.ProjectionUnits.DEGREES
+@exportProperty ol.ProjectionUnits.FEET
 @exportProperty ol.ProjectionUnits.METERS
 
 @exportSymbol ol.projection.addProjection
