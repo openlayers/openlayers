@@ -410,7 +410,12 @@ ol.projection.getProj4jsProjectionFromCode_ = function(code) {
   var proj4jsProjection = proj4jsProjections[code];
   if (!goog.isDef(proj4jsProjection)) {
     var proj4jsProj = new Proj4js.Proj(code);
-    proj4jsProjection = new ol.Proj4jsProjection_(code, proj4jsProj);
+    var srsCode = proj4jsProj.srsCode;
+    proj4jsProjection = proj4jsProjections[srsCode];
+    if (!goog.isDef(proj4jsProjection)) {
+      proj4jsProjection = new ol.Proj4jsProjection_(srsCode, proj4jsProj);
+      proj4jsProjections[srsCode] = proj4jsProjection;
+    }
     proj4jsProjections[code] = proj4jsProjection;
   }
   return proj4jsProjection;
