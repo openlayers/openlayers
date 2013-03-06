@@ -293,6 +293,16 @@ goog.inherits(ol.Map, ol.Object);
 
 
 /**
+ * @param {ol.layer.Layer} layer Layer.
+ */
+ol.Map.prototype.addLayer = function(layer) {
+  var layers = this.getLayers();
+  goog.asserts.assert(goog.isDef(layers));
+  layers.push(layer);
+};
+
+
+/**
  * @param {ol.PreRenderFunction} preRenderFunction Pre-render function.
  */
 ol.Map.prototype.addPreRenderFunction = function(preRenderFunction) {
