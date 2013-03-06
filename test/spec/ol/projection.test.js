@@ -144,6 +144,22 @@ describe('ol.projection', function() {
       expect(point.y).toRoughlyEqual(200146.976, 1);
     });
 
+    it('caches the new Proj4js projections given their srsCode', function() {
+      Proj4js.defs['EPSG:21781'] =
+          '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
+          '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
+          '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs';
+      var code = 'urn:ogc:def:crs:EPSG:21781';
+      var srsCode = 'EPSG:21781';
+      var proj = ol.projection.getFromCode(code);
+      expect(ol.projection.proj4jsProjections_.hasOwnProperty(code))
+          .toBeTruthy();
+      expect(ol.projection.proj4jsProjections_.hasOwnProperty(srsCode))
+          .toBeTruthy();
+      var proj2 = ol.projection.getFromCode(srsCode);
+      expect(proj2).toBe(proj);
+    });
+
     it('numerically estimates point scale at the equator', function() {
       var googleProjection = ol.projection.getFromCode('GOOGLE');
       expect(googleProjection.getPointResolution(1, new ol.Coordinate(0, 0))).
