@@ -27,6 +27,7 @@ var layers = new ol.Collection([
 var map = new ol.Map({
   controls: ol.control.defaults({
     scaleLine: true,
+    // FIXME The typecast here is only needed if the example is compiled
     scaleLineOptions: /** @type {ol.control.ScaleLineOptions} */ ({
       units: ol.control.ScaleLineUnits.DEGREES
     })
