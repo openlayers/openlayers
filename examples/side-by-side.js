@@ -34,7 +34,7 @@ var domMousePosition = new ol.control.MousePosition({
   undefinedHTML: '&nbsp;'
 });
 var domMap = new ol.Map({
-  controls: ol.control.defaults({}, domMousePosition),
+  controls: ol.control.defaults({}, [domMousePosition]),
   layers: new ol.Collection([layer]),
   renderer: ol.RendererHint.DOM,
   target: 'domMap',
@@ -48,7 +48,7 @@ var webglMousePosition = new ol.control.MousePosition({
   undefinedHTML: '&nbsp;'
 });
 var webglMap = new ol.Map({
-  controls: ol.control.defaults({}, webglMousePosition),
+  controls: ol.control.defaults({}, [webglMousePosition]),
   renderer: ol.RendererHint.WEBGL,
   target: 'webglMap'
 });
@@ -65,7 +65,7 @@ var canvasMousePosition = new ol.control.MousePosition({
   undefinedHtml: '&nbsp;'
 });
 var canvasMap = new ol.Map({
-  controls: ol.control.defaults({}, canvasMousePosition),
+  controls: ol.control.defaults({}, [canvasMousePosition]),
   renderer: ol.RendererHint.CANVAS,
   target: 'canvasMap'
 });
