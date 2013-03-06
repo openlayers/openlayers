@@ -1,31 +1,13 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <link rel="stylesheet" href="style.css" type="text/css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="examples.css" type="text/css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.min.css" type="text/css">
     <style type="text/css">
-      html, body, #map {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-      }
-      #text {
-          position: absolute;
-          top: 8px;
-          right: 8px;
-          z-index: 20000;
-          background-color: white;
-          padding: 0 0.5em 0.5em 0.5em;
-          border-radius: 4px;
-      }
-      @media only screen and (max-width: 600px) {
-        #text {
-          display: none;
-        }
-      }
       .overlay {
         display: none;
         font-size: 10pt;
@@ -41,8 +23,8 @@
         text-shadow: black 0.1em 0.1em 0.2em;
       }
       #popup {
-        width: 200px;
-        margin-left: -107px;
+        width: 170px;
+        margin-left: -92px;
         margin-bottom: 12px;
         border-radius: 5px;
         padding: 5px;
@@ -83,22 +65,50 @@
     <title>Anchored elements example</title>
   </head>
   <body>
-    <div id="map">
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="example-list.html">OpenLayers 3 Examples</a>
+          <ul class="nav pull-right">
+            <li><a href="https://github.com/openlayers/ol3"><i class="icon-github"></i></a></li>
+            <li><a href="https://twitter.com/openlayers"><i class="icon-twitter"></i></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+        <div class="span12">
+          <div id="map" class="map"></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+
+        <div class="span4">
+          <h4 id="title">Anchored elements example</h4>
+          <p id="shortdesc">Demonstrates anchored elements.</p>
+          <div id="docs">
+            <p>See the <a href="anchored-elements.js" target="_blank">anchored-elements.js source</a> to see how this is done.</p>
+          </div>
+          <div id="tags">anchored elements, overlay, popup, mapquest, openaerial</div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div style="display: none;">
       <!-- Clickable label for Vienna -->
       <a class="overlay" id="vienna" target="_blank" href="http://en.wikipedia.org/wiki/Vienna">Vienna</a>
       <!-- Popup -->
       <div class="overlay arrow_box" id="popup"></div>
-      <div id="text">
-        <h1 id="title">Anchored elements example</h1>
-        <div id="shortdesc">Demonstrates anchored elements.</div>
-        <div id="docs">
-          <p>See the
-          <a href="anchored-elements.js" target="_blank">anchored-elements.js source</a>
-          to see how this is done.</p>
-        </div>
-      </div>
     </div>
-    <div id="tags">anchored elements, overlay, popup, mapquest, openaerial</div>
+
     <script src="loader.js?id=anchored-elements" type="text/javascript"></script>
+
   </body>
 </html>
