@@ -1,0 +1,13 @@
+body {
+  padding-top: 60px;
+}
+.map {
+  height: 400px;
+  width: 100%;
+}
+.ol-attribution {
+  max-width: 50%;
+}
+#tags {
+  display: none;
+}

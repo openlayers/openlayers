@@ -1,40 +1,56 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link rel="stylesheet" href="style.css" type="text/css">
-    <style type="text/css">
-      .map {
-        width: 400px;
-        height: 400px;
-        border: thin solid #cccccc;
-        margin: 1em;
-      }
-    </style>
-    <title>ol3 two-layers demo</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="examples.css" type="text/css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.min.css" type="text/css">
+    <title>Two layers example</title>
   </head>
   <body>
-    <h1 id="title">Two-layer example</h1>
-    <div id="shortdesc">Sync'ed DOM, WebGL and Canvas maps with two layers.</div>
-    <table>
-      <tr>
-        <th>DOM</th>
-        <th>WebGL</th>
-        <th>Canvas <a id="canvas-export" href="#" download="map.jpeg">export map as jpeg</a></th>
-      </tr>
-      <tr>
-        <td><div id="domMap" class="map"></div></td>
-        <td><div id="webglMap" class="map"></div></td>
-        <td><div id="canvasMap" class="map"></div></td>
-      </tr>
-    </table>
-    <div id="docs">
-      <p>See the
-      <a href="two-layers.js" target="_blank">two-layers.js source</a>
-      to see how this is done.</p>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="examples-list.html">OpenLayers 3 Examples</a>
+        </div>
+      </div>
     </div>
-    <div id="tags">layers, tilejson, bing, bingmaps</div>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+        <div class="span4">
+          <h4>Canvas</h4>
+          <div id="canvasMap" class="map"></div>
+          <small><a id="canvas-export" href="#" download="map.jpeg">export map as jpeg</a></small>
+        </div>
+        <div class="span4">
+          <h4>WebGL</h4>
+          <div id="webglMap" class="map"></div>
+        </div>
+        <div class="span4">
+          <h4>DOM</h4>
+          <div id="domMap" class="map"></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+
+        <div class="span4">
+          <h4 id="title">Two layers example</h4>
+          <p id="shortdesc">Sync'ed DOM, WebGL and Canvas maps with a Bing Maps base layer and a semi-transparent TileJSON layer.</p>
+          <div id="docs">
+            <p>See the <a href="two-layers.js" target="_blank">two-layers.js source</a> to see how this is done.</p>
+          </div>
+          <div id="tags">layers, tilejson, bing, bingmaps</div>
+        </div>
+
+      </div>
+
     <script src="loader.js?id=two-layers" type="text/javascript"></script>
+
   </body>
 </html>
