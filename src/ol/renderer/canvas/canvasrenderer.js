@@ -2,6 +2,7 @@ goog.provide('ol.renderer.canvas.Renderer');
 goog.provide('ol.renderer.canvas.SUPPORTED');
 
 goog.require('goog.asserts');
+goog.require('goog.net.ImageLoader');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Feature');
 goog.require('ol.Pixel');
@@ -11,6 +12,7 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
+goog.require('ol.style.IconLiteral');
 goog.require('ol.style.LineLiteral');
 goog.require('ol.style.PointLiteral');
 goog.require('ol.style.PolygonLiteral');
@@ -32,10 +34,13 @@ ol.renderer.canvas.SUPPORTED = ol.canvas.SUPPORTED;
  * @param {HTMLCanvasElement} canvas Target canvas.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {ol.Pixel=} opt_offset Pixel offset for top-left corner.  This is
- *    provided as an optional argument as a convenience in cases where the
- *    transform applies to a separate canvas.
+ *     provided as an optional argument as a convenience in cases where the
+ *     transform applies to a separate canvas.
+ * @param {function()=} opt_iconLoadedCallback Callback for deferred rendering
+ *     when images need to be loaded before rendering.
  */
-ol.renderer.canvas.Renderer = function(canvas, transform, opt_offset) {
+ol.renderer.canvas.Renderer =
+    function(canvas, transform, opt_offset, opt_iconLoadedCallback) {
 
   var context = /** @type {CanvasRenderingContext2D} */
       (canvas.getContext('2d')),
@@ -70,6 +75,12 @@ ol.renderer.canvas.Renderer = function(canvas, transform, opt_offset) {
    */
   this.context_ = context;
 
+  /**
+   * @type {function()|undefined}
+   * @private
+   */
+  this.iconLoadedCallback_ = opt_iconLoadedCallback;
+
 };
 
 
@@ -77,13 +88,15 @@ ol.renderer.canvas.Renderer = function(canvas, transform, opt_offset) {
  * @param {ol.geom.GeometryType} type Geometry type.
  * @param {Array.<ol.Feature>} features Array of features.
  * @param {ol.style.SymbolizerLiteral} symbolizer Symbolizer.
+ * @return {boolean} true if deferred, false if rendered.
  */
 ol.renderer.canvas.Renderer.prototype.renderFeaturesByGeometryType =
     function(type, features, symbolizer) {
+  var deferred = false;
   switch (type) {
     case ol.geom.GeometryType.POINT:
       goog.asserts.assert(symbolizer instanceof ol.style.PointLiteral);
-      this.renderPointFeatures_(
+      deferred = this.renderPointFeatures_(
           features, /** @type {ol.style.PointLiteral} */ (symbolizer));
       break;
     case ol.geom.GeometryType.LINESTRING:
@@ -99,6 +112,7 @@ ol.renderer.canvas.Renderer.prototype.renderFeaturesByGeometryType =
     default:
       throw new Error('Rendering not implemented for geometry type: ' + type);
   }
+  return deferred;
 };
 
 
@@ -138,31 +152,44 @@ ol.renderer.canvas.Renderer.prototype.renderLineStringFeatures_ =
 /**
  * @param {Array.<ol.Feature>} features Array of point features.
  * @param {ol.style.PointLiteral} symbolizer Point symbolizer.
+ * @return {boolean} true if deferred, false if rendered.
  * @private
  */
 ol.renderer.canvas.Renderer.prototype.renderPointFeatures_ =
     function(features, symbolizer) {
 
   var context = this.context_,
-      canvas, i, ii, point, vec;
+      content, alpha, i, ii, point, vec;
 
   if (symbolizer instanceof ol.style.ShapeLiteral) {
-    canvas = ol.renderer.canvas.Renderer.renderShape(symbolizer);
+    content = ol.renderer.canvas.Renderer.renderShape(symbolizer);
+    alpha = 1;
+  } else if (symbolizer instanceof ol.style.IconLiteral) {
+    content = ol.renderer.canvas.Renderer.renderIcon(
+        symbolizer, this.iconLoadedCallback_);
+    alpha = symbolizer.opacity;
   } else {
     throw new Error('Unsupported symbolizer: ' + symbolizer);
   }
 
-  var mid = canvas.width / 2;
+  if (goog.isNull(content)) {
+    return true;
+  }
+
+  var midWidth = content.width / 2;
+  var midHeight = content.height / 2;
   context.save();
-  context.setTransform(1, 0, 0, 1, -mid, -mid);
-  context.globalAlpha = 1;
+  context.setTransform(1, 0, 0, 1, -midWidth, -midHeight);
+  context.globalAlpha = alpha;
   for (i = 0, ii = features.length; i < ii; ++i) {
     point = /** @type {ol.geom.Point} */ features[i].getGeometry();
     vec = goog.vec.Mat4.multVec3(
         this.transform_, [point.get(0), point.get(1), 0], []);
-    context.drawImage(canvas, vec[0], vec[1]);
+    context.drawImage(content, vec[0], vec[1]);
   }
   context.restore();
+
+  return false;
 };
 
 
@@ -293,3 +320,84 @@ ol.renderer.canvas.Renderer.renderShape = function(shape) {
   }
   return canvas;
 };
+
+
+/**
+ * @param {ol.style.IconLiteral} icon Icon literal.
+ * @param {function()=} opt_callback Callback which will be called when
+ *     the icon is loaded and rendering will work without deferring.
+ * @return {HTMLImageElement} image element of null if deferred.
+ */
+ol.renderer.canvas.Renderer.renderIcon = function(icon, opt_callback) {
+  var url = icon.url;
+  var image = ol.renderer.canvas.Renderer.icons_[url];
+  var deferred = false;
+  if (!goog.isDef(image)) {
+    deferred = true;
+    image = /** @type {HTMLImageElement} */
+        (goog.dom.createElement(goog.dom.TagName.IMG));
+    goog.events.listenOnce(image, goog.events.EventType.ERROR,
+        goog.bind(ol.renderer.canvas.Renderer.handleIconError_, null,
+            opt_callback),
+        false, ol.renderer.canvas.Renderer.renderIcon);
+    goog.events.listenOnce(image, goog.events.EventType.LOAD,
+        goog.bind(ol.renderer.canvas.Renderer.handleIconLoad_, null,
+            opt_callback),
+        false, ol.renderer.canvas.Renderer.renderIcon);
+    image.setAttribute('src', url);
+    ol.renderer.canvas.Renderer.icons_[url] = image;
+  } else if (!goog.isNull(image)) {
+    var width = icon.width,
+        height = icon.height;
+    if (goog.isDef(width) && goog.isDef(height)) {
+      image.width = width;
+      image.height = height;
+    } else if (goog.isDef(width)) {
+      image.height = width / image.width * image.height;
+    } else if (goog.isDef(height)) {
+      image.width = height / image.height * image.width;
+    }
+  }
+  return deferred ? null : image;
+};
+
+
+/**
+ * @type {Object.<string, HTMLImageElement>}
+ * @private
+ */
+ol.renderer.canvas.Renderer.icons_ = {};
+
+
+/**
+ * @param {function()=} opt_callback Callback.
+ * @param {Event=} opt_event Event.
+ * @private
+ */
+ol.renderer.canvas.Renderer.handleIconError_ =
+    function(opt_callback, opt_event) {
+  if (goog.isDef(opt_event)) {
+    var url = opt_event.target.getAttribute('src');
+    ol.renderer.canvas.Renderer.icons_[url] = null;
+    ol.renderer.canvas.Renderer.handleIconLoad_(opt_callback, opt_event);
+  }
+};
+
+
+/**
+ * @param {function()=} opt_callback Callback.
+ * @param {Event=} opt_event Event.
+ * @private
+ */
+ol.renderer.canvas.Renderer.handleIconLoad_ =
+    function(opt_callback, opt_event) {
+  if (goog.isDef(opt_event)) {
+    var url = opt_event.target.getAttribute('src');
+    ol.renderer.canvas.Renderer.icons_[url] =
+        /** @type {HTMLImageElement} */ (opt_event.target);
+  }
+  if (goog.isDef(opt_callback)) {
+    opt_callback();
+  }
+};
+

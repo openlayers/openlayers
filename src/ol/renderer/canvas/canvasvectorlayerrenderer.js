@@ -126,6 +126,15 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    */
   this.tileGrid_ = null;
 
+  /**
+   * @private
+   * @type {function()}
+   */
+  this.requestMapRenderFrame_ = goog.bind(function() {
+    this.dirty_ = true;
+    mapRenderer.getMap().requestRenderFrame();
+  }, this);
+
 };
 goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 
@@ -252,7 +261,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   sketchCanvas.height = sketchSize.height;
 
   var sketchCanvasRenderer = new ol.renderer.canvas.Renderer(
-      sketchCanvas, sketchTransform);
+      sketchCanvas, sketchTransform, undefined, this.requestMapRenderFrame_);
 
   // clear/resize final canvas
   var finalCanvas = this.canvas_;
@@ -267,15 +276,15 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var filters = this.geometryFilters_,
       numFilters = filters.length,
       i, geomFilter, extentFilter, type, features,
-      groups, group, j, numGroups;
+      groups, group, j, numGroups, deferred;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+      deferred = false;
       tileCoord = new ol.TileCoord(z, x, y);
       key = tileCoord.toString();
       if (this.tileCache_.containsKey(key)) {
         tilesToRender[key] = tileCoord;
       } else if (!frameState.viewHints[ol.ViewHint.ANIMATING]) {
-        tilesToRender[key] = tileCoord;
         extentFilter = new ol.filter.Extent(
             tileGrid.getTileCoordExtent(tileCoord));
         for (i = 0; i < numFilters; ++i) {
@@ -288,10 +297,13 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
             numGroups = groups.length;
             for (j = 0; j < numGroups; ++j) {
               group = groups[j];
-              sketchCanvasRenderer.renderFeaturesByGeometryType(type,
-                  group[0], group[1]);
+              deferred = sketchCanvasRenderer.renderFeaturesByGeometryType(
+                  type, group[0], group[1]) || deferred;
             }
           }
+        }
+        if (!deferred) {
+          tilesToRender[key] = tileCoord;
         }
       }
     }
