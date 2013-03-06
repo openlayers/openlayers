@@ -57,16 +57,6 @@ ol.style.IconLiteral.prototype.equals = function(iconLiteral) {
 };
 
 
-/**
- * @typedef {{url: (string|ol.Expression),
- *            width: (number|ol.Expression|undefined),
- *            height: (number|ol.Expression|undefined),
- *            opacity: (number|ol.Expression|undefined),
- *            rotation: (number|ol.Expression|undefined)}}
- */
-ol.style.IconOptions;
-
-
 
 /**
  * @constructor

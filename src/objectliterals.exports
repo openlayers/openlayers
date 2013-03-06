@@ -143,6 +143,13 @@
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.url string|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.urls Array.<string>|undefined
 
+@exportObjectLiteral ol.style.IconOptions
+@exportObjectLiteralProperty ol.style.IconOptions.url string|ol.Expression
+@exportObjectLiteralProperty ol.style.IconOptions.width number|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.IconOptions.height number|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.IconOptions.opacity number|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.IconOptions.rotation number|ol.Expression|undefined
+
 @exportObjectLiteral ol.style.LineOptions
 @exportObjectLiteralProperty ol.style.LineOptions.strokeStyle string|ol.Expression|undefined
 @exportObjectLiteralProperty ol.style.LineOptions.strokeWidth number|ol.Expression|undefined
