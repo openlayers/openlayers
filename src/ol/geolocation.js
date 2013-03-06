@@ -77,7 +77,7 @@ ol.Geolocation.prototype.handleProjectionChanged_ = function() {
   var projection = this.getProjection();
   if (goog.isDefAndNotNull(projection)) {
     this.transformFn_ = ol.projection.getTransform(
-        ol.projection.getFromCode('EPSG:4326'), projection);
+        ol.projection.get('EPSG:4326'), projection);
     if (!goog.isNull(this.position_)) {
       var vertex = [this.position_.x, this.position_.y];
       vertex = this.transformFn_(vertex, vertex, 2);

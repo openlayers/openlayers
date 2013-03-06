@@ -26,7 +26,7 @@ describe('ol.projection', function() {
   describe('projection equivalence', function() {
 
     function _testAllEquivalent(codes) {
-      var projections = goog.array.map(codes, ol.projection.getFromCode);
+      var projections = goog.array.map(codes, ol.projection.get);
       goog.array.forEach(projections, function(source) {
         goog.array.forEach(projections, function(destination) {
           expect(ol.projection.equivalent(source, destination)).toBeTruthy();
@@ -56,7 +56,7 @@ describe('ol.projection', function() {
   describe('identify transform', function() {
 
     it('returns a new object, with same coord values', function() {
-      var epsg4326 = ol.projection.getFromCode('EPSG:4326');
+      var epsg4326 = ol.projection.get('EPSG:4326');
       var uniqueObject = {};
       var sourcePoint = new ol.Coordinate(uniqueObject, uniqueObject);
       var destinationPoint = ol.projection.transform(
@@ -151,24 +151,24 @@ describe('ol.projection', function() {
           '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs';
       var code = 'urn:ogc:def:crs:EPSG:21781';
       var srsCode = 'EPSG:21781';
-      var proj = ol.projection.getFromCode(code);
+      var proj = ol.projection.get(code);
       expect(ol.projection.proj4jsProjections_.hasOwnProperty(code))
           .toBeTruthy();
       expect(ol.projection.proj4jsProjections_.hasOwnProperty(srsCode))
           .toBeTruthy();
-      var proj2 = ol.projection.getFromCode(srsCode);
+      var proj2 = ol.projection.get(srsCode);
       expect(proj2).toBe(proj);
     });
 
     it('numerically estimates point scale at the equator', function() {
-      var googleProjection = ol.projection.getFromCode('GOOGLE');
+      var googleProjection = ol.projection.get('GOOGLE');
       expect(googleProjection.getPointResolution(1, new ol.Coordinate(0, 0))).
           toRoughlyEqual(1, 1e-1);
     });
 
     it('numerically estimates point scale at various latitudes', function() {
-      var epsg3857Projection = ol.projection.getFromCode('EPSG:3857');
-      var googleProjection = ol.projection.getFromCode('GOOGLE');
+      var epsg3857Projection = ol.projection.get('EPSG:3857');
+      var googleProjection = ol.projection.get('GOOGLE');
       var point, y;
       for (y = -20; y <= 20; ++y) {
         point = new ol.Coordinate(0, 1000000 * y);
@@ -178,8 +178,8 @@ describe('ol.projection', function() {
     });
 
     it('numerically estimates point scale at various points', function() {
-      var epsg3857Projection = ol.projection.getFromCode('EPSG:3857');
-      var googleProjection = ol.projection.getFromCode('GOOGLE');
+      var epsg3857Projection = ol.projection.get('EPSG:3857');
+      var googleProjection = ol.projection.get('GOOGLE');
       var point, x, y;
       for (x = -20; x <= 20; ++x) {
         for (y = -20; y <= 20; ++y) {
@@ -194,8 +194,8 @@ describe('ol.projection', function() {
 
   describe('ol.projection.getTransform()', function() {
 
-    var sm = ol.projection.getFromCode('GOOGLE');
-    var gg = ol.projection.getFromCode('EPSG:4326');
+    var sm = ol.projection.get('GOOGLE');
+    var gg = ol.projection.get('EPSG:4326');
 
     it('returns a transform function', function() {
       var transform = ol.projection.getTransform(sm, gg);
@@ -331,7 +331,7 @@ describe('ol.projection', function() {
   describe('ol.Projection.prototype.getMetersPerUnit()', function() {
 
     it('returns value in meters', function() {
-      var epsg4326 = ol.projection.getFromCode('EPSG:4326');
+      var epsg4326 = ol.projection.get('EPSG:4326');
       expect(epsg4326.getMetersPerUnit()).toEqual(111194.87428468118);
     });
 

@@ -15,7 +15,7 @@ var layers = [
   }),
   new ol.layer.TileLayer({
     source: new ol.source.DebugTileSource({
-      projection: ol.projection.getFromCode('EPSG:3857'),
+      projection: ol.projection.get('EPSG:3857'),
       tileGrid: new ol.tilegrid.XYZ({
         maxZoom: 22
       })

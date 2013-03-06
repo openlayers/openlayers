@@ -365,9 +365,9 @@ ol.projection.clearAllProjections = function() {
  */
 ol.projection.createProjection = function(projection, defaultCode) {
   if (!goog.isDefAndNotNull(projection)) {
-    return ol.projection.getFromCode(defaultCode);
+    return ol.projection.get(defaultCode);
   } else if (goog.isString(projection)) {
-    return ol.projection.getFromCode(projection);
+    return ol.projection.get(projection);
   } else {
     goog.asserts.assert(projection instanceof ol.Projection);
     return projection;
@@ -426,7 +426,7 @@ ol.projection.removeTransform = function(source, destination) {
  *   such as “EPSG:4326”.
  * @return {ol.Projection} Projection.
  */
-ol.projection.getFromCode = function(code) {
+ol.projection.get = function(code) {
   var projection = ol.projection.projections_[code];
   if (ol.HAVE_PROJ4JS && !goog.isDef(projection)) {
     projection = ol.projection.getProj4jsProjectionFromCode_({
@@ -579,8 +579,8 @@ ol.projection.getTransform = function(source, destination) {
  * @return {ol.TransformFunction} Transform.
  */
 ol.projection.getTransformFromCodes = function(sourceCode, destinationCode) {
-  var source = ol.projection.getFromCode(sourceCode);
-  var destination = ol.projection.getFromCode(destinationCode);
+  var source = ol.projection.get(sourceCode);
+  var destination = ol.projection.get(destinationCode);
   return ol.projection.getTransform(source, destination);
 };
 

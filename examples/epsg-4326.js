@@ -35,7 +35,7 @@ var map = new ol.Map({
   renderers: [ol.RendererHint.CANVAS, ol.RendererHint.DOM],
   target: 'map',
   view: new ol.View2D({
-    projection: ol.projection.getFromCode('EPSG:4326'),
+    projection: ol.projection.get('EPSG:4326'),
     center: new ol.Coordinate(0, 0),
     zoom: 2
   })

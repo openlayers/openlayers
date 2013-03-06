@@ -52,7 +52,7 @@ goog.exportSymbol('grid', grid);
 ol.source.TileJSON = function(tileJsonOptions) {
 
   goog.base(this, {
-    projection: ol.projection.getFromCode('EPSG:3857')
+    projection: ol.projection.get('EPSG:3857')
   });
 
   /**
@@ -80,7 +80,7 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function() {
 
   var tileJSON = ol.tilejson.grids_.pop();
 
-  var epsg4326Projection = ol.projection.getFromCode('EPSG:4326');
+  var epsg4326Projection = ol.projection.get('EPSG:4326');
 
   var epsg4326Extent, extent;
   if (goog.isDef(tileJSON.bounds)) {
