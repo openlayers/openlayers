@@ -30,6 +30,7 @@ else:
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
     variables.JAVA = 'java'
+    variables.JAR = 'jar'
     variables.JSDOC = 'jsdoc'
     variables.PYTHON = 'python'
     variables.PHANTOMJS = 'phantomjs'
@@ -359,6 +360,37 @@ def jsdoc_BRANCH_timestamp(t):
     t.touch()
 
 
+def split_example_file(example, dst_dir):
+    lines = open(example).readlines()
+
+    target_lines = []
+    target_require_lines = []
+
+    found_requires = False
+    found_code = False
+    for line in lines:
+        m = re.match(r'goog.require\(\'(.*)\'\);', line)
+        if m:
+            found_requires = True
+            target_require_lines.append(line)
+        elif found_requires:
+            if found_code or line not in ('\n', '\r\n'):
+                found_code = True
+                target_lines.append(line)
+
+    target = open(
+        os.path.join(dst_dir, os.path.basename(example)), 'w')
+    target_require = open(
+        os.path.join(dst_dir,
+            os.path.basename(example).replace('.js', '-require.js')), 'w')
+
+    target.writelines(target_lines)
+    target.close()
+
+    target_require.writelines(target_require_lines)
+    target_require.close()
+
+
 @target('hostexamples', 'build', 'examples', phony=True)
 def hostexamples(t):
     examples_dir = 'build/gh-pages/%(BRANCH)s/examples'
@@ -367,8 +399,9 @@ def hostexamples(t):
     t.makedirs(examples_dir)
     t.rm_rf(build_dir)
     t.makedirs(build_dir)
-    t.cp(EXAMPLES, (path.replace('.html', '.js') for path in EXAMPLES),
-        'examples/examples.css', examples_dir)
+    t.cp(EXAMPLES, 'examples/examples.css', examples_dir)
+    for example in [path.replace('.html', '.js') for path in EXAMPLES]:
+        split_example_file(example, examples_dir % vars(variables))
     t.cp_r('examples/data', examples_dir + '/data')
     t.cp_r('examples/bootstrap', examples_dir + '/bootstrap')
     t.cp_r('examples/font-awesome', examples_dir + '/font-awesome')
@@ -378,6 +411,19 @@ def hostexamples(t):
     t.cp('examples/example-list.html', examples_dir + '/index.html')
     t.cp('examples/example-list.js', 'examples/example-list.xml',
         'examples/Jugl.js', examples_dir)
+    t.rm_rf('build/gh-pages/%(BRANCH)s/closure-library')
+    t.makedirs('build/gh-pages/%(BRANCH)s/closure-library')
+    with t.chdir('build/gh-pages/%(BRANCH)s/closure-library'):
+        t.run('%(JAR)s', 'xf', '../../../../' + PLOVR_JAR, 'closure')
+        t.run('%(JAR)s', 'xf', '../../../../' + PLOVR_JAR, 'third_party')
+    t.rm_rf('build/gh-pages/%(BRANCH)s/ol')
+    t.makedirs('build/gh-pages/%(BRANCH)s/ol')
+    t.cp_r('src/ol', 'build/gh-pages/%(BRANCH)s/ol/ol')
+    t.run('%(PYTHON)s', 'bin/closure/depswriter.py',
+        '--root_with_prefix', 'src ../../../ol',
+        '--root', 'build/gh-pages/%(BRANCH)s/closure-library/closure/goog',
+        '--root_with_prefix', 'build/gh-pages/%(BRANCH)s/closure-library/third_party ../../third_party',
+        '--output_file', 'build/gh-pages/%(BRANCH)s/build/ol-deps.js')
 
 
 @target('check-examples', 'hostexamples', phony=True)
