@@ -43,11 +43,11 @@ ol.style.ShapeLiteral = function(config) {
   /** @type {number} */
   this.size = config.size;
 
+  /** @type {string|undefined} */
+  this.fillStyle = config.fillStyle;
   if (goog.isDef(config.fillStyle)) {
     goog.asserts.assertString(config.fillStyle, 'fillStyle must be a string');
   }
-  /** @type {string|undefined} */
-  this.fillStyle = config.fillStyle;
 
   /** @type {string|undefined} */
   this.strokeStyle = config.strokeStyle;

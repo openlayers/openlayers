@@ -185,7 +185,7 @@ describe('ol.parser.GeoJSON', function() {
 
         var callback = function(feature, type) {
           return lookup[type];
-        }
+        };
 
         var result = parser.readFeaturesFromString(text, {callback: callback});
         expect(result.length).toBe(179);
