@@ -1,7 +1,5 @@
-goog.require('ol.AnchoredElement');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
-goog.require('ol.Geolocation');
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
@@ -25,21 +23,3 @@ var map = new ol.Map({
     zoom: 0
   })
 });
-var view2d = map.getView().getView2D();
-view2d.fitExtent(view2d.getProjection().getExtent(), map.getSize());
-
-var geolocation = new ol.Geolocation();
-geolocation.bindTo('projection', map.getView());
-
-var element = document.getElementById('geolocation');
-var marker = new ol.AnchoredElement({
-  map: map,
-  element: element
-});
-marker.bindTo('position', geolocation);
-
-// This is silly: gjslint generates a "No docs found for member
-// 'element.style.display'" without the auto-executing function.
-(function() {
-  element.style.display = 'block';
-})();
