@@ -39,7 +39,7 @@ ol.ProjectionUnits = {
 ol.METERS_PER_UNIT = {};
 ol.METERS_PER_UNIT[ol.ProjectionUnits.DEGREES] =
     2 * Math.PI * ol.sphere.NORMAL.radius / 360;
-ol.METERS_PER_UNIT[ol.ProjectionUnits.FEET] = 0.02540005080010160020;
+ol.METERS_PER_UNIT[ol.ProjectionUnits.FEET] = 0.3048;
 ol.METERS_PER_UNIT[ol.ProjectionUnits.METERS] = 1;
 
 
