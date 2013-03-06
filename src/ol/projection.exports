@@ -17,3 +17,4 @@
 @exportSymbol ol.projection.getTransformFromCodes
 @exportSymbol ol.projection.transform
 @exportSymbol ol.projection.transformWithCodes
+@exportSymbol ol.projection.configureProj4jsProjection

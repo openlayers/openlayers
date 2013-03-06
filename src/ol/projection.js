@@ -108,14 +108,6 @@ ol.Projection.prototype.getExtent = function() {
 
 
 /**
- * @param {ol.Extent} extent Extent.
- */
-ol.Projection.prototype.setExtent = function(extent) {
-  this.extent_ = extent;
-};
-
-
-/**
  * @param {number} resolution Resolution.
  * @param {ol.Coordinate} point Point.
  * @return {number} Point resolution.
@@ -662,4 +654,15 @@ ol.projection.transformWithCodes =
   var vertex = [point.x, point.y];
   vertex = transformFn(vertex, vertex, 2);
   return new ol.Coordinate(vertex[0], vertex[1]);
+};
+
+
+/**
+ * @param {ol.Proj4jsProjectionOptions} options Projection config options.
+ * @return {ol.Proj4jsProjection_} Proj4js projection.
+ */
+ol.projection.configureProj4jsProjection = function(options) {
+  goog.asserts.assert(!goog.object.containsKey(
+      ol.projection.proj4jsProjections_, options.code));
+  return ol.projection.getProj4jsProjectionFromCode_(options);
 };
