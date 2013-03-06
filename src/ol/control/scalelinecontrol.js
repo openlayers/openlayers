@@ -176,7 +176,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function(frameState) {
 
     // Convert pointResolution from meters or feet to degrees
     if (goog.isNull(this.toEPSG4326_)) {
-      this.toEPSG4326_ = ol.projection.getTransform(
+      this.toEPSG4326_ = ol.projection.getTransformFromProjections(
           projection, ol.projection.get('EPSG:4326'));
     }
     var vertex = [center.x, center.y];

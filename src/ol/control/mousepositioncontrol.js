@@ -169,7 +169,7 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
   if (!goog.isNull(pixel)) {
     if (this.renderedProjection_ != this.mapProjection_) {
       if (!goog.isNull(this.projection_)) {
-        this.transform_ = ol.projection.getTransform(
+        this.transform_ = ol.projection.getTransformFromProjections(
             this.mapProjection_, this.projection_);
       } else {
         this.transform_ = ol.projection.identityTransform;

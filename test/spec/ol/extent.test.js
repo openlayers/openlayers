@@ -70,8 +70,7 @@ describe('ol.Extent', function() {
   describe('transform', function() {
 
     it('does transform', function() {
-      var transformFn =
-          ol.projection.getTransformFromCodes('EPSG:4326', 'EPSG:3857');
+      var transformFn = ol.projection.getTransform('EPSG:4326', 'EPSG:3857');
       var sourceExtent = new ol.Extent(-15, -30, 45, 60);
       var destinationExtent = sourceExtent.transform(transformFn);
       expect(destinationExtent).not.toBeUndefined();

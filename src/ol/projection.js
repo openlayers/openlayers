@@ -218,7 +218,7 @@ ol.Proj4jsProjection_.prototype.getPointResolution =
     // measuring its width and height on the normal sphere, and taking the
     // average of the width and height.
     if (goog.isNull(this.toEPSG4326_)) {
-      this.toEPSG4326_ = ol.projection.getTransform(
+      this.toEPSG4326_ = ol.projection.getTransformFromProjections(
           this, ol.projection.getProj4jsProjectionFromCode_({
             code: 'EPSG:4326',
             extent: null
@@ -430,7 +430,7 @@ ol.projection.removeTransform = function(source, destination) {
 
 /**
  * @param {ol.ProjectionLike} projectionLike Either a code string which is a
- *     combination of authority and identifier such as “EPSG:4326”, or an
+ *     combination of authority and identifier such as "EPSG:4326", or an
  *     existing projection object, or undefined.
  * @return {ol.Projection} Projection.
  */
@@ -499,9 +499,27 @@ ol.projection.equivalent = function(projection1, projection2) {
   } else if (projection1.getUnits() != projection2.getUnits()) {
     return false;
   } else {
-    var transformFn = ol.projection.getTransform(projection1, projection2);
+    var transformFn = ol.projection.getTransformFromProjections(
+        projection1, projection2);
     return transformFn === ol.projection.cloneTransform;
   }
+};
+
+
+/**
+ * Given the projection-like objects this method searches for a transformation
+ * function to convert a coordinates array from the source projection to the
+ * destination projection.
+ *
+ * @param {ol.ProjectionLike} source Source.
+ * @param {ol.ProjectionLike} destination Destination.
+ * @return {ol.TransformFunction} Transform.
+ */
+ol.projection.getTransform = function(source, destination) {
+  var sourceProjection = ol.projection.get(source);
+  var destinationProjection = ol.projection.get(destination);
+  return ol.projection.getTransformFromProjections(
+      sourceProjection, destinationProjection);
 };
 
 
@@ -509,14 +527,15 @@ ol.projection.equivalent = function(projection1, projection2) {
  * Searches a function that can be used to convert coordinates from the source
  * projection to the destination projection.
  *
- * @param {ol.Projection} source Source.
- * @param {ol.Projection} destination Destination.
+ * @param {ol.Projection} sourceProjection Source projection.
+ * @param {ol.Projection} destinationProjection Destination projection.
  * @return {ol.TransformFunction} Transform.
  */
-ol.projection.getTransform = function(source, destination) {
+ol.projection.getTransformFromProjections =
+    function(sourceProjection, destinationProjection) {
   var transforms = ol.projection.transforms_;
-  var sourceCode = source.getCode();
-  var destinationCode = destination.getCode();
+  var sourceCode = sourceProjection.getCode();
+  var destinationCode = destinationProjection.getCode();
   var transform;
   if (goog.object.containsKey(transforms, sourceCode) &&
       goog.object.containsKey(transforms[sourceCode], destinationCode)) {
@@ -524,23 +543,23 @@ ol.projection.getTransform = function(source, destination) {
   }
   if (ol.HAVE_PROJ4JS && !goog.isDef(transform)) {
     var proj4jsSource;
-    if (source instanceof ol.Proj4jsProjection_) {
-      proj4jsSource = source;
+    if (sourceProjection instanceof ol.Proj4jsProjection_) {
+      proj4jsSource = sourceProjection;
     } else {
       proj4jsSource =
           ol.projection.getProj4jsProjectionFromCode_({
-            code: source.getCode(),
+            code: sourceCode,
             extent: null
           });
     }
     var sourceProj4jsProj = proj4jsSource.getProj4jsProj();
     var proj4jsDestination;
-    if (destination instanceof ol.Proj4jsProjection_) {
-      proj4jsDestination = destination;
+    if (destinationProjection instanceof ol.Proj4jsProjection_) {
+      proj4jsDestination = destinationProjection;
     } else {
       proj4jsDestination =
           ol.projection.getProj4jsProjectionFromCode_({
-            code: destination.getCode(),
+            code: destinationCode,
             extent: null
           });
     }
@@ -575,29 +594,14 @@ ol.projection.getTransform = function(source, destination) {
       }
       return output;
     };
-    ol.projection.addTransform(source, destination, transform);
+    ol.projection.addTransform(
+        sourceProjection, destinationProjection, transform);
   }
   if (!goog.isDef(transform)) {
     goog.asserts.assert(goog.isDef(transform));
     transform = ol.projection.identityTransform;
   }
   return transform;
-};
-
-
-/**
- * Given the projection codes this method searches for a transformation function
- * to convert a coordinates array from the source projection to the destination
- * projection.
- *
- * @param {string} sourceCode Source code.
- * @param {string} destinationCode Destination code.
- * @return {ol.TransformFunction} Transform.
- */
-ol.projection.getTransformFromCodes = function(sourceCode, destinationCode) {
-  var source = ol.projection.get(sourceCode);
-  var destination = ol.projection.get(destinationCode);
-  return ol.projection.getTransform(source, destination);
 };
 
 
@@ -642,11 +646,9 @@ ol.projection.cloneTransform = function(input, opt_output, opt_dimension) {
 
 
 /**
- * Transforms the given point to the destination projection.
- *
  * @param {ol.Coordinate} point Point.
- * @param {ol.Projection} source Source.
- * @param {ol.Projection} destination Destination.
+ * @param {ol.ProjectionLike} source Source.
+ * @param {ol.ProjectionLike} destination Destination.
  * @return {ol.Coordinate} Point.
  */
 ol.projection.transform = function(point, source, destination) {
@@ -658,15 +660,17 @@ ol.projection.transform = function(point, source, destination) {
 
 
 /**
+ * Transforms the given point to the destination projection.
+ *
  * @param {ol.Coordinate} point Point.
- * @param {string} sourceCode Source code.
- * @param {string} destinationCode Destination code.
+ * @param {ol.Projection} sourceProjection Source projection.
+ * @param {ol.Projection} destinationProjection Destination projection.
  * @return {ol.Coordinate} Point.
  */
-ol.projection.transformWithCodes =
-    function(point, sourceCode, destinationCode) {
-  var transformFn = ol.projection.getTransformFromCodes(
-      sourceCode, destinationCode);
+ol.projection.transformWithProjections =
+    function(point, sourceProjection, destinationProjection) {
+  var transformFn = ol.projection.getTransformFromProjections(
+      sourceProjection, destinationProjection);
   var vertex = [point.x, point.y];
   vertex = transformFn(vertex, vertex, 2);
   return new ol.Coordinate(vertex[0], vertex[1]);

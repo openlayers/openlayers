@@ -11,9 +11,9 @@ goog.require('ol.projection');
 goog.require('ol.source.MapQuestOpenAerial');
 
 
-var LONDON = ol.projection.transformWithCodes(
+var LONDON = ol.projection.transform(
     new ol.Coordinate(-0.12755, 51.507222), 'EPSG:4326', 'EPSG:3857');
-var MOSCOW = ol.projection.transformWithCodes(
+var MOSCOW = ol.projection.transform(
     new ol.Coordinate(37.6178, 55.7517), 'EPSG:4326', 'EPSG:3857');
 
 var layer = new ol.layer.TileLayer({

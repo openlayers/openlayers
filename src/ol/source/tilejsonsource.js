@@ -87,8 +87,8 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function() {
     var bounds = tileJSON.bounds;
     epsg4326Extent = new ol.Extent(
         bounds[0], bounds[1], bounds[2], bounds[3]);
-    extent = epsg4326Extent.transform(
-        ol.projection.getTransform(epsg4326Projection, this.getProjection()));
+    extent = epsg4326Extent.transform(ol.projection.getTransformFromProjections(
+        epsg4326Projection, this.getProjection()));
     this.setExtent(extent);
   } else {
     epsg4326Extent = null;

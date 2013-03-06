@@ -111,7 +111,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                 };
               })));
 
-  var transform = ol.projection.getTransform(
+  var transform = ol.projection.getTransformFromProjections(
       ol.projection.get('EPSG:4326'), this.getProjection());
   var attributions = goog.array.map(
       resource.imageryProviders,
