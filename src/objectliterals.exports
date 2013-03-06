@@ -153,3 +153,10 @@
 
 @exportObjectLiteral ol.tilegrid.XYZOptions
 @exportObjectLiteralProperty ol.tilegrid.XYZOptions.maxZoom number
+
+@exportObjectLiteral ol.ProjectionOptions
+@exportObjectLiteralProperty ol.ProjectionOptions.code string
+@exportObjectLiteralProperty ol.ProjectionOptions.units ol.ProjectionUnits
+@exportObjectLiteralProperty ol.ProjectionOptions.extent ol.Extent
+@exportObjectLiteralProperty ol.ProjectionOptions.axisOrientation string|undefined
+@exportObjectLiteralProperty ol.ProjectionOptions.global boolean|undefined

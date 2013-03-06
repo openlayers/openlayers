@@ -46,46 +46,41 @@ ol.METERS_PER_UNIT[ol.ProjectionUnits.METERS] = 1;
 
 /**
  * @constructor
- * @param {string} code Code.
- * @param {ol.ProjectionUnits} units Units.
- * @param {ol.Extent} extent Extent.
- * @param {string=} opt_axisOrientation Axis orientation.
- * @param {boolean=} opt_global Wether the projection is global.
+ * @param {ol.ProjectionOptions} options Options object.
  */
-ol.Projection =
-    function(code, units, extent, opt_axisOrientation, opt_global) {
+ol.Projection = function(options) {
 
   /**
    * @private
    * @type {string}
    */
-  this.code_ = code;
+  this.code_ = options.code;
 
   /**
    * @private
    * @type {ol.ProjectionUnits}
    */
-  this.units_ = units;
+  this.units_ = options.units;
 
   /**
    * @private
    * @type {ol.Extent}
    */
-  this.extent_ = extent;
+  this.extent_ = options.extent;
 
   /**
    * @private
    * @type {string}
    */
-  this.axisOrientation_ = goog.isDef(opt_axisOrientation) ?
-      opt_axisOrientation : 'enu';
+  this.axisOrientation_ = goog.isDef(options.axisOrientation) ?
+      options.axisOrientation : 'enu';
 
   /**
    * @private
-   * @type {string}
+   * @type {boolean}
    */
-  this.global_ = goog.isDef(opt_global) ?
-      opt_global : false;
+  this.global_ = goog.isDef(options.global) ?
+      options.global : false;
 
   /**
    * @private
@@ -188,7 +183,12 @@ ol.Proj4jsProjection_ = function(code, proj4jsProj) {
 
   var units = /** @type {ol.ProjectionUnits} */ (proj4jsProj.units);
 
-  goog.base(this, code, units, null, proj4jsProj.axis);
+  goog.base(this, {
+    code: code,
+    units: units,
+    extent: null,
+    axisOrientation: proj4jsProj.axis
+  });
 
   /**
    * @private

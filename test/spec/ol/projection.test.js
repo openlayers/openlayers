@@ -305,8 +305,16 @@ describe('ol.projection', function() {
     var units = ol.ProjectionUnits.DEGREES;
 
     it('removes functions cached by addTransform', function() {
-      var foo = new ol.Projection('foo', units, extent);
-      var bar = new ol.Projection('bar', units, extent);
+      var foo = new ol.Projection({
+        code: 'foo',
+        units: units,
+        extent: extent
+      });
+      var bar = new ol.Projection({
+        code: 'bar',
+        units: units,
+        extent: extent
+      });
       var transform = function(input, output, dimension) {return input};
       ol.projection.addTransform(foo, bar, transform);
       expect(ol.projection.transforms_).not.toBeUndefined();

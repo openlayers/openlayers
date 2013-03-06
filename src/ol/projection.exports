@@ -1,4 +1,4 @@
-@exportSymbol ol.Projection
+@exportClass ol.Projection ol.ProjectionOptions
 @exportProperty ol.Projection.prototype.getAxisOrientation
 @exportProperty ol.Projection.prototype.getCode
 @exportProperty ol.Projection.prototype.getExtent
