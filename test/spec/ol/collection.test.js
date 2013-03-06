@@ -104,6 +104,35 @@ describe('ol.collection', function() {
     });
   });
 
+  describe('remove', function() {
+    it('removes the first matching element', function() {
+      var collection = new ol.Collection([0, 1, 2]);
+      expect(collection.remove(1)).toEqual(1);
+      expect(collection.getArray()).toEqual([0, 2]);
+      expect(collection.getLength()).toEqual(2);
+    });
+    it('fires a remove event', function() {
+      var collection = new ol.Collection([0, 1, 2]);
+      var cb = jasmine.createSpy();
+      goog.events.listen(collection, ol.CollectionEventType.REMOVE, cb);
+      expect(collection.remove(1)).toEqual(1);
+      expect(cb).toHaveBeenCalled();
+      expect(cb.mostRecentCall.args[0].elem).toEqual(1);
+    });
+    it('does not remove more than one matching element', function() {
+      var collection = new ol.Collection([0, 1, 1, 2]);
+      expect(collection.remove(1)).toEqual(1);
+      expect(collection.getArray()).toEqual([0, 1, 2]);
+      expect(collection.getLength()).toEqual(3);
+    });
+    it('returns undefined if the element is not found', function() {
+      var collection = new ol.Collection([0, 1, 2]);
+      expect(collection.remove(3)).toBeUndefined();
+      expect(collection.getArray()).toEqual([0, 1, 2]);
+      expect(collection.getLength()).toEqual(3);
+    });
+  });
+
   describe('setAt and event', function() {
     it('does dispatch events', function() {
       var collection = new ol.Collection(['a', 'b']);

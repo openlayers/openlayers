@@ -160,6 +160,22 @@ ol.Collection.prototype.push = function(elem) {
 
 
 /**
+ * Removes the first occurence of elem from the collection.
+ * @param {*} elem Element.
+ * @return {*} The removed element or undefined if elem was not found.
+ */
+ol.Collection.prototype.remove = function(elem) {
+  var i;
+  for (i = 0; i < this.array_.length; ++i) {
+    if (this.array_[i] === elem) {
+      return this.removeAt(i);
+    }
+  }
+  return undefined;
+};
+
+
+/**
  * @param {number} index Index.
  * @return {*} Value.
  */
