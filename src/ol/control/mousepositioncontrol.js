@@ -23,10 +23,11 @@ goog.require('ol.projection');
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.MousePositionOptions} mousePositionOptions Mouse position
- *     options.
+ * @param {ol.control.MousePositionOptions=} opt_options Options.
  */
-ol.control.MousePosition = function(mousePositionOptions) {
+ol.control.MousePosition = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': 'ol-mouse-position'
@@ -34,28 +35,28 @@ ol.control.MousePosition = function(mousePositionOptions) {
 
   goog.base(this, {
     element: element,
-    map: mousePositionOptions.map,
-    target: mousePositionOptions.target
+    map: options.map,
+    target: options.target
   });
 
   /**
    * @private
    * @type {ol.Projection|undefined}
    */
-  this.projection_ = mousePositionOptions.projection;
+  this.projection_ = options.projection;
 
   /**
    * @private
    * @type {ol.CoordinateFormatType|undefined}
    */
-  this.coordinateFormat_ = mousePositionOptions.coordinateFormat;
+  this.coordinateFormat_ = options.coordinateFormat;
 
   /**
    * @private
    * @type {string}
    */
-  this.undefinedHTML_ = goog.isDef(mousePositionOptions.undefinedHTML) ?
-      mousePositionOptions.undefinedHTML : '';
+  this.undefinedHTML_ = goog.isDef(options.undefinedHTML) ?
+      options.undefinedHTML : '';
 
   /**
    * @private

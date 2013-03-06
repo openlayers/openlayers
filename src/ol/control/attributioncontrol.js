@@ -21,10 +21,11 @@ goog.require('ol.source.Source');
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.AttributionOptions} attributionOptions Attribution
- *     options.
+ * @param {ol.control.AttributionOptions=} opt_options Options.
  */
-ol.control.Attribution = function(attributionOptions) {
+ol.control.Attribution = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   this.ulElement_ = goog.dom.createElement(goog.dom.TagName.UL);
 
@@ -34,8 +35,8 @@ ol.control.Attribution = function(attributionOptions) {
 
   goog.base(this, {
     element: element,
-    map: attributionOptions.map,
-    target: attributionOptions.target
+    map: options.map,
+    target: options.target
   });
 
   /**

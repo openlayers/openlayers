@@ -22,7 +22,6 @@ var layers = new ol.Collection([
 var map = new ol.Map({
   layers: layers,
   renderers: ol.RendererHints.createFromQueryData(),
-  scaleLineControl: true,
   target: 'map',
   view: new ol.View2D({
     center: new ol.Coordinate(0, 0),
