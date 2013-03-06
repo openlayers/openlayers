@@ -630,6 +630,18 @@ ol.Map.prototype.requestRenderFrame = function() {
 
 
 /**
+ * @param {ol.layer.Layer} layer Layer.
+ * @return {ol.layer.Layer|undefined} The removed layer or undefined if the
+ *     layer was not found.
+ */
+ol.Map.prototype.removeLayer = function(layer) {
+  var layers = this.getLayers();
+  goog.asserts.assert(goog.isDef(layers));
+  return /** @type {ol.layer.Layer|undefined} */ (layers.remove(layer));
+};
+
+
+/**
  * @param {number} time Time.
  * @private
  */
