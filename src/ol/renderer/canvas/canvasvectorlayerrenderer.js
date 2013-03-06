@@ -271,11 +271,13 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
 
   var renderedFeatures = {};
   var tilesToRender = {};
+  // TODO make gutter configurable?
+  var tileGutter = 15 * tileResolution;
   var tile, tileCoord, key, tileState, x, y;
   // render features by geometry type
   var filters = this.geometryFilters_,
       numFilters = filters.length,
-      i, geomFilter, extentFilter, type, features,
+      i, geomFilter, tileExtent, extentFilter, type, features,
       groups, group, j, numGroups, deferred;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
@@ -285,8 +287,12 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       if (this.tileCache_.containsKey(key)) {
         tilesToRender[key] = tileCoord;
       } else if (!frameState.viewHints[ol.ViewHint.ANIMATING]) {
-        extentFilter = new ol.filter.Extent(
-            tileGrid.getTileCoordExtent(tileCoord));
+        tileExtent = tileGrid.getTileCoordExtent(tileCoord);
+        tileExtent.minX -= tileGutter;
+        tileExtent.minY -= tileGutter;
+        tileExtent.maxX += tileGutter;
+        tileExtent.maxY += tileGutter;
+        extentFilter = new ol.filter.Extent(tileExtent);
         for (i = 0; i < numFilters; ++i) {
           geomFilter = filters[i];
           type = geomFilter.getType();
