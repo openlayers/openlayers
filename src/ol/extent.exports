@@ -1,4 +1,5 @@
 @exportSymbol ol.Extent
+@exportProperty ol.Extent.prototype.getCenter
 @exportProperty ol.Extent.prototype.getHeight
 @exportProperty ol.Extent.prototype.getWidth
 @exportProperty ol.Extent.prototype.containsCoordinate
