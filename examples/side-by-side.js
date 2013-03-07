@@ -57,10 +57,10 @@ keyboardInteraction.addCallback('0', function() {
   layer.setVisible(true);
 });
 keyboardInteraction.addCallback('o', function() {
-  layer.setOpacity(layer.getOpacity() - 0.1);
+  layer.setOpacity(layer.getOpacity() - 0.125);
 });
 keyboardInteraction.addCallback('O', function() {
-  layer.setOpacity(layer.getOpacity() + 0.1);
+  layer.setOpacity(layer.getOpacity() + 0.125);
 });
 keyboardInteraction.addCallback('r', function() {
   view.setRotation(0);
