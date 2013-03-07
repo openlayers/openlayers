@@ -63,6 +63,7 @@ EXAMPLES_SRC = [path
                 if not path.startswith('examples/bootstrap')
                 if not path.startswith('examples/font-awesome')
                 if path != 'examples/Jugl.js'
+                if path != 'examples/jquery.min.js'
                 if path != 'examples/example-list.js']
 
 INTERNAL_SRC = [
@@ -205,6 +206,14 @@ def examples_star_json(name, match):
             'inputs': [
                 'examples/%(id)s.js' % match.groupdict(),
                 'build/src/internal/src/types.js',
+            ],
+            'externs': [
+                '//json.js',
+                '//jquery-1.7.js',
+                'externs/bingmaps.js',
+                'externs/geojson.js',
+                'externs/proj4js.js',
+                'externs/tilejson.js',
             ],
         })
         with open(t.name, 'w') as f:
@@ -410,7 +419,7 @@ def hostexamples(t):
         'build/ol.css', build_dir)
     t.cp('examples/example-list.html', examples_dir + '/index.html')
     t.cp('examples/example-list.js', 'examples/example-list.xml',
-        'examples/Jugl.js', examples_dir)
+        'examples/Jugl.js', 'examples/jquery.min.js', examples_dir)
     t.rm_rf('build/gh-pages/%(BRANCH)s/closure-library')
     t.makedirs('build/gh-pages/%(BRANCH)s/closure-library')
     with t.chdir('build/gh-pages/%(BRANCH)s/closure-library'):
