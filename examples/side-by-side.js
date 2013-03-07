@@ -4,8 +4,6 @@ goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.animation');
-goog.require('ol.control.MousePosition');
-goog.require('ol.control.defaults');
 goog.require('ol.easing');
 goog.require('ol.interaction.Keyboard');
 goog.require('ol.layer.TileLayer');
@@ -27,28 +25,14 @@ var view = new ol.View2D({
   zoom: 1
 });
 
-var domMousePosition = new ol.control.MousePosition({
-  coordinateFormat: ol.Coordinate.toStringHDMS,
-  projection: ol.projection.getFromCode('EPSG:4326'),
-  target: document.getElementById('domMousePosition'),
-  undefinedHTML: '&nbsp;'
-});
 var domMap = new ol.Map({
-  controls: ol.control.defaults({}, [domMousePosition]),
   layers: new ol.Collection([layer]),
   renderer: ol.RendererHint.DOM,
   target: 'domMap',
   view: view
 });
 
-var webglMousePosition = new ol.control.MousePosition({
-  coordinateFormat: ol.Coordinate.toStringHDMS,
-  projection: ol.projection.getFromCode('EPSG:4326'),
-  target: document.getElementById('webglMousePosition'),
-  undefinedHTML: '&nbsp;'
-});
 var webglMap = new ol.Map({
-  controls: ol.control.defaults({}, [webglMousePosition]),
   renderer: ol.RendererHint.WEBGL,
   target: 'webglMap'
 });
@@ -58,14 +42,7 @@ if (webglMap !== null) {
 }
 
 
-var canvasMousePosition = new ol.control.MousePosition({
-  coordinateFormat: ol.Coordinate.toStringHDMS,
-  projection: ol.projection.getFromCode('EPSG:4326'),
-  target: document.getElementById('canvasMousePosition'),
-  undefinedHtml: '&nbsp;'
-});
 var canvasMap = new ol.Map({
-  controls: ol.control.defaults({}, [canvasMousePosition]),
   renderer: ol.RendererHint.CANVAS,
   target: 'canvasMap'
 });
@@ -76,144 +53,19 @@ if (canvasMap !== null) {
 
 var keyboardInteraction = new ol.interaction.Keyboard();
 keyboardInteraction.addCallback('0', function() {
-  layer.setBrightness(0);
-  layer.setContrast(1);
-  layer.setHue(0);
-  layer.setSaturation(1);
   layer.setOpacity(1);
   layer.setVisible(true);
 });
-keyboardInteraction.addCallback('b', function() {
-  layer.setBrightness(layer.getBrightness() - 0.1);
-});
-keyboardInteraction.addCallback('B', function() {
-  layer.setBrightness(layer.getBrightness() + 0.1);
-});
-keyboardInteraction.addCallback('c', function() {
-  layer.setContrast(layer.getContrast() - 0.1);
-});
-keyboardInteraction.addCallback('C', function() {
-  // contrast is unbounded, but for this example we clamp to 3
-  layer.setContrast(Math.min(3, layer.getContrast() + 0.1));
-});
-keyboardInteraction.addCallback('h', function() {
-  layer.setHue(layer.getHue() - (Math.PI / 5));
-});
-keyboardInteraction.addCallback('H', function() {
-  layer.setHue(layer.getHue() + (Math.PI / 5));
-});
-keyboardInteraction.addCallback('j', function() {
-  var bounce = ol.animation.bounce({
-    resolution: 2 * view.getResolution()
-  });
-  domMap.addPreRenderFunction(bounce);
-  webglMap.addPreRenderFunction(bounce);
-  canvasMap.addPreRenderFunction(bounce);
-});
-keyboardInteraction.addCallback('l', function() {
-  var pan = ol.animation.pan({
-    source: view.getCenter(),
-    easing: ol.easing.elastic
-  });
-  domMap.addPreRenderFunction(pan);
-  webglMap.addPreRenderFunction(pan);
-  canvasMap.addPreRenderFunction(pan);
-  view.setCenter(LONDON);
-});
-keyboardInteraction.addCallback('L', function() {
-  var start = +new Date();
-  var duration = 5000;
-  var bounce = ol.animation.bounce({
-    resolution: 2 * view.getResolution(),
-    start: start,
-    duration: duration
-  });
-  var pan = ol.animation.pan({
-    source: view.getCenter(),
-    start: start,
-    duration: duration
-  });
-  var rotate = ol.animation.rotate({
-    rotation: 4 * Math.PI,
-    start: start,
-    duration: duration
-  });
-  var preRenderFunctions = [bounce, pan, rotate];
-  domMap.addPreRenderFunctions(preRenderFunctions);
-  webglMap.addPreRenderFunctions(preRenderFunctions);
-  canvasMap.addPreRenderFunctions(preRenderFunctions);
-  view.setCenter(LONDON);
-});
-keyboardInteraction.addCallback('m', function() {
-  var pan = ol.animation.pan({
-    source: view.getCenter(),
-    duration: 1000,
-    easing: ol.easing.bounce
-  });
-  domMap.addPreRenderFunction(pan);
-  webglMap.addPreRenderFunction(pan);
-  canvasMap.addPreRenderFunction(pan);
-  view.setCenter(MOSCOW);
-});
-keyboardInteraction.addCallback('M', function() {
-  var start = +new Date();
-  var duration = 5000;
-  var bounce = ol.animation.bounce({
-    resolution: 2 * view.getResolution(),
-    start: start,
-    duration: duration
-  });
-  var pan = ol.animation.pan({
-    source: view.getCenter(),
-    start: start,
-    duration: duration
-  });
-  var rotate = ol.animation.rotate({
-    rotation: -4 * Math.PI,
-    start: start,
-    duration: duration
-  });
-  var preRenderFunctions = [bounce, pan, rotate];
-  domMap.addPreRenderFunctions(preRenderFunctions);
-  webglMap.addPreRenderFunctions(preRenderFunctions);
-  canvasMap.addPreRenderFunctions(preRenderFunctions);
-  view.setCenter(MOSCOW);
-});
 keyboardInteraction.addCallback('o', function() {
-  layer.setOpacity(layer.getOpacity() - 0.1);
+  layer.setOpacity(layer.getOpacity() - 0.125);
 });
 keyboardInteraction.addCallback('O', function() {
-  layer.setOpacity(layer.getOpacity() + 0.1);
+  layer.setOpacity(layer.getOpacity() + 0.125);
 });
 keyboardInteraction.addCallback('r', function() {
   view.setRotation(0);
 });
-keyboardInteraction.addCallback('s', function() {
-  layer.setSaturation(layer.getSaturation() - 0.1);
-});
-keyboardInteraction.addCallback('S', function() {
-  // saturation is unbounded, but for this example we clamp to 3
-  layer.setSaturation(Math.min(3, layer.getSaturation() + 0.1));
-});
 keyboardInteraction.addCallback('vV', function() {
   layer.setVisible(!layer.getVisible());
-});
-keyboardInteraction.addCallback('x', function() {
-  var rotate = ol.animation.rotate({
-    rotation: 4 * Math.PI,
-    duration: 2000
-  });
-  domMap.addPreRenderFunction(rotate);
-  webglMap.addPreRenderFunction(rotate);
-  canvasMap.addPreRenderFunction(rotate);
-});
-keyboardInteraction.addCallback('X', function() {
-  var rotate = ol.animation.rotate({
-    rotation: -4 * Math.PI,
-    duration: 2000
-  });
-  domMap.addPreRenderFunction(rotate);
-  webglMap.addPreRenderFunction(rotate);
-  canvasMap.addPreRenderFunction(rotate);
 });
 domMap.getInteractions().push(keyboardInteraction);

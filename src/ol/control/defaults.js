@@ -2,7 +2,6 @@ goog.provide('ol.control.defaults');
 
 goog.require('goog.array');
 goog.require('ol.control.Attribution');
-goog.require('ol.control.ScaleLine');
 goog.require('ol.control.Zoom');
 
 
@@ -24,14 +23,6 @@ ol.control.defaults = function(opt_options, opt_controls) {
     var attributionControlOptions = goog.isDef(options.attributionOptions) ?
         options.attributionOptions : undefined;
     controls.push(new ol.control.Attribution(attributionControlOptions));
-  }
-
-  var scaleLineControl = goog.isDef(options.scaleLine) ?
-      options.scaleLine : false;
-  if (scaleLineControl) {
-    var scaleLineOptions = goog.isDef(options.scaleLineOptions) ?
-        options.scaleLineOptions : undefined;
-    controls.push(new ol.control.ScaleLine(scaleLineOptions));
   }
 
   var zoomControl = goog.isDef(options.zoom) ?

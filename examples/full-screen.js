@@ -11,9 +11,6 @@ var layer = new ol.layer.TileLayer({
   source: new ol.source.MapQuestOpenAerial()
 });
 var map = new ol.Map({
-  controls: ol.control.defaults({
-    scaleLine: true
-  }),
   layers: [layer],
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',

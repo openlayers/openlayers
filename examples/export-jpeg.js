@@ -1,6 +1,6 @@
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
+goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.source.OpenStreetMap');
@@ -12,10 +12,15 @@ var map = new ol.Map({
       source: new ol.source.OpenStreetMap()
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
     center: new ol.Coordinate(0, 0),
     zoom: 2
   })
 });
+
+var exportJPEGElement = document.getElementById('export-jpeg');
+exportJPEGElement.addEventListener('click', function(e) {
+  e.target.href = map.getRenderer().getCanvas().toDataURL('image/jpeg');
+}, false);
