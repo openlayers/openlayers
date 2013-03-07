@@ -1,3 +1,10 @@
 @exportSymbol ol.Extent
 @exportProperty ol.Extent.prototype.getHeight
 @exportProperty ol.Extent.prototype.getWidth
+@exportProperty ol.Extent.prototype.containsCoordinate
+@exportProperty ol.Extent.prototype.containsExtent
+@exportProperty ol.Extent.prototype.getBottomLeft
+@exportProperty ol.Extent.prototype.getBottomRight
+@exportProperty ol.Extent.prototype.getTopLeft
+@exportProperty ol.Extent.prototype.getTopRight
+@exportProperty ol.Extent.prototype.transform
