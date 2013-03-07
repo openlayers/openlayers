@@ -13,17 +13,19 @@ goog.require('ol.interaction.Interaction');
 /**
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @param {number} pixelDelta Pixel delta.
+ * @param {ol.interaction.KeyboardPanOptions=} opt_options Options.
  */
-ol.interaction.KeyboardPan = function(pixelDelta) {
+ol.interaction.KeyboardPan = function(opt_options) {
 
   goog.base(this);
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
    * @type {number}
    */
-  this.pixelDelta_ = pixelDelta;
+  this.delta_ = goog.isDef(options.delta) ? options.delta : 128;
 
 };
 goog.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);
@@ -48,7 +50,7 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       goog.asserts.assert(view instanceof ol.View2D);
       var resolution = view.getResolution();
       var delta;
-      var mapUnitsDelta = resolution * this.pixelDelta_;
+      var mapUnitsDelta = resolution * this.delta_;
       if (keyCode == goog.events.KeyCodes.DOWN) {
         delta = new ol.Coordinate(0, -mapUnitsDelta);
       } else if (keyCode == goog.events.KeyCodes.LEFT) {

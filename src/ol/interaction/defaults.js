@@ -72,10 +72,8 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
 
   var keyboard = goog.isDef(options.keyboard) ?
       options.keyboard : true;
-  var keyboardPanOffset = goog.isDef(options.keyboardPanOffset) ?
-      options.keyboardPanOffset : 80;
   if (keyboard) {
-    interactions.push(new ol.interaction.KeyboardPan(keyboardPanOffset));
+    interactions.push(new ol.interaction.KeyboardPan());
     interactions.push(new ol.interaction.KeyboardZoom());
   }
 

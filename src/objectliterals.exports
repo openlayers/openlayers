@@ -74,12 +74,14 @@
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.doubleClickZoom boolean|undefined
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.dragPan boolean|undefined
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.keyboard boolean|undefined
-@exportObjectLiteralProperty ol.interaction.DefaultOptions.keyboardPanOffset number|undefined
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.mouseWheelZoom boolean|undefined
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.shiftDragZoom boolean|undefined
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.touchPan boolean|undefined
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.touchRotate boolean|undefined
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.touchZoom boolean|undefined
+
+@exportObjectLiteral ol.interaction.KeyboardPanOptions
+@exportObjectLiteralProperty ol.interaction.KeyboardPanOptions.pixelDelta number|undefined
 
 @exportObjectLiteral ol.interaction.KeyboardZoomOptions
 @exportObjectLiteralProperty ol.interaction.KeyboardZoomOptions.delta number|undefined
