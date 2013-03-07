@@ -1,9 +1,16 @@
 goog.provide('ol.parser.ogc.WMSCapabilities');
 goog.require('ol.parser.ogc.Versioned');
+goog.require('ol.parser.ogc.WMSCapabilities_v1_0_0');
 goog.require('ol.parser.ogc.WMSCapabilities_v1_1_0');
 goog.require('ol.parser.ogc.WMSCapabilities_v1_1_1');
 goog.require('ol.parser.ogc.WMSCapabilities_v1_1_1_WMSC');
 goog.require('ol.parser.ogc.WMSCapabilities_v1_3_0');
+
+
+/**
+ * @define {boolean} Whether to enable WMS Capabilities version 1.0.0.
+ */
+ol.ENABLE_WMSCAPS_1_0_0 = false;
 
 
 /**
@@ -41,6 +48,9 @@ ol.parser.ogc.WMSCapabilities = function(opt_options) {
   opt_options = opt_options || {};
   opt_options['defaultVersion'] = '1.1.1';
   this.parsers = {};
+  if (ol.ENABLE_WMSCAPS_1_0_0) {
+    this.parsers['v1_0_0'] = ol.parser.ogc.WMSCapabilities_v1_0_0;
+  }
   if (ol.ENABLE_WMSCAPS_1_1_0) {
     this.parsers['v1_1_0'] = ol.parser.ogc.WMSCapabilities_v1_1_0;
   }
