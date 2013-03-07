@@ -18,7 +18,8 @@ ol.projection.EPSG4326 = function(code, opt_axisOrientation) {
     code: code,
     units: ol.ProjectionUnits.DEGREES,
     extent: ol.projection.EPSG4326.EXTENT,
-    axisOrientation: opt_axisOrientation
+    axisOrientation: opt_axisOrientation,
+    global: true
   });
 };
 goog.inherits(ol.projection.EPSG4326, ol.Projection);

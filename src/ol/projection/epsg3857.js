@@ -18,7 +18,8 @@ ol.projection.EPSG3857 = function(code) {
   goog.base(this, {
     code: code,
     units: ol.ProjectionUnits.METERS,
-    extent: ol.projection.EPSG3857.EXTENT
+    extent: ol.projection.EPSG3857.EXTENT,
+    global: true
   });
 };
 goog.inherits(ol.projection.EPSG3857, ol.Projection);
