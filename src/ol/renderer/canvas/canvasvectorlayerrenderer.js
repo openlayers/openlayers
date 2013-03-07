@@ -116,7 +116,6 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    */
   this.dirty_ = false;
 
-
   /**
    * @private
    * @type {boolean}
@@ -309,11 +308,11 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   // render features by geometry type
   var filters = this.geometryFilters_,
       numFilters = filters.length,
+      deferred = false,
       i, geomFilter, tileExtent, extentFilter, type,
-      groups, group, j, numGroups, deferred;
+      groups, group, j, numGroups;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-      deferred = false;
       tileCoord = new ol.TileCoord(z, x, y);
       key = tileCoord.toString();
       if (this.tileCache_.containsKey(key)) {
@@ -347,7 +346,10 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       group = groups[j];
       deferred = sketchCanvasRenderer.renderFeaturesByGeometryType(
           /** @type {ol.geom.GeometryType} */ (type),
-          group[0], group[1]) || deferred;
+          group[0], group[1]);
+      if (deferred) {
+        break;
+      }
     }
     if (!deferred) {
       goog.object.extend(tilesToRender, tilesOnSketchCanvas);
