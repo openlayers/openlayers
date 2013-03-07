@@ -81,6 +81,9 @@
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.touchRotate boolean|undefined
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.touchZoom boolean|undefined
 
+@exportObjectLiteral ol.interaction.KeyboardZoomOptions
+@exportObjectLiteralProperty ol.interaction.KeyboardZoomOptions.delta number|undefined
+
 @exportObjectLiteral ol.layer.LayerOptions
 @exportObjectLiteralProperty ol.layer.LayerOptions.brightness number|undefined
 @exportObjectLiteralProperty ol.layer.LayerOptions.contrast number|undefined
