@@ -55,6 +55,7 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       var view = map.getView();
       goog.asserts.assert(view instanceof ol.View2D);
       var resolution = view.getResolution();
+      var rotation = view.getRotation();
       var mapUnitsDelta = resolution * this.delta_;
       var deltaX = 0, deltaY = 0;
       if (keyCode == goog.events.KeyCodes.DOWN) {
@@ -66,8 +67,9 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       } else {
         deltaY = mapUnitsDelta;
       }
-      view.pan(map, new ol.Coordinate(deltaX, deltaY),
-          ol.interaction.KEYBOARD_PAN_DURATION);
+      var delta = new ol.Coordinate(deltaX, deltaY);
+      delta.rotate(rotation);
+      view.pan(map, delta, ol.interaction.KEYBOARD_PAN_DURATION);
       keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();
     }
