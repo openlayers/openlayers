@@ -4,19 +4,15 @@ goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.projection');
-goog.require('ol.source.Stamen');
+goog.require('ol.source.BingMaps');
 
 
 var map = new ol.Map({
   layers: [
     new ol.layer.TileLayer({
-      source: new ol.source.Stamen({
-        layer: 'watercolor'
-      })
-    }),
-    new ol.layer.TileLayer({
-      source: new ol.source.Stamen({
-        layer: 'terrain-labels'
+      source: new ol.source.BingMaps({
+        key: 'AgtFlPYDnymLEe9zJ5PCkghbNiFZE9aAtTy3mPaEnEBXqLHtFuTcKoZ-miMC3w7R',
+        style: 'AerialWithLabels'
       })
     })
   ],
@@ -24,7 +20,7 @@ var map = new ol.Map({
   target: 'map',
   view: new ol.View2D({
     center: ol.projection.transformWithCodes(
-        new ol.Coordinate(-122.416667, 37.783333), 'EPSG:4326', 'EPSG:3857'),
-    zoom: 12
+        new ol.Coordinate(-123.1, 49.25), 'EPSG:4326', 'EPSG:3857'),
+    zoom: 8
   })
 });

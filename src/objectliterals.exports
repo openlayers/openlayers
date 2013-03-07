@@ -49,8 +49,6 @@
 @exportObjectLiteral ol.control.DefaultsOptions
 @exportObjectLiteralProperty ol.control.DefaultsOptions.attribution boolean|undefined
 @exportObjectLiteralProperty ol.control.DefaultsOptions.attributionOptions ol.control.AttributionOptions|undefined
-@exportObjectLiteralProperty ol.control.DefaultsOptions.scaleLine boolean|undefined
-@exportObjectLiteralProperty ol.control.DefaultsOptions.scaleLineOptions ol.control.ScaleLineOptions|undefined
 @exportObjectLiteralProperty ol.control.DefaultsOptions.zoom boolean|undefined
 @exportObjectLiteralProperty ol.control.DefaultsOptions.zoomOptions ol.control.ZoomOptions|undefined
 
