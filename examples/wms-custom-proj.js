@@ -6,10 +6,8 @@ goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
-goog.require('ol.layer.ImageLayer');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.projection');
-goog.require('ol.source.SingleImageWMS');
 goog.require('ol.source.TiledWMS');
 
 
@@ -34,14 +32,15 @@ var layers = [
       extent: extent
     })
   }),
-  new ol.layer.ImageLayer({
-    source: new ol.source.SingleImageWMS({
+  new ol.layer.TileLayer({
+    source: new ol.source.TiledWMS({
       url: 'http://wms.geo.admin.ch/',
       attributions: [new ol.Attribution(
           '&copy; ' +
           '<a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">' +
           'National parks / geo.admin.ch</a>')],
-      params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'}
+      params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
+      extent: extent
     })
   })
 ];
