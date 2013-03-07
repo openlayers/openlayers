@@ -1,7 +1,10 @@
 goog.provide('ol.layer.Vector');
 
+goog.require('goog.events.EventType');
 goog.require('ol.Feature');
+goog.require('ol.geom.SharedVertices');
 goog.require('ol.layer.Layer');
+goog.require('ol.projection');
 goog.require('ol.source.Vector');
 goog.require('ol.structs.RTree');
 goog.require('ol.style.Style');
@@ -198,6 +201,8 @@ ol.layer.Vector.prototype.addFeatures = function(features) {
   for (var i = 0, ii = features.length; i < ii; ++i) {
     this.featureCache_.add(features[i]);
   }
+  // TODO: events for real - listeners want features and extent here
+  this.dispatchEvent(goog.events.EventType.CHANGE);
 };
 
 
@@ -256,6 +261,60 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
     }
   }
   return featuresBySymbolizer;
+};
+
+
+/**
+ * @param {Object|Element|Document|string} data Feature data.
+ * @param {ol.parser.Parser} parser Feature parser.
+ * @param {ol.Projection} projection This sucks.  The layer should be a view in
+ *     one projection.
+ */
+ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
+  var features;
+  var pointVertices = new ol.geom.SharedVertices();
+  var lineVertices = new ol.geom.SharedVertices();
+  var polygonVertices = new ol.geom.SharedVertices();
+
+  var lookup = {
+    'point': pointVertices,
+    'linestring': lineVertices,
+    'polygon': polygonVertices,
+    'multipoint': pointVertices,
+    'multilinstring': lineVertices,
+    'multipolygon': polygonVertices
+  };
+
+  var callback = function(feature, type) {
+    return lookup[type];
+  };
+  if (typeof data === 'string') {
+    goog.asserts.assert(typeof parser.readFeaturesFromString === 'function',
+        'Expected a parser with readFeaturesFromString method.');
+    features = parser.readFeaturesFromString(data, {callback: callback});
+  } else {
+    // TODO: parse more data types
+    throw new Error('Data type not supported: ' + data);
+  }
+  var sourceProjection = this.getSource().getProjection();
+  var transform = ol.projection.getTransform(sourceProjection, projection);
+
+  transform(
+      pointVertices.coordinates,
+      pointVertices.coordinates,
+      pointVertices.getDimension());
+
+  transform(
+      lineVertices.coordinates,
+      lineVertices.coordinates,
+      lineVertices.getDimension());
+
+  transform(
+      polygonVertices.coordinates,
+      polygonVertices.coordinates,
+      polygonVertices.getDimension());
+
+  this.addFeatures(features);
 };
 
 
