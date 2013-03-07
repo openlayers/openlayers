@@ -7,10 +7,15 @@
 
 The examples are hosted on GitHub (as GitHub pages): http://openlayers.github.com/ol3/master/examples/.
 
-By default the examples use the `ol.js` script, which is compiled using Closure Compiler's ADVANVCED mode.
-By appending `?mode=simple` or `?mode=whitespace` to the URL you can make the example page load `ol-simple.js`
-or `ol-whitespace.js` instead of `ol.js`. As their names suggest it, `ol-simple.js` and `ol-whitespace.js`
-are compiled using the SIMPLE and WHITESPACE modes, respectively. For example:
+By default the examples use the `ol.js` script, which is compiled using Closure
+Compiler's ADVANCED mode.  By appending `?mode=simple` or `?mode=whitespace` to
+the URL you can make the example page load the `ol-simple.js` or
+`ol-whitespace.js` builds instead of `ol.js`. As their names suggest it,
+`ol-simple.js` and `ol-whitespace.js` are compiled using the SIMPLE and
+WHITESPACE modes, respectively. And by appending `?mode=debug` or `?mode=raw`
+you will make the example work in full debug mode.
+
+For example:
 http://openlayers.github.com/ol3/master/examples/full-screen.html?mode=simple.
 
 ## Build OpenLayers 3
@@ -47,12 +52,14 @@ on GitHub. Start by executing the `hostexamples` build target:
 
     $ ./build.py hostexamples
     
-This will build `ol.js`, `ol-simple.js`, `ol-whitespace.js`, and `ol.css`, create the examples index page,
-and copy everything to `build/gh-pages/<branch_name>/`, where `<branch_name>` is the name of the local
-checked out Git branch. You can now open the examples index page in the browser, for example:
-<http://localhost:8000/build/gh-pages/master/examples/>. To make an example use `ol-simple.js` or
-`ol-whitespace.js` instead of `ol.js` append `?mode=simple` or `?mode=whitespace` to the example
-URL.
+This will build `ol.js`, `ol-simple.js`, `ol-whitespace.js`, and `ol.css`,
+create the examples index page, and copy everything to
+`build/gh-pages/<branch_name>/`, where `<branch_name>` is the name of the local
+checked out Git branch. You can now open the examples index page in the
+browser, for example: <http://localhost:8000/build/gh-pages/master/examples/>.
+To make an example use `ol-simple.js` or `ol-whitespace.js` instead of `ol.js`
+append `?mode=simple` or `?mode=whitespace` to the example URL. And append
+`?mode=debug` or `?mode=raw` to make the example work in full debug mode.
 
 ## Run tests
 
