@@ -49,21 +49,20 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       var view = map.getView();
       goog.asserts.assert(view instanceof ol.View2D);
       var resolution = view.getResolution();
-      var delta;
       var mapUnitsDelta = resolution * this.delta_;
+      var deltaX = 0, deltaY = 0;
       if (keyCode == goog.events.KeyCodes.DOWN) {
-        delta = new ol.Coordinate(0, -mapUnitsDelta);
+        deltaY = -mapUnitsDelta;
       } else if (keyCode == goog.events.KeyCodes.LEFT) {
-        delta = new ol.Coordinate(-mapUnitsDelta, 0);
+        deltaX = -mapUnitsDelta;
       } else if (keyCode == goog.events.KeyCodes.RIGHT) {
-        delta = new ol.Coordinate(mapUnitsDelta, 0);
+        deltaX = mapUnitsDelta;
       } else {
-        goog.asserts.assert(keyCode == goog.events.KeyCodes.UP);
-        delta = new ol.Coordinate(0, mapUnitsDelta);
+        deltaY = mapUnitsDelta;
       }
       var oldCenter = view.getCenter();
       var newCenter = new ol.Coordinate(
-          oldCenter.x + delta.x, oldCenter.y + delta.y);
+          oldCenter.x + deltaX, oldCenter.y + deltaY);
       view.setCenter(newCenter);
       keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();
