@@ -83,12 +83,15 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    * Geometry filters in rendering order.
    * @private
    * @type {Array.<ol.filter.Geometry>}
-   * TODO: deal with multis
+   * TODO: these will go away shortly (in favor of one call per symbolizer type)
    */
   this.geometryFilters_ = [
-    new ol.filter.Geometry(ol.geom.GeometryType.POLYGON),
+    new ol.filter.Geometry(ol.geom.GeometryType.POINT),
+    new ol.filter.Geometry(ol.geom.GeometryType.MULTIPOINT),
     new ol.filter.Geometry(ol.geom.GeometryType.LINESTRING),
-    new ol.filter.Geometry(ol.geom.GeometryType.POINT)
+    new ol.filter.Geometry(ol.geom.GeometryType.MULTILINESTRING),
+    new ol.filter.Geometry(ol.geom.GeometryType.POLYGON),
+    new ol.filter.Geometry(ol.geom.GeometryType.MULTIPOLYGON)
   ];
 
   /**
