@@ -53,23 +53,8 @@ if (canvasMap !== null) {
 
 var keyboardInteraction = new ol.interaction.Keyboard();
 keyboardInteraction.addCallback('0', function() {
-  layer.setBrightness(0);
-  layer.setContrast(1);
   layer.setOpacity(1);
   layer.setVisible(true);
-});
-keyboardInteraction.addCallback('b', function() {
-  layer.setBrightness(layer.getBrightness() - 0.1);
-});
-keyboardInteraction.addCallback('B', function() {
-  layer.setBrightness(layer.getBrightness() + 0.1);
-});
-keyboardInteraction.addCallback('c', function() {
-  layer.setContrast(layer.getContrast() - 0.1);
-});
-keyboardInteraction.addCallback('C', function() {
-  // contrast is unbounded, but for this example we clamp to 3
-  layer.setContrast(Math.min(3, layer.getContrast() + 0.1));
 });
 keyboardInteraction.addCallback('j', function() {
   var bounce = ol.animation.bounce({
