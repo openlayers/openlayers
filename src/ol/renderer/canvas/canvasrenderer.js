@@ -139,6 +139,8 @@ ol.renderer.canvas.Renderer.prototype.renderLineStringFeatures_ =
   context.globalAlpha = symbolizer.opacity;
   context.strokeStyle = symbolizer.strokeStyle;
   context.lineWidth = symbolizer.strokeWidth * this.inverseScale_;
+  context.lineCap = 'round'; // TODO: accept this as a symbolizer property
+  context.lineJoin = 'round'; // TODO: accept this as a symbolizer property
   context.beginPath();
   for (i = 0, ii = features.length; i < ii; ++i) {
     geometry = features[i].getGeometry();
@@ -240,6 +242,8 @@ ol.renderer.canvas.Renderer.prototype.renderPolygonFeatures_ =
   if (strokeStyle) {
     context.strokeStyle = symbolizer.strokeStyle;
     context.lineWidth = symbolizer.strokeWidth * this.inverseScale_;
+    context.lineCap = 'round'; // TODO: accept this as a symbolizer property
+    context.lineJoin = 'round'; // TODO: accept this as a symbolizer property
   }
   if (fillStyle) {
     context.fillStyle = fillStyle;
@@ -330,6 +334,8 @@ ol.renderer.canvas.Renderer.renderCircle_ = function(circle) {
   if (strokeStyle) {
     context.lineWidth = strokeWidth;
     context.strokeStyle = strokeStyle;
+    context.lineCap = 'round'; // TODO: accept this as a symbolizer property
+    context.lineJoin = 'round'; // TODO: accept this as a symbolizer property
   }
 
   context.beginPath();
