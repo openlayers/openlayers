@@ -300,15 +300,16 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   finalCanvas.height = sketchSize.height;
   var finalContext = this.context_;
 
-  var renderedFeatures = {};
+  var featuresToRender = {};
   var tilesToRender = {};
+  var tilesOnSketchCanvas = {};
   // TODO make gutter configurable?
   var tileGutter = 15 * tileResolution;
   var tile, tileCoord, key, tileState, x, y;
   // render features by geometry type
   var filters = this.geometryFilters_,
       numFilters = filters.length,
-      i, geomFilter, tileExtent, extentFilter, type, features,
+      i, geomFilter, tileExtent, extentFilter, type,
       groups, group, j, numGroups, deferred;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
@@ -327,22 +328,29 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         for (i = 0; i < numFilters; ++i) {
           geomFilter = filters[i];
           type = geomFilter.getType();
-          features = layer.getFeatures(new ol.filter.Logical(
-              [geomFilter, extentFilter], ol.filter.LogicalOperator.AND));
-          if (features.length) {
-            groups = layer.groupFeaturesBySymbolizerLiteral(features);
-            numGroups = groups.length;
-            for (j = 0; j < numGroups; ++j) {
-              group = groups[j];
-              deferred = sketchCanvasRenderer.renderFeaturesByGeometryType(
-                  type, group[0], group[1]) || deferred;
-            }
+          if (!goog.isDef(featuresToRender[type])) {
+            featuresToRender[type] = {};
           }
+          goog.object.extend(featuresToRender[type],
+              layer.getFeaturesObject(new ol.filter.Logical(
+                  [geomFilter, extentFilter], ol.filter.LogicalOperator.AND)));
         }
-        if (!deferred) {
-          tilesToRender[key] = tileCoord;
-        }
+        tilesOnSketchCanvas[key] = tileCoord;
       }
+    }
+  }
+
+  for (type in featuresToRender) {
+    groups = layer.groupFeaturesBySymbolizerLiteral(featuresToRender[type]);
+    numGroups = groups.length;
+    for (j = 0; j < numGroups; ++j) {
+      group = groups[j];
+      deferred = sketchCanvasRenderer.renderFeaturesByGeometryType(
+          /** @type {ol.geom.GeometryType} */ (type),
+          group[0], group[1]) || deferred;
+    }
+    if (!deferred) {
+      goog.object.extend(tilesToRender, tilesOnSketchCanvas);
     }
   }
 

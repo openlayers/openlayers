@@ -76,9 +76,8 @@ ol.layer.FeatureCache.prototype.add = function(feature) {
 /**
  * @param {ol.filter.Filter=} opt_filter Optional filter.
  * @return {Object.<string, ol.Feature>} Object of features, keyed by id.
- * @private
  */
-ol.layer.FeatureCache.prototype.getFeaturesObject_ = function(opt_filter) {
+ol.layer.FeatureCache.prototype.getFeaturesObject = function(opt_filter) {
   var i, features;
   if (!goog.isDef(opt_filter)) {
     features = this.idLookup_;
@@ -120,15 +119,6 @@ ol.layer.FeatureCache.prototype.getFeaturesObject_ = function(opt_filter) {
     }
   }
   return features;
-};
-
-
-/**
- * @param {ol.filter.Filter=} opt_filter Optional filter.
- * @return {Array.<ol.Feature>} Array of features.
- */
-ol.layer.FeatureCache.prototype.getFeatures = function(opt_filter) {
-  return goog.object.getValues(this.getFeaturesObject_(opt_filter));
 };
 
 
@@ -209,12 +199,22 @@ ol.layer.Vector.prototype.getVectorSource = function() {
  * @return {Array.<ol.Feature>} Array of features.
  */
 ol.layer.Vector.prototype.getFeatures = function(opt_filter) {
-  return this.featureCache_.getFeatures(opt_filter);
+  return goog.object.getValues(
+      this.featureCache_.getFeaturesObject(opt_filter));
 };
 
 
 /**
- * @param {Array.<ol.Feature>} features Features.
+ * @param {ol.filter.Filter=} opt_filter Optional filter.
+ * @return {Object.<string, ol.Feature>} Features.
+ */
+ol.layer.Vector.prototype.getFeaturesObject = function(opt_filter) {
+  return this.featureCache_.getFeaturesObject(opt_filter);
+};
+
+
+/**
+ * @param {Object.<string, ol.Feature>} features Features.
  * @return {Array.<Array>} symbolizers for features.
  */
 ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
@@ -222,9 +222,8 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
   var uniqueLiterals = {},
       featuresBySymbolizer = [],
       style = this.style_,
-      numFeatures = features.length,
       i, j, l, feature, literals, numLiterals, literal, uniqueLiteral, key;
-  for (i = 0; i < numFeatures; ++i) {
+  for (i in features) {
     feature = features[i];
     literals = feature.getSymbolizerLiterals();
     if (goog.isNull(literals)) {
