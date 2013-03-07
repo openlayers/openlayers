@@ -96,13 +96,16 @@ def report_sizes(t):
     t.info('  compressed: %d bytes', len(stringio.getvalue()))
 
 
-virtual('all', 'build-all', 'build', 'examples', 'precommit')
+virtual('default', 'build')
 
 
-virtual('precommit', 'lint', 'build-all', 'test', 'build', 'build-examples', 'check-examples', 'doc')
+virtual('integration-test', 'lint', 'build', 'build-all', 'test', 'build-examples', 'check-examples', 'doc')
 
 
 virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js')
+
+
+virtual('check', 'lint', 'build/ol.css', 'build/ol.js', 'test')
 
 
 virtual('todo', 'fixme')
@@ -236,7 +239,7 @@ def serve(t):
     t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'build/ol.json', 'build/ol-all.json', EXAMPLES_JSON, 'test/test.json')
 
 
-@target('serve-precommit', PLOVR_JAR, INTERNAL_SRC)
+@target('serve-integration-test', PLOVR_JAR, INTERNAL_SRC)
 def serve_precommit(t):
     t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'build/ol-all.json', 'test/test.json')
 
