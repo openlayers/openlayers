@@ -305,8 +305,16 @@ describe('ol.projection', function() {
     var units = ol.ProjectionUnits.DEGREES;
 
     it('removes functions cached by addTransform', function() {
-      var foo = new ol.Projection('foo', units, extent);
-      var bar = new ol.Projection('bar', units, extent);
+      var foo = new ol.Projection({
+        code: 'foo',
+        units: units,
+        extent: extent
+      });
+      var bar = new ol.Projection({
+        code: 'bar',
+        units: units,
+        extent: extent
+      });
       var transform = function(input, output, dimension) {return input};
       ol.projection.addTransform(foo, bar, transform);
       expect(ol.projection.transforms_).not.toBeUndefined();
@@ -325,6 +333,27 @@ describe('ol.projection', function() {
     it('returns value in meters', function() {
       var epsg4326 = ol.projection.getFromCode('EPSG:4326');
       expect(epsg4326.getMetersPerUnit()).toEqual(111194.87428468118);
+    });
+
+  });
+
+  describe('ol.projection.configureProj4jsProjection()', function() {
+
+    beforeEach(function() {
+      ol.projection.proj4jsProjections_ = {};
+    });
+
+    it('returns a configured projection', function() {
+      var extent = new ol.Extent(
+          485869.5728, 76443.1884, 837076.5648, 299941.7864);
+      var epsg21781 = ol.projection.configureProj4jsProjection({
+        code: 'EPSG:21781',
+        extent: extent
+      });
+      expect(epsg21781.getCode()).toEqual('EPSG:21781');
+      expect(epsg21781.getExtent()).toBe(extent);
+      expect(epsg21781.getUnits()).toBe(ol.ProjectionUnits.METERS);
+      expect(epsg21781.isGlobal()).toBeFalsy();
     });
 
   });

@@ -1,9 +1,11 @@
-@exportSymbol ol.Projection
+@exportClass ol.Projection ol.ProjectionOptions
 @exportProperty ol.Projection.prototype.getAxisOrientation
 @exportProperty ol.Projection.prototype.getCode
 @exportProperty ol.Projection.prototype.getExtent
 @exportProperty ol.Projection.prototype.getPointResolution
 @exportProperty ol.Projection.prototype.getUnits
+@exportProperty ol.Projection.prototype.getMetersPerUnit
+@exportProperty ol.Projection.prototype.isGlobal
 
 @exportSymbol ol.ProjectionUnits
 @exportProperty ol.ProjectionUnits.DEGREES
@@ -16,3 +18,4 @@
 @exportSymbol ol.projection.getTransformFromCodes
 @exportSymbol ol.projection.transform
 @exportSymbol ol.projection.transformWithCodes
+@exportSymbol ol.projection.configureProj4jsProjection
