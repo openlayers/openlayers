@@ -327,8 +327,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         for (i = 0; i < numFilters; ++i) {
           geomFilter = filters[i];
           type = geomFilter.getType();
-          features = layer.getFeatures(new ol.filter.Logical(
-              [geomFilter, extentFilter], ol.filter.LogicalOperator.AND));
+          features = layer.getFeatures(geomFilter);
           if (features.length) {
             groups = layer.groupFeaturesBySymbolizerLiteral(features);
             numGroups = groups.length;
