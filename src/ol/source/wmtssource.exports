@@ -1,1 +1,2 @@
 @exportClass ol.source.WMTS ol.source.WMTSOptions
+@exportSymbol ol.source.WMTS.createFromCapabilities

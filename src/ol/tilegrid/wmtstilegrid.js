@@ -51,3 +51,33 @@ ol.tilegrid.WMTS.prototype.getMatrixId = function(z) {
 ol.tilegrid.WMTS.prototype.getMatrixIds = function() {
   return this.matrixIds_;
 };
+
+
+/**
+ * @param {Object} matrixSet An object representing a matrixSet in the
+ *     capabilities document.
+ * @return {ol.tilegrid.WMTS} WMTS tileGrid instance.
+ */
+ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
+    function(matrixSet) {
+
+  var resolutions = [];
+  var matrixIds = [];
+  var origins = [];
+  var tileSizes = [];
+  var projection = ol.projection.get(matrixSet['supportedCRS']);
+  var meters_per_unit = projection.getMetersPerUnit();
+  goog.array.forEach(matrixSet['matrixIds'], function(elt, index, array) {
+    matrixIds.push(elt['identifier']);
+    origins.push(elt['topLeftCorner']);
+    resolutions.push(elt['scaleDenominator'] * 0.28E-3 / meters_per_unit);
+    tileSizes.push(new ol.Size(elt['tileWidth'], elt['tileHeight']));
+  });
+
+  return new ol.tilegrid.WMTS({
+    origins: origins,
+    resolutions: resolutions,
+    matrixIds: matrixIds,
+    tileSizes: tileSizes
+  });
+};
