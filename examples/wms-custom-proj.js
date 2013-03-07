@@ -13,9 +13,12 @@ goog.require('ol.source.SingleImageWMS');
 goog.require('ol.source.TiledWMS');
 
 
-var epsg21781 = new ol.Projection('EPSG:21781', ol.ProjectionUnits.METERS,
-    // Validity extent from http://spatialreference.org
-    new ol.Extent(485869.5728, 76443.1884, 837076.5648, 299941.7864));
+var epsg21781 = new ol.Projection({
+  code: 'EPSG:21781',
+  units: ol.ProjectionUnits.METERS,
+  // Validity extent from http://spatialreference.org
+  extent: new ol.Extent(485869.5728, 76443.1884, 837076.5648, 299941.7864)
+});
 ol.projection.addProjection(epsg21781);
 
 var extent = new ol.Extent(420000, 30000, 900000, 350000);

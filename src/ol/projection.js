@@ -46,37 +46,41 @@ ol.METERS_PER_UNIT[ol.ProjectionUnits.METERS] = 1;
 
 /**
  * @constructor
- * @param {string} code Code.
- * @param {ol.ProjectionUnits} units Units.
- * @param {ol.Extent} extent Extent.
- * @param {string=} opt_axisOrientation Axis orientation.
+ * @param {ol.ProjectionOptions} options Options object.
  */
-ol.Projection = function(code, units, extent, opt_axisOrientation) {
+ol.Projection = function(options) {
 
   /**
    * @private
    * @type {string}
    */
-  this.code_ = code;
+  this.code_ = options.code;
 
   /**
    * @private
    * @type {ol.ProjectionUnits}
    */
-  this.units_ = units;
+  this.units_ = options.units;
 
   /**
    * @private
    * @type {ol.Extent}
    */
-  this.extent_ = extent;
+  this.extent_ = options.extent;
 
   /**
    * @private
    * @type {string}
    */
-  this.axisOrientation_ = goog.isDef(opt_axisOrientation) ?
-      opt_axisOrientation : 'enu';
+  this.axisOrientation_ = goog.isDef(options.axisOrientation) ?
+      options.axisOrientation : 'enu';
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.global_ = goog.isDef(options.global) ?
+      options.global : false;
 
   /**
    * @private
@@ -100,14 +104,6 @@ ol.Projection.prototype.getCode = function() {
  */
 ol.Projection.prototype.getExtent = function() {
   return this.extent_;
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- */
-ol.Projection.prototype.setExtent = function(extent) {
-  this.extent_ = extent;
 };
 
 
@@ -144,6 +140,14 @@ ol.Projection.prototype.getAxisOrientation = function() {
 
 
 /**
+ * @return {boolean} Wether the projection is global.
+ */
+ol.Projection.prototype.isGlobal = function() {
+  return this.global_;
+};
+
+
+/**
  * @return {ol.tilegrid.TileGrid} The default tile grid.
  */
 ol.Projection.prototype.getDefaultTileGrid = function() {
@@ -163,15 +167,21 @@ ol.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
 /**
  * @constructor
  * @extends {ol.Projection}
- * @param {string} code Code.
  * @param {Proj4js.Proj} proj4jsProj Proj4js projection.
+ * @param {ol.Proj4jsProjectionOptions} options Projection config options.
  * @private
  */
-ol.Proj4jsProjection_ = function(code, proj4jsProj) {
+ol.Proj4jsProjection_ = function(proj4jsProj, options) {
 
   var units = /** @type {ol.ProjectionUnits} */ (proj4jsProj.units);
 
-  goog.base(this, code, units, null, proj4jsProj.axis);
+  var config = /** @type {ol.ProjectionOptions} */ ({
+    units: units,
+    axisOrientation: proj4jsProj.axis
+  });
+  goog.object.extend(config, options);
+
+  goog.base(this, config);
 
   /**
    * @private
@@ -202,7 +212,10 @@ ol.Proj4jsProjection_.prototype.getPointResolution =
     // average of the width and height.
     if (goog.isNull(this.toEPSG4326_)) {
       this.toEPSG4326_ = ol.projection.getTransform(
-          this, ol.projection.getProj4jsProjectionFromCode_('EPSG:4326'));
+          this, ol.projection.getProj4jsProjectionFromCode_({
+            code: 'EPSG:4326',
+            extent: null
+          }));
     }
     var vertices = [
       point.x - resolution / 2, point.y,
@@ -416,7 +429,10 @@ ol.projection.removeTransform = function(source, destination) {
 ol.projection.getFromCode = function(code) {
   var projection = ol.projection.projections_[code];
   if (ol.HAVE_PROJ4JS && !goog.isDef(projection)) {
-    projection = ol.projection.getProj4jsProjectionFromCode_(code);
+    projection = ol.projection.getProj4jsProjectionFromCode_({
+      code: code,
+      extent: null
+    });
   }
   if (!goog.isDef(projection)) {
     goog.asserts.assert(goog.isDef(projection));
@@ -427,11 +443,12 @@ ol.projection.getFromCode = function(code) {
 
 
 /**
- * @param {string} code Code.
+ * @param {ol.Proj4jsProjectionOptions} options Projection config options.
  * @private
  * @return {ol.Proj4jsProjection_} Proj4js projection.
  */
-ol.projection.getProj4jsProjectionFromCode_ = function(code) {
+ol.projection.getProj4jsProjectionFromCode_ = function(options) {
+  var code = options.code;
   var proj4jsProjections = ol.projection.proj4jsProjections_;
   var proj4jsProjection = proj4jsProjections[code];
   if (!goog.isDef(proj4jsProjection)) {
@@ -439,7 +456,10 @@ ol.projection.getProj4jsProjectionFromCode_ = function(code) {
     var srsCode = proj4jsProj.srsCode;
     proj4jsProjection = proj4jsProjections[srsCode];
     if (!goog.isDef(proj4jsProjection)) {
-      proj4jsProjection = new ol.Proj4jsProjection_(srsCode, proj4jsProj);
+      var config = /** @type {ol.Proj4jsProjectionOptions} */
+          (goog.object.clone(options));
+      config.code = srsCode;
+      proj4jsProjection = new ol.Proj4jsProjection_(proj4jsProj, config);
       proj4jsProjections[srsCode] = proj4jsProjection;
     }
     proj4jsProjections[code] = proj4jsProjection;
@@ -492,7 +512,10 @@ ol.projection.getTransform = function(source, destination) {
       proj4jsSource = source;
     } else {
       proj4jsSource =
-          ol.projection.getProj4jsProjectionFromCode_(source.getCode());
+          ol.projection.getProj4jsProjectionFromCode_({
+            code: source.getCode(),
+            extent: null
+          });
     }
     var sourceProj4jsProj = proj4jsSource.getProj4jsProj();
     var proj4jsDestination;
@@ -500,7 +523,10 @@ ol.projection.getTransform = function(source, destination) {
       proj4jsDestination = destination;
     } else {
       proj4jsDestination =
-          ol.projection.getProj4jsProjectionFromCode_(destination.getCode());
+          ol.projection.getProj4jsProjectionFromCode_({
+            code: destination.getCode(),
+            extent: null
+          });
     }
     var destinationProj4jsProj = proj4jsDestination.getProj4jsProj();
     transform =
@@ -628,4 +654,15 @@ ol.projection.transformWithCodes =
   var vertex = [point.x, point.y];
   vertex = transformFn(vertex, vertex, 2);
   return new ol.Coordinate(vertex[0], vertex[1]);
+};
+
+
+/**
+ * @param {ol.Proj4jsProjectionOptions} options Projection config options.
+ * @return {ol.Proj4jsProjection_} Proj4js projection.
+ */
+ol.projection.configureProj4jsProjection = function(options) {
+  goog.asserts.assert(!goog.object.containsKey(
+      ol.projection.proj4jsProjections_, options.code));
+  return ol.projection.getProj4jsProjectionFromCode_(options);
 };
