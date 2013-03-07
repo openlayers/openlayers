@@ -10,7 +10,7 @@ goog.require('ol.parser.ogc.WMSCapabilities_v1_3_0');
 /**
  * @define {boolean} Whether to enable WMS Capabilities version 1.0.0.
  */
-ol.ENABLE_WMSCAPS_1_0_0 = true;
+ol.ENABLE_WMSCAPS_1_0_0 = false;
 
 
 /**

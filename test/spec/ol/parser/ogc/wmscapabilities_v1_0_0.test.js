@@ -1,5 +1,7 @@
 goog.provide('ol.test.parser.ogc.WMSCapabilities_v1_0_0');
 
+ol.ENABLE_WMSCAPS_1_0_0 = true;
+
 describe('ol.parser.ogc.wmscapabilities_v1_0_0', function() {
 
   var parser = new ol.parser.ogc.WMSCapabilities();
