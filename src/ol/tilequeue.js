@@ -89,8 +89,6 @@ ol.TileQueue.prototype.dequeue_ = function() {
   }
   var tileKey = tile.getKey();
   delete this.queuedTileKeys_[tileKey];
-  tile.inQueue--;
-  goog.asserts.assert(tile.inQueue >= 0);
   return tile;
 };
 
@@ -112,8 +110,6 @@ ol.TileQueue.prototype.enqueue = function(tile, tileSourceKey, tileCenter) {
       this.heap_.push([priority, tile, tileSourceKey, tileCenter]);
       this.queuedTileKeys_[tileKey] = true;
       this.siftDown_(0, this.heap_.length - 1);
-      tile.inQueue++;
-      goog.asserts.assert(tile.inQueue > 0);
     }
   }
 };
@@ -250,11 +246,6 @@ ol.TileQueue.prototype.reprioritize = function() {
     if (priority == ol.TileQueue.DROP) {
       tileKey = tile.getKey();
       delete this.queuedTileKeys_[tileKey];
-      tile.inQueue--;
-      goog.asserts.assert(tile.inQueue >= 0);
-      if (tile.inQueue === 0) {
-        goog.events.removeAll(tile);
-      }
     } else {
       node[0] = priority;
       heap[n++] = node;

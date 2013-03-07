@@ -21,20 +21,13 @@ describe('ol.TileQueue', function() {
   }
 
   function addRandomPriorityTiles(tq, num) {
-    var tiles = [];
     var i, tile, priority;
     for (i = 0; i < num; i++) {
       tile = new ol.Tile();
-      tile.toDrop = (i % 2 === 0) ? true : false;
-      goog.events.listen(tile, goog.events.EventType.CHANGE,
-          goog.nullFunction);
       priority = Math.floor(Math.random() * 100);
       tq.heap_.push([priority, tile, '', new ol.Coordinate(0, 0)]);
       tq.queuedTileKeys_[tile.getKey()] = true;
-      tile.inQueue++;
-      tiles.push(tile);
     }
-    return tiles;
   }
 
   describe('heapify', function() {
@@ -52,15 +45,16 @@ describe('ol.TileQueue', function() {
     it('does reprioritize the array', function() {
 
       var tq = new ol.TileQueue(function() {});
-      var tiles = addRandomPriorityTiles(tq, 100);
+      addRandomPriorityTiles(tq, 100);
 
       tq.heapify_();
 
       // now reprioritize, changing the priority of 50 tiles and removing the
       // rest
 
-      tq.tilePriorityFunction_ = function(tile) {
-        if (tile.toDrop) {
+      var i = 0;
+      tq.tilePriorityFunction_ = function() {
+        if ((i++) % 2 === 0) {
           return ol.TileQueue.DROP;
         }
         return Math.floor(Math.random() * 100);
@@ -70,23 +64,10 @@ describe('ol.TileQueue', function() {
       expect(tq.heap_.length).toEqual(50);
       expect(isHeap(tq)).toBeTruthy();
 
-      var i, tile;
-      for (i = 0; i < tiles.length; ++i) {
-        tile = tiles[i];
-        var hasListener = goog.events.hasListener(tile);
-        if (tile.toDrop) {
-          expect(hasListener).toBeFalsy();
-        } else {
-          expect(hasListener).toBeTruthy();
-        }
-      }
-
     });
   });
 });
 
-goog.require('goog.events');
-goog.require('goog.events.EventType');
 goog.require('ol.Coordinate');
 goog.require('ol.Tile');
 goog.require('ol.TileQueue');
