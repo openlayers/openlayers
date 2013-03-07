@@ -9,6 +9,12 @@ goog.require('ol.View2D');
 goog.require('ol.interaction.Interaction');
 
 
+/**
+ * @define {number} Pan duration.
+ */
+ol.interaction.KEYBOARD_PAN_DURATION = 100;
+
+
 
 /**
  * @constructor
@@ -60,10 +66,8 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       } else {
         deltaY = mapUnitsDelta;
       }
-      var oldCenter = view.getCenter();
-      var newCenter = new ol.Coordinate(
-          oldCenter.x + deltaX, oldCenter.y + deltaY);
-      view.setCenter(newCenter);
+      view.pan(map, new ol.Coordinate(deltaX, deltaY),
+          ol.interaction.KEYBOARD_PAN_DURATION);
       keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();
     }
