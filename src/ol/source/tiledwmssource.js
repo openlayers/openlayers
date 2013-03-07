@@ -50,7 +50,7 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
     var projectionExtent = projection.getExtent();
     extent = goog.isDef(extent) ? extent : projectionExtent;
 
-    if (goog.isDef(extent) && projection.isGlobal() &&
+    if (!goog.isNull(extent) && projection.isGlobal() &&
         extent.minX === projectionExtent.minX &&
         extent.maxX === projectionExtent.maxX) {
       var numCols = Math.ceil(
