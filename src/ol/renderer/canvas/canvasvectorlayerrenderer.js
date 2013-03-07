@@ -69,6 +69,9 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    */
   this.tileCache_ = new ol.TileCache(
       ol.renderer.canvas.VectorLayer.TILECACHE_SIZE);
+  // TODO: this is far too coarse, we want extent of added features
+  goog.events.listenOnce(layer, goog.events.EventType.CHANGE,
+      this.handleLayerChange_, false, this);
 
   /**
    * @private
@@ -140,6 +143,20 @@ goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 
 
 /**
+ * Get rid cached tiles.  If the optional extent is provided, only tiles that
+ * intersect that extent will be removed.
+ * @param {ol.Extent=} opt_extent extent Expire tiles within this extent only.
+ * @private
+ */
+ol.renderer.canvas.VectorLayer.prototype.expireTiles_ = function(opt_extent) {
+  if (goog.isDef(opt_extent)) {
+    // TODO: implement this
+  }
+  this.tileCache_.clear();
+};
+
+
+/**
  * @inheritDoc
  */
 ol.renderer.canvas.VectorLayer.prototype.getImage = function() {
@@ -160,6 +177,17 @@ ol.renderer.canvas.VectorLayer.prototype.getVectorLayer = function() {
  */
 ol.renderer.canvas.VectorLayer.prototype.getTransform = function() {
   return this.transform_;
+};
+
+
+/**
+ * @param {goog.events.Event} event Layer change event.
+ * @private
+ */
+ol.renderer.canvas.VectorLayer.prototype.handleLayerChange_ = function(event) {
+  // TODO: get rid of this in favor of vector specific events
+  this.expireTiles_();
+  this.requestMapRenderFrame_();
 };
 
 
