@@ -29,10 +29,10 @@ ol.layer.FeatureCache = function() {
   this.geometryTypeIndex_;
 
   /**
-   * @type {Object.<ol.geom.GeometryType, ol.structs.RTree>}
+   * @type {ol.structs.RTree}
    * @private
    */
-  this.boundsByGeometryType_;
+  this.rTree_;
 
   this.clear();
 
@@ -44,17 +44,12 @@ ol.layer.FeatureCache = function() {
  */
 ol.layer.FeatureCache.prototype.clear = function() {
   this.idLookup_ = {};
-
-  var geometryTypeIndex = {},
-      boundsByGeometryType = {},
-      geometryType;
+  var geometryTypeIndex = {};
   for (var key in ol.geom.GeometryType) {
-    geometryType = ol.geom.GeometryType[key];
-    geometryTypeIndex[geometryType] = {};
-    boundsByGeometryType[geometryType] = new ol.structs.RTree();
+    geometryTypeIndex[ol.geom.GeometryType[key]] = {};
   }
   this.geometryTypeIndex_ = geometryTypeIndex;
-  this.boundsByGeometryType_ = boundsByGeometryType;
+  this.rTree_ = new ol.structs.RTree();
 };
 
 
@@ -72,8 +67,8 @@ ol.layer.FeatureCache.prototype.add = function(feature) {
   if (!goog.isNull(geometry)) {
     var geometryType = geometry.getType();
     this.geometryTypeIndex_[geometryType][id] = feature;
-    this.boundsByGeometryType_[geometryType].put(geometry.getBounds(),
-        feature);
+    this.rTree_.put(geometry.getBounds(),
+        feature, geometryType);
   }
 };
 
@@ -91,12 +86,7 @@ ol.layer.FeatureCache.prototype.getFeaturesObject_ = function(opt_filter) {
     if (opt_filter instanceof ol.filter.Geometry) {
       features = this.geometryTypeIndex_[opt_filter.getType()];
     } else if (opt_filter instanceof ol.filter.Extent) {
-      var boundsByGeometryType = this.boundsByGeometryType_,
-          extent = opt_filter.getExtent();
-      features = {};
-      for (i in boundsByGeometryType) {
-        goog.object.extend(features, boundsByGeometryType[i].find(extent));
-      }
+      features = this.rTree_.find(opt_filter.getExtent());
     } else if (opt_filter instanceof ol.filter.Logical &&
         opt_filter.operator === ol.filter.LogicalOperator.AND) {
       var filters = opt_filter.getFilters();
@@ -111,8 +101,8 @@ ol.layer.FeatureCache.prototype.getFeaturesObject_ = function(opt_filter) {
           }
         }
         if (extentFilter && geometryFilter) {
-          features = this.boundsByGeometryType_[geometryFilter.getType()]
-              .find(extentFilter.getExtent());
+          features = this.rTree_.find(
+              extentFilter.getExtent(), geometryFilter.getType());
         }
       }
     }
