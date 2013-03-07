@@ -10,6 +10,9 @@ goog.require('ol.canvas');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.style.IconLiteral');
@@ -95,17 +98,23 @@ ol.renderer.canvas.Renderer.prototype.renderFeaturesByGeometryType =
   var deferred = false;
   switch (type) {
     case ol.geom.GeometryType.POINT:
-      goog.asserts.assert(symbolizer instanceof ol.style.PointLiteral);
+    case ol.geom.GeometryType.MULTIPOINT:
+      goog.asserts.assert(symbolizer instanceof ol.style.PointLiteral,
+          'Expected point symbolizer: ' + symbolizer);
       deferred = this.renderPointFeatures_(
           features, /** @type {ol.style.PointLiteral} */ (symbolizer));
       break;
     case ol.geom.GeometryType.LINESTRING:
-      goog.asserts.assert(symbolizer instanceof ol.style.LineLiteral);
+    case ol.geom.GeometryType.MULTILINESTRING:
+      goog.asserts.assert(symbolizer instanceof ol.style.LineLiteral,
+          'Expected line symbolizer: ' + symbolizer);
       this.renderLineStringFeatures_(
           features, /** @type {ol.style.LineLiteral} */ (symbolizer));
       break;
     case ol.geom.GeometryType.POLYGON:
-      goog.asserts.assert(symbolizer instanceof ol.style.PolygonLiteral);
+    case ol.geom.GeometryType.MULTIPOLYGON:
+      goog.asserts.assert(symbolizer instanceof ol.style.PolygonLiteral,
+          'Expected polygon symbolizer: ' + symbolizer);
       this.renderPolygonFeatures_(
           features, /** @type {ol.style.PolygonLiteral} */ (symbolizer));
       break;
@@ -125,22 +134,32 @@ ol.renderer.canvas.Renderer.prototype.renderLineStringFeatures_ =
     function(features, symbolizer) {
 
   var context = this.context_,
-      i, ii, line, dim, j, jj, x, y;
+      i, ii, geometry, components, j, jj, line, dim, k, kk, x, y;
 
   context.globalAlpha = symbolizer.opacity;
   context.strokeStyle = symbolizer.strokeStyle;
   context.lineWidth = symbolizer.strokeWidth * this.inverseScale_;
   context.beginPath();
   for (i = 0, ii = features.length; i < ii; ++i) {
-    line = /** @type {ol.geom.LineString} */ features[i].getGeometry();
-    dim = line.dimension;
-    for (j = 0, jj = line.getCount(); j < jj; ++j) {
-      x = line.get(j, 0);
-      y = line.get(j, 1);
-      if (j === 0) {
-        context.moveTo(x, y);
-      } else {
-        context.lineTo(x, y);
+    geometry = features[i].getGeometry();
+    if (geometry instanceof ol.geom.LineString) {
+      components = [geometry];
+    } else {
+      goog.asserts.assert(geometry instanceof ol.geom.MultiLineString,
+          'Expected MultiLineString');
+      components = geometry.components;
+    }
+    for (j = 0, jj = components.length; j < jj; ++j) {
+      line = components[j];
+      dim = line.dimension;
+      for (k = 0, kk = line.getCount(); k < kk; ++k) {
+        x = line.get(k, 0);
+        y = line.get(k, 1);
+        if (k === 0) {
+          context.moveTo(x, y);
+        } else {
+          context.lineTo(x, y);
+        }
       }
     }
   }
@@ -159,7 +178,7 @@ ol.renderer.canvas.Renderer.prototype.renderPointFeatures_ =
     function(features, symbolizer) {
 
   var context = this.context_,
-      content, alpha, i, ii, point, vec;
+      content, alpha, i, ii, geometry, components, j, jj, point, vec;
 
   if (symbolizer instanceof ol.style.ShapeLiteral) {
     content = ol.renderer.canvas.Renderer.renderShape(symbolizer);
@@ -182,10 +201,20 @@ ol.renderer.canvas.Renderer.prototype.renderPointFeatures_ =
   context.setTransform(1, 0, 0, 1, -midWidth, -midHeight);
   context.globalAlpha = alpha;
   for (i = 0, ii = features.length; i < ii; ++i) {
-    point = /** @type {ol.geom.Point} */ features[i].getGeometry();
-    vec = goog.vec.Mat4.multVec3(
-        this.transform_, [point.get(0), point.get(1), 0], []);
-    context.drawImage(content, vec[0], vec[1], content.width, content.height);
+    geometry = features[i].getGeometry();
+    if (geometry instanceof ol.geom.Point) {
+      components = [geometry];
+    } else {
+      goog.asserts.assert(geometry instanceof ol.geom.MultiPoint,
+          'Expected MultiPoint');
+      components = geometry.components;
+    }
+    for (j = 0, jj = components.length; j < jj; ++j) {
+      point = components[j];
+      vec = goog.vec.Mat4.multVec3(
+          this.transform_, [point.get(0), point.get(1), 0], []);
+      context.drawImage(content, vec[0], vec[1], content.width, content.height);
+    }
   }
   context.restore();
 
@@ -204,7 +233,8 @@ ol.renderer.canvas.Renderer.prototype.renderPolygonFeatures_ =
   var context = this.context_,
       strokeStyle = symbolizer.strokeStyle,
       fillStyle = symbolizer.fillStyle,
-      i, ii, poly, rings, numRings, ring, dim, j, jj, x, y;
+      i, ii, geometry, components, j, jj, poly,
+      rings, numRings, ring, dim, k, kk, x, y;
 
   context.globalAlpha = symbolizer.opacity;
   if (strokeStyle) {
@@ -224,31 +254,38 @@ ol.renderer.canvas.Renderer.prototype.renderPolygonFeatures_ =
    */
   context.beginPath();
   for (i = 0, ii = features.length; i < ii; ++i) {
-    poly = /** @type {ol.geom.Polygon} */ features[i].getGeometry();
-    dim = poly.dimension;
-    rings = poly.rings;
-    numRings = rings.length;
-    if (numRings > 1) {
-      // scenario 4
-      // TODO: use sketch canvas to render outer and punch holes for inner rings
-      throw new Error('Rendering holes not implemented');
+    geometry = features[i].getGeometry();
+    if (geometry instanceof ol.geom.Polygon) {
+      components = [geometry];
     } else {
-      ring = rings[0];
-      for (j = 0, jj = ring.getCount(); j < jj; ++j) {
-        x = ring.get(j, 0);
-        y = ring.get(j, 1);
-        if (j === 0) {
-          context.moveTo(x, y);
-        } else {
-          context.lineTo(x, y);
+      goog.asserts.assert(geometry instanceof ol.geom.MultiPolygon,
+          'Expected MultiPolygon');
+      components = geometry.components;
+    }
+    for (j = 0, jj = components.length; j < jj; ++j) {
+      poly = components[j];
+      dim = poly.dimension;
+      rings = poly.rings;
+      numRings = rings.length;
+      if (numRings > 0) {
+        // TODO: scenario 4
+        ring = rings[0];
+        for (k = 0, kk = ring.getCount(); k < kk; ++k) {
+          x = ring.get(k, 0);
+          y = ring.get(k, 1);
+          if (k === 0) {
+            context.moveTo(x, y);
+          } else {
+            context.lineTo(x, y);
+          }
         }
-      }
-      if (fillStyle && strokeStyle) {
-        // scenario 3 - fill and stroke each time
-        context.fill();
-        context.stroke();
-        if (i < ii - 1) {
-          context.beginPath();
+        if (fillStyle && strokeStyle) {
+          // scenario 3 - fill and stroke each time
+          context.fill();
+          context.stroke();
+          if (i < ii - 1) {
+            context.beginPath();
+          }
         }
       }
     }
