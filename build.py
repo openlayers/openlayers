@@ -430,7 +430,9 @@ def hostexamples(t):
 def check_examples(t):
     directory = 'build/gh-pages/%(BRANCH)s/'
     examples = ['build/gh-pages/%(BRANCH)s/' + e for e in EXAMPLES]
-    all_examples = [e + '?mode=whitespace' for e in examples] + \
+    all_examples = \
+        [e + '?mode=raw' for e in examples] + \
+        [e + '?mode=whitespace' for e in examples] + \
         [e + '?mode=simple' for e in examples] + \
         examples
     for example in all_examples:
