@@ -19,7 +19,7 @@ var map = new ol.Map({
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: new ol.View2D({
-    center: ol.projection.transformWithCodes(
+    center: ol.projection.transform(
         new ol.Coordinate(-123.1, 49.25), 'EPSG:4326', 'EPSG:3857'),
     zoom: 8
   })

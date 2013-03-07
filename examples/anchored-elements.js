@@ -25,7 +25,7 @@ var map = new ol.Map({
 // Vienna label
 var vienna = new ol.AnchoredElement({
   map: map,
-  position: ol.projection.transformWithCodes(
+  position: ol.projection.transform(
       new ol.Coordinate(16.3725, 48.208889), 'EPSG:4326', 'EPSG:3857'),
   element: document.getElementById('vienna')
 });
@@ -39,7 +39,7 @@ map.addEventListener('click', function(evt) {
   var coordinate = evt.getCoordinate();
   popup.getElement().innerHTML =
       'Welcome to ol3. The location you clicked was<br>' +
-      ol.Coordinate.toStringHDMS(ol.projection.transformWithCodes(
+      ol.Coordinate.toStringHDMS(ol.projection.transform(
           coordinate, 'EPSG:3857', 'EPSG:4326'));
   popup.setPosition(coordinate);
 });
