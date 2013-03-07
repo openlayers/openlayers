@@ -337,6 +337,27 @@ describe('ol.projection', function() {
 
   });
 
+  describe('ol.projection.configureProj4jsProjection()', function() {
+
+    beforeEach(function() {
+      ol.projection.proj4jsProjections_ = {};
+    });
+
+    it('returns a configured projection', function() {
+      var extent = new ol.Extent(
+          485869.5728, 76443.1884, 837076.5648, 299941.7864);
+      var epsg21781 = ol.projection.configureProj4jsProjection({
+        code: 'EPSG:21781',
+        extent: extent
+      });
+      expect(epsg21781.getCode()).toEqual('EPSG:21781');
+      expect(epsg21781.getExtent()).toBe(extent);
+      expect(epsg21781.getUnits()).toBe(ol.ProjectionUnits.METERS);
+      expect(epsg21781.isGlobal()).toBeFalsy();
+    });
+
+  });
+
 });
 
 goog.require('goog.array');
