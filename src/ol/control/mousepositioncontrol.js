@@ -41,9 +41,9 @@ ol.control.MousePosition = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Projection|undefined}
+   * @type {ol.Projection}
    */
-  this.projection_ = options.projection;
+  this.projection_ = ol.projection.get(options.projection);
 
   /**
    * @private
@@ -168,8 +168,8 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
   var html = this.undefinedHTML_;
   if (!goog.isNull(pixel)) {
     if (this.renderedProjection_ != this.mapProjection_) {
-      if (goog.isDef(this.projection_)) {
-        this.transform_ = ol.projection.getTransform(
+      if (!goog.isNull(this.projection_)) {
+        this.transform_ = ol.projection.getTransformFromProjections(
             this.mapProjection_, this.projection_);
       } else {
         this.transform_ = ol.projection.identityTransform;

@@ -37,7 +37,7 @@ ol.source.XYZOptions;
 ol.source.XYZ = function(xyzOptions) {
 
   var projection = xyzOptions.projection ||
-      ol.projection.getFromCode('EPSG:3857');
+      ol.projection.get('EPSG:3857');
 
   /**
    * @type {ol.TileUrlFunctionType}

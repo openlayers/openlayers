@@ -7,7 +7,7 @@ describe('ol.projection.EPSG3857', function() {
 
     it('returns the correct point scale at the equator', function() {
       // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
-      var epsg3857 = ol.projection.getFromCode('EPSG:3857');
+      var epsg3857 = ol.projection.get('EPSG:3857');
       var resolution = 19.11;
       var point = new ol.Coordinate(0, 0);
       expect(epsg3857.getPointResolution(resolution, point)).
@@ -17,8 +17,8 @@ describe('ol.projection.EPSG3857', function() {
     it('returns the correct point scale at the latitude of Toronto',
         function() {
           // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
-          var epsg3857 = ol.projection.getFromCode('EPSG:3857');
-          var epsg4326 = ol.projection.getFromCode('EPSG:4326');
+          var epsg3857 = ol.projection.get('EPSG:3857');
+          var epsg4326 = ol.projection.get('EPSG:4326');
           var resolution = 19.11;
           var point = ol.projection.transform(
               new ol.Coordinate(0, 43.65), epsg4326, epsg3857);
@@ -28,8 +28,8 @@ describe('ol.projection.EPSG3857', function() {
 
     it('returns the correct point scale at various latitudes', function() {
       // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
-      var epsg3857 = ol.projection.getFromCode('EPSG:3857');
-      var epsg4326 = ol.projection.getFromCode('EPSG:4326');
+      var epsg3857 = ol.projection.get('EPSG:3857');
+      var epsg4326 = ol.projection.get('EPSG:4326');
       var resolution = 19.11;
       var latitude;
       for (latitude = 0; latitude < 90; ++latitude) {

@@ -18,7 +18,7 @@ goog.require('ol.tilegrid.TileGrid');
  *            crossOrigin: (null|string|undefined),
  *            extent: (ol.Extent|undefined),
  *            opaque: (boolean|undefined),
- *            projection: (ol.Projection|undefined),
+ *            projection: ol.ProjectionLike,
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
  */

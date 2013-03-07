@@ -13,7 +13,7 @@ var map = new ol.Map({
   controls: ol.control.defaults({}, [
     new ol.control.MousePosition({
       coordinateFormat: ol.Coordinate.toStringHDMS,
-      projection: ol.projection.getFromCode('EPSG:4326'),
+      projection: 'EPSG:4326',
       target: document.getElementById('mouse-position'),
       undefinedHTML: '&nbsp;'
     })

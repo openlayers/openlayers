@@ -15,7 +15,7 @@ var layers = [
   }),
   new ol.layer.TileLayer({
     source: new ol.source.DebugTileSource({
-      projection: ol.projection.getFromCode('EPSG:3857'),
+      projection: 'EPSG:3857',
       tileGrid: new ol.tilegrid.XYZ({
         maxZoom: 22
       })
@@ -25,7 +25,7 @@ var layers = [
 
 var webglMap = new ol.Map({
   view: new ol.View2D({
-    center: ol.projection.transformWithCodes(
+    center: ol.projection.transform(
         new ol.Coordinate(-0.1275, 51.507222), 'EPSG:4326', 'EPSG:3857'),
     zoom: 10
   }),
