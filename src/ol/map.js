@@ -530,7 +530,14 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
  */
 ol.Map.prototype.handlePostRender = function() {
   this.tileQueue_.reprioritize(); // FIXME only call if needed
-  this.tileQueue_.loadMoreTiles();
+  var moreLoadingTiles = this.tileQueue_.loadMoreTiles();
+  if (moreLoadingTiles) {
+    // The tile layer renderers need to know when tiles change
+    // to the LOADING state (to register the change listener
+    // on the tile).
+    this.requestRenderFrame();
+  }
+
   var postRenderFunctions = this.postRenderFunctions_;
   var i;
   for (i = 0; i < postRenderFunctions.length; ++i) {
