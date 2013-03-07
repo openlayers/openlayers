@@ -49,9 +49,9 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
     var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
     var projectionExtent = projection.getExtent();
     extent = goog.isDef(extent) ? extent : projectionExtent;
-    // FIXME do we want a wrapDateLine param? The code below will break maps
-    // with projections that do not span the whole world width.
-    if (extent.minX === projectionExtent.minX &&
+
+    if (goog.isDef(extent) && projection.isGlobal() &&
+        extent.minX === projectionExtent.minX &&
         extent.maxX === projectionExtent.maxX) {
       var numCols = Math.ceil(
           (extent.maxX - extent.minX) / (tileExtent.maxX - tileExtent.minX));
