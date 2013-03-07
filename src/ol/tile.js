@@ -31,13 +31,6 @@ ol.Tile = function(tileCoord) {
   goog.base(this);
 
   /**
-   * A count incremented each time the tile is inQueue in a tile queue,
-   * and decremented each time the tile is dequeued from a tile queue.
-   * @type {number}
-   */
-  this.inQueue = 0;
-
-  /**
    * @type {ol.TileCoord}
    */
   this.tileCoord = tileCoord;
