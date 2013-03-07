@@ -8,6 +8,7 @@ goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.Vector');
+goog.require('ol.parser.GeoJSON');
 goog.require('ol.projection');
 goog.require('ol.source.MapQuestOpenAerial');
 goog.require('ol.source.Vector');
@@ -19,20 +20,29 @@ var raster = new ol.layer.TileLayer({
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    projection: ol.projection.getFromCode('EPSG:3857')
+    projection: ol.projection.getFromCode('EPSG:4326')
   })
 });
 
-vector.addFeatures([
-  new ol.Feature({
-    g: new ol.geom.LineString([[-10000000, -10000000], [10000000, 10000000]])
-  }),
-  new ol.Feature({
-    g: new ol.geom.LineString([[-10000000, 10000000], [10000000, -10000000]])
-  }),
-  new ol.Feature({g: new ol.geom.Point([-10000000, 5000000])})
-]);
+var geojson = new ol.parser.GeoJSON();
+var url = '../test/spec/ol/parser/geojson/countries.json';
+var xhr = new XMLHttpRequest();
+xhr.open('GET', url, true);
 
+
+/**
+ * onload handler for the XHR request.
+ */
+xhr.onload = function() {
+  if (xhr.status == 200) {
+    // this is silly to have to tell the layer the destination projection
+    var projection = map.getView().getProjection();
+    vector.parseFeatures(xhr.responseText, geojson, projection);
+  } else {
+    throw new Error('Data loading failed: ' + xhr.status);
+  }
+};
+xhr.send();
 
 var map = new ol.Map({
   layers: new ol.Collection([raster, vector]),
