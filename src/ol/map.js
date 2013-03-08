@@ -244,6 +244,12 @@ ol.Map = function(mapOptions) {
 
   /**
    * @private
+   * @type {ol.Coordinate}
+   */
+  this.focus_ = null;
+
+  /**
+   * @private
    * @type {Array.<ol.PreRenderFunction>}
    */
   this.preRenderFunctions_ = [];
@@ -487,9 +493,10 @@ ol.Map.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter) {
   if (!frameState.wantedTiles[tileSourceKey][coordKey]) {
     return ol.TileQueue.DROP;
   }
-  var center = frameState.view2DState.center;
-  var deltaX = tileCenter.x - center.x;
-  var deltaY = tileCenter.y - center.y;
+  var focus = goog.isNull(this.focus_) ?
+      frameState.view2DState.center : this.focus_;
+  var deltaX = tileCenter.x - focus.x;
+  var deltaY = tileCenter.y - focus.y;
   return deltaX * deltaX + deltaY * deltaY;
 };
 
@@ -502,6 +509,11 @@ ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
   var type = opt_type || browserEvent.type;
   var mapBrowserEvent = new ol.MapBrowserEvent(type, this, browserEvent);
   this.handleMapBrowserEvent(mapBrowserEvent);
+  if (type == goog.events.EventType.MOUSEOUT) {
+    this.focus_ = null;
+  } else {
+    this.focus_ = mapBrowserEvent.getCoordinate();
+  }
 };
 
 
