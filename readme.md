@@ -79,7 +79,11 @@ Then:
 
 ## Run the precommit hook before pushing a commit:
 
+First, install the latest version of [JSDoc3](https://github.com/jsdoc3/jsdoc). Then:
+
     $ ./build.py precommit
+
+This makes sure that your commit won't break the build. It also runs JSDoc3 to make sure that there are no invalid API doc directives. 
 
 ## Add examples
 
