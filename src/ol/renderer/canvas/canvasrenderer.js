@@ -231,7 +231,6 @@ ol.renderer.canvas.Renderer.prototype.renderPointFeatures_ =
  */
 ol.renderer.canvas.Renderer.prototype.renderPolygonFeatures_ =
     function(features, symbolizer) {
-
   var context = this.context_,
       strokeStyle = symbolizer.strokeStyle,
       fillStyle = symbolizer.fillStyle,
@@ -287,7 +286,7 @@ ol.renderer.canvas.Renderer.prototype.renderPolygonFeatures_ =
           // scenario 3 - fill and stroke each time
           context.fill();
           context.stroke();
-          if (i < ii - 1) {
+          if (i < ii - 1 || j < jj - 1) {
             context.beginPath();
           }
         }
