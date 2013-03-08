@@ -170,6 +170,27 @@ ol.layer.Vector = function(layerOptions) {
    */
   this.featureCache_ = new ol.layer.FeatureCache();
 
+  /**
+   * TODO: this means we need to know dimension at construction
+   * @type {ol.geom.SharedVertices}
+   * @private
+   */
+  this.pointVertices_ = new ol.geom.SharedVertices();
+
+  /**
+   * TODO: this means we need to know dimension at construction
+   * @type {ol.geom.SharedVertices}
+   * @private
+   */
+  this.lineVertices_ = new ol.geom.SharedVertices();
+
+  /**
+   * TODO: this means we need to know dimension at construction
+   * @type {ol.geom.SharedVertices}
+   * @private
+   */
+  this.polygonVertices_ = new ol.geom.SharedVertices();
+
 };
 goog.inherits(ol.layer.Vector, ol.layer.Layer);
 
@@ -210,6 +231,30 @@ ol.layer.Vector.prototype.getFeatures = function(opt_filter) {
  */
 ol.layer.Vector.prototype.getFeaturesObject = function(opt_filter) {
   return this.featureCache_.getFeaturesObject(opt_filter);
+};
+
+
+/**
+ * @return {ol.geom.SharedVertices} Shared line vertices.
+ */
+ol.layer.Vector.prototype.getLineVertices = function() {
+  return this.lineVertices_;
+};
+
+
+/**
+ * @return {ol.geom.SharedVertices} Shared point vertices.
+ */
+ol.layer.Vector.prototype.getPointVertices = function() {
+  return this.pointVertices_;
+};
+
+
+/**
+ * @return {ol.geom.SharedVertices} Shared polygon vertices.
+ */
+ol.layer.Vector.prototype.getPolygonVertices = function() {
+  return this.polygonVertices_;
 };
 
 
@@ -261,17 +306,14 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
  */
 ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
   var features;
-  var pointVertices = new ol.geom.SharedVertices();
-  var lineVertices = new ol.geom.SharedVertices();
-  var polygonVertices = new ol.geom.SharedVertices();
 
   var lookup = {
-    'point': pointVertices,
-    'linestring': lineVertices,
-    'polygon': polygonVertices,
-    'multipoint': pointVertices,
-    'multilinstring': lineVertices,
-    'multipolygon': polygonVertices
+    'point': this.pointVertices_,
+    'linestring': this.lineVertices_,
+    'polygon': this.polygonVertices_,
+    'multipoint': this.pointVertices_,
+    'multilinstring': this.lineVertices_,
+    'multipolygon': this.polygonVertices_
   };
 
   var callback = function(feature, type) {
@@ -289,19 +331,19 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
   var transform = ol.projection.getTransform(sourceProjection, projection);
 
   transform(
-      pointVertices.coordinates,
-      pointVertices.coordinates,
-      pointVertices.getDimension());
+      this.pointVertices_.coordinates,
+      this.pointVertices_.coordinates,
+      this.pointVertices_.getDimension());
 
   transform(
-      lineVertices.coordinates,
-      lineVertices.coordinates,
-      lineVertices.getDimension());
+      this.lineVertices_.coordinates,
+      this.lineVertices_.coordinates,
+      this.lineVertices_.getDimension());
 
   transform(
-      polygonVertices.coordinates,
-      polygonVertices.coordinates,
-      polygonVertices.getDimension());
+      this.polygonVertices_.coordinates,
+      this.polygonVertices_.coordinates,
+      this.polygonVertices_.getDimension());
 
   this.addFeatures(features);
 };
