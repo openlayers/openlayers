@@ -23,7 +23,7 @@ var raster = new ol.layer.TileLayer({
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    projection: ol.projection.getFromCode('EPSG:4326')
+    projection: ol.projection.get('EPSG:4326')
   }),
   style: new ol.style.Style({rules: [
     new ol.style.Rule({
