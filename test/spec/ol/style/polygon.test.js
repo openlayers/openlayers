@@ -46,7 +46,7 @@ describe('ol.style.Polygon', function() {
     it('accepts expressions', function() {
       var symbolizer = new ol.style.Polygon({
         opacity: new ol.Expression('value / 100'),
-        fillStyle: ol.Expression('fillAttr')
+        fillStyle: new ol.Expression('fillAttr')
       });
       expect(symbolizer).toBeA(ol.style.Polygon);
     });
@@ -70,6 +70,19 @@ describe('ol.style.Polygon', function() {
       expect(literal).toBeA(ol.style.PolygonLiteral);
       expect(literal.opacity).toBe(42 / 100);
       expect(literal.fillStyle).toBe('#ff0000');
+      expect(literal.strokeStyle).toBeUndefined();
+    });
+
+    it('applies default strokeWidth if only strokeStyle is given', function() {
+      var symbolizer = new ol.style.Polygon({
+        strokeStyle: '#ff0000'
+      });
+
+      var literal = symbolizer.createLiteral();
+      expect(literal).toBeA(ol.style.PolygonLiteral);
+      expect(literal.strokeStyle).toBe('#ff0000');
+      expect(literal.strokeWidth).toBe(1.5);
+      expect(literal.fillStyle).toBeUndefined();
     });
 
   });
