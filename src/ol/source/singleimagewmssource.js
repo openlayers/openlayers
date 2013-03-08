@@ -34,11 +34,11 @@ ol.source.SingleImageWMS = function(options) {
   this.image_ = null;
 
   /**
-   * FIXME configurable?
    * @private
    * @type {number}
    */
-  this.ratio_ = 1.5;
+  this.ratio_ = goog.isDef(options.ratio) ?
+      options.ratio : 1.5;
 
 };
 goog.inherits(ol.source.SingleImageWMS, ol.source.ImageSource);
