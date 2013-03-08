@@ -38,7 +38,7 @@ ol.source.SingleImageWMS = function(options) {
    * @type {number}
    */
   this.ratio_ = goog.isDef(options.ratio) ?
-    options.ratio : 1.5;
+      options.ratio : 1.5;
 
 };
 goog.inherits(ol.source.SingleImageWMS, ol.source.ImageSource);
