@@ -7,6 +7,9 @@ goog.require('ol.TileCoord');
 
 
 /**
+ * A representation of a contiguous block of tiles.  A tile range is specified
+ * by its min/max tile coordinates and is inclusive of coordinates.
+ *
  * @constructor
  * @extends {ol.Rectangle}
  * @param {number} minX Minimum X.
@@ -15,7 +18,27 @@ goog.require('ol.TileCoord');
  * @param {number} maxY Maximum Y.
  */
 ol.TileRange = function(minX, minY, maxX, maxY) {
-  goog.base(this, minX, minY, maxX, maxY);
+
+  /**
+   * @type {number}
+   */
+  this.minX = minX;
+
+  /**
+   * @type {number}
+   */
+  this.minY = minY;
+
+  /**
+   * @type {number}
+   */
+  this.maxX = maxX;
+
+  /**
+   * @type {number}
+   */
+  this.maxY = maxY;
+
 };
 goog.inherits(ol.TileRange, ol.Rectangle);
 
@@ -58,16 +81,6 @@ ol.TileRange.prototype.contains = function(tileCoord) {
 ol.TileRange.prototype.containsTileRange = function(tileRange) {
   return this.minX <= tileRange.minX && tileRange.maxX <= this.maxX &&
       this.minY <= tileRange.minY && tileRange.minY <= this.maxY;
-};
-
-
-/**
- * @param {ol.TileRange} tileRange Tile range.
- * @return {boolean} Equals.
- */
-ol.TileRange.prototype.equals = function(tileRange) {
-  return this.minX == tileRange.minX && tileRange.maxX == this.maxX &&
-      this.minY == tileRange.minY && tileRange.minY == this.minY;
 };
 
 

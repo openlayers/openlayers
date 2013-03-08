@@ -33,7 +33,7 @@ ol.DebugTile_ = function(tileCoord, tileGrid) {
    * @private
    * @type {ol.Size}
    */
-  this.tileSize_ = tileGrid.getTileSize();
+  this.tileSize_ = tileGrid.getTileSize(tileCoord.z);
 
   /**
    * @private
@@ -90,6 +90,7 @@ ol.source.DebugTileSource = function(options) {
 
   goog.base(this, {
     extent: options.extent,
+    opaque: false,
     projection: options.projection,
     tileGrid: options.tileGrid
   });

@@ -168,17 +168,18 @@ ol.TileQueue.prototype.heapify_ = function() {
 
 
 /**
- * FIXME empty description for jsdoc
+ * @return {boolean} New loading tiles?
  */
 ol.TileQueue.prototype.loadMoreTiles = function() {
   var tile;
   while (this.heap_.length > 0 && this.tilesLoading_ < this.maxTilesLoading_) {
     tile = /** @type {ol.Tile} */ (this.dequeue_());
-    goog.events.listen(tile, goog.events.EventType.CHANGE,
+    goog.events.listenOnce(tile, goog.events.EventType.CHANGE,
         this.handleTileChange, false, this);
     tile.load();
     ++this.tilesLoading_;
   }
+  return goog.isDef(tile);
 };
 
 

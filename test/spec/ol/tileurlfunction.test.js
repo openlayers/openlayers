@@ -51,8 +51,8 @@ describe('ol.TileUrlFunction', function() {
   describe('createFromTileUrlFunctions', function() {
     it('creates expected URL', function() {
       var tileUrl = ol.TileUrlFunction.createFromTileUrlFunctions([
-          ol.TileUrlFunction.createFromTemplate('a'),
-          ol.TileUrlFunction.createFromTemplate('b')
+        ol.TileUrlFunction.createFromTemplate('a'),
+        ol.TileUrlFunction.createFromTemplate('b')
       ]);
       var tileUrl1 = tileUrl(new ol.TileCoord(1, 0, 0));
       var tileUrl2 = tileUrl(new ol.TileCoord(1, 0, 1));
@@ -61,7 +61,7 @@ describe('ol.TileUrlFunction', function() {
     });
   });
 
-  describe('createBboxParam', function() {
+  describe('createWMSParams', function() {
     var tileGrid;
     beforeEach(function() {
       tileGrid = new ol.tilegrid.XYZ({
@@ -69,12 +69,27 @@ describe('ol.TileUrlFunction', function() {
       });
     });
     it('creates expected URL', function() {
-      var tileUrlFunction = ol.TileUrlFunction.createBboxParam(
-         'http://wms?foo=bar', tileGrid);
+      var epsg3857 = ol.projection.get('EPSG:3857');
+      var tileUrlFunction = ol.TileUrlFunction.createWMSParams(
+          'http://wms?foo=bar', {});
       var tileCoord = new ol.TileCoord(1, 0, 0);
-      var tileUrl = tileUrlFunction(tileCoord);
-      var expected = 'http://wms?foo=bar&BBOX=-20037508.342789244' +
-                     '%2C20037508.342789244%2C0%2C40075016.68557849';
+      var tileUrl = tileUrlFunction(tileCoord, tileGrid, epsg3857);
+      var expected = 'http://wms?foo=bar&SERVICE=WMS&VERSION=1.3.0&REQUEST=' +
+          'GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&WIDTH=256&HEIGHT=256&' +
+          'STYLES=&CRS=EPSG%3A3857&BBOX=-20037508.342789244%2C2' +
+          '0037508.342789244%2C0%2C40075016.68557849';
+      expect(tileUrl).toEqual(expected);
+    });
+    it('creates expected URL respecting axis orientation', function() {
+      var epsg4326 = ol.projection.get('EPSG:4326');
+      var tileUrlFunction = ol.TileUrlFunction.createWMSParams(
+          'http://wms?foo=bar', {});
+      var tileCoord = new ol.TileCoord(1, 0, 0);
+      var tileUrl = tileUrlFunction(tileCoord, tileGrid, epsg4326);
+      var expected = 'http://wms?foo=bar&SERVICE=WMS&VERSION=1.3.0&REQUEST=' +
+          'GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&WIDTH=256&HEIGHT=256&' +
+          'STYLES=&CRS=EPSG%3A4326&BBOX=20037508.342789244%2C' +
+          '-20037508.342789244%2C40075016.68557849%2C0';
       expect(tileUrl).toEqual(expected);
     });
   });
@@ -82,4 +97,5 @@ describe('ol.TileUrlFunction', function() {
 
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.projection');
 goog.require('ol.tilegrid.XYZ');

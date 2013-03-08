@@ -2,13 +2,18 @@ goog.provide('ol.renderer.Layer');
 
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('ol.Attribution');
 goog.require('ol.FrameState');
+goog.require('ol.Image');
+goog.require('ol.ImageState');
 goog.require('ol.Object');
+goog.require('ol.Tile');
+goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
+goog.require('ol.TileState');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerProperty');
 goog.require('ol.layer.LayerState');
-goog.require('ol.source.Source');
 goog.require('ol.source.TileSource');
 
 
@@ -34,6 +39,12 @@ ol.renderer.Layer = function(mapRenderer, layer) {
    * @type {ol.layer.Layer}
    */
   this.layer_ = layer;
+
+  /**
+   * @protected
+   * @type {Object.<string, boolean>}
+   */
+  this.observedTileKeys = {};
 
   goog.events.listen(this.layer_,
       ol.Object.getChangedEventType(ol.layer.LayerProperty.BRIGHTNESS),
@@ -117,6 +128,19 @@ ol.renderer.Layer.prototype.handleLayerHueChange = goog.nullFunction;
 
 
 /**
+ * Handle changes in image state.
+ * @param {goog.events.Event} event Image change event.
+ * @protected
+ */
+ol.renderer.Layer.prototype.handleImageChange = function(event) {
+  var image = /** @type {ol.Image} */ (event.target);
+  if (image.getState() === ol.ImageState.LOADED) {
+    this.getMap().requestRenderFrame();
+  }
+};
+
+
+/**
  * @protected
  */
 ol.renderer.Layer.prototype.handleLayerLoad = function() {
@@ -147,6 +171,35 @@ ol.renderer.Layer.prototype.handleLayerVisibleChange = function() {
 
 
 /**
+ * Handle changes in tile state.
+ * @param {goog.events.Event} event Tile change event.
+ * @private
+ */
+ol.renderer.Layer.prototype.handleTileChange_ = function(event) {
+  var tile = /** @type {ol.Tile} */ (event.target);
+  if (tile.getState() === ol.TileState.LOADED) {
+    this.getMap().requestRenderFrame();
+  }
+  delete this.observedTileKeys[tile.getKey()];
+};
+
+
+/**
+ * Listen once to tileKey, le change event.
+ * @param {ol.Tile} tile Tile.
+ * @protected
+ */
+ol.renderer.Layer.prototype.listenToTileChange = function(tile) {
+  var tileKey = tile.getKey();
+  if (!(tileKey in this.observedTileKeys)) {
+    this.observedTileKeys[tileKey] = true;
+    goog.events.listenOnce(tile, goog.events.EventType.CHANGE,
+        this.handleTileChange_, false, this);
+  }
+};
+
+
+/**
  * @param {ol.FrameState} frameState Frame state.
  * @param {ol.layer.LayerState} layerState Layer state.
  */
@@ -172,49 +225,77 @@ ol.renderer.Layer.prototype.scheduleExpireCache =
 
 /**
  * @protected
- * @param {Object.<string, Object.<string, ol.TileRange>>} usedTiles Used tiles.
- * @param {ol.source.Source} source Source.
- * @param {number} z Z.
- * @param {ol.TileRange} tileRange Tile range.
+ * @param {Object.<string, ol.Attribution>} attributionsSet Attributions
+ *     set (target).
+ * @param {Array.<ol.Attribution>} attributions Attributions (source).
  */
-ol.renderer.Layer.prototype.updateUsedTiles =
-    function(usedTiles, source, z, tileRange) {
-  // FIXME should we use tilesToDrawByZ instead?
-  var sourceKey = goog.getUid(source).toString();
-  var zKey = z.toString();
-  if (sourceKey in usedTiles) {
-    if (zKey in usedTiles[sourceKey]) {
-      usedTiles[sourceKey][zKey].extend(tileRange);
-    } else {
-      usedTiles[sourceKey][zKey] = tileRange;
+ol.renderer.Layer.prototype.updateAttributions =
+    function(attributionsSet, attributions) {
+  if (goog.isDefAndNotNull(attributions)) {
+    var i;
+    var attribution;
+    for (i = 0; i < attributions.length; ++i) {
+      attribution = attributions[i];
+      attributionsSet[goog.getUid(attribution).toString()] = attribution;
     }
-  } else {
-    usedTiles[sourceKey] = {};
-    usedTiles[sourceKey][zKey] = tileRange;
   }
 };
 
 
 /**
  * @protected
- * @param {Object.<string, Object.<string, ol.TileRange>>} wantedTiles Wanted
- *     tile ranges.
- * @param {ol.source.Source} source Source.
+ * @param {Object.<string, Object.<string, ol.TileRange>>} usedTiles Used tiles.
+ * @param {ol.source.TileSource} tileSource Tile source.
  * @param {number} z Z.
  * @param {ol.TileRange} tileRange Tile range.
  */
-ol.renderer.Layer.prototype.updateWantedTiles =
-    function(wantedTiles, source, z, tileRange) {
-  var sourceKey = goog.getUid(source).toString();
+ol.renderer.Layer.prototype.updateUsedTiles =
+    function(usedTiles, tileSource, z, tileRange) {
+  // FIXME should we use tilesToDrawByZ instead?
+  var tileSourceKey = goog.getUid(tileSource).toString();
   var zKey = z.toString();
-  if (sourceKey in wantedTiles) {
-    if (zKey in wantedTiles[sourceKey]) {
-      wantedTiles[sourceKey][zKey].extend(tileRange);
+  if (tileSourceKey in usedTiles) {
+    if (zKey in usedTiles[tileSourceKey]) {
+      usedTiles[tileSourceKey][zKey].extend(tileRange);
     } else {
-      wantedTiles[sourceKey][zKey] = tileRange;
+      usedTiles[tileSourceKey][zKey] = tileRange;
     }
   } else {
-    wantedTiles[sourceKey] = {};
-    wantedTiles[sourceKey][zKey] = tileRange;
+    usedTiles[tileSourceKey] = {};
+    usedTiles[tileSourceKey][zKey] = tileRange;
   }
+};
+
+
+/**
+ * @protected
+ * @param {Object.<string, Object.<string, boolean>>} wantedTiles Wanted tiles.
+ * @param {ol.source.TileSource} tileSource Tile source.
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ */
+ol.renderer.Layer.prototype.updateWantedTiles =
+    function(wantedTiles, tileSource, tileCoord) {
+  var tileSourceKey = goog.getUid(tileSource).toString();
+  var coordKey = tileCoord.toString();
+  if (!(tileSourceKey in wantedTiles)) {
+    wantedTiles[tileSourceKey] = {};
+  }
+  wantedTiles[tileSourceKey][coordKey] = true;
+};
+
+
+/**
+ * @param {function(ol.Tile): boolean} isLoadedFunction Function to
+ *     determine if the tile is loaded.
+ * @param {ol.source.TileSource} tileSource Tile source.
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @param {ol.Projection} projection Projection.
+ * @return {function(ol.TileCoord): ol.Tile} Returns a tile if it is loaded.
+ */
+ol.renderer.Layer.prototype.createGetTileIfLoadedFunction =
+    function(isLoadedFunction, tileSource, tileGrid, projection) {
+  return function(tileCoord) {
+    var tile = tileSource.getTile(tileCoord, tileGrid, projection);
+    return isLoadedFunction(tile) ? tile : null;
+  };
 };

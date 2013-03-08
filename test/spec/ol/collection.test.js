@@ -104,67 +104,94 @@ describe('ol.collection', function() {
     });
   });
 
+  describe('remove', function() {
+    it('removes the first matching element', function() {
+      var collection = new ol.Collection([0, 1, 2]);
+      expect(collection.remove(1)).toEqual(1);
+      expect(collection.getArray()).toEqual([0, 2]);
+      expect(collection.getLength()).toEqual(2);
+    });
+    it('fires a remove event', function() {
+      var collection = new ol.Collection([0, 1, 2]);
+      var cb = jasmine.createSpy();
+      goog.events.listen(collection, ol.CollectionEventType.REMOVE, cb);
+      expect(collection.remove(1)).toEqual(1);
+      expect(cb).toHaveBeenCalled();
+      expect(cb.mostRecentCall.args[0].elem).toEqual(1);
+    });
+    it('does not remove more than one matching element', function() {
+      var collection = new ol.Collection([0, 1, 1, 2]);
+      expect(collection.remove(1)).toEqual(1);
+      expect(collection.getArray()).toEqual([0, 1, 2]);
+      expect(collection.getLength()).toEqual(3);
+    });
+    it('returns undefined if the element is not found', function() {
+      var collection = new ol.Collection([0, 1, 2]);
+      expect(collection.remove(3)).toBeUndefined();
+      expect(collection.getArray()).toEqual([0, 1, 2]);
+      expect(collection.getLength()).toEqual(3);
+    });
+  });
+
   describe('setAt and event', function() {
     it('does dispatch events', function() {
       var collection = new ol.Collection(['a', 'b']);
-      var index, prev;
+      var added, removed;
+      goog.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
+        added = e.elem;
+      });
       goog.events.listen(
-          collection,
-          ol.CollectionEventType.SET_AT,
-          function(e) {
-            index = e.index;
-            prev = e.prev;
+          collection, ol.CollectionEventType.REMOVE, function(e) {
+            removed = e.elem;
           });
       collection.setAt(1, 1);
-      expect(index).toEqual(1);
-      expect(prev).toEqual('b');
+      expect(added).toEqual(1);
+      expect(removed).toEqual('b');
     });
   });
 
   describe('removeAt and event', function() {
     it('does dispatch events', function() {
       var collection = new ol.Collection(['a']);
-      var index, prev;
+      var removed;
       goog.events.listen(
-          collection, ol.CollectionEventType.REMOVE_AT, function(e) {
-            index = e.index;
-            prev = e.prev;
+          collection, ol.CollectionEventType.REMOVE, function(e) {
+            removed = e.elem;
           });
       collection.pop();
-      expect(index).toEqual(0);
-      expect(prev).toEqual('a');
+      expect(removed).toEqual('a');
     });
   });
 
   describe('insertAt and event', function() {
     it('does dispatch events', function() {
       var collection = new ol.Collection([0, 2]);
-      var index;
+      var added;
       goog.events.listen(
-          collection, ol.CollectionEventType.INSERT_AT, function(e) {
-            index = e.index;
+          collection, ol.CollectionEventType.ADD, function(e) {
+            added = e.elem;
           });
       collection.insertAt(1, 1);
-      expect(index).toEqual(1);
+      expect(added).toEqual(1);
     });
   });
 
   describe('setAt beyond end', function() {
     it('triggers events properly', function() {
-      var inserts = [];
+      var added = [];
       goog.events.listen(
-          collection, ol.CollectionEventType.INSERT_AT, function(e) {
-            inserts.push(e.index);
+          collection, ol.CollectionEventType.ADD, function(e) {
+            added.push(e.elem);
           });
       collection.setAt(2, 0);
       expect(collection.getLength()).toEqual(3);
       expect(collection.getAt(0)).toBeUndefined();
       expect(collection.getAt(1)).toBeUndefined();
       expect(collection.getAt(2)).toEqual(0);
-      expect(inserts.length).toEqual(3);
-      expect(inserts[0]).toEqual(0);
-      expect(inserts[1]).toEqual(1);
-      expect(inserts[2]).toEqual(2);
+      expect(added.length).toEqual(3);
+      expect(added[0]).toEqual(undefined);
+      expect(added[1]).toEqual(undefined);
+      expect(added[2]).toEqual(0);
     });
   });
 
@@ -235,6 +262,17 @@ describe('ol.collection', function() {
       });
     });
   });
+
+  describe('extending a collection', function() {
+    it('adds elements to end of the collection', function() {
+      collection.extend([1, 2]);
+      expect(collection.getLength()).toEqual(2);
+      expect(goog.array.equals(collection.getArray(), [1, 2])).toBeTruthy();
+      expect(collection.getAt(0)).toEqual(1);
+      expect(collection.getAt(1)).toEqual(2);
+    });
+  });
+
 });
 
 goog.require('goog.array');

@@ -5,8 +5,10 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.style');
+goog.require('ol.layer.ImageLayer');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.Map');
+goog.require('ol.renderer.dom.ImageLayer');
 goog.require('ol.renderer.dom.TileLayer');
 
 
@@ -57,14 +59,15 @@ ol.renderer.dom.Map.prototype.addLayer = function(layer) {
  * @inheritDoc
  */
 ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
+  var layerRenderer;
   if (layer instanceof ol.layer.TileLayer) {
-    var layerRenderer = new ol.renderer.dom.TileLayer(this, layer);
-    goog.dom.appendChild(this.layersPane_, layerRenderer.getTarget());
-    return layerRenderer;
-  } else {
-    goog.asserts.assert(false);
-    return null;
+    layerRenderer = new ol.renderer.dom.TileLayer(this, layer);
+  } else if (layer instanceof ol.layer.ImageLayer) {
+    layerRenderer = new ol.renderer.dom.ImageLayer(this, layer);
   }
+  goog.asserts.assert(goog.isDef(layerRenderer));
+  goog.dom.appendChild(this.layersPane_, layerRenderer.getTarget());
+  return layerRenderer;
 };
 
 

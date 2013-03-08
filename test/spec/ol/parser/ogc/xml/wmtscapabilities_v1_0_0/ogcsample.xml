@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
+    <ows:ServiceIdentification>
+        <ows:Title>Web Map Tile Service</ows:Title>
+        <ows:Abstract>Service that contrains the map access interface to some TileMatrixSets</ows:Abstract>
+        <ows:Keywords>
+            <ows:Keyword>tile</ows:Keyword>
+            <ows:Keyword>tile matrix set</ows:Keyword>
+            <ows:Keyword>map</ows:Keyword>
+        </ows:Keywords>
+        <ows:ServiceType>OGC WMTS</ows:ServiceType>
+        <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+        <ows:Fees>none</ows:Fees>
+        <ows:AccessConstraints>none</ows:AccessConstraints>
+    </ows:ServiceIdentification>
+    <ows:ServiceProvider>
+        <ows:ProviderName>MiraMon</ows:ProviderName>
+        <ows:ProviderSite xlink:href="http://www.creaf.uab.es/miramon"/>
+        <ows:ServiceContact>
+            <ows:IndividualName>Joan Maso Pau</ows:IndividualName>
+            <ows:PositionName>Senior Software Engineer</ows:PositionName>
+            <ows:ContactInfo>
+                <ows:Phone>
+                    <ows:Voice>+34 93 581 1312</ows:Voice>
+                    <ows:Facsimile>+34 93 581 4151</ows:Facsimile>
+                </ows:Phone>
+                <ows:Address>
+                    <ows:DeliveryPoint>Fac Ciencies UAB</ows:DeliveryPoint>
+                    <ows:City>Bellaterra</ows:City>
+                    <ows:AdministrativeArea>Barcelona</ows:AdministrativeArea>
+                    <ows:PostalCode>08193</ows:PostalCode>
+                    <ows:Country>Spain</ows:Country>
+                    <ows:ElectronicMailAddress>joan.maso@uab.es</ows:ElectronicMailAddress>
+                </ows:Address>
+            </ows:ContactInfo>
+        </ows:ServiceContact>
+    </ows:ServiceProvider>
+    <ows:OperationsMetadata>
+        <ows:Operation name="GetCapabilities">
+            <ows:DCP>
+                <ows:HTTP>
+                    <ows:Get xlink:href="http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?">
+                        <ows:Constraint name="GetEncoding">
+                            <ows:AllowedValues>
+                                <ows:Value>KVP</ows:Value>
+                            </ows:AllowedValues>
+                        </ows:Constraint>
+                    </ows:Get>
+                </ows:HTTP>
+            </ows:DCP>
+        </ows:Operation>
+        <ows:Operation name="GetTile">
+            <ows:DCP>
+                <ows:HTTP>
+                    <ows:Get xlink:href="http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?"/>
+                </ows:HTTP>
+            </ows:DCP>
+        </ows:Operation>
+        <ows:Operation name="GetFeatureInfo">
+            <ows:DCP>
+                <ows:HTTP>
+                    <ows:Get xlink:href="http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?"/>
+                </ows:HTTP>
+            </ows:DCP>
+        </ows:Operation>
+    </ows:OperationsMetadata>
+    <Contents>
+        <Layer>
+            <ows:Title>Coastlines</ows:Title>
+            <ows:Abstract>Coastline/shorelines (BA010)</ows:Abstract>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>-180 -90</ows:LowerCorner>
+                <ows:UpperCorner>180 90</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:Identifier>coastlines</ows:Identifier>
+            <ResourceURL format="image/png" resourceType="tile"
+                         template="http://a.example.com/wmts/coastlines/{TileMatrix}/{TileRow}/{TileCol}.png" />
+            <ResourceURL format="image/png" resourceType="tile"
+                         template="http://b.example.com/wmts/coastlines/{TileMatrix}/{TileRow}/{TileCol}.png" />
+            <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+                         template="http://www.example.com/wmts/coastlines/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml" />
+            <Style isDefault="true">
+                <ows:Title>Dark Blue</ows:Title>
+                <ows:Identifier>DarkBlue</ows:Identifier>
+                <LegendURL format="image/png" xlink:href="http://www.miramon.uab.es/wmts/Coastlines/coastlines_darkBlue.png"/>
+            </Style>
+            <Style>
+                <ows:Title>Thick And Red</ows:Title>
+                <ows:Abstract>Specify this style if you want your maps to have thick red coastlines.
+                </ows:Abstract>
+                <ows:Identifier>thickAndRed</ows:Identifier>
+            </Style>
+            <Format>image/png</Format>
+            <Format>image/gif</Format>
+            <Dimension>
+                <ows:Title>Time</ows:Title>
+                <ows:Abstract>Monthly datasets</ows:Abstract>
+                <ows:Identifier>TIME</ows:Identifier>
+                <Value>2007-05</Value>
+                <Value>2007-06</Value>
+                <Value>2007-07</Value>
+                <Default>default</Default>
+            </Dimension>
+            <TileMatrixSetLink>
+                <TileMatrixSet>BigWorld</TileMatrixSet>
+            </TileMatrixSetLink>
+        </Layer>
+        <TileMatrixSet>
+            <ows:Identifier>BigWorld</ows:Identifier>
+            <ows:SupportedCRS>urn:ogc:def:crs:OGC:1.3:CRS84</ows:SupportedCRS>
+            <TileMatrix>
+                <ows:Identifier>1e6</ows:Identifier>
+                <ScaleDenominator>1e6</ScaleDenominator>
+                <TopLeftCorner>-180 84</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>60000</MatrixWidth>
+                <MatrixHeight>50000</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>2.5e6</ows:Identifier>
+                <ScaleDenominator>2.5e6</ScaleDenominator>
+                <TopLeftCorner>-180 84</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>9000</MatrixWidth>
+                <MatrixHeight>7000</MatrixHeight>
+            </TileMatrix>
+        </TileMatrixSet>
+    </Contents>
+    <Themes>
+        <Theme>
+            <ows:Title>Foundation</ows:Title>
+            <ows:Abstract>"Digital Chart Of The World" data</ows:Abstract>
+            <ows:Identifier>Foundation</ows:Identifier>
+            <Theme>
+                <ows:Title>Boundaries</ows:Title>
+                <ows:Identifier>Boundaries</ows:Identifier>
+                <LayerRef>coastlines</LayerRef>
+                <LayerRef>politicalBoundaries</LayerRef>
+                <LayerRef>depthContours</LayerRef>
+            </Theme>
+            <Theme>
+                <ows:Title>Transportation</ows:Title>
+                <ows:Identifier>Transportation</ows:Identifier>
+                <LayerRef>roads</LayerRef>
+                <LayerRef>railroads</LayerRef>
+                <LayerRef>airports</LayerRef>
+            </Theme>
+        </Theme>
+        <Theme>
+            <ows:Title>World Geology</ows:Title>
+            <ows:Identifier>World Geology</ows:Identifier>
+            <LayerRef>worldAgeRockType</LayerRef>
+            <LayerRef>worldFaultLines</LayerRef>
+            <LayerRef>felsicMagmatic</LayerRef>
+            <LayerRef>maficMagmatic</LayerRef>
+        </Theme>
+    </Themes>
+</Capabilities>

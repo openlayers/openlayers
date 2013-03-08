@@ -1,0 +1,15 @@
+@import url(font-awesome/css/font-awesome.min.css);
+
+body {
+  padding-top: 60px;
+}
+.map {
+  height: 400px;
+  width: 100%;
+}
+.ol-attribution {
+  max-width: 50%;
+}
+#tags {
+  display: none;
+}

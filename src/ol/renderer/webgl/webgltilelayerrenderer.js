@@ -139,7 +139,13 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.matrix_ = goog.vec.Mat4.createNumber();
+  this.texCoordMatrix_ = goog.vec.Mat4.createNumber();
+
+  /**
+   * @private
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.projectionMatrix_ = goog.vec.Mat4.createNumberIdentity();
 
   /**
    * @private
@@ -224,8 +230,8 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.TileLayer.prototype.getMatrix = function() {
-  return this.matrix_;
+ol.renderer.webgl.TileLayer.prototype.getTexCoordMatrix = function() {
+  return this.texCoordMatrix_;
 };
 
 
@@ -234,6 +240,14 @@ ol.renderer.webgl.TileLayer.prototype.getMatrix = function() {
  */
 ol.renderer.webgl.TileLayer.prototype.getTexture = function() {
   return this.texture_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.webgl.TileLayer.prototype.getProjectionMatrix = function() {
+  return this.projectionMatrix_;
 };
 
 
@@ -267,12 +281,16 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   var gl = mapRenderer.getGL();
 
   var view2DState = frameState.view2DState;
+  var projection = view2DState.projection;
   var center = view2DState.center;
 
   var tileLayer = this.getTileLayer();
   var tileSource = tileLayer.getTileSource();
   var tileSourceKey = goog.getUid(tileSource).toString();
   var tileGrid = tileSource.getTileGrid();
+  if (goog.isNull(tileGrid)) {
+    tileGrid = ol.tilegrid.getForProjection(projection);
+  }
   var z = tileGrid.getZForResolution(view2DState.resolution);
   var tileResolution = tileGrid.getResolution(z);
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
@@ -285,7 +303,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   } else {
 
     var tileRangeSize = tileRange.getSize();
-    var tileSize = tileGrid.getTileSize();
+    var tileSize = tileGrid.getTileSize(z);
 
     var maxDimension = Math.max(
         tileRangeSize.width * tileSize.width,
@@ -351,32 +369,12 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     var tilesToDrawByZ = {};
     tilesToDrawByZ[z] = {};
 
-    var findInterimTiles = function(z, tileRange) {
-      // FIXME this could be more efficient about filling partial holes
-      var fullyCovered = true;
-      var tile, tileCoord, tileCoordKey, x, y;
-      for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
-        for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-          tileCoord = new ol.TileCoord(z, x, y);
-          tileCoordKey = tileCoord.toString();
-          if (tilesToDrawByZ[z] && tilesToDrawByZ[z][tileCoordKey]) {
-            return;
-          }
-          tile = tileSource.getTile(tileCoord);
-          if (!goog.isNull(tile) &&
-              tile.getState() == ol.TileState.LOADED &&
-              mapRenderer.isTileTextureLoaded(tile)) {
-            if (!tilesToDrawByZ[z]) {
-              tilesToDrawByZ[z] = {};
-            }
-            tilesToDrawByZ[z][tileCoordKey] = tile;
-          } else {
-            fullyCovered = false;
-          }
-        }
-      }
-      return fullyCovered;
-    };
+    var getTileIfLoaded = this.createGetTileIfLoadedFunction(function(tile) {
+      return !goog.isNull(tile) && tile.getState() == ol.TileState.LOADED &&
+          mapRenderer.isTileTextureLoaded(tile);
+    }, tileSource, tileGrid, projection);
+    var findLoadedTiles = goog.bind(tileSource.findLoadedTiles, tileSource,
+        tilesToDrawByZ, getTileIfLoaded);
 
     var tilesToLoad = new goog.structs.PriorityQueue();
 
@@ -386,15 +384,18 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
         tileCoord = new ol.TileCoord(z, x, y);
-        tile = tileSource.getTile(tileCoord);
+        tile = tileSource.getTile(tileCoord, tileGrid, projection);
         if (goog.isNull(tile)) {
           continue;
         }
 
         tileState = tile.getState();
         if (tileState == ol.TileState.IDLE) {
+          this.updateWantedTiles(frameState.wantedTiles, tileSource, tileCoord);
           tileCenter = tileGrid.getTileCoordCenter(tileCoord);
           frameState.tileQueue.enqueue(tile, tileSourceKey, tileCenter);
+        } else if (tileState == ol.TileState.LOADING) {
+          this.listenToTileChange(tile);
         } else if (tileState == ol.TileState.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {
             tilesToDrawByZ[z][tileCoord.toString()] = tile;
@@ -411,7 +412,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         }
 
         allTilesLoaded = false;
-        tileGrid.forEachTileCoordParentTileRange(tileCoord, findInterimTiles);
+        tileGrid.forEachTileCoordParentTileRange(tileCoord, findLoadedTiles);
 
       }
 
@@ -457,29 +458,29 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
       this.renderedTileRange_ = null;
       this.renderedFramebufferExtent_ = null;
       frameState.animate = true;
-      this.updateWantedTiles(frameState.wantedTiles, tileSource, z, tileRange);
     }
 
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
+  tileSource.useLowResolutionTiles(z, frameState.extent, tileGrid);
   this.scheduleExpireCache(frameState, tileSource);
 
-  goog.vec.Mat4.makeIdentity(this.matrix_);
-  goog.vec.Mat4.translate(this.matrix_,
+  goog.vec.Mat4.makeIdentity(this.texCoordMatrix_);
+  goog.vec.Mat4.translate(this.texCoordMatrix_,
       (view2DState.center.x - framebufferExtent.minX) /
           (framebufferExtent.maxX - framebufferExtent.minX),
       (view2DState.center.y - framebufferExtent.minY) /
           (framebufferExtent.maxY - framebufferExtent.minY),
       0);
-  goog.vec.Mat4.rotateZ(this.matrix_, view2DState.rotation);
-  goog.vec.Mat4.scale(this.matrix_,
+  goog.vec.Mat4.rotateZ(this.texCoordMatrix_, view2DState.rotation);
+  goog.vec.Mat4.scale(this.texCoordMatrix_,
       frameState.size.width * view2DState.resolution /
           (framebufferExtent.maxX - framebufferExtent.minX),
       frameState.size.height * view2DState.resolution /
           (framebufferExtent.maxY - framebufferExtent.minY),
       1);
-  goog.vec.Mat4.translate(this.matrix_,
+  goog.vec.Mat4.translate(this.texCoordMatrix_,
       -0.5,
       -0.5,
       0);

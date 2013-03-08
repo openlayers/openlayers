@@ -43,6 +43,16 @@ ol.Rectangle = function(minX, minY, maxX, maxY) {
 
 /**
  * @param {ol.Rectangle} rectangle Rectangle.
+ * @return {boolean} Equals.
+ */
+ol.Rectangle.prototype.equals = function(rectangle) {
+  return this.minX == rectangle.minX && this.minY == rectangle.minY &&
+      this.maxX == rectangle.maxX && this.maxY == rectangle.maxY;
+};
+
+
+/**
+ * @param {ol.Rectangle} rectangle Rectangle.
  */
 ol.Rectangle.prototype.extend = function(rectangle) {
   this.minX = Math.min(this.minX, rectangle.minX);
@@ -113,4 +123,17 @@ ol.Rectangle.prototype.normalize = function(coordinate) {
  */
 ol.Rectangle.prototype.toString = function() {
   return '(' + [this.minX, this.minY, this.maxX, this.maxY].join(', ') + ')';
+};
+
+
+/**
+ * @param {number} value Value.
+ */
+ol.Rectangle.prototype.scaleFromCenter = function(value) {
+  var deltaX = (this.getWidth() / 2.0) * (value - 1);
+  var deltaY = (this.getHeight() / 2.0) * (value - 1);
+  this.minX -= deltaX;
+  this.minY -= deltaY;
+  this.maxX += deltaX;
+  this.maxY += deltaY;
 };

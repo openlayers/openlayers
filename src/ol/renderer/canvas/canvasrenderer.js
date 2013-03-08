@@ -1,9 +1,10 @@
-goog.provide('ol.renderer.canvas.isSupported');
+goog.provide('ol.renderer.canvas.SUPPORTED');
 
 goog.require('ol.canvas');
 
 
 /**
- * @return {boolean} Is supported.
+ * @const
+ * @type {boolean} Is supported.
  */
-ol.renderer.canvas.isSupported = ol.canvas.isSupported;
+ol.renderer.canvas.SUPPORTED = ol.canvas.SUPPORTED;

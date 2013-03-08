@@ -51,7 +51,9 @@ goog.inherits(ol.interaction.DragPan, ol.interaction.Drag);
  */
 ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
   if (this.kinetic_) {
-    this.kinetic_.update(mapBrowserEvent.browserEvent);
+    this.kinetic_.update(
+        mapBrowserEvent.browserEvent.clientX,
+        mapBrowserEvent.browserEvent.clientY);
   }
   var map = mapBrowserEvent.map;
   // FIXME works for View2D only
@@ -78,13 +80,13 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  view.setHint(ol.ViewHint.PANNING, -1);
+  view.setHint(ol.ViewHint.INTERACTING, -1);
 
   if (this.kinetic_ && this.kinetic_.end()) {
     var distance = this.kinetic_.getDistance();
     var angle = this.kinetic_.getAngle();
     var center = view.getCenter();
-    this.kineticPreRenderFn_ = this.kinetic_.createPanFrom(center);
+    this.kineticPreRenderFn_ = this.kinetic_.pan(center);
     map.addPreRenderFunction(this.kineticPreRenderFn_);
 
     var centerpx = map.getPixelFromCoordinate(center);
@@ -104,11 +106,12 @@ ol.interaction.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   if (this.condition_(browserEvent)) {
     if (this.kinetic_) {
-      this.kinetic_.begin(browserEvent);
+      this.kinetic_.begin();
+      this.kinetic_.update(browserEvent.clientX, browserEvent.clientY);
     }
     var map = mapBrowserEvent.map;
     map.requestRenderFrame();
-    map.getView().setHint(ol.ViewHint.PANNING, 1);
+    map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     return true;
   } else {
     return false;

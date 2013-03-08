@@ -1,9 +1,8 @@
-goog.provide('ol.renderer.dom.isSupported');
-
-goog.require('goog.functions');
+goog.provide('ol.renderer.dom.SUPPORTED');
 
 
 /**
- * @return {boolean} Is supported.
+ * @const
+ * @type {boolean} Is supported.
  */
-ol.renderer.dom.isSupported = goog.functions.TRUE;
+ol.renderer.dom.SUPPORTED = true;

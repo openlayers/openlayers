@@ -79,11 +79,15 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   }
 
   var view2DState = frameState.view2DState;
+  var projection = view2DState.projection;
 
   var tileLayer = this.getTileLayer();
   var tileSource = tileLayer.getTileSource();
   var tileSourceKey = goog.getUid(tileSource).toString();
   var tileGrid = tileSource.getTileGrid();
+  if (goog.isNull(tileGrid)) {
+    tileGrid = ol.tilegrid.getForProjection(projection);
+  }
   var z = tileGrid.getZForResolution(view2DState.resolution);
   var tileResolution = tileGrid.getResolution(z);
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
@@ -93,30 +97,11 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   var tilesToDrawByZ = {};
   tilesToDrawByZ[z] = {};
 
-  var findInterimTiles = function(z, tileRange) {
-    // FIXME this could be more efficient about filling partial holes
-    var fullyCovered = true;
-    var tile, tileCoord, tileCoordKey, x, y;
-    for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
-      for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        tileCoord = new ol.TileCoord(z, x, y);
-        tileCoordKey = tileCoord.toString();
-        if (tilesToDrawByZ[z] && tilesToDrawByZ[z][tileCoordKey]) {
-          return;
-        }
-        tile = tileSource.getTile(tileCoord);
-        if (!goog.isNull(tile) && tile.getState() == ol.TileState.LOADED) {
-          if (!tilesToDrawByZ[z]) {
-            tilesToDrawByZ[z] = {};
-          }
-          tilesToDrawByZ[z][tileCoordKey] = tile;
-        } else {
-          fullyCovered = false;
-        }
-      }
-    }
-    return fullyCovered;
-  };
+  var getTileIfLoaded = this.createGetTileIfLoadedFunction(function(tile) {
+    return !goog.isNull(tile) && tile.getState() == ol.TileState.LOADED;
+  }, tileSource, tileGrid, projection);
+  var findLoadedTiles = goog.bind(tileSource.findLoadedTiles, tileSource,
+      tilesToDrawByZ, getTileIfLoaded);
 
   var allTilesLoaded = true;
   var tile, tileCenter, tileCoord, tileState, x, y;
@@ -124,15 +109,18 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
       tileCoord = new ol.TileCoord(z, x, y);
-      tile = tileSource.getTile(tileCoord);
+      tile = tileSource.getTile(tileCoord, tileGrid, projection);
       if (goog.isNull(tile)) {
         continue;
       }
 
       tileState = tile.getState();
       if (tileState == ol.TileState.IDLE) {
+        this.updateWantedTiles(frameState.wantedTiles, tileSource, tileCoord);
         tileCenter = tileGrid.getTileCoordCenter(tileCoord);
         frameState.tileQueue.enqueue(tile, tileSourceKey, tileCenter);
+      } else if (tileState == ol.TileState.LOADING) {
+        this.listenToTileChange(tile);
       } else if (tileState == ol.TileState.LOADED) {
         tilesToDrawByZ[z][tileCoord.toString()] = tile;
         continue;
@@ -141,7 +129,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
       }
 
       allTilesLoaded = false;
-      tileGrid.forEachTileCoordParentTileRange(tileCoord, findInterimTiles);
+      tileGrid.forEachTileCoordParentTileRange(tileCoord, findLoadedTiles);
 
     }
 
@@ -154,7 +142,6 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   /** @type {Object.<number, boolean>} */
   var newTileLayerZKeys = {};
 
-  var tileSize = tileGrid.getTileSize();
   var iz, tileCoordKey, tileCoordOrigin, tileLayerZ, tileLayerZKey, tilesToDraw;
   for (iz = 0; iz < zs.length; ++iz) {
     tileLayerZKey = zs[iz];
@@ -216,7 +203,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
       }
     } else {
       if (!frameState.viewHints[ol.ViewHint.ANIMATING] &&
-          !frameState.viewHints[ol.ViewHint.PANNING]) {
+          !frameState.viewHints[ol.ViewHint.INTERACTING]) {
         tileLayerZ.removeTilesOutsideExtent(frameState.extent);
       }
     }
@@ -232,12 +219,8 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
     this.renderedVisible_ = true;
   }
 
-  if (!allTilesLoaded) {
-    frameState.animate = true;
-    this.updateWantedTiles(frameState.wantedTiles, tileSource, z, tileRange);
-  }
-
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
+  tileSource.useLowResolutionTiles(z, frameState.extent, tileGrid);
   this.scheduleExpireCache(frameState, tileSource);
 
 };
@@ -313,7 +296,7 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile) {
   if (tileCoordKey in this.tiles_) {
     return;
   }
-  var tileSize = this.tileGrid_.getTileSize();
+  var tileSize = this.tileGrid_.getTileSize(tileCoord.z);
   var image = tile.getImage(this);
   var style = image.style;
   style.position = 'absolute';

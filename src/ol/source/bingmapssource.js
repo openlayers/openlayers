@@ -1,4 +1,3 @@
-goog.provide('ol.BingMapsStyle');
 goog.provide('ol.source.BingMaps');
 
 goog.require('goog.Uri');
@@ -6,25 +5,13 @@ goog.require('goog.array');
 goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
-goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.projection');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');
-
-
-/**
- * @enum {string}
- */
-ol.BingMapsStyle = {
-  AERIAL: 'Aerial',
-  AERIAL_WITH_LABELS: 'AerialWithLabels',
-  ROAD: 'Road',
-  ORDNANCE_SURVEY: 'OrdnanceSurvey',
-  COLLINS_BART: 'CollinsBart'
-};
 
 
 
@@ -36,7 +23,8 @@ ol.BingMapsStyle = {
 ol.source.BingMaps = function(bingMapsOptions) {
 
   goog.base(this, {
-    projection: ol.Projection.getFromCode('EPSG:3857')
+    opaque: true,
+    projection: ol.projection.get('EPSG:3857')
   });
 
   /**
@@ -123,8 +111,8 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                 };
               })));
 
-  var transform = ol.Projection.getTransform(
-      ol.Projection.getFromCode('EPSG:4326'), this.getProjection());
+  var transform = ol.projection.getTransformFromProjections(
+      ol.projection.get('EPSG:4326'), this.getProjection());
   var attributions = goog.array.map(
       resource.imageryProviders,
       function(imageryProvider) {

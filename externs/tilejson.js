@@ -66,7 +66,7 @@ TileJSON.prototype.tiles;
 
 
 /**
- * @type {!Array.<string>}
+ * @type {!Array.<string>|undefined}
  */
 TileJSON.prototype.grids;
 

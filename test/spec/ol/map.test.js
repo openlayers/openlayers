@@ -72,38 +72,24 @@ describe('ol.Map', function() {
 
     beforeEach(function() {
       options = {
-          rotate: false,
-          doubleClickZoom: false,
-          dragPan: false,
-          keyboard: false,
-          mouseWheelZoom: false,
-          shiftDragZoom: false
+        rotate: false,
+        doubleClickZoom: false,
+        dragPan: false,
+        keyboard: false,
+        mouseWheelZoom: false,
+        shiftDragZoom: false,
+        touchPan: false,
+        touchRotate: false,
+        touchZoom: false
       };
     });
 
     describe('create mousewheel interaction', function() {
-
-      beforeEach(function() {
+      it('creates mousewheel interaction', function() {
         options.mouseWheelZoom = true;
-      });
-
-      describe('default mouseWheelZoomDelta', function() {
-        it('create mousewheel interaction with default delta', function() {
-          var interactions = ol.Map.createInteractions_(options);
-          expect(interactions.getLength()).toEqual(1);
-          expect(interactions.getAt(0)).toBeA(ol.interaction.MouseWheelZoom);
-          expect(interactions.getAt(0).delta_).toEqual(1);
-        });
-      });
-
-      describe('set mouseWheelZoomDelta', function() {
-        it('create mousewheel interaction with set delta', function() {
-          options.mouseWheelZoomDelta = 7;
-          var interactions = ol.Map.createInteractions_(options);
-          expect(interactions.getLength()).toEqual(1);
-          expect(interactions.getAt(0)).toBeA(ol.interaction.MouseWheelZoom);
-          expect(interactions.getAt(0).delta_).toEqual(7);
-        });
+        var interactions = ol.interaction.defaults(options);
+        expect(interactions.getLength()).toEqual(1);
+        expect(interactions.getAt(0)).toBeA(ol.interaction.MouseWheelZoom);
       });
     });
 
@@ -115,17 +101,17 @@ describe('ol.Map', function() {
 
       describe('default zoomDelta', function() {
         it('create double click interaction with default delta', function() {
-          var interactions = ol.Map.createInteractions_(options);
+          var interactions = ol.interaction.defaults(options);
           expect(interactions.getLength()).toEqual(1);
           expect(interactions.getAt(0)).toBeA(ol.interaction.DblClickZoom);
-          expect(interactions.getAt(0).delta_).toEqual(4);
+          expect(interactions.getAt(0).delta_).toEqual(1);
         });
       });
 
-      describe('set mouseWheelZoomDelta', function() {
+      describe('set zoomDelta', function() {
         it('create double click interaction with set delta', function() {
           options.zoomDelta = 7;
-          var interactions = ol.Map.createInteractions_(options);
+          var interactions = ol.interaction.defaults(options);
           expect(interactions.getLength()).toEqual(1);
           expect(interactions.getAt(0)).toBeA(ol.interaction.DblClickZoom);
           expect(interactions.getAt(0).delta_).toEqual(7);
@@ -211,14 +197,16 @@ describe('ol.Map', function() {
 
       // confirm that the center is somewhere between origin and destination
       // after a short delay
-      waits(100);
+      waits(goog.async.AnimationDelay.TIMEOUT);
       runs(function() {
         expect(o.callback).toHaveBeenCalled();
         var loc = map.getView().getCenter();
         expect(loc.x).not.toEqual(origin.x);
         expect(loc.y).not.toEqual(origin.y);
-        expect(loc.x).not.toEqual(destination.x);
-        expect(loc.y).not.toEqual(destination.y);
+        if (new Date().getTime() - start < duration) {
+          expect(loc.x).not.toEqual(destination.x);
+          expect(loc.y).not.toEqual(destination.y);
+        }
       });
 
       // confirm that the map has reached the destination after the duration
@@ -241,6 +229,10 @@ goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
+goog.require('ol.RendererHints');
 goog.require('ol.View2D');
+goog.require('ol.interaction.DblClickZoom');
+goog.require('ol.interaction.MouseWheelZoom');
+goog.require('ol.interaction.defaults');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.source.XYZ');

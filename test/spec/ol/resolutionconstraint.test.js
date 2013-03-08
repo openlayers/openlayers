@@ -7,9 +7,8 @@ describe('ol.ResolutionConstraint', function() {
     var resolutionConstraint;
 
     beforeEach(function() {
-      resolutionConstraint =
-            ol.ResolutionConstraint.createSnapToResolutions(
-                [1000, 500, 250, 100]);
+      resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
+          [1000, 500, 250, 100]);
     });
 
     describe('delta 0', function() {

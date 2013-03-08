@@ -11,7 +11,7 @@ goog.require('ol.Object');
  */
 ol.ViewHint = {
   ANIMATING: 0,
-  PANNING: 1
+  INTERACTING: 1
 };
 
 
@@ -22,6 +22,8 @@ ol.ViewHint = {
  * @extends {ol.Object}
  */
 ol.View = function() {
+
+  goog.base(this);
 
   /**
    * @private

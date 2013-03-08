@@ -20,16 +20,14 @@ goog.require('goog.events.KeyHandler');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.MouseWheelHandler.EventType');
+goog.require('goog.style');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
-goog.require('ol.CollectionEvent');
-goog.require('ol.CollectionEventType');
 goog.require('ol.Color');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.FrameState');
 goog.require('ol.IView');
-goog.require('ol.Kinetic');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserEventHandler');
@@ -45,26 +43,18 @@ goog.require('ol.Tile');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
 goog.require('ol.View2D');
-goog.require('ol.control.Attribution');
-goog.require('ol.control.Control');
-goog.require('ol.control.Zoom');
-goog.require('ol.interaction.DblClickZoom');
-goog.require('ol.interaction.DragPan');
-goog.require('ol.interaction.DragRotate');
-goog.require('ol.interaction.DragZoom');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.KeyboardPan');
-goog.require('ol.interaction.KeyboardZoom');
-goog.require('ol.interaction.MouseWheelZoom');
-goog.require('ol.interaction.condition');
+goog.require('ol.control.defaults');
+goog.require('ol.interaction.defaults');
 goog.require('ol.layer.Layer');
+goog.require('ol.projection');
+goog.require('ol.projection.addCommonProjections');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Map');
-goog.require('ol.renderer.canvas.isSupported');
+goog.require('ol.renderer.canvas.SUPPORTED');
 goog.require('ol.renderer.dom.Map');
-goog.require('ol.renderer.dom.isSupported');
+goog.require('ol.renderer.dom.SUPPORTED');
 goog.require('ol.renderer.webgl.Map');
-goog.require('ol.renderer.webgl.isSupported');
+goog.require('ol.renderer.webgl.SUPPORTED');
 
 
 /**
@@ -234,17 +224,6 @@ ol.Map = function(mapOptions) {
    * @type {ol.Collection}
    * @private
    */
-  this.controls_ = mapOptionsInternal.controls;
-
-  goog.events.listen(this.controls_, ol.CollectionEventType.ADD,
-      this.handleControlsAdd_, false, this);
-  goog.events.listen(this.controls_, ol.CollectionEventType.REMOVE,
-      this.handleControlsRemove_, false, this);
-
-  /**
-   * @type {ol.Collection}
-   * @private
-   */
   this.interactions_ = mapOptionsInternal.interactions;
 
   /**
@@ -299,16 +278,28 @@ ol.Map = function(mapOptions) {
   // this gives the map an initial size
   this.handleBrowserWindowResize();
 
-  this.controls_.forEach(
-      /**
-       * @param {ol.control.Control} control Control.
-       */
-      function(control) {
-        control.setMap(this);
-      }, this);
+  if (goog.isDef(mapOptionsInternal.controls)) {
+    goog.array.forEach(mapOptionsInternal.controls,
+        /**
+         * @param {ol.control.Control} control Control.
+         */
+        function(control) {
+          control.setMap(this);
+        }, this);
+  }
 
 };
 goog.inherits(ol.Map, ol.Object);
+
+
+/**
+ * @param {ol.layer.Layer} layer Layer.
+ */
+ol.Map.prototype.addLayer = function(layer) {
+  var layers = this.getLayers();
+  goog.asserts.assert(goog.isDef(layers));
+  layers.push(layer);
+};
 
 
 /**
@@ -384,14 +375,6 @@ ol.Map.prototype.getRenderer = function() {
  */
 ol.Map.prototype.getTarget = function() {
   return this.target_;
-};
-
-
-/**
- * @return {ol.Collection} Controls.
- */
-ol.Map.prototype.getControls = function() {
-  return this.controls_;
 };
 
 
@@ -500,9 +483,8 @@ ol.Map.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter) {
   if (goog.isNull(frameState) || !(tileSourceKey in frameState.wantedTiles)) {
     return ol.TileQueue.DROP;
   }
-  var zKey = tile.tileCoord.z.toString();
-  if (!(zKey in frameState.wantedTiles[tileSourceKey]) ||
-      !frameState.wantedTiles[tileSourceKey][zKey].contains(tile.tileCoord)) {
+  var coordKey = tile.tileCoord.toString();
+  if (!frameState.wantedTiles[tileSourceKey][coordKey]) {
     return ol.TileQueue.DROP;
   }
   var center = frameState.view2DState.center;
@@ -520,26 +502,6 @@ ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
   var type = opt_type || browserEvent.type;
   var mapBrowserEvent = new ol.MapBrowserEvent(type, this, browserEvent);
   this.handleMapBrowserEvent(mapBrowserEvent);
-};
-
-
-/**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @private
- */
-ol.Map.prototype.handleControlsAdd_ = function(collectionEvent) {
-  var control = /** @type {ol.control.Control} */ (collectionEvent.elem);
-  control.setMap(this);
-};
-
-
-/**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @private
- */
-ol.Map.prototype.handleControlsRemove_ = function(collectionEvent) {
-  var control = /** @type {ol.control.Control} */ (collectionEvent.elem);
-  control.setMap(null);
 };
 
 
@@ -568,7 +530,14 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
  */
 ol.Map.prototype.handlePostRender = function() {
   this.tileQueue_.reprioritize(); // FIXME only call if needed
-  this.tileQueue_.loadMoreTiles();
+  var moreLoadingTiles = this.tileQueue_.loadMoreTiles();
+  if (moreLoadingTiles) {
+    // The tile layer renderers need to know when tiles change
+    // to the LOADING state (to register the change listener
+    // on the tile).
+    this.requestRenderFrame();
+  }
+
   var postRenderFunctions = this.postRenderFunctions_;
   var i;
   for (i = 0; i < postRenderFunctions.length; ++i) {
@@ -590,8 +559,8 @@ ol.Map.prototype.handleBackgroundColorChanged_ = function() {
  * @protected
  */
 ol.Map.prototype.handleBrowserWindowResize = function() {
-  var size = new ol.Size(this.target_.clientWidth, this.target_.clientHeight);
-  this.setSize(size);
+  var size = goog.style.getSize(this.target_);
+  this.setSize(new ol.Size(size.width, size.height));
 };
 
 
@@ -668,6 +637,18 @@ ol.Map.prototype.requestRenderFrame = function() {
 
 
 /**
+ * @param {ol.layer.Layer} layer Layer.
+ * @return {ol.layer.Layer|undefined} The removed layer or undefined if the
+ *     layer was not found.
+ */
+ol.Map.prototype.removeLayer = function(layer) {
+  var layers = this.getLayers();
+  goog.asserts.assert(goog.isDef(layers));
+  return /** @type {ol.layer.Layer|undefined} */ (layers.remove(layer));
+};
+
+
+/**
  * @param {number} time Time.
  * @private
  */
@@ -704,6 +685,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
     var view2DState = view2D.getView2DState();
     frameState = {
       animate: false,
+      attributions: {},
       backgroundColor: goog.isDef(backgroundColor) ?
           backgroundColor : new ol.Color(255, 255, 255, 1),
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
@@ -754,8 +736,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
     frameState.extent = ol.Extent.boundingExtent.apply(null, corners);
   }
 
-  this.renderer_.renderFrame(frameState);
   this.frameState_ = frameState;
+  this.renderer_.renderFrame(frameState);
   this.dirty_ = false;
 
   if (!goog.isNull(frameState)) {
@@ -849,7 +831,7 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
 
 
 /**
- * @typedef {{controls: ol.Collection,
+ * @typedef {{controls: Array.<ol.control.Control>,
  *            interactions: ol.Collection,
  *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
@@ -870,8 +852,18 @@ ol.Map.createOptionsInternal = function(mapOptions) {
    */
   var values = {};
 
-  values[ol.MapProperty.LAYERS] = goog.isDef(mapOptions.layers) ?
-      mapOptions.layers : new ol.Collection();
+  var layers;
+  if (goog.isDef(mapOptions.layers)) {
+    if (goog.isArray(mapOptions.layers)) {
+      layers = new ol.Collection(goog.array.clone(mapOptions.layers));
+    } else {
+      goog.asserts.assert(mapOptions.layers instanceof ol.Collection);
+      layers = mapOptions.layers;
+    }
+  } else {
+    layers = new ol.Collection();
+  }
+  values[ol.MapProperty.LAYERS] = layers;
 
   values[ol.MapProperty.VIEW] = goog.isDef(mapOptions.view) ?
       mapOptions.view : new ol.View2D();
@@ -897,42 +889,28 @@ ol.Map.createOptionsInternal = function(mapOptions) {
   for (i = 0; i < rendererHints.length; ++i) {
     rendererHint = rendererHints[i];
     if (rendererHint == ol.RendererHint.CANVAS) {
-      if (ol.ENABLE_CANVAS && ol.renderer.canvas.isSupported()) {
+      if (ol.ENABLE_CANVAS && ol.renderer.canvas.SUPPORTED) {
         rendererConstructor = ol.renderer.canvas.Map;
         break;
       }
     } else if (rendererHint == ol.RendererHint.DOM) {
-      if (ol.ENABLE_DOM && ol.renderer.dom.isSupported()) {
+      if (ol.ENABLE_DOM && ol.renderer.dom.SUPPORTED) {
         rendererConstructor = ol.renderer.dom.Map;
         break;
       }
     } else if (rendererHint == ol.RendererHint.WEBGL) {
-      if (ol.ENABLE_WEBGL && ol.renderer.webgl.isSupported()) {
+      if (ol.ENABLE_WEBGL && ol.renderer.webgl.SUPPORTED) {
         rendererConstructor = ol.renderer.webgl.Map;
         break;
       }
     }
   }
 
-  /**
-   * @type {ol.Collection}
-   */
-  var controls;
-  if (goog.isDef(mapOptions.controls)) {
-    controls = mapOptions.controls;
-  } else {
-    controls = ol.Map.createControls_(mapOptions);
-  }
+  var controls = goog.isDef(mapOptions.controls) ?
+      mapOptions.controls : ol.control.defaults();
 
-  /**
-   * @type {ol.Collection}
-   */
-  var interactions;
-  if (goog.isDef(mapOptions.interactions)) {
-    interactions = mapOptions.interactions;
-  } else {
-    interactions = ol.Map.createInteractions_(mapOptions);
-  }
+  var interactions = goog.isDef(mapOptions.interactions) ?
+      mapOptions.interactions : ol.interaction.defaults();
 
   /**
    * @type {Element}
@@ -946,90 +924,6 @@ ol.Map.createOptionsInternal = function(mapOptions) {
     target: target,
     values: values
   };
-
-};
-
-
-/**
- * @private
- * @param {ol.MapOptions} mapOptions Map options.
- * @return {ol.Collection} Controls.
- */
-ol.Map.createControls_ = function(mapOptions) {
-
-  var controls = new ol.Collection();
-
-  controls.push(new ol.control.Attribution({}));
-
-  var zoomDelta = goog.isDef(mapOptions.zoomDelta) ?
-      mapOptions.zoomDelta : 4;
-  controls.push(new ol.control.Zoom({
-    delta: zoomDelta
-  }));
-
-  return controls;
-
-};
-
-
-/**
- * @private
- * @param {ol.MapOptions} mapOptions Map options.
- * @return {ol.Collection} Interactions.
- */
-ol.Map.createInteractions_ = function(mapOptions) {
-
-  var interactions = new ol.Collection();
-
-  var rotate = goog.isDef(mapOptions.rotate) ?
-      mapOptions.rotate : true;
-  if (rotate) {
-    interactions.push(new ol.interaction.DragRotate(
-        ol.interaction.condition.altShiftKeysOnly));
-  }
-
-  var doubleClickZoom = goog.isDef(mapOptions.doubleClickZoom) ?
-      mapOptions.doubleClickZoom : true;
-  if (doubleClickZoom) {
-    var zoomDelta = goog.isDef(mapOptions.zoomDelta) ?
-        mapOptions.zoomDelta : 4;
-    interactions.push(new ol.interaction.DblClickZoom(zoomDelta));
-  }
-
-  var dragPan = goog.isDef(mapOptions.dragPan) ?
-      mapOptions.dragPan : true;
-  if (dragPan) {
-    interactions.push(
-        new ol.interaction.DragPan(ol.interaction.condition.noModifierKeys,
-            new ol.Kinetic(-0.005, 0.05, 100)));
-  }
-
-  var keyboard = goog.isDef(mapOptions.keyboard) ?
-      mapOptions.keyboard : true;
-  var keyboardPanOffset = goog.isDef(mapOptions.keyboardPanOffset) ?
-      mapOptions.keyboardPanOffset : 80;
-  if (keyboard) {
-    interactions.push(new ol.interaction.KeyboardPan(keyboardPanOffset));
-    interactions.push(new ol.interaction.KeyboardZoom());
-  }
-
-  var mouseWheelZoom = goog.isDef(mapOptions.mouseWheelZoom) ?
-      mapOptions.mouseWheelZoom : true;
-  if (mouseWheelZoom) {
-    var mouseWheelZoomDelta =
-        goog.isDef(mapOptions.mouseWheelZoomDelta) ?
-            mapOptions.mouseWheelZoomDelta : 1;
-    interactions.push(new ol.interaction.MouseWheelZoom(mouseWheelZoomDelta));
-  }
-
-  var shiftDragZoom = goog.isDef(mapOptions.shiftDragZoom) ?
-      mapOptions.shiftDragZoom : true;
-  if (shiftDragZoom) {
-    interactions.push(
-        new ol.interaction.DragZoom(ol.interaction.condition.shiftKeyOnly));
-  }
-
-  return interactions;
 
 };
 
@@ -1050,3 +944,6 @@ ol.RendererHints.createFromQueryData = function(opt_queryData) {
     return ol.DEFAULT_RENDERER_HINTS;
   }
 };
+
+
+ol.projection.addCommonProjections();

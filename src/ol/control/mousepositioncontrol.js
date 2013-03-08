@@ -8,6 +8,7 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.style');
+goog.require('ol.Coordinate');
 goog.require('ol.CoordinateFormatType');
 goog.require('ol.MapEvent');
 goog.require('ol.MapEventType');
@@ -15,16 +16,18 @@ goog.require('ol.Pixel');
 goog.require('ol.Projection');
 goog.require('ol.TransformFunction');
 goog.require('ol.control.Control');
+goog.require('ol.projection');
 
 
 
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.MousePositionOptions} mousePositionOptions Mouse position
- *     options.
+ * @param {ol.control.MousePositionOptions=} opt_options Options.
  */
-ol.control.MousePosition = function(mousePositionOptions) {
+ol.control.MousePosition = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': 'ol-mouse-position'
@@ -32,28 +35,28 @@ ol.control.MousePosition = function(mousePositionOptions) {
 
   goog.base(this, {
     element: element,
-    map: mousePositionOptions.map,
-    target: mousePositionOptions.target
+    map: options.map,
+    target: options.target
   });
 
   /**
    * @private
-   * @type {ol.Projection|undefined}
+   * @type {ol.Projection}
    */
-  this.projection_ = mousePositionOptions.projection;
+  this.projection_ = ol.projection.get(options.projection);
 
   /**
    * @private
    * @type {ol.CoordinateFormatType|undefined}
    */
-  this.coordinateFormat_ = mousePositionOptions.coordinateFormat;
+  this.coordinateFormat_ = options.coordinateFormat;
 
   /**
    * @private
    * @type {string}
    */
-  this.undefinedHTML_ = goog.isDef(mousePositionOptions.undefinedHTML) ?
-      mousePositionOptions.undefinedHTML : '';
+  this.undefinedHTML_ = goog.isDef(options.undefinedHTML) ?
+      options.undefinedHTML : '';
 
   /**
    * @private
@@ -71,7 +74,7 @@ ol.control.MousePosition = function(mousePositionOptions) {
    * @private
    * @type {ol.TransformFunction}
    */
-  this.transform_ = ol.Projection.identityTransform;
+  this.transform_ = ol.projection.identityTransform;
 
   /**
    * @private
@@ -165,18 +168,20 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
   var html = this.undefinedHTML_;
   if (!goog.isNull(pixel)) {
     if (this.renderedProjection_ != this.mapProjection_) {
-      if (goog.isDef(this.projection_)) {
-        this.transform_ = ol.Projection.getTransform(
+      if (!goog.isNull(this.projection_)) {
+        this.transform_ = ol.projection.getTransformFromProjections(
             this.mapProjection_, this.projection_);
       } else {
-        this.transform_ = ol.Projection.identityTransform;
+        this.transform_ = ol.projection.identityTransform;
       }
       this.renderedProjection_ = this.mapProjection_;
     }
     var map = this.getMap();
     var coordinate = map.getCoordinateFromPixel(pixel);
     if (!goog.isNull(coordinate)) {
-      coordinate = this.transform_(coordinate);
+      var vertex = [coordinate.x, coordinate.y];
+      vertex = this.transform_(vertex, vertex);
+      coordinate = new ol.Coordinate(vertex[0], vertex[1]);
       if (goog.isDef(this.coordinateFormat_)) {
         html = this.coordinateFormat_(coordinate);
       } else {

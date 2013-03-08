@@ -14,12 +14,14 @@ goog.require('goog.webgl');
 goog.require('ol.FrameState');
 goog.require('ol.Size');
 goog.require('ol.Tile');
+goog.require('ol.layer.ImageLayer');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.webgl.FragmentShader');
+goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.TileLayer');
 goog.require('ol.renderer.webgl.VertexShader');
-goog.require('ol.structs.LinkedMap');
+goog.require('ol.structs.LRUCache');
 goog.require('ol.webgl');
 goog.require('ol.webgl.WebGLContextEventType');
 
@@ -46,19 +48,17 @@ ol.renderer.webgl.map.shader.Fragment = function() {
   goog.base(this, [
     'precision mediump float;',
     '',
-    'uniform mat4 uColorMatrix;',
-    'uniform float uOpacity;',
-    'uniform mat4 uMatrix;',
-    'uniform sampler2D uTexture;',
+    'uniform mat4 u_colorMatrix;',
+    'uniform float u_opacity;',
+    'uniform sampler2D u_texture;',
     '',
-    'varying vec2 vTexCoord;',
+    'varying vec2 v_texCoord;',
     '',
     'void main(void) {',
     '',
-    '  vec4 texCoord = uMatrix * vec4(vTexCoord, 0., 1.);',
-    '  vec4 texColor = texture2D(uTexture, texCoord.st);',
-    '  vec4 color = uColorMatrix * vec4(texColor.rgb, 1.);',
-    '  color.a = texColor.a * uOpacity;',
+    '  vec4 texColor = texture2D(u_texture, v_texCoord);',
+    '  vec4 color = u_colorMatrix * vec4(texColor.rgb, 1.);',
+    '  color.a = texColor.a * u_opacity;',
     '',
     '  gl_FragColor = color;',
     '',
@@ -77,14 +77,17 @@ goog.addSingletonGetter(ol.renderer.webgl.map.shader.Fragment);
  */
 ol.renderer.webgl.map.shader.Vertex = function() {
   goog.base(this, [
-    'attribute vec2 aPosition;',
-    'attribute vec2 aTexCoord;',
+    'attribute vec2 a_position;',
+    'attribute vec2 a_texCoord;',
     '',
-    'varying vec2 vTexCoord;',
+    'uniform mat4 u_texCoordMatrix;',
+    'uniform mat4 u_projectionMatrix;',
+    '',
+    'varying vec2 v_texCoord;',
     '',
     'void main(void) {',
-    '  gl_Position = vec4(aPosition, 0., 1.);',
-    '  vTexCoord = aTexCoord;',
+    '  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.);',
+    '  v_texCoord = (u_texCoordMatrix * vec4(a_texCoord, 0., 1.)).st;',
     '}'
   ].join('\n'));
 };
@@ -154,12 +157,13 @@ ol.renderer.webgl.Map = function(container, map) {
 
   /**
    * @private
-   * @type {{aPosition: number,
-   *         aTexCoord: number,
-   *         uColorMatrix: WebGLUniformLocation,
-   *         uMatrix: WebGLUniformLocation,
-   *         uOpacity: WebGLUniformLocation,
-   *         uTexture: WebGLUniformLocation}|null}
+   * @type {{a_position: number,
+   *         a_texCoord: number,
+   *         u_colorMatrix: WebGLUniformLocation,
+   *         u_opacity: WebGLUniformLocation,
+   *         u_texture: WebGLUniformLocation,
+   *         u_texCoordMatrix: WebGLUniformLocation,
+   *         u_projectionMatrix: WebGLUniformLocation}|null}
    */
   this.locations_ = null;
 
@@ -183,9 +187,9 @@ ol.renderer.webgl.Map = function(container, map) {
 
   /**
    * @private
-   * @type {ol.structs.LinkedMap}
+   * @type {ol.structs.LRUCache}
    */
-  this.textureCache_ = new ol.structs.LinkedMap(undefined, true);
+  this.textureCache_ = new ol.structs.LRUCache();
 
   /**
    * @private
@@ -270,12 +274,15 @@ ol.renderer.webgl.Map.prototype.bindTileTexture =
  * @inheritDoc
  */
 ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
+  var layerRenderer = null;
   if (layer instanceof ol.layer.TileLayer) {
-    return new ol.renderer.webgl.TileLayer(this, layer);
+    layerRenderer = new ol.renderer.webgl.TileLayer(this, layer);
+  } else if (layer instanceof ol.layer.ImageLayer) {
+    layerRenderer = new ol.renderer.webgl.ImageLayer(this, layer);
   } else {
     goog.asserts.assert(false);
-    return null;
   }
+  return layerRenderer;
 };
 
 
@@ -515,12 +522,13 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   gl.useProgram(program);
   if (goog.isNull(this.locations_)) {
     this.locations_ = {
-      aPosition: gl.getAttribLocation(program, 'aPosition'),
-      aTexCoord: gl.getAttribLocation(program, 'aTexCoord'),
-      uColorMatrix: gl.getUniformLocation(program, 'uColorMatrix'),
-      uMatrix: gl.getUniformLocation(program, 'uMatrix'),
-      uOpacity: gl.getUniformLocation(program, 'uOpacity'),
-      uTexture: gl.getUniformLocation(program, 'uTexture')
+      a_position: gl.getAttribLocation(program, 'a_position'),
+      a_texCoord: gl.getAttribLocation(program, 'a_texCoord'),
+      u_colorMatrix: gl.getUniformLocation(program, 'u_colorMatrix'),
+      u_texCoordMatrix: gl.getUniformLocation(program, 'u_texCoordMatrix'),
+      u_projectionMatrix: gl.getUniformLocation(program, 'u_projectionMatrix'),
+      u_opacity: gl.getUniformLocation(program, 'u_opacity'),
+      u_texture: gl.getUniformLocation(program, 'u_texture')
     };
   }
 
@@ -538,13 +546,13 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
   }
 
-  gl.enableVertexAttribArray(this.locations_.aPosition);
+  gl.enableVertexAttribArray(this.locations_.a_position);
   gl.vertexAttribPointer(
-      this.locations_.aPosition, 2, goog.webgl.FLOAT, false, 16, 0);
-  gl.enableVertexAttribArray(this.locations_.aTexCoord);
+      this.locations_.a_position, 2, goog.webgl.FLOAT, false, 16, 0);
+  gl.enableVertexAttribArray(this.locations_.a_texCoord);
   gl.vertexAttribPointer(
-      this.locations_.aTexCoord, 2, goog.webgl.FLOAT, false, 16, 8);
-  gl.uniform1i(this.locations_.uTexture, 0);
+      this.locations_.a_texCoord, 2, goog.webgl.FLOAT, false, 16, 8);
+  gl.uniform1i(this.locations_.u_texture, 0);
 
   goog.array.forEach(frameState.layersArray, function(layer) {
     var layerState = frameState.layerStates[goog.getUid(layer)];
@@ -553,10 +561,14 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     }
     var layerRenderer = this.getLayerRenderer(layer);
     gl.uniformMatrix4fv(
-        this.locations_.uMatrix, false, layerRenderer.getMatrix());
+        this.locations_.u_texCoordMatrix, false,
+        layerRenderer.getTexCoordMatrix());
     gl.uniformMatrix4fv(
-        this.locations_.uColorMatrix, false, layerRenderer.getColorMatrix());
-    gl.uniform1f(this.locations_.uOpacity, layer.getOpacity());
+        this.locations_.u_projectionMatrix, false,
+        layerRenderer.getProjectionMatrix());
+    gl.uniformMatrix4fv(
+        this.locations_.u_colorMatrix, false, layerRenderer.getColorMatrix());
+    gl.uniform1f(this.locations_.u_opacity, layer.getOpacity());
     gl.bindTexture(goog.webgl.TEXTURE_2D, layerRenderer.getTexture());
     gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
   }, this);
