@@ -16,7 +16,8 @@ ol.TileState = {
   IDLE: 0,
   LOADING: 1,
   LOADED: 2,
-  ERROR: 3
+  ERROR: 3,
+  EMPTY: 4
 };
 
 
@@ -25,8 +26,9 @@ ol.TileState = {
  * @constructor
  * @extends {goog.events.EventTarget}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.TileState} state State.
  */
-ol.Tile = function(tileCoord) {
+ol.Tile = function(tileCoord, state) {
 
   goog.base(this);
 
@@ -39,7 +41,7 @@ ol.Tile = function(tileCoord) {
    * @protected
    * @type {ol.TileState}
    */
-  this.state = ol.TileState.IDLE;
+  this.state = state;
 
 };
 goog.inherits(ol.Tile, goog.events.EventTarget);

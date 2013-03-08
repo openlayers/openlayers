@@ -110,10 +110,6 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
 
       tileCoord = new ol.TileCoord(z, x, y);
       tile = tileSource.getTile(tileCoord, tileGrid, projection);
-      if (goog.isNull(tile)) {
-        continue;
-      }
-
       tileState = tile.getState();
       if (tileState == ol.TileState.IDLE) {
         this.updateWantedTiles(frameState.wantedTiles, tileSource, tileCoord);
@@ -124,7 +120,8 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
       } else if (tileState == ol.TileState.LOADED) {
         tilesToDrawByZ[z][tileCoord.toString()] = tile;
         continue;
-      } else if (tileState == ol.TileState.ERROR) {
+      } else if (tileState == ol.TileState.ERROR ||
+                 tileState == ol.TileState.EMPTY) {
         continue;
       }
 

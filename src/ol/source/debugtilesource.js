@@ -19,9 +19,7 @@ goog.require('ol.tilegrid.TileGrid');
  */
 ol.DebugTile_ = function(tileCoord, tileGrid) {
 
-  goog.base(this, tileCoord);
-
-  this.state = ol.TileState.LOADED;
+  goog.base(this, tileCoord, ol.TileState.LOADED);
 
   /**
    * @private
@@ -127,7 +125,7 @@ ol.source.DebugTileSource.prototype.expireCache = function(usedTiles) {
 ol.source.DebugTileSource.prototype.getTile = function(tileCoord) {
   var key = tileCoord.toString();
   if (this.tileCache_.containsKey(key)) {
-    return /** @type {ol.DebugTile_} */ (this.tileCache_.get(key));
+    return /** @type {!ol.DebugTile_} */ (this.tileCache_.get(key));
   } else {
     var tile = new ol.DebugTile_(tileCoord, this.tileGrid);
     this.tileCache_.set(key, tile);
