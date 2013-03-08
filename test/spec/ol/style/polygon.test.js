@@ -7,19 +7,19 @@ describe('ol.style.PolygonLiteral', function() {
     it('identifies equal literals', function() {
       var literal = new ol.style.PolygonLiteral({
         strokeWidth: 3,
-        strokeStyle: '#013',
-        fillStyle: '#BADA55',
+        strokeColor: '#013',
+        fillColor: '#BADA55',
         opacity: 1
       });
       var equalLiteral = new ol.style.PolygonLiteral({
-        fillStyle: '#BADA55',
-        strokeStyle: '#013',
+        fillColor: '#BADA55',
+        strokeColor: '#013',
         strokeWidth: 3,
         opacity: 1
       });
       var differentLiteral = new ol.style.PolygonLiteral({
-        fillStyle: '#013',
-        strokeStyle: '#013',
+        fillColor: '#013',
+        strokeColor: '#013',
         strokeWidth: 3,
         opacity: 1
       });
@@ -37,7 +37,7 @@ describe('ol.style.Polygon', function() {
 
     it('accepts literal values', function() {
       var symbolizer = new ol.style.Polygon({
-        fillStyle: '#BADA55',
+        fillColor: '#BADA55',
         strokeWidth: 3
       });
       expect(symbolizer).toBeA(ol.style.Polygon);
@@ -46,7 +46,7 @@ describe('ol.style.Polygon', function() {
     it('accepts expressions', function() {
       var symbolizer = new ol.style.Polygon({
         opacity: new ol.Expression('value / 100'),
-        fillStyle: new ol.Expression('fillAttr')
+        fillColor: new ol.Expression('fillAttr')
       });
       expect(symbolizer).toBeA(ol.style.Polygon);
     });
@@ -58,7 +58,7 @@ describe('ol.style.Polygon', function() {
     it('evaluates expressions with the given feature', function() {
       var symbolizer = new ol.style.Polygon({
         opacity: new ol.Expression('value / 100'),
-        fillStyle: new ol.Expression('fillAttr')
+        fillColor: new ol.Expression('fillAttr')
       });
 
       var feature = new ol.Feature({
@@ -69,20 +69,20 @@ describe('ol.style.Polygon', function() {
       var literal = symbolizer.createLiteral(feature);
       expect(literal).toBeA(ol.style.PolygonLiteral);
       expect(literal.opacity).toBe(42 / 100);
-      expect(literal.fillStyle).toBe('#ff0000');
-      expect(literal.strokeStyle).toBeUndefined();
+      expect(literal.fillColor).toBe('#ff0000');
+      expect(literal.strokeColor).toBeUndefined();
     });
 
-    it('applies default strokeWidth if only strokeStyle is given', function() {
+    it('applies default strokeWidth if only strokeColor is given', function() {
       var symbolizer = new ol.style.Polygon({
-        strokeStyle: '#ff0000'
+        strokeColor: '#ff0000'
       });
 
       var literal = symbolizer.createLiteral();
       expect(literal).toBeA(ol.style.PolygonLiteral);
-      expect(literal.strokeStyle).toBe('#ff0000');
+      expect(literal.strokeColor).toBe('#ff0000');
       expect(literal.strokeWidth).toBe(1.5);
-      expect(literal.fillStyle).toBeUndefined();
+      expect(literal.fillColor).toBeUndefined();
     });
 
   });

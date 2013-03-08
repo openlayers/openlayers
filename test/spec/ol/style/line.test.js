@@ -7,16 +7,16 @@ describe('ol.style.LineLiteral', function() {
     it('identifies equal literals', function() {
       var literal = new ol.style.LineLiteral({
         strokeWidth: 3,
-        strokeStyle: '#BADA55',
+        strokeColor: '#BADA55',
         opacity: 1
       });
       var equalLiteral = new ol.style.LineLiteral({
-        strokeStyle: '#BADA55',
+        strokeColor: '#BADA55',
         strokeWidth: 3,
         opacity: 1
       });
       var differentLiteral = new ol.style.LineLiteral({
-        strokeStyle: '#013',
+        strokeColor: '#013',
         strokeWidth: 3,
         opacity: 1
       });
@@ -34,7 +34,7 @@ describe('ol.style.Line', function() {
 
     it('accepts literal values', function() {
       var symbolizer = new ol.style.Line({
-        strokeStyle: '#BADA55',
+        strokeColor: '#BADA55',
         strokeWidth: 3
       });
       expect(symbolizer).toBeA(ol.style.Line);

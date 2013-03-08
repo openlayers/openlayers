@@ -8,24 +8,24 @@ describe('ol.style.ShapeLiteral', function() {
       var literal = new ol.style.ShapeLiteral({
         type: ol.style.ShapeType.CIRCLE,
         size: 4,
-        fillStyle: '#BADA55',
-        strokeStyle: '#013',
+        fillColor: '#BADA55',
+        strokeColor: '#013',
         strokeWidth: 3,
         opacity: 1
       });
       var equalLiteral = new ol.style.ShapeLiteral({
         type: ol.style.ShapeType.CIRCLE,
         size: 4,
-        fillStyle: '#BADA55',
-        strokeStyle: '#013',
+        fillColor: '#BADA55',
+        strokeColor: '#013',
         strokeWidth: 3,
         opacity: 1
       });
       var differentLiteral = new ol.style.ShapeLiteral({
         type: ol.style.ShapeType.CIRCLE,
         size: 4,
-        fillStyle: '#013',
-        strokeStyle: '#013',
+        fillColor: '#013',
+        strokeColor: '#013',
         strokeWidth: 3,
         opacity: 1
       });
@@ -44,7 +44,7 @@ describe('ol.style.Shape', function() {
     it('accepts literal values', function() {
       var symbolizer = new ol.style.Shape({
         size: 4,
-        fillStyle: '#BADA55'
+        fillColor: '#BADA55'
       });
       expect(symbolizer).toBeA(ol.style.Shape);
     });
@@ -52,7 +52,7 @@ describe('ol.style.Shape', function() {
     it('accepts expressions', function() {
       var symbolizer = new ol.style.Shape({
         size: new ol.Expression('sizeAttr'),
-        strokeStyle: new ol.Expression('color')
+        strokeColor: new ol.Expression('color')
       });
       expect(symbolizer).toBeA(ol.style.Shape);
     });
@@ -65,7 +65,7 @@ describe('ol.style.Shape', function() {
       var symbolizer = new ol.style.Shape({
         size: new ol.Expression('sizeAttr'),
         opacity: new ol.Expression('opacityAttr'),
-        fillStyle: '#BADA55'
+        fillColor: '#BADA55'
       });
 
       var feature = new ol.Feature({
@@ -83,8 +83,8 @@ describe('ol.style.Shape', function() {
       var symbolizer = new ol.style.Shape({
         size: 10,
         opacity: 1,
-        fillStyle: '#BADA55',
-        strokeStyle: '#013',
+        fillColor: '#BADA55',
+        strokeColor: '#013',
         strokeWidth: 2
       });
 
@@ -92,8 +92,8 @@ describe('ol.style.Shape', function() {
       expect(literal).toBeA(ol.style.ShapeLiteral);
       expect(literal.size).toBe(10);
       expect(literal.opacity).toBe(1);
-      expect(literal.fillStyle).toBe('#BADA55');
-      expect(literal.strokeStyle).toBe('#013');
+      expect(literal.fillColor).toBe('#BADA55');
+      expect(literal.strokeColor).toBe('#013');
       expect(literal.strokeWidth).toBe(2);
     });
 
@@ -101,7 +101,7 @@ describe('ol.style.Shape', function() {
       var symbolizer = new ol.style.Shape({
         size: new ol.Expression('sizeAttr'),
         opacity: new ol.Expression('opacityAttr'),
-        fillStyle: '#BADA55'
+        fillColor: '#BADA55'
       });
 
       var feature = new ol.Feature({

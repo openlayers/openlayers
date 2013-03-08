@@ -15,7 +15,7 @@ describe('ol.style.Style', function() {
             symbolizers: [
               new ol.style.Shape({
                 size: 4,
-                fillStyle: '#BADA55'
+                fillColor: '#BADA55'
               })
             ]
           })
@@ -24,7 +24,7 @@ describe('ol.style.Style', function() {
       var feature = new ol.Feature();
       feature.set('foo', 'bar');
       expect(style.apply(feature).length).toBe(1);
-      expect(style.apply(feature)[0].fillStyle).toBe('#BADA55');
+      expect(style.apply(feature)[0].fillColor).toBe('#BADA55');
       feature.set('foo', 'baz');
       expect(style.apply(feature).length).toBe(0);
     });

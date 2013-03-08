@@ -8,8 +8,8 @@ goog.require('ol.style.SymbolizerLiteral');
 
 
 /**
- * @typedef {{fillStyle: (string|undefined),
- *            strokeStyle: (string|undefined),
+ * @typedef {{fillColor: (string|undefined),
+ *            strokeColor: (string|undefined),
  *            strokeWidth: (number|undefined),
  *            opacity: (number)}}
  */
@@ -26,16 +26,16 @@ ol.style.PolygonLiteral = function(config) {
   goog.base(this);
 
   /** @type {string|undefined} */
-  this.fillStyle = config.fillStyle;
-  if (goog.isDef(config.fillStyle)) {
-    goog.asserts.assertString(config.fillStyle, 'fillStyle must be a string');
+  this.fillColor = config.fillColor;
+  if (goog.isDef(config.fillColor)) {
+    goog.asserts.assertString(config.fillColor, 'fillColor must be a string');
   }
 
   /** @type {string|undefined} */
-  this.strokeStyle = config.strokeStyle;
-  if (goog.isDef(this.strokeStyle)) {
+  this.strokeColor = config.strokeColor;
+  if (goog.isDef(this.strokeColor)) {
     goog.asserts.assertString(
-        this.strokeStyle, 'strokeStyle must be a string');
+        this.strokeColor, 'strokeColor must be a string');
   }
 
   /** @type {number|undefined} */
@@ -46,9 +46,9 @@ ol.style.PolygonLiteral = function(config) {
   }
 
   goog.asserts.assert(
-      goog.isDef(this.fillStyle) ||
-      (goog.isDef(this.strokeStyle) && goog.isDef(this.strokeWidth)),
-      'Either fillStyle or strokeStyle and strokeWidth must be set');
+      goog.isDef(this.fillColor) ||
+      (goog.isDef(this.strokeColor) && goog.isDef(this.strokeWidth)),
+      'Either fillColor or strokeColor and strokeWidth must be set');
 
   goog.asserts.assertNumber(config.opacity, 'opacity must be a number');
   /** @type {number} */
@@ -62,8 +62,8 @@ goog.inherits(ol.style.PolygonLiteral, ol.style.SymbolizerLiteral);
  * @inheritDoc
  */
 ol.style.PolygonLiteral.prototype.equals = function(polygonLiteral) {
-  return this.fillStyle == polygonLiteral.fillStyle &&
-      this.strokeStyle == polygonLiteral.strokeStyle &&
+  return this.fillColor == polygonLiteral.fillColor &&
+      this.strokeColor == polygonLiteral.strokeColor &&
       this.strokeWidth == polygonLiteral.strokeWidth &&
       this.opacity == polygonLiteral.opacity;
 };
@@ -82,22 +82,22 @@ ol.style.Polygon = function(options) {
    * @type {ol.Expression}
    * @private
    */
-  this.fillStyle_ = !goog.isDefAndNotNull(options.fillStyle) ?
+  this.fillColor_ = !goog.isDefAndNotNull(options.fillColor) ?
       null :
-      (options.fillStyle instanceof ol.Expression) ?
-          options.fillStyle : new ol.ExpressionLiteral(options.fillStyle);
+      (options.fillColor instanceof ol.Expression) ?
+          options.fillColor : new ol.ExpressionLiteral(options.fillColor);
 
   // stroke handling - if any stroke property is supplied, use defaults
-  var strokeStyle = null,
+  var strokeColor = null,
       strokeWidth = null;
 
-  if (goog.isDefAndNotNull(options.strokeStyle) ||
+  if (goog.isDefAndNotNull(options.strokeColor) ||
       goog.isDefAndNotNull(options.strokeWidth)) {
 
-    strokeStyle = !goog.isDefAndNotNull(options.strokeStyle) ?
-        new ol.ExpressionLiteral(ol.style.PolygonDefaults.strokeStyle) :
-        (options.strokeStyle instanceof ol.Expression) ?
-            options.strokeStyle : new ol.ExpressionLiteral(options.strokeStyle);
+    strokeColor = !goog.isDefAndNotNull(options.strokeColor) ?
+        new ol.ExpressionLiteral(ol.style.PolygonDefaults.strokeColor) :
+        (options.strokeColor instanceof ol.Expression) ?
+            options.strokeColor : new ol.ExpressionLiteral(options.strokeColor);
 
     strokeWidth = !goog.isDef(options.strokeWidth) ?
         new ol.ExpressionLiteral(ol.style.PolygonDefaults.strokeWidth) :
@@ -109,7 +109,7 @@ ol.style.Polygon = function(options) {
    * @type {ol.Expression}
    * @private
    */
-  this.strokeStyle_ = strokeStyle;
+  this.strokeColor_ = strokeColor;
 
   /**
    * @type {ol.Expression}
@@ -118,8 +118,8 @@ ol.style.Polygon = function(options) {
   this.strokeWidth_ = strokeWidth;
 
   // one of stroke or fill can be null, both null is user error
-  goog.asserts.assert(!goog.isNull(this.fillStyle_) ||
-      !(goog.isNull(this.strokeStyle_) && goog.isNull(this.strokeWidth_)),
+  goog.asserts.assert(!goog.isNull(this.fillColor_) ||
+      !(goog.isNull(this.strokeColor_) && goog.isNull(this.strokeWidth_)),
       'Stroke or fill properties must be provided');
 
   /**
@@ -146,15 +146,15 @@ ol.style.Polygon.prototype.createLiteral = function(opt_feature) {
     attrs = feature.getAttributes();
   }
 
-  var fillStyle = goog.isNull(this.fillStyle_) ?
+  var fillColor = goog.isNull(this.fillColor_) ?
       undefined :
-      /** @type {string} */ (this.fillStyle_.evaluate(feature, attrs));
-  goog.asserts.assert(!goog.isDef(fillStyle) || goog.isString(fillStyle));
+      /** @type {string} */ (this.fillColor_.evaluate(feature, attrs));
+  goog.asserts.assert(!goog.isDef(fillColor) || goog.isString(fillColor));
 
-  var strokeStyle = goog.isNull(this.strokeStyle_) ?
+  var strokeColor = goog.isNull(this.strokeColor_) ?
       undefined :
-      /** @type {string} */ (this.strokeStyle_.evaluate(feature, attrs));
-  goog.asserts.assert(!goog.isDef(strokeStyle) || goog.isString(strokeStyle));
+      /** @type {string} */ (this.strokeColor_.evaluate(feature, attrs));
+  goog.asserts.assert(!goog.isDef(strokeColor) || goog.isString(strokeColor));
 
   var strokeWidth = goog.isNull(this.strokeWidth_) ?
       undefined :
@@ -162,16 +162,16 @@ ol.style.Polygon.prototype.createLiteral = function(opt_feature) {
   goog.asserts.assert(!goog.isDef(strokeWidth) || goog.isNumber(strokeWidth));
 
   goog.asserts.assert(
-      goog.isDef(fillStyle) ||
-      (goog.isDef(strokeStyle) && goog.isDef(strokeWidth)),
-      'either fill style or strokeStyle and strokeWidth must be defined');
+      goog.isDef(fillColor) ||
+      (goog.isDef(strokeColor) && goog.isDef(strokeWidth)),
+      'either fill style or strokeColor and strokeWidth must be defined');
 
   var opacity = this.opacity_.evaluate(feature, attrs);
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
   return new ol.style.PolygonLiteral({
-    fillStyle: fillStyle,
-    strokeStyle: strokeStyle,
+    fillColor: fillColor,
+    strokeColor: strokeColor,
     strokeWidth: strokeWidth,
     opacity: opacity
   });
@@ -182,8 +182,8 @@ ol.style.Polygon.prototype.createLiteral = function(opt_feature) {
  * @type {ol.style.PolygonLiteral}
  */
 ol.style.PolygonDefaults = new ol.style.PolygonLiteral({
-  fillStyle: '#ffffff',
-  strokeStyle: '#696969',
+  fillColor: '#ffffff',
+  strokeColor: '#696969',
   strokeWidth: 1.5,
   opacity: 0.75
 });

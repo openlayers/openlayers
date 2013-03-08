@@ -151,13 +151,13 @@
 @exportObjectLiteralProperty ol.style.IconOptions.rotation number|ol.Expression|undefined
 
 @exportObjectLiteral ol.style.LineOptions
-@exportObjectLiteralProperty ol.style.LineOptions.strokeStyle string|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.LineOptions.strokeColor string|ol.Expression|undefined
 @exportObjectLiteralProperty ol.style.LineOptions.strokeWidth number|ol.Expression|undefined
 @exportObjectLiteralProperty ol.style.LineOptions.opacity number|ol.Expression|undefined
 
 @exportObjectLiteral ol.style.PolygonOptions
-@exportObjectLiteralProperty ol.style.PolygonOptions.fillStyle string|ol.Expression|undefined
-@exportObjectLiteralProperty ol.style.PolygonOptions.strokeStyle string|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.PolygonOptions.fillColor string|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.PolygonOptions.strokeColor string|ol.Expression|undefined
 @exportObjectLiteralProperty ol.style.PolygonOptions.strokeWidth number|ol.Expression|undefined
 @exportObjectLiteralProperty ol.style.PolygonOptions.opacity number|ol.Expression|undefined
 
@@ -168,8 +168,8 @@
 @exportObjectLiteral ol.style.ShapeOptions
 @exportObjectLiteralProperty ol.style.ShapeOptions.type ol.style.ShapeType|undefined
 @exportObjectLiteralProperty ol.style.ShapeOptions.size number|ol.Expression|undefined
-@exportObjectLiteralProperty ol.style.ShapeOptions.fillStyle string|ol.Expression|undefined
-@exportObjectLiteralProperty ol.style.ShapeOptions.strokeStyle string|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.ShapeOptions.fillColor string|ol.Expression|undefined
+@exportObjectLiteralProperty ol.style.ShapeOptions.strokeColor string|ol.Expression|undefined
 @exportObjectLiteralProperty ol.style.ShapeOptions.strokeWidth number|ol.Expression|undefined
 @exportObjectLiteralProperty ol.style.ShapeOptions.opacity number|ol.Expression|undefined
 

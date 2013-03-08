@@ -107,7 +107,7 @@ describe('ol.layer.Vector', function() {
             symbolizers: [
               new ol.style.Line({
                 strokeWidth: 2,
-                strokeStyle: new ol.Expression('colorProperty'),
+                strokeColor: new ol.Expression('colorProperty'),
                 opacity: 1
               })
             ]
@@ -136,20 +136,20 @@ describe('ol.layer.Vector', function() {
       var groups = layer.groupFeaturesBySymbolizerLiteral(features);
       expect(groups.length).toBe(2);
       expect(groups[0][0].length).toBe(1);
-      expect(groups[0][1].strokeStyle).toBe('#BADA55');
+      expect(groups[0][1].strokeColor).toBe('#BADA55');
       expect(groups[1][0].length).toBe(2);
-      expect(groups[1][1].strokeStyle).toBe('#013');
+      expect(groups[1][1].strokeColor).toBe('#013');
     });
 
     it('groups equal symbolizers also when defined on features', function() {
       var symbolizer = new ol.style.Line({
         strokeWidth: 3,
-        strokeStyle: new ol.Expression('colorProperty'),
+        strokeColor: new ol.Expression('colorProperty'),
         opacity: 1
       });
       var anotherSymbolizer = new ol.style.Line({
         strokeWidth: 3,
-        strokeStyle: '#BADA55',
+        strokeColor: '#BADA55',
         opacity: 1
       });
       var featureWithSymbolizers = new ol.Feature({

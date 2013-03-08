@@ -137,7 +137,7 @@ ol.renderer.canvas.Renderer.prototype.renderLineStringFeatures_ =
       i, ii, geometry, components, j, jj, line, dim, k, kk, x, y;
 
   context.globalAlpha = symbolizer.opacity;
-  context.strokeStyle = symbolizer.strokeStyle;
+  context.strokeStyle = symbolizer.strokeColor;
   context.lineWidth = symbolizer.strokeWidth * this.inverseScale_;
   context.lineCap = 'round'; // TODO: accept this as a symbolizer property
   context.lineJoin = 'round'; // TODO: accept this as a symbolizer property
@@ -232,20 +232,20 @@ ol.renderer.canvas.Renderer.prototype.renderPointFeatures_ =
 ol.renderer.canvas.Renderer.prototype.renderPolygonFeatures_ =
     function(features, symbolizer) {
   var context = this.context_,
-      strokeStyle = symbolizer.strokeStyle,
-      fillStyle = symbolizer.fillStyle,
+      strokeColor = symbolizer.strokeColor,
+      fillColor = symbolizer.fillColor,
       i, ii, geometry, components, j, jj, poly,
       rings, numRings, ring, dim, k, kk, x, y;
 
   context.globalAlpha = symbolizer.opacity;
-  if (strokeStyle) {
-    context.strokeStyle = symbolizer.strokeStyle;
+  if (strokeColor) {
+    context.strokeStyle = symbolizer.strokeColor;
     context.lineWidth = symbolizer.strokeWidth * this.inverseScale_;
     context.lineCap = 'round'; // TODO: accept this as a symbolizer property
     context.lineJoin = 'round'; // TODO: accept this as a symbolizer property
   }
-  if (fillStyle) {
-    context.fillStyle = fillStyle;
+  if (fillColor) {
+    context.fillStyle = fillColor;
   }
 
   /**
@@ -282,7 +282,7 @@ ol.renderer.canvas.Renderer.prototype.renderPolygonFeatures_ =
             context.lineTo(x, y);
           }
         }
-        if (fillStyle && strokeStyle) {
+        if (fillColor && strokeColor) {
           // scenario 3 - fill and stroke each time
           context.fill();
           context.stroke();
@@ -293,8 +293,8 @@ ol.renderer.canvas.Renderer.prototype.renderPolygonFeatures_ =
       }
     }
   }
-  if (!(fillStyle && strokeStyle)) {
-    if (fillStyle) {
+  if (!(fillColor && strokeColor)) {
+    if (fillColor) {
       // scenario 2 - fill all at once
       context.fill();
     } else {
@@ -318,8 +318,8 @@ ol.renderer.canvas.Renderer.renderCircle_ = function(circle) {
           (goog.dom.createElement(goog.dom.TagName.CANVAS)),
       context = /** @type {CanvasRenderingContext2D} */
           (canvas.getContext('2d')),
-      fillStyle = circle.fillStyle,
-      strokeStyle = circle.strokeStyle,
+      fillColor = circle.fillColor,
+      strokeColor = circle.strokeColor,
       twoPi = Math.PI * 2;
 
   canvas.height = size;
@@ -327,12 +327,12 @@ ol.renderer.canvas.Renderer.renderCircle_ = function(circle) {
 
   context.globalAlpha = circle.opacity;
 
-  if (fillStyle) {
-    context.fillStyle = fillStyle;
+  if (fillColor) {
+    context.fillStyle = fillColor;
   }
-  if (strokeStyle) {
+  if (strokeColor) {
     context.lineWidth = strokeWidth;
-    context.strokeStyle = strokeStyle;
+    context.strokeStyle = strokeColor;
     context.lineCap = 'round'; // TODO: accept this as a symbolizer property
     context.lineJoin = 'round'; // TODO: accept this as a symbolizer property
   }
@@ -340,10 +340,10 @@ ol.renderer.canvas.Renderer.renderCircle_ = function(circle) {
   context.beginPath();
   context.arc(mid, mid, circle.size / 2, 0, twoPi, true);
 
-  if (fillStyle) {
+  if (fillColor) {
     context.fill();
   }
-  if (strokeStyle) {
+  if (strokeColor) {
     context.stroke();
   }
   return canvas;

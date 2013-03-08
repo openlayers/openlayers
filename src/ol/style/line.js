@@ -8,7 +8,7 @@ goog.require('ol.style.SymbolizerLiteral');
 
 
 /**
- * @typedef {{strokeStyle: (string),
+ * @typedef {{strokeColor: (string),
  *            strokeWidth: (number),
  *            opacity: (number)}}
  */
@@ -24,9 +24,9 @@ ol.style.LineLiteralOptions;
 ol.style.LineLiteral = function(config) {
   goog.base(this);
 
-  goog.asserts.assertString(config.strokeStyle, 'strokeStyle must be a string');
+  goog.asserts.assertString(config.strokeColor, 'strokeColor must be a string');
   /** @type {string} */
-  this.strokeStyle = config.strokeStyle;
+  this.strokeColor = config.strokeColor;
 
   goog.asserts.assertNumber(config.strokeWidth, 'strokeWidth must be a number');
   /** @type {number} */
@@ -44,7 +44,7 @@ goog.inherits(ol.style.LineLiteral, ol.style.SymbolizerLiteral);
  * @inheritDoc
  */
 ol.style.LineLiteral.prototype.equals = function(lineLiteral) {
-  return this.strokeStyle == lineLiteral.strokeStyle &&
+  return this.strokeColor == lineLiteral.strokeColor &&
       this.strokeWidth == lineLiteral.strokeWidth &&
       this.opacity == lineLiteral.opacity;
 };
@@ -63,10 +63,10 @@ ol.style.Line = function(options) {
    * @type {ol.Expression}
    * @private
    */
-  this.strokeStyle_ = !goog.isDef(options.strokeStyle) ?
-      new ol.ExpressionLiteral(ol.style.LineDefaults.strokeStyle) :
-      (options.strokeStyle instanceof ol.Expression) ?
-          options.strokeStyle : new ol.ExpressionLiteral(options.strokeStyle);
+  this.strokeColor_ = !goog.isDef(options.strokeColor) ?
+      new ol.ExpressionLiteral(ol.style.LineDefaults.strokeColor) :
+      (options.strokeColor instanceof ol.Expression) ?
+          options.strokeColor : new ol.ExpressionLiteral(options.strokeColor);
 
   /**
    * @type {ol.Expression}
@@ -101,8 +101,8 @@ ol.style.Line.prototype.createLiteral = function(opt_feature) {
     attrs = feature.getAttributes();
   }
 
-  var strokeStyle = this.strokeStyle_.evaluate(feature, attrs);
-  goog.asserts.assertString(strokeStyle, 'strokeStyle must be a string');
+  var strokeColor = this.strokeColor_.evaluate(feature, attrs);
+  goog.asserts.assertString(strokeColor, 'strokeColor must be a string');
 
   var strokeWidth = this.strokeWidth_.evaluate(feature, attrs);
   goog.asserts.assertNumber(strokeWidth, 'strokeWidth must be a number');
@@ -111,7 +111,7 @@ ol.style.Line.prototype.createLiteral = function(opt_feature) {
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
   return new ol.style.LineLiteral({
-    strokeStyle: strokeStyle,
+    strokeColor: strokeColor,
     strokeWidth: strokeWidth,
     opacity: opacity
   });
@@ -122,7 +122,7 @@ ol.style.Line.prototype.createLiteral = function(opt_feature) {
  * @type {ol.style.LineLiteral}
  */
 ol.style.LineDefaults = new ol.style.LineLiteral({
-  strokeStyle: '#696969',
+  strokeColor: '#696969',
   strokeWidth: 1.5,
   opacity: 0.75
 });
