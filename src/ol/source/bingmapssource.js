@@ -24,7 +24,7 @@ ol.source.BingMaps = function(bingMapsOptions) {
 
   goog.base(this, {
     opaque: true,
-    projection: ol.projection.getFromCode('EPSG:3857')
+    projection: ol.projection.get('EPSG:3857')
   });
 
   /**
@@ -111,8 +111,8 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                 };
               })));
 
-  var transform = ol.projection.getTransform(
-      ol.projection.getFromCode('EPSG:4326'), this.getProjection());
+  var transform = ol.projection.getTransformFromProjections(
+      ol.projection.get('EPSG:4326'), this.getProjection());
   var attributions = goog.array.map(
       resource.imageryProviders,
       function(imageryProvider) {

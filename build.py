@@ -30,6 +30,7 @@ else:
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
     variables.JAVA = 'java'
+    variables.JAR = 'jar'
     variables.JSDOC = 'jsdoc'
     variables.PYTHON = 'python'
     variables.PHANTOMJS = 'phantomjs'
@@ -59,6 +60,8 @@ EXAMPLES_SRC = [path
                 for path in ifind('examples')
                 if path.endswith('.js')
                 if not path.endswith('.combined.js')
+                if not path.startswith('examples/bootstrap')
+                if not path.startswith('examples/font-awesome')
                 if path != 'examples/Jugl.js'
                 if path != 'examples/example-list.js']
 
@@ -115,13 +118,13 @@ def build_ol_js(t):
     report_sizes(t)
 
 
-@target('build/ol-simple.js', PLOVR_JAR, SRC, EXTERNAL_SRC, 'base.json', 'build/ol.json', 'build/ol-simple.json')
+@target('build/ol-simple.js', PLOVR_JAR, SRC, INTERNAL_SRC, 'base.json', 'build/ol.json', 'build/ol-simple.json')
 def build_ol_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol-simple.json')
     report_sizes(t)
 
 
-@target('build/ol-whitespace.js', PLOVR_JAR, SRC, EXTERNAL_SRC, 'base.json', 'build/ol.json', 'build/ol-whitespace.json')
+@target('build/ol-whitespace.js', PLOVR_JAR, SRC, INTERNAL_SRC, 'base.json', 'build/ol.json', 'build/ol-whitespace.json')
 def build_ol_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol-whitespace.json')
     report_sizes(t)
@@ -357,6 +360,37 @@ def jsdoc_BRANCH_timestamp(t):
     t.touch()
 
 
+def split_example_file(example, dst_dir):
+    lines = open(example).readlines()
+
+    target_lines = []
+    target_require_lines = []
+
+    found_requires = False
+    found_code = False
+    for line in lines:
+        m = re.match(r'goog.require\(\'(.*)\'\);', line)
+        if m:
+            found_requires = True
+            target_require_lines.append(line)
+        elif found_requires:
+            if found_code or line not in ('\n', '\r\n'):
+                found_code = True
+                target_lines.append(line)
+
+    target = open(
+        os.path.join(dst_dir, os.path.basename(example)), 'w')
+    target_require = open(
+        os.path.join(dst_dir,
+            os.path.basename(example).replace('.js', '-require.js')), 'w')
+
+    target.writelines(target_lines)
+    target.close()
+
+    target_require.writelines(target_require_lines)
+    target_require.close()
+
+
 @target('hostexamples', 'build', 'examples', phony=True)
 def hostexamples(t):
     examples_dir = 'build/gh-pages/%(BRANCH)s/examples'
@@ -365,22 +399,40 @@ def hostexamples(t):
     t.makedirs(examples_dir)
     t.rm_rf(build_dir)
     t.makedirs(build_dir)
-    t.cp(EXAMPLES, (path.replace('.html', '.js') for path in EXAMPLES),
-        'examples/style.css', examples_dir)
+    t.cp(EXAMPLES, 'examples/examples.css', examples_dir)
+    for example in [path.replace('.html', '.js') for path in EXAMPLES]:
+        split_example_file(example, examples_dir % vars(variables))
     t.cp_r('examples/data', examples_dir + '/data')
+    t.cp_r('examples/bootstrap', examples_dir + '/bootstrap')
+    t.cp_r('examples/font-awesome', examples_dir + '/font-awesome')
     t.cp('build/loader_hosted_examples.js', examples_dir + '/loader.js')
     t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js',
         'build/ol.css', build_dir)
     t.cp('examples/example-list.html', examples_dir + '/index.html')
     t.cp('examples/example-list.js', 'examples/example-list.xml',
         'examples/Jugl.js', examples_dir)
+    t.rm_rf('build/gh-pages/%(BRANCH)s/closure-library')
+    t.makedirs('build/gh-pages/%(BRANCH)s/closure-library')
+    with t.chdir('build/gh-pages/%(BRANCH)s/closure-library'):
+        t.run('%(JAR)s', 'xf', '../../../../' + PLOVR_JAR, 'closure')
+        t.run('%(JAR)s', 'xf', '../../../../' + PLOVR_JAR, 'third_party')
+    t.rm_rf('build/gh-pages/%(BRANCH)s/ol')
+    t.makedirs('build/gh-pages/%(BRANCH)s/ol')
+    t.cp_r('src/ol', 'build/gh-pages/%(BRANCH)s/ol/ol')
+    t.run('%(PYTHON)s', 'bin/closure/depswriter.py',
+        '--root_with_prefix', 'src ../../../ol',
+        '--root', 'build/gh-pages/%(BRANCH)s/closure-library/closure/goog',
+        '--root_with_prefix', 'build/gh-pages/%(BRANCH)s/closure-library/third_party ../../third_party',
+        '--output_file', 'build/gh-pages/%(BRANCH)s/build/ol-deps.js')
 
 
 @target('check-examples', 'hostexamples', phony=True)
 def check_examples(t):
     directory = 'build/gh-pages/%(BRANCH)s/'
     examples = ['build/gh-pages/%(BRANCH)s/' + e for e in EXAMPLES]
-    all_examples = [e + '?mode=whitespace' for e in examples] + \
+    all_examples = \
+        [e + '?mode=raw' for e in examples] + \
+        [e + '?mode=whitespace' for e in examples] + \
         [e + '?mode=simple' for e in examples] + \
         examples
     for example in all_examples:

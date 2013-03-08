@@ -1,30 +1,17 @@
 @exportObjectLiteral ol.MapOptions
-@exportObjectLiteralProperty ol.MapOptions.attributionControl boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.doubleClickZoom boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.dragPan boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.controls Array.<ol.control.Control>|undefined
 @exportObjectLiteralProperty ol.MapOptions.interactions ol.Collection|undefined
-@exportObjectLiteralProperty ol.MapOptions.keyboard boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.keyboardPanOffset number|undefined
-@exportObjectLiteralProperty ol.MapOptions.layers ol.Collection|undefined
-@exportObjectLiteralProperty ol.MapOptions.mouseWheelZoom boolean|undefined
+@exportObjectLiteralProperty ol.MapOptions.layers Array.<ol.layer.Layer>|ol.Collection|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderer ol.RendererHint|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderers Array.<ol.RendererHint>|undefined
-@exportObjectLiteralProperty ol.MapOptions.scaleLineControl boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.scaleLineUnits ol.control.ScaleLineUnits|undefined
-@exportObjectLiteralProperty ol.MapOptions.shiftDragZoom boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.target Element|string
-@exportObjectLiteralProperty ol.MapOptions.touchPan boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.touchRotate boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.touchZoom boolean|undefined
 @exportObjectLiteralProperty ol.MapOptions.view ol.IView|undefined
-@exportObjectLiteralProperty ol.MapOptions.zoomControl boolean|undefined
-@exportObjectLiteralProperty ol.MapOptions.zoomDelta number|undefined
 
 @exportObjectLiteral ol.View2DOptions
 @exportObjectLiteralProperty ol.View2DOptions.center ol.Coordinate|undefined
 @exportObjectLiteralProperty ol.View2DOptions.maxResolution number|undefined
 @exportObjectLiteralProperty ol.View2DOptions.numZoomLevels number|undefined
-@exportObjectLiteralProperty ol.View2DOptions.projection ol.Projection|string|undefined
+@exportObjectLiteralProperty ol.View2DOptions.projection ol.ProjectionLike
 @exportObjectLiteralProperty ol.View2DOptions.resolution number|undefined
 @exportObjectLiteralProperty ol.View2DOptions.resolutions Array.<number>|undefined
 @exportObjectLiteralProperty ol.View2DOptions.rotation number|undefined
@@ -59,6 +46,12 @@
 @exportObjectLiteralProperty ol.control.AttributionOptions.map ol.Map|undefined
 @exportObjectLiteralProperty ol.control.AttributionOptions.target Element|undefined
 
+@exportObjectLiteral ol.control.DefaultsOptions
+@exportObjectLiteralProperty ol.control.DefaultsOptions.attribution boolean|undefined
+@exportObjectLiteralProperty ol.control.DefaultsOptions.attributionOptions ol.control.AttributionOptions|undefined
+@exportObjectLiteralProperty ol.control.DefaultsOptions.zoom boolean|undefined
+@exportObjectLiteralProperty ol.control.DefaultsOptions.zoomOptions ol.control.ZoomOptions|undefined
+
 @exportObjectLiteral ol.control.ScaleLineOptions
 @exportObjectLiteralProperty ol.control.ScaleLineOptions.map ol.Map|undefined
 @exportObjectLiteralProperty ol.control.ScaleLineOptions.minWidth number|undefined
@@ -68,7 +61,7 @@
 @exportObjectLiteral ol.control.MousePositionOptions
 @exportObjectLiteralProperty ol.control.MousePositionOptions.coordinateFormat ol.CoordinateFormatType|undefined
 @exportObjectLiteralProperty ol.control.MousePositionOptions.map ol.Map|undefined
-@exportObjectLiteralProperty ol.control.MousePositionOptions.projection ol.Projection|undefined
+@exportObjectLiteralProperty ol.control.MousePositionOptions.projection ol.ProjectionLike
 @exportObjectLiteralProperty ol.control.MousePositionOptions.target Element|undefined
 @exportObjectLiteralProperty ol.control.MousePositionOptions.undefinedHTML string|undefined
 
@@ -76,6 +69,17 @@
 @exportObjectLiteralProperty ol.control.ZoomOptions.delta number|undefined
 @exportObjectLiteralProperty ol.control.ZoomOptions.map ol.Map|undefined
 @exportObjectLiteralProperty ol.control.ZoomOptions.target Element|undefined
+
+@exportObjectLiteral ol.interaction.DefaultOptions
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.doubleClickZoom boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.dragPan boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.keyboard boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.keyboardPanOffset number|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.mouseWheelZoom boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.shiftDragZoom boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.touchPan boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.touchRotate boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultOptions.touchZoom boolean|undefined
 
 @exportObjectLiteral ol.layer.LayerOptions
 @exportObjectLiteralProperty ol.layer.LayerOptions.brightness number|undefined
@@ -99,7 +103,7 @@
 
 @exportObjectLiteral ol.source.DebugTileSourceOptions
 @exportObjectLiteralProperty ol.source.DebugTileSourceOptions.extent ol.Extent|undefined
-@exportObjectLiteralProperty ol.source.DebugTileSourceOptions.projection ol.Projection|undefined
+@exportObjectLiteralProperty ol.source.DebugTileSourceOptions.projection ol.ProjectionLike
 @exportObjectLiteralProperty ol.source.DebugTileSourceOptions.tileGrid ol.tilegrid.TileGrid|undefined
 
 @exportObjectLiteral ol.source.SingleImageWMSOptions
@@ -107,7 +111,7 @@
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.crossOrigin null|string|undefined
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.extent ol.Extent|undefined
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.params Object.<string,*>
-@exportObjectLiteralProperty ol.source.SingleImageWMSOptions.projection ol.Projection|undefined
+@exportObjectLiteralProperty ol.source.SingleImageWMSOptions.projection ol.ProjectionLike
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.resolutions Array.<number>|undefined
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.url string|undefined
 
@@ -129,7 +133,7 @@
 @exportObjectLiteralProperty ol.source.StaticImageOptions.extent ol.Extent|undefined
 @exportObjectLiteralProperty ol.source.StaticImageOptions.imageExtent ol.Extent|undefined
 @exportObjectLiteralProperty ol.source.StaticImageOptions.imageSize ol.Size|undefined
-@exportObjectLiteralProperty ol.source.StaticImageOptions.projection ol.Projection|undefined
+@exportObjectLiteralProperty ol.source.StaticImageOptions.projection ol.ProjectionLike
 @exportObjectLiteralProperty ol.source.StaticImageOptions.url string|undefined
 
 @exportObjectLiteral ol.source.TiledWMSOptions
@@ -139,7 +143,7 @@
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.extent ol.Extent|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.tileGrid ol.tilegrid.TileGrid|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.maxZoom number|undefined
-@exportObjectLiteralProperty ol.source.TiledWMSOptions.projection ol.Projection|undefined
+@exportObjectLiteralProperty ol.source.TiledWMSOptions.projection ol.ProjectionLike
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.url string|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.urls Array.<string>|undefined
 
@@ -185,3 +189,15 @@
 
 @exportObjectLiteral ol.tilegrid.XYZOptions
 @exportObjectLiteralProperty ol.tilegrid.XYZOptions.maxZoom number
+
+@exportObjectLiteral ol.ProjectionOptions
+@exportObjectLiteralProperty ol.ProjectionOptions.code string
+@exportObjectLiteralProperty ol.ProjectionOptions.units ol.ProjectionUnits
+@exportObjectLiteralProperty ol.ProjectionOptions.extent ol.Extent
+@exportObjectLiteralProperty ol.ProjectionOptions.axisOrientation string|undefined
+@exportObjectLiteralProperty ol.ProjectionOptions.global boolean|undefined
+
+@exportObjectLiteral ol.Proj4jsProjectionOptions
+@exportObjectLiteralProperty ol.Proj4jsProjectionOptions.code string
+@exportObjectLiteralProperty ol.Proj4jsProjectionOptions.extent ol.Extent
+@exportObjectLiteralProperty ol.Proj4jsProjectionOptions.global boolean|undefined
