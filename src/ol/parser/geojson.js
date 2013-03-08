@@ -52,6 +52,19 @@ ol.parser.GeoJSON.prototype.readFeaturesFromString =
 
 
 /**
+ * Parse a GeoJSON feature collection from decoded JSON.
+ * @param {GeoJSONFeatureCollection} object GeoJSON feature collection decoded
+ *     from JSON.
+ * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
+ * @return {Array.<ol.Feature>} Array of features.
+ */
+ol.parser.GeoJSON.prototype.readFeaturesFromObject =
+    function(object, opt_options) {
+  return this.parseFeatureCollection_(object, opt_options);
+};
+
+
+/**
  * @param {GeoJSONObject} json GeoJSON object.
  * @return {ol.Feature|Array.<ol.Feature>|
  *    ol.geom.Geometry|Array.<ol.geom.Geometry>} Parsed geometry or array

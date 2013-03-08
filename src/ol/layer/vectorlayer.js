@@ -323,6 +323,10 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
     goog.asserts.assert(typeof parser.readFeaturesFromString === 'function',
         'Expected a parser with readFeaturesFromString method.');
     features = parser.readFeaturesFromString(data, {callback: callback});
+  } else if (typeof data === 'object') {
+    goog.asserts.assert(typeof parser.readFeaturesFromObject === 'function',
+        'Expected a parser with a readFeaturesFromObject method.');
+    features = parser.readFeaturesFromObject(data, {callback: callback});
   } else {
     // TODO: parse more data types
     throw new Error('Data type not supported: ' + data);
