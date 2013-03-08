@@ -12,6 +12,9 @@ goog.require('ol.parser.GeoJSON');
 goog.require('ol.projection');
 goog.require('ol.source.MapQuestOpenAerial');
 goog.require('ol.source.Vector');
+goog.require('ol.style.Polygon');
+goog.require('ol.style.Rule');
+goog.require('ol.style.Style');
 
 
 var raster = new ol.layer.TileLayer({
@@ -21,7 +24,18 @@ var raster = new ol.layer.TileLayer({
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
     projection: ol.projection.getFromCode('EPSG:4326')
-  })
+  }),
+  style: new ol.style.Style({rules: [
+    new ol.style.Rule({
+      symbolizers: [
+        new ol.style.Polygon({
+          strokeStyle: '#696969',
+          strokeWidth: 1,
+          opacity: 1.5
+        })
+      ]
+    })
+  ]})
 });
 
 var geojson = new ol.parser.GeoJSON();
