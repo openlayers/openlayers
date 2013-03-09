@@ -93,6 +93,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     return;
   }
 
+  this.snapCenterToPixel(frameState);
+
   var size = frameState.size;
   if (!this.canvasSize_.equals(size)) {
     this.canvas_.width = size.width;

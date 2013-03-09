@@ -493,6 +493,8 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   this.textureCache_.set(frameState.time.toString(), null);
   ++this.textureCacheFrameMarkerCount_;
 
+  this.snapCenterToPixel(frameState);
+
   goog.array.forEach(frameState.layersArray, function(layer) {
     var layerState = frameState.layerStates[goog.getUid(layer)];
     if (!layerState.visible || !layerState.ready) {

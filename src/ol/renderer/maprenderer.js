@@ -11,6 +11,7 @@ goog.require('ol.CollectionEventType');
 goog.require('ol.FrameState');
 goog.require('ol.Object');
 goog.require('ol.layer.Layer');
+goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.Layer');
 
 
@@ -136,6 +137,27 @@ ol.renderer.Map.prototype.disposeInternal = function() {
     goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
   }
   goog.base(this, 'disposeInternal');
+};
+
+
+/**
+ * @param {Array.<ol.layer.Layer>} layersArray Layers array.
+ * @return {Array.<number>} Resolutions.
+ */
+ol.renderer.Map.prototype.findFirstResolutions = function(layersArray) {
+  var i, layer, resolutions, tileGrid, tileLayer;
+  for (i = 0; i < layersArray.length; ++i) {
+    layer = layersArray[i];
+    if (layer.isReady() &&
+        layer instanceof ol.layer.TileLayer) {
+      tileLayer = /** @type {ol.layer.TileLayer} */ (layer);
+      tileGrid = tileLayer.getTileSource().getTileGrid();
+      if (!goog.isNull(tileGrid)) {
+        return tileGrid.getResolutions();
+      }
+    }
+  }
+  return null;
 };
 
 
@@ -266,4 +288,31 @@ ol.renderer.Map.prototype.setLayerRenderer = function(layer, layerRenderer) {
   this.layerRendererChangeListenKeys_[layerKey] = goog.events.listen(
       layerRenderer, goog.events.EventType.CHANGE,
       this.handleLayerRendererChange, false, this);
+};
+
+
+/**
+ * Attempt to snap the map center to the nearest pixel of the first tile layer.
+ * If there are no tile layers, or if the requested resolution is not an exact
+ * resolution supported by the first tile layer, then we do nothing.
+ * @param {ol.FrameState} frameState Frame state.
+ * @protected
+ */
+ol.renderer.Map.prototype.snapCenterToPixel = function(frameState) {
+  var resolutions = this.findFirstResolutions(frameState.layersArray);
+  if (goog.isNull(resolutions)) {
+    return;
+  }
+  var view2DState = frameState.view2DState;
+  var index = resolutions.indexOf(view2DState.resolution);
+  if (index < 0) {
+    return;
+  }
+  var resolution = resolutions[index];
+  var center = view2DState.center;
+  var size = frameState.size;
+  center.x =
+      resolution * (Math.round(center.x / resolution) + (size.width % 2) / 2);
+  center.y =
+      resolution * (Math.round(center.y / resolution) + (size.height % 2) / 2);
 };
