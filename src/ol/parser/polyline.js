@@ -2,6 +2,33 @@ goog.provide('ol.parser.polyline');
 
 
 /**
+ * Encode one single floating point number and return an encoded string
+ *
+ * @param {number} num Floating point number that should be encoded.
+ * @param {number=} opt_factor The factor by which num will be multiplied.
+ * The remaining decimal places will get rounded away.
+ * @return {string} The encoded string.
+ */
+ol.parser.polyline.encodeFloat = function(num, opt_factor) {
+  num = Math.round(num * (opt_factor || 1e5));
+  return ol.parser.polyline.encodeSignedInteger(num);
+};
+
+
+/**
+ * Decode one single floating point number from an encoded string
+ *
+ * @param {string} encoded An encoded string.
+ * @param {number=} opt_factor The factor by which the result will be divided.
+ * @return {number} The decoded floating point number.
+ */
+ol.parser.polyline.decodeFloat = function(encoded, opt_factor) {
+  var result = ol.parser.polyline.decodeSignedInteger(encoded);
+  return result / (opt_factor || 1e5);
+};
+
+
+/**
  * Encode one single signed integer and return an encoded string
  *
  * @param {number} num Signed integer that should be encoded.

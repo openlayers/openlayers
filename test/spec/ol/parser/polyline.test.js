@@ -2,6 +2,46 @@ goog.provide('ol.test.parser.polyline');
 
 describe('ol.parser.polyline', function() {
 
+  describe('encodeFloat', function() {
+    it('returns expected value', function() {
+      var encodeFloat = ol.parser.polyline.encodeFloat;
+
+      expect(encodeFloat(0.00000)).toEqual('?');
+      expect(encodeFloat(-0.00001)).toEqual('@');
+      expect(encodeFloat(0.00001)).toEqual('A');
+      expect(encodeFloat(-0.00002)).toEqual('B');
+      expect(encodeFloat(0.00002)).toEqual('C');
+      expect(encodeFloat(0.00015)).toEqual(']');
+      expect(encodeFloat(-0.00016)).toEqual('^');
+
+      expect(encodeFloat(-0.1, 10)).toEqual('@');
+      expect(encodeFloat(0.1, 10)).toEqual('A');
+
+      expect(encodeFloat(16 * 32 / 1e5)).toEqual('__@');
+      expect(encodeFloat(16 * 32 * 32 / 1e5)).toEqual('___@');
+    });
+  });
+
+  describe('decodeFloat', function() {
+    it('returns expected value', function() {
+      var decodeFloat = ol.parser.polyline.decodeFloat;
+
+      expect(decodeFloat('?')).toEqual(0.00000);
+      expect(decodeFloat('@')).toEqual(-0.00001);
+      expect(decodeFloat('A')).toEqual(0.00001);
+      expect(decodeFloat('B')).toEqual(-0.00002);
+      expect(decodeFloat('C')).toEqual(0.00002);
+      expect(decodeFloat(']')).toEqual(0.00015);
+      expect(decodeFloat('^')).toEqual(-0.00016);
+
+      expect(decodeFloat('@', 10)).toEqual(-0.1);
+      expect(decodeFloat('A', 10)).toEqual(0.1);
+
+      expect(decodeFloat('__@')).toEqual(16 * 32 / 1e5);
+      expect(decodeFloat('___@')).toEqual(16 * 32 * 32 / 1e5);
+    });
+  });
+
   describe('encodeSignedInteger', function() {
     it('returns expected value', function() {
       var encodeSignedInteger = ol.parser.polyline.encodeSignedInteger;
