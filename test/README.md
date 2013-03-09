@@ -24,6 +24,9 @@ With PhantomJS installed, and assuming phantomjs is in the PATH:
 
 This command can also be run by doing `./build.py test` at the root of ol3.
 
+Make sure that the polvr web server is running (`./build.py serve`), otherwise
+you will most likely see something like `0 specs, 0 failures in 0.001s.`.
+
 Tip for TDD'ers: to make PhantomJS run the test suite continuously each time
 a spec file is changed you can use nosier (http://pypi.python.org/pypi/nosier)
 and do `nosier -p test -p src "./build.py test"`.
