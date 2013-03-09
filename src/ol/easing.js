@@ -1,5 +1,28 @@
 goog.provide('ol.easing');
 
+goog.require('goog.fx.easing');
+
+
+/**
+ * @param {number} t Input between 0 and 1.
+ * @return {number} Output between 0 and 1.
+ */
+ol.easing.easeIn = goog.fx.easing.easeIn;
+
+
+/**
+ * @param {number} t Input between 0 and 1.
+ * @return {number} Output between 0 and 1.
+ */
+ol.easing.easeOut = goog.fx.easing.easeOut;
+
+
+/**
+ * @param {number} t Input between 0 and 1.
+ * @return {number} Output between 0 and 1.
+ */
+ol.easing.inAndOut = goog.fx.easing.inAndOut;
+
 
 /**
  * @param {number} t Input between 0 and 1.
