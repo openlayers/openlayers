@@ -142,14 +142,21 @@ ol.renderer.Map.prototype.disposeInternal = function() {
 
 /**
  * @param {Array.<ol.layer.Layer>} layersArray Layers array.
- * @protected
- * @return {ol.layer.TileLayer} Tile layer.
+ * @return {Array.<number>} Resolutions.
  */
-ol.renderer.Map.prototype.findFirstTileLayer = function(layersArray) {
-  var i;
+ol.renderer.Map.prototype.findFirstResolutions = function(layersArray) {
+  var i, layer, resolutions, tileGrid, tileLayer;
   for (i = 0; i < layersArray.length; ++i) {
-    if (layersArray[i] instanceof ol.layer.TileLayer) {
-      return /** @type {ol.layer.TileLayer} */ (layersArray[i]);
+    layer = layersArray[i];
+    if (layer.isReady() &&
+        layer instanceof ol.layer.TileLayer) {
+      tileLayer = /** @type {ol.layer.TileLayer} */ (layer);
+      // FIXME the EPSG:4326 example generates a tile layer without a tile grid
+      // FIXME this should not happen, all tile layers should have tile grids
+      tileGrid = tileLayer.getTileSource().getTileGrid();
+      if (!goog.isNull(tileGrid)) {
+        return tileGrid.getResolutions();
+      }
     }
   }
   return null;
@@ -294,12 +301,11 @@ ol.renderer.Map.prototype.setLayerRenderer = function(layer, layerRenderer) {
  * @protected
  */
 ol.renderer.Map.prototype.snapCenterToPixel = function(frameState) {
-  var tileLayer = this.findFirstTileLayer(frameState.layersArray);
-  if (goog.isNull(tileLayer)) {
+  var resolutions = this.findFirstResolutions(frameState.layersArray);
+  if (goog.isNull(resolutions)) {
     return;
   }
   var view2DState = frameState.view2DState;
-  var resolutions = tileLayer.getTileSource().getTileGrid().getResolutions();
   var index = resolutions.indexOf(view2DState.resolution);
   if (index < 0) {
     return;
