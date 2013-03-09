@@ -151,8 +151,6 @@ ol.renderer.Map.prototype.findFirstResolutions = function(layersArray) {
     if (layer.isReady() &&
         layer instanceof ol.layer.TileLayer) {
       tileLayer = /** @type {ol.layer.TileLayer} */ (layer);
-      // FIXME the EPSG:4326 example generates a tile layer without a tile grid
-      // FIXME this should not happen, all tile layers should have tile grids
       tileGrid = tileLayer.getTileSource().getTileGrid();
       if (!goog.isNull(tileGrid)) {
         return tileGrid.getResolutions();
