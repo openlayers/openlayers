@@ -9,21 +9,29 @@ goog.require('ol.View2D');
 goog.require('ol.interaction.Interaction');
 
 
+/**
+ * @define {number} Pan duration.
+ */
+ol.interaction.KEYBOARD_PAN_DURATION = 100;
+
+
 
 /**
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @param {number} pixelDelta Pixel delta.
+ * @param {ol.interaction.KeyboardPanOptions=} opt_options Options.
  */
-ol.interaction.KeyboardPan = function(pixelDelta) {
+ol.interaction.KeyboardPan = function(opt_options) {
 
   goog.base(this);
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
    * @type {number}
    */
-  this.pixelDelta_ = pixelDelta;
+  this.delta_ = goog.isDef(options.delta) ? options.delta : 128;
 
 };
 goog.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);
@@ -47,22 +55,21 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       var view = map.getView();
       goog.asserts.assert(view instanceof ol.View2D);
       var resolution = view.getResolution();
-      var delta;
-      var mapUnitsDelta = resolution * this.pixelDelta_;
+      var rotation = view.getRotation();
+      var mapUnitsDelta = resolution * this.delta_;
+      var deltaX = 0, deltaY = 0;
       if (keyCode == goog.events.KeyCodes.DOWN) {
-        delta = new ol.Coordinate(0, -mapUnitsDelta);
+        deltaY = -mapUnitsDelta;
       } else if (keyCode == goog.events.KeyCodes.LEFT) {
-        delta = new ol.Coordinate(-mapUnitsDelta, 0);
+        deltaX = -mapUnitsDelta;
       } else if (keyCode == goog.events.KeyCodes.RIGHT) {
-        delta = new ol.Coordinate(mapUnitsDelta, 0);
+        deltaX = mapUnitsDelta;
       } else {
-        goog.asserts.assert(keyCode == goog.events.KeyCodes.UP);
-        delta = new ol.Coordinate(0, mapUnitsDelta);
+        deltaY = mapUnitsDelta;
       }
-      var oldCenter = view.getCenter();
-      var newCenter = new ol.Coordinate(
-          oldCenter.x + delta.x, oldCenter.y + delta.y);
-      view.setCenter(newCenter);
+      var delta = new ol.Coordinate(deltaX, deltaY);
+      delta.rotate(rotation);
+      view.pan(map, delta, ol.interaction.KEYBOARD_PAN_DURATION);
       keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();
     }
