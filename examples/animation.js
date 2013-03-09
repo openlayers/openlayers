@@ -56,8 +56,8 @@ rotateRight.addEventListener('click', function() {
 var panToLondon = document.getElementById('pan-to-london');
 panToLondon.addEventListener('click', function() {
   var pan = ol.animation.pan({
-    source: map.getView().getView2D().getCenter(),
-    duration: 2000
+    duration: 2000,
+    source: map.getView().getView2D().getCenter()
   });
   map.addPreRenderFunction(pan);
   map.getView().getView2D().setCenter(london);
@@ -66,9 +66,9 @@ panToLondon.addEventListener('click', function() {
 var elasticToMoscow = document.getElementById('elastic-to-moscow');
 elasticToMoscow.addEventListener('click', function() {
   var pan = ol.animation.pan({
-    source: map.getView().getView2D().getCenter(),
     duration: 2000,
-    easing: ol.easing.elastic
+    easing: ol.easing.elastic,
+    source: map.getView().getView2D().getCenter()
   });
   map.addPreRenderFunction(pan);
   map.getView().getView2D().setCenter(moscow);
@@ -77,9 +77,9 @@ elasticToMoscow.addEventListener('click', function() {
 var bounceToInstanbul = document.getElementById('bounce-to-instanbul');
 bounceToInstanbul.addEventListener('click', function() {
   var pan = ol.animation.pan({
-    source: map.getView().getView2D().getCenter(),
     duration: 2000,
-    easing: ol.easing.bounce
+    easing: ol.easing.bounce,
+    source: map.getView().getView2D().getCenter()
   });
   map.addPreRenderFunction(pan);
   map.getView().getView2D().setCenter(instanbul);
