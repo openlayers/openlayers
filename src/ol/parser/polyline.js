@@ -17,6 +17,18 @@ ol.parser.polyline.encodeSignedInteger = function(num) {
 
 
 /**
+ * Decode one single signed integer from an encoded string
+ *
+ * @param {string} encoded An encoded string.
+ * @return {number} The decoded signed integer.
+ */
+ol.parser.polyline.decodeSignedInteger = function(encoded) {
+  var result = ol.parser.polyline.decodeUnsignedInteger(encoded);
+  return ((result & 1) ? ~(result >> 1) : (result >> 1));
+};
+
+
+/**
  * Encode one single unsigned integer and return an encoded string
  *
  * @param {number} num Unsigned integer that should be encoded.
@@ -32,4 +44,25 @@ ol.parser.polyline.encodeUnsignedInteger = function(num) {
   value = num + 63;
   encodeString += (String.fromCharCode(value));
   return encodeString;
+};
+
+
+/**
+ * Decode one single unsigned integer from an encoded string
+ *
+ * @param {string} encoded An encoded string.
+ * @return {number} The decoded unsigned integer.
+ */
+ol.parser.polyline.decodeUnsignedInteger = function(encoded) {
+  var result = 0;
+  var shift = 0;
+
+  var b, i = 0;
+  do {
+    b = encoded.charCodeAt(i++) - 63;
+    result |= (b & 0x1f) << shift;
+    shift += 5;
+  } while (b >= 0x20);
+
+  return result;
 };
