@@ -2,7 +2,6 @@
 
 goog.provide('ol.animation');
 
-goog.require('goog.fx.easing');
 goog.require('ol.PreRenderFunction');
 goog.require('ol.ViewHint');
 goog.require('ol.easing');
@@ -48,7 +47,7 @@ ol.animation.pan = function(options) {
   var sourceY = source.y;
   var duration = goog.isDef(options.duration) ? options.duration : 1000;
   var easing = goog.isDef(options.easing) ?
-      options.easing : goog.fx.easing.inAndOut;
+      options.easing : ol.easing.inAndOut;
   return function(map, frameState) {
     if (frameState.time < start) {
       frameState.animate = true;
@@ -79,7 +78,7 @@ ol.animation.rotate = function(options) {
   var start = goog.isDef(options.start) ? options.start : goog.now();
   var duration = goog.isDef(options.duration) ? options.duration : 1000;
   var easing = goog.isDef(options.easing) ?
-      options.easing : goog.fx.easing.inAndOut;
+      options.easing : ol.easing.inAndOut;
 
   return function(map, frameState) {
     if (frameState.time < start) {

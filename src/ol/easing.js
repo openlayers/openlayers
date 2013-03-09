@@ -39,9 +39,9 @@ ol.easing.linear = function(t) {
  */
 ol.easing.upAndDown = function(t) {
   if (t < 0.5) {
-    return goog.fx.easing.inAndOut(2 * t);
+    return ol.easing.inAndOut(2 * t);
   } else {
-    return 1 - goog.fx.easing.inAndOut(2 * (t - 0.5));
+    return 1 - ol.easing.inAndOut(2 * (t - 0.5));
   }
 };
 

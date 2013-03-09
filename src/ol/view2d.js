@@ -4,7 +4,6 @@
 goog.provide('ol.View2D');
 goog.provide('ol.View2DProperty');
 
-goog.require('goog.fx.easing');
 goog.require('ol.Constraints');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
@@ -308,13 +307,13 @@ ol.View2D.prototype.rotateWithoutConstraints =
       map.addPreRenderFunction(ol.animation.rotate({
         rotation: currentRotation,
         duration: opt_duration,
-        easing: goog.fx.easing.easeOut
+        easing: ol.easing.easeOut
       }));
       if (goog.isDef(opt_anchor)) {
         map.addPreRenderFunction(ol.animation.pan({
           source: currentCenter,
           duration: opt_duration,
-          easing: goog.fx.easing.easeOut
+          easing: ol.easing.easeOut
         }));
       }
     }
@@ -382,13 +381,13 @@ ol.View2D.prototype.zoomWithoutConstraints =
       map.addPreRenderFunction(ol.animation.zoom({
         resolution: currentResolution,
         duration: opt_duration,
-        easing: goog.fx.easing.easeOut
+        easing: ol.easing.easeOut
       }));
       if (goog.isDef(opt_anchor)) {
         map.addPreRenderFunction(ol.animation.pan({
           source: currentCenter,
           duration: opt_duration,
-          easing: goog.fx.easing.easeOut
+          easing: ol.easing.easeOut
         }));
       }
     }
