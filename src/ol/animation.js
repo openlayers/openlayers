@@ -109,7 +109,7 @@ ol.animation.zoom = function(options) {
   var start = goog.isDef(options.start) ? options.start : goog.now();
   var duration = goog.isDef(options.duration) ? options.duration : 1000;
   var easing = goog.isDef(options.easing) ?
-      options.easing : ol.easing.linear;
+      options.easing : ol.easing.inAndOut;
   return function(map, frameState) {
     if (frameState.time < start) {
       frameState.animate = true;
