@@ -263,13 +263,15 @@ goog.exportProperty(
  */
 ol.View2D.prototype.pan = function(map, delta, opt_duration) {
   var currentCenter = this.getCenter();
-  if (goog.isDef(currentCenter) && goog.isDef(opt_duration)) {
-    map.requestRenderFrame();
-    map.addPreRenderFunction(ol.animation.pan({
-      source: currentCenter,
-      duration: opt_duration,
-      easing: ol.easing.linear
-    }));
+  if (goog.isDef(currentCenter)) {
+    if (goog.isDef(opt_duration)) {
+      map.requestRenderFrame();
+      map.addPreRenderFunction(ol.animation.pan({
+        source: currentCenter,
+        duration: opt_duration,
+        easing: ol.easing.linear
+      }));
+    }
     this.setCenter(new ol.Coordinate(
         currentCenter.x + delta.x, currentCenter.y + delta.y));
   }
