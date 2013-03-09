@@ -66,6 +66,7 @@ append `?mode=simple` or `?mode=whitespace` to the example URL. And append
 Run the plovr web server (see above), and either open the `test/ol.html` file
 in the browser (e.g. <http://localhost:8000/test/ol.html>), or run `./build.py test`
 on the console (headless testing with PhantomJS, make sure to install it first from http://phantomjs.org/download.html).
+In both cases, the [Plovr](http://plovr.com/) web server has to be launched.
 
 See also the test-specific [readme](https://github.com/openlayers/ol3/tree/master/test).
 
