@@ -16,6 +16,7 @@ goog.require('ol.RotationConstraint');
 goog.require('ol.Size');
 goog.require('ol.View');
 goog.require('ol.animation');
+goog.require('ol.easing');
 goog.require('ol.projection');
 
 
@@ -253,6 +254,28 @@ goog.exportProperty(
     ol.View2D.prototype,
     'setRotation',
     ol.View2D.prototype.setRotation);
+
+
+/**
+ * @param {ol.Map} map Map.
+ * @param {ol.Coordinate} delta Delta.
+ * @param {number=} opt_duration Duration.
+ */
+ol.View2D.prototype.pan = function(map, delta, opt_duration) {
+  var currentCenter = this.getCenter();
+  if (goog.isDef(currentCenter)) {
+    if (goog.isDef(opt_duration)) {
+      map.requestRenderFrame();
+      map.addPreRenderFunction(ol.animation.pan({
+        source: currentCenter,
+        duration: opt_duration,
+        easing: ol.easing.linear
+      }));
+    }
+    this.setCenter(new ol.Coordinate(
+        currentCenter.x + delta.x, currentCenter.y + delta.y));
+  }
+};
 
 
 /**
