@@ -10,6 +10,7 @@ describe('ol.parser.polyline', function() {
     it('returns expected value', function() {
       var encodeFlatCoordinates = ol.parser.polyline.encodeFlatCoordinates;
 
+      // from the "Encoded Polyline Algorithm Format" page at Google
       expect(encodeFlatCoordinates(
           flat_points)).toEqual('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
     });
@@ -19,6 +20,7 @@ describe('ol.parser.polyline', function() {
     it('returns expected value', function() {
       var decodeFlatCoordinates = ol.parser.polyline.decodeFlatCoordinates;
 
+      // from the "Encoded Polyline Algorithm Format" page at Google
       expect(decodeFlatCoordinates(
           '_p~iF~ps|U_ulLnnqC_mqNvxq`@')).toEqual(flat_points);
     });
@@ -41,6 +43,9 @@ describe('ol.parser.polyline', function() {
 
       expect(encodeFloat(16 * 32 / 1e5)).toEqual('__@');
       expect(encodeFloat(16 * 32 * 32 / 1e5)).toEqual('___@');
+
+      // from the "Encoded Polyline Algorithm Format" page at Google
+      expect(encodeFloat(-179.9832104)).toEqual('`~oia@');
     });
   });
 
@@ -61,6 +66,9 @@ describe('ol.parser.polyline', function() {
 
       expect(decodeFloat('__@')).toEqual(16 * 32 / 1e5);
       expect(decodeFloat('___@')).toEqual(16 * 32 * 32 / 1e5);
+
+      // from the "Encoded Polyline Algorithm Format" page at Google
+      expect(decodeFloat('`~oia@')).toEqual(-179.98321);
     });
   });
 
