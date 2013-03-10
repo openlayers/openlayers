@@ -122,6 +122,9 @@ describe('ol.parser.polyline', function() {
       expect(encodeUnsignedInteger(32 * 32)).toEqual('__@');
       expect(encodeUnsignedInteger(5 * 32 * 32)).toEqual('__D');
       expect(encodeUnsignedInteger(32 * 32 * 32)).toEqual('___@');
+
+      // from the "Encoded Polyline Algorithm Format" page at Google
+      expect(encodeUnsignedInteger(174)).toEqual('mD');
     });
   });
 
@@ -139,6 +142,9 @@ describe('ol.parser.polyline', function() {
       expect(decodeUnsignedInteger('__@')).toEqual(32 * 32);
       expect(decodeUnsignedInteger('__D')).toEqual(5 * 32 * 32);
       expect(decodeUnsignedInteger('___@')).toEqual(32 * 32 * 32);
+
+      // from the "Encoded Polyline Algorithm Format" page at Google
+      expect(decodeUnsignedInteger('mD')).toEqual(174);
     });
   });
 });
