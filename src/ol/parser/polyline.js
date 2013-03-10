@@ -73,6 +73,49 @@ ol.parser.polyline.decodeFlatCoordinates = function(encoded, opt_dimension) {
 
 
 /**
+ * Encode a list of floating point numbers and return an encoded string
+ *
+ * Attention: This function will modify the passed array!
+ *
+ * @param {Array.<number>} numbers A list of floating point numbers.
+ * @param {number=} opt_factor The factor by which the numbers will be
+ * multiplied. The remaining decimal places will get rounded away.
+ * @return {string} The encoded string.
+ */
+ol.parser.polyline.encodeFloats = function(numbers, opt_factor) {
+  var factor = opt_factor || 1e5;
+
+  var numbersLength = numbers.length;
+  for (var i = 0; i < numbersLength; ++i) {
+    numbers[i] =  Math.round(numbers[i] * factor);
+  }
+
+  return ol.parser.polyline.encodeSignedIntegers(numbers);
+};
+
+
+/**
+ * Decode a list of floating point numbers from an encoded string
+ *
+ * @param {string} encoded An encoded string.
+ * @param {number=} opt_factor The factor by which the result will be divided.
+ * @return {Array.<number>} A list of floating point numbers.
+ */
+ol.parser.polyline.decodeFloats = function(encoded, opt_factor) {
+  var factor = opt_factor || 1e5;
+
+  var numbers = ol.parser.polyline.decodeSignedIntegers(encoded);
+
+  var numbersLength = numbers.length;
+  for (var i = 0; i < numbersLength; ++i) {
+    numbers[i] /= factor;
+  }
+
+  return numbers;
+};
+
+
+/**
  * Encode a list of signed integers and return an encoded string
  *
  * Attention: This function will modify the passed array!

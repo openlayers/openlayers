@@ -27,6 +27,31 @@ describe('ol.parser.polyline', function() {
   });
 
 
+  var floats = [0.00, 0.15, -0.01, -0.16, 0.16, 0.01];
+  var smallFloats = [0.00000, 0.00015, -0.00001, -0.00016, 0.00016, 0.00001];
+  var encodedFloats = '?]@^_@A';
+
+  describe('encodeFloats', function() {
+    it('returns expected value', function() {
+      var encodeFloats = ol.parser.polyline.encodeFloats;
+
+      expect(encodeFloats(smallFloats.slice())).toEqual(encodedFloats);
+      expect(encodeFloats(smallFloats.slice(), 1e5)).toEqual(encodedFloats);
+      expect(encodeFloats(floats.slice(), 1e2)).toEqual(encodedFloats);
+    });
+  });
+
+  describe('decodeFloats', function() {
+    it('returns expected value', function() {
+      var decodeFloats = ol.parser.polyline.decodeFloats;
+
+      expect(decodeFloats(encodedFloats)).toEqual(smallFloats);
+      expect(decodeFloats(encodedFloats, 1e5)).toEqual(smallFloats);
+      expect(decodeFloats(encodedFloats, 1e2)).toEqual(floats);
+    });
+  });
+
+
   var signedIntegers = [0, 15, -1, -16, 16, 1];
   var encodedSignedIntegers = '?]@^_@A';
 
