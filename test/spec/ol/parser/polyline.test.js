@@ -26,6 +26,29 @@ describe('ol.parser.polyline', function() {
     });
   });
 
+
+  var unsignedIntegers = [0, 30, 1, 31, 32, 2, 174];
+  var encodedUnsignedIntegers = '?]@^_@AmD';
+
+  describe('encodeUnsignedIntegers', function() {
+    it('returns expected value', function() {
+      var encodeUnsignedIntegers = ol.parser.polyline.encodeUnsignedIntegers;
+
+      expect(encodeUnsignedIntegers(
+          unsignedIntegers)).toEqual(encodedUnsignedIntegers);
+    });
+  });
+
+  describe('decodeUnsignedIntegers', function() {
+    it('returns expected value', function() {
+      var decodeUnsignedIntegers = ol.parser.polyline.decodeUnsignedIntegers;
+
+      expect(decodeUnsignedIntegers(
+          encodedUnsignedIntegers)).toEqual(unsignedIntegers);
+    });
+  });
+
+
   describe('encodeFloat', function() {
     it('returns expected value', function() {
       var encodeFloat = ol.parser.polyline.encodeFloat;

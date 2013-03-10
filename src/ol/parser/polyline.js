@@ -73,6 +73,52 @@ ol.parser.polyline.decodeFlatCoordinates = function(encoded, opt_dimension) {
 
 
 /**
+ * Encode a list of unsigned integers and return an encoded string
+ *
+ * @param {Array.<number>} numbers A list of unsigned integers.
+ * @return {string} The encoded string.
+ */
+ol.parser.polyline.encodeUnsignedIntegers = function(numbers) {
+  var encoded = '';
+
+  var numbersLength = numbers.length;
+  for (var i = 0; i < numbersLength; ++i) {
+    encoded += ol.parser.polyline.encodeUnsignedInteger(numbers[i]);
+  }
+
+  return encoded;
+};
+
+
+/**
+ * Decode a list of unsigned integers from an encoded string
+ *
+ * @param {string} encoded An encoded string.
+ * @return {Array.<number>} A list of unsigned integers.
+ */
+ol.parser.polyline.decodeUnsignedIntegers = function(encoded) {
+  var numbers = new Array();
+
+  var encodedLength = encoded.length;
+  for (var i = 0; i < encodedLength;) {
+    var result = 0;
+    var shift = 0;
+
+    var b;
+    do {
+      b = encoded.charCodeAt(i++) - 63;
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 0x20);
+
+    numbers.push(result);
+  }
+
+  return numbers;
+};
+
+
+/**
  * Encode one single floating point number and return an encoded string
  *
  * @param {number} num Floating point number that should be encoded.
