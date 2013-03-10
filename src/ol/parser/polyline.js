@@ -114,7 +114,7 @@ ol.parser.polyline.encodeFloats = function(numbers, opt_factor) {
 
   var numbersLength = numbers.length;
   for (var i = 0; i < numbersLength; ++i) {
-    numbers[i] =  Math.round(numbers[i] * factor);
+    numbers[i] = Math.round(numbers[i] * factor);
   }
 
   return ol.parser.polyline.encodeSignedIntegers(numbers);
