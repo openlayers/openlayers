@@ -23,7 +23,7 @@ describe('ol.parser.polyline', function() {
 
     unsignedIntegers = [0, 30, 1, 31, 32, 2, 174];
     encodedUnsignedIntegers = '?]@^_@AmD';
-  })
+  });
 
 
 
@@ -69,7 +69,7 @@ describe('ol.parser.polyline', function() {
     it('returns expected value', function() {
       var encodeFloats = ol.parser.polyline.encodeFloats;
 
-      expect(encodeFloats(smallFloats).toEqual(encodedFloats);
+      expect(encodeFloats(smallFloats)).toEqual(encodedFloats);
       expect(encodeFloats(smallFloats, 1e5)).toEqual(encodedFloats);
       expect(encodeFloats(floats, 1e2)).toEqual(encodedFloats);
     });
@@ -107,7 +107,7 @@ describe('ol.parser.polyline', function() {
 
 
 
- describe('encodeUnsignedIntegers', function() {
+  describe('encodeUnsignedIntegers', function() {
     it('returns expected value', function() {
       var encodeUnsignedIntegers = ol.parser.polyline.encodeUnsignedIntegers;
 
