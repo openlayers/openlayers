@@ -27,6 +27,25 @@ describe('ol.parser.polyline', function() {
   });
 
 
+  describe('encodeDeltas', function() {
+    it('returns expected value', function() {
+      var encodeDeltas = ol.parser.polyline.encodeDeltas;
+
+      expect(encodeDeltas(
+          flat_points.slice(), 2)).toEqual('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
+    });
+  });
+
+  describe('decodeDeltas', function() {
+    it('returns expected value', function() {
+      var decodeDeltas = ol.parser.polyline.decodeDeltas;
+
+      expect(decodeDeltas(
+          '_p~iF~ps|U_ulLnnqC_mqNvxq`@', 2)).toEqual(flat_points);
+    });
+  });
+
+
   var floats = [0.00, 0.15, -0.01, -0.16, 0.16, 0.01];
   var smallFloats = [0.00000, 0.00015, -0.00001, -0.00016, 0.00016, 0.00001];
   var encodedFloats = '?]@^_@A';

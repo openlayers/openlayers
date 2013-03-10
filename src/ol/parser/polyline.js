@@ -72,6 +72,75 @@ ol.parser.polyline.decodeFlatCoordinates = function(encoded, opt_dimension) {
 };
 
 
+
+/**
+ * Encode a list of n-dimensional points and return an encoded string
+ *
+ * Attention: This function will modify the passed array!
+ *
+ * @param {Array.<number>} numbers A list of n-dimensional points.
+ * @param {number} dimension The dimension of the points in the list.
+ * @param {number=} opt_factor The factor by which the numbers will be
+ * multiplied. The remaining decimal places will get rounded away.
+ * @return {string} The encoded string.
+ */
+ol.parser.polyline.encodeDeltas = function(numbers, dimension, opt_factor) {
+  var factor = opt_factor || 1e5;
+  var d;
+
+  var lastNumbers = new Array(dimension);
+  for (d = 0; d < dimension; ++d) {
+    lastNumbers[d] = 0;
+  }
+
+  var numbersLength = numbers.length;
+  for (var i = 0; i < numbersLength;) {
+    for (d = 0; d < dimension; ++d, ++i) {
+      var num = numbers[i];
+      var delta = num - lastNumbers[d];
+      lastNumbers[d] = num;
+
+      numbers[i] = delta;
+    }
+  }
+
+  return ol.parser.polyline.encodeFloats(numbers, factor);
+};
+
+
+/**
+ * Decode a list of n-dimensional points from an encoded string
+ *
+ * @param {string} encoded An encoded string.
+ * @param {number} dimension The dimension of the points in the encoded string.
+ * @param {number=} opt_factor The factor by which the resulting numbers will
+ * be divided.
+ * @return {Array.<number>} A list of n-dimensional points.
+ */
+ol.parser.polyline.decodeDeltas = function(encoded, dimension, opt_factor) {
+  var factor = opt_factor || 1e5;
+  var d;
+
+  var lastNumbers = new Array(dimension);
+  for (d = 0; d < dimension; ++d) {
+    lastNumbers[d] = 0;
+  }
+
+  var numbers = ol.parser.polyline.decodeFloats(encoded, factor);
+
+  var numbersLength = numbers.length;
+  for (var i = 0; i < numbersLength;) {
+    for (d = 0; d < dimension; ++d, ++i) {
+      lastNumbers[d] += numbers[i];
+
+      numbers[i] = lastNumbers[d];
+    }
+  }
+
+  return numbers;
+};
+
+
 /**
  * Encode a list of floating point numbers and return an encoded string
  *
