@@ -27,6 +27,28 @@ describe('ol.parser.polyline', function() {
   });
 
 
+  var signedIntegers = [0, 15, -1, -16, 16, 1];
+  var encodedSignedIntegers = '?]@^_@A';
+
+  describe('encodeSignedIntegers', function() {
+    it('returns expected value', function() {
+      var encodeSignedIntegers = ol.parser.polyline.encodeSignedIntegers;
+
+      expect(encodeSignedIntegers(
+          signedIntegers.slice())).toEqual(encodedSignedIntegers);
+    });
+  });
+
+  describe('decodeSignedIntegers', function() {
+    it('returns expected value', function() {
+      var decodeSignedIntegers = ol.parser.polyline.decodeSignedIntegers;
+
+      expect(decodeSignedIntegers(
+          encodedSignedIntegers)).toEqual(signedIntegers);
+    });
+  });
+
+
   var unsignedIntegers = [0, 30, 1, 31, 32, 2, 174];
   var encodedUnsignedIntegers = '?]@^_@AmD';
 

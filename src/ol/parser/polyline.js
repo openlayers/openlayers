@@ -73,6 +73,50 @@ ol.parser.polyline.decodeFlatCoordinates = function(encoded, opt_dimension) {
 
 
 /**
+ * Encode a list of signed integers and return an encoded string
+ *
+ * Attention: This function will modify the passed array!
+ *
+ * @param {Array.<number>} numbers A list of signed integers.
+ * @return {string} The encoded string.
+ */
+ol.parser.polyline.encodeSignedIntegers = function(numbers) {
+  var numbersLength = numbers.length;
+  for (var i = 0; i < numbersLength; ++i) {
+    var num = numbers[i];
+
+    var signedNum = num << 1;
+    if (num < 0) {
+      signedNum = ~(signedNum);
+    }
+
+    numbers[i] = signedNum;
+  }
+
+  return ol.parser.polyline.encodeUnsignedIntegers(numbers);
+};
+
+
+/**
+ * Decode a list of signed integers from an encoded string
+ *
+ * @param {string} encoded An encoded string.
+ * @return {Array.<number>} A list of signed integers.
+ */
+ol.parser.polyline.decodeSignedIntegers = function(encoded) {
+  var numbers = ol.parser.polyline.decodeUnsignedIntegers(encoded);
+
+  var numbersLength = numbers.length;
+  for (var i = 0; i < numbersLength; ++i) {
+    var num = numbers[i];
+    numbers[i] = (num & 1) ? ~(num >> 1) : (num >> 1);
+  }
+
+  return numbers;
+};
+
+
+/**
  * Encode a list of unsigned integers and return an encoded string
  *
  * @param {Array.<number>} numbers A list of unsigned integers.
