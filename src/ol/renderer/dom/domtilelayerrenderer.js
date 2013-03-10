@@ -90,8 +90,17 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   }
   var z = tileGrid.getZForResolution(view2DState.resolution);
   var tileResolution = tileGrid.getResolution(z);
+  var center = view2DState.center;
+  var extent;
+  if (tileResolution == view2DState.resolution) {
+    center = this.snapCenterToPixel(center, tileResolution, frameState.size);
+    extent = ol.Extent.getForView2DAndSize(
+        center, tileResolution, view2DState.rotation, frameState.size);
+  } else {
+    extent = frameState.extent;
+  }
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
-      frameState.extent, tileResolution);
+      extent, tileResolution);
 
   /** @type {Object.<number, Object.<string, ol.Tile>>} */
   var tilesToDrawByZ = {};
@@ -149,7 +158,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
       tileLayerZ = this.tileLayerZs_[tileLayerZKey];
     } else {
       tileCoordOrigin =
-          tileGrid.getTileCoordForCoordAndZ(view2DState.center, tileLayerZKey);
+          tileGrid.getTileCoordForCoordAndZ(center, tileLayerZKey);
       tileLayerZ = new ol.renderer.dom.TileLayerZ_(tileGrid, tileCoordOrigin);
       newTileLayerZKeys[tileLayerZKey] = true;
       this.tileLayerZs_[tileLayerZKey] = tileLayerZ;
@@ -186,8 +195,8 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
         resolution / view2DState.resolution, 1);
     goog.vec.Mat4.translate(
         transform,
-        (origin.x - view2DState.center.x) / resolution,
-        (view2DState.center.y - origin.y) / resolution,
+        (origin.x - center.x) / resolution,
+        (center.y - origin.y) / resolution,
         0);
     tileLayerZ.setTransform(transform);
     if (tileLayerZKey in newTileLayerZKeys) {
@@ -204,7 +213,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
     } else {
       if (!frameState.viewHints[ol.ViewHint.ANIMATING] &&
           !frameState.viewHints[ol.ViewHint.INTERACTING]) {
-        tileLayerZ.removeTilesOutsideExtent(frameState.extent);
+        tileLayerZ.removeTilesOutsideExtent(extent);
       }
     }
   }
@@ -220,7 +229,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
-  tileSource.useLowResolutionTiles(z, frameState.extent, tileGrid);
+  tileSource.useLowResolutionTiles(z, extent, tileGrid);
   this.scheduleExpireCache(frameState, tileSource);
 
 };
