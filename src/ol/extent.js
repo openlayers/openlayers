@@ -53,21 +53,24 @@ ol.Extent.boundingExtent = function(var_args) {
  * @return {ol.Extent} Extent.
  */
 ol.Extent.getForView2DAndSize = function(center, resolution, rotation, size) {
-  var x = resolution * size.width / 2;
-  var y = resolution * size.height / 2;
-  var corners = [
-    new ol.Coordinate(-x, -y),
-    new ol.Coordinate(-x, y),
-    new ol.Coordinate(x, -y),
-    new ol.Coordinate(x, y)
-  ];
-  var corner;
+  var dx = resolution * size.width / 2;
+  var dy = resolution * size.height / 2;
+  var cosRotation = Math.cos(rotation);
+  var sinRotation = Math.sin(rotation);
+  var xs = [-dx, -dx, dx, dx];
+  var ys = [-dy, dy, -dy, dy];
+  var i, x, y;
   for (i = 0; i < 4; ++i) {
-    corner = corners[i];
-    corner.rotate(rotation);
-    corner.add(center);
+    x = xs[i];
+    y = ys[i];
+    xs[i] = center.x + x * cosRotation - y * sinRotation;
+    ys[i] = center.y + x * sinRotation + y * cosRotation;
   }
-  return ol.Extent.boundingExtent.apply(null, corners);
+  var minX = Math.min.apply(null, xs);
+  var minY = Math.min.apply(null, ys);
+  var maxX = Math.max.apply(null, xs);
+  var maxY = Math.max.apply(null, ys);
+  return new ol.Extent(minX, minY, maxX, maxY);
 };
 
 
