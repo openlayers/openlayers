@@ -6,6 +6,7 @@ goog.provide('ol.renderer.canvas.TileLayer');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.vec.Mat4');
+goog.require('ol.Extent');
 goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
@@ -103,8 +104,17 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   var z = tileGrid.getZForResolution(view2DState.resolution);
   var tileSize = tileGrid.getTileSize(z);
   var tileResolution = tileGrid.getResolution(z);
+  var center = view2DState.center;
+  var extent;
+  if (tileResolution == view2DState.resolution) {
+    center = this.snapCenterToPixel(center, tileResolution, frameState.size);
+    extent = ol.Extent.getForView2DAndSize(
+        center, tileResolution, view2DState.rotation, frameState.size);
+  } else {
+    extent = frameState.extent;
+  }
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
-      frameState.extent, tileResolution);
+      extent, tileResolution);
   var tileRangeWidth = tileRange.getWidth();
   var tileRangeHeight = tileRange.getHeight();
 
@@ -235,7 +245,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
-  tileSource.useLowResolutionTiles(z, frameState.extent, tileGrid);
+  tileSource.useLowResolutionTiles(z, extent, tileGrid);
   this.scheduleExpireCache(frameState, tileSource);
 
   var transform = this.transform_;
@@ -250,8 +260,8 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
       1);
   goog.vec.Mat4.translate(
       transform,
-      (origin.x - view2DState.center.x) / tileResolution,
-      (view2DState.center.y - origin.y) / tileResolution,
+      (origin.x - center.x) / tileResolution,
+      (center.y - origin.y) / tileResolution,
       0);
 
 };
