@@ -97,8 +97,59 @@ describe('ol.Extent', function() {
     });
 
   });
+
+  describe('getForView2DAndSize', function() {
+
+    it('works for a unit square', function() {
+      var extent = ol.Extent.getForView2DAndSize(
+          new ol.Coordinate(0, 0), 1, 0, new ol.Size(1, 1));
+      expect(extent.minX).toBe(-0.5);
+      expect(extent.minY).toBe(-0.5);
+      expect(extent.maxX).toBe(0.5);
+      expect(extent.maxY).toBe(0.5);
+    });
+
+    it('works for center', function() {
+      var extent = ol.Extent.getForView2DAndSize(
+          new ol.Coordinate(5, 10), 1, 0, new ol.Size(1, 1));
+      expect(extent.minX).toBe(4.5);
+      expect(extent.minY).toBe(9.5);
+      expect(extent.maxX).toBe(5.5);
+      expect(extent.maxY).toBe(10.5);
+    });
+
+    it('works for rotation', function() {
+      var extent = ol.Extent.getForView2DAndSize(
+          new ol.Coordinate(0, 0), 1, Math.PI / 4, new ol.Size(1, 1));
+      expect(extent.minX).toRoughlyEqual(-Math.sqrt(0.5), 1e-9);
+      expect(extent.minY).toRoughlyEqual(-Math.sqrt(0.5), 1e-9);
+      expect(extent.maxX).toRoughlyEqual(Math.sqrt(0.5), 1e-9);
+      expect(extent.maxY).toRoughlyEqual(Math.sqrt(0.5), 1e-9);
+    });
+
+    it('works for resolution', function() {
+      var extent = ol.Extent.getForView2DAndSize(
+          new ol.Coordinate(0, 0), 2, 0, new ol.Size(1, 1));
+      expect(extent.minX).toBe(-1);
+      expect(extent.minY).toBe(-1);
+      expect(extent.maxX).toBe(1);
+      expect(extent.maxY).toBe(1);
+    });
+
+    it('works for size', function() {
+      var extent = ol.Extent.getForView2DAndSize(
+          new ol.Coordinate(0, 0), 1, 0, new ol.Size(10, 5));
+      expect(extent.minX).toBe(-5);
+      expect(extent.minY).toBe(-2.5);
+      expect(extent.maxX).toBe(5);
+      expect(extent.maxY).toBe(2.5);
+    });
+
+  });
+
 });
 
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
+goog.require('ol.Size');
 goog.require('ol.projection');
