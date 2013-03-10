@@ -11,14 +11,15 @@ goog.provide('ol.parser.polyline');
 ol.parser.polyline.encodeFlatCoordinates =
     function(flatPoints, opt_dimension) {
   var dimension = opt_dimension || 2;
+  var i;
 
   var lastPoint = new Array(dimension);
-  for (var i = 0; i < dimension; ++i) {
+  for (i = 0; i < dimension; ++i) {
     lastPoint[i] = 0;
   }
 
   var encoded = '', flatPointsLength = flatPoints.length;
-  for (var i = 0; i < flatPointsLength;) {
+  for (i = 0; i < flatPointsLength;) {
     for (var d = 0; d < dimension; ++d) {
       var part = Math.round(flatPoints[i++] * 1e5);
       var delta = part - lastPoint[d];
@@ -42,14 +43,15 @@ ol.parser.polyline.encodeFlatCoordinates =
  */
 ol.parser.polyline.decodeFlatCoordinates = function(encoded, opt_dimension) {
   var dimension = opt_dimension || 2;
+  var i;
 
   var lastPoint = new Array(dimension);
-  for (var i = 0; i < dimension; ++i) {
+  for (i = 0; i < dimension; ++i) {
     lastPoint[i] = 0;
   }
 
   var flatPoints = new Array(), encodedLength = encoded.length;
-  for (var i = 0; i < encodedLength;) {
+  for (i = 0; i < encodedLength;) {
     for (var d = 0; d < dimension; ++d) {
       var result = 0;
       var shift = 0;
