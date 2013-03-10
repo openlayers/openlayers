@@ -13,8 +13,9 @@ ol.parser.polyline.encodeFlatCoordinates =
   var dimension = opt_dimension || 2;
 
   var last_point = new Array(dimension);
-  for (var i = 0; i < dimension; ++i)
+  for (var i = 0; i < dimension; ++i) {
     last_point[i] = 0;
+  }
 
   var encoded = '', flat_points_length = flat_points.length;
   for (var i = 0; i < flat_points_length;) {
@@ -43,8 +44,9 @@ ol.parser.polyline.decodeFlatCoordinates = function(encoded, opt_dimension) {
   var dimension = opt_dimension || 2;
 
   var last_point = new Array(dimension);
-  for (var i = 0; i < dimension; ++i)
+  for (var i = 0; i < dimension; ++i) {
     last_point[i] = 0;
+  }
 
   var flat_points = new Array(), encoded_length = encoded.length;
   for (var i = 0; i < encoded_length;) {
@@ -103,8 +105,9 @@ ol.parser.polyline.decodeFloat = function(encoded, opt_factor) {
  */
 ol.parser.polyline.encodeSignedInteger = function(num) {
   var sgn_num = num << 1;
-  if (num < 0)
+  if (num < 0) {
     sgn_num = ~(sgn_num);
+  }
 
   return ol.parser.polyline.encodeUnsignedInteger(sgn_num);
 };
