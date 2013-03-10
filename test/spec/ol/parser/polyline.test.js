@@ -2,9 +2,29 @@ goog.provide('ol.test.parser.polyline');
 
 describe('ol.parser.polyline', function() {
 
-  var flatPoints = [38.50000, -120.20000,
-                    40.70000, -120.95000,
-                    43.25200, -126.45300];
+  var flatPoints;
+  var floats, smallFloats, encodedFloats;
+  var signedIntegers, encodedSignedIntegers;
+  var unsignedIntegers, encodedUnsignedIntegers;
+
+  // Reset testing data
+  beforeEach(function() {
+    flatPoints = [38.50000, -120.20000,
+                  40.70000, -120.95000,
+                  43.25200, -126.45300];
+
+    floats = [0.00, 0.15, -0.01, -0.16, 0.16, 0.01];
+    smallFloats = [0.00000, 0.00015, -0.00001, -0.00016, 0.00016, 0.00001];
+    encodedFloats = '?]@^_@A';
+
+    signedIntegers = [0, 15, -1, -16, 16, 1];
+    encodedSignedIntegers = '?]@^_@A';
+
+    unsignedIntegers = [0, 30, 1, 31, 32, 2, 174];
+    encodedUnsignedIntegers = '?]@^_@AmD';
+  })
+
+
 
   describe('encodeFlatCoordinates', function() {
     it('returns expected value', function() {
@@ -12,7 +32,7 @@ describe('ol.parser.polyline', function() {
 
       // from the "Encoded Polyline Algorithm Format" page at Google
       expect(encodeFlatCoordinates(
-          flatPoints.slice())).toEqual('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
+          flatPoints).toEqual('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
     });
   });
 
@@ -27,12 +47,13 @@ describe('ol.parser.polyline', function() {
   });
 
 
+
   describe('encodeDeltas', function() {
     it('returns expected value', function() {
       var encodeDeltas = ol.parser.polyline.encodeDeltas;
 
       expect(encodeDeltas(
-          flatPoints.slice(), 2)).toEqual('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
+          flatPoints, 2)).toEqual('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
     });
   });
 
@@ -46,17 +67,14 @@ describe('ol.parser.polyline', function() {
   });
 
 
-  var floats = [0.00, 0.15, -0.01, -0.16, 0.16, 0.01];
-  var smallFloats = [0.00000, 0.00015, -0.00001, -0.00016, 0.00016, 0.00001];
-  var encodedFloats = '?]@^_@A';
 
   describe('encodeFloats', function() {
     it('returns expected value', function() {
       var encodeFloats = ol.parser.polyline.encodeFloats;
 
-      expect(encodeFloats(smallFloats.slice())).toEqual(encodedFloats);
-      expect(encodeFloats(smallFloats.slice(), 1e5)).toEqual(encodedFloats);
-      expect(encodeFloats(floats.slice(), 1e2)).toEqual(encodedFloats);
+      expect(encodeFloats(smallFloats).toEqual(encodedFloats);
+      expect(encodeFloats(smallFloats, 1e5)).toEqual(encodedFloats);
+      expect(encodeFloats(floats, 1e2)).toEqual(encodedFloats);
     });
   });
 
@@ -71,15 +89,13 @@ describe('ol.parser.polyline', function() {
   });
 
 
-  var signedIntegers = [0, 15, -1, -16, 16, 1];
-  var encodedSignedIntegers = '?]@^_@A';
 
   describe('encodeSignedIntegers', function() {
     it('returns expected value', function() {
       var encodeSignedIntegers = ol.parser.polyline.encodeSignedIntegers;
 
       expect(encodeSignedIntegers(
-          signedIntegers.slice())).toEqual(encodedSignedIntegers);
+          signedIntegers).toEqual(encodedSignedIntegers);
     });
   });
 
@@ -93,10 +109,8 @@ describe('ol.parser.polyline', function() {
   });
 
 
-  var unsignedIntegers = [0, 30, 1, 31, 32, 2, 174];
-  var encodedUnsignedIntegers = '?]@^_@AmD';
 
-  describe('encodeUnsignedIntegers', function() {
+ describe('encodeUnsignedIntegers', function() {
     it('returns expected value', function() {
       var encodeUnsignedIntegers = ol.parser.polyline.encodeUnsignedIntegers;
 
@@ -113,6 +127,7 @@ describe('ol.parser.polyline', function() {
           encodedUnsignedIntegers)).toEqual(unsignedIntegers);
     });
   });
+
 
 
   describe('encodeFloat', function() {
@@ -161,6 +176,8 @@ describe('ol.parser.polyline', function() {
     });
   });
 
+
+
   describe('encodeSignedInteger', function() {
     it('returns expected value', function() {
       var encodeSignedInteger = ol.parser.polyline.encodeSignedInteger;
@@ -196,6 +213,8 @@ describe('ol.parser.polyline', function() {
       expect(decodeSignedInteger('___@')).toEqual(16 * 32 * 32);
     });
   });
+
+
 
   describe('encodeUnsignedInteger', function() {
     it('returns expected value', function() {
