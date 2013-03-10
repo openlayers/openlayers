@@ -2,9 +2,9 @@ goog.provide('ol.test.parser.polyline');
 
 describe('ol.parser.polyline', function() {
 
-  var flat_points = [38.50000, -120.20000,
-                     40.70000, -120.95000,
-                     43.25200, -126.45300];
+  var flatPoints = [38.50000, -120.20000,
+                    40.70000, -120.95000,
+                    43.25200, -126.45300];
 
   describe('encodeFlatCoordinates', function() {
     it('returns expected value', function() {
@@ -12,7 +12,7 @@ describe('ol.parser.polyline', function() {
 
       // from the "Encoded Polyline Algorithm Format" page at Google
       expect(encodeFlatCoordinates(
-          flat_points.slice())).toEqual('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
+          flatPoints.slice())).toEqual('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
     });
   });
 
@@ -22,7 +22,7 @@ describe('ol.parser.polyline', function() {
 
       // from the "Encoded Polyline Algorithm Format" page at Google
       expect(decodeFlatCoordinates(
-          '_p~iF~ps|U_ulLnnqC_mqNvxq`@')).toEqual(flat_points);
+          '_p~iF~ps|U_ulLnnqC_mqNvxq`@')).toEqual(flatPoints);
     });
   });
 
@@ -32,7 +32,7 @@ describe('ol.parser.polyline', function() {
       var encodeDeltas = ol.parser.polyline.encodeDeltas;
 
       expect(encodeDeltas(
-          flat_points.slice(), 2)).toEqual('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
+          flatPoints.slice(), 2)).toEqual('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
     });
   });
 
@@ -41,7 +41,7 @@ describe('ol.parser.polyline', function() {
       var decodeDeltas = ol.parser.polyline.decodeDeltas;
 
       expect(decodeDeltas(
-          '_p~iF~ps|U_ulLnnqC_mqNvxq`@', 2)).toEqual(flat_points);
+          '_p~iF~ps|U_ulLnnqC_mqNvxq`@', 2)).toEqual(flatPoints);
     });
   });
 
