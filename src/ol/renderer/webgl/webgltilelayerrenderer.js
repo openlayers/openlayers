@@ -282,7 +282,6 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
 
   var view2DState = frameState.view2DState;
   var projection = view2DState.projection;
-  var center = view2DState.center;
 
   var tileLayer = this.getTileLayer();
   var tileSource = tileLayer.getTileSource();
@@ -293,8 +292,17 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   }
   var z = tileGrid.getZForResolution(view2DState.resolution);
   var tileResolution = tileGrid.getResolution(z);
+  var center = view2DState.center;
+  var extent;
+  if (tileResolution == view2DState.resolution) {
+    center = this.snapCenterToPixel(center, tileResolution, frameState.size);
+    extent = ol.Extent.getForView2DAndSize(
+        center, tileResolution, view2DState.rotation, frameState.size);
+  } else {
+    extent = frameState.extent;
+  }
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
-      frameState.extent, tileResolution);
+      extent, tileResolution);
 
   var framebufferExtent;
   if (!goog.isNull(this.renderedTileRange_) &&
@@ -463,14 +471,14 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
-  tileSource.useLowResolutionTiles(z, frameState.extent, tileGrid);
+  tileSource.useLowResolutionTiles(z, extent, tileGrid);
   this.scheduleExpireCache(frameState, tileSource);
 
   goog.vec.Mat4.makeIdentity(this.texCoordMatrix_);
   goog.vec.Mat4.translate(this.texCoordMatrix_,
-      (view2DState.center.x - framebufferExtent.minX) /
+      (center.x - framebufferExtent.minX) /
           (framebufferExtent.maxX - framebufferExtent.minX),
-      (view2DState.center.y - framebufferExtent.minY) /
+      (center.y - framebufferExtent.minY) /
           (framebufferExtent.maxY - framebufferExtent.minY),
       0);
   goog.vec.Mat4.rotateZ(this.texCoordMatrix_, view2DState.rotation);
