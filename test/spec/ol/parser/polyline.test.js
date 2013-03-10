@@ -2,7 +2,7 @@ goog.provide('ol.test.parser.polyline');
 
 describe('ol.parser.polyline', function() {
 
-  var flatPoints;
+  var flatPoints, encodedFlatPoints;
   var floats, smallFloats, encodedFloats;
   var signedIntegers, encodedSignedIntegers;
   var unsignedIntegers, encodedUnsignedIntegers;
@@ -12,6 +12,7 @@ describe('ol.parser.polyline', function() {
     flatPoints = [38.50000, -120.20000,
                   40.70000, -120.95000,
                   43.25200, -126.45300];
+    encodedFlatPoints = '_p~iF~ps|U_ulLnnqC_mqNvxq`@';
 
     floats = [0.00, 0.15, -0.01, -0.16, 0.16, 0.01];
     smallFloats = [0.00000, 0.00015, -0.00001, -0.00016, 0.00016, 0.00001];
@@ -31,8 +32,7 @@ describe('ol.parser.polyline', function() {
       var encodeFlatCoordinates = ol.parser.polyline.encodeFlatCoordinates;
 
       // from the "Encoded Polyline Algorithm Format" page at Google
-      expect(encodeFlatCoordinates(
-          flatPoints).toEqual('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
+      expect(encodeFlatCoordinates(flatPoints).toEqual(encodedFlatPoints);
     });
   });
 
@@ -41,8 +41,7 @@ describe('ol.parser.polyline', function() {
       var decodeFlatCoordinates = ol.parser.polyline.decodeFlatCoordinates;
 
       // from the "Encoded Polyline Algorithm Format" page at Google
-      expect(decodeFlatCoordinates(
-          '_p~iF~ps|U_ulLnnqC_mqNvxq`@')).toEqual(flatPoints);
+      expect(decodeFlatCoordinates(encodedFlatPoints)).toEqual(flatPoints);
     });
   });
 
@@ -52,8 +51,7 @@ describe('ol.parser.polyline', function() {
     it('returns expected value', function() {
       var encodeDeltas = ol.parser.polyline.encodeDeltas;
 
-      expect(encodeDeltas(
-          flatPoints, 2)).toEqual('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
+      expect(encodeDeltas(flatPoints, 2)).toEqual(encodedFlatPoints);
     });
   });
 
@@ -61,8 +59,7 @@ describe('ol.parser.polyline', function() {
     it('returns expected value', function() {
       var decodeDeltas = ol.parser.polyline.decodeDeltas;
 
-      expect(decodeDeltas(
-          '_p~iF~ps|U_ulLnnqC_mqNvxq`@', 2)).toEqual(flatPoints);
+      expect(decodeDeltas(encodedFlatPoints, 2)).toEqual(flatPoints);
     });
   });
 
