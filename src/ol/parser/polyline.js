@@ -4,6 +4,8 @@ goog.provide('ol.parser.polyline');
 /**
  * Encode a list of coordinates in a flat array and return an encoded string
  *
+ * Attention: This function will modify the passed array!
+ *
  * @param {Array.<number>} flatPoints A flat array of coordinates.
  * @param {number=} opt_dimension The dimension of the coordinates in the array.
  * @return {string} The encoded string.
@@ -11,25 +13,7 @@ goog.provide('ol.parser.polyline');
 ol.parser.polyline.encodeFlatCoordinates =
     function(flatPoints, opt_dimension) {
   var dimension = opt_dimension || 2;
-  var i;
-
-  var lastPoint = new Array(dimension);
-  for (i = 0; i < dimension; ++i) {
-    lastPoint[i] = 0;
-  }
-
-  var encoded = '', flatPointsLength = flatPoints.length;
-  for (i = 0; i < flatPointsLength;) {
-    for (var d = 0; d < dimension; ++d) {
-      var part = Math.round(flatPoints[i++] * 1e5);
-      var delta = part - lastPoint[d];
-      lastPoint[d] = part;
-
-      encoded += ol.parser.polyline.encodeSignedInteger(delta);
-    }
-  }
-
-  return encoded;
+  return ol.parser.polyline.encodeDeltas(flatPoints, dimension);
 };
 
 
@@ -43,34 +27,8 @@ ol.parser.polyline.encodeFlatCoordinates =
  */
 ol.parser.polyline.decodeFlatCoordinates = function(encoded, opt_dimension) {
   var dimension = opt_dimension || 2;
-  var i;
-
-  var lastPoint = new Array(dimension);
-  for (i = 0; i < dimension; ++i) {
-    lastPoint[i] = 0;
-  }
-
-  var flatPoints = new Array(), encodedLength = encoded.length;
-  for (i = 0; i < encodedLength;) {
-    for (var d = 0; d < dimension; ++d) {
-      var result = 0;
-      var shift = 0;
-
-      var b;
-      do {
-        b = encoded.charCodeAt(i++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-
-      lastPoint[d] += (result & 1) ? ~(result >> 1) : (result >> 1);
-      flatPoints.push(lastPoint[d] / 1e5);
-    }
-  }
-
-  return flatPoints;
+  return ol.parser.polyline.decodeDeltas(encoded, dimension);
 };
-
 
 
 /**

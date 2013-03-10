@@ -12,7 +12,7 @@ describe('ol.parser.polyline', function() {
 
       // from the "Encoded Polyline Algorithm Format" page at Google
       expect(encodeFlatCoordinates(
-          flat_points)).toEqual('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
+          flat_points.slice())).toEqual('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
     });
   });
 
