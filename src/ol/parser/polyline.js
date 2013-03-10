@@ -4,25 +4,25 @@ goog.provide('ol.parser.polyline');
 /**
  * Encode a list of coordinates in a flat array and return an encoded string
  *
- * @param {Array.<number>} flat_points A flat array of coordinates.
+ * @param {Array.<number>} flatPoints A flat array of coordinates.
  * @param {number=} opt_dimension The dimension of the coordinates in the array.
  * @return {string} The encoded string.
  */
 ol.parser.polyline.encodeFlatCoordinates =
-    function(flat_points, opt_dimension) {
+    function(flatPoints, opt_dimension) {
   var dimension = opt_dimension || 2;
 
-  var last_point = new Array(dimension);
+  var lastPoint = new Array(dimension);
   for (var i = 0; i < dimension; ++i) {
-    last_point[i] = 0;
+    lastPoint[i] = 0;
   }
 
-  var encoded = '', flat_points_length = flat_points.length;
-  for (var i = 0; i < flat_points_length;) {
+  var encoded = '', flatPointsLength = flatPoints.length;
+  for (var i = 0; i < flatPointsLength;) {
     for (var d = 0; d < dimension; ++d) {
-      var part = Math.round(flat_points[i++] * 1e5);
-      var delta = part - last_point[d];
-      last_point[d] = part;
+      var part = Math.round(flatPoints[i++] * 1e5);
+      var delta = part - lastPoint[d];
+      lastPoint[d] = part;
 
       encoded += ol.parser.polyline.encodeSignedInteger(delta);
     }
@@ -43,13 +43,13 @@ ol.parser.polyline.encodeFlatCoordinates =
 ol.parser.polyline.decodeFlatCoordinates = function(encoded, opt_dimension) {
   var dimension = opt_dimension || 2;
 
-  var last_point = new Array(dimension);
+  var lastPoint = new Array(dimension);
   for (var i = 0; i < dimension; ++i) {
-    last_point[i] = 0;
+    lastPoint[i] = 0;
   }
 
-  var flat_points = new Array(), encoded_length = encoded.length;
-  for (var i = 0; i < encoded_length;) {
+  var flatPoints = new Array(), encodedLength = encoded.length;
+  for (var i = 0; i < encodedLength;) {
     for (var d = 0; d < dimension; ++d) {
       var result = 0;
       var shift = 0;
@@ -61,12 +61,12 @@ ol.parser.polyline.decodeFlatCoordinates = function(encoded, opt_dimension) {
         shift += 5;
       } while (b >= 0x20);
 
-      last_point[d] += (result & 1) ? ~(result >> 1) : (result >> 1);
-      flat_points.push(last_point[d] / 1e5);
+      lastPoint[d] += (result & 1) ? ~(result >> 1) : (result >> 1);
+      flatPoints.push(lastPoint[d] / 1e5);
     }
   }
 
-  return flat_points;
+  return flatPoints;
 };
 
 
@@ -104,12 +104,12 @@ ol.parser.polyline.decodeFloat = function(encoded, opt_factor) {
  * @return {string} The encoded string.
  */
 ol.parser.polyline.encodeSignedInteger = function(num) {
-  var sgn_num = num << 1;
+  var signedNum = num << 1;
   if (num < 0) {
-    sgn_num = ~(sgn_num);
+    signedNum = ~(signedNum);
   }
 
-  return ol.parser.polyline.encodeUnsignedInteger(sgn_num);
+  return ol.parser.polyline.encodeUnsignedInteger(signedNum);
 };
 
 
@@ -132,15 +132,15 @@ ol.parser.polyline.decodeSignedInteger = function(encoded) {
  * @return {string} The encoded string.
  */
 ol.parser.polyline.encodeUnsignedInteger = function(num) {
-  var value, encodeString = '';
+  var value, encoded = '';
   while (num >= 0x20) {
     value = (0x20 | (num & 0x1f)) + 63;
-    encodeString += (String.fromCharCode(value));
+    encoded += (String.fromCharCode(value));
     num >>= 5;
   }
   value = num + 63;
-  encodeString += (String.fromCharCode(value));
-  return encodeString;
+  encoded += (String.fromCharCode(value));
+  return encoded;
 };
 
 
