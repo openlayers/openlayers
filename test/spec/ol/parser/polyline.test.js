@@ -2,6 +2,28 @@ goog.provide('ol.test.parser.polyline');
 
 describe('ol.parser.polyline', function() {
 
+  var flat_points = [38.50000, -120.20000,
+                     40.70000, -120.95000,
+                     43.25200, -126.45300];
+
+  describe('encodeFlatCoordinates', function() {
+    it('returns expected value', function() {
+      var encodeFlatCoordinates = ol.parser.polyline.encodeFlatCoordinates;
+
+      expect(encodeFlatCoordinates(
+          flat_points)).toEqual('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
+    });
+  });
+
+  describe('decodeFlatCoordinates', function() {
+    it('returns expected value', function() {
+      var decodeFlatCoordinates = ol.parser.polyline.decodeFlatCoordinates;
+
+      expect(decodeFlatCoordinates(
+          '_p~iF~ps|U_ulLnnqC_mqNvxq`@')).toEqual(flat_points);
+    });
+  });
+
   describe('encodeFloat', function() {
     it('returns expected value', function() {
       var encodeFloat = ol.parser.polyline.encodeFloat;
