@@ -7,8 +7,7 @@ describe('ol.parser.polyline', function() {
   var signedIntegers, encodedSignedIntegers;
   var unsignedIntegers, encodedUnsignedIntegers;
 
-  // Reset testing data
-  beforeEach(function() {
+  function resetTestingData() {
     flatPoints = [38.50000, -120.20000,
                   40.70000, -120.95000,
                   43.25200, -126.45300];
@@ -23,7 +22,10 @@ describe('ol.parser.polyline', function() {
 
     unsignedIntegers = [0, 30, 1, 31, 32, 2, 174];
     encodedUnsignedIntegers = '?]@^_@AmD';
-  });
+  }
+
+  // Reset testing data
+  beforeEach(resetTestingData);
 
 
 
@@ -70,7 +72,10 @@ describe('ol.parser.polyline', function() {
       var encodeFloats = ol.parser.polyline.encodeFloats;
 
       expect(encodeFloats(smallFloats)).toEqual(encodedFloats);
+
+      resetTestingData();
       expect(encodeFloats(smallFloats, 1e5)).toEqual(encodedFloats);
+
       expect(encodeFloats(floats, 1e2)).toEqual(encodedFloats);
     });
   });
