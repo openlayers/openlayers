@@ -3,6 +3,7 @@ goog.provide('ol.renderer.Layer');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.Attribution');
+goog.require('ol.Coordinate');
 goog.require('ol.FrameState');
 goog.require('ol.Image');
 goog.require('ol.ImageState');
@@ -298,4 +299,19 @@ ol.renderer.Layer.prototype.createGetTileIfLoadedFunction =
     var tile = tileSource.getTile(tileCoord, tileGrid, projection);
     return isLoadedFunction(tile) ? tile : null;
   };
+};
+
+
+/**
+ * @param {ol.Coordinate} center Center.
+ * @param {number} resolution Resolution.
+ * @param {ol.Size} size Size.
+ * @return {ol.Coordinate} Snapped center.
+ * @protected
+ */
+ol.renderer.Layer.prototype.snapCenterToPixel =
+    function(center, resolution, size) {
+  return new ol.Coordinate(
+      resolution * (Math.round(center.x / resolution) + (size.width % 2) / 2),
+      resolution * (Math.round(center.y / resolution) + (size.height % 2) / 2));
 };
