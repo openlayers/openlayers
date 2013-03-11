@@ -1,5 +1,3 @@
-goog.require('ol.parser.ogc.WMSCapabilities');
-
 var parser = new ol.parser.ogc.WMSCapabilities(), result;
 var url = 'data/ogcsample.xml';
 

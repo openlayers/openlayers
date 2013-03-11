@@ -1,0 +1,2 @@
+@exportProperty ol.MapBrowserEvent.prototype.getCoordinate
+

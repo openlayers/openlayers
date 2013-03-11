@@ -1,0 +1,2 @@
+@exportSymbol ol.parser.ogc.WMSCapabilities
+@exportProperty ol.parser.ogc.WMSCapabilities.prototype.read
