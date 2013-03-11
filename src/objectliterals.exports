@@ -70,6 +70,11 @@
 @exportObjectLiteralProperty ol.control.ZoomOptions.map ol.Map|undefined
 @exportObjectLiteralProperty ol.control.ZoomOptions.target Element|undefined
 
+@exportObjectLiteral ol.control.ZoomSliderOptions
+@exportObjectLiteralProperty ol.control.ZoomSliderOptions.map ol.Map|undefined
+@exportObjectLiteralProperty ol.control.ZoomSliderOptions.maxResolution number|undefined
+@exportObjectLiteralProperty ol.control.ZoomSliderOptions.minResolution number|undefined
+
 @exportObjectLiteral ol.interaction.DefaultOptions
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.doubleClickZoom boolean|undefined
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.dragPan boolean|undefined
