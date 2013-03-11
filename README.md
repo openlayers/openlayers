@@ -77,13 +77,33 @@ Then:
 
     $ ./build.py lint
 
-## Run the precommit hook before pushing a commit:
+## Run the check hook before pushing a commit
 
-First, install the latest version of [JSDoc3](https://github.com/jsdoc3/jsdoc). Then:
+    $ ./build.py check
 
-    $ ./build.py precommit
+The check hook does a few quick tests to make sure that the basics still work.  This includes:
 
-This makes sure that your commit won't break the build. It also runs JSDoc3 to make sure that there are no invalid API doc directives. 
+ * Running the linter
+ * Building the library
+ * Running the tests
+
+
+## Continuous integration tests
+
+When you submit a pull request the [Travis continuous integration
+server](https://travis-ci.org/) will run a full suite of tests, including
+building all versions of the library and checking that all of the examples
+work.  You will receive an email with the results, and the status will be
+displayed in the pull request.  If you want to run the integration tests
+locally, then you'll need to make sure that Plovr is running if it isn't
+already, and then start the tests:
+
+    $ ./build.py integration-test
+
+Running the full suite of integration tests currently takes 5-10 minutes.
+
+This makes sure that your commit won't break the build. It also runs JSDoc3 to
+make sure that there are no invalid API doc directives.
 
 ## Add examples
 

@@ -4,7 +4,7 @@ before_install:
 
 before_script:
   - "./build.py plovr"
-  - "./build.py serve-precommit &"
+  - "./build.py serve-integration-test &"
   - "sleep 3"
 
-script: "./build.py JSDOC=jsdoc/jsdoc precommit"
+script: "./build.py JSDOC=jsdoc/jsdoc integration-test"
