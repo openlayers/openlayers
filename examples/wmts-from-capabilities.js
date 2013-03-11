@@ -12,10 +12,6 @@ goog.require('ol.source.SingleImageWMS');
 goog.require('ol.source.WMTS');
 
 
-Proj4js['defs']['EPSG:21781'] =
-    '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
-    '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
-    '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs';
 var projection = ol.projection.configureProj4jsProjection({
   code: 'EPSG:21781',
   extent: new ol.Extent(485869.5728, 76443.1884, 837076.5648, 299941.7864)
