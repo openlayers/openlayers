@@ -113,8 +113,6 @@ ol.source.WMTS = function(wmtsOptions) {
     };
   }
 
-  // TODO: update createFromTileUrlFunctions so that if
-  // tileUrlFunctions.length == 1, it returns the only tileUrlFunction
   var tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
       goog.array.map(urls, function(url) {
         if (goog.isDef(kvpParams)) {
