@@ -476,7 +476,7 @@ else:
 
 @target('fixme', phony=True)
 def find_fixme(t):
-    regex = re.compile(".(FIXME|TODO).")
+    regex = re.compile('FIXME|TODO')
     matches = dict()
     totalcount = 0
     for filename in SRC:
@@ -485,16 +485,16 @@ def find_fixme(t):
             if regex.search(line):
                 if (filename not in matches):
                     matches[filename] = list()
-                matches[filename].append("#" + str(lineno + 1).ljust(10) + line.strip())
+                matches[filename].append('#%-10d %s' % (lineno + 1, line.strip()))
                 totalcount += 1
         f.close()
 
     for filename in matches:
-        print "  ", filename, "has", len(matches[filename]), "matches:"
+        print '  %s has %d matches:' % (filename, len(matches[filename]))
         for match in matches[filename]:
-            print "    ", match
+            print '    %s' % (match,)
         print
-    print "A total number of", totalcount, "TODO/FIXME was found"
+    print 'A total of %d TODO/FIXME(s) were found' % (totalcount,)
 
 
 @target('reallyclean')
