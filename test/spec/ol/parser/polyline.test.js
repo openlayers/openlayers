@@ -32,7 +32,7 @@ describe('ol.parser.polyline', function() {
       var encodeFlatCoordinates = ol.parser.polyline.encodeFlatCoordinates;
 
       // from the "Encoded Polyline Algorithm Format" page at Google
-      expect(encodeFlatCoordinates(flatPoints).toEqual(encodedFlatPoints);
+      expect(encodeFlatCoordinates(flatPoints)).toEqual(encodedFlatPoints);
     });
   });
 
@@ -92,7 +92,7 @@ describe('ol.parser.polyline', function() {
       var encodeSignedIntegers = ol.parser.polyline.encodeSignedIntegers;
 
       expect(encodeSignedIntegers(
-          signedIntegers).toEqual(encodedSignedIntegers);
+          signedIntegers)).toEqual(encodedSignedIntegers);
     });
   });
 
