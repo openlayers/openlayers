@@ -220,12 +220,9 @@ goog.inherits(ol.test.source.MockTileSource, ol.source.TileSource);
  * @inheritDoc
  */
 ol.test.source.MockTileSource.prototype.getTile = function(tileCoord) {
-  var tile = new ol.Tile(tileCoord);
   var key = tileCoord.toString();
-  if (this.loaded_[key]) {
-    tile.state = ol.TileState.LOADED;
-  }
-  return tile;
+  var tileState = this.loaded_[key] ? ol.TileState.LOADED : ol.TileState.IDLE;
+  return new ol.Tile(tileCoord, tileState);
 };
 
 
