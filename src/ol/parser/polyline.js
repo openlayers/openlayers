@@ -213,19 +213,22 @@ ol.parser.polyline.encodeUnsignedIntegers = function(numbers) {
 ol.parser.polyline.decodeUnsignedIntegers = function(encoded) {
   var numbers = new Array();
 
+  var current = 0;
+  var shift = 0;
+
   var encodedLength = encoded.length;
-  for (var i = 0; i < encodedLength;) {
-    var result = 0;
-    var shift = 0;
+  for (var i = 0; i < encodedLength; ++i) {
+    var b = encoded.charCodeAt(i) - 63;
 
-    var b;
-    do {
-      b = encoded.charCodeAt(i++) - 63;
-      result |= (b & 0x1f) << shift;
+    current |= (b & 0x1f) << shift;
+
+    if (b < 0x20) {
+      numbers.push(current);
+      current = 0;
+      shift = 0;
+    } else {
       shift += 5;
-    } while (b >= 0x20);
-
-    numbers.push(result);
+    }
   }
 
   return numbers;
@@ -316,12 +319,17 @@ ol.parser.polyline.decodeUnsignedInteger = function(encoded) {
   var result = 0;
   var shift = 0;
 
-  var b, i = 0;
-  do {
-    b = encoded.charCodeAt(i++) - 63;
+  var encodedLength = encoded.length;
+  for (var i = 0; i < encodedLength; ++i) {
+    var b = encoded.charCodeAt(i) - 63;
+
     result |= (b & 0x1f) << shift;
+
+    if (b < 0x20)
+      break;
+
     shift += 5;
-  } while (b >= 0x20);
+  }
 
   return result;
 };
