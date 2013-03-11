@@ -136,6 +136,9 @@
 @exportObjectLiteralProperty ol.source.StaticImageOptions.projection ol.ProjectionLike
 @exportObjectLiteralProperty ol.source.StaticImageOptions.url string|undefined
 
+@exportObjectLiteral ol.source.TileJSONOptions
+@exportObjectLiteralProperty ol.source.TileJSONOptions.uri string
+
 @exportObjectLiteral ol.source.TiledWMSOptions
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.attributions Array.<ol.Attribution>|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.params Object

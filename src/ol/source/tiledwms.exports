@@ -1,1 +1,1 @@
-@exportSymbol ol.source.TiledWMS
+@exportClass ol.source.TiledWMS ol.source.TiledWMSOptions

@@ -1,1 +1,1 @@
-@exportSymbol ol.source.TileJSON
+@exportClass ol.source.TileJSON ol.source.TileJSONOptions
