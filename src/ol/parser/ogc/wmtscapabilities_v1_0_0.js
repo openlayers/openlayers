@@ -67,7 +67,7 @@ ol.parser.ogc.WMTSCapabilities_v1_0_0 = function() {
       },
       'TileMatrix': function(node, obj) {
         var tileMatrix = {
-          'supportedCRS': obj.supportedCRS
+          'supportedCRS': obj['supportedCRS']
         };
         this.readChildNodes(node, tileMatrix);
         obj['matrixIds'].push(tileMatrix);
