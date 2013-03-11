@@ -1,7 +1,7 @@
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
+goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.parser.ogc.WMTSCapabilities');
@@ -28,14 +28,13 @@ xhr.onload = function() {
     capabilities = parser.read(xhr.responseXML);
     var wmtsOptions = ol.source.WMTS.optionsFromCapabilities(
         capabilities, 'ch.swisstopo.pixelkarte-farbe');
-    wmtsOptions.crossOrigin = null;
     map = new ol.Map({
       layers: [
         new ol.layer.TileLayer({
           source: new ol.source.WMTS(wmtsOptions)
         })
       ],
-      renderer: ol.RendererHint.CANVAS,
+      renderers: ol.RendererHints.createFromQueryData(),
       target: 'map',
       view: new ol.View2D({
         center: projection.getExtent().getCenter(),
