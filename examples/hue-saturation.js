@@ -3,11 +3,15 @@ goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
-goog.require('ol.source.MapQuestOpenAerial');
+goog.require('ol.projection');
+goog.require('ol.source.BingMaps');
 
 
 var layer = new ol.layer.TileLayer({
-  source: new ol.source.MapQuestOpenAerial()
+  source: new ol.source.BingMaps({
+    key: 'AgtFlPYDnymLEe9zJ5PCkghbNiFZE9aAtTy3mPaEnEBXqLHtFuTcKoZ-miMC3w7R',
+    style: 'Aerial'
+  })
 });
 
 var map = new ol.Map({
@@ -15,8 +19,9 @@ var map = new ol.Map({
   renderer: ol.RendererHint.WEBGL,
   target: 'map',
   view: new ol.View2D({
-    center: new ol.Coordinate(0, 0),
-    zoom: 2
+    center: ol.projection.transform(
+        new ol.Coordinate(-9.375, 51.483333), 'EPSG:4326', 'EPSG:3857'),
+    zoom: 15
   })
 });
 

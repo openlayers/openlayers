@@ -4,7 +4,6 @@
 goog.provide('ol.View2D');
 goog.provide('ol.View2DProperty');
 
-goog.require('goog.fx.easing');
 goog.require('ol.Constraints');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
@@ -16,6 +15,7 @@ goog.require('ol.RotationConstraint');
 goog.require('ol.Size');
 goog.require('ol.View');
 goog.require('ol.animation');
+goog.require('ol.easing');
 goog.require('ol.projection');
 
 
@@ -257,6 +257,28 @@ goog.exportProperty(
 
 /**
  * @param {ol.Map} map Map.
+ * @param {ol.Coordinate} delta Delta.
+ * @param {number=} opt_duration Duration.
+ */
+ol.View2D.prototype.pan = function(map, delta, opt_duration) {
+  var currentCenter = this.getCenter();
+  if (goog.isDef(currentCenter)) {
+    if (goog.isDef(opt_duration)) {
+      map.requestRenderFrame();
+      map.addPreRenderFunction(ol.animation.pan({
+        source: currentCenter,
+        duration: opt_duration,
+        easing: ol.easing.linear
+      }));
+    }
+    this.setCenter(new ol.Coordinate(
+        currentCenter.x + delta.x, currentCenter.y + delta.y));
+  }
+};
+
+
+/**
+ * @param {ol.Map} map Map.
  * @param {number|undefined} rotation Rotation.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
@@ -285,13 +307,13 @@ ol.View2D.prototype.rotateWithoutConstraints =
       map.addPreRenderFunction(ol.animation.rotate({
         rotation: currentRotation,
         duration: opt_duration,
-        easing: goog.fx.easing.easeOut
+        easing: ol.easing.easeOut
       }));
       if (goog.isDef(opt_anchor)) {
         map.addPreRenderFunction(ol.animation.pan({
           source: currentCenter,
           duration: opt_duration,
-          easing: goog.fx.easing.easeOut
+          easing: ol.easing.easeOut
         }));
       }
     }
@@ -359,13 +381,13 @@ ol.View2D.prototype.zoomWithoutConstraints =
       map.addPreRenderFunction(ol.animation.zoom({
         resolution: currentResolution,
         duration: opt_duration,
-        easing: goog.fx.easing.easeOut
+        easing: ol.easing.easeOut
       }));
       if (goog.isDef(opt_anchor)) {
         map.addPreRenderFunction(ol.animation.pan({
           source: currentCenter,
           duration: opt_duration,
-          easing: goog.fx.easing.easeOut
+          easing: ol.easing.easeOut
         }));
       }
     }

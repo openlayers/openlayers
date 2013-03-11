@@ -385,10 +385,6 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
 
         tileCoord = new ol.TileCoord(z, x, y);
         tile = tileSource.getTile(tileCoord, tileGrid, projection);
-        if (goog.isNull(tile)) {
-          continue;
-        }
-
         tileState = tile.getState();
         if (tileState == ol.TileState.IDLE) {
           this.updateWantedTiles(frameState.wantedTiles, tileSource, tileCoord);
@@ -407,7 +403,8 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
             priority = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
             tilesToLoad.enqueue(priority, tile);
           }
-        } else if (tileState == ol.TileState.ERROR) {
+        } else if (tileState == ol.TileState.ERROR ||
+                   tileState == ol.TileState.EMPTY) {
           continue;
         }
 

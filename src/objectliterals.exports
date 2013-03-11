@@ -74,12 +74,17 @@
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.doubleClickZoom boolean|undefined
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.dragPan boolean|undefined
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.keyboard boolean|undefined
-@exportObjectLiteralProperty ol.interaction.DefaultOptions.keyboardPanOffset number|undefined
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.mouseWheelZoom boolean|undefined
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.shiftDragZoom boolean|undefined
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.touchPan boolean|undefined
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.touchRotate boolean|undefined
 @exportObjectLiteralProperty ol.interaction.DefaultOptions.touchZoom boolean|undefined
+
+@exportObjectLiteral ol.interaction.KeyboardPanOptions
+@exportObjectLiteralProperty ol.interaction.KeyboardPanOptions.pixelDelta number|undefined
+
+@exportObjectLiteral ol.interaction.KeyboardZoomOptions
+@exportObjectLiteralProperty ol.interaction.KeyboardZoomOptions.delta number|undefined
 
 @exportObjectLiteral ol.layer.LayerOptions
 @exportObjectLiteralProperty ol.layer.LayerOptions.brightness number|undefined
@@ -135,6 +140,9 @@
 @exportObjectLiteralProperty ol.source.StaticImageOptions.imageSize ol.Size|undefined
 @exportObjectLiteralProperty ol.source.StaticImageOptions.projection ol.ProjectionLike
 @exportObjectLiteralProperty ol.source.StaticImageOptions.url string|undefined
+
+@exportObjectLiteral ol.source.TileJSONOptions
+@exportObjectLiteralProperty ol.source.TileJSONOptions.uri string
 
 @exportObjectLiteral ol.source.TiledWMSOptions
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.attributions Array.<ol.Attribution>|undefined

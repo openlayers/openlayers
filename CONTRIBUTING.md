@@ -50,7 +50,8 @@ Use the following to run the tests:
 
     $ ./build.py test
 
-This command assumes that the `phantomjs` command is on your PATH.
+This command assumes that the `phantomjs` command is on your PATH and that the
+polvr web server is running (`./build.py serve`).
 
 ### The `precommit` target
 

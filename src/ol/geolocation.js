@@ -22,7 +22,9 @@ ol.GeolocationProperty = {
   HEADING: 'heading',
   POSITION: 'position',
   PROJECTION: 'projection',
-  SPEED: 'speed'
+  SPEED: 'speed',
+  TRACKING: 'tracking',
+  TRACKING_OPTIONS: 'trackingOptions'
 };
 
 
@@ -30,9 +32,8 @@ ol.GeolocationProperty = {
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {GeolocationPositionOptions=} opt_positionOptions PositionOptions.
  */
-ol.Geolocation = function(opt_positionOptions) {
+ol.Geolocation = function() {
 
   goog.base(this);
 
@@ -43,20 +44,20 @@ ol.Geolocation = function(opt_positionOptions) {
    */
   this.position_ = null;
 
-  if (ol.Geolocation.SUPPORTED) {
-    goog.events.listen(
-        this, ol.Object.getChangedEventType(ol.GeolocationProperty.PROJECTION),
-        this.handleProjectionChanged_, false, this);
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.watchId_;
 
-    /**
-     * @private
-     * @type {number}
-     */
-    this.watchId_ = navigator.geolocation.watchPosition(
-        goog.bind(this.positionChange_, this),
-        goog.bind(this.positionError_, this),
-        opt_positionOptions);
-  }
+  this.setTracking(false);
+
+  goog.events.listen(
+      this, ol.Object.getChangedEventType(ol.GeolocationProperty.PROJECTION),
+      this.handleProjectionChanged_, false, this);
+  goog.events.listen(
+      this, ol.Object.getChangedEventType(ol.GeolocationProperty.TRACKING),
+      this.handleTrackingChanged_, false, this);
 };
 goog.inherits(ol.Geolocation, ol.Object);
 
@@ -65,7 +66,7 @@ goog.inherits(ol.Geolocation, ol.Object);
  * @inheritDoc
  */
 ol.Geolocation.prototype.disposeInternal = function() {
-  navigator.geolocation.clearWatch(this.watchId_);
+  this.setTracking(false);
   goog.base(this, 'disposeInternal');
 };
 
@@ -83,6 +84,25 @@ ol.Geolocation.prototype.handleProjectionChanged_ = function() {
       vertex = this.transformFn_(vertex, vertex, 2);
       this.set(ol.GeolocationProperty.POSITION,
           new ol.Coordinate(vertex[0], vertex[1]));
+    }
+  }
+};
+
+
+/**
+ * @private
+ */
+ol.Geolocation.prototype.handleTrackingChanged_ = function() {
+  if (ol.Geolocation.SUPPORTED) {
+    var tracking = this.getTracking();
+    if (tracking && !goog.isDef(this.watchId_)) {
+      this.watchId_ = navigator.geolocation.watchPosition(
+          goog.bind(this.positionChange_, this),
+          goog.bind(this.positionError_, this),
+          this.getTrackingOptions());
+    } else if (!tracking && goog.isDef(this.watchId_)) {
+      navigator.geolocation.clearWatch(this.watchId_);
+      this.watchId_ = undefined;
     }
   }
 };
@@ -221,6 +241,32 @@ goog.exportProperty(
 
 
 /**
+ * @return {boolean|undefined} tracking.
+ */
+ol.Geolocation.prototype.getTracking = function() {
+  return /** @type {boolean} */ (
+      this.get(ol.GeolocationProperty.TRACKING));
+};
+goog.exportProperty(
+    ol.Geolocation.prototype,
+    'getTracking',
+    ol.Geolocation.prototype.getTracking);
+
+
+/**
+ * @return {GeolocationPositionOptions|undefined} tracking options.
+ */
+ol.Geolocation.prototype.getTrackingOptions = function() {
+  return /** @type {GeolocationPositionOptions} */ (
+      this.get(ol.GeolocationProperty.TRACKING_OPTIONS));
+};
+goog.exportProperty(
+    ol.Geolocation.prototype,
+    'getTrackingOptions',
+    ol.Geolocation.prototype.getTrackingOptions);
+
+
+/**
  * @param {ol.Projection} projection Projection.
  */
 ol.Geolocation.prototype.setProjection = function(projection) {
@@ -230,6 +276,30 @@ goog.exportProperty(
     ol.Geolocation.prototype,
     'setProjection',
     ol.Geolocation.prototype.setProjection);
+
+
+/**
+ * @param {boolean} tracking Enable or disable tracking.
+ */
+ol.Geolocation.prototype.setTracking = function(tracking) {
+  this.set(ol.GeolocationProperty.TRACKING, tracking);
+};
+goog.exportProperty(
+    ol.Geolocation.prototype,
+    'setTracking',
+    ol.Geolocation.prototype.setTracking);
+
+
+/**
+ * @param {GeolocationPositionOptions} options Tracking options.
+ */
+ol.Geolocation.prototype.setTrackingOptions = function(options) {
+  this.set(ol.GeolocationProperty.TRACKING_OPTIONS, options);
+};
+goog.exportProperty(
+    ol.Geolocation.prototype,
+    'setTrackingOptions',
+    ol.Geolocation.prototype.setTrackingOptions);
 
 
 /**

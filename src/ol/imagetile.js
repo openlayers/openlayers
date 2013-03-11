@@ -13,12 +13,13 @@ goog.require('ol.TileState');
  * @constructor
  * @extends {ol.Tile}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.TileState} state State.
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
  */
-ol.ImageTile = function(tileCoord, src, crossOrigin) {
+ol.ImageTile = function(tileCoord, state, src, crossOrigin) {
 
-  goog.base(this, tileCoord);
+  goog.base(this, tileCoord, state);
 
   /**
    * Image URI

@@ -63,6 +63,7 @@ EXAMPLES_SRC = [path
                 if not path.startswith('examples/bootstrap')
                 if not path.startswith('examples/font-awesome')
                 if path != 'examples/Jugl.js'
+                if path != 'examples/jquery.min.js'
                 if path != 'examples/example-list.js']
 
 INTERNAL_SRC = [
@@ -95,13 +96,16 @@ def report_sizes(t):
     t.info('  compressed: %d bytes', len(stringio.getvalue()))
 
 
-virtual('all', 'build-all', 'build', 'examples', 'precommit')
+virtual('default', 'build')
 
 
-virtual('precommit', 'lint', 'build-all', 'test', 'build', 'build-examples', 'check-examples', 'doc')
+virtual('integration-test', 'lint', 'build', 'build-all', 'test', 'build-examples', 'check-examples', 'doc')
 
 
 virtual('build', 'build/ol.css', 'build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js')
+
+
+virtual('check', 'lint', 'build/ol.css', 'build/ol.js', 'test')
 
 
 virtual('todo', 'fixme')
@@ -206,6 +210,15 @@ def examples_star_json(name, match):
                 'examples/%(id)s.js' % match.groupdict(),
                 'build/src/internal/src/types.js',
             ],
+            'externs': [
+                '//json.js',
+                '//jquery-1.7.js',
+                'externs/bingmaps.js',
+                'externs/bootstrap.js',
+                'externs/geojson.js',
+                'externs/proj4js.js',
+                'externs/tilejson.js',
+            ],
         })
         with open(t.name, 'w') as f:
             f.write(content)
@@ -227,7 +240,7 @@ def serve(t):
     t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'build/ol.json', 'build/ol-all.json', EXAMPLES_JSON, 'test/test.json')
 
 
-@target('serve-precommit', PLOVR_JAR, INTERNAL_SRC)
+@target('serve-integration-test', PLOVR_JAR, INTERNAL_SRC)
 def serve_precommit(t):
     t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'build/ol-all.json', 'test/test.json')
 
@@ -410,7 +423,7 @@ def hostexamples(t):
         'build/ol.css', build_dir)
     t.cp('examples/example-list.html', examples_dir + '/index.html')
     t.cp('examples/example-list.js', 'examples/example-list.xml',
-        'examples/Jugl.js', examples_dir)
+        'examples/Jugl.js', 'examples/jquery.min.js', examples_dir)
     t.rm_rf('build/gh-pages/%(BRANCH)s/closure-library')
     t.makedirs('build/gh-pages/%(BRANCH)s/closure-library')
     with t.chdir('build/gh-pages/%(BRANCH)s/closure-library'):
@@ -476,7 +489,7 @@ else:
 
 @target('fixme', phony=True)
 def find_fixme(t):
-    regex = re.compile(".(FIXME|TODO).")
+    regex = re.compile('FIXME|TODO')
     matches = dict()
     totalcount = 0
     for filename in SRC:
@@ -485,16 +498,16 @@ def find_fixme(t):
             if regex.search(line):
                 if (filename not in matches):
                     matches[filename] = list()
-                matches[filename].append("#" + str(lineno + 1).ljust(10) + line.strip())
+                matches[filename].append('#%-10d %s' % (lineno + 1, line.strip()))
                 totalcount += 1
         f.close()
 
     for filename in matches:
-        print "  ", filename, "has", len(matches[filename]), "matches:"
+        print '  %s has %d matches:' % (filename, len(matches[filename]))
         for match in matches[filename]:
-            print "    ", match
+            print '    %s' % (match,)
         print
-    print "A total number of", totalcount, "TODO/FIXME was found"
+    print 'A total of %d TODO/FIXME(s) were found' % (totalcount,)
 
 
 @target('reallyclean')

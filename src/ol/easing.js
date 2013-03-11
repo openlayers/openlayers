@@ -1,36 +1,6 @@
 goog.provide('ol.easing');
 
-
-/**
- * @param {number} t Input between 0 and 1.
- * @return {number} Output between 0 and 1.
- */
-ol.easing.linear = function(t) {
-  return t;
-};
-
-
-/**
- * @param {number} t Input between 0 and 1.
- * @return {number} Output between 0 and 1.
- */
-ol.easing.upAndDown = function(t) {
-  if (t < 0.5) {
-    return goog.fx.easing.inAndOut(2 * t);
-  } else {
-    return 1 - goog.fx.easing.inAndOut(2 * (t - 0.5));
-  }
-};
-
-
-/**
- * from https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael.js
- * @param {number} t Input between 0 and 1.
- * @return {number} Output between 0 and 1.
- */
-ol.easing.elastic = function(t) {
-  return Math.pow(2, -10 * t) * Math.sin((t - 0.075) * (2 * Math.PI) / 0.3) + 1;
-};
+goog.require('goog.fx.easing');
 
 
 /**
@@ -57,4 +27,57 @@ ol.easing.bounce = function(t) {
     }
   }
   return l;
+};
+
+
+/**
+ * @param {number} t Input between 0 and 1.
+ * @return {number} Output between 0 and 1.
+ */
+ol.easing.easeIn = goog.fx.easing.easeIn;
+
+
+/**
+ * @param {number} t Input between 0 and 1.
+ * @return {number} Output between 0 and 1.
+ */
+ol.easing.easeOut = goog.fx.easing.easeOut;
+
+
+/**
+ * from https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael.js
+ * @param {number} t Input between 0 and 1.
+ * @return {number} Output between 0 and 1.
+ */
+ol.easing.elastic = function(t) {
+  return Math.pow(2, -10 * t) * Math.sin((t - 0.075) * (2 * Math.PI) / 0.3) + 1;
+};
+
+
+/**
+ * @param {number} t Input between 0 and 1.
+ * @return {number} Output between 0 and 1.
+ */
+ol.easing.inAndOut = goog.fx.easing.inAndOut;
+
+
+/**
+ * @param {number} t Input between 0 and 1.
+ * @return {number} Output between 0 and 1.
+ */
+ol.easing.linear = function(t) {
+  return t;
+};
+
+
+/**
+ * @param {number} t Input between 0 and 1.
+ * @return {number} Output between 0 and 1.
+ */
+ol.easing.upAndDown = function(t) {
+  if (t < 0.5) {
+    return ol.easing.inAndOut(2 * t);
+  } else {
+    return 1 - ol.easing.inAndOut(2 * (t - 0.5));
+  }
 };

@@ -1,1 +1,1 @@
-@exportSymbol ol.source.BingMaps
+@exportClass ol.source.BingMaps ol.source.BingMapsOptions

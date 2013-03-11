@@ -153,7 +153,7 @@ ol.renderer.webgl.Map = function(container, map) {
   goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.LOST,
       this.handleWebGLContextLost, false, this);
   goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.RESTORED,
-      this.handleWebGLContextResourced, false, this);
+      this.handleWebGLContextRestored, false, this);
 
   /**
    * @private
@@ -433,9 +433,9 @@ ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
 /**
  * @protected
  */
-ol.renderer.webgl.Map.prototype.handleWebGLContextResourced = function() {
+ol.renderer.webgl.Map.prototype.handleWebGLContextRestored = function() {
   if (goog.DEBUG) {
-    this.logger.info('WebGLContextResourced');
+    this.logger.info('WebGLContextRestored');
   }
   this.initializeGL_();
   this.getMap().render();
