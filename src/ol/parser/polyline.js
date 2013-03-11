@@ -211,7 +211,7 @@ ol.parser.polyline.encodeUnsignedIntegers = function(numbers) {
  * @return {Array.<number>} A list of unsigned integers.
  */
 ol.parser.polyline.decodeUnsignedIntegers = function(encoded) {
-  var numbers = new Array();
+  var numbers = [];
 
   var current = 0;
   var shift = 0;
