@@ -22,12 +22,6 @@ goog.require('ol.tilegrid.XYZ');
 
 
 /**
- * @typedef {{uri: string}}
- */
-ol.source.TileJSONOptions;
-
-
-/**
  * @private
  * @type {Array.<TileJSON>}
  */
