@@ -168,45 +168,26 @@ goog.inherits(ol.source.WMTS, ol.source.ImageTileSource);
 
 /**
  * @param {Object} wmtsCap An object representing the capabilities document.
- * @param {string} layer The layer identifier that we want the grid for.
- * @param {string|null=} opt_crossOrigin Optional crossOrigin value.
- * @param {string=} opt_matrixSet Optional tileMatrixSet name. If not provided,
- *     it defaults to the first matrixSet found.
- * @param {ol.source.WMTSRequestEncoding=} opt_requestEncoding Optional
- *     requestEncoding. If not provided, it defaults to the first value found.
- * @param {string=} opt_format Optional format name. If not provided, it
- *     defaults to the first format found.
- * @param {string=} opt_style Optional style name. If not provided, it defaults
- *     to the first style found.
- * @param {Object=} opt_dimensions Optional object for setting dimensions
- *     values.
- * @param {ol.Extent=} opt_extent Optional extent.
- * @return {ol.source.WMTS} TileGrid instance.
+ * @param {string} layer The layer identifier.
+ * @return {ol.source.WMTSOptions} WMTS source options object.
  */
-ol.source.WMTS.createFromCapabilities = function(wmtsCap, layer,
-    opt_crossOrigin, opt_matrixSet, opt_requestEncoding, opt_format,
-    opt_style, opt_dimensions, opt_extent) {
+ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, layer) {
 
   // TODO: add support for TileMatrixLimits
 
   var layers = wmtsCap['contents']['layers'];
-  var matrixSet = opt_matrixSet;
   var l = goog.array.find(layers, function(elt, index, array) {
     return elt['identifier'] == layer;
   });
   goog.asserts.assert(!goog.isNull(l));
-
-  var format = goog.isDef(opt_format) ?
-      opt_format : /** @type {string} */ (l['formats'][0]);
+  goog.asserts.assert(l['tileMatrixSetLinks'].length > 0);
+  var matrixSet = /** @type {string} */
+      (l['tileMatrixSetLinks'][0]['tileMatrixSet']);
+  var format = /** @type {string} */ (l['formats'][0]);
   var idx = goog.array.findIndex(l['styles'], function(elt, index, array) {
-    if (goog.isDef(opt_style)) {
-      return elt['identifier'] == opt_style;
-    } else {
-      return elt['isDefault'];
-    }
+    return elt['isDefault'];
   });
   if (idx < 0) {
-    goog.asserts.assert(!goog.isDef(opt_style)); // opt_style was not correct
     idx = 0;
   }
   var style = /** @type {string} */ (l['styles'][idx]['identifier']);
@@ -214,11 +195,7 @@ ol.source.WMTS.createFromCapabilities = function(wmtsCap, layer,
   var dimensions = {};
   goog.array.forEach(l['dimensions'], function(elt, index, array) {
     var key = elt['identifier'];
-    // With the special value 'default', the server should automatically
-    // select the default value for this dimension.
-    var value = (goog.isDef(opt_dimensions) &&
-        opt_dimensions.hasOwnProperty(key)) ?
-            opt_dimensions[key] : elt['default'];
+    var value = elt['default'];
     if (goog.isDef(value)) {
       goog.asserts.assert(goog.array.indexOf(elt['values'], value) >= 0);
     } else {
@@ -228,16 +205,6 @@ ol.source.WMTS.createFromCapabilities = function(wmtsCap, layer,
     dimensions[key] = value;
   });
 
-  if (goog.isDef(matrixSet)) {
-    goog.asserts.assert(0 < goog.array.findIndex(
-        l['tileMatrixSetLinks'], function(elt, index, arr) {
-          return elt['tileMatrixSet'] == matrixSet;
-        }));
-  } else {
-    goog.asserts.assert(l['tileMatrixSetLinks'].length > 0);
-    matrixSet = /** @type {string} */
-        (l['tileMatrixSetLinks'][0]['tileMatrixSet']);
-  }
   var matrixSets = wmtsCap['contents']['tileMatrixSets'];
   goog.asserts.assert(matrixSet in matrixSets);
   var matrixSetObj = matrixSets[matrixSet];
@@ -251,8 +218,7 @@ ol.source.WMTS.createFromCapabilities = function(wmtsCap, layer,
   var encodings = goog.object.getKeys(
       gets[0]['constraints']['GetEncoding']['allowedValues']);
   goog.asserts.assert(encodings.length > 0);
-  var requestEncoding = goog.isDef(opt_requestEncoding) ?
-      opt_requestEncoding :  /** @type {ol.source.WMTSRequestEncoding} */
+  var requestEncoding = /** @type {ol.source.WMTSRequestEncoding} */
       (encodings[0]);
   // TODO: arcgis support, quote from ol2:
   // The OGC documentation is not clear if we should use REST or RESTful,
@@ -280,7 +246,7 @@ ol.source.WMTS.createFromCapabilities = function(wmtsCap, layer,
       goog.asserts.assert(false);
   }
 
-  return new ol.source.WMTS({
+  return {
     urls: urls,
     layer: layer,
     matrixSet: matrixSet,
@@ -289,8 +255,6 @@ ol.source.WMTS.createFromCapabilities = function(wmtsCap, layer,
     requestEncoding: requestEncoding,
     tileGrid: tileGrid,
     style: style,
-    crossOrigin: opt_crossOrigin,
-    extent: opt_extent,
     dimensions: dimensions
-  });
+  };
 };

@@ -30,11 +30,13 @@ xhr.open('GET', 'http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml', true);
 xhr.onload = function() {
   if (xhr.status == 200) {
     capabilities = parser.read(xhr.responseXML);
+    var wmtsOptions = ol.source.WMTS.optionsFromCapabilities(
+        capabilities, 'ch.swisstopo.pixelkarte-farbe');
+    wmtsOptions.crossOrigin = null;
     map = new ol.Map({
       layers: [
         new ol.layer.TileLayer({
-          source: ol.source.WMTS.createFromCapabilities(
-              capabilities, 'ch.swisstopo.pixelkarte-farbe', null)
+          source: new ol.source.WMTS(wmtsOptions)
         }),
         new ol.layer.ImageLayer({
           source: new ol.source.SingleImageWMS({
