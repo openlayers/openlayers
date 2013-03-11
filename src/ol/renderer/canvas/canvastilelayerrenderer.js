@@ -152,10 +152,6 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
 
       tileCoord = new ol.TileCoord(z, x, y);
       tile = tileSource.getTile(tileCoord, tileGrid, projection);
-      if (goog.isNull(tile)) {
-        continue;
-      }
-
       tileState = tile.getState();
       if (tileState == ol.TileState.IDLE) {
         this.updateWantedTiles(frameState.wantedTiles, tileSource, tileCoord);
@@ -163,7 +159,8 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
         frameState.tileQueue.enqueue(tile, tileSourceKey, tileCenter);
       } else if (tileState == ol.TileState.LOADING) {
         this.listenToTileChange(tile);
-      } else if (tileState == ol.TileState.LOADED) {
+      } else if (tileState == ol.TileState.LOADED ||
+                 tileState == ol.TileState.EMPTY) {
         tilesToDrawByZ[z][tileCoord.toString()] = tile;
         continue;
       } else if (tileState == ol.TileState.ERROR) {
@@ -198,10 +195,13 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
         if (this.renderedTiles_[index] != tile) {
           x = tileSize.width * (tile.tileCoord.x - tileRange.minX);
           y = tileSize.height * (tileRange.maxY - tile.tileCoord.y);
-          if (!opaque) {
+          tileState = tile.getState();
+          if (tileState == ol.TileState.EMPTY || !opaque) {
             context.clearRect(x, y, tileSize.width, tileSize.height);
           }
-          context.drawImage(tile.getImage(), x, y);
+          if (tileState == ol.TileState.LOADED) {
+            context.drawImage(tile.getImage(), x, y);
+          }
           this.renderedTiles_[index] = tile;
         }
       }
@@ -214,10 +214,13 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
         y = (origin.y - tileExtent.maxY) / tileResolution;
         width = scale * tileSize.width;
         height = scale * tileSize.height;
-        if (!opaque) {
+        tileState = tile.getState();
+        if (tileState == ol.TileState.EMPTY || !opaque) {
           context.clearRect(x, y, width, height);
         }
-        context.drawImage(tile.getImage(), x, y, width, height);
+        if (tileState == ol.TileState.LOADED) {
+          context.drawImage(tile.getImage(), x, y, width, height);
+        }
         interimTileRange =
             tileGrid.getTileRangeForExtentAndZ(tileExtent, z);
         minX = Math.max(interimTileRange.minX, tileRange.minX);

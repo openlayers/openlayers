@@ -7,6 +7,7 @@ goog.require('ol.ImageTile');
 goog.require('ol.Projection');
 goog.require('ol.Tile');
 goog.require('ol.TileCache');
+goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
 goog.require('ol.source.TileSource');
@@ -89,18 +90,17 @@ ol.source.ImageTileSource.prototype.getTile =
     function(tileCoord, tileGrid, projection) {
   var key = tileCoord.toString();
   if (this.tileCache_.containsKey(key)) {
-    return /** @type {ol.Tile} */ (this.tileCache_.get(key));
+    return /** @type {!ol.Tile} */ (this.tileCache_.get(key));
   } else {
     goog.asserts.assert(tileGrid);
     goog.asserts.assert(projection);
     var tileUrl = this.tileUrlFunction(tileCoord, tileGrid, projection);
-    var tile;
-    if (goog.isDef(tileUrl)) {
-      tile = new ol.ImageTile(tileCoord, tileUrl, this.crossOrigin_);
-      this.tileCache_.set(key, tile);
-    } else {
-      tile = null;
-    }
+    var tile = new ol.ImageTile(
+        tileCoord,
+        goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,
+        goog.isDef(tileUrl) ? tileUrl : '',
+        this.crossOrigin_);
+    this.tileCache_.set(key, tile);
     return tile;
   }
 };
