@@ -728,24 +728,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
   if (!goog.isNull(frameState)) {
     // FIXME works for View2D only
-    var center = view2DState.center;
-    var resolution = view2DState.resolution;
-    var rotation = view2DState.rotation;
-    var x = resolution * size.width / 2;
-    var y = resolution * size.height / 2;
-    var corners = [
-      new ol.Coordinate(-x, -y),
-      new ol.Coordinate(-x, y),
-      new ol.Coordinate(x, -y),
-      new ol.Coordinate(x, y)
-    ];
-    var corner;
-    for (i = 0; i < 4; ++i) {
-      corner = corners[i];
-      corner.rotate(rotation);
-      corner.add(center);
-    }
-    frameState.extent = ol.Extent.boundingExtent.apply(null, corners);
+    frameState.extent = ol.Extent.getForView2DAndSize(view2DState.center,
+        view2DState.resolution, view2DState.rotation, frameState.size);
   }
 
   this.frameState_ = frameState;
