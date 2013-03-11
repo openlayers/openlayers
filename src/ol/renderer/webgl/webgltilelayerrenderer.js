@@ -391,11 +391,11 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
 
         tileState = tile.getState();
         if (tileState == ol.TileState.IDLE) {
-          goog.events.listenOnce(tile, goog.events.EventType.CHANGE,
-              this.handleTileChange, false, this);
           this.updateWantedTiles(frameState.wantedTiles, tileSource, tileCoord);
           tileCenter = tileGrid.getTileCoordCenter(tileCoord);
           frameState.tileQueue.enqueue(tile, tileSourceKey, tileCenter);
+        } else if (tileState == ol.TileState.LOADING) {
+          this.listenToTileChange(tile);
         } else if (tileState == ol.TileState.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {
             tilesToDrawByZ[z][tileCoord.toString()] = tile;

@@ -40,6 +40,12 @@ ol.renderer.Layer = function(mapRenderer, layer) {
    */
   this.layer_ = layer;
 
+  /**
+   * @protected
+   * @type {Object.<string, boolean>}
+   */
+  this.observedTileKeys = {};
+
   goog.events.listen(this.layer_,
       ol.Object.getChangedEventType(ol.layer.LayerProperty.BRIGHTNESS),
       this.handleLayerBrightnessChange, false, this);
@@ -167,12 +173,28 @@ ol.renderer.Layer.prototype.handleLayerVisibleChange = function() {
 /**
  * Handle changes in tile state.
  * @param {goog.events.Event} event Tile change event.
- * @protected
+ * @private
  */
-ol.renderer.Layer.prototype.handleTileChange = function(event) {
+ol.renderer.Layer.prototype.handleTileChange_ = function(event) {
   var tile = /** @type {ol.Tile} */ (event.target);
   if (tile.getState() === ol.TileState.LOADED) {
     this.getMap().requestRenderFrame();
+  }
+  delete this.observedTileKeys[tile.getKey()];
+};
+
+
+/**
+ * Listen once to tileKey, le change event.
+ * @param {ol.Tile} tile Tile.
+ * @protected
+ */
+ol.renderer.Layer.prototype.listenToTileChange = function(tile) {
+  var tileKey = tile.getKey();
+  if (!(tileKey in this.observedTileKeys)) {
+    this.observedTileKeys[tileKey] = true;
+    goog.events.listenOnce(tile, goog.events.EventType.CHANGE,
+        this.handleTileChange_, false, this);
   }
 };
 
@@ -209,11 +231,13 @@ ol.renderer.Layer.prototype.scheduleExpireCache =
  */
 ol.renderer.Layer.prototype.updateAttributions =
     function(attributionsSet, attributions) {
-  var i;
-  var attribution;
-  for (i = 0; i < attributions.length; ++i) {
-    attribution = attributions[i];
-    attributionsSet[goog.getUid(attribution).toString()] = attribution;
+  if (goog.isDefAndNotNull(attributions)) {
+    var i;
+    var attribution;
+    for (i = 0; i < attributions.length; ++i) {
+      attribution = attributions[i];
+      attributionsSet[goog.getUid(attribution).toString()] = attribution;
+    }
   }
 };
 

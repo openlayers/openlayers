@@ -27,15 +27,13 @@ var createMap = function(divId) {
     })
   });
   zoomslider = new ol.control.ZoomSlider({
-    minResolution: 5000,
+    minResolution: 500,
     maxResolution: 100000,
     map: map
   });
-  //  zoomslider.setMap(map);
   return map;
 };
 
 var map1 = createMap('map1');
 var map2 = createMap('map2');
 var map3 = createMap('map3');
-

@@ -1,84 +1,77 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link rel="stylesheet" href="style.css" type="text/css">
-    <style type="text/css">
-      .map {
-        width: 400px;
-        height: 400px;
-        border: thin solid #cccccc;
-        margin: 1em;
-      }
-    </style>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="examples.css" type="text/css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.min.css" type="text/css">
     <title>Side-by-side example</title>
   </head>
   <body>
-    <h1 id="title">Side-by-side example</h1>
-    <div id="shortdesc">Side-by-side DOM, WebGL and Canvas sync'ed maps.</div>
-    <table>
-      <tr>
-        <th>DOM</th>
-        <th>WebGL</th>
-        <th>Canvas</th>
-      </tr>
-      <tr>
-        <td><div id="domMap" class="map"></div></td>
-        <td><div id="webglMap" class="map"></div></td>
-        <td><div id="canvasMap" class="map"></div></td>
-      </tr>
-      <tr>
-        <td><div id="domMousePosition" class="mouseposition"></div></td>
-        <td><div id="webglMousePosition" class="mouseposition"></div></td>
-        <td><div id="canvasMousePosition" class="mouseposition"></div></td>
-      </tr>
-    </table>
-    <table>
-      <tr>
-        <td>Pan:</td>
-        <td>drag, arrow keys</td>
-      </tr>
-      <tr>
-        <td>Zoom:</td>
-        <td>double-click, <code>Shift</code>+double-click, mouse wheel, <code>+</code>/<code>-</code> keys; <code>Shift</code>+drag</td>
-      </tr>
-      <tr>
-        <td>Rotate:</td>
-        <td><code>Alt+Shift</code>+drag, <code>r</code> to reset</td>
-      </tr>
-      <tr>
-        <td>Brightness/contrast:</td>
-        <td><code>b</code>/<code>B</code>/<code>c</code>/<code>C</code> keys (WebGL only)</td>
-      </tr>
-      <tr>
-        <td>Hue/saturation:</td>
-        <td><code>h</code>/<code>H</code>/<code>s</code>/<code>S</code> keys (WebGL only)</td>
-      </tr>
-      <tr>
-        <td>Opacity:</td>
-        <td><code>o</code>/<code>O</code> keys</td>
-      </tr>
-      <tr>
-        <td>Visibility:</td>
-        <td><code>v</code>/<code>V</code> keys</td>
-      </tr>
-      <tr>
-        <td>Animations:</td>
-        <td><code>j</code>/<code>l</code>/<code>m</code>/<code>x</code>/<code>L</code>/<code>M</code>/<code>X</code> keys</td>
-      </tr>
-      <tr>
-        <td>Reset</td>
-        <td><code>0</code> key</td>
-      </tr>
-    </table>
-    <p><b>Notes:</b> The two maps share the same center, resolution, rotation and layers.</p>
-    <div id="docs">
-      <p>See the
-      <a href="side-by-side.js" target="_blank">side-by-side.js source</a> to
-      see how this is done.</p>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="example-list.html">OpenLayers 3 Examples</a>
+          <ul class="nav pull-right">
+            <li><a href="https://github.com/openlayers/ol3"><i class="icon-github"></i></a></li>
+            <li><a href="https://twitter.com/openlayers"><i class="icon-twitter"></i></a></li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <div id="tags">side-by-side, webgl, dom, sync, object</div>
+
+    <div class="container-fluid">
+
+      <div class="row-fluid">
+        <div class="span4">
+          <h4>Canvas</h4>
+          <div id="canvasMap" class="map"></div>
+        </div>
+        <div class="span4">
+          <h4>WebGL</h4>
+          <div id="webglMap" class="map"></div>
+        </div>
+        <div class="span4">
+          <h4>DOM</h4>
+          <div id="domMap" class="map"></div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+
+        <div class="span4">
+          <h4 id="title">Side-by-side example</h4>
+          <p id="shortdesc">The three maps, one WebGL, one Canvas, one DOM, share the same center, resolution, rotation and layers.</p>
+          <div id="docs">
+            <p>See the <a href="side-by-side.js" target="_blank">side-by-side.js source</a> to see how this is done.</p>
+          </div>
+          <div id="tags">side-by-side, canvas, webgl, dom, canvas, sync, object</div>
+        </div>
+
+        <div class="span8">
+          <h4>Controls</h4>
+          <dl class="dl-horizontal">
+            <dt>Pan</dt>
+            <dd>drag, arrow keys</dd>
+            <dt>Zoom</dt>
+            <dd>double-click, <code>Shift</code>+double-click, mouse wheel, <code>+</code>/<code>-</code> keys; <code>Shift</code>+drag</dd>
+            <dt>Opacity</dt>
+            <dd><code>o</code>/<code>O</code> keys</dd>
+            <dt>Visibility</dt>
+            <dd><code>v</code>/<code>V</code> keys</dd>
+            <dt>Reset</dt>
+            <dd><code>0</code> key</dd>
+          </dl>
+        </div>
+
+      </div>
+
+    </div>
+
     <script src="loader.js?id=side-by-side" type="text/javascript"></script>
+
   </body>
 </html>

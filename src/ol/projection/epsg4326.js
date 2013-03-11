@@ -14,8 +14,13 @@ goog.require('ol.projection');
  * @param {string=} opt_axisOrientation Axis orientation.
  */
 ol.projection.EPSG4326 = function(code, opt_axisOrientation) {
-  goog.base(this, code, ol.ProjectionUnits.DEGREES,
-      ol.projection.EPSG4326.EXTENT, opt_axisOrientation);
+  goog.base(this, {
+    code: code,
+    units: ol.ProjectionUnits.DEGREES,
+    extent: ol.projection.EPSG4326.EXTENT,
+    axisOrientation: opt_axisOrientation,
+    global: true
+  });
 };
 goog.inherits(ol.projection.EPSG4326, ol.Projection);
 

@@ -23,10 +23,11 @@ goog.require('ol.projection');
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.MousePositionOptions} mousePositionOptions Mouse position
- *     options.
+ * @param {ol.control.MousePositionOptions=} opt_options Options.
  */
-ol.control.MousePosition = function(mousePositionOptions) {
+ol.control.MousePosition = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': 'ol-mouse-position'
@@ -34,28 +35,28 @@ ol.control.MousePosition = function(mousePositionOptions) {
 
   goog.base(this, {
     element: element,
-    map: mousePositionOptions.map,
-    target: mousePositionOptions.target
+    map: options.map,
+    target: options.target
   });
 
   /**
    * @private
-   * @type {ol.Projection|undefined}
+   * @type {ol.Projection}
    */
-  this.projection_ = mousePositionOptions.projection;
+  this.projection_ = ol.projection.get(options.projection);
 
   /**
    * @private
    * @type {ol.CoordinateFormatType|undefined}
    */
-  this.coordinateFormat_ = mousePositionOptions.coordinateFormat;
+  this.coordinateFormat_ = options.coordinateFormat;
 
   /**
    * @private
    * @type {string}
    */
-  this.undefinedHTML_ = goog.isDef(mousePositionOptions.undefinedHTML) ?
-      mousePositionOptions.undefinedHTML : '';
+  this.undefinedHTML_ = goog.isDef(options.undefinedHTML) ?
+      options.undefinedHTML : '';
 
   /**
    * @private
@@ -167,8 +168,8 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
   var html = this.undefinedHTML_;
   if (!goog.isNull(pixel)) {
     if (this.renderedProjection_ != this.mapProjection_) {
-      if (goog.isDef(this.projection_)) {
-        this.transform_ = ol.projection.getTransform(
+      if (!goog.isNull(this.projection_)) {
+        this.transform_ = ol.projection.getTransformFromProjections(
             this.mapProjection_, this.projection_);
       } else {
         this.transform_ = ol.projection.identityTransform;

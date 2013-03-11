@@ -16,7 +16,7 @@ goog.require('ol.source.Source');
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            crossOrigin: (null|string|undefined),
  *            extent: (null|ol.Extent|undefined),
- *            projection: (ol.Projection|undefined),
+ *            projection: ol.ProjectionLike,
  *            resolutions: (Array.<number>|undefined),
  *            imageUrlFunction: (ol.ImageUrlFunctionType|
  *                undefined)}}

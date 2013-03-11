@@ -168,7 +168,7 @@ ol.TileQueue.prototype.heapify_ = function() {
 
 
 /**
- * FIXME empty description for jsdoc
+ * @return {boolean} New loading tiles?
  */
 ol.TileQueue.prototype.loadMoreTiles = function() {
   var tile;
@@ -179,6 +179,7 @@ ol.TileQueue.prototype.loadMoreTiles = function() {
     tile.load();
     ++this.tilesLoading_;
   }
+  return goog.isDef(tile);
 };
 
 

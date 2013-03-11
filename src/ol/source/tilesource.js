@@ -4,7 +4,6 @@ goog.provide('ol.source.TileSourceOptions');
 goog.require('goog.functions');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
-goog.require('ol.Projection');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
@@ -16,7 +15,7 @@ goog.require('ol.tilegrid.TileGrid');
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            extent: (ol.Extent|undefined),
  *            opaque: (boolean|undefined),
- *            projection: (ol.Projection|undefined),
+ *            projection: ol.ProjectionLike,
  *            tileGrid: (ol.tilegrid.TileGrid|undefined)}}
  */
 ol.source.TileSourceOptions;
