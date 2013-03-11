@@ -66,11 +66,11 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
   var origins = [];
   var tileSizes = [];
   var projection = ol.projection.get(matrixSet['supportedCRS']);
-  var meters_per_unit = projection.getMetersPerUnit();
+  var metersPerUnit = projection.getMetersPerUnit();
   goog.array.forEach(matrixSet['matrixIds'], function(elt, index, array) {
     matrixIds.push(elt['identifier']);
     origins.push(elt['topLeftCorner']);
-    resolutions.push(elt['scaleDenominator'] * 0.28E-3 / meters_per_unit);
+    resolutions.push(elt['scaleDenominator'] * 0.28E-3 / metersPerUnit);
     tileSizes.push(new ol.Size(elt['tileWidth'], elt['tileHeight']));
   });
 
