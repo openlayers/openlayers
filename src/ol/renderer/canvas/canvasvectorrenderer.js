@@ -24,6 +24,7 @@ goog.require('ol.style.ShapeType');
 goog.require('ol.style.SymbolizerLiteral');
 
 
+
 /**
  * @constructor
  * @param {HTMLCanvasElement} canvas Target canvas.
