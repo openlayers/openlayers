@@ -123,7 +123,7 @@ vector.parseFeatures({
 
 
 var map = new ol.Map({
-  layers: new ol.Collection([vector]),
+  layers: [vector],
   controls: ol.control.defaults({
     attribution: false
   }),
