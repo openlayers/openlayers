@@ -76,6 +76,18 @@ ol.control.ZoomSlider = function(zoomSliderOptions) {
    */
   this.direction_ = ol.control.ZoomSlider.direction.VERTICAL;
 
+  /**
+   * @private
+   * @type {Array.<?number>}
+   */
+  this.mapListenerKeys_ = null;
+
+  /**
+   * @private
+   * @type {Array.<?number>}
+   */
+  this.draggerListenerKeys_ = null;
+
   var elem = this.createDom_();
   this.dragger_ = this.createDraggable_(elem);
 
@@ -159,8 +171,16 @@ ol.control.ZoomSlider.prototype.setMap = function(map) {
  * @private
  */
 ol.control.ZoomSlider.prototype.initMapEventListeners_ = function() {
-  goog.events.listen(this.getMap(), ol.MapEventType.POSTRENDER,
-      this.handleMapPostRender_, undefined, this);
+  if (!goog.isNull(this.mapListenerKeys_)) {
+    goog.array.forEach(this.mapListenerKeys_, goog.events.unlistenByKey);
+    this.mapListenerKeys_ = null;
+  }
+  if (!goog.isNull(this.getMap())) {
+    this.mapListenerKeys_ = [
+      goog.events.listen(this.getMap(), ol.MapEventType.POSTRENDER,
+          this.handleMapPostRender_, undefined, this)
+    ];
+  }
 };
 
 
@@ -325,11 +345,17 @@ ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
  * @private
  */
 ol.control.ZoomSlider.prototype.createDraggable_ = function(elem) {
+  if (!goog.isNull(this.draggerListenerKeys_)) {
+    goog.array.forEach(this.draggerListenerKeys_, goog.events.unlistenByKey);
+    this.draggerListenerKeys_ = null;
+  }
   var dragger = new goog.fx.Dragger(elem.childNodes[0]);
-  dragger.addEventListener(goog.fx.Dragger.EventType.DRAG,
-      this.handleSliderChange_, undefined, this);
-  dragger.addEventListener(goog.fx.Dragger.EventType.END,
-      this.handleSliderChange_, undefined, this);
+  this.draggerListenerKeys_ = [
+    goog.events.listen(dragger, [
+      goog.fx.Dragger.EventType.DRAG,
+      goog.fx.Dragger.EventType.END
+    ], this.handleSliderChange_, undefined, this)
+  ];
   return dragger;
 };
 
