@@ -155,38 +155,21 @@
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.url string|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.urls Array.<string>|undefined
 
-@exportObjectLiteral ol.style.IconOptions
-@exportObjectLiteralProperty ol.style.IconOptions.url string|ol.Expression
-@exportObjectLiteralProperty ol.style.IconOptions.width number|ol.Expression|undefined
-@exportObjectLiteralProperty ol.style.IconOptions.height number|ol.Expression|undefined
-@exportObjectLiteralProperty ol.style.IconOptions.opacity number|ol.Expression|undefined
-@exportObjectLiteralProperty ol.style.IconOptions.rotation number|ol.Expression|undefined
-
-@exportObjectLiteral ol.style.LineOptions
-@exportObjectLiteralProperty ol.style.LineOptions.strokeColor string|ol.Expression|undefined
-@exportObjectLiteralProperty ol.style.LineOptions.strokeWidth number|ol.Expression|undefined
-@exportObjectLiteralProperty ol.style.LineOptions.opacity number|ol.Expression|undefined
-
-@exportObjectLiteral ol.style.PolygonOptions
-@exportObjectLiteralProperty ol.style.PolygonOptions.fillColor string|ol.Expression|undefined
-@exportObjectLiteralProperty ol.style.PolygonOptions.strokeColor string|ol.Expression|undefined
-@exportObjectLiteralProperty ol.style.PolygonOptions.strokeWidth number|ol.Expression|undefined
-@exportObjectLiteralProperty ol.style.PolygonOptions.opacity number|ol.Expression|undefined
-
-@exportObjectLiteral ol.style.RuleOptions
-@exportObjectLiteralProperty ol.style.RuleOptions.filter ol.filter.Filter|undefined
-@exportObjectLiteralProperty ol.style.RuleOptions.symbolizers Array.<ol.style.Symbolizer>|undefined
-
-@exportObjectLiteral ol.style.ShapeOptions
-@exportObjectLiteralProperty ol.style.ShapeOptions.type ol.style.ShapeType|undefined
-@exportObjectLiteralProperty ol.style.ShapeOptions.size number|ol.Expression|undefined
-@exportObjectLiteralProperty ol.style.ShapeOptions.fillColor string|ol.Expression|undefined
-@exportObjectLiteralProperty ol.style.ShapeOptions.strokeColor string|ol.Expression|undefined
-@exportObjectLiteralProperty ol.style.ShapeOptions.strokeWidth number|ol.Expression|undefined
-@exportObjectLiteralProperty ol.style.ShapeOptions.opacity number|ol.Expression|undefined
-
-@exportObjectLiteral ol.style.StyleOptions
-@exportObjectLiteralProperty ol.style.StyleOptions.rules Array.<ol.style.Rule>
+@exportObjectLiteral ol.source.WMTSOptions
+@exportObjectLiteralProperty ol.source.WMTSOptions.attributions Array.<ol.Attribution>|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.crossOrigin string|null|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.extent ol.Extent|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.tileGrid ol.tilegrid.WMTS
+@exportObjectLiteralProperty ol.source.WMTSOptions.projection ol.Projection|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.requestEncoding ol.source.WMTSRequestEncoding|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.layer string
+@exportObjectLiteralProperty ol.source.WMTSOptions.style string
+@exportObjectLiteralProperty ol.source.WMTSOptions.format string|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.matrixSet string
+@exportObjectLiteralProperty ol.source.WMTSOptions.dimensions Object|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.url string|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.maxZoom number|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.urls Array.<string>|undefined
 
 @exportObjectLiteral ol.tilegrid.TileGridOptions
 @exportObjectLiteralProperty ol.tilegrid.TileGridOptions.origin ol.Coordinate|undefined
@@ -194,6 +177,14 @@
 @exportObjectLiteralProperty ol.tilegrid.TileGridOptions.resolutions !Array.<number>
 @exportObjectLiteralProperty ol.tilegrid.TileGridOptions.tileSize ol.Size|undefined
 @exportObjectLiteralProperty ol.tilegrid.TileGridOptions.tileSizes Array.<ol.Size>|undefined
+
+@exportObjectLiteral ol.tilegrid.WMTSOptions
+@exportObjectLiteralProperty ol.tilegrid.WMTSOptions.origin ol.Coordinate|undefined
+@exportObjectLiteralProperty ol.tilegrid.WMTSOptions.origins Array.<ol.Coordinate>|undefined
+@exportObjectLiteralProperty ol.tilegrid.WMTSOptions.resolutions !Array.<number>
+@exportObjectLiteralProperty ol.tilegrid.WMTSOptions.matrixIds !Array.<string>
+@exportObjectLiteralProperty ol.tilegrid.WMTSOptions.tileSize ol.Size|undefined
+@exportObjectLiteralProperty ol.tilegrid.WMTSOptions.tileSizes Array.<ol.Size>|undefined
 
 @exportObjectLiteral ol.tilegrid.XYZOptions
 @exportObjectLiteralProperty ol.tilegrid.XYZOptions.maxZoom number

@@ -46,6 +46,35 @@ ol.Extent.boundingExtent = function(var_args) {
 
 
 /**
+ * @param {ol.Coordinate} center Center.
+ * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
+ * @param {ol.Size} size Size.
+ * @return {ol.Extent} Extent.
+ */
+ol.Extent.getForView2DAndSize = function(center, resolution, rotation, size) {
+  var dx = resolution * size.width / 2;
+  var dy = resolution * size.height / 2;
+  var cosRotation = Math.cos(rotation);
+  var sinRotation = Math.sin(rotation);
+  var xs = [-dx, -dx, dx, dx];
+  var ys = [-dy, dy, -dy, dy];
+  var i, x, y;
+  for (i = 0; i < 4; ++i) {
+    x = xs[i];
+    y = ys[i];
+    xs[i] = center.x + x * cosRotation - y * sinRotation;
+    ys[i] = center.y + x * sinRotation + y * cosRotation;
+  }
+  var minX = Math.min.apply(null, xs);
+  var minY = Math.min.apply(null, ys);
+  var maxX = Math.max.apply(null, xs);
+  var maxY = Math.max.apply(null, ys);
+  return new ol.Extent(minX, minY, maxX, maxY);
+};
+
+
+/**
  * Checks if the passed coordinate is contained or on the edge
  * of the extent.
  *
