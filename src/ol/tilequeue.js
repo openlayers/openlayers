@@ -20,7 +20,7 @@ goog.require('ol.TileState');
 
 
 /**
- * @typedef {function(ol.Tile, string, ol.Coordinate): number}
+ * @typedef {function(ol.Tile, string, ol.Coordinate, number): number}
  */
 ol.TilePriorityFunction;
 
@@ -106,16 +106,20 @@ ol.TileQueue.prototype.dequeue_ = function() {
  * @param {ol.Tile} tile Tile.
  * @param {string} tileSourceKey Tile source key.
  * @param {ol.Coordinate} tileCenter Tile center.
+ * @param {number} tileResolution Tile resolution.
  */
-ol.TileQueue.prototype.enqueue = function(tile, tileSourceKey, tileCenter) {
+ol.TileQueue.prototype.enqueue = function(
+    tile, tileSourceKey, tileCenter, tileResolution) {
   if (tile.getState() != ol.TileState.IDLE) {
     return;
   }
   var tileKey = tile.getKey();
   if (!(tileKey in this.queuedTileKeys_)) {
-    var priority = this.tilePriorityFunction_(tile, tileSourceKey, tileCenter);
+    var priority = this.tilePriorityFunction_(
+        tile, tileSourceKey, tileCenter, tileResolution);
     if (priority != ol.TileQueue.DROP) {
-      this.heap_.push([priority, tile, tileSourceKey, tileCenter]);
+      this.heap_.push(
+          [priority, tile, tileSourceKey, tileCenter, tileResolution]);
       this.queuedTileKeys_[tileKey] = true;
       this.siftDown_(0, this.heap_.length - 1);
     }
@@ -245,13 +249,16 @@ ol.TileQueue.prototype.siftDown_ = function(startIndex, index) {
  */
 ol.TileQueue.prototype.reprioritize = function() {
   var heap = this.heap_;
-  var i, n = 0, node, priority, tile, tileCenter, tileKey, tileSourceKey;
+  var i, n = 0, node, priority;
+  var tile, tileCenter, tileKey, tileResolution, tileSourceKey;
   for (i = 0; i < heap.length; ++i) {
     node = heap[i];
     tile = /** @type {ol.Tile} */ (node[1]);
     tileSourceKey = /** @type {string} */ (node[2]);
     tileCenter = /** @type {ol.Coordinate} */ (node[3]);
-    priority = this.tilePriorityFunction_(tile, tileSourceKey, tileCenter);
+    tileResolution = /** @type {number} */ (node[4]);
+    priority = this.tilePriorityFunction_(
+        tile, tileSourceKey, tileCenter, tileResolution);
     if (priority == ol.TileQueue.DROP) {
       tileKey = tile.getKey();
       delete this.queuedTileKeys_[tileKey];

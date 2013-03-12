@@ -83,7 +83,6 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
 
   var tileLayer = this.getTileLayer();
   var tileSource = tileLayer.getTileSource();
-  var tileSourceKey = goog.getUid(tileSource).toString();
   var tileGrid = tileSource.getTileGrid();
   if (goog.isNull(tileGrid)) {
     tileGrid = ol.tilegrid.getForProjection(projection);
@@ -113,18 +112,14 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
       tilesToDrawByZ, getTileIfLoaded);
 
   var allTilesLoaded = true;
-  var tile, tileCenter, tileCoord, tileState, x, y;
+  var tile, tileCoord, tileState, x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
       tileCoord = new ol.TileCoord(z, x, y);
       tile = tileSource.getTile(tileCoord, tileGrid, projection);
       tileState = tile.getState();
-      if (tileState == ol.TileState.IDLE) {
-        this.updateWantedTiles(frameState.wantedTiles, tileSource, tileCoord);
-        tileCenter = tileGrid.getTileCoordCenter(tileCoord);
-        frameState.tileQueue.enqueue(tile, tileSourceKey, tileCenter);
-      } else if (tileState == ol.TileState.LOADED) {
+      if (tileState == ol.TileState.LOADED) {
         tilesToDrawByZ[z][tileCoord.toString()] = tile;
         continue;
       } else if (tileState == ol.TileState.ERROR ||
@@ -224,6 +219,8 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
+  this.manageTilePyramid(
+      frameState, tileSource, tileGrid, projection, extent, z);
   this.scheduleExpireCache(frameState, tileSource);
 
 };
