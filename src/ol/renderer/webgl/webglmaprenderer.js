@@ -216,17 +216,6 @@ goog.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
 
 
 /**
- * @inheritDoc
- */
-ol.renderer.webgl.Map.prototype.addLayer = function(layer) {
-  goog.base(this, 'addLayer', layer);
-  if (layer.getVisible()) {
-    this.getMap().render();
-  }
-};
-
-
-/**
  * @param {ol.Tile} tile Tile.
  * @param {number} magFilter Mag filter.
  * @param {number} minFilter Min filter.
@@ -461,17 +450,6 @@ ol.renderer.webgl.Map.prototype.initializeGL_ = function() {
  */
 ol.renderer.webgl.Map.prototype.isTileTextureLoaded = function(tile) {
   return this.textureCache_.containsKey(tile.getKey());
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Map.prototype.removeLayer = function(layer) {
-  goog.base(this, 'removeLayer', layer);
-  if (layer.getVisible()) {
-    this.getMap().render();
-  }
 };
 
 

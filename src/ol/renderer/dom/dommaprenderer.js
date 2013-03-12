@@ -49,15 +49,6 @@ goog.inherits(ol.renderer.dom.Map, ol.renderer.Map);
 /**
  * @inheritDoc
  */
-ol.renderer.dom.Map.prototype.addLayer = function(layer) {
-  goog.base(this, 'addLayer', layer);
-  this.getMap().render();
-};
-
-
-/**
- * @inheritDoc
- */
 ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
   var layerRenderer;
   if (layer instanceof ol.layer.TileLayer) {
