@@ -307,6 +307,8 @@ ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
   var map = this.getMap(),
       amountDragged = this.amountDragged_(e),
       res = this.resolutionForAmount_(amountDragged);
+  goog.asserts.assert(res >= this.minResolution_ && res <= this.maxResolution_,
+      'calculated new resolution is in allowed bounds.');
   if (res !== this.currentResolution_) {
     this.currentResolution_ = res;
     map.getView().setResolution(res);
