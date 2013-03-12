@@ -2,6 +2,31 @@ goog.provide('ol.test.TileUrlFunction');
 
 describe('ol.TileUrlFunction', function() {
 
+  describe('expandUrl', function() {
+    describe('with number range', function() {
+      it('creates expected URLs', function() {
+        var template = 'http://tile-{1-3}/{z}/{x}/{y}';
+        var urls = ol.TileUrlFunction.expandUrl(template);
+        expect(urls).toEqual([
+          'http://tile-1/{z}/{x}/{y}',
+          'http://tile-2/{z}/{x}/{y}',
+          'http://tile-3/{z}/{x}/{y}'
+        ]);
+      });
+    });
+    describe('with character range', function() {
+      it('creates expected URLs', function() {
+        var template = 'http://tile-{c-e}/{z}/{x}/{y}';
+        var urls = ol.TileUrlFunction.expandUrl(template);
+        expect(urls).toEqual([
+          'http://tile-c/{z}/{x}/{y}',
+          'http://tile-d/{z}/{x}/{y}',
+          'http://tile-e/{z}/{x}/{y}'
+        ]);
+      });
+    });
+  });
+
   describe('createFromTemplate', function() {
     it('creates expected URL', function() {
       var tileUrl = ol.TileUrlFunction.createFromTemplate('{z}/{x}/{y}');

@@ -66,23 +66,10 @@ ol.source.WMTS = function(wmtsOptions) {
     goog.object.extend(kvpParams, context);
   }
 
-  // TODO: factorize the code below so that it is usable by all sources
   var urls = wmtsOptions.urls;
   if (!goog.isDef(urls)) {
-    urls = [];
-    var url = wmtsOptions.url;
-    goog.asserts.assert(goog.isDef(url));
-    var match = /\{(\d)-(\d)\}/.exec(url) || /\{([a-z])-([a-z])\}/.exec(url);
-    if (match) {
-      var startCharCode = match[1].charCodeAt(0);
-      var stopCharCode = match[2].charCodeAt(0);
-      var charCode;
-      for (charCode = startCharCode; charCode <= stopCharCode; ++charCode) {
-        urls.push(url.replace(match[0], String.fromCharCode(charCode)));
-      }
-    } else {
-      urls.push(url);
-    }
+    goog.asserts.assert(goog.isDef(wmtsOptions.url));
+    urls = ol.TileUrlFunction.expandUrl(wmtsOptions.url);
   }
 
   /**
