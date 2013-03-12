@@ -139,26 +139,6 @@ ol.source.TileSource.prototype.getTileGrid = function() {
 
 
 /**
- * @param {number} z Z.
- * @param {ol.Extent} extent Extent.
- * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
- */
-ol.source.TileSource.prototype.useLowResolutionTiles =
-    function(z, extent, tileGrid) {
-  var tileRange, x, y, zKey;
-  // FIXME this should loop up to tileGrid's minZ when implemented
-  for (; z >= 0; --z) {
-    tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
-    for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
-      for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        this.useTile(z + '/' + x + '/' + y);
-      }
-    }
-  }
-};
-
-
-/**
  * Marks a tile coord as being used, without triggering a load.
  * @param {string} tileCoordKey Tile coordinate key.
  */
