@@ -128,8 +128,8 @@ ol.structs.RTreeNode_.prototype.divide = function() {
   for (var i = 0; i < numChildren; ++i) {
     child = this.children[i];
     if (i % half === 0) {
-      node = new ol.structs.RTreeNode_(child.minX, child.minY, child.maxX, child.maxY,
-          this, this.level + 1);
+      node = new ol.structs.RTreeNode_(child.minX, child.minY,
+          child.maxX, child.maxY, this, this.level + 1);
       goog.object.extend(this.types, node.types);
       this.children.push(node);
     }
