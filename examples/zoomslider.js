@@ -1,4 +1,3 @@
-goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.View2D');
@@ -14,12 +13,18 @@ goog.require('ol.source.MapQuestOpenAerial');
  * @return {ol.Map} The ol.Map instance.
  */
 var createMap = function(divId) {
-  var layer, map, zoomslider;
+  var source, layer, map, zoomslider, resolutions, minRes, maxRes;
+
+  source = new ol.source.MapQuestOpenAerial();
+  resolutions = source.getResolutions();
+  minRes = resolutions[resolutions.length - 1];
+  maxRes = resolutions[0];
+
   layer = new ol.layer.TileLayer({
-    source: new ol.source.MapQuestOpenAerial()
+    source: source
   });
   map = new ol.Map({
-    layers: new ol.Collection([layer]),
+    layers: [layer],
     target: divId,
     view: new ol.View2D({
       center: new ol.Coordinate(0, 0),
@@ -27,8 +32,8 @@ var createMap = function(divId) {
     })
   });
   zoomslider = new ol.control.ZoomSlider({
-    minResolution: 500,
-    maxResolution: 100000,
+    minResolution: minRes,
+    maxResolution: maxRes,
     map: map
   });
   return map;
