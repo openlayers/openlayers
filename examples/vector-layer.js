@@ -17,6 +17,8 @@ goog.require('ol.style.Rule');
 goog.require('ol.style.Style');
 
 
+var map;
+
 var raster = new ol.layer.TileLayer({
   source: new ol.source.MapQuestOpenAerial()
 });
@@ -58,7 +60,7 @@ xhr.onload = function() {
 };
 xhr.send();
 
-var map = new ol.Map({
+map = new ol.Map({
   layers: new ol.Collection([raster, vector]),
   renderer: ol.RendererHint.CANVAS,
   target: 'map',
