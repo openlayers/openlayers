@@ -6,6 +6,7 @@ goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
+goog.require('ol');
 goog.require('ol.Size');
 goog.require('ol.layer.ImageLayer');
 goog.require('ol.layer.TileLayer');
@@ -40,7 +41,7 @@ ol.renderer.canvas.Map = function(container, map) {
   this.canvas_ = goog.dom.createElement(goog.dom.TagName.CANVAS);
   this.canvas_.height = this.canvasSize_.height;
   this.canvas_.width = this.canvasSize_.width;
-  this.canvas_.className = 'ol-unselectable';
+  this.canvas_.className = ol.CSS_CLASS_UNSELECTABLE;
   goog.dom.insertChildAt(container, this.canvas_, 0);
 
   /**
