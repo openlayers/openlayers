@@ -79,6 +79,7 @@ goog.inherits(ol.renderer.Map, goog.Disposable);
 ol.renderer.Map.prototype.addLayer = function(layer) {
   var layerRenderer = this.createLayerRenderer(layer);
   this.setLayerRenderer(layer, layerRenderer);
+  this.getMap().render();
 };
 
 
@@ -224,6 +225,7 @@ ol.renderer.Map.prototype.handleLayersRemove = function(collectionEvent) {
  */
 ol.renderer.Map.prototype.removeLayer = function(layer) {
   goog.dispose(this.removeLayerRenderer(layer));
+  this.getMap().render();
 };
 
 
