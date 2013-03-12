@@ -224,11 +224,11 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
 
 
 /**
- * @param {{frameState:ol.FrameState}} evtObj The evtObj.
+ * @param {ol.MapEvent} mapEvtObj The ol.MapEvent object.
  * @private
  */
-ol.control.ZoomSlider.prototype.handleMapPostRender_ = function(evtObj) {
-  var res = evtObj.frameState.view2DState.resolution;
+ol.control.ZoomSlider.prototype.handleMapPostRender_ = function(mapEvtObj) {
+  var res = mapEvtObj.frameState.view2DState.resolution;
   if (res !== this.currentResolution_) {
     this.currentResolution_ = res;
     this.positionThumbForResolution_(res);
