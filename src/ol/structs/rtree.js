@@ -11,11 +11,11 @@ goog.require('ol.Rectangle');
  * @param {number} minY Minimum Y.
  * @param {number} maxX Maximum X.
  * @param {number} maxY Maximum Y.
- * @param {ol.RTreeNode_} parent Parent node.
+ * @param {ol.structs.RTreeNode_} parent Parent node.
  * @param {number} level Level in the tree hierarchy.
  * @extends {ol.Rectangle}
  */
-ol.RTreeNode_ = function(minX, minY, maxX, maxY, parent, level) {
+ol.structs.RTreeNode_ = function(minX, minY, maxX, maxY, parent, level) {
 
   goog.base(this, minX, minY, maxX, maxY);
 
@@ -30,7 +30,7 @@ ol.RTreeNode_ = function(minX, minY, maxX, maxY, parent, level) {
   this.objectId;
 
   /**
-   * @type {ol.RTreeNode_}
+   * @type {ol.structs.RTreeNode_}
    */
   this.parent = parent;
 
@@ -45,12 +45,12 @@ ol.RTreeNode_ = function(minX, minY, maxX, maxY, parent, level) {
   this.types = {};
 
   /**
-   * @type {Array.<ol.RTreeNode_>}
+   * @type {Array.<ol.structs.RTreeNode_>}
    */
   this.children = [];
 
 };
-goog.inherits(ol.RTreeNode_, ol.Rectangle);
+goog.inherits(ol.structs.RTreeNode_, ol.Rectangle);
 
 
 /**
@@ -59,7 +59,7 @@ goog.inherits(ol.RTreeNode_, ol.Rectangle);
  * @param {Object.<string, Object>} results Target object for results.
  * @param {string=} opt_type Type for another indexing dimension.
  */
-ol.RTreeNode_.prototype.find = function(bounds, results, opt_type) {
+ol.structs.RTreeNode_.prototype.find = function(bounds, results, opt_type) {
   if (this.intersects(bounds) &&
       (!goog.isDef(opt_type) || this.types[opt_type] === true)) {
     var numChildren = this.children.length;
@@ -79,9 +79,9 @@ ol.RTreeNode_.prototype.find = function(bounds, results, opt_type) {
 /**
  * Find the appropriate node for insertion.
  * @param {ol.Rectangle} bounds Bounding box.
- * @return {ol.RTreeNode_|undefined} Matching node.
+ * @return {ol.structs.RTreeNode_|undefined} Matching node.
  */
-ol.RTreeNode_.prototype.get = function(bounds) {
+ol.structs.RTreeNode_.prototype.get = function(bounds) {
   if (this.intersects(bounds)) {
     var numChildren = this.children.length;
     if (numChildren === 0) {
@@ -103,7 +103,7 @@ ol.RTreeNode_.prototype.get = function(bounds) {
  * Update boxes up to the root to ensure correct bounding
  * @param {ol.Rectangle} bounds Bounding box.
  */
-ol.RTreeNode_.prototype.update = function(bounds) {
+ol.structs.RTreeNode_.prototype.update = function(bounds) {
   this.extend(bounds);
   if (!goog.isNull(this.parent)) {
     this.parent.update(bounds);
@@ -116,7 +116,7 @@ ol.RTreeNode_.prototype.update = function(bounds) {
  * the split items. The top left will be the topmost leftmost child and the
  * bottom right will be the rightmost bottommost child.
  */
-ol.RTreeNode_.prototype.divide = function() {
+ol.structs.RTreeNode_.prototype.divide = function() {
   var numChildren = this.children.length;
   if (numChildren === 0) {
     return;
@@ -128,12 +128,12 @@ ol.RTreeNode_.prototype.divide = function() {
   for (var i = 0; i < numChildren; ++i) {
     child = this.children[i];
     if (i % half === 0) {
-      node = new ol.RTreeNode_(child.minX, child.minY, child.maxX, child.maxY,
+      node = new ol.structs.RTreeNode_(child.minX, child.minY, child.maxX, child.maxY,
           this, this.level + 1);
       goog.object.extend(this.types, node.types);
       this.children.push(node);
     }
-    child.parent = /** @type {ol.RTreeNode_} */ node;
+    child.parent = /** @type {ol.structs.RTreeNode_} */ node;
     goog.object.extend(node.types, child.types);
     node.children.push(child);
     node.extend(child);
@@ -149,9 +149,9 @@ ol.structs.RTree = function() {
 
   /**
    * @private
-   * @type {ol.RTreeNode_}
+   * @type {ol.structs.RTreeNode_}
    */
-  this.root_ = new ol.RTreeNode_(
+  this.root_ = new ol.structs.RTreeNode_(
       Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY,
       Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, null, 0);
 
@@ -178,7 +178,7 @@ ol.structs.RTree.prototype.find = function(bounds, opt_type) {
 ol.structs.RTree.prototype.put = function(bounds, object, opt_type) {
   var found = this.root_.get(bounds);
   if (found) {
-    var node = new ol.RTreeNode_(
+    var node = new ol.structs.RTreeNode_(
         bounds.minX, bounds.minY, bounds.maxX, bounds.maxY,
         found, found.level + 1);
     node.object = object;
