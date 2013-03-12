@@ -25,8 +25,7 @@ ol.control.ZoomSlider = function(zoomSliderOptions) {
   // FIXME these should be read out from a map if not given, and only then
   //       fallback to the constants if they weren't defined on the map.
   /**
-   * The minimum resolution that this control that one can set with this
-   * control.
+   * The minimum resolution that one can set with this control.
    *
    * @type {number}
    * @private
@@ -36,8 +35,7 @@ ol.control.ZoomSlider = function(zoomSliderOptions) {
       ol.control.ZoomSlider.DEFAULT_MAX_RESOLUTION;
 
   /**
-   * The maximum resolution that this control that one can set with this
-   * control.
+   * The maximum resolution that one can set with this control.
    *
    * @type {number}
    * @private
