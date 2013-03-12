@@ -16,6 +16,7 @@
 /build/proj4js
 /examples/*.json
 /examples/*.combined.js
+/examples/*.html.png
 /examples/example-list.js
 /examples/example-list.xml
 /test/requireall.js
