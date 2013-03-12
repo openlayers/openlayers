@@ -123,20 +123,22 @@ ol.control.ZoomSlider.CSS_CLASS_THUMB =
 
 /**
  * The default value for minResolution_ when the control isn't instanciated with
- * an explicit value.
+ * an explicit value. The default value is the resolution of the standard OSM
+ * tiles at zoomlevel 18.
  *
  * @const {number}
  */
-ol.control.ZoomSlider.DEFAULT_MIN_RESOLUTION = 500;
+ol.control.ZoomSlider.DEFAULT_MIN_RESOLUTION = 0.5971642833948135;
 
 
 /**
  * The default value for maxResolution_ when the control isn't instanciated with
- * an explicit value.
+ * an explicit value.  The default value is the resolution of the standard OSM
+ * tiles at zoomlevel 0.
  *
  * @const {number}
  */
-ol.control.ZoomSlider.DEFAULT_MAX_RESOLUTION = 1000000;
+ol.control.ZoomSlider.DEFAULT_MAX_RESOLUTION = 156543.0339;
 
 
 /**

@@ -22,12 +22,15 @@ describe('ol.control.ZoomSlider', function() {
   describe('configuration & defaults', function() {
 
     it('has valid defaults for min and maxresolution', function() {
+      var expectedMin = 0.5971642833948135,
+          expectedMax = 156543.0339,
+          expectedRange = expectedMax - expectedMin;
       expect(function() {
         zoomslider = new ol.control.ZoomSlider({});
       }).not.toThrow();
-      expect(zoomslider.minResolution_).toBe(500);
-      expect(zoomslider.maxResolution_).toBe(1000000);
-      expect(zoomslider.range_).toBe(999500);
+      expect(zoomslider.minResolution_).toBe(expectedMin);
+      expect(zoomslider.maxResolution_).toBe(expectedMax);
+      expect(zoomslider.range_).toBe(expectedRange);
     });
 
     it('throws exception when configured with wrong resolutions', function() {
