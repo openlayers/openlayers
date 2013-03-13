@@ -17,9 +17,6 @@ describe('ol.Rectangle', function() {
 
     beforeEach(function() {
       rectangle1 = new ol.Rectangle(50, 50, 100, 100);
-      expect.Assertion.prototype.intersectWith = function(other) {
-        return this.obj.intersects(other);
-      };
     });
 
     it('returns the expected value', function() {

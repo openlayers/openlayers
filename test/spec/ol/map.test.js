@@ -198,7 +198,7 @@ describe('ol.Map', function() {
       // confirm that the center is somewhere between origin and destination
       // after a short delay
       setTimeout(function() {
-        expect(o.callback.called).to.be.ok();
+        expect(o.callback).to.be.called();
         var loc = map.getView().getCenter();
         expect(loc.x).not.to.eql(origin.x);
         expect(loc.y).not.to.eql(origin.y);

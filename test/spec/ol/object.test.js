@@ -116,17 +116,17 @@ describe('ol.Object', function() {
 
     it('dispatches events', function() {
       o.notify('k');
-      expect(listener1.called).to.be.ok();
+      expect(listener1).to.be.called();
     });
 
     it('dispatches generic change events to bound objects', function() {
       o.notify('k');
-      expect(listener2.called).to.be.ok();
+      expect(listener2).to.be.called();
     });
 
     it('dispatches events to bound objects', function() {
       o.notify('k');
-      expect(listener3.called).to.be.ok();
+      expect(listener3).to.be.called();
     });
   });
 
@@ -149,7 +149,7 @@ describe('ol.Object', function() {
 
     it('dispatches events to object', function() {
       o.set('k', 1);
-      expect(listener1.called).to.be.ok();
+      expect(listener1).to.be.called();
 
       expect(o.getKeys()).to.eql(['k']);
       expect(o2.getKeys()).to.eql(['k']);
@@ -157,17 +157,17 @@ describe('ol.Object', function() {
 
     it('dispatches generic change events to object', function() {
       o.set('k', 1);
-      expect(listener2.called).to.be.ok();
+      expect(listener2).to.be.called();
     });
 
     it('dispatches events to bound object', function() {
       o.set('k', 1);
-      expect(listener3.called).to.be.ok();
+      expect(listener3).to.be.called();
     });
 
     it('dispatches events to object bound to', function() {
       o2.set('k', 2);
-      expect(listener1.called).to.be.ok();
+      expect(listener1).to.be.called();
 
       expect(o.getKeys()).to.eql(['k']);
       expect(o2.getKeys()).to.eql(['k']);
@@ -175,7 +175,7 @@ describe('ol.Object', function() {
 
     it('dispatches generic change events to object bound to', function() {
       o2.set('k', 2);
-      expect(listener2.called).to.be.ok();
+      expect(listener2).to.be.called();
     });
   });
 
@@ -300,8 +300,8 @@ describe('ol.Object', function() {
       expect(o.get('k2')).to.be(undefined);
       expect(o2.get('k2')).to.eql(1);
       expect(o2.get('k1')).to.be(undefined);
-      expect(listener1.called).to.be.ok();
-      expect(listener2.called).to.be.ok();
+      expect(listener1).to.be.called();
+      expect(listener2).to.be.called();
 
       expect(o.getKeys()).to.eql(['k1']);
       expect(o2.getKeys()).to.eql(['k2']);
@@ -392,7 +392,7 @@ describe('ol.Object', function() {
       it('does not call the setter', function() {
         o.set('x', 1);
         expect(o.get('x')).to.eql(1);
-        expect(o.setX.called).to.not.be.ok();
+        expect(o.setX).to.not.be.called();
 
         expect(o.getKeys()).to.eql(['x']);
       });
@@ -403,7 +403,7 @@ describe('ol.Object', function() {
         var o2 = new ol.Object();
         o2.bindTo('x', o);
         o2.set('x', 1);
-        expect(o.setX.called).to.be.ok();
+        expect(o.setX).to.be.called();
         expect(o.get('x')).to.eql(1);
 
         expect(o.getKeys()).to.eql(['x']);
@@ -423,7 +423,7 @@ describe('ol.Object', function() {
     describe('without bind', function() {
       it('does not call the getter', function() {
         expect(o.get('x')).to.be(undefined);
-        expect(o.getX.called).to.not.be.ok();
+        expect(o.getX).to.not.be.called();
       });
     });
 
@@ -432,7 +432,7 @@ describe('ol.Object', function() {
         var o2 = new ol.Object();
         o2.bindTo('x', o);
         expect(o2.get('x')).to.eql(1);
-        expect(o.getX.called).to.be.ok();
+        expect(o.getX).to.be.called();
 
         expect(o.getKeys()).to.eql([]);
         expect(o2.getKeys()).to.eql(['x']);
@@ -467,8 +467,8 @@ describe('ol.Object', function() {
 
     it('dispatches the expected event', function() {
       o.set('K', 1);
-      expect(listener1.called).to.be.ok();
-      expect(listener2.called).to.not.be.ok();
+      expect(listener1).to.be.called();
+      expect(listener2).to.not.be.called();
 
       expect(o.getKeys()).to.eql(['K']);
     });
