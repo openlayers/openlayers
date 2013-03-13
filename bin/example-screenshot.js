@@ -41,11 +41,7 @@ var // imports
     exampleDir = system.args[2];
     // various settings
     ignoreFiles = [ 
-        'example-list.html',
-        'wms-custom-proj.html',
-        'wms-single-image.html',
-        'wms-tiled.html',
-        'wmts.html'
+        'example-list.html'
     ],
     intervalMillisecs = 25,
     renderMillisecs = 2000,
@@ -141,7 +137,7 @@ var interval = setInterval(function() {
             top: 0,
             left: 0,
             width: page.viewportSize.width,
-            height: page.viewportSize.width
+            height: page.viewportSize.height
         };
         page.open(util.buildUrl(baseExamplesUrl, htmlFiles[pageindex]));
     }
