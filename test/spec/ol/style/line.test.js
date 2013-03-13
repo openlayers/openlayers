@@ -20,8 +20,8 @@ describe('ol.style.LineLiteral', function() {
         strokeWidth: 3,
         opacity: 1
       });
-      expect(literal.equals(equalLiteral)).toBe(true);
-      expect(literal.equals(differentLiteral)).toBe(false);
+      expect(literal.equals(equalLiteral)).to.be(true);
+      expect(literal.equals(differentLiteral)).to.be(false);
     });
 
   });
@@ -37,7 +37,7 @@ describe('ol.style.Line', function() {
         strokeColor: '#BADA55',
         strokeWidth: 3
       });
-      expect(symbolizer).toBeA(ol.style.Line);
+      expect(symbolizer).to.be.a(ol.style.Line);
     });
 
     it('accepts expressions', function() {
@@ -45,7 +45,7 @@ describe('ol.style.Line', function() {
         opacity: new ol.Expression('value / 100'),
         strokeWidth: ol.Expression('widthAttr')
       });
-      expect(symbolizer).toBeA(ol.style.Line);
+      expect(symbolizer).to.be.a(ol.style.Line);
     });
 
   });
@@ -64,9 +64,9 @@ describe('ol.style.Line', function() {
       });
 
       var literal = symbolizer.createLiteral(feature);
-      expect(literal).toBeA(ol.style.LineLiteral);
-      expect(literal.opacity).toBe(42 / 100);
-      expect(literal.strokeWidth).toBe(1.5);
+      expect(literal).to.be.a(ol.style.LineLiteral);
+      expect(literal.opacity).to.be(42 / 100);
+      expect(literal.strokeWidth).to.be(1.5);
     });
 
   });

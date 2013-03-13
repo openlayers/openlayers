@@ -77,8 +77,8 @@ describe('ol.parser.GeoJSON', function() {
       });
 
       var obj = parser.read(str);
-      expect(obj).toBeA(ol.geom.Point);
-      expect(obj.getCoordinates()).toEqual([10, 20]);
+      expect(obj).to.be.a(ol.geom.Point);
+      expect(obj.getCoordinates()).to.eql([10, 20]);
     });
 
     it('parses linestring', function() {
@@ -88,8 +88,8 @@ describe('ol.parser.GeoJSON', function() {
       });
 
       var obj = parser.read(str);
-      expect(obj).toBeA(ol.geom.LineString);
-      expect(obj.getCoordinates()).toEqual([[10, 20], [30, 40]]);
+      expect(obj).to.be.a(ol.geom.LineString);
+      expect(obj.getCoordinates()).to.eql([[10, 20], [30, 40]]);
     });
 
     it('parses polygon', function() {
@@ -102,11 +102,11 @@ describe('ol.parser.GeoJSON', function() {
           });
 
       var obj = parser.read(str);
-      expect(obj).toBeA(ol.geom.Polygon);
-      expect(obj.rings.length).toBe(3);
-      expect(obj.rings[0]).toBeA(ol.geom.LinearRing);
-      expect(obj.rings[1]).toBeA(ol.geom.LinearRing);
-      expect(obj.rings[2]).toBeA(ol.geom.LinearRing);
+      expect(obj).to.be.a(ol.geom.Polygon);
+      expect(obj.rings.length).to.be(3);
+      expect(obj.rings[0]).to.be.a(ol.geom.LinearRing);
+      expect(obj.rings[1]).to.be.a(ol.geom.LinearRing);
+      expect(obj.rings[2]).to.be.a(ol.geom.LinearRing);
     });
 
     it('parses geometry collection', function() {
@@ -119,52 +119,53 @@ describe('ol.parser.GeoJSON', function() {
       });
 
       var array = parser.read(str);
-      expect(array.length).toBe(2);
-      expect(array[0]).toBeA(ol.geom.Point);
-      expect(array[1]).toBeA(ol.geom.LineString);
+      expect(array.length).to.be(2);
+      expect(array[0]).to.be.a(ol.geom.Point);
+      expect(array[1]).to.be.a(ol.geom.LineString);
     });
 
     it('parses feature collection', function() {
       var str = JSON.stringify(data),
           array = parser.read(str);
 
-      expect(array.length).toBe(2);
+      expect(array.length).to.be(2);
 
       var first = array[0];
-      expect(first).toBeA(ol.Feature);
-      expect(first.get('LINK_ID')).toBe(573730499);
+      expect(first).to.be.a(ol.Feature);
+      expect(first.get('LINK_ID')).to.be(573730499);
       var firstGeom = first.getGeometry();
-      expect(firstGeom).toBeA(ol.geom.LineString);
+      expect(firstGeom).to.be.a(ol.geom.LineString);
 
       var second = array[1];
-      expect(second).toBeA(ol.Feature);
-      expect(second.get('ST_NAME')).toBe('BRUNNSGATAN');
+      expect(second).to.be.a(ol.Feature);
+      expect(second.get('ST_NAME')).to.be('BRUNNSGATAN');
       var secondGeom = second.getGeometry();
-      expect(secondGeom).toBeA(ol.geom.LineString);
+      expect(secondGeom).to.be.a(ol.geom.LineString);
     });
 
-    it('parses countries.json', function() {
+    it('parses countries.json', function(done) {
       afterLoadText('spec/ol/parser/geojson/countries.json', function(text) {
         var result = parser.read(text);
-        expect(result.length).toBe(179);
+        expect(result.length).to.be(179);
 
         var first = result[0];
-        expect(first).toBeA(ol.Feature);
-        expect(first.get('name')).toBe('Afghanistan');
+        expect(first).to.be.a(ol.Feature);
+        expect(first.get('name')).to.be('Afghanistan');
         var firstGeom = first.getGeometry();
-        expect(firstGeom).toBeA(ol.geom.Polygon);
+        expect(firstGeom).to.be.a(ol.geom.Polygon);
         expect(firstGeom.getBounds().equals(
             new ol.Extent(60.52843, 29.318572, 75.158028, 38.486282)))
-            .toBe(true);
+            .to.be(true);
 
         var last = result[178];
-        expect(last).toBeA(ol.Feature);
-        expect(last.get('name')).toBe('Zimbabwe');
+        expect(last).to.be.a(ol.Feature);
+        expect(last.get('name')).to.be('Zimbabwe');
         var lastGeom = last.getGeometry();
-        expect(lastGeom).toBeA(ol.geom.Polygon);
+        expect(lastGeom).to.be.a(ol.geom.Polygon);
         expect(lastGeom.getBounds().equals(
             new ol.Extent(25.264226, -22.271612, 32.849861, -15.507787)))
-            .toBe(true);
+            .to.be(true);
+        done();
       });
     });
 
@@ -188,29 +189,29 @@ describe('ol.parser.GeoJSON', function() {
         };
 
         var result = parser.readFeaturesFromString(text, {callback: callback});
-        expect(result.length).toBe(179);
+        expect(result.length).to.be(179);
 
-        expect(pointVertices.coordinates.length).toBe(0);
-        expect(lineVertices.coordinates.length).toBe(0);
-        expect(polygonVertices.coordinates.length).toBe(21344);
+        expect(pointVertices.coordinates.length).to.be(0);
+        expect(lineVertices.coordinates.length).to.be(0);
+        expect(polygonVertices.coordinates.length).to.be(21344);
 
         var first = result[0];
-        expect(first).toBeA(ol.Feature);
-        expect(first.get('name')).toBe('Afghanistan');
+        expect(first).to.be.a(ol.Feature);
+        expect(first.get('name')).to.be('Afghanistan');
         var firstGeom = first.getGeometry();
-        expect(firstGeom).toBeA(ol.geom.Polygon);
+        expect(firstGeom).to.be.a(ol.geom.Polygon);
         expect(firstGeom.getBounds().equals(
             new ol.Extent(60.52843, 29.318572, 75.158028, 38.486282)))
-            .toBe(true);
+            .to.be(true);
 
         var last = result[178];
-        expect(last).toBeA(ol.Feature);
-        expect(last.get('name')).toBe('Zimbabwe');
+        expect(last).to.be.a(ol.Feature);
+        expect(last.get('name')).to.be('Zimbabwe');
         var lastGeom = last.getGeometry();
-        expect(lastGeom).toBeA(ol.geom.Polygon);
+        expect(lastGeom).to.be.a(ol.geom.Polygon);
         expect(lastGeom.getBounds().equals(
             new ol.Extent(25.264226, -22.271612, 32.849861, -15.507787)))
-            .toBe(true);
+            .to.be(true);
       });
     });
 

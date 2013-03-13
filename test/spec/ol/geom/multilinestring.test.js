@@ -8,14 +8,14 @@ describe('ol.geom.MultiLineString', function() {
       var multi = new ol.geom.MultiLineString([
         [[10, 20], [30, 40]],
         [[20, 30], [40, 50]]]);
-      expect(multi).toBeA(ol.geom.MultiLineString);
-      expect(multi).toBeA(ol.geom.Geometry);
+      expect(multi).to.be.a(ol.geom.MultiLineString);
+      expect(multi).to.be.a(ol.geom.Geometry);
     });
 
     it('throws when given with insufficient dimensions', function() {
       expect(function() {
         var multi = new ol.geom.MultiLineString([1]);
-      }).toThrow();
+      }).to.throwException();
     });
 
   });
@@ -27,9 +27,9 @@ describe('ol.geom.MultiLineString', function() {
         [[10, 20], [30, 40]],
         [[20, 30], [40, 50]]]);
 
-      expect(multi.components.length).toBe(2);
-      expect(multi.components[0]).toBeA(ol.geom.LineString);
-      expect(multi.components[1]).toBeA(ol.geom.LineString);
+      expect(multi.components.length).to.be(2);
+      expect(multi.components[0]).to.be.a(ol.geom.LineString);
+      expect(multi.components[1]).to.be.a(ol.geom.LineString);
 
     });
 
@@ -41,14 +41,14 @@ describe('ol.geom.MultiLineString', function() {
       var multi = new ol.geom.MultiLineString([
         [[10, 20], [30, 40]],
         [[20, 30], [40, 50]]]);
-      expect(multi.dimension).toBe(2);
+      expect(multi.dimension).to.be(2);
     });
 
     it('can be 3', function() {
       var multi = new ol.geom.MultiLineString([
         [[10, 20, 30], [30, 40, 50]],
         [[20, 30, 40], [40, 50, 60]]]);
-      expect(multi.dimension).toBe(3);
+      expect(multi.dimension).to.be(3);
     });
 
   });
@@ -60,10 +60,10 @@ describe('ol.geom.MultiLineString', function() {
         [[10, 20], [30, 40]],
         [[20, 30], [40, 50]]]);
       var bounds = multi.getBounds();
-      expect(bounds.minX).toBe(10);
-      expect(bounds.minY).toBe(20);
-      expect(bounds.maxX).toBe(40);
-      expect(bounds.maxY).toBe(50);
+      expect(bounds.minX).to.be(10);
+      expect(bounds.minY).to.be(20);
+      expect(bounds.maxX).to.be(40);
+      expect(bounds.maxY).to.be(50);
     });
 
   });
@@ -76,7 +76,7 @@ describe('ol.geom.MultiLineString', function() {
         [[20, 30], [40, 50]]
       ];
       var multi = new ol.geom.MultiLineString(coordinates);
-      expect(multi.getCoordinates()).toEqual(coordinates);
+      expect(multi.getCoordinates()).to.eql(coordinates);
     });
 
   });
