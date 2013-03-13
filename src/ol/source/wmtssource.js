@@ -66,12 +66,6 @@ ol.source.WMTS = function(wmtsOptions) {
     goog.object.extend(kvpParams, context);
   }
 
-  var urls = wmtsOptions.urls;
-  if (!goog.isDef(urls)) {
-    goog.asserts.assert(goog.isDef(wmtsOptions.url));
-    urls = ol.TileUrlFunction.expandUrl(wmtsOptions.url);
-  }
-
   /**
    * @param {string} template Template.
    * @return {ol.TileUrlFunctionType} Tile URL function.
@@ -100,16 +94,23 @@ ol.source.WMTS = function(wmtsOptions) {
     };
   }
 
-  var tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
-      goog.array.map(urls, function(url) {
-        if (goog.isDef(kvpParams)) {
-          // TODO: we may want to create our own appendParams function
-          // so that params order conforms to wmts spec guidance,
-          // and so that we can avoid to escape special template params
-          url = goog.uri.utils.appendParamsFromMap(url, kvpParams);
-        }
-        return createFromWMTSTemplate(url);
-      }));
+  var tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
+  var urls = wmtsOptions.urls;
+  if (!goog.isDef(urls) && goog.isDef(wmtsOptions.url)) {
+    urls = ol.TileUrlFunction.expandUrl(wmtsOptions.url);
+  }
+  if (goog.isDef(urls)) {
+    tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
+        goog.array.map(urls, function(url) {
+          if (goog.isDef(kvpParams)) {
+            // TODO: we may want to create our own appendParams function
+            // so that params order conforms to wmts spec guidance,
+            // and so that we can avoid to escape special template params
+            url = goog.uri.utils.appendParamsFromMap(url, kvpParams);
+          }
+          return createFromWMTSTemplate(url);
+        }));
+  }
 
   tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       function(tileCoord, tileGrid, projection) {
