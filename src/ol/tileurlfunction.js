@@ -20,28 +20,15 @@ ol.TileUrlFunctionType;
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
 ol.TileUrlFunction.createFromTemplate = function(template) {
-  var match =
-      /\{(\d)-(\d)\}/.exec(template) || /\{([a-z])-([a-z])\}/.exec(template);
-  if (match) {
-    var templates = [];
-    var startCharCode = match[1].charCodeAt(0);
-    var stopCharCode = match[2].charCodeAt(0);
-    var charCode;
-    for (charCode = startCharCode; charCode <= stopCharCode; ++charCode) {
-      templates.push(template.replace(match[0], String.fromCharCode(charCode)));
+  return function(tileCoord) {
+    if (goog.isNull(tileCoord)) {
+      return undefined;
+    } else {
+      return template.replace('{z}', tileCoord.z)
+                      .replace('{x}', tileCoord.x)
+                      .replace('{y}', tileCoord.y);
     }
-    return ol.TileUrlFunction.createFromTemplates(templates);
-  } else {
-    return function(tileCoord) {
-      if (goog.isNull(tileCoord)) {
-        return undefined;
-      } else {
-        return template.replace('{z}', tileCoord.z)
-                       .replace('{x}', tileCoord.x)
-                       .replace('{y}', tileCoord.y);
-      }
-    };
-  }
+  };
 };
 
 

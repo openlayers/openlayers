@@ -7,7 +7,7 @@ describe('ol.TileUrlFunction', function() {
       it('creates expected URLs', function() {
         var template = 'http://tile-{1-3}/{z}/{x}/{y}';
         var urls = ol.TileUrlFunction.expandUrl(template);
-        expect(urls).toEqual([
+        expect(urls).to.eql([
           'http://tile-1/{z}/{x}/{y}',
           'http://tile-2/{z}/{x}/{y}',
           'http://tile-3/{z}/{x}/{y}'
@@ -18,7 +18,7 @@ describe('ol.TileUrlFunction', function() {
       it('creates expected URLs', function() {
         var template = 'http://tile-{c-e}/{z}/{x}/{y}';
         var urls = ol.TileUrlFunction.expandUrl(template);
-        expect(urls).toEqual([
+        expect(urls).to.eql([
           'http://tile-c/{z}/{x}/{y}',
           'http://tile-d/{z}/{x}/{y}',
           'http://tile-e/{z}/{x}/{y}'
@@ -33,31 +33,23 @@ describe('ol.TileUrlFunction', function() {
       expect(tileUrl(new ol.TileCoord(3, 2, 1))).to.eql('3/2/1');
       expect(tileUrl(null)).to.be(undefined);
     });
-    describe('with number range', function() {
-      it('creates expected URL', function() {
-        var template = 'http://tile-{1-3}/{z}/{x}/{y}';
-        var tileUrlFunction = ol.TileUrlFunction.createFromTemplate(template);
-        var tileCoord = new ol.TileCoord(3, 2, 1);
-        tileCoord.hash = function() { return 3; };
-        expect(tileUrlFunction(tileCoord)).to.eql('http://tile-1/3/2/1');
-        tileCoord.hash = function() { return 2; };
-        expect(tileUrlFunction(tileCoord)).to.eql('http://tile-3/3/2/1');
-        tileCoord.hash = function() { return 1; };
-        expect(tileUrlFunction(tileCoord)).to.eql('http://tile-2/3/2/1');
-      });
-    });
-    describe('with character range', function() {
-      it('creates expected URL', function() {
-        var template = 'http://tile-{c-e}/{z}/{x}/{y}';
-        var tileUrlFunction = ol.TileUrlFunction.createFromTemplate(template);
-        var tileCoord = new ol.TileCoord(3, 2, 1);
-        tileCoord.hash = function() { return 3; };
-        expect(tileUrlFunction(tileCoord)).to.eql('http://tile-c/3/2/1');
-        tileCoord.hash = function() { return 2; };
-        expect(tileUrlFunction(tileCoord)).to.eql('http://tile-e/3/2/1');
-        tileCoord.hash = function() { return 1; };
-        expect(tileUrlFunction(tileCoord)).to.eql('http://tile-d/3/2/1');
-      });
+  });
+
+  describe('createFromTemplates', function() {
+    it('creates expected URL', function() {
+      var templates = [
+        'http://tile-1/{z}/{x}/{y}',
+        'http://tile-2/{z}/{x}/{y}',
+        'http://tile-3/{z}/{x}/{y}'
+      ];
+      var tileUrlFunction = ol.TileUrlFunction.createFromTemplates(templates);
+      var tileCoord = new ol.TileCoord(3, 2, 1);
+      tileCoord.hash = function() { return 3; };
+      expect(tileUrlFunction(tileCoord)).to.eql('http://tile-1/3/2/1');
+      tileCoord.hash = function() { return 2; };
+      expect(tileUrlFunction(tileCoord)).to.eql('http://tile-3/3/2/1');
+      tileCoord.hash = function() { return 1; };
+      expect(tileUrlFunction(tileCoord)).to.eql('http://tile-2/3/2/1');
     });
   });
 
