@@ -29,6 +29,11 @@ expect.Assertion.prototype.intersectWith = function(other) {
 };
 
 
+expect.Assertion.prototype.called = function() {
+  return this.obj.called;
+};
+
+
 // helper functions for async testing
 (function(global) {
 
