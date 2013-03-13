@@ -24,6 +24,15 @@ expect.Assertion.prototype.roughlyEqual = function(other, tol) {
 };
 
 
+expect.Assertion.prototype.intersectWith = function(other) {
+  return this.obj.intersects(other);
+};
+
+
+expect.Assertion.prototype.called = function() {
+  return this.obj.called;
+};
+
 
 // helper functions for async testing
 (function(global) {

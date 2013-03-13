@@ -56,7 +56,7 @@ describe('ol.layer.Vector', function() {
     it('can filter by geometry type using its GeometryType index', function() {
       sinon.spy(geomFilter, 'applies');
       var lineStrings = layer.getFeatures(geomFilter);
-      expect(geomFilter.applies.called).to.not.be.ok();
+      expect(geomFilter.applies).to.not.be.called();
       expect(lineStrings.length).to.eql(4);
       expect(lineStrings).to.contain(features[4]);
     });
@@ -64,7 +64,7 @@ describe('ol.layer.Vector', function() {
     it('can filter by extent using its RTree', function() {
       sinon.spy(extentFilter, 'applies');
       var subset = layer.getFeatures(extentFilter);
-      expect(extentFilter.applies.called).to.not.be.ok();
+      expect(extentFilter.applies).to.not.be.called();
       expect(subset.length).to.eql(4);
       expect(subset).not.to.contain(features[7]);
     });
@@ -78,8 +78,8 @@ describe('ol.layer.Vector', function() {
       sinon.spy(filter2, 'applies');
       var subset1 = layer.getFeatures(filter1);
       var subset2 = layer.getFeatures(filter2);
-      expect(filter1.applies.called).to.not.be.ok();
-      expect(filter2.applies.called).to.not.be.ok();
+      expect(filter1.applies).to.not.be.called();
+      expect(filter2.applies).to.not.be.called();
       expect(subset1.length).to.eql(0);
       expect(subset2.length).to.eql(0);
     });
@@ -89,7 +89,7 @@ describe('ol.layer.Vector', function() {
           ol.filter.LogicalOperator.OR);
       sinon.spy(filter, 'applies');
       var subset = layer.getFeatures(filter);
-      expect(filter.applies.called).to.be.ok();
+      expect(filter.applies).to.be.called();
       expect(subset.length).to.eql(8);
     });
 
