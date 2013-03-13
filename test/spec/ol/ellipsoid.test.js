@@ -330,7 +330,8 @@ describe('ol.Ellipsoid', function() {
             e = expected[i];
             v = ol.ellipsoid.WGS84.vincenty(e.c1, e.c2, 1e-12, 100);
             expect(v.distance).to.roughlyEqual(e.vincentyDistance, 1e-8);
-            expect(v.finalBearing).to.roughlyEqual(e.vincentyFinalBearing, 1e-9);
+            expect(v.finalBearing).to.roughlyEqual(
+                e.vincentyFinalBearing, 1e-9);
             expect(v.initialBearing).to.roughlyEqual(
                 e.vincentyInitialBearing, 1e-9);
           }
