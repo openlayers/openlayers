@@ -28,6 +28,12 @@
       <div class="row-fluid">
         <div class="span12">
           <div id="map" class="map"></div>
+
+          <select id="layer-select">
+            <option value="Aerial">Aerial</option>
+            <option value="AerialWithLabels" selected>Aerial with labels</option>
+            <option value="Road">Road</option>
+          </select>
         </div>
       </div>
 
@@ -46,6 +52,7 @@
 
     </div>
 
+    <script src="jquery.min.js" type="text/javascript"></script>
     <script src="loader.js?id=bing-maps" type="text/javascript"></script>
 
   </body>
