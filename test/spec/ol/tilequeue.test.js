@@ -37,7 +37,7 @@ describe('ol.TileQueue', function() {
       addRandomPriorityTiles(tq, 100);
 
       tq.heapify_();
-      expect(isHeap(tq)).toBeTruthy();
+      expect(isHeap(tq)).to.be.ok();
     });
   });
 
@@ -61,8 +61,8 @@ describe('ol.TileQueue', function() {
       };
 
       tq.reprioritize();
-      expect(tq.heap_.length).toEqual(50);
-      expect(isHeap(tq)).toBeTruthy();
+      expect(tq.heap_.length).to.eql(50);
+      expect(isHeap(tq)).to.be.ok();
 
     });
   });

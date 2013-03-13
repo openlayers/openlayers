@@ -13,7 +13,7 @@ describe('ol.filter.Extent', function() {
   describe('#getExtent()', function() {
 
     it('returns the configured extent', function() {
-      expect(filter.getExtent()).toBe(extent);
+      expect(filter.getExtent()).to.be(extent);
     });
 
   });
@@ -22,9 +22,9 @@ describe('ol.filter.Extent', function() {
 
     it('returns true if a feature intersects, false if not', function() {
       expect(filter.applies(new ol.Feature({g: new ol.geom.Point([44, 89])})))
-          .toBe(true);
+          .to.be(true);
       expect(filter.applies(new ol.Feature({g: new ol.geom.Point([46, 91])})))
-          .toBe(false);
+          .to.be(false);
     });
 
   });

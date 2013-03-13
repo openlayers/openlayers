@@ -14,8 +14,8 @@ describe('ol.geom.GeometryCollection', function() {
       var line = new ol.geom.LineString([[10, 20], [30, 40]]);
       var poly = new ol.geom.Polygon([outer, inner1, inner2]);
       var multi = new ol.geom.GeometryCollection([point, line, poly]);
-      expect(multi).toBeA(ol.geom.GeometryCollection);
-      expect(multi).toBeA(ol.geom.Geometry);
+      expect(multi).to.be.a(ol.geom.GeometryCollection);
+      expect(multi).to.be.a(ol.geom.Geometry);
     });
 
   });
@@ -28,10 +28,10 @@ describe('ol.geom.GeometryCollection', function() {
       var poly = new ol.geom.Polygon([outer, inner1, inner2]);
       var multi = new ol.geom.GeometryCollection([point, line, poly]);
 
-      expect(multi.components.length).toBe(3);
-      expect(multi.components[0]).toBeA(ol.geom.Point);
-      expect(multi.components[1]).toBeA(ol.geom.LineString);
-      expect(multi.components[2]).toBeA(ol.geom.Polygon);
+      expect(multi.components.length).to.be(3);
+      expect(multi.components[0]).to.be.a(ol.geom.Point);
+      expect(multi.components[1]).to.be.a(ol.geom.LineString);
+      expect(multi.components[2]).to.be.a(ol.geom.Polygon);
     });
 
   });
@@ -43,14 +43,14 @@ describe('ol.geom.GeometryCollection', function() {
       var line = new ol.geom.LineString([[10, 20], [30, 40]]);
       var poly = new ol.geom.Polygon([outer, inner1, inner2]);
       var multi = new ol.geom.GeometryCollection([point, line, poly]);
-      expect(multi.dimension).toBe(2);
+      expect(multi.dimension).to.be(2);
     });
 
     it('can be 3', function() {
       var multi = new ol.geom.GeometryCollection([
         new ol.geom.Point([30, 40, 50])
       ]);
-      expect(multi.dimension).toBe(3);
+      expect(multi.dimension).to.be(3);
     });
 
   });
@@ -62,10 +62,10 @@ describe('ol.geom.GeometryCollection', function() {
       var line = new ol.geom.LineString([[1, 20], [30, 40]]);
       var multi = new ol.geom.GeometryCollection([point, line]);
       var bounds = multi.getBounds();
-      expect(bounds.minX).toBe(1);
-      expect(bounds.minY).toBe(2);
-      expect(bounds.maxX).toBe(30);
-      expect(bounds.maxY).toBe(40);
+      expect(bounds.minX).to.be(1);
+      expect(bounds.minY).to.be(2);
+      expect(bounds.maxX).to.be(30);
+      expect(bounds.maxY).to.be(40);
     });
 
   });

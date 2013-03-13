@@ -6,21 +6,21 @@ describe('ol.array', function() {
     it('returns expected value', function() {
       var arr = [1000, 500, 100];
 
-      expect(ol.array.binaryFindNearest(arr, 10000)).toEqual(0);
-      expect(ol.array.binaryFindNearest(arr, 1000)).toEqual(0);
-      expect(ol.array.binaryFindNearest(arr, 900)).toEqual(0);
+      expect(ol.array.binaryFindNearest(arr, 10000)).to.eql(0);
+      expect(ol.array.binaryFindNearest(arr, 1000)).to.eql(0);
+      expect(ol.array.binaryFindNearest(arr, 900)).to.eql(0);
 
-      expect(ol.array.binaryFindNearest(arr, 750)).toEqual(1);
+      expect(ol.array.binaryFindNearest(arr, 750)).to.eql(1);
 
-      expect(ol.array.binaryFindNearest(arr, 550)).toEqual(1);
-      expect(ol.array.binaryFindNearest(arr, 500)).toEqual(1);
-      expect(ol.array.binaryFindNearest(arr, 450)).toEqual(1);
+      expect(ol.array.binaryFindNearest(arr, 550)).to.eql(1);
+      expect(ol.array.binaryFindNearest(arr, 500)).to.eql(1);
+      expect(ol.array.binaryFindNearest(arr, 450)).to.eql(1);
 
-      expect(ol.array.binaryFindNearest(arr, 300)).toEqual(2);
+      expect(ol.array.binaryFindNearest(arr, 300)).to.eql(2);
 
-      expect(ol.array.binaryFindNearest(arr, 200)).toEqual(2);
-      expect(ol.array.binaryFindNearest(arr, 100)).toEqual(2);
-      expect(ol.array.binaryFindNearest(arr, 50)).toEqual(2);
+      expect(ol.array.binaryFindNearest(arr, 200)).to.eql(2);
+      expect(ol.array.binaryFindNearest(arr, 100)).to.eql(2);
+      expect(ol.array.binaryFindNearest(arr, 50)).to.eql(2);
     });
   });
 
@@ -28,21 +28,21 @@ describe('ol.array', function() {
     it('returns expected value', function() {
       var arr = [1000, 500, 100];
 
-      expect(ol.array.linearFindNearest(arr, 10000)).toEqual(0);
-      expect(ol.array.linearFindNearest(arr, 1000)).toEqual(0);
-      expect(ol.array.linearFindNearest(arr, 900)).toEqual(0);
+      expect(ol.array.linearFindNearest(arr, 10000)).to.eql(0);
+      expect(ol.array.linearFindNearest(arr, 1000)).to.eql(0);
+      expect(ol.array.linearFindNearest(arr, 900)).to.eql(0);
 
-      expect(ol.array.linearFindNearest(arr, 750)).toEqual(1);
+      expect(ol.array.linearFindNearest(arr, 750)).to.eql(1);
 
-      expect(ol.array.linearFindNearest(arr, 550)).toEqual(1);
-      expect(ol.array.linearFindNearest(arr, 500)).toEqual(1);
-      expect(ol.array.linearFindNearest(arr, 450)).toEqual(1);
+      expect(ol.array.linearFindNearest(arr, 550)).to.eql(1);
+      expect(ol.array.linearFindNearest(arr, 500)).to.eql(1);
+      expect(ol.array.linearFindNearest(arr, 450)).to.eql(1);
 
-      expect(ol.array.linearFindNearest(arr, 300)).toEqual(2);
+      expect(ol.array.linearFindNearest(arr, 300)).to.eql(2);
 
-      expect(ol.array.linearFindNearest(arr, 200)).toEqual(2);
-      expect(ol.array.linearFindNearest(arr, 100)).toEqual(2);
-      expect(ol.array.linearFindNearest(arr, 50)).toEqual(2);
+      expect(ol.array.linearFindNearest(arr, 200)).to.eql(2);
+      expect(ol.array.linearFindNearest(arr, 100)).to.eql(2);
+      expect(ol.array.linearFindNearest(arr, 50)).to.eql(2);
     });
   });
 });

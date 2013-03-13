@@ -6,14 +6,14 @@ describe('ol.geom.MultiPoint', function() {
 
     it('creates a multi-point from an array', function() {
       var multi = new ol.geom.MultiPoint([[10, 20], [30, 40]]);
-      expect(multi).toBeA(ol.geom.MultiPoint);
-      expect(multi).toBeA(ol.geom.Geometry);
+      expect(multi).to.be.a(ol.geom.MultiPoint);
+      expect(multi).to.be.a(ol.geom.Geometry);
     });
 
     it('throws when given with insufficient dimensions', function() {
       expect(function() {
         var multi = new ol.geom.MultiPoint([1]);
-      }).toThrow();
+      }).to.throwException();
     });
 
   });
@@ -23,9 +23,9 @@ describe('ol.geom.MultiPoint', function() {
     it('is an array of points', function() {
       var multi = new ol.geom.MultiPoint([[10, 20], [30, 40]]);
 
-      expect(multi.components.length).toBe(2);
-      expect(multi.components[0]).toBeA(ol.geom.Point);
-      expect(multi.components[1]).toBeA(ol.geom.Point);
+      expect(multi.components.length).to.be(2);
+      expect(multi.components[0]).to.be.a(ol.geom.Point);
+      expect(multi.components[1]).to.be.a(ol.geom.Point);
 
     });
 
@@ -35,12 +35,12 @@ describe('ol.geom.MultiPoint', function() {
 
     it('can be 2', function() {
       var multi = new ol.geom.MultiPoint([[10, 20], [30, 40]]);
-      expect(multi.dimension).toBe(2);
+      expect(multi.dimension).to.be(2);
     });
 
     it('can be 3', function() {
       var multi = new ol.geom.MultiPoint([[10, 20, 30], [30, 40, 50]]);
-      expect(multi.dimension).toBe(3);
+      expect(multi.dimension).to.be(3);
     });
 
   });
@@ -50,10 +50,10 @@ describe('ol.geom.MultiPoint', function() {
     it('returns the bounding extent', function() {
       var multi = new ol.geom.MultiPoint([[10, 20], [30, 40]]);
       var bounds = multi.getBounds();
-      expect(bounds.minX).toBe(10);
-      expect(bounds.minY).toBe(20);
-      expect(bounds.maxX).toBe(30);
-      expect(bounds.maxY).toBe(40);
+      expect(bounds.minX).to.be(10);
+      expect(bounds.minY).to.be(20);
+      expect(bounds.maxX).to.be(30);
+      expect(bounds.maxY).to.be(40);
     });
 
   });
@@ -62,7 +62,7 @@ describe('ol.geom.MultiPoint', function() {
 
     it('returns an array', function() {
       var multi = new ol.geom.MultiPoint([[10, 20], [30, 40]]);
-      expect(multi.getCoordinates()).toEqual([[10, 20], [30, 40]]);
+      expect(multi.getCoordinates()).to.eql([[10, 20], [30, 40]]);
     });
 
   });

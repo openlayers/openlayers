@@ -13,14 +13,14 @@ describe('ol.geom.MultiPolygon', function() {
       var multi = new ol.geom.MultiPolygon([
         [outer1, inner1a, inner1b],
         [outer2]]);
-      expect(multi).toBeA(ol.geom.MultiPolygon);
-      expect(multi).toBeA(ol.geom.Geometry);
+      expect(multi).to.be.a(ol.geom.MultiPolygon);
+      expect(multi).to.be.a(ol.geom.Geometry);
     });
 
     it('throws when given with insufficient dimensions', function() {
       expect(function() {
         var multi = new ol.geom.MultiPolygon([1]);
-      }).toThrow();
+      }).to.throwException();
     });
 
   });
@@ -32,9 +32,9 @@ describe('ol.geom.MultiPolygon', function() {
         [outer1, inner1a, inner1b],
         [outer2]]);
 
-      expect(multi.components.length).toBe(2);
-      expect(multi.components[0]).toBeA(ol.geom.Polygon);
-      expect(multi.components[1]).toBeA(ol.geom.Polygon);
+      expect(multi.components.length).to.be(2);
+      expect(multi.components[0]).to.be.a(ol.geom.Polygon);
+      expect(multi.components[1]).to.be.a(ol.geom.Polygon);
 
     });
 
@@ -46,12 +46,12 @@ describe('ol.geom.MultiPolygon', function() {
       var multi = new ol.geom.MultiPolygon([
         [outer1, inner1a, inner1b],
         [outer2]]);
-      expect(multi.dimension).toBe(2);
+      expect(multi.dimension).to.be(2);
     });
 
     it('can be 3', function() {
       var multi = new ol.geom.MultiPolygon([[[[10, 20, 30], [40, 50, 60]]]]);
-      expect(multi.dimension).toBe(3);
+      expect(multi.dimension).to.be(3);
     });
 
   });
@@ -63,10 +63,10 @@ describe('ol.geom.MultiPolygon', function() {
         [outer1, inner1a, inner1b],
         [outer2]]);
       var bounds = multi.getBounds();
-      expect(bounds.minX).toBe(0);
-      expect(bounds.minY).toBe(0);
-      expect(bounds.maxX).toBe(20);
-      expect(bounds.maxY).toBe(50);
+      expect(bounds.minX).to.be(0);
+      expect(bounds.minY).to.be(0);
+      expect(bounds.maxX).to.be(20);
+      expect(bounds.maxY).to.be(50);
     });
 
   });
@@ -79,7 +79,7 @@ describe('ol.geom.MultiPolygon', function() {
         [outer2]
       ];
       var multi = new ol.geom.MultiPolygon(coordinates);
-      expect(multi.getCoordinates()).toEqual(coordinates);
+      expect(multi.getCoordinates()).to.eql(coordinates);
     });
 
   });

@@ -18,36 +18,36 @@ describe('ol.structs.LRUCache', function() {
 
   describe('empty cache', function() {
     it('has size zero', function() {
-      expect(lruCache.getCount()).toEqual(0);
+      expect(lruCache.getCount()).to.eql(0);
     });
     it('has no keys', function() {
-      expect(lruCache.getKeys()).toEqual([]);
+      expect(lruCache.getKeys()).to.eql([]);
     });
     it('has no values', function() {
-      expect(lruCache.getValues()).toEqual([]);
+      expect(lruCache.getValues()).to.eql([]);
     });
   });
 
   describe('populating', function() {
     it('returns the correct size', function() {
       fillLRUCache(lruCache);
-      expect(lruCache.getCount()).toEqual(4);
+      expect(lruCache.getCount()).to.eql(4);
     });
     it('contains the correct keys in the correct order', function() {
       fillLRUCache(lruCache);
-      expect(lruCache.getKeys()).toEqual(['d', 'c', 'b', 'a']);
+      expect(lruCache.getKeys()).to.eql(['d', 'c', 'b', 'a']);
     });
     it('contains the correct values in the correct order', function() {
       fillLRUCache(lruCache);
-      expect(lruCache.getValues()).toEqual([3, 2, 1, 0]);
+      expect(lruCache.getValues()).to.eql([3, 2, 1, 0]);
     });
     it('reports which keys are contained', function() {
       fillLRUCache(lruCache);
-      expect(lruCache.containsKey('a')).toBeTruthy();
-      expect(lruCache.containsKey('b')).toBeTruthy();
-      expect(lruCache.containsKey('c')).toBeTruthy();
-      expect(lruCache.containsKey('d')).toBeTruthy();
-      expect(lruCache.containsKey('e')).toBeFalsy();
+      expect(lruCache.containsKey('a')).to.be.ok();
+      expect(lruCache.containsKey('b')).to.be.ok();
+      expect(lruCache.containsKey('c')).to.be.ok();
+      expect(lruCache.containsKey('d')).to.be.ok();
+      expect(lruCache.containsKey('e')).to.not.be();
     });
   });
 
@@ -55,9 +55,9 @@ describe('ol.structs.LRUCache', function() {
     it('moves the key to newest position', function() {
       fillLRUCache(lruCache);
       lruCache.get('a');
-      expect(lruCache.getCount()).toEqual(4);
-      expect(lruCache.getKeys()).toEqual(['a', 'd', 'c', 'b']);
-      expect(lruCache.getValues()).toEqual([0, 3, 2, 1]);
+      expect(lruCache.getCount()).to.eql(4);
+      expect(lruCache.getKeys()).to.eql(['a', 'd', 'c', 'b']);
+      expect(lruCache.getValues()).to.eql([0, 3, 2, 1]);
     });
   });
 
@@ -65,9 +65,9 @@ describe('ol.structs.LRUCache', function() {
     it('moves the key to newest position', function() {
       fillLRUCache(lruCache);
       lruCache.get('b');
-      expect(lruCache.getCount()).toEqual(4);
-      expect(lruCache.getKeys()).toEqual(['b', 'd', 'c', 'a']);
-      expect(lruCache.getValues()).toEqual([1, 3, 2, 0]);
+      expect(lruCache.getCount()).to.eql(4);
+      expect(lruCache.getKeys()).to.eql(['b', 'd', 'c', 'a']);
+      expect(lruCache.getValues()).to.eql([1, 3, 2, 0]);
     });
   });
 
@@ -75,9 +75,9 @@ describe('ol.structs.LRUCache', function() {
     it('maintains the key to newest position', function() {
       fillLRUCache(lruCache);
       lruCache.get('d');
-      expect(lruCache.getCount()).toEqual(4);
-      expect(lruCache.getKeys()).toEqual(['d', 'c', 'b', 'a']);
-      expect(lruCache.getValues()).toEqual([3, 2, 1, 0]);
+      expect(lruCache.getCount()).to.eql(4);
+      expect(lruCache.getKeys()).to.eql(['d', 'c', 'b', 'a']);
+      expect(lruCache.getValues()).to.eql([3, 2, 1, 0]);
     });
   });
 
@@ -85,8 +85,8 @@ describe('ol.structs.LRUCache', function() {
     it('adds it as the newest value', function() {
       fillLRUCache(lruCache);
       lruCache.set('e', 4);
-      expect(lruCache.getKeys()).toEqual(['e', 'd', 'c', 'b', 'a']);
-      expect(lruCache.getValues()).toEqual([4, 3, 2, 1, 0]);
+      expect(lruCache.getKeys()).to.eql(['e', 'd', 'c', 'b', 'a']);
+      expect(lruCache.getValues()).to.eql([4, 3, 2, 1, 0]);
     });
   });
 
@@ -95,7 +95,7 @@ describe('ol.structs.LRUCache', function() {
       fillLRUCache(lruCache);
       expect(function() {
         lruCache.set('a', 0);
-      }).toThrow();
+      }).to.throwException();
     });
   });
 
@@ -103,76 +103,76 @@ describe('ol.structs.LRUCache', function() {
     it('setting raises an exception', function() {
       expect(function() {
         lruCache.set('constructor', 0);
-      }).toThrow();
+      }).to.throwException();
       expect(function() {
         lruCache.set('hasOwnProperty', 0);
-      }).toThrow();
+      }).to.throwException();
       expect(function() {
         lruCache.set('isPrototypeOf', 0);
-      }).toThrow();
+      }).to.throwException();
       expect(function() {
         lruCache.set('propertyIsEnumerable', 0);
-      }).toThrow();
+      }).to.throwException();
       expect(function() {
         lruCache.set('toLocaleString', 0);
-      }).toThrow();
+      }).to.throwException();
       expect(function() {
         lruCache.set('toString', 0);
-      }).toThrow();
+      }).to.throwException();
       expect(function() {
         lruCache.set('valueOf', 0);
-      }).toThrow();
+      }).to.throwException();
     });
     it('getting returns false', function() {
-      expect(lruCache.containsKey('constructor')).toBeFalsy();
-      expect(lruCache.containsKey('hasOwnProperty')).toBeFalsy();
-      expect(lruCache.containsKey('isPrototypeOf')).toBeFalsy();
-      expect(lruCache.containsKey('propertyIsEnumerable')).toBeFalsy();
-      expect(lruCache.containsKey('toLocaleString')).toBeFalsy();
-      expect(lruCache.containsKey('toString')).toBeFalsy();
-      expect(lruCache.containsKey('valueOf')).toBeFalsy();
+      expect(lruCache.containsKey('constructor')).to.not.be();
+      expect(lruCache.containsKey('hasOwnProperty')).to.not.be();
+      expect(lruCache.containsKey('isPrototypeOf')).to.not.be();
+      expect(lruCache.containsKey('propertyIsEnumerable')).to.not.be();
+      expect(lruCache.containsKey('toLocaleString')).to.not.be();
+      expect(lruCache.containsKey('toString')).to.not.be();
+      expect(lruCache.containsKey('valueOf')).to.not.be();
     });
   });
 
   describe('popping a value', function() {
     it('returns the least-recent-used value', function() {
       fillLRUCache(lruCache);
-      expect(lruCache.pop()).toEqual(0);
-      expect(lruCache.getCount()).toEqual(3);
-      expect(lruCache.containsKey('a')).toBeFalsy();
-      expect(lruCache.pop()).toEqual(1);
-      expect(lruCache.getCount()).toEqual(2);
-      expect(lruCache.containsKey('b')).toBeFalsy();
-      expect(lruCache.pop()).toEqual(2);
-      expect(lruCache.getCount()).toEqual(1);
-      expect(lruCache.containsKey('c')).toBeFalsy();
-      expect(lruCache.pop()).toEqual(3);
-      expect(lruCache.getCount()).toEqual(0);
-      expect(lruCache.containsKey('d')).toBeFalsy();
+      expect(lruCache.pop()).to.eql(0);
+      expect(lruCache.getCount()).to.eql(3);
+      expect(lruCache.containsKey('a')).to.not.be();
+      expect(lruCache.pop()).to.eql(1);
+      expect(lruCache.getCount()).to.eql(2);
+      expect(lruCache.containsKey('b')).to.not.be();
+      expect(lruCache.pop()).to.eql(2);
+      expect(lruCache.getCount()).to.eql(1);
+      expect(lruCache.containsKey('c')).to.not.be();
+      expect(lruCache.pop()).to.eql(3);
+      expect(lruCache.getCount()).to.eql(0);
+      expect(lruCache.containsKey('d')).to.not.be();
     });
   });
 
   describe('peeking at the last value', function() {
     it('returns the last key', function() {
       fillLRUCache(lruCache);
-      expect(lruCache.peekLast()).toEqual(0);
+      expect(lruCache.peekLast()).to.eql(0);
     });
     it('throws an exception when the cache is empty', function() {
       expect(function() {
         lruCache.peekLast();
-      }).toThrow();
+      }).to.throwException();
     });
   });
 
   describe('peeking at the last key', function() {
     it('returns the last key', function() {
       fillLRUCache(lruCache);
-      expect(lruCache.peekLastKey()).toEqual('a');
+      expect(lruCache.peekLastKey()).to.eql('a');
     });
     it('throws an exception when the cache is empty', function() {
       expect(function() {
         lruCache.peekLastKey();
-      }).toThrow();
+      }).to.throwException();
     });
   });
 
@@ -180,9 +180,9 @@ describe('ol.structs.LRUCache', function() {
     it('clears the cache', function() {
       fillLRUCache(lruCache);
       lruCache.clear();
-      expect(lruCache.getCount()).toEqual(0);
-      expect(lruCache.getKeys()).toEqual([]);
-      expect(lruCache.getValues()).toEqual([]);
+      expect(lruCache.getCount()).to.eql(0);
+      expect(lruCache.getKeys()).to.eql([]);
+      expect(lruCache.getValues()).to.eql([]);
     });
   });
 

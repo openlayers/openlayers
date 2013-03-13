@@ -6,8 +6,8 @@ describe('ol.geom.Point', function() {
 
     it('creates a point from an array', function() {
       var point = new ol.geom.Point([10, 20]);
-      expect(point).toBeA(ol.geom.Point);
-      expect(point).toBeA(ol.geom.Geometry);
+      expect(point).to.be.a(ol.geom.Point);
+      expect(point).to.be.a(ol.geom.Geometry);
     });
 
     it('accepts shared vertices', function() {
@@ -15,15 +15,15 @@ describe('ol.geom.Point', function() {
       var p1 = new ol.geom.Point([10, 20], vertices);
       var p2 = new ol.geom.Point([30, 40], vertices);
       var p3 = new ol.geom.Point([50, 60], vertices);
-      expect(p1.getCoordinates()).toEqual([10, 20]);
-      expect(p2.getCoordinates()).toEqual([30, 40]);
-      expect(p3.getCoordinates()).toEqual([50, 60]);
+      expect(p1.getCoordinates()).to.eql([10, 20]);
+      expect(p2.getCoordinates()).to.eql([30, 40]);
+      expect(p3.getCoordinates()).to.eql([50, 60]);
     });
 
     it('throws when given with insufficient dimensions', function() {
       expect(function() {
         var point = new ol.geom.Point([1]);
-      }).toThrow();
+      }).to.throwException();
     });
 
   });
@@ -32,12 +32,12 @@ describe('ol.geom.Point', function() {
 
     it('can be 2', function() {
       var point = new ol.geom.Point([10, 20]);
-      expect(point.dimension).toBe(2);
+      expect(point.dimension).to.be(2);
     });
 
     it('can be 3', function() {
       var point = new ol.geom.Point([10, 20, 30]);
-      expect(point.dimension).toBe(3);
+      expect(point.dimension).to.be(3);
     });
 
   });
@@ -47,10 +47,10 @@ describe('ol.geom.Point', function() {
     it('returns the bounding extent', function() {
       var point = new ol.geom.Point([10, 20]);
       var bounds = point.getBounds();
-      expect(bounds.minX).toBe(10);
-      expect(bounds.minY).toBe(20);
-      expect(bounds.maxX).toBe(10);
-      expect(bounds.maxY).toBe(20);
+      expect(bounds.minX).to.be(10);
+      expect(bounds.minY).to.be(20);
+      expect(bounds.maxX).to.be(10);
+      expect(bounds.maxY).to.be(20);
     });
 
   });
@@ -59,7 +59,7 @@ describe('ol.geom.Point', function() {
 
     it('returns an array', function() {
       var point = new ol.geom.Point([10, 20]);
-      expect(point.getCoordinates()).toEqual([10, 20]);
+      expect(point.getCoordinates()).to.eql([10, 20]);
     });
 
   });
@@ -78,23 +78,23 @@ describe('ol.geom.Point', function() {
       var id2 = p2.getSharedId();
       var id3 = p3.getSharedId();
 
-      expect(vertices.coordinates).toEqual(
+      expect(vertices.coordinates).to.eql(
           [10, 20, 30, 40, 50, 60]);
 
-      expect(vertices.getStart(id1)).toBe(0);
-      expect(vertices.getCount(id1)).toBe(1);
-      expect(vertices.get(id1, 0, 0)).toBe(10);
-      expect(vertices.get(id1, 0, 1)).toBe(20);
+      expect(vertices.getStart(id1)).to.be(0);
+      expect(vertices.getCount(id1)).to.be(1);
+      expect(vertices.get(id1, 0, 0)).to.be(10);
+      expect(vertices.get(id1, 0, 1)).to.be(20);
 
-      expect(vertices.getStart(id2)).toBe(2);
-      expect(vertices.getCount(id2)).toBe(1);
-      expect(vertices.get(id2, 0, 0)).toBe(30);
-      expect(vertices.get(id2, 0, 1)).toBe(40);
+      expect(vertices.getStart(id2)).to.be(2);
+      expect(vertices.getCount(id2)).to.be(1);
+      expect(vertices.get(id2, 0, 0)).to.be(30);
+      expect(vertices.get(id2, 0, 1)).to.be(40);
 
-      expect(vertices.getStart(id3)).toBe(4);
-      expect(vertices.getCount(id3)).toBe(1);
-      expect(vertices.get(id3, 0, 0)).toBe(50);
-      expect(vertices.get(id3, 0, 1)).toBe(60);
+      expect(vertices.getStart(id3)).to.be(4);
+      expect(vertices.getCount(id3)).to.be(1);
+      expect(vertices.get(id3, 0, 0)).to.be(50);
+      expect(vertices.get(id3, 0, 1)).to.be(60);
     });
 
   });
