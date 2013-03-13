@@ -439,10 +439,16 @@ def hostexamples(t):
         '--output_file', 'build/gh-pages/%(BRANCH)s/build/ol-deps.js')
 
 
+def _uses_opengeo_org(example):
+    # opengeo.org servers are unreliable, don't use them integration tests
+    with open(example.replace('.html', '.js')) as f:
+        return f.read().find('opengeo.org') != -1
+
+
 @target('check-examples', 'hostexamples', phony=True)
 def check_examples(t):
     directory = 'build/gh-pages/%(BRANCH)s/'
-    examples = ['build/gh-pages/%(BRANCH)s/' + e for e in EXAMPLES]
+    examples = ['build/gh-pages/%(BRANCH)s/' + e for e in EXAMPLES if not _uses_opengeo_org(e)]
     all_examples = \
         [e + '?mode=raw' for e in examples] + \
         [e + '?mode=whitespace' for e in examples] + \
