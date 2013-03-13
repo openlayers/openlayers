@@ -11,7 +11,7 @@ describe('ol.projection.EPSG3857', function() {
       var resolution = 19.11;
       var point = new ol.Coordinate(0, 0);
       expect(epsg3857.getPointResolution(resolution, point)).
-          toRoughlyEqual(19.11, 1e-1);
+          to.roughlyEqual(19.11, 1e-1);
     });
 
     it('returns the correct point scale at the latitude of Toronto',
@@ -23,7 +23,7 @@ describe('ol.projection.EPSG3857', function() {
           var point = ol.projection.transform(
               new ol.Coordinate(0, 43.65), epsg4326, epsg3857);
           expect(epsg3857.getPointResolution(resolution, point)).
-              toRoughlyEqual(19.11 * Math.cos(Math.PI * 43.65 / 180), 1e-9);
+              to.roughlyEqual(19.11 * Math.cos(Math.PI * 43.65 / 180), 1e-9);
         });
 
     it('returns the correct point scale at various latitudes', function() {
@@ -36,7 +36,7 @@ describe('ol.projection.EPSG3857', function() {
         var point = ol.projection.transform(
             new ol.Coordinate(0, latitude), epsg4326, epsg3857);
         expect(epsg3857.getPointResolution(resolution, point)).
-            toRoughlyEqual(19.11 * Math.cos(Math.PI * latitude / 180), 1e-9);
+            to.roughlyEqual(19.11 * Math.cos(Math.PI * latitude / 180), 1e-9);
       }
     });
 

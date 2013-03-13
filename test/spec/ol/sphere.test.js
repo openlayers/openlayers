@@ -468,7 +468,7 @@ describe('ol.Sphere', function() {
       var e, i;
       for (i = 0; i < expected.length; ++i) {
         e = expected[i];
-        expect(sphere.cosineDistance(e.c1, e.c2)).toRoughlyEqual(
+        expect(sphere.cosineDistance(e.c1, e.c2)).to.roughlyEqual(
             e.cosineDistance, 1e-9);
       }
     });
@@ -481,7 +481,7 @@ describe('ol.Sphere', function() {
       var e, i;
       for (i = 0; i < expected.length; ++i) {
         e = expected[i];
-        expect(sphere.equirectangularDistance(e.c1, e.c2)).toRoughlyEqual(
+        expect(sphere.equirectangularDistance(e.c1, e.c2)).to.roughlyEqual(
             e.equirectangularDistance, 1e-9);
       }
     });
@@ -494,7 +494,7 @@ describe('ol.Sphere', function() {
       var e, i;
       for (i = 0; i < expected.length; ++i) {
         e = expected[i];
-        expect(sphere.finalBearing(e.c1, e.c2)).toRoughlyEqual(
+        expect(sphere.finalBearing(e.c1, e.c2)).to.roughlyEqual(
             e.finalBearing, 1e-9);
       }
     });
@@ -507,7 +507,7 @@ describe('ol.Sphere', function() {
       var e, i;
       for (i = 0; i < expected.length; ++i) {
         e = expected[i];
-        expect(sphere.haversineDistance(e.c1, e.c2)).toRoughlyEqual(
+        expect(sphere.haversineDistance(e.c1, e.c2)).to.roughlyEqual(
             e.haversineDistance, 1e-9);
       }
     });
@@ -520,7 +520,7 @@ describe('ol.Sphere', function() {
       var e, i;
       for (i = 0; i < expected.length; ++i) {
         e = expected[i];
-        expect(sphere.initialBearing(e.c1, e.c2)).toRoughlyEqual(
+        expect(sphere.initialBearing(e.c1, e.c2)).to.roughlyEqual(
             e.initialBearing, 1e-9);
       }
     });
@@ -536,9 +536,9 @@ describe('ol.Sphere', function() {
         midpoint = sphere.midpoint(e.c1, e.c2);
         // Test modulo 360 to avoid unnecessary expensive modulo operations
         // in our implementation.
-        expect(goog.math.modulo(midpoint.x, 360)).toRoughlyEqual(
+        expect(goog.math.modulo(midpoint.x, 360)).to.roughlyEqual(
             goog.math.modulo(e.midpoint.x, 360), 1e-9);
-        expect(midpoint.y).toRoughlyEqual(e.midpoint.y, 1e-9);
+        expect(midpoint.y).to.roughlyEqual(e.midpoint.y, 1e-9);
       }
     });
 

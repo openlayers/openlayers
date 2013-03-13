@@ -10,9 +10,9 @@ describe('ol.View2D', function() {
           var options = {};
           var fn = ol.View2D.createConstraints_(options).resolution;
           expect(fn(156543.03392804097, 0))
-              .toRoughlyEqual(156543.03392804097, 1e-9);
+              .to.roughlyEqual(156543.03392804097, 1e-9);
           expect(fn(78271.51696402048, 0))
-              .toRoughlyEqual(78271.51696402048, 1e-10);
+              .to.roughlyEqual(78271.51696402048, 1e-10);
         });
       });
 
@@ -25,12 +25,12 @@ describe('ol.View2D', function() {
                 zoomFactor: 3
               };
               var fn = ol.View2D.createConstraints_(options).resolution;
-              expect(fn(82, 0)).toEqual(81);
-              expect(fn(81, 0)).toEqual(81);
-              expect(fn(27, 0)).toEqual(27);
-              expect(fn(9, 0)).toEqual(9);
-              expect(fn(3, 0)).toEqual(3);
-              expect(fn(2, 0)).toEqual(3);
+              expect(fn(82, 0)).to.eql(81);
+              expect(fn(81, 0)).to.eql(81);
+              expect(fn(27, 0)).to.eql(27);
+              expect(fn(9, 0)).to.eql(9);
+              expect(fn(3, 0)).to.eql(3);
+              expect(fn(2, 0)).to.eql(3);
             });
           });
 
@@ -40,11 +40,11 @@ describe('ol.View2D', function() {
             resolutions: [97, 76, 65, 54, 0.45]
           };
           var fn = ol.View2D.createConstraints_(options).resolution;
-          expect(fn(97, 0)).toEqual(97);
-          expect(fn(76, 0)).toEqual(76);
-          expect(fn(65, 0)).toEqual(65);
-          expect(fn(54, 0)).toEqual(54);
-          expect(fn(0.45, 0)).toEqual(0.45);
+          expect(fn(97, 0)).to.eql(97);
+          expect(fn(76, 0)).to.eql(76);
+          expect(fn(65, 0)).to.eql(65);
+          expect(fn(54, 0)).to.eql(54);
+          expect(fn(0.45, 0)).to.eql(0.45);
         });
       });
 
@@ -54,8 +54,8 @@ describe('ol.View2D', function() {
       it('gives a correct rotation constraint function', function() {
         var options = {};
         var fn = ol.View2D.createConstraints_(options).rotation;
-        expect(fn(0.01, 0)).toEqual(0);
-        expect(fn(0.15, 0)).toEqual(0.15);
+        expect(fn(0.01, 0)).to.eql(0);
+        expect(fn(0.15, 0)).to.eql(0.15);
       });
     });
 

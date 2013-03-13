@@ -50,28 +50,28 @@ describe('ol.renderer.webgl.ImageLayer', function() {
 
       input = goog.vec.Vec4.createFromValues(-1, -1, 0, 1);
       goog.vec.Mat4.multVec4(matrix, input, output);
-      expect(output[0]).toEqual(-3);
-      expect(output[1]).toEqual(-3);
+      expect(output[0]).to.eql(-3);
+      expect(output[1]).to.eql(-3);
 
       input = goog.vec.Vec4.createFromValues(1, -1, 0, 1);
       goog.vec.Mat4.multVec4(matrix, input, output);
-      expect(output[0]).toEqual(1);
-      expect(output[1]).toEqual(-3);
+      expect(output[0]).to.eql(1);
+      expect(output[1]).to.eql(-3);
 
       input = goog.vec.Vec4.createFromValues(-1, 1, 0, 1);
       goog.vec.Mat4.multVec4(matrix, input, output);
-      expect(output[0]).toEqual(-3);
-      expect(output[1]).toEqual(3);
+      expect(output[0]).to.eql(-3);
+      expect(output[1]).to.eql(3);
 
       input = goog.vec.Vec4.createFromValues(1, 1, 0, 1);
       goog.vec.Mat4.multVec4(matrix, input, output);
-      expect(output[0]).toEqual(1);
-      expect(output[1]).toEqual(3);
+      expect(output[0]).to.eql(1);
+      expect(output[1]).to.eql(3);
 
       input = goog.vec.Vec4.createFromValues(0, 0, 0, 1);
       goog.vec.Mat4.multVec4(matrix, input, output);
-      expect(output[0]).toEqual(-1);
-      expect(output[1]).toEqual(0);
+      expect(output[0]).to.eql(-1);
+      expect(output[1]).to.eql(0);
     });
   });
 });

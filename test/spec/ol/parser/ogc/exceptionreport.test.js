@@ -1,31 +1,31 @@
 goog.provide('ol.test.parser.ogc.ExceptionReport');
 
+
 describe('ol.parser.ogc.exceptionreport', function() {
 
   var parser = new ol.parser.ogc.ExceptionReport();
 
   describe('test read exception', function() {
-    it('OCG WMS 1.3.0 exceptions', function() {
+    it('OCG WMS 1.3.0 exceptions', function(done) {
       var result, exceptions;
-      runs(function() {
-        var url = 'spec/ol/parser/ogc/xml/exceptionreport/wms1_3_0.xml';
-        goog.net.XhrIo.send(url, function(e) {
-          var xhr = e.target;
-          result = parser.read(xhr.getResponseXml());
-          exceptions = result.exceptionReport.exceptions;
-        });
+
+      var url = 'spec/ol/parser/ogc/xml/exceptionreport/wms1_3_0.xml';
+      goog.net.XhrIo.send(url, function(e) {
+        var xhr = e.target;
+        result = parser.read(xhr.getResponseXml());
+        exceptions = result.exceptionReport.exceptions;
       });
+
       waitsFor(function() {
         return (result !== undefined);
-      }, 'XHR timeout', 1000);
-      runs(function() {
-        expect(exceptions.length).toBe(4);
+      }, 'XHR timeout', 1000, function() {
+        expect(exceptions.length).to.be(4);
         var str = 'Plain text message about an error.';
-        expect(goog.string.trim(exceptions[0].text)).toBe(str);
-        expect(exceptions[1].code).toBe('InvalidUpdateSequence');
+        expect(goog.string.trim(exceptions[0].text)).to.be(str);
+        expect(exceptions[1].code).to.be('InvalidUpdateSequence');
         str = ' Another error message, this one with a service exception ' +
             'code supplied. ';
-        expect(exceptions[1].text).toBe(str);
+        expect(exceptions[1].text).to.be(str);
         str = 'Error in module <foo.c>, line 42A message that includes angle ' +
             'brackets in text must be enclosed in a Character Data Section as' +
             ' in this example. All XML-like markup is ignored except for this' +
@@ -37,55 +37,56 @@ describe('ol.parser.ogc.exceptionreport', function() {
             'application-specific software may choose to process it.' +
             '</Explanation>';
         expect(goog.string.trim(exceptions[3].text), str);
+        done();
       });
     });
-    it('test read exception OWSCommon 1.0.0', function() {
+    it('test read exception OWSCommon 1.0.0', function(done) {
       var result, report, exception;
-      runs(function() {
-        var url = 'spec/ol/parser/ogc/xml/exceptionreport/ows1_0_0.xml';
-        goog.net.XhrIo.send(url, function(e) {
-          var xhr = e.target;
-          result = parser.read(xhr.getResponseXml());
-          report = result.exceptionReport;
-          exception = report.exceptions[0];
-        });
+
+      var url = 'spec/ol/parser/ogc/xml/exceptionreport/ows1_0_0.xml';
+      goog.net.XhrIo.send(url, function(e) {
+        var xhr = e.target;
+        result = parser.read(xhr.getResponseXml());
+        report = result.exceptionReport;
+        exception = report.exceptions[0];
       });
+
       waitsFor(function() {
         return (result !== undefined);
-      }, 'XHR timeout', 1000);
-      runs(function() {
-        expect(report.version).toEqual('1.0.0');
-        expect(report.language).toEqual('en');
-        expect(exception.code).toEqual('InvalidParameterValue');
-        expect(exception.locator).toEqual('foo');
+      }, 'XHR timeout', 1000, function() {
+        expect(report.version).to.eql('1.0.0');
+        expect(report.language).to.eql('en');
+        expect(exception.code).to.eql('InvalidParameterValue');
+        expect(exception.locator).to.eql('foo');
         var msg = 'Update error: Error occured updating features';
-        expect(exception.texts[0]).toEqual(msg);
+        expect(exception.texts[0]).to.eql(msg);
         msg = 'Second exception line';
-        expect(exception.texts[1]).toEqual(msg);
+        expect(exception.texts[1]).to.eql(msg);
+        done();
       });
     });
-    it('test read exception OWSCommon 1.1.0', function() {
+    it('test read exception OWSCommon 1.1.0', function(done) {
       var result, report, exception;
-      runs(function() {
-        var url = 'spec/ol/parser/ogc/xml/exceptionreport/ows1_1_0.xml';
-        goog.net.XhrIo.send(url, function(e) {
-          var xhr = e.target;
-          result = parser.read(xhr.getResponseXml());
-          report = result.exceptionReport;
-          exception = report.exceptions[0];
-        });
+
+      var url = 'spec/ol/parser/ogc/xml/exceptionreport/ows1_1_0.xml';
+      goog.net.XhrIo.send(url, function(e) {
+        var xhr = e.target;
+        result = parser.read(xhr.getResponseXml());
+        report = result.exceptionReport;
+        exception = report.exceptions[0];
       });
+
       waitsFor(function() {
         return (result !== undefined);
-      }, 'XHR timeout', 1000);
-      runs(function() {
-        expect(report.version).toEqual('1.1.0');
-        expect(report.language).toEqual('en');
-        expect(exception.code).toEqual('InvalidParameterValue');
-        expect(exception.locator).toEqual('foo');
+      }, 'XHR timeout', 1000, function() {
+        expect(report.version).to.eql('1.1.0');
+        expect(report.language).to.eql('en');
+        expect(exception.code).to.eql('InvalidParameterValue');
+        expect(exception.locator).to.eql('foo');
         var msg = 'Update error: Error occured updating features';
-        expect(exception.texts[0]).toEqual(msg);
-        expect(exception.texts[1]).toEqual('Second exception line');
+        expect(exception.texts[0]).to.eql(msg);
+        expect(exception.texts[1]).to.eql('Second exception line');
+        done();
       });
     });
   });

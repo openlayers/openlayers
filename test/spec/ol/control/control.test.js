@@ -19,7 +19,7 @@ describe('ol.control.Control', function() {
   describe('dispose', function() {
     it('removes the control element from its parent', function() {
       control.dispose();
-      expect(goog.dom.getParentElement(control.element)).toBeNull();
+      expect(goog.dom.getParentElement(control.element)).to.be(null);
     });
   });
 });
