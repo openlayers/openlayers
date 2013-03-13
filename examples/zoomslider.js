@@ -16,10 +16,9 @@ var createMap = function(divId) {
   var source, layer, map, zoomslider, resolutions, minRes, maxRes;
 
   source = new ol.source.MapQuestOpenAerial();
-  resolutions = source.getResolutions();
-  minRes = resolutions[resolutions.length - 1];
-  maxRes = resolutions[0];
-
+  // These are the min and max resolutions of MapQuestOpenAerial
+  minRes = 0.5971642834779395;
+  maxRes = 156543.03392804097;
   layer = new ol.layer.TileLayer({
     source: source
   });
