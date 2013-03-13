@@ -192,25 +192,20 @@ ol.control.ZoomSlider.prototype.initMapEventListeners_ = function() {
 ol.control.ZoomSlider.prototype.initSlider_ = function() {
   var container = this.element,
       thumb = goog.dom.getFirstElementChild(container),
-      elemBounds = goog.style.getBounds(container),
-      elemPaddings = goog.style.getPaddingBox(container),
-      elemBorderBox = goog.style.getBorderBox(container),
+      elemSize = goog.style.getContentBoxSize(container),
       thumbBounds = goog.style.getBounds(thumb),
       thumbMargins = goog.style.getMarginBox(thumb),
       thumbBorderBox = goog.style.getBorderBox(thumb),
-      w = elemBounds.width -
-          elemPaddings.left - elemPaddings.right -
+      w = elemSize.width -
           thumbMargins.left - thumbMargins.right -
           thumbBorderBox.left - thumbBorderBox.right -
           thumbBounds.width,
-      h = elemBounds.height -
-          elemPaddings.top - elemPaddings.bottom -
+      h = elemSize.height -
           thumbMargins.top - thumbMargins.bottom -
           thumbBorderBox.top - thumbBorderBox.bottom -
           thumbBounds.height,
       limits;
-  // set the direction_ of the zoomslider and the allowed bounds for dragging
-  if (elemBounds.width > elemBounds.height) {
+  if (elemSize.width > elemSize.height) {
     this.direction_ = ol.control.ZoomSlider.direction.HORIZONTAL;
     limits = new goog.math.Rect(0, 0, w, 0);
   } else {
