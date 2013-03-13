@@ -3,6 +3,7 @@ goog.provide('ol.control.ScaleLineUnits');
 
 goog.require('goog.dom');
 goog.require('goog.style');
+goog.require('ol');
 goog.require('ol.FrameState');
 goog.require('ol.MapEvent');
 goog.require('ol.MapEventType');
@@ -48,7 +49,7 @@ ol.control.ScaleLine = function(opt_options) {
    * @type {Element}
    */
   this.element_ = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': 'ol-scale-line ol-unselectable'
+    'class': 'ol-scale-line ' + ol.CSS_CLASS_UNSELECTABLE
   }, this.innerElement_);
 
   /**

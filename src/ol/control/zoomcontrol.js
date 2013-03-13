@@ -6,6 +6,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('ol');
 goog.require('ol.control.Control');
 
 
@@ -43,8 +44,9 @@ ol.control.Zoom = function(opt_options) {
     goog.events.EventType.CLICK
   ], this.handleOut_, false, this);
 
-  var element = goog.dom.createDom(
-      goog.dom.TagName.DIV, 'ol-zoom ol-unselectable', inElement, outElement);
+  var cssClasses = 'ol-zoom ' + ol.CSS_CLASS_UNSELECTABLE;
+  var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, inElement,
+      outElement);
 
   goog.base(this, {
     element: element,

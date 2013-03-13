@@ -11,6 +11,7 @@ goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.style');
 goog.require('goog.webgl');
+goog.require('ol');
 goog.require('ol.FrameState');
 goog.require('ol.Size');
 goog.require('ol.Tile');
@@ -122,7 +123,7 @@ ol.renderer.webgl.Map = function(container, map) {
   this.canvas_ = goog.dom.createElement(goog.dom.TagName.CANVAS);
   this.canvas_.height = container.clientHeight;
   this.canvas_.width = container.clientWidth;
-  this.canvas_.className = 'ol-unselectable';
+  this.canvas_.className = ol.CSS_CLASS_UNSELECTABLE;
   goog.dom.insertChildAt(container, this.canvas_, 0);
 
   /**
@@ -213,17 +214,6 @@ ol.renderer.webgl.Map = function(container, map) {
 
 };
 goog.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Map.prototype.addLayer = function(layer) {
-  goog.base(this, 'addLayer', layer);
-  if (layer.getVisible()) {
-    this.getMap().render();
-  }
-};
 
 
 /**
@@ -461,17 +451,6 @@ ol.renderer.webgl.Map.prototype.initializeGL_ = function() {
  */
 ol.renderer.webgl.Map.prototype.isTileTextureLoaded = function(tile) {
   return this.textureCache_.containsKey(tile.getKey());
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Map.prototype.removeLayer = function(layer) {
-  goog.base(this, 'removeLayer', layer);
-  if (layer.getVisible()) {
-    this.getMap().render();
-  }
 };
 
 
