@@ -14,9 +14,9 @@ var layers = [
   }),
   new ol.layer.TileLayer({
     source: new ol.source.TiledWMS({
-      url: 'http://demo.opengeo.org/geoserver/wms',
+      url: 'http://suite.opengeo.org/geoserver/wms',
       crossOrigin: null,
-      params: {'LAYERS': 'topp:states', 'TILED': true},
+      params: {'LAYERS': 'usa:states', 'TILED': true},
       extent: new ol.Extent(-13884991, 2870341, -7455066, 6338219)
     })
   })
