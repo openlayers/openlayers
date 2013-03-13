@@ -22,20 +22,19 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
     tileGrid = tiledWMSOptions.tileGrid;
   }
 
-  var tileUrlFunction;
-  if (tiledWMSOptions.urls) {
+  var tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
+  var urls = tiledWMSOptions.urls;
+  if (!goog.isDef(urls) && goog.isDef(tiledWMSOptions.url)) {
+    urls = ol.TileUrlFunction.expandUrl(tiledWMSOptions.url);
+  }
+  if (goog.isDef(urls)) {
     var tileUrlFunctions = goog.array.map(
-        tiledWMSOptions.urls, function(url) {
+        urls, function(url) {
           return ol.TileUrlFunction.createWMSParams(
               url, tiledWMSOptions.params);
         });
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         tileUrlFunctions);
-  } else if (tiledWMSOptions.url) {
-    tileUrlFunction = ol.TileUrlFunction.createWMSParams(
-        tiledWMSOptions.url, tiledWMSOptions.params);
-  } else {
-    tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
   }
   var transparent = goog.isDef(tiledWMSOptions.params['TRANSPARENT']) ?
       tiledWMSOptions.params['TRANSPARENT'] : true;
