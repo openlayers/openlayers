@@ -16,7 +16,7 @@ describe('ol.Object', function() {
       });
 
       it('returns undefined', function() {
-        expect(v).toBeUndefined();
+        expect(v).to.be(undefined);
       });
 
     });
@@ -29,7 +29,7 @@ describe('ol.Object', function() {
       });
 
       it('returns expected value', function() {
-        expect(v).toEqual(1);
+        expect(v).to.eql(1);
       });
     });
   });
@@ -38,13 +38,13 @@ describe('ol.Object', function() {
 
     it('does not return values that are not explicitly set', function() {
       var o = new ol.Object();
-      expect(o.get('constructor')).toBeUndefined();
-      expect(o.get('hasOwnProperty')).toBeUndefined();
-      expect(o.get('isPrototypeOf')).toBeUndefined();
-      expect(o.get('propertyIsEnumerable')).toBeUndefined();
-      expect(o.get('toLocaleString')).toBeUndefined();
-      expect(o.get('toString')).toBeUndefined();
-      expect(o.get('valueOf')).toBeUndefined();
+      expect(o.get('constructor')).to.be(undefined);
+      expect(o.get('hasOwnProperty')).to.be(undefined);
+      expect(o.get('isPrototypeOf')).to.be(undefined);
+      expect(o.get('propertyIsEnumerable')).to.be(undefined);
+      expect(o.get('toLocaleString')).to.be(undefined);
+      expect(o.get('toString')).to.be(undefined);
+      expect(o.get('valueOf')).to.be(undefined);
     });
 
   });
@@ -54,14 +54,14 @@ describe('ol.Object', function() {
       var o = new ol.Object();
 
       o.set('set', 'sat');
-      expect(o.get('set')).toBe('sat');
+      expect(o.get('set')).to.be('sat');
 
       o.set('get', 'got');
-      expect(o.get('get')).toBe('got');
+      expect(o.get('get')).to.be('got');
 
       o.set('toString', 'string');
-      expect(o.get('toString')).toBe('string');
-      expect(typeof o.toString).toBe('function');
+      expect(o.get('toString')).to.be('string');
+      expect(typeof o.toString).to.be('function');
     });
   });
 
@@ -76,8 +76,8 @@ describe('ol.Object', function() {
       });
 
       var keys = o.getKeys();
-      expect(keys.length).toBe(4);
-      expect(keys.sort()).toEqual(['get', 'prop1', 'prop2', 'toString']);
+      expect(keys.length).to.be(4);
+      expect(keys.sort()).to.eql(['get', 'prop1', 'prop2', 'toString']);
     });
 
   });
@@ -89,11 +89,11 @@ describe('ol.Object', function() {
         k1: 1,
         k2: 2
       });
-      expect(o.get('k1')).toEqual(1);
-      expect(o.get('k2')).toEqual(2);
+      expect(o.get('k1')).to.eql(1);
+      expect(o.get('k2')).to.eql(2);
 
       var keys = o.getKeys().sort();
-      expect(keys).toEqual(['k1', 'k2']);
+      expect(keys).to.eql(['k1', 'k2']);
     });
   });
 
@@ -102,31 +102,31 @@ describe('ol.Object', function() {
     var listener1, listener2, listener3;
 
     beforeEach(function() {
-      listener1 = jasmine.createSpy();
+      listener1 = sinon.spy();
       goog.events.listen(o, 'k_changed', listener1);
 
-      listener2 = jasmine.createSpy();
+      listener2 = sinon.spy();
       goog.events.listen(o, 'changed', listener2);
 
       var o2 = new ol.Object();
       o2.bindTo('k', o);
-      listener3 = jasmine.createSpy();
+      listener3 = sinon.spy();
       goog.events.listen(o2, 'k_changed', listener3);
     });
 
     it('dispatches events', function() {
       o.notify('k');
-      expect(listener1).toHaveBeenCalled();
+      expect(listener1.called).to.be.ok();
     });
 
     it('dispatches generic change events to bound objects', function() {
       o.notify('k');
-      expect(listener2).toHaveBeenCalled();
+      expect(listener2.called).to.be.ok();
     });
 
     it('dispatches events to bound objects', function() {
       o.notify('k');
-      expect(listener3).toHaveBeenCalled();
+      expect(listener3.called).to.be.ok();
     });
   });
 
@@ -135,47 +135,47 @@ describe('ol.Object', function() {
     var listener1, o2, listener2, listener3;
 
     beforeEach(function() {
-      listener1 = jasmine.createSpy();
+      listener1 = sinon.spy();
       goog.events.listen(o, 'k_changed', listener1);
 
-      listener2 = jasmine.createSpy();
+      listener2 = sinon.spy();
       goog.events.listen(o, 'changed', listener2);
 
       o2 = new ol.Object();
       o2.bindTo('k', o);
-      listener3 = jasmine.createSpy();
+      listener3 = sinon.spy();
       goog.events.listen(o2, 'k_changed', listener3);
     });
 
     it('dispatches events to object', function() {
       o.set('k', 1);
-      expect(listener1).toHaveBeenCalled();
+      expect(listener1.called).to.be.ok();
 
-      expect(o.getKeys()).toEqual(['k']);
-      expect(o2.getKeys()).toEqual(['k']);
+      expect(o.getKeys()).to.eql(['k']);
+      expect(o2.getKeys()).to.eql(['k']);
     });
 
     it('dispatches generic change events to object', function() {
       o.set('k', 1);
-      expect(listener2).toHaveBeenCalled();
+      expect(listener2.called).to.be.ok();
     });
 
     it('dispatches events to bound object', function() {
       o.set('k', 1);
-      expect(listener3).toHaveBeenCalled();
+      expect(listener3.called).to.be.ok();
     });
 
     it('dispatches events to object bound to', function() {
       o2.set('k', 2);
-      expect(listener1).toHaveBeenCalled();
+      expect(listener1.called).to.be.ok();
 
-      expect(o.getKeys()).toEqual(['k']);
-      expect(o2.getKeys()).toEqual(['k']);
+      expect(o.getKeys()).to.eql(['k']);
+      expect(o2.getKeys()).to.eql(['k']);
     });
 
     it('dispatches generic change events to object bound to', function() {
       o2.set('k', 2);
-      expect(listener2).toHaveBeenCalled();
+      expect(listener2.called).to.be.ok();
     });
   });
 
@@ -192,11 +192,11 @@ describe('ol.Object', function() {
       it('gets expected value', function() {
         o.set('k', 1);
         o2.bindTo('k', o);
-        expect(o.get('k')).toEqual(1);
-        expect(o2.get('k')).toEqual(1);
+        expect(o.get('k')).to.eql(1);
+        expect(o2.get('k')).to.eql(1);
 
-        expect(o.getKeys()).toEqual(['k']);
-        expect(o2.getKeys()).toEqual(['k']);
+        expect(o.getKeys()).to.eql(['k']);
+        expect(o2.getKeys()).to.eql(['k']);
       });
     });
 
@@ -205,11 +205,11 @@ describe('ol.Object', function() {
       it('gets expected value', function() {
         o2.bindTo('k', o);
         o.set('k', 1);
-        expect(o.get('k')).toEqual(1);
-        expect(o2.get('k')).toEqual(1);
+        expect(o.get('k')).to.eql(1);
+        expect(o2.get('k')).to.eql(1);
 
-        expect(o.getKeys()).toEqual(['k']);
-        expect(o2.getKeys()).toEqual(['k']);
+        expect(o.getKeys()).to.eql(['k']);
+        expect(o2.getKeys()).to.eql(['k']);
       });
     });
 
@@ -219,8 +219,8 @@ describe('ol.Object', function() {
         it('gets expected value', function() {
           o2.set('k', 1);
           o2.bindTo('k', o);
-          expect(o.get('k')).toBeUndefined();
-          expect(o2.get('k')).toBeUndefined();
+          expect(o.get('k')).to.be(undefined);
+          expect(o2.get('k')).to.be(undefined);
         });
       });
 
@@ -229,8 +229,8 @@ describe('ol.Object', function() {
         it('gets expected value', function() {
           o2.bindTo('k', o);
           o2.set('k', 1);
-          expect(o.get('k')).toEqual(1);
-          expect(o2.get('k')).toEqual(1);
+          expect(o.get('k')).to.eql(1);
+          expect(o2.get('k')).to.eql(1);
         });
       });
     });
@@ -247,14 +247,14 @@ describe('ol.Object', function() {
 
     it('makes changes to unbound object invisible to other object', function() {
       // initial state
-      expect(o.get('k')).toEqual(1);
-      expect(o2.get('k')).toEqual(1);
+      expect(o.get('k')).to.eql(1);
+      expect(o2.get('k')).to.eql(1);
       o2.unbind('k');
-      expect(o.get('k')).toEqual(1);
-      expect(o2.get('k')).toEqual(1);
+      expect(o.get('k')).to.eql(1);
+      expect(o2.get('k')).to.eql(1);
       o2.set('k', 2);
-      expect(o.get('k')).toEqual(1);
-      expect(o2.get('k')).toEqual(2);
+      expect(o.get('k')).to.eql(1);
+      expect(o2.get('k')).to.eql(2);
     });
   });
 
@@ -269,14 +269,14 @@ describe('ol.Object', function() {
 
     it('makes changes to unbound object invisible to other object', function() {
       // initial state
-      expect(o.get('k')).toEqual(1);
-      expect(o2.get('k')).toEqual(1);
+      expect(o.get('k')).to.eql(1);
+      expect(o2.get('k')).to.eql(1);
       o2.unbindAll();
-      expect(o.get('k')).toEqual(1);
-      expect(o2.get('k')).toEqual(1);
+      expect(o.get('k')).to.eql(1);
+      expect(o2.get('k')).to.eql(1);
       o2.set('k', 2);
-      expect(o.get('k')).toEqual(1);
-      expect(o2.get('k')).toEqual(2);
+      expect(o.get('k')).to.eql(1);
+      expect(o2.get('k')).to.eql(2);
     });
   });
 
@@ -287,24 +287,24 @@ describe('ol.Object', function() {
       o2 = new ol.Object();
       o2.bindTo('k2', o, 'k1');
 
-      listener1 = jasmine.createSpy();
+      listener1 = sinon.spy();
       goog.events.listen(o, 'k1_changed', listener1);
 
-      listener2 = jasmine.createSpy();
+      listener2 = sinon.spy();
       goog.events.listen(o2, 'k2_changed', listener2);
     });
 
     it('sets the expected properties', function() {
       o.set('k1', 1);
-      expect(o.get('k1')).toEqual(1);
-      expect(o.get('k2')).toBeUndefined();
-      expect(o2.get('k2')).toEqual(1);
-      expect(o2.get('k1')).toBeUndefined();
-      expect(listener1).toHaveBeenCalled();
-      expect(listener2).toHaveBeenCalled();
+      expect(o.get('k1')).to.eql(1);
+      expect(o.get('k2')).to.be(undefined);
+      expect(o2.get('k2')).to.eql(1);
+      expect(o2.get('k1')).to.be(undefined);
+      expect(listener1.called).to.be.ok();
+      expect(listener2.called).to.be.ok();
 
-      expect(o.getKeys()).toEqual(['k1']);
-      expect(o2.getKeys()).toEqual(['k2']);
+      expect(o.getKeys()).to.eql(['k1']);
+      expect(o2.getKeys()).to.eql(['k2']);
     });
   });
 
@@ -320,26 +320,26 @@ describe('ol.Object', function() {
 
     it('sets the expected properties', function() {
       o.set('k1', 1);
-      expect(o.get('k1')).toEqual(1);
-      expect(o2.get('k2')).toEqual(1);
-      expect(o3.get('k3')).toEqual(1);
+      expect(o.get('k1')).to.eql(1);
+      expect(o2.get('k2')).to.eql(1);
+      expect(o3.get('k3')).to.eql(1);
 
-      expect(o.getKeys()).toEqual(['k1']);
-      expect(o2.getKeys()).toEqual(['k2']);
-      expect(o3.getKeys()).toEqual(['k3']);
+      expect(o.getKeys()).to.eql(['k1']);
+      expect(o2.getKeys()).to.eql(['k2']);
+      expect(o3.getKeys()).to.eql(['k3']);
     });
 
     describe('backward', function() {
 
       it('sets the expected properties', function() {
         o3.set('k3', 1);
-        expect(o.get('k1')).toEqual(1);
-        expect(o2.get('k2')).toEqual(1);
-        expect(o3.get('k3')).toEqual(1);
+        expect(o.get('k1')).to.eql(1);
+        expect(o2.get('k2')).to.eql(1);
+        expect(o3.get('k3')).to.eql(1);
 
-        expect(o.getKeys()).toEqual(['k1']);
-        expect(o2.getKeys()).toEqual(['k2']);
-        expect(o3.getKeys()).toEqual(['k3']);
+        expect(o.getKeys()).to.eql(['k1']);
+        expect(o2.getKeys()).to.eql(['k2']);
+        expect(o3.getKeys()).to.eql(['k3']);
       });
     });
   });
@@ -353,7 +353,7 @@ describe('ol.Object', function() {
     });
 
     it('throws an error', function() {
-      expect(function() { o2.bindTo('k', o); }).toThrow();
+      expect(function() { o2.bindTo('k', o); }).to.throwException();
     });
   });
 
@@ -368,15 +368,15 @@ describe('ol.Object', function() {
       o.set('k', 1);
       o2.set('k', 2);
       o.bindTo('k', o2);
-      expect(o.get('k')).toEqual(2);
-      expect(o2.get('k')).toEqual(2);
+      expect(o.get('k')).to.eql(2);
+      expect(o2.get('k')).to.eql(2);
     });
 
     it('respects set order (undefined)', function() {
       o.set('k', 1);
       o.bindTo('k', o2);
-      expect(o.get('k')).toBeUndefined();
-      expect(o2.get('k')).toBeUndefined();
+      expect(o.get('k')).to.be(undefined);
+      expect(o2.get('k')).to.be(undefined);
     });
   });
 
@@ -385,16 +385,16 @@ describe('ol.Object', function() {
       o.setX = function(x) {
         this.set('x', x);
       };
-      spyOn(o, 'setX').andCallThrough();
+      sinon.spy(o, 'setX');
     });
 
     describe('without bind', function() {
       it('does not call the setter', function() {
         o.set('x', 1);
-        expect(o.get('x')).toEqual(1);
-        expect(o.setX).not.toHaveBeenCalled();
+        expect(o.get('x')).to.eql(1);
+        expect(o.setX.called).to.not.be.ok();
 
-        expect(o.getKeys()).toEqual(['x']);
+        expect(o.getKeys()).to.eql(['x']);
       });
     });
 
@@ -403,11 +403,11 @@ describe('ol.Object', function() {
         var o2 = new ol.Object();
         o2.bindTo('x', o);
         o2.set('x', 1);
-        expect(o.setX).toHaveBeenCalled();
-        expect(o.get('x')).toEqual(1);
+        expect(o.setX.called).to.be.ok();
+        expect(o.get('x')).to.eql(1);
 
-        expect(o.getKeys()).toEqual(['x']);
-        expect(o2.getKeys()).toEqual(['x']);
+        expect(o.getKeys()).to.eql(['x']);
+        expect(o2.getKeys()).to.eql(['x']);
       });
     });
   });
@@ -417,13 +417,13 @@ describe('ol.Object', function() {
       o.getX = function() {
         return 1;
       };
-      spyOn(o, 'getX').andCallThrough();
+      sinon.spy(o, 'getX');
     });
 
     describe('without bind', function() {
       it('does not call the getter', function() {
-        expect(o.get('x')).toBeUndefined();
-        expect(o.getX).not.toHaveBeenCalled();
+        expect(o.get('x')).to.be(undefined);
+        expect(o.getX.called).to.not.be.ok();
       });
     });
 
@@ -431,27 +431,27 @@ describe('ol.Object', function() {
       it('does call the getter', function() {
         var o2 = new ol.Object();
         o2.bindTo('x', o);
-        expect(o2.get('x')).toEqual(1);
-        expect(o.getX).toHaveBeenCalled();
+        expect(o2.get('x')).to.eql(1);
+        expect(o.getX.called).to.be.ok();
 
-        expect(o.getKeys()).toEqual([]);
-        expect(o2.getKeys()).toEqual(['x']);
+        expect(o.getKeys()).to.eql([]);
+        expect(o2.getKeys()).to.eql(['x']);
       });
     });
   });
 
   describe('bind self', function() {
     it('throws an error', function() {
-      expect(function() { o.bindTo('k', o); }).toThrow();
+      expect(function() { o.bindTo('k', o); }).to.throwException();
     });
   });
 
   describe('create with options', function() {
     it('sets the property', function() {
       var o = new ol.Object({k: 1});
-      expect(o.get('k')).toEqual(1);
+      expect(o.get('k')).to.eql(1);
 
-      expect(o.getKeys()).toEqual(['k']);
+      expect(o.getKeys()).to.eql(['k']);
     });
   });
 
@@ -459,18 +459,18 @@ describe('ol.Object', function() {
     var listener1, listener2;
 
     beforeEach(function() {
-      listener1 = jasmine.createSpy();
+      listener1 = sinon.spy();
       goog.events.listen(o, 'k_changed', listener1);
-      listener2 = jasmine.createSpy();
+      listener2 = sinon.spy();
       goog.events.listen(o, 'K_changed', listener2);
     });
 
     it('dispatches the expected event', function() {
       o.set('K', 1);
-      expect(listener1).toHaveBeenCalled();
-      expect(listener2).not.toHaveBeenCalled();
+      expect(listener1.called).to.be.ok();
+      expect(listener2.called).to.not.be.ok();
 
-      expect(o.getKeys()).toEqual(['K']);
+      expect(o.getKeys()).to.eql(['K']);
     });
   });
 });

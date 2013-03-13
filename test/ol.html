@@ -1,10 +1,5 @@
 <!DOCTYPE html>
 
-<!-- FIXME console reporter output does not include name of top-level describe -->
-<!-- FIXME console reporter requires window.console_reporter. This is to be
-     reported to phantom-jasmine -->
-
-
 <!--
 
  Note: we assume that Plovr is available at <hostname>:9810, where
@@ -19,12 +14,24 @@
 <head>
   <title>OL Spec Runner</title>
 
-  <link rel="shortcut icon" type="image/png" href="jasmine-1.2.0/jasmine_favicon.png">
-  <link rel="stylesheet" type="text/css" href="jasmine-1.2.0/jasmine.css">
-  <script type="text/javascript" src="jasmine-1.2.0/jasmine.js"></script>
-  <script type="text/javascript" src="jasmine-1.2.0/jasmine-html.js"></script>
-  <script type="text/javascript" src="phantom-jasmine/console-runner.js"></script>
-  <script type="text/javascript" src="jasmine-extensions.js"></script>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="mocha-1.8.1/mocha.css">
+</head>
+
+<body>
+  <div id="mocha"></div>
+
+  <script type="text/javascript" src="jquery-1.9.1/jquery.min.js"></script>
+  <script type="text/javascript" src="expect-0.2.0/expect.js"></script>
+  <script type="text/javascript" src="sinon-1.6.0/sinon.js"></script>
+  <script type="text/javascript" src="mocha-1.8.1/mocha.js"></script>
+  <script type="text/javascript" src="test-extensions.js"></script>
+  <script>
+    mocha.setup({
+      ui: 'bdd',
+      ignoreLeaks: true
+    });
+  </script>
   <script type="text/javascript" src="../build/proj4js/lib/proj4js-combined.js"></script>
 
   <script type="text/javascript">
@@ -41,75 +48,21 @@
             + 'src="http://' + plovrHost + '/compile?id=test&mode=RAW">'
             + '</scr' + 'ipt>';
 
-        // this function will fix the links of the result to also include
-        // the once defined URL Parametrs passed to the testsuite.
-        function fixLinks() {
-            if (doc.getElementsByTagName) {
-                var candidates = doc.getElementsByTagName('a'),
-                    link,
-                    hrefExpression = /\?spec/,
-                    i = 0, len = candidates.length;
-                for(; i < len; i++){
-                    link = candidates[i];
-                    if (hrefExpression.test(link.href)) {
-                        link.href += '&plov_host=' + encodeURIComponent(plovrHost);
-                    }
-                }
-            }
-        }
-
         // write out the script-tag to load the compiled result
         doc.write(script);
 
-        // overwrite jasmines finishCallback to fix the links
-        jasmine.Runner.prototype.finishCallback = function() {
-            jasmine.getEnv().reporter.reportRunnerResults(this);
-            fixLinks();
-        };
     })(document, location);
 
   </script>
 
   <script type="text/javascript">
-
-    (function() {
-      var jasmineEnv = jasmine.getEnv();
-      jasmineEnv.updateInterval = 1000;
-
-      // HTML reporter
-
-      var htmlReporter = new jasmine.HtmlReporter();
-      jasmineEnv.addReporter(htmlReporter);
-      jasmineEnv.specFilter = function(spec) {
-        return htmlReporter.specFilter(spec);
-      };
-
-      // Console reporter (for headless testing)
-
-      var consoleReporter = new jasmine.ConsoleReporter();
-      jasmineEnv.addReporter(consoleReporter);
-      // The run_jasmine_test.coffee script (from phantom-jasmine)
-      // assumes that the console reporter instance is available
-      // in the global namespace object as "console_reporter".
-      // Stupid.
-      window.console_reporter = consoleReporter;
-
-      var currentWindowOnload = window.onload;
-
-      window.onload = function() {
-        if (currentWindowOnload) {
-          currentWindowOnload();
-        }
-        jasmineEnv.execute();
-      };
-
-    })();
-
+    if (window.mochaPhantomJS) {
+      mochaPhantomJS.run();
+    } else {
+      mocha.run();
+    }
   </script>
 
-</head>
-
-<body>
   <div id="map"></div>
 </body>
 </html>

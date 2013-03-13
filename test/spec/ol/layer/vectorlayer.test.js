@@ -9,7 +9,7 @@ describe('ol.layer.Vector', function() {
         source: new ol.source.Vector({})
       });
       layer.addFeatures([new ol.Feature(), new ol.Feature()]);
-      expect(layer.getFeatures().length).toEqual(2);
+      expect(layer.getFeatures().length).to.eql(2);
     });
   });
 
@@ -54,19 +54,19 @@ describe('ol.layer.Vector', function() {
     var extentFilter = new ol.filter.Extent(new ol.Extent(16, 48, 16.3, 48.3));
 
     it('can filter by geometry type using its GeometryType index', function() {
-      spyOn(geomFilter, 'applies');
+      sinon.spy(geomFilter, 'applies');
       var lineStrings = layer.getFeatures(geomFilter);
-      expect(geomFilter.applies).not.toHaveBeenCalled();
-      expect(lineStrings.length).toEqual(4);
-      expect(lineStrings).toContain(features[4]);
+      expect(geomFilter.applies.called).to.not.be.ok();
+      expect(lineStrings.length).to.eql(4);
+      expect(lineStrings).to.contain(features[4]);
     });
 
     it('can filter by extent using its RTree', function() {
-      spyOn(extentFilter, 'applies');
+      sinon.spy(extentFilter, 'applies');
       var subset = layer.getFeatures(extentFilter);
-      expect(extentFilter.applies).not.toHaveBeenCalled();
-      expect(subset.length).toEqual(4);
-      expect(subset).not.toContain(features[7]);
+      expect(extentFilter.applies.called).to.not.be.ok();
+      expect(subset.length).to.eql(4);
+      expect(subset).not.to.contain(features[7]);
     });
 
     it('can filter by extent and geometry type using its index', function() {
@@ -74,23 +74,23 @@ describe('ol.layer.Vector', function() {
           ol.filter.LogicalOperator.AND);
       var filter2 = new ol.filter.Logical([extentFilter, geomFilter],
           ol.filter.LogicalOperator.AND);
-      spyOn(filter1, 'applies');
-      spyOn(filter2, 'applies');
+      sinon.spy(filter1, 'applies');
+      sinon.spy(filter2, 'applies');
       var subset1 = layer.getFeatures(filter1);
       var subset2 = layer.getFeatures(filter2);
-      expect(filter1.applies).not.toHaveBeenCalled();
-      expect(filter2.applies).not.toHaveBeenCalled();
-      expect(subset1.length).toEqual(0);
-      expect(subset2.length).toEqual(0);
+      expect(filter1.applies.called).to.not.be.ok();
+      expect(filter2.applies.called).to.not.be.ok();
+      expect(subset1.length).to.eql(0);
+      expect(subset2.length).to.eql(0);
     });
 
     it('can handle query using the filter\'s applies function', function() {
       var filter = new ol.filter.Logical([geomFilter, extentFilter],
           ol.filter.LogicalOperator.OR);
-      spyOn(filter, 'applies').andCallThrough();
+      sinon.spy(filter, 'applies');
       var subset = layer.getFeatures(filter);
-      expect(filter.applies).toHaveBeenCalled();
-      expect(subset.length).toEqual(8);
+      expect(filter.applies.called).to.be.ok();
+      expect(subset.length).to.eql(8);
     });
 
   });
@@ -134,11 +134,11 @@ describe('ol.layer.Vector', function() {
       ];
 
       var groups = layer.groupFeaturesBySymbolizerLiteral(features);
-      expect(groups.length).toBe(2);
-      expect(groups[0][0].length).toBe(1);
-      expect(groups[0][1].strokeColor).toBe('#BADA55');
-      expect(groups[1][0].length).toBe(2);
-      expect(groups[1][1].strokeColor).toBe('#013');
+      expect(groups.length).to.be(2);
+      expect(groups[0][0].length).to.be(1);
+      expect(groups[0][1].strokeColor).to.be('#BADA55');
+      expect(groups[1][0].length).to.be(2);
+      expect(groups[1][1].strokeColor).to.be('#013');
     });
 
     it('groups equal symbolizers also when defined on features', function() {
@@ -164,9 +164,9 @@ describe('ol.layer.Vector', function() {
       features.push(featureWithSymbolizers, anotherFeatureWithSymbolizers);
 
       var groups = layer.groupFeaturesBySymbolizerLiteral(features);
-      expect(groups.length).toBe(3);
-      expect(groups[2][0].length).toBe(2);
-      expect(groups[2][1].strokeWidth).toBe(3);
+      expect(groups.length).to.be(3);
+      expect(groups[2][0].length).to.be(2);
+      expect(groups[2][1].strokeWidth).to.be(3);
 
     });
 

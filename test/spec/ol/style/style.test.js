@@ -23,10 +23,10 @@ describe('ol.style.Style', function() {
       });
       var feature = new ol.Feature();
       feature.set('foo', 'bar');
-      expect(style.apply(feature).length).toBe(1);
-      expect(style.apply(feature)[0].fillColor).toBe('#BADA55');
+      expect(style.apply(feature).length).to.be(1);
+      expect(style.apply(feature)[0].fillColor).to.be('#BADA55');
       feature.set('foo', 'baz');
-      expect(style.apply(feature).length).toBe(0);
+      expect(style.apply(feature).length).to.be(0);
     });
 
   });
@@ -35,27 +35,27 @@ describe('ol.style.Style', function() {
     var feature = new ol.Feature();
 
     it('returns an empty array for features without geometry', function() {
-      expect(ol.style.Style.applyDefaultStyle(feature).length).toBe(0);
+      expect(ol.style.Style.applyDefaultStyle(feature).length).to.be(0);
     });
 
     it('returns an array with the Shape default for points', function() {
       feature.setGeometry(new ol.geom.Point([0, 0]));
       var symbolizers = ol.style.Style.applyDefaultStyle(feature);
-      expect(symbolizers.length).toBe(1);
-      expect(symbolizers[0]).toBeA(ol.style.ShapeLiteral);
-      expect(symbolizers[0].equals(ol.style.ShapeDefaults)).toBe(true);
+      expect(symbolizers.length).to.be(1);
+      expect(symbolizers[0]).to.be.a(ol.style.ShapeLiteral);
+      expect(symbolizers[0].equals(ol.style.ShapeDefaults)).to.be(true);
     });
 
     it('returns an array with the Line default for lines', function() {
       feature.setGeometry(new ol.geom.LineString([[0, 0], [1, 1]]));
       expect(ol.style.Style.applyDefaultStyle(feature)[0]
-          .equals(ol.style.LineDefaults)).toBe(true);
+          .equals(ol.style.LineDefaults)).to.be(true);
     });
 
     it('returns an array with the Polygon default for polygons', function() {
       feature.setGeometry(new ol.geom.Polygon([[[0, 0], [1, 1], [0, 0]]]));
       expect(ol.style.Style.applyDefaultStyle(feature)[0]
-          .equals(ol.style.PolygonDefaults)).toBe(true);
+          .equals(ol.style.PolygonDefaults)).to.be(true);
     });
 
   });

@@ -8,30 +8,29 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1_wmsc', function() {
   });
 
   describe('test read', function() {
-    it('Test read', function() {
+    it('Test read', function(done) {
       var obj, tilesets, tileset;
-      runs(function() {
-        var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1_WMSC/wmsc.xml';
-        goog.net.XhrIo.send(url, function(e) {
-          var xhr = e.target;
-          obj = parser.read(xhr.getResponseXml());
-          tilesets = obj.capability.vendorSpecific.tileSets;
-          tileset = tilesets[0];
-        });
+
+      var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1_WMSC/wmsc.xml';
+      goog.net.XhrIo.send(url, function(e) {
+        var xhr = e.target;
+        obj = parser.read(xhr.getResponseXml());
+        tilesets = obj.capability.vendorSpecific.tileSets;
+        tileset = tilesets[0];
       });
+
       waitsFor(function() {
         return (obj !== undefined);
-      }, 'XHR timeout', 1000);
-      runs(function() {
-        expect(tilesets.length).toEqual(2);
+      }, 'XHR timeout', 1000, function() {
+        expect(tilesets.length).to.eql(2);
         var bbox = [-13697515.466796875, 5165920.118906248,
           -13619243.94984375, 5244191.635859374];
-        expect(tileset.bbox['EPSG:900913'].bbox).toEqual(bbox);
-        expect(tileset.format).toEqual('image/png');
-        expect(tileset.height).toEqual(256);
-        expect(tileset.width).toEqual(256);
-        expect(tileset.layers).toEqual('medford:hydro');
-        expect(tileset.srs['EPSG:900913']).toBeTruthy();
+        expect(tileset.bbox['EPSG:900913'].bbox).to.eql(bbox);
+        expect(tileset.format).to.eql('image/png');
+        expect(tileset.height).to.eql(256);
+        expect(tileset.width).to.eql(256);
+        expect(tileset.layers).to.eql('medford:hydro');
+        expect(tileset.srs['EPSG:900913']).to.be.ok();
         var resolutions = [156543.03390625, 78271.516953125, 39135.7584765625,
           19567.87923828125, 9783.939619140625, 4891.9698095703125,
           2445.9849047851562, 1222.9924523925781, 611.4962261962891,
@@ -41,28 +40,29 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1_wmsc', function() {
           0.5971642833948135, 0.29858214169740677, 0.14929107084870338,
           0.07464553542435169, 0.037322767712175846, 0.018661383856087923,
           0.009330691928043961, 0.004665345964021981];
-        expect(tileset.resolutions).toEqual(resolutions);
-        expect(tileset.styles).toEqual('');
+        expect(tileset.resolutions).to.eql(resolutions);
+        expect(tileset.styles).to.eql('');
+        done();
       });
     });
   });
 
   describe('test fallback', function() {
-    it('Test fallback', function() {
+    it('Test fallback', function(done) {
       var obj;
-      runs(function() {
-        var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1_WMSC/' +
-            'fallback.xml';
-        goog.net.XhrIo.send(url, function(e) {
-          var xhr = e.target;
-          obj = parser.read(xhr.getResponseXml());
-        });
+
+      var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1_WMSC/' +
+          'fallback.xml';
+      goog.net.XhrIo.send(url, function(e) {
+        var xhr = e.target;
+        obj = parser.read(xhr.getResponseXml());
       });
+
       waitsFor(function() {
         return (obj !== undefined);
-      }, 'XHR timeout', 1000);
-      runs(function() {
-        expect(obj.capability.layers.length).toEqual(2);
+      }, 'XHR timeout', 1000, function() {
+        expect(obj.capability.layers.length).to.eql(2);
+        done();
       });
     });
   });

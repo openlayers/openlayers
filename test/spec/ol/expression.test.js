@@ -5,7 +5,7 @@ describe('ol.Expression', function() {
   describe('constructor', function() {
     it('creates an expression', function() {
       var exp = new ol.Expression('foo');
-      expect(exp).toBeA(ol.Expression);
+      expect(exp).to.be.a(ol.Expression);
     });
   });
 
@@ -31,7 +31,7 @@ describe('ol.Expression', function() {
       for (var i = 0, ii = cases.length; i < ii; ++i) {
         c = cases[i];
         exp = new ol.Expression(c.source);
-        expect(exp.evaluate()).toBe(c.result);
+        expect(exp.evaluate()).to.be(c.result);
       }
     });
 
@@ -41,8 +41,8 @@ describe('ol.Expression', function() {
       };
 
       var exp = new ol.Expression('this.works ? "yes" : "no"');
-      expect(exp.evaluate(new Thing())).toBe('yes');
-      expect(exp.evaluate({})).toBe('no');
+      expect(exp.evaluate(new Thing())).to.be('yes');
+      expect(exp.evaluate({})).to.be('no');
     });
 
     it('accepts an optional scope argument', function() {
@@ -57,18 +57,18 @@ describe('ol.Expression', function() {
 
       // access two members in the scope
       exp = new ol.Expression('greeting + punctuation');
-      expect(exp.evaluate({}, scope)).toBe('hello world!');
+      expect(exp.evaluate({}, scope)).to.be('hello world!');
 
       // call a function in the scope
       exp = new ol.Expression(
           'pick([10, 42, "chicken"], 2) + Math.floor(Math.PI)');
-      expect(exp.evaluate({}, scope)).toBe('chicken3');
+      expect(exp.evaluate({}, scope)).to.be('chicken3');
 
     });
 
     it('throws on error', function() {
       var exp = new ol.Expression('@*)$(&');
-      expect(function() {exp.evaluate()}).toThrow();
+      expect(function() {exp.evaluate()}).to.throwException();
     });
 
   });

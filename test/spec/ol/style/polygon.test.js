@@ -23,8 +23,8 @@ describe('ol.style.PolygonLiteral', function() {
         strokeWidth: 3,
         opacity: 1
       });
-      expect(literal.equals(equalLiteral)).toBe(true);
-      expect(literal.equals(differentLiteral)).toBe(false);
+      expect(literal.equals(equalLiteral)).to.be(true);
+      expect(literal.equals(differentLiteral)).to.be(false);
     });
 
   });
@@ -40,7 +40,7 @@ describe('ol.style.Polygon', function() {
         fillColor: '#BADA55',
         strokeWidth: 3
       });
-      expect(symbolizer).toBeA(ol.style.Polygon);
+      expect(symbolizer).to.be.a(ol.style.Polygon);
     });
 
     it('accepts expressions', function() {
@@ -48,7 +48,7 @@ describe('ol.style.Polygon', function() {
         opacity: new ol.Expression('value / 100'),
         fillColor: new ol.Expression('fillAttr')
       });
-      expect(symbolizer).toBeA(ol.style.Polygon);
+      expect(symbolizer).to.be.a(ol.style.Polygon);
     });
 
   });
@@ -67,10 +67,10 @@ describe('ol.style.Polygon', function() {
       });
 
       var literal = symbolizer.createLiteral(feature);
-      expect(literal).toBeA(ol.style.PolygonLiteral);
-      expect(literal.opacity).toBe(42 / 100);
-      expect(literal.fillColor).toBe('#ff0000');
-      expect(literal.strokeColor).toBeUndefined();
+      expect(literal).to.be.a(ol.style.PolygonLiteral);
+      expect(literal.opacity).to.be(42 / 100);
+      expect(literal.fillColor).to.be('#ff0000');
+      expect(literal.strokeColor).to.be(undefined);
     });
 
     it('applies default strokeWidth if only strokeColor is given', function() {
@@ -79,10 +79,10 @@ describe('ol.style.Polygon', function() {
       });
 
       var literal = symbolizer.createLiteral();
-      expect(literal).toBeA(ol.style.PolygonLiteral);
-      expect(literal.strokeColor).toBe('#ff0000');
-      expect(literal.strokeWidth).toBe(1.5);
-      expect(literal.fillColor).toBeUndefined();
+      expect(literal).to.be.a(ol.style.PolygonLiteral);
+      expect(literal.strokeColor).to.be('#ff0000');
+      expect(literal.strokeWidth).to.be(1.5);
+      expect(literal.fillColor).to.be(undefined);
     });
 
   });

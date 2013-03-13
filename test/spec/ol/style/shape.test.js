@@ -29,8 +29,8 @@ describe('ol.style.ShapeLiteral', function() {
         strokeWidth: 3,
         opacity: 1
       });
-      expect(literal.equals(equalLiteral)).toBe(true);
-      expect(literal.equals(differentLiteral)).toBe(false);
+      expect(literal.equals(equalLiteral)).to.be(true);
+      expect(literal.equals(differentLiteral)).to.be(false);
     });
 
   });
@@ -46,7 +46,7 @@ describe('ol.style.Shape', function() {
         size: 4,
         fillColor: '#BADA55'
       });
-      expect(symbolizer).toBeA(ol.style.Shape);
+      expect(symbolizer).to.be.a(ol.style.Shape);
     });
 
     it('accepts expressions', function() {
@@ -54,7 +54,7 @@ describe('ol.style.Shape', function() {
         size: new ol.Expression('sizeAttr'),
         strokeColor: new ol.Expression('color')
       });
-      expect(symbolizer).toBeA(ol.style.Shape);
+      expect(symbolizer).to.be.a(ol.style.Shape);
     });
 
   });
@@ -74,9 +74,9 @@ describe('ol.style.Shape', function() {
       });
 
       var literal = symbolizer.createLiteral(feature);
-      expect(literal).toBeA(ol.style.ShapeLiteral);
-      expect(literal.size).toBe(42);
-      expect(literal.opacity).toBe(0.4);
+      expect(literal).to.be.a(ol.style.ShapeLiteral);
+      expect(literal.size).to.be(42);
+      expect(literal.opacity).to.be(0.4);
     });
 
     it('can be called without a feature', function() {
@@ -89,12 +89,12 @@ describe('ol.style.Shape', function() {
       });
 
       var literal = symbolizer.createLiteral();
-      expect(literal).toBeA(ol.style.ShapeLiteral);
-      expect(literal.size).toBe(10);
-      expect(literal.opacity).toBe(1);
-      expect(literal.fillColor).toBe('#BADA55');
-      expect(literal.strokeColor).toBe('#013');
-      expect(literal.strokeWidth).toBe(2);
+      expect(literal).to.be.a(ol.style.ShapeLiteral);
+      expect(literal.size).to.be(10);
+      expect(literal.opacity).to.be(1);
+      expect(literal.fillColor).to.be('#BADA55');
+      expect(literal.strokeColor).to.be('#013');
+      expect(literal.strokeWidth).to.be(2);
     });
 
     it('applies default type if none provided', function() {
@@ -110,9 +110,9 @@ describe('ol.style.Shape', function() {
       });
 
       var literal = symbolizer.createLiteral(feature);
-      expect(literal).toBeA(ol.style.ShapeLiteral);
-      expect(literal.size).toBe(42);
-      expect(literal.opacity).toBe(0.4);
+      expect(literal).to.be.a(ol.style.ShapeLiteral);
+      expect(literal.size).to.be(42);
+      expect(literal.opacity).to.be(0.4);
     });
 
   });

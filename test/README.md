@@ -5,20 +5,30 @@ Included in this directory
 
 - spec - includes the OpenLayers test/spec files.
 
-- jasmine-1.2.0 - includes the Jasmine Testing Framework.
-  https://github.com/pivotal/jasmine
+- expect-0.2.0 - Minimalistic BDD-style assertion framework.
+  https://github.com/LearnBoost/expect.js/
 
-- jasmine-extensions.js - includes OpenLayers-specific extensions to Jasmine.
+- jquery-1.9.1 - The Write Less, Do More, JavaScript Library.
+  http://jquery.com/
 
-- phantom-jasmine - a PhantomJS script and a console reporter to for headless
-  testing. Comes from https://github.com/jcarver989/phantom-jasmine.
+- mocha-1.8.1 - the fun, simple, flexible JavaScript test framework.
+  http://visionmedia.github.com/mocha/
+
+- sinon-1.6.0 - Standalone test spies, stubs and mocks for JavaScript.
+  http://sinonjs.org/
+
+- test-extensions.js - includes OpenLayers-specific extensions to the
+  testing frameworks.
+
+- mocha-phantom - a PhantomJS script for headless testing with mocha.
+  http://metaskills.net/mocha-phantomjs/
 
 Run the test suite with PhantomJS
 ---------------------------------
 
 With PhantomJS installed, and assuming phantomjs is in the PATH:
 
-    $ phantomjs phantom-jasmine/run_jasmine_test.coffee ol.html
+    $ phantomjs mocha-phantom.coffee ol.html
 
 (Works with PhantomJS 1.6.1, untested with other versions.)
 

@@ -9,9 +9,9 @@ describe('ol.collection', function() {
 
   describe('create an empty collection', function() {
     it('creates an empty collection', function() {
-      expect(collection.getLength()).toEqual(0);
-      expect(goog.array.equals(collection.getArray(), [])).toBeTruthy();
-      expect(collection.getAt(0)).toBeUndefined();
+      expect(collection.getLength()).to.eql(0);
+      expect(goog.array.equals(collection.getArray(), [])).to.be.ok();
+      expect(collection.getAt(0)).to.be(undefined);
     });
   });
 
@@ -19,18 +19,18 @@ describe('ol.collection', function() {
     it('creates the expected collection', function() {
       var array = [0, 1, 2];
       var collection = new ol.Collection(array);
-      expect(collection.getAt(0)).toEqual(0);
-      expect(collection.getAt(1)).toEqual(1);
-      expect(collection.getAt(2)).toEqual(2);
+      expect(collection.getAt(0)).to.eql(0);
+      expect(collection.getAt(1)).to.eql(1);
+      expect(collection.getAt(2)).to.eql(2);
     });
   });
 
   describe('push to a collection', function() {
     it('adds elements to the collection', function() {
       collection.push(1);
-      expect(collection.getLength()).toEqual(1);
-      expect(goog.array.equals(collection.getArray(), [1])).toBeTruthy();
-      expect(collection.getAt(0)).toEqual(1);
+      expect(collection.getLength()).to.eql(1);
+      expect(goog.array.equals(collection.getArray(), [1])).to.be.ok();
+      expect(collection.getAt(0)).to.eql(1);
     });
   });
 
@@ -38,9 +38,9 @@ describe('ol.collection', function() {
     it('removes elements from the collection', function() {
       collection.push(1);
       collection.pop();
-      expect(collection.getLength()).toEqual(0);
-      expect(goog.array.equals(collection.getArray(), [])).toBeTruthy();
-      expect(collection.getAt(0)).toBeUndefined();
+      expect(collection.getLength()).to.eql(0);
+      expect(goog.array.equals(collection.getArray(), [])).to.be.ok();
+      expect(collection.getAt(0)).to.be(undefined);
     });
   });
 
@@ -48,18 +48,18 @@ describe('ol.collection', function() {
     it('inserts elements at the correct location', function() {
       collection = new ol.Collection([0, 2]);
       collection.insertAt(1, 1);
-      expect(collection.getAt(0)).toEqual(0);
-      expect(collection.getAt(1)).toEqual(1);
-      expect(collection.getAt(2)).toEqual(2);
+      expect(collection.getAt(0)).to.eql(0);
+      expect(collection.getAt(1)).to.eql(1);
+      expect(collection.getAt(2)).to.eql(2);
     });
   });
 
   describe('setAt', function() {
     it('sets at the correct location', function() {
       collection.setAt(1, 1);
-      expect(collection.getLength()).toEqual(2);
-      expect(collection.getAt(0)).toBeUndefined();
-      expect(collection.getAt(1)).toEqual(1);
+      expect(collection.getLength()).to.eql(2);
+      expect(collection.getAt(0)).to.be(undefined);
+      expect(collection.getAt(1)).to.eql(1);
     });
   });
 
@@ -67,20 +67,20 @@ describe('ol.collection', function() {
     it('removes elements at the correction', function() {
       var collection = new ol.Collection([0, 1, 2]);
       collection.removeAt(1);
-      expect(collection.getAt(0)).toEqual(0);
-      expect(collection.getAt(1)).toEqual(2);
+      expect(collection.getAt(0)).to.eql(0);
+      expect(collection.getAt(1)).to.eql(2);
     });
   });
 
   describe('forEach', function() {
     var cb;
     beforeEach(function() {
-      cb = jasmine.createSpy();
+      cb = sinon.spy();
     });
     describe('on an empty collection', function() {
       it('does not call the callback', function() {
         collection.forEach(cb);
-        expect(cb).not.toHaveBeenCalled();
+        expect(cb.called).to.not.be.ok();
       });
     });
     describe('on a non-empty collection', function() {
@@ -88,7 +88,7 @@ describe('ol.collection', function() {
         collection.push(1);
         collection.push(2);
         collection.forEach(cb);
-        expect(cb.calls.length).toEqual(2);
+        expect(cb.callCount).to.eql(2);
       });
     });
     describe('scope', function() {
@@ -99,7 +99,7 @@ describe('ol.collection', function() {
         collection.forEach(function(elem) {
           that = this;
         }, uniqueObj);
-        expect(that).toBe(uniqueObj);
+        expect(that).to.be(uniqueObj);
       });
     });
   });
@@ -107,29 +107,29 @@ describe('ol.collection', function() {
   describe('remove', function() {
     it('removes the first matching element', function() {
       var collection = new ol.Collection([0, 1, 2]);
-      expect(collection.remove(1)).toEqual(1);
-      expect(collection.getArray()).toEqual([0, 2]);
-      expect(collection.getLength()).toEqual(2);
+      expect(collection.remove(1)).to.eql(1);
+      expect(collection.getArray()).to.eql([0, 2]);
+      expect(collection.getLength()).to.eql(2);
     });
     it('fires a remove event', function() {
       var collection = new ol.Collection([0, 1, 2]);
-      var cb = jasmine.createSpy();
+      var cb = sinon.spy();
       goog.events.listen(collection, ol.CollectionEventType.REMOVE, cb);
-      expect(collection.remove(1)).toEqual(1);
-      expect(cb).toHaveBeenCalled();
-      expect(cb.mostRecentCall.args[0].elem).toEqual(1);
+      expect(collection.remove(1)).to.eql(1);
+      expect(cb.called).to.be.ok();
+      expect(cb.lastCall.args[0].elem).to.eql(1);
     });
     it('does not remove more than one matching element', function() {
       var collection = new ol.Collection([0, 1, 1, 2]);
-      expect(collection.remove(1)).toEqual(1);
-      expect(collection.getArray()).toEqual([0, 1, 2]);
-      expect(collection.getLength()).toEqual(3);
+      expect(collection.remove(1)).to.eql(1);
+      expect(collection.getArray()).to.eql([0, 1, 2]);
+      expect(collection.getLength()).to.eql(3);
     });
     it('returns undefined if the element is not found', function() {
       var collection = new ol.Collection([0, 1, 2]);
-      expect(collection.remove(3)).toBeUndefined();
-      expect(collection.getArray()).toEqual([0, 1, 2]);
-      expect(collection.getLength()).toEqual(3);
+      expect(collection.remove(3)).to.be(undefined);
+      expect(collection.getArray()).to.eql([0, 1, 2]);
+      expect(collection.getLength()).to.eql(3);
     });
   });
 
@@ -145,8 +145,8 @@ describe('ol.collection', function() {
             removed = e.elem;
           });
       collection.setAt(1, 1);
-      expect(added).toEqual(1);
-      expect(removed).toEqual('b');
+      expect(added).to.eql(1);
+      expect(removed).to.eql('b');
     });
   });
 
@@ -159,7 +159,7 @@ describe('ol.collection', function() {
             removed = e.elem;
           });
       collection.pop();
-      expect(removed).toEqual('a');
+      expect(removed).to.eql('a');
     });
   });
 
@@ -172,7 +172,7 @@ describe('ol.collection', function() {
             added = e.elem;
           });
       collection.insertAt(1, 1);
-      expect(added).toEqual(1);
+      expect(added).to.eql(1);
     });
   });
 
@@ -184,14 +184,14 @@ describe('ol.collection', function() {
             added.push(e.elem);
           });
       collection.setAt(2, 0);
-      expect(collection.getLength()).toEqual(3);
-      expect(collection.getAt(0)).toBeUndefined();
-      expect(collection.getAt(1)).toBeUndefined();
-      expect(collection.getAt(2)).toEqual(0);
-      expect(added.length).toEqual(3);
-      expect(added[0]).toEqual(undefined);
-      expect(added[1]).toEqual(undefined);
-      expect(added[2]).toEqual(0);
+      expect(collection.getLength()).to.eql(3);
+      expect(collection.getAt(0)).to.be(undefined);
+      expect(collection.getAt(1)).to.be(undefined);
+      expect(collection.getAt(2)).to.eql(0);
+      expect(added.length).to.eql(3);
+      expect(added[0]).to.eql(undefined);
+      expect(added[1]).to.eql(undefined);
+      expect(added[2]).to.eql(0);
     });
   });
 
@@ -199,28 +199,28 @@ describe('ol.collection', function() {
     var collection, cb;
     beforeEach(function() {
       collection = new ol.Collection([0, 1, 2]);
-      cb = jasmine.createSpy();
+      cb = sinon.spy();
       goog.events.listen(collection, 'length_changed', cb);
     });
 
     describe('insertAt', function() {
       it('triggers length_changed event', function() {
         collection.insertAt(2, 3);
-        expect(cb).toHaveBeenCalled();
+        expect(cb.called).to.be.ok();
       });
     });
 
     describe('removeAt', function() {
       it('triggers length_changed event', function() {
         collection.removeAt(0);
-        expect(cb).toHaveBeenCalled();
+        expect(cb.called).to.be.ok();
       });
     });
 
     describe('setAt', function() {
       it('does not trigger length_changed event', function() {
         collection.setAt(1, 1);
-        expect(cb).not.toHaveBeenCalled();
+        expect(cb.called).to.not.be.ok();
       });
     });
   });
@@ -233,7 +233,7 @@ describe('ol.collection', function() {
         elem = e.elem;
       });
       collection.push(1);
-      expect(elem).toEqual(1);
+      expect(elem).to.eql(1);
     });
   });
 
@@ -241,16 +241,16 @@ describe('ol.collection', function() {
     var collection, cb1, cb2;
     beforeEach(function() {
       collection = new ol.Collection([1]);
-      cb1 = jasmine.createSpy();
-      cb2 = jasmine.createSpy();
+      cb1 = sinon.spy();
+      cb2 = sinon.spy();
     });
     describe('setAt', function() {
       it('triggers remove', function() {
         goog.events.listen(collection, ol.CollectionEventType.ADD, cb1);
         goog.events.listen(collection, ol.CollectionEventType.REMOVE, cb2);
         collection.setAt(0, 2);
-        expect(cb1.mostRecentCall.args[0].elem).toEqual(2);
-        expect(cb2.mostRecentCall.args[0].elem).toEqual(1);
+        expect(cb2.lastCall.args[0].elem).to.eql(1);
+        expect(cb1.lastCall.args[0].elem).to.eql(2);
       });
     });
     describe('pop', function() {
@@ -258,7 +258,7 @@ describe('ol.collection', function() {
         var elem;
         goog.events.listen(collection, ol.CollectionEventType.REMOVE, cb1);
         collection.pop();
-        expect(cb1.mostRecentCall.args[0].elem).toEqual(1);
+        expect(cb1.lastCall.args[0].elem).to.eql(1);
       });
     });
   });
@@ -266,10 +266,10 @@ describe('ol.collection', function() {
   describe('extending a collection', function() {
     it('adds elements to end of the collection', function() {
       collection.extend([1, 2]);
-      expect(collection.getLength()).toEqual(2);
-      expect(goog.array.equals(collection.getArray(), [1, 2])).toBeTruthy();
-      expect(collection.getAt(0)).toEqual(1);
-      expect(collection.getAt(1)).toEqual(2);
+      expect(collection.getLength()).to.eql(2);
+      expect(goog.array.equals(collection.getArray(), [1, 2])).to.be.ok();
+      expect(collection.getAt(0)).to.eql(1);
+      expect(collection.getAt(1)).to.eql(2);
     });
   });
 

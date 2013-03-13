@@ -1,41 +1,55 @@
-beforeEach(function() {
-  var parent = this.getMatchersClass_();
-  this.addMatchers({
-    toBeA: function(type) {
-      return this.actual instanceof type;
-    },
-    toRoughlyEqual: function(other, tol) {
-      return Math.abs(this.actual - other) <= tol;
+function waitsFor(condition, message, timeout, callback) {
+  var timeWaiting = 0;
+
+  function inner() {
+    if (condition()) {
+      callback();
+      return;
     }
-  });
-});
+
+    if (timeWaiting >= timeout) {
+      throw new Error(message);
+    }
+
+    timeWaiting += 10;
+    setTimeout(inner, 10);
+  }
+
+  inner();
+}
+
+
+expect.Assertion.prototype.roughlyEqual = function(other, tol) {
+  return Math.abs(this.actual - other) <= tol;
+};
+
+
 
 // helper functions for async testing
 (function(global) {
 
   function afterLoad(type, path, next) {
     var done, error, data;
-    runs(function() {
-      goog.net.XhrIo.send(path, function(event) {
-        var xhr = event.target;
-        if (xhr.isSuccess()) {
-          if (type === 'xml') {
-            data = xhr.getResponseXml();
-          } else if (type === 'json') {
-            data = xhr.getResponseJson();
-          } else {
-            data = xhr.getResponseText();
-          }
+
+    goog.net.XhrIo.send(path, function(event) {
+      var xhr = event.target;
+      if (xhr.isSuccess()) {
+        if (type === 'xml') {
+          data = xhr.getResponseXml();
+        } else if (type === 'json') {
+          data = xhr.getResponseJson();
         } else {
-          error = new Error(path + ' loading failed: ' + xhr.getStatus());
+          data = xhr.getResponseText();
         }
-        done = true;
-      });
+      } else {
+        error = new Error(path + ' loading failed: ' + xhr.getStatus());
+      }
+      done = true;
     });
+
     waitsFor(function() {
       return done;
-    });
-    runs(function() {
+    }, 'XHR timeout', 1000, function() {
       if (error) {
         throw error;
       }
@@ -74,4 +88,3 @@ beforeEach(function() {
   };
 
 })(this);
-

@@ -8,21 +8,21 @@ describe('ol.style.Rule', function() {
 
     it('returns true for a rule without filter', function() {
       rule = new ol.style.Rule({});
-      expect(rule.applies(feature)).toBe(true);
+      expect(rule.applies(feature)).to.be(true);
     });
 
     it('returns false when the rule does not apply', function() {
       rule = new ol.style.Rule({
         filter: new ol.filter.Filter(function() { return false; })
       });
-      expect(rule.applies(feature)).toBe(false);
+      expect(rule.applies(feature)).to.be(false);
     });
 
     it('returns true when the rule applies', function() {
       rule = new ol.style.Rule({
         filter: new ol.filter.Filter(function() { return true; })
       });
-      expect(rule.applies(feature)).toBe(true);
+      expect(rule.applies(feature)).to.be(true);
     });
   });
 

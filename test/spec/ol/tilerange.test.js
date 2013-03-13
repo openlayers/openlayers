@@ -5,45 +5,45 @@ describe('ol.TileRange', function() {
   describe('constructor', function() {
     it('creates a range', function() {
       var range = new ol.TileRange(1, 2, 3, 4);
-      expect(range).toBeA(ol.TileRange);
+      expect(range).to.be.a(ol.TileRange);
     });
 
     it('can represent a range of one tile', function() {
       var range = new ol.TileRange(2, 3, 2, 3);
-      expect(range).toBeA(ol.TileRange);
-      expect(range.getHeight()).toBe(1);
-      expect(range.getWidth()).toBe(1);
+      expect(range).to.be.a(ol.TileRange);
+      expect(range.getHeight()).to.be(1);
+      expect(range.getWidth()).to.be(1);
     });
   });
 
   describe('contains', function() {
     it('returns the expected value', function() {
       var tileRange = new ol.TileRange(1, 1, 3, 3);
-      expect(tileRange.contains(new ol.TileCoord(0, 0, 0))).toBeFalsy();
-      expect(tileRange.contains(new ol.TileCoord(0, 0, 1))).toBeFalsy();
-      expect(tileRange.contains(new ol.TileCoord(0, 0, 2))).toBeFalsy();
-      expect(tileRange.contains(new ol.TileCoord(0, 0, 3))).toBeFalsy();
-      expect(tileRange.contains(new ol.TileCoord(0, 0, 4))).toBeFalsy();
-      expect(tileRange.contains(new ol.TileCoord(0, 1, 0))).toBeFalsy();
-      expect(tileRange.contains(new ol.TileCoord(0, 1, 1))).toBeTruthy();
-      expect(tileRange.contains(new ol.TileCoord(0, 1, 2))).toBeTruthy();
-      expect(tileRange.contains(new ol.TileCoord(0, 1, 3))).toBeTruthy();
-      expect(tileRange.contains(new ol.TileCoord(0, 1, 4))).toBeFalsy();
-      expect(tileRange.contains(new ol.TileCoord(0, 2, 0))).toBeFalsy();
-      expect(tileRange.contains(new ol.TileCoord(0, 2, 1))).toBeTruthy();
-      expect(tileRange.contains(new ol.TileCoord(0, 2, 2))).toBeTruthy();
-      expect(tileRange.contains(new ol.TileCoord(0, 2, 3))).toBeTruthy();
-      expect(tileRange.contains(new ol.TileCoord(0, 2, 4))).toBeFalsy();
-      expect(tileRange.contains(new ol.TileCoord(0, 3, 0))).toBeFalsy();
-      expect(tileRange.contains(new ol.TileCoord(0, 3, 1))).toBeTruthy();
-      expect(tileRange.contains(new ol.TileCoord(0, 3, 2))).toBeTruthy();
-      expect(tileRange.contains(new ol.TileCoord(0, 3, 3))).toBeTruthy();
-      expect(tileRange.contains(new ol.TileCoord(0, 3, 4))).toBeFalsy();
-      expect(tileRange.contains(new ol.TileCoord(0, 4, 0))).toBeFalsy();
-      expect(tileRange.contains(new ol.TileCoord(0, 4, 1))).toBeFalsy();
-      expect(tileRange.contains(new ol.TileCoord(0, 4, 2))).toBeFalsy();
-      expect(tileRange.contains(new ol.TileCoord(0, 4, 3))).toBeFalsy();
-      expect(tileRange.contains(new ol.TileCoord(0, 4, 4))).toBeFalsy();
+      expect(tileRange.contains(new ol.TileCoord(0, 0, 0))).to.not.be();
+      expect(tileRange.contains(new ol.TileCoord(0, 0, 1))).to.not.be();
+      expect(tileRange.contains(new ol.TileCoord(0, 0, 2))).to.not.be();
+      expect(tileRange.contains(new ol.TileCoord(0, 0, 3))).to.not.be();
+      expect(tileRange.contains(new ol.TileCoord(0, 0, 4))).to.not.be();
+      expect(tileRange.contains(new ol.TileCoord(0, 1, 0))).to.not.be();
+      expect(tileRange.contains(new ol.TileCoord(0, 1, 1))).to.be.ok();
+      expect(tileRange.contains(new ol.TileCoord(0, 1, 2))).to.be.ok();
+      expect(tileRange.contains(new ol.TileCoord(0, 1, 3))).to.be.ok();
+      expect(tileRange.contains(new ol.TileCoord(0, 1, 4))).to.not.be();
+      expect(tileRange.contains(new ol.TileCoord(0, 2, 0))).to.not.be();
+      expect(tileRange.contains(new ol.TileCoord(0, 2, 1))).to.be.ok();
+      expect(tileRange.contains(new ol.TileCoord(0, 2, 2))).to.be.ok();
+      expect(tileRange.contains(new ol.TileCoord(0, 2, 3))).to.be.ok();
+      expect(tileRange.contains(new ol.TileCoord(0, 2, 4))).to.not.be();
+      expect(tileRange.contains(new ol.TileCoord(0, 3, 0))).to.not.be();
+      expect(tileRange.contains(new ol.TileCoord(0, 3, 1))).to.be.ok();
+      expect(tileRange.contains(new ol.TileCoord(0, 3, 2))).to.be.ok();
+      expect(tileRange.contains(new ol.TileCoord(0, 3, 3))).to.be.ok();
+      expect(tileRange.contains(new ol.TileCoord(0, 3, 4))).to.not.be();
+      expect(tileRange.contains(new ol.TileCoord(0, 4, 0))).to.not.be();
+      expect(tileRange.contains(new ol.TileCoord(0, 4, 1))).to.not.be();
+      expect(tileRange.contains(new ol.TileCoord(0, 4, 2))).to.not.be();
+      expect(tileRange.contains(new ol.TileCoord(0, 4, 3))).to.not.be();
+      expect(tileRange.contains(new ol.TileCoord(0, 4, 4))).to.not.be();
     });
   });
 
@@ -52,10 +52,10 @@ describe('ol.TileRange', function() {
       var tileRange = new ol.TileRange.boundingTileRange(
           new ol.TileCoord(3, 1, 3),
           new ol.TileCoord(3, 2, 0));
-      expect(tileRange.minX).toEqual(1);
-      expect(tileRange.minY).toEqual(0);
-      expect(tileRange.maxX).toEqual(2);
-      expect(tileRange.maxY).toEqual(3);
+      expect(tileRange.minX).to.eql(1);
+      expect(tileRange.minY).to.eql(0);
+      expect(tileRange.maxX).to.eql(2);
+      expect(tileRange.maxY).to.eql(3);
     });
 
     describe('with mixed z', function() {
@@ -63,7 +63,7 @@ describe('ol.TileRange', function() {
         var tileRange = new ol.TileRange.boundingTileRange(
             new ol.TileCoord(3, 1, 3),
             new ol.TileCoord(4, 2, 0));
-      }).toThrow();
+      }).to.throwException();
     });
   });
 
@@ -75,11 +75,11 @@ describe('ol.TileRange', function() {
       var diff2 = new ol.TileRange(0, 1, 3, 4);
       var diff3 = new ol.TileRange(0, 2, 2, 4);
       var diff4 = new ol.TileRange(1, 1, 2, 4);
-      expect(one.equals(same)).toBe(true);
-      expect(one.equals(diff1)).toBe(false);
-      expect(one.equals(diff2)).toBe(false);
-      expect(one.equals(diff3)).toBe(false);
-      expect(one.equals(diff4)).toBe(false);
+      expect(one.equals(same)).to.be(true);
+      expect(one.equals(diff1)).to.be(false);
+      expect(one.equals(diff2)).to.be(false);
+      expect(one.equals(diff3)).to.be(false);
+      expect(one.equals(diff4)).to.be(false);
     });
   });
 
@@ -89,10 +89,10 @@ describe('ol.TileRange', function() {
       var other = new ol.TileRange(-1, 10, -3, 12);
       one.extend(other);
 
-      expect(one.minX).toBe(-1);
-      expect(one.minY).toBe(1);
-      expect(one.maxX).toBe(2);
-      expect(one.maxY).toBe(12);
+      expect(one.minX).to.be(-1);
+      expect(one.minY).to.be(1);
+      expect(one.maxX).to.be(2);
+      expect(one.maxY).to.be(12);
 
     });
   });
@@ -101,8 +101,8 @@ describe('ol.TileRange', function() {
     it('returns the expected size', function() {
       var tileRange = new ol.TileRange(0, 1, 2, 4);
       var size = tileRange.getSize();
-      expect(size.width).toEqual(3);
-      expect(size.height).toEqual(4);
+      expect(size.width).to.eql(3);
+      expect(size.height).to.eql(4);
     });
   });
 
@@ -113,19 +113,19 @@ describe('ol.TileRange', function() {
       var overlapsLeft = new ol.TileRange(-3, 1, 0, 4);
       var overlapsTop = new ol.TileRange(0, 4, 2, 5);
       var overlapsBottom = new ol.TileRange(0, -3, 2, 1);
-      expect(one.intersects(overlapsLeft)).toBe(true);
-      expect(one.intersects(overlapsRight)).toBe(true);
-      expect(one.intersects(overlapsTop)).toBe(true);
-      expect(one.intersects(overlapsBottom)).toBe(true);
+      expect(one.intersects(overlapsLeft)).to.be(true);
+      expect(one.intersects(overlapsRight)).to.be(true);
+      expect(one.intersects(overlapsTop)).to.be(true);
+      expect(one.intersects(overlapsBottom)).to.be(true);
 
       var right = new ol.TileRange(3, 1, 5, 4);
       var left = new ol.TileRange(-3, 1, -1, 4);
       var above = new ol.TileRange(0, 5, 2, 6);
       var below = new ol.TileRange(0, -3, 2, 0);
-      expect(one.intersects(right)).toBe(false);
-      expect(one.intersects(left)).toBe(false);
-      expect(one.intersects(above)).toBe(false);
-      expect(one.intersects(below)).toBe(false);
+      expect(one.intersects(right)).to.be(false);
+      expect(one.intersects(left)).to.be(false);
+      expect(one.intersects(above)).to.be(false);
+      expect(one.intersects(below)).to.be(false);
     });
   });
 
