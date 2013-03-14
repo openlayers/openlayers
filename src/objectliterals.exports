@@ -122,6 +122,7 @@
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.extent ol.Extent|undefined
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.params Object.<string,*>
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.projection ol.ProjectionLike
+@exportObjectLiteralProperty ol.source.SingleImageWMSOptions.ratio number|undefined
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.resolutions Array.<number>|undefined
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.url string|undefined
 
