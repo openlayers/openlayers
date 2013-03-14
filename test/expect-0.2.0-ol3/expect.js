@@ -300,6 +300,24 @@
   };
 
   /**
+   * Assert value is within _tol_ of _n_.
+   *
+   * @param {Number} n
+   * @param {Number} tol
+   *
+   * @api public
+   */
+
+  Assertion.prototype.roughlyEqual =
+  Assertion.prototype.kindaEqual = function(n, tol) {
+    this.assert(
+        Math.abs(this.obj - n) <= tol
+      , function(){ return 'expected ' + i(this.obj) + ' to be within ' + tol + ' of ' + n }
+      , function(){ return 'expected ' + i(this.obj) + ' not to be within ' + tol + ' of ' + n });
+    return this;
+  };
+
+  /**
    * Assert string value matches _regexp_.
    *
    * @param {RegExp} regexp

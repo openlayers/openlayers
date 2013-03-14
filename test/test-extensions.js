@@ -19,11 +19,6 @@ function waitsFor(condition, message, timeout, callback) {
 }
 
 
-expect.Assertion.prototype.roughlyEqual = function(other, tol) {
-  return Math.abs(this.actual - other) <= tol;
-};
-
-
 expect.Assertion.prototype.intersectWith = function(other) {
   return this.obj.intersects(other);
 };
