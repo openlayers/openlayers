@@ -81,3 +81,5 @@ Basically, here's what a Git commit message should look like:
     nicely even when it's indented.
 
     Further paragraphs come after blank lines.
+
+Please keep the header line short, no more than 45 characters.
