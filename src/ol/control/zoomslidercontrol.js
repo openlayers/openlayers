@@ -10,7 +10,6 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.fx.Dragger');
 goog.require('goog.style');
-goog.require('ol.FrameState');
 goog.require('ol.MapEventType');
 goog.require('ol.control.Control');
 

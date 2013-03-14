@@ -100,6 +100,5 @@ goog.require('goog.dom');
 goog.require('goog.dom.classes');
 goog.require('goog.fx.Dragger');
 goog.require('goog.math.Rect');
-goog.require('goog.style');
 goog.require('ol.Map');
 goog.require('ol.control.ZoomSlider');
