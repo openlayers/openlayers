@@ -41,7 +41,7 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    * @type {CanvasRenderingContext2D}
    */
   this.context_ =  /** @type {CanvasRenderingContext2D} */
-      this.canvas_.getContext('2d');
+      (this.canvas_.getContext('2d'));
 
   /**
    * @private
@@ -254,7 +254,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
 
   if (goog.isNull(this.tileArchetype_)) {
     this.tileArchetype_ = /** @type {HTMLCanvasElement} */
-        goog.dom.createElement(goog.dom.TagName.CANVAS);
+        (goog.dom.createElement(goog.dom.TagName.CANVAS));
     this.tileArchetype_.width = tileSize.width;
     this.tileArchetype_.height = tileSize.height;
   }
@@ -363,7 +363,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       tile = /** @type {HTMLCanvasElement} */ (this.tileCache_.get(key));
     } else {
       tile = /** @type {HTMLCanvasElement} */
-          this.tileArchetype_.cloneNode(false);
+          (this.tileArchetype_.cloneNode(false));
       tile.getContext('2d').drawImage(sketchCanvas,
           (tileRange.minX - tileCoord.x) * tileSize.width,
           (tileCoord.y - tileRange.maxY) * tileSize.height);

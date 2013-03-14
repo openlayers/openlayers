@@ -133,7 +133,7 @@ ol.structs.RTreeNode_.prototype.divide = function() {
       goog.object.extend(this.types, node.types);
       this.children.push(node);
     }
-    child.parent = /** @type {ol.structs.RTreeNode_} */ node;
+    child.parent = /** @type {ol.structs.RTreeNode_} */ (node);
     goog.object.extend(node.types, child.types);
     node.children.push(child);
     node.extend(child);
@@ -164,7 +164,7 @@ ol.structs.RTree = function() {
  * @return {Object.<string, Object>} Results for the passed bounding box.
  */
 ol.structs.RTree.prototype.find = function(bounds, opt_type) {
-  var results = /** @type {Object.<string, Object>} */ {};
+  var results = /** @type {Object.<string, Object>} */ ({});
   this.root_.find(bounds, results, opt_type);
   return results;
 };
