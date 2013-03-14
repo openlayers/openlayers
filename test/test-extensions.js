@@ -24,11 +24,6 @@ expect.Assertion.prototype.intersectWith = function(other) {
 };
 
 
-expect.Assertion.prototype.called = function() {
-  return this.obj.called;
-};
-
-
 expect.Assertion.prototype.equalArray = function(other) {
   return goog.array.equals(this.obj, other);
 };

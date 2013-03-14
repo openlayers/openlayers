@@ -40,4 +40,53 @@ describe('expect.js', function() {
 
   });
 
+  describe('called', function() {
+
+    var telephone;
+    beforeEach(function() {
+      telephone = sinon.spy();
+    });
+
+    it('has caller ID', function() {
+      telephone();
+      expect(telephone).to.be.called();
+    });
+
+    it('also knows when it\'s speaking to the hand', function() {
+      (function() {})();
+      expect(telephone).not.to.be.called();
+    });
+
+  });
+
+  describe('totallyWantsToSpeakToYou', function() {
+
+    var callMeMaybe;
+    beforeEach(function() {
+      callMeMaybe = sinon.spy();
+    });
+
+    it('reminds you that you forgot', function() {
+      expect(function() {
+        expect(callMeMaybe).to.be.called();
+      }).to.throwException();
+    });
+
+    it('gets moody all too quickly', function() {
+      callMeMaybe();
+      expect(function() {
+        expect(callMeMaybe).not.to.be.called();
+      }).to.throwException();
+    });
+
+  });
+
+  describe('called and totallyWantsToSpeakToYou', function() {
+
+    it('are best friends forever \u2665', function() {
+      expect(expect(0).to.called).to.be(expect(1).to.totallyWantsToSpeakToYou);
+    });
+
+  });
+
 });

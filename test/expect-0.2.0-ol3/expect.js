@@ -477,6 +477,21 @@
 
     return this;
   };
+
+  /**
+   * Assert that a sinon spy was called.
+   *
+   * @api public
+   */
+  Assertion.prototype.called =
+  Assertion.prototype.totallyWantsToSpeakToYou = function() {
+    this.assert(
+        this.obj.called
+      , function(){ return 'expected ' + i(this.obj) + ' to be called' }
+      , function(){ return 'expected ' + i(this.obj) + ' not to be called' });
+    return this;
+  };
+
   /**
    * Assert a failure.
    *
