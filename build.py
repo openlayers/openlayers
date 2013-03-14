@@ -311,7 +311,7 @@ def build_check_requires_timestamp(t):
     all_provides.discard('ol')
     all_provides.discard('ol.Map')
     all_provides.discard('ol.MapProperty')
-    provide_res = dict((provide, re.compile(r'\b%s\b' % (re.escape(provide)),)) for provide in all_provides)
+    provide_res = [(provide, re.compile(r'\b%s\b' % (re.escape(provide)),)) for provide in sorted(all_provides, reverse=True)]
     missing_count = 0
     for filename in sorted(t.dependencies):
         if filename in INTERNAL_SRC or filename in EXTERNAL_SRC:
@@ -328,8 +328,9 @@ def build_check_requires_timestamp(t):
             if m:
                 requires.add(m.group(1))
                 continue
-            for provide, provide_re in provide_res.iteritems():
+            for provide, provide_re in provide_res:
                 if provide_re.search(line):
+                    line = line.replace(provide, '')
                     uses.add(provide)
         if filename == 'src/ol/renderer/layerrenderer.js':
             uses.discard('ol.renderer.Map')
