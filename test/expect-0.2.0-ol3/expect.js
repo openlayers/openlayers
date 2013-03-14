@@ -493,6 +493,23 @@
   };
 
   /**
+   * Assert that that objects intersect.
+   * FIXME this is ol3 specific
+   *
+   * @param {Object} other
+   *
+   * @api public
+   */
+  Assertion.prototype.intersect =
+  Assertion.prototype.wentToSchoolWith = function(other) {
+    this.assert(
+        this.obj.intersects(other)
+      , function(){ return 'expected ' + i(this.obj) + ' to intersect ' + i(other) }
+      , function(){ return 'expected ' + i(this.obj) + ' not to intersect ' + i(other) });
+    return this;
+  };
+
+  /**
    * Assert a failure.
    *
    * @param {String ...} custom message

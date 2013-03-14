@@ -19,11 +19,6 @@ function waitsFor(condition, message, timeout, callback) {
 }
 
 
-expect.Assertion.prototype.intersectWith = function(other) {
-  return this.obj.intersects(other);
-};
-
-
 expect.Assertion.prototype.equalArray = function(other) {
   return goog.array.equals(this.obj, other);
 };
