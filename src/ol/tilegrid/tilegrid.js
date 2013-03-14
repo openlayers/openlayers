@@ -368,7 +368,7 @@ ol.tilegrid.createForProjection =
     resolutions[z] = size / Math.pow(2, z);
   }
   return new ol.tilegrid.TileGrid({
-    origin: projectionExtent.getTopLeft(),
+    origin: projectionExtent.getBottomLeft(),
     resolutions: resolutions,
     tileSize: tileSize
   });
