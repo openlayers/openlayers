@@ -179,7 +179,6 @@ describe('ol.layer.Vector', function() {
 goog.require('ol.Expression');
 goog.require('ol.Extent');
 goog.require('ol.Feature');
-goog.require('ol.Projection');
 goog.require('ol.filter.Extent');
 goog.require('ol.filter.Geometry');
 goog.require('ol.filter.Logical');

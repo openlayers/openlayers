@@ -1,13 +1,11 @@
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Expression');
-goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.control.defaults');
 goog.require('ol.filter.Filter');
-goog.require('ol.geom.LineString');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.GeoJSON');
 goog.require('ol.projection');
