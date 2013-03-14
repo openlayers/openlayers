@@ -27,10 +27,10 @@ describe('ol.control.ZoomSlider', function() {
           expectedRange = expectedMax - expectedMin;
       expect(function() {
         zoomslider = new ol.control.ZoomSlider({});
-      }).not.toThrow();
-      expect(zoomslider.minResolution_).toBe(expectedMin);
-      expect(zoomslider.maxResolution_).toBe(expectedMax);
-      expect(zoomslider.range_).toBe(expectedRange);
+      }).not.to.throwException();
+      expect(zoomslider.minResolution_).to.be(expectedMin);
+      expect(zoomslider.maxResolution_).to.be(expectedMax);
+      expect(zoomslider.range_).to.be(expectedRange);
     });
 
     it('throws exception when configured with wrong resolutions', function() {
@@ -39,7 +39,7 @@ describe('ol.control.ZoomSlider', function() {
           minResolution: 50,
           maxResolution: 0
         });
-      }).toThrow();
+      }).to.throwException();
     });
 
     it('can be configured with valid resolutions', function() {
@@ -48,10 +48,10 @@ describe('ol.control.ZoomSlider', function() {
           minResolution: 790,
           maxResolution: 91000
         });
-      }).not.toThrow();
-      expect(zoomslider.minResolution_).toBe(790);
-      expect(zoomslider.maxResolution_).toBe(91000);
-      expect(zoomslider.range_).toBe(90210);
+      }).not.to.throwException();
+      expect(zoomslider.minResolution_).to.be(790);
+      expect(zoomslider.maxResolution_).to.be(91000);
+      expect(zoomslider.range_).to.be(90210);
     });
   });
 
@@ -63,39 +63,34 @@ describe('ol.control.ZoomSlider', function() {
           zoomSliderThumb,
           hasUnselectableCls;
 
-      expect(zoomSliderContainers.length).toBe(1);
+      expect(zoomSliderContainers.length).to.be(1);
 
       zoomSliderContainer = zoomSliderContainers[0];
-      expect(zoomSliderContainer instanceof HTMLDivElement).toBe(true);
+      expect(zoomSliderContainer instanceof HTMLDivElement).to.be(true);
 
       hasUnselectableCls = goog.dom.classes.has(zoomSliderContainer,
           'ol-unselectable');
-      expect(hasUnselectableCls).toBe(true);
+      expect(hasUnselectableCls).to.be(true);
 
       zoomSliderThumbs = goog.dom.getElementsByClass('ol-zoomslider-thumb',
           zoomSliderContainer);
-      expect(zoomSliderThumbs.length).toBe(1);
+      expect(zoomSliderThumbs.length).to.be(1);
 
       zoomSliderThumb = zoomSliderThumbs[0];
-      expect(zoomSliderThumb instanceof HTMLDivElement).toBe(true);
+      expect(zoomSliderThumb instanceof HTMLDivElement).to.be(true);
 
       hasUnselectableCls = goog.dom.classes.has(zoomSliderThumb,
           'ol-unselectable');
-      expect(hasUnselectableCls).toBe(true);
+      expect(hasUnselectableCls).to.be(true);
     });
 
   });
 
   describe('dragger setup', function() {
     it('creates a goog.fx.Dragger', function() {
-      expect(zoomslider.dragger_).toBeDefined();
-      expect(zoomslider.dragger_).toBeA(goog.fx.Dragger);
-
-      expect(zoomslider.dragger_.limits).toBeDefined();
-      expect(zoomslider.dragger_.limits).toBeA(goog.math.Rect);
-
-      expect(zoomslider.direction_).toBeDefined();
-      expect(zoomslider.direction_).toBe(1); // vertical
+      expect(zoomslider.dragger_ instanceof goog.fx.Dragger).to.be(true);
+      expect(zoomslider.dragger_.limits instanceof goog.math.Rect).to.be(true);
+      expect(zoomslider.direction_).to.be(1);  // vertical
     });
   });
 
