@@ -44,7 +44,8 @@ ol.projection.EPSG4326.PROJECTIONS = [
   new ol.projection.EPSG4326('CRS:84'),
   new ol.projection.EPSG4326('EPSG:4326', 'neu'),
   new ol.projection.EPSG4326('urn:ogc:def:crs:EPSG:6.6:4326', 'neu'),
-  new ol.projection.EPSG4326('urn:ogc:def:crs:OGC:1.3:CRS84')
+  new ol.projection.EPSG4326('urn:ogc:def:crs:OGC:1.3:CRS84'),
+  new ol.projection.EPSG4326('urn:ogc:def:crs:OGC:2:84')
 ];
 
 
