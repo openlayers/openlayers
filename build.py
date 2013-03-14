@@ -298,7 +298,10 @@ def build_check_requires_timestamp(t):
             if m:
                 require_linenos[m.group(1)] = lineno
                 continue
-        for lineno, line in _strip_comments(lines):
+        ignore_linenos = require_linenos.values()
+        for lineno, line in enumerate(lines):
+            if lineno in ignore_linenos:
+                continue
             for require in require_linenos.iterkeys():
                 if require in line:
                     uses.add(require)

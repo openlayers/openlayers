@@ -2,11 +2,9 @@ goog.provide('ol.renderer.canvas.VectorRenderer');
 
 
 goog.require('goog.asserts');
-goog.require('goog.net.ImageLoader');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Feature');
 goog.require('ol.Pixel');
-goog.require('ol.canvas');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
