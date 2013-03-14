@@ -114,9 +114,7 @@
   display: block;
   padding: 0;
   margin: 2px;
-  background: #130085; /* @alternate */
   background: rgba(0,60,136,0.5);
-  filter: alpha(opacity=80);
   border-radius: 2px;
   outline: none;
   overflow: hidden;
