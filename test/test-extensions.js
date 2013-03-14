@@ -34,6 +34,11 @@ expect.Assertion.prototype.called = function() {
 };
 
 
+expect.Assertion.prototype.equalArray = function(other) {
+  return goog.array.equals(this.obj, other);
+};
+
+
 // helper functions for async testing
 (function(global) {
 
