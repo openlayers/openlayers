@@ -11,7 +11,7 @@ describe('ol.Rectangle', function() {
     });
   });
 
-  describe('intersects', function() {
+  describe('intersect', function() {
 
     var rectangle1;
 
@@ -20,48 +20,48 @@ describe('ol.Rectangle', function() {
     });
 
     it('returns the expected value', function() {
-      expect(rectangle1).to.intersectWith(rectangle1);
-      expect(rectangle1).to.intersectWith(new ol.Rectangle(20, 20, 80, 80));
-      expect(rectangle1).to.intersectWith(new ol.Rectangle(20, 50, 80, 100));
-      expect(rectangle1).to.intersectWith(new ol.Rectangle(20, 80, 80, 120));
-      expect(rectangle1).to.intersectWith(new ol.Rectangle(50, 20, 100, 80));
-      expect(rectangle1).to.intersectWith(new ol.Rectangle(50, 80, 100, 120));
-      expect(rectangle1).to.intersectWith(new ol.Rectangle(80, 20, 120, 80));
-      expect(rectangle1).to.intersectWith(new ol.Rectangle(80, 50, 120, 100));
-      expect(rectangle1).to.intersectWith(new ol.Rectangle(80, 80, 120, 120));
-      expect(rectangle1).to.intersectWith(new ol.Rectangle(20, 20, 120, 120));
-      expect(rectangle1).to.intersectWith(new ol.Rectangle(70, 70, 80, 80));
-      expect(rectangle1).to.not.intersectWith(
+      expect(rectangle1).to.intersect(rectangle1);
+      expect(rectangle1).to.intersect(new ol.Rectangle(20, 20, 80, 80));
+      expect(rectangle1).to.intersect(new ol.Rectangle(20, 50, 80, 100));
+      expect(rectangle1).to.intersect(new ol.Rectangle(20, 80, 80, 120));
+      expect(rectangle1).to.intersect(new ol.Rectangle(50, 20, 100, 80));
+      expect(rectangle1).to.intersect(new ol.Rectangle(50, 80, 100, 120));
+      expect(rectangle1).to.intersect(new ol.Rectangle(80, 20, 120, 80));
+      expect(rectangle1).to.intersect(new ol.Rectangle(80, 50, 120, 100));
+      expect(rectangle1).to.intersect(new ol.Rectangle(80, 80, 120, 120));
+      expect(rectangle1).to.intersect(new ol.Rectangle(20, 20, 120, 120));
+      expect(rectangle1).to.intersect(new ol.Rectangle(70, 70, 80, 80));
+      expect(rectangle1).to.not.intersect(
           new ol.Rectangle(10, 10, 30, 30));
-      expect(rectangle1).to.not.intersectWith(
+      expect(rectangle1).to.not.intersect(
           new ol.Rectangle(30, 10, 70, 30));
-      expect(rectangle1).to.not.intersectWith(
+      expect(rectangle1).to.not.intersect(
           new ol.Rectangle(50, 10, 100, 30));
-      expect(rectangle1).to.not.intersectWith(
+      expect(rectangle1).to.not.intersect(
           new ol.Rectangle(80, 10, 120, 30));
-      expect(rectangle1).to.not.intersectWith(
+      expect(rectangle1).to.not.intersect(
           new ol.Rectangle(120, 10, 140, 30));
-      expect(rectangle1).to.not.intersectWith(
+      expect(rectangle1).to.not.intersect(
           new ol.Rectangle(10, 30, 30, 70));
-      expect(rectangle1).to.not.intersectWith(
+      expect(rectangle1).to.not.intersect(
           new ol.Rectangle(120, 30, 140, 70));
-      expect(rectangle1).to.not.intersectWith(
+      expect(rectangle1).to.not.intersect(
           new ol.Rectangle(10, 50, 30, 100));
-      expect(rectangle1).to.not.intersectWith(
+      expect(rectangle1).to.not.intersect(
           new ol.Rectangle(120, 50, 140, 100));
-      expect(rectangle1).to.not.intersectWith(
+      expect(rectangle1).to.not.intersect(
           new ol.Rectangle(10, 80, 30, 120));
-      expect(rectangle1).to.not.intersectWith(
+      expect(rectangle1).to.not.intersect(
           new ol.Rectangle(120, 80, 140, 120));
-      expect(rectangle1).to.not.intersectWith(
+      expect(rectangle1).to.not.intersect(
           new ol.Rectangle(10, 120, 30, 140));
-      expect(rectangle1).to.not.intersectWith(
+      expect(rectangle1).to.not.intersect(
           new ol.Rectangle(30, 120, 70, 140));
-      expect(rectangle1).to.not.intersectWith(
+      expect(rectangle1).to.not.intersect(
           new ol.Rectangle(50, 120, 100, 140));
-      expect(rectangle1).to.not.intersectWith(
+      expect(rectangle1).to.not.intersect(
           new ol.Rectangle(80, 120, 120, 140));
-      expect(rectangle1).to.not.intersectWith(
+      expect(rectangle1).to.not.intersect(
           new ol.Rectangle(120, 120, 140, 140));
     });
   });
