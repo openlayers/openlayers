@@ -85,31 +85,44 @@
       return util.appendSlash(baseurl) + name + '?mode=' + mode;
     },
     /**
-     * Simple progressbar logger that uses our globals.
+     * Simple progressbar logger that uses our globals pageindex & lenHtmlFiles.
      */
     logProgress: function() {
       var doneSymbol = '-',
           todoSymbol = ' ',
-          str = '[',
-          percent = (lenHtmlFiles === 0) ? 0 : (pageindex / lenHtmlFiles * 100),
+          currentSymbol = '>',
+          barStrLeft = '[',
+          barStrRight = ']',
+          progresStep = 5, // one doneSymbol equals this percentage
+          totalSteps = Math.round(100 / progresStep),
+          ratio = (lenHtmlFiles === 0) ? 0 : (pageindex / lenHtmlFiles),
+          percent = (ratio === 0) ? 0 : ratio * 100,
+          normalizedNumDone = Math.floor(ratio * totalSteps),
+          normalizedNumTodo = totalSteps - normalizedNumDone,
+          progressLine = '',
           i = 0;
-      for (; i < pageindex; i++) {
-        str += doneSymbol;
+      // the progress bar
+      progressLine += barStrLeft;
+      for (; i < normalizedNumDone; i++) {
+        progressLine += doneSymbol;
       }
-      for (i = 0; i < lenHtmlFiles - pageindex; i++) {
-        str += (i === 0) ? '>' : todoSymbol;
+      for (i = 0; i < normalizedNumTodo; i++) {
+        progressLine += (i === 0) ? currentSymbol : todoSymbol;
       }
-      str += ']';
+      progressLine += barStrRight;
+      // the percentage information
+      // pad if necessary
       if (percent < 10) {
-        str += '  ';
+        progressLine += '  ';
       } else if (percent < 100) {
-        str += ' ';
+        progressLine += ' ';
       }
-      str += ' ' + percent.toFixed(1) + ' % done';
+      progressLine += ' ' + percent.toFixed(1) + ' % done';
+      // additional information
       if (fileName !== '') {
-        str += ', ' + util.baseName(fileName) + '';
+        progressLine += ', ' + util.baseName(fileName) + '';
       }
-      console.log(str);
+      console.log(progressLine);
     }
   };
 
