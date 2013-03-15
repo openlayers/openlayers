@@ -19,26 +19,6 @@ function waitsFor(condition, message, timeout, callback) {
 }
 
 
-expect.Assertion.prototype.roughlyEqual = function(other, tol) {
-  return Math.abs(this.actual - other) <= tol;
-};
-
-
-expect.Assertion.prototype.intersectWith = function(other) {
-  return this.obj.intersects(other);
-};
-
-
-expect.Assertion.prototype.called = function() {
-  return this.obj.called;
-};
-
-
-expect.Assertion.prototype.equalArray = function(other) {
-  return goog.array.equals(this.obj, other);
-};
-
-
 // helper functions for async testing
 (function(global) {
 

@@ -300,6 +300,24 @@
   };
 
   /**
+   * Assert value is within _tol_ of _n_.
+   *
+   * @param {Number} n
+   * @param {Number} tol
+   *
+   * @api public
+   */
+
+  Assertion.prototype.roughlyEqual =
+  Assertion.prototype.kindaEqual = function(n, tol) {
+    this.assert(
+        Math.abs(this.obj - n) <= tol
+      , function(){ return 'expected ' + i(this.obj) + ' to be within ' + tol + ' of ' + n }
+      , function(){ return 'expected ' + i(this.obj) + ' not to be within ' + tol + ' of ' + n });
+    return this;
+  };
+
+  /**
    * Assert string value matches _regexp_.
    *
    * @param {RegExp} regexp
@@ -459,6 +477,64 @@
 
     return this;
   };
+
+  /**
+   * Assert that a sinon spy was called.
+   *
+   * @api public
+   */
+  Assertion.prototype.called =
+  Assertion.prototype.totallyWantsToSpeakToYou = function() {
+    this.assert(
+        this.obj.called
+      , function(){ return 'expected ' + i(this.obj) + ' to be called' }
+      , function(){ return 'expected ' + i(this.obj) + ' not to be called' });
+    return this;
+  };
+
+  /**
+   * Assert that that objects intersect.
+   * FIXME this is ol3 specific
+   *
+   * @param {Object} other
+   *
+   * @api public
+   */
+  Assertion.prototype.intersect =
+  Assertion.prototype.wentToSchoolWith = function(other) {
+    this.assert(
+        this.obj.intersects(other)
+      , function(){ return 'expected ' + i(this.obj) + ' to intersect ' + i(other) }
+      , function(){ return 'expected ' + i(this.obj) + ' not to intersect ' + i(other) });
+    return this;
+  };
+
+  /**
+   * Assert that arrays have the same value.
+   *
+   * @param {Array} other
+   *
+   * @api public
+   */
+  Assertion.prototype.equalArray =
+  Assertion.prototype.preferItBeforeItWasFamous = function(other) {
+    var equal = this.obj.length == other.length;
+    if (equal) {
+      var j = 0;
+      for (j = 0; j < other.length; ++j) {
+        if (this.obj[j] !== other[j]) {
+          equal = false;
+          break;
+        }
+      }
+    }
+    this.assert(
+        equal
+      , function(){ return 'expected ' + i(this.obj) + ' to have the same array value as ' + i(other) }
+      , function(){ return 'expected ' + i(this.obj) + ' not to have the same array value as ' + i(other) });
+    return this;
+  };
+
   /**
    * Assert a failure.
    *
