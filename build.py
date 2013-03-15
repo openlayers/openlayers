@@ -506,7 +506,9 @@ def find_fixme(t):
         f.close()
 
     for filename in matches:
-        print '  %s has %d matches:' % (filename, len(matches[filename]))
+        num_matches = len(matches[filename])
+        noun = 'matches' if num_matches > 1 else 'match'
+        print '  %s has %d %s:' % (filename, num_matches, noun)
         for match in matches[filename]:
             print '    %s' % (match,)
         print
