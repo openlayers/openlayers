@@ -336,7 +336,6 @@ ol.projection.addProj4jsProjection_ = function(proj4jsProjection) {
 ol.projection.addProjection = function(projection) {
   var projections = ol.projection.projections_;
   var code = projection.getCode();
-  goog.asserts.assert(!goog.object.containsKey(projections, code));
   projections[code] = projection;
   ol.projection.addTransform(
       projection, projection, ol.projection.cloneTransform);
@@ -397,8 +396,6 @@ ol.projection.addTransform = function(source, destination, transformFn) {
   if (!goog.object.containsKey(transforms, sourceCode)) {
     transforms[sourceCode] = {};
   }
-  goog.asserts.assert(
-      !goog.object.containsKey(transforms[sourceCode], destinationCode));
   transforms[sourceCode][destinationCode] = transformFn;
 };
 
