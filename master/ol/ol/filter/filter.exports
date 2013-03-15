@@ -1,0 +1,7 @@
+@exportSymbol ol.filter.Filter
+@exportSymbol ol.filter.Geometry
+@exportSymbol ol.filter.Logical
+
+@exportSymbol ol.filter.LogicalOperator
+@exportProperty ol.filter.LogicalOperator.AND
+@exportProperty ol.filter.LogicalOperator.OR

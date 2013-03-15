@@ -5,6 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.style');
+goog.require('ol');
 goog.require('ol.layer.ImageLayer');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.Map');
@@ -28,7 +29,7 @@ ol.renderer.dom.Map = function(container, map) {
    * @private
    */
   this.layersPane_ = goog.dom.createElement(goog.dom.TagName.DIV);
-  this.layersPane_.className = 'ol-layers ol-unselectable';
+  this.layersPane_.className = 'ol-layers ' + ol.CSS_CLASS_UNSELECTABLE;
   var style = this.layersPane_.style;
   style.position = 'absolute';
   style.width = '100%';
@@ -44,15 +45,6 @@ ol.renderer.dom.Map = function(container, map) {
 
 };
 goog.inherits(ol.renderer.dom.Map, ol.renderer.Map);
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.dom.Map.prototype.addLayer = function(layer) {
-  goog.base(this, 'addLayer', layer);
-  this.getMap().render();
-};
 
 
 /**

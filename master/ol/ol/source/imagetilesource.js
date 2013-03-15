@@ -109,9 +109,8 @@ ol.source.ImageTileSource.prototype.getTile =
 /**
  * @inheritDoc
  */
-ol.source.ImageTileSource.prototype.useTile = function(tileCoord) {
-  var key = tileCoord.toString();
-  if (this.tileCache_.containsKey(key)) {
-    this.tileCache_.get(key);
+ol.source.ImageTileSource.prototype.useTile = function(tileCoordKey) {
+  if (this.tileCache_.containsKey(tileCoordKey)) {
+    this.tileCache_.get(tileCoordKey);
   }
 };

@@ -1,10 +1,7 @@
-var epsg21781 = new ol.Projection({
+var projection = ol.projection.configureProj4jsProjection({
   code: 'EPSG:21781',
-  units: ol.ProjectionUnits.METERS,
-  // Validity extent from http://spatialreference.org
   extent: new ol.Extent(485869.5728, 76443.1884, 837076.5648, 299941.7864)
 });
-ol.projection.addProjection(epsg21781);
 
 var extent = new ol.Extent(420000, 30000, 900000, 350000);
 var layers = [
@@ -36,11 +33,16 @@ var layers = [
 ];
 
 var map = new ol.Map({
+  controls: ol.control.defaults({}, [
+    new ol.control.ScaleLine({
+      units: ol.control.ScaleLineUnits.METRIC
+    })
+  ]),
   layers: layers,
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: new ol.View2D({
-    projection: epsg21781,
+    projection: projection,
     center: new ol.Coordinate(660000, 190000),
     zoom: 2
   })

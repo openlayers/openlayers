@@ -8,6 +8,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.object');
 goog.require('goog.style');
+goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.FrameState');
 goog.require('ol.MapEvent');
@@ -30,7 +31,7 @@ ol.control.Attribution = function(opt_options) {
   this.ulElement_ = goog.dom.createElement(goog.dom.TagName.UL);
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': 'ol-attribution ol-unselectable'
+    'class': 'ol-attribution ' + ol.CSS_CLASS_UNSELECTABLE
   }, this.ulElement_);
 
   goog.base(this, {
