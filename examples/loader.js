@@ -23,6 +23,9 @@
     mode: 'ADVANCED',
     id: 'ol'
   };
+  if (window.location.protocol === 'file:' && !params.hostname) {
+    params.hostname = 'localhost';
+  }
   var chunks, search, pair;
 
   var src, index, id, i;
