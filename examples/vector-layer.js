@@ -51,8 +51,6 @@ xhr.onload = function() {
     // this is silly to have to tell the layer the destination projection
     var projection = map.getView().getProjection();
     vector.parseFeatures(xhr.responseText, geojson, projection);
-  } else {
-    throw new Error('Data loading failed: ' + xhr.status);
   }
 };
 xhr.send();
