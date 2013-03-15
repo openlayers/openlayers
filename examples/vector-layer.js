@@ -38,7 +38,7 @@ var vector = new ol.layer.Vector({
 });
 
 var geojson = new ol.parser.GeoJSON();
-var url = '../test/spec/ol/parser/geojson/countries.json';
+var url = 'data/countries.json';
 var xhr = new XMLHttpRequest();
 xhr.open('GET', url, true);
 
