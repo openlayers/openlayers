@@ -38,7 +38,7 @@ var vector = new ol.layer.Vector({
 });
 
 var geojson = new ol.parser.GeoJSON();
-var url = '../test/spec/ol/parser/geojson/countries.json';
+var url = 'data/countries.json';
 var xhr = new XMLHttpRequest();
 xhr.open('GET', url, true);
 
@@ -51,8 +51,6 @@ xhr.onload = function() {
     // this is silly to have to tell the layer the destination projection
     var projection = map.getView().getProjection();
     vector.parseFeatures(xhr.responseText, geojson, projection);
-  } else {
-    throw new Error('Data loading failed: ' + xhr.status);
   }
 };
 xhr.send();
