@@ -1,26 +1,6 @@
-// FIXME refactor to use a packed array of integers to reduce GC load
-
-goog.provide('ol.structs.IntegerRange');
 goog.provide('ol.structs.IntegerSet');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
-
-
-/**
- * @typedef {{start: number, stop: number}}
- */
-ol.structs.IntegerRange;
-
-
-/**
- * @param {ol.structs.IntegerRange} range1 Range 1.
- * @param {ol.structs.IntegerRange} range2 Range 2.
- * @return {number} Compare.
- */
-ol.structs.IntegerRange.compare = function(range1, range2) {
-  return range1.start - range2.start || range1.stop - range2.stop;
-};
 
 
 
@@ -29,15 +9,15 @@ ol.structs.IntegerRange.compare = function(range1, range2) {
  * This implementation is designed for the case when the number of distinct
  * integer ranges is small.
  * @constructor
- * @param {Array.<ol.structs.IntegerRange>=} opt_ranges Ranges.
+ * @param {Array.<number>=} opt_arr Array.
  */
-ol.structs.IntegerSet = function(opt_ranges) {
+ol.structs.IntegerSet = function(opt_arr) {
 
   /**
    * @private
    * @type {Array.<number>}
    */
-  this.ranges_ = goog.isDef(opt_ranges) ? opt_ranges : [];
+  this.arr_ = goog.isDef(opt_arr) ? opt_arr : [];
 
   if (goog.DEBUG) {
     this.assertValid();
@@ -51,18 +31,8 @@ ol.structs.IntegerSet = function(opt_ranges) {
  * @return {ol.structs.IntegerSet} Integer set.
  */
 ol.structs.IntegerSet.unpack = function(arr) {
-  var n = arr.length;
-  goog.asserts.assert(n % 2 === 0);
-  var ranges = new Array(n / 2);
-  var rangeIndex = 0;
-  var i;
-  for (i = 0; i < n; i += 2) {
-    ranges[rangeIndex++] = {
-      start: arr[i],
-      stop: arr[i + 1]
-    };
-  }
-  return new ol.structs.IntegerSet(ranges);
+  // FIXME is this needed?
+  return new ol.structs.IntegerSet(arr);
 };
 
 
@@ -75,8 +45,18 @@ ol.structs.IntegerSet.prototype.addRange = function(addStart, addStop) {
   if (addStart == addStop) {
     return;
   }
-  var range = {start: addStart, stop: addStop};
-  goog.array.binaryInsert(this.ranges_, range, ol.structs.IntegerRange.compare);
+  var arr = this.arr_;
+  var n = arr.length;
+  var i;
+  for (i = 0; i < n; i += 2) {
+    if (addStart <= arr[i]) {
+      // FIXME check if splice is really needed
+      arr.splice(i, 0, addStart, addStop);
+      this.compactRanges_();
+      return;
+    }
+  }
+  arr.push(addStart, addStop);
   this.compactRanges_();
 };
 
@@ -85,8 +65,11 @@ ol.structs.IntegerSet.prototype.addRange = function(addStart, addStop) {
  * FIXME empty description for jsdoc
  */
 ol.structs.IntegerSet.prototype.assertValid = function() {
-  var arr = this.pack();
-  for (i = 1; i < arr.length; ++i) {
+  var arr = this.arr_;
+  var n = arr.length;
+  goog.asserts.assert(n % 2 === 0);
+  var i;
+  for (i = 1; i < n; ++i) {
     goog.asserts.assert(arr[i] > arr[i - 1]);
   }
 };
@@ -96,7 +79,7 @@ ol.structs.IntegerSet.prototype.assertValid = function() {
  * FIXME empty description for jsdoc
  */
 ol.structs.IntegerSet.prototype.clear = function() {
-  this.ranges_.length = 0;
+  this.arr_.length = 0;
 };
 
 
@@ -104,24 +87,24 @@ ol.structs.IntegerSet.prototype.clear = function() {
  * @private
  */
 ol.structs.IntegerSet.prototype.compactRanges_ = function() {
-  var ranges = this.ranges_;
-  var n = ranges.length;
+  var arr = this.arr_;
+  var n = arr.length;
   var rangeIndex = 0;
   var lastRange = null;
   var i;
-  for (i = 0; i < n; ++i) {
-    var range = ranges[i];
-    if (range.start == range.stop) {
+  for (i = 0; i < n; i += 2) {
+    if (arr[i] == arr[i + 1]) {
       // pass
-    } else if (!goog.isNull(lastRange) &&
-               lastRange.start <= range.start &&
-               range.start <= lastRange.stop) {
-      lastRange.stop = Math.max(lastRange.stop, range.stop);
+    } else if (rangeIndex > 0 &&
+               arr[rangeIndex - 2] <= arr[i] &&
+               arr[i] <= arr[rangeIndex - 1]) {
+      arr[rangeIndex - 1] = Math.max(arr[rangeIndex - 1], arr[i + 1]);
     } else {
-      lastRange = ranges[rangeIndex++] = range;
+      arr[rangeIndex++] = arr[i];
+      arr[rangeIndex++] = arr[i + 1];
     }
   }
-  ranges.length = rangeIndex;
+  arr.length = rangeIndex;
 };
 
 
@@ -133,21 +116,20 @@ ol.structs.IntegerSet.prototype.compactRanges_ = function() {
  */
 ol.structs.IntegerSet.prototype.findRange = function(minSize) {
   goog.asserts.assert(minSize > 0);
-  var ranges = this.ranges_;
-  var n = ranges.length;
-  var bestRange = null;
+  var arr = this.arr_;
+  var n = arr.length;
+  var bestIndex = -1;
   var bestSize, i, size;
-  for (i = 0; i < n; ++i) {
-    range = ranges[i];
-    size = range.stop - range.start;
+  for (i = 0; i < n; i += 2) {
+    size = arr[i + 1] - arr[i];
     if (size == minSize) {
-      return range.start;
-    } else if (size > minSize && (goog.isNull(bestRange) || size < bestSize)) {
-      bestRange = range;
+      return arr[i];
+    } else if (size > minSize && (bestIndex == -1 || size < bestSize)) {
+      bestIndex = arr[i];
       bestSize = size;
     }
   }
-  return goog.isNull(bestRange) ? -1 : bestRange.start;
+  return bestIndex;
 };
 
 
@@ -158,11 +140,11 @@ ol.structs.IntegerSet.prototype.findRange = function(minSize) {
  * @template T
  */
 ol.structs.IntegerSet.prototype.forEachRange = function(f, opt_obj) {
-  var ranges = this.ranges_;
-  var n = ranges.length;
+  var arr = this.arr_;
+  var n = arr.length;
   var i;
-  for (i = 0; i < n; ++i) {
-    f.call(opt_obj, ranges[i].start, ranges[i].stop);
+  for (i = 0; i < n; i += 2) {
+    f.call(opt_obj, arr[i], arr[i + 1]);
   }
 };
 
@@ -178,20 +160,20 @@ ol.structs.IntegerSet.prototype.forEachRange = function(f, opt_obj) {
 ol.structs.IntegerSet.prototype.forEachRangeInverted =
     function(start, stop, f, opt_obj) {
   goog.asserts.assert(start < stop);
-  var ranges = this.ranges_;
-  var n = ranges.length;
+  var arr = this.arr_;
+  var n = arr.length;
   if (n === 0) {
     f.call(opt_obj, start, stop);
   } else {
-    if (start < ranges[0].start) {
-      f.call(opt_obj, start, ranges[0].start);
+    if (start < arr[0]) {
+      f.call(opt_obj, start, arr[0]);
     }
     var i;
-    for (i = 1; i < n; ++i) {
-      f.call(opt_obj, ranges[i - 1].stop, ranges[i].start);
+    for (i = 1; i < n - 1; i += 2) {
+      f.call(opt_obj, arr[i], arr[i + 1]);
     }
-    if (ranges[n - 1].stop < stop) {
-      f.call(opt_obj, ranges[n - 1].stop, stop);
+    if (arr[n - 1] < stop) {
+      f.call(opt_obj, arr[n - 1], stop);
     }
   }
 };
@@ -201,9 +183,7 @@ ol.structs.IntegerSet.prototype.forEachRangeInverted =
  * @return {Array.<number>} Array.
  */
 ol.structs.IntegerSet.prototype.getArray = function() {
-  // FIXME this should return the underlying array when the representation is
-  // FIXME updated to use a packed array
-  return this.pack();
+  return this.arr_;
 };
 
 
@@ -212,7 +192,7 @@ ol.structs.IntegerSet.prototype.getArray = function() {
  * @return {number} Start.
  */
 ol.structs.IntegerSet.prototype.getFirst = function() {
-  return this.ranges_.length === 0 ? -1 : this.ranges_[0].start;
+  return this.arr_.length === 0 ? -1 : this.arr_[0];
 };
 
 
@@ -222,18 +202,8 @@ ol.structs.IntegerSet.prototype.getFirst = function() {
  * @return {number} Last.
  */
 ol.structs.IntegerSet.prototype.getLast = function() {
-  var n = this.ranges_.length;
-  return n === 0 ? -1 : this.ranges_[n - 1].stop;
-};
-
-
-/**
- * @return {Array.<ol.structs.IntegerRange>} Array.
- */
-ol.structs.IntegerSet.prototype.getRanges = function() {
-  // FIXME this should be removed when the implementation is updated to use a
-  // FIXME packed array
-  return this.ranges_;
+  var n = this.arr_.length;
+  return n === 0 ? -1 : this.arr_[n - 1];
 };
 
 
@@ -242,11 +212,12 @@ ol.structs.IntegerSet.prototype.getRanges = function() {
  * @return {number} Size.
  */
 ol.structs.IntegerSet.prototype.getSize = function() {
-  var ranges = this.ranges_;
-  var n = ranges.length;
+  var arr = this.arr_;
+  var n = arr.length;
   var size = 0;
-  for (i = 0; i < n; ++i) {
-    size += ranges[i].stop - ranges[i].start;
+  var i;
+  for (i = 0; i < n; i += 2) {
+    size += arr[i + 1] - arr[i];
   }
   return size;
 };
@@ -256,7 +227,7 @@ ol.structs.IntegerSet.prototype.getSize = function() {
  * @return {boolean} Is empty.
  */
 ol.structs.IntegerSet.prototype.isEmpty = function() {
-  return this.ranges_.length === 0;
+  return this.arr_.length === 0;
 };
 
 
@@ -264,15 +235,7 @@ ol.structs.IntegerSet.prototype.isEmpty = function() {
  * @return {Array.<number>} Array.
  */
 ol.structs.IntegerSet.prototype.pack = function() {
-  var ranges = this.ranges_;
-  var n = ranges.length;
-  var arr = new Array(2 * n);
-  var i;
-  for (i = 0; i < n; ++i) {
-    arr[2 * i] = ranges[i].start;
-    arr[2 * i + 1] = ranges[i].stop;
-  }
-  return arr;
+  return this.arr_;
 };
 
 
@@ -284,48 +247,47 @@ ol.structs.IntegerSet.prototype.removeRange =
     function(removeStart, removeStop) {
   // FIXME this could be more efficient
   goog.asserts.assert(removeStart <= removeStop);
-  var ranges = this.ranges_;
-  var n = ranges.length;
-  for (i = 0; i < n; ++i) {
-    var range = ranges[i];
-    if (removeStop < range.start || range.stop < removeStart) {
+  var arr = this.arr_;
+  var n = arr.length;
+  var i;
+  for (i = 0; i < n; i += 2) {
+    if (removeStop < arr[i] || arr[i + 1] < removeStart) {
       continue;
-    } else if (range.start > removeStop) {
+    } else if (arr[i] > removeStop) {
       break;
     }
-    if (removeStart < range.start) {
-      if (removeStop == range.start) {
+    if (removeStart < arr[i]) {
+      if (removeStop == arr[i]) {
         break;
-      } else if (removeStop < range.stop) {
-        range.start = Math.max(range.start, removeStop);
+      } else if (removeStop < arr[i + 1]) {
+        arr[i] = Math.max(arr[i], removeStop);
         break;
       } else {
-        ranges.splice(i, 1);
-        --i;
-        --n;
+        arr.splice(i, 2);
+        i -= 2;
+        n -= 2;
       }
-    } else if (removeStart == range.start) {
-      if (removeStop < range.stop) {
-        range.start = removeStop;
+    } else if (removeStart == arr[i]) {
+      if (removeStop < arr[i + 1]) {
+        arr[i] = removeStop;
         break;
-      } else if (removeStop == range.stop) {
-        ranges.splice(i, 1);
+      } else if (removeStop == arr[i + 1]) {
+        arr.splice(i, 2);
         break;
       } else {
-        ranges.splice(i, 1);
-        --i;
-        --n;
+        arr.splice(i, 2);
+        i -= 2;
+        n -= 2;
       }
     } else {
-      if (removeStop < range.stop) {
-        ranges.splice(i, 1, {start: range.start, stop: removeStart},
-            {start: removeStop, stop: range.stop});
+      if (removeStop < arr[i + 1]) {
+        arr.splice(i, 2, arr[i], removeStart, removeStop, arr[i + 1]);
         break;
-      } else if (removeStop == range.stop) {
-        range.stop = removeStart;
+      } else if (removeStop == arr[i + 1]) {
+        arr[i + 1] = removeStart;
         break;
       } else {
-        range.stop = removeStart;
+        arr[i + 1] = removeStart;
       }
     }
   }
