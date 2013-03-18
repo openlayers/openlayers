@@ -153,10 +153,15 @@ ol.layer.FeatureCache.prototype.getFeaturesByIds_ = function(ids) {
 /**
  * @constructor
  * @extends {ol.layer.Layer}
- * @param {ol.layer.LayerOptions} layerOptions Layer options.
+ * @param {ol.layer.VectorLayerOptions} layerOptions Layer options.
  */
 ol.layer.Vector = function(layerOptions) {
-  goog.base(this, layerOptions);
+
+  goog.base(this, {
+    opacity: layerOptions.opacity,
+    source: layerOptions.source,
+    visible: layerOptions.visible
+  });
 
   /**
    * @private
