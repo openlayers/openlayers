@@ -197,6 +197,7 @@ ol.Map = function(mapOptions) {
       'ol-overlaycontainer');
   goog.events.listen(this.overlayContainer_, [
     goog.events.EventType.CLICK,
+    goog.events.EventType.DBLCLICK,
     ol.BrowserFeature.HAS_TOUCH ?
         goog.events.EventType.TOUCHSTART : goog.events.EventType.MOUSEDOWN
   ], goog.events.Event.stopPropagation);
