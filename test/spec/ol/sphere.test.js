@@ -530,7 +530,7 @@ describe('ol.Sphere', function() {
   describe('midpoint', function() {
 
     it('results match Chris Veness\'s reference implementation', function() {
-      var e, i;
+      var e, i, midpoint;
       for (i = 0; i < expected.length; ++i) {
         e = expected[i];
         midpoint = sphere.midpoint(e.c1, e.c2);
