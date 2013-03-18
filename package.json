@@ -9,7 +9,7 @@
   },
   "bugs": "https://github.com/openlayers/ol3/issues",
   "devDependencies": {
-    "testacular": ">= 0.5.2",
+    "testacular": ">= 0.6.0",
     "glob": "3.x"
   },
   "scripts": {
