@@ -3,6 +3,12 @@ goog.provide('ol.structs.Buffer');
 goog.require('ol.structs.IntegerSet');
 
 
+/**
+ * @define {boolean} Replace unused entries with NaNs.
+ */
+ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS = goog.DEBUG;
+
+
 
 /**
  * @constructor
@@ -36,6 +42,14 @@ ol.structs.Buffer = function(opt_arr, opt_used, opt_dirty) {
   }
   if (opt_dirty && used !== 0) {
     this.dirtySet_.addRange(0, used);
+  }
+  if (ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS) {
+    var arr = this.arr_;
+    var n = arr.length;
+    var i;
+    for (i = used; i < n; ++i) {
+      arr[i] = NaN;
+    }
   }
 
 };
@@ -111,6 +125,13 @@ ol.structs.Buffer.prototype.getFreeSet = function() {
 ol.structs.Buffer.prototype.remove = function(index, size) {
   this.freeSet_.addRange(index, index + size);
   this.dirtySet_.removeRange(index, index + size);
+  if (ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS) {
+    var arr = this.arr_;
+    var i;
+    for (i = 0; i < size; ++i) {
+      arr[index + i] = NaN;
+    }
+  }
 };
 
 
