@@ -143,6 +143,7 @@ ol.structs.Buffer.prototype.set = function(values, offset) {
   var arr = this.arr_;
   var n = values.length;
   goog.asserts.assert(0 <= offset && offset + n <= arr.length);
+  var i;
   for (i = 0; i < n; ++i) {
     arr[offset + i] = values[i];
   }
