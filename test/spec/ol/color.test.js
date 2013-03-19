@@ -52,7 +52,7 @@ describe('ol.Color', function() {
       expect(c.b).to.be(255);
     });
 
-    it('limits 1 to 0-1', function() {
+    it('limits a to 0-1', function() {
       var c;
 
       // legit a
