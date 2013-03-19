@@ -5,7 +5,7 @@
 @exportObjectLiteralProperty ol.MapOptions.renderer ol.RendererHint|undefined
 @exportObjectLiteralProperty ol.MapOptions.renderers Array.<ol.RendererHint>|undefined
 @exportObjectLiteralProperty ol.MapOptions.target Element|string
-@exportObjectLiteralProperty ol.MapOptions.view ol.IView|undefined
+@exportObjectLiteralProperty ol.MapOptions.view ol.View|ol.View2DOptions|undefined
 
 @exportObjectLiteral ol.View2DOptions
 @exportObjectLiteralProperty ol.View2DOptions.center ol.Coordinate|undefined

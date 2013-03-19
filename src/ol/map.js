@@ -880,8 +880,17 @@ ol.Map.createOptionsInternal = function(mapOptions) {
   }
   values[ol.MapProperty.LAYERS] = layers;
 
-  values[ol.MapProperty.VIEW] = goog.isDef(mapOptions.view) ?
-      mapOptions.view : new ol.View2D();
+  var view;
+  if (goog.isDefAndNotNull(mapOptions.view)) {
+    if (!(mapOptions.view instanceof ol.View)) {
+      view = new ol.View2D(mapOptions.view);
+    } else {
+      view = mapOptions.view;
+    }
+  } else {
+    view = new ol.View2D();
+  }
+  values[ol.MapProperty.VIEW] = view;
 
   /**
    * @type {function(new: ol.renderer.Map, Element, ol.Map)}
