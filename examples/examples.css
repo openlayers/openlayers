@@ -13,3 +13,8 @@ body {
 #tags {
   display: none;
 }
+
+/* padding for social links to match bootstrap nav links */
+.nav>li>.twitter-share-button, .nav>li>.g-plusone-wrapper, .nav>li>.github-watch-button {
+  padding: 10px 10px 0px;
+}
