@@ -60,6 +60,18 @@ ol.Rectangle.prototype.extend = function(rectangle) {
 
 
 /**
+ * @param {number} x X.
+ * @param {number} y Y.
+ */
+ol.Rectangle.prototype.extendXY = function(x, y) {
+  this.minX = Math.min(this.minX, x);
+  this.minY = Math.min(this.minY, y);
+  this.maxX = Math.max(this.maxX, x);
+  this.maxY = Math.max(this.maxY, y);
+};
+
+
+/**
  * @return {ol.Coordinate} Center.
  */
 ol.Rectangle.prototype.getCenter = function() {
