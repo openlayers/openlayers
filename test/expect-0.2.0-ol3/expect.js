@@ -522,7 +522,8 @@
     if (equal) {
       var j = 0;
       for (j = 0; j < other.length; ++j) {
-        if (this.obj[j] !== other[j]) {
+        if (this.obj[j] !== other[j] &&
+            !(isNaN(this.obj[j]) && isNaN(other[j]))) {
           equal = false;
           break;
         }
