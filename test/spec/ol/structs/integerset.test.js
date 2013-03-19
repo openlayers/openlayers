@@ -15,26 +15,26 @@ describe('ol.structs.IntegerSet', function() {
 
     });
 
-  });
+    describe('with an argument', function() {
 
-  describe('unpack', function() {
+      it('constructs with a valid array', function() {
+        var is = new ol.structs.IntegerSet([0, 2, 4, 6]);
+        expect(is).to.be.an(ol.structs.IntegerSet);
+        expect(is.getArray()).to.equalArray([0, 2, 4, 6]);
+      });
 
-    it('constructs with a valid array', function() {
-      var is = ol.structs.IntegerSet.unpack([0, 2, 4, 6]);
-      expect(is).to.be.an(ol.structs.IntegerSet);
-      expect(is.getArray()).to.equalArray([0, 2, 4, 6]);
-    });
+      it('throws an exception with an odd number of elements', function() {
+        expect(function() {
+          var is = new ol.structs.IntegerSet([0, 2, 4]);
+        }).to.throwException();
+      });
 
-    it('throws an exception with an odd number of elements', function() {
-      expect(function() {
-        var is = ol.structs.IntegerSet.unpack([0, 2, 4]);
-      }).to.throwException();
-    });
+      it('throws an exception with out-of-order elements', function() {
+        expect(function() {
+          var is = new ol.structs.IntegerSet([0, 2, 2, 4]);
+        }).to.throwException();
+      });
 
-    it('throws an exception with out-of-order elements', function() {
-      expect(function() {
-        var is = ol.structs.IntegerSet.unpack([0, 2, 2, 4]);
-      }).to.throwException();
     });
 
   });
@@ -130,7 +130,7 @@ describe('ol.structs.IntegerSet', function() {
 
     var is;
     beforeEach(function() {
-      is = ol.structs.IntegerSet.unpack([4, 6, 8, 10, 12, 14]);
+      is = new ol.structs.IntegerSet([4, 6, 8, 10, 12, 14]);
     });
 
     describe('addRange', function() {
@@ -363,8 +363,7 @@ describe('ol.structs.IntegerSet', function() {
 
     var is;
     beforeEach(function() {
-      is = ol.structs.IntegerSet.unpack(
-          [0, 1, 2, 4, 5, 8, 9, 12, 13, 15, 16, 17]);
+      is = new ol.structs.IntegerSet([0, 1, 2, 4, 5, 8, 9, 12, 13, 15, 16, 17]);
     });
 
     describe('findRange', function() {

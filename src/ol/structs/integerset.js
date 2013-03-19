@@ -27,16 +27,6 @@ ol.structs.IntegerSet = function(opt_arr) {
 
 
 /**
- * @param {Array.<number>} arr Array.
- * @return {ol.structs.IntegerSet} Integer set.
- */
-ol.structs.IntegerSet.unpack = function(arr) {
-  // FIXME is this needed?
-  return new ol.structs.IntegerSet(arr);
-};
-
-
-/**
  * @param {number} addStart Start.
  * @param {number} addStop Stop.
  */
