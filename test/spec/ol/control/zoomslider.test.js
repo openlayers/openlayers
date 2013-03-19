@@ -1,11 +1,13 @@
 goog.provide('ol.test.control.ZoomSlider');
 
 describe('ol.control.ZoomSlider', function() {
-  var map, zoomslider;
+  var map, target, zoomslider;
 
   beforeEach(function() {
+    target = document.createElement('div');
+    document.body.appendChild(target);
     map = new ol.Map({
-      target: document.getElementById('map')
+      target: target
     });
     zoomslider = new ol.control.ZoomSlider({
       minResolution: 5000,
@@ -17,6 +19,10 @@ describe('ol.control.ZoomSlider', function() {
   afterEach(function() {
     zoomslider.dispose();
     map.dispose();
+    document.body.removeChild(target);
+    zoomslider = null;
+    map = null;
+    target = null;
   });
 
   describe('configuration & defaults', function() {
@@ -58,7 +64,8 @@ describe('ol.control.ZoomSlider', function() {
 
   describe('DOM creation', function() {
     it('creates the expected DOM elements', function() {
-      var zoomSliderContainers = goog.dom.getElementsByClass('ol-zoomslider'),
+      var zoomSliderContainers = goog.dom.getElementsByClass(
+          'ol-zoomslider', target),
           zoomSliderContainer,
           zoomSliderThumbs,
           zoomSliderThumb,
@@ -91,8 +98,39 @@ describe('ol.control.ZoomSlider', function() {
     it('creates a goog.fx.Dragger', function() {
       expect(zoomslider.dragger_ instanceof goog.fx.Dragger).to.be(true);
       expect(zoomslider.dragger_.limits instanceof goog.math.Rect).to.be(true);
+    });
+  });
+
+  describe('#direction_', function() {
+    it('is horizontal for wide containers', function() {
+      var control = new ol.control.ZoomSlider({
+        minResolution: 5000,
+        maxResolution: 100000
+      });
+      control.element.style.width = '1000px';
+      control.element.style.height = '10px';
+      control.setMap(map);
+
       var horizontal = ol.control.ZoomSlider.direction.HORIZONTAL;
-      expect(zoomslider.direction_).to.be(horizontal);  // vertical
+      expect(control.direction_).to.be(horizontal);
+
+      control.dispose();
+    });
+
+    it('is vertical for tall containers', function() {
+      var control = new ol.control.ZoomSlider({
+        minResolution: 5000,
+        maxResolution: 100000
+      });
+      control.element.style.width = '10px';
+      control.element.style.height = '1000px';
+
+      control.setMap(map);
+
+      var vertical = ol.control.ZoomSlider.direction.VERTICAL;
+      expect(control.direction_).to.be(vertical);
+
+      control.dispose();
     });
   });
 

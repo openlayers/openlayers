@@ -56,7 +56,7 @@ describe('ol.Map', function() {
 
     beforeEach(function() {
       map = new ol.Map({
-        target: document.getElementById('map')
+        target: document.createElement('div')
       });
     });
 
@@ -138,7 +138,7 @@ describe('ol.Map', function() {
       map = new ol.Map({
         layers: new ol.Collection([layer]),
         renderer: ol.RendererHint.DOM,
-        target: 'map',
+        target: document.createElement('div'),
         view: new ol.View2D({
           center: new ol.Coordinate(0, 0),
           zoom: 1

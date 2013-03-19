@@ -5,7 +5,7 @@ describe('ol.control.Control', function() {
 
   beforeEach(function() {
     map = new ol.Map({
-      target: document.getElementById('map')
+      target: document.createElement('div')
     });
     var element = goog.dom.createDom(goog.dom.TagName.DIV);
     control = new ol.control.Control({element: element});
