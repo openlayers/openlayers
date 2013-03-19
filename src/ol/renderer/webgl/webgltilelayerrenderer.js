@@ -19,6 +19,7 @@ goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.layer.TileLayer');
+goog.require('ol.math');
 goog.require('ol.renderer.webgl.FragmentShader');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.VertexShader');
@@ -236,8 +237,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     var maxDimension = Math.max(
         tileRangeSize.width * tileSize.width,
         tileRangeSize.height * tileSize.height);
-    var framebufferDimension =
-        Math.pow(2, Math.ceil(Math.log(maxDimension) / Math.log(2)));
+    var framebufferDimension = ol.math.roundUpToPowerOfTwo(maxDimension);
     var framebufferExtentSize = new ol.Size(
         tileResolution * framebufferDimension,
         tileResolution * framebufferDimension);
