@@ -90,7 +90,8 @@ describe('ol.control.ZoomSlider', function() {
     it('creates a goog.fx.Dragger', function() {
       expect(zoomslider.dragger_ instanceof goog.fx.Dragger).to.be(true);
       expect(zoomslider.dragger_.limits instanceof goog.math.Rect).to.be(true);
-      expect(zoomslider.direction_).to.be(1);  // vertical
+      var horizontal = ol.control.ZoomSlider.direction.HORIZONTAL;
+      expect(zoomslider.direction_).to.be(horizontal);  // vertical
     });
   });
 
