@@ -13,7 +13,7 @@ describe('ol.renderer.webgl.ImageLayer', function() {
 
     beforeEach(function() {
       map = new ol.Map({
-        target: 'map'
+        target: document.createElement('div')
       });
       var layer = new ol.layer.ImageLayer({
         source: new ol.source.ImageSource({
