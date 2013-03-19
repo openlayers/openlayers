@@ -64,6 +64,46 @@ describe('ol.math.csch', function() {
 });
 
 
+describe('ol.math.roundUpToPowerOfTwo', function() {
+
+  it('raises an exception when x is negative', function() {
+    expect(function() {
+      ol.math.roundUpToPowerOfTwo(-1);
+    }).to.throwException();
+  });
+
+  it('raises an exception when x is zero', function() {
+    expect(function() {
+      ol.math.roundUpToPowerOfTwo(0);
+    }).to.throwException();
+  });
+
+  it('returns the expected value for simple powers of two', function() {
+    expect(ol.math.roundUpToPowerOfTwo(1)).to.be(1);
+    expect(ol.math.roundUpToPowerOfTwo(2)).to.be(2);
+    expect(ol.math.roundUpToPowerOfTwo(4)).to.be(4);
+    expect(ol.math.roundUpToPowerOfTwo(8)).to.be(8);
+    expect(ol.math.roundUpToPowerOfTwo(16)).to.be(16);
+    expect(ol.math.roundUpToPowerOfTwo(32)).to.be(32);
+    expect(ol.math.roundUpToPowerOfTwo(64)).to.be(64);
+    expect(ol.math.roundUpToPowerOfTwo(128)).to.be(128);
+    expect(ol.math.roundUpToPowerOfTwo(256)).to.be(256);
+  });
+
+  it('returns the expected value for simple powers of ten', function() {
+    expect(ol.math.roundUpToPowerOfTwo(1)).to.be(1);
+    expect(ol.math.roundUpToPowerOfTwo(10)).to.be(16);
+    expect(ol.math.roundUpToPowerOfTwo(100)).to.be(128);
+    expect(ol.math.roundUpToPowerOfTwo(1000)).to.be(1024);
+    expect(ol.math.roundUpToPowerOfTwo(10000)).to.be(16384);
+    expect(ol.math.roundUpToPowerOfTwo(100000)).to.be(131072);
+    expect(ol.math.roundUpToPowerOfTwo(1000000)).to.be(1048576);
+    expect(ol.math.roundUpToPowerOfTwo(10000000)).to.be(16777216);
+  });
+
+});
+
+
 describe('ol.math.sech', function() {
 
   it('returns the correct value at -Infinity', function() {
