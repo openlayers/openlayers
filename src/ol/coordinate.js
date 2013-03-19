@@ -19,9 +19,17 @@ ol.CoordinateFormatType;
  * @extends {goog.math.Vec2}
  * @param {number} x X.
  * @param {number} y Y.
+ * @param {number=} opt_z Z.
  */
-ol.Coordinate = function(x, y) {
+ol.Coordinate = function(x, y, opt_z) {
+
   goog.base(this, x, y);
+
+  /**
+   * @type {number}
+   */
+  this.z = opt_z || 0;
+
 };
 goog.inherits(ol.Coordinate, goog.math.Vec2);
 
