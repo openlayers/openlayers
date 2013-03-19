@@ -455,7 +455,7 @@ describe('ol.Object', function() {
     });
   });
 
-  describe('case sentivity', function() {
+  describe('case sensitivity', function() {
     var listener1, listener2;
 
     beforeEach(function() {
