@@ -105,6 +105,14 @@ ol.Rectangle.prototype.intersects = function(rectangle) {
 
 
 /**
+ * @return {boolean} Is empty.
+ */
+ol.Rectangle.prototype.isEmpty = function() {
+  return this.maxX < this.minX || this.maxY < this.minY;
+};
+
+
+/**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {ol.Coordinate} Coordinate.
  */
