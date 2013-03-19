@@ -14,8 +14,6 @@ goog.require('ol.style.Rule');
 goog.require('ol.style.Style');
 
 
-var map;
-
 var raster = new ol.layer.TileLayer({
   source: new ol.source.MapQuestOpenAerial()
 });
@@ -28,14 +26,23 @@ var vector = new ol.layer.Vector({
     new ol.style.Rule({
       symbolizers: [
         new ol.style.Polygon({
-          strokeStyle: '#696969',
-          strokeWidth: 1,
-          opacity: 1.5
+          strokeColor: '#696969'
         })
       ]
     })
   ]})
 });
+
+var map = new ol.Map({
+  layers: new ol.Collection([raster, vector]),
+  renderer: ol.RendererHint.CANVAS,
+  target: 'map',
+  view: new ol.View2D({
+    center: new ol.Coordinate(0, 0),
+    zoom: 1
+  })
+});
+
 
 var geojson = new ol.parser.GeoJSON();
 var url = 'data/countries.json';
@@ -55,12 +62,3 @@ xhr.onload = function() {
 };
 xhr.send();
 
-map = new ol.Map({
-  layers: new ol.Collection([raster, vector]),
-  renderer: ol.RendererHint.CANVAS,
-  target: 'map',
-  view: new ol.View2D({
-    center: new ol.Coordinate(0, 0),
-    zoom: 1
-  })
-});
