@@ -3,6 +3,7 @@
 // FIXME should possibly be adjustable by clicking on container
 
 goog.provide('ol.control.ZoomSlider');
+goog.provide('ol.control.ZoomSliderMode');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
@@ -56,6 +57,37 @@ ol.control.ZoomSlider = function(zoomSliderOptions) {
    * @private
    */
   this.range_ = this.maxResolution_ - this.minResolution_;
+
+  /**
+   * The mode of the slider. If not pset in the configuration, this will default
+   * to ol.control.ZoomSliderMode.LINEAR.
+   *
+   * @type {ol.control.ZoomSliderMode}
+   * @private
+   */
+  this.mode_ = goog.isDef(zoomSliderOptions.mode) ?
+      zoomSliderOptions.mode : ol.control.ZoomSliderMode.LINEAR;
+
+  goog.asserts.assert(
+      goog.array.indexOf([
+        ol.control.ZoomSliderMode.LINEAR,
+        ol.control.ZoomSliderMode.EXPONENTIAL
+      ], this.mode_) !== -1,
+      'Inexistant mode specified.'
+  );
+
+  /**
+   * The number of steps needed to represent the range of resolutions when in
+   * exponential mode.
+   *
+   * @type {?number}
+   * @private
+   */
+  this.exponentialSteps_ = null;
+  if (this.mode_ === ol.control.ZoomSliderMode.EXPONENTIAL) {
+    var logResRatio = Math.log(this.maxResolution_ / this.minResolution_);
+    this.exponentialSteps_ = Math.round(logResRatio / Math.LN2);
+  }
 
   /**
    * Will hold the current resolution of the view.
@@ -281,7 +313,8 @@ ol.control.ZoomSlider.prototype.amountDragged_ = function(e) {
 
 /**
  * Calculates the corresponding resolution of the thumb by the amount it has
- * been dragged from its minimum.
+ * been dragged from its minimum. Takes the mode ('linear' or 'exponential' into
+ * consideration).
  *
  * @param {number} amount The amount the thumb has been dragged.
  * @return {number} a resolution between this.minResolution_ and
@@ -289,8 +322,17 @@ ol.control.ZoomSlider.prototype.amountDragged_ = function(e) {
  * @private
  */
 ol.control.ZoomSlider.prototype.resolutionForAmount_ = function(amount) {
-  var saneAmount = goog.math.clamp(amount, 0, 1);
-  return this.minResolution_ + this.range_ * saneAmount;
+  var saneAmount = goog.math.clamp(amount, 0, 1),
+      minRes = this.minResolution_,
+      newRes;
+  if (this.mode_ === ol.control.ZoomSliderMode.LINEAR) {
+    newRes = minRes + this.range_ * saneAmount;
+  } else {
+    newRes = minRes * (Math.pow(2, (this.exponentialSteps_ * saneAmount)));
+  }
+  goog.asserts.assert(newRes >= minRes && newRes <= this.maxResolution_,
+      'Illegal resolution calculated.');
+  return newRes;
 };
 
 
@@ -303,8 +345,17 @@ ol.control.ZoomSlider.prototype.resolutionForAmount_ = function(amount) {
  * @private
  */
 ol.control.ZoomSlider.prototype.amountForResolution_ = function(res) {
-  var saneRes = goog.math.clamp(res, this.minResolution_, this.maxResolution_);
-  return (saneRes - this.minResolution_) / this.range_;
+  var saneRes = goog.math.clamp(res, this.minResolution_, this.maxResolution_),
+      amount,
+      logResRatio;
+  if (this.mode_ === ol.control.ZoomSliderMode.LINEAR) {
+    amount = (saneRes - this.minResolution_) / this.range_;
+  } else {
+    logResRatio = Math.log(saneRes / this.minResolution_);
+    amount = (logResRatio / Math.LN2) / this.exponentialSteps_;
+  }
+  goog.asserts.assert(amount >= 0 && amount <= 1, 'Illegal amount calculated.');
+  return amount;
 };
 
 
@@ -371,4 +422,15 @@ ol.control.ZoomSlider.prototype.createDom_ = function(opt_elem) {
       goog.dom.createDom(goog.dom.TagName.DIV, thumbCssCls));
 
   return elem;
+};
+
+
+/**
+ * The enum for available modes.
+ *
+ * @enum {string}
+ */
+ol.control.ZoomSliderMode = {
+  EXPONENTIAL: 'exponential',
+  LINEAR: 'linear'
 };
