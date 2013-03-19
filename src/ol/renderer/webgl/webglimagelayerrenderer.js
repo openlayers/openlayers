@@ -29,13 +29,6 @@ ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
   this.image_ = null;
 
   /**
-   * The last rendered texture.
-   * @private
-   * @type {WebGLTexture}
-   */
-  this.texture_ = null;
-
-  /**
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
@@ -89,29 +82,8 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.disposeInternal = function() {
-  var mapRenderer = this.getMapRenderer();
-  var gl = mapRenderer.getGL();
-  if (!gl.isContextLost()) {
-    gl.deleteTexture(this.texture_);
-  }
-  goog.base(this, 'disposeInternal');
-};
-
-
-/**
- * @inheritDoc
- */
 ol.renderer.webgl.ImageLayer.prototype.getTexCoordMatrix = function() {
   return this.texCoordMatrix_;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.ImageLayer.prototype.getTexture = function() {
-  return this.texture_;
 };
 
 
@@ -134,14 +106,6 @@ ol.renderer.webgl.ImageLayer.prototype.getImageLayer = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.handleWebGLContextLost = function() {
-  this.texture_ = null;
-};
-
-
-/**
- * @inheritDoc
- */
 ol.renderer.webgl.ImageLayer.prototype.renderFrame =
     function(frameState, layerState) {
 
@@ -153,7 +117,7 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
   var viewRotation = view2DState.rotation;
 
   var image = this.image_;
-  var texture = this.texture_;
+  var texture = this.texture;
   var imageLayer = this.getImageLayer();
   var imageSource = imageLayer.getImageSource();
 
@@ -171,13 +135,13 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
       } else if (imageState == ol.ImageState.LOADED) {
         image = image_;
         texture = this.createTexture_(image_);
-        if (!goog.isNull(this.texture_)) {
+        if (!goog.isNull(this.texture)) {
           frameState.postRenderFunctions.push(
               goog.partial(function(gl, texture) {
                 if (!gl.isContextLost()) {
                   gl.deleteTexture(texture);
                 }
-              }, gl, this.texture_));
+              }, gl, this.texture));
         }
       }
     }
@@ -198,7 +162,7 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
     goog.vec.Mat4.translate(texCoordMatrix, 0, -1, 0);
 
     this.image_ = image;
-    this.texture_ = texture;
+    this.texture = texture;
 
     this.updateAttributions(frameState.attributions, image.getAttributions());
   }

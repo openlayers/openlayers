@@ -13,7 +13,6 @@ goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
 goog.require('goog.webgl');
 goog.require('ol.Extent');
-goog.require('ol.FrameState');
 goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
@@ -119,24 +118,6 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {WebGLTexture}
-   */
-  this.texture_ = null;
-
-  /**
-   * @private
-   * @type {WebGLFramebuffer}
-   */
-  this.framebuffer_ = null;
-
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.framebufferDimension_ = undefined;
-
-  /**
-   * @private
    * @type {!goog.vec.Mat4.Number}
    */
   this.texCoordMatrix_ = goog.vec.Mat4.createNumber();
@@ -164,55 +145,6 @@ goog.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
 
 
 /**
- * @param {ol.FrameState} frameState Frame state.
- * @param {number} framebufferDimension Framebuffer dimension.
- * @private
- */
-ol.renderer.webgl.TileLayer.prototype.bindFramebuffer_ =
-    function(frameState, framebufferDimension) {
-
-  var mapRenderer = this.getMapRenderer();
-  var gl = mapRenderer.getGL();
-
-  if (!goog.isDef(this.framebufferDimension_) ||
-      this.framebufferDimension_ != framebufferDimension) {
-
-    var map = this.getMap();
-    frameState.postRenderFunctions.push(
-        goog.partial(function(gl, framebuffer, texture) {
-          if (!gl.isContextLost()) {
-            gl.deleteFramebuffer(framebuffer);
-            gl.deleteTexture(texture);
-          }
-        }, gl, this.framebuffer_, this.texture_));
-
-    var texture = gl.createTexture();
-    gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
-    gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA,
-        framebufferDimension, framebufferDimension, 0, goog.webgl.RGBA,
-        goog.webgl.UNSIGNED_BYTE, null);
-    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER,
-        goog.webgl.LINEAR);
-    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER,
-        goog.webgl.LINEAR);
-
-    var framebuffer = gl.createFramebuffer();
-    gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, framebuffer);
-    gl.framebufferTexture2D(goog.webgl.FRAMEBUFFER,
-        goog.webgl.COLOR_ATTACHMENT0, goog.webgl.TEXTURE_2D, texture, 0);
-
-    this.texture_ = texture;
-    this.framebuffer_ = framebuffer;
-    this.framebufferDimension_ = framebufferDimension;
-
-  } else {
-    gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, this.framebuffer_);
-  }
-
-};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
@@ -220,8 +152,6 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
   var gl = mapRenderer.getGL();
   if (!gl.isContextLost()) {
     gl.deleteBuffer(this.arrayBuffer_);
-    gl.deleteFramebuffer(this.framebuffer_);
-    gl.deleteTexture(this.texture_);
   }
   goog.base(this, 'disposeInternal');
 };
@@ -232,14 +162,6 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
  */
 ol.renderer.webgl.TileLayer.prototype.getTexCoordMatrix = function() {
   return this.texCoordMatrix_;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.TileLayer.prototype.getTexture = function() {
-  return this.texture_;
 };
 
 
@@ -263,11 +185,9 @@ ol.renderer.webgl.TileLayer.prototype.getTileLayer = function() {
  * @inheritDoc
  */
 ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
+  goog.base(this, 'handleWebGLContextLost');
   this.locations_ = null;
   this.arrayBuffer_ = null;
-  this.texture_ = null;
-  this.framebuffer_ = null;
-  this.framebufferDimension_ = undefined;
 };
 
 
@@ -330,7 +250,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         minX + framebufferExtentSize.width,
         minY + framebufferExtentSize.height);
 
-    this.bindFramebuffer_(frameState, framebufferDimension);
+    this.bindFramebuffer(frameState, framebufferDimension);
     gl.viewport(0, 0, framebufferDimension, framebufferDimension);
 
     gl.clearColor(0, 0, 0, 0);
