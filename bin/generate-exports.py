@@ -152,7 +152,7 @@ class ObjectLiteral(Exportable):
         return '.'.join(self.extern_name().split('.')[:-1]) or None
 
     def provide(self):
-        return 'goog.provide(\'%sType\');\n' % (self.name,)
+        return 'goog.provide(\'%s\');\n' % (self.name,)
 
     def typedef(self):
         lines = []
