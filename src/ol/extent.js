@@ -46,6 +46,16 @@ ol.Extent.boundingExtent = function(var_args) {
 
 
 /**
+ * @return {ol.Extent} Empty extent.
+ */
+ol.Extent.createEmptyExtent = function() {
+  return new ol.Extent(
+      Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY,
+      Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY);
+};
+
+
+/**
  * @param {ol.Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
