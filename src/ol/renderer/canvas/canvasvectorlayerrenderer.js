@@ -335,6 +335,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
                   [geomFilter, extentFilter], ol.filter.LogicalOperator.AND)));
         }
         tilesOnSketchCanvas[key] = tileCoord;
+      } else {
+        this.dirty_ = true;
       }
     }
   }
@@ -356,7 +358,6 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     }
   }
 
-  this.dirty_ = true;
   for (key in tilesToRender) {
     tileCoord = tilesToRender[key];
     if (this.tileCache_.containsKey(key)) {
@@ -372,7 +373,6 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     finalContext.drawImage(tile,
         tileSize.width * (tileCoord.x - tileRange.minX),
         tileSize.height * (tileRange.maxY - tileCoord.y));
-    this.dirty_ = false;
   }
 
   this.renderedResolution_ = tileResolution;
