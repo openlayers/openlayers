@@ -427,7 +427,7 @@ def hostexamples(t):
         'build/ol.css', build_dir)
     t.cp('examples/example-list.html', examples_dir + '/index.html')
     t.cp('examples/example-list.js', 'examples/example-list.xml',
-        'examples/Jugl.js', 'examples/jquery.min.js', examples_dir)
+        'examples/Jugl.js', 'examples/jquery.min.js', 'examples/social-links.js', examples_dir)
     t.rm_rf('build/gh-pages/%(BRANCH)s/closure-library')
     t.makedirs('build/gh-pages/%(BRANCH)s/closure-library')
     with t.chdir('build/gh-pages/%(BRANCH)s/closure-library'):
