@@ -38,11 +38,11 @@ feedPath = "http://openlayers.github.com/ol3/master/examples/"
 def getListOfExamples(relPath):
     """
     returns list of .html filenames within a given path - excludes
-    example-list.html
+    index.html
     """
     examples = os.listdir(relPath)
     examples = [example for example in examples if
-                example.endswith('.html') and example != "example-list.html"]
+                example.endswith('.html') and example != "index.html"]
     return examples
 
 

@@ -42,7 +42,7 @@
       exampleDir = system.args[2],
       // various settings
       ignoreFiles = [
-        'example-list.html'
+        'index.html'
       ],
       intervalMillisecs = 25,
       renderMillisecs = 2000,

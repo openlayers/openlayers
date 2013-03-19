@@ -51,7 +51,7 @@ EXAMPLES = [path
             for path in ifind('examples')
             if not path.startswith('examples/standalone/')
             if path.endswith('.html')
-            if path != 'examples/example-list.html']
+            if path != 'examples/index.html']
 
 EXAMPLES_JSON = [example.replace('.html', '.json')
                  for example in EXAMPLES]
@@ -425,8 +425,7 @@ def hostexamples(t):
     t.cp('build/loader_hosted_examples.js', examples_dir + '/loader.js')
     t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js',
         'build/ol.css', build_dir)
-    t.cp('examples/example-list.html', examples_dir + '/index.html')
-    t.cp('examples/example-list.js', 'examples/example-list.xml',
+    t.cp('examples/index.html', 'examples/example-list.js', 'examples/example-list.xml',
         'examples/Jugl.js', 'examples/jquery.min.js', 'examples/social-links.js', examples_dir)
     t.rm_rf('build/gh-pages/%(BRANCH)s/closure-library')
     t.makedirs('build/gh-pages/%(BRANCH)s/closure-library')
