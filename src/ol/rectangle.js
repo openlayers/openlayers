@@ -15,9 +15,6 @@ goog.require('ol.Size');
  */
 ol.Rectangle = function(minX, minY, maxX, maxY) {
 
-  goog.asserts.assert(minX <= maxX);
-  goog.asserts.assert(minY <= maxY);
-
   /**
    * @type {number}
    */
