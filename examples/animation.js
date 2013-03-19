@@ -1,7 +1,6 @@
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
-goog.require('ol.View2D');
 goog.require('ol.animation');
 goog.require('ol.easing');
 goog.require('ol.layer.TileLayer');
@@ -29,7 +28,9 @@ var map = new ol.Map({
   ],
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
-  view: new ol.View2D({
+  // ol.View2DOptions typecast required only when example
+  // code is compiled with Closure Compiler
+  view: /** @type {ol.View2DOptions} */ ({
     center: instanbul,
     zoom: 6
   })
