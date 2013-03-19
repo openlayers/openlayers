@@ -116,6 +116,14 @@ describe('ol.structs.IntegerSet', function() {
 
     });
 
+    describe('toString', function() {
+
+      it('returns an empty string', function() {
+        expect(is.toString()).to.be.empty();
+      });
+
+    });
+
   });
 
   describe('with a populated instance', function() {
@@ -342,6 +350,13 @@ describe('ol.structs.IntegerSet', function() {
 
     });
 
+    describe('toString', function() {
+
+      it('returns the expected value', function() {
+        expect(is.toString()).to.be('4-6, 8-10, 12-14');
+      });
+    });
+
   });
 
   describe('with fragmentation', function() {
@@ -423,6 +438,14 @@ describe('ol.structs.IntegerSet', function() {
       it('can remove all ranges', function() {
         is.removeRange(0, 18);
         expect(is.getArray()).to.equalArray([]);
+      });
+
+    });
+
+    describe('toString', function() {
+
+      it('returns the expected value', function() {
+        expect(is.toString()).to.be('0-1, 2-4, 5-8, 9-12, 13-15, 16-17');
       });
 
     });

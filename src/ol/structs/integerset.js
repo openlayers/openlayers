@@ -293,3 +293,23 @@ ol.structs.IntegerSet.prototype.removeRange =
   }
   this.compactRanges_();
 };
+
+
+if (goog.DEBUG) {
+
+  /**
+   * @return {string} String.
+   */
+  ol.structs.IntegerSet.prototype.toString = function() {
+    var arr = this.arr_;
+    var n = arr.length;
+    var result = new Array(n / 2);
+    var resultIndex = 0;
+    var i;
+    for (i = 0; i < n; i += 2) {
+      result[resultIndex++] = arr[i] + '-' + arr[i + 1];
+    }
+    return result.join(', ');
+  };
+
+}
