@@ -123,13 +123,13 @@ def build_ol_js(t):
 
 
 @target('build/ol-simple.js', PLOVR_JAR, SRC, INTERNAL_SRC, 'base.json', 'build/ol.json', 'build/ol-simple.json')
-def build_ol_js(t):
+def build_ol_simple_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol-simple.json')
     report_sizes(t)
 
 
 @target('build/ol-whitespace.js', PLOVR_JAR, SRC, INTERNAL_SRC, 'base.json', 'build/ol.json', 'build/ol-whitespace.json')
-def build_ol_js(t):
+def build_ol_whitespace_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol-whitespace.json')
     report_sizes(t)
 
@@ -445,7 +445,6 @@ def hostexamples(t):
 
 @target('check-examples', 'hostexamples', phony=True)
 def check_examples(t):
-    directory = 'build/gh-pages/%(BRANCH)s/'
     examples = ['build/gh-pages/%(BRANCH)s/' + e for e in EXAMPLES]
     all_examples = \
         [e + '?mode=raw' for e in examples] + \
@@ -472,7 +471,7 @@ def proj4js_zip(t):
 
 if sys.platform == 'win32':
     @target('test', '%(PHANTOMJS)s', INTERNAL_SRC, PROJ4JS, 'test/requireall.js', phony=True)
-    def test(t):
+    def test_win32(t):
         t.run(PHANTOMJS, 'test/mocha-phantomjs.coffee', 'test/ol.html')
 
     # FIXME the PHANTOMJS should be a pake variable, not a constant
