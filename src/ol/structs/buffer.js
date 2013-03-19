@@ -57,20 +57,20 @@ ol.structs.Buffer = function(opt_arr, opt_used, opt_dirty) {
 
 /**
  * @param {Array.<number>} values Values.
- * @return {number} Index.
+ * @return {number} Offset.
  */
 ol.structs.Buffer.prototype.add = function(values) {
   var size = values.length;
   goog.asserts.assert(size > 0);
-  var index = this.freeSet_.findRange(size);
-  goog.asserts.assert(index != -1);  // FIXME
-  this.freeSet_.removeRange(index, index + size);
+  var offset = this.freeSet_.findRange(size);
+  goog.asserts.assert(offset != -1);  // FIXME
+  this.freeSet_.removeRange(offset, offset + size);
   var i;
   for (i = 0; i < size; ++i) {
-    this.arr_[index + i] = values[i];
+    this.arr_[offset + i] = values[i];
   }
-  this.dirtySet_.addRange(index, index + size);
-  return index;
+  this.dirtySet_.addRange(offset, offset + size);
+  return offset;
 };
 
 
@@ -119,34 +119,34 @@ ol.structs.Buffer.prototype.getFreeSet = function() {
 
 
 /**
- * @param {number} index Index.
  * @param {number} size Size.
+ * @param {number} offset Offset.
  */
-ol.structs.Buffer.prototype.remove = function(index, size) {
-  this.freeSet_.addRange(index, index + size);
-  this.dirtySet_.removeRange(index, index + size);
+ol.structs.Buffer.prototype.remove = function(size, offset) {
+  this.freeSet_.addRange(offset, offset + size);
+  this.dirtySet_.removeRange(offset, offset + size);
   if (ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS) {
     var arr = this.arr_;
     var i;
     for (i = 0; i < size; ++i) {
-      arr[index + i] = NaN;
+      arr[offset + i] = NaN;
     }
   }
 };
 
 
 /**
- * @param {number} index Index.
  * @param {Array.<number>} values Values.
+ * @param {number} offset Offset.
  */
-ol.structs.Buffer.prototype.set = function(index, values) {
+ol.structs.Buffer.prototype.set = function(values, offset) {
   var arr = this.arr_;
   var n = values.length;
-  goog.asserts.assert(0 <= index && index + n <= arr.length);
+  goog.asserts.assert(0 <= offset && offset + n <= arr.length);
   for (i = 0; i < n; ++i) {
-    arr[index + i] = values[i];
+    arr[offset + i] = values[i];
   }
-  this.dirtySet_.addRange(index, index + n);
+  this.dirtySet_.addRange(offset, offset + n);
 };
 
 

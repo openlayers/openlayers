@@ -161,7 +161,7 @@ describe('ol.structs.Buffer', function() {
 
       it('allows items to be removes', function() {
         expect(function() {
-          b.remove(2, 4);
+          b.remove(4, 2);
         }).to.not.throwException();
       });
 
@@ -170,12 +170,12 @@ describe('ol.structs.Buffer', function() {
     describe('set', function() {
 
       it('updates the items', function() {
-        b.set(2, [5, 6]);
+        b.set([5, 6], 2);
         expect(b.getArray()).to.equalArray([0, 1, 5, 6]);
       });
 
       it('marks the set items as dirty', function() {
-        b.set(2, [5, 6]);
+        b.set([5, 6], 2);
         var dirtySet = b.getDirtySet();
         expect(dirtySet.isEmpty()).to.be(false);
         expect(dirtySet.getArray()).to.equalArray([2, 4]);
