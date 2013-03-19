@@ -22,7 +22,8 @@ describe('ol.control.ZoomSlider', function() {
   describe('configuration & defaults', function() {
 
     it('has valid defaults for min and maxresolution', function() {
-      var expectedMin = 0.5971642833948135,
+      var zoomslider,
+          expectedMin = 0.5971642833948135,
           expectedMax = 156543.0339,
           expectedRange = expectedMax - expectedMin;
       expect(function() {
