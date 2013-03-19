@@ -49,6 +49,7 @@ ol.control.ZoomSlider = function(zoomSliderOptions) {
       this.minResolution_ < this.maxResolution_,
       'minResolution must be smaller than maxResolution.'
   );
+  goog.asserts.assert(this.minResolution_ > 0, 'minResolution must be > 0.');
 
   /**
    * The range of resolutions we are handling in this slider.
@@ -92,10 +93,10 @@ ol.control.ZoomSlider = function(zoomSliderOptions) {
   /**
    * Will hold the current resolution of the view.
    *
-   * @type {number}
+   * @type {number|undefined}
    * @private
    */
-  this.currentResolution_;
+  this.currentResolution_ = undefined;
 
   /**
    * The direction of the slider. Will be determined from actual display of the
@@ -191,7 +192,9 @@ ol.control.ZoomSlider.prototype.setMap = function(map) {
   this.currentResolution_ = map.getView().getResolution();
   this.initMapEventListeners_();
   this.initSlider_();
-  this.positionThumbForResolution_(this.currentResolution_);
+  if (goog.isDef(this.currentResolution_)) {
+    this.positionThumbForResolution_(this.currentResolution_);
+  }
 };
 
 
