@@ -14,7 +14,6 @@ goog.require('ol.TileState');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
-goog.require('ol.tilegrid');
 
 
 

@@ -14,7 +14,6 @@ goog.require('ol.source.wms');
 
 /**
  * @constructor
- * @implements {ol.source.IWMS}
  * @extends {ol.source.ImageTileSource}
  * @param {ol.source.TiledWMSOptions} tiledWMSOptions options.
  */
@@ -33,7 +32,7 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
     var tileUrlFunctions = goog.array.map(
         urls, function(url) {
           return ol.TileUrlFunction.createFromParamsFunction(
-              url, ol.source.wms.getUrl);
+              url, tiledWMSOptions.params, ol.source.wms.getUrl);
         });
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         tileUrlFunctions);
@@ -67,16 +66,6 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
     }
     return new ol.TileCoord(tileCoord.z, x, tileCoord.y);
   };
-
-  /**
-   * @inheritDoc
-   */
-  this.url = goog.isDef(urls) ? urls[0] : undefined;
-
-  /**
-   * @inheritDoc
-   */
-  this.params = tiledWMSOptions.params;
 
   goog.base(this, {
     attributions: tiledWMSOptions.attributions,

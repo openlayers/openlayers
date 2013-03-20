@@ -16,7 +16,6 @@ goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.dom.Layer');
-goog.require('ol.tilegrid');
 goog.require('ol.tilegrid.TileGrid');
 
 

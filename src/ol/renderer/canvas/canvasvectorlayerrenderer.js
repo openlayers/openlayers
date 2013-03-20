@@ -14,7 +14,6 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.VectorRenderer');
-goog.require('ol.tilegrid');
 goog.require('ol.tilegrid.TileGrid');
 
 

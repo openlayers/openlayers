@@ -660,5 +660,4 @@ goog.require('ol.Extent');
 goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.projection');
-goog.require('ol.tilegrid');
 goog.require('ol.tilegrid.TileGrid');

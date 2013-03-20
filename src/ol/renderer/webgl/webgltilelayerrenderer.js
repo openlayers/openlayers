@@ -23,7 +23,6 @@ goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.webgl.FragmentShader');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.VertexShader');
-goog.require('ol.tilegrid');
 
 
 
