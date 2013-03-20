@@ -13,6 +13,7 @@
 @exportProperty ol.ProjectionUnits.METERS
 
 @exportSymbol ol.projection.addProjection
+@exportSymbol ol.projection.addCommonProjections
 @exportSymbol ol.projection.get
 @exportSymbol ol.projection.getTransform
 @exportSymbol ol.projection.getTransformFromProjections
