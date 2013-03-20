@@ -23,6 +23,7 @@ goog.require('ol.tilegrid.XYZ');
 ol.source.BingMaps = function(bingMapsOptions) {
 
   goog.base(this, {
+    crossOrigin: 'anonymous',
     opaque: true,
     projection: ol.projection.get('EPSG:3857')
   });

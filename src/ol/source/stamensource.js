@@ -106,6 +106,7 @@ ol.source.Stamen = function(options) {
 
   goog.base(this, {
     attributions: ol.source.STAMEN_ATTRIBUTIONS,
+    crossOrigin: 'anonymous',
     maxZoom: providerConfig.maxZoom,
     // FIXME uncomment the following when tilegrid supports minZoom
     //minZoom: providerConfig.minZoom,

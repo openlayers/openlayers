@@ -19,6 +19,7 @@ var layers = [
   new ol.layer.ImageLayer({
     source: new ol.source.SingleImageWMS({
       url: 'http://wms.geo.admin.ch/',
+      crossOrigin: 'anonymous',
       attributions: [new ol.Attribution(
           '&copy; ' +
           '<a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">' +
@@ -33,6 +34,7 @@ var layers = [
   new ol.layer.ImageLayer({
     source: new ol.source.SingleImageWMS({
       url: 'http://wms.geo.admin.ch/',
+      crossOrigin: 'anonymous',
       attributions: [new ol.Attribution(
           '&copy; ' +
           '<a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">' +
