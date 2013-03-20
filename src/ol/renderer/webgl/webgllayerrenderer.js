@@ -39,6 +39,18 @@ ol.renderer.webgl.Layer = function(mapRenderer, layer) {
   this.framebufferDimension = undefined;
 
   /**
+   * @protected
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.texCoordMatrix = goog.vec.Mat4.createNumber();
+
+  /**
+   * @protected
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.projectionMatrix = goog.vec.Mat4.createNumberIdentity();
+
+  /**
    * @private
    * @type {!goog.vec.Mat4.Float32}
    */
@@ -154,7 +166,9 @@ ol.renderer.webgl.Layer.prototype.getWebGLMapRenderer = function() {
 /**
  * @return {!goog.vec.Mat4.Number} Matrix.
  */
-ol.renderer.webgl.Layer.prototype.getTexCoordMatrix = goog.abstractMethod;
+ol.renderer.webgl.Layer.prototype.getTexCoordMatrix = function() {
+  return this.texCoordMatrix;
+};
 
 
 /**
@@ -168,7 +182,9 @@ ol.renderer.webgl.Layer.prototype.getTexture = function() {
 /**
  * @return {!goog.vec.Mat4.Number} Matrix.
  */
-ol.renderer.webgl.Layer.prototype.getProjectionMatrix = goog.abstractMethod;
+ol.renderer.webgl.Layer.prototype.getProjectionMatrix = function() {
+  return this.projectionMatrix;
+};
 
 
 /**

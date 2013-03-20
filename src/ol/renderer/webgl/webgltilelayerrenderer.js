@@ -125,18 +125,6 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
-   */
-  this.texCoordMatrix_ = goog.vec.Mat4.createNumber();
-
-  /**
-   * @private
-   * @type {!goog.vec.Mat4.Number}
-   */
-  this.projectionMatrix_ = goog.vec.Mat4.createNumberIdentity();
-
-  /**
-   * @private
    * @type {ol.TileRange}
    */
   this.renderedTileRange_ = null;
@@ -158,22 +146,6 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
   var mapRenderer = this.getWebGLMapRenderer();
   mapRenderer.deleteBuffer(this.arrayBuffer_);
   goog.base(this, 'disposeInternal');
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.TileLayer.prototype.getTexCoordMatrix = function() {
-  return this.texCoordMatrix_;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.TileLayer.prototype.getProjectionMatrix = function() {
-  return this.projectionMatrix_;
 };
 
 
@@ -378,21 +350,21 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   tileSource.useLowResolutionTiles(z, extent, tileGrid);
   this.scheduleExpireCache(frameState, tileSource);
 
-  goog.vec.Mat4.makeIdentity(this.texCoordMatrix_);
-  goog.vec.Mat4.translate(this.texCoordMatrix_,
+  goog.vec.Mat4.makeIdentity(this.texCoordMatrix);
+  goog.vec.Mat4.translate(this.texCoordMatrix,
       (center.x - framebufferExtent.minX) /
           (framebufferExtent.maxX - framebufferExtent.minX),
       (center.y - framebufferExtent.minY) /
           (framebufferExtent.maxY - framebufferExtent.minY),
       0);
-  goog.vec.Mat4.rotateZ(this.texCoordMatrix_, view2DState.rotation);
-  goog.vec.Mat4.scale(this.texCoordMatrix_,
+  goog.vec.Mat4.rotateZ(this.texCoordMatrix, view2DState.rotation);
+  goog.vec.Mat4.scale(this.texCoordMatrix,
       frameState.size.width * view2DState.resolution /
           (framebufferExtent.maxX - framebufferExtent.minX),
       frameState.size.height * view2DState.resolution /
           (framebufferExtent.maxY - framebufferExtent.minY),
       1);
-  goog.vec.Mat4.translate(this.texCoordMatrix_,
+  goog.vec.Mat4.translate(this.texCoordMatrix,
       -0.5,
       -0.5,
       0);

@@ -28,18 +28,6 @@ ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
    */
   this.image_ = null;
 
-  /**
-   * @private
-   * @type {!goog.vec.Mat4.Number}
-   */
-  this.texCoordMatrix_ = goog.vec.Mat4.createNumberIdentity();
-
-  /**
-   * @private
-   * @type {!goog.vec.Mat4.Number}
-   */
-  this.projectionMatrix_ = goog.vec.Mat4.createNumber();
-
 };
 goog.inherits(ol.renderer.webgl.ImageLayer, ol.renderer.webgl.Layer);
 
@@ -76,22 +64,6 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
       goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER, goog.webgl.LINEAR);
 
   return texture;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.ImageLayer.prototype.getTexCoordMatrix = function() {
-  return this.texCoordMatrix_;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.ImageLayer.prototype.getProjectionMatrix = function() {
-  return this.projectionMatrix_;
 };
 
 
@@ -156,7 +128,7 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
         viewCenter, viewResolution, viewRotation, image.getExtent());
 
     // Translate and scale to flip the Y coord.
-    var texCoordMatrix = this.texCoordMatrix_;
+    var texCoordMatrix = this.texCoordMatrix;
     goog.vec.Mat4.makeIdentity(texCoordMatrix);
     goog.vec.Mat4.scale(texCoordMatrix, 1, -1, 1);
     goog.vec.Mat4.translate(texCoordMatrix, 0, -1, 0);
@@ -185,7 +157,7 @@ ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ =
   var canvasExtentWidth = canvasWidth * viewResolution;
   var canvasExtentHeight = canvasHeight * viewResolution;
 
-  var projectionMatrix = this.projectionMatrix_;
+  var projectionMatrix = this.projectionMatrix;
   goog.vec.Mat4.makeIdentity(projectionMatrix);
   goog.vec.Mat4.scale(projectionMatrix,
       2 / canvasExtentWidth, 2 / canvasExtentHeight, 1);
