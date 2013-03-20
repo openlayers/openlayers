@@ -1,4 +1,27 @@
+goog.provide('ol.source.IWMS');
 goog.provide('ol.source.wms');
+
+
+
+/**
+ * Interface for WMS
+ * @interface
+ */
+ol.source.IWMS = function() {};
+
+
+/**
+ * @type {string|undefined} The url for this source.
+ */
+ol.source.IWMS.prototype.url;
+
+
+/**
+ * @type {Object.<string,*>} Parameters for WMS requests. 'LAYERS' is mandatory.
+ *     'STYLES' defaults to ''. 'VERSION' defaults to '1.3.0'. 'CRS'/'SRS',
+ *     'BBOX' and 'SIZE' are added dynamically.
+ */
+ol.source.IWMS.prototype.params;
 
 
 /**

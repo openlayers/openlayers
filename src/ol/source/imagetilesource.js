@@ -94,7 +94,8 @@ ol.source.ImageTileSource.prototype.getTile =
   } else {
     goog.asserts.assert(tileGrid);
     goog.asserts.assert(projection);
-    var tileUrl = this.tileUrlFunction(tileCoord, tileGrid, projection);
+    var tileUrl = this.tileUrlFunction.call(this,
+        tileCoord, tileGrid, projection);
     var tile = new ol.ImageTile(
         tileCoord,
         goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,

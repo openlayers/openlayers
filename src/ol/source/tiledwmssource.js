@@ -8,11 +8,13 @@ goog.require('ol.Extent');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.ImageTileSource');
+goog.require('ol.source.wms');
 
 
 
 /**
  * @constructor
+ * @implements {ol.source.IWMS}
  * @extends {ol.source.ImageTileSource}
  * @param {ol.source.TiledWMSOptions} tiledWMSOptions options.
  */
@@ -30,12 +32,13 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
   if (goog.isDef(urls)) {
     var tileUrlFunctions = goog.array.map(
         urls, function(url) {
-          return ol.TileUrlFunction.createWMSParams(
-              url, tiledWMSOptions.params);
+          return ol.TileUrlFunction.createFromParamsFunction(
+              url, ol.source.wms.getUrl);
         });
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         tileUrlFunctions);
   }
+
   var transparent = goog.isDef(tiledWMSOptions.params['TRANSPARENT']) ?
       tiledWMSOptions.params['TRANSPARENT'] : true;
   var extent = tiledWMSOptions.extent;
@@ -64,6 +67,16 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
     }
     return new ol.TileCoord(tileCoord.z, x, tileCoord.y);
   };
+
+  /**
+   * @inheritDoc
+   */
+  this.url = goog.isDef(urls) ? urls[0] : undefined;
+
+  /**
+   * @inheritDoc
+   */
+  this.params = tiledWMSOptions.params;
 
   goog.base(this, {
     attributions: tiledWMSOptions.attributions,

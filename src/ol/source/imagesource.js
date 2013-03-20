@@ -82,7 +82,7 @@ goog.inherits(ol.source.ImageSource, ol.source.Source);
 ol.source.ImageSource.prototype.createImage =
     function(extent, resolution, size, projection) {
   var image = null;
-  var imageUrl = this.imageUrlFunction(extent, size, projection);
+  var imageUrl = this.imageUrlFunction.call(this, extent, size, projection);
   if (goog.isDef(imageUrl)) {
     image = new ol.Image(
         extent, resolution, imageUrl, this.crossOrigin_,
