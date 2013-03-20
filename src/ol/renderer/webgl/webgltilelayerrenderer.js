@@ -350,21 +350,22 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   tileSource.useLowResolutionTiles(z, extent, tileGrid);
   this.scheduleExpireCache(frameState, tileSource);
 
-  goog.vec.Mat4.makeIdentity(this.texCoordMatrix);
-  goog.vec.Mat4.translate(this.texCoordMatrix,
+  var texCoordMatrix = this.texCoordMatrix;
+  goog.vec.Mat4.makeIdentity(texCoordMatrix);
+  goog.vec.Mat4.translate(texCoordMatrix,
       (center.x - framebufferExtent.minX) /
           (framebufferExtent.maxX - framebufferExtent.minX),
       (center.y - framebufferExtent.minY) /
           (framebufferExtent.maxY - framebufferExtent.minY),
       0);
-  goog.vec.Mat4.rotateZ(this.texCoordMatrix, view2DState.rotation);
-  goog.vec.Mat4.scale(this.texCoordMatrix,
+  goog.vec.Mat4.rotateZ(texCoordMatrix, view2DState.rotation);
+  goog.vec.Mat4.scale(texCoordMatrix,
       frameState.size.width * view2DState.resolution /
           (framebufferExtent.maxX - framebufferExtent.minX),
       frameState.size.height * view2DState.resolution /
           (framebufferExtent.maxY - framebufferExtent.minY),
       1);
-  goog.vec.Mat4.translate(this.texCoordMatrix,
+  goog.vec.Mat4.translate(texCoordMatrix,
       -0.5,
       -0.5,
       0);
