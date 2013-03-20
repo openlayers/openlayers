@@ -28,7 +28,7 @@ ol.Coordinate = function(x, y, opt_z) {
   /**
    * @type {number}
    */
-  this.z = opt_z || 0;
+  this.z = goog.isDef(opt_z) ? opt_z : NaN;
 
 };
 goog.inherits(ol.Coordinate, goog.math.Vec2);
