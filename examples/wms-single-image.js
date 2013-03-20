@@ -15,9 +15,9 @@ var layers = [
   }),
   new ol.layer.ImageLayer({
     source: new ol.source.SingleImageWMS({
-      url: 'http://suite.opengeo.org/geoserver/wms',
+      url: 'http://demo.opengeo.org/geoserver/wms',
       crossOrigin: null,
-      params: {'LAYERS': 'usa:states'},
+      params: {'LAYERS': 'topp:states'},
       extent: new ol.Extent(-13884991, 2870341, -7455066, 6338219)
     })
   })
