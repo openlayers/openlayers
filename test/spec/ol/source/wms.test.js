@@ -35,6 +35,7 @@ describe('ol.source.wms', function() {
 
 
 goog.require('ol.TileCoord');
+goog.require('ol.TileUrlFunction');
 goog.require('ol.projection');
 goog.require('ol.source.wms');
 goog.require('ol.tilegrid');

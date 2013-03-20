@@ -97,7 +97,8 @@ describe('ol.TileUrlFunction', function() {
 
 });
 
+goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.projection');
-goog.require('ol.tilegrid.XYZ');
+goog.require('ol.tilegrid');
