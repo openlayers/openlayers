@@ -30,14 +30,22 @@ ol.TilePriorityFunction;
  * @constructor
  * @param {ol.TilePriorityFunction} tilePriorityFunction
  *     Tile priority function.
+ * @param {Function} tileChangeCallback
+ *     Function called on each tile change event.
  */
-ol.TileQueue = function(tilePriorityFunction) {
+ol.TileQueue = function(tilePriorityFunction, tileChangeCallback) {
 
   /**
    * @private
    * @type {ol.TilePriorityFunction}
    */
   this.tilePriorityFunction_ = tilePriorityFunction;
+
+  /**
+   * @private
+   * @type {Function}
+   */
+  this.tileChangeCallback_ = tileChangeCallback;
 
   /**
    * @private
@@ -120,6 +128,7 @@ ol.TileQueue.prototype.enqueue = function(tile, tileSourceKey, tileCenter) {
  */
 ol.TileQueue.prototype.handleTileChange = function() {
   --this.tilesLoading_;
+  this.tileChangeCallback_();
 };
 
 
@@ -168,7 +177,7 @@ ol.TileQueue.prototype.heapify_ = function() {
 
 
 /**
- * @return {boolean} New loading tiles?
+ *  FIXME empty description for jsdoc
  */
 ol.TileQueue.prototype.loadMoreTiles = function() {
   var tile;
@@ -179,7 +188,6 @@ ol.TileQueue.prototype.loadMoreTiles = function() {
     tile.load();
     ++this.tilesLoading_;
   }
-  return goog.isDef(tile);
 };
 
 
