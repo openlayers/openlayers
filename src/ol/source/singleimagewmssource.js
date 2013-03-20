@@ -5,6 +5,7 @@ goog.require('ol.Image');
 goog.require('ol.ImageUrlFunction');
 goog.require('ol.Size');
 goog.require('ol.source.ImageSource');
+goog.require('ol.source.wms');
 
 
 
@@ -15,7 +16,8 @@ goog.require('ol.source.ImageSource');
  */
 ol.source.SingleImageWMS = function(options) {
   var imageUrlFunction = goog.isDef(options.url) ?
-      ol.ImageUrlFunction.createWMSParams(options.url, options.params) :
+      ol.ImageUrlFunction.createFromParamsFunction(
+          options.url, options.params, ol.source.wms.getUrl) :
       ol.ImageUrlFunction.nullImageUrlFunction;
 
   goog.base(this, {

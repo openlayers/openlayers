@@ -4,13 +4,12 @@ goog.provide('ol.TileUrlFunctionType');
 goog.require('goog.array');
 goog.require('goog.math');
 goog.require('ol.TileCoord');
-goog.require('ol.source.wms');
 goog.require('ol.tilegrid.TileGrid');
 
 
 /**
- * @typedef {function(ol.TileCoord, ol.tilegrid.TileGrid, ol.Projection):
- *     (string|undefined)}
+ * @typedef {function(this:ol.source.Source, ol.TileCoord, ol.tilegrid.TileGrid,
+ *     ol.Projection): (string|undefined)}
  */
 ol.TileUrlFunctionType;
 
@@ -63,18 +62,20 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
 
 /**
  * @param {string} baseUrl Base URL (may have query data).
- * @param {Object.<string, string|number>} params WMS parameters.
+ * @param {Object.<string,*>} params to encode in the url.
+ * @param {function(string, Object.<string,*>, ol.Extent, ol.Size,
+ *     ol.Projection)} paramsFunction params function.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
-ol.TileUrlFunction.createWMSParams =
-    function(baseUrl, params) {
+ol.TileUrlFunction.createFromParamsFunction =
+    function(baseUrl, params, paramsFunction) {
   return function(tileCoord, tileGrid, projection) {
     if (goog.isNull(tileCoord)) {
       return undefined;
     } else {
       var size = tileGrid.getTileSize(tileCoord.z);
       var extent = tileGrid.getTileCoordExtent(tileCoord);
-      return ol.source.wms.getUrl(
+      return paramsFunction(
           baseUrl, params, extent, size, projection);
     }
   };
@@ -102,7 +103,7 @@ ol.TileUrlFunction.withTileCoordTransform =
     if (goog.isNull(tileCoord)) {
       return undefined;
     } else {
-      return tileUrlFunction(
+      return tileUrlFunction.call(this,
           transformFn(tileCoord, tileGrid, projection), tileGrid, projection);
     }
   };
