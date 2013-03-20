@@ -78,41 +78,26 @@ describe('ol.TileUrlFunction', function() {
     });
   });
 
-  describe('createWMSParams', function() {
-    var tileGrid;
-    beforeEach(function() {
-      tileGrid = new ol.tilegrid.XYZ({
-        maxZoom: 10
-      });
-    });
-    it('creates expected URL', function() {
-      var epsg3857 = ol.projection.get('EPSG:3857');
-      var tileUrlFunction = ol.TileUrlFunction.createWMSParams(
-          'http://wms?foo=bar', {});
-      var tileCoord = new ol.TileCoord(1, 0, 0);
-      var tileUrl = tileUrlFunction(tileCoord, tileGrid, epsg3857);
-      var expected = 'http://wms?foo=bar&SERVICE=WMS&VERSION=1.3.0&REQUEST=' +
-          'GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&WIDTH=256&HEIGHT=256&' +
-          'STYLES=&CRS=EPSG%3A3857&BBOX=-20037508.342789244%2C2' +
-          '0037508.342789244%2C0%2C40075016.68557849';
-      expect(tileUrl).to.eql(expected);
-    });
-    it('creates expected URL respecting axis orientation', function() {
-      var epsg4326 = ol.projection.get('EPSG:4326');
-      var tileUrlFunction = ol.TileUrlFunction.createWMSParams(
-          'http://wms?foo=bar', {});
-      var tileCoord = new ol.TileCoord(1, 0, 0);
-      var tileUrl = tileUrlFunction(tileCoord, tileGrid, epsg4326);
-      var expected = 'http://wms?foo=bar&SERVICE=WMS&VERSION=1.3.0&REQUEST=' +
-          'GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&WIDTH=256&HEIGHT=256&' +
-          'STYLES=&CRS=EPSG%3A4326&BBOX=20037508.342789244%2C' +
-          '-20037508.342789244%2C40075016.68557849%2C0';
-      expect(tileUrl).to.eql(expected);
+  describe('createFromParamsFunction', function() {
+    var paramsFunction = function(url, params) { return arguments; };
+    var projection = ol.projection.get('EPSG:3857');
+    var params = {foo: 'bar'};
+    var tileUrlFunction = ol.TileUrlFunction.createFromParamsFunction(
+        'url', params, paramsFunction);
+    it('calls the passed function with the correct arguments', function() {
+      var args = tileUrlFunction(new ol.TileCoord(0, 0, 0),
+          ol.tilegrid.getForProjection(projection), projection);
+      expect(args[0]).to.eql('url');
+      expect(args[1]).to.be(params);
+      expect(args[2]).to.eql(projection.getExtent());
+      expect(args[3]).to.eql(new ol.Size(256, 256));
+      expect(args[4]).to.eql(projection);
     });
   });
+
 });
 
+goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.projection');
-goog.require('ol.tilegrid.XYZ');

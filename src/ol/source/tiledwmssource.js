@@ -8,6 +8,7 @@ goog.require('ol.Extent');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.ImageTileSource');
+goog.require('ol.source.wms');
 
 
 
@@ -30,12 +31,13 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
   if (goog.isDef(urls)) {
     var tileUrlFunctions = goog.array.map(
         urls, function(url) {
-          return ol.TileUrlFunction.createWMSParams(
-              url, tiledWMSOptions.params);
+          return ol.TileUrlFunction.createFromParamsFunction(
+              url, tiledWMSOptions.params, ol.source.wms.getUrl);
         });
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         tileUrlFunctions);
   }
+
   var transparent = goog.isDef(tiledWMSOptions.params['TRANSPARENT']) ?
       tiledWMSOptions.params['TRANSPARENT'] : true;
   var extent = tiledWMSOptions.extent;
