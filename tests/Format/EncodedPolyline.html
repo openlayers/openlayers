@@ -3,6 +3,27 @@
     <script src="../OLLoader.js"></script>
     <script type="text/javascript">
 
+      var flatPoints;
+      var floats, smallFloats, encodedFloats;
+      var signedIntegers, encodedSignedIntegers;
+      var unsignedIntegers, encodedUnsignedIntegers;
+
+      function resetTestingData() {
+        flatPoints = [38.50000, -120.20000,
+                      40.70000, -120.95000,
+                      43.25200, -126.45300];
+
+        floats = [0.00, 0.15, -0.01, -0.16, 0.16, 0.01];
+        smallFloats = [0.00000, 0.00015, -0.00001, -0.00016, 0.00016, 0.00001];
+        encodedFloats = '?]@^_@A';
+
+        signedIntegers = [0, 15, -1, -16, 16, 1];
+        encodedSignedIntegers = '?]@^_@A';
+
+        unsignedIntegers = [0, 30, 1, 31, 32, 2, 174];
+        encodedUnsignedIntegers = '?]@^_@AmD';
+      }
+
     var basePoints = new Array(
         new Array(3850000, -12020000),
         new Array(4070000, -12095000),
@@ -10,12 +31,9 @@
     );
 
     var points = [
-        new OpenLayers.Geometry.Point(basePoints[0][1] * 1e-5,
-                                      basePoints[0][0] * 1e-5),
-        new OpenLayers.Geometry.Point(basePoints[1][1] * 1e-5,
-                                      basePoints[1][0] * 1e-5),
-        new OpenLayers.Geometry.Point(basePoints[2][1] * 1e-5,
-                                      basePoints[2][0] * 1e-5)
+        new OpenLayers.Geometry.Point(-120.200, 38.500),
+        new OpenLayers.Geometry.Point(-120.950, 40.700),
+        new OpenLayers.Geometry.Point(-126.453, 43.252)
     ];
 
     var singlePoint = new OpenLayers.Feature.Vector(points[0]);
@@ -124,6 +142,227 @@
         var format = new OpenLayers.Format.EncodedPolyline();
 
         t.eq(format.encode(basePoints, 2), encoded);
+    }
+
+    function test_encodeDeltas_returns_expected_value(t) {
+        t.plan(1);
+        resetTestingData();
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.encodeDeltas(flatPoints, 2), encoded);
+    }
+
+    function test_decodeDeltas_returns_expected_value(t) {
+        t.plan(1);
+        resetTestingData();
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.decodeDeltas(encoded, 2), flatPoints);
+    }
+
+
+
+    function test_encodeFloats_returns_expected_value(t) {
+        t.plan(3);
+        resetTestingData();
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.encodeFloats(smallFloats), encodedFloats);
+
+        resetTestingData();
+        t.eq(format.encodeFloats(smallFloats, 1e5), encodedFloats);
+
+        t.eq(format.encodeFloats(floats, 1e2), encodedFloats);
+    }
+
+    function test_decodeFloats_returns_expected_value(t) {
+        t.plan(3);
+        resetTestingData();
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.decodeFloats(encodedFloats), smallFloats);
+        t.eq(format.decodeFloats(encodedFloats, 1e5), smallFloats);
+        t.eq(format.decodeFloats(encodedFloats, 1e2), floats);
+    }
+
+
+
+    function test_encodeSignedIntegers_returns_expected_value(t) {
+        t.plan(1);
+        resetTestingData();
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.encodeSignedIntegers(
+            signedIntegers), encodedSignedIntegers);
+    }
+
+    function test_decodeSignedIntegers_returns_expected_value(t) {
+        t.plan(1);
+        resetTestingData();
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.decodeSignedIntegers(
+            encodedSignedIntegers), signedIntegers);
+    }
+
+
+
+    function test_encodeUnsignedIntegers_returns_expected_value(t) {
+        t.plan(1);
+        resetTestingData();
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.encodeUnsignedIntegers(
+            unsignedIntegers), encodedUnsignedIntegers);
+    }
+
+    function test_decodeUnsignedIntegers_returns_expected_value(t) {
+        t.plan(1);
+        resetTestingData();
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.decodeUnsignedIntegers(
+          encodedUnsignedIntegers), unsignedIntegers);
+    }
+
+
+
+    function test_encodeFloat_returns_expected_value(t) {
+        t.plan(12);
+        resetTestingData();
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.encodeFloat(0.00000), '?');
+        t.eq(format.encodeFloat(-0.00001), '@');
+        t.eq(format.encodeFloat(0.00001), 'A');
+        t.eq(format.encodeFloat(-0.00002), 'B');
+        t.eq(format.encodeFloat(0.00002), 'C');
+        t.eq(format.encodeFloat(0.00015), ']');
+        t.eq(format.encodeFloat(-0.00016), '^');
+
+        t.eq(format.encodeFloat(-0.1, 10), '@');
+        t.eq(format.encodeFloat(0.1, 10), 'A');
+
+        t.eq(format.encodeFloat(16 * 32 / 1e5), '__@');
+        t.eq(format.encodeFloat(16 * 32 * 32 / 1e5), '___@');
+
+        // from the "Encoded Polyline Algorithm Format" page at Google
+        t.eq(format.encodeFloat(-179.9832104), '`~oia@');
+    }
+
+    function test_decodeFloat_returns_expected_value(t) {
+        t.plan(12);
+        resetTestingData();
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.decodeFloat('?'), 0.00000);
+        t.eq(format.decodeFloat('@'), -0.00001);
+        t.eq(format.decodeFloat('A'), 0.00001);
+        t.eq(format.decodeFloat('B'), -0.00002);
+        t.eq(format.decodeFloat('C'), 0.00002);
+        t.eq(format.decodeFloat(']'), 0.00015);
+        t.eq(format.decodeFloat('^'), -0.00016);
+
+        t.eq(format.decodeFloat('@', 10), -0.1);
+        t.eq(format.decodeFloat('A', 10), 0.1);
+
+        t.eq(format.decodeFloat('__@'), 16 * 32 / 1e5);
+        t.eq(format.decodeFloat('___@'), 16 * 32 * 32 / 1e5);
+
+        // from the "Encoded Polyline Algorithm Format" page at Google
+        t.eq(format.decodeFloat('`~oia@'), -179.98321);
+    }
+
+
+
+    function test_encodeSignedInteger_returns_expected_value(t) {
+        t.plan(10);
+        resetTestingData();
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.encodeSignedInteger(0), '?');
+        t.eq(format.encodeSignedInteger(-1), '@');
+        t.eq(format.encodeSignedInteger(1), 'A');
+        t.eq(format.encodeSignedInteger(-2), 'B');
+        t.eq(format.encodeSignedInteger(2), 'C');
+        t.eq(format.encodeSignedInteger(15), ']');
+        t.eq(format.encodeSignedInteger(-16), '^');
+
+        t.eq(format.encodeSignedInteger(16), '_@');
+        t.eq(format.encodeSignedInteger(16 * 32), '__@');
+        t.eq(format.encodeSignedInteger(16 * 32 * 32), '___@');
+    }
+
+    function test_decodeSignedInteger_returns_expected_value(t) {
+        t.plan(10);
+        resetTestingData();
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.decodeSignedInteger('?'), 0);
+        t.eq(format.decodeSignedInteger('@'), -1);
+        t.eq(format.decodeSignedInteger('A'), 1);
+        t.eq(format.decodeSignedInteger('B'), -2);
+        t.eq(format.decodeSignedInteger('C'), 2);
+        t.eq(format.decodeSignedInteger(']'), 15);
+        t.eq(format.decodeSignedInteger('^'), -16);
+
+        t.eq(format.decodeSignedInteger('__@'), 16 * 32);
+        t.eq(format.decodeSignedInteger('___@'), 16 * 32 * 32);
+        t.eq(format.decodeSignedInteger('_@'), 16);
+    }
+
+
+
+    function test_encodeUnsignedInteger_returns_expected_value(t) {
+        t.plan(10);
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.encodeUnsignedInteger(0), '?');
+        t.eq(format.encodeUnsignedInteger(1), '@');
+        t.eq(format.encodeUnsignedInteger(2), 'A');
+        t.eq(format.encodeUnsignedInteger(30), ']');
+        t.eq(format.encodeUnsignedInteger(31), '^');
+        t.eq(format.encodeUnsignedInteger(32), '_@');
+
+        t.eq(format.encodeUnsignedInteger(32 * 32), '__@');
+        t.eq(format.encodeUnsignedInteger(5 * 32 * 32), '__D');
+        t.eq(format.encodeUnsignedInteger(32 * 32 * 32), '___@');
+
+        // from the "Encoded Polyline Algorithm Format" page at Google
+        t.eq(format.encodeUnsignedInteger(174), 'mD');
+    }
+
+    function test_decodeUnsignedInteger_returns_expected_value(t) {
+        t.plan(10);
+
+        var format = new OpenLayers.Format.EncodedPolyline();
+
+        t.eq(format.decodeUnsignedInteger('?'), 0);
+        t.eq(format.decodeUnsignedInteger('@'), 1);
+        t.eq(format.decodeUnsignedInteger('A'), 2);
+        t.eq(format.decodeUnsignedInteger(']'), 30);
+        t.eq(format.decodeUnsignedInteger('^'), 31);
+        t.eq(format.decodeUnsignedInteger('_@'), 32);
+
+        t.eq(format.decodeUnsignedInteger('__@'), 32 * 32);
+        t.eq(format.decodeUnsignedInteger('__D'), 5 * 32 * 32);
+        t.eq(format.decodeUnsignedInteger('___@'), 32 * 32 * 32);
+
+        // from the "Encoded Polyline Algorithm Format" page at Google
+        t.eq(format.decodeUnsignedInteger('mD'), 174);
     }
 
     </script>
