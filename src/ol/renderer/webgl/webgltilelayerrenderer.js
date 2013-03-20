@@ -23,6 +23,7 @@ goog.require('ol.math');
 goog.require('ol.renderer.webgl.FragmentShader');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.VertexShader');
+goog.require('ol.structs.Buffer');
 
 
 
@@ -113,9 +114,14 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {WebGLBuffer}
+   * @type {ol.structs.Buffer}
    */
-  this.arrayBuffer_ = null;
+  this.arrayBuffer_ = new ol.structs.Buffer([
+    0, 0, 0, 1,
+    1, 0, 1, 1,
+    0, 1, 0, 0,
+    1, 1, 1, 0
+  ]);
 
   /**
    * @private
@@ -150,10 +156,7 @@ goog.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
  */
 ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
   var mapRenderer = this.getWebGLMapRenderer();
-  var gl = mapRenderer.getGL();
-  if (!gl.isContextLost()) {
-    gl.deleteBuffer(this.arrayBuffer_);
-  }
+  mapRenderer.deleteBuffer(this.arrayBuffer_);
   goog.base(this, 'disposeInternal');
 };
 
@@ -188,7 +191,6 @@ ol.renderer.webgl.TileLayer.prototype.getTileLayer = function() {
 ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
   goog.base(this, 'handleWebGLContextLost');
   this.locations_ = null;
-  this.arrayBuffer_ = null;
 };
 
 
@@ -269,20 +271,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
       };
     }
 
-    if (goog.isNull(this.arrayBuffer_)) {
-      var arrayBuffer = gl.createBuffer();
-      gl.bindBuffer(goog.webgl.ARRAY_BUFFER, arrayBuffer);
-      gl.bufferData(goog.webgl.ARRAY_BUFFER, new Float32Array([
-        0, 0, 0, 1,
-        1, 0, 1, 1,
-        0, 1, 0, 0,
-        1, 1, 1, 0
-      ]), goog.webgl.STATIC_DRAW);
-      this.arrayBuffer_ = arrayBuffer;
-    } else {
-      gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
-    }
-
+    mapRenderer.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
     gl.enableVertexAttribArray(this.locations_.aPosition);
     gl.vertexAttribPointer(
         this.locations_.aPosition, 2, goog.webgl.FLOAT, false, 16, 0);

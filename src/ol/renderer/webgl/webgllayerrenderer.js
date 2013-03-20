@@ -133,19 +133,6 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer =
 
 
 /**
- * @inheritDoc
- */
-ol.renderer.webgl.Layer.prototype.disposeInternal = function() {
-  var mapRenderer = this.getWebGLMapRenderer();
-  var gl = mapRenderer.getGL();
-  if (!gl.isContextLost()) {
-    gl.deleteBuffer(this.arrayBuffer_);
-  }
-  goog.base(this, 'disposeInternal');
-};
-
-
-/**
  * @return {!goog.vec.Mat4.Float32} Color matrix.
  */
 ol.renderer.webgl.Layer.prototype.getColorMatrix = function() {

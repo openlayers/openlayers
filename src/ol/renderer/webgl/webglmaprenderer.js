@@ -22,6 +22,7 @@ goog.require('ol.renderer.webgl.FragmentShader');
 goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.TileLayer');
 goog.require('ol.renderer.webgl.VertexShader');
+goog.require('ol.structs.Buffer');
 goog.require('ol.structs.LRUCache');
 goog.require('ol.webgl');
 goog.require('ol.webgl.WebGLContextEventType');
@@ -31,6 +32,12 @@ goog.require('ol.webgl.WebGLContextEventType');
  * @define {number} Texture cache high water mark.
  */
 ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
+
+
+/**
+ * @typedef {{buffer: WebGLBuffer}}
+ */
+ol.renderer.webgl.BufferCacheEntry;
 
 
 /**
@@ -170,9 +177,20 @@ ol.renderer.webgl.Map = function(container, map) {
 
   /**
    * @private
-   * @type {WebGLBuffer}
+   * @type {ol.structs.Buffer}
    */
-  this.arrayBuffer_ = null;
+  this.arrayBuffer_ = new ol.structs.Buffer([
+    -1, -1, 0, 0,
+    1, -1, 1, 0,
+    -1, 1, 0, 1,
+    1, 1, 1, 1
+  ]);
+
+  /**
+   * @private
+   * @type {Object.<number, ol.renderer.webgl.BufferCacheEntry>}
+   */
+  this.bufferCache_ = {};
 
   /**
    * @private
@@ -214,6 +232,46 @@ ol.renderer.webgl.Map = function(container, map) {
 
 };
 goog.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
+
+
+/**
+ * @param {number} target Target.
+ * @param {ol.structs.Buffer} buf Buffer.
+ */
+ol.renderer.webgl.Map.prototype.bindBuffer = function(target, buf) {
+  var gl = this.getGL();
+  var arr = buf.getArray();
+  // FIXME dirty set should be in buffer cache
+  var dirtySet = buf.getDirtySet();
+  var bufferKey = goog.getUid(buf);
+  if (bufferKey in this.bufferCache_) {
+    var bufferCacheEntry = this.bufferCache_[bufferKey];
+    gl.bindBuffer(target, bufferCacheEntry.buffer);
+    dirtySet.forEachRange(function(start, stop) {
+      // FIXME check if slice is really efficient here
+      var slice = arr.slice(start, stop);
+      gl.bufferSubData(
+          target,
+          start,
+          target == goog.webgl.ARRAY_BUFFER ?
+          new Float32Array(slice) :
+          new Uint16Array(slice));
+    });
+  } else {
+    var buffer = gl.createBuffer();
+    gl.bindBuffer(target, buffer);
+    // FIXME should get STATIC/STREAM from buf
+    gl.bufferData(
+        target,
+        target == goog.webgl.ARRAY_BUFFER ?
+        new Float32Array(arr) : new Uint16Array(arr),
+        goog.webgl.STATIC_DRAW);
+    this.bufferCache_[bufferKey] = {
+      buffer: buffer
+    };
+  }
+  dirtySet.clear();
+};
 
 
 /**
@@ -277,11 +335,30 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
 
 
 /**
+ * @param {ol.structs.Buffer} buf Buffer.
+ */
+ol.renderer.webgl.Map.prototype.deleteBuffer = function(buf) {
+  var gl = this.getGL();
+  var arr = buf.getArray();
+  var bufferKey = goog.getUid(buf);
+  goog.asserts.assert(bufferKey in this.bufferCache_);
+  var bufferCacheEntry = this.bufferCache_[bufferKey];
+  if (!gl.isContextLost()) {
+    gl.deleteBuffer(bufferCacheEntry.buffer);
+  }
+  delete this.bufferCache_[bufferKey];
+};
+
+
+/**
  * @inheritDoc
  */
 ol.renderer.webgl.Map.prototype.disposeInternal = function() {
   var gl = this.getGL();
   if (!gl.isContextLost()) {
+    goog.object.forEach(this.bufferCache_, function(bufferCacheEntry) {
+      gl.deleteBuffer(bufferCacheEntry.buffer);
+    });
     goog.object.forEach(this.programCache_, function(program) {
       gl.deleteProgram(program);
     });
@@ -409,7 +486,7 @@ ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
   }
   event.preventDefault();
   this.locations_ = null;
-  this.arrayBuffer_ = null;
+  this.bufferCache_ = {};
   this.shaderCache_ = {};
   this.programCache_ = {};
   this.textureCache_.clear();
@@ -511,19 +588,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     };
   }
 
-  if (goog.isNull(this.arrayBuffer_)) {
-    var arrayBuffer = gl.createBuffer();
-    gl.bindBuffer(goog.webgl.ARRAY_BUFFER, arrayBuffer);
-    gl.bufferData(goog.webgl.ARRAY_BUFFER, new Float32Array([
-      -1, -1, 0, 0,
-      1, -1, 1, 0,
-      -1, 1, 0, 1,
-      1, 1, 1, 1
-    ]), goog.webgl.STATIC_DRAW);
-    this.arrayBuffer_ = arrayBuffer;
-  } else {
-    gl.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
-  }
+  this.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
 
   gl.enableVertexAttribArray(this.locations_.a_position);
   gl.vertexAttribPointer(
