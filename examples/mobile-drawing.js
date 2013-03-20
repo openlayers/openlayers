@@ -11,7 +11,7 @@ function init() {
             }, OpenLayers.Feature.Vector.style['default']),
             select: OpenLayers.Util.applyDefaults({
                 pointRadius: 16
-            }, OpenLayers.Feature.Vector.style.select),
+            }, OpenLayers.Feature.Vector.style.select)
         })
     });
 
