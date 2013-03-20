@@ -56,7 +56,7 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
   // http://learningwebgl.com/blog/?p=2101
 
   var imageElement = image.getImageElement(this);
-  var gl = this.getMapRenderer().getGL();
+  var gl = this.getWebGLMapRenderer().getGL();
 
   var texture = gl.createTexture();
 
@@ -109,7 +109,7 @@ ol.renderer.webgl.ImageLayer.prototype.getImageLayer = function() {
 ol.renderer.webgl.ImageLayer.prototype.renderFrame =
     function(frameState, layerState) {
 
-  var gl = this.getMapRenderer().getGL();
+  var gl = this.getWebGLMapRenderer().getGL();
 
   var view2DState = frameState.view2DState;
   var viewCenter = view2DState.center;
@@ -150,7 +150,7 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
   if (!goog.isNull(image)) {
     goog.asserts.assert(!goog.isNull(texture));
 
-    var canvas = this.getMapRenderer().getCanvas();
+    var canvas = this.getWebGLMapRenderer().getCanvas();
 
     this.updateProjectionMatrix_(canvas.width, canvas.height,
         viewCenter, viewResolution, viewRotation, image.getExtent());

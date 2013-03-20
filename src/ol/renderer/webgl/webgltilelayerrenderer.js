@@ -149,7 +149,7 @@ goog.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
  * @inheritDoc
  */
 ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
-  var mapRenderer = this.getMapRenderer();
+  var mapRenderer = this.getWebGLMapRenderer();
   var gl = mapRenderer.getGL();
   if (!gl.isContextLost()) {
     gl.deleteBuffer(this.arrayBuffer_);
@@ -198,7 +198,7 @@ ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
 ol.renderer.webgl.TileLayer.prototype.renderFrame =
     function(frameState, layerState) {
 
-  var mapRenderer = this.getMapRenderer();
+  var mapRenderer = this.getWebGLMapRenderer();
   var gl = mapRenderer.getGL();
 
   var view2DState = frameState.view2DState;

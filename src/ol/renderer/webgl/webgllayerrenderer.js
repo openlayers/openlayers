@@ -91,7 +91,7 @@ goog.inherits(ol.renderer.webgl.Layer, ol.renderer.Layer);
 ol.renderer.webgl.Layer.prototype.bindFramebuffer =
     function(frameState, framebufferDimension) {
 
-  var mapRenderer = this.getMapRenderer();
+  var mapRenderer = this.getWebGLMapRenderer();
   var gl = mapRenderer.getGL();
 
   if (!goog.isDef(this.framebufferDimension) ||
@@ -136,7 +136,7 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer =
  * @inheritDoc
  */
 ol.renderer.webgl.Layer.prototype.disposeInternal = function() {
-  var mapRenderer = this.getMapRenderer();
+  var mapRenderer = this.getWebGLMapRenderer();
   var gl = mapRenderer.getGL();
   if (!gl.isContextLost()) {
     gl.deleteBuffer(this.arrayBuffer_);
@@ -157,12 +157,10 @@ ol.renderer.webgl.Layer.prototype.getColorMatrix = function() {
 
 
 /**
- * @inheritDoc
- * @return {ol.renderer.Map} MapRenderer.
+ * @return {ol.renderer.webgl.Map} MapRenderer.
  */
-ol.renderer.webgl.Layer.prototype.getMapRenderer = function() {
-  return /** @type {ol.renderer.webgl.Map} */ (goog.base(
-      this, 'getMapRenderer'));
+ol.renderer.webgl.Layer.prototype.getWebGLMapRenderer = function() {
+  return /** @type {ol.renderer.webgl.Map} */ (this.getMapRenderer());
 };
 
 
