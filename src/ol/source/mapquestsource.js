@@ -26,6 +26,7 @@ ol.source.MapQuestOSM = function() {
 
   goog.base(this, {
     attributions: attributions,
+    crossOrigin: 'anonymous',
     opaque: true,
     maxZoom: 28,
     url: 'http://otile{1-4}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.jpg'
@@ -54,6 +55,7 @@ ol.source.MapQuestOpenAerial = function() {
 
   goog.base(this, {
     attributions: attributions,
+    crossOrigin: 'anonymous',
     maxZoom: 18,
     opaque: true,
     url: 'http://oatile{1-4}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg'

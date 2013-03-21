@@ -46,6 +46,7 @@ goog.exportSymbol('grid', grid);
 ol.source.TileJSON = function(tileJsonOptions) {
 
   goog.base(this, {
+    crossOrigin: tileJsonOptions.crossOrigin,
     projection: ol.projection.get('EPSG:3857')
   });
 

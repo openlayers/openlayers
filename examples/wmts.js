@@ -40,7 +40,6 @@ var map = new ol.Map({
           matrixIds: matrixIds
         }),
         style: '_null',
-        crossOrigin: null, // FIXME: this should be the default
         extent: new ol.Extent(-13682835, 5204068, -13667473, 5221690)
       })
     })

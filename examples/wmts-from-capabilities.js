@@ -28,6 +28,7 @@ xhr.onload = function() {
     capabilities = parser.read(xhr.responseXML);
     var wmtsOptions = ol.source.WMTS.optionsFromCapabilities(
         capabilities, 'ch.swisstopo.pixelkarte-farbe');
+    wmtsOptions.crossOrigin = 'anonymous';
     map = new ol.Map({
       layers: [
         new ol.layer.TileLayer({

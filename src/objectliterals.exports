@@ -154,6 +154,7 @@
 @exportObjectLiteralProperty ol.source.StaticImageOptions.url string|undefined
 
 @exportObjectLiteral ol.source.TileJSONOptions
+@exportObjectLiteralProperty ol.source.TileJSONOptions.crossOrigin null|string|undefined
 @exportObjectLiteralProperty ol.source.TileJSONOptions.uri string
 
 @exportObjectLiteral ol.source.TiledWMSOptions
