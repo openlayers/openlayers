@@ -1,7 +1,18 @@
 goog.provide('ol.structs.Buffer');
 
 goog.require('goog.array');
+goog.require('goog.webgl');
 goog.require('ol.structs.IntegerSet');
+
+
+/**
+ * @enum {number}
+ */
+ol.structs.BufferUsage = {
+  STATIC_DRAW: goog.webgl.STATIC_DRAW,
+  STREAM_DRAW: goog.webgl.STREAM_DRAW,
+  DYNAMIC_DRAW: goog.webgl.DYNAMIC_DRAW
+};
 
 
 /**
@@ -15,8 +26,9 @@ ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS = goog.DEBUG;
  * @constructor
  * @param {Array.<number>=} opt_arr Array.
  * @param {number=} opt_used Used.
+ * @param {number=} opt_usage Usage.
  */
-ol.structs.Buffer = function(opt_arr, opt_used) {
+ol.structs.Buffer = function(opt_arr, opt_used, opt_usage) {
 
   /**
    * @private
@@ -48,6 +60,13 @@ ol.structs.Buffer = function(opt_arr, opt_used) {
       arr[i] = NaN;
     }
   }
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.usage_ = goog.isDef(opt_usage) ?
+      opt_usage : ol.structs.BufferUsage.STATIC_DRAW;
 
 };
 
@@ -115,6 +134,14 @@ ol.structs.Buffer.prototype.getCount = function() {
  */
 ol.structs.Buffer.prototype.getFreeSet = function() {
   return this.freeSet_;
+};
+
+
+/**
+ * @return {number} Usage.
+ */
+ol.structs.Buffer.prototype.getUsage = function() {
+  return this.usage_;
 };
 
 
