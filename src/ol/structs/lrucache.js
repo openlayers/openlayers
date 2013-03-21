@@ -6,10 +6,10 @@ goog.require('goog.object');
 
 
 /**
- * @constructor
  * Implements a Least-Recently-Used cache where the keys do not conflict with
  * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring
  * items from the cache is the responsibility of the user.
+ * @constructor
  */
 ol.structs.LRUCache = function() {
 
