@@ -12,7 +12,8 @@ ol.ASSUME_TOUCH = false;
  */
 ol.BrowserFeature = {
   /**
-   * @type {boolean} True if browser supports touch events
+   * True if browser supports touch events.
+   * @type {boolean}
    */
   HAS_TOUCH: ol.ASSUME_TOUCH ||
       (document && 'ontouchstart' in document.documentElement) ||

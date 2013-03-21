@@ -2,7 +2,8 @@ goog.provide('ol.renderer.dom.SUPPORTED');
 
 
 /**
+ * Is supported.
  * @const
- * @type {boolean} Is supported.
+ * @type {boolean}
  */
 ol.renderer.dom.SUPPORTED = true;

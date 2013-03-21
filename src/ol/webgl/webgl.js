@@ -45,8 +45,9 @@ ol.webgl.getContext = function(canvas, opt_attributes) {
 
 
 /**
+ * Is supported.
  * @const
- * @type {boolean} Is supported.
+ * @type {boolean}
  */
 ol.webgl.SUPPORTED = (function() {
   if (!('WebGLRenderingContext' in goog.global)) {
