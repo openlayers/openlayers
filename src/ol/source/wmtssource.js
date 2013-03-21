@@ -47,6 +47,7 @@ ol.source.WMTS = function(wmtsOptions) {
   var context = {
     'Layer': wmtsOptions.layer,
     'style': wmtsOptions.style,
+    'Style': wmtsOptions.style,
     'TileMatrixSet': wmtsOptions.matrixSet
   };
   goog.object.extend(context, dimensions);
