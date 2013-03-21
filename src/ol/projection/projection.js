@@ -19,7 +19,8 @@ ol.ENABLE_PROJ4JS = true;
 
 
 /**
- * @const {boolean} Have Proj4js.
+ * Have Proj4js.
+ * @const {boolean}
  */
 ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof Proj4js == 'object';
 

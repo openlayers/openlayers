@@ -5,8 +5,9 @@ goog.require('goog.dom.TagName');
 
 
 /**
+ * Is supported.
  * @const
- * @type {boolean} Is supported.
+ * @type {boolean}
  */
 ol.canvas.SUPPORTED = (function() {
   if (!('HTMLCanvasElement' in goog.global)) {

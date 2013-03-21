@@ -109,8 +109,9 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
 
 
 /**
+ * Is supported.
  * @const
- * @type {boolean} Is supported.
+ * @type {boolean}
  */
 ol.Geolocation.SUPPORTED = 'geolocation' in navigator;
 
