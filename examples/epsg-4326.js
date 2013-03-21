@@ -13,7 +13,6 @@ var layers = [
   new ol.layer.TileLayer({
     source: new ol.source.TiledWMS({
       url: 'http://vmap0.tiles.osgeo.org/wms/vmap0',
-      crossOrigin: null,
       params: {
         'VERSION': '1.1.1',
         'LAYERS': 'basic',

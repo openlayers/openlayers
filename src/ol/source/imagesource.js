@@ -53,7 +53,7 @@ ol.source.ImageSource = function(options) {
    * @type {?string}
    */
   this.crossOrigin_ =
-      goog.isDef(options.crossOrigin) ? options.crossOrigin : 'anonymous';
+      goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
 
   /**
    * @private
