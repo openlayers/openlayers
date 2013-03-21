@@ -23,6 +23,7 @@ goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.TileLayer');
 goog.require('ol.renderer.webgl.VertexShader');
 goog.require('ol.structs.Buffer');
+goog.require('ol.structs.IntegerSet');
 goog.require('ol.structs.LRUCache');
 goog.require('ol.webgl');
 goog.require('ol.webgl.WebGLContextEventType');
@@ -35,7 +36,9 @@ ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
 
 
 /**
- * @typedef {{buffer: WebGLBuffer}}
+ * @typedef {{buf: ol.structs.Buffer,
+ *            buffer: WebGLBuffer,
+ *            dirtySet: ol.structs.IntegerSet}}
  */
 ol.renderer.webgl.BufferCacheEntry;
 
@@ -241,13 +244,11 @@ goog.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
 ol.renderer.webgl.Map.prototype.bindBuffer = function(target, buf) {
   var gl = this.getGL();
   var arr = buf.getArray();
-  // FIXME dirty set should be in buffer cache
-  var dirtySet = buf.getDirtySet();
   var bufferKey = goog.getUid(buf);
   if (bufferKey in this.bufferCache_) {
     var bufferCacheEntry = this.bufferCache_[bufferKey];
     gl.bindBuffer(target, bufferCacheEntry.buffer);
-    dirtySet.forEachRange(function(start, stop) {
+    bufferCacheEntry.dirtySet.forEachRange(function(start, stop) {
       // FIXME check if slice is really efficient here
       var slice = arr.slice(start, stop);
       gl.bufferSubData(
@@ -257,6 +258,7 @@ ol.renderer.webgl.Map.prototype.bindBuffer = function(target, buf) {
           new Float32Array(slice) :
           new Uint16Array(slice));
     });
+    bufferCacheEntry.dirtySet.clear();
   } else {
     var buffer = gl.createBuffer();
     gl.bindBuffer(target, buffer);
@@ -266,11 +268,14 @@ ol.renderer.webgl.Map.prototype.bindBuffer = function(target, buf) {
         target == goog.webgl.ARRAY_BUFFER ?
         new Float32Array(arr) : new Uint16Array(arr),
         goog.webgl.STATIC_DRAW);
+    var dirtySet = new ol.structs.IntegerSet();
+    buf.addDirtySet(dirtySet);
     this.bufferCache_[bufferKey] = {
-      buffer: buffer
+      buf: buf,
+      buffer: buffer,
+      dirtySet: dirtySet
     };
   }
-  dirtySet.clear();
 };
 
 
@@ -343,6 +348,7 @@ ol.renderer.webgl.Map.prototype.deleteBuffer = function(buf) {
   var bufferKey = goog.getUid(buf);
   goog.asserts.assert(bufferKey in this.bufferCache_);
   var bufferCacheEntry = this.bufferCache_[bufferKey];
+  bufferCacheEntry.buf.removeDirtySet(bufferCacheEntry.dirtySet);
   if (!gl.isContextLost()) {
     gl.deleteBuffer(bufferCacheEntry.buffer);
   }
@@ -355,6 +361,9 @@ ol.renderer.webgl.Map.prototype.deleteBuffer = function(buf) {
  */
 ol.renderer.webgl.Map.prototype.disposeInternal = function() {
   var gl = this.getGL();
+  goog.object.forEach(this.bufferCache_, function(bufferCacheEntry) {
+    bufferCacheEntry.buf.removeDirtySet(bufferCacheEntry.dirtySet);
+  });
   if (!gl.isContextLost()) {
     goog.object.forEach(this.bufferCache_, function(bufferCacheEntry) {
       gl.deleteBuffer(bufferCacheEntry.buffer);
