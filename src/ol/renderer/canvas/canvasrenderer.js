@@ -4,7 +4,8 @@ goog.require('ol.canvas');
 
 
 /**
+ * Is supported.
  * @const
- * @type {boolean} Is supported.
+ * @type {boolean}
  */
 ol.renderer.canvas.SUPPORTED = ol.canvas.SUPPORTED;

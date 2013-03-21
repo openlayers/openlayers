@@ -4,7 +4,8 @@ goog.require('ol.webgl');
 
 
 /**
+ * Is supported.
  * @const
- * @type {boolean} Is supported.
+ * @type {boolean}
  */
 ol.renderer.webgl.SUPPORTED = ol.webgl.SUPPORTED;

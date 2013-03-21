@@ -28,7 +28,8 @@ ol.TileCoord = function(z, x, y) {
   goog.base(this, x, y);
 
   /**
-   * @type {number} Zoom level
+   * Zoom level.
+   * @type {number}
    */
   this.z = z;
 

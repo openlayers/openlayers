@@ -81,9 +81,9 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
 
   /**
    * Geometry filters in rendering order.
+   * TODO: these will go away shortly (in favor of one call per symbolizer type)
    * @private
    * @type {Array.<ol.filter.Geometry>}
-   * TODO: these will go away shortly (in favor of one call per symbolizer type)
    */
   this.geometryFilters_ = [
     new ol.filter.Geometry(ol.geom.GeometryType.POINT),
