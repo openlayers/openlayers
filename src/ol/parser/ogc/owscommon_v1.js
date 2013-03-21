@@ -178,7 +178,7 @@ ol.parser.ogc.OWSCommon_v1 = function() {
         // LowerCorner = "min_x min_y"
         // UpperCorner = "max_x max_y"
         // It should normally depend on the projection
-        var readers = this.readers['http://www.opengis.net/ows'];
+        var readers = this.readers[node.namespaceURI];
         readers['WGS84BoundingBox'].apply(this, [node, obj]);
       },
       'LowerCorner': function(node, obj) {
