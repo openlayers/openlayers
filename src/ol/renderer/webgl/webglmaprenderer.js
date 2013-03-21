@@ -262,12 +262,11 @@ ol.renderer.webgl.Map.prototype.bindBuffer = function(target, buf) {
   } else {
     var buffer = gl.createBuffer();
     gl.bindBuffer(target, buffer);
-    // FIXME should get STATIC/STREAM from buf
     gl.bufferData(
         target,
         target == goog.webgl.ARRAY_BUFFER ?
         new Float32Array(arr) : new Uint16Array(arr),
-        goog.webgl.STATIC_DRAW);
+        buf.getUsage());
     var dirtySet = new ol.structs.IntegerSet();
     buf.addDirtySet(dirtySet);
     this.bufferCache_[bufferKey] = {
