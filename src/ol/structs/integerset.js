@@ -214,6 +214,31 @@ ol.structs.IntegerSet.prototype.getSize = function() {
 
 
 /**
+ * @param {number} start Start.
+ * @param {number} stop Stop.
+ * @return {boolean} Intersects range.
+ */
+ol.structs.IntegerSet.prototype.intersectsRange = function(start, stop) {
+  goog.asserts.assert(start <= stop);
+  if (start == stop) {
+    return false;
+  } else {
+    var arr = this.arr_;
+    var n = arr.length;
+    var i = 0;
+    for (i = 0; i < n; i += 2) {
+      if (arr[i] <= start && start < arr[i + 1] ||
+          arr[i] < stop && stop - 1 < arr[i + 1] ||
+          start < arr[i] && arr[i + 1] <= stop) {
+        return true;
+      }
+    }
+    return false;
+  }
+};
+
+
+/**
  * @return {boolean} Is empty.
  */
 ol.structs.IntegerSet.prototype.isEmpty = function() {

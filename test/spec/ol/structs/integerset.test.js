@@ -108,6 +108,14 @@ describe('ol.structs.IntegerSet', function() {
 
     });
 
+    describe('intersectsRange', function() {
+
+      it('returns false', function() {
+        expect(is.intersectsRange(0, 0)).to.be(false);
+      });
+
+    });
+
     describe('isEmpty', function() {
 
       it('returns true', function() {
@@ -273,6 +281,43 @@ describe('ol.structs.IntegerSet', function() {
 
       it('returns the expected value', function() {
         expect(is.getSize()).to.be(6);
+      });
+
+    });
+
+    describe('intersectsRange', function() {
+
+      it('returns the expected value for small ranges', function() {
+        expect(is.intersectsRange(1, 3)).to.be(false);
+        expect(is.intersectsRange(2, 4)).to.be(false);
+        expect(is.intersectsRange(3, 5)).to.be(true);
+        expect(is.intersectsRange(4, 6)).to.be(true);
+        expect(is.intersectsRange(5, 7)).to.be(true);
+        expect(is.intersectsRange(6, 8)).to.be(false);
+        expect(is.intersectsRange(7, 9)).to.be(true);
+        expect(is.intersectsRange(8, 10)).to.be(true);
+        expect(is.intersectsRange(9, 11)).to.be(true);
+        expect(is.intersectsRange(10, 12)).to.be(false);
+        expect(is.intersectsRange(11, 13)).to.be(true);
+        expect(is.intersectsRange(12, 14)).to.be(true);
+        expect(is.intersectsRange(13, 15)).to.be(true);
+        expect(is.intersectsRange(14, 16)).to.be(false);
+        expect(is.intersectsRange(15, 17)).to.be(false);
+      });
+
+      it('returns the expected value for large ranges', function() {
+        expect(is.intersectsRange(-3, 1)).to.be(false);
+        expect(is.intersectsRange(1, 5)).to.be(true);
+        expect(is.intersectsRange(1, 9)).to.be(true);
+        expect(is.intersectsRange(1, 13)).to.be(true);
+        expect(is.intersectsRange(1, 17)).to.be(true);
+        expect(is.intersectsRange(5, 9)).to.be(true);
+        expect(is.intersectsRange(5, 13)).to.be(true);
+        expect(is.intersectsRange(5, 17)).to.be(true);
+        expect(is.intersectsRange(9, 13)).to.be(true);
+        expect(is.intersectsRange(9, 17)).to.be(true);
+        expect(is.intersectsRange(13, 17)).to.be(true);
+        expect(is.intersectsRange(17, 21)).to.be(false);
       });
 
     });
