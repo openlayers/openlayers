@@ -57,7 +57,8 @@ ol.projection.EPSG3857.CODES = [
   'EPSG:3857',
   'EPSG:102100',
   'EPSG:102113',
-  'EPSG:900913'
+  'EPSG:900913',
+  'urn:ogc:def:crs:EPSG:6.18:3:3857'
 ];
 
 
