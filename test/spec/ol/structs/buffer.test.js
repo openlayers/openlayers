@@ -67,14 +67,6 @@ describe('ol.structs.Buffer', function() {
 
     });
 
-    describe('getDirtySet', function() {
-
-      it('returns an empty set', function() {
-        expect(b.getDirtySet().isEmpty()).to.be(true);
-      });
-
-    });
-
   });
 
   describe('with an empty instance with spare capacity', function() {
@@ -149,14 +141,6 @@ describe('ol.structs.Buffer', function() {
 
     });
 
-    describe('getDirtySet', function() {
-
-      it('returns an empty set', function() {
-        expect(b.getDirtySet().isEmpty()).to.be(true);
-      });
-
-    });
-
     describe('remove', function() {
 
       it('allows items to be removes', function() {
@@ -175,8 +159,10 @@ describe('ol.structs.Buffer', function() {
       });
 
       it('marks the set items as dirty', function() {
+        var dirtySet = new ol.structs.IntegerSet();
+        b.addDirtySet(dirtySet);
+        expect(dirtySet.isEmpty()).to.be(true);
         b.set([5, 6], 2);
-        var dirtySet = b.getDirtySet();
         expect(dirtySet.isEmpty()).to.be(false);
         expect(dirtySet.getArray()).to.equalArray([2, 4]);
       });
@@ -218,14 +204,6 @@ describe('ol.structs.Buffer', function() {
 
       it('returns the expected value', function() {
         expect(b.getCount()).to.be(4);
-      });
-
-    });
-
-    describe('getDirtySet', function() {
-
-      it('returns an empty set', function() {
-        expect(b.getDirtySet().isEmpty()).to.be(true);
       });
 
     });
@@ -281,3 +259,4 @@ describe('ol.structs.Buffer', function() {
 
 
 goog.require('ol.structs.Buffer');
+goog.require('ol.structs.IntegerSet');

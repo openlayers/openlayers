@@ -1,5 +1,6 @@
 goog.provide('ol.structs.Buffer');
 
+goog.require('goog.array');
 goog.require('ol.structs.IntegerSet');
 
 
@@ -14,9 +15,8 @@ ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS = goog.DEBUG;
  * @constructor
  * @param {Array.<number>=} opt_arr Array.
  * @param {number=} opt_used Used.
- * @param {boolean=} opt_dirty Dirty.
  */
-ol.structs.Buffer = function(opt_arr, opt_used, opt_dirty) {
+ol.structs.Buffer = function(opt_arr, opt_used) {
 
   /**
    * @private
@@ -26,9 +26,9 @@ ol.structs.Buffer = function(opt_arr, opt_used, opt_dirty) {
 
   /**
    * @private
-   * @type {ol.structs.IntegerSet}
+   * @type {Array.<ol.structs.IntegerSet>}
    */
-  this.dirtySet_ = new ol.structs.IntegerSet();
+  this.dirtySets_ = [];
 
   /**
    * @private
@@ -39,9 +39,6 @@ ol.structs.Buffer = function(opt_arr, opt_used, opt_dirty) {
   var used = goog.isDef(opt_used) ? opt_used : this.arr_.length;
   if (used < this.arr_.length) {
     this.freeSet_.addRange(used, this.arr_.length);
-  }
-  if (opt_dirty && used !== 0) {
-    this.dirtySet_.addRange(0, used);
   }
   if (ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS) {
     var arr = this.arr_;
@@ -69,8 +66,19 @@ ol.structs.Buffer.prototype.add = function(values) {
   for (i = 0; i < size; ++i) {
     this.arr_[offset + i] = values[i];
   }
-  this.dirtySet_.addRange(offset, offset + size);
+  for (i = 0; i < this.dirtySets_.length; ++i) {
+    this.dirtySets_[i].addRange(offset, offset + size);
+  }
   return offset;
+};
+
+
+/**
+ * @param {ol.structs.IntegerSet} dirtySet Dirty set.
+ */
+ol.structs.Buffer.prototype.addDirtySet = function(dirtySet) {
+  goog.asserts.assert(!goog.array.contains(this.dirtySets_, dirtySet));
+  this.dirtySets_.push(dirtySet);
 };
 
 
@@ -103,14 +111,6 @@ ol.structs.Buffer.prototype.getCount = function() {
 
 
 /**
- * @return {ol.structs.IntegerSet} Dirty set.
- */
-ol.structs.Buffer.prototype.getDirtySet = function() {
-  return this.dirtySet_;
-};
-
-
-/**
  * @return {ol.structs.IntegerSet} Free set.
  */
 ol.structs.Buffer.prototype.getFreeSet = function() {
@@ -123,15 +123,26 @@ ol.structs.Buffer.prototype.getFreeSet = function() {
  * @param {number} offset Offset.
  */
 ol.structs.Buffer.prototype.remove = function(size, offset) {
+  var i;
   this.freeSet_.addRange(offset, offset + size);
-  this.dirtySet_.removeRange(offset, offset + size);
+  for (i = 0; i < this.dirtySets_.length; ++i) {
+    this.dirtySets_[i].removeRange(offset, offset + size);
+  }
   if (ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS) {
     var arr = this.arr_;
-    var i;
     for (i = 0; i < size; ++i) {
       arr[offset + i] = NaN;
     }
   }
+};
+
+
+/**
+ * @param {ol.structs.IntegerSet} dirtySet Dirty set.
+ */
+ol.structs.Buffer.prototype.removeDirtySet = function(dirtySet) {
+  var removed = goog.array.remove(this.dirtySets_, dirtySet);
+  goog.asserts.assert(removed);
 };
 
 
@@ -147,13 +158,7 @@ ol.structs.Buffer.prototype.set = function(values, offset) {
   for (i = 0; i < n; ++i) {
     arr[offset + i] = values[i];
   }
-  this.dirtySet_.addRange(offset, offset + n);
-};
-
-
-/**
- * Marks the buffer as being clean.
- */
-ol.structs.Buffer.prototype.setClean = function() {
-  this.dirtySet_.clear();
+  for (i = 0; i < this.dirtySets_.length; ++i) {
+    this.dirtySets_[i].addRange(offset, offset + n);
+  }
 };
