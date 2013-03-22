@@ -33,12 +33,12 @@ ol.renderer.webgl.tilelayer.shader.Fragment = function() {
   goog.base(this, [
     'precision mediump float;',
     '',
-    'uniform sampler2D uTexture;',
+    'uniform sampler2D u_texture;',
     '',
-    'varying vec2 vTexCoord;',
+    'varying vec2 v_texCoord;',
     '',
     'void main(void) {',
-    ' gl_FragColor = texture2D(uTexture, vTexCoord);',
+    ' gl_FragColor = texture2D(u_texture, v_texCoord);',
     '}'
   ].join('\n'));
 };
@@ -55,18 +55,18 @@ goog.addSingletonGetter(ol.renderer.webgl.tilelayer.shader.Fragment);
  */
 ol.renderer.webgl.tilelayer.shader.Vertex = function() {
   goog.base(this, [
-    'attribute vec2 aPosition;',
-    'attribute vec2 aTexCoord;',
+    'attribute vec2 a_position;',
+    'attribute vec2 a_texCoord;',
     '',
-    'varying vec2 vTexCoord;',
+    'varying vec2 v_texCoord;',
     '',
-    'uniform vec4 uTileOffset;',
+    'uniform vec4 u_tileOffset;',
     '',
     'void main(void) {',
-    '  gl_Position.xy = aPosition * uTileOffset.xy + uTileOffset.zw;',
+    '  gl_Position.xy = a_position * u_tileOffset.xy + u_tileOffset.zw;',
     '  gl_Position.z = 0.;',
     '  gl_Position.w = 1.;',
-    '  vTexCoord = aTexCoord;',
+    '  v_texCoord = a_texCoord;',
     '}'
   ].join('\n'));
 };
@@ -102,10 +102,10 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {{aPosition: number,
-   *         aTexCoord: number,
-   *         uTileOffset: WebGLUniformLocation,
-   *         uTexture: WebGLUniformLocation}|null}
+   * @type {{a_position: number,
+   *         a_texCoord: number,
+   *         u_tileOffset: WebGLUniformLocation,
+   *         u_texture: WebGLUniformLocation}|null}
    */
   this.locations_ = null;
 
@@ -233,21 +233,21 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     gl.useProgram(program);
     if (goog.isNull(this.locations_)) {
       this.locations_ = {
-        aPosition: gl.getAttribLocation(program, 'aPosition'),
-        aTexCoord: gl.getAttribLocation(program, 'aTexCoord'),
-        uTileOffset: gl.getUniformLocation(program, 'uTileOffset'),
-        uTexture: gl.getUniformLocation(program, 'uTexture')
+        a_position: gl.getAttribLocation(program, 'a_position'),
+        a_texCoord: gl.getAttribLocation(program, 'a_texCoord'),
+        u_tileOffset: gl.getUniformLocation(program, 'u_tileOffset'),
+        u_texture: gl.getUniformLocation(program, 'u_texture')
       };
     }
 
     mapRenderer.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
-    gl.enableVertexAttribArray(this.locations_.aPosition);
+    gl.enableVertexAttribArray(this.locations_.a_position);
     gl.vertexAttribPointer(
-        this.locations_.aPosition, 2, goog.webgl.FLOAT, false, 16, 0);
-    gl.enableVertexAttribArray(this.locations_.aTexCoord);
+        this.locations_.a_position, 2, goog.webgl.FLOAT, false, 16, 0);
+    gl.enableVertexAttribArray(this.locations_.a_texCoord);
     gl.vertexAttribPointer(
-        this.locations_.aTexCoord, 2, goog.webgl.FLOAT, false, 16, 8);
-    gl.uniform1i(this.locations_.uTexture, 0);
+        this.locations_.a_texCoord, 2, goog.webgl.FLOAT, false, 16, 8);
+    gl.uniform1i(this.locations_.u_texture, 0);
 
     /**
      * @type {Object.<number, Object.<string, ol.Tile>>}
@@ -302,7 +302,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     /** @type {Array.<number>} */
     var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
     goog.array.sort(zs);
-    var uTileOffset = goog.vec.Vec4.createFloat32();
+    var u_tileOffset = goog.vec.Vec4.createFloat32();
     goog.array.forEach(zs, function(z) {
       goog.object.forEach(tilesToDrawByZ[z], function(tile) {
         var tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord);
@@ -312,8 +312,8 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
             framebufferExtentSize.width - 1;
         var ty = 2 * (tileExtent.minY - framebufferExtent.minY) /
             framebufferExtentSize.height - 1;
-        goog.vec.Vec4.setFromValues(uTileOffset, sx, sy, tx, ty);
-        gl.uniform4fv(this.locations_.uTileOffset, uTileOffset);
+        goog.vec.Vec4.setFromValues(u_tileOffset, sx, sy, tx, ty);
+        gl.uniform4fv(this.locations_.u_tileOffset, u_tileOffset);
         mapRenderer.bindTileTexture(tile, goog.webgl.LINEAR, goog.webgl.LINEAR);
         gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
       }, this);
