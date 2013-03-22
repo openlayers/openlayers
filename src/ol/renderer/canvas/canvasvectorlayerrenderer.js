@@ -211,6 +211,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       resolution = view2DState.resolution,
       extent = frameState.extent,
       layer = this.getVectorLayer(),
+      source = layer.getVectorSource(),
       tileGrid = this.tileGrid_;
 
   if (goog.isNull(tileGrid)) {
@@ -336,7 +337,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
             featuresToRender[type] = {};
           }
           goog.object.extend(featuresToRender[type],
-              layer.getFeaturesObject(new ol.filter.Logical(
+              source.getFeaturesObject(new ol.filter.Logical(
                   [geomFilter, extentFilter], ol.filter.LogicalOperator.AND)));
         }
         tilesOnSketchCanvas[key] = tileCoord;
