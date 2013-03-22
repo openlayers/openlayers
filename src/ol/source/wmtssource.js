@@ -47,6 +47,7 @@ ol.source.WMTS = function(wmtsOptions) {
   var context = {
     'Layer': wmtsOptions.layer,
     'style': wmtsOptions.style,
+    'Style': wmtsOptions.style,
     'TileMatrixSet': wmtsOptions.matrixSet
   };
   goog.object.extend(context, dimensions);
@@ -204,21 +205,22 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, layer) {
   var encodings = goog.object.getKeys(
       gets[0]['constraints']['GetEncoding']['allowedValues']);
   goog.asserts.assert(encodings.length > 0);
-  var requestEncoding = /** @type {ol.source.WMTSRequestEncoding} */
-      (encodings[0]);
-  // TODO: arcgis support, quote from ol2:
-  // The OGC documentation is not clear if we should use REST or RESTful,
-  // ArcGis use RESTful, and OpenLayers use REST.
 
   var urls;
-  switch (requestEncoding) {
-    case ol.source.WMTSRequestEncoding.REST:
+  var requestEncoding;
+  switch (encodings[0]) {
+    case 'REST':
+    case 'RESTful':
+      // The OGC documentation is not clear if we should use REST or RESTful,
+      // ArcGis use RESTful, and OpenLayers use REST.
+      requestEncoding = ol.source.WMTSRequestEncoding.REST;
       goog.asserts.assert(l['resourceUrls'].hasOwnProperty('tile'));
       goog.asserts.assert(l['resourceUrls']['tile'].hasOwnProperty(format));
       urls = /** @type {Array.<string>} */
           (l['resourceUrls']['tile'][format]);
       break;
-    case ol.source.WMTSRequestEncoding.KVP:
+    case 'KVP':
+      requestEncoding = ol.source.WMTSRequestEncoding.REST;
       urls = [];
       goog.array.forEach(gets, function(elt, index, array) {
         if (elt['constraints']['GetEncoding']['allowedValues'].hasOwnProperty(
