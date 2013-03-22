@@ -167,8 +167,6 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
         this.updateWantedTiles(frameState.wantedTiles, tileSource, tileCoord);
         tileCenter = tileGrid.getTileCoordCenter(tileCoord);
         frameState.tileQueue.enqueue(tile, tileSourceKey, tileCenter);
-      } else if (tileState == ol.TileState.LOADING) {
-        this.listenToTileChange(tile);
       } else if (tileState == ol.TileState.LOADED ||
                  tileState == ol.TileState.EMPTY) {
         tilesToDrawByZ[z][tileCoord.toString()] = tile;

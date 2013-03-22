@@ -271,7 +271,8 @@ ol.Map = function(mapOptions) {
    * @private
    * @type {ol.TileQueue}
    */
-  this.tileQueue_ = new ol.TileQueue(goog.bind(this.getTilePriority, this));
+  this.tileQueue_ = new ol.TileQueue(goog.bind(this.getTilePriority, this),
+      goog.bind(this.handleTileChange_, this));
 
   goog.events.listen(this, ol.Object.getChangedEventType(ol.MapProperty.VIEW),
       this.handleViewChanged_, false, this);
@@ -543,13 +544,7 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
  */
 ol.Map.prototype.handlePostRender = function() {
   this.tileQueue_.reprioritize(); // FIXME only call if needed
-  var moreLoadingTiles = this.tileQueue_.loadMoreTiles();
-  if (moreLoadingTiles) {
-    // The tile layer renderers need to know when tiles change
-    // to the LOADING state (to register the change listener
-    // on the tile).
-    this.requestRenderFrame();
-  }
+  this.tileQueue_.loadMoreTiles();
 
   var postRenderFunctions = this.postRenderFunctions_;
   var i;
@@ -582,6 +577,14 @@ ol.Map.prototype.handleBrowserWindowResize = function() {
  */
 ol.Map.prototype.handleSizeChanged_ = function() {
   this.render();
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.handleTileChange_ = function() {
+  this.requestRenderFrame();
 };
 
 
