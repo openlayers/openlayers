@@ -1,6 +1,6 @@
 before_install:
   - "sudo pip install http://closure-linter.googlecode.com/files/closure_linter-latest.tar.gz"
-  - "git clone https://github.com/jsdoc3/jsdoc && (cd jsdoc && git checkout v3.1.1)"
+  - "git clone https://github.com/jsdoc3/jsdoc && (cd jsdoc && git checkout master)"
 
 before_script:
   - "./build.py plovr"
