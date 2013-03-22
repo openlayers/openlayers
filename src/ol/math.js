@@ -35,7 +35,7 @@ ol.math.csch = function(x) {
  */
 ol.math.roundUpToPowerOfTwo = function(x) {
   goog.asserts.assert(0 < x);
-  return Math.pow(2, Math.ceil(Math.log(x) / Math.log(2)));
+  return Math.pow(2, Math.ceil(Math.log(x) / Math.LN2));
 };
 
 
