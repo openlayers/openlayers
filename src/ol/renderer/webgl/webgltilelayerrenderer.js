@@ -2,9 +2,7 @@
 // FIXME animated shaders! check in redraw
 
 goog.provide('ol.renderer.webgl.TileLayer');
-goog.provide('ol.renderer.webgl.tilelayerrenderer');
-goog.provide('ol.renderer.webgl.tilelayerrenderer.shader.Fragment');
-goog.provide('ol.renderer.webgl.tilelayerrenderer.shader.Vertex');
+goog.provide('ol.renderer.webgl.tilelayer.shader');
 
 goog.require('goog.array');
 goog.require('goog.object');
@@ -31,7 +29,7 @@ goog.require('ol.structs.Buffer');
  * @constructor
  * @extends {ol.renderer.webgl.FragmentShader}
  */
-ol.renderer.webgl.tilelayerrenderer.shader.Fragment = function() {
+ol.renderer.webgl.tilelayer.shader.Fragment = function() {
   goog.base(this, [
     'precision mediump float;',
     '',
@@ -45,9 +43,9 @@ ol.renderer.webgl.tilelayerrenderer.shader.Fragment = function() {
   ].join('\n'));
 };
 goog.inherits(
-    ol.renderer.webgl.tilelayerrenderer.shader.Fragment,
+    ol.renderer.webgl.tilelayer.shader.Fragment,
     ol.renderer.webgl.FragmentShader);
-goog.addSingletonGetter(ol.renderer.webgl.tilelayerrenderer.shader.Fragment);
+goog.addSingletonGetter(ol.renderer.webgl.tilelayer.shader.Fragment);
 
 
 
@@ -55,7 +53,7 @@ goog.addSingletonGetter(ol.renderer.webgl.tilelayerrenderer.shader.Fragment);
  * @constructor
  * @extends {ol.renderer.webgl.VertexShader}
  */
-ol.renderer.webgl.tilelayerrenderer.shader.Vertex = function() {
+ol.renderer.webgl.tilelayer.shader.Vertex = function() {
   goog.base(this, [
     'attribute vec2 aPosition;',
     'attribute vec2 aTexCoord;',
@@ -73,9 +71,9 @@ ol.renderer.webgl.tilelayerrenderer.shader.Vertex = function() {
   ].join('\n'));
 };
 goog.inherits(
-    ol.renderer.webgl.tilelayerrenderer.shader.Vertex,
+    ol.renderer.webgl.tilelayer.shader.Vertex,
     ol.renderer.webgl.VertexShader);
-goog.addSingletonGetter(ol.renderer.webgl.tilelayerrenderer.shader.Vertex);
+goog.addSingletonGetter(ol.renderer.webgl.tilelayer.shader.Vertex);
 
 
 
@@ -94,14 +92,13 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
    * @type {ol.renderer.webgl.FragmentShader}
    */
   this.fragmentShader_ =
-      ol.renderer.webgl.tilelayerrenderer.shader.Fragment.getInstance();
+      ol.renderer.webgl.tilelayer.shader.Fragment.getInstance();
 
   /**
    * @private
    * @type {ol.renderer.webgl.VertexShader}
    */
-  this.vertexShader_ =
-      ol.renderer.webgl.tilelayerrenderer.shader.Vertex.getInstance();
+  this.vertexShader_ = ol.renderer.webgl.tilelayer.shader.Vertex.getInstance();
 
   /**
    * @private
