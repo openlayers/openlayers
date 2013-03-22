@@ -152,8 +152,7 @@ ol.structs.RTree = function() {
    * @type {ol.structs.RTreeNode_}
    */
   this.root_ = new ol.structs.RTreeNode_(
-      Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY,
-      Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, null, 0);
+      -Infinity, -Infinity, Infinity, Infinity, null, 0);
 
 };
 

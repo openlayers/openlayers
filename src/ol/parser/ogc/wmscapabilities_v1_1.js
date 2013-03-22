@@ -66,7 +66,7 @@ ol.parser.ogc.WMSCapabilities_v1_1 = function() {
       if (min !== 0) {
         obj['maxScale'] = parseFloat((min / rad2) * ipm * dpi);
       }
-      if (max != Number.POSITIVE_INFINITY) {
+      if (max != Infinity) {
         obj['minScale'] = parseFloat((max / rad2) * ipm * dpi);
       }
     },

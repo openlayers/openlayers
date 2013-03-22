@@ -40,9 +40,9 @@ goog.inherits(ol.geom.AbstractCollection, ol.geom.Geometry);
 ol.geom.AbstractCollection.prototype.getBounds = function() {
   if (goog.isNull(this.bounds)) {
     var minX,
-        minY = minX = Number.POSITIVE_INFINITY,
+        minY = minX = Infinity,
         maxX,
-        maxY = maxX = Number.NEGATIVE_INFINITY,
+        maxY = maxX = -Infinity,
         components = this.components,
         len = components.length,
         bounds, i;
