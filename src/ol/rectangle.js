@@ -52,10 +52,18 @@ ol.Rectangle.prototype.equals = function(rectangle) {
  * @param {ol.Rectangle} rectangle Rectangle.
  */
 ol.Rectangle.prototype.extend = function(rectangle) {
-  this.minX = Math.min(this.minX, rectangle.minX);
-  this.minY = Math.min(this.minY, rectangle.minY);
-  this.maxX = Math.max(this.maxX, rectangle.maxX);
-  this.maxY = Math.max(this.maxY, rectangle.maxY);
+  if (rectangle.minX < this.minX) {
+    this.minX = rectangle.minX;
+  }
+  if (rectangle.minY < this.minY) {
+    this.minY = rectangle.minY;
+  }
+  if (rectangle.maxX > this.maxX) {
+    this.maxX = rectangle.maxX;
+  }
+  if (rectangle.maxY > this.maxY) {
+    this.maxY = rectangle.maxY;
+  }
 };
 
 
@@ -64,10 +72,18 @@ ol.Rectangle.prototype.extend = function(rectangle) {
  * @param {number} y Y.
  */
 ol.Rectangle.prototype.extendXY = function(x, y) {
-  this.minX = Math.min(this.minX, x);
-  this.minY = Math.min(this.minY, y);
-  this.maxX = Math.max(this.maxX, x);
-  this.maxY = Math.max(this.maxY, y);
+  if (x < this.minX) {
+    this.minX = x;
+  }
+  if (y < this.minY) {
+    this.minY = y;
+  }
+  if (x > this.maxX) {
+    this.maxX = x;
+  }
+  if (y > this.maxY) {
+    this.maxY = y;
+  }
 };
 
 
