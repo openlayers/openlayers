@@ -539,6 +539,39 @@
     }
 
 
+    function test_Bounds_extendXY(t) {
+        t.plan(3);
+
+        // null bounds to start
+        var originalBounds = new OpenLayers.Bounds();
+
+        var bounds = originalBounds.clone();
+        bounds.extendXY(4, 5);
+
+        t.ok(bounds.equals(new OpenLayers.Bounds(4,5,4,5)), "uninitialized bounds can be safely extended");
+
+        // left, bottom
+        originalBounds = new OpenLayers.Bounds(10,20,50,80);
+
+        bounds = originalBounds.clone();
+        bounds.extendXY(5, 10);
+
+        t.ok( ((bounds.left == 5) &&
+               (bounds.bottom == 10) &&
+               (bounds.right == originalBounds.right) &&
+               (bounds.top == originalBounds.top)), "extendXY correctly modifies left and bottom");
+
+        // right, top
+        bounds = originalBounds.clone();
+        bounds.extendXY(60, 90);
+
+        t.ok( ((bounds.left == originalBounds.left) &&
+               (bounds.bottom == originalBounds.bottom) &&
+               (bounds.right == 60) &&
+               (bounds.top == 90)), "extendXY correctly modifies right and top");
+    }
+
+
     function test_Bounds_wrapDateLine(t) {
         t.plan( 13 );
 
