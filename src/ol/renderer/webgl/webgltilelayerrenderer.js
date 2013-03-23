@@ -2,7 +2,6 @@
 // FIXME animated shaders! check in redraw
 
 goog.provide('ol.renderer.webgl.TileLayer');
-goog.provide('ol.renderer.webgl.tilelayer.shader');
 
 goog.require('goog.array');
 goog.require('goog.object');
@@ -18,62 +17,9 @@ goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.math');
-goog.require('ol.renderer.webgl.FragmentShader');
 goog.require('ol.renderer.webgl.Layer');
-goog.require('ol.renderer.webgl.VertexShader');
+goog.require('ol.renderer.webgl.tilelayer.shader');
 goog.require('ol.structs.Buffer');
-
-
-
-/**
- * @constructor
- * @extends {ol.renderer.webgl.FragmentShader}
- */
-ol.renderer.webgl.tilelayer.shader.Fragment = function() {
-  goog.base(this, [
-    'precision mediump float;',
-    '',
-    'uniform sampler2D u_texture;',
-    '',
-    'varying vec2 v_texCoord;',
-    '',
-    'void main(void) {',
-    ' gl_FragColor = texture2D(u_texture, v_texCoord);',
-    '}'
-  ].join('\n'));
-};
-goog.inherits(
-    ol.renderer.webgl.tilelayer.shader.Fragment,
-    ol.renderer.webgl.FragmentShader);
-goog.addSingletonGetter(ol.renderer.webgl.tilelayer.shader.Fragment);
-
-
-
-/**
- * @constructor
- * @extends {ol.renderer.webgl.VertexShader}
- */
-ol.renderer.webgl.tilelayer.shader.Vertex = function() {
-  goog.base(this, [
-    'attribute vec2 a_position;',
-    'attribute vec2 a_texCoord;',
-    '',
-    'varying vec2 v_texCoord;',
-    '',
-    'uniform vec4 u_tileOffset;',
-    '',
-    'void main(void) {',
-    '  gl_Position.xy = a_position * u_tileOffset.xy + u_tileOffset.zw;',
-    '  gl_Position.z = 0.;',
-    '  gl_Position.w = 1.;',
-    '  v_texCoord = a_texCoord;',
-    '}'
-  ].join('\n'));
-};
-goog.inherits(
-    ol.renderer.webgl.tilelayer.shader.Vertex,
-    ol.renderer.webgl.VertexShader);
-goog.addSingletonGetter(ol.renderer.webgl.tilelayer.shader.Vertex);
 
 
 
@@ -232,10 +178,14 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     gl.useProgram(program);
     if (goog.isNull(this.locations_)) {
       this.locations_ = {
-        a_position: gl.getAttribLocation(program, 'a_position'),
-        a_texCoord: gl.getAttribLocation(program, 'a_texCoord'),
-        u_tileOffset: gl.getUniformLocation(program, 'u_tileOffset'),
-        u_texture: gl.getUniformLocation(program, 'u_texture')
+        a_position: gl.getAttribLocation(
+            program, ol.renderer.webgl.tilelayer.shader.attribute.a_position),
+        a_texCoord: gl.getAttribLocation(
+            program, ol.renderer.webgl.tilelayer.shader.attribute.a_texCoord),
+        u_tileOffset: gl.getUniformLocation(
+            program, ol.renderer.webgl.tilelayer.shader.uniform.u_tileOffset),
+        u_texture: gl.getUniformLocation(
+            program, ol.renderer.webgl.tilelayer.shader.uniform.u_texture)
       };
     }
 
