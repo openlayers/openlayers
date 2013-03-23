@@ -1,14 +1,13 @@
 goog.provide('ol.renderer.webgl.tilelayer.shader');
-goog.require('ol.webgl.FragmentShader');
-goog.require('ol.webgl.VertexShader');
+goog.require('ol.webgl.shader');
 /**
  * @constructor
- * @extends {ol.webgl.FragmentShader}
+ * @extends {ol.webgl.shader.Fragment}
  */
 ol.renderer.webgl.tilelayer.shader.Fragment = function() {
   goog.base(this, ol.renderer.webgl.tilelayer.shader.Fragment.SOURCE);
 };
-goog.inherits(ol.renderer.webgl.tilelayer.shader.Fragment, ol.webgl.FragmentShader);
+goog.inherits(ol.renderer.webgl.tilelayer.shader.Fragment, ol.webgl.shader.Fragment);
 goog.addSingletonGetter(ol.renderer.webgl.tilelayer.shader.Fragment);
 /**
  * @const
@@ -29,12 +28,12 @@ ol.renderer.webgl.tilelayer.shader.Fragment.SOURCE = goog.DEBUG ?
     ol.renderer.webgl.tilelayer.shader.Fragment.OPTIMIZED_SOURCE;
 /**
  * @constructor
- * @extends {ol.webgl.VertexShader}
+ * @extends {ol.webgl.shader.Vertex}
  */
 ol.renderer.webgl.tilelayer.shader.Vertex = function() {
   goog.base(this, ol.renderer.webgl.tilelayer.shader.Vertex.SOURCE);
 };
-goog.inherits(ol.renderer.webgl.tilelayer.shader.Vertex, ol.webgl.VertexShader);
+goog.inherits(ol.renderer.webgl.tilelayer.shader.Vertex, ol.webgl.shader.Vertex);
 goog.addSingletonGetter(ol.renderer.webgl.tilelayer.shader.Vertex);
 /**
  * @const

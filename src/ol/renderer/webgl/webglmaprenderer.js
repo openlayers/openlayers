@@ -24,9 +24,8 @@ goog.require('ol.structs.Buffer');
 goog.require('ol.structs.IntegerSet');
 goog.require('ol.structs.LRUCache');
 goog.require('ol.webgl');
-goog.require('ol.webgl.FragmentShader');
-goog.require('ol.webgl.VertexShader');
 goog.require('ol.webgl.WebGLContextEventType');
+goog.require('ol.webgl.shader');
 
 
 /**
@@ -163,13 +162,13 @@ ol.renderer.webgl.Map = function(container, map) {
 
   /**
    * @private
-   * @type {ol.webgl.FragmentShader}
+   * @type {ol.webgl.shader.Fragment}
    */
   this.fragmentShader_ = ol.renderer.webgl.map.shader.Fragment.getInstance();
 
   /**
    * @private
-   * @type {ol.webgl.VertexShader}
+   * @type {ol.webgl.shader.Vertex}
    */
   this.vertexShader_ = ol.renderer.webgl.map.shader.Vertex.getInstance();
 
@@ -368,8 +367,8 @@ ol.renderer.webgl.Map.prototype.getGL = function() {
 
 
 /**
- * @param {ol.webgl.FragmentShader} fragmentShaderObject Fragment shader.
- * @param {ol.webgl.VertexShader} vertexShaderObject Vertex shader.
+ * @param {ol.webgl.shader.Fragment} fragmentShaderObject Fragment shader.
+ * @param {ol.webgl.shader.Vertex} vertexShaderObject Vertex shader.
  * @return {WebGLProgram} Program.
  */
 ol.renderer.webgl.Map.prototype.getProgram = function(
