@@ -39,7 +39,7 @@ else:
     variables.PYTHON = 'python'
     variables.PHANTOMJS = 'phantomjs'
 
-TEMPLATE_GLSL_COMPILER_JS = '../glsl-unit/bin/template_glsl_compiler.js'
+TEMPLATE_GLSL_COMPILER_JS = 'build/glsl-unit/bin/template_glsl_compiler.js'
 
 variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
