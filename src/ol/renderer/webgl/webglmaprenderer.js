@@ -1,7 +1,6 @@
 // FIXME check against gl.getParameter(webgl.MAX_TEXTURE_SIZE)
 
 goog.provide('ol.renderer.webgl.Map');
-goog.provide('ol.renderer.webgl.map.shader');
 
 goog.require('goog.array');
 goog.require('goog.debug.Logger');
@@ -22,6 +21,7 @@ goog.require('ol.renderer.webgl.FragmentShader');
 goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.TileLayer');
 goog.require('ol.renderer.webgl.VertexShader');
+goog.require('ol.renderer.webgl.map.shader');
 goog.require('ol.structs.Buffer');
 goog.require('ol.structs.IntegerSet');
 goog.require('ol.structs.LRUCache');
@@ -47,64 +47,6 @@ ol.renderer.webgl.BufferCacheEntry;
  * @typedef {{magFilter: number, minFilter: number, texture: WebGLTexture}}
  */
 ol.renderer.webgl.TextureCacheEntry;
-
-
-
-/**
- * @constructor
- * @extends {ol.renderer.webgl.FragmentShader}
- * @see https://svn.webkit.org/repository/webkit/trunk/Source/WebCore/platform/graphics/filters/skia/SkiaImageFilterBuilder.cpp
- */
-ol.renderer.webgl.map.shader.Fragment = function() {
-  goog.base(this, [
-    'precision mediump float;',
-    '',
-    'uniform mat4 u_colorMatrix;',
-    'uniform float u_opacity;',
-    'uniform sampler2D u_texture;',
-    '',
-    'varying vec2 v_texCoord;',
-    '',
-    'void main(void) {',
-    '',
-    '  vec4 texColor = texture2D(u_texture, v_texCoord);',
-    '  vec4 color = u_colorMatrix * vec4(texColor.rgb, 1.);',
-    '  color.a = texColor.a * u_opacity;',
-    '',
-    '  gl_FragColor = color;',
-    '',
-    '}'
-  ].join('\n'));
-};
-goog.inherits(
-    ol.renderer.webgl.map.shader.Fragment, ol.renderer.webgl.FragmentShader);
-goog.addSingletonGetter(ol.renderer.webgl.map.shader.Fragment);
-
-
-
-/**
- * @constructor
- * @extends {ol.renderer.webgl.VertexShader}
- */
-ol.renderer.webgl.map.shader.Vertex = function() {
-  goog.base(this, [
-    'attribute vec2 a_position;',
-    'attribute vec2 a_texCoord;',
-    '',
-    'uniform mat4 u_texCoordMatrix;',
-    'uniform mat4 u_projectionMatrix;',
-    '',
-    'varying vec2 v_texCoord;',
-    '',
-    'void main(void) {',
-    '  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.);',
-    '  v_texCoord = (u_texCoordMatrix * vec4(a_texCoord, 0., 1.)).st;',
-    '}'
-  ].join('\n'));
-};
-goog.inherits(
-    ol.renderer.webgl.map.shader.Vertex, ol.renderer.webgl.VertexShader);
-goog.addSingletonGetter(ol.renderer.webgl.map.shader.Vertex);
 
 
 
@@ -586,13 +528,20 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   gl.useProgram(program);
   if (goog.isNull(this.locations_)) {
     this.locations_ = {
-      a_position: gl.getAttribLocation(program, 'a_position'),
-      a_texCoord: gl.getAttribLocation(program, 'a_texCoord'),
-      u_colorMatrix: gl.getUniformLocation(program, 'u_colorMatrix'),
-      u_texCoordMatrix: gl.getUniformLocation(program, 'u_texCoordMatrix'),
-      u_projectionMatrix: gl.getUniformLocation(program, 'u_projectionMatrix'),
-      u_opacity: gl.getUniformLocation(program, 'u_opacity'),
-      u_texture: gl.getUniformLocation(program, 'u_texture')
+      a_position: gl.getAttribLocation(
+          program, ol.renderer.webgl.map.shader.attribute.a_position),
+      a_texCoord: gl.getAttribLocation(
+          program, ol.renderer.webgl.map.shader.attribute.a_texCoord),
+      u_colorMatrix: gl.getUniformLocation(
+          program, ol.renderer.webgl.map.shader.uniform.u_colorMatrix),
+      u_texCoordMatrix: gl.getUniformLocation(
+          program, ol.renderer.webgl.map.shader.uniform.u_texCoordMatrix),
+      u_projectionMatrix: gl.getUniformLocation(
+          program, ol.renderer.webgl.map.shader.uniform.u_projectionMatrix),
+      u_opacity: gl.getUniformLocation(
+          program, ol.renderer.webgl.map.shader.uniform.u_opacity),
+      u_texture: gl.getUniformLocation(
+          program, ol.renderer.webgl.map.shader.uniform.u_texture)
     };
   }
 
