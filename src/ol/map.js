@@ -484,9 +484,13 @@ ol.Map.prototype.getOverlayContainer = function() {
  * @param {ol.Tile} tile Tile.
  * @param {string} tileSourceKey Tile source key.
  * @param {ol.Coordinate} tileCenter Tile center.
+ * @param {number} tileResolution Tile resolution.
  * @return {number} Tile priority.
  */
-ol.Map.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter) {
+ol.Map.prototype.getTilePriority =
+    function(tile, tileSourceKey, tileCenter, tileResolution) {
+  // Filter out tiles at higher zoom levels than the current zoom level, or that
+  // are outside the visible extent.
   var frameState = this.frameState_;
   if (goog.isNull(frameState) || !(tileSourceKey in frameState.wantedTiles)) {
     return ol.TileQueue.DROP;
@@ -495,11 +499,14 @@ ol.Map.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter) {
   if (!frameState.wantedTiles[tileSourceKey][coordKey]) {
     return ol.TileQueue.DROP;
   }
+  // Prioritize tiles closest to the focus or center.  The + 1 helps to
+  // prioritize tiles at higher zoom levels over tiles at lower zoom levels,
+  // even if the tile's center is close to the focus.
   var focus = goog.isNull(this.focus_) ?
       frameState.view2DState.center : this.focus_;
   var deltaX = tileCenter.x - focus.x;
   var deltaY = tileCenter.y - focus.y;
-  return deltaX * deltaX + deltaY * deltaY;
+  return tileResolution * (deltaX * deltaX + deltaY * deltaY + 1);
 };
 
 
