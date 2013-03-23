@@ -36,12 +36,17 @@ ol.Extent.boundingExtent = function(var_args) {
   var i;
   for (i = 1; i < arguments.length; ++i) {
     var coordinate = arguments[i];
-    extent.minX = Math.min(extent.minX, coordinate.x);
-    extent.minY = Math.min(extent.minY, coordinate.y);
-    extent.maxX = Math.max(extent.maxX, coordinate.x);
-    extent.maxY = Math.max(extent.maxY, coordinate.y);
+    extent.extendXY(coordinate.x, coordinate.y);
   }
   return extent;
+};
+
+
+/**
+ * @return {ol.Extent} Empty extent.
+ */
+ol.Extent.createEmptyExtent = function() {
+  return new ol.Extent(Infinity, Infinity, -Infinity, -Infinity);
 };
 
 

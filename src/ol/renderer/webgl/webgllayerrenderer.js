@@ -3,6 +3,7 @@
 goog.provide('ol.renderer.webgl.Layer');
 
 goog.require('goog.vec.Mat4');
+goog.require('ol.FrameState');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
 goog.require('ol.vec.Mat4');
@@ -18,6 +19,36 @@ goog.require('ol.vec.Mat4');
 ol.renderer.webgl.Layer = function(mapRenderer, layer) {
 
   goog.base(this, mapRenderer, layer);
+
+  /**
+   * @protected
+   * @type {WebGLTexture}
+   */
+  this.texture = null;
+
+  /**
+   * @protected
+   * @type {WebGLFramebuffer}
+   */
+  this.framebuffer = null;
+
+  /**
+   * @protected
+   * @type {number|undefined}
+   */
+  this.framebufferDimension = undefined;
+
+  /**
+   * @protected
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.texCoordMatrix = goog.vec.Mat4.createNumber();
+
+  /**
+   * @protected
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.projectionMatrix = goog.vec.Mat4.createNumberIdentity();
 
   /**
    * @private
@@ -65,6 +96,55 @@ goog.inherits(ol.renderer.webgl.Layer, ol.renderer.Layer);
 
 
 /**
+ * @param {ol.FrameState} frameState Frame state.
+ * @param {number} framebufferDimension Framebuffer dimension.
+ * @protected
+ */
+ol.renderer.webgl.Layer.prototype.bindFramebuffer =
+    function(frameState, framebufferDimension) {
+
+  var mapRenderer = this.getWebGLMapRenderer();
+  var gl = mapRenderer.getGL();
+
+  if (!goog.isDef(this.framebufferDimension) ||
+      this.framebufferDimension != framebufferDimension) {
+
+    var map = this.getMap();
+    frameState.postRenderFunctions.push(
+        goog.partial(function(gl, framebuffer, texture) {
+          if (!gl.isContextLost()) {
+            gl.deleteFramebuffer(framebuffer);
+            gl.deleteTexture(texture);
+          }
+        }, gl, this.framebuffer, this.texture));
+
+    var texture = gl.createTexture();
+    gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
+    gl.texImage2D(goog.webgl.TEXTURE_2D, 0, goog.webgl.RGBA,
+        framebufferDimension, framebufferDimension, 0, goog.webgl.RGBA,
+        goog.webgl.UNSIGNED_BYTE, null);
+    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER,
+        goog.webgl.LINEAR);
+    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER,
+        goog.webgl.LINEAR);
+
+    var framebuffer = gl.createFramebuffer();
+    gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, framebuffer);
+    gl.framebufferTexture2D(goog.webgl.FRAMEBUFFER,
+        goog.webgl.COLOR_ATTACHMENT0, goog.webgl.TEXTURE_2D, texture, 0);
+
+    this.texture = texture;
+    this.framebuffer = framebuffer;
+    this.framebufferDimension = framebufferDimension;
+
+  } else {
+    gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, this.framebuffer);
+  }
+
+};
+
+
+/**
  * @return {!goog.vec.Mat4.Float32} Color matrix.
  */
 ol.renderer.webgl.Layer.prototype.getColorMatrix = function() {
@@ -76,31 +156,35 @@ ol.renderer.webgl.Layer.prototype.getColorMatrix = function() {
 
 
 /**
- * @inheritDoc
- * @return {ol.renderer.Map} MapRenderer.
+ * @return {ol.renderer.webgl.Map} MapRenderer.
  */
-ol.renderer.webgl.Layer.prototype.getMapRenderer = function() {
-  return /** @type {ol.renderer.webgl.Map} */ (goog.base(
-      this, 'getMapRenderer'));
+ol.renderer.webgl.Layer.prototype.getWebGLMapRenderer = function() {
+  return /** @type {ol.renderer.webgl.Map} */ (this.getMapRenderer());
 };
 
 
 /**
  * @return {!goog.vec.Mat4.Number} Matrix.
  */
-ol.renderer.webgl.Layer.prototype.getTexCoordMatrix = goog.abstractMethod;
+ol.renderer.webgl.Layer.prototype.getTexCoordMatrix = function() {
+  return this.texCoordMatrix;
+};
 
 
 /**
  * @return {WebGLTexture} Texture.
  */
-ol.renderer.webgl.Layer.prototype.getTexture = goog.abstractMethod;
+ol.renderer.webgl.Layer.prototype.getTexture = function() {
+  return this.texture;
+};
 
 
 /**
  * @return {!goog.vec.Mat4.Number} Matrix.
  */
-ol.renderer.webgl.Layer.prototype.getProjectionMatrix = goog.abstractMethod;
+ol.renderer.webgl.Layer.prototype.getProjectionMatrix = function() {
+  return this.projectionMatrix;
+};
 
 
 /**
@@ -150,7 +234,11 @@ ol.renderer.webgl.Layer.prototype.handleLayerSaturationChange = function() {
 /**
  * Handle webglcontextlost.
  */
-ol.renderer.webgl.Layer.prototype.handleWebGLContextLost = goog.nullFunction;
+ol.renderer.webgl.Layer.prototype.handleWebGLContextLost = function() {
+  this.texture = null;
+  this.framebuffer = null;
+  this.framebufferDimension = undefined;
+};
 
 
 /**
