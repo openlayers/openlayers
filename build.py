@@ -188,11 +188,11 @@ def build_src_external_src_types_js(t):
 for glsl_src in GLSL_SRC:
     def shader_src_helper(glsl_src):
         @target(glsl_src.replace('.glsl', 'shader.js'), glsl_src,
-                'src/ol/renderer/webgl/shader.mustache')
+                'src/ol/webgl/shader.mustache')
         def shader_src(t):
             t.run('%(NODE)s', TEMPLATE_GLSL_COMPILER_JS,
                   '--input', glsl_src,
-                  '--template', 'src/ol/renderer/webgl/shader.mustache',
+                  '--template', 'src/ol/webgl/shader.mustache',
                   '--output', t.name)
     shader_src_helper(glsl_src)
 
