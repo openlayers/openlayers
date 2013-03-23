@@ -30,8 +30,7 @@
   <script>
     mocha.setup({
       ui: 'bdd',
-      bail: false,
-      ignoreLeaks: true
+      bail: false
     });
   </script>
   <script type="text/javascript" src="../build/proj4js/lib/proj4js-combined.js"></script>
@@ -58,6 +57,15 @@
   </script>
 
   <script type="text/javascript">
+
+    /**
+     * The goog.dom.ViewportSizeMonitor (used in map.js) creates a global leak
+     * by setting goog.UID_PROPERTY_ on the monitored window.  In order to test
+     * that we don't have other global leaks, we preemptively set the property
+     * so Mocha can compare the global before and after our tests.
+     */
+    goog.getUid(this);
+
     if (window.mochaPhantomJS) {
       mochaPhantomJS.run();
     } else {
