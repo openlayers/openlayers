@@ -9,6 +9,7 @@ describe('ol.renderer.webgl.ImageLayer', function() {
     var viewExtent;
     var viewResolution;
     var viewRotation;
+    var viewCenter;
     var imageExtent;
 
     beforeEach(function() {
