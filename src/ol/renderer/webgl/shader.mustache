@@ -1,0 +1,106 @@
+goog.provide('{{namespace}}.shader');
+
+goog.require('ol.renderer.webgl.FragmentShader');
+goog.require('ol.renderer.webgl.VertexShader');
+
+
+
+/**
+ * @constructor
+ * @extends {ol.renderer.webgl.FragmentShader}
+ */
+{{namespace}}.shader.Fragment = function() {
+  goog.base(this, {{namespace}}.shader.Fragment.SOURCE);
+};
+goog.inherits({{namespace}}.shader.Fragment, ol.renderer.webgl.FragmentShader);
+goog.addSingletonGetter({{namespace}}.shader.Fragment);
+
+
+/**
+ * @const
+ * @type {string}
+ */
+{{namespace}}.shader.Fragment.DEBUG_SOURCE = 'precision mediump float;\n{{getOriginalFragmentSource}}';
+
+
+/**
+ * @const
+ * @type {string}
+ */
+{{namespace}}.shader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;{{getFragmentSource}}';
+
+
+/**
+ * @const
+ * @type {string}
+ */
+{{namespace}}.shader.Fragment.SOURCE = goog.DEBUG ?
+    {{namespace}}.shader.Fragment.DEBUG_SOURCE :
+    {{namespace}}.shader.Fragment.OPTIMIZED_SOURCE;
+
+
+
+/**
+ * @constructor
+ * @extends {ol.renderer.webgl.VertexShader}
+ */
+{{namespace}}.shader.Vertex = function() {
+  goog.base(this, {{namespace}}.shader.Vertex.SOURCE);
+};
+goog.inherits({{namespace}}.shader.Vertex, ol.renderer.webgl.VertexShader);
+goog.addSingletonGetter({{namespace}}.shader.Vertex);
+
+
+/**
+ * @const
+ * @type {string}
+ */
+{{namespace}}.shader.Vertex.DEBUG_SOURCE = '{{getOriginalVertexSource}}';
+
+
+/**
+ * @const
+ * @type {string}
+ */
+{{namespace}}.shader.Vertex.OPTIMIZED_SOURCE = '{{getVertexSource}}';
+
+
+/**
+ * @const
+ * @type {string}
+ */
+{{namespace}}.shader.Vertex.SOURCE = goog.DEBUG ?
+    {{namespace}}.shader.Vertex.DEBUG_SOURCE :
+    {{namespace}}.shader.Vertex.OPTIMIZED_SOURCE;
+
+
+/**
+ * @constructor
+ */
+{{namespace}}.shader.uniform = function() {};
+{{#getUniforms}}
+
+
+/**
+ * @const
+ * @type {string}
+ */
+{{namespace}}.shader.uniform.{{originalName}} =
+    goog.DEBUG ? '{{originalName}}' : '{{shortName}}';
+{{/getUniforms}}
+
+
+/**
+ * @constructor
+ */
+{{namespace}}.shader.attribute = function() {};
+{{#getAttributes}}
+
+
+/**
+ * @const
+ * @type {string}
+ */
+{{namespace}}.shader.attribute.{{originalName}} =
+    goog.DEBUG ? '{{originalName}}' : '{{shortName}}';
+{{/getAttributes}}

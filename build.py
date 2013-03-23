@@ -21,6 +21,7 @@ if sys.platform == 'win32':
     variables.JAVA = os.path.join(
         ProgramFiles, 'Java', 'jre7', 'bin', 'java.exe')
     variables.JSDOC = 'jsdoc'  # FIXME
+    variables.NODE = 'node'
     variables.PYTHON = os.path.join(Python27, 'python.exe')
     PHANTOMJS_WINDOWS_ZIP = 'build/phantomjs-1.8.1-windows.zip'
     # FIXME we should not need both a pake variable and a Python constant here
@@ -34,8 +35,11 @@ else:
     variables.JAVA = 'java'
     variables.JAR = 'jar'
     variables.JSDOC = 'jsdoc'
+    variables.NODE = 'node'
     variables.PYTHON = 'python'
     variables.PHANTOMJS = 'phantomjs'
+
+TEMPLATE_GLSL_COMPILER_JS = '../glsl-unit/bin/template_glsl_compiler.js'
 
 variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
@@ -73,13 +77,21 @@ INTERNAL_SRC = [
     'build/src/internal/src/requireall.js',
     'build/src/internal/src/types.js']
 
+GLSL_SRC = [path
+            for path in ifind('src')
+            if path.endswith('.glsl')]
+
+SHADER_SRC = [path.replace('.glsl', 'shader.js')
+              for path in GLSL_SRC]
+
 SPEC = [path
         for path in ifind('test/spec')
         if path.endswith('.js')]
 
 SRC = [path
        for path in ifind('src/ol')
-       if path.endswith('.js')]
+       if path.endswith('.js')
+       if path not in SHADER_SRC]
 
 PLOVR_JAR = 'bin/plovr-eba786b34df9.jar'
 PLOVR_JAR_MD5 = '20eac8ccc4578676511cf7ccbfc65100'
@@ -121,22 +133,22 @@ def build_ol_css(t):
     t.touch()
 
 
-@target('build/ol.js', PLOVR_JAR, SRC, EXTERNAL_SRC, 'base.json',
-        'build/ol.json')
+@target('build/ol.js', PLOVR_JAR, SRC, EXTERNAL_SRC, SHADER_SRC,
+        'base.json', 'build/ol.json')
 def build_ol_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol.json')
     report_sizes(t)
 
 
-@target('build/ol-simple.js', PLOVR_JAR, SRC, INTERNAL_SRC, 'base.json',
-        'build/ol.json', 'build/ol-simple.json')
+@target('build/ol-simple.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
+        'base.json', 'build/ol.json', 'build/ol-simple.json')
 def build_ol_simple_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol-simple.json')
     report_sizes(t)
 
 
-@target('build/ol-whitespace.js', PLOVR_JAR, SRC, INTERNAL_SRC, 'base.json',
-        'build/ol.json', 'build/ol-whitespace.json')
+@target('build/ol-whitespace.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
+        'base.json', 'build/ol.json', 'build/ol-whitespace.json')
 def build_ol_whitespace_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR,
              'build', 'build/ol-whitespace.json')
@@ -146,8 +158,8 @@ def build_ol_whitespace_js(t):
 virtual('build-all', 'build/ol-all.js')
 
 
-@target('build/ol-all.js', PLOVR_JAR, SRC, INTERNAL_SRC, 'base.json',
-        'build/ol-all.json')
+@target('build/ol-all.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
+        'base.json', 'build/ol-all.json')
 def build_ol_all_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol-all.json')
 
@@ -173,6 +185,18 @@ def build_src_external_src_types_js(t):
              '--typedef', 'src/objectliterals.exports')
 
 
+for glsl_src in GLSL_SRC:
+    def shader_src_helper(glsl_src):
+        @target(glsl_src.replace('.glsl', 'shader.js'), glsl_src,
+                'src/ol/renderer/webgl/shader.mustache')
+        def shader_src(t):
+            t.run('%(NODE)s', TEMPLATE_GLSL_COMPILER_JS,
+                  '--input', glsl_src,
+                  '--template', 'src/ol/renderer/webgl/shader.mustache',
+                  '--output', t.name)
+    shader_src_helper(glsl_src)
+
+
 def _build_require_list(dependencies, output_file_name):
     requires = set()
     for dependency in dependencies:
@@ -185,7 +209,7 @@ def _build_require_list(dependencies, output_file_name):
             f.write('goog.require(\'%s\');\n' % (require,))
 
 
-@target('build/src/internal/src/requireall.js', SRC)
+@target('build/src/internal/src/requireall.js', SRC, SHADER_SRC)
 def build_src_internal_src_requireall_js(t):
     _build_require_list(t.dependencies, t.name)
 
@@ -252,7 +276,7 @@ def examples_star_combined_js(name, match):
         t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build',
                  'examples/%(id)s.json' % match.groupdict())
         report_sizes(t)
-    dependencies = [PLOVR_JAR, SRC, INTERNAL_SRC, 'base.json',
+    dependencies = [PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC, 'base.json',
                     'examples/%(id)s.js' % match.groupdict(),
                     'examples/%(id)s.json' % match.groupdict()]
     return Target(name, action=action, dependencies=dependencies)
@@ -309,7 +333,7 @@ def _strip_comments(lines):
 
 
 @target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC,
-        EXAMPLES_SRC, SPEC)
+        EXAMPLES_SRC, SHADER_SRC, SPEC)
 def build_check_requires_timestamp(t):
     unused_count = 0
     all_provides = set()
@@ -408,7 +432,7 @@ def gh_pages(t):
 virtual('doc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
-@target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), SRC,
+@target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), SRC, SHADER_SRC,
         ifind('doc/template'))
 def jsdoc_BRANCH_timestamp(t):
     t.run('%(JSDOC)s', '-t', 'doc/template', '-r',
