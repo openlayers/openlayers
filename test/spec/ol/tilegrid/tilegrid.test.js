@@ -392,14 +392,14 @@ describe('ol.tilegrid.TileGrid', function() {
 
       // gets higher tile for edge intersection
       tileCoord = tileGrid.getTileCoordForXYAndResolution_(
-          0, 0, 100);
+          0, 0, 100, false);
       expect(tileCoord.z).to.eql(3);
       expect(tileCoord.x).to.eql(0);
       expect(tileCoord.y).to.eql(0);
 
       // gets higher tile for edge intersection
       tileCoord = tileGrid.getTileCoordForXYAndResolution_(
-          100000, 100000, 100);
+          100000, 100000, 100, false);
       expect(tileCoord.z).to.eql(3);
       expect(tileCoord.x).to.eql(10);
       expect(tileCoord.y).to.eql(10);

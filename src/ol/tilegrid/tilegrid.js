@@ -190,7 +190,7 @@ ol.tilegrid.TileGrid.prototype.getTileRangeExtent = function(z, tileRange) {
 ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution = function(
     extent, resolution) {
   var min = this.getTileCoordForXYAndResolution_(
-      extent.minX, extent.minY, resolution);
+      extent.minX, extent.minY, resolution, false);
   var max = this.getTileCoordForXYAndResolution_(
       extent.maxX, extent.maxY, resolution, true);
   return new ol.TileRange(min.x, min.y, max.x, max.y);
@@ -250,7 +250,7 @@ ol.tilegrid.TileGrid.prototype.getTileCoordExtent = function(tileCoord) {
 ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution = function(
     coordinate, resolution) {
   return this.getTileCoordForXYAndResolution_(
-      coordinate.x, coordinate.y, resolution);
+      coordinate.x, coordinate.y, resolution, false);
 };
 
 
@@ -258,14 +258,14 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution = function(
  * @param {number} x X.
  * @param {number} y Y.
  * @param {number} resolution Resolution.
- * @param {boolean=} opt_reverseIntersectionPolicy Instead of letting edge
+ * @param {boolean} reverseIntersectionPolicy Instead of letting edge
  *     intersections go to the higher tile coordinate, let edge intersections
  *     go to the lower tile coordinate.
  * @return {ol.TileCoord} Tile coordinate.
  * @private
  */
 ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
-    x, y, resolution, opt_reverseIntersectionPolicy) {
+    x, y, resolution, reverseIntersectionPolicy) {
   var z = this.getZForResolution(resolution);
   var scale = resolution / this.getResolution(z);
   var origin = this.getOrigin(z);
@@ -274,12 +274,12 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
   var tileCoordX = scale * (x - origin.x) / (resolution * tileSize.width);
   var tileCoordY = scale * (y - origin.y) / (resolution * tileSize.height);
 
-  if (!opt_reverseIntersectionPolicy) {
-    tileCoordX = Math.floor(tileCoordX);
-    tileCoordY = Math.floor(tileCoordY);
-  } else {
+  if (reverseIntersectionPolicy) {
     tileCoordX = Math.ceil(tileCoordX) - 1;
     tileCoordY = Math.ceil(tileCoordY) - 1;
+  } else {
+    tileCoordX = Math.floor(tileCoordX);
+    tileCoordY = Math.floor(tileCoordY);
   }
 
   return new ol.TileCoord(z, tileCoordX, tileCoordY);
@@ -295,7 +295,7 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndZ =
     function(coordinate, z) {
   var resolution = this.getResolution(z);
   return this.getTileCoordForXYAndResolution_(
-      coordinate.x, coordinate.y, resolution);
+      coordinate.x, coordinate.y, resolution, false);
 };
 
 
