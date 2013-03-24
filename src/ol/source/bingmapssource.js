@@ -81,6 +81,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   });
   this.tileGrid = tileGrid;
 
+  var culture = this.culture_;
   this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       function(tileCoord) {
         if (tileCoord.z < zoomMin || zoomMax < tileCoord.z) {
@@ -101,7 +102,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
               function(subdomain) {
                 var imageUrl = resource.imageUrl
                     .replace('{subdomain}', subdomain)
-                    .replace('{culture}', this.culture_);
+                    .replace('{culture}', culture);
                 return function(tileCoord) {
                   if (goog.isNull(tileCoord)) {
                     return undefined;
