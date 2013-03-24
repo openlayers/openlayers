@@ -79,6 +79,17 @@ ol.TileCoord.createFromString = function(str) {
 
 
 /**
+ * @param {number} z Z.
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @return {string} Key.
+ */
+ol.TileCoord.getKeyZXY = function(z, x, y) {
+  return [z, x, y].join('/');
+};
+
+
+/**
  * @return {number} Hash.
  */
 ol.TileCoord.prototype.hash = function() {
@@ -112,5 +123,5 @@ ol.TileCoord.prototype.quadKey = function() {
  * @return {string} String.
  */
 ol.TileCoord.prototype.toString = function() {
-  return [this.z, this.x, this.y].join('/');
+  return ol.TileCoord.getKeyZXY(this.z, this.x, this.y);
 };
