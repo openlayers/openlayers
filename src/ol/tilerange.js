@@ -80,7 +80,7 @@ ol.TileRange.prototype.contains = function(tileCoord) {
  */
 ol.TileRange.prototype.containsTileRange = function(tileRange) {
   return this.minX <= tileRange.minX && tileRange.maxX <= this.maxX &&
-      this.minY <= tileRange.minY && tileRange.minY <= this.maxY;
+      this.minY <= tileRange.minY && tileRange.maxY <= this.maxY;
 };
 
 
