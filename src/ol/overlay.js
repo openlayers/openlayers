@@ -1,6 +1,6 @@
-goog.provide('ol.AnchoredElement');
-goog.provide('ol.AnchoredElementPositioning');
-goog.provide('ol.AnchoredElementProperty');
+goog.provide('ol.Overlay');
+goog.provide('ol.OverlayPositioning');
+goog.provide('ol.OverlayProperty');
 
 goog.require('goog.dom');
 goog.require('goog.events');
@@ -14,7 +14,7 @@ goog.require('ol.Object');
 /**
  * @enum {string}
  */
-ol.AnchoredElementProperty = {
+ol.OverlayProperty = {
   ELEMENT: 'element',
   MAP: 'map',
   POSITION: 'position',
@@ -25,7 +25,7 @@ ol.AnchoredElementProperty = {
 /**
  * @enum {string}
  */
-ol.AnchoredElementPositioning = {
+ol.OverlayPositioning = {
   BOTTOM_LEFT: 'bottom-left',
   BOTTOM_RIGHT: 'bottom-right',
   TOP_LEFT: 'top-left',
@@ -37,10 +37,9 @@ ol.AnchoredElementPositioning = {
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {ol.AnchoredElementOptions} anchoredElementOptions Anchored element
- *     options.
+ * @param {ol.OverlayOptions} options Options.
  */
-ol.AnchoredElement = function(anchoredElementOptions) {
+ol.Overlay = function(options) {
 
   goog.base(this);
 
@@ -68,95 +67,95 @@ ol.AnchoredElement = function(anchoredElementOptions) {
   };
 
   goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.AnchoredElementProperty.ELEMENT),
+      this, ol.Object.getChangedEventType(ol.OverlayProperty.ELEMENT),
       this.handleElementChanged, false, this);
 
   goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.AnchoredElementProperty.MAP),
+      this, ol.Object.getChangedEventType(ol.OverlayProperty.MAP),
       this.handleMapChanged, false, this);
 
   goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.AnchoredElementProperty.POSITION),
+      this, ol.Object.getChangedEventType(ol.OverlayProperty.POSITION),
       this.handlePositionChanged, false, this);
 
   goog.events.listen(
       this,
-      ol.Object.getChangedEventType(ol.AnchoredElementProperty.POSITIONING),
+      ol.Object.getChangedEventType(ol.OverlayProperty.POSITIONING),
       this.handlePositioningChanged, false, this);
 
-  if (goog.isDef(anchoredElementOptions.element)) {
-    this.setElement(anchoredElementOptions.element);
+  if (goog.isDef(options.element)) {
+    this.setElement(options.element);
   }
-  if (goog.isDef(anchoredElementOptions.position)) {
-    this.setPosition(anchoredElementOptions.position);
+  if (goog.isDef(options.position)) {
+    this.setPosition(options.position);
   }
-  if (goog.isDef(anchoredElementOptions.positioning)) {
-    this.setPositioning(anchoredElementOptions.positioning);
+  if (goog.isDef(options.positioning)) {
+    this.setPositioning(options.positioning);
   }
-  if (goog.isDef(anchoredElementOptions.map)) {
-    this.setMap(anchoredElementOptions.map);
+  if (goog.isDef(options.map)) {
+    this.setMap(options.map);
   }
 
 };
-goog.inherits(ol.AnchoredElement, ol.Object);
+goog.inherits(ol.Overlay, ol.Object);
 
 
 /**
  * @return {Element|undefined} Element.
  */
-ol.AnchoredElement.prototype.getElement = function() {
+ol.Overlay.prototype.getElement = function() {
   return /** @type {Element|undefined} */ (
-      this.get(ol.AnchoredElementProperty.ELEMENT));
+      this.get(ol.OverlayProperty.ELEMENT));
 };
 goog.exportProperty(
-    ol.AnchoredElement.prototype,
+    ol.Overlay.prototype,
     'getElement',
-    ol.AnchoredElement.prototype.getElement);
+    ol.Overlay.prototype.getElement);
 
 
 /**
  * @return {ol.Map|undefined} Map.
  */
-ol.AnchoredElement.prototype.getMap = function() {
+ol.Overlay.prototype.getMap = function() {
   return /** @type {ol.Map|undefined} */ (
-      this.get(ol.AnchoredElementProperty.MAP));
+      this.get(ol.OverlayProperty.MAP));
 };
 goog.exportProperty(
-    ol.AnchoredElement.prototype,
+    ol.Overlay.prototype,
     'getMap',
-    ol.AnchoredElement.prototype.getMap);
+    ol.Overlay.prototype.getMap);
 
 
 /**
  * @return {ol.Coordinate|undefined} Position.
  */
-ol.AnchoredElement.prototype.getPosition = function() {
+ol.Overlay.prototype.getPosition = function() {
   return /** @type {ol.Coordinate|undefined} */ (
-      this.get(ol.AnchoredElementProperty.POSITION));
+      this.get(ol.OverlayProperty.POSITION));
 };
 goog.exportProperty(
-    ol.AnchoredElement.prototype,
+    ol.Overlay.prototype,
     'getPosition',
-    ol.AnchoredElement.prototype.getPosition);
+    ol.Overlay.prototype.getPosition);
 
 
 /**
- * @return {ol.AnchoredElementPositioning|undefined} Positioning.
+ * @return {ol.OverlayPositioning|undefined} Positioning.
  */
-ol.AnchoredElement.prototype.getPositioning = function() {
-  return /** @type {ol.AnchoredElementPositioning|undefined} */ (
-      this.get(ol.AnchoredElementProperty.POSITIONING));
+ol.Overlay.prototype.getPositioning = function() {
+  return /** @type {ol.OverlayPositioning|undefined} */ (
+      this.get(ol.OverlayProperty.POSITIONING));
 };
 goog.exportProperty(
-    ol.AnchoredElement.prototype,
+    ol.Overlay.prototype,
     'getPositioning',
-    ol.AnchoredElement.prototype.getPositioning);
+    ol.Overlay.prototype.getPositioning);
 
 
 /**
  * @protected
  */
-ol.AnchoredElement.prototype.handleElementChanged = function() {
+ol.Overlay.prototype.handleElementChanged = function() {
   goog.dom.removeChildren(this.element_);
   var element = this.getElement();
   if (goog.isDefAndNotNull(element)) {
@@ -168,7 +167,7 @@ ol.AnchoredElement.prototype.handleElementChanged = function() {
 /**
  * @protected
  */
-ol.AnchoredElement.prototype.handleMapChanged = function() {
+ol.Overlay.prototype.handleMapChanged = function() {
   if (!goog.isNull(this.mapPostrenderListenerKey_)) {
     goog.dom.removeNode(this.element_);
     goog.events.unlistenByKey(this.mapPostrenderListenerKey_);
@@ -188,7 +187,7 @@ ol.AnchoredElement.prototype.handleMapChanged = function() {
 /**
  * @protected
  */
-ol.AnchoredElement.prototype.handleMapPostrender = function() {
+ol.Overlay.prototype.handleMapPostrender = function() {
   this.updatePixelPosition_();
 };
 
@@ -196,7 +195,7 @@ ol.AnchoredElement.prototype.handleMapPostrender = function() {
 /**
  * @protected
  */
-ol.AnchoredElement.prototype.handlePositionChanged = function() {
+ol.Overlay.prototype.handlePositionChanged = function() {
   this.updatePixelPosition_();
 };
 
@@ -204,7 +203,7 @@ ol.AnchoredElement.prototype.handlePositionChanged = function() {
 /**
  * @protected
  */
-ol.AnchoredElement.prototype.handlePositioningChanged = function() {
+ol.Overlay.prototype.handlePositioningChanged = function() {
   this.updatePixelPosition_();
 };
 
@@ -212,51 +211,51 @@ ol.AnchoredElement.prototype.handlePositioningChanged = function() {
 /**
  * @param {Element|undefined} element Element.
  */
-ol.AnchoredElement.prototype.setElement = function(element) {
-  this.set(ol.AnchoredElementProperty.ELEMENT, element);
+ol.Overlay.prototype.setElement = function(element) {
+  this.set(ol.OverlayProperty.ELEMENT, element);
 };
 goog.exportProperty(
-    ol.AnchoredElement.prototype,
+    ol.Overlay.prototype,
     'setElement',
-    ol.AnchoredElement.prototype.setElement);
+    ol.Overlay.prototype.setElement);
 
 
 /**
  * @param {ol.Map|undefined} map Map.
  */
-ol.AnchoredElement.prototype.setMap = function(map) {
-  this.set(ol.AnchoredElementProperty.MAP, map);
+ol.Overlay.prototype.setMap = function(map) {
+  this.set(ol.OverlayProperty.MAP, map);
 };
 goog.exportProperty(
-    ol.AnchoredElement.prototype,
+    ol.Overlay.prototype,
     'setMap',
-    ol.AnchoredElement.prototype.setMap);
+    ol.Overlay.prototype.setMap);
 
 
 /**
  * @param {ol.Coordinate|undefined} position Position.
  */
-ol.AnchoredElement.prototype.setPosition = function(position) {
-  this.set(ol.AnchoredElementProperty.POSITION, position);
+ol.Overlay.prototype.setPosition = function(position) {
+  this.set(ol.OverlayProperty.POSITION, position);
 };
 goog.exportProperty(
-    ol.AnchoredElement.prototype,
+    ol.Overlay.prototype,
     'setPosition',
-    ol.AnchoredElement.prototype.setPosition);
+    ol.Overlay.prototype.setPosition);
 
 
 /**
- * @param {ol.AnchoredElementPositioning|undefined} positioning Positioning.
+ * @param {ol.OverlayPositioning|undefined} positioning Positioning.
  */
-ol.AnchoredElement.prototype.setPositioning = function(positioning) {
-  this.set(ol.AnchoredElementProperty.POSITIONING, positioning);
+ol.Overlay.prototype.setPositioning = function(positioning) {
+  this.set(ol.OverlayProperty.POSITIONING, positioning);
 };
 
 
 /**
  * @private
  */
-ol.AnchoredElement.prototype.updatePixelPosition_ = function() {
+ol.Overlay.prototype.updatePixelPosition_ = function() {
 
   var map = this.getMap();
   var position = this.getPosition();
@@ -273,8 +272,8 @@ ol.AnchoredElement.prototype.updatePixelPosition_ = function() {
   goog.asserts.assert(goog.isDef(mapSize));
   var style = this.element_.style;
   var positioning = this.getPositioning();
-  if (positioning == ol.AnchoredElementPositioning.BOTTOM_RIGHT ||
-      positioning == ol.AnchoredElementPositioning.TOP_RIGHT) {
+  if (positioning == ol.OverlayPositioning.BOTTOM_RIGHT ||
+      positioning == ol.OverlayPositioning.TOP_RIGHT) {
     if (this.rendered_.left_ !== '') {
       this.rendered_.left_ = style.left = '';
     }
@@ -291,8 +290,8 @@ ol.AnchoredElement.prototype.updatePixelPosition_ = function() {
       this.rendered_.left_ = style.left = left;
     }
   }
-  if (positioning == ol.AnchoredElementPositioning.TOP_LEFT ||
-      positioning == ol.AnchoredElementPositioning.TOP_RIGHT) {
+  if (positioning == ol.OverlayPositioning.TOP_LEFT ||
+      positioning == ol.OverlayPositioning.TOP_RIGHT) {
     if (this.rendered_.bottom_ !== '') {
       this.rendered_.bottom_ = style.bottom = '';
     }

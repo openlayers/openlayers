@@ -1,0 +1,7 @@
+@exportClass ol.Overlay ol.OverlayOptions
+
+@exportSymbol ol.OverlayPositioning
+@exportProperty ol.OverlayPositioning.BOTTOM_LEFT
+@exportProperty ol.OverlayPositioning.BOTTOM_RIGHT
+@exportProperty ol.OverlayPositioning.TOP_LEFT
+@exportProperty ol.OverlayPositioning.TOP_RIGHT

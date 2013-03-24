@@ -106,11 +106,11 @@
 @exportObjectLiteralProperty ol.layer.VectorLayerOptions.style ol.style.Style|undefined
 @exportObjectLiteralProperty ol.layer.VectorLayerOptions.visible boolean|undefined
 
-@exportObjectLiteral ol.AnchoredElementOptions
-@exportObjectLiteralProperty ol.AnchoredElementOptions.element Element|undefined
-@exportObjectLiteralProperty ol.AnchoredElementOptions.map ol.Map|undefined
-@exportObjectLiteralProperty ol.AnchoredElementOptions.position ol.Coordinate|undefined
-@exportObjectLiteralProperty ol.AnchoredElementOptions.positioning ol.AnchoredElementPositioning|undefined
+@exportObjectLiteral ol.OverlayOptions
+@exportObjectLiteralProperty ol.OverlayOptions.element Element|undefined
+@exportObjectLiteralProperty ol.OverlayOptions.map ol.Map|undefined
+@exportObjectLiteralProperty ol.OverlayOptions.position ol.Coordinate|undefined
+@exportObjectLiteralProperty ol.OverlayOptions.positioning ol.OverlayPositioning|undefined
 
 @exportObjectLiteral ol.source.BingMapsOptions
 @exportObjectLiteralProperty ol.source.BingMapsOptions.culture string|undefined
