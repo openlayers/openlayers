@@ -39,18 +39,11 @@ goog.inherits(ol.tilegrid.XYZ, ol.tilegrid.TileGrid);
  */
 ol.tilegrid.XYZ.prototype.forEachTileCoordParentTileRange =
     function(tileCoord, callback, opt_obj) {
-  var x = tileCoord.x;
-  var y = tileCoord.y;
-  var z = tileCoord.z;
-  var tileRange;
-  while (true) {
-    z -= 1;
-    if (z < 0) {
-      break;
-    }
-    x >>= 1;
-    y >>= 1;
-    tileRange = new ol.TileRange(x, y, x, y);
+  var tileRange = new ol.TileRange(0, 0, tileCoord.x, tileCoord.y);
+  var z;
+  for (z = tileCoord.z - 1; z >= 0; --z) {
+    tileRange.minX = tileRange.maxX >>= 1;
+    tileRange.minY = tileRange.maxY >>= 1;
     if (callback.call(opt_obj, z, tileRange)) {
       break;
     }

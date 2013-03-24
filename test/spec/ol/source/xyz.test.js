@@ -86,7 +86,7 @@ describe('ol.source.XYZ', function() {
           tileCoord,
           function(z, tileRange) {
             zs.push(z);
-            tileRanges.push(tileRange);
+            tileRanges.push(tileRange.clone());
             return false;
           });
 
