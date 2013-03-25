@@ -379,7 +379,6 @@ ol.renderer.canvas.VectorRenderer.renderIcon = function(icon, opt_callback) {
             opt_callback),
         false, ol.renderer.canvas.VectorRenderer.renderIcon);
     image.setAttribute('src', url);
-    ol.renderer.canvas.VectorRenderer.icons_[url] = image;
   } else if (!goog.isNull(image)) {
     var width = icon.width,
         height = icon.height;
