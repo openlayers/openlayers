@@ -1,7 +1,0 @@
-@exportClass ol.AnchoredElement ol.AnchoredElementOptions
-
-@exportSymbol ol.AnchoredElementPositioning
-@exportProperty ol.AnchoredElementPositioning.BOTTOM_LEFT
-@exportProperty ol.AnchoredElementPositioning.BOTTOM_RIGHT
-@exportProperty ol.AnchoredElementPositioning.TOP_LEFT
-@exportProperty ol.AnchoredElementPositioning.TOP_RIGHT
