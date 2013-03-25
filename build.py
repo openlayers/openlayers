@@ -415,7 +415,7 @@ def plovr_jar(t):
                os.path.basename(PLOVR_JAR), md5=PLOVR_JAR_MD5)
 
 
-@target('gh-pages', 'hostexamples', 'doc', phony=True)
+@target('gh-pages', 'host-examples', 'doc', phony=True)
 def gh_pages(t):
     with t.tempdir() as tempdir:
         t.run('%(GIT)s', 'clone', '--branch', 'gh-pages',
@@ -472,8 +472,8 @@ def split_example_file(example, dst_dir):
     target_require.close()
 
 
-@target('hostexamples', 'build', 'examples', phony=True)
-def hostexamples(t):
+@target('host-examples', 'build', 'examples', phony=True)
+def host_examples(t):
     examples_dir = 'build/gh-pages/%(BRANCH)s/examples'
     build_dir = 'build/gh-pages/%(BRANCH)s/build'
     t.rm_rf(examples_dir)
@@ -508,7 +508,7 @@ def hostexamples(t):
           '--output_file', 'build/gh-pages/%(BRANCH)s/build/ol-deps.js')
 
 
-@target('check-examples', 'hostexamples', phony=True)
+@target('check-examples', 'host-examples', phony=True)
 def check_examples(t):
     examples = ['build/gh-pages/%(BRANCH)s/' + e for e in EXAMPLES]
     all_examples = \
