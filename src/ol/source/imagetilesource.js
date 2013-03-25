@@ -111,7 +111,7 @@ ol.source.ImageTileSource.prototype.getTile =
 /**
  * @inheritDoc
  */
-ol.source.ImageTileSource.prototype.useTileZXY = function(z, x, y) {
+ol.source.ImageTileSource.prototype.useTile = function(z, x, y) {
   var tileCoordKey = ol.TileCoord.getKeyZXY(z, x, y);
   if (this.tileCache_.containsKey(tileCoordKey)) {
     this.tileCache_.get(tileCoordKey);

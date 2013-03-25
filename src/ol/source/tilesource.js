@@ -145,4 +145,4 @@ ol.source.TileSource.prototype.getTileGrid = function() {
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
  */
-ol.source.TileSource.prototype.useTileZXY = goog.nullFunction;
+ol.source.TileSource.prototype.useTile = goog.nullFunction;

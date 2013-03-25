@@ -322,7 +322,7 @@ ol.renderer.Layer.prototype.manageTilePyramid =
             tileQueue.enqueue(tile, tileSourceKey, tileCenter, tileResolution);
           }
         } else {
-          tileSource.useTileZXY(z, x, y);
+          tileSource.useTile(z, x, y);
         }
       }
     }
