@@ -2,10 +2,10 @@
 <head>
   <script src="../OLLoader.js"></script>
   <script type="text/javascript">
-    var bounds; 
+    var bounds;
     function test_Bounds_constructor (t) {
         t.plan( 26 );
-        
+
         bounds = new OpenLayers.Bounds();
         t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
         t.eq( bounds.CLASS_NAME, "OpenLayers.Bounds", "bounds.CLASS_NAME is set correctly" );
@@ -24,11 +24,11 @@
         t.eq( bounds.top, 4, "bounds.top is set correctly" );
         t.eq( bounds.getWidth(), 10, "bounds.getWidth() returns correct value" );
         t.eq( bounds.getHeight(), 2, "bounds.getHeight() returns correct value" );
-        
+
         var sz = bounds.getSize();
         var size = new OpenLayers.Size(10,2);
         t.ok(sz.equals(size),"bounds.getSize() has correct value" );
-    
+
         var center = new OpenLayers.Pixel(5,3);
         var boundsCenter = bounds.getCenterPixel();
         t.ok( boundsCenter.equals(center), "bounds.getCenterLonLat() has correct value" );
@@ -44,7 +44,7 @@
         t.eq( bounds.bottom, -20037508.34, "bounds.bottom adjusted for floating precision");
         t.eq( bounds.right, 40075016.68, "bounds.right adjusted for floating precision");
         t.eq( bounds.top, 20037508.34, "bounds.top adjusted for floating precision");
-        
+
         // allow construction from a single arg
         bounds = new OpenLayers.Bounds([-180, -90, 180, 90]);
         t.ok(bounds instanceof OpenLayers.Bounds, "(array) correct instance");
@@ -52,7 +52,7 @@
         t.eq(bounds.bottom, -90, "(array) bottom");
         t.eq(bounds.right, 180, "(array) right");
         t.eq(bounds.top, 90, "(array) top");
-        
+
     }
 
     function test_Bounds_constructorFromStrings(t) {
@@ -64,7 +64,7 @@
         t.eq( bounds.bottom, 2, "bounds.bottom is set correctly" );
         t.eq( bounds.right, 10, "bounds.right is set correctly" );
         t.eq( bounds.top, 4, "bounds.top is set correctly" );
-        
+
     }
 
     function test_Bounds_toBBOX(t) {
@@ -85,12 +85,12 @@
     function test_Bounds_toString(t) {
         t.plan( 1 );
         bounds = new OpenLayers.Bounds(1,2,3,4);
-        t.eq( bounds.toString(), "1,2,3,4", "toString() returns correct value." ); 
+        t.eq( bounds.toString(), "1,2,3,4", "toString() returns correct value." );
     }
     function test_Bounds_toArray(t) {
         t.plan( 1 );
         bounds = new OpenLayers.Bounds(1,2,3,4);
-        t.eq( bounds.toArray(), [1,2,3,4], "toArray() returns correct value." ); 
+        t.eq( bounds.toArray(), [1,2,3,4], "toArray() returns correct value." );
     }
 
     function test_Bounds_toGeometry(t) {
@@ -133,9 +133,9 @@
         t.eq( bounds.containsLonLat(ll), bounds.contains(ll.lon, ll.lat), "containsLonLat works");
 
     }
-    
+
     function test_containsLonLat_wraped(t) {
-        
+
         var worldBounds = new OpenLayers.Bounds(-180, -90, 180, 90);
 
         var cases = [{
@@ -157,10 +157,10 @@
         }, {
             ll: [-180 * 50, 5], bbox: [-10, -10, 10, 10], contained: true
         }];
-        
+
         var len = cases.length;
         t.plan(len);
-        
+
         var c, bounds, loc;
         for (var i=0; i<len; ++i) {
             c = cases[i];
@@ -168,7 +168,7 @@
             bounds = new OpenLayers.Bounds.fromArray(c.bbox);
             t.eq(bounds.containsLonLat(loc, {worldBounds: worldBounds}), c.contained, "case " + i);
         }
-        
+
     }
 
     function test_Bounds_fromString(t) {
@@ -200,7 +200,7 @@
 
         t.ok( bounds.getSize().equals(new OpenLayers.Size(100, 110)), "getCenterPixel() works correctly");
     }
-    
+
     function test_Bounds_clone(t) {
        t.plan( 6 );
        var oldBounds = new OpenLayers.Bounds(1,2,3,4);
@@ -210,7 +210,7 @@
        t.eq( bounds.bottom, 2, "bounds.bottom is set correctly" );
        t.eq( bounds.right, 3, "bounds.right is set correctly" );
        t.eq( bounds.top, 4, "bounds.top is set correctly" );
-       
+
        oldBounds.left = 100;
        t.eq( bounds.left, 1, "changing olBounds.left does not change bounds.left" );
     }
@@ -260,15 +260,15 @@
                                                   20037508.34,20037508.34);
         t.eq( merc_aBounds.intersectsBounds(merc_bBounds, true), true, "intersect shouldn't fall prey to floating point errors, inclusive is true");
         t.eq( merc_aBounds.intersectsBounds(merc_bBounds, false), false, "intersect shouldn't fall prey to floating point errors, inclusive is false");
-        
+
         // test for bounds intersection where none of the corners are contained within the other bounds
         var b1 = new OpenLayers.Bounds(-1, -2, 1, 2);
         var b2 = new OpenLayers.Bounds(-2, -1, 2, 1);
         t.eq(b1.intersectsBounds(b2), true, "vertical rectangle intersects horizontal rectangle");
         t.eq(b2.intersectsBounds(b1), true, "horizontal rectangle intersects vertical rectangle");
-        
+
     }
-    
+
     function test_Bounds_containsBounds(t) {
         t.plan( 35 );
         containerBounds = new OpenLayers.Bounds(10,10,40,40);
@@ -321,10 +321,10 @@
         t.eq( containerBounds.containsBounds(bounds, false, false), true, "(" + containerBounds.toBBOX() + ") correctly contains (" + bounds.toBBOX() + ") when partial is false, inclusive is false" );
         t.eq( containerBounds.containsBounds(bounds, true)        , true, "(" + containerBounds.toBBOX() + ") correctly contains (" + bounds.toBBOX() + ") when partial is true" );
         t.eq( containerBounds.containsBounds(bounds, true, true)  , true, "(" + containerBounds.toBBOX() + ") correctly contains (" + bounds.toBBOX() + ") when partial is true, inclusive is true" );
-        t.eq( containerBounds.containsBounds(bounds, true, false) , true, "(" + containerBounds.toBBOX() + ") correctly contains (" + bounds.toBBOX() + ") when partial is true, inclusive is false" );        
-        
+        t.eq( containerBounds.containsBounds(bounds, true, false) , true, "(" + containerBounds.toBBOX() + ") correctly contains (" + bounds.toBBOX() + ") when partial is true, inclusive is false" );
+
     }
-    
+
     function test_Bounds_determineQuadrant(t) {
 
        t.plan( 4 );
@@ -378,39 +378,39 @@
                 t.ok( bounds.getCenterPixel().equals(new OpenLayers.Pixel(50, 70)), "getCenterPixel() works correctly");
         t.ok( bounds.getCenterLonLat().equals(new OpenLayers.LonLat(50, 70)), "getCenterLonLat() works correctly");
     }
-    
+
     function test_getCenterLonLat(t) {
         t.plan(7);
         var bounds = new OpenLayers.Bounds(0, 10, 20, 60);
-        
+
         // set private centerLonLat to confirm that it is getting returned if set
         bounds.centerLonLat = "foo";
         t.eq(bounds.getCenterLonLat(), "foo", "returns cached value");
         bounds.centerLonLat = null;
-        
+
         // unmodified
         var center = bounds.getCenterLonLat();
         t.eq(center.lon, 10, "unmodified: correct x");
         t.eq(center.lat, 35, "unmodified: correct y");
-        
+
         // transformed
         bounds.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
         center = bounds.getCenterLonLat();
         t.eq(Math.round(center.lon), 1113195, "transformed: correct x");
         t.eq(Math.round(center.lat), 4759314, "transformed: correct y");
-        
+
         // extended
         bounds.extend(new OpenLayers.Bounds(-10000000, -10000000, 10000000, 10000000));
         center = bounds.getCenterLonLat();
         t.eq(center.lon, 0, "extended: correct x");
         t.eq(center.lat, 0, "extended: correct y");
-        
-        
+
+
     }
 
     function test_Bounds_fromArray(t) {
        t.plan( 7 );
-       
+
        var bbox = [1,2,3,4];
        bounds = OpenLayers.Bounds.fromArray(bbox);
        t.ok( bounds instanceof OpenLayers.Bounds, "new OpenLayers.Bounds returns Bounds object" );
@@ -418,7 +418,7 @@
        t.eq( bounds.bottom, 2, "bounds.bottom is set correctly" );
        t.eq( bounds.right, 3, "bounds.right is set correctly" );
        t.eq( bounds.top, 4, "bounds.top is set correctly" );
-       
+
        // reverse axis order
        var reverseBbox = bounds.toArray(true);
        t.eq(reverseBbox, [2,1,4,3], "toArray with reverseAxisOrder set to true works as expected");
@@ -428,7 +428,7 @@
 
     function test_Bounds_fromSize(t) {
        t.plan( 5 );
-       
+
        var height = 15;
        var width = 16;
        var size = new OpenLayers.Size(width, height);
@@ -443,104 +443,138 @@
 
     function test_Bounds_extend(t) {
         t.plan( 9 );
-    
+
+        // null bounds to start
         var originalBounds = new OpenLayers.Bounds();
         var bounds = originalBounds.clone();
-        //null bounds to start
-        bounds.extend(new OpenLayers.LonLat(4,5));        
+
+        bounds.extend(new OpenLayers.LonLat(4,5));
         t.ok(bounds.equals(new OpenLayers.Bounds(4,5,4,5)), "uninitialized bounds can be safely extended");
 
-
-
+        // extend with null obj
         originalBounds = new OpenLayers.Bounds(10,20,50,80);
-
         bounds = originalBounds.clone();
-        
-      //null obj
-        bounds.extend(null);        
+
+        bounds.extend(null);
         t.ok(bounds.equals(originalBounds), "null to extend does not crash or change original bounds");
 
-      //obj with no classname        
+        // obj with no classname
         var object = {};
-        bounds.extend(object);        
+        bounds.extend(object);
         t.ok(bounds.equals(originalBounds), "extend() passing object with no classname does not crash or change original bounds")
 
-    //obj is bounds
 
-      //pushing all limits with bounds obj
+        // obj is bounds
+
+        // pushing all limits with bounds obj
         var testBounds = new OpenLayers.Bounds(5, 10, 60, 90);
         object = testBounds.clone();
-        
+
         bounds.extend(object);
         t.ok(bounds.equals(testBounds), "extend by valid bounds, pushing all limits, correctly extends bounds");
 
-      //pushing no limits with bounds obj
+        // pushing no limits with bounds obj
         bounds = originalBounds.clone();
 
         testBounds = new OpenLayers.Bounds(15, 30, 40, 70);
         object = testBounds.clone();
-        
+
         bounds.extend(object);
         t.ok(bounds.equals(originalBounds), "extend by valid bounds, pushing no limits, correctly does not extend bounds");
 
-    // obj is lonlat
-    
-      //left, bottom
+
+        // obj is lonlat
+
+        // left, bottom
         bounds = originalBounds.clone();
-        
+
         object = new OpenLayers.LonLat(5, 10);
-        
+
         bounds.extend(object);
-               
+
         t.ok( ((bounds.left == object.lon) &&
                (bounds.bottom == object.lat) &&
                (bounds.right == originalBounds.right) &&
-               (bounds.top == originalBounds.top)), "obj lonlat to extends correclty modifies left and bottom");
-              
-      //right, top
+               (bounds.top == originalBounds.top)), "obj lonlat to extends correctly modifies left and bottom");
+
+        // right, top
         bounds = originalBounds.clone();
-        
+
         object = new OpenLayers.LonLat(60,90);
-        
+
         bounds.extend(object);
 
         t.ok( ((bounds.left == originalBounds.left) &&
                (bounds.bottom == originalBounds.bottom) &&
                (bounds.right == object.lon) &&
-               (bounds.top == object.lat)), "obj lonlat to extends correclty modifies right and top");
-              
-    // obj is point
-    
-      //left, bottom
+               (bounds.top == object.lat)), "obj lonlat to extends correctly modifies right and top");
+
+
+        // obj is point
+
+        // left, bottom
         bounds = originalBounds.clone();
-        
+
         object = new OpenLayers.Geometry.Point(5, 10);
-        
+
         bounds.extend(object);
-               
+
         t.ok( ((bounds.left == object.x) &&
                (bounds.bottom == object.y) &&
                (bounds.right == originalBounds.right) &&
-               (bounds.top == originalBounds.top)), "obj Point to extends correclty modifies left and bottom");
-              
-      //right, top
+               (bounds.top == originalBounds.top)), "obj Point to extends correctly modifies left and bottom");
+
+        // right, top
         bounds = originalBounds.clone();
-        
+
         object = new OpenLayers.Geometry.Point(60,90);
-        
+
         bounds.extend(object);
 
         t.ok( ((bounds.left == originalBounds.left) &&
                (bounds.bottom == originalBounds.bottom) &&
                (bounds.right == object.x) &&
-               (bounds.top == object.y)), "obj Point to extends correclty modifies right and top");
+               (bounds.top == object.y)), "obj Point to extends correctly modifies right and top");
 
     }
-     
-     
+
+
+    function test_Bounds_extendXY(t) {
+        t.plan(3);
+
+        // null bounds to start
+        var originalBounds = new OpenLayers.Bounds();
+
+        var bounds = originalBounds.clone();
+        bounds.extendXY(4, 5);
+
+        t.ok(bounds.equals(new OpenLayers.Bounds(4,5,4,5)), "uninitialized bounds can be safely extended");
+
+        // left, bottom
+        originalBounds = new OpenLayers.Bounds(10,20,50,80);
+
+        bounds = originalBounds.clone();
+        bounds.extendXY(5, 10);
+
+        t.ok( ((bounds.left == 5) &&
+               (bounds.bottom == 10) &&
+               (bounds.right == originalBounds.right) &&
+               (bounds.top == originalBounds.top)), "extendXY correctly modifies left and bottom");
+
+        // right, top
+        bounds = originalBounds.clone();
+        bounds.extendXY(60, 90);
+
+        t.ok( ((bounds.left == originalBounds.left) &&
+               (bounds.bottom == originalBounds.bottom) &&
+               (bounds.right == 60) &&
+               (bounds.top == 90)), "extendXY correctly modifies right and top");
+    }
+
+
     function test_Bounds_wrapDateLine(t) {
         t.plan( 13 );
-        
+
         var testBounds, wrappedBounds, desiredBounds;
 
         var maxExtent = new OpenLayers.Bounds(-10,-10,10,10);
@@ -556,27 +590,27 @@
 
 
 
-    //exactly inside 
+    //exactly inside
         testBounds = exactBounds.clone();
         wrappedBounds = testBounds.wrapDateLine(maxExtent);
         t.ok(wrappedBounds.equals(exactBounds), "wrapping a bounds precisely within (equal to) maxextent does nothing");
 
 
-    //inside 
+    //inside
         testBounds = simpleBounds.clone();
         wrappedBounds = testBounds.wrapDateLine(maxExtent);
         t.ok(wrappedBounds.equals(simpleBounds), "wrapping a bounds within maxextent does nothing");
-    
+
 // LEFT //
 
     //straddling left
         testBounds = simpleBounds.add(-10,0);
         wrappedBounds = testBounds.wrapDateLine(maxExtent);
         t.ok(wrappedBounds.equals(testBounds), "wrapping a bounds that straddles the left of maxextent does nothing");
-    
+
     //left rightTolerance
         testBounds = simpleBounds.add(-14,0);
-        wrappedBounds = 
+        wrappedBounds =
             testBounds.wrapDateLine(maxExtent, {'rightTolerance': 1} );
         desiredBounds = simpleBounds.add(6,0);
         t.ok(wrappedBounds.equals(desiredBounds), "wrapping a bounds rightTolerance left of maxextent works");
@@ -585,12 +619,12 @@
         testBounds = exactBounds.add(-20,0);
         wrappedBounds = testBounds.wrapDateLine(maxExtent);
         t.ok(wrappedBounds.equals(exactBounds), "wrapping an exact bounds once left of maxextent works");
-    
+
     //left
         testBounds = simpleBounds.add(-20,0);
         wrappedBounds = testBounds.wrapDateLine(maxExtent);
         t.ok(wrappedBounds.equals(simpleBounds), "wrapping a bounds once left of maxextent works");
-    
+
     //way left
         testBounds = simpleBounds.add(-200,0);
         wrappedBounds = testBounds.wrapDateLine(maxExtent);
@@ -603,24 +637,24 @@
         wrappedBounds = testBounds.wrapDateLine(maxExtent);
         desiredBounds = testBounds.add(-maxExtent.getWidth(), 0)
         t.ok(wrappedBounds.equals(desiredBounds), "wrapping a bounds that straddles the right of maxextent moves extent to left side of the world");
-    
+
     //right leftTolerance
         testBounds = simpleBounds.add(14,0);
-        wrappedBounds = 
+        wrappedBounds =
             testBounds.wrapDateLine(maxExtent, {'leftTolerance': 1} );
         desiredBounds = simpleBounds.add(-6,0);
         t.ok(wrappedBounds.equals(desiredBounds), "wrapping a bounds leftTolerance right of maxextent works");
-    
+
     //exactly right
         testBounds = exactBounds.add(20,0);
         wrappedBounds = testBounds.wrapDateLine(maxExtent);
         t.ok(wrappedBounds.equals(exactBounds), "wrapping an exact bounds once right of maxextent works");
-    
+
     //right
         testBounds = simpleBounds.add(20,0);
         wrappedBounds = testBounds.wrapDateLine(maxExtent);
         t.ok(wrappedBounds.equals(simpleBounds), "wrapping a bounds once right of maxextent works");
-    
+
     //way right
         testBounds = simpleBounds.add(200,0);
         wrappedBounds = testBounds.wrapDateLine(maxExtent);
@@ -632,20 +666,20 @@
     function test_Bounds_transform(t) {
         t.plan( 5 );
         bounds = new OpenLayers.Bounds(10, -10, 20, 10);
-        bounds.transform(new OpenLayers.Projection("foo"), new OpenLayers.Projection("Bar")); 
+        bounds.transform(new OpenLayers.Projection("foo"), new OpenLayers.Projection("Bar"));
         t.eq(bounds.toBBOX(), "10,-10,20,10", "null transform okay");
-        bounds.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")); 
+        bounds.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
         t.eq(bounds.toBBOX(), "1113194.907778,-1118889.974702,2226389.815556,1118889.974702", "bounds for spherical mercator transform are correct");
-        bounds.transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326")); 
+        bounds.transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326"));
         t.eq(bounds.toBBOX(), "10,-10,20,10", "bounds for inverse spherical mercator transform are correct");
 
         // transform with string
         bounds = new OpenLayers.Bounds(10, -10, 20, 10);
-        bounds.transform("EPSG:4326", "EPSG:900913"); 
+        bounds.transform("EPSG:4326", "EPSG:900913");
         t.eq(bounds.toBBOX(), "1113194.907778,-1118889.974702,2226389.815556,1118889.974702", "(string) bounds for spherical mercator transform are correct");
-        bounds.transform("EPSG:900913", "EPSG:4326"); 
+        bounds.transform("EPSG:900913", "EPSG:4326");
         t.eq(bounds.toBBOX(), "10,-10,20,10", "(string) bounds for inverse spherical mercator transform are correct");
-        
+
     }
 
     function test_Bounds_add(t) {
@@ -659,7 +693,7 @@
 
         var b = new OpenLayers.Bounds(6,52,8,54);
         t.ok( bounds.equals(b), "bounds is set correctly");
-        
+
     //null values
         try {
             bounds = testBounds.add(null, 50);
@@ -667,12 +701,12 @@
             t.ok("exception thrown when passing null value to add()");
         }
         t.ok( testBounds.equals(origBounds), "testBounds is not modified by erroneous add operation (null x)");
- 
+
         try {
             bounds = testBounds.add(5, null);
         } catch(e) {
             t.ok("exception thrown when passing null value to add()");
-        }            
+        }
         t.ok( testBounds.equals(origBounds), "testBounds is not modified by erroneous add operation (null y)");
     }
 
@@ -680,7 +714,7 @@
         t.plan(3);
 
         origBounds = new OpenLayers.Bounds(1,2,3,4);
-        bounds = origBounds.scale(2);  
+        bounds = origBounds.scale(2);
         var b = new OpenLayers.Bounds(0,1,4,5);
         t.ok(bounds.equals(b), "Bounds scale correctly with default origin at center")
 
