@@ -1,6 +1,6 @@
 before_install:
   - "sudo pip install http://closure-linter.googlecode.com/files/closure_linter-latest.tar.gz"
-  - "git clone https://github.com/jsdoc3/jsdoc && (cd jsdoc && git checkout master)"
+  - "git clone --depth=50 https://github.com/jsdoc3/jsdoc build/jsdoc"
   - "git clone https://code.google.com/p/glsl-unit/ build/glsl-unit"
 
 before_script:
@@ -9,4 +9,4 @@ before_script:
   - "rm src/ol/renderer/webgl/*shader.js"
   - "sleep 3"
 
-script: "./build.py JSDOC=jsdoc/jsdoc integration-test"
+script: "./build.py JSDOC=build/jsdoc/jsdoc integration-test"
