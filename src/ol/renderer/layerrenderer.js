@@ -307,7 +307,7 @@ ol.renderer.Layer.prototype.manageTilePyramid =
   }
   var wantedTiles = frameState.wantedTiles[tileSourceKey];
   var tileQueue = frameState.tileQueue;
-  var tile, tileCenter, tileRange, tileResolution, x, y, z;
+  var tile, tileRange, tileResolution, x, y, z;
   // FIXME this should loop up to tileGrid's minZ when implemented
   for (z = currentZ; z >= 0; --z) {
     tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
@@ -317,9 +317,11 @@ ol.renderer.Layer.prototype.manageTilePyramid =
         if (ol.PREEMPTIVELY_LOAD_LOW_RESOLUTION_TILES || z == currentZ) {
           tile = tileSource.getTile(z, x, y, tileGrid, projection);
           if (tile.getState() == ol.TileState.IDLE) {
-            tileCenter = tileGrid.getTileCoordCenter(tile.tileCoord);
             wantedTiles[tile.tileCoord.toString()] = true;
-            tileQueue.enqueue(tile, tileSourceKey, tileCenter, tileResolution);
+            if (!tileQueue.isKeyQueued(tile.getKey())) {
+              tileQueue.enqueue([tile, tileSourceKey,
+                tileGrid.getTileCoordCenter(tile.tileCoord), tileResolution]);
+            }
           }
         } else {
           tileSource.useTile(z, x, y);

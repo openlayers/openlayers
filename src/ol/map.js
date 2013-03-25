@@ -55,6 +55,7 @@ goog.require('ol.renderer.dom.Map');
 goog.require('ol.renderer.dom.SUPPORTED');
 goog.require('ol.renderer.webgl.Map');
 goog.require('ol.renderer.webgl.SUPPORTED');
+goog.require('ol.structs.PriorityQueue');
 
 
 /**
@@ -493,11 +494,11 @@ ol.Map.prototype.getTilePriority =
   // are outside the visible extent.
   var frameState = this.frameState_;
   if (goog.isNull(frameState) || !(tileSourceKey in frameState.wantedTiles)) {
-    return ol.TileQueue.DROP;
+    return ol.structs.PriorityQueue.DROP;
   }
   var coordKey = tile.tileCoord.toString();
   if (!frameState.wantedTiles[tileSourceKey][coordKey]) {
-    return ol.TileQueue.DROP;
+    return ol.structs.PriorityQueue.DROP;
   }
   // Prioritize tiles closest to the focus or center.  The + 1 helps to
   // prioritize tiles at higher zoom levels over tiles at lower zoom levels,
