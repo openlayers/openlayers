@@ -23,7 +23,7 @@ describe('ol.source.TileSource', function() {
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 3);
 
       function getTileIfLoaded(z, x, y) {
-        var tile = source.getTileZXY(z, x, y, null, null);
+        var tile = source.getTile(z, x, y, null, null);
         return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
             tile : null;
       }
@@ -45,7 +45,7 @@ describe('ol.source.TileSource', function() {
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 0);
 
       function getTileIfLoaded(z, x, y) {
-        var tile = source.getTileZXY(z, x, y, null, null);
+        var tile = source.getTile(z, x, y, null, null);
         return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
             tile : null;
       }
@@ -69,7 +69,7 @@ describe('ol.source.TileSource', function() {
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 1);
 
       function getTileIfLoaded(z, x, y) {
-        var tile = source.getTileZXY(z, x, y, null, null);
+        var tile = source.getTile(z, x, y, null, null);
         return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
             tile : null;
       }
@@ -94,7 +94,7 @@ describe('ol.source.TileSource', function() {
       var grid = source.getTileGrid();
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 1);
       function getTileIfLoaded(z, x, y) {
-        var tile = source.getTileZXY(z, x, y, null, null);
+        var tile = source.getTile(z, x, y, null, null);
         return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
             tile : null;
       }
@@ -120,7 +120,7 @@ describe('ol.source.TileSource', function() {
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 1);
 
       function getTileIfLoaded(z, x, y) {
-        var tile = source.getTileZXY(z, x, y, null, null);
+        var tile = source.getTile(z, x, y, null, null);
         return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
             tile : null;
       }
@@ -143,7 +143,7 @@ describe('ol.source.TileSource', function() {
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 1);
 
       function getTileIfLoaded(z, x, y) {
-        var tile = source.getTileZXY(z, x, y, null, null);
+        var tile = source.getTile(z, x, y, null, null);
         return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
             tile : null;
       }
@@ -168,7 +168,7 @@ describe('ol.source.TileSource', function() {
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 1);
 
       function getTileIfLoaded(z, x, y) {
-        var tile = source.getTileZXY(z, x, y, null, null);
+        var tile = source.getTile(z, x, y, null, null);
         return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
             tile : null;
       }
@@ -219,7 +219,7 @@ goog.inherits(ol.test.source.MockTileSource, ol.source.TileSource);
 /**
  * @inheritDoc
  */
-ol.test.source.MockTileSource.prototype.getTileZXY = function(z, x, y) {
+ol.test.source.MockTileSource.prototype.getTile = function(z, x, y) {
   var key = ol.TileCoord.getKeyZXY(z, x, y);
   var tileState = this.loaded_[key] ? ol.TileState.LOADED : ol.TileState.IDLE;
   return new ol.Tile(new ol.TileCoord(z, x, y), tileState);
@@ -236,7 +236,7 @@ describe('ol.test.source.MockTileSource', function() {
     });
   });
 
-  describe('#getTileZXY()', function() {
+  describe('#getTile()', function() {
     it('returns a tile with state based on constructor arg', function() {
       var source = new ol.test.source.MockTileSource({
         '0/0/0': true,
@@ -245,17 +245,17 @@ describe('ol.test.source.MockTileSource', function() {
       var tile;
 
       // check a loaded tile
-      tile = source.getTileZXY(0, 0, 0);
+      tile = source.getTile(0, 0, 0);
       expect(tile).to.be.a(ol.Tile);
       expect(tile.state).to.be(ol.TileState.LOADED);
 
       // check a tile that is not loaded
-      tile = source.getTileZXY(1, 0, -1);
+      tile = source.getTile(1, 0, -1);
       expect(tile).to.be.a(ol.Tile);
       expect(tile.state).to.be(ol.TileState.IDLE);
 
       // check another loaded tile
-      tile = source.getTileZXY(1, 0, 0);
+      tile = source.getTile(1, 0, 0);
       expect(tile).to.be.a(ol.Tile);
       expect(tile.state).to.be(ol.TileState.LOADED);
 

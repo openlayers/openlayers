@@ -87,7 +87,7 @@ ol.source.ImageTileSource.prototype.expireCache = function(usedTiles) {
 /**
  * @inheritDoc
  */
-ol.source.ImageTileSource.prototype.getTileZXY =
+ol.source.ImageTileSource.prototype.getTile =
     function(z, x, y, tileGrid, projection) {
   var tileCoordKey = ol.TileCoord.getKeyZXY(z, x, y);
   if (this.tileCache_.containsKey(tileCoordKey)) {

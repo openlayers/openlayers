@@ -128,7 +128,7 @@ ol.source.TileSource.prototype.getResolutions = function() {
  * @param {ol.Projection=} opt_projection Projection.
  * @return {!ol.Tile} Tile.
  */
-ol.source.TileSource.prototype.getTileZXY = goog.abstractMethod;
+ol.source.TileSource.prototype.getTile = goog.abstractMethod;
 
 
 /**

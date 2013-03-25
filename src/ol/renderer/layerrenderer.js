@@ -263,7 +263,7 @@ ol.renderer.Layer.prototype.updateUsedTiles =
 ol.renderer.Layer.prototype.createGetTileIfLoadedFunction =
     function(isLoadedFunction, tileSource, tileGrid, projection) {
   return function(z, x, y) {
-    var tile = tileSource.getTileZXY(z, x, y, tileGrid, projection);
+    var tile = tileSource.getTile(z, x, y, tileGrid, projection);
     return isLoadedFunction(tile) ? tile : null;
   };
 };
@@ -315,7 +315,7 @@ ol.renderer.Layer.prototype.manageTilePyramid =
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
         if (ol.PREEMPTIVELY_LOAD_LOW_RESOLUTION_TILES || z == currentZ) {
-          tile = tileSource.getTileZXY(z, x, y, tileGrid, projection);
+          tile = tileSource.getTile(z, x, y, tileGrid, projection);
           if (tile.getState() == ol.TileState.IDLE) {
             tileCenter = tileGrid.getTileCoordCenter(tile.tileCoord);
             wantedTiles[tile.tileCoord.toString()] = true;

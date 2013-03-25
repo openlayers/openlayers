@@ -116,7 +116,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
-      tile = tileSource.getTileZXY(z, x, y, tileGrid, projection);
+      tile = tileSource.getTile(z, x, y, tileGrid, projection);
       tileState = tile.getState();
       if (tileState == ol.TileState.LOADED) {
         tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
