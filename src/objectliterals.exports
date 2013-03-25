@@ -155,7 +155,7 @@
 
 @exportObjectLiteral ol.source.TileJSONOptions
 @exportObjectLiteralProperty ol.source.TileJSONOptions.crossOrigin null|string|undefined
-@exportObjectLiteralProperty ol.source.TileJSONOptions.uri string
+@exportObjectLiteralProperty ol.source.TileJSONOptions.url string
 
 @exportObjectLiteral ol.source.TiledWMSOptions
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.attributions Array.<ol.Attribution>|undefined
