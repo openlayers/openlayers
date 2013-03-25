@@ -130,29 +130,26 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   var tileRangeWidth = tileRange.getWidth();
   var tileRangeHeight = tileRange.getHeight();
 
-  var canvasSize = new ol.Size(
-      tileSize.width * tileRange.getWidth(),
-      tileSize.height * tileRange.getHeight());
+  var canvasWidth = tileSize.width * tileRange.getWidth();
+  var canvasHeight = tileSize.height * tileRange.getHeight();
 
   var canvas, context;
   if (goog.isNull(this.canvas_)) {
     canvas = /** @type {HTMLCanvasElement} */
         (goog.dom.createElement(goog.dom.TagName.CANVAS));
-    canvas.width = canvasSize.width;
-    canvas.height = canvasSize.height;
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
     context = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
     this.canvas_ = canvas;
-    this.canvasSize_ = canvasSize;
     this.context_ = context;
     this.renderedCanvasTileRange_ = null;
   } else {
     canvas = this.canvas_;
     context = this.context_;
-    if (this.canvasSize_.width < canvasSize.width ||
-        this.canvasSize_.height < canvasSize.height) {
-      canvas.width = canvasSize.width;
-      canvas.height = canvasSize.height;
-      this.canvasSize_ = canvasSize;
+    if (this.canvasSize_.width < canvasWidth ||
+        this.canvasSize_.height < canvasHeight) {
+      canvas.width = canvasWidth;
+      canvas.height = canvasHeight;
       this.renderedCanvasTileRange_ = null;
     } else if (z != this.renderedCanvasZ_ ||
                !this.renderedCanvasTileRange_.containsTileRange(tileRange)) {
@@ -163,8 +160,14 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   var canvasTileRange, canvasTileRangeWidth, minX, minY;
   if (z != this.renderedCanvasZ_ ||
       goog.isNull(this.renderedCanvasTileRange_)) {
-    canvasTileRangeWidth = canvasSize.width / tileSize.width;
-    var canvasTileRangeHeight = canvasSize.height / tileSize.height;
+    if (goog.isNull(this.canvasSize_)) {
+      this.canvasSize_ = new ol.Size(canvasWidth, canvasHeight);
+    } else {
+      this.canvasSize_.width = canvasWidth;
+      this.canvasSize_.height = canvasHeight;
+    }
+    canvasTileRangeWidth = canvasWidth / tileSize.width;
+    var canvasTileRangeHeight = canvasHeight / tileSize.height;
     minX = tileRange.minX +
         Math.floor((canvasTileRangeWidth - tileRange.getWidth()) / 2);
     minY = tileRange.minY +
@@ -181,6 +184,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
     canvasTileRangeWidth = canvasTileRange.getWidth();
   }
 
+  goog.asserts.assert(!goog.isNull(this.canvasSize_));
   goog.asserts.assert(canvasTileRange.containsTileRange(tileRange));
 
   /**
