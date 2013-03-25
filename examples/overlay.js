@@ -1,6 +1,6 @@
-goog.require('ol.AnchoredElement');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
+goog.require('ol.Overlay');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
@@ -23,7 +23,7 @@ var map = new ol.Map({
 });
 
 // Vienna label
-var vienna = new ol.AnchoredElement({
+var vienna = new ol.Overlay({
   map: map,
   position: ol.projection.transform(
       new ol.Coordinate(16.3725, 48.208889), 'EPSG:4326', 'EPSG:3857'),
@@ -31,7 +31,7 @@ var vienna = new ol.AnchoredElement({
 });
 
 // Popup showing the position the user clicked
-var popup = new ol.AnchoredElement({
+var popup = new ol.Overlay({
   map: map,
   element: document.getElementById('popup')
 });
