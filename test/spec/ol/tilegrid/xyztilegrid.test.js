@@ -3,13 +3,70 @@ goog.provide('ol.test.tilegrid.XYZ');
 
 describe('ol.tilegrid.XYZ', function() {
 
+  var xyzTileGrid;
+  beforeEach(function() {
+    xyzTileGrid = new ol.tilegrid.XYZ({
+      maxZoom: 22
+    });
+  });
+
+  describe('forEachTileCoordParentTileRange', function() {
+
+    it('iterates as expected', function() {
+
+      var tileCoord = new ol.TileCoord(5, 11, 21);
+      var zs = [], tileRanges = [];
+      xyzTileGrid.forEachTileCoordParentTileRange(
+          tileCoord,
+          function(z, tileRange) {
+            zs.push(z);
+            tileRanges.push(new ol.TileRange(
+                tileRange.minX, tileRange.minY,
+                tileRange.maxX, tileRange.maxY));
+            return false;
+          });
+
+      expect(zs.length).to.eql(5);
+      expect(tileRanges.length).to.eql(5);
+
+      expect(zs[0]).to.eql(4);
+      expect(tileRanges[0].minX).to.eql(5);
+      expect(tileRanges[0].minY).to.eql(10);
+      expect(tileRanges[0].maxX).to.eql(5);
+      expect(tileRanges[0].maxY).to.eql(10);
+
+      expect(zs[1]).to.eql(3);
+      expect(tileRanges[1].minX).to.eql(2);
+      expect(tileRanges[1].minY).to.eql(5);
+      expect(tileRanges[1].maxX).to.eql(2);
+      expect(tileRanges[1].maxY).to.eql(5);
+
+      expect(zs[2]).to.eql(2);
+      expect(tileRanges[2].minX).to.eql(1);
+      expect(tileRanges[2].minY).to.eql(2);
+      expect(tileRanges[2].maxX).to.eql(1);
+      expect(tileRanges[2].maxY).to.eql(2);
+
+      expect(zs[3]).to.eql(1);
+      expect(tileRanges[3].minX).to.eql(0);
+      expect(tileRanges[3].minY).to.eql(1);
+      expect(tileRanges[3].maxX).to.eql(0);
+      expect(tileRanges[3].maxY).to.eql(1);
+
+      expect(zs[4]).to.eql(0);
+      expect(tileRanges[4].minX).to.eql(0);
+      expect(tileRanges[4].minY).to.eql(0);
+      expect(tileRanges[4].maxX).to.eql(0);
+      expect(tileRanges[4].maxY).to.eql(0);
+
+    });
+
+  });
+
   describe('getResolution', function() {
 
     it('returns the correct resolution at the equator', function() {
       // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
-      var xyzTileGrid = new ol.tilegrid.XYZ({
-        maxZoom: 22
-      });
       expect(xyzTileGrid.getResolution(0)).to.roughlyEqual(156543.04, 1e-2);
       expect(xyzTileGrid.getResolution(1)).to.roughlyEqual(78271.52, 1e-2);
       expect(xyzTileGrid.getResolution(2)).to.roughlyEqual(39135.76, 1e-2);
@@ -37,4 +94,6 @@ describe('ol.tilegrid.XYZ', function() {
 });
 
 
+goog.require('ol.TileCoord');
+goog.require('ol.TileRange');
 goog.require('ol.tilegrid.XYZ');
