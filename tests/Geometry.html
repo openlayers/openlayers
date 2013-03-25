@@ -257,24 +257,23 @@
 
         var cases = [{
             got: dist({x: 0, y: 0}, {x1: 0, y1: 1, x2: 1, y2: 1}),
-            expected: {distance: 1, x: 0, y: 1}
+            expected: {distance: 1, x: 0, y: 1, along: 0}
         }, {
             got: dist({x: 0, y: 0}, {x1: -1, y1: -1, x2: 0, y2: -1}),
-            expected: {distance: 1, x: 0, y: -1}
+            expected: {distance: 1, x: 0, y: -1, along: 1}
         }, {
             got: dist({x: 0, y: 0}, {x1: -1, y1: -1, x2: 1, y2: 1}),
-            expected: {distance: 0, x: 0, y: 0}
+            expected: {distance: 0, x: 0, y: 0, along: 0.5}
         }, {
             got: dist({x: 1, y: 1}, {x1: 2, y1: 0, x2: 2, y2: 3}),
-            expected: {distance: 1, x: 2, y: 1}
+            expected: {distance: 1, x: 2, y: 1, along: 1/3.}
         }, {
             got: dist({x: -1, y: -1}, {x1: -2, y1: -2, x2: -1, y2: -3}),
-            expected: {distance: Math.sqrt(2), x: -2, y: -2}
+            expected: {distance: Math.sqrt(2), x: -2, y: -2, along: 0}
         }, {
             got: dist({x: -1, y: 1}, {x1: -3, y1: 1, x2: -1, y2: 3}),
-            expected: {distance: Math.sqrt(2), x: -2, y: 2}
+            expected: {distance: Math.sqrt(2), x: -2, y: 2, along: 0.5}
         }];
-        
         t.plan(cases.length);
         for(var i=0; i<cases.length; ++i) {
             t.eq(cases[i].got, cases[i].expected, "case " + i);
