@@ -11,7 +11,7 @@ goog.require('ol.interaction.Touch');
 /**
  * @define {number} Animation duration.
  */
-ol.interaction.TOUCHZOOM_ANIMATION_DURATION = 250;
+ol.interaction.TOUCHZOOM_ANIMATION_DURATION = 400;
 
 
 
