@@ -61,7 +61,7 @@ ol.source.TileJSON = function(tileJsonOptions) {
    * @type {!goog.async.Deferred}
    */
   this.deferred_ =
-      goog.net.jsloader.load(tileJsonOptions.uri, {cleanupWhenDone: true});
+      goog.net.jsloader.load(tileJsonOptions.url, {cleanupWhenDone: true});
   this.deferred_.addCallback(this.handleTileJSONResponse, this);
 
 };
