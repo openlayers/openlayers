@@ -9,7 +9,6 @@ goog.require('ol.Image');
 goog.require('ol.ImageState');
 goog.require('ol.Object');
 goog.require('ol.Tile');
-goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.layer.Layer');
@@ -258,12 +257,13 @@ ol.renderer.Layer.prototype.updateUsedTiles =
  * @param {ol.source.TileSource} tileSource Tile source.
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @param {ol.Projection} projection Projection.
- * @return {function(ol.TileCoord): ol.Tile} Returns a tile if it is loaded.
+ * @return {function(number, number, number): ol.Tile} Returns a tile if it is
+ *     loaded.
  */
 ol.renderer.Layer.prototype.createGetTileIfLoadedFunction =
     function(isLoadedFunction, tileSource, tileGrid, projection) {
-  return function(tileCoord) {
-    var tile = tileSource.getTile(tileCoord, tileGrid, projection);
+  return function(z, x, y) {
+    var tile = tileSource.getTile(z, x, y, tileGrid, projection);
     return isLoadedFunction(tile) ? tile : null;
   };
 };
@@ -307,7 +307,7 @@ ol.renderer.Layer.prototype.manageTilePyramid =
   }
   var wantedTiles = frameState.wantedTiles[tileSourceKey];
   var tileQueue = frameState.tileQueue;
-  var tile, tileCenter, tileCoord, tileRange, tileResolution, x, y, z;
+  var tile, tileCenter, tileRange, tileResolution, x, y, z;
   // FIXME this should loop up to tileGrid's minZ when implemented
   for (z = currentZ; z >= 0; --z) {
     tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
@@ -315,15 +315,14 @@ ol.renderer.Layer.prototype.manageTilePyramid =
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
         if (ol.PREEMPTIVELY_LOAD_LOW_RESOLUTION_TILES || z == currentZ) {
-          tileCoord = new ol.TileCoord(z, x, y);
-          tile = tileSource.getTile(tileCoord, tileGrid, projection);
+          tile = tileSource.getTile(z, x, y, tileGrid, projection);
           if (tile.getState() == ol.TileState.IDLE) {
-            tileCenter = tileGrid.getTileCoordCenter(tileCoord);
-            wantedTiles[tileCoord.toString()] = true;
+            tileCenter = tileGrid.getTileCoordCenter(tile.tileCoord);
+            wantedTiles[tile.tileCoord.toString()] = true;
             tileQueue.enqueue(tile, tileSourceKey, tileCenter, tileResolution);
           }
         } else {
-          tileSource.useTile(z + '/' + x + '/' + y);
+          tileSource.useTile(z, x, y);
         }
       }
     }

@@ -12,7 +12,6 @@ goog.require('goog.webgl');
 goog.require('ol.Extent');
 goog.require('ol.Size');
 goog.require('ol.Tile');
-goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.layer.TileLayer');
@@ -214,19 +213,18 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     var tilesToLoad = new goog.structs.PriorityQueue();
 
     var allTilesLoaded = true;
-    var deltaX, deltaY, priority, tile, tileCenter, tileCoord, tileState, x, y;
+    var deltaX, deltaY, priority, tile, tileCenter, tileState, x, y;
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
-        tileCoord = new ol.TileCoord(z, x, y);
-        tile = tileSource.getTile(tileCoord, tileGrid, projection);
+        tile = tileSource.getTile(z, x, y, tileGrid, projection);
         tileState = tile.getState();
         if (tileState == ol.TileState.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {
-            tilesToDrawByZ[z][tileCoord.toString()] = tile;
+            tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
             continue;
           } else {
-            tileCenter = tileGrid.getTileCoordCenter(tileCoord);
+            tileCenter = tileGrid.getTileCoordCenter(tile.tileCoord);
             deltaX = tileCenter.x - center.x;
             deltaY = tileCenter.y - center.y;
             priority = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
@@ -238,7 +236,8 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         }
 
         allTilesLoaded = false;
-        tileGrid.forEachTileCoordParentTileRange(tileCoord, findLoadedTiles);
+        tileGrid.forEachTileCoordParentTileRange(
+            tile.tileCoord, findLoadedTiles);
 
       }
 

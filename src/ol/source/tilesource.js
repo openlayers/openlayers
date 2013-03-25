@@ -72,8 +72,8 @@ ol.source.TileSource.prototype.expireCache = goog.abstractMethod;
  *
  * @param {Object.<number, Object.<string, ol.Tile>>} loadedTilesByZ A lookup of
  *     loaded tiles by zoom level.
- * @param {function(ol.TileCoord): ol.Tile} getTileIfLoaded A function that
- *     returns the tile only if it is fully loaded.
+ * @param {function(number, number, number): ol.Tile} getTileIfLoaded A function
+ *     that returns the tile only if it is fully loaded.
  * @param {number} z Zoom level.
  * @param {ol.TileRange} tileRange Tile range.
  * @return {boolean} The tile range is fully covered with loaded tiles.
@@ -82,15 +82,14 @@ ol.source.TileSource.prototype.findLoadedTiles = function(loadedTilesByZ,
     getTileIfLoaded, z, tileRange) {
   // FIXME this could be more efficient about filling partial holes
   var fullyCovered = true;
-  var tile, tileCoord, tileCoordKey, x, y;
+  var tile, tileCoordKey, x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-      tileCoord = new ol.TileCoord(z, x, y);
-      tileCoordKey = tileCoord.toString();
+      tileCoordKey = ol.TileCoord.getKeyZXY(z, x, y);
       if (loadedTilesByZ[z] && loadedTilesByZ[z][tileCoordKey]) {
         continue;
       }
-      tile = getTileIfLoaded(tileCoord);
+      tile = getTileIfLoaded(z, x, y);
       if (!goog.isNull(tile)) {
         if (!loadedTilesByZ[z]) {
           loadedTilesByZ[z] = {};
@@ -122,7 +121,9 @@ ol.source.TileSource.prototype.getResolutions = function() {
 
 
 /**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {number} z Tile coordinate z.
+ * @param {number} x Tile coordinate x.
+ * @param {number} y Tile coordinate y.
  * @param {ol.tilegrid.TileGrid=} opt_tileGrid Tile grid.
  * @param {ol.Projection=} opt_projection Projection.
  * @return {!ol.Tile} Tile.
@@ -140,6 +141,8 @@ ol.source.TileSource.prototype.getTileGrid = function() {
 
 /**
  * Marks a tile coord as being used, without triggering a load.
- * @param {string} tileCoordKey Tile coordinate key.
+ * @param {number} z Tile coordinate z.
+ * @param {number} x Tile coordinate x.
+ * @param {number} y Tile coordinate y.
  */
 ol.source.TileSource.prototype.useTile = goog.nullFunction;

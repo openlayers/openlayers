@@ -379,7 +379,7 @@ describe('ol.tilegrid.TileGrid', function() {
   });
 
 
-  describe('getTileCoordForCoordAndResolution_', function() {
+  describe('getTileCoordForXYAndResolution_', function() {
     it('returns higher tile coord for intersections by default', function() {
       var tileGrid = new ol.tilegrid.TileGrid({
         resolutions: resolutions,
@@ -388,21 +388,18 @@ describe('ol.tilegrid.TileGrid', function() {
         tileSize: tileSize
       });
 
-      var coordinate;
       var tileCoord;
 
       // gets higher tile for edge intersection
-      coordinate = new ol.Coordinate(0, 0);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution_(
-          coordinate, 100);
+      tileCoord = tileGrid.getTileCoordForXYAndResolution_(
+          0, 0, 100, false);
       expect(tileCoord.z).to.eql(3);
       expect(tileCoord.x).to.eql(0);
       expect(tileCoord.y).to.eql(0);
 
       // gets higher tile for edge intersection
-      coordinate = new ol.Coordinate(100000, 100000);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution_(
-          coordinate, 100);
+      tileCoord = tileGrid.getTileCoordForXYAndResolution_(
+          100000, 100000, 100, false);
       expect(tileCoord.z).to.eql(3);
       expect(tileCoord.x).to.eql(10);
       expect(tileCoord.y).to.eql(10);
@@ -417,21 +414,18 @@ describe('ol.tilegrid.TileGrid', function() {
         tileSize: tileSize
       });
 
-      var coordinate;
       var tileCoord;
 
       // can get lower tile for edge intersection
-      coordinate = new ol.Coordinate(0, 0);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution_(
-          coordinate, 100, true);
+      tileCoord = tileGrid.getTileCoordForXYAndResolution_(
+          0, 0, 100, true);
       expect(tileCoord.z).to.eql(3);
       expect(tileCoord.x).to.eql(-1);
       expect(tileCoord.y).to.eql(-1);
 
       // gets higher tile for edge intersection
-      coordinate = new ol.Coordinate(100000, 100000);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution_(
-          coordinate, 100, true);
+      tileCoord = tileGrid.getTileCoordForXYAndResolution_(
+          100000, 100000, 100, true);
       expect(tileCoord.z).to.eql(3);
       expect(tileCoord.x).to.eql(9);
       expect(tileCoord.y).to.eql(9);
