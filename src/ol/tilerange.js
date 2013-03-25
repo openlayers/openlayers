@@ -65,14 +65,6 @@ ol.TileRange.boundingTileRange = function(var_args) {
 
 
 /**
- * @return {ol.TileRange} Clone.
- */
-ol.TileRange.prototype.clone = function() {
-  return new ol.TileRange(this.minX, this.minY, this.maxX, this.maxY);
-};
-
-
-/**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @return {boolean} Contains tile coordinate.
  */
