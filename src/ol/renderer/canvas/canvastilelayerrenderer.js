@@ -155,22 +155,21 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
       tilesToDrawByZ, getTileIfLoaded);
 
   var allTilesLoaded = true;
-  var tile, tileCoord, tileState, x, y;
+  var tile, tileState, x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
-      tileCoord = new ol.TileCoord(z, x, y);
-      tile = tileSource.getTile(tileCoord, tileGrid, projection);
+      tile = tileSource.getTile(z, x, y, tileGrid, projection);
       tileState = tile.getState();
       if (tileState == ol.TileState.LOADED || tileState == ol.TileState.EMPTY) {
-        tilesToDrawByZ[z][tileCoord.toString()] = tile;
+        tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
         continue;
       } else if (tileState == ol.TileState.ERROR) {
         continue;
       }
 
       allTilesLoaded = false;
-      tileGrid.forEachTileCoordParentTileRange(tileCoord, findLoadedTiles);
+      tileGrid.forEachTileCoordParentTileRange(tile.tileCoord, findLoadedTiles);
 
     }
   }
@@ -191,9 +190,8 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
     if (currentZ == z) {
       for (tileCoordKey in tilesToDraw) {
         tile = tilesToDraw[tileCoordKey];
-        tileCoord = tile.tileCoord;
-        index = (tileCoord.y - tileRange.minY) * tileRangeWidth +
-                (tileCoord.x - tileRange.minX);
+        index = (tile.tileCoord.y - tileRange.minY) * tileRangeWidth +
+                (tile.tileCoord.x - tileRange.minX);
         if (this.renderedTiles_[index] != tile) {
           x = tileSize.width * (tile.tileCoord.x - tileRange.minX);
           y = tileSize.height * (tileRange.maxY - tile.tileCoord.y);

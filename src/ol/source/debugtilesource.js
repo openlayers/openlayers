@@ -122,13 +122,13 @@ ol.source.DebugTileSource.prototype.expireCache = function(usedTiles) {
 /**
  * @inheritDoc
  */
-ol.source.DebugTileSource.prototype.getTile = function(tileCoord) {
-  var key = tileCoord.toString();
-  if (this.tileCache_.containsKey(key)) {
-    return /** @type {!ol.DebugTile_} */ (this.tileCache_.get(key));
+ol.source.DebugTileSource.prototype.getTile = function(z, x, y) {
+  var tileCoordKey = ol.TileCoord.getKeyZXY(z, x, y);
+  if (this.tileCache_.containsKey(tileCoordKey)) {
+    return /** @type {!ol.DebugTile_} */ (this.tileCache_.get(tileCoordKey));
   } else {
-    var tile = new ol.DebugTile_(tileCoord, this.tileGrid);
-    this.tileCache_.set(key, tile);
+    var tile = new ol.DebugTile_(new ol.TileCoord(z, x, y), this.tileGrid);
+    this.tileCache_.set(tileCoordKey, tile);
     return tile;
   }
 };

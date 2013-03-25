@@ -137,13 +137,12 @@ ol.tilegrid.TileGrid.prototype.getPixelBoundsForTileCoordAndResolution =
     function(tileCoord, resolution) {
   var scale = resolution / this.getResolution(tileCoord.z);
   var tileSize = this.getTileSize(tileCoord.z);
-  tileSize = new ol.Size(tileSize.width / scale,
-                         tileSize.height / scale);
-  var minX, maxX, minY, maxY;
-  minX = Math.round(tileCoord.x * tileSize.width);
-  maxX = Math.round((tileCoord.x + 1) * tileSize.width);
-  minY = Math.round(tileCoord.y * tileSize.height);
-  maxY = Math.round((tileCoord.y + 1) * tileSize.height);
+  var tileWidth = tileSize.width / scale;
+  var tileHeight = tileSize.height / scale;
+  var minX = Math.round(tileCoord.x * tileWidth);
+  var minY = Math.round(tileCoord.y * tileHeight);
+  var maxX = Math.round((tileCoord.x + 1) * tileWidth);
+  var maxY = Math.round((tileCoord.y + 1) * tileHeight);
   return new ol.PixelBounds(minX, minY, maxX, maxY);
 };
 
@@ -190,10 +189,10 @@ ol.tilegrid.TileGrid.prototype.getTileRangeExtent = function(z, tileRange) {
  */
 ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution = function(
     extent, resolution) {
-  var min = this.getTileCoordForCoordAndResolution_(
-      new ol.Coordinate(extent.minX, extent.minY), resolution);
-  var max = this.getTileCoordForCoordAndResolution_(
-      new ol.Coordinate(extent.maxX, extent.maxY), resolution, true);
+  var min = this.getTileCoordForXYAndResolution_(
+      extent.minX, extent.minY, resolution, false);
+  var max = this.getTileCoordForXYAndResolution_(
+      extent.maxX, extent.maxY, resolution, true);
   return new ol.TileRange(min.x, min.y, max.x, max.y);
 };
 
@@ -250,38 +249,40 @@ ol.tilegrid.TileGrid.prototype.getTileCoordExtent = function(tileCoord) {
  */
 ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution = function(
     coordinate, resolution) {
-  return this.getTileCoordForCoordAndResolution_(coordinate, resolution);
+  return this.getTileCoordForXYAndResolution_(
+      coordinate.x, coordinate.y, resolution, false);
 };
 
 
 /**
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} x X.
+ * @param {number} y Y.
  * @param {number} resolution Resolution.
- * @param {boolean=} opt_reverseIntersectionPolicy Instead of letting edge
+ * @param {boolean} reverseIntersectionPolicy Instead of letting edge
  *     intersections go to the higher tile coordinate, let edge intersections
  *     go to the lower tile coordinate.
  * @return {ol.TileCoord} Tile coordinate.
  * @private
  */
-ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution_ = function(
-    coordinate, resolution, opt_reverseIntersectionPolicy) {
+ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
+    x, y, resolution, reverseIntersectionPolicy) {
   var z = this.getZForResolution(resolution);
   var scale = resolution / this.getResolution(z);
   var origin = this.getOrigin(z);
   var tileSize = this.getTileSize(z);
 
-  var x = scale * (coordinate.x - origin.x) / (resolution * tileSize.width);
-  var y = scale * (coordinate.y - origin.y) / (resolution * tileSize.height);
+  var tileCoordX = scale * (x - origin.x) / (resolution * tileSize.width);
+  var tileCoordY = scale * (y - origin.y) / (resolution * tileSize.height);
 
-  if (!opt_reverseIntersectionPolicy) {
-    x = Math.floor(x);
-    y = Math.floor(y);
+  if (reverseIntersectionPolicy) {
+    tileCoordX = Math.ceil(tileCoordX) - 1;
+    tileCoordY = Math.ceil(tileCoordY) - 1;
   } else {
-    x = Math.ceil(x) - 1;
-    y = Math.ceil(y) - 1;
+    tileCoordX = Math.floor(tileCoordX);
+    tileCoordY = Math.floor(tileCoordY);
   }
 
-  return new ol.TileCoord(z, x, y);
+  return new ol.TileCoord(z, tileCoordX, tileCoordY);
 };
 
 
@@ -293,7 +294,8 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution_ = function(
 ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndZ =
     function(coordinate, z) {
   var resolution = this.getResolution(z);
-  return this.getTileCoordForCoordAndResolution_(coordinate, resolution);
+  return this.getTileCoordForXYAndResolution_(
+      coordinate.x, coordinate.y, resolution, false);
 };
 
 

@@ -86,7 +86,9 @@ describe('ol.source.XYZ', function() {
           tileCoord,
           function(z, tileRange) {
             zs.push(z);
-            tileRanges.push(tileRange);
+            tileRanges.push(new ol.TileRange(
+                tileRange.minX, tileRange.minY,
+                tileRange.maxX, tileRange.maxY));
             return false;
           });
 
@@ -129,5 +131,6 @@ describe('ol.source.XYZ', function() {
 
 goog.require('ol.Coordinate');
 goog.require('ol.TileCoord');
+goog.require('ol.TileRange');
 goog.require('ol.tilegrid.XYZ');
 goog.require('ol.source.XYZ');
