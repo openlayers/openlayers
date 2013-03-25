@@ -214,7 +214,7 @@ describe('ol.Map', function() {
         expect(loc.x).to.eql(destination.x);
         expect(loc.y).to.eql(destination.y);
         done();
-      }, duration + goog.async.AnimationDelay.TIMEOUT);
+      }, duration + 2 * goog.async.AnimationDelay.TIMEOUT);
 
     });
 

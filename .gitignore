@@ -2,6 +2,7 @@
 /bin/plovr*.jar
 /build/gh-pages
 /build/check-requires-timestamp
+/build/glsl-unit
 /build/jsdoc-*-timestamp
 /build/lint-timestamp
 /build/ol.css
