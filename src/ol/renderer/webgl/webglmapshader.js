@@ -14,7 +14,7 @@ goog.addSingletonGetter(ol.renderer.webgl.map.shader.Fragment);
  * @const
  * @type {string}
  */
-ol.renderer.webgl.map.shader.Fragment.DEBUG_SOURCE = 'precision mediump float;\n//! NAMESPACE=ol.renderer.webgl.map\n\n\n//! COMMON\nvarying vec2 v_texCoord;\n\n\n//! FRAGMENT\n// @see https://svn.webkit.org/repository/webkit/trunk/Source/WebCore/platform/graphics/filters/skia/SkiaImageFilterBuilder.cpp\nuniform mat4 u_colorMatrix;\nuniform float u_opacity;\nuniform sampler2D u_texture;\n\nvoid main(void) {\n  vec4 texColor = texture2D(u_texture, v_texCoord);\n  gl_FragColor.rgb = (u_colorMatrix * vec4(texColor.rgb, 1.)).rgb;\n  gl_FragColor.a = texColor.a * u_opacity;\n}\n\n';
+ol.renderer.webgl.map.shader.Fragment.DEBUG_SOURCE = 'precision mediump float;\n//! NAMESPACE=ol.renderer.webgl.map.shader\n//! CLASS=ol.renderer.webgl.map.shader.\n\n\n//! COMMON\nvarying vec2 v_texCoord;\n\n\n//! FRAGMENT\n// @see https://svn.webkit.org/repository/webkit/trunk/Source/WebCore/platform/graphics/filters/skia/SkiaImageFilterBuilder.cpp\nuniform mat4 u_colorMatrix;\nuniform float u_opacity;\nuniform sampler2D u_texture;\n\nvoid main(void) {\n  vec4 texColor = texture2D(u_texture, v_texCoord);\n  gl_FragColor.rgb = (u_colorMatrix * vec4(texColor.rgb, 1.)).rgb;\n  gl_FragColor.a = texColor.a * u_opacity;\n}\n\n';
 /**
  * @const
  * @type {string}
@@ -40,7 +40,7 @@ goog.addSingletonGetter(ol.renderer.webgl.map.shader.Vertex);
  * @const
  * @type {string}
  */
-ol.renderer.webgl.map.shader.Vertex.DEBUG_SOURCE = '//! NAMESPACE=ol.renderer.webgl.map\n\n\n//! COMMON\nvarying vec2 v_texCoord;\n\n\n//! VERTEX\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\n\nuniform mat4 u_texCoordMatrix;\nuniform mat4 u_projectionMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.);\n  v_texCoord = (u_texCoordMatrix * vec4(a_texCoord, 0., 1.)).st;\n}\n\n\n';
+ol.renderer.webgl.map.shader.Vertex.DEBUG_SOURCE = '//! NAMESPACE=ol.renderer.webgl.map.shader\n//! CLASS=ol.renderer.webgl.map.shader.\n\n\n//! COMMON\nvarying vec2 v_texCoord;\n\n\n//! VERTEX\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\n\nuniform mat4 u_texCoordMatrix;\nuniform mat4 u_projectionMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.);\n  v_texCoord = (u_texCoordMatrix * vec4(a_texCoord, 0., 1.)).st;\n}\n\n\n';
 /**
  * @const
  * @type {string}
