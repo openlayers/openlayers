@@ -1,6 +1,6 @@
 before_install:
   - "sudo pip install http://closure-linter.googlecode.com/files/closure_linter-latest.tar.gz"
-  - "git clone https://github.com/jsdoc3/jsdoc build/jsdoc"
+  - "git clone --depth=50 https://github.com/jsdoc3/jsdoc build/jsdoc"
   - "git clone https://code.google.com/p/glsl-unit/ build/glsl-unit"
 
 before_script:
