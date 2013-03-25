@@ -2,24 +2,6 @@ goog.provide('ol.test.TileQueue');
 
 describe('ol.TileQueue', function() {
 
-  // is the tile queue's array a heap?
-  function isHeap(tq) {
-    var priorities = tq.priorities_;
-    var i;
-    var key;
-    var leftKey;
-    var rightKey;
-    for (i = 0; i < (priorities.length >> 1) - 1; i++) {
-      key = priorities[i];
-      leftKey = priorities[tq.getLeftChildIndex_(i)];
-      rightKey = priorities[tq.getRightChildIndex_(i)];
-      if (leftKey < key || rightKey < key) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   function addRandomPriorityTiles(tq, num) {
     var i, tile, priority;
     for (i = 0; i < num; i++) {
@@ -38,7 +20,9 @@ describe('ol.TileQueue', function() {
       addRandomPriorityTiles(tq, 100);
 
       tq.heapify_();
-      expect(isHeap(tq)).to.be.ok();
+      expect(function() {
+        tq.assertValid();
+      }).not.to.throwException();
     });
   });
 
@@ -64,7 +48,9 @@ describe('ol.TileQueue', function() {
       tq.reprioritize();
       expect(tq.elements_.length).to.eql(50);
       expect(tq.priorities_.length).to.eql(50);
-      expect(isHeap(tq)).to.be.ok();
+      expect(function() {
+        tq.assertValid();
+      }).not.to.throwException();
 
     });
   });
