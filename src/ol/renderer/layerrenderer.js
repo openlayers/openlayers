@@ -297,10 +297,13 @@ ol.renderer.Layer.prototype.snapCenterToPixel =
  * @param {ol.Projection} projection Projection.
  * @param {ol.Extent} extent Extent.
  * @param {number} currentZ Current Z.
+ * @param {function(this: T, ol.Tile)=} opt_tileCallback Tile callback.
+ * @param {T=} opt_obj Object.
  * @protected
+ * @template T
  */
-ol.renderer.Layer.prototype.manageTilePyramid =
-    function(frameState, tileSource, tileGrid, projection, extent, currentZ) {
+ol.renderer.Layer.prototype.manageTilePyramid = function(frameState, tileSource,
+    tileGrid, projection, extent, currentZ, opt_tileCallback, opt_obj) {
   var tileSourceKey = goog.getUid(tileSource).toString();
   if (!(tileSourceKey in frameState.wantedTiles)) {
     frameState.wantedTiles[tileSourceKey] = {};
@@ -322,6 +325,9 @@ ol.renderer.Layer.prototype.manageTilePyramid =
               tileQueue.enqueue([tile, tileSourceKey,
                 tileGrid.getTileCoordCenter(tile.tileCoord), tileResolution]);
             }
+          }
+          if (goog.isDef(opt_tileCallback)) {
+            opt_tileCallback.call(opt_obj, tile);
           }
         } else {
           tileSource.useTile(z, x, y);
