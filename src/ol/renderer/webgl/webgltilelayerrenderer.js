@@ -5,7 +5,6 @@ goog.provide('ol.renderer.webgl.TileLayer');
 
 goog.require('goog.array');
 goog.require('goog.object');
-goog.require('goog.structs.PriorityQueue');
 goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
 goog.require('goog.webgl');
@@ -210,10 +209,8 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     var findLoadedTiles = goog.bind(tileSource.findLoadedTiles, tileSource,
         tilesToDrawByZ, getTileIfLoaded);
 
-    var tilesToLoad = new goog.structs.PriorityQueue();
-
     var allTilesLoaded = true;
-    var deltaX, deltaY, priority, tile, tileCenter, tileState, x, y;
+    var tile, tileState, x, y;
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
@@ -223,12 +220,6 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
           if (mapRenderer.isTileTextureLoaded(tile)) {
             tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
             continue;
-          } else {
-            tileCenter = tileGrid.getTileCoordCenter(tile.tileCoord);
-            deltaX = tileCenter.x - center.x;
-            deltaY = tileCenter.y - center.y;
-            priority = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-            tilesToLoad.enqueue(priority, tile);
           }
         } else if (tileState == ol.TileState.ERROR ||
                    tileState == ol.TileState.EMPTY) {
@@ -263,19 +254,6 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
       }, this);
     }, this);
 
-    if (!tilesToLoad.isEmpty()) {
-      frameState.postRenderFunctions.push(
-          goog.partial(function(mapRenderer, tilesToLoad) {
-            var i, tile;
-            // FIXME determine a suitable number of textures to upload per frame
-            for (i = 0; !tilesToLoad.isEmpty() && i < 4; ++i) {
-              tile = /** @type {ol.Tile} */ (tilesToLoad.remove());
-              mapRenderer.bindTileTexture(
-                  tile, goog.webgl.LINEAR, goog.webgl.LINEAR);
-            }
-          }, mapRenderer, tilesToLoad));
-    }
-
     if (allTilesLoaded) {
       this.renderedTileRange_ = tileRange;
       this.renderedFramebufferExtent_ = framebufferExtent;
@@ -288,8 +266,20 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
+  var tileTextureQueue = mapRenderer.getTileTextureQueue();
   this.manageTilePyramid(
-      frameState, tileSource, tileGrid, projection, extent, z);
+      frameState, tileSource, tileGrid, projection, extent, z,
+      function(tile) {
+        if (tile.getState() == ol.TileState.LOADED &&
+            !mapRenderer.isTileTextureLoaded(tile) &&
+            !tileTextureQueue.isKeyQueued(tile.getKey())) {
+          tileTextureQueue.enqueue([
+            tile,
+            tileGrid.getTileCoordCenter(tile.tileCoord),
+            tileGrid.getResolution(tile.tileCoord.z)
+          ]);
+        }
+      }, this);
   this.scheduleExpireCache(frameState, tileSource);
 
   var texCoordMatrix = this.texCoordMatrix;
