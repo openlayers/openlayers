@@ -26,6 +26,7 @@ ol.Coordinate = function(x, y, opt_z) {
   goog.base(this, x, y);
 
   /**
+   * @expose
    * @type {number}
    */
   this.z = goog.isDef(opt_z) ? opt_z : NaN;
