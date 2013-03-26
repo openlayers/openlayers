@@ -500,13 +500,11 @@ ol.Map.prototype.getTilePriority =
   if (!frameState.wantedTiles[tileSourceKey][coordKey]) {
     return ol.structs.PriorityQueue.DROP;
   }
-  // Prioritize tiles closest to the focus or center.  The + 1 helps to
-  // prioritize tiles at higher zoom levels over tiles at lower zoom levels,
-  // even if the tile's center is close to the focus.
-  var focus = goog.isNull(this.focus_) ?
-      frameState.view2DState.center : this.focus_;
-  var deltaX = tileCenter.x - focus.x;
-  var deltaY = tileCenter.y - focus.y;
+  // Prioritize tiles closest to the focus.  The + 1 helps to prioritize tiles
+  // at higher zoom levels over tiles at lower zoom levels, even if the tile's
+  // center is close to the focus.
+  var deltaX = tileCenter.x - frameState.focus.x;
+  var deltaY = tileCenter.y - frameState.focus.y;
   return tileResolution * (deltaX * deltaX + deltaY * deltaY + 1);
 };
 
@@ -714,6 +712,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
           backgroundColor : new ol.Color(255, 255, 255, 1),
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
       extent: null,
+      focus: goog.isNull(this.focus_) ? view2DState.center : this.focus_,
       layersArray: layersArray,
       layerStates: layerStates,
       pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,

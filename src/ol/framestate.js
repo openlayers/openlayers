@@ -23,6 +23,7 @@ goog.require('ol.layer.LayerState');
  *            backgroundColor: ol.Color,
  *            coordinateToPixelMatrix: goog.vec.Mat4.Number,
  *            extent: (null|ol.Extent),
+ *            focus: ol.Coordinate,
  *            layersArray: Array.<ol.layer.Layer>,
  *            layerStates: Object.<number, ol.layer.LayerState>,
  *            pixelToCoordinateMatrix: goog.vec.Mat4.Number,
