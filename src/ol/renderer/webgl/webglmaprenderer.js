@@ -176,7 +176,8 @@ ol.renderer.webgl.Map = function(container, map) {
         var tileResolution = /** @type {number} */ (element[2]);
         var deltaX = tileCenter.x - this.focus_.x;
         var deltaY = tileCenter.y - this.focus_.y;
-        return tileResolution * (deltaX * deltaX + deltaY * deltaY + 1);
+        return 65536 * Math.log(tileResolution) +
+            Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
       }, this),
       /**
        * @param {Array} element Element.

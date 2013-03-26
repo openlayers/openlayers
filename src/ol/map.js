@@ -500,12 +500,16 @@ ol.Map.prototype.getTilePriority =
   if (!frameState.wantedTiles[tileSourceKey][coordKey]) {
     return ol.structs.PriorityQueue.DROP;
   }
-  // Prioritize tiles closest to the focus.  The + 1 helps to prioritize tiles
-  // at higher zoom levels over tiles at lower zoom levels, even if the tile's
-  // center is close to the focus.
+  // Prioritize the highest zoom level tiles closest to the focus.
+  // Tiles at higher zoom levels are prioritized using Math.log(tileResolution).
+  // Within a zoom level, tiles are prioritized by the distance in pixels
+  // between the center of the tile and the focus.  The factor of 65536 means
+  // that the prioritization should behave as desired for tiles up to
+  // 65536 * Math.log(2) = 45426 pixels from the focus.
   var deltaX = tileCenter.x - frameState.focus.x;
   var deltaY = tileCenter.y - frameState.focus.y;
-  return tileResolution * (deltaX * deltaX + deltaY * deltaY + 1);
+  return 65536 * Math.log(tileResolution) +
+      Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
 };
 
 
