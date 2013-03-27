@@ -12,6 +12,7 @@ var layers = [];
 for (var i = 0; i < styles.length; ++i) {
   layers.push(new ol.layer.TileLayer({
     visible: false,
+    preload: true,
     source: new ol.source.BingMaps({
       key: 'AgtFlPYDnymLEe9zJ5PCkghbNiFZE9aAtTy3mPaEnEBXqLHtFuTcKoZ-miMC3w7R',
       style: styles[i]
