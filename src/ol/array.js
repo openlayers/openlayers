@@ -33,9 +33,12 @@ ol.array.binaryFindNearest = function(arr, target) {
 /**
  * @param {Array.<number>} arr Array.
  * @param {number} target Target.
+ * @param {number} direction 0 means return the nearest, > 0
+ *    means return the largest nearest, < 0 means return the
+ *    smallest nearest.
  * @return {number} Index.
  */
-ol.array.linearFindNearest = function(arr, target) {
+ol.array.linearFindNearest = function(arr, target, direction) {
   var n = arr.length;
   if (arr[0] <= target) {
     return 0;
@@ -43,17 +46,34 @@ ol.array.linearFindNearest = function(arr, target) {
     return n - 1;
   } else {
     var i;
-    for (i = 1; i < n; ++i) {
-      if (arr[i] == target) {
-        return i;
-      } else if (arr[i] < target) {
-        if (arr[i - 1] - target < target - arr[i]) {
+    if (direction > 0) {
+      for (i = 1; i < n; ++i) {
+        if (arr[i] < target) {
           return i - 1;
-        } else {
+        }
+      }
+    } else if (direction < 0) {
+      for (i = 1; i < n; ++i) {
+        if (arr[i] <= target) {
           return i;
         }
       }
+    } else {
+      for (i = 1; i < n; ++i) {
+        if (arr[i] == target) {
+          return i;
+        } else if (arr[i] < target) {
+          if (arr[i - 1] - target < target - arr[i]) {
+            return i - 1;
+          } else {
+            return i;
+          }
+        }
+      }
     }
+    // We should never get here, but the compiler complains
+    // if it finds a path for which no number is returned.
+    goog.asserts.assert(false);
     return n - 1;
   }
 };
