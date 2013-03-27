@@ -1049,7 +1049,7 @@
     }
 
     function test_createBackBuffer(t) {
-        t.plan(7);
+        t.plan(8);
 
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS('', '', {}, {
@@ -1083,6 +1083,7 @@
         layer.applyBackBuffer(1);
         t.ok(backBuffer != undefined,
              'createBackBuffer returns a back buffer');
+        t.eq(layer.backBuffer.style.zIndex, '99', 'z-index of backbuffer correct.');
         t.eq(backBuffer.childNodes[0].style.left, '0px',
              'first tile has correct left');
         t.eq(backBuffer.childNodes[0].style.top, '0px',
