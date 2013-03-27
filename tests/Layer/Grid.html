@@ -1334,7 +1334,9 @@
         t.ok(layer.backBuffer === map.layerContainerDiv.firstChild,
              '[a] back buffer is first child of layer container div');
 
-        // Mark one tile loaded, to see if back buffer removal gets scheduled.
+        // Mark one tile loaded and add an element to the backbuffer, to see if
+        // backbuffer removal gets scheduled.
+        layer.backBuffer.appendChild(document.createElement('img'));
         layer.grid[1][1].onImageLoad();
 
         t.ok(layer.backBufferTimerId !== null,
