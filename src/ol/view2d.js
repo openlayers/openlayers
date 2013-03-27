@@ -193,7 +193,7 @@ ol.View2D.prototype.getView3D = function() {
 ol.View2D.prototype.fitExtent = function(extent, size) {
   this.setCenter(extent.getCenter());
   var resolution = this.getResolutionForExtent(extent, size);
-  resolution = this.constraints_.resolution(resolution, 0);
+  resolution = this.constraints_.resolution(resolution, 0, 0);
   this.setResolution(resolution);
 };
 
@@ -342,10 +342,19 @@ ol.View2D.prototype.rotateWithoutConstraints =
  * @param {number|undefined} resolution Resolution to go to.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
+ * @param {number=} opt_direction Zooming direction; > 0 indicates
+ *     zooming out, in which case the constraints system will select
+ *     the largest nearest resolution; < 0 indicates zooming in, in
+ *     which case the constraints system will select the smallest
+ *     nearest resolution; == 0 indicates that the zooming direction
+ *     is unknown/not relevant, in which case the constraints system
+ *     will select the nearest resolution. If not defined 0 is
+ *     assumed.
  */
 ol.View2D.prototype.zoom =
-    function(map, resolution, opt_anchor, opt_duration) {
-  resolution = this.constraints_.resolution(resolution, 0);
+    function(map, resolution, opt_anchor, opt_duration, opt_direction) {
+  var direction = opt_direction || 0;
+  resolution = this.constraints_.resolution(resolution, 0, direction);
   this.zoomWithoutConstraints(map, resolution, opt_anchor, opt_duration);
 };
 
@@ -359,7 +368,7 @@ ol.View2D.prototype.zoom =
 ol.View2D.prototype.zoomByDelta =
     function(map, delta, opt_anchor, opt_duration) {
   var currentResolution = this.getResolution();
-  var resolution = this.constraints_.resolution(currentResolution, delta);
+  var resolution = this.constraints_.resolution(currentResolution, delta, 0);
   this.zoomWithoutConstraints(map, resolution, opt_anchor, opt_duration);
 };
 

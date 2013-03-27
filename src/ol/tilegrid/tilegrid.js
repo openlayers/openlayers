@@ -329,7 +329,7 @@ ol.tilegrid.TileGrid.prototype.getTileSize = function(z) {
  * @return {number} Z.
  */
 ol.tilegrid.TileGrid.prototype.getZForResolution = function(resolution) {
-  return ol.array.linearFindNearest(this.resolutions_, resolution);
+  return ol.array.linearFindNearest(this.resolutions_, resolution, 0);
 };
 
 
