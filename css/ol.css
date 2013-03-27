@@ -24,10 +24,6 @@
   position: absolute;
   border: 2px solid red;
 }
-.ol-renderer-webgl-canvas {
-  width: 100%;
-  height: 100%;
-}
 .ol-scale-line {
   background: rgba(0,60,136,0.3);
   border-radius: 4px;
