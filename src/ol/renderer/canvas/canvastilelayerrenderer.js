@@ -285,8 +285,8 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
-  this.manageTilePyramid(
-      frameState, tileSource, tileGrid, projection, extent, z);
+  this.manageTilePyramid(frameState, tileSource, tileGrid, projection, extent,
+      z, tileLayer.getPreload());
   this.scheduleExpireCache(frameState, tileSource);
 
   var transform = this.transform_;

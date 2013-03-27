@@ -17,12 +17,6 @@ goog.require('ol.layer.LayerState');
 goog.require('ol.source.TileSource');
 
 
-/**
- * @define {boolean} Preemptively load low resolution tiles.
- */
-ol.PREEMPTIVELY_LOAD_LOW_RESOLUTION_TILES = true;
-
-
 
 /**
  * @constructor
@@ -297,13 +291,15 @@ ol.renderer.Layer.prototype.snapCenterToPixel =
  * @param {ol.Projection} projection Projection.
  * @param {ol.Extent} extent Extent.
  * @param {number} currentZ Current Z.
+ * @param {boolean} preload Preload low resolution tiles.
  * @param {function(this: T, ol.Tile)=} opt_tileCallback Tile callback.
  * @param {T=} opt_obj Object.
  * @protected
  * @template T
  */
-ol.renderer.Layer.prototype.manageTilePyramid = function(frameState, tileSource,
-    tileGrid, projection, extent, currentZ, opt_tileCallback, opt_obj) {
+ol.renderer.Layer.prototype.manageTilePyramid = function(
+    frameState, tileSource, tileGrid, projection, extent, currentZ, preload,
+    opt_tileCallback, opt_obj) {
   var tileSourceKey = goog.getUid(tileSource).toString();
   if (!(tileSourceKey in frameState.wantedTiles)) {
     frameState.wantedTiles[tileSourceKey] = {};
@@ -317,7 +313,7 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(frameState, tileSource,
     tileResolution = tileGrid.getResolution(z);
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        if (ol.PREEMPTIVELY_LOAD_LOW_RESOLUTION_TILES || z == currentZ) {
+        if (preload || z == currentZ) {
           tile = tileSource.getTile(z, x, y, tileGrid, projection);
           if (tile.getState() == ol.TileState.IDLE) {
             wantedTiles[tile.tileCoord.toString()] = true;
