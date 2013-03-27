@@ -105,7 +105,7 @@
 @exportObjectLiteralProperty ol.layer.TileLayerOptions.contrast number|undefined
 @exportObjectLiteralProperty ol.layer.TileLayerOptions.hue number|undefined
 @exportObjectLiteralProperty ol.layer.TileLayerOptions.opacity number|undefined
-@exportObjectLiteralProperty ol.layer.TileLayerOptions.preload boolean|undefined
+@exportObjectLiteralProperty ol.layer.TileLayerOptions.preload number|undefined
 @exportObjectLiteralProperty ol.layer.TileLayerOptions.saturation number|undefined
 @exportObjectLiteralProperty ol.layer.TileLayerOptions.source ol.source.Source
 @exportObjectLiteralProperty ol.layer.TileLayerOptions.visible boolean|undefined

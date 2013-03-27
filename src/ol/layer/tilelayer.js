@@ -23,17 +23,17 @@ ol.layer.TileLayer = function(options) {
   goog.base(this, options);
 
   this.setPreload(
-      goog.isDef(options.preload) ? options.preload : false);
+      goog.isDef(options.preload) ? options.preload : 0);
 
 };
 goog.inherits(ol.layer.TileLayer, ol.layer.Layer);
 
 
 /**
- * @return {boolean} Preload.
+ * @return {number} Preload.
  */
 ol.layer.TileLayer.prototype.getPreload = function() {
-  return /** @type {boolean} */ (this.get(ol.layer.TileLayerProperty.PRELOAD));
+  return /** @type {number} */ (this.get(ol.layer.TileLayerProperty.PRELOAD));
 };
 goog.exportProperty(
     ol.layer.TileLayer.prototype,
@@ -50,7 +50,7 @@ ol.layer.TileLayer.prototype.getTileSource = function() {
 
 
 /**
- * @param {boolean} preload Preload.
+ * @param {number} preload Preload.
  */
 ol.layer.TileLayer.prototype.setPreload = function(preload) {
   this.set(ol.layer.TileLayerProperty.PRELOAD, preload);

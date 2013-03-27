@@ -291,7 +291,7 @@ ol.renderer.Layer.prototype.snapCenterToPixel =
  * @param {ol.Projection} projection Projection.
  * @param {ol.Extent} extent Extent.
  * @param {number} currentZ Current Z.
- * @param {boolean} preload Preload low resolution tiles.
+ * @param {number} preload Load low resolution tiles up to 'preload' levels.
  * @param {function(this: T, ol.Tile)=} opt_tileCallback Tile callback.
  * @param {T=} opt_obj Object.
  * @protected
@@ -313,7 +313,7 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
     tileResolution = tileGrid.getResolution(z);
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        if (preload || z == currentZ) {
+        if (currentZ - z <= preload) {
           tile = tileSource.getTile(z, x, y, tileGrid, projection);
           if (tile.getState() == ol.TileState.IDLE) {
             wantedTiles[tile.tileCoord.toString()] = true;

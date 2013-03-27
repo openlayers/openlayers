@@ -10,7 +10,7 @@ goog.require('ol.source.Stamen');
 var map = new ol.Map({
   layers: [
     new ol.layer.TileLayer({
-      preload: true,
+      preload: 4,
       source: new ol.source.Stamen({
         layer: 'watercolor'
       })

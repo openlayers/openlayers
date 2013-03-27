@@ -9,7 +9,7 @@ goog.require('ol.source.BingMaps');
 var map1 = new ol.Map({
   layers: [
     new ol.layer.TileLayer({
-      preload: true,
+      preload: Infinity,
       source: new ol.source.BingMaps({
         key: 'AgtFlPYDnymLEe9zJ5PCkghbNiFZE9aAtTy3mPaEnEBXqLHtFuTcKoZ-miMC3w7R',
         style: 'Aerial'
@@ -27,7 +27,7 @@ var map1 = new ol.Map({
 var map2 = new ol.Map({
   layers: [
     new ol.layer.TileLayer({
-      preload: false,
+      preload: 0, // default value
       source: new ol.source.BingMaps({
         key: 'AgtFlPYDnymLEe9zJ5PCkghbNiFZE9aAtTy3mPaEnEBXqLHtFuTcKoZ-miMC3w7R',
         style: 'AerialWithLabels'
