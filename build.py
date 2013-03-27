@@ -23,12 +23,7 @@ if sys.platform == 'win32':
     variables.JSDOC = 'jsdoc'  # FIXME
     variables.NODE = 'node'
     variables.PYTHON = os.path.join(Python27, 'python.exe')
-    PHANTOMJS_WINDOWS_ZIP = 'build/phantomjs-1.8.1-windows.zip'
-    # FIXME we should not need both a pake variable and a Python constant here
-    # FIXME this requires pake to be modified to lazily evaluate variables in
-    # target names
-    variables.PHANTOMJS = 'build/phantomjs-1.8.1-windows/phantomjs.exe'
-    PHANTOMJS = variables.PHANTOMJS
+    variables.PHANTOMJS = 'phantomjs.exe'
 else:
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
@@ -535,27 +530,9 @@ def proj4js_zip(t):
                os.path.basename(t.name), md5=PROJ4JS_ZIP_MD5)
 
 
-if sys.platform == 'win32':
-    @target('test', '%(PHANTOMJS)s', INTERNAL_SRC, PROJ4JS,
-            'test/requireall.js', phony=True)
-    def test_win32(t):
-        t.run(PHANTOMJS, 'test/mocha-phantomjs.coffee', 'test/ol.html')
-
-    # FIXME the PHANTOMJS should be a pake variable, not a constant
-    @target(PHANTOMJS, PHANTOMJS_WINDOWS_ZIP, clean=False)
-    def phantom_js(t):
-        from zipfile import ZipFile
-        ZipFile(PHANTOMJS_WINDOWS_ZIP).extractall('build')
-
-    @target(PHANTOMJS_WINDOWS_ZIP, clean=False)
-    def phantomjs_windows_zip(t):
-        t.download('http://phantomjs.googlecode.com/files/'
-                   + os.path.basename(t.name))
-
-else:
-    @target('test', INTERNAL_SRC, PROJ4JS, 'test/requireall.js', phony=True)
-    def test(t):
-        t.run('%(PHANTOMJS)s', 'test/mocha-phantomjs.coffee', 'test/ol.html')
+@target('test', INTERNAL_SRC, PROJ4JS, 'test/requireall.js', phony=True)
+def test(t):
+    t.run('%(PHANTOMJS)s', 'test/mocha-phantomjs.coffee', 'test/ol.html')
 
 
 @target('fixme', phony=True)
