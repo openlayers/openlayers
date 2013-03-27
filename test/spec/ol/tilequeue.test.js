@@ -2,31 +2,14 @@ goog.provide('ol.test.TileQueue');
 
 describe('ol.TileQueue', function() {
 
-  // is the tile queue's array a heap?
-  function isHeap(tq) {
-    var heap = tq.heap_;
-    var i;
-    var key;
-    var leftKey;
-    var rightKey;
-    for (i = 0; i < (heap.length >> 1) - 1; i++) {
-      key = heap[i][0];
-      leftKey = heap[tq.getLeftChildIndex_(i)][0];
-      rightKey = heap[tq.getRightChildIndex_(i)][0];
-      if (leftKey < key || rightKey < key) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   function addRandomPriorityTiles(tq, num) {
     var i, tile, priority;
     for (i = 0; i < num; i++) {
       tile = new ol.Tile();
       priority = Math.floor(Math.random() * 100);
-      tq.heap_.push([priority, tile, '', new ol.Coordinate(0, 0)]);
-      tq.queuedTileKeys_[tile.getKey()] = true;
+      tq.elements_.push([tile, '', new ol.Coordinate(0, 0)]);
+      tq.priorities_.push(priority);
+      tq.queuedElements_[tile.getKey()] = true;
     }
   }
 
@@ -37,7 +20,9 @@ describe('ol.TileQueue', function() {
       addRandomPriorityTiles(tq, 100);
 
       tq.heapify_();
-      expect(isHeap(tq)).to.be.ok();
+      expect(function() {
+        tq.assertValid();
+      }).not.to.throwException();
     });
   });
 
@@ -53,16 +38,19 @@ describe('ol.TileQueue', function() {
       // rest
 
       var i = 0;
-      tq.tilePriorityFunction_ = function() {
+      tq.priorityFunction_ = function() {
         if ((i++) % 2 === 0) {
-          return ol.TileQueue.DROP;
+          return ol.structs.PriorityQueue.DROP;
         }
         return Math.floor(Math.random() * 100);
       };
 
       tq.reprioritize();
-      expect(tq.heap_.length).to.eql(50);
-      expect(isHeap(tq)).to.be.ok();
+      expect(tq.elements_.length).to.eql(50);
+      expect(tq.priorities_.length).to.eql(50);
+      expect(function() {
+        tq.assertValid();
+      }).not.to.throwException();
 
     });
   });
@@ -71,3 +59,4 @@ describe('ol.TileQueue', function() {
 goog.require('ol.Coordinate');
 goog.require('ol.Tile');
 goog.require('ol.TileQueue');
+goog.require('ol.structs.PriorityQueue');

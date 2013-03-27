@@ -17,12 +17,6 @@ goog.require('ol.layer.LayerState');
 goog.require('ol.source.TileSource');
 
 
-/**
- * @define {boolean} Preemptively load low resolution tiles.
- */
-ol.PREEMPTIVELY_LOAD_LOW_RESOLUTION_TILES = true;
-
-
 
 /**
  * @constructor
@@ -297,29 +291,39 @@ ol.renderer.Layer.prototype.snapCenterToPixel =
  * @param {ol.Projection} projection Projection.
  * @param {ol.Extent} extent Extent.
  * @param {number} currentZ Current Z.
+ * @param {number} preload Load low resolution tiles up to 'preload' levels.
+ * @param {function(this: T, ol.Tile)=} opt_tileCallback Tile callback.
+ * @param {T=} opt_obj Object.
  * @protected
+ * @template T
  */
-ol.renderer.Layer.prototype.manageTilePyramid =
-    function(frameState, tileSource, tileGrid, projection, extent, currentZ) {
+ol.renderer.Layer.prototype.manageTilePyramid = function(
+    frameState, tileSource, tileGrid, projection, extent, currentZ, preload,
+    opt_tileCallback, opt_obj) {
   var tileSourceKey = goog.getUid(tileSource).toString();
   if (!(tileSourceKey in frameState.wantedTiles)) {
     frameState.wantedTiles[tileSourceKey] = {};
   }
   var wantedTiles = frameState.wantedTiles[tileSourceKey];
   var tileQueue = frameState.tileQueue;
-  var tile, tileCenter, tileRange, tileResolution, x, y, z;
+  var tile, tileRange, tileResolution, x, y, z;
   // FIXME this should loop up to tileGrid's minZ when implemented
   for (z = currentZ; z >= 0; --z) {
     tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
     tileResolution = tileGrid.getResolution(z);
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        if (ol.PREEMPTIVELY_LOAD_LOW_RESOLUTION_TILES || z == currentZ) {
+        if (currentZ - z <= preload) {
           tile = tileSource.getTile(z, x, y, tileGrid, projection);
           if (tile.getState() == ol.TileState.IDLE) {
-            tileCenter = tileGrid.getTileCoordCenter(tile.tileCoord);
             wantedTiles[tile.tileCoord.toString()] = true;
-            tileQueue.enqueue(tile, tileSourceKey, tileCenter, tileResolution);
+            if (!tileQueue.isKeyQueued(tile.getKey())) {
+              tileQueue.enqueue([tile, tileSourceKey,
+                tileGrid.getTileCoordCenter(tile.tileCoord), tileResolution]);
+            }
+          }
+          if (goog.isDef(opt_tileCallback)) {
+            opt_tileCallback.call(opt_obj, tile);
           }
         } else {
           tileSource.useTile(z, x, y);

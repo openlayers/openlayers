@@ -23,6 +23,7 @@ var bern = ol.projection.transform(
 var map = new ol.Map({
   layers: [
     new ol.layer.TileLayer({
+      preload: 4,
       source: new ol.source.OpenStreetMap()
     })
   ],

@@ -55,6 +55,7 @@ goog.require('ol.renderer.dom.Map');
 goog.require('ol.renderer.dom.SUPPORTED');
 goog.require('ol.renderer.webgl.Map');
 goog.require('ol.renderer.webgl.SUPPORTED');
+goog.require('ol.structs.PriorityQueue');
 
 
 /**
@@ -493,20 +494,22 @@ ol.Map.prototype.getTilePriority =
   // are outside the visible extent.
   var frameState = this.frameState_;
   if (goog.isNull(frameState) || !(tileSourceKey in frameState.wantedTiles)) {
-    return ol.TileQueue.DROP;
+    return ol.structs.PriorityQueue.DROP;
   }
   var coordKey = tile.tileCoord.toString();
   if (!frameState.wantedTiles[tileSourceKey][coordKey]) {
-    return ol.TileQueue.DROP;
+    return ol.structs.PriorityQueue.DROP;
   }
-  // Prioritize tiles closest to the focus or center.  The + 1 helps to
-  // prioritize tiles at higher zoom levels over tiles at lower zoom levels,
-  // even if the tile's center is close to the focus.
-  var focus = goog.isNull(this.focus_) ?
-      frameState.view2DState.center : this.focus_;
-  var deltaX = tileCenter.x - focus.x;
-  var deltaY = tileCenter.y - focus.y;
-  return tileResolution * (deltaX * deltaX + deltaY * deltaY + 1);
+  // Prioritize the highest zoom level tiles closest to the focus.
+  // Tiles at higher zoom levels are prioritized using Math.log(tileResolution).
+  // Within a zoom level, tiles are prioritized by the distance in pixels
+  // between the center of the tile and the focus.  The factor of 65536 means
+  // that the prioritization should behave as desired for tiles up to
+  // 65536 * Math.log(2) = 45426 pixels from the focus.
+  var deltaX = tileCenter.x - frameState.focus.x;
+  var deltaY = tileCenter.y - frameState.focus.y;
+  return 65536 * Math.log(tileResolution) +
+      Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
 };
 
 
@@ -713,6 +716,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
           backgroundColor : new ol.Color(255, 255, 255, 1),
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
       extent: null,
+      focus: goog.isNull(this.focus_) ? view2DState.center : this.focus_,
       layersArray: layersArray,
       layerStates: layerStates,
       pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,
