@@ -168,7 +168,7 @@ var map;
                 {layer:"lb"}, defaults
             ));
             labels = format.createLayer(caps, OpenLayers.Util.applyDefaults(
-                {layer:"beschriftung", isBaseLayer: false},
+                {layer:"beschriftung", isBaseLayer: false, transitionEffect: 'map-resize'},
                 defaults
             ));
             map.addLayers([fmzk, aerial, labels]);
@@ -217,7 +217,8 @@ var map;
         ],
         layer: "beschriftung",
         style: "normal",
-        isBaseLayer: false
+        isBaseLayer: false,
+        transitionEffect: 'map-resize'
     },
     defaults));
     map.addLayers([fmzk, aerial, labels]);
