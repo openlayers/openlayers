@@ -180,16 +180,17 @@ def build_src_external_src_types_js(t):
              '--typedef', 'src/objectliterals.exports')
 
 
-for glsl_src in GLSL_SRC:
-    def shader_src_helper(glsl_src):
-        @target(glsl_src.replace('.glsl', 'shader.js'), glsl_src,
-                'src/ol/webgl/shader.mustache')
-        def shader_src(t):
-            t.run('%(NODE)s', TEMPLATE_GLSL_COMPILER_JS,
-                  '--input', glsl_src,
-                  '--template', 'src/ol/webgl/shader.mustache',
-                  '--output', t.name)
-    shader_src_helper(glsl_src)
+if os.path.exists(TEMPLATE_GLSL_COMPILER_JS):
+    for glsl_src in GLSL_SRC:
+        def shader_src_helper(glsl_src):
+            @target(glsl_src.replace('.glsl', 'shader.js'), glsl_src,
+                    'src/ol/webgl/shader.mustache')
+            def shader_src(t):
+                t.run('%(NODE)s', TEMPLATE_GLSL_COMPILER_JS,
+                      '--input', glsl_src,
+                      '--template', 'src/ol/webgl/shader.mustache',
+                      '--output', t.name)
+        shader_src_helper(glsl_src)
 
 
 def _build_require_list(dependencies, output_file_name):
