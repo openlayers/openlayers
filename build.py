@@ -173,7 +173,7 @@ def build_src_external_src_exports_js(t):
              '--exports', 'src/objectliterals.exports', EXPORTS)
 
 
-@target('build/src/external/src/types.js', 'bin/generate-exports',
+@target('build/src/external/src/types.js', 'bin/generate-exports.py',
         'src/objectliterals.exports')
 def build_src_external_src_types_js(t):
     t.output('%(PYTHON)s', 'bin/generate-exports.py',
