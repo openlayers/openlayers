@@ -1049,7 +1049,7 @@
     }
 
     function test_createBackBuffer(t) {
-        t.plan(8);
+        t.plan(9);
 
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS('', '', {}, {
@@ -1074,7 +1074,16 @@
         OpenLayers.Tile.Image.prototype.createBackBuffer = function() {
             return document.createElement('div');
         };
+        
+        layer.transitionEffect = 'map-resize';
         backBuffer = layer.createBackBuffer();
+        t.ok(backBuffer.style.zIndex == 99, 'z-index of backbuffer correct for "map-resize".');
+        layer.removeBackBuffer();
+        
+        layer.transitionEffect = 'resize';
+        backBuffer = layer.createBackBuffer();
+        t.ok(backBuffer.style.zIndex == layer.getZIndex() - 1, 'z-index of backbuffer correct for "resize",');
+
         layer.backBufferResolution = 1;
         layer.gridResolution = 1;
         layer.backBuffer = backBuffer;
@@ -1083,7 +1092,6 @@
         layer.applyBackBuffer(1);
         t.ok(backBuffer != undefined,
              'createBackBuffer returns a back buffer');
-        t.eq(layer.backBuffer.style.zIndex, '99', 'z-index of backbuffer correct.');
         t.eq(backBuffer.childNodes[0].style.left, '0px',
              'first tile has correct left');
         t.eq(backBuffer.childNodes[0].style.top, '0px',
