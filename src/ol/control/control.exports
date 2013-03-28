@@ -1,0 +1,2 @@
+@exportClass ol.control.Control ol.control.ControlOptions
+@exportProperty ol.control.Control.prototype.setMap

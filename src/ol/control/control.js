@@ -1,19 +1,10 @@
 goog.provide('ol.control.Control');
-goog.provide('ol.control.ControlOptions');
 
 goog.require('goog.Disposable');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('ol.MapEventType');
-
-
-/**
- * @typedef {{element: (Element|undefined),
- *            map: (ol.Map|undefined),
- *            target: (Element|undefined)}}
- */
-ol.control.ControlOptions;
 
 
 
@@ -23,6 +14,7 @@ ol.control.ControlOptions;
  *
  * @constructor
  * @extends {goog.Disposable}
+ * @implements {oli.control.Control}
  * @param {ol.control.ControlOptions} options Control options.
  */
 ol.control.Control = function(options) {
@@ -85,10 +77,9 @@ ol.control.Control.prototype.handleMapPostrender = goog.nullFunction;
 
 
 /**
- * Removes the control from its current map and attaches it to the new map.
- * Subtypes might also wish set up event handlers to get notified about changes
- * to the map here.
- *
+ * Remove the control from its current map and attach it to the new map.
+ * Subclasses may set up event handlers to get notified about changes to
+ * the map here.
  * @param {ol.Map} map Map.
  */
 ol.control.Control.prototype.setMap = function(map) {
