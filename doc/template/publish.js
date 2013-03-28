@@ -180,7 +180,7 @@ function buildNav(members) {
     if (members.tutorials.length) {
         nav += '<h3>Tutorials</h3><ul>';
         members.tutorials.sort(byLongName).forEach(function(t) {
-            nav += '<li>'+tutoriallink(t.longname)+'</li>';
+            nav += '<li>'+tutoriallink(t.name)+'</li>';
         });
         
         nav += '</ul>';

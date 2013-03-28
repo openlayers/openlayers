@@ -436,8 +436,8 @@ virtual('doc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 @target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), SRC, SHADER_SRC,
         ifind('doc/template'))
 def jsdoc_BRANCH_timestamp(t):
-    t.run('%(JSDOC)s', '-t', 'doc/template', '-r',
-          'src', '-d', 'build/gh-pages/%(BRANCH)s/apidoc')
+    t.run('%(JSDOC)s', '-c', 'doc/conf.json', 'src', 'doc/index.md',
+          '-d', 'build/gh-pages/%(BRANCH)s/apidoc')
     t.touch()
 
 
