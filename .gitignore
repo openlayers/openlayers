@@ -1,6 +1,8 @@
 *.pyc
 /bin/plovr*.jar
 /build/check-requires-timestamp
+/build/examples/*.combined.js
+/build/examples/*.json
 /build/gh-pages
 /build/glsl-unit
 /build/jsdoc
@@ -17,8 +19,6 @@
 /build/proj4js-*.zip
 /build/src
 /build/test/requireall.js
-/build/examples/*.combined.js
 /examples/*.html.png
-/build/examples/*.json
 /examples/example-list.js
 /examples/example-list.xml
