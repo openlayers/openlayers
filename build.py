@@ -55,9 +55,6 @@ EXAMPLES = [path
             if path.endswith('.html')
             if path != 'examples/index.html']
 
-EXAMPLES_JSON = [example.replace('.html', '.json')
-                 for example in EXAMPLES]
-
 EXAMPLES_SRC = [path
                 for path in ifind('examples')
                 if path.endswith('.js')
@@ -67,6 +64,12 @@ EXAMPLES_SRC = [path
                 if path != 'examples/Jugl.js'
                 if path != 'examples/jquery.min.js'
                 if path != 'examples/example-list.js']
+
+EXAMPLES_JSON = ['build/' + example.replace('.html', '.json')
+                 for example in EXAMPLES]
+
+EXAMPLES_COMBINED = ['build/' + example.replace('.html', '.combined.js')
+                     for example in EXAMPLES]
 
 INTERNAL_SRC = [
     'build/src/internal/src/requireall.js',
@@ -222,12 +225,10 @@ def build_src_internal_types_js(t):
              '--typedef', 'src/objectliterals.exports')
 
 
-virtual('build-examples', 'examples', (path.replace(
-    '.html', '.combined.js') for path in EXAMPLES))
+virtual('build-examples', 'examples', EXAMPLES_COMBINED)
 
 
-virtual('examples', 'examples/example-list.xml', (
-    path.replace('.html', '.json') for path in EXAMPLES))
+virtual('examples', 'examples/example-list.xml', EXAMPLES_JSON)
 
 
 @target('examples/example-list.xml', 'examples/example-list.js')
@@ -240,12 +241,12 @@ def examples_examples_list_js(t):
     t.run('%(PYTHON)s', 'bin/exampleparser.py', 'examples', 'examples')
 
 
-@rule(r'\Aexamples/(?P<id>.*).json\Z')
+@rule(r'\Abuild/examples/(?P<id>.*).json\Z')
 def examples_star_json(name, match):
     def action(t):
         content = json.dumps({
             'id': match.group('id'),
-            'inherits': '../base.json',
+            'inherits': '../../base.json',
             'inputs': [
                 'examples/%(id)s.js' % match.groupdict(),
                 'build/src/internal/src/types.js',
@@ -266,15 +267,15 @@ def examples_star_json(name, match):
     return Target(name, action=action, dependencies=dependencies)
 
 
-@rule(r'\Aexamples/(?P<id>.*).combined.js\Z')
+@rule(r'\Abuild/examples/(?P<id>.*).combined.js\Z')
 def examples_star_combined_js(name, match):
     def action(t):
         t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build',
-                 'examples/%(id)s.json' % match.groupdict())
+                 'build/examples/%(id)s.json' % match.groupdict())
         report_sizes(t)
     dependencies = [PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC, 'base.json',
                     'examples/%(id)s.js' % match.groupdict(),
-                    'examples/%(id)s.json' % match.groupdict()]
+                    'build/examples/%(id)s.json' % match.groupdict()]
     return Target(name, action=action, dependencies=dependencies)
 
 
