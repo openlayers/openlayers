@@ -1,4 +1,4 @@
-goog.provide('ol.source.test.wms');
+goog.provide('ol.test.source.wms');
 
 describe('ol.source.wms', function() {
 
