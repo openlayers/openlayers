@@ -1,0 +1,16 @@
+{
+
+  "id": "test",
+
+  "inherits": "base.json",
+
+  "inputs": [
+    "../build/test/requireall.js"
+  ],
+
+  "paths": [
+    "../src",
+    "../test"
+  ]
+
+}
