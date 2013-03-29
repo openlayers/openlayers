@@ -51,7 +51,6 @@ EXTERNAL_SRC = [
 
 EXAMPLES = [path
             for path in ifind('examples')
-            if not path.startswith('examples/standalone/')
             if path.endswith('.html')
             if path != 'examples/index.html']
 
