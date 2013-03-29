@@ -131,24 +131,25 @@ def build_ol_css(t):
 
 
 @target('build/ol.js', PLOVR_JAR, SRC, EXTERNAL_SRC, SHADER_SRC,
-        'base.json', 'build/ol.json')
+        'buildcfg/base.json', 'buildcfg/ol.json')
 def build_ol_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol.json')
+    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ol.json')
     report_sizes(t)
 
 
 @target('build/ol-simple.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        'base.json', 'build/ol.json', 'build/ol-simple.json')
+        'buildcfg/base.json', 'buildcfg/ol.json', 'buildcfg/ol-simple.json')
 def build_ol_simple_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol-simple.json')
+    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ol-simple.json')
     report_sizes(t)
 
 
 @target('build/ol-whitespace.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        'base.json', 'build/ol.json', 'build/ol-whitespace.json')
+        'buildcfg/base.json', 'buildcfg/ol.json',
+        'buildcfg/ol-whitespace.json')
 def build_ol_whitespace_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR,
-             'build', 'build/ol-whitespace.json')
+             'build', 'buildcfg/ol-whitespace.json')
     report_sizes(t)
 
 
@@ -156,9 +157,9 @@ virtual('build-all', 'build/ol-all.js')
 
 
 @target('build/ol-all.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        'base.json', 'build/ol-all.json')
+        'buildcfg/base.json', 'buildcfg/ol-all.json')
 def build_ol_all_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol-all.json')
+    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
 
 
 @target('build/src/external/externs/types.js', 'bin/generate-exports.py',
@@ -245,24 +246,24 @@ def examples_star_json(name, match):
     def action(t):
         content = json.dumps({
             'id': match.group('id'),
-            'inherits': '../../base.json',
+            'inherits': '../../buildcfg/base.json',
             'inputs': [
-                'examples/%(id)s.js' % match.groupdict(),
-                'build/src/internal/src/types.js',
+                '../examples/%(id)s.js' % match.groupdict(),
+                '../build/src/internal/src/types.js',
             ],
             'externs': [
                 '//json.js',
                 '//jquery-1.7.js',
-                'externs/bingmaps.js',
-                'externs/bootstrap.js',
-                'externs/geojson.js',
-                'externs/proj4js.js',
-                'externs/tilejson.js',
+                '../externs/bingmaps.js',
+                '../externs/bootstrap.js',
+                '../externs/geojson.js',
+                '../externs/proj4js.js',
+                '../externs/tilejson.js',
             ],
         })
         with open(t.name, 'w') as f:
             f.write(content)
-    dependencies = [__file__, 'base.json']
+    dependencies = [__file__, 'buildcfg/base.json']
     return Target(name, action=action, dependencies=dependencies)
 
 
@@ -272,7 +273,8 @@ def examples_star_combined_js(name, match):
         t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build',
                  'build/examples/%(id)s.json' % match.groupdict())
         report_sizes(t)
-    dependencies = [PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC, 'base.json',
+    dependencies = [PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
+                    'buildcfg/base.json',
                     'examples/%(id)s.js' % match.groupdict(),
                     'build/examples/%(id)s.json' % match.groupdict()]
     return Target(name, action=action, dependencies=dependencies)
@@ -280,14 +282,14 @@ def examples_star_combined_js(name, match):
 
 @target('serve', PLOVR_JAR, INTERNAL_SRC, 'test/requireall.js', 'examples')
 def serve(t):
-    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'build/ol.json',
-          'build/ol-all.json', EXAMPLES_JSON, 'test/test.json')
+    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'buildcfg/ol.json',
+          'buildcfg/ol-all.json', EXAMPLES_JSON, 'buildcfg/test.json')
 
 
 @target('serve-integration-test', PLOVR_JAR, INTERNAL_SRC)
 def serve_precommit(t):
     t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve',
-          'build/ol-all.json', 'test/test.json')
+          'buildcfg/ol-all.json', 'buildcfg/test.json')
 
 
 virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp')
