@@ -230,6 +230,17 @@ ol.Object.prototype.notifyInternal_ = function(key) {
 
 
 /**
+ * @param {string} type The event type.
+ * @param {Function} listener The listener function.
+ * @param {Object=} opt_scope Object is whose scope to call
+ *     the listener.
+ */
+ol.Object.prototype.on = function(type, listener, opt_scope) {
+  goog.events.listen(this, type, listener, false, opt_scope);
+};
+
+
+/**
  * @param {string} key Key.
  * @param {*} value Value.
  */
@@ -289,6 +300,17 @@ ol.Object.prototype.unbind = function(key) {
     delete accessors[key];
     this.values_[key] = value;
   }
+};
+
+
+/**
+ * @param {string} type The event type.
+ * @param {Function} listener The listener function.
+ * @param {Object=} opt_scope Object is whose scope to call
+ *     the listener.
+ */
+ol.Object.prototype.un = function(type, listener, opt_scope) {
+  goog.events.unlisten(this, type, listener, false, opt_scope);
 };
 
 
