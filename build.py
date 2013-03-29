@@ -213,7 +213,7 @@ def build_src_internal_src_requireall_js(t):
     _build_require_list(t.dependencies, t.name)
 
 
-@target('test/requireall.js', SPEC)
+@target('build/test/requireall.js', SPEC)
 def build_test_requireall_js(t):
     _build_require_list(t.dependencies, t.name)
 
@@ -280,7 +280,8 @@ def examples_star_combined_js(name, match):
     return Target(name, action=action, dependencies=dependencies)
 
 
-@target('serve', PLOVR_JAR, INTERNAL_SRC, 'test/requireall.js', 'examples')
+@target('serve', PLOVR_JAR, INTERNAL_SRC, 'build/test/requireall.js',
+        'examples')
 def serve(t):
     t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'buildcfg/ol.json',
           'buildcfg/ol-all.json', EXAMPLES_JSON, 'buildcfg/test.json')
@@ -533,7 +534,7 @@ def proj4js_zip(t):
                os.path.basename(t.name), md5=PROJ4JS_ZIP_MD5)
 
 
-@target('test', INTERNAL_SRC, PROJ4JS, 'test/requireall.js', phony=True)
+@target('test', INTERNAL_SRC, PROJ4JS, 'build/test/requireall.js', phony=True)
 def test(t):
     t.run('%(PHANTOMJS)s', 'test/mocha-phantomjs.coffee', 'test/ol.html')
 

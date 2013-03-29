@@ -16,9 +16,9 @@
 /build/proj4js
 /build/proj4js-*.zip
 /build/src
+/build/test/requireall.js
 /build/examples/*.combined.js
 /examples/*.html.png
 /build/examples/*.json
 /examples/example-list.js
 /examples/example-list.xml
-/test/requireall.js

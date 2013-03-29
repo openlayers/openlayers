@@ -5,7 +5,7 @@
   "inherits": "base.json",
 
   "inputs": [
-    "../test/requireall.js"
+    "../build/test/requireall.js"
   ],
 
   "paths": [
