@@ -1,0 +1,12 @@
+{
+
+  "id": "ol-all",
+
+  "inherits": "base.json",
+
+  "inputs": [
+    "../build/src/internal/src/requireall.js",
+    "../build/src/internal/src/types.js"
+  ]
+
+}

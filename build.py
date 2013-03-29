@@ -51,12 +51,8 @@ EXTERNAL_SRC = [
 
 EXAMPLES = [path
             for path in ifind('examples')
-            if not path.startswith('examples/standalone/')
             if path.endswith('.html')
             if path != 'examples/index.html']
-
-EXAMPLES_JSON = [example.replace('.html', '.json')
-                 for example in EXAMPLES]
 
 EXAMPLES_SRC = [path
                 for path in ifind('examples')
@@ -67,6 +63,12 @@ EXAMPLES_SRC = [path
                 if path != 'examples/Jugl.js'
                 if path != 'examples/jquery.min.js'
                 if path != 'examples/example-list.js']
+
+EXAMPLES_JSON = ['build/' + example.replace('.html', '.json')
+                 for example in EXAMPLES]
+
+EXAMPLES_COMBINED = ['build/' + example.replace('.html', '.combined.js')
+                     for example in EXAMPLES]
 
 INTERNAL_SRC = [
     'build/src/internal/src/requireall.js',
@@ -129,24 +131,25 @@ def build_ol_css(t):
 
 
 @target('build/ol.js', PLOVR_JAR, SRC, EXTERNAL_SRC, SHADER_SRC,
-        'base.json', 'build/ol.json')
+        'buildcfg/base.json', 'buildcfg/ol.json')
 def build_ol_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol.json')
+    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ol.json')
     report_sizes(t)
 
 
 @target('build/ol-simple.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        'base.json', 'build/ol.json', 'build/ol-simple.json')
+        'buildcfg/base.json', 'buildcfg/ol.json', 'buildcfg/ol-simple.json')
 def build_ol_simple_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol-simple.json')
+    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ol-simple.json')
     report_sizes(t)
 
 
 @target('build/ol-whitespace.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        'base.json', 'build/ol.json', 'build/ol-whitespace.json')
+        'buildcfg/base.json', 'buildcfg/ol.json',
+        'buildcfg/ol-whitespace.json')
 def build_ol_whitespace_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR,
-             'build', 'build/ol-whitespace.json')
+             'build', 'buildcfg/ol-whitespace.json')
     report_sizes(t)
 
 
@@ -154,9 +157,9 @@ virtual('build-all', 'build/ol-all.js')
 
 
 @target('build/ol-all.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        'base.json', 'build/ol-all.json')
+        'buildcfg/base.json', 'buildcfg/ol-all.json')
 def build_ol_all_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'build/ol-all.json')
+    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
 
 
 @target('build/src/external/externs/types.js', 'bin/generate-exports.py',
@@ -210,7 +213,7 @@ def build_src_internal_src_requireall_js(t):
     _build_require_list(t.dependencies, t.name)
 
 
-@target('test/requireall.js', SPEC)
+@target('build/test/requireall.js', SPEC)
 def build_test_requireall_js(t):
     _build_require_list(t.dependencies, t.name)
 
@@ -222,12 +225,10 @@ def build_src_internal_types_js(t):
              '--typedef', 'src/objectliterals.exports')
 
 
-virtual('build-examples', 'examples', (path.replace(
-    '.html', '.combined.js') for path in EXAMPLES))
+virtual('build-examples', 'examples', EXAMPLES_COMBINED)
 
 
-virtual('examples', 'examples/example-list.xml', (
-    path.replace('.html', '.json') for path in EXAMPLES))
+virtual('examples', 'examples/example-list.xml', EXAMPLES_JSON)
 
 
 @target('examples/example-list.xml', 'examples/example-list.js')
@@ -240,54 +241,56 @@ def examples_examples_list_js(t):
     t.run('%(PYTHON)s', 'bin/exampleparser.py', 'examples', 'examples')
 
 
-@rule(r'\Aexamples/(?P<id>.*).json\Z')
+@rule(r'\Abuild/examples/(?P<id>.*).json\Z')
 def examples_star_json(name, match):
     def action(t):
         content = json.dumps({
             'id': match.group('id'),
-            'inherits': '../base.json',
+            'inherits': '../../buildcfg/base.json',
             'inputs': [
-                'examples/%(id)s.js' % match.groupdict(),
-                'build/src/internal/src/types.js',
+                '../examples/%(id)s.js' % match.groupdict(),
+                '../build/src/internal/src/types.js',
             ],
             'externs': [
                 '//json.js',
                 '//jquery-1.7.js',
-                'externs/bingmaps.js',
-                'externs/bootstrap.js',
-                'externs/geojson.js',
-                'externs/proj4js.js',
-                'externs/tilejson.js',
+                '../externs/bingmaps.js',
+                '../externs/bootstrap.js',
+                '../externs/geojson.js',
+                '../externs/proj4js.js',
+                '../externs/tilejson.js',
             ],
         })
         with open(t.name, 'w') as f:
             f.write(content)
-    dependencies = [__file__, 'base.json']
+    dependencies = [__file__, 'buildcfg/base.json']
     return Target(name, action=action, dependencies=dependencies)
 
 
-@rule(r'\Aexamples/(?P<id>.*).combined.js\Z')
+@rule(r'\Abuild/examples/(?P<id>.*).combined.js\Z')
 def examples_star_combined_js(name, match):
     def action(t):
         t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build',
-                 'examples/%(id)s.json' % match.groupdict())
+                 'build/examples/%(id)s.json' % match.groupdict())
         report_sizes(t)
-    dependencies = [PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC, 'base.json',
+    dependencies = [PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
+                    'buildcfg/base.json',
                     'examples/%(id)s.js' % match.groupdict(),
-                    'examples/%(id)s.json' % match.groupdict()]
+                    'build/examples/%(id)s.json' % match.groupdict()]
     return Target(name, action=action, dependencies=dependencies)
 
 
-@target('serve', PLOVR_JAR, INTERNAL_SRC, 'test/requireall.js', 'examples')
+@target('serve', PLOVR_JAR, INTERNAL_SRC, 'build/test/requireall.js',
+        'examples')
 def serve(t):
-    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'build/ol.json',
-          'build/ol-all.json', EXAMPLES_JSON, 'test/test.json')
+    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'buildcfg/ol.json',
+          'buildcfg/ol-all.json', EXAMPLES_JSON, 'buildcfg/test.json')
 
 
 @target('serve-integration-test', PLOVR_JAR, INTERNAL_SRC)
 def serve_precommit(t):
     t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve',
-          'build/ol-all.json', 'test/test.json')
+          'buildcfg/ol-all.json', 'buildcfg/test.json')
 
 
 virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp')
@@ -482,7 +485,7 @@ def host_examples(t):
     t.cp_r('examples/data', examples_dir + '/data')
     t.cp_r('examples/bootstrap', examples_dir + '/bootstrap')
     t.cp_r('examples/font-awesome', examples_dir + '/font-awesome')
-    t.cp('build/loader_hosted_examples.js', examples_dir + '/loader.js')
+    t.cp('bin/loader_hosted_examples.js', examples_dir + '/loader.js')
     t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js',
          'build/ol.css', build_dir)
     t.cp('examples/index.html', 'examples/example-list.js',
@@ -531,7 +534,7 @@ def proj4js_zip(t):
                os.path.basename(t.name), md5=PROJ4JS_ZIP_MD5)
 
 
-@target('test', INTERNAL_SRC, PROJ4JS, 'test/requireall.js', phony=True)
+@target('test', INTERNAL_SRC, PROJ4JS, 'build/test/requireall.js', phony=True)
 def test(t):
     t.run('%(PHANTOMJS)s', 'test/mocha-phantomjs.coffee', 'test/ol.html')
 
