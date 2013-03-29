@@ -485,7 +485,7 @@ def host_examples(t):
     t.cp_r('examples/data', examples_dir + '/data')
     t.cp_r('examples/bootstrap', examples_dir + '/bootstrap')
     t.cp_r('examples/font-awesome', examples_dir + '/font-awesome')
-    t.cp('build/loader_hosted_examples.js', examples_dir + '/loader.js')
+    t.cp('bin/loader_hosted_examples.js', examples_dir + '/loader.js')
     t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js',
          'build/ol.css', build_dir)
     t.cp('examples/index.html', 'examples/example-list.js',
