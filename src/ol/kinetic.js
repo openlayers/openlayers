@@ -89,10 +89,10 @@ ol.Kinetic.prototype.update = function(x, y) {
  * @return {boolean} Whether we should do kinetic animation.
  */
 ol.Kinetic.prototype.end = function() {
-  var now = goog.now();
+  var delay = goog.now() - this.delay_;
   var lastIndex = this.points_.length - 1;
   var firstIndex = lastIndex - 1;
-  while (firstIndex >= 0 && this.points_[firstIndex].t > now - this.delay_) {
+  while (firstIndex >= 0 && this.points_[firstIndex].t > delay) {
     firstIndex--;
   }
   if (firstIndex >= 0) {
