@@ -9,6 +9,7 @@ goog.provide('ol.RendererHints');
 
 goog.require('goog.Uri.QueryData');
 goog.require('goog.async.AnimationDelay');
+goog.require('goog.async.Delay');
 goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.dom.ViewportSizeMonitor');
@@ -264,9 +265,9 @@ ol.Map = function(mapOptions) {
 
   /**
    * @private
-   * @type {function(this: ol.Map)}
+   * @type {goog.async.Delay}
    */
-  this.handlePostRender_ = goog.bind(this.handlePostRender, this);
+  this.postRenderDelay_ = new goog.async.Delay(this.handlePostRender, 0, this);
 
   /**
    * @private
@@ -346,6 +347,7 @@ ol.Map.prototype.removePreRenderFunction = function(preRenderFunction) {
  */
 ol.Map.prototype.disposeInternal = function() {
   goog.dom.removeNode(this.viewport_);
+  goog.dispose(this.postRenderDelay_);
   goog.base(this, 'disposeInternal');
 };
 
@@ -762,7 +764,9 @@ ol.Map.prototype.renderFrame_ = function(time) {
   this.dispatchEvent(
       new ol.MapEvent(ol.MapEventType.POSTRENDER, this, frameState));
 
-  goog.global.setTimeout(this.handlePostRender_, 0);
+  if (!this.postRenderDelay_.isActive()) {
+    this.postRenderDelay_.start();
+  }
 
 };
 
