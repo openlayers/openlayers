@@ -81,12 +81,13 @@ describe('ol.TileUrlFunction', function() {
   describe('createFromParamsFunction', function() {
     var paramsFunction = function(url, params) { return arguments; };
     var projection = ol.projection.get('EPSG:3857');
+    var fakeTileSource = {getTileGrid: function() {return null;}};
     var params = {foo: 'bar'};
     var tileUrlFunction = ol.TileUrlFunction.createFromParamsFunction(
         'url', params, paramsFunction);
     it('calls the passed function with the correct arguments', function() {
-      var args = tileUrlFunction(new ol.TileCoord(0, 0, 0),
-          ol.tilegrid.getForProjection(projection), projection);
+      var args = tileUrlFunction.call(fakeTileSource,
+          new ol.TileCoord(0, 0, 0), projection);
       expect(args[0]).to.eql('url');
       expect(args[1]).to.be(params);
       expect(args[2]).to.eql(projection.getExtent());

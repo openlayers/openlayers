@@ -103,7 +103,9 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                 var imageUrl = resource.imageUrl
                     .replace('{subdomain}', subdomain)
                     .replace('{culture}', culture);
-                return function(tileCoord) {
+                return function(tileCoord, projection) {
+                  goog.asserts.assert(ol.projection.equivalent(
+                      projection, this.getProjection()));
                   if (goog.isNull(tileCoord)) {
                     return undefined;
                   } else {

@@ -195,7 +195,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
 
   var getTileIfLoaded = this.createGetTileIfLoadedFunction(function(tile) {
     return !goog.isNull(tile) && tile.getState() == ol.TileState.LOADED;
-  }, tileSource, tileGrid, projection);
+  }, tileSource, projection);
   var findLoadedTiles = goog.bind(tileSource.findLoadedTiles, tileSource,
       tilesToDrawByZ, getTileIfLoaded);
 
@@ -204,7 +204,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
-      tile = tileSource.getTile(z, x, y, tileGrid, projection);
+      tile = tileSource.getTile(z, x, y, projection);
       tileState = tile.getState();
       if (tileState == ol.TileState.LOADED || tileState == ol.TileState.EMPTY) {
         tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;

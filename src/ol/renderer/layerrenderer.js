@@ -249,15 +249,14 @@ ol.renderer.Layer.prototype.updateUsedTiles =
  * @param {function(ol.Tile): boolean} isLoadedFunction Function to
  *     determine if the tile is loaded.
  * @param {ol.source.TileSource} tileSource Tile source.
- * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @param {ol.Projection} projection Projection.
  * @return {function(number, number, number): ol.Tile} Returns a tile if it is
  *     loaded.
  */
 ol.renderer.Layer.prototype.createGetTileIfLoadedFunction =
-    function(isLoadedFunction, tileSource, tileGrid, projection) {
+    function(isLoadedFunction, tileSource, projection) {
   return function(z, x, y) {
-    var tile = tileSource.getTile(z, x, y, tileGrid, projection);
+    var tile = tileSource.getTile(z, x, y, projection);
     return isLoadedFunction(tile) ? tile : null;
   };
 };
@@ -314,7 +313,7 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
         if (currentZ - z <= preload) {
-          tile = tileSource.getTile(z, x, y, tileGrid, projection);
+          tile = tileSource.getTile(z, x, y, projection);
           if (tile.getState() == ol.TileState.IDLE) {
             wantedTiles[tile.tileCoord.toString()] = true;
             if (!tileQueue.isKeyQueued(tile.getKey())) {

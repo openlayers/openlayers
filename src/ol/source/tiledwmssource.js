@@ -42,7 +42,11 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
       tiledWMSOptions.params['TRANSPARENT'] : true;
   var extent = tiledWMSOptions.extent;
 
-  var tileCoordTransform = function(tileCoord, tileGrid, projection) {
+  var tileCoordTransform = function(tileCoord, projection) {
+    var tileGrid = this.getTileGrid();
+    if (goog.isNull(tileGrid)) {
+      tileGrid = ol.tilegrid.getForProjection(projection);
+    }
     if (tileGrid.getResolutions().length <= tileCoord.z) {
       return null;
     }
