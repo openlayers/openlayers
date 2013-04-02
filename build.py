@@ -90,6 +90,10 @@ SRC = [path
        if path.endswith('.js')
        if path not in SHADER_SRC]
 
+COMPILER_JAR = 'build/compiler.jar'
+COMPILER_ZIP = 'build/compiler-20130227.zip'
+COMPILER_ZIP_SHA1 = '27395bcb22d633232013300c5cf9edf65de48581'
+
 PLOVR_JAR = 'build/plovr-eba786b34df9.jar'
 PLOVR_JAR_MD5 = '20eac8ccc4578676511cf7ccbfc65100'
 
@@ -519,6 +523,23 @@ def check_examples(t):
         examples
     for example in all_examples:
         t.run('%(PHANTOMJS)s', 'bin/check-example.js', example)
+
+
+@target(COMPILER_JAR, COMPILER_ZIP)
+def compiler_latest_jar(t):
+    from zipfile import ZipFile
+    zf = ZipFile(COMPILER_ZIP)
+    contents = zf.open('compiler.jar').read()
+    with open(t.name, 'wb') as f:
+        f.write(contents)
+
+
+@target(COMPILER_ZIP, clean=False)
+def compiler_latest_zip(t):
+    t.info('downloading %r', t.name)
+    t.download('https://closure-compiler.googlecode.com/files/' +
+               os.path.basename(t.name), sha1=COMPILER_ZIP_SHA1)
+    t.info('downloaded %r', t.name)
 
 
 @target(PROJ4JS, PROJ4JS_ZIP)
