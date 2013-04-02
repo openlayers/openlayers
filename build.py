@@ -532,8 +532,10 @@ def proj4js(t):
 
 @target(PROJ4JS_ZIP, clean=False)
 def proj4js_zip(t):
+    t.info('downloading %r', t.name)
     t.download('http://download.osgeo.org/proj4js/' +
                os.path.basename(t.name), md5=PROJ4JS_ZIP_MD5)
+    t.info('downloaded %r', t.name)
 
 
 @target('test', INTERNAL_SRC, PROJ4JS, 'build/test/requireall.js', phony=True)
