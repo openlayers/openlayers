@@ -410,8 +410,10 @@ virtual('plovr', PLOVR_JAR)
 
 @target(PLOVR_JAR, clean=False)
 def plovr_jar(t):
+    t.info('downloading %r', t.name)
     t.download('https://plovr.googlecode.com/files/' +
                os.path.basename(PLOVR_JAR), md5=PLOVR_JAR_MD5)
+    t.info('downloaded %r', t.name)
 
 
 @target('gh-pages', 'host-examples', 'doc', phony=True)
