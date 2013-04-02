@@ -6,14 +6,6 @@ goog.require('ol.PreRenderFunction');
 goog.require('ol.animation');
 
 
-/**
- * @typedef {{x: number,
- *            y: number,
- *            t: number}}
- */
-ol.KineticPoint;
-
-
 
 /**
  * @constructor
@@ -44,7 +36,7 @@ ol.Kinetic = function(decay, minVelocity, delay) {
 
   /**
    * @private
-   * @type {Array.<ol.KineticPoint>}
+   * @type {Array.<number>}
    */
   this.points_ = [];
 
@@ -77,11 +69,7 @@ ol.Kinetic.prototype.begin = function() {
  * @param {number} y Y.
  */
 ol.Kinetic.prototype.update = function(x, y) {
-  this.points_.push({
-    x: x,
-    y: y,
-    t: goog.now()
-  });
+  this.points_.push(x, y, goog.now());
 };
 
 
@@ -90,18 +78,17 @@ ol.Kinetic.prototype.update = function(x, y) {
  */
 ol.Kinetic.prototype.end = function() {
   var delay = goog.now() - this.delay_;
-  var lastIndex = this.points_.length - 1;
-  var firstIndex = lastIndex - 1;
-  while (firstIndex >= 0 && this.points_[firstIndex].t > delay) {
-    firstIndex--;
+  var lastIndex = this.points_.length - 3;
+  var firstIndex = lastIndex - 3;
+  while (firstIndex >= 0 && this.points_[firstIndex + 2] > delay) {
+    firstIndex -= 3;
   }
   if (firstIndex >= 0) {
-    var first = this.points_[firstIndex];
-    var last = this.points_[lastIndex];
-    var dx = last.x - first.x;
-    var dy = last.y - first.y;
+    var duration = this.points_[lastIndex + 2] - this.points_[firstIndex + 2];
+    var dx = this.points_[lastIndex] - this.points_[firstIndex];
+    var dy = this.points_[lastIndex + 1] - this.points_[firstIndex + 1];
     this.angle_ = Math.atan2(dy, dx);
-    this.initialVelocity_ = Math.sqrt(dx * dx + dy * dy) / (last.t - first.t);
+    this.initialVelocity_ = Math.sqrt(dx * dx + dy * dy) / duration;
     return this.initialVelocity_ > this.minVelocity_;
   }
   return false;
