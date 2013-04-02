@@ -1,5 +1,4 @@
 *.pyc
-/bin/plovr*.jar
 /build
 /examples/*.html.png
 /examples/example-list.js
