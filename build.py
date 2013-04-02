@@ -90,7 +90,7 @@ SRC = [path
        if path.endswith('.js')
        if path not in SHADER_SRC]
 
-PLOVR_JAR = 'bin/plovr-eba786b34df9.jar'
+PLOVR_JAR = 'build/plovr-eba786b34df9.jar'
 PLOVR_JAR_MD5 = '20eac8ccc4578676511cf7ccbfc65100'
 
 PROJ4JS = 'build/proj4js/lib/proj4js-combined.js'
