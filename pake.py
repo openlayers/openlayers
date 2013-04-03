@@ -148,9 +148,11 @@ class Target(object):
     def debug(self, *args, **kwargs):
         self.logger.debug(*args, **kwargs)
 
-    def download(self, url, md5=None):
+    def download(self, url, md5=None, sha1=None):
         content = urllib2.urlopen(url).read()
         if md5 and hashlib.md5(content).hexdigest() != md5:
+            raise BuildError(self, 'corrupt download')
+        if sha1 and hashlib.sha1(content).hexdigest() != sha1:
             raise BuildError(self, 'corrupt download')
         with open(self.name, 'wb') as f:
             f.write(content)
@@ -178,7 +180,8 @@ class Target(object):
 
     def newer(self, *args):
         args = flatten_expand_list(args)
-        return [arg for arg in args if targets.get(arg).timestamp > self.timestamp]
+        return [arg for arg in args
+                if targets.get(arg).timestamp > self.timestamp]
 
     def output(self, *args, **kwargs):
         args = flatten_expand_list(args)
@@ -363,3 +366,21 @@ def virtual(name, *dependencies, **kwargs):
     target = Target(name, dependencies=dependencies, clean=False, phony=True,
                     **kwargs)
     targets.add(target)
+
+
+def which(program):
+    """Returns the full path of a given argument or `None`.
+    See: http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python"""
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+    return None
