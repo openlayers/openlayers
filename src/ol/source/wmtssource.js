@@ -112,7 +112,9 @@ ol.source.WMTS = function(wmtsOptions) {
   }
 
   tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
-      function(tileCoord, tileGrid, projection) {
+      function(tileCoord, projection) {
+        var tileGrid = this.getTileGrid();
+        goog.asserts.assert(!goog.isNull(tileGrid));
         if (tileGrid.getResolutions().length <= tileCoord.z) {
           return null;
         }

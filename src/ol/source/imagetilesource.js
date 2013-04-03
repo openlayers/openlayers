@@ -87,16 +87,14 @@ ol.source.ImageTileSource.prototype.expireCache = function(usedTiles) {
 /**
  * @inheritDoc
  */
-ol.source.ImageTileSource.prototype.getTile =
-    function(z, x, y, tileGrid, projection) {
+ol.source.ImageTileSource.prototype.getTile = function(z, x, y, projection) {
   var tileCoordKey = ol.TileCoord.getKeyZXY(z, x, y);
   if (this.tileCache_.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache_.get(tileCoordKey));
   } else {
-    goog.asserts.assert(tileGrid);
     goog.asserts.assert(projection);
     var tileCoord = new ol.TileCoord(z, x, y);
-    var tileUrl = this.tileUrlFunction(tileCoord, tileGrid, projection);
+    var tileUrl = this.tileUrlFunction(tileCoord, projection);
     var tile = new ol.ImageTile(
         tileCoord,
         goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,
