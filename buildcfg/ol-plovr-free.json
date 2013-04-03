@@ -1,0 +1,13 @@
+{
+
+  "id": "ol-no-plovr",
+
+  "inherits": "ol.json",
+
+  "inputs": [
+    "../build/src/external/src/exports.js",
+    "../build/src/external/src/types.js",
+    "../src/ol/deps.js"
+  ]
+
+}
