@@ -133,25 +133,25 @@ ol.MapBrowserEventHandler = function(map) {
   this.timestamp_ = null;
 
   /**
-   * @type {goog.events.ListenableKey|null|number}
+   * @type {?goog.events.Key}
    * @private
    */
   this.clickListenerKey_ = null;
 
   /**
-   * @type {goog.events.ListenableKey|null|number}
+   * @type {?goog.events.Key}
    * @private
    */
   this.downListenerKey_ = null;
 
   /**
-   * @type {Array.<goog.events.ListenableKey|null|number>}
+   * @type {Array.<?goog.events.Key>}
    * @private
    */
   this.dragListenerKeys_ = null;
 
   /**
-   * @type {Array.<goog.events.ListenableKey|null|number>}
+   * @type {Array.<?goog.events.Key>}
    * @private
    */
   this.touchListenerKeys_ = null;

@@ -44,7 +44,7 @@ ol.control.DragBox = function(dragBoxOptions) {
 
   /**
    * @private
-   * @type {goog.events.ListenableKey|null|number}
+   * @type {?goog.events.Key}
    */
   this.dragListenKey_ = null;
 
