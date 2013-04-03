@@ -18,5 +18,5 @@ var map = new ol.Map({
     zoom: 0
   })
 });
-var view2d = map.getView().getView2D();
-view2d.fitExtent(view2d.getProjection().getExtent(), map.getSize());
+var view = map.getView();
+view.fitExtent(view.getProjection().getExtent(), map.getSize());
