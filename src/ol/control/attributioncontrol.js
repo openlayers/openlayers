@@ -137,7 +137,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
 
   if (goog.isNull(frameState)) {
     if (this.renderedVisible_) {
-      goog.style.showElement(this.element, false);
+      goog.style.setElementShown(this.element, false);
       this.renderedVisible_ = false;
     }
     return;
@@ -181,7 +181,8 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
     attributionKey = attributionKeys[i].toString();
     if (attributionKey in this.attributionElements_) {
       if (!this.attributionElementRenderedVisible_[attributionKey]) {
-        goog.style.showElement(this.attributionElements_[attributionKey], true);
+        goog.style.setElementShown(
+            this.attributionElements_[attributionKey], true);
         this.attributionElementRenderedVisible_[attributionKey] = true;
       }
     } else {
@@ -202,7 +203,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
 
   var renderVisible = !goog.array.isEmpty(attributionKeys);
   if (this.renderedVisible_ != renderVisible) {
-    goog.style.showElement(this.element, renderVisible);
+    goog.style.setElementShown(this.element, renderVisible);
     this.renderedVisible_ = renderVisible;
   }
 
