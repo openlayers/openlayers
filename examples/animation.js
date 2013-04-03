@@ -58,10 +58,10 @@ var panToLondon = document.getElementById('pan-to-london');
 panToLondon.addEventListener('click', function() {
   var pan = ol.animation.pan({
     duration: 2000,
-    source: map.getView().getView2D().getCenter()
+    source: map.getView().getCenter()
   });
   map.addPreRenderFunction(pan);
-  map.getView().getView2D().setCenter(london);
+  map.getView().setCenter(london);
 }, false);
 
 var elasticToMoscow = document.getElementById('elastic-to-moscow');
@@ -69,10 +69,10 @@ elasticToMoscow.addEventListener('click', function() {
   var pan = ol.animation.pan({
     duration: 2000,
     easing: ol.easing.elastic,
-    source: map.getView().getView2D().getCenter()
+    source: map.getView().getCenter()
   });
   map.addPreRenderFunction(pan);
-  map.getView().getView2D().setCenter(moscow);
+  map.getView().setCenter(moscow);
 }, false);
 
 var bounceToInstanbul = document.getElementById('bounce-to-instanbul');
@@ -80,10 +80,10 @@ bounceToInstanbul.addEventListener('click', function() {
   var pan = ol.animation.pan({
     duration: 2000,
     easing: ol.easing.bounce,
-    source: map.getView().getView2D().getCenter()
+    source: map.getView().getCenter()
   });
   map.addPreRenderFunction(pan);
-  map.getView().getView2D().setCenter(instanbul);
+  map.getView().setCenter(instanbul);
 }, false);
 
 var spinToRome = document.getElementById('spin-to-rome');
@@ -92,7 +92,7 @@ spinToRome.addEventListener('click', function() {
   var start = +new Date();
   var pan = ol.animation.pan({
     duration: duration,
-    source: map.getView().getView2D().getCenter(),
+    source: map.getView().getCenter(),
     start: start
   });
   var rotate = ol.animation.rotate({
@@ -101,7 +101,7 @@ spinToRome.addEventListener('click', function() {
     start: start
   });
   map.addPreRenderFunctions([pan, rotate]);
-  map.getView().getView2D().setCenter(rome);
+  map.getView().setCenter(rome);
 }, false);
 
 var flyToBern = document.getElementById('fly-to-bern');
@@ -110,14 +110,14 @@ flyToBern.addEventListener('click', function() {
   var start = +new Date();
   var pan = ol.animation.pan({
     duration: duration,
-    source: map.getView().getView2D().getCenter(),
+    source: map.getView().getCenter(),
     start: start
   });
   var bounce = ol.animation.bounce({
     duration: duration,
-    resolution: 4 * map.getView().getView2D().getResolution(),
+    resolution: 4 * map.getView().getResolution(),
     start: start
   });
   map.addPreRenderFunctions([pan, bounce]);
-  map.getView().getView2D().setCenter(bern);
+  map.getView().setCenter(bern);
 }, false);
