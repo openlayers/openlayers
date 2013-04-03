@@ -117,7 +117,7 @@ ol.Object.getGetterName = function(key) {
 
 /**
  * @param {ol.Object} obj Object.
- * @return {Object.<string, ?number>} Listeners.
+ * @return {Object.<string, (goog.events.ListenableKey|null|number)>} Listeners.
  */
 ol.Object.getListeners = function(obj) {
   return obj[ol.ObjectProperty.BINDINGS] ||

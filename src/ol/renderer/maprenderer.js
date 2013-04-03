@@ -49,7 +49,7 @@ ol.renderer.Map = function(container, map) {
 
   /**
    * @private
-   * @type {?number}
+   * @type {goog.events.ListenableKey|null|number}
    */
   this.mapLayersChangedListenerKey_ =
       goog.events.listen(
@@ -64,7 +64,7 @@ ol.renderer.Map = function(container, map) {
 
   /**
    * @private
-   * @type {Object.<number, ?number>}
+   * @type {Object.<number, (goog.events.ListenableKey|null|number)>}
    */
   this.layerRendererChangeListenKeys_ = {};
 
