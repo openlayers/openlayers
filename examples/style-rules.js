@@ -3,7 +3,6 @@ goog.require('ol.Coordinate');
 goog.require('ol.Expression');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
-goog.require('ol.View2D');
 goog.require('ol.control.defaults');
 goog.require('ol.filter.Filter');
 goog.require('ol.layer.Vector');
@@ -127,7 +126,9 @@ var map = new ol.Map({
   }),
   renderer: ol.RendererHint.CANVAS,
   target: 'map',
-  view: new ol.View2D({
+  // ol.View2DOptions typecast required only when example
+  // code is compiled with Closure Compiler
+  view: /** @type {ol.View2DOptions} */ ({
     center: new ol.Coordinate(0, 0),
     zoom: 1
   })

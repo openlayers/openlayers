@@ -120,6 +120,48 @@ describe('ol.Map', function() {
     });
   });
 
+  describe('#createOptionsInternal', function() {
+
+    describe('create view', function() {
+
+      var options;
+      beforeEach(function() {
+        options = {
+          target: document.createElement('div')
+        };
+      });
+
+      describe('no view property provided', function() {
+        it('creates a View2D object', function() {
+          var o = ol.Map.createOptionsInternal(options);
+          expect(o.values.view).to.be.a(ol.View2D);
+        });
+      });
+
+      describe('ol.View object provided', function() {
+        it('does not create a new object', function() {
+          var view = new ol.View2D();
+          options.view = view;
+          var o = ol.Map.createOptionsInternal(options);
+          expect(o.values.view).to.be.a(ol.View2D);
+          expect(o.values.view).to.be(view);
+        });
+      });
+
+      describe('view options provided', function() {
+        it('creates a View2D object with expected states', function() {
+          var view = {center: new ol.Coordinate(1, 1)};
+          options.view = view;
+          var o = ol.Map.createOptionsInternal(options);
+          expect(o.values.view).to.be.a(ol.View2D);
+          var center = o.values.view.getCenter();
+          expect(center.x).to.be.eql(1);
+          expect(center.y).to.be.eql(1);
+        });
+      });
+    });
+  });
+
   describe('user animation', function() {
 
     var layer, map;
@@ -229,6 +271,7 @@ goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.RendererHints');
+goog.require('ol.View');
 goog.require('ol.View2D');
 goog.require('ol.interaction.DblClickZoom');
 goog.require('ol.interaction.MouseWheelZoom');

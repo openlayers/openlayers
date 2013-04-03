@@ -1,7 +1,6 @@
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
-goog.require('ol.View2D');
 goog.require('ol.control.ScaleLine');
 goog.require('ol.control.ScaleLineUnits');
 goog.require('ol.control.defaults');
@@ -32,7 +31,9 @@ var map = new ol.Map({
   // The OSgeo server does not set cross origin headers, so we cannot use WebGL
   renderers: [ol.RendererHint.CANVAS, ol.RendererHint.DOM],
   target: 'map',
-  view: new ol.View2D({
+  // ol.View2DOptions typecast required only when example
+  // code is compiled with Closure Compiler
+  view: /** @type {ol.View2DOptions} */ ({
     projection: 'EPSG:4326',
     center: new ol.Coordinate(0, 0),
     zoom: 2

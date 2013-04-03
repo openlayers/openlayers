@@ -1,7 +1,6 @@
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
-goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.projection');
 goog.require('ol.source.BingMaps');
@@ -18,7 +17,9 @@ var map = new ol.Map({
   layers: [layer],
   renderer: ol.RendererHint.WEBGL,
   target: 'map',
-  view: new ol.View2D({
+  // ol.View2DOptions typecast required only when example
+  // code is compiled with Closure Compiler
+  view: /** @type {ol.View2DOptions} */ ({
     center: ol.projection.transform(
         new ol.Coordinate(-9.375, 51.483333), 'EPSG:4326', 'EPSG:3857'),
     zoom: 15

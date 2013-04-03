@@ -3,7 +3,6 @@ goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
-goog.require('ol.View2D');
 goog.require('ol.layer.ImageLayer');
 goog.require('ol.projection');
 goog.require('ol.source.SingleImageWMS');
@@ -49,7 +48,9 @@ var map = new ol.Map({
   layers: layers,
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
-  view: new ol.View2D({
+  // ol.View2DOptions typecast required only when example
+  // code is compiled with Closure Compiler
+  view: /** @type {ol.View2DOptions} */ ({
     projection: projection,
     center: new ol.Coordinate(660000, 190000),
     zoom: 2

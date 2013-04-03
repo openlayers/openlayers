@@ -1,6 +1,5 @@
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
-goog.require('ol.View2D');
 goog.require('ol.control.ZoomSlider');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.source.MapQuestOpenAerial');
@@ -25,7 +24,9 @@ var createMap = function(divId) {
   map = new ol.Map({
     layers: [layer],
     target: divId,
-    view: new ol.View2D({
+    // ol.View2DOptions typecast required only when example
+    // code is compiled with Closure Compiler
+    view: /** @type {ol.View2DOptions} */ ({
       center: new ol.Coordinate(0, 0),
       zoom: 2
     })
