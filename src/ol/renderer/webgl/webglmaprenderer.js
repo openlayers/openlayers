@@ -541,6 +541,10 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   var gl = this.getGL();
 
+  if (gl.isContextLost()) {
+    return false;
+  }
+
   if (goog.isNull(frameState)) {
     if (this.renderedVisible_) {
       goog.style.showElement(this.canvas_, false);
