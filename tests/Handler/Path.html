@@ -601,6 +601,12 @@
         handler.mousedown({type: "mousedown", xy: px});
         handler.mouseup({type: "mouseup", xy: px});
     }
+    function userTap(handler, x, y) {
+        var px = new OpenLayers.Pixel(x, y);
+        handler.touchstart({xy: px});
+        handler.touchmove({xy: px});
+        handler.touchend({});
+    }
 
     /**
      * Editing method tests: insertXY, insertDeltaXY, insertDirectionXY,
@@ -720,7 +726,7 @@
     }
 
     function test_undoredo1(t) {
-        t.plan(4);
+        t.plan(5);
         var obj = editingMethodsSetup();
         var map = obj.map;
         var handler = obj.handler;
@@ -746,6 +752,17 @@
         // one redo
         handler.redo();
         t.geom_eq(original, handler.line.geometry, "one redo undoes one undo");
+        
+        // add point via touch
+        userTap(handler, 10, 50);
+        handler.undo();
+        currentLen = handler.line.geometry.components.length;
+        t.geom_eq(
+            handler.line.geometry.components[currentLen-1],
+            handler.line.geometry.components[currentLen-2],
+            "current point (mouse position) is set to the last digitized " + 
+            "point after undo on touch devices"
+        );
         
         // cleanup
         map.destroy();
