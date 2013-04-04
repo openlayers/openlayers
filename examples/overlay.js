@@ -36,10 +36,18 @@ var popup = new ol.Overlay({
   element: document.getElementById('popup')
 });
 map.addEventListener('click', function(evt) {
+  var element = popup.getElement();
   var coordinate = evt.getCoordinate();
-  popup.getElement().innerHTML =
-      'Welcome to ol3. The location you clicked was<br>' +
-      ol.Coordinate.toStringHDMS(ol.projection.transform(
-          coordinate, 'EPSG:3857', 'EPSG:4326'));
+  var hdms = ol.Coordinate.toStringHDMS(ol.projection.transform(
+      coordinate, 'EPSG:3857', 'EPSG:4326'));
+
+  $(element).popover('destroy');
   popup.setPosition(coordinate);
+  $(element).popover({
+    placement: 'top',
+    animation: false,
+    html: true,
+    content: '<p>The location you clicked was:</p><code>' + hdms + '</code>'
+  });
+  $(element).popover('show');
 });
