@@ -232,9 +232,9 @@ ol.Proj4jsProjection_.prototype.getPointResolution =
     ];
     vertices = this.toEPSG4326_(vertices, vertices, 2);
     var width = ol.sphere.NORMAL.haversineDistance(
-        [vertices[0], vertices[1]], [vertices[2], vertices[3]]);
+        vertices.slice(0, 2), vertices.slice(2, 4));
     var height = ol.sphere.NORMAL.haversineDistance(
-        [vertices[4], vertices[5]], [vertices[6], vertices[7]]);
+        vertices.slice(4, 6), vertices.slice(6, 8));
     var pointResolution = (width + height) / 2;
     if (this.getUnits() == ol.ProjectionUnits.FEET) {
       // The radius of the normal sphere is defined in meters, so we must
