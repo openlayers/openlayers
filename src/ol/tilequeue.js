@@ -18,12 +18,15 @@ ol.TilePriorityFunction;
 /**
  * @constructor
  * @extends {ol.structs.PriorityQueue}
+ * @param {number} maxTilesLoading Maximum number of simultaneously loading
+ *     tiles.
  * @param {ol.TilePriorityFunction} tilePriorityFunction
  *     Tile priority function.
  * @param {Function} tileChangeCallback
  *     Function called on each tile change event.
  */
-ol.TileQueue = function(tilePriorityFunction, tileChangeCallback) {
+ol.TileQueue =
+    function(maxTilesLoading, tilePriorityFunction, tileChangeCallback) {
 
   goog.base(
       this,
@@ -52,7 +55,7 @@ ol.TileQueue = function(tilePriorityFunction, tileChangeCallback) {
    * @private
    * @type {number}
    */
-  this.maxTilesLoading_ = 8;
+  this.maxTilesLoading_ = maxTilesLoading;
 
   /**
    * @private
