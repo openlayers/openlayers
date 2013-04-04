@@ -1,1 +1,5 @@
 @exportClass ol.control.ZoomSlider ol.control.ZoomSliderOptions
+
+@exportSymbol ol.control.ZoomSliderMode
+@exportProperty ol.control.ZoomSliderMode.LINEAR
+@exportProperty ol.control.ZoomSliderMode.EXPONENTIAL

@@ -2,6 +2,7 @@ goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.View2D');
 goog.require('ol.control.ZoomSlider');
+goog.require('ol.control.ZoomSliderMode');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.source.MapQuestOpenAerial');
 
@@ -13,7 +14,8 @@ goog.require('ol.source.MapQuestOpenAerial');
  * @return {ol.Map} The ol.Map instance.
  */
 var createMap = function(divId) {
-  var source, layer, map, zoomslider, resolutions, minRes, maxRes;
+  var source, layer, map, zoomslider, resolutions, minRes, maxRes,
+      exponentialMode = ol.control.ZoomSliderMode.EXPONENTIAL;
 
   source = new ol.source.MapQuestOpenAerial();
   // These are the min and max resolutions of MapQuestOpenAerial
@@ -33,7 +35,8 @@ var createMap = function(divId) {
   zoomslider = new ol.control.ZoomSlider({
     minResolution: minRes,
     maxResolution: maxRes,
-    map: map
+    map: map,
+    mode: (divId === 'map2') ? exponentialMode : undefined
   });
   return map;
 };

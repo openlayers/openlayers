@@ -73,6 +73,7 @@
 @exportObjectLiteral ol.control.ZoomSliderOptions
 @exportObjectLiteralProperty ol.control.ZoomSliderOptions.map ol.Map|undefined
 @exportObjectLiteralProperty ol.control.ZoomSliderOptions.maxResolution number|undefined
+@exportObjectLiteralProperty ol.control.ZoomSliderOptions.mode ol.control.ZoomSliderMode|undefined
 @exportObjectLiteralProperty ol.control.ZoomSliderOptions.minResolution number|undefined
 
 @exportObjectLiteral ol.interaction.DefaultOptions
