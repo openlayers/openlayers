@@ -28,7 +28,7 @@ describe('ol.renderer.webgl.ImageLayer', function() {
       canvasHeight = 256;
       viewResolution = 10;
       viewRotation = 0;
-      viewCenter = new ol.Coordinate(7680, 3840);
+      viewCenter = [7680, 3840];
       // view extent is 512O, 2560, 10240, 5120
 
       // image size is 1024, 768
@@ -79,7 +79,6 @@ describe('ol.renderer.webgl.ImageLayer', function() {
 
 goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
-goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.Map');
 goog.require('ol.layer.ImageLayer');

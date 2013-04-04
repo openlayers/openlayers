@@ -156,8 +156,8 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         tileResolution * framebufferDimension,
         tileResolution * framebufferDimension);
     var origin = tileGrid.getOrigin(z);
-    var minX = origin.x + tileRange.minX * tileSize.width * tileResolution;
-    var minY = origin.y + tileRange.minY * tileSize.height * tileResolution;
+    var minX = origin[0] + tileRange.minX * tileSize.width * tileResolution;
+    var minY = origin[1] + tileRange.minY * tileSize.height * tileResolution;
     framebufferExtent = new ol.Extent(
         minX,
         minY,
@@ -286,9 +286,9 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   var texCoordMatrix = this.texCoordMatrix;
   goog.vec.Mat4.makeIdentity(texCoordMatrix);
   goog.vec.Mat4.translate(texCoordMatrix,
-      (center.x - framebufferExtent.minX) /
+      (center[0] - framebufferExtent.minX) /
           (framebufferExtent.maxX - framebufferExtent.minX),
-      (center.y - framebufferExtent.minY) /
+      (center[1] - framebufferExtent.minY) /
           (framebufferExtent.maxY - framebufferExtent.minY),
       0);
   goog.vec.Mat4.rotateZ(texCoordMatrix, view2DState.rotation);

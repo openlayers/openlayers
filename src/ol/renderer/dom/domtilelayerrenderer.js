@@ -184,8 +184,8 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
         resolution / view2DState.resolution, 1);
     goog.vec.Mat4.translate(
         transform,
-        (origin.x - center.x) / resolution,
-        (center.y - origin.y) / resolution,
+        (origin[0] - center[0]) / resolution,
+        (center[1] - origin[1]) / resolution,
         0);
     tileLayerZ.setTransform(transform);
     if (tileLayerZKey in newTileLayerZKeys) {

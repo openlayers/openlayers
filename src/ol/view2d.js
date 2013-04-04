@@ -5,7 +5,6 @@ goog.provide('ol.View2D');
 goog.provide('ol.View2DProperty');
 
 goog.require('ol.Constraints');
-goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.IView2D');
 goog.require('ol.IView3D');
@@ -15,6 +14,7 @@ goog.require('ol.RotationConstraint');
 goog.require('ol.Size');
 goog.require('ol.View');
 goog.require('ol.animation');
+goog.require('ol.coordinate');
 goog.require('ol.easing');
 goog.require('ol.projection');
 
@@ -94,10 +94,10 @@ ol.View2D.prototype.getExtent = function(size) {
   goog.asserts.assert(this.isDef());
   var center = this.getCenter();
   var resolution = this.getResolution();
-  var minX = center.x - resolution * size.width / 2;
-  var minY = center.y - resolution * size.height / 2;
-  var maxX = center.x + resolution * size.width / 2;
-  var maxY = center.y + resolution * size.height / 2;
+  var minX = center[0] - resolution * size.width / 2;
+  var minY = center[1] - resolution * size.height / 2;
+  var maxX = center[0] + resolution * size.width / 2;
+  var maxY = center[1] + resolution * size.height / 2;
   return new ol.Extent(minX, minY, maxX, maxY);
 };
 
@@ -171,7 +171,7 @@ ol.View2D.prototype.getView2DState = function() {
   var resolution = /** @type {number} */ (this.getResolution());
   var rotation = /** @type {number} */ (this.getRotation());
   return {
-    center: new ol.Coordinate(center.x, center.y),
+    center: center.slice(),
     projection: projection,
     resolution: resolution,
     rotation: rotation
@@ -271,8 +271,7 @@ ol.View2D.prototype.pan = function(map, delta, opt_duration) {
         easing: ol.easing.linear
       }));
     }
-    this.setCenter(new ol.Coordinate(
-        currentCenter.x + delta.x, currentCenter.y + delta.y));
+    this.setCenter([currentCenter[0] + delta[0], currentCenter[1] + delta[1]]);
   }
 };
 
@@ -320,12 +319,9 @@ ol.View2D.prototype.rotateWithoutConstraints =
     if (goog.isDefAndNotNull(opt_anchor)) {
       var anchor = opt_anchor;
       var oldCenter = /** @type {!ol.Coordinate} */ (this.getCenter());
-      var center = new ol.Coordinate(
-          oldCenter.x - anchor.x,
-          oldCenter.y - anchor.y);
-      center.rotate(rotation - this.getRotation());
-      center.x += anchor.x;
-      center.y += anchor.y;
+      var center = [oldCenter[0] - anchor[0], oldCenter[1] - anchor[1]];
+      ol.coordinate.rotate(center, rotation - this.getRotation());
+      ol.coordinate.add(center, anchor);
       map.withFrozenRendering(function() {
         this.setCenter(center);
         this.setRotation(rotation);
@@ -404,9 +400,11 @@ ol.View2D.prototype.zoomWithoutConstraints =
       var anchor = opt_anchor;
       var oldCenter = /** @type {!ol.Coordinate} */ (this.getCenter());
       var oldResolution = this.getResolution();
-      var x = anchor.x - resolution * (anchor.x - oldCenter.x) / oldResolution;
-      var y = anchor.y - resolution * (anchor.y - oldCenter.y) / oldResolution;
-      var center = new ol.Coordinate(x, y);
+      var x =
+          anchor[0] - resolution * (anchor[0] - oldCenter[0]) / oldResolution;
+      var y =
+          anchor[1] - resolution * (anchor[1] - oldCenter[1]) / oldResolution;
+      var center = [x, y];
       map.withFrozenRendering(function() {
         this.setCenter(center);
         this.setResolution(resolution);

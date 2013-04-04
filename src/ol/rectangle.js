@@ -1,7 +1,6 @@
 goog.provide('ol.Rectangle');
 
 goog.require('goog.asserts');
-goog.require('ol.Coordinate');
 goog.require('ol.Size');
 
 
@@ -91,8 +90,7 @@ ol.Rectangle.prototype.extendXY = function(x, y) {
  * @return {ol.Coordinate} Center.
  */
 ol.Rectangle.prototype.getCenter = function() {
-  return new ol.Coordinate(
-      (this.minX + this.maxX) / 2, (this.minY + this.maxY) / 2);
+  return [(this.minX + this.maxX) / 2, (this.minY + this.maxY) / 2];
 };
 
 
@@ -145,9 +143,10 @@ ol.Rectangle.prototype.isEmpty = function() {
  * @return {ol.Coordinate} Coordinate.
  */
 ol.Rectangle.prototype.normalize = function(coordinate) {
-  return new ol.Coordinate(
-      (coordinate.x - this.minX) / this.getWidth(),
-      (coordinate.y - this.minY) / this.getHeight());
+  return [
+    (coordinate[0] - this.minX) / this.getWidth(),
+    (coordinate[1] - this.minY) / this.getHeight()
+  ];
 };
 
 

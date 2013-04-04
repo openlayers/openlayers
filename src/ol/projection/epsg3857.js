@@ -141,5 +141,5 @@ ol.projection.EPSG3857.toEPSG4326 = function(input, opt_output, opt_dimension) {
  */
 ol.projection.EPSG3857.prototype.getPointResolution =
     function(resolution, point) {
-  return resolution / ol.math.cosh(point.y / ol.projection.EPSG3857.RADIUS);
+  return resolution / ol.math.cosh(point[1] / ol.projection.EPSG3857.RADIUS);
 };

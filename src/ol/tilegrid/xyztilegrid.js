@@ -1,6 +1,5 @@
 goog.provide('ol.tilegrid.XYZ');
 
-goog.require('ol.Coordinate');
 goog.require('ol.Size');
 goog.require('ol.TileRange');
 goog.require('ol.projection');
@@ -24,8 +23,8 @@ ol.tilegrid.XYZ = function(xyzOptions) {
   }
 
   goog.base(this, {
-    origin: new ol.Coordinate(-ol.projection.EPSG3857.HALF_SIZE,
-                              ol.projection.EPSG3857.HALF_SIZE),
+    origin: [-ol.projection.EPSG3857.HALF_SIZE,
+             ol.projection.EPSG3857.HALF_SIZE],
     resolutions: resolutions,
     tileSize: new ol.Size(ol.DEFAULT_TILE_SIZE, ol.DEFAULT_TILE_SIZE)
   });

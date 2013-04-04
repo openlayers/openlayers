@@ -1,7 +1,6 @@
 goog.provide('ol.TileCoord');
 
 goog.require('goog.array');
-goog.require('ol.Coordinate');
 
 
 /**
@@ -18,14 +17,11 @@ ol.QuadKeyCharCode = {
 
 /**
  * @constructor
- * @extends {ol.Coordinate}
  * @param {number} z Zoom level.
  * @param {number} x X.
  * @param {number} y Y.
  */
 ol.TileCoord = function(z, x, y) {
-
-  goog.base(this, x, y);
 
   /**
    * Zoom level.
@@ -33,8 +29,17 @@ ol.TileCoord = function(z, x, y) {
    */
   this.z = z;
 
+  /**
+   * @type {number}
+   */
+  this.x = x;
+
+  /**
+   * @type {number}
+   */
+  this.y = y;
+
 };
-goog.inherits(ol.TileCoord, ol.Coordinate);
 
 
 /**

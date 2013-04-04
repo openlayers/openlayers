@@ -25,7 +25,6 @@ goog.require('goog.style');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
 goog.require('ol.Color');
-goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.FrameState');
 goog.require('ol.IView');
@@ -400,7 +399,8 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
   } else {
     var vec3 = [pixel.x, pixel.y, 0];
     goog.vec.Mat4.multVec3(frameState.pixelToCoordinateMatrix, vec3, vec3);
-    return new ol.Coordinate(vec3[0], vec3[1]);
+    vec3.length = 2;
+    return vec3;
   }
 };
 
@@ -434,7 +434,7 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
   if (goog.isNull(frameState)) {
     return null;
   } else {
-    var vec3 = [coordinate.x, coordinate.y, 0];
+    var vec3 = [coordinate[0], coordinate[1], 0];
     goog.vec.Mat4.multVec3(frameState.coordinateToPixelMatrix, vec3, vec3);
     return new ol.Pixel(vec3[0], vec3[1]);
   }
@@ -508,8 +508,8 @@ ol.Map.prototype.getTilePriority =
   // between the center of the tile and the focus.  The factor of 65536 means
   // that the prioritization should behave as desired for tiles up to
   // 65536 * Math.log(2) = 45426 pixels from the focus.
-  var deltaX = tileCenter.x - frameState.focus.x;
-  var deltaY = tileCenter.y - frameState.focus.y;
+  var deltaX = tileCenter[0] - frameState.focus[0];
+  var deltaY = tileCenter[1] - frameState.focus[1];
   return 65536 * Math.log(tileResolution) +
       Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
 };

@@ -110,8 +110,8 @@ ol.renderer.canvas.ImageLayer.prototype.renderFrame =
         1);
     goog.vec.Mat4.translate(
         transform,
-        (imageExtent.minX - viewCenter.x) / imageResolution,
-        (viewCenter.y - imageExtent.maxY) / imageResolution,
+        (imageExtent.minX - viewCenter[0]) / imageResolution,
+        (viewCenter[1] - imageExtent.maxY) / imageResolution,
         0);
 
     this.updateAttributions(frameState.attributions, image.getAttributions());

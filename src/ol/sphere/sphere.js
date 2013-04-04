@@ -11,7 +11,6 @@
 goog.provide('ol.Sphere');
 
 goog.require('goog.math');
-goog.require('ol.Coordinate');
 
 
 
@@ -37,9 +36,9 @@ ol.Sphere = function(radius) {
  * @return {number} Spherical law of cosines distance.
  */
 ol.Sphere.prototype.cosineDistance = function(c1, c2) {
-  var lat1 = goog.math.toRadians(c1.y);
-  var lat2 = goog.math.toRadians(c2.y);
-  var deltaLon = goog.math.toRadians(c2.x - c1.x);
+  var lat1 = goog.math.toRadians(c1[1]);
+  var lat2 = goog.math.toRadians(c2[1]);
+  var deltaLon = goog.math.toRadians(c2[0] - c1[0]);
   return this.radius * Math.acos(
       Math.sin(lat1) * Math.sin(lat2) +
       Math.cos(lat1) * Math.cos(lat2) * Math.cos(deltaLon));
@@ -73,9 +72,9 @@ ol.Sphere.prototype.crossTrackDistance = function(c1, c2, c3) {
  * @return {number} Equirectangular distance.
  */
 ol.Sphere.prototype.equirectangularDistance = function(c1, c2) {
-  var lat1 = goog.math.toRadians(c1.y);
-  var lat2 = goog.math.toRadians(c2.y);
-  var deltaLon = goog.math.toRadians(c2.x - c1.x);
+  var lat1 = goog.math.toRadians(c1[1]);
+  var lat2 = goog.math.toRadians(c2[1]);
+  var deltaLon = goog.math.toRadians(c2[0] - c1[0]);
   var x = deltaLon * Math.cos((lat1 + lat2) / 2);
   var y = lat2 - lat1;
   return this.radius * Math.sqrt(x * x + y * y);
@@ -102,10 +101,10 @@ ol.Sphere.prototype.finalBearing = function(c1, c2) {
  * @return {number} Haversine distance.
  */
 ol.Sphere.prototype.haversineDistance = function(c1, c2) {
-  var lat1 = goog.math.toRadians(c1.y);
-  var lat2 = goog.math.toRadians(c2.y);
+  var lat1 = goog.math.toRadians(c1[1]);
+  var lat2 = goog.math.toRadians(c2[1]);
   var deltaLatBy2 = (lat2 - lat1) / 2;
-  var deltaLonBy2 = goog.math.toRadians(c2.x - c1.x) / 2;
+  var deltaLonBy2 = goog.math.toRadians(c2[0] - c1[0]) / 2;
   var a = Math.sin(deltaLatBy2) * Math.sin(deltaLatBy2) +
       Math.sin(deltaLonBy2) * Math.sin(deltaLonBy2) *
       Math.cos(lat1) * Math.cos(lat2);
@@ -121,9 +120,9 @@ ol.Sphere.prototype.haversineDistance = function(c1, c2) {
  * @return {number} Initial bearing.
  */
 ol.Sphere.prototype.initialBearing = function(c1, c2) {
-  var lat1 = goog.math.toRadians(c1.y);
-  var lat2 = goog.math.toRadians(c2.y);
-  var deltaLon = goog.math.toRadians(c2.x - c1.x);
+  var lat1 = goog.math.toRadians(c1[1]);
+  var lat2 = goog.math.toRadians(c2[1]);
+  var deltaLon = goog.math.toRadians(c2[0] - c1[0]);
   var y = Math.sin(deltaLon) * Math.cos(lat2);
   var x = Math.cos(lat1) * Math.sin(lat2) -
       Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
@@ -153,17 +152,17 @@ ol.Sphere.prototype.maximumLatitude = function(bearing, latitude) {
  * @return {ol.Coordinate} Midpoint.
  */
 ol.Sphere.prototype.midpoint = function(c1, c2) {
-  var lat1 = goog.math.toRadians(c1.y);
-  var lat2 = goog.math.toRadians(c2.y);
-  var lon1 = goog.math.toRadians(c1.x);
-  var deltaLon = goog.math.toRadians(c2.x - c1.x);
+  var lat1 = goog.math.toRadians(c1[1]);
+  var lat2 = goog.math.toRadians(c2[1]);
+  var lon1 = goog.math.toRadians(c1[0]);
+  var deltaLon = goog.math.toRadians(c2[0] - c1[0]);
   var Bx = Math.cos(lat2) * Math.cos(deltaLon);
   var By = Math.cos(lat2) * Math.sin(deltaLon);
   var cosLat1PlusBx = Math.cos(lat1) + Bx;
   var lat = Math.atan2(Math.sin(lat1) + Math.sin(lat2),
                        Math.sqrt(cosLat1PlusBx * cosLat1PlusBx + By * By));
   var lon = lon1 + Math.atan2(By, cosLat1PlusBx);
-  return new ol.Coordinate(goog.math.toDegrees(lon), goog.math.toDegrees(lat));
+  return [goog.math.toDegrees(lon), goog.math.toDegrees(lat)];
 };
 
 
@@ -176,8 +175,8 @@ ol.Sphere.prototype.midpoint = function(c1, c2) {
  * @return {ol.Coordinate} Coordinate.
  */
 ol.Sphere.prototype.offset = function(c1, distance, bearing) {
-  var lat1 = goog.math.toRadians(c1.y);
-  var lon1 = goog.math.toRadians(c1.x);
+  var lat1 = goog.math.toRadians(c1[1]);
+  var lon1 = goog.math.toRadians(c1[0]);
   var dByR = distance / this.radius;
   var lat = Math.asin(
       Math.sin(lat1) * Math.cos(dByR) +
@@ -185,5 +184,5 @@ ol.Sphere.prototype.offset = function(c1, distance, bearing) {
   var lon = lon1 + Math.atan2(
       Math.sin(bearing) * Math.sin(dByR) * Math.cos(lat1),
       Math.cos(dByR) - Math.sin(lat1) * Math.sin(lat));
-  return new ol.Coordinate(goog.math.toDegrees(lon), goog.math.toDegrees(lat));
+  return [goog.math.toDegrees(lon), goog.math.toDegrees(lat)];
 };
