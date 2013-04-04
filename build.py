@@ -39,6 +39,9 @@ TEMPLATE_GLSL_COMPILER_JS = 'build/glsl-unit/bin/template_glsl_compiler.js'
 variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
+EXECUTABLES = [variables.GIT, variables.GJSLINT, variables.JAVA,
+               variables.JSDOC, variables.PYTHON, variables.PHANTOMJS]
+
 EXPORTS = [path
            for path in ifind('src')
            if path.endswith('.exports')
@@ -579,6 +582,31 @@ def reallyclean(t):
     #       git clean will refuse to run unless given -f or -n.
     t.run('%(GIT)s', 'clean', '-X', '-d', '-f', '.')
 
+
+@target('checkdeps')
+def check_dependencies(t):
+    for exe in EXECUTABLES:
+        status = 'present' if which(exe) else 'MISSING'
+        print 'Program "%s" seems to be %s.' % (exe, status)
+    print 'For certain targets all above programs need to be present.'
+
+def which(program):
+    """Returns the full path of a given argument or `None`.
+
+See: http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python"""
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+    return None
 
 if __name__ == '__main__':
     main()
