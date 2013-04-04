@@ -105,6 +105,8 @@ ol.MapBrowserEvent.prototype.isMouseActionButton = function() {
  */
 ol.MapBrowserEventHandler = function(map) {
 
+  goog.base(this);
+
   /**
    * This is the element that we will listen to the real events on.
    * @type {ol.Map}
