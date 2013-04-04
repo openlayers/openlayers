@@ -8,14 +8,14 @@
 
 
 /**
- * @param {String|Object.<string,*>=} option
+ * @param {string|Object.<string,*>=} option
  * @return {!jQuery}
  */
 jQuery.prototype.popover = function(option) {};
 
 
 /**
- * @param {String|Object.<string,*>=} option
+ * @param {string|Object.<string,*>=} option
  * @return {!jQuery}
  */
 jQuery.prototype.tooltip = function(option) {};
