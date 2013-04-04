@@ -1,0 +1,3 @@
+@exportClass ol.Map2D ol.Map2DOptions
+@exportProperty ol.Map2D.prototype.getZoom
+@exportProperty ol.Map2D.prototype.setZoom
