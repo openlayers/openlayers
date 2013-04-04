@@ -1,3 +1,16 @@
+@exportObjectLiteral ol.Map2DOptions
+@exportObjectLiteralProperty ol.Map2DOptions.center ol.Coordinate|undefined
+@exportObjectLiteralProperty ol.Map2DOptions.controls Array.<ol.control.Control>|undefined
+@exportObjectLiteralProperty ol.Map2DOptions.interactions ol.Collection|undefined
+@exportObjectLiteralProperty ol.Map2DOptions.layers Array.<ol.layer.Layer>|ol.Collection|undefined
+@exportObjectLiteralProperty ol.Map2DOptions.projection ol.ProjectionLike
+@exportObjectLiteralProperty ol.Map2DOptions.renderer ol.RendererHint|undefined
+@exportObjectLiteralProperty ol.Map2DOptions.renderers Array.<ol.RendererHint>|undefined
+@exportObjectLiteralProperty ol.Map2DOptions.resolution number|undefined
+@exportObjectLiteralProperty ol.Map2DOptions.rotation number|undefined
+@exportObjectLiteralProperty ol.Map2DOptions.target Element|string
+@exportObjectLiteralProperty ol.Map2DOptions.zoom number|undefined
+
 @exportObjectLiteral ol.MapOptions
 @exportObjectLiteralProperty ol.MapOptions.controls Array.<ol.control.Control>|undefined
 @exportObjectLiteralProperty ol.MapOptions.interactions ol.Collection|undefined
