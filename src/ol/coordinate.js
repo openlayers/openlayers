@@ -18,13 +18,6 @@ ol.Coordinate;
 
 
 /**
- * @const
- * @type {ol.Coordinate}
- */
-ol.coordinate.ZERO = [0, 0];
-
-
-/**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {ol.Coordinate} delta Delta.
  * @return {ol.Coordinate} Coordinate.
