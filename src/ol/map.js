@@ -56,6 +56,7 @@ goog.require('ol.renderer.dom.SUPPORTED');
 goog.require('ol.renderer.webgl.Map');
 goog.require('ol.renderer.webgl.SUPPORTED');
 goog.require('ol.structs.PriorityQueue');
+goog.require('ol.vec.Mat4');
 
 
 /**
@@ -397,10 +398,8 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
   if (goog.isNull(frameState)) {
     return null;
   } else {
-    var vec3 = [pixel.x, pixel.y, 0];
-    goog.vec.Mat4.multVec3(frameState.pixelToCoordinateMatrix, vec3, vec3);
-    vec3.length = 2;
-    return vec3;
+    var vec2 = [pixel.x, pixel.y];
+    return ol.vec.Mat4.multVec2(frameState.pixelToCoordinateMatrix, vec2, vec2);
   }
 };
 
@@ -434,9 +433,9 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
   if (goog.isNull(frameState)) {
     return null;
   } else {
-    var vec3 = [coordinate[0], coordinate[1], 0];
-    goog.vec.Mat4.multVec3(frameState.coordinateToPixelMatrix, vec3, vec3);
-    return new ol.Pixel(vec3[0], vec3[1]);
+    var vec2 = coordinate.slice(0, 2);
+    ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix, vec2, vec2);
+    return new ol.Pixel(vec2[0], vec2[1]);
   }
 };
 
