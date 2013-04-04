@@ -78,6 +78,12 @@ ol.ENABLE_WEBGL = true;
 
 
 /**
+ * @define {number} Maximum new tile loads per frame.
+ */
+ol.MAXIMUM_NEW_TILE_LOADS_PER_FRAME = 2;
+
+
+/**
  * @enum {string}
  */
 ol.RendererHint = {
@@ -556,7 +562,7 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
  */
 ol.Map.prototype.handlePostRender = function() {
   this.tileQueue_.reprioritize(); // FIXME only call if needed
-  this.tileQueue_.loadMoreTiles();
+  this.tileQueue_.loadMoreTiles(ol.MAXIMUM_NEW_TILE_LOADS_PER_FRAME);
 
   var postRenderFunctions = this.postRenderFunctions_;
   var i;
