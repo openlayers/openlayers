@@ -155,7 +155,11 @@ ol.MapBrowserEventHandler = function(map) {
    * @private
    */
   this.touchListenerKeys_ = null;
-
+    /**
+     * @type {Array.<number>}
+     * @private
+     */
+    this.eventTargetListeners_ = [];
   /**
    * @type {goog.events.BrowserEvent}
    * @private
