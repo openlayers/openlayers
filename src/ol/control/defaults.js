@@ -2,6 +2,7 @@ goog.provide('ol.control.defaults');
 
 goog.require('goog.array');
 goog.require('ol.control.Attribution');
+goog.require('ol.control.Logo');
 goog.require('ol.control.Zoom');
 
 
@@ -23,6 +24,14 @@ ol.control.defaults = function(opt_options, opt_controls) {
     var attributionControlOptions = goog.isDef(options.attributionOptions) ?
         options.attributionOptions : undefined;
     controls.push(new ol.control.Attribution(attributionControlOptions));
+  }
+
+  var logoControl = goog.isDef(options.logo) ?
+      options.logo : true;
+  if (logoControl) {
+    var logoControlOptions = goog.isDef(options.logoOptions) ?
+        options.logoOptions : undefined;
+    controls.push(new ol.control.Logo(logoControlOptions));
   }
 
   var zoomControl = goog.isDef(options.zoom) ?
