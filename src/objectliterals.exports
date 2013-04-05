@@ -145,6 +145,7 @@
 @exportObjectLiteral ol.source.SourceOptions
 @exportObjectLiteralProperty ol.source.SourceOptions.attributions Array.<ol.Attribution>|undefined
 @exportObjectLiteralProperty ol.source.SourceOptions.extent ol.Extent|undefined
+@exportObjectLiteralProperty ol.source.SourceOptions.logo string|undefined
 @exportObjectLiteralProperty ol.source.SourceOptions.projection ol.ProjectionLike
 
 @exportObjectLiteral ol.source.StamenOptions
