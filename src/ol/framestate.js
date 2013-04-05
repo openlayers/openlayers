@@ -26,6 +26,7 @@ goog.require('ol.layer.LayerState');
  *            focus: ol.Coordinate,
  *            layersArray: Array.<ol.layer.Layer>,
  *            layerStates: Object.<number, ol.layer.LayerState>,
+ *            logos: Object.<string, boolean>,
  *            pixelToCoordinateMatrix: goog.vec.Mat4.Number,
  *            postRenderFunctions: Array.<ol.PostRenderFunction>,
  *            size: ol.Size,

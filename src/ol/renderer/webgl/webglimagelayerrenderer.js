@@ -137,6 +137,7 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
     this.texture = texture;
 
     this.updateAttributions(frameState.attributions, image.getAttributions());
+    this.updateLogos(frameState, imageSource);
   }
 };
 

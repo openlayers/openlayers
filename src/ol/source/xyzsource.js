@@ -19,6 +19,7 @@ goog.require('ol.tilegrid.XYZ');
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            crossOrigin: (string|undefined),
  *            extent: (ol.Extent|undefined),
+ *            logo: (string|undefined),
  *            maxZoom: number,
  *            projection: (ol.Projection|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
@@ -105,6 +106,7 @@ ol.source.XYZ = function(xyzOptions) {
     attributions: xyzOptions.attributions,
     crossOrigin: xyzOptions.crossOrigin,
     extent: xyzOptions.extent,
+    logo: xyzOptions.logo,
     projection: projection,
     tileGrid: tileGrid,
     tileUrlFunction: tileUrlFunction

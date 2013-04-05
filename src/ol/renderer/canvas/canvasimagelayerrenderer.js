@@ -115,5 +115,6 @@ ol.renderer.canvas.ImageLayer.prototype.renderFrame =
         0);
 
     this.updateAttributions(frameState.attributions, image.getAttributions());
+    this.updateLogos(frameState, imageSource);
   }
 };

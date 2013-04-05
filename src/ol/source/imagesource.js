@@ -16,6 +16,7 @@ goog.require('ol.source.Source');
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            crossOrigin: (null|string|undefined),
  *            extent: (null|ol.Extent|undefined),
+ *            logo: (string|undefined),
  *            projection: ol.ProjectionLike,
  *            resolutions: (Array.<number>|undefined),
  *            imageUrlFunction: (ol.ImageUrlFunctionType|
@@ -36,6 +37,7 @@ ol.source.ImageSource = function(options) {
   goog.base(this, {
     attributions: options.attributions,
     extent: options.extent,
+    logo: options.logo,
     projection: options.projection
   });
 

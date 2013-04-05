@@ -19,6 +19,7 @@ goog.require('ol.tilegrid.TileGrid');
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            crossOrigin: (null|string|undefined),
  *            extent: (ol.Extent|undefined),
+ *            logo: (string|undefined),
  *            opaque: (boolean|undefined),
  *            projection: ol.ProjectionLike,
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
@@ -38,6 +39,7 @@ ol.source.ImageTileSource = function(options) {
   goog.base(this, {
     attributions: options.attributions,
     extent: options.extent,
+    logo: options.logo,
     opaque: options.opaque,
     projection: options.projection,
     tileGrid: options.tileGrid

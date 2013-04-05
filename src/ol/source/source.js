@@ -39,6 +39,12 @@ ol.source.Source = function(sourceOptions) {
   this.attributions_ = goog.isDef(sourceOptions.attributions) ?
       sourceOptions.attributions : null;
 
+  /**
+   * @private
+   * @type {string|undefined}
+   */
+  this.logo_ = sourceOptions.logo;
+
 };
 goog.inherits(ol.source.Source, goog.events.EventTarget);
 
@@ -64,6 +70,14 @@ ol.source.Source.prototype.getAttributions = function() {
  */
 ol.source.Source.prototype.getExtent = function() {
   return this.extent_;
+};
+
+
+/**
+ * @return {string|undefined} Logo.
+ */
+ol.source.Source.prototype.getLogo = function() {
+  return this.logo_;
 };
 
 
@@ -100,6 +114,14 @@ ol.source.Source.prototype.setAttributions = function(attributions) {
  */
 ol.source.Source.prototype.setExtent = function(extent) {
   this.extent_ = extent;
+};
+
+
+/**
+ * @param {string|undefined} logo Logo.
+ */
+ol.source.Source.prototype.setLogo = function(logo) {
+  this.logo_ = logo;
 };
 
 
