@@ -383,8 +383,16 @@ def _strip_comments(lines):
 @target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC,
         EXAMPLES_SRC, SHADER_SRC, SPEC)
 def build_check_requires_timestamp(t):
+    from zipfile import ZipFile
     unused_count = 0
     all_provides = set()
+    zf = ZipFile(PLOVR_JAR)
+    for zi in zf.infolist():
+        if zi.filename.endswith('.js'):
+            for line in zf.open(zi):
+                m = re.match(r'goog.provide\(\'(.*)\'\);', line)
+                if m:
+                    all_provides.add(m.group(1))
     for filename in sorted(t.dependencies):
         if filename == 'build/src/internal/src/requireall.js':
             continue
