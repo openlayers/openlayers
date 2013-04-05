@@ -185,13 +185,16 @@ ol.parser.XML.prototype.createElementNS = function(name, opt_uri) {
  * @param {string=} opt_uri The name space uri to which the node belongs.
  * @param {Element=} opt_parent Result will be appended to this node. If no
  * parent is supplied, the node will not be appended to anything.
- * @return {Element} The child node.
+ * @return {?Element} The child node.
  */
 ol.parser.XML.prototype.writeNode = function(name, obj, opt_uri, opt_parent) {
-  var uri = opt_uri ? opt_uri : this.defaultNamespaceURI;
-  var child = this.writers[uri][name].apply(this, [obj]);
-  if (opt_parent && child) {
-    opt_parent.appendChild(child);
+  var child = null;
+  if (goog.isDef(this.writers)) {
+    var uri = opt_uri ? opt_uri : this.defaultNamespaceURI;
+    child = this.writers[uri][name].apply(this, [obj]);
+    if (opt_parent && child) {
+      opt_parent.appendChild(child);
+    }
   }
   return child;
 };
