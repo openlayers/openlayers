@@ -9,21 +9,65 @@ import re
 import shutil
 import sys
 
-from pake import Target, ifind, main, output, rule, target, variables, virtual
+from pake import Target, ifind, main, output, rule, target, variables, virtual, which
 
 
 if sys.platform == 'win32':
-    ProgramFiles = os.environ.get('ProgramFiles', 'C:\\Program Files')
-    ProgramFiles_X86 = os.environ.get('ProgramFiles(X86)', 'C:\\Program Files')
-    Python27 = os.environ.get('SystemDrive', 'C:') + '\\Python27'
-    variables.GIT = os.path.join(ProgramFiles_X86, 'Git', 'bin', 'git.exe')
-    variables.GJSLINT = os.path.join(Python27, 'Scripts', 'gjslint.exe')
-    variables.JAVA = os.path.join(
-        ProgramFiles, 'Java', 'jre7', 'bin', 'java.exe')
-    variables.JSDOC = 'jsdoc'  # FIXME
-    variables.NODE = 'node'
-    variables.PYTHON = os.path.join(Python27, 'python.exe')
-    variables.PHANTOMJS = 'phantomjs.exe'
+    """ windows_defaults assumes that jsdoc was installed at a specific place
+        (C:\jsdoc). It also fixes a certain version (1.9.0) of phantomjs which might
+        not anymore be proposed on
+        http://code.google.com/p/phantomjs/downloads/list"""
+
+    windows_defaults = {
+        'ProgramFiles': os.environ.get('ProgramFiles', 'C:\\Program Files'),
+        'Python27': os.environ.get('SystemDrive', 'C:') + '\\Python27',
+        'jsdoc': os.environ.get('SystemDrive', 'C:') + '\\jsdoc3',
+        'phantomjs': os.environ.get('SystemDrive', 'C:') + \
+            '\\phantomjs-1.9.0-windows'
+    }
+
+    if which('git.exe'):
+        variables.GIT = 'git.exe'
+    else:
+        variables.GIT = os.path.join(windows_defaults['ProgramFiles'],
+                                            'Git', 'bin', 'git.exe')
+
+    if which('gjslint.exe'):
+        variables.GJSLINT = 'gjslint.exe'
+    else:
+        variables.GJSLINT = os.path.join(windows_defaults['Python27'],
+                                                    'Scripts', 'gjslint.exe')
+
+    if which('java.exe'):
+        variables.JAVA = 'java.exe'
+    else:
+        variables.JAVA = os.path.join(windows_defaults['ProgramFiles'],
+                                                'Java', 'jre7', 'bin', 'java.exe')
+    
+    if which('jar.exe'):
+        variables.JAR = 'jar.exe'
+    else:
+        variables.JAR = os.path.join(windows_defaults['ProgramFiles'],
+                                              'Java', 'jdk1.7.0_17', 'bin', 'jar.exe')
+
+    if which('jsdoc.cmd'):
+        variables.JSDOC = 'jsdoc.cmd'
+    else:
+        variables.JSDOC = os.path.join(windows_defaults['jsdoc'],
+                                                'jsdoc.cmd')
+
+    if which('python.exe'):
+        variables.PYTHON = 'python.exe'
+    else:
+        variables.PYTHON = os.path.join(windows_defaults['Python27'],
+                                                    'python.exe')
+
+    if which('phantomjs.exe'):
+        variables.PHANTOMJS = 'phantomjs.exe'
+    else:
+        variables.PHANTOMJS =  os.path.join(windows_defaults['phantomjs'],
+                                                        'phantomjs.exe')
+
 else:
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
@@ -38,6 +82,9 @@ TEMPLATE_GLSL_COMPILER_JS = 'build/glsl-unit/bin/template_glsl_compiler.js'
 
 variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
+
+EXECUTABLES = [variables.GIT, variables.GJSLINT, variables.JAVA, variables.JAR,
+                        variables.JSDOC, variables.PYTHON, variables.PHANTOMJS]
 
 EXPORTS = [path
            for path in ifind('src')
@@ -578,6 +625,14 @@ def reallyclean(t):
     # -f => if git configuration variable clean.requireForce != false,
     #       git clean will refuse to run unless given -f or -n.
     t.run('%(GIT)s', 'clean', '-X', '-d', '-f', '.')
+
+
+@target('checkdeps')
+def check_dependencies(t):
+    for exe in EXECUTABLES:
+        status = 'present' if which(exe) else 'MISSING'
+        print 'Program "%s" seems to be %s.' % (exe, status)
+    print 'For certain targets all above programs need to be present.'
 
 
 if __name__ == '__main__':
