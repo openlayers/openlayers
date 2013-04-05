@@ -78,6 +78,18 @@ ol.ENABLE_WEBGL = true;
 
 
 /**
+ * @define {number} Maximum number of simultaneously loading tiles.
+ */
+ol.MAXIMUM_TILES_LOADING = 8;
+
+
+/**
+ * @define {number} Maximum new tile loads per frame.
+ */
+ol.MAXIMUM_NEW_TILE_LOADS_PER_FRAME = 2;
+
+
+/**
  * @enum {string}
  */
 ol.RendererHint = {
@@ -273,7 +285,9 @@ ol.Map = function(mapOptions) {
    * @private
    * @type {ol.TileQueue}
    */
-  this.tileQueue_ = new ol.TileQueue(goog.bind(this.getTilePriority, this),
+  this.tileQueue_ = new ol.TileQueue(
+      ol.MAXIMUM_TILES_LOADING,
+      goog.bind(this.getTilePriority, this),
       goog.bind(this.handleTileChange_, this));
 
   goog.events.listen(this, ol.Object.getChangedEventType(ol.MapProperty.VIEW),
@@ -555,7 +569,7 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
  */
 ol.Map.prototype.handlePostRender = function() {
   this.tileQueue_.reprioritize(); // FIXME only call if needed
-  this.tileQueue_.loadMoreTiles();
+  this.tileQueue_.loadMoreTiles(ol.MAXIMUM_NEW_TILE_LOADS_PER_FRAME);
 
   var postRenderFunctions = this.postRenderFunctions_;
   var i;
