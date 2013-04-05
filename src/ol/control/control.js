@@ -48,10 +48,10 @@ ol.control.Control = function(controlOptions) {
   this.map_ = null;
 
   /**
-   * @private
-   * @type {?number}
+   * @protected
+   * @type {!Array.<?number>}
    */
-  this.postrenderListenKey_ = null;
+  this.listenerKeys = [];
 
   if (goog.isDef(controlOptions.map)) {
     this.setMap(controlOptions.map);
@@ -95,9 +95,9 @@ ol.control.Control.prototype.setMap = function(map) {
   if (!goog.isNull(this.map_)) {
     goog.dom.removeNode(this.element);
   }
-  if (!goog.isNull(this.postrenderListenKey_)) {
-    goog.events.unlistenByKey(this.postrenderListenKey_);
-    this.postrenderListenKey_ = null;
+  if (!goog.array.isEmpty(this.listenerKeys)) {
+    goog.array.forEach(this.listenerKeys, goog.events.unlistenByKey);
+    this.listenerKeys.length = 0;
   }
   this.map_ = map;
   if (!goog.isNull(this.map_)) {
@@ -105,8 +105,8 @@ ol.control.Control.prototype.setMap = function(map) {
         this.target_ : map.getOverlayContainer();
     goog.dom.appendChild(target, this.element);
     if (this.handleMapPostrender !== goog.nullFunction) {
-      this.postrenderListenKey_ = goog.events.listen(map,
-          ol.MapEventType.POSTRENDER, this.handleMapPostrender, false, this);
+      this.listenerKeys.push(goog.events.listen(map,
+          ol.MapEventType.POSTRENDER, this.handleMapPostrender, false, this));
     }
   }
 };

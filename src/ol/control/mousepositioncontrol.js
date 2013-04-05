@@ -85,12 +85,6 @@ ol.control.MousePosition = function(opt_options) {
    */
   this.lastMouseMovePixel_ = null;
 
-  /**
-   * @private
-   * @type {Array.<?number>}
-   */
-  this.listenerKeys_ = null;
-
 };
 goog.inherits(ol.control.MousePosition, ol.control.Control);
 
@@ -137,19 +131,15 @@ ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
  * @inheritDoc
  */
 ol.control.MousePosition.prototype.setMap = function(map) {
-  if (!goog.isNull(this.listenerKeys_)) {
-    goog.array.forEach(this.listenerKeys_, goog.events.unlistenByKey);
-    this.listenerKeys_ = null;
-  }
   goog.base(this, 'setMap', map);
   if (!goog.isNull(map)) {
     var viewport = map.getViewport();
-    this.listenerKeys_ = [
-      goog.events.listen(viewport, goog.events.EventType.MOUSEMOVE,
-          this.handleMouseMove, false, this),
-      goog.events.listen(viewport, goog.events.EventType.MOUSEOUT,
-          this.handleMouseOut, false, this)
-    ];
+    this.listenerKeys.push(
+        goog.events.listen(viewport, goog.events.EventType.MOUSEMOVE,
+            this.handleMouseMove, false, this),
+        goog.events.listen(viewport, goog.events.EventType.MOUSEOUT,
+            this.handleMouseOut, false, this)
+    );
   }
 };
 

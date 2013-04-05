@@ -42,12 +42,6 @@ ol.control.DragBox = function(dragBoxOptions) {
    */
   this.startCoordinate_ = dragBoxOptions.startCoordinate;
 
-  /**
-   * @private
-   * @type {?number}
-   */
-  this.dragListenKey_ = null;
-
   goog.base(this, {
     element: element,
     map: dragBoxOptions.map
@@ -61,19 +55,15 @@ goog.inherits(ol.control.DragBox, ol.control.Control);
  * @inheritDoc
  */
 ol.control.DragBox.prototype.setMap = function(map) {
-  if (!goog.isNull(this.dragListenKey_)) {
-    goog.events.unlistenByKey(this.dragListenKey_);
-    this.dragListenKey_ = null;
-  }
+  goog.base(this, 'setMap', map);
   if (!goog.isNull(map)) {
     this.startPixel_ = map.getPixelFromCoordinate(this.startCoordinate_);
     goog.asserts.assert(goog.isDef(this.startPixel_));
     goog.style.setPosition(this.element, this.startPixel_);
     goog.style.setBorderBoxSize(this.element, new ol.Size(0, 0));
-    this.dragListenKey_ = goog.events.listen(
-        map, ol.MapBrowserEvent.EventType.DRAG, this.updateBox_, false, this);
+    this.listenerKeys.push(goog.events.listen(
+        map, ol.MapBrowserEvent.EventType.DRAG, this.updateBox_, false, this));
   }
-  goog.base(this, 'setMap', map);
 };
 
 
