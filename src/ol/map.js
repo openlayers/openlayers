@@ -122,6 +122,26 @@ ol.MapProperty = {
 
 
 /**
+ * @class
+ * The map is the core component of OpenLayers. In its minimal configuration it
+ * needs a view, one or more layers, and a target container:
+ *
+ *     var map = new ol.Map({
+ *       view: new ol.View2D({
+ *         center: new ol.Coordinate(0, 0),
+ *         zoom: 1
+ *       }),
+ *       layers: [
+ *         new ol.layer.TileLayer({
+ *           source: new ol.source.MapQuestOSM()
+ *         })
+ *       ],
+ *       target: 'map'
+ *     });
+ *
+ * The above snippet creates a map with a MapQuest OSM layer on a 2D view and
+ * renders it to a DOM element with the id 'map'.
+ *
  * @constructor
  * @extends {ol.Object}
  * @param {ol.MapOptions} mapOptions Map options.

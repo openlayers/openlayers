@@ -480,11 +480,11 @@ def gh_pages(t):
 virtual('doc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
-@target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), SRC, SHADER_SRC,
-        ifind('doc/template'))
+@target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), 'host-resources',
+        SRC, SHADER_SRC, ifind('doc/template'))
 def jsdoc_BRANCH_timestamp(t):
-    t.run('%(JSDOC)s', '-t', 'doc/template', '-r',
-          'src', '-d', 'build/gh-pages/%(BRANCH)s/apidoc')
+    t.run('%(JSDOC)s', '-c', 'doc/conf.json', 'src', 'doc/index.md',
+          '-d', 'build/gh-pages/%(BRANCH)s/apidoc')
     t.touch()
 
 
@@ -520,7 +520,13 @@ def split_example_file(example, dst_dir):
     target_require.close()
 
 
-@target('host-examples', 'build', 'examples', phony=True)
+@target('host-resources', phony=True)
+def host_resources(t):
+    resources_dir = 'build/gh-pages/%(BRANCH)s/resources'
+    t.rm_rf(resources_dir);
+    t.cp_r('resources', resources_dir);
+
+@target('host-examples', 'build', 'host-resources', 'examples', phony=True)
 def host_examples(t):
     examples_dir = 'build/gh-pages/%(BRANCH)s/examples'
     build_dir = 'build/gh-pages/%(BRANCH)s/build'
@@ -528,18 +534,15 @@ def host_examples(t):
     t.makedirs(examples_dir)
     t.rm_rf(build_dir)
     t.makedirs(build_dir)
-    t.cp(EXAMPLES, 'examples/examples.css', examples_dir)
+    t.cp(EXAMPLES, examples_dir)
     for example in [path.replace('.html', '.js') for path in EXAMPLES]:
         split_example_file(example, examples_dir % vars(variables))
-    t.cp_r('examples/data', examples_dir + '/data')
-    t.cp_r('examples/bootstrap', examples_dir + '/bootstrap')
-    t.cp_r('examples/font-awesome', examples_dir + '/font-awesome')
     t.cp('bin/loader_hosted_examples.js', examples_dir + '/loader.js')
     t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js',
          'build/ol.css', build_dir)
     t.cp('examples/index.html', 'examples/example-list.js',
          'examples/example-list.xml', 'examples/Jugl.js',
-         'examples/jquery.min.js', 'examples/social-links.js', examples_dir)
+         'examples/jquery.min.js', examples_dir)
     t.rm_rf('build/gh-pages/%(BRANCH)s/closure-library')
     t.makedirs('build/gh-pages/%(BRANCH)s/closure-library')
     with t.chdir('build/gh-pages/%(BRANCH)s/closure-library'):
