@@ -2,6 +2,9 @@ goog.provide('ol.control.Control');
 goog.provide('ol.control.ControlOptions');
 
 goog.require('goog.Disposable');
+goog.require('goog.events');
+goog.require('ol.MapEvent');
+goog.require('ol.MapEventType');
 
 
 /**
@@ -44,6 +47,12 @@ ol.control.Control = function(controlOptions) {
    */
   this.map_ = null;
 
+  /**
+   * @protected
+   * @type {!Array.<?number>}
+   */
+  this.listenerKeys = [];
+
   if (goog.isDef(controlOptions.map)) {
     this.setMap(controlOptions.map);
   }
@@ -70,6 +79,12 @@ ol.control.Control.prototype.getMap = function() {
 
 
 /**
+ * @param {ol.MapEvent} mapEvent Map event.
+ */
+ol.control.Control.prototype.handleMapPostrender = goog.nullFunction;
+
+
+/**
  * Removes the control from its current map and attaches it to the new map.
  * Subtypes might also wish set up event handlers to get notified about changes
  * to the map here.
@@ -80,10 +95,18 @@ ol.control.Control.prototype.setMap = function(map) {
   if (!goog.isNull(this.map_)) {
     goog.dom.removeNode(this.element);
   }
+  if (!goog.array.isEmpty(this.listenerKeys)) {
+    goog.array.forEach(this.listenerKeys, goog.events.unlistenByKey);
+    this.listenerKeys.length = 0;
+  }
   this.map_ = map;
   if (!goog.isNull(this.map_)) {
     var target = goog.isDef(this.target_) ?
         this.target_ : map.getOverlayContainer();
     goog.dom.appendChild(target, this.element);
+    if (this.handleMapPostrender !== goog.nullFunction) {
+      this.listenerKeys.push(goog.events.listen(map,
+          ol.MapEventType.POSTRENDER, this.handleMapPostrender, false, this));
+    }
   }
 };

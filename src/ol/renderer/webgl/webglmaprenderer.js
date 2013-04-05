@@ -10,10 +10,10 @@ goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.style');
 goog.require('goog.webgl');
-goog.require('ol');
 goog.require('ol.FrameState');
 goog.require('ol.Size');
 goog.require('ol.Tile');
+goog.require('ol.css');
 goog.require('ol.layer.ImageLayer');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.Map');
@@ -75,7 +75,7 @@ ol.renderer.webgl.Map = function(container, map) {
   this.canvas_ = goog.dom.createElement(goog.dom.TagName.CANVAS);
   this.canvas_.height = container.clientHeight;
   this.canvas_.width = container.clientWidth;
-  this.canvas_.className = ol.CSS_CLASS_UNSELECTABLE;
+  this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
   goog.dom.insertChildAt(container, this.canvas_, 0);
 
   /**
