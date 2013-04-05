@@ -6,7 +6,6 @@ goog.provide('ol.projection');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
-goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.TransformFunction');
 goog.require('ol.sphere.NORMAL');
@@ -226,18 +225,16 @@ ol.Proj4jsProjection_.prototype.getPointResolution =
           }));
     }
     var vertices = [
-      point.x - resolution / 2, point.y,
-      point.x + resolution / 2, point.y,
-      point.x, point.y - resolution / 2,
-      point.x, point.y + resolution / 2
+      point[0] - resolution / 2, point[1],
+      point[0] + resolution / 2, point[1],
+      point[0], point[1] - resolution / 2,
+      point[0], point[1] + resolution / 2
     ];
     vertices = this.toEPSG4326_(vertices, vertices, 2);
     var width = ol.sphere.NORMAL.haversineDistance(
-        new ol.Coordinate(vertices[0], vertices[1]),
-        new ol.Coordinate(vertices[2], vertices[3]));
+        vertices.slice(0, 2), vertices.slice(2, 4));
     var height = ol.sphere.NORMAL.haversineDistance(
-        new ol.Coordinate(vertices[4], vertices[5]),
-        new ol.Coordinate(vertices[6], vertices[7]));
+        vertices.slice(4, 6), vertices.slice(6, 8));
     var pointResolution = (width + height) / 2;
     if (this.getUnits() == ol.ProjectionUnits.FEET) {
       // The radius of the normal sphere is defined in meters, so we must
@@ -651,9 +648,7 @@ ol.projection.cloneTransform = function(input, opt_output, opt_dimension) {
  */
 ol.projection.transform = function(point, source, destination) {
   var transformFn = ol.projection.getTransform(source, destination);
-  var vertex = [point.x, point.y];
-  vertex = transformFn(vertex, vertex, 2);
-  return new ol.Coordinate(vertex[0], vertex[1]);
+  return transformFn(point);
 };
 
 
@@ -669,9 +664,7 @@ ol.projection.transformWithProjections =
     function(point, sourceProjection, destinationProjection) {
   var transformFn = ol.projection.getTransformFromProjections(
       sourceProjection, destinationProjection);
-  var vertex = [point.x, point.y];
-  vertex = transformFn(vertex, vertex, 2);
-  return new ol.Coordinate(vertex[0], vertex[1]);
+  return transformFn(point);
 };
 
 

@@ -167,7 +167,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function(frameState) {
 
     // Convert pointResolution from degrees to meters
     this.toEPSG4326_ = null;
-    cosLatitude = Math.cos(goog.math.toRadians(center.y));
+    cosLatitude = Math.cos(goog.math.toRadians(center[1]));
     pointResolution *= Math.PI * cosLatitude * ol.sphere.NORMAL.radius / 180;
     projectionUnits = ol.ProjectionUnits.METERS;
 
@@ -180,9 +180,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function(frameState) {
       this.toEPSG4326_ = ol.projection.getTransformFromProjections(
           projection, ol.projection.get('EPSG:4326'));
     }
-    var vertex = [center.x, center.y];
-    vertex = this.toEPSG4326_(vertex, vertex, 2);
-    cosLatitude = Math.cos(goog.math.toRadians(vertex[1]));
+    cosLatitude = Math.cos(goog.math.toRadians(this.toEPSG4326_(center)[1]));
     var radius = ol.sphere.NORMAL.radius;
     if (projectionUnits == ol.ProjectionUnits.FEET) {
       radius /= 0.3048;

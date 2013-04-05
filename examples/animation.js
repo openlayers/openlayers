@@ -1,4 +1,3 @@
-goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
@@ -10,15 +9,15 @@ goog.require('ol.source.OpenStreetMap');
 
 
 var london = ol.projection.transform(
-    new ol.Coordinate(-0.12755, 51.507222), 'EPSG:4326', 'EPSG:3857');
+    [-0.12755, 51.507222], 'EPSG:4326', 'EPSG:3857');
 var moscow = ol.projection.transform(
-    new ol.Coordinate(37.6178, 55.7517), 'EPSG:4326', 'EPSG:3857');
+    [37.6178, 55.7517], 'EPSG:4326', 'EPSG:3857');
 var istanbul = ol.projection.transform(
-    new ol.Coordinate(28.9744, 41.0128), 'EPSG:4326', 'EPSG:3857');
+    [28.9744, 41.0128], 'EPSG:4326', 'EPSG:3857');
 var rome = ol.projection.transform(
-    new ol.Coordinate(12.5, 41.9), 'EPSG:4326', 'EPSG:3857');
+    [12.5, 41.9], 'EPSG:4326', 'EPSG:3857');
 var bern = ol.projection.transform(
-    new ol.Coordinate(7.4458, 46.95), 'EPSG:4326', 'EPSG:3857');
+    [7.4458, 46.95], 'EPSG:4326', 'EPSG:3857');
 
 var map = new ol.Map({
   layers: [

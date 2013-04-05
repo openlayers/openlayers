@@ -2,12 +2,12 @@
 goog.provide('ol.interaction.TouchPan');
 
 goog.require('goog.asserts');
-goog.require('ol.Coordinate');
 goog.require('ol.Kinetic');
 goog.require('ol.Pixel');
 goog.require('ol.PreRenderFunction');
 goog.require('ol.View');
 goog.require('ol.ViewHint');
+goog.require('ol.coordinate');
 goog.require('ol.interaction.Touch');
 
 
@@ -55,10 +55,10 @@ ol.interaction.TouchPan.prototype.handleTouchMove = function(mapBrowserEvent) {
     var deltaX = this.lastCentroid.x - centroid.x;
     var deltaY = centroid.y - this.lastCentroid.y;
     var view = mapBrowserEvent.map.getView();
-    var center = new ol.Coordinate(deltaX, deltaY)
-      .scale(view.getResolution())
-      .rotate(view.getRotation())
-      .add(view.getCenter());
+    var center = [deltaX, deltaY];
+    ol.coordinate.scale(center, view.getResolution());
+    ol.coordinate.rotate(center, view.getRotation());
+    ol.coordinate.add(center, view.getCenter());
     view.setCenter(center);
   }
   this.lastCentroid = centroid;

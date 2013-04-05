@@ -3,12 +3,12 @@
 goog.provide('ol.interaction.DragPan');
 
 goog.require('goog.asserts');
-goog.require('ol.Coordinate');
 goog.require('ol.Kinetic');
 goog.require('ol.Pixel');
 goog.require('ol.PreRenderFunction');
 goog.require('ol.View2D');
 goog.require('ol.ViewHint');
+goog.require('ol.coordinate');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
 
@@ -61,11 +61,9 @@ ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
   goog.asserts.assert(view instanceof ol.View2D);
   var resolution = view.getResolution();
   var rotation = view.getRotation();
-  var delta =
-      new ol.Coordinate(-resolution * this.deltaX, resolution * this.deltaY);
-  delta.rotate(rotation);
-  var newCenter = new ol.Coordinate(
-      this.startCenter.x + delta.x, this.startCenter.y + delta.y);
+  var newCenter = [-resolution * this.deltaX, resolution * this.deltaY];
+  ol.coordinate.rotate(newCenter, rotation);
+  ol.coordinate.add(newCenter, this.startCenter);
   map.requestRenderFrame();
   view.setCenter(newCenter);
 };

@@ -1,5 +1,5 @@
-@exportSymbol ol.Coordinate
-@exportSymbol ol.Coordinate.createStringXY
-@exportSymbol ol.Coordinate.toStringHDMS
-@exportSymbol ol.Coordinate.toStringXY
-@exportSymbol ol.Coordinate.fromProjectedArray
+@exportSymbol ol.coordinate
+@exportSymbol ol.coordinate.createStringXY
+@exportSymbol ol.coordinate.toStringHDMS
+@exportSymbol ol.coordinate.toStringXY
+@exportSymbol ol.coordinate.fromProjectedArray

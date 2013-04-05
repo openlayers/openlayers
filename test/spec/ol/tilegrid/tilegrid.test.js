@@ -10,7 +10,7 @@ describe('ol.tilegrid.TileGrid', function() {
   beforeEach(function() {
     resolutions = [1000, 500, 250, 100];
     extent = new ol.Extent(0, 0, 100000, 100000);
-    origin = new ol.Coordinate(0, 0);
+    origin = [0, 0];
     origins = [];
     tileSize = new ol.Size(100, 100);
   });
@@ -218,7 +218,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
     describe('Y North, X East', function() {
       it('returns the expected TileCoord', function() {
-        origin = new ol.Coordinate(0, 0);
+        origin = [0, 0];
         var tileGrid = new ol.tilegrid.TileGrid({
           resolutions: resolutions,
           extent: extent,
@@ -227,26 +227,22 @@ describe('ol.tilegrid.TileGrid', function() {
         });
         var tileCoord;
 
-        tileCoord = tileGrid.getTileCoordForCoordAndZ(
-            new ol.Coordinate(0, 0), 3);
+        tileCoord = tileGrid.getTileCoordForCoordAndZ([0, 0], 3);
         expect(tileCoord.z).to.eql(3);
         expect(tileCoord.x).to.eql(0);
         expect(tileCoord.y).to.eql(0);
 
-        tileCoord = tileGrid.getTileCoordForCoordAndZ(
-            new ol.Coordinate(0, 100000), 3);
+        tileCoord = tileGrid.getTileCoordForCoordAndZ([0, 100000], 3);
         expect(tileCoord.z).to.eql(3);
         expect(tileCoord.x).to.eql(0);
         expect(tileCoord.y).to.eql(10);
 
-        tileCoord = tileGrid.getTileCoordForCoordAndZ(
-            new ol.Coordinate(100000, 0), 3);
+        tileCoord = tileGrid.getTileCoordForCoordAndZ([100000, 0], 3);
         expect(tileCoord.z).to.eql(3);
         expect(tileCoord.x).to.eql(10);
         expect(tileCoord.y).to.eql(0);
 
-        tileCoord = tileGrid.getTileCoordForCoordAndZ(
-            new ol.Coordinate(100000, 100000), 3);
+        tileCoord = tileGrid.getTileCoordForCoordAndZ([100000, 100000], 3);
         expect(tileCoord.z).to.eql(3);
         expect(tileCoord.x).to.eql(10);
         expect(tileCoord.y).to.eql(10);
@@ -255,7 +251,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
     describe('Y South, X East', function() {
       it('returns the expected TileCoord', function() {
-        origin = new ol.Coordinate(0, 100000);
+        origin = [0, 100000];
         var tileGrid = new ol.tilegrid.TileGrid({
           resolutions: resolutions,
           extent: extent,
@@ -264,26 +260,22 @@ describe('ol.tilegrid.TileGrid', function() {
         });
         var tileCoord;
 
-        tileCoord = tileGrid.getTileCoordForCoordAndZ(
-            new ol.Coordinate(0, 0), 3);
+        tileCoord = tileGrid.getTileCoordForCoordAndZ([0, 0], 3);
         expect(tileCoord.z).to.eql(3);
         expect(tileCoord.x).to.eql(0);
         expect(tileCoord.y).to.eql(-10);
 
-        tileCoord = tileGrid.getTileCoordForCoordAndZ(
-            new ol.Coordinate(0, 100000), 3);
+        tileCoord = tileGrid.getTileCoordForCoordAndZ([0, 100000], 3);
         expect(tileCoord.z).to.eql(3);
         expect(tileCoord.x).to.eql(0);
         expect(tileCoord.y).to.eql(0);
 
-        tileCoord = tileGrid.getTileCoordForCoordAndZ(
-            new ol.Coordinate(100000, 0), 3);
+        tileCoord = tileGrid.getTileCoordForCoordAndZ([100000, 0], 3);
         expect(tileCoord.z).to.eql(3);
         expect(tileCoord.x).to.eql(10);
         expect(tileCoord.y).to.eql(-10);
 
-        tileCoord = tileGrid.getTileCoordForCoordAndZ(
-            new ol.Coordinate(100000, 100000), 3);
+        tileCoord = tileGrid.getTileCoordForCoordAndZ([100000, 100000], 3);
         expect(tileCoord.z).to.eql(3);
         expect(tileCoord.x).to.eql(10);
         expect(tileCoord.y).to.eql(0);
@@ -305,73 +297,64 @@ describe('ol.tilegrid.TileGrid', function() {
       var tileCoord;
 
       // gets the first tile at the origin
-      coordinate = new ol.Coordinate(0, 0);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 10);
+      coordinate = [0, 0];
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
       expect(tileCoord.z).to.eql(0);
       expect(tileCoord.x).to.eql(0);
       expect(tileCoord.y).to.eql(0);
 
       // gets one tile northwest of the origin
-      coordinate = new ol.Coordinate(-1280, 1280);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 10);
+      coordinate = [-1280, 1280];
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
       expect(tileCoord.z).to.eql(0);
       expect(tileCoord.x).to.eql(-1);
       expect(tileCoord.y).to.eql(0);
 
       // gets one tile northeast of the origin
-      coordinate = new ol.Coordinate(1280, 1280);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 10);
+      coordinate = [1280, 1280];
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
       expect(tileCoord.z).to.eql(0);
       expect(tileCoord.x).to.eql(0);
       expect(tileCoord.y).to.eql(0);
 
       // gets one tile southeast of the origin
-      coordinate = new ol.Coordinate(1280, -1280);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 10);
+      coordinate = [1280, -1280];
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
       expect(tileCoord.z).to.eql(0);
       expect(tileCoord.x).to.eql(0);
       expect(tileCoord.y).to.eql(-1);
 
       // gets one tile southwest of the origin
-      coordinate = new ol.Coordinate(-1280, -1280);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 10);
+      coordinate = [-1280, -1280];
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
       expect(tileCoord.z).to.eql(0);
       expect(tileCoord.x).to.eql(-1);
       expect(tileCoord.y).to.eql(-1);
 
       // gets the tile to the east when on the edge
-      coordinate = new ol.Coordinate(2560, -1280);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 10);
+      coordinate = [2560, -1280];
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
       expect(tileCoord.z).to.eql(0);
       expect(tileCoord.x).to.eql(1);
       expect(tileCoord.y).to.eql(-1);
 
       // gets the tile to the north when on the edge
-      coordinate = new ol.Coordinate(1280, -2560);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 10);
+      coordinate = [1280, -2560];
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
       expect(tileCoord.z).to.eql(0);
       expect(tileCoord.x).to.eql(0);
       expect(tileCoord.y).to.eql(-1);
 
       // pixels are top aligned to the origin
-      coordinate = new ol.Coordinate(1280, -2559.999);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 10);
+      coordinate = [1280, -2559.999];
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
       expect(tileCoord.z).to.eql(0);
       expect(tileCoord.x).to.eql(0);
       expect(tileCoord.y).to.eql(-1);
 
       // pixels are left aligned to the origin
-      coordinate = new ol.Coordinate(2559.999, -1280);
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate, 10);
+      coordinate = [2559.999, -1280];
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
       expect(tileCoord.z).to.eql(0);
       expect(tileCoord.x).to.eql(0);
       expect(tileCoord.y).to.eql(-1);
@@ -445,16 +428,16 @@ describe('ol.tilegrid.TileGrid', function() {
       var center;
 
       center = tileGrid.getTileCoordCenter(new ol.TileCoord(0, 0, 0));
-      expect(center.x).to.eql(50000);
-      expect(center.y).to.eql(50000);
+      expect(center[0]).to.eql(50000);
+      expect(center[1]).to.eql(50000);
 
       center = tileGrid.getTileCoordCenter(new ol.TileCoord(3, 0, 0));
-      expect(center.x).to.eql(5000);
-      expect(center.y).to.eql(5000);
+      expect(center[0]).to.eql(5000);
+      expect(center[1]).to.eql(5000);
 
       center = tileGrid.getTileCoordCenter(new ol.TileCoord(3, 9, 9));
-      expect(center.x).to.eql(95000);
-      expect(center.y).to.eql(95000);
+      expect(center[0]).to.eql(95000);
+      expect(center[1]).to.eql(95000);
     });
   });
 

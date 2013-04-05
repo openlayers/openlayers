@@ -31,12 +31,12 @@ goog.inherits(ol.Extent, ol.Rectangle);
  */
 ol.Extent.boundingExtent = function(var_args) {
   var coordinate0 = arguments[0];
-  var extent = new ol.Extent(coordinate0.x, coordinate0.y,
-                             coordinate0.x, coordinate0.y);
+  var extent = new ol.Extent(coordinate0[0], coordinate0[1],
+                             coordinate0[0], coordinate0[1]);
   var i;
   for (i = 1; i < arguments.length; ++i) {
     var coordinate = arguments[i];
-    extent.extendXY(coordinate.x, coordinate.y);
+    extent.extendXY(coordinate[0], coordinate[1]);
   }
   return extent;
 };
@@ -68,8 +68,8 @@ ol.Extent.getForView2DAndSize = function(center, resolution, rotation, size) {
   for (i = 0; i < 4; ++i) {
     x = xs[i];
     y = ys[i];
-    xs[i] = center.x + x * cosRotation - y * sinRotation;
-    ys[i] = center.y + x * sinRotation + y * cosRotation;
+    xs[i] = center[0] + x * cosRotation - y * sinRotation;
+    ys[i] = center[1] + x * sinRotation + y * cosRotation;
   }
   var minX = Math.min.apply(null, xs);
   var minY = Math.min.apply(null, ys);
@@ -87,8 +87,8 @@ ol.Extent.getForView2DAndSize = function(center, resolution, rotation, size) {
  * @return {boolean} Contains.
  */
 ol.Extent.prototype.containsCoordinate = function(coordinate) {
-  return this.minX <= coordinate.x && coordinate.x <= this.maxX &&
-      this.minY <= coordinate.y && coordinate.y <= this.maxY;
+  return this.minX <= coordinate[0] && coordinate[0] <= this.maxX &&
+      this.minY <= coordinate[1] && coordinate[1] <= this.maxY;
 };
 
 
@@ -109,7 +109,7 @@ ol.Extent.prototype.containsExtent = function(extent) {
  * @return {ol.Coordinate} Bottom left coordinate.
  */
 ol.Extent.prototype.getBottomLeft = function() {
-  return new ol.Coordinate(this.minX, this.minY);
+  return [this.minX, this.minY];
 };
 
 
@@ -117,7 +117,7 @@ ol.Extent.prototype.getBottomLeft = function() {
  * @return {ol.Coordinate} Bottom right coordinate.
  */
 ol.Extent.prototype.getBottomRight = function() {
-  return new ol.Coordinate(this.maxX, this.minY);
+  return [this.maxX, this.minY];
 };
 
 
@@ -125,7 +125,7 @@ ol.Extent.prototype.getBottomRight = function() {
  * @return {ol.Coordinate} Top left coordinate.
  */
 ol.Extent.prototype.getTopLeft = function() {
-  return new ol.Coordinate(this.minX, this.maxY);
+  return [this.minX, this.maxY];
 };
 
 
@@ -133,7 +133,7 @@ ol.Extent.prototype.getTopLeft = function() {
  * @return {ol.Coordinate} Top right coordinate.
  */
 ol.Extent.prototype.getTopRight = function() {
-  return new ol.Coordinate(this.maxX, this.maxY);
+  return [this.maxX, this.maxY];
 };
 
 
