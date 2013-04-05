@@ -4,6 +4,7 @@
 goog.provide('ol.dom');
 goog.provide('ol.dom.BrowserFeature');
 
+goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
 
 

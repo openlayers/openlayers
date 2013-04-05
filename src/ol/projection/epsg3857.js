@@ -1,6 +1,7 @@
 goog.provide('ol.projection.EPSG3857');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('ol.Extent');
 goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');

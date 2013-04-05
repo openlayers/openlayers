@@ -10,6 +10,7 @@ goog.provide('ol.source.TileJSON');
 goog.provide('ol.tilejson');
 
 goog.require('goog.asserts');
+goog.require('goog.math');
 goog.require('goog.net.jsloader');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');

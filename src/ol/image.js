@@ -2,9 +2,11 @@ goog.provide('ol.Image');
 goog.provide('ol.ImageState');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
+goog.require('goog.object');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 

@@ -1,6 +1,8 @@
 goog.provide('ol.layer.Vector');
 
+goog.require('goog.asserts');
 goog.require('goog.events.EventType');
+goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.geom.SharedVertices');
 goog.require('ol.layer.Layer');

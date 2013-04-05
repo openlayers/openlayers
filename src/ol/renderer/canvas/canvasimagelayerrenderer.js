@@ -1,5 +1,7 @@
 goog.provide('ol.renderer.canvas.ImageLayer');
 
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Image');
 goog.require('ol.ImageState');

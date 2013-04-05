@@ -1,5 +1,7 @@
 goog.provide('ol.source.DebugTileSource');
 
+goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.TileCache');

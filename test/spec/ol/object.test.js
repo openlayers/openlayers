@@ -475,4 +475,6 @@ describe('ol.Object', function() {
   });
 });
 
+
+goog.require('goog.events');
 goog.require('ol.Object');

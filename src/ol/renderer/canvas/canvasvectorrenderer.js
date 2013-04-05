@@ -2,6 +2,10 @@ goog.provide('ol.renderer.canvas.VectorRenderer');
 
 
 goog.require('goog.asserts');
+goog.require('goog.dom');
+goog.require('goog.dom.TagName');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Feature');
 goog.require('ol.Pixel');

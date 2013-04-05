@@ -1,6 +1,7 @@
 goog.provide('ol.structs.Buffer');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.webgl');
 goog.require('ol.structs.IntegerSet');
 

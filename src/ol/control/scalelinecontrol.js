@@ -1,7 +1,11 @@
 goog.provide('ol.control.ScaleLine');
 goog.provide('ol.control.ScaleLineUnits');
 
+goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
+goog.require('goog.math');
 goog.require('goog.style');
 goog.require('ol.FrameState');
 goog.require('ol.ProjectionUnits');

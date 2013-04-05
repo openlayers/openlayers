@@ -2,7 +2,9 @@ goog.provide('ol.Overlay');
 goog.provide('ol.OverlayPositioning');
 goog.provide('ol.OverlayProperty');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.style');
 goog.require('ol.Coordinate');

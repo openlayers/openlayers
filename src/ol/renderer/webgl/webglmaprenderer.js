@@ -3,11 +3,13 @@
 goog.provide('ol.renderer.webgl.Map');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
+goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol.FrameState');

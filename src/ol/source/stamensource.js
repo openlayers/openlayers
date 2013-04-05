@@ -1,5 +1,6 @@
 goog.provide('ol.source.Stamen');
 
+goog.require('goog.asserts');
 goog.require('ol.Attribution');
 goog.require('ol.source.XYZ');
 

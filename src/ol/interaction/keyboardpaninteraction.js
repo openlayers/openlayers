@@ -2,6 +2,7 @@
 
 goog.provide('ol.interaction.KeyboardPan');
 
+goog.require('goog.asserts');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('ol.View2D');

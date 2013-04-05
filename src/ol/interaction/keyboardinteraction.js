@@ -2,6 +2,7 @@
 
 goog.provide('ol.interaction.Keyboard');
 
+goog.require('goog.events.KeyHandler.EventType');
 goog.require('ol.interaction.Interaction');
 
 

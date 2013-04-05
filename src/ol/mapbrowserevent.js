@@ -3,6 +3,7 @@ goog.provide('ol.MapBrowserEvent.EventType');
 goog.provide('ol.MapBrowserEventHandler');
 
 goog.require('goog.array');
+goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
