@@ -127,8 +127,6 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   }
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
       extent, tileResolution);
-  var tileRangeWidth = tileRange.getWidth();
-  var tileRangeHeight = tileRange.getHeight();
 
   var canvasWidth = tileSize.width * tileRange.getWidth();
   var canvasHeight = tileSize.height * tileRange.getHeight();
