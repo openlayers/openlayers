@@ -59,7 +59,8 @@ ol.control.DragBox.prototype.setMap = function(map) {
   if (!goog.isNull(map)) {
     this.startPixel_ = map.getPixelFromCoordinate(this.startCoordinate_);
     goog.asserts.assert(goog.isDef(this.startPixel_));
-    goog.style.setPosition(this.element, this.startPixel_);
+    goog.style.setPosition(this.element,
+        this.startPixel_[0], this.startPixel_[1]);
     goog.style.setBorderBoxSize(this.element, new ol.Size(0, 0));
     this.listenerKeys.push(goog.events.listen(
         map, ol.MapBrowserEvent.EventType.DRAG, this.updateBox_, false, this));
@@ -76,10 +77,10 @@ ol.control.DragBox.prototype.updateBox_ = function(mapBrowserEvent) {
   var coordinate = mapBrowserEvent.getCoordinate();
   goog.asserts.assert(goog.isDef(coordinate));
   var currentPixel = map.getPixelFromCoordinate(coordinate);
-  goog.style.setPosition(this.element, new ol.Pixel(
-      Math.min(currentPixel.x, this.startPixel_.x),
-      Math.min(currentPixel.y, this.startPixel_.y)));
+  goog.style.setPosition(this.element,
+      Math.min(currentPixel[0], this.startPixel_[0]),
+      Math.min(currentPixel[1], this.startPixel_[1]));
   goog.style.setBorderBoxSize(this.element, new ol.Size(
-      Math.abs(currentPixel.x - this.startPixel_.x),
-      Math.abs(currentPixel.y - this.startPixel_.y)));
+      Math.abs(currentPixel[0] - this.startPixel_[0]),
+      Math.abs(currentPixel[1] - this.startPixel_[1])));
 };
