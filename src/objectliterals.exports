@@ -7,6 +7,24 @@
 @exportObjectLiteralProperty ol.MapOptions.target Element|string
 @exportObjectLiteralProperty ol.MapOptions.view ol.IView|undefined
 
+@exportObjectLiteral ol.OverlayOptions
+@exportObjectLiteralProperty ol.OverlayOptions.element Element|undefined
+@exportObjectLiteralProperty ol.OverlayOptions.map ol.Map|undefined
+@exportObjectLiteralProperty ol.OverlayOptions.position ol.Coordinate|undefined
+@exportObjectLiteralProperty ol.OverlayOptions.positioning ol.OverlayPositioning|undefined
+
+@exportObjectLiteral ol.Proj4jsProjectionOptions
+@exportObjectLiteralProperty ol.Proj4jsProjectionOptions.code string
+@exportObjectLiteralProperty ol.Proj4jsProjectionOptions.extent ol.Extent
+@exportObjectLiteralProperty ol.Proj4jsProjectionOptions.global boolean|undefined
+
+@exportObjectLiteral ol.ProjectionOptions
+@exportObjectLiteralProperty ol.ProjectionOptions.code string
+@exportObjectLiteralProperty ol.ProjectionOptions.units ol.ProjectionUnits
+@exportObjectLiteralProperty ol.ProjectionOptions.extent ol.Extent
+@exportObjectLiteralProperty ol.ProjectionOptions.axisOrientation string|undefined
+@exportObjectLiteralProperty ol.ProjectionOptions.global boolean|undefined
+
 @exportObjectLiteral ol.View2DOptions
 @exportObjectLiteralProperty ol.View2DOptions.center ol.Coordinate|undefined
 @exportObjectLiteralProperty ol.View2DOptions.maxResolution number|undefined
@@ -58,18 +76,18 @@
 @exportObjectLiteralProperty ol.control.LogoOptions.map ol.Map|undefined
 @exportObjectLiteralProperty ol.control.LogoOptions.target Element|undefined
 
-@exportObjectLiteral ol.control.ScaleLineOptions
-@exportObjectLiteralProperty ol.control.ScaleLineOptions.map ol.Map|undefined
-@exportObjectLiteralProperty ol.control.ScaleLineOptions.minWidth number|undefined
-@exportObjectLiteralProperty ol.control.ScaleLineOptions.target Element|undefined
-@exportObjectLiteralProperty ol.control.ScaleLineOptions.units ol.control.ScaleLineUnits|undefined
-
 @exportObjectLiteral ol.control.MousePositionOptions
 @exportObjectLiteralProperty ol.control.MousePositionOptions.coordinateFormat ol.CoordinateFormatType|undefined
 @exportObjectLiteralProperty ol.control.MousePositionOptions.map ol.Map|undefined
 @exportObjectLiteralProperty ol.control.MousePositionOptions.projection ol.ProjectionLike
 @exportObjectLiteralProperty ol.control.MousePositionOptions.target Element|undefined
 @exportObjectLiteralProperty ol.control.MousePositionOptions.undefinedHTML string|undefined
+
+@exportObjectLiteral ol.control.ScaleLineOptions
+@exportObjectLiteralProperty ol.control.ScaleLineOptions.map ol.Map|undefined
+@exportObjectLiteralProperty ol.control.ScaleLineOptions.minWidth number|undefined
+@exportObjectLiteralProperty ol.control.ScaleLineOptions.target Element|undefined
+@exportObjectLiteralProperty ol.control.ScaleLineOptions.units ol.control.ScaleLineUnits|undefined
 
 @exportObjectLiteral ol.control.ZoomOptions
 @exportObjectLiteralProperty ol.control.ZoomOptions.delta number|undefined
@@ -121,12 +139,6 @@
 @exportObjectLiteralProperty ol.layer.VectorLayerOptions.source ol.source.Source
 @exportObjectLiteralProperty ol.layer.VectorLayerOptions.style ol.style.Style|undefined
 @exportObjectLiteralProperty ol.layer.VectorLayerOptions.visible boolean|undefined
-
-@exportObjectLiteral ol.OverlayOptions
-@exportObjectLiteralProperty ol.OverlayOptions.element Element|undefined
-@exportObjectLiteralProperty ol.OverlayOptions.map ol.Map|undefined
-@exportObjectLiteralProperty ol.OverlayOptions.position ol.Coordinate|undefined
-@exportObjectLiteralProperty ol.OverlayOptions.positioning ol.OverlayPositioning|undefined
 
 @exportObjectLiteral ol.source.BingMapsOptions
 @exportObjectLiteralProperty ol.source.BingMapsOptions.culture string|undefined
@@ -185,6 +197,22 @@
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.url string|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.urls Array.<string>|undefined
 
+@exportObjectLiteral ol.source.WMTSOptions
+@exportObjectLiteralProperty ol.source.WMTSOptions.attributions Array.<ol.Attribution>|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.crossOrigin string|null|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.extent ol.Extent|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.tileGrid ol.tilegrid.WMTS
+@exportObjectLiteralProperty ol.source.WMTSOptions.projection ol.Projection|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.requestEncoding ol.source.WMTSRequestEncoding|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.layer string
+@exportObjectLiteralProperty ol.source.WMTSOptions.style string
+@exportObjectLiteralProperty ol.source.WMTSOptions.format string|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.matrixSet string
+@exportObjectLiteralProperty ol.source.WMTSOptions.dimensions Object|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.url string|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.maxZoom number|undefined
+@exportObjectLiteralProperty ol.source.WMTSOptions.urls Array.<string>|undefined
+
 @exportObjectLiteral ol.style.IconOptions
 @exportObjectLiteralProperty ol.style.IconOptions.url string|ol.Expression
 @exportObjectLiteralProperty ol.style.IconOptions.width number|ol.Expression|undefined
@@ -218,22 +246,6 @@
 @exportObjectLiteral ol.style.StyleOptions
 @exportObjectLiteralProperty ol.style.StyleOptions.rules Array.<ol.style.Rule>
 
-@exportObjectLiteral ol.source.WMTSOptions
-@exportObjectLiteralProperty ol.source.WMTSOptions.attributions Array.<ol.Attribution>|undefined
-@exportObjectLiteralProperty ol.source.WMTSOptions.crossOrigin string|null|undefined
-@exportObjectLiteralProperty ol.source.WMTSOptions.extent ol.Extent|undefined
-@exportObjectLiteralProperty ol.source.WMTSOptions.tileGrid ol.tilegrid.WMTS
-@exportObjectLiteralProperty ol.source.WMTSOptions.projection ol.Projection|undefined
-@exportObjectLiteralProperty ol.source.WMTSOptions.requestEncoding ol.source.WMTSRequestEncoding|undefined
-@exportObjectLiteralProperty ol.source.WMTSOptions.layer string
-@exportObjectLiteralProperty ol.source.WMTSOptions.style string
-@exportObjectLiteralProperty ol.source.WMTSOptions.format string|undefined
-@exportObjectLiteralProperty ol.source.WMTSOptions.matrixSet string
-@exportObjectLiteralProperty ol.source.WMTSOptions.dimensions Object|undefined
-@exportObjectLiteralProperty ol.source.WMTSOptions.url string|undefined
-@exportObjectLiteralProperty ol.source.WMTSOptions.maxZoom number|undefined
-@exportObjectLiteralProperty ol.source.WMTSOptions.urls Array.<string>|undefined
-
 @exportObjectLiteral ol.tilegrid.TileGridOptions
 @exportObjectLiteralProperty ol.tilegrid.TileGridOptions.origin ol.Coordinate|undefined
 @exportObjectLiteralProperty ol.tilegrid.TileGridOptions.origins Array.<ol.Coordinate>|undefined
@@ -251,15 +263,3 @@
 
 @exportObjectLiteral ol.tilegrid.XYZOptions
 @exportObjectLiteralProperty ol.tilegrid.XYZOptions.maxZoom number
-
-@exportObjectLiteral ol.ProjectionOptions
-@exportObjectLiteralProperty ol.ProjectionOptions.code string
-@exportObjectLiteralProperty ol.ProjectionOptions.units ol.ProjectionUnits
-@exportObjectLiteralProperty ol.ProjectionOptions.extent ol.Extent
-@exportObjectLiteralProperty ol.ProjectionOptions.axisOrientation string|undefined
-@exportObjectLiteralProperty ol.ProjectionOptions.global boolean|undefined
-
-@exportObjectLiteral ol.Proj4jsProjectionOptions
-@exportObjectLiteralProperty ol.Proj4jsProjectionOptions.code string
-@exportObjectLiteralProperty ol.Proj4jsProjectionOptions.extent ol.Extent
-@exportObjectLiteralProperty ol.Proj4jsProjectionOptions.global boolean|undefined
