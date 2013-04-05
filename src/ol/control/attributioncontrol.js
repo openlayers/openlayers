@@ -14,6 +14,7 @@ goog.require('ol.MapEvent');
 goog.require('ol.MapEventType');
 goog.require('ol.TileRange');
 goog.require('ol.control.Control');
+goog.require('ol.css');
 goog.require('ol.source.Source');
 
 
@@ -34,7 +35,7 @@ ol.control.Attribution = function(opt_options) {
   this.ulElement_ = goog.dom.createElement(goog.dom.TagName.UL);
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': 'ol-attribution ' + ol.CSS_CLASS_UNSELECTABLE
+    'class': 'ol-attribution ' + ol.css.CLASS_UNSELECTABLE
   }, this.ulElement_);
 
   goog.base(this, {

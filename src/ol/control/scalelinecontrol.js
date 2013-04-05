@@ -3,13 +3,13 @@ goog.provide('ol.control.ScaleLineUnits');
 
 goog.require('goog.dom');
 goog.require('goog.style');
-goog.require('ol');
 goog.require('ol.FrameState');
 goog.require('ol.MapEvent');
 goog.require('ol.MapEventType');
 goog.require('ol.ProjectionUnits');
 goog.require('ol.TransformFunction');
 goog.require('ol.control.Control');
+goog.require('ol.css');
 goog.require('ol.projection');
 goog.require('ol.sphere.NORMAL');
 
@@ -49,7 +49,7 @@ ol.control.ScaleLine = function(opt_options) {
    * @type {Element}
    */
   this.element_ = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': 'ol-scale-line ' + ol.CSS_CLASS_UNSELECTABLE
+    'class': 'ol-scale-line ' + ol.css.CLASS_UNSELECTABLE
   }, this.innerElement_);
 
   /**

@@ -10,9 +10,9 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.fx.Dragger');
 goog.require('goog.style');
-goog.require('ol');
 goog.require('ol.MapEventType');
 goog.require('ol.control.Control');
+goog.require('ol.css');
 
 
 
@@ -363,9 +363,9 @@ ol.control.ZoomSlider.prototype.createDraggable_ = function(elem) {
 ol.control.ZoomSlider.prototype.createDom_ = function(opt_elem) {
   var elem,
       sliderCssCls = ol.control.ZoomSlider.CSS_CLASS_CONTAINER + ' ' +
-          ol.CSS_CLASS_UNSELECTABLE,
+          ol.css.CLASS_UNSELECTABLE,
       thumbCssCls = ol.control.ZoomSlider.CSS_CLASS_THUMB + ' ' +
-          ol.CSS_CLASS_UNSELECTABLE;
+          ol.css.CLASS_UNSELECTABLE;
 
   elem = goog.dom.createDom(goog.dom.TagName.DIV, sliderCssCls,
       goog.dom.createDom(goog.dom.TagName.DIV, thumbCssCls));
