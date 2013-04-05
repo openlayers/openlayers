@@ -109,6 +109,7 @@ EXAMPLES_SRC = [path
                 if not path.startswith('examples/font-awesome')
                 if path != 'examples/Jugl.js'
                 if path != 'examples/jquery.min.js'
+                if path != 'examples/loader.js'
                 if path != 'examples/example-list.js']
 
 EXAMPLES_JSON = ['build/' + example.replace('.html', '.json')
