@@ -14,6 +14,7 @@ goog.require('ol.TileState');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerProperty');
 goog.require('ol.layer.LayerState');
+goog.require('ol.source.Source');
 goog.require('ol.source.TileSource');
 
 
@@ -216,6 +217,19 @@ ol.renderer.Layer.prototype.updateAttributions =
       attribution = attributions[i];
       attributionsSet[goog.getUid(attribution).toString()] = attribution;
     }
+  }
+};
+
+
+/**
+ * @protected
+ * @param {ol.FrameState} frameState Frame state.
+ * @param {ol.source.Source} source Source.
+ */
+ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
+  var logo = source.getLogo();
+  if (goog.isDef(logo)) {
+    frameState.logos[logo] = true;
   }
 };
 

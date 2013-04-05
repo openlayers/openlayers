@@ -282,6 +282,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         }
       }, this);
   this.scheduleExpireCache(frameState, tileSource);
+  this.updateLogos(frameState, tileSource);
 
   var texCoordMatrix = this.texCoordMatrix;
   goog.vec.Mat4.makeIdentity(texCoordMatrix);
