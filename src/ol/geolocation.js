@@ -80,10 +80,8 @@ ol.Geolocation.prototype.handleProjectionChanged_ = function() {
     this.transformFn_ = ol.projection.getTransformFromProjections(
         ol.projection.get('EPSG:4326'), projection);
     if (!goog.isNull(this.position_)) {
-      var vertex = [this.position_.x, this.position_.y];
-      vertex = this.transformFn_(vertex, vertex, 2);
-      this.set(ol.GeolocationProperty.POSITION,
-          new ol.Coordinate(vertex[0], vertex[1]));
+      this.set(
+          ol.GeolocationProperty.POSITION, this.transformFn_(this.position_));
     }
   }
 };
@@ -130,11 +128,13 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
       undefined : coords.altitudeAccuracy);
   this.set(ol.GeolocationProperty.HEADING, goog.isNull(coords.heading) ?
       undefined : goog.math.toRadians(coords.heading));
-  this.position_ = new ol.Coordinate(coords.longitude, coords.latitude);
-  var vertex = [coords.longitude, coords.latitude];
-  vertex = this.transformFn_(vertex, vertex, 2);
-  this.set(ol.GeolocationProperty.POSITION,
-      new ol.Coordinate(vertex[0], vertex[1]));
+  if (goog.isNull(this.position_)) {
+    this.position_ = [coords.longitude, coords.latitude];
+  } else {
+    this.position_[0] = coords.longitude;
+    this.position_[1] = coords.latitude;
+  }
+  this.set(ol.GeolocationProperty.POSITION, this.transformFn_(this.position_));
   this.set(ol.GeolocationProperty.SPEED,
       goog.isNull(coords.speed) ? undefined : coords.speed);
 };

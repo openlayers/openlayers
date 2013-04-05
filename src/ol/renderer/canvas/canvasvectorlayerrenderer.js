@@ -236,8 +236,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       tileResolution / resolution, tileResolution / resolution, 1);
   goog.vec.Mat4.rotateZ(transform, view2DState.rotation);
   goog.vec.Mat4.translate(transform,
-      (sketchOrigin.x - view2DState.center.x) / tileResolution,
-      (view2DState.center.y - sketchOrigin.y) / tileResolution,
+      (sketchOrigin[0] - view2DState.center[0]) / tileResolution,
+      (view2DState.center[1] - sketchOrigin[1]) / tileResolution,
       0);
 
   /**
@@ -282,8 +282,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       -1 / tileResolution,
       1);
   goog.vec.Mat4.translate(sketchTransform,
-      -(sketchOrigin.x + halfWidth * tileResolution),
-      -(sketchOrigin.y - halfHeight * tileResolution),
+      -(sketchOrigin[0] + halfWidth * tileResolution),
+      -(sketchOrigin[1] - halfHeight * tileResolution),
       0);
 
   // clear/resize sketch canvas

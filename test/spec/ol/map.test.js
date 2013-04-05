@@ -140,7 +140,7 @@ describe('ol.Map', function() {
         renderer: ol.RendererHint.DOM,
         target: document.createElement('div'),
         view: new ol.View2D({
-          center: new ol.Coordinate(0, 0),
+          center: [0, 0],
           zoom: 1
         })
       });
@@ -161,14 +161,14 @@ describe('ol.Map', function() {
       }
 
       var duration = 500;
-      var destination = new ol.Coordinate(1000, 1000);
+      var destination = [1000, 1000];
 
       var origin = map.getView().getCenter();
       var start = new Date().getTime();
-      var x0 = origin.x;
-      var y0 = origin.y;
-      var dx = destination.x - origin.x;
-      var dy = destination.y - origin.y;
+      var x0 = origin[0];
+      var y0 = origin[1];
+      var dx = destination[0] - origin[0];
+      var dy = destination[1] - origin[1];
 
       var o = {
         callback: function() {
@@ -179,10 +179,10 @@ describe('ol.Map', function() {
             x = quadInOut(dt, x0, dx, duration);
             y = quadInOut(dt, y0, dy, duration);
           } else {
-            x = destination.x;
-            y = destination.y;
+            x = destination[0];
+            y = destination[1];
           }
-          map.getView().setCenter(new ol.Coordinate(x, y));
+          map.getView().setCenter([x, y]);
           if (more) {
             animationDelay.start();
           }
@@ -200,19 +200,19 @@ describe('ol.Map', function() {
       setTimeout(function() {
         expect(o.callback).to.be.called();
         var loc = map.getView().getCenter();
-        expect(loc.x).not.to.eql(origin.x);
-        expect(loc.y).not.to.eql(origin.y);
+        expect(loc[0]).not.to.eql(origin[0]);
+        expect(loc[1]).not.to.eql(origin[1]);
         if (new Date().getTime() - start < duration) {
-          expect(loc.x).not.to.eql(destination.x);
-          expect(loc.y).not.to.eql(destination.y);
+          expect(loc[0]).not.to.eql(destination[0]);
+          expect(loc[1]).not.to.eql(destination[1]);
         }
       }, goog.async.AnimationDelay.TIMEOUT);
 
       // confirm that the map has reached the destination after the duration
       setTimeout(function() {
         var loc = map.getView().getCenter();
-        expect(loc.x).to.eql(destination.x);
-        expect(loc.y).to.eql(destination.y);
+        expect(loc[0]).to.eql(destination[0]);
+        expect(loc[1]).to.eql(destination[1]);
         done();
       }, duration + 2 * goog.async.AnimationDelay.TIMEOUT);
 
@@ -225,7 +225,6 @@ describe('ol.Map', function() {
 goog.require('goog.async.AnimationDelay');
 goog.require('goog.dom');
 goog.require('ol.Collection');
-goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.RendererHints');

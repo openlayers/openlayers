@@ -96,8 +96,8 @@ ol.renderer.dom.ImageLayer.prototype.renderFrame =
         1);
     goog.vec.Mat4.translate(
         transform,
-        (imageExtent.minX - viewCenter.x) / imageResolution,
-        (viewCenter.y - imageExtent.maxY) / imageResolution,
+        (imageExtent.minX - viewCenter[0]) / imageResolution,
+        (viewCenter[1] - imageExtent.maxY) / imageResolution,
         0);
     if (image != this.image_) {
       var imageElement = image.getImageElement(this);

@@ -4,8 +4,8 @@ goog.provide('ol.interaction.KeyboardPan');
 
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
-goog.require('ol.Coordinate');
 goog.require('ol.View2D');
+goog.require('ol.coordinate');
 goog.require('ol.interaction.Interaction');
 
 
@@ -67,8 +67,8 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       } else {
         deltaY = mapUnitsDelta;
       }
-      var delta = new ol.Coordinate(deltaX, deltaY);
-      delta.rotate(rotation);
+      var delta = [deltaX, deltaY];
+      ol.coordinate.rotate(delta, rotation);
       view.pan(map, delta, ol.interaction.KEYBOARD_PAN_DURATION);
       keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();

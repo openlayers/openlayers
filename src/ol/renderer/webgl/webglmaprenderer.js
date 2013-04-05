@@ -174,8 +174,8 @@ ol.renderer.webgl.Map = function(container, map) {
         var tile = /** @type {ol.Tile} */ (element[0]);
         var tileCenter = /** @type {ol.Coordinate} */ (element[1]);
         var tileResolution = /** @type {number} */ (element[2]);
-        var deltaX = tileCenter.x - this.focus_.x;
-        var deltaY = tileCenter.y - this.focus_.y;
+        var deltaX = tileCenter[0] - this.focus_[0];
+        var deltaY = tileCenter[1] - this.focus_[1];
         return 65536 * Math.log(tileResolution) +
             Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
       }, this),

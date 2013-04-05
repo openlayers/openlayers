@@ -9,7 +9,7 @@ describe('ol.projection.EPSG3857', function() {
       // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
       var epsg3857 = ol.projection.get('EPSG:3857');
       var resolution = 19.11;
-      var point = new ol.Coordinate(0, 0);
+      var point = [0, 0];
       expect(epsg3857.getPointResolution(resolution, point)).
           to.roughlyEqual(19.11, 1e-1);
     });
@@ -20,8 +20,7 @@ describe('ol.projection.EPSG3857', function() {
           var epsg3857 = ol.projection.get('EPSG:3857');
           var epsg4326 = ol.projection.get('EPSG:4326');
           var resolution = 19.11;
-          var point = ol.projection.transform(
-              new ol.Coordinate(0, 43.65), epsg4326, epsg3857);
+          var point = ol.projection.transform([0, 43.65], epsg4326, epsg3857);
           expect(epsg3857.getPointResolution(resolution, point)).
               to.roughlyEqual(19.11 * Math.cos(Math.PI * 43.65 / 180), 1e-9);
         });
@@ -33,8 +32,7 @@ describe('ol.projection.EPSG3857', function() {
       var resolution = 19.11;
       var latitude;
       for (latitude = 0; latitude < 90; ++latitude) {
-        var point = ol.projection.transform(
-            new ol.Coordinate(0, latitude), epsg4326, epsg3857);
+        var point = ol.projection.transform([0, latitude], epsg4326, epsg3857);
         expect(epsg3857.getPointResolution(resolution, point)).
             to.roughlyEqual(19.11 * Math.cos(Math.PI * latitude / 180), 1e-9);
       }
@@ -45,6 +43,5 @@ describe('ol.projection.EPSG3857', function() {
 });
 
 
-goog.require('ol.Coordinate');
 goog.require('ol.projection');
 goog.require('ol.projection.EPSG3857');

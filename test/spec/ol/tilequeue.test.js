@@ -7,7 +7,7 @@ describe('ol.TileQueue', function() {
     for (i = 0; i < num; i++) {
       tile = new ol.Tile();
       priority = Math.floor(Math.random() * 100);
-      tq.elements_.push([tile, '', new ol.Coordinate(0, 0)]);
+      tq.elements_.push([tile, '', [0, 0]]);
       tq.priorities_.push(priority);
       tq.queuedElements_[tile.getKey()] = true;
     }
@@ -56,7 +56,6 @@ describe('ol.TileQueue', function() {
   });
 });
 
-goog.require('ol.Coordinate');
 goog.require('ol.Tile');
 goog.require('ol.TileQueue');
 goog.require('ol.structs.PriorityQueue');

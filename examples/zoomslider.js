@@ -1,4 +1,3 @@
-goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.View2D');
 goog.require('ol.control.ZoomSlider');
@@ -26,7 +25,7 @@ var createMap = function(divId) {
     layers: [layer],
     target: divId,
     view: new ol.View2D({
-      center: new ol.Coordinate(0, 0),
+      center: [0, 0],
       zoom: 2
     })
   });

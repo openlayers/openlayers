@@ -1,4 +1,3 @@
-goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
@@ -40,7 +39,7 @@ xhr.onload = function() {
       renderer: ol.RendererHint.CANVAS,
       target: 'map',
       view: new ol.View2D({
-        center: new ol.Coordinate(1823849, 6143760),
+        center: [1823849, 6143760],
         projection: 'EPSG:3857',
         zoom: 11
       })

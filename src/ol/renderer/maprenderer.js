@@ -104,8 +104,8 @@ ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
   goog.vec.Mat4.rotateZ(coordinateToPixelMatrix,
       -view2DState.rotation);
   goog.vec.Mat4.translate(coordinateToPixelMatrix,
-      -view2DState.center.x,
-      -view2DState.center.y,
+      -view2DState.center[0],
+      -view2DState.center[1],
       0);
 
   var inverted = goog.vec.Mat4.invert(

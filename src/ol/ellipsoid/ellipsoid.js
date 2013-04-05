@@ -45,9 +45,9 @@ ol.Ellipsoid.prototype.vincenty =
   var maxIterations = goog.isDef(opt_maxIterations) ?
       opt_maxIterations : 100;
   var f = this.flattening;
-  var lat1 = goog.math.toRadians(c1.y);
-  var lat2 = goog.math.toRadians(c2.y);
-  var deltaLon = goog.math.toRadians(c2.x - c1.x);
+  var lat1 = goog.math.toRadians(c1[1]);
+  var lat2 = goog.math.toRadians(c2[1]);
+  var deltaLon = goog.math.toRadians(c2[0] - c1[0]);
   var U1 = Math.atan((1 - f) * Math.tan(lat1));
   var cosU1 = Math.cos(U1);
   var sinU1 = Math.sin(U1);

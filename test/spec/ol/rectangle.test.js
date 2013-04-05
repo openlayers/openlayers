@@ -6,8 +6,8 @@ describe('ol.Rectangle', function() {
     it('returns the expected center', function() {
       var rectangle = new ol.Rectangle(1, 2, 3, 4);
       var center = rectangle.getCenter();
-      expect(center.x).to.eql(2);
-      expect(center.y).to.eql(3);
+      expect(center[0]).to.eql(2);
+      expect(center[1]).to.eql(3);
     });
   });
 
@@ -80,25 +80,25 @@ describe('ol.Rectangle', function() {
       var rectangle = new ol.Rectangle(0, 1, 2, 3);
       var coordinate;
 
-      coordinate = rectangle.normalize(new ol.Coordinate(1, 2));
-      expect(coordinate.x).to.eql(0.5);
-      expect(coordinate.y).to.eql(0.5);
+      coordinate = rectangle.normalize([1, 2]);
+      expect(coordinate[0]).to.eql(0.5);
+      expect(coordinate[1]).to.eql(0.5);
 
-      coordinate = rectangle.normalize(new ol.Coordinate(0, 3));
-      expect(coordinate.x).to.eql(0);
-      expect(coordinate.y).to.eql(1);
+      coordinate = rectangle.normalize([0, 3]);
+      expect(coordinate[0]).to.eql(0);
+      expect(coordinate[1]).to.eql(1);
 
-      coordinate = rectangle.normalize(new ol.Coordinate(2, 1));
-      expect(coordinate.x).to.eql(1);
-      expect(coordinate.y).to.eql(0);
+      coordinate = rectangle.normalize([2, 1]);
+      expect(coordinate[0]).to.eql(1);
+      expect(coordinate[1]).to.eql(0);
 
-      coordinate = rectangle.normalize(new ol.Coordinate(0, 0));
-      expect(coordinate.x).to.eql(0);
-      expect(coordinate.y).to.eql(-0.5);
+      coordinate = rectangle.normalize([0, 0]);
+      expect(coordinate[0]).to.eql(0);
+      expect(coordinate[1]).to.eql(-0.5);
 
-      coordinate = rectangle.normalize(new ol.Coordinate(-1, 1));
-      expect(coordinate.x).to.eql(-0.5);
-      expect(coordinate.y).to.eql(0);
+      coordinate = rectangle.normalize([-1, 1]);
+      expect(coordinate[0]).to.eql(-0.5);
+      expect(coordinate[1]).to.eql(0);
     });
   });
 
@@ -122,5 +122,4 @@ describe('ol.Rectangle', function() {
 
 });
 
-goog.require('ol.Coordinate');
 goog.require('ol.Rectangle');
