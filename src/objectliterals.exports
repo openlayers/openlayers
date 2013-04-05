@@ -52,6 +52,10 @@
 @exportObjectLiteralProperty ol.control.DefaultsOptions.zoom boolean|undefined
 @exportObjectLiteralProperty ol.control.DefaultsOptions.zoomOptions ol.control.ZoomOptions|undefined
 
+@exportObjectLiteral ol.control.LogoOptions
+@exportObjectLiteralProperty ol.control.LogoOptions.map ol.Map|undefined
+@exportObjectLiteralProperty ol.control.LogoOptions.target Element|undefined
+
 @exportObjectLiteral ol.control.ScaleLineOptions
 @exportObjectLiteralProperty ol.control.ScaleLineOptions.map ol.Map|undefined
 @exportObjectLiteralProperty ol.control.ScaleLineOptions.minWidth number|undefined

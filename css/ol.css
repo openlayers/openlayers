@@ -24,6 +24,19 @@
   position: absolute;
   border: 2px solid red;
 }
+.ol-logo {
+  bottom: 0;
+  left: 0;
+  padding: 2px;
+  position: absolute;
+}
+.ol-logo ul {
+  margin: 0;
+}
+.ol-logo ul li {
+  display: inline;
+  list-style: none;
+}
 .ol-scale-line {
   background: rgba(0,60,136,0.3);
   border-radius: 4px;
