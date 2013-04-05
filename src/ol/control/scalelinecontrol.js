@@ -4,8 +4,6 @@ goog.provide('ol.control.ScaleLineUnits');
 goog.require('goog.dom');
 goog.require('goog.style');
 goog.require('ol.FrameState');
-goog.require('ol.MapEvent');
-goog.require('ol.MapEventType');
 goog.require('ol.ProjectionUnits');
 goog.require('ol.TransformFunction');
 goog.require('ol.control.Control');
@@ -67,12 +65,6 @@ ol.control.ScaleLine = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<?number>}
-   */
-  this.listenerKeys_ = null;
-
-  /**
-   * @private
    * @type {boolean}
    */
   this.renderedVisible_ = false;
@@ -113,29 +105,10 @@ ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
 
 
 /**
- * @param {ol.MapEvent} mapEvent Map event.
- */
-ol.control.ScaleLine.prototype.handleMapPostrender = function(mapEvent) {
-  var frameState = mapEvent.frameState;
-  this.updateElement_(mapEvent.frameState);
-};
-
-
-/**
  * @inheritDoc
  */
-ol.control.ScaleLine.prototype.setMap = function(map) {
-  if (!goog.isNull(this.listenerKeys_)) {
-    goog.array.forEach(this.listenerKeys_, goog.events.unlistenByKey);
-    this.listenerKeys_ = null;
-  }
-  goog.base(this, 'setMap', map);
-  if (!goog.isNull(map)) {
-    this.listenerKeys_ = [
-      goog.events.listen(map, ol.MapEventType.POSTRENDER,
-          this.handleMapPostrender, false, this)
-    ];
-  }
+ol.control.ScaleLine.prototype.handleMapPostrender = function(mapEvent) {
+  this.updateElement_(mapEvent.frameState);
 };
 
 

@@ -5,13 +5,10 @@ goog.provide('ol.control.Attribution');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.events');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('ol.Attribution');
 goog.require('ol.FrameState');
-goog.require('ol.MapEvent');
-goog.require('ol.MapEventType');
 goog.require('ol.TileRange');
 goog.require('ol.control.Control');
 goog.require('ol.css');
@@ -62,12 +59,6 @@ ol.control.Attribution = function(opt_options) {
    */
   this.attributionElementRenderedVisible_ = {};
 
-  /**
-   * @private
-   * @type {?number}
-   */
-  this.postrenderListenKey_ = null;
-
 };
 goog.inherits(ol.control.Attribution, ol.control.Control);
 
@@ -108,26 +99,10 @@ ol.control.Attribution.prototype.getTileSourceAttributions =
 
 
 /**
- * @param {ol.MapEvent} mapEvent Map event.
+ * @inheritDoc
  */
 ol.control.Attribution.prototype.handleMapPostrender = function(mapEvent) {
   this.updateElement_(mapEvent.frameState);
-};
-
-
-/**
- * @inheritDoc
- */
-ol.control.Attribution.prototype.setMap = function(map) {
-  if (!goog.isNull(this.postrenderListenKey_)) {
-    goog.events.unlistenByKey(this.postrenderListenKey_);
-    this.postrenderListenKey_ = null;
-  }
-  goog.base(this, 'setMap', map);
-  if (!goog.isNull(map)) {
-    this.postrenderListenKey_ = goog.events.listen(
-        map, ol.MapEventType.POSTRENDER, this.handleMapPostrender, false, this);
-  }
 };
 
 

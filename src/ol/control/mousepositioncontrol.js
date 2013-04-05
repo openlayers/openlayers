@@ -9,8 +9,6 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.style');
 goog.require('ol.CoordinateFormatType');
-goog.require('ol.MapEvent');
-goog.require('ol.MapEventType');
 goog.require('ol.Pixel');
 goog.require('ol.Projection');
 goog.require('ol.TransformFunction');
@@ -98,8 +96,7 @@ goog.inherits(ol.control.MousePosition, ol.control.Control);
 
 
 /**
- * @param {ol.MapEvent} mapEvent Map event.
- * @protected
+ * @inheritDoc
  */
 ol.control.MousePosition.prototype.handleMapPostrender = function(mapEvent) {
   var frameState = mapEvent.frameState;
@@ -151,9 +148,7 @@ ol.control.MousePosition.prototype.setMap = function(map) {
       goog.events.listen(viewport, goog.events.EventType.MOUSEMOVE,
           this.handleMouseMove, false, this),
       goog.events.listen(viewport, goog.events.EventType.MOUSEOUT,
-          this.handleMouseOut, false, this),
-      goog.events.listen(map, ol.MapEventType.POSTRENDER,
-          this.handleMapPostrender, false, this)
+          this.handleMouseOut, false, this)
     ];
   }
 };
