@@ -18,12 +18,15 @@ ol.TilePriorityFunction;
 /**
  * @constructor
  * @extends {ol.structs.PriorityQueue}
+ * @param {number} maxTilesLoading Maximum number of simultaneously loading
+ *     tiles.
  * @param {ol.TilePriorityFunction} tilePriorityFunction
  *     Tile priority function.
  * @param {Function} tileChangeCallback
  *     Function called on each tile change event.
  */
-ol.TileQueue = function(tilePriorityFunction, tileChangeCallback) {
+ol.TileQueue =
+    function(maxTilesLoading, tilePriorityFunction, tileChangeCallback) {
 
   goog.base(
       this,
@@ -52,7 +55,7 @@ ol.TileQueue = function(tilePriorityFunction, tileChangeCallback) {
    * @private
    * @type {number}
    */
-  this.maxTilesLoading_ = 8;
+  this.maxTilesLoading_ = maxTilesLoading;
 
   /**
    * @private
@@ -74,15 +77,18 @@ ol.TileQueue.prototype.handleTileChange = function() {
 
 
 /**
- *  FIXME empty description for jsdoc
+ * @param {number} limit Maximum number of new tiles to load.
  */
-ol.TileQueue.prototype.loadMoreTiles = function() {
+ol.TileQueue.prototype.loadMoreTiles = function(limit) {
   var tile;
-  while (!this.isEmpty() && this.tilesLoading_ < this.maxTilesLoading_) {
+  while (limit > 0 &&
+         !this.isEmpty() &&
+         this.tilesLoading_ < this.maxTilesLoading_) {
     tile = /** @type {ol.Tile} */ (this.dequeue()[0]);
     goog.events.listenOnce(tile, goog.events.EventType.CHANGE,
         this.handleTileChange, false, this);
     tile.load();
     ++this.tilesLoading_;
+    --limit;
   }
 };
