@@ -221,6 +221,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   this.manageTilePyramid(frameState, tileSource, tileGrid, projection, extent,
       z, tileLayer.getPreload());
   this.scheduleExpireCache(frameState, tileSource);
+  this.updateLogos(frameState, tileSource);
 
 };
 

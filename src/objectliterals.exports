@@ -49,8 +49,14 @@
 @exportObjectLiteral ol.control.DefaultsOptions
 @exportObjectLiteralProperty ol.control.DefaultsOptions.attribution boolean|undefined
 @exportObjectLiteralProperty ol.control.DefaultsOptions.attributionOptions ol.control.AttributionOptions|undefined
+@exportObjectLiteralProperty ol.control.DefaultsOptions.logo boolean|undefined
+@exportObjectLiteralProperty ol.control.DefaultsOptions.logoOptions ol.control.LogoOptions|undefined
 @exportObjectLiteralProperty ol.control.DefaultsOptions.zoom boolean|undefined
 @exportObjectLiteralProperty ol.control.DefaultsOptions.zoomOptions ol.control.ZoomOptions|undefined
+
+@exportObjectLiteral ol.control.LogoOptions
+@exportObjectLiteralProperty ol.control.LogoOptions.map ol.Map|undefined
+@exportObjectLiteralProperty ol.control.LogoOptions.target Element|undefined
 
 @exportObjectLiteral ol.control.ScaleLineOptions
 @exportObjectLiteralProperty ol.control.ScaleLineOptions.map ol.Map|undefined
@@ -145,6 +151,7 @@
 @exportObjectLiteral ol.source.SourceOptions
 @exportObjectLiteralProperty ol.source.SourceOptions.attributions Array.<ol.Attribution>|undefined
 @exportObjectLiteralProperty ol.source.SourceOptions.extent ol.Extent|undefined
+@exportObjectLiteralProperty ol.source.SourceOptions.logo string|undefined
 @exportObjectLiteralProperty ol.source.SourceOptions.projection ol.ProjectionLike
 
 @exportObjectLiteral ol.source.StamenOptions

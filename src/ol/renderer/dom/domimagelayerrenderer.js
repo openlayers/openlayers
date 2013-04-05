@@ -109,6 +109,7 @@ ol.renderer.dom.ImageLayer.prototype.renderFrame =
     this.setTransform(transform);
 
     this.updateAttributions(frameState.attributions, image.getAttributions());
+    this.updateLogos(frameState, imageSource);
   }
 
 };

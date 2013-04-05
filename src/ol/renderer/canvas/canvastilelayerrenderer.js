@@ -286,6 +286,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   this.manageTilePyramid(frameState, tileSource, tileGrid, projection, extent,
       z, tileLayer.getPreload());
   this.scheduleExpireCache(frameState, tileSource);
+  this.updateLogos(frameState, tileSource);
 
   var transform = this.transform_;
   goog.vec.Mat4.makeIdentity(transform);

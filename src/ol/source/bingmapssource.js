@@ -147,6 +147,8 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
       });
   this.setAttributions(attributions);
 
+  this.setLogo(brandLogoUri);
+
   this.ready_ = true;
 
   this.dispatchLoadEvent();
