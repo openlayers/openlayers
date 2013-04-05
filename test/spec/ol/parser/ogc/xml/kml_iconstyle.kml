@@ -1,0 +1,23 @@
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+  <Document>
+    <Style id="pushpin">
+      <IconStyle id="mystyle">
+        <color>ffffffff</color>
+        <colorMode>normal</colorMode>
+        <scale>1</scale>
+        <heading>0</heading>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="0.5"  y="0.5" xunits="fraction" yunits="fraction"/>
+      </IconStyle>
+    </Style>
+    <Placemark id="mountainpin1">
+      <name>Pin on a mountaintop</name>
+      <styleUrl>#pushpin</styleUrl>
+      <Point>
+        <coordinates>170.1435558771009,-43.60505741890396,0</coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>

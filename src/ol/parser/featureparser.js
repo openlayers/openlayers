@@ -1,3 +1,4 @@
+goog.provide('ol.parser.AsyncObjectFeatureParser');
 goog.provide('ol.parser.DomFeatureParser');
 goog.provide('ol.parser.ObjectFeatureParser');
 goog.provide('ol.parser.ReadFeaturesOptions');
@@ -51,6 +52,23 @@ ol.parser.StringFeatureParser = function() {};
  * @return {Array.<ol.Feature>} Array of features.
  */
 ol.parser.StringFeatureParser.prototype.readFeaturesFromString =
+    goog.abstractMethod;
+
+
+
+/**
+ * @interface
+ */
+ol.parser.AsyncObjectFeatureParser = function() {};
+
+
+/**
+ * @param {Object} obj Object representing features.
+ * @param {function(Array.<ol.Feature>)} callback Callback which is called
+ * after parsing.
+ * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
+ */
+ol.parser.AsyncObjectFeatureParser.prototype.readFeaturesFromObjectAsync =
     goog.abstractMethod;
 
 
