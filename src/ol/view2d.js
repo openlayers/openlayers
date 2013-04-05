@@ -12,6 +12,7 @@ goog.require('ol.IView3D');
 goog.require('ol.Projection');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
+goog.require('ol.RotationConstraintType');
 goog.require('ol.Size');
 goog.require('ol.View');
 goog.require('ol.animation');
@@ -64,11 +65,29 @@ ol.View2D = function(opt_options) {
   values[ol.View2DProperty.ROTATION] = options.rotation;
   this.setValues(values);
 
+  var parts = ol.View2D.createResolutionConstraint_(options);
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.maxResolution_ = parts[1];
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.minResolution_ = parts[2];
+
+  var resolutionConstraint = parts[0];
+  var rotationConstraint = ol.View2D.createRotationConstraint_(options);
+
   /**
    * @private
    * @type {ol.Constraints}
    */
-  this.constraints_ = ol.View2D.createConstraints_(options);
+  this.constraints_ = new ol.Constraints(resolutionConstraint,
+      rotationConstraint);
 
 };
 goog.inherits(ol.View2D, ol.View);
@@ -142,6 +161,26 @@ ol.View2D.prototype.getResolutionForExtent = function(extent, size) {
 
 
 /**
+ * Return a function that returns a value between 0 and 1 for a
+ * resolution. Exponential scaling is assumed.
+ * @param {number=} opt_power Power.
+ * @return {function(number): number} Resolution for value function.
+ */
+ol.View2D.prototype.getResolutionForValueFunction = function(opt_power) {
+  var power = opt_power || 2;
+  var maxResolution = this.maxResolution_;
+  var minResolution = this.minResolution_;
+  var max = Math.log(maxResolution / minResolution) / Math.log(power);
+  return function(value) {
+    var resolution = maxResolution / Math.pow(power, value * max);
+    goog.asserts.assert(resolution >= minResolution &&
+        resolution <= maxResolution);
+    return resolution;
+  };
+};
+
+
+/**
  * @return {number} Map rotation.
  */
 ol.View2D.prototype.getRotation = function() {
@@ -152,6 +191,25 @@ goog.exportProperty(
     ol.View2D.prototype,
     'getRotation',
     ol.View2D.prototype.getRotation);
+
+
+/**
+ * Return a function that returns a resolution for a value between
+ * 0 and 1. Exponential scaling is assumed.
+ * @param {number=} opt_power Power.
+ * @return {function(number): number} Value for resolution function.
+ */
+ol.View2D.prototype.getValueForResolutionFunction = function(opt_power) {
+  var power = opt_power || 2;
+  var maxResolution = this.maxResolution_;
+  var minResolution = this.minResolution_;
+  var max = Math.log(maxResolution / minResolution) / Math.log(power);
+  return function(resolution) {
+    var value = (Math.log(maxResolution / resolution) / Math.log(power)) / max;
+    goog.asserts.assert(value >= 0 && value <= 1);
+    return value;
+  };
+};
 
 
 /**
@@ -420,15 +478,21 @@ ol.View2D.prototype.zoomWithoutConstraints =
 /**
  * @private
  * @param {ol.View2DOptions} options View2D options.
- * @return {ol.Constraints} Constraints.
+ * @return {Array} Array of three elements: the resolution constraint,
+ *     maxResolution, and minResolution.
  */
-ol.View2D.createConstraints_ = function(options) {
+ol.View2D.createResolutionConstraint_ = function(options) {
   var resolutionConstraint;
+  var maxResolution;
+  var minResolution;
   if (goog.isDef(options.resolutions)) {
+    var resolutions = options.resolutions;
+    maxResolution = resolutions[0];
+    minResolution = resolutions[resolutions.length - 1];
     resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
-        options.resolutions);
+        resolutions);
   } else {
-    var maxResolution, numZoomLevels, zoomFactor;
+    var numZoomLevels, zoomFactor;
     if (goog.isDef(options.maxResolution) &&
         goog.isDef(options.numZoomLevels) &&
         goog.isDef(options.zoomFactor)) {
@@ -444,10 +508,20 @@ ol.View2D.createConstraints_ = function(options) {
       numZoomLevels = 29;
       zoomFactor = 2;
     }
+    minResolution = maxResolution / Math.pow(zoomFactor, numZoomLevels - 1);
     resolutionConstraint = ol.ResolutionConstraint.createSnapToPower(
         zoomFactor, maxResolution, numZoomLevels - 1);
   }
+  return [resolutionConstraint, maxResolution, minResolution];
+};
+
+
+/**
+ * @private
+ * @param {ol.View2DOptions} options View2D options.
+ * @return {ol.RotationConstraintType} Rotation constraint.
+ */
+ol.View2D.createRotationConstraint_ = function(options) {
   // FIXME rotation constraint is not configurable at the moment
-  var rotationConstraint = ol.RotationConstraint.createSnapToZero();
-  return new ol.Constraints(resolutionConstraint, rotationConstraint);
+  return ol.RotationConstraint.createSnapToZero();
 };
