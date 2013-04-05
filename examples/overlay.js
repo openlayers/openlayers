@@ -43,11 +43,12 @@ map.on('click', function(evt) {
 
   $(element).popover('destroy');
   popup.setPosition(coordinate);
+  // the keys are quoted to prevent renaming in ADVANCED_OPTIMIZATIONS mode.
   $(element).popover({
-    placement: 'top',
-    animation: false,
-    html: true,
-    content: '<p>The location you clicked was:</p><code>' + hdms + '</code>'
+    'placement': 'top',
+    'animation': false,
+    'html': true,
+    'content': '<p>The location you clicked was:</p><code>' + hdms + '</code>'
   });
   $(element).popover('show');
 });
