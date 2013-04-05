@@ -8,6 +8,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
+goog.require('goog.fx.DragDropEvent');
 goog.require('goog.fx.Dragger');
 goog.require('goog.style');
 goog.require('ol');
