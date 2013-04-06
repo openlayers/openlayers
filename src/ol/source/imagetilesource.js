@@ -1,6 +1,7 @@
 goog.provide('ol.source.ImageTileSource');
 goog.provide('ol.source.ImageTileSourceOptions');
 
+goog.require('goog.asserts');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.ImageTile');

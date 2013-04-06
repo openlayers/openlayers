@@ -4,11 +4,16 @@
 
 goog.provide('ol.control.ZoomSlider');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.fx.Dragger');
+goog.require('goog.fx.Dragger.EventType');
+goog.require('goog.math');
+goog.require('goog.math.Rect');
 goog.require('goog.style');
 goog.require('ol.control.Control');
 goog.require('ol.css');

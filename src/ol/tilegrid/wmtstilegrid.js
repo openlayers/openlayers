@@ -1,5 +1,7 @@
 goog.provide('ol.tilegrid.WMTS');
 
+goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('ol.Size');
 goog.require('ol.projection');
 goog.require('ol.tilegrid.TileGrid');

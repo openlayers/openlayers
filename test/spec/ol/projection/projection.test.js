@@ -357,6 +357,7 @@ describe('ol.projection', function() {
 });
 
 goog.require('goog.array');
+goog.require('goog.asserts.AssertionError');
 goog.require('ol.Extent');
 goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');

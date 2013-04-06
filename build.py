@@ -383,8 +383,22 @@ def _strip_comments(lines):
 @target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC,
         EXAMPLES_SRC, SHADER_SRC, SPEC)
 def build_check_requires_timestamp(t):
+    from zipfile import ZipFile
     unused_count = 0
     all_provides = set()
+    zf = ZipFile(PLOVR_JAR)
+    for zi in zf.infolist():
+        if zi.filename.endswith('.js'):
+            if not zi.filename.startswith('closure/goog/'):
+                continue
+            # Skip goog.i18n because it contains so many modules that it causes
+            # the generated regular expression to exceed Python's limits
+            if zi.filename.startswith('closure/goog/i18n/'):
+                continue
+            for line in zf.open(zi):
+                m = re.match(r'goog.provide\(\'(.*)\'\);', line)
+                if m:
+                    all_provides.add(m.group(1))
     for filename in sorted(t.dependencies):
         if filename == 'build/src/internal/src/requireall.js':
             continue
@@ -412,10 +426,46 @@ def build_check_requires_timestamp(t):
                 filename, require_linenos[require], require))
             unused_count += 1
     all_provides.discard('ol')
-    all_provides.discard('ol.Map')
     all_provides.discard('ol.MapProperty')
-    provide_res = [(provide, re.compile(r'\b%s\b' % (re.escape(
-        provide)),)) for provide in sorted(all_provides, reverse=True)]
+
+    class Node(object):
+
+        def __init__(self):
+            self.present = False
+            self.children = {}
+
+        def _build_re(self, key):
+            if len(self.children) == 1:
+                child_key, child = next(self.children.iteritems())
+                child_re = '\\.' + child._build_re(child_key)
+                if self.present:
+                    return key + '(' + child_re + ')?'
+                else:
+                    return key + child_re
+            elif self.children:
+                children_re = '(?:\\.(?:' + '|'.join(
+                    self.children[k]._build_re(k)
+                    for k in sorted(self.children.keys())) + '))'
+                if self.present:
+                    return key + children_re + '?'
+                else:
+                    return key + children_re
+            else:
+                assert self.present
+                return key
+
+        def build_re(self, key):
+            return re.compile('\\b' + self._build_re(key) + '\\b')
+    root = Node()
+    for provide in all_provides:
+        node = root
+        for component in provide.split('.'):
+            if component not in node.children:
+                node.children[component] = Node()
+            node = node.children[component]
+        node.present = True
+    provide_res = [child.build_re(key)
+                   for key, child in root.children.iteritems()]
     missing_count = 0
     for filename in sorted(t.dependencies):
         if filename in INTERNAL_SRC or filename in EXTERNAL_SRC:
@@ -432,10 +482,15 @@ def build_check_requires_timestamp(t):
             if m:
                 requires.add(m.group(1))
                 continue
-            for provide, provide_re in provide_res:
-                if provide_re.search(line):
-                    line = line.replace(provide, '')
-                    uses.add(provide)
+            while True:
+                for provide_re in provide_res:
+                    m = provide_re.search(line)
+                    if m:
+                        uses.add(m.group())
+                        line = line[:m.start()] + line[m.end():]
+                        break
+                else:
+                    break
         if filename == 'src/ol/renderer/layerrenderer.js':
             uses.discard('ol.renderer.Map')
         m = re.match(

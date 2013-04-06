@@ -2,6 +2,8 @@ goog.provide('ol.source.BingMaps');
 
 goog.require('goog.Uri');
 goog.require('goog.array');
+goog.require('goog.asserts');
+goog.require('goog.math');
 goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');

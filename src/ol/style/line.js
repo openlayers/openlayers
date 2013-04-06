@@ -1,6 +1,7 @@
 goog.provide('ol.style.Line');
 goog.provide('ol.style.LineLiteral');
 
+goog.require('goog.asserts');
 goog.require('ol.Expression');
 goog.require('ol.ExpressionLiteral');
 goog.require('ol.style.Symbolizer');

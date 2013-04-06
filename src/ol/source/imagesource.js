@@ -1,6 +1,7 @@
 goog.provide('ol.source.ImageSource');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.Image');

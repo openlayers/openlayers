@@ -2,6 +2,7 @@ goog.provide('ol.style.Shape');
 goog.provide('ol.style.ShapeLiteral');
 goog.provide('ol.style.ShapeType');
 
+goog.require('goog.asserts');
 goog.require('ol.Expression');
 goog.require('ol.ExpressionLiteral');
 goog.require('ol.style.Point');

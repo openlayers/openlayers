@@ -615,5 +615,6 @@ describe('ol.structs.IntegerSet', function() {
 
 
 goog.require('goog.array');
+goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol.structs.IntegerSet');

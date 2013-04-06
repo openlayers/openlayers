@@ -1,5 +1,7 @@
 goog.provide('ol.math');
 
+goog.require('goog.asserts');
+
 
 /**
  * @param {number} x X.

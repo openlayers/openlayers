@@ -1,6 +1,10 @@
 goog.provide('ol.renderer.webgl.ImageLayer');
 
+goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
+goog.require('goog.webgl');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.Image');

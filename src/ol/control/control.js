@@ -2,8 +2,9 @@ goog.provide('ol.control.Control');
 goog.provide('ol.control.ControlOptions');
 
 goog.require('goog.Disposable');
+goog.require('goog.array');
+goog.require('goog.dom');
 goog.require('goog.events');
-goog.require('ol.MapEvent');
 goog.require('ol.MapEventType');
 
 

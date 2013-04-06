@@ -2,6 +2,7 @@ goog.provide('ol.style.Icon');
 goog.provide('ol.style.IconLiteral');
 goog.provide('ol.style.IconType');
 
+goog.require('goog.asserts');
 goog.require('ol.Expression');
 goog.require('ol.ExpressionLiteral');
 goog.require('ol.style.Point');

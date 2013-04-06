@@ -4,6 +4,7 @@
 goog.provide('ol.Geolocation');
 goog.provide('ol.GeolocationProperty');
 
+goog.require('goog.events');
 goog.require('goog.functions');
 goog.require('goog.math');
 goog.require('ol.Coordinate');

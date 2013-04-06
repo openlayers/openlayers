@@ -1,7 +1,11 @@
 goog.provide('ol.source.WMTS');
 goog.provide('ol.source.WMTSRequestEncoding');
 
-goog.require('ol.Attribution');
+goog.require('goog.array');
+goog.require('goog.asserts');
+goog.require('goog.math');
+goog.require('goog.object');
+goog.require('goog.uri.utils');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');

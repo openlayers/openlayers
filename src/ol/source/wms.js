@@ -1,5 +1,8 @@
 goog.provide('ol.source.wms');
 
+goog.require('goog.object');
+goog.require('goog.uri.utils');
+
 
 /**
  * @param {string} baseUrl WMS base url.

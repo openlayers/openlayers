@@ -1,5 +1,6 @@
 goog.provide('ol.geom.GeometryCollection');
 
+goog.require('goog.asserts');
 goog.require('ol.geom.AbstractCollection');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');

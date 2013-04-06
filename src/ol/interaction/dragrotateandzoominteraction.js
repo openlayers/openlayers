@@ -2,6 +2,7 @@
 
 goog.provide('ol.interaction.DragRotateAndZoom');
 
+goog.require('goog.asserts');
 goog.require('goog.math.Vec2');
 goog.require('ol.View2D');
 goog.require('ol.interaction.ConditionType');
