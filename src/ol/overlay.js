@@ -39,7 +39,7 @@ ol.OverlayPositioning = {
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {ol.OverlayOptions} options Options.
+ * @param {ol.OverlayOptions} options Overlay options.
  */
 ol.Overlay = function(options) {
 
