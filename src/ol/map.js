@@ -49,6 +49,7 @@ goog.require('ol.Tile');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
 goog.require('ol.View2D');
+goog.require('ol.ViewHint');
 goog.require('ol.control.defaults');
 goog.require('ol.interaction.defaults');
 goog.require('ol.layer.Layer');
@@ -594,8 +595,19 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
  * @protected
  */
 ol.Map.prototype.handlePostRender = function() {
+
+  // Limit the number of tile loads if animating or interacting.
+  var limit = (1 << 30) - 1; // a large enough integer
+  var frameState = this.frameState_;
+  if (!goog.isNull(frameState)) {
+    var hints = frameState.viewHints;
+    if (hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING]) {
+      limit = ol.MAXIMUM_NEW_TILE_LOADS_PER_FRAME;
+    }
+  }
+
   this.tileQueue_.reprioritize(); // FIXME only call if needed
-  this.tileQueue_.loadMoreTiles(ol.MAXIMUM_NEW_TILE_LOADS_PER_FRAME);
+  this.tileQueue_.loadMoreTiles(limit);
 
   var postRenderFunctions = this.postRenderFunctions_;
   var i;
