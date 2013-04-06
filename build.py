@@ -9,64 +9,65 @@ import re
 import shutil
 import sys
 
-from pake import Target, ifind, main, output, rule, target, variables, virtual, which
+from pake import Target
+from pake import ifind, main, output, rule, target, variables, virtual, which
 
 
 if sys.platform == 'win32':
     """ windows_defaults assumes that jsdoc was installed at a specific place
-        (C:\jsdoc). It also fixes a certain version (1.9.0) of phantomjs which might
-        not anymore be proposed on
+        (C:\jsdoc). It also fixes a certain version (1.9.0) of phantomjs which
+        might not anymore be proposed on
         http://code.google.com/p/phantomjs/downloads/list"""
 
     windows_defaults = {
         'ProgramFiles': os.environ.get('ProgramFiles', 'C:\\Program Files'),
         'Python27': os.environ.get('SystemDrive', 'C:') + '\\Python27',
         'jsdoc': os.environ.get('SystemDrive', 'C:') + '\\jsdoc3',
-        'phantomjs': os.environ.get('SystemDrive', 'C:') + \
-            '\\phantomjs-1.9.0-windows'
+        'phantomjs': (os.environ.get('SystemDrive', 'C:') +
+                      '\\phantomjs-1.9.0-windows')
     }
 
     if which('git.exe'):
         variables.GIT = 'git.exe'
     else:
         variables.GIT = os.path.join(windows_defaults['ProgramFiles'],
-                                            'Git', 'bin', 'git.exe')
+                                     'Git', 'bin', 'git.exe')
 
     if which('gjslint.exe'):
         variables.GJSLINT = 'gjslint.exe'
     else:
         variables.GJSLINT = os.path.join(windows_defaults['Python27'],
-                                                    'Scripts', 'gjslint.exe')
+                                         'Scripts', 'gjslint.exe')
 
     if which('java.exe'):
         variables.JAVA = 'java.exe'
     else:
         variables.JAVA = os.path.join(windows_defaults['ProgramFiles'],
-                                                'Java', 'jre7', 'bin', 'java.exe')
-    
+                                      'Java', 'jre7', 'bin', 'java.exe')
+
     if which('jar.exe'):
         variables.JAR = 'jar.exe'
     else:
         variables.JAR = os.path.join(windows_defaults['ProgramFiles'],
-                                              'Java', 'jdk1.7.0_17', 'bin', 'jar.exe')
+                                     'Java', 'jdk1.7.0_17', 'bin', 'jar.exe')
 
     if which('jsdoc.cmd'):
         variables.JSDOC = 'jsdoc.cmd'
     else:
         variables.JSDOC = os.path.join(windows_defaults['jsdoc'],
-                                                'jsdoc.cmd')
+                                       'jsdoc.cmd')
 
     if which('python.exe'):
         variables.PYTHON = 'python.exe'
     else:
         variables.PYTHON = os.path.join(windows_defaults['Python27'],
-                                                    'python.exe')
+                                        'python.exe')
 
     if which('phantomjs.exe'):
         variables.PHANTOMJS = 'phantomjs.exe'
     else:
-        variables.PHANTOMJS =  os.path.join(windows_defaults['phantomjs'],
-                                                        'phantomjs.exe')
+        variables.PHANTOMJS = os.path.join(windows_defaults['phantomjs'],
+                                           'phantomjs.exe')
 
 else:
     variables.GIT = 'git'
@@ -84,7 +85,7 @@ variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
 EXECUTABLES = [variables.GIT, variables.GJSLINT, variables.JAVA, variables.JAR,
-                        variables.JSDOC, variables.PYTHON, variables.PHANTOMJS]
+               variables.JSDOC, variables.PYTHON, variables.PHANTOMJS]
 
 EXPORTS = [path
            for path in ifind('src')
@@ -524,8 +525,9 @@ def split_example_file(example, dst_dir):
 @target('host-resources', phony=True)
 def host_resources(t):
     resources_dir = 'build/gh-pages/%(BRANCH)s/resources'
-    t.rm_rf(resources_dir);
-    t.cp_r('resources', resources_dir);
+    t.rm_rf(resources_dir)
+    t.cp_r('resources', resources_dir)
+
 
 @target('host-examples', 'build', 'host-resources', 'examples', phony=True)
 def host_examples(t):
