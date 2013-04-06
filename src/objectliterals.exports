@@ -99,15 +99,15 @@
 @exportObjectLiteralProperty ol.control.ZoomSliderOptions.maxResolution number|undefined
 @exportObjectLiteralProperty ol.control.ZoomSliderOptions.minResolution number|undefined
 
-@exportObjectLiteral ol.interaction.DefaultOptions
-@exportObjectLiteralProperty ol.interaction.DefaultOptions.doubleClickZoom boolean|undefined
-@exportObjectLiteralProperty ol.interaction.DefaultOptions.dragPan boolean|undefined
-@exportObjectLiteralProperty ol.interaction.DefaultOptions.keyboard boolean|undefined
-@exportObjectLiteralProperty ol.interaction.DefaultOptions.mouseWheelZoom boolean|undefined
-@exportObjectLiteralProperty ol.interaction.DefaultOptions.shiftDragZoom boolean|undefined
-@exportObjectLiteralProperty ol.interaction.DefaultOptions.touchPan boolean|undefined
-@exportObjectLiteralProperty ol.interaction.DefaultOptions.touchRotate boolean|undefined
-@exportObjectLiteralProperty ol.interaction.DefaultOptions.touchZoom boolean|undefined
+@exportObjectLiteral ol.interaction.DefaultsOptions
+@exportObjectLiteralProperty ol.interaction.DefaultsOptions.doubleClickZoom boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultsOptions.dragPan boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultsOptions.keyboard boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultsOptions.mouseWheelZoom boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultsOptions.shiftDragZoom boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultsOptions.touchPan boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultsOptions.touchRotate boolean|undefined
+@exportObjectLiteralProperty ol.interaction.DefaultsOptions.touchZoom boolean|undefined
 
 @exportObjectLiteral ol.interaction.KeyboardPanOptions
 @exportObjectLiteralProperty ol.interaction.KeyboardPanOptions.pixelDelta number|undefined
