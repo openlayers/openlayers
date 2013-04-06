@@ -32,7 +32,7 @@ ol.control.ScaleLineUnits = {
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.ScaleLineOptions=} opt_options Options.
+ * @param {ol.control.ScaleLineOptions=} opt_options Scale line options.
  */
 ol.control.ScaleLine = function(opt_options) {
 

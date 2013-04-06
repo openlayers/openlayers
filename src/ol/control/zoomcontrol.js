@@ -20,7 +20,7 @@ ol.control.ZOOM_DURATION = 250;
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.ZoomOptions=} opt_options Options.
+ * @param {ol.control.ZoomOptions=} opt_options Zoom options.
  */
 ol.control.Zoom = function(opt_options) {
 

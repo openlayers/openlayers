@@ -21,7 +21,7 @@ goog.require('ol.projection');
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.MousePositionOptions=} opt_options Options.
+ * @param {ol.control.MousePositionOptions=} opt_options Mouse position options.
  */
 ol.control.MousePosition = function(opt_options) {
 
