@@ -32,7 +32,7 @@ except ImportError, E:
     missing_deps = E
 
 feedName = "example-list.xml"
-feedPath = "http://openlayers.github.com/ol3/master/examples/"
+feedPath = "http://openlayers.github.io/ol3/master/examples/"
 
 
 def getListOfExamples(relPath):
