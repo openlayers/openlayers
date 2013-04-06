@@ -3,6 +3,7 @@
 goog.provide('ol.interaction.TouchZoom');
 
 goog.require('goog.asserts');
+goog.require('goog.style');
 goog.require('ol.View');
 goog.require('ol.ViewHint');
 goog.require('ol.interaction.Touch');

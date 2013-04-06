@@ -1,6 +1,7 @@
 goog.provide('ol.style.Polygon');
 goog.provide('ol.style.PolygonLiteral');
 
+goog.require('goog.asserts');
 goog.require('ol.Expression');
 goog.require('ol.ExpressionLiteral');
 goog.require('ol.style.Symbolizer');

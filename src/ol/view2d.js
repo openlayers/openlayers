@@ -4,6 +4,7 @@
 goog.provide('ol.View2D');
 goog.provide('ol.View2DProperty');
 
+goog.require('goog.asserts');
 goog.require('ol.Constraints');
 goog.require('ol.Extent');
 goog.require('ol.IView2D');

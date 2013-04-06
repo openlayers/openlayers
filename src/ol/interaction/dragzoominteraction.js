@@ -3,6 +3,7 @@
 
 goog.provide('ol.interaction.DragZoom');
 
+goog.require('goog.asserts');
 goog.require('ol.Extent');
 goog.require('ol.Size');
 goog.require('ol.View2D');

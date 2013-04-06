@@ -1,5 +1,10 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
+goog.require('goog.dom');
+goog.require('goog.dom.TagName');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
+goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Extent');
 goog.require('ol.Size');

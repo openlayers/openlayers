@@ -2,6 +2,7 @@
 
 goog.provide('ol.interaction.KeyboardZoom');
 
+goog.require('goog.asserts');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('ol.View2D');
 goog.require('ol.interaction.Interaction');

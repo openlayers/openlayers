@@ -3,6 +3,7 @@
 goog.provide('ol.renderer.webgl.Layer');
 
 goog.require('goog.vec.Mat4');
+goog.require('goog.webgl');
 goog.require('ol.FrameState');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');

@@ -2,6 +2,7 @@
 
 goog.provide('ol.interaction.DblClickZoom');
 
+goog.require('goog.asserts');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.View2D');

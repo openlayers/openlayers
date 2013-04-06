@@ -4,7 +4,10 @@
 goog.provide('ol.renderer.canvas.TileLayer');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
+goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Extent');
 goog.require('ol.Size');

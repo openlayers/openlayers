@@ -2,6 +2,7 @@
 goog.provide('ol.interaction.Touch');
 
 goog.require('goog.functions');
+goog.require('goog.object');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.Pixel');

@@ -1,6 +1,7 @@
 goog.provide('ol.array');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 
 
 /**

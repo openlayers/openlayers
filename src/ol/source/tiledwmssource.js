@@ -2,8 +2,8 @@
 
 goog.provide('ol.source.TiledWMS');
 
-
 goog.require('goog.array');
+goog.require('goog.math');
 goog.require('ol.Extent');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
