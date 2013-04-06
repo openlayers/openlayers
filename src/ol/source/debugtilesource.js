@@ -84,7 +84,7 @@ ol.DebugTile_.prototype.getImage = function(opt_context) {
 /**
  * @constructor
  * @extends {ol.source.TileSource}
- * @param {ol.source.DebugTileSourceOptions} options Options.
+ * @param {ol.source.DebugTileSourceOptions} options Debug tile options.
  */
 ol.source.DebugTileSource = function(options) {
 

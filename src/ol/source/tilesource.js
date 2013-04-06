@@ -26,30 +26,28 @@ ol.source.TileSourceOptions;
 /**
  * @constructor
  * @extends {ol.source.Source}
- * @param {ol.source.TileSourceOptions} tileSourceOptions Tile source options.
+ * @param {ol.source.TileSourceOptions} options Tile source options.
  */
-ol.source.TileSource = function(tileSourceOptions) {
+ol.source.TileSource = function(options) {
 
   goog.base(this, {
-    attributions: tileSourceOptions.attributions,
-    extent: tileSourceOptions.extent,
-    logo: tileSourceOptions.logo,
-    projection: tileSourceOptions.projection
+    attributions: options.attributions,
+    extent: options.extent,
+    logo: options.logo,
+    projection: options.projection
   });
 
   /**
    * @private
    * @type {boolean}
    */
-  this.opaque_ = goog.isDef(tileSourceOptions.opaque) ?
-      tileSourceOptions.opaque : false;
+  this.opaque_ = goog.isDef(options.opaque) ? options.opaque : false;
 
   /**
    * @protected
    * @type {ol.tilegrid.TileGrid}
    */
-  this.tileGrid = goog.isDef(tileSourceOptions.tileGrid) ?
-      tileSourceOptions.tileGrid : null;
+  this.tileGrid = goog.isDef(options.tileGrid) ? options.tileGrid : null;
 
 };
 goog.inherits(ol.source.TileSource, ol.source.Source);

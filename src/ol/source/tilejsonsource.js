@@ -42,12 +42,12 @@ goog.exportSymbol('grid', grid);
 /**
  * @constructor
  * @extends {ol.source.ImageTileSource}
- * @param {ol.source.TileJSONOptions} tileJsonOptions TileJSON optios.
+ * @param {ol.source.TileJSONOptions} options TileJSON options.
  */
-ol.source.TileJSON = function(tileJsonOptions) {
+ol.source.TileJSON = function(options) {
 
   goog.base(this, {
-    crossOrigin: tileJsonOptions.crossOrigin,
+    crossOrigin: options.crossOrigin,
     projection: ol.projection.get('EPSG:3857')
   });
 
@@ -61,8 +61,7 @@ ol.source.TileJSON = function(tileJsonOptions) {
    * @private
    * @type {!goog.async.Deferred}
    */
-  this.deferred_ =
-      goog.net.jsloader.load(tileJsonOptions.url, {cleanupWhenDone: true});
+  this.deferred_ = goog.net.jsloader.load(options.url, {cleanupWhenDone: true});
   this.deferred_.addCallback(this.handleTileJSONResponse, this);
 
 };

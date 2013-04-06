@@ -12,9 +12,9 @@ goog.require('ol.projection');
 /**
  * @constructor
  * @extends {goog.events.EventTarget}
- * @param {ol.source.SourceOptions} sourceOptions Source options.
+ * @param {ol.source.SourceOptions} options Source options.
  */
-ol.source.Source = function(sourceOptions) {
+ol.source.Source = function(options) {
 
   goog.base(this);
 
@@ -22,28 +22,28 @@ ol.source.Source = function(sourceOptions) {
    * @private
    * @type {ol.Projection}
    */
-  this.projection_ = ol.projection.get(sourceOptions.projection);
+  this.projection_ = ol.projection.get(options.projection);
 
   /**
    * @private
    * @type {ol.Extent}
    */
-  this.extent_ = goog.isDef(sourceOptions.extent) ?
-      sourceOptions.extent : goog.isDef(sourceOptions.projection) ?
+  this.extent_ = goog.isDef(options.extent) ?
+      options.extent : goog.isDef(options.projection) ?
           this.projection_.getExtent() : null;
 
   /**
    * @private
    * @type {Array.<ol.Attribution>}
    */
-  this.attributions_ = goog.isDef(sourceOptions.attributions) ?
-      sourceOptions.attributions : null;
+  this.attributions_ = goog.isDef(options.attributions) ?
+      options.attributions : null;
 
   /**
    * @private
    * @type {string|undefined}
    */
-  this.logo_ = sourceOptions.logo;
+  this.logo_ = options.logo;
 
 };
 goog.inherits(ol.source.Source, goog.events.EventTarget);

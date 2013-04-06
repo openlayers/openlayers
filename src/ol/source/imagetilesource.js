@@ -1,5 +1,4 @@
 goog.provide('ol.source.ImageTileSource');
-goog.provide('ol.source.ImageTileSourceOptions');
 
 goog.require('goog.asserts');
 goog.require('ol.Attribution');
@@ -26,14 +25,14 @@ goog.require('ol.tilegrid.TileGrid');
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
  */
-ol.source.ImageTileSourceOptions;
+ol.source.ImageTileOptions;
 
 
 
 /**
  * @constructor
  * @extends {ol.source.TileSource}
- * @param {ol.source.ImageTileSourceOptions} options Options.
+ * @param {ol.source.ImageTileOptions} options Image tile options.
  */
 ol.source.ImageTileSource = function(options) {
 

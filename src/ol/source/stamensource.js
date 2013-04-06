@@ -89,7 +89,7 @@ ol.source.STAMEN_ATTRIBUTIONS = [new ol.Attribution(
 /**
  * @constructor
  * @extends {ol.source.XYZ}
- * @param {ol.source.StamenOptions} options Options.
+ * @param {ol.source.StamenOptions} options Stamen options.
  */
 ol.source.Stamen = function(options) {
 
