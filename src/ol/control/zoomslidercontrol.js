@@ -10,9 +10,8 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.fx.Dragger');
 goog.require('goog.style');
-goog.require('ol');
-goog.require('ol.MapEventType');
 goog.require('ol.control.Control');
+goog.require('ol.css');
 
 
 
@@ -73,12 +72,6 @@ ol.control.ZoomSlider = function(zoomSliderOptions) {
    * @private
    */
   this.direction_ = ol.control.ZoomSlider.direction.VERTICAL;
-
-  /**
-   * @private
-   * @type {Array.<?number>}
-   */
-  this.mapListenerKeys_ = null;
 
   /**
    * @private
@@ -157,28 +150,8 @@ ol.control.ZoomSlider.DEFAULT_MAX_RESOLUTION = 156543.0339;
 ol.control.ZoomSlider.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
   this.currentResolution_ = map.getView().getResolution();
-  this.initMapEventListeners_();
   this.initSlider_();
   this.positionThumbForResolution_(this.currentResolution_);
-};
-
-
-/**
- * Initializes the event listeners for map events.
- *
- * @private
- */
-ol.control.ZoomSlider.prototype.initMapEventListeners_ = function() {
-  if (!goog.isNull(this.mapListenerKeys_)) {
-    goog.array.forEach(this.mapListenerKeys_, goog.events.unlistenByKey);
-    this.mapListenerKeys_ = null;
-  }
-  if (!goog.isNull(this.getMap())) {
-    this.mapListenerKeys_ = [
-      goog.events.listen(this.getMap(), ol.MapEventType.POSTRENDER,
-          this.handleMapPostRender_, undefined, this)
-    ];
-  }
 };
 
 
@@ -217,11 +190,10 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
 
 
 /**
- * @param {ol.MapEvent} mapEvtObj The ol.MapEvent object.
- * @private
+ * @inheritDoc
  */
-ol.control.ZoomSlider.prototype.handleMapPostRender_ = function(mapEvtObj) {
-  var res = mapEvtObj.frameState.view2DState.resolution;
+ol.control.ZoomSlider.prototype.handleMapPostrender = function(mapEvent) {
+  var res = mapEvent.frameState.view2DState.resolution;
   if (res !== this.currentResolution_) {
     this.currentResolution_ = res;
     this.positionThumbForResolution_(res);
@@ -363,9 +335,9 @@ ol.control.ZoomSlider.prototype.createDraggable_ = function(elem) {
 ol.control.ZoomSlider.prototype.createDom_ = function(opt_elem) {
   var elem,
       sliderCssCls = ol.control.ZoomSlider.CSS_CLASS_CONTAINER + ' ' +
-          ol.CSS_CLASS_UNSELECTABLE,
+          ol.css.CLASS_UNSELECTABLE,
       thumbCssCls = ol.control.ZoomSlider.CSS_CLASS_THUMB + ' ' +
-          ol.CSS_CLASS_UNSELECTABLE;
+          ol.css.CLASS_UNSELECTABLE;
 
   elem = goog.dom.createDom(goog.dom.TagName.DIV, sliderCssCls,
       goog.dom.createDom(goog.dom.TagName.DIV, thumbCssCls));

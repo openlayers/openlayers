@@ -9,8 +9,6 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.style');
 goog.require('ol.CoordinateFormatType');
-goog.require('ol.MapEvent');
-goog.require('ol.MapEventType');
 goog.require('ol.Pixel');
 goog.require('ol.Projection');
 goog.require('ol.TransformFunction');
@@ -87,19 +85,12 @@ ol.control.MousePosition = function(opt_options) {
    */
   this.lastMouseMovePixel_ = null;
 
-  /**
-   * @private
-   * @type {Array.<?number>}
-   */
-  this.listenerKeys_ = null;
-
 };
 goog.inherits(ol.control.MousePosition, ol.control.Control);
 
 
 /**
- * @param {ol.MapEvent} mapEvent Map event.
- * @protected
+ * @inheritDoc
  */
 ol.control.MousePosition.prototype.handleMapPostrender = function(mapEvent) {
   var frameState = mapEvent.frameState;
@@ -140,21 +131,15 @@ ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
  * @inheritDoc
  */
 ol.control.MousePosition.prototype.setMap = function(map) {
-  if (!goog.isNull(this.listenerKeys_)) {
-    goog.array.forEach(this.listenerKeys_, goog.events.unlistenByKey);
-    this.listenerKeys_ = null;
-  }
   goog.base(this, 'setMap', map);
   if (!goog.isNull(map)) {
     var viewport = map.getViewport();
-    this.listenerKeys_ = [
-      goog.events.listen(viewport, goog.events.EventType.MOUSEMOVE,
-          this.handleMouseMove, false, this),
-      goog.events.listen(viewport, goog.events.EventType.MOUSEOUT,
-          this.handleMouseOut, false, this),
-      goog.events.listen(map, ol.MapEventType.POSTRENDER,
-          this.handleMapPostrender, false, this)
-    ];
+    this.listenerKeys.push(
+        goog.events.listen(viewport, goog.events.EventType.MOUSEMOVE,
+            this.handleMouseMove, false, this),
+        goog.events.listen(viewport, goog.events.EventType.MOUSEOUT,
+            this.handleMouseOut, false, this)
+    );
   }
 };
 
