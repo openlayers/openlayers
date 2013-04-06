@@ -11,14 +11,14 @@ goog.require('ol.tilegrid.TileGrid');
 /**
  * @constructor
  * @extends {ol.tilegrid.TileGrid}
- * @param {ol.tilegrid.XYZOptions} xyzOptions XYZ options.
+ * @param {ol.tilegrid.XYZOptions} options XYZ options.
  */
-ol.tilegrid.XYZ = function(xyzOptions) {
+ol.tilegrid.XYZ = function(options) {
 
-  var resolutions = new Array(xyzOptions.maxZoom + 1);
+  var resolutions = new Array(options.maxZoom + 1);
   var z;
   var size = 2 * ol.projection.EPSG3857.HALF_SIZE / ol.DEFAULT_TILE_SIZE;
-  for (z = 0; z <= xyzOptions.maxZoom; ++z) {
+  for (z = 0; z <= options.maxZoom; ++z) {
     resolutions[z] = size / Math.pow(2, z);
   }
 
