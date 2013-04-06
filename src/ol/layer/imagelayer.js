@@ -8,10 +8,10 @@ goog.require('ol.source.ImageSource');
 /**
  * @constructor
  * @extends {ol.layer.Layer}
- * @param {ol.layer.LayerOptions} layerOptions Layer options.
+ * @param {ol.layer.LayerOptions} options Layer options.
  */
-ol.layer.ImageLayer = function(layerOptions) {
-  goog.base(this, layerOptions);
+ol.layer.ImageLayer = function(options) {
+  goog.base(this, options);
 };
 goog.inherits(ol.layer.ImageLayer, ol.layer.Layer);
 
