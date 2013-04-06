@@ -8,7 +8,7 @@ goog.require('ol.easing');
 
 
 /**
- * @param {ol.animation.BounceOptions} options Options.
+ * @param {ol.animation.BounceOptions} options Bounce options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
 ol.animation.bounce = function(options) {
@@ -37,7 +37,7 @@ ol.animation.bounce = function(options) {
 
 
 /**
- * @param {ol.animation.PanOptions} options Options.
+ * @param {ol.animation.PanOptions} options Pan options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
 ol.animation.pan = function(options) {
@@ -70,7 +70,7 @@ ol.animation.pan = function(options) {
 
 
 /**
- * @param {ol.animation.RotateOptions} options Options.
+ * @param {ol.animation.RotateOptions} options Rotate options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
 ol.animation.rotate = function(options) {
@@ -101,7 +101,7 @@ ol.animation.rotate = function(options) {
 
 
 /**
- * @param {ol.animation.ZoomOptions} options Options.
+ * @param {ol.animation.ZoomOptions} options Zoom options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
 ol.animation.zoom = function(options) {
