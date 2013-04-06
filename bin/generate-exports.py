@@ -264,7 +264,7 @@ def main(argv):
                     components = m.group('name').split('.')
                     if re.match(r'[A-Z]', components[-1]):
                         requires.add(name)
-                    else:
+                    elif len(components) > 2:
                         requires.add('.'.join(components[:-1]))
                 continue
             raise RuntimeError(line)

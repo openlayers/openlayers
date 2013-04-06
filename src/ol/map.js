@@ -12,7 +12,6 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.async.AnimationDelay');
 goog.require('goog.async.Delay');
-goog.require('goog.debug.Logger');
 goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -156,14 +155,6 @@ ol.MapProperty = {
 ol.Map = function(mapOptions) {
 
   goog.base(this);
-
-  if (goog.DEBUG) {
-    /**
-     * @protected
-     * @type {goog.debug.Logger}
-     */
-    this.logger = goog.debug.Logger.getLogger('ol.map.' + goog.getUid(this));
-  }
 
   var mapOptionsInternal = ol.Map.createOptionsInternal(mapOptions);
 
@@ -737,10 +728,6 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
   if (this.freezeRenderingCount_ != 0) {
     return;
-  }
-
-  if (goog.DEBUG) {
-    this.logger.info('renderFrame_');
   }
 
   var size = this.getSize();
