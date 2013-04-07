@@ -341,7 +341,8 @@ def serve_precommit(t):
           'buildcfg/ol-all.json', 'buildcfg/test.json')
 
 
-virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp')
+virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp',
+        'build/check-whitespace-timestamp')
 
 
 @target('build/lint-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC,
@@ -505,6 +506,36 @@ def build_check_requires_timestamp(t):
     if unused_count or missing_count:
         t.error('%d unused goog.requires, %d missing goog.requires' %
                 (unused_count, missing_count))
+    t.touch()
+
+
+@target('build/check-whitespace-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC,
+        EXAMPLES_SRC, SPEC, EXPORTS, 'src/objectliterals.exports',
+        precious=True)
+def build_check_whitespace_timestamp(t):
+    CR_RE = re.compile(r'\r')
+    TRAILING_WHITESPACE_RE = re.compile(r'\s+\n\Z')
+    NO_NEWLINE_RE = re.compile(r'[^\n]\Z')
+    ALL_WHITESPACE_RE = re.compile(r'\s+\Z')
+    errors = 0
+    for filename in sorted(t.newer(t.dependencies)):
+        whitespace = False
+        for lineno, line in enumerate(open(filename)):
+            if CR_RE.search(line):
+                t.info('%s:%d: carriage return character in line', filename, lineno + 1)
+                errors += 1
+            if TRAILING_WHITESPACE_RE.search(line):
+                t.info('%s:%d: trailing whitespace', filename, lineno + 1)
+                errors += 1
+            if NO_NEWLINE_RE.search(line):
+                t.info('%s:%d: no newline at end of file', filename, lineno + 1)
+                errors += 1
+            whitespace = ALL_WHITESPACE_RE.match(line)
+        if whitespace:
+            t.info('%s: trailing whitespace at end of file', filename)
+            errors += 1
+    if errors:
+        t.error('%d whitespace errors' % (errors,))
     t.touch()
 
 
