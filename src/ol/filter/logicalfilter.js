@@ -1,5 +1,8 @@
 goog.provide('ol.filter.Logical');
 goog.provide('ol.filter.LogicalOperator');
+goog.provide('ol.filter.and');
+goog.provide('ol.filter.not');
+goog.provide('ol.filter.or');
 
 goog.require('goog.asserts');
 goog.require('ol.filter.Filter');
@@ -78,4 +81,38 @@ ol.filter.LogicalOperator = {
   AND: '&&',
   OR: '||',
   NOT: '!'
+};
+
+
+/**
+ * Create a filter that evaluates to true if any of the provided filters
+ * evaluate to true.
+ * @param {...ol.filter.Filter} var_filters Filters.
+ * @return {ol.filter.Logical} A logical filter.
+ */
+ol.filter.and = function(var_filters) {
+  var filters = Array.prototype.slice.call(arguments);
+  return new ol.filter.Logical(filters, ol.filter.LogicalOperator.AND);
+};
+
+
+/**
+ * Create a new filter that is the logical compliment of another.
+ * @param {ol.filter.Filter} filter The filter to negate.
+ * @return {ol.filter.Logical} A logical filter.
+ */
+ol.filter.not = function(filter) {
+  return new ol.filter.Logical([filter], ol.filter.LogicalOperator.NOT);
+};
+
+
+/**
+ * Create a filter that evaluates to true if all of the provided filters
+ * evaluate to true.
+ * @param {...ol.filter.Filter} var_filters Filters.
+ * @return {ol.filter.Logical} A logical filter.
+ */
+ol.filter.or = function(var_filters) {
+  var filters = Array.prototype.slice.call(arguments);
+  return new ol.filter.Logical(filters, ol.filter.LogicalOperator.OR);
 };

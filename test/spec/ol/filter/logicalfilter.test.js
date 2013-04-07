@@ -91,7 +91,54 @@ describe('ol.filter.Logical', function() {
 
 });
 
+describe('ol.filter.and', function() {
+  it('creates the a logical AND filter', function() {
+    var a = new ol.filter.Filter();
+    var b = new ol.filter.Filter();
+    var c = new ol.filter.Filter();
+    var and = ol.filter.and(a, b, c);
+    expect(and).to.be.a(ol.filter.Logical);
+    expect(and.operator).to.be(ol.filter.LogicalOperator.AND);
+    var filters = and.getFilters();
+    expect(filters[0]).to.be(a);
+    expect(filters[1]).to.be(b);
+    expect(filters[2]).to.be(c);
+  });
+});
+
+describe('ol.filter.not', function() {
+  it('creates the logical compliment of another filter', function() {
+    var include = new ol.filter.Filter(function() {return true;});
+    var notInclude = ol.filter.not(include);
+    expect(notInclude).to.be.a(ol.filter.Logical);
+    expect(notInclude.applies()).to.be(false);
+
+    var exclude = new ol.filter.Filter(function() {return false;});
+    var notExclude = ol.filter.not(exclude);
+    expect(notExclude).to.be.a(ol.filter.Logical);
+    expect(notExclude.applies()).to.be(true);
+  });
+});
+
+describe('ol.filter.or', function() {
+  it('creates the a logical OR filter', function() {
+    var a = new ol.filter.Filter();
+    var b = new ol.filter.Filter();
+    var c = new ol.filter.Filter();
+    var and = ol.filter.or(a, b, c);
+    expect(and).to.be.a(ol.filter.Logical);
+    expect(and.operator).to.be(ol.filter.LogicalOperator.OR);
+    var filters = and.getFilters();
+    expect(filters[0]).to.be(a);
+    expect(filters[1]).to.be(b);
+    expect(filters[2]).to.be(c);
+  });
+});
+
 goog.require('ol.Feature');
 goog.require('ol.filter.Filter');
 goog.require('ol.filter.Logical');
 goog.require('ol.filter.LogicalOperator');
+goog.require('ol.filter.and');
+goog.require('ol.filter.not');
+goog.require('ol.filter.or');
