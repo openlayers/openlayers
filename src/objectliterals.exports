@@ -150,6 +150,12 @@
 @exportObjectLiteralProperty ol.source.DebugTileSourceOptions.projection ol.ProjectionLike
 @exportObjectLiteralProperty ol.source.DebugTileSourceOptions.tileGrid ol.tilegrid.TileGrid|undefined
 
+@exportObjectLiteral ol.source.OpenStreetMapOptions
+@exportObjectLiteralProperty ol.source.OpenStreetMapOptions.attribution ol.Attribution|undefined
+@exportObjectLiteralProperty ol.source.OpenStreetMapOptions.attributions Array.<ol.Attribution>|undefined
+@exportObjectLiteralProperty ol.source.OpenStreetMapOptions.maxZoom number|undefined
+@exportObjectLiteralProperty ol.source.OpenStreetMapOptions.url string|undefined
+
 @exportObjectLiteral ol.source.SingleImageWMSOptions
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.attributions Array.<ol.Attribution>|undefined
 @exportObjectLiteralProperty ol.source.SingleImageWMSOptions.crossOrigin null|string|undefined
