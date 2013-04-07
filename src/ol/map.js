@@ -304,7 +304,6 @@ ol.Map = function(options) {
    * @type {ol.TileQueue}
    */
   this.tileQueue_ = new ol.TileQueue(
-      ol.MAXIMUM_TILES_LOADING,
       goog.bind(this.getTilePriority, this),
       goog.bind(this.handleTileChange_, this));
 
@@ -598,7 +597,7 @@ ol.Map.prototype.handlePostRender = function() {
   }
 
   this.tileQueue_.reprioritize(); // FIXME only call if needed
-  this.tileQueue_.loadMoreTiles(limit);
+  this.tileQueue_.loadMoreTiles(limit, ol.MAXIMUM_TILES_LOADING);
 
   var postRenderFunctions = this.postRenderFunctions_;
   var i;
