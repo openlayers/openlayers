@@ -586,8 +586,10 @@ ol.Map.prototype.handlePostRender = function() {
     }
   }
 
-  this.tileQueue_.reprioritize(); // FIXME only call if needed
-  this.tileQueue_.loadMoreTiles(maxTotalLoading, maxNewLoads);
+  if (this.tileQueue_.getTilesLoading() < maxTotalLoading) {
+    this.tileQueue_.reprioritize(); // FIXME only call if view has changed
+    this.tileQueue_.loadMoreTiles(maxTotalLoading, maxNewLoads);
+  }
 
   var postRenderFunctions = this.postRenderFunctions_;
   var i;
