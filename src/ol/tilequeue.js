@@ -68,19 +68,19 @@ ol.TileQueue.prototype.handleTileChange = function() {
 
 
 /**
- * @param {number} limit Maximum number of new tiles to load.
- * @param {number} maxTilesLoading Maximum number tiles to load simultaneously.
+ * @param {number} maxTotalLoading Maximum number tiles to load simultaneously.
+ * @param {number} maxNewLoads Maximum number of new tiles to load.
  */
-ol.TileQueue.prototype.loadMoreTiles = function(limit, maxTilesLoading) {
+ol.TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
   var tile;
-  while (limit > 0 &&
+  while (maxNewLoads > 0 &&
          !this.isEmpty() &&
-         this.tilesLoading_ < maxTilesLoading) {
+         this.tilesLoading_ < maxTotalLoading) {
     tile = /** @type {ol.Tile} */ (this.dequeue()[0]);
     goog.events.listenOnce(tile, goog.events.EventType.CHANGE,
         this.handleTileChange, false, this);
     tile.load();
     ++this.tilesLoading_;
-    --limit;
+    --maxNewLoads;
   }
 };
