@@ -84,7 +84,7 @@ goog.inherits(ol.parser.ogc.ExceptionReport, ol.parser.XML);
  * @return {Object} Information about the exceptions that occurred.
  */
 ol.parser.ogc.ExceptionReport.prototype.read = function(data) {
-  if (typeof data == 'string') {
+  if (goog.isString(data)) {
     data = goog.dom.xml.loadXml(data);
   }
   var exceptionInfo = {};
