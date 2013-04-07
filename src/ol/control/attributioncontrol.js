@@ -20,7 +20,7 @@ goog.require('ol.source.Source');
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.AttributionOptions=} opt_options Options.
+ * @param {ol.control.AttributionOptions=} opt_options Attribution options.
  */
 ol.control.Attribution = function(opt_options) {
 

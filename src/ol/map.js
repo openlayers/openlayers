@@ -150,13 +150,13 @@ ol.MapProperty = {
  *
  * @constructor
  * @extends {ol.Object}
- * @param {ol.MapOptions} mapOptions Map options.
+ * @param {ol.MapOptions} options Map options.
  */
-ol.Map = function(mapOptions) {
+ol.Map = function(options) {
 
   goog.base(this);
 
-  var mapOptionsInternal = ol.Map.createOptionsInternal(mapOptions);
+  var optionsInternal = ol.Map.createOptionsInternal(options);
 
   /**
    * @private
@@ -200,7 +200,7 @@ ol.Map = function(mapOptions) {
    * @private
    * @type {Element}
    */
-  this.target_ = mapOptionsInternal.target;
+  this.target_ = optionsInternal.target;
 
   /**
    * @private
@@ -257,14 +257,14 @@ ol.Map = function(mapOptions) {
    * @type {ol.Collection}
    * @private
    */
-  this.interactions_ = mapOptionsInternal.interactions;
+  this.interactions_ = optionsInternal.interactions;
 
   /**
    * @type {ol.renderer.Map}
    * @private
    */
   this.renderer_ =
-      new mapOptionsInternal.rendererConstructor(this.viewport_, this);
+      new optionsInternal.rendererConstructor(this.viewport_, this);
   this.registerDisposable(this.renderer_);
 
   /**
@@ -315,13 +315,13 @@ ol.Map = function(mapOptions) {
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.BACKGROUND_COLOR),
       this.handleBackgroundColorChanged_, false, this);
-  this.setValues(mapOptionsInternal.values);
+  this.setValues(optionsInternal.values);
 
   // this gives the map an initial size
   this.handleBrowserWindowResize();
 
-  if (goog.isDef(mapOptionsInternal.controls)) {
-    goog.array.forEach(mapOptionsInternal.controls,
+  if (goog.isDef(optionsInternal.controls)) {
+    goog.array.forEach(optionsInternal.controls,
         /**
          * @param {ol.control.Control} control Control.
          */
@@ -896,10 +896,10 @@ ol.MapOptionsInternal;
 
 
 /**
- * @param {ol.MapOptions} mapOptions Map options.
- * @return {ol.MapOptionsInternal} Map options.
+ * @param {ol.MapOptions} options Map options.
+ * @return {ol.MapOptionsInternal} Internal map options.
  */
-ol.Map.createOptionsInternal = function(mapOptions) {
+ol.Map.createOptionsInternal = function(options) {
 
   /**
    * @type {Object.<string, *>}
@@ -907,20 +907,20 @@ ol.Map.createOptionsInternal = function(mapOptions) {
   var values = {};
 
   var layers;
-  if (goog.isDef(mapOptions.layers)) {
-    if (goog.isArray(mapOptions.layers)) {
-      layers = new ol.Collection(goog.array.clone(mapOptions.layers));
+  if (goog.isDef(options.layers)) {
+    if (goog.isArray(options.layers)) {
+      layers = new ol.Collection(goog.array.clone(options.layers));
     } else {
-      goog.asserts.assert(mapOptions.layers instanceof ol.Collection);
-      layers = mapOptions.layers;
+      goog.asserts.assert(options.layers instanceof ol.Collection);
+      layers = options.layers;
     }
   } else {
     layers = new ol.Collection();
   }
   values[ol.MapProperty.LAYERS] = layers;
 
-  values[ol.MapProperty.VIEW] = goog.isDef(mapOptions.view) ?
-      mapOptions.view : new ol.View2D();
+  values[ol.MapProperty.VIEW] = goog.isDef(options.view) ?
+      options.view : new ol.View2D();
 
   /**
    * @type {function(new: ol.renderer.Map, Element, ol.Map)}
@@ -931,10 +931,10 @@ ol.Map.createOptionsInternal = function(mapOptions) {
    * @type {Array.<ol.RendererHint>}
    */
   var rendererHints;
-  if (goog.isDef(mapOptions.renderers)) {
-    rendererHints = mapOptions.renderers;
-  } else if (goog.isDef(mapOptions.renderer)) {
-    rendererHints = [mapOptions.renderer];
+  if (goog.isDef(options.renderers)) {
+    rendererHints = options.renderers;
+  } else if (goog.isDef(options.renderer)) {
+    rendererHints = [options.renderer];
   } else {
     rendererHints = ol.DEFAULT_RENDERER_HINTS;
   }
@@ -960,16 +960,16 @@ ol.Map.createOptionsInternal = function(mapOptions) {
     }
   }
 
-  var controls = goog.isDef(mapOptions.controls) ?
-      mapOptions.controls : ol.control.defaults();
+  var controls = goog.isDef(options.controls) ?
+      options.controls : ol.control.defaults();
 
-  var interactions = goog.isDef(mapOptions.interactions) ?
-      mapOptions.interactions : ol.interaction.defaults();
+  var interactions = goog.isDef(options.interactions) ?
+      options.interactions : ol.interaction.defaults();
 
   /**
    * @type {Element}
    */
-  var target = goog.dom.getElement(mapOptions.target);
+  var target = goog.dom.getElement(options.target);
 
   return {
     controls: controls,

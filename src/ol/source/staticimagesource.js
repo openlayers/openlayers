@@ -10,7 +10,7 @@ goog.require('ol.source.ImageSource');
 /**
  * @constructor
  * @extends {ol.source.ImageSource}
- * @param {ol.source.StaticImageOptions} options Options.
+ * @param {ol.source.StaticImageOptions} options Static image options.
  */
 ol.source.StaticImage = function(options) {
 

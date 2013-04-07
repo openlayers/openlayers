@@ -16,7 +16,7 @@ ol.layer.TileLayerProperty = {
 /**
  * @constructor
  * @extends {ol.layer.Layer}
- * @param {ol.layer.TileLayerOptions} options Options.
+ * @param {ol.layer.TileLayerOptions} options Tile layer options.
  */
 ol.layer.TileLayer = function(options) {
 

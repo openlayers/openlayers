@@ -6,21 +6,21 @@ goog.require('ol.parser.ogc.ExceptionReport');
 
 /**
  * @constructor
- * @param {Object} formatOptions Options which will be set on this object.
+ * @param {Object=} opt_options Options which will be set on this object.
  */
-ol.parser.ogc.Versioned = function(formatOptions) {
-  formatOptions = formatOptions || {};
-  this.options = formatOptions;
-  this.defaultVersion = formatOptions.defaultVersion || null;
-  this.version = formatOptions.version;
-  this.profile = formatOptions.profile;
-  if (formatOptions.allowFallback !== undefined) {
-    this.allowFallback = formatOptions.allowFallback;
+ol.parser.ogc.Versioned = function(opt_options) {
+  var options = goog.isDef(opt_options) ? opt_options : {};
+  this.options = options;
+  this.defaultVersion = options.defaultVersion || null;
+  this.version = options.version;
+  this.profile = options.profile;
+  if (options.allowFallback !== undefined) {
+    this.allowFallback = options.allowFallback;
   } else {
     this.allowFallback = false;
   }
-  if (formatOptions.stringifyOutput !== undefined) {
-    this.stringifyOutput = formatOptions.stringifyOutput;
+  if (options.stringifyOutput !== undefined) {
+    this.stringifyOutput = options.stringifyOutput;
   } else {
     this.stringifyOutput = false;
   }

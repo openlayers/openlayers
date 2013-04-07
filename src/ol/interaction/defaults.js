@@ -17,7 +17,7 @@ goog.require('ol.interaction.condition');
 
 
 /**
- * @param {ol.interaction.DefaultOptions=} opt_options Options.
+ * @param {ol.interaction.DefaultsOptions=} opt_options Defaults options.
  * @param {Array.<ol.interaction.Interaction>=} opt_interactions Additional
  *     interactions.
  * @return {ol.Collection} Interactions.

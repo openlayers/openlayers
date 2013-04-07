@@ -29,15 +29,15 @@ ol.DEFAULT_MAX_ZOOM = 42;
 
 /**
  * @constructor
- * @param {ol.tilegrid.TileGridOptions} tileGridOptions Tile grid options.
+ * @param {ol.tilegrid.TileGridOptions} options Tile grid options.
  */
-ol.tilegrid.TileGrid = function(tileGridOptions) {
+ol.tilegrid.TileGrid = function(options) {
 
   /**
    * @private
    * @type {!Array.<number>}
    */
-  this.resolutions_ = tileGridOptions.resolutions;
+  this.resolutions_ = options.resolutions;
   goog.asserts.assert(goog.array.isSorted(this.resolutions_, function(a, b) {
     return b - a;
   }, true));
@@ -52,16 +52,15 @@ ol.tilegrid.TileGrid = function(tileGridOptions) {
    * @private
    * @type {ol.Coordinate}
    */
-  this.origin_ = goog.isDef(tileGridOptions.origin) ?
-      tileGridOptions.origin : null;
+  this.origin_ = goog.isDef(options.origin) ? options.origin : null;
 
   /**
    * @private
    * @type {Array.<ol.Coordinate>}
    */
   this.origins_ = null;
-  if (goog.isDef(tileGridOptions.origins)) {
-    this.origins_ = tileGridOptions.origins;
+  if (goog.isDef(options.origins)) {
+    this.origins_ = options.origins;
     goog.asserts.assert(this.origins_.length == this.resolutions_.length);
   }
   goog.asserts.assert(
@@ -73,8 +72,8 @@ ol.tilegrid.TileGrid = function(tileGridOptions) {
    * @type {Array.<ol.Size>}
    */
   this.tileSizes_ = null;
-  if (goog.isDef(tileGridOptions.tileSizes)) {
-    this.tileSizes_ = tileGridOptions.tileSizes;
+  if (goog.isDef(options.tileSizes)) {
+    this.tileSizes_ = options.tileSizes;
     goog.asserts.assert(this.tileSizes_.length == this.resolutions_.length);
   }
 
@@ -82,8 +81,8 @@ ol.tilegrid.TileGrid = function(tileGridOptions) {
    * @private
    * @type {ol.Size}
    */
-  this.tileSize_ = goog.isDef(tileGridOptions.tileSize) ?
-      tileGridOptions.tileSize :
+  this.tileSize_ = goog.isDef(options.tileSize) ?
+      options.tileSize :
       goog.isNull(this.tileSizes_) ?
           new ol.Size(ol.DEFAULT_TILE_SIZE, ol.DEFAULT_TILE_SIZE) : null;
   goog.asserts.assert(

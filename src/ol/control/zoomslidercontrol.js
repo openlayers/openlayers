@@ -23,9 +23,9 @@ goog.require('ol.css');
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.ZoomSliderOptions} zoomSliderOptions Zoom options.
+ * @param {ol.control.ZoomSliderOptions} options Zoom slider options.
  */
-ol.control.ZoomSlider = function(zoomSliderOptions) {
+ol.control.ZoomSlider = function(options) {
   // FIXME these should be read out from a map if not given, and only then
   //       fallback to the constants if they weren't defined on the map.
   /**
@@ -34,9 +34,8 @@ ol.control.ZoomSlider = function(zoomSliderOptions) {
    * @type {number}
    * @private
    */
-  this.maxResolution_ = goog.isDef(zoomSliderOptions.maxResolution) ?
-      zoomSliderOptions.maxResolution :
-      ol.control.ZoomSlider.DEFAULT_MAX_RESOLUTION;
+  this.maxResolution_ = goog.isDef(options.maxResolution) ?
+      options.maxResolution : ol.control.ZoomSlider.DEFAULT_MAX_RESOLUTION;
 
   /**
    * The maximum resolution that one can set with this control.
@@ -44,9 +43,8 @@ ol.control.ZoomSlider = function(zoomSliderOptions) {
    * @type {number}
    * @private
    */
-  this.minResolution_ = goog.isDef(zoomSliderOptions.minResolution) ?
-      zoomSliderOptions.minResolution :
-      ol.control.ZoomSlider.DEFAULT_MIN_RESOLUTION;
+  this.minResolution_ = goog.isDef(options.minResolution) ?
+      options.minResolution : ol.control.ZoomSlider.DEFAULT_MIN_RESOLUTION;
 
   goog.asserts.assert(
       this.minResolution_ < this.maxResolution_,
@@ -95,7 +93,7 @@ ol.control.ZoomSlider = function(zoomSliderOptions) {
 
   goog.base(this, {
     element: elem,
-    map: zoomSliderOptions.map
+    map: options.map
   });
 };
 goog.inherits(ol.control.ZoomSlider, ol.control.Control);
