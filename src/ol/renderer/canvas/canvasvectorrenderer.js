@@ -439,4 +439,3 @@ ol.renderer.canvas.VectorRenderer.handleIconLoad_ =
     opt_callback();
   }
 };
-

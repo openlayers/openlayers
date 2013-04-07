@@ -117,4 +117,3 @@ ol.dom.Input.prototype.handleCheckedChanged_ = function() {
 ol.dom.Input.prototype.handleValueChanged_ = function() {
   this.target_.value = this.getValue();
 };
-

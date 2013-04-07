@@ -39,4 +39,3 @@ ol.filter.Geometry.prototype.applies = function(feature) {
 ol.filter.Geometry.prototype.getType = function() {
   return this.type_;
 };
-
