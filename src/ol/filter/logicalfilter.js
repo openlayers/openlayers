@@ -85,10 +85,10 @@ ol.filter.LogicalOperator = {
 
 
 /**
- * Create a filter that evaluates to true if any of the provided filters
+ * Create a filter that evaluates to true if all of the provided filters
  * evaluate to true.
  * @param {...ol.filter.Filter} var_filters Filters.
- * @return {ol.filter.Logical} A logical filter.
+ * @return {ol.filter.Logical} A logical AND filter.
  */
 ol.filter.and = function(var_filters) {
   var filters = Array.prototype.slice.call(arguments);
@@ -99,7 +99,7 @@ ol.filter.and = function(var_filters) {
 /**
  * Create a new filter that is the logical compliment of another.
  * @param {ol.filter.Filter} filter The filter to negate.
- * @return {ol.filter.Logical} A logical filter.
+ * @return {ol.filter.Logical} A logical NOT filter.
  */
 ol.filter.not = function(filter) {
   return new ol.filter.Logical([filter], ol.filter.LogicalOperator.NOT);
@@ -107,10 +107,10 @@ ol.filter.not = function(filter) {
 
 
 /**
- * Create a filter that evaluates to true if all of the provided filters
+ * Create a filter that evaluates to true if any of the provided filters
  * evaluate to true.
  * @param {...ol.filter.Filter} var_filters Filters.
- * @return {ol.filter.Logical} A logical filter.
+ * @return {ol.filter.Logical} A logical OR filter.
  */
 ol.filter.or = function(var_filters) {
   var filters = Array.prototype.slice.call(arguments);
