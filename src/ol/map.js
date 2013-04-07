@@ -345,6 +345,26 @@ ol.Map.prototype.addLayer = function(layer) {
 
 
 /**
+ * @param {...(Array.<ol.layer.Layer>|ol.Collection|ol.layer.Layer)} layers
+ *     Layers.
+ */
+ol.Map.prototype.addLayers = function(layers) {
+  var argument, i;
+  for (i = 0; i < arguments.length; ++i) {
+    argument = arguments[i];
+    if (goog.isArray(argument)) {
+      this.addLayers.apply(this, argument);
+    } else if (argument instanceof ol.Collection) {
+      this.addLayers.apply(this, argument.getArray());
+    } else {
+      goog.asserts.assert(argument instanceof ol.layer.Layer);
+      this.addLayer(argument);
+    }
+  }
+};
+
+
+/**
  * @param {ol.PreRenderFunction} preRenderFunction Pre-render function.
  */
 ol.Map.prototype.addPreRenderFunction = function(preRenderFunction) {
@@ -715,6 +735,26 @@ ol.Map.prototype.removeLayer = function(layer) {
   var layers = this.getLayers();
   goog.asserts.assert(goog.isDef(layers));
   return /** @type {ol.layer.Layer|undefined} */ (layers.remove(layer));
+};
+
+
+/**
+ * @param {...(Array.<ol.layer.Layer>|ol.Collection|ol.layer.Layer)} layers
+ *     Layers.
+ */
+ol.Map.prototype.removeLayers = function(layers) {
+  var i, argument;
+  for (i = 0; i < arguments.length; ++i) {
+    argument = arguments[i];
+    if (goog.isArray(argument)) {
+      this.removeLayers.apply(this, argument);
+    } else if (argument instanceof ol.Collection) {
+      this.removeLayers.apply(this, argument.getArray());
+    } else {
+      goog.asserts.assert(argument instanceof ol.layer.Layer);
+      this.removeLayer(argument);
+    }
+  }
 };
 
 
