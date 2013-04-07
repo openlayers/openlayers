@@ -89,8 +89,7 @@ EXECUTABLES = [variables.GIT, variables.GJSLINT, variables.JAVA, variables.JAR,
 
 EXPORTS = [path
            for path in ifind('src')
-           if path.endswith('.exports')
-           if path != 'src/objectliterals.exports']
+           if path.endswith('.exports')]
 
 EXTERNAL_SRC = [
     'build/src/external/externs/types.js',
@@ -212,24 +211,24 @@ def build_ol_all_js(t):
 
 
 @target('build/src/external/externs/types.js', 'bin/generate-exports.py',
-        'src/objectliterals.exports')
+        'src/objectliterals.jsdoc')
 def build_src_external_externs_types_js(t):
     t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--externs', 'src/objectliterals.exports')
+             '--externs', 'src/objectliterals.jsdoc')
 
 
 @target('build/src/external/src/exports.js', 'bin/generate-exports.py',
-        'src/objectliterals.exports', EXPORTS)
+        'src/objectliterals.jsdoc', EXPORTS)
 def build_src_external_src_exports_js(t):
     t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--exports', 'src/objectliterals.exports', EXPORTS)
+             '--exports', 'src/objectliterals.jsdoc', EXPORTS)
 
 
 @target('build/src/external/src/types.js', 'bin/generate-exports.py',
-        'src/objectliterals.exports')
+        'src/objectliterals.jsdoc')
 def build_src_external_src_types_js(t):
     t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--typedef', 'src/objectliterals.exports')
+             '--typedef', 'src/objectliterals.jsdoc')
 
 
 if os.path.exists(TEMPLATE_GLSL_COMPILER_JS):
@@ -268,10 +267,10 @@ def build_test_requireall_js(t):
 
 
 @target('build/src/internal/src/types.js', 'bin/generate-exports.py',
-        'src/objectliterals.exports')
+        'src/objectliterals.jsdoc')
 def build_src_internal_types_js(t):
     t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--typedef', 'src/objectliterals.exports')
+             '--typedef', 'src/objectliterals.jsdoc')
 
 
 virtual('build-examples', 'examples', EXAMPLES_COMBINED)

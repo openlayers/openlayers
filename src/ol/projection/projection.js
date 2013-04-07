@@ -25,7 +25,8 @@ ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof Proj4js == 'object';
 
 
 /**
- * @typedef {ol.Projection|string|undefined}
+ * A projection as {@link ol.Projection}, SRS identifier string or undefined.
+ * @typedef {ol.Projection|string|undefined} ol.ProjectionLike
  */
 ol.ProjectionLike;
 
