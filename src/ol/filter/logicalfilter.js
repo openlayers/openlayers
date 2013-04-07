@@ -1,6 +1,7 @@
 goog.provide('ol.filter.Logical');
 goog.provide('ol.filter.LogicalOperator');
 
+goog.require('goog.asserts');
 goog.require('ol.filter.Filter');
 
 
@@ -9,7 +10,7 @@ goog.require('ol.filter.Filter');
  * @constructor
  * @extends {ol.filter.Filter}
  * @param {Array.<ol.filter.Filter>} filters Filters to and-combine.
- * @param {!ol.filter.LogicalOperator} operator Operator.
+ * @param {ol.filter.LogicalOperator} operator Operator.
  */
 ol.filter.Logical = function(filters, operator) {
   goog.base(this);
@@ -19,9 +20,10 @@ ol.filter.Logical = function(filters, operator) {
    * @private
    */
   this.filters_ = filters;
+  goog.asserts.assert(filters.length > 0, 'Must supply at least one filter');
 
   /**
-   * @type {!ol.filter.LogicalOperator}
+   * @type {ol.filter.LogicalOperator}
    */
   this.operator = operator;
 
@@ -35,14 +37,29 @@ goog.inherits(ol.filter.Logical, ol.filter.Filter);
 ol.filter.Logical.prototype.applies = function(feature) {
   var filters = this.filters_,
       i = 0, ii = filters.length,
-      operator = this.operator,
-      start = operator(true, false),
-      result = start;
-  while (result === start && i < ii) {
-    result = operator(result, filters[i].applies(feature));
-    ++i;
+      result;
+  switch (this.operator) {
+    case ol.filter.LogicalOperator.AND:
+      result = true;
+      while (result && i < ii) {
+        result = result && filters[i].applies(feature);
+        ++i;
+      }
+      break;
+    case ol.filter.LogicalOperator.OR:
+      result = false;
+      while (!result && i < ii) {
+        result = result || filters[i].applies(feature);
+        ++i;
+      }
+      break;
+    case ol.filter.LogicalOperator.NOT:
+      result = !filters[i].applies(feature);
+      break;
+    default:
+      goog.asserts.assert(false, 'Unsupported operation: ' + this.operator);
   }
-  return result;
+  return !!result;
 };
 
 
@@ -55,9 +72,10 @@ ol.filter.Logical.prototype.getFilters = function() {
 
 
 /**
- * @enum {!Function}
+ * @enum {string}
  */
 ol.filter.LogicalOperator = {
-  AND: /** @return {boolean} result. */ function(a, b) { return a && b; },
-  OR: /** @return {boolean} result. */ function(a, b) { return a || b; }
+  AND: '&&',
+  OR: '||',
+  NOT: '!'
 };
