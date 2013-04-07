@@ -23,24 +23,24 @@ ol.style.IconLiteralOptions;
 /**
  * @constructor
  * @extends {ol.style.PointLiteral}
- * @param {ol.style.IconLiteralOptions} config Symbolizer properties.
+ * @param {ol.style.IconLiteralOptions} options Icon literal options.
  */
-ol.style.IconLiteral = function(config) {
+ol.style.IconLiteral = function(options) {
 
   /** @type {string} */
-  this.url = config.url;
+  this.url = options.url;
 
   /** @type {number|undefined} */
-  this.width = config.width;
+  this.width = options.width;
 
   /** @type {number|undefined} */
-  this.height = config.height;
+  this.height = options.height;
 
   /** @type {number} */
-  this.opacity = config.opacity;
+  this.opacity = options.opacity;
 
   /** @type {number} */
-  this.rotation = config.rotation;
+  this.rotation = options.rotation;
 
 };
 goog.inherits(ol.style.IconLiteral, ol.style.PointLiteral);
@@ -62,7 +62,7 @@ ol.style.IconLiteral.prototype.equals = function(iconLiteral) {
 /**
  * @constructor
  * @extends {ol.style.Point}
- * @param {ol.style.IconOptions} options Symbolizer properties.
+ * @param {ol.style.IconOptions} options Icon options.
  */
 ol.style.Icon = function(options) {
 

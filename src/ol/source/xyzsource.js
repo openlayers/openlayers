@@ -33,38 +33,37 @@ ol.source.XYZOptions;
 /**
  * @constructor
  * @extends {ol.source.ImageTileSource}
- * @param {ol.source.XYZOptions} xyzOptions XYZ options.
+ * @param {ol.source.XYZOptions} options XYZ options.
  */
-ol.source.XYZ = function(xyzOptions) {
+ol.source.XYZ = function(options) {
 
-  var projection = xyzOptions.projection ||
-      ol.projection.get('EPSG:3857');
+  var projection = options.projection || ol.projection.get('EPSG:3857');
 
   /**
    * @type {ol.TileUrlFunctionType}
    */
   var tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
   // FIXME use goog.nullFunction ?
-  if (goog.isDef(xyzOptions.tileUrlFunction)) {
-    tileUrlFunction = xyzOptions.tileUrlFunction;
-  } else if (goog.isDef(xyzOptions.urls)) {
-    tileUrlFunction = ol.TileUrlFunction.createFromTemplates(xyzOptions.urls);
-  } else if (goog.isDef(xyzOptions.url)) {
+  if (goog.isDef(options.tileUrlFunction)) {
+    tileUrlFunction = options.tileUrlFunction;
+  } else if (goog.isDef(options.urls)) {
+    tileUrlFunction = ol.TileUrlFunction.createFromTemplates(options.urls);
+  } else if (goog.isDef(options.url)) {
     tileUrlFunction = ol.TileUrlFunction.createFromTemplates(
-        ol.TileUrlFunction.expandUrl(xyzOptions.url));
+        ol.TileUrlFunction.expandUrl(options.url));
   }
 
   var tileGrid = new ol.tilegrid.XYZ({
-    maxZoom: xyzOptions.maxZoom
+    maxZoom: options.maxZoom
   });
 
   // FIXME factor out common code
-  var extent = xyzOptions.extent;
+  var extent = options.extent;
   if (goog.isDefAndNotNull(extent)) {
 
     tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
         function(tileCoord) {
-          if (xyzOptions.maxZoom < tileCoord.z) {
+          if (options.maxZoom < tileCoord.z) {
             return null;
           }
           var n = 1 << tileCoord.z;
@@ -87,7 +86,7 @@ ol.source.XYZ = function(xyzOptions) {
 
     tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
         function(tileCoord) {
-          if (xyzOptions.maxZoom < tileCoord.z) {
+          if (options.maxZoom < tileCoord.z) {
             return null;
           }
           var n = 1 << tileCoord.z;
@@ -103,10 +102,10 @@ ol.source.XYZ = function(xyzOptions) {
   }
 
   goog.base(this, {
-    attributions: xyzOptions.attributions,
-    crossOrigin: xyzOptions.crossOrigin,
-    extent: xyzOptions.extent,
-    logo: xyzOptions.logo,
+    attributions: options.attributions,
+    crossOrigin: options.crossOrigin,
+    extent: options.extent,
+    logo: options.logo,
     projection: projection,
     tileGrid: tileGrid,
     tileUrlFunction: tileUrlFunction

@@ -30,8 +30,7 @@ ol.source.ImageSourceOptions;
 /**
  * @constructor
  * @extends {ol.source.Source}
- * @param {ol.source.ImageSourceOptions} options Single
- *     image source options.
+ * @param {ol.source.ImageSourceOptions} options Single image source options.
  */
 ol.source.ImageSource = function(options) {
 

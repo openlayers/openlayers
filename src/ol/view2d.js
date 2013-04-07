@@ -37,38 +37,38 @@ ol.View2DProperty = {
  * @implements {ol.IView2D}
  * @implements {ol.IView3D}
  * @extends {ol.View}
- * @param {ol.View2DOptions=} opt_view2DOptions View2D options.
+ * @param {ol.View2DOptions=} opt_options View2D options.
  */
-ol.View2D = function(opt_view2DOptions) {
+ol.View2D = function(opt_options) {
   goog.base(this);
-  var view2DOptions = opt_view2DOptions || {};
+  var options = opt_options || {};
 
   /**
    * @type {Object.<string, *>}
    */
   var values = {};
-  values[ol.View2DProperty.CENTER] = goog.isDef(view2DOptions.center) ?
-      view2DOptions.center : null;
+  values[ol.View2DProperty.CENTER] = goog.isDef(options.center) ?
+      options.center : null;
   values[ol.View2DProperty.PROJECTION] = ol.projection.createProjection(
-      view2DOptions.projection, 'EPSG:3857');
-  if (goog.isDef(view2DOptions.resolution)) {
-    values[ol.View2DProperty.RESOLUTION] = view2DOptions.resolution;
-  } else if (goog.isDef(view2DOptions.zoom)) {
+      options.projection, 'EPSG:3857');
+  if (goog.isDef(options.resolution)) {
+    values[ol.View2DProperty.RESOLUTION] = options.resolution;
+  } else if (goog.isDef(options.zoom)) {
     var projectionExtent = values[ol.View2DProperty.PROJECTION].getExtent();
     var size = Math.max(
         projectionExtent.maxX - projectionExtent.minX,
         projectionExtent.maxY - projectionExtent.minY);
     values[ol.View2DProperty.RESOLUTION] =
-        size / (ol.DEFAULT_TILE_SIZE * Math.pow(2, view2DOptions.zoom));
+        size / (ol.DEFAULT_TILE_SIZE * Math.pow(2, options.zoom));
   }
-  values[ol.View2DProperty.ROTATION] = view2DOptions.rotation;
+  values[ol.View2DProperty.ROTATION] = options.rotation;
   this.setValues(values);
 
   /**
    * @private
    * @type {ol.Constraints}
    */
-  this.constraints_ = ol.View2D.createConstraints_(view2DOptions);
+  this.constraints_ = ol.View2D.createConstraints_(options);
 
 };
 goog.inherits(ol.View2D, ol.View);
@@ -419,25 +419,25 @@ ol.View2D.prototype.zoomWithoutConstraints =
 
 /**
  * @private
- * @param {ol.View2DOptions} view2DOptions View2D options.
+ * @param {ol.View2DOptions} options View2D options.
  * @return {ol.Constraints} Constraints.
  */
-ol.View2D.createConstraints_ = function(view2DOptions) {
+ol.View2D.createConstraints_ = function(options) {
   var resolutionConstraint;
-  if (goog.isDef(view2DOptions.resolutions)) {
+  if (goog.isDef(options.resolutions)) {
     resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
-        view2DOptions.resolutions);
+        options.resolutions);
   } else {
     var maxResolution, numZoomLevels, zoomFactor;
-    if (goog.isDef(view2DOptions.maxResolution) &&
-        goog.isDef(view2DOptions.numZoomLevels) &&
-        goog.isDef(view2DOptions.zoomFactor)) {
-      maxResolution = view2DOptions.maxResolution;
-      numZoomLevels = view2DOptions.numZoomLevels;
-      zoomFactor = view2DOptions.zoomFactor;
+    if (goog.isDef(options.maxResolution) &&
+        goog.isDef(options.numZoomLevels) &&
+        goog.isDef(options.zoomFactor)) {
+      maxResolution = options.maxResolution;
+      numZoomLevels = options.numZoomLevels;
+      zoomFactor = options.zoomFactor;
     } else {
       var projectionExtent = ol.projection.createProjection(
-          view2DOptions.projection, 'EPSG:3857').getExtent();
+          options.projection, 'EPSG:3857').getExtent();
       maxResolution = Math.max(
           projectionExtent.maxX - projectionExtent.minX,
           projectionExtent.maxY - projectionExtent.minY) / ol.DEFAULT_TILE_SIZE;

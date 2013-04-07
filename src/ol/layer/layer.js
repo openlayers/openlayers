@@ -38,9 +38,9 @@ ol.layer.LayerState;
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {ol.layer.LayerOptions} layerOptions LayerOptions.
+ * @param {ol.layer.LayerOptions} options Layer options.
  */
-ol.layer.Layer = function(layerOptions) {
+ol.layer.Layer = function(options) {
 
   goog.base(this);
 
@@ -48,20 +48,14 @@ ol.layer.Layer = function(layerOptions) {
    * @private
    * @type {ol.source.Source}
    */
-  this.source_ = layerOptions.source;
+  this.source_ = options.source;
 
-  this.setBrightness(
-      goog.isDef(layerOptions.brightness) ? layerOptions.brightness : 0);
-  this.setContrast(
-      goog.isDef(layerOptions.contrast) ? layerOptions.contrast : 1);
-  this.setHue(
-      goog.isDef(layerOptions.hue) ? layerOptions.hue : 0);
-  this.setOpacity(
-      goog.isDef(layerOptions.opacity) ? layerOptions.opacity : 1);
-  this.setSaturation(
-      goog.isDef(layerOptions.saturation) ? layerOptions.saturation : 1);
-  this.setVisible(
-      goog.isDef(layerOptions.visible) ? layerOptions.visible : true);
+  this.setBrightness(goog.isDef(options.brightness) ? options.brightness : 0);
+  this.setContrast(goog.isDef(options.contrast) ? options.contrast : 1);
+  this.setHue(goog.isDef(options.hue) ? options.hue : 0);
+  this.setOpacity(goog.isDef(options.opacity) ? options.opacity : 1);
+  this.setSaturation(goog.isDef(options.saturation) ? options.saturation : 1);
+  this.setVisible(goog.isDef(options.visible) ? options.visible : true);
 
   if (!this.source_.isReady()) {
     goog.events.listenOnce(this.source_, goog.events.EventType.LOAD,

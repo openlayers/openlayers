@@ -24,9 +24,9 @@ ol.control.DragBoxOptions;
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.DragBoxOptions} dragBoxOptions Drag box options.
+ * @param {ol.control.DragBoxOptions} options Drag box options.
  */
-ol.control.DragBox = function(dragBoxOptions) {
+ol.control.DragBox = function(options) {
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-dragbox');
 
@@ -40,11 +40,11 @@ ol.control.DragBox = function(dragBoxOptions) {
    * @private
    * @type {ol.Coordinate}
    */
-  this.startCoordinate_ = dragBoxOptions.startCoordinate;
+  this.startCoordinate_ = options.startCoordinate;
 
   goog.base(this, {
     element: element,
-    map: dragBoxOptions.map
+    map: options.map
   });
 
 };

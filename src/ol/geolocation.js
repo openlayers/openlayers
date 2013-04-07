@@ -256,7 +256,7 @@ goog.exportProperty(
 
 
 /**
- * @return {GeolocationPositionOptions|undefined} tracking options.
+ * @return {GeolocationPositionOptions|undefined} Tracking options.
  */
 ol.Geolocation.prototype.getTrackingOptions = function() {
   return /** @type {GeolocationPositionOptions} */ (

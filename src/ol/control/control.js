@@ -23,9 +23,9 @@ ol.control.ControlOptions;
  *
  * @constructor
  * @extends {goog.Disposable}
- * @param {ol.control.ControlOptions} controlOptions Control options.
+ * @param {ol.control.ControlOptions} options Control options.
  */
-ol.control.Control = function(controlOptions) {
+ol.control.Control = function(options) {
 
   goog.base(this);
 
@@ -33,14 +33,13 @@ ol.control.Control = function(controlOptions) {
    * @protected
    * @type {Element}
    */
-  this.element = goog.isDef(controlOptions.element) ?
-      controlOptions.element : null;
+  this.element = goog.isDef(options.element) ? options.element : null;
 
   /**
    * @private
    * @type {Element|undefined}
    */
-  this.target_ = controlOptions.target;
+  this.target_ = options.target;
 
   /**
    * @private
@@ -54,8 +53,8 @@ ol.control.Control = function(controlOptions) {
    */
   this.listenerKeys = [];
 
-  if (goog.isDef(controlOptions.map)) {
-    this.setMap(controlOptions.map);
+  if (goog.isDef(options.map)) {
+    this.setMap(options.map);
   }
 
 };
