@@ -8,7 +8,7 @@
  * @property {ol.RendererHint|undefined} renderer Renderer.
  * @property {Array.<ol.RendererHint>|undefined} renderers Renderers.
  * @property {Element|string} target The container for the map.
- * @property {ol.View2D|ol.View3D|undefined} view View.
+ * @property {ol.IView|undefined} view View.
  */
 
 /**
@@ -114,7 +114,7 @@
 /**
  * @typedef {Object} ol.control.LogoOptions
  * @property {ol.Map|undefined} map Map.
- * @property {Element|undefined} LogoOptions.target Target.
+ * @property {Element|undefined} target Target.
  */
 
 /**
