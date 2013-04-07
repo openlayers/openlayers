@@ -4,6 +4,16 @@ goog.require('ol.Attribution');
 goog.require('ol.source.XYZ');
 
 
+/**
+ * @const
+ * @type {Array.<ol.Attribution>}
+ */
+ol.source.OPENSTREETMAP_ATTRIBUTIONS = [new ol.Attribution(
+    '&copy; <a href="http://www.openstreetmap.org">OpenStreetMap</a> ' +
+    'contributors, ' +
+    '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>')];
+
+
 
 /**
  * @constructor
@@ -20,14 +30,7 @@ ol.source.OpenStreetMap = function(opt_options) {
   } else if (goog.isDef(options.attribution)) {
     attributions = [options.attribution];
   } else {
-    attributions = [
-      new ol.Attribution(
-          '&copy; <a href="http://www.openstreetmap.org">OpenStreetMap</a> ' +
-          'contributors, ' +
-          '<a href="http://creativecommons.org/licenses/by-sa/2.0/"> ' +
-          'CC BY-SA' +
-          '</a>')
-    ];
+    attributions = ol.source.OPENSTREETMAP_ATTRIBUTIONS;
   }
 
   var maxZoom = goog.isDef(options.maxZoom) ? options.maxZoom : 18;
