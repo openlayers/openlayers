@@ -194,7 +194,7 @@
 
 @exportObjectLiteral ol.source.TiledWMSOptions
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.attributions Array.<ol.Attribution>|undefined
-@exportObjectLiteralProperty ol.source.TiledWMSOptions.params Object
+@exportObjectLiteralProperty ol.source.TiledWMSOptions.params Object.<string,*>
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.crossOrigin null|string|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.extent ol.Extent|undefined
 @exportObjectLiteralProperty ol.source.TiledWMSOptions.tileGrid ol.tilegrid.TileGrid|undefined
