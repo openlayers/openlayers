@@ -24,4 +24,3 @@ ol.parser.ogc.WMSCapabilities_v1_1_0 = function() {
 };
 goog.inherits(ol.parser.ogc.WMSCapabilities_v1_1_0,
     ol.parser.ogc.WMSCapabilities_v1_1);
-

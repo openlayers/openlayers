@@ -14,11 +14,11 @@
 /**
  * Object literal with config options for the overlay.
  * @typedef {Object} ol.OverlayOptions
- * @property {Element|undefined} element The overlay element. 
- * @property {ol.Map|undefined} map The map to overlay onto. 
+ * @property {Element|undefined} element The overlay element.
+ * @property {ol.Map|undefined} map The map to overlay onto.
  * @property {ol.Coordinate|undefined} position The overlay position in map
  *     projection.
- * @property {ol.OverlayPositioning|undefined} positioning Positioning. 
+ * @property {ol.OverlayPositioning|undefined} positioning Positioning.
  */
 
 /**
@@ -50,24 +50,24 @@
  *     units per pixel.
  * @property {number|undefined} numZoomLevels The number of zoom levels for this
  *     view. Zoom level 0 uses the `maxResolution`; subsequent zoom levels are
- *     calculated by dividing the previous resolution by `zoomFactor`. 
+ *     calculated by dividing the previous resolution by `zoomFactor`.
  * @property {ol.ProjectionLike} projection The map projection.
- * @property {number|undefined} resolution The initial resolution for the view. 
+ * @property {number|undefined} resolution The initial resolution for the view.
  * @property {Array.<number>|undefined} resolutions The resolutions for this
  *     view. If configured, this is equivalent to specifying `maxResolution` and
  *     `numZoomLevels`.
- * @property {number|undefined} rotation Initial rotation of the view. 
- * @property {number|undefined} zoom Initial zoom level of the view. 
+ * @property {number|undefined} rotation Initial rotation of the view.
+ * @property {number|undefined} zoom Initial zoom level of the view.
  * @property {number|undefined} zoomFactor Factor to calculate resolutions for
  *     zoom levels. Default is 2.
  */
 
 /**
  * @typedef {Object} ol.animation.BounceOptions
- * @property {number} resolution Resolution. 
- * @property {number|undefined} start Start. 
- * @property {number|undefined} duration Duration. 
- * @property {function(number):number|undefined} easing Easing function. 
+ * @property {number} resolution Resolution.
+ * @property {number|undefined} start Start.
+ * @property {number|undefined} duration Duration.
+ * @property {function(number):number|undefined} easing Easing function.
  */
 
 /**
@@ -96,7 +96,7 @@
 
 /**
  * @typedef {Object} ol.control.AttributionOptions
- * @property {ol.Map|undefined} map Map. 
+ * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
  */
 
@@ -194,7 +194,7 @@
  * @property {number|undefined} contrast Contrast.
  * @property {number|undefined} hue Hue.
  * @property {number|undefined} opacity Opacity. 0-1. Default is 1.
- * @property {number|undefined} preload Preload. 
+ * @property {number|undefined} preload Preload.
  * @property {number|undefined} saturation Saturation.
  * @property {ol.source.Source} source Source for this layer.
  * @property {boolean|undefined} visible Visibility. Default is true (visible).
@@ -204,7 +204,7 @@
  * @typedef {Object} ol.layer.VectorLayerOptions
  * @property {number|undefined} opacity Opacity. 0-1. Default is 1.
  * @property {ol.source.Source} source Source for this layer.
- * @property {ol.style.Style|undefined} style Style. 
+ * @property {ol.style.Style|undefined} style Style.
  * @property {boolean|undefined} visible Visibility. Default is true (visible).
  */
 
@@ -301,7 +301,7 @@
  * @property {ol.ProjectionLike} projection Projection.
  * @property {string|undefined} url WMS service url.
  * @property {Array.<string>|undefined} urls WMS service urls. Use this instead
- *     of `url` when the WMS supports multiple urls for GetMap requests. 
+ *     of `url` when the WMS supports multiple urls for GetMap requests.
  */
 
 /**
@@ -350,9 +350,9 @@
  * @property {string|ol.Expression|undefined} fillColor Fill color as hex color
  *     code.
  * @property {string|ol.Expression|undefined} strokeColor Stroke color as hex
- *     color code. 
+ *     color code.
  * @property {number|ol.Expression|undefined} strokeWidth Stroke width in
- *     pixels. 
+ *     pixels.
  * @property {number|ol.Expression|undefined} opacity Opacity (0-1).
  */
 

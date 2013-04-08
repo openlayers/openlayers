@@ -8,5 +8,3 @@ goog.provide('ol.IView3D');
  */
 ol.IView3D = function() {
 };
-
-
