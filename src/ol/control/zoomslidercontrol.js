@@ -152,9 +152,12 @@ ol.control.ZoomSlider.DEFAULT_MAX_RESOLUTION = 156543.0339;
  */
 ol.control.ZoomSlider.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
-  this.currentResolution_ = map.getView().getResolution();
   this.initSlider_();
-  this.positionThumbForResolution_(this.currentResolution_);
+  var resolution = map.getView().getResolution();
+  if (goog.isDef(resolution)) {
+    this.currentResolution_ = resolution;
+    this.positionThumbForResolution_(resolution);
+  }
 };
 
 
