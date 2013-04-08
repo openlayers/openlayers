@@ -1,5 +1,5 @@
-//! NAMESPACE=ol.renderer.webgl.map.shader
-//! CLASS=ol.renderer.webgl.map.shader.
+//! NAMESPACE=ol.renderer.webgl.map.shader.Color
+//! CLASS=ol.renderer.webgl.map.shader.Color
 
 
 //! COMMON
