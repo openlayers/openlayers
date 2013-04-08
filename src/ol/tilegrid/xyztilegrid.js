@@ -42,6 +42,20 @@ goog.inherits(ol.tilegrid.XYZ, ol.tilegrid.TileGrid);
 /**
  * @inheritDoc
  */
+ol.tilegrid.XYZ.prototype.getTileCoordChildTileRange = function(tileCoord) {
+  if (tileCoord.z < this.maxZoom_) {
+    return new ol.TileRange(
+        tileCoord.x << 1, tileCoord.y << 1,
+        tileCoord.x + 1 << 1, tileCoord.y + 1 << 1);
+  } else {
+    return null;
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.tilegrid.XYZ.prototype.forEachTileCoordParentTileRange =
     function(tileCoord, callback, opt_obj) {
   var tileRange = new ol.TileRange(0, 0, tileCoord.x, tileCoord.y);
