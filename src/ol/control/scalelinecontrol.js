@@ -226,7 +226,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function(frameState) {
       pointResolution /= 1609.3472;
     }
   } else {
-    goog.asserts.assert(false);
+    goog.asserts.fail();
   }
 
   var i = 3 * Math.floor(

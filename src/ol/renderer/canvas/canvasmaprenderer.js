@@ -73,7 +73,7 @@ ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
   } else if (layer instanceof ol.layer.Vector) {
     return new ol.renderer.canvas.VectorLayer(this, layer);
   } else {
-    goog.asserts.assert(false);
+    goog.asserts.fail();
     return null;
   }
 };

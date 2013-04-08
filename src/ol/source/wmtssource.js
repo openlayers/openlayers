@@ -235,7 +235,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, layer) {
       goog.asserts.assert(urls.length > 0);
       break;
     default:
-      goog.asserts.assert(false);
+      goog.asserts.fail();
   }
 
   return {

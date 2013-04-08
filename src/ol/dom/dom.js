@@ -77,7 +77,7 @@ ol.dom.transformElement2D = function(element, transform, opt_precision) {
     ol.dom.setTransform(element, 'matrix(' + value2D + ')');
   } else if (ol.dom.BrowserFeature.CAN_USE_MATRIX_FILTER) {
     // http://msdn.microsoft.com/en-us/library/ms533014%28VS.85,loband%29.aspx
-    goog.asserts.assert(false); // FIXME
+    goog.asserts.fail(); // FIXME
   } else {
     // FIXME check this code!
     var style = element.style;

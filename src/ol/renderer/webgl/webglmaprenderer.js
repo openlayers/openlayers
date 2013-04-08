@@ -313,7 +313,7 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
   } else if (layer instanceof ol.layer.ImageLayer) {
     layerRenderer = new ol.renderer.webgl.ImageLayer(this, layer);
   } else {
-    goog.asserts.assert(false);
+    goog.asserts.fail();
   }
   return layerRenderer;
 };
