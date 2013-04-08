@@ -10,8 +10,6 @@ describe('ol.control.ZoomSlider', function() {
       target: target
     });
     zoomslider = new ol.control.ZoomSlider({
-      minResolution: 5000,
-      maxResolution: 100000,
       map: map
     });
   });
@@ -23,43 +21,6 @@ describe('ol.control.ZoomSlider', function() {
     zoomslider = null;
     map = null;
     target = null;
-  });
-
-  describe('configuration & defaults', function() {
-
-    it('has valid defaults for min and maxresolution', function() {
-      var zoomslider,
-          expectedMin = 0.5971642833948135,
-          expectedMax = 156543.0339,
-          expectedRange = expectedMax - expectedMin;
-      expect(function() {
-        zoomslider = new ol.control.ZoomSlider({});
-      }).not.to.throwException();
-      expect(zoomslider.minResolution_).to.be(expectedMin);
-      expect(zoomslider.maxResolution_).to.be(expectedMax);
-      expect(zoomslider.range_).to.be(expectedRange);
-    });
-
-    it('throws exception when configured with wrong resolutions', function() {
-      expect(function() {
-        zoomslider = new ol.control.ZoomSlider({
-          minResolution: 50,
-          maxResolution: 0
-        });
-      }).to.throwException();
-    });
-
-    it('can be configured with valid resolutions', function() {
-      expect(function() {
-        zoomslider = new ol.control.ZoomSlider({
-          minResolution: 790,
-          maxResolution: 91000
-        });
-      }).not.to.throwException();
-      expect(zoomslider.minResolution_).to.be(790);
-      expect(zoomslider.maxResolution_).to.be(91000);
-      expect(zoomslider.range_).to.be(90210);
-    });
   });
 
   describe('DOM creation', function() {
@@ -103,10 +64,7 @@ describe('ol.control.ZoomSlider', function() {
 
   describe('#direction_', function() {
     it('is horizontal for wide containers', function() {
-      var control = new ol.control.ZoomSlider({
-        minResolution: 5000,
-        maxResolution: 100000
-      });
+      var control = new ol.control.ZoomSlider({});
       control.element.style.width = '1000px';
       control.element.style.height = '10px';
       control.setMap(map);
@@ -118,10 +76,7 @@ describe('ol.control.ZoomSlider', function() {
     });
 
     it('is vertical for tall containers', function() {
-      var control = new ol.control.ZoomSlider({
-        minResolution: 5000,
-        maxResolution: 100000
-      });
+      var control = new ol.control.ZoomSlider({});
       control.element.style.width = '10px';
       control.element.style.height = '1000px';
 
