@@ -14,7 +14,7 @@ goog.addSingletonGetter(ol.renderer.webgl.tilelayer.shader.Fragment);
  * @const
  * @type {string}
  */
-ol.renderer.webgl.tilelayer.shader.Fragment.DEBUG_SOURCE = 'precision mediump float;\n//! NAMESPACE=ol.renderer.webgl.tilelayer\n\n\n//! COMMON\nvarying vec2 v_texCoord;\n\n\n//! FRAGMENT\nuniform sampler2D u_texture;\n\nvoid main(void) {\n  gl_FragColor = texture2D(u_texture, v_texCoord);\n}\n\n';
+ol.renderer.webgl.tilelayer.shader.Fragment.DEBUG_SOURCE = 'precision mediump float;\n//! NAMESPACE=ol.renderer.webgl.tilelayer.shader\n//! CLASS=ol.renderer.webgl.tilelayer.shader.\n\n\n//! COMMON\nvarying vec2 v_texCoord;\n\n\n//! FRAGMENT\nuniform sampler2D u_texture;\n\nvoid main(void) {\n  gl_FragColor = texture2D(u_texture, v_texCoord);\n}\n\n';
 /**
  * @const
  * @type {string}
@@ -40,7 +40,7 @@ goog.addSingletonGetter(ol.renderer.webgl.tilelayer.shader.Vertex);
  * @const
  * @type {string}
  */
-ol.renderer.webgl.tilelayer.shader.Vertex.DEBUG_SOURCE = '//! NAMESPACE=ol.renderer.webgl.tilelayer\n\n\n//! COMMON\nvarying vec2 v_texCoord;\n\n\n//! VERTEX\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\nuniform vec4 u_tileOffset;\n\nvoid main(void) {\n  gl_Position = vec4(a_position * u_tileOffset.xy + u_tileOffset.zw, 0., 1.);\n  v_texCoord = a_texCoord;\n}\n\n\n';
+ol.renderer.webgl.tilelayer.shader.Vertex.DEBUG_SOURCE = '//! NAMESPACE=ol.renderer.webgl.tilelayer.shader\n//! CLASS=ol.renderer.webgl.tilelayer.shader.\n\n\n//! COMMON\nvarying vec2 v_texCoord;\n\n\n//! VERTEX\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\nuniform vec4 u_tileOffset;\n\nvoid main(void) {\n  gl_Position = vec4(a_position * u_tileOffset.xy + u_tileOffset.zw, 0., 1.);\n  v_texCoord = a_texCoord;\n}\n\n\n';
 /**
  * @const
  * @type {string}
@@ -55,33 +55,28 @@ ol.renderer.webgl.tilelayer.shader.Vertex.SOURCE = goog.DEBUG ?
     ol.renderer.webgl.tilelayer.shader.Vertex.OPTIMIZED_SOURCE;
 /**
  * @constructor
+ * @param {WebGLRenderingContext} gl GL.
+ * @param {WebGLProgram} program Program.
  */
-ol.renderer.webgl.tilelayer.shader.uniform = function() {};
-/**
- * @const
- * @type {string}
- */
-ol.renderer.webgl.tilelayer.shader.uniform.u_tileOffset =
-    goog.DEBUG ? 'u_tileOffset' : 'b';
-/**
- * @const
- * @type {string}
- */
-ol.renderer.webgl.tilelayer.shader.uniform.u_texture =
-    goog.DEBUG ? 'u_texture' : 'c';
-/**
- * @constructor
- */
-ol.renderer.webgl.tilelayer.shader.attribute = function() {};
-/**
- * @const
- * @type {string}
- */
-ol.renderer.webgl.tilelayer.shader.attribute.a_position =
-    goog.DEBUG ? 'a_position' : 'c';
-/**
- * @const
- * @type {string}
- */
-ol.renderer.webgl.tilelayer.shader.attribute.a_texCoord =
-    goog.DEBUG ? 'a_texCoord' : 'd';
+ol.renderer.webgl.tilelayer.shader.Locations = function(gl, program) {
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.u_tileOffset = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_tileOffset' : 'b');
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.u_texture = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_texture' : 'c');
+  /**
+   * @type {number}
+   */
+  this.a_position = gl.getAttribLocation(
+      program, goog.DEBUG ? 'a_position' : 'c');
+  /**
+   * @type {number}
+   */
+  this.a_texCoord = gl.getAttribLocation(
+      program, goog.DEBUG ? 'a_texCoord' : 'd');
+};
