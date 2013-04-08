@@ -154,7 +154,7 @@ goog.inherits(ol.parser.ogc.WMTSCapabilities_v1_0_0, ol.parser.XML);
  * @return {Object} An object representing the document.
  */
 ol.parser.ogc.WMTSCapabilities_v1_0_0.prototype.read = function(data) {
-  if (typeof data == 'string') {
+  if (goog.isString(data)) {
     data = goog.dom.xml.loadXml(data);
   }
   if (data && data.nodeType == 9) {
