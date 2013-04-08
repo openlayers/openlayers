@@ -46,10 +46,7 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {{a_position: number,
-   *         a_texCoord: number,
-   *         u_tileOffset: WebGLUniformLocation,
-   *         u_texture: WebGLUniformLocation}|null}
+   * @type {ol.renderer.webgl.tilelayer.shader.Locations}
    */
   this.locations_ = null;
 
@@ -175,16 +172,8 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         this.fragmentShader_, this.vertexShader_);
     gl.useProgram(program);
     if (goog.isNull(this.locations_)) {
-      this.locations_ = {
-        a_position: gl.getAttribLocation(
-            program, ol.renderer.webgl.tilelayer.shader.attribute.a_position),
-        a_texCoord: gl.getAttribLocation(
-            program, ol.renderer.webgl.tilelayer.shader.attribute.a_texCoord),
-        u_tileOffset: gl.getUniformLocation(
-            program, ol.renderer.webgl.tilelayer.shader.uniform.u_tileOffset),
-        u_texture: gl.getUniformLocation(
-            program, ol.renderer.webgl.tilelayer.shader.uniform.u_texture)
-      };
+      this.locations_ =
+          new ol.renderer.webgl.tilelayer.shader.Locations(gl, program);
     }
 
     mapRenderer.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
