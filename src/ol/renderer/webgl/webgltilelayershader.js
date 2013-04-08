@@ -85,3 +85,30 @@ ol.renderer.webgl.tilelayer.shader.attribute.a_position =
  */
 ol.renderer.webgl.tilelayer.shader.attribute.a_texCoord =
     goog.DEBUG ? 'a_texCoord' : 'd';
+/**
+ * @constructor
+ * @param {WebGLRenderingContext} gl GL.
+ * @param {WebGLProgram} program Program.
+ */
+ol.renderer.webgl.tilelayer.shader.Locations = function(gl, program) {
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.u_tileOffset = gl.getUniformLocation(program,
+      ol.renderer.webgl.tilelayer.shader.uniform.u_tileOffset);
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.u_texture = gl.getUniformLocation(program,
+      ol.renderer.webgl.tilelayer.shader.uniform.u_texture);
+  /**
+   * @type {number}
+   */
+  this.a_position = gl.getAttribLocation(program,
+      ol.renderer.webgl.tilelayer.shader.attribute.a_position);
+  /**
+   * @type {number}
+   */
+  this.a_texCoord = gl.getAttribLocation(program,
+      ol.renderer.webgl.tilelayer.shader.attribute.a_texCoord);
+};

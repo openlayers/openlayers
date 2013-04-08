@@ -104,3 +104,28 @@ goog.addSingletonGetter({{className}}Vertex);
 {{namespace}}.attribute.{{originalName}} =
     goog.DEBUG ? '{{originalName}}' : '{{shortName}}';
 {{/getAttributes}}
+
+
+/**
+ * @constructor
+ * @param {WebGLRenderingContext} gl GL.
+ * @param {WebGLProgram} program Program.
+ */
+{{namespace}}.Locations = function(gl, program) {
+{{#getUniforms}}
+
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.{{originalName}} = gl.getUniformLocation(program,
+      {{namespace}}.uniform.{{originalName}});
+{{/getUniforms}}
+{{#getAttributes}}
+
+  /**
+   * @type {number}
+   */
+  this.{{originalName}} = gl.getAttribLocation(program,
+      {{namespace}}.attribute.{{originalName}});
+{{/getAttributes}}
+};

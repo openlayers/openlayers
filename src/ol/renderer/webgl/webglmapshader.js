@@ -103,3 +103,45 @@ ol.renderer.webgl.map.shader.attribute.a_position =
  */
 ol.renderer.webgl.map.shader.attribute.a_texCoord =
     goog.DEBUG ? 'a_texCoord' : 'e';
+/**
+ * @constructor
+ * @param {WebGLRenderingContext} gl GL.
+ * @param {WebGLProgram} program Program.
+ */
+ol.renderer.webgl.map.shader.Locations = function(gl, program) {
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.u_texCoordMatrix = gl.getUniformLocation(program,
+      ol.renderer.webgl.map.shader.uniform.u_texCoordMatrix);
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.u_projectionMatrix = gl.getUniformLocation(program,
+      ol.renderer.webgl.map.shader.uniform.u_projectionMatrix);
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.u_colorMatrix = gl.getUniformLocation(program,
+      ol.renderer.webgl.map.shader.uniform.u_colorMatrix);
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.u_opacity = gl.getUniformLocation(program,
+      ol.renderer.webgl.map.shader.uniform.u_opacity);
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.u_texture = gl.getUniformLocation(program,
+      ol.renderer.webgl.map.shader.uniform.u_texture);
+  /**
+   * @type {number}
+   */
+  this.a_position = gl.getAttribLocation(program,
+      ol.renderer.webgl.map.shader.attribute.a_position);
+  /**
+   * @type {number}
+   */
+  this.a_texCoord = gl.getAttribLocation(program,
+      ol.renderer.webgl.map.shader.attribute.a_texCoord);
+};
