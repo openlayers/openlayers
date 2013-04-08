@@ -326,12 +326,12 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
   var callback = function(feature, type) {
     return lookup[type];
   };
-  if (typeof data === 'string') {
-    goog.asserts.assert(typeof parser.readFeaturesFromString === 'function',
+  if (goog.isString(data)) {
+    goog.asserts.assert(goog.isFunction(parser.readFeaturesFromString),
         'Expected a parser with readFeaturesFromString method.');
     features = parser.readFeaturesFromString(data, {callback: callback});
-  } else if (typeof data === 'object') {
-    goog.asserts.assert(typeof parser.readFeaturesFromObject === 'function',
+  } else if (goog.isObject(data)) {
+    goog.asserts.assert(goog.isFunction(parser.readFeaturesFromObject),
         'Expected a parser with a readFeaturesFromObject method.');
     features = parser.readFeaturesFromObject(data, {callback: callback});
   } else {

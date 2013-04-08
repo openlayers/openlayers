@@ -14,12 +14,12 @@ ol.parser.ogc.Versioned = function(opt_options) {
   this.defaultVersion = options.defaultVersion || null;
   this.version = options.version;
   this.profile = options.profile;
-  if (options.allowFallback !== undefined) {
+  if (goog.isDef(options.allowFallback)) {
     this.allowFallback = options.allowFallback;
   } else {
     this.allowFallback = false;
   }
-  if (options.stringifyOutput !== undefined) {
+  if (goog.isDef(options.stringifyOutput)) {
     this.stringifyOutput = options.stringifyOutput;
   } else {
     this.stringifyOutput = false;
@@ -103,7 +103,7 @@ ol.parser.ogc.Versioned.prototype.write = function(obj, opt_options) {
  * @return {Object} An object representing the document.
  */
 ol.parser.ogc.Versioned.prototype.read = function(data, opt_options) {
-  if (typeof data == 'string') {
+  if (goog.isString(data)) {
     data = goog.dom.xml.loadXml(data);
   }
   var root = data.documentElement;
