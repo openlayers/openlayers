@@ -1,5 +1,4 @@
 // FIXME add tests for browser features (Modernizr?)
-// FIXME implement Matrix Filter for IE < 9
 
 goog.provide('ol.dom');
 goog.provide('ol.dom.BrowserFeature');
@@ -13,8 +12,7 @@ goog.require('goog.vec.Mat4');
  */
 ol.dom.BrowserFeature = {
   CAN_USE_CSS_TRANSFORM: false,
-  CAN_USE_CSS_TRANSFORM3D: true,
-  CAN_USE_MATRIX_FILTER: false
+  CAN_USE_CSS_TRANSFORM3D: true
 };
 
 
@@ -75,9 +73,6 @@ ol.dom.transformElement2D = function(element, transform, opt_precision) {
       value2D = transform2D.join(',');
     }
     ol.dom.setTransform(element, 'matrix(' + value2D + ')');
-  } else if (ol.dom.BrowserFeature.CAN_USE_MATRIX_FILTER) {
-    // http://msdn.microsoft.com/en-us/library/ms533014%28VS.85,loband%29.aspx
-    goog.asserts.fail(); // FIXME
   } else {
     // FIXME check this code!
     var style = element.style;
