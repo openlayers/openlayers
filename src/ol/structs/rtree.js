@@ -210,4 +210,3 @@ ol.structs.RTree.MAX_SUB_DIVISIONS = 6;
  * @type {number}
  */
 ol.structs.RTree.MAX_OBJECTS = 6;
-

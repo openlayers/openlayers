@@ -160,4 +160,3 @@ ol.geom.SharedVertices.prototype.getStart = function(id) {
 ol.geom.SharedVertices.prototype.getStarts = function() {
   return this.starts_;
 };
-

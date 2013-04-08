@@ -43,4 +43,3 @@ ol.style.Rule.prototype.applies = function(feature) {
 ol.style.Rule.prototype.getSymbolizers = function() {
   return this.symbolizers_;
 };
-
