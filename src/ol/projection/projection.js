@@ -610,7 +610,7 @@ ol.projection.getTransformFromProjections =
 ol.projection.identityTransform = function(input, opt_output, opt_dimension) {
   if (goog.isDef(opt_output) && input !== opt_output) {
     // TODO: consider making this a warning instead
-    goog.asserts.assert(false, 'This should not be used internally.');
+    goog.asserts.fail('This should not be used internally.');
     for (var i = 0, ii = input.length; i < ii; ++i) {
       opt_output[i] = input[i];
     }
