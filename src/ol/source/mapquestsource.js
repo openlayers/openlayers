@@ -2,6 +2,7 @@ goog.provide('ol.source.MapQuestOSM');
 goog.provide('ol.source.MapQuestOpenAerial');
 
 goog.require('ol.Attribution');
+goog.require('ol.source.OpenStreetMap');
 goog.require('ol.source.XYZ');
 
 
@@ -16,11 +17,7 @@ ol.source.MapQuestOSM = function() {
     new ol.Attribution(
         'Tiles Courtesy of ' +
         '<a href="http://www.mapquest.com/" target="_blank">MapQuest</a>'),
-    new ol.Attribution(
-        'Data &copy; ' +
-        '<a href="http://www.openstreetmap.org">OpenStreetMap</a> ' +
-        'contributors, ' +
-        '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>')
+    ol.source.OpenStreetMap.DATA_ATTRIBUTION
   ];
 
   goog.base(this, {

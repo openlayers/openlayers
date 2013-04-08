@@ -4,16 +4,6 @@ goog.require('ol.Attribution');
 goog.require('ol.source.XYZ');
 
 
-/**
- * @const
- * @type {Array.<ol.Attribution>}
- */
-ol.source.OPENSTREETMAP_ATTRIBUTIONS = [new ol.Attribution(
-    '&copy; <a href="http://www.openstreetmap.org">OpenStreetMap</a> ' +
-    'contributors, ' +
-    '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>')];
-
-
 
 /**
  * @constructor
@@ -30,7 +20,7 @@ ol.source.OpenStreetMap = function(opt_options) {
   } else if (goog.isDef(options.attribution)) {
     attributions = [options.attribution];
   } else {
-    attributions = ol.source.OPENSTREETMAP_ATTRIBUTIONS;
+    attributions = ol.source.OpenStreetMap.ATTRIBUTIONS;
   }
 
   var maxZoom = goog.isDef(options.maxZoom) ? options.maxZoom : 18;
@@ -48,3 +38,34 @@ ol.source.OpenStreetMap = function(opt_options) {
 
 };
 goog.inherits(ol.source.OpenStreetMap, ol.source.XYZ);
+
+
+/**
+ * @const
+ * @type {ol.Attribution}
+ */
+ol.source.OpenStreetMap.DATA_ATTRIBUTION = new ol.Attribution(
+    'Data &copy; <a href="http://www.openstreetmap.org/">OpenStreetMap</a> ' +
+    'contributors, ' +
+    '<a href="http://www.openstreetmap.org/copyright">ODbL</a>');
+
+
+/**
+ * @const
+ * @type {ol.Attribution}
+ */
+ol.source.OpenStreetMap.TILE_ATTRIBUTION = new ol.Attribution(
+    'Tiles &copy; ' +
+    '<a href="http://www.openstreetmap.org/">OpenStreetMap</a> ' +
+    'contributors, ' +
+    '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>');
+
+
+/**
+ * @const
+ * @type {Array.<ol.Attribution>}
+ */
+ol.source.OpenStreetMap.ATTRIBUTIONS = [
+  ol.source.OpenStreetMap.TILE_ATTRIBUTION,
+  ol.source.OpenStreetMap.DATA_ATTRIBUTION
+];

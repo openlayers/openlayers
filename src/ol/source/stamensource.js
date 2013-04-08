@@ -2,6 +2,7 @@ goog.provide('ol.source.Stamen');
 
 goog.require('goog.asserts');
 goog.require('ol.Attribution');
+goog.require('ol.source.OpenStreetMap');
 goog.require('ol.source.XYZ');
 
 
@@ -78,11 +79,12 @@ ol.source.StamenProviderConfig = {
 /**
  * @const {Array.<ol.Attribution>}
  */
-ol.source.STAMEN_ATTRIBUTIONS = [new ol.Attribution(
-    'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under ' +
-    '<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. ' +
-    'Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under ' +
-    '<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.')];
+ol.source.STAMEN_ATTRIBUTIONS = [
+  new ol.Attribution(
+      'Map tiles by <a href="http://stamen.com/">Stamen Design</a>, under ' +
+      '<a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.'),
+  ol.source.OpenStreetMap.DATA_ATTRIBUTION
+];
 
 
 
