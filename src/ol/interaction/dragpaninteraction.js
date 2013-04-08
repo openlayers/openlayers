@@ -58,7 +58,7 @@ ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   // FIXME works for View2D only
   var view = map.getView();
-  goog.asserts.assert(view instanceof ol.View2D);
+  goog.asserts.assertInstanceof(view, ol.View2D);
   var resolution = view.getResolution();
   var rotation = view.getRotation();
   var newCenter = [-resolution * this.deltaX, resolution * this.deltaY];
@@ -124,7 +124,7 @@ ol.interaction.DragPan.prototype.handleDown = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   // FIXME works for View2D only
   var view = map.getView();
-  goog.asserts.assert(view instanceof ol.View2D);
+  goog.asserts.assertInstanceof(view, ol.View2D);
   goog.asserts.assert(!goog.isNull(mapBrowserEvent.frameState));
   if (!goog.isNull(this.kineticPreRenderFn_) &&
       map.removePreRenderFunction(this.kineticPreRenderFn_)) {

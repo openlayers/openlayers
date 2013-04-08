@@ -77,7 +77,7 @@ ol.interaction.MouseWheelZoom.prototype.handleMapBrowserEvent =
     var map = mapBrowserEvent.map;
     var mouseWheelEvent = /** @type {goog.events.MouseWheelEvent} */
         (mapBrowserEvent.browserEvent);
-    goog.asserts.assert(mouseWheelEvent instanceof goog.events.MouseWheelEvent);
+    goog.asserts.assertInstanceof(mouseWheelEvent, goog.events.MouseWheelEvent);
 
     this.lastAnchor_ = mapBrowserEvent.getCoordinate();
     this.delta_ += mouseWheelEvent.deltaY / 3;
@@ -109,7 +109,7 @@ ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
 
   // FIXME works for View2D only
   var view = map.getView();
-  goog.asserts.assert(view instanceof ol.View2D);
+  goog.asserts.assertInstanceof(view, ol.View2D);
 
   map.requestRenderFrame();
   view.zoomByDelta(map, -delta, this.lastAnchor_,
