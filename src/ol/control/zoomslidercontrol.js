@@ -5,7 +5,6 @@
 goog.provide('ol.control.ZoomSlider');
 
 goog.require('goog.array');
-goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
@@ -26,38 +25,6 @@ goog.require('ol.css');
  * @param {ol.control.ZoomSliderOptions} options Zoom slider options.
  */
 ol.control.ZoomSlider = function(options) {
-  // FIXME these should be read out from a map if not given, and only then
-  //       fallback to the constants if they weren't defined on the map.
-  /**
-   * The minimum resolution that one can set with this control.
-   *
-   * @type {number}
-   * @private
-   */
-  this.maxResolution_ = goog.isDef(options.maxResolution) ?
-      options.maxResolution : ol.control.ZoomSlider.DEFAULT_MAX_RESOLUTION;
-
-  /**
-   * The maximum resolution that one can set with this control.
-   *
-   * @type {number}
-   * @private
-   */
-  this.minResolution_ = goog.isDef(options.minResolution) ?
-      options.minResolution : ol.control.ZoomSlider.DEFAULT_MIN_RESOLUTION;
-
-  goog.asserts.assert(
-      this.minResolution_ < this.maxResolution_,
-      'minResolution must be smaller than maxResolution.'
-  );
-
-  /**
-   * The range of resolutions we are handling in this slider.
-   *
-   * @type {number}
-   * @private
-   */
-  this.range_ = this.maxResolution_ - this.minResolution_;
 
   /**
    * Will hold the current resolution of the view.
@@ -125,26 +92,6 @@ ol.control.ZoomSlider.CSS_CLASS_CONTAINER = 'ol-zoomslider';
  */
 ol.control.ZoomSlider.CSS_CLASS_THUMB =
     ol.control.ZoomSlider.CSS_CLASS_CONTAINER + '-thumb';
-
-
-/**
- * The default value for minResolution_ when the control isn't instanciated with
- * an explicit value. The default value is the resolution of the standard OSM
- * tiles at zoomlevel 18.
- *
- * @const {number}
- */
-ol.control.ZoomSlider.DEFAULT_MIN_RESOLUTION = 0.5971642833948135;
-
-
-/**
- * The default value for maxResolution_ when the control isn't instanciated with
- * an explicit value.  The default value is the resolution of the standard OSM
- * tiles at zoomlevel 0.
- *
- * @const {number}
- */
-ol.control.ZoomSlider.DEFAULT_MAX_RESOLUTION = 156543.0339;
 
 
 /**
@@ -262,13 +209,14 @@ ol.control.ZoomSlider.prototype.amountDragged_ = function(e) {
  * been dragged from its minimum.
  *
  * @param {number} amount The amount the thumb has been dragged.
- * @return {number} a resolution between this.minResolution_ and
- *     this.maxResolution_.
+ * @return {number} The corresponding resolution.
  * @private
  */
 ol.control.ZoomSlider.prototype.resolutionForAmount_ = function(amount) {
-  var saneAmount = goog.math.clamp(amount, 0, 1);
-  return this.minResolution_ + this.range_ * saneAmount;
+  // FIXME do we really need this affine transform?
+  amount = (goog.math.clamp(amount, 0, 1) - 1) * -1;
+  var fn = this.getMap().getView().getResolutionForValueFunction();
+  return fn(amount);
 };
 
 
@@ -277,12 +225,14 @@ ol.control.ZoomSlider.prototype.resolutionForAmount_ = function(amount) {
  * given resolution.
  *
  * @param {number} res The resolution to get the amount for.
- * @return {number} an amount between 0 and 1.
+ * @return {number} The corresponding value (between 0 and 1).
  * @private
  */
 ol.control.ZoomSlider.prototype.amountForResolution_ = function(res) {
-  var saneRes = goog.math.clamp(res, this.minResolution_, this.maxResolution_);
-  return (saneRes - this.minResolution_) / this.range_;
+  var fn = this.getMap().getView().getValueForResolutionFunction();
+  var value = fn(res);
+  // FIXME do we really need this affine transform?
+  return (value - 1) * -1;
 };
 
 
@@ -298,8 +248,6 @@ ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
   var map = this.getMap(),
       amountDragged = this.amountDragged_(e),
       res = this.resolutionForAmount_(amountDragged);
-  goog.asserts.assert(res >= this.minResolution_ && res <= this.maxResolution_,
-      'calculated new resolution is in allowed bounds.');
   if (res !== this.currentResolution_) {
     this.currentResolution_ = res;
     map.getView().setResolution(res);
