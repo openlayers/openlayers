@@ -18,6 +18,12 @@ goog.require('ol.control.Control');
 goog.require('ol.css');
 
 
+/**
+ * @define {number} Animation duration.
+ */
+ol.control.ZOOMSLIDER_ANIMATION_DURATION = 200;
+
+
 
 /**
  * @constructor
@@ -248,9 +254,14 @@ ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
   var map = this.getMap(),
       amountDragged = this.amountDragged_(e),
       res = this.resolutionForAmount_(amountDragged);
-  if (res !== this.currentResolution_) {
-    this.currentResolution_ = res;
-    map.getView().setResolution(res);
+  if (e.type === goog.fx.Dragger.EventType.DRAG) {
+    if (res !== this.currentResolution_) {
+      this.currentResolution_ = res;
+      map.getView().zoomWithoutConstraints(map, res);
+    }
+  } else {
+    map.getView().zoom(map, this.currentResolution_, undefined,
+        ol.control.ZOOMSLIDER_ANIMATION_DURATION);
   }
 };
 
