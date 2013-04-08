@@ -74,37 +74,6 @@ goog.addSingletonGetter({{className}}Vertex);
     {{className}}Vertex.OPTIMIZED_SOURCE;
 
 
-/**
- * @constructor
- */
-{{namespace}}.uniform = function() {};
-{{#getUniforms}}
-
-
-/**
- * @const
- * @type {string}
- */
-{{namespace}}.uniform.{{originalName}} =
-    goog.DEBUG ? '{{originalName}}' : '{{shortName}}';
-{{/getUniforms}}
-
-
-/**
- * @constructor
- */
-{{namespace}}.attribute = function() {};
-{{#getAttributes}}
-
-
-/**
- * @const
- * @type {string}
- */
-{{namespace}}.attribute.{{originalName}} =
-    goog.DEBUG ? '{{originalName}}' : '{{shortName}}';
-{{/getAttributes}}
-
 
 /**
  * @constructor
@@ -117,15 +86,15 @@ goog.addSingletonGetter({{className}}Vertex);
   /**
    * @type {WebGLUniformLocation}
    */
-  this.{{originalName}} = gl.getUniformLocation(program,
-      {{namespace}}.uniform.{{originalName}});
+  this.{{originalName}} = gl.getUniformLocation(
+      program, goog.DEBUG ? '{{originalName}}' : '{{shortName}}');
 {{/getUniforms}}
 {{#getAttributes}}
 
   /**
    * @type {number}
    */
-  this.{{originalName}} = gl.getAttribLocation(program,
-      {{namespace}}.attribute.{{originalName}});
+  this.{{originalName}} = gl.getAttribLocation(
+      program, goog.DEBUG ? '{{originalName}}' : '{{shortName}}');
 {{/getAttributes}}
 };

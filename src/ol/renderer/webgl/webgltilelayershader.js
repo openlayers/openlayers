@@ -55,38 +55,6 @@ ol.renderer.webgl.tilelayer.shader.Vertex.SOURCE = goog.DEBUG ?
     ol.renderer.webgl.tilelayer.shader.Vertex.OPTIMIZED_SOURCE;
 /**
  * @constructor
- */
-ol.renderer.webgl.tilelayer.shader.uniform = function() {};
-/**
- * @const
- * @type {string}
- */
-ol.renderer.webgl.tilelayer.shader.uniform.u_tileOffset =
-    goog.DEBUG ? 'u_tileOffset' : 'b';
-/**
- * @const
- * @type {string}
- */
-ol.renderer.webgl.tilelayer.shader.uniform.u_texture =
-    goog.DEBUG ? 'u_texture' : 'c';
-/**
- * @constructor
- */
-ol.renderer.webgl.tilelayer.shader.attribute = function() {};
-/**
- * @const
- * @type {string}
- */
-ol.renderer.webgl.tilelayer.shader.attribute.a_position =
-    goog.DEBUG ? 'a_position' : 'c';
-/**
- * @const
- * @type {string}
- */
-ol.renderer.webgl.tilelayer.shader.attribute.a_texCoord =
-    goog.DEBUG ? 'a_texCoord' : 'd';
-/**
- * @constructor
  * @param {WebGLRenderingContext} gl GL.
  * @param {WebGLProgram} program Program.
  */
@@ -94,21 +62,21 @@ ol.renderer.webgl.tilelayer.shader.Locations = function(gl, program) {
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_tileOffset = gl.getUniformLocation(program,
-      ol.renderer.webgl.tilelayer.shader.uniform.u_tileOffset);
+  this.u_tileOffset = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_tileOffset' : 'b');
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_texture = gl.getUniformLocation(program,
-      ol.renderer.webgl.tilelayer.shader.uniform.u_texture);
+  this.u_texture = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_texture' : 'c');
   /**
    * @type {number}
    */
-  this.a_position = gl.getAttribLocation(program,
-      ol.renderer.webgl.tilelayer.shader.attribute.a_position);
+  this.a_position = gl.getAttribLocation(
+      program, goog.DEBUG ? 'a_position' : 'c');
   /**
    * @type {number}
    */
-  this.a_texCoord = gl.getAttribLocation(program,
-      ol.renderer.webgl.tilelayer.shader.attribute.a_texCoord);
+  this.a_texCoord = gl.getAttribLocation(
+      program, goog.DEBUG ? 'a_texCoord' : 'd');
 };

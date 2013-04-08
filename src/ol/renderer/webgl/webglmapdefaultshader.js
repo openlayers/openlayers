@@ -55,50 +55,6 @@ ol.renderer.webgl.map.shader.DefaultVertex.SOURCE = goog.DEBUG ?
     ol.renderer.webgl.map.shader.DefaultVertex.OPTIMIZED_SOURCE;
 /**
  * @constructor
- */
-ol.renderer.webgl.map.shader.Default.uniform = function() {};
-/**
- * @const
- * @type {string}
- */
-ol.renderer.webgl.map.shader.Default.uniform.u_texCoordMatrix =
-    goog.DEBUG ? 'u_texCoordMatrix' : 'b';
-/**
- * @const
- * @type {string}
- */
-ol.renderer.webgl.map.shader.Default.uniform.u_projectionMatrix =
-    goog.DEBUG ? 'u_projectionMatrix' : 'c';
-/**
- * @const
- * @type {string}
- */
-ol.renderer.webgl.map.shader.Default.uniform.u_opacity =
-    goog.DEBUG ? 'u_opacity' : 'd';
-/**
- * @const
- * @type {string}
- */
-ol.renderer.webgl.map.shader.Default.uniform.u_texture =
-    goog.DEBUG ? 'u_texture' : 'e';
-/**
- * @constructor
- */
-ol.renderer.webgl.map.shader.Default.attribute = function() {};
-/**
- * @const
- * @type {string}
- */
-ol.renderer.webgl.map.shader.Default.attribute.a_position =
-    goog.DEBUG ? 'a_position' : 'd';
-/**
- * @const
- * @type {string}
- */
-ol.renderer.webgl.map.shader.Default.attribute.a_texCoord =
-    goog.DEBUG ? 'a_texCoord' : 'e';
-/**
- * @constructor
  * @param {WebGLRenderingContext} gl GL.
  * @param {WebGLProgram} program Program.
  */
@@ -106,31 +62,31 @@ ol.renderer.webgl.map.shader.Default.Locations = function(gl, program) {
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_texCoordMatrix = gl.getUniformLocation(program,
-      ol.renderer.webgl.map.shader.Default.uniform.u_texCoordMatrix);
+  this.u_texCoordMatrix = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_texCoordMatrix' : 'b');
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_projectionMatrix = gl.getUniformLocation(program,
-      ol.renderer.webgl.map.shader.Default.uniform.u_projectionMatrix);
+  this.u_projectionMatrix = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_projectionMatrix' : 'c');
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_opacity = gl.getUniformLocation(program,
-      ol.renderer.webgl.map.shader.Default.uniform.u_opacity);
+  this.u_opacity = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_opacity' : 'd');
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_texture = gl.getUniformLocation(program,
-      ol.renderer.webgl.map.shader.Default.uniform.u_texture);
+  this.u_texture = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_texture' : 'e');
   /**
    * @type {number}
    */
-  this.a_position = gl.getAttribLocation(program,
-      ol.renderer.webgl.map.shader.Default.attribute.a_position);
+  this.a_position = gl.getAttribLocation(
+      program, goog.DEBUG ? 'a_position' : 'd');
   /**
    * @type {number}
    */
-  this.a_texCoord = gl.getAttribLocation(program,
-      ol.renderer.webgl.map.shader.Default.attribute.a_texCoord);
+  this.a_texCoord = gl.getAttribLocation(
+      program, goog.DEBUG ? 'a_texCoord' : 'e');
 };
