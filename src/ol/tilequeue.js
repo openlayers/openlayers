@@ -1,6 +1,7 @@
 goog.provide('ol.TilePriorityFunction');
 goog.provide('ol.TileQueue');
 
+goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.Coordinate');
@@ -18,15 +19,12 @@ ol.TilePriorityFunction;
 /**
  * @constructor
  * @extends {ol.structs.PriorityQueue}
- * @param {number} maxTilesLoading Maximum number of simultaneously loading
- *     tiles.
  * @param {ol.TilePriorityFunction} tilePriorityFunction
  *     Tile priority function.
  * @param {Function} tileChangeCallback
  *     Function called on each tile change event.
  */
-ol.TileQueue =
-    function(maxTilesLoading, tilePriorityFunction, tileChangeCallback) {
+ol.TileQueue = function(tilePriorityFunction, tileChangeCallback) {
 
   goog.base(
       this,
@@ -55,16 +53,18 @@ ol.TileQueue =
    * @private
    * @type {number}
    */
-  this.maxTilesLoading_ = maxTilesLoading;
-
-  /**
-   * @private
-   * @type {number}
-   */
   this.tilesLoading_ = 0;
 
 };
 goog.inherits(ol.TileQueue, ol.structs.PriorityQueue);
+
+
+/**
+ * @return {number} Number of tiles loading.
+ */
+ol.TileQueue.prototype.getTilesLoading = function() {
+  return this.tilesLoading_;
+};
 
 
 /**
@@ -77,18 +77,19 @@ ol.TileQueue.prototype.handleTileChange = function() {
 
 
 /**
- * @param {number} limit Maximum number of new tiles to load.
+ * @param {number} maxTotalLoading Maximum number tiles to load simultaneously.
+ * @param {number} maxNewLoads Maximum number of new tiles to load.
  */
-ol.TileQueue.prototype.loadMoreTiles = function(limit) {
-  var tile;
-  while (limit > 0 &&
-         !this.isEmpty() &&
-         this.tilesLoading_ < this.maxTilesLoading_) {
+ol.TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
+  var newLoads = Math.min(
+      maxTotalLoading - this.getTilesLoading(), maxNewLoads, this.getCount());
+  goog.asserts.assert(newLoads > 0);
+  var i, tile;
+  for (i = 0; i < newLoads; ++i) {
     tile = /** @type {ol.Tile} */ (this.dequeue()[0]);
     goog.events.listenOnce(tile, goog.events.EventType.CHANGE,
         this.handleTileChange, false, this);
     tile.load();
-    ++this.tilesLoading_;
-    --limit;
   }
+  this.tilesLoading_ += newLoads;
 };
