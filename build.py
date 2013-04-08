@@ -126,6 +126,10 @@ GLSL_SRC = [path
             for path in ifind('src')
             if path.endswith('.glsl')]
 
+JSDOC_SRC = [path
+             for path in ifind('src')
+             if path.endswith('.jsdoc')]
+
 SHADER_SRC = [path.replace('.glsl', 'shader.js')
               for path in GLSL_SRC]
 
@@ -510,7 +514,7 @@ def build_check_requires_timestamp(t):
 
 
 @target('build/check-whitespace-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC,
-        EXAMPLES_SRC, SPEC, EXPORTS, 'src/objectliterals.exports',
+        EXAMPLES_SRC, SPEC, EXPORTS, JSDOC_SRC,
         precious=True)
 def build_check_whitespace_timestamp(t):
     CR_RE = re.compile(r'\r')
