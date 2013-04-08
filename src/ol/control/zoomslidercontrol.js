@@ -106,7 +106,7 @@ ol.control.ZoomSlider.CSS_CLASS_THUMB =
 ol.control.ZoomSlider.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
   this.initSlider_();
-  var resolution = map.getView().getResolution();
+  var resolution = map.getView().getView2D().getResolution();
   if (goog.isDef(resolution)) {
     this.currentResolution_ = resolution;
     this.positionThumbForResolution_(resolution);
@@ -221,7 +221,7 @@ ol.control.ZoomSlider.prototype.amountDragged_ = function(e) {
 ol.control.ZoomSlider.prototype.resolutionForAmount_ = function(amount) {
   // FIXME do we really need this affine transform?
   amount = (goog.math.clamp(amount, 0, 1) - 1) * -1;
-  var fn = this.getMap().getView().getResolutionForValueFunction();
+  var fn = this.getMap().getView().getView2D().getResolutionForValueFunction();
   return fn(amount);
 };
 
@@ -235,7 +235,7 @@ ol.control.ZoomSlider.prototype.resolutionForAmount_ = function(amount) {
  * @private
  */
 ol.control.ZoomSlider.prototype.amountForResolution_ = function(res) {
-  var fn = this.getMap().getView().getValueForResolutionFunction();
+  var fn = this.getMap().getView().getView2D().getValueForResolutionFunction();
   var value = fn(res);
   // FIXME do we really need this affine transform?
   return (value - 1) * -1;
@@ -257,10 +257,10 @@ ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
   if (e.type === goog.fx.Dragger.EventType.DRAG) {
     if (res !== this.currentResolution_) {
       this.currentResolution_ = res;
-      map.getView().zoomWithoutConstraints(map, res);
+      map.getView().getView2D().zoomWithoutConstraints(map, res);
     }
   } else {
-    map.getView().zoom(map, this.currentResolution_, undefined,
+    map.getView().getView2D().zoom(map, this.currentResolution_, undefined,
         ol.control.ZOOMSLIDER_ANIMATION_DURATION);
   }
 };
