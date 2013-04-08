@@ -165,6 +165,21 @@ ol.tilegrid.TileGrid.prototype.getResolutions = function() {
 
 
 /**
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @return {ol.TileRange} Tile range.
+ */
+ol.tilegrid.TileGrid.prototype.getTileCoordChildTileRange =
+    function(tileCoord) {
+  if (tileCoord.z < this.resolutions_.length) {
+    var tileCoordExtent = this.getTileCoordExtent(tileCoord);
+    return this.getTileRangeForExtentAndZ(tileCoordExtent, tileCoord.z + 1);
+  } else {
+    return null;
+  }
+};
+
+
+/**
  * @param {number} z Z.
  * @param {ol.TileRange} tileRange Tile range.
  * @return {ol.Extent} Extent.
