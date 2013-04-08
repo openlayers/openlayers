@@ -574,27 +574,38 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
  */
 ol.Map.prototype.handlePostRender = function() {
 
-  // Limit the number of tile loads if animating or interacting.
-  var maxTotalLoading = 16;
-  var maxNewLoads = maxTotalLoading;
   var frameState = this.frameState_;
-  if (!goog.isNull(frameState)) {
-    var hints = frameState.viewHints;
-    if (hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING]) {
-      maxTotalLoading = 8;
-      maxNewLoads = 2;
-    }
-  }
 
-  if (this.tileQueue_.getTilesLoading() < maxTotalLoading) {
-    this.tileQueue_.reprioritize(); // FIXME only call if view has changed
-    this.tileQueue_.loadMoreTiles(maxTotalLoading, maxNewLoads);
+  // Manage the tile queue
+  // Image loads are expensive and a limited resource, so try to use them
+  // efficiently:
+  // * When the view is static we allow a large number of parallel tile loads
+  //   to complete the frame as quickly as possible.
+  // * When animating or interacting, image loads can cause janks, so we reduce
+  //   the maximum number of loads per frame and limit the number of parallel
+  //   tile loads to remain reactive to view changes and to reduce the chance of
+  //   loading tiles that will quickly disappear from view.
+  var tileQueue = this.tileQueue_;
+  if (!tileQueue.isEmpty()) {
+    var maxTotalLoading = 16;
+    var maxNewLoads = maxTotalLoading;
+    if (!goog.isNull(frameState)) {
+      var hints = frameState.viewHints;
+      if (hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING]) {
+        maxTotalLoading = 8;
+        maxNewLoads = 2;
+      }
+    }
+    if (tileQueue.getTilesLoading() < maxTotalLoading) {
+      tileQueue.reprioritize(); // FIXME only call if view has changed
+      tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
+    }
   }
 
   var postRenderFunctions = this.postRenderFunctions_;
   var i;
   for (i = 0; i < postRenderFunctions.length; ++i) {
-    postRenderFunctions[i](this, this.frameState_);
+    postRenderFunctions[i](this, frameState);
   }
   postRenderFunctions.length = 0;
 };
