@@ -1,6 +1,7 @@
 goog.provide('ol.TilePriorityFunction');
 goog.provide('ol.TileQueue');
 
+goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.Coordinate');
@@ -82,14 +83,13 @@ ol.TileQueue.prototype.handleTileChange = function() {
 ol.TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
   var newLoads = Math.min(
       maxTotalLoading - this.getTilesLoading(), maxNewLoads, this.getCount());
-  if (newLoads > 0) {
-    var i, tile;
-    for (i = 0; i < newLoads; ++i) {
-      tile = /** @type {ol.Tile} */ (this.dequeue()[0]);
-      goog.events.listenOnce(tile, goog.events.EventType.CHANGE,
-          this.handleTileChange, false, this);
-      tile.load();
-    }
-    this.tilesLoading_ += newLoads;
+  goog.asserts.assert(newLoads > 0);
+  var i, tile;
+  for (i = 0; i < newLoads; ++i) {
+    tile = /** @type {ol.Tile} */ (this.dequeue()[0]);
+    goog.events.listenOnce(tile, goog.events.EventType.CHANGE,
+        this.handleTileChange, false, this);
+    tile.load();
   }
+  this.tilesLoading_ += newLoads;
 };
