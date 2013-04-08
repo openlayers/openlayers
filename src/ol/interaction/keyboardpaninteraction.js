@@ -54,7 +54,7 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       var map = mapBrowserEvent.map;
       // FIXME works for View2D only
       var view = map.getView();
-      goog.asserts.assert(view instanceof ol.View2D);
+      goog.asserts.assertInstanceof(view, ol.View2D);
       var resolution = view.getResolution();
       var rotation = view.getRotation();
       var mapUnitsDelta = resolution * this.delta_;

@@ -56,7 +56,7 @@ ol.interaction.DragRotateAndZoom.prototype.handleDrag =
   var magnitude = delta.magnitude();
   // FIXME works for View2D only
   var view = map.getView();
-  goog.asserts.assert(view instanceof ol.View2D);
+  goog.asserts.assertInstanceof(view, ol.View2D);
   map.requestRenderFrame();
   // FIXME the calls to map.rotate and map.zoomToResolution should use
   // map.withFrozenRendering but an assertion fails :-(

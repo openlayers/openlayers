@@ -374,7 +374,7 @@ ol.projection.createProjection = function(projection, defaultCode) {
   } else if (goog.isString(projection)) {
     return ol.projection.get(projection);
   } else {
-    goog.asserts.assert(projection instanceof ol.Projection);
+    goog.asserts.assertInstanceof(projection, ol.Projection);
     return projection;
   }
 };

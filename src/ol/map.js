@@ -913,7 +913,7 @@ ol.Map.createOptionsInternal = function(options) {
     if (goog.isArray(options.layers)) {
       layers = new ol.Collection(goog.array.clone(options.layers));
     } else {
-      goog.asserts.assert(options.layers instanceof ol.Collection);
+      goog.asserts.assertInstanceof(options.layers, ol.Collection);
       layers = options.layers;
     }
   } else {
