@@ -84,18 +84,6 @@ ol.ENABLE_WEBGL = true;
 
 
 /**
- * @define {number} Maximum number of simultaneously loading tiles.
- */
-ol.MAXIMUM_TILES_LOADING = 8;
-
-
-/**
- * @define {number} Maximum new tile loads per frame.
- */
-ol.MAXIMUM_NEW_TILE_LOADS_PER_FRAME = 2;
-
-
-/**
  * @enum {string}
  */
 ol.RendererHint = {
@@ -304,7 +292,6 @@ ol.Map = function(options) {
    * @type {ol.TileQueue}
    */
   this.tileQueue_ = new ol.TileQueue(
-      ol.MAXIMUM_TILES_LOADING,
       goog.bind(this.getTilePriority, this),
       goog.bind(this.handleTileChange_, this));
 
@@ -587,23 +574,38 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
  */
 ol.Map.prototype.handlePostRender = function() {
 
-  // Limit the number of tile loads if animating or interacting.
-  var limit = (1 << 30) - 1; // a large enough integer
   var frameState = this.frameState_;
-  if (!goog.isNull(frameState)) {
-    var hints = frameState.viewHints;
-    if (hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING]) {
-      limit = ol.MAXIMUM_NEW_TILE_LOADS_PER_FRAME;
+
+  // Manage the tile queue
+  // Image loads are expensive and a limited resource, so try to use them
+  // efficiently:
+  // * When the view is static we allow a large number of parallel tile loads
+  //   to complete the frame as quickly as possible.
+  // * When animating or interacting, image loads can cause janks, so we reduce
+  //   the maximum number of loads per frame and limit the number of parallel
+  //   tile loads to remain reactive to view changes and to reduce the chance of
+  //   loading tiles that will quickly disappear from view.
+  var tileQueue = this.tileQueue_;
+  if (!tileQueue.isEmpty()) {
+    var maxTotalLoading = 16;
+    var maxNewLoads = maxTotalLoading;
+    if (!goog.isNull(frameState)) {
+      var hints = frameState.viewHints;
+      if (hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING]) {
+        maxTotalLoading = 8;
+        maxNewLoads = 2;
+      }
+    }
+    if (tileQueue.getTilesLoading() < maxTotalLoading) {
+      tileQueue.reprioritize(); // FIXME only call if view has changed
+      tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
     }
   }
-
-  this.tileQueue_.reprioritize(); // FIXME only call if needed
-  this.tileQueue_.loadMoreTiles(limit);
 
   var postRenderFunctions = this.postRenderFunctions_;
   var i;
   for (i = 0; i < postRenderFunctions.length; ++i) {
-    postRenderFunctions[i](this, this.frameState_);
+    postRenderFunctions[i](this, frameState);
   }
   postRenderFunctions.length = 0;
 };
