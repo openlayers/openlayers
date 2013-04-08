@@ -15,10 +15,16 @@ goog.require('ol.tilegrid.TileGrid');
  */
 ol.tilegrid.XYZ = function(options) {
 
-  var resolutions = new Array(options.maxZoom + 1);
+  /**
+   * @private
+   * @type {number}
+   */
+  this.maxZoom_ = options.maxZoom;
+
+  var resolutions = new Array(this.maxZoom_ + 1);
   var z;
   var size = 2 * ol.projection.EPSG3857.HALF_SIZE / ol.DEFAULT_TILE_SIZE;
-  for (z = 0; z <= options.maxZoom; ++z) {
+  for (z = 0; z <= this.maxZoom_; ++z) {
     resolutions[z] = size / Math.pow(2, z);
   }
 
