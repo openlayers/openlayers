@@ -93,6 +93,13 @@ ol.tilegrid.TileGrid = function(options) {
 
 
 /**
+ * @private
+ * @type {ol.TileCoord}
+ */
+ol.tilegrid.TileGrid.tmpTileCoord_ = new ol.TileCoord(0, 0, 0);
+
+
+/**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {function(this: T, number, ol.TileRange): boolean} callback Callback.
  * @param {T=} opt_obj Object.
@@ -213,11 +220,12 @@ ol.tilegrid.TileGrid.prototype.getTileRangeExtent =
  */
 ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution =
     function(extent, resolution, opt_tileRange) {
-  var tileCoord = this.getTileCoordForXYAndResolution_(
-      extent.minX, extent.minY, resolution, false);
+  var tileCoord = ol.tilegrid.TileGrid.tmpTileCoord_;
+  this.getTileCoordForXYAndResolution_(
+      extent.minX, extent.minY, resolution, false, tileCoord);
   var minX = tileCoord.x;
   var minY = tileCoord.y;
-  tileCoord = this.getTileCoordForXYAndResolution_(
+  this.getTileCoordForXYAndResolution_(
       extent.maxX, extent.maxY, resolution, true, tileCoord);
   return ol.TileRange.createOrUpdate(
       minX, minY, tileCoord.x, tileCoord.y, opt_tileRange);
