@@ -629,6 +629,7 @@ def host_examples(t):
     t.cp(EXAMPLES, examples_dir)
     for example in [path.replace('.html', '.js') for path in EXAMPLES]:
         split_example_file(example, examples_dir % vars(variables))
+    t.cp_r('examples/data', examples_dir + '/data')
     t.cp('bin/loader_hosted_examples.js', examples_dir + '/loader.js')
     t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js',
          'build/ol.css', build_dir)
