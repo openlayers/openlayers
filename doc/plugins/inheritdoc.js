@@ -5,12 +5,12 @@
  * TODO: Remove this hack when https://github.com/jsdoc3/jsdoc/issues/53
  * is addressed.
  */
-exports.handlers = {
+exports.nodeVisitor = {
 
-  beforeParse: function(e) {
-    e.source = e.source.replace(
-        /\/\*\*\r?\n?\s*\* @(inheritDoc|override)\r?\n?\s*\*\/\r?\n?/g,
-        "/***\n *\n */\n");
+  visitNode: function(node, e, parser, currentSourceName) {
+    if (/@(inheritDoc|override)(\n|\r)/.test(e.comment)) {
+      e.preventDefault = true;
+    }
   }
 
 };
