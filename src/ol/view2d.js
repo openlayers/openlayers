@@ -131,6 +131,31 @@ ol.View2D.prototype.calculateCenterZoom = function(resolution, anchor) {
 
 
 /**
+ * @param {number|undefined} resolution Resolution.
+ * @param {number=} opt_delta Delta.
+ * @param {number=} opt_direction Direction.
+ * @return {number|undefined} Constrained resolution.
+ */
+ol.View2D.prototype.constrainResolution = function(
+    resolution, opt_delta, opt_direction) {
+  var delta = opt_delta || 0;
+  var direction = opt_direction || 0;
+  return this.constraints_.resolution(resolution, delta, direction);
+};
+
+
+/**
+ * @param {number|undefined} rotation Rotation.
+ * @param {number=} opt_delta Delta.
+ * @return {number|undefined} Constrained rotation.
+ */
+ol.View2D.prototype.constrainRotation = function(rotation, opt_delta) {
+  var delta = opt_delta || 0;
+  return this.constraints_.rotation(rotation, delta);
+};
+
+
+/**
  * @inheritDoc
  */
 ol.View2D.prototype.getCenter = function() {
@@ -289,7 +314,7 @@ ol.View2D.prototype.getView3D = function() {
 ol.View2D.prototype.fitExtent = function(extent, size) {
   this.setCenter(extent.getCenter());
   var resolution = this.getResolutionForExtent(extent, size);
-  resolution = this.constraints_.resolution(resolution, 0, 0);
+  resolution = this.constrainResolution(resolution, 0, 0);
   this.setResolution(resolution);
 };
 
@@ -380,7 +405,7 @@ ol.View2D.prototype.pan = function(map, delta, opt_duration) {
  */
 ol.View2D.prototype.rotate =
     function(map, rotation, opt_anchor, opt_duration) {
-  rotation = this.constraints_.rotation(rotation, 0);
+  rotation = this.constrainRotation(rotation, 0);
   this.rotateWithoutConstraints(map, rotation, opt_anchor, opt_duration);
 };
 
@@ -441,8 +466,7 @@ ol.View2D.prototype.rotateWithoutConstraints =
  */
 ol.View2D.prototype.zoom =
     function(map, resolution, opt_anchor, opt_duration, opt_direction) {
-  var direction = opt_direction || 0;
-  resolution = this.constraints_.resolution(resolution, 0, direction);
+  resolution = this.constrainResolution(resolution, 0, opt_direction);
   this.zoomWithoutConstraints(map, resolution, opt_anchor, opt_duration);
 };
 
@@ -456,7 +480,7 @@ ol.View2D.prototype.zoom =
 ol.View2D.prototype.zoomByDelta =
     function(map, delta, opt_anchor, opt_duration) {
   var currentResolution = this.getResolution();
-  var resolution = this.constraints_.resolution(currentResolution, delta, 0);
+  var resolution = this.constrainResolution(currentResolution, delta, 0);
   this.zoomWithoutConstraints(map, resolution, opt_anchor, opt_duration);
 };
 
