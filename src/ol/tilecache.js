@@ -8,7 +8,7 @@ goog.require('ol.structs.LRUCache');
 /**
  * @define {number} Default high water mark.
  */
-ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK = 512;
+ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK = 2048;
 
 
 
