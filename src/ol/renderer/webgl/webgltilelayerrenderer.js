@@ -199,7 +199,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         tilesToDrawByZ, getTileIfLoaded);
 
     var allTilesLoaded = true;
-    var tile, tileState, x, y;
+    var childTileRange, fullyLoaded, tile, tileState, x, y;
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
@@ -216,8 +216,14 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         }
 
         allTilesLoaded = false;
-        tileGrid.forEachTileCoordParentTileRange(
+        fullyLoaded = tileGrid.forEachTileCoordParentTileRange(
             tile.tileCoord, findLoadedTiles);
+        if (!fullyLoaded) {
+          childTileRange = tileGrid.getTileCoordChildTileRange(tile.tileCoord);
+          if (!goog.isNull(childTileRange)) {
+            findLoadedTiles(z + 1, childTileRange);
+          }
+        }
 
       }
 

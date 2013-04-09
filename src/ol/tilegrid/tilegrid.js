@@ -96,6 +96,7 @@ ol.tilegrid.TileGrid = function(options) {
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {function(this: T, number, ol.TileRange): boolean} callback Callback.
  * @param {T=} opt_obj Object.
+ * @return {boolean} Callback succeeded.
  * @template T
  */
 ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange =
@@ -105,10 +106,11 @@ ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange =
   while (z >= 0) {
     if (callback.call(
         opt_obj, z, this.getTileRangeForExtentAndZ(tileCoordExtent, z))) {
-      return;
+      return true;
     }
     --z;
   }
+  return false;
 };
 
 
@@ -161,6 +163,21 @@ ol.tilegrid.TileGrid.prototype.getResolution = function(z) {
  */
 ol.tilegrid.TileGrid.prototype.getResolutions = function() {
   return this.resolutions_;
+};
+
+
+/**
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @return {ol.TileRange} Tile range.
+ */
+ol.tilegrid.TileGrid.prototype.getTileCoordChildTileRange =
+    function(tileCoord) {
+  if (tileCoord.z < this.resolutions_.length) {
+    var tileCoordExtent = this.getTileCoordExtent(tileCoord);
+    return this.getTileRangeForExtentAndZ(tileCoordExtent, tileCoord.z + 1);
+  } else {
+    return null;
+  }
 };
 
 

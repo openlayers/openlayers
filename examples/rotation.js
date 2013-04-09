@@ -8,7 +8,6 @@ goog.require('ol.source.OpenStreetMap');
 var map = new ol.Map({
   layers: [
     new ol.layer.TileLayer({
-      preload: 4,
       source: new ol.source.OpenStreetMap()
     })
   ],
