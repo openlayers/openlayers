@@ -378,27 +378,6 @@ goog.exportProperty(
 
 /**
  * @param {ol.Map} map Map.
- * @param {ol.Coordinate} delta Delta.
- * @param {number=} opt_duration Duration.
- */
-ol.View2D.prototype.pan = function(map, delta, opt_duration) {
-  var currentCenter = this.getCenter();
-  if (goog.isDef(currentCenter)) {
-    if (goog.isDef(opt_duration)) {
-      map.requestRenderFrame();
-      map.addPreRenderFunction(ol.animation.pan({
-        source: currentCenter,
-        duration: opt_duration,
-        easing: ol.easing.linear
-      }));
-    }
-    this.setCenter([currentCenter[0] + delta[0], currentCenter[1] + delta[1]]);
-  }
-};
-
-
-/**
- * @param {ol.Map} map Map.
  * @param {number|undefined} rotation Rotation.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
