@@ -1,9 +1,14 @@
 goog.provide('ol.parser.ogc.KML');
+goog.require('goog.array');
 goog.require('goog.async.Deferred');
 goog.require('goog.async.DeferredList');
 goog.require('goog.date');
 goog.require('goog.dom.xml');
+goog.require('goog.events');
+goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
+goog.require('goog.object');
+goog.require('goog.string');
 goog.require('ol.Feature');
 goog.require('ol.geom.AbstractCollection');
 goog.require('ol.geom.GeometryCollection');
@@ -934,7 +939,7 @@ ol.parser.ogc.KML.prototype.read = function(data, opt_callback) {
  * @param {Array} styles The style list to search in.
  * @param {Array=} opt_symbolizers Optional symbolizers.
  */
-ol.parser.ogc.KML.prototype.applyStyle_ = function(feature, styles, 
+ol.parser.ogc.KML.prototype.applyStyle_ = function(feature, styles,
     opt_symbolizers) {
   var symbolizers = opt_symbolizers;
   var i, ii;
