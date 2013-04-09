@@ -262,12 +262,13 @@ ol.tilegrid.TileGrid.prototype.getTileCoordExtent = function(tileCoord) {
  *
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
+ * @param {ol.TileCoord=} opt_tileCoord Destination ol.TileCoord object.
  * @return {ol.TileCoord} Tile coordinate.
  */
 ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution = function(
-    coordinate, resolution) {
+    coordinate, resolution, opt_tileCoord) {
   return this.getTileCoordForXYAndResolution_(
-      coordinate[0], coordinate[1], resolution, false);
+      coordinate[0], coordinate[1], resolution, false, opt_tileCoord);
 };
 
 
@@ -278,11 +279,12 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution = function(
  * @param {boolean} reverseIntersectionPolicy Instead of letting edge
  *     intersections go to the higher tile coordinate, let edge intersections
  *     go to the lower tile coordinate.
+ * @param {ol.TileCoord=} opt_tileCoord Temporary ol.TileCoord object.
  * @return {ol.TileCoord} Tile coordinate.
  * @private
  */
 ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
-    x, y, resolution, reverseIntersectionPolicy) {
+    x, y, resolution, reverseIntersectionPolicy, opt_tileCoord) {
   var z = this.getZForResolution(resolution);
   var scale = resolution / this.getResolution(z);
   var origin = this.getOrigin(z);
@@ -299,20 +301,21 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
     tileCoordY = Math.floor(tileCoordY);
   }
 
-  return new ol.TileCoord(z, tileCoordX, tileCoordY);
+  return ol.TileCoord.createOrUpdate(z, tileCoordX, tileCoordY, opt_tileCoord);
 };
 
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} z Z.
+ * @param {ol.TileCoord=} opt_tileCoord Destination ol.TileCoord object.
  * @return {ol.TileCoord} Tile coordinate.
  */
 ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndZ =
-    function(coordinate, z) {
+    function(coordinate, z, opt_tileCoord) {
   var resolution = this.getResolution(z);
   return this.getTileCoordForXYAndResolution_(
-      coordinate[0], coordinate[1], resolution, false);
+      coordinate[0], coordinate[1], resolution, false, opt_tileCoord);
 };
 
 
