@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+  <name>LineString.kml</name>
+  <open>1</open>
+  <LookAt>
+    <longitude>-122.36415</longitude>
+    <latitude>37.824553</latitude>
+    <altitude>0</altitude>
+    <range>150</range>
+    <tilt>50</tilt>
+    <heading>0</heading>
+  </LookAt>
+  <Placemark>
+    <name>unextruded</name>
+    <LineString>
+      <extrude>1</extrude>
+      <tessellate>1</tessellate>
+      <coordinates>
+        -122.364383,37.824664,0 -122.364152,37.824322,0
+      </coordinates>
+    </LineString>
+  </Placemark>
+  <Placemark>
+    <name>extruded</name>
+    <LineString>
+      <extrude>1</extrude>
+      <tessellate>1</tessellate>
+      <altitudeMode>relativeToGround</altitudeMode>
+      <coordinates>
+        -122.364167,37.824787,50 -122.363917,37.824423,50
+      </coordinates>
+    </LineString>
+  </Placemark>
+</Document>
+</kml>
