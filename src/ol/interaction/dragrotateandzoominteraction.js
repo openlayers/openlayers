@@ -7,6 +7,7 @@ goog.require('goog.math.Vec2');
 goog.require('ol.View2D');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
+goog.require('ol.interaction.Interaction');
 
 
 
@@ -62,7 +63,8 @@ ol.interaction.DragRotateAndZoom.prototype.handleDrag =
   // map.withFrozenRendering but an assertion fails :-(
   if (goog.isDef(this.lastAngle_)) {
     var angleDelta = theta - this.lastAngle_;
-    view.rotate(map, view.getRotation() - angleDelta);
+    ol.interaction.Interaction.rotate(
+        map, view, view.getRotation() - angleDelta);
   }
   this.lastAngle_ = theta;
   if (goog.isDef(this.lastMagnitude_)) {

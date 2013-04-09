@@ -6,6 +6,7 @@ goog.require('goog.asserts');
 goog.require('goog.style');
 goog.require('ol.View');
 goog.require('ol.ViewHint');
+goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Touch');
 
 
@@ -86,7 +87,6 @@ ol.interaction.TouchRotate.prototype.handleTouchMove =
   this.lastAngle_ = angle;
 
   var map = mapBrowserEvent.map;
-  var view = map.getView();
 
   // rotate anchor point.
   // FIXME: should be the intersection point between the lines:
@@ -99,8 +99,9 @@ ol.interaction.TouchRotate.prototype.handleTouchMove =
 
   // rotate
   if (this.rotating_) {
-    view.rotateWithoutConstraints(map, view.getRotation() + rotationDelta,
-        anchor);
+    var view = map.getView().getView2D();
+    ol.interaction.Interaction.rotateWithoutConstraints(map, view,
+        view.getRotation() + rotationDelta, anchor);
   }
 };
 
@@ -112,9 +113,10 @@ ol.interaction.TouchRotate.prototype.handleTouchEnd =
     function(mapBrowserEvent) {
   if (this.targetTouches.length < 2) {
     var map = mapBrowserEvent.map;
-    var view = map.getView();
+    var view = map.getView().getView2D();
     if (this.rotating_) {
-      view.rotate(map, view.getRotation(), undefined,
+      ol.interaction.Interaction.rotate(
+          map, view, view.getRotation(), undefined,
           ol.interaction.TOUCHROTATE_ANIMATION_DURATION);
     }
     view.setHint(ol.ViewHint.INTERACTING, -1);

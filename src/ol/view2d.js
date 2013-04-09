@@ -378,59 +378,6 @@ goog.exportProperty(
 
 /**
  * @param {ol.Map} map Map.
- * @param {number|undefined} rotation Rotation.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- */
-ol.View2D.prototype.rotate =
-    function(map, rotation, opt_anchor, opt_duration) {
-  rotation = this.constrainRotation(rotation, 0);
-  this.rotateWithoutConstraints(map, rotation, opt_anchor, opt_duration);
-};
-
-
-/**
- * @param {ol.Map} map Map.
- * @param {number|undefined} rotation Rotation.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- */
-ol.View2D.prototype.rotateWithoutConstraints =
-    function(map, rotation, opt_anchor, opt_duration) {
-  if (goog.isDefAndNotNull(rotation)) {
-    var currentRotation = this.getRotation();
-    var currentCenter = this.getCenter();
-    if (goog.isDef(currentRotation) && goog.isDef(currentCenter) &&
-        goog.isDef(opt_duration)) {
-      map.requestRenderFrame();
-      map.addPreRenderFunction(ol.animation.rotate({
-        rotation: currentRotation,
-        duration: opt_duration,
-        easing: ol.easing.easeOut
-      }));
-      if (goog.isDef(opt_anchor)) {
-        map.addPreRenderFunction(ol.animation.pan({
-          source: currentCenter,
-          duration: opt_duration,
-          easing: ol.easing.easeOut
-        }));
-      }
-    }
-    if (goog.isDefAndNotNull(opt_anchor)) {
-      var center = this.calculateCenterRotate(rotation, opt_anchor);
-      map.withFrozenRendering(function() {
-        this.setCenter(center);
-        this.setRotation(rotation);
-      }, this);
-    } else {
-      this.setRotation(rotation);
-    }
-  }
-};
-
-
-/**
- * @param {ol.Map} map Map.
  * @param {number|undefined} resolution Resolution to go to.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
