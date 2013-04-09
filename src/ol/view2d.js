@@ -94,6 +94,43 @@ goog.inherits(ol.View2D, ol.View);
 
 
 /**
+ * @param {number} rotation Target rotation.
+ * @param {ol.Coordinate} anchor Rotation anchor.
+ * @return {ol.Coordinate|undefined} Center for rotation and anchor.
+ */
+ol.View2D.prototype.calculateCenterRotate = function(rotation, anchor) {
+  var center;
+  var currentCenter = this.getCenter();
+  if (goog.isDef(currentCenter)) {
+    center = [currentCenter[0] - anchor[0], currentCenter[1] - anchor[1]];
+    ol.coordinate.rotate(center, rotation - this.getRotation());
+    ol.coordinate.add(center, anchor);
+  }
+  return center;
+};
+
+
+/**
+ * @param {number} resolution Target resolution.
+ * @param {ol.Coordinate} anchor Zoom anchor.
+ * @return {ol.Coordinate|undefined} Center for resolution and anchor.
+ */
+ol.View2D.prototype.calculateCenterZoom = function(resolution, anchor) {
+  var center;
+  var currentCenter = this.getCenter();
+  var currentResolution = this.getResolution();
+  if (goog.isDef(currentCenter) && goog.isDef(currentResolution)) {
+    var x = anchor[0] -
+        resolution * (anchor[0] - currentCenter[0]) / currentResolution;
+    var y = anchor[1] -
+        resolution * (anchor[1] - currentCenter[1]) / currentResolution;
+    center = [x, y];
+  }
+  return center;
+};
+
+
+/**
  * @inheritDoc
  */
 ol.View2D.prototype.getCenter = function() {
@@ -376,11 +413,7 @@ ol.View2D.prototype.rotateWithoutConstraints =
       }
     }
     if (goog.isDefAndNotNull(opt_anchor)) {
-      var anchor = opt_anchor;
-      var oldCenter = /** @type {!ol.Coordinate} */ (this.getCenter());
-      var center = [oldCenter[0] - anchor[0], oldCenter[1] - anchor[1]];
-      ol.coordinate.rotate(center, rotation - this.getRotation());
-      ol.coordinate.add(center, anchor);
+      var center = this.calculateCenterRotate(rotation, opt_anchor);
       map.withFrozenRendering(function() {
         this.setCenter(center);
         this.setRotation(rotation);
@@ -456,14 +489,7 @@ ol.View2D.prototype.zoomWithoutConstraints =
       }
     }
     if (goog.isDefAndNotNull(opt_anchor)) {
-      var anchor = opt_anchor;
-      var oldCenter = /** @type {!ol.Coordinate} */ (this.getCenter());
-      var oldResolution = this.getResolution();
-      var x =
-          anchor[0] - resolution * (anchor[0] - oldCenter[0]) / oldResolution;
-      var y =
-          anchor[1] - resolution * (anchor[1] - oldCenter[1]) / oldResolution;
-      var center = [x, y];
+      var center = this.calculateCenterZoom(resolution, opt_anchor);
       map.withFrozenRendering(function() {
         this.setCenter(center);
         this.setResolution(resolution);
