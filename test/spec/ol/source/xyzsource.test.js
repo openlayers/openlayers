@@ -17,7 +17,7 @@ describe('ol.source.XYZ', function() {
 
     it('return the expected URL', function() {
 
-      var coordinate = new ol.Coordinate(829330.2064098881, 5933916.615134273);
+      var coordinate = [829330.2064098881, 5933916.615134273];
       var tileUrl;
 
       tileUrl = xyzTileSource.tileUrlFunction(
@@ -86,6 +86,5 @@ describe('ol.source.XYZ', function() {
 
 });
 
-goog.require('ol.Coordinate');
 goog.require('ol.TileCoord');
 goog.require('ol.source.XYZ');

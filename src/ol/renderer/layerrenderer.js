@@ -14,6 +14,7 @@ goog.require('ol.TileState');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerProperty');
 goog.require('ol.layer.LayerState');
+goog.require('ol.source.Source');
 goog.require('ol.source.TileSource');
 
 
@@ -222,6 +223,19 @@ ol.renderer.Layer.prototype.updateAttributions =
 
 /**
  * @protected
+ * @param {ol.FrameState} frameState Frame state.
+ * @param {ol.source.Source} source Source.
+ */
+ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
+  var logo = source.getLogo();
+  if (goog.isDef(logo)) {
+    frameState.logos[logo] = true;
+  }
+};
+
+
+/**
+ * @protected
  * @param {Object.<string, Object.<string, ol.TileRange>>} usedTiles Used tiles.
  * @param {ol.source.TileSource} tileSource Tile source.
  * @param {number} z Z.
@@ -271,9 +285,10 @@ ol.renderer.Layer.prototype.createGetTileIfLoadedFunction =
  */
 ol.renderer.Layer.prototype.snapCenterToPixel =
     function(center, resolution, size) {
-  return new ol.Coordinate(
-      resolution * (Math.round(center.x / resolution) + (size.width % 2) / 2),
-      resolution * (Math.round(center.y / resolution) + (size.height % 2) / 2));
+  return [
+    resolution * (Math.round(center[0] / resolution) + (size.width % 2) / 2),
+    resolution * (Math.round(center[1] / resolution) + (size.height % 2) / 2)
+  ];
 };
 
 

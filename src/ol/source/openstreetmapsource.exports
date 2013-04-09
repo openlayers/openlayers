@@ -1,2 +1,3 @@
 @exportSymbol ol.source.OpenStreetMap
-
+@exportProperty ol.source.OpenStreetMap.DATA_ATTRIBUTION
+@exportProperty ol.source.OpenStreetMap.TILE_ATTRIBUTION

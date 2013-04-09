@@ -2,6 +2,7 @@ goog.provide('ol.View');
 goog.provide('ol.ViewHint');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('ol.IView');
 goog.require('ol.Object');
 

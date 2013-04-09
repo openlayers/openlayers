@@ -3,18 +3,16 @@
 goog.provide('ol.control.Attribution');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.events');
 goog.require('goog.object');
 goog.require('goog.style');
-goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.FrameState');
-goog.require('ol.MapEvent');
-goog.require('ol.MapEventType');
 goog.require('ol.TileRange');
 goog.require('ol.control.Control');
+goog.require('ol.css');
 goog.require('ol.source.Source');
 
 
@@ -22,16 +20,20 @@ goog.require('ol.source.Source');
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.AttributionOptions=} opt_options Options.
+ * @param {ol.control.AttributionOptions=} opt_options Attribution options.
  */
 ol.control.Attribution = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
+  /**
+   * @private
+   * @type {Element}
+   */
   this.ulElement_ = goog.dom.createElement(goog.dom.TagName.UL);
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': 'ol-attribution ' + ol.CSS_CLASS_UNSELECTABLE
+    'class': 'ol-attribution ' + ol.css.CLASS_UNSELECTABLE
   }, this.ulElement_);
 
   goog.base(this, {
@@ -57,12 +59,6 @@ ol.control.Attribution = function(opt_options) {
    * @type {Object.<string, boolean>}
    */
   this.attributionElementRenderedVisible_ = {};
-
-  /**
-   * @private
-   * @type {Array.<?number>}
-   */
-  this.listenerKeys_ = null;
 
 };
 goog.inherits(ol.control.Attribution, ol.control.Control);
@@ -104,28 +100,10 @@ ol.control.Attribution.prototype.getTileSourceAttributions =
 
 
 /**
- * @param {ol.MapEvent} mapEvent Map event.
+ * @inheritDoc
  */
 ol.control.Attribution.prototype.handleMapPostrender = function(mapEvent) {
   this.updateElement_(mapEvent.frameState);
-};
-
-
-/**
- * @inheritDoc
- */
-ol.control.Attribution.prototype.setMap = function(map) {
-  if (!goog.isNull(this.listenerKeys_)) {
-    goog.array.forEach(this.listenerKeys_, goog.events.unlistenByKey);
-    this.listenerKeys_ = null;
-  }
-  goog.base(this, 'setMap', map);
-  if (!goog.isNull(map)) {
-    this.listenerKeys_ = [
-      goog.events.listen(map, ol.MapEventType.POSTRENDER,
-          this.handleMapPostrender, false, this)
-    ];
-  }
 };
 
 

@@ -1,6 +1,10 @@
 goog.provide('ol.renderer.webgl.ImageLayer');
 
+goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
+goog.require('goog.webgl');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.Image');
@@ -137,6 +141,7 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
     this.texture = texture;
 
     this.updateAttributions(frameState.attributions, image.getAttributions());
+    this.updateLogos(frameState, imageSource);
   }
 };
 
@@ -163,8 +168,8 @@ ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ =
       2 / canvasExtentWidth, 2 / canvasExtentHeight, 1);
   goog.vec.Mat4.rotateZ(projectionMatrix, -viewRotation);
   goog.vec.Mat4.translate(projectionMatrix,
-      imageExtent.minX - viewCenter.x,
-      imageExtent.minY - viewCenter.y,
+      imageExtent.minX - viewCenter[0],
+      imageExtent.minY - viewCenter[1],
       0);
   goog.vec.Mat4.scale(projectionMatrix,
       imageExtent.getWidth() / 2, imageExtent.getHeight() / 2, 1);

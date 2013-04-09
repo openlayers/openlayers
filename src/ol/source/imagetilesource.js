@@ -1,6 +1,6 @@
 goog.provide('ol.source.ImageTileSource');
-goog.provide('ol.source.ImageTileSourceOptions');
 
+goog.require('goog.asserts');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.ImageTile');
@@ -19,25 +19,27 @@ goog.require('ol.tilegrid.TileGrid');
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            crossOrigin: (null|string|undefined),
  *            extent: (ol.Extent|undefined),
+ *            logo: (string|undefined),
  *            opaque: (boolean|undefined),
  *            projection: ol.ProjectionLike,
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
  */
-ol.source.ImageTileSourceOptions;
+ol.source.ImageTileOptions;
 
 
 
 /**
  * @constructor
  * @extends {ol.source.TileSource}
- * @param {ol.source.ImageTileSourceOptions} options Options.
+ * @param {ol.source.ImageTileOptions} options Image tile options.
  */
 ol.source.ImageTileSource = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
     extent: options.extent,
+    logo: options.logo,
     opaque: options.opaque,
     projection: options.projection,
     tileGrid: options.tileGrid

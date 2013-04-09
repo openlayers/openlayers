@@ -1,4 +1,6 @@
 goog.provide('ol.parser.ogc.WMSCapabilities_v1_3_0');
+
+goog.require('goog.object');
 goog.require('ol.parser.ogc.WMSCapabilities_v1');
 
 

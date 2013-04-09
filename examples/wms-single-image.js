@@ -1,4 +1,3 @@
-goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
@@ -26,7 +25,7 @@ var map = new ol.Map({
   layers: layers,
   target: 'map',
   view: new ol.View2D({
-    center: new ol.Coordinate(-10997148, 4569099),
+    center: [-10997148, 4569099],
     zoom: 4
   })
 });

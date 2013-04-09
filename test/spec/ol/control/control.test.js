@@ -25,5 +25,6 @@ describe('ol.control.Control', function() {
 });
 
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('ol.Map');
 goog.require('ol.control.Control');

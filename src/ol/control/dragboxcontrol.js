@@ -24,9 +24,9 @@ ol.control.DragBoxOptions;
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.DragBoxOptions} dragBoxOptions Drag box options.
+ * @param {ol.control.DragBoxOptions} options Drag box options.
  */
-ol.control.DragBox = function(dragBoxOptions) {
+ol.control.DragBox = function(options) {
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-dragbox');
 
@@ -40,17 +40,11 @@ ol.control.DragBox = function(dragBoxOptions) {
    * @private
    * @type {ol.Coordinate}
    */
-  this.startCoordinate_ = dragBoxOptions.startCoordinate;
-
-  /**
-   * @private
-   * @type {?number}
-   */
-  this.dragListenKey_ = null;
+  this.startCoordinate_ = options.startCoordinate;
 
   goog.base(this, {
     element: element,
-    map: dragBoxOptions.map
+    map: options.map
   });
 
 };
@@ -61,19 +55,15 @@ goog.inherits(ol.control.DragBox, ol.control.Control);
  * @inheritDoc
  */
 ol.control.DragBox.prototype.setMap = function(map) {
-  if (!goog.isNull(this.dragListenKey_)) {
-    goog.events.unlistenByKey(this.dragListenKey_);
-    this.dragListenKey_ = null;
-  }
+  goog.base(this, 'setMap', map);
   if (!goog.isNull(map)) {
     this.startPixel_ = map.getPixelFromCoordinate(this.startCoordinate_);
     goog.asserts.assert(goog.isDef(this.startPixel_));
     goog.style.setPosition(this.element, this.startPixel_);
     goog.style.setBorderBoxSize(this.element, new ol.Size(0, 0));
-    this.dragListenKey_ = goog.events.listen(
-        map, ol.MapBrowserEvent.EventType.DRAG, this.updateBox_, false, this);
+    this.listenerKeys.push(goog.events.listen(
+        map, ol.MapBrowserEvent.EventType.DRAG, this.updateBox_, false, this));
   }
-  goog.base(this, 'setMap', map);
 };
 
 

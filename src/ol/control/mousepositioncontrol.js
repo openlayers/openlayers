@@ -5,13 +5,11 @@ goog.provide('ol.control.MousePosition');
 
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.style');
-goog.require('ol.Coordinate');
 goog.require('ol.CoordinateFormatType');
-goog.require('ol.MapEvent');
-goog.require('ol.MapEventType');
 goog.require('ol.Pixel');
 goog.require('ol.Projection');
 goog.require('ol.TransformFunction');
@@ -23,7 +21,7 @@ goog.require('ol.projection');
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.MousePositionOptions=} opt_options Options.
+ * @param {ol.control.MousePositionOptions=} opt_options Mouse position options.
  */
 ol.control.MousePosition = function(opt_options) {
 
@@ -88,19 +86,12 @@ ol.control.MousePosition = function(opt_options) {
    */
   this.lastMouseMovePixel_ = null;
 
-  /**
-   * @private
-   * @type {Array.<?number>}
-   */
-  this.listenerKeys_ = null;
-
 };
 goog.inherits(ol.control.MousePosition, ol.control.Control);
 
 
 /**
- * @param {ol.MapEvent} mapEvent Map event.
- * @protected
+ * @inheritDoc
  */
 ol.control.MousePosition.prototype.handleMapPostrender = function(mapEvent) {
   var frameState = mapEvent.frameState;
@@ -141,21 +132,15 @@ ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
  * @inheritDoc
  */
 ol.control.MousePosition.prototype.setMap = function(map) {
-  if (!goog.isNull(this.listenerKeys_)) {
-    goog.array.forEach(this.listenerKeys_, goog.events.unlistenByKey);
-    this.listenerKeys_ = null;
-  }
   goog.base(this, 'setMap', map);
   if (!goog.isNull(map)) {
     var viewport = map.getViewport();
-    this.listenerKeys_ = [
-      goog.events.listen(viewport, goog.events.EventType.MOUSEMOVE,
-          this.handleMouseMove, false, this),
-      goog.events.listen(viewport, goog.events.EventType.MOUSEOUT,
-          this.handleMouseOut, false, this),
-      goog.events.listen(map, ol.MapEventType.POSTRENDER,
-          this.handleMapPostrender, false, this)
-    ];
+    this.listenerKeys.push(
+        goog.events.listen(viewport, goog.events.EventType.MOUSEMOVE,
+            this.handleMouseMove, false, this),
+        goog.events.listen(viewport, goog.events.EventType.MOUSEOUT,
+            this.handleMouseOut, false, this)
+    );
   }
 };
 
@@ -179,9 +164,7 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
     var map = this.getMap();
     var coordinate = map.getCoordinateFromPixel(pixel);
     if (!goog.isNull(coordinate)) {
-      var vertex = [coordinate.x, coordinate.y];
-      vertex = this.transform_(vertex, vertex);
-      coordinate = new ol.Coordinate(vertex[0], vertex[1]);
+      this.transform_(coordinate, coordinate);
       if (goog.isDef(this.coordinateFormat_)) {
         html = this.coordinateFormat_(coordinate);
       } else {

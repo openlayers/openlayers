@@ -6,7 +6,6 @@ goog.provide('ol.projection');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
-goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.TransformFunction');
 goog.require('ol.sphere.NORMAL');
@@ -26,7 +25,8 @@ ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof Proj4js == 'object';
 
 
 /**
- * @typedef {ol.Projection|string|undefined}
+ * A projection as {@link ol.Projection}, SRS identifier string or undefined.
+ * @typedef {ol.Projection|string|undefined} ol.ProjectionLike
  */
 ol.ProjectionLike;
 
@@ -54,7 +54,7 @@ ol.METERS_PER_UNIT[ol.ProjectionUnits.METERS] = 1;
 
 /**
  * @constructor
- * @param {ol.ProjectionOptions} options Options object.
+ * @param {ol.ProjectionOptions} options Projection options.
  */
 ol.Projection = function(options) {
 
@@ -176,7 +176,7 @@ ol.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
  * @constructor
  * @extends {ol.Projection}
  * @param {Proj4js.Proj} proj4jsProj Proj4js projection.
- * @param {ol.Proj4jsProjectionOptions} options Projection config options.
+ * @param {ol.Proj4jsProjectionOptions} options Proj4js projection options.
  * @private
  */
 ol.Proj4jsProjection_ = function(proj4jsProj, options) {
@@ -226,18 +226,16 @@ ol.Proj4jsProjection_.prototype.getPointResolution =
           }));
     }
     var vertices = [
-      point.x - resolution / 2, point.y,
-      point.x + resolution / 2, point.y,
-      point.x, point.y - resolution / 2,
-      point.x, point.y + resolution / 2
+      point[0] - resolution / 2, point[1],
+      point[0] + resolution / 2, point[1],
+      point[0], point[1] - resolution / 2,
+      point[0], point[1] + resolution / 2
     ];
     vertices = this.toEPSG4326_(vertices, vertices, 2);
     var width = ol.sphere.NORMAL.haversineDistance(
-        new ol.Coordinate(vertices[0], vertices[1]),
-        new ol.Coordinate(vertices[2], vertices[3]));
+        vertices.slice(0, 2), vertices.slice(2, 4));
     var height = ol.sphere.NORMAL.haversineDistance(
-        new ol.Coordinate(vertices[4], vertices[5]),
-        new ol.Coordinate(vertices[6], vertices[7]));
+        vertices.slice(4, 6), vertices.slice(6, 8));
     var pointResolution = (width + height) / 2;
     if (this.getUnits() == ol.ProjectionUnits.FEET) {
       // The radius of the normal sphere is defined in meters, so we must
@@ -376,7 +374,7 @@ ol.projection.createProjection = function(projection, defaultCode) {
   } else if (goog.isString(projection)) {
     return ol.projection.get(projection);
   } else {
-    goog.asserts.assert(projection instanceof ol.Projection);
+    goog.asserts.assertInstanceof(projection, ol.Projection);
     return projection;
   }
 };
@@ -457,7 +455,7 @@ ol.projection.get = function(projectionLike) {
 
 
 /**
- * @param {ol.Proj4jsProjectionOptions} options Projection config options.
+ * @param {ol.Proj4jsProjectionOptions} options Proj4js projection options.
  * @private
  * @return {ol.Proj4jsProjection_} Proj4js projection.
  */
@@ -612,7 +610,7 @@ ol.projection.getTransformFromProjections =
 ol.projection.identityTransform = function(input, opt_output, opt_dimension) {
   if (goog.isDef(opt_output) && input !== opt_output) {
     // TODO: consider making this a warning instead
-    goog.asserts.assert(false, 'This should not be used internally.');
+    goog.asserts.fail('This should not be used internally.');
     for (var i = 0, ii = input.length; i < ii; ++i) {
       opt_output[i] = input[i];
     }
@@ -651,9 +649,7 @@ ol.projection.cloneTransform = function(input, opt_output, opt_dimension) {
  */
 ol.projection.transform = function(point, source, destination) {
   var transformFn = ol.projection.getTransform(source, destination);
-  var vertex = [point.x, point.y];
-  vertex = transformFn(vertex, vertex, 2);
-  return new ol.Coordinate(vertex[0], vertex[1]);
+  return transformFn(point);
 };
 
 
@@ -669,14 +665,12 @@ ol.projection.transformWithProjections =
     function(point, sourceProjection, destinationProjection) {
   var transformFn = ol.projection.getTransformFromProjections(
       sourceProjection, destinationProjection);
-  var vertex = [point.x, point.y];
-  vertex = transformFn(vertex, vertex, 2);
-  return new ol.Coordinate(vertex[0], vertex[1]);
+  return transformFn(point);
 };
 
 
 /**
- * @param {ol.Proj4jsProjectionOptions} options Projection config options.
+ * @param {ol.Proj4jsProjectionOptions} options Proj4js projection options.
  * @return {ol.Proj4jsProjection_} Proj4js projection.
  */
 ol.projection.configureProj4jsProjection = function(options) {

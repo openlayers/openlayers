@@ -5,5 +5,5 @@
 Welcome to OpenLayers 3!
 
 To see OpenLayers 3 in action you can look at the live examples on
-http://openlayers.github.com/ol3/master/examples/.  If you want to contribute
+http://openlayers.github.io/ol3/master/examples/.  If you want to contribute
 to OpenLayers 3 please read the [CONTRIBUTING](CONTRIBUTING.md) page.

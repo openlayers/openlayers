@@ -1,5 +1,7 @@
 goog.provide('ol.source.DebugTileSource');
 
+goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.TileCache');
@@ -82,7 +84,7 @@ ol.DebugTile_.prototype.getImage = function(opt_context) {
 /**
  * @constructor
  * @extends {ol.source.TileSource}
- * @param {ol.source.DebugTileSourceOptions} options Options.
+ * @param {ol.source.DebugTileSourceOptions} options Debug tile options.
  */
 ol.source.DebugTileSource = function(options) {
 

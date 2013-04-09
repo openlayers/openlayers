@@ -3,6 +3,7 @@
 
 goog.provide('ol.interaction.DragZoom');
 
+goog.require('goog.asserts');
 goog.require('ol.Extent');
 goog.require('ol.Size');
 goog.require('ol.View2D');
@@ -68,7 +69,7 @@ ol.interaction.DragZoom.prototype.handleDragEnd =
     map.withFrozenRendering(function() {
       // FIXME works for View2D only
       var view = map.getView();
-      goog.asserts.assert(view instanceof ol.View2D);
+      goog.asserts.assertInstanceof(view, ol.View2D);
       var mapSize = /** @type {ol.Size} */ (map.getSize());
       view.fitExtent(extent, mapSize);
       // FIXME we should preserve rotation

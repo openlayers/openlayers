@@ -8,10 +8,13 @@ goog.provide('ol.RendererHint');
 goog.provide('ol.RendererHints');
 
 goog.require('goog.Uri.QueryData');
+goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.async.AnimationDelay');
 goog.require('goog.async.Delay');
-goog.require('goog.debug.Logger');
+goog.require('goog.dispose');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.ViewportSizeMonitor');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
@@ -21,11 +24,12 @@ goog.require('goog.events.KeyHandler');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.MouseWheelHandler.EventType');
+goog.require('goog.object');
 goog.require('goog.style');
+goog.require('goog.vec.Mat4');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
 goog.require('ol.Color');
-goog.require('ol.Coordinate');
 goog.require('ol.Extent');
 goog.require('ol.FrameState');
 goog.require('ol.IView');
@@ -44,6 +48,7 @@ goog.require('ol.Tile');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
 goog.require('ol.View2D');
+goog.require('ol.ViewHint');
 goog.require('ol.control.defaults');
 goog.require('ol.interaction.defaults');
 goog.require('ol.layer.Layer');
@@ -57,6 +62,7 @@ goog.require('ol.renderer.dom.SUPPORTED');
 goog.require('ol.renderer.webgl.Map');
 goog.require('ol.renderer.webgl.SUPPORTED');
 goog.require('ol.structs.PriorityQueue');
+goog.require('ol.vec.Mat4');
 
 
 /**
@@ -110,23 +116,35 @@ ol.MapProperty = {
 
 
 /**
+ * @class
+ * The map is the core component of OpenLayers. In its minimal configuration it
+ * needs a view, one or more layers, and a target container:
+ *
+ *     var map = new ol.Map({
+ *       view: new ol.View2D({
+ *         center: [0, 0],
+ *         zoom: 1
+ *       }),
+ *       layers: [
+ *         new ol.layer.TileLayer({
+ *           source: new ol.source.MapQuestOSM()
+ *         })
+ *       ],
+ *       target: 'map'
+ *     });
+ *
+ * The above snippet creates a map with a MapQuest OSM layer on a 2D view and
+ * renders it to a DOM element with the id 'map'.
+ *
  * @constructor
  * @extends {ol.Object}
- * @param {ol.MapOptions} mapOptions Map options.
+ * @param {ol.MapOptions} options Map options.
  */
-ol.Map = function(mapOptions) {
+ol.Map = function(options) {
 
   goog.base(this);
 
-  if (goog.DEBUG) {
-    /**
-     * @protected
-     * @type {goog.debug.Logger}
-     */
-    this.logger = goog.debug.Logger.getLogger('ol.map.' + goog.getUid(this));
-  }
-
-  var mapOptionsInternal = ol.Map.createOptionsInternal(mapOptions);
+  var optionsInternal = ol.Map.createOptionsInternal(options);
 
   /**
    * @private
@@ -170,7 +188,7 @@ ol.Map = function(mapOptions) {
    * @private
    * @type {Element}
    */
-  this.target_ = mapOptionsInternal.target;
+  this.target_ = optionsInternal.target;
 
   /**
    * @private
@@ -227,14 +245,14 @@ ol.Map = function(mapOptions) {
    * @type {ol.Collection}
    * @private
    */
-  this.interactions_ = mapOptionsInternal.interactions;
+  this.interactions_ = optionsInternal.interactions;
 
   /**
    * @type {ol.renderer.Map}
    * @private
    */
   this.renderer_ =
-      new mapOptionsInternal.rendererConstructor(this.viewport_, this);
+      new optionsInternal.rendererConstructor(this.viewport_, this);
   this.registerDisposable(this.renderer_);
 
   /**
@@ -273,7 +291,8 @@ ol.Map = function(mapOptions) {
    * @private
    * @type {ol.TileQueue}
    */
-  this.tileQueue_ = new ol.TileQueue(goog.bind(this.getTilePriority, this),
+  this.tileQueue_ = new ol.TileQueue(
+      goog.bind(this.getTilePriority, this),
       goog.bind(this.handleTileChange_, this));
 
   goog.events.listen(this, ol.Object.getChangedEventType(ol.MapProperty.VIEW),
@@ -283,13 +302,13 @@ ol.Map = function(mapOptions) {
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.BACKGROUND_COLOR),
       this.handleBackgroundColorChanged_, false, this);
-  this.setValues(mapOptionsInternal.values);
+  this.setValues(optionsInternal.values);
 
   // this gives the map an initial size
   this.handleBrowserWindowResize();
 
-  if (goog.isDef(mapOptionsInternal.controls)) {
-    goog.array.forEach(mapOptionsInternal.controls,
+  if (goog.isDef(optionsInternal.controls)) {
+    goog.array.forEach(optionsInternal.controls,
         /**
          * @param {ol.control.Control} control Control.
          */
@@ -398,9 +417,8 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
   if (goog.isNull(frameState)) {
     return null;
   } else {
-    var vec3 = [pixel.x, pixel.y, 0];
-    goog.vec.Mat4.multVec3(frameState.pixelToCoordinateMatrix, vec3, vec3);
-    return new ol.Coordinate(vec3[0], vec3[1]);
+    var vec2 = [pixel.x, pixel.y];
+    return ol.vec.Mat4.multVec2(frameState.pixelToCoordinateMatrix, vec2, vec2);
   }
 };
 
@@ -434,9 +452,9 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
   if (goog.isNull(frameState)) {
     return null;
   } else {
-    var vec3 = [coordinate.x, coordinate.y, 0];
-    goog.vec.Mat4.multVec3(frameState.coordinateToPixelMatrix, vec3, vec3);
-    return new ol.Pixel(vec3[0], vec3[1]);
+    var vec2 = coordinate.slice(0, 2);
+    ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix, vec2, vec2);
+    return new ol.Pixel(vec2[0], vec2[1]);
   }
 };
 
@@ -508,8 +526,8 @@ ol.Map.prototype.getTilePriority =
   // between the center of the tile and the focus.  The factor of 65536 means
   // that the prioritization should behave as desired for tiles up to
   // 65536 * Math.log(2) = 45426 pixels from the focus.
-  var deltaX = tileCenter.x - frameState.focus.x;
-  var deltaY = tileCenter.y - frameState.focus.y;
+  var deltaX = tileCenter[0] - frameState.focus[0];
+  var deltaY = tileCenter[1] - frameState.focus[1];
   return 65536 * Math.log(tileResolution) +
       Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
 };
@@ -555,13 +573,39 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
  * @protected
  */
 ol.Map.prototype.handlePostRender = function() {
-  this.tileQueue_.reprioritize(); // FIXME only call if needed
-  this.tileQueue_.loadMoreTiles();
+
+  var frameState = this.frameState_;
+
+  // Manage the tile queue
+  // Image loads are expensive and a limited resource, so try to use them
+  // efficiently:
+  // * When the view is static we allow a large number of parallel tile loads
+  //   to complete the frame as quickly as possible.
+  // * When animating or interacting, image loads can cause janks, so we reduce
+  //   the maximum number of loads per frame and limit the number of parallel
+  //   tile loads to remain reactive to view changes and to reduce the chance of
+  //   loading tiles that will quickly disappear from view.
+  var tileQueue = this.tileQueue_;
+  if (!tileQueue.isEmpty()) {
+    var maxTotalLoading = 16;
+    var maxNewLoads = maxTotalLoading;
+    if (!goog.isNull(frameState)) {
+      var hints = frameState.viewHints;
+      if (hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING]) {
+        maxTotalLoading = 8;
+        maxNewLoads = 2;
+      }
+    }
+    if (tileQueue.getTilesLoading() < maxTotalLoading) {
+      tileQueue.reprioritize(); // FIXME only call if view has changed
+      tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
+    }
+  }
 
   var postRenderFunctions = this.postRenderFunctions_;
   var i;
   for (i = 0; i < postRenderFunctions.length; ++i) {
-    postRenderFunctions[i](this, this.frameState_);
+    postRenderFunctions[i](this, frameState);
   }
   postRenderFunctions.length = 0;
 };
@@ -688,10 +732,6 @@ ol.Map.prototype.renderFrame_ = function(time) {
     return;
   }
 
-  if (goog.DEBUG) {
-    this.logger.info('renderFrame_');
-  }
-
   var size = this.getSize();
   var layers = this.getLayers();
   var layersArray = goog.isDef(layers) ?
@@ -721,6 +761,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       focus: goog.isNull(this.focus_) ? view2DState.center : this.focus_,
       layersArray: layersArray,
       layerStates: layerStates,
+      logos: {},
       pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,
       postRenderFunctions: [],
       size: size,
@@ -857,10 +898,10 @@ ol.MapOptionsInternal;
 
 
 /**
- * @param {ol.MapOptions} mapOptions Map options.
- * @return {ol.MapOptionsInternal} Map options.
+ * @param {ol.MapOptions} options Map options.
+ * @return {ol.MapOptionsInternal} Internal map options.
  */
-ol.Map.createOptionsInternal = function(mapOptions) {
+ol.Map.createOptionsInternal = function(options) {
 
   /**
    * @type {Object.<string, *>}
@@ -868,20 +909,20 @@ ol.Map.createOptionsInternal = function(mapOptions) {
   var values = {};
 
   var layers;
-  if (goog.isDef(mapOptions.layers)) {
-    if (goog.isArray(mapOptions.layers)) {
-      layers = new ol.Collection(goog.array.clone(mapOptions.layers));
+  if (goog.isDef(options.layers)) {
+    if (goog.isArray(options.layers)) {
+      layers = new ol.Collection(goog.array.clone(options.layers));
     } else {
-      goog.asserts.assert(mapOptions.layers instanceof ol.Collection);
-      layers = mapOptions.layers;
+      goog.asserts.assertInstanceof(options.layers, ol.Collection);
+      layers = options.layers;
     }
   } else {
     layers = new ol.Collection();
   }
   values[ol.MapProperty.LAYERS] = layers;
 
-  values[ol.MapProperty.VIEW] = goog.isDef(mapOptions.view) ?
-      mapOptions.view : new ol.View2D();
+  values[ol.MapProperty.VIEW] = goog.isDef(options.view) ?
+      options.view : new ol.View2D();
 
   /**
    * @type {function(new: ol.renderer.Map, Element, ol.Map)}
@@ -892,10 +933,10 @@ ol.Map.createOptionsInternal = function(mapOptions) {
    * @type {Array.<ol.RendererHint>}
    */
   var rendererHints;
-  if (goog.isDef(mapOptions.renderers)) {
-    rendererHints = mapOptions.renderers;
-  } else if (goog.isDef(mapOptions.renderer)) {
-    rendererHints = [mapOptions.renderer];
+  if (goog.isDef(options.renderers)) {
+    rendererHints = options.renderers;
+  } else if (goog.isDef(options.renderer)) {
+    rendererHints = [options.renderer];
   } else {
     rendererHints = ol.DEFAULT_RENDERER_HINTS;
   }
@@ -921,16 +962,16 @@ ol.Map.createOptionsInternal = function(mapOptions) {
     }
   }
 
-  var controls = goog.isDef(mapOptions.controls) ?
-      mapOptions.controls : ol.control.defaults();
+  var controls = goog.isDef(options.controls) ?
+      options.controls : ol.control.defaults();
 
-  var interactions = goog.isDef(mapOptions.interactions) ?
-      mapOptions.interactions : ol.interaction.defaults();
+  var interactions = goog.isDef(options.interactions) ?
+      options.interactions : ol.interaction.defaults();
 
   /**
    * @type {Element}
    */
-  var target = goog.dom.getElement(mapOptions.target);
+  var target = goog.dom.getElement(options.target);
 
   return {
     controls: controls,

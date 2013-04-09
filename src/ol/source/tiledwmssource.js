@@ -2,8 +2,8 @@
 
 goog.provide('ol.source.TiledWMS');
 
-
 goog.require('goog.array');
+goog.require('goog.math');
 goog.require('ol.Extent');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
@@ -15,32 +15,32 @@ goog.require('ol.source.wms');
 /**
  * @constructor
  * @extends {ol.source.ImageTileSource}
- * @param {ol.source.TiledWMSOptions} tiledWMSOptions options.
+ * @param {ol.source.TiledWMSOptions} options Tiled WMS options.
  */
-ol.source.TiledWMS = function(tiledWMSOptions) {
+ol.source.TiledWMS = function(options) {
   var tileGrid;
-  if (goog.isDef(tiledWMSOptions.tileGrid)) {
-    tileGrid = tiledWMSOptions.tileGrid;
+  if (goog.isDef(options.tileGrid)) {
+    tileGrid = options.tileGrid;
   }
 
   var tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
-  var urls = tiledWMSOptions.urls;
-  if (!goog.isDef(urls) && goog.isDef(tiledWMSOptions.url)) {
-    urls = ol.TileUrlFunction.expandUrl(tiledWMSOptions.url);
+  var urls = options.urls;
+  if (!goog.isDef(urls) && goog.isDef(options.url)) {
+    urls = ol.TileUrlFunction.expandUrl(options.url);
   }
   if (goog.isDef(urls)) {
     var tileUrlFunctions = goog.array.map(
         urls, function(url) {
           return ol.TileUrlFunction.createFromParamsFunction(
-              url, tiledWMSOptions.params, ol.source.wms.getUrl);
+              url, options.params, ol.source.wms.getUrl);
         });
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         tileUrlFunctions);
   }
 
-  var transparent = goog.isDef(tiledWMSOptions.params['TRANSPARENT']) ?
-      tiledWMSOptions.params['TRANSPARENT'] : true;
-  var extent = tiledWMSOptions.extent;
+  var transparent = goog.isDef(options.params['TRANSPARENT']) ?
+      options.params['TRANSPARENT'] : true;
+  var extent = options.extent;
 
   var tileCoordTransform = function(tileCoord, projection) {
     var tileGrid = this.getTileGrid();
@@ -72,12 +72,12 @@ ol.source.TiledWMS = function(tiledWMSOptions) {
   };
 
   goog.base(this, {
-    attributions: tiledWMSOptions.attributions,
-    crossOrigin: tiledWMSOptions.crossOrigin,
+    attributions: options.attributions,
+    crossOrigin: options.crossOrigin,
     extent: extent,
-    tileGrid: tiledWMSOptions.tileGrid,
+    tileGrid: options.tileGrid,
     opaque: !transparent,
-    projection: tiledWMSOptions.projection,
+    projection: options.projection,
     tileUrlFunction: ol.TileUrlFunction.withTileCoordTransform(
         tileCoordTransform, tileUrlFunction)
   });

@@ -46,10 +46,7 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {{a_position: number,
-   *         a_texCoord: number,
-   *         u_tileOffset: WebGLUniformLocation,
-   *         u_texture: WebGLUniformLocation}|null}
+   * @type {ol.renderer.webgl.tilelayer.shader.Locations}
    */
   this.locations_ = null;
 
@@ -156,8 +153,8 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         tileResolution * framebufferDimension,
         tileResolution * framebufferDimension);
     var origin = tileGrid.getOrigin(z);
-    var minX = origin.x + tileRange.minX * tileSize.width * tileResolution;
-    var minY = origin.y + tileRange.minY * tileSize.height * tileResolution;
+    var minX = origin[0] + tileRange.minX * tileSize.width * tileResolution;
+    var minY = origin[1] + tileRange.minY * tileSize.height * tileResolution;
     framebufferExtent = new ol.Extent(
         minX,
         minY,
@@ -175,16 +172,8 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         this.fragmentShader_, this.vertexShader_);
     gl.useProgram(program);
     if (goog.isNull(this.locations_)) {
-      this.locations_ = {
-        a_position: gl.getAttribLocation(
-            program, ol.renderer.webgl.tilelayer.shader.attribute.a_position),
-        a_texCoord: gl.getAttribLocation(
-            program, ol.renderer.webgl.tilelayer.shader.attribute.a_texCoord),
-        u_tileOffset: gl.getUniformLocation(
-            program, ol.renderer.webgl.tilelayer.shader.uniform.u_tileOffset),
-        u_texture: gl.getUniformLocation(
-            program, ol.renderer.webgl.tilelayer.shader.uniform.u_texture)
-      };
+      this.locations_ =
+          new ol.renderer.webgl.tilelayer.shader.Locations(gl, program);
     }
 
     mapRenderer.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
@@ -282,13 +271,14 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         }
       }, this);
   this.scheduleExpireCache(frameState, tileSource);
+  this.updateLogos(frameState, tileSource);
 
   var texCoordMatrix = this.texCoordMatrix;
   goog.vec.Mat4.makeIdentity(texCoordMatrix);
   goog.vec.Mat4.translate(texCoordMatrix,
-      (center.x - framebufferExtent.minX) /
+      (center[0] - framebufferExtent.minX) /
           (framebufferExtent.maxX - framebufferExtent.minX),
-      (center.y - framebufferExtent.minY) /
+      (center[1] - framebufferExtent.minY) /
           (framebufferExtent.maxY - framebufferExtent.minY),
       0);
   goog.vec.Mat4.rotateZ(texCoordMatrix, view2DState.rotation);

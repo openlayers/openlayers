@@ -6,8 +6,8 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('ol');
 goog.require('ol.control.Control');
+goog.require('ol.css');
 
 
 /**
@@ -20,7 +20,7 @@ ol.control.ZOOM_DURATION = 250;
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.ZoomOptions=} opt_options Options.
+ * @param {ol.control.ZoomOptions=} opt_options Zoom options.
  */
 ol.control.Zoom = function(opt_options) {
 
@@ -44,7 +44,7 @@ ol.control.Zoom = function(opt_options) {
     goog.events.EventType.CLICK
   ], this.handleOut_, false, this);
 
-  var cssClasses = 'ol-zoom ' + ol.CSS_CLASS_UNSELECTABLE;
+  var cssClasses = 'ol-zoom ' + ol.css.CLASS_UNSELECTABLE;
   var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, inElement,
       outElement);
 

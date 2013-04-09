@@ -1,6 +1,7 @@
 goog.provide('ol.style.Line');
 goog.provide('ol.style.LineLiteral');
 
+goog.require('goog.asserts');
 goog.require('ol.Expression');
 goog.require('ol.ExpressionLiteral');
 goog.require('ol.style.Symbolizer');
@@ -19,22 +20,24 @@ ol.style.LineLiteralOptions;
 /**
  * @constructor
  * @extends {ol.style.SymbolizerLiteral}
- * @param {ol.style.LineLiteralOptions} config Symbolizer properties.
+ * @param {ol.style.LineLiteralOptions} options Line literal options.
  */
-ol.style.LineLiteral = function(config) {
+ol.style.LineLiteral = function(options) {
   goog.base(this);
 
-  goog.asserts.assertString(config.strokeColor, 'strokeColor must be a string');
+  goog.asserts.assertString(
+      options.strokeColor, 'strokeColor must be a string');
   /** @type {string} */
-  this.strokeColor = config.strokeColor;
+  this.strokeColor = options.strokeColor;
 
-  goog.asserts.assertNumber(config.strokeWidth, 'strokeWidth must be a number');
+  goog.asserts.assertNumber(
+      options.strokeWidth, 'strokeWidth must be a number');
   /** @type {number} */
-  this.strokeWidth = config.strokeWidth;
+  this.strokeWidth = options.strokeWidth;
 
-  goog.asserts.assertNumber(config.opacity, 'opacity must be a number');
+  goog.asserts.assertNumber(options.opacity, 'opacity must be a number');
   /** @type {number} */
-  this.opacity = config.opacity;
+  this.opacity = options.opacity;
 
 };
 goog.inherits(ol.style.LineLiteral, ol.style.SymbolizerLiteral);
@@ -54,7 +57,7 @@ ol.style.LineLiteral.prototype.equals = function(lineLiteral) {
 /**
  * @constructor
  * @extends {ol.style.Symbolizer}
- * @param {ol.style.LineOptions} options Symbolizer properties.
+ * @param {ol.style.LineOptions} options Line options.
  */
 ol.style.Line = function(options) {
   goog.base(this);

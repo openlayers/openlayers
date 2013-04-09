@@ -230,10 +230,10 @@ ol.parser.ogc.WMSCapabilities_v1 = function() {
             layer['prefix'] = parts[0];
           }
           capability['layers'].push(layer);
-          if (layer['formats'] === undefined) {
+          if (!goog.isDef(layer['formats'])) {
             layer['formats'] = request['getmap']['formats'];
           }
-          if (layer['infoFormats'] === undefined && gfi) {
+          if (!goog.isDef(layer['infoFormats']) && gfi) {
             layer['infoFormats'] = gfi['formats'];
           }
         }
@@ -303,7 +303,7 @@ goog.inherits(ol.parser.ogc.WMSCapabilities_v1, ol.parser.XML);
  * @return {Object} An object representing the document.
  */
 ol.parser.ogc.WMSCapabilities_v1.prototype.read = function(data) {
-  if (typeof data == 'string') {
+  if (goog.isString(data)) {
     data = goog.dom.xml.loadXml(data);
   }
   if (data && data.nodeType == 9) {

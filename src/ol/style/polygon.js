@@ -1,6 +1,7 @@
 goog.provide('ol.style.Polygon');
 goog.provide('ol.style.PolygonLiteral');
 
+goog.require('goog.asserts');
 goog.require('ol.Expression');
 goog.require('ol.ExpressionLiteral');
 goog.require('ol.style.Symbolizer');
@@ -20,26 +21,26 @@ ol.style.PolygonLiteralOptions;
 /**
  * @constructor
  * @extends {ol.style.SymbolizerLiteral}
- * @param {ol.style.PolygonLiteralOptions} config Symbolizer properties.
+ * @param {ol.style.PolygonLiteralOptions} options Polygon literal options.
  */
-ol.style.PolygonLiteral = function(config) {
+ol.style.PolygonLiteral = function(options) {
   goog.base(this);
 
   /** @type {string|undefined} */
-  this.fillColor = config.fillColor;
-  if (goog.isDef(config.fillColor)) {
-    goog.asserts.assertString(config.fillColor, 'fillColor must be a string');
+  this.fillColor = options.fillColor;
+  if (goog.isDef(options.fillColor)) {
+    goog.asserts.assertString(options.fillColor, 'fillColor must be a string');
   }
 
   /** @type {string|undefined} */
-  this.strokeColor = config.strokeColor;
+  this.strokeColor = options.strokeColor;
   if (goog.isDef(this.strokeColor)) {
     goog.asserts.assertString(
         this.strokeColor, 'strokeColor must be a string');
   }
 
   /** @type {number|undefined} */
-  this.strokeWidth = config.strokeWidth;
+  this.strokeWidth = options.strokeWidth;
   if (goog.isDef(this.strokeWidth)) {
     goog.asserts.assertNumber(
         this.strokeWidth, 'strokeWidth must be a number');
@@ -50,9 +51,9 @@ ol.style.PolygonLiteral = function(config) {
       (goog.isDef(this.strokeColor) && goog.isDef(this.strokeWidth)),
       'Either fillColor or strokeColor and strokeWidth must be set');
 
-  goog.asserts.assertNumber(config.opacity, 'opacity must be a number');
+  goog.asserts.assertNumber(options.opacity, 'opacity must be a number');
   /** @type {number} */
-  this.opacity = config.opacity;
+  this.opacity = options.opacity;
 
 };
 goog.inherits(ol.style.PolygonLiteral, ol.style.SymbolizerLiteral);
@@ -73,7 +74,7 @@ ol.style.PolygonLiteral.prototype.equals = function(polygonLiteral) {
 /**
  * @constructor
  * @extends {ol.style.Symbolizer}
- * @param {ol.style.PolygonOptions} options Symbolizer properties.
+ * @param {ol.style.PolygonOptions} options Polygon options.
  */
 ol.style.Polygon = function(options) {
   goog.base(this);

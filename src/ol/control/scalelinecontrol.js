@@ -1,15 +1,17 @@
 goog.provide('ol.control.ScaleLine');
 goog.provide('ol.control.ScaleLineUnits');
 
+goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
+goog.require('goog.math');
 goog.require('goog.style');
-goog.require('ol');
 goog.require('ol.FrameState');
-goog.require('ol.MapEvent');
-goog.require('ol.MapEventType');
 goog.require('ol.ProjectionUnits');
 goog.require('ol.TransformFunction');
 goog.require('ol.control.Control');
+goog.require('ol.css');
 goog.require('ol.projection');
 goog.require('ol.sphere.NORMAL');
 
@@ -30,7 +32,7 @@ ol.control.ScaleLineUnits = {
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.ScaleLineOptions=} opt_options Options.
+ * @param {ol.control.ScaleLineOptions=} opt_options Scale line options.
  */
 ol.control.ScaleLine = function(opt_options) {
 
@@ -49,7 +51,7 @@ ol.control.ScaleLine = function(opt_options) {
    * @type {Element}
    */
   this.element_ = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': 'ol-scale-line ' + ol.CSS_CLASS_UNSELECTABLE
+    'class': 'ol-scale-line ' + ol.css.CLASS_UNSELECTABLE
   }, this.innerElement_);
 
   /**
@@ -64,12 +66,6 @@ ol.control.ScaleLine = function(opt_options) {
    */
   this.units_ = goog.isDef(options.units) ?
       options.units : ol.control.ScaleLineUnits.METRIC;
-
-  /**
-   * @private
-   * @type {Array.<?number>}
-   */
-  this.listenerKeys_ = null;
 
   /**
    * @private
@@ -113,29 +109,10 @@ ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
 
 
 /**
- * @param {ol.MapEvent} mapEvent Map event.
- */
-ol.control.ScaleLine.prototype.handleMapPostrender = function(mapEvent) {
-  var frameState = mapEvent.frameState;
-  this.updateElement_(mapEvent.frameState);
-};
-
-
-/**
  * @inheritDoc
  */
-ol.control.ScaleLine.prototype.setMap = function(map) {
-  if (!goog.isNull(this.listenerKeys_)) {
-    goog.array.forEach(this.listenerKeys_, goog.events.unlistenByKey);
-    this.listenerKeys_ = null;
-  }
-  goog.base(this, 'setMap', map);
-  if (!goog.isNull(map)) {
-    this.listenerKeys_ = [
-      goog.events.listen(map, ol.MapEventType.POSTRENDER,
-          this.handleMapPostrender, false, this)
-    ];
-  }
+ol.control.ScaleLine.prototype.handleMapPostrender = function(mapEvent) {
+  this.updateElement_(mapEvent.frameState);
 };
 
 
@@ -167,7 +144,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function(frameState) {
 
     // Convert pointResolution from degrees to meters
     this.toEPSG4326_ = null;
-    cosLatitude = Math.cos(goog.math.toRadians(center.y));
+    cosLatitude = Math.cos(goog.math.toRadians(center[1]));
     pointResolution *= Math.PI * cosLatitude * ol.sphere.NORMAL.radius / 180;
     projectionUnits = ol.ProjectionUnits.METERS;
 
@@ -180,9 +157,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function(frameState) {
       this.toEPSG4326_ = ol.projection.getTransformFromProjections(
           projection, ol.projection.get('EPSG:4326'));
     }
-    var vertex = [center.x, center.y];
-    vertex = this.toEPSG4326_(vertex, vertex, 2);
-    cosLatitude = Math.cos(goog.math.toRadians(vertex[1]));
+    cosLatitude = Math.cos(goog.math.toRadians(this.toEPSG4326_(center)[1]));
     var radius = ol.sphere.NORMAL.radius;
     if (projectionUnits == ol.ProjectionUnits.FEET) {
       radius /= 0.3048;
@@ -251,7 +226,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function(frameState) {
       pointResolution /= 1609.3472;
     }
   } else {
-    goog.asserts.assert(false);
+    goog.asserts.fail();
   }
 
   var i = 3 * Math.floor(

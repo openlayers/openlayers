@@ -2,6 +2,8 @@ goog.provide('ol.source.BingMaps');
 
 goog.require('goog.Uri');
 goog.require('goog.array');
+goog.require('goog.asserts');
+goog.require('goog.math');
 goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
@@ -18,9 +20,9 @@ goog.require('ol.tilegrid.XYZ');
 /**
  * @constructor
  * @extends {ol.source.ImageTileSource}
- * @param {ol.source.BingMapsOptions} bingMapsOptions Bing Maps options.
+ * @param {ol.source.BingMapsOptions} options Bing Maps options.
  */
-ol.source.BingMaps = function(bingMapsOptions) {
+ol.source.BingMaps = function(options) {
 
   goog.base(this, {
     crossOrigin: 'anonymous',
@@ -32,8 +34,7 @@ ol.source.BingMaps = function(bingMapsOptions) {
    * @private
    * @type {string}
    */
-  this.culture_ = goog.isDef(bingMapsOptions.culture) ?
-      bingMapsOptions.culture : 'en-us';
+  this.culture_ = goog.isDef(options.culture) ? options.culture : 'en-us';
 
   /**
    * @private
@@ -42,12 +43,11 @@ ol.source.BingMaps = function(bingMapsOptions) {
   this.ready_ = false;
 
   var uri = new goog.Uri(
-      '//dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
-      bingMapsOptions.style);
+      '//dev.virtualearth.net/REST/v1/Imagery/Metadata/' + options.style);
   var jsonp = new goog.net.Jsonp(uri, 'jsonp');
   jsonp.send({
     'include': 'ImageryProviders',
-    'key': bingMapsOptions.key
+    'key': options.key
   }, goog.bind(this.handleImageryMetadataResponse, this));
 
 };
@@ -146,6 +146,8 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
         return new ol.Attribution(html, tileRanges);
       });
   this.setAttributions(attributions);
+
+  this.setLogo(brandLogoUri);
 
   this.ready_ = true;
 

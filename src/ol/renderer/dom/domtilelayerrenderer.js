@@ -3,8 +3,11 @@
 
 goog.provide('ol.renderer.dom.TileLayer');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
+goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Coordinate');
@@ -184,8 +187,8 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
         resolution / view2DState.resolution, 1);
     goog.vec.Mat4.translate(
         transform,
-        (origin.x - center.x) / resolution,
-        (center.y - origin.y) / resolution,
+        (origin[0] - center[0]) / resolution,
+        (center[1] - origin[1]) / resolution,
         0);
     tileLayerZ.setTransform(transform);
     if (tileLayerZKey in newTileLayerZKeys) {
@@ -221,6 +224,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   this.manageTilePyramid(frameState, tileSource, tileGrid, projection, extent,
       z, tileLayer.getPreload());
   this.scheduleExpireCache(frameState, tileSource);
+  this.updateLogos(frameState, tileSource);
 
 };
 

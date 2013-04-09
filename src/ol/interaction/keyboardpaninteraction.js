@@ -2,10 +2,11 @@
 
 goog.provide('ol.interaction.KeyboardPan');
 
+goog.require('goog.asserts');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
-goog.require('ol.Coordinate');
 goog.require('ol.View2D');
+goog.require('ol.coordinate');
 goog.require('ol.interaction.Interaction');
 
 
@@ -53,7 +54,7 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       var map = mapBrowserEvent.map;
       // FIXME works for View2D only
       var view = map.getView();
-      goog.asserts.assert(view instanceof ol.View2D);
+      goog.asserts.assertInstanceof(view, ol.View2D);
       var resolution = view.getResolution();
       var rotation = view.getRotation();
       var mapUnitsDelta = resolution * this.delta_;
@@ -67,8 +68,8 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       } else {
         deltaY = mapUnitsDelta;
       }
-      var delta = new ol.Coordinate(deltaX, deltaY);
-      delta.rotate(rotation);
+      var delta = [deltaX, deltaY];
+      ol.coordinate.rotate(delta, rotation);
       view.pan(map, delta, ol.interaction.KEYBOARD_PAN_DURATION);
       keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();

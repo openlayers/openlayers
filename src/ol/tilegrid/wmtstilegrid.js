@@ -1,5 +1,7 @@
 goog.provide('ol.tilegrid.WMTS');
 
+goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('ol.Size');
 goog.require('ol.projection');
 goog.require('ol.tilegrid.TileGrid');
@@ -9,26 +11,26 @@ goog.require('ol.tilegrid.TileGrid');
 /**
  * @constructor
  * @extends {ol.tilegrid.TileGrid}
- * @param {ol.tilegrid.WMTSOptions} wmtsOptions WMTS options.
+ * @param {ol.tilegrid.WMTSOptions} options WMTS options.
  */
-ol.tilegrid.WMTS = function(wmtsOptions) {
+ol.tilegrid.WMTS = function(options) {
 
   goog.asserts.assert(
-      wmtsOptions.resolutions.length == wmtsOptions.matrixIds.length);
+      options.resolutions.length == options.matrixIds.length);
 
   /**
    * @private
    * @type {!Array.<string>}
    */
-  this.matrixIds_ = wmtsOptions.matrixIds;
+  this.matrixIds_ = options.matrixIds;
   // FIXME: should the matrixIds become optionnal?
 
   goog.base(this, {
-    origin: wmtsOptions.origin,
-    origins: wmtsOptions.origins,
-    resolutions: wmtsOptions.resolutions,
-    tileSize: wmtsOptions.tileSize,
-    tileSizes: wmtsOptions.tileSizes
+    origin: options.origin,
+    origins: options.origins,
+    resolutions: options.resolutions,
+    tileSize: options.tileSize,
+    tileSizes: options.tileSizes
   });
 
 };

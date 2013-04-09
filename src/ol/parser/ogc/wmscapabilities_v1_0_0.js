@@ -1,4 +1,6 @@
 goog.provide('ol.parser.ogc.WMSCapabilities_v1_0_0');
+
+goog.require('goog.object');
 goog.require('goog.string');
 goog.require('ol.parser.ogc.WMSCapabilities_v1_1_0');
 
@@ -59,4 +61,3 @@ ol.parser.ogc.WMSCapabilities_v1_0_0 = function() {
 };
 goog.inherits(ol.parser.ogc.WMSCapabilities_v1_0_0,
     ol.parser.ogc.WMSCapabilities_v1_1_0);
-

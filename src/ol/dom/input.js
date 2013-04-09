@@ -1,6 +1,8 @@
 goog.provide('ol.dom.Input');
 goog.provide('ol.dom.InputProperty');
 
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('ol.Object');
 
 
@@ -115,4 +117,3 @@ ol.dom.Input.prototype.handleCheckedChanged_ = function() {
 ol.dom.Input.prototype.handleValueChanged_ = function() {
   this.target_.value = this.getValue();
 };
-

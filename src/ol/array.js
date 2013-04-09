@@ -1,6 +1,7 @@
 goog.provide('ol.array');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 
 
 /**
@@ -73,7 +74,7 @@ ol.array.linearFindNearest = function(arr, target, direction) {
     }
     // We should never get here, but the compiler complains
     // if it finds a path for which no number is returned.
-    goog.asserts.assert(false);
+    goog.asserts.fail();
     return n - 1;
   }
 };

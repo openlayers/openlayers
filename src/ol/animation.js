@@ -8,7 +8,7 @@ goog.require('ol.easing');
 
 
 /**
- * @param {ol.animation.BounceOptions} options Options.
+ * @param {ol.animation.BounceOptions} options Bounce options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
 ol.animation.bounce = function(options) {
@@ -37,14 +37,14 @@ ol.animation.bounce = function(options) {
 
 
 /**
- * @param {ol.animation.PanOptions} options Options.
+ * @param {ol.animation.PanOptions} options Pan options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
 ol.animation.pan = function(options) {
   var source = options.source;
   var start = goog.isDef(options.start) ? options.start : goog.now();
-  var sourceX = source.x;
-  var sourceY = source.y;
+  var sourceX = source[0];
+  var sourceY = source[1];
   var duration = goog.isDef(options.duration) ? options.duration : 1000;
   var easing = goog.isDef(options.easing) ?
       options.easing : ol.easing.inAndOut;
@@ -55,11 +55,11 @@ ol.animation.pan = function(options) {
       return true;
     } else if (frameState.time < start + duration) {
       var delta = 1 - easing((frameState.time - start) / duration);
-      var deltaX = sourceX - frameState.view2DState.center.x;
-      var deltaY = sourceY - frameState.view2DState.center.y;
+      var deltaX = sourceX - frameState.view2DState.center[0];
+      var deltaY = sourceY - frameState.view2DState.center[1];
       frameState.animate = true;
-      frameState.view2DState.center.x += delta * deltaX;
-      frameState.view2DState.center.y += delta * deltaY;
+      frameState.view2DState.center[0] += delta * deltaX;
+      frameState.view2DState.center[1] += delta * deltaY;
       frameState.viewHints[ol.ViewHint.ANIMATING] += 1;
       return true;
     } else {
@@ -70,7 +70,7 @@ ol.animation.pan = function(options) {
 
 
 /**
- * @param {ol.animation.RotateOptions} options Options.
+ * @param {ol.animation.RotateOptions} options Rotate options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
 ol.animation.rotate = function(options) {
@@ -101,7 +101,7 @@ ol.animation.rotate = function(options) {
 
 
 /**
- * @param {ol.animation.ZoomOptions} options Options.
+ * @param {ol.animation.ZoomOptions} options Zoom options.
  * @return {ol.PreRenderFunction} Pre-render function.
  */
 ol.animation.zoom = function(options) {

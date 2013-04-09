@@ -58,5 +58,6 @@ describe('ol.structs.RTree', function() {
 
 });
 
+goog.require('goog.object');
 goog.require('ol.Rectangle');
 goog.require('ol.structs.RTree');

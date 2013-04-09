@@ -59,12 +59,12 @@ describe('ol.projection', function() {
     it('returns a new object, with same coord values', function() {
       var epsg4326 = ol.projection.get('EPSG:4326');
       var uniqueObject = {};
-      var sourcePoint = new ol.Coordinate(uniqueObject, uniqueObject);
+      var sourcePoint = [uniqueObject, uniqueObject];
       var destinationPoint = ol.projection.transform(
           sourcePoint, epsg4326, epsg4326);
       expect(sourcePoint === destinationPoint).to.not.be();
-      expect(destinationPoint.x === sourcePoint.x).to.be.ok();
-      expect(destinationPoint.y === sourcePoint.y).to.be.ok();
+      expect(destinationPoint[0] === sourcePoint[0]).to.be.ok();
+      expect(destinationPoint[1] === sourcePoint[1]).to.be.ok();
     });
   });
 
@@ -72,10 +72,10 @@ describe('ol.projection', function() {
 
     it('returns expected value', function() {
       var point = ol.projection.transform(
-          new ol.Coordinate(0, 0), 'EPSG:4326', 'EPSG:3857');
+          [0, 0], 'EPSG:4326', 'EPSG:3857');
       expect(point).not.to.be(undefined);
       expect(point).not.to.be(null);
-      expect(point.y).to.roughlyEqual(0, 1e-9);
+      expect(point[1]).to.roughlyEqual(0, 1e-9);
     });
   });
 
@@ -83,11 +83,11 @@ describe('ol.projection', function() {
 
     it('returns expected value', function() {
       var point = ol.projection.transform(
-          new ol.Coordinate(0, 0), 'EPSG:3857', 'EPSG:4326');
+          [0, 0], 'EPSG:3857', 'EPSG:4326');
       expect(point).not.to.be(undefined);
       expect(point).not.to.be(null);
-      expect(point.x).to.eql(0);
-      expect(point.y).to.eql(0);
+      expect(point[0]).to.eql(0);
+      expect(point[1]).to.eql(0);
     });
   });
 
@@ -96,13 +96,13 @@ describe('ol.projection', function() {
 
     it('returns expected value', function() {
       var point = ol.projection.transform(
-          new ol.Coordinate(-5.625, 52.4827802220782),
+          [-5.625, 52.4827802220782],
           'EPSG:4326',
           'EPSG:900913');
       expect(point).not.to.be(undefined);
       expect(point).not.to.be(null);
-      expect(point.x).to.roughlyEqual(-626172.13571216376, 1e-9);
-      expect(point.y).to.roughlyEqual(6887893.4928337997, 1e-8);
+      expect(point[0]).to.roughlyEqual(-626172.13571216376, 1e-9);
+      expect(point[1]).to.roughlyEqual(6887893.4928337997, 1e-8);
     });
   });
 
@@ -111,13 +111,13 @@ describe('ol.projection', function() {
 
     it('returns expected value', function() {
       var point = ol.projection.transform(
-          new ol.Coordinate(-626172.13571216376, 6887893.4928337997),
+          [-626172.13571216376, 6887893.4928337997],
           'EPSG:900913',
           'EPSG:4326');
       expect(point).not.to.be(undefined);
       expect(point).not.to.be(null);
-      expect(point.x).to.roughlyEqual(-5.625, 1e-9);
-      expect(point.y).to.roughlyEqual(52.4827802220782, 1e-9);
+      expect(point[0]).to.roughlyEqual(-5.625, 1e-9);
+      expect(point[1]).to.roughlyEqual(52.4827802220782, 1e-9);
     });
   });
 
@@ -125,11 +125,11 @@ describe('ol.projection', function() {
 
     it('allows Proj4js projections to be used transparently', function() {
       var point = ol.projection.transform(
-          new ol.Coordinate(-626172.13571216376, 6887893.4928337997),
+          [-626172.13571216376, 6887893.4928337997],
           'GOOGLE',
           'WGS84');
-      expect(point.x).to.roughlyEqual(-5.625, 1e-9);
-      expect(point.y).to.roughlyEqual(52.4827802220782, 1e-9);
+      expect(point[0]).to.roughlyEqual(-5.625, 1e-9);
+      expect(point[1]).to.roughlyEqual(52.4827802220782, 1e-9);
     });
 
     it('allows new Proj4js projections to be defined', function() {
@@ -138,11 +138,11 @@ describe('ol.projection', function() {
           '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
           '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs';
       var point = ol.projection.transform(
-          new ol.Coordinate(7.439583333333333, 46.95240555555556),
+          [7.439583333333333, 46.95240555555556],
           'EPSG:4326',
           'EPSG:21781');
-      expect(point.x).to.roughlyEqual(600072.300, 1);
-      expect(point.y).to.roughlyEqual(200146.976, 1);
+      expect(point[0]).to.roughlyEqual(600072.300, 1);
+      expect(point[1]).to.roughlyEqual(200146.976, 1);
     });
 
     it('caches the new Proj4js projections given their srsCode', function() {
@@ -163,7 +163,7 @@ describe('ol.projection', function() {
 
     it('numerically estimates point scale at the equator', function() {
       var googleProjection = ol.projection.get('GOOGLE');
-      expect(googleProjection.getPointResolution(1, new ol.Coordinate(0, 0))).
+      expect(googleProjection.getPointResolution(1, [0, 0])).
           to.roughlyEqual(1, 1e-1);
     });
 
@@ -172,7 +172,7 @@ describe('ol.projection', function() {
       var googleProjection = ol.projection.get('GOOGLE');
       var point, y;
       for (y = -20; y <= 20; ++y) {
-        point = new ol.Coordinate(0, 1000000 * y);
+        point = [0, 1000000 * y];
         expect(googleProjection.getPointResolution(1, point)).to.roughlyEqual(
             epsg3857Projection.getPointResolution(1, point), 1e-1);
       }
@@ -184,7 +184,7 @@ describe('ol.projection', function() {
       var point, x, y;
       for (x = -20; x <= 20; ++x) {
         for (y = -20; y <= 20; ++y) {
-          point = new ol.Coordinate(1000000 * x, 1000000 * y);
+          point = [1000000 * x, 1000000 * y];
           expect(googleProjection.getPointResolution(1, point)).to.roughlyEqual(
               epsg3857Projection.getPointResolution(1, point), 1e-1);
         }
@@ -357,7 +357,7 @@ describe('ol.projection', function() {
 });
 
 goog.require('goog.array');
-goog.require('ol.Coordinate');
+goog.require('goog.asserts.AssertionError');
 goog.require('ol.Extent');
 goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');

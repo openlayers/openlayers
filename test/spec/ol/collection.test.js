@@ -275,5 +275,7 @@ describe('ol.collection', function() {
 
 });
 
+
+goog.require('goog.events');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');

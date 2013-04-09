@@ -1,8 +1,8 @@
 goog.provide('ol.Coordinate');
 goog.provide('ol.CoordinateFormatType');
+goog.provide('ol.coordinate');
 
 goog.require('goog.math');
-goog.require('goog.math.Vec2');
 
 
 /**
@@ -11,44 +11,31 @@ goog.require('goog.math.Vec2');
 ol.CoordinateFormatType;
 
 
+/**
+ * @typedef {Array.<number>}
+ */
+ol.Coordinate;
+
 
 /**
- * Two dimensional coordinate which does not know its projection.
- *
- * @constructor
- * @extends {goog.math.Vec2}
- * @param {number} x X.
- * @param {number} y Y.
- * @param {number=} opt_z Z.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.Coordinate} delta Delta.
+ * @return {ol.Coordinate} Coordinate.
  */
-ol.Coordinate = function(x, y, opt_z) {
-
-  goog.base(this, x, y);
-
-  /**
-   * @expose
-   * @type {number}
-   */
-  this.z = goog.isDef(opt_z) ? opt_z : NaN;
-
+ol.coordinate.add = function(coordinate, delta) {
+  coordinate[0] += delta[0];
+  coordinate[1] += delta[1];
+  return coordinate;
 };
-goog.inherits(ol.Coordinate, goog.math.Vec2);
-
-
-/**
- * @const
- * @type {ol.Coordinate}
- */
-ol.Coordinate.ZERO = new ol.Coordinate(0, 0);
 
 
 /**
  * @param {number=} opt_precision Precision.
  * @return {ol.CoordinateFormatType} Coordinate format.
  */
-ol.Coordinate.createStringXY = function(opt_precision) {
+ol.coordinate.createStringXY = function(opt_precision) {
   return function(coordinate) {
-    return ol.Coordinate.toStringXY(coordinate, opt_precision);
+    return ol.coordinate.toStringXY(coordinate, opt_precision);
   };
 };
 
@@ -59,7 +46,7 @@ ol.Coordinate.createStringXY = function(opt_precision) {
  * @param {string} hemispheres Hemispheres.
  * @return {string} String.
  */
-ol.Coordinate.degreesToStringHDMS_ = function(degrees, hemispheres) {
+ol.coordinate.degreesToStringHDMS_ = function(degrees, hemispheres) {
   var normalizedDegrees = goog.math.modulo(degrees + 180, 360) - 180;
   var x = Math.abs(Math.round(3600 * normalizedDegrees));
   return Math.floor(x / 3600) + '\u00b0 ' +
@@ -70,13 +57,41 @@ ol.Coordinate.degreesToStringHDMS_ = function(degrees, hemispheres) {
 
 
 /**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} angle Angle.
+ * @return {ol.Coordinate} Coordinate.
+ */
+ol.coordinate.rotate = function(coordinate, angle) {
+  var cosAngle = Math.cos(angle);
+  var sinAngle = Math.sin(angle);
+  var x = coordinate[0] * cosAngle - coordinate[1] * sinAngle;
+  var y = coordinate[1] * cosAngle + coordinate[0] * sinAngle;
+  coordinate[0] = x;
+  coordinate[1] = y;
+  return coordinate;
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} s Scale.
+ * @return {ol.Coordinate} Coordinate.
+ */
+ol.coordinate.scale = function(coordinate, s) {
+  coordinate[0] *= s;
+  coordinate[1] *= s;
+  return coordinate;
+};
+
+
+/**
  * @param {ol.Coordinate|undefined} coordinate Coordinate.
  * @return {string} Hemisphere, degrees, minutes and seconds.
  */
-ol.Coordinate.toStringHDMS = function(coordinate) {
+ol.coordinate.toStringHDMS = function(coordinate) {
   if (goog.isDef(coordinate)) {
-    return ol.Coordinate.degreesToStringHDMS_(coordinate.y, 'NS') + ' ' +
-        ol.Coordinate.degreesToStringHDMS_(coordinate.x, 'EW');
+    return ol.coordinate.degreesToStringHDMS_(coordinate[1], 'NS') + ' ' +
+        ol.coordinate.degreesToStringHDMS_(coordinate[0], 'EW');
   } else {
     return '';
   }
@@ -88,11 +103,11 @@ ol.Coordinate.toStringHDMS = function(coordinate) {
  * @param {number=} opt_precision Precision.
  * @return {string} XY.
  */
-ol.Coordinate.toStringXY = function(coordinate, opt_precision) {
+ol.coordinate.toStringXY = function(coordinate, opt_precision) {
   if (goog.isDef(coordinate)) {
     var precision = opt_precision || 0;
-    return coordinate.x.toFixed(precision) + ', ' +
-        coordinate.y.toFixed(precision);
+    return coordinate[0].toFixed(precision) + ', ' +
+        coordinate[1].toFixed(precision);
   } else {
     return '';
   }
@@ -105,11 +120,11 @@ ol.Coordinate.toStringXY = function(coordinate, opt_precision) {
  * @param {string} axis the axis info.
  * @return {ol.Coordinate} The coordinate created.
  */
-ol.Coordinate.fromProjectedArray = function(array, axis) {
+ol.coordinate.fromProjectedArray = function(array, axis) {
   var firstAxis = axis.charAt(0);
   if (firstAxis === 'n' || firstAxis === 's') {
-    return new ol.Coordinate(array[1], array[0]);
+    return [array[1], array[0]];
   } else {
-    return new ol.Coordinate(array[0], array[1]);
+    return array;
   }
 };

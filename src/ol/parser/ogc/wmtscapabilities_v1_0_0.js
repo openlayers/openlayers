@@ -1,6 +1,6 @@
 goog.provide('ol.parser.ogc.WMTSCapabilities_v1_0_0');
 goog.require('goog.dom.xml');
-goog.require('ol.Coordinate');
+goog.require('ol.coordinate');
 goog.require('ol.parser.XML');
 goog.require('ol.parser.ogc.OWSCommon_v1_1_0');
 goog.require('ol.projection');
@@ -80,7 +80,7 @@ ol.parser.ogc.WMTSCapabilities_v1_0_0 = function() {
         var coords = topLeftCorner.split(' ');
         var axisOrientation =
             ol.projection.get(obj['supportedCRS']).getAxisOrientation();
-        obj['topLeftCorner'] = ol.Coordinate.fromProjectedArray(
+        obj['topLeftCorner'] = ol.coordinate.fromProjectedArray(
             [parseFloat(coords[0]), parseFloat(coords[1])], axisOrientation);
       },
       'TileWidth': function(node, obj) {
@@ -154,7 +154,7 @@ goog.inherits(ol.parser.ogc.WMTSCapabilities_v1_0_0, ol.parser.XML);
  * @return {Object} An object representing the document.
  */
 ol.parser.ogc.WMTSCapabilities_v1_0_0.prototype.read = function(data) {
-  if (typeof data == 'string') {
+  if (goog.isString(data)) {
     data = goog.dom.xml.loadXml(data);
   }
   if (data && data.nodeType == 9) {

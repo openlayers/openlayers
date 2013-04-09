@@ -9,21 +9,66 @@ import re
 import shutil
 import sys
 
-from pake import Target, ifind, main, output, rule, target, variables, virtual
+from pake import Target
+from pake import ifind, main, output, rule, target, variables, virtual, which
 
 
 if sys.platform == 'win32':
-    ProgramFiles = os.environ.get('ProgramFiles', 'C:\\Program Files')
-    ProgramFiles_X86 = os.environ.get('ProgramFiles(X86)', 'C:\\Program Files')
-    Python27 = os.environ.get('SystemDrive', 'C:') + '\\Python27'
-    variables.GIT = os.path.join(ProgramFiles_X86, 'Git', 'bin', 'git.exe')
-    variables.GJSLINT = os.path.join(Python27, 'Scripts', 'gjslint.exe')
-    variables.JAVA = os.path.join(
-        ProgramFiles, 'Java', 'jre7', 'bin', 'java.exe')
-    variables.JSDOC = 'jsdoc'  # FIXME
-    variables.NODE = 'node'
-    variables.PYTHON = os.path.join(Python27, 'python.exe')
-    variables.PHANTOMJS = 'phantomjs.exe'
+    """ windows_defaults assumes that jsdoc was installed at a specific place
+        (C:\jsdoc). It also fixes a certain version (1.9.0) of phantomjs which
+        might not anymore be proposed on
+        http://code.google.com/p/phantomjs/downloads/list"""
+
+    windows_defaults = {
+        'ProgramFiles': os.environ.get('ProgramFiles', 'C:\\Program Files'),
+        'Python27': os.environ.get('SystemDrive', 'C:') + '\\Python27',
+        'jsdoc': os.environ.get('SystemDrive', 'C:') + '\\jsdoc3',
+        'phantomjs': (os.environ.get('SystemDrive', 'C:') +
+                      '\\phantomjs-1.9.0-windows')
+    }
+
+    if which('git.exe'):
+        variables.GIT = 'git.exe'
+    else:
+        variables.GIT = os.path.join(windows_defaults['ProgramFiles'],
+                                     'Git', 'bin', 'git.exe')
+
+    if which('gjslint.exe'):
+        variables.GJSLINT = 'gjslint.exe'
+    else:
+        variables.GJSLINT = os.path.join(windows_defaults['Python27'],
+                                         'Scripts', 'gjslint.exe')
+
+    if which('java.exe'):
+        variables.JAVA = 'java.exe'
+    else:
+        variables.JAVA = os.path.join(windows_defaults['ProgramFiles'],
+                                      'Java', 'jre7', 'bin', 'java.exe')
+
+    if which('jar.exe'):
+        variables.JAR = 'jar.exe'
+    else:
+        variables.JAR = os.path.join(windows_defaults['ProgramFiles'],
+                                     'Java', 'jdk1.7.0_17', 'bin', 'jar.exe')
+
+    if which('jsdoc.cmd'):
+        variables.JSDOC = 'jsdoc.cmd'
+    else:
+        variables.JSDOC = os.path.join(windows_defaults['jsdoc'],
+                                       'jsdoc.cmd')
+
+    if which('python.exe'):
+        variables.PYTHON = 'python.exe'
+    else:
+        variables.PYTHON = os.path.join(windows_defaults['Python27'],
+                                        'python.exe')
+
+    if which('phantomjs.exe'):
+        variables.PHANTOMJS = 'phantomjs.exe'
+    else:
+        variables.PHANTOMJS = os.path.join(windows_defaults['phantomjs'],
+                                           'phantomjs.exe')
+
 else:
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
@@ -39,10 +84,12 @@ TEMPLATE_GLSL_COMPILER_JS = 'build/glsl-unit/bin/template_glsl_compiler.js'
 variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
+EXECUTABLES = [variables.GIT, variables.GJSLINT, variables.JAVA, variables.JAR,
+               variables.JSDOC, variables.PYTHON, variables.PHANTOMJS]
+
 EXPORTS = [path
            for path in ifind('src')
-           if path.endswith('.exports')
-           if path != 'src/objectliterals.exports']
+           if path.endswith('.exports')]
 
 EXTERNAL_SRC = [
     'build/src/external/externs/types.js',
@@ -62,6 +109,7 @@ EXAMPLES_SRC = [path
                 if not path.startswith('examples/font-awesome')
                 if path != 'examples/Jugl.js'
                 if path != 'examples/jquery.min.js'
+                if path != 'examples/loader.js'
                 if path != 'examples/example-list.js']
 
 EXAMPLES_JSON = ['build/' + example.replace('.html', '.json')
@@ -77,6 +125,10 @@ INTERNAL_SRC = [
 GLSL_SRC = [path
             for path in ifind('src')
             if path.endswith('.glsl')]
+
+JSDOC_SRC = [path
+             for path in ifind('src')
+             if path.endswith('.jsdoc')]
 
 SHADER_SRC = [path.replace('.glsl', 'shader.js')
               for path in GLSL_SRC]
@@ -163,24 +215,24 @@ def build_ol_all_js(t):
 
 
 @target('build/src/external/externs/types.js', 'bin/generate-exports.py',
-        'src/objectliterals.exports')
+        'src/objectliterals.jsdoc')
 def build_src_external_externs_types_js(t):
     t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--externs', 'src/objectliterals.exports')
+             '--externs', 'src/objectliterals.jsdoc')
 
 
 @target('build/src/external/src/exports.js', 'bin/generate-exports.py',
-        'src/objectliterals.exports', EXPORTS)
+        'src/objectliterals.jsdoc', EXPORTS)
 def build_src_external_src_exports_js(t):
     t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--exports', 'src/objectliterals.exports', EXPORTS)
+             '--exports', 'src/objectliterals.jsdoc', EXPORTS)
 
 
 @target('build/src/external/src/types.js', 'bin/generate-exports.py',
-        'src/objectliterals.exports')
+        'src/objectliterals.jsdoc')
 def build_src_external_src_types_js(t):
     t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--typedef', 'src/objectliterals.exports')
+             '--typedef', 'src/objectliterals.jsdoc')
 
 
 if os.path.exists(TEMPLATE_GLSL_COMPILER_JS):
@@ -219,10 +271,10 @@ def build_test_requireall_js(t):
 
 
 @target('build/src/internal/src/types.js', 'bin/generate-exports.py',
-        'src/objectliterals.exports')
+        'src/objectliterals.jsdoc')
 def build_src_internal_types_js(t):
     t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--typedef', 'src/objectliterals.exports')
+             '--typedef', 'src/objectliterals.jsdoc')
 
 
 virtual('build-examples', 'examples', EXAMPLES_COMBINED)
@@ -293,7 +345,8 @@ def serve_precommit(t):
           'buildcfg/ol-all.json', 'buildcfg/test.json')
 
 
-virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp')
+virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp',
+        'build/check-whitespace-timestamp')
 
 
 @target('build/lint-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC,
@@ -334,8 +387,22 @@ def _strip_comments(lines):
 @target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC,
         EXAMPLES_SRC, SHADER_SRC, SPEC)
 def build_check_requires_timestamp(t):
+    from zipfile import ZipFile
     unused_count = 0
     all_provides = set()
+    zf = ZipFile(PLOVR_JAR)
+    for zi in zf.infolist():
+        if zi.filename.endswith('.js'):
+            if not zi.filename.startswith('closure/goog/'):
+                continue
+            # Skip goog.i18n because it contains so many modules that it causes
+            # the generated regular expression to exceed Python's limits
+            if zi.filename.startswith('closure/goog/i18n/'):
+                continue
+            for line in zf.open(zi):
+                m = re.match(r'goog.provide\(\'(.*)\'\);', line)
+                if m:
+                    all_provides.add(m.group(1))
     for filename in sorted(t.dependencies):
         if filename == 'build/src/internal/src/requireall.js':
             continue
@@ -363,10 +430,46 @@ def build_check_requires_timestamp(t):
                 filename, require_linenos[require], require))
             unused_count += 1
     all_provides.discard('ol')
-    all_provides.discard('ol.Map')
     all_provides.discard('ol.MapProperty')
-    provide_res = [(provide, re.compile(r'\b%s\b' % (re.escape(
-        provide)),)) for provide in sorted(all_provides, reverse=True)]
+
+    class Node(object):
+
+        def __init__(self):
+            self.present = False
+            self.children = {}
+
+        def _build_re(self, key):
+            if len(self.children) == 1:
+                child_key, child = next(self.children.iteritems())
+                child_re = '\\.' + child._build_re(child_key)
+                if self.present:
+                    return key + '(' + child_re + ')?'
+                else:
+                    return key + child_re
+            elif self.children:
+                children_re = '(?:\\.(?:' + '|'.join(
+                    self.children[k]._build_re(k)
+                    for k in sorted(self.children.keys())) + '))'
+                if self.present:
+                    return key + children_re + '?'
+                else:
+                    return key + children_re
+            else:
+                assert self.present
+                return key
+
+        def build_re(self, key):
+            return re.compile('\\b' + self._build_re(key) + '\\b')
+    root = Node()
+    for provide in all_provides:
+        node = root
+        for component in provide.split('.'):
+            if component not in node.children:
+                node.children[component] = Node()
+            node = node.children[component]
+        node.present = True
+    provide_res = [child.build_re(key)
+                   for key, child in root.children.iteritems()]
     missing_count = 0
     for filename in sorted(t.dependencies):
         if filename in INTERNAL_SRC or filename in EXTERNAL_SRC:
@@ -383,10 +486,15 @@ def build_check_requires_timestamp(t):
             if m:
                 requires.add(m.group(1))
                 continue
-            for provide, provide_re in provide_res:
-                if provide_re.search(line):
-                    line = line.replace(provide, '')
-                    uses.add(provide)
+            while True:
+                for provide_re in provide_res:
+                    m = provide_re.search(line)
+                    if m:
+                        uses.add(m.group())
+                        line = line[:m.start()] + line[m.end():]
+                        break
+                else:
+                    break
         if filename == 'src/ol/renderer/layerrenderer.js':
             uses.discard('ol.renderer.Map')
         m = re.match(
@@ -402,6 +510,36 @@ def build_check_requires_timestamp(t):
     if unused_count or missing_count:
         t.error('%d unused goog.requires, %d missing goog.requires' %
                 (unused_count, missing_count))
+    t.touch()
+
+
+@target('build/check-whitespace-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC,
+        EXAMPLES_SRC, SPEC, EXPORTS, JSDOC_SRC,
+        precious=True)
+def build_check_whitespace_timestamp(t):
+    CR_RE = re.compile(r'\r')
+    TRAILING_WHITESPACE_RE = re.compile(r'\s+\n\Z')
+    NO_NEWLINE_RE = re.compile(r'[^\n]\Z')
+    ALL_WHITESPACE_RE = re.compile(r'\s+\Z')
+    errors = 0
+    for filename in sorted(t.newer(t.dependencies)):
+        whitespace = False
+        for lineno, line in enumerate(open(filename)):
+            if CR_RE.search(line):
+                t.info('%s:%d: carriage return character in line', filename, lineno + 1)
+                errors += 1
+            if TRAILING_WHITESPACE_RE.search(line):
+                t.info('%s:%d: trailing whitespace', filename, lineno + 1)
+                errors += 1
+            if NO_NEWLINE_RE.search(line):
+                t.info('%s:%d: no newline at end of file', filename, lineno + 1)
+                errors += 1
+            whitespace = ALL_WHITESPACE_RE.match(line)
+        if whitespace:
+            t.info('%s: trailing whitespace at end of file', filename)
+            errors += 1
+    if errors:
+        t.error('%d whitespace errors' % (errors,))
     t.touch()
 
 
@@ -433,11 +571,11 @@ def gh_pages(t):
 virtual('doc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
-@target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), SRC, SHADER_SRC,
-        ifind('doc/template'))
+@target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), 'host-resources',
+        SRC, SHADER_SRC, ifind('doc/template'))
 def jsdoc_BRANCH_timestamp(t):
-    t.run('%(JSDOC)s', '-t', 'doc/template', '-r',
-          'src', '-d', 'build/gh-pages/%(BRANCH)s/apidoc')
+    t.run('%(JSDOC)s', '-c', 'doc/conf.json', 'src', 'doc/index.md',
+          '-d', 'build/gh-pages/%(BRANCH)s/apidoc')
     t.touch()
 
 
@@ -473,7 +611,14 @@ def split_example_file(example, dst_dir):
     target_require.close()
 
 
-@target('host-examples', 'build', 'examples', phony=True)
+@target('host-resources', phony=True)
+def host_resources(t):
+    resources_dir = 'build/gh-pages/%(BRANCH)s/resources'
+    t.rm_rf(resources_dir)
+    t.cp_r('resources', resources_dir)
+
+
+@target('host-examples', 'build', 'host-resources', 'examples', phony=True)
 def host_examples(t):
     examples_dir = 'build/gh-pages/%(BRANCH)s/examples'
     build_dir = 'build/gh-pages/%(BRANCH)s/build'
@@ -481,18 +626,15 @@ def host_examples(t):
     t.makedirs(examples_dir)
     t.rm_rf(build_dir)
     t.makedirs(build_dir)
-    t.cp(EXAMPLES, 'examples/examples.css', examples_dir)
+    t.cp(EXAMPLES, examples_dir)
     for example in [path.replace('.html', '.js') for path in EXAMPLES]:
         split_example_file(example, examples_dir % vars(variables))
-    t.cp_r('examples/data', examples_dir + '/data')
-    t.cp_r('examples/bootstrap', examples_dir + '/bootstrap')
-    t.cp_r('examples/font-awesome', examples_dir + '/font-awesome')
     t.cp('bin/loader_hosted_examples.js', examples_dir + '/loader.js')
     t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js',
          'build/ol.css', build_dir)
     t.cp('examples/index.html', 'examples/example-list.js',
          'examples/example-list.xml', 'examples/Jugl.js',
-         'examples/jquery.min.js', 'examples/social-links.js', examples_dir)
+         'examples/jquery.min.js', examples_dir)
     t.rm_rf('build/gh-pages/%(BRANCH)s/closure-library')
     t.makedirs('build/gh-pages/%(BRANCH)s/closure-library')
     with t.chdir('build/gh-pages/%(BRANCH)s/closure-library'):
@@ -578,6 +720,14 @@ def reallyclean(t):
     # -f => if git configuration variable clean.requireForce != false,
     #       git clean will refuse to run unless given -f or -n.
     t.run('%(GIT)s', 'clean', '-X', '-d', '-f', '.')
+
+
+@target('checkdeps')
+def check_dependencies(t):
+    for exe in EXECUTABLES:
+        status = 'present' if which(exe) else 'MISSING'
+        print 'Program "%s" seems to be %s.' % (exe, status)
+    print 'For certain targets all above programs need to be present.'
 
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 goog.provide('ol.source.ImageSource');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.Image');
@@ -16,6 +17,7 @@ goog.require('ol.source.Source');
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            crossOrigin: (null|string|undefined),
  *            extent: (null|ol.Extent|undefined),
+ *            logo: (string|undefined),
  *            projection: ol.ProjectionLike,
  *            resolutions: (Array.<number>|undefined),
  *            imageUrlFunction: (ol.ImageUrlFunctionType|
@@ -28,14 +30,14 @@ ol.source.ImageSourceOptions;
 /**
  * @constructor
  * @extends {ol.source.Source}
- * @param {ol.source.ImageSourceOptions} options Single
- *     image source options.
+ * @param {ol.source.ImageSourceOptions} options Single image source options.
  */
 ol.source.ImageSource = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
     extent: options.extent,
+    logo: options.logo,
     projection: options.projection
   });
 

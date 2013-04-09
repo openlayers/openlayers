@@ -1,6 +1,9 @@
 goog.provide('ol.webgl');
 goog.provide('ol.webgl.WebGLContextEventType');
 
+goog.require('goog.dom');
+goog.require('goog.dom.TagName');
+
 
 /**
  * @const

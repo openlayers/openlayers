@@ -199,9 +199,42 @@ def main(argv):
     objects = {}
     requires = set()
     for arg in args:
+        in_comment = False
+        object_literal = None
         for line in open(arg):
             line = line.strip()
             if not line:
+                continue
+            if line == '/**':
+                assert not in_comment
+                in_comment = True
+                continue
+            if line == '*/':
+                assert in_comment
+                in_comment = False
+                object_literal = None
+                continue
+            if in_comment:
+                if not line.startswith('*'):
+                    raise RuntimeError(line)  # malformed comment
+                m = re.match(r'\*\s*@typedef\s*\{Object\}\s*(?P<name>\S+)', line)
+                if m:
+                    assert object_literal is None
+                    name = m.group('name')
+                    if name in objects:
+                        raise RuntimeError(line)  # Name already defined
+                    object_literal = ObjectLiteral(name)
+                    objects[name] = object_literal
+                    continue
+                m = re.match(r'\*\s*@property\s*{(?P<type>.*)}\s*(?P<prop>\S+)', line)
+                if m:
+                    assert object_literal is not None
+                    prop = m.group('prop')
+                    if prop in object_literal.prop_types:
+                        raise RuntimeError(line)  # Duplicate property
+                    type = m.group('type')
+                    object_literal.prop_types[prop] = type
+                    continue
                 continue
             m = re.match(r'@exportClass\s+(?P<name>\S+)(?:\s+(?P<object_literal_name>\S+))?\Z', line)
             if m:
@@ -214,27 +247,6 @@ def main(argv):
                     raise RuntimeError(line)  # Undefined object literal
                 klass = Class(name, object_literal, objects)
                 objects[name] = klass
-                continue
-            m = re.match(r'@exportObjectLiteral\s+(?P<name>\S+)\Z', line)
-            if m:
-                name = m.group('name')
-                if name in objects:
-                    raise RuntimeError(line)  # Name already defined
-                object_literal = ObjectLiteral(name)
-                objects[name] = object_literal
-                continue
-            m = re.match(r'@exportObjectLiteralProperty\s+(?P<prop>\S+)\s+(?P<type>\S+)\Z', line)
-            if m:
-                components = m.group('prop').split('.')
-                name = '.'.join(components[:-1])
-                if not name in objects:
-                    raise RuntimeError(line)  # Undefined object literal
-                object_literal = objects[name]
-                prop = components[-1]
-                if prop in object_literal.prop_types:
-                    raise RuntimeError(line)  # Duplicate property
-                type = m.group('type')
-                object_literal.prop_types[prop] = type
                 continue
             m = re.match(r'@exportProperty\s+(?P<prop>\S+)\Z', line)
             if m:
@@ -264,7 +276,7 @@ def main(argv):
                     components = m.group('name').split('.')
                     if re.match(r'[A-Z]', components[-1]):
                         requires.add(name)
-                    else:
+                    elif len(components) > 2:
                         requires.add('.'.join(components[:-1]))
                 continue
             raise RuntimeError(line)

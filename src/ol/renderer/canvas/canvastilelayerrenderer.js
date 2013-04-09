@@ -4,7 +4,10 @@
 goog.provide('ol.renderer.canvas.TileLayer');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
+goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Extent');
 goog.require('ol.Size');
@@ -254,8 +257,8 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
       for (tileCoordKey in tilesToDraw) {
         tile = tilesToDraw[tileCoordKey];
         tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord);
-        x = (tileExtent.minX - origin.x) / tileResolution;
-        y = (origin.y - tileExtent.maxY) / tileResolution;
+        x = (tileExtent.minX - origin[0]) / tileResolution;
+        y = (origin[1] - tileExtent.maxY) / tileResolution;
         width = scale * tileSize.width;
         height = scale * tileSize.height;
         tileState = tile.getState();
@@ -286,6 +289,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   this.manageTilePyramid(frameState, tileSource, tileGrid, projection, extent,
       z, tileLayer.getPreload());
   this.scheduleExpireCache(frameState, tileSource);
+  this.updateLogos(frameState, tileSource);
 
   var transform = this.transform_;
   goog.vec.Mat4.makeIdentity(transform);
@@ -299,8 +303,8 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
       1);
   goog.vec.Mat4.translate(
       transform,
-      (origin.x - center.x) / tileResolution,
-      (center.y - origin.y) / tileResolution,
+      (origin[0] - center[0]) / tileResolution,
+      (center[1] - origin[1]) / tileResolution,
       0);
 
 };

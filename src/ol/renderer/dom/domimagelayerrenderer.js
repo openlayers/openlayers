@@ -1,6 +1,9 @@
 goog.provide('ol.renderer.dom.ImageLayer');
 
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Image');
 goog.require('ol.ImageState');
@@ -96,8 +99,8 @@ ol.renderer.dom.ImageLayer.prototype.renderFrame =
         1);
     goog.vec.Mat4.translate(
         transform,
-        (imageExtent.minX - viewCenter.x) / imageResolution,
-        (viewCenter.y - imageExtent.maxY) / imageResolution,
+        (imageExtent.minX - viewCenter[0]) / imageResolution,
+        (viewCenter[1] - imageExtent.maxY) / imageResolution,
         0);
     if (image != this.image_) {
       var imageElement = image.getImageElement(this);
@@ -109,6 +112,7 @@ ol.renderer.dom.ImageLayer.prototype.renderFrame =
     this.setTransform(transform);
 
     this.updateAttributions(frameState.attributions, image.getAttributions());
+    this.updateLogos(frameState, imageSource);
   }
 
 };

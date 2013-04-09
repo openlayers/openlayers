@@ -1,6 +1,8 @@
 goog.provide('ol.layer.Vector');
 
+goog.require('goog.asserts');
 goog.require('goog.events.EventType');
+goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.geom.SharedVertices');
 goog.require('ol.layer.Layer');
@@ -153,21 +155,21 @@ ol.layer.FeatureCache.prototype.getFeaturesByIds_ = function(ids) {
 /**
  * @constructor
  * @extends {ol.layer.Layer}
- * @param {ol.layer.VectorLayerOptions} layerOptions Layer options.
+ * @param {ol.layer.VectorLayerOptions} options Vector layer options.
  */
-ol.layer.Vector = function(layerOptions) {
+ol.layer.Vector = function(options) {
 
   goog.base(this, {
-    opacity: layerOptions.opacity,
-    source: layerOptions.source,
-    visible: layerOptions.visible
+    opacity: options.opacity,
+    source: options.source,
+    visible: options.visible
   });
 
   /**
    * @private
    * @type {ol.style.Style}
    */
-  this.style_ = goog.isDef(layerOptions.style) ? layerOptions.style : null;
+  this.style_ = goog.isDef(options.style) ? options.style : null;
 
   /**
    * @type {ol.layer.FeatureCache}
@@ -347,16 +349,16 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
     this.addFeatures(features);
   };
 
-  if (typeof data === 'string') {
-    goog.asserts.assert(typeof parser.readFeaturesFromString === 'function',
+  if (goog.isString(data)) {
+    goog.asserts.assert(goog.isFunction(parser.readFeaturesFromString),
         'Expected a parser with readFeaturesFromString method.');
     features = parser.readFeaturesFromString(data, {callback: callback});
-  } else if (typeof data === 'object') {
-    if (typeof parser.readFeaturesFromObjectAsync === 'function') {
+  } else if (goog.isObject(data)) {
+    if (goog.isFunction(parser.readFeaturesFromObjectAsync)) {
       parser.readFeaturesFromObjectAsync(data, goog.bind(addFeatures, this),
           {callback: callback});
     } else {
-      goog.asserts.assert(typeof parser.readFeaturesFromObject === 'function',
+      goog.asserts.assert(goog.isFunction(parser.readFeaturesFromObject),
           'Expected a parser with a readFeaturesFromObject method.');
       features = parser.readFeaturesFromObject(data, {callback: callback});
       addFeatures.call(this, features);

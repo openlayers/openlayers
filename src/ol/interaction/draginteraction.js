@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.Drag');
 
 goog.require('goog.asserts');
+goog.require('goog.events.BrowserEvent');
 goog.require('goog.functions');
 goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');
@@ -98,24 +99,24 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
   var view = map.getView();
   var browserEvent = mapBrowserEvent.browserEvent;
   if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DOWN) {
-    goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
+    goog.asserts.assertInstanceof(browserEvent, goog.events.BrowserEvent);
     this.handleDown(mapBrowserEvent);
   }
   if (this.dragging_) {
     if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAG) {
-      goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
+      goog.asserts.assertInstanceof(browserEvent, goog.events.BrowserEvent);
       this.deltaX = browserEvent.clientX - this.startX;
       this.deltaY = browserEvent.clientY - this.startY;
       this.handleDrag(mapBrowserEvent);
     } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAGEND) {
-      goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
+      goog.asserts.assertInstanceof(browserEvent, goog.events.BrowserEvent);
       this.deltaX = browserEvent.clientX - this.startX;
       this.deltaY = browserEvent.clientY - this.startY;
       this.handleDragEnd(mapBrowserEvent);
       this.dragging_ = false;
     }
   } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAGSTART) {
-    goog.asserts.assert(browserEvent instanceof goog.events.BrowserEvent);
+    goog.asserts.assertInstanceof(browserEvent, goog.events.BrowserEvent);
     this.startX = browserEvent.clientX;
     this.startY = browserEvent.clientY;
     this.deltaX = 0;

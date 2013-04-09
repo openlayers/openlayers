@@ -1,5 +1,4 @@
 goog.require('ol.Collection');
-goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
@@ -36,7 +35,7 @@ var map = new ol.Map({
   target: 'map',
   view: new ol.View2D({
     projection: epsg4326,
-    center: new ol.Coordinate(-112.169, 36.099),
+    center: [-112.169, 36.099],
     zoom: 11
   })
 });

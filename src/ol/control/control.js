@@ -2,6 +2,10 @@ goog.provide('ol.control.Control');
 goog.provide('ol.control.ControlOptions');
 
 goog.require('goog.Disposable');
+goog.require('goog.array');
+goog.require('goog.dom');
+goog.require('goog.events');
+goog.require('ol.MapEventType');
 
 
 /**
@@ -19,9 +23,9 @@ ol.control.ControlOptions;
  *
  * @constructor
  * @extends {goog.Disposable}
- * @param {ol.control.ControlOptions} controlOptions Control options.
+ * @param {ol.control.ControlOptions} options Control options.
  */
-ol.control.Control = function(controlOptions) {
+ol.control.Control = function(options) {
 
   goog.base(this);
 
@@ -29,14 +33,13 @@ ol.control.Control = function(controlOptions) {
    * @protected
    * @type {Element}
    */
-  this.element = goog.isDef(controlOptions.element) ?
-      controlOptions.element : null;
+  this.element = goog.isDef(options.element) ? options.element : null;
 
   /**
    * @private
    * @type {Element|undefined}
    */
-  this.target_ = controlOptions.target;
+  this.target_ = options.target;
 
   /**
    * @private
@@ -44,8 +47,14 @@ ol.control.Control = function(controlOptions) {
    */
   this.map_ = null;
 
-  if (goog.isDef(controlOptions.map)) {
-    this.setMap(controlOptions.map);
+  /**
+   * @protected
+   * @type {!Array.<?number>}
+   */
+  this.listenerKeys = [];
+
+  if (goog.isDef(options.map)) {
+    this.setMap(options.map);
   }
 
 };
@@ -70,6 +79,12 @@ ol.control.Control.prototype.getMap = function() {
 
 
 /**
+ * @param {ol.MapEvent} mapEvent Map event.
+ */
+ol.control.Control.prototype.handleMapPostrender = goog.nullFunction;
+
+
+/**
  * Removes the control from its current map and attaches it to the new map.
  * Subtypes might also wish set up event handlers to get notified about changes
  * to the map here.
@@ -80,10 +95,18 @@ ol.control.Control.prototype.setMap = function(map) {
   if (!goog.isNull(this.map_)) {
     goog.dom.removeNode(this.element);
   }
+  if (!goog.array.isEmpty(this.listenerKeys)) {
+    goog.array.forEach(this.listenerKeys, goog.events.unlistenByKey);
+    this.listenerKeys.length = 0;
+  }
   this.map_ = map;
   if (!goog.isNull(this.map_)) {
     var target = goog.isDef(this.target_) ?
         this.target_ : map.getOverlayContainer();
     goog.dom.appendChild(target, this.element);
+    if (this.handleMapPostrender !== goog.nullFunction) {
+      this.listenerKeys.push(goog.events.listen(map,
+          ol.MapEventType.POSTRENDER, this.handleMapPostrender, false, this));
+    }
   }
 };

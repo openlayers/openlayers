@@ -3,8 +3,11 @@ goog.provide('ol.renderer.Map');
 goog.require('goog.Disposable');
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.dispose');
 goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.functions');
+goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
@@ -104,8 +107,8 @@ ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
   goog.vec.Mat4.rotateZ(coordinateToPixelMatrix,
       -view2DState.rotation);
   goog.vec.Mat4.translate(coordinateToPixelMatrix,
-      -view2DState.center.x,
-      -view2DState.center.y,
+      -view2DState.center[0],
+      -view2DState.center[1],
       0);
 
   var inverted = goog.vec.Mat4.invert(
