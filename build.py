@@ -626,7 +626,8 @@ def host_examples(t):
     t.makedirs(examples_dir)
     t.rm_rf(build_dir)
     t.makedirs(build_dir)
-    t.cp(EXAMPLES, examples_dir)
+    t.rm_rf(examples_dir)
+    t.cp_r('examples', examples_dir)
     for example in [path.replace('.html', '.js') for path in EXAMPLES]:
         split_example_file(example, examples_dir % vars(variables))
     t.cp('bin/loader_hosted_examples.js', examples_dir + '/loader.js')
