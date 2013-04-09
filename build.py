@@ -572,6 +572,7 @@ virtual('doc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
 @target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), 'host-resources',
+        'build/src/external/src/exports.js', 'build/src/external/src/types.js',
         SRC, SHADER_SRC, ifind('doc/template'))
 def jsdoc_BRANCH_timestamp(t):
     t.run('%(JSDOC)s', '-c', 'doc/conf.json', 'src', 'doc/index.md',
