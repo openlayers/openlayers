@@ -96,16 +96,17 @@ ol.tilegrid.TileGrid = function(options) {
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {function(this: T, number, ol.TileRange): boolean} callback Callback.
  * @param {T=} opt_obj Object.
+ * @param {ol.TileRange=} opt_tileRange Temporary ol.TileRange object.
  * @return {boolean} Callback succeeded.
  * @template T
  */
 ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange =
-    function(tileCoord, callback, opt_obj) {
+    function(tileCoord, callback, opt_obj, opt_tileRange) {
   var tileCoordExtent = this.getTileCoordExtent(tileCoord);
   var z = tileCoord.z - 1;
   while (z >= 0) {
-    if (callback.call(
-        opt_obj, z, this.getTileRangeForExtentAndZ(tileCoordExtent, z))) {
+    if (callback.call(opt_obj, z,
+        this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange))) {
       return true;
     }
     --z;
@@ -168,13 +169,15 @@ ol.tilegrid.TileGrid.prototype.getResolutions = function() {
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.TileRange=} opt_tileRange Temporary ol.TileRange object.
  * @return {ol.TileRange} Tile range.
  */
 ol.tilegrid.TileGrid.prototype.getTileCoordChildTileRange =
-    function(tileCoord) {
+    function(tileCoord, opt_tileRange) {
   if (tileCoord.z < this.resolutions_.length) {
     var tileCoordExtent = this.getTileCoordExtent(tileCoord);
-    return this.getTileRangeForExtentAndZ(tileCoordExtent, tileCoord.z + 1);
+    return this.getTileRangeForExtentAndZ(
+        tileCoordExtent, tileCoord.z + 1, opt_tileRange);
   } else {
     return null;
   }
@@ -201,28 +204,33 @@ ol.tilegrid.TileGrid.prototype.getTileRangeExtent = function(z, tileRange) {
 /**
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
+ * @param {ol.TileRange=} opt_tileRange Temporary tile range object.
  * @return {ol.TileRange} Tile range.
  */
-ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution = function(
-    extent, resolution) {
+ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution =
+    function(extent, resolution, opt_tileRange) {
   var tileCoord = this.getTileCoordForXYAndResolution_(
       extent.minX, extent.minY, resolution, false);
   var minX = tileCoord.x;
   var minY = tileCoord.y;
   tileCoord = this.getTileCoordForXYAndResolution_(
       extent.maxX, extent.maxY, resolution, true, tileCoord);
-  return new ol.TileRange(minX, minY, tileCoord.x, tileCoord.y);
+  return ol.TileRange.createOrUpdate(
+      minX, minY, tileCoord.x, tileCoord.y, opt_tileRange);
 };
 
 
 /**
  * @param {ol.Extent} extent Extent.
  * @param {number} z Z.
+ * @param {ol.TileRange=} opt_tileRange Temporary tile range object.
  * @return {ol.TileRange} Tile range.
  */
-ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndZ = function(extent, z) {
+ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndZ =
+    function(extent, z, opt_tileRange) {
   var resolution = this.getResolution(z);
-  return this.getTileRangeForExtentAndResolution(extent, resolution);
+  return this.getTileRangeForExtentAndResolution(
+      extent, resolution, opt_tileRange);
 };
 
 
