@@ -6,6 +6,7 @@ goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
+goog.require('ol.Extent');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
@@ -113,6 +114,7 @@ ol.source.WMTS = function(options) {
         }));
   }
 
+  var tmpExtent = new ol.Extent(0, 0, 0, 0);
   var tmpTileCoord = new ol.TileCoord(0, 0, 0);
   tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       function(tileCoord, projection) {
@@ -138,7 +140,7 @@ ol.source.WMTS = function(options) {
           tmpTileCoord.z = tileCoord.z;
           tmpTileCoord.x = x;
           tmpTileCoord.y = tileCoord.y;
-          tileExtent = tileGrid.getTileCoordExtent(tmpTileCoord);
+          tileExtent = tileGrid.getTileCoordExtent(tmpTileCoord, tmpExtent);
         }
         if (!tileExtent.intersects(extent)) {
           return null;

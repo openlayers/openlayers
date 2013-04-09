@@ -201,6 +201,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
       tilesToDrawByZ, getTileIfLoaded);
 
   var allTilesLoaded = true;
+  var tmpExtent = new ol.Extent(0, 0, 0, 0);
   var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
   var childTileRange, fullyLoaded, tile, tileState, x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
@@ -217,10 +218,10 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
 
       allTilesLoaded = false;
       fullyLoaded = tileGrid.forEachTileCoordParentTileRange(
-          tile.tileCoord, findLoadedTiles, null, tmpTileRange);
+          tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
       if (!fullyLoaded) {
         childTileRange = tileGrid.getTileCoordChildTileRange(
-            tile.tileCoord, tmpTileRange);
+            tile.tileCoord, tmpTileRange, tmpExtent);
         if (!goog.isNull(childTileRange)) {
           findLoadedTiles(z + 1, childTileRange);
         }
@@ -234,7 +235,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   goog.array.sort(zs);
   var opaque = tileSource.getOpaque();
   var origin = tileGrid.getTileCoordExtent(new ol.TileCoord(
-      z, canvasTileRange.minX, canvasTileRange.maxY)).getTopLeft();
+      z, canvasTileRange.minX, canvasTileRange.maxY), tmpExtent).getTopLeft();
   var currentZ, i, index, scale, tileCoordKey, tileExtent, tilesToDraw;
   var ix, iy, interimTileExtent, interimTileRange, maxX, maxY;
   var height, width;
@@ -265,7 +266,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
       scale = tileGrid.getResolution(currentZ) / tileResolution;
       for (tileCoordKey in tilesToDraw) {
         tile = tilesToDraw[tileCoordKey];
-        tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord);
+        tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
         x = (tileExtent.minX - origin[0]) / tileResolution;
         y = (origin[1] - tileExtent.maxY) / tileResolution;
         width = scale * tileSize.width;
