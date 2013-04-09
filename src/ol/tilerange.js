@@ -65,6 +65,27 @@ ol.TileRange.boundingTileRange = function(var_args) {
 
 
 /**
+ * @param {number} minX Minimum X.
+ * @param {number} minY Minimum Y.
+ * @param {number} maxX Maximum X.
+ * @param {number} maxY Maximum Y.
+ * @param {ol.TileRange|undefined} tileRange TileRange.
+ * @return {ol.TileRange} Tile range.
+ */
+ol.TileRange.createOrUpdate = function(minX, minY, maxX, maxY, tileRange) {
+  if (goog.isDef(tileRange)) {
+    tileRange.minX = minX;
+    tileRange.minY = minY;
+    tileRange.maxX = maxX;
+    tileRange.maxY = maxY;
+    return tileRange;
+  } else {
+    return new ol.TileRange(minX, minY, maxX, maxY);
+  }
+};
+
+
+/**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @return {boolean} Contains tile coordinate.
  */
