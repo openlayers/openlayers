@@ -199,6 +199,8 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         tilesToDrawByZ, getTileIfLoaded);
 
     var allTilesLoaded = true;
+    var tmpExtent = new ol.Extent(0, 0, 0, 0);
+    var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
     var childTileRange, fullyLoaded, tile, tileState, x, y;
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
@@ -217,9 +219,10 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
 
         allTilesLoaded = false;
         fullyLoaded = tileGrid.forEachTileCoordParentTileRange(
-            tile.tileCoord, findLoadedTiles);
+            tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
         if (!fullyLoaded) {
-          childTileRange = tileGrid.getTileCoordChildTileRange(tile.tileCoord);
+          childTileRange = tileGrid.getTileCoordChildTileRange(
+              tile.tileCoord, tmpTileRange, tmpExtent);
           if (!goog.isNull(childTileRange)) {
             findLoadedTiles(z + 1, childTileRange);
           }
@@ -235,7 +238,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     var u_tileOffset = goog.vec.Vec4.createFloat32();
     goog.array.forEach(zs, function(z) {
       goog.object.forEach(tilesToDrawByZ[z], function(tile) {
-        var tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord);
+        var tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
         var sx = 2 * tileExtent.getWidth() / framebufferExtentSize.width;
         var sy = 2 * tileExtent.getHeight() / framebufferExtentSize.height;
         var tx = 2 * (tileExtent.minX - framebufferExtent.minX) /

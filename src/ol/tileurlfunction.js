@@ -3,6 +3,7 @@ goog.provide('ol.TileUrlFunctionType');
 
 goog.require('goog.array');
 goog.require('goog.math');
+goog.require('ol.Extent');
 goog.require('ol.TileCoord');
 
 
@@ -68,6 +69,7 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
  */
 ol.TileUrlFunction.createFromParamsFunction =
     function(baseUrl, params, paramsFunction) {
+  var tmpExtent = new ol.Extent(0, 0, 0, 0);
   return function(tileCoord, projection) {
     if (goog.isNull(tileCoord)) {
       return undefined;
@@ -77,7 +79,7 @@ ol.TileUrlFunction.createFromParamsFunction =
         tileGrid = ol.tilegrid.getForProjection(projection);
       }
       var size = tileGrid.getTileSize(tileCoord.z);
-      var extent = tileGrid.getTileCoordExtent(tileCoord);
+      var extent = tileGrid.getTileCoordExtent(tileCoord, tmpExtent);
       return paramsFunction.call(this, baseUrl, params,
           extent, size, projection);
     }

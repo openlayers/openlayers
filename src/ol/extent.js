@@ -93,6 +93,27 @@ ol.Extent.prototype.containsCoordinate = function(coordinate) {
 
 
 /**
+ * @param {number} minX Minimum X.
+ * @param {number} minY Minimum Y.
+ * @param {number} maxX Maximum X.
+ * @param {number} maxY Maximum Y.
+ * @param {ol.Extent|undefined} extent Extent.
+ * @return {ol.Extent} Extent.
+ */
+ol.Extent.createOrUpdate = function(minX, minY, maxX, maxY, extent) {
+  if (goog.isDef(extent)) {
+    extent.minX = minX;
+    extent.minY = minY;
+    extent.maxX = maxX;
+    extent.maxY = maxY;
+    return extent;
+  } else {
+    return new ol.Extent(minX, minY, maxX, maxY);
+  }
+};
+
+
+/**
  * Checks if the passed extent is contained or on the edge of the
  * extent.
  *
