@@ -113,6 +113,13 @@
  */
 
 /**
+ * @typedef {Object} ol.control.FullScreenOptions
+ * @property {boolean|undefined} keys Full keyboard access.
+ * @property {ol.Map|undefined} map Map.
+ * @property {Element|undefined} target Target.
+ */
+
+/**
  * @typedef {Object} ol.control.LogoOptions
  * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
