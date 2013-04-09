@@ -19,6 +19,12 @@ var rome = ol.projection.transform(
 var bern = ol.projection.transform(
     [7.4458, 46.95], 'EPSG:4326', 'EPSG:3857');
 
+var view = new ol.View2D({
+  // the view's initial state
+  center: istanbul,
+  zoom: 6
+});
+
 var map = new ol.Map({
   layers: [
     new ol.layer.TileLayer({
@@ -28,10 +34,7 @@ var map = new ol.Map({
   ],
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
-  view: new ol.View2D({
-    center: istanbul,
-    zoom: 6
-  })
+  view: view
 });
 
 
@@ -57,10 +60,10 @@ var panToLondon = document.getElementById('pan-to-london');
 panToLondon.addEventListener('click', function() {
   var pan = ol.animation.pan({
     duration: 2000,
-    source: map.getView().getView2D().getCenter()
+    source: view.getCenter()
   });
   map.addPreRenderFunction(pan);
-  map.getView().getView2D().setCenter(london);
+  view.setCenter(london);
 }, false);
 
 var elasticToMoscow = document.getElementById('elastic-to-moscow');
@@ -68,10 +71,10 @@ elasticToMoscow.addEventListener('click', function() {
   var pan = ol.animation.pan({
     duration: 2000,
     easing: ol.easing.elastic,
-    source: map.getView().getView2D().getCenter()
+    source: view.getCenter()
   });
   map.addPreRenderFunction(pan);
-  map.getView().getView2D().setCenter(moscow);
+  view.setCenter(moscow);
 }, false);
 
 var bounceToIstanbul = document.getElementById('bounce-to-istanbul');
@@ -79,10 +82,10 @@ bounceToIstanbul.addEventListener('click', function() {
   var pan = ol.animation.pan({
     duration: 2000,
     easing: ol.easing.bounce,
-    source: map.getView().getView2D().getCenter()
+    source: view.getCenter()
   });
   map.addPreRenderFunction(pan);
-  map.getView().getView2D().setCenter(istanbul);
+  view.setCenter(istanbul);
 }, false);
 
 var spinToRome = document.getElementById('spin-to-rome');
@@ -91,7 +94,7 @@ spinToRome.addEventListener('click', function() {
   var start = +new Date();
   var pan = ol.animation.pan({
     duration: duration,
-    source: map.getView().getView2D().getCenter(),
+    source: view.getCenter(),
     start: start
   });
   var rotate = ol.animation.rotate({
@@ -100,7 +103,7 @@ spinToRome.addEventListener('click', function() {
     start: start
   });
   map.addPreRenderFunctions([pan, rotate]);
-  map.getView().getView2D().setCenter(rome);
+  view.setCenter(rome);
 }, false);
 
 var flyToBern = document.getElementById('fly-to-bern');
@@ -109,14 +112,14 @@ flyToBern.addEventListener('click', function() {
   var start = +new Date();
   var pan = ol.animation.pan({
     duration: duration,
-    source: map.getView().getView2D().getCenter(),
+    source: view.getCenter(),
     start: start
   });
   var bounce = ol.animation.bounce({
     duration: duration,
-    resolution: 4 * map.getView().getView2D().getResolution(),
+    resolution: 4 * view.getResolution(),
     start: start
   });
   map.addPreRenderFunctions([pan, bounce]);
-  map.getView().getView2D().setCenter(bern);
+  view.setCenter(bern);
 }, false);

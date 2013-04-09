@@ -8,14 +8,17 @@ goog.require('ol.source.MapQuestOpenAerial');
 var layer = new ol.layer.TileLayer({
   source: new ol.source.MapQuestOpenAerial()
 });
+
+var view = new ol.View2D();
+
 var map = new ol.Map({
   layers: [layer],
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
-  view: new ol.View2D({
-    center: [0, 0],
-    zoom: 0
-  })
+  view: view
 });
-var view2d = map.getView().getView2D();
-view2d.fitExtent(view2d.getProjection().getExtent(), map.getSize());
+
+var mapSize = map.getSize();
+if (mapSize) {
+  view.fitExtent(view.getProjection().getExtent(), mapSize);
+}
