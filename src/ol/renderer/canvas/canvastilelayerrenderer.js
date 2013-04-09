@@ -201,6 +201,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
       tilesToDrawByZ, getTileIfLoaded);
 
   var allTilesLoaded = true;
+  var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
   var childTileRange, fullyLoaded, tile, tileState, x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
@@ -216,9 +217,10 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
 
       allTilesLoaded = false;
       fullyLoaded = tileGrid.forEachTileCoordParentTileRange(
-          tile.tileCoord, findLoadedTiles);
+          tile.tileCoord, findLoadedTiles, null, tmpTileRange);
       if (!fullyLoaded) {
-        childTileRange = tileGrid.getTileCoordChildTileRange(tile.tileCoord);
+        childTileRange = tileGrid.getTileCoordChildTileRange(
+            tile.tileCoord, tmpTileRange);
         if (!goog.isNull(childTileRange)) {
           findLoadedTiles(z + 1, childTileRange);
         }
@@ -276,7 +278,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
           context.drawImage(tile.getImage(), x, y, width, height);
         }
         interimTileRange =
-            tileGrid.getTileRangeForExtentAndZ(tileExtent, z);
+            tileGrid.getTileRangeForExtentAndZ(tileExtent, z, tmpTileRange);
         minX = Math.max(interimTileRange.minX, canvasTileRange.minX);
         maxX = Math.min(interimTileRange.maxX, canvasTileRange.maxX);
         minY = Math.max(interimTileRange.minY, canvasTileRange.minY);
