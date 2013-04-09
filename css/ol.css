@@ -52,6 +52,13 @@
   text-decoration: none;
   width: 22px;
 }
+a.ol-full-screen-false:after {
+  content: "\2194";
+}
+a.ol-full-screen-true:after {
+  content: "\00d7";
+}
+
 .ol-full-screen div {
   border-radius: 2px;
 }
