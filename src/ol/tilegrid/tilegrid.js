@@ -205,11 +205,13 @@ ol.tilegrid.TileGrid.prototype.getTileRangeExtent = function(z, tileRange) {
  */
 ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution = function(
     extent, resolution) {
-  var min = this.getTileCoordForXYAndResolution_(
+  var tileCoord = this.getTileCoordForXYAndResolution_(
       extent.minX, extent.minY, resolution, false);
-  var max = this.getTileCoordForXYAndResolution_(
-      extent.maxX, extent.maxY, resolution, true);
-  return new ol.TileRange(min.x, min.y, max.x, max.y);
+  var minX = tileCoord.x;
+  var minY = tileCoord.y;
+  tileCoord = this.getTileCoordForXYAndResolution_(
+      extent.maxX, extent.maxY, resolution, true, tileCoord);
+  return new ol.TileRange(minX, minY, tileCoord.x, tileCoord.y);
 };
 
 

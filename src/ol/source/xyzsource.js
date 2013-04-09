@@ -61,6 +61,7 @@ ol.source.XYZ = function(options) {
   var extent = options.extent;
   if (goog.isDefAndNotNull(extent)) {
 
+    var tmpTileCoord = new ol.TileCoord(0, 0, 0);
     tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
         function(tileCoord) {
           if (options.maxZoom < tileCoord.z) {
@@ -72,8 +73,10 @@ ol.source.XYZ = function(options) {
             return null;
           }
           var x = goog.math.modulo(tileCoord.x, n);
-          var tileExtent = tileGrid.getTileCoordExtent(
-              new ol.TileCoord(tileCoord.z, x, tileCoord.y));
+          tmpTileCoord.z = tileCoord.z;
+          tmpTileCoord.x = x;
+          tmpTileCoord.y = tileCoord.y;
+          var tileExtent = tileGrid.getTileCoordExtent(tmpTileCoord);
           // FIXME we shouldn't need a typecast here
           if (!tileExtent.intersects(/** @type {ol.Extent} */ (extent))) {
             return null;
