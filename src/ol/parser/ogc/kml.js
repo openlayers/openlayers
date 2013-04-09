@@ -351,9 +351,10 @@ ol.parser.ogc.KML = function(opt_options) {
         if (symbolizer.color) {
           symbolizer.fillColor = symbolizer.color.color;
         }
-        if (symbolizer.fill === '0') {
+        if (symbolizer.fill === '0' || symbolizer.fill === 'false') {
           // TODO we need a better way in the symbolizer to disable fill
           // now we are using opacity for this, but it's a workaround
+          // see also: https://github.com/openlayers/ol3/issues/475
           symbolizer.opacity = 0;
         } else {
           symbolizer.opacity = symbolizer.color.opacity;
@@ -362,7 +363,7 @@ ol.parser.ogc.KML = function(opt_options) {
           symbolizer.strokeWidth = parseFloat(symbolizer.width);
         }
         // outline disabled
-        if (symbolizer.outline === '0') {
+        if (symbolizer.outline === '0' || symbolizer.outline === 'false') {
           symbolizer.strokeWidth = 0;
         }
         delete symbolizer.outline;
