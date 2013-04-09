@@ -64,7 +64,8 @@ ol.tilegrid.XYZ.prototype.forEachTileCoordParentTileRange =
     tileRange.minX = tileRange.maxX >>= 1;
     tileRange.minY = tileRange.maxY >>= 1;
     if (callback.call(opt_obj, z, tileRange)) {
-      break;
+      return true;
     }
   }
+  return false;
 };

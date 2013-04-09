@@ -96,6 +96,7 @@ ol.tilegrid.TileGrid = function(options) {
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {function(this: T, number, ol.TileRange): boolean} callback Callback.
  * @param {T=} opt_obj Object.
+ * @return {boolean} Callback succeeded.
  * @template T
  */
 ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange =
@@ -105,10 +106,11 @@ ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange =
   while (z >= 0) {
     if (callback.call(
         opt_obj, z, this.getTileRangeForExtentAndZ(tileCoordExtent, z))) {
-      return;
+      return true;
     }
     --z;
   }
+  return false;
 };
 
 
