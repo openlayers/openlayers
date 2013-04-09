@@ -44,7 +44,7 @@ var kml = new ol.parser.ogc.KML({
   maxDepth: 1, dimension: 2, extractStyles: true, extractAttributes: true});
 
 $.ajax({
-  url: 'kml/lines.kml'
+  url: 'data/kml/lines.kml'
 }).done(function(data) {
   vector.parseFeatures(data, kml, epsg4326);
 });

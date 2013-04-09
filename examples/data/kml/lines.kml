@@ -265,7 +265,7 @@
 		<Placemark>
 			<name>Blue Icon</name>
 			<description>Just another blue icon.</description>
-			<styleUrl>kml/styles.kml#blueIcons</styleUrl>
+			<styleUrl>data/kml/styles.kml#blueIcons</styleUrl>
 			<Point>
 				<coordinates>-112.292238941097,36.09520916122063,630</coordinates>
 			</Point>
