@@ -119,7 +119,7 @@ ol.style.Icon = function(options) {
  * @return {ol.style.IconLiteral} Literal shape symbolizer.
  */
 ol.style.Icon.prototype.createLiteral = function(feature) {
-  var attrs = feature.getAttributes();
+  var attrs = feature && feature.getAttributes();
 
   var url = /** @type {string} */ (this.url_.evaluate(feature, attrs));
   goog.asserts.assert(goog.isString(url) && url != '#', 'url must be a string');
