@@ -112,7 +112,7 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
  * @const
  * @type {boolean}
  */
-ol.Geolocation.SUPPORTED = 'geolocation' in navigator;
+ol.Geolocation.SUPPORTED = 'geolocation' in goog.global.navigator;
 
 
 /**
