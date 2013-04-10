@@ -2,7 +2,7 @@ goog.provide('ol.source.Stamen');
 
 goog.require('goog.asserts');
 goog.require('ol.Attribution');
-goog.require('ol.source.OpenStreetMap');
+goog.require('ol.source.OSM');
 goog.require('ol.source.XYZ');
 
 
@@ -83,7 +83,7 @@ ol.source.STAMEN_ATTRIBUTIONS = [
   new ol.Attribution(
       'Map tiles by <a href="http://stamen.com/">Stamen Design</a>, under ' +
       '<a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.'),
-  ol.source.OpenStreetMap.DATA_ATTRIBUTION
+  ol.source.OSM.DATA_ATTRIBUTION
 ];
 
 

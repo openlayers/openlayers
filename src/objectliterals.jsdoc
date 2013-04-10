@@ -224,7 +224,7 @@
  */
 
 /**
- * @typedef {Object} ol.source.OpenStreetMapOptions
+ * @typedef {Object} ol.source.OSMOptions
  * @property {ol.Attribution|undefined} attribution Attribution.
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {number|undefined} maxZoom Max zoom.

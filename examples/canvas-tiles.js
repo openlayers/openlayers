@@ -4,14 +4,14 @@ goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.projection');
 goog.require('ol.source.DebugTileSource');
-goog.require('ol.source.OpenStreetMap');
+goog.require('ol.source.OSM');
 goog.require('ol.tilegrid.XYZ');
 
 
 var map = new ol.Map({
   layers: [
     new ol.layer.TileLayer({
-      source: new ol.source.OpenStreetMap()
+      source: new ol.source.OSM()
     }),
     new ol.layer.TileLayer({
       source: new ol.source.DebugTileSource({

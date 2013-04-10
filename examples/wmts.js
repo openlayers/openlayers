@@ -4,7 +4,7 @@ goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.projection');
-goog.require('ol.source.OpenStreetMap');
+goog.require('ol.source.OSM');
 goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
 
@@ -23,7 +23,7 @@ for (var z = 0; z < 26; ++z) {
 var map = new ol.Map({
   layers: [
     new ol.layer.TileLayer({
-      source: new ol.source.OpenStreetMap(),
+      source: new ol.source.OSM(),
       opacity: 0.7
     }),
     new ol.layer.TileLayer({

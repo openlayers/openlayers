@@ -5,7 +5,7 @@ goog.require('ol.control.ScaleLine');
 goog.require('ol.control.ScaleLineUnits');
 goog.require('ol.control.defaults');
 goog.require('ol.layer.TileLayer');
-goog.require('ol.source.OpenStreetMap');
+goog.require('ol.source.OSM');
 
 
 var map = new ol.Map({
@@ -16,7 +16,7 @@ var map = new ol.Map({
   ]),
   layers: [
     new ol.layer.TileLayer({
-      source: new ol.source.OpenStreetMap()
+      source: new ol.source.OSM()
     })
   ],
   renderers: ol.RendererHints.createFromQueryData(),
