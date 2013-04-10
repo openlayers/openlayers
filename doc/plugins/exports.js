@@ -42,7 +42,7 @@ exports.handlers = {
   },
   
   newDoclet: function(e) {
-    if (!e.doclet.undocumented) {
+    if (api.indexOf(e.doclet.longname) > -1) {
       // Add params of API symbols to the API
       var names, name;
       var params = e.doclet.params;
