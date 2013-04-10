@@ -9,7 +9,7 @@ goog.require('ol.parser.Parser');
  * @extends {ol.parser.Parser}
  */
 ol.parser.XML = function() {
-  if (window.ActiveXObject) {
+  if (goog.global.ActiveXObject) {
     this.xmldom = new ActiveXObject('Microsoft.XMLDOM');
   }
   this.regExes = {

@@ -4,7 +4,7 @@ goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.Vector');
-goog.require('ol.parser.ogc.KML');
+goog.require('ol.parser.KML');
 goog.require('ol.projection');
 goog.require('ol.source.TiledWMS');
 goog.require('ol.source.Vector');
@@ -40,7 +40,7 @@ var map = new ol.Map({
   })
 });
 
-var kml = new ol.parser.ogc.KML({
+var kml = new ol.parser.KML({
   maxDepth: 1, dimension: 2, extractStyles: true, extractAttributes: true});
 
 $.ajax({

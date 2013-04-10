@@ -1,12 +1,12 @@
-goog.provide('ol.test.parser.ogc.kml');
+goog.provide('ol.test.parser.kml');
 
 describe('ol.parser.kml', function() {
 
-  var parser = new ol.parser.ogc.KML();
+  var parser = new ol.parser.KML();
 
   describe('Test KML parser', function() {
     it('Polygon read correctly', function() {
-      var url = 'spec/ol/parser/ogc/xml/kml_polygon.kml';
+      var url = 'spec/ol/parser/kml/polygon.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var output = parser.write(obj);
@@ -33,7 +33,7 @@ describe('ol.parser.kml', function() {
       });
     });
     it('Linestring read correctly', function() {
-      var url = 'spec/ol/parser/ogc/xml/kml_linestring.kml';
+      var url = 'spec/ol/parser/kml/linestring.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var output = parser.write(obj);
@@ -54,7 +54,7 @@ describe('ol.parser.kml', function() {
       });
     });
     it('Point read correctly', function() {
-      var url = 'spec/ol/parser/ogc/xml/kml_point.kml';
+      var url = 'spec/ol/parser/kml/point.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var output = parser.write(obj);
@@ -72,9 +72,9 @@ describe('ol.parser.kml', function() {
       });
     });
     it('NetworkLink read correctly', function(done) {
-      var url = 'spec/ol/parser/ogc/xml/kml_networklink.kml';
+      var url = 'spec/ol/parser/kml/networklink.kml';
       afterLoadXml(url, function(xml) {
-        var p = new ol.parser.ogc.KML({maxDepth: 1});
+        var p = new ol.parser.KML({maxDepth: 1});
         // we need to supply a callback to get visited NetworkLinks
         var obj = p.read(xml, function(features) {
           expect(features.length).to.eql(3);
@@ -83,9 +83,9 @@ describe('ol.parser.kml', function() {
       });
     });
     it('NetworkLink read correctly [recursively]', function(done) {
-      var url = 'spec/ol/parser/ogc/xml/kml_networklink_depth.kml';
+      var url = 'spec/ol/parser/kml/networklink_depth.kml';
       afterLoadXml(url, function(xml) {
-        var p = new ol.parser.ogc.KML({maxDepth: 2});
+        var p = new ol.parser.KML({maxDepth: 2});
         // we need to supply a callback to get visited NetworkLinks
         var obj = p.read(xml, function(features) {
           expect(features.length).to.eql(2);
@@ -94,9 +94,9 @@ describe('ol.parser.kml', function() {
       });
     });
     it('NetworkLink maxDepth', function(done) {
-      var url = 'spec/ol/parser/ogc/xml/kml_networklink_depth.kml';
+      var url = 'spec/ol/parser/kml/networklink_depth.kml';
       afterLoadXml(url, function(xml) {
-        var p = new ol.parser.ogc.KML({maxDepth: 1});
+        var p = new ol.parser.KML({maxDepth: 1});
         // we need to supply a callback to get visited NetworkLinks
         var obj = p.read(xml, function(features) {
           // since maxDepth is 1, we will not get to the second feature
@@ -106,7 +106,7 @@ describe('ol.parser.kml', function() {
       });
     });
     it('Extended data read correctly', function() {
-      var url = 'spec/ol/parser/ogc/xml/kml_extended_data.kml';
+      var url = 'spec/ol/parser/kml/extended_data.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         expect(obj.features[0].get('name')).to.eql('Extended data placemark');
@@ -117,7 +117,7 @@ describe('ol.parser.kml', function() {
       });
     });
     it('Extended data read correctly [2]', function() {
-      var url = 'spec/ol/parser/ogc/xml/kml_extended_data2.kml';
+      var url = 'spec/ol/parser/kml/extended_data2.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var feature = obj.features[0];
@@ -127,7 +127,7 @@ describe('ol.parser.kml', function() {
       });
     });
     it('Multi geometry read correctly', function() {
-      var url = 'spec/ol/parser/ogc/xml/kml_multigeometry.kml';
+      var url = 'spec/ol/parser/kml/multigeometry.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var geom = obj.features[0].getGeometry();
@@ -146,7 +146,7 @@ describe('ol.parser.kml', function() {
       });
     });
     it('Discrete multi geometry read correctly', function() {
-      var url = 'spec/ol/parser/ogc/xml/kml_multigeometry_discrete.kml';
+      var url = 'spec/ol/parser/kml/multigeometry_discrete.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var geom = obj.features[0].getGeometry();
@@ -157,9 +157,9 @@ describe('ol.parser.kml', function() {
       });
     });
     it('Test extract tracks', function() {
-      var url = 'spec/ol/parser/ogc/xml/kml_macnoise.kml';
+      var url = 'spec/ol/parser/kml/macnoise.kml';
       afterLoadXml(url, function(xml) {
-        var p = new ol.parser.ogc.KML({extractStyles: true,
+        var p = new ol.parser.KML({extractStyles: true,
           trackAttributes: ['speed', 'num']});
         var obj = p.read(xml);
         expect(obj.features.length).to.eql(170);
@@ -198,7 +198,7 @@ describe('ol.parser.kml', function() {
           '<width>10</width> </LineStyle> </Style>  <LineString> ' +
           '<coordinates> -112,36 -113,37 </coordinates> </LineString>' +
           '</Placemark></kml>';
-      var p = new ol.parser.ogc.KML({extractStyles: true});
+      var p = new ol.parser.KML({extractStyles: true});
       var obj = p.read(test_style);
       var output = p.write(obj);
       var expected = '<kml xmlns="http://www.opengis.net/kml/2.2">' +
@@ -229,7 +229,7 @@ describe('ol.parser.kml', function() {
           '49.630662409673505 8.397385910100951,48.45172350357396 ' +
           '5.001370157823406,49.26855713824488</coordinates></LinearRing>' +
           '</outerBoundaryIs></Polygon></Placemark></kml>';
-      var p = new ol.parser.ogc.KML({extractStyles: true});
+      var p = new ol.parser.KML({extractStyles: true});
       var obj = p.read(test_style_fill);
       var output = p.write(obj);
       var expected = '<kml xmlns="http://www.opengis.net/kml/2.2"><Document>' +
@@ -253,9 +253,9 @@ describe('ol.parser.kml', function() {
       expect(symbolizer2.opacity).to.eql(0);
     });
     it('Test iconStyle', function() {
-      var url = 'spec/ol/parser/ogc/xml/kml_iconstyle.kml';
+      var url = 'spec/ol/parser/kml/iconstyle.kml';
       afterLoadXml(url, function(xml) {
-        var p = new ol.parser.ogc.KML({extractStyles: true});
+        var p = new ol.parser.KML({extractStyles: true});
         var obj = p.read(xml);
         var output = p.write(obj);
         var expected = '<kml xmlns="http://www.opengis.net/kml/2.2">' +
@@ -285,5 +285,5 @@ goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.parser.ogc.KML');
+goog.require('ol.parser.KML');
 goog.require('ol.style.LineLiteral');

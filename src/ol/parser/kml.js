@@ -1,4 +1,4 @@
-goog.provide('ol.parser.ogc.KML');
+goog.provide('ol.parser.KML');
 goog.require('goog.array');
 goog.require('goog.async.Deferred');
 goog.require('goog.async.DeferredList');
@@ -38,7 +38,7 @@ goog.require('ol.style.PolygonLiteral');
  *            dimension: (number|undefined),
  *            maxDepth: (number|undefined)}}
  */
-ol.parser.ogc.KMLOptions;
+ol.parser.KMLOptions;
 
 
 
@@ -47,10 +47,10 @@ ol.parser.ogc.KMLOptions;
  * @implements {ol.parser.DomFeatureParser}
  * @implements {ol.parser.StringFeatureParser}
  * @implements {ol.parser.AsyncObjectFeatureParser}
- * @param {ol.parser.ogc.KMLOptions=} opt_options Optional configuration object.
+ * @param {ol.parser.KMLOptions=} opt_options Optional configuration object.
  * @extends {ol.parser.XML}
  */
-ol.parser.ogc.KML = function(opt_options) {
+ol.parser.KML = function(opt_options) {
   if (goog.isDef(opt_options)) {
     goog.object.extend(this, opt_options);
   }
@@ -802,7 +802,7 @@ ol.parser.ogc.KML = function(opt_options) {
     straightBracket: (/\$\[(.*?)\]/g)
   });
 };
-goog.inherits(ol.parser.ogc.KML, ol.parser.XML);
+goog.inherits(ol.parser.KML, ol.parser.XML);
 
 
 /**
@@ -811,7 +811,7 @@ goog.inherits(ol.parser.ogc.KML, ol.parser.XML);
  * after parsing.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */
-ol.parser.ogc.KML.prototype.readFeaturesFromObjectAsync =
+ol.parser.KML.prototype.readFeaturesFromObjectAsync =
     function(obj, callback, opt_options) {
   this.readFeaturesOptions_ = opt_options;
   this.read(obj, callback);
@@ -824,7 +824,7 @@ ol.parser.ogc.KML.prototype.readFeaturesFromObjectAsync =
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {Array.<ol.Feature>} Array of features.
  */
-ol.parser.ogc.KML.prototype.readFeaturesFromString =
+ol.parser.KML.prototype.readFeaturesFromString =
     function(str, opt_options) {
   this.readFeaturesOptions_ = opt_options;
   return this.read(str).features;
@@ -837,7 +837,7 @@ ol.parser.ogc.KML.prototype.readFeaturesFromString =
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  * @return {Array.<ol.Feature>} Array of features.
  */
-ol.parser.ogc.KML.prototype.readFeaturesFromNode =
+ol.parser.KML.prototype.readFeaturesFromNode =
     function(node, opt_options) {
   this.readFeaturesOptions_ = opt_options;
   return this.read(node).features;
@@ -849,7 +849,7 @@ ol.parser.ogc.KML.prototype.readFeaturesFromNode =
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  * @return {Array.<ol.Feature>} Array of features.
  */
-ol.parser.ogc.KML.prototype.readFeaturesFromObject =
+ol.parser.KML.prototype.readFeaturesFromObject =
     function(obj, opt_options) {
   this.readFeaturesOptions_ = opt_options;
   return this.read(obj).features;
@@ -861,7 +861,7 @@ ol.parser.ogc.KML.prototype.readFeaturesFromObject =
  * @param {Object} obj The returned object from the parser.
  * @param {Function} done A callback for when all links have been retrieved.
  */
-ol.parser.ogc.KML.prototype.parseLinks = function(deferreds, obj, done) {
+ol.parser.KML.prototype.parseLinks = function(deferreds, obj, done) {
   var unvisited;
   if (this.depth_ < this.maxDepth) {
     this.depth_++;
@@ -875,6 +875,7 @@ ol.parser.ogc.KML.prototype.parseLinks = function(deferreds, obj, done) {
         goog.events.listen(xhr, goog.net.EventType.COMPLETE, function(e) {
           if (e.target.isSuccess()) {
             var data = e.target.getResponseXml();
+            e.target.dispose();
             if (data && data.nodeType == 9) {
               data = data.documentElement;
             }
@@ -901,7 +902,7 @@ ol.parser.ogc.KML.prototype.parseLinks = function(deferreds, obj, done) {
  * is done.
  * @return {Object} An object representing the document.
  */
-ol.parser.ogc.KML.prototype.read = function(data, opt_callback) {
+ol.parser.KML.prototype.read = function(data, opt_callback) {
   if (typeof data == 'string') {
     data = goog.dom.xml.loadXml(data);
   }
@@ -940,7 +941,7 @@ ol.parser.ogc.KML.prototype.read = function(data, opt_callback) {
  * @param {Array} styles The style list to search in.
  * @param {Array=} opt_symbolizers Optional symbolizers.
  */
-ol.parser.ogc.KML.prototype.applyStyle_ = function(feature, styles,
+ol.parser.KML.prototype.applyStyle_ = function(feature, styles,
     opt_symbolizers) {
   var symbolizers = opt_symbolizers;
   var i, ii;
@@ -978,7 +979,7 @@ ol.parser.ogc.KML.prototype.applyStyle_ = function(feature, styles,
  * @param {ol.geom.SharedVertices=} opt_vertices Shared vertices.
  * @return {ol.geom.Geometry} The geometry created.
  */
-ol.parser.ogc.KML.prototype.createGeometry_ = function(container,
+ol.parser.KML.prototype.createGeometry_ = function(container,
     opt_vertices) {
   var geometry = null, coordinates, i, ii;
   switch (container.geometry.type) {
@@ -1035,7 +1036,7 @@ ol.parser.ogc.KML.prototype.createGeometry_ = function(container,
  * @param {Object} obj Object structure to write out as XML.
  * @return {string} An string representing the XML document.
  */
-ol.parser.ogc.KML.prototype.write = function(obj) {
+ol.parser.KML.prototype.write = function(obj) {
   var root = this.writeNode('kml', obj);
   return goog.dom.xml.serialize(root);
 };
