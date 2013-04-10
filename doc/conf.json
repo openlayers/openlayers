@@ -11,7 +11,11 @@
         "includePattern": ".+\\.js(doc)?$",
         "excludePattern": "(^|\\/|\\\\)_"
     },
-    "plugins": [ "plugins/markdown", "doc/plugins/inheritdoc" ],
+    "plugins": [
+        "plugins/markdown",
+        "doc/plugins/inheritdoc",
+        "doc/plugins/exports"
+    ],
     "markdown": {
         "parser": "gfm"
     },

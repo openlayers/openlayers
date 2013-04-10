@@ -671,7 +671,7 @@ ol.projection.transformWithProjections =
 
 /**
  * @param {ol.Proj4jsProjectionOptions} options Proj4js projection options.
- * @return {ol.Proj4jsProjection_} Proj4js projection.
+ * @return {ol.Projection} Proj4js projection.
  */
 ol.projection.configureProj4jsProjection = function(options) {
   goog.asserts.assert(!goog.object.containsKey(
