@@ -4,7 +4,6 @@ goog.provide('ol.interaction.KeyboardZoom');
 
 goog.require('goog.asserts');
 goog.require('goog.events.KeyHandler.EventType');
-goog.require('ol.View2D');
 goog.require('ol.interaction.Interaction');
 
 
@@ -50,9 +49,8 @@ ol.interaction.KeyboardZoom.prototype.handleMapBrowserEvent =
       var delta = (charCode == '+'.charCodeAt(0)) ? this.delta_ : -this.delta_;
       map.requestRenderFrame();
       // FIXME works for View2D only
-      var view = map.getView();
-      goog.asserts.assertInstanceof(view, ol.View2D);
-      view.zoomByDelta(map, delta, undefined,
+      var view = map.getView().getView2D();
+      ol.interaction.Interaction.zoomByDelta(map, view, delta, undefined,
           ol.interaction.KEYBOARD_ZOOM_DURATION);
       keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();

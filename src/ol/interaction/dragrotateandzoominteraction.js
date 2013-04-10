@@ -4,7 +4,6 @@ goog.provide('ol.interaction.DragRotateAndZoom');
 
 goog.require('goog.asserts');
 goog.require('goog.math.Vec2');
-goog.require('ol.View2D');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
 goog.require('ol.interaction.Interaction');
@@ -56,8 +55,7 @@ ol.interaction.DragRotateAndZoom.prototype.handleDrag =
   var theta = Math.atan2(delta.y, delta.x);
   var magnitude = delta.magnitude();
   // FIXME works for View2D only
-  var view = map.getView();
-  goog.asserts.assertInstanceof(view, ol.View2D);
+  var view = map.getView().getView2D();
   map.requestRenderFrame();
   // FIXME the calls to map.rotate and map.zoomToResolution should use
   // map.withFrozenRendering but an assertion fails :-(
@@ -69,7 +67,7 @@ ol.interaction.DragRotateAndZoom.prototype.handleDrag =
   this.lastAngle_ = theta;
   if (goog.isDef(this.lastMagnitude_)) {
     var resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
-    view.zoom(map, resolution);
+    ol.interaction.Interaction.zoom(map, view, resolution);
   }
   this.lastMagnitude_ = magnitude;
 };

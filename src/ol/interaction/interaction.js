@@ -99,3 +99,83 @@ ol.interaction.Interaction.rotateWithoutConstraints =
     }
   }
 };
+
+
+/**
+ * @param {ol.Map} map Map.
+ * @param {ol.View2D} view View.
+ * @param {number|undefined} resolution Resolution to go to.
+ * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ * @param {number=} opt_duration Duration.
+ * @param {number=} opt_direction Zooming direction; > 0 indicates
+ *     zooming out, in which case the constraints system will select
+ *     the largest nearest resolution; < 0 indicates zooming in, in
+ *     which case the constraints system will select the smallest
+ *     nearest resolution; == 0 indicates that the zooming direction
+ *     is unknown/not relevant, in which case the constraints system
+ *     will select the nearest resolution. If not defined 0 is
+ *     assumed.
+ */
+ol.interaction.Interaction.zoom =
+    function(map, view, resolution, opt_anchor, opt_duration, opt_direction) {
+  resolution = view.constrainResolution(resolution, 0, opt_direction);
+  ol.interaction.Interaction.zoomWithoutConstraints(
+      map, view, resolution, opt_anchor, opt_duration);
+};
+
+
+/**
+ * @param {ol.Map} map Map.
+ * @param {ol.View2D} view View.
+ * @param {number} delta Delta from previous zoom level.
+ * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ * @param {number=} opt_duration Duration.
+ */
+ol.interaction.Interaction.zoomByDelta =
+    function(map, view, delta, opt_anchor, opt_duration) {
+  var currentResolution = view.getResolution();
+  var resolution = view.constrainResolution(currentResolution, delta, 0);
+  ol.interaction.Interaction.zoomWithoutConstraints(
+      map, view, resolution, opt_anchor, opt_duration);
+};
+
+
+/**
+ * @param {ol.Map} map Map.
+ * @param {ol.View2D} view View.
+ * @param {number|undefined} resolution Resolution to go to.
+ * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ * @param {number=} opt_duration Duration.
+ */
+ol.interaction.Interaction.zoomWithoutConstraints =
+    function(map, view, resolution, opt_anchor, opt_duration) {
+  if (goog.isDefAndNotNull(resolution)) {
+    var currentResolution = view.getResolution();
+    var currentCenter = view.getCenter();
+    if (goog.isDef(currentResolution) && goog.isDef(currentCenter) &&
+        goog.isDef(opt_duration)) {
+      map.requestRenderFrame();
+      map.addPreRenderFunction(ol.animation.zoom({
+        resolution: currentResolution,
+        duration: opt_duration,
+        easing: ol.easing.easeOut
+      }));
+      if (goog.isDef(opt_anchor)) {
+        map.addPreRenderFunction(ol.animation.pan({
+          source: currentCenter,
+          duration: opt_duration,
+          easing: ol.easing.easeOut
+        }));
+      }
+    }
+    if (goog.isDefAndNotNull(opt_anchor)) {
+      var center = view.calculateCenterZoom(resolution, opt_anchor);
+      map.withFrozenRendering(function() {
+        view.setCenter(center);
+        view.setResolution(resolution);
+      });
+    } else {
+      view.setResolution(resolution);
+    }
+  }
+};

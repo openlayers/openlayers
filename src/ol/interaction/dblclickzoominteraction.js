@@ -5,7 +5,6 @@ goog.provide('ol.interaction.DblClickZoom');
 goog.require('goog.asserts');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
-goog.require('ol.View2D');
 goog.require('ol.interaction.Interaction');
 
 
@@ -46,9 +45,8 @@ ol.interaction.DblClickZoom.prototype.handleMapBrowserEvent =
     var delta = mapBrowserEvent.browserEvent.shiftKey ?
         -this.delta_ : this.delta_;
     // FIXME works for View2D only
-    var view = map.getView();
-    goog.asserts.assertInstanceof(view, ol.View2D);
-    view.zoomByDelta(map, delta, anchor,
+    var view = map.getView().getView2D();
+    ol.interaction.Interaction.zoomByDelta(map, view, delta, anchor,
         ol.interaction.DBLCLICKZOOM_ANIMATION_DURATION);
     mapBrowserEvent.preventDefault();
     browserEvent.preventDefault();

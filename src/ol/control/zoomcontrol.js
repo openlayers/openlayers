@@ -6,8 +6,10 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
+goog.require('ol.easing');
 
 
 /**
@@ -74,8 +76,17 @@ ol.control.Zoom.prototype.handleIn_ = function(browserEvent) {
   var map = this.getMap();
   map.requestRenderFrame();
   // FIXME works for View2D only
-  map.getView().zoomByDelta(map, this.delta_, undefined,
-      ol.control.ZOOM_DURATION);
+  var view = map.getView().getView2D();
+  var currentResolution = view.getResolution();
+  if (goog.isDef(currentResolution)) {
+    map.addPreRenderFunction(ol.animation.zoom({
+      resolution: currentResolution,
+      duration: ol.control.ZOOM_DURATION,
+      easing: ol.easing.easeOut
+    }));
+  }
+  var resolution = view.constrainResolution(currentResolution, this.delta_);
+  view.setResolution(resolution);
 };
 
 
@@ -87,8 +98,16 @@ ol.control.Zoom.prototype.handleOut_ = function(browserEvent) {
   // prevent #zoomOut anchor from getting appended to the url
   browserEvent.preventDefault();
   var map = this.getMap();
-  map.requestRenderFrame();
   // FIXME works for View2D only
-  map.getView().zoomByDelta(map, -this.delta_, undefined,
-      ol.control.ZOOM_DURATION);
+  var view = map.getView().getView2D();
+  var currentResolution = view.getResolution();
+  if (goog.isDef(currentResolution)) {
+    map.addPreRenderFunction(ol.animation.zoom({
+      resolution: currentResolution,
+      duration: ol.control.ZOOM_DURATION,
+      easing: ol.easing.easeOut
+    }));
+  }
+  var resolution = view.constrainResolution(currentResolution, -this.delta_);
+  view.setResolution(resolution);
 };

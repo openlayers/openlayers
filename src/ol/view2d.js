@@ -15,9 +15,7 @@ goog.require('ol.RotationConstraint');
 goog.require('ol.RotationConstraintType');
 goog.require('ol.Size');
 goog.require('ol.View');
-goog.require('ol.animation');
 goog.require('ol.coordinate');
-goog.require('ol.easing');
 goog.require('ol.projection');
 
 
@@ -374,81 +372,6 @@ goog.exportProperty(
     ol.View2D.prototype,
     'setRotation',
     ol.View2D.prototype.setRotation);
-
-
-/**
- * @param {ol.Map} map Map.
- * @param {number|undefined} resolution Resolution to go to.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- * @param {number=} opt_direction Zooming direction; > 0 indicates
- *     zooming out, in which case the constraints system will select
- *     the largest nearest resolution; < 0 indicates zooming in, in
- *     which case the constraints system will select the smallest
- *     nearest resolution; == 0 indicates that the zooming direction
- *     is unknown/not relevant, in which case the constraints system
- *     will select the nearest resolution. If not defined 0 is
- *     assumed.
- */
-ol.View2D.prototype.zoom =
-    function(map, resolution, opt_anchor, opt_duration, opt_direction) {
-  resolution = this.constrainResolution(resolution, 0, opt_direction);
-  this.zoomWithoutConstraints(map, resolution, opt_anchor, opt_duration);
-};
-
-
-/**
- * @param {ol.Map} map Map.
- * @param {number} delta Delta from previous zoom level.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- */
-ol.View2D.prototype.zoomByDelta =
-    function(map, delta, opt_anchor, opt_duration) {
-  var currentResolution = this.getResolution();
-  var resolution = this.constrainResolution(currentResolution, delta, 0);
-  this.zoomWithoutConstraints(map, resolution, opt_anchor, opt_duration);
-};
-
-
-/**
- * @param {ol.Map} map Map.
- * @param {number|undefined} resolution Resolution to go to.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- */
-ol.View2D.prototype.zoomWithoutConstraints =
-    function(map, resolution, opt_anchor, opt_duration) {
-  if (goog.isDefAndNotNull(resolution)) {
-    var currentResolution = this.getResolution();
-    var currentCenter = this.getCenter();
-    if (goog.isDef(currentResolution) && goog.isDef(currentCenter) &&
-        goog.isDef(opt_duration)) {
-      map.requestRenderFrame();
-      map.addPreRenderFunction(ol.animation.zoom({
-        resolution: currentResolution,
-        duration: opt_duration,
-        easing: ol.easing.easeOut
-      }));
-      if (goog.isDef(opt_anchor)) {
-        map.addPreRenderFunction(ol.animation.pan({
-          source: currentCenter,
-          duration: opt_duration,
-          easing: ol.easing.easeOut
-        }));
-      }
-    }
-    if (goog.isDefAndNotNull(opt_anchor)) {
-      var center = this.calculateCenterZoom(resolution, opt_anchor);
-      map.withFrozenRendering(function() {
-        this.setCenter(center);
-        this.setResolution(resolution);
-      }, this);
-    } else {
-      this.setResolution(resolution);
-    }
-  }
-};
 
 
 /**
