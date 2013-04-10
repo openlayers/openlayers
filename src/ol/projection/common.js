@@ -1,4 +1,4 @@
-goog.provide('ol.projection.addCommonProjections');
+goog.provide('ol.projection.common');
 
 goog.require('ol.projection');
 goog.require('ol.projection.EPSG3857');
@@ -8,7 +8,7 @@ goog.require('ol.projection.EPSG4326');
 /**
  * FIXME empty description for jsdoc
  */
-ol.projection.addCommonProjections = function() {
+ol.projection.common.addProjections = function() {
   // Add transformations that don't alter coordinates to convert within set of
   // projections with equal meaning.
   ol.projection.addEquivalentProjections(ol.projection.EPSG3857.PROJECTIONS);
