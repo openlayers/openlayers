@@ -25,8 +25,7 @@ var map = new ol.Map({
 // Vienna label
 var vienna = new ol.Overlay({
   map: map,
-  position: ol.projection.transform(
-      [16.3725, 48.208889], 'EPSG:4326', 'EPSG:3857'),
+  position: ol.toMap([48.208889, 16.3725]),
   element: document.getElementById('vienna')
 });
 

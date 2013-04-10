@@ -2,7 +2,6 @@ goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
-goog.require('ol.projection');
 goog.require('ol.source.BingMaps');
 
 
@@ -18,8 +17,7 @@ var map = new ol.Map({
   renderer: ol.RendererHint.WEBGL,
   target: 'map',
   view: new ol.View2D({
-    center: ol.projection.transform(
-        [-9.375, 51.483333], 'EPSG:4326', 'EPSG:3857'),
+    center: ol.toMap([51.483333, -9.375]),
     zoom: 15
   })
 });
