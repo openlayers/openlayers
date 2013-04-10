@@ -5,6 +5,7 @@ goog.require('ol.View2D');
 goog.require('ol.ViewHint');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
+goog.require('ol.interaction.Interaction');
 
 
 /**
@@ -54,7 +55,8 @@ ol.interaction.DragRotate.prototype.handleDrag = function(mapBrowserEvent) {
     // FIXME supports View2D only
     goog.asserts.assertInstanceof(view, ol.View2D);
     map.requestRenderFrame();
-    view.rotateWithoutConstraints(map, view.getRotation() - delta);
+    ol.interaction.Interaction.rotateWithoutConstraints(
+        map, view, view.getRotation() - delta);
   }
   this.lastAngle_ = theta;
 };
@@ -69,7 +71,7 @@ ol.interaction.DragRotate.prototype.handleDragEnd = function(mapBrowserEvent) {
   // FIXME supports View2D only
   var view = map.getView();
   goog.asserts.assertInstanceof(view, ol.View2D);
-  view.rotate(map, view.getRotation(), undefined,
+  ol.interaction.Interaction.rotate(map, view, view.getRotation(), undefined,
       ol.interaction.DRAGROTATE_ANIMATION_DURATION);
   view.setHint(ol.ViewHint.INTERACTING, -1);
 };

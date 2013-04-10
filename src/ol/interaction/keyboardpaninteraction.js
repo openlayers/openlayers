@@ -70,7 +70,8 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       }
       var delta = [deltaX, deltaY];
       ol.coordinate.rotate(delta, rotation);
-      view.pan(map, delta, ol.interaction.KEYBOARD_PAN_DURATION);
+      ol.interaction.Interaction.pan(
+          map, view, delta, ol.interaction.KEYBOARD_PAN_DURATION);
       keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();
     }
