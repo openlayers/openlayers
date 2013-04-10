@@ -5,6 +5,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classes');
 goog.require('goog.dom.fullscreen');
+goog.require('goog.dom.fullscreen.EventType');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.control.Control');
@@ -35,6 +36,9 @@ ol.control.FullScreen = function(opt_options) {
     goog.events.EventType.CLICK,
     goog.events.EventType.TOUCHEND
   ], this.handleClick_, false, this);
+
+  goog.events.listen(goog.global.document, goog.dom.fullscreen.EventType.CHANGE,
+      this.handleFullScreenChange_, false, this);
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE
@@ -69,20 +73,30 @@ ol.control.FullScreen.prototype.handleClick_ = function(browserEvent) {
   if (!goog.dom.fullscreen.isSupported()) {
     return;
   }
-  var opened = this.cssClassName_ + '-true';
-  var closed = this.cssClassName_ + '-false';
-  var anchor = goog.dom.getFirstElementChild(this.element);
   if (goog.dom.fullscreen.isFullScreen()) {
-    goog.dom.classes.swap(anchor, opened, closed);
     goog.dom.fullscreen.exitFullScreen();
   } else {
     var element = map.getTarget();
     goog.asserts.assert(!goog.isNull(element));
-    goog.dom.classes.swap(anchor, closed, opened);
     if (this.keys_) {
       goog.dom.fullscreen.requestFullScreenWithKeys(element);
     } else {
       goog.dom.fullscreen.requestFullScreen(element);
     }
+  }
+};
+
+
+/**
+ * @private
+ */
+ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
+  var opened = this.cssClassName_ + '-true';
+  var closed = this.cssClassName_ + '-false';
+  var anchor = goog.dom.getFirstElementChild(this.element);
+  if (goog.dom.fullscreen.isFullScreen()) {
+    goog.dom.classes.swap(anchor, closed, opened);
+  } else {
+    goog.dom.classes.swap(anchor, opened, closed);
   }
 };
