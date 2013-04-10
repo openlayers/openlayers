@@ -1,4 +1,4 @@
-goog.provide('ol.source.OpenStreetMap');
+goog.provide('ol.source.OSM');
 
 goog.require('ol.Attribution');
 goog.require('ol.source.XYZ');
@@ -8,9 +8,9 @@ goog.require('ol.source.XYZ');
 /**
  * @constructor
  * @extends {ol.source.XYZ}
- * @param {ol.source.OpenStreetMapOptions=} opt_options Open Street Map options.
+ * @param {ol.source.OSMOptions=} opt_options Open Street Map options.
  */
-ol.source.OpenStreetMap = function(opt_options) {
+ol.source.OSM = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
@@ -20,7 +20,7 @@ ol.source.OpenStreetMap = function(opt_options) {
   } else if (goog.isDef(options.attribution)) {
     attributions = [options.attribution];
   } else {
-    attributions = ol.source.OpenStreetMap.ATTRIBUTIONS;
+    attributions = ol.source.OSM.ATTRIBUTIONS;
   }
 
   var maxZoom = goog.isDef(options.maxZoom) ? options.maxZoom : 18;
@@ -37,14 +37,14 @@ ol.source.OpenStreetMap = function(opt_options) {
   });
 
 };
-goog.inherits(ol.source.OpenStreetMap, ol.source.XYZ);
+goog.inherits(ol.source.OSM, ol.source.XYZ);
 
 
 /**
  * @const
  * @type {ol.Attribution}
  */
-ol.source.OpenStreetMap.DATA_ATTRIBUTION = new ol.Attribution(
+ol.source.OSM.DATA_ATTRIBUTION = new ol.Attribution(
     'Data &copy; <a href="http://www.openstreetmap.org/">OpenStreetMap</a> ' +
     'contributors, ' +
     '<a href="http://www.openstreetmap.org/copyright">ODbL</a>');
@@ -54,7 +54,7 @@ ol.source.OpenStreetMap.DATA_ATTRIBUTION = new ol.Attribution(
  * @const
  * @type {ol.Attribution}
  */
-ol.source.OpenStreetMap.TILE_ATTRIBUTION = new ol.Attribution(
+ol.source.OSM.TILE_ATTRIBUTION = new ol.Attribution(
     'Tiles &copy; ' +
     '<a href="http://www.openstreetmap.org/">OpenStreetMap</a> ' +
     'contributors, ' +
@@ -65,7 +65,7 @@ ol.source.OpenStreetMap.TILE_ATTRIBUTION = new ol.Attribution(
  * @const
  * @type {Array.<ol.Attribution>}
  */
-ol.source.OpenStreetMap.ATTRIBUTIONS = [
-  ol.source.OpenStreetMap.TILE_ATTRIBUTION,
-  ol.source.OpenStreetMap.DATA_ATTRIBUTION
+ol.source.OSM.ATTRIBUTIONS = [
+  ol.source.OSM.TILE_ATTRIBUTION,
+  ol.source.OSM.DATA_ATTRIBUTION
 ];

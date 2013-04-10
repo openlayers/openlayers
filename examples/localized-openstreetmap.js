@@ -3,18 +3,18 @@ goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
-goog.require('ol.source.OpenStreetMap');
+goog.require('ol.source.OSM');
 
 
 var map = new ol.Map({
   layers: [
     new ol.layer.TileLayer({
-      source: new ol.source.OpenStreetMap({
+      source: new ol.source.OSM({
         attributions: [
           new ol.Attribution(
               'All maps &copy; ' +
               '<a href="http://www.opencyclemap.org/">OpenCycleMap</a>'),
-          ol.source.OpenStreetMap.DATA_ATTRIBUTION
+          ol.source.OSM.DATA_ATTRIBUTION
         ],
         url: 'http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
       })
