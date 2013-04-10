@@ -25,6 +25,18 @@ ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof Proj4js == 'object';
 
 
 /**
+ * @define {string} Default map projection.
+ */
+ol.DEFAULT_MAP_PROJECTION = 'EPSG:3857';
+
+
+/**
+ * @define {string} Default user projection.
+ */
+ol.DEFAULT_USER_PROJECTION = 'EPSG:4326';
+
+
+/**
  * A projection as {@link ol.Projection}, SRS identifier string or undefined.
  * @typedef {ol.Projection|string|undefined} ol.ProjectionLike
  */

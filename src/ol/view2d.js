@@ -49,7 +49,7 @@ ol.View2D = function(opt_options) {
   values[ol.View2DProperty.CENTER] = goog.isDef(options.center) ?
       options.center : null;
   values[ol.View2DProperty.PROJECTION] = ol.projection.createProjection(
-      options.projection, 'EPSG:3857');
+      options.projection, ol.DEFAULT_MAP_PROJECTION);
   if (goog.isDef(options.resolution)) {
     values[ol.View2DProperty.RESOLUTION] = options.resolution;
   } else if (goog.isDef(options.zoom)) {
@@ -400,7 +400,7 @@ ol.View2D.createResolutionConstraint_ = function(options) {
       zoomFactor = options.zoomFactor;
     } else {
       var projectionExtent = ol.projection.createProjection(
-          options.projection, 'EPSG:3857').getExtent();
+          options.projection, ol.DEFAULT_MAP_PROJECTION).getExtent();
       maxResolution = Math.max(
           projectionExtent.maxX - projectionExtent.minX,
           projectionExtent.maxY - projectionExtent.minY) / ol.DEFAULT_TILE_SIZE;
