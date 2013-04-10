@@ -1,3 +1,9 @@
+/*
+ * This plugin parses goog.exportSymbol and goog.exportProperty calls to build
+ * a list of API symbols and properties. Everything else is marked undocumented,
+ * which will remove it from the docs.
+ */
+
 var api = [];
 
 function collectExports(source) {
