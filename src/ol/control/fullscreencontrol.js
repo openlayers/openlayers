@@ -41,7 +41,8 @@ ol.control.FullScreen = function(opt_options) {
       this.handleFullScreenChange_, false, this);
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE
+    'class': this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE +
+        (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '')
   }, aElement);
 
   goog.base(this, {
@@ -65,12 +66,12 @@ goog.inherits(ol.control.FullScreen, ol.control.Control);
  * @private
  */
 ol.control.FullScreen.prototype.handleClick_ = function(browserEvent) {
+  if (!goog.dom.fullscreen.isSupported()) {
+    return;
+  }
   browserEvent.preventDefault();
   var map = this.getMap();
   if (goog.isNull(map)) {
-    return;
-  }
-  if (!goog.dom.fullscreen.isSupported()) {
     return;
   }
   if (goog.dom.fullscreen.isFullScreen()) {

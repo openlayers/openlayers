@@ -99,6 +99,9 @@ a.ol-full-screen-true:after {
   margin: 1px;
   padding: 0px 2px;
 }
+.ol-unsupported {
+  display: none;
+}
 .ol-viewport .ol-unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;

@@ -7,3 +7,11 @@ goog.provide('ol.css');
  * @const {string}
  */
 ol.css.CLASS_UNSELECTABLE = 'ol-unselectable';
+
+
+/**
+ * The CSS class for unsupported feature.
+ *
+ * @const {string}
+ */
+ol.css.CLASS_UNSUPPORTED = 'ol-unsupported';
