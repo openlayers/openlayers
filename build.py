@@ -171,7 +171,7 @@ virtual('build', 'build/ol.css', 'build/ol.js',
         'build/ol-simple.js', 'build/ol-whitespace.js')
 
 
-virtual('check', 'lint', 'build/ol.css', 'build/ol.js', 'test')
+virtual('check', 'lint', 'build/ol.css', 'build/ol-all.js', 'test')
 
 
 virtual('todo', 'fixme')
