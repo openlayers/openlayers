@@ -18,8 +18,6 @@ ol.interaction.TOUCHROTATE_ANIMATION_DURATION = 250;
 
 
 /**
-
-/**
  * @constructor
  * @extends {ol.interaction.Touch}
  * @param {number=} opt_threshold Minimal angle to start a rotation.
