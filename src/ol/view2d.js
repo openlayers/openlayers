@@ -15,9 +15,7 @@ goog.require('ol.RotationConstraint');
 goog.require('ol.RotationConstraintType');
 goog.require('ol.Size');
 goog.require('ol.View');
-goog.require('ol.animation');
 goog.require('ol.coordinate');
-goog.require('ol.easing');
 goog.require('ol.projection');
 
 
@@ -91,6 +89,68 @@ ol.View2D = function(opt_options) {
 
 };
 goog.inherits(ol.View2D, ol.View);
+
+
+/**
+ * @param {number} rotation Target rotation.
+ * @param {ol.Coordinate} anchor Rotation anchor.
+ * @return {ol.Coordinate|undefined} Center for rotation and anchor.
+ */
+ol.View2D.prototype.calculateCenterRotate = function(rotation, anchor) {
+  var center;
+  var currentCenter = this.getCenter();
+  if (goog.isDef(currentCenter)) {
+    center = [currentCenter[0] - anchor[0], currentCenter[1] - anchor[1]];
+    ol.coordinate.rotate(center, rotation - this.getRotation());
+    ol.coordinate.add(center, anchor);
+  }
+  return center;
+};
+
+
+/**
+ * @param {number} resolution Target resolution.
+ * @param {ol.Coordinate} anchor Zoom anchor.
+ * @return {ol.Coordinate|undefined} Center for resolution and anchor.
+ */
+ol.View2D.prototype.calculateCenterZoom = function(resolution, anchor) {
+  var center;
+  var currentCenter = this.getCenter();
+  var currentResolution = this.getResolution();
+  if (goog.isDef(currentCenter) && goog.isDef(currentResolution)) {
+    var x = anchor[0] -
+        resolution * (anchor[0] - currentCenter[0]) / currentResolution;
+    var y = anchor[1] -
+        resolution * (anchor[1] - currentCenter[1]) / currentResolution;
+    center = [x, y];
+  }
+  return center;
+};
+
+
+/**
+ * @param {number|undefined} resolution Resolution.
+ * @param {number=} opt_delta Delta.
+ * @param {number=} opt_direction Direction.
+ * @return {number|undefined} Constrained resolution.
+ */
+ol.View2D.prototype.constrainResolution = function(
+    resolution, opt_delta, opt_direction) {
+  var delta = opt_delta || 0;
+  var direction = opt_direction || 0;
+  return this.constraints_.resolution(resolution, delta, direction);
+};
+
+
+/**
+ * @param {number|undefined} rotation Rotation.
+ * @param {number=} opt_delta Delta.
+ * @return {number|undefined} Constrained rotation.
+ */
+ol.View2D.prototype.constrainRotation = function(rotation, opt_delta) {
+  var delta = opt_delta || 0;
+  return this.constraints_.rotation(rotation, delta);
+};
 
 
 /**
@@ -252,7 +312,7 @@ ol.View2D.prototype.getView3D = function() {
 ol.View2D.prototype.fitExtent = function(extent, size) {
   this.setCenter(extent.getCenter());
   var resolution = this.getResolutionForExtent(extent, size);
-  resolution = this.constraints_.resolution(resolution, 0, 0);
+  resolution = this.constrainResolution(resolution, 0, 0);
   this.setResolution(resolution);
 };
 
@@ -312,167 +372,6 @@ goog.exportProperty(
     ol.View2D.prototype,
     'setRotation',
     ol.View2D.prototype.setRotation);
-
-
-/**
- * @param {ol.Map} map Map.
- * @param {ol.Coordinate} delta Delta.
- * @param {number=} opt_duration Duration.
- */
-ol.View2D.prototype.pan = function(map, delta, opt_duration) {
-  var currentCenter = this.getCenter();
-  if (goog.isDef(currentCenter)) {
-    if (goog.isDef(opt_duration)) {
-      map.requestRenderFrame();
-      map.addPreRenderFunction(ol.animation.pan({
-        source: currentCenter,
-        duration: opt_duration,
-        easing: ol.easing.linear
-      }));
-    }
-    this.setCenter([currentCenter[0] + delta[0], currentCenter[1] + delta[1]]);
-  }
-};
-
-
-/**
- * @param {ol.Map} map Map.
- * @param {number|undefined} rotation Rotation.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- */
-ol.View2D.prototype.rotate =
-    function(map, rotation, opt_anchor, opt_duration) {
-  rotation = this.constraints_.rotation(rotation, 0);
-  this.rotateWithoutConstraints(map, rotation, opt_anchor, opt_duration);
-};
-
-
-/**
- * @param {ol.Map} map Map.
- * @param {number|undefined} rotation Rotation.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- */
-ol.View2D.prototype.rotateWithoutConstraints =
-    function(map, rotation, opt_anchor, opt_duration) {
-  if (goog.isDefAndNotNull(rotation)) {
-    var currentRotation = this.getRotation();
-    var currentCenter = this.getCenter();
-    if (goog.isDef(currentRotation) && goog.isDef(currentCenter) &&
-        goog.isDef(opt_duration)) {
-      map.requestRenderFrame();
-      map.addPreRenderFunction(ol.animation.rotate({
-        rotation: currentRotation,
-        duration: opt_duration,
-        easing: ol.easing.easeOut
-      }));
-      if (goog.isDef(opt_anchor)) {
-        map.addPreRenderFunction(ol.animation.pan({
-          source: currentCenter,
-          duration: opt_duration,
-          easing: ol.easing.easeOut
-        }));
-      }
-    }
-    if (goog.isDefAndNotNull(opt_anchor)) {
-      var anchor = opt_anchor;
-      var oldCenter = /** @type {!ol.Coordinate} */ (this.getCenter());
-      var center = [oldCenter[0] - anchor[0], oldCenter[1] - anchor[1]];
-      ol.coordinate.rotate(center, rotation - this.getRotation());
-      ol.coordinate.add(center, anchor);
-      map.withFrozenRendering(function() {
-        this.setCenter(center);
-        this.setRotation(rotation);
-      }, this);
-    } else {
-      this.setRotation(rotation);
-    }
-  }
-};
-
-
-/**
- * @param {ol.Map} map Map.
- * @param {number|undefined} resolution Resolution to go to.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- * @param {number=} opt_direction Zooming direction; > 0 indicates
- *     zooming out, in which case the constraints system will select
- *     the largest nearest resolution; < 0 indicates zooming in, in
- *     which case the constraints system will select the smallest
- *     nearest resolution; == 0 indicates that the zooming direction
- *     is unknown/not relevant, in which case the constraints system
- *     will select the nearest resolution. If not defined 0 is
- *     assumed.
- */
-ol.View2D.prototype.zoom =
-    function(map, resolution, opt_anchor, opt_duration, opt_direction) {
-  var direction = opt_direction || 0;
-  resolution = this.constraints_.resolution(resolution, 0, direction);
-  this.zoomWithoutConstraints(map, resolution, opt_anchor, opt_duration);
-};
-
-
-/**
- * @param {ol.Map} map Map.
- * @param {number} delta Delta from previous zoom level.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- */
-ol.View2D.prototype.zoomByDelta =
-    function(map, delta, opt_anchor, opt_duration) {
-  var currentResolution = this.getResolution();
-  var resolution = this.constraints_.resolution(currentResolution, delta, 0);
-  this.zoomWithoutConstraints(map, resolution, opt_anchor, opt_duration);
-};
-
-
-/**
- * @param {ol.Map} map Map.
- * @param {number|undefined} resolution Resolution to go to.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- */
-ol.View2D.prototype.zoomWithoutConstraints =
-    function(map, resolution, opt_anchor, opt_duration) {
-  if (goog.isDefAndNotNull(resolution)) {
-    var currentResolution = this.getResolution();
-    var currentCenter = this.getCenter();
-    if (goog.isDef(currentResolution) && goog.isDef(currentCenter) &&
-        goog.isDef(opt_duration)) {
-      map.requestRenderFrame();
-      map.addPreRenderFunction(ol.animation.zoom({
-        resolution: currentResolution,
-        duration: opt_duration,
-        easing: ol.easing.easeOut
-      }));
-      if (goog.isDef(opt_anchor)) {
-        map.addPreRenderFunction(ol.animation.pan({
-          source: currentCenter,
-          duration: opt_duration,
-          easing: ol.easing.easeOut
-        }));
-      }
-    }
-    if (goog.isDefAndNotNull(opt_anchor)) {
-      var anchor = opt_anchor;
-      var oldCenter = /** @type {!ol.Coordinate} */ (this.getCenter());
-      var oldResolution = this.getResolution();
-      var x =
-          anchor[0] - resolution * (anchor[0] - oldCenter[0]) / oldResolution;
-      var y =
-          anchor[1] - resolution * (anchor[1] - oldCenter[1]) / oldResolution;
-      var center = [x, y];
-      map.withFrozenRendering(function() {
-        this.setCenter(center);
-        this.setResolution(resolution);
-      }, this);
-    } else {
-      this.setResolution(resolution);
-    }
-  }
-};
 
 
 /**

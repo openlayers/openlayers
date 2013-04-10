@@ -6,6 +6,7 @@ goog.require('goog.asserts');
 goog.require('goog.style');
 goog.require('ol.View');
 goog.require('ol.ViewHint');
+goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Touch');
 
 
@@ -65,7 +66,7 @@ ol.interaction.TouchZoom.prototype.handleTouchMove =
   }
 
   var map = mapBrowserEvent.map;
-  var view = map.getView();
+  var view = map.getView().getView2D();
 
   // scale anchor point.
   var viewportPosition = goog.style.getClientPosition(map.getViewport());
@@ -75,7 +76,8 @@ ol.interaction.TouchZoom.prototype.handleTouchMove =
   var anchor = map.getCoordinateFromPixel(centroid);
 
   // scale, bypass the resolution constraint
-  view.zoomWithoutConstraints(map, view.getResolution() * scaleDelta, anchor);
+  ol.interaction.Interaction.zoomWithoutConstraints(
+      map, view, view.getResolution() * scaleDelta, anchor);
 
 };
 
@@ -87,12 +89,12 @@ ol.interaction.TouchZoom.prototype.handleTouchEnd =
     function(mapBrowserEvent) {
   if (this.targetTouches.length < 2) {
     var map = mapBrowserEvent.map;
-    var view = map.getView();
+    var view = map.getView().getView2D();
     // Zoom to final resolution, with an animation, and provide a
     // direction not to zoom out/in if user was pinching in/out.
     // Direction is > 0 if pinching out, and < 0 if pinching in.
     var direction = this.lastScaleDelta_ - 1;
-    view.zoom(map, view.getResolution(), undefined,
+    ol.interaction.Interaction.zoom(map, view, view.getResolution(), undefined,
         ol.interaction.TOUCHZOOM_ANIMATION_DURATION, direction);
     view.setHint(ol.ViewHint.INTERACTING, -1);
     return false;
