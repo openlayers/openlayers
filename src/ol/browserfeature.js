@@ -16,6 +16,7 @@ ol.BrowserFeature = {
    * @type {boolean}
    */
   HAS_TOUCH: ol.ASSUME_TOUCH ||
-      (document && 'ontouchstart' in document.documentElement) ||
-      !!(window.navigator.msPointerEnabled)
+      (goog.global.document &&
+      'ontouchstart' in goog.global.document.documentElement) ||
+      !!(goog.global.navigator.msPointerEnabled)
 };
