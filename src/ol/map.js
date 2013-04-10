@@ -261,7 +261,7 @@ ol.Map = function(options) {
   this.viewportSizeMonitor_ = new goog.dom.ViewportSizeMonitor();
 
   goog.events.listen(this.viewportSizeMonitor_, goog.events.EventType.RESIZE,
-      this.handleBrowserWindowResize, false, this);
+      this.updateSize, false, this);
 
   /**
    * @private
@@ -305,7 +305,7 @@ ol.Map = function(options) {
   this.setValues(optionsInternal.values);
 
   // this gives the map an initial size
-  this.handleBrowserWindowResize();
+  this.updateSize();
 
   if (goog.isDef(optionsInternal.controls)) {
     goog.array.forEach(optionsInternal.controls,
@@ -620,15 +620,6 @@ ol.Map.prototype.handleBackgroundColorChanged_ = function() {
 
 
 /**
- * @protected
- */
-ol.Map.prototype.handleBrowserWindowResize = function() {
-  var size = goog.style.getSize(this.target_);
-  this.setSize(new ol.Size(size.width, size.height));
-};
-
-
-/**
  * @private
  */
 ol.Map.prototype.handleSizeChanged_ = function() {
@@ -868,6 +859,16 @@ ol.Map.prototype.unfreezeRendering = function() {
   if (--this.freezeRenderingCount_ === 0 && this.dirty_) {
     this.animationDelay_.fire();
   }
+};
+
+
+/**
+ * Force a recalculation of the map viewport size.  This should be called when
+ * third-party code changes the size of the map viewport.
+ */
+ol.Map.prototype.updateSize = function() {
+  var size = goog.style.getSize(this.target_);
+  this.setSize(new ol.Size(size.width, size.height));
 };
 
 
