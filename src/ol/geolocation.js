@@ -95,12 +95,12 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
   if (ol.Geolocation.SUPPORTED) {
     var tracking = this.getTracking();
     if (tracking && !goog.isDef(this.watchId_)) {
-      this.watchId_ = navigator.geolocation.watchPosition(
+      this.watchId_ = goog.global.navigator.geolocation.watchPosition(
           goog.bind(this.positionChange_, this),
           goog.bind(this.positionError_, this),
           this.getTrackingOptions());
     } else if (!tracking && goog.isDef(this.watchId_)) {
-      navigator.geolocation.clearWatch(this.watchId_);
+      goog.global.navigator.geolocation.clearWatch(this.watchId_);
       this.watchId_ = undefined;
     }
   }
@@ -112,7 +112,7 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
  * @const
  * @type {boolean}
  */
-ol.Geolocation.SUPPORTED = 'geolocation' in navigator;
+ol.Geolocation.SUPPORTED = 'geolocation' in goog.global.navigator;
 
 
 /**

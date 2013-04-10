@@ -230,7 +230,7 @@ ol.Map = function(options) {
   this.registerDisposable(mapBrowserEventHandler);
 
   // FIXME we probably shouldn't listen on document...
-  var keyHandler = new goog.events.KeyHandler(document);
+  var keyHandler = new goog.events.KeyHandler(goog.global.document);
   goog.events.listen(keyHandler, goog.events.KeyHandler.EventType.KEY,
       this.handleBrowserEvent, false, this);
   this.registerDisposable(keyHandler);

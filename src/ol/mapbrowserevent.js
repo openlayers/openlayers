@@ -248,9 +248,9 @@ ol.MapBrowserEventHandler.prototype.handleMouseDown_ = function(browserEvent) {
     };
     this.dragged_ = false;
     this.dragListenerKeys_ = [
-      goog.events.listen(document, goog.events.EventType.MOUSEMOVE,
+      goog.events.listen(goog.global.document, goog.events.EventType.MOUSEMOVE,
           this.handleMouseMove_, false, this),
-      goog.events.listen(document, goog.events.EventType.MOUSEUP,
+      goog.events.listen(goog.global.document, goog.events.EventType.MOUSEUP,
           this.handleMouseUp_, false, this)
     ];
     // prevent browser image dragging with the dom renderer
