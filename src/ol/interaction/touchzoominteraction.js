@@ -76,6 +76,7 @@ ol.interaction.TouchZoom.prototype.handleTouchMove =
   var anchor = map.getCoordinateFromPixel(centroid);
 
   // scale, bypass the resolution constraint
+  map.requestRenderFrame();
   ol.interaction.Interaction.zoomWithoutConstraints(
       map, view, view.getResolution() * scaleDelta, anchor);
 
@@ -110,9 +111,11 @@ ol.interaction.TouchZoom.prototype.handleTouchEnd =
 ol.interaction.TouchZoom.prototype.handleTouchStart =
     function(mapBrowserEvent) {
   if (this.targetTouches.length >= 2) {
-    var view = mapBrowserEvent.map.getView();
+    var map = mapBrowserEvent.map;
+    var view = map.getView();
     this.lastDistance_ = undefined;
     this.lastScaleDelta_ = 1;
+    map.requestRenderFrame();
     view.setHint(ol.ViewHint.INTERACTING, 1);
     return true;
   } else {
