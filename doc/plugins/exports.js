@@ -70,6 +70,17 @@ function filter(e) {
     var fqn = e.doclet.longname;
     if (fqn) {
       e.doclet.undocumented = (api.indexOf(fqn) === -1);
+      // Remove parents that are not part of the API
+      var parent;
+      var parents = e.doclet.augments;
+      if (parents) {
+        for (var i = parents.length - 1; i >= 0; --i) {
+          parent = parents[i];
+          if (api.indexOf(parent) === -1) {
+            parents.splice(i, 1);
+          }
+        }
+      }
     }
   }
 }
