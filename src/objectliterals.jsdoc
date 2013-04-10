@@ -8,7 +8,8 @@
  * @property {ol.RendererHint|undefined} renderer Renderer.
  * @property {Array.<ol.RendererHint>|undefined} renderers Renderers.
  * @property {Element|string} target The container for the map.
- * @property {ol.IView|undefined} view View.
+ * @property {ol.IView|undefined} view The map's view. Currently
+ *     {@link ol.View2D} is available as view.
  */
 
 /**

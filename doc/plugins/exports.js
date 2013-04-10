@@ -23,21 +23,8 @@ function collectExports(source) {
 
 var encoding = env.conf.encoding || 'utf8';
 var fs = require('jsdoc/fs');
-
 collectExports(fs.readFileSync('build/src/external/src/exports.js', encoding));
-
-var types = fs.readFileSync('build/src/external/src/types.js', encoding);
-collectExports(types);
-var typedefs = types.match(/goog\.provide\('[^']*'\)/g);
-var typedef, namespace;
-for (var i = 0, ii = typedefs.length; i < ii; ++ i) {
-  typedef = typedefs[i].match(/'([^']*)'/)[1];
-  api.push(typedef);
-  namespace = typedef.substr(0, typedef.lastIndexOf('.'));
-  if (api.indexOf(namespace) === -1) {
-    api.push(namespace);
-  }
-}
+collectExports(fs.readFileSync('build/src/external/src/types.js', encoding));
 
 
 exports.handlers = {
@@ -49,10 +36,22 @@ exports.handlers = {
   },
   
   newDoclet: function(e) {
-    var fqn = e.doclet.longname;
-    if (fqn) {
-      if (api.indexOf(fqn) === -1) {
-        e.doclet.undocumented = true;
+    if (!e.doclet.undocumented) {
+      // Add params of API symbols to the API
+      var names, name;
+      var params = e.doclet.params;
+      if (params) {
+        for (var i = 0, ii = params.length; i < ii; ++i) {
+          names = params[i].type.names;
+          if (names) {
+            for (var j = 0, jj=names.length; j < jj; ++j) {
+              name = names[j];
+              if (api.indexOf(name) === -1) {
+                api.push(name);
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -60,11 +59,19 @@ exports.handlers = {
 };
 
 
+function filter(e) {
+  if (e.doclet) {
+    var fqn = e.doclet.longname;
+    if (fqn) {
+      e.doclet.undocumented = (api.indexOf(fqn) === -1);
+    }
+  }
+}
+
 exports.nodeVisitor = {
 
   visitNode: function(node, e, parser, currentSourceName) {
-    if (e.code) {
-      //console.log(e.source);
-    }
+    // filter out non-API symbols before the addDocletRef finisher is called
+    e.finishers.unshift(filter);
   }
 };
