@@ -33,7 +33,6 @@ ol.interaction.Interaction.pan = function(
   var currentCenter = view.getCenter();
   if (goog.isDef(currentCenter)) {
     if (goog.isDef(opt_duration)) {
-      map.requestRenderFrame();
       map.addPreRenderFunction(ol.animation.pan({
         source: currentCenter,
         duration: opt_duration,
@@ -74,7 +73,6 @@ ol.interaction.Interaction.rotateWithoutConstraints =
     var currentCenter = view.getCenter();
     if (goog.isDef(currentRotation) && goog.isDef(currentCenter) &&
         goog.isDef(opt_duration)) {
-      map.requestRenderFrame();
       map.addPreRenderFunction(ol.animation.rotate({
         rotation: currentRotation,
         duration: opt_duration,
@@ -154,7 +152,6 @@ ol.interaction.Interaction.zoomWithoutConstraints =
     var currentCenter = view.getCenter();
     if (goog.isDef(currentResolution) && goog.isDef(currentCenter) &&
         goog.isDef(opt_duration)) {
-      map.requestRenderFrame();
       map.addPreRenderFunction(ol.animation.zoom({
         resolution: currentResolution,
         duration: opt_duration,
