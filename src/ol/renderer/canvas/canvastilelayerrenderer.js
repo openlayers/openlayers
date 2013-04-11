@@ -168,9 +168,6 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
         this.renderedCanvasTileRange_ = null;
       }
     }
-    if (goog.isNull(this.renderedCanvasTileRange_)) {
-      context.clearRect(0, 0, canvasWidth, canvasHeight);
-    }
   }
 
   var canvasTileRange, canvasTileRangeWidth, minX, minY;
@@ -200,6 +197,8 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
    */
   var tilesToDrawByZ = {};
   tilesToDrawByZ[z] = {};
+  /** @type {Array.<ol.Tile>} */
+  var tilesToClear = [];
 
   var getTileIfLoaded = this.createGetTileIfLoadedFunction(function(tile) {
     return !goog.isNull(tile) && tile.getState() == ol.TileState.LOADED;
@@ -227,6 +226,9 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
       fullyLoaded = tileGrid.forEachTileCoordParentTileRange(
           tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
       if (!fullyLoaded) {
+        // FIXME we do not need to clear the tile if it is fully covered by its
+        //       children
+        tilesToClear.push(tile);
         childTileRange = tileGrid.getTileCoordChildTileRange(
             tile.tileCoord, tmpTileRange, tmpExtent);
         if (!goog.isNull(childTileRange)) {
@@ -237,13 +239,21 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
     }
   }
 
+  var i;
+  for (i = 0; i < tilesToClear.length; ++i) {
+    tile = tilesToClear[i];
+    x = tileSize.width * (tile.tileCoord.x - canvasTileRange.minX);
+    y = tileSize.height * (canvasTileRange.maxY - tile.tileCoord.y);
+    context.clearRect(x, y, tileSize.width, tileSize.height);
+  }
+
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
   goog.array.sort(zs);
   var opaque = tileSource.getOpaque();
   var origin = tileGrid.getTileCoordExtent(new ol.TileCoord(
       z, canvasTileRange.minX, canvasTileRange.maxY), tmpExtent).getTopLeft();
-  var currentZ, i, index, scale, tileCoordKey, tileExtent, tilesToDraw;
+  var currentZ, index, scale, tileCoordKey, tileExtent, tilesToDraw;
   var ix, iy, interimTileExtent, interimTileRange, maxX, maxY;
   var height, width;
   for (i = 0; i < zs.length; ++i) {
