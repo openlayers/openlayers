@@ -1,0 +1,30 @@
+<kml xmlns="http://earth.google.com/kml/2.2">
+<Document>
+<Placemark>
+  <name>Easy trail</name>
+  <ExtendedData>
+    <SchemaData schemaUrl="#TrailHeadTypeId">
+      <SimpleData name="TrailHeadName">Pi in the sky</SimpleData>
+      <SimpleData name="TrailLength">3.14159</SimpleData>
+      <SimpleData name="ElevationGain">10</SimpleData>
+    </SchemaData>
+    </ExtendedData>
+    <Point>
+      <coordinates>-122.000,37.002</coordinates>
+    </Point>
+</Placemark>
+<Placemark>
+  <name>Difficult trail</name>
+  <ExtendedData>
+    <SchemaData schemaUrl="#TrailHeadTypeId">
+      <SimpleData name="TrailHeadName">Mount Everest</SimpleData>
+      <SimpleData name="TrailLength">347.45</SimpleData>
+      <SimpleData name="ElevationGain">10000</SimpleData>
+    </SchemaData>
+  </ExtendedData>
+  <Point>
+    <coordinates>-122.000,37.002</coordinates>
+  </Point>
+</Placemark>
+</Document>
+</kml>
