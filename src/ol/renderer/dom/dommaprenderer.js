@@ -56,8 +56,10 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
     layerRenderer = new ol.renderer.dom.TileLayer(this, layer);
   } else if (layer instanceof ol.layer.ImageLayer) {
     layerRenderer = new ol.renderer.dom.ImageLayer(this, layer);
+  } else {
+    goog.asserts.fail();
+    return null;
   }
-  goog.asserts.assert(goog.isDef(layerRenderer));
   goog.dom.appendChild(this.layersPane_, layerRenderer.getTarget());
   return layerRenderer;
 };
