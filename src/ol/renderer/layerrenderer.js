@@ -189,9 +189,9 @@ ol.renderer.Layer.prototype.renderFrame = goog.abstractMethod;
 
 
 /**
- * @protected
  * @param {ol.FrameState} frameState Frame state.
  * @param {ol.source.TileSource} tileSource Tile source.
+ * @protected
  */
 ol.renderer.Layer.prototype.scheduleExpireCache =
     function(frameState, tileSource) {
@@ -206,10 +206,10 @@ ol.renderer.Layer.prototype.scheduleExpireCache =
 
 
 /**
- * @protected
  * @param {Object.<string, ol.Attribution>} attributionsSet Attributions
  *     set (target).
  * @param {Array.<ol.Attribution>} attributions Attributions (source).
+ * @protected
  */
 ol.renderer.Layer.prototype.updateAttributions =
     function(attributionsSet, attributions) {
@@ -225,9 +225,9 @@ ol.renderer.Layer.prototype.updateAttributions =
 
 
 /**
- * @protected
  * @param {ol.FrameState} frameState Frame state.
  * @param {ol.source.Source} source Source.
+ * @protected
  */
 ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
   var logo = source.getLogo();
@@ -238,11 +238,11 @@ ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
 
 
 /**
- * @protected
  * @param {Object.<string, Object.<string, ol.TileRange>>} usedTiles Used tiles.
  * @param {ol.source.TileSource} tileSource Tile source.
  * @param {number} z Z.
  * @param {ol.TileRange} tileRange Tile range.
+ * @protected
  */
 ol.renderer.Layer.prototype.updateUsedTiles =
     function(usedTiles, tileSource, z, tileRange) {
@@ -284,8 +284,8 @@ ol.renderer.Layer.prototype.createGetTileIfLoadedFunction =
  * @param {ol.Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {ol.Size} size Size.
- * @return {ol.Coordinate} Snapped center.
  * @protected
+ * @return {ol.Coordinate} Snapped center.
  */
 ol.renderer.Layer.prototype.snapCenterToPixel =
     function(center, resolution, size) {
