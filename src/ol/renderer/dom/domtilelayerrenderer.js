@@ -61,6 +61,7 @@ goog.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
 
 
 /**
+ * @protected
  * @return {ol.layer.TileLayer} Tile layer.
  */
 ol.renderer.dom.TileLayer.prototype.getTileLayer = function() {

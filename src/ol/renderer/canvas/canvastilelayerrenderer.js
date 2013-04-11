@@ -86,6 +86,7 @@ ol.renderer.canvas.TileLayer.prototype.getImage = function() {
 
 
 /**
+ * @protected
  * @return {ol.layer.TileLayer} Tile layer.
  */
 ol.renderer.canvas.TileLayer.prototype.getTileLayer = function() {

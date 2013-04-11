@@ -157,6 +157,7 @@ ol.renderer.webgl.Layer.prototype.getColorMatrix = function() {
 
 
 /**
+ * @protected
  * @return {ol.renderer.webgl.Map} MapRenderer.
  */
 ol.renderer.webgl.Layer.prototype.getWebGLMapRenderer = function() {

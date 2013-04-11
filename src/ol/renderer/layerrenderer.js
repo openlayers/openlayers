@@ -81,6 +81,7 @@ ol.renderer.Layer.prototype.dispatchChangeEvent = function() {
 
 
 /**
+ * @protected
  * @return {ol.layer.Layer} Layer.
  */
 ol.renderer.Layer.prototype.getLayer = function() {
@@ -89,6 +90,7 @@ ol.renderer.Layer.prototype.getLayer = function() {
 
 
 /**
+ * @protected
  * @return {ol.Map} Map.
  */
 ol.renderer.Layer.prototype.getMap = function() {
@@ -97,6 +99,7 @@ ol.renderer.Layer.prototype.getMap = function() {
 
 
 /**
+ * @protected
  * @return {ol.renderer.Map} Map renderer.
  */
 ol.renderer.Layer.prototype.getMapRenderer = function() {
@@ -264,6 +267,7 @@ ol.renderer.Layer.prototype.updateUsedTiles =
  *     determine if the tile is loaded.
  * @param {ol.source.TileSource} tileSource Tile source.
  * @param {ol.Projection} projection Projection.
+ * @protected
  * @return {function(number, number, number): ol.Tile} Returns a tile if it is
  *     loaded.
  */
