@@ -5,7 +5,6 @@ goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.GeoJSON');
-goog.require('ol.projection');
 goog.require('ol.source.MapQuestOpenAerial');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Polygon');
@@ -17,10 +16,12 @@ var raster = new ol.layer.TileLayer({
   source: new ol.source.MapQuestOpenAerial()
 });
 
+var vectorSource = new ol.source.Vector({
+  projection: 'EPSG:3857'
+});
+
 var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    projection: ol.projection.get('EPSG:4326')
-  }),
+  source: vectorSource,
   style: new ol.style.Style({rules: [
     new ol.style.Rule({
       symbolizers: [
@@ -54,9 +55,8 @@ xhr.open('GET', url, true);
  */
 xhr.onload = function() {
   if (xhr.status == 200) {
-    // this is silly to have to tell the layer the destination projection
-    var projection = map.getView().getProjection();
-    vector.parseFeatures(xhr.responseText, geojson, projection);
+    vectorSource.parseFeatures(
+        xhr.responseText, geojson, 'EPSG:4326');
   }
 };
 xhr.send();
