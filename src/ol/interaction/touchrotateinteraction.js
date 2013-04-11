@@ -18,8 +18,6 @@ ol.interaction.TOUCHROTATE_ANIMATION_DURATION = 250;
 
 
 /**
-
-/**
  * @constructor
  * @extends {ol.interaction.Touch}
  * @param {number=} opt_threshold Minimal angle to start a rotation.
@@ -100,6 +98,7 @@ ol.interaction.TouchRotate.prototype.handleTouchMove =
   // rotate
   if (this.rotating_) {
     var view = map.getView().getView2D();
+    map.requestRenderFrame();
     ol.interaction.Interaction.rotateWithoutConstraints(map, view,
         view.getRotation() + rotationDelta, anchor);
   }
@@ -133,10 +132,12 @@ ol.interaction.TouchRotate.prototype.handleTouchEnd =
 ol.interaction.TouchRotate.prototype.handleTouchStart =
     function(mapBrowserEvent) {
   if (this.targetTouches.length >= 2) {
-    var view = mapBrowserEvent.map.getView();
+    var map = mapBrowserEvent.map;
+    var view = map.getView();
     this.lastAngle_ = undefined;
     this.rotating_ = false;
     this.rotationDelta_ = 0.0;
+    map.requestRenderFrame();
     view.setHint(ol.ViewHint.INTERACTING, 1);
     return true;
   } else {

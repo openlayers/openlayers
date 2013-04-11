@@ -60,11 +60,13 @@ ol.interaction.TouchPan.prototype.handleTouchMove = function(mapBrowserEvent) {
     }
     var deltaX = this.lastCentroid.x - centroid.x;
     var deltaY = centroid.y - this.lastCentroid.y;
-    var view = mapBrowserEvent.map.getView();
+    var map = mapBrowserEvent.map;
+    var view = map.getView();
     var center = [deltaX, deltaY];
     ol.coordinate.scale(center, view.getResolution());
     ol.coordinate.rotate(center, view.getRotation());
     ol.coordinate.add(center, view.getCenter());
+    map.requestRenderFrame();
     view.setCenter(center);
   }
   this.lastCentroid = centroid;
@@ -110,9 +112,9 @@ ol.interaction.TouchPan.prototype.handleTouchStart =
     var map = mapBrowserEvent.map;
     var view = map.getView();
     this.lastCentroid = null;
+    map.requestRenderFrame();
     if (!goog.isNull(this.kineticPreRenderFn_) &&
         map.removePreRenderFunction(this.kineticPreRenderFn_)) {
-      map.requestRenderFrame();
       view.setCenter(mapBrowserEvent.frameState.view2DState.center);
       this.kineticPreRenderFn_ = null;
     }
