@@ -35,10 +35,10 @@ ol.renderer.Map = function(container, map) {
   this.container_ = container;
 
   /**
-   * @protected
+   * @private
    * @type {ol.Map}
    */
-  this.map = map;
+  this.map_ = map;
 
   /**
    * @protected
@@ -166,7 +166,7 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
  * @return {ol.Map} Map.
  */
 ol.renderer.Map.prototype.getMap = function() {
-  return this.map;
+  return this.map_;
 };
 
 
@@ -199,7 +199,7 @@ ol.renderer.Map.prototype.handleLayersChanged = function() {
     goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
     this.layersListenerKeys_ = null;
   }
-  var layers = this.map.getLayers();
+  var layers = this.getMap().getLayers();
   if (goog.isDefAndNotNull(layers)) {
     layers.forEach(this.addLayer, this);
     this.layersListenerKeys_ = [
