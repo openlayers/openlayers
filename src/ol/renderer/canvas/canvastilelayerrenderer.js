@@ -136,42 +136,50 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
 
   var canvas, context;
   if (goog.isNull(this.canvas_)) {
+    goog.asserts.assert(goog.isNull(this.canvasSize_));
+    goog.asserts.assert(goog.isNull(this.context_));
+    goog.asserts.assert(goog.isNull(this.renderedCanvasTileRange_));
     canvas = /** @type {HTMLCanvasElement} */
         (goog.dom.createElement(goog.dom.TagName.CANVAS));
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
     context = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
     this.canvas_ = canvas;
+    this.canvasSize_ = new ol.Size(canvasWidth, canvasHeight);
     this.context_ = context;
-    this.renderedCanvasTileRange_ = null;
   } else {
+    goog.asserts.assert(!goog.isNull(this.canvasSize_));
+    goog.asserts.assert(!goog.isNull(this.context_));
     canvas = this.canvas_;
     context = this.context_;
     if (this.canvasSize_.width < canvasWidth ||
         this.canvasSize_.height < canvasHeight) {
+      // Canvas is too small, make it bigger
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
+      this.canvasSize_.width = canvasWidth;
+      this.canvasSize_.height = canvasHeight;
       this.renderedCanvasTileRange_ = null;
-    } else if (z != this.renderedCanvasZ_ ||
-               !this.renderedCanvasTileRange_.containsTileRange(tileRange)) {
-      this.renderedCanvasTileRange_ = null;
+    } else {
+      canvasWidth = this.canvasSize_.width;
+      canvasHeight = this.canvasSize_.height;
+      if (z != this.renderedCanvasZ_ ||
+          !this.renderedCanvasTileRange_.containsTileRange(tileRange)) {
+        this.renderedCanvasTileRange_ = null;
+      }
+    }
+    if (goog.isNull(this.renderedCanvasTileRange_)) {
+      context.clearRect(0, 0, canvasWidth, canvasHeight);
     }
   }
 
   var canvasTileRange, canvasTileRangeWidth, minX, minY;
-  if (z != this.renderedCanvasZ_ ||
-      goog.isNull(this.renderedCanvasTileRange_)) {
-    if (goog.isNull(this.canvasSize_)) {
-      this.canvasSize_ = new ol.Size(canvasWidth, canvasHeight);
-    } else {
-      this.canvasSize_.width = canvasWidth;
-      this.canvasSize_.height = canvasHeight;
-    }
+  if (goog.isNull(this.renderedCanvasTileRange_)) {
     canvasTileRangeWidth = canvasWidth / tileSize.width;
     var canvasTileRangeHeight = canvasHeight / tileSize.height;
-    minX = tileRange.minX +
+    minX = tileRange.minX -
         Math.floor((canvasTileRangeWidth - tileRange.getWidth()) / 2);
-    minY = tileRange.minY +
+    minY = tileRange.minY -
         Math.floor((canvasTileRangeHeight - tileRange.getHeight()) / 2);
     this.renderedCanvasZ_ = z;
     this.renderedCanvasTileRange_ = new ol.TileRange(
@@ -185,7 +193,6 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
     canvasTileRangeWidth = canvasTileRange.getWidth();
   }
 
-  goog.asserts.assert(!goog.isNull(this.canvasSize_));
   goog.asserts.assert(canvasTileRange.containsTileRange(tileRange));
 
   /**
