@@ -5,35 +5,25 @@ describe('ol.parser.ogc.wmscapabilities_v1_3_0', function() {
   var parser = new ol.parser.ogc.WMSCapabilities();
 
   describe('test read exception', function() {
-    it('Error reported correctly', function(done) {
-      var result;
-
+    it('Error reported correctly', function() {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_3_0/' +
           'exceptionsample.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        result = parser.read(xhr.getResponseXml());
-      });
-
-      waitsFor(function() {
-        return (result !== undefined);
-      }, 'XHR timeout', 1000, function() {
+      afterLoadXml(url, function(xml) {
+        var result;
+        result = parser.read(xml);
         expect(!!result.error).to.be(true);
-        done();
       });
     });
   });
 
   describe('test read', function() {
-    it('Test read', function(done) {
-      var obj, capability, layers = {}, rootlayer, identifiers, authorities;
-      var featurelist, time, elevation, service, contactinfo, personPrimary,
-          addr, request, exception, attribution, keywords, metadataURLs;
-
+    it('Test read', function() {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_3_0/ogcsample.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        obj = parser.read(xhr.getResponseXml());
+      afterLoadXml(url, function(xml) {
+        var obj, capability, layers = {}, rootlayer, identifiers, authorities;
+        var featurelist, time, elevation, service, contactinfo, personPrimary,
+            addr, request, exception, attribution, keywords, metadataURLs;
+        obj = parser.read(xml);
         capability = obj.capability;
         for (var i = 0, len = capability.layers.length; i < len; i++) {
           if ('name' in capability.layers[i]) {
@@ -55,11 +45,6 @@ describe('ol.parser.ogc.wmscapabilities_v1_3_0', function() {
         attribution = capability.layers[2].attribution;
         keywords = capability.layers[0].keywords;
         metadataURLs = capability.layers[0].metadataURLs;
-      });
-
-      waitsFor(function() {
-        return (obj !== undefined);
-      }, 'XHR timeout', 1000, function() {
         expect(rootlayer.srs).to.eql({'CRS:84': true});
         var srs = {'CRS:84': true, 'EPSG:26986': true};
         expect(layers['ROADS_RIVERS'].srs).to.eql(srs);
@@ -146,7 +131,6 @@ describe('ol.parser.ogc.wmscapabilities_v1_3_0', function() {
         expect(obj.service.layerLimit).to.eql(16);
         expect(obj.service.maxHeight).to.eql(2048);
         expect(obj.service.maxWidth).to.eql(2048);
-        done();
       });
     });
   });
