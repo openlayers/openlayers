@@ -9,6 +9,9 @@ goog.require('ol.parser.Parser');
  * @extends {ol.parser.Parser}
  */
 ol.parser.XML = function() {
+  if (goog.global.ActiveXObject) {
+    this.xmldom = new ActiveXObject('Microsoft.XMLDOM');
+  }
   this.regExes = {
     trimSpace: (/^\s*|\s*$/g),
     removeSpace: (/\s*/g),
@@ -148,4 +151,98 @@ ol.parser.XML.prototype.getAttributeNS = function(node, uri, name) {
     }
   }
   return attributeValue;
+};
+
+
+/**
+ * Create a new element with namespace.  This node can be appended to
+ * another node with the standard node.appendChild method.  For
+ * cross-browser support, this method must be used instead of
+ * document.createElementNS.
+ *
+ * @param {string} name The qualified name of the element (prefix:localname).
+ * @param {string=} opt_uri Namespace URI for the element.
+ * @return {Element} A DOM element with namespace.
+ */
+ol.parser.XML.prototype.createElementNS = function(name, opt_uri) {
+  var uri = opt_uri ? opt_uri : this.defaultNamespaceURI;
+  var element;
+  if (this.xmldom) {
+    element = this.xmldom.createNode(1, name, uri);
+  } else {
+    element = document.createElementNS(uri, name);
+  }
+  return element;
+};
+
+
+/**
+ * Shorthand for applying one of the named writers and appending the
+ * results to a node.
+ *
+ * @param {string} name The name of a node to generate. Only use a local name.
+ * @param {Object} obj Structure containing data for the writer.
+ * @param {string=} opt_uri The name space uri to which the node belongs.
+ * @param {Element=} opt_parent Result will be appended to this node. If no
+ * parent is supplied, the node will not be appended to anything.
+ * @return {?Element} The child node.
+ */
+ol.parser.XML.prototype.writeNode = function(name, obj, opt_uri, opt_parent) {
+  var child = null;
+  if (goog.isDef(this.writers)) {
+    var uri = opt_uri ? opt_uri : this.defaultNamespaceURI;
+    child = this.writers[uri][name].apply(this, [obj]);
+    if (opt_parent && child) {
+      opt_parent.appendChild(child);
+    }
+  }
+  return child;
+};
+
+
+/**
+ * Create a text node. This node can be appended to another node with
+ * the standard node.appendChild method.  For cross-browser support,
+ * this method must be used instead of document.createTextNode.
+ *
+ * @param {string} text The text of the node.
+ * @return {Element} A DOM text node.
+ */
+ol.parser.XML.prototype.createTextNode = function(text) {
+  var node;
+  if (this.xmldom) {
+    node = this.xmldom.createTextNode(text);
+  } else {
+    node = document.createTextNode(text);
+  }
+  return node;
+};
+
+
+/**
+ * Adds a new attribute or changes the value of an attribute with the given
+ * namespace and name.
+ *
+ * @param {Element} node Element node on which to set the attribute.
+ * @param {string} uri Namespace URI for the attribute.
+ * @param {string} name Qualified name (prefix:localname) for the attribute.
+ * @param {string} value Attribute value.
+ */
+ol.parser.XML.prototype.setAttributeNS = function(node, uri, name, value) {
+  if (node.setAttributeNS) {
+    node.setAttributeNS(uri, name, value);
+  } else {
+    if (this.xmldom) {
+      if (uri) {
+        var attribute = node.ownerDocument.createNode(
+            2, name, uri);
+        attribute.nodeValue = value;
+        node.setAttributeNode(attribute);
+      } else {
+        node.setAttribute(name, value);
+      }
+    } else {
+      throw new Error('setAttributeNS not implemented');
+    }
+  }
 };

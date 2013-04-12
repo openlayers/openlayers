@@ -326,37 +326,48 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
   var callback = function(feature, type) {
     return lookup[type];
   };
+
+  var addFeatures = function(features) {
+    var sourceProjection = this.getSource().getProjection();
+    var transform = ol.projection.getTransform(sourceProjection, projection);
+
+    transform(
+        this.pointVertices_.coordinates,
+        this.pointVertices_.coordinates,
+        this.pointVertices_.getDimension());
+
+    transform(
+        this.lineVertices_.coordinates,
+        this.lineVertices_.coordinates,
+        this.lineVertices_.getDimension());
+
+    transform(
+        this.polygonVertices_.coordinates,
+        this.polygonVertices_.coordinates,
+        this.polygonVertices_.getDimension());
+
+    this.addFeatures(features);
+  };
+
   if (goog.isString(data)) {
     goog.asserts.assert(goog.isFunction(parser.readFeaturesFromString),
         'Expected a parser with readFeaturesFromString method.');
     features = parser.readFeaturesFromString(data, {callback: callback});
+    addFeatures.call(this, features);
   } else if (goog.isObject(data)) {
-    goog.asserts.assert(goog.isFunction(parser.readFeaturesFromObject),
-        'Expected a parser with a readFeaturesFromObject method.');
-    features = parser.readFeaturesFromObject(data, {callback: callback});
+    if (goog.isFunction(parser.readFeaturesFromObjectAsync)) {
+      parser.readFeaturesFromObjectAsync(data, goog.bind(addFeatures, this),
+          {callback: callback});
+    } else {
+      goog.asserts.assert(goog.isFunction(parser.readFeaturesFromObject),
+          'Expected a parser with a readFeaturesFromObject method.');
+      features = parser.readFeaturesFromObject(data, {callback: callback});
+      addFeatures.call(this, features);
+    }
   } else {
     // TODO: parse more data types
     throw new Error('Data type not supported: ' + data);
   }
-  var sourceProjection = this.getSource().getProjection();
-  var transform = ol.projection.getTransform(sourceProjection, projection);
-
-  transform(
-      this.pointVertices_.coordinates,
-      this.pointVertices_.coordinates,
-      this.pointVertices_.getDimension());
-
-  transform(
-      this.lineVertices_.coordinates,
-      this.lineVertices_.coordinates,
-      this.lineVertices_.getDimension());
-
-  transform(
-      this.polygonVertices_.coordinates,
-      this.polygonVertices_.coordinates,
-      this.polygonVertices_.getDimension());
-
-  this.addFeatures(features);
 };
 
 
