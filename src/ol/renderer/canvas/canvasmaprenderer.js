@@ -153,4 +153,6 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     this.renderedVisible_ = true;
   }
 
+  this.removeUnusedLayerRenderers(frameState);
+
 };
