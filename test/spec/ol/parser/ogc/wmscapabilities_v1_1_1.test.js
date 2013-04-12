@@ -5,43 +5,27 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
   var parser = new ol.parser.ogc.WMSCapabilities();
 
   describe('test read exception', function() {
-    it('Error reported correctly', function(done) {
-      var obj;
-
+    it('Error reported correctly', function() {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/' +
           'exceptionsample.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        obj = parser.read(xhr.getResponseXml());
-      });
-
-      waitsFor(function() {
-        return (obj !== undefined);
-      }, 'XHR timeout', 1000, function() {
+      afterLoadXml(url, function(xml) {
+        var obj = parser.read(xml);
         expect(!!obj.error).to.be.ok();
-        done();
       });
     });
   });
 
   describe('test read', function() {
-    it('Test read', function(done) {
-      var obj, capability, getmap, describelayer, getfeatureinfo, layer;
-
+    it('Test read', function() {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/gssample.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        obj = parser.read(xhr.getResponseXml());
+      afterLoadXml(url, function(xml) {
+        var obj, capability, getmap, describelayer, getfeatureinfo, layer;
+        obj = parser.read(xml);
         capability = obj.capability;
         getmap = capability.request.getmap;
         describelayer = capability.request.describelayer;
         getfeatureinfo = capability.request.getfeatureinfo;
         layer = capability.layers[2];
-      });
-
-      waitsFor(function() {
-        return (obj !== undefined);
-      }, 'XHR timeout', 1000, function() {
         expect(capability).to.be.ok();
         expect(getmap.formats.length).to.eql(28);
         var get = 'http://publicus.opengeo.org:80/geoserver/wms?SERVICE=WMS&';
@@ -75,20 +59,17 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         expect(layer.styles[0].legend.href).to.eql(legend);
         expect(layer.styles[0].legend.format).to.eql('image/png');
         expect(layer.queryable).to.be.ok();
-        done();
       });
     });
   });
 
   describe('test layers', function() {
-    it('Test layers', function(done) {
-      var obj, capability, layers = {}, rootlayer, identifiers, authorities;
-      var featurelist;
-
+    it('Test layers', function() {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/ogcsample.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        obj = parser.read(xhr.getResponseXml());
+      afterLoadXml(url, function(xml) {
+        var obj, capability, layers = {}, rootlayer, identifiers, authorities;
+        var featurelist;
+        obj = parser.read(xml);
         capability = obj.capability;
         for (var i = 0, len = capability.layers.length; i < len; i++) {
           if ('name' in capability.layers[i]) {
@@ -99,11 +80,6 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         identifiers = layers['ROADS_RIVERS'].identifiers;
         authorities = layers['ROADS_RIVERS'].authorityURLs;
         featurelist = layers['ROADS_RIVERS'].featureListURL;
-      });
-
-      waitsFor(function() {
-        return (obj !== undefined);
-      }, 'XHR timeout', 1000, function() {
         expect(rootlayer.srs).to.eql({'EPSG:4326': true});
         var srs = {'EPSG:4326': true, 'EPSG:26986': true};
         expect(layers['ROADS_RIVERS'].srs).to.eql(srs);
@@ -134,19 +110,16 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         expect(layers['ozone_image'].fixedHeight).to.eql(256);
         expect(layers['ozone_image'].opaque).to.be.ok();
         expect(layers['ozone_image'].noSubsets).to.be.ok();
-        done();
       });
     });
   });
 
   describe('test dimensions', function() {
-    it('Test dimensions', function(done) {
-      var obj, capability, layers = {}, time, elevation;
-
+    it('Test dimensions', function() {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/ogcsample.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        obj = parser.read(xhr.getResponseXml());
+      afterLoadXml(url, function(xml) {
+        var obj, capability, layers = {}, time, elevation;
+        obj = parser.read(xml);
         capability = obj.capability;
         for (var i = 0, len = capability.layers.length; i < len; i++) {
           if ('name' in capability.layers[i]) {
@@ -155,11 +128,6 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         }
         time = layers['Clouds'].dimensions.time;
         elevation = layers['Pressure'].dimensions.elevation;
-      });
-
-      waitsFor(function() {
-        return (obj !== undefined);
-      }, 'XHR timeout', 1000, function() {
         expect(time['default']).to.eql('2000-08-22');
         expect(time.values.length).to.eql(1);
         expect(time.values[0]).to.eql('1999-01-01/2000-08-22/P1D');
@@ -169,29 +137,21 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         expect(elevation.multipleVal).to.not.be();
         expect(elevation.values).to.eql(
             ['0', '1000', '3000', '5000', '10000']);
-        done();
       });
     });
   });
 
   describe('test contact info', function() {
-    it('Test contact info', function(done) {
-      var obj, service, contactinfo, personPrimary, addr;
-
+    it('Test contact info', function() {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/' +
           'ogcsample.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        obj = parser.read(xhr.getResponseXml());
+      afterLoadXml(url, function(xml) {
+        var obj, service, contactinfo, personPrimary, addr;
+        obj = parser.read(xml);
         service = obj.service;
         contactinfo = service.contactInformation;
         personPrimary = contactinfo.personPrimary;
         addr = contactinfo.contactAddress;
-      });
-
-      waitsFor(function() {
-        return (obj !== undefined);
-      }, 'XHR timeout', 1000, function() {
         expect(contactinfo).to.be.ok();
         expect(personPrimary).to.be.ok();
         expect(personPrimary.person).to.eql('Jeff deLaBeaujardiere');
@@ -208,48 +168,32 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         expect(contactinfo.phone).to.eql('+1 301 286-1569');
         expect(contactinfo.fax).to.eql('+1 301 286-1777');
         expect(contactinfo.email).to.eql('delabeau@iniki.gsfc.nasa.gov');
-        done();
       });
     });
   });
 
   describe('Test fees and constraints', function() {
-    it('Test fees and constraints', function(done) {
-      var obj, service;
-
+    it('Test fees and constraints', function() {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/gssample.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        obj = parser.read(xhr.getResponseXml());
+      afterLoadXml(url, function(xml) {
+        var obj, service;
+        obj = parser.read(xml);
         service = obj.service;
-      });
-
-      waitsFor(function() {
-        return (obj !== undefined);
-      }, 'XHR timeout', 1000, function() {
         expect('fees' in service).to.not.be();
         expect('accessConstraints' in service).to.not.be();
-        done();
       });
     });
   });
 
   describe('Test requests', function() {
-    it('Test requests', function(done) {
-      var obj, request, exception, userSymbols;
-
+    it('Test requests', function() {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/gssample.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        obj = parser.read(xhr.getResponseXml());
+      afterLoadXml(url, function(xml) {
+        var obj, request, exception, userSymbols;
+        obj = parser.read(xml);
         request = obj.capability.request;
         exception = obj.capability.exception;
         userSymbols = obj.capability.userSymbols;
-      });
-
-      waitsFor(function() {
-        return (obj !== undefined);
-      }, 'XHR timeout', 1000, function() {
         expect(request).to.be.ok();
         expect('getmap' in request).to.be.ok();
         expect('getfeatureinfo' in request).to.be.ok();
@@ -264,28 +208,20 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         expect(userSymbols.userLayer).to.be.ok();
         expect(userSymbols.userStyle).to.be.ok();
         expect(userSymbols.remoteWFS).to.be.ok();
-        done();
       });
     });
   });
 
   describe('test ogc', function() {
-    it('Test ogc', function(done) {
-      var obj, capability, attribution, keywords, metadataURLs;
-
+    it('Test ogc', function() {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/ogcsample.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        obj = parser.read(xhr.getResponseXml());
+      afterLoadXml(url, function(xml) {
+        var obj, capability, attribution, keywords, metadataURLs;
+        obj = parser.read(xml);
         capability = obj.capability;
         attribution = capability.layers[2].attribution;
         keywords = capability.layers[0].keywords;
         metadataURLs = capability.layers[0].metadataURLs;
-      });
-
-      waitsFor(function() {
-        return (obj !== undefined);
-      }, 'XHR timeout', 1000, function() {
         expect(attribution.title).to.eql('State College University');
         expect(attribution.href).to.eql('http://www.university.edu/');
         var url = 'http://www.university.edu/icons/logo.gif';
@@ -304,7 +240,6 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         expect(Math.round(capability.layers[0].maxScale)).to.eql(1000);
         expect(capability.layers[1].minScale).to.be(undefined);
         expect(capability.layers[1].maxScale).to.be(undefined);
-        done();
       });
     });
   });
