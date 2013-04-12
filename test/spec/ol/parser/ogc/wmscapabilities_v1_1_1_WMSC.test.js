@@ -8,20 +8,13 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1_wmsc', function() {
   });
 
   describe('test read', function() {
-    it('Test read', function(done) {
-      var obj, tilesets, tileset;
-
+    it('Test read', function() {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1_WMSC/wmsc.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        obj = parser.read(xhr.getResponseXml());
+      afterLoadXml(url, function(xml) {
+        var obj, tilesets, tileset;
+        obj = parser.read(xml);
         tilesets = obj.capability.vendorSpecific.tileSets;
         tileset = tilesets[0];
-      });
-
-      waitsFor(function() {
-        return (obj !== undefined);
-      }, 'XHR timeout', 1000, function() {
         expect(tilesets.length).to.eql(2);
         var bbox = [-13697515.466796875, 5165920.118906248,
           -13619243.94984375, 5244191.635859374];
@@ -42,27 +35,18 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1_wmsc', function() {
           0.009330691928043961, 0.004665345964021981];
         expect(tileset.resolutions).to.eql(resolutions);
         expect(tileset.styles).to.eql('');
-        done();
       });
     });
   });
 
   describe('test fallback', function() {
-    it('Test fallback', function(done) {
-      var obj;
-
+    it('Test fallback', function() {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1_WMSC/' +
           'fallback.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        obj = parser.read(xhr.getResponseXml());
-      });
-
-      waitsFor(function() {
-        return (obj !== undefined);
-      }, 'XHR timeout', 1000, function() {
+      afterLoadXml(url, function(xml) {
+        var obj;
+        obj = parser.read(xml);
         expect(obj.capability.layers.length).to.eql(2);
-        done();
       });
     });
   });

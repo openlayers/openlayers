@@ -11,18 +11,11 @@ describe('ol.parser.ogc.wmscapabilities_v1_0_0', function() {
   var parser = new ol.parser.ogc.WMSCapabilities();
 
   describe('test read', function() {
-    it('Test read', function(done) {
-      var obj;
-
+    it('Test read', function() {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_0_0.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        obj = parser.read(xhr.getResponseXml());
-      });
-
-      waitsFor(function() {
-        return (obj !== undefined);
-      }, 'XHR timeout', 1000, function() {
+      afterLoadXml(url, function(xml) {
+        var obj;
+        obj = parser.read(xml);
         expect(obj.service.keywords.length).to.eql(2);
         expect(obj.service.keywords[0]['value']).to.eql('BGDI');
         expect(obj.service.href).to.eql('https://wms.geo.admin.ch/?');
@@ -34,7 +27,6 @@ describe('ol.parser.ogc.wmscapabilities_v1_0_0', function() {
         expect(getmap.formats[0]).to.eql('GIF');
         expect(obj.capability.layers[64].keywords.length).to.eql(2);
         expect(obj.capability.layers[64].keywords[0].value).to.eql('Geometer');
-        done();
       });
     });
   });
