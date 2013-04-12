@@ -37,8 +37,8 @@ goog.inherits(ol.renderer.webgl.ImageLayer, ol.renderer.webgl.Layer);
 
 
 /**
- * @private
  * @param {ol.Image} image Image.
+ * @private
  * @return {WebGLTexture} Texture.
  */
 ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
@@ -72,6 +72,7 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
 
 
 /**
+ * @protected
  * @return {ol.layer.ImageLayer} Tile layer.
  */
 ol.renderer.webgl.ImageLayer.prototype.getImageLayer = function() {
@@ -147,13 +148,13 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
 
 
 /**
- * @private
  * @param {number} canvasWidth Canvas width.
  * @param {number} canvasHeight Canvas height.
  * @param {ol.Coordinate} viewCenter View center.
  * @param {number} viewResolution View resolution.
  * @param {number} viewRotation View rotation.
  * @param {ol.Extent} imageExtent Image extent.
+ * @private
  */
 ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ =
     function(canvasWidth, canvasHeight, viewCenter,

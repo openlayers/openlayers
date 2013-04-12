@@ -88,6 +88,7 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
 
 
 /**
+ * @protected
  * @return {ol.layer.TileLayer} Tile layer.
  */
 ol.renderer.webgl.TileLayer.prototype.getTileLayer = function() {
