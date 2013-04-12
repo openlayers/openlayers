@@ -108,6 +108,67 @@ ol.renderer.canvas.TileLayer.prototype.getTransform = function() {
 ol.renderer.canvas.TileLayer.prototype.renderFrame =
     function(frameState, layerState) {
 
+  //
+  // Warning! You're entering a dangerous zone!
+  //
+  // The canvas tile layer renderering is highly optimized, hence
+  // the complexity of this function. For best performance we try
+  // to minimize the number of pixels to update on the canvas. This
+  // includes:
+  //
+  // - Only drawing pixels that will be visible.
+  // - Not re-drawing pixels/tiles that are already correct.
+  // - Minimizing calls to clearRect.
+  // - Never shrink the canvas. Just make it bigger when necessary.
+  //   Re-sizing the canvas also clears it, which further means
+  //   re-creating it (expensive).
+  //
+  // The various steps performed by this functions:
+  //
+  // - Create a canvas element if none has been created yet.
+  //
+  // - Make the canvas bigger if it's too small. Note that we never shrink
+  //   the canvas, we just make it bigger when necessary, when rotating for
+  //   example. Note also that the canvas always contains a whole number
+  //   of tiles.
+  //
+  // - Invalidate the canvas tile range (renderedCanvasTileRange_ = null)
+  //   if (1) the canvas has been enlarged, or (2) the zoom level changes,
+  //   or (3) the canvas tile range doesn't contain the required tile
+  //   range. This canvas tile range invalidation thing is related to
+  //   an optimization where we attempt to redraw as few pixels as
+  //   possible on each renderFrame call.
+  //
+  // - If the canvas tile range has been invalidated we reset
+  //   renderedCanvasTileRange_ and reset the renderedTiles_ array.
+  //   The renderedTiles_ array is the structure used to determine
+  //   the canvas pixels that need not be redrawn from one renderFrame
+  //   call to another. It records while tile has been rendered at
+  //   which position in the canvas.
+  //
+  // - We then determine the tiles to draw on the canvas. Tiles for
+  //   the target resolution may not be loaded yet. In that case we
+  //   use low-resolution/interim tiles if loaded already. And, if
+  //   for a non-yet-loaded tile we haven't found a corresponding
+  //   low-resolution tile we indicate that the pixels for that
+  //   tile must be cleared on the canvas. Note: determining the
+  //   interim tiles is based on tile extents instead of tile
+  //   coords, this is to be able to handler irregular tile grids.
+  //
+  // - We're now ready to render. We start by calling clearRect
+  //   for the tiles that aren't loaded and that don't have a
+  //   corresponding low-resolution tile. We then render "back to
+  //   front", i.e. starting with the low-resolution tiles.
+  //
+  // - After rendering some bookkeeping is performed (updateUsedTiles,
+  //   etc.). manageTilePyramid is what enqueue tiles in the tile
+  //   queue for loading.
+  //
+  // - The last step involves updating the transform matrix, which
+  //   will be used by the map renderer for the final composition
+  //   and positioning.
+  //
+
   var view2DState = frameState.view2DState;
   var projection = view2DState.projection;
 
