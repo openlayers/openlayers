@@ -156,9 +156,11 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   //   coords, this is to be able to handler irregular tile grids.
   //
   // - We're now ready to render. We start by calling clearRect
-  //   for the tiles that aren't loaded and that don't have a
-  //   corresponding low-resolution tile. We then render "back to
-  //   front", i.e. starting with the low-resolution tiles.
+  //   for the tiles that aren't loaded yet and are not fully covered
+  //   by a low-resolution tile (if they're loaded, we'll draw them;
+  //   if they're fully covered by a low-resolution tile then there's
+  //   no need to clear). We then render the tiles "back to front",
+  //   i.e. starting with the low-resolution tiles.
   //
   // - After rendering some bookkeeping is performed (updateUsedTiles,
   //   etc.). manageTilePyramid is what enqueue tiles in the tile
