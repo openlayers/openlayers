@@ -48,6 +48,7 @@ ol.renderer.canvas.ImageLayer.prototype.getImage = function() {
 
 
 /**
+ * @protected
  * @return {ol.layer.ImageLayer} Single image layer.
  */
 ol.renderer.canvas.ImageLayer.prototype.getImageLayer = function() {

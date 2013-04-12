@@ -296,15 +296,14 @@ ol.renderer.webgl.Map.prototype.bindTileTexture =
  * @inheritDoc
  */
 ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
-  var layerRenderer = null;
   if (layer instanceof ol.layer.TileLayer) {
-    layerRenderer = new ol.renderer.webgl.TileLayer(this, layer);
+    return new ol.renderer.webgl.TileLayer(this, layer);
   } else if (layer instanceof ol.layer.ImageLayer) {
-    layerRenderer = new ol.renderer.webgl.ImageLayer(this, layer);
+    return new ol.renderer.webgl.ImageLayer(this, layer);
   } else {
     goog.asserts.fail();
+    return null;
   }
-  return layerRenderer;
 };
 
 
@@ -464,7 +463,7 @@ ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
   this.programCache_ = {};
   this.textureCache_.clear();
   this.textureCacheFrameMarkerCount_ = 0;
-  goog.object.forEach(this.layerRenderers, function(layerRenderer) {
+  goog.object.forEach(this.getLayerRenderers(), function(layerRenderer) {
     layerRenderer.handleWebGLContextLost();
   });
 };

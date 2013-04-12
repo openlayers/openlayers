@@ -81,6 +81,7 @@ ol.renderer.Layer.prototype.dispatchChangeEvent = function() {
 
 
 /**
+ * @protected
  * @return {ol.layer.Layer} Layer.
  */
 ol.renderer.Layer.prototype.getLayer = function() {
@@ -89,6 +90,7 @@ ol.renderer.Layer.prototype.getLayer = function() {
 
 
 /**
+ * @protected
  * @return {ol.Map} Map.
  */
 ol.renderer.Layer.prototype.getMap = function() {
@@ -97,6 +99,7 @@ ol.renderer.Layer.prototype.getMap = function() {
 
 
 /**
+ * @protected
  * @return {ol.renderer.Map} Map renderer.
  */
 ol.renderer.Layer.prototype.getMapRenderer = function() {
@@ -186,9 +189,9 @@ ol.renderer.Layer.prototype.renderFrame = goog.abstractMethod;
 
 
 /**
- * @protected
  * @param {ol.FrameState} frameState Frame state.
  * @param {ol.source.TileSource} tileSource Tile source.
+ * @protected
  */
 ol.renderer.Layer.prototype.scheduleExpireCache =
     function(frameState, tileSource) {
@@ -203,10 +206,10 @@ ol.renderer.Layer.prototype.scheduleExpireCache =
 
 
 /**
- * @protected
  * @param {Object.<string, ol.Attribution>} attributionsSet Attributions
  *     set (target).
  * @param {Array.<ol.Attribution>} attributions Attributions (source).
+ * @protected
  */
 ol.renderer.Layer.prototype.updateAttributions =
     function(attributionsSet, attributions) {
@@ -222,9 +225,9 @@ ol.renderer.Layer.prototype.updateAttributions =
 
 
 /**
- * @protected
  * @param {ol.FrameState} frameState Frame state.
  * @param {ol.source.Source} source Source.
+ * @protected
  */
 ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
   var logo = source.getLogo();
@@ -235,11 +238,11 @@ ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
 
 
 /**
- * @protected
  * @param {Object.<string, Object.<string, ol.TileRange>>} usedTiles Used tiles.
  * @param {ol.source.TileSource} tileSource Tile source.
  * @param {number} z Z.
  * @param {ol.TileRange} tileRange Tile range.
+ * @protected
  */
 ol.renderer.Layer.prototype.updateUsedTiles =
     function(usedTiles, tileSource, z, tileRange) {
@@ -264,6 +267,7 @@ ol.renderer.Layer.prototype.updateUsedTiles =
  *     determine if the tile is loaded.
  * @param {ol.source.TileSource} tileSource Tile source.
  * @param {ol.Projection} projection Projection.
+ * @protected
  * @return {function(number, number, number): ol.Tile} Returns a tile if it is
  *     loaded.
  */
@@ -280,8 +284,8 @@ ol.renderer.Layer.prototype.createGetTileIfLoadedFunction =
  * @param {ol.Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {ol.Size} size Size.
- * @return {ol.Coordinate} Snapped center.
  * @protected
+ * @return {ol.Coordinate} Snapped center.
  */
 ol.renderer.Layer.prototype.snapCenterToPixel =
     function(center, resolution, size) {

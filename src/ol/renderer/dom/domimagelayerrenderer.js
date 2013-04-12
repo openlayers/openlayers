@@ -45,6 +45,7 @@ goog.inherits(ol.renderer.dom.ImageLayer, ol.renderer.dom.Layer);
 
 
 /**
+ * @protected
  * @return {ol.layer.ImageLayer} Image layer.
  */
 ol.renderer.dom.ImageLayer.prototype.getImageLayer = function() {
@@ -109,7 +110,7 @@ ol.renderer.dom.ImageLayer.prototype.renderFrame =
       goog.dom.appendChild(this.target, imageElement);
       this.image_ = image;
     }
-    this.setTransform(transform);
+    this.setTransform_(transform);
 
     this.updateAttributions(frameState.attributions, image.getAttributions());
     this.updateLogos(frameState, imageSource);
@@ -120,8 +121,9 @@ ol.renderer.dom.ImageLayer.prototype.renderFrame =
 
 /**
  * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @private
  */
-ol.renderer.dom.ImageLayer.prototype.setTransform = function(transform) {
+ol.renderer.dom.ImageLayer.prototype.setTransform_ = function(transform) {
   if (!goog.vec.Mat4.equals(transform, this.transform_)) {
     ol.dom.transformElement2D(this.target, transform, 6);
     goog.vec.Mat4.setFromArray(this.transform_, transform);

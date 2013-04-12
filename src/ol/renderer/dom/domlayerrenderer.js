@@ -37,6 +37,7 @@ ol.renderer.dom.Layer.prototype.disposeInternal = function() {
 
 
 /**
+ * @protected
  * @return {!Element} Target.
  */
 ol.renderer.dom.Layer.prototype.getTarget = function() {
