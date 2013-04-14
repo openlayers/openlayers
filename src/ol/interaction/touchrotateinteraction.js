@@ -4,6 +4,7 @@ goog.provide('ol.interaction.TouchRotate');
 
 goog.require('goog.asserts');
 goog.require('goog.style');
+goog.require('ol.Coordinate');
 goog.require('ol.View');
 goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
@@ -26,6 +27,12 @@ ol.interaction.TOUCHROTATE_ANIMATION_DURATION = 250;
 ol.interaction.TouchRotate = function(opt_threshold) {
 
   goog.base(this);
+
+  /**
+   * @private
+   * @type {ol.Coordinate}
+   */
+  this.anchor_ = null;
 
   /**
    * @private
@@ -93,14 +100,14 @@ ol.interaction.TouchRotate.prototype.handleTouchMove =
   var centroid = ol.interaction.Touch.centroid(this.targetTouches);
   centroid.x -= viewportPosition.x;
   centroid.y -= viewportPosition.y;
-  var anchor = map.getCoordinateFromPixel(centroid);
+  this.anchor_ = map.getCoordinateFromPixel(centroid);
 
   // rotate
   if (this.rotating_) {
     var view = map.getView().getView2D();
     map.requestRenderFrame();
     ol.interaction.Interaction.rotateWithoutConstraints(map, view,
-        view.getRotation() + rotationDelta, anchor);
+        view.getRotation() + rotationDelta, this.anchor_);
   }
 };
 
@@ -115,7 +122,7 @@ ol.interaction.TouchRotate.prototype.handleTouchEnd =
     var view = map.getView().getView2D();
     if (this.rotating_) {
       ol.interaction.Interaction.rotate(
-          map, view, view.getRotation(), undefined,
+          map, view, view.getRotation(), this.anchor_,
           ol.interaction.TOUCHROTATE_ANIMATION_DURATION);
     }
     view.setHint(ol.ViewHint.INTERACTING, -1);
@@ -134,6 +141,7 @@ ol.interaction.TouchRotate.prototype.handleTouchStart =
   if (this.targetTouches.length >= 2) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
+    this.anchor_ = null;
     this.lastAngle_ = undefined;
     this.rotating_ = false;
     this.rotationDelta_ = 0.0;
