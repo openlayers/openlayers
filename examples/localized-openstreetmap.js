@@ -23,6 +23,7 @@ var map = new ol.Map({
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: new ol.View2D({
+    maxZoom: 18,
     center: [-172857, 5977746],
     zoom: 12
   })
