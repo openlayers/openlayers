@@ -391,25 +391,25 @@ ol.View2D.createResolutionConstraint_ = function(options) {
     resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
         resolutions);
   } else {
-    var numZoomLevels, zoomFactor;
-    if (goog.isDef(options.maxResolution) &&
-        goog.isDef(options.numZoomLevels) &&
-        goog.isDef(options.zoomFactor)) {
-      maxResolution = options.maxResolution;
-      numZoomLevels = options.numZoomLevels;
-      zoomFactor = options.zoomFactor;
-    } else {
+    maxResolution = options.maxResolution;
+    if (!goog.isDef(maxResolution)) {
       var projectionExtent = ol.projection.createProjection(
           options.projection, 'EPSG:3857').getExtent();
       maxResolution = Math.max(
           projectionExtent.maxX - projectionExtent.minX,
           projectionExtent.maxY - projectionExtent.minY) / ol.DEFAULT_TILE_SIZE;
-      numZoomLevels = 29;
+    }
+    var maxZoom = options.maxZoom;
+    if (!goog.isDef(maxZoom)) {
+      maxZoom = 28;
+    }
+    var zoomFactor = options.zoomFactor;
+    if (!goog.isDef(zoomFactor)) {
       zoomFactor = 2;
     }
-    minResolution = maxResolution / Math.pow(zoomFactor, numZoomLevels - 1);
+    minResolution = maxResolution / Math.pow(zoomFactor, maxZoom);
     resolutionConstraint = ol.ResolutionConstraint.createSnapToPower(
-        zoomFactor, maxResolution, numZoomLevels - 1);
+        zoomFactor, maxResolution, maxZoom);
   }
   return [resolutionConstraint, maxResolution, minResolution];
 };
