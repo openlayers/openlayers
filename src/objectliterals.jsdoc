@@ -49,14 +49,14 @@
  * @property {ol.Coordinate|undefined} center The view center in map projection.
  * @property {number|undefined} maxResolution The maximum resolution in map
  *     units per pixel.
- * @property {number|undefined} numZoomLevels The number of zoom levels for this
- *     view. Zoom level 0 uses the `maxResolution`; subsequent zoom levels are
+ * @property {number|undefined} maxZoom The maximum zoom level for this view.
+ *     Zoom level 0 uses the `maxResolution`; subsequent zoom levels are
  *     calculated by dividing the previous resolution by `zoomFactor`.
  * @property {ol.ProjectionLike} projection The map projection.
  * @property {number|undefined} resolution The initial resolution for the view.
  * @property {Array.<number>|undefined} resolutions The resolutions for this
  *     view. If configured, this is equivalent to specifying `maxResolution` and
- *     `numZoomLevels`.
+ *     `maxZoom`.
  * @property {number|undefined} rotation Initial rotation of the view.
  * @property {number|undefined} zoom Initial zoom level of the view.
  * @property {number|undefined} zoomFactor Factor to calculate resolutions for

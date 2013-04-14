@@ -391,12 +391,12 @@ ol.View2D.createResolutionConstraint_ = function(options) {
     resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
         resolutions);
   } else {
-    var numZoomLevels, zoomFactor;
+    var maxZoom, zoomFactor;
     if (goog.isDef(options.maxResolution) &&
-        goog.isDef(options.numZoomLevels) &&
+        goog.isDef(options.maxZoom) &&
         goog.isDef(options.zoomFactor)) {
       maxResolution = options.maxResolution;
-      numZoomLevels = options.numZoomLevels;
+      maxZoom = options.maxZoom;
       zoomFactor = options.zoomFactor;
     } else {
       var projectionExtent = ol.projection.createProjection(
@@ -404,12 +404,12 @@ ol.View2D.createResolutionConstraint_ = function(options) {
       maxResolution = Math.max(
           projectionExtent.maxX - projectionExtent.minX,
           projectionExtent.maxY - projectionExtent.minY) / ol.DEFAULT_TILE_SIZE;
-      numZoomLevels = 29;
+      maxZoom = 28;
       zoomFactor = 2;
     }
-    minResolution = maxResolution / Math.pow(zoomFactor, numZoomLevels - 1);
+    minResolution = maxResolution / Math.pow(zoomFactor, maxZoom);
     resolutionConstraint = ol.ResolutionConstraint.createSnapToPower(
-        zoomFactor, maxResolution, numZoomLevels - 1);
+        zoomFactor, maxResolution, maxZoom);
   }
   return [resolutionConstraint, maxResolution, minResolution];
 };

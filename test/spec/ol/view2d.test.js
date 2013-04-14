@@ -16,12 +16,12 @@ describe('ol.View2D', function() {
         });
       });
 
-      describe('with maxResolution, numZoomLevels, and zoomFactor options',
+      describe('with maxResolution, maxZoom, and zoomFactor options',
           function() {
             it('gives a correct resolution constraint function', function() {
               var options = {
                 maxResolution: 81,
-                numZoomLevels: 4,
+                maxZoom: 3,
                 zoomFactor: 3
               };
               var parts = ol.View2D.createResolutionConstraint_(options);
