@@ -207,6 +207,9 @@ ol.Map = function(options) {
   this.viewport_.style.height = '100%';
   // prevent page zoom on IE >= 10 browsers
   this.viewport_.style.msTouchAction = 'none';
+  if (ol.BrowserFeature.HAS_TOUCH) {
+    this.viewport_.className = 'ol-touch';
+  }
   goog.dom.appendChild(this.target_, this.viewport_);
 
   /**
