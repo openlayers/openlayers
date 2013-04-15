@@ -140,6 +140,12 @@ a.ol-full-screen-true:after {
   line-height: 19px;
   background: rgba(0,60,136,0.5);
 }
+.ol-touch .ol-zoom a {
+  font-size: 20px;
+  height: 30px;
+  width: 30px;
+  line-height: 26px;
+}
 .ol-zoom a:hover {
   background: rgba(0,60,136,0.7);
 }
