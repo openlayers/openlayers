@@ -4,6 +4,7 @@ goog.provide('ol.interaction.KeyboardZoom');
 
 goog.require('goog.asserts');
 goog.require('goog.events.KeyHandler.EventType');
+goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Interaction');
 
 
@@ -16,14 +17,21 @@ ol.interaction.KEYBOARD_ZOOM_DURATION = 100;
 
 /**
  * @constructor
+ * @param {ol.interaction.ConditionType} condition Condition.
  * @param {ol.interaction.KeyboardZoomOptions=} opt_options Options.
  * @extends {ol.interaction.Interaction}
  */
-ol.interaction.KeyboardZoom = function(opt_options) {
+ol.interaction.KeyboardZoom = function(condition, opt_options) {
 
   goog.base(this);
 
   var options = goog.isDef(opt_options) ? opt_options : {};
+
+  /**
+   * @private
+   * @type {ol.interaction.ConditionType}
+   */
+  this.condition_ = condition;
 
   /**
    * @private
@@ -44,7 +52,8 @@ ol.interaction.KeyboardZoom.prototype.handleMapBrowserEvent =
     var keyEvent = /** @type {goog.events.KeyEvent} */
         (mapBrowserEvent.browserEvent);
     var charCode = keyEvent.charCode;
-    if (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0)) {
+    if (this.condition_(keyEvent) &&
+        (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0))) {
       var map = mapBrowserEvent.map;
       var delta = (charCode == '+'.charCodeAt(0)) ? this.delta_ : -this.delta_;
       map.requestRenderFrame();
