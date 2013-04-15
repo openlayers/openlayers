@@ -81,7 +81,7 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
   var map = mapBrowserEvent.map;
   var view = map.getView();
   if (this.targetTouches.length == 0) {
-    view.setHint(ol.ViewHint.INTERACTING, -1);
+    var interacting = view.setHint(ol.ViewHint.INTERACTING, -1);
     if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
       var distance = this.kinetic_.getDistance();
       var angle = this.kinetic_.getAngle();
@@ -94,6 +94,8 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
           centerpx.y - distance * Math.sin(angle));
       var dest = map.getCoordinateFromPixel(destpx);
       view.setCenter(dest);
+    } else if (interacting === 0) {
+      map.requestRenderFrame();
     }
     return false;
   } else {
