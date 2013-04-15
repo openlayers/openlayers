@@ -78,7 +78,7 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  view.setHint(ol.ViewHint.INTERACTING, -1);
+  var interacting = view.setHint(ol.ViewHint.INTERACTING, -1);
 
   if (this.kinetic_ && this.kinetic_.end()) {
     var distance = this.kinetic_.getDistance();
@@ -93,6 +93,8 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
         centerpx.y - distance * Math.sin(angle));
     var dest = map.getCoordinateFromPixel(destpx);
     view.setCenter(dest);
+  } else if (interacting === 0) {
+    map.requestRenderFrame();
   }
 };
 
