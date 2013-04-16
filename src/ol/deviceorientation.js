@@ -1,4 +1,3 @@
-// FIXME: tracking property (same as ol.Geolocation)
 // FIXME: event.absolute
 goog.provide('ol.DeviceOrientation');
 goog.provide('ol.DeviceOrientationProperty');
@@ -14,7 +13,8 @@ goog.require('ol.Object');
 ol.DeviceOrientationProperty = {
   ALPHA: 'alpha',
   BETA: 'beta',
-  GAMMA: 'gamma'
+  GAMMA: 'gamma',
+  TRACKING: 'tracking'
 };
 
 
@@ -27,12 +27,28 @@ ol.DeviceOrientation = function() {
 
   goog.base(this);
 
-  if (ol.DeviceOrientation.SUPPORTED) {
-    goog.events.listen(window, 'deviceorientation',
-        this.orientationChange_, false, this);
-  }
+  /**
+   * @private
+   * @type {?number}
+   */
+  this.listenerKey_ = null;
+
+  this.setTracking(false);
+
+  goog.events.listen(this,
+      ol.Object.getChangedEventType(ol.DeviceOrientationProperty.TRACKING),
+      this.handleTrackingChanged_, false, this);
 };
 goog.inherits(ol.DeviceOrientation, ol.Object);
+
+
+/**
+ * @inheritDoc
+ */
+ol.DeviceOrientation.prototype.disposeInternal = function() {
+  this.setTracking(false);
+  goog.base(this, 'disposeInternal');
+};
 
 
 /**
@@ -102,3 +118,45 @@ goog.exportProperty(
     ol.DeviceOrientation.prototype,
     'getGamma',
     ol.DeviceOrientation.prototype.getGamma);
+
+
+/**
+ * @return {boolean|undefined} tracking.
+ */
+ol.DeviceOrientation.prototype.getTracking = function() {
+  return /** @type {boolean} */ (
+      this.get(ol.DeviceOrientationProperty.TRACKING));
+};
+goog.exportProperty(
+    ol.DeviceOrientation.prototype,
+    'getTracking',
+    ol.DeviceOrientation.prototype.getTracking);
+
+
+/**
+ * @private
+ */
+ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
+  if (ol.DeviceOrientation.SUPPORTED) {
+    var tracking = this.getTracking();
+    if (tracking && goog.isNull(this.listenerKey_)) {
+      this.listenerKey_ = goog.events.listen(window, 'deviceorientation',
+          this.orientationChange_, false, this);
+    } else if (!tracking && !goog.isNull(this.listenerKey_)) {
+      goog.events.unlistenByKey(this.listenerKey_);
+      this.listenerKey_ = null;
+    }
+  }
+};
+
+
+/**
+ * @param {boolean} tracking Enable or disable tracking.
+ */
+ol.DeviceOrientation.prototype.setTracking = function(tracking) {
+  this.set(ol.DeviceOrientationProperty.TRACKING, tracking);
+};
+goog.exportProperty(
+    ol.DeviceOrientation.prototype,
+    'setTracking',
+    ol.DeviceOrientation.prototype.setTracking);
