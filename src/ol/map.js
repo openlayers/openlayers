@@ -32,7 +32,6 @@ goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Color');
-goog.require('ol.Extent');
 goog.require('ol.FrameState');
 goog.require('ol.IView');
 goog.require('ol.MapBrowserEvent');
@@ -52,6 +51,7 @@ goog.require('ol.View');
 goog.require('ol.View2D');
 goog.require('ol.ViewHint');
 goog.require('ol.control.defaults');
+goog.require('ol.extent');
 goog.require('ol.interaction.defaults');
 goog.require('ol.layer.Layer');
 goog.require('ol.projection');
@@ -838,7 +838,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
   if (!goog.isNull(frameState)) {
     // FIXME works for View2D only
-    frameState.extent = ol.Extent.getForView2DAndSize(view2DState.center,
+    frameState.extent = ol.extent.getForView2DAndSize(view2DState.center,
         view2DState.resolution, view2DState.rotation, frameState.size);
   }
 
