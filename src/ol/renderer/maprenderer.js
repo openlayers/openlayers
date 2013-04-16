@@ -1,7 +1,6 @@
 goog.provide('ol.renderer.Map');
 
 goog.require('goog.Disposable');
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dispose');
 goog.require('goog.events');
@@ -9,10 +8,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
-goog.require('ol.CollectionEvent');
-goog.require('ol.CollectionEventType');
 goog.require('ol.FrameState');
-goog.require('ol.Object');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
 
@@ -45,20 +41,6 @@ ol.renderer.Map = function(container, map) {
    * @type {Object.<string, ol.renderer.Layer>}
    */
   this.layerRenderers_ = {};
-
-  /**
-   * @private
-   * @type {?number}
-   */
-  this.mapLayersChangedListenerKey_ = goog.events.listen(
-      map, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
-      this.handleLayersChanged_, false, this);
-
-  /**
-   * @private
-   * @type {Array.<?number>}
-   */
-  this.layersListenerKeys_ = null;
 
   /**
    * @private
@@ -119,7 +101,6 @@ ol.renderer.Map.prototype.disposeInternal = function() {
   goog.object.forEach(this.layerRenderers_, function(layerRenderer) {
     goog.dispose(layerRenderer);
   });
-  goog.events.unlistenByKey(this.mapLayersChangedListenerKey_);
   goog.object.forEach(
       this.layerRendererChangeListenKeys_, goog.events.unlistenByKey);
   goog.base(this, 'disposeInternal');
@@ -174,46 +155,6 @@ ol.renderer.Map.prototype.getMap = function() {
  * @private
  */
 ol.renderer.Map.prototype.handleLayerRendererChange_ = function(event) {
-  this.getMap().render();
-};
-
-
-/**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @private
- */
-ol.renderer.Map.prototype.handleLayersAdd_ = function(collectionEvent) {
-  this.getMap().render();
-};
-
-
-/**
- * @param {goog.events.Event} event Event.
- * @private
- */
-ol.renderer.Map.prototype.handleLayersChanged_ = function(event) {
-  if (!goog.isNull(this.layersListenerKeys_)) {
-    goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
-    this.layersListenerKeys_ = null;
-  }
-  var layers = this.getMap().getLayers();
-  if (goog.isDefAndNotNull(layers)) {
-    this.layersListenerKeys_ = [
-      goog.events.listen(layers, ol.CollectionEventType.ADD,
-          this.handleLayersAdd_, false, this),
-      goog.events.listen(layers, ol.CollectionEventType.REMOVE,
-          this.handleLayersRemove_, false, this)
-    ];
-  }
-  this.getMap().render();
-};
-
-
-/**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @private
- */
-ol.renderer.Map.prototype.handleLayersRemove_ = function(collectionEvent) {
   this.getMap().render();
 };
 
