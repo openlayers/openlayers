@@ -1,24 +1,23 @@
 goog.provide('ol.structs.RTree');
 
 goog.require('goog.object');
-goog.require('ol.Rectangle');
+goog.require('ol.extent');
 
 
 
 /**
  * @private
  * @constructor
- * @param {number} minX Minimum X.
- * @param {number} minY Minimum Y.
- * @param {number} maxX Maximum X.
- * @param {number} maxY Maximum Y.
+ * @param {ol.Extent} bounds Extent.
  * @param {ol.structs.RTreeNode_} parent Parent node.
  * @param {number} level Level in the tree hierarchy.
- * @extends {ol.Rectangle}
  */
-ol.structs.RTreeNode_ = function(minX, minY, maxX, maxY, parent, level) {
+ol.structs.RTreeNode_ = function(bounds, parent, level) {
 
-  goog.base(this, minX, minY, maxX, maxY);
+  /**
+   * @type {ol.Extent}
+   */
+  this.bounds = bounds;
 
   /**
    * @type {Object}
@@ -51,17 +50,16 @@ ol.structs.RTreeNode_ = function(minX, minY, maxX, maxY, parent, level) {
   this.children = [];
 
 };
-goog.inherits(ol.structs.RTreeNode_, ol.Rectangle);
 
 
 /**
  * Find all objects intersected by a rectangle.
- * @param {ol.Rectangle} bounds Bounding box.
+ * @param {ol.Extent} bounds Bounding box.
  * @param {Object.<string, Object>} results Target object for results.
  * @param {string=} opt_type Type for another indexing dimension.
  */
 ol.structs.RTreeNode_.prototype.find = function(bounds, results, opt_type) {
-  if (this.intersects(bounds) &&
+  if (ol.extent.intersects(this.bounds, bounds) &&
       (!goog.isDef(opt_type) || this.types[opt_type] === true)) {
     var numChildren = this.children.length;
     if (numChildren === 0) {
@@ -79,11 +77,11 @@ ol.structs.RTreeNode_.prototype.find = function(bounds, results, opt_type) {
 
 /**
  * Find the appropriate node for insertion.
- * @param {ol.Rectangle} bounds Bounding box.
+ * @param {ol.Extent} bounds Bounding box.
  * @return {ol.structs.RTreeNode_|undefined} Matching node.
  */
 ol.structs.RTreeNode_.prototype.get = function(bounds) {
-  if (this.intersects(bounds)) {
+  if (ol.extent.intersects(this.bounds, bounds)) {
     var numChildren = this.children.length;
     if (numChildren === 0) {
       return goog.isNull(this.parent) ? this : this.parent;
@@ -102,10 +100,10 @@ ol.structs.RTreeNode_.prototype.get = function(bounds) {
 
 /**
  * Update boxes up to the root to ensure correct bounding
- * @param {ol.Rectangle} bounds Bounding box.
+ * @param {ol.Extent} bounds Bounding box.
  */
 ol.structs.RTreeNode_.prototype.update = function(bounds) {
-  this.extend(bounds);
+  ol.extent.extend(this.bounds, bounds);
   if (!goog.isNull(this.parent)) {
     this.parent.update(bounds);
   }
@@ -129,15 +127,15 @@ ol.structs.RTreeNode_.prototype.divide = function() {
   for (var i = 0; i < numChildren; ++i) {
     child = this.children[i];
     if (i % half === 0) {
-      node = new ol.structs.RTreeNode_(child.minX, child.minY,
-          child.maxX, child.maxY, this, this.level + 1);
+      node = new ol.structs.RTreeNode_(
+          child.bounds.slice(), this, this.level + 1);
       goog.object.extend(this.types, node.types);
       this.children.push(node);
     }
     child.parent = /** @type {ol.structs.RTreeNode_} */ (node);
     goog.object.extend(node.types, child.types);
     node.children.push(child);
-    node.extend(child);
+    ol.extent.extend(node.bounds, child.bounds);
   }
 };
 
@@ -153,13 +151,13 @@ ol.structs.RTree = function() {
    * @type {ol.structs.RTreeNode_}
    */
   this.root_ = new ol.structs.RTreeNode_(
-      -Infinity, -Infinity, Infinity, Infinity, null, 0);
+      [-Infinity, Infinity, -Infinity, Infinity], null, 0);
 
 };
 
 
 /**
- * @param {ol.Rectangle} bounds Bounding box.
+ * @param {ol.Extent} bounds Bounding box.
  * @param {string=} opt_type Type for another indexing dimension.
  * @return {Object.<string, Object>} Results for the passed bounding box.
  */
@@ -171,16 +169,14 @@ ol.structs.RTree.prototype.find = function(bounds, opt_type) {
 
 
 /**
- * @param {ol.Rectangle} bounds Bounding box.
+ * @param {ol.Extent} bounds Bounding box.
  * @param {Object} object Object to store with the passed bounds.
  * @param {string=} opt_type Type for another indexing dimension.
  */
 ol.structs.RTree.prototype.put = function(bounds, object, opt_type) {
   var found = this.root_.get(bounds);
   if (found) {
-    var node = new ol.structs.RTreeNode_(
-        bounds.minX, bounds.minY, bounds.maxX, bounds.maxY,
-        found, found.level + 1);
+    var node = new ol.structs.RTreeNode_(bounds, found, found.level + 1);
     node.object = object;
     node.objectId = goog.getUid(object).toString();
 
