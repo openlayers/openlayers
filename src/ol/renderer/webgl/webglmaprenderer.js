@@ -474,7 +474,7 @@ ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
  */
 ol.renderer.webgl.Map.prototype.handleWebGLContextRestored = function() {
   this.initializeGL_();
-  this.getMap().render();
+  this.dispatchChangeEvent(true);
 };
 
 

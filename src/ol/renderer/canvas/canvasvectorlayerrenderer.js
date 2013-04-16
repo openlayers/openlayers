@@ -142,7 +142,7 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    */
   this.requestMapRenderFrame_ = goog.bind(function() {
     this.dirty_ = true;
-    mapRenderer.getMap().requestRenderFrame();
+    this.dispatchChangeEvent(false);
   }, this);
 
 };
