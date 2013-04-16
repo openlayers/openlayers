@@ -429,8 +429,6 @@ def build_check_requires_timestamp(t):
             t.info('%s:%d: unused goog.require: %r' % (
                 filename, require_linenos[require], require))
             unused_count += 1
-    all_provides.discard('ol')
-    all_provides.discard('ol.MapProperty')
 
     class Node(object):
 
