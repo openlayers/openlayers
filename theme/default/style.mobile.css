@@ -43,6 +43,9 @@ div.olControlZoom a:hover {
         background: rgba(0, 60, 136, 0.5);
     }
 }
+div.olMapViewport {
+    -ms-touch-action: none;
+}
 .olLayerGrid .olTileImage {
     -webkit-transition: opacity 0.2s linear;
     -moz-transition: opacity 0.2s linear;
