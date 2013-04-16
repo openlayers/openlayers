@@ -184,15 +184,14 @@ ol.renderer.Map.prototype.renderFrame = goog.nullFunction;
 
 /**
  * @param {ol.Map} map Map.
- * @param {!ol.FrameState} frameState Frame state.
+ * @param {ol.FrameState} frameState Frame state.
  * @private
  */
 ol.renderer.Map.prototype.removeUnusedLayerRenderers_ =
     function(map, frameState) {
-  var layerStates = frameState.layerStates;
   var layerKey;
   for (layerKey in this.layerRenderers_) {
-    if (!(layerKey in layerStates)) {
+    if (goog.isNull(frameState) || !(layerKey in frameState.layerStates)) {
       goog.dispose(this.removeLayerRendererByKey_(layerKey));
     }
   }
