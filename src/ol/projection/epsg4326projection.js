@@ -1,6 +1,5 @@
 goog.provide('ol.projection.EPSG4326');
 
-goog.require('ol.Extent');
 goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');
 goog.require('ol.projection');
@@ -31,7 +30,7 @@ goog.inherits(ol.projection.EPSG4326, ol.Projection);
  * @const
  * @type {ol.Extent}
  */
-ol.projection.EPSG4326.EXTENT = new ol.Extent(-180, -90, 180, 90);
+ol.projection.EPSG4326.EXTENT = [-180, 180, -90, 90];
 
 
 /**
