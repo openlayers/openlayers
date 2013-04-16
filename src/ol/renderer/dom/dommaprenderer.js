@@ -18,11 +18,10 @@ goog.require('ol.renderer.dom.TileLayer');
  * @constructor
  * @extends {ol.renderer.Map}
  * @param {Element} container Container.
- * @param {ol.Map} map Map.
  */
-ol.renderer.dom.Map = function(container, map) {
+ol.renderer.dom.Map = function(container) {
 
-  goog.base(this, container, map);
+  goog.base(this, container);
 
   /**
    * @type {!Element}

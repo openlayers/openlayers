@@ -110,7 +110,6 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer =
   if (!goog.isDef(this.framebufferDimension) ||
       this.framebufferDimension != framebufferDimension) {
 
-    var map = this.getMap();
     frameState.postRenderFunctions.push(
         goog.partial(function(gl, framebuffer, texture) {
           if (!gl.isContextLost()) {

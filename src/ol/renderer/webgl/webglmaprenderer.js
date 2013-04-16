@@ -56,11 +56,10 @@ ol.renderer.webgl.TextureCacheEntry;
  * @constructor
  * @extends {ol.renderer.Map}
  * @param {Element} container Container.
- * @param {ol.Map} map Map.
  */
-ol.renderer.webgl.Map = function(container, map) {
+ol.renderer.webgl.Map = function(container) {
 
-  goog.base(this, container, map);
+  goog.base(this, container);
 
   /**
    * @private

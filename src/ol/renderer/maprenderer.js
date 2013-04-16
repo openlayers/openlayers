@@ -20,9 +20,8 @@ goog.require('ol.renderer.Layer');
  * @constructor
  * @extends {goog.events.EventTarget}
  * @param {Element} container Container.
- * @param {ol.Map} map Map.
  */
-ol.renderer.Map = function(container, map) {
+ol.renderer.Map = function(container) {
 
   goog.base(this);
 
@@ -31,12 +30,6 @@ ol.renderer.Map = function(container, map) {
    * @type {Element}
    */
   this.container_ = container;
-
-  /**
-   * @private
-   * @type {ol.Map}
-   */
-  this.map_ = map;
 
   /**
    * @private
@@ -150,14 +143,6 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
  */
 ol.renderer.Map.prototype.getLayerRenderers = function() {
   return this.layerRenderers_;
-};
-
-
-/**
- * @return {ol.Map} Map.
- */
-ol.renderer.Map.prototype.getMap = function() {
-  return this.map_;
 };
 
 
