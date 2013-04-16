@@ -6,7 +6,7 @@ describe('ol.filter.Extent', function() {
   var extent, filter;
 
   beforeEach(function() {
-    extent = new ol.Extent(0, 0, 45, 90);
+    extent = [0, 45, 0, 90];
     filter = new ol.filter.Extent(extent);
   });
 
@@ -31,7 +31,6 @@ describe('ol.filter.Extent', function() {
 
 });
 
-goog.require('ol.Extent');
 goog.require('ol.Feature');
 goog.require('ol.filter.Extent');
 goog.require('ol.geom.Point');
