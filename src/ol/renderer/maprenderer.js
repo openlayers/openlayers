@@ -242,23 +242,34 @@ ol.renderer.Map.prototype.renderFrame = goog.nullFunction;
 
 
 /**
+ * @param {ol.Map} map Map.
+ * @param {!ol.FrameState} frameState Frame state.
+ * @private
+ */
+ol.renderer.Map.prototype.removeUnusedLayerRenderers_ =
+    function(map, frameState) {
+  var layerStates = frameState.layerStates;
+  var layerKey;
+  for (layerKey in this.layerRenderers_) {
+    if (!(layerKey in layerStates)) {
+      goog.dispose(this.removeLayerRendererByKey_(layerKey));
+    }
+  }
+};
+
+
+/**
  * @param {!ol.FrameState} frameState Frame state.
  * @protected
  */
-ol.renderer.Map.prototype.removeUnusedLayerRenderers =
+ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers =
     function(frameState) {
-  var layerRenderersToRemove = {};
   var layerKey;
   for (layerKey in this.layerRenderers_) {
-    layerRenderersToRemove[layerKey] = true;
-  }
-  var layersArray = frameState.layersArray;
-  var i;
-  for (i = 0; i < layersArray.length; ++i) {
-    layerKey = goog.getUid(layersArray[i]).toString();
-    delete layerRenderersToRemove[layerKey];
-  }
-  for (layerKey in layerRenderersToRemove) {
-    goog.dispose(this.removeLayerRendererByKey_(layerKey));
+    if (!(layerKey in frameState.layerStates)) {
+      frameState.postRenderFunctions.push(
+          goog.bind(this.removeUnusedLayerRenderers_, this));
+      return;
+    }
   }
 };

@@ -641,6 +641,6 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     frameState.animate = true;
   }
 
-  this.removeUnusedLayerRenderers(frameState);
+  this.scheduleRemoveUnusedLayerRenderers(frameState);
 
 };
