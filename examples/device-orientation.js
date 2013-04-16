@@ -29,4 +29,5 @@ deviceOrientation.on('changed', function() {
   document.getElementById('alpha').innerHTML = deviceOrientation.getAlpha();
   document.getElementById('beta').innerHTML = deviceOrientation.getBeta();
   document.getElementById('gamma').innerHTML = deviceOrientation.getGamma();
+  document.getElementById('heading').innerHTML = deviceOrientation.getHeading();
 });

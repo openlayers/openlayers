@@ -1,4 +1,3 @@
-// FIXME: event.absolute
 goog.provide('ol.DeviceOrientation');
 goog.provide('ol.DeviceOrientationProperty');
 
@@ -14,6 +13,7 @@ ol.DeviceOrientationProperty = {
   ALPHA: 'alpha',
   BETA: 'beta',
   GAMMA: 'gamma',
+  HEADING: 'heading',
   TRACKING: 'tracking'
 };
 
@@ -67,8 +67,12 @@ ol.DeviceOrientation.prototype.orientationChange_ = function(browserEvent) {
   var event = /** @type {DeviceOrientationEvent} */
       (browserEvent.getBrowserEvent());
   if (goog.isDefAndNotNull(event.alpha)) {
-    this.set(ol.DeviceOrientationProperty.ALPHA,
-        goog.math.toRadians(event.alpha));
+    var alpha = goog.math.toRadians(event.alpha);
+    this.set(ol.DeviceOrientationProperty.ALPHA, alpha);
+    // event.absolute is undefined in iOS.
+    if (goog.isBoolean(event.absolute) && event.absolute) {
+      this.set(ol.DeviceOrientationProperty.HEADING, alpha);
+    }
   }
   if (goog.isDefAndNotNull(event.beta)) {
     this.set(ol.DeviceOrientationProperty.BETA,
@@ -118,6 +122,19 @@ goog.exportProperty(
     ol.DeviceOrientation.prototype,
     'getGamma',
     ol.DeviceOrientation.prototype.getGamma);
+
+
+/**
+ * @return {number|undefined} heading.
+ */
+ol.DeviceOrientation.prototype.getHeading = function() {
+  return /** @type {number} */ (
+      this.get(ol.DeviceOrientationProperty.HEADING));
+};
+goog.exportProperty(
+    ol.DeviceOrientation.prototype,
+    'getHeading',
+    ol.DeviceOrientation.prototype.getHeading);
 
 
 /**
