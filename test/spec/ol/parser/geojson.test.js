@@ -153,8 +153,8 @@ describe('ol.parser.GeoJSON', function() {
         expect(first.get('name')).to.be('Afghanistan');
         var firstGeom = first.getGeometry();
         expect(firstGeom).to.be.a(ol.geom.Polygon);
-        expect(firstGeom.getBounds().equals(
-            new ol.Extent(60.52843, 29.318572, 75.158028, 38.486282)))
+        expect(ol.extent.equals(firstGeom.getBounds(),
+            [60.52843, 75.158028, 29.318572, 38.486282]))
             .to.be(true);
 
         var last = result[178];
@@ -162,8 +162,8 @@ describe('ol.parser.GeoJSON', function() {
         expect(last.get('name')).to.be('Zimbabwe');
         var lastGeom = last.getGeometry();
         expect(lastGeom).to.be.a(ol.geom.Polygon);
-        expect(lastGeom.getBounds().equals(
-            new ol.Extent(25.264226, -22.271612, 32.849861, -15.507787)))
+        expect(ol.extent.equals(lastGeom.getBounds(),
+            [25.264226, 32.849861, -22.271612, -15.507787]))
             .to.be(true);
         done();
       });
@@ -200,8 +200,8 @@ describe('ol.parser.GeoJSON', function() {
         expect(first.get('name')).to.be('Afghanistan');
         var firstGeom = first.getGeometry();
         expect(firstGeom).to.be.a(ol.geom.Polygon);
-        expect(firstGeom.getBounds().equals(
-            new ol.Extent(60.52843, 29.318572, 75.158028, 38.486282)))
+        expect(ol.extent.equals(firstGeom.getBounds(),
+            [60.52843, 75.158028, 29.318572, 38.486282]))
             .to.be(true);
 
         var last = result[178];
@@ -209,8 +209,8 @@ describe('ol.parser.GeoJSON', function() {
         expect(last.get('name')).to.be('Zimbabwe');
         var lastGeom = last.getGeometry();
         expect(lastGeom).to.be.a(ol.geom.Polygon);
-        expect(lastGeom.getBounds().equals(
-            new ol.Extent(25.264226, -22.271612, 32.849861, -15.507787)))
+        expect(ol.extent.equals(lastGeom.getBounds(),
+            [25.264226, 32.849861, -22.271612, -15.507787]))
             .to.be(true);
       });
     });
@@ -219,8 +219,8 @@ describe('ol.parser.GeoJSON', function() {
 
 });
 
-goog.require('ol.Extent');
 goog.require('ol.Feature');
+goog.require('ol.extent');
 goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');

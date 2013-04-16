@@ -1,5 +1,4 @@
 goog.provide('ol.parser.ogc.OWSCommon_v1');
-goog.require('ol.Extent');
 goog.require('ol.parser.XML');
 
 
@@ -196,9 +195,10 @@ ol.parser.ogc.OWSCommon_v1 = function() {
         var pointList = str.split(this.regExes.splitSpace);
         obj['right'] = pointList[0];
         obj['top'] = pointList[1];
-        obj['bounds'] = new ol.Extent(parseFloat(obj['left']),
-            parseFloat(obj['bottom']), parseFloat(obj['right']),
-            parseFloat(obj['top']));
+        obj['bounds'] = [
+          parseFloat(obj['left']), parseFloat(obj['right']),
+          parseFloat(obj['bottom']), parseFloat(obj['top'])
+        ];
         delete obj['left'];
         delete obj['bottom'];
         delete obj['right'];
