@@ -45,10 +45,10 @@ describe('ol.geom.LineString', function() {
     it('returns the bounding extent', function() {
       var line = new ol.geom.LineString([[10, 20], [20, 30], [30, 40]]);
       var bounds = line.getBounds();
-      expect(bounds.minX).to.be(10);
-      expect(bounds.minY).to.be(20);
-      expect(bounds.maxX).to.be(30);
-      expect(bounds.maxY).to.be(40);
+      expect(bounds[0]).to.be(10);
+      expect(bounds[1]).to.be(30);
+      expect(bounds[2]).to.be(20);
+      expect(bounds[3]).to.be(40);
     });
 
   });
