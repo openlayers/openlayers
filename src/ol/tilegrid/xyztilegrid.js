@@ -46,8 +46,8 @@ ol.tilegrid.XYZ.prototype.getTileCoordChildTileRange =
     function(tileCoord, opt_tileRange) {
   if (tileCoord.z < this.maxZoom_) {
     return ol.TileRange.createOrUpdate(
-        tileCoord.x << 1, tileCoord.y << 1,
-        tileCoord.x + 1 << 1, tileCoord.y + 1 << 1,
+        tileCoord.x << 1, tileCoord.x + 1 << 1,
+        tileCoord.y << 1, tileCoord.y + 1 << 1,
         opt_tileRange);
   } else {
     return null;
@@ -61,7 +61,7 @@ ol.tilegrid.XYZ.prototype.getTileCoordChildTileRange =
 ol.tilegrid.XYZ.prototype.forEachTileCoordParentTileRange =
     function(tileCoord, callback, opt_obj, opt_tileRange) {
   var tileRange = ol.TileRange.createOrUpdate(
-      0, 0, tileCoord.x, tileCoord.y, opt_tileRange);
+      0, tileCoord.x, 0, tileCoord.y, opt_tileRange);
   var z;
   for (z = tileCoord.z - 1; z >= 0; --z) {
     tileRange.minX = tileRange.maxX >>= 1;

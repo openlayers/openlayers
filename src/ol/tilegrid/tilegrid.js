@@ -228,7 +228,7 @@ ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution =
   this.getTileCoordForXYAndResolution_(
       extent.maxX, extent.maxY, resolution, true, tileCoord);
   return ol.TileRange.createOrUpdate(
-      minX, minY, tileCoord.x, tileCoord.y, opt_tileRange);
+      minX, tileCoord.x, minY, tileCoord.y, opt_tileRange);
 };
 
 
