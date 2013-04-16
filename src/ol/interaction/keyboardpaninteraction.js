@@ -7,6 +7,7 @@ goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('ol.View2D');
 goog.require('ol.coordinate');
+goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Interaction');
 
 
@@ -20,13 +21,20 @@ ol.interaction.KEYBOARD_PAN_DURATION = 100;
 /**
  * @constructor
  * @extends {ol.interaction.Interaction}
+ * @param {ol.interaction.ConditionType} condition Condition.
  * @param {ol.interaction.KeyboardPanOptions=} opt_options Options.
  */
-ol.interaction.KeyboardPan = function(opt_options) {
+ol.interaction.KeyboardPan = function(condition, opt_options) {
 
   goog.base(this);
 
   var options = goog.isDef(opt_options) ? opt_options : {};
+
+  /**
+   * @private
+   * @type {ol.interaction.ConditionType}
+   */
+  this.condition_ = condition;
 
   /**
    * @private
@@ -47,10 +55,10 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
     var keyEvent = /** @type {goog.events.KeyEvent} */
         (mapBrowserEvent.browserEvent);
     var keyCode = keyEvent.keyCode;
-    if (keyCode == goog.events.KeyCodes.DOWN ||
+    if (this.condition_(keyEvent) && (keyCode == goog.events.KeyCodes.DOWN ||
         keyCode == goog.events.KeyCodes.LEFT ||
         keyCode == goog.events.KeyCodes.RIGHT ||
-        keyCode == goog.events.KeyCodes.UP) {
+        keyCode == goog.events.KeyCodes.UP)) {
       var map = mapBrowserEvent.map;
       // FIXME works for View2D only
       var view = map.getView();
