@@ -1,18 +1,34 @@
 goog.provide('ol.PixelBounds');
 
-goog.require('ol.Rectangle');
-
 
 
 /**
  * @constructor
- * @extends {ol.Rectangle}
  * @param {number} minX Minimum X.
- * @param {number} minY Minimum Y.
  * @param {number} maxX Maximum X.
+ * @param {number} minY Minimum Y.
  * @param {number} maxY Maximum Y.
  */
-ol.PixelBounds = function(minX, minY, maxX, maxY) {
-  goog.base(this, minX, minY, maxX, maxY);
+ol.PixelBounds = function(minX, maxX, minY, maxY) {
+
+  /**
+   * @type {number}
+   */
+  this.minX = minX;
+
+  /**
+   * @type {number}
+   */
+  this.maxX = maxX;
+
+  /**
+   * @type {number}
+   */
+  this.minY = minY;
+
+  /**
+   * @type {number}
+   */
+  this.maxY = maxY;
+
 };
-goog.inherits(ol.PixelBounds, ol.Rectangle);

@@ -150,10 +150,10 @@ ol.tilegrid.TileGrid.prototype.getPixelBoundsForTileCoordAndResolution =
   var tileWidth = tileSize.width / scale;
   var tileHeight = tileSize.height / scale;
   var minX = Math.round(tileCoord.x * tileWidth);
-  var minY = Math.round(tileCoord.y * tileHeight);
   var maxX = Math.round((tileCoord.x + 1) * tileWidth);
+  var minY = Math.round(tileCoord.y * tileHeight);
   var maxY = Math.round((tileCoord.y + 1) * tileHeight);
-  return new ol.PixelBounds(minX, minY, maxX, maxY);
+  return new ol.PixelBounds(minX, maxX, minY, maxY);
 };
 
 
