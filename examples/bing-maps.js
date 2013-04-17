@@ -13,7 +13,7 @@ for (var i = 0; i < styles.length; ++i) {
     visible: false,
     preload: Infinity,
     source: new ol.source.BingMaps({
-      key: 'AgtFlPYDnymLEe9zJ5PCkghbNiFZE9aAtTy3mPaEnEBXqLHtFuTcKoZ-miMC3w7R',
+      key: 'AlQLZ0-5yk301_ESrmNLma3LYxEKNSg7w-e_knuRfyYFtld-UFvXVs38NOulku3Q',
       style: styles[i]
     })
   }));
