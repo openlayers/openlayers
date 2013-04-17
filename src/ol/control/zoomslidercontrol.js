@@ -5,6 +5,7 @@
 goog.provide('ol.control.ZoomSlider');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
@@ -14,8 +15,10 @@ goog.require('goog.fx.Dragger.EventType');
 goog.require('goog.math');
 goog.require('goog.math.Rect');
 goog.require('goog.style');
+goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
+goog.require('ol.easing');
 
 
 /**
@@ -251,17 +254,25 @@ ol.control.ZoomSlider.prototype.amountForResolution_ = function(res) {
  * @private
  */
 ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
-  var map = this.getMap(),
-      amountDragged = this.amountDragged_(e),
-      res = this.resolutionForAmount_(amountDragged);
+  var map = this.getMap();
+  var view = map.getView().getView2D();
+  var resolution;
   if (e.type === goog.fx.Dragger.EventType.DRAG) {
-    if (res !== this.currentResolution_) {
-      this.currentResolution_ = res;
-      map.getView().getView2D().zoomWithoutConstraints(map, res);
+    var amountDragged = this.amountDragged_(e);
+    resolution = this.resolutionForAmount_(amountDragged);
+    if (resolution !== this.currentResolution_) {
+      this.currentResolution_ = resolution;
+      view.setResolution(resolution);
     }
   } else {
-    map.getView().getView2D().zoom(map, this.currentResolution_, undefined,
-        ol.control.ZOOMSLIDER_ANIMATION_DURATION);
+    goog.asserts.assert(goog.isDef(this.currentResolution_));
+    map.addPreRenderFunction(ol.animation.zoom({
+      resolution: this.currentResolution_,
+      duration: ol.control.ZOOMSLIDER_ANIMATION_DURATION,
+      easing: ol.easing.easeOut
+    }));
+    resolution = view.constrainResolution(this.currentResolution_);
+    view.setResolution(resolution);
   }
 };
 
