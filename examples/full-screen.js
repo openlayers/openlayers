@@ -19,7 +19,7 @@ var map = new ol.Map({
   layers: [
     new ol.layer.TileLayer({
       source: new ol.source.BingMaps({
-        key: 'AgtFlPYDnymLEe9zJ5PCkghbNiFZE9aAtTy3mPaEnEBXqLHtFuTcKoZ-miMC3w7R',
+        key: 'AlQLZ0-5yk301_ESrmNLma3LYxEKNSg7w-e_knuRfyYFtld-UFvXVs38NOulku3Q',
         style: 'Aerial'
       })
     })
