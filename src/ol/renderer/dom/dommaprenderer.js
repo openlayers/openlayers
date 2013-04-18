@@ -81,7 +81,7 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
   goog.array.forEach(frameState.layersArray, function(layer) {
     var layerRenderer = this.getLayerRenderer(layer);
     var layerState = frameState.layerStates[goog.getUid(layer)];
-    if (layerState.visible && layerState.ready) {
+    if (layerState.ready) {
       layerRenderer.renderFrame(frameState, layerState);
     }
   }, this);
