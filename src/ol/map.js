@@ -170,6 +170,12 @@ ol.Map = function(options) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.frameIndex_ = 0;
+
+  /**
+   * @private
    * @type {?ol.FrameState}
    */
   this.frameState_ = null;
@@ -804,6 +810,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
       extent: null,
       focus: goog.isNull(this.focus_) ? view2DState.center : this.focus_,
+      index: this.frameIndex_++,
       layersArray: layersArray,
       layerStates: layerStates,
       logos: {},
