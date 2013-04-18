@@ -4,6 +4,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.object');
 goog.require('goog.style');
 goog.require('ol.css');
 goog.require('ol.layer.ImageLayer');
@@ -81,10 +82,18 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
   goog.array.forEach(frameState.layersArray, function(layer) {
     var layerRenderer = this.getLayerRenderer(layer);
     var layerState = frameState.layerStates[goog.getUid(layer)];
-    if (layerState.visible && layerState.ready) {
+    if (layerState.ready) {
       layerRenderer.renderFrame(frameState, layerState);
     }
   }, this);
+
+  goog.object.forEach(
+      this.getLayerRenderers(),
+      function(layerRenderer, layerKey) {
+        if (!(layerKey in frameState.layerStates)) {
+          goog.dom.removeNode(layerRenderer.getTarget());
+        }
+      });
 
   if (!this.renderedVisible_) {
     goog.style.showElement(this.layersPane_, true);
