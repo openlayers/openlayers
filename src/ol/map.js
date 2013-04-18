@@ -29,6 +29,8 @@ goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
+goog.require('ol.CollectionEvent');
+goog.require('ol.CollectionEventType');
 goog.require('ol.Color');
 goog.require('ol.Extent');
 goog.require('ol.FrameState');
@@ -298,6 +300,14 @@ ol.Map = function(options) {
       goog.bind(this.getTilePriority, this),
       goog.bind(this.handleTileChange_, this));
 
+  /**
+   * @private
+   * @type {Array.<?number>}
+   */
+  this.layersListenerKeys_ = null;
+
+  goog.events.listen(this, ol.Object.getChangedEventType(ol.MapProperty.LAYERS),
+      this.handleLayersChanged_, false, this);
   goog.events.listen(this, ol.Object.getChangedEventType(ol.MapProperty.VIEW),
       this.handleViewChanged_, false, this);
   goog.events.listen(this, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
@@ -305,6 +315,7 @@ ol.Map = function(options) {
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.BACKGROUND_COLOR),
       this.handleBackgroundColorChanged_, false, this);
+
   this.setValues(optionsInternal.values);
 
   // this gives the map an initial size
@@ -549,6 +560,46 @@ ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
   } else {
     this.focus_ = mapBrowserEvent.getCoordinate();
   }
+};
+
+
+/**
+ * @param {ol.CollectionEvent} collectionEvent Collection event.
+ * @private
+ */
+ol.Map.prototype.handleLayersAdd_ = function(collectionEvent) {
+  this.render();
+};
+
+
+/**
+ * @param {goog.events.Event} event Event.
+ * @private
+ */
+ol.Map.prototype.handleLayersChanged_ = function(event) {
+  if (!goog.isNull(this.layersListenerKeys_)) {
+    goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
+    this.layersListenerKeys_ = null;
+  }
+  var layers = this.getLayers();
+  if (goog.isDefAndNotNull(layers)) {
+    this.layersListenerKeys_ = [
+      goog.events.listen(layers, ol.CollectionEventType.ADD,
+          this.handleLayersAdd_, false, this),
+      goog.events.listen(layers, ol.CollectionEventType.REMOVE,
+          this.handleLayersRemove_, false, this)
+    ];
+  }
+  this.render();
+};
+
+
+/**
+ * @param {ol.CollectionEvent} collectionEvent Collection event.
+ * @private
+ */
+ol.Map.prototype.handleLayersRemove_ = function(collectionEvent) {
+  this.render();
 };
 
 
