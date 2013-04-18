@@ -4,23 +4,24 @@ goog.require('goog.Disposable');
 goog.require('goog.asserts');
 goog.require('goog.dispose');
 goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('goog.events.EventTarget');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.FrameState');
 goog.require('ol.layer.Layer');
+goog.require('ol.renderer.Event');
+goog.require('ol.renderer.EventType');
 goog.require('ol.renderer.Layer');
 
 
 
 /**
  * @constructor
- * @extends {goog.Disposable}
+ * @extends {goog.events.EventTarget}
  * @param {Element} container Container.
- * @param {ol.Map} map Map.
  */
-ol.renderer.Map = function(container, map) {
+ol.renderer.Map = function(container) {
 
   goog.base(this);
 
@@ -29,12 +30,6 @@ ol.renderer.Map = function(container, map) {
    * @type {Element}
    */
   this.container_ = container;
-
-  /**
-   * @private
-   * @type {ol.Map}
-   */
-  this.map_ = map;
 
   /**
    * @private
@@ -49,7 +44,7 @@ ol.renderer.Map = function(container, map) {
   this.layerRendererChangeListenKeys_ = {};
 
 };
-goog.inherits(ol.renderer.Map, goog.Disposable);
+goog.inherits(ol.renderer.Map, goog.events.EventTarget);
 
 
 /**
@@ -95,6 +90,15 @@ ol.renderer.Map.prototype.createLayerRenderer = function(layer) {
 
 
 /**
+ * @param {boolean} immediate Immediate.
+ */
+ol.renderer.Map.prototype.dispatchChangeEvent = function(immediate) {
+  this.dispatchEvent(
+      new ol.renderer.Event(ol.renderer.EventType.CHANGE, immediate, this));
+};
+
+
+/**
  * @inheritDoc
  */
 ol.renderer.Map.prototype.disposeInternal = function() {
@@ -126,7 +130,7 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
     var layerRenderer = this.createLayerRenderer(layer);
     this.layerRenderers_[layerKey] = layerRenderer;
     this.layerRendererChangeListenKeys_[layerKey] = goog.events.listen(
-        layerRenderer, goog.events.EventType.CHANGE,
+        layerRenderer, ol.renderer.EventType.CHANGE,
         this.handleLayerRendererChange_, false, this);
     return layerRenderer;
   }
@@ -143,19 +147,11 @@ ol.renderer.Map.prototype.getLayerRenderers = function() {
 
 
 /**
- * @return {ol.Map} Map.
- */
-ol.renderer.Map.prototype.getMap = function() {
-  return this.map_;
-};
-
-
-/**
- * @param {goog.events.Event} event Event.
+ * @param {ol.renderer.Event} rendererEvent Renderer event.
  * @private
  */
-ol.renderer.Map.prototype.handleLayerRendererChange_ = function(event) {
-  this.getMap().render();
+ol.renderer.Map.prototype.handleLayerRendererChange_ = function(rendererEvent) {
+  this.dispatchChangeEvent(rendererEvent.immediate);
 };
 
 

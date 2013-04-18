@@ -110,7 +110,6 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer =
   if (!goog.isDef(this.framebufferDimension) ||
       this.framebufferDimension != framebufferDimension) {
 
-    var map = this.getMap();
     frameState.postRenderFunctions.push(
         goog.partial(function(gl, framebuffer, texture) {
           if (!gl.isContextLost()) {
@@ -196,7 +195,7 @@ ol.renderer.webgl.Layer.prototype.handleLayerBrightnessChange = function() {
   var value = this.getLayer().getBrightness();
   ol.vec.Mat4.makeBrightness(this.brightnessMatrix_, value);
   this.colorMatrixDirty_ = true;
-  this.dispatchChangeEvent();
+  this.dispatchChangeEvent(true);
 };
 
 
@@ -207,7 +206,7 @@ ol.renderer.webgl.Layer.prototype.handleLayerContrastChange = function() {
   var value = this.getLayer().getContrast();
   ol.vec.Mat4.makeContrast(this.contrastMatrix_, value);
   this.colorMatrixDirty_ = true;
-  this.dispatchChangeEvent();
+  this.dispatchChangeEvent(true);
 };
 
 
@@ -218,7 +217,7 @@ ol.renderer.webgl.Layer.prototype.handleLayerHueChange = function() {
   var value = this.getLayer().getHue();
   ol.vec.Mat4.makeHue(this.hueMatrix_, value);
   this.colorMatrixDirty_ = true;
-  this.dispatchChangeEvent();
+  this.dispatchChangeEvent(true);
 };
 
 
@@ -229,7 +228,7 @@ ol.renderer.webgl.Layer.prototype.handleLayerSaturationChange = function() {
   var saturation = this.getLayer().getSaturation();
   ol.vec.Mat4.makeSaturation(this.saturationMatrix_, saturation);
   this.colorMatrixDirty_ = true;
-  this.dispatchChangeEvent();
+  this.dispatchChangeEvent(true);
 };
 
 

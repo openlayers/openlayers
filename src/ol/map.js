@@ -56,6 +56,7 @@ goog.require('ol.interaction.defaults');
 goog.require('ol.layer.Layer');
 goog.require('ol.projection');
 goog.require('ol.projection.addCommonProjections');
+goog.require('ol.renderer.EventType');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Map');
 goog.require('ol.renderer.canvas.SUPPORTED');
@@ -258,6 +259,8 @@ ol.Map = function(options) {
    */
   this.renderer_ =
       new optionsInternal.rendererConstructor(this.viewport_, this);
+  goog.events.listen(this.renderer_, ol.renderer.EventType.CHANGE,
+      this.handleMapRendererChange_, false, this);
   this.registerDisposable(this.renderer_);
 
   /**
@@ -619,6 +622,19 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
         break;
       }
     }
+  }
+};
+
+
+/**
+ * @param {ol.renderer.Event} rendererEvent Renderer event.
+ * @private
+ */
+ol.Map.prototype.handleMapRendererChange_ = function(rendererEvent) {
+  if (rendererEvent.immediate) {
+    this.render();
+  } else {
+    this.requestRenderFrame();
   }
 };
 

@@ -14,6 +14,8 @@ goog.require('ol.TileState');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerProperty');
 goog.require('ol.layer.LayerState');
+goog.require('ol.renderer.Event');
+goog.require('ol.renderer.EventType');
 goog.require('ol.source.Source');
 goog.require('ol.source.TileSource');
 
@@ -73,10 +75,12 @@ goog.inherits(ol.renderer.Layer, ol.Object);
 
 
 /**
+ * @param {boolean} immediate Immediate.
  * @protected
  */
-ol.renderer.Layer.prototype.dispatchChangeEvent = function() {
-  this.dispatchEvent(goog.events.EventType.CHANGE);
+ol.renderer.Layer.prototype.dispatchChangeEvent = function(immediate) {
+  this.dispatchEvent(
+      new ol.renderer.Event(ol.renderer.EventType.CHANGE, immediate, this));
 };
 
 
@@ -86,15 +90,6 @@ ol.renderer.Layer.prototype.dispatchChangeEvent = function() {
  */
 ol.renderer.Layer.prototype.getLayer = function() {
   return this.layer_;
-};
-
-
-/**
- * @protected
- * @return {ol.Map} Map.
- */
-ol.renderer.Layer.prototype.getMap = function() {
-  return this.mapRenderer_.getMap();
 };
 
 
@@ -133,7 +128,7 @@ ol.renderer.Layer.prototype.handleLayerHueChange = goog.nullFunction;
 ol.renderer.Layer.prototype.handleImageChange = function(event) {
   var image = /** @type {ol.Image} */ (event.target);
   if (image.getState() === ol.ImageState.LOADED) {
-    this.getMap().requestRenderFrame();
+    this.dispatchChangeEvent(false);
   }
 };
 
@@ -142,7 +137,7 @@ ol.renderer.Layer.prototype.handleImageChange = function(event) {
  * @protected
  */
 ol.renderer.Layer.prototype.handleLayerLoad = function() {
-  this.dispatchChangeEvent();
+  this.dispatchChangeEvent(true);
 };
 
 
@@ -150,7 +145,7 @@ ol.renderer.Layer.prototype.handleLayerLoad = function() {
  * @protected
  */
 ol.renderer.Layer.prototype.handleLayerOpacityChange = function() {
-  this.dispatchChangeEvent();
+  this.dispatchChangeEvent(true);
 };
 
 
@@ -164,7 +159,7 @@ ol.renderer.Layer.prototype.handleLayerSaturationChange = goog.nullFunction;
  * @protected
  */
 ol.renderer.Layer.prototype.handleLayerVisibleChange = function() {
-  this.dispatchChangeEvent();
+  this.dispatchChangeEvent(true);
 };
 
 
@@ -176,7 +171,7 @@ ol.renderer.Layer.prototype.handleLayerVisibleChange = function() {
 ol.renderer.Layer.prototype.handleTileChange_ = function(event) {
   var tile = /** @type {ol.Tile} */ (event.target);
   if (tile.getState() === ol.TileState.LOADED) {
-    this.getMap().requestRenderFrame();
+    this.dispatchChangeEvent(false);
   }
 };
 
