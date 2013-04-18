@@ -525,12 +525,11 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   ++this.textureCacheFrameMarkerCount_;
 
   goog.array.forEach(frameState.layersArray, function(layer) {
-    var layerState = frameState.layerStates[goog.getUid(layer)];
-    if (!layerState.visible || !layerState.ready) {
-      return;
-    }
     var layerRenderer = this.getLayerRenderer(layer);
-    layerRenderer.renderFrame(frameState, layerState);
+    var layerState = frameState.layerStates[goog.getUid(layer)];
+    if (layerState.visible && layerState.ready) {
+      layerRenderer.renderFrame(frameState, layerState);
+    }
   }, this);
 
   var size = frameState.size;
