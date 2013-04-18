@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.Layer');
 
+goog.require('goog.Disposable');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.Attribution');
@@ -21,7 +22,7 @@ goog.require('ol.source.TileSource');
 
 /**
  * @constructor
- * @extends {ol.Object}
+ * @extends {goog.Disposable}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
  * @param {ol.layer.Layer} layer Layer.
  */
@@ -69,7 +70,7 @@ ol.renderer.Layer = function(mapRenderer, layer) {
       this.handleLayerVisibleChange, false, this);
 
 };
-goog.inherits(ol.renderer.Layer, ol.Object);
+goog.inherits(ol.renderer.Layer, goog.Disposable);
 
 
 /**
