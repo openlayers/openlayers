@@ -24,6 +24,7 @@ goog.require('ol.layer.LayerState');
  *            coordinateToPixelMatrix: goog.vec.Mat4.Number,
  *            extent: (null|ol.Extent),
  *            focus: ol.Coordinate,
+ *            index: number,
  *            layersArray: Array.<ol.layer.Layer>,
  *            layerStates: Object.<number, ol.layer.LayerState>,
  *            logos: Object.<string, boolean>,
