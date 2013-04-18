@@ -133,7 +133,7 @@ ol.renderer.Layer.prototype.handleLayerHueChange = goog.nullFunction;
 ol.renderer.Layer.prototype.handleImageChange = function(event) {
   var image = /** @type {ol.Image} */ (event.target);
   if (image.getState() === ol.ImageState.LOADED) {
-    this.getMap().requestRenderFrame();
+    this.getMap().render();
   }
 };
 
