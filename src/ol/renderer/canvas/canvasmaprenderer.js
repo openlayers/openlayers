@@ -121,14 +121,11 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   goog.array.forEach(frameState.layersArray, function(layer) {
 
+    var layerRenderer = this.getLayerRenderer(layer);
     var layerState = frameState.layerStates[goog.getUid(layer)];
-    if (!layerState.visible) {
-      return;
-    } else if (!layerState.ready) {
-      frameState.animate = true;
+    if (!layerState.visible || !layerState.ready) {
       return;
     }
-    var layerRenderer = this.getLayerRenderer(layer);
     layerRenderer.renderFrame(frameState, layerState);
 
     var image = layerRenderer.getImage();
