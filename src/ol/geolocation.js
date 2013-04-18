@@ -49,7 +49,7 @@ ol.Geolocation = function() {
    * @private
    * @type {number|undefined}
    */
-  this.watchId_;
+  this.watchId_ = undefined;
 
   this.setTracking(false);
 
