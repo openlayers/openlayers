@@ -193,7 +193,7 @@ ol.renderer.webgl.Layer.prototype.getProjectionMatrix = function() {
  */
 ol.renderer.webgl.Layer.prototype.handleLayerBrightnessChange = function() {
   this.updateBrightnessMatrix_();
-  this.dispatchChangeEvent();
+  this.renderIfReadyAndVisible();
 };
 
 
@@ -202,7 +202,7 @@ ol.renderer.webgl.Layer.prototype.handleLayerBrightnessChange = function() {
  */
 ol.renderer.webgl.Layer.prototype.handleLayerContrastChange = function() {
   this.updateContrastMatrix_();
-  this.dispatchChangeEvent();
+  this.renderIfReadyAndVisible();
 };
 
 
@@ -211,7 +211,7 @@ ol.renderer.webgl.Layer.prototype.handleLayerContrastChange = function() {
  */
 ol.renderer.webgl.Layer.prototype.handleLayerHueChange = function() {
   this.updateHueMatrix_();
-  this.dispatchChangeEvent();
+  this.renderIfReadyAndVisible();
 };
 
 
@@ -220,7 +220,7 @@ ol.renderer.webgl.Layer.prototype.handleLayerHueChange = function() {
  */
 ol.renderer.webgl.Layer.prototype.handleLayerSaturationChange = function() {
   this.updateSaturationMatrix_();
-  this.dispatchChangeEvent();
+  this.renderIfReadyAndVisible();
 };
 
 

@@ -3,8 +3,6 @@ goog.provide('ol.renderer.Map');
 goog.require('goog.Disposable');
 goog.require('goog.asserts');
 goog.require('goog.dispose');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
@@ -41,12 +39,6 @@ ol.renderer.Map = function(container, map) {
    * @type {Object.<string, ol.renderer.Layer>}
    */
   this.layerRenderers_ = {};
-
-  /**
-   * @private
-   * @type {Object.<string, ?number>}
-   */
-  this.layerRendererChangeListenKeys_ = {};
 
 };
 goog.inherits(ol.renderer.Map, goog.Disposable);
@@ -101,8 +93,6 @@ ol.renderer.Map.prototype.disposeInternal = function() {
   goog.object.forEach(this.layerRenderers_, function(layerRenderer) {
     goog.dispose(layerRenderer);
   });
-  goog.object.forEach(
-      this.layerRendererChangeListenKeys_, goog.events.unlistenByKey);
   goog.base(this, 'disposeInternal');
 };
 
@@ -125,9 +115,6 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
   } else {
     var layerRenderer = this.createLayerRenderer(layer);
     this.layerRenderers_[layerKey] = layerRenderer;
-    this.layerRendererChangeListenKeys_[layerKey] = goog.events.listen(
-        layerRenderer, goog.events.EventType.CHANGE,
-        this.handleLayerRendererChange_, false, this);
     return layerRenderer;
   }
 };
@@ -151,15 +138,6 @@ ol.renderer.Map.prototype.getMap = function() {
 
 
 /**
- * @param {goog.events.Event} event Event.
- * @private
- */
-ol.renderer.Map.prototype.handleLayerRendererChange_ = function(event) {
-  this.getMap().render();
-};
-
-
-/**
  * @param {string} layerKey Layer key.
  * @return {ol.renderer.Layer} Layer renderer.
  * @private
@@ -168,9 +146,6 @@ ol.renderer.Map.prototype.removeLayerRendererByKey_ = function(layerKey) {
   goog.asserts.assert(layerKey in this.layerRenderers_);
   var layerRenderer = this.layerRenderers_[layerKey];
   delete this.layerRenderers_[layerKey];
-  goog.asserts.assert(layerKey in this.layerRendererChangeListenKeys_);
-  goog.events.unlistenByKey(this.layerRendererChangeListenKeys_[layerKey]);
-  delete this.layerRendererChangeListenKeys_[layerKey];
   return layerRenderer;
 };
 
