@@ -29,13 +29,13 @@ ol.interaction.DragRotateAndZoom = function(condition) {
    * @private
    * @type {number|undefined}
    */
-  this.lastAngle_;
+  this.lastAngle_ = undefined;
 
   /**
    * @private
    * @type {number|undefined}
    */
-  this.lastMagnitude_;
+  this.lastMagnitude_ = undefined;
 
 };
 goog.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Drag);

@@ -38,7 +38,7 @@ ol.interaction.TouchRotate = function(opt_threshold) {
    * @private
    * @type {number|undefined}
    */
-  this.lastAngle_;
+  this.lastAngle_ = undefined;
 
   /**
    * @private
