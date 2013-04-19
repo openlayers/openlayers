@@ -524,13 +524,17 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   this.textureCache_.set(frameState.index.toString(), null);
   ++this.textureCacheFrameMarkerCount_;
 
-  goog.array.forEach(frameState.layersArray, function(layer) {
-    var layerRenderer = this.getLayerRenderer(layer);
-    var layerState = frameState.layerStates[goog.getUid(layer)];
+  var layerStates = frameState.layerStates;
+  var layersArray = frameState.layersArray;
+  var i, layer, layerRenderer, layerState;
+  for (i = 0; i < layersArray.length; ++i) {
+    layer = layersArray[i];
+    layerRenderer = this.getLayerRenderer(layer);
+    layerState = frameState.layerStates[goog.getUid(layer)];
     if (layerState.visible && layerState.ready) {
       layerRenderer.renderFrame(frameState, layerState);
     }
-  }, this);
+  }
 
   var size = frameState.size;
   if (!this.canvasSize_.equals(size)) {
@@ -552,9 +556,10 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   var currentProgram = null;
   var locations;
-  goog.array.forEach(frameState.layersArray, function(layer) {
+  for (i = 0; i < layersArray.length; ++i) {
 
-    var layerState = frameState.layerStates[goog.getUid(layer)];
+    layer = layersArray[i];
+    layerState = frameState.layerStates[goog.getUid(layer)];
     if (!layerState.visible || !layerState.ready) {
       return;
     }
@@ -608,7 +613,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
     }
 
-    var layerRenderer = this.getLayerRenderer(layer);
+    layerRenderer = this.getLayerRenderer(layer);
     gl.uniformMatrix4fv(
         locations.u_texCoordMatrix, false, layerRenderer.getTexCoordMatrix());
     gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
@@ -621,7 +626,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     gl.bindTexture(goog.webgl.TEXTURE_2D, layerRenderer.getTexture());
     gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
 
-  }, this);
+  }
 
   if (!this.renderedVisible_) {
     goog.style.showElement(this.canvas_, true);
