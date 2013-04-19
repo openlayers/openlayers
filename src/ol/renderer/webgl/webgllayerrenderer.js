@@ -55,30 +55,6 @@ ol.renderer.webgl.Layer = function(mapRenderer, layer) {
    * @private
    * @type {!goog.vec.Mat4.Float32}
    */
-  this.brightnessMatrix_ = goog.vec.Mat4.createFloat32();
-
-  /**
-   * @private
-   * @type {!goog.vec.Mat4.Float32}
-   */
-  this.contrastMatrix_ = goog.vec.Mat4.createFloat32();
-
-  /**
-   * @private
-   * @type {!goog.vec.Mat4.Float32}
-   */
-  this.hueMatrix_ = goog.vec.Mat4.createFloat32();
-
-  /**
-   * @private
-   * @type {!goog.vec.Mat4.Float32}
-   */
-  this.saturationMatrix_ = goog.vec.Mat4.createFloat32();
-
-  /**
-   * @private
-   * @type {!goog.vec.Mat4.Float32}
-   */
   this.colorMatrix_ = goog.vec.Mat4.createFloat32();
 
   /**
@@ -87,10 +63,33 @@ ol.renderer.webgl.Layer = function(mapRenderer, layer) {
    */
   this.colorMatrixDirty_ = true;
 
-  this.handleLayerBrightnessChange();
-  this.handleLayerContrastChange();
-  this.handleLayerHueChange();
-  this.handleLayerSaturationChange();
+  /**
+   * @private
+   * @type {!goog.vec.Mat4.Float32}
+   */
+  this.brightnessMatrix_ = goog.vec.Mat4.createFloat32();
+  this.updateBrightnessMatrix_();
+
+  /**
+   * @private
+   * @type {!goog.vec.Mat4.Float32}
+   */
+  this.contrastMatrix_ = goog.vec.Mat4.createFloat32();
+  this.updateContrastMatrix_();
+
+  /**
+   * @private
+   * @type {!goog.vec.Mat4.Float32}
+   */
+  this.hueMatrix_ = goog.vec.Mat4.createFloat32();
+  this.updateHueMatrix_();
+
+  /**
+   * @private
+   * @type {!goog.vec.Mat4.Float32}
+   */
+  this.saturationMatrix_ = goog.vec.Mat4.createFloat32();
+  this.updateSaturationMatrix_();
 
 };
 goog.inherits(ol.renderer.webgl.Layer, ol.renderer.Layer);
@@ -193,10 +192,8 @@ ol.renderer.webgl.Layer.prototype.getProjectionMatrix = function() {
  * @inheritDoc
  */
 ol.renderer.webgl.Layer.prototype.handleLayerBrightnessChange = function() {
-  var value = this.getLayer().getBrightness();
-  ol.vec.Mat4.makeBrightness(this.brightnessMatrix_, value);
-  this.colorMatrixDirty_ = true;
-  this.dispatchChangeEvent();
+  this.updateBrightnessMatrix_();
+  this.renderIfReadyAndVisible();
 };
 
 
@@ -204,10 +201,8 @@ ol.renderer.webgl.Layer.prototype.handleLayerBrightnessChange = function() {
  * @inheritDoc
  */
 ol.renderer.webgl.Layer.prototype.handleLayerContrastChange = function() {
-  var value = this.getLayer().getContrast();
-  ol.vec.Mat4.makeContrast(this.contrastMatrix_, value);
-  this.colorMatrixDirty_ = true;
-  this.dispatchChangeEvent();
+  this.updateContrastMatrix_();
+  this.renderIfReadyAndVisible();
 };
 
 
@@ -215,10 +210,8 @@ ol.renderer.webgl.Layer.prototype.handleLayerContrastChange = function() {
  * @inheritDoc
  */
 ol.renderer.webgl.Layer.prototype.handleLayerHueChange = function() {
-  var value = this.getLayer().getHue();
-  ol.vec.Mat4.makeHue(this.hueMatrix_, value);
-  this.colorMatrixDirty_ = true;
-  this.dispatchChangeEvent();
+  this.updateHueMatrix_();
+  this.renderIfReadyAndVisible();
 };
 
 
@@ -226,10 +219,8 @@ ol.renderer.webgl.Layer.prototype.handleLayerHueChange = function() {
  * @inheritDoc
  */
 ol.renderer.webgl.Layer.prototype.handleLayerSaturationChange = function() {
-  var saturation = this.getLayer().getSaturation();
-  ol.vec.Mat4.makeSaturation(this.saturationMatrix_, saturation);
-  this.colorMatrixDirty_ = true;
-  this.dispatchChangeEvent();
+  this.updateSaturationMatrix_();
+  this.renderIfReadyAndVisible();
 };
 
 
@@ -246,6 +237,16 @@ ol.renderer.webgl.Layer.prototype.handleWebGLContextLost = function() {
 /**
  * @private
  */
+ol.renderer.webgl.Layer.prototype.updateBrightnessMatrix_ = function() {
+  var brightness = this.getLayer().getBrightness();
+  ol.vec.Mat4.makeBrightness(this.brightnessMatrix_, brightness);
+  this.colorMatrixDirty_ = true;
+};
+
+
+/**
+ * @private
+ */
 ol.renderer.webgl.Layer.prototype.updateColorMatrix_ = function() {
   var colorMatrix = this.colorMatrix_;
   goog.vec.Mat4.makeIdentity(colorMatrix);
@@ -254,4 +255,34 @@ ol.renderer.webgl.Layer.prototype.updateColorMatrix_ = function() {
   goog.vec.Mat4.multMat(colorMatrix, this.saturationMatrix_, colorMatrix);
   goog.vec.Mat4.multMat(colorMatrix, this.hueMatrix_, colorMatrix);
   this.colorMatrixDirty_ = false;
+};
+
+
+/**
+ * @private
+ */
+ol.renderer.webgl.Layer.prototype.updateContrastMatrix_ = function() {
+  var contrast = this.getLayer().getContrast();
+  ol.vec.Mat4.makeContrast(this.contrastMatrix_, contrast);
+  this.colorMatrixDirty_ = true;
+};
+
+
+/**
+ * @private
+ */
+ol.renderer.webgl.Layer.prototype.updateHueMatrix_ = function() {
+  var hue = this.getLayer().getHue();
+  ol.vec.Mat4.makeHue(this.hueMatrix_, hue);
+  this.colorMatrixDirty_ = true;
+};
+
+
+/**
+ * @private
+ */
+ol.renderer.webgl.Layer.prototype.updateSaturationMatrix_ = function() {
+  var saturation = this.getLayer().getSaturation();
+  ol.vec.Mat4.makeSaturation(this.saturationMatrix_, saturation);
+  this.colorMatrixDirty_ = true;
 };
