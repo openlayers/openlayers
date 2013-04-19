@@ -236,23 +236,24 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
     goog.array.sort(zs);
     var u_tileOffset = goog.vec.Vec4.createFloat32();
-    goog.array.forEach(zs, function(z) {
-      goog.object.forEach(tilesToDrawByZ[z], function(tile) {
-        var tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
-        var sx =
-            2 * (tileExtent[1] - tileExtent[0]) / framebufferExtentSize.width;
-        var sy =
-            2 * (tileExtent[3] - tileExtent[2]) / framebufferExtentSize.height;
-        var tx = 2 * (tileExtent[0] - framebufferExtent[0]) /
+    var i, sx, sy, tileExtent, tileKey, tilesToDraw, tx, ty;
+    for (i = 0; i < zs.length; ++i) {
+      tilesToDraw = tilesToDrawByZ[zs[i]];
+      for (tileKey in tilesToDraw) {
+        tile = tilesToDraw[tileKey];
+        tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
+        sx = 2 * (tileExtent[1] - tileExtent[0]) / framebufferExtentSize.width;
+        sy = 2 * (tileExtent[3] - tileExtent[2]) / framebufferExtentSize.height;
+        tx = 2 * (tileExtent[0] - framebufferExtent[0]) /
             framebufferExtentSize.width - 1;
-        var ty = 2 * (tileExtent[2] - framebufferExtent[2]) /
+        ty = 2 * (tileExtent[2] - framebufferExtent[2]) /
             framebufferExtentSize.height - 1;
         goog.vec.Vec4.setFromValues(u_tileOffset, sx, sy, tx, ty);
         gl.uniform4fv(this.locations_.u_tileOffset, u_tileOffset);
         mapRenderer.bindTileTexture(tile, goog.webgl.LINEAR, goog.webgl.LINEAR);
         gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
-      }, this);
-    }, this);
+      }
+    }
 
     if (allTilesLoaded) {
       this.renderedTileRange_ = tileRange;
