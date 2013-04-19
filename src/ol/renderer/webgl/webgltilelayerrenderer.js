@@ -8,7 +8,6 @@ goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
 goog.require('goog.webgl');
-goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
@@ -150,15 +149,13 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         tileRangeSize.width * tileSize.width,
         tileRangeSize.height * tileSize.height);
     var framebufferDimension = ol.math.roundUpToPowerOfTwo(maxDimension);
-    var framebufferExtentSize = new ol.Size(
-        tileResolution * framebufferDimension,
-        tileResolution * framebufferDimension);
+    var framebufferExtentDimension = tileResolution * framebufferDimension;
     var origin = tileGrid.getOrigin(z);
     var minX = origin[0] + tileRange.minX * tileSize.width * tileResolution;
     var minY = origin[1] + tileRange.minY * tileSize.height * tileResolution;
     framebufferExtent = [
-      minX, minX + framebufferExtentSize.width,
-      minY, minY + framebufferExtentSize.height
+      minX, minX + framebufferExtentDimension,
+      minY, minY + framebufferExtentDimension
     ];
 
     this.bindFramebuffer(frameState, framebufferDimension);
@@ -242,12 +239,12 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
       for (tileKey in tilesToDraw) {
         tile = tilesToDraw[tileKey];
         tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
-        sx = 2 * (tileExtent[1] - tileExtent[0]) / framebufferExtentSize.width;
-        sy = 2 * (tileExtent[3] - tileExtent[2]) / framebufferExtentSize.height;
+        sx = 2 * (tileExtent[1] - tileExtent[0]) / framebufferExtentDimension;
+        sy = 2 * (tileExtent[3] - tileExtent[2]) / framebufferExtentDimension;
         tx = 2 * (tileExtent[0] - framebufferExtent[0]) /
-            framebufferExtentSize.width - 1;
+            framebufferExtentDimension - 1;
         ty = 2 * (tileExtent[2] - framebufferExtent[2]) /
-            framebufferExtentSize.height - 1;
+            framebufferExtentDimension - 1;
         goog.vec.Vec4.setFromValues(u_tileOffset, sx, sy, tx, ty);
         gl.uniform4fv(this.locations_.u_tileOffset, u_tileOffset);
         mapRenderer.bindTileTexture(tile, goog.webgl.LINEAR, goog.webgl.LINEAR);
