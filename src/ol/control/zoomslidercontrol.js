@@ -38,10 +38,10 @@ ol.control.ZoomSlider = function(options) {
   /**
    * Will hold the current resolution of the view.
    *
-   * @type {number}
+   * @type {number|undefined}
    * @private
    */
-  this.currentResolution_;
+  this.currentResolution_ = undefined;
 
   /**
    * The direction of the slider. Will be determined from actual display of the

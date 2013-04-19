@@ -36,7 +36,7 @@ ol.interaction.TouchZoom = function() {
    * @private
    * @type {number|undefined}
    */
-  this.lastDistance_;
+  this.lastDistance_ = undefined;
 
   /**
    * @private

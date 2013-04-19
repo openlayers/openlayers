@@ -77,7 +77,7 @@ ol.control.ScaleLine = function(opt_options) {
    * @private
    * @type {number|undefined}
    */
-  this.renderedWidth_;
+  this.renderedWidth_ = undefined;
 
   /**
    * @private
