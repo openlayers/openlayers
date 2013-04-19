@@ -99,11 +99,11 @@ describe('ol.parser.ogc.wmtscapabilities_v1_0_0', function() {
         expect(layer.styles[1].legend).to.be(undefined);
         expect(layer.tileMatrixSetLinks.length).to.eql(1);
         expect(layer.tileMatrixSetLinks[0].tileMatrixSet).to.eql('BigWorld');
-        expect(wgs84Bbox instanceof ol.Extent).to.be.ok();
-        expect(wgs84Bbox.minX).to.eql(-180.0);
-        expect(wgs84Bbox.maxX).to.eql(180.0);
-        expect(wgs84Bbox.minY).to.eql(-90.0);
-        expect(wgs84Bbox.maxY).to.eql(90.0);
+        expect(wgs84Bbox).to.be.an(Array);
+        expect(wgs84Bbox[0]).to.eql(-180.0);
+        expect(wgs84Bbox[1]).to.eql(180.0);
+        expect(wgs84Bbox[2]).to.eql(-90.0);
+        expect(wgs84Bbox[3]).to.eql(90.0);
         expect(layer.resourceUrls.hasOwnProperty('tile')).to.be.ok();
         var format = 'image/png';
         expect(layer.resourceUrls.tile.hasOwnProperty(format)).to.be.ok();
@@ -178,5 +178,4 @@ describe('ol.parser.ogc.wmtscapabilities_v1_0_0', function() {
 });
 
 goog.require('goog.net.XhrIo');
-goog.require('ol.Extent');
 goog.require('ol.parser.ogc.WMTSCapabilities');

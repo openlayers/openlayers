@@ -8,11 +8,11 @@ goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
 goog.require('goog.webgl');
-goog.require('ol.Extent');
 goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
+goog.require('ol.extent');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.math');
 goog.require('ol.renderer.webgl.Layer');
@@ -129,7 +129,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   var extent;
   if (tileResolution == view2DState.resolution) {
     center = this.snapCenterToPixel(center, tileResolution, frameState.size);
-    extent = ol.Extent.getForView2DAndSize(
+    extent = ol.extent.getForView2DAndSize(
         center, tileResolution, view2DState.rotation, frameState.size);
   } else {
     extent = frameState.extent;
@@ -156,11 +156,10 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     var origin = tileGrid.getOrigin(z);
     var minX = origin[0] + tileRange.minX * tileSize.width * tileResolution;
     var minY = origin[1] + tileRange.minY * tileSize.height * tileResolution;
-    framebufferExtent = new ol.Extent(
-        minX,
-        minY,
-        minX + framebufferExtentSize.width,
-        minY + framebufferExtentSize.height);
+    framebufferExtent = [
+      minX, minX + framebufferExtentSize.width,
+      minY, minY + framebufferExtentSize.height
+    ];
 
     this.bindFramebuffer(frameState, framebufferDimension);
     gl.viewport(0, 0, framebufferDimension, framebufferDimension);
@@ -200,7 +199,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
         tilesToDrawByZ, getTileIfLoaded);
 
     var allTilesLoaded = true;
-    var tmpExtent = new ol.Extent(0, 0, 0, 0);
+    var tmpExtent = ol.extent.createEmptyExtent();
     var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
     var childTileRange, fullyLoaded, tile, tileState, x, y;
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
@@ -240,11 +239,13 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     goog.array.forEach(zs, function(z) {
       goog.object.forEach(tilesToDrawByZ[z], function(tile) {
         var tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
-        var sx = 2 * tileExtent.getWidth() / framebufferExtentSize.width;
-        var sy = 2 * tileExtent.getHeight() / framebufferExtentSize.height;
-        var tx = 2 * (tileExtent.minX - framebufferExtent.minX) /
+        var sx =
+            2 * (tileExtent[1] - tileExtent[0]) / framebufferExtentSize.width;
+        var sy =
+            2 * (tileExtent[3] - tileExtent[2]) / framebufferExtentSize.height;
+        var tx = 2 * (tileExtent[0] - framebufferExtent[0]) /
             framebufferExtentSize.width - 1;
-        var ty = 2 * (tileExtent.minY - framebufferExtent.minY) /
+        var ty = 2 * (tileExtent[2] - framebufferExtent[2]) /
             framebufferExtentSize.height - 1;
         goog.vec.Vec4.setFromValues(u_tileOffset, sx, sy, tx, ty);
         gl.uniform4fv(this.locations_.u_tileOffset, u_tileOffset);
@@ -286,17 +287,17 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   var texCoordMatrix = this.texCoordMatrix;
   goog.vec.Mat4.makeIdentity(texCoordMatrix);
   goog.vec.Mat4.translate(texCoordMatrix,
-      (center[0] - framebufferExtent.minX) /
-          (framebufferExtent.maxX - framebufferExtent.minX),
-      (center[1] - framebufferExtent.minY) /
-          (framebufferExtent.maxY - framebufferExtent.minY),
+      (center[0] - framebufferExtent[0]) /
+          (framebufferExtent[1] - framebufferExtent[0]),
+      (center[1] - framebufferExtent[2]) /
+          (framebufferExtent[3] - framebufferExtent[2]),
       0);
   goog.vec.Mat4.rotateZ(texCoordMatrix, view2DState.rotation);
   goog.vec.Mat4.scale(texCoordMatrix,
       frameState.size.width * view2DState.resolution /
-          (framebufferExtent.maxX - framebufferExtent.minX),
+          (framebufferExtent[1] - framebufferExtent[0]),
       frameState.size.height * view2DState.resolution /
-          (framebufferExtent.maxY - framebufferExtent.minY),
+          (framebufferExtent[3] - framebufferExtent[2]),
       1);
   goog.vec.Mat4.translate(texCoordMatrix,
       -0.5,

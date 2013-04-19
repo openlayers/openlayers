@@ -64,10 +64,10 @@ describe('ol.geom.Polygon', function() {
     it('returns the bounding extent', function() {
       var poly = new ol.geom.Polygon([outer, inner1, inner2]);
       var bounds = poly.getBounds();
-      expect(bounds.minX).to.be(0);
-      expect(bounds.minY).to.be(0);
-      expect(bounds.maxX).to.be(10);
-      expect(bounds.maxY).to.be(10);
+      expect(bounds[0]).to.be(0);
+      expect(bounds[1]).to.be(10);
+      expect(bounds[2]).to.be(0);
+      expect(bounds[3]).to.be(10);
     });
 
   });

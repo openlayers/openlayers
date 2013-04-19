@@ -1,6 +1,6 @@
 goog.provide('ol.filter.Extent');
 
-goog.require('ol.Extent');
+goog.require('ol.extent');
 goog.require('ol.filter.Filter');
 
 
@@ -35,5 +35,5 @@ ol.filter.Extent.prototype.getExtent = function() {
  * @inheritDoc
  */
 ol.filter.Extent.prototype.applies = function(feature) {
-  return feature.getGeometry().getBounds().intersects(this.extent_);
+  return ol.extent.intersects(feature.getGeometry().getBounds(), this.extent_);
 };

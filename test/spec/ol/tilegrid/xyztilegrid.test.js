@@ -21,8 +21,8 @@ describe('ol.tilegrid.XYZ', function() {
           function(z, tileRange) {
             zs.push(z);
             tileRanges.push(new ol.TileRange(
-                tileRange.minX, tileRange.minY,
-                tileRange.maxX, tileRange.maxY));
+                tileRange.minX, tileRange.maxX,
+                tileRange.minY, tileRange.maxY));
             return false;
           });
 
@@ -31,32 +31,32 @@ describe('ol.tilegrid.XYZ', function() {
 
       expect(zs[0]).to.eql(4);
       expect(tileRanges[0].minX).to.eql(5);
-      expect(tileRanges[0].minY).to.eql(10);
       expect(tileRanges[0].maxX).to.eql(5);
+      expect(tileRanges[0].minY).to.eql(10);
       expect(tileRanges[0].maxY).to.eql(10);
 
       expect(zs[1]).to.eql(3);
       expect(tileRanges[1].minX).to.eql(2);
-      expect(tileRanges[1].minY).to.eql(5);
       expect(tileRanges[1].maxX).to.eql(2);
+      expect(tileRanges[1].minY).to.eql(5);
       expect(tileRanges[1].maxY).to.eql(5);
 
       expect(zs[2]).to.eql(2);
       expect(tileRanges[2].minX).to.eql(1);
-      expect(tileRanges[2].minY).to.eql(2);
       expect(tileRanges[2].maxX).to.eql(1);
+      expect(tileRanges[2].minY).to.eql(2);
       expect(tileRanges[2].maxY).to.eql(2);
 
       expect(zs[3]).to.eql(1);
       expect(tileRanges[3].minX).to.eql(0);
-      expect(tileRanges[3].minY).to.eql(1);
       expect(tileRanges[3].maxX).to.eql(0);
+      expect(tileRanges[3].minY).to.eql(1);
       expect(tileRanges[3].maxY).to.eql(1);
 
       expect(zs[4]).to.eql(0);
       expect(tileRanges[4].minX).to.eql(0);
-      expect(tileRanges[4].minY).to.eql(0);
       expect(tileRanges[4].maxX).to.eql(0);
+      expect(tileRanges[4].minY).to.eql(0);
       expect(tileRanges[4].maxY).to.eql(0);
 
     });

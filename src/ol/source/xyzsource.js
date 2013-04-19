@@ -5,11 +5,11 @@ goog.provide('ol.source.XYZOptions');
 
 goog.require('goog.math');
 goog.require('ol.Attribution');
-goog.require('ol.Extent');
 goog.require('ol.Projection');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
+goog.require('ol.extent');
 goog.require('ol.projection');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');
@@ -58,10 +58,10 @@ ol.source.XYZ = function(options) {
   });
 
   // FIXME factor out common code
-  var extent = options.extent;
-  if (goog.isDefAndNotNull(extent)) {
+  if (goog.isDef(options.extent)) {
 
-    var tmpExtent = new ol.Extent(0, 0, 0, 0);
+    var extent = options.extent;
+    var tmpExtent = ol.extent.createEmptyExtent();
     var tmpTileCoord = new ol.TileCoord(0, 0, 0);
     tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
         function(tileCoord) {
@@ -78,8 +78,7 @@ ol.source.XYZ = function(options) {
           tmpTileCoord.x = x;
           tmpTileCoord.y = tileCoord.y;
           var tileExtent = tileGrid.getTileCoordExtent(tmpTileCoord, tmpExtent);
-          // FIXME we shouldn't need a typecast here
-          if (!tileExtent.intersects(/** @type {ol.Extent} */ (extent))) {
+          if (!ol.extent.intersects(tileExtent, extent)) {
             return null;
           }
           return new ol.TileCoord(tileCoord.z, x, y);

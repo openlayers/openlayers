@@ -6,7 +6,6 @@ goog.provide('ol.View2DProperty');
 
 goog.require('goog.asserts');
 goog.require('ol.Constraints');
-goog.require('ol.Extent');
 goog.require('ol.IView2D');
 goog.require('ol.IView3D');
 goog.require('ol.Projection');
@@ -16,6 +15,7 @@ goog.require('ol.RotationConstraintType');
 goog.require('ol.Size');
 goog.require('ol.View');
 goog.require('ol.coordinate');
+goog.require('ol.extent');
 goog.require('ol.projection');
 
 
@@ -55,8 +55,8 @@ ol.View2D = function(opt_options) {
   } else if (goog.isDef(options.zoom)) {
     var projectionExtent = values[ol.View2DProperty.PROJECTION].getExtent();
     var size = Math.max(
-        projectionExtent.maxX - projectionExtent.minX,
-        projectionExtent.maxY - projectionExtent.minY);
+        projectionExtent[1] - projectionExtent[0],
+        projectionExtent[3] - projectionExtent[2]);
     values[ol.View2DProperty.RESOLUTION] =
         size / (ol.DEFAULT_TILE_SIZE * Math.pow(2, options.zoom));
   }
@@ -175,10 +175,10 @@ ol.View2D.prototype.getExtent = function(size) {
   var center = this.getCenter();
   var resolution = this.getResolution();
   var minX = center[0] - resolution * size.width / 2;
-  var minY = center[1] - resolution * size.height / 2;
   var maxX = center[0] + resolution * size.width / 2;
+  var minY = center[1] - resolution * size.height / 2;
   var maxY = center[1] + resolution * size.height / 2;
-  return new ol.Extent(minX, minY, maxX, maxY);
+  return [minX, maxX, minY, maxX];
 };
 
 
@@ -214,8 +214,8 @@ goog.exportProperty(
  * @return {number} Resolution.
  */
 ol.View2D.prototype.getResolutionForExtent = function(extent, size) {
-  var xResolution = (extent.maxX - extent.minX) / size.width;
-  var yResolution = (extent.maxY - extent.minY) / size.height;
+  var xResolution = (extent[1] - extent[0]) / size.width;
+  var yResolution = (extent[3] - extent[2]) / size.height;
   return Math.max(xResolution, yResolution);
 };
 
@@ -310,7 +310,7 @@ ol.View2D.prototype.getView3D = function() {
  * @param {ol.Size} size Box pixel size.
  */
 ol.View2D.prototype.fitExtent = function(extent, size) {
-  this.setCenter(extent.getCenter());
+  this.setCenter(ol.extent.getCenter(extent));
   var resolution = this.getResolutionForExtent(extent, size);
   resolution = this.constrainResolution(resolution, 0, 0);
   this.setResolution(resolution);
@@ -396,8 +396,8 @@ ol.View2D.createResolutionConstraint_ = function(options) {
       var projectionExtent = ol.projection.createProjection(
           options.projection, 'EPSG:3857').getExtent();
       maxResolution = Math.max(
-          projectionExtent.maxX - projectionExtent.minX,
-          projectionExtent.maxY - projectionExtent.minY) / ol.DEFAULT_TILE_SIZE;
+          projectionExtent[1] - projectionExtent[0],
+          projectionExtent[3] - projectionExtent[2]) / ol.DEFAULT_TILE_SIZE;
     }
     var maxZoom = options.maxZoom;
     if (!goog.isDef(maxZoom)) {

@@ -4,9 +4,9 @@ goog.provide('ol.source.TiledWMS');
 
 goog.require('goog.array');
 goog.require('goog.math');
-goog.require('ol.Extent');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.extent');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.source.wms');
 
@@ -56,16 +56,15 @@ ol.source.TiledWMS = function(options) {
     extent = goog.isDef(extent) ? extent : projectionExtent;
 
     if (!goog.isNull(extent) && projection.isGlobal() &&
-        extent.minX === projectionExtent.minX &&
-        extent.maxX === projectionExtent.maxX) {
+        extent[0] === projectionExtent[0] &&
+        extent[1] === projectionExtent[1]) {
       var numCols = Math.ceil(
-          (extent.maxX - extent.minX) / (tileExtent.maxX - tileExtent.minX));
+          (extent[1] - extent[0]) / (tileExtent[1] - tileExtent[0]));
       x = goog.math.modulo(x, numCols);
       tileExtent = tileGrid.getTileCoordExtent(
           new ol.TileCoord(tileCoord.z, x, tileCoord.y));
     }
-    // FIXME We shouldn't need a typecast here.
-    if (!tileExtent.intersects(/** @type {ol.Extent} */ (extent))) {
+    if (!ol.extent.intersects(tileExtent, extent)) {
       return null;
     }
     return new ol.TileCoord(tileCoord.z, x, tileCoord.y);

@@ -297,7 +297,7 @@ describe('ol.projection', function() {
 
   describe('ol.projection.removeTransform()', function() {
 
-    var extent = new ol.Extent(-180, -90, 180, 90);
+    var extent = [180, 180, -90, 90];
     var units = ol.ProjectionUnits.DEGREES;
 
     it('removes functions cached by addTransform', function() {
@@ -340,8 +340,7 @@ describe('ol.projection', function() {
     });
 
     it('returns a configured projection', function() {
-      var extent = new ol.Extent(
-          485869.5728, 76443.1884, 837076.5648, 299941.7864);
+      var extent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
       var epsg21781 = ol.projection.configureProj4jsProjection({
         code: 'EPSG:21781',
         extent: extent
@@ -358,7 +357,6 @@ describe('ol.projection', function() {
 
 goog.require('goog.array');
 goog.require('goog.asserts.AssertionError');
-goog.require('ol.Extent');
 goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');
 goog.require('ol.projection');

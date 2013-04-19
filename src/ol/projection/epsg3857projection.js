@@ -2,7 +2,6 @@ goog.provide('ol.projection.EPSG3857');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('ol.Extent');
 goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');
 goog.require('ol.math');
@@ -44,9 +43,10 @@ ol.projection.EPSG3857.HALF_SIZE = Math.PI * ol.projection.EPSG3857.RADIUS;
  * @const
  * @type {ol.Extent}
  */
-ol.projection.EPSG3857.EXTENT = new ol.Extent(
-    -ol.projection.EPSG3857.HALF_SIZE, -ol.projection.EPSG3857.HALF_SIZE,
-    ol.projection.EPSG3857.HALF_SIZE, ol.projection.EPSG3857.HALF_SIZE);
+ol.projection.EPSG3857.EXTENT = [
+  -ol.projection.EPSG3857.HALF_SIZE, ol.projection.EPSG3857.HALF_SIZE,
+  -ol.projection.EPSG3857.HALF_SIZE, ol.projection.EPSG3857.HALF_SIZE
+];
 
 
 /**

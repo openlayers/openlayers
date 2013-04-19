@@ -6,10 +6,10 @@ goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
-goog.require('ol.Extent');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
+goog.require('ol.extent');
 goog.require('ol.projection');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.WMTS');
@@ -114,7 +114,7 @@ ol.source.WMTS = function(options) {
         }));
   }
 
-  var tmpExtent = new ol.Extent(0, 0, 0, 0);
+  var tmpExtent = ol.extent.createEmptyExtent();
   var tmpTileCoord = new ol.TileCoord(0, 0, 0);
   tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       function(tileCoord, projection) {
@@ -131,18 +131,17 @@ ol.source.WMTS = function(options) {
             options.extent : projectionExtent;
 
         if (!goog.isNull(extent) && projection.isGlobal() &&
-            extent.minX === projectionExtent.minX &&
-            extent.maxX === projectionExtent.maxX) {
+            extent[0] === projectionExtent[0] &&
+            extent[1] === projectionExtent[1]) {
           var numCols = Math.ceil(
-              (extent.maxX - extent.minX) /
-              (tileExtent.maxX - tileExtent.minX));
+              (extent[1] - extent[0]) / (tileExtent[1] - tileExtent[0]));
           x = goog.math.modulo(x, numCols);
           tmpTileCoord.z = tileCoord.z;
           tmpTileCoord.x = x;
           tmpTileCoord.y = tileCoord.y;
           tileExtent = tileGrid.getTileCoordExtent(tmpTileCoord, tmpExtent);
         }
-        if (!tileExtent.intersects(extent)) {
+        if (!ol.extent.intersects(tileExtent, extent)) {
           return null;
         }
         return new ol.TileCoord(tileCoord.z, x, y);

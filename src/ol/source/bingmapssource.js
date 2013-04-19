@@ -6,11 +6,11 @@ goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
-goog.require('ol.Extent');
 goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.extent');
 goog.require('ol.projection');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');
@@ -129,9 +129,8 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
               var minZ = coverageArea.zoomMin;
               var maxZ = coverageArea.zoomMax;
               var bbox = coverageArea.bbox;
-              var epsg4326Extent =
-                  new ol.Extent(bbox[1], bbox[0], bbox[3], bbox[2]);
-              var extent = epsg4326Extent.transform(transform);
+              var epsg4326Extent = [bbox[1], bbox[3], bbox[0], bbox[2]];
+              var extent = ol.extent.transform(epsg4326Extent, transform);
               var tileRange, z, zKey;
               for (z = minZ; z <= maxZ; ++z) {
                 zKey = z.toString();
