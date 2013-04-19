@@ -1,7 +1,6 @@
 goog.provide('ol.geom.Point');
 
 goog.require('goog.asserts');
-goog.require('ol.Extent');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SharedVertices');
@@ -69,7 +68,7 @@ ol.geom.Point.prototype.getBounds = function() {
   if (goog.isNull(this.bounds_)) {
     var x = this.get(0),
         y = this.get(1);
-    this.bounds_ = new ol.Extent(x, y, x, y);
+    this.bounds_ = [x, x, y, y];
   }
   return this.bounds_;
 };

@@ -1,4 +1,3 @@
-goog.require('ol.Extent');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
@@ -16,7 +15,7 @@ var layers = [
     source: new ol.source.SingleImageWMS({
       url: 'http://demo.opengeo.org/geoserver/wms',
       params: {'LAYERS': 'topp:states'},
-      extent: new ol.Extent(-13884991, 2870341, -7455066, 6338219)
+      extent: [-13884991, -7455066, 2870341, 6338219]
     })
   })
 ];

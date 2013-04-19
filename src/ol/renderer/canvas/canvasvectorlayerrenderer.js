@@ -6,11 +6,11 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
-goog.require('ol.Extent');
 goog.require('ol.Size');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
 goog.require('ol.ViewHint');
+goog.require('ol.extent');
 goog.require('ol.filter.Extent');
 goog.require('ol.filter.Geometry');
 goog.require('ol.filter.Logical');
@@ -229,7 +229,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
           extent, tileResolution),
       tileRangeExtent = tileGrid.getTileRangeExtent(z, tileRange),
       tileSize = tileGrid.getTileSize(z),
-      sketchOrigin = tileRangeExtent.getTopLeft(),
+      sketchOrigin = ol.extent.getTopLeft(tileRangeExtent),
       transform = this.transform_;
 
   goog.vec.Mat4.makeIdentity(transform);
@@ -324,10 +324,10 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         tilesToRender[key] = tileCoord;
       } else if (!frameState.viewHints[ol.ViewHint.ANIMATING]) {
         tileExtent = tileGrid.getTileCoordExtent(tileCoord);
-        tileExtent.minX -= tileGutter;
-        tileExtent.minY -= tileGutter;
-        tileExtent.maxX += tileGutter;
-        tileExtent.maxY += tileGutter;
+        tileExtent[0] -= tileGutter;
+        tileExtent[1] += tileGutter;
+        tileExtent[2] -= tileGutter;
+        tileExtent[3] += tileGutter;
         extentFilter = new ol.filter.Extent(tileExtent);
         for (i = 0; i < numFilters; ++i) {
           geomFilter = filters[i];

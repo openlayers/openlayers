@@ -51,7 +51,7 @@ describe('ol.layer.Vector', function() {
     });
 
     var geomFilter = new ol.filter.Geometry(ol.geom.GeometryType.LINESTRING);
-    var extentFilter = new ol.filter.Extent(new ol.Extent(16, 48, 16.3, 48.3));
+    var extentFilter = new ol.filter.Extent([16, 16.3, 48, 48.3]);
 
     it('can filter by geometry type using its GeometryType index', function() {
       sinon.spy(geomFilter, 'applies');
@@ -177,7 +177,6 @@ describe('ol.layer.Vector', function() {
 });
 
 goog.require('ol.Expression');
-goog.require('ol.Extent');
 goog.require('ol.Feature');
 goog.require('ol.filter.Extent');
 goog.require('ol.filter.Geometry');

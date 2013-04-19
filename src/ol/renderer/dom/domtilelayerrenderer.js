@@ -11,13 +11,13 @@ goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Coordinate');
-goog.require('ol.Extent');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
+goog.require('ol.extent');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.tilegrid.TileGrid');
@@ -98,7 +98,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   var extent;
   if (tileResolution == view2DState.resolution) {
     center = this.snapCenterToPixel(center, tileResolution, frameState.size);
-    extent = ol.Extent.getForView2DAndSize(
+    extent = ol.extent.getForView2DAndSize(
         center, tileResolution, view2DState.rotation, frameState.size);
   } else {
     extent = frameState.extent;
@@ -117,7 +117,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
       tilesToDrawByZ, getTileIfLoaded);
 
   var allTilesLoaded = true;
-  var tmpExtent = new ol.Extent(0, 0, 0, 0);
+  var tmpExtent = ol.extent.createEmptyExtent();
   var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
   var childTileRange, fullyLoaded, tile, tileState, x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
@@ -272,7 +272,8 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
    * @private
    * @type {ol.Coordinate}
    */
-  this.origin_ = tileGrid.getTileCoordExtent(tileCoordOrigin).getTopLeft();
+  this.origin_ =
+      ol.extent.getTopLeft(tileGrid.getTileCoordExtent(tileCoordOrigin));
 
   /**
    * @private

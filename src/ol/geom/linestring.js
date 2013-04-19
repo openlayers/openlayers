@@ -1,7 +1,6 @@
 goog.provide('ol.geom.LineString');
 
 goog.require('goog.asserts');
-goog.require('ol.Extent');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SharedVertices');
@@ -126,7 +125,7 @@ ol.geom.LineString.prototype.getBounds = function() {
         maxY = y;
       }
     }
-    this.bounds_ = new ol.Extent(minX, minY, maxX, maxY);
+    this.bounds_ = [minX, maxX, minY, maxY];
   }
   return this.bounds_;
 };

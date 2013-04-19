@@ -4,10 +4,10 @@
 goog.provide('ol.interaction.DragZoom');
 
 goog.require('goog.asserts');
-goog.require('ol.Extent');
 goog.require('ol.Size');
 goog.require('ol.View2D');
 goog.require('ol.control.DragBox');
+goog.require('ol.extent');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
 
@@ -63,9 +63,8 @@ ol.interaction.DragZoom.prototype.handleDragEnd =
   if (this.deltaX * this.deltaX + this.deltaY * this.deltaY >=
       ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED) {
     var map = mapBrowserEvent.map;
-    var extent = ol.Extent.boundingExtent(
-        this.startCoordinate,
-        mapBrowserEvent.getCoordinate());
+    var extent = ol.extent.boundingExtent(
+        [this.startCoordinate, mapBrowserEvent.getCoordinate()]);
     map.withFrozenRendering(function() {
       // FIXME works for View2D only
       var view = map.getView();
