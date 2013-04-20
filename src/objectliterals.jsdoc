@@ -1,4 +1,11 @@
 /**
+ * @typedef {Object} ol.GeolocationOptions
+ * @property {boolean|undefined} tracking Tracking.
+ * @property {GeolocationPositionOptions|undefined} trackingOptions Tracking options.
+ * @property {ol.ProjectionLike} projection Projection.
+ */
+
+/**
  * Object literal with config options for the map.
  * @typedef {Object} ol.MapOptions
  * @property {Array.<ol.control.Control>|undefined} controls Controls initially
