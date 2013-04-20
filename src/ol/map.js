@@ -617,8 +617,9 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   var interactions = this.getInteractions();
   var interactionsArray = /** @type {Array.<ol.interaction.Interaction>} */
       (interactions.getArray());
+  var i;
   if (this.dispatchEvent(mapBrowserEvent) !== false) {
-    for (var i = interactionsArray.length - 1; i >= 0; i--) {
+    for (i = interactionsArray.length - 1; i >= 0; i--) {
       var interaction = interactionsArray[i];
       interaction.handleMapBrowserEvent(mapBrowserEvent);
       if (mapBrowserEvent.defaultPrevented) {
@@ -663,8 +664,8 @@ ol.Map.prototype.handlePostRender = function() {
   }
 
   var postRenderFunctions = this.postRenderFunctions_;
-  var i;
-  for (i = 0; i < postRenderFunctions.length; ++i) {
+  var i, ii;
+  for (i = 0, ii = postRenderFunctions.length; i < ii; ++i) {
     postRenderFunctions[i](this, frameState);
   }
   postRenderFunctions.length = 0;
@@ -796,8 +797,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
     var backgroundColor = this.getBackgroundColor();
     var viewHints = view.getHints();
     var layerStates = {};
-    var layer;
-    for (i = 0; i < layersArray.length; ++i) {
+    var ii, layer;
+    for (i = 0, ii = layersArray.length; i < ii; ++i) {
       layer = layersArray[i];
       layerStates[goog.getUid(layer)] = layer.getLayerState();
     }
@@ -828,7 +829,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
   var preRenderFunctions = this.preRenderFunctions_;
   var n = 0, preRenderFunction;
-  for (i = 0; i < preRenderFunctions.length; ++i) {
+  for (i = 0, ii = preRenderFunctions.length; i < ii; ++i) {
     preRenderFunction = preRenderFunctions[i];
     if (preRenderFunction(this, frameState)) {
       preRenderFunctions[n++] = preRenderFunction;
@@ -1003,8 +1004,9 @@ ol.Map.createOptionsInternal = function(options) {
     rendererHints = ol.DEFAULT_RENDERER_HINTS;
   }
 
+  var n = rendererHints.length;
   var i, rendererHint;
-  for (i = 0; i < rendererHints.length; ++i) {
+  for (i = 0; i < n; ++i) {
     rendererHint = rendererHints[i];
     if (rendererHint == ol.RendererHint.CANVAS) {
       if (ol.ENABLE_CANVAS && ol.renderer.canvas.SUPPORTED) {

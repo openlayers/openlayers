@@ -121,6 +121,17 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
 
 
 /**
+ * @param {string} layerKey Layer key.
+ * @protected
+ * @return {ol.renderer.Layer} Layer renderer.
+ */
+ol.renderer.Map.prototype.getLayerRendererByKey = function(layerKey) {
+  goog.asserts.assert(layerKey in this.layerRenderers_);
+  return this.layerRenderers_[layerKey];
+};
+
+
+/**
  * @protected
  * @return {Object.<number, ol.renderer.Layer>} Layer renderers.
  */
