@@ -120,8 +120,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   var layerStates = frameState.layerStates;
   var layersArray = frameState.layersArray;
-  var i, image, layer, layerRenderer, layerState, transform;
-  for (i = 0; i < layersArray.length; ++i) {
+  var i, ii, image, layer, layerRenderer, layerState, transform;
+  for (i = 0, ii = layersArray.length; i < ii; ++i) {
 
     layer = layersArray[i];
     layerRenderer = this.getLayerRenderer(layer);
