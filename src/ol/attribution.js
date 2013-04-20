@@ -42,13 +42,13 @@ ol.Attribution.prototype.intersectsAnyTileRange = function(tileRanges) {
   if (goog.isNull(this.tileRanges_)) {
     return true;
   }
-  var i, tileRange, z;
+  var i, ii, tileRange, z;
   for (z in tileRanges) {
     if (!(z in this.tileRanges_)) {
       continue;
     }
     tileRange = tileRanges[z];
-    for (i = 0; i < this.tileRanges_[z].length; ++i) {
+    for (i = 0, ii = this.tileRanges_[z].length; i < ii; ++i) {
       if (this.tileRanges_[z][i].intersects(tileRange)) {
         return true;
       }
