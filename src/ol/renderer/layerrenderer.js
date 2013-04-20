@@ -224,9 +224,8 @@ ol.renderer.Layer.prototype.scheduleExpireCache =
 ol.renderer.Layer.prototype.updateAttributions =
     function(attributionsSet, attributions) {
   if (goog.isDefAndNotNull(attributions)) {
-    var i;
-    var attribution;
-    for (i = 0; i < attributions.length; ++i) {
+    var attribution, i, ii;
+    for (i = 0, ii = attributions.length; i < ii; ++i) {
       attribution = attributions[i];
       attributionsSet[goog.getUid(attribution).toString()] = attribution;
     }

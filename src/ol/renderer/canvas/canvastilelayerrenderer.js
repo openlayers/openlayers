@@ -303,8 +303,8 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
     }
   }
 
-  var i;
-  for (i = 0; i < tilesToClear.length; ++i) {
+  var i, ii;
+  for (i = 0, ii = tilesToClear.length; i < ii; ++i) {
     tile = tilesToClear[i];
     x = tileSize.width * (tile.tileCoord.x - canvasTileRange.minX);
     y = tileSize.height * (canvasTileRange.maxY - tile.tileCoord.y);
@@ -321,7 +321,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   var currentZ, index, scale, tileCoordKey, tileExtent, tilesToDraw;
   var ix, iy, interimTileExtent, interimTileRange, maxX, maxY;
   var height, width;
-  for (i = 0; i < zs.length; ++i) {
+  for (i = 0, ii = zs.length; i < ii; ++i) {
     currentZ = zs[i];
     tileSize = tileGrid.getTileSize(currentZ);
     tilesToDraw = tilesToDrawByZ[currentZ];

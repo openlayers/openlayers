@@ -87,8 +87,8 @@ ol.Collection.prototype.clear = function() {
  * @param {Array} arr Array.
  */
 ol.Collection.prototype.extend = function(arr) {
-  var i;
-  for (i = 0; i < arr.length; ++i) {
+  var i, ii;
+  for (i = 0, ii = arr.length; i < ii; ++i) {
     this.push(arr[i]);
   }
 };
@@ -165,9 +165,10 @@ ol.Collection.prototype.push = function(elem) {
  * @return {*} The removed element or undefined if elem was not found.
  */
 ol.Collection.prototype.remove = function(elem) {
-  var i;
-  for (i = 0; i < this.array_.length; ++i) {
-    if (this.array_[i] === elem) {
+  var arr = this.array_;
+  var i, ii;
+  for (i = 0, ii = arr.length; i < ii; ++i) {
+    if (arr[i] === elem) {
       return this.removeAt(i);
     }
   }

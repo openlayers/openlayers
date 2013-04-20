@@ -2,7 +2,6 @@
 
 goog.provide('ol.renderer.canvas.Map');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -119,18 +118,22 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   this.calculateMatrices2D(frameState);
 
-  goog.array.forEach(frameState.layersArray, function(layer) {
+  var layerStates = frameState.layerStates;
+  var layersArray = frameState.layersArray;
+  var i, ii, image, layer, layerRenderer, layerState, transform;
+  for (i = 0, ii = layersArray.length; i < ii; ++i) {
 
-    var layerRenderer = this.getLayerRenderer(layer);
-    var layerState = frameState.layerStates[goog.getUid(layer)];
+    layer = layersArray[i];
+    layerRenderer = this.getLayerRenderer(layer);
+    layerState = layerStates[goog.getUid(layer)];
     if (!layerState.visible || !layerState.ready) {
-      return;
+      continue;
     }
     layerRenderer.renderFrame(frameState, layerState);
 
-    var image = layerRenderer.getImage();
+    image = layerRenderer.getImage();
     if (!goog.isNull(image)) {
-      var transform = layerRenderer.getTransform();
+      transform = layerRenderer.getTransform();
       context.setTransform(
           goog.vec.Mat4.getElement(transform, 0, 0),
           goog.vec.Mat4.getElement(transform, 1, 0),
@@ -143,7 +146,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
       context.drawImage(image, 0, 0);
     }
 
-  }, this);
+  }
 
   if (!this.renderedVisible_) {
     goog.style.showElement(this.canvas_, true);

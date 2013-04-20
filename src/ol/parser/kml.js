@@ -270,7 +270,7 @@ ol.parser.KML = function(opt_options) {
         var reg = this.regExes;
         var coords = coordstr.replace(reg.trimSpace, '').split(reg.splitSpace);
         var coordArray = [];
-        for (var i = 0, len = coords.length; i < len; i++) {
+        for (var i = 0, ii = coords.length; i < ii; i++) {
           var array = coords[i].replace(reg.removeSpace, '').split(',');
           var pair = [];
           var jj = Math.min(array.length, this.dimension);

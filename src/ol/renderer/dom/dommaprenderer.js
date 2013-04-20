@@ -1,10 +1,8 @@
 goog.provide('ol.renderer.dom.Map');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.object');
 goog.require('goog.style');
 goog.require('ol.css');
 goog.require('ol.layer.ImageLayer');
@@ -79,21 +77,25 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
     return;
   }
 
-  goog.array.forEach(frameState.layersArray, function(layer) {
-    var layerRenderer = this.getLayerRenderer(layer);
-    var layerState = frameState.layerStates[goog.getUid(layer)];
+  var layerStates = frameState.layerStates;
+  var layersArray = frameState.layersArray;
+  var i, ii, layer, layerRenderer, layerState;
+  for (i = 0, ii = layersArray.length; i < ii; ++i) {
+    layer = layersArray[i];
+    layerRenderer = this.getLayerRenderer(layer);
+    layerState = frameState.layerStates[goog.getUid(layer)];
     if (layerState.ready) {
       layerRenderer.renderFrame(frameState, layerState);
     }
-  }, this);
+  }
 
-  goog.object.forEach(
-      this.getLayerRenderers(),
-      function(layerRenderer, layerKey) {
-        if (!(layerKey in frameState.layerStates)) {
-          goog.dom.removeNode(layerRenderer.getTarget());
-        }
-      });
+  var layerKey;
+  for (layerKey in this.getLayerRenderers()) {
+    if (!(layerKey in layerStates)) {
+      layerRenderer = this.getLayerRendererByKey(layerKey);
+      goog.dom.removeNode(layerRenderer.getTarget());
+    }
+  }
 
   if (!this.renderedVisible_) {
     goog.style.showElement(this.layersPane_, true);
