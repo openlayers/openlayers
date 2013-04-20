@@ -233,8 +233,8 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
     goog.array.sort(zs);
     var u_tileOffset = goog.vec.Vec4.createFloat32();
-    var i, sx, sy, tileExtent, tileKey, tilesToDraw, tx, ty;
-    for (i = 0; i < zs.length; ++i) {
+    var i, ii, sx, sy, tileExtent, tileKey, tilesToDraw, tx, ty;
+    for (i = 0, ii = zs.length; i < ii; ++i) {
       tilesToDraw = tilesToDrawByZ[zs[i]];
       for (tileKey in tilesToDraw) {
         tile = tilesToDraw[tileKey];

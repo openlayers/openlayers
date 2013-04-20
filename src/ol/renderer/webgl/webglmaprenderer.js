@@ -526,8 +526,8 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   var layerStates = frameState.layerStates;
   var layersArray = frameState.layersArray;
-  var i, layer, layerRenderer, layerState;
-  for (i = 0; i < layersArray.length; ++i) {
+  var i, ii, layer, layerRenderer, layerState;
+  for (i = 0, ii = layersArray.length; i < ii; ++i) {
     layer = layersArray[i];
     layerRenderer = this.getLayerRenderer(layer);
     layerState = frameState.layerStates[goog.getUid(layer)];
@@ -556,7 +556,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   var currentProgram = null;
   var locations;
-  for (i = 0; i < layersArray.length; ++i) {
+  for (i = 0, ii = layersArray.length; i < ii; ++i) {
 
     layer = layersArray[i];
     layerState = frameState.layerStates[goog.getUid(layer)];
