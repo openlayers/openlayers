@@ -35,7 +35,7 @@ ol.extent.boundingExtent = function(coordinates) {
  * @param {Array.<number>} ys Ys.
  * @param {ol.Extent=} opt_extent Destination extent.
  * @private
- * @return {ol.Extent}
+ * @return {ol.Extent} Extent.
  */
 ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
   goog.asserts.assert(xs.length > 0);
