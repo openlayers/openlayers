@@ -165,22 +165,6 @@ ol.renderer.Layer.prototype.handleLayerVisibleChange = function() {
 
 
 /**
- * Handle changes in tile state.
- * @param {goog.events.Event} event Tile change event.
- * @private
- */
-ol.renderer.Layer.prototype.handleTileChange_ = function(event) {
-  var tile = /** @type {ol.Tile} */ (event.target);
-  if (tile.getState() === ol.TileState.LOADED) {
-    var layer = this.getLayer();
-    if (layer.getVisible() && layer.isReady()) {
-      this.getMap().requestRenderFrame();
-    }
-  }
-};
-
-
-/**
  * @param {ol.FrameState} frameState Frame state.
  * @param {ol.layer.LayerState} layerState Layer state.
  */
