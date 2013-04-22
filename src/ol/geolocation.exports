@@ -1,1 +1,1 @@
-@exportSymbol ol.Geolocation
+@exportClass ol.Geolocation ol.GeolocationOptions
