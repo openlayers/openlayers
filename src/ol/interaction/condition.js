@@ -1,6 +1,8 @@
 goog.provide('ol.interaction.ConditionType');
 goog.provide('ol.interaction.condition');
 
+goog.require('goog.functions');
+
 
 /**
  * @typedef {function(goog.events.BrowserEvent): boolean}
@@ -30,6 +32,13 @@ ol.interaction.condition.altShiftKeysOnly = function(browserEvent) {
       !browserEvent.platformModifierKey &&
       browserEvent.shiftKey);
 };
+
+
+/**
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @return {boolean} True.
+ */
+ol.interaction.condition.always = goog.functions.TRUE;
 
 
 /**
