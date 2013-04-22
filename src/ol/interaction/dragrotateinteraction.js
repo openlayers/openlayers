@@ -6,6 +6,7 @@ goog.require('ol.ViewHint');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
 goog.require('ol.interaction.Interaction');
+goog.require('ol.interaction.condition');
 
 
 /**
@@ -18,9 +19,11 @@ ol.interaction.DRAGROTATE_ANIMATION_DURATION = 250;
 /**
  * @constructor
  * @extends {ol.interaction.Drag}
- * @param {ol.interaction.ConditionType} condition Condition.
+ * @param {ol.interaction.DragRotateOptions=} opt_options Options.
  */
-ol.interaction.DragRotate = function(condition) {
+ol.interaction.DragRotate = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   goog.base(this);
 
@@ -28,7 +31,8 @@ ol.interaction.DragRotate = function(condition) {
    * @private
    * @type {ol.interaction.ConditionType}
    */
-  this.condition_ = condition;
+  this.condition_ = goog.isDef(options.condition) ?
+      options.condition : ol.interaction.condition.altShiftKeysOnly;
 
   /**
    * @private

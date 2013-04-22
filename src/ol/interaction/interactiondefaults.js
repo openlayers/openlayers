@@ -31,8 +31,7 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
   var altShiftDragRotate = goog.isDef(options.altShiftDragRotate) ?
       options.altShiftDragRotate : true;
   if (altShiftDragRotate) {
-    interactions.push(new ol.interaction.DragRotate(
-        ol.interaction.condition.altShiftKeysOnly));
+    interactions.push(new ol.interaction.DragRotate());
   }
 
   var doubleClickZoom = goog.isDef(options.doubleClickZoom) ?
