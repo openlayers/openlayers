@@ -43,8 +43,19 @@ var map = new ol.Map({
 var kml = new ol.parser.KML({
   maxDepth: 1, dimension: 2, extractStyles: true, extractAttributes: true});
 
-$.ajax({
-  url: 'data/kml/lines.kml'
-}).done(function(data) {
-  vector.parseFeatures(data, kml, epsg4326);
-});
+var url = 'data/kml/lines.kml';
+var xhr = new XMLHttpRequest();
+xhr.open('GET', url, true);
+
+
+/**
+ * onload handler for the XHR request.
+ */
+xhr.onload = function() {
+  if (xhr.status == 200) {
+    // this is silly to have to tell the layer the destination projection
+    var projection = map.getView().getProjection();
+    vector.parseFeatures(xhr.responseText, kml, epsg4326);
+  }
+};
+xhr.send();
