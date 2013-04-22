@@ -38,7 +38,7 @@ ol.interaction.DragRotate = function(opt_options) {
    * @private
    * @type {number|undefined}
    */
-  this.lastAngle_;
+  this.lastAngle_ = undefined;
 
 };
 goog.inherits(ol.interaction.DragRotate, ol.interaction.Drag);
