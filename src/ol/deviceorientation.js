@@ -22,10 +22,9 @@ ol.DeviceOrientationProperty = {
 /**
  * @constructor
  * @extends {ol.Object}
+ * @param {ol.DeviceOrientationOptions=} opt_options Options.
  */
-ol.DeviceOrientation = function() {
-
-  goog.base(this);
+ol.DeviceOrientation = function(opt_options) {
 
   /**
    * @private
@@ -33,11 +32,12 @@ ol.DeviceOrientation = function() {
    */
   this.listenerKey_ = null;
 
-  this.setTracking(false);
-
   goog.events.listen(this,
       ol.Object.getChangedEventType(ol.DeviceOrientationProperty.TRACKING),
       this.handleTrackingChanged_, false, this);
+
+  goog.base(this, goog.isDef(opt_options) ? opt_options : {});
+
 };
 goog.inherits(ol.DeviceOrientation, ol.Object);
 

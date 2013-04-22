@@ -1,4 +1,9 @@
 /**
+ * @typedef {Object} ol.DeviceOrientationOptions
+ * @property {boolean|undefined} tracking Tracking.
+ */
+
+/**
  * @typedef {Object} ol.GeolocationOptions
  * @property {boolean|undefined} tracking Tracking.
  * @property {GeolocationPositionOptions|undefined} trackingOptions Tracking options.
