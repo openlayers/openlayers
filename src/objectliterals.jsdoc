@@ -203,6 +203,7 @@
 
 /**
  * @typedef {Object} ol.interaction.KeyboardPanOptions
+ * @property {ol.interaction.ConditionType|undefined} condition Condition.
  * @property {number|undefined} pixelDelta Pixel delta
  */
 

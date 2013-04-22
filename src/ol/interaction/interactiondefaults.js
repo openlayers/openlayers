@@ -72,8 +72,7 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
   var keyboard = goog.isDef(options.keyboard) ?
       options.keyboard : true;
   if (keyboard) {
-    interactions.push(new ol.interaction.KeyboardPan(
-        ol.interaction.condition.noModifierKeys));
+    interactions.push(new ol.interaction.KeyboardPan());
     interactions.push(new ol.interaction.KeyboardZoom(
         ol.interaction.condition.noModifierKeys));
   }
