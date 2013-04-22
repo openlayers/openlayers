@@ -15,8 +15,8 @@ describe('ol.control.ZoomSlider', function() {
   });
 
   afterEach(function() {
-    zoomslider.dispose();
-    map.dispose();
+    goog.dispose(zoomslider);
+    goog.dispose(map);
     document.body.removeChild(target);
     zoomslider = null;
     map = null;
@@ -72,7 +72,7 @@ describe('ol.control.ZoomSlider', function() {
       var horizontal = ol.control.ZoomSlider.direction.HORIZONTAL;
       expect(control.direction_).to.be(horizontal);
 
-      control.dispose();
+      goog.dispose(control);
     });
 
     it('is vertical for tall containers', function() {
@@ -85,12 +85,13 @@ describe('ol.control.ZoomSlider', function() {
       var vertical = ol.control.ZoomSlider.direction.VERTICAL;
       expect(control.direction_).to.be(vertical);
 
-      control.dispose();
+      goog.dispose(control);
     });
   });
 
 });
 
+goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.classes');
 goog.require('goog.fx.Dragger');
