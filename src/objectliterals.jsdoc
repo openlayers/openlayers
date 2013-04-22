@@ -167,6 +167,8 @@
 /**
  * Interactions for the map. Default is true for all options.
  * @typedef {Object} ol.interaction.DefaultsOptions
+ * @property {boolean|undefined} altShiftDragRotate Whether Alt-Shift-drag
+ *     rotate is desired.
  * @property {boolean|undefined} doubleClickZoom Whether double click zoom is
  *     desired.
  * @property {boolean|undefined} dragPan Whether drag-pan is desired.

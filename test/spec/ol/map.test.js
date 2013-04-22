@@ -72,7 +72,7 @@ describe('ol.Map', function() {
 
     beforeEach(function() {
       options = {
-        rotate: false,
+        altShiftDragRotate: false,
         doubleClickZoom: false,
         dragPan: false,
         keyboard: false,

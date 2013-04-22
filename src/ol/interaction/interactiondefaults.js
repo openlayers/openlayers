@@ -28,9 +28,9 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
 
   var interactions = new ol.Collection();
 
-  var rotate = goog.isDef(options.rotate) ?
-      options.rotate : true;
-  if (rotate) {
+  var altShiftDragRotate = goog.isDef(options.altShiftDragRotate) ?
+      options.altShiftDragRotate : true;
+  if (altShiftDragRotate) {
     interactions.push(new ol.interaction.DragRotate(
         ol.interaction.condition.altShiftKeysOnly));
   }
