@@ -27,6 +27,8 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
 
   var interactions = new ol.Collection();
 
+  var kinetic = new ol.Kinetic(-0.005, 0.05, 100);
+
   var altShiftDragRotate = goog.isDef(options.altShiftDragRotate) ?
       options.altShiftDragRotate : true;
   if (altShiftDragRotate) {
@@ -45,7 +47,7 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
       options.touchPan : true;
   if (touchPan) {
     interactions.push(new ol.interaction.TouchPan({
-      kinetic: new ol.Kinetic(-0.005, 0.05, 100)
+      kinetic: kinetic
     }));
   }
 
@@ -65,7 +67,7 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
       options.dragPan : true;
   if (dragPan) {
     interactions.push(new ol.interaction.DragPan({
-      kinetic: new ol.Kinetic(-0.005, 0.05, 100)
+      kinetic: kinetic
     }));
   }
 
