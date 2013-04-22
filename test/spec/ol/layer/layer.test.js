@@ -15,7 +15,7 @@ describe('ol.layer.Layer', function() {
     });
 
     afterEach(function() {
-      layer.dispose();
+      goog.dispose(layer);
     });
 
     it('creates an instance', function() {
@@ -70,7 +70,7 @@ describe('ol.layer.Layer', function() {
       expect(layer.getSaturation()).to.be(5);
       expect(layer.getVisible()).to.be(false);
 
-      layer.dispose();
+      goog.dispose(layer);
     });
 
   });
@@ -88,7 +88,7 @@ describe('ol.layer.Layer', function() {
     });
 
     afterEach(function() {
-      layer.dispose();
+      goog.dispose(layer);
     });
 
     it('accepts a positive number', function() {
@@ -126,7 +126,7 @@ describe('ol.layer.Layer', function() {
     });
 
     afterEach(function() {
-      layer.dispose();
+      goog.dispose(layer);
     });
 
     it('accepts a small positive number', function() {
@@ -160,7 +160,7 @@ describe('ol.layer.Layer', function() {
     });
 
     afterEach(function() {
-      layer.dispose();
+      goog.dispose(layer);
     });
 
     it('accepts a small positive number', function() {
@@ -199,7 +199,7 @@ describe('ol.layer.Layer', function() {
     });
 
     afterEach(function() {
-      layer.dispose();
+      goog.dispose(layer);
     });
 
     it('accepts a positive number', function() {
@@ -233,7 +233,7 @@ describe('ol.layer.Layer', function() {
     });
 
     afterEach(function() {
-      layer.dispose();
+      goog.dispose(layer);
     });
 
     it('accepts a small positive number', function() {
@@ -269,13 +269,14 @@ describe('ol.layer.Layer', function() {
       layer.setVisible(true);
       expect(layer.getVisible()).to.be(true);
 
-      layer.dispose();
+      goog.dispose(layer);
     });
 
   });
 
 });
 
+goog.require('goog.dispose');
 goog.require('ol.layer.Layer');
 goog.require('ol.projection');
 goog.require('ol.source.Source');
