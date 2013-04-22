@@ -74,7 +74,7 @@ ol.control.Attribution.prototype.getTileSourceAttributions =
     function(usedTiles, sources) {
   /** @type {Object.<string, ol.Attribution>} */
   var attributions = {};
-  var i, tileRanges, tileSource, tileSourceAttribution,
+  var i, ii, tileRanges, tileSource, tileSourceAttribution,
       tileSourceAttributionKey, tileSourceAttributions, tileSourceKey, z;
   for (tileSourceKey in usedTiles) {
     goog.asserts.assert(tileSourceKey in sources);
@@ -84,7 +84,7 @@ ol.control.Attribution.prototype.getTileSourceAttributions =
       continue;
     }
     tileRanges = usedTiles[tileSourceKey];
-    for (i = 0; i < tileSourceAttributions.length; ++i) {
+    for (i = 0, ii = tileSourceAttributions.length; i < ii; ++i) {
       tileSourceAttribution = tileSourceAttributions[i];
       tileSourceAttributionKey = goog.getUid(tileSourceAttribution).toString();
       if (tileSourceAttributionKey in attributions) {
@@ -134,8 +134,8 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
       sources[goog.getUid(source).toString()] = source;
       var attributions = source.getAttributions();
       if (!goog.isNull(attributions)) {
-        var attribution, i;
-        for (i = 0; i < attributions.length; ++i) {
+        var attribution, i, ii;
+        for (i = 0, ii = attributions.length; i < ii; ++i) {
           attribution = attributions[i];
           attributionKey = goog.getUid(attribution).toString();
           attributionsToRemove[attributionKey] = true;
@@ -154,8 +154,8 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
   var attributionKeys =
       goog.array.map(goog.object.getKeys(attributions), Number);
   goog.array.sort(attributionKeys);
-  var i, attributionElement, attributionKey;
-  for (i = 0; i < attributionKeys.length; ++i) {
+  var i, ii, attributionElement, attributionKey;
+  for (i = 0, ii = attributionKeys.length; i < ii; ++i) {
     attributionKey = attributionKeys[i].toString();
     if (attributionKey in this.attributionElements_) {
       if (!this.attributionElementRenderedVisible_[attributionKey]) {
