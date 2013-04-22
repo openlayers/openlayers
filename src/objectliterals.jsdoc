@@ -230,6 +230,11 @@
  */
 
 /**
+ * @typedef {Object} ol.interaction.TouchRotateOptions
+ * @property {number|undefined} threshold Minimal angle to start a rotation.
+ */
+
+/**
  * @typedef {Object} ol.layer.LayerOptions
  * @property {number|undefined} brightness Brightness.
  * @property {number|undefined} contrast Contrast.
