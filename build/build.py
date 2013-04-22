@@ -32,6 +32,13 @@ def build(config_file = None, output_file = None, options = None):
     except ImportError:
         print "No minimize"
 
+    try:
+        import uglify_js
+        uglify_js.check_available()
+        have_compressor.append("uglify-js")
+    except Exception, E:
+        print "No uglify-js (%s)" % E
+
     use_compressor = None
     if options.compressor and options.compressor in have_compressor:
         use_compressor = options.compressor
@@ -52,7 +59,7 @@ def build(config_file = None, output_file = None, options = None):
 
     print "Merging libraries."
     try:
-        if use_compressor == "closure":
+        if use_compressor == "closure" or use_compressor == 'uglify-js':
             sourceFiles = mergejs.getNames(sourceDirectory, configFilename)
         else:
             merged = mergejs.run(sourceDirectory, None, configFilename)
@@ -107,6 +114,14 @@ def build(config_file = None, output_file = None, options = None):
             print "\nAbnormal termination due to compilation errors." 
             sys.exit("ERROR: Closure Compilation failed! See compilation errors.") 
         print "Closure Compilation has completed successfully."
+    elif use_compressor == "uglify-js":
+        minimized = uglify_js.compile(sourceFiles)
+        if minimized is None:
+            print "\nAbnormal termination due to compilation errors."
+            sys.exit("ERROR: Uglify JS compilation failed! See compilation errors.")
+
+        print "Uglify JS compilation has completed successfully."
+
     else: # fallback
         minimized = merged 
 
