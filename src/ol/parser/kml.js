@@ -21,6 +21,7 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SharedVertices');
 goog.require('ol.parser.AsyncObjectFeatureParser');
+goog.require('ol.parser.AsyncStringFeatureParser');
 goog.require('ol.parser.DomFeatureParser');
 goog.require('ol.parser.ReadFeaturesOptions');
 goog.require('ol.parser.StringFeatureParser');
@@ -47,6 +48,7 @@ ol.parser.KMLOptions;
  * @implements {ol.parser.DomFeatureParser}
  * @implements {ol.parser.StringFeatureParser}
  * @implements {ol.parser.AsyncObjectFeatureParser}
+ * @implements {ol.parser.AsyncStringFeatureParser}
  * @param {ol.parser.KMLOptions=} opt_options Optional configuration object.
  * @extends {ol.parser.XML}
  */
@@ -815,6 +817,19 @@ ol.parser.KML.prototype.readFeaturesFromObjectAsync =
     function(obj, callback, opt_options) {
   this.readFeaturesOptions_ = opt_options;
   this.read(obj, callback);
+};
+
+
+/**
+ * @param {string} str KML document.
+ * @param {function(Array.<ol.Feature>)} callback Callback which is called
+ * after parsing.
+ * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
+ */
+ol.parser.KML.prototype.readFeaturesFromStringAsync =
+    function(str, callback, opt_options) {
+  this.readFeaturesOptions_ = opt_options;
+  this.read(str, callback);
 };
 
 
