@@ -165,7 +165,7 @@
  */
 
 /**
- * @typedef {Object} ol.interaction.DblClickZoomOptions
+ * @typedef {Object} ol.interaction.DoubleClickZoomOptions
  * @property {number|undefined} delta The zoom delta applied on each double
  *    click.
  */

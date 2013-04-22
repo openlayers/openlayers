@@ -103,7 +103,7 @@ describe('ol.Map', function() {
         it('create double click interaction with default delta', function() {
           var interactions = ol.interaction.defaults(options);
           expect(interactions.getLength()).to.eql(1);
-          expect(interactions.getAt(0)).to.be.a(ol.interaction.DblClickZoom);
+          expect(interactions.getAt(0)).to.be.a(ol.interaction.DoubleClickZoom);
           expect(interactions.getAt(0).delta_).to.eql(1);
         });
       });
@@ -113,7 +113,7 @@ describe('ol.Map', function() {
           options.zoomDelta = 7;
           var interactions = ol.interaction.defaults(options);
           expect(interactions.getLength()).to.eql(1);
-          expect(interactions.getAt(0)).to.be.a(ol.interaction.DblClickZoom);
+          expect(interactions.getAt(0)).to.be.a(ol.interaction.DoubleClickZoom);
           expect(interactions.getAt(0).delta_).to.eql(7);
         });
       });
@@ -127,6 +127,6 @@ goog.require('goog.dom');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.RendererHints');
-goog.require('ol.interaction.DblClickZoom');
+goog.require('ol.interaction.DoubleClickZoom');
 goog.require('ol.interaction.MouseWheelZoom');
 goog.require('ol.interaction.defaults');

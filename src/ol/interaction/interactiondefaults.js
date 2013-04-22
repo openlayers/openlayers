@@ -2,7 +2,7 @@ goog.provide('ol.interaction.defaults');
 
 goog.require('ol.Collection');
 goog.require('ol.Kinetic');
-goog.require('ol.interaction.DblClickZoom');
+goog.require('ol.interaction.DoubleClickZoom');
 goog.require('ol.interaction.DragPan');
 goog.require('ol.interaction.DragRotate');
 goog.require('ol.interaction.DragZoom');
@@ -38,7 +38,7 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
   var doubleClickZoom = goog.isDef(options.doubleClickZoom) ?
       options.doubleClickZoom : true;
   if (doubleClickZoom) {
-    interactions.push(new ol.interaction.DblClickZoom({
+    interactions.push(new ol.interaction.DoubleClickZoom({
       delta: options.zoomDelta
     }));
   }
