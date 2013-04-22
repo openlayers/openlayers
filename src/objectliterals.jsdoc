@@ -209,6 +209,7 @@
 
 /**
  * @typedef {Object} ol.interaction.KeyboardZoomOptions
+ * @property {ol.interaction.ConditionType|undefined} condition Condition.
  * @property {number|undefined} delta Delta.
  */
 

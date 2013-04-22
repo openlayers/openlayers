@@ -73,8 +73,9 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
       options.keyboard : true;
   if (keyboard) {
     interactions.push(new ol.interaction.KeyboardPan());
-    interactions.push(new ol.interaction.KeyboardZoom(
-        ol.interaction.condition.noModifierKeys));
+    interactions.push(new ol.interaction.KeyboardZoom({
+      delta: options.zoomDelta
+    }));
   }
 
   var mouseWheelZoom = goog.isDef(options.mouseWheelZoom) ?
