@@ -171,6 +171,12 @@
  */
 
 /**
+ * @typedef {Object} ol.interaction.DragPanOptions
+ * @property {ol.Kinetic|undefined} kinetic Kinetic.
+ * @property {ol.interaction.ConditionType|undefined} condition Conditon.
+ */
+
+/**
  * @typedef {Object} ol.interaction.DragRotateOptions
  * @property {ol.interaction.ConditionType|undefined} condition Condition.
  */

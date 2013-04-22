@@ -13,7 +13,6 @@ goog.require('ol.interaction.MouseWheelZoom');
 goog.require('ol.interaction.TouchPan');
 goog.require('ol.interaction.TouchRotate');
 goog.require('ol.interaction.TouchZoom');
-goog.require('ol.interaction.condition');
 
 
 /**
@@ -64,9 +63,9 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
   var dragPan = goog.isDef(options.dragPan) ?
       options.dragPan : true;
   if (dragPan) {
-    interactions.push(
-        new ol.interaction.DragPan(ol.interaction.condition.noModifierKeys,
-            new ol.Kinetic(-0.005, 0.05, 100)));
+    interactions.push(new ol.interaction.DragPan({
+      kinetic: new ol.Kinetic(-0.005, 0.05, 100)
+    }));
   }
 
   var keyboard = goog.isDef(options.keyboard) ?
