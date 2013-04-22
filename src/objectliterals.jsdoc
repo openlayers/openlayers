@@ -165,6 +165,12 @@
  */
 
 /**
+ * @typedef {Object} ol.interaction.DblClickZoomOptions
+ * @property {number|undefined} delta The zoom delta applied on each double
+ *    click.
+ */
+
+/**
  * Interactions for the map. Default is true for all options.
  * @typedef {Object} ol.interaction.DefaultsOptions
  * @property {boolean|undefined} altShiftDragRotate Whether Alt-Shift-drag
@@ -182,6 +188,7 @@
  *     desired.
  * @property {boolean|undefined} touchRotate Whether touch rotate is desired.
  * @property {boolean|undefined} touchZoom Whether touch zoom is desired.
+ * @property {number|undefined} zoomDelta Zoom delta.
  */
 
 /**

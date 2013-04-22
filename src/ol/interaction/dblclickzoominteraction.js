@@ -18,16 +18,20 @@ ol.interaction.DBLCLICKZOOM_ANIMATION_DURATION = 250;
 /**
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @param {number} delta The zoom delta applied on each double click.
+ * @param {ol.interaction.DblClickZoomOptions=} opt_options Options.
  */
-ol.interaction.DblClickZoom = function(delta) {
+ol.interaction.DblClickZoom = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
+
   /**
    * @private
    * @type {number}
    */
-  this.delta_ = delta;
+  this.delta_ = goog.isDef(options.delta) ? options.delta : 1;
 
   goog.base(this);
+
 };
 goog.inherits(ol.interaction.DblClickZoom, ol.interaction.Interaction);
 

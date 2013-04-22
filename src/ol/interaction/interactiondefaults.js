@@ -38,9 +38,9 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
   var doubleClickZoom = goog.isDef(options.doubleClickZoom) ?
       options.doubleClickZoom : true;
   if (doubleClickZoom) {
-    var zoomDelta = goog.isDef(options.zoomDelta) ?
-        options.zoomDelta : 1;
-    interactions.push(new ol.interaction.DblClickZoom(zoomDelta));
+    interactions.push(new ol.interaction.DblClickZoom({
+      delta: options.zoomDelta
+    }));
   }
 
   var touchPan = goog.isDef(options.touchPan) ?
