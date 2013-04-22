@@ -5,7 +5,6 @@ goog.provide('ol.tilegrid.TileGrid');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.Coordinate');
-goog.require('ol.PixelBounds');
 goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.TileCoord');
@@ -135,25 +134,6 @@ ol.tilegrid.TileGrid.prototype.getOrigin = function(z) {
     goog.asserts.assert(0 <= z && z < this.origins_.length);
     return this.origins_[z];
   }
-};
-
-
-/**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {number} resolution Resolution.
- * @return {ol.PixelBounds} Pixel bounds.
- */
-ol.tilegrid.TileGrid.prototype.getPixelBoundsForTileCoordAndResolution =
-    function(tileCoord, resolution) {
-  var scale = resolution / this.getResolution(tileCoord.z);
-  var tileSize = this.getTileSize(tileCoord.z);
-  var tileWidth = tileSize.width / scale;
-  var tileHeight = tileSize.height / scale;
-  var minX = Math.round(tileCoord.x * tileWidth);
-  var maxX = Math.round((tileCoord.x + 1) * tileWidth);
-  var minY = Math.round(tileCoord.y * tileHeight);
-  var maxY = Math.round((tileCoord.y + 1) * tileHeight);
-  return new ol.PixelBounds(minX, maxX, minY, maxY);
 };
 
 
