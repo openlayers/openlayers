@@ -61,7 +61,7 @@ describe('ol.Map', function() {
     });
 
     it('removes the viewport from its parent', function() {
-      map.dispose();
+      goog.dispose(map);
       expect(goog.dom.getParentElement(map.getViewport())).to.be(null);
     });
   });
@@ -223,6 +223,7 @@ describe('ol.Map', function() {
 });
 
 goog.require('goog.async.AnimationDelay');
+goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('ol.Collection');
 goog.require('ol.Map');
