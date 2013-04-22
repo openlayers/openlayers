@@ -46,8 +46,7 @@ ol.interaction.DblClickZoom.prototype.handleMapBrowserEvent =
       mapBrowserEvent.isMouseActionButton()) {
     var map = mapBrowserEvent.map;
     var anchor = mapBrowserEvent.getCoordinate();
-    var delta = mapBrowserEvent.browserEvent.shiftKey ?
-        -this.delta_ : this.delta_;
+    var delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
     // FIXME works for View2D only
     var view = map.getView().getView2D();
     ol.interaction.Interaction.zoomByDelta(map, view, delta, anchor,
