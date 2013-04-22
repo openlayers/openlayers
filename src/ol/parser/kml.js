@@ -3,6 +3,7 @@ goog.require('goog.array');
 goog.require('goog.async.Deferred');
 goog.require('goog.async.DeferredList');
 goog.require('goog.date');
+goog.require('goog.dispose');
 goog.require('goog.dom.xml');
 goog.require('goog.events');
 goog.require('goog.net.EventType');
@@ -875,7 +876,7 @@ ol.parser.KML.prototype.parseLinks = function(deferreds, obj, done) {
         goog.events.listen(xhr, goog.net.EventType.COMPLETE, function(e) {
           if (e.target.isSuccess()) {
             var data = e.target.getResponseXml();
-            e.target.dispose();
+            goog.dispose(e.target);
             if (data && data.nodeType == 9) {
               data = data.documentElement;
             }
