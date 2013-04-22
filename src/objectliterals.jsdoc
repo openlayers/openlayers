@@ -181,6 +181,11 @@
  */
 
 /**
+ * @typedef {Object} ol.interaction.DragZoomOptions
+ * @property {ol.interaction.ConditionType|undefined} condition Condition.
+ */
+
+/**
  * Interactions for the map. Default is true for all options.
  * @typedef {Object} ol.interaction.DefaultsOptions
  * @property {boolean|undefined} altShiftDragRotate Whether Alt-Shift-drag

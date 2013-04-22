@@ -87,8 +87,7 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
   var shiftDragZoom = goog.isDef(options.shiftDragZoom) ?
       options.shiftDragZoom : true;
   if (shiftDragZoom) {
-    interactions.push(
-        new ol.interaction.DragZoom(ol.interaction.condition.shiftKeyOnly));
+    interactions.push(new ol.interaction.DragZoom());
   }
 
   if (goog.isDef(opt_interactions)) {
