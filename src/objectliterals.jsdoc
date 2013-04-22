@@ -225,6 +225,11 @@
  */
 
 /**
+ * @typedef {Object} ol.interaction.TouchPanOptions
+ * @property {ol.Kinetic|undefined} kinetic Kinetic.
+ */
+
+/**
  * @typedef {Object} ol.layer.LayerOptions
  * @property {number|undefined} brightness Brightness.
  * @property {number|undefined} contrast Contrast.

@@ -44,8 +44,9 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
   var touchPan = goog.isDef(options.touchPan) ?
       options.touchPan : true;
   if (touchPan) {
-    interactions.push(new ol.interaction.TouchPan(
-        new ol.Kinetic(-0.005, 0.05, 100)));
+    interactions.push(new ol.interaction.TouchPan({
+      kinetic: new ol.Kinetic(-0.005, 0.05, 100)
+    }));
   }
 
   var touchRotate = goog.isDef(options.touchRotate) ?
