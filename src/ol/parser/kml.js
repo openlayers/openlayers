@@ -33,15 +33,6 @@ goog.require('ol.style.Polygon');
 goog.require('ol.style.PolygonLiteral');
 
 
-/**
- * @typedef {{extractAttributes: (boolean|undefined),
- *            extractStyles: (boolean|undefined),
- *            dimension: (number|undefined),
- *            maxDepth: (number|undefined)}}
- */
-ol.parser.KMLOptions;
-
-
 
 /**
  * @constructor
