@@ -112,6 +112,7 @@ ol.MapProperty = {
   BACKGROUND_COLOR: 'backgroundColor',
   LAYERS: 'layers',
   SIZE: 'size',
+  TARGET: 'target',
   VIEW: 'view'
 };
 
@@ -194,12 +195,6 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {Element}
-   */
-  this.target_ = optionsInternal.target;
-
-  /**
-   * @private
    * @type {?number}
    */
   this.viewPropertyListenerKey_ = null;
@@ -218,7 +213,6 @@ ol.Map = function(options) {
   if (ol.BrowserFeature.HAS_TOUCH) {
     this.viewport_.className = 'ol-touch';
   }
-  goog.dom.appendChild(this.target_, this.viewport_);
 
   /**
    * @private
@@ -318,14 +312,15 @@ ol.Map = function(options) {
       this.handleViewChanged_, false, this);
   goog.events.listen(this, ol.Object.getChangedEventType(ol.MapProperty.SIZE),
       this.handleSizeChanged_, false, this);
+  goog.events.listen(this, ol.Object.getChangedEventType(ol.MapProperty.TARGET),
+      this.handleTargetChanged_, false, this);
   goog.events.listen(
       this, ol.Object.getChangedEventType(ol.MapProperty.BACKGROUND_COLOR),
       this.handleBackgroundColorChanged_, false, this);
 
+  // setValues will trigger the rendering of the map if the map
+  // is "defined" already.
   this.setValues(optionsInternal.values);
-
-  // this gives the map an initial size
-  this.updateSize();
 
   if (goog.isDef(optionsInternal.controls)) {
     goog.array.forEach(optionsInternal.controls,
@@ -421,11 +416,15 @@ ol.Map.prototype.getRenderer = function() {
 
 
 /**
- * @return {Element} Container.
+ * @return {Element|undefined} Target.
  */
 ol.Map.prototype.getTarget = function() {
-  return this.target_;
+  return /** @type {Element|undefined} */ (this.get(ol.MapProperty.TARGET));
 };
+goog.exportProperty(
+    ol.Map.prototype,
+    'getTarget',
+    ol.Map.prototype.getTarget);
 
 
 /**
@@ -691,6 +690,26 @@ ol.Map.prototype.handleSizeChanged_ = function() {
 /**
  * @private
  */
+ol.Map.prototype.handleTargetChanged_ = function() {
+  // target may be undefined, null or an Element. If it's not
+  // an Element we remove the viewport from the DOM. If it's
+  // an Element we append the viewport element to it.
+  var target = this.getTarget();
+  if (!goog.dom.isElement(target)) {
+    goog.dom.removeNode(this.viewport_);
+  } else {
+    goog.asserts.assert(goog.isDefAndNotNull(target));
+    goog.dom.appendChild(target, this.viewport_);
+  }
+  this.updateSize();
+  // updateSize calls setSize, so no need to call this.render
+  // ourselves here.
+};
+
+
+/**
+ * @private
+ */
 ol.Map.prototype.handleTileChange_ = function() {
   this.requestRenderFrame();
 };
@@ -890,7 +909,7 @@ goog.exportProperty(
 
 
 /**
- * @param {ol.Size} size Size.
+ * @param {ol.Size|undefined} size Size.
  */
 ol.Map.prototype.setSize = function(size) {
   this.set(ol.MapProperty.SIZE, size);
@@ -899,6 +918,21 @@ goog.exportProperty(
     ol.Map.prototype,
     'setSize',
     ol.Map.prototype.setSize);
+
+
+/**
+ * @param {Element|string|undefined} target Target.
+ */
+ol.Map.prototype.setTarget = function(target) {
+  if (goog.isDef(target)) {
+    target = goog.dom.getElement(target);
+  }
+  this.set(ol.MapProperty.TARGET, target);
+};
+goog.exportProperty(
+    ol.Map.prototype,
+    'setTarget',
+    ol.Map.prototype.setTarget);
 
 
 /**
@@ -929,8 +963,13 @@ ol.Map.prototype.unfreezeRendering = function() {
  * third-party code changes the size of the map viewport.
  */
 ol.Map.prototype.updateSize = function() {
-  var size = goog.style.getSize(this.target_);
-  this.setSize(new ol.Size(size.width, size.height));
+  var target = this.getTarget();
+  if (goog.isDef(target)) {
+    var size = goog.style.getSize(target);
+    this.setSize(new ol.Size(size.width, size.height));
+  } else {
+    this.setSize(undefined);
+  }
 };
 
 
@@ -954,7 +993,6 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
  *            interactions: ol.Collection,
  *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
- *            target: Element,
  *            values: Object.<string, *>}}
  */
 ol.MapOptionsInternal;
@@ -983,6 +1021,8 @@ ol.Map.createOptionsInternal = function(options) {
     layers = new ol.Collection();
   }
   values[ol.MapProperty.LAYERS] = layers;
+
+  values[ol.MapProperty.TARGET] = options.target;
 
   values[ol.MapProperty.VIEW] = goog.isDef(options.view) ?
       options.view : new ol.View2D();
@@ -1032,16 +1072,10 @@ ol.Map.createOptionsInternal = function(options) {
   var interactions = goog.isDef(options.interactions) ?
       options.interactions : ol.interaction.defaults();
 
-  /**
-   * @type {Element}
-   */
-  var target = goog.dom.getElement(options.target);
-
   return {
     controls: controls,
     interactions: interactions,
     rendererConstructor: rendererConstructor,
-    target: target,
     values: values
   };
 

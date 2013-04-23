@@ -78,7 +78,7 @@ ol.control.FullScreen.prototype.handleClick_ = function(browserEvent) {
     goog.dom.fullscreen.exitFullScreen();
   } else {
     var element = map.getTarget();
-    goog.asserts.assert(!goog.isNull(element));
+    goog.asserts.assert(goog.isDefAndNotNull(element));
     if (this.keys_) {
       goog.dom.fullscreen.requestFullScreenWithKeys(element);
     } else {
