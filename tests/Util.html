@@ -111,6 +111,16 @@
     
     function test_Util_pagePosition(t) {
         t.plan( 2 );
+
+        // making sure that the test iframe is visible
+        var origDisplay;
+        var parents = window.parent.document.getElementsByTagName('iframe');
+        if (parents.length) {
+            origDisplay = parents[1].parentNode.style.display;
+            // span containing the test iframe is the invisible element
+            parents[1].parentNode.style.display = "";
+        }
+
         var pp = OpenLayers.Util.pagePosition(window);
         t.eq( pp.toString(), "0,0", "Page position doesn't bail if passed 'window'");
         
@@ -118,6 +128,11 @@
         var mapDiv = document.getElementById("map");
         pp = OpenLayers.Util.pagePosition(mapDiv);
         t.eq( pp.toString(), "123,1234", "Page position should work after page has been scrolled");
+        
+        // reset test iframe visibility
+        if (parents.length) {
+            parents[1].parentNode.style.display = origDisplay;
+        }
     }
 
     function test_Util_createDiv(t) {
