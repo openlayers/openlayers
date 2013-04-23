@@ -43,8 +43,6 @@ ol.OverlayPositioning = {
  */
 ol.Overlay = function(options) {
 
-  goog.base(this);
-
   /**
    * @private
    * @type {Element}
@@ -85,18 +83,7 @@ ol.Overlay = function(options) {
       ol.Object.getChangedEventType(ol.OverlayProperty.POSITIONING),
       this.handlePositioningChanged, false, this);
 
-  if (goog.isDef(options.element)) {
-    this.setElement(options.element);
-  }
-  if (goog.isDef(options.position)) {
-    this.setPosition(options.position);
-  }
-  if (goog.isDef(options.positioning)) {
-    this.setPositioning(options.positioning);
-  }
-  if (goog.isDef(options.map)) {
-    this.setMap(options.map);
-  }
+  goog.base(this, options);
 
 };
 goog.inherits(ol.Overlay, ol.Object);
