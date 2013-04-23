@@ -15,17 +15,19 @@ goog.require('ol.interaction.Touch');
 /**
  * @constructor
  * @extends {ol.interaction.Touch}
- * @param {ol.Kinetic=} opt_kinetic Kinetic object.
+ * @param {ol.interaction.TouchPanOptions=} opt_options Options.
  */
-ol.interaction.TouchPan = function(opt_kinetic) {
+ol.interaction.TouchPan = function(opt_options) {
 
   goog.base(this);
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
    * @type {ol.Kinetic|undefined}
    */
-  this.kinetic_ = opt_kinetic;
+  this.kinetic_ = options.kinetic;
 
   /**
    * @private

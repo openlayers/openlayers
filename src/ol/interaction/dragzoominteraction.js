@@ -10,6 +10,7 @@ goog.require('ol.control.DragBox');
 goog.require('ol.extent');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
+goog.require('ol.interaction.condition');
 
 
 /**
@@ -30,17 +31,20 @@ ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED =
 /**
  * @constructor
  * @extends {ol.interaction.Drag}
- * @param {ol.interaction.ConditionType} condition Condition.
+ * @param {ol.interaction.DragZoomOptions=} opt_options Options.
  */
-ol.interaction.DragZoom = function(condition) {
+ol.interaction.DragZoom = function(opt_options) {
 
   goog.base(this);
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
    * @type {ol.interaction.ConditionType}
    */
-  this.condition_ = condition;
+  this.condition_ = goog.isDef(options.condition) ?
+      options.condition : ol.interaction.condition.shiftKeyOnly;
 
   /**
    * @type {ol.control.DragBox}
