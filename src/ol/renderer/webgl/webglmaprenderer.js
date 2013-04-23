@@ -561,7 +561,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     layer = layersArray[i];
     layerState = frameState.layerStates[goog.getUid(layer)];
     if (!layerState.visible || !layerState.ready) {
-      return;
+      continue;
     }
     var useColor =
         layerState.brightness ||
