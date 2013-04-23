@@ -917,9 +917,12 @@ goog.exportProperty(
 
 
 /**
- * @param {Element|undefined} target Target.
+ * @param {Element|string|undefined} target Target.
  */
 ol.Map.prototype.setTarget = function(target) {
+  if (goog.isDef(target)) {
+    target = goog.dom.getElement(target);
+  }
   this.set(ol.MapProperty.TARGET, target);
 };
 goog.exportProperty(
@@ -1015,9 +1018,7 @@ ol.Map.createOptionsInternal = function(options) {
   }
   values[ol.MapProperty.LAYERS] = layers;
 
-  if (goog.isDef(options.target)) {
-    values[ol.MapProperty.TARGET] = goog.dom.getElement(options.target);
-  }
+  values[ol.MapProperty.TARGET] = options.target;
 
   values[ol.MapProperty.VIEW] = goog.isDef(options.view) ?
       options.view : new ol.View2D();
