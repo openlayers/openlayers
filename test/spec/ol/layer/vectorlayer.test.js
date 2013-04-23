@@ -170,12 +170,13 @@ describe('ol.layer.Vector', function() {
 
     });
 
-    layer.dispose();
+    goog.dispose(layer);
 
   });
 
 });
 
+goog.require('goog.dispose');
 goog.require('ol.Expression');
 goog.require('ol.Feature');
 goog.require('ol.filter.Extent');

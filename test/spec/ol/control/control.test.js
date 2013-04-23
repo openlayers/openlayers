@@ -13,17 +13,18 @@ describe('ol.control.Control', function() {
   });
 
   afterEach(function() {
-    map.dispose();
+    goog.dispose(map);
   });
 
   describe('dispose', function() {
     it('removes the control element from its parent', function() {
-      control.dispose();
+      goog.dispose(control);
       expect(goog.dom.getParentElement(control.element)).to.be(null);
     });
   });
 });
 
+goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('ol.Map');
