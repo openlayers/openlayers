@@ -111,7 +111,9 @@ class Class(Exportable):
             lines.append('  }\n')
             lines.append('  goog.base(this, arg);\n')
             lines.append('};\n')
-            lines.append('goog.inherits(%sExport, %s);\n' % (self.name, self.name))
+            lines.append('goog.inherits(\n')
+            lines.append('    %sExport,\n' % (self.name,));
+            lines.append('    %s);\n' % (self.name,));
             lines.append('goog.exportSymbol(\n')
             lines.append('    \'%s\',\n' % (self.name,))
             lines.append('    %s);\n' % (self.export_name(),))

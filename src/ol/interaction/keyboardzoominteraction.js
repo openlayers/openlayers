@@ -6,6 +6,7 @@ goog.require('goog.asserts');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Interaction');
+goog.require('ol.interaction.condition');
 
 
 /**
@@ -17,11 +18,10 @@ ol.interaction.KEYBOARD_ZOOM_DURATION = 100;
 
 /**
  * @constructor
- * @param {ol.interaction.ConditionType} condition Condition.
  * @param {ol.interaction.KeyboardZoomOptions=} opt_options Options.
  * @extends {ol.interaction.Interaction}
  */
-ol.interaction.KeyboardZoom = function(condition, opt_options) {
+ol.interaction.KeyboardZoom = function(opt_options) {
 
   goog.base(this);
 
@@ -31,7 +31,8 @@ ol.interaction.KeyboardZoom = function(condition, opt_options) {
    * @private
    * @type {ol.interaction.ConditionType}
    */
-  this.condition_ = condition;
+  this.condition_ = goog.isDef(options.condition) ?
+      options.condition : ol.interaction.condition.noModifierKeys;
 
   /**
    * @private

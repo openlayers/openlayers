@@ -165,8 +165,37 @@
  */
 
 /**
+ * @typedef {Object} ol.interaction.DoubleClickZoomOptions
+ * @property {number|undefined} delta The zoom delta applied on each double
+ *    click.
+ */
+
+/**
+ * @typedef {Object} ol.interaction.DragPanOptions
+ * @property {ol.Kinetic|undefined} kinetic Kinetic.
+ * @property {ol.interaction.ConditionType|undefined} condition Conditon.
+ */
+
+/**
+ * @typedef {Object} ol.interaction.DragRotateOptions
+ * @property {ol.interaction.ConditionType|undefined} condition Condition.
+ */
+
+/**
+ * @typedef {Object} ol.interaction.DragRotateAndZoomOptions
+ * @property {ol.interaction.ConditionType|undefined} condition Condition.
+ */
+
+/**
+ * @typedef {Object} ol.interaction.DragZoomOptions
+ * @property {ol.interaction.ConditionType|undefined} condition Condition.
+ */
+
+/**
  * Interactions for the map. Default is true for all options.
  * @typedef {Object} ol.interaction.DefaultsOptions
+ * @property {boolean|undefined} altShiftDragRotate Whether Alt-Shift-drag
+ *     rotate is desired.
  * @property {boolean|undefined} doubleClickZoom Whether double click zoom is
  *     desired.
  * @property {boolean|undefined} dragPan Whether drag-pan is desired.
@@ -180,16 +209,29 @@
  *     desired.
  * @property {boolean|undefined} touchRotate Whether touch rotate is desired.
  * @property {boolean|undefined} touchZoom Whether touch zoom is desired.
+ * @property {number|undefined} zoomDelta Zoom delta.
  */
 
 /**
  * @typedef {Object} ol.interaction.KeyboardPanOptions
+ * @property {ol.interaction.ConditionType|undefined} condition Condition.
  * @property {number|undefined} pixelDelta Pixel delta
  */
 
 /**
  * @typedef {Object} ol.interaction.KeyboardZoomOptions
+ * @property {ol.interaction.ConditionType|undefined} condition Condition.
  * @property {number|undefined} delta Delta.
+ */
+
+/**
+ * @typedef {Object} ol.interaction.TouchPanOptions
+ * @property {ol.Kinetic|undefined} kinetic Kinetic.
+ */
+
+/**
+ * @typedef {Object} ol.interaction.TouchRotateOptions
+ * @property {number|undefined} threshold Minimal angle to start a rotation.
  */
 
 /**

@@ -11,30 +11,33 @@ goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
+goog.require('ol.interaction.condition');
 
 
 
 /**
  * @constructor
  * @extends {ol.interaction.Drag}
- * @param {ol.interaction.ConditionType} condition Condition.
- * @param {ol.Kinetic=} opt_kinetic Kinetic object.
+ * @param {ol.interaction.DragPanOptions=} opt_options Options.
  */
-ol.interaction.DragPan = function(condition, opt_kinetic) {
+ol.interaction.DragPan = function(opt_options) {
 
   goog.base(this);
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
    * @type {ol.interaction.ConditionType}
    */
-  this.condition_ = condition;
+  this.condition_ = goog.isDef(options.condition) ?
+      options.condition : ol.interaction.condition.noModifierKeys;
 
   /**
    * @private
    * @type {ol.Kinetic|undefined}
    */
-  this.kinetic_ = opt_kinetic;
+  this.kinetic_ = options.kinetic;
 
   /**
    * @private

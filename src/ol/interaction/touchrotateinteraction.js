@@ -21,12 +21,13 @@ ol.interaction.TOUCHROTATE_ANIMATION_DURATION = 250;
 /**
  * @constructor
  * @extends {ol.interaction.Touch}
- * @param {number=} opt_threshold Minimal angle to start a rotation.
- *     Default to 0.3 (radian).
+ * @param {ol.interaction.TouchRotateOptions=} opt_options Options.
  */
-ol.interaction.TouchRotate = function(opt_threshold) {
+ol.interaction.TouchRotate = function(opt_options) {
 
   goog.base(this);
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
@@ -56,7 +57,7 @@ ol.interaction.TouchRotate = function(opt_threshold) {
    * @private
    * @type {number}
    */
-  this.threshold_ = goog.isDef(opt_threshold) ? opt_threshold : 0.3;
+  this.threshold_ = goog.isDef(options.threshold) ? options.threshold : 0.3;
 
 };
 goog.inherits(ol.interaction.TouchRotate, ol.interaction.Touch);
