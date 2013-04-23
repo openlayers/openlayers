@@ -237,53 +237,57 @@
     }
     
     function test_setOpacity(t) {
+        if(validkey) {        
+            t.plan(6);
         
-        t.plan(6);
+            var map = new OpenLayers.Map("map");
+            var gmap = new OpenLayers.Layer.Google(
+                "Google Streets", // the default
+                {numZoomLevels: 20}
+            );
+            var ghyb = new OpenLayers.Layer.Google(
+                "Google Hybrid",
+                {type: G_HYBRID_MAP, numZoomLevels: 20}
+            );
+            var gsat = new OpenLayers.Layer.Google(
+                "Google Satellite",
+                {type: G_SATELLITE_MAP, numZoomLevels: 22}
+            );
+            map.addLayers([gmap, ghyb, gsat]);
+            map.zoomToMaxExtent();
         
-        var map = new OpenLayers.Map("map");
-        var gmap = new OpenLayers.Layer.Google(
-            "Google Streets", // the default
-            {numZoomLevels: 20}
-        );
-        var ghyb = new OpenLayers.Layer.Google(
-            "Google Hybrid",
-            {type: G_HYBRID_MAP, numZoomLevels: 20}
-        );
-        var gsat = new OpenLayers.Layer.Google(
-            "Google Satellite",
-            {type: G_SATELLITE_MAP, numZoomLevels: 22}
-        );
-        map.addLayers([gmap, ghyb, gsat]);
-        map.zoomToMaxExtent();
+            var container = map.baseLayer.mapObject.getContainer();
+            var opacityCheck = function(opacity) {
+                var style = container.style;
+                var current = style.opacity === "" ? 1 : parseFloat(style.opacity);
+                if (style.filter && !style.opacity) {
+                    current = Number(style.filter.replace(/alpha\(opacity=(.+?)\)/, "$1"));
+                }
+                return (current === opacity);
+            };
         
-        var container = map.baseLayer.mapObject.getContainer();
-        var opacityCheck = function(opacity) {
-            var style = container.style;
-            var current = style.opacity === "" ? 1 : parseFloat(style.opacity);
-            if (style.filter && !style.opacity) {
-                current = Number(style.filter.replace(/alpha\(opacity=(.+?)\)/, "$1"));
-            }
-            return (current === opacity);
-        };
+            gmap.setOpacity(0.5);
+            t.ok(opacityCheck(0.5), "container opacity set for visible layer");
         
-        gmap.setOpacity(0.5);
-        t.ok(opacityCheck(0.5), "container opacity set for visible layer");
+            ghyb.setOpacity(0.75);
+            t.ok(opacityCheck(0.5), "container opacity not changed if layer not visible");
+            map.setBaseLayer(ghyb);
+            t.ok(opacityCheck(0.75), "container opacity changed to 0.75 when layer becomes visible");
         
-        ghyb.setOpacity(0.75);
-        t.ok(opacityCheck(0.5), "container opacity not changed if layer not visible");
-        map.setBaseLayer(ghyb);
-        t.ok(opacityCheck(0.75), "container opacity changed to 0.75 when layer becomes visible");
+            map.setBaseLayer(gsat);
+            t.ok(opacityCheck(1), "container opacity set to 1 by default");
+            gsat.setOpacity(0.25);
+            t.ok(opacityCheck(0.25), "container opacity changed to 0.25 for visible layer");
         
-        map.setBaseLayer(gsat);
-        t.ok(opacityCheck(1), "container opacity set to 1 by default");
-        gsat.setOpacity(0.25);
-        t.ok(opacityCheck(0.25), "container opacity changed to 0.25 for visible layer");
+            map.setBaseLayer(gmap);
+            t.ok(opacityCheck(0.5), "container opacity set to layer opacity");
         
-        map.setBaseLayer(gmap);
-        t.ok(opacityCheck(0.5), "container opacity set to layer opacity");
-        
-        map.destroy();
-        
+            map.destroy();
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }        
     }
 
     function test_Layer_Google_setGMapVisibility(t) {
@@ -321,34 +325,39 @@
     }
     
     function test_sphericalMercator(t) {
-        
-        t.plan(4);
-        var map, layer;
 
-        map = new OpenLayers.Map("map");
-        layer = new OpenLayers.Layer.Google();
-        map.addLayer(layer);
-        t.ok(!layer.sphericalMercator, "sphericalMercator false by default");
-        t.eq(map.getProjection(), "EPSG:4326", "4326 by default without sphericalMercator");
-        map.destroy();
-        
-        map = new OpenLayers.Map("map");
-        layer = new OpenLayers.Layer.Google(null, {
-            sphericalMercator: true
-        });
-        map.addLayer(layer);
-        t.eq(map.getProjection(), "EPSG:900913", "900913 by default with sphericalMercator");
-        map.destroy();
+        if (validkey) {        
+            t.plan(4);
+            var map, layer;
 
-        map = new OpenLayers.Map("map");
-        layer = new OpenLayers.Layer.Google(null, {
-            sphericalMercator: true,
-            projection: "EPSG:102113"
-        });
-        map.addLayer(layer);
-        t.eq(map.getProjection(), "EPSG:102113", "custom code respected with sphericalMercator");
-        map.destroy();
+            map = new OpenLayers.Map("map");
+            layer = new OpenLayers.Layer.Google();
+            map.addLayer(layer);
+            t.ok(!layer.sphericalMercator, "sphericalMercator false by default");
+            t.eq(map.getProjection(), "EPSG:4326", "4326 by default without sphericalMercator");
+            map.destroy();
         
+            map = new OpenLayers.Map("map");
+            layer = new OpenLayers.Layer.Google(null, {
+                sphericalMercator: true
+            });
+            map.addLayer(layer);
+            t.eq(map.getProjection(), "EPSG:900913", "900913 by default with sphericalMercator");
+            map.destroy();
+
+            map = new OpenLayers.Map("map");
+            layer = new OpenLayers.Layer.Google(null, {
+                sphericalMercator: true,
+                projection: "EPSG:102113"
+            });
+            map.addLayer(layer);
+            t.eq(map.getProjection(), "EPSG:102113", "custom code respected with sphericalMercator");
+            map.destroy();
+        } else {
+            t.plan(0);
+            t.debug_print("Google tests can't be run from " +
+                          window.location.host);
+        }        
     }
     
 
