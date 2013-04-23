@@ -691,10 +691,14 @@ ol.Map.prototype.handleSizeChanged_ = function() {
  * @private
  */
 ol.Map.prototype.handleTargetChanged_ = function() {
+  // target may be undefined, null or an Element. If it's not
+  // an Element we remove the viewport from the DOM. If it's
+  // an Element we append the viewport element to it.
   var target = this.getTarget();
-  if (!goog.isDef(target)) {
+  if (!goog.dom.isElement(target)) {
     goog.dom.removeNode(this.viewport_);
   } else {
+    goog.asserts.assert(goog.isDefAndNotNull(target));
     goog.dom.appendChild(target, this.viewport_);
   }
   this.updateSize();
