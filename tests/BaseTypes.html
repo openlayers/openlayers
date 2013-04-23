@@ -155,8 +155,8 @@
             }
         };
         t.eq(
-            format("${a.b.c} ${a.b.e} ${a.b.q} ${a} ${a...b...c}", context),
-            "d f undefined [object Object] d",
+            format("${a.b.c} ${a.b.e} ${a.b.q} ${a} ${a...b...c} ${aa.b} ${a.bb.c}", context),
+            "d f undefined [object Object] d undefined undefined",
             "attribute values that are objects are supported"
         );
 
