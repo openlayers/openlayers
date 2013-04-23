@@ -1,6 +1,5 @@
 @exportSymbol ol.Object
 @exportProperty ol.Object.prototype.bindTo
-@exportProperty ol.Object.prototype.changed
 @exportProperty ol.Object.prototype.get
 @exportProperty ol.Object.prototype.notify
 @exportProperty ol.Object.prototype.on
