@@ -73,15 +73,25 @@ ol.structs.Buffer = function(opt_arr, opt_used, opt_usage) {
 
 
 /**
+ * @param {number} size Size.
+ * @return {number} Offset.
+ */
+ol.structs.Buffer.prototype.allocate = function(size) {
+  goog.asserts.assert(size > 0);
+  var offset = this.freeSet_.findRange(size);
+  goog.asserts.assert(offset != -1);  // FIXME
+  this.freeSet_.removeRange(offset, offset + size);
+  return offset;
+};
+
+
+/**
  * @param {Array.<number>} values Values.
  * @return {number} Offset.
  */
 ol.structs.Buffer.prototype.add = function(values) {
   var size = values.length;
-  goog.asserts.assert(size > 0);
-  var offset = this.freeSet_.findRange(size);
-  goog.asserts.assert(offset != -1);  // FIXME
-  this.freeSet_.removeRange(offset, offset + size);
+  var offset = this.allocate(size);
   var i;
   for (i = 0; i < size; ++i) {
     this.arr_[offset + i] = values[i];
