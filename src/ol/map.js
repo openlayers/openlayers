@@ -797,7 +797,7 @@ ol.Map.prototype.removeLayer = function(layer) {
  */
 ol.Map.prototype.renderFrame_ = function(time) {
 
-  var i;
+  var i, ii, view2DState;
 
   if (this.freezeRenderingCount_ != 0) {
     return;
@@ -816,12 +816,12 @@ ol.Map.prototype.renderFrame_ = function(time) {
     var backgroundColor = this.getBackgroundColor();
     var viewHints = view.getHints();
     var layerStates = {};
-    var ii, layer;
+    var layer;
     for (i = 0, ii = layersArray.length; i < ii; ++i) {
       layer = layersArray[i];
       layerStates[goog.getUid(layer)] = layer.getLayerState();
     }
-    var view2DState = view2D.getView2DState();
+    view2DState = view2D.getView2DState();
     frameState = {
       animate: false,
       attributions: {},
