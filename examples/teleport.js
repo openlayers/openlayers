@@ -18,14 +18,11 @@ var map = new ol.Map({
   })
 });
 
-var mapTarget1 = document.getElementById('map1');
-var mapTarget2 = document.getElementById('map2');
-
-map.setTarget(mapTarget1);
+map.setTarget('map1');
 
 var teleportButton = document.getElementById('teleport');
 
 teleportButton.addEventListener('click', function() {
-  var target = map.getTarget() === mapTarget1 ? mapTarget2 : mapTarget1;
+  var target = map.getTarget().id === 'map1' ? 'map2' : 'map1';
   map.setTarget(target);
 }, false);
