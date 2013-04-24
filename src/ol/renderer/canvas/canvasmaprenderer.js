@@ -108,13 +108,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   var context = this.context_;
   context.setTransform(1, 0, 0, 1, 0, 0);
-  var backgroundColor = frameState.backgroundColor;
-  context.fillStyle = 'rgb(' +
-      backgroundColor.r.toFixed(0) + ',' +
-      backgroundColor.g.toFixed(0) + ',' +
-      backgroundColor.b.toFixed(0) + ')';
-  context.globalAlpha = 1;
-  context.fillRect(0, 0, size.width, size.height);
+  context.clearRect(0, 0, size.width, size.height);
 
   this.calculateMatrices2D(frameState);
 

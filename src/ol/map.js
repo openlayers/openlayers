@@ -31,7 +31,6 @@ goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
-goog.require('ol.Color');
 goog.require('ol.FrameState');
 goog.require('ol.IView');
 goog.require('ol.MapBrowserEvent');
@@ -109,7 +108,6 @@ ol.DEFAULT_RENDERER_HINTS = [
  * @enum {string}
  */
 ol.MapProperty = {
-  BACKGROUND_COLOR: 'backgroundColor',
   LAYERS: 'layers',
   SIZE: 'size',
   TARGET: 'target',
@@ -314,9 +312,6 @@ ol.Map = function(options) {
       this.handleSizeChanged_, false, this);
   goog.events.listen(this, ol.Object.getChangedEventType(ol.MapProperty.TARGET),
       this.handleTargetChanged_, false, this);
-  goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.MapProperty.BACKGROUND_COLOR),
-      this.handleBackgroundColorChanged_, false, this);
 
   // setValues will trigger the rendering of the map if the map
   // is "defined" already.
@@ -392,19 +387,6 @@ ol.Map.prototype.disposeInternal = function() {
 ol.Map.prototype.freezeRendering = function() {
   ++this.freezeRenderingCount_;
 };
-
-
-/**
- * @return {ol.Color|undefined} Background color.
- */
-ol.Map.prototype.getBackgroundColor = function() {
-  return /** @type {ol.Color|undefined} */ (
-      this.get(ol.MapProperty.BACKGROUND_COLOR));
-};
-goog.exportProperty(
-    ol.Map.prototype,
-    'getBackgroundColor',
-    ol.Map.prototype.getBackgroundColor);
 
 
 /**
@@ -674,14 +656,6 @@ ol.Map.prototype.handlePostRender = function() {
 /**
  * @private
  */
-ol.Map.prototype.handleBackgroundColorChanged_ = function() {
-  this.render();
-};
-
-
-/**
- * @private
- */
 ol.Map.prototype.handleSizeChanged_ = function() {
   this.render();
 };
@@ -813,7 +787,6 @@ ol.Map.prototype.renderFrame_ = function(time) {
   var frameState = null;
   if (goog.isDef(layersArray) && goog.isDef(size) && goog.isDef(view2D) &&
       view2D.isDef()) {
-    var backgroundColor = this.getBackgroundColor();
     var viewHints = view.getHints();
     var layerStates = {};
     var layer;
@@ -825,8 +798,6 @@ ol.Map.prototype.renderFrame_ = function(time) {
     frameState = {
       animate: false,
       attributions: {},
-      backgroundColor: goog.isDef(backgroundColor) ?
-          backgroundColor : new ol.Color(255, 255, 255, 1),
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
       extent: null,
       focus: goog.isNull(this.focus_) ? view2DState.center : this.focus_,
@@ -882,18 +853,6 @@ ol.Map.prototype.renderFrame_ = function(time) {
   }
 
 };
-
-
-/**
- * @param {ol.Color} backgroundColor Background color.
- */
-ol.Map.prototype.setBackgroundColor = function(backgroundColor) {
-  this.set(ol.MapProperty.BACKGROUND_COLOR, backgroundColor);
-};
-goog.exportProperty(
-    ol.Map.prototype,
-    'setBackgroundColor',
-    ol.Map.prototype.setBackgroundColor);
 
 
 /**
