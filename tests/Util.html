@@ -124,10 +124,11 @@
         var pp = OpenLayers.Util.pagePosition(window);
         t.eq( pp.toString(), "0,0", "Page position doesn't bail if passed 'window'");
         
-        window.scrollTo(100, 1200);
         var mapDiv = document.getElementById("map");
+        var beforeScrollPp = OpenLayers.Util.pagePosition(mapDiv);
+        window.scrollTo(100, 1200);
         pp = OpenLayers.Util.pagePosition(mapDiv);
-        t.eq( pp.toString(), "123,1234", "Page position should work after page has been scrolled");
+        t.eq(pp, beforeScrollPp, "Page position should work after page has been scrolled");
         
         // reset test iframe visibility
         if (parents.length) {
