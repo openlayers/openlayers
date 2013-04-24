@@ -2101,7 +2101,9 @@
     function test_applyTransform(t) {
         t.plan(10);
         var origStylePrefix = OpenLayers.Util.vendorPrefix.style;
-        OpenLayers.Util.vendorPrefix.style = function(key) { return 'transform'; };
+        OpenLayers.Util.vendorPrefix.style =
+                OpenLayers.Util.vendorPrefix.css =
+                function(key) { return 'transform'; };
         
         var map = new OpenLayers.Map('map');
         map.layerContainerDiv = {style: {}};
