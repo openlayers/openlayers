@@ -8,7 +8,7 @@ goog.require('ol.geom.Geometry');
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {Object=} opt_values Attributes.
+ * @param {Object.<string, *>=} opt_values Attributes.
  */
 ol.Feature = function(opt_values) {
 
@@ -31,7 +31,7 @@ goog.inherits(ol.Feature, ol.Object);
 
 
 /**
- * @return {Object} Attributes object.
+ * @return {Object.<string, *>} Attributes object.
  */
 ol.Feature.prototype.getAttributes = function() {
   var keys = this.getKeys(),
