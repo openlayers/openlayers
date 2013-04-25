@@ -638,6 +638,9 @@ ol.Map.prototype.handlePostRender = function() {
         maxNewLoads = 2;
       }
     }
+    var tileSourceCount = goog.object.getCount(frameState.wantedTiles);
+    maxTotalLoading *= tileSourceCount;
+    maxNewLoads *= tileSourceCount;
     if (tileQueue.getTilesLoading() < maxTotalLoading) {
       tileQueue.reprioritize(); // FIXME only call if view has changed
       tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
