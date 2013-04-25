@@ -228,9 +228,10 @@ ol.Object.prototype.notifyInternal_ = function(key) {
  * @param {Function} listener The listener function.
  * @param {Object=} opt_scope Object is whose scope to call
  *     the listener.
+ * @return {?number} Unique key for the listener.
  */
 ol.Object.prototype.on = function(type, listener, opt_scope) {
-  goog.events.listen(this, type, listener, false, opt_scope);
+  return goog.events.listen(this, type, listener, false, opt_scope);
 };
 
 
