@@ -89,7 +89,6 @@ ol.renderer.webgl.Map = function(container, map) {
    * @type {WebGLRenderingContext}
    */
   this.gl_ = ol.webgl.getContext(this.canvas_, {
-    alpha: false,
     antialias: true,
     depth: false,
     preserveDrawingBuffer: false,
@@ -484,7 +483,9 @@ ol.renderer.webgl.Map.prototype.handleWebGLContextRestored = function() {
 ol.renderer.webgl.Map.prototype.initializeGL_ = function() {
   var gl = this.gl_;
   gl.activeTexture(goog.webgl.TEXTURE0);
-  gl.blendFunc(goog.webgl.SRC_ALPHA, goog.webgl.ONE_MINUS_SRC_ALPHA);
+  gl.blendFuncSeparate(
+      goog.webgl.SRC_ALPHA, goog.webgl.ONE_MINUS_SRC_ALPHA,
+      goog.webgl.ONE, goog.webgl.ONE_MINUS_SRC_ALPHA);
   gl.disable(goog.webgl.CULL_FACE);
   gl.disable(goog.webgl.DEPTH_TEST);
   gl.disable(goog.webgl.SCISSOR_TEST);
@@ -545,9 +546,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
 
-  var clearColor = frameState.backgroundColor;
-  gl.clearColor(clearColor.r / 255, clearColor.g / 255,
-      clearColor.b / 255, clearColor.a);
+  gl.clearColor(0, 0, 0, 0);
   gl.clear(goog.webgl.COLOR_BUFFER_BIT);
   gl.enable(goog.webgl.BLEND);
   gl.viewport(0, 0, size.width, size.height);

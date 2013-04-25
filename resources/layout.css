@@ -6,6 +6,7 @@ body {
 .map {
   height: 400px;
   width: 100%;
+  background: url(textured_paper.jpeg) repeat;
 }
 .ol-attribution {
   max-width: 50%;
