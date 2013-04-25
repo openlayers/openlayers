@@ -288,7 +288,7 @@
         // "touchend" events set expected states in the drag handler.
         // We also verify that we prevent the default as appropriate.
 
-        t.plan(14);
+        t.plan(19);
 
         // set up
 
@@ -318,6 +318,11 @@
         t.eq(h.start.y, 0, '[touchstart] start.y is correct');
         t.eq(log.length, 1, '[touchstart] one item in log');
         t.ok(log[0] === e, "touchstart", '[touchstart] event is stopped');
+        t.eq(m.events.listeners.mousedown.length, 0,"mousedown is not registered");
+        t.eq(m.events.listeners.mouseup.length, 0,"mouseup is not registered");
+        t.eq(m.events.listeners.mousemove.length, 0,"mousemove is not registered");
+        t.eq(m.events.listeners.click.length, 0,"click is not registered");
+        t.eq(m.events.listeners.mouseout.length, 0,"mouseout is not registered");
 
         e = {xy: new Px(1, 1)};
         m.events.triggerEvent('touchmove', e);
