@@ -236,6 +236,18 @@ ol.Object.prototype.on = function(type, listener, opt_scope) {
 
 
 /**
+ * @param {string} type The event type.
+ * @param {Function} listener The listener function.
+ * @param {Object=} opt_scope Object is whose scope to call
+ *     the listener.
+ * @return {?number} Unique key for the listener.
+ */
+ol.Object.prototype.onOnce = function(type, listener, opt_scope) {
+  return goog.events.listenOnce(this, type, listener, false, opt_scope);
+};
+
+
+/**
  * @param {string} key Key.
  * @param {*} value Value.
  */
