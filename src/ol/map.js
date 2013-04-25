@@ -54,7 +54,7 @@ goog.require('ol.extent');
 goog.require('ol.interaction.defaults');
 goog.require('ol.layer.Layer');
 goog.require('ol.projection');
-goog.require('ol.projection.addCommonProjections');
+goog.require('ol.projection.common');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Map');
 goog.require('ol.renderer.canvas.SUPPORTED');
@@ -1062,4 +1062,4 @@ ol.RendererHints.createFromQueryData = function(opt_queryData) {
 };
 
 
-ol.projection.addCommonProjections();
+ol.projection.common.addProjections();

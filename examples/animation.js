@@ -4,20 +4,14 @@ goog.require('ol.View2D');
 goog.require('ol.animation');
 goog.require('ol.easing');
 goog.require('ol.layer.TileLayer');
-goog.require('ol.projection');
 goog.require('ol.source.OSM');
 
 
-var london = ol.projection.transform(
-    [-0.12755, 51.507222], 'EPSG:4326', 'EPSG:3857');
-var moscow = ol.projection.transform(
-    [37.6178, 55.7517], 'EPSG:4326', 'EPSG:3857');
-var istanbul = ol.projection.transform(
-    [28.9744, 41.0128], 'EPSG:4326', 'EPSG:3857');
-var rome = ol.projection.transform(
-    [12.5, 41.9], 'EPSG:4326', 'EPSG:3857');
-var bern = ol.projection.transform(
-    [7.4458, 46.95], 'EPSG:4326', 'EPSG:3857');
+var london = ol.toMap([51.507222, -0.12755]);
+var moscow = ol.toMap([55.7517, 37.6178]);
+var istanbul = ol.toMap([41.0128, 28.9744]);
+var rome = ol.toMap([41.9, 12.5]);
+var bern = ol.toMap([46.95, 7.4458]);
 
 var view = new ol.View2D({
   // the view's initial state
