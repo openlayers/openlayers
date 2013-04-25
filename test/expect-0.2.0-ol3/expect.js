@@ -204,6 +204,116 @@
     return this;
   };
 
+  function getChildNodes(node, options) {
+    // check whitespace
+    if (options && options.includeWhiteSpace) {
+        return node.childNodes;
+    } else {
+      var nodes = [];
+      for (var i = 0, ii=node.childNodes.length; i < ii; i++ ) {
+        var child = node.childNodes[i];
+        if (child.nodeType == 1) {
+          // element node, add it 
+          nodes.push(child);
+        } else if (child.nodeType == 3) {
+          // text node, add if non empty
+          if (child.nodeValue &&
+              child.nodeValue.replace(/^\s*(.*?)\s*$/, '$1') != '') {
+            nodes.push(child);
+          }
+        }
+      }
+      return nodes;
+    }
+  };
+
+  function assertElementNodesEqual(node1, node2, options) {
+    var testPrefix = (options && options.prefix === true);
+    expect(node1.nodeType).to.eql(node2.nodeType);
+    if (testPrefix) {
+      expect(node1.nodeName).to.eql(node2.nodeName);
+    } else {
+      expect(node1.nodeName.split(':').pop()).to.eql(node2.nodeName.split(':').pop());
+    }
+    // for text nodes compare value
+    if (node1.nodeType === 3) {
+      expect(node1.nodeValue).to.eql(node2.nodeValue);
+    }
+    // for element type nodes compare namespace, attributes, and children
+    else if (node1.nodeType === 1) {
+      // test namespace alias and uri
+      if (node1.prefix || node2.prefix) {
+        if (testPrefix) {
+          expect(node1.prefix).to.eql(node2.prefix);
+        }
+      }
+      if (node1.namespaceURI || node2.namespaceURI) {
+        expect(node1.namespaceURI).to.eql(node2.namespaceURI);
+      }
+      // compare attributes - disregard xmlns given namespace handling above
+      var node1AttrLen = 0;
+      var node1Attr = {};
+      var node2AttrLen = 0;
+      var node2Attr = {};
+      var ga, ea, gn, en;
+      var i, ii;
+      for (i=0, ii=node1.attributes.length; i<ii; ++i) {
+        ga = node1.attributes[i];
+        if (ga.specified === undefined || ga.specified === true) {
+          if (ga.name.split(':').shift() != 'xmlns') {
+            gn = testPrefix ? ga.name : ga.name.split(':').pop();
+            node1Attr[gn] = ga;
+            ++node1AttrLen;
+          }
+        }
+      }
+      for (i=0, ii=node2.attributes.length; i<ii; ++i) {
+        ea = node2.attributes[i];
+        if (ea.specified === undefined || ea.specified === true) {
+          if (ea.name.split(':').shift() != 'xmlns') {
+            en = testPrefix ? ea.name : ea.name.split(':').pop();
+            node2Attr[en] = ea;
+            ++node2AttrLen;
+          }
+        }
+      }
+      expect(node1AttrLen).to.eql(node2AttrLen);
+      var gv, ev;
+      for (var name in node1Attr) {
+        if (node2Attr[name] === undefined) {
+          throw new Error('Attribute name ' + node1Attr[name].name + ' expected for element ' + node1.nodeName);
+          return false;
+        }
+        // test attribute namespace
+        expect(node1Attr[name].namespaceURI).to.eql(node2Attr[name].namespaceURI);
+        expect(node1Attr[name].value).to.eql(node2Attr[name].value);
+      }
+      // compare children
+      var node1ChildNodes = getChildNodes(got, options);
+      var node2ChildNodes = getChildNodes(expected, options);
+      expect(node1ChildNodes.length).to.eql(node2ChildNodes.length);
+      for (var j=0, jj=node1ChildNodes.length; j<jj; ++j) {
+        assertElementNodesEqual(node1ChildNodes[j], node2ChildNodes[j], options);
+      }
+    }
+    return true;
+  };
+
+  /**
+   * Checks if the XML document sort of equals another XML document.
+   *
+   * @api public
+   */
+
+  Assertion.prototype.xmleql = function(obj, options) {
+    var result = assertElementNodesEqual(obj, this.obj, options);
+    this.assert(
+        !!result
+      , function(){ return 'expected ' + i(this.obj) + ' to sort of equal ' + i(obj) }
+      , function(){ return 'expected ' + i(this.obj) + ' to sort of not equal ' + i(obj) });
+    return this; 
+  };
+
   /**
    * Checks if the obj sortof equals another.
    *
