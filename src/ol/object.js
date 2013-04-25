@@ -310,6 +310,14 @@ ol.Object.prototype.un = function(type, listener, opt_scope) {
 
 
 /**
+ * @param {?number} key Key.
+ */
+ol.Object.prototype.unByKey = function(key) {
+  goog.events.unlistenByKey(key);
+};
+
+
+/**
  * Removes all bindings.
  */
 ol.Object.prototype.unbindAll = function() {
