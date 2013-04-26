@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <style type="text/css">
+        .test_getRenderedDimensions p{
+            padding: 20px; 
+        }     
+  </style>
+  <script>
+    var OpenLayers = [
+        "OpenLayers/BaseTypes/Class.js",
+        "OpenLayers/Util.js",
+        "OpenLayers/BaseTypes.js",
+        "OpenLayers/BaseTypes/Element.js",
+        "OpenLayers/BaseTypes/LonLat.js",
+        "OpenLayers/BaseTypes/Pixel.js",
+        "OpenLayers/BaseTypes/Size.js",
+        "OpenLayers/Lang.js",
+        "OpenLayers/Console.js"
+    ];
+  </script>
+  <script src="OLLoader.js"></script>
+  <script src="Util_common.js"></script>
+  <script type="text/javascript">
+    function test_getRenderedDimensions(t) {
+        // from <script src="Util_common.js"> and shared by Util.html
+        com_test_getRenderedDimensions(t);
+    }
+  </script>
+</head>
+<body>
+    <div id="map" style="width: 1024px; height: 512px;"/>
+</body>
+</html>

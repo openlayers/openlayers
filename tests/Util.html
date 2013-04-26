@@ -11,6 +11,9 @@
         top:  1234px;
         left: 123px;
     }
+    .test_getRenderedDimensions p{
+        padding: 20px; 
+    }
   </style>
   <script>
     var OpenLayers = [
@@ -26,6 +29,7 @@
     ];
   </script>
   <script src="OLLoader.js"></script>
+  <script src="Util_common.js"></script>
   <script type="text/javascript">
     var isMozilla = (navigator.userAgent.indexOf("compatible") == -1);
     var map; 
@@ -1116,17 +1120,8 @@
     }
     
     function test_getRenderedDimensions(t) {
-        t.plan(2);
-        var content = (new Array(100)).join("foo ");
-        
-        // test with fixed width
-        var fw = OpenLayers.Util.getRenderedDimensions(content, {w: 20});
-        t.eq(fw.w, 20, "got the fixed width");
-        
-        // test with fixed height
-        var fh = OpenLayers.Util.getRenderedDimensions(content, {h: 15});
-        t.eq(fh.h, 15, "got the fixed height");
-        
+        // from <script src="Util_common.js"> and shared by Util_w3c.html
+        com_test_getRenderedDimensions(t); 
     }
 
     function test_toFloat(t) {
