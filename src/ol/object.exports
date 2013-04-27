@@ -3,9 +3,11 @@
 @exportProperty ol.Object.prototype.get
 @exportProperty ol.Object.prototype.notify
 @exportProperty ol.Object.prototype.on
+@exportProperty ol.Object.prototype.onOnce
 @exportProperty ol.Object.prototype.set
 @exportProperty ol.Object.prototype.setOptions
 @exportProperty ol.Object.prototype.setValues
 @exportProperty ol.Object.prototype.un
+@exportProperty ol.Object.prototype.unByKey
 @exportProperty ol.Object.prototype.unbind
 @exportProperty ol.Object.prototype.unbindAll
