@@ -802,6 +802,20 @@
         control.destroy();
     }
 
+    function test_moveLayerToTop_moveLayerBack(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer1 = new OpenLayers.Layer.Vector();
+        var layer2 = new OpenLayers.Layer.Vector();
+        map.addLayers([layer1, layer2]);
+        var control = new OpenLayers.Control.ModifyFeature(layer1);
+        map.addControl(control);
+        control.activate();
+        t.ok(layer1.div.style.zIndex > layer2.div.style.zIndex, "layer raised so events don't get swallowed");
+        control.deactivate();
+        t.ok(layer1.div.style.zIndex < layer2.div.style.zIndex, 'layer order restored on deactivation');
+    }
+
     </script>
 </head>
 <body>
