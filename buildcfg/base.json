@@ -50,11 +50,54 @@
 
   "mode": "ADVANCED",
 
+  "name-suffixes-to-strip": [
+    "logger",
+    "logger_"
+  ],
+
   "paths": [
     "../build/src/internal/src",
     "../src"
   ],
 
-  "treat-warnings-as-errors": false
+  "treat-warnings-as-errors": false,
+
+  "type-prefixes-to-strip": [
+    "goog.asserts",
+    "goog.debug.Console",
+    "goog.debug.DebugWindow",
+    "goog.debug.DevCss",
+    "goog.debug.DivConsole",
+    "goog.debug.EntryPointMonitor",
+    "goog.debug.ErrorHandler",
+    "goog.debug.ErrorReporter",
+    "goog.debug.FancyWindow",
+    "goog.debug.Formatter",
+    "goog.debug.FpsDisplay",
+    "goog.debug.GcDiagnostics",
+    "goog.debug.HtmlFormatter",
+    "goog.debug.LogBuffer",
+    "goog.debug.LogManager",
+    "goog.debug.LogRecord",
+    "goog.debug.Logger",
+    "goog.debug.RelativeTimeProvider",
+    "goog.debug.TextFormatter",
+    "goog.debug.Trace",
+    "goog.debug.catchErrors",
+    "goog.debug.deepExpose",
+    "goog.debug.enhanceError",
+    "goog.debug.entryPointRegistry",
+    "goog.debug.errorHandlerWeakDep",
+    "goog.debug.expose",
+    "goog.debug.exposeArray",
+    "goog.debug.exposeException",
+    "goog.debug.getFunctionName",
+    "goog.debug.getStacktrace",
+    "goog.debug.getStacktraceSimple",
+    "goog.debug.logRecordSerializer",
+    "goog.debug.makeWhitespaceVisible",
+    "goog.debug.normalizeErrorObject",
+    "goog.debug.reflect"
+  ]
 
 }
