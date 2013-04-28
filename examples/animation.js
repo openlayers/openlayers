@@ -18,6 +18,8 @@ var rome = ol.projection.transform(
     [12.5, 41.9], 'EPSG:4326', 'EPSG:3857');
 var bern = ol.projection.transform(
     [7.4458, 46.95], 'EPSG:4326', 'EPSG:3857');
+var madrid = ol.projection.transform(
+    [-3.683333, 40.4], 'EPSG:4326', 'EPSG:3857');
 
 var view = new ol.View2D({
   // the view's initial state
@@ -122,4 +124,27 @@ flyToBern.addEventListener('click', function() {
   });
   map.addPreRenderFunctions([pan, bounce]);
   view.setCenter(bern);
+}, false);
+
+var spiralToMadrid = document.getElementById('spiral-to-madrid');
+spiralToMadrid.addEventListener('click', function() {
+  var duration = 2000;
+  var start = +new Date();
+  var pan = ol.animation.pan({
+    duration: duration,
+    source: view.getCenter(),
+    start: start
+  });
+  var bounce = ol.animation.bounce({
+    duration: duration,
+    resolution: 2 * view.getResolution(),
+    start: start
+  });
+  var rotate = ol.animation.rotate({
+    duration: duration,
+    rotation: -4 * Math.PI,
+    start: start
+  });
+  map.addPreRenderFunctions([pan, bounce, rotate]);
+  view.setCenter(madrid);
 }, false);
