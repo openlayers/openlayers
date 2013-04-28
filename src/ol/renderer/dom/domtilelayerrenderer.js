@@ -315,6 +315,10 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile) {
   var tileSize = this.tileGrid_.getTileSize(tileCoord.z);
   var image = tile.getImage(this);
   var style = image.style;
+  // Bootstrap sets the style max-width: 100% for all images, which breaks
+  // prevents the tile from being displayed in FireFox.  Workaround by
+  // overriding the max-width style.
+  style.maxWidth = 'none';
   style.position = 'absolute';
   style.left =
       ((tileCoord.x - this.tileCoordOrigin_.x) * tileSize.width) + 'px';
