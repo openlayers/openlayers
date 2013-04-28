@@ -39,7 +39,6 @@ var map = new ol.Map({
   view: view
 });
 
-
 var rotateLeft = document.getElementById('rotate-left');
 rotateLeft.addEventListener('click', function() {
   var rotateLeft = ol.animation.rotate({
