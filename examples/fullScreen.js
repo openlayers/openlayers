@@ -6,6 +6,7 @@ var urls = [
 
 var map = new OpenLayers.Map({
     div: "map",
+    tileManager: new OpenLayers.TileManager(),
     layers: [
         new OpenLayers.Layer.XYZ("OSM (with buffer)", urls, {
             transitionEffect: "resize", buffer: 2, sphericalMercator: true,
