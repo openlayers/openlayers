@@ -4,6 +4,7 @@ goog.provide('ol.renderer.webgl.Map');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
@@ -410,6 +411,12 @@ ol.renderer.webgl.Map.prototype.getProgram = function(
     gl.attachShader(program, this.getShader(fragmentShaderObject));
     gl.attachShader(program, this.getShader(vertexShaderObject));
     gl.linkProgram(program);
+    if (goog.DEBUG) {
+      if (!gl.getProgramParameter(program, goog.webgl.LINK_STATUS) &&
+          !gl.isContextLost()) {
+        this.logger_.severe(gl.getProgramInfoLog(program));
+      }
+    }
     goog.asserts.assert(
         gl.getProgramParameter(program, goog.webgl.LINK_STATUS) ||
         gl.isContextLost());
@@ -432,6 +439,12 @@ ol.renderer.webgl.Map.prototype.getShader = function(shaderObject) {
     var shader = gl.createShader(shaderObject.getType());
     gl.shaderSource(shader, shaderObject.getSource());
     gl.compileShader(shader);
+    if (goog.DEBUG) {
+      if (!gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS) &&
+          !gl.isContextLost()) {
+        this.logger_.severe(gl.getShaderInfoLog(shader));
+      }
+    }
     goog.asserts.assert(
         gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS) ||
         gl.isContextLost());
@@ -499,6 +512,14 @@ ol.renderer.webgl.Map.prototype.initializeGL_ = function() {
 ol.renderer.webgl.Map.prototype.isTileTextureLoaded = function(tile) {
   return this.textureCache_.containsKey(tile.getKey());
 };
+
+
+/**
+ * @private
+ * @type {goog.debug.Logger}
+ */
+ol.renderer.webgl.Map.prototype.logger_ =
+    goog.debug.Logger.getLogger('ol.renderer.webgl.Map');
 
 
 /**
