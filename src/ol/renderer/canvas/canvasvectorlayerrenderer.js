@@ -188,6 +188,26 @@ ol.renderer.canvas.VectorLayer.prototype.getTransform = function() {
 
 
 /**
+ * @param {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
+ * @return {Array.<ol.Feature>} Features at the pixel location.
+ */
+ol.renderer.canvas.VectorLayer.prototype.getFeatureInfoForPixel =
+    function(pixel) {
+  // TODO adjust pixel tolerance for point features
+  var minPixel = new ol.Pixel(pixel.x - 1, pixel.y - 1);
+  var maxPixel = new ol.Pixel(pixel.x + 1, pixel.y + 1);
+  var map = this.getMap();
+  var minCoordinate = map.getCoordinateFromPixel(minPixel);
+  var maxCoordinate = map.getCoordinateFromPixel(maxPixel);
+  var bbox = ol.extent.boundingExtent([minCoordinate, maxCoordinate]);
+  var filter = new ol.filter.Extent(bbox);
+
+  // TODO do a real intersect against the filtered result for exact matches
+  return this.getLayer().getFeatures(filter);
+};
+
+
+/**
  * @param {goog.events.Event} event Layer change event.
  * @private
  */

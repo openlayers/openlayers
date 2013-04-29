@@ -428,6 +428,34 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
 
 
 /**
+ * Get feature information for a pixel on the map.
+ *
+ * @param {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
+ * @param {Array.<ol.layer.Layer>|undefined} opt_layers Layers to restrict the
+ *     query to.  All layers will be queried if not provided.
+ * @return {Array.<ol.Feature|string>} Feature information.  Layers that are
+ *     able to return attribute data will return ol.Feature instances, other
+ *     layers will return a string which can either be plain text or markup.
+ */
+ol.Map.prototype.getFeatureInfoForPixel = function(pixel, opt_layers) {
+  var renderer = this.getRenderer();
+  var layers = goog.isDefAndNotNull(opt_layers) ?
+      opt_layers : this.getLayers().getArray();
+  var layer, layerRenderer;
+  var featureInfo = [];
+  for (var i = 0, ii = layers.length; i < ii; ++i) {
+    layer = layers[i];
+    layerRenderer = renderer.getLayerRenderer(layer);
+    if (goog.isFunction(layerRenderer.getFeatureInfoForPixel)) {
+      featureInfo.push.apply(featureInfo,
+          layerRenderer.getFeatureInfoForPixel(pixel));
+    }
+  }
+  return featureInfo;
+};
+
+
+/**
  * @return {ol.Collection} Interactions.
  */
 ol.Map.prototype.getInteractions = function() {
