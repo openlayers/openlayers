@@ -20,14 +20,14 @@ goog.addSingletonGetter({{className}}Fragment);
  * @const
  * @type {string}
  */
-{{className}}Fragment.DEBUG_SOURCE = 'precision mediump float;\n{{getOriginalFragmentSource}}';
+{{className}}Fragment.DEBUG_SOURCE = 'precision mediump float;\n{{{getOriginalFragmentSource}}}';
 
 
 /**
  * @const
  * @type {string}
  */
-{{className}}Fragment.OPTIMIZED_SOURCE = 'precision mediump float;{{getFragmentSource}}';
+{{className}}Fragment.OPTIMIZED_SOURCE = 'precision mediump float;{{{getFragmentSource}}}';
 
 
 /**
@@ -55,14 +55,14 @@ goog.addSingletonGetter({{className}}Vertex);
  * @const
  * @type {string}
  */
-{{className}}Vertex.DEBUG_SOURCE = '{{getOriginalVertexSource}}';
+{{className}}Vertex.DEBUG_SOURCE = '{{{getOriginalVertexSource}}}';
 
 
 /**
  * @const
  * @type {string}
  */
-{{className}}Vertex.OPTIMIZED_SOURCE = '{{getVertexSource}}';
+{{className}}Vertex.OPTIMIZED_SOURCE = '{{{getVertexSource}}}';
 
 
 /**
