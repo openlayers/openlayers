@@ -1,15 +1,10 @@
-// FIXME add minZoom support
-
 goog.provide('ol.source.XYZ');
 goog.provide('ol.source.XYZOptions');
 
-goog.require('goog.math');
 goog.require('ol.Attribution');
 goog.require('ol.Projection');
-goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
-goog.require('ol.extent');
 goog.require('ol.projection');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');
@@ -21,6 +16,7 @@ goog.require('ol.tilegrid.XYZ');
  *            extent: (ol.Extent|undefined),
  *            logo: (string|undefined),
  *            maxZoom: number,
+ *            minZoom: (number|undefined),
  *            projection: (ol.Projection|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *            url: (string|undefined),
@@ -54,55 +50,16 @@ ol.source.XYZ = function(options) {
   }
 
   var tileGrid = new ol.tilegrid.XYZ({
-    maxZoom: options.maxZoom
+    maxZoom: options.maxZoom,
+    minZoom: options.minZoom
   });
 
-  // FIXME factor out common code
-  if (goog.isDef(options.extent)) {
+  var tileCoordTransform = tileGrid.createTileCoordTransform({
+    extent: options.extent
+  });
 
-    var extent = options.extent;
-    var tmpExtent = ol.extent.createEmptyExtent();
-    var tmpTileCoord = new ol.TileCoord(0, 0, 0);
-    tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
-        function(tileCoord) {
-          if (options.maxZoom < tileCoord.z) {
-            return null;
-          }
-          var n = 1 << tileCoord.z;
-          var y = -tileCoord.y - 1;
-          if (y < 0 || n <= y) {
-            return null;
-          }
-          var x = goog.math.modulo(tileCoord.x, n);
-          tmpTileCoord.z = tileCoord.z;
-          tmpTileCoord.x = x;
-          tmpTileCoord.y = tileCoord.y;
-          var tileExtent = tileGrid.getTileCoordExtent(tmpTileCoord, tmpExtent);
-          if (!ol.extent.intersects(tileExtent, extent)) {
-            return null;
-          }
-          return new ol.TileCoord(tileCoord.z, x, y);
-        },
-        tileUrlFunction);
-
-  } else {
-
-    tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
-        function(tileCoord) {
-          if (options.maxZoom < tileCoord.z) {
-            return null;
-          }
-          var n = 1 << tileCoord.z;
-          var y = -tileCoord.y - 1;
-          if (y < 0 || n <= y) {
-            return null;
-          } else {
-            var x = goog.math.modulo(tileCoord.x, n);
-            return new ol.TileCoord(tileCoord.z, x, y);
-          }
-        },
-        tileUrlFunction);
-  }
+  tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
+      tileCoordTransform, tileUrlFunction);
 
   goog.base(this, {
     attributions: options.attributions,

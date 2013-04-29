@@ -317,9 +317,9 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
   }
   var wantedTiles = frameState.wantedTiles[tileSourceKey];
   var tileQueue = frameState.tileQueue;
+  var minZoom = tileGrid.getMinZoom();
   var tile, tileRange, tileResolution, x, y, z;
-  // FIXME this should loop up to tileGrid's minZ when implemented
-  for (z = currentZ; z >= 0; --z) {
+  for (z = currentZ; z >= minZoom; --z) {
     tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
     tileResolution = tileGrid.getResolution(z);
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
