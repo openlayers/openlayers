@@ -4,7 +4,6 @@ goog.require('goog.math');
 goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
-goog.require('ol.extent');
 goog.require('ol.projection');
 goog.require('ol.projection.EPSG3857');
 goog.require('ol.tilegrid.TileGrid');
@@ -45,13 +44,23 @@ goog.inherits(ol.tilegrid.XYZ, ol.tilegrid.TileGrid);
  */
 ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
-  var tileGrid = this;
   var minZ = this.minZoom;
   var maxZ = this.maxZoom;
   var wrapX = goog.isDef(options.wrapX) ? options.wrapX : true;
-  var extent = options.extent;
-  var tmpExtent = ol.extent.createEmptyExtent();
   var tmpTileCoord = new ol.TileCoord(0, 0, 0);
+  /** @type {Array.<ol.TileRange>} */
+  var tileRangeByZ = null;
+  if (goog.isDef(options.extent)) {
+    tileRangeByZ = new Array(maxZ + 1);
+    var z;
+    for (z = 0; z < maxZ; ++z) {
+      if (z < minZ) {
+        tileRangeByZ[z] = null;
+      } else {
+        tileRangeByZ[z] = this.getTileRangeForExtentAndZ(options.extent, z);
+      }
+    }
+  }
   return (
       /**
        * @param {ol.TileCoord} tileCoord Tile coordinate.
@@ -75,13 +84,11 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
         if (y < -n || -1 < y) {
           return null;
         }
-        if (goog.isDef(extent)) {
+        if (!goog.isNull(tileRangeByZ)) {
           tmpTileCoord.z = z;
           tmpTileCoord.x = x;
           tmpTileCoord.y = y;
-          var tileExtent =
-              tileGrid.getTileCoordExtent(tmpTileCoord, tmpExtent);
-          if (!ol.extent.intersects(extent, tileExtent)) {
+          if (!tileRangeByZ[z].contains(tmpTileCoord)) {
             return null;
           }
         }
