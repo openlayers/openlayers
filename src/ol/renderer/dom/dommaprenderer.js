@@ -28,7 +28,7 @@ ol.renderer.dom.Map = function(container, map) {
    * @private
    */
   this.layersPane_ = goog.dom.createElement(goog.dom.TagName.DIV);
-  this.layersPane_.className = 'ol-layers ' + ol.css.CLASS_UNSELECTABLE;
+  this.layersPane_.className = ol.css.CLASS_UNSELECTABLE;
   var style = this.layersPane_.style;
   style.position = 'absolute';
   style.width = '100%';
