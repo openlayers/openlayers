@@ -148,6 +148,12 @@ ol.MapBrowserEventHandler = function(map) {
   this.downListenerKey_ = null;
 
   /**
+   * @type {?number}
+   * @private
+   */
+  this.moveListenerKey_ = null;
+
+  /**
    * @type {Array.<number>}
    * @private
    */
@@ -172,6 +178,9 @@ ol.MapBrowserEventHandler = function(map) {
   this.downListenerKey_ = goog.events.listen(element,
       goog.events.EventType.MOUSEDOWN,
       this.handleMouseDown_, false, this);
+  this.moveListenerKey_ = goog.events.listen(element,
+      goog.events.EventType.MOUSEMOVE,
+      this.relayMouseMove_, false, this);
   // touch events
   this.touchListenerKeys_ = [
     goog.events.listen(element, [
@@ -285,6 +294,16 @@ ol.MapBrowserEventHandler.prototype.handleMouseMove_ = function(browserEvent) {
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
+ol.MapBrowserEventHandler.prototype.relayMouseMove_ = function(browserEvent) {
+  this.dispatchEvent(new ol.MapBrowserEvent(
+      ol.MapBrowserEvent.EventType.MOUSEMOVE, this.map_, browserEvent));
+};
+
+
+/**
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @private
+ */
 ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
   // prevent context menu
   browserEvent.preventDefault();
@@ -335,6 +354,7 @@ ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
 ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
   goog.events.unlistenByKey(this.clickListenerKey_);
   goog.events.unlistenByKey(this.downListenerKey_);
+  goog.events.unlistenByKey(this.moveListenerKey_);
   if (!goog.isNull(this.dragListenerKeys_)) {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
@@ -360,5 +380,6 @@ ol.MapBrowserEvent.EventType = {
   DRAGEND: 'dragend',
   TOUCHSTART: goog.events.EventType.TOUCHSTART,
   TOUCHMOVE: goog.events.EventType.TOUCHMOVE,
-  TOUCHEND: goog.events.EventType.TOUCHEND
+  TOUCHEND: goog.events.EventType.TOUCHEND,
+  MOUSEMOVE: goog.events.EventType.MOUSEMOVE
 };

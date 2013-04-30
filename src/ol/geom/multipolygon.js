@@ -57,6 +57,24 @@ ol.geom.MultiPolygon.prototype.getType = function() {
 
 
 /**
+ * Check whether a given coordinate is inside this multipolygon.
+ *
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {boolean} Whether the coordinate is inside the multipolygon.
+ */
+ol.geom.MultiPolygon.prototype.containsCoordinate = function(coordinate) {
+  var containsCoordinate = false;
+  for (var i = 0, ii = this.components.length; i < ii; ++i) {
+    if (this.components[i].containsCoordinate(coordinate)) {
+      containsCoordinate = true;
+      break;
+    }
+  }
+  return containsCoordinate;
+};
+
+
+/**
  * Create a multi-polygon geometry from an array of polygon geometries.
  *
  * @param {Array.<ol.geom.Polygon>} geometries Array of geometries.
