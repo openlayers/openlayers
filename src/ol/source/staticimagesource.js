@@ -60,7 +60,14 @@ ol.source.StaticImage.prototype.getImage =
  * @return {ol.ImageUrlFunctionType} Function.
  */
 ol.source.StaticImage.createImageFunction = function(url) {
-  return function(extent, size, projection) {
-    return url;
-  };
+  return (
+      /**
+       * @param {ol.Extent} extent Extent.
+       * @param {ol.Size} size Size.
+       * @param {ol.Projection} projection Projection.
+       * @return {string|undefined} URL.
+       */
+      function(extent, size, projection) {
+        return url;
+      });
 };

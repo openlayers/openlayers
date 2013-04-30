@@ -15,15 +15,21 @@ ol.ImageUrlFunctionType;
  * @param {string} baseUrl Base URL (may have query data).
  * @param {Object.<string,*>} params to encode in the url.
  * @param {function(string, Object.<string,*>, ol.Extent, ol.Size,
- *     ol.Projection)} paramsFunction params function.
+ *     ol.Projection): (string|undefined)} paramsFunction params function.
  * @return {ol.ImageUrlFunctionType} Image URL function.
  */
 ol.ImageUrlFunction.createFromParamsFunction =
     function(baseUrl, params, paramsFunction) {
-  return function(extent, size, projection) {
-    return paramsFunction(
-        baseUrl, params, extent, size, projection);
-  };
+  return (
+      /**
+       * @param {ol.Extent} extent Extent.
+       * @param {ol.Size} size Size.
+       * @param {ol.Projection} projection Projection.
+       * @return {string|undefined} URL.
+       */
+      function(extent, size, projection) {
+        return paramsFunction(baseUrl, params, extent, size, projection);
+      });
 };
 
 

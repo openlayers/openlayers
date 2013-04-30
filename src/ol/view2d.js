@@ -231,12 +231,17 @@ ol.View2D.prototype.getResolutionForValueFunction = function(opt_power) {
   var maxResolution = this.maxResolution_;
   var minResolution = this.minResolution_;
   var max = Math.log(maxResolution / minResolution) / Math.log(power);
-  return function(value) {
-    var resolution = maxResolution / Math.pow(power, value * max);
-    goog.asserts.assert(resolution >= minResolution &&
-        resolution <= maxResolution);
-    return resolution;
-  };
+  return (
+      /**
+       * @param {number} value Value.
+       * @return {number} Resolution.
+       */
+      function(value) {
+        var resolution = maxResolution / Math.pow(power, value * max);
+        goog.asserts.assert(resolution >= minResolution &&
+            resolution <= maxResolution);
+        return resolution;
+      });
 };
 
 
@@ -264,11 +269,17 @@ ol.View2D.prototype.getValueForResolutionFunction = function(opt_power) {
   var maxResolution = this.maxResolution_;
   var minResolution = this.minResolution_;
   var max = Math.log(maxResolution / minResolution) / Math.log(power);
-  return function(resolution) {
-    var value = (Math.log(maxResolution / resolution) / Math.log(power)) / max;
-    goog.asserts.assert(value >= 0 && value <= 1);
-    return value;
-  };
+  return (
+      /**
+       * @param {number} resolution Resolution.
+       * @return {number} Value.
+       */
+      function(resolution) {
+        var value =
+            (Math.log(maxResolution / resolution) / Math.log(power)) / max;
+        goog.asserts.assert(value >= 0 && value <= 1);
+        return value;
+      });
 };
 
 

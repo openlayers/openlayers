@@ -266,10 +266,17 @@ ol.renderer.Layer.prototype.updateUsedTiles =
  */
 ol.renderer.Layer.prototype.createGetTileIfLoadedFunction =
     function(isLoadedFunction, tileSource, projection) {
-  return function(z, x, y) {
-    var tile = tileSource.getTile(z, x, y, projection);
-    return isLoadedFunction(tile) ? tile : null;
-  };
+  return (
+      /**
+       * @param {number} z Z.
+       * @param {number} x X.
+       * @param {number} y Y.
+       * @return {ol.Tile} Tile.
+       */
+      function(z, x, y) {
+        var tile = tileSource.getTile(z, x, y, projection);
+        return isLoadedFunction(tile) ? tile : null;
+      });
 };
 
 
