@@ -18,15 +18,21 @@ ol.TileUrlFunctionType;
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
 ol.TileUrlFunction.createFromTemplate = function(template) {
-  return function(tileCoord) {
-    if (goog.isNull(tileCoord)) {
-      return undefined;
-    } else {
-      return template.replace('{z}', tileCoord.z)
-                      .replace('{x}', tileCoord.x)
-                      .replace('{y}', tileCoord.y);
-    }
-  };
+  return (
+      /**
+       * @param {ol.TileCoord} tileCoord Tile Coordinate.
+       * @param {ol.Projection} projection Projection.
+       * @return {string|undefined} Tile URL.
+       */
+      function(tileCoord, projection) {
+        if (goog.isNull(tileCoord)) {
+          return undefined;
+        } else {
+          return template.replace('{z}', '' + tileCoord.z)
+                         .replace('{x}', '' + tileCoord.x)
+                         .replace('{y}', '' + tileCoord.y);
+        }
+      });
 };
 
 
@@ -48,14 +54,21 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
   if (tileUrlFunctions.length === 1) {
     return tileUrlFunctions[0];
   }
-  return function(tileCoord, projection) {
-    if (goog.isNull(tileCoord)) {
-      return undefined;
-    } else {
-      var index = goog.math.modulo(tileCoord.hash(), tileUrlFunctions.length);
-      return tileUrlFunctions[index].call(this, tileCoord, projection);
-    }
-  };
+  return (
+      /**
+       * @param {ol.TileCoord} tileCoord Tile Coordinate.
+       * @param {ol.Projection} projection Projection.
+       * @return {string|undefined} Tile URL.
+       */
+      function(tileCoord, projection) {
+        if (goog.isNull(tileCoord)) {
+          return undefined;
+        } else {
+          var index =
+              goog.math.modulo(tileCoord.hash(), tileUrlFunctions.length);
+          return tileUrlFunctions[index].call(this, tileCoord, projection);
+        }
+      });
 };
 
 
@@ -69,20 +82,26 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
 ol.TileUrlFunction.createFromParamsFunction =
     function(baseUrl, params, paramsFunction) {
   var tmpExtent = ol.extent.createEmptyExtent();
-  return function(tileCoord, projection) {
-    if (goog.isNull(tileCoord)) {
-      return undefined;
-    } else {
-      var tileGrid = this.getTileGrid();
-      if (goog.isNull(tileGrid)) {
-        tileGrid = ol.tilegrid.getForProjection(projection);
-      }
-      var size = tileGrid.getTileSize(tileCoord.z);
-      var extent = tileGrid.getTileCoordExtent(tileCoord, tmpExtent);
-      return paramsFunction.call(this, baseUrl, params,
-          extent, size, projection);
-    }
-  };
+  return (
+      /**
+       * @param {ol.TileCoord} tileCoord Tile Coordinate.
+       * @param {ol.Projection} projection Projection.
+       * @return {string|undefined} Tile URL.
+       */
+      function(tileCoord, projection) {
+        if (goog.isNull(tileCoord)) {
+          return undefined;
+        } else {
+          var tileGrid = this.getTileGrid();
+          if (goog.isNull(tileGrid)) {
+            tileGrid = ol.tilegrid.getForProjection(projection);
+          }
+          var size = tileGrid.getTileSize(tileCoord.z);
+          var extent = tileGrid.getTileCoordExtent(tileCoord, tmpExtent);
+          return paramsFunction.call(this, baseUrl, params,
+              extent, size, projection);
+        }
+      });
 };
 
 
@@ -105,16 +124,22 @@ ol.TileUrlFunction.nullTileUrlFunction = function(tileCoord, projection) {
 ol.TileUrlFunction.withTileCoordTransform =
     function(transformFn, tileUrlFunction) {
   var tmpTileCoord = new ol.TileCoord(0, 0, 0);
-  return function(tileCoord, projection) {
-    if (goog.isNull(tileCoord)) {
-      return undefined;
-    } else {
-      return tileUrlFunction.call(
-          this,
-          transformFn.call(this, tileCoord, projection, tmpTileCoord),
-          projection);
-    }
-  };
+  return (
+      /**
+       * @param {ol.TileCoord} tileCoord Tile Coordinate.
+       * @param {ol.Projection} projection Projection.
+       * @return {string|undefined} Tile URL.
+       */
+      function(tileCoord, projection) {
+        if (goog.isNull(tileCoord)) {
+          return undefined;
+        } else {
+          return tileUrlFunction.call(
+              this,
+              transformFn.call(this, tileCoord, projection, tmpTileCoord),
+              projection);
+        }
+      });
 };
 
 
