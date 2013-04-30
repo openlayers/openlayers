@@ -29,7 +29,7 @@ describe('ol.collection', function() {
     it('adds elements to the collection', function() {
       collection.push(1);
       expect(collection.getLength()).to.eql(1);
-      expect(collection.getArray()).to.equalArray([1]);
+      expect(collection.getArray()).to.eql([1]);
       expect(collection.getAt(0)).to.eql(1);
     });
   });
@@ -267,7 +267,7 @@ describe('ol.collection', function() {
     it('adds elements to end of the collection', function() {
       collection.extend([1, 2]);
       expect(collection.getLength()).to.eql(2);
-      expect(collection.getArray()).to.equalArray([1, 2]);
+      expect(collection.getArray()).to.eql([1, 2]);
       expect(collection.getAt(0)).to.eql(1);
       expect(collection.getAt(1)).to.eql(2);
     });

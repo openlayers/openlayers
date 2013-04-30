@@ -73,7 +73,7 @@ describe('ol.TileUrlFunction', function() {
       ]);
       var tileUrl1 = tileUrl(new ol.TileCoord(1, 0, 0));
       var tileUrl2 = tileUrl(new ol.TileCoord(1, 0, 1));
-      expect(tileUrl1).not.to.eql(tileUrl2);
+      expect(tileUrl1).not.to.be(tileUrl2);
       expect(tileUrl(null)).to.be(undefined);
     });
   });
