@@ -35,9 +35,14 @@ ol.coordinate.add = function(coordinate, delta) {
  * @return {ol.CoordinateFormatType} Coordinate format.
  */
 ol.coordinate.createStringXY = function(opt_precision) {
-  return function(coordinate) {
-    return ol.coordinate.toStringXY(coordinate, opt_precision);
-  };
+  return (
+      /**
+       * @param {ol.Coordinate|undefined} coordinate Coordinate.
+       * @return {string} String XY.
+       */
+      function(coordinate) {
+        return ol.coordinate.toStringXY(coordinate, opt_precision);
+      });
 };
 
 

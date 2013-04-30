@@ -88,16 +88,22 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                 var imageUrl = resource.imageUrl
                     .replace('{subdomain}', subdomain)
                     .replace('{culture}', culture);
-                return function(tileCoord, projection) {
-                  goog.asserts.assert(ol.projection.equivalent(
-                      projection, this.getProjection()));
-                  if (goog.isNull(tileCoord)) {
-                    return undefined;
-                  } else {
-                    return imageUrl.replace(
-                        '{quadkey}', tileCoord.quadKey());
-                  }
-                };
+                return (
+                    /**
+                     * @param {ol.TileCoord} tileCoord Tile coordinate.
+                     * @param {ol.Projection} projection Projection.
+                     * @return {string|undefined} Tile URL.
+                     */
+                    function(tileCoord, projection) {
+                      goog.asserts.assert(ol.projection.equivalent(
+                          projection, this.getProjection()));
+                      if (goog.isNull(tileCoord)) {
+                        return undefined;
+                      } else {
+                        return imageUrl.replace(
+                            '{quadkey}', tileCoord.quadKey());
+                      }
+                    });
               })));
 
   var transform = ol.projection.getTransformFromProjections(
