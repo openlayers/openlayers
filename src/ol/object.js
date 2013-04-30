@@ -242,7 +242,7 @@ ol.Object.prototype.on = function(type, listener, opt_scope) {
  *     the listener.
  * @return {?number} Unique key for the listener.
  */
-ol.Object.prototype.onOnce = function(type, listener, opt_scope) {
+ol.Object.prototype.once = function(type, listener, opt_scope) {
   return goog.events.listenOnce(this, type, listener, false, opt_scope);
 };
 
