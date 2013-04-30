@@ -224,7 +224,7 @@ ol.Object.prototype.notifyInternal_ = function(key) {
 
 
 /**
- * @param {string} type The event type.
+ * @param {string|Array.<string>} type The event type or array of event types.
  * @param {Function} listener The listener function.
  * @param {Object=} opt_scope Object is whose scope to call
  *     the listener.
@@ -236,7 +236,7 @@ ol.Object.prototype.on = function(type, listener, opt_scope) {
 
 
 /**
- * @param {string} type The event type.
+ * @param {string|Array.<string>} type The event type or array of event types.
  * @param {Function} listener The listener function.
  * @param {Object=} opt_scope Object is whose scope to call
  *     the listener.
@@ -311,7 +311,7 @@ ol.Object.prototype.unbind = function(key) {
 
 
 /**
- * @param {string} type The event type.
+ * @param {string|Array.<string>} type The event type or array of event types.
  * @param {Function} listener The listener function.
  * @param {Object=} opt_scope Object is whose scope to call
  *     the listener.
