@@ -8,8 +8,7 @@ goog.require('ol.extent');
 
 
 /**
- * @typedef {function(this:ol.source.ImageTileSource, ol.TileCoord,
- *     ol.Projection): (string|undefined)}
+ * @typedef {function(ol.TileCoord, ol.Projection): (string|undefined)}
  */
 ol.TileUrlFunctionType;
 
@@ -98,19 +97,22 @@ ol.TileUrlFunction.nullTileUrlFunction = function(tileCoord, projection) {
 
 
 /**
- * @param {function(this:ol.source.ImageTileSource, ol.TileCoord,
- *     ol.Projection) : ol.TileCoord} transformFn Transform function.
+ * @param {function(ol.TileCoord, ol.Projection, ol.TileCoord=): ol.TileCoord}
+ *     transformFn Transform function.
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
 ol.TileUrlFunction.withTileCoordTransform =
     function(transformFn, tileUrlFunction) {
+  var tmpTileCoord = new ol.TileCoord(0, 0, 0);
   return function(tileCoord, projection) {
     if (goog.isNull(tileCoord)) {
       return undefined;
     } else {
-      return tileUrlFunction.call(this,
-          transformFn.call(this, tileCoord, projection), projection);
+      return tileUrlFunction.call(
+          this,
+          transformFn.call(this, tileCoord, projection, tmpTileCoord),
+          projection);
     }
   };
 };

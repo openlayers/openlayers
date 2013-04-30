@@ -3,11 +3,9 @@ goog.provide('ol.source.BingMaps');
 goog.require('goog.Uri');
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.math');
 goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
 goog.require('ol.Size');
-goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
@@ -72,30 +70,17 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   goog.asserts.assert(resourceSet.resources.length == 1);
   var resource = resourceSet.resources[0];
 
-  var zoomMin = resource.zoomMin;
-  var zoomMax = resource.zoomMax;
   var tileSize = new ol.Size(resource.imageWidth, resource.imageHeight);
   var tileGrid = new ol.tilegrid.XYZ({
-    maxZoom: zoomMax,
+    minZoom: resource.zoomMin,
+    maxZoom: resource.zoomMax,
     tileSize: tileSize
   });
   this.tileGrid = tileGrid;
 
   var culture = this.culture_;
   this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
-      function(tileCoord) {
-        if (tileCoord.z < zoomMin || zoomMax < tileCoord.z) {
-          return null;
-        }
-        var n = 1 << tileCoord.z;
-        var y = -tileCoord.y - 1;
-        if (y < 0 || n <= y) {
-          return null;
-        } else {
-          var x = goog.math.modulo(tileCoord.x, n);
-          return new ol.TileCoord(tileCoord.z, x, y);
-        }
-      },
+      tileGrid.createTileCoordTransform(),
       ol.TileUrlFunction.createFromTileUrlFunctions(
           goog.array.map(
               resource.imageUrlSubdomains,
