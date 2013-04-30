@@ -12,6 +12,9 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.async.AnimationDelay');
 goog.require('goog.async.Delay');
+goog.require('goog.debug.Console');
+goog.require('goog.debug.Logger');
+goog.require('goog.debug.Logger.Level');
 goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -1063,3 +1066,12 @@ ol.RendererHints.createFromQueryData = function(opt_queryData) {
 
 
 ol.projection.addCommonProjections();
+
+
+if (goog.DEBUG) {
+  (function() {
+    goog.debug.Console.autoInstall();
+    var logger = goog.debug.Logger.getLogger('ol');
+    logger.setLevel(goog.debug.Logger.Level.FINEST);
+  })();
+}
