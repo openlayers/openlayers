@@ -12,7 +12,8 @@ ol.CoordinateFormatType;
 
 
 /**
- * @typedef {Array.<number>}
+ * An array representing a coordinate.
+ * @typedef {Array.<number>} ol.Coordinate
  */
 ol.Coordinate;
 
@@ -81,6 +82,18 @@ ol.coordinate.scale = function(coordinate, s) {
   coordinate[0] *= s;
   coordinate[1] *= s;
   return coordinate;
+};
+
+
+/**
+ * @param {ol.Coordinate} coord1 First coordinate.
+ * @param {ol.Coordinate} coord2 Second coordinate.
+ * @return {number} Squared distance between coord1 and coord2.
+ */
+ol.coordinate.squaredDistance = function(coord1, coord2) {
+  var dx = coord1[0] - coord2[0];
+  var dy = coord1[1] - coord2[1];
+  return dx * dx + dy * dy;
 };
 
 

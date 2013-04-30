@@ -6,6 +6,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
+goog.require('ol.Pixel');
 goog.require('ol.Size');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
@@ -193,17 +194,43 @@ ol.renderer.canvas.VectorLayer.prototype.getTransform = function() {
  */
 ol.renderer.canvas.VectorLayer.prototype.getFeatureInfoForPixel =
     function(pixel) {
-  // TODO adjust pixel tolerance for point features
+  // TODO adjust pixel tolerance for applied styles
   var minPixel = new ol.Pixel(pixel.x - 1, pixel.y - 1);
   var maxPixel = new ol.Pixel(pixel.x + 1, pixel.y + 1);
   var map = this.getMap();
-  var minCoordinate = map.getCoordinateFromPixel(minPixel);
-  var maxCoordinate = map.getCoordinateFromPixel(maxPixel);
-  var bbox = ol.extent.boundingExtent([minCoordinate, maxCoordinate]);
-  var filter = new ol.filter.Extent(bbox);
 
+  var locationMin = map.getCoordinateFromPixel(minPixel);
+  var locationMax = map.getCoordinateFromPixel(maxPixel);
+  var locationBbox = ol.extent.boundingExtent([locationMin, locationMax]);
+  var filter = new ol.filter.Extent(locationBbox);
   // TODO do a real intersect against the filtered result for exact matches
-  return this.getLayer().getFeatures(filter);
+  var candidates = this.getLayer().getFeatures(filter);
+
+  var location = map.getCoordinateFromPixel(pixel);
+  // TODO adjust tolerance for stroke width or use configurable tolerance
+  var tolerance = map.getView().getView2D().getResolution() * 3;
+  var result = [];
+  var candidate, geom;
+  for (var i = 0, ii = candidates.length; i < ii; ++i) {
+    candidate = candidates[i];
+    geom = candidate.getGeometry();
+    if (goog.isFunction(geom.containsCoordinate)) {
+      // For polygons, check if the pixel location is inside the polygon
+      if (geom.containsCoordinate(location)) {
+        result.push(candidate);
+      }
+    } else if (goog.isFunction(geom.distanceFromCoordinate)) {
+      // For lines, check if the ditance to the pixel location is within the
+      // tolerance threshold
+      if (geom.distanceFromCoordinate(location) < tolerance) {
+        result.push(candidate);
+      }
+    } else {
+      // For points, the bbox filter is all we need
+      result.push(candidate);
+    }
+  }
+  return result;
 };
 
 
