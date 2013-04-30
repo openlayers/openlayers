@@ -295,11 +295,8 @@ ol.MapBrowserEventHandler.prototype.handleMouseMove_ = function(browserEvent) {
  * @private
  */
 ol.MapBrowserEventHandler.prototype.relayMouseMove_ = function(browserEvent) {
-  if (goog.events.hasListener(
-      this.map_, ol.MapBrowserEvent.EventType.MOUSEMOVE)) {
-    this.dispatchEvent(new ol.MapBrowserEvent(
-        ol.MapBrowserEvent.EventType.MOUSEMOVE, this.map_, browserEvent));
-  }
+  this.dispatchEvent(new ol.MapBrowserEvent(
+      ol.MapBrowserEvent.EventType.MOUSEMOVE, this.map_, browserEvent));
 };
 
 
