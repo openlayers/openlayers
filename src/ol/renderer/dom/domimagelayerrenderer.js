@@ -22,7 +22,6 @@ goog.require('ol.renderer.dom.Layer');
  */
 ol.renderer.dom.ImageLayer = function(mapRenderer, imageLayer) {
   var target = goog.dom.createElement(goog.dom.TagName.DIV);
-  target.className = 'ol-layer-image';
   target.style.position = 'absolute';
 
   goog.base(this, mapRenderer, imageLayer, target);
