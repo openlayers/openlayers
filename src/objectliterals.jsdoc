@@ -451,6 +451,7 @@
 
 /**
  * @typedef {Object} ol.tilegrid.TileGridOptions
+ * @property {number|undefined} minZoom Minimum zoom.
  * @property {ol.Coordinate|undefined} origin Origin.
  * @property {Array.<ol.Coordinate>|undefined} origins Origins.
  * @property {!Array.<number>} resolutions Resolutions.
