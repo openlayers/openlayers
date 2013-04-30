@@ -5,6 +5,7 @@
 @exportProperty ol.Map.prototype.getInteractions
 @exportProperty ol.Map.prototype.getRenderer
 @exportProperty ol.Map.prototype.removeLayer
+@exportProperty ol.Map.prototype.updateSize
 
 @exportSymbol ol.RendererHint
 @exportProperty ol.RendererHint.CANVAS
