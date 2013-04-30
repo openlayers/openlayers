@@ -929,7 +929,11 @@
     // 7.3. Other pairs that do not both pass typeof value == "object",
     // equivalence is determined by ==.
     } else if (typeof actual != 'object' && typeof expected != 'object') {
-      return actual == expected;
+      if (isNaN(actual) && isNaN(expected)) {
+        return true;
+      } else {
+        return actual == expected;
+      }
 
     // 7.4. For all other Object pairs, including Array objects, equivalence is
     // determined by having the same number of owned properties (as verified
