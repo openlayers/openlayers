@@ -104,6 +104,10 @@ ol.renderer.dom.ImageLayer.prototype.renderFrame =
         0);
     if (image != this.image_) {
       var imageElement = image.getImageElement(this);
+      // Bootstrap sets the style max-width: 100% for all images, which breaks
+      // prevents the image from being displayed in FireFox.  Workaround by
+      // overriding the max-width style.
+      imageElement.style.maxWidth = 'none';
       imageElement.style.position = 'absolute';
       goog.dom.removeChildren(this.target);
       goog.dom.appendChild(this.target, imageElement);
