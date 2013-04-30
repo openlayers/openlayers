@@ -37,10 +37,7 @@ goog.inherits(ol.tilegrid.XYZ, ol.tilegrid.TileGrid);
 
 
 /**
- * @param {{wrapX: (boolean|undefined),
- *          extent: (ol.Extent|undefined)}=} opt_options Options.
- * @return {function(ol.TileCoord, ol.Projection, ol.TileCoord=): ol.TileCoord}
- *     Tile coordinate transform.
+ * @inheritDoc
  */
 ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};

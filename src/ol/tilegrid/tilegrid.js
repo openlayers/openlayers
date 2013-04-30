@@ -103,6 +103,15 @@ ol.tilegrid.TileGrid.tmpTileCoord_ = new ol.TileCoord(0, 0, 0);
 
 
 /**
+ * @param {{extent: (ol.Extent|undefined),
+ *          wrapX: (boolean|undefined)}=} opt_options Options.
+ * @return {function(ol.TileCoord, ol.Projection, ol.TileCoord=): ol.TileCoord}
+ *     Tile coordinate transform.
+ */
+ol.tilegrid.TileGrid.prototype.createTileCoordTransform = goog.abstractMethod;
+
+
+/**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {function(this: T, number, ol.TileRange): boolean} callback Callback.
  * @param {T=} opt_obj Object.
