@@ -48,7 +48,7 @@ map.on('mousemove', function(evt) {
   for (var i = 0, ii = features.length; i < ii; ++i) {
     info.push(features[i].get('name'));
   }
-  document.getElementById('map').title = info.join(', ');
+  document.getElementById('info').innerHTML = info.join(', ') || '&nbsp;';
 });
 
 
