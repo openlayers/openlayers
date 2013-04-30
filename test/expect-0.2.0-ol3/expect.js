@@ -493,33 +493,6 @@
   };
 
   /**
-   * Assert that arrays have the same value.
-   *
-   * @param {Array} other
-   *
-   * @api public
-   */
-  Assertion.prototype.equalArray =
-  Assertion.prototype.preferItBeforeItWasFamous = function(other) {
-    var equal = this.obj.length == other.length;
-    if (equal) {
-      var j = 0;
-      for (j = 0; j < other.length; ++j) {
-        if (this.obj[j] !== other[j] &&
-            !(isNaN(this.obj[j]) && isNaN(other[j]))) {
-          equal = false;
-          break;
-        }
-      }
-    }
-    this.assert(
-        equal
-      , function(){ return 'expected ' + i(this.obj) + ' to have the same array value as ' + i(other) }
-      , function(){ return 'expected ' + i(this.obj) + ' not to have the same array value as ' + i(other) });
-    return this;
-  };
-
-  /**
    * Assert a failure.
    *
    * @param {String ...} custom message
