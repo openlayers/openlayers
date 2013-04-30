@@ -28,14 +28,20 @@ ol.RotationConstraint.none = function(rotation, delta) {
  */
 ol.RotationConstraint.createSnapToN = function(n) {
   var theta = 2 * Math.PI / n;
-  return function(rotation, delta) {
-    if (goog.isDef(rotation)) {
-      rotation = Math.floor((rotation + delta) / theta + 0.5) * theta;
-      return rotation;
-    } else {
-      return undefined;
-    }
-  };
+  return (
+      /**
+       * @param {number|undefined} rotation Rotation.
+       * @param {number} delta Delta.
+       * @return {number|undefined} Rotation.
+       */
+      function(rotation, delta) {
+        if (goog.isDef(rotation)) {
+          rotation = Math.floor((rotation + delta) / theta + 0.5) * theta;
+          return rotation;
+        } else {
+          return undefined;
+        }
+      });
 };
 
 
@@ -45,15 +51,21 @@ ol.RotationConstraint.createSnapToN = function(n) {
  */
 ol.RotationConstraint.createSnapToZero = function(opt_tolerance) {
   var tolerance = opt_tolerance || 0.1;
-  return function(rotation, delta) {
-    if (goog.isDef(rotation)) {
-      if (Math.abs(rotation + delta) <= tolerance) {
-        return 0;
-      } else {
-        return rotation + delta;
-      }
-    } else {
-      return undefined;
-    }
-  };
+  return (
+      /**
+       * @param {number|undefined} rotation Rotation.
+       * @param {number} delta Delta.
+       * @return {number|undefined} Rotation.
+       */
+      function(rotation, delta) {
+        if (goog.isDef(rotation)) {
+          if (Math.abs(rotation + delta) <= tolerance) {
+            return 0;
+          } else {
+            return rotation + delta;
+          }
+        } else {
+          return undefined;
+        }
+      });
 };
