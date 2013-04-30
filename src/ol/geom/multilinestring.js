@@ -56,6 +56,25 @@ ol.geom.MultiLineString.prototype.getType = function() {
 
 
 /**
+ * Calculate the distance from a coordinate to this multilinestring. This is
+ * the closest distance of the coordinate to one of this multilinestring's
+ * components.<
+ *
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {number} Distance from the coordinate to this multilinestring.
+ */
+ol.geom.MultiLineString.prototype.distanceFromCoordinate =
+    function(coordinate) {
+  var distance = Infinity;
+  for (var i = 0, ii = this.components.length; i < ii; ++i) {
+    distance = Math.min(distance,
+        this.components[i].distanceFromCoordinate(coordinate));
+  }
+  return distance;
+};
+
+
+/**
  * Create a multi-linestring geometry from an array of linestring geometries.
  *
  * @param {Array.<ol.geom.LineString>} geometries Array of geometries.

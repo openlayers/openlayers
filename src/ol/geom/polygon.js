@@ -88,3 +88,26 @@ ol.geom.Polygon.prototype.getCoordinates = function() {
 ol.geom.Polygon.prototype.getType = function() {
   return ol.geom.GeometryType.POLYGON;
 };
+
+
+/**
+ * Check whether a given coordinate is inside this polygon.
+ *
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {boolean} Whether the coordinate is inside the polygon.
+ */
+ol.geom.Polygon.prototype.containsCoordinate = function(coordinate) {
+  var rings = this.rings;
+  var containsCoordinate = ol.geom.pointInPolygon(coordinate,
+      rings[0].getCoordinates());
+  if (containsCoordinate) {
+    // if inner ring contains point, polygon does not contain it
+    for (var i = 1, ii = rings.length; i < ii; ++i) {
+      if (ol.geom.pointInPolygon(coordinate, rings[i].getCoordinates())) {
+        containsCoordinate = false;
+        break;
+      }
+    }
+  }
+  return containsCoordinate;
+};

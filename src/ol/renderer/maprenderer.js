@@ -104,6 +104,29 @@ ol.renderer.Map.prototype.getCanvas = goog.functions.NULL;
 
 
 /**
+ * @param {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
+ * @param {Array.<ol.layer.Layer>} layers Layers to query.
+ * @return {Array.<ol.Feature|string>} Feature information.  Layers that are
+ *     able to return attribute data will return ol.Feature instances, other
+ *     layers will return a string which can either be plain text or markup.
+ */
+ol.renderer.Map.prototype.getFeatureInfoForPixel =
+    function(pixel, layers) {
+  var layer, layerRenderer;
+  var featureInfo = [];
+  for (var i = 0, ii = layers.length; i < ii; ++i) {
+    layer = layers[i];
+    layerRenderer = this.getLayerRenderer(layer);
+    if (goog.isFunction(layerRenderer.getFeatureInfoForPixel)) {
+      featureInfo.push.apply(featureInfo,
+          layerRenderer.getFeatureInfoForPixel(pixel));
+    }
+  }
+  return featureInfo;
+};
+
+
+/**
  * @param {ol.layer.Layer} layer Layer.
  * @protected
  * @return {ol.renderer.Layer} Layer renderer.
