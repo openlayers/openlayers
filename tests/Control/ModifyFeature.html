@@ -13,34 +13,27 @@
             }
         };
         var options = {
-            geometryTypes: "bar"
+            documentDrag: true
         };
         var control = new OpenLayers.Control.ModifyFeature(layer, options);
         
         t.ok(control.layer == layer,
              "constructor sets layer correctly");
-        t.eq(control.selectControl.geometryTypes, "bar",
-             "constructor sets options correctly on feature handler");
+        t.eq(control.handlers.drag.documentDrag, true,
+             "constructor sets options correctly on drag handler");
         t.eq(control.mode, OpenLayers.Control.ModifyFeature.RESHAPE,
              "constructor initializes modification mode correctly");
         control.destroy();
     }
 
     function test_destroy(t) {
-        t.plan(2);
+        t.plan(1);
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.Vector();
         map.addLayer(layer);
         var control = new OpenLayers.Control.ModifyFeature(layer);
-        control.selectControl.destroy = function() {
-            t.ok(true,
-                 "control.destroy calls destroy on select control");
-        }
-        control.dragControl.destroy = function() {
-            t.ok(true,
-                 "control.destroy calls destroy on feature handler");
-        }
         control.destroy();
+        t.eq(control.layer, null, "Layer reference removed on destroy.");
         map.destroy();
     }
     
@@ -51,11 +44,11 @@
         map.addLayer(layer);
         var control = new OpenLayers.Control.ModifyFeature(layer);
         map.addControl(control);
-        t.ok(!control.selectControl.active,
-             "select control is not active prior to activating control");
+        t.ok(!control.handlers.drag.active,
+             "drag handler is not active prior to activating control");
         control.activate();
-        t.ok(control.selectControl.active,
-             "select control is active after activating control");
+        t.ok(control.handlers.drag.active,
+             "drag handler is active after activating control");
 
         map.destroy();
     }
@@ -99,7 +92,8 @@
         );
         
         // mock up vertex deletion
-        control.dragControl.feature = point;
+        var origGetFeatureFromEvent = layer.getFeatureFromEvent;
+        layer.getFeatureFromEvent = function() { return point; };
         control.feature = poly;
         // we cannot use selectFeature since the control is not part of a map
         control._originalGeometry = poly.geometry.clone();
@@ -139,17 +133,18 @@
         t.eq(control.feature.state, OpenLayers.State.UPDATE, "feature state set to update");
 
         // now make sure nothing happens if the vertex is mid-drag
-        control.dragControl.handlers.drag.dragging = true;
+        control.handlers.drag.dragging = true;
         control.handleKeypress({keyCode:delKey});
 
         //  clean up
+        layer.getFeatureFromEvent = origGetFeatureFromEvent;
         control.destroy();
         layer.destroy();
     }    
         
 
     function test_onUnSelect(t) {
-        t.plan(6);
+        t.plan(5);
         var layer = new OpenLayers.Layer.Vector();
         var control = new OpenLayers.Control.ModifyFeature(layer);
         var fakeFeature = {'id':'myid'};
@@ -159,7 +154,6 @@
         layer.events.on({"afterfeaturemodified": function(event) {
             t.eq(event.feature, fakeFeature, "afterfeaturemodified triggered");
         }});
-        control.dragControl.deactivate = function() { t.ok(true, "Deactivate called on drag control"); }
         control.onModificationEnd = function (feature) { t.eq(feature.id, fakeFeature.id, "onModificationEnd got feature.") }
         layer.removeFeatures = function(verts) {
             t.ok(verts == 'a', "Normal verts removed correctly");
@@ -190,10 +184,6 @@
         // If a feature is to be modified, control.selectFeature gets called.
         // We want this test to fail if selectFeature gets called.
         var modified = false;
-        var _ = OpenLayers.Control.ModifyFeature.prototype.selectFeature;
-        OpenLayers.Control.ModifyFeature.prototype.selectFeature = function() {
-            modified = true;
-        }
 
         var control = new OpenLayers.Control.ModifyFeature(layer);
         map.addControl(control);
@@ -202,17 +192,15 @@
         // register a listener that will stop feature modification
         layer.events.on({"beforefeaturemodified": function() {return false}});
 
-        // we can initiate feature modification by selecting a feature with
-        // the control's select feature control
-        control.selectControl.select(feature);
+        // we can initiate feature modification by programmatically selecting
+        // a feature
+        control.selectFeature(feature);
         
         if(modified) {
             t.fail("selectFeature called, prepping feature for modification");
         } else {
             t.ok(true, "the beforefeaturemodified listener stopped feature modification");
         }
-        
-        OpenLayers.Control.ModifyFeature.prototype.selectFeature = _;
     }
 
     function test_selectFeature(t) {
@@ -228,7 +216,6 @@
             t.ok(obj.feature == fakeFeature, "beforefeaturemodified triggered");
         };
         layer.events.on({"beforefeaturemodified": callback});
-        control.dragControl.activate = function() { t.ok(true, "drag Control activated"); }
         control.onModificationStart = function(feature)  { t.eq(feature.id, fakeFeature.id, "On Modification Start called with correct feature."); } 
         
         // Start of testing
@@ -262,7 +249,7 @@
         control.selectFeature(fakeFeature);
         
         control.vertices = ['a'];
-        control.virtualVertices = ['b'];
+        control.virtualVertices = [{destroy: function() {}}];
         
         layer.addFeatures = function(features) {} 
         
@@ -283,7 +270,7 @@
     }  
 
     function test_resetVertices(t) {
-        t.plan(21);
+        t.plan(20);
         var layer = new OpenLayers.Layer.Vector();
         var control = new OpenLayers.Control.ModifyFeature(layer);
         var point = new OpenLayers.Geometry.Point(5,6);
@@ -339,18 +326,6 @@
         t.ok(control.radiusHandle != null, "Radius handle is set (RESIZE|RESHAPE)");
         t.eq(control.vertices.length, 0, "No vertices when both resizing and reshaping (RESIZE|RESHAPE)");
         t.eq(control.virtualVertices.length, 0, "No virtual vertices when both resizing and reshaping (RESIZE|RESHAPE)");
-        
-        control.dragControl.feature = new OpenLayers.Feature.Vector(polygon);
-        control.dragControl.map = {};
-        control.dragControl.map.div = {};
-        control.dragControl.map.div.style = {};
-        control.dragControl.map.viewPortDiv = "foo";
-        control.dragControl.handlers.drag.deactivate = function() {
-            this.active = false;
-        }
-        control.resetVertices();
-        t.ok(!control.dragControl.handlers.drag.active, "resetVertices deactivates drag handler");
-        control.dragControl.map = null;
         
         control.destroy();
         layer.destroy();
@@ -512,17 +487,19 @@
         var control = new OpenLayers.Control.ModifyFeature(layer);
         map.addControl(control);
         
-        control.selectControl.deactivate = function() {
+        control.handlers.keyboard.deactivate = function() {
             t.ok(true,
-                 "control.deactivate calls deactivate on select control");
+                 "control.deactivate calls deactivate on keyboard handler");
         }
-        control.dragControl.deactivate = function() {
+        control.handlers.drag.deactivate = function() {
             t.ok(true,
-                 "control.deactivate calls deactivate on drag control");
+                 "control.deactivate calls deactivate on drag handler");
         }
         control.active = true;
         control.deactivate();
         
+        control.handlers.keyboard.deactivate = OpenLayers.Handler.Keyboard.prototype.deactivate;
+        control.handlers.drag.deactivate = OpenLayers.Handler.Drag.prototype.deactivate;
         map.destroy();
     }
 
@@ -609,14 +586,17 @@
         layer.events.on({"featuremodified": function(event) {
             t.eq(event.feature.id, poly.id, "featuremodified triggered");
         }});
+
         control.onModification = function(feature) {
             t.eq(feature.id, poly.id,
                 "onModification called with the right feature on vertex delete");
         };
         point.geometry.parent = poly.geometry;
-        control.dragControl.feature = point;
+        origGetFeatureFromEvent = layer.getFeatureFromEvent;
+        layer.getFeatureFromEvent = function() { return point; };
         control.handleKeypress({keyCode:46});
         layer.drawFeature = oldDraw;
+        layer.getFeatureFromEvent = origGetFeatureFromEvent;
         
         map.destroy();
     }
@@ -694,7 +674,7 @@
     
     function test_standalone(t) {
         
-        t.plan(18);
+        t.plan(17);
         var map = new OpenLayers.Map("map");
         var layer = new OpenLayers.Layer.Vector();
         
@@ -733,7 +713,6 @@
         // activate control
         control.activate();
         t.eq(control.active, true, "[activate] control activated");
-        t.eq(control.selectControl, null, "[activate] no select control");
         
         // manually select feature for editing
         control.selectFeature(f1);
@@ -761,22 +740,19 @@
         t.ok(log[0].feature === f2, "[deactivate] correct feature");
         t.eq(log[0].modified, false, "[deactivate] feature not actually modified");
         
-        // reactivate control and select a point feature to see if we can drag
-        // another point feature;
-        control.activate();
-        control.selectFeature(f3);
-        control.dragControl.handlers.feature.triggerCallback("mousemove", "in", [f4]);
-        t.eq(control.dragControl.handlers.drag.active, false, "cannot drag unselected feature f4");
-        control.dragControl.handlers.feature.triggerCallback("mousemove", "in", [f3]);
-        t.eq(control.dragControl.handlers.drag.active, true, "can drag selected feature f3");
-        
         // select the polygon feature to make sure that we can drag vertices and
         // virtual vertices
         control.selectFeature(f2);
-        control.dragControl.handlers.feature.triggerCallback("mousemove", "in", [control.vertices[0]]);
-        t.eq(control.dragControl.handlers.drag.active, true, "can drag vertex of feature f2");
-        control.dragControl.handlers.feature.triggerCallback("mousemove", "in", [control.virtualVertices[0]]);
-        t.eq(control.dragControl.handlers.drag.active, true, "can drag virtual vertex of feature f2");
+        var origGetFeatureFromEvent = layer.getFeatureFromEvent;
+        layer.getFeatureFromEvent = function() { return control.vertices[0]; };
+        control.handlers.drag.callbacks.down.call(control, new OpenLayers.Pixel(0,0));
+        t.ok(control.vertex === control.vertices[0], "can drag vertex of feature f2");
+        t.ok(control.feature === f2, "dragging a vertex does not change the selected feature");
+        layer.getFeatureFromEvent = function() { return control.virtualVertices[0]; };
+        control.handlers.drag.callbacks.down.call(control, new OpenLayers.Pixel(0,0));
+        t.ok(control.vertex === control.virtualVertices[0], "can drag virtual vertex of feature f2");
+        t.ok(control.feature === f2, "dragging a vertex does not change the selected feature");
+        layer.getFeatureFromEvent = origGetFeatureFromEvent;
         control.deactivate();
         
         map.destroy();
@@ -824,6 +800,20 @@
         t.eq(control.vertices.length, 3, "Correct vertices length with createVertices is false");
         t.eq(control.virtualVertices.length, 0, "Correct virtual vertices length with createVertices is false");
         control.destroy();
+    }
+
+    function test_moveLayerToTop_moveLayerBack(t) {
+        t.plan(2);
+        var map = new OpenLayers.Map("map");
+        var layer1 = new OpenLayers.Layer.Vector();
+        var layer2 = new OpenLayers.Layer.Vector();
+        map.addLayers([layer1, layer2]);
+        var control = new OpenLayers.Control.ModifyFeature(layer1);
+        map.addControl(control);
+        control.activate();
+        t.ok(layer1.div.style.zIndex > layer2.div.style.zIndex, "layer raised so events don't get swallowed");
+        control.deactivate();
+        t.ok(layer1.div.style.zIndex < layer2.div.style.zIndex, 'layer order restored on deactivation');
     }
 
     </script>

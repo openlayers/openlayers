@@ -128,27 +128,28 @@
     function test_zoomOut(t) {
         t.plan(1);
 
-        var map = new OpenLayers.Map(document.body);
+        var map = new OpenLayers.Map('map', {zoomMethod: null});
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
                     "http://labs.metacarta.com/wms/vmap0",
                     {layers: 'basic'} );
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0, 0), 5);
+        var origSetTimeout = window.setTimeout;
+        window.setTimeout = function(fn) { fn(); return 'id'; };
         var control = new OpenLayers.Control.TouchNavigation();
         map.addControl(control);
         var handler = control.handlers.click;
         handler.touchstart({xy: new OpenLayers.Pixel(1 ,1), touches: ["foo", "bar"]});
         handler.touchend({});
-        t.delay_call(1, function() {
-            t.eq(map.getZoom(), 4, "Did we zoom out?");
-            // tear down
-            map.destroy();
-        });
-
+        t.eq(map.getZoom(), 4, "Did we zoom out?");
+        // tear down
+        map.destroy();
+        window.setTimeout = origSetTimeout;
     }
 
   </script>
 </head>
 <body>
+    <div id="map" style="width:512px;height:256px"></div>
 </body>
 </html>

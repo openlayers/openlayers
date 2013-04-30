@@ -1,9 +1,11 @@
 <html>
 <head>
-  <script src="../OLLoader.js"></script>
+  <script src="../../OLLoader.js"></script>
+  <script src="../../../lib/Rico/Corner.js"></script>
+  <script src="../../../lib/deprecated.js"></script>
   <script type="text/javascript">
 
-   function test_Popup_Anchored_setOpacity(t) { 
+   function test_Popup_Anchored_setOpacity(t) {
         t.plan(5);
         var opacity = 0.5;
         var id = "chicken";
@@ -32,7 +34,7 @@
         popup.setOpacity(opacity);
         popup.draw(new OpenLayers.Pixel(x, y));
 
-        if (navigator.appName.indexOf("Microsoft") == -1) {
+        if (navigator.appName.indexOf("Microsoft") == -1 || new RegExp(/msie 10/).test(navigator.userAgent.toLowerCase())) {
             t.eq(parseFloat(popup.div.style.opacity), opacity, "good default popup.opacity");
         } else {
             t.eq(popup.div.style.filter, "alpha(opacity=" + opacity*100 + ")", "good default popup.opacity");
@@ -43,12 +45,12 @@
         t.ok(popup.groupDiv.parentNode.getElementsByTagName("span").length > 0, "popup.groupDiv.parentNode has SPAN children");
 
         var ricoCornerDiv = popup.groupDiv.parentNode.getElementsByTagName("span")[0];
-        if (navigator.appName.indexOf("Microsoft") == -1) {
+        if (navigator.appName.indexOf("Microsoft") == -1 || new RegExp(/msie 10/).test(navigator.userAgent.toLowerCase())) {
             t.eq(parseFloat(ricoCornerDiv.style.opacity), opacity, "good default ricoCornerDiv.opacity");
         } else {
             t.eq(ricoCornerDiv.style.filter, "alpha(opacity=" + opacity*100 + ")", "good default ricoCornerDiv.opacity");
         }
-        
+
    }
 
   </script>

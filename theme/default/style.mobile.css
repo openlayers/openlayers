@@ -43,21 +43,28 @@ div.olControlZoom a:hover {
         background: rgba(0, 60, 136, 0.5);
     }
 }
+div.olMapViewport {
+    -ms-touch-action: none;
+}
 .olLayerGrid .olTileImage {
     -webkit-transition: opacity 0.2s linear;
     -moz-transition: opacity 0.2s linear;
     -o-transition: opacity 0.2s linear;
     transition: opacity 0.2s linear;
 }
-/* Enable 3d acceleration when operating on tiles, this is
-   known to yield better performance on IOS Safari.
-   http://osgeo-org.1803224.n2.nabble.com/Harware-accelerated-CSS3-animations-for-iOS-td6255560.html
-
-   It also prevents tile blinking effects in iOS 5.
-   See https://github.com/openlayers/openlayers/issues/511
-*/
-@media (-webkit-transform-3d) {
-img.olTileImage {
-    -webkit-transform: translate3d(0, 0, 0);
-}
+/* Turn on GPU support where available */
+.olTileImage {
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -o-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    -moz-perspective: 1000;
+    -ms-perspective: 1000;
+    perspective: 1000;
 }

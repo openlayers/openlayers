@@ -5,7 +5,15 @@ function init() {
         styleMap: new OpenLayers.StyleMap({
             temporary: OpenLayers.Util.applyDefaults({
                 pointRadius: 16
-            }, OpenLayers.Feature.Vector.style.temporary)
+            }, OpenLayers.Feature.Vector.style.temporary),
+            'default': OpenLayers.Util.applyDefaults({
+                pointRadius: 16,
+                strokeWidth: 3,
+            }, OpenLayers.Feature.Vector.style['default']),
+            select: OpenLayers.Util.applyDefaults({
+                pointRadius: 16,
+                strokeWidth: 3
+            }, OpenLayers.Feature.Vector.style.select)
         })
     });
 

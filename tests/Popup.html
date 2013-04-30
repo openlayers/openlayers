@@ -168,8 +168,7 @@
         var bColor = popup.div.style.backgroundColor;
         var goodColor = ( (bColor == color) || (bColor == hexColor));
         t.ok(goodColor, "good default popup.backgroundColor");
-
-        if (navigator.appName.indexOf("Microsoft") == -1) {
+        if (navigator.appName.indexOf("Microsoft") == -1 || new RegExp(/msie 10/).test(navigator.userAgent.toLowerCase())) {
             t.eq(parseFloat(popup.div.style.opacity), opacity, "good default popup.opacity");
         } else {
             t.eq(popup.div.style.filter, "alpha(opacity=" + opacity*100 + ")", "good default popup.opacity");

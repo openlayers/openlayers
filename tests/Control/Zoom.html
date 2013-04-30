@@ -43,7 +43,8 @@
         
         var map = new OpenLayers.Map({
             div: "map",
-            layers: [new OpenLayers.Layer(null, {isBaseLayer: true})]
+            layers: [new OpenLayers.Layer(null, {isBaseLayer: true})],
+            zoomMethod: null
         });
         var control = new OpenLayers.Control.Zoom();
         map.addControl(control);
@@ -60,7 +61,8 @@
         
         var map = new OpenLayers.Map({
             div: "map",
-            layers: [new OpenLayers.Layer(null, {isBaseLayer: true})]
+            layers: [new OpenLayers.Layer(null, {isBaseLayer: true})],
+            zoomMethod: null
         });
         var control = new OpenLayers.Control.Zoom();
         map.addControl(control);

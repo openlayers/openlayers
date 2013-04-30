@@ -51,7 +51,7 @@
         });
 
         // create a map with the layers and a center
-        var map = new OpenLayers.Map("map");
+        var map = new OpenLayers.Map("map", {zoomMethod: null});
         map.addLayers([dummy, layer]);
         map.zoomToMaxExtent();
         
@@ -206,7 +206,7 @@
     function test_resFactor(t) {
         t.plan(2);
         
-        var map = new OpenLayers.Map("map");
+        var map = new OpenLayers.Map("map", {zoomMethod: null});
         var bbox = new OpenLayers.Strategy.BBOX();
         var fakeProtocol = new OpenLayers.Protocol({
             'read': function() { 

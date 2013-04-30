@@ -148,6 +148,7 @@
         var nav = new OpenLayers.Control.Navigation({zoomWheelEnabled: false});
         var map = new OpenLayers.Map({
             div: "map",
+            zoomMethod: null,
             controls: [nav],
             layers: [
                 new OpenLayers.Layer(null, {isBaseLayer: true})

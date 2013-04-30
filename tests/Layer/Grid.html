@@ -22,7 +22,7 @@
 
 
     function test_constructor (t) {
-        t.plan( 8 );
+        t.plan( 7 );
                        
         layer = new OpenLayers.Layer.Grid(name, url, params, null);
         t.ok( layer instanceof OpenLayers.Layer.Grid, "returns OpenLayers.Layer.Grid object" );
@@ -31,7 +31,6 @@
         t.eq( layer.numLoadingTiles, 0, "numLoadingTiles starts at 0");
         t.ok( layer.tileClass === OpenLayers.Tile.Image, "tileClass default is OpenLayers.Tile.Image");
         t.eq( layer.className, 'olLayerGrid', "className default is olLayerGrid");
-        t.eq( layer.removeBackBufferDelay, 2500, "removeBackBufferDelay default is 2500");
 
         var obj = {};
         var func = function() {};
@@ -390,7 +389,7 @@
      */
 
     function test_Layer_Grid_clone(t) {
-        t.plan(6);
+        t.plan(7);
         
         var options = {tileSize: new OpenLayers.Size(500,50)};
         var map = new OpenLayers.Map('map', options);
@@ -400,8 +399,10 @@
         layer.grid = [ [6, 7], 
                        [8, 9]];
 
+        // if we clone when tiles are still loading, this should not influence the clone
+        layer.numLoadingTiles = 1;
         var clone = layer.clone();
-
+        t.eq( clone.numLoadingTiles, 0, "numLoadingTiles should be reset");
         t.ok( clone.grid != layer.grid, "clone does not copy grid");
         t.ok( clone.grid.length == 0, "clone creates a new array instead");
         
@@ -625,7 +626,7 @@
     }
     function test_Layer_Grid_getTileBounds(t) {
         t.plan(2);
-        var map = new OpenLayers.Map("map2");
+        var map = new OpenLayers.Map("map2", {zoomMethod: null});
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.WMS(name, url, params);
         
@@ -822,7 +823,8 @@
         t.plan(11);
 
         var map = new OpenLayers.Map('map', {
-            resolutions: [32, 16, 8, 4, 2, 1]
+            resolutions: [32, 16, 8, 4, 2, 1],
+            zoomMethod: null
         });
         var layer = new OpenLayers.Layer.WMS('', '', {}, {
             isBaseLayer: true,
@@ -883,7 +885,8 @@
         t.plan(4);
 
         var map = new OpenLayers.Map('map', {
-            resolutions: [1, 0.5, 0.025]
+            resolutions: [1, 0.5, 0.025],
+            zoomMethod: null
         });
         var resolution;
         var layer = new OpenLayers.Layer.WMS('', '', {}, {
@@ -927,7 +930,8 @@
         t.plan(4);
 
         var map = new OpenLayers.Map('map', {
-            resolutions: [1, 0.5, 0.025]
+            resolutions: [1, 0.5, 0.025],
+            zoomMethod: null
         });
         var resolution;
         var layer = new OpenLayers.Layer.WMS('', '', {}, {
@@ -996,7 +1000,7 @@
         layer.applyBackBuffer(2);
         t.ok(layer.backBuffer === backBuffer,
              'back buffer set in layer');
-        t.ok(layer.div.firstChild === backBuffer,
+        t.ok(map.layerContainerDiv.firstChild === backBuffer,
              'back buffer inserted as first child');
         t.eq(layer.backBuffer.style.left, '250px',
              'back buffer has correct left');
@@ -1016,36 +1020,36 @@
         layer.applyBackBuffer(2);
         t.ok(layer.backBuffer === backBuffer,
              'back buffer set in layer');
-        t.ok(layer.div.firstChild === backBuffer,
+        t.ok(map.layerContainerDiv.firstChild === backBuffer,
              'back buffer inserted as first child');
         t.eq(layer.backBuffer.style.left, '230px',
              'back buffer has correct left');
         t.eq(layer.backBuffer.style.top, '295px',
              'back buffer has correct top');
 
-        // test #4
-        // and a back buffer in the layer and do as if back buffer removal
-        // has been scheduled, and test that applyBackBuffer removes the
-        // back buffer and clears the timer
-        layer.createBackBuffer = function() {
-            return;
-        };
-        backBuffer = document.createElement('div');
-        layer.div.insertBefore(backBuffer, layer.div.firstChild);
-        layer.backBuffer = backBuffer;
-        layer.backBufferTimerId = 'fake';
-        layer.applyBackBuffer(2);
-        t.ok(backBuffer.parentNode !== layer.div,
-             'back buffer is not child node of layer div');
-        t.eq(layer.backBuffer, null,
-             'back buffer not set in layer');
-        t.eq(layer.backBufferTimerId, null,
-             'back buffer timer cleared');
-        map.destroy();
+         // test #4
+         // and a back buffer in the layer and do as if back buffer removal
+         // has been scheduled, and test that applyBackBuffer removes the
+         // back buffer and clears the timer
+         layer.createBackBuffer = function() {
+             return;
+         };
+         backBuffer = document.createElement('div');
+         map.layerContainerDiv.insertBefore(backBuffer, map.baseLayer.div);
+         layer.backBuffer = backBuffer;
+         layer.backBufferTimerId = 'fake';
+         layer.applyBackBuffer(2);
+         t.ok(backBuffer !== map.layerContainerDiv.firstChild,
+              'back buffer is not first child of layer container div');
+         t.eq(layer.backBuffer, null,
+              'back buffer not set in layer');
+         t.eq(layer.backBufferTimerId, null,
+              'back buffer timer cleared');
+         map.destroy();
     }
 
     function test_createBackBuffer(t) {
-        t.plan(7);
+        t.plan(9);
 
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS('', '', {}, {
@@ -1070,7 +1074,16 @@
         OpenLayers.Tile.Image.prototype.createBackBuffer = function() {
             return document.createElement('div');
         };
+        
+        layer.transitionEffect = 'map-resize';
         backBuffer = layer.createBackBuffer();
+        t.ok(backBuffer.style.zIndex == 99, 'z-index of backbuffer correct for "map-resize".');
+        layer.removeBackBuffer();
+        
+        layer.transitionEffect = 'resize';
+        backBuffer = layer.createBackBuffer();
+        t.ok(backBuffer.style.zIndex == layer.getZIndex() - 1, 'z-index of backbuffer correct for "resize",');
+
         layer.backBufferResolution = 1;
         layer.gridResolution = 1;
         layer.backBuffer = backBuffer;
@@ -1093,7 +1106,7 @@
     }
 
     function test_removeBackBuffer(t) {
-        t.plan(4);
+        t.plan(3);
 
         var map = new OpenLayers.Map('map');
         var layer = new OpenLayers.Layer.WMS('', '', {}, {isBaseLayer: true});
@@ -1105,17 +1118,12 @@
         layer.div.appendChild(backBuffer);
         layer.backBufferResolution = 32;
 
-        // add a fake back buffer removal timer
-        layer.backBufferTimerId = 'fake';
-
         layer.removeBackBuffer();
         t.eq(layer.backBuffer, null, 'backBuffer set to null in layer');
         t.eq(layer.backBufferResolution, null,
              'backBufferResolution set to null in layer');
         t.ok(backBuffer.parentNode !== layer.div,
              'back buffer removed from layer');
-        t.eq(layer.backBufferTimerId, null,
-             'backBufferTimerId set to null in layer');
 
         map.destroy();
     }
@@ -1150,6 +1158,23 @@
         });
     }
 
+    function test_backbuffer_replace_singleTile(t) {
+        t.plan(1);
+        var map = new OpenLayers.Map('map');
+        var layer = new OpenLayers.Layer.WMS('', '../../img/blank.gif', null, {
+            singleTile: true,
+            transitionEffect: 'resize'
+        });
+        map.addLayer(layer);
+        map.zoomToMaxExtent();
+        
+        t.delay_call(1, function() {
+            map.zoomIn();
+            var tile = layer.grid[0][0];
+            t.ok(!OpenLayers.Element.hasClass(tile.imgDiv, 'olTileReplacing'), 'tile is not marked for being replaced for singleTile layers');
+        });
+    }
+
     function test_singleTile_move_and_zoom(t) {
 
         //
@@ -1162,9 +1187,10 @@
 
         t.plan(4);
 
-        var map = new OpenLayers.Map('map');
+        var map = new OpenLayers.Map('map', {zoomMethod: null});
         var layer = new OpenLayers.Layer.WMS('', '', {}, {
             isBaseLayer: true,
+            transitionEffect: null,
             singleTile: true,
             ratio: 1.1
         });
@@ -1193,7 +1219,8 @@
         //
 
         var map = new OpenLayers.Map('map', {
-            resolutions: [32, 16, 8, 4, 2, 1]
+            resolutions: [32, 16, 8, 4, 2, 1],
+            zoomMethod: null
         });
         var layer = new OpenLayers.Layer.WMS(
             "WMS",
@@ -1289,6 +1316,7 @@
         OpenLayers.Tile.Image.prototype.createBackBuffer = origCreateBackBuffer
     }
 
+
     function test_delayed_back_buffer_removal(t) {
         //
         // Test that the delaying of the back buffer removal behaves
@@ -1300,7 +1328,8 @@
         // set up
         
         var map = new OpenLayers.Map('map', {
-            resolutions: [32, 16, 8, 4, 2, 1]
+            resolutions: [32, 16, 8, 4, 2, 1],
+            zoomMethod: null
         });
         var layer = new OpenLayers.Layer.WMS('', '', {}, {
             isBaseLayer: true,
@@ -1311,11 +1340,14 @@
 
         map.zoomTo(1);
 
-        // Mark one tile loaded, to see if back buffer removal gets scheduled.
+        t.ok(layer.backBuffer === map.layerContainerDiv.firstChild,
+             '[a] back buffer is first child of layer container div');
+
+        // Mark one tile loaded and add an element to the backbuffer, to see if
+        // backbuffer removal gets scheduled.
+        layer.backBuffer.appendChild(document.createElement('img'));
         layer.grid[1][1].onImageLoad();
 
-        t.ok(layer.backBuffer.parentNode === layer.div,
-             '[a] back buffer is a child of layer div');
         t.ok(layer.backBufferTimerId !== null,
              '[a] back buffer scheduled for removal');
 
@@ -1325,8 +1357,8 @@
 
         t.ok(layer.backBuffer !== backBuffer,
              '[b] a new back buffer was created');
-        t.ok(layer.backBuffer.parentNode === layer.div,
-             '[b] back buffer is a child of layer div');
+        t.ok(layer.backBuffer === map.layerContainerDiv.firstChild,
+             '[b] back buffer is first child of layer container div');
         t.ok(layer.backBufferTimerId === null,
              '[b] back buffer no longer scheduled for removal');
 
@@ -1334,7 +1366,7 @@
 
         map.destroy();
     }
-    
+
     function test_getGridData(t) {
         t.plan(12);
         

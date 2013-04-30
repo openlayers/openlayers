@@ -88,13 +88,13 @@
         control = new OpenLayers.Control.LayerSwitcher();
         map.addControl(control);
 
-        var wmsInput = OpenLayers.Util.getElement(control.id + "_input_" + layer.name);
+        var wmsInput = control.div.childNodes[0].childNodes[1].childNodes[0];
         t.ok(wmsInput != null, "correctly makes an input for wms layer");
         t.eq(wmsInput.type, "radio", "wms correctly made a radio button");
         t.eq(wmsInput.name, control.id + "_baseLayers", "wms correctly named");
         t.eq(wmsInput.value, layer.name, "wms correctly valued");
         
-        var markersInput = OpenLayers.Util.getElement(control.id + "_input_" + markers.name);
+        var markersInput = control.div.childNodes[0].childNodes[3].childNodes[0];
         t.ok(markersInput != null, "correctly makes an input for markers layer");
         t.eq(markersInput.type, "checkbox", "wms correctly made a radio button");
         t.eq(markersInput.name, markers.name, "wms correctly named");
@@ -191,7 +191,54 @@
         t.eq(control.div.childNodes[0].childNodes[0].style.display, "" , "Base layer display on when visble base layer");
     }
 
+    // See e.g. https://github.com/openlayers/openlayers/issues/866
+    function test_Control_LayerSwitcher_validIds(t){
+        t.plan(2);
 
+        // setup
+        var layername = "Name with spaces & illegal characters * + ~ ` ' ? )",
+            map = new OpenLayers.Map("map", {
+                controls: [
+                    new OpenLayers.Control.LayerSwitcher()
+                ],
+                layers: [
+                    new OpenLayers.Layer.WMS(
+                        layername,
+                        "../../img/blank.gif"
+                    ),
+                    // add another layer with the same name, the generated id
+                    // must be different
+                    new OpenLayers.Layer.WMS(
+                        layername,
+                        "../../img/blank.gif"
+                    )
+                ]
+            });
+
+        var baselayerDiv = map.controls[0].div.childNodes[0].childNodes[1],
+            firstGeneratedInputId = baselayerDiv.childNodes[0].id,
+            secondGeneratedInputId = baselayerDiv.childNodes[1].id,
+            // legal ids start with a letter and are followed only by word
+            // characters (letters, digits, and underscores) plus the dash (-)
+            // This is only a subset of all allowed charcters inside of ids.
+            allowedIdChars = (/^[a-zA-Z]{1}[\w-]*$/g);
+
+        // tests
+        // validity
+        t.ok(
+            allowedIdChars.test(firstGeneratedInputId),
+            "id only contains letters, digits, underscores and dashes. It " +
+                "starts with a letter."
+        );
+        // uniqueness
+        t.ok(
+            firstGeneratedInputId !== secondGeneratedInputId,
+            "generated ids are different even for equal layernames"
+        );
+
+        // teardown
+        map.destroy();
+    }
 
   </script>
 </head>

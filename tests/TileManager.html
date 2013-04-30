@@ -8,6 +8,7 @@
         
         var tileManager = new OpenLayers.TileManager();
         var map = new OpenLayers.Map('map', {
+            zoomMethod: null,
             tileManager: tileManager
         });
         var layer = new OpenLayers.Layer.WMS('WMS1', '../img/blank.gif');
@@ -63,17 +64,28 @@
             gridSize = layer.div.childNodes.length;
             map.setCenter([17, 47]);
         });
+
+        function inCache(img) {
+            var search = img.src.split('?')[1];
+            for (var s in tileManager.tileCache) {
+                if (s.split('?')[1] == search) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         t.delay_call(4, function() {
             t.eq(tileManager.tileCacheIndex.length, 12, "tiles cached");
             t.ok(tileManager.tileCache[layer.grid[1][2].url] === layer.grid[1][2].imgDiv, "correct object cached");
-            t.ok(!(firstInCache.getAttribute("src") in tileManager.tileCache), "old tile discarded");
-            t.ok(sharedTile.getAttribute("src") in tileManager.tileCache, "shared tile still in cache");
+            t.ok(!inCache(firstInCache), "old tile discarded");
+            t.ok(inCache(sharedTile), "shared tile still in cache");
             firstInCache = tileManager.tileCache[tileManager.tileCacheIndex[0]];
             map.setCenter([16, 48]);
         });
         t.delay_call(6, function() {
-            t.ok(!(firstInCache.getAttribute("src") in tileManager.tileCache), "old tile discarded");
-            t.ok(sharedTile.getAttribute("src") in tileManager.tileCache, "shared tile still in cache");
+            t.ok(!inCache(firstInCache), "old tile discarded");
+            t.ok(inCache(sharedTile), "shared tile still in cache");
             t.eq(layer.div.childNodes.length, gridSize, 'no unused images left in dom');
             map.destroy();
         });

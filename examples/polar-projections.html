@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>Switch between polar projections</title>
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script type="text/javascript" src="http://svn.osgeo.org/metacrs/proj4js/trunk/lib/proj4js-compressed.js"></script>
+        <script type="text/javascript" src="http://spatialreference.org/ref/epsg/3574/proj4js/"></script>
+        <script type="text/javascript" src="http://spatialreference.org/ref/epsg/3576/proj4js/"></script>
+        <script type="text/javascript" src="http://spatialreference.org/ref/epsg/3571/proj4js/"></script>
+        <script type="text/javascript" src="http://spatialreference.org/ref/epsg/3573/proj4js/"></script>
+        <script type="text/javascript" src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript" src="polar-projections.js"></script>
+    </head>
+    <body onload="init()">
+      <h1 id="title">Polar Projections WMS Example</h1>
+
+      <div id="tags">
+          switch projections polar
+      </div>
+
+      <div id="shortdesc">Switch between different projections</div>
+
+      <div id="map" class="smallmap" style="height:512px"></div>
+      <button id='epsg3574'>EPSG:3574</button>
+      <button id='epsg3576'>EPSG:3576</button>
+      <button id='epsg3571'>EPSG:3571</button>
+      <button id='epsg3573'>EPSG:3573</button>
+
+      <div id="docs">
+          <p>This example shows how to switch between different projections,
+              maintaining the center and resolution.</p>
+          <p>Click the buttons above to try it, and see
+              <a href='polar-projections.js'>polar-projections.js</a> for the
+              source code.</p>
+      </div>
+    </body>
+</html>

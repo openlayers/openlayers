@@ -31,6 +31,21 @@
             "activates registers visibilitychanged listener");
     }
 
+    function test_deactivate(t) {
+        t.plan(3);
+
+        var l = new OpenLayers.Layer.Vector();
+        l.setVisibility(false);
+        var s = new OpenLayers.Strategy.Refresh();
+        s.setLayer(l);
+        s.activate();
+        var deactivated = s.deactivate();
+        t.eq(deactivated, true, "deactivate returns true");
+        t.eq(s.active, false, "deactivated after activate");
+        t.ok(l.events.listeners.visibilitychanged.length == 0,
+            "deactivate unregisters visibilitychanged listener");
+    }
+	
     function test_activateWithVisibleLayer(t) {
         t.plan(5);
 

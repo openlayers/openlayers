@@ -45,8 +45,8 @@
         });
         
         var log = [];
-        control.applyTransform = function(transform) {
-            log.push(transform);
+        map.applyTransform = function(x, y, scale) {
+            log.push([x, y, scale]);
         }
         
         map.layerContainerOriginPx = {
@@ -58,12 +58,12 @@
         };
 
         var cases = [
-            {x: 100, y: 60, scale: 1, transform: "translate(0px, 10px) scale(1)"},
-            {x: 150, y: 60, scale: 1, transform: "translate(50px, 10px) scale(1)"},
-            {x: 150, y: 60, scale: 2, transform: "translate(-100px, -90px) scale(2)"},
-            {x: 50, y: 20, scale: 2.5, transform: "translate(-275px, -180px) scale(2.5)"},
-            {x: 150, y: 60, scale: 2, transform: "translate(-100px, -90px) scale(2)"},
-            {x: 50, y: 20, scale: 0.25, transform: "translate(63px, 45px) scale(0.25)"}
+            {x: 100, y: 60, scale: 1, transform: [-50, -40, 1]},
+            {x: 150, y: 60, scale: 1, transform: [0, -40, 1]},
+            {x: 150, y: 60, scale: 2, transform: [-150, -140, 2]},
+            {x: 50, y: 20, scale: 2.5, transform: [-325, -230, 2.5]},
+            {x: 150, y: 60, scale: 2, transform: [-150, -140, 2]},
+            {x: 50, y: 20, scale: 0.25, transform: [13, -5, 0.25]}
         ];
         
         var len = cases.length;
@@ -95,23 +95,23 @@
         var centerPx = map.getPixelFromLonLat(map.getCenter());
 
         control.pinchStart = function(evt, pinchData) {
-            t.eq(control.pinchOrigin, centerPx, "center preserved");
-            t.eq(control.currentCenter, centerPx, "center preserved");
+            t.eq(map.layerContainerOriginPx, {x: 0, y: 0}, "center preserved");
+            t.eq(map.getPixelFromLonLat(map.getCenter()), centerPx, "center preserved");
         }
 
         control.pinchStart(null);
 
         var log = [];
-        control.applyTransform = function(transform) {
-            log.push(transform);
+        map.applyTransform = function(x, y, scale) {
+            log.push([x, y, scale]);
         }
         control.pinchOrigin = map.getPixelFromLonLat(map.getCenter());
 
         var cases = [
-            {scale: 1, transform: "translate(0px, 0px) scale(1)"},
-            {scale: 2, transform: "translate(-128px, -128px) scale(2)"},
-            {scale: 2.5, transform: "translate(-192px, -192px) scale(2.5)"},
-            {scale: 0.25, transform: "translate(96px, 96px) scale(0.25)"}
+            {scale: 1, transform: [0, 0, 1]},
+            {scale: 2, transform: [-128, -128, 2]},
+            {scale: 2.5, transform: [-192, -192, 2.5]},
+            {scale: 0.25, transform: [96, 96, 0.25]}
         ];
 
         var len = cases.length;

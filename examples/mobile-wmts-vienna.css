@@ -12,14 +12,48 @@ html, body, #map {
 #title, #tags, #shortdesc {
     display: none;
 }
+div.olMapViewport {
+    -ms-touch-action: none;
+}
+
+/* Turn on GPU support where available */
+.olTileImage {
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -o-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    -moz-perspective: 1000;
+    -ms-perspective: 1000;
+    perspective: 1000;
+}
+
+/* Tile fade animation */
 .olLayerGrid .olTileImage {
     -webkit-transition: opacity 0.2s linear;
     -moz-transition: opacity 0.2s linear;
     -o-transition: opacity 0.2s linear;
     transition: opacity 0.2s linear;
-    /* workaround for strange border tile squeezing on Android 4.x */
-    -webkit-transform: scale(1.001);
 }
+
+/* Zoom Box */
+.olHandlerBoxZoomBox {
+    border: 2px solid red;
+    position: absolute;
+    background-color: white;
+    opacity: 0.50;
+    font-size: 1px;
+    filter: alpha(opacity=50);
+}
+.olDrawBox {
+    cursor: crosshair;
+}
+
 div.olControlAttribution {
     position: absolute;
     font-size: 10px;

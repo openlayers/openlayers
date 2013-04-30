@@ -46,49 +46,53 @@ var map;
     
     // Geolocate control for the Locate button - the locationupdated handler
     // draws a cross at the location and a circle showing the accuracy radius.
-    zoomPanel.addControls([
-        new OpenLayers.Control.Geolocate({
-            type: OpenLayers.Control.TYPE_TOGGLE,
-            geolocationOptions: {
-                enableHighAccuracy: false,
-                maximumAge: 0,
-                timeout: 7000
+    var geolocate = new OpenLayers.Control.Geolocate({
+        type: OpenLayers.Control.TYPE_TOGGLE,
+        bind: false,
+        watch: true,
+        geolocationOptions: {
+            enableHighAccuracy: false,
+            maximumAge: 0,
+            timeout: 7000
+        },
+        eventListeners: {
+            activate: function() {
+                map.addLayer(vector);
             },
-            eventListeners: {
-                activate: function() {
-                    map.addLayer(vector);
-                },
-                deactivate: function() {
-                    map.removeLayer(vector);
-                    vector.removeAllFeatures();
-                },
-                locationupdated: function(e) {
-                    vector.removeAllFeatures();
-                    vector.addFeatures([
-                        new OpenLayers.Feature.Vector(e.point, null, {
-                            graphicName: 'cross',
+            deactivate: function() {
+                map.removeLayer(vector);
+                vector.removeAllFeatures();
+            },
+            locationupdated: function(e) {
+                vector.removeAllFeatures();
+                vector.addFeatures([
+                    new OpenLayers.Feature.Vector(e.point, null, {
+                        graphicName: 'cross',
+                        strokeColor: '#f00',
+                        strokeWidth: 2,
+                        fillOpacity: 0,
+                        pointRadius: 10
+                    }),
+                    new OpenLayers.Feature.Vector(
+                        OpenLayers.Geometry.Polygon.createRegularPolygon(
+                            new OpenLayers.Geometry.Point(e.point.x, e.point.y),
+                            e.position.coords.accuracy / 2, 50, 0
+                        ), null, {
+                            fillOpacity: 0.1,
+                            fillColor: '#000',
                             strokeColor: '#f00',
-                            strokeWidth: 2,
-                            fillOpacity: 0,
-                            pointRadius: 10
-                        }),
-                        new OpenLayers.Feature.Vector(
-                            OpenLayers.Geometry.Polygon.createRegularPolygon(
-                                new OpenLayers.Geometry.Point(e.point.x, e.point.y),
-                                e.position.coords.accuracy / 2, 50, 0
-                            ), null, {
-                                fillOpacity: 0.1,
-                                fillColor: '#000',
-                                strokeColor: '#f00',
-                                strokeOpacity: 0.6
-                            }
-                        )
-                    ]);
-                    map.zoomToExtent(vector.getDataExtent());
-                }
+                            strokeOpacity: 0.6
+                        }
+                    )
+                ]);
+                map.zoomToExtent(vector.getDataExtent());
             }
-        })
-    ]);
+        }
+    });
+    zoomPanel.addControls([geolocate]);
+
+    // Fallback layer when outside Vienna
+    var osm = new OpenLayers.Layer.OSM();
 
     // Map with navigation controls optimized for touch devices
     map = new OpenLayers.Map({
@@ -96,23 +100,11 @@ var map;
         theme: null,
         projection: "EPSG:3857",
         units: "m",
-        maxExtent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34],
-        maxResolution: 156543.0339,
-        numZoomLevels: 20,
+        maxResolution: 38.21851413574219,
+        numZoomLevels: 8,
         tileManager: new OpenLayers.TileManager(),
         controls: [
-            new OpenLayers.Control.Navigation({
-                mouseWheelOptions: {
-                    cumulative: false,
-                    interval: 20
-                },
-                dragPanOptions: {
-                    enableKinetic: {
-                        deceleration: 0.02
-                    }
-                },
-                zoomBoxEnabled: false
-            }),
+            new OpenLayers.Control.Navigation(),
             new OpenLayers.Control.Attribution(),
             zoomPanel,
             layerPanel
@@ -122,6 +114,15 @@ var map;
                 // update anchor for permalinks
                 var ctr = map.getCenter();
                 window.location.hash = "x="+ctr.lon+"&y="+ctr.lat+"&z="+map.getZoom();
+                // switch to OSM when outside Vienna
+                if (!map.getExtent().intersectsBounds(fmzk.tileFullExtent)) {
+                    if (map.baseLayer !== osm) {
+                        map.addLayer(osm);
+                        map.setBaseLayer(osm);
+                    }
+                } else if (map.baseLayer === osm) {
+                    map.removeLayer(osm);
+                }
             }
         }
     });
@@ -133,6 +134,7 @@ var map;
 
     // Defaults for the WMTS layers
     var defaults = {
+        zoomOffset: 12,
         requestEncoding: "REST",
         matrixSet: "google3857",
         attribution: 'Datenquelle: Stadt Wien - <a href="http://data.wien.gv.at">data.wien.gv.at</a>'
@@ -160,13 +162,13 @@ var map;
             var doc = request.responseText,
                 caps = format.read(doc);
             fmzk = format.createLayer(caps, OpenLayers.Util.applyDefaults(
-                {layer:"fmzk", transitionEffect:"resize"}, defaults
+                {layer:"fmzk"}, defaults
             ));
             aerial = format.createLayer(caps, OpenLayers.Util.applyDefaults(
-                {layer:"lb", transitionEffect:"resize"}, defaults
+                {layer:"lb"}, defaults
             ));
             labels = format.createLayer(caps, OpenLayers.Util.applyDefaults(
-                {layer:"beschriftung", isBaseLayer: false},
+                {layer:"beschriftung", isBaseLayer: false, transitionEffect: 'map-resize'},
                 defaults
             ));
             map.addLayers([fmzk, aerial, labels]);
@@ -182,25 +184,41 @@ var map;
     var extent = new OpenLayers.Bounds(1799448.394855, 6124949.74777, 1848250.442089, 6162571.828177);
     defaults.tileFullExtent = extent;
     fmzk = new OpenLayers.Layer.WMTS(OpenLayers.Util.applyDefaults({
-        url: "http://maps.wien.gv.at/wmts/fmzk/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
+        url: [
+            "http://maps.wien.gv.at/wmts/fmzk/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
+            "http://maps1.wien.gv.at/wmts/fmzk/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
+            "http://maps2.wien.gv.at/wmts/fmzk/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
+            "http://maps3.wien.gv.at/wmts/fmzk/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
+            "http://maps4.wien.gv.at/wmts/fmzk/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"
+        ],
         layer: "fmzk",
-        style: "pastell",
-        transitionEffect: "resize"
+        style: "pastell"
     },
     defaults));
     aerial = new OpenLayers.Layer.WMTS(OpenLayers.Util.applyDefaults({
-        url: "http://maps.wien.gv.at/wmts/lb/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
+        url: [
+            "http://maps.wien.gv.at/wmts/lb/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
+            "http://maps1.wien.gv.at/wmts/lb/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
+            "http://maps2.wien.gv.at/wmts/lb/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
+            "http://maps3.wien.gv.at/wmts/lb/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
+            "http://maps4.wien.gv.at/wmts/lb/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"
+        ],
         layer: "lb",
-        style: "farbe",
-        transitionEffect: "resize"
+        style: "farbe"
     },
     defaults));
     labels = new OpenLayers.Layer.WMTS(OpenLayers.Util.applyDefaults({
-        url: "http://maps.wien.gv.at/wmts/beschriftung/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+        url: [
+            "http://maps.wien.gv.at/wmts/beschriftung/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+            "http://maps1.wien.gv.at/wmts/beschriftung/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+            "http://maps2.wien.gv.at/wmts/beschriftung/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+            "http://maps3.wien.gv.at/wmts/beschriftung/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+            "http://maps4.wien.gv.at/wmts/beschriftung/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"
+        ],
         layer: "beschriftung",
         style: "normal",
-        transitionEffect: null,
-        isBaseLayer: false
+        isBaseLayer: false,
+        transitionEffect: 'map-resize'
     },
     defaults));
     map.addLayers([fmzk, aerial, labels]);

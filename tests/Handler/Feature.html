@@ -280,9 +280,10 @@
         handler.mousedown = function() {}; // mock mousedown
         handler.activate();
 
+        var eventTypes = ['mousedown', 'mouseup', 'mousemove', 'click', 'dblclick'];
+
         function allRegistered() {
-            var eventTypes = ['mousedown', 'mouseup', 'mousemove', 'click', 'dblclick'],
-                eventType,
+            var eventType,
                 listeners,
                 listener,
                 flag;
@@ -305,21 +306,18 @@
         }
 
         function noneRegistered() {
-            var eventTypes = ['mousedown', 'mouseup', 'mousemove', 'click', 'dblclick'],
-                eventType,
-                listeners,
-                listener;
+            var eventType,
+                times,
+                flag = false;
             for(var i=0, ilen=eventTypes.length; i<ilen; i++) {
                 eventType = eventTypes[i];
-                listeners = map.events.listeners[eventType];
-                for(var j=0, jlen=listeners.length; j<jlen; j++) {
-                    listener = listeners[j];
-                    if(listener.func === handler[eventType] && listener.obj === handler) {
-                        return false;
-                    }
+                times = map.events.listeners[eventType].length;
+                if (times != 0) {
+                    t.fail(eventType + " is registered " + times + " times");
+                    flag = true;
                 }
             }
-            return true;
+            return !flag;
         }
 
         // test
@@ -564,10 +562,10 @@
         handler = new OpenLayers.Handler.Feature(
             control, layer, callbacks, {clickTolerance: 4});
         handler.activate();
-        handler.down = {x: 0, y: 0};
 
         // distance between down and up is 1, which is
         // lower than clickTolerance so "click" should trigger
+        handler.down = {x: 0, y: 0};
         handler.up = {x: 1, y: 0};
         clicks = 0;
         map.events.triggerEvent("click", evtPx);
@@ -575,6 +573,7 @@
 
         // distance between down and up is 4, which is
         // equal to clickTolerance so "click" should trigger
+        handler.down = {x: 0, y: 0}; // cached handler.down cleared (#857)
         handler.up = {x: 0, y: 4};
         clicks = 0;
         map.events.triggerEvent("click", evtPx);
@@ -582,6 +581,7 @@
 
         // distance between down and up is 5, which is
         // greater than clickTolerance so "click" should not trigger
+        handler.down = {x: 0, y: 0}; // cached handler.down cleared (#857)
         handler.up = {x: 5, y: 0};
         clicks = 0;
         map.events.triggerEvent("click", evtPx);
@@ -658,6 +658,36 @@
         map.events.triggerEvent("changelayer");
         t.eq(parseInt(vector.getZIndex(), 10), 725, "vector layer's zIndex still correct after changelayer event");
         
+    }
+
+    function test_clear_event_position_cache(t) {
+        t.plan(2);
+
+        var map, control, layer, feature, evtPx;
+
+        map = new OpenLayers.Map('map', {controls: []});
+        control = new OpenLayers.Control();
+        map.addControl(control);
+        layer = new OpenLayers.Layer();
+        layer.getFeatureFromEvent = function(evt) { return feature; };
+        map.addLayer(layer);
+        feature = new OpenLayers.Feature.Vector();
+        feature.layer = layer;
+
+        evtPx = {
+            xy: new OpenLayers.Pixel(Math.random(), Math.random()),
+            type: "click"
+        };
+ 
+        handler = new OpenLayers.Handler.Feature(
+            control, layer, {}, {});
+        handler.activate();
+
+        handler.down = {x: 0, y: 0};
+        handler.up = {x: 1, y: 0};
+        map.events.triggerEvent("click", evtPx);
+        t.eq(handler.down, null, "cached mousedown position is cleared after handling click");
+        t.eq(handler.up, null, "cached mouseup position is cleared after handling click")
     }
 
   </script>

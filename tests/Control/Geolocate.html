@@ -101,18 +101,6 @@
         map.removeControl(control);
         map.setCenter(centerLL);
     }
-    function test_uncapable(t) {
-        t.plan(1);
-        var control = new OpenLayers.Control.Geolocate({
-            geolocation: null,
-            bind: false
-        });
-        control.events.register('locationuncapable', null, function() {
-            t.ok(true,'uncapable browser fired locationuncapable event');
-        });
-        map.addControl(control);
-        control.activate();
-    }
     function test_destroy(t) {
         t.plan(1);
         var control = new OpenLayers.Control.Geolocate({

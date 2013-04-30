@@ -187,7 +187,9 @@
     }
         
     /**
-     * Check our utility function for generating tile indexes against a file cache
+     * Check the utility function for generating tile indexes against a file cache
+     * This is already tested in BaseTypes test, but these are specific,
+     * common conversions that this class will rely on, so the tests are retained
      */
     function test_Layer_ARCGISCACHE_zeroPad(t) {
         t.plan(4);
@@ -195,10 +197,10 @@
         var layer = new OpenLayers.Layer.ArcGISCache('test', null, { });
 
         //some tile examples
-        t.ok('00000001' == layer.zeroPad(1, 8, 16), 'zeroPad should generate tile indexes properly ');
-        t.ok('00000020' == layer.zeroPad(32, 8, 16), 'zeroPad should generate tile indexes properly ');
-        t.ok('00000100' == layer.zeroPad(256, 8, 16), 'zeroPad should generate tile indexes properly ');
-        t.ok('00001000' == layer.zeroPad(4096, 8, 16), 'zeroPad should generate tile indexes properly ');        
+        t.ok('00000001' == OpenLayers.Number.zeroPad(1, 8, 16), 'zeroPad should generate tile indexes properly ');
+        t.ok('00000020' == OpenLayers.Number.zeroPad(32, 8, 16), 'zeroPad should generate tile indexes properly ');
+        t.ok('00000100' == OpenLayers.Number.zeroPad(256, 8, 16), 'zeroPad should generate tile indexes properly ');
+        t.ok('00001000' == OpenLayers.Number.zeroPad(4096, 8, 16), 'zeroPad should generate tile indexes properly ');        
     }
     
     /**

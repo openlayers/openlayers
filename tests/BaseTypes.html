@@ -155,8 +155,8 @@
             }
         };
         t.eq(
-            format("${a.b.c} ${a.b.e} ${a.b.q} ${a} ${a...b...c}", context),
-            "d f undefined [object Object] d",
+            format("${a.b.c} ${a.b.e} ${a.b.q} ${a} ${a...b...c} ${aa.b} ${a.bb.c}", context),
+            "d f undefined [object Object] d undefined undefined",
             "attribute values that are objects are supported"
         );
 
@@ -277,6 +277,17 @@
         OpenLayers.Number.thousandsSeparator = ".";
         OpenLayers.Number.decimalSeparator = ",";
         t.eq(format(num, 3), "12.345,679", "changing thousands/decimal separator globally works");
+    }
+    
+    function test_Number_zeroPad(t) {
+        t.plan(6);
+        var pad = OpenLayers.Number.zeroPad;
+        t.eq(pad(15, 4), "0015", "left padding works");
+        t.eq(pad(15, 2), "15", "no left padding when equal to number of digits");
+        t.eq(pad(15, 1), "15", "no left padding when less than number of digits");
+        t.eq(pad(10, 5, 2), "01010", "radix modified and padding works");
+        t.eq(pad(10, 5, 8), "00012", "radix modified and padding works");
+        t.eq(pad(10, 5, 36), "0000a", "radix modified and padding works");
     }
 
     function test_Function_bind(t) {
