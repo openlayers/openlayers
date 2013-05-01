@@ -20,7 +20,7 @@ ol.Extent;
  * @return {ol.Extent} Bounding extent.
  */
 ol.extent.boundingExtent = function(coordinates) {
-  var extent = ol.extent.createEmptyExtent();
+  var extent = ol.extent.createEmpty();
   var n = coordinates.length;
   var i;
   for (i = 0; i < n; ++i) {
@@ -87,7 +87,7 @@ ol.extent.containsExtent = function(extent1, extent2) {
 /**
  * @return {ol.Extent} Empty extent.
  */
-ol.extent.createEmptyExtent = function() {
+ol.extent.createEmpty = function() {
   return [Infinity, -Infinity, Infinity, -Infinity];
 };
 

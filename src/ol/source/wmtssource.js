@@ -119,7 +119,7 @@ ol.source.WMTS = function(options) {
         }));
   }
 
-  var tmpExtent = ol.extent.createEmptyExtent();
+  var tmpExtent = ol.extent.createEmpty();
   var tmpTileCoord = new ol.TileCoord(0, 0, 0);
   tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       function(tileCoord, projection) {
