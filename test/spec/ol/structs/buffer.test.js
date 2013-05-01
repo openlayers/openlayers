@@ -27,7 +27,7 @@ describe('ol.structs.Buffer', function() {
       });
 
       it('constructs a populated instance', function() {
-        expect(b.getArray()).to.equalArray([0, 1, 2, 3]);
+        expect(b.getArray()).to.eql([0, 1, 2, 3]);
       });
 
     });
@@ -80,7 +80,7 @@ describe('ol.structs.Buffer', function() {
 
       it('allows elements to be added', function() {
         expect(b.add([0, 1, 2, 3])).to.be(0);
-        expect(b.getArray()).to.equalArray([0, 1, 2, 3]);
+        expect(b.getArray()).to.eql([0, 1, 2, 3]);
       });
 
     });
@@ -128,7 +128,7 @@ describe('ol.structs.Buffer', function() {
         var callback = sinon.spy();
         b.forEachRange(callback);
         expect(callback.calledOnce).to.be(true);
-        expect(callback.args[0]).to.equalArray([0, 4]);
+        expect(callback.args[0]).to.eql([0, 4]);
       });
 
     });
@@ -155,7 +155,7 @@ describe('ol.structs.Buffer', function() {
 
       it('updates the items', function() {
         b.set([5, 6], 2);
-        expect(b.getArray()).to.equalArray([0, 1, 5, 6]);
+        expect(b.getArray()).to.eql([0, 1, 5, 6]);
       });
 
       it('marks the set items as dirty', function() {
@@ -164,7 +164,7 @@ describe('ol.structs.Buffer', function() {
         expect(dirtySet.isEmpty()).to.be(true);
         b.set([5, 6], 2);
         expect(dirtySet.isEmpty()).to.be(false);
-        expect(dirtySet.getArray()).to.equalArray([2, 4]);
+        expect(dirtySet.getArray()).to.eql([2, 4]);
       });
 
     });
@@ -184,7 +184,7 @@ describe('ol.structs.Buffer', function() {
 
       it('allows more items to be added', function() {
         expect(b.add([4, 5, 6, 7])).to.be(4);
-        expect(b.getArray()).to.equalArray([0, 1, 2, 3, 4, 5, 6, 7]);
+        expect(b.getArray()).to.eql([0, 1, 2, 3, 4, 5, 6, 7]);
       });
 
     });
@@ -195,7 +195,7 @@ describe('ol.structs.Buffer', function() {
         var callback = sinon.spy();
         b.forEachRange(callback);
         expect(callback.calledOnce).to.be(true);
-        expect(callback.args[0]).to.equalArray([0, 4]);
+        expect(callback.args[0]).to.eql([0, 4]);
       });
 
     });
@@ -213,7 +213,7 @@ describe('ol.structs.Buffer', function() {
       it('returns the expected set', function() {
         var freeSet = b.getFreeSet();
         expect(freeSet.isEmpty()).to.be(false);
-        expect(freeSet.getArray()).to.equalArray([4, 8]);
+        expect(freeSet.getArray()).to.eql([4, 8]);
       });
 
     });
@@ -225,31 +225,31 @@ describe('ol.structs.Buffer', function() {
     it('allows multiple adds and removes', function() {
       var b = new ol.structs.Buffer(new Array(8), 0);
       expect(b.add([0, 1])).to.be(0);
-      expect(b.getArray()).to.equalArray([0, 1, NaN, NaN, NaN, NaN, NaN, NaN]);
+      expect(b.getArray()).to.eql([0, 1, NaN, NaN, NaN, NaN, NaN, NaN]);
       expect(b.getCount()).to.be(2);
       expect(b.add([2, 3, 4, 5])).to.be(2);
-      expect(b.getArray()).to.equalArray([0, 1, 2, 3, 4, 5, NaN, NaN]);
+      expect(b.getArray()).to.eql([0, 1, 2, 3, 4, 5, NaN, NaN]);
       expect(b.getCount()).to.be(6);
       expect(b.add([6, 7])).to.be(6);
-      expect(b.getArray()).to.equalArray([0, 1, 2, 3, 4, 5, 6, 7]);
+      expect(b.getArray()).to.eql([0, 1, 2, 3, 4, 5, 6, 7]);
       expect(b.getCount()).to.be(8);
       b.remove(2, 2);
-      expect(b.getArray()).to.equalArray([0, 1, NaN, NaN, 4, 5, 6, 7]);
+      expect(b.getArray()).to.eql([0, 1, NaN, NaN, 4, 5, 6, 7]);
       expect(b.getCount()).to.be(6);
       expect(b.add([8, 9])).to.be(2);
-      expect(b.getArray()).to.equalArray([0, 1, 8, 9, 4, 5, 6, 7]);
+      expect(b.getArray()).to.eql([0, 1, 8, 9, 4, 5, 6, 7]);
       expect(b.getCount()).to.be(8);
       b.remove(1, 1);
-      expect(b.getArray()).to.equalArray([0, NaN, 8, 9, 4, 5, 6, 7]);
+      expect(b.getArray()).to.eql([0, NaN, 8, 9, 4, 5, 6, 7]);
       expect(b.getCount()).to.be(7);
       b.remove(4, 4);
-      expect(b.getArray()).to.equalArray([0, NaN, 8, 9, NaN, NaN, NaN, NaN]);
+      expect(b.getArray()).to.eql([0, NaN, 8, 9, NaN, NaN, NaN, NaN]);
       expect(b.getCount()).to.be(3);
       expect(b.add([10, 11, 12])).to.be(4);
-      expect(b.getArray()).to.equalArray([0, NaN, 8, 9, 10, 11, 12, NaN]);
+      expect(b.getArray()).to.eql([0, NaN, 8, 9, 10, 11, 12, NaN]);
       expect(b.getCount()).to.be(6);
       expect(b.add([13])).to.be(1);
-      expect(b.getArray()).to.equalArray([0, 13, 8, 9, 10, 11, 12, NaN]);
+      expect(b.getArray()).to.eql([0, 13, 8, 9, 10, 11, 12, NaN]);
       expect(b.getCount()).to.be(7);
     });
 
