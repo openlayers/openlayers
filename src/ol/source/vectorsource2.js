@@ -1,5 +1,6 @@
 goog.provide('ol.source.VectorSource2');
 
+goog.require('ol.geom2.LineStringCollection');
 goog.require('ol.geom2.PointCollection');
 goog.require('ol.source.Source');
 
@@ -25,8 +26,23 @@ ol.source.VectorSource2 = function(options) {
   this.pointCollections_ = goog.isDef(options.pointCollections) ?
       options.pointCollections : [];
 
+  /**
+   * @private
+   * @type {Array.<ol.geom2.LineStringCollection>}
+   */
+  this.lineStringCollections_ = goog.isDef(options.lineStringCollections) ?
+      options.lineStringCollections : [];
+
 };
 goog.inherits(ol.source.VectorSource2, ol.source.Source);
+
+
+/**
+ * @return {Array.<ol.geom2.LineStringCollection>} Line string collections.
+ */
+ol.source.VectorSource2.prototype.getLineStringCollections = function() {
+  return this.lineStringCollections_;
+};
 
 
 /**
