@@ -20,7 +20,7 @@ describe('ol.structs.IntegerSet', function() {
       it('constructs with a valid array', function() {
         var is = new ol.structs.IntegerSet([0, 2, 4, 6]);
         expect(is).to.be.an(ol.structs.IntegerSet);
-        expect(is.getArray()).to.equalArray([0, 2, 4, 6]);
+        expect(is.getArray()).to.eql([0, 2, 4, 6]);
       });
 
       it('throws an exception with an odd number of elements', function() {
@@ -50,7 +50,7 @@ describe('ol.structs.IntegerSet', function() {
 
       it('creates a new element', function() {
         is.addRange(0, 2);
-        expect(is.getArray()).to.equalArray([0, 2]);
+        expect(is.getArray()).to.eql([0, 2]);
       });
 
     });
@@ -79,7 +79,7 @@ describe('ol.structs.IntegerSet', function() {
         var callback = sinon.spy();
         is.forEachRangeInverted(0, 8, callback);
         expect(callback.calledOnce).to.be(true);
-        expect(callback.args[0]).to.equalArray([0, 8]);
+        expect(callback.args[0]).to.eql([0, 8]);
       });
 
     });
@@ -145,52 +145,52 @@ describe('ol.structs.IntegerSet', function() {
 
       it('inserts before the first element', function() {
         is.addRange(0, 2);
-        expect(is.getArray()).to.equalArray([0, 2, 4, 6, 8, 10, 12, 14]);
+        expect(is.getArray()).to.eql([0, 2, 4, 6, 8, 10, 12, 14]);
       });
 
       it('extends the first element to the left', function() {
         is.addRange(0, 4);
-        expect(is.getArray()).to.equalArray([0, 6, 8, 10, 12, 14]);
+        expect(is.getArray()).to.eql([0, 6, 8, 10, 12, 14]);
       });
 
       it('extends the first element to the right', function() {
         is.addRange(6, 7);
-        expect(is.getArray()).to.equalArray([4, 7, 8, 10, 12, 14]);
+        expect(is.getArray()).to.eql([4, 7, 8, 10, 12, 14]);
       });
 
       it('merges the first two elements', function() {
         is.addRange(6, 8);
-        expect(is.getArray()).to.equalArray([4, 10, 12, 14]);
+        expect(is.getArray()).to.eql([4, 10, 12, 14]);
       });
 
       it('extends middle elements to the left', function() {
         is.addRange(7, 8);
-        expect(is.getArray()).to.equalArray([4, 6, 7, 10, 12, 14]);
+        expect(is.getArray()).to.eql([4, 6, 7, 10, 12, 14]);
       });
 
       it('extends middle elements to the right', function() {
         is.addRange(10, 11);
-        expect(is.getArray()).to.equalArray([4, 6, 8, 11, 12, 14]);
+        expect(is.getArray()).to.eql([4, 6, 8, 11, 12, 14]);
       });
 
       it('merges the last two elements', function() {
         is.addRange(10, 12);
-        expect(is.getArray()).to.equalArray([4, 6, 8, 14]);
+        expect(is.getArray()).to.eql([4, 6, 8, 14]);
       });
 
       it('extends the last element to the left', function() {
         is.addRange(11, 12);
-        expect(is.getArray()).to.equalArray([4, 6, 8, 10, 11, 14]);
+        expect(is.getArray()).to.eql([4, 6, 8, 10, 11, 14]);
       });
 
       it('extends the last element to the right', function() {
         is.addRange(14, 15);
-        expect(is.getArray()).to.equalArray([4, 6, 8, 10, 12, 15]);
+        expect(is.getArray()).to.eql([4, 6, 8, 10, 12, 15]);
       });
 
       it('inserts after the last element', function() {
         is.addRange(16, 18);
-        expect(is.getArray()).to.equalArray([4, 6, 8, 10, 12, 14, 16, 18]);
+        expect(is.getArray()).to.eql([4, 6, 8, 10, 12, 14, 16, 18]);
       });
 
     });
@@ -239,9 +239,9 @@ describe('ol.structs.IntegerSet', function() {
         is.forEachRange(callback);
         expect(callback).to.be.called();
         expect(callback.calledThrice).to.be(true);
-        expect(callback.args[0]).to.equalArray([4, 6]);
-        expect(callback.args[1]).to.equalArray([8, 10]);
-        expect(callback.args[2]).to.equalArray([12, 14]);
+        expect(callback.args[0]).to.eql([4, 6]);
+        expect(callback.args[1]).to.eql([8, 10]);
+        expect(callback.args[2]).to.eql([12, 14]);
       });
 
     });
@@ -252,10 +252,10 @@ describe('ol.structs.IntegerSet', function() {
         var callback = sinon.spy();
         is.forEachRangeInverted(0, 16, callback);
         expect(callback.callCount).to.be(4);
-        expect(callback.args[0]).to.equalArray([0, 4]);
-        expect(callback.args[1]).to.equalArray([6, 8]);
-        expect(callback.args[2]).to.equalArray([10, 12]);
-        expect(callback.args[3]).to.equalArray([14, 16]);
+        expect(callback.args[0]).to.eql([0, 4]);
+        expect(callback.args[1]).to.eql([6, 8]);
+        expect(callback.args[2]).to.eql([10, 12]);
+        expect(callback.args[3]).to.eql([14, 16]);
       });
 
     });
@@ -334,57 +334,57 @@ describe('ol.structs.IntegerSet', function() {
 
       it('removes the first part of the first element', function() {
         is.removeRange(4, 5);
-        expect(is.getArray()).to.equalArray([5, 6, 8, 10, 12, 14]);
+        expect(is.getArray()).to.eql([5, 6, 8, 10, 12, 14]);
       });
 
       it('removes the last part of the first element', function() {
         is.removeRange(5, 6);
-        expect(is.getArray()).to.equalArray([4, 5, 8, 10, 12, 14]);
+        expect(is.getArray()).to.eql([4, 5, 8, 10, 12, 14]);
       });
 
       it('removes the first element', function() {
         is.removeRange(4, 6);
-        expect(is.getArray()).to.equalArray([8, 10, 12, 14]);
+        expect(is.getArray()).to.eql([8, 10, 12, 14]);
       });
 
       it('removes the first part of a middle element', function() {
         is.removeRange(8, 9);
-        expect(is.getArray()).to.equalArray([4, 6, 9, 10, 12, 14]);
+        expect(is.getArray()).to.eql([4, 6, 9, 10, 12, 14]);
       });
 
       it('removes the last part of a middle element', function() {
         is.removeRange(9, 10);
-        expect(is.getArray()).to.equalArray([4, 6, 8, 9, 12, 14]);
+        expect(is.getArray()).to.eql([4, 6, 8, 9, 12, 14]);
       });
 
       it('removes a middle element', function() {
         is.removeRange(8, 10);
-        expect(is.getArray()).to.equalArray([4, 6, 12, 14]);
+        expect(is.getArray()).to.eql([4, 6, 12, 14]);
       });
 
       it('removes the first part of the last element', function() {
         is.removeRange(12, 13);
-        expect(is.getArray()).to.equalArray([4, 6, 8, 10, 13, 14]);
+        expect(is.getArray()).to.eql([4, 6, 8, 10, 13, 14]);
       });
 
       it('removes the last part of the last element', function() {
         is.removeRange(13, 14);
-        expect(is.getArray()).to.equalArray([4, 6, 8, 10, 12, 13]);
+        expect(is.getArray()).to.eql([4, 6, 8, 10, 12, 13]);
       });
 
       it('removes the last element', function() {
         is.removeRange(12, 14);
-        expect(is.getArray()).to.equalArray([4, 6, 8, 10]);
+        expect(is.getArray()).to.eql([4, 6, 8, 10]);
       });
 
       it('can remove multiple ranges near the start', function() {
         is.removeRange(3, 11);
-        expect(is.getArray()).to.equalArray([12, 14]);
+        expect(is.getArray()).to.eql([12, 14]);
       });
 
       it('can remove multiple ranges near the start', function() {
         is.removeRange(7, 15);
-        expect(is.getArray()).to.equalArray([4, 6]);
+        expect(is.getArray()).to.eql([4, 6]);
       });
 
       it('throws an exception when passed an invalid range', function() {
@@ -459,29 +459,29 @@ describe('ol.structs.IntegerSet', function() {
 
       it('removing an empty range has no effect', function() {
         is.removeRange(0, 0);
-        expect(is.getArray()).to.equalArray(
+        expect(is.getArray()).to.eql(
             [0, 1, 2, 4, 5, 8, 9, 12, 13, 15, 16, 17]);
       });
 
       it('can remove elements from the middle of range', function() {
         is.removeRange(6, 7);
-        expect(is.getArray()).to.equalArray(
+        expect(is.getArray()).to.eql(
             [0, 1, 2, 4, 5, 6, 7, 8, 9, 12, 13, 15, 16, 17]);
       });
 
       it('can remove multiple ranges', function() {
         is.removeRange(2, 12);
-        expect(is.getArray()).to.equalArray([0, 1, 13, 15, 16, 17]);
+        expect(is.getArray()).to.eql([0, 1, 13, 15, 16, 17]);
       });
 
       it('can remove multiple ranges and reduce others', function() {
         is.removeRange(0, 10);
-        expect(is.getArray()).to.equalArray([10, 12, 13, 15, 16, 17]);
+        expect(is.getArray()).to.eql([10, 12, 13, 15, 16, 17]);
       });
 
       it('can remove all ranges', function() {
         is.removeRange(0, 18);
-        expect(is.getArray()).to.equalArray([]);
+        expect(is.getArray()).to.eql([]);
       });
 
     });
@@ -556,7 +556,7 @@ describe('ol.structs.IntegerSet', function() {
         addStop = addStart + goog.math.randomInt(16);
         is.addRange(addStart, addStop);
         sis.addRange(addStart, addStop);
-        expect(is.getArray()).to.equalArray(sis.getArray());
+        expect(is.getArray()).to.eql(sis.getArray());
       }
     });
 
@@ -569,7 +569,7 @@ describe('ol.structs.IntegerSet', function() {
         removeStop = removeStart + goog.math.randomInt(16);
         is.removeRange(removeStart, removeStop);
         sis.removeRange(removeStart, removeStop);
-        expect(is.getArray()).to.equalArray(sis.getArray());
+        expect(is.getArray()).to.eql(sis.getArray());
       }
     });
 
@@ -585,7 +585,7 @@ describe('ol.structs.IntegerSet', function() {
           is.removeRange(start, stop);
           sis.removeRange(start, stop);
         }
-        expect(is.getArray()).to.equalArray(sis.getArray());
+        expect(is.getArray()).to.eql(sis.getArray());
       }
     });
 
@@ -605,7 +605,7 @@ describe('ol.structs.IntegerSet', function() {
           is.clear();
           sis.clear();
         }
-        expect(is.getArray()).to.equalArray(sis.getArray());
+        expect(is.getArray()).to.eql(sis.getArray());
       }
     });
 

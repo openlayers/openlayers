@@ -32,8 +32,8 @@ describe('ol.structs.PriorityQueue', function() {
       expect(function() {
         pq.assertValid();
       }).not.to.throwException();
-      expect(pq.elements_).to.equalArray([0]);
-      expect(pq.priorities_).to.equalArray([0]);
+      expect(pq.elements_).to.eql([0]);
+      expect(pq.priorities_).to.eql([0]);
     });
 
     it('maintains the pq property while elements are enqueued', function() {

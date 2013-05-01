@@ -2370,6 +2370,12 @@ function HTML(runner, root) {
       }
 
       el.appendChild(fragment('<pre class="error">%e</pre>', str));
+
+      // Display errors in Chrome's console
+      if (window.chrome) {
+        window.console.error(str);
+      }
+
     }
 
     // toggle code

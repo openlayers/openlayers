@@ -493,50 +493,6 @@
   };
 
   /**
-   * Assert that that objects intersect.
-   * FIXME this is ol3 specific
-   *
-   * @param {Object} other
-   *
-   * @api public
-   */
-  Assertion.prototype.intersect =
-  Assertion.prototype.wentToSchoolWith = function(other) {
-    this.assert(
-        this.obj.intersects(other)
-      , function(){ return 'expected ' + i(this.obj) + ' to intersect ' + i(other) }
-      , function(){ return 'expected ' + i(this.obj) + ' not to intersect ' + i(other) });
-    return this;
-  };
-
-  /**
-   * Assert that arrays have the same value.
-   *
-   * @param {Array} other
-   *
-   * @api public
-   */
-  Assertion.prototype.equalArray =
-  Assertion.prototype.preferItBeforeItWasFamous = function(other) {
-    var equal = this.obj.length == other.length;
-    if (equal) {
-      var j = 0;
-      for (j = 0; j < other.length; ++j) {
-        if (this.obj[j] !== other[j] &&
-            !(isNaN(this.obj[j]) && isNaN(other[j]))) {
-          equal = false;
-          break;
-        }
-      }
-    }
-    this.assert(
-        equal
-      , function(){ return 'expected ' + i(this.obj) + ' to have the same array value as ' + i(other) }
-      , function(){ return 'expected ' + i(this.obj) + ' not to have the same array value as ' + i(other) });
-    return this;
-  };
-
-  /**
    * Assert a failure.
    *
    * @param {String ...} custom message
@@ -946,7 +902,11 @@
     // 7.3. Other pairs that do not both pass typeof value == "object",
     // equivalence is determined by ==.
     } else if (typeof actual != 'object' && typeof expected != 'object') {
-      return actual == expected;
+      if (isNaN(actual) && isNaN(expected)) {
+        return true;
+      } else {
+        return actual == expected;
+      }
 
     // 7.4. For all other Object pairs, including Array objects, equivalence is
     // determined by having the same number of owned properties (as verified
