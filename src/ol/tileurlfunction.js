@@ -81,7 +81,7 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
  */
 ol.TileUrlFunction.createFromParamsFunction =
     function(baseUrl, params, paramsFunction) {
-  var tmpExtent = ol.extent.createEmptyExtent();
+  var tmpExtent = ol.extent.createEmpty();
   return (
       /**
        * @param {ol.TileCoord} tileCoord Tile Coordinate.

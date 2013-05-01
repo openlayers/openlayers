@@ -116,7 +116,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
       tilesToDrawByZ, getTileIfLoaded);
 
   var allTilesLoaded = true;
-  var tmpExtent = ol.extent.createEmptyExtent();
+  var tmpExtent = ol.extent.createEmpty();
   var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
   var childTileRange, fullyLoaded, tile, tileState, x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
