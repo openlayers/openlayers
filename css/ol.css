@@ -81,6 +81,13 @@ a.ol-full-screen-true:after {
   display: inline;
   list-style: none;
 }
+
+.ol-mouseposition {
+  top: 8px;
+  right: 8px;
+  position: absolute;  
+}
+
 .ol-scale-line {
   background: rgba(0,60,136,0.3);
   border-radius: 4px;
