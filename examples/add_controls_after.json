@@ -1,0 +1,1 @@
+{"inherits": "../base.json", "inputs": ["examples/simple.js", "build/src/internal/src/types.js"], "id": "simple", "externs": ["//json.js", "//jquery-1.7.js", "externs/bingmaps.js", "externs/bootstrap.js", "externs/geojson.js", "externs/proj4js.js", "externs/tilejson.js"]}
