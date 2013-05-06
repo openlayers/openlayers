@@ -5,7 +5,6 @@ goog.provide('ol.Geolocation');
 goog.provide('ol.GeolocationProperty');
 
 goog.require('goog.events');
-goog.require('goog.functions');
 goog.require('goog.math');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
@@ -50,6 +49,12 @@ ol.Geolocation = function(opt_options) {
 
   /**
    * @private
+   * @type {ol.TransformFunction}
+   */
+  this.transform_ = ol.projection.identityTransform;
+
+  /**
+   * @private
    * @type {number|undefined}
    */
   this.watchId_ = undefined;
@@ -90,11 +95,11 @@ ol.Geolocation.prototype.disposeInternal = function() {
 ol.Geolocation.prototype.handleProjectionChanged_ = function() {
   var projection = this.getProjection();
   if (goog.isDefAndNotNull(projection)) {
-    this.transformFn_ = ol.projection.getTransformFromProjections(
+    this.transform_ = ol.projection.getTransformFromProjections(
         ol.projection.get('EPSG:4326'), projection);
     if (!goog.isNull(this.position_)) {
       this.set(
-          ol.GeolocationProperty.POSITION, this.transformFn_(this.position_));
+          ol.GeolocationProperty.POSITION, this.transform_(this.position_));
     }
   }
 };
@@ -147,7 +152,7 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
     this.position_[0] = coords.longitude;
     this.position_[1] = coords.latitude;
   }
-  this.set(ol.GeolocationProperty.POSITION, this.transformFn_(this.position_));
+  this.set(ol.GeolocationProperty.POSITION, this.transform_(this.position_));
   this.set(ol.GeolocationProperty.SPEED,
       goog.isNull(coords.speed) ? undefined : coords.speed);
 };
@@ -314,13 +319,3 @@ goog.exportProperty(
     ol.Geolocation.prototype,
     'setTrackingOptions',
     ol.Geolocation.prototype.setTrackingOptions);
-
-
-/**
- * @private
- * @param {Array.<number>} input Input coordinate values.
- * @param {Array.<number>=} opt_output Output array of coordinate values.
- * @param {number=} opt_dimension Dimension (default is 2).
- * @return {Array.<number>} Output coordinate values.
- */
-ol.Geolocation.prototype.transformFn_ = goog.functions.identity;
