@@ -89,4 +89,21 @@ describe('expect.js', function() {
 
   });
 
+  describe('Test equality of XML documents - xmleql', function() {
+
+    it('Test XML docs', function() {
+      var url = 'spec/ol/parser/kml/point.kml';
+      afterLoadXml(url, function(xml) {
+        var parser = new ol.parser.KML();
+        var obj = parser.read(xml);
+        var output = parser.write(obj);
+        expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
+      });
+    });
+
+  });
+
 });
+
+goog.require('goog.dom.xml');
+goog.require('ol.parser.KML');
