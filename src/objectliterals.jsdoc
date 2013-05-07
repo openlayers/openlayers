@@ -122,6 +122,7 @@
 
 /**
  * @typedef {Object} ol.control.FullScreenOptions
+ * @property {string|undefined} className Class name.
  * @property {boolean|undefined} keys Full keyboard access.
  * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
