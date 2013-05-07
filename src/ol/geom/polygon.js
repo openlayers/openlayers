@@ -91,22 +91,25 @@ ol.geom.Polygon.prototype.getType = function() {
 
 
 /**
- * Check whether a given coordinate is inside this polygon.
+ * Check whether a given coordinate is inside this polygon. Note that this is a
+ * fast and simple check - points on an edge or vertex of the polygon or one of
+ * its inner rings are either classified inside or outside.
  *
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {boolean} Whether the coordinate is inside the polygon.
  */
 ol.geom.Polygon.prototype.containsCoordinate = function(coordinate) {
   var rings = this.rings;
-  var containsCoordinate = ol.geom.pointInPolygon(coordinate,
-      rings[0].getCoordinates());
-  if (containsCoordinate) {
-    // if inner ring contains point, polygon does not contain it
-    for (var i = 1, ii = rings.length; i < ii; ++i) {
-      if (ol.geom.pointInPolygon(coordinate, rings[i].getCoordinates())) {
-        containsCoordinate = false;
-        break;
-      }
+  /** @type {boolean} */
+  var containsCoordinate;
+  for (var i = 0, ii = rings.length; i < ii; ++i) {
+    containsCoordinate = rings[i].containsCoordinate(coordinate);
+    // if inner ring (i > 0) contains coordinate, polygon does not contain it
+    if (i > 0) {
+      containsCoordinate = !containsCoordinate;
+    }
+    if (!containsCoordinate) {
+      break;
     }
   }
   return containsCoordinate;
