@@ -104,6 +104,7 @@
 
 /**
  * @typedef {Object} ol.control.AttributionOptions
+ * @property {string|undefined} className Class name.
  * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
  */
