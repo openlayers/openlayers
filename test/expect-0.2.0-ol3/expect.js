@@ -227,28 +227,52 @@
     }
   };
 
-  function assertElementNodesEqual(node1, node2, options) {
+  function assertElementNodesEqual(node1, node2, options, errors) {
     var testPrefix = (options && options.prefix === true);
-    expect(node1.nodeType).to.eql(node2.nodeType);
+    try {
+      expect(node1.nodeType).to.equal(node2.nodeType);
+    } catch(e) {
+      errors.push('nodeType test failed for: ' + node1.nodeName + ' | ' + node2.nodeName + ' | ' + e.message);
+    }
     if (testPrefix) {
-      expect(node1.nodeName).to.eql(node2.nodeName);
+      try {
+        expect(node1.nodeName).to.equal(node2.nodeName);
+      } catch(e) {
+        errors.push('nodeName test failed for: ' + node1.nodeName + ' | ' + node2.nodeName + ' | ' + e.message);
+      }
     } else {
-      expect(node1.nodeName.split(':').pop()).to.eql(node2.nodeName.split(':').pop());
+      try {
+        expect(node1.nodeName.split(':').pop()).to.equal(node2.nodeName.split(':').pop());
+      } catch(e) {
+        errors.push('nodeName test failed for: ' + node1.nodeName + ' | ' + node2.nodeName + ' | ' + e.message);
+      }
     }
     // for text nodes compare value
     if (node1.nodeType === 3) {
-      expect(node1.nodeValue).to.eql(node2.nodeValue);
+      try {
+        expect(node1.nodeValue).to.equal(node2.nodeValue);
+      } catch(e) {
+        errors.push('nodeValue test failed for: ' + node1.nodeName + ' | ' + e.message);
+      }
     }
     // for element type nodes compare namespace, attributes, and children
     else if (node1.nodeType === 1) {
       // test namespace alias and uri
       if (node1.prefix || node2.prefix) {
         if (testPrefix) {
-          expect(node1.prefix).to.eql(node2.prefix);
+          try {
+            expect(node1.prefix).to.equal(node2.prefix);
+          } catch(e) {
+            errors.push('Prefix test failed for: ' + node1.nodeName + ' | ' + e.message);
+          }
         }
       }
       if (node1.namespaceURI || node2.namespaceURI) {
-        expect(node1.namespaceURI).to.eql(node2.namespaceURI);
+        try {
+          expect(node1.namespaceURI).to.equal(node2.namespaceURI);
+        } catch(e) {
+          errors.push('namespaceURI test failed for: ' + node1.nodeName + ' | ' + e.message);
+        }
       }
       // compare attributes - disregard xmlns given namespace handling above
       var node1AttrLen = 0;
@@ -277,26 +301,40 @@
           }
         }
       }
-      expect(node1AttrLen).to.eql(node2AttrLen);
+      try {
+        expect(node1AttrLen).to.equal(node2AttrLen);
+      } catch(e) {
+        errors.push('Number of attributes test failed for: ' + node1.nodeName + ' | ' + e.message);
+      }
       var gv, ev;
       for (var name in node1Attr) {
         if (node2Attr[name] === undefined) {
-          throw new Error('Attribute name ' + node1Attr[name].name + ' expected for element ' + node1.nodeName);
-          return false;
+          errors.push('Attribute name ' + node1Attr[name].name + ' expected for element ' + node1.nodeName);
         }
         // test attribute namespace
-        expect(node1Attr[name].namespaceURI).to.eql(node2Attr[name].namespaceURI);
-        expect(node1Attr[name].value).to.eql(node2Attr[name].value);
+        try {
+          expect(node1Attr[name].namespaceURI).to.equal(node2Attr[name].namespaceURI);
+        } catch(e) {
+          errors.push('namespaceURI attribute test failed for: ' + node1.nodeName + ' | ' + e.message);
+        }
+        try {
+          expect(node1Attr[name].value).to.equal(node2Attr[name].value);
+        } catch(e) {
+          errors.push('Attribute value test failed for: ' + node1.nodeName + ' | ' + e.message);
+        }
       }
       // compare children
-      var node1ChildNodes = getChildNodes(got, options);
-      var node2ChildNodes = getChildNodes(expected, options);
-      expect(node1ChildNodes.length).to.eql(node2ChildNodes.length);
+      var node1ChildNodes = getChildNodes(node1, options);
+      var node2ChildNodes = getChildNodes(node2, options);
+      try {
+        expect(node1ChildNodes.length).to.equal(node2ChildNodes.length);
+      } catch(e) {
+        errors.push('Number of childNodes test failed for: ' + node1.nodeName + ' | ' + e.message);
+      }
       for (var j=0, jj=node1ChildNodes.length; j<jj; ++j) {
-        assertElementNodesEqual(node1ChildNodes[j], node2ChildNodes[j], options);
+        assertElementNodesEqual(node1ChildNodes[j], node2ChildNodes[j], options, errors);
       }
     }
-    return true;
   };
 
   /**
@@ -306,11 +344,19 @@
    */
 
   Assertion.prototype.xmleql = function(obj, options) {
-    var result = assertElementNodesEqual(obj, this.obj, options);
+    if (obj && obj.nodeType == 9) {
+      obj = obj.documentElement;
+    }
+    if (this.obj && this.obj.nodeType == 9) {
+      this.obj = this.obj.documentElement;
+    }
+    var errors = [];
+    assertElementNodesEqual(obj, this.obj, options, errors);
+    var result = (errors.length === 0);
     this.assert(
         !!result
-      , function(){ return 'expected ' + i(this.obj) + ' to sort of equal ' + i(obj) }
-      , function(){ return 'expected ' + i(this.obj) + ' to sort of not equal ' + i(obj) });
+      , function(){ return 'expected ' + i(this.obj) + ' to sort of equal ' + i(obj) + '\n' + errors.join('\n') }
+      , function(){ return 'expected ' + i(this.obj) + ' to sort of not equal ' + i(obj) + '\n' + errors.join('\n') });
     return this; 
   };
 
