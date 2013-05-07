@@ -42,31 +42,3 @@ ol.geom.squaredDistanceToSegment = function(coordinate, segment) {
   return ol.coordinate.squaredDistance(coordinate,
       [v[0] + t * (w[0] - v[0]), v[1] + t * (w[1] - v[1])]);
 };
-
-
-/**
- * Calculate whether a point falls inside a polygon.
- *
- * @param {ol.Coordinate} coordinate Coordinate of the point.
- * @param {Array.<ol.Coordinate>} vertices Vertices of the polygon.
- * @return {boolean} Whether the point falls inside the polygon.
- */
-ol.geom.pointInPolygon = function(coordinate, vertices) {
-  // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-  var x = coordinate[0], y = coordinate[1];
-  var inside = false;
-  var xi, yi, xj, yj, intersect;
-  var numVertices = vertices.length;
-  for (var i = 0, j = numVertices - 1; i < numVertices; j = i++) {
-    xi = vertices[i][0];
-    yi = vertices[i][1];
-    xj = vertices[j][0];
-    yj = vertices[j][1];
-    intersect = ((yi > y) != (yj > y)) &&
-        (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-    if (intersect) {
-      inside = !inside;
-    }
-  }
-  return inside;
-};
