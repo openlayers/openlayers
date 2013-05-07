@@ -28,9 +28,11 @@ ol.control.Zoom = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
+  var className = goog.isDef(options.className) ? options.className : 'ol-zoom';
+
   var inElement = goog.dom.createDom(goog.dom.TagName.A, {
     'href': '#zoomIn',
-    'class': 'ol-zoom-in'
+    'class': className + '-in'
   });
   goog.events.listen(inElement, [
     goog.events.EventType.TOUCHEND,
@@ -39,14 +41,14 @@ ol.control.Zoom = function(opt_options) {
 
   var outElement = goog.dom.createDom(goog.dom.TagName.A, {
     'href': '#zoomOut',
-    'class': 'ol-zoom-out'
+    'class': className + '-out'
   });
   goog.events.listen(outElement, [
     goog.events.EventType.TOUCHEND,
     goog.events.EventType.CLICK
   ], this.handleOut_, false, this);
 
-  var cssClasses = 'ol-zoom ' + ol.css.CLASS_UNSELECTABLE;
+  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE;
   var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, inElement,
       outElement);
 
