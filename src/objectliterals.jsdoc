@@ -130,6 +130,7 @@
 
 /**
  * @typedef {Object} ol.control.LogoOptions
+ * @property {string|undefined} className Class name.
  * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
  */
