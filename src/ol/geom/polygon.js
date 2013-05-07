@@ -100,6 +100,7 @@ ol.geom.Polygon.prototype.getType = function() {
  */
 ol.geom.Polygon.prototype.containsCoordinate = function(coordinate) {
   var rings = this.rings;
+  /** @type {boolean} */
   var containsCoordinate;
   for (var i = 0, ii = rings.length; i < ii; ++i) {
     containsCoordinate = rings[i].containsCoordinate(coordinate);
