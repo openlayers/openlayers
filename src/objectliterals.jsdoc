@@ -165,6 +165,7 @@
 
 /**
  * @typedef {Object} ol.control.ZoomSliderOptions
+ * @property {string|undefined} className Class name.
  * @property {ol.Map|undefined} map Map.
  * @property {number|undefined} maxResolution Maximum resolution.
  * @property {number|undefined} minResolution Minimum resolution.

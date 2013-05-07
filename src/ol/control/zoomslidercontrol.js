@@ -60,10 +60,10 @@ ol.control.ZoomSlider = function(opt_options) {
    */
   this.draggerListenerKeys_ = null;
 
-  var sliderCssCls = ol.control.ZoomSlider.CSS_CLASS_CONTAINER + ' ' +
-      ol.css.CLASS_UNSELECTABLE;
-  var thumbCssCls = ol.control.ZoomSlider.CSS_CLASS_THUMB + ' ' +
-      ol.css.CLASS_UNSELECTABLE;
+  var className = goog.isDef(options.className) ?
+      options.className : 'ol-zoomslider';
+  var sliderCssCls = className + ' ' + ol.css.CLASS_UNSELECTABLE;
+  var thumbCssCls = className + '-thumb' + ' ' + ol.css.CLASS_UNSELECTABLE;
   var element = goog.dom.createDom(goog.dom.TagName.DIV, sliderCssCls,
       goog.dom.createDom(goog.dom.TagName.DIV, thumbCssCls));
 
@@ -92,23 +92,6 @@ ol.control.ZoomSlider.direction = {
   VERTICAL: 0,
   HORIZONTAL: 1
 };
-
-
-/**
- * The CSS class that we'll give the zoomslider container.
- *
- * @const {string}
- */
-ol.control.ZoomSlider.CSS_CLASS_CONTAINER = 'ol-zoomslider';
-
-
-/**
- * The CSS class that we'll give the zoomslider thumb.
- *
- * @const {string}
- */
-ol.control.ZoomSlider.CSS_CLASS_THUMB =
-    ol.control.ZoomSlider.CSS_CLASS_CONTAINER + '-thumb';
 
 
 /**
