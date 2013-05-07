@@ -195,30 +195,30 @@ describe('ol.collection', function() {
     });
   });
 
-  describe('length_changed event', function() {
+  describe('change:length event', function() {
     var collection, cb;
     beforeEach(function() {
       collection = new ol.Collection([0, 1, 2]);
       cb = sinon.spy();
-      goog.events.listen(collection, 'length_changed', cb);
+      goog.events.listen(collection, 'change:length', cb);
     });
 
     describe('insertAt', function() {
-      it('triggers length_changed event', function() {
+      it('triggers change:length event', function() {
         collection.insertAt(2, 3);
         expect(cb).to.be.called();
       });
     });
 
     describe('removeAt', function() {
-      it('triggers length_changed event', function() {
+      it('triggers change:length event', function() {
         collection.removeAt(0);
         expect(cb).to.be.called();
       });
     });
 
     describe('setAt', function() {
-      it('does not trigger length_changed event', function() {
+      it('does not trigger change:length event', function() {
         collection.setAt(1, 1);
         expect(cb).to.not.be.called();
       });

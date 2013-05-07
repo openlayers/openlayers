@@ -34,10 +34,10 @@ ol.dom.Input = function(target) {
       this.handleInputChanged_, false, this);
 
   goog.events.listen(this,
-      ol.Object.getChangedEventType(ol.dom.InputProperty.VALUE),
+      ol.Object.getChangeEventType(ol.dom.InputProperty.VALUE),
       this.handleValueChanged_, false, this);
   goog.events.listen(this,
-      ol.Object.getChangedEventType(ol.dom.InputProperty.CHECKED),
+      ol.Object.getChangeEventType(ol.dom.InputProperty.CHECKED),
       this.handleCheckedChanged_, false, this);
 };
 goog.inherits(ol.dom.Input, ol.Object);
