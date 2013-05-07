@@ -31,9 +31,11 @@ ol.control.ZOOMSLIDER_ANIMATION_DURATION = 200;
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.ZoomSliderOptions} options Zoom slider options.
+ * @param {ol.control.ZoomSliderOptions=} opt_options Zoom slider options.
  */
-ol.control.ZoomSlider = function(options) {
+ol.control.ZoomSlider = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * Will hold the current resolution of the view.
