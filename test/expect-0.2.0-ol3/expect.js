@@ -250,9 +250,10 @@
     // for text nodes compare value
     if (node1.nodeType === 3) {
       try {
-        expect(node1.nodeValue).to.equal(node2.nodeValue);
+        // TODO should we make this optional?
+        expect(node1.nodeValue.replace(/\s/g, '')).to.equal(node2.nodeValue.replace(/\s/g, ''));
       } catch(e) {
-        errors.push('nodeValue test failed for: ' + node1.nodeName + ' | ' + e.message);
+        errors.push('nodeValue test failed | ' + e.message);
       }
     }
     // for element type nodes compare namespace, attributes, and children
@@ -281,23 +282,27 @@
       var node2Attr = {};
       var ga, ea, gn, en;
       var i, ii;
-      for (i=0, ii=node1.attributes.length; i<ii; ++i) {
-        ga = node1.attributes[i];
-        if (ga.specified === undefined || ga.specified === true) {
-          if (ga.name.split(':').shift() != 'xmlns') {
-            gn = testPrefix ? ga.name : ga.name.split(':').pop();
-            node1Attr[gn] = ga;
-            ++node1AttrLen;
+      if (node1.attributes) {
+        for (i=0, ii=node1.attributes.length; i<ii; ++i) {
+          ga = node1.attributes[i];
+          if (ga.specified === undefined || ga.specified === true) {
+            if (ga.name.split(':').shift() != 'xmlns') {
+              gn = testPrefix ? ga.name : ga.name.split(':').pop();
+              node1Attr[gn] = ga;
+              ++node1AttrLen;
+            }
           }
         }
       }
-      for (i=0, ii=node2.attributes.length; i<ii; ++i) {
-        ea = node2.attributes[i];
-        if (ea.specified === undefined || ea.specified === true) {
-          if (ea.name.split(':').shift() != 'xmlns') {
-            en = testPrefix ? ea.name : ea.name.split(':').pop();
-            node2Attr[en] = ea;
-            ++node2AttrLen;
+      if (node2.attributes) {
+        for (i=0, ii=node2.attributes.length; i<ii; ++i) {
+          ea = node2.attributes[i];
+          if (ea.specified === undefined || ea.specified === true) {
+            if (ea.name.split(':').shift() != 'xmlns') {
+              en = testPrefix ? ea.name : ea.name.split(':').pop();
+              node2Attr[en] = ea;
+              ++node2AttrLen;
+            }
           }
         }
       }
@@ -331,8 +336,11 @@
       } catch(e) {
         errors.push('Number of childNodes test failed for: ' + node1.nodeName + ' | ' + e.message);
       }
-      for (var j=0, jj=node1ChildNodes.length; j<jj; ++j) {
-        assertElementNodesEqual(node1ChildNodes[j], node2ChildNodes[j], options, errors);
+      // only compare if they are equal
+      if (node1ChildNodes.length === node2ChildNodes.length) {
+        for (var j=0, jj=node1ChildNodes.length; j<jj; ++j) {
+          assertElementNodesEqual(node1ChildNodes[j], node2ChildNodes[j], options, errors);
+        }
       }
     }
   };
@@ -715,9 +723,9 @@
     var ns = "http://www.w3.org/1999/xhtml";
     var container = document.createElementNS(ns, '_');
     var elemProto = (window.HTMLElement || window.Element).prototype;
-    var xmlSerializer = new XMLSerializer();
     var html;
-    if (document.xmlVersion) {
+    if (typeof XMLSerializer != 'undefined') {
+      var xmlSerializer = new XMLSerializer();
       return xmlSerializer.serializeToString(element);
     } else {
       container.appendChild(element.cloneNode(false));

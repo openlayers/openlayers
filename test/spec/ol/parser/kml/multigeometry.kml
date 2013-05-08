@@ -5,7 +5,6 @@
   <open>0</open>
   <Placemark>
     <name>SF Marina Harbor Master</name>
-    <visibility>0</visibility>
     <MultiGeometry>
       <LineString>
         <!-- north wall -->

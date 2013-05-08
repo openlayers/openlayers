@@ -6,14 +6,12 @@
   <Placemark>
     <name>hollow box</name>
     <Polygon>
-      <extrude>1</extrude>
-      <altitudeMode>relativeToGround</altitudeMode>
       <outerBoundaryIs>
         <LinearRing>
           <coordinates>
             -122.366278,37.818844,30
             -122.365248,37.819267,30
-            -122.365640,37.819861,30
+            -122.36564,37.819861,30
             -122.366669,37.819429,30
             -122.366278,37.818844,30
           </coordinates>
