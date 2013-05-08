@@ -31,9 +31,11 @@ ol.control.ZOOMSLIDER_ANIMATION_DURATION = 200;
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.ZoomSliderOptions} options Zoom slider options.
+ * @param {ol.control.ZoomSliderOptions=} opt_options Zoom slider options.
  */
-ol.control.ZoomSlider = function(options) {
+ol.control.ZoomSlider = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * Will hold the current resolution of the view.
@@ -58,17 +60,23 @@ ol.control.ZoomSlider = function(options) {
    */
   this.draggerListenerKeys_ = null;
 
-  var elem = this.createDom_();
-  this.dragger_ = this.createDraggable_(elem);
+  var className = goog.isDef(options.className) ?
+      options.className : 'ol-zoomslider';
+  var sliderCssCls = className + ' ' + ol.css.CLASS_UNSELECTABLE;
+  var thumbCssCls = className + '-thumb' + ' ' + ol.css.CLASS_UNSELECTABLE;
+  var element = goog.dom.createDom(goog.dom.TagName.DIV, sliderCssCls,
+      goog.dom.createDom(goog.dom.TagName.DIV, thumbCssCls));
+
+  this.dragger_ = this.createDraggable_(element);
 
   // FIXME currently only a do nothing function is bound.
-  goog.events.listen(elem, [
+  goog.events.listen(element, [
     goog.events.EventType.TOUCHEND,
     goog.events.EventType.CLICK
   ], this.handleContainerClick_, false, this);
 
   goog.base(this, {
-    element: elem,
+    element: element,
     map: options.map
   });
 };
@@ -84,23 +92,6 @@ ol.control.ZoomSlider.direction = {
   VERTICAL: 0,
   HORIZONTAL: 1
 };
-
-
-/**
- * The CSS class that we'll give the zoomslider container.
- *
- * @const {string}
- */
-ol.control.ZoomSlider.CSS_CLASS_CONTAINER = 'ol-zoomslider';
-
-
-/**
- * The CSS class that we'll give the zoomslider thumb.
- *
- * @const {string}
- */
-ol.control.ZoomSlider.CSS_CLASS_THUMB =
-    ol.control.ZoomSlider.CSS_CLASS_CONTAINER + '-thumb';
 
 
 /**
@@ -298,25 +289,4 @@ ol.control.ZoomSlider.prototype.createDraggable_ = function(elem) {
     ], this.handleSliderChange_, undefined, this)
   ];
   return dragger;
-};
-
-
-/**
- * Setup the DOM-structure we need for the zoomslider.
- *
- * @param {Element=} opt_elem The element for the slider.
- * @return {Element} The correctly set up DOMElement.
- * @private
- */
-ol.control.ZoomSlider.prototype.createDom_ = function(opt_elem) {
-  var elem,
-      sliderCssCls = ol.control.ZoomSlider.CSS_CLASS_CONTAINER + ' ' +
-          ol.css.CLASS_UNSELECTABLE,
-      thumbCssCls = ol.control.ZoomSlider.CSS_CLASS_THUMB + ' ' +
-          ol.css.CLASS_UNSELECTABLE;
-
-  elem = goog.dom.createDom(goog.dom.TagName.DIV, sliderCssCls,
-      goog.dom.createDom(goog.dom.TagName.DIV, thumbCssCls));
-
-  return elem;
 };

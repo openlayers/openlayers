@@ -13,8 +13,9 @@ var map = new ol.Map({
     new ol.control.MousePosition({
       coordinateFormat: ol.coordinate.toStringHDMS,
       projection: 'EPSG:4326',
-      // comment the following line to have the mouse position
+      // comment the following two lines to have the mouse position
       // be placed within the map.
+      className: 'custom-mouse-position',
       target: document.getElementById('mouse-position'),
       undefinedHTML: '&nbsp;'
     })

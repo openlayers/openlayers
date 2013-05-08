@@ -26,7 +26,8 @@ ol.control.FullScreen = function(opt_options) {
    * @private
    * @type {string}
    */
-  this.cssClassName_ = 'ol-full-screen';
+  this.cssClassName_ = goog.isDef(options.className) ?
+      options.className : 'ol-full-screen';
 
   var aElement = goog.dom.createDom(goog.dom.TagName.A, {
     'href': '#fullScreen',
