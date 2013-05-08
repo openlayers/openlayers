@@ -1012,7 +1012,8 @@
     // 7.3. Other pairs that do not both pass typeof value == "object",
     // equivalence is determined by ==.
     } else if (typeof actual != 'object' && typeof expected != 'object') {
-      if (isNaN(actual) && isNaN(expected)) {
+      if (typeof actual == 'number' && isNaN(actual) &&
+          typeof expected == 'number' && isNaN(expected)) {
         return true;
       } else {
         return actual == expected;
