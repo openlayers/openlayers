@@ -25,8 +25,10 @@ ol.control.Logo = function(opt_options) {
    */
   this.ulElement_ = goog.dom.createElement(goog.dom.TagName.UL);
 
+  var className = goog.isDef(options.className) ? options.className : 'ol-logo';
+
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': 'ol-logo ' + ol.css.CLASS_UNSELECTABLE
+    'class': className + ' ' + ol.css.CLASS_UNSELECTABLE
   }, this.ulElement_);
 
   goog.base(this, {

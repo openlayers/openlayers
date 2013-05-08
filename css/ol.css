@@ -82,7 +82,7 @@ a.ol-full-screen-true:after {
   list-style: none;
 }
 
-.ol-mouseposition {
+.ol-mouse-position {
   top: 8px;
   right: 8px;
   position: absolute;  

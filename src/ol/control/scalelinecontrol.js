@@ -38,12 +38,15 @@ ol.control.ScaleLine = function(opt_options) {
 
   var options = opt_options || {};
 
+  var className = goog.isDef(options.className) ?
+      options.className : 'ol-scale-line';
+
   /**
    * @private
    * @type {Element}
    */
   this.innerElement_ = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': 'ol-scale-line-inner'
+    'class': className + '-inner'
   });
 
   /**
@@ -51,7 +54,7 @@ ol.control.ScaleLine = function(opt_options) {
    * @type {Element}
    */
   this.element_ = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': 'ol-scale-line ' + ol.css.CLASS_UNSELECTABLE
+    'class': className + ' ' + ol.css.CLASS_UNSELECTABLE
   }, this.innerElement_);
 
   /**
