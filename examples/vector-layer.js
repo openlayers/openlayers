@@ -43,7 +43,7 @@ var map = new ol.Map({
 });
 
 map.on('mousemove', function(evt) {
-  var features = map.getFeatureInfo({
+  map.getFeatureInfo({
     pixel: evt.getPixel(),
     layers: [vector],
     success: function(features) {
