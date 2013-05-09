@@ -178,7 +178,7 @@ ol.View2D.prototype.getExtent = function(size) {
   var maxX = center[0] + resolution * size.width / 2;
   var minY = center[1] - resolution * size.height / 2;
   var maxY = center[1] + resolution * size.height / 2;
-  return [minX, maxX, minY, maxX];
+  return [minX, maxX, minY, maxY];
 };
 
 
