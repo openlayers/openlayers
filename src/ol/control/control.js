@@ -71,6 +71,9 @@ ol.control.Control.prototype.getMap = function() {
 
 
 /**
+ * Function called on each map render. Executes in a requestAnimationFrame
+ * callback. Can be implemented in sub-classes to re-render the control's
+ * UI.
  * @param {ol.MapEvent} mapEvent Map event.
  */
 ol.control.Control.prototype.handleMapPostrender = goog.nullFunction;

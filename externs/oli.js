@@ -14,6 +14,13 @@ var oli;
  */
 oli.control.Control = function() {};
 
+
+/**
+ * @param {ol.MapEvent} mapEvent Map event.
+ */
+oli.control.Control.prototype.handleMapPostrender = function(mapEvent) {};
+
+
 /**
  * @param {ol.Map} map Map.
  * @return {undefined} Undefined.
