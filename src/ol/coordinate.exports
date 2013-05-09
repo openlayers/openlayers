@@ -1,4 +1,3 @@
-@exportSymbol ol.coordinate
 @exportSymbol ol.coordinate.createStringXY
 @exportSymbol ol.coordinate.toStringHDMS
 @exportSymbol ol.coordinate.toStringXY
