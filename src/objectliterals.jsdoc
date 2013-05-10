@@ -6,6 +6,20 @@
  */
 
 /**
+ * @typedef {Object} ol.GetFeatureInfoOptions
+ * @property {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
+ * @property {Array.<ol.layer.Layer>|undefined} layers Layers to restrict the
+ *     query to. All layers will be queried if not provided.
+ * @property {function(Array.<ol.Feature|string>)} success Callback for
+ *     successful queries. The passed argument is the resulting feature
+ *     information.  Layers that are able to provide attribute data will put
+ *     ol.Feature instances, other layers will put a string which can either
+ *     be plain text or markup.
+ * @property {function(Object)|undefined} error Callback for unsuccessful
+ *     queries.
+ */
+
+/**
  * Object literal with config options for the map.
  * @typedef {Object} ol.MapOptions
  * @property {Array.<ol.control.Control>|undefined} controls Controls initially

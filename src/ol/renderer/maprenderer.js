@@ -106,23 +106,34 @@ ol.renderer.Map.prototype.getCanvas = goog.functions.NULL;
 /**
  * @param {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
  * @param {Array.<ol.layer.Layer>} layers Layers to query.
- * @return {Array.<ol.Feature|string>} Feature information.  Layers that are
- *     able to return attribute data will return ol.Feature instances, other
- *     layers will return a string which can either be plain text or markup.
+ * @param {function(Array.<ol.Feature|string>)} success Callback for
+ *     successful queries. The passed argument is the resulting feature
+ *     information.  Layers that are able to provide attribute data will put
+ *     ol.Feature instances, other layers will put a string which can either
+ *     be plain text or markup.
+ * @param {function(Object)=} opt_error Callback for unsuccessful
+ *     queries.
  */
 ol.renderer.Map.prototype.getFeatureInfoForPixel =
-    function(pixel, layers) {
+    function(pixel, layers, success, opt_error) {
   var layer, layerRenderer;
   var featureInfo = [];
-  for (var i = 0, ii = layers.length; i < ii; ++i) {
+  var numLayers = layers.length;
+  var callback = function(layerFeatureInfo) {
+    featureInfo.push.apply(featureInfo, layerFeatureInfo);
+    --numLayers;
+    if (!numLayers) {
+      success(featureInfo);
+    }
+  };
+
+  for (var i = 0; i < numLayers; ++i) {
     layer = layers[i];
     layerRenderer = this.getLayerRenderer(layer);
     if (goog.isFunction(layerRenderer.getFeatureInfoForPixel)) {
-      featureInfo.push.apply(featureInfo,
-          layerRenderer.getFeatureInfoForPixel(pixel));
+      layerRenderer.getFeatureInfoForPixel(pixel, callback, opt_error);
     }
   }
-  return featureInfo;
 };
 
 
