@@ -190,10 +190,14 @@ ol.renderer.canvas.VectorLayer.prototype.getTransform = function() {
 
 /**
  * @param {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
- * @return {Array.<ol.Feature>} Features at the pixel location.
+ * @param {function(Array.<ol.Feature|string>)} success Callback for
+ *     successful queries. The passed argument is the resulting feature
+ *     information.  Layers that are able to provide attribute data will put
+ *     ol.Feature instances, other layers will put a string which can either
+ *     be plain text or markup.
  */
 ol.renderer.canvas.VectorLayer.prototype.getFeatureInfoForPixel =
-    function(pixel) {
+    function(pixel, success) {
   // TODO adjust pixel tolerance for applied styles
   var minPixel = new ol.Pixel(pixel.x - 1, pixel.y - 1);
   var maxPixel = new ol.Pixel(pixel.x + 1, pixel.y + 1);
@@ -230,7 +234,7 @@ ol.renderer.canvas.VectorLayer.prototype.getFeatureInfoForPixel =
       result.push(candidate);
     }
   }
-  return result;
+  goog.global.setTimeout(function() { success(result); }, 0);
 };
 
 

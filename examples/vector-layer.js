@@ -43,12 +43,17 @@ var map = new ol.Map({
 });
 
 map.on('mousemove', function(evt) {
-  var features = map.getFeatureInfoForPixel(evt.getPixel(), [vector]);
-  var info = [];
-  for (var i = 0, ii = features.length; i < ii; ++i) {
-    info.push(features[i].get('name'));
-  }
-  document.getElementById('info').innerHTML = info.join(', ') || '&nbsp;';
+  map.getFeatureInfo({
+    pixel: evt.getPixel(),
+    layers: [vector],
+    success: function(features) {
+      var info = [];
+      for (var i = 0, ii = features.length; i < ii; ++i) {
+        info.push(features[i].get('name'));
+      }
+      document.getElementById('info').innerHTML = info.join(', ') || '&nbsp;';
+    }
+  });
 });
 
 
