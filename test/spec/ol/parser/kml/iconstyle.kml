@@ -2,17 +2,12 @@
   <Document>
     <Style id="pushpin">
       <IconStyle id="mystyle">
-        <color>ffffffff</color>
-        <colorMode>normal</colorMode>
-        <scale>1</scale>
-        <heading>0</heading>
         <Icon>
           <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
         </Icon>
-        <hotSpot x="0.5"  y="0.5" xunits="fraction" yunits="fraction"/>
       </IconStyle>
     </Style>
-    <Placemark id="mountainpin1">
+    <Placemark>
       <name>Pin on a mountaintop</name>
       <styleUrl>#pushpin</styleUrl>
       <Point>
