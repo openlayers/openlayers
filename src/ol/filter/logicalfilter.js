@@ -87,10 +87,10 @@ ol.filter.LogicalOperator = {
 /**
  * Create a filter that evaluates to true if all of the provided filters
  * evaluate to true.
- * @param {...ol.filter.Filter} var_filters Filters.
+ * @param {...ol.filter.Filter} var_args Filters.
  * @return {ol.filter.Logical} A logical AND filter.
  */
-ol.filter.and = function(var_filters) {
+ol.filter.and = function(var_args) {
   var filters = Array.prototype.slice.call(arguments);
   return new ol.filter.Logical(filters, ol.filter.LogicalOperator.AND);
 };
@@ -109,10 +109,10 @@ ol.filter.not = function(filter) {
 /**
  * Create a filter that evaluates to true if any of the provided filters
  * evaluate to true.
- * @param {...ol.filter.Filter} var_filters Filters.
+ * @param {...ol.filter.Filter} var_args Filters.
  * @return {ol.filter.Logical} A logical OR filter.
  */
-ol.filter.or = function(var_filters) {
+ol.filter.or = function(var_args) {
   var filters = Array.prototype.slice.call(arguments);
   return new ol.filter.Logical(filters, ol.filter.LogicalOperator.OR);
 };
