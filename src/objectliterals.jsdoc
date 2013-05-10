@@ -123,6 +123,13 @@
  * @property {Element|undefined} target Target.
  */
 
+ /**
+  * @typedef {Object} ol.control.ControlOptions
+  * @property {Element|undefined} element Element.
+  * @property {ol.Map|undefined} map Map.
+  * @property {Element|undefined} target Target.
+  */
+
 /**
  * @typedef {Object} ol.control.DefaultsOptions
  * @property {boolean|undefined} attribution Attribution.

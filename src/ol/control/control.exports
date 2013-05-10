@@ -1,0 +1,4 @@
+@exportClass ol.control.Control ol.control.ControlOptions
+@exportProperty ol.control.Control.prototype.handleMapPostrender
+@exportProperty ol.control.Control.prototype.getMap
+@exportProperty ol.control.Control.prototype.setMap
