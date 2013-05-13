@@ -783,7 +783,7 @@
     }
 
     function test_Util_isEquivalentUrl(t) {
-        t.plan(9);
+        t.plan(10);
         
         var url1, url2, options;
 
@@ -846,6 +846,11 @@
         url2 = new Array(window.location.pathname.split("/").length-1).join("../")+"foo/bar";
         
         t.ok(OpenLayers.Util.isEquivalentUrl(url1, url2), "absolute and relative path without host works for "+url2) 
+
+  //ARGS
+        url1 = "foo.html?bbox=1,2,3,4",
+        url2 = url1;
+        t.ok(OpenLayers.Util.isEquivalentUrl(url1, url2), "equal urls with comma delimited params are equal");
     }
     
     function test_createUrlObject(t) {
