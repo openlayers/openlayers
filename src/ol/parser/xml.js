@@ -1,5 +1,6 @@
 goog.provide('ol.parser.XML');
 
+goog.require('goog.dom.xml');
 goog.require('ol.parser.Parser');
 
 
@@ -244,5 +245,29 @@ ol.parser.XML.prototype.setAttributeNS = function(node, uri, name, value) {
     } else {
       throw new Error('setAttributeNS not implemented');
     }
+  }
+};
+
+
+/**
+ * Serializes a node.
+ *
+ * @param {Element} node Element node to serialize.
+ * @return {string} The serialized XML string.
+ */
+ol.parser.XML.prototype.serialize = function(node) {
+  if (node.nodeType == 1) {
+    // Add nodes to a document before serializing. Everything else
+    // is serialized as is. This is also needed to get all namespaces
+    // defined in some browsers such as Chrome (xmlns attributes).
+    var doc = document.implementation.createDocument('', '', null);
+    if (doc.importNode) {
+      doc.appendChild(doc.importNode(node, true));
+    } else {
+      doc.appendChild(node);
+    }
+    return goog.dom.xml.serialize(doc);
+  } else {
+    return goog.dom.xml.serialize(node);
   }
 };

@@ -306,6 +306,44 @@
  */
 
 /**
+ * @typedef {Object} ol.parser.GML2Options
+ * @property {boolean|undefined} extractAttributes Should we extract attributes
+ *     from the GML? Default is `true´.
+ * @property {string|undefined} featureNS The feature namespace. If not set it
+ *     will be automatically configured from the GML.
+ * @property {Array.<string>|string|undefined} featureType The local
+ *     (without prefix) feature typeName(s).
+ * @property {string|undefined} geometryName Geometry element name.
+ * @property {boolean|undefined} xy Order of the GML coordinate true:(x,y) or
+ *     false:(y,x). Default is `true`.
+ */
+
+/**
+ * @typedef {Object} ol.parser.GML3Options
+ * @property {boolean|undefined} extractAttributes Should we extract attributes
+ *     from the GML? Default is `true´.
+ * @property {string|undefined} featureNS The feature namespace. If not set it
+ *     will be automatically configured from the GML.
+ * @property {Array.<string>|string|undefined} featureType The local
+ *     (without prefix) feature typeName(s).
+ * @property {string|undefined} geometryName Geometry element name.
+ * @property {boolean|undefined} xy Order of the GML coordinate true:(x,y) or
+ *     false:(y,x). Default is `true`.
+ * @property {boolean|undefined} surface Write gml:Surface instead of
+ *     gml:Polygon elements. This also affects the elements in multi-part
+ *     geometries. Default is `false´.
+ * @property {boolean|undefined} curve Write gml:Curve instead of
+ *     gml:LineString elements. This also affects the elements in multi-part
+ *     geometries. Default is `false´.
+ * @property {boolean|undefined} multiCurve Write gml:MultiCurve instead of
+ *     gml:MultiLineString. Since the latter is deprecated in GML 3, the
+ *     default is `true´.
+ * @property {boolean|undefined} multiSurface Write gml:multiSurface instead
+ *     of gml:MultiPolygon. Since the latter is deprecated in GML 3, the
+ *     default is `true´.
+ */
+
+/**
  * @typedef {Object} ol.source.BingMapsOptions
  * @property {string|undefined} culture Culture.
  * @property {string} key Bing Maps API key. Get yours at

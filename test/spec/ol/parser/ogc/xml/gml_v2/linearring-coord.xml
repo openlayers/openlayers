@@ -1,0 +1,18 @@
+<gml:LinearRing xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:coord>
+        <gml:X>1</gml:X>
+        <gml:Y>2</gml:Y>
+    </gml:coord>
+    <gml:coord>
+        <gml:X>3</gml:X>
+        <gml:Y>4</gml:Y>
+    </gml:coord>
+    <gml:coord>
+        <gml:X>5</gml:X>
+        <gml:Y>6</gml:Y>
+    </gml:coord>
+    <gml:coord>
+        <gml:X>1</gml:X>
+        <gml:Y>2</gml:Y>
+    </gml:coord>
+</gml:LinearRing>

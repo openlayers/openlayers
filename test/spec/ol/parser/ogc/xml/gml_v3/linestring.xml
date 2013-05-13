@@ -1,0 +1,3 @@
+<gml:LineString xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+  <gml:posList>1 2 3 4</gml:posList>
+</gml:LineString>

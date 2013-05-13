@@ -1,0 +1,26 @@
+<gml:MultiLineString xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:lineStringMember>
+        <gml:LineString>
+            <gml:coord>
+                <gml:X>1</gml:X>
+                <gml:Y>2</gml:Y>
+            </gml:coord>
+            <gml:coord>
+                <gml:X>2</gml:X>
+                <gml:Y>3</gml:Y>
+            </gml:coord>
+        </gml:LineString>
+    </gml:lineStringMember>
+    <gml:lineStringMember>
+        <gml:LineString>
+            <gml:coord>
+                <gml:X>3</gml:X>
+                <gml:Y>4</gml:Y>
+            </gml:coord>
+            <gml:coord>
+                <gml:X>4</gml:X>
+                <gml:Y>5</gml:Y>
+            </gml:coord>
+        </gml:LineString>
+    </gml:lineStringMember>
+</gml:MultiLineString>

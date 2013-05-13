@@ -1,0 +1,17 @@
+<gml:MultiPoint xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:pointMember>
+        <gml:Point>
+            <gml:coordinates decimal="." cs="," ts=" ">1,2</gml:coordinates>
+        </gml:Point>
+    </gml:pointMember>
+    <gml:pointMember>
+        <gml:Point>
+            <gml:coordinates decimal="." cs="," ts=" ">2,3</gml:coordinates>
+        </gml:Point>
+    </gml:pointMember>
+    <gml:pointMember>
+        <gml:Point>
+            <gml:coordinates decimal="." cs="," ts=" ">3,4</gml:coordinates>
+        </gml:Point>
+    </gml:pointMember>
+</gml:MultiPoint>

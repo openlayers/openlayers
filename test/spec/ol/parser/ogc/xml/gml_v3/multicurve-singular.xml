@@ -1,0 +1,12 @@
+<gml:MultiCurve xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:curveMember>
+        <gml:LineString>
+            <gml:posList>1 2 2 3</gml:posList>
+        </gml:LineString>
+    </gml:curveMember>
+    <gml:curveMember>
+        <gml:LineString>
+            <gml:posList>3 4 4 5</gml:posList>
+        </gml:LineString>
+    </gml:curveMember>
+</gml:MultiCurve>
