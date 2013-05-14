@@ -506,7 +506,7 @@ a.olControlZoomOut {
 }
 
 /* when replacing tiles, do not show tile and backbuffer at the same time */
-.olTileImage.olTileReplacing {
+.olTileReplacing {
     display: none;
 }
 
