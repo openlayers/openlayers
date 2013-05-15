@@ -57,16 +57,26 @@ ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
 
 
 /**
- * Checks if the passed coordinate is contained or on the edge
+ * Checks if (one of) the passed coordinate(s) is contained or on the edge
  * of the extent.
  *
  * @param {ol.Extent} extent Extent.
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.Coordinate|Array.<ol.Coordinate>} coordinates Coordinate(s).
  * @return {boolean} Contains.
  */
-ol.extent.containsCoordinate = function(extent, coordinate) {
-  return extent[0] <= coordinate[0] && coordinate[0] <= extent[1] &&
-      extent[2] <= coordinate[1] && coordinate[1] <= extent[3];
+ol.extent.containsCoordinate = function(extent, coordinates) {
+  coordinates = goog.isArray(coordinates[0]) ? coordinates : [coordinates];
+  var contains = false,
+      coordinate, i;
+  for (i = coordinates.length - 1; i >= 0; --i) {
+    coordinate = coordinates[i];
+    if (extent[0] <= coordinate[0] && coordinate[0] <= extent[1] &&
+        extent[2] <= coordinate[1] && coordinate[1] <= extent[3]) {
+      contains = true;
+      break;
+    }
+  }
+  return contains;
 };
 
 
