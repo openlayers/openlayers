@@ -314,8 +314,8 @@
  * @property {Array.<string>|string|undefined} featureType The local
  *     (without prefix) feature typeName(s).
  * @property {string|undefined} geometryName Geometry element name.
- * @property {boolean|undefined} xy Order of the GML coordinate true:(x,y) or
- *     false:(y,x). Default is `true`.
+ * @property {string|undefined} axisOrientation The axis orientation as
+ *     specified in Proj4. The default is 'enu'.
  */
 
 /**
@@ -327,8 +327,8 @@
  * @property {Array.<string>|string|undefined} featureType The local
  *     (without prefix) feature typeName(s).
  * @property {string|undefined} geometryName Geometry element name.
- * @property {boolean|undefined} xy Order of the GML coordinate true:(x,y) or
- *     false:(y,x). Default is `true`.
+ * @property {string|undefined} axisOrientation The axis orientation as
+ *     specified in Proj4. The default is 'enu'.
  * @property {boolean|undefined} surface Write gml:Surface instead of
  *     gml:Polygon elements. This also affects the elements in multi-part
  *     geometries. Default is `false´.

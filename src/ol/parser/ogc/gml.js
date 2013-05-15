@@ -29,8 +29,8 @@ ol.parser.ogc.GML = function(opt_options) {
   if (goog.isDef(opt_options)) {
     goog.object.extend(this, opt_options);
   }
-  if (!goog.isDef(this.xy)) {
-    this.xy = true;
+  if (!goog.isDef(this.axisOrientation)) {
+    this.axisOrientation = 'enu';
   }
   if (!goog.isDef(this.extractAttributes)) {
     this.extractAttributes = true;
@@ -182,7 +182,7 @@ ol.parser.ogc.GML = function(opt_options) {
         var points = new Array(numPoints);
         for (var i = 0; i < numPoints; ++i) {
           coords = pointList[i].split(cs).map(parseFloat);
-          if (this.xy) {
+          if (this.axisOrientation.substr(0, 2) === 'en') {
             points[i] = coords;
           } else {
             if (coords.length === 2) {
@@ -552,5 +552,8 @@ ol.parser.ogc.GML.prototype.createGeometry_ = function(container,
 ol.parser.ogc.GML.prototype.readFeaturesFromString =
     function(str, opt_options) {
   this.readFeaturesOptions_ = opt_options;
+  if (goog.isDef(opt_options) && goog.isDef(opt_options.projection)) {
+    this.axisOrientation = opt_options.projection.getAxisOrientation();
+  }
   return this.read(str).features;
 };

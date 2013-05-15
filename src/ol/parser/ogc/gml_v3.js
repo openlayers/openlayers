@@ -112,7 +112,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       var str = this.getChildValue(node).replace(
           this.regExes.trimSpace, '');
       var coords = str.split(this.regExes.splitSpace).map(parseFloat);
-      if (this.xy) {
+      if (this.axisOrientation.substr(0, 2) === 'en') {
         obj.push([coords]);
       } else {
         if (coords.length === 2) {
@@ -136,14 +136,15 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       for (var i = 0, ii = coords.length; i < ii; i += dim) {
         x = parseFloat(coords[i]);
         y = parseFloat(coords[i + 1]);
+        var xy = this.axisOrientation.substr(0, 2) === 'en';
         if (dim === 3) {
-          if (this.xy) {
+          if (xy) {
             points[i / dim] = [x, y, parseFloat(coords[i + 2])];
           } else {
             points[i / dim] = [y, x, parseFloat(coords[i + 2])];
           }
         } else if (dim === 2) {
-          if (this.xy) {
+          if (xy) {
             points[i / dim] = [x, y];
           } else {
             points[i / dim] = [y, x];
@@ -248,7 +249,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     'pos': function(point) {
       // only 2d for simple features profile
       var pos;
-      if (this.xy) {
+      if (this.axisOrientation.substr(0, 2) === 'en') {
         pos = (point[0] + ' ' + point[1]);
       } else {
         pos = (point[1] + ' ' + point[0]);
@@ -284,7 +285,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       var point;
       for (var i = 0; i < len; ++i) {
         point = points[i];
-        if (this.xy) {
+        if (this.axisOrientation.substr(0, 2) === 'en') {
           parts[i] = point[0] + ' ' + point[1];
         } else {
           parts[i] = point[1] + ' ' + point[0];
@@ -383,7 +384,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     'lowerCorner': function(bounds) {
       // only 2d for simple features profile
       var pos;
-      if (this.xy) {
+      if (this.axisOrientation.substr(0, 2) === 'en') {
         pos = (bounds.left + ' ' + bounds.bottom);
       } else {
         pos = (bounds.bottom + ' ' + bounds.left);
@@ -395,7 +396,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     'upperCorner': function(bounds) {
       // only 2d for simple features profile
       var pos;
-      if (this.xy) {
+      if (this.axisOrientation.substr(0, 2) === 'en') {
         pos = (bounds.right + ' ' + bounds.top);
       } else {
         pos = (bounds.top + ' ' + bounds.right);

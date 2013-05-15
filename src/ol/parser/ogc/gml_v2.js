@@ -1,6 +1,6 @@
 goog.provide('ol.parser.ogc.GML_v2');
 
-goog.require('goog.dom.xml');
+goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol.parser.ogc.GML');
 
@@ -44,18 +44,14 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
       var parts = new Array(numCoordinates);
       for (var i = 0; i < numCoordinates; ++i) {
         var coord = coordinates[i];
-        var str = '';
-        if (this.xy) {
-          str += coord[0] + ',' + coord[1];
-        } else {
-          str += coord[1] + ',' + coord[0];
+        var part = goog.array.concat(coord);
+        if (this.axisOrientation.substr(0, 2) !== 'en') {
+          part[0] = coord[1];
+          part[1] = coord[0];
         }
-        if (coord.length === 3) {
-          str += ',' + coord[2];
-        }
-        parts[i] = str;
+        parts[i] = part.join(',');
       }
-      var value = (numCoordinates === 1) ? parts[0] : parts.join(' ');
+      var value = parts.join(' ');
       var node = this.createElementNS('gml:coordinates');
       this.setAttributeNS(node, null, 'decimal', '.');
       this.setAttributeNS(node, null, 'cs', ',');
