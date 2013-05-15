@@ -1,0 +1,12 @@
+<gml:MultiLineString xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:lineStringMember>
+        <gml:LineString>
+            <gml:coordinates decimal="." cs="," ts=" ">1,2 2,3</gml:coordinates>
+        </gml:LineString>
+    </gml:lineStringMember>
+    <gml:lineStringMember>
+        <gml:LineString>
+            <gml:coordinates decimal="." cs="," ts=" ">3,4 4,5</gml:coordinates>
+        </gml:LineString>
+    </gml:lineStringMember>
+</gml:MultiLineString>

@@ -1,0 +1,4 @@
+<gml:Envelope xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:lowerCorner>1 2</gml:lowerCorner>
+    <gml:upperCorner>3 4</gml:upperCorner>
+</gml:Envelope>

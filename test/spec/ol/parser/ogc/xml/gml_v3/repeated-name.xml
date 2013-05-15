@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection numberOfFeatures="1" timeStamp="2010-01-29T15:10:38.921-07:00"
+        xsi:schemaLocation="http://medford.opengeo.org http://localhost:8080/geoserver/wfs?service=WFS&amp;version=1.1.0&amp;request=DescribeFeatureType&amp;typeName=medford%3Azoning http://www.opengis.net/wfs http://localhost:8080/geoserver/schemas/wfs/1.1.0/wfs.xsd"
+        xmlns:ogc="http://www.opengis.net/ogc"
+        xmlns:wfs="http://www.opengis.net/wfs"
+        xmlns:medford="http://opengeo.org/#medford"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ows="http://www.opengis.net/ows"
+        xmlns:gml="http://www.opengis.net/gml"
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+    <gml:featureMembers>
+        <medford:zoning gml:id="zoning.1">
+            <medford:the_geom>
+                <gml:MultiSurface srsName="urn:x-ogc:def:crs:EPSG:4326">
+                    <gml:surfaceMember>
+                        <gml:Polygon>
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList>42.397027571297585 -122.88465674265922 42.39702893980587 -122.88509730796012 42.397029086785146 -122.88511582432085 42.39702379767053 -122.88528111596624 42.39748517484964 -122.88529300380065 42.39748473847452 -122.88509914138723 42.39748482219041 -122.8849959517568 42.397485082635576 -122.8846741899541 42.3974853307826 -122.88436529392652 42.39702663751206 -122.88435664014142 42.397027571297585 -122.88465674265922</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:surfaceMember>
+                </gml:MultiSurface>
+            </medford:the_geom>
+            <medford:objectid>1</medford:objectid>
+            <medford:cityzone>YES</medford:cityzone>
+            <medford:zoning>I-L</medford:zoning>
+            <medford:revdate>2004-04-12T00:00:00-06:00</medford:revdate>
+            <medford:finord></medford:finord>
+            <medford:filenum></medford:filenum>
+            <medford:acres>0.95741118624</medford:acres>
+            <medford:misc></medford:misc>
+            <medford:shape_leng>835.705330224</medford:shape_leng>
+            <medford:perimeter>835.705330224</medford:perimeter>
+            <medford:area>41704.8312728</medford:area>
+            <medford:shape_le_1>835.705330224</medford:shape_le_1>
+            <medford:shape_area>41704.8312728</medford:shape_area>
+            <medford:hectares>0.38745056079</medford:hectares>
+        </medford:zoning>
+    </gml:featureMembers>
+</wfs:FeatureCollection>

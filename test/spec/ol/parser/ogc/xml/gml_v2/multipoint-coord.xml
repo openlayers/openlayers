@@ -1,0 +1,26 @@
+<gml:MultiPoint xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:pointMember>
+        <gml:Point>
+            <gml:coord>
+                <gml:X>1</gml:X>
+                <gml:Y>2</gml:Y>
+            </gml:coord>
+        </gml:Point>
+    </gml:pointMember>
+    <gml:pointMember>
+        <gml:Point>
+            <gml:coord>
+                <gml:X>2</gml:X>
+                <gml:Y>3</gml:Y>
+            </gml:coord>
+        </gml:Point>
+    </gml:pointMember>
+    <gml:pointMember>
+        <gml:Point>
+            <gml:coord>
+                <gml:X>3</gml:X>
+                <gml:Y>4</gml:Y>
+            </gml:coord>
+        </gml:Point>
+    </gml:pointMember>
+</gml:MultiPoint>
