@@ -41,7 +41,7 @@ var map = new ol.Map({
   })
 });
 
-var gml = new ol.parser.ogc.GML_v3();
+var gml = new ol.parser.ogc.GML_v3({axisOrientation: 'neu'});
 
 var url = 'data/gml/topp-states-wfs.xml';
 var xhr = new XMLHttpRequest();

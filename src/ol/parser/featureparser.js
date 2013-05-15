@@ -97,7 +97,6 @@ ol.parser.ReadFeaturesCallback;
 
 
 /**
- * @typedef {{callback: ol.parser.ReadFeaturesCallback,
- *     projection: ol.Projection}}
+ * @typedef {{callback: ol.parser.ReadFeaturesCallback}}
  */
 ol.parser.ReadFeaturesOptions;

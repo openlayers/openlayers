@@ -552,8 +552,5 @@ ol.parser.ogc.GML.prototype.createGeometry_ = function(container,
 ol.parser.ogc.GML.prototype.readFeaturesFromString =
     function(str, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  if (goog.isDef(opt_options) && goog.isDef(opt_options.projection)) {
-    this.axisOrientation = opt_options.projection.getAxisOrientation();
-  }
   return this.read(str).features;
 };
