@@ -1,0 +1,7 @@
+<gml:Curve xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+    <gml:segments>
+        <gml:LineStringSegment>
+            <gml:posList>1 2 3 4</gml:posList>
+        </gml:LineStringSegment>
+    </gml:segments>
+</gml:Curve>

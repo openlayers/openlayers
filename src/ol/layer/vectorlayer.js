@@ -349,24 +349,25 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
     this.addFeatures(features);
   };
 
+  var options = {callback: callback};
   if (goog.isString(data)) {
     if (goog.isFunction(parser.readFeaturesFromStringAsync)) {
       parser.readFeaturesFromStringAsync(data, goog.bind(addFeatures, this),
-          {callback: callback});
+          options);
     } else {
       goog.asserts.assert(goog.isFunction(parser.readFeaturesFromString),
           'Expected a parser with readFeaturesFromString method.');
-      features = parser.readFeaturesFromString(data, {callback: callback});
+      features = parser.readFeaturesFromString(data, options);
       addFeatures.call(this, features);
     }
   } else if (goog.isObject(data)) {
     if (goog.isFunction(parser.readFeaturesFromObjectAsync)) {
       parser.readFeaturesFromObjectAsync(data, goog.bind(addFeatures, this),
-          {callback: callback});
+          options);
     } else {
       goog.asserts.assert(goog.isFunction(parser.readFeaturesFromObject),
           'Expected a parser with a readFeaturesFromObject method.');
-      features = parser.readFeaturesFromObject(data, {callback: callback});
+      features = parser.readFeaturesFromObject(data, options);
       addFeatures.call(this, features);
     }
   } else {

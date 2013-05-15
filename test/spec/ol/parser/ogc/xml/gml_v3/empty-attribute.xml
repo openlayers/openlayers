@@ -1,0 +1,15 @@
+<gml:featureMembers xmlns:gml="http://www.opengis.net/gml">
+  <topp:gnis_pop gml:id="gnis_pop.148604" xmlns:topp="http://www.openplans.org/topp">
+    <gml:name>Aflu</gml:name>
+    <topp:the_geom>
+      <gml:Point srsName="urn:x-ogc:def:crs:EPSG:4326">
+        <gml:pos>34.12 2.09</gml:pos>
+      </gml:Point>
+    </topp:the_geom>
+    <topp:population>84683</topp:population>
+    <topp:country>Algeria</topp:country>
+    <topp:type>place</topp:type>
+    <topp:name>Aflu</topp:name>
+    <topp:empty></topp:empty>
+  </topp:gnis_pop>
+</gml:featureMembers>
