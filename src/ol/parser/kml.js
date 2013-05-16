@@ -45,22 +45,16 @@ goog.require('ol.style.PolygonLiteral');
  * @extends {ol.parser.XML}
  */
 ol.parser.KML = function(opt_options) {
-  if (goog.isDef(opt_options)) {
-    goog.object.extend(this, opt_options);
-  }
-  if (!goog.isDef(this.extractAttributes)) {
-    this.extractAttributes = true;
-  }
-  if (!goog.isDef(this.extractStyles)) {
-    this.extractStyles = false;
-  }
+  var options = /** @type {ol.parser.KMLOptions} */
+      (goog.isDef(opt_options) ? opt_options : {});
+  this.extractAttributes = goog.isDef(options.extractAttributes) ?
+      options.extractAttributes : true;
+  this.extractStyles = goog.isDef(options.extractStyles) ?
+      options.extractStyles : false;
   // TODO re-evaluate once shared structures support 3D
-  if (!goog.isDef(this.dimension)) {
-    this.dimension = 3;
-  }
-  if (!goog.isDef(this.maxDepth)) {
-    this.maxDepth = 0;
-  }
+  this.dimension = goog.isDef(options.dimension) ? options.dimension : 3;
+  this.maxDepth = goog.isDef(options.maxDepth) ? options.maxDepth : 0;
+
   this.defaultNamespaceURI = 'http://www.opengis.net/kml/2.2';
   this.readers = {
     'http://www.opengis.net/kml/2.2': {
