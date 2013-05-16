@@ -79,6 +79,34 @@ ol.renderer.canvas.VectorRenderer =
    */
   this.iconLoadedCallback_ = opt_iconLoadedCallback;
 
+  /**
+   * @type {Object.<number, Array.<number>>}
+   * @private
+   */
+  this.symbolSizes_ = {};
+
+  /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.maxSymbolSize_ = [0, 0];
+
+};
+
+
+/**
+ * @return {Object.<number, Array.<number>>} Symbolizer sizes.
+ */
+ol.renderer.canvas.VectorRenderer.prototype.getSymbolSizes = function() {
+  return this.symbolSizes_;
+};
+
+
+/**
+ * @return {Array.<number>} Maximum symbolizer size.
+ */
+ol.renderer.canvas.VectorRenderer.prototype.getMaxSymbolSize = function() {
+  return this.maxSymbolSize_;
 };
 
 
@@ -129,7 +157,8 @@ ol.renderer.canvas.VectorRenderer.prototype.renderLineStringFeatures_ =
     function(features, symbolizer) {
 
   var context = this.context_,
-      i, ii, geometry, components, j, jj, line, dim, k, kk, x, y;
+      i, ii, feature, id, currentSize, geometry, components, j, jj, line, dim,
+      k, kk, x, y;
 
   context.globalAlpha = symbolizer.opacity;
   context.strokeStyle = symbolizer.strokeColor;
@@ -138,7 +167,15 @@ ol.renderer.canvas.VectorRenderer.prototype.renderLineStringFeatures_ =
   context.lineJoin = 'round'; // TODO: accept this as a symbolizer property
   context.beginPath();
   for (i = 0, ii = features.length; i < ii; ++i) {
-    geometry = features[i].getGeometry();
+    feature = features[i];
+    id = goog.getUid(feature);
+    currentSize = goog.isDef(this.symbolSizes_[id]) ?
+        this.symbolSizes_[id] : [0];
+    currentSize[0] = Math.max(currentSize[0], context.lineWidth);
+    this.symbolSizes_[id] = currentSize;
+    this.maxSymbolSize_ = [Math.max(currentSize[0], this.maxSymbolSize_[0]),
+          Math.max(currentSize[0], this.maxSymbolSize_[1])];
+    geometry = feature.getGeometry();
     if (geometry instanceof ol.geom.LineString) {
       components = [geometry];
     } else {
@@ -175,7 +212,8 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
     function(features, symbolizer) {
 
   var context = this.context_,
-      content, alpha, i, ii, geometry, components, j, jj, point, vec;
+      content, alpha, i, ii, feature, id, size, geometry, components, j, jj,
+      point, vec;
 
   if (symbolizer instanceof ol.style.ShapeLiteral) {
     content = ol.renderer.canvas.VectorRenderer.renderShape(symbolizer);
@@ -198,7 +236,18 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
   context.setTransform(1, 0, 0, 1, -midWidth, -midHeight);
   context.globalAlpha = alpha;
   for (i = 0, ii = features.length; i < ii; ++i) {
-    geometry = features[i].getGeometry();
+    feature = features[i];
+    id = goog.getUid(feature);
+    size = this.symbolSizes_[id];
+    this.symbolSizes_[id] = goog.isDef(size) ?
+        [Math.max(size[0], content.width * this.inverseScale_),
+          Math.max(size[1], content.height * this.inverseScale_)] :
+        [content.width * this.inverseScale_,
+          content.height * this.inverseScale_];
+    this.maxSymbolSize_ =
+        [Math.max(this.maxSymbolSize_[0], this.symbolSizes_[id][0]),
+          Math.max(this.maxSymbolSize_[1], this.symbolSizes_[id][1])];
+    geometry = feature.getGeometry();
     if (geometry instanceof ol.geom.Point) {
       components = [geometry];
     } else {
