@@ -295,14 +295,16 @@
 
 /**
  * @typedef {Object} ol.parser.KMLOptions
+ * @property {number|undefined} dimension Create geometries with `dimension`
+ *     dimensions. Default is 3.
  * @property {boolean|undefined} extractAttributes Should we extract attributes
  *     from the KML? Default is `true´.
  * @property {boolean|undefined} extractStyles Should we extract styles from the
  *     KML? Default is `false`.
- * @property {number|undefined} dimension Create geometries with `dimension`
- *     dimensions. Default is 3.
  * @property {number|undefined} maxDepth Maximum depth to follow network links.
  *     Default is 0, which means we don't follow network links at all.
+ * @property {Array.<string>|undefined} trackAttributes Track attributes to
+ *     parse.
  */
 
 /**
