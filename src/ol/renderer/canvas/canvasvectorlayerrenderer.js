@@ -70,6 +70,10 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
   this.sketchTransform_ = goog.vec.Mat4.createNumber();
 
   /**
+   * Tile cache entries are arrays. The first item in each array is the tile
+   * itself, the second are the symbol sizes, and the third is the maximum
+   * symbol size.
+   *
    * @private
    * @type {ol.TileCache}
    */
@@ -198,40 +202,64 @@ ol.renderer.canvas.VectorLayer.prototype.getTransform = function() {
  */
 ol.renderer.canvas.VectorLayer.prototype.getFeatureInfoForPixel =
     function(pixel, success) {
-  // TODO adjust pixel tolerance for applied styles
-  var minPixel = new ol.Pixel(pixel.x - 1, pixel.y - 1);
-  var maxPixel = new ol.Pixel(pixel.x + 1, pixel.y + 1);
   var map = this.getMap();
-
-  var locationMin = map.getCoordinateFromPixel(minPixel);
-  var locationMax = map.getCoordinateFromPixel(maxPixel);
-  var locationBbox = ol.extent.boundingExtent([locationMin, locationMax]);
-  var filter = new ol.filter.Extent(locationBbox);
-  // TODO do a real intersect against the filtered result for exact matches
-  var candidates = this.getLayer().getFeatures(filter);
+  var result = [];
 
   var location = map.getCoordinateFromPixel(pixel);
-  // TODO adjust tolerance for stroke width or use configurable tolerance
-  var tolerance = map.getView().getView2D().getResolution() * 3;
-  var result = [];
-  var candidate, geom;
-  for (var i = 0, ii = candidates.length; i < ii; ++i) {
-    candidate = candidates[i];
-    geom = candidate.getGeometry();
-    if (goog.isFunction(geom.containsCoordinate)) {
-      // For polygons, check if the pixel location is inside the polygon
-      if (geom.containsCoordinate(location)) {
-        result.push(candidate);
+  var tileCoord = this.tileGrid_.getTileCoordForCoordAndResolution(
+      location, this.getMap().getView().getView2D().getResolution());
+  var key = tileCoord.toString();
+  if (this.tileCache_.containsKey(key)) {
+    var cachedTile = this.tileCache_.get(key);
+    var symbolSizes = cachedTile[1];
+    var maxSymbolSize = cachedTile[2];
+    var halfMaxWidth = maxSymbolSize[0] / 2;
+    var halfMaxHeight = maxSymbolSize[1] / 2;
+    var locationMin = [location[0] - halfMaxWidth, location[1] - halfMaxHeight];
+    var locationMax = [location[0] + halfMaxWidth, location[1] + halfMaxHeight];
+    var locationBbox = ol.extent.boundingExtent([locationMin, locationMax]);
+    var filter = new ol.filter.Extent(locationBbox);
+    var candidates = this.getLayer().getFeatures(filter);
+
+    var candidate, geom, type, symbolBounds, symbolSize, halfWidth, halfHeight,
+        coordinates, j;
+    for (var i = 0, ii = candidates.length; i < ii; ++i) {
+      candidate = candidates[i];
+      geom = candidate.getGeometry();
+      type = geom.getType();
+      if (type === ol.geom.GeometryType.POINT ||
+          type === ol.geom.GeometryType.MULTIPOINT) {
+        // For points, check if the pixel coordinate is inside the candidate's
+        // symbol
+        symbolSize = symbolSizes[goog.getUid(candidate)];
+        halfWidth = symbolSize[0] / 2;
+        halfHeight = symbolSize[1] / 2;
+        symbolBounds = ol.extent.boundingExtent(
+            [[location[0] - halfWidth, location[1] - halfHeight],
+              [location[0] + halfWidth, location[1] + halfHeight]]);
+        coordinates = geom.getCoordinates();
+        if (!goog.isArray(coordinates[0])) {
+          coordinates = [coordinates];
+        }
+        for (j = coordinates.length - 1; j >= 0; --j) {
+          if (ol.extent.containsCoordinate(symbolBounds, coordinates[j])) {
+            result.push(candidate);
+            break;
+          }
+        }
+      } else if (goog.isFunction(geom.containsCoordinate)) {
+        // For polygons, check if the pixel location is inside the polygon
+        if (geom.containsCoordinate(location)) {
+          result.push(candidate);
+        }
+      } else if (goog.isFunction(geom.distanceFromCoordinate)) {
+        // For lines, check if the distance to the pixel location is
+        // within the rendered line width
+        if (2 * geom.distanceFromCoordinate(location) <=
+            symbolSizes[goog.getUid(candidate)][0]) {
+          result.push(candidate);
+        }
       }
-    } else if (goog.isFunction(geom.distanceFromCoordinate)) {
-      // For lines, check if the ditance to the pixel location is within the
-      // tolerance threshold
-      if (geom.distanceFromCoordinate(location) < tolerance) {
-        result.push(candidate);
-      }
-    } else {
-      // For points, the bbox filter is all we need
-      result.push(candidate);
     }
   }
   goog.global.setTimeout(function() { success(result); }, 0);
@@ -416,17 +444,19 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     goog.object.extend(tilesToRender, tilesOnSketchCanvas);
   }
 
+  var symbolSizes = sketchCanvasRenderer.getSymbolSizes(),
+      maxSymbolSize = sketchCanvasRenderer.getMaxSymbolSize();
   for (key in tilesToRender) {
     tileCoord = tilesToRender[key];
     if (this.tileCache_.containsKey(key)) {
-      tile = /** @type {HTMLCanvasElement} */ (this.tileCache_.get(key));
+      tile = /** @type {HTMLCanvasElement} */ (this.tileCache_.get(key)[0]);
     } else {
       tile = /** @type {HTMLCanvasElement} */
           (this.tileArchetype_.cloneNode(false));
       tile.getContext('2d').drawImage(sketchCanvas,
           (tileRange.minX - tileCoord.x) * tileSize.width,
           (tileCoord.y - tileRange.maxY) * tileSize.height);
-      this.tileCache_.set(key, tile);
+      this.tileCache_.set(key, [tile, symbolSizes, maxSymbolSize]);
     }
     finalContext.drawImage(tile,
         tileSize.width * (tileCoord.x - tileRange.minX),
