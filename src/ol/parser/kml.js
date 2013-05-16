@@ -564,7 +564,7 @@ ol.parser.KML = function(opt_options) {
       'Document': function(options) {
         var node = this.createElementNS('Document');
         for (var key in options) {
-          if (options.hasOwnProperty(key) && typeof options[key] === 'string') {
+          if (options.hasOwnProperty(key) && goog.isString(options[key])) {
             var child = this.createElementNS(key);
             child.appendChild(this.createTextNode(options[key]));
             node.appendChild(child);
@@ -878,7 +878,7 @@ ol.parser.KML.prototype.parseLinks = function(deferreds, obj, done) {
         goog.events.listen(xhr, goog.net.EventType.COMPLETE, function(e) {
           if (e.target.isSuccess()) {
             var data = e.target.getResponseXml() || e.target.getResponseText();
-            if (typeof data == 'string') {
+            if (goog.isString(data)) {
               data = goog.dom.xml.loadXml(data);
             }
             goog.dispose(e.target);
@@ -911,7 +911,7 @@ ol.parser.KML.prototype.parseLinks = function(deferreds, obj, done) {
  * @return {Object} An object representing the document.
  */
 ol.parser.KML.prototype.read = function(data, opt_callback) {
-  if (typeof data == 'string') {
+  if (goog.isString(data)) {
     data = goog.dom.xml.loadXml(data);
   }
   if (data && data.nodeType == 9) {
