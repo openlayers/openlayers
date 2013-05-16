@@ -70,6 +70,10 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
   this.sketchTransform_ = goog.vec.Mat4.createNumber();
 
   /**
+   * Tile cache entries are arrays. The first item in each array is the tile
+   * itself, the second are the symbol sizes, and the third is the maximum
+   * symbol size.
+   *
    * @private
    * @type {ol.TileCache}
    */
@@ -138,18 +142,6 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
   this.tileGrid_ = null;
 
   /**
-   * @type {Object.<number, Array.<number>>}
-   * @private
-   */
-  this.symbolSizes_ = {};
-
-  /**
-   * @type {Array.<number>}
-   * @private
-   */
-  this.maxSymbolSize_ = [0, 0];
-
-  /**
    * @private
    * @type {function()}
    */
@@ -173,8 +165,6 @@ ol.renderer.canvas.VectorLayer.prototype.expireTiles_ = function(opt_extent) {
     // TODO: implement this
   }
   this.tileCache_.clear();
-  this.symbolSizes_ = {};
-  this.maxSymbolSize_ = [0, 0];
 };
 
 
@@ -213,48 +203,56 @@ ol.renderer.canvas.VectorLayer.prototype.getTransform = function() {
 ol.renderer.canvas.VectorLayer.prototype.getFeatureInfoForPixel =
     function(pixel, success) {
   var map = this.getMap();
-
-  var hw = this.maxSymbolSize_[0] / 2;
-  var hh = this.maxSymbolSize_[1] / 2;
-  var location = map.getCoordinateFromPixel(pixel);
-  var locationMin = [location[0] - hw, location[1] - hh];
-  var locationMax = [location[0] + hw, location[1] + hh];
-  var locationBbox = ol.extent.boundingExtent([locationMin, locationMax]);
-  var filter = new ol.filter.Extent(locationBbox);
-  var candidates = this.getLayer().getFeatures(filter);
-
   var result = [];
-  var candidate, geom, type, symbolBounds, symbolSize, halfWidth, halfHeight,
-      coordinates, j;
-  for (var i = 0, ii = candidates.length; i < ii; ++i) {
-    candidate = candidates[i];
-    geom = candidate.getGeometry();
-    type = geom.getType();
-    if (type === ol.geom.GeometryType.POINT ||
-        type === ol.geom.GeometryType.MULTIPOINT) {
-      // For points, check if the pixel coordinate is inside the candidate's
-      // symbol
-      symbolSize = this.symbolSizes_[goog.getUid(candidate)];
-      halfWidth = symbolSize[0] / 2;
-      halfHeight = symbolSize[1] / 2;
-      symbolBounds = ol.extent.boundingExtent(
-          [[location[0] - halfWidth, location[1] - halfHeight],
-            [location[0] + halfWidth, location[1] + halfHeight]]);
-      coordinates = geom.getCoordinates();
-      if (ol.extent.containsCoordinate(symbolBounds, coordinates)) {
-        result.push(candidate);
-      }
-    } else if (goog.isFunction(geom.containsCoordinate)) {
-      // For polygons, check if the pixel location is inside the polygon
-      if (geom.containsCoordinate(location)) {
-        result.push(candidate);
-      }
-    } else if (goog.isFunction(geom.distanceFromCoordinate)) {
-      // For lines, check if the distance to the pixel location is
-      // within the rendered line width
-      if (2 * geom.distanceFromCoordinate(location) <=
-          this.symbolSizes_[goog.getUid(candidate)][0]) {
-        result.push(candidate);
+
+  var location = map.getCoordinateFromPixel(pixel);
+  var tileCoord = this.tileGrid_.getTileCoordForCoordAndResolution(
+      location, this.getMap().getView().getView2D().getResolution());
+  var key = tileCoord.toString();
+  if (this.tileCache_.containsKey(key)) {
+    var cachedTile = this.tileCache_.get(key);
+    var symbolSizes = cachedTile[1];
+    var maxSymbolSize = cachedTile[2];
+    var hw = maxSymbolSize[0] / 2;
+    var hh = maxSymbolSize[1] / 2;
+    var locationMin = [location[0] - hw, location[1] - hh];
+    var locationMax = [location[0] + hw, location[1] + hh];
+    var locationBbox = ol.extent.boundingExtent([locationMin, locationMax]);
+    var filter = new ol.filter.Extent(locationBbox);
+    var candidates = this.getLayer().getFeatures(filter);
+
+    var candidate, geom, type, symbolBounds, symbolSize, halfWidth, halfHeight,
+        coordinates, j;
+    for (var i = 0, ii = candidates.length; i < ii; ++i) {
+      candidate = candidates[i];
+      geom = candidate.getGeometry();
+      type = geom.getType();
+      if (type === ol.geom.GeometryType.POINT ||
+          type === ol.geom.GeometryType.MULTIPOINT) {
+        // For points, check if the pixel coordinate is inside the candidate's
+        // symbol
+        symbolSize = symbolSizes[goog.getUid(candidate)];
+        halfWidth = symbolSize[0] / 2;
+        halfHeight = symbolSize[1] / 2;
+        symbolBounds = ol.extent.boundingExtent(
+            [[location[0] - halfWidth, location[1] - halfHeight],
+              [location[0] + halfWidth, location[1] + halfHeight]]);
+        coordinates = geom.getCoordinates();
+        if (ol.extent.containsCoordinate(symbolBounds, coordinates)) {
+          result.push(candidate);
+        }
+      } else if (goog.isFunction(geom.containsCoordinate)) {
+        // For polygons, check if the pixel location is inside the polygon
+        if (geom.containsCoordinate(location)) {
+          result.push(candidate);
+        }
+      } else if (goog.isFunction(geom.distanceFromCoordinate)) {
+        // For lines, check if the distance to the pixel location is
+        // within the rendered line width
+        if (2 * geom.distanceFromCoordinate(location) <=
+            symbolSizes[goog.getUid(candidate)][0]) {
+          result.push(candidate);
+        }
       }
     }
   }
@@ -421,7 +419,6 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     }
   }
 
-  var renderedNew = false;
   renderByGeometryType:
   for (type in featuresToRender) {
     groups = layer.groupFeaturesBySymbolizerLiteral(featuresToRender[type]);
@@ -434,31 +431,26 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       if (deferred) {
         break renderByGeometryType;
       }
-      renderedNew = true;
     }
-  }
-
-  if (renderedNew) {
-    goog.object.extend(this.symbolSizes_,
-        sketchCanvasRenderer.getSymbolSizes());
-    this.maxSymbolSize_ = sketchCanvasRenderer.getMaxSymbolSize();
   }
 
   if (!deferred) {
     goog.object.extend(tilesToRender, tilesOnSketchCanvas);
   }
 
+  var symbolSizes = sketchCanvasRenderer.getSymbolSizes(),
+      maxSymbolSize = sketchCanvasRenderer.getMaxSymbolSize();
   for (key in tilesToRender) {
     tileCoord = tilesToRender[key];
     if (this.tileCache_.containsKey(key)) {
-      tile = /** @type {HTMLCanvasElement} */ (this.tileCache_.get(key));
+      tile = /** @type {HTMLCanvasElement} */ (this.tileCache_.get(key)[0]);
     } else {
       tile = /** @type {HTMLCanvasElement} */
           (this.tileArchetype_.cloneNode(false));
       tile.getContext('2d').drawImage(sketchCanvas,
           (tileRange.minX - tileCoord.x) * tileSize.width,
           (tileCoord.y - tileRange.maxY) * tileSize.height);
-      this.tileCache_.set(key, tile);
+      this.tileCache_.set(key, [tile, symbolSizes, maxSymbolSize]);
     }
     finalContext.drawImage(tile,
         tileSize.width * (tileCoord.x - tileRange.minX),
