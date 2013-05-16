@@ -238,8 +238,14 @@ ol.renderer.canvas.VectorLayer.prototype.getFeatureInfoForPixel =
             [[location[0] - halfWidth, location[1] - halfHeight],
               [location[0] + halfWidth, location[1] + halfHeight]]);
         coordinates = geom.getCoordinates();
-        if (ol.extent.containsCoordinate(symbolBounds, coordinates)) {
-          result.push(candidate);
+        if (!goog.isArray(coordinates[0])) {
+          coordinates = [coordinates];
+        }
+        for (j = coordinates.length - 1; j >= 0; --j) {
+          if (ol.extent.containsCoordinate(symbolBounds, coordinates[j])) {
+            result.push(candidate);
+            break;
+          }
         }
       } else if (goog.isFunction(geom.containsCoordinate)) {
         // For polygons, check if the pixel location is inside the polygon
