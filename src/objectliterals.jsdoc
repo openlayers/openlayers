@@ -303,6 +303,7 @@
  *     KML? Default is `false`.
  * @property {number|undefined} maxDepth Maximum depth to follow network links.
  *     Default is 0, which means we don't follow network links at all.
+ * @property {Array.<string>} trackAttributes Track attributes to parse.
  */
 
 /**

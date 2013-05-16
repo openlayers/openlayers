@@ -54,6 +54,8 @@ ol.parser.KML = function(opt_options) {
   // TODO re-evaluate once shared structures support 3D
   this.dimension = goog.isDef(options.dimension) ? options.dimension : 3;
   this.maxDepth = goog.isDef(options.maxDepth) ? options.maxDepth : 0;
+  this.trackAttributes = goog.isDef(options.trackAttributes) ?
+      options.trackAttributes : null;
 
   this.defaultNamespaceURI = 'http://www.opengis.net/kml/2.2';
   this.readers = {
