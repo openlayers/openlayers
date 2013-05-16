@@ -95,7 +95,7 @@ ol.renderer.canvas.VectorRenderer =
 
 
 /**
- * @return {Object.<string, Array.<number>>} Symbolizer sizes.
+ * @return {Object.<number, Array.<number>>} Symbolizer sizes.
  */
 ol.renderer.canvas.VectorRenderer.prototype.getSymbolSizes = function() {
   return this.symbolSizes_;
