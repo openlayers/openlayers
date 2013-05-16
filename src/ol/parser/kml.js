@@ -877,12 +877,17 @@ ol.parser.KML.prototype.parseLinks = function(deferreds, obj, done) {
         var me = this;
         goog.events.listen(xhr, goog.net.EventType.COMPLETE, function(e) {
           if (e.target.isSuccess()) {
-            var data = e.target.getResponseXml();
-            goog.dispose(e.target);
-            if (data && data.nodeType == 9) {
-              data = data.documentElement;
+            var data = e.target.getResponseXml() || e.target.getResponseText();
+            if (typeof data == 'string') {
+              data = goog.dom.xml.loadXml(data);
             }
-            me.readNode(data, obj);
+            goog.dispose(e.target);
+            if (data) {
+              if (data.nodeType == 9) {
+                data = data.documentElement;
+              }
+              me.readNode(data, obj);
+            }
             me.parseLinks(deferreds, obj, done);
             this.callback(data);
           }
