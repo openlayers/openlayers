@@ -59,8 +59,8 @@ ol.structs.RTreeNode_ = function(bounds, parent, level) {
  * @param {string=} opt_type Type for another indexing dimension.
  */
 ol.structs.RTreeNode_.prototype.find = function(bounds, results, opt_type) {
-  if (ol.extent.intersects(this.bounds, bounds) &&
-      (!goog.isDef(opt_type) || this.types[opt_type] === true)) {
+  if ((!goog.isDef(opt_type) || this.types[opt_type] === true) &&
+      ol.extent.intersects(this.bounds, bounds)) {
     var numChildren = this.children.length;
     if (numChildren === 0) {
       if (goog.isDef(this.object)) {
