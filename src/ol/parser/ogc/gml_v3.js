@@ -1,6 +1,6 @@
 goog.provide('ol.parser.ogc.GML_v3');
 
-goog.require('goog.dom.xml');
+goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.parser.ogc.GML');
@@ -9,7 +9,7 @@ goog.require('ol.parser.ogc.GML');
 
 /**
  * @constructor
- * @param {ol.parser.GML3Options=} opt_options Optional configuration object.
+ * @param {ol.parser.GMLOptions=} opt_options Optional configuration object.
  * @extends {ol.parser.ogc.GML}
  */
 ol.parser.ogc.GML_v3 = function(opt_options) {
@@ -17,18 +17,6 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       'http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
       '1.0.0/gmlsf.xsd';
   goog.base(this, opt_options);
-  if (!goog.isDef(this.surface)) {
-    this.surface = false;
-  }
-  if (!goog.isDef(this.curve)) {
-    this.curve = false;
-  }
-  if (!goog.isDef(this.multiCurve)) {
-    this.multiCurve = true;
-  }
-  if (!goog.isDef(this.multiSurface)) {
-    this.multiSurface = true;
-  }
   this.featureNSWiters_['_geometry'] = function(geometry) {
     var node = this.createElementNS('feature:' + this.geometryName,
         this.featureNS);
@@ -111,7 +99,8 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     'pos': function(node, obj) {
       var str = this.getChildValue(node).replace(
           this.regExes.trimSpace, '');
-      var coords = str.split(this.regExes.splitSpace).map(parseFloat);
+      var coords = goog.array.map(str.split(this.regExes.splitSpace),
+          parseFloat);
       if (this.axisOrientation.substr(0, 2) === 'en') {
         obj.push([coords]);
       } else {
