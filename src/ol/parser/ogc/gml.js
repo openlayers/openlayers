@@ -1,7 +1,6 @@
 goog.provide('ol.parser.ogc.GML');
 goog.require('goog.array');
 goog.require('goog.dom.xml');
-goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryCollection');
@@ -21,19 +20,35 @@ goog.require('ol.parser.XML');
 /**
  * @constructor
  * @implements {ol.parser.StringFeatureParser}
- * @param {ol.parser.GML2Options|ol.parser.GML3Options=} opt_options
+ * @param {ol.parser.GMLOptions=} opt_options
  *     Optional configuration object.
  * @extends {ol.parser.XML}
  */
 ol.parser.ogc.GML = function(opt_options) {
-  if (goog.isDef(opt_options)) {
-    goog.object.extend(this, opt_options);
+  var options = /** @type {ol.parser.GMLOptions} */
+      (goog.isDef(opt_options) ? opt_options : {});
+  this.axisOrientation = goog.isDef(options.axisOrientation) ?
+      options.axisOrientation : 'enu';
+  this.extractAttributes = goog.isDef(options.extractAttributes) ?
+      options.extractAttributes : true;
+  this.surface = goog.isDef(options.surface) ?
+      options.surface : false;
+  this.curve = goog.isDef(options.curve) ?
+      options.curve : false;
+  this.multiCurve = goog.isDef(options.multiCurve) ?
+      options.multiCurve : true;
+  this.multiSurface = goog.isDef(options.multiSurface) ?
+      options.multiSurface : true;
+  this.srsName = goog.isDef(options.srsName) ?
+      options.srsName : null;
+  if (goog.isDef(options.schemaLocation)) {
+    this.schemaLocation = options.schemaLocation;
   }
-  if (!goog.isDef(this.axisOrientation)) {
-    this.axisOrientation = 'enu';
+  if (goog.isDef(options.featureNS)) {
+    this.featureNS = options.featureNS;
   }
-  if (!goog.isDef(this.extractAttributes)) {
-    this.extractAttributes = true;
+  if (goog.isDef(options.featureType)) {
+    this.featureType = options.featureType;
   }
   this.singleFeatureType = !goog.isDef(opt_options) ||
       goog.isString(opt_options.featureType);
@@ -181,7 +196,7 @@ ol.parser.ogc.GML = function(opt_options) {
         var numPoints = pointList.length;
         var points = new Array(numPoints);
         for (var i = 0; i < numPoints; ++i) {
-          coords = pointList[i].split(cs).map(parseFloat);
+          coords = goog.array.map(pointList[i].split(cs), parseFloat);
           if (this.axisOrientation.substr(0, 2) === 'en') {
             points[i] = coords;
           } else {
@@ -424,7 +439,9 @@ ol.parser.ogc.GML = function(opt_options) {
       return node;
     }
   };
-  this.writers[this.featureNS] = this.featureNSWiters_;
+  if (goog.isDef(this.featureNS)) {
+    this.writers[this.featureNS] = this.featureNSWiters_;
+  }
   goog.base(this);
 };
 goog.inherits(ol.parser.ogc.GML, ol.parser.XML);

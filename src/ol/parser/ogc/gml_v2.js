@@ -8,7 +8,7 @@ goog.require('ol.parser.ogc.GML');
 
 /**
  * @constructor
- * @param {ol.parser.GML2Options=} opt_options Optional configuration object.
+ * @param {ol.parser.GMLOptions=} opt_options Optional configuration object.
  * @extends {ol.parser.ogc.GML}
  */
 ol.parser.ogc.GML_v2 = function(opt_options) {
