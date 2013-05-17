@@ -1,9 +1,9 @@
 goog.provide('ol.parser.WKT');
 
+goog.require('goog.array');
 goog.require('goog.string');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryCollection');
-goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
@@ -19,15 +19,22 @@ goog.require('ol.parser.Parser');
  * @extends {ol.parser.Parser}
  */
 ol.parser.WKT = function() {
-  this.regExes = {
-    typeStr: /^\s*(\w+)\s*\(\s*(.*)\s*\)\s*$/,
-    spaces: /\s+/,
-    parenComma: /\)\s*,\s*\(/,
-    doubleParenComma: /\)\s*\)\s*,\s*\(\s*\(/,
-    trimParens: /^\s*\(?(.*?)\)?\s*$/
-  };
 };
 goog.inherits(ol.parser.WKT, ol.parser.Parser);
+
+
+/**
+ * Constants for regExes.
+ * @enum {RegExp}
+ */
+ol.parser.WKT.regExes = {
+  typeStr: /^\s*(\w+)\s*\(\s*(.*)\s*\)\s*$/,
+  spaces: /\s+/,
+  parenComma: /\)\s*,\s*\(/,
+  doubleParenComma: /\)\s*\)\s*,\s*\(\s*\(/,
+  trimParens: /^\s*\(?(.*?)\)?\s*$/,
+  geomCollection: /,\s*([A-Za-z])/g
+};
 
 
 /**
@@ -36,8 +43,8 @@ goog.inherits(ol.parser.WKT, ol.parser.Parser);
  * @private
  */
 ol.parser.WKT.prototype.parsePoint_ = function(str) {
-  var coords = goog.string.trim(str).split(this.regExes.spaces);
-  return new ol.geom.Point(coords.map(parseFloat));
+  var coords = goog.string.trim(str).split(ol.parser.WKT.regExes.spaces);
+  return new ol.geom.Point(goog.array.map(coords, parseFloat));
 };
 
 
@@ -67,7 +74,7 @@ ol.parser.WKT.prototype.parseMultiPoint_ = function(str) {
   var points = goog.string.trim(str).split(',');
   var parts = [];
   for (var i = 0, ii = points.length; i < ii; ++i) {
-    point = points[i].replace(this.regExes.trimParens, '$1');
+    point = points[i].replace(ol.parser.WKT.regExes.trimParens, '$1');
     parts.push(this.parsePoint_.apply(this, [point]));
   }
   return ol.geom.MultiPoint.fromParts(parts);
@@ -81,10 +88,10 @@ ol.parser.WKT.prototype.parseMultiPoint_ = function(str) {
  */
 ol.parser.WKT.prototype.parseMultiLineString_ = function(str) {
   var line;
-  var lines = goog.string.trim(str).split(this.regExes.parenComma);
+  var lines = goog.string.trim(str).split(ol.parser.WKT.regExes.parenComma);
   var parts = [];
   for (var i = 0, ii = lines.length; i < ii; ++i) {
-    line = lines[i].replace(this.regExes.trimParens, '$1');
+    line = lines[i].replace(ol.parser.WKT.regExes.trimParens, '$1');
     parts.push(this.parseLineString_.apply(this, [line]));
   }
   return ol.geom.MultiLineString.fromParts(parts);
@@ -98,10 +105,10 @@ ol.parser.WKT.prototype.parseMultiLineString_ = function(str) {
  */
 ol.parser.WKT.prototype.parsePolygon_ = function(str) {
   var ring, linestring, linearring;
-  var rings = goog.string.trim(str).split(this.regExes.parenComma);
+  var rings = goog.string.trim(str).split(ol.parser.WKT.regExes.parenComma);
   var coordinates = [];
   for (var i = 0, ii = rings.length; i < ii; ++i) {
-    ring = rings[i].replace(this.regExes.trimParens, '$1');
+    ring = rings[i].replace(ol.parser.WKT.regExes.trimParens, '$1');
     linestring = this.parseLineString_.apply(this, [ring]).getCoordinates();
     coordinates.push(linestring);
   }
@@ -116,10 +123,11 @@ ol.parser.WKT.prototype.parsePolygon_ = function(str) {
  */
 ol.parser.WKT.prototype.parseMultiPolygon_ = function(str) {
   var polygon;
-  var polygons = goog.string.trim(str).split(this.regExes.doubleParenComma);
+  var polygons = goog.string.trim(str).split(
+      ol.parser.WKT.regExes.doubleParenComma);
   var parts = [];
   for (var i = 0, ii = polygons.length; i < ii; ++i) {
-    polygon = polygons[i].replace(this.regExes.trimParens, '$1');
+    polygon = polygons[i].replace(ol.parser.WKT.regExes.trimParens, '$1');
     parts.push(this.parsePolygon_.apply(this, [polygon]));
   }
   return ol.geom.MultiPolygon.fromParts(parts);
@@ -133,7 +141,7 @@ ol.parser.WKT.prototype.parseMultiPolygon_ = function(str) {
  */
 ol.parser.WKT.prototype.parseGeometryCollection_ = function(str) {
   // separate components of the collection with |
-  str = str.replace(/,\s*([A-Za-z])/g, '|$1');
+  str = str.replace(ol.parser.WKT.regExes.geomCollection, '|$1');
   var wktArray = goog.string.trim(str).split('|');
   var components = [];
   for (var i = 0, ii = wktArray.length; i < ii; ++i) {
@@ -251,7 +259,7 @@ ol.parser.WKT.prototype.encodeMultiPolygon_ = function(geom) {
  */
 ol.parser.WKT.prototype.parse_ = function(wkt) {
   wkt = wkt.replace(/[\n\r]/g, ' ');
-  var matches = this.regExes.typeStr.exec(wkt);
+  var matches = ol.parser.WKT.regExes.typeStr.exec(wkt);
   var geometry;
   if (matches) {
     var type = matches[1].toLowerCase();
@@ -295,36 +303,22 @@ ol.parser.WKT.prototype.parse_ = function(wkt) {
 ol.parser.WKT.prototype.encode_ = function(geom) {
   var type = geom.getType();
   var result = type.toUpperCase() + '(';
-  switch (type) {
-    case ol.geom.GeometryType.POINT:
-      result += this.encodePoint_(/** @type {ol.geom.Point} */ (geom));
-      break;
-    case ol.geom.GeometryType.MULTIPOINT:
-      result += this.encodeMultiPoint_(
-          /** @type {ol.geom.MultiPoint} */ (geom));
-      break;
-    case ol.geom.GeometryType.LINESTRING:
-      result += this.encodeLineString_(
-          /** @type {ol.geom.LineString} */ (geom));
-      break;
-    case ol.geom.GeometryType.MULTILINESTRING:
-      result += this.encodeMultiLineString_(
-          /** @type {ol.geom.MultiLineString} */ (geom));
-      break;
-    case ol.geom.GeometryType.POLYGON:
-      result += this.encodePolygon_(
-          /** @type {ol.geom.Polygon} */ (geom));
-      break;
-    case ol.geom.GeometryType.MULTIPOLYGON:
-      result += this.encodeMultiPolygon_(
-          /** @type {ol.geom.MultiPolygon} */ (geom));
-      break;
-    case ol.geom.GeometryType.GEOMETRYCOLLECTION:
-      result += this.encodeGeometryCollection_(
-          /** @type {ol.geom.GeometryCollection} */ (geom));
-      break;
-    default:
-      throw new Error('Bad geometry type: ' + type);
+  if (geom instanceof ol.geom.Point) {
+    result += this.encodePoint_(geom);
+  } else if (geom instanceof ol.geom.MultiPoint) {
+    result += this.encodeMultiPoint_(geom);
+  } else if (geom instanceof ol.geom.LineString) {
+    result += this.encodeLineString_(geom);
+  } else if (geom instanceof ol.geom.MultiLineString) {
+    result += this.encodeMultiLineString_(geom);
+  } else if (geom instanceof ol.geom.Polygon) {
+    result += this.encodePolygon_(geom);
+  } else if (geom instanceof ol.geom.MultiPolygon) {
+    result += this.encodeMultiPolygon_(geom);
+  } else if (geom instanceof ol.geom.GeometryCollection) {
+    result += this.encodeGeometryCollection_(geom);
+  } else {
+    throw new Error('Bad geometry type: ' + type);
   }
   return result + ')';
 };
