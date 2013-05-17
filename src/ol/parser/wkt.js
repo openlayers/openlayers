@@ -33,7 +33,8 @@ ol.parser.WKT.regExes = {
   parenComma: /\)\s*,\s*\(/,
   doubleParenComma: /\)\s*\)\s*,\s*\(\s*\(/,
   trimParens: /^\s*\(?(.*?)\)?\s*$/,
-  geomCollection: /,\s*([A-Za-z])/g
+  geomCollection: /,\s*([A-Za-z])/g,
+  removeNewLine: /[\n\r]/g
 };
 
 
@@ -258,7 +259,7 @@ ol.parser.WKT.prototype.encodeMultiPolygon_ = function(geom) {
  * @private
  */
 ol.parser.WKT.prototype.parse_ = function(wkt) {
-  wkt = wkt.replace(/[\n\r]/g, ' ');
+  wkt = wkt.replace(ol.parser.WKT.regExes.removeNewLine, ' ');
   var matches = ol.parser.WKT.regExes.typeStr.exec(wkt);
   var geometry;
   if (matches) {
