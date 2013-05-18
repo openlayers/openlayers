@@ -13,10 +13,7 @@ describe('ol.structs.RTree', function() {
     rTree.put([-3, -2, -3, -2], 6);
 
     it('stores items', function() {
-      expect(goog.object.getCount(rTree.find([
-        Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY,
-        Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY
-      ]))).to.be(6);
+      expect(goog.object.getCount(rTree.find([-100, 100, -100, 100]))).to.be(6);
     });
 
     it('filters by rectangle', function() {
