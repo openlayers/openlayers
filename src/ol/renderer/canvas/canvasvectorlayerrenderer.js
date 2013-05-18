@@ -393,6 +393,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var filters = this.geometryFilters_,
       numFilters = filters.length,
       deferred = false,
+      dirty = false,
       i, geomFilter, tileExtent, extentFilter, type,
       groups, group, j, numGroups;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
@@ -420,10 +421,11 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         }
         tilesOnSketchCanvas[key] = tileCoord;
       } else {
-        this.dirty_ = true;
+        dirty = true;
       }
     }
   }
+  this.dirty_ = dirty;
 
   renderByGeometryType:
   for (type in featuresToRender) {
