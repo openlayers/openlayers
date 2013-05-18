@@ -106,8 +106,8 @@
         for (i in decodedPoints) {
             var point = basePoints[i];
             var decodedPoint = decodedPoints[i];
-            t.eq(point[0], decodedPoint[0]);
-            t.eq(point[1], decodedPoint[1]);
+            t.eq(parseInt(decodedPoint[0] * 1e5), point[0]);
+            t.eq(parseInt(decodedPoint[1] * 1e5), point[1]);
         }
     }
 
@@ -141,7 +141,7 @@
 
         var format = new OpenLayers.Format.EncodedPolyline();
 
-        t.eq(format.encode(basePoints, 2), encoded);
+        t.eq(format.encode(basePoints, 2, 1), encoded);
     }
 
     function test_encodeDeltas_returns_expected_value(t) {
