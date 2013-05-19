@@ -363,7 +363,7 @@ ol.structs.RTree = function(opt_width) {
               // walk all the way in to the leaf to know that we don't need it
               if (!goog.isDef(opt_type) || lTree.type == opt_type) {
                 var obj = lTree.leaf;
-                result[goog.getUid(obj)] = obj;
+                result[goog.getUid(obj).toString()] = obj;
               }
             } else {
               result.push(lTree);
