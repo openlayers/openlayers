@@ -120,7 +120,7 @@ ol.structs.RTree = function(opt_width) {
 
     /** @type {ol.structs.RTreeNode} */
     var workingObject = /** @type {ol.structs.RTreeNode} */
-        ({extent: goog.array.concat(rect), target: obj});
+        ({extent: goog.array.concat(rect.extent), target: obj});
 
     countStack.push(root.nodes.length);
     hitStack.push(root);
@@ -521,19 +521,20 @@ ol.structs.RTree = function(opt_width) {
    * @this {ol.structs.RTree}
    */
   this.find = function(extent, opt_type) {
-    var rect = ({extent: extent});
+    var rect = /** @type {ol.structs.RTreeNode} */ ({extent: extent});
     return searchSubtree.apply(this, [rect, false, {}, rootTree, opt_type]);
   };
 
   /**
    * Non-recursive function that deletes a specific region.
    *
-   * @param {ol.structs.RTreeNode} rect Rectangle.
+   * @param {ol.Extent} extent Extent.
    * @param {Object=} opt_obj Object.
    * @return {Array} Result.
    * @this {ol.structs.RTree}
    */
-  this.remove = function(rect, opt_obj) {
+  this.remove = function(extent, opt_obj) {
+    arguments[0] = /** @type {ol.structs.RTreeNode} */ ({extent: extent});
     switch (arguments.length) {
       case 1:
         arguments[1] = false; // opt_obj == false for conditionals
@@ -563,7 +564,8 @@ ol.structs.RTree = function(opt_width) {
    * @param {string=} opt_type Optional type to store along with the object.
    */
   this.put = function(extent, obj, opt_type) {
-    var node = ({extent: extent, leaf: obj});
+    var node = /** @type {ol.structs.RTreeNode} */
+        ({extent: extent, leaf: obj});
     if (goog.isDef(opt_type)) {
       node.type = opt_type;
     }
