@@ -28,14 +28,13 @@
 
 
 goog.provide('ol.structs.RTree');
-goog.provide('ol.structs.RTreeRectangle');
 
-goog.require('goog.object');
+goog.require('goog.array');
+goog.require('ol.extent');
 
 
 /**
- * @typedef {{x: (number), y: (number), w: (number), h: (number),
- *     leaf: (Object|undefined),
+ * @typedef {{extent: (ol.Extent), leaf: (Object|undefined),
  *     nodes: (Array.<ol.structs.RTreeNode>|undefined),
  *     target: (Object|undefined), type: (string|undefined)}}
  */
@@ -56,12 +55,19 @@ ol.structs.RTree = function(opt_width) {
     maxWidth = opt_width;
   }
   // Start with an empty root-tree
-  var tree = /** @type {ol.structs.RTreeNode} */
-      ({x: 0, y: 0, w: 0, h: 0, nodes: []});
+  var rootTree = /** @type {ol.structs.RTreeNode} */
+      ({extent: [0, 0, 0, 0], nodes: []});
 
-  // This is my special addition to the world of r-trees
-  // every other (simple) method I found produced crap trees
-  // this skews insertions to prefering squarer and emptier nodes
+  /**
+   * This is Jon-Carlos Rivera's special addition to the world of r-trees.
+   * Every other (simple) method he found produced crap trees.
+   * This skews insertions to prefering squarer and emptier nodes.
+   *
+   * @param {number} l L.
+   * @param {number} w W.
+   * @param {number} fill Fill.
+   * @return {number} Squarified ratio.
+   */
   var squarifiedRatio = function(l, w, fill) {
     // Area of new enlarged rectangle
     var peri = (l + w) / 2; // Average size of a side of the new rectangle
@@ -71,6 +77,27 @@ ol.structs.RTree = function(opt_width) {
     // more elongated a rectangle is
     var geo = area / (peri * peri);
     return area * fill / geo;
+  };
+
+  /**
+   * Generates a minimally bounding rectangle for all rectangles in
+   * array "nodes". `rect` is modified into the MBR.
+   *
+   * @param {Array} nodes Nodes.
+   * @param {ol.structs.RTreeNode} rect Rectangle.
+   * @return {ol.structs.RTreeNode} Rectangle.
+   */
+  var makeMBR = function(nodes, rect) {
+    if (nodes.length < 1) {
+      return {extent: [0, 0, 0, 0]};
+    }
+    rect.extent = goog.array.concat(nodes[0].extent);
+
+    for (var i = nodes.length - 1; i > 0; --i) {
+      ol.extent.extend(rect.extent, nodes[i].extent);
+    }
+
+    return rect;
   };
 
   /**
@@ -87,13 +114,13 @@ ol.structs.RTree = function(opt_width) {
     var returnArray = [];
     var currentDepth = 1;
 
-    if (!rect || !ol.structs.RTreeRectangle.overlapRectangle(rect, root)) {
+    if (!rect || !ol.extent.intersects(rect.extent, root.extent)) {
       return returnArray;
     }
 
-    var workingObject = /** @type {ol.structs.RTreeNode} */ ({
-      x: rect.x, y: rect.y, w: rect.w, h: rect.h, target: obj
-    });
+    /** @type {ol.structs.RTreeNode} */
+    var workingObject = /** @type {ol.structs.RTreeNode} */
+        ({extent: goog.array.concat(rect), target: obj});
 
     countStack.push(root.nodes.length);
     hitStack.push(root);
@@ -106,13 +133,12 @@ ol.structs.RTree = function(opt_width) {
         // We are searching for a target
         while (i >= 0) {
           var lTree = tree.nodes[i];
-          if (ol.structs.RTreeRectangle.overlapRectangle(
-              workingObject, lTree)) {
+          if (ol.extent.intersects(workingObject.extent, lTree.extent)) {
             if ((workingObject.target && goog.isDef(lTree.leaf) &&
                 lTree.leaf === workingObject.target) ||
                 (!workingObject.target && (goog.isDef(lTree.leaf) ||
-                ol.structs.RTreeRectangle.containsRectangle(
-                    lTree, workingObject)))) { // A Match !!
+                ol.extent.containsExtent(workingObject.extent, lTree.extent))))
+            { // A Match !!
               // Yup we found a match...
               // we can cancel search and start walking up the list
               if (goog.isDef(lTree.nodes)) {
@@ -123,7 +149,7 @@ ol.structs.RTree = function(opt_width) {
                 returnArray = tree.nodes.splice(i, 1);
               }
               // Resize MBR down...
-              ol.structs.RTreeRectangle.makeMBR(tree.nodes, tree);
+              makeMBR(tree.nodes, tree);
               workingObject.target = undefined;
               if (tree.nodes.length < minWidth) { // Underflow
                 workingObject.nodes = /** @type {Array} */
@@ -147,11 +173,11 @@ ol.structs.RTree = function(opt_width) {
         // workingObject.nodes contains a list of elements removed from the
         // tree so far
         if (tree.nodes.length > 0)
-          ol.structs.RTreeRectangle.makeMBR(tree.nodes, tree);
+          makeMBR(tree.nodes, tree);
         for (var t = 0, tt = workingObject.nodes.length; t < tt; ++t)
           insertSubtree(workingObject.nodes[t], tree);
         workingObject.nodes.length = 0;
-        if (hitStack.length == 0 && tree.nodes.length <= 1) {
+        if (hitStack.length === 0 && tree.nodes.length <= 1) {
           // Underflow..on root!
           workingObject.nodes = /** @type {Array} */
               (searchSubtree(tree, true, workingObject.nodes, tree));
@@ -167,7 +193,7 @@ ol.structs.RTree = function(opt_width) {
           workingObject.nodes = undefined; // Just start resizing
         }
       } else { // we are just resizing
-        ol.structs.RTreeRectangle.makeMBR(tree.nodes, tree);
+        makeMBR(tree.nodes, tree);
       }
       currentDepth -= 1;
     } while (hitStack.length > 0);
@@ -205,14 +231,18 @@ ol.structs.RTree = function(opt_width) {
           break;
         }
         // Area of new enlarged rectangle
-        var oldLRatio = squarifiedRatio(lTree.w, lTree.h,
-            lTree.nodes.length + 1);
+        var oldLRatio = squarifiedRatio(lTree.extent[1] - lTree.extent[0],
+            lTree.extent[3] - lTree.extent[2], lTree.nodes.length + 1);
 
         // Enlarge rectangle to fit new rectangle
-        var nw = Math.max(lTree.x + lTree.w, rect.x + rect.w) -
-            Math.min(lTree.x, rect.x);
-        var nh = Math.max(lTree.y + lTree.h, rect.y + rect.h) -
-            Math.min(lTree.y, rect.y);
+        var nw = (lTree.extent[1] > rect.extent[1] ?
+            lTree.extent[1] : rect.extent[1]) -
+            (lTree.extent[0] < rect.extent[0] ?
+            lTree.extent[0] : rect.extent[0]);
+        var nh = (lTree.extent[3] > rect.extent[3] ?
+            lTree.extent[3] : rect.extent[3]) -
+            (lTree.extent[2] < rect.extent[2] ?
+            lTree.extent[2] : rect.extent[2]);
 
         // Area of new enlarged rectangle
         var lRatio = squarifiedRatio(nw, nh, lTree.nodes.length + 2);
@@ -228,9 +258,12 @@ ol.structs.RTree = function(opt_width) {
     return bestChoiceStack;
   };
 
-  /* split a set of nodes into two roughly equally-filled nodes
-   * [ an array of two new arrays of nodes ] = linearSplit(array of nodes)
-   * @private
+  /**
+   * Split a set of nodes into two roughly equally-filled nodes.
+   *
+   * @param {Array.<ol.structs.RTreeNode>} nodes Array of nodes.
+   * @return {Array.<Array.<ol.structs.RTreeNode>>} An array of two new arrays
+   *     of nodes.
    */
   var linearSplit = function(nodes) {
     var n = pickLinear(nodes);
@@ -240,36 +273,44 @@ ol.structs.RTree = function(opt_width) {
     return n;
   };
 
-  /* insert the best source rectangle into the best fitting parent node: a or b
-   * [] = pick_next(array of source nodes, target node array a, target node
-   * array b)
-   * @private
+  /**
+   * Insert the best source rectangle into the best fitting parent node: a or b.
+   *
+   * @param {Array.<ol.structs.RTreeNode>} nodes Source node array.
+   * @param {ol.structs.RTreeNode} a Target node array a.
+   * @param {ol.structs.RTreeNode} b Target node array b.
    */
   var pickNext = function(nodes, a, b) {
     // Area of new enlarged rectangle
-    var areaA = squarifiedRatio(a.w, a.h, a.nodes.length + 1);
-    var areaB = squarifiedRatio(b.w, b.h, b.nodes.length + 1);
+    var areaA = squarifiedRatio(a.extent[1] - a.extent[0],
+        a.extent[3] - a.extent[2], a.nodes.length + 1);
+    var areaB = squarifiedRatio(b.extent[1] - b.extent[0],
+        b.extent[3] - b.extent[2], b.nodes.length + 1);
     var highAreaDelta;
     var highAreaNode;
     var lowestGrowthGroup;
 
     for (var i = nodes.length - 1; i >= 0; --i) {
       var l = nodes[i];
-      var newAreaA = {};
-      newAreaA.x = Math.min(a.x, l.x);
-      newAreaA.y = Math.min(a.y, l.y);
-      newAreaA.w = Math.max(a.x + a.w, l.x + l.w) - newAreaA.x;
-      newAreaA.h = Math.max(a.y + a.h, l.y + l.h) - newAreaA.y;
-      var changeNewAreaA = Math.abs(squarifiedRatio(newAreaA.w, newAreaA.h,
-          a.nodes.length + 2) - areaA);
 
-      var newAreaB = {};
-      newAreaB.x = Math.min(b.x, l.x);
-      newAreaB.y = Math.min(b.y, l.y);
-      newAreaB.w = Math.max(b.x + b.w, l.x + l.w) - newAreaB.x;
-      newAreaB.h = Math.max(b.y + b.h, l.y + l.h) - newAreaB.y;
+      var newAreaA = [
+        a.extent[0] < l.extent[0] ? a.extent[0] : l.extent[0],
+        a.extent[1] > l.extent[1] ? a.extent[1] : l.extent[1],
+        a.extent[2] < l.extent[2] ? a.extent[2] : l.extent[2],
+        a.extent[3] > l.extent[3] ? a.extent[3] : l.extent[3]
+      ];
+      var changeNewAreaA = Math.abs(squarifiedRatio(newAreaA[1] - newAreaA[0],
+          newAreaA[3] - newAreaA[2], a.nodes.length + 2) - areaA);
+
+      var newAreaB = [
+        b.extent[0] < l.extent[0] ? b.extent[0] : l.extent[0],
+        b.extent[1] > l.extent[1] ? b.extent[1] : l.extent[1],
+        b.extent[2] < l.extent[2] ? b.extent[2] : l.extent[2],
+        b.extent[3] > l.extent[3] ? b.extent[3] : l.extent[3]
+      ];
       var changeNewAreaB = Math.abs(squarifiedRatio(
-          newAreaB.w, newAreaB.h, b.nodes.length + 2) - areaB);
+          newAreaB[1] - newAreaB[0], newAreaB[3] - newAreaB[2],
+          b.nodes.length + 2) - areaB);
 
       if (!highAreaNode || !highAreaDelta ||
           Math.abs(changeNewAreaB - changeNewAreaA) < highAreaDelta) {
@@ -281,21 +322,24 @@ ol.structs.RTree = function(opt_width) {
     var tempNode = nodes.splice(highAreaNode, 1)[0];
     if (a.nodes.length + nodes.length + 1 <= minWidth) {
       a.nodes.push(tempNode);
-      ol.structs.RTreeRectangle.expandRectangle(a, tempNode);
+      ol.extent.extend(a.extent, tempNode.extent);
     } else if (b.nodes.length + nodes.length + 1 <= minWidth) {
       b.nodes.push(tempNode);
-      ol.structs.RTreeRectangle.expandRectangle(b, tempNode);
+      ol.extent.extend(b.extent, tempNode.extent);
     }
     else {
       lowestGrowthGroup.nodes.push(tempNode);
-      ol.structs.RTreeRectangle.expandRectangle(lowestGrowthGroup, tempNode);
+      ol.extent.extend(lowestGrowthGroup.extent, tempNode.extent);
     }
   };
 
-  /* pick the "best" two starter nodes to use as seeds using the "linear"
-   * criteria [ an array of two new arrays of nodes ] = pickLinear(array of
-   * source nodes)
-   * @private
+  /**
+   * Pick the "best" two starter nodes to use as seeds using the "linear"
+   * criteria.
+   *
+   * @param {Array.<ol.structs.RTreeNode>} nodes Array of source nodes.
+   * @return {Array.<ol.structs.RTreeNode>} An array of two new arrays
+   *     of nodes.
    */
   var pickLinear = function(nodes) {
     var lowestHighX = nodes.length - 1;
@@ -306,21 +350,21 @@ ol.structs.RTree = function(opt_width) {
 
     for (var i = nodes.length - 2; i >= 0; --i) {
       var l = nodes[i];
-      if (l.x > nodes[highestLowX].x) {
+      if (l.extent[0] > nodes[highestLowX].extent[0]) {
         highestLowX = i;
-      } else if (l.x + l.w < nodes[lowestHighX].x + nodes[lowestHighX].w) {
+      } else if (l.extent[1] < nodes[lowestHighX].extent[2]) {
         lowestHighX = i;
       }
-      if (l.y > nodes[highestLowY].y) {
+      if (l.extent[2] > nodes[highestLowY].extent[2]) {
         highestLowY = i;
-      } else if (l.y + l.h < nodes[lowestHighY].y + nodes[lowestHighY].h) {
+      } else if (l.extent[3] < nodes[lowestHighY].extent[3]) {
         lowestHighY = i;
       }
     }
-    var dx = Math.abs((nodes[lowestHighX].x + nodes[lowestHighX].w) -
-        nodes[highestLowX].x);
-    var dy = Math.abs((nodes[lowestHighY].y + nodes[lowestHighY].h) -
-        nodes[highestLowY].y);
+    var dx = Math.abs(nodes[lowestHighX].extent[1] -
+        nodes[highestLowX].extent[0]);
+    var dy = Math.abs(nodes[lowestHighY].extent[3] -
+        nodes[highestLowY].extent[2]);
     if (dx > dy) {
       if (lowestHighX > highestLowX) {
         t1 = nodes.splice(lowestHighX, 1)[0];
@@ -340,18 +384,12 @@ ol.structs.RTree = function(opt_width) {
     }
     return [
       /** @type {ol.structs.RTreeNode} */
-      ({x: t1.x, y: t1.y, w: t1.w, h: t1.h, nodes: [t1]}),
+      ({extent: goog.array.concat(t1.extent), nodes: [t1]}),
       /** @type {ol.structs.RTreeNode} */
-      ({x: t2.x, y: t2.y, w: t2.w, h: t2.h, nodes: [t2]})
+      ({extent: goog.array.concat(t2.extent), nodes: [t2]})
     ];
   };
 
-  var attachData = function(node, moreTree) {
-    node.nodes = moreTree.nodes;
-    node.x = moreTree.x; node.y = moreTree.y;
-    node.w = moreTree.w; node.h = moreTree.h;
-    return node;
-  };
 
   /**
    * Non-recursive internal search function
@@ -366,7 +404,7 @@ ol.structs.RTree = function(opt_width) {
   var searchSubtree = function(rect, returnNode, result, root, opt_type) {
     var hitStack = []; // Contains the elements that overlap
 
-    if (!ol.structs.RTreeRectangle.overlapRectangle(rect, root)) {
+    if (!ol.extent.intersects(rect.extent, root.extent)) {
       return result;
     }
 
@@ -377,7 +415,7 @@ ol.structs.RTree = function(opt_width) {
 
       for (var i = nodes.length - 1; i >= 0; --i) {
         var lTree = nodes[i];
-        if (ol.structs.RTreeRectangle.overlapRectangle(rect, lTree)) {
+        if (ol.extent.intersects(rect.extent, lTree.extent)) {
           if (goog.isDef(lTree.nodes)) { // Not a Leaf
             hitStack.push(lTree.nodes);
           } else if (goog.isDef(lTree.leaf)) { // A Leaf !!
@@ -399,19 +437,18 @@ ol.structs.RTree = function(opt_width) {
     return result;
   };
 
-  /* non-recursive internal insert function
-   * [] = insertSubtree(rectangle, object to insert, root to begin insertion at)
-   * @private
+  /**
+   * Non-recursive internal insert function.
+   *
+   * @param {ol.structs.RTreeNode} node Node to insert.
+   * @param {ol.structs.RTreeNode} root Root to begin insertion at.
    */
   var insertSubtree = function(node, root) {
     var bc; // Best Current node
     // Initial insertion is special because we resize the Tree and we don't
     // care about any overflow (seriously, how can the first object overflow?)
-    if (root.nodes.length == 0) {
-      root.x = node.x;
-      root.y = node.y;
-      root.w = node.w;
-      root.h = node.h;
+    if (root.nodes.length === 0) {
+      root.extent = goog.array.concat(node.extent);
       root.nodes.push(node);
       return;
     }
@@ -420,16 +457,16 @@ ol.structs.RTree = function(opt_width) {
     // chooseLeaf returns an array of all tree levels (including root)
     // that were traversed while trying to find the leaf
     var treeStack = chooseLeafSubtree(node, root);
-    var workingObject = node;//{x:rect.x,y:rect.y,w:rect.w,h:rect.h, leaf: obj};
+    var workingObject = node;
 
     // Walk back up the tree resizing and inserting as needed
     do {
       //handle the case of an empty node (from a split)
-      if (bc && goog.isDef(bc.nodes) && bc.nodes.length == 0) {
+      if (bc && goog.isDef(bc.nodes) && bc.nodes.length === 0) {
         var pbc = bc; // Past bc
         bc = treeStack.pop();
         for (var t = 0, tt = bc.nodes.length; t < tt; ++t) {
-          if (bc.nodes[t] === pbc || bc.nodes[t].nodes.length == 0) {
+          if (bc.nodes[t] === pbc || bc.nodes[t].nodes.length === 0) {
             bc.nodes.splice(t, 1);
             break;
           }
@@ -445,17 +482,16 @@ ol.structs.RTree = function(opt_width) {
         // Do Insert
         if (isArray) {
           for (var ai = 0, aii = workingObject.length; ai < aii; ++ai) {
-            ol.structs.RTreeRectangle.expandRectangle(bc, workingObject[ai]);
+            ol.extent.extend(bc.extent, workingObject[ai].extent);
           }
           bc.nodes = bc.nodes.concat(workingObject);
         } else {
-          ol.structs.RTreeRectangle.expandRectangle(bc, workingObject);
+          ol.extent.extend(bc.extent, workingObject.extent);
           bc.nodes.push(workingObject); // Do Insert
         }
 
         if (bc.nodes.length <= maxWidth) { // Start Resizeing Up the Tree
-          workingObject = /** @type {ol.structs.RTreeNode} */
-              ({x: bc.x, y: bc.y, w: bc.w, h: bc.h});
+          workingObject = {extent: goog.array.concat(bc.extent)};
         } else { // Otherwise Split this Node
           // linearSplit() returns an array containing two new nodes
           // formed from the split of the previous node's overflow
@@ -470,9 +506,8 @@ ol.structs.RTree = function(opt_width) {
         }
       } else { // Otherwise Do Resize
         //Just keep applying the new bounding rectangle to the parents..
-        ol.structs.RTreeRectangle.expandRectangle(bc, workingObject);
-        workingObject = /** @type {ol.structs.RTreeNode} */
-            ({x: bc.x, y: bc.y, w: bc.w, h: bc.h});
+        ol.extent.extend(bc.extent, workingObject.extent);
+        workingObject = ({extent: goog.array.concat(bc.extent)});
       }
     } while (treeStack.length > 0);
   };
@@ -486,11 +521,8 @@ ol.structs.RTree = function(opt_width) {
    * @this {ol.structs.RTree}
    */
   this.find = function(extent, opt_type) {
-    var rect = /** @type {ol.structs.RTreeNode} */ ({
-      x: extent[0], y: extent[2],
-      w: extent[1] - extent[0], h: extent[3] - extent[2]
-    });
-    return searchSubtree.apply(this, [rect, false, {}, tree, opt_type]);
+    var rect = ({extent: extent});
+    return searchSubtree.apply(this, [rect, false, {}, rootTree, opt_type]);
   };
 
   /**
@@ -506,7 +538,7 @@ ol.structs.RTree = function(opt_width) {
       case 1:
         arguments[1] = false; // opt_obj == false for conditionals
       case 2:
-        arguments[2] = tree; // Add root node to end of argument list
+        arguments[2] = rootTree; // Add root node to end of argument list
       default:
         arguments.length = 3;
     }
@@ -531,94 +563,12 @@ ol.structs.RTree = function(opt_width) {
    * @param {string=} opt_type Optional type to store along with the object.
    */
   this.put = function(extent, obj, opt_type) {
-    var node = /** @type {ol.structs.RTreeNode} */ ({
-      x: extent[0], y: extent[2],
-      w: extent[1] - extent[0], h: extent[3] - extent[2],
-      leaf: obj
-    });
+    var node = ({extent: extent, leaf: obj});
     if (goog.isDef(opt_type)) {
       node.type = opt_type;
     }
-    insertSubtree(node, tree);
+    insertSubtree(node, rootTree);
   };
 
   //End of RTree
-};
-
-
-/**
- * Returns true if rectangle 1 overlaps rectangle 2.
- *
- * @param {ol.structs.RTreeNode} a Rectangle A.
- * @param {ol.structs.RTreeNode} b Rectangle B.
- * @return {boolean} Does a overlap b?
- */
-ol.structs.RTreeRectangle.overlapRectangle = function(a, b) {
-  // TODO The original implementation has < and > instead of <= and >= or equal.
-  // Make sure that this change (which made our tests pass) does not have any
-  // unwanted side effects.
-  return a.x <= (b.x + b.w) && (a.x + a.w) >= b.x && a.y <= (b.y + b.h) &&
-      (a.y + a.h) >= b.y;
-};
-
-
-/**
- * Returns true if rectangle a is contained in rectangle b.
- *
- * @param {ol.structs.RTreeNode} a Rectangle A.
- * @param {ol.structs.RTreeNode} b Rectangle B.
- * @return {boolean} Is a contained in b?
- */
-ol.structs.RTreeRectangle.containsRectangle = function(a, b) {
-  return (a.x + a.w) <= (b.x + b.w) && a.x >= b.x && (a.y + a.h) <=
-      (b.y + b.h) && a.y >= b.y;
-};
-
-
-/**
- * Expands rectangle A to include rectangle B, rectangle B is untouched.
- *
- * @param {ol.structs.RTreeNode} a Rectangle A.
- * @param {ol.structs.RTreeNode} b Rectangle B.
- * @return {ol.structs.RTreeNode} Rectangle A.
- */
-ol.structs.RTreeRectangle.expandRectangle = function(a, b)  {
-  var nx = Math.min(a.x, b.x);
-  var ny = Math.min(a.y, b.y);
-  a.w = Math.max(a.x + a.w, b.x + b.w) - nx;
-  a.h = Math.max(a.y + a.h, b.y + b.h) - ny;
-  a.x = nx;
-  a.y = ny;
-  return a;
-};
-
-
-/**
- * Generates a minimally bounding rectangle for all rectangles in
- * array "nodes". If rect is set, it is modified into the MBR. Otherwise,
- * a new rectangle is generated and returned.
- *
- * @param {Array} nodes Nodes.
- * @param {ol.structs.RTreeNode} rect Rectangle.
- * @return {ol.structs.RTreeNode} Rectangle.
- */
-ol.structs.RTreeRectangle.makeMBR = function(nodes, rect) {
-  if (nodes.length < 1) {
-    return {x: 0, y: 0, w: 0, h: 0};
-  }
-  if (!rect) {
-    rect = {x: nodes[0].x, y: nodes[0].y, w: nodes[0].w, h: nodes[0].h};
-  }
-  else {
-    rect.x = nodes[0].x;
-    rect.y = nodes[0].y;
-    rect.w = nodes[0].w;
-    rect.h = nodes[0].h;
-  }
-
-  for (var i = nodes.length - 1; i > 0; --i) {
-    ol.structs.RTreeRectangle.expandRectangle(rect, nodes[i]);
-  }
-
-  return rect;
 };
