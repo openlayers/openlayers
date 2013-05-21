@@ -20,6 +20,7 @@ describe('ol.geom.MultiPolygon', function() {
     it('throws when given with insufficient dimensions', function() {
       expect(function() {
         var multi = new ol.geom.MultiPolygon([1]);
+        multi = multi; // suppress gjslint warning about unused variable
       }).to.throwException();
     });
 

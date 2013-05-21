@@ -1,7 +1,6 @@
 goog.provide('ol.geom.Polygon');
 
 goog.require('goog.asserts');
-goog.require('ol.Extent');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LinearRing');
@@ -50,12 +49,6 @@ ol.geom.Polygon = function(coordinates, opt_shared) {
    */
   this.dimension = vertices.getDimension();
   goog.asserts.assert(this.dimension >= 2);
-
-  /**
-   * @type {ol.Extent}
-   * @private
-   */
-  this.bounds_ = null;
 
 };
 goog.inherits(ol.geom.Polygon, ol.geom.Geometry);

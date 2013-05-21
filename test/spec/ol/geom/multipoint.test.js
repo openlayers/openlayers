@@ -13,6 +13,7 @@ describe('ol.geom.MultiPoint', function() {
     it('throws when given with insufficient dimensions', function() {
       expect(function() {
         var multi = new ol.geom.MultiPoint([1]);
+        multi = multi; // suppress gjslint warning about unused variable
       }).to.throwException();
     });
 
