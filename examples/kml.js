@@ -67,7 +67,6 @@ xhr.open('GET', url, true);
 xhr.onload = function() {
   if (xhr.status == 200) {
     // this is silly to have to tell the layer the destination projection
-    var projection = map.getView().getProjection();
     vector.parseFeatures(xhr.responseText, kml, epsg4326);
   }
 };
