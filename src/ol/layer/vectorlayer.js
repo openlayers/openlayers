@@ -102,8 +102,9 @@ ol.layer.FeatureCache.prototype.getFeaturesObject = function(opt_filter) {
           }
         }
         if (extentFilter && geometryFilter) {
-          features = this.rTree_.find(
-              extentFilter.getExtent(), geometryFilter.getType());
+          var type = geometryFilter.getType();
+          features = goog.object.isEmpty(this.geometryTypeIndex_[type]) ? {} :
+              this.rTree_.find(extentFilter.getExtent(), type);
         }
       }
     }
