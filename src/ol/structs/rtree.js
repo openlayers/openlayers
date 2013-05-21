@@ -91,7 +91,7 @@ ol.structs.RTree = function(opt_width) {
     if (nodes.length < 1) {
       return {extent: [0, 0, 0, 0]};
     }
-    rect.extent = goog.array.concat(nodes[0].extent);
+    rect.extent = nodes[0].extent.concat();
 
     for (var i = nodes.length - 1; i > 0; --i) {
       ol.extent.extend(rect.extent, nodes[i].extent);
@@ -120,7 +120,7 @@ ol.structs.RTree = function(opt_width) {
 
     /** @type {ol.structs.RTreeNode} */
     var workingObject = /** @type {ol.structs.RTreeNode} */
-        ({extent: goog.array.concat(rect.extent), target: obj});
+        ({extent: rect.extent.concat(), target: obj});
 
     countStack.push(root.nodes.length);
     hitStack.push(root);
@@ -172,10 +172,12 @@ ol.structs.RTree = function(opt_width) {
         tree.nodes.splice(i + 1, 1); // Remove unsplit node
         // workingObject.nodes contains a list of elements removed from the
         // tree so far
-        if (tree.nodes.length > 0)
+        if (tree.nodes.length > 0) {
           makeMBR(tree.nodes, tree);
-        for (var t = 0, tt = workingObject.nodes.length; t < tt; ++t)
+        }
+        for (var t = 0, tt = workingObject.nodes.length; t < tt; ++t) {
           insertSubtree(workingObject.nodes[t], tree);
+        }
         workingObject.nodes.length = 0;
         if (hitStack.length === 0 && tree.nodes.length <= 1) {
           // Underflow..on root!
@@ -312,10 +314,11 @@ ol.structs.RTree = function(opt_width) {
           newAreaB[1] - newAreaB[0], newAreaB[3] - newAreaB[2],
           b.nodes.length + 2) - areaB);
 
+      var changeNewAreaDelta = Math.abs(changeNewAreaB - changeNewAreaA);
       if (!highAreaNode || !highAreaDelta ||
-          Math.abs(changeNewAreaB - changeNewAreaA) < highAreaDelta) {
+          changeNewAreaDelta < highAreaDelta) {
         highAreaNode = i;
-        highAreaDelta = Math.abs(changeNewAreaB - changeNewAreaA);
+        highAreaDelta = changeNewAreaDelta;
         lowestGrowthGroup = changeNewAreaB < changeNewAreaA ? b : a;
       }
     }
@@ -384,9 +387,9 @@ ol.structs.RTree = function(opt_width) {
     }
     return [
       /** @type {ol.structs.RTreeNode} */
-      ({extent: goog.array.concat(t1.extent), nodes: [t1]}),
+      ({extent: t1.extent.concat(), nodes: [t1]}),
       /** @type {ol.structs.RTreeNode} */
-      ({extent: goog.array.concat(t2.extent), nodes: [t2]})
+      ({extent: t2.extent.concat(), nodes: [t2]})
     ];
   };
 
@@ -448,7 +451,7 @@ ol.structs.RTree = function(opt_width) {
     // Initial insertion is special because we resize the Tree and we don't
     // care about any overflow (seriously, how can the first object overflow?)
     if (root.nodes.length === 0) {
-      root.extent = goog.array.concat(node.extent);
+      root.extent = node.extent.concat();
       root.nodes.push(node);
       return;
     }
@@ -491,7 +494,7 @@ ol.structs.RTree = function(opt_width) {
         }
 
         if (bc.nodes.length <= maxWidth) { // Start Resizeing Up the Tree
-          workingObject = {extent: goog.array.concat(bc.extent)};
+          workingObject = {extent: bc.extent.concat()};
         } else { // Otherwise Split this Node
           // linearSplit() returns an array containing two new nodes
           // formed from the split of the previous node's overflow
@@ -507,7 +510,7 @@ ol.structs.RTree = function(opt_width) {
       } else { // Otherwise Do Resize
         //Just keep applying the new bounding rectangle to the parents..
         ol.extent.extend(bc.extent, workingObject.extent);
-        workingObject = ({extent: goog.array.concat(bc.extent)});
+        workingObject = ({extent: bc.extent.concat()});
       }
     } while (treeStack.length > 0);
   };
