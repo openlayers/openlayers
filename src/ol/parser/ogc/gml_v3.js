@@ -119,7 +119,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       var dim = obj.srsDimension ||
           parseInt(node.getAttribute('srsDimension') ||
           node.getAttribute('dimension'), 10) || 2;
-      var j, x, y, z;
+      var x, y, z;
       var numPoints = coords.length / dim;
       var points = new Array(numPoints);
       for (var i = 0, ii = coords.length; i < ii; i += dim) {
