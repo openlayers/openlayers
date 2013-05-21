@@ -3,17 +3,14 @@
 goog.provide('ol.control.Attribution');
 
 goog.require('goog.array');
-goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('ol.Attribution');
 goog.require('ol.FrameState');
-goog.require('ol.TileRange');
 goog.require('ol.control.Control');
 goog.require('ol.css');
-goog.require('ol.source.Source');
 
 
 
@@ -67,33 +64,33 @@ goog.inherits(ol.control.Attribution, ol.control.Control);
 
 
 /**
- * @param {?Object.<string, Object.<string, ol.TileRange>>} usedTiles Used
- *     tiles.
- * @param {Object.<string, ol.source.Source>} sources Sources.
+ * @param {?ol.FrameState} frameState Frame state.
  * @return {Object.<string, ol.Attribution>} Attributions.
  */
 ol.control.Attribution.prototype.getTileSourceAttributions =
-    function(usedTiles, sources) {
+    function(frameState) {
   /** @type {Object.<string, ol.Attribution>} */
   var attributions = {};
-  var i, ii, tileRanges, tileSource, tileSourceAttribution,
-      tileSourceAttributionKey, tileSourceAttributions, tileSourceKey, z;
-  for (tileSourceKey in usedTiles) {
-    goog.asserts.assert(tileSourceKey in sources);
-    tileSource = sources[tileSourceKey];
-    tileSourceAttributions = tileSource.getAttributions();
-    if (goog.isNull(tileSourceAttributions)) {
-      continue;
-    }
-    tileRanges = usedTiles[tileSourceKey];
-    for (i = 0, ii = tileSourceAttributions.length; i < ii; ++i) {
-      tileSourceAttribution = tileSourceAttributions[i];
-      tileSourceAttributionKey = goog.getUid(tileSourceAttribution).toString();
-      if (tileSourceAttributionKey in attributions) {
+  var i, ii, j, jj, tileRanges, tileSource, tileSourceAttribution,
+      tileSourceAttributionKey, tileSourceAttributions, tileSourceKey;
+  var layers = frameState.layersArray;
+  for (i = 0, ii = layers.length; i < ii; i++) {
+    tileSource = layers[i].getSource();
+    tileSourceKey = goog.getUid(tileSource).toString();
+    if (tileSourceKey in frameState.usedTiles) {
+      tileSourceAttributions = tileSource.getAttributions();
+      if (goog.isNull(tileSourceAttributions)) {
         continue;
       }
-      if (tileSourceAttribution.intersectsAnyTileRange(tileRanges)) {
-        attributions[tileSourceAttributionKey] = tileSourceAttribution;
+      tileRanges = frameState.usedTiles[tileSourceKey];
+      for (j = 0, jj = tileSourceAttributions.length; j < jj; j++) {
+        tileSourceAttribution = tileSourceAttributions[j];
+        tileSourceAttributionKey =
+            goog.getUid(tileSourceAttribution).toString();
+        if (!(tileSourceAttributionKey in attributions) &&
+            tileSourceAttribution.intersectsAnyTileRange(tileRanges)) {
+          attributions[tileSourceAttributionKey] = tileSourceAttribution;
+        }
       }
     }
   }
@@ -123,64 +120,34 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
     return;
   }
 
-  var map = this.getMap();
-
-  /** @type {Object.<string, boolean>} */
-  var attributionsToRemove = {};
-  /** @type {Object.<string, ol.source.Source>} */
-  var sources = {};
-  var layers = map.getLayers();
-  if (goog.isDef(layers)) {
-    layers.forEach(function(layer) {
-      var source = layer.getSource();
-      sources[goog.getUid(source).toString()] = source;
-      var attributions = source.getAttributions();
-      if (!goog.isNull(attributions)) {
-        var attribution, i, ii;
-        for (i = 0, ii = attributions.length; i < ii; ++i) {
-          attribution = attributions[i];
-          attributionKey = goog.getUid(attribution).toString();
-          attributionsToRemove[attributionKey] = true;
-        }
-      }
-    });
-  }
-
   /** @type {Object.<string, ol.Attribution>} */
   var attributions = goog.object.clone(frameState.attributions);
-  var tileSourceAttributions = this.getTileSourceAttributions(
-      frameState.usedTiles, sources);
-  goog.object.extend(attributions, tileSourceAttributions);
+  goog.object.extend(attributions, this.getTileSourceAttributions(frameState));
 
-  /** @type {Array.<number>} */
-  var attributionKeys =
-      goog.array.map(goog.object.getKeys(attributions), Number);
-  goog.array.sort(attributionKeys);
-  var i, ii, attributionElement, attributionKey;
-  for (i = 0, ii = attributionKeys.length; i < ii; ++i) {
-    attributionKey = attributionKeys[i].toString();
-    if (attributionKey in this.attributionElements_) {
+  var attributionElement, attributionKey;
+  for (attributionKey in this.attributionElements_) {
+    if (attributionKey in attributions) {
       if (!this.attributionElementRenderedVisible_[attributionKey]) {
         goog.style.showElement(this.attributionElements_[attributionKey], true);
         this.attributionElementRenderedVisible_[attributionKey] = true;
       }
-    } else {
-      attributionElement = goog.dom.createElement(goog.dom.TagName.LI);
-      attributionElement.innerHTML = attributions[attributionKey].getHTML();
-      goog.dom.appendChild(this.ulElement_, attributionElement);
-      this.attributionElements_[attributionKey] = attributionElement;
-      this.attributionElementRenderedVisible_[attributionKey] = true;
+      delete attributions[attributionKey];
     }
-    delete attributionsToRemove[attributionKey];
+    else {
+      goog.dom.removeNode(this.attributionElements_[attributionKey]);
+      delete this.attributionElements_[attributionKey];
+      delete this.attributionElementRenderedVisible_[attributionKey];
+    }
+  }
+  for (attributionKey in attributions) {
+    attributionElement = goog.dom.createElement(goog.dom.TagName.LI);
+    attributionElement.innerHTML = attributions[attributionKey].getHTML();
+    goog.dom.appendChild(this.ulElement_, attributionElement);
+    this.attributionElements_[attributionKey] = attributionElement;
+    this.attributionElementRenderedVisible_[attributionKey] = true;
   }
 
-  for (attributionKey in attributionsToRemove) {
-    goog.dom.removeNode(this.attributionElements_[attributionKey]);
-    delete this.attributionElements_[attributionKey];
-    delete this.attributionElementRenderedVisible_[attributionKey];
-  }
-
-  var renderVisible = !goog.array.isEmpty(attributionKeys);
+  var renderVisible = !goog.object.isEmpty(this.attributionElements_);
   if (this.renderedVisible_ != renderVisible) {
     goog.style.showElement(this.element, renderVisible);
     this.renderedVisible_ = renderVisible;
