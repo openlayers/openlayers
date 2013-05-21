@@ -6,7 +6,6 @@ describe('ol.renderer.webgl.ImageLayer', function() {
     var renderer;
     var canvasWidth;
     var canvasHeight;
-    var viewExtent;
     var viewResolution;
     var viewRotation;
     var viewCenter;

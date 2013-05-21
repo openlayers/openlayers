@@ -165,7 +165,6 @@ ol.renderer.webgl.Map = function(container, map) {
        * @return {number} Priority.
        */
       goog.bind(function(element) {
-        var tile = /** @type {ol.Tile} */ (element[0]);
         var tileCenter = /** @type {ol.Coordinate} */ (element[1]);
         var tileResolution = /** @type {number} */ (element[2]);
         var deltaX = tileCenter[0] - this.focus_[0];
@@ -312,7 +311,6 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
  */
 ol.renderer.webgl.Map.prototype.deleteBuffer = function(buf) {
   var gl = this.getGL();
-  var arr = buf.getArray();
   var bufferKey = goog.getUid(buf);
   goog.asserts.assert(bufferKey in this.bufferCache_);
   var bufferCacheEntry = this.bufferCache_[bufferKey];
@@ -359,7 +357,7 @@ ol.renderer.webgl.Map.prototype.disposeInternal = function() {
  */
 ol.renderer.webgl.Map.prototype.expireCache_ = function(map, frameState) {
   var gl = this.getGL();
-  var key, textureCacheEntry;
+  var textureCacheEntry;
   while (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ >
       ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
     textureCacheEntry = /** @type {?ol.renderer.webgl.TextureCacheEntry} */
@@ -546,7 +544,6 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   this.textureCache_.set((-frameState.index).toString(), null);
   ++this.textureCacheFrameMarkerCount_;
 
-  var layerStates = frameState.layerStates;
   var layersArray = frameState.layersArray;
   var i, ii, layer, layerRenderer, layerState;
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
