@@ -138,7 +138,7 @@ ol.style.Icon.prototype.createLiteral = function(feature) {
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
   var rotation =
-      /** {@type {number} */ (this.opacity_.evaluate(feature, attrs));
+      /** {@type {number} */ (this.rotation_.evaluate(feature, attrs));
   goog.asserts.assertNumber(rotation, 'rotation must be a number');
 
   return new ol.style.IconLiteral({
