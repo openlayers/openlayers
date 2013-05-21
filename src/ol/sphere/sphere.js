@@ -54,7 +54,6 @@ ol.Sphere.prototype.cosineDistance = function(c1, c2) {
  * @return {number} Cross-track distance.
  */
 ol.Sphere.prototype.crossTrackDistance = function(c1, c2, c3) {
-  var d12 = this.cosineDistance(c1, c2);
   var d13 = this.cosineDistance(c1, c2);
   var theta12 = goog.math.toRadians(this.initialBearing(c1, c2));
   var theta13 = goog.math.toRadians(this.initialBearing(c1, c3));
