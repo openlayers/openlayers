@@ -56,9 +56,9 @@ describe('ol.structs.RTree', function() {
       var len = 0;
       while (i > 0) {
         var bounds = new Array(4);
-        bounds[0] = -Math.random() * 10000 + 501;
+        bounds[0] = Math.random() * 10000;
         bounds[1] = bounds[0] + Math.random() * 500;
-        bounds[2] = -Math.random() * 10000 + 501;
+        bounds[2] = Math.random() * 10000;
         bounds[3] = bounds[2] + Math.random() * 500;
         len += goog.object.getCount(rTree.find(bounds));
         i--;
