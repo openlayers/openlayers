@@ -28,7 +28,7 @@ var map = new ol.Map({
   })
 });
 
-map.on('mousemove', function(evt) {
+map.on(['click', 'mousemove'], function(evt) {
   map.getFeatureInfo({
     pixel: evt.getPixel(),
     layers: [vector],
