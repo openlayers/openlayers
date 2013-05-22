@@ -51,6 +51,8 @@ ol.parser.KML = function(opt_options) {
       options.extractAttributes : true;
   this.extractStyles = goog.isDef(options.extractStyles) ?
       options.extractStyles : false;
+  this.schemaLocation = 'http://www.opengis.net/kml/2.2 ' +
+      'http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd';
   // TODO re-evaluate once shared structures support 3D
   this.dimension = goog.isDef(options.dimension) ? options.dimension : 3;
   this.maxDepth = goog.isDef(options.maxDepth) ? options.maxDepth : 0;
@@ -557,7 +559,6 @@ ol.parser.KML = function(opt_options) {
     'http://www.opengis.net/kml/2.2': {
       'kml': function(options) {
         var node = this.createElementNS('kml');
-        node.setAttribute('xmlns', this.defaultNamespaceURI);
         this.writeNode('Document', options, null, node);
         return node;
       },
@@ -1046,5 +1047,8 @@ ol.parser.KML.prototype.createGeometry_ = function(container,
  */
 ol.parser.KML.prototype.write = function(obj) {
   var root = this.writeNode('kml', obj);
-  return goog.dom.xml.serialize(root);
+  this.setAttributeNS(
+      root, 'http://www.w3.org/2001/XMLSchema-instance',
+      'xsi:schemaLocation', this.schemaLocation);
+  return this.serialize(root);
 };

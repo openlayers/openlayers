@@ -156,7 +156,10 @@ describe('ol.parser.kml', function() {
       expect(obj.features[0].get('name')).to.eql('Pezinok');
     });
     it('Test line style', function() {
-      var test_style = '<kml xmlns="http://www.opengis.net/kml/2.2"> ' +
+      var test_style = '<kml xmlns="http://www.opengis.net/kml/2.2" ' +
+          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+          'xsi:schemaLocation="http://www.opengis.net/kml/2.2 ' +
+          'http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd"> ' +
           '<Document><Placemark><Style><LineStyle> <color>870000ff</color> ' +
           '<width>10</width> </LineStyle> </Style>  <LineString> ' +
           '<coordinates> -112,36 -113,37 </coordinates> </LineString>' +
@@ -173,7 +176,7 @@ describe('ol.parser.kml', function() {
       expect(symbolizer.strokeWidth).to.eql(10);
     });
     it('Test style fill', function() {
-      var test_style_fill = '<kml xmlns="http://www.opengis.net/kml/2.2"> ' +
+      var test_style_fill = '<kml xmlns="http://www.opengis.net/kml/2.2">' +
           '<Document><Placemark>    <Style> <PolyStyle> <fill>1</fill> ' +
           '<color>870000ff</color> <width>10</width> </PolyStyle> </Style>' +
           '<Polygon><outerBoundaryIs><LinearRing><coordinates>' +
@@ -188,7 +191,10 @@ describe('ol.parser.kml', function() {
           '49.630662409673505 8.397385910100951,48.45172350357396 ' +
           '5.001370157823406,49.26855713824488</coordinates></LinearRing>' +
           '</outerBoundaryIs></Polygon></Placemark></Document></kml>';
-      var style_fill_write = '<kml xmlns="http://www.opengis.net/kml/2.2"> ' +
+      var style_fill_write = '<kml xmlns="http://www.opengis.net/kml/2.2" ' +
+          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+          'xsi:schemaLocation="http://www.opengis.net/kml/2.2 ' +
+          'http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd"> ' +
           '<Document><Placemark>    <Style> <PolyStyle> <fill>1</fill> ' +
           '<color>870000ff</color> <width>10</width> </PolyStyle> </Style>' +
           '<Polygon><outerBoundaryIs><LinearRing><coordinates>' +
