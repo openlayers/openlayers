@@ -42,7 +42,7 @@ var map = new ol.Map({
 var kml = new ol.parser.KML({
   maxDepth: 1, dimension: 2, extractStyles: true, extractAttributes: true});
 
-map.on('mousemove', function(evt) {
+map.on(['click', 'mousemove'], function(evt) {
   map.getFeatureInfo({
     pixel: evt.getPixel(),
     layers: [vector],
