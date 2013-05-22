@@ -39,3 +39,6 @@ brightness.bindTo('value', layer, 'brightness');
 
 var rotation = new ol.dom.Input(document.getElementById('rotation'));
 rotation.bindTo('value', map.getView(), 'rotation');
+
+var resolution = new ol.dom.Input(document.getElementById('resolution'));
+resolution.bindTo('value', map.getView(), 'resolution');
