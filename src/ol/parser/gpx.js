@@ -127,6 +127,8 @@ ol.parser.GPX = function(opt_options) {
         var value = this.getChildValue(node);
         if (obj.properties) {
           obj.properties[local] = value.replace(this.regExes.trimSpace, '');
+        } else {
+          obj[local] = value.replace(this.regExes.trimSpace, '');
         }
       }
     }

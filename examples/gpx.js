@@ -1,4 +1,3 @@
-goog.require('ol.Collection');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
@@ -20,13 +19,27 @@ var vector = new ol.layer.Vector({
 });
 
 var map = new ol.Map({
-  layers: new ol.Collection([raster, vector]),
+  layers: [raster, vector],
   renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
     center: [-7916461.9312699, 5226343.9091441],
     zoom: 11
   })
+});
+
+map.on('mousemove', function(evt) {
+  map.getFeatureInfo({
+    pixel: evt.getPixel(),
+    layers: [vector],
+    success: function(features) {
+      var info = [];
+      for (var i = 0, ii = features.length; i < ii; ++i) {
+        info.push(features[i].get('name') + ': ' + features[i].get('type'));
+      }
+      document.getElementById('info').innerHTML = info.join(', ') || '&nbsp;';
+    }
+  });
 });
 
 var gpx = new ol.parser.GPX();
