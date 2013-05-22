@@ -151,6 +151,7 @@ describe('ol.parser.GeoJSON', function() {
         var first = result[0];
         expect(first).to.be.a(ol.Feature);
         expect(first.get('name')).to.be('Afghanistan');
+        expect(first.get('id')).to.be('AFG');
         var firstGeom = first.getGeometry();
         expect(firstGeom).to.be.a(ol.geom.Polygon);
         expect(ol.extent.equals(firstGeom.getBounds(),
