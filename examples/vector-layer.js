@@ -48,7 +48,7 @@ map.on(['click', 'mousemove'], function(evt) {
     success: function(features) {
       var info = [];
       for (var i = 0, ii = features.length; i < ii; ++i) {
-        info.push(features[i].get('name'));
+        info.push(features[i].get('id') + ': ' + features[i].get('name'));
       }
       document.getElementById('info').innerHTML = info.join(', ') || '&nbsp;';
     }
