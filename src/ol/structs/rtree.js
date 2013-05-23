@@ -34,7 +34,7 @@ goog.require('ol.extent');
 
 
 /**
- * @typedef {{extent: (ol.Extent), leaf: (Object|undefined),
+ * @typedef {{extent: ol.Extent, leaf: (Object|undefined),
  *     nodes: (Array.<ol.structs.RTreeNode>|undefined),
  *     target: (Object|undefined), type: (string|undefined)}}
  */
@@ -50,17 +50,18 @@ ol.structs.RTree = function(opt_width) {
   // Variables to control tree-dimensions
   var minWidth = 3;  // Minimum width of any node before a merge
   var maxWidth = 6;  // Maximum width of any node before a split
-  if (!isNaN(opt_width)) {
+  if (goog.isDef(opt_width)) {
     minWidth = Math.floor(opt_width / 2);
     maxWidth = opt_width;
   }
+
   // Start with an empty root-tree
   var rootTree = /** @type {ol.structs.RTreeNode} */
       ({extent: [0, 0, 0, 0], nodes: []});
 
   /**
    * This is Jon-Carlos Rivera's special addition to the world of r-trees.
-   * Every other (simple) method he found produced crap trees.
+   * Every other (simple) method he found produced poor trees.
    * This skews insertions to prefering squarer and emptier nodes.
    *
    * @param {number} l L.
@@ -402,9 +403,13 @@ ol.structs.RTree = function(opt_width) {
    * @param {Array|Object} result Result.
    * @param {ol.structs.RTreeNode} root Root.
    * @param {string=} opt_type Optional type to search for.
+   * @param {boolean=} opt_resultAsObject If set, result will be an object keyed
+   *     by UID.
    * @return {Array|Object} Result.
    */
-  var searchSubtree = function(rect, returnNode, result, root, opt_type) {
+  var searchSubtree = function(rect, returnNode, result, root, opt_type,
+      opt_resultAsObject) {
+    var resultObject = {};
     var hitStack = []; // Contains the elements that overlap
 
     if (!ol.extent.intersects(rect.extent, root.extent)) {
@@ -427,7 +432,11 @@ ol.structs.RTree = function(opt_width) {
               // walk all the way in to the leaf to know that we don't need it
               if (!goog.isDef(opt_type) || lTree.type == opt_type) {
                 var obj = lTree.leaf;
-                result[goog.getUid(obj).toString()] = obj;
+                if (goog.isDef(opt_resultAsObject)) {
+                  resultObject[goog.getUid(obj).toString()] = obj;
+                } else {
+                  result.push(obj);
+                }
               }
             } else {
               result.push(lTree);
@@ -437,7 +446,11 @@ ol.structs.RTree = function(opt_width) {
       }
     } while (hitStack.length > 0);
 
-    return result;
+    if (goog.isDef(opt_resultAsObject)) {
+      return resultObject;
+    } else {
+      return result;
+    }
   };
 
   /**
@@ -520,12 +533,27 @@ ol.structs.RTree = function(opt_width) {
    *
    * @param {ol.Extent} extent Extent.
    * @param {string=} opt_type Optional type of the objects we want to find.
+   * @return {Array} Result.
+   * @this {ol.structs.RTree}
+   */
+  this.search = function(extent, opt_type) {
+    var rect = /** @type {ol.structs.RTreeNode} */ ({extent: extent});
+    return /** @type {Array} */ (searchSubtree.apply(this, [rect, false, [],
+          rootTree, opt_type]));
+  };
+
+  /**
+   * Non-recursive search function
+   *
+   * @param {ol.Extent} extent Extent.
+   * @param {string=} opt_type Optional type of the objects we want to find.
    * @return {Object} Result. Keys are UIDs of the values.
    * @this {ol.structs.RTree}
    */
-  this.find = function(extent, opt_type) {
+  this.searchReturningObject = function(extent, opt_type) {
     var rect = /** @type {ol.structs.RTreeNode} */ ({extent: extent});
-    return searchSubtree.apply(this, [rect, false, {}, rootTree, opt_type]);
+    return /** @type {Object} */ (searchSubtree.apply(this, [rect, false, [],
+          rootTree, opt_type, true]));
   };
 
   /**
@@ -566,7 +594,7 @@ ol.structs.RTree = function(opt_width) {
    * @param {Object} obj Object to insert.
    * @param {string=} opt_type Optional type to store along with the object.
    */
-  this.put = function(extent, obj, opt_type) {
+  this.insert = function(extent, obj, opt_type) {
     var node = /** @type {ol.structs.RTreeNode} */
         ({extent: extent, leaf: obj});
     if (goog.isDef(opt_type)) {

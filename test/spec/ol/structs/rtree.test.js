@@ -14,10 +14,10 @@ describe('ol.structs.RTree', function() {
         bounds[1] = bounds[0] + Math.random() * 500;
         bounds[2] = Math.random() * 10000;
         bounds[3] = bounds[2] + Math.random() * 500;
-        rTree.put(bounds, 'JUST A TEST OBJECT!_' + i);
+        rTree.insert(bounds, 'JUST A TEST OBJECT!_' + i);
         i--;
       }
-      expect(goog.object.getCount(rTree.find([0, 10600, 0, 10600])))
+      expect(goog.object.getCount(rTree.search([0, 10600, 0, 10600])))
           .to.be(1000);
     });
     it('can insert 1k more objects', function() {
@@ -28,10 +28,10 @@ describe('ol.structs.RTree', function() {
         bounds[1] = bounds[0] + Math.random() * 500;
         bounds[2] = Math.random() * 10000;
         bounds[3] = bounds[2] + Math.random() * 500;
-        rTree.put(bounds, 'JUST A TEST OBJECT!_' + i);
+        rTree.insert(bounds, 'JUST A TEST OBJECT!_' + i);
         i--;
       }
-      expect(goog.object.getCount(rTree.find([0, 10600, 0, 10600])))
+      expect(goog.object.getCount(rTree.search([0, 10600, 0, 10600])))
           .to.be(2000);
     });
   });
@@ -46,7 +46,7 @@ describe('ol.structs.RTree', function() {
         bounds[1] = bounds[0] + Math.random() * 500;
         bounds[2] = -(Math.random() * 10000 + 501);
         bounds[3] = bounds[2] + Math.random() * 500;
-        len += goog.object.getCount(rTree.find(bounds));
+        len += rTree.search(bounds).length;
         i--;
       }
       expect(len).to.be(0);
@@ -60,7 +60,7 @@ describe('ol.structs.RTree', function() {
         bounds[1] = bounds[0] + Math.random() * 500;
         bounds[2] = Math.random() * 10000;
         bounds[3] = bounds[2] + Math.random() * 500;
-        len += goog.object.getCount(rTree.find(bounds));
+        len += rTree.search(bounds).length;
         i--;
       }
       expect(len).not.to.be(0);
@@ -81,28 +81,46 @@ describe('ol.structs.RTree', function() {
     });
   });
 
-  describe('result plausibility', function() {
+  describe('result plausibility and structure', function() {
 
     it('filters by rectangle', function() {
-      rTree.put([0, 1, 0, 1], 1);
-      rTree.put([1, 4, 1, 4], 2);
-      rTree.put([2, 3, 2, 3], 3);
-      rTree.put([-5, -4, -5, -4], 4);
-      rTree.put([-4, -1, -4, -1], 5);
-      rTree.put([-3, -2, -3, -2], 6);
+      rTree.insert([0, 1, 0, 1], 1);
+      rTree.insert([1, 4, 1, 4], 2);
+      rTree.insert([2, 3, 2, 3], 3);
+      rTree.insert([-5, -4, -5, -4], 4);
+      rTree.insert([-4, -1, -4, -1], 5);
+      rTree.insert([-3, -2, -3, -2], 6);
 
       var result;
-      result = goog.object.getValues(rTree.find([2, 3, 2, 3]));
+      result = goog.object.getValues(rTree.search([2, 3, 2, 3]));
       expect(result).to.contain(2);
       expect(result).to.contain(3);
       expect(result.length).to.be(2);
-      result = goog.object.getValues(rTree.find([-1, 2, -1, 2]));
+      result = goog.object.getValues(rTree.search([-1, 2, -1, 2]));
       expect(result).to.contain(1);
       expect(result).to.contain(2);
       expect(result).to.contain(3);
       expect(result).to.contain(5);
       expect(result.length).to.be(4);
-      expect(goog.object.getCount(rTree.find([5, 6, 5, 6]))).to.be(0);
+      expect(goog.object.getCount(rTree.search([5, 6, 5, 6]))).to.be(0);
+    });
+
+    it('filters by type', function() {
+      rTree.insert([2, 3, 2, 3], 7, 'type1');
+
+      var result;
+      result = rTree.search([1, 4, 2, 4], 'type1');
+      expect(result).to.contain(7);
+      expect(result.length).to.be(1);
+      result = rTree.search([1, 4, 2, 4]);
+      expect(result.length).to.be(3);
+    });
+
+    it('can return objects instead of arrays', function() {
+      var obj = {foo: 'bar'};
+      rTree.insert([5, 5, 5, 5], obj);
+      var result = rTree.searchReturningObject([4, 6, 4, 6]);
+      expect(result[goog.getUid(obj)]).to.equal(obj);
     });
 
   });

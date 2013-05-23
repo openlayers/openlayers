@@ -69,7 +69,7 @@ ol.layer.FeatureCache.prototype.add = function(feature) {
   if (!goog.isNull(geometry)) {
     var geometryType = geometry.getType();
     this.geometryTypeIndex_[geometryType][id] = feature;
-    this.rTree_.put(geometry.getBounds(),
+    this.rTree_.insert(geometry.getBounds(),
         feature, geometryType);
   }
 };
@@ -87,7 +87,7 @@ ol.layer.FeatureCache.prototype.getFeaturesObject = function(opt_filter) {
     if (opt_filter instanceof ol.filter.Geometry) {
       features = this.geometryTypeIndex_[opt_filter.getType()];
     } else if (opt_filter instanceof ol.filter.Extent) {
-      features = this.rTree_.find(opt_filter.getExtent());
+      features = this.rTree_.searchReturningObject(opt_filter.getExtent());
     } else if (opt_filter instanceof ol.filter.Logical &&
         opt_filter.operator === ol.filter.LogicalOperator.AND) {
       var filters = opt_filter.getFilters();
@@ -104,7 +104,7 @@ ol.layer.FeatureCache.prototype.getFeaturesObject = function(opt_filter) {
         if (extentFilter && geometryFilter) {
           var type = geometryFilter.getType();
           features = goog.object.isEmpty(this.geometryTypeIndex_[type]) ? {} :
-              this.rTree_.find(extentFilter.getExtent(), type);
+              this.rTree_.searchReturningObject(extentFilter.getExtent(), type);
         }
       }
     }
