@@ -68,6 +68,53 @@ describe('ol.parser.GeoJSON', function() {
     ]
   };
 
+  describe('#write()', function() {
+
+    it('encodes point', function() {
+      var point = new ol.geom.Point([10, 20]);
+      var geojson = parser.write(point);
+      expect(point).to.eql(parser.read(geojson));
+    });
+
+    it('encodes linestring', function() {
+      var linestring = new ol.geom.LineString([[10, 20], [30, 40]]);
+      var geojson = parser.write(linestring);
+      expect(linestring).to.eql(parser.read(geojson));
+    });
+
+    it('encodes polygon', function() {
+      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]],
+          inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]],
+          inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
+      var polygon = new ol.geom.Polygon([outer, inner1, inner2]);
+      var geojson = parser.write(polygon);
+      expect(polygon).to.eql(parser.read(geojson));
+    });
+
+    it('encodes geometry collection', function() {
+      var collection = new ol.geom.GeometryCollection([
+        new ol.geom.Point([10, 20]),
+        new ol.geom.LineString([[30, 40], [50, 60]])
+      ]);
+      var geojson = parser.write(collection);
+      // surprised to see read return an Array of geometries instead of
+      // a true ol.geom.GeometryCollection, so compare collection.components
+      expect(collection.components).to.eql(parser.read(geojson));
+    });
+
+    it('encodes feature collection', function() {
+      var str = JSON.stringify(data),
+          array = parser.read(str);
+      var geojson = parser.write(array);
+      var result = parser.read(geojson);
+      for (var i = 0, ii = array.length; i < ii; ++i) {
+        expect(array[i].getGeometry()).to.eql(result[i].getGeometry());
+        expect(array[i].getAttributes()).to.eql(result[i].getAttributes());
+      }
+    });
+
+  });
+
   describe('#read()', function() {
 
     it('parses point', function() {
@@ -221,6 +268,7 @@ describe('ol.parser.GeoJSON', function() {
 
 goog.require('ol.Feature');
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
