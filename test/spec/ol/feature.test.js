@@ -16,6 +16,12 @@ describe('ol.Feature', function() {
       expect(feature.get('foo')).to.be('bar');
     });
 
+    it('can store the feature\'s commonly used id', function() {
+      var feature = new ol.Feature();
+      feature.setFeatureId('foo');
+      expect(feature.getFeatureId()).to.be('foo');
+    });
+
     it('will set the default geometry', function() {
       var feature = new ol.Feature({
         loc: new ol.geom.Point([10, 20]),
