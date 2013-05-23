@@ -225,6 +225,7 @@
         
         // Points don't call collectVertices
         control.selectFeature(fakeFeature);
+        control.unselectFeature(fakeFeature);
         
         control.collectVertices = function() { 
           t.ok(true, "collectVertices called"); 
@@ -237,7 +238,8 @@
         layer.addFeatures = function(features) { 
             t.ok(features == 'a' || features == 'd', "features passed correctly"); 
         }
-        
+        layer.destroyFeatures = function() {};
+
         fakeFeature.geometry = new OpenLayers.Geometry.Polygon([
             new OpenLayers.Geometry.LinearRing([
                 new OpenLayers.Geometry.Point(0, 0),
@@ -246,7 +248,9 @@
         ]);
         
         // OnSelect calls collectVertices and passes features to layer 
-        control.selectFeature(fakeFeature);
+        control.selectFeature(fakeFeature);        
+        control.unselectFeature(fakeFeature);
+        layer.destroyFeatures = OpenLayers.Layer.Vector.prototype.destroyFeatures;
         
         control.vertices = ['a'];
         control.virtualVertices = [{destroy: function() {}}];
