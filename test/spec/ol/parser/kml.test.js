@@ -5,7 +5,7 @@ describe('ol.parser.kml', function() {
   var parser = new ol.parser.KML();
 
   describe('Test KML parser', function() {
-    it('Polygon read correctly', function() {
+    it('Polygon read / written correctly', function() {
       var url = 'spec/ol/parser/kml/polygon.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -13,11 +13,12 @@ describe('ol.parser.kml', function() {
         expect(xml).to.xmleql(goog.dom.xml.loadXml(output));
         expect(obj.features.length).to.eql(1);
         var geom = obj.features[0].getGeometry();
+        expect(obj.features[0].getFeatureId()).to.eql('KML.Polygon');
         expect(geom instanceof ol.geom.Polygon).to.be.ok();
         expect(geom.dimension).to.eql(3);
       });
     });
-    it('Linestring read correctly', function() {
+    it('Linestring read / written correctly', function() {
       var url = 'spec/ol/parser/kml/linestring.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -31,7 +32,7 @@ describe('ol.parser.kml', function() {
         expect(geom instanceof ol.geom.LineString).to.be.ok();
       });
     });
-    it('Point read correctly', function() {
+    it('Point read / written correctly', function() {
       var url = 'spec/ol/parser/kml/point.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -99,7 +100,7 @@ describe('ol.parser.kml', function() {
         expect(feature.get('ElevationGain')).to.eql('10');
       });
     });
-    it('Multi geometry read correctly', function() {
+    it('Multi geometry read / written correctly', function() {
       var url = 'spec/ol/parser/kml/multigeometry.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -156,7 +157,7 @@ describe('ol.parser.kml', function() {
       expect(obj.features[0].get('description')).to.eql('Full of text.');
       expect(obj.features[0].get('name')).to.eql('Pezinok');
     });
-    it('Test line style', function() {
+    it('Test line style (read / write)', function() {
       var test_style = '<kml xmlns="http://www.opengis.net/kml/2.2" ' +
           'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
           'xsi:schemaLocation="http://www.opengis.net/kml/2.2 ' +
@@ -176,7 +177,7 @@ describe('ol.parser.kml', function() {
       expect(symbolizer.opacity).to.eql(0.5294117647058824);
       expect(symbolizer.strokeWidth).to.eql(10);
     });
-    it('Test style fill', function() {
+    it('Test style fill (read / write)', function() {
       var test_style_fill = '<kml xmlns="http://www.opengis.net/kml/2.2">' +
           '<Document><Placemark>    <Style> <PolyStyle> <fill>1</fill> ' +
           '<color>870000ff</color> <width>10</width> </PolyStyle> </Style>' +
@@ -213,7 +214,7 @@ describe('ol.parser.kml', function() {
       expect(symbolizer1.fillColor).to.eql('#ff0000');
       expect(symbolizer2.opacity).to.eql(0);
     });
-    it('Test iconStyle', function() {
+    it('Test iconStyle (read / write)', function() {
       var url = 'spec/ol/parser/kml/iconstyle.kml';
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.KML({extractStyles: true});

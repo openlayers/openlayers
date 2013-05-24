@@ -280,7 +280,7 @@ describe('ol.parser.gml_v3', function() {
         expect(feature.getGeometry() instanceof
             ol.geom.MultiPolygon).to.be.ok();
         var attributes = feature.getAttributes();
-        // TODO test for fid
+        expect(feature.getFeatureId()).to.eql('states.1');
         expect(attributes['STATE_NAME']).to.eql('Illinois');
         expect(attributes['STATE_FIPS']).to.eql('17');
         expect(attributes['SUB_REGION']).to.eql('E N Cen');
@@ -297,7 +297,7 @@ describe('ol.parser.gml_v3', function() {
         expect(feature.getGeometry() instanceof
             ol.geom.MultiPolygon).to.be.ok();
         var attributes = feature.getAttributes();
-        // TODO test for fid
+        expect(feature.getFeatureId()).to.eql('states.1');
         expect(attributes['STATE_NAME']).to.eql('Illinois');
         expect(attributes['STATE_FIPS']).to.eql('17');
         expect(attributes['SUB_REGION']).to.eql('E N Cen');

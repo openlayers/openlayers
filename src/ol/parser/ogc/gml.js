@@ -291,7 +291,11 @@ ol.parser.ogc.GML = function(opt_options) {
         }
       }
       // TODO set feature.type and feature.namespace
-      // TODO set fid
+      var fid = node.getAttribute('fid') ||
+          this.getAttributeNS(node, this.defaultNamespaceURI, 'id');
+      if (!goog.isNull(fid)) {
+        feature.setFeatureId(fid);
+      }
       obj.features.push(feature);
     },
     '_geometry': function(node, obj) {
@@ -389,8 +393,10 @@ ol.parser.ogc.GML = function(opt_options) {
     '_typeName': function(feature) {
       var node = this.createElementNS('feature:' + this.featureType,
           this.featureNS);
-      // TODO: https://github.com/openlayers/ol3/issues/558
-      // this.setAttributeNS(node, null, 'fid', feature.fid);
+      var fid = feature.getFeatureId();
+      if (goog.isDef(fid)) {
+        this.setAttributeNS(node, this.defaultNamespaceURI, 'fid', fid);
+      }
       if (feature.getGeometry() !== null) {
         this.writeNode('_geometry', feature.getGeometry(), this.featureNS,
             node);
