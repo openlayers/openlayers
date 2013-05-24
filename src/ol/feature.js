@@ -18,6 +18,12 @@ ol.Feature = function(opt_values) {
    * @type {string|undefined}
    * @private
    */
+  this.featureId_;
+
+  /**
+   * @type {string|undefined}
+   * @private
+   */
   this.geometryName_;
 
   /**
@@ -43,6 +49,17 @@ ol.Feature.prototype.getAttributes = function() {
     attributes[key] = this.get(key);
   }
   return attributes;
+};
+
+
+/**
+ * Returns the feature's commonly used identifier. This identifier is usually
+ * the unique id in the source store.
+ *
+ * @return {string|undefined} The feature's identifier.
+ */
+ol.Feature.prototype.getFeatureId = function() {
+  return this.featureId_;
 };
 
 
@@ -82,6 +99,17 @@ ol.Feature.prototype.set = function(key, value) {
     this.geometryName_ = key;
   }
   goog.base(this, 'set', key, value);
+};
+
+
+/**
+ * Set the feature's commonly used identifier. This identifier is usually the
+ * unique id in the source store.
+ *
+ * @param {string} featureId The feature's identifier.
+ */
+ol.Feature.prototype.setFeatureId = function(featureId) {
+  this.featureId_ = featureId;
 };
 
 

@@ -198,6 +198,7 @@ describe('ol.parser.GeoJSON', function() {
         var first = result[0];
         expect(first).to.be.a(ol.Feature);
         expect(first.get('name')).to.be('Afghanistan');
+        expect(first.getFeatureId()).to.be('AFG');
         var firstGeom = first.getGeometry();
         expect(firstGeom).to.be.a(ol.geom.Polygon);
         expect(ol.extent.equals(firstGeom.getBounds(),
@@ -207,6 +208,7 @@ describe('ol.parser.GeoJSON', function() {
         var last = result[178];
         expect(last).to.be.a(ol.Feature);
         expect(last.get('name')).to.be('Zimbabwe');
+        expect(last.getFeatureId()).to.be('ZWE');
         var lastGeom = last.getGeometry();
         expect(lastGeom).to.be.a(ol.geom.Polygon);
         expect(ol.extent.equals(lastGeom.getBounds(),

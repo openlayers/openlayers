@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/kml/2.2 http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd">
-  <Placemark>
+  <Placemark id="foobarbaz">
     <name>Extended data placemark</name>
     <description>Attached to the ground. Intelligently places itself 
        at the height of the underlying terrain.</description>

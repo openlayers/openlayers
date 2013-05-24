@@ -144,6 +144,9 @@ ol.parser.GeoJSON.prototype.parseFeature_ = function(json, opt_options) {
       geometry = null,
       options = opt_options || {};
   var feature = new ol.Feature(json.properties);
+  if (goog.isDef(json.id)) {
+    feature.setFeatureId(json.id);
+  }
   if (geomJson) {
     var type = geomJson.type;
     var callback = options.callback;
