@@ -86,6 +86,7 @@ describe('ol.parser.kml', function() {
             'itself \n       at the height of the underlying terrain.';
         expect(obj.features[0].get('description')).to.eql(description);
         expect(obj.features[0].get('foo')).to.eql('bar');
+        expect(obj.features[0].getFeatureId()).to.eql('foobarbaz');
       });
     });
     it('Extended data read correctly [2]', function() {

@@ -104,6 +104,7 @@ ol.parser.KML = function(opt_options) {
       'Placemark': function(node, obj) {
         var container = {properties: {}};
         var sharedVertices, callback;
+        var id = node.getAttribute('id');
         this.readChildNodes(node, container);
         if (goog.isDef(container.track)) {
           var track = container.track, j, jj;
@@ -125,6 +126,9 @@ ol.parser.KML = function(opt_options) {
               container.properties['altitude'] = track.points[i].coordinates[2];
             }
             var feature = new ol.Feature(container.properties);
+            if (!goog.isNull(id)) {
+              feature.setFeatureId(id);
+            }
             var geom = track.points[i];
             if (geom) {
               sharedVertices = undefined;
@@ -150,6 +154,9 @@ ol.parser.KML = function(opt_options) {
             }
           }
           feature = new ol.Feature(container.properties);
+          if (!goog.isNull(id)) {
+            feature.setFeatureId(id);
+          }
           if (container.geometry) {
             sharedVertices = undefined;
             if (this.readFeaturesOptions_) {
