@@ -256,7 +256,9 @@ ol.parser.XML.prototype.setAttributeNS = function(node, uri, name, value) {
  * @return {string} The serialized XML string.
  */
 ol.parser.XML.prototype.serialize = function(node) {
-  if (node.nodeType == 1) {
+  if (this.xmldom) {
+    return node.xml;
+  } else if (node.nodeType == 1) {
     // Add nodes to a document before serializing. Everything else
     // is serialized as is. This is also needed to get all namespaces
     // defined in some browsers such as Chrome (xmlns attributes).

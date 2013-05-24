@@ -318,7 +318,18 @@
         }
         // test attribute namespace
         try {
-          expect(node1Attr[name].namespaceURI).to.equal(node2Attr[name].namespaceURI);
+          var uri1 = node1Attr[name].namespaceURI;
+          var uri2 = node2Attr[name].namespaceURI;
+          // we do not care about the difference between an empty string and null for namespaceURI
+          // some tests will fail in IE9 otherwise
+          // see also http://msdn.microsoft.com/en-us/library/ff460650(v=vs.85).aspx
+          if (uri1 == '') {
+            uri1 = null;
+          }
+          if (uri2 == '') {
+            uri2 = null;
+          }
+          expect(uri1).to.equal(uri2);
         } catch(e) {
           errors.push('namespaceURI attribute test failed for: ' + node1.nodeName + ' | ' + e.message);
         }
