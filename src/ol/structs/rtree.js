@@ -60,27 +60,6 @@ ol.structs.RTree = function(opt_width) {
       ({extent: [0, 0, 0, 0], nodes: []});
 
   /**
-   * This is Jon-Carlos Rivera's special addition to the world of r-trees.
-   * Every other (simple) method he found produced poor trees.
-   * This skews insertions to prefering squarer and emptier nodes.
-   *
-   * @param {number} l L.
-   * @param {number} w W.
-   * @param {number} fill Fill.
-   * @return {number} Squarified ratio.
-   */
-  var squarifiedRatio = function(l, w, fill) {
-    // Area of new enlarged rectangle
-    var peri = (l + w) / 2; // Average size of a side of the new rectangle
-    var area = l * w; // Area of new rectangle
-    // return the ratio of the perimeter to the area - the closer to 1 we are,
-    // the more "square" a rectangle is. conversly, when approaching zero the
-    // more elongated a rectangle is
-    var geo = area / (peri * peri);
-    return area * fill / geo;
-  };
-
-  /**
    * Generates a minimally bounding rectangle for all rectangles in
    * array "nodes". `rect` is modified into the MBR.
    *
@@ -234,8 +213,10 @@ ol.structs.RTree = function(opt_width) {
           break;
         }
         // Area of new enlarged rectangle
-        var oldLRatio = squarifiedRatio(lTree.extent[1] - lTree.extent[0],
-            lTree.extent[3] - lTree.extent[2], lTree.nodes.length + 1);
+        var oldLRatio = ol.structs.RTree.squarifiedRatio_(
+            lTree.extent[1] - lTree.extent[0],
+            lTree.extent[3] - lTree.extent[2],
+            lTree.nodes.length + 1);
 
         // Enlarge rectangle to fit new rectangle
         var nw = (lTree.extent[1] > rect.extent[1] ?
@@ -248,7 +229,8 @@ ol.structs.RTree = function(opt_width) {
             lTree.extent[2] : rect.extent[2]);
 
         // Area of new enlarged rectangle
-        var lRatio = squarifiedRatio(nw, nh, lTree.nodes.length + 2);
+        var lRatio = ol.structs.RTree.squarifiedRatio_(
+            nw, nh, lTree.nodes.length + 2);
 
         if (bestChoiceIndex < 0 ||
             Math.abs(lRatio - oldLRatio) < bestChoiceArea) {
@@ -285,9 +267,9 @@ ol.structs.RTree = function(opt_width) {
    */
   var pickNext = function(nodes, a, b) {
     // Area of new enlarged rectangle
-    var areaA = squarifiedRatio(a.extent[1] - a.extent[0],
+    var areaA = ol.structs.RTree.squarifiedRatio_(a.extent[1] - a.extent[0],
         a.extent[3] - a.extent[2], a.nodes.length + 1);
-    var areaB = squarifiedRatio(b.extent[1] - b.extent[0],
+    var areaB = ol.structs.RTree.squarifiedRatio_(b.extent[1] - b.extent[0],
         b.extent[3] - b.extent[2], b.nodes.length + 1);
     var highAreaDelta;
     var highAreaNode;
@@ -302,7 +284,8 @@ ol.structs.RTree = function(opt_width) {
         a.extent[2] < l.extent[2] ? a.extent[2] : l.extent[2],
         a.extent[3] > l.extent[3] ? a.extent[3] : l.extent[3]
       ];
-      var changeNewAreaA = Math.abs(squarifiedRatio(newAreaA[1] - newAreaA[0],
+      var changeNewAreaA = Math.abs(ol.structs.RTree.squarifiedRatio_(
+          newAreaA[1] - newAreaA[0],
           newAreaA[3] - newAreaA[2], a.nodes.length + 2) - areaA);
 
       var newAreaB = [
@@ -311,7 +294,7 @@ ol.structs.RTree = function(opt_width) {
         b.extent[2] < l.extent[2] ? b.extent[2] : l.extent[2],
         b.extent[3] > l.extent[3] ? b.extent[3] : l.extent[3]
       ];
-      var changeNewAreaB = Math.abs(squarifiedRatio(
+      var changeNewAreaB = Math.abs(ol.structs.RTree.squarifiedRatio_(
           newAreaB[1] - newAreaB[0], newAreaB[3] - newAreaB[2],
           b.nodes.length + 2) - areaB);
 
@@ -604,4 +587,27 @@ ol.structs.RTree = function(opt_width) {
   };
 
   //End of RTree
+};
+
+
+/**
+ * This is Jon-Carlos Rivera's special addition to the world of r-trees.
+ * Every other (simple) method he found produced poor trees.
+ * This skews insertions to prefering squarer and emptier nodes.
+ *
+ * @param {number} l L.
+ * @param {number} w W.
+ * @param {number} fill Fill.
+ * @private
+ * @return {number} Squarified ratio.
+ */
+ol.structs.RTree.squarifiedRatio_ = function(l, w, fill) {
+  // Area of new enlarged rectangle
+  var peri = (l + w) / 2; // Average size of a side of the new rectangle
+  var area = l * w; // Area of new rectangle
+  // return the ratio of the perimeter to the area - the closer to 1 we are,
+  // the more "square" a rectangle is. conversly, when approaching zero the
+  // more elongated a rectangle is
+  var geo = area / (peri * peri);
+  return area * fill / geo;
 };
