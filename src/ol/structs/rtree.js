@@ -43,17 +43,26 @@ ol.structs.RTreeNode;
 
 
 /**
- * @param {number=} opt_width Width before a node is split. Default is 6.
+ * @param {number=} opt_maxWidth Width before a node is split. Default is 6.
  * @constructor
  */
-ol.structs.RTree = function(opt_width) {
-  // Variables to control tree-dimensions
-  var minWidth = 3;  // Minimum width of any node before a merge
-  var maxWidth = 6;  // Maximum width of any node before a split
-  if (goog.isDef(opt_width)) {
-    minWidth = Math.floor(opt_width / 2);
-    maxWidth = opt_width;
-  }
+ol.structs.RTree = function(opt_maxWidth) {
+
+  /**
+   * Maximum width of any node before a split.
+   * @private
+   * @type {number}
+   */
+  this.maxWidth_ = goog.isDef(opt_maxWidth) ? opt_maxWidth : 6;
+
+  /**
+   * Minimum width of any node before a merge.
+   * @private
+   * @type {number}
+   */
+  this.minWidth_ = Math.floor(this.maxWidth_ / 2);
+
+  var that = this; // FIXME remove
 
   // Start with an empty root-tree
   var rootTree = /** @type {ol.structs.RTreeNode} */
@@ -110,7 +119,7 @@ ol.structs.RTree = function(opt_width) {
               // Resize MBR down...
               ol.structs.RTree.makeMBR_(tree.nodes, tree);
               workingObject.target = undefined;
-              if (tree.nodes.length < minWidth) { // Underflow
+              if (tree.nodes.length < that.minWidth_) { // Underflow
                 workingObject.nodes = /** @type {Array} */
                     (searchSubtree(tree, true, [], tree));
               }
@@ -145,7 +154,7 @@ ol.structs.RTree = function(opt_width) {
           tree.nodes.length = 0;
           hitStack.push(tree);
           countStack.push(1);
-        } else if (hitStack.length > 0 && tree.nodes.length < minWidth) {
+        } else if (hitStack.length > 0 && tree.nodes.length < that.minWidth_) {
           // Underflow..AGAIN!
           workingObject.nodes = /** @type {Array} */
               (searchSubtree(tree, true, workingObject.nodes, tree));
@@ -286,10 +295,10 @@ ol.structs.RTree = function(opt_width) {
       }
     }
     var tempNode = nodes.splice(highAreaNode, 1)[0];
-    if (a.nodes.length + nodes.length + 1 <= minWidth) {
+    if (a.nodes.length + nodes.length + 1 <= that.minWidth_) {
       a.nodes.push(tempNode);
       ol.extent.extend(a.extent, tempNode.extent);
-    } else if (b.nodes.length + nodes.length + 1 <= minWidth) {
+    } else if (b.nodes.length + nodes.length + 1 <= that.minWidth_) {
       b.nodes.push(tempNode);
       ol.extent.extend(b.extent, tempNode.extent);
     }
@@ -468,7 +477,7 @@ ol.structs.RTree = function(opt_width) {
           bc.nodes.push(workingObject); // Do Insert
         }
 
-        if (bc.nodes.length <= maxWidth) { // Start Resizeing Up the Tree
+        if (bc.nodes.length <= that.maxWidth_) { // Start Resizeing Up the Tree
           workingObject = {extent: bc.extent.concat()};
         } else { // Otherwise Split this Node
           // linearSplit() returns an array containing two new nodes
