@@ -60,27 +60,6 @@ ol.structs.RTree = function(opt_width) {
       ({extent: [0, 0, 0, 0], nodes: []});
 
   /**
-   * Generates a minimally bounding rectangle for all rectangles in
-   * array "nodes". `rect` is modified into the MBR.
-   *
-   * @param {Array} nodes Nodes.
-   * @param {ol.structs.RTreeNode} rect Rectangle.
-   * @return {ol.structs.RTreeNode} Rectangle.
-   */
-  var makeMBR = function(nodes, rect) {
-    if (nodes.length < 1) {
-      return {extent: [0, 0, 0, 0]};
-    }
-    rect.extent = nodes[0].extent.concat();
-
-    for (var i = nodes.length - 1; i > 0; --i) {
-      ol.extent.extend(rect.extent, nodes[i].extent);
-    }
-
-    return rect;
-  };
-
-  /**
    * Find the best specific node(s) for object to be deleted from.
    *
    * @param {ol.structs.RTreeNode} rect Rectangle.
@@ -129,7 +108,7 @@ ol.structs.RTree = function(opt_width) {
                 returnArray = tree.nodes.splice(i, 1);
               }
               // Resize MBR down...
-              makeMBR(tree.nodes, tree);
+              ol.structs.RTree.makeMBR_(tree.nodes, tree);
               workingObject.target = undefined;
               if (tree.nodes.length < minWidth) { // Underflow
                 workingObject.nodes = /** @type {Array} */
@@ -153,7 +132,7 @@ ol.structs.RTree = function(opt_width) {
         // workingObject.nodes contains a list of elements removed from the
         // tree so far
         if (tree.nodes.length > 0) {
-          makeMBR(tree.nodes, tree);
+          ol.structs.RTree.makeMBR_(tree.nodes, tree);
         }
         for (var t = 0, tt = workingObject.nodes.length; t < tt; ++t) {
           insertSubtree(workingObject.nodes[t], tree);
@@ -175,7 +154,7 @@ ol.structs.RTree = function(opt_width) {
           workingObject.nodes = undefined; // Just start resizing
         }
       } else { // we are just resizing
-        makeMBR(tree.nodes, tree);
+        ol.structs.RTree.makeMBR_(tree.nodes, tree);
       }
       currentDepth -= 1;
     } while (hitStack.length > 0);
@@ -587,6 +566,29 @@ ol.structs.RTree = function(opt_width) {
   };
 
   //End of RTree
+};
+
+
+/**
+ * Generates a minimally bounding rectangle for all rectangles in
+ * array "nodes". `rect` is modified into the MBR.
+ *
+ * @param {Array} nodes Nodes.
+ * @param {ol.structs.RTreeNode} rect Rectangle.
+ * @private
+ * @return {ol.structs.RTreeNode} Rectangle.
+ */
+ol.structs.RTree.makeMBR_ = function(nodes, rect) {
+  if (nodes.length < 1) {
+    return {extent: [0, 0, 0, 0]};
+  }
+  rect.extent = nodes[0].extent.concat();
+
+  for (var i = nodes.length - 1; i > 0; --i) {
+    ol.extent.extend(rect.extent, nodes[i].extent);
+  }
+
+  return rect;
 };
 
 
