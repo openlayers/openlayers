@@ -62,39 +62,15 @@ ol.structs.RTree = function(opt_maxWidth) {
    */
   this.minWidth_ = Math.floor(this.maxWidth_ / 2);
 
-  var that = this; // FIXME remove
-
-  // Start with an empty root-tree
-  var rootTree = /** @type {ol.structs.RTreeNode} */
+  /**
+   * Start with an empty root-tree.
+   * @private
+   * @type {ol.structs.RTreeNode}
+   */
+  this.rootTree_ = /** @type {ol.structs.RTreeNode} */
       ({extent: [0, 0, 0, 0], nodes: []});
 
-  /**
-   * Non-recursive search function
-   *
-   * @param {ol.Extent} extent Extent.
-   * @param {string=} opt_type Optional type of the objects we want to find.
-   * @return {Array} Result.
-   * @this {ol.structs.RTree}
-   */
-  this.search = function(extent, opt_type) {
-    var rect = /** @type {ol.structs.RTreeNode} */ ({extent: extent});
-    return /** @type {Array} */ (that.searchSubtree_.apply(this,
-        [rect, false, [], rootTree, opt_type]));
-  };
-
-  /**
-   * Non-recursive search function
-   *
-   * @param {ol.Extent} extent Extent.
-   * @param {string=} opt_type Optional type of the objects we want to find.
-   * @return {Object} Result. Keys are UIDs of the values.
-   * @this {ol.structs.RTree}
-   */
-  this.searchReturningObject = function(extent, opt_type) {
-    var rect = /** @type {ol.structs.RTreeNode} */ ({extent: extent});
-    return /** @type {Object} */ (that.searchSubtree_.apply(this,
-        [rect, false, [], rootTree, opt_type, true]));
-  };
+  var that = this; // FIXME remove
 
   /**
    * Non-recursive function that deletes a specific region.
@@ -110,7 +86,7 @@ ol.structs.RTree = function(opt_maxWidth) {
       case 1:
         arguments[1] = false; // opt_obj == false for conditionals
       case 2:
-        arguments[2] = rootTree; // Add root node to end of argument list
+        arguments[2] = that.rootTree_; // Add root node to end of argument list
       default:
         arguments.length = 3;
     }
@@ -140,7 +116,7 @@ ol.structs.RTree = function(opt_maxWidth) {
     if (goog.isDef(opt_type)) {
       node.type = opt_type;
     }
-    that.insertSubtree_(node, rootTree);
+    that.insertSubtree_(node, that.rootTree_);
   };
 
   //End of RTree
@@ -574,6 +550,36 @@ ol.structs.RTree.prototype.linearSplit_ = function(nodes) {
     this.pickNext_(nodes, n[0], n[1]);
   }
   return n;
+};
+
+
+/**
+ * Non-recursive search function
+ *
+ * @param {ol.Extent} extent Extent.
+ * @param {string=} opt_type Optional type of the objects we want to find.
+ * @return {Array} Result.
+ * @this {ol.structs.RTree}
+ */
+ol.structs.RTree.prototype.search = function(extent, opt_type) {
+  var rect = /** @type {ol.structs.RTreeNode} */ ({extent: extent});
+  return /** @type {Array} */ (
+      this.searchSubtree_(rect, false, [], this.rootTree_, opt_type));
+};
+
+
+/**
+ * Non-recursive search function
+ *
+ * @param {ol.Extent} extent Extent.
+ * @param {string=} opt_type Optional type of the objects we want to find.
+ * @return {Object} Result. Keys are UIDs of the values.
+ * @this {ol.structs.RTree}
+ */
+ol.structs.RTree.prototype.searchReturningObject = function(extent, opt_type) {
+  var rect = /** @type {ol.structs.RTreeNode} */ ({extent: extent});
+  return /** @type {Object} */ (
+      this.searchSubtree_(rect, false, [], this.rootTree_, opt_type, true));
 };
 
 
