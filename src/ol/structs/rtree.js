@@ -73,37 +73,6 @@ ol.structs.RTree = function(opt_maxWidth) {
   var that = this; // FIXME remove
 
   /**
-   * Non-recursive function that deletes a specific region.
-   *
-   * @param {ol.Extent} extent Extent.
-   * @param {Object=} opt_obj Object.
-   * @return {Array} Result.
-   * @this {ol.structs.RTree}
-   */
-  this.remove = function(extent, opt_obj) {
-    arguments[0] = /** @type {ol.structs.RTreeNode} */ ({extent: extent});
-    switch (arguments.length) {
-      case 1:
-        arguments[1] = false; // opt_obj == false for conditionals
-      case 2:
-        arguments[2] = that.rootTree_; // Add root node to end of argument list
-      default:
-        arguments.length = 3;
-    }
-    if (arguments[1] === false) { // Do area-wide †
-      var numberDeleted = 0;
-      var result = [];
-      do {
-        numberDeleted = result.length;
-        result = result.concat(this.removeSubtree_.apply(this, arguments));
-      } while (numberDeleted != result.length);
-      return result;
-    } else { // Delete a specific item
-      return this.removeSubtree_.apply(this, arguments);
-    }
-  };
-
-  /**
    * Non-recursive insert function.
    *
    * @param {ol.Extent} extent Extent.
@@ -550,6 +519,38 @@ ol.structs.RTree.prototype.linearSplit_ = function(nodes) {
     this.pickNext_(nodes, n[0], n[1]);
   }
   return n;
+};
+
+
+/**
+ * Non-recursive function that deletes a specific region.
+ *
+ * @param {ol.Extent} extent Extent.
+ * @param {Object=} opt_obj Object.
+ * @return {Array} Result.
+ * @this {ol.structs.RTree}
+ */
+ol.structs.RTree.prototype.remove = function(extent, opt_obj) {
+  arguments[0] = /** @type {ol.structs.RTreeNode} */ ({extent: extent});
+  switch (arguments.length) {
+    case 1:
+      arguments[1] = false; // opt_obj == false for conditionals
+    case 2:
+      arguments[2] = this.rootTree_; // Add root node to end of argument list
+    default:
+      arguments.length = 3;
+  }
+  if (arguments[1] === false) { // Do area-wide †
+    var numberDeleted = 0;
+    var result = [];
+    do {
+      numberDeleted = result.length;
+      result = result.concat(this.removeSubtree_.apply(this, arguments));
+    } while (numberDeleted != result.length);
+    return result;
+  } else { // Delete a specific item
+    return this.removeSubtree_.apply(this, arguments);
+  }
 };
 
 
