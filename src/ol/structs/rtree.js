@@ -68,31 +68,31 @@ ol.structs.RTree = function(opt_maxWidth) {
    * @type {ol.structs.RTreeNode}
    */
   this.rootTree_ = /** @type {ol.structs.RTreeNode} */
-      ({extent: [0, 0, 0, 0], nodes: []});
+      ({extent: ol.extent.createEmpty(), nodes: []});
 
 };
 
 
 /**
- * Generates a minimally bounding rectangle for all rectangles in
- * array "nodes". `rect` is modified into the MBR.
- *
- * @param {Array} nodes Nodes.
- * @param {ol.structs.RTreeNode} rect Rectangle.
+ * @param {ol.structs.RTreeNode} node Node.
  * @private
- * @return {ol.structs.RTreeNode} Rectangle.
  */
-ol.structs.RTree.makeMBR_ = function(nodes, rect) {
-  if (nodes.length < 1) {
-    return {extent: [0, 0, 0, 0]};
+ol.structs.RTree.recalculateExtent_ = function(node) {
+  var n = node.nodes.length;
+  var extent = node.extent;
+  if (n === 0) {
+    ol.extent.empty(extent);
+  } else {
+    var firstNodeExtent = node.nodes[0].extent;
+    extent[0] = firstNodeExtent[0];
+    extent[1] = firstNodeExtent[1];
+    extent[2] = firstNodeExtent[2];
+    extent[3] = firstNodeExtent[3];
+    var i;
+    for (i = 1; i < n; ++i) {
+      ol.extent.extend(extent, node.nodes[i].extent);
+    }
   }
-  rect.extent = nodes[0].extent.concat();
-
-  for (var i = nodes.length - 1; i > 0; --i) {
-    ol.extent.extend(rect.extent, nodes[i].extent);
-  }
-
-  return rect;
 };
 
 
@@ -497,7 +497,7 @@ ol.structs.RTree.prototype.removeSubtree_ = function(rect, obj, root) {
               returnArray = tree.nodes.splice(i, 1);
             }
             // Resize MBR down...
-            ol.structs.RTree.makeMBR_(tree.nodes, tree);
+            ol.structs.RTree.recalculateExtent_(tree);
             workingObject.target = undefined;
             if (tree.nodes.length < this.minWidth_) { // Underflow
               workingObject.nodes = /** @type {Array} */
@@ -521,7 +521,7 @@ ol.structs.RTree.prototype.removeSubtree_ = function(rect, obj, root) {
       // workingObject.nodes contains a list of elements removed from the
       // tree so far
       if (tree.nodes.length > 0) {
-        ol.structs.RTree.makeMBR_(tree.nodes, tree);
+        ol.structs.RTree.recalculateExtent_(tree);
       }
       for (var t = 0, tt = workingObject.nodes.length; t < tt; ++t) {
         this.insertSubtree_(workingObject.nodes[t], tree);
@@ -543,7 +543,7 @@ ol.structs.RTree.prototype.removeSubtree_ = function(rect, obj, root) {
         workingObject.nodes = undefined; // Just start resizing
       }
     } else { // we are just resizing
-      ol.structs.RTree.makeMBR_(tree.nodes, tree);
+      ol.structs.RTree.recalculateExtent_(tree);
     }
     currentDepth -= 1;
   } while (hitStack.length > 0);
