@@ -112,6 +112,18 @@ ol.extent.createOrUpdate = function(minX, maxX, minY, maxY, extent) {
 
 
 /**
+ * Empties extent in place.
+ * @param {ol.Extent} extent Extent.
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.empty = function(extent) {
+  extent[0] = extent[2] = Infinity;
+  extent[1] = extent[3] = -Infinity;
+  return extent;
+};
+
+
+/**
  * @param {ol.Extent} extent1 Extent 1.
  * @param {ol.Extent} extent2 Extent 2.
  * @return {boolean} Equals.
