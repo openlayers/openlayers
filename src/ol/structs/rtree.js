@@ -70,24 +70,6 @@ ol.structs.RTree = function(opt_maxWidth) {
   this.rootTree_ = /** @type {ol.structs.RTreeNode} */
       ({extent: [0, 0, 0, 0], nodes: []});
 
-  var that = this; // FIXME remove
-
-  /**
-   * Non-recursive insert function.
-   *
-   * @param {ol.Extent} extent Extent.
-   * @param {Object} obj Object to insert.
-   * @param {string=} opt_type Optional type to store along with the object.
-   */
-  this.insert = function(extent, obj, opt_type) {
-    var node = /** @type {ol.structs.RTreeNode} */
-        ({extent: extent, leaf: obj});
-    if (goog.isDef(opt_type)) {
-      node.type = opt_type;
-    }
-    that.insertSubtree_(node, that.rootTree_);
-  };
-
   //End of RTree
 };
 
@@ -197,6 +179,23 @@ ol.structs.RTree.prototype.chooseLeafSubtree_ = function(rect, root) {
   } while (bestChoiceIndex != -1);
 
   return bestChoiceStack;
+};
+
+
+/**
+ * Non-recursive insert function.
+ *
+ * @param {ol.Extent} extent Extent.
+ * @param {Object} obj Object to insert.
+ * @param {string=} opt_type Optional type to store along with the object.
+ */
+ol.structs.RTree.prototype.insert = function(extent, obj, opt_type) {
+  var node = /** @type {ol.structs.RTreeNode} */
+      ({extent: extent, leaf: obj});
+  if (goog.isDef(opt_type)) {
+    node.type = opt_type;
+  }
+  this.insertSubtree_(node, this.rootTree_);
 };
 
 
