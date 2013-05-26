@@ -120,7 +120,7 @@ ol.structs.RTree.squarifiedRatio_ = function(l, w, fill) {
 
 
 /**
- * Choose the best damn node for rectangle to be inserted into.
+ * Choose the best for rectangle to be inserted into.
  *
  * @param {ol.structs.RTreeNode} rect Rectangle.
  * @param {ol.structs.RTreeNode} root Root to start search.
@@ -276,6 +276,23 @@ ol.structs.RTree.prototype.insertSubtree_ = function(node, root) {
 
 
 /**
+ * Split a set of nodes into two roughly equally-filled nodes.
+ *
+ * @param {Array.<ol.structs.RTreeNode>} nodes Array of nodes.
+ * @private
+ * @return {Array.<Array.<ol.structs.RTreeNode>>} An array of two new arrays
+ *     of nodes.
+ */
+ol.structs.RTree.prototype.linearSplit_ = function(nodes) {
+  var n = this.pickLinear_(nodes);
+  while (nodes.length > 0) {
+    this.pickNext_(nodes, n[0], n[1]);
+  }
+  return n;
+};
+
+
+/**
  * Pick the "best" two starter nodes to use as seeds using the "linear"
  * criteria.
  *
@@ -399,6 +416,38 @@ ol.structs.RTree.prototype.pickNext_ = function(nodes, a, b) {
 
 
 /**
+ * Non-recursive function that deletes a specific region.
+ *
+ * @param {ol.Extent} extent Extent.
+ * @param {Object=} opt_obj Object.
+ * @return {Array} Result.
+ * @this {ol.structs.RTree}
+ */
+ol.structs.RTree.prototype.remove = function(extent, opt_obj) {
+  arguments[0] = /** @type {ol.structs.RTreeNode} */ ({extent: extent});
+  switch (arguments.length) {
+    case 1:
+      arguments[1] = false; // opt_obj == false for conditionals
+    case 2:
+      arguments[2] = this.rootTree_; // Add root node to end of argument list
+    default:
+      arguments.length = 3;
+  }
+  if (arguments[1] === false) { // Do area-wide †
+    var numberDeleted = 0;
+    var result = [];
+    do {
+      numberDeleted = result.length;
+      result = result.concat(this.removeSubtree_.apply(this, arguments));
+    } while (numberDeleted != result.length);
+    return result;
+  } else { // Delete a specific item
+    return this.removeSubtree_.apply(this, arguments);
+  }
+};
+
+
+/**
  * Find the best specific node(s) for object to be deleted from.
  *
  * @param {ol.structs.RTreeNode} rect Rectangle.
@@ -500,55 +549,6 @@ ol.structs.RTree.prototype.removeSubtree_ = function(rect, obj, root) {
   } while (hitStack.length > 0);
 
   return returnArray;
-};
-
-
-/**
- * Split a set of nodes into two roughly equally-filled nodes.
- *
- * @param {Array.<ol.structs.RTreeNode>} nodes Array of nodes.
- * @private
- * @return {Array.<Array.<ol.structs.RTreeNode>>} An array of two new arrays
- *     of nodes.
- */
-ol.structs.RTree.prototype.linearSplit_ = function(nodes) {
-  var n = this.pickLinear_(nodes);
-  while (nodes.length > 0) {
-    this.pickNext_(nodes, n[0], n[1]);
-  }
-  return n;
-};
-
-
-/**
- * Non-recursive function that deletes a specific region.
- *
- * @param {ol.Extent} extent Extent.
- * @param {Object=} opt_obj Object.
- * @return {Array} Result.
- * @this {ol.structs.RTree}
- */
-ol.structs.RTree.prototype.remove = function(extent, opt_obj) {
-  arguments[0] = /** @type {ol.structs.RTreeNode} */ ({extent: extent});
-  switch (arguments.length) {
-    case 1:
-      arguments[1] = false; // opt_obj == false for conditionals
-    case 2:
-      arguments[2] = this.rootTree_; // Add root node to end of argument list
-    default:
-      arguments.length = 3;
-  }
-  if (arguments[1] === false) { // Do area-wide †
-    var numberDeleted = 0;
-    var result = [];
-    do {
-      numberDeleted = result.length;
-      result = result.concat(this.removeSubtree_.apply(this, arguments));
-    } while (numberDeleted != result.length);
-    return result;
-  } else { // Delete a specific item
-    return this.removeSubtree_.apply(this, arguments);
-  }
 };
 
 
