@@ -36,6 +36,12 @@ geolocation.addEventListener('accuracy_changed', function() {
     title: this.getAccuracy() + 'm from this point'
   });
 });
+geolocation.on('error', function(error) {
+  var info = document.getElementById('info');
+  info.innerHTML = error.message;
+  info.style.display = '';
+});
+
 
 $('#locate').click(function() {
   geolocation.setTracking(true);
