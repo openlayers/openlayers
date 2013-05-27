@@ -3,7 +3,7 @@
 <Document>
   <name>Polygon.kml</name>
   <open>0</open>
-  <Placemark>
+  <Placemark id="KML.Polygon">
     <name>hollow box</name>
     <Polygon>
       <outerBoundaryIs>

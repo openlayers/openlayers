@@ -687,6 +687,10 @@ ol.parser.KML = function(opt_options) {
       },
       '_feature': function(feature) {
         var node = this.createElementNS('Placemark');
+        var fid = feature.getFeatureId();
+        if (goog.isDef(fid)) {
+          node.setAttribute('id', fid);
+        }
         this.writeNode('name', feature, null, node);
         this.writeNode('description', feature, null, node);
         var literals = feature.getSymbolizerLiterals();
