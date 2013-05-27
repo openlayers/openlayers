@@ -94,7 +94,6 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
             [extent.maxX, extent.maxY]], null, node);
       // srsName attribute is optional for gml:Box
       if (goog.isDef(this.srsName)) {
-        // TODO setAttribute or this.setAttributeNS
         node.setAttribute('srsName', this.srsName);
       }
       return node;
