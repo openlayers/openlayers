@@ -1,10 +1,10 @@
 // FIXME handle geolocation not supported
-// FIXME handle geolocation errors
 
 goog.provide('ol.Geolocation');
 goog.provide('ol.GeolocationProperty');
 
 goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.math');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
@@ -163,6 +163,8 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
  * @param {GeolocationPositionError} error error object.
  */
 ol.Geolocation.prototype.positionError_ = function(error) {
+  error.type = goog.events.EventType.ERROR;
+  this.dispatchEvent(error);
 };
 
 
