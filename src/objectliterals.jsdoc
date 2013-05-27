@@ -341,6 +341,31 @@
  */
 
 /**
+ * @typedef {Object} ol.parser.GPXOptions
+ * @property {string|undefined} creator The creator attribute to be added to
+ *     the written GPX files. Defaults to `OpenLayers´.
+ * @property {string|undefined} defaultDesc Default description for the
+ *     waypoints/tracks in the case where the feature has no 'description'
+ *     attribute. Default is 'No description available'.
+ * @property {boolean|undefined} extractAttributes Should we extract attributes
+ *     from the GPX? Default is `true´.
+ * @property {boolean|undefined} extractWaypoints Extract waypoints from GPX.
+ *     Default is `true´.
+ * @property {boolean|undefined} extractTracks Extract tracks from GPX.
+ *     Default is `true´.
+ * @property {boolean|undefined} extractRoutes Extract routes from GPX.
+ *     Default is `true´.
+ */
+
+/**
+ * @typedef {Object} ol.parser.GPXWriteOptions
+ * @property {Array.<ol.Feature>|ol.Feature} features The features to write
+ *     out.
+ * @property {Object|undefined} metadata Metadata key/value pair with keys:
+ *     name, desc and author.
+ */
+
+/**
  * @typedef {Object} ol.source.BingMapsOptions
  * @property {string|undefined} culture Culture.
  * @property {string} key Bing Maps API key. Get yours at
