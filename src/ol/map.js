@@ -792,7 +792,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
   var i, ii, view2DState;
 
-  if (this.freezeRenderingCount_ != 0) {
+  if (this.freezeRenderingCount_ !== 0) {
     return;
   }
 

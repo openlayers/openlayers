@@ -308,8 +308,7 @@ describe('ol.parser.gml_v3', function() {
     it('Read autoConfig', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/topp-states-wfs.xml';
       afterLoadXml(url, function(xml) {
-        var obj = parser.read(xml);
-        var features = obj.features;
+        parser.read(xml);
         expect(parser.featureType).to.eql('states');
         expect(parser.featureNS).to.eql('http://www.openplans.org/topp');
         expect(parser.autoConfig === true).to.be.ok();

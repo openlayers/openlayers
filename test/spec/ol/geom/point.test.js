@@ -23,6 +23,7 @@ describe('ol.geom.Point', function() {
     it('throws when given with insufficient dimensions', function() {
       expect(function() {
         var point = new ol.geom.Point([1]);
+        point = point; // suppress gjslint warning about unused variable
       }).to.throwException();
     });
 

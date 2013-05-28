@@ -73,8 +73,6 @@ ol.interaction.TouchRotate.prototype.handleTouchMove =
 
   var touch0 = this.targetTouches[0];
   var touch1 = this.targetTouches[1];
-  var dx = touch0.clientX - touch1.clientX;
-  var dy = touch0.clientY - touch1.clientY;
 
   // angle between touches
   var angle = Math.atan2(

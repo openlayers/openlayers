@@ -417,7 +417,7 @@ ol.projection.removeTransform = function(source, destination) {
   var transform = transforms[sourceCode][destinationCode];
   delete transforms[sourceCode][destinationCode];
   var keys = goog.object.getKeys(transforms[sourceCode]);
-  if (keys.length == 0) {
+  if (keys.length === 0) {
     delete transforms[sourceCode];
   }
   return transform;

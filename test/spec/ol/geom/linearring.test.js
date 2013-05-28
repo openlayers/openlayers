@@ -12,6 +12,7 @@ describe('ol.geom.LinearRing', function() {
     it('throws when given mismatched dimension', function() {
       expect(function() {
         var ring = new ol.geom.LinearRing([[10, 20], [30, 40, 50]]);
+        ring = ring; // suppress gjslint warning about unused variable
       }).to.throwException();
     });
 
