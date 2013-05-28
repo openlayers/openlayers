@@ -1,0 +1,91 @@
+<html>
+<head>
+<script src="../OLLoader.js"></script>
+<script type="text/javascript">
+
+var layer1, style, logevt, lognoevt, map, lonlat, pixel, element;
+
+function init() {
+
+	element = document.getElementById("map");
+
+	style = new OpenLayers.StyleMap({
+		 'default': OpenLayers.Util.applyDefaults(
+		     {label: "${l}", pointRadius: 30},
+		     OpenLayers.Feature.Vector.style["default"]
+		 ),
+		 'select': OpenLayers.Util.applyDefaults(
+		     {pointRadius: 30},
+		     OpenLayers.Feature.Vector.style.select
+		 )
+	});
+	
+	layer1 = new OpenLayers.Layer.Vector("Layer 1", {
+		styleMap: style
+	});
+
+	layer1.addFeatures([
+		 new OpenLayers.Feature.Vector(OpenLayers.Geometry.fromWKT("POINT(0 0)"), {l:1}),
+		 new OpenLayers.Feature.Vector(OpenLayers.Geometry.fromWKT("POINT(0 0)"), {l:1}),
+		 new OpenLayers.Feature.Vector(OpenLayers.Geometry.fromWKT("POINT(0 0)"), {l:1}),
+		 new OpenLayers.Feature.Vector(OpenLayers.Geometry.fromWKT("POINT(0 0)"), {l:1})
+	]);
+
+	map = new OpenLayers.Map({
+		div: "map",
+		allOverlays: true,
+		layers: [layer1],
+		zoom: 6,
+		center: [0, 0],
+		eventListeners: {
+            featureclick: logEvent,
+            nofeatureclick: logNoEvent
+		}
+	});	
+}
+
+function logNoEvent(e) {
+	lognoevt.push(e);
+}
+
+function logEvent(e) {
+	logevt.push(e);	
+}
+
+function trigger(type, pxl) {
+	var map_position = OpenLayers.Util.pagePosition(element);
+	map.events.triggerEvent(type, {
+		xy: pxl, 
+		clientX: pxl.x + map_position[0], 
+		clientY: pxl.y + map_position[1], 
+		which: 1  // which == 1 means left-click
+	}); 	
+}
+
+// TESTS
+
+function test_onClick(t) {
+	t.plan(2);
+	logevt = [];
+	lognoevt = [];
+	lonlat = new OpenLayers.LonLat(0,0);
+	pixel = map.getPixelFromLonLat(lonlat);
+
+	trigger('mousedown', pixel);
+	trigger('mouseup', pixel);
+	
+	t.eq(logevt.length, 4, "4 features hit");
+    
+    trigger('mousedown', {x: 40, y: 40});
+    trigger('mouseup', {x: 40, y: 40});
+	t.eq(lognoevt.length, 1, "nofeatureclick fired for click outside features.");
+}
+
+// END TESTS
+
+</script>
+</head>
+<body onload="init()">
+<div id="map" style="width: 300px; height: 150px; border: 1px solid black"></div>
+</body>
+</html>
