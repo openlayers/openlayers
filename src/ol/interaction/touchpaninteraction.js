@@ -82,7 +82,7 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
     function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  if (this.targetTouches.length == 0) {
+  if (this.targetTouches.length === 0) {
     var interacting = view.setHint(ol.ViewHint.INTERACTING, -1);
     if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
       var distance = this.kinetic_.getDistance();

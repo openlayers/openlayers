@@ -28,7 +28,7 @@ ol.geom.squaredDistanceToSegment = function(coordinate, segment) {
   var v = segment[0];
   var w = segment[1];
   var l2 = ol.coordinate.squaredDistance(v, w);
-  if (l2 == 0) {
+  if (l2 === 0) {
     return ol.coordinate.squaredDistance(coordinate, v);
   }
   var t = ((coordinate[0] - v[0]) * (w[0] - v[0]) +
