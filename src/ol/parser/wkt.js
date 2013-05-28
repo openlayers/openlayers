@@ -21,6 +21,7 @@ goog.require('ol.parser.Parser');
 ol.parser.WKT = function() {
 };
 goog.inherits(ol.parser.WKT, ol.parser.Parser);
+goog.addSingletonGetter(ol.parser.WKT);
 
 
 /**
@@ -342,4 +343,24 @@ ol.parser.WKT.prototype.read = function(str) {
  */
 ol.parser.WKT.prototype.write = function(geom) {
   return this.encode_(geom);
+};
+
+
+/**
+ * Parse a WKT string.
+ * @param {string} str WKT string.
+ * @return {ol.geom.Geometry|undefined} Parsed geometry.
+ */
+ol.parser.WKT.read = function(str) {
+  return ol.parser.WKT.getInstance().read(str);
+};
+
+
+/**
+ * Write out a geometry as a WKT string.
+ * @param {ol.geom.Geometry} geom The geometry to encode.
+ * @return {string} WKT for the geometry.
+ */
+ol.parser.WKT.write = function(geom) {
+  return ol.parser.WKT.getInstance().write(geom);
 };
