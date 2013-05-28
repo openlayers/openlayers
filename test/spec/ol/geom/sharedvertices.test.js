@@ -117,9 +117,9 @@ describe('ol.geom.SharedVertices', function() {
   describe('#getCounts()', function() {
     it('returns the counts array', function() {
       var vertices = new ol.geom.SharedVertices();
-      var first = vertices.add([[2, 3], [3, 4], [4, 5]]);
-      var second = vertices.add([[5, 6], [6, 6]]);
-      var third = vertices.add([[7, 8]]);
+      vertices.add([[2, 3], [3, 4], [4, 5]]);
+      vertices.add([[5, 6], [6, 6]]);
+      vertices.add([[7, 8]]);
 
       expect(vertices.getCounts()).to.eql([3, 2, 1]);
     });
@@ -169,9 +169,9 @@ describe('ol.geom.SharedVertices', function() {
   describe('#getStarts()', function() {
     it('returns the counts array', function() {
       var vertices = new ol.geom.SharedVertices();
-      var first = vertices.add([[2, 3], [3, 4], [4, 5]]);
-      var second = vertices.add([[5, 6], [6, 6]]);
-      var third = vertices.add([[7, 8]]);
+      vertices.add([[2, 3], [3, 4], [4, 5]]);
+      vertices.add([[5, 6], [6, 6]]);
+      vertices.add([[7, 8]]);
 
       expect(vertices.getStarts()).to.eql([0, 6, 10]);
     });
@@ -180,19 +180,19 @@ describe('ol.geom.SharedVertices', function() {
   describe('#coordinates', function() {
     it('is a flat array of all coordinate values', function() {
       var vertices = new ol.geom.SharedVertices();
-      var first = vertices.add([[1, 2], [3, 4]]);
-      var second = vertices.add([[5, 6]]);
-      var third = vertices.add([[7, 8], [9, 10], [11, 12]]);
+      vertices.add([[1, 2], [3, 4]]);
+      vertices.add([[5, 6]]);
+      vertices.add([[7, 8], [9, 10], [11, 12]]);
       expect(vertices.coordinates).to.eql(
           [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
     });
 
     it('is not reassigned', function() {
       var vertices = new ol.geom.SharedVertices();
-      var first = vertices.add([[1, 2], [3, 4]]);
+      vertices.add([[1, 2], [3, 4]]);
       var coordinates = vertices.coordinates;
 
-      var second = vertices.add([[5, 6]]);
+      vertices.add([[5, 6]]);
       expect(vertices.coordinates).to.be(coordinates);
     });
   });

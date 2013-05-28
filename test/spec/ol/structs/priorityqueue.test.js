@@ -82,7 +82,7 @@ describe('ol.structs.PriorityQueue', function() {
       pq = new ol.structs.PriorityQueue(function(element) {
         return Math.abs(element - target);
       }, goog.identityFunction);
-      var element, i;
+      var i;
       for (i = 0; i < 32; ++i) {
         pq.enqueue(Math.random());
       }

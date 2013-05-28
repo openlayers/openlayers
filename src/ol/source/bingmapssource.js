@@ -64,7 +64,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   goog.asserts.assert(response.statusDescription == 'OK');
 
   var brandLogoUri = response.brandLogoUri;
-  var copyright = response.copyright;
+  //var copyright = response.copyright;  // FIXME do we need to display this?
   goog.asserts.assert(response.resourceSets.length == 1);
   var resourceSet = response.resourceSets[0];
   goog.asserts.assert(resourceSet.resources.length == 1);

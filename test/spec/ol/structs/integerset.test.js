@@ -26,12 +26,14 @@ describe('ol.structs.IntegerSet', function() {
       it('throws an exception with an odd number of elements', function() {
         expect(function() {
           var is = new ol.structs.IntegerSet([0, 2, 4]);
+          is = is; // suppress gjslint warning about unused variable
         }).to.throwException();
       });
 
       it('throws an exception with out-of-order elements', function() {
         expect(function() {
           var is = new ol.structs.IntegerSet([0, 2, 2, 4]);
+          is = is; // suppress gjslint warning about unused variable
         }).to.throwException();
       });
 

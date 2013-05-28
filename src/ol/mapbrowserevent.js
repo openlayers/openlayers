@@ -209,7 +209,7 @@ ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
   if (!this.dragged_) {
     var newEvent;
     var type = browserEvent.type;
-    if (this.timestamp_ == 0 || type == goog.events.EventType.DBLCLICK) {
+    if (this.timestamp_ === 0 || type == goog.events.EventType.DBLCLICK) {
       newEvent = new ol.MapBrowserEvent(
           ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, browserEvent);
       this.dispatchEvent(newEvent);

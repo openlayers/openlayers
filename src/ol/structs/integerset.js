@@ -80,7 +80,6 @@ ol.structs.IntegerSet.prototype.compactRanges_ = function() {
   var arr = this.arr_;
   var n = arr.length;
   var rangeIndex = 0;
-  var lastRange = null;
   var i;
   for (i = 0; i < n; i += 2) {
     if (arr[i] == arr[i + 1]) {

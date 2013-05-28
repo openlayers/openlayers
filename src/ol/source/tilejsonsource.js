@@ -84,7 +84,6 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function() {
     this.setExtent(extent);
   }
 
-  var scheme = goog.isDef(tileJSON.scheme) || 'xyz';
   if (goog.isDef(tileJSON.scheme)) {
     goog.asserts.assert(tileJSON.scheme == 'xyz');
   }

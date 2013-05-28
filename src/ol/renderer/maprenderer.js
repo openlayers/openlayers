@@ -24,12 +24,6 @@ ol.renderer.Map = function(container, map) {
 
   /**
    * @private
-   * @type {Element}
-   */
-  this.container_ = container;
-
-  /**
-   * @private
    * @type {ol.Map}
    */
   this.map_ = map;

@@ -115,7 +115,6 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   var findLoadedTiles = goog.bind(tileSource.findLoadedTiles, tileSource,
       tilesToDrawByZ, getTileIfLoaded);
 
-  var allTilesLoaded = true;
   var tmpExtent = ol.extent.createEmpty();
   var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
   var childTileRange, fullyLoaded, tile, tileState, x, y;
@@ -132,7 +131,6 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
         continue;
       }
 
-      allTilesLoaded = false;
       fullyLoaded = tileGrid.forEachTileCoordParentTileRange(
           tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
       if (!fullyLoaded) {

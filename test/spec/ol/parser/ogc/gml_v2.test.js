@@ -298,7 +298,7 @@ describe('ol.parser.gml_v2', function() {
     it('Test boundedBy', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/boundedBy.xml';
       afterLoadXml(url, function(xml) {
-        var obj = parser.read(xml);
+        parser.read(xml);
         // TODO test bounds on feature
         // see https://github.com/openlayers/ol3/issues/566
       });

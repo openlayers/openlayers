@@ -6,8 +6,8 @@ describe('ol.filter.Logical', function() {
   var OR = ol.filter.LogicalOperator.OR;
   var AND = ol.filter.LogicalOperator.AND;
   var NOT = ol.filter.LogicalOperator.NOT;
-  var include = new ol.filter.Filter(function() {return true});
-  var exclude = new ol.filter.Filter(function() {return false});
+  var include = new ol.filter.Filter(function() {return true;});
+  var exclude = new ol.filter.Filter(function() {return false;});
 
   var apple = new ol.Feature({});
   var orange = new ol.Feature({});

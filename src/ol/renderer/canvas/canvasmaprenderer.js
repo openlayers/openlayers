@@ -132,7 +132,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
       // for performance reasons, context.setTransform is only used
       // when the view is rotated. see http://jsperf.com/canvas-transform
-      if (frameState.view2DState.rotation == 0) {
+      if (frameState.view2DState.rotation === 0) {
         var dx = goog.vec.Mat4.getElement(transform, 0, 3);
         var dy = goog.vec.Mat4.getElement(transform, 1, 3);
         var dw = image.width * goog.vec.Mat4.getElement(transform, 0, 0);

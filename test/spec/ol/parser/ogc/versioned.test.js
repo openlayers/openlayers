@@ -2,9 +2,6 @@ goog.provide('ol.test.parser.ogc.Versioned');
 
 describe('ol.parser.ogc.versioned', function() {
 
-  var snippet = '<foo version="2.0.0"></foo>';
-  var snippet2 = '<foo></foo>';
-
   describe('test constructor', function() {
     var parser = new ol.parser.ogc.Versioned({version: '1.0.0'});
     it('new OpenLayers.Format.XML.VersionedOGC returns object', function() {

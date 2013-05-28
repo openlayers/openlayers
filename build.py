@@ -357,8 +357,11 @@ def build_lint_src_timestamp(t):
         path
         for path in ifind('externs', 'build/src/external/externs')
         if path.endswith('.js')]
-    t.run('%(GJSLINT)s', '--strict', '--limited_doc_files=%s' %
-          (','.join(limited_doc_files),), t.newer(t.dependencies))
+    t.run('%(GJSLINT)s',
+          '--jslint_error=all',
+          '--limited_doc_files=%s' % (','.join(limited_doc_files),),
+          '--strict',
+          t.newer(t.dependencies))
     t.touch()
 
 
