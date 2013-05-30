@@ -90,8 +90,8 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
     },
     'Box': function(extent) {
       var node = this.createElementNS('gml:Box');
-      this.writeNode('coordinates', [[extent.minX, extent.minY],
-            [extent.maxX, extent.maxY]], null, node);
+      this.writeNode('coordinates', [[extent[0], extent[1]],
+            [extent[2], extent[3]]], null, node);
       // srsName attribute is optional for gml:Box
       if (goog.isDef(this.srsName)) {
         node.setAttribute('srsName', this.srsName);

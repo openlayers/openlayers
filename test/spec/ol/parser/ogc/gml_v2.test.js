@@ -18,7 +18,7 @@ describe('ol.parser.gml_v2', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         parser.srsName = 'foo';
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -44,7 +44,7 @@ describe('ol.parser.gml_v2', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         parser.srsName = 'foo';
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -71,7 +71,7 @@ describe('ol.parser.gml_v2', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         parser.srsName = 'foo';
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -97,7 +97,7 @@ describe('ol.parser.gml_v2', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         parser.srsName = 'foo';
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -129,7 +129,7 @@ describe('ol.parser.gml_v2', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         parser.srsName = 'foo';
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -159,7 +159,7 @@ describe('ol.parser.gml_v2', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         parser.srsName = 'foo';
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -176,7 +176,7 @@ describe('ol.parser.gml_v2', function() {
         var p = new ol.parser.ogc.GML_v2({srsName: 'foo',
           featureNS: 'http://foo'});
         var obj = p.read(xml);
-        var geom = p.createGeometry_({geometry: obj.geometry});
+        var geom = p.createGeometry({geometry: obj.geometry});
         var node = p.featureNSWiters_['_geometry'].apply(p,
             [geom]).firstChild;
         expect(goog.dom.xml.loadXml(p.serialize(node))).to.xmleql(xml);
@@ -215,7 +215,7 @@ describe('ol.parser.gml_v2', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         parser.srsName = 'foo';
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);

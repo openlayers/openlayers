@@ -374,9 +374,9 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       // only 2d for simple features profile
       var pos;
       if (this.axisOrientation.substr(0, 2) === 'en') {
-        pos = (bounds.left + ' ' + bounds.bottom);
+        pos = (bounds[0] + ' ' + bounds[2]);
       } else {
-        pos = (bounds.bottom + ' ' + bounds.left);
+        pos = (bounds[2] + ' ' + bounds[0]);
       }
       var node = this.createElementNS('gml:lowerCorner');
       node.appendChild(this.createTextNode(pos));
@@ -386,9 +386,9 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       // only 2d for simple features profile
       var pos;
       if (this.axisOrientation.substr(0, 2) === 'en') {
-        pos = (bounds.right + ' ' + bounds.top);
+        pos = (bounds[1] + ' ' + bounds[3]);
       } else {
-        pos = (bounds.top + ' ' + bounds.right);
+        pos = (bounds[3] + ' ' + bounds[1]);
       }
       var node = this.createElementNS('gml:upperCorner');
       node.appendChild(this.createTextNode(pos));

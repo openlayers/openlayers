@@ -1,0 +1,11 @@
+<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+    <ogc:PropertyIsBetween>
+        <ogc:PropertyName>when</ogc:PropertyName>
+        <ogc:LowerBoundary>
+            <ogc:Literal>2010-11-27</ogc:Literal>
+        </ogc:LowerBoundary>
+        <ogc:UpperBoundary>
+            <ogc:Literal>2011-12-27</ogc:Literal>
+        </ogc:UpperBoundary>
+    </ogc:PropertyIsBetween>
+</ogc:Filter>
