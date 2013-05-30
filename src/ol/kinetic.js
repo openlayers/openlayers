@@ -79,6 +79,10 @@ ol.Kinetic.prototype.update = function(x, y) {
 ol.Kinetic.prototype.end = function() {
   var delay = goog.now() - this.delay_;
   var lastIndex = this.points_.length - 3;
+  if (this.points_[lastIndex + 2] < delay) {
+    // the user stopped panning before releasing the map
+    return false;
+  }
   var firstIndex = lastIndex - 3;
   while (firstIndex >= 0 && this.points_[firstIndex + 2] > delay) {
     firstIndex -= 3;
