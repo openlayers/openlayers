@@ -22,6 +22,12 @@ ol.structs.BufferUsage = {
 ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS = goog.DEBUG;
 
 
+/**
+ * @typedef {{high: Float32Array, low: Float32Array}}
+ */
+ol.structs.BufferSplit32;
+
+
 
 /**
  * @constructor
@@ -61,6 +67,18 @@ ol.structs.Buffer = function(opt_arr, opt_used, opt_usage) {
       arr[i] = NaN;
     }
   }
+
+  /**
+   * @private
+   * @type {?ol.structs.BufferSplit32}
+   */
+  this.split32_ = null;
+
+  /**
+   * @private
+   * @type {ol.structs.IntegerSet}
+   */
+  this.split32DirtySet_ = null;
 
   /**
    * @private
@@ -143,6 +161,45 @@ ol.structs.Buffer.prototype.getCount = function() {
  */
 ol.structs.Buffer.prototype.getFreeSet = function() {
   return this.freeSet_;
+};
+
+
+/**
+ * Splits this buffer into two Float32Arrays.
+ * @see http://blogs.agi.com/insight3d/index.php/2008/09/03/precisions-precisions/
+ * @return {ol.structs.BufferSplit32} Split.
+ */
+ol.structs.Buffer.prototype.getSplit32 = function() {
+  var arr = this.arr_;
+  var n = arr.length;
+  if (goog.isNull(this.split32DirtySet_)) {
+    this.split32DirtySet_ = new ol.structs.IntegerSet([0, n]);
+    this.addDirtySet(this.split32DirtySet_);
+  }
+  if (goog.isNull(this.split32_)) {
+    this.split32_ = {
+      high: new Float32Array(n),
+      low: new Float32Array(n)
+    };
+  }
+  var split32 = this.split32_;
+  this.split32DirtySet_.forEachRange(function(start, stop) {
+    var doubleHigh, i, value;
+    for (i = start; i < stop; ++i) {
+      value = arr[i];
+      if (value < 0) {
+        doubleHigh = 65536 * Math.floor(-value / 65536);
+        split32.high[i] = -doubleHigh;
+        split32.low[i] = value + doubleHigh;
+      } else {
+        doubleHigh = 65536 * Math.floor(value / 65536);
+        split32.high[i] = doubleHigh;
+        split32.low[i] = value - doubleHigh;
+      }
+    }
+  });
+  this.split32DirtySet_.clear();
+  return this.split32_;
 };
 
 
