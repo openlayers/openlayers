@@ -28,7 +28,11 @@ var vector = new ol.layer.Vector({
         })
       ]
     })
-  ]})
+  ]}),
+  featureInfoFunction: function(features) {
+    return features.length > 0 ?
+        features[0].getFeatureId() + ': ' + features[0].get('name') : '&nbsp;';
+  }
 });
 
 var map = new ol.Map({
@@ -45,12 +49,8 @@ map.on(['click', 'mousemove'], function(evt) {
   map.getFeatureInfo({
     pixel: evt.getPixel(),
     layers: [vector],
-    success: function(features) {
-      var info = [];
-      for (var i = 0, ii = features.length; i < ii; ++i) {
-        info.push(features[i].getFeatureId() + ': ' + features[i].get('name'));
-      }
-      document.getElementById('info').innerHTML = info.join(', ') || '&nbsp;';
+    success: function(featureInfo) {
+      document.getElementById('info').innerHTML = featureInfo[0];
     }
   });
 });
