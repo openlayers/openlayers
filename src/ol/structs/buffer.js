@@ -22,12 +22,6 @@ ol.structs.BufferUsage = {
 ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS = goog.DEBUG;
 
 
-/**
- * @typedef {{high: Float32Array, low: Float32Array}}
- */
-ol.structs.BufferSplit32;
-
-
 
 /**
  * @constructor
@@ -70,7 +64,7 @@ ol.structs.Buffer = function(opt_arr, opt_used, opt_usage) {
 
   /**
    * @private
-   * @type {?ol.structs.BufferSplit32}
+   * @type {?Float32Array}
    */
   this.split32_ = null;
 
@@ -165,9 +159,12 @@ ol.structs.Buffer.prototype.getFreeSet = function() {
 
 
 /**
- * Splits this buffer into two Float32Arrays.
+ * Returns a Float32Array twice the length of the buffer containing each value
+ * split into two 32-bit floating point values that, when added together,
+ * approximate the original value. Even indicies contain the high bits, odd
+ * indicies contain the low bits.
  * @see http://blogs.agi.com/insight3d/index.php/2008/09/03/precisions-precisions/
- * @return {ol.structs.BufferSplit32} Split.
+ * @return {Float32Array} Split.
  */
 ol.structs.Buffer.prototype.getSplit32 = function() {
   var arr = this.arr_;
@@ -177,24 +174,21 @@ ol.structs.Buffer.prototype.getSplit32 = function() {
     this.addDirtySet(this.split32DirtySet_);
   }
   if (goog.isNull(this.split32_)) {
-    this.split32_ = {
-      high: new Float32Array(n),
-      low: new Float32Array(n)
-    };
+    this.split32_ = new Float32Array(2 * n);
   }
   var split32 = this.split32_;
   this.split32DirtySet_.forEachRange(function(start, stop) {
-    var doubleHigh, i, value;
-    for (i = start; i < stop; ++i) {
+    var doubleHigh, i, j, value;
+    for (i = start, j = 2 * start; i < stop; ++i, j += 2) {
       value = arr[i];
       if (value < 0) {
         doubleHigh = 65536 * Math.floor(-value / 65536);
-        split32.high[i] = -doubleHigh;
-        split32.low[i] = value + doubleHigh;
+        split32[j] = -doubleHigh;
+        split32[j + 1] = value + doubleHigh;
       } else {
         doubleHigh = 65536 * Math.floor(value / 65536);
-        split32.high[i] = doubleHigh;
-        split32.low[i] = value - doubleHigh;
+        split32[j] = doubleHigh;
+        split32[j + 1] = value - doubleHigh;
       }
     }
   });

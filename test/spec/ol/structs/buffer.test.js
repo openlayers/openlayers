@@ -231,14 +231,12 @@ describe('ol.structs.Buffer', function() {
 
       it('returns the expected value', function() {
         var split32 = b.getSplit32();
-        expect(split32.high).to.be.a(Float32Array);
-        expect(split32.low).to.be.a(Float32Array);
-        expect(split32.high).to.have.length(2);
-        expect(split32.low).to.have.length(2);
-        expect(split32.high[0]).to.roughlyEqual(1179648.0, 1e1);
-        expect(split32.low[0]).to.roughlyEqual(54919.12345670001, 1e-2);
-        expect(split32.high[1]).to.roughlyEqual(-7602176.0, 1e1);
-        expect(split32.low[1]).to.roughlyEqual(-52145.76543209981, 1e-2);
+        expect(split32).to.be.a(Float32Array);
+        expect(split32).to.have.length(4);
+        expect(split32[0]).to.roughlyEqual(1179648.0, 1e1);
+        expect(split32[1]).to.roughlyEqual(54919.12345670001, 1e-2);
+        expect(split32[2]).to.roughlyEqual(-7602176.0, 1e1);
+        expect(split32[3]).to.roughlyEqual(-52145.76543209981, 1e-2);
       });
 
       it('tracks updates', function() {
@@ -246,14 +244,12 @@ describe('ol.structs.Buffer', function() {
         b.getArray()[0] = 0;
         b.markDirty(1, 0);
         var split32 = b.getSplit32();
-        expect(split32.high).to.be.a(Float32Array);
-        expect(split32.low).to.be.a(Float32Array);
-        expect(split32.high).to.have.length(2);
-        expect(split32.low).to.have.length(2);
-        expect(split32.high[0]).to.be(0);
-        expect(split32.low[0]).to.be(0);
-        expect(split32.high[1]).to.roughlyEqual(-7602176.0, 1e1);
-        expect(split32.low[1]).to.roughlyEqual(-52145.76543209981, 1e-2);
+        expect(split32).to.be.a(Float32Array);
+        expect(split32).to.have.length(4);
+        expect(split32[0]).to.be(0);
+        expect(split32[1]).to.be(0);
+        expect(split32[2]).to.roughlyEqual(-7602176.0, 1e1);
+        expect(split32[3]).to.roughlyEqual(-52145.76543209981, 1e-2);
       });
 
     });
