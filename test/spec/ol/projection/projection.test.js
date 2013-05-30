@@ -1,17 +1,16 @@
 goog.provide('ol.test.Projection');
 
-describe('ol.projection', function() {
+describe('ol.proj', function() {
 
   beforeEach(function() {
-    sinon.spy(ol.projection, 'addTransform');
+    sinon.spy(ol.proj, 'addTransform');
   });
 
   afterEach(function() {
-    var argsForCall = ol.projection.addTransform.args;
+    var argsForCall = ol.proj.addTransform.args;
     for (var i = 0, ii = argsForCall.length; i < ii; ++i) {
       try {
-        ol.projection.removeTransform.apply(
-            ol.projection, argsForCall[i].splice(0, 2));
+        ol.proj.removeTransform.apply(ol.proj, argsForCall[i].splice(0, 2));
       } catch (error) {
         if (error instanceof goog.asserts.AssertionError) {
           // The removeTransform function may have been called explicitly by the
@@ -21,16 +20,16 @@ describe('ol.projection', function() {
         }
       }
     }
-    ol.projection.addTransform.restore();
+    ol.proj.addTransform.restore();
   });
 
   describe('projection equivalence', function() {
 
     function _testAllEquivalent(codes) {
-      var projections = goog.array.map(codes, ol.projection.get);
+      var projections = goog.array.map(codes, ol.proj.get);
       goog.array.forEach(projections, function(source) {
         goog.array.forEach(projections, function(destination) {
-          expect(ol.projection.equivalent(source, destination)).to.be.ok();
+          expect(ol.proj.equivalent(source, destination)).to.be.ok();
         });
       });
     }
@@ -57,10 +56,10 @@ describe('ol.projection', function() {
   describe('identify transform', function() {
 
     it('returns a new object, with same coord values', function() {
-      var epsg4326 = ol.projection.get('EPSG:4326');
+      var epsg4326 = ol.proj.get('EPSG:4326');
       var uniqueObject = {};
       var sourcePoint = [uniqueObject, uniqueObject];
-      var destinationPoint = ol.projection.transform(
+      var destinationPoint = ol.proj.transform(
           sourcePoint, epsg4326, epsg4326);
       expect(sourcePoint === destinationPoint).to.not.be();
       expect(destinationPoint[0] === sourcePoint[0]).to.be.ok();
@@ -71,8 +70,7 @@ describe('ol.projection', function() {
   describe('transform 0,0 from 4326 to 3857', function() {
 
     it('returns expected value', function() {
-      var point = ol.projection.transform(
-          [0, 0], 'EPSG:4326', 'EPSG:3857');
+      var point = ol.proj.transform([0, 0], 'EPSG:4326', 'EPSG:3857');
       expect(point).not.to.be(undefined);
       expect(point).not.to.be(null);
       expect(point[1]).to.roughlyEqual(0, 1e-9);
@@ -82,8 +80,7 @@ describe('ol.projection', function() {
   describe('transform 0,0 from 3857 to 4326', function() {
 
     it('returns expected value', function() {
-      var point = ol.projection.transform(
-          [0, 0], 'EPSG:3857', 'EPSG:4326');
+      var point = ol.proj.transform([0, 0], 'EPSG:3857', 'EPSG:4326');
       expect(point).not.to.be(undefined);
       expect(point).not.to.be(null);
       expect(point[0]).to.eql(0);
@@ -95,10 +92,8 @@ describe('ol.projection', function() {
     // http://alastaira.wordpress.com/2011/01/23/the-google-maps-bing-maps-spherical-mercator-projection/
 
     it('returns expected value', function() {
-      var point = ol.projection.transform(
-          [-5.625, 52.4827802220782],
-          'EPSG:4326',
-          'EPSG:900913');
+      var point = ol.proj.transform(
+          [-5.625, 52.4827802220782], 'EPSG:4326', 'EPSG:900913');
       expect(point).not.to.be(undefined);
       expect(point).not.to.be(null);
       expect(point[0]).to.roughlyEqual(-626172.13571216376, 1e-9);
@@ -110,10 +105,8 @@ describe('ol.projection', function() {
     // http://alastaira.wordpress.com/2011/01/23/the-google-maps-bing-maps-spherical-mercator-projection/
 
     it('returns expected value', function() {
-      var point = ol.projection.transform(
-          [-626172.13571216376, 6887893.4928337997],
-          'EPSG:900913',
-          'EPSG:4326');
+      var point = ol.proj.transform([-626172.13571216376, 6887893.4928337997],
+          'EPSG:900913', 'EPSG:4326');
       expect(point).not.to.be(undefined);
       expect(point).not.to.be(null);
       expect(point[0]).to.roughlyEqual(-5.625, 1e-9);
@@ -124,10 +117,8 @@ describe('ol.projection', function() {
   describe('Proj4js integration', function() {
 
     it('allows Proj4js projections to be used transparently', function() {
-      var point = ol.projection.transform(
-          [-626172.13571216376, 6887893.4928337997],
-          'GOOGLE',
-          'WGS84');
+      var point = ol.proj.transform(
+          [-626172.13571216376, 6887893.4928337997], 'GOOGLE', 'WGS84');
       expect(point[0]).to.roughlyEqual(-5.625, 1e-9);
       expect(point[1]).to.roughlyEqual(52.4827802220782, 1e-9);
     });
@@ -137,10 +128,8 @@ describe('ol.projection', function() {
           '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
           '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
           '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs';
-      var point = ol.projection.transform(
-          [7.439583333333333, 46.95240555555556],
-          'EPSG:4326',
-          'EPSG:21781');
+      var point = ol.proj.transform([7.439583333333333, 46.95240555555556],
+          'EPSG:4326', 'EPSG:21781');
       expect(point[0]).to.roughlyEqual(600072.300, 1);
       expect(point[1]).to.roughlyEqual(200146.976, 1);
     });
@@ -152,24 +141,22 @@ describe('ol.projection', function() {
           '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs';
       var code = 'urn:ogc:def:crs:EPSG:21781';
       var srsCode = 'EPSG:21781';
-      var proj = ol.projection.get(code);
-      expect(ol.projection.proj4jsProjections_.hasOwnProperty(code))
-          .to.be.ok();
-      expect(ol.projection.proj4jsProjections_.hasOwnProperty(srsCode))
-          .to.be.ok();
-      var proj2 = ol.projection.get(srsCode);
+      var proj = ol.proj.get(code);
+      expect(ol.proj.proj4jsProjections_.hasOwnProperty(code)).to.be.ok();
+      expect(ol.proj.proj4jsProjections_.hasOwnProperty(srsCode)).to.be.ok();
+      var proj2 = ol.proj.get(srsCode);
       expect(proj2).to.be(proj);
     });
 
     it('numerically estimates point scale at the equator', function() {
-      var googleProjection = ol.projection.get('GOOGLE');
+      var googleProjection = ol.proj.get('GOOGLE');
       expect(googleProjection.getPointResolution(1, [0, 0])).
           to.roughlyEqual(1, 1e-1);
     });
 
     it('numerically estimates point scale at various latitudes', function() {
-      var epsg3857Projection = ol.projection.get('EPSG:3857');
-      var googleProjection = ol.projection.get('GOOGLE');
+      var epsg3857Projection = ol.proj.get('EPSG:3857');
+      var googleProjection = ol.proj.get('GOOGLE');
       var point, y;
       for (y = -20; y <= 20; ++y) {
         point = [0, 1000000 * y];
@@ -179,8 +166,8 @@ describe('ol.projection', function() {
     });
 
     it('numerically estimates point scale at various points', function() {
-      var epsg3857Projection = ol.projection.get('EPSG:3857');
-      var googleProjection = ol.projection.get('GOOGLE');
+      var epsg3857Projection = ol.proj.get('EPSG:3857');
+      var googleProjection = ol.proj.get('GOOGLE');
       var point, x, y;
       for (x = -20; x <= 20; ++x) {
         for (y = -20; y <= 20; ++y) {
@@ -193,13 +180,13 @@ describe('ol.projection', function() {
 
   });
 
-  describe('ol.projection.getTransformFromProjections()', function() {
+  describe('ol.proj.getTransformFromProjections()', function() {
 
-    var sm = ol.projection.get('GOOGLE');
-    var gg = ol.projection.get('EPSG:4326');
+    var sm = ol.proj.get('GOOGLE');
+    var gg = ol.proj.get('EPSG:4326');
 
     it('returns a transform function', function() {
-      var transform = ol.projection.getTransformFromProjections(sm, gg);
+      var transform = ol.proj.getTransformFromProjections(sm, gg);
       expect(typeof transform).to.be('function');
 
       var output = transform([-12000000, 5000000]);
@@ -209,7 +196,7 @@ describe('ol.projection', function() {
     });
 
     it('works for longer arrays', function() {
-      var transform = ol.projection.getTransformFromProjections(sm, gg);
+      var transform = ol.proj.getTransformFromProjections(sm, gg);
       expect(typeof transform).to.be('function');
 
       var output = transform([-12000000, 5000000, -12000000, 5000000]);
@@ -222,15 +209,15 @@ describe('ol.projection', function() {
 
   });
 
-  describe('ol.projection.getTransform()', function() {
+  describe('ol.proj.getTransform()', function() {
 
     it('returns a function', function() {
-      var transform = ol.projection.getTransform('GOOGLE', 'EPSG:4326');
+      var transform = ol.proj.getTransform('GOOGLE', 'EPSG:4326');
       expect(typeof transform).to.be('function');
     });
 
     it('returns a transform function', function() {
-      var transform = ol.projection.getTransform('GOOGLE', 'EPSG:4326');
+      var transform = ol.proj.getTransform('GOOGLE', 'EPSG:4326');
       expect(typeof transform).to.be('function');
 
       var output = transform([-626172.13571216376, 6887893.4928337997]);
@@ -241,7 +228,7 @@ describe('ol.projection', function() {
     });
 
     it('works for longer arrays of coordinate values', function() {
-      var transform = ol.projection.getTransform('GOOGLE', 'EPSG:4326');
+      var transform = ol.proj.getTransform('GOOGLE', 'EPSG:4326');
       expect(typeof transform).to.be('function');
 
       var output = transform([
@@ -259,7 +246,7 @@ describe('ol.projection', function() {
     });
 
     it('accepts an optional destination array', function() {
-      var transform = ol.projection.getTransform('EPSG:3857', 'EPSG:4326');
+      var transform = ol.proj.getTransform('EPSG:3857', 'EPSG:4326');
       var input = [-12000000, 5000000];
       var output = [];
 
@@ -273,7 +260,7 @@ describe('ol.projection', function() {
     });
 
     it('accepts a dimension', function() {
-      var transform = ol.projection.getTransform('GOOGLE', 'EPSG:4326');
+      var transform = ol.proj.getTransform('GOOGLE', 'EPSG:4326');
       expect(typeof transform).to.be('function');
 
       var dimension = 3;
@@ -295,7 +282,7 @@ describe('ol.projection', function() {
     });
   });
 
-  describe('ol.projection.removeTransform()', function() {
+  describe('ol.proj.removeTransform()', function() {
 
     var extent = [180, 180, -90, 90];
     var units = ol.ProjectionUnits.DEGREES;
@@ -312,14 +299,14 @@ describe('ol.projection', function() {
         extent: extent
       });
       var transform = function(input, output, dimension) {return input};
-      ol.projection.addTransform(foo, bar, transform);
-      expect(ol.projection.transforms_).not.to.be(undefined);
-      expect(ol.projection.transforms_.foo).not.to.be(undefined);
-      expect(ol.projection.transforms_.foo.bar).to.be(transform);
+      ol.proj.addTransform(foo, bar, transform);
+      expect(ol.proj.transforms_).not.to.be(undefined);
+      expect(ol.proj.transforms_.foo).not.to.be(undefined);
+      expect(ol.proj.transforms_.foo.bar).to.be(transform);
 
-      var removed = ol.projection.removeTransform(foo, bar);
+      var removed = ol.proj.removeTransform(foo, bar);
       expect(removed).to.be(transform);
-      expect(ol.projection.transforms_.foo).to.be(undefined);
+      expect(ol.proj.transforms_.foo).to.be(undefined);
     });
 
   });
@@ -327,21 +314,21 @@ describe('ol.projection', function() {
   describe('ol.Projection.prototype.getMetersPerUnit()', function() {
 
     it('returns value in meters', function() {
-      var epsg4326 = ol.projection.get('EPSG:4326');
+      var epsg4326 = ol.proj.get('EPSG:4326');
       expect(epsg4326.getMetersPerUnit()).to.eql(111194.87428468118);
     });
 
   });
 
-  describe('ol.projection.configureProj4jsProjection()', function() {
+  describe('ol.proj.configureProj4jsProjection()', function() {
 
     beforeEach(function() {
-      ol.projection.proj4jsProjections_ = {};
+      ol.proj.proj4jsProjections_ = {};
     });
 
     it('returns a configured projection', function() {
       var extent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
-      var epsg21781 = ol.projection.configureProj4jsProjection({
+      var epsg21781 = ol.proj.configureProj4jsProjection({
         code: 'EPSG:21781',
         extent: extent
       });
@@ -359,4 +346,4 @@ goog.require('goog.array');
 goog.require('goog.asserts.AssertionError');
 goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');
-goog.require('ol.projection');
+goog.require('ol.proj');

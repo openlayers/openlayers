@@ -3,7 +3,7 @@ goog.provide('ol.source.StaticImage');
 goog.require('ol.Image');
 goog.require('ol.ImageUrlFunctionType');
 goog.require('ol.extent');
-goog.require('ol.projection');
+goog.require('ol.proj');
 goog.require('ol.source.ImageSource');
 
 
@@ -21,7 +21,7 @@ ol.source.StaticImage = function(options) {
   var imageExtent = options.imageExtent;
   var imageSize = options.imageSize;
   var imageResolution = (imageExtent[3] - imageExtent[2]) / imageSize.height;
-  var projection = ol.projection.get(options.projection);
+  var projection = ol.proj.get(options.projection);
 
   goog.base(this, {
     attributions: options.attributions,

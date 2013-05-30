@@ -6,7 +6,7 @@ goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.geom.SharedVertices');
 goog.require('ol.layer.Layer');
-goog.require('ol.projection');
+goog.require('ol.proj');
 goog.require('ol.source.Vector');
 goog.require('ol.structs.RTree');
 goog.require('ol.style.Style');
@@ -330,7 +330,7 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
 
   var addFeatures = function(features) {
     var sourceProjection = this.getSource().getProjection();
-    var transform = ol.projection.getTransform(sourceProjection, projection);
+    var transform = ol.proj.getTransform(sourceProjection, projection);
 
     transform(
         this.pointVertices_.coordinates,

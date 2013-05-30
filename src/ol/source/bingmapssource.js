@@ -9,7 +9,7 @@ goog.require('ol.Size');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
-goog.require('ol.projection');
+goog.require('ol.proj');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');
 
@@ -25,7 +25,7 @@ ol.source.BingMaps = function(options) {
   goog.base(this, {
     crossOrigin: 'anonymous',
     opaque: true,
-    projection: ol.projection.get('EPSG:3857')
+    projection: ol.proj.get('EPSG:3857')
   });
 
   /**
@@ -95,7 +95,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                      * @return {string|undefined} Tile URL.
                      */
                     function(tileCoord, projection) {
-                      goog.asserts.assert(ol.projection.equivalent(
+                      goog.asserts.assert(ol.proj.equivalent(
                           projection, this.getProjection()));
                       if (goog.isNull(tileCoord)) {
                         return undefined;
@@ -106,8 +106,8 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                     });
               })));
 
-  var transform = ol.projection.getTransformFromProjections(
-      ol.projection.get('EPSG:4326'), this.getProjection());
+  var transform = ol.proj.getTransformFromProjections(
+      ol.proj.get('EPSG:4326'), this.getProjection());
   var attributions = goog.array.map(
       resource.imageryProviders,
       function(imageryProvider) {

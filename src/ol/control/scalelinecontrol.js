@@ -12,7 +12,7 @@ goog.require('ol.ProjectionUnits');
 goog.require('ol.TransformFunction');
 goog.require('ol.control.Control');
 goog.require('ol.css');
-goog.require('ol.projection');
+goog.require('ol.proj');
 goog.require('ol.sphere.NORMAL');
 
 
@@ -157,8 +157,8 @@ ol.control.ScaleLine.prototype.updateElement_ = function(frameState) {
 
     // Convert pointResolution from meters or feet to degrees
     if (goog.isNull(this.toEPSG4326_)) {
-      this.toEPSG4326_ = ol.projection.getTransformFromProjections(
-          projection, ol.projection.get('EPSG:4326'));
+      this.toEPSG4326_ = ol.proj.getTransformFromProjections(
+          projection, ol.proj.get('EPSG:4326'));
     }
     cosLatitude = Math.cos(goog.math.toRadians(this.toEPSG4326_(center)[1]));
     var radius = ol.sphere.NORMAL.radius;

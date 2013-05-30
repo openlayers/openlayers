@@ -5,7 +5,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
-goog.require('ol.projection');
+goog.require('ol.proj');
 
 
 
@@ -22,7 +22,7 @@ ol.source.Source = function(options) {
    * @private
    * @type {ol.Projection}
    */
-  this.projection_ = ol.projection.get(options.projection);
+  this.projection_ = ol.proj.get(options.projection);
 
   /**
    * @private

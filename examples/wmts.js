@@ -3,13 +3,13 @@ goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.extent');
 goog.require('ol.layer.TileLayer');
-goog.require('ol.projection');
+goog.require('ol.proj');
 goog.require('ol.source.OSM');
 goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
 
 
-var projection = ol.projection.get('EPSG:900913');
+var projection = ol.proj.get('EPSG:900913');
 var projectionExtent = projection.getExtent();
 var size = ol.extent.getWidth(projectionExtent) / 256;
 var resolutions = new Array(26);

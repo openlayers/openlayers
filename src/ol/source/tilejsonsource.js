@@ -14,7 +14,7 @@ goog.require('ol.Attribution');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
-goog.require('ol.projection');
+goog.require('ol.proj');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');
 
@@ -45,7 +45,7 @@ ol.source.TileJSON = function(options) {
 
   goog.base(this, {
     crossOrigin: options.crossOrigin,
-    projection: ol.projection.get('EPSG:3857')
+    projection: ol.proj.get('EPSG:3857')
   });
 
   /**
@@ -72,13 +72,13 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function() {
 
   var tileJSON = ol.tilejson.grids_.pop();
 
-  var epsg4326Projection = ol.projection.get('EPSG:4326');
+  var epsg4326Projection = ol.proj.get('EPSG:4326');
 
   var extent;
   if (goog.isDef(tileJSON.bounds)) {
     var bounds = tileJSON.bounds;
     var epsg4326Extent = [bounds[0], bounds[2], bounds[1], bounds[3]];
-    var transform = ol.projection.getTransformFromProjections(
+    var transform = ol.proj.getTransformFromProjections(
         epsg4326Projection, this.getProjection());
     extent = ol.extent.transform(epsg4326Extent, transform);
     this.setExtent(extent);

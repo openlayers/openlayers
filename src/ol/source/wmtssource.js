@@ -10,7 +10,7 @@ goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
 goog.require('ol.extent');
-goog.require('ol.projection');
+goog.require('ol.proj');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.WMTS');
 
@@ -212,7 +212,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, layer) {
   var tileGrid = ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet(
       matrixSetObj);
 
-  var projection = ol.projection.get(matrixSetObj['supportedCRS']);
+  var projection = ol.proj.get(matrixSetObj['supportedCRS']);
 
   var gets = wmtsCap['operationsMetadata']['GetTile']['dcp']['http']['get'];
   var encodings = goog.object.getKeys(
