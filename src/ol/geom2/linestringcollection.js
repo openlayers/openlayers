@@ -1,6 +1,7 @@
 goog.provide('ol.geom2.LineString');
 goog.provide('ol.geom2.LineStringCollection');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.geom2');
@@ -131,6 +132,29 @@ ol.geom2.LineStringCollection.prototype.getCount = function() {
  */
 ol.geom2.LineStringCollection.prototype.getExtent = function() {
   return ol.geom2.getExtent(this.buf, this.dim);
+};
+
+
+/**
+ * @return {Array} Indices.
+ */
+ol.geom2.LineStringCollection.prototype.getIndices = function() {
+  // FIXME cache and track dirty / track output length
+  // FIXME return UInt16Array?
+  var dim = this.dim;
+  var offsets = goog.array.map(goog.object.getKeys(this.ranges), Number);
+  goog.array.sort(offsets);
+  var n = offsets.length;
+  var indices = [];
+  var i, j, range, stop;
+  for (i = 0; i < n; ++i) {
+    range = this.ranges[offsets[i]];
+    stop = range[1] / dim - 1;
+    for (j = range[0] / dim; j < stop; ++j) {
+      indices.push(j, j + 1);
+    }
+  }
+  return indices;
 };
 
 
