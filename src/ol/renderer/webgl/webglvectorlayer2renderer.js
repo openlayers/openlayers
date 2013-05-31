@@ -150,19 +150,27 @@ ol.renderer.webgl.VectorLayer2.prototype.renderLineStringCollections =
   gl.uniformMatrix4fv(this.lineStringCollectionLocations_.u_modelViewMatrix,
       false, this.modelViewMatrix_);
 
-  var buf, dim, i, lineStringCollection;
+  var buf, dim, i, indexBuffer, indices, lineStringCollection;
   for (i = 0; i < lineStringCollections.length; ++i) {
     lineStringCollection = lineStringCollections[i];
     buf = lineStringCollection.buf;
     dim = lineStringCollection.dim;
     mapRenderer.bindBuffer(goog.webgl.ARRAY_BUFFER, buf);
+    // FIXME re-use index buffer
+    // FIXME use mapRenderer.bindBuffer
+    indices = lineStringCollection.getIndices();
+    indexBuffer = gl.createBuffer();
+    gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferData(
+        goog.webgl.ELEMENT_ARRAY_BUFFER, indices, goog.webgl.DYNAMIC_DRAW);
     gl.enableVertexAttribArray(this.lineStringCollectionLocations_.a_position);
     gl.vertexAttribPointer(this.lineStringCollectionLocations_.a_position, 2,
         goog.webgl.FLOAT, false, 4 * dim, 0);
     gl.uniform4fv(this.lineStringCollectionLocations_.u_color, [1, 1, 0, 0.75]);
-    buf.forEachRange(function(start, stop) {
-      gl.drawArrays(goog.webgl.LINES, start / dim, (stop - start) / dim);
-    });
+    gl.drawElements(
+        goog.webgl.LINES, indices.length, goog.webgl.UNSIGNED_SHORT, 0);
+    gl.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, null);
+    gl.deleteBuffer(indexBuffer);
   }
 
 };
