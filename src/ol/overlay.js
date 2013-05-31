@@ -69,20 +69,20 @@ ol.Overlay = function(options) {
   };
 
   goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.OverlayProperty.ELEMENT),
+      this, ol.Object.getChangeEventType(ol.OverlayProperty.ELEMENT),
       this.handleElementChanged, false, this);
 
   goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.OverlayProperty.MAP),
+      this, ol.Object.getChangeEventType(ol.OverlayProperty.MAP),
       this.handleMapChanged, false, this);
 
   goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.OverlayProperty.POSITION),
+      this, ol.Object.getChangeEventType(ol.OverlayProperty.POSITION),
       this.handlePositionChanged, false, this);
 
   goog.events.listen(
       this,
-      ol.Object.getChangedEventType(ol.OverlayProperty.POSITIONING),
+      ol.Object.getChangeEventType(ol.OverlayProperty.POSITIONING),
       this.handlePositioningChanged, false, this);
 
   if (goog.isDef(options.element)) {

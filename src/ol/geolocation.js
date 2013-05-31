@@ -60,10 +60,10 @@ ol.Geolocation = function(opt_options) {
   this.watchId_ = undefined;
 
   goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.GeolocationProperty.PROJECTION),
+      this, ol.Object.getChangeEventType(ol.GeolocationProperty.PROJECTION),
       this.handleProjectionChanged_, false, this);
   goog.events.listen(
-      this, ol.Object.getChangedEventType(ol.GeolocationProperty.TRACKING),
+      this, ol.Object.getChangeEventType(ol.GeolocationProperty.TRACKING),
       this.handleTrackingChanged_, false, this);
 
   if (goog.isDef(options.projection)) {

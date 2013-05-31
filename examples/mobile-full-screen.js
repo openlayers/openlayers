@@ -29,7 +29,7 @@ var geolocation = new ol.Geolocation({
   tracking: true
 });
 geolocation.bindTo('projection', view);
-geolocation.once('position_changed', function() {
+geolocation.once('change:position', function() {
   view.setCenter(geolocation.getPosition());
   view.setResolution(2.388657133911758);
 });
