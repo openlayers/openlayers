@@ -57,6 +57,8 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 
 
 /**
+ * Geometry types.
+ *
  * @enum {string}
  */
 ol.geom.GeometryType = {
