@@ -3,7 +3,7 @@ goog.provide('ol.tilegrid.WMTS');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.Size');
-goog.require('ol.projection');
+goog.require('ol.proj');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -67,7 +67,7 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
   var matrixIds = [];
   var origins = [];
   var tileSizes = [];
-  var projection = ol.projection.get(matrixSet['supportedCRS']);
+  var projection = ol.proj.get(matrixSet['supportedCRS']);
   var metersPerUnit = projection.getMetersPerUnit();
   goog.array.forEach(matrixSet['matrixIds'], function(elt, index, array) {
     matrixIds.push(elt['identifier']);

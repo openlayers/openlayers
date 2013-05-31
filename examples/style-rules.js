@@ -6,7 +6,7 @@ goog.require('ol.control.defaults');
 goog.require('ol.filter.Filter');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.GeoJSON');
-goog.require('ol.projection');
+goog.require('ol.proj');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Line');
 goog.require('ol.style.Rule');
@@ -48,7 +48,7 @@ var style = new ol.style.Style({rules: [
 var vector = new ol.layer.Vector({
   style: style,
   source: new ol.source.Vector({
-    projection: ol.projection.get('EPSG:3857')
+    projection: ol.proj.get('EPSG:3857')
   })
 });
 
@@ -115,7 +115,7 @@ vector.parseFeatures({
       'coordinates': [[10000000, -10000000], [-10000000, -10000000]]
     }
   }]
-}, new ol.parser.GeoJSON(), ol.projection.get('EPSG:3857'));
+}, new ol.parser.GeoJSON(), ol.proj.get('EPSG:3857'));
 
 
 var map = new ol.Map({

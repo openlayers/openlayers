@@ -5,7 +5,7 @@ goog.require('ol.Attribution');
 goog.require('ol.Projection');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
-goog.require('ol.projection');
+goog.require('ol.proj');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');
 
@@ -33,7 +33,7 @@ ol.source.XYZOptions;
  */
 ol.source.XYZ = function(options) {
 
-  var projection = options.projection || ol.projection.get('EPSG:3857');
+  var projection = options.projection || ol.proj.get('EPSG:3857');
 
   /**
    * @type {ol.TileUrlFunctionType}

@@ -6,11 +6,11 @@ goog.require('ol.control.ScaleLine');
 goog.require('ol.control.ScaleLineUnits');
 goog.require('ol.control.defaults');
 goog.require('ol.layer.TileLayer');
-goog.require('ol.projection');
+goog.require('ol.proj');
 goog.require('ol.source.TiledWMS');
 
 
-var projection = ol.projection.configureProj4jsProjection({
+var projection = ol.proj.configureProj4jsProjection({
   code: 'EPSG:21781',
   extent: [485869.5728, 837076.5648, 76443.1884, 299941.7864]
 });

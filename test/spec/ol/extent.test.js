@@ -197,7 +197,7 @@ describe('ol.extent', function() {
   describe('transform', function() {
 
     it('does transform', function() {
-      var transformFn = ol.projection.getTransform('EPSG:4326', 'EPSG:3857');
+      var transformFn = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
       var sourceExtent = [-15, 45, -30, 60];
       var destinationExtent = ol.extent.transform(sourceExtent, transformFn);
       expect(destinationExtent).not.to.be(undefined);
@@ -240,4 +240,4 @@ describe('ol.extent', function() {
 
 goog.require('ol.Size');
 goog.require('ol.extent');
-goog.require('ol.projection');
+goog.require('ol.proj');
