@@ -372,6 +372,20 @@
   };
 
   /**
+   * Checks if the array sort of equals another array.
+   *
+   * @api public
+   */
+
+  Assertion.prototype.arreql = function (obj) {
+    this.assert(
+        goog.array.equals(this.obj, obj)
+      , function(){ return 'expected ' + i(this.obj) + ' to sort of equal ' + i(obj) }
+      , function(){ return 'expected ' + i(this.obj) + ' to sort of not equal ' + i(obj) });
+    return this;
+  };
+
+  /**
    * Checks if the obj sortof equals another.
    *
    * @api public
