@@ -42,8 +42,8 @@ ol.renderer.canvas.VectorRenderer =
 
   var context = /** @type {CanvasRenderingContext2D} */
       (canvas.getContext('2d')),
-      dx = goog.isDef(opt_offset) ? opt_offset.x : 0,
-      dy = goog.isDef(opt_offset) ? opt_offset.y : 0;
+      dx = goog.isDef(opt_offset) ? opt_offset[0] : 0,
+      dy = goog.isDef(opt_offset) ? opt_offset[1] : 0;
 
   /**
    * @type {goog.vec.Mat4.Number}

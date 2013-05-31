@@ -421,7 +421,7 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
   if (goog.isNull(frameState)) {
     return null;
   } else {
-    var vec2 = [pixel.x, pixel.y];
+    var vec2 = pixel.slice();
     return ol.vec.Mat4.multVec2(frameState.pixelToCoordinateMatrix, vec2, vec2);
   }
 };
@@ -470,8 +470,7 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
     return null;
   } else {
     var vec2 = coordinate.slice(0, 2);
-    ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix, vec2, vec2);
-    return new ol.Pixel(vec2[0], vec2[1]);
+    return ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix, vec2, vec2);
   }
 };
 

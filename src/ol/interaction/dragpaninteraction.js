@@ -4,7 +4,6 @@ goog.provide('ol.interaction.DragPan');
 
 goog.require('goog.asserts');
 goog.require('ol.Kinetic');
-goog.require('ol.Pixel');
 goog.require('ol.PreRenderFunction');
 goog.require('ol.View2D');
 goog.require('ol.ViewHint');
@@ -91,10 +90,10 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
     map.addPreRenderFunction(this.kineticPreRenderFn_);
 
     var centerpx = map.getPixelFromCoordinate(center);
-    var destpx = new ol.Pixel(
-        centerpx.x - distance * Math.cos(angle),
-        centerpx.y - distance * Math.sin(angle));
-    var dest = map.getCoordinateFromPixel(destpx);
+    var dest = map.getCoordinateFromPixel([
+      centerpx[0] - distance * Math.cos(angle),
+      centerpx[1] - distance * Math.sin(angle)
+    ]);
     view.setCenter(dest);
   } else if (interacting === 0) {
     map.requestRenderFrame();

@@ -82,7 +82,7 @@ ol.MapBrowserEvent.prototype.getPixel = function() {
   if (goog.isNull(this.pixel_)) {
     var eventPosition = goog.style.getRelativePosition(
         this.browserEvent, this.map.getViewport());
-    this.pixel_ = new ol.Pixel(eventPosition.x, eventPosition.y);
+    this.pixel_ = [eventPosition.x, eventPosition.y];
   }
   return this.pixel_;
 };
