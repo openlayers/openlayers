@@ -24,27 +24,45 @@ var map = new ol.Map({
 });
 
 var increaseHue = document.getElementById('increase-hue');
+var resetHue = document.getElementById('reset-hue');
+var decreaseHue = document.getElementById('decrease-hue');
+
+function setResetHueButtonHTML() {
+  resetHue.innerHTML = 'Hue (' + layer.getHue() + ')';
+}
+setResetHueButtonHTML();
+
 increaseHue.addEventListener('click', function() {
   layer.setHue(layer.getHue() + 0.25);
+  setResetHueButtonHTML();
 }, false);
-var resetHue = document.getElementById('reset-hue');
 resetHue.addEventListener('click', function() {
   layer.setHue(0);
+  setResetHueButtonHTML();
 }, false);
-var decreaseHue = document.getElementById('decrease-hue');
 decreaseHue.addEventListener('click', function() {
   layer.setHue(layer.getHue() - 0.25);
+  setResetHueButtonHTML();
 }, false);
 
 var increaseSaturation = document.getElementById('increase-saturation');
+var resetSaturation = document.getElementById('reset-saturation');
+var decreaseSaturation = document.getElementById('decrease-saturation');
+
+function setResetSaturationButtonHTML() {
+  resetSaturation.innerHTML = 'Saturation (' + layer.getSaturation() + ')';
+}
+setResetSaturationButtonHTML();
+
 increaseSaturation.addEventListener('click', function() {
   layer.setSaturation(layer.getSaturation() + 0.25);
+  setResetSaturationButtonHTML();
 }, false);
-var resetSaturation = document.getElementById('reset-saturation');
 resetSaturation.addEventListener('click', function() {
   layer.setSaturation(1);
+  setResetSaturationButtonHTML();
 }, false);
-var decreaseSaturation = document.getElementById('decrease-saturation');
 decreaseSaturation.addEventListener('click', function() {
   layer.setSaturation(layer.getSaturation() - 0.25);
+  setResetSaturationButtonHTML();
 }, false);
