@@ -3,7 +3,7 @@ goog.require('goog.dom.xml');
 goog.require('ol.coordinate');
 goog.require('ol.parser.XML');
 goog.require('ol.parser.ogc.OWSCommon_v1_1_0');
-goog.require('ol.projection');
+goog.require('ol.proj');
 
 
 
@@ -79,7 +79,7 @@ ol.parser.ogc.WMTSCapabilities_v1_0_0 = function() {
         var topLeftCorner = this.getChildValue(node);
         var coords = topLeftCorner.split(' ');
         var axisOrientation =
-            ol.projection.get(obj['supportedCRS']).getAxisOrientation();
+            ol.proj.get(obj['supportedCRS']).getAxisOrientation();
         obj['topLeftCorner'] = ol.coordinate.fromProjectedArray(
             [parseFloat(coords[0]), parseFloat(coords[1])], axisOrientation);
       },

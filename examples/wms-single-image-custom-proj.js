@@ -3,11 +3,11 @@ goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.ImageLayer');
-goog.require('ol.projection');
+goog.require('ol.proj');
 goog.require('ol.source.SingleImageWMS');
 
 
-var projection = ol.projection.configureProj4jsProjection({
+var projection = ol.proj.configureProj4jsProjection({
   code: 'EPSG:21781',
   extent: [485869.5728, 837076.5648, 76443.1884, 299941.7864]
 });

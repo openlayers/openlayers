@@ -1,7 +1,7 @@
 goog.provide('ol.Projection');
 goog.provide('ol.ProjectionLike');
 goog.provide('ol.ProjectionUnits');
-goog.provide('ol.projection');
+goog.provide('ol.proj');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -219,8 +219,8 @@ ol.Proj4jsProjection_.prototype.getPointResolution =
     // measuring its width and height on the normal sphere, and taking the
     // average of the width and height.
     if (goog.isNull(this.toEPSG4326_)) {
-      this.toEPSG4326_ = ol.projection.getTransformFromProjections(
-          this, ol.projection.getProj4jsProjectionFromCode_({
+      this.toEPSG4326_ = ol.proj.getTransformFromProjections(
+          this, ol.proj.getProj4jsProjectionFromCode_({
             code: 'EPSG:4326',
             extent: null
           }));
@@ -259,21 +259,21 @@ ol.Proj4jsProjection_.prototype.getProj4jsProj = function() {
  * @private
  * @type {Object.<string, ol.Proj4jsProjection_>}
  */
-ol.projection.proj4jsProjections_ = {};
+ol.proj.proj4jsProjections_ = {};
 
 
 /**
  * @private
  * @type {Object.<string, ol.Projection>}
  */
-ol.projection.projections_ = {};
+ol.proj.projections_ = {};
 
 
 /**
  * @private
  * @type {Object.<string, Object.<string, ol.TransformFunction>>}
  */
-ol.projection.transforms_ = {};
+ol.proj.transforms_ = {};
 
 
 /**
@@ -282,13 +282,12 @@ ol.projection.transforms_ = {};
  *
  * @param {Array.<ol.Projection>} projections Projections.
  */
-ol.projection.addEquivalentProjections = function(projections) {
-  ol.projection.addProjections(projections);
+ol.proj.addEquivalentProjections = function(projections) {
+  ol.proj.addProjections(projections);
   goog.array.forEach(projections, function(source) {
     goog.array.forEach(projections, function(destination) {
       if (source !== destination) {
-        ol.projection.addTransform(
-            source, destination, ol.projection.cloneTransform);
+        ol.proj.addTransform(source, destination, ol.proj.cloneTransform);
       }
     });
   });
@@ -306,12 +305,12 @@ ol.projection.addEquivalentProjections = function(projections) {
  * @param {ol.TransformFunction} inverseTransform Transform from any projection
  *   in projection2 to any projection in projection1..
  */
-ol.projection.addEquivalentTransforms =
+ol.proj.addEquivalentTransforms =
     function(projections1, projections2, forwardTransform, inverseTransform) {
   goog.array.forEach(projections1, function(projection1) {
     goog.array.forEach(projections2, function(projection2) {
-      ol.projection.addTransform(projection1, projection2, forwardTransform);
-      ol.projection.addTransform(projection2, projection1, inverseTransform);
+      ol.proj.addTransform(projection1, projection2, forwardTransform);
+      ol.proj.addTransform(projection2, projection1, inverseTransform);
     });
   });
 };
@@ -321,8 +320,8 @@ ol.projection.addEquivalentTransforms =
  * @param {ol.Proj4jsProjection_} proj4jsProjection Proj4js projection.
  * @private
  */
-ol.projection.addProj4jsProjection_ = function(proj4jsProjection) {
-  var proj4jsProjections = ol.projection.proj4jsProjections_;
+ol.proj.addProj4jsProjection_ = function(proj4jsProjection) {
+  var proj4jsProjections = ol.proj.proj4jsProjections_;
   var code = proj4jsProjection.getCode();
   goog.asserts.assert(!goog.object.containsKey(proj4jsProjections, code));
   proj4jsProjections[code] = proj4jsProjection;
@@ -332,21 +331,20 @@ ol.projection.addProj4jsProjection_ = function(proj4jsProjection) {
 /**
  * @param {ol.Projection} projection Projection.
  */
-ol.projection.addProjection = function(projection) {
-  var projections = ol.projection.projections_;
+ol.proj.addProjection = function(projection) {
+  var projections = ol.proj.projections_;
   var code = projection.getCode();
   projections[code] = projection;
-  ol.projection.addTransform(
-      projection, projection, ol.projection.cloneTransform);
+  ol.proj.addTransform(projection, projection, ol.proj.cloneTransform);
 };
 
 
 /**
  * @param {Array.<ol.Projection>} projections Projections.
  */
-ol.projection.addProjections = function(projections) {
+ol.proj.addProjections = function(projections) {
   goog.array.forEach(projections, function(projection) {
-    ol.projection.addProjection(projection);
+    ol.proj.addProjection(projection);
   });
 };
 
@@ -354,12 +352,12 @@ ol.projection.addProjections = function(projections) {
 /**
  * FIXME empty description for jsdoc
  */
-ol.projection.clearAllProjections = function() {
+ol.proj.clearAllProjections = function() {
   if (ol.ENABLE_PROJ4JS) {
-    ol.projection.proj4jsProjections_ = {};
+    ol.proj.proj4jsProjections_ = {};
   }
-  ol.projection.projections_ = {};
-  ol.projection.transforms_ = {};
+  ol.proj.projections_ = {};
+  ol.proj.transforms_ = {};
 };
 
 
@@ -368,11 +366,11 @@ ol.projection.clearAllProjections = function() {
  * @param {string} defaultCode Default code.
  * @return {ol.Projection} Projection.
  */
-ol.projection.createProjection = function(projection, defaultCode) {
+ol.proj.createProjection = function(projection, defaultCode) {
   if (!goog.isDefAndNotNull(projection)) {
-    return ol.projection.get(defaultCode);
+    return ol.proj.get(defaultCode);
   } else if (goog.isString(projection)) {
-    return ol.projection.get(projection);
+    return ol.proj.get(projection);
   } else {
     goog.asserts.assertInstanceof(projection, ol.Projection);
     return projection;
@@ -388,10 +386,10 @@ ol.projection.createProjection = function(projection, defaultCode) {
  * @param {ol.Projection} destination Destination.
  * @param {ol.TransformFunction} transformFn Transform.
  */
-ol.projection.addTransform = function(source, destination, transformFn) {
+ol.proj.addTransform = function(source, destination, transformFn) {
   var sourceCode = source.getCode();
   var destinationCode = destination.getCode();
-  var transforms = ol.projection.transforms_;
+  var transforms = ol.proj.transforms_;
   if (!goog.object.containsKey(transforms, sourceCode)) {
     transforms[sourceCode] = {};
   }
@@ -408,10 +406,10 @@ ol.projection.addTransform = function(source, destination, transformFn) {
  * @param {ol.Projection} destination Destination projection.
  * @return {ol.TransformFunction} transformFn The unregistered transform.
  */
-ol.projection.removeTransform = function(source, destination) {
+ol.proj.removeTransform = function(source, destination) {
   var sourceCode = source.getCode();
   var destinationCode = destination.getCode();
-  var transforms = ol.projection.transforms_;
+  var transforms = ol.proj.transforms_;
   goog.asserts.assert(sourceCode in transforms);
   goog.asserts.assert(destinationCode in transforms[sourceCode]);
   var transform = transforms[sourceCode][destinationCode];
@@ -430,15 +428,15 @@ ol.projection.removeTransform = function(source, destination) {
  *     existing projection object, or undefined.
  * @return {ol.Projection} Projection.
  */
-ol.projection.get = function(projectionLike) {
+ol.proj.get = function(projectionLike) {
   var projection;
   if (projectionLike instanceof ol.Projection) {
     projection = projectionLike;
   } else if (goog.isString(projectionLike)) {
     var code = projectionLike;
-    projection = ol.projection.projections_[code];
+    projection = ol.proj.projections_[code];
     if (ol.HAVE_PROJ4JS && !goog.isDef(projection)) {
-      projection = ol.projection.getProj4jsProjectionFromCode_({
+      projection = ol.proj.getProj4jsProjectionFromCode_({
         code: code,
         extent: null
       });
@@ -459,9 +457,9 @@ ol.projection.get = function(projectionLike) {
  * @private
  * @return {ol.Proj4jsProjection_} Proj4js projection.
  */
-ol.projection.getProj4jsProjectionFromCode_ = function(options) {
+ol.proj.getProj4jsProjectionFromCode_ = function(options) {
   var code = options.code;
-  var proj4jsProjections = ol.projection.proj4jsProjections_;
+  var proj4jsProjections = ol.proj.proj4jsProjections_;
   var proj4jsProjection = proj4jsProjections[code];
   if (!goog.isDef(proj4jsProjection)) {
     var proj4jsProj = new Proj4js.Proj(code);
@@ -489,15 +487,15 @@ ol.projection.getProj4jsProjectionFromCode_ = function(options) {
  * @param {ol.Projection} projection2 Projection 2.
  * @return {boolean} Equivalent.
  */
-ol.projection.equivalent = function(projection1, projection2) {
+ol.proj.equivalent = function(projection1, projection2) {
   if (projection1 === projection2) {
     return true;
   } else if (projection1.getUnits() != projection2.getUnits()) {
     return false;
   } else {
-    var transformFn = ol.projection.getTransformFromProjections(
+    var transformFn = ol.proj.getTransformFromProjections(
         projection1, projection2);
-    return transformFn === ol.projection.cloneTransform;
+    return transformFn === ol.proj.cloneTransform;
   }
 };
 
@@ -511,10 +509,10 @@ ol.projection.equivalent = function(projection1, projection2) {
  * @param {ol.ProjectionLike} destination Destination.
  * @return {ol.TransformFunction} Transform.
  */
-ol.projection.getTransform = function(source, destination) {
-  var sourceProjection = ol.projection.get(source);
-  var destinationProjection = ol.projection.get(destination);
-  return ol.projection.getTransformFromProjections(
+ol.proj.getTransform = function(source, destination) {
+  var sourceProjection = ol.proj.get(source);
+  var destinationProjection = ol.proj.get(destination);
+  return ol.proj.getTransformFromProjections(
       sourceProjection, destinationProjection);
 };
 
@@ -527,9 +525,9 @@ ol.projection.getTransform = function(source, destination) {
  * @param {ol.Projection} destinationProjection Destination projection.
  * @return {ol.TransformFunction} Transform.
  */
-ol.projection.getTransformFromProjections =
+ol.proj.getTransformFromProjections =
     function(sourceProjection, destinationProjection) {
-  var transforms = ol.projection.transforms_;
+  var transforms = ol.proj.transforms_;
   var sourceCode = sourceProjection.getCode();
   var destinationCode = destinationProjection.getCode();
   var transform;
@@ -543,7 +541,7 @@ ol.projection.getTransformFromProjections =
       proj4jsSource = sourceProjection;
     } else {
       proj4jsSource =
-          ol.projection.getProj4jsProjectionFromCode_({
+          ol.proj.getProj4jsProjectionFromCode_({
             code: sourceCode,
             extent: null
           });
@@ -554,7 +552,7 @@ ol.projection.getTransformFromProjections =
       proj4jsDestination = destinationProjection;
     } else {
       proj4jsDestination =
-          ol.projection.getProj4jsProjectionFromCode_({
+          ol.proj.getProj4jsProjectionFromCode_({
             code: destinationCode,
             extent: null
           });
@@ -590,12 +588,11 @@ ol.projection.getTransformFromProjections =
       }
       return output;
     };
-    ol.projection.addTransform(
-        sourceProjection, destinationProjection, transform);
+    ol.proj.addTransform(sourceProjection, destinationProjection, transform);
   }
   if (!goog.isDef(transform)) {
     goog.asserts.assert(goog.isDef(transform));
-    transform = ol.projection.identityTransform;
+    transform = ol.proj.identityTransform;
   }
   return transform;
 };
@@ -607,7 +604,7 @@ ol.projection.getTransformFromProjections =
  * @param {number=} opt_dimension Dimension.
  * @return {Array.<number>} Input coordinate array (same array as input).
  */
-ol.projection.identityTransform = function(input, opt_output, opt_dimension) {
+ol.proj.identityTransform = function(input, opt_output, opt_dimension) {
   if (goog.isDef(opt_output) && input !== opt_output) {
     // TODO: consider making this a warning instead
     goog.asserts.fail('This should not be used internally.');
@@ -627,7 +624,7 @@ ol.projection.identityTransform = function(input, opt_output, opt_dimension) {
  * @return {Array.<number>} Output coordinate array (new array, same coordinate
  *     values).
  */
-ol.projection.cloneTransform = function(input, opt_output, opt_dimension) {
+ol.proj.cloneTransform = function(input, opt_output, opt_dimension) {
   var output;
   if (goog.isDef(opt_output)) {
     for (var i = 0, ii = input.length; i < ii; ++i) {
@@ -647,8 +644,8 @@ ol.projection.cloneTransform = function(input, opt_output, opt_dimension) {
  * @param {ol.ProjectionLike} destination Destination.
  * @return {ol.Coordinate} Point.
  */
-ol.projection.transform = function(point, source, destination) {
-  var transformFn = ol.projection.getTransform(source, destination);
+ol.proj.transform = function(point, source, destination) {
+  var transformFn = ol.proj.getTransform(source, destination);
   return transformFn(point);
 };
 
@@ -661,9 +658,9 @@ ol.projection.transform = function(point, source, destination) {
  * @param {ol.Projection} destinationProjection Destination projection.
  * @return {ol.Coordinate} Point.
  */
-ol.projection.transformWithProjections =
+ol.proj.transformWithProjections =
     function(point, sourceProjection, destinationProjection) {
-  var transformFn = ol.projection.getTransformFromProjections(
+  var transformFn = ol.proj.getTransformFromProjections(
       sourceProjection, destinationProjection);
   return transformFn(point);
 };
@@ -673,8 +670,8 @@ ol.projection.transformWithProjections =
  * @param {ol.Proj4jsProjectionOptions} options Proj4js projection options.
  * @return {ol.Projection} Proj4js projection.
  */
-ol.projection.configureProj4jsProjection = function(options) {
+ol.proj.configureProj4jsProjection = function(options) {
   goog.asserts.assert(!goog.object.containsKey(
-      ol.projection.proj4jsProjections_, options.code));
-  return ol.projection.getProj4jsProjectionFromCode_(options);
+      ol.proj.proj4jsProjections_, options.code));
+  return ol.proj.getProj4jsProjectionFromCode_(options);
 };

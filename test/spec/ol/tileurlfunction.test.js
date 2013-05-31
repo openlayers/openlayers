@@ -80,7 +80,7 @@ describe('ol.TileUrlFunction', function() {
 
   describe('createFromParamsFunction', function() {
     var paramsFunction = function(url, params) { return arguments; };
-    var projection = ol.projection.get('EPSG:3857');
+    var projection = ol.proj.get('EPSG:3857');
     var fakeTileSource = {getTileGrid: function() {return null;}};
     var params = {foo: 'bar'};
     var tileUrlFunction = ol.TileUrlFunction.createFromParamsFunction(
@@ -101,4 +101,4 @@ describe('ol.TileUrlFunction', function() {
 goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
-goog.require('ol.projection');
+goog.require('ol.proj');

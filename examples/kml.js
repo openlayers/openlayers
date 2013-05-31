@@ -4,7 +4,7 @@ goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.KML');
-goog.require('ol.projection');
+goog.require('ol.proj');
 goog.require('ol.source.TiledWMS');
 goog.require('ol.source.Vector');
 
@@ -20,7 +20,7 @@ var raster = new ol.layer.TileLayer({
   })
 });
 
-var epsg4326 = ol.projection.get('EPSG:4326');
+var epsg4326 = ol.proj.get('EPSG:4326');
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({

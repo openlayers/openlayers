@@ -4,7 +4,7 @@ goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.GPX');
-goog.require('ol.projection');
+goog.require('ol.proj');
 goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
 
@@ -14,7 +14,7 @@ var raster = new ol.layer.TileLayer({
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    projection: ol.projection.get('EPSG:4326')
+    projection: ol.proj.get('EPSG:4326')
   })
 });
 

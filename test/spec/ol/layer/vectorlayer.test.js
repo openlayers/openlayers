@@ -99,7 +99,7 @@ describe('ol.layer.Vector', function() {
 
     var layer = new ol.layer.Vector({
       source: new ol.source.Vector({
-        projection: ol.projection.get('EPSG:4326')
+        projection: ol.proj.get('EPSG:4326')
       }),
       style: new ol.style.Style({
         rules: [
@@ -186,7 +186,7 @@ goog.require('ol.filter.LogicalOperator');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
-goog.require('ol.projection');
+goog.require('ol.proj');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Line');
