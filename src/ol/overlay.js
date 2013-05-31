@@ -279,7 +279,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
     if (this.rendered_.left_ !== '') {
       this.rendered_.left_ = style.left = '';
     }
-    var right = Math.round(mapSize.width - pixel[0]) + 'px';
+    var right = Math.round(mapSize[0] - pixel[0]) + 'px';
     if (this.rendered_.right_ != right) {
       this.rendered_.right_ = style.right = right;
     }
@@ -305,7 +305,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
     if (this.rendered_.top_ !== '') {
       this.rendered_.top_ = style.top = '';
     }
-    var bottom = Math.round(mapSize.height - pixel[1]) + 'px';
+    var bottom = Math.round(mapSize[1] - pixel[1]) + 'px';
     if (this.rendered_.bottom_ != bottom) {
       this.rendered_.bottom_ = style.bottom = bottom;
     }

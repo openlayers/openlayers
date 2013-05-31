@@ -11,7 +11,7 @@ describe('ol.source.wms', function() {
           'foo=bar&STYLES=&CRS=EPSG%3A3857&BBOX=' +
           '-20037508.342789244%2C-20037508.342789244%2C0%2C0';
       var url = ol.source.wms.getUrl('http://wms', {'foo': 'bar'},
-          extent, new ol.Size(256, 256), epsg3857);
+          extent, [256, 256], epsg3857);
       expect(url).to.eql(expected);
     });
     it('creates expected URL respecting axis orientation', function() {
@@ -21,7 +21,7 @@ describe('ol.source.wms', function() {
           'GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&WIDTH=256&HEIGHT=256&' +
           'foo=bar&STYLES=&CRS=EPSG%3A4326&BBOX=-90%2C-180%2C90%2C0';
       var url = ol.source.wms.getUrl('http://wms', {'foo': 'bar'},
-          extent, new ol.Size(256, 256), epsg4326);
+          extent, [256, 256], epsg4326);
       expect(url).to.eql(expected);
     });
   });
@@ -29,6 +29,5 @@ describe('ol.source.wms', function() {
 });
 
 
-goog.require('ol.Size');
 goog.require('ol.proj');
 goog.require('ol.source.wms');

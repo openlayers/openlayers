@@ -102,8 +102,7 @@ describe('ol.TileRange', function() {
     it('returns the expected size', function() {
       var tileRange = new ol.TileRange(0, 2, 1, 4);
       var size = tileRange.getSize();
-      expect(size.width).to.eql(3);
-      expect(size.height).to.eql(4);
+      expect(size).to.eql([3, 4]);
     });
   });
 

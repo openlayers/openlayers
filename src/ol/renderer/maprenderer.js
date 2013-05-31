@@ -49,8 +49,8 @@ ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
 
   goog.vec.Mat4.makeIdentity(coordinateToPixelMatrix);
   goog.vec.Mat4.translate(coordinateToPixelMatrix,
-      frameState.size.width / 2,
-      frameState.size.height / 2,
+      frameState.size[0] / 2,
+      frameState.size[1] / 2,
       0);
   goog.vec.Mat4.scale(coordinateToPixelMatrix,
       1 / view2DState.resolution,

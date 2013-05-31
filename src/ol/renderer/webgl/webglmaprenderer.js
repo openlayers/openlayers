@@ -23,6 +23,7 @@ goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.TileLayer');
 goog.require('ol.renderer.webgl.map.shader.Color');
 goog.require('ol.renderer.webgl.map.shader.Default');
+goog.require('ol.size');
 goog.require('ol.structs.Buffer');
 goog.require('ol.structs.IntegerSet');
 goog.require('ol.structs.LRUCache');
@@ -83,7 +84,7 @@ ol.renderer.webgl.Map = function(container, map) {
    * @private
    * @type {ol.Size}
    */
-  this.canvasSize_ = new ol.Size(container.clientHeight, container.clientWidth);
+  this.canvasSize_ = [container.clientHeight, container.clientWidth];
 
   /**
    * @private
@@ -556,9 +557,9 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   }
 
   var size = frameState.size;
-  if (!this.canvasSize_.equals(size)) {
-    this.canvas_.width = size.width;
-    this.canvas_.height = size.height;
+  if (!ol.size.equals(this.canvasSize_, size)) {
+    this.canvas_.width = size[0];
+    this.canvas_.height = size[1];
     this.canvasSize_ = size;
   }
 
@@ -567,7 +568,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   gl.clearColor(0, 0, 0, 0);
   gl.clear(goog.webgl.COLOR_BUFFER_BIT);
   gl.enable(goog.webgl.BLEND);
-  gl.viewport(0, 0, size.width, size.height);
+  gl.viewport(0, 0, size[0], size[1]);
 
   this.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
 

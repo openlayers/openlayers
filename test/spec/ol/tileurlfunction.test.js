@@ -91,14 +91,13 @@ describe('ol.TileUrlFunction', function() {
       expect(args[0]).to.eql('url');
       expect(args[1]).to.be(params);
       expect(args[2]).to.eql(projection.getExtent());
-      expect(args[3]).to.eql(new ol.Size(256, 256));
+      expect(args[3]).to.eql([256, 256]);
       expect(args[4]).to.eql(projection);
     });
   });
 
 });
 
-goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.proj');

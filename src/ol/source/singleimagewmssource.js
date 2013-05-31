@@ -2,7 +2,6 @@ goog.provide('ol.source.SingleImageWMS');
 
 goog.require('ol.Image');
 goog.require('ol.ImageUrlFunction');
-goog.require('ol.Size');
 goog.require('ol.extent');
 goog.require('ol.source.ImageSource');
 goog.require('ol.source.wms');
@@ -64,7 +63,7 @@ ol.source.SingleImageWMS.prototype.getImage =
   ol.extent.scaleFromCenter(extent, this.ratio_);
   var width = (extent[1] - extent[0]) / resolution;
   var height = (extent[3] - extent[2]) / resolution;
-  var size = new ol.Size(width, height);
+  var size = [width, height];
 
   this.image_ = this.createImage(extent, resolution, size, projection);
   return this.image_;

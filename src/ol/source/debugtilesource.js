@@ -58,20 +58,20 @@ ol.DebugTile_.prototype.getImage = function(opt_context) {
 
     var canvas = /** @type {HTMLCanvasElement} */
         (goog.dom.createElement(goog.dom.TagName.CANVAS));
-    canvas.width = tileSize.width;
-    canvas.height = tileSize.height;
+    canvas.width = tileSize[0];
+    canvas.height = tileSize[1];
 
     var context = canvas.getContext('2d');
 
     context.strokeStyle = 'black';
-    context.strokeRect(0.5, 0.5, tileSize.width + 0.5, tileSize.height + 0.5);
+    context.strokeRect(0.5, 0.5, tileSize[0] + 0.5, tileSize[1] + 0.5);
 
     context.fillStyle = 'black';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.font = '24px sans-serif';
     context.fillText(
-        this.tileCoord_.toString(), tileSize.width / 2, tileSize.height / 2);
+        this.tileCoord_.toString(), tileSize[0] / 2, tileSize[1] / 2);
 
     this.canvasByContext_[key] = canvas;
     return canvas;

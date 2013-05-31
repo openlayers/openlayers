@@ -56,7 +56,7 @@ describe('ol.extent', function() {
 
     it('works for a unit square', function() {
       var extent = ol.extent.getForView2DAndSize(
-          [0, 0], 1, 0, new ol.Size(1, 1));
+          [0, 0], 1, 0, [1, 1]);
       expect(extent[0]).to.be(-0.5);
       expect(extent[1]).to.be(0.5);
       expect(extent[2]).to.be(-0.5);
@@ -65,7 +65,7 @@ describe('ol.extent', function() {
 
     it('works for center', function() {
       var extent = ol.extent.getForView2DAndSize(
-          [5, 10], 1, 0, new ol.Size(1, 1));
+          [5, 10], 1, 0, [1, 1]);
       expect(extent[0]).to.be(4.5);
       expect(extent[1]).to.be(5.5);
       expect(extent[2]).to.be(9.5);
@@ -74,7 +74,7 @@ describe('ol.extent', function() {
 
     it('works for rotation', function() {
       var extent = ol.extent.getForView2DAndSize(
-          [0, 0], 1, Math.PI / 4, new ol.Size(1, 1));
+          [0, 0], 1, Math.PI / 4, [1, 1]);
       expect(extent[0]).to.roughlyEqual(-Math.sqrt(0.5), 1e-9);
       expect(extent[1]).to.roughlyEqual(Math.sqrt(0.5), 1e-9);
       expect(extent[2]).to.roughlyEqual(-Math.sqrt(0.5), 1e-9);
@@ -83,7 +83,7 @@ describe('ol.extent', function() {
 
     it('works for resolution', function() {
       var extent = ol.extent.getForView2DAndSize(
-          [0, 0], 2, 0, new ol.Size(1, 1));
+          [0, 0], 2, 0, [1, 1]);
       expect(extent[0]).to.be(-1);
       expect(extent[1]).to.be(1);
       expect(extent[2]).to.be(-1);
@@ -92,7 +92,7 @@ describe('ol.extent', function() {
 
     it('works for size', function() {
       var extent = ol.extent.getForView2DAndSize(
-          [0, 0], 1, 0, new ol.Size(10, 5));
+          [0, 0], 1, 0, [10, 5]);
       expect(extent[0]).to.be(-5);
       expect(extent[1]).to.be(5);
       expect(extent[2]).to.be(-2.5);
@@ -105,8 +105,7 @@ describe('ol.extent', function() {
     it('returns the expected size', function() {
       var extent = [0, 2, 1, 4];
       var size = ol.extent.getSize(extent);
-      expect(size.width).to.eql(2);
-      expect(size.height).to.eql(3);
+      expect(size).to.eql([2, 3]);
     });
   });
 
@@ -238,6 +237,5 @@ describe('ol.extent', function() {
 });
 
 
-goog.require('ol.Size');
 goog.require('ol.extent');
 goog.require('ol.proj');
