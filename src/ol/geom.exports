@@ -1,3 +1,4 @@
+@exportSymbol ol.geom.GeometryType
 @exportSymbol ol.geom.Point
 @exportSymbol ol.geom.LineString
 @exportSymbol ol.geom.Polygon
