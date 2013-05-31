@@ -18,7 +18,7 @@ goog.require('goog.object');
  * @enum {string}
  */
 ol.ObjectEventType = {
-  CHANGED: 'changed'
+  CHANGE: 'change'
 };
 
 
@@ -57,7 +57,7 @@ goog.inherits(ol.Object, goog.events.EventTarget);
  * @private
  * @type {Object.<string, string>}
  */
-ol.Object.changedEventTypeCache_ = {};
+ol.Object.changeEventTypeCache_ = {};
 
 
 /**
@@ -95,12 +95,12 @@ ol.Object.getAccessors = function(obj) {
 
 /**
  * @param {string} key Key.
- * @return {string} Changed name.
+ * @return {string} Change name.
  */
-ol.Object.getChangedEventType = function(key) {
-  return ol.Object.changedEventTypeCache_.hasOwnProperty(key) ?
-      ol.Object.changedEventTypeCache_[key] :
-      (ol.Object.changedEventTypeCache_[key] = key.toLowerCase() + '_changed');
+ol.Object.getChangeEventType = function(key) {
+  return ol.Object.changeEventTypeCache_.hasOwnProperty(key) ?
+      ol.Object.changeEventTypeCache_[key] :
+      (ol.Object.changeEventTypeCache_[key] = 'change:' + key.toLowerCase());
 };
 
 
@@ -146,7 +146,7 @@ ol.Object.prototype.bindTo =
     function(key, target, opt_targetKey, opt_noNotify) {
   var targetKey = opt_targetKey || key;
   this.unbind(key);
-  var eventType = ol.Object.getChangedEventType(targetKey);
+  var eventType = ol.Object.getChangeEventType(targetKey);
   var listeners = ol.Object.getListeners(this);
   listeners[key] = goog.events.listen(target, eventType, function() {
     this.notifyInternal_(key);
@@ -217,9 +217,9 @@ ol.Object.prototype.notify = function(key) {
  * @private
  */
 ol.Object.prototype.notifyInternal_ = function(key) {
-  var eventType = ol.Object.getChangedEventType(key);
+  var eventType = ol.Object.getChangeEventType(key);
   this.dispatchEvent(eventType);
-  this.dispatchEvent(ol.ObjectEventType.CHANGED);
+  this.dispatchEvent(ol.ObjectEventType.CHANGE);
 };
 
 

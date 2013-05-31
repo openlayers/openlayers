@@ -103,15 +103,15 @@ describe('ol.Object', function() {
 
     beforeEach(function() {
       listener1 = sinon.spy();
-      goog.events.listen(o, 'k_changed', listener1);
+      goog.events.listen(o, 'change:k', listener1);
 
       listener2 = sinon.spy();
-      goog.events.listen(o, 'changed', listener2);
+      goog.events.listen(o, 'change', listener2);
 
       var o2 = new ol.Object();
       o2.bindTo('k', o);
       listener3 = sinon.spy();
-      goog.events.listen(o2, 'k_changed', listener3);
+      goog.events.listen(o2, 'change:k', listener3);
     });
 
     it('dispatches events', function() {
@@ -136,15 +136,15 @@ describe('ol.Object', function() {
 
     beforeEach(function() {
       listener1 = sinon.spy();
-      goog.events.listen(o, 'k_changed', listener1);
+      goog.events.listen(o, 'change:k', listener1);
 
       listener2 = sinon.spy();
-      goog.events.listen(o, 'changed', listener2);
+      goog.events.listen(o, 'change', listener2);
 
       o2 = new ol.Object();
       o2.bindTo('k', o);
       listener3 = sinon.spy();
-      goog.events.listen(o2, 'k_changed', listener3);
+      goog.events.listen(o2, 'change:k', listener3);
     });
 
     it('dispatches events to object', function() {
@@ -288,10 +288,10 @@ describe('ol.Object', function() {
       o2.bindTo('k2', o, 'k1');
 
       listener1 = sinon.spy();
-      goog.events.listen(o, 'k1_changed', listener1);
+      goog.events.listen(o, 'change:k1', listener1);
 
       listener2 = sinon.spy();
-      goog.events.listen(o2, 'k2_changed', listener2);
+      goog.events.listen(o2, 'change:k2', listener2);
     });
 
     it('sets the expected properties', function() {
@@ -460,9 +460,9 @@ describe('ol.Object', function() {
 
     beforeEach(function() {
       listener1 = sinon.spy();
-      goog.events.listen(o, 'k_changed', listener1);
+      goog.events.listen(o, 'change:k', listener1);
       listener2 = sinon.spy();
-      goog.events.listen(o, 'K_changed', listener2);
+      goog.events.listen(o, 'change:K', listener2);
     });
 
     it('dispatches the expected event', function() {

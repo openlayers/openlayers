@@ -43,30 +43,30 @@ ol.renderer.Layer = function(mapRenderer, layer) {
   this.layer_ = layer;
 
   goog.events.listen(this.layer_,
-      ol.Object.getChangedEventType(ol.layer.LayerProperty.BRIGHTNESS),
+      ol.Object.getChangeEventType(ol.layer.LayerProperty.BRIGHTNESS),
       this.handleLayerBrightnessChange, false, this);
 
   goog.events.listen(this.layer_,
-      ol.Object.getChangedEventType(ol.layer.LayerProperty.CONTRAST),
+      ol.Object.getChangeEventType(ol.layer.LayerProperty.CONTRAST),
       this.handleLayerContrastChange, false, this);
 
   goog.events.listen(this.layer_,
-      ol.Object.getChangedEventType(ol.layer.LayerProperty.HUE),
+      ol.Object.getChangeEventType(ol.layer.LayerProperty.HUE),
       this.handleLayerHueChange, false, this);
 
   goog.events.listen(this.layer_, goog.events.EventType.LOAD,
       this.handleLayerLoad, false, this);
 
   goog.events.listen(this.layer_,
-      ol.Object.getChangedEventType(ol.layer.LayerProperty.OPACITY),
+      ol.Object.getChangeEventType(ol.layer.LayerProperty.OPACITY),
       this.handleLayerOpacityChange, false, this);
 
   goog.events.listen(this.layer_,
-      ol.Object.getChangedEventType(ol.layer.LayerProperty.SATURATION),
+      ol.Object.getChangeEventType(ol.layer.LayerProperty.SATURATION),
       this.handleLayerSaturationChange, false, this);
 
   goog.events.listen(this.layer_,
-      ol.Object.getChangedEventType(ol.layer.LayerProperty.VISIBLE),
+      ol.Object.getChangeEventType(ol.layer.LayerProperty.VISIBLE),
       this.handleLayerVisibleChange, false, this);
 
 };
