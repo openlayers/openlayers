@@ -20,27 +20,45 @@ var map = new ol.Map({
 });
 
 var increaseBrightness = document.getElementById('increase-brightness');
+var resetBrightness = document.getElementById('reset-brightness');
+var decreaseBrightness = document.getElementById('decrease-brightness');
+
+function setResetBrightnessButtonHTML() {
+  resetBrightness.innerHTML = 'Brightness (' + layer.getBrightness() + ')';
+}
+setResetBrightnessButtonHTML();
+
 increaseBrightness.addEventListener('click', function() {
   layer.setBrightness(layer.getBrightness() + 0.125);
+  setResetBrightnessButtonHTML();
 }, false);
-var resetBrightness = document.getElementById('reset-brightness');
 resetBrightness.addEventListener('click', function() {
   layer.setBrightness(0);
+  setResetBrightnessButtonHTML();
 }, false);
-var decreaseBrightness = document.getElementById('decrease-brightness');
 decreaseBrightness.addEventListener('click', function() {
   layer.setBrightness(layer.getBrightness() - 0.125);
+  setResetBrightnessButtonHTML();
 }, false);
 
 var increaseContrast = document.getElementById('increase-contrast');
+var resetContrast = document.getElementById('reset-contrast');
+var decreaseContrast = document.getElementById('decrease-contrast');
+
+function setResetContrastButtonHTML() {
+  resetContrast.innerHTML = 'Contrast (' + layer.getContrast() + ')';
+}
+setResetContrastButtonHTML();
+
 increaseContrast.addEventListener('click', function() {
   layer.setContrast(layer.getContrast() + 0.125);
+  setResetContrastButtonHTML();
 }, false);
-var resetContrast = document.getElementById('reset-contrast');
 resetContrast.addEventListener('click', function() {
   layer.setContrast(1);
+  setResetContrastButtonHTML();
 }, false);
-var decreaseContrast = document.getElementById('decrease-contrast');
 decreaseContrast.addEventListener('click', function() {
   layer.setContrast(layer.getContrast() - 0.125);
+  setResetContrastButtonHTML();
 }, false);
