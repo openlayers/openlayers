@@ -136,11 +136,10 @@ ol.geom2.LineStringCollection.prototype.getExtent = function() {
 
 
 /**
- * @return {Array} Indices.
+ * @return {Uint16Array} Indices.
  */
 ol.geom2.LineStringCollection.prototype.getIndices = function() {
   // FIXME cache and track dirty / track output length
-  // FIXME return UInt16Array?
   var dim = this.dim;
   var offsets = goog.array.map(goog.object.getKeys(this.ranges), Number);
   goog.array.sort(offsets);
@@ -154,7 +153,7 @@ ol.geom2.LineStringCollection.prototype.getIndices = function() {
       indices.push(j, j + 1);
     }
   }
-  return indices;
+  return new Uint16Array(indices);
 };
 
 

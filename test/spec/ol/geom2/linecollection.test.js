@@ -197,7 +197,7 @@ describe('ol.geom2.LineStringCollection', function() {
     describe('getIndices', function() {
 
       it('returns the expected value', function() {
-        expect(lsc.getIndices()).to.eql([0, 1]);
+        expect(lsc.getIndices()).to.arreql([0, 1]);
       });
 
     });
@@ -276,7 +276,7 @@ describe('ol.geom2.LineStringCollection', function() {
     describe('getIndices', function() {
 
       it('returns the expected value', function() {
-        expect(lsc.getIndices()).to.eql([0, 1, 2, 3, 3, 4]);
+        expect(lsc.getIndices()).to.arreql([0, 1, 2, 3, 3, 4]);
       });
 
     });
@@ -287,14 +287,14 @@ describe('ol.geom2.LineStringCollection', function() {
         lsc.remove(0);
         expect(lsc.getCount()).to.be(1);
         expect(lsc.get(4)).to.eql([[4, 5], [6, 7], [8, 9]]);
-        expect(lsc.getIndices()).to.eql([2, 3, 3, 4]);
+        expect(lsc.getIndices()).to.arreql([2, 3, 3, 4]);
       });
 
       it('can remove the second line string', function() {
         lsc.remove(4);
         expect(lsc.getCount()).to.be(1);
         expect(lsc.get(0)).to.eql([[0, 1], [2, 3]]);
-        expect(lsc.getIndices()).to.eql([0, 1]);
+        expect(lsc.getIndices()).to.arreql([0, 1]);
       });
 
     });
@@ -315,7 +315,7 @@ describe('ol.geom2.LineStringCollection', function() {
         expect(lsc.add([[10, 11], [12, 13], [14, 15]])).to.be(10);
         expect(lsc.getCount()).to.be(2);
         expect(lsc.get(10)).to.eql([[10, 11], [12, 13], [14, 15]]);
-        expect(lsc.getIndices()).to.eql([2, 3, 3, 4, 5, 6, 6, 7]);
+        expect(lsc.getIndices()).to.arreql([2, 3, 3, 4, 5, 6, 6, 7]);
       });
 
     });
