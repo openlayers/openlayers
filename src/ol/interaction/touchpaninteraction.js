@@ -58,10 +58,10 @@ ol.interaction.TouchPan.prototype.handleTouchMove = function(mapBrowserEvent) {
   var centroid = ol.interaction.Touch.centroid(this.targetTouches);
   if (!goog.isNull(this.lastCentroid)) {
     if (this.kinetic_) {
-      this.kinetic_.update(centroid.x, centroid.y);
+      this.kinetic_.update(centroid[0], centroid[1]);
     }
-    var deltaX = this.lastCentroid.x - centroid.x;
-    var deltaY = centroid.y - this.lastCentroid.y;
+    var deltaX = this.lastCentroid[0] - centroid[0];
+    var deltaY = centroid[1] - this.lastCentroid[1];
     var map = mapBrowserEvent.map;
     var view = map.getView();
     var center = [deltaX, deltaY];
@@ -91,10 +91,10 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
       this.kineticPreRenderFn_ = this.kinetic_.pan(center);
       map.addPreRenderFunction(this.kineticPreRenderFn_);
       var centerpx = map.getPixelFromCoordinate(center);
-      var destpx = new ol.Pixel(
-          centerpx.x - distance * Math.cos(angle),
-          centerpx.y - distance * Math.sin(angle));
-      var dest = map.getCoordinateFromPixel(destpx);
+      var dest = map.getCoordinateFromPixel([
+        centerpx[0] - distance * Math.cos(angle),
+        centerpx[1] - distance * Math.sin(angle)
+      ]);
       view.setCenter(dest);
     } else if (interacting === 0) {
       map.requestRenderFrame();

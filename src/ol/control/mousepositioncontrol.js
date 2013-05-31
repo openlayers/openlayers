@@ -115,9 +115,8 @@ ol.control.MousePosition.prototype.handleMouseMove = function(browserEvent) {
   var map = this.getMap();
   var eventPosition = goog.style.getRelativePosition(
       browserEvent, map.getViewport());
-  var pixel = new ol.Pixel(eventPosition.x, eventPosition.y);
-  this.updateHTML_(pixel);
-  this.lastMouseMovePixel_ = pixel;
+  this.lastMouseMovePixel_ = [eventPosition.x, eventPosition.y];
+  this.updateHTML_(this.lastMouseMovePixel_);
 };
 
 

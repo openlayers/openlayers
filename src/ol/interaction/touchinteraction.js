@@ -52,7 +52,7 @@ ol.interaction.Touch.centroid = function(touches) {
     clientX += touches[i].clientX;
     clientY += touches[i].clientY;
   }
-  return new ol.Pixel(clientX / length, clientY / length);
+  return [clientX / length, clientY / length];
 };
 
 
