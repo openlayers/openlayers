@@ -1,25 +1,20 @@
 goog.provide('ol.Size');
-
-goog.require('goog.math.Size');
-
+goog.provide('ol.size');
 
 
 /**
- * @constructor
- * @extends {goog.math.Size}
- * @param {number} width Width.
- * @param {number} height Height.
+ * An array representing a size: [width, height].
+ * @typedef {Array.<number>} ol.Size
  */
-ol.Size = function(width, height) {
-  goog.base(this, width, height);
-};
-goog.inherits(ol.Size, goog.math.Size);
+ol.Size;
 
 
 /**
- * @param {ol.Size} size Size.
+ * Compares sizes for equality.
+ * @param {ol.Size} a Size.
+ * @param {ol.Size} b Size.
  * @return {boolean} Equals.
  */
-ol.Size.prototype.equals = function(size) {
-  return this.width == size.width && this.height == size.height;
+ol.size.equals = function(a, b) {
+  return a[0] == b[0] && a[1] == b[1];
 };

@@ -104,7 +104,7 @@ ol.renderer.canvas.ImageLayer.prototype.renderFrame =
     var transform = this.transform_;
     goog.vec.Mat4.makeIdentity(transform);
     goog.vec.Mat4.translate(transform,
-        frameState.size.width / 2, frameState.size.height / 2, 0);
+        frameState.size[0] / 2, frameState.size[1] / 2, 0);
     goog.vec.Mat4.rotateZ(transform, viewRotation);
     goog.vec.Mat4.scale(
         transform,

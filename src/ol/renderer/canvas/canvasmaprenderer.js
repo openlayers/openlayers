@@ -16,6 +16,7 @@ goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.canvas.VectorLayer');
+goog.require('ol.size');
 
 
 
@@ -31,17 +32,11 @@ ol.renderer.canvas.Map = function(container, map) {
 
   /**
    * @private
-   * @type {ol.Size}
-   */
-  this.canvasSize_ = new ol.Size(container.clientHeight, container.clientWidth);
-
-  /**
-   * @private
    * @type {Element}
    */
   this.canvas_ = goog.dom.createElement(goog.dom.TagName.CANVAS);
-  this.canvas_.height = this.canvasSize_.height;
-  this.canvas_.width = this.canvasSize_.width;
+  this.canvas_.height = container.clientHeight;
+  this.canvas_.width = container.clientWidth;
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
   goog.dom.insertChildAt(container, this.canvas_, 0);
 
@@ -50,6 +45,12 @@ ol.renderer.canvas.Map = function(container, map) {
    * @type {boolean}
    */
   this.renderedVisible_ = true;
+
+  /**
+   * @private
+   * @type {ol.Size}
+   */
+  this.canvasSize_ = [container.clientHeight, container.clientWidth];
 
   /**
    * @private
@@ -100,15 +101,15 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   }
 
   var size = frameState.size;
-  if (!this.canvasSize_.equals(size)) {
-    this.canvas_.width = size.width;
-    this.canvas_.height = size.height;
+  if (!ol.size.equals(this.canvasSize_, size)) {
+    this.canvas_.width = size[0];
+    this.canvas_.height = size[1];
     this.canvasSize_ = size;
   }
 
   var context = this.context_;
   context.setTransform(1, 0, 0, 1, 0, 0);
-  context.clearRect(0, 0, size.width, size.height);
+  context.clearRect(0, 0, size[0], size[1]);
 
   this.calculateMatrices2D(frameState);
 

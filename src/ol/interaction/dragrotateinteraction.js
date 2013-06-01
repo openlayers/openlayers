@@ -52,7 +52,7 @@ ol.interaction.DragRotate.prototype.handleDrag = function(mapBrowserEvent) {
   var size = map.getSize();
   var offset = mapBrowserEvent.getPixel();
   var theta =
-      Math.atan2(size.height / 2 - offset[1], offset[0] - size.width / 2);
+      Math.atan2(size[1] / 2 - offset[1], offset[0] - size[0] / 2);
   if (goog.isDef(this.lastAngle_)) {
     var delta = theta - this.lastAngle_;
     var view = map.getView();

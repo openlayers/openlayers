@@ -20,8 +20,8 @@ ol.source.wms.getUrl =
     'REQUEST': 'GetMap',
     'FORMAT': 'image/png',
     'TRANSPARENT': true,
-    'WIDTH': Math.round(size.width),
-    'HEIGHT': Math.round(size.height)
+    'WIDTH': Math.round(size[0]),
+    'HEIGHT': Math.round(size[1])
   };
   goog.object.extend(baseParams, params);
 

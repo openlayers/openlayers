@@ -211,8 +211,8 @@ ol.extent.getCenter = function(extent) {
  */
 ol.extent.getForView2DAndSize =
     function(center, resolution, rotation, size, opt_extent) {
-  var dx = resolution * size.width / 2;
-  var dy = resolution * size.height / 2;
+  var dx = resolution * size[0] / 2;
+  var dy = resolution * size[1] / 2;
   var cosRotation = Math.cos(rotation);
   var sinRotation = Math.sin(rotation);
   var xs = [-dx, -dx, dx, dx];
@@ -242,7 +242,7 @@ ol.extent.getHeight = function(extent) {
  * @return {ol.Size} Size.
  */
 ol.extent.getSize = function(extent) {
-  return new ol.Size(extent[1] - extent[0], extent[3] - extent[2]);
+  return [extent[1] - extent[0], extent[3] - extent[2]];
 };
 
 

@@ -175,10 +175,10 @@ ol.View2D.prototype.calculateExtent = function(size) {
   goog.asserts.assert(this.isDef());
   var center = this.getCenter();
   var resolution = this.getResolution();
-  var minX = center[0] - resolution * size.width / 2;
-  var maxX = center[0] + resolution * size.width / 2;
-  var minY = center[1] - resolution * size.height / 2;
-  var maxY = center[1] + resolution * size.height / 2;
+  var minX = center[0] - resolution * size[0] / 2;
+  var maxX = center[0] + resolution * size[0] / 2;
+  var minY = center[1] - resolution * size[1] / 2;
+  var maxY = center[1] + resolution * size[1] / 2;
   return [minX, maxX, minY, maxY];
 };
 
@@ -215,8 +215,8 @@ goog.exportProperty(
  * @return {number} Resolution.
  */
 ol.View2D.prototype.getResolutionForExtent = function(extent, size) {
-  var xResolution = (extent[1] - extent[0]) / size.width;
-  var yResolution = (extent[3] - extent[2]) / size.height;
+  var xResolution = (extent[1] - extent[0]) / size[0];
+  var yResolution = (extent[3] - extent[2]) / size[1];
   return Math.max(xResolution, yResolution);
 };
 

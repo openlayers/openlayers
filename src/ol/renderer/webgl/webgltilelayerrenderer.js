@@ -146,13 +146,13 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     var tileSize = tileGrid.getTileSize(z);
 
     var maxDimension = Math.max(
-        tileRangeSize.width * tileSize.width,
-        tileRangeSize.height * tileSize.height);
+        tileRangeSize[0] * tileSize[0],
+        tileRangeSize[1] * tileSize[1]);
     var framebufferDimension = ol.math.roundUpToPowerOfTwo(maxDimension);
     var framebufferExtentDimension = tileResolution * framebufferDimension;
     var origin = tileGrid.getOrigin(z);
-    var minX = origin[0] + tileRange.minX * tileSize.width * tileResolution;
-    var minY = origin[1] + tileRange.minY * tileSize.height * tileResolution;
+    var minX = origin[0] + tileRange.minX * tileSize[0] * tileResolution;
+    var minY = origin[1] + tileRange.minY * tileSize[1] * tileResolution;
     framebufferExtent = [
       minX, minX + framebufferExtentDimension,
       minY, minY + framebufferExtentDimension
@@ -292,9 +292,9 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
       0);
   goog.vec.Mat4.rotateZ(texCoordMatrix, view2DState.rotation);
   goog.vec.Mat4.scale(texCoordMatrix,
-      frameState.size.width * view2DState.resolution /
+      frameState.size[0] * view2DState.resolution /
           (framebufferExtent[1] - framebufferExtent[0]),
-      frameState.size.height * view2DState.resolution /
+      frameState.size[1] * view2DState.resolution /
           (framebufferExtent[3] - framebufferExtent[2]),
       1);
   goog.vec.Mat4.translate(texCoordMatrix,

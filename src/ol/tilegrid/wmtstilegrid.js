@@ -2,7 +2,6 @@ goog.provide('ol.tilegrid.WMTS');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('ol.Size');
 goog.require('ol.proj');
 goog.require('ol.tilegrid.TileGrid');
 
@@ -73,7 +72,7 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
     matrixIds.push(elt['identifier']);
     origins.push(elt['topLeftCorner']);
     resolutions.push(elt['scaleDenominator'] * 0.28E-3 / metersPerUnit);
-    tileSizes.push(new ol.Size(elt['tileWidth'], elt['tileHeight']));
+    tileSizes.push([elt['tileWidth'], elt['tileHeight']]);
   });
 
   return new ol.tilegrid.WMTS({
