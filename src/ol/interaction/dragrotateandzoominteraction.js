@@ -66,8 +66,8 @@ ol.interaction.DragRotateAndZoom.prototype.handleDrag =
   var map = mapBrowserEvent.map;
   var size = map.getSize();
   var delta = new goog.math.Vec2(
-      browserEvent.offsetX - size.width / 2,
-      size.height / 2 - browserEvent.offsetY);
+      browserEvent.offsetX - size[0] / 2,
+      size[1] / 2 - browserEvent.offsetY);
   var theta = Math.atan2(delta.y, delta.x);
   var magnitude = delta.magnitude();
   // FIXME works for View2D only

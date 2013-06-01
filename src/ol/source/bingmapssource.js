@@ -5,7 +5,6 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
-goog.require('ol.Size');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
@@ -70,11 +69,10 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   goog.asserts.assert(resourceSet.resources.length == 1);
   var resource = resourceSet.resources[0];
 
-  var tileSize = new ol.Size(resource.imageWidth, resource.imageHeight);
   var tileGrid = new ol.tilegrid.XYZ({
     minZoom: resource.zoomMin,
     maxZoom: resource.zoomMax,
-    tileSize: tileSize
+    tileSize: [resource.imageWidth, resource.imageHeight]
   });
   this.tileGrid = tileGrid;
 

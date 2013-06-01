@@ -4,12 +4,12 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
+goog.require('goog.math.Size');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.Pixel');
-goog.require('ol.Size');
 goog.require('ol.control.Control');
 
 
@@ -61,7 +61,7 @@ ol.control.DragBox.prototype.setMap = function(map) {
     goog.asserts.assert(goog.isDef(this.startPixel_));
     goog.style.setPosition(this.element,
         this.startPixel_[0], this.startPixel_[1]);
-    goog.style.setBorderBoxSize(this.element, new ol.Size(0, 0));
+    goog.style.setBorderBoxSize(this.element, new goog.math.Size(0, 0));
     this.listenerKeys.push(goog.events.listen(
         map, ol.MapBrowserEvent.EventType.DRAG, this.updateBox_, false, this));
   }
@@ -80,7 +80,7 @@ ol.control.DragBox.prototype.updateBox_ = function(mapBrowserEvent) {
   goog.style.setPosition(this.element,
       Math.min(currentPixel[0], this.startPixel_[0]),
       Math.min(currentPixel[1], this.startPixel_[1]));
-  goog.style.setBorderBoxSize(this.element, new ol.Size(
+  goog.style.setBorderBoxSize(this.element, new goog.math.Size(
       Math.abs(currentPixel[0] - this.startPixel_[0]),
       Math.abs(currentPixel[1] - this.startPixel_[1])));
 };

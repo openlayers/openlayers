@@ -943,7 +943,7 @@ ol.Map.prototype.updateSize = function() {
   var target = this.getTarget();
   if (goog.isDef(target)) {
     var size = goog.style.getSize(target);
-    this.setSize(new ol.Size(size.width, size.height));
+    this.setSize([size.width, size.height]);
   } else {
     this.setSize(undefined);
   }

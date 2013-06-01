@@ -144,7 +144,7 @@ ol.TileRange.prototype.getHeight = function() {
  * @return {ol.Size} Size.
  */
 ol.TileRange.prototype.getSize = function() {
-  return new ol.Size(this.getWidth(), this.getHeight());
+  return [this.getWidth(), this.getHeight()];
 };
 
 

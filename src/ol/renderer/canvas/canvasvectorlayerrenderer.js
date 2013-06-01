@@ -7,7 +7,6 @@ goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Pixel');
-goog.require('ol.Size');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
 goog.require('ol.ViewHint');
@@ -297,7 +296,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     tileGrid = ol.tilegrid.createForProjection(
         view2DState.projection,
         22, // should be no harm in going big here - ideally, it would be ∞
-        new ol.Size(512, 512));
+        [512, 512]);
     this.tileGrid_ = tileGrid;
   }
 
@@ -313,8 +312,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
 
   goog.vec.Mat4.makeIdentity(transform);
   goog.vec.Mat4.translate(transform,
-      frameState.size.width / 2,
-      frameState.size.height / 2,
+      frameState.size[0] / 2,
+      frameState.size[1] / 2,
       0);
   goog.vec.Mat4.scale(transform,
       tileResolution / resolution, tileResolution / resolution, 1);
@@ -339,8 +338,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   if (goog.isNull(this.tileArchetype_)) {
     this.tileArchetype_ = /** @type {HTMLCanvasElement} */
         (goog.dom.createElement(goog.dom.TagName.CANVAS));
-    this.tileArchetype_.width = tileSize.width;
-    this.tileArchetype_.height = tileSize.height;
+    this.tileArchetype_.width = tileSize[0];
+    this.tileArchetype_.height = tileSize[1];
   }
 
   /**
@@ -348,14 +347,13 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
    * and will have rendered all newly visible features.
    */
   var sketchCanvas = this.sketchCanvas_;
-  var sketchSize = new ol.Size(
-      tileSize.width * tileRange.getWidth(),
-      tileSize.height * tileRange.getHeight());
+  var sketchWidth = tileSize[0] * tileRange.getWidth();
+  var sketchHeight = tileSize[1] * tileRange.getHeight();
 
   // transform for map coords to sketch canvas pixel coords
   var sketchTransform = this.sketchTransform_;
-  var halfWidth = sketchSize.width / 2;
-  var halfHeight = sketchSize.height / 2;
+  var halfWidth = sketchWidth / 2;
+  var halfHeight = sketchHeight / 2;
   goog.vec.Mat4.makeIdentity(sketchTransform);
   goog.vec.Mat4.translate(sketchTransform,
       halfWidth,
@@ -371,16 +369,16 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       0);
 
   // clear/resize sketch canvas
-  sketchCanvas.width = sketchSize.width;
-  sketchCanvas.height = sketchSize.height;
+  sketchCanvas.width = sketchWidth;
+  sketchCanvas.height = sketchHeight;
 
   var sketchCanvasRenderer = new ol.renderer.canvas.VectorRenderer(
       sketchCanvas, sketchTransform, undefined, this.requestMapRenderFrame_);
 
   // clear/resize final canvas
   var finalCanvas = this.canvas_;
-  finalCanvas.width = sketchSize.width;
-  finalCanvas.height = sketchSize.height;
+  finalCanvas.width = sketchWidth;
+  finalCanvas.height = sketchHeight;
   var finalContext = this.context_;
 
   var featuresToRender = {};
@@ -456,13 +454,13 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       tile = /** @type {HTMLCanvasElement} */
           (this.tileArchetype_.cloneNode(false));
       tile.getContext('2d').drawImage(sketchCanvas,
-          (tileRange.minX - tileCoord.x) * tileSize.width,
-          (tileCoord.y - tileRange.maxY) * tileSize.height);
+          (tileRange.minX - tileCoord.x) * tileSize[0],
+          (tileCoord.y - tileRange.maxY) * tileSize[1]);
       this.tileCache_.set(key, [tile, symbolSizes, maxSymbolSize]);
     }
     finalContext.drawImage(tile,
-        tileSize.width * (tileCoord.x - tileRange.minX),
-        tileSize.height * (tileRange.maxY - tileCoord.y));
+        tileSize[0] * (tileCoord.x - tileRange.minX),
+        tileSize[1] * (tileRange.maxY - tileCoord.y));
   }
 
   this.renderedResolution_ = tileResolution;

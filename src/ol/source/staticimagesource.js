@@ -20,7 +20,7 @@ ol.source.StaticImage = function(options) {
 
   var imageExtent = options.imageExtent;
   var imageSize = options.imageSize;
-  var imageResolution = (imageExtent[3] - imageExtent[2]) / imageSize.height;
+  var imageResolution = (imageExtent[3] - imageExtent[2]) / imageSize[1];
   var projection = ol.proj.get(options.projection);
 
   goog.base(this, {

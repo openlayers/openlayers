@@ -195,8 +195,8 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
       extent, tileResolution);
 
-  var canvasWidth = tileSize.width * tileRange.getWidth();
-  var canvasHeight = tileSize.height * tileRange.getHeight();
+  var canvasWidth = tileSize[0] * tileRange.getWidth();
+  var canvasHeight = tileSize[1] * tileRange.getHeight();
 
   var canvas, context;
   if (goog.isNull(this.canvas_)) {
@@ -209,24 +209,23 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
     canvas.height = canvasHeight;
     context = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
     this.canvas_ = canvas;
-    this.canvasSize_ = new ol.Size(canvasWidth, canvasHeight);
+    this.canvasSize_ = [canvasWidth, canvasHeight];
     this.context_ = context;
   } else {
     goog.asserts.assert(!goog.isNull(this.canvasSize_));
     goog.asserts.assert(!goog.isNull(this.context_));
     canvas = this.canvas_;
     context = this.context_;
-    if (this.canvasSize_.width < canvasWidth ||
-        this.canvasSize_.height < canvasHeight) {
+    if (this.canvasSize_[0] < canvasWidth ||
+        this.canvasSize_[1] < canvasHeight) {
       // Canvas is too small, make it bigger
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
-      this.canvasSize_.width = canvasWidth;
-      this.canvasSize_.height = canvasHeight;
+      this.canvasSize_ = [canvasWidth, canvasHeight];
       this.renderedCanvasTileRange_ = null;
     } else {
-      canvasWidth = this.canvasSize_.width;
-      canvasHeight = this.canvasSize_.height;
+      canvasWidth = this.canvasSize_[0];
+      canvasHeight = this.canvasSize_[1];
       if (z != this.renderedCanvasZ_ ||
           !this.renderedCanvasTileRange_.containsTileRange(tileRange)) {
         this.renderedCanvasTileRange_ = null;
@@ -236,8 +235,8 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
 
   var canvasTileRange, canvasTileRangeWidth, minX, minY;
   if (goog.isNull(this.renderedCanvasTileRange_)) {
-    canvasTileRangeWidth = canvasWidth / tileSize.width;
-    var canvasTileRangeHeight = canvasHeight / tileSize.height;
+    canvasTileRangeWidth = canvasWidth / tileSize[0];
+    var canvasTileRangeHeight = canvasHeight / tileSize[1];
     minX = tileRange.minX -
         Math.floor((canvasTileRangeWidth - tileRange.getWidth()) / 2);
     minY = tileRange.minY -
@@ -304,9 +303,9 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   var i, ii;
   for (i = 0, ii = tilesToClear.length; i < ii; ++i) {
     tile = tilesToClear[i];
-    x = tileSize.width * (tile.tileCoord.x - canvasTileRange.minX);
-    y = tileSize.height * (canvasTileRange.maxY - tile.tileCoord.y);
-    context.clearRect(x, y, tileSize.width, tileSize.height);
+    x = tileSize[0] * (tile.tileCoord.x - canvasTileRange.minX);
+    y = tileSize[1] * (canvasTileRange.maxY - tile.tileCoord.y);
+    context.clearRect(x, y, tileSize[0], tileSize[1]);
   }
 
   /** @type {Array.<number>} */
@@ -330,13 +329,13 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
             (tile.tileCoord.y - canvasTileRange.minY) * canvasTileRangeWidth +
             (tile.tileCoord.x - canvasTileRange.minX);
         if (this.renderedTiles_[index] != tile) {
-          x = tileSize.width * (tile.tileCoord.x - canvasTileRange.minX);
-          y = tileSize.height * (canvasTileRange.maxY - tile.tileCoord.y);
+          x = tileSize[0] * (tile.tileCoord.x - canvasTileRange.minX);
+          y = tileSize[1] * (canvasTileRange.maxY - tile.tileCoord.y);
           tileState = tile.getState();
           if (tileState == ol.TileState.EMPTY ||
               tileState == ol.TileState.ERROR ||
               !opaque) {
-            context.clearRect(x, y, tileSize.width, tileSize.height);
+            context.clearRect(x, y, tileSize[0], tileSize[1]);
           }
           if (tileState == ol.TileState.LOADED) {
             context.drawImage(tile.getImage(), x, y);
@@ -351,8 +350,8 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
         tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
         x = (tileExtent[0] - origin[0]) / tileResolution;
         y = (origin[1] - tileExtent[3]) / tileResolution;
-        width = scale * tileSize.width;
-        height = scale * tileSize.height;
+        width = scale * tileSize[0];
+        height = scale * tileSize[1];
         tileState = tile.getState();
         if (tileState == ol.TileState.EMPTY || !opaque) {
           context.clearRect(x, y, width, height);
@@ -386,7 +385,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   var transform = this.transform_;
   goog.vec.Mat4.makeIdentity(transform);
   goog.vec.Mat4.translate(transform,
-      frameState.size.width / 2, frameState.size.height / 2, 0);
+      frameState.size[0] / 2, frameState.size[1] / 2, 0);
   goog.vec.Mat4.rotateZ(transform, view2DState.rotation);
   goog.vec.Mat4.scale(
       transform,

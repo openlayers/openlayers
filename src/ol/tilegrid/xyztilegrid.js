@@ -1,7 +1,6 @@
 goog.provide('ol.tilegrid.XYZ');
 
 goog.require('goog.math');
-goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.proj');
@@ -28,7 +27,7 @@ ol.tilegrid.XYZ = function(options) {
     minZoom: options.minZoom,
     origin: [-ol.proj.EPSG3857.HALF_SIZE, ol.proj.EPSG3857.HALF_SIZE],
     resolutions: resolutions,
-    tileSize: new ol.Size(ol.DEFAULT_TILE_SIZE, ol.DEFAULT_TILE_SIZE)
+    tileSize: [ol.DEFAULT_TILE_SIZE, ol.DEFAULT_TILE_SIZE]
   });
 
 };
