@@ -330,8 +330,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
    * necessary.  And look for ways to get here faster.
    */
   if (!this.dirty_ && this.renderedResolution_ === tileResolution &&
-      // TODO: extent.equals()
-      this.renderedExtent_.toString() === tileRangeExtent.toString()) {
+      ol.extent.equals(this.renderedExtent_, tileRangeExtent)) {
     return;
   }
 
