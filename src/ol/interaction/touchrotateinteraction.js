@@ -97,8 +97,8 @@ ol.interaction.TouchRotate.prototype.handleTouchMove =
   //     touch0,touch1 and previousTouch0,previousTouch1
   var viewportPosition = goog.style.getClientPosition(map.getViewport());
   var centroid = ol.interaction.Touch.centroid(this.targetTouches);
-  centroid[0] -= viewportPosition[0];
-  centroid[1] -= viewportPosition[1];
+  centroid[0] -= viewportPosition.x;
+  centroid[1] -= viewportPosition.y;
   this.anchor_ = map.getCoordinateFromPixel(centroid);
 
   // rotate
