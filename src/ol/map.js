@@ -339,6 +339,18 @@ goog.inherits(ol.Map, ol.Object);
 
 
 /**
+ * Add the given control to the map.
+ * @param {ol.control.Control} control Control.
+ */
+ol.Map.prototype.addControl = function(control) {
+  var controls = this.getControls();
+  goog.asserts.assert(goog.isDef(controls));
+  controls.push(control);
+  control.setMap(this);
+};
+
+
+/**
  * Adds the given layer to the top of this map.
  * @param {ol.layer.Layer} layer Layer.
  */
@@ -806,6 +818,20 @@ ol.Map.prototype.requestRenderFrame = function() {
   } else {
     this.dirty_ = true;
   }
+};
+
+
+/**
+ * Remove the given control from the map.
+ * @param {ol.control.Control} control Control.
+ * @return {ol.control.Control|undefined} The removed control of undefined
+ *     if the control was not found.
+ */
+ol.Map.prototype.removeControl = function(control) {
+  var controls = this.getControls();
+  goog.asserts.assert(goog.isDef(controls));
+  control.setMap(null);
+  return /** @type {ol.control.Control|undefined} */ (controls.remove(control));
 };
 
 
