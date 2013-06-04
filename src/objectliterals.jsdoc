@@ -43,8 +43,8 @@
 /**
  * Object literal with config options for the map.
  * @typedef {Object} ol.MapOptions
- * @property {Array.<ol.control.Control>|undefined} controls Controls initially
- *     added to the map.
+ * @property {ol.Collection|Array.<ol.control.Control>|undefined} controls
+ *     Controls initially added to the map.
  * @property {ol.Collection|undefined} interactions Interactions.
  * @property {Array.<ol.layer.Layer>|ol.Collection|undefined} layers Layers.
  * @property {ol.RendererHint|undefined} renderer Renderer.

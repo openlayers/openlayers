@@ -251,6 +251,12 @@ ol.Map = function(options) {
    * @type {ol.Collection}
    * @private
    */
+  this.controls_ = optionsInternal.controls;
+
+  /**
+   * @type {ol.Collection}
+   * @private
+   */
   this.interactions_ = optionsInternal.interactions;
 
   /**
@@ -320,15 +326,13 @@ ol.Map = function(options) {
   // is "defined" already.
   this.setValues(optionsInternal.values);
 
-  if (goog.isDef(optionsInternal.controls)) {
-    goog.array.forEach(optionsInternal.controls,
-        /**
-         * @param {ol.control.Control} control Control.
-         */
-        function(control) {
-          control.setMap(this);
-        }, this);
-  }
+  this.controls_.forEach(
+      /**
+       * @param {ol.control.Control} control Control.
+       */
+      function(control) {
+        control.setMap(this);
+      }, this);
 
 };
 goog.inherits(ol.Map, ol.Object);
@@ -431,6 +435,14 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
     var vec2 = pixel.slice();
     return ol.vec.Mat4.multVec2(frameState.pixelToCoordinateMatrix, vec2, vec2);
   }
+};
+
+
+/**
+ * @return {ol.Collection} Controls.
+ */
+ol.Map.prototype.getControls = function() {
+  return this.controls_;
 };
 
 
@@ -997,7 +1009,7 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
 
 
 /**
- * @typedef {{controls: Array.<ol.control.Control>,
+ * @typedef {{controls: ol.Collection,
  *            interactions: ol.Collection,
  *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
@@ -1074,8 +1086,17 @@ ol.Map.createOptionsInternal = function(options) {
     }
   }
 
-  var controls = goog.isDef(options.controls) ?
-      options.controls : ol.control.defaults();
+  var controls;
+  if (goog.isDef(options.controls)) {
+    if (goog.isArray(options.controls)) {
+      controls = new ol.Collection(goog.array.clone(options.controls));
+    } else {
+      goog.asserts.assertInstanceof(options.controls, ol.Collection);
+      controls = options.controls;
+    }
+  } else {
+    controls = ol.control.defaults();
+  }
 
   var interactions = goog.isDef(options.interactions) ?
       options.interactions : ol.interaction.defaults();
