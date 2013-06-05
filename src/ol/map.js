@@ -112,6 +112,7 @@ ol.DEFAULT_RENDERER_HINTS = [
  */
 ol.MapProperty = {
   LAYERS: 'layers',
+  POINTER: 'pointer',
   SIZE: 'size',
   TARGET: 'target',
   VIEW: 'view'
@@ -393,6 +394,19 @@ ol.Map.prototype.freezeRendering = function() {
 
 
 /**
+ * @return {ol.Coordinate|undefined} Pointer position.
+ */
+ol.Map.prototype.getPointer = function() {
+  return /** @type {ol.Coordinate|undefined} */ (
+      this.get(ol.MapProperty.POINTER));
+};
+goog.exportProperty(
+    ol.Map.prototype,
+    'getPointer',
+    ol.Map.prototype.getPointer);
+
+
+/**
  * @return {ol.renderer.Map} Renderer.
  */
 ol.Map.prototype.getRenderer = function() {
@@ -609,6 +623,7 @@ ol.Map.prototype.handleLayersRemove_ = function(collectionEvent) {
  * @param {ol.MapBrowserEvent} mapBrowserEvent The event to handle.
  */
 ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
+  this.set(ol.MapProperty.POINTER, mapBrowserEvent.getCoordinate());
   mapBrowserEvent.frameState = this.frameState_;
   var interactions = this.getInteractions();
   var interactionsArray = /** @type {Array.<ol.interaction.Interaction>} */
