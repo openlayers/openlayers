@@ -11,6 +11,12 @@ goog.require('ol.source.OSM');
 goog.require('ol.source.VectorSource2');
 
 
+// WARNING
+// This example is an experimental testbed for WebGL vector work.  The function
+// calls used here are internal and low-level and are not representative of the
+// final API.
+
+
 var pointCollection = ol.geom2.PointCollection.createEmpty(101 * 101);
 var i, j, x, y;
 for (i = 0; i < 101; ++i) {
