@@ -188,85 +188,92 @@ ol.expression.Lexer.prototype.isFutureReservedWord_ = function(id) {
 
 /**
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.8.3
- * @param {number} ch The unicode of a character.
+ * @param {number} code The unicode of a character.
  * @return {boolean} The character is a hex digit.
  * @private
  */
-ol.expression.Lexer.prototype.isHexDigit_ = function(ch) {
-  return this.isDecimalDigit_(ch) ||
-      (ch >= ol.expression.Char.LOWER_A && ch <= ol.expression.Char.LOWER_F) ||
-      (ch >= ol.expression.Char.UPPER_A && ch <= ol.expression.Char.UPPER_F);
+ol.expression.Lexer.prototype.isHexDigit_ = function(code) {
+  return this.isDecimalDigit_(code) ||
+      (code >= ol.expression.Char.LOWER_A &&
+          code <= ol.expression.Char.LOWER_F) ||
+      (code >= ol.expression.Char.UPPER_A &&
+          code <= ol.expression.Char.UPPER_F);
 };
 
 
 /**
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.6
  * Doesn't deal with non-ascii identifiers.
- * @param {number} ch The unicode of a character.
+ * @param {number} code The unicode of a character.
  * @return {boolean} The character is a valid identifier part.
  * @private
  */
-ol.expression.Lexer.prototype.isIdentifierPart_ = function(ch) {
-  return this.isIdentifierStart_(ch) ||
-      (ch >= ol.expression.Char.DIGIT_0 && ch <= ol.expression.Char.DIGIT_9);
+ol.expression.Lexer.prototype.isIdentifierPart_ = function(code) {
+  return this.isIdentifierStart_(code) ||
+      (code >= ol.expression.Char.DIGIT_0 &&
+          code <= ol.expression.Char.DIGIT_9);
 };
 
 
 /**
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.6
  * Doesn't yet deal with non-ascii identifiers.
- * @param {number} ch The unicode of a character.
+ * @param {number} code The unicode of a character.
  * @return {boolean} The character is a valid identifier start.
  * @private
  */
-ol.expression.Lexer.prototype.isIdentifierStart_ = function(ch) {
-  return (ch === ol.expression.Char.DOLLAR) ||
-      (ch === ol.expression.Char.UNDERSCORE) ||
-      (ch >= ol.expression.Char.UPPER_A && ch <= ol.expression.Char.UPPER_Z) ||
-      (ch >= ol.expression.Char.LOWER_A && ch <= ol.expression.Char.LOWER_Z);
+ol.expression.Lexer.prototype.isIdentifierStart_ = function(code) {
+  return (code === ol.expression.Char.DOLLAR) ||
+      (code === ol.expression.Char.UNDERSCORE) ||
+      (code >= ol.expression.Char.UPPER_A &&
+          code <= ol.expression.Char.UPPER_Z) ||
+      (code >= ol.expression.Char.LOWER_A &&
+          code <= ol.expression.Char.LOWER_Z);
 };
 
 
 /**
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.3
- * @param {number} ch The unicode of a character.
+ * @param {number} code The unicode of a character.
  * @return {boolean} The character is a line terminator.
  * @private
  */
-ol.expression.Lexer.prototype.isLineTerminator_ = function(ch) {
-  return (ch === ol.expression.Char.LINE_FEED) ||
-      (ch === ol.expression.Char.CARRIAGE_RETURN) ||
-      (ch === ol.expression.Char.LINE_SEPARATOR) ||
-      (ch === ol.expression.Char.PARAGRAPH_SEPARATOR);
+ol.expression.Lexer.prototype.isLineTerminator_ = function(code) {
+  return (code === ol.expression.Char.LINE_FEED) ||
+      (code === ol.expression.Char.CARRIAGE_RETURN) ||
+      (code === ol.expression.Char.LINE_SEPARATOR) ||
+      (code === ol.expression.Char.PARAGRAPH_SEPARATOR);
 };
 
 
 /**
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.8.3
- * @param {number} ch The unicode of a character.
+ * @param {number} code The unicode of a character.
  * @return {boolean} The character is an octal digit.
  * @private
  */
-ol.expression.Lexer.prototype.isOctalDigit_ = function(ch) {
-  return (ch >= ol.expression.Char.DIGIT_0 && ch <= ol.expression.Char.DIGIT_7);
+ol.expression.Lexer.prototype.isOctalDigit_ = function(code) {
+  return (
+      code >= ol.expression.Char.DIGIT_0 &&
+      code <= ol.expression.Char.DIGIT_7);
 };
 
 
 /**
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.2
- * @param {number} ch The unicode of a character.
+ * @param {number} code The unicode of a character.
  * @return {boolean} The character is whitespace.
  * @private
  */
-ol.expression.Lexer.prototype.isWhitespace_ = function(ch) {
-  return (ch === ol.expression.Char.SPACE) ||
-      (ch === ol.expression.Char.TAB) ||
-      (ch === ol.expression.Char.VERTICAL_TAB) ||
-      (ch === ol.expression.Char.FORM_FEED) ||
-      (ch === ol.expression.Char.NONBREAKING_SPACE) ||
-      (ch >= 0x1680 && '\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005' +
+ol.expression.Lexer.prototype.isWhitespace_ = function(code) {
+  return (code === ol.expression.Char.SPACE) ||
+      (code === ol.expression.Char.TAB) ||
+      (code === ol.expression.Char.VERTICAL_TAB) ||
+      (code === ol.expression.Char.FORM_FEED) ||
+      (code === ol.expression.Char.NONBREAKING_SPACE) ||
+      (code >= 0x1680 && '\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005' +
           '\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\uFEFF'
-          .indexOf(String.fromCharCode(ch)) > 0);
+          .indexOf(String.fromCharCode(code)) > 0);
 };
 
 
@@ -297,36 +304,36 @@ ol.expression.Lexer.prototype.getCurrentCharCode_ = function() {
  * @private
  */
 ol.expression.Lexer.prototype.scanPunctuator_ = function() {
-  var ch = this.getCurrentCharCode_();
+  var code = this.getCurrentCharCode_();
 
   // single char punctuation
-  if (ch === ol.expression.Char.DOT ||
-      ch === ol.expression.Char.LEFT_PAREN ||
-      ch === ol.expression.Char.RIGHT_PAREN ||
-      ch === ol.expression.Char.COMMA ||
-      ch === ol.expression.Char.GREATER ||
-      ch === ol.expression.Char.LESS ||
-      ch === ol.expression.Char.PLUS ||
-      ch === ol.expression.Char.MINUS ||
-      ch === ol.expression.Char.STAR ||
-      ch === ol.expression.Char.PERCENT ||
-      ch === ol.expression.Char.PIPE ||
-      ch === ol.expression.Char.AMPERSAND ||
-      ch === ol.expression.Char.TILDE) {
+  if (code === ol.expression.Char.DOT ||
+      code === ol.expression.Char.LEFT_PAREN ||
+      code === ol.expression.Char.RIGHT_PAREN ||
+      code === ol.expression.Char.COMMA ||
+      code === ol.expression.Char.GREATER ||
+      code === ol.expression.Char.LESS ||
+      code === ol.expression.Char.PLUS ||
+      code === ol.expression.Char.MINUS ||
+      code === ol.expression.Char.STAR ||
+      code === ol.expression.Char.PERCENT ||
+      code === ol.expression.Char.PIPE ||
+      code === ol.expression.Char.AMPERSAND ||
+      code === ol.expression.Char.TILDE) {
 
     this.increment_(1);
     return {
       type: ol.expression.TokenType.PUNCTUATOR,
-      value: String.fromCharCode(ch)
+      value: String.fromCharCode(code)
     };
   }
 
   // check for 2-character punctuation
-  var ch1 = this.getCharCode_(1);
+  var nextCode = this.getCharCode_(1);
 
   // assignment or comparison (and we don't allow assignment)
-  if (ch1 === ol.expression.Char.EQUAL) {
-    if (ch === ol.expression.Char.BANG || ch === ol.expression.Char.EQUAL) {
+  if (nextCode === ol.expression.Char.EQUAL) {
+    if (code === ol.expression.Char.BANG || code === ol.expression.Char.EQUAL) {
       // we're looking at !=, ==, !==, or ===
       this.increment_(2);
 
@@ -335,31 +342,33 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function() {
         this.increment_(1);
         return {
           type: ol.expression.TokenType.PUNCTUATOR,
-          value: String.fromCharCode(ch) + '=='
+          value: String.fromCharCode(code) + '=='
         };
       } else {
         // != or ==
         return {
           type: ol.expression.TokenType.PUNCTUATOR,
-          value: String.fromCharCode(ch) + '='
+          value: String.fromCharCode(code) + '='
         };
       }
     }
 
-    if (ch === ol.expression.Char.GREATER || ch === ol.expression.Char.LESS) {
+    if (code === ol.expression.Char.GREATER ||
+        code === ol.expression.Char.LESS) {
       return {
         type: ol.expression.TokenType.PUNCTUATOR,
-        value: String.fromCharCode(ch) + '='
+        value: String.fromCharCode(code) + '='
       };
     }
   }
 
   // remaining 2-charcter punctuators are || and &&
-  if (ch === ch1 &&
-      (ch === ol.expression.Char.PIPE || ch === ol.expression.Char.AMPERSAND)) {
+  if (code === nextCode &&
+      (code === ol.expression.Char.PIPE ||
+          code === ol.expression.Char.AMPERSAND)) {
 
     this.increment_(2);
-    var str = String.fromCharCode(ch);
+    var str = String.fromCharCode(code);
     return {
       type: ol.expression.TokenType.PUNCTUATOR,
       value: str + str
