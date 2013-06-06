@@ -1,5 +1,7 @@
 goog.provide('ol.expression.Lexer');
 
+goog.require('goog.asserts');
+
 
 /**
  * @enum {number}
@@ -23,7 +25,9 @@ ol.expression.Char = {
   LINE_FEED: 10,
   LINE_SEPARATOR: 0x2028,
   LOWER_A: 97,
+  LOWER_E: 101,
   LOWER_F: 102,
+  LOWER_X: 120,
   LOWER_Z: 122,
   MINUS: 45,
   NONBREAKING_SPACE: 0xA0,
@@ -39,7 +43,9 @@ ol.expression.Char = {
   TILDE: 126,
   UNDERSCORE: 95,
   UPPER_A: 65,
+  UPPER_E: 69,
   UPPER_F: 70,
+  UPPER_X: 88,
   UPPER_Z: 90,
   VERTICAL_TAB: 0xB
 };
@@ -111,35 +117,35 @@ ol.expression.Lexer.prototype.advance_ = function() {
       value: null
     };
   }
-  var ch = this.getCurrentCharCode_();
+  var code = this.getCurrentCharCode_();
 
   // check for common punctuation
-  if (ch === ol.expression.Char.LEFT_PAREN ||
-      ch === ol.expression.Char.RIGHT_PAREN) {
+  if (code === ol.expression.Char.LEFT_PAREN ||
+      code === ol.expression.Char.RIGHT_PAREN) {
     return this.scanPunctuator_();
   }
 
   // check for string literal
-  if (ch === ol.expression.Char.SINGLE_QUOTE ||
-      ch === ol.expression.Char.DOUBLE_QUOTE) {
+  if (code === ol.expression.Char.SINGLE_QUOTE ||
+      code === ol.expression.Char.DOUBLE_QUOTE) {
     return this.scanStringLiteral_();
   }
 
   // check for identifier
-  if (this.isIdentifierStart_(ch)) {
+  if (this.isIdentifierStart_(code)) {
     this.scanIdentifier_();
   }
 
   // check dot punctuation or decimal
-  if (ch === ol.expression.Char.DOT) {
+  if (code === ol.expression.Char.DOT) {
     if (this.isDecimalDigit_(this.getCharCode_(1))) {
       return this.scanNumericLiteral_();
     }
     return this.scanPunctuator_();
   }
 
-  // check decimal number
-  if (this.isDecimalDigit_(ch)) {
+  // check for numeric literal
+  if (this.isDecimalDigit_(code)) {
     return this.scanNumericLiteral_();
   }
 
@@ -160,12 +166,14 @@ ol.expression.Lexer.prototype.increment_ = function(delta) {
 
 /**
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.8.3
- * @param {number} ch The unicode of a character.
+ * @param {number} code The unicode of a character.
  * @return {boolean} The character is a decimal digit.
  * @private
  */
-ol.expression.Lexer.prototype.isDecimalDigit_ = function(ch) {
-  return (ch >= ol.expression.Char.DIGIT_0 && ch <= ol.expression.Char.DIGIT_9);
+ol.expression.Lexer.prototype.isDecimalDigit_ = function(code) {
+  return (
+      code >= ol.expression.Char.DIGIT_0 &&
+      code <= ol.expression.Char.DIGIT_9);
 };
 
 
@@ -289,12 +297,209 @@ ol.expression.Lexer.prototype.getCharCode_ = function(delta) {
 
 
 /**
+ * Get the character at the current index.
+ * @return {string} The current character.
+ * @private
+ */
+ol.expression.Lexer.prototype.getCurrentChar_ = function() {
+  return this.source_[this.index_];
+};
+
+
+/**
  * Get the unicode of the character at the current index.
  * @return {number} The current character code.
  * @private
  */
 ol.expression.Lexer.prototype.getCurrentCharCode_ = function() {
   return this.getCharCode_(0);
+};
+
+
+/**
+ * Scan hex literal as numeric token.
+ * @return {ol.expression.Token} Numeric literal token.
+ * @private
+ */
+ol.expression.Lexer.prototype.scanHexLiteral_ = function() {
+  var code = this.getCurrentCharCode_();
+  var str = '';
+
+  while (this.index_ < this.length_) {
+    if (!this.isHexDigit_(code)) {
+      break;
+    }
+    str += String.fromCharCode(code);
+    this.increment_(1);
+    code = this.getCurrentCharCode_();
+  }
+
+  if (str.length === 0) {
+    throw new Error('Unexpected token at index ' + this.index_ +
+        ': ' + String.fromCharCode(code));
+  }
+
+  if (this.isIdentifierStart_(code)) {
+    throw new Error('Unexpected token at index ' + this.index_ +
+        ': ' + String.fromCharCode(code));
+  }
+
+  goog.asserts.assert(!isNaN(parseInt('0x' + str, 16)), 'Valid hex: ' + str);
+
+  return {
+    type: ol.expression.TokenType.NUMERIC_LITERAL,
+    value: parseInt('0x' + str, 16)
+  };
+};
+
+
+/**
+ * Scan identifier token.
+ * @return {ol.expression.Token} Identifier token.
+ * @private
+ */
+ol.expression.Lexer.prototype.scanIdentifier_ = function() {
+  throw new Error('Not yet implemented');
+};
+
+
+/**
+ * Scan numeric literal token.
+ * @return {ol.expression.Token} Numeric literal token.
+ * @private
+ */
+ol.expression.Lexer.prototype.scanNumericLiteral_ = function() {
+  var code = this.getCurrentCharCode_();
+  goog.asserts.assert(
+      code === ol.expression.Char.DOT || this.isDecimalDigit_(code),
+      'Valid start for numeric literal: ' + String.fromCharCode(code));
+
+  // start assembling numeric string
+  var str = '';
+
+  if (code !== ol.expression.Char.DOT) {
+
+    if (code === ol.expression.Char.DIGIT_0) {
+      var nextCode = this.getCharCode_(1);
+
+      // hex literals start with 0X or 0x
+      if (nextCode === ol.expression.Char.UPPER_X ||
+          nextCode === ol.expression.Char.LOWER_X) {
+        this.increment_(2);
+        return this.scanHexLiteral_();
+      }
+
+      // octals start with 0
+      if (this.isOctalDigit_(nextCode)) {
+        this.increment_(1);
+        return this.scanOctalLiteral_();
+      }
+
+      // numbers like 04 not allowed
+      if (this.isDecimalDigit_(nextCode)) {
+        throw new Error('Unexpected token at index ' + this.index_ +
+            ': ' + String.fromCharCode(nextCode));
+      }
+    }
+
+    // scan all decimal chars
+    while (this.isDecimalDigit_(code)) {
+      str += String.fromCharCode(code);
+      this.increment_(1);
+      code = this.getCurrentCharCode_();
+    }
+  }
+
+  // scan fractional part
+  if (code === ol.expression.Char.DOT) {
+    str += String.fromCharCode(code);
+    this.increment_(1);
+    code = this.getCurrentCharCode_();
+
+    // scan all decimal chars
+    while (this.isDecimalDigit_(code)) {
+      str += String.fromCharCode(code);
+      this.increment_(1);
+      code = this.getCurrentCharCode_();
+    }
+  }
+
+  // scan exponent
+  if (code === ol.expression.Char.UPPER_E ||
+      code === ol.expression.Char.LOWER_E) {
+    str += 'E';
+    this.increment_(1);
+
+    code = this.getCurrentCharCode_();
+    if (code === ol.expression.Char.PLUS ||
+        code === ol.expression.Char.MINUS) {
+      str += String.fromCharCode(code);
+      this.increment_(1);
+      code = this.getCurrentCharCode_();
+    }
+
+    if (!this.isDecimalDigit_(code)) {
+      throw new Error('Unexpected token at index ' + this.index_ +
+          ': ' + String.fromCharCode(code));
+    }
+
+    // scan all decimal chars (TODO: unduplicate this)
+    while (this.isDecimalDigit_(code)) {
+      str += String.fromCharCode(code);
+      this.increment_(1);
+      code = this.getCurrentCharCode_();
+    }
+  }
+
+  if (this.isIdentifierStart_(code)) {
+    throw new Error('Unexpected token at index ' + this.index_ +
+        ': ' + String.fromCharCode(code));
+  }
+
+  goog.asserts.assert(!isNaN(parseFloat(str)), 'Valid number: ' + str);
+
+  return {
+    type: ol.expression.TokenType.NUMERIC_LITERAL,
+    value: parseFloat(str)
+  };
+
+};
+
+
+/**
+ * Scan octal literal as numeric token.
+ * @return {ol.expression.Token} Numeric literal token.
+ * @private
+ */
+ol.expression.Lexer.prototype.scanOctalLiteral_ = function() {
+  var code = this.getCurrentCharCode_();
+  goog.asserts.assert(this.isOctalDigit_(code));
+
+  var str = '0' + String.fromCharCode(code);
+  this.increment_(1);
+
+  while (this.index_ < this.length_) {
+    code = this.getCurrentCharCode_();
+    if (!this.isOctalDigit_(code)) {
+      break;
+    }
+    str += String.fromCharCode(code);
+    this.increment_(1);
+  }
+
+  code = this.getCurrentCharCode_();
+  if (this.isIdentifierStart_(code) ||
+      this.isDecimalDigit_(code)) {
+    throw new Error('Unexpected token at index ' + (this.index_ - 1) +
+        ': ' + String.fromCharCode(code));
+  }
+
+  goog.asserts.assert(!isNaN(parseInt(str, 8)), 'Valid octal: ' + str);
+
+  return {
+    type: ol.expression.TokenType.NUMERIC_LITERAL,
+    value: parseInt(str, 8)
+  };
 };
 
 
@@ -378,28 +583,8 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function() {
   // we don't allow 4-character punctuator (>>>=)
   // and the allowed 3-character punctuators (!==, ===) are already consumed
 
-  throw new Error('Unexpected token at index ' + this.index_ +
-      ': ' + String.fromCharCode(ch));
-};
-
-
-/**
- * Scan identifier token.
- * @return {ol.expression.Token} Identifier token.
- * @private
- */
-ol.expression.Lexer.prototype.scanIdentifier_ = function() {
-  throw new Error('Not yet implemented');
-};
-
-
-/**
- * Scan numeric literal token.
- * @return {ol.expression.Token} Numeric literal token.
- * @private
- */
-ol.expression.Lexer.prototype.scanNumericLiteral_ = function() {
-  throw new Error('Not yet implemented');
+  throw new Error('Unexpected token at index ' + (this.index_ - 1) +
+      ': ' + String.fromCharCode(code));
 };
 
 
