@@ -134,7 +134,7 @@
 
         var url = "http://octo.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.WMS(name, url, params, {'wrapDateLine':true,encodeBBOX:true, buffer: 2});
-        var m = new OpenLayers.Map('map', {adjustZoom: function(z) {return z;}});
+        var m = new OpenLayers.Map('map', {tileManager: null, adjustZoom: function(z) {return z;}});
         m.addLayer(layer);
         m.zoomToMaxExtent();
         t.eq(layer.grid[3][0].url, "http://octo.metacarta.com/cgi-bin/mapserv?MAP=%2Fmapdata%2Fvmap_wms.map&LAYERS=basic&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&SRS=EPSG%3A4326&BBOX=0%2C-90%2C180%2C90&WIDTH=256&HEIGHT=256", "cell [3][0] is wrapped around the world.");
@@ -151,7 +151,7 @@
              "http://www.openlayers.org/world/index.php",
              {g: "satellite", map: "world"},
              {wrapDateLine: true, buffer: 2} ); 
-        var m = new OpenLayers.Map('map', {adjustZoom: function(z) {return z;}});
+        var m = new OpenLayers.Map('map', {tileManager: null, adjustZoom: function(z) {return z;}});
         m.addLayer(layer);
         m.zoomToMaxExtent();
         t.eq(layer.grid[4][7].url, "http://www.openlayers.org/world/index.php?g=satellite&map=world&i=jpeg&t=0&l=-256&s=221471921.25", "grid[5][7] kamap is okay");
@@ -170,7 +170,7 @@
                      "prov_bound,fedlimit,rail,road,popplace",
              transparent: "true", format: "image/png"},
             {wrapDateLine: true, encodeBBOX:true, buffer:2});
-        var m = new OpenLayers.Map('map', {adjustZoom: function(z) {return z;}});
+        var m = new OpenLayers.Map('map', {tileManager: null, adjustZoom: function(z) {return z;}});
         m.addLayers([baselayer,layer]);
         m.zoomToMaxExtent();
         t.eq(layer.grid[3][0].url, "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap?LAYERS=bathymetry%2Cland_fn%2Cpark%2Cdrain_fn%2Cdrainage%2Cprov_bound%2Cfedlimit%2Crail%2Croad%2Cpopplace&TRANSPARENT=true&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&SRS=EPSG%3A4326&BBOX=0%2C-90%2C180%2C90&WIDTH=256&HEIGHT=256", "grid[0][0] wms overlay is okay");

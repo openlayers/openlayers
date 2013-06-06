@@ -102,7 +102,6 @@ var map;
         units: "m",
         maxResolution: 38.21851413574219,
         numZoomLevels: 8,
-        tileManager: new OpenLayers.TileManager(),
         controls: [
             new OpenLayers.Control.Navigation(),
             new OpenLayers.Control.Attribution(),

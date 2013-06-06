@@ -19,7 +19,7 @@
     
     function test_Tile_Image_IFrame_create (t) {
         t.plan( 3 );
-        map   = new OpenLayers.Map('map');
+        map   = new OpenLayers.Map('map', {tileManager: null});
         var bar = new Array(205).join("1234567890");
         layer = new OpenLayers.Layer.WMS(name, wmsUrl,
                                          {layers: 'basic', foo: bar},
@@ -87,7 +87,7 @@
     function test_Tile_Image_IFrame_createImage (t) {
         t.plan( 9 );
 
-        map   = new OpenLayers.Map('map');
+        map   = new OpenLayers.Map('map', {tileManager: null});
         layer = new OpenLayers.Layer.WMS(name, wmsUrl, {layers: 'basic'}, {tileOptions: {maxGetUrlLength: 0}}); 
         map.addLayer(layer);  
         var tile = layer.addTile(bounds, position);

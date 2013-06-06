@@ -193,6 +193,7 @@
         // test that events.on is called at map construction
         var options = {
             eventListeners: {foo: "bar"},
+            tileManager: null,
             controls: []
         };
         OpenLayers.Events.prototype.on = function(obj) {
@@ -207,7 +208,7 @@
         OpenLayers.Events.prototype.on = function(obj) {
             t.fail("events.on called without eventListeners");
         }
-        var map2 = new OpenLayers.Map("map", {controls: []});
+        var map2 = new OpenLayers.Map("map", {tileManager: null, controls: []});
         OpenLayers.Events.prototype.on = method;
         map2.destroy();
     }
@@ -2246,6 +2247,20 @@
             }
         }
         t.eq(resizeListener, map.autoUpdateSize, "resize listener not registered when autoUpdateSize is false");
+        map.destroy();
+    }
+
+    function test_tileManager(t) {
+        t.plan(3);
+        var map = new OpenLayers.Map('map');
+        t.ok(map.tileManager instanceof OpenLayers.TileManager, "Default tileManager created");
+        map.destroy();
+        map = new OpenLayers.Map('map', {tileManager: null});
+        t.ok(map.tileManager === null, "No tileManager created");
+        map.destroy();
+        var options = {cacheSize: 512};
+        map = new OpenLayers.Map('map', {tileManager: options});
+        t.eq(map.tileManager.cacheSize, 512, "cacheSize taken from options");
         map.destroy();
     }
 

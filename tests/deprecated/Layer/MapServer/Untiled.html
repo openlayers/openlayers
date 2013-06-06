@@ -69,7 +69,7 @@
     function test_Layer_MapServer_Untiled_mergeNewParams (t) {
         t.plan( 5 );
 
-        var map = new OpenLayers.Map("map");
+        var map = new OpenLayers.Map("map", {tileManager: null});
         var url = "http://labs.metacarta.com/cgi-bin/mapserv";
         layer = new OpenLayers.Layer.MapServer.Untiled(name, url, params);
         

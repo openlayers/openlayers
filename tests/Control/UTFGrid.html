@@ -30,6 +30,7 @@
         });
         map = new OpenLayers.Map({
             div: "map",
+            tileManager: null,
             projection: "EPSG:900913",
             layers: [layer],
             center: [0, 0],

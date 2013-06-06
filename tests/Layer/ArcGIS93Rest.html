@@ -60,7 +60,7 @@
         t.plan( 6 );
     
         layer = new OpenLayers.Layer.ArcGIS93Rest(name, url, params);
-        var map = new OpenLayers.Map('map');
+        var map = new OpenLayers.Map('map', {tileManager: null});
         map.addLayer(layer);
         var pixel = new OpenLayers.Pixel(5,6);
         var tile = layer.addTile(new OpenLayers.Bounds(1,2,3,4), pixel);
@@ -258,7 +258,7 @@
         t.plan( 9 );
     
         layer = new OpenLayers.Layer.ArcGIS93Rest(name, url, params);
-        var map = new OpenLayers.Map('map');
+        var map = new OpenLayers.Map('map', {tileManager: null});
         map.addLayer(layer);
         var pixel = new OpenLayers.Pixel(5,6);
         var tile = layer.addTile(new OpenLayers.Bounds(1,2,3,4), pixel);

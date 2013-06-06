@@ -1,6 +1,5 @@
 var map = new OpenLayers.Map({
     div: "map",
-    tileManager: new OpenLayers.TileManager(),
     layers: [
         new OpenLayers.Layer.OSM("OSM (without buffer)"),
         new OpenLayers.Layer.OSM("OSM (with buffer)", null, {buffer: 2})

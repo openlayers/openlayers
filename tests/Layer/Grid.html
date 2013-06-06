@@ -48,7 +48,7 @@
 
     function test_setMap(t) {
         t.plan(1);
-        var map = new OpenLayers.Map('map');
+        var map = new OpenLayers.Map('map', {tileManager: null});
         layer = new OpenLayers.Layer.Grid(name, url, params, null);
         map.addLayer(layer);
         t.ok(OpenLayers.Element.hasClass(layer.div, "olLayerGrid"),
@@ -1130,7 +1130,7 @@
     
     function test_backbuffer_replace(t) {
         t.plan(6);
-        var map = new OpenLayers.Map('map');
+        var map = new OpenLayers.Map('map', {tileManager: null});
         var layer = new OpenLayers.Layer.WMS('', '../../img/blank.gif');
         map.addLayer(layer);
         map.zoomToMaxExtent();
@@ -1220,7 +1220,8 @@
 
         var map = new OpenLayers.Map('map', {
             resolutions: [32, 16, 8, 4, 2, 1],
-            zoomMethod: null
+            zoomMethod: null,
+            tileManager: null
         });
         var layer = new OpenLayers.Layer.WMS(
             "WMS",
