@@ -7,6 +7,7 @@ goog.require('ol.source.Source');
 
 
 /**
+ * This is an internal class that will be removed from the API.
  * @constructor
  * @extends {ol.source.Source}
  * @param {ol.source.VectorSource2Options} options Options.

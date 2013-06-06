@@ -15,6 +15,7 @@ ol.geom2.Point;
 
 
 /**
+ * This is an internal class that will be removed from the API.
  * @constructor
  * @param {ol.structs.Buffer} buf Buffer.
  * @param {number=} opt_dim Dimension.
@@ -35,6 +36,7 @@ ol.geom2.PointCollection = function(buf, opt_dim) {
 
 
 /**
+ * This is an internal function that will be removed from the API.
  * @param {number} capacity Capacity.
  * @param {number=} opt_dim Dimension.
  * @return {ol.geom2.PointCollection} Point collection.
@@ -47,6 +49,7 @@ ol.geom2.PointCollection.createEmpty = function(capacity, opt_dim) {
 
 
 /**
+ * This is an internal function that will be removed from the API.
  * @param {Array.<ol.geom2.Point>} unpackedPoints Unpacked points.
  * @param {number=} opt_capacity Capacity.
  * @param {number=} opt_dim Dimension.
