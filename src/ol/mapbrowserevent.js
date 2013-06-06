@@ -136,22 +136,10 @@ ol.MapBrowserEventHandler = function(map) {
   this.timestamp_ = null;
 
   /**
-   * @type {?number}
+   * @type {Array.<number>}
    * @private
    */
-  this.clickListenerKey_ = null;
-
-  /**
-   * @type {?number}
-   * @private
-   */
-  this.downListenerKey_ = null;
-
-  /**
-   * @type {?number}
-   * @private
-   */
-  this.moveListenerKey_ = null;
+  this.listenerKeys_ = null;
 
   /**
    * @type {Array.<number>}
@@ -172,15 +160,17 @@ ol.MapBrowserEventHandler = function(map) {
   this.down_ = null;
 
   var element = this.map_.getViewport();
-  this.clickListenerKey_ = goog.events.listen(element,
-      [goog.events.EventType.CLICK, goog.events.EventType.DBLCLICK],
-      this.click_, false, this);
-  this.downListenerKey_ = goog.events.listen(element,
-      goog.events.EventType.MOUSEDOWN,
-      this.handleMouseDown_, false, this);
-  this.moveListenerKey_ = goog.events.listen(element,
-      goog.events.EventType.MOUSEMOVE,
-      this.relayMouseMove_, false, this);
+  this.listenerKeys_ = [
+    goog.events.listen(element,
+        [goog.events.EventType.CLICK, goog.events.EventType.DBLCLICK],
+        this.click_, false, this),
+    goog.events.listen(element,
+        goog.events.EventType.MOUSEDOWN,
+        this.handleMouseDown_, false, this),
+    goog.events.listen(element,
+        goog.events.EventType.MOUSEMOVE,
+        this.relayMouseMove_, false, this)
+  ];
   // touch events
   this.touchListenerKeys_ = [
     goog.events.listen(element, [
@@ -352,9 +342,10 @@ ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
  * FIXME empty description for jsdoc
  */
 ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
-  goog.events.unlistenByKey(this.clickListenerKey_);
-  goog.events.unlistenByKey(this.downListenerKey_);
-  goog.events.unlistenByKey(this.moveListenerKey_);
+  if (!goog.isNull(this.listenerKeys_)) {
+    goog.array.forEach(this.listenerKeys_, goog.events.unlistenByKey);
+    this.listenerKeys_ = null;
+  }
   if (!goog.isNull(this.dragListenerKeys_)) {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
