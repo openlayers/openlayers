@@ -77,6 +77,7 @@ ol.expression.Token;
 
 /**
  * Lexer constructor.
+ *
  * @constructor
  * @param {string} source Source code.
  */
@@ -108,6 +109,7 @@ ol.expression.Lexer = function(source) {
 
 /**
  * Scan next token.
+ *
  * @return {ol.expression.Token} Next token.
  * @private
  */
@@ -157,6 +159,7 @@ ol.expression.Lexer.prototype.advance_ = function() {
 
 /**
  * Increment the current character index.
+ *
  * @param {number} delta Delta by which the index is advanced.
  * @private
  */
@@ -167,6 +170,7 @@ ol.expression.Lexer.prototype.increment_ = function(delta) {
 
 /**
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.8.3
+ *
  * @param {number} code The unicode of a character.
  * @return {boolean} The character is a decimal digit.
  * @private
@@ -180,6 +184,7 @@ ol.expression.Lexer.prototype.isDecimalDigit_ = function(code) {
 
 /**
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.6.1.2
+ *
  * @param {string} id A string identifier.
  * @return {boolean} The identifier is a future reserved word.
  * @private
@@ -197,6 +202,7 @@ ol.expression.Lexer.prototype.isFutureReservedWord_ = function(id) {
 
 /**
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.8.3
+ *
  * @param {number} code The unicode of a character.
  * @return {boolean} The character is a hex digit.
  * @private
@@ -213,6 +219,7 @@ ol.expression.Lexer.prototype.isHexDigit_ = function(code) {
 /**
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.6
  * Doesn't deal with non-ascii identifiers.
+ *
  * @param {number} code The unicode of a character.
  * @return {boolean} The character is a valid identifier part.
  * @private
@@ -227,6 +234,7 @@ ol.expression.Lexer.prototype.isIdentifierPart_ = function(code) {
 /**
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.6
  * Doesn't yet deal with non-ascii identifiers.
+ *
  * @param {number} code The unicode of a character.
  * @return {boolean} The character is a valid identifier start.
  * @private
@@ -243,6 +251,7 @@ ol.expression.Lexer.prototype.isIdentifierStart_ = function(code) {
 
 /**
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.3
+ *
  * @param {number} code The unicode of a character.
  * @return {boolean} The character is a line terminator.
  * @private
@@ -257,6 +266,7 @@ ol.expression.Lexer.prototype.isLineTerminator_ = function(code) {
 
 /**
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.8.3
+ *
  * @param {number} code The unicode of a character.
  * @return {boolean} The character is an octal digit.
  * @private
@@ -270,6 +280,7 @@ ol.expression.Lexer.prototype.isOctalDigit_ = function(code) {
 
 /**
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.2
+ *
  * @param {number} code The unicode of a character.
  * @return {boolean} The character is whitespace.
  * @private
@@ -288,6 +299,7 @@ ol.expression.Lexer.prototype.isWhitespace_ = function(code) {
 
 /**
  * Get the unicode of the character at the given offset from the current index.
+ *
  * @param {number} delta Offset from current index.
  * @return {number} The character code.
  * @private
@@ -299,6 +311,7 @@ ol.expression.Lexer.prototype.getCharCode_ = function(delta) {
 
 /**
  * Get the character at the current index.
+ *
  * @return {string} The current character.
  * @private
  */
@@ -309,6 +322,7 @@ ol.expression.Lexer.prototype.getCurrentChar_ = function() {
 
 /**
  * Get the unicode of the character at the current index.
+ *
  * @return {number} The current character code.
  * @private
  */
@@ -319,6 +333,7 @@ ol.expression.Lexer.prototype.getCurrentCharCode_ = function() {
 
 /**
  * Scan hex literal as numeric token.
+ *
  * @return {ol.expression.Token} Numeric literal token.
  * @private
  */
@@ -356,6 +371,7 @@ ol.expression.Lexer.prototype.scanHexLiteral_ = function() {
 
 /**
  * Scan identifier token.
+ *
  * @return {ol.expression.Token} Identifier token.
  * @private
  */
@@ -366,6 +382,8 @@ ol.expression.Lexer.prototype.scanIdentifier_ = function() {
 
 /**
  * Scan numeric literal token.
+ * http://www.ecma-international.org/ecma-262/5.1/#sec-7.8.3
+ *
  * @return {ol.expression.Token} Numeric literal token.
  * @private
  */
@@ -396,7 +414,7 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function() {
         return this.scanOctalLiteral_();
       }
 
-      // numbers like 04 not allowed
+      // numbers like 09 not allowed
       if (this.isDecimalDigit_(nextCode)) {
         throw new Error('Unexpected token at index ' + this.index_ +
             ': ' + String.fromCharCode(nextCode));
@@ -469,6 +487,7 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function() {
 
 /**
  * Scan octal literal as numeric token.
+ *
  * @return {ol.expression.Token} Numeric literal token.
  * @private
  */
@@ -506,6 +525,7 @@ ol.expression.Lexer.prototype.scanOctalLiteral_ = function() {
 
 /**
  * Scan punctuator token (a subset of allowed tokens in 7.7).
+ *
  * @return {ol.expression.Token} Punctuator token.
  * @private
  */
@@ -591,6 +611,7 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function() {
 
 /**
  * Scan string literal token.
+ *
  * @return {ol.expression.Token} String literal token.
  * @private
  */
@@ -601,6 +622,7 @@ ol.expression.Lexer.prototype.scanStringLiteral_ = function() {
 
 /**
  * Peek at the next token, but don't advance the index.
+ *
  * @return {ol.expression.Token} The upcoming token.
  * @private
  */
@@ -614,6 +636,7 @@ ol.expression.Lexer.prototype.peek_ = function() {
 
 /**
  * Tokenize the provided code.
+ *
  * @return {Array.<ol.expression.Token>} Tokens.
  */
 ol.expression.Lexer.prototype.tokenize = function() {
