@@ -691,7 +691,40 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function() {
  * @private
  */
 ol.expression.Lexer.prototype.scanStringLiteral_ = function() {
-  throw new Error('Not yet implemented');
+  var quote = this.getCurrentCharCode_();
+  goog.asserts.assert(quote === ol.expression.Char.SINGLE_QUOTE ||
+      quote === ol.expression.Char.DOUBLE_QUOTE,
+      'Strings must start with a quote: ' + String.fromCharCode(quote));
+
+  var start = this.index_;
+  this.increment_(1);
+
+  var str = '';
+  var code;
+  while (this.index_ < this.length_) {
+    code = this.getCurrentCharCode_();
+    this.increment_(1);
+    if (code === quote) {
+      quote = 0;
+      break;
+    }
+    // look for escaped quote or backslash
+    if (code === ol.expression.Char.BACKSLASH) {
+      str += this.getCurrentChar_();
+      this.increment_(1);
+    } else {
+      str += String.fromCharCode(code);
+    }
+  }
+
+  if (quote !== 0) {
+    throw new Error('Unterminated string literal');
+  }
+
+  return {
+    type: ol.expression.TokenType.STRING_LITERAL,
+    value: str
+  };
 };
 
 

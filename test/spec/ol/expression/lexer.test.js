@@ -147,6 +147,111 @@ describe('ol.expression.Lexer', function() {
 
   });
 
+  describe('#scanStringLiteral_()', function() {
+
+    function scan(source) {
+      var lexer = new ol.expression.Lexer(source);
+      return lexer.scanStringLiteral_();
+    }
+
+    it('parses double quoted string', function() {
+      var token = scan('"my string"');
+      expect(token.value).to.be('my string');
+      expect(token.type).to.be(ol.expression.TokenType.STRING_LITERAL);
+    });
+
+    it('parses double quoted string with internal single quotes', function() {
+      var token = scan('"my \'quoted\' string"');
+      expect(token.value).to.be('my \'quoted\' string');
+      expect(token.type).to.be(ol.expression.TokenType.STRING_LITERAL);
+    });
+
+    it('parses double quoted string with escaped double quotes', function() {
+      var token = scan('"my \\"quoted\\" string"');
+      expect(token.value).to.be('my "quoted" string');
+      expect(token.type).to.be(ol.expression.TokenType.STRING_LITERAL);
+    });
+
+    it('parses double quoted string with escaped backslash', function() {
+      var token = scan('"my \\\ string"');
+      expect(token.value).to.be('my \ string');
+      expect(token.type).to.be(ol.expression.TokenType.STRING_LITERAL);
+    });
+
+    it('parses double quoted string with unicode escape sequences', function() {
+      var token = scan('"\u006f\u006c\u0033"');
+      expect(token.value).to.be('ol3');
+      expect(token.type).to.be(ol.expression.TokenType.STRING_LITERAL);
+    });
+
+    it('parses double quoted string with hex escape sequences', function() {
+      var token = scan('"\x6f\x6c\x33"');
+      expect(token.value).to.be('ol3');
+      expect(token.type).to.be(ol.expression.TokenType.STRING_LITERAL);
+    });
+
+    it('parses double quoted string with tab', function() {
+      var token = scan('"a\ttab"');
+      expect(token.value).to.be('a\ttab');
+      expect(token.type).to.be(ol.expression.TokenType.STRING_LITERAL);
+    });
+
+    it('throws on unterminated double quote', function() {
+      expect(function() {
+        scan('"never \'ending\' string');
+      }).to.throwException();
+    });
+
+    it('parses single quoted string', function() {
+      var token = scan('\'my string\'');
+      expect(token.value).to.be('my string');
+      expect(token.type).to.be(ol.expression.TokenType.STRING_LITERAL);
+    });
+
+    it('parses single quoted string with internal double quotes', function() {
+      var token = scan('\'my "quoted" string\'');
+      expect(token.value).to.be('my "quoted" string');
+      expect(token.type).to.be(ol.expression.TokenType.STRING_LITERAL);
+    });
+
+    it('parses single quoted string with escaped single quotes', function() {
+      var token = scan('\'my \\\'quoted\\\' string\'');
+      expect(token.value).to.be('my \'quoted\' string');
+      expect(token.type).to.be(ol.expression.TokenType.STRING_LITERAL);
+    });
+
+    it('parses single quoted string with escaped backslash', function() {
+      var token = scan('\'my \\\ string\'');
+      expect(token.value).to.be('my \ string');
+      expect(token.type).to.be(ol.expression.TokenType.STRING_LITERAL);
+    });
+
+    it('parses single quoted string with unicode escape sequences', function() {
+      var token = scan('\'\u006f\u006c\u0033\'');
+      expect(token.value).to.be('ol3');
+      expect(token.type).to.be(ol.expression.TokenType.STRING_LITERAL);
+    });
+
+    it('parses single quoted string with hex escape sequences', function() {
+      var token = scan('\'\x6f\x6c\x33\'');
+      expect(token.value).to.be('ol3');
+      expect(token.type).to.be(ol.expression.TokenType.STRING_LITERAL);
+    });
+
+    it('parses single quoted string with tab', function() {
+      var token = scan('\'a\ttab\'');
+      expect(token.value).to.be('a\ttab');
+      expect(token.type).to.be(ol.expression.TokenType.STRING_LITERAL);
+    });
+
+    it('throws on unterminated single quote', function() {
+      expect(function() {
+        scan('\'never "ending" string');
+      }).to.throwException();
+    });
+
+  });
+
 });
 
 goog.require('ol.expression.Lexer');
