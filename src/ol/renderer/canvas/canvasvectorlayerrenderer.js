@@ -200,7 +200,7 @@ ol.renderer.canvas.VectorLayer.prototype.getTransform = function() {
 ol.renderer.canvas.VectorLayer.prototype.getFeatureInfoForPixel =
     function(pixel, success) {
   var callback = function(features, layer) {
-    success(layer.getFeatureInfoFunction()(features), layer);
+    success(layer.getTransformFeatureInfo()(features), layer);
   };
   this.getFeaturesForPixel(pixel, callback);
 };

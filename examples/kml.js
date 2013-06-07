@@ -26,7 +26,7 @@ var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
     projection: epsg4326
   }),
-  featureInfoFunction: function(features) {
+  transformFeatureInfo: function(features) {
     var info = [];
     for (var i = 0, ii = features.length; i < ii; ++i) {
       info.push(features[i].get('name'));

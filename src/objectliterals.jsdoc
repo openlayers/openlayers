@@ -302,7 +302,7 @@
 /**
  * @typedef {Object} ol.layer.VectorLayerOptions
  * @property {function(Array.<ol.Feature>):string|
- *     undefined} featureInfoFunction Function to render an array of features
+ *     undefined} transformFeatureInfo Function to render an array of features
  *     into feature info markup. If not provided, a comma separated list the
  *     unique ids of the resulting features will be returned.
  * @property {number|undefined} opacity Opacity. 0-1. Default is 1.
