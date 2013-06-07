@@ -1,4 +1,5 @@
 goog.provide('ol.expression.Lexer');
+goog.provide('ol.expression.TokenType');
 
 goog.require('goog.asserts');
 
