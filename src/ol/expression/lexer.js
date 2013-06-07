@@ -29,7 +29,6 @@ ol.expression.Char = {
   LOWER_A: 97,
   LOWER_E: 101,
   LOWER_F: 102,
-  LOWER_U: 117,
   LOWER_X: 120,
   LOWER_Z: 122,
   MINUS: 45,
@@ -375,129 +374,6 @@ ol.expression.Lexer.prototype.getCurrentCharCode_ = function() {
 
 
 /**
- * Get an identifier that includes escape sequences.
- *
- * @return {string} The identifier.
- * @private
- */
-ol.expression.Lexer.prototype.getEscapedIdentifier_ = function() {
-  var code = this.getCurrentCharCode_();
-  var id = String.fromCharCode(code);
-
-  this.increment_(1);
-
-  // the \u sequence denotes an escaped character
-  if (code === ol.expression.Char.BACKSLASH) {
-    if (this.getCurrentCharCode_() !== ol.expression.Char.LOWER_U) {
-      throw new Error('Unexpected token at index ' + this.index_ +
-          ': ' + this.getCurrentChar_());
-    }
-    this.increment_(1);
-    code = this.scanEscapeSequence_(ol.expression.Char.LOWER_U);
-
-    if (!code || code === ol.expression.Char.BACKSLASH ||
-        !this.isIdentifierStart_(code)) {
-      throw new Error('Unexpected token at index ' + this.index_ +
-          ': ' + this.getCurrentChar_());
-    }
-    id = String.fromCharCode(code);
-  }
-
-  while (this.index_ < this.length_) {
-    code = this.getCurrentCharCode_();
-    if (!this.isIdentifierPart_(code)) {
-      break;
-    }
-    this.increment_(1);
-    id += String.fromCharCode(code);
-
-    // the \u sequence denotes an escaped character
-    if (code === ol.expression.Char.BACKSLASH) {
-      if (this.getCurrentCharCode_() !== ol.expression.Char.LOWER_U) {
-        throw new Error('Unexpected token at index ' + this.index_ +
-            ': ' + this.getCurrentChar_());
-      }
-      id = id.substr(0, id.length - 1);
-      this.increment_(1);
-      code = this.scanEscapeSequence_(ol.expression.Char.LOWER_U);
-
-      if (!code || code === ol.expression.Char.BACKSLASH ||
-          !this.isIdentifierStart_(code)) {
-        throw new Error('Unexpected token at index ' + this.index_ +
-            ': ' + this.getCurrentChar_());
-      }
-      id += String.fromCharCode(code);
-    }
-  }
-
-  return id;
-};
-
-
-/**
- * Get an identifier.  This assumes we've encountered an identifier that doesn't
- * start with an escape sequence.  If an escape sequence is encountered during
- * the scan, we switch to the `getEscapedIdentifier_` method.
- *
- * @return {string} The identifier.
- * @private
- */
-ol.expression.Lexer.prototype.getIdentifier_ = function() {
-  goog.asserts.assert(
-      this.getCurrentCharCode_() !== ol.expression.Char.BACKSLASH,
-      'Must not be called with first char a backslash');
-
-  var start = this.index_;
-  this.increment_(1);
-
-  var code;
-  while (this.index_ < this.length_) {
-    code = this.getCurrentCharCode_();
-    if (code === ol.expression.Char.BACKSLASH) {
-      // reset cursor and start over scanning escaped identifier
-      this.index_ = start;
-      return this.getEscapedIdentifier_();
-    }
-    if (this.isIdentifierPart_(code)) {
-      this.increment_(1);
-    } else {
-      break;
-    }
-  }
-  return this.source_.slice(start, this.index_);
-};
-
-
-/**
- * Scan an escape sequence of characters prefixed by the given character
- * code.  This works for both unicode escape sequences (e.g. \u0123) and
- * hex escape sequences (e.g. \x12).
- * http://www.ecma-international.org/ecma-262/5.1/#sec-7.8.4
- *
- * @param {number} prefix The character code of the escape prefix.
- * @return {number} The unicode of the string resulting from the escape
- *     sequence.  For invalid escape sequences, 0 is returned.
- * @private
- */
-ol.expression.Lexer.prototype.scanEscapeSequence_ = function(prefix) {
-  var code = 0;
-  var len = (prefix === ol.expression.Char.LOWER_U) ? 4 : 2;
-  var ch;
-  for (var i = 0; i < len; ++i) {
-    if (this.index_ < this.length_ &&
-        this.isHexDigit_(this.getCurrentCharCode_())) {
-      ch = this.getCurrentChar_();
-      code = (code * 16) + parseInt(ch, 16);
-      this.increment_(1);
-    } else {
-      return 0;
-    }
-  }
-  return code;
-};
-
-
-/**
  * Scan hex literal as numeric token.
  *
  * @return {ol.expression.Token} Numeric literal token.
@@ -546,8 +422,18 @@ ol.expression.Lexer.prototype.scanIdentifier_ = function() {
   goog.asserts.assert(this.isIdentifierStart_(code),
       'Must be called with a valid identifier');
 
-  var id = (code === ol.expression.Char.BACKSLASH) ?
-      this.getEscapedIdentifier_() : this.getIdentifier_();
+  var start = this.index_;
+  this.increment_(1);
+
+  while (this.index_ < this.length_) {
+    code = this.getCurrentCharCode_();
+    if (this.isIdentifierPart_(code)) {
+      this.increment_(1);
+    } else {
+      break;
+    }
+  }
+  var id = this.source_.slice(start, this.index_);
 
   var type;
   if (id.length === 1) {
