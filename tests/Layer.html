@@ -858,44 +858,6 @@
              "setOpacity() does not trigger changelayer if the opacity value is the same");
     }
 
-    function test_display(t) {
-        t.plan(9);
-
-        var map, layer, log;
-
-        map = new OpenLayers.Map("map");
-        layer = new OpenLayers.Layer("", {
-            alwaysInRange: true,
-            visibility: true
-        });
-        map.addLayer(layer);
-
-        log = [];
-        map.events.register('changelayer', t, function(event) {
-            log.push({
-                layer: event.layer,
-                property: event.property
-            });
-        });
-        layer.display(false);
-        t.eq(layer.div.style.display, "none", "display() set layer's display style to correct value");
-        t.eq(layer.getVisibility(), true, "display() does not affect layer's visibility state");
-        t.eq(log.length, 1, "display() triggers changelayer once");
-        t.ok(log[0].layer == layer, "changelayer listener called with expected layer");
-        t.eq(log[0].property, "visibility", "changelayer listener called with expected property");
-        layer.visibility = false;
-        layer.display(true);
-        t.eq(layer.div.style.display, "block", "display() set layer's display style to correct value");
-        t.eq(layer.getVisibility(), false, "display() does not affect layer's visibility state");
-        layer.setVisibility(true);
-
-        // This call must not trig the event because the opacity value is the same.
-        log = [];
-        layer.display(true);
-        t.eq(log.length, 0, "display() does not trigger changelayer if the display value is the same");
-        layer.setVisibility(false);
-        t.eq(log.length, 1, "changelayer event called only once. setVisibility doesn't fire any extra changelayer events");
-    }
 
 /******
  * 

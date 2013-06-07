@@ -984,22 +984,14 @@
     }
 
     function test_Map_moveTo(t) {
-        t.plan(12);
+        t.plan(2);
 
         map = new OpenLayers.Map('map');
         var baseLayer = new OpenLayers.Layer.WMS("Test Layer", 
             "http://octo.metacarta.com/cgi-bin/mapserv?",
             {map: "/mapdata/vmap_wms.map", layers: "basic"},
             {maxResolution: 'auto', maxExtent: new OpenLayers.Bounds(-10,-10,10,10)});
-        var testLayer = new OpenLayers.Layer("",{maxResolution: 0.1, minResolution: 0.03, isBaseLayer: false, visibility: true});
-        var log = [];
-        map.events.register('changelayer', t, function(event) {
-            log.push({
-                layer: event.layer,
-                property: event.property
-            });
-        });
-        map.events.on({
+        baseLayer.events.on({
             move: function() {
                 t.ok(true, "move listener called");
             },
@@ -1013,20 +1005,10 @@
             }
         });
         map.addLayer(baseLayer);
-        map.addLayer(testLayer);
-        log = [];
         var ll = new OpenLayers.LonLat(-100,-150);
         map.moveTo(ll, 2);
-        
         t.ok(map.getCenter().equals(new OpenLayers.LonLat(0,0)), "safely sets out-of-bounds lonlat");
-        t.eq(testLayer.div.style.display, "none", "moveTo out of resolution range set layer's display style to correct value");
-        t.eq(log.length, 1, "Map.moveTo out of resolution range triggers changelayer once");
-        t.ok(log[0].layer == testLayer, "changelayer listener called with expected layer");
-        t.eq(log[0].property, "visibility", "changelayer listener called with expected property");
 
-        map.moveTo(new OpenLayers.LonLat(0,0), 0);
-        t.eq(testLayer.div.style.display, "block", "moveTo in to resolution range set layer's display style to correct value");
-        
         map.destroy();
     }
 
