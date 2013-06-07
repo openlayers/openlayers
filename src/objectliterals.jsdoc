@@ -9,14 +9,30 @@
  * @typedef {Object} ol.GetFeatureInfoOptions
  * @property {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
  * @property {Array.<ol.layer.Layer>|undefined} layers Layers to restrict the
- *     query to. All layers will be queried if not provided.
- * @property {function(Array.<ol.Feature|string>)} success Callback for
+ *     query to. All map layers will be queried if not provided.
+ * @property {function(Array.<string|undefined>)} success Callback for
  *     successful queries. The passed argument is the resulting feature
- *     information.  Layers that are able to provide attribute data will put
- *     ol.Feature instances, other layers will put a string which can either
- *     be plain text or markup.
+ *     information for each layer, with array indices being the same as in the
+ *     passed `layers` array or in the layer collection as returned from
+ *     `ol.Map#getLayers()` if no `layers` were provided.
  * @property {function(Object)|undefined} error Callback for unsuccessful
- *     queries.
+ *     queries. Note that queries with no matching features trigger the success
+ *     callback, not the error callback.
+ */
+
+/**
+ * @typedef {Object} ol.GetFeaturesOptions
+ * @property {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
+ * @property {Array.<ol.layer.Layer>|undefined} layers Layers to restrict the
+ *     query to. All layers will be queried if not provided.
+ * @property {function(Array.<Array.<ol.Feature|undefined>>)} success Callback
+ *     for successful queries. The passed argument is the resulting features for
+ *     each layer, with array indices being the same as in the passed `layers`
+ *     array or in the layer collection as returned from `ol.Map#getLayers()` if
+ *     no layers were provided.
+ * @property {function(Object)|undefined} error Callback for unsuccessful
+ *     queries. Note that queries with no matching features trigger the success
+ *     callback, not the error callback.
  */
 
 /**
@@ -287,6 +303,10 @@
 
 /**
  * @typedef {Object} ol.layer.VectorLayerOptions
+ * @property {function(Array.<ol.Feature>):string|
+ *     undefined} getTransformFeatureInfo Function to render an array of
+ *     features into feature info markup. If not provided, a comma separated
+ *     list of the unique ids of the resulting features will be returned.
  * @property {number|undefined} opacity Opacity. 0-1. Default is 1.
  * @property {ol.source.Source} source Source for this layer.
  * @property {ol.style.Style|undefined} style Style.
