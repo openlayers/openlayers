@@ -23,7 +23,7 @@
             t.debug_print("Can't test google reprojection in Opera or Safari.");
         } else if(validkey) {
             t.plan(5);
-            var map = new OpenLayers.Map('map');
+            var map = new OpenLayers.Map('map', {tileManager: null});
             var layer = new OpenLayers.Layer.Google("Google");
             map.addLayer(layer);
             layer = new OpenLayers.Layer.MapServer(name, url, params, {reproject: true, isBaseLayer: false, buffer: 2});
@@ -42,7 +42,7 @@
                           window.location.host);
         }
 
-        var map = new OpenLayers.Map('map');
+        var map = new OpenLayers.Map('map', {tileManager: null});
         layer = new OpenLayers.Layer.MapServer(name, url, params, {buffer:2});
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0), 5);

@@ -282,7 +282,7 @@
                        format: 'image/png'};
 
 
-        var map = new OpenLayers.Map('map');
+        var map = new OpenLayers.Map('map', {tileManager: null});
         var layer = new OpenLayers.Layer.WMS(name, url, params, {gutter: gutter});
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0), 5);
@@ -296,7 +296,7 @@
         map.destroy();
         
         var gutter = 15;
-        var map = new OpenLayers.Map('map');
+        var map = new OpenLayers.Map('map', {tileManager: null});
         var layer = new OpenLayers.Layer.WMS(name, url, params, {gutter: gutter});
         map.addLayer(layer);
         map.setCenter(new OpenLayers.LonLat(0,0), 5);
@@ -320,7 +320,7 @@
     function test_createBackBuffer(t) {
         t.plan(3);
 
-        var map = new OpenLayers.Map('map');
+        var map = new OpenLayers.Map('map', {tileManager: null});
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
             "../../img/blank.gif", {layers: 'basic'});
         map.addLayer(layer);
@@ -345,7 +345,7 @@
     function test_onImageLoad(t) {
         t.plan(3);
 
-        var map = new OpenLayers.Map('map');
+        var map = new OpenLayers.Map('map', {tileManager: null});
         var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
             "../../img/blank.gif", {layers: 'basic'}, {opacity: 0.5});
         map.addLayer(layer);

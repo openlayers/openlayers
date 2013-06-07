@@ -682,7 +682,7 @@
 
         t.plan( 9 );
 
-        var map = new OpenLayers.Map('map');
+        var map = new OpenLayers.Map('map', {tileManager: null});
         layer = new OpenLayers.Layer.Grid(name, url, params);
         map.addLayer(layer);
         layer.destroy();
