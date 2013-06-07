@@ -25,7 +25,7 @@ var deviceOrientation = new ol.DeviceOrientation();
 var track = new ol.dom.Input(document.getElementById('track'));
 track.bindTo('checked', deviceOrientation, 'tracking');
 
-deviceOrientation.on('changed', function() {
+deviceOrientation.on('change', function() {
   document.getElementById('alpha').innerHTML = deviceOrientation.getAlpha();
   document.getElementById('beta').innerHTML = deviceOrientation.getBeta();
   document.getElementById('gamma').innerHTML = deviceOrientation.getGamma();

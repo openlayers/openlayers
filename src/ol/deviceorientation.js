@@ -33,7 +33,7 @@ ol.DeviceOrientation = function(opt_options) {
   this.listenerKey_ = null;
 
   goog.events.listen(this,
-      ol.Object.getChangedEventType(ol.DeviceOrientationProperty.TRACKING),
+      ol.Object.getChangeEventType(ol.DeviceOrientationProperty.TRACKING),
       this.handleTrackingChanged_, false, this);
 
   goog.base(this, goog.isDef(opt_options) ? opt_options : {});
