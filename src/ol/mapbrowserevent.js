@@ -169,7 +169,10 @@ ol.MapBrowserEventHandler = function(map) {
         this.handleMouseDown_, false, this),
     goog.events.listen(element,
         goog.events.EventType.MOUSEMOVE,
-        this.relayMouseMove_, false, this)
+        this.relayEvent_, false, this),
+    goog.events.listen(element,
+        goog.events.EventType.MOUSEOUT,
+        this.relayEvent_, false, this)
   ];
   // touch events
   this.touchListenerKeys_ = [
@@ -284,9 +287,9 @@ ol.MapBrowserEventHandler.prototype.handleMouseMove_ = function(browserEvent) {
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.relayMouseMove_ = function(browserEvent) {
+ol.MapBrowserEventHandler.prototype.relayEvent_ = function(browserEvent) {
   this.dispatchEvent(new ol.MapBrowserEvent(
-      ol.MapBrowserEvent.EventType.MOUSEMOVE, this.map_, browserEvent));
+      browserEvent.type, this.map_, browserEvent));
 };
 
 
@@ -372,5 +375,6 @@ ol.MapBrowserEvent.EventType = {
   TOUCHSTART: goog.events.EventType.TOUCHSTART,
   TOUCHMOVE: goog.events.EventType.TOUCHMOVE,
   TOUCHEND: goog.events.EventType.TOUCHEND,
-  MOUSEMOVE: goog.events.EventType.MOUSEMOVE
+  MOUSEMOVE: goog.events.EventType.MOUSEMOVE,
+  MOUSEOUT: goog.events.EventType.MOUSEOUT
 };
