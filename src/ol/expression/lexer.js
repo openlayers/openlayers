@@ -729,6 +729,21 @@ ol.expression.Lexer.prototype.scanStringLiteral_ = function() {
 
 
 /**
+ * Skip all whitespace.
+ * @private
+ */
+ol.expression.Lexer.prototype.skipWhitespace_ = function() {
+  var code;
+  while (this.index_ < this.length_) {
+    code = this.getCurrentCharCode_();
+    if (this.isWhitespace_(code)) {
+      this.increment_(1);
+    }
+  }
+};
+
+
+/**
  * Peek at the next token, but don't advance the index.
  *
  * @return {ol.expression.Token} The upcoming token.
