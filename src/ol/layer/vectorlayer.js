@@ -1,5 +1,6 @@
 goog.provide('ol.layer.Vector');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
@@ -177,6 +178,13 @@ ol.layer.Vector = function(options) {
    * @private
    */
   this.featureCache_ = new ol.layer.FeatureCache();
+
+  /**
+   * @type {function(Array.<ol.Feature>):string}
+   * @private
+   */
+  this.transformFeatureInfo_ = goog.isDef(options.transformFeatureInfo) ?
+      options.transformFeatureInfo : ol.layer.Vector.uidTransformFeatureInfo;
 
   /**
    * TODO: this means we need to know dimension at construction
@@ -375,6 +383,25 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
     // TODO: parse more data types
     throw new Error('Data type not supported: ' + data);
   }
+};
+
+
+/**
+ * @return {function(Array.<ol.Feature>):string} Feature info function.
+ */
+ol.layer.Vector.prototype.getTransformFeatureInfo = function() {
+  return this.transformFeatureInfo_;
+};
+
+
+/**
+ * @param {Array.<ol.Feature>} features Features.
+ * @return {string} Feature info.
+ */
+ol.layer.Vector.uidTransformFeatureInfo = function(features) {
+  var featureIds = goog.array.map(features,
+      function(feature) { return goog.getUid(feature); });
+  return featureIds.join(', ');
 };
 
 

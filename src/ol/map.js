@@ -441,6 +441,19 @@ ol.Map.prototype.getFeatureInfo = function(options) {
 
 
 /**
+ * Get features for a pixel on the map.
+ *
+ * @param {ol.GetFeaturesOptions} options Options.
+ */
+ol.Map.prototype.getFeatures = function(options) {
+  var layers = goog.isDefAndNotNull(options.layers) ?
+      options.layers : this.getLayers().getArray();
+  this.getRenderer().getFeaturesForPixel(
+      options.pixel, layers, options.success, options.error);
+};
+
+
+/**
  * @return {ol.Collection} Interactions.
  */
 ol.Map.prototype.getInteractions = function() {
