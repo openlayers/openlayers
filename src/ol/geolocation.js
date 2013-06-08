@@ -1,6 +1,7 @@
 // FIXME handle geolocation not supported
 
 goog.provide('ol.Geolocation');
+goog.provide('ol.Geolocation.SUPPORTED');
 goog.provide('ol.GeolocationProperty');
 
 goog.require('goog.events');
