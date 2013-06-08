@@ -1,4 +1,5 @@
 goog.provide('ol.DeviceOrientation');
+goog.provide('ol.DeviceOrientation.SUPPORTED');
 goog.provide('ol.DeviceOrientationProperty');
 
 goog.require('goog.events');
