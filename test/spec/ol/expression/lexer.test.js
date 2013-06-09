@@ -9,6 +9,88 @@ describe('ol.expression.Lexer', function() {
     });
   });
 
+  describe.only('#next()', function() {
+
+    it('returns one token at a time', function() {
+      var source = 'foo === "bar"';
+      var lexer = new ol.expression.Lexer(source);
+
+      // scan first token
+      var token = lexer.next();
+      expect(token.type).to.be(ol.expression.TokenType.IDENTIFIER);
+      expect(token.value).to.be('foo');
+
+      // scan second token
+      token = lexer.next();
+      expect(token.type).to.be(ol.expression.TokenType.PUNCTUATOR);
+      expect(token.value).to.be('===');
+
+      // scan third token
+      token = lexer.next();
+      expect(token.type).to.be(ol.expression.TokenType.STRING_LITERAL);
+      expect(token.value).to.be('bar');
+
+      // scan again
+      token = lexer.next();
+      expect(token.type).to.be(ol.expression.TokenType.EOF);
+
+      // and again
+      token = lexer.next();
+      expect(token.type).to.be(ol.expression.TokenType.EOF);
+    });
+
+  });
+
+  describe.only('#peek()', function() {
+
+    var lexer;
+    beforeEach(function() {
+      lexer = new ol.expression.Lexer('foo > 42 && bar == "chicken"');
+    });
+
+    it('looks ahead without consuming token', function() {
+      var token = lexer.peek();
+      expect(token.type).to.be(ol.expression.TokenType.IDENTIFIER);
+      expect(token.value).to.be('foo');
+
+      token = lexer.next();
+      expect(token.type).to.be(ol.expression.TokenType.IDENTIFIER);
+      expect(token.value).to.be('foo');
+    });
+
+    it('works after a couple scans', function() {
+      var token = lexer.next();
+      expect(token.type).to.be(ol.expression.TokenType.IDENTIFIER);
+      expect(token.value).to.be('foo');
+
+      token = lexer.next();
+      expect(token.type).to.be(ol.expression.TokenType.PUNCTUATOR);
+      expect(token.value).to.be('>');
+
+      token = lexer.peek();
+      expect(token.type).to.be(ol.expression.TokenType.NUMERIC_LITERAL);
+      expect(token.value).to.be(42);
+
+      token = lexer.next();
+      expect(token.type).to.be(ol.expression.TokenType.NUMERIC_LITERAL);
+      expect(token.value).to.be(42);
+    });
+
+    it('returns the same thing when called multiple times', function() {
+      var token = lexer.peek();
+      expect(token.type).to.be(ol.expression.TokenType.IDENTIFIER);
+      expect(token.value).to.be('foo');
+
+      for (var i = 0; i < 10; ++i) {
+        token = lexer.peek();
+        expect(token.type).to.be(ol.expression.TokenType.IDENTIFIER);
+        expect(token.value).to.be('foo');
+      }
+    });
+
+  });
+
+
   describe('#scanIdentifier_()', function() {
 
     function scan(source) {

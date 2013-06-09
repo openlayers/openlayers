@@ -110,56 +110,6 @@ ol.expression.Lexer = function(source) {
 
 
 /**
- * Scan next token.
- *
- * @return {ol.expression.Token} Next token.
- * @private
- */
-ol.expression.Lexer.prototype.advance_ = function() {
-  if (this.index_ >= this.length_) {
-    return {
-      type: ol.expression.TokenType.EOF,
-      value: null
-    };
-  }
-  var code = this.getCurrentCharCode_();
-
-  // check for common punctuation
-  if (code === ol.expression.Char.LEFT_PAREN ||
-      code === ol.expression.Char.RIGHT_PAREN) {
-    return this.scanPunctuator_();
-  }
-
-  // check for string literal
-  if (code === ol.expression.Char.SINGLE_QUOTE ||
-      code === ol.expression.Char.DOUBLE_QUOTE) {
-    return this.scanStringLiteral_();
-  }
-
-  // check for identifier
-  if (this.isIdentifierStart_(code)) {
-    this.scanIdentifier_();
-  }
-
-  // check dot punctuation or decimal
-  if (code === ol.expression.Char.DOT) {
-    if (this.isDecimalDigit_(this.getCharCode_(1))) {
-      return this.scanNumericLiteral_();
-    }
-    return this.scanPunctuator_();
-  }
-
-  // check for numeric literal
-  if (this.isDecimalDigit_(code)) {
-    return this.scanNumericLiteral_();
-  }
-
-  // all the rest is punctuation
-  return this.scanPunctuator_();
-};
-
-
-/**
  * Increment the current character index.
  *
  * @param {number} delta Delta by which the index is advanced.
@@ -371,6 +321,56 @@ ol.expression.Lexer.prototype.getCurrentChar_ = function() {
  */
 ol.expression.Lexer.prototype.getCurrentCharCode_ = function() {
   return this.getCharCode_(0);
+};
+
+
+/**
+ * Scan the next token.
+ *
+ * @return {ol.expression.Token} Next token.
+ */
+ol.expression.Lexer.prototype.next = function() {
+  var code = this.skipWhitespace_();
+
+  if (this.index_ >= this.length_) {
+    return {
+      type: ol.expression.TokenType.EOF,
+      value: null
+    };
+  }
+
+  // check for common punctuation
+  if (code === ol.expression.Char.LEFT_PAREN ||
+      code === ol.expression.Char.RIGHT_PAREN) {
+    return this.scanPunctuator_();
+  }
+
+  // check for string literal
+  if (code === ol.expression.Char.SINGLE_QUOTE ||
+      code === ol.expression.Char.DOUBLE_QUOTE) {
+    return this.scanStringLiteral_();
+  }
+
+  // check for identifier
+  if (this.isIdentifierStart_(code)) {
+    return this.scanIdentifier_();
+  }
+
+  // check dot punctuation or decimal
+  if (code === ol.expression.Char.DOT) {
+    if (this.isDecimalDigit_(this.getCharCode_(1))) {
+      return this.scanNumericLiteral_();
+    }
+    return this.scanPunctuator_();
+  }
+
+  // check for numeric literal
+  if (this.isDecimalDigit_(code)) {
+    return this.scanNumericLiteral_();
+  }
+
+  // all the rest is punctuation
+  return this.scanPunctuator_();
 };
 
 
@@ -743,6 +743,7 @@ ol.expression.Lexer.prototype.scanStringLiteral_ = function() {
 
 /**
  * Skip all whitespace.
+ * @return {number} The character code of the first non-whitespace character.
  * @private
  */
 ol.expression.Lexer.prototype.skipWhitespace_ = function() {
@@ -751,8 +752,11 @@ ol.expression.Lexer.prototype.skipWhitespace_ = function() {
     code = this.getCurrentCharCode_();
     if (this.isWhitespace_(code)) {
       this.increment_(1);
+    } else {
+      break;
     }
   }
+  return code;
 };
 
 
@@ -760,11 +764,10 @@ ol.expression.Lexer.prototype.skipWhitespace_ = function() {
  * Peek at the next token, but don't advance the index.
  *
  * @return {ol.expression.Token} The upcoming token.
- * @private
  */
-ol.expression.Lexer.prototype.peek_ = function() {
+ol.expression.Lexer.prototype.peek = function() {
   var currentIndex = this.index_;
-  var token = this.advance_();
+  var token = this.next();
   this.index_ = currentIndex;
   return token;
 };
