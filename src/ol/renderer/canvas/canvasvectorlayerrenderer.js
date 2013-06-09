@@ -386,7 +386,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   sketchCanvas.height = sketchHeight;
 
   var sketchCanvasRenderer = new ol.renderer.canvas.VectorRenderer(
-      sketchCanvas, sketchTransform, undefined, this.requestMapRenderFrame_);
+      sketchCanvas, sketchTransform, this.requestMapRenderFrame_);
 
   // clear/resize final canvas
   var finalCanvas = this.canvas_;
