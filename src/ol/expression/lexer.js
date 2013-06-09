@@ -771,13 +771,3 @@ ol.expression.Lexer.prototype.peek = function() {
   this.index_ = currentIndex;
   return token;
 };
-
-
-/**
- * Tokenize the provided code.
- *
- * @return {Array.<ol.expression.Token>} Tokens.
- */
-ol.expression.Lexer.prototype.tokenize = function() {
-  return [];
-};
