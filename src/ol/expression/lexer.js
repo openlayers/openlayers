@@ -39,6 +39,7 @@ ol.expression.Char = {
   PLUS: 43,
   RIGHT_PAREN: 41,
   SINGLE_QUOTE: 39,
+  SLASH: 47,
   SPACE: 32,
   STAR: 42,
   TAB: 9,
@@ -607,19 +608,17 @@ ol.expression.Lexer.prototype.scanOctalLiteral_ = function() {
 ol.expression.Lexer.prototype.scanPunctuator_ = function() {
   var code = this.getCurrentCharCode_();
 
-  // single char punctuation
+  // single char punctuation that also doesn't start longer punctuation
+  // (we disallow assignment, so no += etc.)
   if (code === ol.expression.Char.DOT ||
       code === ol.expression.Char.LEFT_PAREN ||
       code === ol.expression.Char.RIGHT_PAREN ||
       code === ol.expression.Char.COMMA ||
-      code === ol.expression.Char.GREATER ||
-      code === ol.expression.Char.LESS ||
       code === ol.expression.Char.PLUS ||
       code === ol.expression.Char.MINUS ||
       code === ol.expression.Char.STAR ||
+      code === ol.expression.Char.SLASH ||
       code === ol.expression.Char.PERCENT ||
-      code === ol.expression.Char.PIPE ||
-      code === ol.expression.Char.AMPERSAND ||
       code === ol.expression.Char.TILDE) {
 
     this.increment_(1);
@@ -639,7 +638,7 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function() {
       this.increment_(2);
 
       // check for triple
-      if (this.getCharCode_(1) === ol.expression.Char.EQUAL) {
+      if (this.getCurrentCharCode_() === ol.expression.Char.EQUAL) {
         this.increment_(1);
         return {
           type: ol.expression.TokenType.PUNCTUATOR,
@@ -678,6 +677,20 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function() {
 
   // we don't allow 4-character punctuator (>>>=)
   // and the allowed 3-character punctuators (!==, ===) are already consumed
+
+  // other single character punctuators
+  if (code === ol.expression.Char.GREATER ||
+      code === ol.expression.Char.LESS ||
+      code === ol.expression.Char.BANG ||
+      code === ol.expression.Char.AMPERSAND ||
+      code === ol.expression.Char.PIPE) {
+
+    this.increment_(1);
+    return {
+      type: ol.expression.TokenType.PUNCTUATOR,
+      value: String.fromCharCode(code)
+    };
+  }
 
   throw new Error('Unexpected token at index ' + (this.index_ - 1) +
       ': ' + String.fromCharCode(code));

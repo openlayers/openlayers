@@ -147,6 +147,93 @@ describe('ol.expression.Lexer', function() {
 
   });
 
+  describe('#scanPunctuator_()', function() {
+
+    function scan(source) {
+      var lexer = new ol.expression.Lexer(source);
+      return lexer.scanPunctuator_();
+    }
+
+    it('works for dot', function() {
+      var token = scan('.');
+      expect(token.value).to.be('.');
+      expect(token.type).to.be(ol.expression.TokenType.PUNCTUATOR);
+    });
+
+    it('works for bang', function() {
+      var token = scan('!');
+      expect(token.value).to.be('!');
+      expect(token.type).to.be(ol.expression.TokenType.PUNCTUATOR);
+    });
+
+    it('works for double equal', function() {
+      var token = scan('==');
+      expect(token.value).to.be('==');
+      expect(token.type).to.be(ol.expression.TokenType.PUNCTUATOR);
+    });
+
+    it('works for triple equal', function() {
+      var token = scan('===');
+      expect(token.value).to.be('===');
+      expect(token.type).to.be(ol.expression.TokenType.PUNCTUATOR);
+    });
+
+    it('works for not double equal', function() {
+      var token = scan('!=');
+      expect(token.value).to.be('!=');
+      expect(token.type).to.be(ol.expression.TokenType.PUNCTUATOR);
+    });
+
+    it('works for not triple equal', function() {
+      var token = scan('!==');
+      expect(token.value).to.be('!==');
+      expect(token.type).to.be(ol.expression.TokenType.PUNCTUATOR);
+    });
+
+    it('works for logical or', function() {
+      var token = scan('||');
+      expect(token.value).to.be('||');
+      expect(token.type).to.be(ol.expression.TokenType.PUNCTUATOR);
+    });
+
+    it('works for logical and', function() {
+      var token = scan('&&');
+      expect(token.value).to.be('&&');
+      expect(token.type).to.be(ol.expression.TokenType.PUNCTUATOR);
+    });
+
+    it('works for plus', function() {
+      var token = scan('+');
+      expect(token.value).to.be('+');
+      expect(token.type).to.be(ol.expression.TokenType.PUNCTUATOR);
+    });
+
+    it('works for minus', function() {
+      var token = scan('-');
+      expect(token.value).to.be('-');
+      expect(token.type).to.be(ol.expression.TokenType.PUNCTUATOR);
+    });
+
+    it('works for star', function() {
+      var token = scan('*');
+      expect(token.value).to.be('*');
+      expect(token.type).to.be(ol.expression.TokenType.PUNCTUATOR);
+    });
+
+    it('works for slash', function() {
+      var token = scan('/');
+      expect(token.value).to.be('/');
+      expect(token.type).to.be(ol.expression.TokenType.PUNCTUATOR);
+    });
+
+    it('works for percent', function() {
+      var token = scan('%');
+      expect(token.value).to.be('%');
+      expect(token.type).to.be(ol.expression.TokenType.PUNCTUATOR);
+    });
+
+  });
+
   describe('#scanStringLiteral_()', function() {
 
     function scan(source) {
