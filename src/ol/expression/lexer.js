@@ -342,46 +342,46 @@ ol.expression.Lexer.prototype.next = function() {
   // check for common punctuation
   if (code === ol.expression.Char.LEFT_PAREN ||
       code === ol.expression.Char.RIGHT_PAREN) {
-    return this.scanPunctuator_();
+    return this.scanPunctuator_(code);
   }
 
   // check for string literal
   if (code === ol.expression.Char.SINGLE_QUOTE ||
       code === ol.expression.Char.DOUBLE_QUOTE) {
-    return this.scanStringLiteral_();
+    return this.scanStringLiteral_(code);
   }
 
   // check for identifier
   if (this.isIdentifierStart_(code)) {
-    return this.scanIdentifier_();
+    return this.scanIdentifier_(code);
   }
 
   // check dot punctuation or decimal
   if (code === ol.expression.Char.DOT) {
     if (this.isDecimalDigit_(this.getCharCode_(1))) {
-      return this.scanNumericLiteral_();
+      return this.scanNumericLiteral_(code);
     }
-    return this.scanPunctuator_();
+    return this.scanPunctuator_(code);
   }
 
   // check for numeric literal
   if (this.isDecimalDigit_(code)) {
-    return this.scanNumericLiteral_();
+    return this.scanNumericLiteral_(code);
   }
 
   // all the rest is punctuation
-  return this.scanPunctuator_();
+  return this.scanPunctuator_(code);
 };
 
 
 /**
  * Scan hex literal as numeric token.
  *
+ * @param {number} code The current character code.
  * @return {ol.expression.Token} Numeric literal token.
  * @private
  */
-ol.expression.Lexer.prototype.scanHexLiteral_ = function() {
-  var code = this.getCurrentCharCode_();
+ol.expression.Lexer.prototype.scanHexLiteral_ = function(code) {
   var str = '';
 
   while (this.index_ < this.length_) {
@@ -415,11 +415,11 @@ ol.expression.Lexer.prototype.scanHexLiteral_ = function() {
 /**
  * Scan identifier token.
  *
+ * @param {number} code The current character code.
  * @return {ol.expression.Token} Identifier token.
  * @private
  */
-ol.expression.Lexer.prototype.scanIdentifier_ = function() {
-  var code = this.getCurrentCharCode_();
+ol.expression.Lexer.prototype.scanIdentifier_ = function(code) {
   goog.asserts.assert(this.isIdentifierStart_(code),
       'Must be called with a valid identifier');
 
@@ -460,11 +460,11 @@ ol.expression.Lexer.prototype.scanIdentifier_ = function() {
  * Scan numeric literal token.
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.8.3
  *
+ * @param {number} code The current character code.
  * @return {ol.expression.Token} Numeric literal token.
  * @private
  */
-ol.expression.Lexer.prototype.scanNumericLiteral_ = function() {
-  var code = this.getCurrentCharCode_();
+ol.expression.Lexer.prototype.scanNumericLiteral_ = function(code) {
   goog.asserts.assert(
       code === ol.expression.Char.DOT || this.isDecimalDigit_(code),
       'Valid start for numeric literal: ' + String.fromCharCode(code));
@@ -481,13 +481,13 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function() {
       if (nextCode === ol.expression.Char.UPPER_X ||
           nextCode === ol.expression.Char.LOWER_X) {
         this.increment_(2);
-        return this.scanHexLiteral_();
+        return this.scanHexLiteral_(this.getCurrentCharCode_());
       }
 
       // octals start with 0
       if (this.isOctalDigit_(nextCode)) {
         this.increment_(1);
-        return this.scanOctalLiteral_();
+        return this.scanOctalLiteral_(nextCode);
       }
 
       // numbers like 09 not allowed
@@ -564,11 +564,11 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function() {
 /**
  * Scan octal literal as numeric token.
  *
+ * @param {number} code The current character code.
  * @return {ol.expression.Token} Numeric literal token.
  * @private
  */
-ol.expression.Lexer.prototype.scanOctalLiteral_ = function() {
-  var code = this.getCurrentCharCode_();
+ol.expression.Lexer.prototype.scanOctalLiteral_ = function(code) {
   goog.asserts.assert(this.isOctalDigit_(code));
 
   var str = '0' + String.fromCharCode(code);
@@ -602,11 +602,11 @@ ol.expression.Lexer.prototype.scanOctalLiteral_ = function() {
 /**
  * Scan punctuator token (a subset of allowed tokens in 7.7).
  *
+ * @param {number} code The current character code.
  * @return {ol.expression.Token} Punctuator token.
  * @private
  */
-ol.expression.Lexer.prototype.scanPunctuator_ = function() {
-  var code = this.getCurrentCharCode_();
+ol.expression.Lexer.prototype.scanPunctuator_ = function(code) {
 
   // single char punctuation that also doesn't start longer punctuation
   // (we disallow assignment, so no += etc.)
@@ -700,11 +700,11 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function() {
 /**
  * Scan string literal token.
  *
+ * @param {number} quote The current character code.
  * @return {ol.expression.Token} String literal token.
  * @private
  */
-ol.expression.Lexer.prototype.scanStringLiteral_ = function() {
-  var quote = this.getCurrentCharCode_();
+ol.expression.Lexer.prototype.scanStringLiteral_ = function(quote) {
   goog.asserts.assert(quote === ol.expression.Char.SINGLE_QUOTE ||
       quote === ol.expression.Char.DOUBLE_QUOTE,
       'Strings must start with a quote: ' + String.fromCharCode(quote));

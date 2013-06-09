@@ -95,7 +95,7 @@ describe('ol.expression.Lexer', function() {
 
     function scan(source) {
       var lexer = new ol.expression.Lexer(source);
-      return lexer.scanIdentifier_();
+      return lexer.scanIdentifier_(lexer.getCurrentCharCode_());
     }
 
     it('works for short identifiers', function() {
@@ -182,7 +182,7 @@ describe('ol.expression.Lexer', function() {
 
     function scan(source) {
       var lexer = new ol.expression.Lexer(source);
-      return lexer.scanNumericLiteral_();
+      return lexer.scanNumericLiteral_(lexer.getCurrentCharCode_());
     }
 
     it('works for integers', function() {
@@ -233,7 +233,7 @@ describe('ol.expression.Lexer', function() {
 
     function scan(source) {
       var lexer = new ol.expression.Lexer(source);
-      return lexer.scanPunctuator_();
+      return lexer.scanPunctuator_(lexer.getCurrentCharCode_());
     }
 
     it('works for dot', function() {
@@ -320,7 +320,7 @@ describe('ol.expression.Lexer', function() {
 
     function scan(source) {
       var lexer = new ol.expression.Lexer(source);
-      return lexer.scanStringLiteral_();
+      return lexer.scanStringLiteral_(lexer.getCurrentCharCode_());
     }
 
     it('parses double quoted string', function() {
