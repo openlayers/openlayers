@@ -747,7 +747,7 @@ ol.expression.Lexer.prototype.scanStringLiteral_ = function(quote) {
  * @private
  */
 ol.expression.Lexer.prototype.skipWhitespace_ = function() {
-  var code;
+  var code = NaN;
   while (this.index_ < this.length_) {
     code = this.getCurrentCharCode_();
     if (this.isWhitespace_(code)) {
