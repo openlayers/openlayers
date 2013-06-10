@@ -70,14 +70,14 @@ describe('ol.geom2.LineStringCollection', function() {
 
     it('throws an error when dimensions are inconsistent', function() {
       expect(function() {
-        var lsc = ol.geom2.LineStringCollection.pack([[0, 1], [2, 3, 4]]);
+        var lsc = ol.geom2.LineStringCollection.pack([[[0, 1], [2, 3, 4]]]);
         lsc = lsc; // suppress gjslint warning about unused variable
       }).to.throwException();
     });
 
     it('throws an error when a line string is too short', function() {
       expect(function() {
-        var lsc = ol.geom2.LineStringCollection.pack([[0, 1]]);
+        var lsc = ol.geom2.LineStringCollection.pack([[[0, 1]]]);
         lsc = lsc; // suppress gjslint warning about unused variable
       }).to.throwException();
     });
