@@ -433,8 +433,7 @@ ol.expression.Parser.prototype.parseUnaryExpression_ = function(lexer) {
     expr = this.parseUnaryExpression_(lexer);
     expr = this.createUnaryExpression_('!', expr);
   } else {
-    // TODO: add token.index
-    throw new Error('Unexpected token: ' + operator.value);
+    expr = this.parseLeftHandSideExpression_(lexer);
   }
   return expr;
 };
@@ -449,4 +448,16 @@ ol.expression.Parser.prototype.parseUnaryExpression_ = function(lexer) {
  */
 ol.expression.Parser.prototype.parseExpression_ = function(lexer) {
   return this.parseBinaryExpression_(lexer);
+};
+
+
+/**
+ * Parse an expression
+ * @param {string} source The expression source (e.g. `'foo + 2'`).
+ * @return {ol.expression.Expression} An expression instance that can be
+ *     evaluated within some scope to provide a value.
+ */
+ol.expression.parse = function(source) {
+  var parser = new ol.expression.Parser();
+  return parser.parse(source);
 };
