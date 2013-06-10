@@ -126,15 +126,15 @@ ol.expression.Parser.prototype.binaryPrecedence_ = function(token) {
 ol.expression.Parser.prototype.createBinaryExpression_ = function(operator,
     left, right) {
   var expr;
-  if (ol.expression.ComparisonOp.hasOwnProperty(operator)) {
+  if (ol.expression.Comparison.isValidOp(operator)) {
     expr = new ol.expression.Comparison(
         /** @type {ol.expression.ComparisonOp.<string>} */ (operator),
         left, right);
-  } else if (ol.expression.LogicalOp.hasOwnProperty(operator)) {
+  } else if (ol.expression.Logical.isValidOp(operator)) {
     expr = new ol.expression.Logical(
         /** @type {ol.expression.LogicalOp.<string>} */ (operator),
         left, right);
-  } else if (ol.expression.MathOp.hasOwnProperty(operator)) {
+  } else if (ol.expression.Math.isValidOp(operator)) {
     expr = new ol.expression.Math(
         /** @type {ol.expression.MathOp.<string>} */ (operator),
         left, right);

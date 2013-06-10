@@ -137,6 +137,22 @@ goog.inherits(ol.expression.Comparison, ol.expression.Expression);
 
 
 /**
+ * Determine if a given string is a valid comparison operator.
+ * @param {string} candidate Operator to test.
+ * @return {boolean} The operator is valid.
+ */
+ol.expression.Comparison.isValidOp = (function() {
+  var valid = {};
+  for (var key in ol.expression.ComparisonOp) {
+    valid[ol.expression.ComparisonOp[key]] = true;
+  }
+  return function isValidOp(candidate) {
+    return !!valid[candidate];
+  };
+}());
+
+
+/**
  * @inheritDoc
  */
 ol.expression.Comparison.prototype.evaluate = function(scope, opt_this,
@@ -277,6 +293,22 @@ goog.inherits(ol.expression.Logical, ol.expression.Expression);
 
 
 /**
+ * Determine if a given string is a valid logical operator.
+ * @param {string} candidate Operator to test.
+ * @return {boolean} The operator is valid.
+ */
+ol.expression.Logical.isValidOp = (function() {
+  var valid = {};
+  for (var key in ol.expression.LogicalOp) {
+    valid[ol.expression.LogicalOp[key]] = true;
+  }
+  return function isValidOp(candidate) {
+    return !!valid[candidate];
+  };
+}());
+
+
+/**
  * @inheritDoc
  */
 ol.expression.Logical.prototype.evaluate = function(scope, opt_fns, opt_this) {
@@ -339,6 +371,22 @@ ol.expression.Math = function(operator, left, right) {
 
 };
 goog.inherits(ol.expression.Math, ol.expression.Expression);
+
+
+/**
+ * Determine if a given string is a valid math operator.
+ * @param {string} candidate Operator to test.
+ * @return {boolean} The operator is valid.
+ */
+ol.expression.Math.isValidOp = (function() {
+  var valid = {};
+  for (var key in ol.expression.MathOp) {
+    valid[ol.expression.MathOp[key]] = true;
+  }
+  return function isValidOp(candidate) {
+    return !!valid[candidate];
+  };
+}());
 
 
 /**

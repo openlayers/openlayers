@@ -177,6 +177,24 @@ describe('ol.expression.Comparison', function() {
     });
   });
 
+  describe('#isValidOp()', function() {
+    it('determines if a string is a valid operator', function() {
+      expect(ol.expression.Comparison.isValidOp('<')).to.be(true);
+      expect(ol.expression.Comparison.isValidOp('<')).to.be(true);
+      expect(ol.expression.Comparison.isValidOp('<=')).to.be(true);
+      expect(ol.expression.Comparison.isValidOp('<=')).to.be(true);
+      expect(ol.expression.Comparison.isValidOp('==')).to.be(true);
+      expect(ol.expression.Comparison.isValidOp('!=')).to.be(true);
+      expect(ol.expression.Comparison.isValidOp('===')).to.be(true);
+      expect(ol.expression.Comparison.isValidOp('!==')).to.be(true);
+
+      expect(ol.expression.Comparison.isValidOp('')).to.be(false);
+      expect(ol.expression.Comparison.isValidOp('+')).to.be(false);
+      expect(ol.expression.Comparison.isValidOp('-')).to.be(false);
+      expect(ol.expression.Comparison.isValidOp('&&')).to.be(false);
+    });
+  });
+
 });
 
 describe('ol.expression.Identifier', function() {
@@ -292,6 +310,18 @@ describe('ol.expression.Logical', function() {
     });
   });
 
+  describe('#isValidOp()', function() {
+    it('determines if a string is a valid operator', function() {
+      expect(ol.expression.Logical.isValidOp('||')).to.be(true);
+      expect(ol.expression.Logical.isValidOp('&&')).to.be(true);
+
+      expect(ol.expression.Logical.isValidOp('')).to.be(false);
+      expect(ol.expression.Logical.isValidOp('+')).to.be(false);
+      expect(ol.expression.Logical.isValidOp('<')).to.be(false);
+      expect(ol.expression.Logical.isValidOp('|')).to.be(false);
+    });
+  });
+
 });
 
 describe('ol.expression.Math', function() {
@@ -389,6 +419,24 @@ describe('ol.expression.Math', function() {
       expect(expr.evaluate({foo: '150'})).to.be(50);
     });
   });
+
+  describe('#isValidOp()', function() {
+    it('determines if a string is a valid operator', function() {
+      expect(ol.expression.Math.isValidOp('+')).to.be(true);
+      expect(ol.expression.Math.isValidOp('-')).to.be(true);
+      expect(ol.expression.Math.isValidOp('*')).to.be(true);
+      expect(ol.expression.Math.isValidOp('/')).to.be(true);
+      expect(ol.expression.Math.isValidOp('%')).to.be(true);
+
+      expect(ol.expression.Math.isValidOp('')).to.be(false);
+      expect(ol.expression.Math.isValidOp('|')).to.be(false);
+      expect(ol.expression.Math.isValidOp('&')).to.be(false);
+      expect(ol.expression.Math.isValidOp('<')).to.be(false);
+      expect(ol.expression.Math.isValidOp('||')).to.be(false);
+      expect(ol.expression.Math.isValidOp('.')).to.be(false);
+    });
+  });
+
 
 });
 
