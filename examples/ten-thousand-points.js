@@ -1,5 +1,5 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
+goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.control.MousePosition');
 goog.require('ol.control.defaults');
@@ -59,7 +59,7 @@ var map = new ol.Map({
       })
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: ol.RendererHint.WEBGL,
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],
