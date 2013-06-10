@@ -6,7 +6,7 @@ describe('ol.expression.BooleanLiteral', function() {
   describe('constructor', function() {
     var expr = new ol.expression.BooleanLiteral(true);
     expect(expr).to.be.a(ol.expression.Expression);
-    expect(expr).not.to.be.a(ol.expression.BooleanLiteral);
+    expect(expr).to.be.a(ol.expression.BooleanLiteral);
   });
 
 });
