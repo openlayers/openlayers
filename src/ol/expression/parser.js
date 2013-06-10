@@ -17,10 +17,16 @@ goog.provide('ol.expression.Parser');
 
 goog.require('goog.asserts');
 
+goog.require('ol.expression.Comparison');
+goog.require('ol.expression.ComparisonOp');
 goog.require('ol.expression.Expression');
 goog.require('ol.expression.Identifier');
 goog.require('ol.expression.Lexer');
 goog.require('ol.expression.Literal');
+goog.require('ol.expression.Logical');
+goog.require('ol.expression.LogicalOp');
+goog.require('ol.expression.Math');
+goog.require('ol.expression.MathOp');
 goog.require('ol.expression.Not');
 goog.require('ol.expression.Token');
 goog.require('ol.expression.TokenType');
@@ -70,28 +76,35 @@ ol.expression.Parser.prototype.binaryPrecedence_ = function(token) {
   }
 
   switch (token.value) {
-    case '||':
+    case ol.expression.LogicalOp.OR:
       precedence = 1;
       break;
-    case '&&':
+    case ol.expression.LogicalOp.AND:
       precedence = 2;
       break;
-    case '==': case '!=': case '===': case '!==':
+    case ol.expression.ComparisonOp.EQ:
+    case ol.expression.ComparisonOp.NEQ:
+    case ol.expression.ComparisonOp.STRICT_EQ:
+    case ol.expression.ComparisonOp.STRICT_NEQ:
       precedence = 3;
       break;
-    case '<': case '>': case '<=': case '>=':
+    case ol.expression.ComparisonOp.GT:
+    case ol.expression.ComparisonOp.LT:
+    case ol.expression.ComparisonOp.GTE:
+    case ol.expression.ComparisonOp.LTE:
       precedence = 4;
       break;
-    case '<<': case '>>':
+    case ol.expression.MathOp.ADD:
+    case ol.expression.MathOp.SUBTRACT:
       precedence = 5;
       break;
-    case '+': case '-':
+    case ol.expression.MathOp.MULTIPLY:
+    case ol.expression.MathOp.DIVIDE:
+    case ol.expression.MathOp.MOD:
       precedence = 6;
       break;
-    case '*': case '/': case '%':
-      precedence = 7;
-      break;
     default:
+      // punctuator is not a supported binary operator, that's fine
       break;
   }
 
@@ -105,11 +118,28 @@ ol.expression.Parser.prototype.binaryPrecedence_ = function(token) {
  * @param {string} operator Operator.
  * @param {ol.expression.Expression} left Left expression.
  * @param {ol.expression.Expression} right Right expression.
+ * @return {ol.expression.Expression} The expression.
  * @private
  */
 ol.expression.Parser.prototype.createBinaryExpression_ = function(operator,
     left, right) {
-  throw new Error('Not implemented');
+  var expr;
+  if (ol.expression.ComparisonOp.hasOwnProperty(operator)) {
+    expr = new ol.expression.Comparison(
+        /** @type {ol.expression.ComparisonOp.<string>} */ (operator),
+        left, right);
+  } else if (ol.expression.LogicalOp.hasOwnProperty(operator)) {
+    expr = new ol.expression.Logical(
+        /** @type {ol.expression.LogicalOp.<string>} */ (operator),
+        left, right);
+  } else if (ol.expression.MathOp.hasOwnProperty(operator)) {
+    expr = new ol.expression.Math(
+        /** @type {ol.expression.MathOp.<string>} */ (operator),
+        left, right);
+  } else {
+    throw new Error('Unsupported binary operator: ' + operator);
+  }
+  return expr;
 };
 
 
@@ -243,7 +273,7 @@ ol.expression.Parser.prototype.parseBinaryExpression_ = function(lexer) {
   var operator = lexer.peek();
   var precedence = this.binaryPrecedence_(operator);
   if (precedence === 0) {
-    // not a binary operator
+    // not a supported binary operator
     return left;
   }
   lexer.skip();
