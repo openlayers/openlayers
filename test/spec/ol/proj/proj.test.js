@@ -1,4 +1,4 @@
-goog.provide('ol.test.Projection');
+goog.provide('ol.test.proj');
 
 describe('ol.proj', function() {
 
@@ -341,6 +341,7 @@ describe('ol.proj', function() {
   });
 
 });
+
 
 goog.require('goog.array');
 goog.require('goog.asserts.AssertionError');
