@@ -1,3 +1,5 @@
+goog.provide('ol.expression.Comparison');
+goog.provide('ol.expression.ComparisonOp');
 goog.provide('ol.expression.Expression');
 goog.provide('ol.expression.Identifier');
 goog.provide('ol.expression.Literal');
@@ -26,6 +28,95 @@ ol.expression.Expression = function() {};
  * @return {*} Result of the expression.
  */
 ol.expression.Expression.prototype.evaluate = goog.abstractMethod;
+
+
+/**
+ * @enum {string}
+ */
+ol.expression.ComparisonOp = {
+  EQ: '==',
+  NEQ: '!=',
+  STRICT_EQ: '===',
+  STRICT_NEQ: '!==',
+  GT: '>',
+  LT: '<',
+  GTE: '>=',
+  LTE: '<='
+};
+
+
+
+/**
+ * A comparison expression (e.g. `foo >= 42`, `bar != "chicken"`).
+ *
+ * @constructor
+ * @extends {ol.expression.Expression}
+ * @param {ol.expression.ComparisonOp} operator Comparison operator.
+ * @param {ol.expression.Expression} left Left expression.
+ * @param {ol.expression.Expression} right Right expression.
+ */
+ol.expression.Comparison = function(operator, left, right) {
+
+  /**
+   * @type {ol.expression.ComparisonOp}
+   * @private
+   */
+  this.operator_ = operator;
+
+  /**
+   * @type {ol.expression.Expression}
+   * @private
+   */
+  this.left_ = left;
+
+  /**
+   * @type {ol.expression.Expression}
+   * @private
+   */
+  this.right_ = right;
+
+};
+goog.inherits(ol.expression.Comparison, ol.expression.Expression);
+
+
+/**
+ * @inheritDoc
+ */
+ol.expression.Comparison.prototype.evaluate = function(scope) {
+  var result;
+  var rightVal = this.right_.evaluate(scope);
+  var leftVal = this.left_.evaluate(scope);
+
+  switch (this.operator_) {
+    case ol.expression.ComparisonOp.EQ:
+      result = leftVal == rightVal;
+      break;
+    case ol.expression.ComparisonOp.NEQ:
+      result = leftVal != rightVal;
+      break;
+    case ol.expression.ComparisonOp.STRICT_EQ:
+      result = leftVal === rightVal;
+      break;
+    case ol.expression.ComparisonOp.STRICT_NEQ:
+      result = leftVal !== rightVal;
+      break;
+    case ol.expression.ComparisonOp.GT:
+      result = leftVal > rightVal;
+      break;
+    case ol.expression.ComparisonOp.LT:
+      result = leftVal < rightVal;
+      break;
+    case ol.expression.ComparisonOp.GTE:
+      result = leftVal >= rightVal;
+      break;
+    case ol.expression.ComparisonOp.LTE:
+      result = leftVal <= rightVal;
+      break;
+    default:
+      throw new Error('Unsupported comparison operator: ' + this.operator_);
+  }
+  return result;
+};
 
 
 

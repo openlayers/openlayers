@@ -1,6 +1,115 @@
 goog.provide('ol.test.expression.Expression');
 
 
+describe('ol.expression.Comparison', function() {
+
+  describe('constructor', function() {
+    it('creates a new expression', function() {
+      var expr = new ol.expression.Comparison(
+          ol.expression.ComparisonOp.EQ,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Literal(42));
+      expect(expr).to.be.a(ol.expression.Expression);
+      expect(expr).to.be.a(ol.expression.Comparison);
+    });
+  });
+
+  describe('#evaluate()', function() {
+    it('compares with ==', function() {
+      var expr = new ol.expression.Comparison(
+          ol.expression.ComparisonOp.EQ,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Literal(42));
+
+      expect(expr.evaluate({foo: 42})).to.be(true);
+      expect(expr.evaluate({foo: '42'})).to.be(true);
+      expect(expr.evaluate({foo: true})).to.be(false);
+      expect(expr.evaluate({bar: true})).to.be(false);
+    });
+
+    it('compares with !=', function() {
+      var expr = new ol.expression.Comparison(
+          ol.expression.ComparisonOp.NEQ,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Literal(42));
+
+      expect(expr.evaluate({foo: 42})).to.be(false);
+      expect(expr.evaluate({foo: '42'})).to.be(false);
+      expect(expr.evaluate({foo: true})).to.be(true);
+      expect(expr.evaluate({bar: true})).to.be(true);
+    });
+
+    it('compares with ===', function() {
+      var expr = new ol.expression.Comparison(
+          ol.expression.ComparisonOp.STRICT_EQ,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Literal(42));
+
+      expect(expr.evaluate({foo: 42})).to.be(true);
+      expect(expr.evaluate({foo: '42'})).to.be(false);
+      expect(expr.evaluate({foo: true})).to.be(false);
+      expect(expr.evaluate({bar: true})).to.be(false);
+    });
+
+    it('compares with !==', function() {
+      var expr = new ol.expression.Comparison(
+          ol.expression.ComparisonOp.STRICT_NEQ,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Literal(42));
+
+      expect(expr.evaluate({foo: 42})).to.be(false);
+      expect(expr.evaluate({foo: '42'})).to.be(true);
+      expect(expr.evaluate({foo: true})).to.be(true);
+      expect(expr.evaluate({bar: true})).to.be(true);
+    });
+
+    it('compares with >', function() {
+      var expr = new ol.expression.Comparison(
+          ol.expression.ComparisonOp.GT,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Literal(42));
+
+      expect(expr.evaluate({foo: 42})).to.be(false);
+      expect(expr.evaluate({foo: 41})).to.be(false);
+      expect(expr.evaluate({foo: 43})).to.be(true);
+    });
+
+    it('compares with <', function() {
+      var expr = new ol.expression.Comparison(
+          ol.expression.ComparisonOp.LT,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Literal(42));
+
+      expect(expr.evaluate({foo: 42})).to.be(false);
+      expect(expr.evaluate({foo: 41})).to.be(true);
+      expect(expr.evaluate({foo: 43})).to.be(false);
+    });
+
+    it('compares with >=', function() {
+      var expr = new ol.expression.Comparison(
+          ol.expression.ComparisonOp.GTE,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Literal(42));
+
+      expect(expr.evaluate({foo: 42})).to.be(true);
+      expect(expr.evaluate({foo: 41})).to.be(false);
+      expect(expr.evaluate({foo: 43})).to.be(true);
+    });
+
+    it('compares with <=', function() {
+      var expr = new ol.expression.Comparison(
+          ol.expression.ComparisonOp.LTE,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Literal(42));
+
+      expect(expr.evaluate({foo: 42})).to.be(true);
+      expect(expr.evaluate({foo: 41})).to.be(true);
+      expect(expr.evaluate({foo: 43})).to.be(false);
+    });
+  });
+
+});
+
 describe('ol.expression.Identifier', function() {
 
   describe('constructor', function() {
@@ -119,6 +228,8 @@ describe('ol.expression.Not', function() {
 });
 
 
+goog.require('ol.expression.Comparison');
+goog.require('ol.expression.ComparisonOp');
 goog.require('ol.expression.Expression');
 goog.require('ol.expression.Identifier');
 goog.require('ol.expression.Literal');
