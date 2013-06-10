@@ -17,6 +17,7 @@ goog.provide('ol.expression.Parser');
 
 goog.require('goog.asserts');
 
+goog.require('ol.expression.Call');
 goog.require('ol.expression.Comparison');
 goog.require('ol.expression.ComparisonOp');
 goog.require('ol.expression.Expression');
@@ -148,10 +149,11 @@ ol.expression.Parser.prototype.createBinaryExpression_ = function(operator,
  *
  * @param {ol.expression.Identifier} expr Identifier expression for function.
  * @param {Array.<ol.expression.Expression>} args Arguments array.
+ * @return {ol.expression.Call} Call expression.
  * @private
  */
 ol.expression.Parser.prototype.createCallExpression_ = function(expr, args) {
-  throw new Error('Not implemented');
+  return new ol.expressions.Call(expr, args);
 };
 
 

@@ -761,7 +761,6 @@ ol.expression.Lexer.prototype.scanStringLiteral_ = function(quote) {
       quote === ol.expression.Char.DOUBLE_QUOTE,
       'Strings must start with a quote: ' + String.fromCharCode(quote));
 
-  var start = this.index_;
   this.increment_(1);
 
   var str = '';

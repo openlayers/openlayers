@@ -1,6 +1,75 @@
 goog.provide('ol.test.expression.Expression');
 
 
+describe('ol.expression.Call', function() {
+
+  describe('constructor', function() {
+    it('creates a new expression', function() {
+      var expr = new ol.expression.Call(
+          new ol.expression.Identifier('sqrt'),
+          [new ol.expression.Literal(42)]);
+      expect(expr).to.be.a(ol.expression.Expression);
+      expect(expr).to.be.a(ol.expression.Call);
+    });
+  });
+
+  describe('#evaluate()', function() {
+    var fns = {
+      sqrt: function(value) {
+        return Math.sqrt(value);
+      },
+      strConcat: function() {
+        return Array.prototype.join.call(arguments, '');
+      },
+      discouraged: function() {
+        return this.message;
+      }
+    };
+
+    it('calls method on scope with literal args', function() {
+      var expr = new ol.expression.Call(
+          new ol.expression.Identifier('sqrt'),
+          [new ol.expression.Literal(42)]);
+      expect(expr.evaluate(fns)).to.be(Math.sqrt(42));
+    });
+
+    it('accepts a separate scope for functions', function() {
+      var expr = new ol.expression.Call(
+          new ol.expression.Identifier('sqrt'),
+          [new ol.expression.Identifier('foo')]);
+      expect(expr.evaluate({foo: 42}, fns)).to.be(Math.sqrt(42));
+    });
+
+    it('accepts multiple expression arguments', function() {
+      var expr = new ol.expression.Call(
+          new ol.expression.Identifier('strConcat'),
+          [
+            new ol.expression.Identifier('foo'),
+            new ol.expression.Literal(' comes after '),
+            new ol.expression.Math(
+                ol.expression.MathOp.SUBTRACT,
+                new ol.expression.Identifier('foo'),
+                new ol.expression.Literal(1))
+          ]);
+      expect(expr.evaluate({foo: 42}, fns)).to.be('42 comes after 41');
+    });
+
+    it('accepts optional this arg', function() {
+      var expr = new ol.expression.Call(
+          new ol.expression.Identifier('discouraged'), []);
+
+      var thisArg = {
+        message: 'avoid this'
+      };
+
+      expect(expr.evaluate(fns, null, thisArg)).to.be('avoid this');
+    });
+
+  });
+
+});
+
+
 describe('ol.expression.Comparison', function() {
 
   describe('constructor', function() {
@@ -367,6 +436,7 @@ describe('ol.expression.Not', function() {
 });
 
 
+goog.require('ol.expression.Call');
 goog.require('ol.expression.Comparison');
 goog.require('ol.expression.ComparisonOp');
 goog.require('ol.expression.Expression');
