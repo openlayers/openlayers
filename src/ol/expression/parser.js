@@ -65,7 +65,6 @@ ol.expression.Parser = function() {
  */
 ol.expression.Parser.prototype.binaryPrecedence_ = function(token) {
   var precedence = 0;
-
   if (token.type !== ol.expression.TokenType.PUNCTUATOR) {
     return precedence;
   }
@@ -74,53 +73,24 @@ ol.expression.Parser.prototype.binaryPrecedence_ = function(token) {
     case '||':
       precedence = 1;
       break;
-
     case '&&':
       precedence = 2;
       break;
-
-    case '|':
+    case '==': case '!=': case '===': case '!==':
       precedence = 3;
       break;
-
-    case '^':
+    case '<': case '>': case '<=': case '>=':
       precedence = 4;
       break;
-
-    case '&':
+    case '<<': case '>>':
       precedence = 5;
       break;
-
-    case '==':
-    case '!=':
-    case '===':
-    case '!==':
+    case '+': case '-':
       precedence = 6;
       break;
-
-    case '<':
-    case '>':
-    case '<=':
-    case '>=':
+    case '*': case '/': case '%':
       precedence = 7;
       break;
-
-    case '<<':
-    case '>>':
-      precedence = 8;
-      break;
-
-    case '+':
-    case '-':
-      precedence = 9;
-      break;
-
-    case '*':
-    case '/':
-    case '%':
-      precedence = 10;
-      break;
-
     default:
       break;
   }
@@ -246,8 +216,22 @@ ol.expression.Parser.prototype.parseArguments_ = function(lexer) {
 
 
 /**
- * Parse a binary expression.
- * http://www.ecma-international.org/ecma-262/5.1/#sec-11.11
+ * Parse a binary expression.  Supported binary expressions:
+ *
+ *  - Multiplicative Operators (`*`, `/`, `%`)
+ *    http://www.ecma-international.org/ecma-262/5.1/#sec-11.5
+
+ *  - Additive Operators (`+`, `-`)
+ *    http://www.ecma-international.org/ecma-262/5.1/#sec-11.6
+ *
+ *  - Relational Operators (`<`, `>`, `<=`, `>=`)
+ *    http://www.ecma-international.org/ecma-262/5.1/#sec-11.8
+ *
+ *  - Equality Operators (`==`, `!=`, `===`, `!==`)
+ *    http://www.ecma-international.org/ecma-262/5.1/#sec-11.9
+ *
+ *  - Binary Logical Operators (`&&`, `||`)
+ *    http://www.ecma-international.org/ecma-262/5.1/#sec-11.11
  *
  * @param {ol.expression.Lexer} lexer Lexer.
  * @return {ol.expression.Expression} Expression.
