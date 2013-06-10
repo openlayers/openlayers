@@ -333,8 +333,7 @@ def examples_star_combined_js(name, match):
     return Target(name, action=action, dependencies=dependencies)
 
 
-@target('serve', PLOVR_JAR, INTERNAL_SRC, 'build/test/requireall.js',
-        'examples')
+@target('serve', PLOVR_JAR, 'test-deps', 'examples')
 def serve(t):
     t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'buildcfg/ol.json',
           'buildcfg/ol-all.json', EXAMPLES_JSON, 'buildcfg/test.json')
@@ -686,7 +685,10 @@ def proj4js_zip(t):
     t.info('downloaded %r', t.name)
 
 
-@target('test', INTERNAL_SRC, PROJ4JS, 'build/test/requireall.js', phony=True)
+virtual('test-deps', INTERNAL_SRC, PROJ4JS, 'build/test/requireall.js')
+
+
+@target('test', 'test-deps', phony=True)
 def test(t):
     t.run('%(PHANTOMJS)s', 'test/mocha-phantomjs.coffee', 'test/ol.html')
 
