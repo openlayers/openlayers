@@ -3,6 +3,8 @@ goog.provide('ol.expression.ComparisonOp');
 goog.provide('ol.expression.Expression');
 goog.provide('ol.expression.Identifier');
 goog.provide('ol.expression.Literal');
+goog.provide('ol.expression.Logical');
+goog.provide('ol.expression.LogicalOp');
 goog.provide('ol.expression.Math');
 goog.provide('ol.expression.MathOp');
 goog.provide('ol.expression.Not');
@@ -174,6 +176,68 @@ goog.inherits(ol.expression.Literal, ol.expression.Expression);
  */
 ol.expression.Literal.prototype.evaluate = function(scope) {
   return this.value_;
+};
+
+
+/**
+ * @enum {string}
+ */
+ol.expression.LogicalOp = {
+  AND: '&&',
+  OR: '||'
+};
+
+
+
+/**
+ * A binary logical expression (e.g. `foo && bar`, `bar || "chicken"`).
+ *
+ * @constructor
+ * @extends {ol.expression.Expression}
+ * @param {ol.expression.LogicalOp} operator Logical operator.
+ * @param {ol.expression.Expression} left Left expression.
+ * @param {ol.expression.Expression} right Right expression.
+ */
+ol.expression.Logical = function(operator, left, right) {
+
+  /**
+   * @type {ol.expression.LogicalOp}
+   * @private
+   */
+  this.operator_ = operator;
+
+  /**
+   * @type {ol.expression.Expression}
+   * @private
+   */
+  this.left_ = left;
+
+  /**
+   * @type {ol.expression.Expression}
+   * @private
+   */
+  this.right_ = right;
+
+};
+goog.inherits(ol.expression.Logical, ol.expression.Expression);
+
+
+/**
+ * @inheritDoc
+ */
+ol.expression.Logical.prototype.evaluate = function(scope) {
+  var result;
+  var rightVal = this.right_.evaluate(scope);
+  var leftVal = this.left_.evaluate(scope);
+
+  if (this.operator_ === ol.expression.LogicalOp.AND) {
+    result = leftVal && rightVal;
+  } else if (this.operator_ === ol.expression.LogicalOp.OR) {
+    result = leftVal || rightVal;
+  } else {
+    throw new Error('Unsupported logical operator: ' + this.operator_);
+  }
+  return result;
 };
 
 

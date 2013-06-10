@@ -184,6 +184,47 @@ describe('ol.expression.Literal', function() {
 });
 
 
+describe('ol.expression.Logical', function() {
+
+  describe('constructor', function() {
+    it('creates a new expression', function() {
+      var expr = new ol.expression.Logical(
+          ol.expression.LogicalOp.OR,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Identifier('bar'));
+      expect(expr).to.be.a(ol.expression.Expression);
+      expect(expr).to.be.a(ol.expression.Logical);
+    });
+  });
+
+  describe('#evaluate()', function() {
+    it('applies || to resolved identifiers', function() {
+      var expr = new ol.expression.Logical(
+          ol.expression.LogicalOp.OR,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Identifier('bar'));
+
+      expect(expr.evaluate({foo: true, bar: true})).to.be(true);
+      expect(expr.evaluate({foo: true, bar: false})).to.be(true);
+      expect(expr.evaluate({foo: false, bar: true})).to.be(true);
+      expect(expr.evaluate({foo: false, bar: false})).to.be(false);
+    });
+
+    it('applies && to resolved identifiers', function() {
+      var expr = new ol.expression.Logical(
+          ol.expression.LogicalOp.AND,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Identifier('bar'));
+
+      expect(expr.evaluate({foo: true, bar: true})).to.be(true);
+      expect(expr.evaluate({foo: true, bar: false})).to.be(false);
+      expect(expr.evaluate({foo: false, bar: true})).to.be(false);
+      expect(expr.evaluate({foo: false, bar: false})).to.be(false);
+    });
+  });
+
+});
+
 describe('ol.expression.Math', function() {
 
   describe('constructor', function() {
@@ -331,6 +372,8 @@ goog.require('ol.expression.ComparisonOp');
 goog.require('ol.expression.Expression');
 goog.require('ol.expression.Identifier');
 goog.require('ol.expression.Literal');
+goog.require('ol.expression.Logical');
+goog.require('ol.expression.LogicalOp');
 goog.require('ol.expression.Math');
 goog.require('ol.expression.MathOp');
 goog.require('ol.expression.Not');
