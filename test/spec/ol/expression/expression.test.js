@@ -184,6 +184,104 @@ describe('ol.expression.Literal', function() {
 });
 
 
+describe('ol.expression.Math', function() {
+
+  describe('constructor', function() {
+    it('creates a new expression', function() {
+      var expr = new ol.expression.Math(
+          ol.expression.MathOp.ADD,
+          new ol.expression.Literal(40),
+          new ol.expression.Literal(2));
+      expect(expr).to.be.a(ol.expression.Expression);
+      expect(expr).to.be.a(ol.expression.Math);
+    });
+  });
+
+  describe('#evaluate()', function() {
+    it('does + with numeric literal', function() {
+      var expr = new ol.expression.Math(
+          ol.expression.MathOp.ADD,
+          new ol.expression.Literal(40),
+          new ol.expression.Literal(2));
+
+      expect(expr.evaluate({})).to.be(42);
+    });
+
+    it('does + with string literal (note: subject to change)', function() {
+      var expr = new ol.expression.Math(
+          ol.expression.MathOp.ADD,
+          new ol.expression.Literal('foo'),
+          new ol.expression.Literal('bar'));
+
+      expect(expr.evaluate({})).to.be('foobar');
+    });
+
+    it('does + with identifiers', function() {
+      var expr = new ol.expression.Math(
+          ol.expression.MathOp.ADD,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Identifier('bar'));
+
+      expect(expr.evaluate({foo: 40, bar: 2})).to.be(42);
+    });
+
+    it('does - with identifiers', function() {
+      var expr = new ol.expression.Math(
+          ol.expression.MathOp.SUBTRACT,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Literal(2));
+
+      expect(expr.evaluate({foo: 40})).to.be(38);
+    });
+
+    it('casts to number with - (note: this may throw later)', function() {
+      var expr = new ol.expression.Math(
+          ol.expression.MathOp.SUBTRACT,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Literal(2));
+
+      expect(expr.evaluate({foo: '40'})).to.be(38);
+    });
+
+    it('does * with identifiers', function() {
+      var expr = new ol.expression.Math(
+          ol.expression.MathOp.MULTIPLY,
+          new ol.expression.Literal(2),
+          new ol.expression.Identifier('foo'));
+
+      expect(expr.evaluate({foo: 21})).to.be(42);
+    });
+
+    it('casts to number with * (note: this may throw later)', function() {
+      var expr = new ol.expression.Math(
+          ol.expression.MathOp.MULTIPLY,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Literal(2));
+
+      expect(expr.evaluate({foo: '21'})).to.be(42);
+    });
+
+    it('does % with identifiers', function() {
+      var expr = new ol.expression.Math(
+          ol.expression.MathOp.MOD,
+          new ol.expression.Literal(97),
+          new ol.expression.Identifier('foo'));
+
+      expect(expr.evaluate({foo: 55})).to.be(42);
+    });
+
+    it('casts to number with % (note: this may throw later)', function() {
+      var expr = new ol.expression.Math(
+          ol.expression.MathOp.MOD,
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Literal(100));
+
+      expect(expr.evaluate({foo: '150'})).to.be(50);
+    });
+  });
+
+});
+
 describe('ol.expression.Not', function() {
 
   describe('constructor', function() {
@@ -233,4 +331,6 @@ goog.require('ol.expression.ComparisonOp');
 goog.require('ol.expression.Expression');
 goog.require('ol.expression.Identifier');
 goog.require('ol.expression.Literal');
+goog.require('ol.expression.Math');
+goog.require('ol.expression.MathOp');
 goog.require('ol.expression.Not');

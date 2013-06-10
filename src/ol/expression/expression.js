@@ -3,6 +3,8 @@ goog.provide('ol.expression.ComparisonOp');
 goog.provide('ol.expression.Expression');
 goog.provide('ol.expression.Identifier');
 goog.provide('ol.expression.Literal');
+goog.provide('ol.expression.Math');
+goog.provide('ol.expression.MathOp');
 goog.provide('ol.expression.Not');
 
 
@@ -172,6 +174,88 @@ goog.inherits(ol.expression.Literal, ol.expression.Expression);
  */
 ol.expression.Literal.prototype.evaluate = function(scope) {
   return this.value_;
+};
+
+
+/**
+ * @enum {string}
+ */
+ol.expression.MathOp = {
+  ADD: '+',
+  SUBTRACT: '-',
+  MULTIPLY: '*',
+  DIVIDE: '/',
+  MOD: '%'
+};
+
+
+
+/**
+ * A math expression (e.g. `foo + 42`, `bar % 10`).
+ *
+ * @constructor
+ * @extends {ol.expression.Expression}
+ * @param {ol.expression.MathOp} operator Math operator.
+ * @param {ol.expression.Expression} left Left expression.
+ * @param {ol.expression.Expression} right Right expression.
+ */
+ol.expression.Math = function(operator, left, right) {
+
+  /**
+   * @type {ol.expression.MathOp}
+   * @private
+   */
+  this.operator_ = operator;
+
+  /**
+   * @type {ol.expression.Expression}
+   * @private
+   */
+  this.left_ = left;
+
+  /**
+   * @type {ol.expression.Expression}
+   * @private
+   */
+  this.right_ = right;
+
+};
+goog.inherits(ol.expression.Math, ol.expression.Expression);
+
+
+/**
+ * @inheritDoc
+ */
+ol.expression.Math.prototype.evaluate = function(scope) {
+  var result;
+  var rightVal = this.right_.evaluate(scope);
+  var leftVal = this.left_.evaluate(scope);
+  /**
+   * TODO: throw if rightVal, leftVal not numbers - this would require the use
+   * of a concat function for strings but it would let us serialize these as
+   * math functions where available elsewhere
+   */
+
+  switch (this.operator_) {
+    case ol.expression.MathOp.ADD:
+      result = leftVal + rightVal;
+      break;
+    case ol.expression.MathOp.SUBTRACT:
+      result = Number(leftVal) - Number(rightVal);
+      break;
+    case ol.expression.MathOp.MULTIPLY:
+      result = Number(leftVal) * Number(rightVal);
+      break;
+    case ol.expression.MathOp.DIVIDE:
+      result = Number(leftVal) / Number(rightVal);
+      break;
+    case ol.expression.MathOp.MOD:
+      result = Number(leftVal) % Number(rightVal);
+      break;
+    default:
+      throw new Error('Unsupported math operator: ' + this.operator_);
+  }
+  return result;
 };
 
 
