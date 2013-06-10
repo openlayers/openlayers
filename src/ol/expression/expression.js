@@ -8,6 +8,7 @@ goog.provide('ol.expression.Logical');
 goog.provide('ol.expression.LogicalOp');
 goog.provide('ol.expression.Math');
 goog.provide('ol.expression.MathOp');
+goog.provide('ol.expression.Member');
 goog.provide('ol.expression.Not');
 
 
@@ -373,6 +374,43 @@ ol.expression.Math.prototype.evaluate = function(scope, opt_fns, opt_this) {
       throw new Error('Unsupported math operator: ' + this.operator_);
   }
   return result;
+};
+
+
+
+/**
+ * A member expression (e.g. `foo.bar`).
+ *
+ * @constructor
+ * @extends {ol.expression.Expression}
+ * @param {ol.expression.Expression} expr An expression that resolves to an
+ *     object.
+ * @param {ol.expression.Identifier} property Identifier with name of property.
+ */
+ol.expression.Member = function(expr, property) {
+
+  /**
+   * @type {ol.expression.Expression}
+   * @private
+   */
+  this.expr_ = expr;
+
+  /**
+   * @type {ol.expression.Identifier}
+   * @private
+   */
+  this.property_ = property;
+
+};
+goog.inherits(ol.expression.Member, ol.expression.Expression);
+
+
+/**
+ * @inheritDoc
+ */
+ol.expression.Member.prototype.evaluate = function(scope, opt_fns, opt_this) {
+  var obj = this.expr_.evaluate(scope, opt_fns, opt_this);
+  return this.property_.evaluate(obj);
 };
 
 

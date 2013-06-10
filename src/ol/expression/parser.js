@@ -28,6 +28,7 @@ goog.require('ol.expression.Logical');
 goog.require('ol.expression.LogicalOp');
 goog.require('ol.expression.Math');
 goog.require('ol.expression.MathOp');
+goog.require('ol.expression.Member');
 goog.require('ol.expression.Not');
 goog.require('ol.expression.Token');
 goog.require('ol.expression.TokenType');
@@ -187,11 +188,12 @@ ol.expression.Parser.prototype.createLiteral_ = function(value) {
  * // TODO: make exp {ol.expression.Member|ol.expression.Identifier}
  * @param {ol.expression.Expression} expr Expression.
  * @param {ol.expression.Identifier} property Member name.
+ * @return {ol.expression.Member} The member expression.
  * @private
  */
 ol.expression.Parser.prototype.createMemberExpression_ = function(expr,
     property) {
-  throw new Error('Not implemented');
+  return new ol.expression.Member(expr, property);
 };
 
 

@@ -392,6 +392,32 @@ describe('ol.expression.Math', function() {
 
 });
 
+describe('ol.expression.Member', function() {
+  describe('constructor', function() {
+    it('creates a new expression', function() {
+      var expr = new ol.expression.Member(
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Identifier('bar'));
+
+      expect(expr).to.be.a(ol.expression.Expression);
+      expect(expr).to.be.a(ol.expression.Member);
+    });
+  });
+
+  describe('#evaluate()', function() {
+    it('accesses an object property', function() {
+
+      var expr = new ol.expression.Member(
+          new ol.expression.Identifier('foo'),
+          new ol.expression.Identifier('bar'));
+
+      var scope = {foo: {bar: 42}};
+      expect(expr.evaluate(scope)).to.be(42);
+    });
+  });
+});
+
+
 describe('ol.expression.Not', function() {
 
   describe('constructor', function() {
@@ -446,4 +472,5 @@ goog.require('ol.expression.Logical');
 goog.require('ol.expression.LogicalOp');
 goog.require('ol.expression.Math');
 goog.require('ol.expression.MathOp');
+goog.require('ol.expression.Member');
 goog.require('ol.expression.Not');
