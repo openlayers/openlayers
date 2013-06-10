@@ -1,3 +1,18 @@
+/**
+ * The logic and naming of methods here are inspired by Esprima (BSD Licensed).
+ * Esprima (http://esprima.org) includes the following copyright notices:
+ *
+ * Copyright (C) 2013 Ariya Hidayat <ariya.hidayat@gmail.com>
+ * Copyright (C) 2013 Thaddee Tyl <thaddee.tyl@gmail.com>
+ * Copyright (C) 2012 Ariya Hidayat <ariya.hidayat@gmail.com>
+ * Copyright (C) 2012 Mathias Bynens <mathias@qiwi.be>
+ * Copyright (C) 2012 Joost-Wim Boekesteijn <joost-wim@boekesteijn.nl>
+ * Copyright (C) 2012 Kris Kowal <kris.kowal@cixar.com>
+ * Copyright (C) 2012 Yusuke Suzuki <utatane.tea@gmail.com>
+ * Copyright (C) 2012 Arpad Borsos <arpad.borsos@googlemail.com>
+ * Copyright (C) 2011 Ariya Hidayat <ariya.hidayat@gmail.com>
+ */
+
 goog.provide('ol.expression.Parser');
 
 goog.require('goog.asserts');

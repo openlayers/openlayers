@@ -4,17 +4,15 @@ goog.provide('ol.expression.Literal');
 goog.provide('ol.expression.Not');
 
 
+
 /**
- * Support an extremely limited subset of ECMAScript 5.1
- * http://www.ecma-international.org/ecma-262/5.1/
+ * Base class for all expressions.  Instances of ol.Expression correspond to
+ * a limited set of ECMAScript 5.1 expressions.
+ * http://www.ecma-international.org/ecma-262/5.1/#sec-11
  *
- * Inspired by Esprima (https://github.com/ariya/esprima)
- * BSD Licensed
- */
-
-
-
-/**
+ * This base class should not be constructed directly.  Instead, use one of
+ * the subclass constructors.
+ *
  * @constructor
  */
 ol.expression.Expression = function() {};
