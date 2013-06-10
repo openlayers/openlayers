@@ -1,4 +1,4 @@
-goog.provide('ol.test.projection.EPSG3857');
+goog.provide('ol.test.proj.EPSG3857');
 
 
 describe('ol.proj.EPSG3857', function() {
