@@ -1,4 +1,5 @@
 goog.provide('ol.expression.Lexer');
+goog.provide('ol.expression.Token');
 goog.provide('ol.expression.TokenType');
 
 goog.require('goog.asserts');
@@ -106,6 +107,27 @@ ol.expression.Lexer = function(source) {
    */
   this.index_ = 0;
 
+  /**
+   * Next character index (only set after `peek`ing).
+   * @type {number}
+   * @private
+   */
+  this.nextIndex_ = 0;
+
+};
+
+
+/**
+ * Scan the next token and throw if it doesn't match.
+ * @param {string} value Token value.
+ */
+ol.expression.Lexer.prototype.expect = function(value) {
+  var match = this.match(value);
+  this.skip();
+  if (!match) {
+    throw new Error('Unexpected token at index ' + this.index_ +
+        ': ' + this.getCurrentChar_());
+  }
 };
 
 
@@ -321,6 +343,19 @@ ol.expression.Lexer.prototype.getCurrentChar_ = function() {
  */
 ol.expression.Lexer.prototype.getCurrentCharCode_ = function() {
   return this.getCharCode_(0);
+};
+
+
+/**
+ * Determine whether the upcoming token matches the given punctuator.
+ * @param {string} value Punctuator value.
+ * @return {boolean} The token matches.
+ */
+ol.expression.Lexer.prototype.match = function(value) {
+  var token = this.peek();
+  return (
+      token.type === ol.expression.TokenType.PUNCTUATOR &&
+      token.value === value);
 };
 
 
@@ -768,6 +803,15 @@ ol.expression.Lexer.prototype.skipWhitespace_ = function() {
 ol.expression.Lexer.prototype.peek = function() {
   var currentIndex = this.index_;
   var token = this.next();
+  this.nextIndex_ = this.index_;
   this.index_ = currentIndex;
   return token;
+};
+
+
+/**
+ * After peeking, skip may be called to advance the cursor without re-scanning.
+ */
+ol.expression.Lexer.prototype.skip = function() {
+  this.index_ = this.nextIndex_;
 };
