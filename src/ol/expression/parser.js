@@ -2,14 +2,11 @@ goog.provide('ol.expression.Parser');
 
 goog.require('goog.asserts');
 
-goog.require('ol.expression.BooleanLiteral');
 goog.require('ol.expression.Expression');
 goog.require('ol.expression.Identifier');
 goog.require('ol.expression.Lexer');
+goog.require('ol.expression.Literal');
 goog.require('ol.expression.Not');
-goog.require('ol.expression.NullLiteral');
-goog.require('ol.expression.NumericLiteral');
-goog.require('ol.expression.StringLiteral');
 goog.require('ol.expression.Token');
 goog.require('ol.expression.TokenType');
 
@@ -159,24 +156,11 @@ ol.expression.Parser.prototype.createIdentifier_ = function(name) {
  * Create a literal expression.
  *
  * @param {string|number|boolean|null} value Literal value.
- * @return {ol.expression.StringLiteral|ol.expression.NumericLiteral|
- *          ol.expression.BooleanLiteral|ol.expression.NullLiteral} The
- *     expression.
+ * @return {ol.expression.Literal} The literal expression.
  * @private
  */
 ol.expression.Parser.prototype.createLiteral_ = function(value) {
-  var expr;
-  if (goog.isString(value)) {
-    expr = new ol.expression.StringLiteral(value);
-  } else if (goog.isNumber(value)) {
-    expr = new ol.expression.NumericLiteral(value);
-  } else if (goog.isBoolean(value)) {
-    expr = new ol.expression.BooleanLiteral(value);
-  } else {
-    goog.asserts.assert(goog.isNull(value));
-    expr = new ol.expression.NullLiteral();
-  }
-  return expr;
+  return new ol.expression.Literal(value);
 };
 
 

@@ -1,10 +1,7 @@
-goog.provide('ol.expression.BooleanLiteral');
 goog.provide('ol.expression.Expression');
 goog.provide('ol.expression.Identifier');
+goog.provide('ol.expression.Literal');
 goog.provide('ol.expression.Not');
-goog.provide('ol.expression.NullLiteral');
-goog.provide('ol.expression.NumericLiteral');
-goog.provide('ol.expression.StringLiteral');
 
 
 /**
@@ -28,37 +25,9 @@ ol.expression.Expression = function() {};
  *
  * @param {Object} scope Evaluation scope.  All properties of this object
  *     will be available as variables when evaluating the expression.
- * @return {string|number|boolean|null} Result of the expression.
+ * @return {*} Result of the expression.
  */
 ol.expression.Expression.prototype.evaluate = goog.abstractMethod;
-
-
-
-/**
- * A boolean literal expression (e.g. `true`).
- *
- * @constructor
- * @extends {ol.expression.Expression}
- * @param {boolean} value A boolean value.
- */
-ol.expression.BooleanLiteral = function(value) {
-
-  /**
-   * @type {boolean}
-   * @private
-   */
-  this.value_ = value;
-
-};
-goog.inherits(ol.expression.BooleanLiteral, ol.expression.Expression);
-
-
-/**
- * @inheritDoc
- */
-ol.expression.BooleanLiteral.prototype.evaluate = function(scope) {
-  return this.value_;
-};
 
 
 
@@ -91,6 +60,34 @@ ol.expression.Identifier.prototype.evaluate = function(scope) {
 
 
 /**
+ * A literal expression (e.g. `"chicken"`, `42`, `true`, `null`).
+ *
+ * @constructor
+ * @extends {ol.expression.Expression}
+ * @param {string|number|boolean|null} value A literal value.
+ */
+ol.expression.Literal = function(value) {
+
+  /**
+   * @type {string|number|boolean|null}
+   * @private
+   */
+  this.value_ = value;
+
+};
+goog.inherits(ol.expression.Literal, ol.expression.Expression);
+
+
+/**
+ * @inheritDoc
+ */
+ol.expression.Literal.prototype.evaluate = function(scope) {
+  return this.value_;
+};
+
+
+
+/**
  * A logical not expression (e.g. `!foo`).
  *
  * @constructor
@@ -116,78 +113,3 @@ ol.expression.Not.prototype.evaluate = function(scope) {
   return !this.expr_.evaluate(scope);
 };
 
-
-
-/**
- * A numeric literal expression (e.g. `42`).
- *
- * @constructor
- * @extends {ol.expression.Expression}
- * @param {number} value A numeric value.
- */
-ol.expression.NumericLiteral = function(value) {
-
-  /**
-   * @type {number}
-   * @private
-   */
-  this.value_ = value;
-
-};
-goog.inherits(ol.expression.NumericLiteral, ol.expression.Expression);
-
-
-/**
- * @inheritDoc
- */
-ol.expression.NumericLiteral.prototype.evaluate = function(scope) {
-  return this.value_;
-};
-
-
-
-/**
- * A null literal expression (i.e. `null`).
- *
- * @constructor
- * @extends {ol.expression.Expression}
- */
-ol.expression.NullLiteral = function() {
-};
-goog.inherits(ol.expression.NullLiteral, ol.expression.Expression);
-
-
-/**
- * @inheritDoc
- */
-ol.expression.NullLiteral.prototype.evaluate = function(scope) {
-  return null;
-};
-
-
-
-/**
- * A string literal expression (e.g. `"chicken"`).
- *
- * @constructor
- * @extends {ol.expression.Expression}
- * @param {string} value A string.
- */
-ol.expression.StringLiteral = function(value) {
-
-  /**
-   * @type {string}
-   * @private
-   */
-  this.value_ = value;
-
-};
-goog.inherits(ol.expression.StringLiteral, ol.expression.Expression);
-
-
-/**
- * @inheritDoc
- */
-ol.expression.StringLiteral.prototype.evaluate = function(scope) {
-  return this.value_;
-};
