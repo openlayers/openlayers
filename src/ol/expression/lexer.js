@@ -134,7 +134,7 @@ ol.expression.Lexer = function(source) {
 
 
 /**
- * Scan the next token and throw if it doesn't match.
+ * Scan the next token and throw if it isn't a punctuator that matches input.
  * @param {string} value Token value.
  */
 ol.expression.Lexer.prototype.expect = function(value) {
@@ -423,6 +423,20 @@ ol.expression.Lexer.prototype.next = function() {
 
   // all the rest is punctuation
   return this.scanPunctuator_(code);
+};
+
+
+/**
+ * Peek at the next token, but don't advance the index.
+ *
+ * @return {ol.expression.Token} The upcoming token.
+ */
+ol.expression.Lexer.prototype.peek = function() {
+  var currentIndex = this.index_;
+  var token = this.next();
+  this.nextIndex_ = this.index_;
+  this.index_ = currentIndex;
+  return token;
 };
 
 
@@ -793,6 +807,14 @@ ol.expression.Lexer.prototype.scanStringLiteral_ = function(quote) {
 
 
 /**
+ * After peeking, skip may be called to advance the cursor without re-scanning.
+ */
+ol.expression.Lexer.prototype.skip = function() {
+  this.index_ = this.nextIndex_;
+};
+
+
+/**
  * Skip all whitespace.
  * @return {number} The character code of the first non-whitespace character.
  * @private
@@ -808,26 +830,4 @@ ol.expression.Lexer.prototype.skipWhitespace_ = function() {
     }
   }
   return code;
-};
-
-
-/**
- * Peek at the next token, but don't advance the index.
- *
- * @return {ol.expression.Token} The upcoming token.
- */
-ol.expression.Lexer.prototype.peek = function() {
-  var currentIndex = this.index_;
-  var token = this.next();
-  this.nextIndex_ = this.index_;
-  this.index_ = currentIndex;
-  return token;
-};
-
-
-/**
- * After peeking, skip may be called to advance the cursor without re-scanning.
- */
-ol.expression.Lexer.prototype.skip = function() {
-  this.index_ = this.nextIndex_;
 };
