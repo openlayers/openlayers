@@ -404,10 +404,14 @@ ol.expression.Parser.prototype.parsePrimaryExpression_ = function(lexer) {
   if (type === ol.expression.TokenType.IDENTIFIER) {
     expr = this.createIdentifier_(/** @type {string} */ (token.value));
   } else if (type === ol.expression.TokenType.STRING_LITERAL ||
-      type === ol.expression.TokenType.NUMERIC_LITERAL ||
-      type === ol.expression.TokenType.BOOLEAN_LITERAL ||
-      type === ol.expression.TokenType.NULL_LITERAL) {
+      type === ol.expression.TokenType.NUMERIC_LITERAL) {
+    // numeric and string literals are already the correct type
     expr = this.createLiteral_(token.value);
+  } else if (type === ol.expression.TokenType.BOOLEAN_LITERAL) {
+    // because booleans are valid member properties, tokens are still string
+    expr = this.createLiteral_(token.value === 'true');
+  } else if (type === ol.expression.TokenType.NULL_LITERAL) {
+    expr = this.createLiteral_(null);
   } else {
     throw new Error('Unexpected token: ' + token.value);
   }
