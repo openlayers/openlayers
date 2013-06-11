@@ -45,6 +45,70 @@ describe('ol.expression.Parser', function() {
 
   });
 
+  describe('#parseBinaryExpression_()', function() {
+
+    function parse(source) {
+      var lexer = new ol.expression.Lexer(source);
+      var parser = new ol.expression.Parser();
+      return parser.parseBinaryExpression_(lexer);
+    }
+
+    it('works with multiplicitave operators', function() {
+      var expr = parse('4 * 1e4');
+      expect(expr).to.be.a(ol.expression.Math);
+      expect(expr.evaluate()).to.be(40000);
+
+      expect(parse('10/3').evaluate()).to.be(10 / 3);
+    });
+
+    it('works with additive operators', function() {
+      var expr = parse('4 +1e4');
+      expect(expr).to.be.a(ol.expression.Math);
+      expect(expr.evaluate()).to.be(10004);
+
+      expect(parse('10-3').evaluate()).to.be(7);
+    });
+
+    it('works with relational operators', function() {
+      var expr = parse('4 < 1e4');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate()).to.be(true);
+
+      expect(parse('10<3').evaluate()).to.be(false);
+      expect(parse('10 <= "10"').evaluate()).to.be(true);
+      expect(parse('10 > "10"').evaluate()).to.be(false);
+      expect(parse('10 >= 9').evaluate()).to.be(true);
+    });
+
+    it('works with equality operators', function() {
+      var expr = parse('4 == 1e4');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate()).to.be(false);
+
+      expect(parse('10!=3').evaluate()).to.be(true);
+      expect(parse('10 == "10"').evaluate()).to.be(true);
+      expect(parse('10 === "10"').evaluate()).to.be(false);
+      expect(parse('10 !== "10"').evaluate()).to.be(true);
+    });
+
+    it('works with binary logical operators', function() {
+      var expr = parse('true && false');
+      expect(expr).to.be.a(ol.expression.Logical);
+      expect(expr.evaluate()).to.be(false);
+
+      expect(parse('false||true').evaluate()).to.be(true);
+      expect(parse('false || false').evaluate()).to.be(false);
+      expect(parse('true &&true').evaluate()).to.be(true);
+    });
+
+    it('throws for invalid binary expression', function() {
+      expect(function() {
+        parse('4 * / 2');
+      }).throwException();
+    });
+
+  });
+
   describe('#parseGroupExpression_()', function() {
 
     function parse(source) {
