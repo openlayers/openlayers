@@ -93,9 +93,13 @@ describe('ol.expression.Lexer', function() {
 
   describe('#scanIdentifier_()', function() {
 
-    function scan(source) {
+    function scan(source, part) {
       var lexer = new ol.expression.Lexer(source);
-      return lexer.scanIdentifier_(lexer.getCurrentCharCode_());
+      var token = lexer.scanIdentifier_(lexer.getCurrentCharCode_());
+      if (!part) {
+        expect(lexer.peek().type).to.be(ol.expression.TokenType.EOF);
+      }
+      return token;
     }
 
     it('works for short identifiers', function() {
@@ -171,7 +175,7 @@ describe('ol.expression.Lexer', function() {
     });
 
     it('only scans valid identifier part', function() {
-      var token = scan('foo>bar');
+      var token = scan('foo>bar', true);
       expect(token.value).to.be('foo');
       expect(token.type).to.be(ol.expression.TokenType.IDENTIFIER);
     });
@@ -182,7 +186,9 @@ describe('ol.expression.Lexer', function() {
 
     function scan(source) {
       var lexer = new ol.expression.Lexer(source);
-      return lexer.scanNumericLiteral_(lexer.getCurrentCharCode_());
+      var token = lexer.scanNumericLiteral_(lexer.getCurrentCharCode_());
+      expect(lexer.peek().type).to.be(ol.expression.TokenType.EOF);
+      return token;
     }
 
     it('works for integers', function() {
@@ -233,7 +239,9 @@ describe('ol.expression.Lexer', function() {
 
     function scan(source) {
       var lexer = new ol.expression.Lexer(source);
-      return lexer.scanPunctuator_(lexer.getCurrentCharCode_());
+      var token = lexer.scanPunctuator_(lexer.getCurrentCharCode_());
+      expect(lexer.peek().type).to.be(ol.expression.TokenType.EOF);
+      return token;
     }
 
     it('works for dot', function() {
@@ -320,7 +328,9 @@ describe('ol.expression.Lexer', function() {
 
     function scan(source) {
       var lexer = new ol.expression.Lexer(source);
-      return lexer.scanStringLiteral_(lexer.getCurrentCharCode_());
+      var token = lexer.scanStringLiteral_(lexer.getCurrentCharCode_());
+      expect(lexer.peek().type).to.be(ol.expression.TokenType.EOF);
+      return token;
     }
 
     it('parses double quoted string', function() {

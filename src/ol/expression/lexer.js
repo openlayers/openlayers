@@ -721,6 +721,7 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function(code) {
 
     if (code === ol.expression.Char.GREATER ||
         code === ol.expression.Char.LESS) {
+      this.increment_(2);
       return {
         type: ol.expression.TokenType.PUNCTUATOR,
         value: String.fromCharCode(code) + '='
