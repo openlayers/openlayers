@@ -201,12 +201,93 @@ describe('ol.expression.parse', function() {
     });
 
   });
+
+  describe('relational operators', function() {
+    // http://www.ecma-international.org/ecma-262/5.1/#sec-11.8
+
+    it('parses < operator', function() {
+      var expr = ol.expression.parse('foo<bar');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate({foo: 10, bar: 20})).to.be(true);
+      expect(expr.evaluate({foo: 100, bar: 20})).to.be(false);
+    });
+
+    it('consumes whitespace as expected with <', function() {
+      var expr = ol.expression.parse(' foo <10 ');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate({foo: 15})).to.be(false);
+      expect(expr.evaluate({foo: 5})).to.be(true);
+    });
+
+    it('parses > operator', function() {
+      var expr = ol.expression.parse('foo>bar');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate({foo: 10, bar: 20})).to.be(false);
+      expect(expr.evaluate({foo: 100, bar: 20})).to.be(true);
+    });
+
+    it('consumes whitespace as expected with >', function() {
+      var expr = ol.expression.parse(' foo> 10 ');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate({foo: 15})).to.be(true);
+      expect(expr.evaluate({foo: 5})).to.be(false);
+    });
+
+    it('parses <= operator', function() {
+      var expr = ol.expression.parse('foo<=bar');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate({foo: 10, bar: 20})).to.be(true);
+      expect(expr.evaluate({foo: 100, bar: 20})).to.be(false);
+      expect(expr.evaluate({foo: 20, bar: 20})).to.be(true);
+    });
+
+    it('consumes whitespace as expected with <=', function() {
+      var expr = ol.expression.parse(' foo<= 10 ');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate({foo: 15})).to.be(false);
+      expect(expr.evaluate({foo: 5})).to.be(true);
+      expect(expr.evaluate({foo: 10})).to.be(true);
+    });
+
+    it('throws for invalid spacing with <=', function() {
+      expect(function() {
+        ol.expression.parse(' foo< = 10 ');
+      }).throwException();
+    });
+
+    it('parses >= operator', function() {
+      var expr = ol.expression.parse('foo>=bar');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate({foo: 10, bar: 20})).to.be(false);
+      expect(expr.evaluate({foo: 100, bar: 20})).to.be(true);
+      expect(expr.evaluate({foo: 20, bar: 20})).to.be(true);
+    });
+
+    it('consumes whitespace as expected with >=', function() {
+      var expr = ol.expression.parse(' foo >=10 ');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate({foo: 15})).to.be(true);
+      expect(expr.evaluate({foo: 5})).to.be(false);
+      expect(expr.evaluate({foo: 10})).to.be(true);
+    });
+
+    it('throws for invalid spacing with >=', function() {
+      expect(function() {
+        ol.expression.parse(' 10 > =foo ');
+      }).throwException();
+    });
+
+  });
+
 });
 
 
 goog.require('ol.expression');
+goog.require('ol.expression.Call');
+goog.require('ol.expression.Comparison');
 goog.require('ol.expression.Expression');
 goog.require('ol.expression.Identifier');
 goog.require('ol.expression.Literal');
 goog.require('ol.expression.Math');
+goog.require('ol.expression.Member');
 goog.require('ol.expression.Not');
