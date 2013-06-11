@@ -37,7 +37,8 @@ ol.ProjectionLike;
 ol.ProjectionUnits = {
   DEGREES: 'degrees',
   FEET: 'ft',
-  METERS: 'm'
+  METERS: 'm',
+  PIXELS: 'pixels'
 };
 
 
@@ -49,6 +50,7 @@ ol.METERS_PER_UNIT[ol.ProjectionUnits.DEGREES] =
     2 * Math.PI * ol.sphere.NORMAL.radius / 360;
 ol.METERS_PER_UNIT[ol.ProjectionUnits.FEET] = 0.3048;
 ol.METERS_PER_UNIT[ol.ProjectionUnits.METERS] = 1;
+ol.METERS_PER_UNIT[ol.ProjectionUnits.PIXELS] = NaN;
 
 
 
