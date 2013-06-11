@@ -333,7 +333,8 @@ ol.expression.Parser.prototype.parseGroupExpression_ = function(lexer) {
 
 
 /**
- * Parse left-hand-side expression.
+ * Parse left-hand-side expression.  Limited to Member Expressions
+ * and Call Expressions.
  * http://www.ecma-international.org/ecma-262/5.1/#sec-11.2
  *
  * @param {ol.expression.Lexer} lexer Lexer.
