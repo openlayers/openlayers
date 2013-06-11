@@ -9,6 +9,42 @@ describe('ol.expression.Parser', function() {
     });
   });
 
+  describe('#parseArguments_()', function() {
+
+    function parse(source) {
+      var lexer = new ol.expression.Lexer(source);
+      var parser = new ol.expression.Parser();
+      return parser.parseArguments_(lexer);
+    }
+
+    it('parses comma separated expressions in parens', function() {
+      var args = parse('(1/3, "foo", true)');
+      expect(args).length(3);
+
+      expect(args[0]).to.be.a(ol.expression.Math);
+      expect(args[0].evaluate()).to.be(1 / 3);
+
+      expect(args[1]).to.be.a(ol.expression.Literal);
+      expect(args[1].evaluate()).to.be('foo');
+
+      expect(args[2]).to.be.a(ol.expression.Literal);
+      expect(args[2].evaluate()).to.be(true);
+    });
+
+    it('throws on invalid arg expression', function() {
+      expect(function() {
+        parse('(6e)');
+      }).throwException();
+    });
+
+    it('throws on unterminated args', function() {
+      expect(function() {
+        parse('("foo", 42, )');
+      }).throwException();
+    });
+
+  });
+
   describe('#parseGroupExpression_()', function() {
 
     function parse(source) {
