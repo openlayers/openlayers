@@ -46,13 +46,14 @@ ol.expression.Expression.prototype.evaluate = goog.abstractMethod;
  *
  * @constructor
  * @extends {ol.expression.Expression}
- * @param {expr} expr An expression that resolves to a function.
+ * @param {ol.expression.Expression} expr An expression that resolves to a
+ *     function.
  * @param {Array.<ol.expression.Expression>} args Arguments.
  */
 ol.expression.Call = function(expr, args) {
 
   /**
-   * @type {expr}
+   * @type {ol.expression.Expression}
    * @private
    */
   this.expr_ = expr;
@@ -74,7 +75,7 @@ ol.expression.Call.prototype.evaluate = function(scope, opt_fns, opt_this) {
   var fnScope = goog.isDefAndNotNull(opt_fns) ? opt_fns : scope;
   var fn = this.expr_.evaluate(fnScope);
   if (!fn || !goog.isFunction(fn)) {
-    throw new Error('No function in provided scope: ' + this.name_);
+    throw new Error('Expected function but found ' + fn);
   }
   var thisArg = goog.isDef(opt_this) ? opt_this : {};
 
@@ -458,7 +459,11 @@ goog.inherits(ol.expression.Member, ol.expression.Expression);
  */
 ol.expression.Member.prototype.evaluate = function(scope, opt_fns, opt_this) {
   var obj = this.expr_.evaluate(scope, opt_fns, opt_this);
-  return this.property_.evaluate(obj);
+  if (!goog.isObject(obj)) {
+    throw new Error('Expected member expression to evaluate to an object ' +
+        'but got ' + obj);
+  }
+  return this.property_.evaluate(/** @type {Object} */ (obj));
 };
 
 

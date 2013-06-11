@@ -154,7 +154,7 @@ ol.expression.Parser.prototype.createBinaryExpression_ = function(operator,
  * @private
  */
 ol.expression.Parser.prototype.createCallExpression_ = function(expr, args) {
-  return new ol.expressions.Call(expr, args);
+  return new ol.expression.Call(expr, args);
 };
 
 
