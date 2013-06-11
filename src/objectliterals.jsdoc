@@ -6,6 +6,11 @@
  */
 
 /**
+ * @typedef {Object} ol.DeviceMotionOptions
+ * @property {boolean|undefined} tracking Tracking.
+ */
+
+/**
  * @typedef {Object} ol.DeviceOrientationOptions
  * @property {boolean|undefined} tracking Tracking.
  */
