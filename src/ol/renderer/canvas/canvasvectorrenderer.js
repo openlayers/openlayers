@@ -276,14 +276,11 @@ ol.renderer.canvas.VectorRenderer.prototype.renderLabels_ =
       color = text.color,
       vecs, vec;
 
-  context.save();
-  context.scale(1, -1);
-
   if (color) {
     context.fillStyle = color;
   }
   if (goog.isDef(text.fontSize)) {
-    fontArray.push((text.fontSize * this.inverseScale_) + 'px');
+    fontArray.push(text.fontSize + 'px');
   }
   if (goog.isDef(text.fontFamily)) {
     fontArray.push(text.fontFamily);
@@ -305,7 +302,6 @@ ol.renderer.canvas.VectorRenderer.prototype.renderLabels_ =
     }
   }
 
-  context.restore();
 };
 
 
