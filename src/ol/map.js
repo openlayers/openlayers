@@ -335,6 +335,7 @@ goog.inherits(ol.Map, ol.Object);
 
 
 /**
+ * Adds the given layer to the top of this map.
  * @param {ol.layer.Layer} layer Layer.
  */
 ol.Map.prototype.addLayer = function(layer) {
@@ -345,6 +346,8 @@ ol.Map.prototype.addLayer = function(layer) {
 
 
 /**
+ * Add a prerender function. This can be used for attaching animations to
+ * be performed before setting the map's center.
  * @param {ol.PreRenderFunction} preRenderFunction Pre-render function.
  */
 ol.Map.prototype.addPreRenderFunction = function(preRenderFunction) {
@@ -354,6 +357,8 @@ ol.Map.prototype.addPreRenderFunction = function(preRenderFunction) {
 
 
 /**
+ * Add prerender functions. This can be used for attaching animations to
+ * be performed before setting the map's center.
  * @param {Array.<ol.PreRenderFunction>} preRenderFunctions
  *     Pre-render functions.
  */
@@ -393,6 +398,7 @@ ol.Map.prototype.freezeRendering = function() {
 
 
 /**
+ * Get the map's renderer.
  * @return {ol.renderer.Map} Renderer.
  */
 ol.Map.prototype.getRenderer = function() {
@@ -401,6 +407,7 @@ ol.Map.prototype.getRenderer = function() {
 
 
 /**
+ * Get the element in which this map is rendered.
  * @return {Element|undefined} Target.
  */
 ol.Map.prototype.getTarget = function() {
@@ -454,6 +461,8 @@ ol.Map.prototype.getFeatures = function(options) {
 
 
 /**
+ * Gets the collection on interactions associated with this map.
+ * Interactions are used for e.g. pan, zoom and rotate.
  * @return {ol.Collection} Interactions.
  */
 ol.Map.prototype.getInteractions = function() {
@@ -462,6 +471,7 @@ ol.Map.prototype.getInteractions = function() {
 
 
 /**
+ * Get the collection of layers associated with this map.
  * @return {ol.Collection} Layers.
  */
 ol.Map.prototype.getLayers = function() {
@@ -489,6 +499,7 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
 
 
 /**
+ * Get the size of this map.
  * @return {ol.Size|undefined} Size.
  */
 ol.Map.prototype.getSize = function() {
@@ -501,6 +512,8 @@ goog.exportProperty(
 
 
 /**
+ * Get the view associated with this map. This can be a 2D or 3D view. A 2D
+ * view manages properties such as center and resolution.
  * @return {ol.View} View.
  */
 ol.Map.prototype.getView = function() {
@@ -785,6 +798,7 @@ ol.Map.prototype.requestRenderFrame = function() {
 
 
 /**
+ * Removes the given layer from the map.
  * @param {ol.layer.Layer} layer Layer.
  * @return {ol.layer.Layer|undefined} The removed layer or undefined if the
  *     layer was not found.
@@ -887,6 +901,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
 
 /**
+ * Sets the whole collection of layers for this map.
  * @param {ol.Collection} layers Layers.
  */
 ol.Map.prototype.setLayers = function(layers) {
@@ -899,6 +914,7 @@ goog.exportProperty(
 
 
 /**
+ * Set the size of this map.
  * @param {ol.Size|undefined} size Size.
  */
 ol.Map.prototype.setSize = function(size) {
@@ -911,6 +927,7 @@ goog.exportProperty(
 
 
 /**
+ * Set the target element to render this map into.
  * @param {Element|string|undefined} target Target.
  */
 ol.Map.prototype.setTarget = function(target) {
@@ -926,6 +943,7 @@ goog.exportProperty(
 
 
 /**
+ * Set the view for this map.
  * @param {ol.IView} view View.
  */
 ol.Map.prototype.setView = function(view) {

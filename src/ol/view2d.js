@@ -31,6 +31,14 @@ ol.View2DProperty = {
 
 
 /**
+ * Create a new View2D, a View2D manages properties such as center,
+ *     projection, resolution and rotation.
+ *
+ * Example:
+ *
+ *     // to get the current extent
+ *     map.getView().getView2D().calculateExtent(map.getSize())
+ *
  * @constructor
  * @implements {ol.IView2D}
  * @implements {ol.IView3D}
@@ -128,6 +136,7 @@ ol.View2D.prototype.calculateCenterZoom = function(resolution, anchor) {
 
 
 /**
+ * Get the constrained the resolution of this view.
  * @param {number|undefined} resolution Resolution.
  * @param {number=} opt_delta Delta.
  * @param {number=} opt_direction Direction.
@@ -142,6 +151,7 @@ ol.View2D.prototype.constrainResolution = function(
 
 
 /**
+ * Get the constrained rotation of this view.
  * @param {number|undefined} rotation Rotation.
  * @param {number=} opt_delta Delta.
  * @return {number|undefined} Constrained rotation.
@@ -166,7 +176,7 @@ goog.exportProperty(
 
 
 /**
- * Calculate the extent for the given size in pixels, the current
+ * Calculate the extent for the given size in pixels, based on the current
  * resolution and the current center.
  * @param {ol.Size} size Box pixel size.
  * @return {ol.Extent} Extent.
@@ -247,6 +257,7 @@ ol.View2D.prototype.getResolutionForValueFunction = function(opt_power) {
 
 
 /**
+ * Get the current rotation of this view.
  * @return {number} Map rotation.
  */
 ol.View2D.prototype.getRotation = function() {
@@ -318,6 +329,7 @@ ol.View2D.prototype.getView3D = function() {
 
 
 /**
+ * Fit the given extent based on the given map size.
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Box pixel size.
  */
@@ -339,6 +351,7 @@ ol.View2D.prototype.isDef = function() {
 
 
 /**
+ * Set the center of the current view.
  * @param {ol.Coordinate|undefined} center Center.
  */
 ol.View2D.prototype.setCenter = function(center) {
@@ -351,6 +364,7 @@ goog.exportProperty(
 
 
 /**
+ * Set the projection of this view.
  * @param {ol.Projection|undefined} projection Projection.
  */
 ol.View2D.prototype.setProjection = function(projection) {
@@ -363,6 +377,7 @@ goog.exportProperty(
 
 
 /**
+ * Set the resolution for this view.
  * @param {number|undefined} resolution Resolution.
  */
 ol.View2D.prototype.setResolution = function(resolution) {
@@ -375,6 +390,7 @@ goog.exportProperty(
 
 
 /**
+ * Set the rotation for this view.
  * @param {number|undefined} rotation Rotation.
  */
 ol.View2D.prototype.setRotation = function(rotation) {

@@ -29,6 +29,14 @@ ol.control.ZOOMSLIDER_ANIMATION_DURATION = 200;
 
 
 /**
+ * A slider type of control for zooming.
+ *
+ * Example:
+ *
+ *     var zoomslider = new ol.control.ZoomSlider({
+ *       map: map
+ *     });
+ *
  * @constructor
  * @extends {ol.control.Control}
  * @param {ol.control.ZoomSliderOptions=} opt_options Zoom slider options.

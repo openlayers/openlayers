@@ -19,6 +19,19 @@ goog.require('ol.proj');
 
 
 /**
+ * Create a new control to show the position of the mouse in the map's
+ * projection (or any other supplied projection). By default the control is
+ * shown in the top right corner of the map but this can be changed by using
+ * a css selector .ol-mouse-position.
+ *
+ * Example:
+ *
+ *     var map = new ol.Map({
+ *       controls: ol.control.defaults({}, [
+ *         new ol.control.MousePosition({projection: ol.proj.get('EPSG:4326')})
+ *       ]),
+ *       ...
+ *
  * @constructor
  * @extends {ol.control.Control}
  * @param {ol.control.MousePositionOptions=} opt_options Mouse position options.

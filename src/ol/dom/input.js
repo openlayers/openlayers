@@ -17,6 +17,14 @@ ol.dom.InputProperty = {
 
 
 /**
+ * Helper class for binding HTML input to an ol.Object
+ *
+ * Example:
+ *
+ *     // bind a checkbox with id 'visible' to a layer's visibility
+ *     var visible = new ol.dom.Input(document.getElementById('visible'));
+ *     visible.bindTo('checked', layer, 'visible');
+ *
  * @constructor
  * @extends {ol.Object}
  * @param {Element} target Target element.
@@ -44,6 +52,7 @@ goog.inherits(ol.dom.Input, ol.Object);
 
 
 /**
+ * If the input is a checkbox, return whether or not the checbox is checked.
  * @return {boolean|undefined} checked.
  */
 ol.dom.Input.prototype.getChecked = function() {
@@ -56,6 +65,7 @@ goog.exportProperty(
 
 
 /**
+ * Get the value of the input.
  * @return {string|undefined} input value.
  */
 ol.dom.Input.prototype.getValue = function() {
@@ -68,6 +78,7 @@ goog.exportProperty(
 
 
 /**
+ * Sets the value of the input.
  * @param {string} value Value.
  */
 ol.dom.Input.prototype.setValue = function(value) {
@@ -80,6 +91,7 @@ goog.exportProperty(
 
 
 /**
+ * Set whether or not a checkbox is checked.
  * @param {boolean} checked Checked.
  */
 ol.dom.Input.prototype.setChecked = function(checked) {

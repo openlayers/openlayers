@@ -10,9 +10,19 @@ goog.require('ol.filter.Filter');
 
 
 /**
+ * A filter to group (a) subfilter(s) by a logical operator (AND/OR/NOT).
+ *
+ * Example:
+ *
+ *     var f1 = new ol.filter.Filter(myFunc1);
+ *     var f2 = new ol.filter.Filter(myFunc2);
+ *     // match one of the two filters above
+ *     var logical = new ol.filter.Logical([f1, f2],
+ *         ol.filter.LogicalOperator.OR);
+ *
  * @constructor
  * @extends {ol.filter.Filter}
- * @param {Array.<ol.filter.Filter>} filters Filters to and-combine.
+ * @param {Array.<ol.filter.Filter>} filters Filters to combine.
  * @param {ol.filter.LogicalOperator} operator Operator.
  */
 ol.filter.Logical = function(filters, operator) {
@@ -61,6 +71,7 @@ ol.filter.Logical.prototype.applies = function(feature) {
       break;
     default:
       goog.asserts.assert(false, 'Unsupported operation: ' + this.operator);
+      break;
   }
   return !!result;
 };
