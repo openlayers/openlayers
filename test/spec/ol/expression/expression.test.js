@@ -132,6 +132,46 @@ describe('ol.expression.parse', function() {
 
   });
 
+  describe('multiplicitave operators', function() {
+    // http://www.ecma-international.org/ecma-262/5.1/#sec-11.5
+
+    it('parses * operator', function() {
+      var expr = ol.expression.parse('foo*bar');
+      expect(expr).to.be.a(ol.expression.Math);
+      expect(expr.evaluate({foo: 10, bar: 20})).to.be(200);
+    });
+
+    it('consumes whitespace as expected with *', function() {
+      var expr = ol.expression.parse(' foo * bar ');
+      expect(expr).to.be.a(ol.expression.Math);
+      expect(expr.evaluate({foo: 15, bar: 2})).to.be(30);
+    });
+
+    it('parses / operator', function() {
+      var expr = ol.expression.parse('foo/12');
+      expect(expr).to.be.a(ol.expression.Math);
+      expect(expr.evaluate({foo: 10})).to.be(10 / 12);
+    });
+
+    it('consumes whitespace as expected with /', function() {
+      var expr = ol.expression.parse(' 4 / bar ');
+      expect(expr).to.be.a(ol.expression.Math);
+      expect(expr.evaluate({bar: 3})).to.be(4 / 3);
+    });
+
+    it('parses % operator', function() {
+      var expr = ol.expression.parse('12%foo');
+      expect(expr).to.be.a(ol.expression.Math);
+      expect(expr.evaluate({foo: 10})).to.be(2);
+    });
+
+    it('consumes whitespace as expected with %', function() {
+      var expr = ol.expression.parse(' 4 %bar ');
+      expect(expr).to.be.a(ol.expression.Math);
+      expect(expr.evaluate({bar: 3})).to.be(1);
+    });
+
+  });
 });
 
 
@@ -139,4 +179,5 @@ goog.require('ol.expression');
 goog.require('ol.expression.Expression');
 goog.require('ol.expression.Identifier');
 goog.require('ol.expression.Literal');
+goog.require('ol.expression.Math');
 goog.require('ol.expression.Not');
