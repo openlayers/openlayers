@@ -424,7 +424,7 @@ ol.expression.Parser.prototype.parsePrimaryExpression_ = function(lexer) {
 
 
 /**
- * Parse expression with a unary operator.
+ * Parse expression with a unary operator.  Limited to logical not operator.
  * http://www.ecma-international.org/ecma-262/5.1/#sec-11.4
  *
  * @param {ol.expression.Lexer} lexer Lexer.

@@ -222,6 +222,42 @@ describe('ol.expression.Parser', function() {
 
   });
 
+  describe('#parseUnaryExpression_()', function() {
+
+    function parse(source) {
+      var lexer = new ol.expression.Lexer(source);
+      var parser = new ol.expression.Parser();
+      var expr = parser.parseUnaryExpression_(lexer);
+      expect(lexer.peek().type).to.be(ol.expression.TokenType.EOF);
+      return expr;
+    }
+
+    it('parses logical not', function() {
+      var expr = parse('!foo');
+      expect(expr).to.be.a(ol.expression.Not);
+      expect(expr.evaluate({foo: true})).to.be(false);
+    });
+
+    it('works with string literal', function() {
+      var expr = parse('!"foo"');
+      expect(expr).to.be.a(ol.expression.Not);
+      expect(expr.evaluate()).to.be(false);
+    });
+
+    it('works with empty string', function() {
+      var expr = parse('!""');
+      expect(expr).to.be.a(ol.expression.Not);
+      expect(expr.evaluate()).to.be(true);
+    });
+
+    it('works with null', function() {
+      var expr = parse('!null');
+      expect(expr).to.be.a(ol.expression.Not);
+      expect(expr.evaluate()).to.be(true);
+    });
+
+  });
+
 
 });
 
@@ -234,5 +270,6 @@ goog.require('ol.expression.Literal');
 goog.require('ol.expression.Logical');
 goog.require('ol.expression.Math');
 goog.require('ol.expression.Member');
+goog.require('ol.expression.Not');
 goog.require('ol.expression.Parser');
 goog.require('ol.expression.TokenType');
