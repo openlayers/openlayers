@@ -309,7 +309,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     // lazy tile grid creation to match the view projection
     tileGrid = ol.tilegrid.createForProjection(
         view2DState.projection,
-        22, // should be no harm in going big here - ideally, it would be ∞
+        20, // should be no harm in going big here - ideally, it would be ∞
         [512, 512]);
     this.tileGrid_ = tileGrid;
   }
