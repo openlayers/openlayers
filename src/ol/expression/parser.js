@@ -236,12 +236,14 @@ ol.expression.Parser.prototype.parseArguments_ = function(lexer) {
 
   lexer.expect('(');
 
-  while (!lexer.match(')')) {
-    args.push(this.parseBinaryExpression_(lexer));
-    if (lexer.match(')')) {
-      break;
+  if (!lexer.match(')')) {
+    while (true) {
+      args.push(this.parseBinaryExpression_(lexer));
+      if (lexer.match(')')) {
+        break;
+      }
+      lexer.expect(',');
     }
-    lexer.expect(',');
   }
   lexer.skip();
 
@@ -355,6 +357,7 @@ ol.expression.Parser.prototype.parseLeftHandSideExpression_ = function(lexer) {
     while (token.value === '.') {
       var property = this.parseNonComputedMember_(lexer);
       expr = this.createMemberExpression_(expr, property);
+      token = lexer.peek();
     }
   }
   return expr;
