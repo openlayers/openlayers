@@ -172,6 +172,35 @@ describe('ol.expression.parse', function() {
     });
 
   });
+
+  describe('additive operators', function() {
+    // http://www.ecma-international.org/ecma-262/5.1/#sec-11.6
+
+    it('parses + operator', function() {
+      var expr = ol.expression.parse('foo+bar');
+      expect(expr).to.be.a(ol.expression.Math);
+      expect(expr.evaluate({foo: 10, bar: 20})).to.be(30);
+    });
+
+    it('consumes whitespace as expected with +', function() {
+      var expr = ol.expression.parse(' foo +10 ');
+      expect(expr).to.be.a(ol.expression.Math);
+      expect(expr.evaluate({foo: 15})).to.be(25);
+    });
+
+    it('parses - operator', function() {
+      var expr = ol.expression.parse('foo-bar');
+      expect(expr).to.be.a(ol.expression.Math);
+      expect(expr.evaluate({foo: 10, bar: 20})).to.be(-10);
+    });
+
+    it('consumes whitespace as expected with -', function() {
+      var expr = ol.expression.parse(' foo- 10 ');
+      expect(expr).to.be.a(ol.expression.Math);
+      expect(expr.evaluate({foo: 15})).to.be(5);
+    });
+
+  });
 });
 
 
