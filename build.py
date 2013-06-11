@@ -481,6 +481,7 @@ def build_check_requires_timestamp(t):
         provides = set()
         requires = set()
         uses = set()
+        uses_linenos = {}
         for lineno, line in _strip_comments(open(filename)):
             m = re.match(r'goog.provide\(\'(.*)\'\);', line)
             if m:
@@ -495,6 +496,7 @@ def build_check_requires_timestamp(t):
                     m = provide_re.search(line)
                     if m:
                         uses.add(m.group())
+                        uses_linenos[m.group()] = lineno
                         line = line[:m.start()] + line[m.end():]
                         break
                 else:
@@ -508,9 +510,10 @@ def build_check_requires_timestamp(t):
             uses.discard('ol.renderer.%s.Map' % (m.group(1),))
         missing_requires = uses - requires - provides
         if missing_requires:
-            t.info('%s: missing goog.requires: %s', filename, ', '.join(
-                sorted(missing_requires)))
-            missing_count += len(missing_requires)
+            for missing_require in sorted(missing_requires):
+                t.info("%s:%d missing goog.requires('%s')" %
+                       (filename, uses_linenos[missing_require], missing_require))
+                missing_count += 1
     if unused_count or missing_count:
         t.error('%d unused goog.requires, %d missing goog.requires' %
                 (unused_count, missing_count))
