@@ -17,6 +17,12 @@ describe('ol.expression.parse', function() {
       expect(expr.evaluate({foo: 'bar'})).to.be('bar');
     });
 
+    it('consumes whitespace as expected', function() {
+      var expr = ol.expression.parse('  foo  ');
+      expect(expr).to.be.a(ol.expression.Identifier);
+      expect(expr.evaluate({foo: 'bar'})).to.be('bar');
+    });
+
     it('throws on invalid identifier expressions', function() {
       expect(function() {
         ol.expression.parse('3foo');
@@ -66,6 +72,13 @@ describe('ol.expression.parse', function() {
 
     it('parses member expressions with dot notation', function() {
       var expr = ol.expression.parse('foo.bar.baz');
+      expect(expr).to.be.a(ol.expression.Member);
+      var scope = {foo: {bar: {baz: 42}}};
+      expect(expr.evaluate(scope)).to.be(42);
+    });
+
+    it('consumes whitespace as expected', function() {
+      var expr = ol.expression.parse(' foo . bar . baz ');
       expect(expr).to.be.a(ol.expression.Member);
       var scope = {foo: {bar: {baz: 42}}};
       expect(expr.evaluate(scope)).to.be(42);
