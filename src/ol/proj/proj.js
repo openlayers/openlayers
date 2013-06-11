@@ -87,8 +87,7 @@ ol.Projection = function(options) {
    * @private
    * @type {boolean}
    */
-  this.global_ = goog.isDef(options.global) ?
-      options.global : false;
+  this.global_ = goog.isDef(options.global) ? options.global : false;
 
   /**
    * @private
