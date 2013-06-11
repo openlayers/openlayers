@@ -8,7 +8,6 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Feature');
-goog.require('ol.Pixel');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
@@ -31,32 +30,19 @@ goog.require('ol.style.SymbolizerLiteral');
  * @constructor
  * @param {HTMLCanvasElement} canvas Target canvas.
  * @param {goog.vec.Mat4.Number} transform Transform.
- * @param {ol.Pixel=} opt_offset Pixel offset for top-left corner.  This is
- *     provided as an optional argument as a convenience in cases where the
- *     transform applies to a separate canvas.
  * @param {function()=} opt_iconLoadedCallback Callback for deferred rendering
  *     when images need to be loaded before rendering.
  */
 ol.renderer.canvas.VectorRenderer =
-    function(canvas, transform, opt_offset, opt_iconLoadedCallback) {
+    function(canvas, transform, opt_iconLoadedCallback) {
 
   var context = /** @type {CanvasRenderingContext2D} */
-      (canvas.getContext('2d')),
-      dx = goog.isDef(opt_offset) ? opt_offset[0] : 0,
-      dy = goog.isDef(opt_offset) ? opt_offset[1] : 0;
-
+      (canvas.getContext('2d'));
   /**
    * @type {goog.vec.Mat4.Number}
    * @private
    */
   this.transform_ = transform;
-  context.setTransform(
-      goog.vec.Mat4.getElement(transform, 0, 0),
-      goog.vec.Mat4.getElement(transform, 1, 0),
-      goog.vec.Mat4.getElement(transform, 0, 1),
-      goog.vec.Mat4.getElement(transform, 1, 1),
-      goog.vec.Mat4.getElement(transform, 0, 3) + dx,
-      goog.vec.Mat4.getElement(transform, 1, 3) + dy);
 
   var vec = [1, 0, 0];
   goog.vec.Mat4.multVec3NoTranslate(transform, vec, vec);
@@ -158,20 +144,21 @@ ol.renderer.canvas.VectorRenderer.prototype.renderLineStringFeatures_ =
 
   var context = this.context_,
       i, ii, feature, id, currentSize, geometry, components, j, jj, line, dim,
-      k, kk, x, y;
+      k, kk, vec, strokeSize;
 
   context.globalAlpha = symbolizer.opacity;
   context.strokeStyle = symbolizer.strokeColor;
-  context.lineWidth = symbolizer.strokeWidth * this.inverseScale_;
+  context.lineWidth = symbolizer.strokeWidth;
   context.lineCap = 'round'; // TODO: accept this as a symbolizer property
   context.lineJoin = 'round'; // TODO: accept this as a symbolizer property
+  strokeSize = context.lineWidth * this.inverseScale_;
   context.beginPath();
   for (i = 0, ii = features.length; i < ii; ++i) {
     feature = features[i];
     id = goog.getUid(feature);
     currentSize = goog.isDef(this.symbolSizes_[id]) ?
         this.symbolSizes_[id] : [0];
-    currentSize[0] = Math.max(currentSize[0], context.lineWidth);
+    currentSize[0] = Math.max(currentSize[0], strokeSize);
     this.symbolSizes_[id] = currentSize;
     this.maxSymbolSize_ = [Math.max(currentSize[0], this.maxSymbolSize_[0]),
           Math.max(currentSize[0], this.maxSymbolSize_[1])];
@@ -187,12 +174,12 @@ ol.renderer.canvas.VectorRenderer.prototype.renderLineStringFeatures_ =
       line = components[j];
       dim = line.dimension;
       for (k = 0, kk = line.getCount(); k < kk; ++k) {
-        x = line.get(k, 0);
-        y = line.get(k, 1);
+        vec = [line.get(k, 0), line.get(k, 1), 0];
+        goog.vec.Mat4.multVec3(this.transform_, vec, vec);
         if (k === 0) {
-          context.moveTo(x, y);
+          context.moveTo(vec[0], vec[1]);
         } else {
-          context.lineTo(x, y);
+          context.lineTo(vec[0], vec[1]);
         }
       }
     }
@@ -232,6 +219,8 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
 
   var midWidth = content.width / 2;
   var midHeight = content.height / 2;
+  var contentWidth = content.width * this.inverseScale_;
+  var contentHeight = content.height * this.inverseScale_;
   context.save();
   context.setTransform(1, 0, 0, 1, -midWidth, -midHeight);
   context.globalAlpha = alpha;
@@ -240,10 +229,8 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
     id = goog.getUid(feature);
     size = this.symbolSizes_[id];
     this.symbolSizes_[id] = goog.isDef(size) ?
-        [Math.max(size[0], content.width * this.inverseScale_),
-          Math.max(size[1], content.height * this.inverseScale_)] :
-        [content.width * this.inverseScale_,
-          content.height * this.inverseScale_];
+        [Math.max(size[0], contentWidth), Math.max(size[1], contentHeight)] :
+        [contentWidth, contentHeight];
     this.maxSymbolSize_ =
         [Math.max(this.maxSymbolSize_[0], this.symbolSizes_[id][0]),
           Math.max(this.maxSymbolSize_[1], this.symbolSizes_[id][1])];
@@ -257,8 +244,8 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
     }
     for (j = 0, jj = components.length; j < jj; ++j) {
       point = components[j];
-      vec = goog.vec.Mat4.multVec3(
-          this.transform_, [point.get(0), point.get(1), 0], []);
+      vec = [point.get(0), point.get(1), 0];
+      goog.vec.Mat4.multVec3(this.transform_, vec, vec);
       context.drawImage(content, vec[0], vec[1], content.width, content.height);
     }
   }
@@ -277,14 +264,17 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPolygonFeatures_ =
     function(features, symbolizer) {
   var context = this.context_,
       strokeColor = symbolizer.strokeColor,
+      strokeWidth = symbolizer.strokeWidth,
       fillColor = symbolizer.fillColor,
       i, ii, geometry, components, j, jj, poly,
-      rings, numRings, ring, dim, k, kk, x, y;
+      rings, numRings, ring, dim, k, kk, vec;
 
   context.globalAlpha = symbolizer.opacity;
   if (strokeColor) {
-    context.strokeStyle = symbolizer.strokeColor;
-    context.lineWidth = symbolizer.strokeWidth * this.inverseScale_;
+    context.strokeStyle = strokeColor;
+    if (strokeWidth) {
+      context.lineWidth = strokeWidth;
+    }
     context.lineCap = 'round'; // TODO: accept this as a symbolizer property
     context.lineJoin = 'round'; // TODO: accept this as a symbolizer property
   }
@@ -318,12 +308,12 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPolygonFeatures_ =
         // TODO: scenario 4
         ring = rings[0];
         for (k = 0, kk = ring.getCount(); k < kk; ++k) {
-          x = ring.get(k, 0);
-          y = ring.get(k, 1);
+          vec = [ring.get(k, 0), ring.get(k, 1), 0];
+          goog.vec.Mat4.multVec3(this.transform_, vec, vec);
           if (k === 0) {
-            context.moveTo(x, y);
+            context.moveTo(vec[0], vec[1]);
           } else {
-            context.lineTo(x, y);
+            context.lineTo(vec[0], vec[1]);
           }
         }
         if (fillColor && strokeColor) {
