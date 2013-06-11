@@ -511,7 +511,7 @@ def build_check_requires_timestamp(t):
         missing_requires = uses - requires - provides
         if missing_requires:
             for missing_require in sorted(missing_requires):
-                t.info("%s:%d missing goog.requires('%s')" %
+                t.info("%s:%d missing goog.require('%s')" %
                        (filename, uses_linenos[missing_require], missing_require))
                 missing_count += 1
     if unused_count or missing_count:
