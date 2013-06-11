@@ -36,25 +36,25 @@ describe('ol.expression.Parser', function() {
     it('parses string literal', function() {
       var expr = parse('"foo"');
       expect(expr).to.be.a(ol.expression.Literal);
-      expect(expr.evaluate({})).to.be('foo');
+      expect(expr.evaluate()).to.be('foo');
     });
 
     it('parses numeric literal', function() {
       var expr = parse('.42e2');
       expect(expr).to.be.a(ol.expression.Literal);
-      expect(expr.evaluate({})).to.be(42);
+      expect(expr.evaluate()).to.be(42);
     });
 
     it('parses boolean literal', function() {
       var expr = parse('.42e2');
       expect(expr).to.be.a(ol.expression.Literal);
-      expect(expr.evaluate({})).to.be(42);
+      expect(expr.evaluate()).to.be(42);
     });
 
     it('parses null literal', function() {
       var expr = parse('null');
       expect(expr).to.be.a(ol.expression.Literal);
-      expect(expr.evaluate({})).to.be(null);
+      expect(expr.evaluate()).to.be(null);
     });
 
   });

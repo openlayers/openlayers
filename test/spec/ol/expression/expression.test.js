@@ -26,7 +26,7 @@ describe('ol.expression.parse', function() {
     it('parses string literal expressions', function() {
       var expr = ol.expression.parse('"foo"');
       expect(expr).to.be.a(ol.expression.Literal);
-      expect(expr.evaluate({})).to.be('foo');
+      expect(expr.evaluate()).to.be('foo');
     });
 
     it('throws on unterminated string', function() {
@@ -38,7 +38,7 @@ describe('ol.expression.parse', function() {
     it('parses numeric literal expressions', function() {
       var expr = ol.expression.parse('.42e+2');
       expect(expr).to.be.a(ol.expression.Literal);
-      expect(expr.evaluate({})).to.be(42);
+      expect(expr.evaluate()).to.be(42);
     });
 
     it('throws on invalid number', function() {
@@ -50,13 +50,13 @@ describe('ol.expression.parse', function() {
     it('parses boolean literal expressions', function() {
       var expr = ol.expression.parse('false');
       expect(expr).to.be.a(ol.expression.Literal);
-      expect(expr.evaluate({})).to.be(false);
+      expect(expr.evaluate()).to.be(false);
     });
 
     it('parses null literal expressions', function() {
       var expr = ol.expression.parse('null');
       expect(expr).to.be.a(ol.expression.Literal);
-      expect(expr.evaluate({})).to.be(null);
+      expect(expr.evaluate()).to.be(null);
     });
 
   });

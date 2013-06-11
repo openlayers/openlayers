@@ -29,8 +29,9 @@ ol.expression.Expression = function() {};
 /**
  * Evaluate the expression and return the result.
  *
- * @param {Object} scope Evaluation scope.  All properties of this object
- *     will be available as variables when evaluating the expression.
+ * @param {Object=} opt_scope Evaluation scope.  All properties of this object
+ *     will be available as variables when evaluating the expression.  If not
+ *     provided, `null` will be used.
  * @param {Object=} opt_fns Optional scope for looking up functions.  If not
  *     provided, functions will be looked in the evaluation scope.
  * @param {Object=} opt_this Object to use as this when evaluating call
@@ -71,8 +72,8 @@ goog.inherits(ol.expression.Call, ol.expression.Expression);
 /**
  * @inheritDoc
  */
-ol.expression.Call.prototype.evaluate = function(scope, opt_fns, opt_this) {
-  var fnScope = goog.isDefAndNotNull(opt_fns) ? opt_fns : scope;
+ol.expression.Call.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
+  var fnScope = goog.isDefAndNotNull(opt_fns) ? opt_fns : opt_scope;
   var fn = this.expr_.evaluate(fnScope);
   if (!fn || !goog.isFunction(fn)) {
     throw new Error('Expected function but found ' + fn);
@@ -82,7 +83,7 @@ ol.expression.Call.prototype.evaluate = function(scope, opt_fns, opt_this) {
   var len = this.args_.length;
   var values = new Array(len);
   for (var i = 0; i < len; ++i) {
-    values[i] = this.args_[i].evaluate(scope, opt_fns, opt_this);
+    values[i] = this.args_[i].evaluate(opt_scope, opt_fns, opt_this);
   }
   return fn.apply(thisArg, values);
 };
@@ -156,11 +157,11 @@ ol.expression.Comparison.isValidOp = (function() {
 /**
  * @inheritDoc
  */
-ol.expression.Comparison.prototype.evaluate = function(scope, opt_this,
+ol.expression.Comparison.prototype.evaluate = function(opt_scope, opt_this,
     opt_fns) {
   var result;
-  var rightVal = this.right_.evaluate(scope, opt_fns, opt_this);
-  var leftVal = this.left_.evaluate(scope, opt_fns, opt_this);
+  var rightVal = this.right_.evaluate(opt_scope, opt_fns, opt_this);
+  var leftVal = this.left_.evaluate(opt_scope, opt_fns, opt_this);
 
   switch (this.operator_) {
     case ol.expression.ComparisonOp.EQ:
@@ -217,8 +218,11 @@ goog.inherits(ol.expression.Identifier, ol.expression.Expression);
 /**
  * @inheritDoc
  */
-ol.expression.Identifier.prototype.evaluate = function(scope) {
-  return scope[this.name_];
+ol.expression.Identifier.prototype.evaluate = function(opt_scope) {
+  if (!goog.isDefAndNotNull(opt_scope)) {
+    throw new Error('Attempt to evaluate identifier with no scope');
+  }
+  return opt_scope[this.name_];
 };
 
 
@@ -312,10 +316,11 @@ ol.expression.Logical.isValidOp = (function() {
 /**
  * @inheritDoc
  */
-ol.expression.Logical.prototype.evaluate = function(scope, opt_fns, opt_this) {
+ol.expression.Logical.prototype.evaluate = function(opt_scope, opt_fns,
+    opt_this) {
   var result;
-  var rightVal = this.right_.evaluate(scope, opt_fns, opt_this);
-  var leftVal = this.left_.evaluate(scope, opt_fns, opt_this);
+  var rightVal = this.right_.evaluate(opt_scope, opt_fns, opt_this);
+  var leftVal = this.left_.evaluate(opt_scope, opt_fns, opt_this);
 
   if (this.operator_ === ol.expression.LogicalOp.AND) {
     result = leftVal && rightVal;
@@ -393,10 +398,10 @@ ol.expression.Math.isValidOp = (function() {
 /**
  * @inheritDoc
  */
-ol.expression.Math.prototype.evaluate = function(scope, opt_fns, opt_this) {
+ol.expression.Math.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
   var result;
-  var rightVal = this.right_.evaluate(scope, opt_fns, opt_this);
-  var leftVal = this.left_.evaluate(scope, opt_fns, opt_this);
+  var rightVal = this.right_.evaluate(opt_scope, opt_fns, opt_this);
+  var leftVal = this.left_.evaluate(opt_scope, opt_fns, opt_this);
   /**
    * TODO: throw if rightVal, leftVal not numbers - this would require the use
    * of a concat function for strings but it would let us serialize these as
@@ -457,8 +462,9 @@ goog.inherits(ol.expression.Member, ol.expression.Expression);
 /**
  * @inheritDoc
  */
-ol.expression.Member.prototype.evaluate = function(scope, opt_fns, opt_this) {
-  var obj = this.expr_.evaluate(scope, opt_fns, opt_this);
+ol.expression.Member.prototype.evaluate = function(opt_scope, opt_fns,
+    opt_this) {
+  var obj = this.expr_.evaluate(opt_scope, opt_fns, opt_this);
   if (!goog.isObject(obj)) {
     throw new Error('Expected member expression to evaluate to an object ' +
         'but got ' + obj);
@@ -490,6 +496,6 @@ goog.inherits(ol.expression.Not, ol.expression.Expression);
 /**
  * @inheritDoc
  */
-ol.expression.Not.prototype.evaluate = function(scope, opt_fns, opt_this) {
-  return !this.expr_.evaluate(scope, opt_fns, opt_this);
+ol.expression.Not.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
+  return !this.expr_.evaluate(opt_scope, opt_fns, opt_this);
 };

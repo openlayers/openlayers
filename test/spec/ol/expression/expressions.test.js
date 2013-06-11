@@ -250,22 +250,22 @@ describe('ol.expression.Literal', function() {
   describe('#evaluate()', function() {
     it('works for numeric literal', function() {
       var expr = new ol.expression.Literal(42e-11);
-      expect(expr.evaluate({})).to.be(4.2e-10);
+      expect(expr.evaluate()).to.be(4.2e-10);
     });
 
     it('works for string literal', function() {
       var expr = new ol.expression.Literal('asdf');
-      expect(expr.evaluate({})).to.be('asdf');
+      expect(expr.evaluate()).to.be('asdf');
     });
 
     it('works for boolean literal', function() {
       var expr = new ol.expression.Literal(true);
-      expect(expr.evaluate({})).to.be(true);
+      expect(expr.evaluate()).to.be(true);
     });
 
     it('works for null literal', function() {
       var expr = new ol.expression.Literal(null);
-      expect(expr.evaluate({})).to.be(null);
+      expect(expr.evaluate()).to.be(null);
     });
   });
 });
@@ -344,7 +344,7 @@ describe('ol.expression.Math', function() {
           new ol.expression.Literal(40),
           new ol.expression.Literal(2));
 
-      expect(expr.evaluate({})).to.be(42);
+      expect(expr.evaluate()).to.be(42);
     });
 
     it('does + with string literal (note: subject to change)', function() {
@@ -353,7 +353,7 @@ describe('ol.expression.Math', function() {
           new ol.expression.Literal('foo'),
           new ol.expression.Literal('bar'));
 
-      expect(expr.evaluate({})).to.be('foobar');
+      expect(expr.evaluate()).to.be('foobar');
     });
 
     it('does + with identifiers', function() {
@@ -480,30 +480,30 @@ describe('ol.expression.Not', function() {
   describe('#evaluate()', function() {
     it('returns the logical complement', function() {
       var expr = new ol.expression.Not(new ol.expression.Literal(true));
-      expect(expr.evaluate({})).to.be(false);
+      expect(expr.evaluate()).to.be(false);
 
       expr = new ol.expression.Not(new ol.expression.Literal(false));
-      expect(expr.evaluate({})).to.be(true);
+      expect(expr.evaluate()).to.be(true);
     });
 
     it('negates a truthy string', function() {
       var expr = new ol.expression.Not(new ol.expression.Literal('asdf'));
-      expect(expr.evaluate({})).to.be(false);
+      expect(expr.evaluate()).to.be(false);
     });
 
     it('negates a falsy string', function() {
       var expr = new ol.expression.Not(new ol.expression.Literal(''));
-      expect(expr.evaluate({})).to.be(true);
+      expect(expr.evaluate()).to.be(true);
     });
 
     it('negates a truthy number', function() {
       var expr = new ol.expression.Not(new ol.expression.Literal(42));
-      expect(expr.evaluate({})).to.be(false);
+      expect(expr.evaluate()).to.be(false);
     });
 
     it('negates a falsy number', function() {
       var expr = new ol.expression.Not(new ol.expression.Literal(NaN));
-      expect(expr.evaluate({})).to.be(true);
+      expect(expr.evaluate()).to.be(true);
     });
   });
 
