@@ -111,6 +111,26 @@ describe('ol.expression.parse', function() {
 
   });
 
+  describe('unary operators', function() {
+    // http://www.ecma-international.org/ecma-262/5.1/#sec-11.4
+
+    it('parses logical not operator', function() {
+      var expr = ol.expression.parse('!foo');
+      expect(expr).to.be.a(ol.expression.Not);
+      expect(expr.evaluate({foo: true})).to.be(false);
+      expect(expr.evaluate({foo: false})).to.be(true);
+      expect(expr.evaluate({foo: ''})).to.be(true);
+      expect(expr.evaluate({foo: 'foo'})).to.be(false);
+    });
+
+    it('consumes whitespace as expected', function() {
+      var expr = ol.expression.parse(' ! foo');
+      expect(expr).to.be.a(ol.expression.Not);
+      expect(expr.evaluate({foo: true})).to.be(false);
+      expect(expr.evaluate({foo: false})).to.be(true);
+    });
+
+  });
 
 });
 
@@ -119,3 +139,4 @@ goog.require('ol.expression');
 goog.require('ol.expression.Expression');
 goog.require('ol.expression.Identifier');
 goog.require('ol.expression.Literal');
+goog.require('ol.expression.Not');
