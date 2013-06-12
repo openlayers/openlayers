@@ -1,8 +1,8 @@
-goog.require('ol.Expression');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.control.defaults');
+goog.require('ol.expression');
 goog.require('ol.filter.Filter');
 goog.require('ol.filter.Geometry');
 goog.require('ol.geom.GeometryType');
@@ -24,7 +24,7 @@ var style = new ol.style.Style({rules: [
     }),
     symbolizers: [
       new ol.style.Line({
-        strokeColor: new ol.Expression('color'),
+        strokeColor: ol.expression.parse('color'),
         strokeWidth: 4,
         opacity: 1
       })
@@ -41,7 +41,7 @@ var style = new ol.style.Style({rules: [
         opacity: 1
       }),
       new ol.style.Line({
-        strokeColor: new ol.Expression('color'),
+        strokeColor: ol.expression.parse('color'),
         strokeWidth: 2,
         opacity: 1
       })

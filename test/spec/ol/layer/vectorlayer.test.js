@@ -107,7 +107,7 @@ describe('ol.layer.Vector', function() {
             symbolizers: [
               new ol.style.Line({
                 strokeWidth: 2,
-                strokeColor: new ol.Expression('colorProperty'),
+                strokeColor: ol.expression.parse('colorProperty'),
                 opacity: 1
               })
             ]
@@ -144,7 +144,7 @@ describe('ol.layer.Vector', function() {
     it('groups equal symbolizers also when defined on features', function() {
       var symbolizer = new ol.style.Line({
         strokeWidth: 3,
-        strokeColor: new ol.Expression('colorProperty'),
+        strokeColor: ol.expression.parse('colorProperty'),
         opacity: 1
       });
       var anotherSymbolizer = new ol.style.Line({
@@ -177,8 +177,8 @@ describe('ol.layer.Vector', function() {
 });
 
 goog.require('goog.dispose');
-goog.require('ol.Expression');
 goog.require('ol.Feature');
+goog.require('ol.expression');
 goog.require('ol.filter.Extent');
 goog.require('ol.filter.Geometry');
 goog.require('ol.filter.Logical');

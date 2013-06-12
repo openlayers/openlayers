@@ -519,34 +519,35 @@
 
 /**
  * @typedef {Object} ol.style.IconOptions
- * @property {string|ol.Expression} url Icon image url.
- * @property {number|ol.Expression|undefined} width Width of the icon in pixels.
- *     Default is the width of the icon image.
- * @property {number|ol.Expression|undefined} height Height of the icon in
- *     pixels. Default is the height of the icon image.
- * @property {number|ol.Expression|undefined} opacity Icon opacity (0-1).
- * @property {number|ol.Expression|undefined} rotation Rotation in degrees
- *     (0-360).
+ * @property {string|ol.expression.Expression} url Icon image url.
+ * @property {number|ol.expression.Expression|undefined} width Width of the icon
+ *     in pixels.  Default is the width of the icon image.
+ * @property {number|ol.expression.Expression|undefined} height Height of the
+ *     icon in pixels. Default is the height of the icon image.
+ * @property {number|ol.expression.Expression|undefined} opacity Icon opacity
+ *     (0-1).
+ * @property {number|ol.expression.Expression|undefined} rotation Rotation in
+ *     degrees (0-360).
  */
 
 /**
  * @typedef {Object} ol.style.LineOptions
- * @property {string|ol.Expression|undefined} strokeColor Stroke color as hex
- *     color code.
- * @property {number|ol.Expression|undefined} strokeWidth Stroke width in
- *     pixels.
- * @property {number|ol.Expression|undefined} opacity Opacity (0-1).
+ * @property {string|ol.expression.Expression|undefined} strokeColor Stroke
+ *     color as hex color code.
+ * @property {number|ol.expression.Expression|undefined} strokeWidth Stroke
+ *     width in pixels.
+ * @property {number|ol.expression.Expression|undefined} opacity Opacity (0-1).
  */
 
 /**
  * @typedef {Object} ol.style.PolygonOptions
- * @property {string|ol.Expression|undefined} fillColor Fill color as hex color
- *     code.
- * @property {string|ol.Expression|undefined} strokeColor Stroke color as hex
- *     color code.
- * @property {number|ol.Expression|undefined} strokeWidth Stroke width in
- *     pixels.
- * @property {number|ol.Expression|undefined} opacity Opacity (0-1).
+ * @property {string|ol.expression.Expression|undefined} fillColor Fill color as
+ *     hex color code.
+ * @property {string|ol.expression.Expression|undefined} strokeColor Stroke
+ *     color as hex color code.
+ * @property {number|ol.expression.Expression|undefined} strokeWidth Stroke
+ *     width in pixels.
+ * @property {number|ol.expression.Expression|undefined} opacity Opacity (0-1).
  */
 
 /**
@@ -558,14 +559,14 @@
 /**
  * @typedef {Object} ol.style.ShapeOptions
  * @property {ol.style.ShapeType|undefined} type Type.
- * @property {number|ol.Expression|undefined} size Size in pixels.
- * @property {string|ol.Expression|undefined} fillColor Fill color as hex color
- *     code.
- * @property {string|ol.Expression|undefined} strokeColor Stroke color as hex
- *     color code.
- * @property {number|ol.Expression|undefined} strokeWidth Stroke width in
- *     pixels.
- * @property {number|ol.Expression|undefined} opacity Opacity (0-1).
+ * @property {number|ol.expression.Expression|undefined} size Size in pixels.
+ * @property {string|ol.expression.Expression|undefined} fillColor Fill color as
+ *     hex color code.
+ * @property {string|ol.expression.Expression|undefined} strokeColor Stroke
+ *     color as hex color code.
+ * @property {number|ol.expression.Expression|undefined} strokeWidth Stroke
+ *     width in pixels.
+ * @property {number|ol.expression.Expression|undefined} opacity Opacity (0-1).
  */
 
 /**
