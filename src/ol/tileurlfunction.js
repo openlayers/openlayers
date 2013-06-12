@@ -73,14 +73,14 @@ ol.TileURLFunction.createFromTileURLFunctions = function(tileURLFunctions) {
 
 
 /**
- * @param {string} baseUrl Base URL (may have query data).
+ * @param {string} baseURL Base URL (may have query data).
  * @param {Object.<string,*>} params to encode in the url.
  * @param {function(this: ol.source.ImageTileSource, string, Object.<string,*>,
  *     ol.Extent, ol.Size, ol.Projection)} paramsFunction params function.
  * @return {ol.TileURLFunctionType} Tile URL function.
  */
 ol.TileURLFunction.createFromParamsFunction =
-    function(baseUrl, params, paramsFunction) {
+    function(baseURL, params, paramsFunction) {
   var tmpExtent = ol.extent.createEmpty();
   return (
       /**
@@ -98,7 +98,7 @@ ol.TileURLFunction.createFromParamsFunction =
           }
           var size = tileGrid.getTileSize(tileCoord.z);
           var extent = tileGrid.getTileCoordExtent(tileCoord, tmpExtent);
-          return paramsFunction.call(this, baseUrl, params,
+          return paramsFunction.call(this, baseURL, params,
               extent, size, projection);
         }
       });
