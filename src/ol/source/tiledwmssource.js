@@ -5,7 +5,7 @@ goog.provide('ol.source.TiledWMS');
 goog.require('goog.array');
 goog.require('goog.math');
 goog.require('ol.TileCoord');
-goog.require('ol.TileUrlFunction');
+goog.require('ol.TileURLFunction');
 goog.require('ol.extent');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.source.wms');
@@ -23,19 +23,19 @@ ol.source.TiledWMS = function(options) {
     tileGrid = options.tileGrid;
   }
 
-  var tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
+  var tileURLFunction = ol.TileURLFunction.nullTileURLFunction;
   var urls = options.urls;
   if (!goog.isDef(urls) && goog.isDef(options.url)) {
-    urls = ol.TileUrlFunction.expandUrl(options.url);
+    urls = ol.TileURLFunction.expandUrl(options.url);
   }
   if (goog.isDef(urls)) {
-    var tileUrlFunctions = goog.array.map(
+    var tileURLFunctions = goog.array.map(
         urls, function(url) {
-          return ol.TileUrlFunction.createFromParamsFunction(
+          return ol.TileURLFunction.createFromParamsFunction(
               url, options.params, ol.source.wms.getUrl);
         });
-    tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
-        tileUrlFunctions);
+    tileURLFunction = ol.TileURLFunction.createFromTileURLFunctions(
+        tileURLFunctions);
   }
 
   var transparent = goog.isDef(options.params['TRANSPARENT']) ?
@@ -77,8 +77,8 @@ ol.source.TiledWMS = function(options) {
     tileGrid: options.tileGrid,
     opaque: !transparent,
     projection: options.projection,
-    tileUrlFunction: ol.TileUrlFunction.withTileCoordTransform(
-        tileCoordTransform, tileUrlFunction)
+    tileURLFunction: ol.TileURLFunction.withTileCoordTransform(
+        tileCoordTransform, tileURLFunction)
   });
 
 };

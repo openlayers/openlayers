@@ -7,8 +7,8 @@ goog.require('goog.math');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
 goog.require('ol.TileCoord');
-goog.require('ol.TileUrlFunction');
-goog.require('ol.TileUrlFunctionType');
+goog.require('ol.TileURLFunction');
+goog.require('ol.TileURLFunctionType');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.ImageTileSource');
@@ -70,7 +70,7 @@ ol.source.WMTS = function(options) {
 
   /**
    * @param {string} template Template.
-   * @return {ol.TileUrlFunctionType} Tile URL function.
+   * @return {ol.TileURLFunctionType} Tile URL function.
    */
   function createFromWMTSTemplate(template) {
     return (
@@ -101,13 +101,13 @@ ol.source.WMTS = function(options) {
         });
   }
 
-  var tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
+  var tileURLFunction = ol.TileURLFunction.nullTileURLFunction;
   var urls = options.urls;
   if (!goog.isDef(urls) && goog.isDef(options.url)) {
-    urls = ol.TileUrlFunction.expandUrl(options.url);
+    urls = ol.TileURLFunction.expandUrl(options.url);
   }
   if (goog.isDef(urls)) {
-    tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
+    tileURLFunction = ol.TileURLFunction.createFromTileURLFunctions(
         goog.array.map(urls, function(url) {
           if (goog.isDef(kvpParams)) {
             // TODO: we may want to create our own appendParams function
@@ -121,7 +121,7 @@ ol.source.WMTS = function(options) {
 
   var tmpExtent = ol.extent.createEmpty();
   var tmpTileCoord = new ol.TileCoord(0, 0, 0);
-  tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
+  tileURLFunction = ol.TileURLFunction.withTileCoordTransform(
       function(tileCoord, projection) {
         var tileGrid = this.getTileGrid();
         goog.asserts.assert(!goog.isNull(tileGrid));
@@ -151,7 +151,7 @@ ol.source.WMTS = function(options) {
         }
         return new ol.TileCoord(tileCoord.z, x, y);
       },
-      tileUrlFunction);
+      tileURLFunction);
 
   goog.base(this, {
     attributions: options.attributions,
@@ -159,7 +159,7 @@ ol.source.WMTS = function(options) {
     extent: options.extent,
     projection: options.projection,
     tileGrid: tileGrid,
-    tileUrlFunction: tileUrlFunction
+    tileURLFunction: tileURLFunction
   });
 
 };
