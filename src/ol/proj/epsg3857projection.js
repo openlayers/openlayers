@@ -140,7 +140,6 @@ ol.proj.EPSG3857.toEPSG4326 = function(input, opt_output, opt_dimension) {
 /**
  * @inheritDoc
  */
-ol.proj.EPSG3857.prototype.getPointResolution =
-    function(resolution, point) {
+ol.proj.EPSG3857.prototype.getPointResolution = function(resolution, point) {
   return resolution / ol.math.cosh(point[1] / ol.proj.EPSG3857.RADIUS);
 };
