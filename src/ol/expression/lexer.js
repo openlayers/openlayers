@@ -458,7 +458,7 @@ ol.expression.Lexer.prototype.peek = function() {
  */
 ol.expression.Lexer.prototype.scanHexLiteral_ = function(code) {
   var str = '';
-  var start = this.index_;
+  var start = this.index_ - 2;
 
   while (this.index_ < this.length_) {
     if (!this.isHexDigit_(code)) {
@@ -659,7 +659,7 @@ ol.expression.Lexer.prototype.scanOctalLiteral_ = function(code) {
   goog.asserts.assert(this.isOctalDigit_(code));
 
   var str = '0' + String.fromCharCode(code);
-  var start = this.index_;
+  var start = this.index_ - 1;
   this.increment_(1);
 
   while (this.index_ < this.length_) {
@@ -677,7 +677,7 @@ ol.expression.Lexer.prototype.scanOctalLiteral_ = function(code) {
     throw new ol.expression.UnexpectedToken({
       type: ol.expression.TokenType.UNKNOWN,
       value: String.fromCharCode(code),
-      index: this.index_ - 1
+      index: this.index_
     });
   }
 
@@ -812,10 +812,10 @@ ol.expression.Lexer.prototype.scanStringLiteral_ = function(quote) {
       quote === ol.expression.Char.DOUBLE_QUOTE,
       'Strings must start with a quote: ' + String.fromCharCode(quote));
 
+  var start = this.index_;
   this.increment_(1);
 
   var str = '';
-  var start = this.index_;
   var code;
   while (this.index_ < this.length_) {
     code = this.getCurrentCharCode_();

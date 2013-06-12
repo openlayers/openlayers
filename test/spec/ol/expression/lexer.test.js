@@ -97,6 +97,7 @@ describe('ol.expression.Lexer', function() {
       var lexer = new ol.expression.Lexer(source);
       var token = lexer.scanIdentifier_(lexer.getCurrentCharCode_());
       if (!part) {
+        expect(token.index).to.be(0);
         expect(lexer.peek().type).to.be(ol.expression.TokenType.EOF);
       }
       return token;
@@ -187,6 +188,7 @@ describe('ol.expression.Lexer', function() {
     function scan(source) {
       var lexer = new ol.expression.Lexer(source);
       var token = lexer.scanNumericLiteral_(lexer.getCurrentCharCode_());
+      expect(token.index).to.be(0);
       expect(lexer.peek().type).to.be(ol.expression.TokenType.EOF);
       return token;
     }
@@ -197,10 +199,32 @@ describe('ol.expression.Lexer', function() {
       expect(token.type).to.be(ol.expression.TokenType.NUMERIC_LITERAL);
     });
 
+    it('throws for bogus integer', function() {
+      expect(function() {
+        scan('123z');
+      }).throwException(function(err) {
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        var token = err.token;
+        expect(token.value).to.be('z');
+        expect(token.index).to.be(3);
+      });
+    });
+
     it('works for float', function() {
       var token = scan('123.456');
       expect(token.value).to.be(123.456);
       expect(token.type).to.be(ol.expression.TokenType.NUMERIC_LITERAL);
+    });
+
+    it('throws for bogus float', function() {
+      expect(function() {
+        scan('123.4x4');
+      }).throwException(function(err) {
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        var token = err.token;
+        expect(token.value).to.be('x');
+        expect(token.index).to.be(5);
+      });
     });
 
     it('works with exponent', function() {
@@ -221,16 +245,51 @@ describe('ol.expression.Lexer', function() {
       expect(token.type).to.be(ol.expression.TokenType.NUMERIC_LITERAL);
     });
 
+    it('throws for bogus float', function() {
+      expect(function() {
+        scan('1.234eo4');
+      }).throwException(function(err) {
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        var token = err.token;
+        expect(token.value).to.be('o');
+        expect(token.index).to.be(6);
+      });
+    });
+
     it('works with octals', function() {
       var token = scan('02322');
       expect(token.value).to.be(1234);
       expect(token.type).to.be(ol.expression.TokenType.NUMERIC_LITERAL);
     });
 
+    it('throws for bogus octal', function() {
+      // note that this is more strict than most es5 engines
+      expect(function() {
+        scan('02392');
+      }).throwException(function(err) {
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        var token = err.token;
+        expect(token.value).to.be('9');
+        expect(token.index).to.be(3);
+      });
+    });
+
     it('works with hex', function() {
       var token = scan('0x4d2');
       expect(token.value).to.be(1234);
       expect(token.type).to.be(ol.expression.TokenType.NUMERIC_LITERAL);
+    });
+
+    it('throws for bogus hex', function() {
+      // note that this is more strict than most es5 engines
+      expect(function() {
+        scan('0x4G');
+      }).throwException(function(err) {
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        var token = err.token;
+        expect(token.value).to.be('G');
+        expect(token.index).to.be(3);
+      });
     });
 
   });
@@ -240,6 +299,7 @@ describe('ol.expression.Lexer', function() {
     function scan(source) {
       var lexer = new ol.expression.Lexer(source);
       var token = lexer.scanPunctuator_(lexer.getCurrentCharCode_());
+      expect(token.index).to.be(0);
       expect(lexer.peek().type).to.be(ol.expression.TokenType.EOF);
       return token;
     }
@@ -329,6 +389,7 @@ describe('ol.expression.Lexer', function() {
     function scan(source) {
       var lexer = new ol.expression.Lexer(source);
       var token = lexer.scanStringLiteral_(lexer.getCurrentCharCode_());
+      expect(token.index).to.be(0);
       expect(lexer.peek().type).to.be(ol.expression.TokenType.EOF);
       return token;
     }
