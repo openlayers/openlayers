@@ -27,9 +27,8 @@ describe('ol.expression.parse', function() {
       expect(function() {
         ol.expression.parse('3foo');
       }).throwException(function(err) {
-        expect(err).to.be.an(Error);
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
         var token = err.token;
-        expect(token).not.to.be(undefined);
         expect(token.value).to.be('f');
         expect(token.index).to.be(1);
       });
@@ -45,9 +44,8 @@ describe('ol.expression.parse', function() {
       expect(function() {
         ol.expression.parse('"foo');
       }).throwException(function(err) {
-        expect(err).to.be.an(Error);
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
         var token = err.token;
-        expect(token).not.to.be(undefined);
         expect(token.type).to.be(ol.expression.TokenType.EOF);
         expect(token.index).to.be(4);
       });
@@ -63,9 +61,8 @@ describe('ol.expression.parse', function() {
       expect(function() {
         ol.expression.parse('.42eX');
       }).throwException(function(err) {
-        expect(err).to.be.an(Error);
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
         var token = err.token;
-        expect(token).not.to.be(undefined);
         expect(token.value).to.be('X');
         expect(token.index).to.be(4);
       });
@@ -106,9 +103,8 @@ describe('ol.expression.parse', function() {
       expect(function() {
         ol.expression.parse('foo.4bar');
       }).throwException(function(err) {
-        expect(err).to.be.an(Error);
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
         var token = err.token;
-        expect(token).not.to.be(undefined);
         expect(token.value).to.be('b');
         expect(token.index).to.be(5);
       });
@@ -131,9 +127,8 @@ describe('ol.expression.parse', function() {
       expect(function() {
         ol.expression.parse('foo(42,)');
       }).throwException(function(err) {
-        expect(err).to.be.an(Error);
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
         var token = err.token;
-        expect(token).not.to.be(undefined);
         expect(token.value).to.be(')');
         expect(token.index).to.be(7);
       });
@@ -294,9 +289,8 @@ describe('ol.expression.parse', function() {
       expect(function() {
         ol.expression.parse(' foo< = 10 ');
       }).throwException(function(err) {
-        expect(err).to.be.an(Error);
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
         var token = err.token;
-        expect(token).not.to.be(undefined);
         expect(token.value).to.be('=');
         expect(token.index).to.be(6);
       });
@@ -322,9 +316,8 @@ describe('ol.expression.parse', function() {
       expect(function() {
         ol.expression.parse(' 10 > =foo ');
       }).throwException(function(err) {
-        expect(err).to.be.an(Error);
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
         var token = err.token;
-        expect(token).not.to.be(undefined);
         expect(token.value).to.be('=');
         expect(token.index).to.be(6);
       });
@@ -355,9 +348,8 @@ describe('ol.expression.parse', function() {
       expect(function() {
         ol.expression.parse(' 10 = =foo ');
       }).throwException(function(err) {
-        expect(err).to.be.an(Error);
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
         var token = err.token;
-        expect(token).not.to.be(undefined);
         expect(token.value).to.be('=');
         expect(token.index).to.be(4);
       });
@@ -383,9 +375,8 @@ describe('ol.expression.parse', function() {
       expect(function() {
         ol.expression.parse(' 10! =foo ');
       }).throwException(function(err) {
-        expect(err).to.be.an(Error);
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
         var token = err.token;
-        expect(token).not.to.be(undefined);
         expect(token.value).to.be('!');
         expect(token.index).to.be(3);
       });
@@ -411,9 +402,8 @@ describe('ol.expression.parse', function() {
       expect(function() {
         ol.expression.parse(' 10 = == foo ');
       }).throwException(function(err) {
-        expect(err).to.be.an(Error);
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
         var token = err.token;
-        expect(token).not.to.be(undefined);
         expect(token.value).to.be('=');
         expect(token.index).to.be(4);
       });
@@ -439,9 +429,8 @@ describe('ol.expression.parse', function() {
       expect(function() {
         ol.expression.parse(' 10 != = foo ');
       }).throwException(function(err) {
-        expect(err).to.be.an(Error);
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
         var token = err.token;
-        expect(token).not.to.be(undefined);
         expect(token.value).to.be('=');
         expect(token.index).to.be(7);
       });
@@ -478,9 +467,8 @@ describe('ol.expression.parse', function() {
       expect(function() {
         ol.expression.parse('true & & false');
       }).throwException(function(err) {
-        expect(err).to.be.an(Error);
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
         var token = err.token;
-        expect(token).not.to.be(undefined);
         expect(token.value).to.be('&');
         expect(token.index).to.be(5);
       });
@@ -508,9 +496,8 @@ describe('ol.expression.parse', function() {
       expect(function() {
         ol.expression.parse('true | | false');
       }).throwException(function(err) {
-        expect(err).to.be.an(Error);
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
         var token = err.token;
-        expect(token).not.to.be(undefined);
         expect(token.value).to.be('|');
         expect(token.index).to.be(5);
       });

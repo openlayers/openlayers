@@ -379,9 +379,8 @@ describe('ol.expression.Lexer', function() {
       expect(function() {
         scan('"never \'ending\' string');
       }).to.throwException(function(err) {
-        expect(err).to.be.an(Error);
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
         var token = err.token;
-        expect(token).not.to.be(undefined);
         expect(token.type).to.be(ol.expression.TokenType.EOF);
         expect(token.index).to.be(22);
       });
@@ -433,9 +432,8 @@ describe('ol.expression.Lexer', function() {
       expect(function() {
         scan('\'never "ending" string');
       }).to.throwException(function(err) {
-        expect(err).to.be.an(Error);
+        expect(err).to.be.an(ol.expression.UnexpectedToken);
         var token = err.token;
-        expect(token).not.to.be(undefined);
         expect(token.type).to.be(ol.expression.TokenType.EOF);
         expect(token.index).to.be(22);
       });
@@ -447,3 +445,4 @@ describe('ol.expression.Lexer', function() {
 
 goog.require('ol.expression.Lexer');
 goog.require('ol.expression.TokenType');
+goog.require('ol.expression.UnexpectedToken');
