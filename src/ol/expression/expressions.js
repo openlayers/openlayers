@@ -14,8 +14,8 @@ goog.provide('ol.expression.Not');
 
 
 /**
- * Base class for all expressions.  Instances of ol.Expression correspond to
- * a limited set of ECMAScript 5.1 expressions.
+ * Base class for all expressions.  Instances of ol.expression.Expression
+ * correspond to a limited set of ECMAScript 5.1 expressions.
  * http://www.ecma-international.org/ecma-262/5.1/#sec-11
  *
  * This base class should not be constructed directly.  Instead, use one of
@@ -175,8 +175,8 @@ ol.expression.Comparison.isValidOp = (function() {
 /**
  * @inheritDoc
  */
-ol.expression.Comparison.prototype.evaluate = function(opt_scope, opt_this,
-    opt_fns) {
+ol.expression.Comparison.prototype.evaluate = function(opt_scope, opt_fns,
+    opt_this) {
   var result;
   var rightVal = this.right_.evaluate(opt_scope, opt_fns, opt_this);
   var leftVal = this.left_.evaluate(opt_scope, opt_fns, opt_this);
