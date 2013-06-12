@@ -9,8 +9,8 @@ goog.require('ol.MapEventType');
 
 
 /**
- * A thing which is painted over the map to provide a means for interaction
- * (buttons) of show annotations (status bars).
+ * Something to be painted over the map to provide a means for interaction
+ * (buttons) or to show annotations (status bars).
  *
  * @constructor
  * @extends {goog.Disposable}
@@ -63,6 +63,7 @@ ol.control.Control.prototype.disposeInternal = function() {
 
 
 /**
+ * Get the map associated with this control.
  * @return {ol.Map} Map.
  */
 ol.control.Control.prototype.getMap = function() {

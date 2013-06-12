@@ -30,6 +30,18 @@ ol.control.ScaleLineUnits = {
 
 
 /**
+ * Create a control to help users estimate distances on a map.
+ *
+ * Example:
+ *
+ *     var map = new ol.Map({
+ *       controls: ol.control.defaults({}, [
+ *         new ol.control.ScaleLine({
+ *           units: ol.control.ScaleLineUnits.IMPERIAL
+ *         })
+ *       ]),
+ *       ...
+ *
  * @constructor
  * @extends {ol.control.Control}
  * @param {ol.control.ScaleLineOptions=} opt_options Scale line options.

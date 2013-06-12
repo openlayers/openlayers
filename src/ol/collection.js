@@ -53,6 +53,7 @@ ol.CollectionProperty = {
 
 
 /**
+ * A mutable MVC Array.
  * @constructor
  * @extends {ol.Object}
  * @param {Array=} opt_array Array.
@@ -95,8 +96,12 @@ ol.Collection.prototype.extend = function(arr) {
 
 
 /**
- * @param {Function} f Function.
- * @param {Object=} opt_obj Object.
+ * Iterate over each element, calling the provided callback.
+ * @param {Function} f The function to call for every element. This function
+ *     takes 3 arguments (the element, the index and the array). The return
+ *     value is ignored.
+ * @param {Object=} opt_obj The object to be used as the value of 'this'
+ *     within f.
  */
 ol.Collection.prototype.forEach = function(f, opt_obj) {
   goog.array.forEach(this.array_, f, opt_obj);
@@ -112,6 +117,7 @@ ol.Collection.prototype.getArray = function() {
 
 
 /**
+ * Get the element at the provided index.
  * @param {number} index Index.
  * @return {*} Element.
  */
@@ -121,6 +127,7 @@ ol.Collection.prototype.getAt = function(index) {
 
 
 /**
+ * Get the length of this collection.
  * @return {number} Length.
  */
 ol.Collection.prototype.getLength = function() {
@@ -129,6 +136,7 @@ ol.Collection.prototype.getLength = function() {
 
 
 /**
+ * Insert an element at the provided index.
  * @param {number} index Index.
  * @param {*} elem Element.
  */
@@ -141,6 +149,7 @@ ol.Collection.prototype.insertAt = function(index, elem) {
 
 
 /**
+ * Remove the last element of the collection.
  * @return {*} Element.
  */
 ol.Collection.prototype.pop = function() {
@@ -149,6 +158,7 @@ ol.Collection.prototype.pop = function() {
 
 
 /**
+ * Insert the provided element at the end of the collection.
  * @param {*} elem Element.
  * @return {number} Length.
  */
@@ -177,6 +187,7 @@ ol.Collection.prototype.remove = function(elem) {
 
 
 /**
+ * Remove the element at the provided index.
  * @param {number} index Index.
  * @return {*} Value.
  */
@@ -191,6 +202,7 @@ ol.Collection.prototype.removeAt = function(index) {
 
 
 /**
+ * Set the element at the provided index.
  * @param {number} index Index.
  * @param {*} elem Element.
  */

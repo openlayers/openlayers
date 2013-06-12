@@ -4,6 +4,16 @@ goog.provide('ol.ExpressionLiteral');
 
 
 /**
+ * Create a new expression. Expressions are used for instance to bind
+ * symbolizer properties to feature attributes.
+ *
+ * Example:
+ *
+ *     // take the color from the color attribute
+ *     color: new ol.Expression('color');
+ *     // take the strokeWidth from the width attribute and multiply by 2.
+ *     strokeWidth: new ol.Expression('width*2');
+ *
  * @constructor
  * @param {string} source Expression to be evaluated.
  */

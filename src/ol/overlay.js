@@ -37,6 +37,16 @@ ol.OverlayPositioning = {
 
 
 /**
+ * An element to show on top of the map, such as for a popup.
+ *
+ * Example:
+ *
+ *     var popup = new ol.Overlay({
+ *       map: map,
+ *       element: document.getElementById('popup')
+ *     });
+ *     popup.setPosition(coordinate);
+ *
  * @constructor
  * @extends {ol.Object}
  * @param {ol.OverlayOptions} options Overlay options.
@@ -103,6 +113,7 @@ goog.inherits(ol.Overlay, ol.Object);
 
 
 /**
+ * Get the DOM element of this overlay.
  * @return {Element|undefined} Element.
  */
 ol.Overlay.prototype.getElement = function() {
@@ -116,6 +127,7 @@ goog.exportProperty(
 
 
 /**
+ * Get the map associated with this overlay.
  * @return {ol.Map|undefined} Map.
  */
 ol.Overlay.prototype.getMap = function() {
@@ -129,6 +141,7 @@ goog.exportProperty(
 
 
 /**
+ * Get the current position of this overlay.
  * @return {ol.Coordinate|undefined} Position.
  */
 ol.Overlay.prototype.getPosition = function() {
@@ -142,6 +155,7 @@ goog.exportProperty(
 
 
 /**
+ * Get the current positioning of this overlay.
  * @return {ol.OverlayPositioning|undefined} Positioning.
  */
 ol.Overlay.prototype.getPositioning = function() {
@@ -211,6 +225,7 @@ ol.Overlay.prototype.handlePositioningChanged = function() {
 
 
 /**
+ * Set the DOM element to be associated with this overlay.
  * @param {Element|undefined} element Element.
  */
 ol.Overlay.prototype.setElement = function(element) {
@@ -223,6 +238,7 @@ goog.exportProperty(
 
 
 /**
+ * Set the map to be associated with this overlay.
  * @param {ol.Map|undefined} map Map.
  */
 ol.Overlay.prototype.setMap = function(map) {
@@ -235,6 +251,7 @@ goog.exportProperty(
 
 
 /**
+ * Set the position for this overlay.
  * @param {ol.Coordinate|undefined} position Position.
  */
 ol.Overlay.prototype.setPosition = function(position) {
