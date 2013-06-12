@@ -219,7 +219,13 @@ ol.expression.Parser.prototype.createUnaryExpression_ = function(op, expr) {
  */
 ol.expression.Parser.prototype.parse = function(source) {
   var lexer = new ol.expression.Lexer(source);
-  return this.parseExpression_(lexer);
+  var expr = this.parseExpression_(lexer);
+  var token = lexer.peek();
+  if (token.type !== ol.expression.TokenType.EOF) {
+    // TODO: token.index
+    throw new Error('Unexpected token: ' + token.value);
+  }
+  return expr;
 };
 
 

@@ -279,6 +279,98 @@ describe('ol.expression.parse', function() {
 
   });
 
+  describe('equality operators', function() {
+    // http://www.ecma-international.org/ecma-262/5.1/#sec-11.9
+
+    it('parses == operator', function() {
+      var expr = ol.expression.parse('foo==42');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate({foo: 42})).to.be(true);
+      expect(expr.evaluate({foo: 41})).to.be(false);
+      expect(expr.evaluate({foo: '42'})).to.be(true);
+    });
+
+    it('consumes whitespace as expected with ==', function() {
+      var expr = ol.expression.parse(' 42 ==foo ');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate({foo: 42})).to.be(true);
+      expect(expr.evaluate({foo: 41})).to.be(false);
+      expect(expr.evaluate({foo: '42'})).to.be(true);
+    });
+
+    it('throws for invalid spacing with ==', function() {
+      expect(function() {
+        ol.expression.parse(' 10 = =foo ');
+      }).throwException();
+    });
+
+    it('parses != operator', function() {
+      var expr = ol.expression.parse('foo!=42');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate({foo: 42})).to.be(false);
+      expect(expr.evaluate({foo: 41})).to.be(true);
+      expect(expr.evaluate({foo: '42'})).to.be(false);
+    });
+
+    it('consumes whitespace as expected with !=', function() {
+      var expr = ol.expression.parse(' 42 !=foo ');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate({foo: 42})).to.be(false);
+      expect(expr.evaluate({foo: 41})).to.be(true);
+      expect(expr.evaluate({foo: '42'})).to.be(false);
+    });
+
+    it('throws for invalid spacing with !=', function() {
+      expect(function() {
+        ol.expression.parse(' 10! =foo ');
+      }).throwException();
+    });
+
+    it('parses === operator', function() {
+      var expr = ol.expression.parse('42===foo');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate({foo: 42})).to.be(true);
+      expect(expr.evaluate({foo: 41})).to.be(false);
+      expect(expr.evaluate({foo: '42'})).to.be(false);
+    });
+
+    it('consumes whitespace as expected with ===', function() {
+      var expr = ol.expression.parse(' foo ===42 ');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate({foo: 42})).to.be(true);
+      expect(expr.evaluate({foo: 41})).to.be(false);
+      expect(expr.evaluate({foo: '42'})).to.be(false);
+    });
+
+    it('throws for invalid spacing with ===', function() {
+      expect(function() {
+        ol.expression.parse(' 10 = == foo ');
+      }).throwException();
+    });
+
+    it('parses !== operator', function() {
+      var expr = ol.expression.parse('foo!==42');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate({foo: 42})).to.be(false);
+      expect(expr.evaluate({foo: 41})).to.be(true);
+      expect(expr.evaluate({foo: '42'})).to.be(true);
+    });
+
+    it('consumes whitespace as expected with !==', function() {
+      var expr = ol.expression.parse(' 42 !== foo ');
+      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr.evaluate({foo: 42})).to.be(false);
+      expect(expr.evaluate({foo: 41})).to.be(true);
+      expect(expr.evaluate({foo: '42'})).to.be(true);
+    });
+
+    it('throws for invalid spacing with !==', function() {
+      expect(function() {
+        ol.expression.parse(' 10 != = foo ');
+      }).throwException();
+    });
+  });
+
 });
 
 
