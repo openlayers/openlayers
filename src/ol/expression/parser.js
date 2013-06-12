@@ -148,13 +148,13 @@ ol.expression.Parser.prototype.createBinaryExpression_ = function(operator,
 /**
  * Create a call expression.
  *
- * @param {ol.expression.Identifier} expr Identifier expression for function.
+ * @param {ol.expression.Expression} callee Expression for function.
  * @param {Array.<ol.expression.Expression>} args Arguments array.
  * @return {ol.expression.Call} Call expression.
  * @private
  */
-ol.expression.Parser.prototype.createCallExpression_ = function(expr, args) {
-  return new ol.expression.Call(expr, args);
+ol.expression.Parser.prototype.createCallExpression_ = function(callee, args) {
+  return new ol.expression.Call(callee, args);
 };
 
 
@@ -186,14 +186,14 @@ ol.expression.Parser.prototype.createLiteral_ = function(value) {
  * Create a member expression.
  *
  * // TODO: make exp {ol.expression.Member|ol.expression.Identifier}
- * @param {ol.expression.Expression} expr Expression.
+ * @param {ol.expression.Expression} object Expression.
  * @param {ol.expression.Identifier} property Member name.
  * @return {ol.expression.Member} The member expression.
  * @private
  */
-ol.expression.Parser.prototype.createMemberExpression_ = function(expr,
+ol.expression.Parser.prototype.createMemberExpression_ = function(object,
     property) {
-  return new ol.expression.Member(expr, property);
+  return new ol.expression.Member(object, property);
 };
 
 
@@ -201,13 +201,13 @@ ol.expression.Parser.prototype.createMemberExpression_ = function(expr,
  * Create a unary expression.
  *
  * @param {string} op Operator.
- * @param {ol.expression.Expression} expr Expression.
+ * @param {ol.expression.Expression} argument Expression.
  * @return {ol.expression.Not} The logical not of the input expression.
  * @private
  */
-ol.expression.Parser.prototype.createUnaryExpression_ = function(op, expr) {
+ol.expression.Parser.prototype.createUnaryExpression_ = function(op, argument) {
   goog.asserts.assert(op === '!');
-  return new ol.expression.Not(expr);
+  return new ol.expression.Not(argument);
 };
 
 
@@ -222,8 +222,7 @@ ol.expression.Parser.prototype.parse = function(source) {
   var expr = this.parseExpression_(lexer);
   var token = lexer.peek();
   if (token.type !== ol.expression.TokenType.EOF) {
-    // TODO: token.index
-    throw new Error('Unexpected token: ' + token.value);
+    lexer.throwUnexpected(token);
   }
   return expr;
 };
@@ -353,9 +352,8 @@ ol.expression.Parser.prototype.parseLeftHandSideExpression_ = function(lexer) {
   if (token.value === '(') {
     // only allow calls on identifiers (e.g. `foo()` not `foo.bar()`)
     if (!(expr instanceof ol.expression.Identifier)) {
-      // TODO: token.index
       // TODO: more helpful error messages for restricted syntax
-      throw new Error('Unexpected token: (');
+      lexer.throwUnexpected(token);
     }
     var args = this.parseArguments_(lexer);
     expr = this.createCallExpression_(expr, args);
@@ -387,8 +385,7 @@ ol.expression.Parser.prototype.parseNonComputedMember_ = function(lexer) {
       token.type !== ol.expression.TokenType.KEYWORD &&
       token.type !== ol.expression.TokenType.BOOLEAN_LITERAL &&
       token.type !== ol.expression.TokenType.NULL_LITERAL) {
-    // TODO: token.index
-    throw new Error('Unexpected token: ' + token.value);
+    lexer.throwUnexpected(token);
   }
 
   return this.createIdentifier_(String(token.value));
@@ -423,8 +420,10 @@ ol.expression.Parser.prototype.parsePrimaryExpression_ = function(lexer) {
   } else if (type === ol.expression.TokenType.NULL_LITERAL) {
     expr = this.createLiteral_(null);
   } else {
-    throw new Error('Unexpected token: ' + token.value);
+    lexer.throwUnexpected(token);
   }
+  // the compiler doesn't recognize that we have covered all cases here
+  goog.asserts.assert(goog.isDef(expr));
   return expr;
 };
 

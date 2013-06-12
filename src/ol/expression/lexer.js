@@ -82,13 +82,15 @@ ol.expression.TokenType = {
   NULL_LITERAL: 'Null',
   NUMERIC_LITERAL: 'Numeric',
   PUNCTUATOR: 'Punctuator',
-  STRING_LITERAL: 'String'
+  STRING_LITERAL: 'String',
+  UNKNOWN: 'Unknown'
 };
 
 
 /**
  * @typedef {{type: (ol.expression.TokenType),
- *            value: (string|number|boolean|null)}}
+ *            value: (string|number|boolean|null),
+ *            index: (number)}}
  */
 ol.expression.Token;
 
@@ -140,11 +142,14 @@ ol.expression.Lexer = function(source) {
  */
 ol.expression.Lexer.prototype.expect = function(value) {
   var match = this.match(value);
-  this.skip();
   if (!match) {
-    throw new Error('Unexpected token at index ' + this.index_ +
-        ': ' + this.getCurrentChar_());
+    this.throwUnexpected({
+      type: ol.expression.TokenType.UNKNOWN,
+      value: this.getCurrentChar_(),
+      index: this.index_
+    });
   }
+  this.skip();
 };
 
 
@@ -388,7 +393,8 @@ ol.expression.Lexer.prototype.next = function() {
   if (this.index_ >= this.length_) {
     return {
       type: ol.expression.TokenType.EOF,
-      value: null
+      value: null,
+      index: this.index_
     };
   }
 
@@ -450,6 +456,7 @@ ol.expression.Lexer.prototype.peek = function() {
  */
 ol.expression.Lexer.prototype.scanHexLiteral_ = function(code) {
   var str = '';
+  var start = this.index_;
 
   while (this.index_ < this.length_) {
     if (!this.isHexDigit_(code)) {
@@ -460,21 +467,20 @@ ol.expression.Lexer.prototype.scanHexLiteral_ = function(code) {
     code = this.getCurrentCharCode_();
   }
 
-  if (str.length === 0) {
-    throw new Error('Unexpected token at index ' + this.index_ +
-        ': ' + String.fromCharCode(code));
-  }
-
-  if (this.isIdentifierStart_(code)) {
-    throw new Error('Unexpected token at index ' + this.index_ +
-        ': ' + String.fromCharCode(code));
+  if (str.length === 0 || this.isIdentifierStart_(code)) {
+    this.throwUnexpected({
+      type: ol.expression.TokenType.UNKNOWN,
+      value: String.fromCharCode(code),
+      index: this.index_
+    });
   }
 
   goog.asserts.assert(!isNaN(parseInt('0x' + str, 16)), 'Valid hex: ' + str);
 
   return {
     type: ol.expression.TokenType.NUMERIC_LITERAL,
-    value: parseInt('0x' + str, 16)
+    value: parseInt('0x' + str, 16),
+    index: start
   };
 };
 
@@ -518,7 +524,8 @@ ol.expression.Lexer.prototype.scanIdentifier_ = function(code) {
 
   return {
     type: type,
-    value: id
+    value: id,
+    index: start
   };
 };
 
@@ -538,6 +545,7 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function(code) {
 
   // start assembling numeric string
   var str = '';
+  var start = this.index_;
 
   if (code !== ol.expression.Char.DOT) {
 
@@ -559,8 +567,11 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function(code) {
 
       // numbers like 09 not allowed
       if (this.isDecimalDigit_(nextCode)) {
-        throw new Error('Unexpected token at index ' + this.index_ +
-            ': ' + String.fromCharCode(nextCode));
+        this.throwUnexpected({
+          type: ol.expression.TokenType.UNKNOWN,
+          value: String.fromCharCode(nextCode),
+          index: this.index_
+        });
       }
     }
 
@@ -601,8 +612,11 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function(code) {
     }
 
     if (!this.isDecimalDigit_(code)) {
-      throw new Error('Unexpected token at index ' + this.index_ +
-          ': ' + String.fromCharCode(code));
+      this.throwUnexpected({
+        type: ol.expression.TokenType.UNKNOWN,
+        value: String.fromCharCode(code),
+        index: this.index_
+      });
     }
 
     // scan all decimal chars (TODO: unduplicate this)
@@ -614,15 +628,19 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function(code) {
   }
 
   if (this.isIdentifierStart_(code)) {
-    throw new Error('Unexpected token at index ' + this.index_ +
-        ': ' + String.fromCharCode(code));
+    this.throwUnexpected({
+      type: ol.expression.TokenType.UNKNOWN,
+      value: String.fromCharCode(code),
+      index: this.index_
+    });
   }
 
   goog.asserts.assert(!isNaN(parseFloat(str)), 'Valid number: ' + str);
 
   return {
     type: ol.expression.TokenType.NUMERIC_LITERAL,
-    value: parseFloat(str)
+    value: parseFloat(str),
+    index: start
   };
 
 };
@@ -639,6 +657,7 @@ ol.expression.Lexer.prototype.scanOctalLiteral_ = function(code) {
   goog.asserts.assert(this.isOctalDigit_(code));
 
   var str = '0' + String.fromCharCode(code);
+  var start = this.index_;
   this.increment_(1);
 
   while (this.index_ < this.length_) {
@@ -653,15 +672,19 @@ ol.expression.Lexer.prototype.scanOctalLiteral_ = function(code) {
   code = this.getCurrentCharCode_();
   if (this.isIdentifierStart_(code) ||
       this.isDecimalDigit_(code)) {
-    throw new Error('Unexpected token at index ' + (this.index_ - 1) +
-        ': ' + String.fromCharCode(code));
+    this.throwUnexpected({
+      type: ol.expression.TokenType.UNKNOWN,
+      value: String.fromCharCode(code),
+      index: this.index_ - 1
+    });
   }
 
   goog.asserts.assert(!isNaN(parseInt(str, 8)), 'Valid octal: ' + str);
 
   return {
     type: ol.expression.TokenType.NUMERIC_LITERAL,
-    value: parseInt(str, 8)
+    value: parseInt(str, 8),
+    index: start
   };
 };
 
@@ -674,6 +697,7 @@ ol.expression.Lexer.prototype.scanOctalLiteral_ = function(code) {
  * @private
  */
 ol.expression.Lexer.prototype.scanPunctuator_ = function(code) {
+  var start = this.index_;
 
   // single char punctuation that also doesn't start longer punctuation
   // (we disallow assignment, so no += etc.)
@@ -691,7 +715,8 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function(code) {
     this.increment_(1);
     return {
       type: ol.expression.TokenType.PUNCTUATOR,
-      value: String.fromCharCode(code)
+      value: String.fromCharCode(code),
+      index: start
     };
   }
 
@@ -709,13 +734,15 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function(code) {
         this.increment_(1);
         return {
           type: ol.expression.TokenType.PUNCTUATOR,
-          value: String.fromCharCode(code) + '=='
+          value: String.fromCharCode(code) + '==',
+          index: start
         };
       } else {
         // != or ==
         return {
           type: ol.expression.TokenType.PUNCTUATOR,
-          value: String.fromCharCode(code) + '='
+          value: String.fromCharCode(code) + '=',
+          index: start
         };
       }
     }
@@ -725,7 +752,8 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function(code) {
       this.increment_(2);
       return {
         type: ol.expression.TokenType.PUNCTUATOR,
-        value: String.fromCharCode(code) + '='
+        value: String.fromCharCode(code) + '=',
+        index: start
       };
     }
   }
@@ -739,7 +767,8 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function(code) {
     var str = String.fromCharCode(code);
     return {
       type: ol.expression.TokenType.PUNCTUATOR,
-      value: str + str
+      value: str + str,
+      index: start
     };
   }
 
@@ -756,12 +785,24 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function(code) {
     this.increment_(1);
     return {
       type: ol.expression.TokenType.PUNCTUATOR,
-      value: String.fromCharCode(code)
+      value: String.fromCharCode(code),
+      index: start
     };
   }
 
-  throw new Error('Unexpected token at index ' + (this.index_ - 1) +
-      ': ' + String.fromCharCode(code));
+  this.throwUnexpected({
+    type: ol.expression.TokenType.UNKNOWN,
+    value: String.fromCharCode(code),
+    index: this.index_
+  });
+
+  // This code is unreachable, but the compiler complains with
+  // JSC_MISSING_RETURN_STATEMENT without it.
+  return {
+    type: ol.expression.TokenType.UNKNOWN,
+    value: '',
+    index: 0
+  };
 };
 
 
@@ -780,6 +821,7 @@ ol.expression.Lexer.prototype.scanStringLiteral_ = function(quote) {
   this.increment_(1);
 
   var str = '';
+  var start = this.index_;
   var code;
   while (this.index_ < this.length_) {
     code = this.getCurrentCharCode_();
@@ -798,12 +840,14 @@ ol.expression.Lexer.prototype.scanStringLiteral_ = function(quote) {
   }
 
   if (quote !== 0) {
-    throw new Error('Unterminated string literal');
+    // unterminated string literal
+    this.throwUnexpected(this.peek());
   }
 
   return {
     type: ol.expression.TokenType.STRING_LITERAL,
-    value: str
+    value: str,
+    index: start
   };
 };
 
@@ -832,4 +876,16 @@ ol.expression.Lexer.prototype.skipWhitespace_ = function() {
     }
   }
   return code;
+};
+
+
+/**
+ * Throw an error about an unexpected token.
+ * @param {ol.expression.Token} token The unexpected token.
+ */
+ol.expression.Lexer.prototype.throwUnexpected = function(token) {
+  var error = new Error('Unexpected token at ' + token.index + ' : ' +
+      token.value);
+  error.token = token;
+  throw error;
 };

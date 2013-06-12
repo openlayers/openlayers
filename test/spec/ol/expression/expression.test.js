@@ -26,7 +26,13 @@ describe('ol.expression.parse', function() {
     it('throws on invalid identifier expressions', function() {
       expect(function() {
         ol.expression.parse('3foo');
-      }).throwException();
+      }).throwException(function(err) {
+        expect(err).to.be.an(Error);
+        var token = err.token;
+        expect(token).not.to.be(undefined);
+        expect(token.value).to.be('f');
+        expect(token.index).to.be(1);
+      });
     });
 
     it('parses string literal expressions', function() {
@@ -38,7 +44,13 @@ describe('ol.expression.parse', function() {
     it('throws on unterminated string', function() {
       expect(function() {
         ol.expression.parse('"foo');
-      }).throwException();
+      }).throwException(function(err) {
+        expect(err).to.be.an(Error);
+        var token = err.token;
+        expect(token).not.to.be(undefined);
+        expect(token.type).to.be(ol.expression.TokenType.EOF);
+        expect(token.index).to.be(4);
+      });
     });
 
     it('parses numeric literal expressions', function() {
@@ -50,7 +62,13 @@ describe('ol.expression.parse', function() {
     it('throws on invalid number', function() {
       expect(function() {
         ol.expression.parse('.42eX');
-      }).throwException();
+      }).throwException(function(err) {
+        expect(err).to.be.an(Error);
+        var token = err.token;
+        expect(token).not.to.be(undefined);
+        expect(token.value).to.be('X');
+        expect(token.index).to.be(4);
+      });
     });
 
     it('parses boolean literal expressions', function() {
@@ -87,7 +105,13 @@ describe('ol.expression.parse', function() {
     it('throws on invalid member expression', function() {
       expect(function() {
         ol.expression.parse('foo.4bar');
-      }).throwException();
+      }).throwException(function(err) {
+        expect(err).to.be.an(Error);
+        var token = err.token;
+        expect(token).not.to.be(undefined);
+        expect(token.value).to.be('b');
+        expect(token.index).to.be(5);
+      });
     });
 
     it('parses call expressions with literal arguments', function() {
@@ -106,7 +130,13 @@ describe('ol.expression.parse', function() {
     it('throws on calls with unterminated arguments', function() {
       expect(function() {
         ol.expression.parse('foo(42,)');
-      }).throwException();
+      }).throwException(function(err) {
+        expect(err).to.be.an(Error);
+        var token = err.token;
+        expect(token).not.to.be(undefined);
+        expect(token.value).to.be(')');
+        expect(token.index).to.be(7);
+      });
     });
 
   });
@@ -263,7 +293,13 @@ describe('ol.expression.parse', function() {
     it('throws for invalid spacing with <=', function() {
       expect(function() {
         ol.expression.parse(' foo< = 10 ');
-      }).throwException();
+      }).throwException(function(err) {
+        expect(err).to.be.an(Error);
+        var token = err.token;
+        expect(token).not.to.be(undefined);
+        expect(token.value).to.be('=');
+        expect(token.index).to.be(6);
+      });
     });
 
     it('parses >= operator', function() {
@@ -285,7 +321,13 @@ describe('ol.expression.parse', function() {
     it('throws for invalid spacing with >=', function() {
       expect(function() {
         ol.expression.parse(' 10 > =foo ');
-      }).throwException();
+      }).throwException(function(err) {
+        expect(err).to.be.an(Error);
+        var token = err.token;
+        expect(token).not.to.be(undefined);
+        expect(token.value).to.be('=');
+        expect(token.index).to.be(6);
+      });
     });
 
   });
@@ -312,7 +354,13 @@ describe('ol.expression.parse', function() {
     it('throws for invalid spacing with ==', function() {
       expect(function() {
         ol.expression.parse(' 10 = =foo ');
-      }).throwException();
+      }).throwException(function(err) {
+        expect(err).to.be.an(Error);
+        var token = err.token;
+        expect(token).not.to.be(undefined);
+        expect(token.value).to.be('=');
+        expect(token.index).to.be(4);
+      });
     });
 
     it('parses != operator', function() {
@@ -334,7 +382,13 @@ describe('ol.expression.parse', function() {
     it('throws for invalid spacing with !=', function() {
       expect(function() {
         ol.expression.parse(' 10! =foo ');
-      }).throwException();
+      }).throwException(function(err) {
+        expect(err).to.be.an(Error);
+        var token = err.token;
+        expect(token).not.to.be(undefined);
+        expect(token.value).to.be('!');
+        expect(token.index).to.be(3);
+      });
     });
 
     it('parses === operator', function() {
@@ -356,7 +410,13 @@ describe('ol.expression.parse', function() {
     it('throws for invalid spacing with ===', function() {
       expect(function() {
         ol.expression.parse(' 10 = == foo ');
-      }).throwException();
+      }).throwException(function(err) {
+        expect(err).to.be.an(Error);
+        var token = err.token;
+        expect(token).not.to.be(undefined);
+        expect(token.value).to.be('=');
+        expect(token.index).to.be(4);
+      });
     });
 
     it('parses !== operator', function() {
@@ -378,7 +438,13 @@ describe('ol.expression.parse', function() {
     it('throws for invalid spacing with !==', function() {
       expect(function() {
         ol.expression.parse(' 10 != = foo ');
-      }).throwException();
+      }).throwException(function(err) {
+        expect(err).to.be.an(Error);
+        var token = err.token;
+        expect(token).not.to.be(undefined);
+        expect(token.value).to.be('=');
+        expect(token.index).to.be(7);
+      });
     });
   });
 
@@ -411,7 +477,13 @@ describe('ol.expression.parse', function() {
     it('throws for invalid spacing with &&', function() {
       expect(function() {
         ol.expression.parse('true & & false');
-      }).throwException();
+      }).throwException(function(err) {
+        expect(err).to.be.an(Error);
+        var token = err.token;
+        expect(token).not.to.be(undefined);
+        expect(token.value).to.be('&');
+        expect(token.index).to.be(5);
+      });
     });
 
     it('parses || operator', function() {
@@ -435,7 +507,13 @@ describe('ol.expression.parse', function() {
     it('throws for invalid spacing with ||', function() {
       expect(function() {
         ol.expression.parse('true | | false');
-      }).throwException();
+      }).throwException(function(err) {
+        expect(err).to.be.an(Error);
+        var token = err.token;
+        expect(token).not.to.be(undefined);
+        expect(token.value).to.be('|');
+        expect(token.index).to.be(5);
+      });
     });
 
   });
@@ -468,3 +546,4 @@ goog.require('ol.expression.Logical');
 goog.require('ol.expression.Math');
 goog.require('ol.expression.Member');
 goog.require('ol.expression.Not');
+goog.require('ol.expression.TokenType');

@@ -378,7 +378,13 @@ describe('ol.expression.Lexer', function() {
     it('throws on unterminated double quote', function() {
       expect(function() {
         scan('"never \'ending\' string');
-      }).to.throwException();
+      }).to.throwException(function(err) {
+        expect(err).to.be.an(Error);
+        var token = err.token;
+        expect(token).not.to.be(undefined);
+        expect(token.type).to.be(ol.expression.TokenType.EOF);
+        expect(token.index).to.be(22);
+      });
     });
 
     it('parses single quoted string', function() {
@@ -426,7 +432,13 @@ describe('ol.expression.Lexer', function() {
     it('throws on unterminated single quote', function() {
       expect(function() {
         scan('\'never "ending" string');
-      }).to.throwException();
+      }).to.throwException(function(err) {
+        expect(err).to.be.an(Error);
+        var token = err.token;
+        expect(token).not.to.be(undefined);
+        expect(token.type).to.be(ol.expression.TokenType.EOF);
+        expect(token.index).to.be(22);
+      });
     });
 
   });
