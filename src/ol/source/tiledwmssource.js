@@ -32,7 +32,7 @@ ol.source.TiledWMS = function(options) {
     var tileURLFunctions = goog.array.map(
         urls, function(url) {
           return ol.TileURLFunction.createFromParamsFunction(
-              url, options.params, ol.source.wms.getUrl);
+              url, options.params, ol.source.wms.getURL);
         });
     tileURLFunction = ol.TileURLFunction.createFromTileURLFunctions(
         tileURLFunctions);

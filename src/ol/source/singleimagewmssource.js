@@ -16,7 +16,7 @@ goog.require('ol.source.wms');
 ol.source.SingleImageWMS = function(options) {
   var imageURLFunction = goog.isDef(options.url) ?
       ol.ImageURLFunction.createFromParamsFunction(
-          options.url, options.params, ol.source.wms.getUrl) :
+          options.url, options.params, ol.source.wms.getURL) :
       ol.ImageURLFunction.nullImageURLFunction;
 
   goog.base(this, {
