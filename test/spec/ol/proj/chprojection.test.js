@@ -9,6 +9,17 @@ describe('ol.proj.CH', function() {
     ol.proj.CH.add();
   });
 
+  it('has the correct constants', function() {
+    expect(ol.proj.CH.ELLIPSOID.eSquared).to.roughlyEqual(
+        0.006674372230614, 1e-13);
+    expect(ol.proj.CH.R).to.roughlyEqual(6378815.90365, 1e-5);
+    expect(ol.proj.CH.ALPHA).to.roughlyEqual(1.00072913843038, 1e-14);
+    expect(ol.proj.CH.B0).to.roughlyEqual(
+        goog.math.toRadians((3600 * 46 + 60 * 54 + 27.83324844) / 3600),
+        1e-13);
+    expect(ol.proj.CH.K).to.roughlyEqual(0.0030667323772751, 1e-13);
+  });
+
   it('can transform from EPSG:2056 to EPSG:21781', function() {
     var output = ol.proj.transform(
         [2660389.515487, 1185731.630396], 'EPSG:2056', 'EPSG:21781');
@@ -41,19 +52,24 @@ describe('ol.proj.EPSG2056', function() {
 
   it('transforms from EPSG:2056 to EPSG:4326', function() {
     var wgs84 = ol.proj.transform(
-        [2660389.515487, 1185731.630396], 'EPSG:2056', 'EPSG:4326');
+        [2679520.05, 1212273.44], 'EPSG:2056', 'EPSG:4326');
     expect(wgs84).to.be.an(Array);
     expect(wgs84).to.have.length(2);
-    expect(wgs84[0]).to.roughlyEqual(8.23, 1e-3);
-    expect(wgs84[1]).to.roughlyEqual(46.82, 1e-3);
+    expect(wgs84[0]).to.roughlyEqual(
+        (3600 * 8 + 60 * 29 + 11.111272) / 3600, 1e-8);
+    expect(wgs84[1]).to.roughlyEqual(
+        (3600 * 47 + 60 * 3 + 28.956592) / 3600, 1e-8);
   });
 
   it('transforms from EPSG:4326 to EPSG:2056', function() {
-    var ch1903 = ol.proj.transform([8.23, 46.82], 'EPSG:4326', 'EPSG:2056');
-    expect(ch1903).to.be.an(Array);
-    expect(ch1903).to.have.length(2);
-    expect(ch1903[0]).to.roughlyEqual(2660389.515487, 1);
-    expect(ch1903[1]).to.roughlyEqual(1185731.630396, 1);
+    var lv95 = ol.proj.transform([
+      (3600 * 8 + 60 * 29 + 11.11127154) / 3600,
+      (3600 * 47 + 60 * 3 + 28.95659233) / 3600
+    ], 'EPSG:4326', 'EPSG:2056');
+    expect(lv95).to.be.an(Array);
+    expect(lv95).to.have.length(2);
+    expect(lv95[0]).to.roughlyEqual(2679520.05, 1e-3);
+    expect(lv95[1]).to.roughlyEqual(1212273.44, 1e-3);
   });
 
 });
@@ -69,7 +85,7 @@ describe('ol.proj.EPSG21781', function() {
     expect(epsg21781).to.be.an(ol.Projection);
   });
 
-  it('does not lose too much accuracy when round-tripping', function() {
+  it('maintains accuracy when round-tripping', function() {
     var extent = epsg21781.getExtent();
     var fromEPSG4326 = ol.proj.getTransform('EPSG:4326', 'EPSG:21781');
     var toEPSG4326 = ol.proj.getTransform('EPSG:21781', 'EPSG:4326');
@@ -79,32 +95,38 @@ describe('ol.proj.EPSG21781', function() {
         roundTripped = fromEPSG4326(toEPSG4326([x, y]));
         expect(roundTripped).to.be.an(Array);
         expect(roundTripped).to.have.length(2);
-        expect(roundTripped[0]).to.roughlyEqual(x, 1e1);
-        expect(roundTripped[1]).to.roughlyEqual(y, 1e1);
+        expect(roundTripped[0]).to.roughlyEqual(x, 1e-3);
+        expect(roundTripped[1]).to.roughlyEqual(y, 1e-3);
       }
     }
   });
 
   it('transforms from EPSG:21781 to EPSG:4326', function() {
     var wgs84 = ol.proj.transform(
-        [660389.515487, 185731.630396], 'EPSG:21781', 'EPSG:4326');
+        [679520.05, 212273.44], 'EPSG:21781', 'EPSG:4326');
     expect(wgs84).to.be.an(Array);
     expect(wgs84).to.have.length(2);
-    expect(wgs84[0]).to.roughlyEqual(8.23, 1e-3);
-    expect(wgs84[1]).to.roughlyEqual(46.82, 1e-3);
+    expect(wgs84[0]).to.roughlyEqual(
+        (3600 * 8 + 60 * 29 + 11.111272) / 3600, 1e-8);
+    expect(wgs84[1]).to.roughlyEqual(
+        (3600 * 47 + 60 * 3 + 28.956592) / 3600, 1e-8);
   });
 
   it('transforms from EPSG:4326 to EPSG:21781', function() {
-    var ch1903 = ol.proj.transform([8.23, 46.82], 'EPSG:4326', 'EPSG:21781');
-    expect(ch1903).to.be.an(Array);
-    expect(ch1903).to.have.length(2);
-    expect(ch1903[0]).to.roughlyEqual(660389.515487, 1);
-    expect(ch1903[1]).to.roughlyEqual(185731.630396, 1);
+    var lv03 = ol.proj.transform([
+      (3600 * 8 + 60 * 29 + 11.11127154) / 3600,
+      (3600 * 47 + 60 * 3 + 28.95659233) / 3600
+    ], 'EPSG:4326', 'EPSG:21781');
+    expect(lv03).to.be.an(Array);
+    expect(lv03).to.have.length(2);
+    expect(lv03[0]).to.roughlyEqual(679520.05, 1e-3);
+    expect(lv03[1]).to.roughlyEqual(212273.44, 1e-3);
   });
 
 });
 
 
+goog.require('goog.math');
 goog.require('ol.Projection');
 goog.require('ol.proj');
 goog.require('ol.proj.CH');
