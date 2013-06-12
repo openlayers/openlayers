@@ -554,17 +554,17 @@ ol.expression.Math.prototype.getRight = function() {
  *
  * @constructor
  * @extends {ol.expression.Expression}
- * @param {ol.expression.Expression} expr An expression that resolves to an
+ * @param {ol.expression.Expression} object An expression that resolves to an
  *     object.
  * @param {ol.expression.Identifier} property Identifier with name of property.
  */
-ol.expression.Member = function(expr, property) {
+ol.expression.Member = function(object, property) {
 
   /**
    * @type {ol.expression.Expression}
    * @private
    */
-  this.expr_ = expr;
+  this.object_ = object;
 
   /**
    * @type {ol.expression.Identifier}
@@ -581,12 +581,30 @@ goog.inherits(ol.expression.Member, ol.expression.Expression);
  */
 ol.expression.Member.prototype.evaluate = function(opt_scope, opt_fns,
     opt_this) {
-  var obj = this.expr_.evaluate(opt_scope, opt_fns, opt_this);
+  var obj = this.object_.evaluate(opt_scope, opt_fns, opt_this);
   if (!goog.isObject(obj)) {
     throw new Error('Expected member expression to evaluate to an object ' +
         'but got ' + obj);
   }
   return this.property_.evaluate(/** @type {Object} */ (obj));
+};
+
+
+/**
+ * Get the object expression.
+ * @return {ol.expression.Expression} The object.
+ */
+ol.expression.Member.prototype.getObject = function() {
+  return this.object_;
+};
+
+
+/**
+ * Get the property expression.
+ * @return {ol.expression.Identifier} The property.
+ */
+ol.expression.Member.prototype.getProperty = function() {
+  return this.property_;
 };
 
 

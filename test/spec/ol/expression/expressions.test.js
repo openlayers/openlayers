@@ -558,6 +558,19 @@ describe('ol.expression.Member', function() {
       expect(expr.evaluate(scope)).to.be(42);
     });
   });
+
+  var object = new ol.expression.Identifier('foo');
+  var property = new ol.expression.Identifier('bar');
+  var expr = new ol.expression.Member(object, property);
+
+  describe('#getObject()', function() {
+    expect(expr.getObject()).to.be(object);
+  });
+
+  describe('#getProperty()', function() {
+    expect(expr.getProperty()).to.be(property);
+  });
+
 });
 
 
