@@ -213,6 +213,33 @@ ol.expression.Comparison.prototype.evaluate = function(opt_scope, opt_this,
 };
 
 
+/**
+ * Get the comparison operator.
+ * @return {string} The comparison operator.
+ */
+ol.expression.Comparison.prototype.getOperator = function() {
+  return this.operator_;
+};
+
+
+/**
+ * Get the left expression.
+ * @return {ol.expression.Expression} The left expression.
+ */
+ol.expression.Comparison.prototype.getLeft = function() {
+  return this.left_;
+};
+
+
+/**
+ * Get the right expression.
+ * @return {ol.expression.Expression} The right expression.
+ */
+ol.expression.Comparison.prototype.getRight = function() {
+  return this.right_;
+};
+
+
 
 /**
  * An identifier expression (e.g. `foo`).
