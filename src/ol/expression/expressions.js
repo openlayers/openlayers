@@ -521,6 +521,33 @@ ol.expression.Math.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
 };
 
 
+/**
+ * Get the math operator.
+ * @return {string} The math operator.
+ */
+ol.expression.Math.prototype.getOperator = function() {
+  return this.operator_;
+};
+
+
+/**
+ * Get the left expression.
+ * @return {ol.expression.Expression} The left expression.
+ */
+ol.expression.Math.prototype.getLeft = function() {
+  return this.left_;
+};
+
+
+/**
+ * Get the right expression.
+ * @return {ol.expression.Expression} The right expression.
+ */
+ol.expression.Math.prototype.getRight = function() {
+  return this.right_;
+};
+
+
 
 /**
  * A member expression (e.g. `foo.bar`).
