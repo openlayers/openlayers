@@ -614,15 +614,15 @@ ol.expression.Member.prototype.getProperty = function() {
  *
  * @constructor
  * @extends {ol.expression.Expression}
- * @param {ol.expression.Expression} expr Expression to negate.
+ * @param {ol.expression.Expression} argument Expression to negate.
  */
-ol.expression.Not = function(expr) {
+ol.expression.Not = function(argument) {
 
   /**
    * @type {ol.expression.Expression}
    * @private
    */
-  this.expr_ = expr;
+  this.argument_ = argument;
 
 };
 goog.inherits(ol.expression.Not, ol.expression.Expression);
@@ -632,5 +632,14 @@ goog.inherits(ol.expression.Not, ol.expression.Expression);
  * @inheritDoc
  */
 ol.expression.Not.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
-  return !this.expr_.evaluate(opt_scope, opt_fns, opt_this);
+  return !this.argument_.evaluate(opt_scope, opt_fns, opt_this);
+};
+
+
+/**
+ * Get the argument (the negated expression).
+ * @return {ol.expression.Expression} The argument.
+ */
+ol.expression.Not.prototype.getArgument = function() {
+  return this.argument_;
 };

@@ -615,6 +615,12 @@ describe('ol.expression.Not', function() {
     });
   });
 
+  describe('#getArgument()', function() {
+    var argument = new ol.expression.Literal(true);
+    var expr = new ol.expression.Not(argument);
+    expect(expr.getArgument()).to.be(argument);
+  });
+
 });
 
 
