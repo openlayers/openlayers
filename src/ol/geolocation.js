@@ -225,7 +225,7 @@ goog.exportProperty(
 
 
 /**
- * Get the heading as degrees clockwise from North.
+ * Get the heading as radians clockwise from North.
  * @return {number|undefined} Heading.
  */
 ol.Geolocation.prototype.getHeading = function() {

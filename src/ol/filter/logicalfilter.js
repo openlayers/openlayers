@@ -71,7 +71,6 @@ ol.filter.Logical.prototype.applies = function(feature) {
       break;
     default:
       goog.asserts.assert(false, 'Unsupported operation: ' + this.operator);
-      break;
   }
   return !!result;
 };
