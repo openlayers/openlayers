@@ -7,6 +7,7 @@ goog.require('ol.geom.GeometryType');
 
 
 /**
+ * Filter features by geometry type.
  * @constructor
  * @extends {ol.filter.Filter}
  * @param {ol.geom.GeometryType} type The geometry type.

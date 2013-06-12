@@ -99,6 +99,7 @@ ol.Projection = function(options) {
 
 
 /**
+ * Get the code for this projection, e.g. 'EPSG:4326'.
  * @return {string} Code.
  */
 ol.Projection.prototype.getCode = function() {
@@ -107,6 +108,7 @@ ol.Projection.prototype.getCode = function() {
 
 
 /**
+ * Get the validity extent for this projection.
  * @return {ol.Extent} Extent.
  */
 ol.Projection.prototype.getExtent = function() {
@@ -115,6 +117,11 @@ ol.Projection.prototype.getExtent = function() {
 
 
 /**
+ * Get the resolution of the point in degrees. For projections with degrees as
+ * the unit this will simply return the provided resolution. For other
+ * projections the point resolution is estimated by transforming the center
+ * pixel to EPSG:4326, measuring its width and height on the normal sphere,
+ * and taking the average of the width and height.
  * @param {number} resolution Resolution.
  * @param {ol.Coordinate} point Point.
  * @return {number} Point resolution.
@@ -123,6 +130,7 @@ ol.Projection.prototype.getPointResolution = goog.abstractMethod;
 
 
 /**
+ * Get the units of this projection.
  * @return {ol.ProjectionUnits} Units.
  */
 ol.Projection.prototype.getUnits = function() {
@@ -131,6 +139,7 @@ ol.Projection.prototype.getUnits = function() {
 
 
 /**
+ * Get the amount of meters per unit of this projection.
  * @return {number} Meters.
  */
 ol.Projection.prototype.getMetersPerUnit = function() {
@@ -139,6 +148,13 @@ ol.Projection.prototype.getMetersPerUnit = function() {
 
 
 /**
+ * Get the axis orientation of this projection.
+ * Example values are:
+ * enu - the default easting, northing, elevation.
+ * neu - northing, easting, up - useful for "lat/long" geographic coordinates,
+ *     or south orientated transverse mercator.
+ * wnu - westing, northing, up - some planetary coordinate systems have
+ *     "west positive" coordinate systems
  * @return {string} Axis orientation.
  */
 ol.Projection.prototype.getAxisOrientation = function() {
@@ -147,6 +163,7 @@ ol.Projection.prototype.getAxisOrientation = function() {
 
 
 /**
+ * Is this projection a global projection which spans the whole world?
  * @return {boolean} Wether the projection is global.
  */
 ol.Projection.prototype.isGlobal = function() {

@@ -33,6 +33,7 @@ ol.ObjectProperty = {
 
 
 /**
+ * Base class implementing KVO (Key Value Observing).
  * @constructor
  * @extends {goog.events.EventTarget}
  * @param {Object.<string, *>=} opt_values Values.
@@ -137,6 +138,7 @@ ol.Object.getSetterName = function(key) {
 
 
 /**
+ * Binds a View to a Model.
  * @param {string} key Key.
  * @param {ol.Object} target Target.
  * @param {string=} opt_targetKey Target key.
@@ -161,6 +163,7 @@ ol.Object.prototype.bindTo =
 
 
 /**
+ * Gets a value.
  * @param {string} key Key.
  * @return {*} Value.
  */
@@ -197,6 +200,9 @@ ol.Object.prototype.getKeys = function() {
 
 
 /**
+ * Notify all observers of a change on this property. This notifies both
+ * objects that are bound to the object's property as well as the object
+ * that it is bound to.
  * @param {string} key Key.
  */
 ol.Object.prototype.notify = function(key) {
@@ -224,6 +230,7 @@ ol.Object.prototype.notifyInternal_ = function(key) {
 
 
 /**
+ * Listen for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
  * @param {Function} listener The listener function.
  * @param {Object=} opt_scope Object is whose scope to call
@@ -236,6 +243,7 @@ ol.Object.prototype.on = function(type, listener, opt_scope) {
 
 
 /**
+ * Listen once for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
  * @param {Function} listener The listener function.
  * @param {Object=} opt_scope Object is whose scope to call
@@ -248,6 +256,7 @@ ol.Object.prototype.once = function(type, listener, opt_scope) {
 
 
 /**
+ * Sets a value.
  * @param {string} key Key.
  * @param {*} value Value.
  */
@@ -271,6 +280,7 @@ ol.Object.prototype.set = function(key, value) {
 
 
 /**
+ * Sets a collection of key-value pairs.
  * @param {Object.<string, *>} options Options.
  */
 ol.Object.prototype.setOptions = function(options) {
@@ -288,12 +298,15 @@ ol.Object.prototype.setOptions = function(options) {
 
 
 /**
+ * Sets a collection of key-value pairs.
  * @param {Object.<string, *>} values Values.
  */
 ol.Object.prototype.setValues = ol.Object.prototype.setOptions;
 
 
 /**
+ * Removes a binding. Unbinding will set the unbound property to the current
+ *     value. The object will not be notified, as the value has not changed.
  * @param {string} key Key.
  */
 ol.Object.prototype.unbind = function(key) {
@@ -311,6 +324,7 @@ ol.Object.prototype.unbind = function(key) {
 
 
 /**
+ * Unlisten for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
  * @param {Function} listener The listener function.
  * @param {Object=} opt_scope Object is whose scope to call
@@ -322,6 +336,8 @@ ol.Object.prototype.un = function(type, listener, opt_scope) {
 
 
 /**
+ * Removes an event listener which was added with listen() by the key returned
+ *     by on().
  * @param {?number} key Key.
  */
 ol.Object.prototype.unByKey = function(key) {
