@@ -371,6 +371,59 @@ describe('ol.expression.parse', function() {
     });
   });
 
+  describe('binary logical operators', function() {
+    // http://www.ecma-international.org/ecma-262/5.1/#sec-11.11
+
+    it('parses && operator', function() {
+      var expr = ol.expression.parse('foo&&bar');
+      expect(expr).to.be.a(ol.expression.Logical);
+      expect(expr.evaluate({foo: true, bar: true})).to.be(true);
+      expect(expr.evaluate({foo: true, bar: false})).to.be(false);
+      expect(expr.evaluate({foo: false, bar: true})).to.be(false);
+      expect(expr.evaluate({foo: false, bar: false})).to.be(false);
+    });
+
+    it('consumes space as expected with &&', function() {
+      var expr = ol.expression.parse(' foo && bar ');
+      expect(expr).to.be.a(ol.expression.Logical);
+      expect(expr.evaluate({foo: true, bar: true})).to.be(true);
+      expect(expr.evaluate({foo: true, bar: false})).to.be(false);
+      expect(expr.evaluate({foo: false, bar: true})).to.be(false);
+      expect(expr.evaluate({foo: false, bar: false})).to.be(false);
+    });
+
+    it('throws for invalid spacing with &&', function() {
+      expect(function() {
+        ol.expression.parse('true & & false');
+      }).throwException();
+    });
+
+    it('parses || operator', function() {
+      var expr = ol.expression.parse('foo||bar');
+      expect(expr).to.be.a(ol.expression.Logical);
+      expect(expr.evaluate({foo: true, bar: true})).to.be(true);
+      expect(expr.evaluate({foo: true, bar: false})).to.be(true);
+      expect(expr.evaluate({foo: false, bar: true})).to.be(true);
+      expect(expr.evaluate({foo: false, bar: false})).to.be(false);
+    });
+
+    it('consumes space as expected with ||', function() {
+      var expr = ol.expression.parse(' foo || bar ');
+      expect(expr).to.be.a(ol.expression.Logical);
+      expect(expr.evaluate({foo: true, bar: true})).to.be(true);
+      expect(expr.evaluate({foo: true, bar: false})).to.be(true);
+      expect(expr.evaluate({foo: false, bar: true})).to.be(true);
+      expect(expr.evaluate({foo: false, bar: false})).to.be(false);
+    });
+
+    it('throws for invalid spacing with ||', function() {
+      expect(function() {
+        ol.expression.parse('true | | false');
+      }).throwException();
+    });
+
+  });
+
 });
 
 
@@ -380,6 +433,7 @@ goog.require('ol.expression.Comparison');
 goog.require('ol.expression.Expression');
 goog.require('ol.expression.Identifier');
 goog.require('ol.expression.Literal');
+goog.require('ol.expression.Logical');
 goog.require('ol.expression.Math');
 goog.require('ol.expression.Member');
 goog.require('ol.expression.Not');
