@@ -274,6 +274,11 @@ describe('ol.expression.Identifier', function() {
     });
   });
 
+  describe('#getName()', function() {
+    var expr = new ol.expression.Identifier('asdf');
+    expect(expr.getName()).to.be('asdf');
+  });
+
 });
 
 describe('ol.expression.Literal', function() {

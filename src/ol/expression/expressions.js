@@ -271,6 +271,15 @@ ol.expression.Identifier.prototype.evaluate = function(opt_scope) {
 };
 
 
+/**
+ * Get the identifier name.
+ * @return {string} The identifier name.
+ */
+ol.expression.Identifier.prototype.getName = function() {
+  return this.name_;
+};
+
+
 
 /**
  * A literal expression (e.g. `"chicken"`, `42`, `true`, `null`).
