@@ -446,7 +446,7 @@
  * @property {number|undefined} minZoom Minimum zoom.
  * @property {number|undefined} maxZoom Maximum zoom.
  * @property {boolean|undefined} opaque Whether the layer is opaque.
- * @property {string|undefined} url Url.
+ * @property {string|undefined} url URL.
  */
 
 /**
@@ -458,14 +458,14 @@
  * @property {ol.Extent|undefined} imageExtent Extent of the image.
  * @property {ol.Size|undefined} imageSize Size of the image.
  * @property {ol.ProjectionLike} projection Projection.
- * @property {string|undefined} url Url.
+ * @property {string|undefined} url URL.
  */
 
 /**
  * @typedef {Object} ol.source.TileJSONOptions
  * @property {null|string|undefined} crossOrigin crossOriin setting for image
  *     requests.
- * @property {string} url Url.
+ * @property {string} url URL.
  */
 
 /**
@@ -501,9 +501,9 @@
  * @property {string|undefined} format Format.
  * @property {string} matrixSet Matrix set.
  * @property {Object|undefined} dimensions Dimensions.
- * @property {string|undefined} url Url.
+ * @property {string|undefined} url URL.
  * @property {number|undefined} maxZoom Maximum zoom.
- * @property {Array.<string>|undefined} urls Urls.
+ * @property {Array.<string>|undefined} urls URLs.
  */
 
 /**
