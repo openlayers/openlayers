@@ -47,17 +47,17 @@ ol.expression.Expression.prototype.evaluate = goog.abstractMethod;
  *
  * @constructor
  * @extends {ol.expression.Expression}
- * @param {ol.expression.Expression} expr An expression that resolves to a
+ * @param {ol.expression.Expression} callee An expression that resolves to a
  *     function.
  * @param {Array.<ol.expression.Expression>} args Arguments.
  */
-ol.expression.Call = function(expr, args) {
+ol.expression.Call = function(callee, args) {
 
   /**
    * @type {ol.expression.Expression}
    * @private
    */
-  this.expr_ = expr;
+  this.callee_ = callee;
 
   /**
    * @type {Array.<ol.expression.Expression>}
@@ -74,7 +74,7 @@ goog.inherits(ol.expression.Call, ol.expression.Expression);
  */
 ol.expression.Call.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
   var fnScope = goog.isDefAndNotNull(opt_fns) ? opt_fns : opt_scope;
-  var fn = this.expr_.evaluate(fnScope);
+  var fn = this.callee_.evaluate(fnScope);
   if (!fn || !goog.isFunction(fn)) {
     throw new Error('Expected function but found ' + fn);
   }
@@ -86,6 +86,24 @@ ol.expression.Call.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
     values[i] = this.args_[i].evaluate(opt_scope, opt_fns, opt_this);
   }
   return fn.apply(thisArg, values);
+};
+
+
+/**
+ * Get the argument list.
+ * @return {Array.<ol.expression.Expression>} The argument.
+ */
+ol.expression.Call.prototype.getArgs = function() {
+  return this.args_;
+};
+
+
+/**
+ * Get the callee expression.
+ * @return {ol.expression.Expression} The callee expression.
+ */
+ol.expression.Call.prototype.getCallee = function() {
+  return this.callee_;
 };
 
 

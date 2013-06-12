@@ -67,6 +67,22 @@ describe('ol.expression.Call', function() {
 
   });
 
+  var callee = new ol.expression.Identifier('sqrt');
+  var args = [new ol.expression.Literal(42)];
+  var expr = new ol.expression.Call(callee, args);
+
+  describe('#getArgs()', function() {
+    it('gets the callee expression', function() {
+      expect(expr.getArgs()).to.be(args);
+    });
+  });
+
+  describe('#getCallee()', function() {
+    it('gets the callee expression', function() {
+      expect(expr.getCallee()).to.be(callee);
+    });
+  });
+
 });
 
 
