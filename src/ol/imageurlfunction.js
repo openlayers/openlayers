@@ -38,7 +38,6 @@ ol.ImageURLFunction.createFromParamsFunction =
  * @param {ol.Size} size Size.
  * @return {string|undefined} Image URL.
  */
-ol.ImageURLFunction.nullImageURLFunction =
-    function(extent, size) {
+ol.ImageURLFunction.nullImageURLFunction = function(extent, size) {
   return undefined;
 };

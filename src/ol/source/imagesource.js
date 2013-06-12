@@ -45,17 +45,15 @@ ol.source.ImageSource = function(options) {
    * @protected
    * @type {ol.ImageURLFunctionType}
    */
-  this.imageURLFunction =
-      goog.isDef(options.imageURLFunction) ?
-          options.imageURLFunction :
-          ol.ImageURLFunction.nullImageURLFunction;
+  this.imageURLFunction = goog.isDef(options.imageURLFunction) ?
+      options.imageURLFunction : ol.ImageURLFunction.nullImageURLFunction;
 
   /**
    * @private
    * @type {?string}
    */
-  this.crossOrigin_ =
-      goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
+  this.crossOrigin_ = goog.isDef(options.crossOrigin) ?
+      options.crossOrigin : null;
 
   /**
    * @private

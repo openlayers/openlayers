@@ -12,8 +12,7 @@ goog.require('goog.uri.utils');
  * @param {ol.Projection} projection Projection.
  * @return {string} WMS GetMap request URL.
  */
-ol.source.wms.getURL =
-    function(baseURL, params, extent, size, projection) {
+ol.source.wms.getURL = function(baseURL, params, extent, size, projection) {
   var baseParams = {
     'SERVICE': 'WMS',
     'VERSION': '1.3.0',

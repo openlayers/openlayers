@@ -50,15 +50,14 @@ ol.source.ImageTileSource = function(options) {
    * @type {ol.TileURLFunctionType}
    */
   this.tileURLFunction = goog.isDef(options.tileURLFunction) ?
-      options.tileURLFunction :
-      ol.TileURLFunction.nullTileURLFunction;
+      options.tileURLFunction : ol.TileURLFunction.nullTileURLFunction;
 
   /**
    * @private
    * @type {?string}
    */
-  this.crossOrigin_ =
-      goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
+  this.crossOrigin_ = goog.isDef(options.crossOrigin) ?
+      options.crossOrigin : null;
 
   /**
    * @private
