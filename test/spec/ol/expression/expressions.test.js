@@ -312,6 +312,12 @@ describe('ol.expression.Literal', function() {
       expect(expr.evaluate()).to.be(null);
     });
   });
+
+  describe('#getValue()', function() {
+    var expr = new ol.expression.Literal('asdf');
+    expect(expr.getValue()).to.be('asdf');
+  });
+
 });
 
 

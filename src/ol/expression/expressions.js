@@ -309,6 +309,15 @@ ol.expression.Literal.prototype.evaluate = function() {
 
 
 /**
+ * Get the literal value.
+ * @return {string|number|boolean|null} The literal value.
+ */
+ol.expression.Literal.prototype.getValue = function() {
+  return this.value_;
+};
+
+
+/**
  * @enum {string}
  */
 ol.expression.LogicalOp = {
