@@ -13,6 +13,7 @@
  * Copyright (C) 2011 Ariya Hidayat <ariya.hidayat@gmail.com>
  */
 
+goog.provide('ol.expression.Char'); // TODO: remove this - see #785
 goog.provide('ol.expression.Lexer');
 goog.provide('ol.expression.Token');
 goog.provide('ol.expression.TokenType');
