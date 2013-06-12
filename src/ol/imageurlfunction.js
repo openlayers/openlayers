@@ -13,7 +13,7 @@ ol.ImageURLFunctionType;
 
 /**
  * @param {string} baseURL Base URL (may have query data).
- * @param {Object.<string,*>} params to encode in the url.
+ * @param {Object.<string,*>} params to encode in the URL.
  * @param {function(string, Object.<string,*>, ol.Extent, ol.Size,
  *     ol.Projection): (string|undefined)} paramsFunction params function.
  * @return {ol.ImageURLFunctionType} Image URL function.

@@ -74,7 +74,7 @@ ol.TileURLFunction.createFromTileURLFunctions = function(tileURLFunctions) {
 
 /**
  * @param {string} baseURL Base URL (may have query data).
- * @param {Object.<string,*>} params to encode in the url.
+ * @param {Object.<string,*>} params to encode in the URL.
  * @param {function(this: ol.source.ImageTileSource, string, Object.<string,*>,
  *     ol.Extent, ol.Size, ol.Projection)} paramsFunction params function.
  * @return {ol.TileURLFunctionType} Tile URL function.
@@ -144,8 +144,8 @@ ol.TileURLFunction.withTileCoordTransform =
 
 
 /**
- * @param {string} url Url.
- * @return {Array.<string>} Array of urls.
+ * @param {string} url URL.
+ * @return {Array.<string>} Array of URLs.
  */
 ol.TileURLFunction.expandUrl = function(url) {
   var urls = [];

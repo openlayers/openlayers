@@ -5,7 +5,7 @@ goog.require('goog.uri.utils');
 
 
 /**
- * @param {string} baseURL WMS base url.
+ * @param {string} baseURL WMS base URL.
  * @param {Object.<string, string|number>} params Request parameters.
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Size.

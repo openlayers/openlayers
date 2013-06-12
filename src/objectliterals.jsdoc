@@ -429,7 +429,7 @@
  *     on.
  * @property {Array.<number>|undefined} resolutions Resolutions. If specified,
  *     requests will be made for these resolutions only.
- * @property {string|undefined} url WMS service url.
+ * @property {string|undefined} url WMS service URL.
  */
 
 /**
@@ -481,9 +481,9 @@
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  * @property {number|undefined} maxZoom Maximum zoom.
  * @property {ol.ProjectionLike} projection Projection.
- * @property {string|undefined} url WMS service url.
- * @property {Array.<string>|undefined} urls WMS service urls. Use this instead
- *     of `url` when the WMS supports multiple urls for GetMap requests.
+ * @property {string|undefined} url WMS service URL.
+ * @property {Array.<string>|undefined} urls WMS service URLs. Use this instead
+ *     of `url` when the WMS supports multiple URLs for GetMap requests.
  */
 
 /**
@@ -508,7 +508,7 @@
 
 /**
  * @typedef {Object} ol.style.IconOptions
- * @property {string|ol.Expression} url Icon image url.
+ * @property {string|ol.Expression} url Icon image URL.
  * @property {number|ol.Expression|undefined} width Width of the icon in pixels.
  *     Default is the width of the icon image.
  * @property {number|ol.Expression|undefined} height Height of the icon in
