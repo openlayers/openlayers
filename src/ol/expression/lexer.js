@@ -17,8 +17,10 @@ goog.provide('ol.expression.Char'); // TODO: remove this - see #785
 goog.provide('ol.expression.Lexer');
 goog.provide('ol.expression.Token');
 goog.provide('ol.expression.TokenType');
+goog.provide('ol.expression.UnexpectedToken');
 
 goog.require('goog.asserts');
+goog.require('goog.debug.Error');
 
 
 /**
@@ -143,7 +145,7 @@ ol.expression.Lexer = function(source) {
 ol.expression.Lexer.prototype.expect = function(value) {
   var match = this.match(value);
   if (!match) {
-    this.throwUnexpected({
+    throw new ol.expression.UnexpectedToken({
       type: ol.expression.TokenType.UNKNOWN,
       value: this.getCurrentChar_(),
       index: this.index_
@@ -468,7 +470,7 @@ ol.expression.Lexer.prototype.scanHexLiteral_ = function(code) {
   }
 
   if (str.length === 0 || this.isIdentifierStart_(code)) {
-    this.throwUnexpected({
+    throw new ol.expression.UnexpectedToken({
       type: ol.expression.TokenType.UNKNOWN,
       value: String.fromCharCode(code),
       index: this.index_
@@ -567,7 +569,7 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function(code) {
 
       // numbers like 09 not allowed
       if (this.isDecimalDigit_(nextCode)) {
-        this.throwUnexpected({
+        throw new ol.expression.UnexpectedToken({
           type: ol.expression.TokenType.UNKNOWN,
           value: String.fromCharCode(nextCode),
           index: this.index_
@@ -612,7 +614,7 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function(code) {
     }
 
     if (!this.isDecimalDigit_(code)) {
-      this.throwUnexpected({
+      throw new ol.expression.UnexpectedToken({
         type: ol.expression.TokenType.UNKNOWN,
         value: String.fromCharCode(code),
         index: this.index_
@@ -628,7 +630,7 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function(code) {
   }
 
   if (this.isIdentifierStart_(code)) {
-    this.throwUnexpected({
+    throw new ol.expression.UnexpectedToken({
       type: ol.expression.TokenType.UNKNOWN,
       value: String.fromCharCode(code),
       index: this.index_
@@ -672,7 +674,7 @@ ol.expression.Lexer.prototype.scanOctalLiteral_ = function(code) {
   code = this.getCurrentCharCode_();
   if (this.isIdentifierStart_(code) ||
       this.isDecimalDigit_(code)) {
-    this.throwUnexpected({
+    throw new ol.expression.UnexpectedToken({
       type: ol.expression.TokenType.UNKNOWN,
       value: String.fromCharCode(code),
       index: this.index_ - 1
@@ -790,19 +792,11 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function(code) {
     };
   }
 
-  this.throwUnexpected({
+  throw new ol.expression.UnexpectedToken({
     type: ol.expression.TokenType.UNKNOWN,
     value: String.fromCharCode(code),
     index: this.index_
   });
-
-  // This code is unreachable, but the compiler complains with
-  // JSC_MISSING_RETURN_STATEMENT without it.
-  return {
-    type: ol.expression.TokenType.UNKNOWN,
-    value: '',
-    index: 0
-  };
 };
 
 
@@ -841,7 +835,7 @@ ol.expression.Lexer.prototype.scanStringLiteral_ = function(quote) {
 
   if (quote !== 0) {
     // unterminated string literal
-    this.throwUnexpected(this.peek());
+    throw new ol.expression.UnexpectedToken(this.peek());
   }
 
   return {
@@ -879,13 +873,28 @@ ol.expression.Lexer.prototype.skipWhitespace_ = function() {
 };
 
 
+
 /**
- * Throw an error about an unexpected token.
+ * Error object for unexpected tokens.
  * @param {ol.expression.Token} token The unexpected token.
+ * @param {string=} opt_message Custom error message.
+ * @constructor
+ * @extends {goog.debug.Error}
  */
-ol.expression.Lexer.prototype.throwUnexpected = function(token) {
-  var error = new Error('Unexpected token at ' + token.index + ' : ' +
-      token.value);
-  error.token = token;
-  throw error;
+ol.expression.UnexpectedToken = function(token, opt_message) {
+  var message = goog.isDef(opt_message) ? opt_message :
+      'Unexpected token ' + token.value + ' at index ' + token.index;
+
+  goog.debug.Error.call(this, message);
+
+  /**
+   * @type {ol.expression.Token}
+   */
+  this.token = token;
+
 };
+goog.inherits(ol.expression.UnexpectedToken, goog.debug.Error);
+
+
+/** @override */
+ol.expression.UnexpectedToken.prototype.name = 'UnexpectedToken';

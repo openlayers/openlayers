@@ -32,6 +32,7 @@ goog.require('ol.expression.Member');
 goog.require('ol.expression.Not');
 goog.require('ol.expression.Token');
 goog.require('ol.expression.TokenType');
+goog.require('ol.expression.UnexpectedToken');
 
 
 
@@ -222,7 +223,7 @@ ol.expression.Parser.prototype.parse = function(source) {
   var expr = this.parseExpression_(lexer);
   var token = lexer.peek();
   if (token.type !== ol.expression.TokenType.EOF) {
-    lexer.throwUnexpected(token);
+    throw new ol.expression.UnexpectedToken(token);
   }
   return expr;
 };
@@ -353,7 +354,7 @@ ol.expression.Parser.prototype.parseLeftHandSideExpression_ = function(lexer) {
     // only allow calls on identifiers (e.g. `foo()` not `foo.bar()`)
     if (!(expr instanceof ol.expression.Identifier)) {
       // TODO: more helpful error messages for restricted syntax
-      lexer.throwUnexpected(token);
+      throw new ol.expression.UnexpectedToken(token);
     }
     var args = this.parseArguments_(lexer);
     expr = this.createCallExpression_(expr, args);
@@ -385,7 +386,7 @@ ol.expression.Parser.prototype.parseNonComputedMember_ = function(lexer) {
       token.type !== ol.expression.TokenType.KEYWORD &&
       token.type !== ol.expression.TokenType.BOOLEAN_LITERAL &&
       token.type !== ol.expression.TokenType.NULL_LITERAL) {
-    lexer.throwUnexpected(token);
+    throw new ol.expression.UnexpectedToken(token);
   }
 
   return this.createIdentifier_(String(token.value));
@@ -420,10 +421,8 @@ ol.expression.Parser.prototype.parsePrimaryExpression_ = function(lexer) {
   } else if (type === ol.expression.TokenType.NULL_LITERAL) {
     expr = this.createLiteral_(null);
   } else {
-    lexer.throwUnexpected(token);
+    throw new ol.expression.UnexpectedToken(token);
   }
-  // the compiler doesn't recognize that we have covered all cases here
-  goog.asserts.assert(goog.isDef(expr));
   return expr;
 };
 
