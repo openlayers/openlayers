@@ -30,6 +30,18 @@ ol.Ellipsoid = function(a, flattening) {
    */
   this.b = this.a * (1 - this.flattening);
 
+  /**
+   * @const
+   * @type {number}
+   */
+  this.eSquared = 2 * flattening - flattening * flattening;
+
+  /**
+   * @const
+   * @type {number}
+   */
+  this.e = Math.sqrt(this.eSquared);
+
 };
 
 
