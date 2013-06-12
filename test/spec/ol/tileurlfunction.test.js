@@ -2,11 +2,11 @@ goog.provide('ol.test.TileURLFunction');
 
 describe('ol.TileURLFunction', function() {
 
-  describe('expandUrl', function() {
+  describe('expandURL', function() {
     describe('with number range', function() {
       it('creates expected URLs', function() {
         var template = 'http://tile-{1-3}/{z}/{x}/{y}';
-        var urls = ol.TileURLFunction.expandUrl(template);
+        var urls = ol.TileURLFunction.expandURL(template);
         expect(urls).to.eql([
           'http://tile-1/{z}/{x}/{y}',
           'http://tile-2/{z}/{x}/{y}',
@@ -17,7 +17,7 @@ describe('ol.TileURLFunction', function() {
     describe('with character range', function() {
       it('creates expected URLs', function() {
         var template = 'http://tile-{c-e}/{z}/{x}/{y}';
-        var urls = ol.TileURLFunction.expandUrl(template);
+        var urls = ol.TileURLFunction.expandURL(template);
         expect(urls).to.eql([
           'http://tile-c/{z}/{x}/{y}',
           'http://tile-d/{z}/{x}/{y}',

@@ -147,7 +147,7 @@ ol.TileURLFunction.withTileCoordTransform =
  * @param {string} url URL.
  * @return {Array.<string>} Array of URLs.
  */
-ol.TileURLFunction.expandUrl = function(url) {
+ol.TileURLFunction.expandURL = function(url) {
   var urls = [];
   var match = /\{(\d)-(\d)\}/.exec(url) || /\{([a-z])-([a-z])\}/.exec(url);
   if (match) {

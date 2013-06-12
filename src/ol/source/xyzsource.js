@@ -46,7 +46,7 @@ ol.source.XYZ = function(options) {
     tileURLFunction = ol.TileURLFunction.createFromTemplates(options.urls);
   } else if (goog.isDef(options.url)) {
     tileURLFunction = ol.TileURLFunction.createFromTemplates(
-        ol.TileURLFunction.expandUrl(options.url));
+        ol.TileURLFunction.expandURL(options.url));
   }
 
   var tileGrid = new ol.tilegrid.XYZ({

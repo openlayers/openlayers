@@ -104,7 +104,7 @@ ol.source.WMTS = function(options) {
   var tileURLFunction = ol.TileURLFunction.nullTileURLFunction;
   var urls = options.urls;
   if (!goog.isDef(urls) && goog.isDef(options.url)) {
-    urls = ol.TileURLFunction.expandUrl(options.url);
+    urls = ol.TileURLFunction.expandURL(options.url);
   }
   if (goog.isDef(urls)) {
     tileURLFunction = ol.TileURLFunction.createFromTileURLFunctions(
