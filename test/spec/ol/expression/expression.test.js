@@ -3,12 +3,12 @@ goog.provide('ol.test.expression');
 
 describe('ol.expression.parse', function() {
 
-  it('parses a string and returns an expression', function() {
+  it('parses a subset of ECMAScript 5.1 expressions', function() {
     var expr = ol.expression.parse('foo');
     expect(expr).to.be.a(ol.expression.Expression);
   });
 
-  describe('primary expressions', function() {
+  describe('11.1 - primary expressions', function() {
     // http://www.ecma-international.org/ecma-262/5.1/#sec-11.1
 
     it('parses identifier expressions', function() {
@@ -67,7 +67,7 @@ describe('ol.expression.parse', function() {
 
   });
 
-  describe('left-hand-side expressions', function() {
+  describe('11.2 - left-hand-side expressions', function() {
     // http://www.ecma-international.org/ecma-262/5.1/#sec-11.2
 
     it('parses member expressions with dot notation', function() {
@@ -111,7 +111,13 @@ describe('ol.expression.parse', function() {
 
   });
 
-  describe('unary operators', function() {
+  describe('11.3 - postfix expressions', function() {
+    // http://www.ecma-international.org/ecma-262/5.1/#sec-11.3
+    it('not supported');
+  });
+
+
+  describe('11.4 - unary operators', function() {
     // http://www.ecma-international.org/ecma-262/5.1/#sec-11.4
 
     it('parses logical not operator', function() {
@@ -132,7 +138,7 @@ describe('ol.expression.parse', function() {
 
   });
 
-  describe('multiplicitave operators', function() {
+  describe('11.5 - multiplicitave operators', function() {
     // http://www.ecma-international.org/ecma-262/5.1/#sec-11.5
 
     it('parses * operator', function() {
@@ -173,7 +179,7 @@ describe('ol.expression.parse', function() {
 
   });
 
-  describe('additive operators', function() {
+  describe('11.6 - additive operators', function() {
     // http://www.ecma-international.org/ecma-262/5.1/#sec-11.6
 
     it('parses + operator', function() {
@@ -202,7 +208,12 @@ describe('ol.expression.parse', function() {
 
   });
 
-  describe('relational operators', function() {
+  describe('11.7 - bitwise shift operators', function() {
+    // http://www.ecma-international.org/ecma-262/5.1/#sec-11.7
+    it('not supported');
+  });
+
+  describe('11.8 - relational operators', function() {
     // http://www.ecma-international.org/ecma-262/5.1/#sec-11.8
 
     it('parses < operator', function() {
@@ -279,7 +290,7 @@ describe('ol.expression.parse', function() {
 
   });
 
-  describe('equality operators', function() {
+  describe('11.9 - equality operators', function() {
     // http://www.ecma-international.org/ecma-262/5.1/#sec-11.9
 
     it('parses == operator', function() {
@@ -371,7 +382,12 @@ describe('ol.expression.parse', function() {
     });
   });
 
-  describe('binary logical operators', function() {
+  describe('11.10 - binary bitwise operators', function() {
+    // http://www.ecma-international.org/ecma-262/5.1/#sec-11.10
+    it('not supported');
+  });
+
+  describe('11.11 - binary logical operators', function() {
     // http://www.ecma-international.org/ecma-262/5.1/#sec-11.11
 
     it('parses && operator', function() {
@@ -422,6 +438,21 @@ describe('ol.expression.parse', function() {
       }).throwException();
     });
 
+  });
+
+  describe('11.12 - conditional operator', function() {
+    // http://www.ecma-international.org/ecma-262/5.1/#sec-11.12
+    it('not supported');
+  });
+
+  describe('11.13 - assignment operators', function() {
+    // http://www.ecma-international.org/ecma-262/5.1/#sec-11.13
+    it('not supported');
+  });
+
+  describe('11.14 - comma operator', function() {
+    // http://www.ecma-international.org/ecma-262/5.1/#sec-11.14
+    it('not supported');
   });
 
 });
