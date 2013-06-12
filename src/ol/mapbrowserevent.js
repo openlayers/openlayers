@@ -172,6 +172,9 @@ ol.MapBrowserEventHandler = function(map) {
         this.relayEvent_, false, this),
     goog.events.listen(element,
         goog.events.EventType.MOUSEOUT,
+        this.relayEvent_, false, this),
+    goog.events.listen(element,
+        goog.events.EventType.CONTEXTMENU,
         this.relayEvent_, false, this)
   ];
   // touch events
@@ -376,5 +379,6 @@ ol.MapBrowserEvent.EventType = {
   TOUCHMOVE: goog.events.EventType.TOUCHMOVE,
   TOUCHEND: goog.events.EventType.TOUCHEND,
   MOUSEMOVE: goog.events.EventType.MOUSEMOVE,
-  MOUSEOUT: goog.events.EventType.MOUSEOUT
+  MOUSEOUT: goog.events.EventType.MOUSEOUT,
+  CONTEXTMENU: goog.events.EventType.CONTEXTMENU
 };
