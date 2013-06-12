@@ -1,5 +1,5 @@
-goog.provide('ol.ImageUrlFunction');
-goog.provide('ol.ImageUrlFunctionType');
+goog.provide('ol.ImageURLFunction');
+goog.provide('ol.ImageURLFunctionType');
 
 goog.require('ol.Size');
 
@@ -8,7 +8,7 @@ goog.require('ol.Size');
  * @typedef {function(this:ol.source.Source, ol.Extent, ol.Size, ol.Projection):
  *     (string|undefined)}
  */
-ol.ImageUrlFunctionType;
+ol.ImageURLFunctionType;
 
 
 /**
@@ -16,9 +16,9 @@ ol.ImageUrlFunctionType;
  * @param {Object.<string,*>} params to encode in the url.
  * @param {function(string, Object.<string,*>, ol.Extent, ol.Size,
  *     ol.Projection): (string|undefined)} paramsFunction params function.
- * @return {ol.ImageUrlFunctionType} Image URL function.
+ * @return {ol.ImageURLFunctionType} Image URL function.
  */
-ol.ImageUrlFunction.createFromParamsFunction =
+ol.ImageURLFunction.createFromParamsFunction =
     function(baseUrl, params, paramsFunction) {
   return (
       /**
@@ -38,7 +38,7 @@ ol.ImageUrlFunction.createFromParamsFunction =
  * @param {ol.Size} size Size.
  * @return {string|undefined} Image URL.
  */
-ol.ImageUrlFunction.nullImageUrlFunction =
+ol.ImageURLFunction.nullImageURLFunction =
     function(extent, size) {
   return undefined;
 };

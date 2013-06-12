@@ -83,7 +83,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
           goog.array.map(
               resource.imageUrlSubdomains,
               function(subdomain) {
-                var imageUrl = resource.imageUrl
+                var imageURL = resource.imageUrl
                     .replace('{subdomain}', subdomain)
                     .replace('{culture}', culture);
                 return (
@@ -98,7 +98,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                       if (goog.isNull(tileCoord)) {
                         return undefined;
                       } else {
-                        return imageUrl.replace(
+                        return imageURL.replace(
                             '{quadkey}', tileCoord.quadKey());
                       }
                     });
