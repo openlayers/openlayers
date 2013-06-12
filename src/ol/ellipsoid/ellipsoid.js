@@ -13,16 +13,19 @@ goog.require('ol.Coordinate');
 ol.Ellipsoid = function(a, flattening) {
 
   /**
+   * @const
    * @type {number}
    */
   this.a = a;
 
   /**
+   * @const
    * @type {number}
    */
   this.flattening = flattening;
 
   /**
+   * @const
    * @type {number}
    */
   this.b = this.a * (1 - this.flattening);
