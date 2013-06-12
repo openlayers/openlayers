@@ -372,6 +372,29 @@ describe('ol.expression.Logical', function() {
     });
   });
 
+  var op = ol.expression.LogicalOp.AND;
+  var left = new ol.expression.Identifier('foo');
+  var right = new ol.expression.Literal(false);
+  var expr = new ol.expression.Logical(op, left, right);
+
+  describe('#getOperator()', function() {
+    it('gets the operator', function() {
+      expect(expr.getOperator()).to.be(op);
+    });
+  });
+
+  describe('#getLeft()', function() {
+    it('gets the left expression', function() {
+      expect(expr.getLeft()).to.be(left);
+    });
+  });
+
+  describe('#getRight()', function() {
+    it('gets the right expression', function() {
+      expect(expr.getRight()).to.be(right);
+    });
+  });
+
 });
 
 describe('ol.expression.Math', function() {

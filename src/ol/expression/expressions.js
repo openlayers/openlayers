@@ -397,6 +397,33 @@ ol.expression.Logical.prototype.evaluate = function(opt_scope, opt_fns,
 
 
 /**
+ * Get the logical operator.
+ * @return {string} The logical operator.
+ */
+ol.expression.Logical.prototype.getOperator = function() {
+  return this.operator_;
+};
+
+
+/**
+ * Get the left expression.
+ * @return {ol.expression.Expression} The left expression.
+ */
+ol.expression.Logical.prototype.getLeft = function() {
+  return this.left_;
+};
+
+
+/**
+ * Get the right expression.
+ * @return {ol.expression.Expression} The right expression.
+ */
+ol.expression.Logical.prototype.getRight = function() {
+  return this.right_;
+};
+
+
+/**
  * @enum {string}
  */
 ol.expression.MathOp = {
