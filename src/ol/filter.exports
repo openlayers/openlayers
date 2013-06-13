@@ -1,7 +1,28 @@
 @exportSymbol ol.filter.Filter
 @exportSymbol ol.filter.Geometry
 @exportSymbol ol.filter.Logical
+@exportSymbol ol.filter.Comparison
+@exportSymbol ol.filter.FeatureId
+@exportSymbol ol.filter.Spatial
 
 @exportSymbol ol.filter.LogicalOperator
 @exportProperty ol.filter.LogicalOperator.AND
 @exportProperty ol.filter.LogicalOperator.OR
+
+@exportSymbol ol.filter.ComparisonType
+@exportProperty ol.filter.ComparisonType.EQUAL_TO
+@exportProperty ol.filter.ComparisonType.NOT_EQUAL_TO
+@exportProperty ol.filter.ComparisonType.LESS_THAN
+@exportProperty ol.filter.ComparisonType.GREATER_THAN
+@exportProperty ol.filter.ComparisonType.LESS_THAN_OR_EQUAL_TO
+@exportProperty ol.filter.ComparisonType.GREATER_THAN_OR_EQUAL_TO
+@exportProperty ol.filter.ComparisonType.BETWEEN
+@exportProperty ol.filter.ComparisonType.LIKE
+@exportProperty ol.filter.ComparisonType.IS_NULL
+
+@exportSymbol ol.filter.SpatialType
+@exportProperty ol.filter.SpatialType.BBOX
+@exportProperty ol.filter.SpatialType.INTERSECTS
+@exportProperty ol.filter.SpatialType.DWITHIN
+@exportProperty ol.filter.SpatialType.WITHIN
+@exportProperty ol.filter.SpatialType.CONTAINS

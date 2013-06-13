@@ -545,6 +545,34 @@
  */
 
 /**
+ * @typedef {Object} ol.filter.ComparisonOptions
+ * @property {ol.filter.ComparisonType} type The type of comparison filter.
+ * @property {string} property The property associated with the filter.
+ * @property {string|undefined} value The value associated with the filter.
+ * @property {string|undefined} lowerBoundary The lower boundary of a between
+ *     filter.
+ * @property {string|undefined} upperBoundary The upper boundary of a between
+ *     filter.
+ */
+
+/**
+ * @typedef {Object} ol.filter.SpatialOptions
+ * @property {ol.filter.SpatialType} type The type of spatial filter.
+ * @property {string|undefined} property The property associated with the filter.
+ * @property {ol.geom.Geometry} value The value associated with the filter.
+ * @property {number|undefined} distance The distance of the DWITHIN filter.
+ * @property {string|undefined} distanceUnits The distance units of the
+ *     DWITHIN filter.
+ */
+
+/**
+ * @typedef {Object} ol.filter.FunctionOptions
+ * @property {string} name The name of the function to use.
+ * @property {Array.<ol.filter.Function|string|number>} params The parameters
+ *     to use.
+ */
+
+/**
  * @typedef {Object} ol.style.ShapeOptions
  * @property {ol.style.ShapeType|undefined} type Type.
  * @property {number|ol.Expression|undefined} size Size in pixels.
