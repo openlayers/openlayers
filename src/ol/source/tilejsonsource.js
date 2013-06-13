@@ -12,7 +12,7 @@ goog.require('goog.asserts');
 goog.require('goog.net.jsloader');
 goog.require('ol.Attribution');
 goog.require('ol.TileRange');
-goog.require('ol.TileUrlFunction');
+goog.require('ol.TileURLFunction');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.ImageTileSource');
@@ -95,11 +95,11 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function() {
   });
   this.tileGrid = tileGrid;
 
-  this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
+  this.tileURLFunction = ol.TileURLFunction.withTileCoordTransform(
       tileGrid.createTileCoordTransform({
         extent: extent
       }),
-      ol.TileUrlFunction.createFromTemplates(tileJSON.tiles));
+      ol.TileURLFunction.createFromTemplates(tileJSON.tiles));
 
   if (goog.isDef(tileJSON.attribution)) {
     var attributionExtent = goog.isDef(extent) ?

@@ -5,15 +5,14 @@ goog.require('goog.uri.utils');
 
 
 /**
- * @param {string} baseUrl WMS base url.
+ * @param {string} baseURL WMS base URL.
  * @param {Object.<string, string|number>} params Request parameters.
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Size.
  * @param {ol.Projection} projection Projection.
  * @return {string} WMS GetMap request URL.
  */
-ol.source.wms.getUrl =
-    function(baseUrl, params, extent, size, projection) {
+ol.source.wms.getURL = function(baseURL, params, extent, size, projection) {
   var baseParams = {
     'SERVICE': 'WMS',
     'VERSION': '1.3.0',
@@ -38,5 +37,5 @@ ol.source.wms.getUrl =
       [extent[0], extent[2], extent[1], extent[3]];
   baseParams['BBOX'] = bboxValues.join(',');
 
-  return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);
+  return goog.uri.utils.appendParamsFromMap(baseURL, baseParams);
 };

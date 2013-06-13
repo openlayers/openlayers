@@ -6,7 +6,7 @@ goog.require('goog.asserts');
 goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
 goog.require('ol.TileRange');
-goog.require('ol.TileUrlFunction');
+goog.require('ol.TileURLFunction');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.ImageTileSource');
@@ -77,13 +77,13 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   this.tileGrid = tileGrid;
 
   var culture = this.culture_;
-  this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
+  this.tileURLFunction = ol.TileURLFunction.withTileCoordTransform(
       tileGrid.createTileCoordTransform(),
-      ol.TileUrlFunction.createFromTileUrlFunctions(
+      ol.TileURLFunction.createFromTileURLFunctions(
           goog.array.map(
               resource.imageUrlSubdomains,
               function(subdomain) {
-                var imageUrl = resource.imageUrl
+                var imageURL = resource.imageUrl
                     .replace('{subdomain}', subdomain)
                     .replace('{culture}', culture);
                 return (
@@ -98,7 +98,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                       if (goog.isNull(tileCoord)) {
                         return undefined;
                       } else {
-                        return imageUrl.replace(
+                        return imageURL.replace(
                             '{quadkey}', tileCoord.quadKey());
                       }
                     });

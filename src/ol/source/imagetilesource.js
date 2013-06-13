@@ -9,8 +9,8 @@ goog.require('ol.Tile');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
 goog.require('ol.TileState');
-goog.require('ol.TileUrlFunction');
-goog.require('ol.TileUrlFunctionType');
+goog.require('ol.TileURLFunction');
+goog.require('ol.TileURLFunctionType');
 goog.require('ol.source.TileSource');
 goog.require('ol.tilegrid.TileGrid');
 
@@ -23,7 +23,7 @@ goog.require('ol.tilegrid.TileGrid');
  *            opaque: (boolean|undefined),
  *            projection: ol.ProjectionLike,
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
- *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
+ *            tileURLFunction: (ol.TileURLFunctionType|undefined)}}
  */
 ol.source.ImageTileOptions;
 
@@ -47,18 +47,17 @@ ol.source.ImageTileSource = function(options) {
 
   /**
    * @protected
-   * @type {ol.TileUrlFunctionType}
+   * @type {ol.TileURLFunctionType}
    */
-  this.tileUrlFunction = goog.isDef(options.tileUrlFunction) ?
-      options.tileUrlFunction :
-      ol.TileUrlFunction.nullTileUrlFunction;
+  this.tileURLFunction = goog.isDef(options.tileURLFunction) ?
+      options.tileURLFunction : ol.TileURLFunction.nullTileURLFunction;
 
   /**
    * @private
    * @type {?string}
    */
-  this.crossOrigin_ =
-      goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
+  this.crossOrigin_ = goog.isDef(options.crossOrigin) ?
+      options.crossOrigin : null;
 
   /**
    * @private
@@ -96,11 +95,11 @@ ol.source.ImageTileSource.prototype.getTile = function(z, x, y, projection) {
   } else {
     goog.asserts.assert(projection);
     var tileCoord = new ol.TileCoord(z, x, y);
-    var tileUrl = this.tileUrlFunction(tileCoord, projection);
+    var tileURL = this.tileURLFunction(tileCoord, projection);
     var tile = new ol.ImageTile(
         tileCoord,
-        goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,
-        goog.isDef(tileUrl) ? tileUrl : '',
+        goog.isDef(tileURL) ? ol.TileState.IDLE : ol.TileState.EMPTY,
+        goog.isDef(tileURL) ? tileURL : '',
         this.crossOrigin_);
     this.tileCache_.set(tileCoordKey, tile);
     return tile;

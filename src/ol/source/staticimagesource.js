@@ -1,7 +1,7 @@
 goog.provide('ol.source.StaticImage');
 
 goog.require('ol.Image');
-goog.require('ol.ImageUrlFunctionType');
+goog.require('ol.ImageURLFunctionType');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.ImageSource');
@@ -28,7 +28,7 @@ ol.source.StaticImage = function(options) {
     crossOrigin: options.crossOrigin,
     extent: options.extent,
     projection: options.projection,
-    imageUrlFunction: imageFunction,
+    imageURLFunction: imageFunction,
     resolutions: [imageResolution]
   });
 
@@ -57,7 +57,7 @@ ol.source.StaticImage.prototype.getImage =
 
 /**
  * @param {string|undefined} url URL.
- * @return {ol.ImageUrlFunctionType} Function.
+ * @return {ol.ImageURLFunctionType} Function.
  */
 ol.source.StaticImage.createImageFunction = function(url) {
   return (

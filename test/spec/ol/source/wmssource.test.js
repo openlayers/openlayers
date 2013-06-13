@@ -2,7 +2,7 @@ goog.provide('ol.test.source.wms');
 
 describe('ol.source.wms', function() {
 
-  describe('ol.source.wms.getUrl', function() {
+  describe('ol.source.wms.getURL', function() {
     it('creates expected URL', function() {
       var epsg3857 = ol.proj.get('EPSG:3857');
       var extent = [-20037508.342789244, 0, -20037508.342789244, 0];
@@ -10,7 +10,7 @@ describe('ol.source.wms', function() {
           'GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&WIDTH=256&HEIGHT=256&' +
           'foo=bar&STYLES=&CRS=EPSG%3A3857&BBOX=' +
           '-20037508.342789244%2C-20037508.342789244%2C0%2C0';
-      var url = ol.source.wms.getUrl('http://wms', {'foo': 'bar'},
+      var url = ol.source.wms.getURL('http://wms', {'foo': 'bar'},
           extent, [256, 256], epsg3857);
       expect(url).to.eql(expected);
     });
@@ -20,7 +20,7 @@ describe('ol.source.wms', function() {
       var expected = 'http://wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=' +
           'GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&WIDTH=256&HEIGHT=256&' +
           'foo=bar&STYLES=&CRS=EPSG%3A4326&BBOX=-90%2C-180%2C90%2C0';
-      var url = ol.source.wms.getUrl('http://wms', {'foo': 'bar'},
+      var url = ol.source.wms.getURL('http://wms', {'foo': 'bar'},
           extent, [256, 256], epsg4326);
       expect(url).to.eql(expected);
     });

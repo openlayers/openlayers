@@ -3,8 +3,8 @@ goog.provide('ol.source.XYZOptions');
 
 goog.require('ol.Attribution');
 goog.require('ol.Projection');
-goog.require('ol.TileUrlFunction');
-goog.require('ol.TileUrlFunctionType');
+goog.require('ol.TileURLFunction');
+goog.require('ol.TileURLFunctionType');
 goog.require('ol.proj');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.tilegrid.XYZ');
@@ -18,7 +18,7 @@ goog.require('ol.tilegrid.XYZ');
  *            maxZoom: number,
  *            minZoom: (number|undefined),
  *            projection: (ol.Projection|undefined),
- *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
+ *            tileURLFunction: (ol.TileURLFunctionType|undefined),
  *            url: (string|undefined),
  *            urls: (Array.<string>|undefined)}}
  */
@@ -36,17 +36,17 @@ ol.source.XYZ = function(options) {
   var projection = options.projection || ol.proj.get('EPSG:3857');
 
   /**
-   * @type {ol.TileUrlFunctionType}
+   * @type {ol.TileURLFunctionType}
    */
-  var tileUrlFunction = ol.TileUrlFunction.nullTileUrlFunction;
+  var tileURLFunction = ol.TileURLFunction.nullTileURLFunction;
   // FIXME use goog.nullFunction ?
-  if (goog.isDef(options.tileUrlFunction)) {
-    tileUrlFunction = options.tileUrlFunction;
+  if (goog.isDef(options.tileURLFunction)) {
+    tileURLFunction = options.tileURLFunction;
   } else if (goog.isDef(options.urls)) {
-    tileUrlFunction = ol.TileUrlFunction.createFromTemplates(options.urls);
+    tileURLFunction = ol.TileURLFunction.createFromTemplates(options.urls);
   } else if (goog.isDef(options.url)) {
-    tileUrlFunction = ol.TileUrlFunction.createFromTemplates(
-        ol.TileUrlFunction.expandUrl(options.url));
+    tileURLFunction = ol.TileURLFunction.createFromTemplates(
+        ol.TileURLFunction.expandURL(options.url));
   }
 
   var tileGrid = new ol.tilegrid.XYZ({
@@ -58,8 +58,8 @@ ol.source.XYZ = function(options) {
     extent: options.extent
   });
 
-  tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
-      tileCoordTransform, tileUrlFunction);
+  tileURLFunction = ol.TileURLFunction.withTileCoordTransform(
+      tileCoordTransform, tileURLFunction);
 
   goog.base(this, {
     attributions: options.attributions,
@@ -68,7 +68,7 @@ ol.source.XYZ = function(options) {
     logo: options.logo,
     projection: projection,
     tileGrid: tileGrid,
-    tileUrlFunction: tileUrlFunction
+    tileURLFunction: tileURLFunction
   });
 
 };

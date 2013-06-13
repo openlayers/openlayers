@@ -1,7 +1,7 @@
 goog.provide('ol.source.SingleImageWMS');
 
 goog.require('ol.Image');
-goog.require('ol.ImageUrlFunction');
+goog.require('ol.ImageURLFunction');
 goog.require('ol.extent');
 goog.require('ol.source.ImageSource');
 goog.require('ol.source.wms');
@@ -14,10 +14,10 @@ goog.require('ol.source.wms');
  * @param {ol.source.SingleImageWMSOptions} options Options.
  */
 ol.source.SingleImageWMS = function(options) {
-  var imageUrlFunction = goog.isDef(options.url) ?
-      ol.ImageUrlFunction.createFromParamsFunction(
-          options.url, options.params, ol.source.wms.getUrl) :
-      ol.ImageUrlFunction.nullImageUrlFunction;
+  var imageURLFunction = goog.isDef(options.url) ?
+      ol.ImageURLFunction.createFromParamsFunction(
+          options.url, options.params, ol.source.wms.getURL) :
+      ol.ImageURLFunction.nullImageURLFunction;
 
   goog.base(this, {
     attributions: options.attributions,
@@ -25,7 +25,7 @@ ol.source.SingleImageWMS = function(options) {
     extent: options.extent,
     projection: options.projection,
     resolutions: options.resolutions,
-    imageUrlFunction: imageUrlFunction
+    imageURLFunction: imageURLFunction
   });
 
   /**

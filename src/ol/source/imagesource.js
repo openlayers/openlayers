@@ -5,8 +5,8 @@ goog.require('goog.asserts');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.Image');
-goog.require('ol.ImageUrlFunction');
-goog.require('ol.ImageUrlFunctionType');
+goog.require('ol.ImageURLFunction');
+goog.require('ol.ImageURLFunctionType');
 goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.array');
@@ -20,7 +20,7 @@ goog.require('ol.source.Source');
  *            logo: (string|undefined),
  *            projection: ol.ProjectionLike,
  *            resolutions: (Array.<number>|undefined),
- *            imageUrlFunction: (ol.ImageUrlFunctionType|
+ *            imageURLFunction: (ol.ImageURLFunctionType|
  *                undefined)}}
  */
 ol.source.ImageSourceOptions;
@@ -43,19 +43,17 @@ ol.source.ImageSource = function(options) {
 
   /**
    * @protected
-   * @type {ol.ImageUrlFunctionType}
+   * @type {ol.ImageURLFunctionType}
    */
-  this.imageUrlFunction =
-      goog.isDef(options.imageUrlFunction) ?
-          options.imageUrlFunction :
-          ol.ImageUrlFunction.nullImageUrlFunction;
+  this.imageURLFunction = goog.isDef(options.imageURLFunction) ?
+      options.imageURLFunction : ol.ImageURLFunction.nullImageURLFunction;
 
   /**
    * @private
    * @type {?string}
    */
-  this.crossOrigin_ =
-      goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
+  this.crossOrigin_ = goog.isDef(options.crossOrigin) ?
+      options.crossOrigin : null;
 
   /**
    * @private
@@ -84,10 +82,10 @@ goog.inherits(ol.source.ImageSource, ol.source.Source);
 ol.source.ImageSource.prototype.createImage =
     function(extent, resolution, size, projection) {
   var image = null;
-  var imageUrl = this.imageUrlFunction(extent, size, projection);
-  if (goog.isDef(imageUrl)) {
+  var imageURL = this.imageURLFunction(extent, size, projection);
+  if (goog.isDef(imageURL)) {
     image = new ol.Image(
-        extent, resolution, imageUrl, this.crossOrigin_,
+        extent, resolution, imageURL, this.crossOrigin_,
         this.getAttributions());
   }
   return image;
