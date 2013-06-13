@@ -9,7 +9,7 @@ describe('ol.expression.Lexer', function() {
     });
   });
 
-  describe.only('#next()', function() {
+  describe('#next()', function() {
 
     it('returns one token at a time', function() {
       var source = 'foo === "bar"';
@@ -41,7 +41,7 @@ describe('ol.expression.Lexer', function() {
 
   });
 
-  describe.only('#peek()', function() {
+  describe('#peek()', function() {
 
     var lexer;
     beforeEach(function() {

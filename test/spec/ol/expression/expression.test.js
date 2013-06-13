@@ -534,3 +534,4 @@ goog.require('ol.expression.Math');
 goog.require('ol.expression.Member');
 goog.require('ol.expression.Not');
 goog.require('ol.expression.TokenType');
+goog.require('ol.expression.UnexpectedToken');

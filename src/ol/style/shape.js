@@ -130,17 +130,24 @@ ol.style.Shape = function(options) {
   if (goog.isDefAndNotNull(options.strokeColor) ||
       goog.isDefAndNotNull(options.strokeWidth)) {
 
-    strokeColor = !goog.isDefAndNotNull(options.strokeColor) ?
-        new ol.expression.Literal(ol.style.ShapeDefaults.strokeColor) :
-        (options.strokeColor instanceof ol.expression.Expression) ?
-            options.strokeColor :
-            new ol.expression.Literal(options.strokeColor);
+    if (goog.isDefAndNotNull(options.strokeColor)) {
+      strokeColor = (options.strokeColor instanceof ol.expression.Expression) ?
+          options.strokeColor :
+          new ol.expression.Literal(options.strokeColor);
+    } else {
+      strokeColor = new ol.expression.Literal(
+          /** @type {string} */ (ol.style.ShapeDefaults.strokeColor));
+    }
 
-    strokeWidth = !goog.isDef(options.strokeWidth) ?
-        new ol.expression.Literal(ol.style.ShapeDefaults.strokeWidth) :
-        (options.strokeWidth instanceof ol.expression.Expression) ?
-            options.strokeWidth :
-            new ol.expression.Literal(options.strokeWidth);
+    if (goog.isDefAndNotNull(options.strokeWidth)) {
+      strokeWidth = (options.strokeWidth instanceof ol.expression.Expression) ?
+          options.strokeWidth :
+          new ol.expression.Literal(options.strokeWidth);
+    } else {
+      strokeWidth = new ol.expression.Literal(
+          /** @type {number} */ (ol.style.ShapeDefaults.strokeWidth));
+    }
+
   }
 
   /**
