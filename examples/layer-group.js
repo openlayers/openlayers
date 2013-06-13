@@ -42,8 +42,11 @@ var map = new ol.Map({
 function bindInputs(layerid, layer) {
   new ol.dom.Input($(layerid + ' .visible')[0])
       .bindTo('checked', layer, 'visible');
-  new ol.dom.Input($(layerid + ' .opacity')[0])
-      .bindTo('value', layer, 'opacity');
+  $.each(['opacity', 'hue', 'saturation', 'contrast', 'brightness'],
+      function(i, v) {
+        new ol.dom.Input($(layerid + ' .' + v)[0]).bindTo('value', layer, v);
+      }
+  );
 }
 map.getLayers().forEach(function(layer, i) {
   bindInputs('#layer' + i, layer);
