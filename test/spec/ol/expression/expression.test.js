@@ -522,6 +522,48 @@ describe('ol.expression.parse', function() {
 
 });
 
+describe('ol.expression.lib', function() {
+
+  var lib = ol.expression.lib;
+  var parse = ol.expression.parse;
+
+  function evaluate(expression, feature) {
+    return expression.evaluate(feature.getAttributes(), lib, feature);
+  }
+
+  describe('extent()', function() {
+
+    var nw = new ol.Feature({
+      geom: new ol.geom.Polygon([[
+        [-180, 90], [0, 90], [0, 0], [-180, 0], [-180, 90]
+      ]])
+    });
+
+    var se = new ol.Feature({
+      geom: new ol.geom.Polygon([[
+        [180, -90], [0, -90], [0, 0], [180, 0], [180, -90]
+      ]])
+    });
+
+    var north = parse('extent(-100, 100, 40, 60)');
+    var south = parse('extent(-100, 100, -60, -40)');
+    var east = parse('extent(80, 100, -50, 50)');
+    var west = parse('extent(-100, -80, -50, 50)');
+
+    expect(evaluate(north, nw), true);
+    expect(evaluate(south, nw), false);
+    expect(evaluate(east, nw), false);
+    expect(evaluate(west, nw), true);
+
+    expect(evaluate(north, se), false);
+    expect(evaluate(south, se), true);
+    expect(evaluate(east, se), true);
+    expect(evaluate(west, se), false);
+
+  });
+
+});
+
 
 goog.require('ol.expression');
 goog.require('ol.expression.Call');
