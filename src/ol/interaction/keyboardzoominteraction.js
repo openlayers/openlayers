@@ -62,7 +62,6 @@ ol.interaction.KeyboardZoom.prototype.handleMapBrowserEvent =
       var view = map.getView().getView2D();
       ol.interaction.Interaction.zoomByDelta(map, view, delta, undefined,
           ol.interaction.KEYBOARD_ZOOM_DURATION);
-      keyEvent.preventDefault();
       mapBrowserEvent.preventDefault();
     }
   }

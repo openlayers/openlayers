@@ -98,6 +98,24 @@ ol.MapBrowserEvent.prototype.isMouseActionButton = function() {
 };
 
 
+/**
+ * @override
+ */
+ol.MapBrowserEvent.prototype.preventDefault = function() {
+  goog.base(this, 'preventDefault');
+  this.browserEvent.preventDefault();
+};
+
+
+/**
+ * @override
+ */
+ol.MapBrowserEvent.prototype.stopPropagation = function() {
+  goog.base(this, 'stopPropagation');
+  this.browserEvent.stopPropagation();
+};
+
+
 
 /**
  * @param {ol.Map} map The map with the viewport to listen to events on.

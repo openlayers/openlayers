@@ -93,7 +93,6 @@ ol.interaction.MouseWheelZoom.prototype.handleMapBrowserEvent =
         goog.bind(this.doZoom_, this, map), timeLeft);
 
     mapBrowserEvent.preventDefault();
-    mouseWheelEvent.preventDefault();
   }
 };
 
