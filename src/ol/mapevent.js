@@ -31,23 +31,9 @@ ol.MapEvent = function(type, map, opt_frameState) {
   this.map = map;
 
   /**
-   * @type {boolean}
-   */
-  this.defaultPrevented = false;
-
-  /**
    * @type {?ol.FrameState}
    */
   this.frameState = goog.isDef(opt_frameState) ? opt_frameState : null;
 
 };
 goog.inherits(ol.MapEvent, goog.events.Event);
-
-
-/**
- * Prevents the default action.
- */
-ol.MapEvent.prototype.preventDefault = function() {
-  goog.base(this, 'preventDefault');
-  this.defaultPrevented = true;
-};
