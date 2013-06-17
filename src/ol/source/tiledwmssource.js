@@ -64,7 +64,7 @@ ol.source.TiledWMS = function(options) {
       tileExtent = tileGrid.getTileCoordExtent(
           new ol.TileCoord(tileCoord.z, x, tileCoord.y));
     }
-    if (!ol.extent.intersects(tileExtent, extent)) {
+    if (!goog.isNull(extent) && !ol.extent.intersects(tileExtent, extent)) {
       return null;
     }
     return new ol.TileCoord(tileCoord.z, x, tileCoord.y);

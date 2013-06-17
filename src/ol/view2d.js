@@ -8,6 +8,7 @@ goog.require('ol.Constraints');
 goog.require('ol.IView2D');
 goog.require('ol.IView3D');
 goog.require('ol.Projection');
+goog.require('ol.ProjectionUnits');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
 goog.require('ol.RotationConstraintType');
@@ -57,18 +58,6 @@ ol.View2D = function(opt_options) {
       options.center : null;
   values[ol.View2DProperty.PROJECTION] = ol.proj.createProjection(
       options.projection, 'EPSG:3857');
-  if (goog.isDef(options.resolution)) {
-    values[ol.View2DProperty.RESOLUTION] = options.resolution;
-  } else if (goog.isDef(options.zoom)) {
-    var projectionExtent = values[ol.View2DProperty.PROJECTION].getExtent();
-    var size = Math.max(
-        projectionExtent[1] - projectionExtent[0],
-        projectionExtent[3] - projectionExtent[2]);
-    values[ol.View2DProperty.RESOLUTION] =
-        size / (ol.DEFAULT_TILE_SIZE * Math.pow(2, options.zoom));
-  }
-  values[ol.View2DProperty.ROTATION] = options.rotation;
-  this.setValues(values);
 
   var parts = ol.View2D.createResolutionConstraint_(options);
 
@@ -94,6 +83,14 @@ ol.View2D = function(opt_options) {
   this.constraints_ = new ol.Constraints(resolutionConstraint,
       rotationConstraint);
 
+  if (goog.isDef(options.resolution)) {
+    values[ol.View2DProperty.RESOLUTION] = options.resolution;
+  } else if (goog.isDef(options.zoom)) {
+    values[ol.View2DProperty.RESOLUTION] = resolutionConstraint(
+        this.maxResolution_, options.zoom);
+  }
+  values[ol.View2DProperty.ROTATION] = options.rotation;
+  this.setValues(values);
 };
 goog.inherits(ol.View2D, ol.View);
 
@@ -421,11 +418,16 @@ ol.View2D.createResolutionConstraint_ = function(options) {
   } else {
     maxResolution = options.maxResolution;
     if (!goog.isDef(maxResolution)) {
-      var projectionExtent = ol.proj.createProjection(
-          options.projection, 'EPSG:3857').getExtent();
-      maxResolution = Math.max(
-          projectionExtent[1] - projectionExtent[0],
-          projectionExtent[3] - projectionExtent[2]) / ol.DEFAULT_TILE_SIZE;
+      var projection = options.projection;
+      var projectionExtent = ol.proj.createProjection(projection, 'EPSG:3857')
+          .getExtent();
+      var size = goog.isNull(projectionExtent) ?
+          // use an extent that can fit the whole world if need be
+          360 * ol.METERS_PER_UNIT[ol.ProjectionUnits.DEGREES] /
+              ol.METERS_PER_UNIT[projection.getUnits()] :
+          Math.max(projectionExtent[1] - projectionExtent[0],
+              projectionExtent[3] - projectionExtent[2]);
+      maxResolution = size / ol.DEFAULT_TILE_SIZE;
     }
     var maxZoom = options.maxZoom;
     if (!goog.isDef(maxZoom)) {
