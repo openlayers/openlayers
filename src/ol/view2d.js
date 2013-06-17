@@ -4,7 +4,6 @@ goog.provide('ol.View2D');
 goog.provide('ol.View2DProperty');
 
 goog.require('goog.asserts');
-goog.require('goog.math');
 goog.require('ol.Constraints');
 goog.require('ol.IView2D');
 goog.require('ol.IView3D');
@@ -59,12 +58,6 @@ ol.View2D = function(opt_options) {
       options.center : null;
   values[ol.View2DProperty.PROJECTION] = ol.proj.createProjection(
       options.projection, 'EPSG:3857');
-
-  /**
-   * @private
-   * @type {ol.Extent}
-   */
-  this.maxExtent_ = goog.isDef(options.maxExtent) ? options.maxExtent : null;
 
   var parts = ol.View2D.createResolutionConstraint_(options);
 
@@ -359,10 +352,7 @@ ol.View2D.prototype.isDef = function() {
  * @param {ol.Coordinate|undefined} center Center.
  */
 ol.View2D.prototype.setCenter = function(center) {
-  this.set(ol.View2DProperty.CENTER, goog.isNull(this.maxExtent_) ? center : [
-    goog.math.clamp(center[0], this.maxExtent_[0], this.maxExtent_[1]),
-    goog.math.clamp(center[1], this.maxExtent_[2], this.maxExtent_[3])
-  ]);
+  this.set(ol.View2DProperty.CENTER, center);
 };
 goog.exportProperty(
     ol.View2D.prototype,

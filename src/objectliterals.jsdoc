@@ -89,8 +89,6 @@
  * Object literal with config options for the view.
  * @typedef {Object} ol.View2DOptions
  * @property {ol.Coordinate|undefined} center The view center in map projection.
- * @property {ol.Extent|undefined} maxExtent The maximum extent for the view.
- *     If configured, the view's center cannot be outside this extent.
  * @property {number|undefined} maxResolution The maximum resolution in map
  *     units per pixel.
  * @property {number|undefined} maxZoom The maximum zoom level for this view.
