@@ -101,6 +101,7 @@
  * @property {ol.Coordinate|undefined} center The initial center for the view.
  *     The coordinate system for the center is specified with the `projection`
  *     option.
+ * @property {ol.Extent|undefined} extent The extent to constraint the center to.
  * @property {number|undefined} maxResolution The maximum resolution used to
  *     determine the resolution constraint. It is used together with `maxZoom`
  *     and `zoomFactor`. If unspecified it is calculated in such a way that the
