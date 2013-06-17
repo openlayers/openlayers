@@ -199,16 +199,33 @@ ol.expression.Parser.prototype.createMemberExpression_ = function(object,
 
 
 /**
- * Create a unary expression.
+ * Create a unary expression.  The only true unary operator supported here is
+ * "!".  For +/-, we apply the operator to literal expressions and return
+ * another literal.
  *
- * @param {string} op Operator.
+ * @param {ol.expression.Token} op Operator.
  * @param {ol.expression.Expression} argument Expression.
- * @return {ol.expression.Not} The logical not of the input expression.
+ * @return {ol.expression.Expression} The unary expression.
  * @private
  */
 ol.expression.Parser.prototype.createUnaryExpression_ = function(op, argument) {
-  goog.asserts.assert(op === '!');
-  return new ol.expression.Not(argument);
+  goog.asserts.assert(op.value === '!' || op.value === '+' || op.value === '-');
+  var expr;
+  if (op.value === '!') {
+    expr = new ol.expression.Not(argument);
+  } else if (!(argument instanceof ol.expression.Literal)) {
+    throw new ol.expression.UnexpectedToken(op);
+  } else {
+    // we've got +/- literal
+    if (op.value === '+') {
+      expr = this.createLiteral_(
+          + /** @type {number|string|boolean|null} */ (argument.evaluate()));
+    } else {
+      expr = this.createLiteral_(
+          - /** @type {number|string|boolean|null} */ (argument.evaluate()));
+    }
+  }
+  return expr;
 };
 
 
@@ -440,10 +457,11 @@ ol.expression.Parser.prototype.parseUnaryExpression_ = function(lexer) {
   var operator = lexer.peek();
   if (operator.type !== ol.expression.TokenType.PUNCTUATOR) {
     expr = this.parseLeftHandSideExpression_(lexer);
-  } else if (operator.value === '!') {
+  } else if (operator.value === '!' || operator.value === '-' ||
+      operator.value === '+') {
     lexer.skip();
     expr = this.parseUnaryExpression_(lexer);
-    expr = this.createUnaryExpression_('!', expr);
+    expr = this.createUnaryExpression_(operator, expr);
   } else {
     expr = this.parseLeftHandSideExpression_(lexer);
   }

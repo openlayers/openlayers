@@ -524,12 +524,8 @@ describe('ol.expression.parse', function() {
 
 describe('ol.expression.lib', function() {
 
-  var lib = ol.expression.lib;
   var parse = ol.expression.parse;
-
-  function evaluate(expression, feature) {
-    return expression.evaluate(feature.getAttributes(), lib, feature);
-  }
+  var evaluate = ol.expression.evaluateFeature;
 
   describe('extent()', function() {
 
@@ -550,21 +546,73 @@ describe('ol.expression.lib', function() {
     var east = parse('extent(80, 100, -50, 50)');
     var west = parse('extent(-100, -80, -50, 50)');
 
-    expect(evaluate(north, nw), true);
-    expect(evaluate(south, nw), false);
-    expect(evaluate(east, nw), false);
-    expect(evaluate(west, nw), true);
+    it('evaluates to true for features within given extent', function() {
 
-    expect(evaluate(north, se), false);
-    expect(evaluate(south, se), true);
-    expect(evaluate(east, se), true);
-    expect(evaluate(west, se), false);
+      expect(evaluate(north, nw), true);
+      expect(evaluate(south, nw), false);
+      expect(evaluate(east, nw), false);
+      expect(evaluate(west, nw), true);
+
+      expect(evaluate(north, se), false);
+      expect(evaluate(south, se), true);
+      expect(evaluate(east, se), true);
+      expect(evaluate(west, se), false);
+
+    });
+
+  });
+
+  describe('geometryType()', function() {
+
+    var point = new ol.Feature({
+      geom: new ol.geom.Point([0, 0])
+    });
+
+    var line = new ol.Feature({
+      geom: new ol.geom.LineString([[180, -90], [-180, 90]])
+    });
+
+    var poly = new ol.Feature({
+      geom: new ol.geom.Polygon([[
+        [180, -90], [0, -90], [0, 0], [180, 0], [180, -90]
+      ]])
+    });
+
+    var isPoint = parse('geometryType("point")');
+    var isLine = parse('geometryType("linestring")');
+    var isPoly = parse('geometryType("polygon")');
+    var pointOrPoly = parse('geometryType("point") || geometryType("polygon")');
+
+    it('distinguishes point features', function() {
+      expect(evaluate(isPoint, point), true);
+      expect(evaluate(isPoint, line), false);
+      expect(evaluate(isPoint, poly), false);
+    });
+
+    it('distinguishes line features', function() {
+      expect(evaluate(isLine, point), false);
+      expect(evaluate(isLine, line), true);
+      expect(evaluate(isLine, poly), false);
+    });
+
+    it('distinguishes polygon features', function() {
+      expect(evaluate(isPoly, point), false);
+      expect(evaluate(isPoly, line), false);
+      expect(evaluate(isPoly, poly), true);
+    });
+
+    it('can be composed in a logical expression', function() {
+      expect(evaluate(pointOrPoly, point), true);
+      expect(evaluate(pointOrPoly, line), false);
+      expect(evaluate(pointOrPoly, poly), true);
+    });
 
   });
 
 });
 
 
+goog.require('ol.Feature');
 goog.require('ol.expression');
 goog.require('ol.expression.Call');
 goog.require('ol.expression.Comparison');
@@ -577,3 +625,6 @@ goog.require('ol.expression.Member');
 goog.require('ol.expression.Not');
 goog.require('ol.expression.TokenType');
 goog.require('ol.expression.UnexpectedToken');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');

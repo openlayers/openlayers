@@ -2,9 +2,25 @@ goog.provide('ol.expression');
 
 goog.require('ol.Extent');
 goog.require('ol.Feature');
+goog.require('ol.expression.Expression');
 goog.require('ol.expression.Parser');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
+
+
+/**
+ * Evaluate an expression with a feature.  The feature attributes will be used
+ * as the evaluation scope.  The `ol.expression.lib` functions will be used as
+ * function scope.  The feature itself will be used as the `this` argument.
+ *
+ * @param {ol.expression.Expression} expr The expression.
+ * @param {ol.Feature} feature The feature.
+ * @return {*} The result of the expression.
+ */
+ol.expression.evaluateFeature = function(expr, feature) {
+  return expr.evaluate(
+      feature.getAttributes(), ol.expression.lib, feature);
+};
 
 
 /**
