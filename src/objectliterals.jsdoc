@@ -68,7 +68,7 @@
  * Object literal with config options for the Proj4js projection.
  * @typedef {Object} ol.Proj4jsProjectionOptions
  * @property {string} code The SRS identifier code, e.g. 'EPSG:31256'.
- * @property {ol.Extent} extent The validity extent for the SRS.
+ * @property {ol.Extent|undefined} extent The validity extent for the SRS.
  * @property {boolean|undefined} global Whether the projection is valid for the
  *     whole globe. Default is false.
  */
@@ -78,7 +78,7 @@
  * @typedef {Object} ol.ProjectionOptions
  * @property {string} code The SRS identifier code, e.g. 'EPSG:4326'.
  * @property {ol.ProjectionUnits} units Units.
- * @property {ol.Extent} extent The validity extent for the SRS.
+ * @property {ol.Extent|undefined} extent The validity extent for the SRS.
  * @property {string|undefined} axisOrientation The axis orientation as
  *     specified in Proj4. The default is 'enu'.
  * @property {boolean|undefined} global Whether the projection is valid for the
@@ -89,6 +89,8 @@
  * Object literal with config options for the view.
  * @typedef {Object} ol.View2DOptions
  * @property {ol.Coordinate|undefined} center The view center in map projection.
+ * @property {ol.Extent|undefined} maxExtent The maximum extent for the view.
+ *     If configured, the view's center cannot be outside this extent.
  * @property {number|undefined} maxResolution The maximum resolution in map
  *     units per pixel.
  * @property {number|undefined} maxZoom The maximum zoom level for this view.

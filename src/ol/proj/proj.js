@@ -74,7 +74,7 @@ ol.Projection = function(options) {
    * @private
    * @type {ol.Extent}
    */
-  this.extent_ = options.extent;
+  this.extent_ = goog.isDef(options.extent) ? options.extent : null;
 
   /**
    * @private
