@@ -552,7 +552,7 @@
 
 /**
  * @typedef {Object} ol.style.RuleOptions
- * @property {ol.filter.Filter|undefined} filter Filter.
+ * @property {ol.expression.Expression|string|undefined} filter Filter.
  * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers.
  */
 

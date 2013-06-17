@@ -3,9 +3,6 @@ goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.control.defaults');
 goog.require('ol.expression');
-goog.require('ol.filter.Filter');
-goog.require('ol.filter.Geometry');
-goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.GeoJSON');
 goog.require('ol.proj');
@@ -19,9 +16,7 @@ goog.require('ol.style.Text');
 
 var style = new ol.style.Style({rules: [
   new ol.style.Rule({
-    filter: new ol.filter.Filter(function(feature) {
-      return feature.get('where') == 'outer';
-    }),
+    filter: 'where == "outer"',
     symbolizers: [
       new ol.style.Line({
         strokeColor: ol.expression.parse('color'),
@@ -31,9 +26,7 @@ var style = new ol.style.Style({rules: [
     ]
   }),
   new ol.style.Rule({
-    filter: new ol.filter.Filter(function(feature) {
-      return feature.get('where') == 'inner';
-    }),
+    filter: 'where == "inner"',
     symbolizers: [
       new ol.style.Line({
         strokeColor: '#013',
@@ -48,7 +41,7 @@ var style = new ol.style.Style({rules: [
     ]
   }),
   new ol.style.Rule({
-    filter: new ol.filter.Geometry(ol.geom.GeometryType.POINT),
+    filter: 'geometryType("point")',
     symbolizers: [
       new ol.style.Shape({
         size: 40,
