@@ -391,6 +391,14 @@
  */
 
 /**
+ * @typedef {Object} ol.proj.SimpleOptions
+ * @property {Array.<number>|undefined} extent Extent.
+ * @property {boolean|undefined} global Global.
+ * @property {Array.<number>|undefined} size Size.
+ * @property {ol.ProjectionUnits|undefined} units Units.
+ */
+
+/**
  * @typedef {Object} ol.source.BingMapsOptions
  * @property {string|undefined} culture Culture.
  * @property {string} key Bing Maps API key. Get yours at
