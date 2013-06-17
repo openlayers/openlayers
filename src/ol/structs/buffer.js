@@ -64,6 +64,18 @@ ol.structs.Buffer = function(opt_arr, opt_used, opt_usage) {
 
   /**
    * @private
+   * @type {?Float32Array}
+   */
+  this.split32_ = null;
+
+  /**
+   * @private
+   * @type {ol.structs.IntegerSet}
+   */
+  this.split32DirtySet_ = null;
+
+  /**
+   * @private
    * @type {number}
    */
   this.usage_ = goog.isDef(opt_usage) ?
@@ -73,23 +85,30 @@ ol.structs.Buffer = function(opt_arr, opt_used, opt_usage) {
 
 
 /**
+ * @param {number} size Size.
+ * @return {number} Offset.
+ */
+ol.structs.Buffer.prototype.allocate = function(size) {
+  goog.asserts.assert(size > 0);
+  var offset = this.freeSet_.findRange(size);
+  goog.asserts.assert(offset != -1);  // FIXME
+  this.freeSet_.removeRange(offset, offset + size);
+  return offset;
+};
+
+
+/**
  * @param {Array.<number>} values Values.
  * @return {number} Offset.
  */
 ol.structs.Buffer.prototype.add = function(values) {
   var size = values.length;
-  goog.asserts.assert(size > 0);
-  var offset = this.freeSet_.findRange(size);
-  goog.asserts.assert(offset != -1);  // FIXME
-  this.freeSet_.removeRange(offset, offset + size);
+  var offset = this.allocate(size);
   var i;
   for (i = 0; i < size; ++i) {
     this.arr_[offset + i] = values[i];
   }
-  var ii;
-  for (i = 0, ii = this.dirtySets_.length; i < ii; ++i) {
-    this.dirtySets_[i].addRange(offset, offset + size);
-  }
+  this.markDirty(size, offset);
   return offset;
 };
 
@@ -140,10 +159,61 @@ ol.structs.Buffer.prototype.getFreeSet = function() {
 
 
 /**
+ * Returns a Float32Array twice the length of the buffer containing each value
+ * split into two 32-bit floating point values that, when added together,
+ * approximate the original value. Even indicies contain the high bits, odd
+ * indicies contain the low bits.
+ * @see http://blogs.agi.com/insight3d/index.php/2008/09/03/precisions-precisions/
+ * @return {Float32Array} Split.
+ */
+ol.structs.Buffer.prototype.getSplit32 = function() {
+  var arr = this.arr_;
+  var n = arr.length;
+  if (goog.isNull(this.split32DirtySet_)) {
+    this.split32DirtySet_ = new ol.structs.IntegerSet([0, n]);
+    this.addDirtySet(this.split32DirtySet_);
+  }
+  if (goog.isNull(this.split32_)) {
+    this.split32_ = new Float32Array(2 * n);
+  }
+  var split32 = this.split32_;
+  this.split32DirtySet_.forEachRange(function(start, stop) {
+    var doubleHigh, i, j, value;
+    for (i = start, j = 2 * start; i < stop; ++i, j += 2) {
+      value = arr[i];
+      if (value < 0) {
+        doubleHigh = 65536 * Math.floor(-value / 65536);
+        split32[j] = -doubleHigh;
+        split32[j + 1] = value + doubleHigh;
+      } else {
+        doubleHigh = 65536 * Math.floor(value / 65536);
+        split32[j] = doubleHigh;
+        split32[j + 1] = value - doubleHigh;
+      }
+    }
+  });
+  this.split32DirtySet_.clear();
+  return this.split32_;
+};
+
+
+/**
  * @return {number} Usage.
  */
 ol.structs.Buffer.prototype.getUsage = function() {
   return this.usage_;
+};
+
+
+/**
+ * @param {number} size Size.
+ * @param {number} offset Offset.
+ */
+ol.structs.Buffer.prototype.markDirty = function(size, offset) {
+  var i, ii;
+  for (i = 0, ii = this.dirtySets_.length; i < ii; ++i) {
+    this.dirtySets_[i].addRange(offset, offset + size);
+  }
 };
 
 
@@ -187,8 +257,5 @@ ol.structs.Buffer.prototype.set = function(values, offset) {
   for (i = 0; i < n; ++i) {
     arr[offset + i] = values[i];
   }
-  var ii;
-  for (i = 0, ii = this.dirtySets_.length; i < ii; ++i) {
-    this.dirtySets_[i].addRange(offset, offset + n);
-  }
+  this.markDirty(n, offset);
 };

@@ -220,6 +220,41 @@ describe('ol.structs.Buffer', function() {
 
   });
 
+  describe('with a populated instance', function() {
+
+    var b;
+    beforeEach(function() {
+      b = new ol.structs.Buffer([1234567.1234567, -7654321.7654321]);
+    });
+
+    describe('getSplit32', function() {
+
+      it('returns the expected value', function() {
+        var split32 = b.getSplit32();
+        expect(split32).to.be.a(Float32Array);
+        expect(split32).to.have.length(4);
+        expect(split32[0]).to.roughlyEqual(1179648.0, 1e1);
+        expect(split32[1]).to.roughlyEqual(54919.12345670001, 1e-2);
+        expect(split32[2]).to.roughlyEqual(-7602176.0, 1e1);
+        expect(split32[3]).to.roughlyEqual(-52145.76543209981, 1e-2);
+      });
+
+      it('tracks updates', function() {
+        b.getSplit32();
+        b.getArray()[0] = 0;
+        b.markDirty(1, 0);
+        var split32 = b.getSplit32();
+        expect(split32).to.be.a(Float32Array);
+        expect(split32).to.have.length(4);
+        expect(split32[0]).to.be(0);
+        expect(split32[1]).to.be(0);
+        expect(split32[2]).to.roughlyEqual(-7602176.0, 1e1);
+        expect(split32[3]).to.roughlyEqual(-52145.76543209981, 1e-2);
+      });
+
+    });
+  });
+
   describe('usage tests', function() {
 
     it('allows multiple adds and removes', function() {
