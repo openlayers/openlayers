@@ -19,7 +19,7 @@ ol.geom2.LineString;
  * This is an internal class that will be removed from the API.
  * @constructor
  * @param {ol.structs.Buffer} buf Buffer.
- * @param {Object.<number, Array.<number>>=} opt_ranges Ranges.
+ * @param {Object.<string, number>=} opt_ranges Ranges.
  * @param {number=} opt_dim Dimension.
  */
 ol.geom2.LineStringCollection = function(buf, opt_ranges, opt_dim) {
@@ -30,7 +30,7 @@ ol.geom2.LineStringCollection = function(buf, opt_ranges, opt_dim) {
   this.buf = buf;
 
   /**
-   * @type {Object.<number, Array.<number>>}
+   * @type {Object.<string, number>}
    */
   this.ranges = goog.isDef(opt_ranges) ? opt_ranges : {};
 
@@ -79,7 +79,7 @@ ol.geom2.LineStringCollection.pack =
   }
   capacity *= dim;
   var arr = new Array(capacity);
-  /** @type {Object.<number, Array.<number>>} */
+  /** @type {Object.<string, number>} */
   var ranges = {};
   var offset = 0;
   var start;
@@ -87,7 +87,7 @@ ol.geom2.LineStringCollection.pack =
     goog.asserts.assert(unpackedLineStrings[i].length > 1);
     start = offset;
     offset = ol.geom2.packPoints(arr, offset, unpackedLineStrings[i], dim);
-    ranges[start] = [start, offset];
+    ranges[/** @type {string} */ (start)] = offset;
   }
   goog.asserts.assert(offset <= capacity);
   var buf = new ol.structs.Buffer(arr, offset);
@@ -103,7 +103,7 @@ ol.geom2.LineStringCollection.prototype.add = function(lineString) {
   var n = lineString.length * this.dim;
   var offset = this.buf.allocate(n);
   goog.asserts.assert(offset != -1);
-  this.ranges[offset] = [offset, offset + n];
+  this.ranges[/** @type {string} */ (offset)] = offset + n;
   ol.geom2.packPoints(this.buf.getArray(), offset, lineString, this.dim);
   return offset;
 };
@@ -115,9 +115,9 @@ ol.geom2.LineStringCollection.prototype.add = function(lineString) {
  */
 ol.geom2.LineStringCollection.prototype.get = function(offset) {
   goog.asserts.assert(offset in this.ranges);
-  var range = this.ranges[offset];
+  var range = this.ranges[/** @type {string} */ (offset)];
   return ol.geom2.unpackPoints(
-      this.buf.getArray(), range[0], range[1], this.dim);
+      this.buf.getArray(), offset, range, this.dim);
 };
 
 
@@ -147,11 +147,12 @@ ol.geom2.LineStringCollection.prototype.getIndices = function() {
   goog.array.sort(offsets);
   var n = offsets.length;
   var indices = [];
-  var i, j, range, stop;
+  var i, j, range, offset, stop;
   for (i = 0; i < n; ++i) {
-    range = this.ranges[offsets[i]];
-    stop = range[1] / dim - 1;
-    for (j = range[0] / dim; j < stop; ++j) {
+    offset = offsets[i];
+    range = this.ranges[offset];
+    stop = range / dim - 1;
+    for (j = offset / dim; j < stop; ++j) {
       indices.push(j, j + 1);
     }
   }
@@ -164,9 +165,9 @@ ol.geom2.LineStringCollection.prototype.getIndices = function() {
  */
 ol.geom2.LineStringCollection.prototype.remove = function(offset) {
   goog.asserts.assert(offset in this.ranges);
-  var range = this.ranges[offset];
-  this.buf.remove(range[1] - range[0], range[0]);
-  delete this.ranges[offset];
+  var range = this.ranges[/** @type {string} */ (offset)];
+  this.buf.remove(range - offset, offset);
+  delete this.ranges[/** @type {string} */ (offset)];
 };
 
 
@@ -178,10 +179,10 @@ ol.geom2.LineStringCollection.prototype.remove = function(offset) {
 ol.geom2.LineStringCollection.prototype.set = function(offset, lineString) {
   var dim = this.dim;
   goog.asserts.assert(offset in this.ranges);
-  var range = this.ranges[offset];
-  if (lineString.length * dim == range[1] - range[0]) {
-    ol.geom2.packPoints(this.buf.getArray(), range[0], lineString, dim);
-    this.buf.markDirty(range[1] - range[0], range[0]);
+  var range = this.ranges[/** @type {string} */ (offset)];
+  if (lineString.length * dim == range - offset) {
+    ol.geom2.packPoints(this.buf.getArray(), offset, lineString, dim);
+    this.buf.markDirty(range - offset, offset);
     return offset;
   } else {
     this.remove(offset);
@@ -200,9 +201,9 @@ ol.geom2.LineStringCollection.prototype.unpack = function() {
   var i = 0;
   var offset, range;
   for (offset in this.ranges) {
-    range = this.ranges[Number(offset)];
+    range = this.ranges[offset];
     lineStrings[i++] = ol.geom2.unpackPoints(
-        this.buf.getArray(), range[0], range[1], dim);
+        this.buf.getArray(), Number(offset), range, dim);
   }
   return lineStrings;
 };
