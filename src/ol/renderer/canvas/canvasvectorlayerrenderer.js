@@ -12,10 +12,6 @@ goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
-goog.require('ol.filter.Extent');
-goog.require('ol.filter.Geometry');
-goog.require('ol.filter.Logical');
-goog.require('ol.filter.LogicalOperator');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
 goog.require('ol.renderer.canvas.Layer');
@@ -101,18 +97,18 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
   this.tileArchetype_ = null;
 
   /**
-   * Geometry filters in rendering order.
+   * Geometry types in rendering order.
    * TODO: these will go away shortly (in favor of one call per symbolizer type)
    * @private
-   * @type {Array.<ol.filter.Geometry>}
+   * @type {Array.<ol.geom.GeometryType>}
    */
-  this.geometryFilters_ = [
-    new ol.filter.Geometry(ol.geom.GeometryType.POINT),
-    new ol.filter.Geometry(ol.geom.GeometryType.MULTIPOINT),
-    new ol.filter.Geometry(ol.geom.GeometryType.LINESTRING),
-    new ol.filter.Geometry(ol.geom.GeometryType.MULTILINESTRING),
-    new ol.filter.Geometry(ol.geom.GeometryType.POLYGON),
-    new ol.filter.Geometry(ol.geom.GeometryType.MULTIPOLYGON)
+  this.geometryTypes_ = [
+    ol.geom.GeometryType.POINT,
+    ol.geom.GeometryType.MULTIPOINT,
+    ol.geom.GeometryType.LINESTRING,
+    ol.geom.GeometryType.MULTILINESTRING,
+    ol.geom.GeometryType.POLYGON,
+    ol.geom.GeometryType.MULTIPOLYGON
   ];
 
   /**
@@ -251,13 +247,12 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
     var locationMin = [location[0] - halfMaxWidth, location[1] - halfMaxHeight];
     var locationMax = [location[0] + halfMaxWidth, location[1] + halfMaxHeight];
     var locationBbox = ol.extent.boundingExtent([locationMin, locationMax]);
-    var filter = new ol.filter.Extent(locationBbox);
-    var candidates = layer.getFeatures(filter);
+    var candidates = layer.getFeaturesObjectForExtent(locationBbox);
 
     var candidate, geom, type, symbolBounds, symbolSize, halfWidth, halfHeight,
         coordinates, j;
-    for (var i = 0, ii = candidates.length; i < ii; ++i) {
-      candidate = candidates[i];
+    for (var id in candidates) {
+      candidate = candidates[id];
       geom = candidate.getGeometry();
       type = geom.getType();
       if (type === ol.geom.GeometryType.POINT ||
@@ -445,11 +440,11 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var tileGutter = 15 * tileResolution;
   var tile, tileCoord, key, x, y;
   // render features by geometry type
-  var filters = this.geometryFilters_,
-      numFilters = filters.length,
+  var types = this.geometryTypes_,
+      numTypes = types.length,
       deferred = false,
       dirty = false,
-      i, geomFilter, tileExtent, extentFilter, type,
+      i, type, tileExtent,
       groups, group, j, numGroups, featuresObject, tileHasFeatures;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
@@ -463,16 +458,13 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         tileExtent[1] += tileGutter;
         tileExtent[2] -= tileGutter;
         tileExtent[3] += tileGutter;
-        extentFilter = new ol.filter.Extent(tileExtent);
         tileHasFeatures = false;
-        for (i = 0; i < numFilters; ++i) {
-          geomFilter = filters[i];
-          type = geomFilter.getType();
+        for (i = 0; i < numTypes; ++i) {
+          type = types[i];
           if (!goog.isDef(featuresToRender[type])) {
             featuresToRender[type] = {};
           }
-          featuresObject = layer.getFeaturesObject(new ol.filter.Logical(
-              [geomFilter, extentFilter], ol.filter.LogicalOperator.AND));
+          featuresObject = layer.getFeaturesObjectForExtent(tileExtent, type);
           tileHasFeatures = tileHasFeatures ||
               !goog.object.isEmpty(featuresObject);
           goog.object.extend(featuresToRender[type], featuresObject);

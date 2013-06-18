@@ -2,7 +2,9 @@ goog.provide('ol.expression');
 
 goog.require('ol.Extent');
 goog.require('ol.Feature');
+goog.require('ol.expression.Call');
 goog.require('ol.expression.Expression');
+goog.require('ol.expression.Identifier');
 goog.require('ol.expression.Parser');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
@@ -32,6 +34,30 @@ ol.expression.evaluateFeature = function(expr, feature) {
 ol.expression.parse = function(source) {
   var parser = new ol.expression.Parser();
   return parser.parse(source);
+};
+
+
+/**
+ * Determines whether an expression is a call expression that calls one of the
+ * `ol.expression.lib` functions.
+ *
+ * @param {ol.expression.Expression} expr The candidate expression.
+ * @return {string|undefined} If the candidate expression is a call to a lib
+ * function, the return will be the function name.  If not, the return will be
+ * `undefined`.
+ */
+ol.expression.isLibCall = function(expr) {
+  var name;
+  if (expr instanceof ol.expression.Call) {
+    var callee = expr.getCallee();
+    if (callee instanceof ol.expression.Identifier) {
+      name = callee.getName();
+      if (!ol.expression.lib.hasOwnProperty(name)) {
+        name = undefined;
+      }
+    }
+  }
+  return name;
 };
 
 

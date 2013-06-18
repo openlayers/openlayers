@@ -50,46 +50,46 @@ describe('ol.layer.Vector', function() {
       layer.addFeatures(features);
     });
 
-    var geomFilter = new ol.filter.Geometry(ol.geom.GeometryType.LINESTRING);
-    var extentFilter = new ol.filter.Extent([16, 16.3, 48, 48.3]);
+    var geomFilter = ol.expression.parse('geometryType("linestring")');
+    var extentFilter = ol.expression.parse('extent(16, 16.3, 48, 48.3)');
 
     it('can filter by geometry type using its GeometryType index', function() {
-      sinon.spy(geomFilter, 'applies');
+      sinon.spy(geomFilter, 'evaluate');
       var lineStrings = layer.getFeatures(geomFilter);
-      expect(geomFilter.applies).to.not.be.called();
+      expect(geomFilter.evaluate).to.not.be.called();
       expect(lineStrings.length).to.eql(4);
       expect(lineStrings).to.contain(features[4]);
     });
 
     it('can filter by extent using its RTree', function() {
-      sinon.spy(extentFilter, 'applies');
+      sinon.spy(extentFilter, 'evaluate');
       var subset = layer.getFeatures(extentFilter);
-      expect(extentFilter.applies).to.not.be.called();
+      expect(extentFilter.evaluate).to.not.be.called();
       expect(subset.length).to.eql(4);
       expect(subset).not.to.contain(features[7]);
     });
 
     it('can filter by extent and geometry type using its index', function() {
-      var filter1 = new ol.filter.Logical([geomFilter, extentFilter],
-          ol.filter.LogicalOperator.AND);
-      var filter2 = new ol.filter.Logical([extentFilter, geomFilter],
-          ol.filter.LogicalOperator.AND);
-      sinon.spy(filter1, 'applies');
-      sinon.spy(filter2, 'applies');
+      var filter1 = new ol.expression.Logical(
+          ol.expression.LogicalOp.AND, geomFilter, extentFilter);
+      var filter2 = new ol.expression.Logical(
+          ol.expression.LogicalOp.AND, extentFilter, geomFilter);
+      sinon.spy(filter1, 'evaluate');
+      sinon.spy(filter2, 'evaluate');
       var subset1 = layer.getFeatures(filter1);
       var subset2 = layer.getFeatures(filter2);
-      expect(filter1.applies).to.not.be.called();
-      expect(filter2.applies).to.not.be.called();
+      expect(filter1.evaluate).to.not.be.called();
+      expect(filter2.evaluate).to.not.be.called();
       expect(subset1.length).to.eql(0);
       expect(subset2.length).to.eql(0);
     });
 
-    it('can handle query using the filter\'s applies function', function() {
-      var filter = new ol.filter.Logical([geomFilter, extentFilter],
-          ol.filter.LogicalOperator.OR);
-      sinon.spy(filter, 'applies');
+    it('can handle query using the filter\'s evaluate function', function() {
+      var filter = new ol.expression.Logical(
+          ol.expression.LogicalOp.OR, geomFilter, extentFilter);
+      sinon.spy(filter, 'evaluate');
       var subset = layer.getFeatures(filter);
-      expect(filter.applies).to.be.called();
+      expect(filter.evaluate).to.be.called();
       expect(subset.length).to.eql(8);
     });
 
@@ -179,11 +179,8 @@ describe('ol.layer.Vector', function() {
 goog.require('goog.dispose');
 goog.require('ol.Feature');
 goog.require('ol.expression');
-goog.require('ol.filter.Extent');
-goog.require('ol.filter.Geometry');
-goog.require('ol.filter.Logical');
-goog.require('ol.filter.LogicalOperator');
-goog.require('ol.geom.GeometryType');
+goog.require('ol.expression.Logical');
+goog.require('ol.expression.LogicalOp');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.proj');
