@@ -118,6 +118,14 @@ ol.control.MousePosition.prototype.handleMapPostrender = function(mapEvent) {
 
 
 /**
+ * @return {ol.Projection} projection.
+ */
+ol.control.MousePosition.prototype.getProjection = function() {
+  return this.projection_;
+};
+
+
+/**
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @protected
  */
