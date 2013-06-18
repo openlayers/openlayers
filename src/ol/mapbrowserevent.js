@@ -40,6 +40,11 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
   this.coordinate_ = null;
 
   /**
+   * @type {boolean}
+   */
+  this.otherInteractionsStopped = false;
+
+  /**
    * @private
    * @type {ol.Pixel}
    */
@@ -95,6 +100,36 @@ ol.MapBrowserEvent.prototype.isMouseActionButton = function() {
   // always assume a left-click on touch devices
   return ol.BrowserFeature.HAS_TOUCH ||
       this.browserEvent.isMouseActionButton();
+};
+
+
+/**
+ * Prevents the default browser action.
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/event.preventDefault
+ * @override
+ */
+ol.MapBrowserEvent.prototype.preventDefault = function() {
+  goog.base(this, 'preventDefault');
+  this.browserEvent.preventDefault();
+};
+
+
+/**
+ * Stop the interaction chain.
+ */
+ol.MapBrowserEvent.prototype.stopOtherInteractions = function() {
+  this.otherInteractionsStopped = true;
+};
+
+
+/**
+ * Prevents further propagation of the current event.
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/event.stopPropagation
+ * @override
+ */
+ol.MapBrowserEvent.prototype.stopPropagation = function() {
+  goog.base(this, 'stopPropagation');
+  this.browserEvent.stopPropagation();
 };
 
 
