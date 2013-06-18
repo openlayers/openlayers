@@ -104,6 +104,8 @@ ol.MapBrowserEvent.prototype.isMouseActionButton = function() {
 
 
 /**
+ * Prevents the default browser action.
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/event.preventDefault
  * @override
  */
 ol.MapBrowserEvent.prototype.preventDefault = function() {
@@ -121,6 +123,8 @@ ol.MapBrowserEvent.prototype.stopOtherInteractions = function() {
 
 
 /**
+ * Prevents further propagation of the current event.
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/event.stopPropagation
  * @override
  */
 ol.MapBrowserEvent.prototype.stopPropagation = function() {
