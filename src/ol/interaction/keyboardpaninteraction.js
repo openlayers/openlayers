@@ -82,6 +82,7 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       ol.interaction.Interaction.pan(
           map, view, delta, ol.interaction.KEYBOARD_PAN_DURATION);
       mapBrowserEvent.preventDefault();
+      mapBrowserEvent.stopOtherInteractions();
     }
   }
 };
