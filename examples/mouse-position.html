@@ -30,7 +30,11 @@
       <div class="row-fluid">
         <div class="span12">
           <div id="map" class="map"></div>
-          <small id="mouse-position"></small>
+          <select id="projection">
+            <option value="EPSG:4326">EPSG:4326</option>
+            <option value="EPSG:3857">EPSG:3857</option>
+          </select>
+          <div style="display: inline-block;" id="mouse-position"></div>
         </div>
       </div>
 

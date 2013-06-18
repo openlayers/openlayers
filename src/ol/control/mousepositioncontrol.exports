@@ -1,2 +1,4 @@
 @exportClass ol.control.MousePosition ol.control.MousePositionOptions
 @exportProperty ol.control.MousePosition.prototype.setMap
+@exportProperty ol.control.MousePosition.prototype.getProjection
+@exportProperty ol.control.MousePosition.prototype.setProjection
