@@ -644,7 +644,7 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
     for (i = interactionsArray.length - 1; i >= 0; i--) {
       var interaction = interactionsArray[i];
       interaction.handleMapBrowserEvent(mapBrowserEvent);
-      if (mapBrowserEvent.defaultPrevented) {
+      if (mapBrowserEvent.otherInteractionsStopped) {
         break;
       }
     }
