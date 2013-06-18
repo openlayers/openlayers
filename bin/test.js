@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 var path = require('path');
 var fs = require('fs');
 var glob = require('glob');
@@ -17,9 +15,9 @@ if (!plovr) {
 }
 
 // get the various plovr config files
-var builds = glob.sync('build/*.json', {cwd: base});
-var examples = glob.sync('examples/*.json', {cwd: base});
-var tests = glob.sync('test/*.json', {cwd: base});
+var builds = ['buildcfg/ol.json', 'buildcfg/ol-all.json'];
+var examples = glob.sync('build/examples/*.json', {cwd: base});
+var tests = ['buildcfg/test.json'];
 
 // start up the plovr server
 var serve = cp.spawn(
@@ -27,15 +25,15 @@ var serve = cp.spawn(
     ['-jar', plovr, 'serve'].concat(builds, examples, tests),
     {cwd: base});
 
-// prepare to start testacular
+// prepare to start karma
 function startTestacular() {
-  var testacular = cp.fork(
-      path.join(base, 'node_modules', 'testacular', 'bin', 'testacular'),
+  var karma = cp.fork(
+      path.join(base, 'node_modules', 'karma', 'bin', 'karma'),
       process.argv.splice(2), {cwd: base});
 
-  testacular.on('exit', function(code) {
+  karma.on('exit', function(code) {
     process.exit(code);
-  });  
+  });
 }
 
 serve.stderr.on('data', function(chunk) {

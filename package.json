@@ -9,13 +9,13 @@
   },
   "bugs": "https://github.com/openlayers/ol3/issues",
   "devDependencies": {
-    "testacular": ">= 0.6.0",
-    "glob": "3.x"
+    "karma": "0.8.6",
+    "glob": "3.2.1"
   },
   "scripts": {
-    "install": "./build.py",
-    "test": "./bin/test.js --single-run=true start test/testacular.conf.js",
-    "test-forever": "./bin/test.js start test/testacular.conf.js",
+    "postinstall": "./build.py",
+    "test": "node ./bin/test.js --single-run=true start test/karma.conf.js",
+    "test-forever": "node ./bin/test.js start test/karma.conf.js",
     "start": "./build.py serve"
   }
 }
