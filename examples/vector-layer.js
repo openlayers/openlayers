@@ -57,7 +57,7 @@ map.on(['click', 'mousemove'], function(evt) {
 
 
 var geojson = new ol.parser.GeoJSON();
-var url = 'data/countries.json';
+var url = 'data/countries.geojson';
 var xhr = new XMLHttpRequest();
 xhr.open('GET', url, true);
 
