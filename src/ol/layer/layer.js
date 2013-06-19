@@ -122,13 +122,13 @@ ol.layer.Layer.prototype.getLayerState = function() {
   var saturation = this.getSaturation();
   var visible = this.getVisible();
   return {
-    brightness: goog.isDef(brightness) ? brightness : 0,
-    contrast: goog.isDef(contrast) ? contrast : 1,
+    brightness: goog.isDef(brightness) ? goog.math.clamp(brightness, -1, 1) : 0,
+    contrast: goog.isDef(contrast) ? Math.max(contrast, 0) : 1,
     hue: goog.isDef(hue) ? hue : 0,
-    opacity: goog.isDef(opacity) ? opacity : 1,
+    opacity: goog.isDef(opacity) ? goog.math.clamp(opacity, 0, 1) : 1,
     ready: ready,
-    saturation: goog.isDef(saturation) ? saturation : 1,
-    visible: goog.isDef(visible) ? visible : true
+    saturation: goog.isDef(saturation) ? Math.max(saturation, 0) : 1,
+    visible: goog.isDef(visible) ? !!visible : true
   };
 };
 
@@ -214,10 +214,7 @@ ol.layer.Layer.prototype.isReady = function() {
  * @param {number} brightness Brightness.
  */
 ol.layer.Layer.prototype.setBrightness = function(brightness) {
-  brightness = goog.math.clamp(brightness, -1, 1);
-  if (brightness != this.getBrightness()) {
-    this.set(ol.layer.LayerProperty.BRIGHTNESS, brightness);
-  }
+  this.set(ol.layer.LayerProperty.BRIGHTNESS, brightness);
 };
 goog.exportProperty(
     ol.layer.Layer.prototype,
@@ -233,10 +230,7 @@ goog.exportProperty(
  * @param {number} contrast Contrast.
  */
 ol.layer.Layer.prototype.setContrast = function(contrast) {
-  contrast = Math.max(0, contrast);
-  if (contrast != this.getContrast()) {
-    this.set(ol.layer.LayerProperty.CONTRAST, contrast);
-  }
+  this.set(ol.layer.LayerProperty.CONTRAST, contrast);
 };
 goog.exportProperty(
     ol.layer.Layer.prototype,
@@ -250,9 +244,7 @@ goog.exportProperty(
  * @param {number} hue Hue.
  */
 ol.layer.Layer.prototype.setHue = function(hue) {
-  if (hue != this.getHue()) {
-    this.set(ol.layer.LayerProperty.HUE, hue);
-  }
+  this.set(ol.layer.LayerProperty.HUE, hue);
 };
 goog.exportProperty(
     ol.layer.Layer.prototype,
@@ -264,10 +256,7 @@ goog.exportProperty(
  * @param {number} opacity Opacity.
  */
 ol.layer.Layer.prototype.setOpacity = function(opacity) {
-  opacity = goog.math.clamp(opacity, 0, 1);
-  if (opacity != this.getOpacity()) {
-    this.set(ol.layer.LayerProperty.OPACITY, opacity);
-  }
+  this.set(ol.layer.LayerProperty.OPACITY, opacity);
 };
 goog.exportProperty(
     ol.layer.Layer.prototype,
@@ -284,10 +273,7 @@ goog.exportProperty(
  * @param {number} saturation Saturation.
  */
 ol.layer.Layer.prototype.setSaturation = function(saturation) {
-  saturation = Math.max(0, saturation);
-  if (saturation != this.getSaturation()) {
-    this.set(ol.layer.LayerProperty.SATURATION, saturation);
-  }
+  this.set(ol.layer.LayerProperty.SATURATION, saturation);
 };
 goog.exportProperty(
     ol.layer.Layer.prototype,
@@ -299,10 +285,7 @@ goog.exportProperty(
  * @param {boolean} visible Visible.
  */
 ol.layer.Layer.prototype.setVisible = function(visible) {
-  visible = !!visible;
-  if (visible != this.getVisible()) {
-    this.set(ol.layer.LayerProperty.VISIBLE, visible);
-  }
+  this.set(ol.layer.LayerProperty.VISIBLE, visible);
 };
 goog.exportProperty(
     ol.layer.Layer.prototype,
