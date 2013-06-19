@@ -189,6 +189,14 @@
  */
 
 /**
+ * @typedef {Object} ol.control.OverviewMapOptions
+ * @property {ol.Map|undefined} map Map.
+ * @property {Element|undefined} target Target.
+ * @property {number|undefined} maxRatio Maximum extent ratio.
+ * @property {number|undefined} minRatio Minimum extent ratio.
+ */
+
+/**
  * @typedef {Object} ol.control.ScaleLineOptions
  * @property {string|undefined} className Class name.
  * @property {ol.Map|undefined} map Map.
