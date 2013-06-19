@@ -136,7 +136,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderFeaturesByGeometryType =
         throw new Error('Rendering not implemented for geometry type: ' + type);
     }
   } else {
-    this.renderLabels_(features, symbolizer, data);
+    this.renderText_(features, symbolizer, data);
   }
   return deferred;
 };
@@ -269,7 +269,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
  * @param {Array} texts Label text for each feature.
  * @private
  */
-ol.renderer.canvas.VectorRenderer.prototype.renderLabels_ =
+ol.renderer.canvas.VectorRenderer.prototype.renderText_ =
     function(features, text, texts) {
   var context = this.context_,
       fontArray = [],
