@@ -56,7 +56,7 @@ var style = new ol.style.Style({rules: [
       }),
       new ol.style.Text({
         color: '#bada55',
-        name: new ol.Expression('label'),
+        text: new ol.Expression('label'),
         fontFamily: 'Calibri,sans-serif',
         fontSize: 14
       })

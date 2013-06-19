@@ -12,7 +12,7 @@ goog.require('ol.style.SymbolizerLiteral');
  * @typedef {{color: (string|undefined),
  *            fontFamily: (string|undefined),
  *            fontSize: number,
- *            name: string,
+ *            text: string,
  *            opacity: number}}
  */
 ol.style.TextLiteralOptions;
@@ -43,9 +43,9 @@ ol.style.TextLiteral = function(options) {
   /** @type {number} */
   this.fontSize = options.fontSize;
 
-  goog.asserts.assertString(options.name, 'name must be a string');
+  goog.asserts.assertString(options.text, 'text must be a string');
   /** @type {string} */
-  this.name = options.name;
+  this.text = options.text;
 
   goog.asserts.assertNumber(options.opacity, 'opacity must be a number');
   /** @type {number} */
@@ -105,8 +105,8 @@ ol.style.Text = function(options) {
    * @type {ol.Expression}
    * @private
    */
-  this.name_ = (options.name instanceof ol.Expression) ?
-      options.name : new ol.ExpressionLiteral(options.name);
+  this.text_ = (options.text instanceof ol.Expression) ?
+      options.text : new ol.ExpressionLiteral(options.text);
 
   /**
    * @type {ol.Expression}
@@ -145,8 +145,8 @@ ol.style.Text.prototype.createLiteral = function(opt_feature) {
   var fontSize = this.fontSize_.evaluate(feature, attrs);
   goog.asserts.assertNumber(fontSize, 'fontSize must be a number');
 
-  var name = this.name_.evaluate(feature, attrs);
-  goog.asserts.assertString(name, 'name must be a string');
+  var text = this.text_.evaluate(feature, attrs);
+  goog.asserts.assertString(text, 'text must be a string');
 
   var opacity = this.opacity_.evaluate(feature, attrs);
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
@@ -155,7 +155,7 @@ ol.style.Text.prototype.createLiteral = function(opt_feature) {
     color: color,
     fontFamily: fontFamily,
     fontSize: fontSize,
-    name: name,
+    text: text,
     opacity: opacity
   });
 };
@@ -166,6 +166,6 @@ ol.style.Text.prototype.createLiteral = function(opt_feature) {
  */
 ol.style.TextDefaults = new ol.style.TextLiteral({
   fontSize: 10,
-  name: '',
+  text: '',
   opacity: 1
 });

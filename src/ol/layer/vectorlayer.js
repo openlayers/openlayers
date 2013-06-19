@@ -318,7 +318,7 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
       item = featuresBySymbolizer[uniqueLiterals[key]];
       item[0].push(feature);
       if (literal instanceof ol.style.TextLiteral) {
-        item[2].push(literals[j].name);
+        item[2].push(literals[j].text);
       }
     }
   }

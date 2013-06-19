@@ -266,11 +266,11 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
 /**
  * @param {Array.<ol.Feature>} features Array of features.
  * @param {ol.style.TextLiteral} text Text symbolizer.
- * @param {Array} names Label text for each feature.
+ * @param {Array} texts Label text for each feature.
  * @private
  */
 ol.renderer.canvas.VectorRenderer.prototype.renderLabels_ =
-    function(features, text, names) {
+    function(features, text, texts) {
   var context = this.context_,
       fontArray = [],
       color = text.color,
@@ -298,7 +298,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderLabels_ =
     for (var j = 0, jj = vecs.length; j < jj; ++j) {
       vec = vecs[j];
       goog.vec.Mat4.multVec3(this.transform_, vec, vec);
-      context.fillText(names[i], vec[0], vec[1]);
+      context.fillText(texts[i], vec[0], vec[1]);
     }
   }
 

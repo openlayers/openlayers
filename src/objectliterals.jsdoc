@@ -578,7 +578,7 @@
  * @property {string|ol.Expression|undefined} color Color.
  * @property {string|ol.Expression|undefined} fontFamily Font family.
  * @property {number|ol.Expression|undefined} fontSize Font size in pixels.
- * @property {string|ol.Expression} name Name (i.e. text content) of the label.
+ * @property {string|ol.Expression} text Text for the label.
  * @property {number|ol.Expression|undefined} opacity Opacity (0-1).
  */
 
