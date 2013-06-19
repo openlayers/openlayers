@@ -1,5 +1,5 @@
 basePath = '../';
-baseUrl = '/base/test';
+urlRoot = '/base/test';
 
 files = [
   // 'test/mocha-1.8.1/mocha.js',
@@ -10,7 +10,8 @@ files = [
   'test/test-extensions.js',
   'build/proj4js/lib/proj4js-combined.js',
   'http://localhost:9810/compile?id=test&mode=RAW',
-  {pattern: 'test/**/*.json', watched: false, included: false, served: true},
+  {pattern: 'test/**/*.geojson', watched: false, included: false, served: true},
+  {pattern: 'test/**/*.kml', watched: false, included: false, served: true},
   {pattern: 'test/**/*.xml', watched: false, included: false, served: true},
   {pattern: 'test/**/*.test.js', watched: true, included: false, served: false},
   {pattern: 'src/**/*.js', watched: true, included: false, served: false}
