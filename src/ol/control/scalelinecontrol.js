@@ -302,7 +302,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
   while (true) {
     count = ol.control.ScaleLine.LEADING_DIGITS[i % 3] *
         Math.pow(10, Math.floor(i / 3));
-    width = Math.round(count / pointResolution);
+    width = (count / pointResolution) | 0;
     if (width >= this.minWidth_) {
       break;
     }
