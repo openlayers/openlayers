@@ -46,7 +46,6 @@ serve.stderr.on('data', function(chunk) {
 serve.stdout.on('data', function(chunk) {
   // plovr doesn't write to stdout, but if it does in the future ...
   process.stdout.write(chunk);
-  startTestacular();
 });
 
 serve.on('exit', function(code) {
