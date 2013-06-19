@@ -41,8 +41,8 @@ ol.source.wms.getUrl =
     'REQUEST': 'GetMap',
     'FORMAT': 'image/png',
     'TRANSPARENT': true,
-    'WIDTH': Math.round(size[0]),
-    'HEIGHT': Math.round(size[1])
+    'WIDTH': size[0] | 0,
+    'HEIGHT': size[1] | 0
   };
   goog.object.extend(baseParams, params);
 
