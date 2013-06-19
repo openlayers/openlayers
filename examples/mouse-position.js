@@ -7,19 +7,18 @@ goog.require('ol.coordinate');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.source.OSM');
 
+var control = new ol.control.MousePosition({
+  coordinateFormat: ol.coordinate.createStringXY(4),
+  projection: 'EPSG:4326',
+  // comment the following two lines to have the mouse position
+  // be placed within the map.
+  className: 'custom-mouse-position',
+  target: document.getElementById('mouse-position'),
+  undefinedHTML: '&nbsp;'
+});
 
 var map = new ol.Map({
-  controls: ol.control.defaults({}, [
-    new ol.control.MousePosition({
-      coordinateFormat: ol.coordinate.toStringHDMS,
-      projection: 'EPSG:4326',
-      // comment the following two lines to have the mouse position
-      // be placed within the map.
-      className: 'custom-mouse-position',
-      target: document.getElementById('mouse-position'),
-      undefinedHTML: '&nbsp;'
-    })
-  ]),
+  controls: ol.control.defaults({}, [control]),
   layers: [
     new ol.layer.TileLayer({
       source: new ol.source.OSM()
@@ -32,3 +31,7 @@ var map = new ol.Map({
     zoom: 2
   })
 });
+
+document.getElementById('projection').addEventListener('change', function() {
+  control.setProjection(this.value);
+}, false);

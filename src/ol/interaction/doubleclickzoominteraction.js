@@ -52,6 +52,6 @@ ol.interaction.DoubleClickZoom.prototype.handleMapBrowserEvent =
     ol.interaction.Interaction.zoomByDelta(map, view, delta, anchor,
         ol.interaction.DOUBLECLICKZOOM_ANIMATION_DURATION);
     mapBrowserEvent.preventDefault();
-    browserEvent.preventDefault();
+    mapBrowserEvent.stopOtherInteractions();
   }
 };

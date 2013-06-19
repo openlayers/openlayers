@@ -190,8 +190,8 @@ describe('ol.parser.GeoJSON', function() {
       expect(secondGeom).to.be.a(ol.geom.LineString);
     });
 
-    it('parses countries.json', function(done) {
-      afterLoadText('spec/ol/parser/geojson/countries.json', function(text) {
+    it('parses countries.geojson', function(done) {
+      afterLoadText('spec/ol/parser/geojson/countries.geojson', function(text) {
         var result = parser.read(text);
         expect(result.length).to.be(179);
 
@@ -218,8 +218,8 @@ describe('ol.parser.GeoJSON', function() {
       });
     });
 
-    it('parses countries.json with shared vertices', function() {
-      afterLoadText('spec/ol/parser/geojson/countries.json', function(text) {
+    it('parses countries.geojson with shared vertices', function() {
+      afterLoadText('spec/ol/parser/geojson/countries.geojson', function(text) {
         var pointVertices = new ol.geom.SharedVertices();
         var lineVertices = new ol.geom.SharedVertices();
         var polygonVertices = new ol.geom.SharedVertices();
