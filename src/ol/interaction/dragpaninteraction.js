@@ -106,7 +106,7 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
  */
 ol.interaction.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
-  if (this.condition_(browserEvent)) {
+  if (browserEvent.isMouseActionButton() && this.condition_(browserEvent)) {
     if (this.kinetic_) {
       this.kinetic_.begin();
       this.kinetic_.update(browserEvent.clientX, browserEvent.clientY);
