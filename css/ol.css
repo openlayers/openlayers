@@ -290,3 +290,14 @@ button.ol-full-screen-true:after {
 .ol-has-tooltip [role=tooltip] {
   font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
 }
+
+.ol-overviewmap {
+  background: rgba(255,255,255,0.4);
+  border-radius: 4px 0 0 4px;
+  padding: 2px;
+  position: absolute;
+  right: 0;
+  bottom: 32px;
+  width: 320px;
+  height: 160px;
+}

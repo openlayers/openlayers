@@ -1,0 +1,2 @@
+@exportClass ol.control.OverviewMap ol.control.OverviewMapOptions
+@exportProperty ol.control.OverviewMap.prototype.setMap
