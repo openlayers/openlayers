@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
+goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
@@ -20,6 +21,12 @@ goog.require('ol.layer.Vector');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.VectorRenderer');
 goog.require('ol.tilegrid.TileGrid');
+
+
+/**
+ * @define {number} The lowest supported resolution value.
+ */
+ol.renderer.canvas.MIN_RESOLUTION = 0.14929107086948487;
 
 
 
@@ -303,16 +310,49 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       resolution = view2DState.resolution,
       extent = frameState.extent,
       layer = this.getVectorLayer(),
-      tileGrid = this.tileGrid_;
+      tileGrid = this.tileGrid_,
+      resolutions, tileCoord, key, i;
 
-  if (goog.isNull(tileGrid)) {
-    // lazy tile grid creation to match the view projection
-    tileGrid = ol.tilegrid.createForProjection(
-        view2DState.projection,
-        20, // should be no harm in going big here - ideally, it would be ∞
-        [512, 512]);
-    this.tileGrid_ = tileGrid;
+  // lazy tile grid creation
+  if (!frameState.viewHints[ol.ViewHint.ANIMATING]) {
+    // Avoid rendering issues at very high zoom levels
+    var gridResolution = Math.max(resolution,
+        ol.renderer.canvas.MIN_RESOLUTION);
+    if (goog.isNull(tileGrid)) {
+      // start with the current resolution
+      resolutions = [gridResolution];
+    } else if (!goog.array.contains(tileGrid.getResolutions(),
+        gridResolution)) {
+      // create a new tile grid, adding the current resolution, and update z
+      // tile coordinates in tile cache to match the new tile grid
+      var oldResolutions = tileGrid.getResolutions();
+      resolutions = [gridResolution].concat(oldResolutions);
+      resolutions.sort(function(a, b) { return b - a; });
+      var keys = this.tileCache_.getKeys();
+      for (i = keys.length - 1; i >= 0; --i) {
+        key = keys[i];
+        tileCoord = ol.TileCoord.createFromString(key);
+        tileCoord.z = goog.array.indexOf(resolutions,
+            oldResolutions[tileCoord.z]);
+        this.tileCache_.set(tileCoord.toString(), this.tileCache_.pop());
+      }
+    }
+    if (goog.isDef(resolutions)) {
+      tileGrid = new ol.tilegrid.TileGrid({
+        origin: [0, 0],
+        projection: view2DState.projection,
+        resolutions: resolutions,
+        tileSize: [512, 512]
+      });
+      this.tileGrid_ = tileGrid;
+    }
   }
+  if (goog.isNull(tileGrid)) {
+    // We should only get here when the first call to renderFrame happens during
+    // an animation. Try again in the next renderFrame call.
+    return;
+  }
+
 
   // set up transform for the layer canvas to be drawn to the map canvas
   var z = tileGrid.getZForResolution(resolution),
@@ -399,7 +439,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var tilesOnSketchCanvas = {};
   // TODO make gutter configurable?
   var tileGutter = 15 * tileResolution;
-  var tile, tileCoord, key, tileState, x, y;
+  var tile, x, y;
   // render features by geometry type
   var filters = this.geometryFilters_,
       numFilters = filters.length,
