@@ -52,7 +52,7 @@ ol.control.OverviewMap = function(opt_options) {
   });
 
   /**
-   * @type {ol.Map} The overview map itself
+   * @type {ol.Map}
    * @private
    */
   this.ovmap_ = new ol.Map({
