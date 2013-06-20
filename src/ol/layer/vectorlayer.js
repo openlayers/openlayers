@@ -11,6 +11,7 @@ goog.require('ol.proj');
 goog.require('ol.source.Vector');
 goog.require('ol.structs.RTree');
 goog.require('ol.style.Style');
+goog.require('ol.style.TextLiteral');
 
 
 
@@ -276,14 +277,17 @@ ol.layer.Vector.prototype.getPolygonVertices = function() {
 
 /**
  * @param {Object.<string, ol.Feature>} features Features.
- * @return {Array.<Array>} symbolizers for features.
+ * @return {Array.<Array>} symbolizers for features. Each array in this array
+ *     contains 3 items: an array of features, the symbolizer literal, and
+ *     an array with optional additional data for each feature.
  */
 ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
     function(features) {
   var uniqueLiterals = {},
       featuresBySymbolizer = [],
       style = this.style_,
-      i, j, l, feature, literals, numLiterals, literal, uniqueLiteral, key;
+      i, j, l, feature, literals, numLiterals, literal, uniqueLiteral, key,
+      item;
   for (i in features) {
     feature = features[i];
     literals = feature.getSymbolizerLiterals();
@@ -305,9 +309,17 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
       key = goog.getUid(literal);
       if (!goog.object.containsKey(uniqueLiterals, key)) {
         uniqueLiterals[key] = featuresBySymbolizer.length;
-        featuresBySymbolizer.push([[], literal]);
+        featuresBySymbolizer.push([
+          /** @type {Array.<ol.Feature>} */ ([]),
+          /** @type {ol.style.SymbolizerLiteral} */ (literal),
+          /** @type {Array} */ ([])
+        ]);
       }
-      featuresBySymbolizer[uniqueLiterals[key]][0].push(feature);
+      item = featuresBySymbolizer[uniqueLiterals[key]];
+      item[0].push(feature);
+      if (literal instanceof ol.style.TextLiteral) {
+        item[2].push(literals[j].text);
+      }
     }
   }
   return featuresBySymbolizer;
