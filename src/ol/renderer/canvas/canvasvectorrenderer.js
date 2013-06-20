@@ -289,6 +289,8 @@ ol.renderer.canvas.VectorRenderer.prototype.renderText_ =
     context.font = fontArray.join(' ');
   }
   context.globalAlpha = text.opacity;
+
+  // TODO: make alignments configurable
   context.textAlign = 'center';
   context.textBaseline = 'middle';
 
@@ -454,7 +456,7 @@ ol.renderer.canvas.VectorRenderer.getLabelVectors = function(geometry) {
     return [[geometry.get(0), geometry.get(1), 0]];
   }
   if (type == ol.geom.GeometryType.POLYGON) {
-    // TODO Better label placement
+    // TODO: better label placement
     var coordinates = ol.extent.getCenter(geometry.getBounds());
     return [[coordinates[0], coordinates[1], 0]];
   }
