@@ -28,7 +28,7 @@ var resetHue = document.getElementById('reset-hue');
 var decreaseHue = document.getElementById('decrease-hue');
 
 function setResetHueButtonHTML() {
-  resetHue.innerHTML = 'Hue (' + layer.getHue() + ')';
+  resetHue.innerHTML = 'Hue (' + layer.getHue().toFixed(2) + ')';
 }
 setResetHueButtonHTML();
 
@@ -50,7 +50,8 @@ var resetSaturation = document.getElementById('reset-saturation');
 var decreaseSaturation = document.getElementById('decrease-saturation');
 
 function setResetSaturationButtonHTML() {
-  resetSaturation.innerHTML = 'Saturation (' + layer.getSaturation() + ')';
+  resetSaturation.innerHTML = 'Saturation (' +
+      layer.getSaturation().toFixed(2) + ')';
 }
 setResetSaturationButtonHTML();
 

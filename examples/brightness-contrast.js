@@ -24,7 +24,8 @@ var resetBrightness = document.getElementById('reset-brightness');
 var decreaseBrightness = document.getElementById('decrease-brightness');
 
 function setResetBrightnessButtonHTML() {
-  resetBrightness.innerHTML = 'Brightness (' + layer.getBrightness() + ')';
+  resetBrightness.innerHTML = 'Brightness (' +
+      layer.getBrightness().toFixed(3) + ')';
 }
 setResetBrightnessButtonHTML();
 
@@ -46,7 +47,7 @@ var resetContrast = document.getElementById('reset-contrast');
 var decreaseContrast = document.getElementById('decrease-contrast');
 
 function setResetContrastButtonHTML() {
-  resetContrast.innerHTML = 'Contrast (' + layer.getContrast() + ')';
+  resetContrast.innerHTML = 'Contrast (' + layer.getContrast().toFixed(3) + ')';
 }
 setResetContrastButtonHTML();
 
