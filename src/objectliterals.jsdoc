@@ -574,6 +574,15 @@
  */
 
 /**
+ * @typedef {Object} ol.style.TextOptions
+ * @property {string|ol.Expression|undefined} color Color.
+ * @property {string|ol.Expression|undefined} fontFamily Font family.
+ * @property {number|ol.Expression|undefined} fontSize Font size in pixels.
+ * @property {string|ol.Expression} text Text for the label.
+ * @property {number|ol.Expression|undefined} opacity Opacity (0-1).
+ */
+
+/**
  * @typedef {Object} ol.tilegrid.TileGridOptions
  * @property {number|undefined} minZoom Minimum zoom.
  * @property {ol.Coordinate|undefined} origin Origin.

@@ -446,7 +446,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       group = groups[j];
       deferred = sketchCanvasRenderer.renderFeaturesByGeometryType(
           /** @type {ol.geom.GeometryType} */ (type),
-          group[0], group[1]);
+          group[0], group[1], group[2]);
       if (deferred) {
         break renderByGeometryType;
       }
