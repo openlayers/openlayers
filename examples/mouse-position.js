@@ -9,7 +9,7 @@ goog.require('ol.layer.TileLayer');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
 
-var control = new ol.control.MousePosition({
+var mousePositionControl = new ol.control.MousePosition({
   coordinateFormat: ol.coordinate.createStringXY(4),
   projection: 'EPSG:4326',
   // comment the following two lines to have the mouse position
@@ -20,7 +20,7 @@ var control = new ol.control.MousePosition({
 });
 
 var map = new ol.Map({
-  controls: ol.control.defaults({}, [control]),
+  controls: ol.control.defaults({}, [mousePositionControl]),
   layers: [
     new ol.layer.TileLayer({
       source: new ol.source.OSM()
@@ -34,13 +34,13 @@ var map = new ol.Map({
   })
 });
 
-var projection = new ol.dom.Input(document.getElementById('projection'));
-projection.on('change:value', function() {
-  control.setProjection(ol.proj.get(projection.getValue()));
+var projectionSelect = new ol.dom.Input(document.getElementById('projection'));
+projectionSelect.on('change:value', function() {
+  mousePositionControl.setProjection(ol.proj.get(projectionSelect.getValue()));
 });
 
-var precision = new ol.dom.Input(document.getElementById('precision'));
-precision.on('change:value', function() {
-  var format = ol.coordinate.createStringXY(precision.getValue());
-  control.setCoordinateFormat(format);
+var precisionInput = new ol.dom.Input(document.getElementById('precision'));
+precisionInput.on('change:value', function() {
+  var format = ol.coordinate.createStringXY(precisionInput.getValue());
+  mousePositionControl.setCoordinateFormat(format);
 });

@@ -8,11 +8,11 @@ goog.require('ol.layer.TileLayer');
 goog.require('ol.source.OSM');
 
 
-var control = new ol.control.ScaleLine();
+var scaleLineControl = new ol.control.ScaleLine();
 
 var map = new ol.Map({
   controls: ol.control.defaults({}, [
-    control
+    scaleLineControl
   ]),
   layers: [
     new ol.layer.TileLayer({
@@ -28,5 +28,5 @@ var map = new ol.Map({
 });
 
 
-var units = new ol.dom.Input(document.getElementById('units'));
-units.bindTo('value', control, 'units');
+var unitsSelect = new ol.dom.Input(document.getElementById('units'));
+unitsSelect.bindTo('value', scaleLineControl, 'units');
