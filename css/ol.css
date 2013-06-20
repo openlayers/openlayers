@@ -301,3 +301,6 @@ button.ol-full-screen-true:after {
   width: 320px;
   height: 160px;
 }
+.ol-overviewmap-box {
+  border: 2px dotted red;
+}
