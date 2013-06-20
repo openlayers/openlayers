@@ -38,7 +38,7 @@ var vector = new ol.layer.Vector({
       symbolizers: [
         new ol.style.Text({
           color: '#bada55',
-          name: new ol.Expression('name'),
+          text: new ol.Expression('name'),
           fontFamily: 'Calibri,sans-serif',
           fontSize: 12
         })
