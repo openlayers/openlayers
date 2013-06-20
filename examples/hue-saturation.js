@@ -63,6 +63,6 @@ resetSaturation.addEventListener('click', function() {
   setResetSaturationButtonHTML();
 }, false);
 decreaseSaturation.addEventListener('click', function() {
-  layer.setSaturation(layer.getSaturation() - 0.25);
+  layer.setSaturation(Math.max(layer.getSaturation() - 0.25, 0));
   setResetSaturationButtonHTML();
 }, false);

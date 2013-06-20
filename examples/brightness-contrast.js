@@ -29,7 +29,7 @@ function setResetBrightnessButtonHTML() {
 setResetBrightnessButtonHTML();
 
 increaseBrightness.addEventListener('click', function() {
-  layer.setBrightness(layer.getBrightness() + 0.125);
+  layer.setBrightness(Math.min(layer.getBrightness() + 0.125, 1));
   setResetBrightnessButtonHTML();
 }, false);
 resetBrightness.addEventListener('click', function() {
@@ -37,7 +37,7 @@ resetBrightness.addEventListener('click', function() {
   setResetBrightnessButtonHTML();
 }, false);
 decreaseBrightness.addEventListener('click', function() {
-  layer.setBrightness(layer.getBrightness() - 0.125);
+  layer.setBrightness(Math.max(layer.getBrightness() - 0.125, -1));
   setResetBrightnessButtonHTML();
 }, false);
 
@@ -59,6 +59,6 @@ resetContrast.addEventListener('click', function() {
   setResetContrastButtonHTML();
 }, false);
 decreaseContrast.addEventListener('click', function() {
-  layer.setContrast(layer.getContrast() - 0.125);
+  layer.setContrast(Math.max(layer.getContrast() - 0.125, 0));
   setResetContrastButtonHTML();
 }, false);
