@@ -9,8 +9,8 @@ goog.require('ol.style.SymbolizerLiteral');
 
 
 /**
- * @typedef {{color: (string|undefined),
- *            fontFamily: (string|undefined),
+ * @typedef {{color: string,
+ *            fontFamily: string,
  *            fontSize: number,
  *            text: string,
  *            opacity: number}}
@@ -26,13 +26,13 @@ ol.style.TextLiteralOptions;
  */
 ol.style.TextLiteral = function(options) {
 
-  /** @type {string|undefined} */
+  /** @type {string} */
   this.color = options.color;
   if (goog.isDef(options.color)) {
     goog.asserts.assertString(options.color, 'color must be a string');
   }
 
-  /** @type {string|undefined} */
+  /** @type {string} */
   this.fontFamily = options.fontFamily;
   if (goog.isDef(options.fontFamily)) {
     goog.asserts.assertString(options.fontFamily,
@@ -79,7 +79,7 @@ ol.style.Text = function(options) {
    * @private
    */
   this.color_ = !goog.isDef(options.color) ?
-      null :
+      new ol.ExpressionLiteral(ol.style.TextDefaults.color) :
       (options.color instanceof ol.Expression) ?
           options.color : new ol.ExpressionLiteral(options.color);
 
@@ -87,8 +87,8 @@ ol.style.Text = function(options) {
    * @type {ol.Expression}
    * @private
    */
-  this.fontFamily_ = !goog.isDefAndNotNull(options.fontFamily) ?
-      null :
+  this.fontFamily_ = !goog.isDef(options.fontFamily) ?
+      new ol.ExpressionLiteral(ol.style.TextDefaults.fontFamily) :
       (options.fontFamily instanceof ol.Expression) ?
           options.fontFamily : new ol.ExpressionLiteral(options.fontFamily);
 
@@ -96,8 +96,8 @@ ol.style.Text = function(options) {
    * @type {ol.Expression}
    * @private
    */
-  this.fontSize_ = !goog.isDefAndNotNull(options.fontSize) ?
-      null :
+  this.fontSize_ = !goog.isDef(options.fontSize) ?
+      new ol.ExpressionLiteral(ol.style.TextDefaults.fontSize) :
       (options.fontSize instanceof ol.Expression) ?
           options.fontSize : new ol.ExpressionLiteral(options.fontSize);
 
@@ -132,15 +132,11 @@ ol.style.Text.prototype.createLiteral = function(opt_feature) {
     attrs = feature.getAttributes();
   }
 
-  var color = goog.isNull(this.color_) ?
-      undefined :
-      /** @type {string} */ (this.color_.evaluate(feature, attrs));
-  goog.asserts.assert(!goog.isDef(color) || goog.isString(color));
+  var color = this.color_.evaluate(feature, attrs);
+  goog.asserts.assertString(color, 'color must be a string');
 
-  var fontFamily = goog.isNull(this.fontFamily_) ?
-      undefined :
-      /** @type {string} */ (this.fontFamily_.evaluate(feature, attrs));
-  goog.asserts.assert(!goog.isDef(fontFamily) || goog.isString(fontFamily));
+  var fontFamily = this.fontFamily_.evaluate(feature, attrs);
+  goog.asserts.assertString(fontFamily, 'fontFamily must be a string');
 
   var fontSize = this.fontSize_.evaluate(feature, attrs);
   goog.asserts.assertNumber(fontSize, 'fontSize must be a number');
@@ -165,6 +161,8 @@ ol.style.Text.prototype.createLiteral = function(opt_feature) {
  * @type {ol.style.TextLiteral}
  */
 ol.style.TextDefaults = new ol.style.TextLiteral({
+  color: '#000',
+  fontFamily: 'sans-serif',
   fontSize: 10,
   text: '',
   opacity: 1
