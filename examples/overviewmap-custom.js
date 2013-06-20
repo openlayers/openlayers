@@ -29,7 +29,7 @@ var overviewMap = new ol.Map({
 
 var setOverviewResolution = function() {
   overviewView.setResolution(4 * mainView.getResolution());
-}
+};
 
 // have both maps share the same layers
 overviewMap.bindTo('layers', map);
@@ -43,5 +43,5 @@ mainView.on('change:resolution', setOverviewResolution);
 
 // initialize the main map view's position in the end, which will adjust
 // the overview map view's position too
-mainView.setCenter([0,0]);
+mainView.setCenter([0, 0]);
 setOverviewResolution();
