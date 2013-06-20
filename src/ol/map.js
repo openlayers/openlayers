@@ -830,8 +830,11 @@ ol.Map.prototype.requestRenderFrame = function() {
 ol.Map.prototype.removeControl = function(control) {
   var controls = this.getControls();
   goog.asserts.assert(goog.isDef(controls));
-  control.setMap(null);
-  return /** @type {ol.control.Control|undefined} */ (controls.remove(control));
+  if (goog.isDef(controls.remove(control))) {
+    control.setMap(null);
+    return control;
+  }
+  return undefined;
 };
 
 
