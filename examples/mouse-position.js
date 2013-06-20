@@ -4,7 +4,9 @@ goog.require('ol.View2D');
 goog.require('ol.control.MousePosition');
 goog.require('ol.control.defaults');
 goog.require('ol.coordinate');
+goog.require('ol.dom.Input');
 goog.require('ol.layer.TileLayer');
+goog.require('ol.proj');
 goog.require('ol.source.OSM');
 
 var control = new ol.control.MousePosition({
@@ -32,6 +34,13 @@ var map = new ol.Map({
   })
 });
 
-document.getElementById('projection').addEventListener('change', function() {
-  control.setProjection(this.value);
-}, false);
+var projection = new ol.dom.Input(document.getElementById('projection'));
+projection.on('change:value', function() {
+  control.setProjection(ol.proj.get(projection.getValue()));
+});
+
+var precision = new ol.dom.Input(document.getElementById('precision'));
+precision.on('change:value', function() {
+  var format = ol.coordinate.createStringXY(precision.getValue());
+  control.setCoordinateFormat(format);
+});
