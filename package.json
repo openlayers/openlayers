@@ -1,8 +1,8 @@
 {
   "name": "openlayers",
-  "version": "3.0.0beta",
+  "version": "3.0.0-alpha",
   "description": "Mapping library",
-  "homepage": "http://openlayers.org",
+  "homepage": "http://ol3js.org/",
   "repository": {
     "type" : "git",
     "url" : "https://github.com/openlayers/ol3.git"
