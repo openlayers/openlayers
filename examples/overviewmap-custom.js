@@ -4,6 +4,10 @@ goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.source.OSM');
 
+// main map
+var mainView = new ol.View2D({
+  zoom: 2
+});
 var map = new ol.Map({
   layers: [
     new ol.layer.TileLayer({
@@ -12,20 +16,32 @@ var map = new ol.Map({
   ],
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
-  view: new ol.View2D({
-    center: [0, 0],
-    zoom: 2
-  })
+  view: mainView
 });
 
+// overview map
+var overviewView = new ol.View2D();
 var overviewMap = new ol.Map({
   controls: [],
   target: 'overviewmap',
-  view: new ol.View2D({
-    center: [0, 0],
-    zoom: 2
-  })
+  view: overviewView
 });
 
+var setOverviewResolution = function() {
+  overviewView.setResolution(4 * mainView.getResolution());
+}
+
+// have both maps share the same layers
 overviewMap.bindTo('layers', map);
+
+// make the overview map view's center follow the main map view's center
 overviewMap.getView().bindTo('center', map.getView());
+
+// listen to the main map view's resolution change to adjust the overview
+// resolution accordingly
+mainView.on('change:resolution', setOverviewResolution);
+
+// initialize the main map view's position in the end, which will adjust
+// the overview map view's position too
+mainView.setCenter([0,0]);
+setOverviewResolution();
