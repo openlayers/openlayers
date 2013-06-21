@@ -27,7 +27,7 @@ ol.control.OVERVIEWMAP_MAX_RATIO = 0.75;
  * @define {number} Minimum width and/or height extent ratio that determines
  * when the overview map should be zoomed in.
  */
-ol.control.OVERVIEWMAP_MIN_RATIO = 0.25;
+ol.control.OVERVIEWMAP_MIN_RATIO = 0.1;
 
 
 
@@ -74,13 +74,15 @@ ol.control.OverviewMap = function(opt_options) {
    * @type {number}
    * @private
    */
-  this.maxRatio_ = options.maxRatio || ol.control.OVERVIEWMAP_MAX_RATIO;
+  this.maxRatio_ = goog.isDefAndNotNull(options.maxRatio) ?
+      options.maxRatio : ol.control.OVERVIEWMAP_MAX_RATIO;
 
   /**
    * @type {number}
    * @private
    */
-  this.minRatio_ = options.minRatio || ol.control.OVERVIEWMAP_MIN_RATIO;
+  this.minRatio_ = goog.isDefAndNotNull(options.minRatio) ?
+      options.minRatio : ol.control.OVERVIEWMAP_MIN_RATIO;
 
   goog.base(this, {
     element: element,
@@ -206,15 +208,21 @@ ol.control.OverviewMap.prototype.validateExtent_ = function() {
 
 
 /**
- * Reset the overview map extent to the map extent with a ratio.
+ * Reset the overview map extent to half calculated min and max ratio times
+ * the extent of the main map.
  * @private
  */
 ol.control.OverviewMap.prototype.resetExtent_ = function() {
+  if (this.maxRatio_ == 0 || this.minRatio_ == 0) {
+    return;
+  }
+
   var map = this.getMap();
+  var ovmap = this.ovmap_;
   var extent = map.getView().calculateExtent(map.getSize());
-  // FIXME - set ratio as property
-  ol.extent.scaleFromCenter(extent, 1.5);
-  this.ovmap_.getView().fitExtent(extent, this.ovmap_.getSize());
+  var ratio = 1 / ((this.maxRatio_ - this.minRatio_) / 2 + this.minRatio_);
+  ol.extent.scaleFromCenter(extent, ratio);
+  ovmap.getView().fitExtent(extent, ovmap.getSize());
 };
 
 

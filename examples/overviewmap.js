@@ -42,5 +42,5 @@ var map3 = createMap('map3');
 var overview3 = new ol.control.OverviewMap({
   map: map3,
   maxRatio: 0.5,
-  minRatio: 0.05
+  minRatio: 0.025
 });
