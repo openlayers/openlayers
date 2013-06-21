@@ -215,7 +215,12 @@ ol.control.OverviewMap.prototype.resetExtent_ = function() {
   var map = this.getMap();
   var ovmap = this.ovmap_;
   var extent = map.getView().calculateExtent(map.getSize());
-  var ratio = 1 / ((this.maxRatio_ - this.minRatio_) / 2 + this.minRatio_);
+
+  // get how many times the current map overview could hold different
+  // box sizes using the min and max ratio, pick the step in the middle used
+  // to calculate the extent from the main map to set it to the overview map,
+  var steps = Math.log(this.maxRatio_ / this.minRatio_) / Math.LN2;
+  var ratio = 1 / (Math.pow(2, steps / 2) * this.minRatio_);
   ol.extent.scaleFromCenter(extent, ratio);
   ovmap.getView().fitExtent(extent, ovmap.getSize());
 };
