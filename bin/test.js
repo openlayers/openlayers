@@ -6,7 +6,7 @@ var cp = require('child_process');
 var base = path.join(__dirname, '..');
 
 // get the most recent plovr.jar
-var plovr = glob.sync('bin/plovr*.jar').sort(function(a, b) {
+var plovr = glob.sync('build/plovr*.jar').sort(function(a, b) {
   return fs.statSync(a).mtime.getTime() - fs.statSync(b).mtime.getTime();
 }).pop();
 if (!plovr) {
