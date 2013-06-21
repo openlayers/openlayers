@@ -316,20 +316,16 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   if (!frameState.viewHints[ol.ViewHint.ANIMATING] &&
       !frameState.viewHints[ol.ViewHint.INTERACTING]) {
     // avoid rendering issues for very high zoom levels
-    var newResolution = Math.max(resolution, ol.renderer.canvas.MIN_RESOLUTION);
-    var oldResolutions = goog.isNull(this.tileGrid_) ? [] :
-        this.tileGrid_.getResolutions();
-    if (!goog.array.contains(oldResolutions, newResolution)) {
-      var newResolutions = oldResolutions.concat([]);
-      goog.array.binaryInsert(newResolutions, newResolution,
-          function(a, b) { return b - a; });
+    var gridResolution = Math.max(resolution,
+        ol.renderer.canvas.MIN_RESOLUTION);
+    if (gridResolution !== this.renderedResolution_) {
       tileGrid = new ol.tilegrid.TileGrid({
         origin: [0, 0],
         projection: view2DState.projection,
-        resolutions: newResolutions,
+        resolutions: [gridResolution],
         tileSize: [512, 512]
       });
-      this.updateTileCache_(oldResolutions, newResolutions);
+      this.tileCache_.clear();
       this.tileGrid_ = tileGrid;
     }
   }
@@ -528,25 +524,6 @@ ol.renderer.canvas.VectorLayer.prototype.pruneTileCache_ = function() {
     this.tileCache_.pop();
   }
   this.pendingCachePrune_ = false;
-};
-
-
-/**
- * @private
- * @param {Array.<number>} oldResolutions Resolutions of the old tile grid.
- * @param {Array.<number>} newResolutions Resolutions of the new tile grid.
- */
-ol.renderer.canvas.VectorLayer.prototype.updateTileCache_ =
-    function(oldResolutions, newResolutions) {
-  var keys = this.tileCache_.getKeys(),
-      tileCoord, key, i;
-  for (i = keys.length - 1; i >= 0; --i) {
-    key = keys[i];
-    tileCoord = ol.TileCoord.createFromString(key);
-    tileCoord.z = goog.array.indexOf(newResolutions,
-        oldResolutions[tileCoord.z]);
-    this.tileCache_.set(tileCoord.toString(), this.tileCache_.pop());
-  }
 };
 
 
