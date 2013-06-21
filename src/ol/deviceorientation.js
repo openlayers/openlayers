@@ -90,7 +90,7 @@ ol.DeviceOrientation.prototype.orientationChange_ = function(browserEvent) {
  * @return {number|undefined} alpha.
  */
 ol.DeviceOrientation.prototype.getAlpha = function() {
-  return /** @type {number} */ (
+  return /** @type {number|undefined} */ (
       this.get(ol.DeviceOrientationProperty.ALPHA));
 };
 goog.exportProperty(
@@ -103,7 +103,7 @@ goog.exportProperty(
  * @return {number|undefined} beta.
  */
 ol.DeviceOrientation.prototype.getBeta = function() {
-  return /** @type {number} */ (
+  return /** @type {number|undefined} */ (
       this.get(ol.DeviceOrientationProperty.BETA));
 };
 goog.exportProperty(
@@ -116,7 +116,7 @@ goog.exportProperty(
  * @return {number|undefined} gamma.
  */
 ol.DeviceOrientation.prototype.getGamma = function() {
-  return /** @type {number} */ (
+  return /** @type {number|undefined} */ (
       this.get(ol.DeviceOrientationProperty.GAMMA));
 };
 goog.exportProperty(
@@ -129,7 +129,7 @@ goog.exportProperty(
  * @return {number|undefined} heading.
  */
 ol.DeviceOrientation.prototype.getHeading = function() {
-  return /** @type {number} */ (
+  return /** @type {number|undefined} */ (
       this.get(ol.DeviceOrientationProperty.HEADING));
 };
 goog.exportProperty(

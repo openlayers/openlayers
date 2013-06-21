@@ -187,7 +187,7 @@ ol.Geolocation.prototype.positionError_ = function(error) {
  * @return {number|undefined} accuracy in meters.
  */
 ol.Geolocation.prototype.getAccuracy = function() {
-  return /** @type {number} */ (
+  return /** @type {number|undefined} */ (
       this.get(ol.GeolocationProperty.ACCURACY));
 };
 goog.exportProperty(
@@ -243,7 +243,7 @@ goog.exportProperty(
  * @return {ol.Coordinate|undefined} position.
  */
 ol.Geolocation.prototype.getPosition = function() {
-  return /** @type {ol.Coordinate} */ (
+  return /** @type {ol.Coordinate|undefined} */ (
       this.get(ol.GeolocationProperty.POSITION));
 };
 goog.exportProperty(
@@ -257,7 +257,7 @@ goog.exportProperty(
  * @return {ol.Projection|undefined} projection.
  */
 ol.Geolocation.prototype.getProjection = function() {
-  return /** @type {ol.Projection} */ (
+  return /** @type {ol.Projection|undefined} */ (
       this.get(ol.GeolocationProperty.PROJECTION));
 };
 goog.exportProperty(
@@ -299,7 +299,7 @@ goog.exportProperty(
  * @return {GeolocationPositionOptions|undefined} Tracking options.
  */
 ol.Geolocation.prototype.getTrackingOptions = function() {
-  return /** @type {GeolocationPositionOptions} */ (
+  return /** @type {GeolocationPositionOptions|undefined} */ (
       this.get(ol.GeolocationProperty.TRACKING_OPTIONS));
 };
 goog.exportProperty(
