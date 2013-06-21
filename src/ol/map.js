@@ -251,6 +251,12 @@ ol.Map = function(options) {
    * @type {ol.Collection}
    * @private
    */
+  this.controls_ = optionsInternal.controls;
+
+  /**
+   * @type {ol.Collection}
+   * @private
+   */
   this.interactions_ = optionsInternal.interactions;
 
   /**
@@ -320,18 +326,28 @@ ol.Map = function(options) {
   // is "defined" already.
   this.setValues(optionsInternal.values);
 
-  if (goog.isDef(optionsInternal.controls)) {
-    goog.array.forEach(optionsInternal.controls,
-        /**
-         * @param {ol.control.Control} control Control.
-         */
-        function(control) {
-          control.setMap(this);
-        }, this);
-  }
+  this.controls_.forEach(
+      /**
+       * @param {ol.control.Control} control Control.
+       */
+      function(control) {
+        control.setMap(this);
+      }, this);
 
 };
 goog.inherits(ol.Map, ol.Object);
+
+
+/**
+ * Add the given control to the map.
+ * @param {ol.control.Control} control Control.
+ */
+ol.Map.prototype.addControl = function(control) {
+  var controls = this.getControls();
+  goog.asserts.assert(goog.isDef(controls));
+  controls.push(control);
+  control.setMap(this);
+};
 
 
 /**
@@ -431,6 +447,14 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
     var vec2 = pixel.slice();
     return ol.vec.Mat4.multVec2(frameState.pixelToCoordinateMatrix, vec2, vec2);
   }
+};
+
+
+/**
+ * @return {ol.Collection} Controls.
+ */
+ol.Map.prototype.getControls = function() {
+  return this.controls_;
 };
 
 
@@ -798,6 +822,23 @@ ol.Map.prototype.requestRenderFrame = function() {
 
 
 /**
+ * Remove the given control from the map.
+ * @param {ol.control.Control} control Control.
+ * @return {ol.control.Control|undefined} The removed control of undefined
+ *     if the control was not found.
+ */
+ol.Map.prototype.removeControl = function(control) {
+  var controls = this.getControls();
+  goog.asserts.assert(goog.isDef(controls));
+  if (goog.isDef(controls.remove(control))) {
+    control.setMap(null);
+    return control;
+  }
+  return undefined;
+};
+
+
+/**
  * Removes the given layer from the map.
  * @param {ol.layer.Layer} layer Layer.
  * @return {ol.layer.Layer|undefined} The removed layer or undefined if the
@@ -997,7 +1038,7 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
 
 
 /**
- * @typedef {{controls: Array.<ol.control.Control>,
+ * @typedef {{controls: ol.Collection,
  *            interactions: ol.Collection,
  *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
@@ -1074,8 +1115,17 @@ ol.Map.createOptionsInternal = function(options) {
     }
   }
 
-  var controls = goog.isDef(options.controls) ?
-      options.controls : ol.control.defaults();
+  var controls;
+  if (goog.isDef(options.controls)) {
+    if (goog.isArray(options.controls)) {
+      controls = new ol.Collection(goog.array.clone(options.controls));
+    } else {
+      goog.asserts.assertInstanceof(options.controls, ol.Collection);
+      controls = options.controls;
+    }
+  } else {
+    controls = ol.control.defaults();
+  }
 
   var interactions = goog.isDef(options.interactions) ?
       options.interactions : ol.interaction.defaults();
