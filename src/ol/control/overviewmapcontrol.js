@@ -140,14 +140,7 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
  * @private
  */
 ol.control.OverviewMap.prototype.handleCenterChanged_ = function(event) {
-  var map = this.getMap();
-  var mapViewExtent = map.getView().calculateExtent(map.getSize());
-  var ovmapViewExtent = this.ovmap_.getView().calculateExtent(
-      this.ovmap_.getSize());
-  if (!ol.extent.containsExtent(ovmapViewExtent, mapViewExtent)) {
-    this.resetExtent_();
-  }
-
+  this.validateExtent_();
   this.updateBox_();
 };
 
@@ -183,8 +176,8 @@ ol.control.OverviewMap.prototype.handleSizeChanged_ = function(event) {
 ol.control.OverviewMap.prototype.validateExtent_ = function() {
   var map = this.getMap();
   var ovmap = this.ovmap_;
-  var view = map.getView();
-  var extent = view.calculateExtent(map.getSize());
+  var extent = map.getView().calculateExtent(map.getSize());
+  var ovextent = ovmap.getView().calculateExtent(ovmap.getSize());
 
   var topLeftPixel =
       ovmap.getPixelFromCoordinate(ol.extent.getTopLeft(extent));
@@ -203,6 +196,8 @@ ol.control.OverviewMap.prototype.validateExtent_ = function() {
       boxSize.width > ovmapWidth * this.maxRatio_ ||
       boxSize.height > ovmapHeight * this.maxRatio_) {
     this.resetExtent_();
+  } else if (!ol.extent.containsExtent(ovextent, extent)) {
+    this.recenter_();
   }
 };
 
@@ -223,6 +218,18 @@ ol.control.OverviewMap.prototype.resetExtent_ = function() {
   var ratio = 1 / ((this.maxRatio_ - this.minRatio_) / 2 + this.minRatio_);
   ol.extent.scaleFromCenter(extent, ratio);
   ovmap.getView().fitExtent(extent, ovmap.getSize());
+};
+
+
+/**
+ * Set the center of the overview map to the map center without changing its
+ * resolution.
+ * @private
+ */
+ol.control.OverviewMap.prototype.recenter_ = function() {
+  var map = this.getMap();
+  var ovmap = this.ovmap_;
+  ovmap.getView().setCenter(map.getView().getCenter());
 };
 
 
