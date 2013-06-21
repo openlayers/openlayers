@@ -3,6 +3,7 @@ goog.provide('ol.style.ShapeLiteral');
 goog.provide('ol.style.ShapeType');
 
 goog.require('goog.asserts');
+goog.require('ol.expression');
 goog.require('ol.expression.Expression');
 goog.require('ol.expression.Literal');
 goog.require('ol.style.Point');
@@ -184,36 +185,34 @@ ol.style.Shape = function(options) {
  * @return {ol.style.ShapeLiteral} Literal shape symbolizer.
  */
 ol.style.Shape.prototype.createLiteral = function(opt_feature) {
-  var attrs,
-      feature = opt_feature;
-  if (goog.isDef(feature)) {
-    attrs = feature.getAttributes();
-  }
 
-  var size = this.size_.evaluate(attrs, null, feature);
+  var size = ol.expression.evaluateFeature(this.size_, opt_feature);
   goog.asserts.assertNumber(size, 'size must be a number');
 
-  var fillColor = goog.isNull(this.fillColor_) ?
-      undefined :
-      /** @type {string} */ (this.fillColor_.evaluate(attrs, null, feature));
-  goog.asserts.assert(!goog.isDef(fillColor) || goog.isString(fillColor));
+  var fillColor;
+  if (!goog.isNull(this.fillColor_)) {
+    fillColor = ol.expression.evaluateFeature(this.fillColor_, opt_feature);
+    goog.asserts.assertString(fillColor, 'fillColor must be a string');
+  }
 
-  var strokeColor = goog.isNull(this.strokeColor_) ?
-      undefined :
-      /** @type {string} */ (this.strokeColor_.evaluate(attrs, null, feature));
-  goog.asserts.assert(!goog.isDef(strokeColor) || goog.isString(strokeColor));
+  var strokeColor;
+  if (!goog.isNull(this.strokeColor_)) {
+    strokeColor = ol.expression.evaluateFeature(this.strokeColor_, opt_feature);
+    goog.asserts.assertString(strokeColor, 'strokeColor must be a string');
+  }
 
-  var strokeWidth = goog.isNull(this.strokeWidth_) ?
-      undefined :
-      /** @type {number} */ (this.strokeWidth_.evaluate(attrs, null, feature));
-  goog.asserts.assert(!goog.isDef(strokeWidth) || goog.isNumber(strokeWidth));
+  var strokeWidth;
+  if (!goog.isNull(this.strokeWidth_)) {
+    strokeWidth = ol.expression.evaluateFeature(this.strokeWidth_, opt_feature);
+    goog.asserts.assertNumber(strokeWidth, 'strokeWidth must be a number');
+  }
 
   goog.asserts.assert(
       goog.isDef(fillColor) ||
       (goog.isDef(strokeColor) && goog.isDef(strokeWidth)),
-      'either fill style or strokeColor and strokeWidth must be defined');
+      'either fillColor or strokeColor and strokeWidth must be defined');
 
-  var opacity = this.opacity_.evaluate(attrs, null, feature);
+  var opacity = ol.expression.evaluateFeature(this.opacity_, opt_feature);
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
   return new ol.style.ShapeLiteral({

@@ -3,6 +3,7 @@ goog.provide('ol.style.IconLiteral');
 goog.provide('ol.style.IconType');
 
 goog.require('goog.asserts');
+goog.require('ol.expression');
 goog.require('ol.expression.Expression');
 goog.require('ol.expression.Literal');
 goog.require('ol.style.Point');
@@ -118,28 +119,28 @@ ol.style.Icon = function(options) {
  * @inheritDoc
  * @return {ol.style.IconLiteral} Literal shape symbolizer.
  */
-ol.style.Icon.prototype.createLiteral = function(feature) {
-  var attrs = feature && feature.getAttributes();
+ol.style.Icon.prototype.createLiteral = function(opt_feature) {
 
-  var url = /** @type {string} */ (this.url_.evaluate(attrs, null, feature));
-  goog.asserts.assert(goog.isString(url) && url != '#', 'url must be a string');
+  var url = ol.expression.evaluateFeature(this.url_, opt_feature);
+  goog.asserts.assertString(url, 'url must be a string');
+  goog.asserts.assert(url != '#', 'url must not be "#"');
 
-  var width = /** @type {number|undefined} */ (goog.isNull(this.width_) ?
-      undefined : this.width_.evaluate(attrs, null, feature));
-  goog.asserts.assert(!goog.isDef(width) || goog.isNumber(width),
-      'width must be undefined or a number');
+  var width;
+  if (!goog.isNull(this.width_)) {
+    width = ol.expression.evaluateFeature(this.width_, opt_feature);
+    goog.asserts.assertNumber(width, 'width must be a number');
+  }
 
-  var height = /** @type {number|undefined} */ (goog.isNull(this.height_) ?
-      undefined : this.height_.evaluate(attrs, null, feature));
-  goog.asserts.assert(!goog.isDef(height) || goog.isNumber(height),
-      'height must be undefined or a number');
+  var height;
+  if (!goog.isNull(this.height_)) {
+    height = ol.expression.evaluateFeature(this.height_, opt_feature);
+    goog.asserts.assertNumber(height, 'height must be a number');
+  }
 
-  var opacity = /** {@type {number} */ (this.opacity_.evaluate(attrs, null,
-      feature));
+  var opacity = ol.expression.evaluateFeature(this.opacity_, opt_feature);
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
-  var rotation =
-      /** {@type {number} */ (this.rotation_.evaluate(attrs, null, feature));
+  var rotation = ol.expression.evaluateFeature(this.rotation_, opt_feature);
   goog.asserts.assertNumber(rotation, 'rotation must be a number');
 
   return new ol.style.IconLiteral({

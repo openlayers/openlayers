@@ -16,12 +16,18 @@ goog.require('ol.geom.GeometryType');
  * function scope.  The feature itself will be used as the `this` argument.
  *
  * @param {ol.expression.Expression} expr The expression.
- * @param {ol.Feature} feature The feature.
+ * @param {ol.Feature=} opt_feature The feature.
  * @return {*} The result of the expression.
  */
-ol.expression.evaluateFeature = function(expr, feature) {
-  return expr.evaluate(
-      feature.getAttributes(), ol.expression.lib, feature);
+ol.expression.evaluateFeature = function(expr, opt_feature) {
+  var result;
+  if (goog.isDef(opt_feature)) {
+    result = expr.evaluate(
+        opt_feature.getAttributes(), ol.expression.lib, opt_feature);
+  } else {
+    result = expr.evaluate();
+  }
+  return result;
 };
 
 

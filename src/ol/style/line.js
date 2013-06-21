@@ -2,6 +2,7 @@ goog.provide('ol.style.Line');
 goog.provide('ol.style.LineLiteral');
 
 goog.require('goog.asserts');
+goog.require('ol.expression');
 goog.require('ol.expression.Expression');
 goog.require('ol.expression.Literal');
 goog.require('ol.style.Symbolizer');
@@ -98,19 +99,16 @@ goog.inherits(ol.style.Line, ol.style.Symbolizer);
  * @return {ol.style.LineLiteral} Literal line symbolizer.
  */
 ol.style.Line.prototype.createLiteral = function(opt_feature) {
-  var attrs,
-      feature = opt_feature;
-  if (goog.isDef(feature)) {
-    attrs = feature.getAttributes();
-  }
 
-  var strokeColor = this.strokeColor_.evaluate(attrs, null, feature);
+  var strokeColor = ol.expression.evaluateFeature(
+      this.strokeColor_, opt_feature);
   goog.asserts.assertString(strokeColor, 'strokeColor must be a string');
 
-  var strokeWidth = this.strokeWidth_.evaluate(attrs, null, feature);
+  var strokeWidth = ol.expression.evaluateFeature(
+      this.strokeWidth_, opt_feature);
   goog.asserts.assertNumber(strokeWidth, 'strokeWidth must be a number');
 
-  var opacity = this.opacity_.evaluate(attrs, null, feature);
+  var opacity = ol.expression.evaluateFeature(this.opacity_, opt_feature);
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
   return new ol.style.LineLiteral({

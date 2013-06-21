@@ -2,6 +2,7 @@ goog.provide('ol.style.Text');
 goog.provide('ol.style.TextLiteral');
 
 goog.require('goog.asserts');
+goog.require('ol.expression');
 goog.require('ol.expression.Expression');
 goog.require('ol.expression.Literal');
 goog.require('ol.style.Symbolizer');
@@ -121,25 +122,20 @@ goog.inherits(ol.style.Text, ol.style.Symbolizer);
  * @return {ol.style.TextLiteral} Literal text symbolizer.
  */
 ol.style.Text.prototype.createLiteral = function(opt_feature) {
-  var attrs,
-      feature = opt_feature;
-  if (goog.isDef(feature)) {
-    attrs = feature.getAttributes();
-  }
 
-  var color = this.color_.evaluate(attrs, null, feature);
+  var color = ol.expression.evaluateFeature(this.color_, opt_feature);
   goog.asserts.assertString(color, 'color must be a string');
 
-  var fontFamily = this.fontFamily_.evaluate(attrs, null, feature);
+  var fontFamily = ol.expression.evaluateFeature(this.fontFamily_, opt_feature);
   goog.asserts.assertString(fontFamily, 'fontFamily must be a string');
 
-  var fontSize = this.fontSize_.evaluate(attrs, null, feature);
+  var fontSize = ol.expression.evaluateFeature(this.fontSize_, opt_feature);
   goog.asserts.assertNumber(fontSize, 'fontSize must be a number');
 
-  var text = this.text_.evaluate(attrs, null, feature);
+  var text = ol.expression.evaluateFeature(this.text_, opt_feature);
   goog.asserts.assertString(text, 'text must be a string');
 
-  var opacity = this.opacity_.evaluate(attrs, null, feature);
+  var opacity = ol.expression.evaluateFeature(this.opacity_, opt_feature);
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
   return new ol.style.TextLiteral({
