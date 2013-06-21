@@ -8,6 +8,8 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Feature');
+goog.require('ol.extent');
+goog.require('ol.geom.AbstractCollection');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
@@ -23,6 +25,7 @@ goog.require('ol.style.PolygonLiteral');
 goog.require('ol.style.ShapeLiteral');
 goog.require('ol.style.ShapeType');
 goog.require('ol.style.SymbolizerLiteral');
+goog.require('ol.style.TextLiteral');
 
 
 
@@ -100,35 +103,40 @@ ol.renderer.canvas.VectorRenderer.prototype.getMaxSymbolSize = function() {
  * @param {ol.geom.GeometryType} type Geometry type.
  * @param {Array.<ol.Feature>} features Array of features.
  * @param {ol.style.SymbolizerLiteral} symbolizer Symbolizer.
+ * @param {Array} data Additional data.
  * @return {boolean} true if deferred, false if rendered.
  */
 ol.renderer.canvas.VectorRenderer.prototype.renderFeaturesByGeometryType =
-    function(type, features, symbolizer) {
+    function(type, features, symbolizer, data) {
   var deferred = false;
-  switch (type) {
-    case ol.geom.GeometryType.POINT:
-    case ol.geom.GeometryType.MULTIPOINT:
-      goog.asserts.assert(symbolizer instanceof ol.style.PointLiteral,
-          'Expected point symbolizer: ' + symbolizer);
-      deferred = this.renderPointFeatures_(
-          features, /** @type {ol.style.PointLiteral} */ (symbolizer));
-      break;
-    case ol.geom.GeometryType.LINESTRING:
-    case ol.geom.GeometryType.MULTILINESTRING:
-      goog.asserts.assert(symbolizer instanceof ol.style.LineLiteral,
-          'Expected line symbolizer: ' + symbolizer);
-      this.renderLineStringFeatures_(
-          features, /** @type {ol.style.LineLiteral} */ (symbolizer));
-      break;
-    case ol.geom.GeometryType.POLYGON:
-    case ol.geom.GeometryType.MULTIPOLYGON:
-      goog.asserts.assert(symbolizer instanceof ol.style.PolygonLiteral,
-          'Expected polygon symbolizer: ' + symbolizer);
-      this.renderPolygonFeatures_(
-          features, /** @type {ol.style.PolygonLiteral} */ (symbolizer));
-      break;
-    default:
-      throw new Error('Rendering not implemented for geometry type: ' + type);
+  if (!(symbolizer instanceof ol.style.TextLiteral)) {
+    switch (type) {
+      case ol.geom.GeometryType.POINT:
+      case ol.geom.GeometryType.MULTIPOINT:
+        goog.asserts.assert(symbolizer instanceof ol.style.PointLiteral,
+            'Expected point symbolizer: ' + symbolizer);
+        deferred = this.renderPointFeatures_(
+            features, /** @type {ol.style.PointLiteral} */ (symbolizer));
+        break;
+      case ol.geom.GeometryType.LINESTRING:
+      case ol.geom.GeometryType.MULTILINESTRING:
+        goog.asserts.assert(symbolizer instanceof ol.style.LineLiteral,
+            'Expected line symbolizer: ' + symbolizer);
+        this.renderLineStringFeatures_(
+            features, /** @type {ol.style.LineLiteral} */ (symbolizer));
+        break;
+      case ol.geom.GeometryType.POLYGON:
+      case ol.geom.GeometryType.MULTIPOLYGON:
+        goog.asserts.assert(symbolizer instanceof ol.style.PolygonLiteral,
+            'Expected polygon symbolizer: ' + symbolizer);
+        this.renderPolygonFeatures_(
+            features, /** @type {ol.style.PolygonLiteral} */ (symbolizer));
+        break;
+      default:
+        throw new Error('Rendering not implemented for geometry type: ' + type);
+    }
+  } else {
+    this.renderText_(features, symbolizer, data);
   }
   return deferred;
 };
@@ -252,6 +260,50 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
   context.restore();
 
   return false;
+};
+
+
+/**
+ * @param {Array.<ol.Feature>} features Array of features.
+ * @param {ol.style.TextLiteral} text Text symbolizer.
+ * @param {Array} texts Label text for each feature.
+ * @private
+ */
+ol.renderer.canvas.VectorRenderer.prototype.renderText_ =
+    function(features, text, texts) {
+  var context = this.context_,
+      fontArray = [],
+      color = text.color,
+      vecs, vec;
+
+  if (color) {
+    context.fillStyle = color;
+  }
+  if (goog.isDef(text.fontSize)) {
+    fontArray.push(text.fontSize + 'px');
+  }
+  if (goog.isDef(text.fontFamily)) {
+    fontArray.push(text.fontFamily);
+  }
+  if (fontArray.length) {
+    context.font = fontArray.join(' ');
+  }
+  context.globalAlpha = text.opacity;
+
+  // TODO: make alignments configurable
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+
+  for (var i = 0, ii = features.length; i < ii; ++i) {
+    vecs = ol.renderer.canvas.VectorRenderer.getLabelVectors(
+        features[i].getGeometry());
+    for (var j = 0, jj = vecs.length; j < jj; ++j) {
+      vec = vecs[j];
+      goog.vec.Mat4.multVec3(this.transform_, vec, vec);
+      context.fillText(texts[i], vec[0], vec[1]);
+    }
+  }
+
 };
 
 
@@ -381,6 +433,35 @@ ol.renderer.canvas.VectorRenderer.renderCircle_ = function(circle) {
     context.stroke();
   }
   return canvas;
+};
+
+
+/**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @return {Array.<goog.vec.Vec3.AnyType>} Renderable geometry vectors.
+ */
+ol.renderer.canvas.VectorRenderer.getLabelVectors = function(geometry) {
+  if (geometry instanceof ol.geom.AbstractCollection) {
+    var components = geometry.components;
+    var numComponents = components.length;
+    var result = [];
+    for (var i = 0; i < numComponents; ++i) {
+      result.push.apply(result,
+          ol.renderer.canvas.VectorRenderer.getLabelVectors(components[i]));
+    }
+    return result;
+  }
+  var type = geometry.getType();
+  if (type == ol.geom.GeometryType.POINT) {
+    return [[geometry.get(0), geometry.get(1), 0]];
+  }
+  if (type == ol.geom.GeometryType.POLYGON) {
+    // TODO: better label placement
+    var coordinates = ol.extent.getCenter(geometry.getBounds());
+    return [[coordinates[0], coordinates[1], 0]];
+  }
+  throw new Error('Label rendering not implemented for geometry type: ' +
+      type);
 };
 
 

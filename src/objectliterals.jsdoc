@@ -43,8 +43,8 @@
 /**
  * Object literal with config options for the map.
  * @typedef {Object} ol.MapOptions
- * @property {Array.<ol.control.Control>|undefined} controls Controls initially
- *     added to the map.
+ * @property {ol.Collection|Array.<ol.control.Control>|undefined} controls
+ *     Controls initially added to the map.
  * @property {ol.Collection|undefined} interactions Interactions.
  * @property {Array.<ol.layer.Layer>|ol.Collection|undefined} layers Layers.
  * @property {ol.RendererHint|undefined} renderer Renderer.
@@ -579,6 +579,15 @@
 /**
  * @typedef {Object} ol.style.StyleOptions
  * @property {Array.<ol.style.Rule>} rules Rules.
+ */
+
+/**
+ * @typedef {Object} ol.style.TextOptions
+ * @property {string|ol.Expression|undefined} color Color.
+ * @property {string|ol.Expression|undefined} fontFamily Font family.
+ * @property {number|ol.Expression|undefined} fontSize Font size in pixels.
+ * @property {string|ol.Expression} text Text for the label.
+ * @property {number|ol.Expression|undefined} opacity Opacity (0-1).
  */
 
 /**
