@@ -204,14 +204,15 @@ a.ol-full-screen-true:after {
 }
 
 .ol-overviewmap {
-  background: rgba(255,255,255,0.4);
-  border-radius: 4px 0 0 4px;
-  padding: 2px;
+  background: rgba(0,60,136,0.5);
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 4px 0 0 0;
+  padding: 4px;
   position: absolute;
   right: 0;
-  bottom: 32px;
-  width: 320px;
-  height: 160px;
+  bottom: 0;
+  width: 150px;
+  height: 150px;
 }
 .ol-overviewmap-box {
   border: 2px dotted red;

@@ -50,12 +50,6 @@ ol.control.OverviewMap = function(opt_options) {
 
   var box = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-overviewmap-box');
 
-  goog.base(this, {
-    element: element,
-    map: options.map,
-    target: options.target
-  });
-
   /**
    * @type {ol.Map}
    * @private
@@ -88,6 +82,11 @@ ol.control.OverviewMap = function(opt_options) {
    */
   this.minRatio_ = options.minRatio || ol.control.OVERVIEWMAP_MIN_RATIO;
 
+  goog.base(this, {
+    element: element,
+    map: options.map,
+    target: options.target
+  });
 
   // FIXME - check if layers in options, otherwise we add the map layers later
   // ...
