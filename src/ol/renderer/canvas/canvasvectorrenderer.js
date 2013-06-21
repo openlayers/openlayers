@@ -272,22 +272,12 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
 ol.renderer.canvas.VectorRenderer.prototype.renderText_ =
     function(features, text, texts) {
   var context = this.context_,
-      fontArray = [],
-      color = text.color,
       vecs, vec;
 
-  if (color) {
-    context.fillStyle = color;
+  if (context.fillStyle !== text.color) {
+    context.fillStyle = text.color;
   }
-  if (goog.isDef(text.fontSize)) {
-    fontArray.push(text.fontSize + 'px');
-  }
-  if (goog.isDef(text.fontFamily)) {
-    fontArray.push(text.fontFamily);
-  }
-  if (fontArray.length) {
-    context.font = fontArray.join(' ');
-  }
+  context.font = text.fontSize + 'px ' + text.fontFamily;
   context.globalAlpha = text.opacity;
 
   // TODO: make alignments configurable

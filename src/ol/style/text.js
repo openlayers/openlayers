@@ -26,18 +26,13 @@ ol.style.TextLiteralOptions;
  */
 ol.style.TextLiteral = function(options) {
 
+  goog.asserts.assertString(options.color, 'color must be a string');
   /** @type {string} */
   this.color = options.color;
-  if (goog.isDef(options.color)) {
-    goog.asserts.assertString(options.color, 'color must be a string');
-  }
 
+  goog.asserts.assertString(options.fontFamily, 'fontFamily must be a string');
   /** @type {string} */
   this.fontFamily = options.fontFamily;
-  if (goog.isDef(options.fontFamily)) {
-    goog.asserts.assertString(options.fontFamily,
-        'fontFamily must be a string');
-  }
 
   goog.asserts.assertNumber(options.fontSize, 'fontSize must be a number');
   /** @type {number} */
