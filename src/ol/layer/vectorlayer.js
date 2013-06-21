@@ -5,10 +5,10 @@ goog.require('goog.asserts');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.Feature');
-goog.require('ol.expression');
-goog.require('ol.expression.Literal');
-goog.require('ol.expression.Logical');
-goog.require('ol.expression.LogicalOp');
+goog.require('ol.expr');
+goog.require('ol.expr.Literal');
+goog.require('ol.expr.Logical');
+goog.require('ol.expr.LogicalOp');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SharedVertices');
 goog.require('ol.layer.Layer');
@@ -83,7 +83,7 @@ ol.layer.FeatureCache.prototype.add = function(feature) {
 
 
 /**
- * @param {ol.expression.Expression=} opt_expr Expression for filtering.
+ * @param {ol.expr.Expression=} opt_expr Expression for filtering.
  * @return {Object.<string, ol.Feature>} Object of features, keyed by id.
  */
 ol.layer.FeatureCache.prototype.getFeaturesObject = function(opt_expr) {
@@ -92,48 +92,48 @@ ol.layer.FeatureCache.prototype.getFeaturesObject = function(opt_expr) {
     features = this.idLookup_;
   } else {
     // check for geometryType or extent expression
-    var name = ol.expression.isLibCall(opt_expr);
+    var name = ol.expr.isLibCall(opt_expr);
     if (name === 'geometryType') {
-      var args = /** @type {ol.expression.Call} */ (opt_expr).getArgs();
+      var args = /** @type {ol.expr.Call} */ (opt_expr).getArgs();
       goog.asserts.assert(args.length === 1);
-      goog.asserts.assert(args[0] instanceof ol.expression.Literal);
-      var type = /** @type {ol.expression.Literal } */ (args[0]).evaluate();
+      goog.asserts.assert(args[0] instanceof ol.expr.Literal);
+      var type = /** @type {ol.expr.Literal } */ (args[0]).evaluate();
       goog.asserts.assertString(type);
       features = this.geometryTypeIndex_[type];
     } else if (name === 'extent') {
-      var args = /** @type {ol.expression.Call} */ (opt_expr).getArgs();
+      var args = /** @type {ol.expr.Call} */ (opt_expr).getArgs();
       goog.asserts.assert(args.length === 4);
       var extent = [];
       for (var i = 0; i < 4; ++i) {
-        goog.asserts.assert(args[i] instanceof ol.expression.Literal);
-        extent[i] = /** @type {ol.expression.Literal} */ (args[i]).evaluate();
+        goog.asserts.assert(args[i] instanceof ol.expr.Literal);
+        extent[i] = /** @type {ol.expr.Literal} */ (args[i]).evaluate();
         goog.asserts.assertNumber(extent[i]);
       }
       features = this.rTree_.searchReturningObject(extent);
     } else {
       // not a call expression, check logical
-      if (opt_expr instanceof ol.expression.Logical) {
-        var op = /** @type {ol.expression.Logical} */ (opt_expr).getOperator();
-        if (op === ol.expression.LogicalOp.AND) {
+      if (opt_expr instanceof ol.expr.Logical) {
+        var op = /** @type {ol.expr.Logical} */ (opt_expr).getOperator();
+        if (op === ol.expr.LogicalOp.AND) {
           var expressions = [opt_expr.getLeft(), opt_expr.getRight()];
           var expr, args, type, extent;
           for (var i = 0; i <= 1; ++i) {
             expr = expressions[i];
-            name = ol.expression.isLibCall(expr);
+            name = ol.expr.isLibCall(expr);
             if (name === 'geometryType') {
-              args = /** @type {ol.expression.Call} */ (expr).getArgs();
+              args = /** @type {ol.expr.Call} */ (expr).getArgs();
               goog.asserts.assert(args.length === 1);
-              goog.asserts.assert(args[0] instanceof ol.expression.Literal);
-              type = /** @type {ol.expression.Literal } */ (args[0]).evaluate();
+              goog.asserts.assert(args[0] instanceof ol.expr.Literal);
+              type = /** @type {ol.expr.Literal } */ (args[0]).evaluate();
               goog.asserts.assertString(type);
             } else if (name === 'extent') {
-              args = /** @type {ol.expression.Call} */ (expr).getArgs();
+              args = /** @type {ol.expr.Call} */ (expr).getArgs();
               goog.asserts.assert(args.length === 4);
               extent = [];
               for (var j = 0; j < 4; ++j) {
-                goog.asserts.assert(args[j] instanceof ol.expression.Literal);
+                goog.asserts.assert(args[j] instanceof ol.expr.Literal);
                 extent[j] =
-                    /** @type {ol.expression.Literal} */ (args[j]).evaluate();
+                    /** @type {ol.expr.Literal} */ (args[j]).evaluate();
                 goog.asserts.assertNumber(extent[j]);
               }
             }
@@ -152,7 +152,7 @@ ol.layer.FeatureCache.prototype.getFeaturesObject = function(opt_expr) {
       features = {};
       for (i in candidates) {
         feature = candidates[i];
-        if (ol.expression.evaluateFeature(opt_expr, feature)) {
+        if (ol.expr.evaluateFeature(opt_expr, feature)) {
           features[i] = feature;
         }
       }
@@ -278,7 +278,7 @@ ol.layer.Vector.prototype.getVectorSource = function() {
 
 
 /**
- * @param {ol.expression.Expression=} opt_expr Expression for filtering.
+ * @param {ol.expr.Expression=} opt_expr Expression for filtering.
  * @return {Array.<ol.Feature>} Array of features.
  */
 ol.layer.Vector.prototype.getFeatures = function(opt_expr) {
@@ -288,7 +288,7 @@ ol.layer.Vector.prototype.getFeatures = function(opt_expr) {
 
 
 /**
- * @param {ol.expression.Expression=} opt_expr Expression for filtering.
+ * @param {ol.expr.Expression=} opt_expr Expression for filtering.
  * @return {Object.<string, ol.Feature>} Features.
  */
 ol.layer.Vector.prototype.getFeaturesObject = function(opt_expr) {

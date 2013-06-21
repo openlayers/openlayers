@@ -45,8 +45,8 @@ describe('ol.style.Polygon', function() {
 
     it('accepts expressions', function() {
       var symbolizer = new ol.style.Polygon({
-        opacity: ol.expression.parse('value / 100'),
-        fillColor: ol.expression.parse('fillAttr')
+        opacity: ol.expr.parse('value / 100'),
+        fillColor: ol.expr.parse('fillAttr')
       });
       expect(symbolizer).to.be.a(ol.style.Polygon);
     });
@@ -57,8 +57,8 @@ describe('ol.style.Polygon', function() {
 
     it('evaluates expressions with the given feature', function() {
       var symbolizer = new ol.style.Polygon({
-        opacity: ol.expression.parse('value / 100'),
-        fillColor: ol.expression.parse('fillAttr')
+        opacity: ol.expr.parse('value / 100'),
+        fillColor: ol.expr.parse('fillAttr')
       });
 
       var feature = new ol.Feature({
@@ -90,6 +90,6 @@ describe('ol.style.Polygon', function() {
 });
 
 goog.require('ol.Feature');
-goog.require('ol.expression');
+goog.require('ol.expr');
 goog.require('ol.style.Polygon');
 goog.require('ol.style.PolygonLiteral');

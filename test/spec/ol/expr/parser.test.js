@@ -1,21 +1,21 @@
 goog.provide('ol.test.expression.Parser');
 
-describe('ol.expression.Parser', function() {
+describe('ol.expr.Parser', function() {
 
   describe('constructor', function() {
     it('creates a new expression parser', function() {
-      var parser = new ol.expression.Parser();
-      expect(parser).to.be.a(ol.expression.Parser);
+      var parser = new ol.expr.Parser();
+      expect(parser).to.be.a(ol.expr.Parser);
     });
   });
 
   describe('#parseArguments_()', function() {
 
     function parse(source) {
-      var lexer = new ol.expression.Lexer(source);
-      var parser = new ol.expression.Parser();
+      var lexer = new ol.expr.Lexer(source);
+      var parser = new ol.expr.Parser();
       var expr = parser.parseArguments_(lexer);
-      expect(lexer.peek().type).to.be(ol.expression.TokenType.EOF);
+      expect(lexer.peek().type).to.be(ol.expr.TokenType.EOF);
       return expr;
     }
 
@@ -23,13 +23,13 @@ describe('ol.expression.Parser', function() {
       var args = parse('(1/3, "foo", true)');
       expect(args).length(3);
 
-      expect(args[0]).to.be.a(ol.expression.Math);
+      expect(args[0]).to.be.a(ol.expr.Math);
       expect(args[0].evaluate()).to.be(1 / 3);
 
-      expect(args[1]).to.be.a(ol.expression.Literal);
+      expect(args[1]).to.be.a(ol.expr.Literal);
       expect(args[1].evaluate()).to.be('foo');
 
-      expect(args[2]).to.be.a(ol.expression.Literal);
+      expect(args[2]).to.be.a(ol.expr.Literal);
       expect(args[2].evaluate()).to.be(true);
     });
 
@@ -50,16 +50,16 @@ describe('ol.expression.Parser', function() {
   describe('#parseBinaryExpression_()', function() {
 
     function parse(source) {
-      var lexer = new ol.expression.Lexer(source);
-      var parser = new ol.expression.Parser();
+      var lexer = new ol.expr.Lexer(source);
+      var parser = new ol.expr.Parser();
       var expr = parser.parseBinaryExpression_(lexer);
-      expect(lexer.peek().type).to.be(ol.expression.TokenType.EOF);
+      expect(lexer.peek().type).to.be(ol.expr.TokenType.EOF);
       return expr;
     }
 
     it('works with multiplicitave operators', function() {
       var expr = parse('4 * 1e4');
-      expect(expr).to.be.a(ol.expression.Math);
+      expect(expr).to.be.a(ol.expr.Math);
       expect(expr.evaluate()).to.be(40000);
 
       expect(parse('10/3').evaluate()).to.be(10 / 3);
@@ -67,7 +67,7 @@ describe('ol.expression.Parser', function() {
 
     it('works with additive operators', function() {
       var expr = parse('4 +1e4');
-      expect(expr).to.be.a(ol.expression.Math);
+      expect(expr).to.be.a(ol.expr.Math);
       expect(expr.evaluate()).to.be(10004);
 
       expect(parse('10-3').evaluate()).to.be(7);
@@ -75,7 +75,7 @@ describe('ol.expression.Parser', function() {
 
     it('works with relational operators', function() {
       var expr = parse('4 < 1e4');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate()).to.be(true);
 
       expect(parse('10<3').evaluate()).to.be(false);
@@ -86,7 +86,7 @@ describe('ol.expression.Parser', function() {
 
     it('works with equality operators', function() {
       var expr = parse('4 == 1e4');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate()).to.be(false);
 
       expect(parse('10!=3').evaluate()).to.be(true);
@@ -97,7 +97,7 @@ describe('ol.expression.Parser', function() {
 
     it('works with binary logical operators', function() {
       var expr = parse('true && false');
-      expect(expr).to.be.a(ol.expression.Logical);
+      expect(expr).to.be.a(ol.expr.Logical);
       expect(expr.evaluate()).to.be(false);
 
       expect(parse('false||true').evaluate()).to.be(true);
@@ -125,16 +125,16 @@ describe('ol.expression.Parser', function() {
   describe('#parseGroupExpression_()', function() {
 
     function parse(source) {
-      var lexer = new ol.expression.Lexer(source);
-      var parser = new ol.expression.Parser();
+      var lexer = new ol.expr.Lexer(source);
+      var parser = new ol.expr.Parser();
       var expr = parser.parseGroupExpression_(lexer);
-      expect(lexer.peek().type).to.be(ol.expression.TokenType.EOF);
+      expect(lexer.peek().type).to.be(ol.expr.TokenType.EOF);
       return expr;
     }
 
     it('parses grouped expressions', function() {
       var expr = parse('(3 * (foo + 2))');
-      expect(expr).to.be.a(ol.expression.Math);
+      expect(expr).to.be.a(ol.expr.Math);
       expect(expr.evaluate({foo: 3})).to.be(15);
     });
 
@@ -143,16 +143,16 @@ describe('ol.expression.Parser', function() {
   describe('#parseLeftHandSideExpression_()', function() {
 
     function parse(source) {
-      var lexer = new ol.expression.Lexer(source);
-      var parser = new ol.expression.Parser();
+      var lexer = new ol.expr.Lexer(source);
+      var parser = new ol.expr.Parser();
       var expr = parser.parseLeftHandSideExpression_(lexer);
-      expect(lexer.peek().type).to.be(ol.expression.TokenType.EOF);
+      expect(lexer.peek().type).to.be(ol.expr.TokenType.EOF);
       return expr;
     }
 
     it('parses member expressions', function() {
       var expr = parse('foo.bar.bam');
-      expect(expr).to.be.a(ol.expression.Member);
+      expect(expr).to.be.a(ol.expr.Member);
     });
 
     it('throws on invalid member expression', function() {
@@ -163,7 +163,7 @@ describe('ol.expression.Parser', function() {
 
     it('parses call expressions', function() {
       var expr = parse('foo(bar)');
-      expect(expr).to.be.a(ol.expression.Call);
+      expect(expr).to.be.a(ol.expr.Call);
       var fns = {
         foo: function(arg) {
           expect(arguments).length(1);
@@ -189,34 +189,34 @@ describe('ol.expression.Parser', function() {
   describe('#parsePrimaryExpression_()', function() {
 
     function parse(source) {
-      var lexer = new ol.expression.Lexer(source);
-      var parser = new ol.expression.Parser();
+      var lexer = new ol.expr.Lexer(source);
+      var parser = new ol.expr.Parser();
       var expr = parser.parsePrimaryExpression_(lexer);
-      expect(lexer.peek().type).to.be(ol.expression.TokenType.EOF);
+      expect(lexer.peek().type).to.be(ol.expr.TokenType.EOF);
       return expr;
     }
 
     it('parses string literal', function() {
       var expr = parse('"foo"');
-      expect(expr).to.be.a(ol.expression.Literal);
+      expect(expr).to.be.a(ol.expr.Literal);
       expect(expr.evaluate()).to.be('foo');
     });
 
     it('parses numeric literal', function() {
       var expr = parse('.42e2');
-      expect(expr).to.be.a(ol.expression.Literal);
+      expect(expr).to.be.a(ol.expr.Literal);
       expect(expr.evaluate()).to.be(42);
     });
 
     it('parses boolean literal', function() {
       var expr = parse('.42e2');
-      expect(expr).to.be.a(ol.expression.Literal);
+      expect(expr).to.be.a(ol.expr.Literal);
       expect(expr.evaluate()).to.be(42);
     });
 
     it('parses null literal', function() {
       var expr = parse('null');
-      expect(expr).to.be.a(ol.expression.Literal);
+      expect(expr).to.be.a(ol.expr.Literal);
       expect(expr.evaluate()).to.be(null);
     });
 
@@ -225,34 +225,34 @@ describe('ol.expression.Parser', function() {
   describe('#parseUnaryExpression_()', function() {
 
     function parse(source) {
-      var lexer = new ol.expression.Lexer(source);
-      var parser = new ol.expression.Parser();
+      var lexer = new ol.expr.Lexer(source);
+      var parser = new ol.expr.Parser();
       var expr = parser.parseUnaryExpression_(lexer);
-      expect(lexer.peek().type).to.be(ol.expression.TokenType.EOF);
+      expect(lexer.peek().type).to.be(ol.expr.TokenType.EOF);
       return expr;
     }
 
     it('parses logical not', function() {
       var expr = parse('!foo');
-      expect(expr).to.be.a(ol.expression.Not);
+      expect(expr).to.be.a(ol.expr.Not);
       expect(expr.evaluate({foo: true})).to.be(false);
     });
 
     it('works with string literal', function() {
       var expr = parse('!"foo"');
-      expect(expr).to.be.a(ol.expression.Not);
+      expect(expr).to.be.a(ol.expr.Not);
       expect(expr.evaluate()).to.be(false);
     });
 
     it('works with empty string', function() {
       var expr = parse('!""');
-      expect(expr).to.be.a(ol.expression.Not);
+      expect(expr).to.be.a(ol.expr.Not);
       expect(expr.evaluate()).to.be(true);
     });
 
     it('works with null', function() {
       var expr = parse('!null');
-      expect(expr).to.be.a(ol.expression.Not);
+      expect(expr).to.be.a(ol.expr.Not);
       expect(expr.evaluate()).to.be(true);
     });
 
@@ -262,14 +262,14 @@ describe('ol.expression.Parser', function() {
 });
 
 
-goog.require('ol.expression.Expression');
-goog.require('ol.expression.Call');
-goog.require('ol.expression.Comparison');
-goog.require('ol.expression.Lexer');
-goog.require('ol.expression.Literal');
-goog.require('ol.expression.Logical');
-goog.require('ol.expression.Math');
-goog.require('ol.expression.Member');
-goog.require('ol.expression.Not');
-goog.require('ol.expression.Parser');
-goog.require('ol.expression.TokenType');
+goog.require('ol.expr.Expression');
+goog.require('ol.expr.Call');
+goog.require('ol.expr.Comparison');
+goog.require('ol.expr.Lexer');
+goog.require('ol.expr.Literal');
+goog.require('ol.expr.Logical');
+goog.require('ol.expr.Math');
+goog.require('ol.expr.Member');
+goog.require('ol.expr.Not');
+goog.require('ol.expr.Parser');
+goog.require('ol.expr.TokenType');

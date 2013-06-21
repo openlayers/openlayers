@@ -1,29 +1,29 @@
-goog.provide('ol.expression');
+goog.provide('ol.expr');
 
 goog.require('ol.Extent');
 goog.require('ol.Feature');
-goog.require('ol.expression.Call');
-goog.require('ol.expression.Expression');
-goog.require('ol.expression.Identifier');
-goog.require('ol.expression.Parser');
+goog.require('ol.expr.Call');
+goog.require('ol.expr.Expression');
+goog.require('ol.expr.Identifier');
+goog.require('ol.expr.Parser');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 
 
 /**
  * Evaluate an expression with a feature.  The feature attributes will be used
- * as the evaluation scope.  The `ol.expression.lib` functions will be used as
+ * as the evaluation scope.  The `ol.expr.lib` functions will be used as
  * function scope.  The feature itself will be used as the `this` argument.
  *
- * @param {ol.expression.Expression} expr The expression.
+ * @param {ol.expr.Expression} expr The expression.
  * @param {ol.Feature=} opt_feature The feature.
  * @return {*} The result of the expression.
  */
-ol.expression.evaluateFeature = function(expr, opt_feature) {
+ol.expr.evaluateFeature = function(expr, opt_feature) {
   var result;
   if (goog.isDef(opt_feature)) {
     result = expr.evaluate(
-        opt_feature.getAttributes(), ol.expression.lib, opt_feature);
+        opt_feature.getAttributes(), ol.expr.lib, opt_feature);
   } else {
     result = expr.evaluate();
   }
@@ -34,11 +34,11 @@ ol.expression.evaluateFeature = function(expr, opt_feature) {
 /**
  * Parse an expression.
  * @param {string} source The expression source (e.g. `'foo + 2'`).
- * @return {ol.expression.Expression} An expression instance that can be
+ * @return {ol.expr.Expression} An expression instance that can be
  *     evaluated within some scope to provide a value.
  */
-ol.expression.parse = function(source) {
-  var parser = new ol.expression.Parser();
+ol.expr.parse = function(source) {
+  var parser = new ol.expr.Parser();
   return parser.parse(source);
 };
 
@@ -50,27 +50,27 @@ ol.expression.parse = function(source) {
  *     expression.  This function will be called with a feature as the `this`
  *     argument when the expression is evaluated in the context of a features.
  */
-ol.expression.register = function(name, func) {
-  ol.expression.lib[name] = func;
+ol.expr.register = function(name, func) {
+  ol.expr.lib[name] = func;
 };
 
 
 /**
  * Determines whether an expression is a call expression that calls one of the
- * `ol.expression.lib` functions.
+ * `ol.expr.lib` functions.
  *
- * @param {ol.expression.Expression} expr The candidate expression.
+ * @param {ol.expr.Expression} expr The candidate expression.
  * @return {string|undefined} If the candidate expression is a call to a lib
  * function, the return will be the function name.  If not, the return will be
  * `undefined`.
  */
-ol.expression.isLibCall = function(expr) {
+ol.expr.isLibCall = function(expr) {
   var name;
-  if (expr instanceof ol.expression.Call) {
+  if (expr instanceof ol.expr.Call) {
     var callee = expr.getCallee();
-    if (callee instanceof ol.expression.Identifier) {
+    if (callee instanceof ol.expr.Identifier) {
       name = callee.getName();
-      if (!ol.expression.lib.hasOwnProperty(name)) {
+      if (!ol.expr.lib.hasOwnProperty(name)) {
         name = undefined;
       }
     }
@@ -81,11 +81,11 @@ ol.expression.isLibCall = function(expr) {
 
 /**
  * Library of well-known functions.  These are available to expressions parsed
- * with `ol.expression.parse`.
+ * with `ol.expr.parse`.
  *
  * @type {Object}
  */
-ol.expression.lib = {
+ol.expr.lib = {
 
   /**
    * Determine if a feature's extent intersects the provided extent.

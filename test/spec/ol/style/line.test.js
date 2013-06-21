@@ -42,8 +42,8 @@ describe('ol.style.Line', function() {
 
     it('accepts expressions', function() {
       var symbolizer = new ol.style.Line({
-        opacity: ol.expression.parse('value / 100'),
-        strokeWidth: ol.expression.parse('widthAttr')
+        opacity: ol.expr.parse('value / 100'),
+        strokeWidth: ol.expr.parse('widthAttr')
       });
       expect(symbolizer).to.be.a(ol.style.Line);
     });
@@ -54,8 +54,8 @@ describe('ol.style.Line', function() {
 
     it('evaluates expressions with the given feature', function() {
       var symbolizer = new ol.style.Line({
-        opacity: ol.expression.parse('value / 100'),
-        strokeWidth: ol.expression.parse('widthAttr')
+        opacity: ol.expr.parse('value / 100'),
+        strokeWidth: ol.expr.parse('widthAttr')
       });
 
       var feature = new ol.Feature({
@@ -74,6 +74,6 @@ describe('ol.style.Line', function() {
 });
 
 goog.require('ol.Feature');
-goog.require('ol.expression');
+goog.require('ol.expr');
 goog.require('ol.style.Line');
 goog.require('ol.style.LineLiteral');

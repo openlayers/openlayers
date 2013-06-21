@@ -1,20 +1,20 @@
-goog.provide('ol.expression.Call');
-goog.provide('ol.expression.Comparison');
-goog.provide('ol.expression.ComparisonOp');
-goog.provide('ol.expression.Expression');
-goog.provide('ol.expression.Identifier');
-goog.provide('ol.expression.Literal');
-goog.provide('ol.expression.Logical');
-goog.provide('ol.expression.LogicalOp');
-goog.provide('ol.expression.Math');
-goog.provide('ol.expression.MathOp');
-goog.provide('ol.expression.Member');
-goog.provide('ol.expression.Not');
+goog.provide('ol.expr.Call');
+goog.provide('ol.expr.Comparison');
+goog.provide('ol.expr.ComparisonOp');
+goog.provide('ol.expr.Expression');
+goog.provide('ol.expr.Identifier');
+goog.provide('ol.expr.Literal');
+goog.provide('ol.expr.Logical');
+goog.provide('ol.expr.LogicalOp');
+goog.provide('ol.expr.Math');
+goog.provide('ol.expr.MathOp');
+goog.provide('ol.expr.Member');
+goog.provide('ol.expr.Not');
 
 
 
 /**
- * Base class for all expressions.  Instances of ol.expression.Expression
+ * Base class for all expressions.  Instances of ol.expr.Expression
  * correspond to a limited set of ECMAScript 5.1 expressions.
  * http://www.ecma-international.org/ecma-262/5.1/#sec-11
  *
@@ -23,7 +23,7 @@ goog.provide('ol.expression.Not');
  *
  * @constructor
  */
-ol.expression.Expression = function() {};
+ol.expr.Expression = function() {};
 
 
 /**
@@ -38,7 +38,7 @@ ol.expression.Expression = function() {};
  *     expressions.  If not provided, `this` will resolve to a new object.
  * @return {*} Result of the expression.
  */
-ol.expression.Expression.prototype.evaluate = goog.abstractMethod;
+ol.expr.Expression.prototype.evaluate = goog.abstractMethod;
 
 
 
@@ -46,33 +46,33 @@ ol.expression.Expression.prototype.evaluate = goog.abstractMethod;
  * A call expression (e.g. `foo(bar)`).
  *
  * @constructor
- * @extends {ol.expression.Expression}
- * @param {ol.expression.Expression} callee An expression that resolves to a
+ * @extends {ol.expr.Expression}
+ * @param {ol.expr.Expression} callee An expression that resolves to a
  *     function.
- * @param {Array.<ol.expression.Expression>} args Arguments.
+ * @param {Array.<ol.expr.Expression>} args Arguments.
  */
-ol.expression.Call = function(callee, args) {
+ol.expr.Call = function(callee, args) {
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.callee_ = callee;
 
   /**
-   * @type {Array.<ol.expression.Expression>}
+   * @type {Array.<ol.expr.Expression>}
    * @private
    */
   this.args_ = args;
 
 };
-goog.inherits(ol.expression.Call, ol.expression.Expression);
+goog.inherits(ol.expr.Call, ol.expr.Expression);
 
 
 /**
  * @inheritDoc
  */
-ol.expression.Call.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
+ol.expr.Call.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
   var fnScope = goog.isDefAndNotNull(opt_fns) ? opt_fns : opt_scope;
   var fn = this.callee_.evaluate(fnScope);
   if (!fn || !goog.isFunction(fn)) {
@@ -91,18 +91,18 @@ ol.expression.Call.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
 
 /**
  * Get the argument list.
- * @return {Array.<ol.expression.Expression>} The argument.
+ * @return {Array.<ol.expr.Expression>} The argument.
  */
-ol.expression.Call.prototype.getArgs = function() {
+ol.expr.Call.prototype.getArgs = function() {
   return this.args_;
 };
 
 
 /**
  * Get the callee expression.
- * @return {ol.expression.Expression} The callee expression.
+ * @return {ol.expr.Expression} The callee expression.
  */
-ol.expression.Call.prototype.getCallee = function() {
+ol.expr.Call.prototype.getCallee = function() {
   return this.callee_;
 };
 
@@ -110,7 +110,7 @@ ol.expression.Call.prototype.getCallee = function() {
 /**
  * @enum {string}
  */
-ol.expression.ComparisonOp = {
+ol.expr.ComparisonOp = {
   EQ: '==',
   NEQ: '!=',
   STRICT_EQ: '===',
@@ -127,33 +127,33 @@ ol.expression.ComparisonOp = {
  * A comparison expression (e.g. `foo >= 42`, `bar != "chicken"`).
  *
  * @constructor
- * @extends {ol.expression.Expression}
- * @param {ol.expression.ComparisonOp} operator Comparison operator.
- * @param {ol.expression.Expression} left Left expression.
- * @param {ol.expression.Expression} right Right expression.
+ * @extends {ol.expr.Expression}
+ * @param {ol.expr.ComparisonOp} operator Comparison operator.
+ * @param {ol.expr.Expression} left Left expression.
+ * @param {ol.expr.Expression} right Right expression.
  */
-ol.expression.Comparison = function(operator, left, right) {
+ol.expr.Comparison = function(operator, left, right) {
 
   /**
-   * @type {ol.expression.ComparisonOp}
+   * @type {ol.expr.ComparisonOp}
    * @private
    */
   this.operator_ = operator;
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.left_ = left;
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.right_ = right;
 
 };
-goog.inherits(ol.expression.Comparison, ol.expression.Expression);
+goog.inherits(ol.expr.Comparison, ol.expr.Expression);
 
 
 /**
@@ -161,10 +161,10 @@ goog.inherits(ol.expression.Comparison, ol.expression.Expression);
  * @param {string} candidate Operator to test.
  * @return {boolean} The operator is valid.
  */
-ol.expression.Comparison.isValidOp = (function() {
+ol.expr.Comparison.isValidOp = (function() {
   var valid = {};
-  for (var key in ol.expression.ComparisonOp) {
-    valid[ol.expression.ComparisonOp[key]] = true;
+  for (var key in ol.expr.ComparisonOp) {
+    valid[ol.expr.ComparisonOp[key]] = true;
   }
   return function isValidOp(candidate) {
     return !!valid[candidate];
@@ -175,35 +175,35 @@ ol.expression.Comparison.isValidOp = (function() {
 /**
  * @inheritDoc
  */
-ol.expression.Comparison.prototype.evaluate = function(opt_scope, opt_fns,
+ol.expr.Comparison.prototype.evaluate = function(opt_scope, opt_fns,
     opt_this) {
   var result;
   var rightVal = this.right_.evaluate(opt_scope, opt_fns, opt_this);
   var leftVal = this.left_.evaluate(opt_scope, opt_fns, opt_this);
 
   switch (this.operator_) {
-    case ol.expression.ComparisonOp.EQ:
+    case ol.expr.ComparisonOp.EQ:
       result = leftVal == rightVal;
       break;
-    case ol.expression.ComparisonOp.NEQ:
+    case ol.expr.ComparisonOp.NEQ:
       result = leftVal != rightVal;
       break;
-    case ol.expression.ComparisonOp.STRICT_EQ:
+    case ol.expr.ComparisonOp.STRICT_EQ:
       result = leftVal === rightVal;
       break;
-    case ol.expression.ComparisonOp.STRICT_NEQ:
+    case ol.expr.ComparisonOp.STRICT_NEQ:
       result = leftVal !== rightVal;
       break;
-    case ol.expression.ComparisonOp.GT:
+    case ol.expr.ComparisonOp.GT:
       result = leftVal > rightVal;
       break;
-    case ol.expression.ComparisonOp.LT:
+    case ol.expr.ComparisonOp.LT:
       result = leftVal < rightVal;
       break;
-    case ol.expression.ComparisonOp.GTE:
+    case ol.expr.ComparisonOp.GTE:
       result = leftVal >= rightVal;
       break;
-    case ol.expression.ComparisonOp.LTE:
+    case ol.expr.ComparisonOp.LTE:
       result = leftVal <= rightVal;
       break;
     default:
@@ -217,25 +217,25 @@ ol.expression.Comparison.prototype.evaluate = function(opt_scope, opt_fns,
  * Get the comparison operator.
  * @return {string} The comparison operator.
  */
-ol.expression.Comparison.prototype.getOperator = function() {
+ol.expr.Comparison.prototype.getOperator = function() {
   return this.operator_;
 };
 
 
 /**
  * Get the left expression.
- * @return {ol.expression.Expression} The left expression.
+ * @return {ol.expr.Expression} The left expression.
  */
-ol.expression.Comparison.prototype.getLeft = function() {
+ol.expr.Comparison.prototype.getLeft = function() {
   return this.left_;
 };
 
 
 /**
  * Get the right expression.
- * @return {ol.expression.Expression} The right expression.
+ * @return {ol.expr.Expression} The right expression.
  */
-ol.expression.Comparison.prototype.getRight = function() {
+ol.expr.Comparison.prototype.getRight = function() {
   return this.right_;
 };
 
@@ -245,10 +245,10 @@ ol.expression.Comparison.prototype.getRight = function() {
  * An identifier expression (e.g. `foo`).
  *
  * @constructor
- * @extends {ol.expression.Expression}
+ * @extends {ol.expr.Expression}
  * @param {string} name An identifier name.
  */
-ol.expression.Identifier = function(name) {
+ol.expr.Identifier = function(name) {
 
   /**
    * @type {string}
@@ -257,13 +257,13 @@ ol.expression.Identifier = function(name) {
   this.name_ = name;
 
 };
-goog.inherits(ol.expression.Identifier, ol.expression.Expression);
+goog.inherits(ol.expr.Identifier, ol.expr.Expression);
 
 
 /**
  * @inheritDoc
  */
-ol.expression.Identifier.prototype.evaluate = function(opt_scope) {
+ol.expr.Identifier.prototype.evaluate = function(opt_scope) {
   if (!goog.isDefAndNotNull(opt_scope)) {
     throw new Error('Attempt to evaluate identifier with no scope');
   }
@@ -275,7 +275,7 @@ ol.expression.Identifier.prototype.evaluate = function(opt_scope) {
  * Get the identifier name.
  * @return {string} The identifier name.
  */
-ol.expression.Identifier.prototype.getName = function() {
+ol.expr.Identifier.prototype.getName = function() {
   return this.name_;
 };
 
@@ -285,10 +285,10 @@ ol.expression.Identifier.prototype.getName = function() {
  * A literal expression (e.g. `"chicken"`, `42`, `true`, `null`).
  *
  * @constructor
- * @extends {ol.expression.Expression}
+ * @extends {ol.expr.Expression}
  * @param {string|number|boolean|null} value A literal value.
  */
-ol.expression.Literal = function(value) {
+ol.expr.Literal = function(value) {
 
   /**
    * @type {string|number|boolean|null}
@@ -297,13 +297,13 @@ ol.expression.Literal = function(value) {
   this.value_ = value;
 
 };
-goog.inherits(ol.expression.Literal, ol.expression.Expression);
+goog.inherits(ol.expr.Literal, ol.expr.Expression);
 
 
 /**
  * @inheritDoc
  */
-ol.expression.Literal.prototype.evaluate = function() {
+ol.expr.Literal.prototype.evaluate = function() {
   return this.value_;
 };
 
@@ -312,7 +312,7 @@ ol.expression.Literal.prototype.evaluate = function() {
  * Get the literal value.
  * @return {string|number|boolean|null} The literal value.
  */
-ol.expression.Literal.prototype.getValue = function() {
+ol.expr.Literal.prototype.getValue = function() {
   return this.value_;
 };
 
@@ -320,7 +320,7 @@ ol.expression.Literal.prototype.getValue = function() {
 /**
  * @enum {string}
  */
-ol.expression.LogicalOp = {
+ol.expr.LogicalOp = {
   AND: '&&',
   OR: '||'
 };
@@ -331,33 +331,33 @@ ol.expression.LogicalOp = {
  * A binary logical expression (e.g. `foo && bar`, `bar || "chicken"`).
  *
  * @constructor
- * @extends {ol.expression.Expression}
- * @param {ol.expression.LogicalOp} operator Logical operator.
- * @param {ol.expression.Expression} left Left expression.
- * @param {ol.expression.Expression} right Right expression.
+ * @extends {ol.expr.Expression}
+ * @param {ol.expr.LogicalOp} operator Logical operator.
+ * @param {ol.expr.Expression} left Left expression.
+ * @param {ol.expr.Expression} right Right expression.
  */
-ol.expression.Logical = function(operator, left, right) {
+ol.expr.Logical = function(operator, left, right) {
 
   /**
-   * @type {ol.expression.LogicalOp}
+   * @type {ol.expr.LogicalOp}
    * @private
    */
   this.operator_ = operator;
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.left_ = left;
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.right_ = right;
 
 };
-goog.inherits(ol.expression.Logical, ol.expression.Expression);
+goog.inherits(ol.expr.Logical, ol.expr.Expression);
 
 
 /**
@@ -365,10 +365,10 @@ goog.inherits(ol.expression.Logical, ol.expression.Expression);
  * @param {string} candidate Operator to test.
  * @return {boolean} The operator is valid.
  */
-ol.expression.Logical.isValidOp = (function() {
+ol.expr.Logical.isValidOp = (function() {
   var valid = {};
-  for (var key in ol.expression.LogicalOp) {
-    valid[ol.expression.LogicalOp[key]] = true;
+  for (var key in ol.expr.LogicalOp) {
+    valid[ol.expr.LogicalOp[key]] = true;
   }
   return function isValidOp(candidate) {
     return !!valid[candidate];
@@ -379,15 +379,15 @@ ol.expression.Logical.isValidOp = (function() {
 /**
  * @inheritDoc
  */
-ol.expression.Logical.prototype.evaluate = function(opt_scope, opt_fns,
+ol.expr.Logical.prototype.evaluate = function(opt_scope, opt_fns,
     opt_this) {
   var result;
   var rightVal = this.right_.evaluate(opt_scope, opt_fns, opt_this);
   var leftVal = this.left_.evaluate(opt_scope, opt_fns, opt_this);
 
-  if (this.operator_ === ol.expression.LogicalOp.AND) {
+  if (this.operator_ === ol.expr.LogicalOp.AND) {
     result = leftVal && rightVal;
-  } else if (this.operator_ === ol.expression.LogicalOp.OR) {
+  } else if (this.operator_ === ol.expr.LogicalOp.OR) {
     result = leftVal || rightVal;
   } else {
     throw new Error('Unsupported logical operator: ' + this.operator_);
@@ -400,25 +400,25 @@ ol.expression.Logical.prototype.evaluate = function(opt_scope, opt_fns,
  * Get the logical operator.
  * @return {string} The logical operator.
  */
-ol.expression.Logical.prototype.getOperator = function() {
+ol.expr.Logical.prototype.getOperator = function() {
   return this.operator_;
 };
 
 
 /**
  * Get the left expression.
- * @return {ol.expression.Expression} The left expression.
+ * @return {ol.expr.Expression} The left expression.
  */
-ol.expression.Logical.prototype.getLeft = function() {
+ol.expr.Logical.prototype.getLeft = function() {
   return this.left_;
 };
 
 
 /**
  * Get the right expression.
- * @return {ol.expression.Expression} The right expression.
+ * @return {ol.expr.Expression} The right expression.
  */
-ol.expression.Logical.prototype.getRight = function() {
+ol.expr.Logical.prototype.getRight = function() {
   return this.right_;
 };
 
@@ -426,7 +426,7 @@ ol.expression.Logical.prototype.getRight = function() {
 /**
  * @enum {string}
  */
-ol.expression.MathOp = {
+ol.expr.MathOp = {
   ADD: '+',
   SUBTRACT: '-',
   MULTIPLY: '*',
@@ -440,33 +440,33 @@ ol.expression.MathOp = {
  * A math expression (e.g. `foo + 42`, `bar % 10`).
  *
  * @constructor
- * @extends {ol.expression.Expression}
- * @param {ol.expression.MathOp} operator Math operator.
- * @param {ol.expression.Expression} left Left expression.
- * @param {ol.expression.Expression} right Right expression.
+ * @extends {ol.expr.Expression}
+ * @param {ol.expr.MathOp} operator Math operator.
+ * @param {ol.expr.Expression} left Left expression.
+ * @param {ol.expr.Expression} right Right expression.
  */
-ol.expression.Math = function(operator, left, right) {
+ol.expr.Math = function(operator, left, right) {
 
   /**
-   * @type {ol.expression.MathOp}
+   * @type {ol.expr.MathOp}
    * @private
    */
   this.operator_ = operator;
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.left_ = left;
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.right_ = right;
 
 };
-goog.inherits(ol.expression.Math, ol.expression.Expression);
+goog.inherits(ol.expr.Math, ol.expr.Expression);
 
 
 /**
@@ -474,10 +474,10 @@ goog.inherits(ol.expression.Math, ol.expression.Expression);
  * @param {string} candidate Operator to test.
  * @return {boolean} The operator is valid.
  */
-ol.expression.Math.isValidOp = (function() {
+ol.expr.Math.isValidOp = (function() {
   var valid = {};
-  for (var key in ol.expression.MathOp) {
-    valid[ol.expression.MathOp[key]] = true;
+  for (var key in ol.expr.MathOp) {
+    valid[ol.expr.MathOp[key]] = true;
   }
   return function isValidOp(candidate) {
     return !!valid[candidate];
@@ -488,7 +488,7 @@ ol.expression.Math.isValidOp = (function() {
 /**
  * @inheritDoc
  */
-ol.expression.Math.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
+ol.expr.Math.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
   var result;
   var rightVal = this.right_.evaluate(opt_scope, opt_fns, opt_this);
   var leftVal = this.left_.evaluate(opt_scope, opt_fns, opt_this);
@@ -499,19 +499,19 @@ ol.expression.Math.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
    */
 
   switch (this.operator_) {
-    case ol.expression.MathOp.ADD:
+    case ol.expr.MathOp.ADD:
       result = leftVal + rightVal;
       break;
-    case ol.expression.MathOp.SUBTRACT:
+    case ol.expr.MathOp.SUBTRACT:
       result = Number(leftVal) - Number(rightVal);
       break;
-    case ol.expression.MathOp.MULTIPLY:
+    case ol.expr.MathOp.MULTIPLY:
       result = Number(leftVal) * Number(rightVal);
       break;
-    case ol.expression.MathOp.DIVIDE:
+    case ol.expr.MathOp.DIVIDE:
       result = Number(leftVal) / Number(rightVal);
       break;
-    case ol.expression.MathOp.MOD:
+    case ol.expr.MathOp.MOD:
       result = Number(leftVal) % Number(rightVal);
       break;
     default:
@@ -525,25 +525,25 @@ ol.expression.Math.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
  * Get the math operator.
  * @return {string} The math operator.
  */
-ol.expression.Math.prototype.getOperator = function() {
+ol.expr.Math.prototype.getOperator = function() {
   return this.operator_;
 };
 
 
 /**
  * Get the left expression.
- * @return {ol.expression.Expression} The left expression.
+ * @return {ol.expr.Expression} The left expression.
  */
-ol.expression.Math.prototype.getLeft = function() {
+ol.expr.Math.prototype.getLeft = function() {
   return this.left_;
 };
 
 
 /**
  * Get the right expression.
- * @return {ol.expression.Expression} The right expression.
+ * @return {ol.expr.Expression} The right expression.
  */
-ol.expression.Math.prototype.getRight = function() {
+ol.expr.Math.prototype.getRight = function() {
   return this.right_;
 };
 
@@ -553,33 +553,33 @@ ol.expression.Math.prototype.getRight = function() {
  * A member expression (e.g. `foo.bar`).
  *
  * @constructor
- * @extends {ol.expression.Expression}
- * @param {ol.expression.Expression} object An expression that resolves to an
+ * @extends {ol.expr.Expression}
+ * @param {ol.expr.Expression} object An expression that resolves to an
  *     object.
- * @param {ol.expression.Identifier} property Identifier with name of property.
+ * @param {ol.expr.Identifier} property Identifier with name of property.
  */
-ol.expression.Member = function(object, property) {
+ol.expr.Member = function(object, property) {
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.object_ = object;
 
   /**
-   * @type {ol.expression.Identifier}
+   * @type {ol.expr.Identifier}
    * @private
    */
   this.property_ = property;
 
 };
-goog.inherits(ol.expression.Member, ol.expression.Expression);
+goog.inherits(ol.expr.Member, ol.expr.Expression);
 
 
 /**
  * @inheritDoc
  */
-ol.expression.Member.prototype.evaluate = function(opt_scope, opt_fns,
+ol.expr.Member.prototype.evaluate = function(opt_scope, opt_fns,
     opt_this) {
   var obj = this.object_.evaluate(opt_scope, opt_fns, opt_this);
   if (!goog.isObject(obj)) {
@@ -592,18 +592,18 @@ ol.expression.Member.prototype.evaluate = function(opt_scope, opt_fns,
 
 /**
  * Get the object expression.
- * @return {ol.expression.Expression} The object.
+ * @return {ol.expr.Expression} The object.
  */
-ol.expression.Member.prototype.getObject = function() {
+ol.expr.Member.prototype.getObject = function() {
   return this.object_;
 };
 
 
 /**
  * Get the property expression.
- * @return {ol.expression.Identifier} The property.
+ * @return {ol.expr.Identifier} The property.
  */
-ol.expression.Member.prototype.getProperty = function() {
+ol.expr.Member.prototype.getProperty = function() {
   return this.property_;
 };
 
@@ -613,33 +613,33 @@ ol.expression.Member.prototype.getProperty = function() {
  * A logical not expression (e.g. `!foo`).
  *
  * @constructor
- * @extends {ol.expression.Expression}
- * @param {ol.expression.Expression} argument Expression to negate.
+ * @extends {ol.expr.Expression}
+ * @param {ol.expr.Expression} argument Expression to negate.
  */
-ol.expression.Not = function(argument) {
+ol.expr.Not = function(argument) {
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.argument_ = argument;
 
 };
-goog.inherits(ol.expression.Not, ol.expression.Expression);
+goog.inherits(ol.expr.Not, ol.expr.Expression);
 
 
 /**
  * @inheritDoc
  */
-ol.expression.Not.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
+ol.expr.Not.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
   return !this.argument_.evaluate(opt_scope, opt_fns, opt_this);
 };
 
 
 /**
  * Get the argument (the negated expression).
- * @return {ol.expression.Expression} The argument.
+ * @return {ol.expr.Expression} The argument.
  */
-ol.expression.Not.prototype.getArgument = function() {
+ol.expr.Not.prototype.getArgument = function() {
   return this.argument_;
 };

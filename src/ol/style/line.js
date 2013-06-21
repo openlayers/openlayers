@@ -2,9 +2,9 @@ goog.provide('ol.style.Line');
 goog.provide('ol.style.LineLiteral');
 
 goog.require('goog.asserts');
-goog.require('ol.expression');
-goog.require('ol.expression.Expression');
-goog.require('ol.expression.Literal');
+goog.require('ol.expr');
+goog.require('ol.expr.Expression');
+goog.require('ol.expr.Literal');
 goog.require('ol.style.Symbolizer');
 goog.require('ol.style.SymbolizerLiteral');
 
@@ -64,31 +64,31 @@ ol.style.Line = function(options) {
   goog.base(this);
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.strokeColor_ = !goog.isDef(options.strokeColor) ?
-      new ol.expression.Literal(ol.style.LineDefaults.strokeColor) :
-      (options.strokeColor instanceof ol.expression.Expression) ?
-          options.strokeColor : new ol.expression.Literal(options.strokeColor);
+      new ol.expr.Literal(ol.style.LineDefaults.strokeColor) :
+      (options.strokeColor instanceof ol.expr.Expression) ?
+          options.strokeColor : new ol.expr.Literal(options.strokeColor);
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.strokeWidth_ = !goog.isDef(options.strokeWidth) ?
-      new ol.expression.Literal(ol.style.LineDefaults.strokeWidth) :
-      (options.strokeWidth instanceof ol.expression.Expression) ?
-          options.strokeWidth : new ol.expression.Literal(options.strokeWidth);
+      new ol.expr.Literal(ol.style.LineDefaults.strokeWidth) :
+      (options.strokeWidth instanceof ol.expr.Expression) ?
+          options.strokeWidth : new ol.expr.Literal(options.strokeWidth);
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.opacity_ = !goog.isDef(options.opacity) ?
-      new ol.expression.Literal(ol.style.LineDefaults.opacity) :
-      (options.opacity instanceof ol.expression.Expression) ?
-          options.opacity : new ol.expression.Literal(options.opacity);
+      new ol.expr.Literal(ol.style.LineDefaults.opacity) :
+      (options.opacity instanceof ol.expr.Expression) ?
+          options.opacity : new ol.expr.Literal(options.opacity);
 
 };
 goog.inherits(ol.style.Line, ol.style.Symbolizer);
@@ -100,15 +100,15 @@ goog.inherits(ol.style.Line, ol.style.Symbolizer);
  */
 ol.style.Line.prototype.createLiteral = function(opt_feature) {
 
-  var strokeColor = ol.expression.evaluateFeature(
+  var strokeColor = ol.expr.evaluateFeature(
       this.strokeColor_, opt_feature);
   goog.asserts.assertString(strokeColor, 'strokeColor must be a string');
 
-  var strokeWidth = ol.expression.evaluateFeature(
+  var strokeWidth = ol.expr.evaluateFeature(
       this.strokeWidth_, opt_feature);
   goog.asserts.assertNumber(strokeWidth, 'strokeWidth must be a number');
 
-  var opacity = ol.expression.evaluateFeature(this.opacity_, opt_feature);
+  var opacity = ol.expr.evaluateFeature(this.opacity_, opt_feature);
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
   return new ol.style.LineLiteral({

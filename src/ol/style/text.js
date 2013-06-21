@@ -2,9 +2,9 @@ goog.provide('ol.style.Text');
 goog.provide('ol.style.TextLiteral');
 
 goog.require('goog.asserts');
-goog.require('ol.expression');
-goog.require('ol.expression.Expression');
-goog.require('ol.expression.Literal');
+goog.require('ol.expr');
+goog.require('ol.expr.Expression');
+goog.require('ol.expr.Literal');
 goog.require('ol.style.Symbolizer');
 goog.require('ol.style.SymbolizerLiteral');
 
@@ -71,47 +71,47 @@ ol.style.TextLiteral.prototype.equals = function(textLiteral) {
 ol.style.Text = function(options) {
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.color_ = !goog.isDef(options.color) ?
-      new ol.expression.Literal(ol.style.TextDefaults.color) :
-      (options.color instanceof ol.expression.Expression) ?
-          options.color : new ol.expression.Literal(options.color);
+      new ol.expr.Literal(ol.style.TextDefaults.color) :
+      (options.color instanceof ol.expr.Expression) ?
+          options.color : new ol.expr.Literal(options.color);
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.fontFamily_ = !goog.isDef(options.fontFamily) ?
-      new ol.expression.Literal(ol.style.TextDefaults.fontFamily) :
-      (options.fontFamily instanceof ol.expression.Expression) ?
-          options.fontFamily : new ol.expression.Literal(options.fontFamily);
+      new ol.expr.Literal(ol.style.TextDefaults.fontFamily) :
+      (options.fontFamily instanceof ol.expr.Expression) ?
+          options.fontFamily : new ol.expr.Literal(options.fontFamily);
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.fontSize_ = !goog.isDef(options.fontSize) ?
-      new ol.expression.Literal(ol.style.TextDefaults.fontSize) :
-      (options.fontSize instanceof ol.expression.Expression) ?
-          options.fontSize : new ol.expression.Literal(options.fontSize);
+      new ol.expr.Literal(ol.style.TextDefaults.fontSize) :
+      (options.fontSize instanceof ol.expr.Expression) ?
+          options.fontSize : new ol.expr.Literal(options.fontSize);
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
-  this.text_ = (options.text instanceof ol.expression.Expression) ?
-      options.text : new ol.expression.Literal(options.text);
+  this.text_ = (options.text instanceof ol.expr.Expression) ?
+      options.text : new ol.expr.Literal(options.text);
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.opacity_ = !goog.isDef(options.opacity) ?
-      new ol.expression.Literal(ol.style.TextDefaults.opacity) :
-      (options.opacity instanceof ol.expression.Expression) ?
-          options.opacity : new ol.expression.Literal(options.opacity);
+      new ol.expr.Literal(ol.style.TextDefaults.opacity) :
+      (options.opacity instanceof ol.expr.Expression) ?
+          options.opacity : new ol.expr.Literal(options.opacity);
 
 };
 goog.inherits(ol.style.Text, ol.style.Symbolizer);
@@ -123,19 +123,19 @@ goog.inherits(ol.style.Text, ol.style.Symbolizer);
  */
 ol.style.Text.prototype.createLiteral = function(opt_feature) {
 
-  var color = ol.expression.evaluateFeature(this.color_, opt_feature);
+  var color = ol.expr.evaluateFeature(this.color_, opt_feature);
   goog.asserts.assertString(color, 'color must be a string');
 
-  var fontFamily = ol.expression.evaluateFeature(this.fontFamily_, opt_feature);
+  var fontFamily = ol.expr.evaluateFeature(this.fontFamily_, opt_feature);
   goog.asserts.assertString(fontFamily, 'fontFamily must be a string');
 
-  var fontSize = ol.expression.evaluateFeature(this.fontSize_, opt_feature);
+  var fontSize = ol.expr.evaluateFeature(this.fontSize_, opt_feature);
   goog.asserts.assertNumber(fontSize, 'fontSize must be a number');
 
-  var text = ol.expression.evaluateFeature(this.text_, opt_feature);
+  var text = ol.expr.evaluateFeature(this.text_, opt_feature);
   goog.asserts.assertString(text, 'text must be a string');
 
-  var opacity = ol.expression.evaluateFeature(this.opacity_, opt_feature);
+  var opacity = ol.expr.evaluateFeature(this.opacity_, opt_feature);
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
   return new ol.style.TextLiteral({

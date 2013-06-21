@@ -3,8 +3,8 @@ goog.provide('ol.style.Rule');
 goog.require('goog.asserts');
 
 goog.require('ol.Feature');
-goog.require('ol.expression');
-goog.require('ol.expression.Expression');
+goog.require('ol.expr');
+goog.require('ol.expr.Expression');
 goog.require('ol.style.Symbolizer');
 
 
@@ -19,15 +19,15 @@ ol.style.Rule = function(options) {
   var filter = null;
   if (goog.isDef(options.filter)) {
     if (goog.isString(options.filter)) {
-      filter = ol.expression.parse(options.filter);
+      filter = ol.expr.parse(options.filter);
     } else {
-      goog.asserts.assert(options.filter instanceof ol.expression.Expression);
+      goog.asserts.assert(options.filter instanceof ol.expr.Expression);
       filter = options.filter;
     }
   }
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.filter_ = filter;
@@ -48,7 +48,7 @@ ol.style.Rule = function(options) {
  */
 ol.style.Rule.prototype.applies = function(feature) {
   return goog.isNull(this.filter_) ?
-      true : !!ol.expression.evaluateFeature(this.filter_, feature);
+      true : !!ol.expr.evaluateFeature(this.filter_, feature);
 };
 
 

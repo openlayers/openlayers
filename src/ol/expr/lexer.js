@@ -13,11 +13,11 @@
  * Copyright (C) 2011 Ariya Hidayat <ariya.hidayat@gmail.com>
  */
 
-goog.provide('ol.expression.Char'); // TODO: remove this - see #785
-goog.provide('ol.expression.Lexer');
-goog.provide('ol.expression.Token');
-goog.provide('ol.expression.TokenType');
-goog.provide('ol.expression.UnexpectedToken');
+goog.provide('ol.expr.Char'); // TODO: remove this - see #785
+goog.provide('ol.expr.Lexer');
+goog.provide('ol.expr.Token');
+goog.provide('ol.expr.TokenType');
+goog.provide('ol.expr.UnexpectedToken');
 
 goog.require('goog.asserts');
 goog.require('goog.debug.Error');
@@ -26,7 +26,7 @@ goog.require('goog.debug.Error');
 /**
  * @enum {number}
  */
-ol.expression.Char = {
+ol.expr.Char = {
   AMPERSAND: 38,
   BACKSLASH: 92,
   BANG: 33, // !
@@ -76,7 +76,7 @@ ol.expression.Char = {
 /**
  * @enum {string}
  */
-ol.expression.TokenType = {
+ol.expr.TokenType = {
   BOOLEAN_LITERAL: 'Boolean',
   EOF: '<end>',
   IDENTIFIER: 'Identifier',
@@ -90,11 +90,11 @@ ol.expression.TokenType = {
 
 
 /**
- * @typedef {{type: (ol.expression.TokenType),
+ * @typedef {{type: (ol.expr.TokenType),
  *            value: (string|number|boolean|null),
  *            index: (number)}}
  */
-ol.expression.Token;
+ol.expr.Token;
 
 
 
@@ -105,7 +105,7 @@ ol.expression.Token;
  * @constructor
  * @param {string} source Source code.
  */
-ol.expression.Lexer = function(source) {
+ol.expr.Lexer = function(source) {
 
   /**
    * Source code.
@@ -142,11 +142,11 @@ ol.expression.Lexer = function(source) {
  * Scan the next token and throw if it isn't a punctuator that matches input.
  * @param {string} value Token value.
  */
-ol.expression.Lexer.prototype.expect = function(value) {
+ol.expr.Lexer.prototype.expect = function(value) {
   var match = this.match(value);
   if (!match) {
-    throw new ol.expression.UnexpectedToken({
-      type: ol.expression.TokenType.UNKNOWN,
+    throw new ol.expr.UnexpectedToken({
+      type: ol.expr.TokenType.UNKNOWN,
       value: this.getCurrentChar_(),
       index: this.index_
     });
@@ -161,7 +161,7 @@ ol.expression.Lexer.prototype.expect = function(value) {
  * @param {number} delta Delta by which the index is advanced.
  * @private
  */
-ol.expression.Lexer.prototype.increment_ = function(delta) {
+ol.expr.Lexer.prototype.increment_ = function(delta) {
   this.index_ += delta;
 };
 
@@ -173,10 +173,10 @@ ol.expression.Lexer.prototype.increment_ = function(delta) {
  * @return {boolean} The character is a decimal digit.
  * @private
  */
-ol.expression.Lexer.prototype.isDecimalDigit_ = function(code) {
+ol.expr.Lexer.prototype.isDecimalDigit_ = function(code) {
   return (
-      code >= ol.expression.Char.DIGIT_0 &&
-      code <= ol.expression.Char.DIGIT_9);
+      code >= ol.expr.Char.DIGIT_0 &&
+      code <= ol.expr.Char.DIGIT_9);
 };
 
 
@@ -187,7 +187,7 @@ ol.expression.Lexer.prototype.isDecimalDigit_ = function(code) {
  * @return {boolean} The identifier is a future reserved word.
  * @private
  */
-ol.expression.Lexer.prototype.isFutureReservedWord_ = function(id) {
+ol.expr.Lexer.prototype.isFutureReservedWord_ = function(id) {
   return (
       id === 'class' ||
       id === 'enum' ||
@@ -205,12 +205,12 @@ ol.expression.Lexer.prototype.isFutureReservedWord_ = function(id) {
  * @return {boolean} The character is a hex digit.
  * @private
  */
-ol.expression.Lexer.prototype.isHexDigit_ = function(code) {
+ol.expr.Lexer.prototype.isHexDigit_ = function(code) {
   return this.isDecimalDigit_(code) ||
-      (code >= ol.expression.Char.LOWER_A &&
-          code <= ol.expression.Char.LOWER_F) ||
-      (code >= ol.expression.Char.UPPER_A &&
-          code <= ol.expression.Char.UPPER_F);
+      (code >= ol.expr.Char.LOWER_A &&
+          code <= ol.expr.Char.LOWER_F) ||
+      (code >= ol.expr.Char.UPPER_A &&
+          code <= ol.expr.Char.UPPER_F);
 };
 
 
@@ -222,10 +222,10 @@ ol.expression.Lexer.prototype.isHexDigit_ = function(code) {
  * @return {boolean} The character is a valid identifier part.
  * @private
  */
-ol.expression.Lexer.prototype.isIdentifierPart_ = function(code) {
+ol.expr.Lexer.prototype.isIdentifierPart_ = function(code) {
   return this.isIdentifierStart_(code) ||
-      (code >= ol.expression.Char.DIGIT_0 &&
-          code <= ol.expression.Char.DIGIT_9);
+      (code >= ol.expr.Char.DIGIT_0 &&
+          code <= ol.expr.Char.DIGIT_9);
 };
 
 
@@ -237,20 +237,20 @@ ol.expression.Lexer.prototype.isIdentifierPart_ = function(code) {
  * @return {boolean} The character is a valid identifier start.
  * @private
  */
-ol.expression.Lexer.prototype.isIdentifierStart_ = function(code) {
-  return (code === ol.expression.Char.DOLLAR) ||
-      (code === ol.expression.Char.UNDERSCORE) ||
-      (code >= ol.expression.Char.UPPER_A &&
-          code <= ol.expression.Char.UPPER_Z) ||
-      (code >= ol.expression.Char.LOWER_A &&
-          code <= ol.expression.Char.LOWER_Z);
+ol.expr.Lexer.prototype.isIdentifierStart_ = function(code) {
+  return (code === ol.expr.Char.DOLLAR) ||
+      (code === ol.expr.Char.UNDERSCORE) ||
+      (code >= ol.expr.Char.UPPER_A &&
+          code <= ol.expr.Char.UPPER_Z) ||
+      (code >= ol.expr.Char.LOWER_A &&
+          code <= ol.expr.Char.LOWER_Z);
 };
 
 
 /**
  * Determine if the given identifier is an ECMAScript keyword.  These cannot
  * be used as identifiers in programs.  There is no real reason these could not
- * be used in ol expressions - but they are reserved for future use.
+ * be used in ol.exprs - but they are reserved for future use.
  *
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.6.1.1
  *
@@ -258,7 +258,7 @@ ol.expression.Lexer.prototype.isIdentifierStart_ = function(code) {
  * @return {boolean} The identifier is a keyword.
  * @private
  */
-ol.expression.Lexer.prototype.isKeyword_ = function(id) {
+ol.expr.Lexer.prototype.isKeyword_ = function(id) {
   return (
       id === 'break' ||
       id === 'case' ||
@@ -296,11 +296,11 @@ ol.expression.Lexer.prototype.isKeyword_ = function(id) {
  * @return {boolean} The character is a line terminator.
  * @private
  */
-ol.expression.Lexer.prototype.isLineTerminator_ = function(code) {
-  return (code === ol.expression.Char.LINE_FEED) ||
-      (code === ol.expression.Char.CARRIAGE_RETURN) ||
-      (code === ol.expression.Char.LINE_SEPARATOR) ||
-      (code === ol.expression.Char.PARAGRAPH_SEPARATOR);
+ol.expr.Lexer.prototype.isLineTerminator_ = function(code) {
+  return (code === ol.expr.Char.LINE_FEED) ||
+      (code === ol.expr.Char.CARRIAGE_RETURN) ||
+      (code === ol.expr.Char.LINE_SEPARATOR) ||
+      (code === ol.expr.Char.PARAGRAPH_SEPARATOR);
 };
 
 
@@ -311,10 +311,10 @@ ol.expression.Lexer.prototype.isLineTerminator_ = function(code) {
  * @return {boolean} The character is an octal digit.
  * @private
  */
-ol.expression.Lexer.prototype.isOctalDigit_ = function(code) {
+ol.expr.Lexer.prototype.isOctalDigit_ = function(code) {
   return (
-      code >= ol.expression.Char.DIGIT_0 &&
-      code <= ol.expression.Char.DIGIT_7);
+      code >= ol.expr.Char.DIGIT_0 &&
+      code <= ol.expr.Char.DIGIT_7);
 };
 
 
@@ -325,12 +325,12 @@ ol.expression.Lexer.prototype.isOctalDigit_ = function(code) {
  * @return {boolean} The character is whitespace.
  * @private
  */
-ol.expression.Lexer.prototype.isWhitespace_ = function(code) {
-  return (code === ol.expression.Char.SPACE) ||
-      (code === ol.expression.Char.TAB) ||
-      (code === ol.expression.Char.VERTICAL_TAB) ||
-      (code === ol.expression.Char.FORM_FEED) ||
-      (code === ol.expression.Char.NONBREAKING_SPACE) ||
+ol.expr.Lexer.prototype.isWhitespace_ = function(code) {
+  return (code === ol.expr.Char.SPACE) ||
+      (code === ol.expr.Char.TAB) ||
+      (code === ol.expr.Char.VERTICAL_TAB) ||
+      (code === ol.expr.Char.FORM_FEED) ||
+      (code === ol.expr.Char.NONBREAKING_SPACE) ||
       (code >= 0x1680 && '\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005' +
           '\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\uFEFF'
           .indexOf(String.fromCharCode(code)) > 0);
@@ -344,7 +344,7 @@ ol.expression.Lexer.prototype.isWhitespace_ = function(code) {
  * @return {number} The character code.
  * @private
  */
-ol.expression.Lexer.prototype.getCharCode_ = function(delta) {
+ol.expr.Lexer.prototype.getCharCode_ = function(delta) {
   return this.source_.charCodeAt(this.index_ + delta);
 };
 
@@ -355,7 +355,7 @@ ol.expression.Lexer.prototype.getCharCode_ = function(delta) {
  * @return {string} The current character.
  * @private
  */
-ol.expression.Lexer.prototype.getCurrentChar_ = function() {
+ol.expr.Lexer.prototype.getCurrentChar_ = function() {
   return this.source_[this.index_];
 };
 
@@ -366,7 +366,7 @@ ol.expression.Lexer.prototype.getCurrentChar_ = function() {
  * @return {number} The current character code.
  * @private
  */
-ol.expression.Lexer.prototype.getCurrentCharCode_ = function() {
+ol.expr.Lexer.prototype.getCurrentCharCode_ = function() {
   return this.getCharCode_(0);
 };
 
@@ -376,10 +376,10 @@ ol.expression.Lexer.prototype.getCurrentCharCode_ = function() {
  * @param {string} value Punctuator value.
  * @return {boolean} The token matches.
  */
-ol.expression.Lexer.prototype.match = function(value) {
+ol.expr.Lexer.prototype.match = function(value) {
   var token = this.peek();
   return (
-      token.type === ol.expression.TokenType.PUNCTUATOR &&
+      token.type === ol.expr.TokenType.PUNCTUATOR &&
       token.value === value);
 };
 
@@ -387,28 +387,28 @@ ol.expression.Lexer.prototype.match = function(value) {
 /**
  * Scan the next token.
  *
- * @return {ol.expression.Token} Next token.
+ * @return {ol.expr.Token} Next token.
  */
-ol.expression.Lexer.prototype.next = function() {
+ol.expr.Lexer.prototype.next = function() {
   var code = this.skipWhitespace_();
 
   if (this.index_ >= this.length_) {
     return {
-      type: ol.expression.TokenType.EOF,
+      type: ol.expr.TokenType.EOF,
       value: null,
       index: this.index_
     };
   }
 
   // check for common punctuation
-  if (code === ol.expression.Char.LEFT_PAREN ||
-      code === ol.expression.Char.RIGHT_PAREN) {
+  if (code === ol.expr.Char.LEFT_PAREN ||
+      code === ol.expr.Char.RIGHT_PAREN) {
     return this.scanPunctuator_(code);
   }
 
   // check for string literal
-  if (code === ol.expression.Char.SINGLE_QUOTE ||
-      code === ol.expression.Char.DOUBLE_QUOTE) {
+  if (code === ol.expr.Char.SINGLE_QUOTE ||
+      code === ol.expr.Char.DOUBLE_QUOTE) {
     return this.scanStringLiteral_(code);
   }
 
@@ -418,7 +418,7 @@ ol.expression.Lexer.prototype.next = function() {
   }
 
   // check dot punctuation or decimal
-  if (code === ol.expression.Char.DOT) {
+  if (code === ol.expr.Char.DOT) {
     if (this.isDecimalDigit_(this.getCharCode_(1))) {
       return this.scanNumericLiteral_(code);
     }
@@ -438,9 +438,9 @@ ol.expression.Lexer.prototype.next = function() {
 /**
  * Peek at the next token, but don't advance the index.
  *
- * @return {ol.expression.Token} The upcoming token.
+ * @return {ol.expr.Token} The upcoming token.
  */
-ol.expression.Lexer.prototype.peek = function() {
+ol.expr.Lexer.prototype.peek = function() {
   var currentIndex = this.index_;
   var token = this.next();
   this.nextIndex_ = this.index_;
@@ -453,10 +453,10 @@ ol.expression.Lexer.prototype.peek = function() {
  * Scan hex literal as numeric token.
  *
  * @param {number} code The current character code.
- * @return {ol.expression.Token} Numeric literal token.
+ * @return {ol.expr.Token} Numeric literal token.
  * @private
  */
-ol.expression.Lexer.prototype.scanHexLiteral_ = function(code) {
+ol.expr.Lexer.prototype.scanHexLiteral_ = function(code) {
   var str = '';
   var start = this.index_ - 2;
 
@@ -470,8 +470,8 @@ ol.expression.Lexer.prototype.scanHexLiteral_ = function(code) {
   }
 
   if (str.length === 0 || this.isIdentifierStart_(code)) {
-    throw new ol.expression.UnexpectedToken({
-      type: ol.expression.TokenType.UNKNOWN,
+    throw new ol.expr.UnexpectedToken({
+      type: ol.expr.TokenType.UNKNOWN,
       value: String.fromCharCode(code),
       index: this.index_
     });
@@ -480,7 +480,7 @@ ol.expression.Lexer.prototype.scanHexLiteral_ = function(code) {
   goog.asserts.assert(!isNaN(parseInt('0x' + str, 16)), 'Valid hex: ' + str);
 
   return {
-    type: ol.expression.TokenType.NUMERIC_LITERAL,
+    type: ol.expr.TokenType.NUMERIC_LITERAL,
     value: parseInt('0x' + str, 16),
     index: start
   };
@@ -491,10 +491,10 @@ ol.expression.Lexer.prototype.scanHexLiteral_ = function(code) {
  * Scan identifier token.
  *
  * @param {number} code The current character code.
- * @return {ol.expression.Token} Identifier token.
+ * @return {ol.expr.Token} Identifier token.
  * @private
  */
-ol.expression.Lexer.prototype.scanIdentifier_ = function(code) {
+ol.expr.Lexer.prototype.scanIdentifier_ = function(code) {
   goog.asserts.assert(this.isIdentifierStart_(code),
       'Must be called with a valid identifier');
 
@@ -513,15 +513,15 @@ ol.expression.Lexer.prototype.scanIdentifier_ = function(code) {
 
   var type;
   if (id.length === 1) {
-    type = ol.expression.TokenType.IDENTIFIER;
+    type = ol.expr.TokenType.IDENTIFIER;
   } else if (this.isKeyword_(id)) {
-    type = ol.expression.TokenType.KEYWORD;
+    type = ol.expr.TokenType.KEYWORD;
   } else if (id === 'null') {
-    type = ol.expression.TokenType.NULL_LITERAL;
+    type = ol.expr.TokenType.NULL_LITERAL;
   } else if (id === 'true' || id === 'false') {
-    type = ol.expression.TokenType.BOOLEAN_LITERAL;
+    type = ol.expr.TokenType.BOOLEAN_LITERAL;
   } else {
-    type = ol.expression.TokenType.IDENTIFIER;
+    type = ol.expr.TokenType.IDENTIFIER;
   }
 
   return {
@@ -537,26 +537,26 @@ ol.expression.Lexer.prototype.scanIdentifier_ = function(code) {
  * http://www.ecma-international.org/ecma-262/5.1/#sec-7.8.3
  *
  * @param {number} code The current character code.
- * @return {ol.expression.Token} Numeric literal token.
+ * @return {ol.expr.Token} Numeric literal token.
  * @private
  */
-ol.expression.Lexer.prototype.scanNumericLiteral_ = function(code) {
+ol.expr.Lexer.prototype.scanNumericLiteral_ = function(code) {
   goog.asserts.assert(
-      code === ol.expression.Char.DOT || this.isDecimalDigit_(code),
+      code === ol.expr.Char.DOT || this.isDecimalDigit_(code),
       'Valid start for numeric literal: ' + String.fromCharCode(code));
 
   // start assembling numeric string
   var str = '';
   var start = this.index_;
 
-  if (code !== ol.expression.Char.DOT) {
+  if (code !== ol.expr.Char.DOT) {
 
-    if (code === ol.expression.Char.DIGIT_0) {
+    if (code === ol.expr.Char.DIGIT_0) {
       var nextCode = this.getCharCode_(1);
 
       // hex literals start with 0X or 0x
-      if (nextCode === ol.expression.Char.UPPER_X ||
-          nextCode === ol.expression.Char.LOWER_X) {
+      if (nextCode === ol.expr.Char.UPPER_X ||
+          nextCode === ol.expr.Char.LOWER_X) {
         this.increment_(2);
         return this.scanHexLiteral_(this.getCurrentCharCode_());
       }
@@ -569,8 +569,8 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function(code) {
 
       // numbers like 09 not allowed
       if (this.isDecimalDigit_(nextCode)) {
-        throw new ol.expression.UnexpectedToken({
-          type: ol.expression.TokenType.UNKNOWN,
+        throw new ol.expr.UnexpectedToken({
+          type: ol.expr.TokenType.UNKNOWN,
           value: String.fromCharCode(nextCode),
           index: this.index_
         });
@@ -586,7 +586,7 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function(code) {
   }
 
   // scan fractional part
-  if (code === ol.expression.Char.DOT) {
+  if (code === ol.expr.Char.DOT) {
     str += String.fromCharCode(code);
     this.increment_(1);
     code = this.getCurrentCharCode_();
@@ -600,22 +600,22 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function(code) {
   }
 
   // scan exponent
-  if (code === ol.expression.Char.UPPER_E ||
-      code === ol.expression.Char.LOWER_E) {
+  if (code === ol.expr.Char.UPPER_E ||
+      code === ol.expr.Char.LOWER_E) {
     str += 'E';
     this.increment_(1);
 
     code = this.getCurrentCharCode_();
-    if (code === ol.expression.Char.PLUS ||
-        code === ol.expression.Char.MINUS) {
+    if (code === ol.expr.Char.PLUS ||
+        code === ol.expr.Char.MINUS) {
       str += String.fromCharCode(code);
       this.increment_(1);
       code = this.getCurrentCharCode_();
     }
 
     if (!this.isDecimalDigit_(code)) {
-      throw new ol.expression.UnexpectedToken({
-        type: ol.expression.TokenType.UNKNOWN,
+      throw new ol.expr.UnexpectedToken({
+        type: ol.expr.TokenType.UNKNOWN,
         value: String.fromCharCode(code),
         index: this.index_
       });
@@ -630,8 +630,8 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function(code) {
   }
 
   if (this.isIdentifierStart_(code)) {
-    throw new ol.expression.UnexpectedToken({
-      type: ol.expression.TokenType.UNKNOWN,
+    throw new ol.expr.UnexpectedToken({
+      type: ol.expr.TokenType.UNKNOWN,
       value: String.fromCharCode(code),
       index: this.index_
     });
@@ -640,7 +640,7 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function(code) {
   goog.asserts.assert(!isNaN(parseFloat(str)), 'Valid number: ' + str);
 
   return {
-    type: ol.expression.TokenType.NUMERIC_LITERAL,
+    type: ol.expr.TokenType.NUMERIC_LITERAL,
     value: parseFloat(str),
     index: start
   };
@@ -652,10 +652,10 @@ ol.expression.Lexer.prototype.scanNumericLiteral_ = function(code) {
  * Scan octal literal as numeric token.
  *
  * @param {number} code The current character code.
- * @return {ol.expression.Token} Numeric literal token.
+ * @return {ol.expr.Token} Numeric literal token.
  * @private
  */
-ol.expression.Lexer.prototype.scanOctalLiteral_ = function(code) {
+ol.expr.Lexer.prototype.scanOctalLiteral_ = function(code) {
   goog.asserts.assert(this.isOctalDigit_(code));
 
   var str = '0' + String.fromCharCode(code);
@@ -674,8 +674,8 @@ ol.expression.Lexer.prototype.scanOctalLiteral_ = function(code) {
   code = this.getCurrentCharCode_();
   if (this.isIdentifierStart_(code) ||
       this.isDecimalDigit_(code)) {
-    throw new ol.expression.UnexpectedToken({
-      type: ol.expression.TokenType.UNKNOWN,
+    throw new ol.expr.UnexpectedToken({
+      type: ol.expr.TokenType.UNKNOWN,
       value: String.fromCharCode(code),
       index: this.index_
     });
@@ -684,7 +684,7 @@ ol.expression.Lexer.prototype.scanOctalLiteral_ = function(code) {
   goog.asserts.assert(!isNaN(parseInt(str, 8)), 'Valid octal: ' + str);
 
   return {
-    type: ol.expression.TokenType.NUMERIC_LITERAL,
+    type: ol.expr.TokenType.NUMERIC_LITERAL,
     value: parseInt(str, 8),
     index: start
   };
@@ -695,28 +695,28 @@ ol.expression.Lexer.prototype.scanOctalLiteral_ = function(code) {
  * Scan punctuator token (a subset of allowed tokens in 7.7).
  *
  * @param {number} code The current character code.
- * @return {ol.expression.Token} Punctuator token.
+ * @return {ol.expr.Token} Punctuator token.
  * @private
  */
-ol.expression.Lexer.prototype.scanPunctuator_ = function(code) {
+ol.expr.Lexer.prototype.scanPunctuator_ = function(code) {
   var start = this.index_;
 
   // single char punctuation that also doesn't start longer punctuation
   // (we disallow assignment, so no += etc.)
-  if (code === ol.expression.Char.DOT ||
-      code === ol.expression.Char.LEFT_PAREN ||
-      code === ol.expression.Char.RIGHT_PAREN ||
-      code === ol.expression.Char.COMMA ||
-      code === ol.expression.Char.PLUS ||
-      code === ol.expression.Char.MINUS ||
-      code === ol.expression.Char.STAR ||
-      code === ol.expression.Char.SLASH ||
-      code === ol.expression.Char.PERCENT ||
-      code === ol.expression.Char.TILDE) {
+  if (code === ol.expr.Char.DOT ||
+      code === ol.expr.Char.LEFT_PAREN ||
+      code === ol.expr.Char.RIGHT_PAREN ||
+      code === ol.expr.Char.COMMA ||
+      code === ol.expr.Char.PLUS ||
+      code === ol.expr.Char.MINUS ||
+      code === ol.expr.Char.STAR ||
+      code === ol.expr.Char.SLASH ||
+      code === ol.expr.Char.PERCENT ||
+      code === ol.expr.Char.TILDE) {
 
     this.increment_(1);
     return {
-      type: ol.expression.TokenType.PUNCTUATOR,
+      type: ol.expr.TokenType.PUNCTUATOR,
       value: String.fromCharCode(code),
       index: start
     };
@@ -726,34 +726,34 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function(code) {
   var nextCode = this.getCharCode_(1);
 
   // assignment or comparison (and we don't allow assignment)
-  if (nextCode === ol.expression.Char.EQUAL) {
-    if (code === ol.expression.Char.BANG || code === ol.expression.Char.EQUAL) {
+  if (nextCode === ol.expr.Char.EQUAL) {
+    if (code === ol.expr.Char.BANG || code === ol.expr.Char.EQUAL) {
       // we're looking at !=, ==, !==, or ===
       this.increment_(2);
 
       // check for triple
-      if (this.getCurrentCharCode_() === ol.expression.Char.EQUAL) {
+      if (this.getCurrentCharCode_() === ol.expr.Char.EQUAL) {
         this.increment_(1);
         return {
-          type: ol.expression.TokenType.PUNCTUATOR,
+          type: ol.expr.TokenType.PUNCTUATOR,
           value: String.fromCharCode(code) + '==',
           index: start
         };
       } else {
         // != or ==
         return {
-          type: ol.expression.TokenType.PUNCTUATOR,
+          type: ol.expr.TokenType.PUNCTUATOR,
           value: String.fromCharCode(code) + '=',
           index: start
         };
       }
     }
 
-    if (code === ol.expression.Char.GREATER ||
-        code === ol.expression.Char.LESS) {
+    if (code === ol.expr.Char.GREATER ||
+        code === ol.expr.Char.LESS) {
       this.increment_(2);
       return {
-        type: ol.expression.TokenType.PUNCTUATOR,
+        type: ol.expr.TokenType.PUNCTUATOR,
         value: String.fromCharCode(code) + '=',
         index: start
       };
@@ -762,13 +762,13 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function(code) {
 
   // remaining 2-charcter punctuators are || and &&
   if (code === nextCode &&
-      (code === ol.expression.Char.PIPE ||
-          code === ol.expression.Char.AMPERSAND)) {
+      (code === ol.expr.Char.PIPE ||
+          code === ol.expr.Char.AMPERSAND)) {
 
     this.increment_(2);
     var str = String.fromCharCode(code);
     return {
-      type: ol.expression.TokenType.PUNCTUATOR,
+      type: ol.expr.TokenType.PUNCTUATOR,
       value: str + str,
       index: start
     };
@@ -778,22 +778,22 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function(code) {
   // and the allowed 3-character punctuators (!==, ===) are already consumed
 
   // other single character punctuators
-  if (code === ol.expression.Char.GREATER ||
-      code === ol.expression.Char.LESS ||
-      code === ol.expression.Char.BANG ||
-      code === ol.expression.Char.AMPERSAND ||
-      code === ol.expression.Char.PIPE) {
+  if (code === ol.expr.Char.GREATER ||
+      code === ol.expr.Char.LESS ||
+      code === ol.expr.Char.BANG ||
+      code === ol.expr.Char.AMPERSAND ||
+      code === ol.expr.Char.PIPE) {
 
     this.increment_(1);
     return {
-      type: ol.expression.TokenType.PUNCTUATOR,
+      type: ol.expr.TokenType.PUNCTUATOR,
       value: String.fromCharCode(code),
       index: start
     };
   }
 
-  throw new ol.expression.UnexpectedToken({
-    type: ol.expression.TokenType.UNKNOWN,
+  throw new ol.expr.UnexpectedToken({
+    type: ol.expr.TokenType.UNKNOWN,
     value: String.fromCharCode(code),
     index: this.index_
   });
@@ -804,12 +804,12 @@ ol.expression.Lexer.prototype.scanPunctuator_ = function(code) {
  * Scan string literal token.
  *
  * @param {number} quote The current character code.
- * @return {ol.expression.Token} String literal token.
+ * @return {ol.expr.Token} String literal token.
  * @private
  */
-ol.expression.Lexer.prototype.scanStringLiteral_ = function(quote) {
-  goog.asserts.assert(quote === ol.expression.Char.SINGLE_QUOTE ||
-      quote === ol.expression.Char.DOUBLE_QUOTE,
+ol.expr.Lexer.prototype.scanStringLiteral_ = function(quote) {
+  goog.asserts.assert(quote === ol.expr.Char.SINGLE_QUOTE ||
+      quote === ol.expr.Char.DOUBLE_QUOTE,
       'Strings must start with a quote: ' + String.fromCharCode(quote));
 
   var start = this.index_;
@@ -825,7 +825,7 @@ ol.expression.Lexer.prototype.scanStringLiteral_ = function(quote) {
       break;
     }
     // look for escaped quote or backslash
-    if (code === ol.expression.Char.BACKSLASH) {
+    if (code === ol.expr.Char.BACKSLASH) {
       str += this.getCurrentChar_();
       this.increment_(1);
     } else {
@@ -835,11 +835,11 @@ ol.expression.Lexer.prototype.scanStringLiteral_ = function(quote) {
 
   if (quote !== 0) {
     // unterminated string literal
-    throw new ol.expression.UnexpectedToken(this.peek());
+    throw new ol.expr.UnexpectedToken(this.peek());
   }
 
   return {
-    type: ol.expression.TokenType.STRING_LITERAL,
+    type: ol.expr.TokenType.STRING_LITERAL,
     value: str,
     index: start
   };
@@ -849,7 +849,7 @@ ol.expression.Lexer.prototype.scanStringLiteral_ = function(quote) {
 /**
  * After peeking, skip may be called to advance the cursor without re-scanning.
  */
-ol.expression.Lexer.prototype.skip = function() {
+ol.expr.Lexer.prototype.skip = function() {
   this.index_ = this.nextIndex_;
 };
 
@@ -859,7 +859,7 @@ ol.expression.Lexer.prototype.skip = function() {
  * @return {number} The character code of the first non-whitespace character.
  * @private
  */
-ol.expression.Lexer.prototype.skipWhitespace_ = function() {
+ol.expr.Lexer.prototype.skipWhitespace_ = function() {
   var code = NaN;
   while (this.index_ < this.length_) {
     code = this.getCurrentCharCode_();
@@ -876,25 +876,25 @@ ol.expression.Lexer.prototype.skipWhitespace_ = function() {
 
 /**
  * Error object for unexpected tokens.
- * @param {ol.expression.Token} token The unexpected token.
+ * @param {ol.expr.Token} token The unexpected token.
  * @param {string=} opt_message Custom error message.
  * @constructor
  * @extends {goog.debug.Error}
  */
-ol.expression.UnexpectedToken = function(token, opt_message) {
+ol.expr.UnexpectedToken = function(token, opt_message) {
   var message = goog.isDef(opt_message) ? opt_message :
       'Unexpected token ' + token.value + ' at index ' + token.index;
 
   goog.debug.Error.call(this, message);
 
   /**
-   * @type {ol.expression.Token}
+   * @type {ol.expr.Token}
    */
   this.token = token;
 
 };
-goog.inherits(ol.expression.UnexpectedToken, goog.debug.Error);
+goog.inherits(ol.expr.UnexpectedToken, goog.debug.Error);
 
 
 /** @override */
-ol.expression.UnexpectedToken.prototype.name = 'UnexpectedToken';
+ol.expr.UnexpectedToken.prototype.name = 'UnexpectedToken';

@@ -2,7 +2,7 @@ goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.control.defaults');
-goog.require('ol.expression');
+goog.require('ol.expr');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.GeoJSON');
 goog.require('ol.proj');
@@ -19,7 +19,7 @@ var style = new ol.style.Style({rules: [
     filter: 'where == "outer"',
     symbolizers: [
       new ol.style.Line({
-        strokeColor: ol.expression.parse('color'),
+        strokeColor: ol.expr.parse('color'),
         strokeWidth: 4,
         opacity: 1
       })
@@ -34,7 +34,7 @@ var style = new ol.style.Style({rules: [
         opacity: 1
       }),
       new ol.style.Line({
-        strokeColor: ol.expression.parse('color'),
+        strokeColor: ol.expr.parse('color'),
         strokeWidth: 2,
         opacity: 1
       })
@@ -49,7 +49,7 @@ var style = new ol.style.Style({rules: [
       }),
       new ol.style.Text({
         color: '#bada55',
-        text: ol.expression.parse('label'),
+        text: ol.expr.parse('label'),
         fontFamily: 'Calibri,sans-serif',
         fontSize: 14
       })

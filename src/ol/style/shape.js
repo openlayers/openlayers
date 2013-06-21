@@ -3,9 +3,9 @@ goog.provide('ol.style.ShapeLiteral');
 goog.provide('ol.style.ShapeType');
 
 goog.require('goog.asserts');
-goog.require('ol.expression');
-goog.require('ol.expression.Expression');
-goog.require('ol.expression.Literal');
+goog.require('ol.expr');
+goog.require('ol.expr.Expression');
+goog.require('ol.expr.Literal');
 goog.require('ol.style.Point');
 goog.require('ol.style.PointLiteral');
 
@@ -107,22 +107,22 @@ ol.style.Shape = function(options) {
       options.type : ol.style.ShapeDefaults.type);
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.size_ = !goog.isDef(options.size) ?
-      new ol.expression.Literal(ol.style.ShapeDefaults.size) :
-      (options.size instanceof ol.expression.Expression) ?
-          options.size : new ol.expression.Literal(options.size);
+      new ol.expr.Literal(ol.style.ShapeDefaults.size) :
+      (options.size instanceof ol.expr.Expression) ?
+          options.size : new ol.expr.Literal(options.size);
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.fillColor_ = !goog.isDefAndNotNull(options.fillColor) ?
       null :
-      (options.fillColor instanceof ol.expression.Expression) ?
-          options.fillColor : new ol.expression.Literal(options.fillColor);
+      (options.fillColor instanceof ol.expr.Expression) ?
+          options.fillColor : new ol.expr.Literal(options.fillColor);
 
   // stroke handling - if any stroke property is supplied, use defaults
   var strokeColor = null,
@@ -132,33 +132,33 @@ ol.style.Shape = function(options) {
       goog.isDefAndNotNull(options.strokeWidth)) {
 
     if (goog.isDefAndNotNull(options.strokeColor)) {
-      strokeColor = (options.strokeColor instanceof ol.expression.Expression) ?
+      strokeColor = (options.strokeColor instanceof ol.expr.Expression) ?
           options.strokeColor :
-          new ol.expression.Literal(options.strokeColor);
+          new ol.expr.Literal(options.strokeColor);
     } else {
-      strokeColor = new ol.expression.Literal(
+      strokeColor = new ol.expr.Literal(
           /** @type {string} */ (ol.style.ShapeDefaults.strokeColor));
     }
 
     if (goog.isDefAndNotNull(options.strokeWidth)) {
-      strokeWidth = (options.strokeWidth instanceof ol.expression.Expression) ?
+      strokeWidth = (options.strokeWidth instanceof ol.expr.Expression) ?
           options.strokeWidth :
-          new ol.expression.Literal(options.strokeWidth);
+          new ol.expr.Literal(options.strokeWidth);
     } else {
-      strokeWidth = new ol.expression.Literal(
+      strokeWidth = new ol.expr.Literal(
           /** @type {number} */ (ol.style.ShapeDefaults.strokeWidth));
     }
 
   }
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.strokeColor_ = strokeColor;
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.strokeWidth_ = strokeWidth;
@@ -169,13 +169,13 @@ ol.style.Shape = function(options) {
       'Stroke or fill properties must be provided');
 
   /**
-   * @type {ol.expression.Expression}
+   * @type {ol.expr.Expression}
    * @private
    */
   this.opacity_ = !goog.isDef(options.opacity) ?
-      new ol.expression.Literal(ol.style.ShapeDefaults.opacity) :
-      (options.opacity instanceof ol.expression.Expression) ?
-          options.opacity : new ol.expression.Literal(options.opacity);
+      new ol.expr.Literal(ol.style.ShapeDefaults.opacity) :
+      (options.opacity instanceof ol.expr.Expression) ?
+          options.opacity : new ol.expr.Literal(options.opacity);
 
 };
 
@@ -186,24 +186,24 @@ ol.style.Shape = function(options) {
  */
 ol.style.Shape.prototype.createLiteral = function(opt_feature) {
 
-  var size = ol.expression.evaluateFeature(this.size_, opt_feature);
+  var size = ol.expr.evaluateFeature(this.size_, opt_feature);
   goog.asserts.assertNumber(size, 'size must be a number');
 
   var fillColor;
   if (!goog.isNull(this.fillColor_)) {
-    fillColor = ol.expression.evaluateFeature(this.fillColor_, opt_feature);
+    fillColor = ol.expr.evaluateFeature(this.fillColor_, opt_feature);
     goog.asserts.assertString(fillColor, 'fillColor must be a string');
   }
 
   var strokeColor;
   if (!goog.isNull(this.strokeColor_)) {
-    strokeColor = ol.expression.evaluateFeature(this.strokeColor_, opt_feature);
+    strokeColor = ol.expr.evaluateFeature(this.strokeColor_, opt_feature);
     goog.asserts.assertString(strokeColor, 'strokeColor must be a string');
   }
 
   var strokeWidth;
   if (!goog.isNull(this.strokeWidth_)) {
-    strokeWidth = ol.expression.evaluateFeature(this.strokeWidth_, opt_feature);
+    strokeWidth = ol.expr.evaluateFeature(this.strokeWidth_, opt_feature);
     goog.asserts.assertNumber(strokeWidth, 'strokeWidth must be a number');
   }
 
@@ -212,7 +212,7 @@ ol.style.Shape.prototype.createLiteral = function(opt_feature) {
       (goog.isDef(strokeColor) && goog.isDef(strokeWidth)),
       'either fillColor or strokeColor and strokeWidth must be defined');
 
-  var opacity = ol.expression.evaluateFeature(this.opacity_, opt_feature);
+  var opacity = ol.expr.evaluateFeature(this.opacity_, opt_feature);
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
   return new ol.style.ShapeLiteral({

@@ -1,7 +1,7 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
-goog.require('ol.expression');
+goog.require('ol.expr');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.GeoJSON');
@@ -19,7 +19,7 @@ var raster = new ol.layer.TileLayer({
 });
 
 // TODO: discuss scale dependent rules
-ol.expression.register('resolution', function() {
+ol.expr.register('resolution', function() {
   return map.getView().getView2D().getResolution();
 });
 
@@ -40,7 +40,7 @@ var vector = new ol.layer.Vector({
       symbolizers: [
         new ol.style.Text({
           color: '#bada55',
-          text: ol.expression.parse('name'),
+          text: ol.expr.parse('name'),
           fontFamily: 'Calibri,sans-serif',
           fontSize: 12
         })

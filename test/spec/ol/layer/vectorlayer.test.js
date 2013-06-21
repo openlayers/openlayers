@@ -50,8 +50,8 @@ describe('ol.layer.Vector', function() {
       layer.addFeatures(features);
     });
 
-    var geomFilter = ol.expression.parse('geometryType("linestring")');
-    var extentFilter = ol.expression.parse('extent(16, 16.3, 48, 48.3)');
+    var geomFilter = ol.expr.parse('geometryType("linestring")');
+    var extentFilter = ol.expr.parse('extent(16, 16.3, 48, 48.3)');
 
     it('can filter by geometry type using its GeometryType index', function() {
       sinon.spy(geomFilter, 'evaluate');
@@ -70,10 +70,10 @@ describe('ol.layer.Vector', function() {
     });
 
     it('can filter by extent and geometry type using its index', function() {
-      var filter1 = new ol.expression.Logical(
-          ol.expression.LogicalOp.AND, geomFilter, extentFilter);
-      var filter2 = new ol.expression.Logical(
-          ol.expression.LogicalOp.AND, extentFilter, geomFilter);
+      var filter1 = new ol.expr.Logical(
+          ol.expr.LogicalOp.AND, geomFilter, extentFilter);
+      var filter2 = new ol.expr.Logical(
+          ol.expr.LogicalOp.AND, extentFilter, geomFilter);
       sinon.spy(filter1, 'evaluate');
       sinon.spy(filter2, 'evaluate');
       var subset1 = layer.getFeatures(filter1);
@@ -85,8 +85,8 @@ describe('ol.layer.Vector', function() {
     });
 
     it('can handle query using the filter\'s evaluate function', function() {
-      var filter = new ol.expression.Logical(
-          ol.expression.LogicalOp.OR, geomFilter, extentFilter);
+      var filter = new ol.expr.Logical(
+          ol.expr.LogicalOp.OR, geomFilter, extentFilter);
       sinon.spy(filter, 'evaluate');
       var subset = layer.getFeatures(filter);
       expect(filter.evaluate).to.be.called();
@@ -107,7 +107,7 @@ describe('ol.layer.Vector', function() {
             symbolizers: [
               new ol.style.Line({
                 strokeWidth: 2,
-                strokeColor: ol.expression.parse('colorProperty'),
+                strokeColor: ol.expr.parse('colorProperty'),
                 opacity: 1
               })
             ]
@@ -144,7 +144,7 @@ describe('ol.layer.Vector', function() {
     it('groups equal symbolizers also when defined on features', function() {
       var symbolizer = new ol.style.Line({
         strokeWidth: 3,
-        strokeColor: ol.expression.parse('colorProperty'),
+        strokeColor: ol.expr.parse('colorProperty'),
         opacity: 1
       });
       var anotherSymbolizer = new ol.style.Line({
@@ -178,9 +178,9 @@ describe('ol.layer.Vector', function() {
 
 goog.require('goog.dispose');
 goog.require('ol.Feature');
-goog.require('ol.expression');
-goog.require('ol.expression.Logical');
-goog.require('ol.expression.LogicalOp');
+goog.require('ol.expr');
+goog.require('ol.expr.Logical');
+goog.require('ol.expr.LogicalOp');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.proj');

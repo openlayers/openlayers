@@ -1,33 +1,33 @@
 goog.provide('ol.test.expression');
 
 
-describe('ol.expression.parse()', function() {
+describe('ol.expr.parse()', function() {
 
   it('parses a subset of ECMAScript 5.1 expressions', function() {
-    var expr = ol.expression.parse('foo');
-    expect(expr).to.be.a(ol.expression.Expression);
+    var expr = ol.expr.parse('foo');
+    expect(expr).to.be.a(ol.expr.Expression);
   });
 
   describe('11.1 - primary expressions', function() {
     // http://www.ecma-international.org/ecma-262/5.1/#sec-11.1
 
     it('parses identifier expressions', function() {
-      var expr = ol.expression.parse('foo');
-      expect(expr).to.be.a(ol.expression.Identifier);
+      var expr = ol.expr.parse('foo');
+      expect(expr).to.be.a(ol.expr.Identifier);
       expect(expr.evaluate({foo: 'bar'})).to.be('bar');
     });
 
     it('consumes whitespace as expected', function() {
-      var expr = ol.expression.parse('  foo  ');
-      expect(expr).to.be.a(ol.expression.Identifier);
+      var expr = ol.expr.parse('  foo  ');
+      expect(expr).to.be.a(ol.expr.Identifier);
       expect(expr.evaluate({foo: 'bar'})).to.be('bar');
     });
 
     it('throws on invalid identifier expressions', function() {
       expect(function() {
-        ol.expression.parse('3foo');
+        ol.expr.parse('3foo');
       }).throwException(function(err) {
-        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        expect(err).to.be.an(ol.expr.UnexpectedToken);
         var token = err.token;
         expect(token.value).to.be('f');
         expect(token.index).to.be(1);
@@ -35,33 +35,33 @@ describe('ol.expression.parse()', function() {
     });
 
     it('parses string literal expressions', function() {
-      var expr = ol.expression.parse('"foo"');
-      expect(expr).to.be.a(ol.expression.Literal);
+      var expr = ol.expr.parse('"foo"');
+      expect(expr).to.be.a(ol.expr.Literal);
       expect(expr.evaluate()).to.be('foo');
     });
 
     it('throws on unterminated string', function() {
       expect(function() {
-        ol.expression.parse('"foo');
+        ol.expr.parse('"foo');
       }).throwException(function(err) {
-        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        expect(err).to.be.an(ol.expr.UnexpectedToken);
         var token = err.token;
-        expect(token.type).to.be(ol.expression.TokenType.EOF);
+        expect(token.type).to.be(ol.expr.TokenType.EOF);
         expect(token.index).to.be(4);
       });
     });
 
     it('parses numeric literal expressions', function() {
-      var expr = ol.expression.parse('.42e+2');
-      expect(expr).to.be.a(ol.expression.Literal);
+      var expr = ol.expr.parse('.42e+2');
+      expect(expr).to.be.a(ol.expr.Literal);
       expect(expr.evaluate()).to.be(42);
     });
 
     it('throws on invalid number', function() {
       expect(function() {
-        ol.expression.parse('.42eX');
+        ol.expr.parse('.42eX');
       }).throwException(function(err) {
-        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        expect(err).to.be.an(ol.expr.UnexpectedToken);
         var token = err.token;
         expect(token.value).to.be('X');
         expect(token.index).to.be(4);
@@ -69,14 +69,14 @@ describe('ol.expression.parse()', function() {
     });
 
     it('parses boolean literal expressions', function() {
-      var expr = ol.expression.parse('false');
-      expect(expr).to.be.a(ol.expression.Literal);
+      var expr = ol.expr.parse('false');
+      expect(expr).to.be.a(ol.expr.Literal);
       expect(expr.evaluate()).to.be(false);
     });
 
     it('parses null literal expressions', function() {
-      var expr = ol.expression.parse('null');
-      expect(expr).to.be.a(ol.expression.Literal);
+      var expr = ol.expr.parse('null');
+      expect(expr).to.be.a(ol.expr.Literal);
       expect(expr.evaluate()).to.be(null);
     });
 
@@ -86,24 +86,24 @@ describe('ol.expression.parse()', function() {
     // http://www.ecma-international.org/ecma-262/5.1/#sec-11.2
 
     it('parses member expressions with dot notation', function() {
-      var expr = ol.expression.parse('foo.bar.baz');
-      expect(expr).to.be.a(ol.expression.Member);
+      var expr = ol.expr.parse('foo.bar.baz');
+      expect(expr).to.be.a(ol.expr.Member);
       var scope = {foo: {bar: {baz: 42}}};
       expect(expr.evaluate(scope)).to.be(42);
     });
 
     it('consumes whitespace as expected', function() {
-      var expr = ol.expression.parse(' foo . bar . baz ');
-      expect(expr).to.be.a(ol.expression.Member);
+      var expr = ol.expr.parse(' foo . bar . baz ');
+      expect(expr).to.be.a(ol.expr.Member);
       var scope = {foo: {bar: {baz: 42}}};
       expect(expr.evaluate(scope)).to.be(42);
     });
 
     it('throws on invalid member expression', function() {
       expect(function() {
-        ol.expression.parse('foo.4bar');
+        ol.expr.parse('foo.4bar');
       }).throwException(function(err) {
-        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        expect(err).to.be.an(ol.expr.UnexpectedToken);
         var token = err.token;
         expect(token.value).to.be('b');
         expect(token.index).to.be(5);
@@ -111,8 +111,8 @@ describe('ol.expression.parse()', function() {
     });
 
     it('parses call expressions with literal arguments', function() {
-      var expr = ol.expression.parse('foo(42, "bar")');
-      expect(expr).to.be.a(ol.expression.Call);
+      var expr = ol.expr.parse('foo(42, "bar")');
+      expect(expr).to.be.a(ol.expr.Call);
       var scope = {
         foo: function(num, str) {
           expect(num).to.be(42);
@@ -125,9 +125,9 @@ describe('ol.expression.parse()', function() {
 
     it('throws on calls with unterminated arguments', function() {
       expect(function() {
-        ol.expression.parse('foo(42,)');
+        ol.expr.parse('foo(42,)');
       }).throwException(function(err) {
-        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        expect(err).to.be.an(ol.expr.UnexpectedToken);
         var token = err.token;
         expect(token.value).to.be(')');
         expect(token.index).to.be(7);
@@ -146,8 +146,8 @@ describe('ol.expression.parse()', function() {
     // http://www.ecma-international.org/ecma-262/5.1/#sec-11.4
 
     it('parses logical not operator', function() {
-      var expr = ol.expression.parse('!foo');
-      expect(expr).to.be.a(ol.expression.Not);
+      var expr = ol.expr.parse('!foo');
+      expect(expr).to.be.a(ol.expr.Not);
       expect(expr.evaluate({foo: true})).to.be(false);
       expect(expr.evaluate({foo: false})).to.be(true);
       expect(expr.evaluate({foo: ''})).to.be(true);
@@ -155,8 +155,8 @@ describe('ol.expression.parse()', function() {
     });
 
     it('consumes whitespace as expected', function() {
-      var expr = ol.expression.parse(' ! foo');
-      expect(expr).to.be.a(ol.expression.Not);
+      var expr = ol.expr.parse(' ! foo');
+      expect(expr).to.be.a(ol.expr.Not);
       expect(expr.evaluate({foo: true})).to.be(false);
       expect(expr.evaluate({foo: false})).to.be(true);
     });
@@ -167,38 +167,38 @@ describe('ol.expression.parse()', function() {
     // http://www.ecma-international.org/ecma-262/5.1/#sec-11.5
 
     it('parses * operator', function() {
-      var expr = ol.expression.parse('foo*bar');
-      expect(expr).to.be.a(ol.expression.Math);
+      var expr = ol.expr.parse('foo*bar');
+      expect(expr).to.be.a(ol.expr.Math);
       expect(expr.evaluate({foo: 10, bar: 20})).to.be(200);
     });
 
     it('consumes whitespace as expected with *', function() {
-      var expr = ol.expression.parse(' foo * bar ');
-      expect(expr).to.be.a(ol.expression.Math);
+      var expr = ol.expr.parse(' foo * bar ');
+      expect(expr).to.be.a(ol.expr.Math);
       expect(expr.evaluate({foo: 15, bar: 2})).to.be(30);
     });
 
     it('parses / operator', function() {
-      var expr = ol.expression.parse('foo/12');
-      expect(expr).to.be.a(ol.expression.Math);
+      var expr = ol.expr.parse('foo/12');
+      expect(expr).to.be.a(ol.expr.Math);
       expect(expr.evaluate({foo: 10})).to.be(10 / 12);
     });
 
     it('consumes whitespace as expected with /', function() {
-      var expr = ol.expression.parse(' 4 / bar ');
-      expect(expr).to.be.a(ol.expression.Math);
+      var expr = ol.expr.parse(' 4 / bar ');
+      expect(expr).to.be.a(ol.expr.Math);
       expect(expr.evaluate({bar: 3})).to.be(4 / 3);
     });
 
     it('parses % operator', function() {
-      var expr = ol.expression.parse('12%foo');
-      expect(expr).to.be.a(ol.expression.Math);
+      var expr = ol.expr.parse('12%foo');
+      expect(expr).to.be.a(ol.expr.Math);
       expect(expr.evaluate({foo: 10})).to.be(2);
     });
 
     it('consumes whitespace as expected with %', function() {
-      var expr = ol.expression.parse(' 4 %bar ');
-      expect(expr).to.be.a(ol.expression.Math);
+      var expr = ol.expr.parse(' 4 %bar ');
+      expect(expr).to.be.a(ol.expr.Math);
       expect(expr.evaluate({bar: 3})).to.be(1);
     });
 
@@ -208,26 +208,26 @@ describe('ol.expression.parse()', function() {
     // http://www.ecma-international.org/ecma-262/5.1/#sec-11.6
 
     it('parses + operator', function() {
-      var expr = ol.expression.parse('foo+bar');
-      expect(expr).to.be.a(ol.expression.Math);
+      var expr = ol.expr.parse('foo+bar');
+      expect(expr).to.be.a(ol.expr.Math);
       expect(expr.evaluate({foo: 10, bar: 20})).to.be(30);
     });
 
     it('consumes whitespace as expected with +', function() {
-      var expr = ol.expression.parse(' foo +10 ');
-      expect(expr).to.be.a(ol.expression.Math);
+      var expr = ol.expr.parse(' foo +10 ');
+      expect(expr).to.be.a(ol.expr.Math);
       expect(expr.evaluate({foo: 15})).to.be(25);
     });
 
     it('parses - operator', function() {
-      var expr = ol.expression.parse('foo-bar');
-      expect(expr).to.be.a(ol.expression.Math);
+      var expr = ol.expr.parse('foo-bar');
+      expect(expr).to.be.a(ol.expr.Math);
       expect(expr.evaluate({foo: 10, bar: 20})).to.be(-10);
     });
 
     it('consumes whitespace as expected with -', function() {
-      var expr = ol.expression.parse(' foo- 10 ');
-      expect(expr).to.be.a(ol.expression.Math);
+      var expr = ol.expr.parse(' foo- 10 ');
+      expect(expr).to.be.a(ol.expr.Math);
       expect(expr.evaluate({foo: 15})).to.be(5);
     });
 
@@ -242,44 +242,44 @@ describe('ol.expression.parse()', function() {
     // http://www.ecma-international.org/ecma-262/5.1/#sec-11.8
 
     it('parses < operator', function() {
-      var expr = ol.expression.parse('foo<bar');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      var expr = ol.expr.parse('foo<bar');
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate({foo: 10, bar: 20})).to.be(true);
       expect(expr.evaluate({foo: 100, bar: 20})).to.be(false);
     });
 
     it('consumes whitespace as expected with <', function() {
-      var expr = ol.expression.parse(' foo <10 ');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      var expr = ol.expr.parse(' foo <10 ');
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate({foo: 15})).to.be(false);
       expect(expr.evaluate({foo: 5})).to.be(true);
     });
 
     it('parses > operator', function() {
-      var expr = ol.expression.parse('foo>bar');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      var expr = ol.expr.parse('foo>bar');
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate({foo: 10, bar: 20})).to.be(false);
       expect(expr.evaluate({foo: 100, bar: 20})).to.be(true);
     });
 
     it('consumes whitespace as expected with >', function() {
-      var expr = ol.expression.parse(' foo> 10 ');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      var expr = ol.expr.parse(' foo> 10 ');
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate({foo: 15})).to.be(true);
       expect(expr.evaluate({foo: 5})).to.be(false);
     });
 
     it('parses <= operator', function() {
-      var expr = ol.expression.parse('foo<=bar');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      var expr = ol.expr.parse('foo<=bar');
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate({foo: 10, bar: 20})).to.be(true);
       expect(expr.evaluate({foo: 100, bar: 20})).to.be(false);
       expect(expr.evaluate({foo: 20, bar: 20})).to.be(true);
     });
 
     it('consumes whitespace as expected with <=', function() {
-      var expr = ol.expression.parse(' foo<= 10 ');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      var expr = ol.expr.parse(' foo<= 10 ');
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate({foo: 15})).to.be(false);
       expect(expr.evaluate({foo: 5})).to.be(true);
       expect(expr.evaluate({foo: 10})).to.be(true);
@@ -287,9 +287,9 @@ describe('ol.expression.parse()', function() {
 
     it('throws for invalid spacing with <=', function() {
       expect(function() {
-        ol.expression.parse(' foo< = 10 ');
+        ol.expr.parse(' foo< = 10 ');
       }).throwException(function(err) {
-        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        expect(err).to.be.an(ol.expr.UnexpectedToken);
         var token = err.token;
         expect(token.value).to.be('=');
         expect(token.index).to.be(6);
@@ -297,16 +297,16 @@ describe('ol.expression.parse()', function() {
     });
 
     it('parses >= operator', function() {
-      var expr = ol.expression.parse('foo>=bar');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      var expr = ol.expr.parse('foo>=bar');
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate({foo: 10, bar: 20})).to.be(false);
       expect(expr.evaluate({foo: 100, bar: 20})).to.be(true);
       expect(expr.evaluate({foo: 20, bar: 20})).to.be(true);
     });
 
     it('consumes whitespace as expected with >=', function() {
-      var expr = ol.expression.parse(' foo >=10 ');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      var expr = ol.expr.parse(' foo >=10 ');
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate({foo: 15})).to.be(true);
       expect(expr.evaluate({foo: 5})).to.be(false);
       expect(expr.evaluate({foo: 10})).to.be(true);
@@ -314,9 +314,9 @@ describe('ol.expression.parse()', function() {
 
     it('throws for invalid spacing with >=', function() {
       expect(function() {
-        ol.expression.parse(' 10 > =foo ');
+        ol.expr.parse(' 10 > =foo ');
       }).throwException(function(err) {
-        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        expect(err).to.be.an(ol.expr.UnexpectedToken);
         var token = err.token;
         expect(token.value).to.be('=');
         expect(token.index).to.be(6);
@@ -329,16 +329,16 @@ describe('ol.expression.parse()', function() {
     // http://www.ecma-international.org/ecma-262/5.1/#sec-11.9
 
     it('parses == operator', function() {
-      var expr = ol.expression.parse('foo==42');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      var expr = ol.expr.parse('foo==42');
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate({foo: 42})).to.be(true);
       expect(expr.evaluate({foo: 41})).to.be(false);
       expect(expr.evaluate({foo: '42'})).to.be(true);
     });
 
     it('consumes whitespace as expected with ==', function() {
-      var expr = ol.expression.parse(' 42 ==foo ');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      var expr = ol.expr.parse(' 42 ==foo ');
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate({foo: 42})).to.be(true);
       expect(expr.evaluate({foo: 41})).to.be(false);
       expect(expr.evaluate({foo: '42'})).to.be(true);
@@ -346,9 +346,9 @@ describe('ol.expression.parse()', function() {
 
     it('throws for invalid spacing with ==', function() {
       expect(function() {
-        ol.expression.parse(' 10 = =foo ');
+        ol.expr.parse(' 10 = =foo ');
       }).throwException(function(err) {
-        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        expect(err).to.be.an(ol.expr.UnexpectedToken);
         var token = err.token;
         expect(token.value).to.be('=');
         expect(token.index).to.be(4);
@@ -356,16 +356,16 @@ describe('ol.expression.parse()', function() {
     });
 
     it('parses != operator', function() {
-      var expr = ol.expression.parse('foo!=42');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      var expr = ol.expr.parse('foo!=42');
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate({foo: 42})).to.be(false);
       expect(expr.evaluate({foo: 41})).to.be(true);
       expect(expr.evaluate({foo: '42'})).to.be(false);
     });
 
     it('consumes whitespace as expected with !=', function() {
-      var expr = ol.expression.parse(' 42 !=foo ');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      var expr = ol.expr.parse(' 42 !=foo ');
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate({foo: 42})).to.be(false);
       expect(expr.evaluate({foo: 41})).to.be(true);
       expect(expr.evaluate({foo: '42'})).to.be(false);
@@ -373,9 +373,9 @@ describe('ol.expression.parse()', function() {
 
     it('throws for invalid spacing with !=', function() {
       expect(function() {
-        ol.expression.parse(' 10! =foo ');
+        ol.expr.parse(' 10! =foo ');
       }).throwException(function(err) {
-        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        expect(err).to.be.an(ol.expr.UnexpectedToken);
         var token = err.token;
         expect(token.value).to.be('!');
         expect(token.index).to.be(3);
@@ -383,16 +383,16 @@ describe('ol.expression.parse()', function() {
     });
 
     it('parses === operator', function() {
-      var expr = ol.expression.parse('42===foo');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      var expr = ol.expr.parse('42===foo');
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate({foo: 42})).to.be(true);
       expect(expr.evaluate({foo: 41})).to.be(false);
       expect(expr.evaluate({foo: '42'})).to.be(false);
     });
 
     it('consumes whitespace as expected with ===', function() {
-      var expr = ol.expression.parse(' foo ===42 ');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      var expr = ol.expr.parse(' foo ===42 ');
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate({foo: 42})).to.be(true);
       expect(expr.evaluate({foo: 41})).to.be(false);
       expect(expr.evaluate({foo: '42'})).to.be(false);
@@ -400,9 +400,9 @@ describe('ol.expression.parse()', function() {
 
     it('throws for invalid spacing with ===', function() {
       expect(function() {
-        ol.expression.parse(' 10 = == foo ');
+        ol.expr.parse(' 10 = == foo ');
       }).throwException(function(err) {
-        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        expect(err).to.be.an(ol.expr.UnexpectedToken);
         var token = err.token;
         expect(token.value).to.be('=');
         expect(token.index).to.be(4);
@@ -410,16 +410,16 @@ describe('ol.expression.parse()', function() {
     });
 
     it('parses !== operator', function() {
-      var expr = ol.expression.parse('foo!==42');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      var expr = ol.expr.parse('foo!==42');
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate({foo: 42})).to.be(false);
       expect(expr.evaluate({foo: 41})).to.be(true);
       expect(expr.evaluate({foo: '42'})).to.be(true);
     });
 
     it('consumes whitespace as expected with !==', function() {
-      var expr = ol.expression.parse(' 42 !== foo ');
-      expect(expr).to.be.a(ol.expression.Comparison);
+      var expr = ol.expr.parse(' 42 !== foo ');
+      expect(expr).to.be.a(ol.expr.Comparison);
       expect(expr.evaluate({foo: 42})).to.be(false);
       expect(expr.evaluate({foo: 41})).to.be(true);
       expect(expr.evaluate({foo: '42'})).to.be(true);
@@ -427,9 +427,9 @@ describe('ol.expression.parse()', function() {
 
     it('throws for invalid spacing with !==', function() {
       expect(function() {
-        ol.expression.parse(' 10 != = foo ');
+        ol.expr.parse(' 10 != = foo ');
       }).throwException(function(err) {
-        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        expect(err).to.be.an(ol.expr.UnexpectedToken);
         var token = err.token;
         expect(token.value).to.be('=');
         expect(token.index).to.be(7);
@@ -446,8 +446,8 @@ describe('ol.expression.parse()', function() {
     // http://www.ecma-international.org/ecma-262/5.1/#sec-11.11
 
     it('parses && operator', function() {
-      var expr = ol.expression.parse('foo&&bar');
-      expect(expr).to.be.a(ol.expression.Logical);
+      var expr = ol.expr.parse('foo&&bar');
+      expect(expr).to.be.a(ol.expr.Logical);
       expect(expr.evaluate({foo: true, bar: true})).to.be(true);
       expect(expr.evaluate({foo: true, bar: false})).to.be(false);
       expect(expr.evaluate({foo: false, bar: true})).to.be(false);
@@ -455,8 +455,8 @@ describe('ol.expression.parse()', function() {
     });
 
     it('consumes space as expected with &&', function() {
-      var expr = ol.expression.parse(' foo && bar ');
-      expect(expr).to.be.a(ol.expression.Logical);
+      var expr = ol.expr.parse(' foo && bar ');
+      expect(expr).to.be.a(ol.expr.Logical);
       expect(expr.evaluate({foo: true, bar: true})).to.be(true);
       expect(expr.evaluate({foo: true, bar: false})).to.be(false);
       expect(expr.evaluate({foo: false, bar: true})).to.be(false);
@@ -465,9 +465,9 @@ describe('ol.expression.parse()', function() {
 
     it('throws for invalid spacing with &&', function() {
       expect(function() {
-        ol.expression.parse('true & & false');
+        ol.expr.parse('true & & false');
       }).throwException(function(err) {
-        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        expect(err).to.be.an(ol.expr.UnexpectedToken);
         var token = err.token;
         expect(token.value).to.be('&');
         expect(token.index).to.be(5);
@@ -475,8 +475,8 @@ describe('ol.expression.parse()', function() {
     });
 
     it('parses || operator', function() {
-      var expr = ol.expression.parse('foo||bar');
-      expect(expr).to.be.a(ol.expression.Logical);
+      var expr = ol.expr.parse('foo||bar');
+      expect(expr).to.be.a(ol.expr.Logical);
       expect(expr.evaluate({foo: true, bar: true})).to.be(true);
       expect(expr.evaluate({foo: true, bar: false})).to.be(true);
       expect(expr.evaluate({foo: false, bar: true})).to.be(true);
@@ -484,8 +484,8 @@ describe('ol.expression.parse()', function() {
     });
 
     it('consumes space as expected with ||', function() {
-      var expr = ol.expression.parse(' foo || bar ');
-      expect(expr).to.be.a(ol.expression.Logical);
+      var expr = ol.expr.parse(' foo || bar ');
+      expect(expr).to.be.a(ol.expr.Logical);
       expect(expr.evaluate({foo: true, bar: true})).to.be(true);
       expect(expr.evaluate({foo: true, bar: false})).to.be(true);
       expect(expr.evaluate({foo: false, bar: true})).to.be(true);
@@ -494,9 +494,9 @@ describe('ol.expression.parse()', function() {
 
     it('throws for invalid spacing with ||', function() {
       expect(function() {
-        ol.expression.parse('true | | false');
+        ol.expr.parse('true | | false');
       }).throwException(function(err) {
-        expect(err).to.be.an(ol.expression.UnexpectedToken);
+        expect(err).to.be.an(ol.expr.UnexpectedToken);
         var token = err.token;
         expect(token.value).to.be('|');
         expect(token.index).to.be(5);
@@ -522,10 +522,10 @@ describe('ol.expression.parse()', function() {
 
 });
 
-describe('ol.expression.lib', function() {
+describe('ol.expr.lib', function() {
 
-  var parse = ol.expression.parse;
-  var evaluate = ol.expression.evaluateFeature;
+  var parse = ol.expr.parse;
+  var evaluate = ol.expr.evaluateFeature;
 
   describe('extent()', function() {
 
@@ -611,48 +611,50 @@ describe('ol.expression.lib', function() {
 
 });
 
-describe('ol.expression.register()', function() {
+describe('ol.expr.register()', function() {
 
   var spy;
   beforeEach(function() {
     spy = sinon.spy();
   });
 
-  it('registers custom functions in ol.expression.lib', function() {
-    ol.expression.register('someFunc', spy);
-    expect(ol.expression.lib.someFunc).to.be(spy);
+  it('registers custom functions in ol.expr.lib', function() {
+    ol.expr.register('someFunc', spy);
+    expect(ol.expr.lib.someFunc).to.be(spy);
   });
 
   it('allows custom functions to be called', function() {
-    ol.expression.register('myFunc', spy);
-    var expr = ol.expression.parse('myFunc(42)');
-    expr.evaluate(null, ol.expression.lib);
+    ol.expr.register('myFunc', spy);
+    var expr = ol.expr.parse('myFunc(42)');
+    expr.evaluate(null, ol.expr.lib);
     expect(spy.calledOnce);
     expect(spy.calledWithExactly(42));
   });
 
   it('allows custom functions to be called with identifiers', function() {
-    ol.expression.register('myFunc', spy);
-    var expr = ol.expression.parse('myFunc(foo, 42)');
-    expr.evaluate({foo: 'bar'}, ol.expression.lib);
+    ol.expr.register('myFunc', spy);
+    var expr = ol.expr.parse('myFunc(foo, 42)');
+    expr.evaluate({foo: 'bar'}, ol.expr.lib);
     expect(spy.calledOnce);
     expect(spy.calledWithExactly('bar', 42));
   });
 
   it('allows custom functions to be called with custom this obj', function() {
-    ol.expression.register('myFunc', spy);
-    var expr = ol.expression.parse('myFunc(foo, 42)');
+    ol.expr.register('myFunc', spy);
+    var expr = ol.expr.parse('myFunc(foo, 42)');
     var that = {};
-    expr.evaluate({foo: 'bar'}, ol.expression.lib, that);
+    expr.evaluate({foo: 'bar'}, ol.expr.lib, that);
     expect(spy.calledOnce);
     expect(spy.calledWithExactly('bar', 42));
     expect(spy.calledOn(that));
   });
 
-  it('allows overriding existing ol.expression.lib functions', function() {
-    expect(ol.expression.lib.extent).not.to.be(spy);
-    ol.expression.register('extent', spy);
-    expect(ol.expression.lib.extent).to.be(spy);
+  it('allows overriding existing ol.expr.lib functions', function() {
+    var orig = ol.expr.lib.extent;
+    expect(orig).not.to.be(spy);
+    ol.expr.register('extent', spy);
+    expect(ol.expr.lib.extent).to.be(spy);
+    ol.expr.lib.extent = orig;
   });
 
 });
@@ -660,18 +662,18 @@ describe('ol.expression.register()', function() {
 
 
 goog.require('ol.Feature');
-goog.require('ol.expression');
-goog.require('ol.expression.Call');
-goog.require('ol.expression.Comparison');
-goog.require('ol.expression.Expression');
-goog.require('ol.expression.Identifier');
-goog.require('ol.expression.Literal');
-goog.require('ol.expression.Logical');
-goog.require('ol.expression.Math');
-goog.require('ol.expression.Member');
-goog.require('ol.expression.Not');
-goog.require('ol.expression.TokenType');
-goog.require('ol.expression.UnexpectedToken');
+goog.require('ol.expr');
+goog.require('ol.expr.Call');
+goog.require('ol.expr.Comparison');
+goog.require('ol.expr.Expression');
+goog.require('ol.expr.Identifier');
+goog.require('ol.expr.Literal');
+goog.require('ol.expr.Logical');
+goog.require('ol.expr.Math');
+goog.require('ol.expr.Member');
+goog.require('ol.expr.Not');
+goog.require('ol.expr.TokenType');
+goog.require('ol.expr.UnexpectedToken');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
