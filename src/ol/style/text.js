@@ -2,8 +2,8 @@ goog.provide('ol.style.Text');
 goog.provide('ol.style.TextLiteral');
 
 goog.require('goog.asserts');
-goog.require('ol.Expression');
-goog.require('ol.ExpressionLiteral');
+goog.require('ol.expression.Expression');
+goog.require('ol.expression.Literal');
 goog.require('ol.style.Symbolizer');
 goog.require('ol.style.SymbolizerLiteral');
 
@@ -75,47 +75,47 @@ ol.style.TextLiteral.prototype.equals = function(textLiteral) {
 ol.style.Text = function(options) {
 
   /**
-   * @type {ol.Expression}
+   * @type {ol.expression.Expression}
    * @private
    */
   this.color_ = !goog.isDef(options.color) ?
-      new ol.ExpressionLiteral(ol.style.TextDefaults.color) :
-      (options.color instanceof ol.Expression) ?
-          options.color : new ol.ExpressionLiteral(options.color);
+      new ol.expression.Literal(ol.style.TextDefaults.color) :
+      (options.color instanceof ol.expression.Expression) ?
+          options.color : new ol.expression.Literal(options.color);
 
   /**
-   * @type {ol.Expression}
+   * @type {ol.expression.Expression}
    * @private
    */
   this.fontFamily_ = !goog.isDef(options.fontFamily) ?
-      new ol.ExpressionLiteral(ol.style.TextDefaults.fontFamily) :
-      (options.fontFamily instanceof ol.Expression) ?
-          options.fontFamily : new ol.ExpressionLiteral(options.fontFamily);
+      new ol.expression.Literal(ol.style.TextDefaults.fontFamily) :
+      (options.fontFamily instanceof ol.expression.Expression) ?
+          options.fontFamily : new ol.expression.Literal(options.fontFamily);
 
   /**
-   * @type {ol.Expression}
+   * @type {ol.expression.Expression}
    * @private
    */
   this.fontSize_ = !goog.isDef(options.fontSize) ?
-      new ol.ExpressionLiteral(ol.style.TextDefaults.fontSize) :
-      (options.fontSize instanceof ol.Expression) ?
-          options.fontSize : new ol.ExpressionLiteral(options.fontSize);
+      new ol.expression.Literal(ol.style.TextDefaults.fontSize) :
+      (options.fontSize instanceof ol.expression.Expression) ?
+          options.fontSize : new ol.expression.Literal(options.fontSize);
 
   /**
-   * @type {ol.Expression}
+   * @type {ol.expression.Expression}
    * @private
    */
-  this.text_ = (options.text instanceof ol.Expression) ?
-      options.text : new ol.ExpressionLiteral(options.text);
+  this.text_ = (options.text instanceof ol.expression.Expression) ?
+      options.text : new ol.expression.Literal(options.text);
 
   /**
-   * @type {ol.Expression}
+   * @type {ol.expression.Expression}
    * @private
    */
   this.opacity_ = !goog.isDef(options.opacity) ?
-      new ol.ExpressionLiteral(ol.style.TextDefaults.opacity) :
-      (options.opacity instanceof ol.Expression) ?
-          options.opacity : new ol.ExpressionLiteral(options.opacity);
+      new ol.expression.Literal(ol.style.TextDefaults.opacity) :
+      (options.opacity instanceof ol.expression.Expression) ?
+          options.opacity : new ol.expression.Literal(options.opacity);
 
 };
 goog.inherits(ol.style.Text, ol.style.Symbolizer);
@@ -132,19 +132,19 @@ ol.style.Text.prototype.createLiteral = function(opt_feature) {
     attrs = feature.getAttributes();
   }
 
-  var color = this.color_.evaluate(feature, attrs);
+  var color = this.color_.evaluate(attrs, null, feature);
   goog.asserts.assertString(color, 'color must be a string');
 
-  var fontFamily = this.fontFamily_.evaluate(feature, attrs);
+  var fontFamily = this.fontFamily_.evaluate(attrs, null, feature);
   goog.asserts.assertString(fontFamily, 'fontFamily must be a string');
 
-  var fontSize = this.fontSize_.evaluate(feature, attrs);
+  var fontSize = this.fontSize_.evaluate(attrs, null, feature);
   goog.asserts.assertNumber(fontSize, 'fontSize must be a number');
 
-  var text = this.text_.evaluate(feature, attrs);
+  var text = this.text_.evaluate(attrs, null, feature);
   goog.asserts.assertString(text, 'text must be a string');
 
-  var opacity = this.opacity_.evaluate(feature, attrs);
+  var opacity = this.opacity_.evaluate(attrs, null, feature);
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
   return new ol.style.TextLiteral({

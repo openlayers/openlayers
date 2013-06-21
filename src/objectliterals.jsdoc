@@ -576,11 +576,11 @@
 
 /**
  * @typedef {Object} ol.style.TextOptions
- * @property {string|ol.Expression|undefined} color Color.
- * @property {string|ol.Expression|undefined} fontFamily Font family.
- * @property {number|ol.Expression|undefined} fontSize Font size in pixels.
- * @property {string|ol.Expression} text Text for the label.
- * @property {number|ol.Expression|undefined} opacity Opacity (0-1).
+ * @property {string|ol.expression.Expression|undefined} color Color.
+ * @property {string|ol.expression.Expression|undefined} fontFamily Font family.
+ * @property {number|ol.expression.Expression|undefined} fontSize Font size in pixels.
+ * @property {string|ol.expression.Expression} text Text for the label.
+ * @property {number|ol.expression.Expression|undefined} opacity Opacity (0-1).
  */
 
 /**
