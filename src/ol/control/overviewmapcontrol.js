@@ -174,27 +174,33 @@ ol.control.OverviewMap.prototype.handleSizeChanged_ = function(event) {
 
 
 /**
- * Reset the overview map extent if the main extent size (width or
- * height is less than the size of the overview extent times minRatio
- * or is greater than the size of the overview extent times maxRatio.
+ * Reset the overview map extent if the box size (width or
+ * height) is less than the size of the overview map size times minRatio
+ * or is greater than the size of the overview size times maxRatio.
  * @private
  */
 ol.control.OverviewMap.prototype.validateExtent_ = function() {
   var map = this.getMap();
+  var ovmap = this.ovmap_;
   var view = map.getView();
-  var mapViewExtent = view.calculateExtent(map.getSize());
-  var mapViewExtentWidth = ol.extent.getWidth(mapViewExtent);
-  var mapViewExtentHeight = ol.extent.getHeight(mapViewExtent);
+  var extent = view.calculateExtent(map.getSize());
 
-  var ovview = this.ovmap_.getView();
-  var ovmapViewExtent = ovview.calculateExtent(this.ovmap_.getSize());
-  var ovmapViewExtentWidth = ol.extent.getWidth(ovmapViewExtent);
-  var ovmapViewExtentHeight = ol.extent.getHeight(ovmapViewExtent);
+  var topLeftPixel =
+      ovmap.getPixelFromCoordinate(ol.extent.getTopLeft(extent));
+  var bottomRightPixel =
+      ovmap.getPixelFromCoordinate(ol.extent.getBottomRight(extent));
+  var boxSize = new goog.math.Size(
+      Math.abs(topLeftPixel[0] - bottomRightPixel[0]),
+      Math.abs(topLeftPixel[1] - bottomRightPixel[1]));
 
-  if (ovmapViewExtentWidth < mapViewExtentWidth / this.minRatio_ ||
-      ovmapViewExtentHeight < mapViewExtentHeight / this.minRatio_ ||
-      ovmapViewExtentWidth > mapViewExtentWidth / this.maxRatio_ ||
-      ovmapViewExtentHeight > mapViewExtentHeight / this.maxRatio_) {
+  var ovmapSize = ovmap.getSize();
+  var ovmapWidth = ovmapSize[0];
+  var ovmapHeight = ovmapSize[1];
+
+  if (boxSize.width < ovmapWidth * this.minRatio_ ||
+      boxSize.height < ovmapHeight * this.minRatio_ ||
+      boxSize.width > ovmapWidth * this.maxRatio_ ||
+      boxSize.height > ovmapHeight * this.maxRatio_) {
     this.resetExtent_();
   }
 };
