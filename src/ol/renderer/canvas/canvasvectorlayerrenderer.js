@@ -313,7 +313,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       tileGrid = this.tileGrid_;
 
   // lazy tile grid creation
-  if (!frameState.viewHints[ol.ViewHint.ANIMATING]) {
+  if (!frameState.viewHints[ol.ViewHint.ANIMATING] &&
+      !frameState.viewHints[ol.ViewHint.INTERACTING]) {
     // avoid rendering issues for very high zoom levels
     var newResolution = Math.max(resolution, ol.renderer.canvas.MIN_RESOLUTION);
     var oldResolutions = goog.isNull(this.tileGrid_) ? [] :
