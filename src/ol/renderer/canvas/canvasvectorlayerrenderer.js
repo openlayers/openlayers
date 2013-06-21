@@ -320,14 +320,16 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
     var oldResolutions = goog.isNull(this.tileGrid_) ? [] :
         this.tileGrid_.getResolutions();
     if (!goog.array.contains(oldResolutions, newResolution)) {
+      var newResolutions = oldResolutions.concat([]);
+      goog.array.binaryInsert(newResolutions, newResolution,
+          function(a, b) { return b - a; });
       tileGrid = new ol.tilegrid.TileGrid({
         origin: [0, 0],
         projection: view2DState.projection,
-        resolutions: [newResolution].concat(oldResolutions)
-            .sort(function(a, b) { return b - a; }),
+        resolutions: newResolutions,
         tileSize: [512, 512]
       });
-      this.updateTileCache_(oldResolutions, tileGrid.getResolutions());
+      this.updateTileCache_(oldResolutions, newResolutions);
       this.tileGrid_ = tileGrid;
     }
   }
