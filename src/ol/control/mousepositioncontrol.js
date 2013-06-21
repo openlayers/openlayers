@@ -10,11 +10,21 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.style');
 goog.require('ol.CoordinateFormatType');
+goog.require('ol.Object');
 goog.require('ol.Pixel');
 goog.require('ol.Projection');
 goog.require('ol.TransformFunction');
 goog.require('ol.control.Control');
 goog.require('ol.proj');
+
+
+/**
+ * @enum {string}
+ */
+ol.control.MousePositionProperty = {
+  PROJECTION: 'projection',
+  COORDINATE_FORMAT: 'coordinateFormat'
+};
 
 
 
@@ -53,17 +63,16 @@ ol.control.MousePosition = function(opt_options) {
     target: options.target
   });
 
-  /**
-   * @private
-   * @type {ol.Projection}
-   */
-  this.projection_ = ol.proj.get(options.projection);
+  goog.events.listen(this,
+      ol.Object.getChangeEventType(ol.control.MousePositionProperty.PROJECTION),
+      this.handleProjectionChanged_, false, this);
 
-  /**
-   * @private
-   * @type {ol.CoordinateFormatType|undefined}
-   */
-  this.coordinateFormat_ = options.coordinateFormat;
+  if (goog.isDef(options.coordinateFormat)) {
+    this.setCoordinateFormat(options.coordinateFormat);
+  }
+  if (goog.isDef(options.projection)) {
+    this.setProjection(ol.proj.get(options.projection));
+  }
 
   /**
    * @private
@@ -118,11 +127,37 @@ ol.control.MousePosition.prototype.handleMapPostrender = function(mapEvent) {
 
 
 /**
- * @return {ol.Projection} projection.
+ * @private
+ */
+ol.control.MousePosition.prototype.handleProjectionChanged_ = function() {
+  this.transform_ = null;
+};
+
+
+/**
+ * @return {ol.CoordinateFormatType|undefined} projection.
+ */
+ol.control.MousePosition.prototype.getCoordinateFormat = function() {
+  return /** @type {ol.CoordinateFormatType|undefined} */ (
+      this.get(ol.control.MousePositionProperty.COORDINATE_FORMAT));
+};
+goog.exportProperty(
+    ol.control.MousePosition.prototype,
+    'getCoordinateFormat',
+    ol.control.MousePosition.prototype.getCoordinateFormat);
+
+
+/**
+ * @return {ol.Projection|undefined} projection.
  */
 ol.control.MousePosition.prototype.getProjection = function() {
-  return this.projection_;
+  return /** @type {ol.Projection|undefined} */ (
+      this.get(ol.control.MousePositionProperty.PROJECTION));
 };
+goog.exportProperty(
+    ol.control.MousePosition.prototype,
+    'getProjection',
+    ol.control.MousePosition.prototype.getProjection);
 
 
 /**
@@ -166,12 +201,27 @@ ol.control.MousePosition.prototype.setMap = function(map) {
 
 
 /**
- * @param {ol.ProjectionLike} projection Projection.
+ * @param {ol.CoordinateFormatType} format Coordinate format.
+ */
+ol.control.MousePosition.prototype.setCoordinateFormat = function(format) {
+  this.set(ol.control.MousePositionProperty.COORDINATE_FORMAT, format);
+};
+goog.exportProperty(
+    ol.control.MousePosition.prototype,
+    'setCoordinateFormat',
+    ol.control.MousePosition.prototype.setCoordinateFormat);
+
+
+/**
+ * @param {ol.Projection} projection Projection.
  */
 ol.control.MousePosition.prototype.setProjection = function(projection) {
-  this.projection_ = ol.proj.get(projection);
-  this.transform_ = null;
+  this.set(ol.control.MousePositionProperty.PROJECTION, projection);
 };
+goog.exportProperty(
+    ol.control.MousePosition.prototype,
+    'setProjection',
+    ol.control.MousePosition.prototype.setProjection);
 
 
 /**
@@ -182,9 +232,10 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
   var html = this.undefinedHTML_;
   if (!goog.isNull(pixel)) {
     if (goog.isNull(this.transform_)) {
-      if (!goog.isNull(this.projection_)) {
+      var projection = this.getProjection();
+      if (goog.isDef(projection)) {
         this.transform_ = ol.proj.getTransformFromProjections(
-            this.mapProjection_, this.projection_);
+            this.mapProjection_, projection);
       } else {
         this.transform_ = ol.proj.identityTransform;
       }
@@ -193,8 +244,9 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
     var coordinate = map.getCoordinateFromPixel(pixel);
     if (!goog.isNull(coordinate)) {
       this.transform_(coordinate, coordinate);
-      if (goog.isDef(this.coordinateFormat_)) {
-        html = this.coordinateFormat_(coordinate);
+      var coordinateFormat = this.getCoordinateFormat();
+      if (goog.isDef(coordinateFormat)) {
+        html = coordinateFormat(coordinate);
       } else {
         html = coordinate.toString();
       }
