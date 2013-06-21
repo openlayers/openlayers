@@ -56,6 +56,7 @@ ol.control.OverviewMap = function(opt_options) {
    */
   this.ovmap_ = new ol.Map({
     controls: [],
+    interactions: new ol.Collection(),
     target: element
   });
 
