@@ -1,7 +1,7 @@
 goog.provide('ol.test.expression');
 
 
-describe('ol.expression.parse', function() {
+describe('ol.expression.parse()', function() {
 
   it('parses a subset of ECMAScript 5.1 expressions', function() {
     var expr = ol.expression.parse('foo');
@@ -610,6 +610,53 @@ describe('ol.expression.lib', function() {
   });
 
 });
+
+describe('ol.expression.register()', function() {
+
+  var spy;
+  beforeEach(function() {
+    spy = sinon.spy();
+  });
+
+  it('registers custom functions in ol.expression.lib', function() {
+    ol.expression.register('someFunc', spy);
+    expect(ol.expression.lib.someFunc).to.be(spy);
+  });
+
+  it('allows custom functions to be called', function() {
+    ol.expression.register('myFunc', spy);
+    var expr = ol.expression.parse('myFunc(42)');
+    expr.evaluate(null, ol.expression.lib);
+    expect(spy.calledOnce);
+    expect(spy.calledWithExactly(42));
+  });
+
+  it('allows custom functions to be called with identifiers', function() {
+    ol.expression.register('myFunc', spy);
+    var expr = ol.expression.parse('myFunc(foo, 42)');
+    expr.evaluate({foo: 'bar'}, ol.expression.lib);
+    expect(spy.calledOnce);
+    expect(spy.calledWithExactly('bar', 42));
+  });
+
+  it('allows custom functions to be called with custom this obj', function() {
+    ol.expression.register('myFunc', spy);
+    var expr = ol.expression.parse('myFunc(foo, 42)');
+    var that = {};
+    expr.evaluate({foo: 'bar'}, ol.expression.lib, that);
+    expect(spy.calledOnce);
+    expect(spy.calledWithExactly('bar', 42));
+    expect(spy.calledOn(that));
+  });
+
+  it('allows overriding existing ol.expression.lib functions', function() {
+    expect(ol.expression.lib.extent).not.to.be(spy);
+    ol.expression.register('extent', spy);
+    expect(ol.expression.lib.extent).to.be(spy);
+  });
+
+});
+
 
 
 goog.require('ol.Feature');
