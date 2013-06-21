@@ -7,6 +7,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.math.Size');
 goog.require('goog.style');
+goog.require('ol.Collection');
 goog.require('ol.Map');
 goog.require('ol.Object');
 goog.require('ol.Overlay');
