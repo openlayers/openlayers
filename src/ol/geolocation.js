@@ -86,9 +86,8 @@ ol.Geolocation = function(opt_options) {
   if (goog.isDef(options.trackingOptions)) {
     this.setTrackingOptions(options.trackingOptions);
   }
-  if (goog.isDef(options.tracking)) {
-    this.setTracking(options.tracking);
-  }
+
+  this.setTracking(goog.isDef(options.tracking) ? options.tracking : false);
 
 };
 goog.inherits(ol.Geolocation, ol.Object);
@@ -282,7 +281,7 @@ goog.exportProperty(
 
 /**
  * Are we tracking the user's position?
- * @return {boolean|undefined} tracking.
+ * @return {boolean} tracking.
  */
 ol.Geolocation.prototype.getTracking = function() {
   return /** @type {boolean} */ (

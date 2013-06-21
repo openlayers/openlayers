@@ -27,6 +27,10 @@ ol.DeviceOrientationProperty = {
  */
 ol.DeviceOrientation = function(opt_options) {
 
+  goog.base(this);
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
+
   /**
    * @private
    * @type {?number}
@@ -37,7 +41,7 @@ ol.DeviceOrientation = function(opt_options) {
       ol.Object.getChangeEventType(ol.DeviceOrientationProperty.TRACKING),
       this.handleTrackingChanged_, false, this);
 
-  goog.base(this, goog.isDef(opt_options) ? opt_options : {});
+  this.setTracking(goog.isDef(options.tracking) ? options.tracking : false);
 
 };
 goog.inherits(ol.DeviceOrientation, ol.Object);
@@ -139,7 +143,8 @@ goog.exportProperty(
 
 
 /**
- * @return {boolean|undefined} tracking.
+ * Are we tracking the device's orientation?
+ * @return {boolean} tracking.
  */
 ol.DeviceOrientation.prototype.getTracking = function() {
   return /** @type {boolean} */ (
