@@ -148,6 +148,15 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
   this.tileGrid_ = null;
 
   /**
+   * Tile range before the current animation or interaction.  This is updated
+   * whenever the view is idle.
+   *
+   * @private
+   * @type {ol.TileRange}
+   */
+  this.tileRange_ = null;
+
+  /**
    * @private
    * @type {function()}
    */
@@ -310,11 +319,13 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       resolution = view2DState.resolution,
       extent = frameState.extent,
       layer = this.getVectorLayer(),
-      tileGrid = this.tileGrid_;
+      tileGrid = this.tileGrid_,
+      tileSize = [512, 512],
+      idle = !frameState.viewHints[ol.ViewHint.ANIMATING] &&
+          !frameState.viewHints[ol.ViewHint.INTERACTING];
 
   // lazy tile grid creation
-  if (!frameState.viewHints[ol.ViewHint.ANIMATING] &&
-      !frameState.viewHints[ol.ViewHint.INTERACTING]) {
+  if (idle) {
     // avoid rendering issues for very high zoom levels
     var gridResolution = Math.max(resolution,
         ol.renderer.canvas.MIN_RESOLUTION);
@@ -323,7 +334,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         origin: [0, 0],
         projection: view2DState.projection,
         resolutions: [gridResolution],
-        tileSize: [512, 512]
+        tileSize: tileSize
       });
       this.tileCache_.clear();
       this.tileGrid_ = tileGrid;
@@ -338,14 +349,15 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
 
 
   // set up transform for the layer canvas to be drawn to the map canvas
-  var z = tileGrid.getZForResolution(resolution),
-      tileResolution = tileGrid.getResolution(z),
-      tileRange = tileGrid.getTileRangeForExtentAndResolution(
-          extent, tileResolution),
-      tileRangeExtent = tileGrid.getTileRangeExtent(z, tileRange),
-      tileSize = tileGrid.getTileSize(z),
-      sketchOrigin = ol.extent.getTopLeft(tileRangeExtent),
-      transform = this.transform_;
+  var tileResolution = tileGrid.getResolution(0);
+  if (idle) {
+    this.tileRange_ = tileGrid.getTileRangeForExtentAndResolution(
+        extent, tileResolution);
+  }
+  var transform = this.transform_,
+      tileRange = this.tileRange_,
+      tileRangeExtent = tileGrid.getTileRangeExtent(0, tileRange),
+      sketchOrigin = ol.extent.getTopLeft(tileRangeExtent);
 
   goog.vec.Mat4.makeIdentity(transform);
   goog.vec.Mat4.translate(transform,
@@ -432,11 +444,11 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       groups, group, j, numGroups, featuresObject, tileHasFeatures;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-      tileCoord = new ol.TileCoord(z, x, y);
+      tileCoord = new ol.TileCoord(0, x, y);
       key = tileCoord.toString();
       if (this.tileCache_.containsKey(key)) {
         tilesToRender[key] = tileCoord;
-      } else if (!frameState.viewHints[ol.ViewHint.ANIMATING]) {
+      } else if (idle) {
         tileExtent = tileGrid.getTileCoordExtent(tileCoord);
         tileExtent[0] -= tileGutter;
         tileExtent[1] += tileGutter;
