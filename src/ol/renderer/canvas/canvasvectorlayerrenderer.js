@@ -240,8 +240,7 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
 
   var layer = this.getLayer();
   var location = map.getCoordinateFromPixel(pixel);
-  var tileCoord = this.tileGrid_.getTileCoordForCoordAndResolution(
-      location, this.getMap().getView().getView2D().getResolution());
+  var tileCoord = this.tileGrid_.getTileCoordForCoordAndZ(location, 0);
   var key = tileCoord.toString();
   if (this.tileCache_.containsKey(key)) {
     var cachedTile = this.tileCache_.get(key);
