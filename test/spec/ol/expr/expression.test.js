@@ -161,6 +161,29 @@ describe('ol.expr.parse()', function() {
       expect(expr.evaluate({foo: false})).to.be(true);
     });
 
+    it('parses not preceeding call expression', function() {
+      var lib = {
+        foo: function() {
+          return true;
+        }
+      };
+      var expr = ol.expr.parse('!foo()');
+      expect(expr).to.be.a(ol.expr.Not);
+      expect(expr.evaluate(null, lib)).to.be(false);
+    });
+
+    it('parses not in call argument', function() {
+      var lib = {
+        foo: function(arg) {
+          return arg;
+        }
+      };
+      var expr = ol.expr.parse('foo(!bar)');
+      expect(expr).to.be.a(ol.expr.Call);
+      expect(expr.evaluate({bar: true}, lib)).to.be(false);
+      expect(expr.evaluate({bar: false}, lib)).to.be(true);
+    });
+
   });
 
   describe('11.5 - multiplicitave operators', function() {
