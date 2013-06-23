@@ -406,7 +406,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       deferred = false,
       dirty = false,
       i, geomFilter, tileExtent, extentFilter, type,
-      groups, group, j, numGroups;
+      groups, group, j, numGroups, featuresObject, tileHasFeatures;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tileCoord = new ol.TileCoord(z, x, y);
@@ -420,17 +420,22 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         tileExtent[2] -= tileGutter;
         tileExtent[3] += tileGutter;
         extentFilter = new ol.filter.Extent(tileExtent);
+        tileHasFeatures = false;
         for (i = 0; i < numFilters; ++i) {
           geomFilter = filters[i];
           type = geomFilter.getType();
           if (!goog.isDef(featuresToRender[type])) {
             featuresToRender[type] = {};
           }
-          goog.object.extend(featuresToRender[type],
-              layer.getFeaturesObject(new ol.filter.Logical(
-                  [geomFilter, extentFilter], ol.filter.LogicalOperator.AND)));
+          featuresObject = layer.getFeaturesObject(new ol.filter.Logical(
+              [geomFilter, extentFilter], ol.filter.LogicalOperator.AND));
+          tileHasFeatures = tileHasFeatures ||
+              !goog.object.isEmpty(featuresObject);
+          goog.object.extend(featuresToRender[type], featuresObject);
         }
-        tilesOnSketchCanvas[key] = tileCoord;
+        if (tileHasFeatures) {
+          tilesOnSketchCanvas[key] = tileCoord;
+        }
       } else {
         dirty = true;
       }
