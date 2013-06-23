@@ -1,32 +1,10 @@
-function waitsFor(condition, message, timeout, callback) {
-  var timeWaiting = 0;
-
-  function inner() {
-    if (condition()) {
-      callback();
-      return;
-    }
-
-    if (timeWaiting >= timeout) {
-      throw new Error(message);
-    }
-
-    timeWaiting += 10;
-    setTimeout(inner, 10);
-  }
-
-  inner();
-}
-
-
 // helper functions for async testing
 (function(global) {
 
   function afterLoad(type, path, next) {
-    var done, error, data;
-
     goog.net.XhrIo.send(path, function(event) {
       var xhr = event.target;
+      var data;
       if (xhr.isSuccess()) {
         if (type === 'xml') {
           data = xhr.getResponseXml();
@@ -36,16 +14,7 @@ function waitsFor(condition, message, timeout, callback) {
           data = xhr.getResponseText();
         }
       } else {
-        error = new Error(path + ' loading failed: ' + xhr.getStatus());
-      }
-      done = true;
-    });
-
-    waitsFor(function() {
-      return done;
-    }, 'XHR timeout', 1000, function() {
-      if (error) {
-        throw error;
+        throw new Error(path + ' loading failed: ' + xhr.getStatus());
       }
       next(data);
     });
