@@ -9,6 +9,7 @@ goog.require('goog.vec.Mat4');
 goog.require('ol.Pixel');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
+goog.require('ol.TileRange');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.filter.Extent');
@@ -20,6 +21,17 @@ goog.require('ol.layer.Vector');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.VectorRenderer');
 goog.require('ol.tilegrid.TileGrid');
+
+
+/**
+ * Resolution at zoom level 21 in a web mercator default tiling scheme. This
+ * is a workaround for browser bugs that cause line segments to disappear when
+ * they get too long. TODO: Use line clipping as a better work around. See
+ * https://github.com/openlayers/ol3/issues/404.
+ *
+ * @define {number} The lowest supported resolution value.
+ */
+ol.renderer.canvas.MIN_RESOLUTION = 0.14929107086948487;
 
 
 
@@ -141,6 +153,15 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
   this.tileGrid_ = null;
 
   /**
+   * Tile range before the current animation or interaction.  This is updated
+   * whenever the view is idle.
+   *
+   * @private
+   * @type {ol.TileRange}
+   */
+  this.tileRange_ = null;
+
+  /**
    * @private
    * @type {function()}
    */
@@ -219,8 +240,7 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
 
   var layer = this.getLayer();
   var location = map.getCoordinateFromPixel(pixel);
-  var tileCoord = this.tileGrid_.getTileCoordForCoordAndResolution(
-      location, this.getMap().getView().getView2D().getResolution());
+  var tileCoord = this.tileGrid_.getTileCoordForCoordAndZ(location, 0);
   var key = tileCoord.toString();
   if (this.tileCache_.containsKey(key)) {
     var cachedTile = this.tileCache_.get(key);
@@ -301,28 +321,49 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
 
   var view2DState = frameState.view2DState,
       resolution = view2DState.resolution,
+      projection = view2DState.projection,
       extent = frameState.extent,
       layer = this.getVectorLayer(),
-      tileGrid = this.tileGrid_;
+      tileGrid = this.tileGrid_,
+      tileSize = [512, 512],
+      idle = !frameState.viewHints[ol.ViewHint.ANIMATING] &&
+          !frameState.viewHints[ol.ViewHint.INTERACTING];
 
-  if (goog.isNull(tileGrid)) {
-    // lazy tile grid creation to match the view projection
-    tileGrid = ol.tilegrid.createForProjection(
-        view2DState.projection,
-        20, // should be no harm in going big here - ideally, it would be ∞
-        [512, 512]);
-    this.tileGrid_ = tileGrid;
+  // lazy tile grid creation
+  if (idle) {
+    // avoid rendering issues for very high zoom levels
+    var gridResolution = Math.max(resolution,
+        ol.renderer.canvas.MIN_RESOLUTION /
+        ol.METERS_PER_UNIT[projection.getUnits()]);
+    if (gridResolution !== this.renderedResolution_) {
+      tileGrid = new ol.tilegrid.TileGrid({
+        origin: [0, 0],
+        projection: projection,
+        resolutions: [gridResolution],
+        tileSize: tileSize
+      });
+      this.tileCache_.clear();
+      this.tileGrid_ = tileGrid;
+    }
   }
 
+  if (goog.isNull(tileGrid)) {
+    // We should only get here when the first call to renderFrame happens during
+    // an animation. Try again in the next renderFrame call.
+    return;
+  }
+
+
   // set up transform for the layer canvas to be drawn to the map canvas
-  var z = tileGrid.getZForResolution(resolution),
-      tileResolution = tileGrid.getResolution(z),
-      tileRange = tileGrid.getTileRangeForExtentAndResolution(
-          extent, tileResolution),
-      tileRangeExtent = tileGrid.getTileRangeExtent(z, tileRange),
-      tileSize = tileGrid.getTileSize(z),
-      sketchOrigin = ol.extent.getTopLeft(tileRangeExtent),
-      transform = this.transform_;
+  var tileResolution = tileGrid.getResolution(0);
+  if (idle) {
+    this.tileRange_ = tileGrid.getTileRangeForExtentAndResolution(
+        extent, tileResolution);
+  }
+  var transform = this.transform_,
+      tileRange = this.tileRange_,
+      tileRangeExtent = tileGrid.getTileRangeExtent(0, tileRange),
+      sketchOrigin = ol.extent.getTopLeft(tileRangeExtent);
 
   goog.vec.Mat4.makeIdentity(transform);
   goog.vec.Mat4.translate(transform,
@@ -399,7 +440,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var tilesOnSketchCanvas = {};
   // TODO make gutter configurable?
   var tileGutter = 15 * tileResolution;
-  var tile, tileCoord, key, tileState, x, y;
+  var tile, tileCoord, key, x, y;
   // render features by geometry type
   var filters = this.geometryFilters_,
       numFilters = filters.length,
@@ -409,11 +450,11 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       groups, group, j, numGroups, featuresObject, tileHasFeatures;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-      tileCoord = new ol.TileCoord(z, x, y);
+      tileCoord = new ol.TileCoord(0, x, y);
       key = tileCoord.toString();
       if (this.tileCache_.containsKey(key)) {
         tilesToRender[key] = tileCoord;
-      } else if (!frameState.viewHints[ol.ViewHint.ANIMATING]) {
+      } else if (idle) {
         tileExtent = tileGrid.getTileCoordExtent(tileCoord);
         tileExtent[0] -= tileGutter;
         tileExtent[1] += tileGutter;
