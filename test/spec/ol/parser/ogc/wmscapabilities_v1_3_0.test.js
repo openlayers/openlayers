@@ -5,19 +5,20 @@ describe('ol.parser.ogc.wmscapabilities_v1_3_0', function() {
   var parser = new ol.parser.ogc.WMSCapabilities();
 
   describe('test read exception', function() {
-    it('Error reported correctly', function() {
+    it('Error reported correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_3_0/' +
           'exceptionsample.xml';
       afterLoadXml(url, function(xml) {
         var result;
         result = parser.read(xml);
         expect(!!result.error).to.be(true);
+        done();
       });
     });
   });
 
   describe('test read', function() {
-    it('Test read', function() {
+    it('Test read', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_3_0/ogcsample.xml';
       afterLoadXml(url, function(xml) {
         var obj, capability, layers = {}, rootlayer, identifiers, authorities;
@@ -131,6 +132,7 @@ describe('ol.parser.ogc.wmscapabilities_v1_3_0', function() {
         expect(obj.service.layerLimit).to.eql(16);
         expect(obj.service.maxHeight).to.eql(2048);
         expect(obj.service.maxWidth).to.eql(2048);
+        done();
       });
     });
   });
