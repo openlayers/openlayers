@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
-goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
@@ -10,6 +9,7 @@ goog.require('goog.vec.Mat4');
 goog.require('ol.Pixel');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
+goog.require('ol.TileRange');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.filter.Extent');
