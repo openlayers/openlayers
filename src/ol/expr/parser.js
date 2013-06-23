@@ -310,8 +310,7 @@ ol.expr.Parser.prototype.parseBinaryExpression_ = function(lexer) {
   var right = this.parseUnaryExpression_(lexer);
   var stack = [left, operator, right];
 
-  operator = lexer.peek();
-  precedence = this.binaryPrecedence_(operator);
+  precedence = this.binaryPrecedence_(lexer.peek());
   while (precedence > 0) {
     // TODO: cache operator precedence in stack
     while (stack.length > 2 &&
@@ -321,11 +320,9 @@ ol.expr.Parser.prototype.parseBinaryExpression_ = function(lexer) {
       left = stack.pop();
       stack.push(this.createBinaryExpression_(operator.value, left, right));
     }
-    lexer.skip();
-    operator = lexer.peek();
-    precedence = this.binaryPrecedence_(operator);
-    stack.push(operator);
+    stack.push(lexer.next());
     stack.push(this.parseUnaryExpression_(lexer));
+    precedence = this.binaryPrecedence_(lexer.peek());
   }
 
   var i = stack.length - 1;

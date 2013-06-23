@@ -225,6 +225,32 @@ describe('ol.expr.parse()', function() {
       expect(expr.evaluate({bar: 3})).to.be(1);
     });
 
+    it('parses * in call argument', function() {
+      var lib = {
+        foo: function(arg) {
+          return arg;
+        }
+      };
+      var expr = ol.expr.parse('foo(2 * bar)');
+      expect(expr).to.be.a(ol.expr.Call);
+      expect(expr.evaluate({bar: 3}, lib)).to.be(6);
+      expect(expr.evaluate({bar: 4}, lib)).to.be(8);
+    });
+
+    it('parses * in left side of comparison expression', function() {
+      var expr = ol.expr.parse('foo * 2 >bar');
+      expect(expr).to.be.a(ol.expr.Comparison);
+      expect(expr.evaluate({foo: 4, bar: 7})).to.be(true);
+      expect(expr.evaluate({foo: 4, bar: 8})).to.be(false);
+    });
+
+    it('parses * in right side of comparison expression', function() {
+      var expr = ol.expr.parse('foo > 2 * bar');
+      expect(expr).to.be.a(ol.expr.Comparison);
+      expect(expr.evaluate({foo: 4, bar: 1})).to.be(true);
+      expect(expr.evaluate({foo: 4, bar: 2})).to.be(false);
+    });
+
   });
 
   describe('11.6 - additive operators', function() {
@@ -252,6 +278,32 @@ describe('ol.expr.parse()', function() {
       var expr = ol.expr.parse(' foo- 10 ');
       expect(expr).to.be.a(ol.expr.Math);
       expect(expr.evaluate({foo: 15})).to.be(5);
+    });
+
+    it('parses + in call argument', function() {
+      var lib = {
+        foo: function(arg) {
+          return arg;
+        }
+      };
+      var expr = ol.expr.parse('foo(2 + bar)');
+      expect(expr).to.be.a(ol.expr.Call);
+      expect(expr.evaluate({bar: 3}, lib)).to.be(5);
+      expect(expr.evaluate({bar: 4}, lib)).to.be(6);
+    });
+
+    it('parses + in left side of comparison expression', function() {
+      var expr = ol.expr.parse('foo+2>bar');
+      expect(expr).to.be.a(ol.expr.Comparison);
+      expect(expr.evaluate({foo: 4, bar: 5})).to.be(true);
+      expect(expr.evaluate({foo: 4, bar: 6})).to.be(false);
+    });
+
+    it('parses + in right side of comparison expression', function() {
+      var expr = ol.expr.parse('foo >2 +bar');
+      expect(expr).to.be.a(ol.expr.Comparison);
+      expect(expr.evaluate({foo: 4, bar: 1})).to.be(true);
+      expect(expr.evaluate({foo: 4, bar: 2})).to.be(false);
     });
 
   });
