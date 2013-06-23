@@ -321,6 +321,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
 
   var view2DState = frameState.view2DState,
       resolution = view2DState.resolution,
+      projection = view2DState.projection,
       extent = frameState.extent,
       layer = this.getVectorLayer(),
       tileGrid = this.tileGrid_,
@@ -332,11 +333,12 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   if (idle) {
     // avoid rendering issues for very high zoom levels
     var gridResolution = Math.max(resolution,
-        ol.renderer.canvas.MIN_RESOLUTION);
+        ol.renderer.canvas.MIN_RESOLUTION /
+        ol.METERS_PER_UNIT[projection.getUnits()]);
     if (gridResolution !== this.renderedResolution_) {
       tileGrid = new ol.tilegrid.TileGrid({
         origin: [0, 0],
-        projection: view2DState.projection,
+        projection: projection,
         resolutions: [gridResolution],
         tileSize: tileSize
       });
