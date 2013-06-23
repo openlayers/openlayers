@@ -24,6 +24,11 @@ goog.require('ol.tilegrid.TileGrid');
 
 
 /**
+ * Resolution at zoom level 21 in a web mercator default tiling scheme. This
+ * is a workaround for browser bugs that cause line segments to disappear when
+ * they get too long. TODO: Use line clipping as a better work around. See
+ * https://github.com/openlayers/ol3/issues/404.
+ *
  * @define {number} The lowest supported resolution value.
  */
 ol.renderer.canvas.MIN_RESOLUTION = 0.14929107086948487;
