@@ -139,8 +139,9 @@ ol.Projection.prototype.getUnits = function() {
 
 
 /**
- * Get the amount of meters per unit of this projection.
- * @return {number} Meters.
+ * Get the amount of meters per unit of this projection.  If the projection is
+ * not configured with a units identifier, the return is `undefined`.
+ * @return {number|undefined} Meters.
  */
 ol.Projection.prototype.getMetersPerUnit = function() {
   return ol.METERS_PER_UNIT[this.units_];
