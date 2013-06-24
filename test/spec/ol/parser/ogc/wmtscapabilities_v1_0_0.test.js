@@ -6,23 +6,16 @@ describe('ol.parser.ogc.wmtscapabilities_v1_0_0', function() {
 
   describe('test ows', function() {
     it('Test ows', function(done) {
-      var obj, serviceIdentification, serviceProvider, operationsMetadata,
-          contactInfo;
-
       var url = 'spec/ol/parser/ogc/xml/wmtscapabilities_v1_0_0/' +
           'ogcsample.xml';
       goog.net.XhrIo.send(url, function(e) {
         var xhr = e.target;
-        obj = parser.read(xhr.getResponseXml());
-        serviceIdentification = obj.serviceIdentification;
-        serviceProvider = obj.serviceProvider;
-        operationsMetadata = obj.operationsMetadata;
-        contactInfo = serviceProvider.serviceContact.contactInfo;
-      });
+        var obj = parser.read(xhr.getResponseXml());
+        var serviceIdentification = obj.serviceIdentification;
+        var serviceProvider = obj.serviceProvider;
+        var operationsMetadata = obj.operationsMetadata;
+        var contactInfo = serviceProvider.serviceContact.contactInfo;
 
-      waitsFor(function() {
-        return (obj !== undefined);
-      }, 'XHR timeout', 1000, function() {
         expect(serviceIdentification.title).to.eql('Web Map Tile Service');
         expect(serviceIdentification.serviceTypeVersion).to.eql('1.0.0');
         expect(serviceIdentification.serviceType.value).to.eql('OGC WMTS');
@@ -62,22 +55,16 @@ describe('ol.parser.ogc.wmtscapabilities_v1_0_0', function() {
   });
   describe('test layers', function() {
     it('Test layers', function(done) {
-      var obj, contents, layer, wgs84Bbox, dimensions;
-
       var url = 'spec/ol/parser/ogc/xml/wmtscapabilities_v1_0_0/' +
           'ogcsample.xml';
       goog.net.XhrIo.send(url, function(e) {
         var xhr = e.target;
-        obj = parser.read(xhr.getResponseXml());
-        contents = obj.contents;
-        layer = contents.layers[0];
-        wgs84Bbox = layer.bounds;
-        dimensions = layer.dimensions;
-      });
+        var obj = parser.read(xhr.getResponseXml());
+        var contents = obj.contents;
+        var layer = contents.layers[0];
+        var wgs84Bbox = layer.bounds;
+        var dimensions = layer.dimensions;
 
-      waitsFor(function() {
-        return (obj !== undefined);
-      }, 'XHR timeout', 1000, function() {
         expect(contents.layers.length).to.eql(1);
         expect(layer['abstract']).to.eql('Coastline/shorelines (BA010)');
         expect(layer.identifier).to.eql('coastlines');
@@ -136,22 +123,17 @@ describe('ol.parser.ogc.wmtscapabilities_v1_0_0', function() {
       });
     });
   });
+
   describe('test tileMatrixSets', function() {
     it('Test tileMatrixSets', function(done) {
-      var obj, tileMatrixSets, bigWorld;
-
       var url = 'spec/ol/parser/ogc/xml/wmtscapabilities_v1_0_0/' +
           'ogcsample.xml';
       goog.net.XhrIo.send(url, function(e) {
         var xhr = e.target;
-        obj = parser.read(xhr.getResponseXml());
-        tileMatrixSets = obj.contents.tileMatrixSets;
-        bigWorld = tileMatrixSets['BigWorld'];
-      });
+        var obj = parser.read(xhr.getResponseXml());
+        var tileMatrixSets = obj.contents.tileMatrixSets;
+        var bigWorld = tileMatrixSets['BigWorld'];
 
-      waitsFor(function() {
-        return (obj !== undefined);
-      }, 'XHR timeout', 1000, function() {
         expect(bigWorld).to.not.be(undefined);
         expect(bigWorld.identifier).to.eql('BigWorld');
         expect(bigWorld.matrixIds.length).to.eql(2);
