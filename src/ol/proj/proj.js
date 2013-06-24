@@ -143,15 +143,7 @@ ol.Projection.prototype.getUnits = function() {
  * @return {number} Meters.
  */
 ol.Projection.prototype.getMetersPerUnit = function() {
-  var metersPerUnit;
-  if (!goog.isNull(this.units_)) {
-    metersPerUnit = ol.METERS_PER_UNIT[this.units_];
-  } else {
-    if (this instanceof ol.Proj4jsProjection_) {
-      metersPerUnit = this.getProj4jsProj().to_meter;
-    }
-  }
-  return metersPerUnit;
+  return ol.METERS_PER_UNIT[this.units_];
 };
 
 
@@ -229,6 +221,20 @@ ol.Proj4jsProjection_ = function(proj4jsProj, options) {
 
 };
 goog.inherits(ol.Proj4jsProjection_, ol.Projection);
+
+
+/**
+ * @inheritDoc
+ */
+ol.Proj4jsProjection_.prototype.getMetersPerUnit = function() {
+  var metersPerUnit;
+  if (!goog.isNull(this.units_)) {
+    metersPerUnit = ol.METERS_PER_UNIT[this.units_];
+  } else {
+    metersPerUnit = this.getProj4jsProj().to_meter;
+  }
+  return metersPerUnit;
+};
 
 
 /**
