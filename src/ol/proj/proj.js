@@ -143,7 +143,15 @@ ol.Projection.prototype.getUnits = function() {
  * @return {number} Meters.
  */
 ol.Projection.prototype.getMetersPerUnit = function() {
-  return ol.METERS_PER_UNIT[this.units_];
+  var metersPerUnit;
+  if (!goog.isNull(this.units_)) {
+    metersPerUnit = ol.METERS_PER_UNIT[this.units_];
+  } else {
+    if (this instanceof ol.Proj4jsProjection_) {
+      metersPerUnit = this.getProj4jsProj().to_meter;
+    }
+  }
+  return metersPerUnit;
 };
 
 
