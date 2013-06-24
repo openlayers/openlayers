@@ -332,9 +332,12 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   // lazy tile grid creation
   if (idle) {
     // avoid rendering issues for very high zoom levels
-    var gridResolution = Math.max(resolution,
-        ol.renderer.canvas.MIN_RESOLUTION /
-        ol.METERS_PER_UNIT[projection.getUnits()]);
+    var minResolution = ol.renderer.canvas.MIN_RESOLUTION;
+    var metersPerUnit = projection.getMetersPerUnit();
+    if (metersPerUnit) {
+      minResolution = minResolution / metersPerUnit;
+    }
+    var gridResolution = Math.max(resolution, minResolution);
     if (gridResolution !== this.renderedResolution_) {
       tileGrid = new ol.tilegrid.TileGrid({
         origin: [0, 0],
