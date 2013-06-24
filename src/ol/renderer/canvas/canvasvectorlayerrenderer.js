@@ -159,7 +159,7 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    * @private
    * @type {ol.TileRange}
    */
-  this.tileRange_ = null;
+  this.tileRange_ = new ol.TileRange(NaN, NaN, NaN, NaN);
 
   /**
    * @private
@@ -360,8 +360,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   // set up transform for the layer canvas to be drawn to the map canvas
   var tileResolution = tileGrid.getResolution(0);
   if (idle) {
-    this.tileRange_ = tileGrid.getTileRangeForExtentAndResolution(
-        extent, tileResolution);
+    tileGrid.getTileRangeForExtentAndResolution(
+        extent, tileResolution, this.tileRange_);
   }
   var transform = this.transform_,
       tileRange = this.tileRange_,
