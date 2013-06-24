@@ -10,6 +10,12 @@ goog.require('ol.geom.VertexArray');
 
 
 /**
+ * Create a polygon from an array of vertex arrays.  Coordinates for the
+ * exterior ring will be forced to clockwise order.  Coordinates for any
+ * interior rings will be forced to counter-clockwise order.  In cases where
+ * the opposite winding order occurs in the passed vertex arrays, they will
+ * be modified in place.
+ *
  * @constructor
  * @extends {ol.geom.Geometry}
  * @param {Array.<ol.geom.VertexArray>} coordinates Array of rings.  First
@@ -40,8 +46,21 @@ ol.geom.Polygon = function(coordinates, opt_shared) {
    * @type {Array.<ol.geom.LinearRing>}
    */
   this.rings = new Array(numRings);
+  var ringCoords;
   for (var i = 0; i < numRings; ++i) {
-    this.rings[i] = new ol.geom.LinearRing(coordinates[i], vertices);
+    ringCoords = coordinates[i];
+    if (i === 0) {
+      // force exterior ring to be clockwise
+      if (!ol.geom.LinearRing.isClockwise(ringCoords)) {
+        ringCoords.reverse();
+      }
+    } else {
+      // force interior rings to be counter-clockwise
+      if (ol.geom.LinearRing.isClockwise(ringCoords)) {
+        ringCoords.reverse();
+      }
+    }
+    this.rings[i] = new ol.geom.LinearRing(ringCoords, vertices);
   }
 
   /**

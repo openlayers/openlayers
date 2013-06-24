@@ -44,6 +44,28 @@ describe('ol.geom.Polygon', function() {
       expect(poly.rings[2]).to.be.a(ol.geom.LinearRing);
     });
 
+    var isClockwise = ol.geom.LinearRing.isClockwise;
+
+    it('forces exterior ring to be clockwise', function() {
+      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
+      expect(isClockwise(outer)).to.be(false);
+
+      var poly = new ol.geom.Polygon([outer]);
+      var ring = poly.rings[0];
+      expect(isClockwise(ring.getCoordinates())).to.be(true);
+    });
+
+    it('forces interior ring to be counter-clockwise', function() {
+      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
+      var inner = [[2, 2], [2, 8], [8, 8], [8, 2], [2, 2]];
+      expect(isClockwise(inner)).to.be(true);
+
+      var poly = new ol.geom.Polygon([outer, inner]);
+      var ring = poly.rings[1];
+      expect(isClockwise(ring.getCoordinates())).to.be(false);
+    });
+
+
   });
 
   describe('#dimension', function() {
