@@ -77,6 +77,12 @@ Proj4js.Proj.prototype.srsCode;
 
 
 /**
+ * @type {number}
+ */
+Proj4js.Proj.prototype.to_meter;
+
+
+/**
  * @nosideeffects
  * @param {Proj4js.Proj} source
  * @param {Proj4js.Proj} dest
