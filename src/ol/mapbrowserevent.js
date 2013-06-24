@@ -373,7 +373,9 @@ ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
     } else {
       this.timestamp_ = 0;
     }
-    this.click_(this.down_);
+    if (!goog.isNull(this.down_)) {
+      this.click_(this.down_);
+    }
   }
   this.down_ = null;
 };
