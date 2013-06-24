@@ -228,11 +228,9 @@ goog.inherits(ol.Proj4jsProjection_, ol.Projection);
  * @inheritDoc
  */
 ol.Proj4jsProjection_.prototype.getMetersPerUnit = function() {
-  var metersPerUnit;
-  if (!goog.isNull(this.units_)) {
+  var metersPerUnit = this.proj4jsProj_.to_meter;
+  if (!goog.isDef(metersPerUnit)) {
     metersPerUnit = ol.METERS_PER_UNIT[this.units_];
-  } else {
-    metersPerUnit = this.getProj4jsProj().to_meter;
   }
   return metersPerUnit;
 };
