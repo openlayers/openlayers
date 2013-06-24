@@ -5,43 +5,46 @@ describe('ol.parser.kml', function() {
   var parser = new ol.parser.KML();
 
   describe('Test KML parser', function() {
-    it('Polygon read / written correctly', function() {
+    it('Polygon read / written correctly', function(done) {
       var url = 'spec/ol/parser/kml/polygon.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var output = parser.write(obj);
-        expect(xml).to.xmleql(goog.dom.xml.loadXml(output));
+        expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         expect(obj.features.length).to.eql(1);
         var geom = obj.features[0].getGeometry();
         expect(obj.features[0].getFeatureId()).to.eql('KML.Polygon');
         expect(geom instanceof ol.geom.Polygon).to.be.ok();
         expect(geom.dimension).to.eql(3);
+        done();
       });
     });
-    it('Linestring read / written correctly', function() {
+    it('Linestring read / written correctly', function(done) {
       var url = 'spec/ol/parser/kml/linestring.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var output = parser.write(obj);
-        expect(xml).to.xmleql(goog.dom.xml.loadXml(output));
+        expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         expect(obj.features.length).to.eql(2);
         var geom = obj.features[0].getGeometry();
         expect(geom instanceof ol.geom.LineString).to.be.ok();
         expect(geom.dimension).to.eql(3);
         geom = obj.features[1].getGeometry();
         expect(geom instanceof ol.geom.LineString).to.be.ok();
+        done();
       });
     });
-    it('Point read / written correctly', function() {
+    it('Point read / written correctly', function(done) {
       var url = 'spec/ol/parser/kml/point.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var output = parser.write(obj);
-        expect(xml).to.xmleql(goog.dom.xml.loadXml(output));
+        expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         expect(obj.features.length).to.eql(1);
         var geom = obj.features[0].getGeometry();
         expect(geom instanceof ol.geom.Point).to.be.ok();
         expect(geom.dimension).to.eql(3);
+        done();
       });
     });
     it('NetworkLink read correctly', function(done) {
@@ -78,7 +81,7 @@ describe('ol.parser.kml', function() {
         });
       });
     });
-    it('Extended data read correctly', function() {
+    it('Extended data read correctly', function(done) {
       var url = 'spec/ol/parser/kml/extended_data.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -88,9 +91,10 @@ describe('ol.parser.kml', function() {
         expect(obj.features[0].get('description')).to.eql(description);
         expect(obj.features[0].get('foo')).to.eql('bar');
         expect(obj.features[0].getFeatureId()).to.eql('foobarbaz');
+        done();
       });
     });
-    it('Extended data read correctly [2]', function() {
+    it('Extended data read correctly [2]', function(done) {
       var url = 'spec/ol/parser/kml/extended_data2.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -98,19 +102,21 @@ describe('ol.parser.kml', function() {
         expect(feature.get('TrailHeadName')).to.eql('Pi in the sky');
         expect(feature.get('TrailLength')).to.eql('3.14159');
         expect(feature.get('ElevationGain')).to.eql('10');
+        done();
       });
     });
-    it('Multi geometry read / written correctly', function() {
+    it('Multi geometry read / written correctly', function(done) {
       var url = 'spec/ol/parser/kml/multigeometry.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var geom = obj.features[0].getGeometry();
         var output = parser.write(obj);
-        expect(xml).to.xmleql(goog.dom.xml.loadXml(output));
+        expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         expect(geom instanceof ol.geom.MultiLineString).to.be.ok();
+        done();
       });
     });
-    it('Discrete multi geometry read correctly', function() {
+    it('Discrete multi geometry read correctly', function(done) {
       var url = 'spec/ol/parser/kml/multigeometry_discrete.kml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -119,9 +125,10 @@ describe('ol.parser.kml', function() {
         expect(geom.components.length).to.eql(2);
         expect(geom.components[0] instanceof ol.geom.LineString).to.be.ok();
         expect(geom.components[1] instanceof ol.geom.Point).to.be.ok();
+        done();
       });
     });
-    it('Test extract tracks', function() {
+    it('Test extract tracks', function(done) {
       var url = 'spec/ol/parser/kml/macnoise.kml';
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.KML({extractStyles: true,
@@ -145,6 +152,7 @@ describe('ol.parser.kml', function() {
         expect(geom.get(0)).to.eql(-93.0753620391713);
         expect(geom.get(1)).to.eql(44.9879724110872);
         expect(geom.get(2)).to.eql(1006);
+        done();
       });
     });
     it('Test CDATA attributes', function() {
@@ -214,18 +222,19 @@ describe('ol.parser.kml', function() {
       expect(symbolizer1.fillColor).to.eql('#ff0000');
       expect(symbolizer2.opacity).to.eql(0);
     });
-    it('Test iconStyle (read / write)', function() {
+    it('Test iconStyle (read / write)', function(done) {
       var url = 'spec/ol/parser/kml/iconstyle.kml';
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.KML({extractStyles: true});
         var obj = p.read(xml);
         var output = p.write(obj);
-        expect(xml).to.xmleql(goog.dom.xml.loadXml(output));
+        expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         var symbolizer = obj.features[0].getSymbolizerLiterals()[0];
         var url = 'http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
         expect(symbolizer.url).to.eql(url);
         expect(symbolizer.width).to.eql(32);
         expect(symbolizer.height).to.eql(32);
+        done();
       });
     });
   });

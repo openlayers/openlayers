@@ -5,14 +5,15 @@ describe('ol.parser.gml_v3', function() {
   var parser = new ol.parser.ogc.GML_v3();
 
   describe('Test GML v3 parser', function() {
-    it('Envelope read correctly', function() {
+    it('Envelope read correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/envelope.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         expect(obj.bounds).to.eql([1, 3, 2, 4]);
+        done();
       });
     });
-    it('LinearRing read / written correctly', function() {
+    it('LinearRing read / written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/linearring.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -25,9 +26,10 @@ describe('ol.parser.gml_v3', function() {
         expect(obj.geometry.type).to.eql('linearring');
         expect(obj.geometry.coordinates).to.eql([[1, 2], [3, 4], [5, 6],
               [1, 2]]);
+        done();
       });
     });
-    it('Linestring read / written correctly', function() {
+    it('Linestring read / written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/linestring.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -39,18 +41,20 @@ describe('ol.parser.gml_v3', function() {
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
         expect(obj.geometry.type).to.eql('linestring');
         expect(obj.geometry.coordinates).to.eql([[1, 2], [3, 4]]);
+        done();
       });
     });
-    it('Linestring 3D read correctly', function() {
+    it('Linestring 3D read correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/linestring3d.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         // no write test since simple features only does 2D
         expect(obj.geometry.type).to.eql('linestring');
         expect(obj.geometry.coordinates).to.eql([[1, 2, 3], [4, 5, 6]]);
+        done();
       });
     });
-    it('Curve read / written correctly', function() {
+    it('Curve read / written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/curve.xml';
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.ogc.GML_v3({curve: true, srsName: 'foo'});
@@ -61,9 +65,10 @@ describe('ol.parser.gml_v3', function() {
         expect(goog.dom.xml.loadXml(p.serialize(node))).to.xmleql(xml);
         expect(obj.geometry.type).to.eql('linestring');
         expect(obj.geometry.coordinates).to.eql([[1, 2], [3, 4]]);
+        done();
       });
     });
-    it('MultiLineString plural read correctly', function() {
+    it('MultiLineString plural read correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multilinestring-plural.xml';
       afterLoadXml(url, function(xml) {
         // no write test for plural, we only write singular
@@ -71,9 +76,10 @@ describe('ol.parser.gml_v3', function() {
         expect(obj.geometry.type).to.eql('multilinestring');
         expect(obj.geometry.parts.length).to.eql(2);
         expect(obj.geometry.parts[0].type).to.eql('linestring');
+        done();
       });
     });
-    it('MultiLineString singular read / written correctly', function() {
+    it('MultiLineString singular read / written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multilinestring-singular.xml';
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.ogc.GML_v3({multiCurve: false, srsName: 'foo'});
@@ -85,9 +91,10 @@ describe('ol.parser.gml_v3', function() {
         expect(obj.geometry.type).to.eql('multilinestring');
         expect(obj.geometry.parts.length).to.eql(2);
         expect(obj.geometry.parts[0].type).to.eql('linestring');
+        done();
       });
     });
-    it('MultiCurve singular read / written correctly', function() {
+    it('MultiCurve singular read / written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multicurve-singular.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -101,9 +108,10 @@ describe('ol.parser.gml_v3', function() {
         expect(obj.geometry.parts.length).to.eql(2);
         expect(obj.geometry.parts[0].type).to.eql('linestring');
         expect(obj.geometry.parts[0].coordinates).to.eql([[1, 2], [2, 3]]);
+        done();
       });
     });
-    it('MultiCurve curve read / written correctly', function() {
+    it('MultiCurve curve read / written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multicurve-curve.xml';
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.ogc.GML_v3({curve: true, srsName: 'foo'});
@@ -116,9 +124,10 @@ describe('ol.parser.gml_v3', function() {
         expect(obj.geometry.parts.length).to.eql(2);
         expect(obj.geometry.parts[0].type).to.eql('linestring');
         expect(obj.geometry.parts[0].coordinates).to.eql([[1, 2], [2, 3]]);
+        done();
       });
     });
-    it('MultiPoint plural read correctly', function() {
+    it('MultiPoint plural read correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multipoint-plural.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -126,9 +135,10 @@ describe('ol.parser.gml_v3', function() {
         expect(obj.geometry.parts.length).to.eql(3);
         expect(obj.geometry.parts[0].type).to.eql('point');
         expect(obj.geometry.parts[0].coordinates).to.eql([1, 2]);
+        done();
       });
     });
-    it('MultiPoint singular read / written correctly', function() {
+    it('MultiPoint singular read / written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multipoint-singular.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -142,18 +152,20 @@ describe('ol.parser.gml_v3', function() {
         expect(obj.geometry.parts.length).to.eql(3);
         expect(obj.geometry.parts[0].type).to.eql('point');
         expect(obj.geometry.parts[0].coordinates).to.eql([1, 2]);
+        done();
       });
     });
-    it('MultiPolygon plural read correctly', function() {
+    it('MultiPolygon plural read correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multipolygon-plural.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         expect(obj.geometry.type).to.eql('multipolygon');
         expect(obj.geometry.parts.length).to.eql(2);
         expect(obj.geometry.parts[0].type).to.eql('polygon');
+        done();
       });
     });
-    it('MultiPolygon singular read / written correctly', function() {
+    it('MultiPolygon singular read / written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multipolygon-singular.xml';
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.ogc.GML_v3({multiSurface: false, srsName: 'foo'});
@@ -165,18 +177,20 @@ describe('ol.parser.gml_v3', function() {
         expect(obj.geometry.type).to.eql('multipolygon');
         expect(obj.geometry.parts.length).to.eql(2);
         expect(obj.geometry.parts[0].type).to.eql('polygon');
+        done();
       });
     });
-    it('MultiSurface plural read correctly', function() {
+    it('MultiSurface plural read correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multisurface-plural.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         expect(obj.geometry.type).to.eql('multipolygon');
         expect(obj.geometry.parts.length).to.eql(2);
         expect(obj.geometry.parts[0].type).to.eql('polygon');
+        done();
       });
     });
-    it('MultiSurface singular read / written correctly', function() {
+    it('MultiSurface singular read / written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multisurface-singular.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -189,9 +203,10 @@ describe('ol.parser.gml_v3', function() {
         expect(obj.geometry.type).to.eql('multipolygon');
         expect(obj.geometry.parts.length).to.eql(2);
         expect(obj.geometry.parts[0].type).to.eql('polygon');
+        done();
       });
     });
-    it('MultiSurface surface read / written correctly', function() {
+    it('MultiSurface surface read / written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multisurface-surface.xml';
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.ogc.GML_v3({surface: true, srsName: 'foo'});
@@ -203,9 +218,10 @@ describe('ol.parser.gml_v3', function() {
         expect(obj.geometry.type).to.eql('multipolygon');
         expect(obj.geometry.parts.length).to.eql(2);
         expect(obj.geometry.parts[0].type).to.eql('polygon');
+        done();
       });
     });
-    it('Point read / written correctly', function() {
+    it('Point read / written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/point.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -217,9 +233,10 @@ describe('ol.parser.gml_v3', function() {
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
         expect(obj.geometry.type).to.eql('point');
         expect(obj.geometry.coordinates).to.eql([1, 2]);
+        done();
       });
     });
-    it('Polygon read / written correctly', function() {
+    it('Polygon read / written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/polygon.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -238,9 +255,10 @@ describe('ol.parser.gml_v3', function() {
               [6, 7], [2, 3]]);
         expect(obj.geometry.coordinates[2]).to.eql([[3, 4], [5, 6],
               [7, 8], [3, 4]]);
+        done();
       });
     });
-    it('Surface read / written correctly', function() {
+    it('Surface read / written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/surface.xml';
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.ogc.GML_v3({surface: true, srsName: 'foo'});
@@ -258,9 +276,10 @@ describe('ol.parser.gml_v3', function() {
               [6, 7], [2, 3]]);
         expect(obj.geometry.coordinates[2]).to.eql([[3, 4], [5, 6],
               [7, 8], [3, 4]]);
+        done();
       });
     });
-    it('FeatureCollection from GML read / written correctly', function() {
+    it('FeatureCollection from GML read / written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/topp-states-gml.xml';
       afterLoadXml(url, function(xml) {
         var srsName = 'urn:x-ogc:def:crs:EPSG:4326';
@@ -286,9 +305,10 @@ describe('ol.parser.gml_v3', function() {
         expect(attributes['SUB_REGION']).to.eql('E N Cen');
         expect(attributes['STATE_ABBR']).to.eql('IL');
         expect(attributes['LAND_KM']).to.eql('143986.61');
+        done();
       });
     });
-    it('FeatureCollection from WFS read correctly', function() {
+    it('FeatureCollection from WFS read correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/topp-states-wfs.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -303,9 +323,10 @@ describe('ol.parser.gml_v3', function() {
         expect(attributes['SUB_REGION']).to.eql('E N Cen');
         expect(attributes['STATE_ABBR']).to.eql('IL');
         expect(attributes['LAND_KM']).to.eql('143986.61');
+        done();
       });
     });
-    it('Read autoConfig', function() {
+    it('Read autoConfig', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/topp-states-wfs.xml';
       afterLoadXml(url, function(xml) {
         parser.read(xml);
@@ -316,9 +337,10 @@ describe('ol.parser.gml_v3', function() {
         parser.read(xml);
         expect(parser.autoConfig === false).to.be.ok();
         parser.autoConfig = true;
+        done();
       });
     });
-    it('Empty attribute', function() {
+    it('Empty attribute', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/empty-attribute.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -327,15 +349,17 @@ describe('ol.parser.gml_v3', function() {
         expect(attr['name']).to.eql('Aflu');
         expect(attr['foo']).to.eql(undefined);
         expect(attr['empty']).to.eql('');
+        done();
       });
     });
-    it('Repeated name', function() {
+    it('Repeated name', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/repeated-name.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         expect(obj.features.length).to.eql(1);
         var atts = obj.features[0].getAttributes();
         expect(atts['zoning']).to.eql('I-L');
+        done();
       });
     });
   });
