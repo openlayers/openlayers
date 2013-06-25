@@ -5,8 +5,6 @@ goog.provide('ol.interaction.TouchZoom');
 goog.require('goog.asserts');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
-goog.require('ol.View');
-goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Touch');
 
@@ -104,7 +102,6 @@ ol.interaction.TouchZoom.prototype.handleTouchEnd =
     var direction = this.lastScaleDelta_ - 1;
     ol.interaction.Interaction.zoom(map, view, view.getResolution(),
         this.anchor_, ol.interaction.TOUCHZOOM_ANIMATION_DURATION, direction);
-    view.setHint(ol.ViewHint.INTERACTING, -1);
     return false;
   } else {
     return true;
@@ -119,12 +116,10 @@ ol.interaction.TouchZoom.prototype.handleTouchStart =
     function(mapBrowserEvent) {
   if (this.targetTouches.length >= 2) {
     var map = mapBrowserEvent.map;
-    var view = map.getView();
     this.anchor_ = null;
     this.lastDistance_ = undefined;
     this.lastScaleDelta_ = 1;
     map.requestRenderFrame();
-    view.setHint(ol.ViewHint.INTERACTING, 1);
     return true;
   } else {
     return false;

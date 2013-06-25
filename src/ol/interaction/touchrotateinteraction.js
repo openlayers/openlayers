@@ -5,8 +5,6 @@ goog.provide('ol.interaction.TouchRotate');
 goog.require('goog.asserts');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
-goog.require('ol.View');
-goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Touch');
 
@@ -124,7 +122,6 @@ ol.interaction.TouchRotate.prototype.handleTouchEnd =
           map, view, view.getRotation(), this.anchor_,
           ol.interaction.TOUCHROTATE_ANIMATION_DURATION);
     }
-    view.setHint(ol.ViewHint.INTERACTING, -1);
     return false;
   } else {
     return true;
@@ -139,13 +136,11 @@ ol.interaction.TouchRotate.prototype.handleTouchStart =
     function(mapBrowserEvent) {
   if (this.targetTouches.length >= 2) {
     var map = mapBrowserEvent.map;
-    var view = map.getView();
     this.anchor_ = null;
     this.lastAngle_ = undefined;
     this.rotating_ = false;
     this.rotationDelta_ = 0.0;
     map.requestRenderFrame();
-    view.setHint(ol.ViewHint.INTERACTING, 1);
     return true;
   } else {
     return false;
