@@ -61,10 +61,12 @@ ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
   // FIXME works for View2D only
   var view = map.getView();
   goog.asserts.assertInstanceof(view, ol.View2D);
-  var resolution = view.getResolution();
-  var rotation = view.getRotation();
-  var newCenter = [-resolution * this.deltaX, resolution * this.deltaY];
-  ol.coordinate.rotate(newCenter, rotation);
+  var view2DState = view.getView2DState();
+  var newCenter = [
+    -view2DState.resolution * this.deltaX,
+    view2DState.resolution * this.deltaY
+  ];
+  ol.coordinate.rotate(newCenter, view2DState.rotation);
   ol.coordinate.add(newCenter, this.startCenter);
   map.requestRenderFrame();
   view.setCenter(newCenter);
