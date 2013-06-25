@@ -305,12 +305,12 @@ ol.View2D.prototype.getView2D = function() {
 ol.View2D.prototype.getView2DState = function() {
   goog.asserts.assert(this.isDef());
   var center = /** @type {ol.Coordinate} */ (this.getCenter());
-  var projection = /** @type {ol.Projection} */ (this.getProjection());
+  var projection = this.getProjection();
   var resolution = /** @type {number} */ (this.getResolution());
   var rotation = this.getRotation();
   return {
     center: center.slice(),
-    projection: projection,
+    projection: goog.isDef(projection) ? projection : null,
     resolution: resolution,
     rotation: goog.isDef(rotation) ? rotation : 0
   };
