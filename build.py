@@ -346,19 +346,32 @@ def serve_precommit(t):
           'buildcfg/ol-all.json', 'buildcfg/test.json')
 
 
-virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp',
-        'build/check-whitespace-timestamp')
+virtual('lint', 'build/lint-timestamp', 'build/lint-generated-timestamp',
+        'build/check-requires-timestamp', 'build/check-whitespace-timestamp')
 
 
-@target('build/lint-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC,
-        SPEC, precious=True)
+@target('build/lint-timestamp', SRC, EXAMPLES_SRC, SPEC, precious=True)
 def build_lint_src_timestamp(t):
+    t.run('%(GJSLINT)s',
+          '--jslint_error=all',
+          '--strict',
+          t.newer(t.dependencies))
+    t.touch()
+
+
+@target('build/lint-generated-timestamp', INTERNAL_SRC, EXTERNAL_SRC,
+        precious=True)
+def build_lint_generated_timestamp(t):
     limited_doc_files = [
         path
         for path in ifind('externs', 'build/src/external/externs')
         if path.endswith('.js')]
     t.run('%(GJSLINT)s',
           '--jslint_error=all',
+          # ignore error for max line length (for these auto-generated sources)
+          '--disable=110',
+          # for a complete list of error codes to allow, see
+          # http://closure-linter.googlecode.com/svn/trunk/closure_linter/errors.py
           '--limited_doc_files=%s' % (','.join(limited_doc_files),),
           '--strict',
           t.newer(t.dependencies))
