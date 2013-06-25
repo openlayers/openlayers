@@ -6,6 +6,7 @@ goog.require('goog.functions');
 goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
+goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
 
 
@@ -113,6 +114,7 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
       this.deltaX = browserEvent.clientX - this.startX;
       this.deltaY = browserEvent.clientY - this.startY;
       this.handleDragEnd(mapBrowserEvent);
+      view.setHint(ol.ViewHint.INTERACTING, -1);
       this.dragging_ = false;
     }
   } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAGSTART) {
@@ -126,6 +128,7 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
         (mapBrowserEvent.getCoordinate());
     var handled = this.handleDragStart(mapBrowserEvent);
     if (handled) {
+      view.setHint(ol.ViewHint.INTERACTING, 1);
       this.dragging_ = true;
       mapBrowserEvent.preventDefault();
       mapBrowserEvent.stopOtherInteractions();

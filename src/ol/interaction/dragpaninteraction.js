@@ -6,7 +6,6 @@ goog.require('goog.asserts');
 goog.require('ol.Kinetic');
 goog.require('ol.PreRenderFunction');
 goog.require('ol.View2D');
-goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
@@ -82,7 +81,6 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  var interacting = view.setHint(ol.ViewHint.INTERACTING, -1);
 
   if (this.kinetic_ && this.kinetic_.end()) {
     var distance = this.kinetic_.getDistance();
@@ -97,9 +95,8 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
       centerpx[1] - distance * Math.sin(angle)
     ]);
     view.setCenter(dest);
-  } else if (interacting === 0) {
-    map.requestRenderFrame();
   }
+  map.requestRenderFrame();
 };
 
 
@@ -115,7 +112,6 @@ ol.interaction.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
     }
     var map = mapBrowserEvent.map;
     map.requestRenderFrame();
-    map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     return true;
   } else {
     return false;
