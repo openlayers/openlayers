@@ -64,9 +64,8 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       // FIXME works for View2D only
       var view = map.getView();
       goog.asserts.assertInstanceof(view, ol.View2D);
-      var resolution = view.getResolution();
-      var rotation = view.getRotation();
-      var mapUnitsDelta = resolution * this.delta_;
+      var view2DState = view.getView2DState();
+      var mapUnitsDelta = view2DState.resolution * this.delta_;
       var deltaX = 0, deltaY = 0;
       if (keyCode == goog.events.KeyCodes.DOWN) {
         deltaY = -mapUnitsDelta;
@@ -78,7 +77,7 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
         deltaY = mapUnitsDelta;
       }
       var delta = [deltaX, deltaY];
-      ol.coordinate.rotate(delta, rotation);
+      ol.coordinate.rotate(delta, view2DState.rotation);
       ol.interaction.Interaction.pan(
           map, view, delta, ol.interaction.KEYBOARD_PAN_DURATION);
       mapBrowserEvent.preventDefault();
