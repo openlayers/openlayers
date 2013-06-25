@@ -89,7 +89,8 @@ ol.View2D = function(opt_options) {
     values[ol.View2DProperty.RESOLUTION] = resolutionConstraint(
         this.maxResolution_, options.zoom);
   }
-  values[ol.View2DProperty.ROTATION] = options.rotation;
+  values[ol.View2DProperty.ROTATION] =
+      goog.isDef(options.rotation) ? options.rotation : 0;
   this.setValues(values);
 };
 goog.inherits(ol.View2D, ol.View);
@@ -254,12 +255,10 @@ ol.View2D.prototype.getResolutionForValueFunction = function(opt_power) {
 
 
 /**
- * Get the current rotation of this view.
- * @return {number} Map rotation.
+ * @inheritDoc
  */
 ol.View2D.prototype.getRotation = function() {
-  return /** @type {number|undefined} */ (
-      this.get(ol.View2DProperty.ROTATION)) || 0;
+  return /** @type {number|undefined} */ (this.get(ol.View2DProperty.ROTATION));
 };
 goog.exportProperty(
     ol.View2D.prototype,
@@ -308,12 +307,12 @@ ol.View2D.prototype.getView2DState = function() {
   var center = /** @type {ol.Coordinate} */ (this.getCenter());
   var projection = /** @type {ol.Projection} */ (this.getProjection());
   var resolution = /** @type {number} */ (this.getResolution());
-  var rotation = /** @type {number} */ (this.getRotation());
+  var rotation = this.getRotation();
   return {
     center: center.slice(),
     projection: projection,
     resolution: resolution,
-    rotation: rotation
+    rotation: goog.isDef(rotation) ? rotation : 0
   };
 };
 
