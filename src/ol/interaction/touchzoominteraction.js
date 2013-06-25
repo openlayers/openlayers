@@ -71,6 +71,7 @@ ol.interaction.TouchZoom.prototype.handleTouchMove =
   }
 
   var map = mapBrowserEvent.map;
+  // FIXME works for View2D only
   var view = map.getView().getView2D();
 
   // scale anchor point.
@@ -95,6 +96,7 @@ ol.interaction.TouchZoom.prototype.handleTouchEnd =
     function(mapBrowserEvent) {
   if (this.targetTouches.length < 2) {
     var map = mapBrowserEvent.map;
+    // FIXME works for View2D only
     var view = map.getView().getView2D();
     // Zoom to final resolution, with an animation, and provide a
     // direction not to zoom out/in if user was pinching in/out.
