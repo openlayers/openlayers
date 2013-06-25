@@ -128,6 +128,7 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
     if (handled) {
       this.dragging_ = true;
       mapBrowserEvent.preventDefault();
+      mapBrowserEvent.stopOtherInteractions();
     }
   }
 };
