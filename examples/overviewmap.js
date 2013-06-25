@@ -3,6 +3,7 @@ goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.control.OverviewMap');
 goog.require('ol.layer.TileLayer');
+goog.require('ol.source.MapQuestOpenAerial');
 goog.require('ol.source.OSM');
 
 
@@ -40,6 +41,11 @@ var overview2 = new ol.control.OverviewMap({
 
 var map3 = createMap('map3');
 var overview3 = new ol.control.OverviewMap({
+  layers: [
+    new ol.layer.TileLayer({
+      source: new ol.source.MapQuestOpenAerial()
+    })
+  ],
   map: map3,
   maxRatio: 0.5,
   minRatio: 0.025

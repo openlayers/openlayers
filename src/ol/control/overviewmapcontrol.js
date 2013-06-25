@@ -60,6 +60,7 @@ ol.control.OverviewMap = function(opt_options) {
     interactions: new ol.Collection(),
     target: element
   });
+  var ovmap = this.ovmap_;
 
   /**
    * @type {ol.Overlay}
@@ -86,14 +87,21 @@ ol.control.OverviewMap = function(opt_options) {
   this.minRatio_ = goog.isDefAndNotNull(options.minRatio) ?
       options.minRatio : ol.control.OVERVIEWMAP_MIN_RATIO;
 
+  if (goog.isDefAndNotNull(options.layers)) {
+    options.layers.forEach(
+        /**
+       * @param {ol.layer.Layer} layer Layer.
+       */
+        function(layer) {
+          ovmap.addLayer(layer);
+        }, this);
+  }
+
   goog.base(this, {
     element: element,
     map: options.map,
     target: options.target
   });
-
-  // FIXME - check if layers in options, otherwise we add the map layers later
-  // ...
 };
 goog.inherits(ol.control.OverviewMap, ol.control.Control);
 
