@@ -96,6 +96,7 @@ ol.expr.lib = {};
  */
 ol.expr.functions = {
   EXTENT: 'extent',
+  FID: 'fid',
   GEOMETRY_TYPE: 'geometryType'
 };
 
@@ -119,8 +120,27 @@ ol.expr.lib[ol.expr.functions.EXTENT] = function(minX, maxX, minY, maxY) {
   return intersects;
 };
 
+
+/**
+ * Determine if the feature identifier matches any of the provided values.
+ * @param {...string} var_args Feature identifiers.
+ * @return {boolean} The feature's identifier matches one of the given values.
+ * @this {ol.Feature}
+ */
+ol.expr.lib[ol.expr.functions.FID] = function(var_args) {
+  var matches = false;
+  var id = this.getFeatureId();
+  if (goog.isDef(id)) {
+    for (var i = 0, ii = arguments.length; i < ii; ++i) {
+      if (arguments[i] === id) {
+        matches = true;
+        break;
+      }
     }
   }
+  return matches;
+};
+
 
 /**
  * Determine if a feature's default geometry is of the given type.

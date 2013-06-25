@@ -663,6 +663,54 @@ describe('ol.expr.lib', function() {
 
   });
 
+  describe('fid()', function() {
+
+    var one = new ol.Feature();
+    one.setFeatureId('one');
+
+    var two = new ol.Feature();
+    two.setFeatureId('two');
+
+    var three = new ol.Feature();
+    three.setFeatureId('three');
+
+    var four = new ol.Feature();
+    four.setFeatureId('four');
+
+    var odd = parse('fid("one", "three")');
+    var even = parse('fid("two", "four")');
+    var first = parse('fid("one")');
+    var last = parse('fid("four")');
+    var none = parse('fid("foo")');
+
+    it('evaluates to true if feature id matches', function() {
+      expect(evaluate(odd, one), true);
+      expect(evaluate(odd, three), true);
+      expect(evaluate(even, two), true);
+      expect(evaluate(even, four), true);
+      expect(evaluate(first, one), true);
+      expect(evaluate(last, four), true);
+    });
+
+    it('evaluates to false if feature id doesn\'t match', function() {
+      expect(evaluate(odd, two), false);
+      expect(evaluate(odd, four), false);
+      expect(evaluate(even, one), false);
+      expect(evaluate(even, three), false);
+      expect(evaluate(first, two), false);
+      expect(evaluate(first, three), false);
+      expect(evaluate(first, four), false);
+      expect(evaluate(last, one), false);
+      expect(evaluate(last, two), false);
+      expect(evaluate(last, three), false);
+      expect(evaluate(none, one), false);
+      expect(evaluate(none, two), false);
+      expect(evaluate(none, three), false);
+      expect(evaluate(none, four), false);
+    });
+
+  });
+
   describe('geometryType()', function() {
 
     var point = new ol.Feature({
