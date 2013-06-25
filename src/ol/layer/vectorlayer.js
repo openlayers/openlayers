@@ -5,6 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.Feature');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SharedVertices');
 goog.require('ol.layer.Layer');
 goog.require('ol.proj');
@@ -335,14 +336,13 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
 ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
   var features;
 
-  var lookup = {
-    'point': this.pointVertices_,
-    'linestring': this.lineVertices_,
-    'polygon': this.polygonVertices_,
-    'multipoint': this.pointVertices_,
-    'multilinstring': this.lineVertices_,
-    'multipolygon': this.polygonVertices_
-  };
+  var lookup = {};
+  lookup[ol.geom.GeometryType.POINT] = this.pointVertices_;
+  lookup[ol.geom.GeometryType.LINESTRING] = this.lineVertices_;
+  lookup[ol.geom.GeometryType.POLYGON] = this.polygonVertices_;
+  lookup[ol.geom.GeometryType.MULTIPOINT] = this.pointVertices_;
+  lookup[ol.geom.GeometryType.MULTILINESTRING] = this.lineVertices_;
+  lookup[ol.geom.GeometryType.MULTIPOLYGON] = this.polygonVertices_;
 
   var callback = function(feature, type) {
     return lookup[type];
