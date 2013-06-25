@@ -9,6 +9,7 @@ goog.require('ol.expr');
 goog.require('ol.expr.Literal');
 goog.require('ol.expr.Logical');
 goog.require('ol.expr.LogicalOp');
+goog.require('ol.expr.functions');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SharedVertices');
 goog.require('ol.layer.Layer');
@@ -93,14 +94,14 @@ ol.layer.FeatureCache.prototype.getFeaturesObject = function(opt_expr) {
   } else {
     // check for geometryType or extent expression
     var name = ol.expr.isLibCall(opt_expr);
-    if (name === 'geometryType') {
+    if (name === ol.expr.functions.GEOMETRY_TYPE) {
       var args = /** @type {ol.expr.Call} */ (opt_expr).getArgs();
       goog.asserts.assert(args.length === 1);
       goog.asserts.assert(args[0] instanceof ol.expr.Literal);
       var type = /** @type {ol.expr.Literal } */ (args[0]).evaluate();
       goog.asserts.assertString(type);
       features = this.geometryTypeIndex_[type];
-    } else if (name === 'extent') {
+    } else if (name === ol.expr.functions.EXTENT) {
       var args = /** @type {ol.expr.Call} */ (opt_expr).getArgs();
       goog.asserts.assert(args.length === 4);
       var extent = [];
@@ -120,13 +121,13 @@ ol.layer.FeatureCache.prototype.getFeaturesObject = function(opt_expr) {
           for (var i = 0; i <= 1; ++i) {
             expr = expressions[i];
             name = ol.expr.isLibCall(expr);
-            if (name === 'geometryType') {
+            if (name === ol.expr.functions.GEOMETRY_TYPE) {
               args = /** @type {ol.expr.Call} */ (expr).getArgs();
               goog.asserts.assert(args.length === 1);
               goog.asserts.assert(args[0] instanceof ol.expr.Literal);
               type = /** @type {ol.expr.Literal } */ (args[0]).evaluate();
               goog.asserts.assertString(type);
-            } else if (name === 'extent') {
+            } else if (name === ol.expr.functions.EXTENT) {
               args = /** @type {ol.expr.Call} */ (expr).getArgs();
               goog.asserts.assert(args.length === 4);
               extent = [];
