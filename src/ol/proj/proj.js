@@ -139,8 +139,9 @@ ol.Projection.prototype.getUnits = function() {
 
 
 /**
- * Get the amount of meters per unit of this projection.
- * @return {number} Meters.
+ * Get the amount of meters per unit of this projection.  If the projection is
+ * not configured with a units identifier, the return is `undefined`.
+ * @return {number|undefined} Meters.
  */
 ol.Projection.prototype.getMetersPerUnit = function() {
   return ol.METERS_PER_UNIT[this.units_];
@@ -221,6 +222,18 @@ ol.Proj4jsProjection_ = function(proj4jsProj, options) {
 
 };
 goog.inherits(ol.Proj4jsProjection_, ol.Projection);
+
+
+/**
+ * @inheritDoc
+ */
+ol.Proj4jsProjection_.prototype.getMetersPerUnit = function() {
+  var metersPerUnit = this.proj4jsProj_.to_meter;
+  if (!goog.isDef(metersPerUnit)) {
+    metersPerUnit = ol.METERS_PER_UNIT[this.units_];
+  }
+  return metersPerUnit;
+};
 
 
 /**

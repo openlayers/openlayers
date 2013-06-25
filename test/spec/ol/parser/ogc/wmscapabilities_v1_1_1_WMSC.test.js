@@ -8,7 +8,7 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1_wmsc', function() {
   });
 
   describe('test read', function() {
-    it('Test read', function() {
+    it('Test read', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1_WMSC/wmsc.xml';
       afterLoadXml(url, function(xml) {
         var obj, tilesets, tileset;
@@ -35,18 +35,20 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1_wmsc', function() {
           0.009330691928043961, 0.004665345964021981];
         expect(tileset.resolutions).to.eql(resolutions);
         expect(tileset.styles).to.eql('');
+        done();
       });
     });
   });
 
   describe('test fallback', function() {
-    it('Test fallback', function() {
+    it('Test fallback', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1_WMSC/' +
           'fallback.xml';
       afterLoadXml(url, function(xml) {
         var obj;
         obj = parser.read(xml);
         expect(obj.capability.layers.length).to.eql(2);
+        done();
       });
     });
   });

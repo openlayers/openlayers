@@ -27,6 +27,10 @@ ol.DeviceOrientationProperty = {
  */
 ol.DeviceOrientation = function(opt_options) {
 
+  goog.base(this);
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
+
   /**
    * @private
    * @type {?number}
@@ -37,7 +41,7 @@ ol.DeviceOrientation = function(opt_options) {
       ol.Object.getChangeEventType(ol.DeviceOrientationProperty.TRACKING),
       this.handleTrackingChanged_, false, this);
 
-  goog.base(this, goog.isDef(opt_options) ? opt_options : {});
+  this.setTracking(goog.isDef(options.tracking) ? options.tracking : false);
 
 };
 goog.inherits(ol.DeviceOrientation, ol.Object);
@@ -90,7 +94,7 @@ ol.DeviceOrientation.prototype.orientationChange_ = function(browserEvent) {
  * @return {number|undefined} alpha.
  */
 ol.DeviceOrientation.prototype.getAlpha = function() {
-  return /** @type {number} */ (
+  return /** @type {number|undefined} */ (
       this.get(ol.DeviceOrientationProperty.ALPHA));
 };
 goog.exportProperty(
@@ -103,7 +107,7 @@ goog.exportProperty(
  * @return {number|undefined} beta.
  */
 ol.DeviceOrientation.prototype.getBeta = function() {
-  return /** @type {number} */ (
+  return /** @type {number|undefined} */ (
       this.get(ol.DeviceOrientationProperty.BETA));
 };
 goog.exportProperty(
@@ -116,7 +120,7 @@ goog.exportProperty(
  * @return {number|undefined} gamma.
  */
 ol.DeviceOrientation.prototype.getGamma = function() {
-  return /** @type {number} */ (
+  return /** @type {number|undefined} */ (
       this.get(ol.DeviceOrientationProperty.GAMMA));
 };
 goog.exportProperty(
@@ -129,7 +133,7 @@ goog.exportProperty(
  * @return {number|undefined} heading.
  */
 ol.DeviceOrientation.prototype.getHeading = function() {
-  return /** @type {number} */ (
+  return /** @type {number|undefined} */ (
       this.get(ol.DeviceOrientationProperty.HEADING));
 };
 goog.exportProperty(
@@ -139,7 +143,8 @@ goog.exportProperty(
 
 
 /**
- * @return {boolean|undefined} tracking.
+ * Are we tracking the device's orientation?
+ * @return {boolean} tracking.
  */
 ol.DeviceOrientation.prototype.getTracking = function() {
   return /** @type {boolean} */ (
