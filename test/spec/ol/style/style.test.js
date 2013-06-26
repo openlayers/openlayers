@@ -9,9 +9,7 @@ describe('ol.style.Style', function() {
       var style = new ol.style.Style({
         rules: [
           new ol.style.Rule({
-            filter: new ol.filter.Filter(function(feature) {
-              return feature.get('foo') == 'bar';
-            }),
+            filter: 'foo == "bar"',
             symbolizers: [
               new ol.style.Shape({
                 size: 4,
@@ -66,7 +64,6 @@ goog.require('ol.Feature');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.filter.Filter');
 goog.require('ol.style.Rule');
 goog.require('ol.style.Shape');
 goog.require('ol.style.ShapeLiteral');
