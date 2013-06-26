@@ -1020,7 +1020,7 @@ ol.parser.KML.prototype.createGeometry_ = function(container,
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         coordinates.push(container.geometry.parts[i].coordinates);
       }
-      geometry = ol.geom.MultiPoint.fromParts(coordinates, opt_vertices);
+      geometry = new ol.geom.MultiPoint(coordinates, opt_vertices);
       break;
     case ol.geom.GeometryType.MULTILINESTRING:
       coordinates = [];
@@ -1034,7 +1034,7 @@ ol.parser.KML.prototype.createGeometry_ = function(container,
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         coordinates.push(container.geometry.parts[i].coordinates);
       }
-      geometry = ol.geom.MultiPolygon.fromParts(coordinates, opt_vertices);
+      geometry = new ol.geom.MultiPolygon(coordinates, opt_vertices);
       break;
     case ol.geom.GeometryType.GEOMETRYCOLLECTION:
       var geometries = [];
