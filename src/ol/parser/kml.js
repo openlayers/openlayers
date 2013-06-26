@@ -184,24 +184,25 @@ ol.parser.KML = function(opt_options) {
         var buckets = goog.array.bucket(parts, function(val) {
           return val.type;
         });
-        // homogeneous collection
+        var obj = {};
         if (goog.object.getCount(buckets) === 1) {
+          // homogeneous collection
           var type = goog.object.getAnyKey(buckets);
           switch (type) {
             case ol.geom.GeometryType.POINT:
-              container.geometry = {
+              obj.geometry = {
                 type: ol.geom.GeometryType.MULTIPOINT,
                 parts: parts
               };
               break;
             case ol.geom.GeometryType.LINESTRING:
-              container.geometry = {
+              obj.geometry = {
                 type: ol.geom.GeometryType.MULTILINESTRING,
                 parts: parts
               };
               break;
             case ol.geom.GeometryType.POLYGON:
-              container.geometry = {
+              obj.geometry = {
                 type: ol.geom.GeometryType.MULTIPOLYGON,
                 parts: parts
               };
@@ -210,10 +211,17 @@ ol.parser.KML = function(opt_options) {
               break;
           }
         } else {
-          container.geometry = {
+          // mixed collection
+          obj.geometry = {
             type: ol.geom.GeometryType.GEOMETRYCOLLECTION,
             parts: parts
           };
+        }
+        if (goog.isArray(container)) {
+          // MultiGeometry nested inside another
+          container.push(obj.geometry);
+        } else {
+          container.geometry = obj.geometry;
         }
       },
       'Point': function(node, container) {
