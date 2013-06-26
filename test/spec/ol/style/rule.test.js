@@ -13,14 +13,14 @@ describe('ol.style.Rule', function() {
 
     it('returns false when the rule does not apply', function() {
       rule = new ol.style.Rule({
-        filter: new ol.filter.Filter(function() { return false; })
+        filter: new ol.expr.Literal(false)
       });
       expect(rule.applies(feature)).to.be(false);
     });
 
     it('returns true when the rule applies', function() {
       rule = new ol.style.Rule({
-        filter: new ol.filter.Filter(function() { return true; })
+        filter: new ol.expr.Literal(true)
       });
       expect(rule.applies(feature)).to.be(true);
     });
@@ -29,5 +29,5 @@ describe('ol.style.Rule', function() {
 });
 
 goog.require('ol.Feature');
-goog.require('ol.filter.Filter');
+goog.require('ol.expr.Literal');
 goog.require('ol.style.Rule');

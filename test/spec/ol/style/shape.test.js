@@ -51,8 +51,8 @@ describe('ol.style.Shape', function() {
 
     it('accepts expressions', function() {
       var symbolizer = new ol.style.Shape({
-        size: new ol.Expression('sizeAttr'),
-        strokeColor: new ol.Expression('color')
+        size: ol.expr.parse('sizeAttr'),
+        strokeColor: ol.expr.parse('color')
       });
       expect(symbolizer).to.be.a(ol.style.Shape);
     });
@@ -63,8 +63,8 @@ describe('ol.style.Shape', function() {
 
     it('evaluates expressions with the given feature', function() {
       var symbolizer = new ol.style.Shape({
-        size: new ol.Expression('sizeAttr'),
-        opacity: new ol.Expression('opacityAttr'),
+        size: ol.expr.parse('sizeAttr'),
+        opacity: ol.expr.parse('opacityAttr'),
         fillColor: '#BADA55'
       });
 
@@ -99,8 +99,8 @@ describe('ol.style.Shape', function() {
 
     it('applies default type if none provided', function() {
       var symbolizer = new ol.style.Shape({
-        size: new ol.Expression('sizeAttr'),
-        opacity: new ol.Expression('opacityAttr'),
+        size: ol.expr.parse('sizeAttr'),
+        opacity: ol.expr.parse('opacityAttr'),
         fillColor: '#BADA55'
       });
 
@@ -119,8 +119,8 @@ describe('ol.style.Shape', function() {
 
 });
 
-goog.require('ol.Expression');
 goog.require('ol.Feature');
+goog.require('ol.expr');
 goog.require('ol.style.Shape');
 goog.require('ol.style.ShapeLiteral');
 goog.require('ol.style.ShapeType');
