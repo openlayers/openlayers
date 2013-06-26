@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
     <style type="text/css">
-      .zoom-extent {
+      .rotate-north {
         position: absolute;
         top: 65px;
         left: 8px;
@@ -16,29 +16,22 @@
         border-radius: 4px;
         padding: 2px;
       }
-      .zoom-extent a {
+      .rotate-north a {
         display: block;
-        margin: 1px;
-        padding: 0;
         color: white;
-        font-size: 18px;
+        font-size: 16px;
         font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
         font-weight: bold;
+        margin: 1px;
         text-decoration: none;
         text-align: center;
+        border-radius: 2px;
         height: 22px;
         width: 22px;
-        line-height: 19px;
         background: rgba(0,60,136,0.5);
       }
-      .zoom-extent a:hover {
+      .rotate-north a:hover {
         background: rgba(0,60,136,0.7);
-      }
-      .zoom-to {
-        border-radius: 2px 2px 0 0;
-      }
-      .zoom-to:before {
-        content: "E";
       }
     </style>
     <title>ol3 custom controls example</title>
@@ -73,10 +66,9 @@
           <p id="shortdesc">This example shows how to create custom controls.</p>
           <div id="docs">
             <p>
-              This example creates a "zoom to extent" button.
+              This example creates a "rotate to north" button.
               See the <a href="custom-controls.js" target="_blank">custom-controls.js
               source</a> to see how this is done.
-              Per default, the zoom extent control use the map projection extent.
             </p>
           </div>
           <div id="tags">
