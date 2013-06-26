@@ -1,0 +1,2 @@
+@exportClass ol.control.ZoomToExtent ol.control.ZoomToExtentOptions
+@exportProperty ol.control.ZoomToExtent.prototype.setMap
