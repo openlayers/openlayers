@@ -214,6 +214,14 @@
  */
 
 /**
+ * @typedef {Object} ol.control.ZoomToExtentOptions
+ * @property {string|undefined} className Class name.
+ * @property {ol.Map|undefined} map Map.
+ * @property {Element|undefined} target Target.
+ * @property {ol.Extent|undefined} extent The extent to zoom to.
+ */
+
+/**
  * @typedef {Object} ol.interaction.DoubleClickZoomOptions
  * @property {number|undefined} delta The zoom delta applied on each double
  *    click.
