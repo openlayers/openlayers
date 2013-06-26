@@ -5,8 +5,6 @@ goog.require('goog.asserts');
 goog.require('ol.Kinetic');
 goog.require('ol.Pixel');
 goog.require('ol.PreRenderFunction');
-goog.require('ol.View');
-goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
 goog.require('ol.interaction.Touch');
 
@@ -83,7 +81,6 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
   var map = mapBrowserEvent.map;
   var view = map.getView();
   if (this.targetTouches.length === 0) {
-    var interacting = view.setHint(ol.ViewHint.INTERACTING, -1);
     if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
       var distance = this.kinetic_.getDistance();
       var angle = this.kinetic_.getAngle();
@@ -96,9 +93,8 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
         centerpx[1] - distance * Math.sin(angle)
       ]);
       view.setCenter(dest);
-    } else if (interacting === 0) {
-      map.requestRenderFrame();
     }
+    map.requestRenderFrame();
     return false;
   } else {
     this.lastCentroid = null;
@@ -125,7 +121,6 @@ ol.interaction.TouchPan.prototype.handleTouchStart =
     if (this.kinetic_) {
       this.kinetic_.begin();
     }
-    view.setHint(ol.ViewHint.INTERACTING, 1);
     // No kinetic as soon as more than one fingers on the screen is
     // detected. This is to prevent nasty pans after pinch.
     this.noKinetic_ = this.targetTouches.length > 1;
