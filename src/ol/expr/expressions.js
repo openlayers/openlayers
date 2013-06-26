@@ -175,39 +175,30 @@ ol.expr.Comparison.isValidOp = (function() {
 /**
  * @inheritDoc
  */
-ol.expr.Comparison.prototype.evaluate = function(opt_scope, opt_fns,
-    opt_this) {
+ol.expr.Comparison.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
   var result;
   var rightVal = this.right_.evaluate(opt_scope, opt_fns, opt_this);
   var leftVal = this.left_.evaluate(opt_scope, opt_fns, opt_this);
 
-  switch (this.operator_) {
-    case ol.expr.ComparisonOp.EQ:
-      result = leftVal == rightVal;
-      break;
-    case ol.expr.ComparisonOp.NEQ:
-      result = leftVal != rightVal;
-      break;
-    case ol.expr.ComparisonOp.STRICT_EQ:
-      result = leftVal === rightVal;
-      break;
-    case ol.expr.ComparisonOp.STRICT_NEQ:
-      result = leftVal !== rightVal;
-      break;
-    case ol.expr.ComparisonOp.GT:
-      result = leftVal > rightVal;
-      break;
-    case ol.expr.ComparisonOp.LT:
-      result = leftVal < rightVal;
-      break;
-    case ol.expr.ComparisonOp.GTE:
-      result = leftVal >= rightVal;
-      break;
-    case ol.expr.ComparisonOp.LTE:
-      result = leftVal <= rightVal;
-      break;
-    default:
-      throw new Error('Unsupported comparison operator: ' + this.operator_);
+  var op = this.operator_;
+  if (op === ol.expr.ComparisonOp.EQ) {
+    result = leftVal == rightVal;
+  } else if (op === ol.expr.ComparisonOp.NEQ) {
+    result = leftVal != rightVal;
+  } else if (op === ol.expr.ComparisonOp.STRICT_EQ) {
+    result = leftVal === rightVal;
+  } else if (op === ol.expr.ComparisonOp.STRICT_NEQ) {
+    result = leftVal !== rightVal;
+  } else if (op === ol.expr.ComparisonOp.GT) {
+    result = leftVal > rightVal;
+  } else if (op === ol.expr.ComparisonOp.LT) {
+    result = leftVal < rightVal;
+  } else if (op === ol.expr.ComparisonOp.GTE) {
+    result = leftVal >= rightVal;
+  } else if (op === ol.expr.ComparisonOp.LTE) {
+    result = leftVal <= rightVal;
+  } else {
+    throw new Error('Unsupported comparison operator: ' + this.operator_);
   }
   return result;
 };
@@ -498,24 +489,19 @@ ol.expr.Math.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
    * math functions where available elsewhere
    */
 
-  switch (this.operator_) {
-    case ol.expr.MathOp.ADD:
-      result = leftVal + rightVal;
-      break;
-    case ol.expr.MathOp.SUBTRACT:
-      result = Number(leftVal) - Number(rightVal);
-      break;
-    case ol.expr.MathOp.MULTIPLY:
-      result = Number(leftVal) * Number(rightVal);
-      break;
-    case ol.expr.MathOp.DIVIDE:
-      result = Number(leftVal) / Number(rightVal);
-      break;
-    case ol.expr.MathOp.MOD:
-      result = Number(leftVal) % Number(rightVal);
-      break;
-    default:
-      throw new Error('Unsupported math operator: ' + this.operator_);
+  var op = this.operator_;
+  if (op === ol.expr.MathOp.ADD) {
+    result = leftVal + rightVal;
+  } else if (op === ol.expr.MathOp.SUBTRACT) {
+    result = Number(leftVal) - Number(rightVal);
+  } else if (op === ol.expr.MathOp.MULTIPLY) {
+    result = Number(leftVal) * Number(rightVal);
+  } else if (op === ol.expr.MathOp.DIVIDE) {
+    result = Number(leftVal) / Number(rightVal);
+  } else if (op === ol.expr.MathOp.MOD) {
+    result = Number(leftVal) % Number(rightVal);
+  } else {
+    throw new Error('Unsupported math operator: ' + this.operator_);
   }
   return result;
 };
