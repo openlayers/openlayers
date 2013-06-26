@@ -1,7 +1,7 @@
-goog.require('ol.Expression');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
+goog.require('ol.expr');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.KML');
@@ -12,8 +12,15 @@ goog.require('ol.style.Polygon');
 goog.require('ol.style.Rule');
 goog.require('ol.style.Style');
 
-// calculate opacity based on difference from local noon
-function getOpacity(feature) {
+
+/**
+ * Register a function to be used in a symbolizer.  Here we want the opacity
+ * of polygons to be based on the offset from local noon.  For example, a
+ * timezone where it is currently noon would have an opacity of 1.  And a
+ * timezone where it is currently 6:00am would have an opacity of 0.5.
+ */
+ol.expr.register('getOpacity', function() {
+  var feature = this;
   var opacity = 0;
   var name = feature.get('name'); // e.g. GMT -08:30
   var match = name.match(/([-+]\d{2}):(\d{2})$/);
@@ -31,7 +38,7 @@ function getOpacity(feature) {
     opacity = 1 - offset / 12;
   }
   return opacity;
-}
+});
 
 var style = new ol.style.Style({rules: [
   new ol.style.Rule({
@@ -39,7 +46,7 @@ var style = new ol.style.Style({rules: [
       new ol.style.Polygon({
         fillColor: '#ffff33',
         strokeColor: '#ffffff',
-        opacity: new ol.Expression('getOpacity(this)')
+        opacity: ol.expr.parse('getOpacity()')
       })
     ]
   })
