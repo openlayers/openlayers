@@ -8,6 +8,17 @@
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
     <title>Timezones in KML</title>
+    <style>
+      #map {
+        position: relative;
+      }
+      #info {
+        position: absolute;
+        height: 1px;
+        width: 1px;
+        z-index: 100;
+      }
+    </style>
   </head>
   <body>
 
@@ -29,7 +40,7 @@
 
       <div class="row-fluid">
         <div class="span12">
-          <div id="map" class="map"></div>
+          <div id="map" class="map"><div id="info"></div></div>
         </div>
       </div>
 
@@ -48,6 +59,8 @@
 
     </div>
 
+    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="../resources/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="loader.js?id=kml-timezones" type="text/javascript"></script>
     <script src="../resources/social-links.js" type="text/javascript"></script>
 

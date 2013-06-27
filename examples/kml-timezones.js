@@ -16,28 +16,29 @@ goog.require('ol.style.Style');
 /**
  * Register a function to be used in a symbolizer.  Here we want the opacity
  * of polygons to be based on the offset from local noon.  For example, a
- * timezone where it is currently noon would have an opacity of 1.  And a
- * timezone where it is currently 6:00am would have an opacity of 0.5.
+ * timezone where it is currently noon would have an opacity of 0.75.  And a
+ * timezone where it is currently midnight would have an opacity of 0.  This
+ * doesn't account for daylight savings, so don't use it to plan your vacation.
  */
 ol.expr.register('getOpacity', function() {
   var feature = this;
-  var opacity = 0;
+  var offset = 0;
   var name = feature.get('name'); // e.g. GMT -08:30
   var match = name.match(/([-+]\d{2}):(\d{2})$/);
   if (match) {
     var hours = parseInt(match[1], 10);
     var minutes = parseInt(match[2], 10);
-    var date = new Date();
-    var diff = 60 * hours + minutes + date.getTimezoneOffset();
-    var remote = new Date(date.getTime() + diff * 60000);
-    // offset from local noon (in hours)
-    var offset = Math.abs(12 - remote.getHours() + (remote.getMinutes() / 60));
-    if (offset > 12) {
-      offset = 24 - offset;
-    }
-    opacity = 1 - offset / 12;
+    offset = 60 * hours + minutes;
   }
-  return opacity;
+  var date = new Date();
+  var local = new Date(date.getTime() +
+      (date.getTimezoneOffset() + offset) * 60000);
+  // offset from local noon (in hours)
+  var delta = Math.abs(12 - local.getHours() + (local.getMinutes() / 60));
+  if (delta > 12) {
+    delta = 24 - delta;
+  }
+  return 0.75 * (1 - delta / 12);
 });
 
 var style = new ol.style.Style({rules: [
@@ -73,6 +74,34 @@ var map = new ol.Map({
     center: [0, 0],
     zoom: 2
   })
+});
+
+var info = $('#info');
+info.tooltip({
+  animation: false,
+  trigger: 'manual'
+});
+map.on(['click', 'mousemove'], function(evt) {
+  var pixel = evt.getPixel();
+  info.css({
+    left: pixel[0] + 'px',
+    top: (pixel[1] - 15) + 'px'
+  });
+  map.getFeatures({
+    pixel: pixel,
+    layers: [vector],
+    success: function(layerFeatures) {
+      var feature = layerFeatures[0][0];
+      if (feature) {
+        info.tooltip('hide')
+            .attr('data-original-title', feature.get('name'))
+            .tooltip('fixTitle')
+            .tooltip('show');
+      } else {
+        info.tooltip('hide');
+      }
+    }
+  });
 });
 
 var kml = new ol.parser.KML({dimension: 2});
