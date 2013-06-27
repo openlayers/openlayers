@@ -13,7 +13,7 @@
         position: absolute;
         top: 65px;
         left: 8px;
-        background: rgba(255,255,255,0.4);
+        background: rgba(255, 255, 255, 0.4);
         border-radius: 4px;
         padding: 2px;
       }
@@ -29,10 +29,45 @@
         border-radius: 2px;
         height: 22px;
         width: 22px;
-        background: rgba(0,60,136,0.5);
+        background: rgba(0, 60, 136, 0.5);
       }
       .rotate-north a:hover {
-        background: rgba(0,60,136,0.7);
+        background: rgba(0, 60, 136, 0.7);
+      }
+
+      .ol-svg-pan {
+        position: absolute;
+        right: 8px;
+        top: 8px;
+        width: 32px;
+        height: 32px;
+      }
+      .ol-svg-button-border {
+        fill: rgba(255, 255, 255, 0.4);
+      }
+      .ol-svg-button {
+        cursor: pointer;
+      }
+      .ol-svg-button-background {
+        fill: rgba(0, 60, 136, 0.5);
+      }
+      .ol-svg-button-forground {
+        fill: rgba(255, 255, 255, 0.7);
+      }
+      .ol-svg-button:hover .ol-svg-button-background {
+        fill: rgba(0, 60, 136, 0.7);
+      }
+      @media print {
+        .ol-svg-button-border, ol-svg-button {
+          display: none;
+        }
+      }
+      a.ol-svg-button:focus {
+          outline: none;
+      }
+      .ol-svg-button:focus .ol-svg-button-background {
+          stroke: #ffa600;
+          stroke-width: 1.5;
       }
     </style>
     <title>ol3 custom controls example</title>
