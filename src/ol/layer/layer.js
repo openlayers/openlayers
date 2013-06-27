@@ -5,6 +5,7 @@ goog.provide('ol.layer.LayerState');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.math');
+goog.require('goog.object');
 goog.require('ol.Object');
 goog.require('ol.source.Source');
 
@@ -50,12 +51,17 @@ ol.layer.Layer = function(options) {
    */
   this.source_ = options.source;
 
-  this.setBrightness(goog.isDef(options.brightness) ? options.brightness : 0);
-  this.setContrast(goog.isDef(options.contrast) ? options.contrast : 1);
-  this.setHue(goog.isDef(options.hue) ? options.hue : 0);
-  this.setOpacity(goog.isDef(options.opacity) ? options.opacity : 1);
-  this.setSaturation(goog.isDef(options.saturation) ? options.saturation : 1);
-  this.setVisible(goog.isDef(options.visible) ? options.visible : true);
+  var values = goog.object.clone(options);
+  delete values.source;
+
+  values.brightness = goog.isDef(values.brightness) ? values.brightness : 0;
+  values.contrast = goog.isDef(values.contrast) ? values.contrast : 1;
+  values.hue = goog.isDef(values.hue) ? values.hue : 0;
+  values.opacity = goog.isDef(values.opacity) ? values.opacity : 1;
+  values.saturation = goog.isDef(values.saturation) ? values.saturation : 1;
+  values.visible = goog.isDef(values.visible) ? values.visible : true;
+
+  this.setValues(values);
 
   if (!this.source_.isReady()) {
     goog.events.listenOnce(this.source_, goog.events.EventType.LOAD,
