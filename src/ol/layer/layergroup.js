@@ -170,6 +170,18 @@ goog.exportProperty(
 /**
  * @inheritDoc
  */
+ol.layer.LayerGroup.prototype.getLayersArray = function(opt_array) {
+  var array = (goog.isDef(opt_array)) ? opt_array : [];
+  this.getLayers().forEach(function(layer) {
+    layer.getLayersArray(array);
+  });
+  return array;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.layer.LayerGroup.prototype.getLayerStatesArray = function(opt_obj) {
   var obj = (goog.isDef(opt_obj)) ? opt_obj : {
     layers: [],

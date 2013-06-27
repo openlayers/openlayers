@@ -48,6 +48,16 @@ ol.layer.Layer.prototype.dispatchLoadEvent_ = function() {
 /**
  * @inheritDoc
  */
+ol.layer.Layer.prototype.getLayersArray = function(opt_array) {
+  var array = (goog.isDef(opt_array)) ? opt_array : [];
+  array.push(this);
+  return array;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.layer.Layer.prototype.getLayerStatesArray = function(opt_obj) {
   var obj = (goog.isDef(opt_obj)) ? opt_obj : {
     layers: [],
