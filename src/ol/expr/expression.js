@@ -95,9 +95,28 @@ ol.expr.lib = {};
  * @enum {string}
  */
 ol.expr.functions = {
+  AND: 'and',
   EXTENT: 'extent',
   FID: 'fid',
-  GEOMETRY_TYPE: 'geometryType'
+  GEOMETRY_TYPE: 'geometryType',
+  OR: 'or'
+};
+
+
+/**
+ * AND the provided arguments
+ * @param {...*} var_args The arguments to AND
+ * @return {boolean} True when all provided arguments are truthy.
+ */
+ol.expr.lib[ol.expr.functions.AND] = function(var_args) {
+  var result = true;
+  for (var i = 0, ii = arguments.length; i < ii; ++i) {
+    result = result && arguments[i];
+    if (!result) {
+      break;
+    }
+  }
+  return !!result;
 };
 
 
@@ -155,4 +174,21 @@ ol.expr.lib[ol.expr.functions.GEOMETRY_TYPE] = function(type) {
     same = geometry.getType() === type;
   }
   return same;
+};
+
+
+/**
+ * OR the provided arguments
+ * @param {...*} var_args The arguments to OR
+ * @return {boolean} True when any of the provided arguments are truthy.
+ */
+ol.expr.lib[ol.expr.functions.OR] = function(var_args) {
+  var result = false;
+  for (var i = 0, ii = arguments.length; i < ii; ++i) {
+    result = result || arguments[i];
+    if (result) {
+      break;
+    }
+  }
+  return !!result;
 };
