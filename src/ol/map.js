@@ -659,6 +659,11 @@ ol.Map.prototype.handleLayersRemove_ = function(collectionEvent) {
  * @param {ol.MapBrowserEvent} mapBrowserEvent The event to handle.
  */
 ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
+  if (goog.isNull(this.frameState_)) {
+    // With no view defined, we cannot translate pixels into geographical
+    // coordinates so interactions cannot be used.
+    return;
+  }
   mapBrowserEvent.frameState = this.frameState_;
   var interactions = this.getInteractions();
   var interactionsArray = /** @type {Array.<ol.interaction.Interaction>} */

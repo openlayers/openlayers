@@ -71,7 +71,9 @@ ol.interaction.TouchZoom.prototype.handleTouchMove =
   }
 
   var map = mapBrowserEvent.map;
+  // FIXME works for View2D only
   var view = map.getView().getView2D();
+  var view2DState = view.getView2DState();
 
   // scale anchor point.
   var viewportPosition = goog.style.getClientPosition(map.getViewport());
@@ -83,7 +85,7 @@ ol.interaction.TouchZoom.prototype.handleTouchMove =
   // scale, bypass the resolution constraint
   map.requestRenderFrame();
   ol.interaction.Interaction.zoomWithoutConstraints(
-      map, view, view.getResolution() * scaleDelta, this.anchor_);
+      map, view, view2DState.resolution * scaleDelta, this.anchor_);
 
 };
 
@@ -95,12 +97,14 @@ ol.interaction.TouchZoom.prototype.handleTouchEnd =
     function(mapBrowserEvent) {
   if (this.targetTouches.length < 2) {
     var map = mapBrowserEvent.map;
+    // FIXME works for View2D only
     var view = map.getView().getView2D();
+    var view2DState = view.getView2DState();
     // Zoom to final resolution, with an animation, and provide a
     // direction not to zoom out/in if user was pinching in/out.
     // Direction is > 0 if pinching out, and < 0 if pinching in.
     var direction = this.lastScaleDelta_ - 1;
-    ol.interaction.Interaction.zoom(map, view, view.getResolution(),
+    ol.interaction.Interaction.zoom(map, view, view2DState.resolution,
         this.anchor_, ol.interaction.TOUCHZOOM_ANIMATION_DURATION, direction);
     return false;
   } else {
