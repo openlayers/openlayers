@@ -95,8 +95,9 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   if (!map.isDef()) {
-    return;
+    return true;
   }
+  var stopEvent = false;
   var view = map.getView();
   var browserEvent = mapBrowserEvent.browserEvent;
   if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DOWN) {
@@ -131,7 +132,8 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
       view.setHint(ol.ViewHint.INTERACTING, 1);
       this.dragging_ = true;
       mapBrowserEvent.preventDefault();
-      mapBrowserEvent.stopOtherInteractions();
+      stopEvent = true;
     }
   }
+  return !stopEvent;
 };

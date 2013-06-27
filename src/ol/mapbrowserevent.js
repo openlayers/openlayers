@@ -40,11 +40,6 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
   this.coordinate_ = null;
 
   /**
-   * @type {boolean}
-   */
-  this.otherInteractionsStopped = false;
-
-  /**
    * @private
    * @type {ol.Pixel}
    */
@@ -111,14 +106,6 @@ ol.MapBrowserEvent.prototype.isMouseActionButton = function() {
 ol.MapBrowserEvent.prototype.preventDefault = function() {
   goog.base(this, 'preventDefault');
   this.browserEvent.preventDefault();
-};
-
-
-/**
- * Stop the interaction chain.
- */
-ol.MapBrowserEvent.prototype.stopOtherInteractions = function() {
-  this.otherInteractionsStopped = true;
 };
 
 

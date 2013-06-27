@@ -70,7 +70,7 @@ goog.inherits(ol.interaction.MouseWheelZoom, ol.interaction.Interaction);
  */
 ol.interaction.MouseWheelZoom.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
-
+  var stopEvent = false;
   if (mapBrowserEvent.type ==
       goog.events.MouseWheelHandler.EventType.MOUSEWHEEL) {
     var map = mapBrowserEvent.map;
@@ -93,8 +93,9 @@ ol.interaction.MouseWheelZoom.prototype.handleMapBrowserEvent =
         goog.bind(this.doZoom_, this, map), timeLeft);
 
     mapBrowserEvent.preventDefault();
-    mapBrowserEvent.stopOtherInteractions();
+    stopEvent = true;
   }
+  return !stopEvent;
 };
 
 
