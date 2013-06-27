@@ -399,6 +399,16 @@ goog.exportProperty(
 
 
 /**
+ * Zoom to a specific zoom level.
+ * @param {number} zoom Zoom level.
+ */
+ol.View2D.prototype.setZoom = function(zoom) {
+  var resolution = this.constrainResolution(this.maxResolution_, zoom);
+  this.setResolution(resolution);
+};
+
+
+/**
  * @private
  * @param {ol.View2DOptions} options View2D options.
  * @return {Array} Array of three elements: the resolution constraint,
