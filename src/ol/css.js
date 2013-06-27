@@ -10,6 +10,14 @@ ol.css.CLASS_BUTTON = 'ol-button';
 
 
 /**
+ * The CSS class for a group of buttons.
+ *
+ * @const {string}
+ */
+ol.css.CLASS_BUTTON_GROUP = 'ol-button-group';
+
+
+/**
  * The CSS class that we'll give the DOM elements to have them unselectable.
  *
  * @const {string}

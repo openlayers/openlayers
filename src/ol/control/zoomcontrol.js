@@ -47,7 +47,7 @@ ol.control.Zoom = function(opt_options) {
       false, this);
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV,
-      className, inElement, outElement);
+      className + ' ' + ol.css.CLASS_BUTTON_GROUP, inElement, outElement);
 
   goog.base(this, {
     element: element,

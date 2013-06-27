@@ -54,6 +54,17 @@
 .ol-button:hover {
   background-color: rgba(0,60,136,0.7);
 }
+.ol-button-group .ol-button:first-child {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-width: 1px;
+}
+
+.ol-button-group .ol-button:last-child {
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  border-top-width: 1px;
+}
 
 .ol-full-screen {
   position: absolute;
@@ -121,17 +132,6 @@
   position: absolute;
   top: 8px;
   left: 8px;
-}
-.ol-zoom .ol-button:first-child {
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-  border-bottom-width: 1px;
-}
-
-.ol-zoom .ol-button:last-child {
-  border-top-right-radius: 0;
-  border-top-left-radius: 0;
-  border-top-width: 1px;
 }
 .ol-zoom-in, .ol-zoom-out {
   font-weight: bold;
