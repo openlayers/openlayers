@@ -238,14 +238,63 @@ describe('ol.parser.kml', function() {
       });
     });
   });
+
+  describe('parsing states.kml', function() {
+
+    var features;
+    before(function(done) {
+      afterLoadXml('spec/ol/parser/kml/states.kml', function(xml) {
+        var parser = new ol.parser.KML();
+        var obj;
+        try {
+          obj = parser.read(xml);
+        } catch (err) {
+          return done(err);
+        }
+        if (!obj.features) {
+          return done(new Error('Failed to parse features from doc'));
+        }
+        features = obj.features;
+        done();
+      });
+    });
+
+    it('creates 50 features', function() {
+      expect(features).to.have.length(50);
+    });
+
+    it('creates features with heterogenous geometry collections', function() {
+      // TODO: decide if we should instead create features with multiple geoms
+      var feature = features[0];
+      expect(feature).to.be.a(ol.Feature);
+      var geometry = feature.getGeometry();
+      expect(geometry).to.be.a(ol.geom.GeometryCollection);
+    });
+
+    it('parses Point and MultiPolygon for Alaska', function() {
+      var alaska = goog.array.find(features, function(feature) {
+        return feature.get('name') === 'Alaska';
+      });
+      expect(alaska).to.be.a(ol.Feature);
+      var geometry = alaska.getGeometry();
+      expect(geometry).to.be.a(ol.geom.GeometryCollection);
+      expect(geometry.components).to.have.length(2);
+      expect(geometry.components[0]).to.be.a(ol.geom.Point);
+      expect(geometry.components[1]).to.be.a(ol.geom.MultiPolygon);
+    });
+
+  });
+
 });
 
+goog.require('goog.array');
 goog.require('goog.dom.xml');
 
 goog.require('ol.Feature');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.parser.KML');
