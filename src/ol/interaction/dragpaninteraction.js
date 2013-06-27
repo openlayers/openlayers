@@ -80,16 +80,16 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
   // FIXME works for View2D only
 
   var map = mapBrowserEvent.map;
-  var view = map.getView();
+  var view = map.getView().getView2D();
 
   if (this.kinetic_ && this.kinetic_.end()) {
+    var view2DState = view.getView2DState();
     var distance = this.kinetic_.getDistance();
     var angle = this.kinetic_.getAngle();
-    var center = view.getCenter();
-    this.kineticPreRenderFn_ = this.kinetic_.pan(center);
+    this.kineticPreRenderFn_ = this.kinetic_.pan(view2DState.center);
     map.addPreRenderFunction(this.kineticPreRenderFn_);
 
-    var centerpx = map.getPixelFromCoordinate(center);
+    var centerpx = map.getPixelFromCoordinate(view2DState.center);
     var dest = map.getCoordinateFromPixel([
       centerpx[0] - distance * Math.cos(angle),
       centerpx[1] - distance * Math.sin(angle)

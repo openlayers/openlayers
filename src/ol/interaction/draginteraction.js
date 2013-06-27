@@ -119,11 +119,12 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
     }
   } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAGSTART) {
     goog.asserts.assertInstanceof(browserEvent, goog.events.BrowserEvent);
+    var view2DState = view.getView2D().getView2DState();
     this.startX = browserEvent.clientX;
     this.startY = browserEvent.clientY;
     this.deltaX = 0;
     this.deltaY = 0;
-    this.startCenter = /** @type {!ol.Coordinate} */ (view.getCenter());
+    this.startCenter = view2DState.center;
     this.startCoordinate = /** @type {ol.Coordinate} */
         (mapBrowserEvent.getCoordinate());
     var handled = this.handleDragStart(mapBrowserEvent);

@@ -61,11 +61,12 @@ ol.interaction.TouchPan.prototype.handleTouchMove = function(mapBrowserEvent) {
     var deltaX = this.lastCentroid[0] - centroid[0];
     var deltaY = centroid[1] - this.lastCentroid[1];
     var map = mapBrowserEvent.map;
-    var view = map.getView();
+    var view = map.getView().getView2D();
+    var view2DState = view.getView2DState();
     var center = [deltaX, deltaY];
-    ol.coordinate.scale(center, view.getResolution());
-    ol.coordinate.rotate(center, view.getRotation());
-    ol.coordinate.add(center, view.getCenter());
+    ol.coordinate.scale(center, view2DState.resolution);
+    ol.coordinate.rotate(center, view2DState.rotation);
+    ol.coordinate.add(center, view2DState.center);
     map.requestRenderFrame();
     view.setCenter(center);
   }
