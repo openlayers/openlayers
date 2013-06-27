@@ -233,7 +233,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, layer) {
           (l['resourceUrls']['tile'][format]);
       break;
     case 'KVP':
-      requestEncoding = ol.source.WMTSRequestEncoding.REST;
+      requestEncoding = ol.source.WMTSRequestEncoding.KVP;
       urls = [];
       goog.array.forEach(gets, function(elt, index, array) {
         if (elt['constraints']['GetEncoding']['allowedValues'].hasOwnProperty(
