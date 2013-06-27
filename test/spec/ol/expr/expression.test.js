@@ -628,6 +628,38 @@ describe('ol.expr.lib', function() {
   var parse = ol.expr.parse;
   var evaluate = ol.expr.evaluateFeature;
 
+  describe('and() and or()', function() {
+    var f1 = new ol.Feature({
+      name: 'f1',
+      type: '1',
+      foo: 'bar'
+    });
+    var f2 = new ol.Feature({
+      name: 'f2',
+      type: '1',
+      foo: 'bar'
+    });
+    var f3 = new ol.Feature({
+      name: 'f3',
+      type: '2',
+      foo: 'baz'
+    });
+
+    var and = parse('and(name=="f1", type=="1", foo=="bar")');
+    var or = parse('or(name=="f1", type=="1", foo=="bar")');
+
+    it('ANDs multiple attributes', function() {
+      expect(evaluate(and, f1), true);
+      expect(evaluate(and, f2), false);
+      expect(evaluate(and, f3), false);
+    });
+    it('ORs multiple attributes', function() {
+      expect(evaluate(or, f1), true);
+      expect(evaluate(or, f2), true);
+      expect(evaluate(or, f3), false);
+    });
+  });
+
   describe('extent()', function() {
 
     var nw = new ol.Feature({
