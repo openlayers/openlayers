@@ -45,7 +45,8 @@ app.RotateNorthControl = function(opt_options) {
   anchor.addEventListener('touchstart', handleRotateNorth, false);
 
   var element = document.createElement('div');
-  element.className = 'rotate-north ol-unselectable';
+  element.className = 'rotate-north ol-unselectable ' +
+      'ol-button-group ol-vertical';
   element.appendChild(anchor);
 
   ol.control.Control.call(this, {

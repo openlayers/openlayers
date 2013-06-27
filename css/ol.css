@@ -1,3 +1,65 @@
+.ol-button-group {
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+  padding: 2px;
+  position: absolute;
+}
+@media print {
+  .ol-button-group {
+    display: none;
+  }
+}
+.ol-touch .ol-button-group a {
+  font-size: 20px;
+  height: 30px;
+  line-height: 26px;
+}
+div.ol-button-group > * {
+  background-color: rgba(0, 60, 136, 0.5);
+  color: white;
+  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 19px;
+  vertical-align: middle;
+  height: 22px;
+  margin: 1px;
+  padding: 0;
+}
+div.ol-button-group > a {
+  text-decoration: none;
+  color: white;
+}
+.ol-button-group > a:hover, .ol-button-group > a:focus {
+  background-color: rgba(0, 60, 136, 0.7);
+  outline: none;
+}
+.ol-button-group.ol-vertical > * {
+  display: block;
+}
+.ol-button-group.ol-horizontal > * {
+  display: inline-block;
+  margin-right: 0;
+}
+.ol-button-group.ol-vertical > *:first-child {
+  border-top-right-radius: 2px;
+  border-top-left-radius: 2px;
+}
+.ol-button-group.ol-vertical > *:last-child {
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+.ol-button-group.ol-horizontal > *:first-child {
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+.ol-button-group.ol-horizontal > *:last-child {
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  margin-right: 1px;
+}
+
 .ol-attribution {
   position: absolute;
   text-align: right;
@@ -31,32 +93,14 @@
   border: 2px solid red;
 }
 .ol-full-screen {
-  background: rgba(255,255,255,0.4);
-  border-radius: 4px;
-  padding: 2px;
-  position: absolute;
   right: 8px;
   top: 8px;
 }
-@media print {
-  .ol-full-screen {
-    display: none;
-  }
-}
 .ol-full-screen a {
-  background: rgba(0,60,136,0.5);
-  color: white;
-  display: block;
-  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
-  font-size: 18px;
-  font-weight: bold;
-  height: 22px;
-  line-height: 19px;
-  margin: 1px;
-  padding: 0;
-  text-align: center;
-  text-decoration: none;
   width: 22px;
+}
+.ol-touch .ol-full-screen a {
+  width: 30px;
 }
 a.ol-full-screen-false:after {
   content: "\2194";
@@ -65,15 +109,6 @@ a.ol-full-screen-true:after {
   content: "\00d7";
 }
 
-.ol-full-screen div {
-  border-radius: 2px;
-}
-.ol-full-screen div a {
-  border-radius: 2px;
-}
-.ol-full-screen a:hover {
-  background: rgba(0,60,136,0.7);
-}
 .ol-logo {
   bottom: 0;
   left: 0;
@@ -125,53 +160,17 @@ a.ol-full-screen-true:after {
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 .ol-zoom {
-  position: absolute;
   top: 8px;
   left: 8px;
-  background: rgba(255,255,255,0.4);
-  border-radius: 4px;
-  padding: 2px;
 }
-@media print {
-  .ol-zoom {
-    display: none;
-  }
-}
-
 .ol-zoom a {
-  display: block;
-  margin: 1px;
-  padding: 0;
-  color: white;
-  font-size: 18px;
-  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
-  font-weight: bold;
-  text-decoration: none;
-  text-align: center;
-  height: 22px;
   width: 22px;
-  line-height: 19px;
-  background: rgba(0,60,136,0.5);
 }
 .ol-touch .ol-zoom a {
-  font-size: 20px;
-  height: 30px;
   width: 30px;
-  line-height: 26px;
-}
-.ol-zoom a:hover {
-  background: rgba(0,60,136,0.7);
-}
-
-.ol-zoom-in {
-  border-radius: 2px 2px 0 0;
 }
 .ol-zoom-in:before {
   content: "+";
-}
-
-.ol-zoom-out {
-  border-radius: 0 0 2px 2px;
 }
 .ol-zoom-out:before {
   content: "\2212";
@@ -195,50 +194,25 @@ a.ol-full-screen-true:after {
   display: block;
   padding: 0;
   margin: 2px;
-  background: rgba(0,60,136,0.5);
+  background-color: rgba(0, 60, 136, 0.5);
   border-radius: 2px;
   outline: none;
   overflow: hidden;
   height: 20px;
   width: 24px;
 }
+
 .ol-zoom-extent {
-  position: absolute;
-  background: rgba(255,255,255,0.4);
-  border-radius: 4px;
-  left: 8px;
-  padding: 2px;
   top: 65px;
-}
-@media print {
-  .ol-zoom-extent {
-    display: none;
-  }
+  left: 8px;
 }
 .ol-zoom-extent a {
-  display: block;
-  margin: 1px;
-  padding: 0;
-  color: white;
-  font-size: 16px;
-  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
-  font-weight: bold;
-  text-decoration: none;
-  text-align: center;
-  height: 22px;
+  line-height: 20px;
   width: 22px;
-  background-color: rgba(0, 60, 136, 0.5);
-  border-radius: 2px;
 }
 .ol-touch .ol-zoom-extent a {
-  font-size: 20px;
-  height: 30px;
   width: 30px;
-  line-height: 26px;
-}
-.ol-zoom-extent a:hover {
-  background-color: rgba(0, 60, 136, 0.7);
 }
 .ol-zoom-extent a:after {
-    content: "E";
+  content: "E";
 }
