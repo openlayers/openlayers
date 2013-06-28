@@ -574,20 +574,6 @@ def plovr_jar(t):
     t.info('downloaded %r', t.name)
 
 
-@target('gh-pages', 'host-examples', 'doc', phony=True)
-def gh_pages(t):
-    with t.tempdir() as tempdir:
-        t.run('%(GIT)s', 'clone', '--branch', 'gh-pages',
-              'git@github.com:openlayers/ol3.git', tempdir)
-        with t.chdir(tempdir):
-            t.rm_rf('%(BRANCH)s')
-        t.cp_r('build/gh-pages/%(BRANCH)s', tempdir + '/%(BRANCH)s')
-        with t.chdir(tempdir):
-            t.run('%(GIT)s', 'add', '--all', '%(BRANCH)s')
-            t.run('%(GIT)s', 'commit', '--message', 'Updated')
-            t.run('%(GIT)s', 'push', 'origin', 'gh-pages')
-
-
 virtual('doc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
