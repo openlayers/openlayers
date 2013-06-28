@@ -26,7 +26,7 @@ TopoJSONTopology.prototype.transform;
 
 
 /**
- * @type {Object.<string, TopoJSONGeometry>}
+ * @type {Object.<string, (TopoJSONGeometry|TopoJSONGeometryCollection)>}
  */
 TopoJSONTopology.prototype.objects;
 
@@ -73,6 +73,19 @@ TopoJSONGeometry.prototype.type;
  * @type {string|number|undefined}
  */
 TopoJSONGeometry.prototype.id;
+
+
+
+/**
+ * @constructor
+ */
+var TopoJSONGeometryCollection = function() {};
+
+
+/**
+ * @type {Array.<TopoJSONGeometry>}
+ */
+TopoJSONGeometryCollection.prototype.geometries;
 
 
 

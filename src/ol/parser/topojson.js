@@ -145,6 +145,31 @@ ol.parser.TopoJSON.prototype.readFeatureFromGeometry_ = function(object, arcs,
 
 
 /**
+ * Create features from a TopoJSON GeometryCollection object.
+ *
+ * @param {TopoJSONGeometryCollection} collection TopoJSON GeometryCollection
+ *     object.
+ * @param {Array.<ol.geom.VertexArray>} arcs Array of arcs.
+ * @param {Array.<number>} scale Scale for each dimension.
+ * @param {Array.<number>} translate Translation for each dimension.
+ * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
+ * @return {Array.<ol.Feature>} Array of features.
+ * @private
+ */
+ol.parser.TopoJSON.prototype.readFeaturesFromGeometryCollection_ = function(
+    collection, arcs, scale, translate, opt_options) {
+  var geometries = collection.geometries;
+  var num = geometries.length;
+  var features = new Array(num);
+  for (var i = 0; i < num; ++i) {
+    features[i] = this.readFeatureFromGeometry_(geometries[i], arcs, scale,
+        translate, opt_options);
+  }
+  return features;
+};
+
+
+/**
  * @param {TopoJSONTopology} topology TopoJSON object.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {Array.<ol.Feature>} Parsed features.
@@ -160,8 +185,15 @@ ol.parser.TopoJSON.prototype.readFeaturesFromTopology_ = function(
   var objects = topology.objects;
   var features = [];
   for (var key in objects) {
-    features.push(this.readFeatureFromGeometry_(objects[key], arcs, scale,
-        translate, opt_options));
+    if (objects[key].type === 'GeometryCollection') {
+      features.push.apply(features, this.readFeaturesFromGeometryCollection_(
+          /** @type {TopoJSONGeometryCollection} */ (objects[key]),
+          arcs, scale, translate, opt_options));
+    } else {
+      features.push(this.readFeatureFromGeometry_(
+          /** @type {TopoJSONGeometry} */ (objects[key]),
+          arcs, scale, translate, opt_options));
+    }
   }
   return features;
 };
