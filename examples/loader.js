@@ -8,7 +8,7 @@
  *
  *     * hostname - the current hostname (window.location.hostname)
  *     * port - 9810
- *     * mode - ADVANCED
+ *     * mode - RAW
  *     * id - id param in loader.js query string; defaults to 'ol' if not set
  *
  * Usage:
@@ -20,7 +20,7 @@
   var params = {
     hostname: window.location.hostname,
     port: '9810',
-    mode: 'ADVANCED',
+    mode: 'RAW',
     id: 'ol'
   };
   if (window.location.protocol === 'file:' && !params.hostname) {
