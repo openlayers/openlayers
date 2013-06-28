@@ -10,18 +10,44 @@
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
     <style type="text/css">
       .rotate-north {
-        top: 65px;
+        top: 100px;
         left: 8px;
       }
       div.rotate-north a {
-        line-height: 20px;
-        font-size: 19px;
         width: 22px;
       }
       .ol-touch div.rotate-north a {
         line-height: 27px;
         font-size: 21px;
         width: 30px;
+      }
+
+      div.ol-zoom-extent a, div.ol-full-screen a, div.rotate-north a {
+        font-family: FontAwesome;
+        font-size: 16px;
+        line-height: 22px;
+      }
+      .ol-touch div.ol-zoom-extent a, .ol-touch div.ol-full-screen a,
+            .ol-touch div.rotate-north a {
+        font-size: 20px;
+        line-height: 30px;
+      }
+
+      div.ol-zoom-extent a:after {
+        content: "\f047";
+      }
+      div.ol-full-screen a.ol-full-screen-false:after {
+        content: "\f0b2";
+      }
+      div.ol-full-screen a.ol-full-screen-true:after {
+        content: "\f066";
+      }
+
+      .ol-touch .ol-zoom-extent {
+        top: 80px;
+      }
+      .ol-touch .rotate-north {
+        top: 120px;
       }
     </style>
     <title>ol3 custom controls example</title>

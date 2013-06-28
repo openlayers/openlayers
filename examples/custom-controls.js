@@ -3,6 +3,8 @@ goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.control.Control');
+goog.require('ol.control.FullScreen');
+goog.require('ol.control.ZoomToExtent');
 goog.require('ol.control.defaults');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.source.OSM');
@@ -32,7 +34,7 @@ app.RotateNorthControl = function(opt_options) {
 
   var anchor = document.createElement('a');
   anchor.href = '#rotate-north';
-  anchor.innerHTML = 'N';
+  anchor.innerHTML = '&#xf062;';
 
   var this_ = this;
   var handleRotateNorth = function(e) {
@@ -66,7 +68,9 @@ ol.inherits(app.RotateNorthControl, ol.control.Control);
 
 var map = new ol.Map({
   controls: ol.control.defaults({}, [
-    new app.RotateNorthControl()
+    new ol.control.ZoomToExtent(),
+    new app.RotateNorthControl(),
+    new ol.control.FullScreen()
   ]),
   layers: [
     new ol.layer.TileLayer({
