@@ -1,6 +1,7 @@
 goog.provide('ol.parser.TopoJSON');
 
 goog.require('ol.Feature');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
@@ -20,7 +21,18 @@ goog.require('ol.parser.StringFeatureParser');
  * @implements {ol.parser.StringFeatureParser}
  * @extends {ol.parser.Parser}
  */
-ol.parser.TopoJSON = function() {};
+ol.parser.TopoJSON = function() {
+
+  /**
+   * Common feature for all shared vertex creation.
+   * // TODO: make feature optional in shared vertex callback
+   *
+   * @type {ol.Feature}
+   * @private
+   */
+  this.feature_ = new ol.Feature();
+
+};
 goog.inherits(ol.parser.TopoJSON, ol.parser.Parser);
 goog.addSingletonGetter(ol.parser.TopoJSON);
 
@@ -212,8 +224,12 @@ ol.parser.TopoJSON.prototype.readLineString_ = function(object, arcs,
     opt_options) {
   var coordinates = this.concatenateArcs_(object.arcs, arcs);
   // TODO: make feature optional in callback
-  // TODO: get shared structure
-  return new ol.geom.LineString(coordinates);
+  var callback = opt_options && opt_options.callback;
+  var sharedVertices;
+  if (callback) {
+    sharedVertices = callback(this.feature_, ol.geom.GeometryType.LINESTRING);
+  }
+  return new ol.geom.LineString(coordinates, sharedVertices);
 };
 
 
@@ -235,8 +251,13 @@ ol.parser.TopoJSON.prototype.readMultiLineString_ = function(object, arcs,
     coordinates[i] = this.concatenateArcs_(array[i], arcs);
   }
   // TODO: make feature optional in callback
-  // TODO: get shared structure
-  return new ol.geom.MultiLineString(coordinates);
+  var callback = opt_options && opt_options.callback;
+  var sharedVertices;
+  if (callback) {
+    sharedVertices = callback(this.feature_,
+        ol.geom.GeometryType.MULTILINESTRING);
+  }
+  return new ol.geom.MultiLineString(coordinates, sharedVertices);
 };
 
 
@@ -257,8 +278,12 @@ ol.parser.TopoJSON.prototype.readMultiPoint_ = function(object, scale,
     this.transformVertex_(coordinates[i], scale, translate);
   }
   // TODO: make feature optional in callback
-  // TODO: get shared structure
-  return new ol.geom.MultiPoint(coordinates);
+  var callback = opt_options && opt_options.callback;
+  var sharedVertices;
+  if (callback) {
+    sharedVertices = callback(this.feature_, ol.geom.GeometryType.MULTIPOINT);
+  }
+  return new ol.geom.MultiPoint(coordinates, sharedVertices);
 };
 
 
@@ -289,8 +314,12 @@ ol.parser.TopoJSON.prototype.readMultiPolygon_ = function(object, arcs,
     coordinates[i] = ringCoords;
   }
   // TODO: make feature optional in callback
-  // TODO: get shared structure
-  return new ol.geom.MultiPolygon(coordinates);
+  var callback = opt_options && opt_options.callback;
+  var sharedVertices;
+  if (callback) {
+    sharedVertices = callback(this.feature_, ol.geom.GeometryType.MULTIPOLYGON);
+  }
+  return new ol.geom.MultiPolygon(coordinates, sharedVertices);
 };
 
 
@@ -309,8 +338,12 @@ ol.parser.TopoJSON.prototype.readPoint_ = function(object, scale, translate,
   var coordinates = object.coordinates;
   this.transformVertex_(coordinates, scale, translate);
   // TODO: make feature optional in callback
-  // TODO: get shared structure
-  return new ol.geom.Point(coordinates);
+  var callback = opt_options && opt_options.callback;
+  var sharedVertices;
+  if (callback) {
+    sharedVertices = callback(this.feature_, ol.geom.GeometryType.POINT);
+  }
+  return new ol.geom.Point(coordinates, sharedVertices);
 };
 
 
@@ -332,8 +365,12 @@ ol.parser.TopoJSON.prototype.readPolygon_ = function(object, arcs,
     coordinates[i] = this.concatenateArcs_(array[i], arcs);
   }
   // TODO: make feature optional in callback
-  // TODO: get shared structure
-  return new ol.geom.Polygon(coordinates);
+  var callback = opt_options && opt_options.callback;
+  var sharedVertices;
+  if (callback) {
+    sharedVertices = callback(this.feature_, ol.geom.GeometryType.POLYGON);
+  }
+  return new ol.geom.Polygon(coordinates, sharedVertices);
 };
 
 
