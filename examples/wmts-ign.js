@@ -67,8 +67,8 @@ xhr.onload = function() {
       // we need to set the URL because it must include the key.
       sourceOptions.urls = [wmtsUrl];
       sourceOptions.attributions = [attribution];
+      sourceOptions.logo = layerLogos[i];
       source = new ol.source.WMTS(sourceOptions);
-      source.setLogo(layerLogos[i]);
       layer = new ol.layer.TileLayer({source: source});
       map.addLayer(layer);
     }
