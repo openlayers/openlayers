@@ -181,7 +181,7 @@ ol.parser.TopoJSON.prototype.readFeaturesFromTopology_ = function(
   var scale = transform.scale;
   var translate = transform.translate;
   var arcs = topology.arcs;
-  this.transformArcs_(scale, translate, arcs);
+  this.transformArcs_(arcs, scale, translate);
   var objects = topology.objects;
   var features = [];
   for (var key in objects) {
