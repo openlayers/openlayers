@@ -1,9 +1,10 @@
 goog.require('ol');
+goog.require('ol.ImageTile');
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
-goog.require('ol.source.OSM');
+goog.require('ol.proj');
+goog.require('ol.source.ImageTileSource');
 
 
 /**
@@ -13,8 +14,12 @@ window.app = {};
 var app = window.app;
 
 
+
 /**
+ * The custom tile
+ *
  * @constructor
+ * @inheritDoc
  * @extends {ol.ImageTile}
  */
 app.Tile = function(tileCoord, state, src, crossOrigin) {
@@ -23,6 +28,9 @@ app.Tile = function(tileCoord, state, src, crossOrigin) {
 ol.inherits(app.Tile, ol.ImageTile);
 
 
+/**
+ * @inheritDoc
+ */
 app.Tile.prototype.loadImage = function(src) {
   var that = this;
   window.setTimeout(function() {
