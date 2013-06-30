@@ -27,3 +27,10 @@ oli.control.Control.prototype.handleMapPostrender = function(mapEvent) {};
  * @return {undefined} Undefined.
  */
 oli.control.Control.prototype.setMap = function(map) {};
+
+
+/**
+ * @param {string} src The URL that should get loaded.
+ * @return {undefined} Undefined.
+ */
+oli.ImageTile.prototype.loadImage = function(src) {};

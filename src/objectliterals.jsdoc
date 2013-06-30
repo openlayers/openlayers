@@ -406,6 +406,20 @@
  */
 
 /**
+ * @typedef {Object} ol.source.ImageTileOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {null|string|undefined} crossOrigin Cross origin.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {boolean|undefined} opaque Opaque or not.
+ * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
+ * @property {ol.TileUrlFunctionType|undefined} tileUrlFunction Tile URL
+ *     function,
+ * @property {ol.ImageTileConstructor|undefined} tileClass Tile class.
+ */
+
+/**
  * @typedef {Object} ol.source.OSMOptions
  * @property {ol.Attribution|undefined} attribution Attribution.
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.

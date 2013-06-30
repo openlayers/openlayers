@@ -23,7 +23,8 @@ goog.require('ol.tilegrid.TileGrid');
  *            opaque: (boolean|undefined),
  *            projection: ol.ProjectionLike,
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
- *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
+ *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
+ *            tileClass: (ol.ImageTileConstructor|undefined)}}
  */
 ol.source.ImageTileOptions;
 
@@ -52,6 +53,14 @@ ol.source.ImageTileSource = function(options) {
   this.tileUrlFunction = goog.isDef(options.tileUrlFunction) ?
       options.tileUrlFunction :
       ol.TileUrlFunction.nullTileUrlFunction;
+
+  /**
+   * @protected
+   * @type {ol.ImageTileConstructor}
+   */
+  this.tileClass = goog.isDef(options.tileClass) ?
+      options.tileClass :
+      ol.ImageTile;
 
   /**
    * @private
@@ -97,7 +106,7 @@ ol.source.ImageTileSource.prototype.getTile = function(z, x, y, projection) {
     goog.asserts.assert(projection);
     var tileCoord = new ol.TileCoord(z, x, y);
     var tileUrl = this.tileUrlFunction(tileCoord, projection);
-    var tile = new ol.ImageTile(
+    var tile = new this.tileClass(
         tileCoord,
         goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,
         goog.isDef(tileUrl) ? tileUrl : '',
