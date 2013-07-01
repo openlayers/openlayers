@@ -29,6 +29,7 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
     'Box': function(node, container) {
       var coordinates = [];
       this.readChildNodes(node, coordinates);
+      container.projection = node.getAttribute('srsName');
       container.bounds = [coordinates[0][0][0], coordinates[0][1][0],
         coordinates[0][0][1], coordinates[0][1][1]];
     }
@@ -90,10 +91,10 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
     },
     'Box': function(extent) {
       var node = this.createElementNS('gml:Box');
-      this.writeNode('coordinates', [[extent.minX, extent.minY],
-            [extent.maxX, extent.maxY]], null, node);
+      this.writeNode('coordinates', [[extent[0], extent[1]],
+            [extent[2], extent[3]]], null, node);
       // srsName attribute is optional for gml:Box
-      if (goog.isDef(this.srsName)) {
+      if (goog.isDefAndNotNull(this.srsName)) {
         node.setAttribute('srsName', this.srsName);
       }
       return node;

@@ -182,8 +182,9 @@ ol.parser.XML.prototype.createElementNS = function(name, opt_uri) {
  * results to a node.
  *
  * @param {string} name The name of a node to generate. Only use a local name.
- * @param {Object} obj Structure containing data for the writer.
- * @param {string=} opt_uri The name space uri to which the node belongs.
+ * @param {Object|string|number} obj Structure containing data for the writer.
+ * @param {?string=} opt_uri The name space uri to which the node
+ *     belongs.
  * @param {Element=} opt_parent Result will be appended to this node. If no
  * parent is supplied, the node will not be appended to anything.
  * @return {?Element} The child node.
@@ -272,4 +273,23 @@ ol.parser.XML.prototype.serialize = function(node) {
   } else {
     return goog.dom.xml.serialize(node);
   }
+};
+
+
+/**
+ * Create a document fragment node that can be appended to another node
+ *     created by createElementNS. This will call
+ *     document.createDocumentFragment outside of IE. In IE, the ActiveX
+ *     object's createDocumentFragment method is used.
+ *
+ * @return {Element} A document fragment.
+ */
+ol.parser.XML.prototype.createDocumentFragment = function() {
+  var element;
+  if (this.xmldom) {
+    element = this.xmldom.createDocumentFragment();
+  } else {
+    element = document.createDocumentFragment();
+  }
+  return element;
 };

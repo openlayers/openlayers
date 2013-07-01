@@ -97,7 +97,14 @@ ol.expr.lib = {};
 ol.expr.functions = {
   EXTENT: 'extent',
   FID: 'fid',
-  GEOMETRY_TYPE: 'geometryType'
+  GEOMETRY_TYPE: 'geometryType',
+  INTERSECTS: 'intersects',
+  CONTAINS: 'contains',
+  DWITHIN: 'dwithin',
+  WITHIN: 'within',
+  LIKE: 'like',
+  IEQ: 'ieq',
+  INEQ: 'ineq'
 };
 
 
@@ -107,12 +114,16 @@ ol.expr.functions = {
  * @param {number} maxX Maximum x-coordinate value.
  * @param {number} minY Minimum y-coordinate value.
  * @param {number} maxY Maximum y-coordinate value.
+ * @param {string=} opt_projection Projection of the extent.
+ * @param {string=} opt_attribute Name of the geometry attribute to use.
  * @return {boolean} The provided extent intersects the feature's extent.
  * @this {ol.Feature}
  */
-ol.expr.lib[ol.expr.functions.EXTENT] = function(minX, maxX, minY, maxY) {
+ol.expr.lib[ol.expr.functions.EXTENT] = function(minX, maxX, minY, maxY,
+    opt_projection, opt_attribute) {
   var intersects = false;
-  var geometry = this.getGeometry();
+  var geometry = goog.isDef(opt_attribute) ?
+      this.getAttributes()[opt_attribute] : this.getGeometry();
   if (geometry) {
     intersects = ol.extent.intersects(geometry.getBounds(),
         [minX, maxX, minY, maxY]);
@@ -143,6 +154,75 @@ ol.expr.lib[ol.expr.functions.FID] = function(var_args) {
 
 
 /**
+ * Determine if a feature attribute is like the provided value.
+ * @param {string} attribute The name of the attribute to test for.
+ * @param {string} value The value to test for.
+ * @param {string} wildCard The wildcard character to use.
+ * @param {string} singleChar The single character to use.
+ * @param {string} escapeChar The escape character to use.
+ * @param {boolean} matchCase Should we match case or not?
+ * @this {ol.Feature}
+ */
+ol.expr.lib[ol.expr.functions.LIKE] = function(attribute, value, wildCard,
+    singleChar, escapeChar, matchCase) {
+  if (wildCard == '.') {
+    throw new Error('"." is an unsupported wildCard character for ' +
+        'ol.filter.Comparison');
+  }
+  // set UMN MapServer defaults for unspecified parameters
+  wildCard = goog.isDef(wildCard) ? wildCard : '*';
+  singleChar = goog.isDef(singleChar) ? singleChar : '.';
+  escapeChar = goog.isDef(escapeChar) ? escapeChar : '!';
+  var val;
+  val = value.replace(
+      new RegExp('\\' + escapeChar + '(.|$)', 'g'), '\\$1');
+  val = value.replace(
+      new RegExp('\\' + singleChar, 'g'), '.');
+  val = value.replace(
+      new RegExp('\\' + wildCard, 'g'), '.*');
+  val = value.replace(
+      new RegExp('\\\\.\\*', 'g'), '\\' + wildCard);
+  val = value.replace(
+      new RegExp('\\\\\\.', 'g'), '\\' + singleChar);
+  var attributes = this.getAttributes();
+  var modifiers = (matchCase === false) ? 'gi' : 'g';
+  return new RegExp(val, modifiers).test(attributes[attribute]);
+};
+
+
+/**
+ * Case insensitive comparison for equality.
+ * @param {string} attribute Name of the attribute.
+ * @param {string} value Value to test for equality.
+ * @this {ol.Feature}
+ */
+ol.expr.lib[ol.expr.functions.IEQ] = function(attribute, value) {
+  var attributes = this.getAttributes();
+  if (goog.isString(value) && goog.isString(attributes[attribute])) {
+    return value.toUpperCase() == attributes[attribute].toUpperCase();
+  } else {
+    return value == attributes[attribute];
+  }
+};
+
+
+/**
+ * Case insensitive comparison for non-equality.
+ * @param {string} attribute Name of the attribute.
+ * @param {string} value Value to test for non-equality.
+ * @this {ol.Feature}
+ */
+ol.expr.lib[ol.expr.functions.INEQ] = function(attribute, value) {
+  var attributes = this.getAttributes();
+  if (goog.isString(value) && goog.isString(attributes[attribute])) {
+    return value.toUpperCase() == attributes[attribute].toUpperCase();
+  } else {
+    return value != attributes[attribute];
+  }
+};
+
+
+/**
  * Determine if a feature's default geometry is of the given type.
  * @param {ol.geom.GeometryType} type Geometry type.
  * @return {boolean} The feature's default geometry is of the given type.
@@ -155,4 +235,32 @@ ol.expr.lib[ol.expr.functions.GEOMETRY_TYPE] = function(type) {
     same = geometry.getType() === type;
   }
   return same;
+};
+
+
+ol.expr.lib[ol.expr.functions.INTERSECTS] = function(geom, opt_projection,
+    opt_attribute) {
+  throw new Error('Spatial function not implemented: ' +
+      ol.expr.functions.INTERSECTS);
+};
+
+
+ol.expr.lib[ol.expr.functions.WITHIN] = function(geom, opt_projection,
+    opt_attribute) {
+  throw new Error('Spatial function not implemented: ' +
+      ol.expr.functions.WITHIN);
+};
+
+
+ol.expr.lib[ol.expr.functions.CONTAINS] = function(geom, opt_projeciton,
+    opt_attribute) {
+  throw new Error('Spatial function not implemented: ' +
+      ol.expr.functions.CONTAINS);
+};
+
+
+ol.expr.lib[ol.expr.functions.DWITHIN] = function(geom, distance, units,
+    opt_projection, opt_attribute) {
+  throw new Error('Spatial function not implemented: ' +
+      ol.expr.functions.DWITHIN);
 };
