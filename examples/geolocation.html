@@ -46,11 +46,19 @@
 
         <div class="span12">
           <h4 id="title">Geolocation example</h4>
+          <label class="checkbox" for="track">
+            <input id="track" type="checkbox"/>track position
+          </label>
+          <p>position accuracy : <code id="accuracy"></code></p>
+          <p>altitude : <code id="altitude"></code></p>
+          <p>altitude accuracy : <code id="altitudeAccuracy"></code></p>
+          <p>heading : <code id="heading"></code></p>
+          <p>speed : <code id="speed"></code></p>
+
           <p id="shortdesc">Example of a geolocation map.</p>
           <div id="docs">
             <p>See the <a href="geolocation.js" target="_blank">geolocation.js source</a> to see how this is done.</p>
           </div>
-          <button id="locate"><i class="icon-screenshot"></i> locate</button>
           <div id="tags">geolocation, openstreetmap</div>
         </div>
         <div class="span4 pull-right">
