@@ -28,7 +28,7 @@ var overviewMap = new ol.Map({
 });
 
 var setOverviewResolution = function() {
-  overviewView.setResolution(4 * mainView.getResolution());
+  overviewView.setResolution(16 * mainView.getResolution());
 };
 
 // have both maps share the same layers
