@@ -140,10 +140,6 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
 
 
 /**
- * @param {goog.events.Event} event Event.
- * @private
- */
-/**
  * Called on main map view center change. If the overview map extent doesn't
  * contain the main map view extent, reset the overview extent.
  * @param {goog.events.Event} event Event.
@@ -181,6 +177,11 @@ ol.control.OverviewMap.prototype.handleSizeChanged_ = function(event) {
  * Reset the overview map extent if the box size (width or
  * height) is less than the size of the overview map size times minRatio
  * or is greater than the size of the overview size times maxRatio.
+ *
+ * If the map extent was not reset, the box size can fits in the defined
+ * ratio sizes. This method then checks if is contained inside the overview
+ * map current extent. If not, recenter the overview map to the current
+ * main map center location.
  * @private
  */
 ol.control.OverviewMap.prototype.validateExtent_ = function() {
