@@ -1,5 +1,5 @@
-Finding your way round
-----------------------
+Finding your way around
+-----------------------
 See the class list to the right and especially take a look at {@link ol.Map} and {@link ol.layer.Layer} because those are the central objects.
 
 In general every use of OpenLayers starts by initializing a map, then adding the required layers. Controls and interactions can be added to change the behavior of the map.

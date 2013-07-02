@@ -60,7 +60,8 @@ describe('ol.layer.Layer', function() {
         hue: 180,
         opacity: 0.5,
         saturation: 5,
-        visible: false
+        visible: false,
+        foo: 42
       });
 
       expect(layer.getBrightness()).to.be(0.5);
@@ -69,6 +70,7 @@ describe('ol.layer.Layer', function() {
       expect(layer.getOpacity()).to.be(0.5);
       expect(layer.getSaturation()).to.be(5);
       expect(layer.getVisible()).to.be(false);
+      expect(layer.get('foo')).to.be(42);
 
       goog.dispose(layer);
     });

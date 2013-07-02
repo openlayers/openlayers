@@ -346,19 +346,32 @@ def serve_precommit(t):
           'buildcfg/ol-all.json', 'buildcfg/test.json')
 
 
-virtual('lint', 'build/lint-timestamp', 'build/check-requires-timestamp',
-        'build/check-whitespace-timestamp')
+virtual('lint', 'build/lint-timestamp', 'build/lint-generated-timestamp',
+        'build/check-requires-timestamp', 'build/check-whitespace-timestamp')
 
 
-@target('build/lint-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC, EXAMPLES_SRC,
-        SPEC, precious=True)
+@target('build/lint-timestamp', SRC, EXAMPLES_SRC, SPEC, precious=True)
 def build_lint_src_timestamp(t):
+    t.run('%(GJSLINT)s',
+          '--jslint_error=all',
+          '--strict',
+          t.newer(t.dependencies))
+    t.touch()
+
+
+@target('build/lint-generated-timestamp', INTERNAL_SRC, EXTERNAL_SRC,
+        precious=True)
+def build_lint_generated_timestamp(t):
     limited_doc_files = [
         path
         for path in ifind('externs', 'build/src/external/externs')
         if path.endswith('.js')]
     t.run('%(GJSLINT)s',
           '--jslint_error=all',
+          # ignore error for max line length (for these auto-generated sources)
+          '--disable=110',
+          # for a complete list of error codes to allow, see
+          # http://closure-linter.googlecode.com/svn/trunk/closure_linter/errors.py
           '--limited_doc_files=%s' % (','.join(limited_doc_files),),
           '--strict',
           t.newer(t.dependencies))
@@ -559,20 +572,6 @@ def plovr_jar(t):
     t.download('https://plovr.googlecode.com/files/' +
                os.path.basename(PLOVR_JAR), md5=PLOVR_JAR_MD5)
     t.info('downloaded %r', t.name)
-
-
-@target('gh-pages', 'host-examples', 'doc', phony=True)
-def gh_pages(t):
-    with t.tempdir() as tempdir:
-        t.run('%(GIT)s', 'clone', '--branch', 'gh-pages',
-              'git@github.com:openlayers/ol3.git', tempdir)
-        with t.chdir(tempdir):
-            t.rm_rf('%(BRANCH)s')
-        t.cp_r('build/gh-pages/%(BRANCH)s', tempdir + '/%(BRANCH)s')
-        with t.chdir(tempdir):
-            t.run('%(GIT)s', 'add', '--all', '%(BRANCH)s')
-            t.run('%(GIT)s', 'commit', '--message', 'Updated')
-            t.run('%(GIT)s', 'push', 'origin', 'gh-pages')
 
 
 virtual('doc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))

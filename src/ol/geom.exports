@@ -1,4 +1,13 @@
 @exportSymbol ol.geom.GeometryType
+@exportProperty ol.geom.GeometryType.POINT
+@exportProperty ol.geom.GeometryType.LINEARRING
+@exportProperty ol.geom.GeometryType.LINESTRING
+@exportProperty ol.geom.GeometryType.POLYGON
+@exportProperty ol.geom.GeometryType.MULTIPOINT
+@exportProperty ol.geom.GeometryType.MULTILINESTRING
+@exportProperty ol.geom.GeometryType.MULTIPOLYGON
+@exportProperty ol.geom.GeometryType.GEOMETRYCOLLECTION
+
 @exportSymbol ol.geom.Point
 @exportSymbol ol.geom.LineString
 @exportSymbol ol.geom.Polygon

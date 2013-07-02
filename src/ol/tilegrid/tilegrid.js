@@ -193,7 +193,7 @@ ol.tilegrid.TileGrid.prototype.getResolutions = function() {
  */
 ol.tilegrid.TileGrid.prototype.getTileCoordChildTileRange =
     function(tileCoord, opt_tileRange, opt_extent) {
-  if (tileCoord.z < this.resolutions_.length) {
+  if (tileCoord.z < this.maxZoom) {
     var tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
     return this.getTileRangeForExtentAndZ(
         tileCoordExtent, tileCoord.z + 1, opt_tileRange);

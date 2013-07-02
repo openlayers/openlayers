@@ -139,7 +139,7 @@
 
 /**
  * @typedef {Object} ol.control.AttributionOptions
- * @property {string|undefined} className Class name.
+ * @property {string|undefined} className CSS class name. Default is 'ol-attribution'.
  * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
  */
@@ -164,7 +164,7 @@
 
 /**
  * @typedef {Object} ol.control.FullScreenOptions
- * @property {string|undefined} className Class name.
+ * @property {string|undefined} className CSS class name. Default is 'ol-full-screen'.
  * @property {boolean|undefined} keys Full keyboard access.
  * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
@@ -172,20 +172,21 @@
 
 /**
  * @typedef {Object} ol.control.LogoOptions
- * @property {string|undefined} className Class name.
+ * @property {string|undefined} className CSS class name. Default is 'ol-logo'.
  * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
  */
 
 /**
  * @typedef {Object} ol.control.MousePositionOptions
- * @property {string|undefined} className Class name.
+ * @property {string|undefined} className CSS class name. Default is 'ol-mouse-position'.
  * @property {ol.CoordinateFormatType|undefined} coordinateFormat Coordinate
  *     format.
  * @property {ol.Map|undefined} map Map.
  * @property {ol.ProjectionLike} projection Projection.
  * @property {Element|undefined} target Target.
  * @property {string|undefined} undefinedHTML Markup for undefined coordinates.
+ *     Default is '' (empty string).
  */
 
 /**
@@ -201,7 +202,7 @@
 
 /**
  * @typedef {Object} ol.control.ScaleLineOptions
- * @property {string|undefined} className Class name.
+ * @property {string|undefined} className CSS Class name. Default is 'ol-scale-line'.
  * @property {ol.Map|undefined} map Map.
  * @property {number|undefined} minWidth Minimum width in pixels.
  * @property {Element|undefined} target Target.
@@ -210,15 +211,15 @@
 
 /**
  * @typedef {Object} ol.control.ZoomOptions
- * @property {string|undefined} className Class name.
- * @property {number|undefined} delta Delta.
+ * @property {string|undefined} className CSS class name. Default is 'ol-zoom'.
+ * @property {number|undefined} delta The zoom delta applied on each click.
  * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
  */
 
 /**
  * @typedef {Object} ol.control.ZoomSliderOptions
- * @property {string|undefined} className Class name.
+ * @property {string|undefined} className CSS class name.
  * @property {ol.Map|undefined} map Map.
  * @property {number|undefined} maxResolution Maximum resolution.
  * @property {number|undefined} minResolution Minimum resolution.
@@ -319,8 +320,8 @@
 
 /**
  * @typedef {Object} ol.layer.VectorLayerOptions
- * @property {function(Array.<ol.Feature>):string|
- *     undefined} getTransformFeatureInfo Function to render an array of
+ * @property {function(Array.<ol.Feature>):string|undefined} transformFeatureInfo
+ *     Function to render an array of
  *     features into feature info markup. If not provided, a comma separated
  *     list of the unique ids of the resulting features will be returned.
  * @property {number|undefined} opacity Opacity. 0-1. Default is 1.
@@ -530,53 +531,54 @@
 
 /**
  * @typedef {Object} ol.style.IconOptions
- * @property {string|ol.Expression} url Icon image url.
- * @property {number|ol.Expression|undefined} width Width of the icon in pixels.
- *     Default is the width of the icon image.
- * @property {number|ol.Expression|undefined} height Height of the icon in
- *     pixels. Default is the height of the icon image.
- * @property {number|ol.Expression|undefined} opacity Icon opacity (0-1).
- * @property {number|ol.Expression|undefined} rotation Rotation in degrees
- *     (0-360).
+ * @property {string|ol.expr.Expression} url Icon image url.
+ * @property {number|ol.expr.Expression|undefined} width Width of the icon
+ *     in pixels.  Default is the width of the icon image.
+ * @property {number|ol.expr.Expression|undefined} height Height of the
+ *     icon in pixels. Default is the height of the icon image.
+ * @property {number|ol.expr.Expression|undefined} opacity Icon opacity
+ *     (0-1).
+ * @property {number|ol.expr.Expression|undefined} rotation Rotation in
+ *     degrees (0-360).
  */
 
 /**
  * @typedef {Object} ol.style.LineOptions
- * @property {string|ol.Expression|undefined} strokeColor Stroke color as hex
- *     color code.
- * @property {number|ol.Expression|undefined} strokeWidth Stroke width in
- *     pixels.
- * @property {number|ol.Expression|undefined} opacity Opacity (0-1).
+ * @property {string|ol.expr.Expression|undefined} strokeColor Stroke
+ *     color as hex color code.
+ * @property {number|ol.expr.Expression|undefined} strokeWidth Stroke
+ *     width in pixels.
+ * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
  */
 
 /**
  * @typedef {Object} ol.style.PolygonOptions
- * @property {string|ol.Expression|undefined} fillColor Fill color as hex color
- *     code.
- * @property {string|ol.Expression|undefined} strokeColor Stroke color as hex
- *     color code.
- * @property {number|ol.Expression|undefined} strokeWidth Stroke width in
- *     pixels.
- * @property {number|ol.Expression|undefined} opacity Opacity (0-1).
+ * @property {string|ol.expr.Expression|undefined} fillColor Fill color as
+ *     hex color code.
+ * @property {string|ol.expr.Expression|undefined} strokeColor Stroke
+ *     color as hex color code.
+ * @property {number|ol.expr.Expression|undefined} strokeWidth Stroke
+ *     width in pixels.
+ * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
  */
 
 /**
  * @typedef {Object} ol.style.RuleOptions
- * @property {ol.filter.Filter|undefined} filter Filter.
+ * @property {ol.expr.Expression|string|undefined} filter Filter.
  * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers.
  */
 
 /**
  * @typedef {Object} ol.style.ShapeOptions
  * @property {ol.style.ShapeType|undefined} type Type.
- * @property {number|ol.Expression|undefined} size Size in pixels.
- * @property {string|ol.Expression|undefined} fillColor Fill color as hex color
- *     code.
- * @property {string|ol.Expression|undefined} strokeColor Stroke color as hex
- *     color code.
- * @property {number|ol.Expression|undefined} strokeWidth Stroke width in
- *     pixels.
- * @property {number|ol.Expression|undefined} opacity Opacity (0-1).
+ * @property {number|ol.expr.Expression|undefined} size Size in pixels.
+ * @property {string|ol.expr.Expression|undefined} fillColor Fill color as
+ *     hex color code.
+ * @property {string|ol.expr.Expression|undefined} strokeColor Stroke
+ *     color as hex color code.
+ * @property {number|ol.expr.Expression|undefined} strokeWidth Stroke
+ *     width in pixels.
+ * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
  */
 
 /**
@@ -586,11 +588,11 @@
 
 /**
  * @typedef {Object} ol.style.TextOptions
- * @property {string|ol.Expression|undefined} color Color.
- * @property {string|ol.Expression|undefined} fontFamily Font family.
- * @property {number|ol.Expression|undefined} fontSize Font size in pixels.
- * @property {string|ol.Expression} text Text for the label.
- * @property {number|ol.Expression|undefined} opacity Opacity (0-1).
+ * @property {string|ol.expr.Expression|undefined} color Color.
+ * @property {string|ol.expr.Expression|undefined} fontFamily Font family.
+ * @property {number|ol.expr.Expression|undefined} fontSize Font size in pixels.
+ * @property {string|ol.expr.Expression} text Text for the label.
+ * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
  */
 
 /**

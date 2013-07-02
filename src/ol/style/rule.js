@@ -1,7 +1,10 @@
 goog.provide('ol.style.Rule');
 
+goog.require('goog.asserts');
+
 goog.require('ol.Feature');
-goog.require('ol.filter.Filter');
+goog.require('ol.expr');
+goog.require('ol.expr.Expression');
 goog.require('ol.style.Symbolizer');
 
 
@@ -12,11 +15,22 @@ goog.require('ol.style.Symbolizer');
  */
 ol.style.Rule = function(options) {
 
+
+  var filter = null;
+  if (goog.isDef(options.filter)) {
+    if (goog.isString(options.filter)) {
+      filter = ol.expr.parse(options.filter);
+    } else {
+      goog.asserts.assert(options.filter instanceof ol.expr.Expression);
+      filter = options.filter;
+    }
+  }
+
   /**
-   * @type {ol.filter.Filter}
+   * @type {ol.expr.Expression}
    * @private
    */
-  this.filter_ = goog.isDef(options.filter) ? options.filter : null;
+  this.filter_ = filter;
 
   /**
    * @type {Array.<ol.style.Symbolizer>}
@@ -33,7 +47,8 @@ ol.style.Rule = function(options) {
  * @return {boolean} Does the rule apply to the feature?
  */
 ol.style.Rule.prototype.applies = function(feature) {
-  return goog.isNull(this.filter_) ? true : this.filter_.applies(feature);
+  return goog.isNull(this.filter_) ?
+      true : !!ol.expr.evaluateFeature(this.filter_, feature);
 };
 
 
