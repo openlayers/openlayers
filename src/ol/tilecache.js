@@ -1,6 +1,8 @@
 goog.provide('ol.TileCache');
 
+goog.require('goog.asserts');
 goog.require('ol.Tile');
+goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.structs.LRUCache');
 
@@ -46,12 +48,33 @@ ol.TileCache.prototype.canExpireCache = function() {
 ol.TileCache.prototype.expireCache = function(usedTiles) {
   var tile, zKey;
   while (this.canExpireCache()) {
-    tile = /** @type {ol.Tile} */ (this.peekLast());
+    tile = (this.peekLast());
+    // TODO: Enforce ol.Tile in ol.TileCache#set
+    goog.asserts.assert(tile instanceof ol.Tile,
+        'ol.TileCache#expireCache only works with ol.Tile values.');
     zKey = tile.tileCoord.z.toString();
     if (zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
       break;
     } else {
       this.pop();
+    }
+  }
+};
+
+
+/**
+ * Remove a tile range from the cache, e.g. to invalidate tiles.
+ * @param {ol.TileRange} tileRange The tile range to prune.
+ */
+ol.TileCache.prototype.pruneTileRange = function(tileRange) {
+  var i = this.getCount(),
+      key;
+  while (i--) {
+    key = this.peekLastKey();
+    if (tileRange.contains(ol.TileCoord.createFromString(key))) {
+      this.pop();
+    } else {
+      this.get(key);
     }
   }
 };
