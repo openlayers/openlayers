@@ -1017,9 +1017,8 @@ ol.Map.prototype.unfreezeRendering = function() {
  * third-party code changes the size of the map viewport.
  */
 ol.Map.prototype.updateSize = function() {
-  var target = this.getTarget();
-  if (goog.isDef(target)) {
-    var size = goog.style.getSize(target);
+  if (goog.isDef(this.getTarget())) {
+    var size = goog.style.getSize(this.viewport_);
     this.setSize([size.width, size.height]);
   } else {
     this.setSize(undefined);
