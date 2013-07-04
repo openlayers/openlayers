@@ -59,21 +59,22 @@ ol.View2D = function(opt_options) {
   values[ol.View2DProperty.PROJECTION] = ol.proj.createProjection(
       options.projection, 'EPSG:3857');
 
-  var parts = ol.View2D.createResolutionConstraint_(options);
+  var resolutionConstraintInfo = ol.View2D.createResolutionConstraint_(
+      options);
 
   /**
    * @private
    * @type {number}
    */
-  this.maxResolution_ = parts[1];
+  this.maxResolution_ = resolutionConstraintInfo.maxResolution;
 
   /**
    * @private
    * @type {number}
    */
-  this.minResolution_ = parts[2];
+  this.minResolution_ = resolutionConstraintInfo.minResolution;
 
-  var resolutionConstraint = parts[0];
+  var resolutionConstraint = resolutionConstraintInfo.constraint;
   var rotationConstraint = ol.View2D.createRotationConstraint_(options);
 
   /**
@@ -87,7 +88,7 @@ ol.View2D = function(opt_options) {
     values[ol.View2DProperty.RESOLUTION] = options.resolution;
   } else if (goog.isDef(options.zoom)) {
     values[ol.View2DProperty.RESOLUTION] = resolutionConstraint(
-        this.maxResolution_, options.zoom);
+        this.maxResolution_, options.zoom, 0);
   }
   values[ol.View2DProperty.ROTATION] =
       goog.isDef(options.rotation) ? options.rotation : 0;
@@ -403,7 +404,7 @@ goog.exportProperty(
  * @param {number} zoom Zoom level.
  */
 ol.View2D.prototype.setZoom = function(zoom) {
-  var resolution = this.constrainResolution(this.maxResolution_, zoom);
+  var resolution = this.constrainResolution(this.maxResolution_, zoom, 0);
   this.setResolution(resolution);
 };
 
@@ -411,8 +412,8 @@ ol.View2D.prototype.setZoom = function(zoom) {
 /**
  * @private
  * @param {ol.View2DOptions} options View2D options.
- * @return {Array} Array of three elements: the resolution constraint,
- *     maxResolution, and minResolution.
+ * @return {{constraint: ol.ResolutionConstraintType, maxResolution: number,
+ *     minResolution: number}}
  */
 ol.View2D.createResolutionConstraint_ = function(options) {
   var resolutionConstraint;
@@ -450,7 +451,8 @@ ol.View2D.createResolutionConstraint_ = function(options) {
     resolutionConstraint = ol.ResolutionConstraint.createSnapToPower(
         zoomFactor, maxResolution, maxZoom);
   }
-  return [resolutionConstraint, maxResolution, minResolution];
+  return {constraint: resolutionConstraint, maxResolution: maxResolution,
+    minResolution: minResolution};
 };
 
 
