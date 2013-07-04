@@ -87,8 +87,8 @@ ol.View2D = function(opt_options) {
   if (goog.isDef(options.resolution)) {
     values[ol.View2DProperty.RESOLUTION] = options.resolution;
   } else if (goog.isDef(options.zoom)) {
-    values[ol.View2DProperty.RESOLUTION] = resolutionConstraint(
-        this.maxResolution_, options.zoom, 0);
+    values[ol.View2DProperty.RESOLUTION] = this.constrainResolution(
+        this.maxResolution_, options.zoom);
   }
   values[ol.View2DProperty.ROTATION] =
       goog.isDef(options.rotation) ? options.rotation : 0;
