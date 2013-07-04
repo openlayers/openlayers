@@ -49,6 +49,7 @@ goog.inherits(ol.interaction.KeyboardZoom, ol.interaction.Interaction);
  */
 ol.interaction.KeyboardZoom.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
+  var stopEvent = false;
   if (mapBrowserEvent.type == goog.events.KeyHandler.EventType.KEY) {
     var keyEvent = /** @type {goog.events.KeyEvent} */
         (mapBrowserEvent.browserEvent);
@@ -63,7 +64,8 @@ ol.interaction.KeyboardZoom.prototype.handleMapBrowserEvent =
       ol.interaction.Interaction.zoomByDelta(map, view, delta, undefined,
           ol.interaction.KEYBOARD_ZOOM_DURATION);
       mapBrowserEvent.preventDefault();
-      mapBrowserEvent.stopOtherInteractions();
+      stopEvent = true;
     }
   }
+  return !stopEvent;
 };

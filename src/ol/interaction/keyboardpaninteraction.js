@@ -52,6 +52,7 @@ goog.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);
  */
 ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
+  var stopEvent = false;
   if (mapBrowserEvent.type == goog.events.KeyHandler.EventType.KEY) {
     var keyEvent = /** @type {goog.events.KeyEvent} */
         (mapBrowserEvent.browserEvent);
@@ -81,7 +82,8 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       ol.interaction.Interaction.pan(
           map, view, delta, ol.interaction.KEYBOARD_PAN_DURATION);
       mapBrowserEvent.preventDefault();
-      mapBrowserEvent.stopOtherInteractions();
+      stopEvent = true;
     }
   }
+  return !stopEvent;
 };
