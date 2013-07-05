@@ -28,7 +28,7 @@ goog.inherits(ol.geom.LinearRing, ol.geom.LineString);
 
 
 /**
- * Determine of a vertex array representing a linear ring is in clockwise
+ * Determine if a vertex array representing a linear ring is in clockwise
  * order.
  *
  * This method comes from Green's Theorem and was mentioned in an answer to a
