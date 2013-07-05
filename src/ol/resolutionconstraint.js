@@ -12,33 +12,6 @@ ol.ResolutionConstraintType;
 
 
 /**
- * @param {number} power Power.
- * @param {number} maxResolution Maximum resolution.
- * @param {number=} opt_minResolution Minimum resolution.
- * @return {ol.ResolutionConstraintType} Zoom function.
- */
-ol.ResolutionConstraint.createContinuous =
-    function(power, maxResolution, opt_minResolution) {
-  var minResolution = opt_minResolution || 0;
-  return (
-      /**
-       * @param {number|undefined} resolution Resolution.
-       * @param {number} delta Delta.
-       * @param {number} direction Direction.
-       * @return {number|undefined} Resolution.
-       */
-      function(resolution, delta, direction) {
-        if (goog.isDef(resolution)) {
-          resolution /= Math.pow(power, delta);
-          return goog.math.clamp(resolution, minResolution, maxResolution);
-        } else {
-          return undefined;
-        }
-      });
-};
-
-
-/**
  * @param {Array.<number>} resolutions Resolutions.
  * @return {ol.ResolutionConstraintType} Zoom function.
  */
