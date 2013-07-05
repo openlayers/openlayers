@@ -80,7 +80,9 @@ describe('ol.parser.WKT', function() {
     expect(geom.rings[0].getCoordinates()).to.eql(
         [[30, 10], [10, 20], [20, 40], [40, 40], [30, 10]]);
     expect(parser.write(geom)).to.eql(wkt);
-    wkt = 'POLYGON((35 10,10 20,15 40,45 45,35 10),(20 30,35 35,30 20,20 30))';
+
+    // note that WKT doesn't care about winding order, we do
+    wkt = 'POLYGON((35 10,10 20,15 40,45 45,35 10),(20 30,30 20,35 35,20 30))';
     geom = parser.read(wkt);
     expect(geom.getType()).to.eql(ol.geom.GeometryType.POLYGON);
     expect(geom.rings.length).to.eql(2);
@@ -89,8 +91,9 @@ describe('ol.parser.WKT', function() {
     expect(geom.rings[0].getCoordinates()).to.eql(
         [[35, 10], [10, 20], [15, 40], [45, 45], [35, 10]]);
     expect(geom.rings[1].getCoordinates()).to.eql(
-        [[20, 30], [35, 35], [30, 20], [20, 30]]);
+        [[20, 30], [30, 20], [35, 35], [20, 30]]);
     expect(parser.write(geom)).to.eql(wkt);
+
     // test whitespace when reading
     wkt = 'POLYGON ( (30 10, 10 20, 20 40, 40 40, 30 10) )';
     geom = parser.read(wkt);
@@ -102,7 +105,8 @@ describe('ol.parser.WKT', function() {
   });
 
   it('MultiPolygon read / written correctly', function() {
-    var wkt = 'MULTIPOLYGON(((40 40,20 45,45 30,40 40)),' +
+    // note that WKT doesn't care about winding order, we do
+    var wkt = 'MULTIPOLYGON(((40 40,45 30,20 45,40 40)),' +
         '((20 35,45 20,30 5,10 10,10 30,20 35),(30 20,20 25,20 15,30 20)))';
     var geom = parser.read(wkt);
     expect(geom.getType()).to.eql(ol.geom.GeometryType.MULTIPOLYGON);
@@ -112,16 +116,17 @@ describe('ol.parser.WKT', function() {
     expect(geom.components[0].rings.length).to.eql(1);
     expect(geom.components[1].rings.length).to.eql(2);
     expect(geom.components[0].rings[0].getCoordinates()).to.eql(
-        [[40, 40], [20, 45], [45, 30], [40, 40]]);
+        [[40, 40], [45, 30], [20, 45], [40, 40]]);
     expect(geom.components[1].rings[0].getCoordinates()).to.eql(
         [[20, 35], [45, 20], [30, 5], [10, 10], [10, 30], [20, 35]]);
     expect(geom.components[1].rings[1].getCoordinates()).to.eql(
         [[30, 20], [20, 25], [20, 15], [30, 20]]);
     expect(parser.write(geom)).to.eql(wkt);
+
     // test whitespace when reading
-    wkt = 'MULTIPOLYGON( ( (40 40, 20 45, 45 30, 40 40) ), ' +
-        '( (20 35, 45 20, 30 5, 10 10, 10 30, 20 35 ), ( 30 20, 20 25, ' +
-        '20 15, 30 20 ) ) )';
+    wkt = 'MULTIPOLYGON( ( ( 40 40,45 30, 20 45 ,40 40 )) ,' +
+        '( (20 35, 45 20,30 5,10 10,10 30,20 35), ' +
+        '( 30 20,  20 25,20 15  ,30 20 ) ))';
     geom = parser.read(wkt);
     expect(geom.getType()).to.eql(ol.geom.GeometryType.MULTIPOLYGON);
     expect(geom.components.length).to.eql(2);
@@ -130,7 +135,7 @@ describe('ol.parser.WKT', function() {
     expect(geom.components[0].rings.length).to.eql(1);
     expect(geom.components[1].rings.length).to.eql(2);
     expect(geom.components[0].rings[0].getCoordinates()).to.eql(
-        [[40, 40], [20, 45], [45, 30], [40, 40]]);
+        [[40, 40], [45, 30], [20, 45], [40, 40]]);
     expect(geom.components[1].rings[0].getCoordinates()).to.eql(
         [[20, 35], [45, 20], [30, 5], [10, 10], [10, 30], [20, 35]]);
     expect(geom.components[1].rings[1].getCoordinates()).to.eql(

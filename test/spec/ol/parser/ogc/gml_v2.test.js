@@ -145,14 +145,6 @@ describe('ol.parser.gml_v2', function() {
         delete parser.srsName;
         expect(obj.geometry.type).to.eql('polygon');
         done();
-        expect(obj.geometry.coordinates.length).to.eql(3);
-        expect(obj.geometry.coordinates[0].length).to.eql(4);
-        expect(obj.geometry.coordinates[0]).to.eql([[1, 2], [3, 4],
-              [5, 6], [1, 2]]);
-        expect(obj.geometry.coordinates[1]).to.eql([[2, 3], [4, 5],
-              [6, 7], [2, 3]]);
-        expect(obj.geometry.coordinates[2]).to.eql([[3, 4], [5, 6],
-              [7, 8], [3, 4]]);
       });
     });
     it('MultiPolygon read correctly from coord', function(done) {
