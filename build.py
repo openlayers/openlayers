@@ -582,7 +582,7 @@ virtual('doc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
         SRC, SHADER_SRC, ifind('doc/template'))
 def jsdoc_BRANCH_timestamp(t):
     t.run('%(JSDOC)s', '-c', 'doc/conf.json', 'src', 'doc/index.md',
-          '-d', 'build/gh-pages/%(BRANCH)s/apidoc')
+          '-d', 'build/hosted/%(BRANCH)s/apidoc')
     t.touch()
 
 
@@ -620,15 +620,15 @@ def split_example_file(example, dst_dir):
 
 @target('host-resources', phony=True)
 def host_resources(t):
-    resources_dir = 'build/gh-pages/%(BRANCH)s/resources'
+    resources_dir = 'build/hosted/%(BRANCH)s/resources'
     t.rm_rf(resources_dir)
     t.cp_r('resources', resources_dir)
 
 
 @target('host-examples', 'build', 'host-resources', 'examples', phony=True)
 def host_examples(t):
-    examples_dir = 'build/gh-pages/%(BRANCH)s/examples'
-    build_dir = 'build/gh-pages/%(BRANCH)s/build'
+    examples_dir = 'build/hosted/%(BRANCH)s/examples'
+    build_dir = 'build/hosted/%(BRANCH)s/build'
     t.rm_rf(examples_dir)
     t.makedirs(examples_dir)
     t.rm_rf(build_dir)
@@ -643,25 +643,25 @@ def host_examples(t):
     t.cp('examples/index.html', 'examples/example-list.js',
          'examples/example-list.xml', 'examples/Jugl.js',
          'examples/jquery.min.js', examples_dir)
-    t.rm_rf('build/gh-pages/%(BRANCH)s/closure-library')
-    t.makedirs('build/gh-pages/%(BRANCH)s/closure-library')
-    with t.chdir('build/gh-pages/%(BRANCH)s/closure-library'):
+    t.rm_rf('build/hosted/%(BRANCH)s/closure-library')
+    t.makedirs('build/hosted/%(BRANCH)s/closure-library')
+    with t.chdir('build/hosted/%(BRANCH)s/closure-library'):
         t.run('%(JAR)s', 'xf', '../../../../' + PLOVR_JAR, 'closure')
         t.run('%(JAR)s', 'xf', '../../../../' + PLOVR_JAR, 'third_party')
-    t.rm_rf('build/gh-pages/%(BRANCH)s/ol')
-    t.makedirs('build/gh-pages/%(BRANCH)s/ol')
-    t.cp_r('src/ol', 'build/gh-pages/%(BRANCH)s/ol/ol')
+    t.rm_rf('build/hosted/%(BRANCH)s/ol')
+    t.makedirs('build/hosted/%(BRANCH)s/ol')
+    t.cp_r('src/ol', 'build/hosted/%(BRANCH)s/ol/ol')
     t.run('%(PYTHON)s', 'bin/closure/depswriter.py',
           '--root_with_prefix', 'src ../../../ol',
-          '--root', 'build/gh-pages/%(BRANCH)s/closure-library/closure/goog',
-          '--root_with_prefix', 'build/gh-pages/%(BRANCH)s/closure-library/'
+          '--root', 'build/hosted/%(BRANCH)s/closure-library/closure/goog',
+          '--root_with_prefix', 'build/hosted/%(BRANCH)s/closure-library/'
           'third_party ../../third_party',
-          '--output_file', 'build/gh-pages/%(BRANCH)s/build/ol-deps.js')
+          '--output_file', 'build/hosted/%(BRANCH)s/build/ol-deps.js')
 
 
 @target('check-examples', 'host-examples', phony=True)
 def check_examples(t):
-    examples = ['build/gh-pages/%(BRANCH)s/' + e for e in EXAMPLES]
+    examples = ['build/hosted/%(BRANCH)s/' + e for e in EXAMPLES]
     all_examples = \
         [e + '?mode=raw' for e in examples] + \
         [e + '?mode=whitespace' for e in examples] + \
