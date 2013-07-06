@@ -247,14 +247,6 @@ describe('ol.parser.gml_v3', function() {
         delete parser.srsName;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
         expect(obj.geometry.type).to.eql('polygon');
-        expect(obj.geometry.coordinates.length).to.eql(3);
-        expect(obj.geometry.coordinates[0].length).to.eql(4);
-        expect(obj.geometry.coordinates[0]).to.eql([[1, 2], [3, 4],
-              [5, 6], [1, 2]]);
-        expect(obj.geometry.coordinates[1]).to.eql([[2, 3], [4, 5],
-              [6, 7], [2, 3]]);
-        expect(obj.geometry.coordinates[2]).to.eql([[3, 4], [5, 6],
-              [7, 8], [3, 4]]);
         done();
       });
     });
@@ -268,14 +260,6 @@ describe('ol.parser.gml_v3', function() {
             [geom]).firstChild;
         expect(goog.dom.xml.loadXml(p.serialize(node))).to.xmleql(xml);
         expect(obj.geometry.type).to.eql('polygon');
-        expect(obj.geometry.coordinates.length).to.eql(3);
-        expect(obj.geometry.coordinates[0].length).to.eql(4);
-        expect(obj.geometry.coordinates[0]).to.eql([[1, 2], [3, 4],
-              [5, 6], [1, 2]]);
-        expect(obj.geometry.coordinates[1]).to.eql([[2, 3], [4, 5],
-              [6, 7], [2, 3]]);
-        expect(obj.geometry.coordinates[2]).to.eql([[3, 4], [5, 6],
-              [7, 8], [3, 4]]);
         done();
       });
     });

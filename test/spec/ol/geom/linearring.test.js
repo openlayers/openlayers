@@ -108,4 +108,39 @@ describe('ol.geom.LinearRing', function() {
 
 });
 
+describe('ol.geom.LinearRing.isClockwise()', function() {
+
+  var isClockwise = ol.geom.LinearRing.isClockwise;
+
+  it('returns true for clockwise coordinates', function() {
+    var coordinates = [
+      [0, 0], [0, 1], [1, 1], [1, 0], [0, 0]
+    ];
+    expect(isClockwise(coordinates)).to.be(true);
+  });
+
+  it('returns false for counter-clockwise coordinates', function() {
+    var coordinates = [
+      [0, 0], [1, 0], [1, 1], [0, 1], [0, 0]
+    ];
+    expect(isClockwise(coordinates)).to.be(false);
+  });
+
+  it('returns true for mostly clockwise, self-intersecting ring', function() {
+    var coordinates = [
+      [0, 0], [0, 1], [1.5, 1], [1.5, 1.5], [1, 1.5], [1, 0], [0, 0]
+    ];
+    expect(isClockwise(coordinates)).to.be(true);
+  });
+
+  it('returns false for mostly counter-clockwise, intersecting', function() {
+    var coordinates = [
+      [0, 0], [1, 0], [1, 1.5], [1.5, 1.5], [1.5, 1], [0, 1], [0, 0]
+    ];
+    expect(isClockwise(coordinates)).to.be(false);
+  });
+
+});
+
+
 goog.require('ol.geom.LinearRing');
