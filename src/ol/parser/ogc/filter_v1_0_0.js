@@ -1,11 +1,13 @@
 goog.provide('ol.parser.ogc.Filter_v1_0_0');
 
+goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.expr');
 goog.require('ol.expr.Call');
 goog.require('ol.expr.Comparison');
 goog.require('ol.expr.ComparisonOp');
 goog.require('ol.expr.Identifier');
+goog.require('ol.expr.Literal');
 goog.require('ol.expr.functions');
 goog.require('ol.geom.Geometry');
 goog.require('ol.parser.ogc.Filter_v1');
@@ -44,10 +46,9 @@ ol.parser.ogc.Filter_v1_0_0 = function() {
       this.readChildNodes(node, container);
       var args = [];
       args.push(container['property'], container['value'],
-          node.getAttribute('wildCard'),
-          node.getAttribute('singleChar'),
-          node.getAttribute('escape')
-      );
+          new ol.expr.Literal(node.getAttribute('wildCard')),
+          new ol.expr.Literal(node.getAttribute('singleChar')),
+          new ol.expr.Literal(node.getAttribute('escape')));
       obj['filters'].push(new ol.expr.Call(
           new ol.expr.Identifier(ol.expr.functions.LIKE), args));
     }
@@ -56,27 +57,26 @@ ol.parser.ogc.Filter_v1_0_0 = function() {
     'PropertyIsEqualTo': function(filter) {
       var node = this.createElementNS('ogc:PropertyIsEqualTo');
       var property = filter.getLeft();
-      if (goog.isDef(property)) {
-        this.writeNode('PropertyName', property, null, node);
-      }
+      this.writeNode('PropertyName', property, null, node);
       this.writeOgcExpression(filter.getRight(), node);
       return node;
     },
     'PropertyIsNotEqualTo': function(filter) {
       var node = this.createElementNS('ogc:PropertyIsNotEqualTo');
       var property = filter.getLeft();
-      if (goog.isDef(property)) {
-        this.writeNode('PropertyName', property, null, node);
-      }
+      this.writeNode('PropertyName', property, null, node);
       this.writeOgcExpression(filter.getRight(), node);
       return node;
     },
     'PropertyIsLike': function(filter) {
       var node = this.createElementNS('ogc:PropertyIsLike');
       var args = filter.getArgs();
-      node.setAttribute('wildCard', args[2]);
-      node.setAttribute('singleChar', args[3]);
-      node.setAttribute('escape', args[4]);
+      goog.asserts.assert(args[2] instanceof ol.expr.Literal);
+      node.setAttribute('wildCard', args[2].getValue());
+      goog.asserts.assert(args[3] instanceof ol.expr.Literal);
+      node.setAttribute('singleChar', args[3].getValue());
+      goog.asserts.assert(args[4] instanceof ol.expr.Literal);
+      node.setAttribute('escape', args[4].getValue());
       var property = args[0];
       if (goog.isDef(property)) {
         this.writeNode('PropertyName', property, null, node);
@@ -87,8 +87,14 @@ ol.parser.ogc.Filter_v1_0_0 = function() {
     'BBOX': function(filter) {
       var node = this.createElementNS('ogc:BBOX');
       var args = filter.getArgs();
-      var property = args[5], bbox = [args[0], args[1], args[2], args[3]],
-          projection = args[4];
+      goog.asserts.assert(args[0] instanceof ol.expr.Literal);
+      goog.asserts.assert(args[1] instanceof ol.expr.Literal);
+      goog.asserts.assert(args[2] instanceof ol.expr.Literal);
+      goog.asserts.assert(args[3] instanceof ol.expr.Literal);
+      goog.asserts.assert(args[4] instanceof ol.expr.Literal);
+      var property = args[5], bbox = [args[0].getValue(), args[1].getValue(),
+            args[2].getValue(), args[3].getValue()],
+          projection = args[4].getValue();
       // PropertyName is mandatory in 1.0.0, but e.g. GeoServer also
       // accepts filters without it.
       if (goog.isDefAndNotNull(property)) {
@@ -119,12 +125,17 @@ ol.parser.ogc.Filter_v1_0_0.prototype.writeSpatial_ = function(filter, name) {
   var node = this.createElementNS('ogc:' + name);
   var args = filter.getArgs();
   var property, geom = null, bbox, call, projection;
-  if (goog.isNumber(args[0])) {
-    bbox = [args[0], args[1], args[2], args[3]];
+  if (args[0] instanceof ol.expr.Literal && goog.isNumber(args[0].getValue())) {
+    goog.asserts.assert(args[1] instanceof ol.expr.Literal);
+    goog.asserts.assert(args[2] instanceof ol.expr.Literal);
+    goog.asserts.assert(args[3] instanceof ol.expr.Literal);
+    bbox = [args[0].getValue(), args[1].getValue(), args[2].getValue(),
+          args[3].getValue()];
     projection = args[4];
     property = args[5];
-  } else if (args[0] instanceof ol.geom.Geometry) {
-    geom = args[0];
+  } else if (args[0] instanceof ol.expr.Literal &&
+      args[0].getValue() instanceof ol.geom.Geometry) {
+    geom = args[0].getValue();
     if (name === 'DWithin') {
       projection = args[3];
       property = args[4];
@@ -157,8 +168,9 @@ ol.parser.ogc.Filter_v1_0_0.prototype.writeSpatial_ = function(filter, name) {
           'http://www.opengis.net/gml');
     }
     if (goog.isDef(child)) {
-      if (goog.isDef(projection)) {
-        child.setAttribute('srsName', projection);
+      goog.asserts.assert(projection instanceof ol.expr.Literal);
+      if (goog.isDefAndNotNull(projection.getValue())) {
+        child.setAttribute('srsName', projection.getValue());
       }
       node.appendChild(child);
     }

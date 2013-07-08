@@ -1,12 +1,15 @@
 goog.provide('ol.parser.ogc.Filter_v1');
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom.xml');
+goog.require('goog.object');
 goog.require('goog.string');
 goog.require('ol.expr');
 goog.require('ol.expr.Call');
 goog.require('ol.expr.Comparison');
 goog.require('ol.expr.ComparisonOp');
 goog.require('ol.expr.Identifier');
+goog.require('ol.expr.Literal');
 goog.require('ol.expr.Logical');
 goog.require('ol.expr.LogicalOp');
 goog.require('ol.expr.Not');
@@ -24,18 +27,18 @@ ol.parser.ogc.Filter_v1 = function() {
   this.errorProperty = 'filter';
   this.readers = {
     'http://www.opengis.net/ogc': {
-      '_expression': function(node) {
-        // only the simplest of ogc:expression handled
-        // "some text and an <PropertyName>attribute</PropertyName>"
+      _expression: function(node) {
         var obj, value = '';
         for (var child = node.firstChild; child; child = child.nextSibling) {
           switch (child.nodeType) {
             case 1:
               obj = this.readNode(child);
               if (obj['property']) {
-                value += obj['property'];
+                value += obj['property'].getName();
               } else if (goog.isDef(obj['value'])) {
-                value += obj['value'];
+                // TODO adding this to value and then parsing causes
+                // ol.expr.UnexpectedToken on e.g. 10
+                return obj['value'];
               }
               break;
             case 3: // text node
@@ -46,17 +49,17 @@ ol.parser.ogc.Filter_v1 = function() {
               break;
           }
         }
-        return value;
+        return ol.expr.parse(value);
       },
       'Filter': function(node, obj) {
         var container = {
           'filters': []
         };
         this.readChildNodes(node, container);
-        if (goog.isDef(container['fids'])) {
+        if (goog.isDef(container.fids)) {
           obj['filter'] = new ol.expr.Call(
               new ol.expr.Identifier(ol.expr.functions.FID),
-              container['fids']);
+              goog.object.getValues(container.fids));
         } else if (container['filters'].length > 0) {
           obj['filter'] = container['filters'][0];
         }
@@ -64,10 +67,12 @@ ol.parser.ogc.Filter_v1 = function() {
       'FeatureId': function(node, obj) {
         var fid = node.getAttribute('fid');
         if (fid) {
-          if (!goog.isDef(obj['fids'])) {
-            obj['fids'] = {};
+          if (!goog.isDef(obj.fids)) {
+            obj.fids = {};
           }
-          obj['fids'][fid] = true;
+          if (!obj.fids.hasOwnProperty(fid)) {
+            obj.fids[fid] = new ol.expr.Literal(fid);
+          }
         }
       },
       'And': function(node, obj) {
@@ -97,7 +102,7 @@ ol.parser.ogc.Filter_v1 = function() {
         obj['filters'].push(new ol.expr.Comparison(
             ol.expr.ComparisonOp.EQ,
             container['property'],
-            null));
+            new ol.expr.Literal(null)));
       },
       'PropertyIsLessThan': function(node, obj) {
         var container = {};
@@ -143,28 +148,29 @@ ol.parser.ogc.Filter_v1 = function() {
       'Literal': function(node, obj) {
         var nodeValue = this.getChildValue(node);
         var value = goog.string.toNumber(nodeValue);
-        obj['value'] = isNaN(value) ? nodeValue : value;
+        obj['value'] = new ol.expr.Literal(isNaN(value) ? nodeValue : value);
       },
       'PropertyName': function(node, obj) {
-        obj['property'] = this.getChildValue(node);
+        obj['property'] = new ol.expr.Identifier(this.getChildValue(node));
       },
       'LowerBoundary': function(node, obj) {
         var readers = this.readers[this.defaultNamespaceURI];
-        obj['lowerBoundary'] = goog.string.toNumber(
-            readers['_expression'].call(this, node));
+        obj['lowerBoundary'] = readers._expression.call(this, node);
       },
       'UpperBoundary': function(node, obj) {
         var readers = this.readers[this.defaultNamespaceURI];
-        obj['upperBoundary'] = goog.string.toNumber(
-            readers['_expression'].call(this, node));
+        obj['upperBoundary'] = readers._expression.call(this, node);
       },
-      '_spatial': function(node, obj, identifier) {
+      _spatial: function(node, obj, identifier) {
         var args = [], container = {};
         this.readChildNodes(node, container);
         if (goog.isDef(container.geometry)) {
-          args.push(this.gml_.createGeometry(container));
+          args.push(new ol.expr.Literal(this.gml_.createGeometry(container)));
         } else {
-          args = container['bounds'];
+          args = [new ol.expr.Literal(container.bounds[0]),
+                new ol.expr.Literal(container.bounds[1]),
+                new ol.expr.Literal(container.bounds[2]),
+                new ol.expr.Literal(container.bounds[3])];
         }
         if (goog.isDef(container['distance'])) {
           args.push(container['distance']);
@@ -172,7 +178,7 @@ ol.parser.ogc.Filter_v1 = function() {
         if (goog.isDef(container['distanceUnits'])) {
           args.push(container['distanceUnits']);
         }
-        args.push(container['projection']);
+        args.push(new ol.expr.Literal(container.projection));
         if (goog.isDef(container['property'])) {
           args.push(container['property']);
         }
@@ -181,32 +187,32 @@ ol.parser.ogc.Filter_v1 = function() {
       },
       'BBOX': function(node, obj) {
         var readers = this.readers[this.defaultNamespaceURI];
-        readers['_spatial'].call(this, node, obj,
+        readers._spatial.call(this, node, obj,
             ol.expr.functions.EXTENT);
       },
       'Intersects': function(node, obj) {
         var readers = this.readers[this.defaultNamespaceURI];
-        readers['_spatial'].call(this, node, obj,
+        readers._spatial.call(this, node, obj,
             ol.expr.functions.INTERSECTS);
       },
       'Within': function(node, obj) {
         var readers = this.readers[this.defaultNamespaceURI];
-        readers['_spatial'].call(this, node, obj,
+        readers._spatial.call(this, node, obj,
             ol.expr.functions.WITHIN);
       },
       'Contains': function(node, obj) {
         var readers = this.readers[this.defaultNamespaceURI];
-        readers['_spatial'].call(this, node, obj,
+        readers._spatial.call(this, node, obj,
             ol.expr.functions.CONTAINS);
       },
       'DWithin': function(node, obj) {
         var readers = this.readers[this.defaultNamespaceURI];
-        readers['_spatial'].call(this, node, obj,
+        readers._spatial.call(this, node, obj,
             ol.expr.functions.DWITHIN);
       },
       'Distance': function(node, obj) {
-        obj['distance'] = parseInt(this.getChildValue(node), 10);
-        obj['distanceUnits'] = node.getAttribute('units');
+        obj['distance'] = new ol.expr.Literal(this.getChildValue(node));
+        obj['distanceUnits'] = new ol.expr.Literal(node.getAttribute('units'));
       }
     }
   };
@@ -219,9 +225,10 @@ ol.parser.ogc.Filter_v1 = function() {
       },
       '_featureIds': function(filter) {
         var node = this.createDocumentFragment();
-        var fids = filter.getArgs();
-        for (var i = 0, ii = fids.length; i < ii; i++) {
-          this.writeNode('FeatureId', fids[i], null, node);
+        var args = filter.getArgs();
+        for (var i = 0, ii = args.length; i < ii; i++) {
+          goog.asserts.assert(args[i] instanceof ol.expr.Literal);
+          this.writeNode('FeatureId', args[i].getValue(), null, node);
         }
         return node;
       },
@@ -296,23 +303,26 @@ ol.parser.ogc.Filter_v1 = function() {
         filters[0] = filter.getLeft();
         filters[1] = filter.getRight();
         for (var i = 0; i < 2; ++i) {
-          var value = filters[i].getRight();
+          var expr = filters[i].getRight();
           if (filters[i].getOperator() === ol.expr.ComparisonOp.GTE) {
-            lower = value;
+            lower = expr;
           } else if (filters[i].getOperator() === ol.expr.ComparisonOp.LTE) {
-            upper = value;
+            upper = expr;
           }
         }
         this.writeNode('LowerBoundary', lower, null, node);
         this.writeNode('UpperBoundary', upper, null, node);
         return node;
       },
-      'PropertyName': function(name) {
+      'PropertyName': function(expr) {
+        goog.asserts.assert(expr instanceof ol.expr.Identifier);
         var node = this.createElementNS('ogc:PropertyName');
-        node.appendChild(this.createTextNode(name));
+        node.appendChild(this.createTextNode(expr.getName()));
         return node;
       },
-      'Literal': function(value) {
+      'Literal': function(expr) {
+        goog.asserts.assert(expr instanceof ol.expr.Literal);
+        var value = expr.getValue();
         if (value instanceof Date) {
           value = value.toISOString();
         }
@@ -320,14 +330,14 @@ ol.parser.ogc.Filter_v1 = function() {
         node.appendChild(this.createTextNode(value));
         return node;
       },
-      'LowerBoundary': function(value) {
+      'LowerBoundary': function(expr) {
         var node = this.createElementNS('ogc:LowerBoundary');
-        this.writeOgcExpression(value, node);
+        this.writeOgcExpression(expr, node);
         return node;
       },
-      'UpperBoundary': function(value) {
+      'UpperBoundary': function(expr) {
         var node = this.createElementNS('ogc:UpperBoundary');
-        this.writeOgcExpression(value, node);
+        this.writeOgcExpression(expr, node);
         return node;
       },
       'INTERSECTS': function(filter) {
@@ -347,8 +357,10 @@ ol.parser.ogc.Filter_v1 = function() {
       'Distance': function(filter) {
         var node = this.createElementNS('ogc:Distance');
         var args = filter.getArgs();
-        node.setAttribute('units', args[2]);
-        node.appendChild(this.createTextNode(args[1]));
+        goog.asserts.assert(args[2] instanceof ol.expr.Literal);
+        node.setAttribute('units', args[2].getValue());
+        goog.asserts.assert(args[1] instanceof ol.expr.Literal);
+        node.appendChild(this.createTextNode(args[1].getValue()));
         return node;
       },
       'Function': function(filter) {
@@ -378,14 +390,16 @@ ol.parser.ogc.Filter_v1 = function() {
     '<=': 'PropertyIsLessThanOrEqualTo',
     '>=': 'PropertyIsGreaterThanOrEqualTo',
     '..': 'PropertyIsBetween',
-    '~': 'PropertyIsLike',
-    'NULL': 'PropertyIsNull',
-    'BBOX': 'BBOX',
-    'DWITHIN': 'DWITHIN',
-    'WITHIN': 'WITHIN',
-    'CONTAINS': 'CONTAINS',
-    'INTERSECTS': 'INTERSECTS',
-    'FID': '_featureIds'
+    'like': 'PropertyIsLike',
+    'null': 'PropertyIsNull',
+    'extent': 'BBOX',
+    'dwithin': 'DWITHIN',
+    'within': 'WITHIN',
+    'contains': 'CONTAINS',
+    'intersects': 'INTERSECTS',
+    'fid': '_featureIds',
+    'ieq': 'PropertyIsEqualTo',
+    'ineq': 'PropertyIsNotEqualTo'
   };
   goog.base(this);
 };
@@ -402,46 +416,30 @@ ol.parser.ogc.Filter_v1.prototype.getFilterType_ = function(filter) {
   if (filter instanceof ol.expr.Logical ||
       filter instanceof ol.expr.Comparison) {
     type = filter.getOperator();
+    var left = filter.getLeft();
+    var right = filter.getRight();
     var isNull = (type === ol.expr.ComparisonOp.EQ &&
-        filter.getRight() === null);
+        right instanceof ol.expr.Literal && right.getValue() === null);
     if (isNull) {
-      type = 'NULL';
+      type = 'null';
     }
     var isBetween = (type === ol.expr.LogicalOp.AND &&
-        filter.getLeft() instanceof ol.expr.Comparison &&
-        filter.getRight() instanceof ol.expr.Comparison &&
-        filter.getLeft().getLeft() === filter.getRight().getLeft() &&
-        (filter.getLeft().getOperator() === ol.expr.ComparisonOp.LTE ||
-            filter.getLeft().getOperator() === ol.expr.ComparisonOp.GTE) &&
-        (filter.getRight().getOperator() === ol.expr.ComparisonOp.LTE ||
-            filter.getRight().getOperator() === ol.expr.ComparisonOp.GTE));
+        left instanceof ol.expr.Comparison &&
+        right instanceof ol.expr.Comparison &&
+        left.getLeft() instanceof ol.expr.Identifier &&
+        right.getLeft() instanceof ol.expr.Identifier &&
+        left.getLeft().getName() === right.getLeft().getName() &&
+        (left.getOperator() === ol.expr.ComparisonOp.LTE ||
+            left.getOperator() === ol.expr.ComparisonOp.GTE) &&
+        (right.getOperator() === ol.expr.ComparisonOp.LTE ||
+            right.getOperator() === ol.expr.ComparisonOp.GTE));
     if (isBetween) {
       type = '..';
     }
   } else if (filter instanceof ol.expr.Call) {
-    var callee = filter.getCallee().getName();
-    if (callee === ol.expr.functions.FID) {
-      type = 'FID';
-    }
-    else if (callee === ol.expr.functions.IEQ) {
-      type = '==';
-    } else if (callee === ol.expr.functions.INEQ) {
-      type = '!=';
-    }
-    else if (callee === ol.expr.functions.LIKE) {
-      type = '~';
-    }
-    else if (callee === ol.expr.functions.CONTAINS) {
-      type = 'CONTAINS';
-    } else if (callee === ol.expr.functions.WITHIN) {
-      type = 'WITHIN';
-    } else if (callee === ol.expr.functions.DWITHIN) {
-      type = 'DWITHIN';
-    } else if (callee === ol.expr.functions.EXTENT) {
-      type = 'BBOX';
-    } else if (callee === ol.expr.functions.INTERSECTS) {
-      type = 'INTERSECTS';
-    }
+    var callee = filter.getCallee();
+    goog.asserts.assert(callee instanceof ol.expr.Identifier);
+    type = callee.getName();
   } else if (filter instanceof ol.expr.Not) {
     type = '!';
   }
@@ -484,16 +482,18 @@ ol.parser.ogc.Filter_v1.prototype.write = function(filter) {
 
 
 /**
- * @param {ol.expr.Call|string|number} value The value write out.
+ * @param {ol.expr.Expression} expr The value write out.
  * @param {Element} node The node to append to.
  * @return {Element} The node to which was appended.
  * @protected
  */
-ol.parser.ogc.Filter_v1.prototype.writeOgcExpression = function(value, node) {
-  if (value instanceof ol.expr.Call) {
-    this.writeNode('Function', value, null, node);
-  } else {
-    this.writeNode('Literal', value, null, node);
+ol.parser.ogc.Filter_v1.prototype.writeOgcExpression = function(expr, node) {
+  if (expr instanceof ol.expr.Call) {
+    this.writeNode('Function', expr, null, node);
+  } else if (expr instanceof ol.expr.Literal) {
+    this.writeNode('Literal', expr, null, node);
+  } else if (expr instanceof ol.expr.Identifier) {
+    this.writeNode('PropertyName', expr, null, node);
   }
   return node;
 };
@@ -540,7 +540,7 @@ ol.parser.ogc.Filter_v1.prototype.aggregateLogical_ = function(filters,
       if (subFilters.length === 2) {
         newFilters.push(new ol.expr.Logical(operator,
             subFilters[0], subFilters[1]));
-        goog.array.clear(subFilters);
+        subFilters.length = 0;
       }
     }
     // there could be a single item left now

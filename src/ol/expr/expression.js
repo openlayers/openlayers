@@ -123,7 +123,7 @@ ol.expr.lib[ol.expr.functions.EXTENT] = function(minX, maxX, minY, maxY,
     opt_projection, opt_attribute) {
   var intersects = false;
   var geometry = goog.isDef(opt_attribute) ?
-      this.getAttributes()[opt_attribute] : this.getGeometry();
+      this.get(opt_attribute) : this.getGeometry();
   if (geometry) {
     intersects = ol.extent.intersects(geometry.getBounds(),
         [minX, maxX, minY, maxY]);
@@ -167,7 +167,7 @@ ol.expr.lib[ol.expr.functions.LIKE] = function(attribute, value, wildCard,
     singleChar, escapeChar, matchCase) {
   if (wildCard == '.') {
     throw new Error('"." is an unsupported wildCard character for ' +
-        'ol.filter.Comparison');
+        'the "like" function');
   }
   // set UMN MapServer defaults for unspecified parameters
   wildCard = goog.isDef(wildCard) ? wildCard : '*';
@@ -184,9 +184,8 @@ ol.expr.lib[ol.expr.functions.LIKE] = function(attribute, value, wildCard,
       new RegExp('\\\\.\\*', 'g'), '\\' + wildCard);
   val = value.replace(
       new RegExp('\\\\\\.', 'g'), '\\' + singleChar);
-  var attributes = this.getAttributes();
   var modifiers = (matchCase === false) ? 'gi' : 'g';
-  return new RegExp(val, modifiers).test(attributes[attribute]);
+  return new RegExp(val, modifiers).test(this.get(attribute));
 };
 
 
@@ -197,11 +196,11 @@ ol.expr.lib[ol.expr.functions.LIKE] = function(attribute, value, wildCard,
  * @this {ol.Feature}
  */
 ol.expr.lib[ol.expr.functions.IEQ] = function(attribute, value) {
-  var attributes = this.getAttributes();
-  if (goog.isString(value) && goog.isString(attributes[attribute])) {
-    return value.toUpperCase() == attributes[attribute].toUpperCase();
+  var attributeValue = this.get(attribute);
+  if (goog.isString(value) && goog.isString(attributeValue)) {
+    return value.toUpperCase() == attributeValue.toUpperCase();
   } else {
-    return value == attributes[attribute];
+    return value == attributeValue;
   }
 };
 
@@ -213,11 +212,11 @@ ol.expr.lib[ol.expr.functions.IEQ] = function(attribute, value) {
  * @this {ol.Feature}
  */
 ol.expr.lib[ol.expr.functions.INEQ] = function(attribute, value) {
-  var attributes = this.getAttributes();
-  if (goog.isString(value) && goog.isString(attributes[attribute])) {
-    return value.toUpperCase() == attributes[attribute].toUpperCase();
+  var attributeValue = this.get(attribute);
+  if (goog.isString(value) && goog.isString(attributeValue)) {
+    return value.toUpperCase() == attributeValue.toUpperCase();
   } else {
-    return value != attributes[attribute];
+    return value != attributeValue;
   }
 };
 

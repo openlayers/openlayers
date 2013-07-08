@@ -11,30 +11,36 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
         expect(filter instanceof ol.expr.Logical).to.be(true);
-        expect(filter.getOperator()).to.eql(ol.expr.LogicalOp.OR);
+        expect(filter.getOperator()).to.equal(ol.expr.LogicalOp.OR);
         var filters = [];
         parser.getSubfiltersForLogical_(filter, filters);
-        expect(filters.length).to.eql(5);
+        expect(filters.length).to.equal(5);
         expect(filters[0]).to.eql(new ol.expr.Logical(ol.expr.LogicalOp.AND,
             new ol.expr.Comparison(
-                ol.expr.ComparisonOp.GTE, 'number', 1064866676),
+                ol.expr.ComparisonOp.GTE, new ol.expr.Identifier('number'),
+                new ol.expr.Literal(1064866676)),
             new ol.expr.Comparison(
-                ol.expr.ComparisonOp.LTE, 'number', 1065512599)));
+                ol.expr.ComparisonOp.LTE, new ol.expr.Identifier('number'),
+                new ol.expr.Literal(1065512599))));
         expect(filters[1]).to.eql(new ol.expr.Not(new ol.expr.Comparison(
-            ol.expr.ComparisonOp.LTE, 'FOO', 5000)));
+            ol.expr.ComparisonOp.LTE, new ol.expr.Identifier('FOO'),
+            new ol.expr.Literal(5000))));
         expect(filters[2] instanceof ol.expr.Call).to.be(true);
-        expect(filters[2].getCallee().getName()).to.eql(
+        expect(filters[2].getCallee().getName()).to.equal(
             ol.expr.functions.LIKE);
-        expect(filters[2].getArgs()).to.eql(['cat', '*dog.food!*good', '*',
-          '.', '!', null]);
+        expect(filters[2].getArgs()).to.eql([new ol.expr.Identifier('cat'),
+              new ol.expr.Literal('*dog.food!*good'), new ol.expr.Literal('*'),
+              new ol.expr.Literal('.'), new ol.expr.Literal('!'),
+              new ol.expr.Literal(null)]);
         expect(filters[3] instanceof ol.expr.Call).to.be(true);
-        expect(filters[3].getCallee().getName()).to.eql(
+        expect(filters[3].getCallee().getName()).to.equal(
             ol.expr.functions.IEQ);
-        expect(filters[3].getArgs()).to.eql(['cat', 'dog']);
+        expect(filters[3].getArgs()).to.eql([new ol.expr.Identifier('cat'),
+              new ol.expr.Literal('dog')]);
         expect(filters[4] instanceof ol.expr.Comparison).to.be(true);
-        expect(filters[4].getOperator()).to.eql(ol.expr.ComparisonOp.EQ);
-        expect(filters[4].getLeft()).to.eql('cat');
-        expect(filters[4].getRight()).to.eql('dog');
+        expect(filters[4].getOperator()).to.equal(ol.expr.ComparisonOp.EQ);
+        expect(filters[4].getLeft().getName()).to.equal('cat');
+        expect(filters[4].getRight().getValue()).to.equal('dog');
         done();
       });
     });
@@ -109,7 +115,7 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
         c = cases[i];
         filter = parser.read(c.str);
         var matchCase = (filter instanceof ol.expr.Call) ? false : true;
-        expect(matchCase).to.eql(c.exp);
+        expect(matchCase).to.equal(c.exp);
       }
     });
 
@@ -149,8 +155,10 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
         var filter = new ol.expr.Call(new ol.expr.Identifier(
             ol.expr.functions.INTERSECTS),
             [new ol.expr.Call(new ol.expr.Identifier('querySingle'),
-             ['sf:restricted', 'the_geom',
-               'cat=3']), undefined, 'the_geom']);
+             [new ol.expr.Literal('sf:restricted'),
+               new ol.expr.Literal('the_geom'),
+               new ol.expr.Literal('cat=3')]), new ol.expr.Literal(null),
+             new ol.expr.Identifier('the_geom')]);
         var output = parser.write(filter);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         done();
@@ -162,8 +170,9 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
       afterLoadXml(url, function(xml) {
         var filter = new ol.expr.Logical(ol.expr.LogicalOp.AND,
             new ol.expr.Call(new ol.expr.Identifier(ol.expr.functions.INEQ),
-            ['FOO', new ol.expr.Call(new ol.expr.Identifier('customFunction'),
-             ['param1', 'param2'])]));
+            [new ol.expr.Identifier('FOO'), new ol.expr.Call(
+            new ol.expr.Identifier('customFunction'),
+            [new ol.expr.Literal('param1'), new ol.expr.Literal('param2')])]));
         var output = parser.write(filter);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         done();
@@ -177,8 +186,11 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
             ol.expr.functions.DWITHIN),
             [new ol.expr.Call(new ol.expr.Identifier('collectGeometries'),
              [new ol.expr.Call(new ol.expr.Identifier('queryCollection'),
-              ['sf:roads', 'the_geom', 'INCLUDE'])]), 200, 'meters',
-             undefined, 'the_geom']);
+              [new ol.expr.Literal('sf:roads'),
+               new ol.expr.Literal('the_geom'),
+               new ol.expr.Literal('INCLUDE')])]), new ol.expr.Literal(200),
+              new ol.expr.Literal('meters'),
+             new ol.expr.Literal(null), new ol.expr.Identifier('the_geom')]);
         var output = parser.write(filter);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         done();
@@ -190,7 +202,9 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
       afterLoadXml(url, function(xml) {
         var filter = new ol.expr.Call(
             new ol.expr.Identifier(ol.expr.functions.LIKE),
-            ['person', '*me*', '*', '.', '!', false]);
+            [new ol.expr.Identifier('person'), new ol.expr.Literal('*me*'),
+             new ol.expr.Literal('*'), new ol.expr.Literal('.'),
+             new ol.expr.Literal('!'), new ol.expr.Literal(false)]);
         var output = parser.write(filter);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         done();
@@ -202,11 +216,11 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
       afterLoadXml(url, function(xml) {
         var writer = parser.writers['http://www.opengis.net/ogc']['SortBy'];
         var output = writer.call(parser, [{
-          'property': 'Title',
-          'order': 'ASC'
+          'property': new ol.expr.Identifier('Title'),
+          'order': new ol.expr.Literal('ASC')
         },{
-          'property': 'Relevance',
-          'order': 'DESC'
+          'property': new ol.expr.Identifier('Relevance'),
+          'order': new ol.expr.Literal('DESC')
         }]);
         expect(output).to.xmleql(xml);
         done();
@@ -223,6 +237,7 @@ goog.require('ol.expr.Call');
 goog.require('ol.expr.Comparison');
 goog.require('ol.expr.ComparisonOp');
 goog.require('ol.expr.Identifier');
+goog.require('ol.expr.Literal');
 goog.require('ol.expr.Logical');
 goog.require('ol.expr.LogicalOp');
 goog.require('ol.expr.Not');

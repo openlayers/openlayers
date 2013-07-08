@@ -11,12 +11,12 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
         expect(filter instanceof ol.expr.Call).to.be(true);
-        expect(filter.getCallee().getName()).to.eql(
+        expect(filter.getCallee().getName()).to.equal(
             ol.expr.functions.INTERSECTS);
         var args = filter.getArgs();
         var geom = args[0];
-        expect(geom instanceof ol.geom.Polygon).to.be(true);
-        expect(args[2]).to.eql('Geometry');
+        expect(geom.getValue() instanceof ol.geom.Polygon).to.be(true);
+        expect(args[2].getName()).to.equal('Geometry');
         var output = parser.write(filter);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         done();
@@ -28,11 +28,11 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
         expect(filter instanceof ol.expr.Call).to.be(true);
-        expect(filter.getCallee().getName()).to.eql(ol.expr.functions.WITHIN);
+        expect(filter.getCallee().getName()).to.equal(ol.expr.functions.WITHIN);
         var args = filter.getArgs();
         var geom = args[0];
-        expect(geom instanceof ol.geom.Polygon).to.be(true);
-        expect(args[2]).to.eql('Geometry');
+        expect(geom.getValue() instanceof ol.geom.Polygon).to.be(true);
+        expect(args[2].getName()).to.equal('Geometry');
         var output = parser.write(filter);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         done();
@@ -44,12 +44,12 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
         expect(filter instanceof ol.expr.Call).to.be(true);
-        expect(filter.getCallee().getName()).to.eql(
+        expect(filter.getCallee().getName()).to.equal(
             ol.expr.functions.CONTAINS);
         var args = filter.getArgs();
         var geom = args[0];
-        expect(geom instanceof ol.geom.Polygon).to.be(true);
-        expect(args[2]).to.eql('Geometry');
+        expect(geom.getValue() instanceof ol.geom.Polygon).to.be(true);
+        expect(args[2].getName()).to.equal('Geometry');
         var output = parser.write(filter);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         done();
@@ -61,16 +61,17 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
         expect(filter instanceof ol.expr.Logical).to.be.ok();
-        expect(filter.getOperator()).to.eql(ol.expr.LogicalOp.AND);
+        expect(filter.getOperator()).to.equal(ol.expr.LogicalOp.AND);
         expect(filter.getLeft() instanceof ol.expr.Comparison).to.be.ok();
-        expect(filter.getLeft().getOperator()).to.eql(ol.expr.ComparisonOp.GTE);
-        expect(filter.getLeft().getLeft()).to.eql('number');
-        expect(filter.getLeft().getRight()).to.eql(0);
+        expect(filter.getLeft().getOperator()).to.equal(
+            ol.expr.ComparisonOp.GTE);
+        expect(filter.getLeft().getLeft().getName()).to.equal('number');
+        expect(filter.getLeft().getRight().getValue()).to.equal(0);
         expect(filter.getRight() instanceof ol.expr.Comparison).to.be.ok();
-        expect(filter.getRight().getOperator()).to.eql(
+        expect(filter.getRight().getOperator()).to.equal(
             ol.expr.ComparisonOp.LTE);
-        expect(filter.getRight().getLeft()).to.eql('number');
-        expect(filter.getRight().getRight()).to.eql(100);
+        expect(filter.getRight().getLeft().getName()).to.equal('number');
+        expect(filter.getRight().getRight().getValue()).to.equal(100);
         var output = parser.write(filter);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         done();
@@ -82,16 +83,17 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
         expect(filter instanceof ol.expr.Logical).to.be.ok();
-        expect(filter.getOperator()).to.eql(ol.expr.LogicalOp.AND);
+        expect(filter.getOperator()).to.equal(ol.expr.LogicalOp.AND);
         expect(filter.getLeft() instanceof ol.expr.Comparison).to.be.ok();
-        expect(filter.getLeft().getOperator()).to.eql(ol.expr.ComparisonOp.GTE);
-        expect(filter.getLeft().getLeft()).to.eql('number');
-        expect(filter.getLeft().getRight()).to.eql(0);
+        expect(filter.getLeft().getOperator()).to.equal(
+            ol.expr.ComparisonOp.GTE);
+        expect(filter.getLeft().getLeft().getName()).to.equal('number');
+        expect(filter.getLeft().getRight().getValue()).to.equal(0);
         expect(filter.getRight() instanceof ol.expr.Comparison).to.be.ok();
-        expect(filter.getRight().getOperator()).to.eql(
+        expect(filter.getRight().getOperator()).to.equal(
             ol.expr.ComparisonOp.LTE);
-        expect(filter.getRight().getLeft()).to.eql('number');
-        expect(filter.getRight().getRight()).to.eql(100);
+        expect(filter.getRight().getLeft().getName()).to.equal('number');
+        expect(filter.getRight().getRight().getValue()).to.equal(100);
         done();
       });
     });
@@ -101,8 +103,8 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
         expect(filter instanceof ol.expr.Comparison).to.be.ok();
-        expect(filter.getLeft()).to.eql('prop');
-        expect(filter.getRight()).to.eql(null);
+        expect(filter.getLeft().getName()).to.equal('prop');
+        expect(filter.getRight().getValue()).to.equal(null);
         var output = parser.write(filter);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         done();
@@ -114,7 +116,10 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       afterLoadXml(url, function(xml) {
         var filter = new ol.expr.Call(
             new ol.expr.Identifier(ol.expr.functions.EXTENT),
-            [-180, -90, 180, 90, 'EPSG:4326', 'the_geom']);
+            [new ol.expr.Literal(-180), new ol.expr.Literal(-90),
+              new ol.expr.Literal(180), new ol.expr.Literal(90),
+              new ol.expr.Literal('EPSG:4326'),
+              new ol.expr.Identifier('the_geom')]);
         var output = parser.write(filter);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         done();
@@ -126,7 +131,9 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       afterLoadXml(url, function(xml) {
         var filter = new ol.expr.Call(
             new ol.expr.Identifier(ol.expr.functions.EXTENT),
-            [-180, -90, 180, 90, 'EPSG:4326']);
+            [new ol.expr.Literal(-180), new ol.expr.Literal(-90),
+              new ol.expr.Literal(180), new ol.expr.Literal(90),
+              new ol.expr.Literal('EPSG:4326')]);
         var output = parser.write(filter);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         done();
@@ -138,8 +145,9 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       afterLoadXml(url, function(xml) {
         var filter = new ol.expr.Call(new ol.expr.Identifier(
             ol.expr.functions.DWITHIN),
-            [new ol.geom.Point([2488789, 289552]), 1000, 'm', undefined,
-             'Geometry']);
+            [new ol.expr.Literal(new ol.geom.Point([2488789, 289552])),
+              new ol.expr.Literal(1000), new ol.expr.Literal('m'),
+              new ol.expr.Literal(null), new ol.expr.Identifier('Geometry')]);
         var output = parser.write(filter);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         filter = parser.read(xml);
@@ -160,9 +168,11 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       afterLoadXml(url, function(xml) {
         var filter = new ol.expr.Logical(ol.expr.LogicalOp.OR,
             new ol.expr.Call(new ol.expr.Identifier(ol.expr.functions.LIKE),
-            ['person', 'me', '*', '.', '!']),
+            [new ol.expr.Identifier('person'), new ol.expr.Literal('me'),
+              new ol.expr.Literal('*'), new ol.expr.Literal('.'),
+              new ol.expr.Literal('!')]),
             new ol.expr.Call(new ol.expr.Identifier(ol.expr.functions.FID),
-            ['foo.1', 'foo.2']));
+            [new ol.expr.Literal('foo.1'), new ol.expr.Literal('foo.2')]));
         var output = parser.write(filter);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         done();
@@ -176,9 +186,11 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
           afterLoadXml(url, function(xml) {
             var filter = new ol.expr.Logical(ol.expr.LogicalOp.AND,
                 new ol.expr.Call(new ol.expr.Identifier(ol.expr.functions.LIKE),
-                ['person', 'me', '*', '.', '!']),
+                [new ol.expr.Identifier('person'), new ol.expr.Literal('me'),
+                  new ol.expr.Literal('*'), new ol.expr.Literal('.'),
+                  new ol.expr.Literal('!')]),
                 new ol.expr.Call(new ol.expr.Identifier(ol.expr.functions.FID),
-                ['foo.1', 'foo.2']));
+                [new ol.expr.Literal('foo.1'), new ol.expr.Literal('foo.2')]));
             var output = parser.write(filter);
             expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
             done();
@@ -192,7 +204,7 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
           afterLoadXml(url, function(xml) {
             var filter = new ol.expr.Not(
                 new ol.expr.Call(new ol.expr.Identifier(ol.expr.functions.FID),
-                    ['foo.2']));
+                    [new ol.expr.Literal('foo.2')]));
             var output = parser.write(filter);
             expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
             done();
@@ -211,8 +223,10 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
         // ISO 8601: 2011-12-27T18:19:15.123Z
         var end = new Date(Date.UTC(2011, 11, 27, 18, 19, 15, 123));
         var filter = new ol.expr.Logical(ol.expr.LogicalOp.AND,
-            new ol.expr.Comparison(ol.expr.ComparisonOp.GTE, 'when', start),
-            new ol.expr.Comparison(ol.expr.ComparisonOp.LTE, 'when', end));
+            new ol.expr.Comparison(ol.expr.ComparisonOp.GTE,
+            new ol.expr.Identifier('when'), new ol.expr.Literal(start)),
+            new ol.expr.Comparison(ol.expr.ComparisonOp.LTE,
+            new ol.expr.Identifier('when'), new ol.expr.Literal(end)));
         var output = parser.write(filter);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         done();
@@ -229,6 +243,7 @@ goog.require('ol.expr.Call');
 goog.require('ol.expr.Comparison');
 goog.require('ol.expr.ComparisonOp');
 goog.require('ol.expr.Identifier');
+goog.require('ol.expr.Literal');
 goog.require('ol.expr.Logical');
 goog.require('ol.expr.LogicalOp');
 goog.require('ol.expr.Not');
