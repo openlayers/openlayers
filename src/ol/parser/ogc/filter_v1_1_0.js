@@ -31,14 +31,14 @@ ol.parser.ogc.Filter_v1_1_0 = function() {
       this.readChildNodes(node, container);
       if (matchCase === 'false' || matchCase === '0') {
         filter = new ol.expr.Call(new ol.expr.Identifier(ol.expr.functions.IEQ),
-            [container['property'], container['value']]);
+            [container.property, container.value]);
       } else {
         filter = new ol.expr.Comparison(
             ol.expr.ComparisonOp.EQ,
-            container['property'],
-            container['value']);
+            container.property,
+            container.value);
       }
-      obj['filters'].push(filter);
+      obj.filters.push(filter);
     },
     'PropertyIsNotEqualTo': function(node, obj) {
       var matchCase = node.getAttribute('matchCase');
@@ -47,25 +47,25 @@ ol.parser.ogc.Filter_v1_1_0 = function() {
       if (matchCase === 'false' || matchCase === '0') {
         filter = new ol.expr.Call(new ol.expr.Identifier(
             ol.expr.functions.INEQ),
-            [container['property'], container['value']]);
+            [container.property, container.value]);
       } else {
         filter = new ol.expr.Comparison(
             ol.expr.ComparisonOp.NEQ,
-            container['property'],
-            container['value']);
+            container.property,
+            container.value);
       }
-      obj['filters'].push(filter);
+      obj.filters.push(filter);
     },
     'PropertyIsLike': function(node, obj) {
       var container = {};
       this.readChildNodes(node, container);
       var args = [];
-      args.push(container['property'], container['value'],
+      args.push(container.property, container.value,
           new ol.expr.Literal(node.getAttribute('wildCard')),
           new ol.expr.Literal(node.getAttribute('singleChar')),
           new ol.expr.Literal(node.getAttribute('escapeChar')),
           new ol.expr.Literal(node.getAttribute('matchCase')));
-      obj['filters'].push(new ol.expr.Call(
+      obj.filters.push(new ol.expr.Call(
           new ol.expr.Identifier(ol.expr.functions.LIKE), args));
     }
   });

@@ -33,12 +33,12 @@ ol.parser.ogc.Filter_v1 = function() {
           switch (child.nodeType) {
             case 1:
               obj = this.readNode(child);
-              if (obj['property']) {
-                value += obj['property'].getName();
-              } else if (goog.isDef(obj['value'])) {
+              if (obj.property) {
+                value += obj.property.getName();
+              } else if (goog.isDef(obj.value)) {
                 // TODO adding this to value and then parsing causes
                 // ol.expr.UnexpectedToken on e.g. 10
-                return obj['value'];
+                return obj.value;
               }
               break;
             case 3: // text node
@@ -53,15 +53,15 @@ ol.parser.ogc.Filter_v1 = function() {
       },
       'Filter': function(node, obj) {
         var container = {
-          'filters': []
+          filters: []
         };
         this.readChildNodes(node, container);
         if (goog.isDef(container.fids)) {
-          obj['filter'] = new ol.expr.Call(
+          obj.filter = new ol.expr.Call(
               new ol.expr.Identifier(ol.expr.functions.FID),
               goog.object.getValues(container.fids));
-        } else if (container['filters'].length > 0) {
-          obj['filter'] = container['filters'][0];
+        } else if (container.filters.length > 0) {
+          obj.filter = container.filters[0];
         }
       },
       'FeatureId': function(node, obj) {
@@ -76,90 +76,90 @@ ol.parser.ogc.Filter_v1 = function() {
         }
       },
       'And': function(node, obj) {
-        var container = {'filters': []};
+        var container = {filters: []};
         this.readChildNodes(node, container);
-        var filter = this.aggregateLogical_(container['filters'],
+        var filter = this.aggregateLogical_(container.filters,
             ol.expr.LogicalOp.AND);
-        obj['filters'].push(filter);
+        obj.filters.push(filter);
       },
       'Or': function(node, obj) {
-        var container = {'filters': []};
+        var container = {filters: []};
         this.readChildNodes(node, container);
-        var filter = this.aggregateLogical_(container['filters'],
+        var filter = this.aggregateLogical_(container.filters,
             ol.expr.LogicalOp.OR);
-        obj['filters'].push(filter);
+        obj.filters.push(filter);
       },
       'Not': function(node, obj) {
-        var container = {'filters': []};
+        var container = {filters: []};
         this.readChildNodes(node, container);
         // Not is unary so can only contain 1 child filter
-        obj['filters'].push(new ol.expr.Not(
+        obj.filters.push(new ol.expr.Not(
             container.filters[0]));
       },
       'PropertyIsNull': function(node, obj) {
         var container = {};
         this.readChildNodes(node, container);
-        obj['filters'].push(new ol.expr.Comparison(
+        obj.filters.push(new ol.expr.Comparison(
             ol.expr.ComparisonOp.EQ,
-            container['property'],
+            container.property,
             new ol.expr.Literal(null)));
       },
       'PropertyIsLessThan': function(node, obj) {
         var container = {};
         this.readChildNodes(node, container);
-        obj['filters'].push(new ol.expr.Comparison(
+        obj.filters.push(new ol.expr.Comparison(
             ol.expr.ComparisonOp.LT,
-            container['property'],
-            container['value']));
+            container.property,
+            container.value));
       },
       'PropertyIsGreaterThan': function(node, obj) {
         var container = {};
         this.readChildNodes(node, container);
-        obj['filters'].push(new ol.expr.Comparison(
+        obj.filters.push(new ol.expr.Comparison(
             ol.expr.ComparisonOp.GT,
-            container['property'],
-            container['value']));
+            container.property,
+            container.value));
       },
       'PropertyIsLessThanOrEqualTo': function(node, obj) {
         var container = {};
         this.readChildNodes(node, container);
-        obj['filters'].push(new ol.expr.Comparison(
+        obj.filters.push(new ol.expr.Comparison(
             ol.expr.ComparisonOp.LTE,
-            container['property'],
-            container['value']));
+            container.property,
+            container.value));
       },
       'PropertyIsGreaterThanOrEqualTo': function(node, obj) {
         var container = {};
         this.readChildNodes(node, container);
-        obj['filters'].push(new ol.expr.Comparison(
+        obj.filters.push(new ol.expr.Comparison(
             ol.expr.ComparisonOp.GTE,
-            container['property'],
-            container['value']));
+            container.property,
+            container.value));
       },
       'PropertyIsBetween': function(node, obj) {
         var container = {};
         this.readChildNodes(node, container);
-        obj['filters'].push(new ol.expr.Logical(ol.expr.LogicalOp.AND,
+        obj.filters.push(new ol.expr.Logical(ol.expr.LogicalOp.AND,
             new ol.expr.Comparison(ol.expr.ComparisonOp.GTE,
-            container['property'], container['lowerBoundary']),
+            container.property, container.lowerBoundary),
             new ol.expr.Comparison(ol.expr.ComparisonOp.LTE,
-            container['property'], container['upperBoundary'])));
+            container.property, container.upperBoundary)));
       },
       'Literal': function(node, obj) {
         var nodeValue = this.getChildValue(node);
         var value = goog.string.toNumber(nodeValue);
-        obj['value'] = new ol.expr.Literal(isNaN(value) ? nodeValue : value);
+        obj.value = new ol.expr.Literal(isNaN(value) ? nodeValue : value);
       },
       'PropertyName': function(node, obj) {
-        obj['property'] = new ol.expr.Identifier(this.getChildValue(node));
+        obj.property = new ol.expr.Identifier(this.getChildValue(node));
       },
       'LowerBoundary': function(node, obj) {
         var readers = this.readers[this.defaultNamespaceURI];
-        obj['lowerBoundary'] = readers._expression.call(this, node);
+        obj.lowerBoundary = readers._expression.call(this, node);
       },
       'UpperBoundary': function(node, obj) {
         var readers = this.readers[this.defaultNamespaceURI];
-        obj['upperBoundary'] = readers._expression.call(this, node);
+        obj.upperBoundary = readers._expression.call(this, node);
       },
       _spatial: function(node, obj, identifier) {
         var args = [], container = {};
@@ -172,17 +172,17 @@ ol.parser.ogc.Filter_v1 = function() {
                 new ol.expr.Literal(container.bounds[2]),
                 new ol.expr.Literal(container.bounds[3])];
         }
-        if (goog.isDef(container['distance'])) {
-          args.push(container['distance']);
+        if (goog.isDef(container.distance)) {
+          args.push(container.distance);
         }
-        if (goog.isDef(container['distanceUnits'])) {
-          args.push(container['distanceUnits']);
+        if (goog.isDef(container.distanceUnits)) {
+          args.push(container.distanceUnits);
         }
         args.push(new ol.expr.Literal(container.projection));
-        if (goog.isDef(container['property'])) {
-          args.push(container['property']);
+        if (goog.isDef(container.property)) {
+          args.push(container.property);
         }
-        obj['filters'].push(new ol.expr.Call(new ol.expr.Identifier(
+        obj.filters.push(new ol.expr.Call(new ol.expr.Identifier(
             identifier), args));
       },
       'BBOX': function(node, obj) {
@@ -211,8 +211,8 @@ ol.parser.ogc.Filter_v1 = function() {
             ol.expr.functions.DWITHIN);
       },
       'Distance': function(node, obj) {
-        obj['distance'] = new ol.expr.Literal(this.getChildValue(node));
-        obj['distanceUnits'] = new ol.expr.Literal(node.getAttribute('units'));
+        obj.distance = new ol.expr.Literal(this.getChildValue(node));
+        obj.distanceUnits = new ol.expr.Literal(node.getAttribute('units'));
       }
     }
   };
@@ -464,7 +464,7 @@ ol.parser.ogc.Filter_v1.prototype.read = function(data) {
   }
   var obj = {};
   this.readNode(data, obj);
-  return obj['filter'];
+  return obj.filter;
 };
 
 

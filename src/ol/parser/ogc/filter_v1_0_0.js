@@ -28,28 +28,28 @@ ol.parser.ogc.Filter_v1_0_0 = function() {
     'PropertyIsEqualTo': function(node, obj) {
       var container = {};
       this.readChildNodes(node, container);
-      obj['filters'].push(new ol.expr.Comparison(
+      obj.filters.push(new ol.expr.Comparison(
           ol.expr.ComparisonOp.EQ,
-          container['property'],
-          container['value']));
+          container.property,
+          container.value));
     },
     'PropertyIsNotEqualTo': function(node, obj) {
       var container = {};
       this.readChildNodes(node, container);
-      obj['filters'].push(new ol.expr.Comparison(
+      obj.filters.push(new ol.expr.Comparison(
           ol.expr.ComparisonOp.NEQ,
-          container['property'],
-          container['value']));
+          container.property,
+          container.value));
     },
     'PropertyIsLike': function(node, obj) {
       var container = {};
       this.readChildNodes(node, container);
       var args = [];
-      args.push(container['property'], container['value'],
+      args.push(container.property, container.value,
           new ol.expr.Literal(node.getAttribute('wildCard')),
           new ol.expr.Literal(node.getAttribute('singleChar')),
           new ol.expr.Literal(node.getAttribute('escape')));
-      obj['filters'].push(new ol.expr.Call(
+      obj.filters.push(new ol.expr.Call(
           new ol.expr.Identifier(ol.expr.functions.LIKE), args));
     }
   });
