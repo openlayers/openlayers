@@ -63,6 +63,13 @@ ol.control.ZoomSlider = function(opt_options) {
   this.direction_ = ol.control.ZoomSlider.direction.VERTICAL;
 
   /**
+   * Whether the slider is initialized.
+   * @type {boolean}
+   * @private
+   */
+  this.sliderInitialized_ = false;
+
+  /**
    * @private
    * @type {Array.<?number>}
    */
@@ -107,11 +114,8 @@ ol.control.ZoomSlider.direction = {
  */
 ol.control.ZoomSlider.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
-  this.initSlider_();
-  var resolution = map.getView().getView2D().getResolution();
-  if (goog.isDef(resolution)) {
-    this.currentResolution_ = resolution;
-    this.positionThumbForResolution_(resolution);
+  if (!goog.isNull(map)) {
+    map.render();
   }
 };
 
@@ -147,6 +151,7 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
     limits = new goog.math.Rect(0, 0, 0, h);
   }
   this.dragger_.setLimits(limits);
+  this.sliderInitialized_ = true;
 };
 
 
@@ -154,6 +159,14 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
  * @inheritDoc
  */
 ol.control.ZoomSlider.prototype.handleMapPostrender = function(mapEvent) {
+  if (goog.isNull(mapEvent.frameState)) {
+    return;
+  }
+  goog.asserts.assert(
+      goog.isDefAndNotNull(mapEvent.frameState.view2DState));
+  if (!this.sliderInitialized_) {
+    this.initSlider_();
+  }
   var res = mapEvent.frameState.view2DState.resolution;
   if (res !== this.currentResolution_) {
     this.currentResolution_ = res;

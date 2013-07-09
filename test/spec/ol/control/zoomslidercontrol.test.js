@@ -68,6 +68,7 @@ describe('ol.control.ZoomSlider', function() {
       control.element.style.width = '1000px';
       control.element.style.height = '10px';
       control.setMap(map);
+      control.initSlider_();
 
       var horizontal = ol.control.ZoomSlider.direction.HORIZONTAL;
       expect(control.direction_).to.be(horizontal);
