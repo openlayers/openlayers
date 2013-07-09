@@ -32,13 +32,51 @@ ol.View2DProperty = {
 
 
 /**
- * Create a new View2D, a View2D manages properties such as center,
- *     projection, resolution and rotation.
+ * @class
+ * An ol.View2D object represents a simple 2D view of the map.
  *
- * Example:
+ * This is the object to act upon to change the center, resolution,
+ * and rotation of the map.
  *
- *     // to get the current extent
- *     map.getView().getView2D().calculateExtent(map.getSize())
+ * ### The view states
+ *
+ * An `ol.View2D` is determined by three states: `center`, `resolution`,
+ * and `rotation`. To each state corresponds a getter and a setter. E.g.
+ * `getCenter` and `setCenter` for the `center` state.
+ *
+ * An `ol.View2D` has a `projection`. The projection determines the
+ * coordinate system of the center, and its units determine the units of the
+ * resolution (projection units per pixel). The default projection is
+ * Spherical Mercator (EPSG:3857).
+ *
+ * ### The constraints
+ *
+ * `setCenter`, `setResolution` and `setRotation` can be used to change the
+ * states of the view. Any value can be passed to the setters. And the value
+ * that is passed to a setter will effectively be the value set in the view,
+ * and returned by the corresponding getter.
+ *
+ * But an `ol.View2D` object also has a *resolution constraint* and a
+ * *rotation constraint*. There's currently no *center constraint*, but
+ * this may change in the future.
+ *
+ * As said above no constraints are applied when the setters are used to set
+ * new states for the view. Applying constraints is done explicitly through
+ * the use of the `constrain*` functions (`constrainResolution` and
+ * `constrainRotation`).
+ *
+ * The main users of the constraints are the interactions and the
+ * controls. For example, double-clicking on the map changes the view to
+ * the "next" resolution. And releasing the fingers after pinch-zooming
+ * snaps to the closest resolution (with an animation).
+ *
+ * So the *resolution constraint* snaps to specific resolutions. It is
+ * determined by the following options: `resolutions`, `maxResolution`,
+ * `maxZoom`, and `zoomFactor`. If `resolutions` is set, the other three
+ * options are ignored. See {@link ol.View2DOptions} for more information.
+ *
+ * The *rotation constaint* is currently not configurable. It snaps the
+ * rotation value to zero when approaching the horizontal.
  *
  * @constructor
  * @implements {ol.IView2D}
