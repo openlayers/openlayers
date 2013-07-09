@@ -33,6 +33,8 @@ ol.control.Zoom = function(opt_options) {
 
   var className = goog.isDef(options.className) ? options.className : 'ol-zoom';
 
+  var delta = goog.isDef(options.delta) ? options.delta : 1;
+
   var inElement = goog.dom.createDom(goog.dom.TagName.A, {
     'href': '#zoomIn',
     'class': className + '-in'
@@ -40,7 +42,7 @@ ol.control.Zoom = function(opt_options) {
   goog.events.listen(inElement, [
     goog.events.EventType.TOUCHEND,
     goog.events.EventType.CLICK
-  ], this.handleIn_, false, this);
+  ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
 
   var outElement = goog.dom.createDom(goog.dom.TagName.A, {
     'href': '#zoomOut',
@@ -49,7 +51,7 @@ ol.control.Zoom = function(opt_options) {
   goog.events.listen(outElement, [
     goog.events.EventType.TOUCHEND,
     goog.events.EventType.CLICK
-  ], this.handleOut_, false, this);
+  ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, -delta), false, this);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE;
   var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, inElement,
@@ -61,46 +63,17 @@ ol.control.Zoom = function(opt_options) {
     target: options.target
   });
 
-  /**
-   * @type {number}
-   * @private
-   */
-  this.delta_ = goog.isDef(options.delta) ? options.delta : 1;
-
 };
 goog.inherits(ol.control.Zoom, ol.control.Control);
 
 
 /**
+ * @param {number} delta Zoom delta.
  * @param {goog.events.BrowserEvent} browserEvent The browser event to handle.
  * @private
  */
-ol.control.Zoom.prototype.handleIn_ = function(browserEvent) {
-  // prevent #zoomIn anchor from getting appended to the url
-  browserEvent.preventDefault();
-  var map = this.getMap();
-  map.requestRenderFrame();
-  // FIXME works for View2D only
-  var view = map.getView().getView2D();
-  var currentResolution = view.getResolution();
-  if (goog.isDef(currentResolution)) {
-    map.addPreRenderFunction(ol.animation.zoom({
-      resolution: currentResolution,
-      duration: ol.control.ZOOM_DURATION,
-      easing: ol.easing.easeOut
-    }));
-  }
-  var resolution = view.constrainResolution(currentResolution, this.delta_);
-  view.setResolution(resolution);
-};
-
-
-/**
- * @param {goog.events.BrowserEvent} browserEvent The browser event to handle.
- * @private
- */
-ol.control.Zoom.prototype.handleOut_ = function(browserEvent) {
-  // prevent #zoomOut anchor from getting appended to the url
+ol.control.Zoom.prototype.zoomByDelta_ = function(delta, browserEvent) {
+  // prevent the anchor from getting appended to the url
   browserEvent.preventDefault();
   var map = this.getMap();
   // FIXME works for View2D only
@@ -112,7 +85,7 @@ ol.control.Zoom.prototype.handleOut_ = function(browserEvent) {
       duration: ol.control.ZOOM_DURATION,
       easing: ol.easing.easeOut
     }));
+    var newResolution = view.constrainResolution(currentResolution, delta);
+    view.setResolution(newResolution);
   }
-  var resolution = view.constrainResolution(currentResolution, -this.delta_);
-  view.setResolution(resolution);
 };
