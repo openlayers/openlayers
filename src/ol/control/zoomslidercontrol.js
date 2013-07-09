@@ -159,6 +159,11 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
  * @inheritDoc
  */
 ol.control.ZoomSlider.prototype.handleMapPostrender = function(mapEvent) {
+  if (goog.isNull(mapEvent.frameState)) {
+    return;
+  }
+  goog.asserts.assert(
+      goog.isDefAndNotNull(mapEvent.frameState.view2DState));
   if (!this.sliderInitialized_) {
     this.initSlider_();
   }
