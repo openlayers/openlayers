@@ -379,31 +379,36 @@ ol.parser.ogc.Filter_v1 = function() {
       }
     }
   };
-  this.filterMap_ = {
-    '&&': 'And',
-    '||': 'Or',
-    '!': 'Not',
-    '==': 'PropertyIsEqualTo',
-    '!=': 'PropertyIsNotEqualTo',
-    '<': 'PropertyIsLessThan',
-    '>': 'PropertyIsGreaterThan',
-    '<=': 'PropertyIsLessThanOrEqualTo',
-    '>=': 'PropertyIsGreaterThanOrEqualTo',
-    '..': 'PropertyIsBetween',
-    'like': 'PropertyIsLike',
-    'null': 'PropertyIsNull',
-    'extent': 'BBOX',
-    'dwithin': 'DWITHIN',
-    'within': 'WITHIN',
-    'contains': 'CONTAINS',
-    'intersects': 'INTERSECTS',
-    'fid': '_featureIds',
-    'ieq': 'PropertyIsEqualTo',
-    'ineq': 'PropertyIsNotEqualTo'
-  };
   goog.base(this);
 };
 goog.inherits(ol.parser.ogc.Filter_v1, ol.parser.XML);
+
+
+/**
+ * @private
+ */
+ol.parser.ogc.Filter_v1.filterMap_ = {
+  '&&': 'And',
+  '||': 'Or',
+  '!': 'Not',
+  '==': 'PropertyIsEqualTo',
+  '!=': 'PropertyIsNotEqualTo',
+  '<': 'PropertyIsLessThan',
+  '>': 'PropertyIsGreaterThan',
+  '<=': 'PropertyIsLessThanOrEqualTo',
+  '>=': 'PropertyIsGreaterThanOrEqualTo',
+  '..': 'PropertyIsBetween',
+  'like': 'PropertyIsLike',
+  'null': 'PropertyIsNull',
+  'extent': 'BBOX',
+  'dwithin': 'DWITHIN',
+  'within': 'WITHIN',
+  'contains': 'CONTAINS',
+  'intersects': 'INTERSECTS',
+  'fid': '_featureIds',
+  'ieq': 'PropertyIsEqualTo',
+  'ineq': 'PropertyIsNotEqualTo'
+};
 
 
 /**
@@ -443,7 +448,7 @@ ol.parser.ogc.Filter_v1.prototype.getFilterType_ = function(filter) {
   } else if (filter instanceof ol.expr.Not) {
     type = '!';
   }
-  var filterType = this.filterMap_[type];
+  var filterType = ol.parser.ogc.Filter_v1.filterMap_[type];
   if (!filterType) {
     throw new Error('Filter writing not supported for rule type: ' + type);
   }
