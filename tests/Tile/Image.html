@@ -382,12 +382,9 @@
 
             t.delay_call(5, function() {
                 var tile = layer.grid[0][0];
-                if (tile.isLoading) {
-                    t.ok(false, "test_getCanvasContext timeout");
-                } else {
-                    t.ok(tile.getCanvasContext() instanceof CanvasRenderingContext2D,
-                         "getCanvasContext() returns CanvasRenderingContext2D instance");
-                }
+                tile.onImageLoad();
+                t.ok(tile.getCanvasContext() instanceof CanvasRenderingContext2D,
+                     "getCanvasContext() returns CanvasRenderingContext2D instance");
                 map.destroy();
             });
         }
