@@ -70,6 +70,38 @@ describe('ol.View2D', function() {
     });
 
   });
+
+  describe('#getZoom', function() {
+    var view;
+    beforeEach(function() {
+      view = new ol.View2D({
+        resolutions: [512, 256, 128, 64, 32, 16]
+      });
+    });
+
+    it('returns correct zoom levels', function() {
+      view.setResolution(undefined);
+      expect(view.getZoom()).to.be(undefined);
+
+      view.setResolution(511);
+      expect(view.getZoom()).to.be(undefined);
+
+      view.setResolution(512);
+      expect(view.getZoom()).to.be(0);
+
+      view.setResolution(64);
+      expect(view.getZoom()).to.be(3);
+
+      view.setResolution(65);
+      expect(view.getZoom()).to.be(undefined);
+
+      view.setResolution(16);
+      expect(view.getZoom()).to.be(5);
+
+      view.setResolution(15);
+      expect(view.getZoom()).to.be(undefined);
+    });
+  });
 });
 
 goog.require('ol.View2D');

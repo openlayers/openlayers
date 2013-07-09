@@ -326,6 +326,31 @@ ol.View2D.prototype.getView3D = function() {
 
 
 /**
+ * Get the current zoom level. Return undefined if the current
+ * resolution is undefined or not a "constrained resolution".
+ * @return {number|undefined} Zoom.
+ */
+ol.View2D.prototype.getZoom = function() {
+  var zoom;
+  var resolution = this.getResolution();
+
+  if (goog.isDef(resolution)) {
+    var res, z = 0;
+    do {
+      res = this.constrainResolution(this.maxResolution_, z);
+      if (res == resolution) {
+        zoom = z;
+        break;
+      }
+      ++z;
+    } while (res > this.minResolution_);
+  }
+
+  return zoom;
+};
+
+
+/**
  * Fit the given extent based on the given map size.
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Box pixel size.
