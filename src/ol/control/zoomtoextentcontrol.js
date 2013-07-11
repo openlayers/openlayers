@@ -62,18 +62,7 @@ ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function(browserEvent) {
   browserEvent.preventDefault();
   var map = this.getMap();
   var view = map.getView().getView2D();
-  view.fitExtent(this.extent_, map.getSize());
-};
-
-
-/**
- * Overload setMap to use the view projection's validity extent
- * if no extent was passed to the constructor.
- * @param {ol.Map} map Map.
- */
-ol.control.ZoomToExtent.prototype.setMap = function(map) {
-  ol.control.Control.prototype.setMap.call(this, map);
-  if (map && !this.extent_) {
-    this.extent_ = map.getView().getProjection().getExtent();
-  }
+  var extent = goog.isNull(this.extent_) ?
+      view.getProjection().getExtent() : this.extent_;
+  view.fitExtent(extent, map.getSize());
 };
