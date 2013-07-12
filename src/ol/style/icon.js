@@ -51,7 +51,7 @@ goog.inherits(ol.style.IconLiteral, ol.style.PointLiteral);
  * @inheritDoc
  */
 ol.style.IconLiteral.prototype.equals = function(iconLiteral) {
-  return this.url == iconLiteral.type &&
+  return this.url == iconLiteral.url &&
       this.width == iconLiteral.width &&
       this.height == iconLiteral.height &&
       this.opacity == iconLiteral.opacity &&
