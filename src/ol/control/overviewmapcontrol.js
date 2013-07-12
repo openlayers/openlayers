@@ -4,7 +4,9 @@ goog.provide('ol.control.OverviewMap');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.classes');
 goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.math.Size');
 goog.require('goog.style');
 goog.require('ol.Collection');
@@ -74,6 +76,35 @@ ol.control.OverviewMap = function(opt_options) {
 
 
   /**
+   * @type {boolean}
+   * @private
+   */
+  this.maximized_ = goog.isDefAndNotNull(options.maximized) ?
+      options.maximized : false;
+
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.buttonMaximizedClass_ = 'ol-overviewmap-button-maximized';
+
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.buttonMinimizedClass_ = 'ol-overviewmap-button-minimized';
+
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.elementMinimizedClass_ = 'ol-overviewmap-minimized';
+
+
+  /**
    * @type {number}
    * @private
    */
@@ -102,6 +133,35 @@ ol.control.OverviewMap = function(opt_options) {
     map: options.map,
     target: options.target
   });
+
+  // minimize/maximize button
+  var cls = [];
+  cls.push('ol-overviewmap-button');
+  if (this.maximized_) {
+    cls.push(this.buttonMaximizedClass_);
+  } else {
+    cls.push(this.buttonMinimizedClass_);
+  }
+
+  /**
+   * @type {Element}
+   * @private
+   */
+  this.button_ = goog.dom.createDom(goog.dom.TagName.A, {
+    'class': cls.join(' '),
+    'href': '#toggle'
+  });
+
+  goog.events.listen(this.button_, [
+    goog.events.EventType.TOUCHEND,
+    goog.events.EventType.CLICK
+  ], goog.partial(ol.control.OverviewMap.prototype.toggle_), false, this);
+
+  goog.dom.appendChild(options.map.getOverlayContainer(), this.button_);
+
+  if (!this.maximized_) {
+    this.minimize_();
+  }
 };
 goog.inherits(ol.control.OverviewMap, ol.control.Control);
 
@@ -274,5 +334,42 @@ ol.control.OverviewMap.prototype.updateBox_ = function() {
         Math.abs(topLeftPixel[0] - bottomRightPixel[0]),
         Math.abs(topLeftPixel[1] - bottomRightPixel[1])));
   }
+};
 
+
+/**
+ * Toggle the control visibility
+ * @param {goog.events.Event} event Event.
+ * @private
+ */
+ol.control.OverviewMap.prototype.toggle_ = function(event) {
+  if (this.maximized_ == true) {
+    this.minimize_();
+  } else {
+    this.maximize_();
+  }
+};
+
+
+/**
+ * Maximize the control
+ * @private
+ */
+ol.control.OverviewMap.prototype.maximize_ = function() {
+  goog.dom.classes.addRemove(
+      this.button_, this.buttonMinimizedClass_, this.buttonMaximizedClass_);
+  goog.dom.classes.remove(this.element, this.elementMinimizedClass_);
+  this.maximized_ = true;
+};
+
+
+/**
+ * Minimize the control
+ * @private
+ */
+ol.control.OverviewMap.prototype.minimize_ = function() {
+  goog.dom.classes.addRemove(
+      this.button_, this.buttonMaximizedClass_, this.buttonMinimizedClass_);
+  goog.dom.classes.add(this.element, this.elementMinimizedClass_);
+  this.maximized_ = false;
 };
