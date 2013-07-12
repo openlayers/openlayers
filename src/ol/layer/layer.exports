@@ -1,0 +1,2 @@
+@exportSymbol ol.layer.Layer
+@exportProperty ol.layer.Layer.prototype.getSource
