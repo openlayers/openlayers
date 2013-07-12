@@ -6,7 +6,6 @@ goog.require('goog.asserts');
 goog.require('ol.Kinetic');
 goog.require('ol.PreRenderFunction');
 goog.require('ol.View2D');
-goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
@@ -61,10 +60,12 @@ ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
   // FIXME works for View2D only
   var view = map.getView();
   goog.asserts.assertInstanceof(view, ol.View2D);
-  var resolution = view.getResolution();
-  var rotation = view.getRotation();
-  var newCenter = [-resolution * this.deltaX, resolution * this.deltaY];
-  ol.coordinate.rotate(newCenter, rotation);
+  var view2DState = view.getView2DState();
+  var newCenter = [
+    -view2DState.resolution * this.deltaX,
+    view2DState.resolution * this.deltaY
+  ];
+  ol.coordinate.rotate(newCenter, view2DState.rotation);
   ol.coordinate.add(newCenter, this.startCenter);
   map.requestRenderFrame();
   view.setCenter(newCenter);
@@ -79,25 +80,23 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
   // FIXME works for View2D only
 
   var map = mapBrowserEvent.map;
-  var view = map.getView();
-  var interacting = view.setHint(ol.ViewHint.INTERACTING, -1);
+  var view = map.getView().getView2D();
 
   if (this.kinetic_ && this.kinetic_.end()) {
+    var view2DState = view.getView2DState();
     var distance = this.kinetic_.getDistance();
     var angle = this.kinetic_.getAngle();
-    var center = view.getCenter();
-    this.kineticPreRenderFn_ = this.kinetic_.pan(center);
+    this.kineticPreRenderFn_ = this.kinetic_.pan(view2DState.center);
     map.addPreRenderFunction(this.kineticPreRenderFn_);
 
-    var centerpx = map.getPixelFromCoordinate(center);
+    var centerpx = map.getPixelFromCoordinate(view2DState.center);
     var dest = map.getCoordinateFromPixel([
       centerpx[0] - distance * Math.cos(angle),
       centerpx[1] - distance * Math.sin(angle)
     ]);
     view.setCenter(dest);
-  } else if (interacting === 0) {
-    map.requestRenderFrame();
   }
+  map.requestRenderFrame();
 };
 
 
@@ -113,7 +112,6 @@ ol.interaction.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
     }
     var map = mapBrowserEvent.map;
     map.requestRenderFrame();
-    map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     return true;
   } else {
     return false;

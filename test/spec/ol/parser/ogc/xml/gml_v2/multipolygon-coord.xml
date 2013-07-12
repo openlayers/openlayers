@@ -9,11 +9,11 @@
                     </gml:coord>
                     <gml:coord>
                         <gml:X>3</gml:X>
-                        <gml:Y>4</gml:Y>
+                        <gml:Y>2</gml:Y>
                     </gml:coord>
                     <gml:coord>
-                        <gml:X>5</gml:X>
-                        <gml:Y>6</gml:Y>
+                        <gml:X>3</gml:X>
+                        <gml:Y>4</gml:Y>
                     </gml:coord>
                     <gml:coord>
                         <gml:X>1</gml:X>
@@ -28,12 +28,12 @@
                         <gml:Y>3</gml:Y>
                     </gml:coord>
                     <gml:coord>
-                        <gml:X>4</gml:X>
+                        <gml:X>2</gml:X>
                         <gml:Y>5</gml:Y>
                     </gml:coord>
                     <gml:coord>
-                        <gml:X>6</gml:X>
-                        <gml:Y>7</gml:Y>
+                        <gml:X>4</gml:X>
+                        <gml:Y>5</gml:Y>
                     </gml:coord>
                     <gml:coord>
                         <gml:X>2</gml:X>
@@ -48,12 +48,12 @@
                         <gml:Y>4</gml:Y>
                     </gml:coord>
                     <gml:coord>
-                        <gml:X>5</gml:X>
+                        <gml:X>3</gml:X>
                         <gml:Y>6</gml:Y>
                     </gml:coord>
                     <gml:coord>
-                        <gml:X>7</gml:X>
-                        <gml:Y>8</gml:Y>
+                        <gml:X>5</gml:X>
+                        <gml:Y>6</gml:Y>
                     </gml:coord>
                     <gml:coord>
                         <gml:X>3</gml:X>
@@ -73,11 +73,11 @@
                     </gml:coord>
                     <gml:coord>
                         <gml:X>3</gml:X>
-                        <gml:Y>4</gml:Y>
+                        <gml:Y>2</gml:Y>
                     </gml:coord>
                     <gml:coord>
-                        <gml:X>5</gml:X>
-                        <gml:Y>6</gml:Y>
+                        <gml:X>3</gml:X>
+                        <gml:Y>4</gml:Y>
                     </gml:coord>
                     <gml:coord>
                         <gml:X>1</gml:X>

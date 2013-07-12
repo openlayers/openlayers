@@ -1,10 +1,10 @@
 goog.provide('ol.control.Control');
 
-goog.require('goog.Disposable');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('ol.MapEventType');
+goog.require('ol.Object');
 
 
 
@@ -13,7 +13,7 @@ goog.require('ol.MapEventType');
  * (buttons) or to show annotations (status bars).
  *
  * @constructor
- * @extends {goog.Disposable}
+ * @extends {ol.Object}
  * @implements {oli.control.Control}
  * @param {ol.control.ControlOptions} options Control options.
  */
@@ -50,7 +50,7 @@ ol.control.Control = function(options) {
   }
 
 };
-goog.inherits(ol.control.Control, goog.Disposable);
+goog.inherits(ol.control.Control, ol.Object);
 
 
 /**

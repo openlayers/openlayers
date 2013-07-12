@@ -5,17 +5,17 @@
                 <gml:PolygonPatch interpolation="planar">
                     <gml:exterior>
                         <gml:LinearRing>
-                            <gml:posList>1 2 3 4 5 6 1 2</gml:posList>
+                            <gml:posList>1 2 3 2 3 4 1 2</gml:posList>
                         </gml:LinearRing>
                     </gml:exterior>
                     <gml:interior>
                         <gml:LinearRing>
-                            <gml:posList>2 3 4 5 6 7 2 3</gml:posList>
+                            <gml:posList>2 3 2 5 4 5 2 3</gml:posList>
                         </gml:LinearRing>
                     </gml:interior>    
                     <gml:interior>
                         <gml:LinearRing>
-                            <gml:posList>3 4 5 6 7 8 3 4</gml:posList>
+                            <gml:posList>3 4 3 6 5 6 3 4</gml:posList>
                         </gml:LinearRing>
                     </gml:interior>
                 </gml:PolygonPatch>
@@ -28,7 +28,7 @@
                 <gml:PolygonPatch interpolation="planar">
                     <gml:exterior>
                         <gml:LinearRing>
-                            <gml:posList>1 2 3 4 5 6 1 2</gml:posList>
+                            <gml:posList>1 2 3 2 3 4 1 2</gml:posList>
                         </gml:LinearRing>
                     </gml:exterior>
                 </gml:PolygonPatch>

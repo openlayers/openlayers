@@ -6,19 +6,13 @@ describe('ol.parser.ogc.exceptionreport', function() {
   var parser = new ol.parser.ogc.ExceptionReport();
 
   describe('test read exception', function() {
-    it('OCG WMS 1.3.0 exceptions', function(done) {
-      var result, exceptions;
 
+    it('OCG WMS 1.3.0 exceptions', function(done) {
       var url = 'spec/ol/parser/ogc/xml/exceptionreport/wms1_3_0.xml';
       goog.net.XhrIo.send(url, function(e) {
         var xhr = e.target;
-        result = parser.read(xhr.getResponseXml());
-        exceptions = result.exceptionReport.exceptions;
-      });
-
-      waitsFor(function() {
-        return (result !== undefined);
-      }, 'XHR timeout', 1000, function() {
+        var result = parser.read(xhr.getResponseXml());
+        var exceptions = result.exceptionReport.exceptions;
         expect(exceptions.length).to.be(4);
         var str = 'Plain text message about an error.';
         expect(goog.string.trim(exceptions[0].text)).to.be(str);
@@ -40,20 +34,15 @@ describe('ol.parser.ogc.exceptionreport', function() {
         done();
       });
     });
-    it('test read exception OWSCommon 1.0.0', function(done) {
-      var result, report, exception;
 
+    it('test read exception OWSCommon 1.0.0', function(done) {
       var url = 'spec/ol/parser/ogc/xml/exceptionreport/ows1_0_0.xml';
       goog.net.XhrIo.send(url, function(e) {
         var xhr = e.target;
-        result = parser.read(xhr.getResponseXml());
-        report = result.exceptionReport;
-        exception = report.exceptions[0];
-      });
+        var result = parser.read(xhr.getResponseXml());
+        var report = result.exceptionReport;
+        var exception = report.exceptions[0];
 
-      waitsFor(function() {
-        return (result !== undefined);
-      }, 'XHR timeout', 1000, function() {
         expect(report.version).to.eql('1.0.0');
         expect(report.language).to.eql('en');
         expect(exception.code).to.eql('InvalidParameterValue');
@@ -65,20 +54,15 @@ describe('ol.parser.ogc.exceptionreport', function() {
         done();
       });
     });
-    it('test read exception OWSCommon 1.1.0', function(done) {
-      var result, report, exception;
 
+    it('test read exception OWSCommon 1.1.0', function(done) {
       var url = 'spec/ol/parser/ogc/xml/exceptionreport/ows1_1_0.xml';
       goog.net.XhrIo.send(url, function(e) {
         var xhr = e.target;
-        result = parser.read(xhr.getResponseXml());
-        report = result.exceptionReport;
-        exception = report.exceptions[0];
-      });
+        var result = parser.read(xhr.getResponseXml());
+        var report = result.exceptionReport;
+        var exception = report.exceptions[0];
 
-      waitsFor(function() {
-        return (result !== undefined);
-      }, 'XHR timeout', 1000, function() {
         expect(report.version).to.eql('1.1.0');
         expect(report.language).to.eql('en');
         expect(exception.code).to.eql('InvalidParameterValue');

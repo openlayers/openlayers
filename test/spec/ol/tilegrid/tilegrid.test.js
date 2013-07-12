@@ -190,6 +190,16 @@ describe('ol.tilegrid.TileGrid', function() {
       expect(resolutions.length).to.be(24);
     });
 
+    it('works for projections unknown to the client', function() {
+      var projection = new ol.Projection(
+          {code: 'EPSG:31287', units: 'm'});
+      var grid = ol.tilegrid.createForProjection(projection);
+      var resolutions = grid.getResolutions();
+      expect(resolutions[5]).to.be(
+          360 * ol.METERS_PER_UNIT[ol.ProjectionUnits.DEGREES] /
+          ol.DEFAULT_TILE_SIZE / Math.pow(2, 5));
+    });
+
   });
 
   describe('getForProjection', function() {
@@ -633,6 +643,8 @@ describe('ol.tilegrid.TileGrid', function() {
 });
 
 goog.require('ol.Coordinate');
+goog.require('ol.Projection');
+goog.require('ol.ProjectionUnits');
 goog.require('ol.TileCoord');
 goog.require('ol.proj');
 goog.require('ol.tilegrid.TileGrid');

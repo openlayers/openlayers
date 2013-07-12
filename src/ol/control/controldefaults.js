@@ -1,6 +1,6 @@
 goog.provide('ol.control.defaults');
 
-goog.require('goog.array');
+goog.require('ol.Collection');
 goog.require('ol.control.Attribution');
 goog.require('ol.control.Logo');
 goog.require('ol.control.Zoom');
@@ -9,14 +9,13 @@ goog.require('ol.control.Zoom');
 /**
  * @param {ol.control.DefaultsOptions=} opt_options Defaults options.
  * @param {Array.<ol.control.Control>=} opt_controls Additional controls.
- * @return {Array.<ol.control.Control>} Controls.
+ * @return {ol.Collection} Controls.
  */
 ol.control.defaults = function(opt_options, opt_controls) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
-  /** @type {Array.<ol.control.Control>} */
-  var controls = [];
+  var controls = new ol.Collection();
 
   var attributionControl = goog.isDef(options.attribution) ?
       options.attribution : true;
@@ -43,7 +42,7 @@ ol.control.defaults = function(opt_options, opt_controls) {
   }
 
   if (goog.isDef(opt_controls)) {
-    goog.array.extend(controls, opt_controls);
+    controls.extend(opt_controls);
   }
 
   return controls;

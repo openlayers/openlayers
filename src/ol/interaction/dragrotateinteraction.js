@@ -1,8 +1,6 @@
 goog.provide('ol.interaction.DragRotate');
 
 goog.require('goog.asserts');
-goog.require('ol.View2D');
-goog.require('ol.ViewHint');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
 goog.require('ol.interaction.Interaction');
@@ -55,12 +53,12 @@ ol.interaction.DragRotate.prototype.handleDrag = function(mapBrowserEvent) {
       Math.atan2(size[1] / 2 - offset[1], offset[0] - size[0] / 2);
   if (goog.isDef(this.lastAngle_)) {
     var delta = theta - this.lastAngle_;
-    var view = map.getView();
-    // FIXME supports View2D only
-    goog.asserts.assertInstanceof(view, ol.View2D);
+    // FIXME works for View2D only
+    var view = map.getView().getView2D();
+    var view2DState = view.getView2DState();
     map.requestRenderFrame();
     ol.interaction.Interaction.rotateWithoutConstraints(
-        map, view, view.getRotation() - delta);
+        map, view, view2DState.rotation - delta);
   }
   this.lastAngle_ = theta;
 };
@@ -71,12 +69,11 @@ ol.interaction.DragRotate.prototype.handleDrag = function(mapBrowserEvent) {
  */
 ol.interaction.DragRotate.prototype.handleDragEnd = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
-  // FIXME supports View2D only
-  var view = map.getView();
-  goog.asserts.assertInstanceof(view, ol.View2D);
-  ol.interaction.Interaction.rotate(map, view, view.getRotation(), undefined,
+  // FIXME works for View2D only
+  var view = map.getView().getView2D();
+  var view2DState = view.getView2DState();
+  ol.interaction.Interaction.rotate(map, view, view2DState.rotation, undefined,
       ol.interaction.DRAGROTATE_ANIMATION_DURATION);
-  view.setHint(ol.ViewHint.INTERACTING, -1);
 };
 
 
@@ -88,12 +85,8 @@ ol.interaction.DragRotate.prototype.handleDragStart =
   var browserEvent = mapBrowserEvent.browserEvent;
   if (browserEvent.isMouseActionButton() && this.condition_(browserEvent)) {
     var map = mapBrowserEvent.map;
-    // FIXME supports View2D only
-    var view = map.getView();
-    goog.asserts.assertInstanceof(view, ol.View2D);
     map.requestRenderFrame();
     this.lastAngle_ = undefined;
-    view.setHint(ol.ViewHint.INTERACTING, 1);
     return true;
   } else {
     return false;

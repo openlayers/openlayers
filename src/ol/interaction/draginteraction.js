@@ -6,6 +6,7 @@ goog.require('goog.functions');
 goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
+goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
 
 
@@ -94,8 +95,9 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   if (!map.isDef()) {
-    return;
+    return true;
   }
+  var stopEvent = false;
   var view = map.getView();
   var browserEvent = mapBrowserEvent.browserEvent;
   if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DOWN) {
@@ -113,21 +115,26 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
       this.deltaX = browserEvent.clientX - this.startX;
       this.deltaY = browserEvent.clientY - this.startY;
       this.handleDragEnd(mapBrowserEvent);
+      view.setHint(ol.ViewHint.INTERACTING, -1);
       this.dragging_ = false;
     }
   } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAGSTART) {
     goog.asserts.assertInstanceof(browserEvent, goog.events.BrowserEvent);
+    var view2DState = view.getView2D().getView2DState();
     this.startX = browserEvent.clientX;
     this.startY = browserEvent.clientY;
     this.deltaX = 0;
     this.deltaY = 0;
-    this.startCenter = /** @type {!ol.Coordinate} */ (view.getCenter());
+    this.startCenter = view2DState.center;
     this.startCoordinate = /** @type {ol.Coordinate} */
         (mapBrowserEvent.getCoordinate());
     var handled = this.handleDragStart(mapBrowserEvent);
     if (handled) {
+      view.setHint(ol.ViewHint.INTERACTING, 1);
       this.dragging_ = true;
       mapBrowserEvent.preventDefault();
+      stopEvent = true;
     }
   }
+  return !stopEvent;
 };

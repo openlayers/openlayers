@@ -5,15 +5,16 @@ describe('ol.parser.gml_v2', function() {
   var parser = new ol.parser.ogc.GML_v2();
 
   describe('Test GML v2 parser', function() {
-    it('Point read  correctly from coord', function() {
+    it('Point read  correctly from coord', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/point-coord.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         expect(obj.geometry.type).to.eql('point');
         expect(obj.geometry.coordinates).to.eql([1, 2]);
+        done();
       });
     });
-    it('Point read / written correctly from coordinates', function() {
+    it('Point read / written correctly from coordinates', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/point-coordinates.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -25,9 +26,10 @@ describe('ol.parser.gml_v2', function() {
         delete parser.srsName;
         expect(obj.geometry.type).to.eql('point');
         expect(obj.geometry.coordinates).to.eql([1, 2]);
+        done();
       });
     });
-    it('MultiPoint read correctly from coord', function() {
+    it('MultiPoint read correctly from coord', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/multipoint-coord.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -37,9 +39,10 @@ describe('ol.parser.gml_v2', function() {
         expect(obj.geometry.parts[0].coordinates).to.eql([1, 2]);
         expect(obj.geometry.parts[1].coordinates).to.eql([2, 3]);
         expect(obj.geometry.parts[2].coordinates).to.eql([3, 4]);
+        done();
       });
     });
-    it('MultiPoint read / written correctly from coordinates', function() {
+    it('MultiPoint read / written correctly from coordinates', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/multipoint-coordinates.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -55,18 +58,20 @@ describe('ol.parser.gml_v2', function() {
         expect(obj.geometry.parts[0].coordinates).to.eql([1, 2]);
         expect(obj.geometry.parts[1].coordinates).to.eql([2, 3]);
         expect(obj.geometry.parts[2].coordinates).to.eql([3, 4]);
+        done();
       });
     });
-    it('LineString read correctly from coord', function() {
+    it('LineString read correctly from coord', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/linestring-coord.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         expect(obj.geometry.type).to.eql('linestring');
         expect(obj.geometry.coordinates.length).to.eql(2);
         expect(obj.geometry.coordinates).to.eql([[1, 2], [3, 4]]);
+        done();
       });
     });
-    it('LineString read / written correctly from coordinates', function() {
+    it('LineString read / written correctly from coordinates', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/linestring-coordinates.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -79,9 +84,10 @@ describe('ol.parser.gml_v2', function() {
         expect(obj.geometry.type).to.eql('linestring');
         expect(obj.geometry.coordinates.length).to.eql(2);
         expect(obj.geometry.coordinates).to.eql([[1, 2], [3, 4]]);
+        done();
       });
     });
-    it('MultiLineString read correctly from coord', function() {
+    it('MultiLineString read correctly from coord', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/multilinestring-coord.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -90,9 +96,10 @@ describe('ol.parser.gml_v2', function() {
         expect(obj.geometry.parts[0].type).to.eql('linestring');
         expect(obj.geometry.parts[0].coordinates).to.eql([[1, 2], [2, 3]]);
         expect(obj.geometry.parts[1].coordinates).to.eql([[3, 4], [4, 5]]);
+        done();
       });
     });
-    it('MultiLineString read / written correctly from coordinates', function() {
+    it('MultiLineString read / written correctly from coords', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/multilinestring-coordinates.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -107,9 +114,10 @@ describe('ol.parser.gml_v2', function() {
         expect(obj.geometry.parts[0].type).to.eql('linestring');
         expect(obj.geometry.parts[0].coordinates).to.eql([[1, 2], [2, 3]]);
         expect(obj.geometry.parts[1].coordinates).to.eql([[3, 4], [4, 5]]);
+        done();
       });
     });
-    it('Polygon read correctly from coord', function() {
+    it('Polygon read correctly from coord', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/polygon-coord.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -122,9 +130,10 @@ describe('ol.parser.gml_v2', function() {
               [6, 7], [2, 3]]);
         expect(obj.geometry.coordinates[2]).to.eql([[3, 4], [5, 6],
               [7, 8], [3, 4]]);
+        done();
       });
     });
-    it('Polygon read / written correctly from coordinates', function() {
+    it('Polygon read / written correctly from coordinates', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/polygon-coordinates.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -135,26 +144,20 @@ describe('ol.parser.gml_v2', function() {
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
         delete parser.srsName;
         expect(obj.geometry.type).to.eql('polygon');
-        expect(obj.geometry.coordinates.length).to.eql(3);
-        expect(obj.geometry.coordinates[0].length).to.eql(4);
-        expect(obj.geometry.coordinates[0]).to.eql([[1, 2], [3, 4],
-              [5, 6], [1, 2]]);
-        expect(obj.geometry.coordinates[1]).to.eql([[2, 3], [4, 5],
-              [6, 7], [2, 3]]);
-        expect(obj.geometry.coordinates[2]).to.eql([[3, 4], [5, 6],
-              [7, 8], [3, 4]]);
+        done();
       });
     });
-    it('MultiPolygon read correctly from coord', function() {
+    it('MultiPolygon read correctly from coord', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/multipolygon-coord.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         expect(obj.geometry.type).to.eql('multipolygon');
         expect(obj.geometry.parts.length).to.eql(2);
         expect(obj.geometry.parts[0].type).to.eql('polygon');
+        done();
       });
     });
-    it('MultiPolygon read / written correctly from coordinates', function() {
+    it('MultiPolygon read / written from coordinates', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/multipolygon-coordinates.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -167,9 +170,10 @@ describe('ol.parser.gml_v2', function() {
         expect(obj.geometry.type).to.eql('multipolygon');
         expect(obj.geometry.parts.length).to.eql(2);
         expect(obj.geometry.parts[0].type).to.eql('polygon');
+        done();
       });
     });
-    it('GeometryCollection r / w correctly from coordinates', function() {
+    it('GeometryCollection r / w correctly from coordinates', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/' +
           'geometrycollection-coordinates.xml';
       afterLoadXml(url, function(xml) {
@@ -185,32 +189,36 @@ describe('ol.parser.gml_v2', function() {
         expect(obj.geometry.parts[0].type).to.eql('point');
         expect(obj.geometry.parts[1].type).to.eql('linestring');
         expect(obj.geometry.parts[2].type).to.eql('polygon');
+        done();
       });
     });
-    it('Box read correctly from coord', function() {
+    it('Box read correctly from coord', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/box-coord.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         expect(obj.bounds).to.eql([1, 3, 2, 4]);
+        done();
       });
     });
-    it('Box read correctly from coordinates', function() {
+    it('Box read correctly from coordinates', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/box-coordinates.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         expect(obj.bounds).to.eql([1, 3, 2, 4]);
+        done();
       });
     });
-    it('LinearRing read correctly from coord', function() {
+    it('LinearRing read correctly from coord', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/linearring-coord.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         expect(obj.geometry.type).to.eql('linearring');
         expect(obj.geometry.coordinates).to.eql([[1, 2], [3, 4], [5, 6],
               [1, 2]]);
+        done();
       });
     });
-    it('LinearRing read / written correctly from coordinates', function() {
+    it('LinearRing read / written correctly from coordinates', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/linearring-coordinates.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -223,9 +231,10 @@ describe('ol.parser.gml_v2', function() {
         expect(obj.geometry.type).to.eql('linearring');
         expect(obj.geometry.coordinates).to.eql([[1, 2], [3, 4], [5, 6],
               [1, 2]]);
+        done();
       });
     });
-    it('FeatureCollection read / written correctly', function() {
+    it('FeatureCollection read / written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/topp-states.xml';
       afterLoadXml(url, function(xml) {
         var srsName = 'http://www.opengis.net/gml/srs/epsg.xml#4326';
@@ -252,9 +261,10 @@ describe('ol.parser.gml_v2', function() {
         expect(attributes['SUB_REGION']).to.eql('E N Cen');
         expect(attributes['STATE_ABBR']).to.eql('IL');
         expect(attributes['LAND_KM']).to.eql('143986.61');
+        done();
       });
     });
-    it('Auto configure works correctly', function() {
+    it('Auto configure works correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/topp-states.xml';
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.ogc.GML_v2();
@@ -264,9 +274,10 @@ describe('ol.parser.gml_v2', function() {
             ol.geom.MultiPolygon).to.be.ok();
         expect(p.featureType).to.eql('states');
         expect(p.featureNS).to.eql('http://www.openplans.org/topp');
+        done();
       });
     });
-    it('Test multiple typeNames', function() {
+    it('Test multiple typeNames', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/multipletypenames.xml';
       afterLoadXml(url, function(xml) {
         // we should not go through autoConfig so specify featureNS
@@ -282,9 +293,10 @@ describe('ol.parser.gml_v2', function() {
             ol.geom.MultiLineString).to.be.ok();
         expect(features[2].getGeometry() instanceof
             ol.geom.MultiPoint).to.be.ok();
+        done();
       });
     });
-    it('Test no geometry', function() {
+    it('Test no geometry', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/nogeom.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -293,14 +305,16 @@ describe('ol.parser.gml_v2', function() {
         expect(feature.getGeometry() === null).to.be.ok();
         // TODO test bounds on feature
         // see https://github.com/openlayers/ol3/issues/566
+        done();
       });
     });
-    it('Test boundedBy', function() {
+    it('Test boundedBy', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/boundedBy.xml';
       afterLoadXml(url, function(xml) {
         parser.read(xml);
         // TODO test bounds on feature
         // see https://github.com/openlayers/ol3/issues/566
+        done();
       });
     });
   });

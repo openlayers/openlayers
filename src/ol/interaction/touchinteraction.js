@@ -6,6 +6,7 @@ goog.require('goog.object');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.Pixel');
+goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
 
 
@@ -106,15 +107,24 @@ ol.interaction.Touch.prototype.handleTouchStart = goog.functions.FALSE;
  */
 ol.interaction.Touch.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
+  var view = mapBrowserEvent.map.getView();
   this.updateTrackedTouches_(mapBrowserEvent);
   if (this.handled_) {
     if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.TOUCHMOVE) {
       this.handleTouchMove(mapBrowserEvent);
     } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.TOUCHEND) {
       this.handled_ = this.handleTouchEnd(mapBrowserEvent);
+      if (!this.handled_) {
+        view.setHint(ol.ViewHint.INTERACTING, -1);
+      }
     }
   }
   if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.TOUCHSTART) {
-    this.handled_ = this.handleTouchStart(mapBrowserEvent);
+    var handled = this.handleTouchStart(mapBrowserEvent);
+    if (!this.handled_ && handled) {
+      view.setHint(ol.ViewHint.INTERACTING, 1);
+    }
+    this.handled_ = handled;
   }
+  return true;
 };

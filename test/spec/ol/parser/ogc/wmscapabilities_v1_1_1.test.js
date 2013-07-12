@@ -5,18 +5,19 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
   var parser = new ol.parser.ogc.WMSCapabilities();
 
   describe('test read exception', function() {
-    it('Error reported correctly', function() {
+    it('Error reported correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/' +
           'exceptionsample.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         expect(!!obj.error).to.be.ok();
+        done();
       });
     });
   });
 
   describe('test read', function() {
-    it('Test read', function() {
+    it('Test read', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/gssample.xml';
       afterLoadXml(url, function(xml) {
         var obj, capability, getmap, describelayer, getfeatureinfo, layer;
@@ -59,12 +60,13 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         expect(layer.styles[0].legend.href).to.eql(legend);
         expect(layer.styles[0].legend.format).to.eql('image/png');
         expect(layer.queryable).to.be.ok();
+        done();
       });
     });
   });
 
   describe('test layers', function() {
-    it('Test layers', function() {
+    it('Test layers', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/ogcsample.xml';
       afterLoadXml(url, function(xml) {
         var obj, capability, layers = {}, rootlayer, identifiers, authorities;
@@ -110,12 +112,13 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         expect(layers['ozone_image'].fixedHeight).to.eql(256);
         expect(layers['ozone_image'].opaque).to.be.ok();
         expect(layers['ozone_image'].noSubsets).to.be.ok();
+        done();
       });
     });
   });
 
   describe('test dimensions', function() {
-    it('Test dimensions', function() {
+    it('Test dimensions', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/ogcsample.xml';
       afterLoadXml(url, function(xml) {
         var obj, capability, layers = {}, time, elevation;
@@ -137,12 +140,13 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         expect(elevation.multipleVal).to.not.be();
         expect(elevation.values).to.eql(
             ['0', '1000', '3000', '5000', '10000']);
+        done();
       });
     });
   });
 
   describe('test contact info', function() {
-    it('Test contact info', function() {
+    it('Test contact info', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/' +
           'ogcsample.xml';
       afterLoadXml(url, function(xml) {
@@ -168,12 +172,13 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         expect(contactinfo.phone).to.eql('+1 301 286-1569');
         expect(contactinfo.fax).to.eql('+1 301 286-1777');
         expect(contactinfo.email).to.eql('delabeau@iniki.gsfc.nasa.gov');
+        done();
       });
     });
   });
 
   describe('Test fees and constraints', function() {
-    it('Test fees and constraints', function() {
+    it('Test fees and constraints', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/gssample.xml';
       afterLoadXml(url, function(xml) {
         var obj, service;
@@ -181,12 +186,13 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         service = obj.service;
         expect('fees' in service).to.not.be();
         expect('accessConstraints' in service).to.not.be();
+        done();
       });
     });
   });
 
   describe('Test requests', function() {
-    it('Test requests', function() {
+    it('Test requests', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/gssample.xml';
       afterLoadXml(url, function(xml) {
         var obj, request, exception, userSymbols;
@@ -208,12 +214,13 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         expect(userSymbols.userLayer).to.be.ok();
         expect(userSymbols.userStyle).to.be.ok();
         expect(userSymbols.remoteWFS).to.be.ok();
+        done();
       });
     });
   });
 
   describe('test ogc', function() {
-    it('Test ogc', function() {
+    it('Test ogc', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wmscapabilities_v1_1_1/ogcsample.xml';
       afterLoadXml(url, function(xml) {
         var obj, capability, attribution, keywords, metadataURLs;
@@ -240,6 +247,7 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         expect(Math.round(capability.layers[0].maxScale)).to.eql(1000);
         expect(capability.layers[1].minScale).to.be(undefined);
         expect(capability.layers[1].maxScale).to.be(undefined);
+        done();
       });
     });
   });
