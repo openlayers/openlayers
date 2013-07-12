@@ -36,7 +36,8 @@ var overview1 = new ol.control.OverviewMap({
 
 var map2 = createMap('map2');
 var overview2 = new ol.control.OverviewMap({
-  map: map2
+  map: map2,
+  maximized: true
 });
 
 var map3 = createMap('map3');
@@ -47,6 +48,7 @@ var overview3 = new ol.control.OverviewMap({
     })
   ],
   map: map3,
+  maximized: true,
   maxRatio: 0.5,
   minRatio: 0.025
 });

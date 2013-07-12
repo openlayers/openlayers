@@ -208,6 +208,8 @@
  * @property {Array.<ol.layer.Layer>|ol.Collection|undefined} layers Layers
  *     for the overview map. If not set, then all main map layers are used
  *     instead.
+ * @property {boolean|undefined} maximized Start as maximized (visible).
+ *     Defaults to false.
  * @property {number|undefined} maxRatio Maximum extent ratio.
  * @property {number|undefined} minRatio Minimum extent ratio.
  */

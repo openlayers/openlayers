@@ -214,6 +214,38 @@ a.ol-full-screen-true:after {
   width: 150px;
   height: 150px;
 }
+.ol-overviewmap-minimized {
+  display: none;
+}
 .ol-overviewmap-box {
   border: 2px dotted rgba(0,60,136,0.7);
+}
+a.ol-overviewmap-button {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: block;
+  margin: 1px;
+  padding: 0;
+  color: white;
+  font-size: 18px;
+  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  height: 22px;
+  width: 22px;
+  line-height: 19px;
+  background: rgba(0,60,136,0.5);
+  border-radius: 4px;
+  border: 3px solid rgba(255,255,255,0.4);
+}
+a.ol-overviewmap-button:hover {
+  background: rgba(0,60,136,0.7);
+}
+a.ol-overviewmap-button-minimized:before {
+  content: "+";
+}
+a.ol-overviewmap-button-maximized:before {
+  content: "\2212";
 }
