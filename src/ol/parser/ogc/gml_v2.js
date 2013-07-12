@@ -67,9 +67,17 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
     'Polygon': function(geometry) {
       var node = this.createElementNS('gml:Polygon');
       var coordinates = geometry.getCoordinates();
-      this.writeNode('outerBoundaryIs', coordinates[0], null, node);
+      /**
+       * Though there continues to be ambiguity around this, GML references
+       * ISO 19107, which says polygons have counter-clockwise exterior rings
+       * and clockwise interior rings.  The ambiguity comes because the
+       * the Simple Feature Access - SQL spec (ISO 19125-2) says that no
+       * winding order is enforced.  Anyway, we write out counter-clockwise
+       * exterior and clockwise interior here but accept either when reading.
+       */
+      this.writeNode('outerBoundaryIs', coordinates[0].reverse(), null, node);
       for (var i = 1; i < coordinates.length; ++i) {
-        this.writeNode('innerBoundaryIs', coordinates[i], null, node);
+        this.writeNode('innerBoundaryIs', coordinates[i].reverse(), null, node);
       }
       return node;
     },

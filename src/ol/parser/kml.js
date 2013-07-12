@@ -763,6 +763,10 @@ ol.parser.KML = function(opt_options) {
         return node;
       },
       'Polygon': function(geometry) {
+        /**
+         * KML doesn't specify the winding order of coordinates in linear
+         * rings.  So we keep them as they are in the geometries.
+         */
         var node = this.createElementNS('Polygon');
         var coordinates = geometry.getCoordinates();
         this.writeNode('outerBoundaryIs', coordinates[0], null, node);
