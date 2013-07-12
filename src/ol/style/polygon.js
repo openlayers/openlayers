@@ -187,6 +187,82 @@ ol.style.Polygon.prototype.createLiteral = function(opt_feature) {
 
 
 /**
+ * Get the fill color.
+ * @return {ol.expr.Expression} Fill color.
+ */
+ol.style.Polygon.prototype.getFillColor = function() {
+  return this.fillColor_;
+};
+
+
+/**
+ * Get the opacity.
+ * @return {ol.expr.Expression} Opacity.
+ */
+ol.style.Polygon.prototype.getOpacity = function() {
+  return this.opacity_;
+};
+
+
+/**
+ * Get the stroke color.
+ * @return {ol.expr.Expression} Stroke color.
+ */
+ol.style.Polygon.prototype.getStrokeColor = function() {
+  return this.strokeColor_;
+};
+
+
+/**
+ * Get the stroke width.
+ * @return {ol.expr.Expression} Stroke width.
+ */
+ol.style.Polygon.prototype.getStrokeWidth = function() {
+  return this.strokeWidth_;
+};
+
+
+/**
+ * Set the fill color.
+ * @param {ol.expr.Expression} fillColor Fill color.
+ */
+ol.style.Polygon.prototype.setFillColor = function(fillColor) {
+  goog.asserts.assertInstanceof(fillColor, ol.expr.Expression);
+  this.fillColor_ = fillColor;
+};
+
+
+/**
+ * Set the opacity.
+ * @param {ol.expr.Expression} opacity Opacity.
+ */
+ol.style.Polygon.prototype.setOpacity = function(opacity) {
+  goog.asserts.assertInstanceof(opacity, ol.expr.Expression);
+  this.opacity_ = opacity;
+};
+
+
+/**
+ * Set the stroke color.
+ * @param {ol.expr.Expression} strokeColor Stroke color.
+ */
+ol.style.Polygon.prototype.setStrokeColor = function(strokeColor) {
+  goog.asserts.assertInstanceof(strokeColor, ol.expr.Expression);
+  this.strokeColor_ = strokeColor;
+};
+
+
+/**
+ * Set the stroke width.
+ * @param {ol.expr.Expression} strokeWidth Stroke width.
+ */
+ol.style.Polygon.prototype.setStrokeWidth = function(strokeWidth) {
+  goog.asserts.assertInstanceof(strokeWidth, ol.expr.Expression);
+  this.strokeWidth_ = strokeWidth;
+};
+
+
+/**
  * @type {ol.style.PolygonLiteral}
  */
 ol.style.PolygonDefaults = new ol.style.PolygonLiteral({
