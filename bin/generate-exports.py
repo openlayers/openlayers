@@ -92,7 +92,7 @@ class Class(Exportable):
             lines.append(' */\n')
             lines.append('%s = function(options) {\n' % (self.export_name(),))
             lines.append('  /** @type {%s} */\n' % (self.object_literal.name,))
-            lines.append('  var arg;\n');
+            lines.append('  var arg = /** @type {%s} */ (options);\n' % (self.object_literal.name,));
             lines.append('  if (goog.isDefAndNotNull(options)) {\n')
             # FIXME: we modify the user's options object
             lines.append(''.join(
@@ -103,12 +103,8 @@ class Class(Exportable):
                              {'o': o, 'base': b.name, 'ctor': k.export_name(),
                               'extern': ol.extern_name()} \
                                      for o, ol, k, b in self.nested_options()))
-            lines.append('    arg = {')
-            lines.extend(','.join('\n      %s: options.%s' % (key, key) for key in sorted(self.object_literal.prop_types.keys())))
-            lines.append('\n    };\n')
-            lines.append('  } else {\n')
-            lines.append('    arg = /** @type {%s} */ (options);\n' % (self.object_literal.name,))
-            lines.append('  }\n')
+            lines.extend('\n'.join('    arg.%s = options.%s;' % (key, key) for key in sorted(self.object_literal.prop_types.keys())))
+            lines.append('\n  }\n')
             lines.append('  goog.base(this, arg);\n')
             lines.append('};\n')
             lines.append('goog.inherits(\n')
