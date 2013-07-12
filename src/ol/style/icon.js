@@ -51,7 +51,7 @@ goog.inherits(ol.style.IconLiteral, ol.style.PointLiteral);
  * @inheritDoc
  */
 ol.style.IconLiteral.prototype.equals = function(iconLiteral) {
-  return this.url == iconLiteral.type &&
+  return this.url == iconLiteral.url &&
       this.width == iconLiteral.width &&
       this.height == iconLiteral.height &&
       this.opacity == iconLiteral.opacity &&
@@ -150,6 +150,101 @@ ol.style.Icon.prototype.createLiteral = function(opt_feature) {
     opacity: opacity,
     rotation: rotation
   });
+};
+
+
+/**
+ * Get the height.
+ * @return {ol.expr.Expression} Icon height.
+ */
+ol.style.Icon.prototype.getHeight = function() {
+  return this.height_;
+};
+
+
+/**
+ * Get the opacity.
+ * @return {ol.expr.Expression} Opacity.
+ */
+ol.style.Icon.prototype.getOpacity = function() {
+  return this.opacity_;
+};
+
+
+/**
+ * Get the rotation.
+ * @return {ol.expr.Expression} Icon rotation.
+ */
+ol.style.Icon.prototype.getRotation = function() {
+  return this.rotation_;
+};
+
+
+/**
+ * Get the url.
+ * @return {ol.expr.Expression} Icon url.
+ */
+ol.style.Icon.prototype.getUrl = function() {
+  return this.url_;
+};
+
+
+/**
+ * Get the width.
+ * @return {ol.expr.Expression} Icon width.
+ */
+ol.style.Icon.prototype.getWidth = function() {
+  return this.width_;
+};
+
+
+/**
+ * Set the height.
+ * @param {ol.expr.Expression} height Icon height.
+ */
+ol.style.Icon.prototype.setHeight = function(height) {
+  goog.asserts.assertInstanceof(height, ol.expr.Expression);
+  this.height_ = height;
+};
+
+
+/**
+ * Set the opacity.
+ * @param {ol.expr.Expression} opacity Opacity.
+ */
+ol.style.Icon.prototype.setOpacity = function(opacity) {
+  goog.asserts.assertInstanceof(opacity, ol.expr.Expression);
+  this.opacity_ = opacity;
+};
+
+
+/**
+ * Set the rotation.
+ * @param {ol.expr.Expression} rotation Icon rotation.
+ */
+ol.style.Icon.prototype.setRotation = function(rotation) {
+  goog.asserts.assertInstanceof(rotation, ol.expr.Expression);
+  this.rotation_ = rotation;
+};
+
+
+/**
+ * Set the url.
+ * @param {ol.expr.Expression} url Icon url.
+ */
+ol.style.Icon.prototype.setUrl = function(url) {
+  goog.asserts.assertInstanceof(url, ol.expr.Expression);
+  this.url_ = url;
+};
+
+
+/**
+ * Set the width.
+ * @param {ol.expr.Expression} width Icon width.
+ */
+ol.style.Icon.prototype.setWidth = function(width) {
+  goog.asserts.assertInstanceof(width, ol.expr.Expression);
+  this.width_ = width;
 };
 
 
