@@ -202,3 +202,39 @@ a.ol-full-screen-true:after {
   height: 20px;
   width: 24px;
 }
+.ol-zoom-extent {
+  position: absolute;
+  background: rgba(255,255,255,0.4);
+  border-radius: 4px;
+  padding: 2px;
+}
+@media print {
+  .ol-zoom-extent {
+    display: none;
+  }
+}
+.ol-zoom-extent a {
+  display: block;
+  margin: 1px;
+  padding: 0;
+  color: white;
+  font-size: 18px;
+  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  height: 22px;
+  width: 22px;
+  line-height: 19px;
+  background-color: rgba(0, 60, 136, 0.5);
+  border-radius: 2px;
+}
+.ol-touch .ol-zoom-extent a {
+  font-size: 20px;
+  height: 30px;
+  width: 30px;
+  line-height: 26px;
+}
+.ol-zoom-extent a:hover {
+  background-color: rgba(0, 60, 136, 0.7);
+}

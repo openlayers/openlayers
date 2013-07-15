@@ -16,7 +16,7 @@ var app = window.app;
 
 
 //
-// Define zoom extent control.
+// Define rotate to north control.
 //
 
 
@@ -26,25 +26,25 @@ var app = window.app;
  * @extends {ol.control.Control}
  * @param {Object=} opt_options Control options.
  */
-app.ZoomExtentControl = function(opt_options) {
+app.RotateNorthControl = function(opt_options) {
 
   var options = opt_options || {};
-  this.extent_ = options.extent;
 
   var anchor = document.createElement('a');
-  anchor.href = '#zoom-to';
-  anchor.className = 'zoom-to';
+  anchor.href = '#rotate-north';
+  anchor.innerHTML = 'N';
 
   var this_ = this;
-  var handleZoomTo = function(e) {
-    this_.handleZoomTo(e);
+  var handleRotateNorth = function(e) {
+    // prevent #rotate-north anchor from getting appended to the url
+    this_.getMap().getView().getView2D().setRotation(0);
   };
 
-  anchor.addEventListener('click', handleZoomTo, false);
-  anchor.addEventListener('touchstart', handleZoomTo, false);
+  anchor.addEventListener('click', handleRotateNorth, false);
+  anchor.addEventListener('touchstart', handleRotateNorth, false);
 
   var element = document.createElement('div');
-  element.className = 'zoom-extent ol-unselectable';
+  element.className = 'rotate-north ol-unselectable';
   element.appendChild(anchor);
 
   ol.control.Control.call(this, {
@@ -54,46 +54,17 @@ app.ZoomExtentControl = function(opt_options) {
   });
 
 };
-ol.inherits(app.ZoomExtentControl, ol.control.Control);
-
-
-/**
- * @param {Event} e Browser event.
- */
-app.ZoomExtentControl.prototype.handleZoomTo = function(e) {
-  // prevent #zoomTo anchor from getting appended to the url
-  e.preventDefault();
-
-  var map = this.getMap();
-  var view = map.getView();
-  view.fitExtent(this.extent_, map.getSize());
-};
-
-
-/**
- * Overload setMap to use the view projection's validity extent
- * if no extent was passed to the constructor.
- * @param {ol.Map} map Map.
- */
-app.ZoomExtentControl.prototype.setMap = function(map) {
-  ol.control.Control.prototype.setMap.call(this, map);
-  if (map && !this.extent_) {
-    this.extent_ = map.getView().getProjection().getExtent();
-  }
-};
+ol.inherits(app.RotateNorthControl, ol.control.Control);
 
 
 //
-// Create map, giving it a zoom extent control.
+// Create map, giving it a rotate to north control.
 //
 
 
 var map = new ol.Map({
   controls: ol.control.defaults({}, [
-    new app.ZoomExtentControl({
-      extent: [813079.7791264898, 848966.9639063801,
-               5929220.284081122, 5936863.986909639]
-    })
+    new app.RotateNorthControl()
   ]),
   layers: [
     new ol.layer.TileLayer({
@@ -104,6 +75,7 @@ var map = new ol.Map({
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],
-    zoom: 2
+    zoom: 2,
+    rotation: 1
   })
 });
