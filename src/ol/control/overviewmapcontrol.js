@@ -118,6 +118,15 @@ ol.control.OverviewMap = function(opt_options) {
   this.minRatio_ = goog.isDefAndNotNull(options.minRatio) ?
       options.minRatio : ol.control.OVERVIEWMAP_MIN_RATIO;
 
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.rotateBox_ = goog.isDefAndNotNull(options.rotateBox) ?
+      options.rotateBox : false;
+
+
   if (goog.isDefAndNotNull(options.layers)) {
     options.layers.forEach(
         /**
@@ -191,6 +200,12 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
     goog.events.listen(
         map, ol.Object.getChangeEventType(ol.MapProperty.SIZE),
         this.handleSizeChanged_, false, this);
+
+    if (this.rotateBox_ == true) {
+    // FIXME - support box rotation
+    } else {
+      this.ovmap_.getView().bindTo(ol.View2DProperty.ROTATION, map.getView());
+    }
 
     this.ovmap_.updateSize();
     this.resetExtent_();
