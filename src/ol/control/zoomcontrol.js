@@ -36,15 +36,17 @@ ol.control.Zoom = function(opt_options) {
 
   var inElement = goog.dom.createDom(goog.dom.TagName.BUTTON,
       className + '-in' + ' ' + ol.css.CLASS_BUTTON);
-  goog.events.listen(inElement, goog.events.EventType.CLICK,
-      goog.partial(ol.control.Zoom.prototype.zoomByDelta_, delta),
-      false, this);
+  goog.events.listen(inElement, [
+    goog.events.EventType.CLICK,
+    goog.events.EventType.TOUCHEND
+  ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
 
   var outElement = goog.dom.createDom(goog.dom.TagName.BUTTON,
       className + '-out' + ' ' + ol.css.CLASS_BUTTON);
-  goog.events.listen(inElement, goog.events.EventType.CLICK,
-      goog.partial(ol.control.Zoom.prototype.zoomByDelta_, -delta),
-      false, this);
+  goog.events.listen(outElement, [
+    goog.events.EventType.CLICK,
+    goog.events.EventType.TOUCHEND
+  ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, -delta), false, this);
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV,
       className + ' ' + ol.css.CLASS_BUTTON_GROUP, inElement, outElement);

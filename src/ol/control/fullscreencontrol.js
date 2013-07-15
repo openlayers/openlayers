@@ -40,8 +40,10 @@ ol.control.FullScreen = function(opt_options) {
       className + ' ' + ol.css.CLASS_BUTTON +
       (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : ''));
 
-  goog.events.listen(element, goog.events.EventType.CLICK,
-      this.handleClick_, false, this);
+  goog.events.listen(element, [
+    goog.events.EventType.CLICK,
+    goog.events.EventType.TOUCHEND
+  ], this.handleClick_, false, this);
 
   goog.events.listen(goog.global.document, goog.dom.fullscreen.EventType.CHANGE,
       this.handleFullScreenChange_, false, this);
