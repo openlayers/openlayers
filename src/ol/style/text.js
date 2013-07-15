@@ -149,6 +149,101 @@ ol.style.Text.prototype.createLiteral = function(opt_feature) {
 
 
 /**
+ * Get the font color.
+ * @return {ol.expr.Expression} Font color.
+ */
+ol.style.Text.prototype.getColor = function() {
+  return this.color_;
+};
+
+
+/**
+ * Get the font family.
+ * @return {ol.expr.Expression} Font family.
+ */
+ol.style.Text.prototype.getFontFamily = function() {
+  return this.fontFamily_;
+};
+
+
+/**
+ * Get the font size.
+ * @return {ol.expr.Expression} Font size.
+ */
+ol.style.Text.prototype.getFontSize = function() {
+  return this.fontSize_;
+};
+
+
+/**
+ * Get the opacity.
+ * @return {ol.expr.Expression} Opacity.
+ */
+ol.style.Text.prototype.getOpacity = function() {
+  return this.opacity_;
+};
+
+
+/**
+ * Get the text.
+ * @return {ol.expr.Expression} Text.
+ */
+ol.style.Text.prototype.getText = function() {
+  return this.text_;
+};
+
+
+/**
+ * Set the font color.
+ * @param {ol.expr.Expression} color Font color.
+ */
+ol.style.Text.prototype.setColor = function(color) {
+  goog.asserts.assertInstanceof(color, ol.expr.Expression);
+  this.color_ = color;
+};
+
+
+/**
+ * Set the font family.
+ * @param {ol.expr.Expression} fontFamily Font family.
+ */
+ol.style.Text.prototype.setFontFamily = function(fontFamily) {
+  goog.asserts.assertInstanceof(fontFamily, ol.expr.Expression);
+  this.fontFamily_ = fontFamily;
+};
+
+
+/**
+ * Set the font size.
+ * @param {ol.expr.Expression} fontSize Font size.
+ */
+ol.style.Text.prototype.setFontSize = function(fontSize) {
+  goog.asserts.assertInstanceof(fontSize, ol.expr.Expression);
+  this.fontSize_ = fontSize;
+};
+
+
+/**
+ * Set the opacity.
+ * @param {ol.expr.Expression} opacity Opacity.
+ */
+ol.style.Text.prototype.setOpacity = function(opacity) {
+  goog.asserts.assertInstanceof(opacity, ol.expr.Expression);
+  this.opacity_ = opacity;
+};
+
+
+/**
+ * Set the text.
+ * @param {ol.expr.Expression} text Text.
+ */
+ol.style.Text.prototype.setText = function(text) {
+  goog.asserts.assertInstanceof(text, ol.expr.Expression);
+  this.text_ = text;
+};
+
+
+/**
  * @type {ol.style.TextLiteral}
  */
 ol.style.TextDefaults = new ol.style.TextLiteral({
