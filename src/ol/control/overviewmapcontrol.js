@@ -354,10 +354,12 @@ ol.control.OverviewMap.prototype.updateBox_ = function() {
 
 /**
  * Toggle the control visibility
- * @param {goog.events.Event} event Event.
+ * @param {goog.events.Event} event The browser event to handle.
  * @private
  */
 ol.control.OverviewMap.prototype.toggle_ = function(event) {
+  // prevent the anchor from getting appended to the url
+  event.preventDefault();
   if (this.maximized_ == true) {
     this.minimize_();
   } else {
