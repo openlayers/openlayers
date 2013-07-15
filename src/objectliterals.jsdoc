@@ -212,6 +212,9 @@
  *     Defaults to false.
  * @property {number|undefined} maxRatio Maximum extent ratio.
  * @property {number|undefined} minRatio Minimum extent ratio.
+ * @property {boolean|undefined} rotateBox Whether to rotate the box when
+ *     the main map rotation changes or the overview map instead. Defaults to
+ *     false.
  */
 
 /**
