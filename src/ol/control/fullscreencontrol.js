@@ -94,8 +94,8 @@ ol.control.FullScreen.prototype.handleClick_ = function(browserEvent) {
  */
 ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
   if (goog.dom.fullscreen.isFullScreen()) {
-    goog.dom.classes.add(this.element, 'ol-active');
+    goog.dom.classes.add(this.element, ol.css.CLASS_ACTIVE);
   } else {
-    goog.dom.classes.remove(this.element, 'ol-active');
+    goog.dom.classes.remove(this.element, ol.css.CLASS_ACTIVE);
   }
 };

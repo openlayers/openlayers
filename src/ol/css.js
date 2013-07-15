@@ -2,6 +2,14 @@ goog.provide('ol.css');
 
 
 /**
+ * The CSS class for an active feature.
+ *
+ * @const {string}
+ */
+ol.css.CLASS_ACTIVE = 'ol-active';
+
+
+/**
  * The CSS class for a button.
  *
  * @const {string}
