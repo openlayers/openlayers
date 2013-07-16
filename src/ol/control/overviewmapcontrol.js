@@ -15,6 +15,7 @@ goog.require('ol.Object');
 goog.require('ol.Overlay');
 goog.require('ol.View2DProperty');
 goog.require('ol.control.Control');
+goog.require('ol.coordinate');
 goog.require('ol.css');
 goog.require('ol.extent');
 
@@ -198,6 +199,10 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
         this.handleResolutionChanged_, false, this);
 
     goog.events.listen(
+        view, ol.Object.getChangeEventType(ol.View2DProperty.ROTATION),
+        this.handleRotationChanged_, false, this);
+
+    goog.events.listen(
         map, ol.Object.getChangeEventType(ol.MapProperty.SIZE),
         this.handleSizeChanged_, false, this);
 
@@ -233,6 +238,17 @@ ol.control.OverviewMap.prototype.handleCenterChanged_ = function(event) {
  */
 ol.control.OverviewMap.prototype.handleResolutionChanged_ = function(event) {
   this.validateExtent_();
+  this.updateBox_();
+};
+
+
+/**
+ * Called on main map view rotation change.
+ * @param {goog.events.Event} event Event.
+ * @private
+ */
+ol.control.OverviewMap.prototype.handleRotationChanged_ = function(event) {
+  //this.validateExtent_();
   this.updateBox_();
 };
 
@@ -331,23 +347,26 @@ ol.control.OverviewMap.prototype.recenter_ = function() {
 ol.control.OverviewMap.prototype.updateBox_ = function() {
   var map = this.getMap();
   var ovmap = this.ovmap_;
+  var view = map.getView();
+  var ovview = ovmap.getView();
+  var rotation = view.getRotation();
   var overlay = this.boxOverlay_;
   var box = this.boxOverlay_.getElement();
-  var extent = map.getView().calculateExtent(map.getSize());
+  var extent = view.calculateExtent(map.getSize());
+  var ovresolution = ovview.getResolution();
+  var bottomLeft = ol.extent.getBottomLeft(extent);
+  var topRight = ol.extent.getTopRight(extent);
 
   // set position using bottom left coordinates
-  var bottomLeft = ol.extent.getBottomLeft(extent);
-  overlay.setPosition(bottomLeft);
+  var rotateBottomLeft = this.calculateCoordinateRotate(rotation, bottomLeft);
+  overlay.setPosition(rotateBottomLeft);
 
-  // set box size using top left and bottom right pixels
+  // set box size calculated from map extent size and overview map resolution
   if (goog.isDefAndNotNull(box)) {
-    var topLeftPixel =
-        ovmap.getPixelFromCoordinate(ol.extent.getTopLeft(extent));
-    var bottomRightPixel =
-        ovmap.getPixelFromCoordinate(ol.extent.getBottomRight(extent));
+    var boxWidth = Math.abs((bottomLeft[0] - topRight[0]) / ovresolution);
+    var boxHeight = Math.abs((topRight[1] - bottomLeft[1]) / ovresolution);
     goog.style.setBorderBoxSize(box, new goog.math.Size(
-        Math.abs(topLeftPixel[0] - bottomRightPixel[0]),
-        Math.abs(topLeftPixel[1] - bottomRightPixel[1])));
+        boxWidth, boxHeight));
   }
 };
 
@@ -389,4 +408,26 @@ ol.control.OverviewMap.prototype.minimize_ = function() {
       this.button_, this.buttonMaximizedClass_, this.buttonMinimizedClass_);
   goog.dom.classes.add(this.element, this.elementMinimizedClass_);
   this.maximized_ = false;
+};
+
+
+/**
+ * @param {number} rotation Target rotation.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {ol.Coordinate|undefined} Coordinate for rotation and center anchor.
+ */
+ol.control.OverviewMap.prototype.calculateCoordinateRotate = function(
+    rotation, coordinate) {
+  var coordinateRotate;
+  var view = this.getMap().getView();
+  var currentCenter = view.getCenter();
+  if (goog.isDef(currentCenter)) {
+    coordinateRotate = [
+      coordinate[0] - currentCenter[0],
+      coordinate[1] - currentCenter[1]
+    ];
+    ol.coordinate.rotate(coordinateRotate, rotation);
+    ol.coordinate.add(coordinateRotate, currentCenter);
+  }
+  return coordinateRotate;
 };

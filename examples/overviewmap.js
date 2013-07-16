@@ -63,3 +63,39 @@ var overview3 = new ol.control.OverviewMap({
   maxRatio: 0.5,
   minRatio: 0.025
 });
+
+var rotateClockwise225 = document.getElementById('rotate-cw-22.5d');
+rotateClockwise225.addEventListener('click', function() {
+  var view = map3.getView();
+  view.setRotation(view.getRotation() + 0.392699082);
+}, false);
+
+var rotateClockwise45 = document.getElementById('rotate-cw-45d');
+rotateClockwise45.addEventListener('click', function() {
+  var view = map3.getView();
+  view.setRotation(view.getRotation() + 0.785398164);
+}, false);
+
+var rotateClockwise90 = document.getElementById('rotate-cw-90d');
+rotateClockwise90.addEventListener('click', function() {
+  var view = map3.getView();
+  view.setRotation(view.getRotation() + 1.570796327);
+}, false);
+
+var rotateCounterClockwise225 = document.getElementById('rotate-cc-22.5d');
+rotateCounterClockwise225.addEventListener('click', function() {
+  var view = map3.getView();
+  view.setRotation(view.getRotation() - 0.392699082);
+}, false);
+
+var rotateCounterClockwise45 = document.getElementById('rotate-cc-45d');
+rotateCounterClockwise45.addEventListener('click', function() {
+  var view = map3.getView();
+  view.setRotation(view.getRotation() - 0.785398164);
+}, false);
+
+var rotateCounterClockwise90 = document.getElementById('rotate-cc-90d');
+rotateCounterClockwise90.addEventListener('click', function() {
+  var view = map3.getView();
+  view.setRotation(view.getRotation() - 1.570796327);
+}, false);
