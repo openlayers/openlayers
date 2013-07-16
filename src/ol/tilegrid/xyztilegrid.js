@@ -48,7 +48,7 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
   if (goog.isDef(options.extent)) {
     tileRangeByZ = new Array(maxZ + 1);
     var z;
-    for (z = 0; z < maxZ; ++z) {
+    for (z = 0; z <= maxZ; ++z) {
       if (z < minZ) {
         tileRangeByZ[z] = null;
       } else {
