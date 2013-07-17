@@ -97,9 +97,9 @@ ol.Collection.prototype.extend = function(arr) {
 
 /**
  * Iterate over each element, calling the provided callback.
- * @param {Function} f The function to call for every element. This function
- *     takes 3 arguments (the element, the index and the array). The return
- *     value is ignored.
+ * @param {function(?, number, Array)} f The function to call for every element.
+ *     This function takes 3 arguments (the element, the index and the array).
+ *     The return value is ignored.
  * @param {Object=} opt_obj The object to be used as the value of 'this'
  *     within f.
  */

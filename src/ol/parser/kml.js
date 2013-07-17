@@ -886,7 +886,7 @@ ol.parser.KML.prototype.readFeaturesFromObject =
 /**
  * @param {Array} deferreds List of deferred instances.
  * @param {Object} obj The returned object from the parser.
- * @param {Function} done A callback for when all links have been retrieved.
+ * @param {function()} done A callback for when all links have been retrieved.
  */
 ol.parser.KML.prototype.parseLinks = function(deferreds, obj, done) {
   var unvisited;
@@ -930,8 +930,8 @@ ol.parser.KML.prototype.parseLinks = function(deferreds, obj, done) {
 
 /**
  * @param {string|Document|Element|Object} data Data to read.
- * @param {Function=} opt_callback Optional callback to call when reading
- * is done.
+ * @param {function(Array.<ol.Feature>)=} opt_callback Optional callback
+ *     to call when reading is done.
  * @return {Object} An object representing the document.
  */
 ol.parser.KML.prototype.read = function(data, opt_callback) {
