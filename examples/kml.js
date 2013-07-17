@@ -20,11 +20,12 @@ var raster = new ol.layer.TileLayer({
   })
 });
 
-var epsg4326 = ol.proj.get('EPSG:4326');
-
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    projection: epsg4326
+    parser: new ol.parser.KML({
+      maxDepth: 1, dimension: 2, extractStyles: true, extractAttributes: true
+    }),
+    url: 'data/kml/lines.kml'
   }),
   transformFeatureInfo: function(features) {
     var info = [];
@@ -40,14 +41,11 @@ var map = new ol.Map({
   renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
-    projection: epsg4326,
+    projection: ol.proj.get('EPSG:4326'),
     center: [-112.169, 36.099],
     zoom: 11
   })
 });
-
-var kml = new ol.parser.KML({
-  maxDepth: 1, dimension: 2, extractStyles: true, extractAttributes: true});
 
 map.on(['click', 'mousemove'], function(evt) {
   map.getFeatureInfo({
@@ -58,19 +56,3 @@ map.on(['click', 'mousemove'], function(evt) {
     }
   });
 });
-
-var url = 'data/kml/lines.kml';
-var xhr = new XMLHttpRequest();
-xhr.open('GET', url, true);
-
-
-/**
- * onload handler for the XHR request.
- */
-xhr.onload = function() {
-  if (xhr.status == 200) {
-    // this is silly to have to tell the layer the destination projection
-    vector.parseFeatures(xhr.responseText, kml, epsg4326);
-  }
-};
-xhr.send();
