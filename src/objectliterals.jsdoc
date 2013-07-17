@@ -500,6 +500,19 @@
  */
 
 /**
+ * @typedef {Object} ol.source.VectorOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {Object|string|undefined} data Data to parse.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {ol.parser.Parser} parser Parser instance to parse data
+ *     provided as `data` or fetched from `url`.
+ * @property {ol.ProjectionLike|undefined} projection Projection. EPSG:4326
+ *     is assumed if not defined.
+ * @property {string|undefined} url Server url providing the vector data.
+ */
+
+/**
  * @typedef {Object} ol.source.VectorSource2Options
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {ol.Extent|undefined} extent Extent.
