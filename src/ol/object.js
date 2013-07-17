@@ -281,12 +281,12 @@ ol.Object.prototype.set = function(key, value) {
 
 /**
  * Sets a collection of key-value pairs.
- * @param {Object.<string, *>} options Options.
+ * @param {Object.<string, *>} values Values.
  */
-ol.Object.prototype.setOptions = function(options) {
+ol.Object.prototype.setValues = function(values) {
   var key, value, setterName;
-  for (key in options) {
-    value = options[key];
+  for (key in values) {
+    value = values[key];
     setterName = ol.Object.getSetterName(key);
     if (this[setterName]) {
       this[setterName](value);
@@ -295,13 +295,6 @@ ol.Object.prototype.setOptions = function(options) {
     }
   }
 };
-
-
-/**
- * Sets a collection of key-value pairs.
- * @param {Object.<string, *>} values Values.
- */
-ol.Object.prototype.setValues = ol.Object.prototype.setOptions;
 
 
 /**
