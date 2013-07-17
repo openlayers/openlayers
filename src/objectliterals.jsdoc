@@ -120,32 +120,32 @@
 /**
  * @typedef {Object} ol.animation.BounceOptions
  * @property {number} resolution Resolution.
- * @property {number|undefined} start Start.
- * @property {number|undefined} duration Duration.
+ * @property {number|undefined} start The start time of the animation. Default is immediately.
+ * @property {number|undefined} duration The duration of the animation in milliseconds.
  * @property {function(number):number|undefined} easing Easing function.
  */
 
 /**
  * @typedef {Object} ol.animation.PanOptions
  * @property {ol.Coordinate} source Source.
- * @property {number|undefined} start Start.
- * @property {number|undefined} duration Duration.
+ * @property {number|undefined} start The start time of the animation. Default is immediately.
+ * @property {number|undefined} duration The duration of the animation in milliseconds.
  * @property {function(number):number|undefined} easing Easing function.
  */
 
 /**
  * @typedef {Object} ol.animation.RotateOptions
  * @property {number} rotation Rotation.
- * @property {number|undefined} start Start.
- * @property {number|undefined} duration Duration.
+ * @property {number|undefined} start The start time of the animation. Default is immediately.
+ * @property {number|undefined} duration The duration of the animation in milliseconds.
  * @property {function(number):number|undefined} easing Easing function.
  */
 
 /**
  * @typedef {Object} ol.animation.ZoomOptions
  * @property {number} resolution number Resolution.
- * @property {number|undefined} start Start.
- * @property {number|undefined} duration Duration.
+ * @property {number|undefined} start The start time of the animation. Default is immediately.
+ * @property {number|undefined} duration The duration of the animation in milliseconds.
  * @property {function(number):number|undefined} easing Easing function.
  */
 
