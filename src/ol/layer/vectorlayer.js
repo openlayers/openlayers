@@ -279,34 +279,26 @@ ol.layer.Vector.prototype.getVectorSource = function() {
 
 
 /**
- * @param {ol.expr.Expression=} opt_expr Expression for filtering.
- * @return {Array.<ol.Feature>} Array of features.
- */
-ol.layer.Vector.prototype.getFeatures = function(opt_expr) {
-  return goog.object.getValues(
-      this.featureCache_.getFeaturesObject(opt_expr));
-};
-
-
-/**
- * @param {ol.expr.Expression=} opt_expr Expression for filtering.
- * @return {Object.<string, ol.Feature>} Features.
- */
-ol.layer.Vector.prototype.getFeaturesObject = function(opt_expr) {
-  return this.featureCache_.getFeaturesObject(opt_expr);
-};
-
-
-/**
- * Get all features whose bounding box intersects the provided extent.
+ * Get all features whose bounding box intersects the provided extent. This
+ * method is intended for being called by the renderer. When null is returned,
+ * the renderer should not waste time rendering, and `opt_callback` is
+ * usually a function that requests a renderFrame, which will be called as soon
+ * as the data for `extent` is available.
  *
  * @param {ol.Extent} extent Bounding extent.
+ * @param {ol.Projection} projection Target projection.
  * @param {ol.geom.GeometryType=} opt_type Optional geometry type.
- * @return {Object.<string, ol.Feature>} Features.
+ * @param {Function=} opt_callback Callback to call when data is parsed.
+ * @return {Object.<string, ol.Feature>} Features or null if source is loading
+ *     data for `extent`.
  */
 ol.layer.Vector.prototype.getFeaturesObjectForExtent = function(extent,
-    opt_type) {
-  return this.featureCache_.getFeaturesObjectForExtent(extent, opt_type);
+    projection, opt_type, opt_callback) {
+  var source = this.getSource();
+  return source.prepareFeatures(this, extent, projection, opt_callback) ==
+      ol.source.VectorLoadState.LOADING ?
+          null :
+          this.featureCache_.getFeaturesObjectForExtent(extent, opt_type);
 };
 
 
