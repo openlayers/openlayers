@@ -228,9 +228,11 @@ ol.renderer.canvas.VectorLayer.prototype.getFeatureInfoForPixel =
  * @param {function(Array.<ol.Feature>, ol.layer.Layer)} success Callback for
  *     successful queries. The passed arguments are the resulting features
  *     and the layer.
+ * @param {function()=} opt_error Callback for unsuccessful queries.
  */
 ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
-    function(pixel, success) {
+    function(pixel, success, opt_error) {
+  // TODO What do we want to pass to the error callback?
   var map = this.getMap();
   var result = [];
 
@@ -247,7 +249,15 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
     var locationMin = [location[0] - halfMaxWidth, location[1] - halfMaxHeight];
     var locationMax = [location[0] + halfMaxWidth, location[1] + halfMaxHeight];
     var locationBbox = ol.extent.boundingExtent([locationMin, locationMax]);
-    var candidates = layer.getFeaturesObjectForExtent(locationBbox);
+    var candidates = layer.getFeaturesObjectForExtent(locationBbox,
+        map.getView().getView2D().getProjection());
+    if (goog.isNull(candidates)) {
+      // data is not loaded
+      if (goog.isDef(opt_error)) {
+        goog.global.setTimeout(function() { opt_error(); }, 0);
+      }
+      return;
+    }
 
     var candidate, geom, type, symbolBounds, symbolSize, halfWidth, halfHeight,
         coordinates, j;
@@ -446,6 +456,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       dirty = false,
       i, type, tileExtent,
       groups, group, j, numGroups, featuresObject, tileHasFeatures;
+  fetchTileData:
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tileCoord = new ol.TileCoord(0, x, y);
@@ -464,7 +475,12 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
           if (!goog.isDef(featuresToRender[type])) {
             featuresToRender[type] = {};
           }
-          featuresObject = layer.getFeaturesObjectForExtent(tileExtent, type);
+          featuresObject = layer.getFeaturesObjectForExtent(tileExtent,
+              projection, type, this.requestMapRenderFrame_);
+          if (goog.isNull(featuresObject)) {
+            deferred = true;
+            break fetchTileData;
+          }
           tileHasFeatures = tileHasFeatures ||
               !goog.object.isEmpty(featuresObject);
           goog.object.extend(featuresToRender[type], featuresObject);
