@@ -508,7 +508,8 @@
  * @property {ol.parser.Parser} parser Parser instance to parse data
  *     provided as `data` or fetched from `url`.
  * @property {ol.ProjectionLike|undefined} projection Projection. EPSG:4326
- *     is assumed if not defined.
+ *     is assumed if not defined. TODO: Get projection from the parser instead
+ *     of assuming EPSG:4326.
  * @property {string|undefined} url Server url providing the vector data.
  */
 

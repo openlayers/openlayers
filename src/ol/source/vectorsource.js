@@ -6,6 +6,17 @@ goog.require('ol.proj');
 goog.require('ol.source.Source');
 
 
+/**
+ * @enum {number}
+ */
+ol.source.VectorLoadState = {
+  IDLE: 0,
+  LOADING: 1,
+  LOADED: 2,
+  ERROR: 3
+};
+
+
 
 /**
  * @constructor
@@ -50,10 +61,10 @@ goog.inherits(ol.source.Vector, ol.source.Source);
 
 
 /**
- * @param {ol.layer.Layer} layer Layer that parses the data.
+ * @param {ol.layer.Vector} layer Layer that parses the data.
  * @param {ol.Extent} extent Extent that needs to be fetched.
  * @param {ol.Projection} projection Projection of the view.
- * @param {Function=} opt_callback Callback which is called when features are
+ * @param {function()=} opt_callback Callback which is called when features are
  *     parsed after loading.
  * @return {ol.source.VectorLoadState} The current load state.
  */
@@ -83,15 +94,4 @@ ol.source.Vector.prototype.prepareFeatures = function(layer, extent, projection,
     this.loadState_ = ol.source.VectorLoadState.LOADED;
   }
   return this.loadState_;
-};
-
-
-/**
- * @enum {number}
- */
-ol.source.VectorLoadState = {
-  IDLE: 0,
-  LOADING: 1,
-  LOADED: 2,
-  ERROR: 3
 };

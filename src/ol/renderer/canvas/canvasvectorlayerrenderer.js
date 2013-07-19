@@ -228,8 +228,7 @@ ol.renderer.canvas.VectorLayer.prototype.getFeatureInfoForPixel =
  * @param {function(Array.<ol.Feature>, ol.layer.Layer)} success Callback for
  *     successful queries. The passed arguments are the resulting features
  *     and the layer.
- * @param {function(Object)=} opt_error Callback for
- *     unsuccessful queries.
+ * @param {function()=} opt_error Callback for unsuccessful queries.
  */
 ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
     function(pixel, success, opt_error) {
@@ -255,7 +254,7 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
     if (goog.isNull(candidates)) {
       // data is not loaded
       if (goog.isDef(opt_error)) {
-        goog.global.setTimeout(function() { opt_error({}); }, 0);
+        goog.global.setTimeout(function() { opt_error(); }, 0);
       }
       return;
     }

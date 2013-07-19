@@ -4,7 +4,6 @@ goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.KML');
-goog.require('ol.proj');
 goog.require('ol.source.TiledWMS');
 goog.require('ol.source.Vector');
 
@@ -41,7 +40,7 @@ var map = new ol.Map({
   renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
-    projection: ol.proj.get('EPSG:4326'),
+    projection: 'EPSG:4326',
     center: [-112.169, 36.099],
     zoom: 11
   })
