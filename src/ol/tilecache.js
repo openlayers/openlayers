@@ -48,7 +48,7 @@ ol.TileCache.prototype.canExpireCache = function() {
 ol.TileCache.prototype.expireCache = function(usedTiles) {
   var tile, zKey;
   while (this.canExpireCache()) {
-    tile = (this.peekLast());
+    tile = /** @type {ol.Tile} */ (this.peekLast());
     // TODO: Enforce ol.Tile in ol.TileCache#set
     goog.asserts.assert(tile instanceof ol.Tile,
         'ol.TileCache#expireCache only works with ol.Tile values.');
