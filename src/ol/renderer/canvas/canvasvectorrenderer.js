@@ -8,7 +8,6 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Feature');
-goog.require('ol.extent');
 goog.require('ol.geom.AbstractCollection');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
@@ -446,8 +445,7 @@ ol.renderer.canvas.VectorRenderer.getLabelVectors = function(geometry) {
     return [[geometry.get(0), geometry.get(1), 0]];
   }
   if (type == ol.geom.GeometryType.POLYGON) {
-    // TODO: better label placement
-    var coordinates = ol.extent.getCenter(geometry.getBounds());
+    var coordinates = geometry.getLabelPoint();
     return [[coordinates[0], coordinates[1], 0]];
   }
   throw new Error('Label rendering not implemented for geometry type: ' +
