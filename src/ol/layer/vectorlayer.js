@@ -10,6 +10,7 @@ goog.require('ol.expr.Literal');
 goog.require('ol.expr.Logical');
 goog.require('ol.expr.LogicalOp');
 goog.require('ol.expr.functions');
+goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SharedVertices');
 goog.require('ol.layer.Layer');
@@ -200,6 +201,34 @@ ol.layer.FeatureCache.prototype.getFeaturesByIds_ = function(ids) {
 };
 
 
+/**
+ * Remove a feature from the cache.
+ * @param {ol.Feature} feature Feature.
+ */
+ol.layer.FeatureCache.prototype.remove = function(feature) {
+  var id = goog.getUid(feature).toString(),
+      geometry = feature.getGeometry();
+
+  delete this.idLookup_[id];
+
+  // index by geometry type and bounding box
+  if (!goog.isNull(geometry)) {
+    var geometryType = geometry.getType();
+    delete this.geometryTypeIndex_[geometryType][id];
+    this.rTree_.remove(geometry.getBounds(), feature);
+  }
+};
+
+
+/**
+ * TODO: Create a VectorLayerEvent with ADD and REMOVE event types
+ * @typedef {{extent: (ol.Extent|undefined),
+ *            features: (Array.<ol.Feature>|undefined),
+ *            type: goog.events.EventType}}
+ */
+ol.layer.VectorLayerEventObject;
+
+
 
 /**
  * @constructor
@@ -262,11 +291,21 @@ goog.inherits(ol.layer.Vector, ol.layer.Layer);
  * @param {Array.<ol.Feature>} features Array of features.
  */
 ol.layer.Vector.prototype.addFeatures = function(features) {
+  var extent = ol.extent.createEmpty(),
+      feature, geometry;
   for (var i = 0, ii = features.length; i < ii; ++i) {
-    this.featureCache_.add(features[i]);
+    feature = features[i];
+    this.featureCache_.add(feature);
+    geometry = feature.getGeometry();
+    if (!goog.isNull(geometry)) {
+      ol.extent.extend(extent, geometry.getBounds());
+    }
   }
-  // TODO: events for real - listeners want features and extent here
-  this.dispatchEvent(goog.events.EventType.CHANGE);
+  this.dispatchEvent(/** @type {ol.layer.VectorLayerEventObject} */ ({
+    extent: extent,
+    features: features,
+    type: goog.events.EventType.CHANGE
+  }));
 };
 
 
@@ -453,6 +492,29 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
  */
 ol.layer.Vector.prototype.getTransformFeatureInfo = function() {
   return this.transformFeatureInfo_;
+};
+
+
+/**
+ * Remove features from the layer.
+ * @param {Array.<ol.Feature>} features Features to remove.
+ */
+ol.layer.Vector.prototype.removeFeatures = function(features) {
+  var extent = ol.extent.createEmpty(),
+      feature, geometry;
+  for (var i = 0, ii = features.length; i < ii; ++i) {
+    feature = features[i];
+    this.featureCache_.remove(feature);
+    geometry = feature.getGeometry();
+    if (!goog.isNull(geometry)) {
+      ol.extent.extend(extent, geometry.getBounds());
+    }
+  }
+  this.dispatchEvent(/** @type {ol.layer.VectorLayerEventObject} */ ({
+    extent: extent,
+    features: features,
+    type: goog.events.EventType.CHANGE
+  }));
 };
 
 
