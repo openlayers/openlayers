@@ -34,7 +34,7 @@ app.RotateNorthControl = function(opt_options) {
   var anchor = document.createElement('a');
   anchor.href = '#rotate-north';
   anchor.className = 'ol-button rotate-north';
-  anchor.innerHTML = 'N';
+  anchor.innerHTML = 'Reset rotation';
 
   var this_ = this;
   var handleRotateNorth = function(e) {
@@ -63,7 +63,8 @@ ol.inherits(app.RotateNorthControl, ol.control.Control);
 
 var map = new ol.Map({
   controls: ol.control.defaults({}, [
-    new app.RotateNorthControl()
+    new app.RotateNorthControl(),
+    new ol.control.ZoomToExtent()
   ]),
   layers: [
     new ol.layer.TileLayer({
