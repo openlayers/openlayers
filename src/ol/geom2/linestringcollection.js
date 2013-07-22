@@ -87,7 +87,7 @@ ol.geom2.LineStringCollection.pack =
     goog.asserts.assert(unpackedLineStrings[i].length > 1);
     start = offset;
     offset = ol.geom2.packPoints(arr, offset, unpackedLineStrings[i], dim);
-    ranges[/** @type {string} */ (start)] = offset;
+    ranges[start + ''] = offset;
   }
   goog.asserts.assert(offset <= capacity);
   var buf = new ol.structs.Buffer(arr, offset);
@@ -103,7 +103,7 @@ ol.geom2.LineStringCollection.prototype.add = function(lineString) {
   var n = lineString.length * this.dim;
   var offset = this.buf.allocate(n);
   goog.asserts.assert(offset != -1);
-  this.ranges[/** @type {string} */ (offset)] = offset + n;
+  this.ranges[offset + ''] = offset + n;
   ol.geom2.packPoints(this.buf.getArray(), offset, lineString, this.dim);
   return offset;
 };
@@ -115,7 +115,7 @@ ol.geom2.LineStringCollection.prototype.add = function(lineString) {
  */
 ol.geom2.LineStringCollection.prototype.get = function(offset) {
   goog.asserts.assert(offset in this.ranges);
-  var range = this.ranges[/** @type {string} */ (offset)];
+  var range = this.ranges[offset + ''];
   return ol.geom2.unpackPoints(
       this.buf.getArray(), offset, range, this.dim);
 };
@@ -165,9 +165,9 @@ ol.geom2.LineStringCollection.prototype.getIndices = function() {
  */
 ol.geom2.LineStringCollection.prototype.remove = function(offset) {
   goog.asserts.assert(offset in this.ranges);
-  var range = this.ranges[/** @type {string} */ (offset)];
+  var range = this.ranges[offset + ''];
   this.buf.remove(range - offset, offset);
-  delete this.ranges[/** @type {string} */ (offset)];
+  delete this.ranges[offset + ''];
 };
 
 
@@ -179,7 +179,7 @@ ol.geom2.LineStringCollection.prototype.remove = function(offset) {
 ol.geom2.LineStringCollection.prototype.set = function(offset, lineString) {
   var dim = this.dim;
   goog.asserts.assert(offset in this.ranges);
-  var range = this.ranges[/** @type {string} */ (offset)];
+  var range = this.ranges[offset + ''];
   if (lineString.length * dim == range - offset) {
     ol.geom2.packPoints(this.buf.getArray(), offset, lineString, dim);
     this.buf.markDirty(range - offset, offset);
