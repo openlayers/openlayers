@@ -154,16 +154,17 @@ ol.expr.lib[ol.expr.functions.FID] = function(var_args) {
 
 
 /**
- * Determine if a feature attribute is like the provided value.
- * @param {string} attribute The name of the attribute to test for.
- * @param {string} value The value to test for.
+ * Determine if two strings are like one another, based on simple pattern
+ * matching.
+ * @param {string} value The string to test.
+ * @param {string} pattern The comparison pattern.
  * @param {string} wildCard The wildcard character to use.
  * @param {string} singleChar The single character to use.
  * @param {string} escapeChar The escape character to use.
  * @param {boolean} matchCase Should we match case or not?
  * @this {ol.Feature}
  */
-ol.expr.lib[ol.expr.functions.LIKE] = function(attribute, value, wildCard,
+ol.expr.lib[ol.expr.functions.LIKE] = function(value, pattern, wildCard,
     singleChar, escapeChar, matchCase) {
   if (wildCard == '.') {
     throw new Error('"." is an unsupported wildCard character for ' +
@@ -173,19 +174,18 @@ ol.expr.lib[ol.expr.functions.LIKE] = function(attribute, value, wildCard,
   wildCard = goog.isDef(wildCard) ? wildCard : '*';
   singleChar = goog.isDef(singleChar) ? singleChar : '.';
   escapeChar = goog.isDef(escapeChar) ? escapeChar : '!';
-  var val;
-  val = value.replace(
+  pattern = pattern.replace(
       new RegExp('\\' + escapeChar + '(.|$)', 'g'), '\\$1');
-  val = value.replace(
+  pattern = pattern.replace(
       new RegExp('\\' + singleChar, 'g'), '.');
-  val = value.replace(
+  pattern = pattern.replace(
       new RegExp('\\' + wildCard, 'g'), '.*');
-  val = value.replace(
+  pattern = pattern.replace(
       new RegExp('\\\\.\\*', 'g'), '\\' + wildCard);
-  val = value.replace(
+  pattern = pattern.replace(
       new RegExp('\\\\\\.', 'g'), '\\' + singleChar);
   var modifiers = (matchCase === false) ? 'gi' : 'g';
-  return new RegExp(val, modifiers).test(this.get(attribute));
+  return new RegExp(pattern, modifiers).test(value);
 };
 
 
