@@ -27,6 +27,7 @@ goog.require('ol.parser.DomFeatureParser');
 goog.require('ol.parser.ReadFeaturesOptions');
 goog.require('ol.parser.StringFeatureParser');
 goog.require('ol.parser.XML');
+goog.require('ol.proj');
 goog.require('ol.style.Icon');
 goog.require('ol.style.Line');
 goog.require('ol.style.LineLiteral');
@@ -925,6 +926,14 @@ ol.parser.KML.prototype.parseLinks = function(deferreds, obj, done) {
   if (unvisited !== true && this.callbackCalled_ !== true) {
     done.call(this);
   }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.parser.KML.prototype.getProjection = function() {
+  return ol.proj.get('EPSG:4326');
 };
 
 

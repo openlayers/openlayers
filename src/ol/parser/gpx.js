@@ -12,6 +12,7 @@ goog.require('ol.parser.ObjectFeatureParser');
 goog.require('ol.parser.ReadFeaturesOptions');
 goog.require('ol.parser.StringFeatureParser');
 goog.require('ol.parser.XML');
+goog.require('ol.proj');
 
 
 
@@ -230,6 +231,14 @@ ol.parser.GPX = function(opt_options) {
   goog.base(this);
 };
 goog.inherits(ol.parser.GPX, ol.parser.XML);
+
+
+/**
+ * @inheritDoc
+ */
+ol.parser.GPX.prototype.getProjection = function() {
+  return ol.proj.get('EPSG:4326');
+};
 
 
 /**
