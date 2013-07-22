@@ -67,7 +67,11 @@ ol.inherits(app.RotateNorthControl, ol.control.Control);
 
 
 var map = new ol.Map({
-  controls: ol.control.defaults({}, [
+  controls: ol.control.defaults({
+    zoomControlOptions: {
+      className: 'ol-zoom ol-button-group ol-horizontal'
+    }
+  }, [
     new ol.control.ZoomToExtent(),
     new app.RotateNorthControl(),
     new ol.control.FullScreen()

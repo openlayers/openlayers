@@ -49,12 +49,24 @@
       .ol-touch .rotate-north {
         top: 120px;
       }
+
+      .map {
+        position: relative;
+      }
+      .links {
+        top: 40px;
+        right: 8px;
+        z-index: 1;
+      }
+      div.links > p {
+        color: black;
+      }
     </style>
     <title>ol3 custom controls example</title>
   </head>
   <body>
 
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div id="top" class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
           <a class="brand" href="./">OpenLayers 3 Examples</a>
@@ -72,7 +84,13 @@
 
       <div class="row-fluid">
         <div class="span12">
-          <div id="map" class="map"></div>
+          <div id="map" class="map">
+            <div class="links ol-button-group ol-vertical">
+              <p>Links</p>
+              <a href="#top">Top</a>
+              <a href="#map">Map</a>
+              <a href="#title">Documentation</a>
+          </div>
         </div>
       </div>
 
