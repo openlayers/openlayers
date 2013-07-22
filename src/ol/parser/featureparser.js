@@ -8,23 +8,22 @@ goog.provide('ol.parser.StringFeatureParser');
 goog.require('ol.Feature');
 
 
+/**
+ * @typedef {{projection: ol.Projection}}
+ */
+ol.parser.ReadFeaturesMetadata;
+
+
+/**
+ * @typedef {{features: Array.<ol.Feature>,
+ *     metadata: ol.parser.ReadFeaturesMetadata}}
+ */
+ol.parser.ReadFeaturesResult;
+
+
 
 /**
  * @interface
- */
-ol.parser.FeatureParser = function() {};
-
-
-/**
- * @return {ol.Projection} Data projection.
- */
-ol.parser.FeatureParser.prototype.getProjection = goog.abstractMethod;
-
-
-
-/**
- * @interface
- * @extends {ol.parser.FeatureParser}
  */
 ol.parser.DomFeatureParser = function() {};
 
@@ -32,9 +31,9 @@ ol.parser.DomFeatureParser = function() {};
 /**
  * @param {Element|Document} node Document or element node.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.DomFeatureParser.prototype.readFeaturesFromNode =
+ol.parser.DomFeatureParser.prototype.readFeaturesWithMetadataFromNode =
     goog.abstractMethod;
 
 
@@ -48,9 +47,9 @@ ol.parser.ObjectFeatureParser = function() {};
 /**
  * @param {Object} obj Object representing features.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.ObjectFeatureParser.prototype.readFeaturesFromObject =
+ol.parser.ObjectFeatureParser.prototype.readFeaturesWithMetadataFromObject =
     goog.abstractMethod;
 
 
@@ -64,9 +63,9 @@ ol.parser.StringFeatureParser = function() {};
 /**
  * @param {string} data String data.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.StringFeatureParser.prototype.readFeaturesFromString =
+ol.parser.StringFeatureParser.prototype.readFeaturesWithMetadataFromString =
     goog.abstractMethod;
 
 
@@ -79,7 +78,8 @@ ol.parser.AsyncStringFeatureParser = function() {};
 
 /**
  * @param {string} data String data.
- * @param {function(Array.<ol.Feature>)} callback Callback which is called
+ * @param {function(Array.<ol.Feature>, ol.parser.ReadFeaturesMetadata)}
+ *        callback Callback which is called
  * after parsing.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */
@@ -96,7 +96,8 @@ ol.parser.AsyncObjectFeatureParser = function() {};
 
 /**
  * @param {Object} obj Object representing features.
- * @param {function(Array.<ol.Feature>)} callback Callback which is called
+ * @param {function(Array.<ol.Feature>), ol.parser.ReadFeaturesMetadata}
+ *     callback Callback which is called
  * after parsing.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */

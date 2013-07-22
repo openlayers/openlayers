@@ -437,10 +437,10 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
     return lookup[type];
   };
 
-  var addFeatures = function(features) {
+  var addFeatures = function(features, metadata) {
     var sourceProjection = this.getSource().getProjection();
     if (goog.isNull(sourceProjection)) {
-      sourceProjection = parser.getProjection();
+      sourceProjection = metadata.projection;
     }
     var transform = ol.proj.getTransform(sourceProjection, projection);
 
@@ -468,20 +468,22 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
       parser.readFeaturesFromStringAsync(data, goog.bind(addFeatures, this),
           options);
     } else {
-      goog.asserts.assert(goog.isFunction(parser.readFeaturesFromString),
-          'Expected a parser with readFeaturesFromString method.');
-      features = parser.readFeaturesFromString(data, options);
-      addFeatures.call(this, features);
+      goog.asserts.assert(
+          goog.isFunction(parser.readFeaturesWithMetadataFromString),
+          'Expected parser with a readFeaturesWithMetadataFromString method.');
+      result = parser.readFeaturesWithMetadataFromString(data, options);
+      addFeatures.call(this, result.features, result.metadata);
     }
   } else if (goog.isObject(data)) {
     if (goog.isFunction(parser.readFeaturesFromObjectAsync)) {
       parser.readFeaturesFromObjectAsync(data, goog.bind(addFeatures, this),
           options);
     } else {
-      goog.asserts.assert(goog.isFunction(parser.readFeaturesFromObject),
-          'Expected a parser with a readFeaturesFromObject method.');
-      features = parser.readFeaturesFromObject(data, options);
-      addFeatures.call(this, features);
+      goog.asserts.assert(
+          goog.isFunction(parser.readFeaturesWithMetadataFromObject),
+          'Expected parser with a readFeaturesWithMetadataFromObject method.');
+      result = parser.readFeaturesWithMetadataFromObject(data, options);
+      addFeatures.call(this, result.features, result.metadata);
     }
   } else {
     // TODO: parse more data types
