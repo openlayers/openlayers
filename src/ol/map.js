@@ -196,7 +196,7 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {?number}
+   * @type {goog.events.Key}
    */
   this.viewPropertyListenerKey_ = null;
 
