@@ -66,6 +66,7 @@ ol.parser.KML = function(opt_options) {
       'kml': function(node, obj) {
         if (!goog.isDef(obj.features)) {
           obj.features = [];
+          obj.metadata = {projection: ol.proj.get('EPSG:4326')};
         }
         if (!goog.isDef(obj.links)) {
           obj.links = [];
@@ -822,7 +823,8 @@ goog.inherits(ol.parser.KML, ol.parser.XML);
 
 /**
  * @param {Object} obj Object representing features.
- * @param {function(Array.<ol.Feature>)} callback Callback which is called
+ * @param {function(Array.<ol.Feature>, ol.parser.ReadFeaturesMetadata)}
+ *     callback Callback which is called
  * after parsing.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */
@@ -834,15 +836,16 @@ ol.parser.KML.prototype.readFeaturesFromObjectAsync =
 
 
 /**
- * @param {string} str KML document.
- * @param {function(Array.<ol.Feature>)} callback Callback which is called
+ * @param {string} data String data.
+ * @param {function(Array.<ol.Feature>, ol.parser.ReadFeaturesMetadata)}
+ *        callback Callback which is called
  * after parsing.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */
 ol.parser.KML.prototype.readFeaturesFromStringAsync =
-    function(str, callback, opt_options) {
+    function(data, callback, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  this.read(str, callback);
+  this.read(data, callback);
 };
 
 
@@ -850,12 +853,12 @@ ol.parser.KML.prototype.readFeaturesFromStringAsync =
  * Parse a KML document provided as a string.
  * @param {string} str KML document.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.KML.prototype.readFeaturesFromString =
+ol.parser.KML.prototype.readFeaturesWithMetadataFromString =
     function(str, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(str).features;
+  return this.read(str);
 };
 
 
@@ -863,24 +866,24 @@ ol.parser.KML.prototype.readFeaturesFromString =
  * Parse a KML document provided as a DOM structure.
  * @param {Element|Document} node Document or element node.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.KML.prototype.readFeaturesFromNode =
+ol.parser.KML.prototype.readFeaturesWithMetadataFromNode =
     function(node, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(node).features;
+  return this.read(node);
 };
 
 
 /**
  * @param {Object} obj Object representing features.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.KML.prototype.readFeaturesFromObject =
+ol.parser.KML.prototype.readFeaturesWithMetadataFromObject =
     function(obj, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(obj).features;
+  return this.read(obj);
 };
 
 
@@ -930,18 +933,11 @@ ol.parser.KML.prototype.parseLinks = function(deferreds, obj, done) {
 
 
 /**
- * @inheritDoc
- */
-ol.parser.KML.prototype.getProjection = function() {
-  return ol.proj.get('EPSG:4326');
-};
-
-
-/**
  * @param {string|Document|Element|Object} data Data to read.
  * @param {Function=} opt_callback Optional callback to call when reading
  * is done.
- * @return {Object} An object representing the document.
+ * @return {ol.parser.ReadFeaturesResult} An object representing the
+ * document.
  */
 ol.parser.KML.prototype.read = function(data, opt_callback) {
   if (goog.isString(data)) {
@@ -950,7 +946,7 @@ ol.parser.KML.prototype.read = function(data, opt_callback) {
   if (data && data.nodeType == 9) {
     data = data.documentElement;
   }
-  var obj = {};
+  var obj = {features: [], metadata: {projection: ol.proj.get('EPSG:4326')}};
   this.readNode(data, obj);
   if (goog.isDef(opt_callback)) {
     var deferreds = [];
@@ -964,15 +960,15 @@ ol.parser.KML.prototype.read = function(data, opt_callback) {
               var feature = obj.features[i];
               this.applyStyle_(feature, obj['styles']);
             }
-            opt_callback.call(null, obj.features);
+            opt_callback.call(null, obj);
           }, function() {
             throw new Error('KML: parsing of NetworkLinks failed');
           }, this);
     });
   } else {
-    return obj;
+    return /* ol.parser.ReadFeaturesResult */(obj);
   }
-  return null;
+  return {features: null, metadata: {projection: ol.proj.get('EPSG:4326')}};
 };
 
 

@@ -455,7 +455,7 @@ goog.inherits(ol.parser.ogc.GML, ol.parser.XML);
 
 /**
  * @param {string|Document|Element|Object} data Data to read.
- * @return {Object} An object representing the document.
+ * @return {ol.parser.ReadFeaturesResult} An object representing the document.
  */
 ol.parser.ogc.GML.prototype.read = function(data) {
   if (typeof data == 'string') {
@@ -464,7 +464,7 @@ ol.parser.ogc.GML.prototype.read = function(data) {
   if (data && data.nodeType == 9) {
     data = data.documentElement;
   }
-  var obj = {features: []};
+  var obj = {features: [], metadata: {projection: null}};
   this.readNode(data, obj, true);
   return obj;
 };
@@ -570,10 +570,10 @@ ol.parser.ogc.GML.prototype.createGeometry_ = function(container,
  * Parse a GML document provided as a string.
  * @param {string} str GML document.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.ogc.GML.prototype.readFeaturesFromString =
+ol.parser.ogc.GML.prototype.readFeaturesWithMetadataFromString =
     function(str, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(str).features;
+  return this.read(str);
 };

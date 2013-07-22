@@ -96,7 +96,7 @@ ol.parser.AsyncObjectFeatureParser = function() {};
 
 /**
  * @param {Object} obj Object representing features.
- * @param {function(Array.<ol.Feature>), ol.parser.ReadFeaturesMetadata}
+ * @param {function(Array.<ol.Feature>, ol.parser.ReadFeaturesMetadata)}
  *     callback Callback which is called
  * after parsing.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.

@@ -418,7 +418,7 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
 
 /**
  * @param {Object|Element|Document|string} data Feature data.
- * @param {ol.parser.FeatureParser} parser Feature parser.
+ * @param {ol.parser.Parser} parser Feature parser.
  * @param {ol.Projection} projection This sucks.  The layer should be a view in
  *     one projection.
  */
@@ -462,7 +462,7 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
     this.addFeatures(features);
   };
 
-  var options = {callback: callback};
+  var options = {callback: callback}, result;
   if (goog.isString(data)) {
     if (goog.isFunction(parser.readFeaturesFromStringAsync)) {
       parser.readFeaturesFromStringAsync(data, goog.bind(addFeatures, this),

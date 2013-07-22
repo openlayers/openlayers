@@ -16,6 +16,7 @@ goog.require('ol.geom.SharedVertices');
 goog.require('ol.parser.Parser');
 goog.require('ol.parser.ReadFeaturesOptions');
 goog.require('ol.parser.StringFeatureParser');
+goog.require('ol.proj');
 
 
 
@@ -58,12 +59,13 @@ ol.parser.GeoJSON.read = function(str) {
  * Parse a GeoJSON feature collection.
  * @param {string} str GeoJSON feature collection.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.GeoJSON.prototype.readFeaturesFromString =
+ol.parser.GeoJSON.prototype.readFeaturesWithMetadataFromString =
     function(str, opt_options) {
   var json = /** @type {GeoJSONFeatureCollection} */ (JSON.parse(str));
-  return this.parseFeatureCollection_(json, opt_options);
+  return {features: this.parseFeatureCollection_(json, opt_options),
+    metadata: {projection: ol.proj.get('EPSG:4326')}};
 };
 
 
@@ -72,11 +74,12 @@ ol.parser.GeoJSON.prototype.readFeaturesFromString =
  * @param {GeoJSONFeatureCollection} object GeoJSON feature collection decoded
  *     from JSON.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.GeoJSON.prototype.readFeaturesFromObject =
+ol.parser.GeoJSON.prototype.readFeaturesWithMetadataFromObject =
     function(object, opt_options) {
-  return this.parseFeatureCollection_(object, opt_options);
+  return {features: this.parseFeatureCollection_(object, opt_options),
+    metadata: {projection: ol.proj.get('EPSG:4326')}};
 };
 
 

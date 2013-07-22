@@ -38,7 +38,7 @@ ol.source.Vector = function(options) {
 
   /**
    * @private
-   * @type {ol.parser.FeatureParser}
+   * @type {ol.parser.Parser}
    */
   this.parser_ = goog.isDef(options.parser) ? options.parser : null;
 
