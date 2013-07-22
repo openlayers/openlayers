@@ -788,6 +788,44 @@ describe('ol.expr.lib', function() {
 
   });
 
+  describe('ieq()', function() {
+
+    var one = new ol.Feature({foo: 'Bar'});
+    var two = new ol.Feature({bar: 'Foo'});
+
+    var ieq1 = parse('ieq(foo, "bar")');
+    var ieq2 = parse('ieq("foo", bar)');
+
+    it('case-insensitive equality for an attribute', function() {
+      expect(evaluate(ieq1, one), true);
+    });
+
+    it('case-insensitive equality for an attribute as second argument',
+        function() {
+          expect(evaluate(ieq2, two), true);
+        });
+
+  });
+
+  describe('ineq()', function() {
+
+    var one = new ol.Feature({foo: 'Bar'});
+    var two = new ol.Feature({bar: 'Foo'});
+
+    var ieq1 = parse('ineq(foo, "bar")');
+    var ieq2 = parse('ineq("foo", bar)');
+
+    it('case-insensitive non-equality for an attribute', function() {
+      expect(evaluate(ieq1, one), false);
+    });
+
+    it('case-insensitive non-equality for an attribute as second argument',
+        function() {
+          expect(evaluate(ieq2, two), false);
+        });
+
+  });
+
 });
 
 describe('ol.expr.register()', function() {

@@ -191,32 +191,30 @@ ol.expr.lib[ol.expr.functions.LIKE] = function(value, pattern, wildCard,
 
 /**
  * Case insensitive comparison for equality.
- * @param {string} attribute Name of the attribute.
- * @param {string} value Value to test for equality.
+ * @param {*} first First value.
+ * @param {*} second Second value.
  * @this {ol.Feature}
  */
-ol.expr.lib[ol.expr.functions.IEQ] = function(attribute, value) {
-  var attributeValue = this.get(attribute);
-  if (goog.isString(value) && goog.isString(attributeValue)) {
-    return value.toUpperCase() == attributeValue.toUpperCase();
+ol.expr.lib[ol.expr.functions.IEQ] = function(first, second) {
+  if (goog.isString(first) && goog.isString(second)) {
+    return first.toUpperCase() == second.toUpperCase();
   } else {
-    return value == attributeValue;
+    return first == second;
   }
 };
 
 
 /**
  * Case insensitive comparison for non-equality.
- * @param {string} attribute Name of the attribute.
- * @param {string} value Value to test for non-equality.
+ * @param {*} first First value.
+ * @param {*} second Second value.
  * @this {ol.Feature}
  */
-ol.expr.lib[ol.expr.functions.INEQ] = function(attribute, value) {
-  var attributeValue = this.get(attribute);
-  if (goog.isString(value) && goog.isString(attributeValue)) {
-    return value.toUpperCase() == attributeValue.toUpperCase();
+ol.expr.lib[ol.expr.functions.INEQ] = function(first, second) {
+  if (goog.isString(first) && goog.isString(second)) {
+    return first.toUpperCase() != second.toUpperCase();
   } else {
-    return value != attributeValue;
+    return first != second;
   }
 };
 
