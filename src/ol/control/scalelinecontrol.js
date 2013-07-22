@@ -194,7 +194,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
 
   if (goog.isNull(view2DState)) {
     if (this.renderedVisible_) {
-      goog.style.showElement(this.element_, false);
+      goog.style.setElementShown(this.element_, false);
       this.renderedVisible_ = false;
     }
     return;
@@ -322,7 +322,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
   }
 
   if (!this.renderedVisible_) {
-    goog.style.showElement(this.element_, true);
+    goog.style.setElementShown(this.element_, true);
     this.renderedVisible_ = true;
   }
 

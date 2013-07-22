@@ -76,7 +76,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
 
   if (!layerState.visible) {
     if (this.renderedVisible_) {
-      goog.style.showElement(this.target, false);
+      goog.style.setElementShown(this.target, false);
       this.renderedVisible_ = false;
     }
     return;
@@ -226,7 +226,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   }
 
   if (layerState.visible && !this.renderedVisible_) {
-    goog.style.showElement(this.target, true);
+    goog.style.setElementShown(this.target, true);
     this.renderedVisible_ = true;
   }
 

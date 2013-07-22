@@ -538,7 +538,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   if (goog.isNull(frameState)) {
     if (this.renderedVisible_) {
-      goog.style.showElement(this.canvas_, false);
+      goog.style.setElementShown(this.canvas_, false);
       this.renderedVisible_ = false;
     }
     return false;
@@ -651,7 +651,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   }
 
   if (!this.renderedVisible_) {
-    goog.style.showElement(this.canvas_, true);
+    goog.style.setElementShown(this.canvas_, true);
     this.renderedVisible_ = true;
   }
 
