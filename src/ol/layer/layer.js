@@ -54,11 +54,17 @@ ol.layer.Layer = function(options) {
   var values = goog.object.clone(options);
   delete values.source;
 
+  /** @type {number} */
   values.brightness = goog.isDef(values.brightness) ? values.brightness : 0;
+  /** @type {number} */
   values.contrast = goog.isDef(values.contrast) ? values.contrast : 1;
+  /** @type {number} */
   values.hue = goog.isDef(values.hue) ? values.hue : 0;
+  /** @type {number} */
   values.opacity = goog.isDef(values.opacity) ? values.opacity : 1;
+  /** @type {number} */
   values.saturation = goog.isDef(values.saturation) ? values.saturation : 1;
+  /** @type {boolean} */
   values.visible = goog.isDef(values.visible) ? values.visible : true;
 
   this.setValues(values);
