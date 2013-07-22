@@ -78,6 +78,12 @@ ol.Overlay = function(options) {
     visible: true
   };
 
+  /**
+   * @private
+   * @type {goog.events.Key}
+   */
+  this.mapPostrenderListenerKey_ = null;
+
   goog.events.listen(
       this, ol.Object.getChangeEventType(ol.OverlayProperty.ELEMENT),
       this.handleElementChanged, false, this);
