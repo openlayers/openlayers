@@ -2,7 +2,6 @@ goog.provide('ol.source.Vector');
 
 goog.require('goog.asserts');
 goog.require('goog.net.XhrIo');
-goog.require('ol.proj');
 goog.require('ol.source.Source');
 
 
@@ -39,7 +38,7 @@ ol.source.Vector = function(options) {
 
   /**
    * @private
-   * @type {ol.parser.Parser}
+   * @type {ol.parser.FeatureParser}
    */
   this.parser_ = goog.isDef(options.parser) ? options.parser : null;
 
@@ -53,8 +52,7 @@ ol.source.Vector = function(options) {
     attributions: options.attributions,
     extent: options.extent,
     logo: options.logo,
-    projection: goog.isDef(options.projection) ?
-        options.projection : ol.proj.get('EPSG:4326')
+    projection: options.projection
   });
 };
 goog.inherits(ol.source.Vector, ol.source.Source);

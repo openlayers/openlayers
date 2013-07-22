@@ -12,6 +12,20 @@ goog.require('ol.Feature');
 /**
  * @interface
  */
+ol.parser.FeatureParser = function() {};
+
+
+/**
+ * @return {ol.Projection} Data projection.
+ */
+ol.parser.FeatureParser.prototype.getProjection = goog.abstractMethod;
+
+
+
+/**
+ * @interface
+ * @extends {ol.parser.FeatureParser}
+ */
 ol.parser.DomFeatureParser = function() {};
 
 

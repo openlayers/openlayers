@@ -514,7 +514,7 @@
  * @property {Object|string|undefined} data Data to parse.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
- * @property {ol.parser.Parser} parser Parser instance to parse data
+ * @property {ol.parser.FeatureParser} parser Parser instance to parse data
  *     provided as `data` or fetched from `url`.
  * @property {ol.ProjectionLike|undefined} projection Projection. EPSG:4326
  *     is assumed if not defined. TODO: Get projection from the parser instead
