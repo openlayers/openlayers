@@ -5,7 +5,7 @@ import gzip
 import json
 import os
 import os.path
-import re
+import regex as re
 import shutil
 import sys
 
