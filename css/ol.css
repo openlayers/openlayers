@@ -46,6 +46,11 @@
   background-color: #428bca;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
+.ol-button:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
 @media print {
   .ol-button {
     display: none;
@@ -59,6 +64,9 @@
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
+.ol-button-group .ol-button:not(:first-child):not(:last-child) {
+  border-radius: 0;
+}
 .ol-button-group .ol-button + .ol-button {
   margin-top: -1px;
 }
@@ -66,6 +74,18 @@
   border-top-right-radius: 0;
   border-top-left-radius: 0;
 }
+
+/* vertical group */
+.ol-button-group {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+.ol-button-group .ol-button {
+  display: block;
+  float: none;
+}
+/* vertical group end*/
 
 .ol-full-screen {
   position: absolute;

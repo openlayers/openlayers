@@ -36,7 +36,7 @@ ol.control.FullScreen = function(opt_options) {
   var className = goog.isDef(options.className) ?
       options.className : 'ol-full-screen';
 
-  var element = goog.dom.createDom(goog.dom.TagName.BUTTON,
+  var element = goog.dom.createDom(goog.dom.TagName.A,
       className + ' ' + ol.css.CLASS_BUTTON +
       (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : ''));
 

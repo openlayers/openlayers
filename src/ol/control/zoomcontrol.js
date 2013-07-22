@@ -34,14 +34,14 @@ ol.control.Zoom = function(opt_options) {
   var className = goog.isDef(options.className) ? options.className : 'ol-zoom';
   var delta = goog.isDef(options.delta) ? options.delta : 1;
 
-  var inElement = goog.dom.createDom(goog.dom.TagName.BUTTON,
+  var inElement = goog.dom.createDom(goog.dom.TagName.A,
       className + '-in' + ' ' + ol.css.CLASS_BUTTON);
   goog.events.listen(inElement, [
     goog.events.EventType.CLICK,
     goog.events.EventType.TOUCHEND
   ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
 
-  var outElement = goog.dom.createDom(goog.dom.TagName.BUTTON,
+  var outElement = goog.dom.createDom(goog.dom.TagName.A,
       className + '-out' + ' ' + ol.css.CLASS_BUTTON);
   goog.events.listen(outElement, [
     goog.events.EventType.CLICK,

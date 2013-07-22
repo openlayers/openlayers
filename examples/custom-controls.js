@@ -32,6 +32,7 @@ app.RotateNorthControl = function(opt_options) {
 
   var anchor = document.createElement('a');
   anchor.href = '#rotate-north';
+  anchor.className = 'ol-button rotate-north';
   anchor.innerHTML = 'N';
 
   var this_ = this;
@@ -44,12 +45,8 @@ app.RotateNorthControl = function(opt_options) {
   anchor.addEventListener('click', handleRotateNorth, false);
   anchor.addEventListener('touchstart', handleRotateNorth, false);
 
-  var element = document.createElement('div');
-  element.className = 'rotate-north ol-unselectable';
-  element.appendChild(anchor);
-
   ol.control.Control.call(this, {
-    element: element,
+    element: anchor,
     map: options.map,
     target: options.target
   });
