@@ -98,7 +98,8 @@
     "goog.debug.logRecordSerializer",
     "goog.debug.makeWhitespaceVisible",
     "goog.debug.normalizeErrorObject",
-    "goog.debug.reflect"
+    "goog.debug.reflect",
+    "goog.log"
   ]
 
 }
