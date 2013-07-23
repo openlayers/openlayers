@@ -120,6 +120,63 @@ ol.style.Line.prototype.createLiteral = function(opt_feature) {
 
 
 /**
+ * Get the stroke color.
+ * @return {ol.expr.Expression} Stroke color.
+ */
+ol.style.Line.prototype.getStrokeColor = function() {
+  return this.strokeColor_;
+};
+
+
+/**
+ * Get the stroke width.
+ * @return {ol.expr.Expression} Stroke width.
+ */
+ol.style.Line.prototype.getStrokeWidth = function() {
+  return this.strokeWidth_;
+};
+
+
+/**
+ * Get the stroke opacity.
+ * @return {ol.expr.Expression} Stroke opacity.
+ */
+ol.style.Line.prototype.getOpacity = function() {
+  return this.opacity_;
+};
+
+
+/**
+ * Set the stroke color.
+ * @param {ol.expr.Expression} strokeColor Stroke color.
+ */
+ol.style.Line.prototype.setStrokeColor = function(strokeColor) {
+  goog.asserts.assertInstanceof(strokeColor, ol.expr.Expression);
+  this.strokeColor_ = strokeColor;
+};
+
+
+/**
+ * Set the stroke width.
+ * @param {ol.expr.Expression} strokeWidth Stroke width.
+ */
+ol.style.Line.prototype.setStrokeWidth = function(strokeWidth) {
+  goog.asserts.assertInstanceof(strokeWidth, ol.expr.Expression);
+  this.strokeWidth_ = strokeWidth;
+};
+
+
+/**
+ * Set the stroke opacity.
+ * @param {ol.expr.Expression} opacity Stroke opacity.
+ */
+ol.style.Line.prototype.setOpacity = function(opacity) {
+  goog.asserts.assertInstanceof(opacity, ol.expr.Expression);
+  this.opacity_ = opacity;
+};
+
+
+/**
  * @type {ol.style.LineLiteral}
  */
 ol.style.LineDefaults = new ol.style.LineLiteral({

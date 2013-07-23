@@ -4,7 +4,6 @@ goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.GPX');
-goog.require('ol.proj');
 goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
 
@@ -14,7 +13,8 @@ var raster = new ol.layer.TileLayer({
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    projection: ol.proj.get('EPSG:4326')
+    parser: new ol.parser.GPX(),
+    url: 'data/gpx/yahoo.xml'
   }),
   transformFeatureInfo: function(features) {
     var info = [];
@@ -44,22 +44,3 @@ map.on(['click', 'mousemove'], function(evt) {
     }
   });
 });
-
-var gpx = new ol.parser.GPX();
-
-var url = 'data/gpx/yahoo.xml';
-var xhr = new XMLHttpRequest();
-xhr.open('GET', url, true);
-
-
-/**
- * onload handler for the XHR request.
- */
-xhr.onload = function() {
-  if (xhr.status == 200) {
-    // this is silly to have to tell the layer the destination projection
-    var projection = map.getView().getProjection();
-    vector.parseFeatures(xhr.responseText, gpx, projection);
-  }
-};
-xhr.send();

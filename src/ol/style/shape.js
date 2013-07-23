@@ -227,6 +227,119 @@ ol.style.Shape.prototype.createLiteral = function(opt_feature) {
 
 
 /**
+ * Get the fill color.
+ * @return {ol.expr.Expression} Fill color.
+ */
+ol.style.Shape.prototype.getFillColor = function() {
+  return this.fillColor_;
+};
+
+
+/**
+ * Get the opacity.
+ * @return {ol.expr.Expression} Opacity.
+ */
+ol.style.Shape.prototype.getOpacity = function() {
+  return this.opacity_;
+};
+
+
+/**
+ * Get the shape size.
+ * @return {ol.expr.Expression} Shape size.
+ */
+ol.style.Shape.prototype.getSize = function() {
+  return this.size_;
+};
+
+
+/**
+ * Get the stroke color.
+ * @return {ol.expr.Expression} Stroke color.
+ */
+ol.style.Shape.prototype.getStrokeColor = function() {
+  return this.strokeColor_;
+};
+
+
+/**
+ * Get the stroke width.
+ * @return {ol.expr.Expression} Stroke width.
+ */
+ol.style.Shape.prototype.getStrokeWidth = function() {
+  return this.strokeWidth_;
+};
+
+
+/**
+ * Get the shape type.
+ * @return {ol.style.ShapeType} Shape type.
+ */
+ol.style.Shape.prototype.getType = function() {
+  return this.type_;
+};
+
+
+/**
+ * Set the fill color.
+ * @param {ol.expr.Expression} fillColor Fill color.
+ */
+ol.style.Shape.prototype.setFillColor = function(fillColor) {
+  goog.asserts.assertInstanceof(fillColor, ol.expr.Expression);
+  this.fillColor_ = fillColor;
+};
+
+
+/**
+ * Set the opacity.
+ * @param {ol.expr.Expression} opacity Opacity.
+ */
+ol.style.Shape.prototype.setOpacity = function(opacity) {
+  goog.asserts.assertInstanceof(opacity, ol.expr.Expression);
+  this.opacity_ = opacity;
+};
+
+
+/**
+ * Set the shape size.
+ * @param {ol.expr.Expression} size Shape size.
+ */
+ol.style.Shape.prototype.setSize = function(size) {
+  goog.asserts.assertInstanceof(size, ol.expr.Expression);
+  this.size_ = size;
+};
+
+
+/**
+ * Set the stroke color.
+ * @param {ol.expr.Expression} strokeColor Stroke color.
+ */
+ol.style.Shape.prototype.setStrokeColor = function(strokeColor) {
+  goog.asserts.assertInstanceof(strokeColor, ol.expr.Expression);
+  this.strokeColor_ = strokeColor;
+};
+
+
+/**
+ * Set the stroke width.
+ * @param {ol.expr.Expression} strokeWidth Stroke width.
+ */
+ol.style.Shape.prototype.setStrokeWidth = function(strokeWidth) {
+  goog.asserts.assertInstanceof(strokeWidth, ol.expr.Expression);
+  this.strokeWidth_ = strokeWidth;
+};
+
+
+/**
+ * Set the shape type.
+ * @param {ol.style.ShapeType} type Shape type.
+ */
+ol.style.Shape.prototype.setType = function(type) {
+  this.type_ = type;
+};
+
+
+/**
  * @type {ol.style.ShapeLiteral}
  */
 ol.style.ShapeDefaults = new ol.style.ShapeLiteral({

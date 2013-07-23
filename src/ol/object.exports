@@ -5,7 +5,6 @@
 @exportProperty ol.Object.prototype.on
 @exportProperty ol.Object.prototype.once
 @exportProperty ol.Object.prototype.set
-@exportProperty ol.Object.prototype.setOptions
 @exportProperty ol.Object.prototype.setValues
 @exportProperty ol.Object.prototype.un
 @exportProperty ol.Object.prototype.unByKey

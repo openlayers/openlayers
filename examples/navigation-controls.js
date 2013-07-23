@@ -1,30 +1,32 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
-goog.require('ol.control.FullScreen');
+goog.require('ol.control.ZoomToExtent');
 goog.require('ol.control.defaults');
 goog.require('ol.layer.TileLayer');
-goog.require('ol.source.BingMaps');
+goog.require('ol.source.OSM');
 
-
-var view = new ol.View2D({
-  center: [-9101767, 2822912],
-  zoom: 14
-});
 
 var map = new ol.Map({
   controls: ol.control.defaults({}, [
-    new ol.control.FullScreen()
+    new ol.control.ZoomToExtent({
+      extent: [
+        813079.7791264898,
+        848966.9639063801,
+        5929220.284081122,
+        5936863.986909639
+      ]
+    })
   ]),
   layers: [
     new ol.layer.TileLayer({
-      source: new ol.source.BingMaps({
-        key: 'Ar33pRUvQOdESG8m_T15MUmNz__E1twPo42bFx9jvdDePhX0PNgAcEm44OVTS7tt',
-        style: 'Aerial'
-      })
+      source: new ol.source.OSM()
     })
   ],
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
-  view: view
+  view: new ol.View2D({
+    center: [0, 0],
+    zoom: 2
+  })
 });
