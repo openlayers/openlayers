@@ -118,7 +118,7 @@ ol.Object.getGetterName = function(key) {
 
 /**
  * @param {ol.Object} obj Object.
- * @return {Object.<string, ?number>} Listeners.
+ * @return {Object.<string, goog.events.Key>} Listeners.
  */
 ol.Object.getListeners = function(obj) {
   return obj[ol.ObjectProperty.BINDINGS] ||
@@ -235,7 +235,7 @@ ol.Object.prototype.notifyInternal_ = function(key) {
  * @param {Function} listener The listener function.
  * @param {Object=} opt_scope Object is whose scope to call
  *     the listener.
- * @return {?number} Unique key for the listener.
+ * @return {goog.events.Key} Unique key for the listener.
  */
 ol.Object.prototype.on = function(type, listener, opt_scope) {
   return goog.events.listen(this, type, listener, false, opt_scope);
@@ -248,7 +248,7 @@ ol.Object.prototype.on = function(type, listener, opt_scope) {
  * @param {Function} listener The listener function.
  * @param {Object=} opt_scope Object is whose scope to call
  *     the listener.
- * @return {?number} Unique key for the listener.
+ * @return {goog.events.Key} Unique key for the listener.
  */
 ol.Object.prototype.once = function(type, listener, opt_scope) {
   return goog.events.listenOnce(this, type, listener, false, opt_scope);

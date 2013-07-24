@@ -10,9 +10,15 @@ goog.require('goog.asserts');
  * @return {number} Index.
  */
 ol.array.binaryFindNearest = function(arr, target) {
-  var index = goog.array.binarySearch(arr, target, function(a, b) {
-    return b - a;
-  });
+  var index = goog.array.binarySearch(arr, target,
+      /**
+       * @param {number} a A.
+       * @param {number} b B.
+       * @return {number} b minus a.
+       */
+      function(a, b) {
+        return b - a;
+      });
   if (index >= 0) {
     return index;
   } else if (index == -1) {
