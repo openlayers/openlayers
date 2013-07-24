@@ -16,12 +16,20 @@ module.exports = function(grunt) {
       options: {
         configFile: 'test/karma.conf.js'
       },
-      // run Karma with options from configFile
-      watch: {},
-      // run tests with Karma once
+      watch: {
+        // run continuously with options from configFile
+      },
       single: {
+        // run once
         options: {
           singleRun: true
+        }
+      },
+      phantom: {
+        // run once with PhantomJS
+        options: {
+          singleRun: true,
+          browsers: ['PhantomJS']
         }
       }
     }
