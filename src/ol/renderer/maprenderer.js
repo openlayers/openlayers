@@ -101,7 +101,7 @@ ol.renderer.Map.prototype.getCanvas = goog.functions.NULL;
 /**
  * @param {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
  * @param {Array.<ol.layer.Layer>} layers Layers to query.
- * @param {function(Array.<ol.Feature|string>)} success Callback for
+ * @param {function(Array.<Array.<string|undefined>>)} success Callback for
  *     successful queries. The passed argument is the resulting feature
  *     information.  Layers that are able to provide attribute data will put
  *     ol.Feature instances, other layers will put a string which can either
@@ -137,7 +137,7 @@ ol.renderer.Map.prototype.getFeatureInfoForPixel =
 /**
  * @param {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
  * @param {Array.<ol.layer.Layer>} layers Layers to query.
- * @param {function(Array.<ol.Feature|string>)} success Callback for
+ * @param {function(Array.<Array.<ol.Feature|undefined>>)} success Callback for
  *     successful queries. The passed argument is the resulting feature
  *     information.  Layers that are able to provide attribute data will put
  *     ol.Feature instances, other layers will put a string which can either

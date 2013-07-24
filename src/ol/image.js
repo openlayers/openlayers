@@ -34,6 +34,8 @@ ol.ImageState = {
  */
 ol.Image = function(extent, resolution, src, crossOrigin, attributions) {
 
+  goog.base(this);
+
   /**
    * @private
    * @type {Array.<ol.Attribution>}

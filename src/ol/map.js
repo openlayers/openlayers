@@ -13,8 +13,6 @@ goog.require('goog.asserts');
 goog.require('goog.async.AnimationDelay');
 goog.require('goog.async.Delay');
 goog.require('goog.debug.Console');
-goog.require('goog.debug.Logger');
-goog.require('goog.debug.Logger.Level');
 goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -27,6 +25,8 @@ goog.require('goog.events.KeyHandler');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.MouseWheelHandler.EventType');
+goog.require('goog.log');
+goog.require('goog.log.Level');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
@@ -196,7 +196,7 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {?number}
+   * @type {goog.events.Key}
    */
   this.viewPropertyListenerKey_ = null;
 
@@ -1169,7 +1169,7 @@ ol.proj.addCommonProjections();
 if (goog.DEBUG) {
   (function() {
     goog.debug.Console.autoInstall();
-    var logger = goog.debug.Logger.getLogger('ol');
-    logger.setLevel(goog.debug.Logger.Level.FINEST);
+    var logger = goog.log.getLogger('ol');
+    logger.setLevel(goog.log.Level.FINEST);
   })();
 }
