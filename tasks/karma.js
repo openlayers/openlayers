@@ -36,6 +36,9 @@ module.exports = function(grunt) {
       });
     });
 
+    // exit cleanly on ctrl-c
+    process.on('SIGINT', done);
+
   });
 
 };
