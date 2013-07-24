@@ -21,7 +21,7 @@ describe('ol.parser.gml_v3', function() {
         parser.srsName = 'foo';
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
-        delete parser.srsName;
+        parser.srsName = null;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
         expect(obj.geometry.type).to.eql('linearring');
         expect(obj.geometry.coordinates).to.eql([[1, 2], [3, 4], [5, 6],
@@ -37,7 +37,7 @@ describe('ol.parser.gml_v3', function() {
         parser.srsName = 'foo';
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
-        delete parser.srsName;
+        parser.srsName = null;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
         expect(obj.geometry.type).to.eql('linestring');
         expect(obj.geometry.coordinates).to.eql([[1, 2], [3, 4]]);
@@ -103,7 +103,7 @@ describe('ol.parser.gml_v3', function() {
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
-        delete parser.srsName;
+        parser.srsName = null;
         expect(obj.geometry.type).to.eql('multilinestring');
         expect(obj.geometry.parts.length).to.eql(2);
         expect(obj.geometry.parts[0].type).to.eql('linestring');
@@ -147,7 +147,7 @@ describe('ol.parser.gml_v3', function() {
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
-        delete parser.srsName;
+        parser.srsName = null;
         expect(obj.geometry.type).to.eql('multipoint');
         expect(obj.geometry.parts.length).to.eql(3);
         expect(obj.geometry.parts[0].type).to.eql('point');
@@ -199,7 +199,7 @@ describe('ol.parser.gml_v3', function() {
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
-        delete parser.srsName;
+        parser.srsName = null;
         expect(obj.geometry.type).to.eql('multipolygon');
         expect(obj.geometry.parts.length).to.eql(2);
         expect(obj.geometry.parts[0].type).to.eql('polygon');
@@ -229,7 +229,7 @@ describe('ol.parser.gml_v3', function() {
         parser.srsName = 'foo';
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
-        delete parser.srsName;
+        parser.srsName = null;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
         expect(obj.geometry.type).to.eql('point');
         expect(obj.geometry.coordinates).to.eql([1, 2]);
@@ -244,7 +244,7 @@ describe('ol.parser.gml_v3', function() {
         parser.srsName = 'foo';
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
-        delete parser.srsName;
+        parser.srsName = null;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
         expect(obj.geometry.type).to.eql('polygon');
         done();
@@ -266,15 +266,15 @@ describe('ol.parser.gml_v3', function() {
     it('FeatureCollection from GML read / written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/topp-states-gml.xml';
       afterLoadXml(url, function(xml) {
-        var srsName = 'urn:x-ogc:def:crs:EPSG:4326';
         var schemaLoc = 'http://www.openplans.org/topp ' +
             'http://demo.opengeo.org/geoserver/wfs?service=WFS&version=' +
             '1.1.0&request=DescribeFeatureType&typeName=topp:states ' +
             'http://www.opengis.net/gml ' +
             'http://schemas.opengis.net/gml/3.2.1/gml.xsd';
-        var p = new ol.parser.ogc.GML_v3({srsName: srsName,
-          schemaLocation: schemaLoc});
+        var p = new ol.parser.ogc.GML_v3({schemaLocation: schemaLoc});
         var obj = p.read(xml);
+        p.srsName = 'urn:x-ogc:def:crs:EPSG:4326';
+        p.axisOrientation = 'neu';
         var output = p.write(obj);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         expect(p.geometryName).to.eql('the_geom');
@@ -289,6 +289,7 @@ describe('ol.parser.gml_v3', function() {
         expect(attributes['SUB_REGION']).to.eql('E N Cen');
         expect(attributes['STATE_ABBR']).to.eql('IL');
         expect(attributes['LAND_KM']).to.eql('143986.61');
+        expect(obj.metadata.projection).to.eql('EPSG:4326');
         done();
       });
     });
@@ -307,6 +308,7 @@ describe('ol.parser.gml_v3', function() {
         expect(attributes['SUB_REGION']).to.eql('E N Cen');
         expect(attributes['STATE_ABBR']).to.eql('IL');
         expect(attributes['LAND_KM']).to.eql('143986.61');
+        expect(obj.metadata.projection).to.eql('EPSG:4326');
         done();
       });
     });

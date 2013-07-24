@@ -16,7 +16,7 @@ var raster = new ol.layer.TileLayer({
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    parser: new ol.parser.ogc.GML_v3({axisOrientation: 'neu'}),
+    parser: new ol.parser.ogc.GML_v3(),
     url: 'data/gml/topp-states-wfs.xml'
   }),
   style: new ol.style.Style({rules: [

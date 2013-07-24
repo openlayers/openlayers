@@ -14,6 +14,7 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.parser.StringFeatureParser');
 goog.require('ol.parser.XML');
+goog.require('ol.proj');
 
 
 
@@ -41,6 +42,20 @@ ol.parser.ogc.GML = function(opt_options) {
       options.multiSurface : true;
   this.srsName = goog.isDef(options.srsName) ?
       options.srsName : null;
+
+  /**
+   * @private
+   * @type {string|undefined}
+   */
+  this.srsName_ = goog.isNull(this.srsName) ? undefined : this.srsName;
+
+  /**
+   * @private
+   * @type {string|undefined}
+   */
+  this.axisOrientation_ = goog.isNull(this.srsName) ? undefined :
+      ol.proj.get(this.srsName).getAxisOrientation();
+
   if (goog.isDef(options.schemaLocation)) {
     this.schemaLocation = options.schemaLocation;
   }
@@ -197,7 +212,7 @@ ol.parser.ogc.GML = function(opt_options) {
         var points = new Array(numPoints);
         for (var i = 0; i < numPoints; ++i) {
           coords = goog.array.map(pointList[i].split(cs), parseFloat);
-          if (this.axisOrientation.substr(0, 2) === 'en') {
+          if (this.getAxisOrientation().substr(0, 2) === 'en') {
             points[i] = coords;
           } else {
             if (coords.length === 2) {
@@ -301,6 +316,27 @@ ol.parser.ogc.GML = function(opt_options) {
     '_geometry': function(node, obj) {
       if (!this.geometryName) {
         this.geometryName = node.nodeName.split(':').pop();
+      }
+      // TODO: Deal with GML documents that do not have the same SRS for all
+      // geometries.
+      if (!goog.isDef(this.srsName_)) {
+        for (var i = node.childNodes.length - 1; i >= 0; --i) {
+          var child = node.childNodes[i];
+          if (child.nodeType == 1) {
+            var srsName = child.getAttribute('srsName');
+            if (goog.isDef(srsName)) {
+              this.srsName_ = srsName.replace(ol.parser.ogc.GML.regExes.epsg,
+                  'EPSG:');
+              if (!goog.isDef(this.axisOrientation_)) {
+                var projection = ol.proj.get(this.srsName_);
+                if (!goog.isNull(projection)) {
+                  this.axisOrientation_ = projection.getAxisOrientation();
+                }
+              }
+            }
+            break;
+          }
+        }
       }
       this.readChildNodes(node, obj);
     },
@@ -454,6 +490,26 @@ goog.inherits(ol.parser.ogc.GML, ol.parser.XML);
 
 
 /**
+ * Constants for regExes.
+ * @enum {RegExp}
+ */
+ol.parser.ogc.GML.regExes = {
+  epsg: new RegExp('(http:\/\/www\.opengis\.net\/gml\/srs\/epsg.xml#|' +
+      'urn:x-ogc:def:crs:EPSG:)', 'i')
+};
+
+
+/**
+ * @return {string?} Axis orientation of the data that is currently being
+ * parsed.
+ */
+ol.parser.ogc.GML.prototype.getAxisOrientation = function() {
+  return goog.isDef(this.axisOrientation_) ?
+      this.axisOrientation_ : this.axisOrientation;
+};
+
+
+/**
  * @param {string|Document|Element|Object} data Data to read.
  * @return {ol.parser.ReadFeaturesResult} An object representing the document.
  */
@@ -464,8 +520,12 @@ ol.parser.ogc.GML.prototype.read = function(data) {
   if (data && data.nodeType == 9) {
     data = data.documentElement;
   }
-  var obj = {features: [], metadata: {projection: null}};
+  var obj = /** @type {ol.parser.ReadFeaturesResult} */
+      ({features: [], metadata: {}});
   this.readNode(data, obj, true);
+  obj.metadata.projection = this.srsName_;
+  this.srsName_ = goog.isNull(this.srsName) ? undefined : this.srsName;
+  delete this.axisOrientation_;
   return obj;
 };
 

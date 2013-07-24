@@ -357,7 +357,9 @@
 /**
  * @typedef {Object} ol.parser.GMLOptions
  * @property {string|undefined} axisOrientation The axis orientation as
- *     specified in Proj4. The default is 'enu'.
+ *     specified in Proj4. If this is not provided, 'enu' will be used for GML2,
+ *     and the projection's axis orientation for GML3, with a fallback to 'enu'
+ *     if `projection` was not configured and is not provided by the data.
  * @property {boolean|undefined} curve Write gml:Curve instead of
  *     gml:LineString elements. This also affects the elements in multi-part
  *     geometries. Default is `false´. This only applies to GML version 3.
@@ -381,7 +383,8 @@
  * @property {string|undefined} srsName URI for spatial reference system.
  *     This is optional for single part geometries and mandatory for
  *     collections and multis. If set, the srsName attribute will be written
- *     for all geometries. Default is null.
+ *     for all geometries. Default is null. For reading only, no `srsName` needs
+ *     to be provided.
  * @property {boolean|undefined} surface Write gml:Surface instead of
  *     gml:Polygon elements. This also affects the elements in multi-part
  *     geometries. Default is `false´. This only applies to GML version 3.

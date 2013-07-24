@@ -112,6 +112,14 @@ goog.inherits(ol.parser.ogc.GML_v2, ol.parser.ogc.GML);
 
 
 /**
+ * @return {string?} Axis orientation that was configured with this instance.
+ */
+ol.parser.ogc.GML_v2.prototype.getAxisOrientation = function() {
+  return this.axisOrientation;
+};
+
+
+/**
  * @param {Object} obj Object structure to write out as XML.
  * @return {string} An string representing the XML document.
  */
