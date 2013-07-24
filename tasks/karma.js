@@ -5,7 +5,8 @@
  * task and waits for Plovr to start listening before running Karma.
  */
 var path = require('path');
-var server = require('karma').server;
+var karma = require('karma').server;
+var plovr = require('./lib/plovr');
 
 
 /** @param {Object} grunt Grunt DSL object. */
@@ -19,33 +20,20 @@ module.exports = function(grunt) {
       options.configFile = path.resolve(options.configFile);
     }
 
-    var child = grunt.util.spawn({
-      grunt: true,
-      args: ['serve']
-    }, function(error, result, code) {
-      if (error || code !== 0) {
-        grunt.log.error(result.stderr || result.stdout);
+    plovr.start(function(err) {
+      if (err) {
+        return done(err);
       }
-      done(error);
-    });
-
-    child.stdout.on('data', function(chunk) {
-
-      // check to see if Plovr is listening
-      if (chunk.toString().indexOf('Listening on') === 0) {
-        grunt.log.write(String(chunk));
-        grunt.log.write('\n');
-
-        // start Karma
-        server.start(options, function(code) {
+      // start Karma
+      karma.start(options, function(code) {
+        plovr.stop(function() {
           if (code !== 0) {
-            child.kill();
+            done(new Error('Karma exited with non-zero status: ' + code));
           } else {
             done();
           }
         });
-
-      }
+      });
     });
 
   });
