@@ -516,9 +516,10 @@
  * @property {string|undefined} logo Logo.
  * @property {ol.parser.Parser} parser Parser instance to parse data
  *     provided as `data` or fetched from `url`.
- * @property {ol.ProjectionLike|undefined} projection Projection. EPSG:4326
- *     is assumed if not defined. TODO: Get projection from the parser instead
- *     of assuming EPSG:4326.
+ * @property {ol.ProjectionLike|undefined} projection Projection. Usually the
+ *     projection is provided by the parser, so this only needs to be set if
+ *     the parser does not know the SRS (e.g. in some GML flavors), or if the
+ *     projection determined by the parser needs to be overridden.
  * @property {string|undefined} url Server url providing the vector data.
  */
 

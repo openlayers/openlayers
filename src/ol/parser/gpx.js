@@ -12,7 +12,6 @@ goog.require('ol.parser.ObjectFeatureParser');
 goog.require('ol.parser.ReadFeaturesOptions');
 goog.require('ol.parser.StringFeatureParser');
 goog.require('ol.parser.XML');
-goog.require('ol.proj');
 
 
 
@@ -47,7 +46,6 @@ ol.parser.GPX = function(opt_options) {
       'gpx': function(node, obj) {
         if (!goog.isDef(obj.features)) {
           obj.features = [];
-          obj.metadata = {projection: ol.proj.get('EPSG:4326')};
         }
         this.readChildNodes(node, obj);
       },
@@ -245,7 +243,8 @@ ol.parser.GPX.prototype.read = function(data) {
   if (data && data.nodeType == 9) {
     data = data.documentElement;
   }
-  var obj = {features: [], metadata: {projection: ol.proj.get('EPSG:4326')}};
+  var obj = /** @type {ol.parser.ReadFeaturesResult} */
+      ({metadata: {projection: 'EPSG:4326'}});
   this.readNode(data, obj);
   return obj;
 };

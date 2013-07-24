@@ -16,7 +16,6 @@ goog.require('ol.geom.SharedVertices');
 goog.require('ol.parser.Parser');
 goog.require('ol.parser.ReadFeaturesOptions');
 goog.require('ol.parser.StringFeatureParser');
-goog.require('ol.proj');
 
 
 
@@ -65,7 +64,7 @@ ol.parser.GeoJSON.prototype.readFeaturesWithMetadataFromString =
     function(str, opt_options) {
   var json = /** @type {GeoJSONFeatureCollection} */ (JSON.parse(str));
   return {features: this.parseFeatureCollection_(json, opt_options),
-    metadata: {projection: ol.proj.get('EPSG:4326')}};
+    metadata: {projection: 'EPSG:4326'}};
 };
 
 
@@ -79,7 +78,7 @@ ol.parser.GeoJSON.prototype.readFeaturesWithMetadataFromString =
 ol.parser.GeoJSON.prototype.readFeaturesWithMetadataFromObject =
     function(object, opt_options) {
   return {features: this.parseFeatureCollection_(object, opt_options),
-    metadata: {projection: ol.proj.get('EPSG:4326')}};
+    metadata: {projection: 'EPSG:4326'}};
 };
 
 

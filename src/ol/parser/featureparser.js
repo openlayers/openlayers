@@ -8,19 +8,6 @@ goog.provide('ol.parser.StringFeatureParser');
 goog.require('ol.Feature');
 
 
-/**
- * @typedef {{projection: ol.Projection}}
- */
-ol.parser.ReadFeaturesMetadata;
-
-
-/**
- * @typedef {{features: Array.<ol.Feature>,
- *     metadata: ol.parser.ReadFeaturesMetadata}}
- */
-ol.parser.ReadFeaturesResult;
-
-
 
 /**
  * @interface
@@ -78,9 +65,8 @@ ol.parser.AsyncStringFeatureParser = function() {};
 
 /**
  * @param {string} data String data.
- * @param {function(Array.<ol.Feature>, ol.parser.ReadFeaturesMetadata)}
- *        callback Callback which is called
- * after parsing.
+ * @param {function(ol.parser.ReadFeaturesResult)} callback Callback which is
+ *     called after parsing.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */
 ol.parser.AsyncStringFeatureParser.prototype.readFeaturesFromStringAsync =
@@ -96,9 +82,8 @@ ol.parser.AsyncObjectFeatureParser = function() {};
 
 /**
  * @param {Object} obj Object representing features.
- * @param {function(Array.<ol.Feature>, ol.parser.ReadFeaturesMetadata)}
- *     callback Callback which is called
- * after parsing.
+ * @param {function(ol.parser.ReadFeaturesResult)} callback Callback which is
+ *     called after parsing.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */
 ol.parser.AsyncObjectFeatureParser.prototype.readFeaturesFromObjectAsync =
@@ -112,6 +97,19 @@ ol.parser.ReadFeaturesCallback;
 
 
 /**
+ * @typedef {{projection: ol.ProjectionLike}}
+ */
+ol.parser.ReadFeaturesMetadata;
+
+
+/**
  * @typedef {{callback: ol.parser.ReadFeaturesCallback}}
  */
 ol.parser.ReadFeaturesOptions;
+
+
+/**
+ * @typedef {{features: Array.<ol.Feature>,
+ *     metadata: ol.parser.ReadFeaturesMetadata}}
+ */
+ol.parser.ReadFeaturesResult;

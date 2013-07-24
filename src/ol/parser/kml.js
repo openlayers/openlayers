@@ -27,7 +27,6 @@ goog.require('ol.parser.DomFeatureParser');
 goog.require('ol.parser.ReadFeaturesOptions');
 goog.require('ol.parser.StringFeatureParser');
 goog.require('ol.parser.XML');
-goog.require('ol.proj');
 goog.require('ol.style.Icon');
 goog.require('ol.style.Line');
 goog.require('ol.style.LineLiteral');
@@ -66,7 +65,6 @@ ol.parser.KML = function(opt_options) {
       'kml': function(node, obj) {
         if (!goog.isDef(obj.features)) {
           obj.features = [];
-          obj.metadata = {projection: ol.proj.get('EPSG:4326')};
         }
         if (!goog.isDef(obj.links)) {
           obj.links = [];
@@ -823,9 +821,8 @@ goog.inherits(ol.parser.KML, ol.parser.XML);
 
 /**
  * @param {Object} obj Object representing features.
- * @param {function(Array.<ol.Feature>, ol.parser.ReadFeaturesMetadata)}
- *     callback Callback which is called
- * after parsing.
+ * @param {function(ol.parser.ReadFeaturesResult)} callback Callback which is
+ *     called after parsing.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */
 ol.parser.KML.prototype.readFeaturesFromObjectAsync =
@@ -836,16 +833,15 @@ ol.parser.KML.prototype.readFeaturesFromObjectAsync =
 
 
 /**
- * @param {string} data String data.
- * @param {function(Array.<ol.Feature>, ol.parser.ReadFeaturesMetadata)}
- *        callback Callback which is called
- * after parsing.
+ * @param {string} str String data.
+ * @param {function(ol.parser.ReadFeaturesResult)}
+ *     callback Callback which is called after parsing.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */
 ol.parser.KML.prototype.readFeaturesFromStringAsync =
-    function(data, callback, opt_options) {
+    function(str, callback, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  this.read(data, callback);
+  this.read(str, callback);
 };
 
 
@@ -858,7 +854,7 @@ ol.parser.KML.prototype.readFeaturesFromStringAsync =
 ol.parser.KML.prototype.readFeaturesWithMetadataFromString =
     function(str, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(str);
+  return /** @type {ol.parser.ReadFeaturesResult} */ (this.read(str));
 };
 
 
@@ -871,7 +867,7 @@ ol.parser.KML.prototype.readFeaturesWithMetadataFromString =
 ol.parser.KML.prototype.readFeaturesWithMetadataFromNode =
     function(node, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(node);
+  return /** @type {ol.parser.ReadFeaturesResult} */ (this.read(node));
 };
 
 
@@ -883,7 +879,7 @@ ol.parser.KML.prototype.readFeaturesWithMetadataFromNode =
 ol.parser.KML.prototype.readFeaturesWithMetadataFromObject =
     function(obj, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(obj);
+  return /** @type {ol.parser.ReadFeaturesResult} */ (this.read(obj));
 };
 
 
@@ -934,10 +930,11 @@ ol.parser.KML.prototype.parseLinks = function(deferreds, obj, done) {
 
 /**
  * @param {string|Document|Element|Object} data Data to read.
- * @param {Function=} opt_callback Optional callback to call when reading
- * is done.
- * @return {ol.parser.ReadFeaturesResult} An object representing the
- * document.
+ * @param {function(ol.parser.ReadFeaturesResult)=} opt_callback Optional
+ *     callback to call when reading is done. If provided, this method will
+ *     return undefined.
+ * @return {ol.parser.ReadFeaturesResult|undefined} An object representing the
+ *     document if `opt_callback` was not provided.
  */
 ol.parser.KML.prototype.read = function(data, opt_callback) {
   if (goog.isString(data)) {
@@ -946,7 +943,8 @@ ol.parser.KML.prototype.read = function(data, opt_callback) {
   if (data && data.nodeType == 9) {
     data = data.documentElement;
   }
-  var obj = {features: [], metadata: {projection: ol.proj.get('EPSG:4326')}};
+  var obj = /** @type {ol.parser.ReadFeaturesResult} */
+      ({metadata: {projection: 'EPSG:4326'}});
   this.readNode(data, obj);
   if (goog.isDef(opt_callback)) {
     var deferreds = [];
@@ -966,9 +964,8 @@ ol.parser.KML.prototype.read = function(data, opt_callback) {
           }, this);
     });
   } else {
-    return /* ol.parser.ReadFeaturesResult */(obj);
+    return obj;
   }
-  return {features: null, metadata: {projection: ol.proj.get('EPSG:4326')}};
 };
 
 
