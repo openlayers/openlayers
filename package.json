@@ -17,7 +17,7 @@
     "grunt-openlayers": "0.2.0"
   },
   "scripts": {
-    "postinstall": "grunt install",
+    "postinstall": "grunt build",
     "test": "grunt karma:single",
     "watch": "grunt karma",
     "start": "grunt serve"

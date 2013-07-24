@@ -4,7 +4,7 @@
  * This Grunt configuration makes a number of tasks available for OpenLayers 3
  * development.
  *
- * grunt install - Pull down dependencies and build the library.
+ * grunt build - Pull down extra dependencies and build the library.
  * grunt serve - Start the Plovr server (for viewing examples).
  * grunt karma - Start the Karma test runner (also runs Plovr).
  *
@@ -33,10 +33,11 @@ module.exports = function(grunt) {
     }
   });
 
+  // this is required by the build task
   grunt.loadNpmTasks('grunt-openlayers');
 
   grunt.loadTasks('tasks');
 
-  grunt.registerTask('default', ['karma']);
+  grunt.registerTask('default', ['build']);
 
 };
