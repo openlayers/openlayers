@@ -12,7 +12,13 @@ var plovr = require('./lib/plovr');
 /** @param {Object} grunt Grunt DSL object. */
 module.exports = function(grunt) {
 
-  grunt.registerMultiTask('karma', 'Launch the Karma test runner.', function() {
+  var description = 'Start development server and run tests.  The individual ' +
+      'targets are configured with specific options (e.g. karma:single runs ' +
+      'the tests once and exits while karma:watch watches for changes and re-' +
+      'runs the tests with each change).';
+
+
+  grunt.registerMultiTask('karma', description, function() {
     var done = this.async();
     var options = this.options();
 

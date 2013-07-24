@@ -10,7 +10,9 @@ var plovr = require('./lib/plovr');
 /** @param {Object} grunt Grunt DSL object. */
 module.exports = function(grunt) {
 
-  grunt.registerTask('serve', 'Run the Plovr server.', function() {
+  var description = 'Serve scripts in development mode (for viewing examples).';
+
+  grunt.registerTask('serve', description, function() {
     var done = this.async();
     plovr.start(function(err) {
       if (err) {

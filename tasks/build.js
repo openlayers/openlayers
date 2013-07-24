@@ -8,7 +8,11 @@
 /** @param {Object} grunt Grunt DSL object. */
 module.exports = function(grunt) {
 
-  grunt.registerTask('build', 'Build the library.', function() {
+  var description = 'Build a compiled version of the library.  This task ' +
+      'ensures that all development dependencies are met, generates exports ' +
+      'and externs, and builds the full library.';
+
+  grunt.registerTask('build', description, function() {
     grunt.task.run([
       'buildpy:build',
       'buildpy:test-deps'
