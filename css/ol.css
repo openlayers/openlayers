@@ -33,6 +33,7 @@
 
 .ol-button {
   display: block;
+  box-sizing: border-box;
   padding: 6px 10px;
   font-size: 14px;
   line-height: 1.428571429;
@@ -46,17 +47,14 @@
   background-color: #428bca;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
-.ol-button:hover {
-  color: #fff;
-  text-decoration: none;
-}
-
 @media print {
   .ol-button {
     display: none;
   }
 }
 .ol-button:hover {
+  color: #fff;
+  text-decoration: none;
   background-color: #357ebd;
 }
 
@@ -77,13 +75,13 @@
 
 /* vertical group */
 .ol-button-group {
-  position: relative;
   display: inline-block;
   vertical-align: middle;
 }
 .ol-button-group .ol-button {
   display: block;
   float: none;
+  width: 100%;
 }
 /* vertical group end*/
 
