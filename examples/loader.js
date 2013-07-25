@@ -1,7 +1,7 @@
 
 
 /**
- * Loader to add the plovr generated script and ol.css to the document.
+ * Loader to add the plovr generated script to the document.
  *
  * The following default values may be overridden with query string
  * parameters:
@@ -59,8 +59,6 @@
     pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(params[key]));
   }
 
-  document.write('<link rel="stylesheet" href="../css/ol.css" ' +
-                 'type="text/css">');
   var url = 'http://' + host + '/compile?' + pairs.join('&');
   document.write('<script type="text/javascript" src="' + url + '"></script>');
 }());
