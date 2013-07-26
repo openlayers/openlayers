@@ -111,6 +111,8 @@ describe('ol.parser.TopoJSON', function() {
 });
 
 goog.require('ol.Feature');
+goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Polygon');
+goog.require('ol.geom.SharedVertices');
 goog.require('ol.parser.Parser');
 goog.require('ol.parser.TopoJSON');
