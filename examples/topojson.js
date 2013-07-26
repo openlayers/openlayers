@@ -4,7 +4,7 @@ goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.TopoJSON');
-goog.require('ol.source.MapQuestOpenAerial');
+goog.require('ol.source.TileJSON');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Polygon');
 goog.require('ol.style.Rule');
@@ -12,7 +12,9 @@ goog.require('ol.style.Style');
 
 
 var raster = new ol.layer.TileLayer({
-  source: new ol.source.MapQuestOpenAerial()
+  source: new ol.source.TileJSON({
+    url: 'http://api.tiles.mapbox.com/v3/mapbox.world-dark.jsonp'
+  })
 });
 
 var vector = new ol.layer.Vector({
@@ -24,9 +26,10 @@ var vector = new ol.layer.Vector({
     new ol.style.Rule({
       symbolizers: [
         new ol.style.Polygon({
-          strokeColor: '#bada55',
-          strokeWidth: 2,
-          opacity: 0.9
+          strokeColor: '#FFF',
+          fillColor: '#BADA55',
+          strokeWidth: 1.5,
+          opacity: 0.5
         })
       ]
     })
