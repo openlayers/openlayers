@@ -56,6 +56,58 @@ describe('ol.parser.TopoJSON', function() {
 
   });
 
+  describe('#readFeaturesFromString()', function() {
+
+    it('parses world-110m.geojson with shared vertices', function(done) {
+      afterLoadText('spec/ol/parser/topojson/world-110m.json', function(text) {
+
+        var pointVertices = new ol.geom.SharedVertices();
+        var lineVertices = new ol.geom.SharedVertices();
+        var polygonVertices = new ol.geom.SharedVertices();
+
+        var lookup = {
+          'point': pointVertices,
+          'linestring': lineVertices,
+          'polygon': polygonVertices,
+          'multipoint': pointVertices,
+          'multilinstring': lineVertices,
+          'multipolygon': polygonVertices
+        };
+
+        var callback = function(feature, type) {
+          return lookup[type];
+        };
+
+        var result = parser.readFeaturesFromString(text, {callback: callback});
+        expect(result.length).to.be(178);
+
+        expect(pointVertices.coordinates.length).to.be(0);
+        expect(lineVertices.coordinates.length).to.be(0);
+        expect(polygonVertices.coordinates.length).to.be(31400);
+
+        var first = result[0];
+        expect(first).to.be.a(ol.Feature);
+        var firstGeom = first.getGeometry();
+        expect(firstGeom).to.be.a(ol.geom.MultiPolygon);
+        expect(firstGeom.getBounds()).to.eql([
+          -180, 180, -85.60903777459777, 83.64513000000002
+        ]);
+
+        var last = result[177];
+        expect(last).to.be.a(ol.Feature);
+        var lastGeom = last.getGeometry();
+        expect(lastGeom).to.be.a(ol.geom.Polygon);
+        expect(lastGeom.getBounds()).to.eql([
+          25.26325263252633, 32.848528485284874,
+          -22.271802279310577, -15.50833810039586
+        ]);
+
+        done();
+      });
+    });
+
+  });
+
 });
 
 goog.require('ol.Feature');
