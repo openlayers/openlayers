@@ -393,7 +393,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     'upperCorner': function(bounds) {
       // only 2d for simple features profile
       var pos;
-      if (this.axisOrientation().substr(0, 2) === 'en') {
+      if (this.getAxisOrientation().substr(0, 2) === 'en') {
         pos = (bounds.right + ' ' + bounds.top);
       } else {
         pos = (bounds.top + ' ' + bounds.right);
