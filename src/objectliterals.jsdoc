@@ -357,9 +357,9 @@
 /**
  * @typedef {Object} ol.parser.GMLOptions
  * @property {string|undefined} axisOrientation The axis orientation as
- *     specified in Proj4. If this is not provided, 'enu' will be used for GML2,
- *     and the projection's axis orientation for GML3, with a fallback to 'enu'
- *     if `projection` was not configured and is not provided by the data.
+ *     specified in Proj4. If this is not provided, the projection's axis
+ *     orientation will be used if `projection` is not overridden (i.e. the
+ *     projection defined in the data is used). Otherwise the default is 'enu'.
  * @property {boolean|undefined} curve Write gml:Curve instead of
  *     gml:LineString elements. This also affects the elements in multi-part
  *     geometries. Default is `false´. This only applies to GML version 3.

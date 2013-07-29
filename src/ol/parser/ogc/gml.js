@@ -29,7 +29,7 @@ ol.parser.ogc.GML = function(opt_options) {
   var options = /** @type {ol.parser.GMLOptions} */
       (goog.isDef(opt_options) ? opt_options : {});
   this.axisOrientation = goog.isDef(options.axisOrientation) ?
-      options.axisOrientation : 'enu';
+      options.axisOrientation : null;
   this.extractAttributes = goog.isDef(options.extractAttributes) ?
       options.extractAttributes : true;
   this.surface = goog.isDef(options.surface) ?
@@ -47,14 +47,13 @@ ol.parser.ogc.GML = function(opt_options) {
    * @private
    * @type {string|undefined}
    */
-  this.srsName_ = goog.isNull(this.srsName) ? undefined : this.srsName;
+  this.srsName_;
 
   /**
    * @private
    * @type {string|undefined}
    */
-  this.axisOrientation_ = goog.isNull(this.srsName) ? undefined :
-      ol.proj.get(this.srsName).getAxisOrientation();
+  this.axisOrientation_;
 
   if (goog.isDef(options.schemaLocation)) {
     this.schemaLocation = options.schemaLocation;
@@ -319,23 +318,22 @@ ol.parser.ogc.GML = function(opt_options) {
       }
       // TODO: Deal with GML documents that do not have the same SRS for all
       // geometries.
+      var srsName;
       if (!goog.isDef(this.srsName_)) {
         for (var i = node.childNodes.length - 1; i >= 0; --i) {
           var child = node.childNodes[i];
           if (child.nodeType == 1) {
-            var srsName = child.getAttribute('srsName');
+            srsName = child.getAttribute('srsName');
             if (goog.isDef(srsName)) {
-              this.srsName_ = srsName.replace(ol.parser.ogc.GML.regExes.epsg,
-                  'EPSG:');
-              if (!goog.isDef(this.axisOrientation_)) {
-                var projection = ol.proj.get(this.srsName_);
-                if (!goog.isNull(projection)) {
-                  this.axisOrientation_ = projection.getAxisOrientation();
-                }
-              }
+              this.srsName_ = srsName;
             }
             break;
           }
+        }
+      }
+      if (!goog.isDef(this.axisOrientation_)) {
+        if (goog.isDef(srsName)) {
+          this.axisOrientation_ = ol.proj.get(srsName).getAxisOrientation();
         }
       }
       this.readChildNodes(node, obj);
@@ -516,12 +514,13 @@ ol.parser.ogc.GML.prototype.read = function(data) {
   if (data && data.nodeType == 9) {
     data = data.documentElement;
   }
+  this.srsName_ = goog.isNull(this.srsName) ? undefined : this.srsName;
+  this.axisOrientation_ = goog.isNull(this.axisOrientation) ?
+      undefined : this.axisOrientation;
   var obj = /** @type {ol.parser.ReadFeaturesResult} */
       ({features: [], metadata: {}});
   this.readNode(data, obj, true);
   obj.metadata.projection = this.srsName_;
-  this.srsName_ = goog.isNull(this.srsName) ? undefined : this.srsName;
-  delete this.axisOrientation_;
   return obj;
 };
 

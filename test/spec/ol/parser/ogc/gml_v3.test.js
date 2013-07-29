@@ -2,7 +2,8 @@ goog.provide('ol.test.parser.gml_v3');
 
 describe('ol.parser.gml_v3', function() {
 
-  var parser = new ol.parser.ogc.GML_v3();
+  var parser = new ol.parser.ogc.GML_v3(
+      {srsName: 'foo', axisOrientation: 'enu'});
 
   describe('Test GML v3 parser', function() {
     it('Envelope read correctly', function(done) {
@@ -18,10 +19,8 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var geom = parser.createGeometry_({geometry: obj.geometry});
-        parser.srsName = 'foo';
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
-        parser.srsName = null;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
         expect(obj.geometry.type).to.eql('linearring');
         expect(obj.geometry.coordinates).to.eql([[1, 2], [3, 4], [5, 6],
@@ -34,10 +33,8 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var geom = parser.createGeometry_({geometry: obj.geometry});
-        parser.srsName = 'foo';
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
-        parser.srsName = null;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
         expect(obj.geometry.type).to.eql('linestring');
         expect(obj.geometry.coordinates).to.eql([[1, 2], [3, 4]]);
@@ -98,12 +95,10 @@ describe('ol.parser.gml_v3', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multicurve-singular.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        parser.srsName = 'foo';
         var geom = parser.createGeometry_({geometry: obj.geometry});
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
-        parser.srsName = null;
         expect(obj.geometry.type).to.eql('multilinestring');
         expect(obj.geometry.parts.length).to.eql(2);
         expect(obj.geometry.parts[0].type).to.eql('linestring');
@@ -142,12 +137,10 @@ describe('ol.parser.gml_v3', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multipoint-singular.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        parser.srsName = 'foo';
         var geom = parser.createGeometry_({geometry: obj.geometry});
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
-        parser.srsName = null;
         expect(obj.geometry.type).to.eql('multipoint');
         expect(obj.geometry.parts.length).to.eql(3);
         expect(obj.geometry.parts[0].type).to.eql('point');
@@ -194,12 +187,10 @@ describe('ol.parser.gml_v3', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multisurface-singular.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        parser.srsName = 'foo';
         var geom = parser.createGeometry_({geometry: obj.geometry});
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
-        parser.srsName = null;
         expect(obj.geometry.type).to.eql('multipolygon');
         expect(obj.geometry.parts.length).to.eql(2);
         expect(obj.geometry.parts[0].type).to.eql('polygon');
@@ -226,10 +217,8 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var geom = parser.createGeometry_({geometry: obj.geometry});
-        parser.srsName = 'foo';
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
-        parser.srsName = null;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
         expect(obj.geometry.type).to.eql('point');
         expect(obj.geometry.coordinates).to.eql([1, 2]);
@@ -241,10 +230,8 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var geom = parser.createGeometry_({geometry: obj.geometry});
-        parser.srsName = 'foo';
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
-        parser.srsName = null;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
         expect(obj.geometry.type).to.eql('polygon');
         done();
@@ -272,9 +259,8 @@ describe('ol.parser.gml_v3', function() {
             'http://www.opengis.net/gml ' +
             'http://schemas.opengis.net/gml/3.2.1/gml.xsd';
         var p = new ol.parser.ogc.GML_v3({schemaLocation: schemaLoc});
+        debugger
         var obj = p.read(xml);
-        p.srsName = 'urn:x-ogc:def:crs:EPSG:4326';
-        p.axisOrientation = 'neu';
         var output = p.write(obj);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         expect(p.geometryName).to.eql('the_geom');
@@ -289,13 +275,15 @@ describe('ol.parser.gml_v3', function() {
         expect(attributes['SUB_REGION']).to.eql('E N Cen');
         expect(attributes['STATE_ABBR']).to.eql('IL');
         expect(attributes['LAND_KM']).to.eql('143986.61');
-        expect(obj.metadata.projection).to.eql('EPSG:4326');
+        expect(ol.proj.get(obj.metadata.projection) instanceof ol.proj.EPSG4326)
+            .to.be.ok();
         done();
       });
     });
     it('FeatureCollection from WFS read correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/topp-states-wfs.xml';
       afterLoadXml(url, function(xml) {
+        parser.srsName = null;
         var obj = parser.read(xml);
         expect(obj.features.length).to.eql(3);
         var feature = obj.features[0];
@@ -308,7 +296,9 @@ describe('ol.parser.gml_v3', function() {
         expect(attributes['SUB_REGION']).to.eql('E N Cen');
         expect(attributes['STATE_ABBR']).to.eql('IL');
         expect(attributes['LAND_KM']).to.eql('143986.61');
-        expect(obj.metadata.projection).to.eql('EPSG:4326');
+        expect(ol.proj.get(obj.metadata.projection) instanceof ol.proj.EPSG4326)
+            .to.be.ok();
+        parser.srsName = "foo";
         done();
       });
     });

@@ -45,7 +45,7 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
       for (var i = 0; i < numCoordinates; ++i) {
         var coord = coordinates[i];
         var part = goog.array.concat(coord);
-        if (this.axisOrientation.substr(0, 2) !== 'en') {
+        if (this.getAxisOrientation().substr(0, 2) !== 'en') {
           part[0] = coord[1];
           part[1] = coord[0];
         }
@@ -101,22 +101,14 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
       this.writeNode('coordinates', [[extent.minX, extent.minY],
             [extent.maxX, extent.maxY]], null, node);
       // srsName attribute is optional for gml:Box
-      if (goog.isDef(this.srsName)) {
-        node.setAttribute('srsName', this.srsName);
+      if (goog.isDef(this.getSrsName())) {
+        node.setAttribute('srsName', this.getSrsName());
       }
       return node;
     }
   });
 };
 goog.inherits(ol.parser.ogc.GML_v2, ol.parser.ogc.GML);
-
-
-/**
- * @return {string?} Axis orientation that was configured with this instance.
- */
-ol.parser.ogc.GML_v2.prototype.getAxisOrientation = function() {
-  return this.axisOrientation;
-};
 
 
 /**
@@ -129,5 +121,8 @@ ol.parser.ogc.GML_v2.prototype.write = function(obj) {
   this.setAttributeNS(
       root, 'http://www.w3.org/2001/XMLSchema-instance',
       'xsi:schemaLocation', this.schemaLocation);
+  this.srsName_ = goog.isNull(this.srsName) ? undefined : this.srsName;
+  this.axisOrientation_ = goog.isNull(this.axisOrientation) ?
+      undefined : this.axisOrientation;
   return this.serialize(root);
 };

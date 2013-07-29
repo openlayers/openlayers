@@ -55,8 +55,8 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     } else if (type === ol.geom.GeometryType.GEOMETRYCOLLECTION) {
       child = this.writeNode('MultiGeometry', geometry, null, node);
     }
-    if (goog.isDef(this.srsName)) {
-      this.setAttributeNS(child, null, 'srsName', this.srsName);
+    if (goog.isDef(this.getSrsName())) {
+      this.setAttributeNS(child, null, 'srsName', this.getSrsName());
     }
     return node;
   };
@@ -238,7 +238,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     'pos': function(point) {
       // only 2d for simple features profile
       var pos;
-      if (this.axisOrientation.substr(0, 2) === 'en') {
+      if (this.getAxisOrientation().substr(0, 2) === 'en') {
         pos = (point[0] + ' ' + point[1]);
       } else {
         pos = (point[1] + ' ' + point[0]);
@@ -274,7 +274,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       var point;
       for (var i = 0; i < len; ++i) {
         point = points[i];
-        if (this.axisOrientation.substr(0, 2) === 'en') {
+        if (this.getAxisOrientation().substr(0, 2) === 'en') {
           parts[i] = point[0] + ' ' + point[1];
         } else {
           parts[i] = point[1] + ' ' + point[0];
@@ -373,15 +373,15 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       this.writeNode('lowerCorner', bounds, null, node);
       this.writeNode('upperCorner', bounds, null, node);
       // srsName attribute is required for gml:Envelope
-      if (this.srsName) {
-        node.setAttribute('srsName', this.srsName);
+      if (this.getSrsName()) {
+        node.setAttribute('srsName', this.getSrsName());
       }
       return node;
     },
     'lowerCorner': function(bounds) {
       // only 2d for simple features profile
       var pos;
-      if (this.axisOrientation.substr(0, 2) === 'en') {
+      if (this.getAxisOrientation().substr(0, 2) === 'en') {
         pos = (bounds.left + ' ' + bounds.bottom);
       } else {
         pos = (bounds.bottom + ' ' + bounds.left);
@@ -416,5 +416,8 @@ ol.parser.ogc.GML_v3.prototype.write = function(obj) {
   this.setAttributeNS(
       root, 'http://www.w3.org/2001/XMLSchema-instance',
       'xsi:schemaLocation', this.schemaLocation);
+  this.srsName_ = goog.isNull(this.srsName) ? undefined : this.srsName;
+  this.axisOrientation_ = goog.isNull(this.axisOrientation) ?
+      undefined : this.axisOrientation;
   return this.serialize(root);
 };

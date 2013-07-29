@@ -243,6 +243,7 @@ describe('ol.parser.gml_v2', function() {
             'http://www.opengis.net/wfs http://demo.opengeo.org/' +
             'geoserver/schemas/wfs/1.0.0/WFS-basic.xsd';
         var p = new ol.parser.ogc.GML_v2({
+          axisOrientation: 'enu',
           featureType: 'states',
           featureNS: 'http://www.openplans.org/topp',
           schemaLocation: schemaLoc});
@@ -261,7 +262,8 @@ describe('ol.parser.gml_v2', function() {
         expect(attributes['SUB_REGION']).to.eql('E N Cen');
         expect(attributes['STATE_ABBR']).to.eql('IL');
         expect(attributes['LAND_KM']).to.eql('143986.61');
-        expect(obj.metadata.projection).to.eql('EPSG:4326');
+        expect(ol.proj.get(obj.metadata.projection) instanceof ol.proj.EPSG4326)
+            .to.be.ok();
         done();
       });
     });
