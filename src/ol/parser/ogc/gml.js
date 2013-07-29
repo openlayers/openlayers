@@ -490,23 +490,19 @@ goog.inherits(ol.parser.ogc.GML, ol.parser.XML);
 
 
 /**
- * Constants for regExes.
- * @enum {RegExp}
+ * @return {string?} Axis orientation.
  */
-ol.parser.ogc.GML.regExes = {
-  epsg: new RegExp('(http:\/\/www\.opengis\.net\/gml\/srs\/epsg.xml#|' +
-      'urn:x-ogc:def:crs:EPSG:)', 'i')
+ol.parser.ogc.GML.prototype.getAxisOrientation = function() {
+  return goog.isDef(this.axisOrientation_) ? this.axisOrientation_ : 'enu';
 };
 
 
 /**
- * @return {string?} Axis orientation of the data that is currently being
- * parsed.
+ * @return {string?} SRS name.
  */
-ol.parser.ogc.GML.prototype.getAxisOrientation = function() {
-  return goog.isDef(this.axisOrientation_) ?
-      this.axisOrientation_ : this.axisOrientation;
-};
+ol.parser.ogc.GML.prototype.getSrsName = function() {
+  return this.srsName_;
+}
 
 
 /**
