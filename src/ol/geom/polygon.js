@@ -136,10 +136,11 @@ ol.geom.Polygon.prototype.containsCoordinate = function(coordinate) {
 
 
 /**
- * Calculates a label point that is guaranteed to be inside the polygon.
- * @return {ol.Coordinate} The label point.
+ * Calculates a point that is guaranteed to lie in the interior of the polygon.
+ * Inspired by JTS's com.vividsolutions.jts.geom.Geometry#getInteriorPoint.
+ * @return {ol.Coordinate} A point which is in the interior of the polygon.
  */
-ol.geom.Polygon.prototype.getLabelPoint = function() {
+ol.geom.Polygon.prototype.getInteriorPoint = function() {
   if (goog.isNull(this.labelPoint_)) {
     var center = ol.extent.getCenter(this.getBounds()),
         resultY = center[1],

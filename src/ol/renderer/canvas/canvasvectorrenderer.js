@@ -445,7 +445,7 @@ ol.renderer.canvas.VectorRenderer.getLabelVectors = function(geometry) {
     return [[geometry.get(0), geometry.get(1), 0]];
   }
   if (type == ol.geom.GeometryType.POLYGON) {
-    var coordinates = geometry.getLabelPoint();
+    var coordinates = geometry.getInteriorPoint();
     return [[coordinates[0], coordinates[1], 0]];
   }
   throw new Error('Label rendering not implemented for geometry type: ' +
