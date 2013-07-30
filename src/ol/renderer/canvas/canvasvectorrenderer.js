@@ -400,8 +400,6 @@ ol.renderer.canvas.VectorRenderer.renderCircle_ = function(circle) {
   canvas.height = size;
   canvas.width = size;
 
-  context.globalAlpha = circle.opacity;
-
   if (fillColor) {
     context.fillStyle = fillColor;
   }
@@ -416,9 +414,13 @@ ol.renderer.canvas.VectorRenderer.renderCircle_ = function(circle) {
   context.arc(mid, mid, circle.size / 2, 0, twoPi, true);
 
   if (fillColor) {
+    goog.asserts.assertNumber(circle.fillOpacity);
+    context.globalAlpha = circle.fillOpacity;
     context.fill();
   }
   if (strokeColor) {
+    goog.asserts.assertNumber(circle.strokeOpacity);
+    context.globalAlpha = circle.strokeOpacity;
     context.stroke();
   }
   return canvas;
