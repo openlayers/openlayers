@@ -182,7 +182,7 @@ describe('ol.parser.kml', function() {
       var symbolizer = obj.features[0].getSymbolizerLiterals()[0];
       expect(symbolizer instanceof ol.style.LineLiteral).to.be.ok();
       expect(symbolizer.strokeColor).to.eql('#ff0000');
-      expect(symbolizer.opacity).to.eql(0.5294117647058824);
+      expect(symbolizer.strokeOpacity).to.eql(0.5294117647058824);
       expect(symbolizer.strokeWidth).to.eql(10);
     });
     it('Test style fill (read / write)', function() {

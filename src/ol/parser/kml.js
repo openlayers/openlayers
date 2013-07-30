@@ -342,7 +342,7 @@ ol.parser.KML = function(opt_options) {
         this.readChildNodes(node, symbolizer);
         if (symbolizer.color) {
           symbolizer.strokeColor = symbolizer.color.color;
-          symbolizer.opacity = symbolizer.color.opacity;
+          symbolizer.strokeOpacity = symbolizer.color.opacity;
         }
         if (symbolizer.width) {
           symbolizer.strokeWidth = parseFloat(symbolizer.width);
@@ -657,7 +657,7 @@ ol.parser.KML = function(opt_options) {
             symbolizer : symbolizer.createLiteral();
         this.writeNode('color', {
           color: literal.strokeColor.substring(1),
-          opacity: literal.opacity
+          opacity: literal.strokeOpacity
         }, null, node);
         this.writeNode('width', literal.strokeWidth, null, node);
         return node;
