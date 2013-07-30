@@ -1,6 +1,7 @@
 goog.provide('ol.geom.Polygon');
 
 goog.require('goog.asserts');
+goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LinearRing');
@@ -34,6 +35,12 @@ ol.geom.Polygon = function(coordinates, opt_shared) {
     dimension = coordinates[0][0].length;
     vertices = new ol.geom.SharedVertices({dimension: dimension});
   }
+
+  /**
+   * @private
+   * @type {ol.Coordinate}
+   */
+  this.labelPoint_ = null;
 
   /**
    * @type {ol.geom.SharedVertices}
@@ -125,4 +132,50 @@ ol.geom.Polygon.prototype.containsCoordinate = function(coordinate) {
     }
   }
   return containsCoordinate;
+};
+
+
+/**
+ * Calculates a point that is guaranteed to lie in the interior of the polygon.
+ * Inspired by JTS's com.vividsolutions.jts.geom.Geometry#getInteriorPoint.
+ * @return {ol.Coordinate} A point which is in the interior of the polygon.
+ */
+ol.geom.Polygon.prototype.getInteriorPoint = function() {
+  if (goog.isNull(this.labelPoint_)) {
+    var center = ol.extent.getCenter(this.getBounds()),
+        resultY = center[1],
+        vertices = this.rings[0].getCoordinates(),
+        intersections = [],
+        maxLength = 0,
+        i, vertex1, vertex2, x, segmentLength, resultX;
+
+    // Calculate intersections with the horizontal bounding box center line
+    for (i = vertices.length - 1; i >= 1; --i) {
+      vertex1 = vertices[i];
+      vertex2 = vertices[i - 1];
+      if ((vertex1[1] >= resultY && vertex2[1] <= resultY) ||
+          (vertex1[1] <= resultY && vertex2[1] >= resultY)) {
+        x = (resultY - vertex1[1]) / (vertex2[1] - vertex1[1]) *
+            (vertex2[0] - vertex1[0]) + vertex1[0];
+        intersections.push(x);
+      }
+    }
+
+    // Find the longest segment of the horizontal bounding box center line that
+    // has its center point inside the polygon
+    intersections.sort();
+    for (i = intersections.length - 1; i >= 1; --i) {
+      segmentLength = Math.abs(intersections[i] - intersections[i - 1]);
+      if (segmentLength > maxLength) {
+        x = (intersections[i] + intersections[i - 1]) / 2;
+        if (this.containsCoordinate([x, resultY])) {
+          maxLength = segmentLength;
+          resultX = x;
+        }
+      }
+    }
+    this.labelPoint_ = [resultX, resultY];
+  }
+
+  return this.labelPoint_;
 };
