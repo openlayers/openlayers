@@ -306,11 +306,13 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPolygonFeatures_ =
   var context = this.context_,
       strokeColor = symbolizer.strokeColor,
       strokeWidth = symbolizer.strokeWidth,
+      strokeOpacity = symbolizer.strokeOpacity,
       fillColor = symbolizer.fillColor,
+      fillOpacity = symbolizer.fillOpacity,
+      globalAlpha,
       i, ii, geometry, components, j, jj, poly,
       rings, numRings, ring, dim, k, kk, vec;
 
-  context.globalAlpha = symbolizer.opacity;
   if (strokeColor) {
     context.strokeStyle = strokeColor;
     if (strokeWidth) {
@@ -359,7 +361,17 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPolygonFeatures_ =
         }
         if (fillColor && strokeColor) {
           // scenario 3 - fill and stroke each time
+          if (fillOpacity !== globalAlpha) {
+            goog.asserts.assertNumber(fillOpacity);
+            context.globalAlpha = fillOpacity;
+            globalAlpha = fillOpacity;
+          }
           context.fill();
+          if (strokeOpacity !== globalAlpha) {
+            goog.asserts.assertNumber(strokeOpacity);
+            context.globalAlpha = strokeOpacity;
+            globalAlpha = strokeOpacity;
+          }
           context.stroke();
           if (i < ii - 1 || j < jj - 1) {
             context.beginPath();
@@ -371,9 +383,19 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPolygonFeatures_ =
   if (!(fillColor && strokeColor)) {
     if (fillColor) {
       // scenario 2 - fill all at once
+      if (fillOpacity !== globalAlpha) {
+        goog.asserts.assertNumber(fillOpacity);
+        context.globalAlpha = fillOpacity;
+        globalAlpha = fillOpacity;
+      }
       context.fill();
     } else {
       // scenario 1 - stroke all at once
+      if (strokeOpacity !== globalAlpha) {
+        goog.asserts.assertNumber(strokeOpacity);
+        context.globalAlpha = strokeOpacity;
+        globalAlpha = strokeOpacity;
+      }
       context.stroke();
     }
   }

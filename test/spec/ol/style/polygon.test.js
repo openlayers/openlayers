@@ -8,23 +8,58 @@ describe('ol.style.PolygonLiteral', function() {
       var literal = new ol.style.PolygonLiteral({
         strokeWidth: 3,
         strokeColor: '#013',
+        strokeOpacity: 0.4,
         fillColor: '#BADA55',
-        opacity: 1
+        fillOpacity: 0.3
       });
       var equalLiteral = new ol.style.PolygonLiteral({
+        strokeWidth: 3,
+        strokeColor: '#013',
+        strokeOpacity: 0.4,
         fillColor: '#BADA55',
-        strokeColor: '#013',
-        strokeWidth: 3,
-        opacity: 1
+        fillOpacity: 0.3
       });
-      var differentLiteral = new ol.style.PolygonLiteral({
-        fillColor: '#013',
+      var differentStrokeWidth = new ol.style.PolygonLiteral({
+        strokeWidth: 5,
         strokeColor: '#013',
+        strokeOpacity: 0.4,
+        fillColor: '#BADA55',
+        fillOpacity: 0.3
+      });
+      var differentStrokeColor = new ol.style.PolygonLiteral({
         strokeWidth: 3,
-        opacity: 1
+        strokeColor: '#ffff00',
+        strokeOpacity: 0.4,
+        fillColor: '#BADA55',
+        fillOpacity: 0.3
+      });
+      var differentStrokeOpacity = new ol.style.PolygonLiteral({
+        strokeWidth: 3,
+        strokeColor: '#013',
+        strokeOpacity: 0.41,
+        fillColor: '#BADA55',
+        fillOpacity: 0.3
+      });
+      var differentFillColor = new ol.style.PolygonLiteral({
+        strokeWidth: 3,
+        strokeColor: '#013',
+        strokeOpacity: 0.4,
+        fillColor: '#00ffff',
+        fillOpacity: 0.3
+      });
+      var differentFillOpacity = new ol.style.PolygonLiteral({
+        strokeWidth: 3,
+        strokeColor: '#013',
+        strokeOpacity: 0.4,
+        fillColor: '#BADA55',
+        fillOpacity: 0.31
       });
       expect(literal.equals(equalLiteral)).to.be(true);
-      expect(literal.equals(differentLiteral)).to.be(false);
+      expect(literal.equals(differentStrokeWidth)).to.be(false);
+      expect(literal.equals(differentStrokeColor)).to.be(false);
+      expect(literal.equals(differentStrokeOpacity)).to.be(false);
+      expect(literal.equals(differentFillColor)).to.be(false);
+      expect(literal.equals(differentFillOpacity)).to.be(false);
     });
 
   });
@@ -45,7 +80,7 @@ describe('ol.style.Polygon', function() {
 
     it('accepts expressions', function() {
       var symbolizer = new ol.style.Polygon({
-        opacity: ol.expr.parse('value / 100'),
+        fillOpacity: ol.expr.parse('value / 100'),
         fillColor: ol.expr.parse('fillAttr')
       });
       expect(symbolizer).to.be.a(ol.style.Polygon);
@@ -57,7 +92,7 @@ describe('ol.style.Polygon', function() {
 
     it('evaluates expressions with the given feature', function() {
       var symbolizer = new ol.style.Polygon({
-        opacity: ol.expr.parse('value / 100'),
+        fillOpacity: ol.expr.parse('value / 100'),
         fillColor: ol.expr.parse('fillAttr')
       });
 
@@ -68,7 +103,7 @@ describe('ol.style.Polygon', function() {
 
       var literal = symbolizer.createLiteral(feature);
       expect(literal).to.be.a(ol.style.PolygonLiteral);
-      expect(literal.opacity).to.be(42 / 100);
+      expect(literal.fillOpacity).to.be(42 / 100);
       expect(literal.fillColor).to.be('#ff0000');
       expect(literal.strokeColor).to.be(undefined);
     });
@@ -101,6 +136,20 @@ describe('ol.style.Polygon', function() {
 
   });
 
+  describe('#getFillOpacity()', function() {
+
+    it('returns the fill opacity', function() {
+      var symbolizer = new ol.style.Polygon({
+        fillColor: '#ffffff',
+        fillOpacity: 0.123
+      });
+
+      var opacity = symbolizer.getFillOpacity();
+      expect(opacity).to.be.a(ol.expr.Literal);
+      expect(opacity.getValue()).to.be(0.123);
+    });
+
+  });
 
   describe('#getStrokeColor()', function() {
 
@@ -130,15 +179,15 @@ describe('ol.style.Polygon', function() {
 
   });
 
-  describe('#getOpacity()', function() {
+  describe('#getStrokeOpacity()', function() {
 
     it('returns the stroke opacity', function() {
       var symbolizer = new ol.style.Polygon({
         strokeWidth: 1,
-        opacity: 0.123
+        strokeOpacity: 0.123
       });
 
-      var opacity = symbolizer.getOpacity();
+      var opacity = symbolizer.getStrokeOpacity();
       expect(opacity).to.be.a(ol.expr.Literal);
       expect(opacity.getValue()).to.be(0.123);
     });
@@ -228,16 +277,16 @@ describe('ol.style.Polygon', function() {
 
   });
 
-  describe('#setOpacity()', function() {
+  describe('#setStrokeOpacity()', function() {
 
     it('sets the stroke opacity', function() {
       var symbolizer = new ol.style.Polygon({
         strokeWidth: 1,
-        opacity: 0.123
+        strokeOpacity: 0.123
       });
-      symbolizer.setOpacity(new ol.expr.Literal(0.321));
+      symbolizer.setStrokeOpacity(new ol.expr.Literal(0.321));
 
-      var opacity = symbolizer.getOpacity();
+      var opacity = symbolizer.getStrokeOpacity();
       expect(opacity).to.be.a(ol.expr.Literal);
       expect(opacity.getValue()).to.be(0.321);
     });
@@ -245,11 +294,11 @@ describe('ol.style.Polygon', function() {
     it('throws when not provided an expression', function() {
       var symbolizer = new ol.style.Polygon({
         strokeWidth: 1,
-        opacity: 1
+        strokeOpacity: 1
       });
 
       expect(function() {
-        symbolizer.setOpacity(0.5);
+        symbolizer.setStrokeOpacity(0.5);
       }).throwException(function(err) {
         expect(err).to.be.a(goog.asserts.AssertionError);
       });
