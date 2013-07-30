@@ -4,6 +4,7 @@ goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.parser.ogc.GML');
+goog.require('ol.proj');
 
 
 
@@ -56,7 +57,8 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       child = this.writeNode('MultiGeometry', geometry, null, node);
     }
     if (goog.isDef(this.getSrsName())) {
-      this.setAttributeNS(child, null, 'srsName', this.getSrsName());
+      this.setAttributeNS(child, null, 'srsName',
+          ol.proj.get(this.getSrsName()).getCode());
     }
     return node;
   };
@@ -412,12 +414,15 @@ goog.inherits(ol.parser.ogc.GML_v3, ol.parser.ogc.GML);
  * @return {string} An string representing the XML document.
  */
 ol.parser.ogc.GML_v3.prototype.write = function(obj) {
+  if (goog.isDef(obj.metadata)) {
+    this.srsName = goog.isDef(obj.metadata.projection) ?
+        ol.proj.get(obj.metadata.projection).getCode() : undefined;
+  }
   var root = this.writeNode('featureMembers', obj.features);
   this.setAttributeNS(
       root, 'http://www.w3.org/2001/XMLSchema-instance',
       'xsi:schemaLocation', this.schemaLocation);
-  this.srsName_ = goog.isNull(this.srsName) ? undefined : this.srsName;
-  this.axisOrientation_ = goog.isNull(this.axisOrientation) ?
-      undefined : this.axisOrientation;
-  return this.serialize(root);
+  var gml = this.serialize(root);
+  delete this.srsName;
+  return gml;
 };

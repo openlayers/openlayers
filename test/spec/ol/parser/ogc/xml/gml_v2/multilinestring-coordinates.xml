@@ -1,4 +1,4 @@
-<gml:MultiLineString xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+<gml:MultiLineString xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
     <gml:lineStringMember>
         <gml:LineString>
             <gml:coordinates decimal="." cs="," ts=" ">1,2 2,3</gml:coordinates>

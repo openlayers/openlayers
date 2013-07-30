@@ -1,4 +1,4 @@
-<gml:MultiPolygon xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+<gml:MultiPolygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
     <gml:polygonMember>
         <gml:Polygon>
             <gml:outerBoundaryIs>

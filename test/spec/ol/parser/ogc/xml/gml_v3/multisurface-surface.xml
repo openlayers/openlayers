@@ -1,4 +1,4 @@
-<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
     <gml:surfaceMember>
         <gml:Surface>
             <gml:patches>

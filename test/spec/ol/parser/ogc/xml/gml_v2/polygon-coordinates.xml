@@ -1,4 +1,4 @@
-<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="foo">
+<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
     <gml:outerBoundaryIs>
         <gml:LinearRing>
             <gml:coordinates decimal="." cs="," ts=" ">1,2 5,2 5,6 1,2</gml:coordinates>

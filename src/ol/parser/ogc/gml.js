@@ -28,8 +28,6 @@ goog.require('ol.proj');
 ol.parser.ogc.GML = function(opt_options) {
   var options = /** @type {ol.parser.GMLOptions} */
       (goog.isDef(opt_options) ? opt_options : {});
-  this.axisOrientation = goog.isDef(options.axisOrientation) ?
-      options.axisOrientation : null;
   this.extractAttributes = goog.isDef(options.extractAttributes) ?
       options.extractAttributes : true;
   this.surface = goog.isDef(options.surface) ?
@@ -40,20 +38,18 @@ ol.parser.ogc.GML = function(opt_options) {
       options.multiCurve : true;
   this.multiSurface = goog.isDef(options.multiSurface) ?
       options.multiSurface : true;
-  this.srsName = goog.isDef(options.srsName) ?
-      options.srsName : null;
 
   /**
-   * @private
+   * @protected
    * @type {string|undefined}
    */
-  this.srsName_;
+  this.srsName;
 
   /**
-   * @private
+   * @protected
    * @type {string|undefined}
    */
-  this.axisOrientation_;
+  this.axisOrientation;
 
   if (goog.isDef(options.schemaLocation)) {
     this.schemaLocation = options.schemaLocation;
@@ -319,21 +315,21 @@ ol.parser.ogc.GML = function(opt_options) {
       // TODO: Deal with GML documents that do not have the same SRS for all
       // geometries.
       var srsName;
-      if (!goog.isDef(this.srsName_)) {
+      if (!goog.isDef(this.srsName)) {
         for (var i = node.childNodes.length - 1; i >= 0; --i) {
           var child = node.childNodes[i];
           if (child.nodeType == 1) {
             srsName = child.getAttribute('srsName');
             if (goog.isDef(srsName)) {
-              this.srsName_ = srsName;
+              this.srsName = srsName;
             }
             break;
           }
         }
       }
-      if (!goog.isDef(this.axisOrientation_)) {
+      if (!goog.isDef(this.axisOrientation)) {
         if (goog.isDef(srsName)) {
-          this.axisOrientation_ = ol.proj.get(srsName).getAxisOrientation();
+          this.axisOrientation = ol.proj.get(srsName).getAxisOrientation();
         }
       }
       this.readChildNodes(node, obj);
@@ -349,9 +345,9 @@ ol.parser.ogc.GML = function(opt_options) {
   }
   this.writers = {
     'http://www.opengis.net/gml': {
-      'featureMember': function(feature) {
+      'featureMember': function(obj) {
         var node = this.createElementNS('gml:featureMember');
-        this.writeNode('_typeName', feature, this.featureNS, node);
+        this.writeNode('_typeName', obj, this.featureNS, node);
         return node;
       },
       'MultiPoint': function(geometry) {
@@ -468,8 +464,9 @@ ol.parser.ogc.GML = function(opt_options) {
       } else if (type === ol.geom.GeometryType.GEOMETRYCOLLECTION) {
         child = this.writeNode('GeometryCollection', geometry, null, node);
       }
-      if (goog.isDef(this.srsName)) {
-        this.setAttributeNS(child, null, 'srsName', this.srsName);
+      if (goog.isDef(this.getSrsName())) {
+        this.setAttributeNS(child, null, 'srsName',
+            ol.proj.get(this.getSrsName()).getCode());
       }
       return node;
     },
@@ -491,16 +488,16 @@ goog.inherits(ol.parser.ogc.GML, ol.parser.XML);
  * @return {string?} Axis orientation.
  */
 ol.parser.ogc.GML.prototype.getAxisOrientation = function() {
-  return goog.isDef(this.axisOrientation_) ? this.axisOrientation_ : 'enu';
+  return goog.isDef(this.axisOrientation) ? this.axisOrientation : 'enu';
 };
 
 
 /**
- * @return {string?} SRS name.
+ * @return {string|undefined} SRS name.
  */
 ol.parser.ogc.GML.prototype.getSrsName = function() {
-  return this.srsName_;
-}
+  return this.srsName;
+};
 
 
 /**
@@ -514,13 +511,10 @@ ol.parser.ogc.GML.prototype.read = function(data) {
   if (data && data.nodeType == 9) {
     data = data.documentElement;
   }
-  this.srsName_ = goog.isNull(this.srsName) ? undefined : this.srsName;
-  this.axisOrientation_ = goog.isNull(this.axisOrientation) ?
-      undefined : this.axisOrientation;
   var obj = /** @type {ol.parser.ReadFeaturesResult} */
       ({features: [], metadata: {}});
   this.readNode(data, obj, true);
-  obj.metadata.projection = this.srsName_;
+  obj.metadata.projection = this.srsName;
   return obj;
 };
 
