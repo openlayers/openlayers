@@ -87,7 +87,7 @@ ol.source.wms.getFeatureInfo = function(url, options, success, opt_error) {
       .replace(/LAYERS=([^&]+)/, 'LAYERS=$1&QUERY_LAYERS=$1');
   if (options.method == ol.source.WMSGetFeatureInfoMethod.IFRAME) {
     goog.global.setTimeout(function() {
-      success('<iframe seamless src="' + url + '"></iframe');
+      success('<iframe seamless src="' + url + '"></iframe>');
     }, 0);
   } else if (options.method == ol.source.WMSGetFeatureInfoMethod.XHR_GET) {
     goog.net.XhrIo.send(url, function(event) {

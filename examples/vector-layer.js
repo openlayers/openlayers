@@ -46,11 +46,7 @@ var vector = new ol.layer.Vector({
         })
       ]
     })
-  ]}),
-  transformFeatureInfo: function(features) {
-    return features.length > 0 ?
-        features[0].getFeatureId() + ': ' + features[0].get('name') : '&nbsp;';
-  }
+  ]})
 });
 
 var map = new ol.Map({
@@ -64,11 +60,14 @@ var map = new ol.Map({
 });
 
 map.on(['click', 'mousemove'], function(evt) {
-  map.getFeatureInfo({
+  map.getFeatures({
     pixel: evt.getPixel(),
     layers: [vector],
-    success: function(featureInfo) {
-      document.getElementById('info').innerHTML = featureInfo[0];
+    success: function(featuresByLayer) {
+      var features = featuresByLayer[0];
+      document.getElementById('info').innerHTML = features.length > 0 ?
+          features[0].getFeatureId() + ': ' + features[0].get('name') :
+          '&nbsp;';
     }
   });
 });

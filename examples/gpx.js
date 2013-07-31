@@ -15,14 +15,7 @@ var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
     parser: new ol.parser.GPX(),
     url: 'data/gpx/yahoo.xml'
-  }),
-  transformFeatureInfo: function(features) {
-    var info = [];
-    for (var i = 0, ii = features.length; i < ii; ++i) {
-      info.push(features[i].get('name') + ': ' + features[i].get('type'));
-    }
-    return info.join(', ');
-  }
+  })
 });
 
 var map = new ol.Map({
@@ -36,11 +29,16 @@ var map = new ol.Map({
 });
 
 map.on(['click', 'mousemove'], function(evt) {
-  map.getFeatureInfo({
+  map.getFeatures({
     pixel: evt.getPixel(),
     layers: [vector],
-    success: function(featureInfo) {
-      document.getElementById('info').innerHTML = featureInfo[0] || '&nbsp;';
+    success: function(featuresByLayer) {
+      var features = featuresByLayer[0];
+      var info = [];
+      for (var i = 0, ii = features.length; i < ii; ++i) {
+        info.push(features[i].get('name') + ': ' + features[i].get('type'));
+      }
+      document.getElementById('info').innerHTML = info.join(', ') || '&nbsp;';
     }
   });
 });
