@@ -72,24 +72,25 @@ ol.source.wms.getUrl =
  */
 ol.source.wms.getFeatureInfo = function(url, options, success, opt_error) {
   options = goog.isDef(options) ? goog.object.clone(options) : {};
-  goog.object.extend(options, {
+  var localOptions = {
     method: ol.source.WMSGetFeatureInfoMethod.IFRAME,
     params: {}
-  });
+  };
+  goog.object.extend(localOptions, options);
   var params = {
     'INFO_FORMAT': 'text/html'
   };
-  goog.object.extend(params, options.params);
+  goog.object.extend(params, localOptions.params);
   url = goog.uri.utils.appendParamsFromMap(url, params);
   // TODO: This could be done in a smarter way if the url function was not a
   // closure
   url = url.replace('REQUEST=GetMap', 'REQUEST=GetFeatureInfo')
       .replace(/LAYERS=([^&]+)/, 'LAYERS=$1&QUERY_LAYERS=$1');
-  if (options.method == ol.source.WMSGetFeatureInfoMethod.IFRAME) {
+  if (localOptions.method == ol.source.WMSGetFeatureInfoMethod.IFRAME) {
     goog.global.setTimeout(function() {
       success('<iframe seamless src="' + url + '"></iframe>');
     }, 0);
-  } else if (options.method == ol.source.WMSGetFeatureInfoMethod.XHR_GET) {
+  } else if (localOptions.method == ol.source.WMSGetFeatureInfoMethod.XHR_GET) {
     goog.net.XhrIo.send(url, function(event) {
       var xhr = event.target;
       if (xhr.isSuccess()) {

@@ -26,8 +26,30 @@ describe('ol.source.wms', function() {
     });
   });
 
+  describe('ol.source.wms.getFeatureInfo', function() {
+    it('calls a callback with a feature info IFRAME as result', function(done) {
+      ol.source.wms.getFeatureInfo('?REQUEST=GetMap&LAYERS=foo',
+          {params: {'INFO_FORMAT': 'text/plain'}},
+          function(info) {
+            expect(info).to.eql('<iframe seamless src="' +
+                '?REQUEST=GetFeatureInfo&LAYERS=foo&QUERY_LAYERS=foo&' +
+                'INFO_FORMAT=text%2Fplain"></iframe>');
+            done();
+          });
+    });
+    it('can do xhr to retrieve feature info', function(done) {
+      ol.source.wms.getFeatureInfo('?REQUEST=GetMap&LAYERS=foo', {
+        method: ol.source.WMSGetFeatureInfoMethod.XHR_GET
+      }, function(info) {
+        expect(info).to.contain('<html>');
+        done();
+      });
+    });
+  });
+
 });
 
 
 goog.require('ol.proj');
+goog.require('ol.source.WMSGetFeatureInfoMethod');
 goog.require('ol.source.wms');
