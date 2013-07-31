@@ -3,10 +3,13 @@
 goog.provide('ol.source.TiledWMS');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.math');
+goog.require('goog.uri.utils');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
+goog.require('ol.source.FeatureInfoSource');
 goog.require('ol.source.ImageTileSource');
 goog.require('ol.source.wms');
 
@@ -15,9 +18,11 @@ goog.require('ol.source.wms');
 /**
  * @constructor
  * @extends {ol.source.ImageTileSource}
+ * @implements {ol.source.FeatureInfoSource}
  * @param {ol.source.TiledWMSOptions} options Tiled WMS options.
  */
 ol.source.TiledWMS = function(options) {
+
   var tileGrid;
   if (goog.isDef(options.tileGrid)) {
     tileGrid = options.tileGrid;
@@ -28,6 +33,7 @@ ol.source.TiledWMS = function(options) {
   if (!goog.isDef(urls) && goog.isDef(options.url)) {
     urls = ol.TileUrlFunction.expandUrl(options.url);
   }
+
   if (goog.isDef(urls)) {
     var tileUrlFunctions = goog.array.map(
         urls, function(url) {
@@ -81,5 +87,42 @@ ol.source.TiledWMS = function(options) {
         tileCoordTransform, tileUrlFunction)
   });
 
+  /**
+   * @private
+   * @type {ol.source.WMSGetFeatureInfoOptions}
+   */
+  this.getFeatureInfoOptions_ = goog.isDef(options.getFeatureInfoOptions) ?
+      options.getFeatureInfoOptions : {};
+
 };
 goog.inherits(ol.source.TiledWMS, ol.source.ImageTileSource);
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.TiledWMS.prototype.getFeatureInfoForPixel =
+    function(pixel, map, success, opt_error) {
+  var coord = map.getCoordinateFromPixel(pixel),
+      view2D = map.getView().getView2D(),
+      projection = view2D.getProjection(),
+      tileGrid = goog.isNull(this.tileGrid) ?
+          ol.tilegrid.getForProjection(projection) : tileGrid,
+      tileCoord = tileGrid.getTileCoordForCoordAndResolution(coord,
+          view2D.getResolution()),
+      tileExtent = tileGrid.getTileCoordExtent(tileCoord),
+      offset = map.getPixelFromCoordinate(ol.extent.getTopLeft(tileExtent)),
+      x = Math.round(pixel[0] - offset[0]),
+      y = Math.round(pixel[1] - offset[1]),
+      url = this.tileUrlFunction(tileCoord, projection);
+  goog.asserts.assert(goog.isDef(url),
+      'ol.source.TiledWMS#tileUrlFunction does not return a url');
+  // TODO: X, Y is for WMS 1.1 and I, J for 1.3 - without a closure url
+  // function this could be set conditionally.
+  url = goog.uri.utils.appendParamsFromMap(url, {
+    'X': x, 'I': x,
+    'Y': y, 'J': y
+  });
+  ol.source.wms.getFeatureInfo(url, this.getFeatureInfoOptions_, success,
+      opt_error);
+};

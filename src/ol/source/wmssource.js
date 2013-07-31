@@ -1,7 +1,27 @@
+goog.provide('ol.source.WMSGetFeatureInfoMethod');
 goog.provide('ol.source.wms');
 
+goog.require('goog.net.XhrIo');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
+
+
+/**
+ * Method to use to get WMS feature info.
+ * @enum {string}
+ */
+ol.source.WMSGetFeatureInfoMethod = {
+  /**
+   * Load the info in an IFRAME. Only works with 'text/html and 'text/plain' as
+   * `INFO_FORMAT`.
+   */
+  IFRAME: 'iframe',
+  /**
+   * Use an asynchronous GET request. Requires CORS headers or a server at the
+   * same origin as the application script.
+   */
+  XHR_GET: 'xhr_get'
+};
 
 
 /**
@@ -39,4 +59,44 @@ ol.source.wms.getUrl =
   baseParams['BBOX'] = bboxValues.join(',');
 
   return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);
+};
+
+
+/**
+ * @param {string} url URL as provided by the url function, with added I, J, X
+ *     and Y params.
+ * @param {Object} options Options as defined in the source.
+ * @param {function(string)} success Callback function for successful queries.
+ * @param {function()=} opt_error Optional callback function for unsuccessful
+ *     queries.
+ */
+ol.source.wms.getFeatureInfo = function(url, options, success, opt_error) {
+  options = goog.isDef(options) ? goog.object.clone(options) : {};
+  goog.object.extend(options, {
+    method: ol.source.WMSGetFeatureInfoMethod.IFRAME,
+    params: {}
+  });
+  var params = {
+    'INFO_FORMAT': 'text/html'
+  };
+  goog.object.extend(params, options.params);
+  url = goog.uri.utils.appendParamsFromMap(url, params);
+  // TODO: This could be done in a smarter way if the url function was not a
+  // closure
+  url = url.replace('REQUEST=GetMap', 'REQUEST=GetFeatureInfo')
+      .replace(/LAYERS=([^&]+)/, 'LAYERS=$1&QUERY_LAYERS=$1');
+  if (options.method == ol.source.WMSGetFeatureInfoMethod.IFRAME) {
+    goog.global.setTimeout(function() {
+      success('<iframe seamless src="' + url + '"></iframe');
+    }, 0);
+  } else if (options.method == ol.source.WMSGetFeatureInfoMethod.XHR_GET) {
+    goog.net.XhrIo.send(url, function(event) {
+      var xhr = event.target;
+      if (xhr.isSuccess()) {
+        success(xhr.getResponseText());
+      } else if (goog.isDef(opt_error)) {
+        opt_error();
+      }
+    });
+  }
 };
