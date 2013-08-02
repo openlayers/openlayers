@@ -328,26 +328,6 @@ ol.parser.ogc.GML = function(opt_options) {
       if (!this.geometryName) {
         this.geometryName = node.nodeName.split(':').pop();
       }
-      // TODO: Deal with GML documents that do not have the same SRS for all
-      // geometries.
-      /*var srsName;
-      if (!goog.isDef(this.srsName)) {
-        for (var i = node.childNodes.length - 1; i >= 0; --i) {
-          var child = node.childNodes[i];
-          if (child.nodeType == 1) {
-            srsName = child.getAttribute('srsName');
-            if (goog.isDef(srsName)) {
-              this.srsName = srsName;
-            }
-            break;
-          }
-        }
-      }
-      if (!goog.isDef(this.axisOrientation)) {
-        if (goog.isDef(srsName)) {
-          this.axisOrientation = ol.proj.get(srsName).getAxisOrientation();
-        }
-      }*/
       this.readChildNodes(node, obj);
     },
     '_attribute': function(node, obj) {
