@@ -355,6 +355,17 @@
  */
 
 /**
+ * @typedef {Object} ol.parser.GMLReadOptions
+ * @property {string|undefined} axisOrientation The axis orientation.
+ */
+
+/**
+ * @typedef {Object} ol.parser.GMLWriteOptions
+ * @property {ol.ProjectionLike} srsName The srsName to use when writing.
+ * @property {string|undefined} axisOrientation The axis orientation.
+ */
+
+/**
  * @typedef {Object} ol.parser.GMLOptions
  * @property {boolean|undefined} curve Write gml:Curve instead of
  *     gml:LineString elements. This also affects the elements in multi-part
@@ -379,6 +390,10 @@
  * @property {boolean|undefined} surface Write gml:Surface instead of
  *     gml:Polygon elements. This also affects the elements in multi-part
  *     geometries. Default is `false´. This only applies to GML version 3.
+ * @property {ol.parser.GMLReadOptions|undefined} readOptions readOptions to
+ *     use for this instance.
+ * @property {ol.parser.GMLWriteOptions|undefined} writeOptions writeOptions
+ *     to use for this instance.
  */
 
 /**

@@ -3,7 +3,6 @@ goog.provide('ol.parser.ogc.GML_v2');
 goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol.parser.ogc.GML');
-goog.require('ol.proj');
 
 
 
@@ -29,6 +28,8 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
     },
     'Box': function(node, container) {
       var coordinates = [];
+      this.readers[this.defaultNamespaceURI]['_inherit'].apply(this,
+          [node, coordinates, container]);
       this.readChildNodes(node, coordinates);
       container.bounds = [coordinates[0][0][0], coordinates[0][1][0],
         coordinates[0][0][1], coordinates[0][1][1]];
@@ -46,7 +47,7 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
       for (var i = 0; i < numCoordinates; ++i) {
         var coord = coordinates[i];
         var part = goog.array.concat(coord);
-        if (this.getAxisOrientation().substr(0, 2) !== 'en') {
+        if (this.axisOrientation.substr(0, 2) !== 'en') {
           part[0] = coord[1];
           part[1] = coord[0];
         }
@@ -102,8 +103,8 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
       this.writeNode('coordinates', [[extent.minX, extent.minY],
             [extent.maxX, extent.maxY]], null, node);
       // srsName attribute is optional for gml:Box
-      if (goog.isDef(this.getSrsName())) {
-        node.setAttribute('srsName', this.getSrsName());
+      if (goog.isDef(this.srsName)) {
+        node.setAttribute('srsName', this.srsName);
       }
       return node;
     }
@@ -115,13 +116,11 @@ goog.inherits(ol.parser.ogc.GML_v2, ol.parser.ogc.GML);
 /**
  * @param {ol.parser.ReadFeaturesResult} obj Object structure to write out as
  * GML.
+ * @param {ol.parser.GMLWriteOptions=} opt_options Write options.
  * @return {string} A string representing the GML document.
  */
-ol.parser.ogc.GML_v2.prototype.write = function(obj) {
-  if (goog.isDef(obj.metadata)) {
-    this.srsName = goog.isDef(obj.metadata.projection) ?
-        ol.proj.get(obj.metadata.projection).getCode() : undefined;
-  }
+ol.parser.ogc.GML_v2.prototype.write = function(obj, opt_options) {
+  this.handleWriteOptions(obj, opt_options);
   var root = this.writeNode('FeatureCollection', obj.features,
       'http://www.opengis.net/wfs');
   this.setAttributeNS(
@@ -129,5 +128,6 @@ ol.parser.ogc.GML_v2.prototype.write = function(obj) {
       'xsi:schemaLocation', this.schemaLocation);
   var gml = this.serialize(root);
   delete this.srsName;
+  delete this.axisOrientation;
   return gml;
 };

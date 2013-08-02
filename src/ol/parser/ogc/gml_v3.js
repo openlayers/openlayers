@@ -4,7 +4,6 @@ goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.parser.ogc.GML');
-goog.require('ol.proj');
 
 
 
@@ -56,14 +55,15 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     } else if (type === ol.geom.GeometryType.GEOMETRYCOLLECTION) {
       child = this.writeNode('MultiGeometry', geometry, null, node);
     }
-    if (goog.isDef(this.getSrsName())) {
-      this.setAttributeNS(child, null, 'srsName',
-          ol.proj.get(this.getSrsName()).getCode());
+    if (goog.isDef(this.srsName)) {
+      this.setAttributeNS(child, null, 'srsName', this.srsName);
     }
     return node;
   };
+  var baseInherit = this.readers['http://www.opengis.net/gml']['_inherit'];
   goog.object.extend(this.readers['http://www.opengis.net/gml'], {
     '_inherit': function(node, obj, container) {
+      baseInherit.call(this, node, obj, container);
       // SRSReferenceGroup attributes
       var dim = parseInt(node.getAttribute('srsDimension'), 10) ||
           (container && container.srsDimension);
@@ -103,7 +103,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
           this.regExes.trimSpace, '');
       var coords = goog.array.map(str.split(this.regExes.splitSpace),
           parseFloat);
-      if (this.getAxisOrientation().substr(0, 2) === 'en') {
+      if (this.axisOrientation.substr(0, 2) === 'en') {
         obj.push([coords]);
       } else {
         if (coords.length === 2) {
@@ -127,7 +127,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       for (var i = 0, ii = coords.length; i < ii; i += dim) {
         x = parseFloat(coords[i]);
         y = parseFloat(coords[i + 1]);
-        var xy = this.getAxisOrientation().substr(0, 2) === 'en';
+        var xy = this.axisOrientation.substr(0, 2) === 'en';
         if (dim === 3) {
           if (xy) {
             points[i / dim] = [x, y, parseFloat(coords[i + 2])];
@@ -207,6 +207,8 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     },
     'Envelope': function(node, container) {
       var coordinates = [];
+      this.readers[this.defaultNamespaceURI]['_inherit'].apply(this,
+          [node, coordinates, container]);
       this.readChildNodes(node, coordinates);
       container.bounds = [coordinates[0][0][0][0], coordinates[1][0][0][0],
         coordinates[0][0][0][1], coordinates[1][0][0][1]];
@@ -240,7 +242,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     'pos': function(point) {
       // only 2d for simple features profile
       var pos;
-      if (this.getAxisOrientation().substr(0, 2) === 'en') {
+      if (this.axisOrientation.substr(0, 2) === 'en') {
         pos = (point[0] + ' ' + point[1]);
       } else {
         pos = (point[1] + ' ' + point[0]);
@@ -276,7 +278,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       var point;
       for (var i = 0; i < len; ++i) {
         point = points[i];
-        if (this.getAxisOrientation().substr(0, 2) === 'en') {
+        if (this.axisOrientation.substr(0, 2) === 'en') {
           parts[i] = point[0] + ' ' + point[1];
         } else {
           parts[i] = point[1] + ' ' + point[0];
@@ -375,15 +377,15 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       this.writeNode('lowerCorner', bounds, null, node);
       this.writeNode('upperCorner', bounds, null, node);
       // srsName attribute is required for gml:Envelope
-      if (this.getSrsName()) {
-        node.setAttribute('srsName', this.getSrsName());
+      if (goog.isDef(this.srsName)) {
+        node.setAttribute('srsName', this.srsName);
       }
       return node;
     },
     'lowerCorner': function(bounds) {
       // only 2d for simple features profile
       var pos;
-      if (this.getAxisOrientation().substr(0, 2) === 'en') {
+      if (this.axisOrientation.substr(0, 2) === 'en') {
         pos = (bounds.left + ' ' + bounds.bottom);
       } else {
         pos = (bounds.bottom + ' ' + bounds.left);
@@ -395,7 +397,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     'upperCorner': function(bounds) {
       // only 2d for simple features profile
       var pos;
-      if (this.getAxisOrientation().substr(0, 2) === 'en') {
+      if (this.axisOrientation.substr(0, 2) === 'en') {
         pos = (bounds.right + ' ' + bounds.top);
       } else {
         pos = (bounds.top + ' ' + bounds.right);
@@ -410,19 +412,19 @@ goog.inherits(ol.parser.ogc.GML_v3, ol.parser.ogc.GML);
 
 
 /**
- * @param {Object} obj Object structure to write out as XML.
+ * @param {ol.parser.ReadFeaturesResult} obj Object structure to write out as
+ *     XML.
+ * @param {ol.parser.GMLWriteOptions=} opt_options Write options.
  * @return {string} An string representing the XML document.
  */
-ol.parser.ogc.GML_v3.prototype.write = function(obj) {
-  if (goog.isDef(obj.metadata)) {
-    this.srsName = goog.isDef(obj.metadata.projection) ?
-        ol.proj.get(obj.metadata.projection).getCode() : undefined;
-  }
+ol.parser.ogc.GML_v3.prototype.write = function(obj, opt_options) {
+  this.handleWriteOptions(obj, opt_options);
   var root = this.writeNode('featureMembers', obj.features);
   this.setAttributeNS(
       root, 'http://www.w3.org/2001/XMLSchema-instance',
       'xsi:schemaLocation', this.schemaLocation);
   var gml = this.serialize(root);
   delete this.srsName;
+  delete this.axisOrientation;
   return gml;
 };

@@ -1,16 +1,16 @@
-<gml:GeometryCollection xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+<gml:GeometryCollection xmlns:gml="http://www.opengis.net/gml" srsName="foo">
     <gml:geometryMember>
-        <gml:Point srsName="EPSG:4326">
+        <gml:Point srsName="foo">
           <gml:coordinates decimal="." cs="," ts=" ">1,2</gml:coordinates>
         </gml:Point>
     </gml:geometryMember>
     <gml:geometryMember>
-        <gml:LineString srsName="EPSG:4326">
+        <gml:LineString srsName="foo">
           <gml:coordinates decimal="." cs="," ts=" ">1,2 3,4</gml:coordinates>
         </gml:LineString>
     </gml:geometryMember>
     <gml:geometryMember>
-        <gml:Polygon srsName="EPSG:4326">
+        <gml:Polygon srsName="foo">
             <gml:outerBoundaryIs>
                 <gml:LinearRing>
                     <gml:coordinates decimal="." cs="," ts=" ">1,2 3,2 3,4 1,2</gml:coordinates>
