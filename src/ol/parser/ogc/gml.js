@@ -627,7 +627,6 @@ ol.parser.ogc.GML.prototype.readFeaturesWithMetadataFromString =
 
 
 /**
- * @protected
  * Handle the writeOptions passed into the write function.
  * @param {ol.parser.ReadFeaturesResult} obj Object structure to write out as
  * GML.
