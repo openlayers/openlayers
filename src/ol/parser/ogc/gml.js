@@ -619,7 +619,7 @@ ol.parser.ogc.GML.prototype.createGeometry_ = function(container,
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.ogc.GML.prototype.readFeaturesWithMetadataFromString =
+ol.parser.ogc.GML.prototype.readFeaturesFromString =
     function(str, opt_options) {
   this.readFeaturesOptions_ = opt_options;
   return this.read(str);

@@ -468,9 +468,9 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
           options);
     } else {
       goog.asserts.assert(
-          goog.isFunction(parser.readFeaturesWithMetadataFromString),
-          'Expected parser with a readFeaturesWithMetadataFromString method.');
-      result = parser.readFeaturesWithMetadataFromString(data, options);
+          goog.isFunction(parser.readFeaturesFromString),
+          'Expected parser with a readFeaturesFromString method.');
+      result = parser.readFeaturesFromString(data, options);
       addFeatures.call(this, result);
     }
   } else if (goog.isObject(data)) {
@@ -479,9 +479,9 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
           options);
     } else {
       goog.asserts.assert(
-          goog.isFunction(parser.readFeaturesWithMetadataFromObject),
-          'Expected parser with a readFeaturesWithMetadataFromObject method.');
-      result = parser.readFeaturesWithMetadataFromObject(data, options);
+          goog.isFunction(parser.readFeaturesFromObject),
+          'Expected parser with a readFeaturesFromObject method.');
+      result = parser.readFeaturesFromObject(data, options);
       addFeatures.call(this, result);
     }
   } else {

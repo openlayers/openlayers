@@ -851,7 +851,7 @@ ol.parser.KML.prototype.readFeaturesFromStringAsync =
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.KML.prototype.readFeaturesWithMetadataFromString =
+ol.parser.KML.prototype.readFeaturesFromString =
     function(str, opt_options) {
   this.readFeaturesOptions_ = opt_options;
   return /** @type {ol.parser.ReadFeaturesResult} */ (this.read(str));
@@ -864,7 +864,7 @@ ol.parser.KML.prototype.readFeaturesWithMetadataFromString =
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.KML.prototype.readFeaturesWithMetadataFromNode =
+ol.parser.KML.prototype.readFeaturesFromNode =
     function(node, opt_options) {
   this.readFeaturesOptions_ = opt_options;
   return /** @type {ol.parser.ReadFeaturesResult} */ (this.read(node));
@@ -876,7 +876,7 @@ ol.parser.KML.prototype.readFeaturesWithMetadataFromNode =
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.KML.prototype.readFeaturesWithMetadataFromObject =
+ol.parser.KML.prototype.readFeaturesFromObject =
     function(obj, opt_options) {
   this.readFeaturesOptions_ = opt_options;
   return /** @type {ol.parser.ReadFeaturesResult} */ (this.read(obj));

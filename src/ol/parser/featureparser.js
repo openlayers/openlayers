@@ -20,7 +20,7 @@ ol.parser.DomFeatureParser = function() {};
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.DomFeatureParser.prototype.readFeaturesWithMetadataFromNode =
+ol.parser.DomFeatureParser.prototype.readFeaturesFromNode =
     goog.abstractMethod;
 
 
@@ -36,7 +36,7 @@ ol.parser.ObjectFeatureParser = function() {};
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.ObjectFeatureParser.prototype.readFeaturesWithMetadataFromObject =
+ol.parser.ObjectFeatureParser.prototype.readFeaturesFromObject =
     goog.abstractMethod;
 
 
@@ -52,7 +52,7 @@ ol.parser.StringFeatureParser = function() {};
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.StringFeatureParser.prototype.readFeaturesWithMetadataFromString =
+ol.parser.StringFeatureParser.prototype.readFeaturesFromString =
     goog.abstractMethod;
 
 

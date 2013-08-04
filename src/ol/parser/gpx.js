@@ -256,7 +256,7 @@ ol.parser.GPX.prototype.read = function(data) {
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.GPX.prototype.readFeaturesWithMetadataFromString =
+ol.parser.GPX.prototype.readFeaturesFromString =
     function(str, opt_options) {
   this.readFeaturesOptions_ = opt_options;
   return this.read(str);
@@ -269,7 +269,7 @@ ol.parser.GPX.prototype.readFeaturesWithMetadataFromString =
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.GPX.prototype.readFeaturesWithMetadataFromNode =
+ol.parser.GPX.prototype.readFeaturesFromNode =
     function(node, opt_options) {
   this.readFeaturesOptions_ = opt_options;
   return this.read(node);
@@ -281,7 +281,7 @@ ol.parser.GPX.prototype.readFeaturesWithMetadataFromNode =
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.GPX.prototype.readFeaturesWithMetadataFromObject =
+ol.parser.GPX.prototype.readFeaturesFromObject =
     function(obj, opt_options) {
   this.readFeaturesOptions_ = opt_options;
   return this.read(obj);
