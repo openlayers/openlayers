@@ -18,7 +18,7 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var geom = parser.createGeometry_({geometry: obj.geometry});
-        parser.handleWriteOptions(obj);
+        parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         delete parser.srsName;
@@ -35,7 +35,7 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var geom = parser.createGeometry_({geometry: obj.geometry});
-        parser.handleWriteOptions(obj);
+        parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         delete parser.srsName;
@@ -62,7 +62,7 @@ describe('ol.parser.gml_v3', function() {
         var p = new ol.parser.ogc.GML_v3({curve: true});
         var obj = p.read(xml);
         var geom = p.createGeometry_({geometry: obj.geometry});
-        p.handleWriteOptions(obj);
+        p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
             [geom]).firstChild;
         delete p.srsName;
@@ -90,7 +90,7 @@ describe('ol.parser.gml_v3', function() {
         var p = new ol.parser.ogc.GML_v3({multiCurve: false});
         var obj = p.read(xml);
         var geom = p.createGeometry_({geometry: obj.geometry});
-        p.handleWriteOptions(obj);
+        p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
             [geom]).firstChild;
         delete p.srsName;
@@ -107,7 +107,7 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var geom = parser.createGeometry_({geometry: obj.geometry});
-        parser.handleWriteOptions(obj);
+        parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         delete parser.srsName;
@@ -126,7 +126,7 @@ describe('ol.parser.gml_v3', function() {
         var p = new ol.parser.ogc.GML_v3({curve: true});
         var obj = p.read(xml);
         var geom = p.createGeometry_({geometry: obj.geometry});
-        p.handleWriteOptions(obj);
+        p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
             [geom]).firstChild;
         delete p.srsName;
@@ -155,7 +155,7 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var geom = parser.createGeometry_({geometry: obj.geometry});
-        parser.handleWriteOptions(obj);
+        parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         delete parser.srsName;
@@ -184,7 +184,7 @@ describe('ol.parser.gml_v3', function() {
         var p = new ol.parser.ogc.GML_v3({multiSurface: false});
         var obj = p.read(xml);
         var geom = p.createGeometry_({geometry: obj.geometry});
-        p.handleWriteOptions(obj);
+        p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
             [geom]).firstChild;
         delete p.srsName;
@@ -211,7 +211,7 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var geom = parser.createGeometry_({geometry: obj.geometry});
-        parser.handleWriteOptions(obj);
+        parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         delete parser.srsName;
@@ -229,7 +229,7 @@ describe('ol.parser.gml_v3', function() {
         var p = new ol.parser.ogc.GML_v3({surface: true});
         var obj = p.read(xml);
         var geom = p.createGeometry_({geometry: obj.geometry});
-        p.handleWriteOptions(obj);
+        p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
             [geom]).firstChild;
         delete p.srsName;
@@ -246,7 +246,7 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var geom = parser.createGeometry_({geometry: obj.geometry});
-        parser.handleWriteOptions(obj);
+        parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         delete parser.srsName;
@@ -262,7 +262,7 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var geom = parser.createGeometry_({geometry: obj.geometry});
-        parser.handleWriteOptions(obj);
+        parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         delete parser.srsName;
@@ -278,7 +278,7 @@ describe('ol.parser.gml_v3', function() {
         var p = new ol.parser.ogc.GML_v3({surface: true});
         var obj = p.read(xml);
         var geom = p.createGeometry_({geometry: obj.geometry});
-        p.handleWriteOptions(obj, {srsName: 'foo'});
+        p.applyWriteOptions(obj, {srsName: 'foo'});
         var node = p.featureNSWiters_['_geometry'].apply(p,
             [geom]).firstChild;
         delete p.srsName;

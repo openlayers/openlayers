@@ -627,13 +627,13 @@ ol.parser.ogc.GML.prototype.readFeaturesWithMetadataFromString =
 
 
 /**
- * Handle the writeOptions passed into the write function.
+ * Applies the writeOptions passed into the write function.
  * @param {ol.parser.ReadFeaturesResult} obj Object structure to write out as
  * GML.
  * @param {ol.parser.GMLWriteOptions=} opt_options Write options.
  */
-ol.parser.ogc.GML.prototype.handleWriteOptions = function(obj, opt_options) {
-  // srsName handling: opt_options takes precedence over obj.metadata
+ol.parser.ogc.GML.prototype.applyWriteOptions = function(obj, opt_options) {
+  // srsName handling: opt_options -> this.writeOptions -> obj.metadata
   var srsName;
   if (goog.isDef(opt_options) && goog.isDef(opt_options.srsName)) {
     srsName = opt_options.srsName;
@@ -643,9 +643,9 @@ ol.parser.ogc.GML.prototype.handleWriteOptions = function(obj, opt_options) {
   } else if (goog.isDef(obj.metadata)) {
     srsName = obj.metadata.projection;
   }
-  goog.asserts.assert(goog.isDef(srsName));
+  goog.asserts.assert(goog.isDef(srsName), 'srsName required for writing GML');
   this.srsName = goog.isString(srsName) ? srsName : srsName.getCode();
-  // axisOrientation handling
+  // axisOrientation handling: opt_options -> this.writeOptions
   if (goog.isDef(opt_options) && goog.isDef(opt_options.axisOrientation)) {
     this.axisOrientation = opt_options.axisOrientation;
   } else if (goog.isDef(this.writeOptions) &&

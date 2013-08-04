@@ -120,7 +120,7 @@ goog.inherits(ol.parser.ogc.GML_v2, ol.parser.ogc.GML);
  * @return {string} A string representing the GML document.
  */
 ol.parser.ogc.GML_v2.prototype.write = function(obj, opt_options) {
-  this.handleWriteOptions(obj, opt_options);
+  this.applyWriteOptions(obj, opt_options);
   var root = this.writeNode('FeatureCollection', obj.features,
       'http://www.opengis.net/wfs');
   this.setAttributeNS(

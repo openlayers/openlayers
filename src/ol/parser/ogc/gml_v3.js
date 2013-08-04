@@ -419,7 +419,7 @@ goog.inherits(ol.parser.ogc.GML_v3, ol.parser.ogc.GML);
  * @return {string} An string representing the XML document.
  */
 ol.parser.ogc.GML_v3.prototype.write = function(obj, opt_options) {
-  this.handleWriteOptions(obj, opt_options);
+  this.applyWriteOptions(obj, opt_options);
   var root = this.writeNode('featureMembers', obj.features);
   this.setAttributeNS(
       root, 'http://www.w3.org/2001/XMLSchema-instance',
