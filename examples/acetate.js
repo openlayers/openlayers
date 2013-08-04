@@ -1,8 +1,9 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
+goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.proj');
+goog.require('ol.proj.EPSG3857');
 goog.require('ol.source.Acetate');
 
 
@@ -22,8 +23,7 @@ var map = new ol.Map({
   renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
-    center: ol.proj.transform(
-        [-117.19565, 34.056766], 'EPSG:4326', 'EPSG:3857'),
+    center: ol.proj.EPSG3857.fromEPSG4326([-117.19565, 34.056766]),
     zoom: 9
   })
 });

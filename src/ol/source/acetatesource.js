@@ -109,7 +109,6 @@ ol.source.Acetate = function(options) {
 
   goog.base(this, {
     attributions: ol.source.ACETATE_ATTRIBUTIONS,
-    crossOrigin: null,
     maxZoom: providerConfig.maxZoom,
     minZoom: providerConfig.minZoom,
     opaque: layerConfig.opaque,
