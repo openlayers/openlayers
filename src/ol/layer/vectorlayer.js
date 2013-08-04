@@ -423,8 +423,6 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
  *     one projection.
  */
 ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
-  var features;
-
   var lookup = {};
   lookup[ol.geom.GeometryType.POINT] = this.pointVertices_;
   lookup[ol.geom.GeometryType.LINESTRING] = this.lineVertices_;
@@ -437,8 +435,12 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
     return lookup[type];
   };
 
-  var addFeatures = function(features) {
+  var addFeatures = function(data) {
+    var features = data.features;
     var sourceProjection = this.getSource().getProjection();
+    if (goog.isNull(sourceProjection)) {
+      sourceProjection = data.metadata.projection;
+    }
     var transform = ol.proj.getTransform(sourceProjection, projection);
 
     transform(
@@ -459,26 +461,28 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
     this.addFeatures(features);
   };
 
-  var options = {callback: callback};
+  var options = {callback: callback}, result;
   if (goog.isString(data)) {
     if (goog.isFunction(parser.readFeaturesFromStringAsync)) {
       parser.readFeaturesFromStringAsync(data, goog.bind(addFeatures, this),
           options);
     } else {
-      goog.asserts.assert(goog.isFunction(parser.readFeaturesFromString),
-          'Expected a parser with readFeaturesFromString method.');
-      features = parser.readFeaturesFromString(data, options);
-      addFeatures.call(this, features);
+      goog.asserts.assert(
+          goog.isFunction(parser.readFeaturesFromString),
+          'Expected parser with a readFeaturesFromString method.');
+      result = parser.readFeaturesFromString(data, options);
+      addFeatures.call(this, result);
     }
   } else if (goog.isObject(data)) {
     if (goog.isFunction(parser.readFeaturesFromObjectAsync)) {
       parser.readFeaturesFromObjectAsync(data, goog.bind(addFeatures, this),
           options);
     } else {
-      goog.asserts.assert(goog.isFunction(parser.readFeaturesFromObject),
-          'Expected a parser with a readFeaturesFromObject method.');
-      features = parser.readFeaturesFromObject(data, options);
-      addFeatures.call(this, features);
+      goog.asserts.assert(
+          goog.isFunction(parser.readFeaturesFromObject),
+          'Expected parser with a readFeaturesFromObject method.');
+      result = parser.readFeaturesFromObject(data, options);
+      addFeatures.call(this, result);
     }
   } else {
     // TODO: parse more data types

@@ -58,12 +58,13 @@ ol.parser.GeoJSON.read = function(str) {
  * Parse a GeoJSON feature collection.
  * @param {string} str GeoJSON feature collection.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.GeoJSON.prototype.readFeaturesFromString =
     function(str, opt_options) {
   var json = /** @type {GeoJSONFeatureCollection} */ (JSON.parse(str));
-  return this.parseFeatureCollection_(json, opt_options);
+  return {features: this.parseFeatureCollection_(json, opt_options),
+    metadata: {projection: 'EPSG:4326'}};
 };
 
 
@@ -72,11 +73,12 @@ ol.parser.GeoJSON.prototype.readFeaturesFromString =
  * @param {GeoJSONFeatureCollection} object GeoJSON feature collection decoded
  *     from JSON.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.GeoJSON.prototype.readFeaturesFromObject =
     function(object, opt_options) {
-  return this.parseFeatureCollection_(object, opt_options);
+  return {features: this.parseFeatureCollection_(object, opt_options),
+    metadata: {projection: 'EPSG:4326'}};
 };
 
 
