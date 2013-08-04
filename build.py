@@ -669,7 +669,7 @@ def check_examples(t):
         [e + '?mode=raw' for e in examples] + \
         [e + '?mode=whitespace' for e in examples] + \
         [e + '?mode=simple' for e in examples] + \
-        examples
+        [e + '?mode=advanced' for e in examples]
     for example in all_examples:
         t.run('%(PHANTOMJS)s', 'bin/check-example.js', example)
 
