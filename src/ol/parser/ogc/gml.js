@@ -74,7 +74,7 @@ ol.parser.ogc.GML = function(opt_options) {
     },
     'http://www.opengis.net/gml': {
       '_inherit': function(node, obj, container) {
-        // To be implemented by version specific parsers
+        // Version specific parsers extend this with goog.functions.sequence
         var srsName;
         if (!goog.isDef(this.srsName)) {
           srsName = this.srsName = node.getAttribute('srsName');

@@ -1,6 +1,7 @@
 goog.provide('ol.parser.ogc.GML_v3');
 
 goog.require('goog.array');
+goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.parser.ogc.GML');
@@ -60,17 +61,17 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     }
     return node;
   };
-  var baseInherit = this.readers['http://www.opengis.net/gml']['_inherit'];
   goog.object.extend(this.readers['http://www.opengis.net/gml'], {
-    '_inherit': function(node, obj, container) {
-      baseInherit.call(this, node, obj, container);
-      // SRSReferenceGroup attributes
-      var dim = parseInt(node.getAttribute('srsDimension'), 10) ||
-          (container && container.srsDimension);
-      if (dim) {
-        obj.srsDimension = dim;
-      }
-    },
+    '_inherit': goog.functions.sequence(
+        this.readers['http://www.opengis.net/gml']['_inherit'],
+        function(node, obj, container) {
+          // SRSReferenceGroup attributes
+          var dim = parseInt(node.getAttribute('srsDimension'), 10) ||
+              (container && container.srsDimension);
+          if (dim) {
+            obj.srsDimension = dim;
+          }
+        }),
     'featureMembers': function(node, obj) {
       this.readChildNodes(node, obj);
     },
