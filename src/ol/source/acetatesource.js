@@ -76,19 +76,6 @@ ol.source.AcetateProviderConfig = {
 };
 
 
-/**
- * @const {Array.<ol.Attribution>}
- */
-ol.source.ACETATE_ATTRIBUTIONS = [
-  new ol.Attribution(
-      'Map tiles by  by <a href="http://www.esri.com">ESRI</a> and ' +
-      '<a href="http://stamen.com">Stamen Design</a>, under ' +
-      '<a href="http://creativecommons.org/licenses/by-sa/2.5/">' +
-      'CC BY-SA 2.5</a>.'),
-  ol.source.OSM.DATA_ATTRIBUTION
-];
-
-
 
 /**
  * @constructor
@@ -108,7 +95,7 @@ ol.source.Acetate = function(options) {
       '/{z}/{x}/{y}.' + layerConfig.extension;
 
   goog.base(this, {
-    attributions: ol.source.ACETATE_ATTRIBUTIONS,
+    attributions: ol.source.Acetate.ATTRIBUTIONS,
     maxZoom: providerConfig.maxZoom,
     minZoom: providerConfig.minZoom,
     opaque: layerConfig.opaque,
@@ -117,3 +104,16 @@ ol.source.Acetate = function(options) {
 
 };
 goog.inherits(ol.source.Acetate, ol.source.XYZ);
+
+
+/**
+ * @const {Array.<ol.Attribution>}
+ */
+ol.source.Acetate.ATTRIBUTIONS = [
+  new ol.Attribution(
+      'Map tiles by  by <a href="http://www.esri.com">ESRI</a> and ' +
+      '<a href="http://stamen.com">Stamen Design</a>, under ' +
+      '<a href="http://creativecommons.org/licenses/by-sa/2.5/">' +
+      'CC BY-SA 2.5</a>.'),
+  ol.source.OSM.DATA_ATTRIBUTION
+];
