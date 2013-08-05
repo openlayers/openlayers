@@ -79,13 +79,13 @@ describe('ol.parser.TopoJSON', function() {
         };
 
         var result = parser.readFeaturesFromString(text, {callback: callback});
-        expect(result.length).to.be(178);
+        expect(result.features.length).to.be(178);
 
         expect(pointVertices.coordinates.length).to.be(0);
         expect(lineVertices.coordinates.length).to.be(0);
         expect(polygonVertices.coordinates.length).to.be(31400);
 
-        var first = result[0];
+        var first = result.features[0];
         expect(first).to.be.a(ol.Feature);
         var firstGeom = first.getGeometry();
         expect(firstGeom).to.be.a(ol.geom.MultiPolygon);
@@ -93,7 +93,7 @@ describe('ol.parser.TopoJSON', function() {
           -180, 180, -85.60903777459777, 83.64513000000002
         ]);
 
-        var last = result[177];
+        var last = result.features[177];
         expect(last).to.be.a(ol.Feature);
         var lastGeom = last.getGeometry();
         expect(lastGeom).to.be.a(ol.geom.Polygon);

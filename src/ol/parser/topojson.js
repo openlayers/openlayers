@@ -74,7 +74,7 @@ ol.parser.TopoJSON.prototype.concatenateArcs_ = function(indices, arcs) {
  */
 ol.parser.TopoJSON.prototype.read = function(str) {
   var topology = /** @type {TopoJSONTopology} */ (JSON.parse(str));
-  return this.readFeaturesFromObject(topology);
+  return this.readFeaturesFromObject(topology).features;
 };
 
 
@@ -83,7 +83,7 @@ ol.parser.TopoJSON.prototype.read = function(str) {
  *
  * @param {string} str TopoJSON topology string.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.TopoJSON.prototype.readFeaturesFromString =
     function(str, opt_options) {
@@ -91,7 +91,8 @@ ol.parser.TopoJSON.prototype.readFeaturesFromString =
   if (topology.type !== 'Topology') {
     throw new Error('Not a "Topology" type object');
   }
-  return this.readFeaturesFromTopology_(topology, opt_options);
+  return {features: this.readFeaturesFromTopology_(topology, opt_options),
+    metadata: {projection: 'EPSG:4326'}};
 };
 
 
@@ -100,14 +101,15 @@ ol.parser.TopoJSON.prototype.readFeaturesFromString =
  *
  * @param {TopoJSONTopology} topology TopoJSON topology object.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.TopoJSON.prototype.readFeaturesFromObject =
     function(topology, opt_options) {
   if (topology.type !== 'Topology') {
     throw new Error('Not a "Topology" type object');
   }
-  return this.readFeaturesFromTopology_(topology, opt_options);
+  return {features: this.readFeaturesFromTopology_(topology, opt_options),
+    metadata: {projection: 'EPSG:4326'}};
 };
 
 

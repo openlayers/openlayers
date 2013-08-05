@@ -44,7 +44,9 @@ ol.proj.EPSG4326.PROJECTIONS = [
   new ol.proj.EPSG4326('EPSG:4326', 'neu'),
   new ol.proj.EPSG4326('urn:ogc:def:crs:EPSG:6.6:4326', 'neu'),
   new ol.proj.EPSG4326('urn:ogc:def:crs:OGC:1.3:CRS84'),
-  new ol.proj.EPSG4326('urn:ogc:def:crs:OGC:2:84')
+  new ol.proj.EPSG4326('urn:ogc:def:crs:OGC:2:84'),
+  new ol.proj.EPSG4326('http://www.opengis.net/gml/srs/epsg.xml#4326', 'neu'),
+  new ol.proj.EPSG4326('urn:x-ogc:def:crs:EPSG:4326', 'neu')
 ];
 
 

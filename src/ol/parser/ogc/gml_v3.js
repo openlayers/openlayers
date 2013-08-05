@@ -1,6 +1,7 @@
 goog.provide('ol.parser.ogc.GML_v3');
 
 goog.require('goog.array');
+goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.parser.ogc.GML');
@@ -61,14 +62,16 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     return node;
   };
   goog.object.extend(this.readers['http://www.opengis.net/gml'], {
-    '_inherit': function(node, obj, container) {
-      // SRSReferenceGroup attributes
-      var dim = parseInt(node.getAttribute('srsDimension'), 10) ||
-          (container && container.srsDimension);
-      if (dim) {
-        obj.srsDimension = dim;
-      }
-    },
+    '_inherit': goog.functions.sequence(
+        this.readers['http://www.opengis.net/gml']['_inherit'],
+        function(node, obj, container) {
+          // SRSReferenceGroup attributes
+          var dim = parseInt(node.getAttribute('srsDimension'), 10) ||
+              (container && container.srsDimension);
+          if (dim) {
+            obj.srsDimension = dim;
+          }
+        }),
     'featureMembers': function(node, obj) {
       this.readChildNodes(node, obj);
     },
@@ -205,6 +208,8 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     },
     'Envelope': function(node, container) {
       var coordinates = [];
+      this.readers[this.defaultNamespaceURI]['_inherit'].apply(this,
+          [node, coordinates, container]);
       this.readChildNodes(node, coordinates);
       container.bounds = [coordinates[0][0][0][0], coordinates[1][0][0][0],
         coordinates[0][0][0][1], coordinates[1][0][0][1]];
@@ -373,7 +378,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       this.writeNode('lowerCorner', bounds, null, node);
       this.writeNode('upperCorner', bounds, null, node);
       // srsName attribute is required for gml:Envelope
-      if (this.srsName) {
+      if (goog.isDef(this.srsName)) {
         node.setAttribute('srsName', this.srsName);
       }
       return node;
@@ -408,13 +413,19 @@ goog.inherits(ol.parser.ogc.GML_v3, ol.parser.ogc.GML);
 
 
 /**
- * @param {Object} obj Object structure to write out as XML.
+ * @param {ol.parser.ReadFeaturesResult} obj Object structure to write out as
+ *     XML.
+ * @param {ol.parser.GMLWriteOptions=} opt_options Write options.
  * @return {string} An string representing the XML document.
  */
-ol.parser.ogc.GML_v3.prototype.write = function(obj) {
+ol.parser.ogc.GML_v3.prototype.write = function(obj, opt_options) {
+  this.applyWriteOptions(obj, opt_options);
   var root = this.writeNode('featureMembers', obj.features);
   this.setAttributeNS(
       root, 'http://www.w3.org/2001/XMLSchema-instance',
       'xsi:schemaLocation', this.schemaLocation);
-  return this.serialize(root);
+  var gml = this.serialize(root);
+  delete this.srsName;
+  delete this.axisOrientation;
+  return gml;
 };

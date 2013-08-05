@@ -821,8 +821,8 @@ goog.inherits(ol.parser.KML, ol.parser.XML);
 
 /**
  * @param {Object} obj Object representing features.
- * @param {function(Array.<ol.Feature>)} callback Callback which is called
- * after parsing.
+ * @param {function(ol.parser.ReadFeaturesResult)} callback Callback which is
+ *     called after parsing.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */
 ol.parser.KML.prototype.readFeaturesFromObjectAsync =
@@ -833,9 +833,9 @@ ol.parser.KML.prototype.readFeaturesFromObjectAsync =
 
 
 /**
- * @param {string} str KML document.
- * @param {function(Array.<ol.Feature>)} callback Callback which is called
- * after parsing.
+ * @param {string} str String data.
+ * @param {function(ol.parser.ReadFeaturesResult)}
+ *     callback Callback which is called after parsing.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */
 ol.parser.KML.prototype.readFeaturesFromStringAsync =
@@ -849,12 +849,12 @@ ol.parser.KML.prototype.readFeaturesFromStringAsync =
  * Parse a KML document provided as a string.
  * @param {string} str KML document.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.KML.prototype.readFeaturesFromString =
     function(str, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(str).features;
+  return /** @type {ol.parser.ReadFeaturesResult} */ (this.read(str));
 };
 
 
@@ -862,24 +862,24 @@ ol.parser.KML.prototype.readFeaturesFromString =
  * Parse a KML document provided as a DOM structure.
  * @param {Element|Document} node Document or element node.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.KML.prototype.readFeaturesFromNode =
     function(node, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(node).features;
+  return /** @type {ol.parser.ReadFeaturesResult} */ (this.read(node));
 };
 
 
 /**
  * @param {Object} obj Object representing features.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.KML.prototype.readFeaturesFromObject =
     function(obj, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(obj).features;
+  return /** @type {ol.parser.ReadFeaturesResult} */ (this.read(obj));
 };
 
 
@@ -930,9 +930,11 @@ ol.parser.KML.prototype.parseLinks = function(deferreds, obj, done) {
 
 /**
  * @param {string|Document|Element|Object} data Data to read.
- * @param {Function=} opt_callback Optional callback to call when reading
- * is done.
- * @return {Object} An object representing the document.
+ * @param {function(ol.parser.ReadFeaturesResult)=} opt_callback Optional
+ *     callback to call when reading is done. If provided, this method will
+ *     return undefined.
+ * @return {ol.parser.ReadFeaturesResult|undefined} An object representing the
+ *     document if `opt_callback` was not provided.
  */
 ol.parser.KML.prototype.read = function(data, opt_callback) {
   if (goog.isString(data)) {
@@ -941,7 +943,8 @@ ol.parser.KML.prototype.read = function(data, opt_callback) {
   if (data && data.nodeType == 9) {
     data = data.documentElement;
   }
-  var obj = {};
+  var obj = /** @type {ol.parser.ReadFeaturesResult} */
+      ({metadata: {projection: 'EPSG:4326'}});
   this.readNode(data, obj);
   if (goog.isDef(opt_callback)) {
     var deferreds = [];
@@ -955,7 +958,7 @@ ol.parser.KML.prototype.read = function(data, opt_callback) {
               var feature = obj.features[i];
               this.applyStyle_(feature, obj['styles']);
             }
-            opt_callback.call(null, obj.features);
+            opt_callback.call(null, obj);
           }, function() {
             throw new Error('KML: parsing of NetworkLinks failed');
           }, this);
@@ -963,7 +966,6 @@ ol.parser.KML.prototype.read = function(data, opt_callback) {
   } else {
     return obj;
   }
-  return null;
 };
 
 

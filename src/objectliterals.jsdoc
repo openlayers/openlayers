@@ -355,9 +355,18 @@
  */
 
 /**
+ * @typedef {Object} ol.parser.GMLReadOptions
+ * @property {string|undefined} axisOrientation The axis orientation.
+ */
+
+/**
+ * @typedef {Object} ol.parser.GMLWriteOptions
+ * @property {ol.ProjectionLike} srsName The srsName to use when writing.
+ * @property {string|undefined} axisOrientation The axis orientation.
+ */
+
+/**
  * @typedef {Object} ol.parser.GMLOptions
- * @property {string|undefined} axisOrientation The axis orientation as
- *     specified in Proj4. The default is 'enu'.
  * @property {boolean|undefined} curve Write gml:Curve instead of
  *     gml:LineString elements. This also affects the elements in multi-part
  *     geometries. Default is `false´. This only applies to GML version 3.
@@ -378,13 +387,13 @@
  *     default is `true´. This only applies to GML version 3.
  * @property {string|undefined} schemaLocation Optional schemaLocation to use
  *     when writing out the GML, this will override the default provided.
- * @property {string|undefined} srsName URI for spatial reference system.
- *     This is optional for single part geometries and mandatory for
- *     collections and multis. If set, the srsName attribute will be written
- *     for all geometries. Default is null.
  * @property {boolean|undefined} surface Write gml:Surface instead of
  *     gml:Polygon elements. This also affects the elements in multi-part
  *     geometries. Default is `false´. This only applies to GML version 3.
+ * @property {ol.parser.GMLReadOptions|undefined} readOptions readOptions to
+ *     use for this instance.
+ * @property {ol.parser.GMLWriteOptions|undefined} writeOptions writeOptions
+ *     to use for this instance.
  */
 
 /**
@@ -516,9 +525,10 @@
  * @property {string|undefined} logo Logo.
  * @property {ol.parser.Parser} parser Parser instance to parse data
  *     provided as `data` or fetched from `url`.
- * @property {ol.ProjectionLike|undefined} projection Projection. EPSG:4326
- *     is assumed if not defined. TODO: Get projection from the parser instead
- *     of assuming EPSG:4326.
+ * @property {ol.ProjectionLike|undefined} projection Projection. Usually the
+ *     projection is provided by the parser, so this only needs to be set if
+ *     the parser does not know the SRS (e.g. in some GML flavors), or if the
+ *     projection determined by the parser needs to be overridden.
  * @property {string|undefined} url Server url providing the vector data.
  */
 

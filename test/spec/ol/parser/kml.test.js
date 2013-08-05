@@ -52,8 +52,8 @@ describe('ol.parser.kml', function() {
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.KML({maxDepth: 1});
         // we need to supply a callback to get visited NetworkLinks
-        p.read(xml, function(features) {
-          expect(features.length).to.eql(3);
+        p.read(xml, function(obj) {
+          expect(obj.features.length).to.eql(3);
           done();
         });
       });
@@ -63,8 +63,8 @@ describe('ol.parser.kml', function() {
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.KML({maxDepth: 2});
         // we need to supply a callback to get visited NetworkLinks
-        p.read(xml, function(features) {
-          expect(features.length).to.eql(2);
+        p.read(xml, function(obj) {
+          expect(obj.features.length).to.eql(2);
           done();
         });
       });
@@ -74,9 +74,9 @@ describe('ol.parser.kml', function() {
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.KML({maxDepth: 1});
         // we need to supply a callback to get visited NetworkLinks
-        p.read(xml, function(features) {
+        p.read(xml, function(obj) {
           // since maxDepth is 1, we will not get to the second feature
-          expect(features.length).to.eql(1);
+          expect(obj.features.length).to.eql(1);
           done();
         });
       });
