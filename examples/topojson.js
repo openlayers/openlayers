@@ -26,10 +26,11 @@ var vector = new ol.layer.Vector({
     new ol.style.Rule({
       symbolizers: [
         new ol.style.Polygon({
-          strokeColor: '#FFF',
           fillColor: '#BADA55',
-          strokeWidth: 1.5,
-          opacity: 0.5
+          fillOpacity: 0.5,
+          strokeColor: '#FFF',
+          strokeOpacity: 1,
+          strokeWidth: 1.5
         })
       ]
     })
