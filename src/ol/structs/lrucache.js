@@ -96,7 +96,7 @@ ol.structs.LRUCache.prototype.containsKey = function(key) {
 
 
 /**
- * @param {Function} f Function.
+ * @param {function(*, string, ol.structs.LRUCache)} f Function.
  * @param {Object=} opt_obj Object.
  */
 ol.structs.LRUCache.prototype.forEach = function(f, opt_obj) {
