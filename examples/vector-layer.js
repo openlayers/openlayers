@@ -31,7 +31,10 @@ var vector = new ol.layer.Vector({
     new ol.style.Rule({
       symbolizers: [
         new ol.style.Polygon({
-          strokeColor: '#bada55'
+          strokeColor: '#319FD3',
+          strokeOpacity: 1,
+          fillColor: '#ffffff',
+          fillOpacity: 0.6
         })
       ]
     }),
@@ -39,7 +42,7 @@ var vector = new ol.layer.Vector({
       filter: 'resolution() < 5000',
       symbolizers: [
         new ol.style.Text({
-          color: '#bada55',
+          color: '#000000',
           text: ol.expr.parse('name'),
           fontFamily: 'Calibri,sans-serif',
           fontSize: 12

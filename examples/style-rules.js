@@ -21,7 +21,7 @@ var style = new ol.style.Style({rules: [
       new ol.style.Line({
         strokeColor: ol.expr.parse('color'),
         strokeWidth: 4,
-        opacity: 1
+        strokeOpacity: 1
       })
     ]
   }),
@@ -31,12 +31,12 @@ var style = new ol.style.Style({rules: [
       new ol.style.Line({
         strokeColor: '#013',
         strokeWidth: 4,
-        opacity: 1
+        strokeOpacity: 1
       }),
       new ol.style.Line({
         strokeColor: ol.expr.parse('color'),
         strokeWidth: 2,
-        opacity: 1
+        strokeOpacity: 1
       })
     ]
   }),

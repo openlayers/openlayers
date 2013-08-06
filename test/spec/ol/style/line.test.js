@@ -8,17 +8,17 @@ describe('ol.style.LineLiteral', function() {
       var literal = new ol.style.LineLiteral({
         strokeWidth: 3,
         strokeColor: '#BADA55',
-        opacity: 1
+        strokeOpacity: 1
       });
       var equalLiteral = new ol.style.LineLiteral({
         strokeColor: '#BADA55',
         strokeWidth: 3,
-        opacity: 1
+        strokeOpacity: 1
       });
       var differentLiteral = new ol.style.LineLiteral({
         strokeColor: '#013',
         strokeWidth: 3,
-        opacity: 1
+        strokeOpacity: 1
       });
       expect(literal.equals(equalLiteral)).to.be(true);
       expect(literal.equals(differentLiteral)).to.be(false);
@@ -42,7 +42,7 @@ describe('ol.style.Line', function() {
 
     it('accepts expressions', function() {
       var symbolizer = new ol.style.Line({
-        opacity: ol.expr.parse('value / 100'),
+        strokeOpacity: ol.expr.parse('value / 100'),
         strokeWidth: ol.expr.parse('widthAttr')
       });
       expect(symbolizer).to.be.a(ol.style.Line);
@@ -54,7 +54,7 @@ describe('ol.style.Line', function() {
 
     it('evaluates expressions with the given feature', function() {
       var symbolizer = new ol.style.Line({
-        opacity: ol.expr.parse('value / 100'),
+        strokeOpacity: ol.expr.parse('value / 100'),
         strokeWidth: ol.expr.parse('widthAttr')
       });
 
@@ -65,7 +65,7 @@ describe('ol.style.Line', function() {
 
       var literal = symbolizer.createLiteral(feature);
       expect(literal).to.be.a(ol.style.LineLiteral);
-      expect(literal.opacity).to.be(42 / 100);
+      expect(literal.strokeOpacity).to.be(42 / 100);
       expect(literal.strokeWidth).to.be(1.5);
     });
 
@@ -99,14 +99,14 @@ describe('ol.style.Line', function() {
 
   });
 
-  describe('#getOpacity()', function() {
+  describe('#getStrokeOpacity()', function() {
 
     it('returns the stroke opacity', function() {
       var symbolizer = new ol.style.Line({
-        opacity: 0.123
+        strokeOpacity: 0.123
       });
 
-      var opacity = symbolizer.getOpacity();
+      var opacity = symbolizer.getStrokeOpacity();
       expect(opacity).to.be.a(ol.expr.Literal);
       expect(opacity.getValue()).to.be(0.123);
     });
@@ -168,26 +168,26 @@ describe('ol.style.Line', function() {
 
   });
 
-  describe('#setOpacity()', function() {
+  describe('#setStrokeOpacity()', function() {
 
     it('sets the stroke opacity', function() {
       var symbolizer = new ol.style.Line({
-        opacity: 0.123
+        strokeOpacity: 0.123
       });
-      symbolizer.setOpacity(new ol.expr.Literal(0.321));
+      symbolizer.setStrokeOpacity(new ol.expr.Literal(0.321));
 
-      var opacity = symbolizer.getOpacity();
+      var opacity = symbolizer.getStrokeOpacity();
       expect(opacity).to.be.a(ol.expr.Literal);
       expect(opacity.getValue()).to.be(0.321);
     });
 
     it('throws when not provided an expression', function() {
       var symbolizer = new ol.style.Line({
-        opacity: 1
+        strokeOpacity: 1
       });
 
       expect(function() {
-        symbolizer.setOpacity(0.5);
+        symbolizer.setStrokeOpacity(0.5);
       }).throwException(function(err) {
         expect(err).to.be.a(goog.asserts.AssertionError);
       });
