@@ -145,8 +145,8 @@ SRC = [path
        if path.endswith('.js')
        if path not in SHADER_SRC]
 
-PLOVR_JAR = 'build/plovr-2013-rc3.jar'
-PLOVR_JAR_MD5 = '8690b431a7c257b8849ae7d0fa979537'
+PLOVR_JAR = 'build/plovr-81ed862.jar'
+PLOVR_JAR_MD5 = '1c752daaf11ad6220b298e7d2ee2b87d'
 
 PROJ4JS = 'build/proj4js/lib/proj4js-combined.js'
 PROJ4JS_ZIP = 'build/proj4js-1.1.0.zip'
@@ -572,7 +572,7 @@ virtual('plovr', PLOVR_JAR)
 @target(PLOVR_JAR, clean=False)
 def plovr_jar(t):
     t.info('downloading %r', t.name)
-    t.download('http://plovr.com/' +
+    t.download('https://plovr.googlecode.com/files/' +
                os.path.basename(PLOVR_JAR), md5=PLOVR_JAR_MD5)
     t.info('downloaded %r', t.name)
 
