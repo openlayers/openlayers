@@ -44,9 +44,9 @@ var style = new ol.style.Style({rules: [
   new ol.style.Rule({
     symbolizers: [
       new ol.style.Polygon({
-        fillColor: '#ffff33',
         strokeColor: '#ffffff',
-        opacity: ol.expr.parse('getOpacity()')
+        fillColor: '#ffff33',
+        fillOpacity: ol.expr.parse('getOpacity()')
       })
     ]
   })

@@ -342,7 +342,7 @@ ol.parser.KML = function(opt_options) {
         this.readChildNodes(node, symbolizer);
         if (symbolizer.color) {
           symbolizer.strokeColor = symbolizer.color.color;
-          symbolizer.opacity = symbolizer.color.opacity;
+          symbolizer.strokeOpacity = symbolizer.color.opacity;
         }
         if (symbolizer.width) {
           symbolizer.strokeWidth = parseFloat(symbolizer.width);
@@ -353,30 +353,31 @@ ol.parser.KML = function(opt_options) {
         obj['symbolizers'].push(new ol.style.Line(symbolizer));
       },
       'PolyStyle': function(node, obj) {
-        var symbolizer = {};
-        this.readChildNodes(node, symbolizer);
-        if (symbolizer.color) {
-          symbolizer.fillColor = symbolizer.color.color;
+        var style = {}; // from KML
+        var symbolizer = {}; // for ol.style.Polygon
+        this.readChildNodes(node, style);
+        // check if poly has fill
+        if (!(style.fill === '0' || style.fill === 'false')) {
+          if (style.color) {
+            symbolizer.fillColor = style.color.color;
+            symbolizer.fillOpacity = style.color.opacity;
+          } else {
+            // KML defaults
+            symbolizer.fillColor = '#ffffff';
+            symbolizer.fillOpacity = 1;
+          }
         }
-        if (symbolizer.fill === '0' || symbolizer.fill === 'false') {
-          // TODO we need a better way in the symbolizer to disable fill
-          // now we are using opacity for this, but it's a workaround
-          // see also: https://github.com/openlayers/ol3/issues/475
-          symbolizer.opacity = 0;
-        } else {
-          symbolizer.opacity = symbolizer.color.opacity;
+        // check if poly has stroke
+        if (!(style.outline === '0' || style.outline === 'false')) {
+          if (style.color) {
+            symbolizer.strokeColor = style.color.color;
+            symbolizer.strokeOpacity = style.color.opacity;
+          } else {
+            // KML defaults
+            symbolizer.strokeColor = '#ffffff';
+            symbolizer.strokeOpacity = 1;
+          }
         }
-        if (symbolizer.width) {
-          symbolizer.strokeWidth = parseFloat(symbolizer.width);
-        }
-        // outline disabled
-        if (symbolizer.outline === '0' || symbolizer.outline === 'false') {
-          symbolizer.strokeWidth = 0;
-        }
-        delete symbolizer.outline;
-        delete symbolizer.width;
-        delete symbolizer.color;
-        delete symbolizer.fill;
         obj['ids'].push(node.getAttribute('id'));
         obj['symbolizers'].push(new ol.style.Polygon(symbolizer));
       },
@@ -623,6 +624,11 @@ ol.parser.KML = function(opt_options) {
         }
       },
       'PolyStyle': function(symbolizerObj) {
+        /**
+         * There is not a 1:1 mapping between KML PolyStyle and
+         * ol.style.Polygon.  In KML, if a PolyStyle has <outline>1</outline>
+         * then the "current" LineStyle is used to stroke the polygon.
+         */
         var node = this.createElementNS('PolyStyle');
         if (symbolizerObj.id) {
           this.setAttributeNS(node, null, 'id', symbolizerObj.id);
@@ -630,21 +636,37 @@ ol.parser.KML = function(opt_options) {
         var symbolizer = symbolizerObj.symbolizer;
         var literal = symbolizer instanceof ol.style.PolygonLiteral ?
             symbolizer : symbolizer.createLiteral();
-        if (literal.opacity !== 0) {
+        var color, opacity;
+        if (literal.fillOpacity !== 0) {
           this.writeNode('fill', '1', null, node);
+          color = literal.fillColor;
+          opacity = literal.fillOpacity;
         } else {
           this.writeNode('fill', '0', null, node);
         }
-        this.writeNode('color', {
-          color: literal.fillColor.substring(1),
-          opacity: literal.opacity
-        }, null, node);
-        this.writeNode('width', literal.strokeWidth, null, node);
+        if (literal.strokeOpacity) {
+          this.writeNode('outline', '1', null, node);
+          color = color || literal.strokeColor;
+          opacity = opacity || literal.strokeOpacity;
+        } else {
+          this.writeNode('outline', '0', null, node);
+        }
+        if (color && opacity) {
+          this.writeNode('color', {
+            color: color.substring(1),
+            opacity: opacity
+          }, null, node);
+        }
         return node;
       },
       'fill': function(fill) {
         var node = this.createElementNS('fill');
         node.appendChild(this.createTextNode(fill));
+        return node;
+      },
+      'outline': function(outline) {
+        var node = this.createElementNS('outline');
+        node.appendChild(this.createTextNode(outline));
         return node;
       },
       'LineStyle': function(symbolizerObj) {
@@ -657,7 +679,7 @@ ol.parser.KML = function(opt_options) {
             symbolizer : symbolizer.createLiteral();
         this.writeNode('color', {
           color: literal.strokeColor.substring(1),
-          opacity: literal.opacity
+          opacity: literal.strokeOpacity
         }, null, node);
         this.writeNode('width', literal.strokeWidth, null, node);
         return node;

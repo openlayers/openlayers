@@ -11,8 +11,8 @@ goog.require('ol.style.SymbolizerLiteral');
 
 /**
  * @typedef {{strokeColor: (string),
- *            strokeWidth: (number),
- *            opacity: (number)}}
+ *            strokeOpacity: (number),
+ *            strokeWidth: (number)}}
  */
 ol.style.LineLiteralOptions;
 
@@ -32,13 +32,14 @@ ol.style.LineLiteral = function(options) {
   this.strokeColor = options.strokeColor;
 
   goog.asserts.assertNumber(
+      options.strokeOpacity, 'strokeOpacity must be a number');
+  /** @type {number} */
+  this.strokeOpacity = options.strokeOpacity;
+
+  goog.asserts.assertNumber(
       options.strokeWidth, 'strokeWidth must be a number');
   /** @type {number} */
   this.strokeWidth = options.strokeWidth;
-
-  goog.asserts.assertNumber(options.opacity, 'opacity must be a number');
-  /** @type {number} */
-  this.opacity = options.opacity;
 
 };
 goog.inherits(ol.style.LineLiteral, ol.style.SymbolizerLiteral);
@@ -49,8 +50,8 @@ goog.inherits(ol.style.LineLiteral, ol.style.SymbolizerLiteral);
  */
 ol.style.LineLiteral.prototype.equals = function(lineLiteral) {
   return this.strokeColor == lineLiteral.strokeColor &&
-      this.strokeWidth == lineLiteral.strokeWidth &&
-      this.opacity == lineLiteral.opacity;
+      this.strokeOpacity == lineLiteral.strokeOpacity &&
+      this.strokeWidth == lineLiteral.strokeWidth;
 };
 
 
@@ -76,19 +77,19 @@ ol.style.Line = function(options) {
    * @type {ol.expr.Expression}
    * @private
    */
-  this.strokeWidth_ = !goog.isDef(options.strokeWidth) ?
-      new ol.expr.Literal(ol.style.LineDefaults.strokeWidth) :
-      (options.strokeWidth instanceof ol.expr.Expression) ?
-          options.strokeWidth : new ol.expr.Literal(options.strokeWidth);
+  this.strokeOpacity_ = !goog.isDef(options.strokeOpacity) ?
+      new ol.expr.Literal(ol.style.LineDefaults.strokeOpacity) :
+      (options.strokeOpacity instanceof ol.expr.Expression) ?
+          options.strokeOpacity : new ol.expr.Literal(options.strokeOpacity);
 
   /**
    * @type {ol.expr.Expression}
    * @private
    */
-  this.opacity_ = !goog.isDef(options.opacity) ?
-      new ol.expr.Literal(ol.style.LineDefaults.opacity) :
-      (options.opacity instanceof ol.expr.Expression) ?
-          options.opacity : new ol.expr.Literal(options.opacity);
+  this.strokeWidth_ = !goog.isDef(options.strokeWidth) ?
+      new ol.expr.Literal(ol.style.LineDefaults.strokeWidth) :
+      (options.strokeWidth instanceof ol.expr.Expression) ?
+          options.strokeWidth : new ol.expr.Literal(options.strokeWidth);
 
 };
 goog.inherits(ol.style.Line, ol.style.Symbolizer);
@@ -104,17 +105,19 @@ ol.style.Line.prototype.createLiteral = function(opt_feature) {
       this.strokeColor_, opt_feature);
   goog.asserts.assertString(strokeColor, 'strokeColor must be a string');
 
+  var strokeOpacity = ol.expr.evaluateFeature(
+      this.strokeOpacity_, opt_feature);
+  goog.asserts.assertNumber(strokeOpacity, 'strokeOpacity must be a number');
+
   var strokeWidth = ol.expr.evaluateFeature(
       this.strokeWidth_, opt_feature);
   goog.asserts.assertNumber(strokeWidth, 'strokeWidth must be a number');
 
-  var opacity = ol.expr.evaluateFeature(this.opacity_, opt_feature);
-  goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
   return new ol.style.LineLiteral({
     strokeColor: strokeColor,
-    strokeWidth: strokeWidth,
-    opacity: opacity
+    strokeOpacity: strokeOpacity,
+    strokeWidth: strokeWidth
   });
 };
 
@@ -129,20 +132,20 @@ ol.style.Line.prototype.getStrokeColor = function() {
 
 
 /**
+ * Get the stroke opacity.
+ * @return {ol.expr.Expression} Stroke opacity.
+ */
+ol.style.Line.prototype.getStrokeOpacity = function() {
+  return this.strokeOpacity_;
+};
+
+
+/**
  * Get the stroke width.
  * @return {ol.expr.Expression} Stroke width.
  */
 ol.style.Line.prototype.getStrokeWidth = function() {
   return this.strokeWidth_;
-};
-
-
-/**
- * Get the stroke opacity.
- * @return {ol.expr.Expression} Stroke opacity.
- */
-ol.style.Line.prototype.getOpacity = function() {
-  return this.opacity_;
 };
 
 
@@ -157,6 +160,16 @@ ol.style.Line.prototype.setStrokeColor = function(strokeColor) {
 
 
 /**
+ * Set the stroke opacity.
+ * @param {ol.expr.Expression} strokeOpacity Stroke opacity.
+ */
+ol.style.Line.prototype.setStrokeOpacity = function(strokeOpacity) {
+  goog.asserts.assertInstanceof(strokeOpacity, ol.expr.Expression);
+  this.strokeOpacity_ = strokeOpacity;
+};
+
+
+/**
  * Set the stroke width.
  * @param {ol.expr.Expression} strokeWidth Stroke width.
  */
@@ -167,20 +180,10 @@ ol.style.Line.prototype.setStrokeWidth = function(strokeWidth) {
 
 
 /**
- * Set the stroke opacity.
- * @param {ol.expr.Expression} opacity Stroke opacity.
- */
-ol.style.Line.prototype.setOpacity = function(opacity) {
-  goog.asserts.assertInstanceof(opacity, ol.expr.Expression);
-  this.opacity_ = opacity;
-};
-
-
-/**
  * @type {ol.style.LineLiteral}
  */
 ol.style.LineDefaults = new ol.style.LineLiteral({
   strokeColor: '#696969',
-  strokeWidth: 1.5,
-  opacity: 0.75
+  strokeOpacity: 0.75,
+  strokeWidth: 1.5
 });
