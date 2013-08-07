@@ -63,7 +63,7 @@ ol.parser.GeoJSON.read = function(str) {
 ol.parser.GeoJSON.prototype.readFeaturesFromString =
     function(str, opt_options) {
   var json = /** @type {GeoJSONFeatureCollection} */ (JSON.parse(str));
-  return {features: this.parseFeatureCollection_(json, opt_options),
+  return {features: this.parseAsFeatureCollection_(json, opt_options),
     metadata: {projection: 'EPSG:4326'}};
 };
 
@@ -77,61 +77,79 @@ ol.parser.GeoJSON.prototype.readFeaturesFromString =
  */
 ol.parser.GeoJSON.prototype.readFeaturesFromObject =
     function(object, opt_options) {
-  return {features: this.parseFeatureCollection_(object, opt_options),
+  return {features: this.parseAsFeatureCollection_(object, opt_options),
     metadata: {projection: 'EPSG:4326'}};
 };
 
 
 /**
+ * Parse any GeoJSON object.  Note that this method should not be called
+ * recursively due to the shared vertex creation.
+ *
  * @param {GeoJSONObject} json GeoJSON object.
+ * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.Feature|Array.<ol.Feature>|
  *    ol.geom.Geometry|Array.<ol.geom.Geometry>} Parsed geometry or array
  *    of geometries.
  * @private
  */
-ol.parser.GeoJSON.prototype.parse_ = function(json) {
+ol.parser.GeoJSON.prototype.parse_ = function(json, opt_options) {
   var result;
-  switch (json.type) {
-    case 'FeatureCollection':
-      result = this.parseFeatureCollection_(
-          /** @type {GeoJSONFeatureCollection} */ (json));
-      break;
-    case 'Feature':
-      result = this.parseFeature_(
-          /** @type {GeoJSONFeature} */ (json));
-      break;
-    case 'GeometryCollection':
-      result = this.parseGeometryCollection_(
-          /** @type {GeoJSONGeometryCollection} */ (json));
-      break;
-    case 'Point':
-      result = this.parsePoint_(
-          /** @type {GeoJSONGeometry} */ (json));
-      break;
-    case 'LineString':
-      result = this.parseLineString_(
-          /** @type {GeoJSONGeometry} */ (json));
-      break;
-    case 'Polygon':
-      result = this.parsePolygon_(
-          /** @type {GeoJSONGeometry} */ (json));
-      break;
-    case 'MultiPoint':
-      result = this.parseMultiPoint_(
-          /** @type {GeoJSONGeometry} */ (json));
-      break;
-    case 'MultiLineString':
-      result = this.parseMultiLineString_(
-          /** @type {GeoJSONGeometry} */ (json));
-      break;
-    case 'MultiPolygon':
-      result = this.parseMultiPolygon_(
-          /** @type {GeoJSONGeometry} */ (json));
-      break;
-    default:
-      throw new Error('GeoJSON parsing not implemented for type: ' + json.type);
+  if (json.type === 'FeatureCollection') {
+    result = this.parseFeatureCollection_(
+        /** @type {GeoJSONFeatureCollection} */ (json), opt_options);
+  } else if (json.type === 'Feature') {
+    result = this.parseFeature_(
+        /** @type {GeoJSONFeature} */ (json), opt_options);
+  } else if (json.type === 'GeometryCollection') {
+    result = this.parseGeometryCollection_(
+        /** @type {GeoJSONGeometryCollection} */ (json), opt_options);
+  } else {
+    // we've been called with a geometry or an unknown object
+    // create a feature to get shared vertices handling
+    var feature = this.parseFeature_(
+        /** @type {GeoJSONFeature} */ ({type: 'Feature', geometry: json}),
+        opt_options);
+    result = feature.getGeometry();
   }
   return result;
+};
+
+
+/**
+ * @param {GeoJSONObject} json GeoJSON object.
+ * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
+ * @return {Array.<ol.Feature>} Parsed object coerced into array of features.
+ * @private
+ */
+ol.parser.GeoJSON.prototype.parseAsFeatureCollection_ = function(json,
+    opt_options) {
+  var obj = this.parse_(json, opt_options);
+  var features = [];
+  var feature;
+  if (obj instanceof ol.Feature) {
+    features = [obj];
+  } else if (obj instanceof ol.geom.Geometry) {
+    feature = new ol.Feature();
+    feature.setGeometry(obj);
+    features = [feature];
+  } else if (goog.isArray(obj)) {
+    var item, geomArray;
+    for (var i = 0, ii = obj.length; i < ii; ++i) {
+      item = obj[i];
+      geomArray = geomArray || (item instanceof ol.geom.Geometry);
+      if (!geomArray) {
+        goog.asserts.assert(item instanceof ol.Feature, 'expected feature');
+        features = obj;
+        break;
+      } else {
+        feature = new ol.Feature();
+        feature.setGeometry(item);
+        features[i] = feature;
+      }
+    }
+  }
+  return features;
 };
 
 
@@ -209,17 +227,20 @@ ol.parser.GeoJSON.prototype.parseFeatureCollection_ = function(
 
 /**
  * @param {GeoJSONGeometryCollection} json GeoJSON geometry collection.
+ * @param {ol.parser.ReadFeaturesOptions=} opt_options Read options.
  * @return {Array.<ol.geom.Geometry>} Parsed array of geometries.
  * @private
  */
-ol.parser.GeoJSON.prototype.parseGeometryCollection_ = function(json) {
+ol.parser.GeoJSON.prototype.parseGeometryCollection_ = function(json,
+    opt_options) {
   var geometries = json.geometries,
       len = geometries.length,
       result = new Array(len),
       i;
 
   for (i = 0; i < len; ++i) {
-    result[i] = this.parse_(/** @type {GeoJSONGeometry} */ (geometries[i]));
+    result[i] = this.parse_(/** @type {GeoJSONGeometry} */ (geometries[i]),
+        opt_options);
   }
   return result;
 };
