@@ -188,42 +188,6 @@ ol.renderer.webgl.Layer.prototype.getProjectionMatrix = function() {
 
 
 /**
- * @inheritDoc
- */
-ol.renderer.webgl.Layer.prototype.handleLayerBrightnessChange = function() {
-  this.updateBrightnessMatrix_();
-  this.renderIfReadyAndVisible();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Layer.prototype.handleLayerContrastChange = function() {
-  this.updateContrastMatrix_();
-  this.renderIfReadyAndVisible();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Layer.prototype.handleLayerHueChange = function() {
-  this.updateHueMatrix_();
-  this.renderIfReadyAndVisible();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Layer.prototype.handleLayerSaturationChange = function() {
-  this.updateSaturationMatrix_();
-  this.renderIfReadyAndVisible();
-};
-
-
-/**
  * Handle webglcontextlost.
  */
 ol.renderer.webgl.Layer.prototype.handleWebGLContextLost = function() {

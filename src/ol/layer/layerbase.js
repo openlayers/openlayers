@@ -1,3 +1,5 @@
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.provide('ol.layer.LayerBase');
 goog.provide('ol.layer.LayerProperty');
 goog.provide('ol.layer.LayerState');
@@ -59,8 +61,27 @@ ol.layer.LayerBase = function(options) {
 
   this.setValues(values);
 
+  goog.events.listen(this, [
+    ol.Object.getChangeEventType(ol.layer.LayerProperty.BRIGHTNESS),
+    ol.Object.getChangeEventType(ol.layer.LayerProperty.CONTRAST),
+    ol.Object.getChangeEventType(ol.layer.LayerProperty.HUE),
+    ol.Object.getChangeEventType(ol.layer.LayerProperty.OPACITY),
+    ol.Object.getChangeEventType(ol.layer.LayerProperty.SATURATION),
+    ol.Object.getChangeEventType(ol.layer.LayerProperty.VISIBLE),
+    goog.events.EventType.LOAD
+  ],
+  this.handleLayerChange, false, this);
+
 };
 goog.inherits(ol.layer.LayerBase, ol.Object);
+
+
+/**
+ * @protected
+ */
+ol.layer.LayerBase.prototype.dispatchChangeEvent = function() {
+  this.dispatchEvent(goog.events.EventType.CHANGE);
+};
 
 
 /**
@@ -177,6 +198,14 @@ goog.exportProperty(
     ol.layer.LayerBase.prototype,
     'getVisible',
     ol.layer.LayerBase.prototype.getVisible);
+
+
+/**
+ * @protected
+ */
+ol.layer.LayerBase.prototype.handleLayerChange = function() {
+  this.dispatchChangeEvent();
+};
 
 
 /**
