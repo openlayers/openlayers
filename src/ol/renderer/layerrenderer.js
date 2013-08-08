@@ -74,6 +74,26 @@ goog.inherits(ol.renderer.Layer, goog.Disposable);
 
 
 /**
+ * @param {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
+ * @param {function(string, ol.layer.Layer)} success Callback for
+ *     successful queries. The passed arguments are the resulting feature
+ *     information and the layer.
+ * @param {function()=} opt_error Callback for unsuccessful queries.
+ */
+ol.renderer.Layer.prototype.getFeatureInfoForPixel =
+    function(pixel, success, opt_error) {
+  var layer = this.getLayer();
+  var source = layer.getSource();
+  if (goog.isFunction(source.getFeatureInfoForPixel)) {
+    var callback = function(layerFeatureInfo) {
+      success(layerFeatureInfo, layer);
+    };
+    source.getFeatureInfoForPixel(pixel, this.getMap(), callback, opt_error);
+  }
+};
+
+
+/**
  * @protected
  * @return {ol.layer.Layer} Layer.
  */
