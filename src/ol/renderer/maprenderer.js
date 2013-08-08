@@ -106,7 +106,7 @@ ol.renderer.Map.prototype.getCanvas = goog.functions.NULL;
  *     information.  Layers that are able to provide attribute data will put
  *     ol.Feature instances, other layers will put a string which can either
  *     be plain text or markup.
- * @param {function(Object)=} opt_error Callback for unsuccessful
+ * @param {function()=} opt_error Callback for unsuccessful
  *     queries.
  */
 ol.renderer.Map.prototype.getFeatureInfoForPixel =
@@ -142,7 +142,7 @@ ol.renderer.Map.prototype.getFeatureInfoForPixel =
  *     information.  Layers that are able to provide attribute data will put
  *     ol.Feature instances, other layers will put a string which can either
  *     be plain text or markup.
- * @param {function(Object)=} opt_error Callback for unsuccessful
+ * @param {function()=} opt_error Callback for unsuccessful
  *     queries.
  */
 ol.renderer.Map.prototype.getFeaturesForPixel =

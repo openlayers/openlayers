@@ -25,14 +25,7 @@ var vector = new ol.layer.Vector({
       maxDepth: 1, dimension: 2, extractStyles: true, extractAttributes: true
     }),
     url: 'data/kml/lines.kml'
-  }),
-  transformFeatureInfo: function(features) {
-    var info = [];
-    for (var i = 0, ii = features.length; i < ii; ++i) {
-      info.push(features[i].get('name'));
-    }
-    return info.join(', ');
-  }
+  })
 });
 
 var map = new ol.Map({
@@ -47,11 +40,16 @@ var map = new ol.Map({
 });
 
 map.on(['click', 'mousemove'], function(evt) {
-  map.getFeatureInfo({
+  map.getFeatures({
     pixel: evt.getPixel(),
     layers: [vector],
-    success: function(featureInfo) {
-      document.getElementById('info').innerHTML = featureInfo[0] || '&nbsp';
+    success: function(featuresByLayer) {
+      var features = featuresByLayer[0];
+      var info = [];
+      for (var i = 0, ii = features.length; i < ii; ++i) {
+        info.push(features[i].get('name'));
+      }
+      document.getElementById('info').innerHTML = info.join(', ') || '&nbsp';
     }
   });
 });

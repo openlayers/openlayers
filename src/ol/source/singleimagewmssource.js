@@ -1,8 +1,10 @@
 goog.provide('ol.source.SingleImageWMS');
 
+goog.require('goog.asserts');
 goog.require('ol.Image');
 goog.require('ol.ImageUrlFunction');
 goog.require('ol.extent');
+goog.require('ol.source.FeatureInfoSource');
 goog.require('ol.source.ImageSource');
 goog.require('ol.source.wms');
 
@@ -11,6 +13,7 @@ goog.require('ol.source.wms');
 /**
  * @constructor
  * @extends {ol.source.ImageSource}
+ * @implements {ol.source.FeatureInfoSource}
  * @param {ol.source.SingleImageWMSOptions} options Options.
  */
 ol.source.SingleImageWMS = function(options) {
@@ -27,6 +30,13 @@ ol.source.SingleImageWMS = function(options) {
     resolutions: options.resolutions,
     imageUrlFunction: imageUrlFunction
   });
+
+  /**
+   * @private
+   * @type {ol.source.WMSGetFeatureInfoOptions}
+   */
+  this.getFeatureInfoOptions_ = goog.isDef(options.getFeatureInfoOptions) ?
+      options.getFeatureInfoOptions : {};
 
   /**
    * @private
@@ -67,4 +77,23 @@ ol.source.SingleImageWMS.prototype.getImage =
 
   this.image_ = this.createImage(extent, resolution, size, projection);
   return this.image_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.SingleImageWMS.prototype.getFeatureInfoForPixel =
+    function(pixel, map, success, opt_error) {
+  var view2D = map.getView().getView2D(),
+      projection = view2D.getProjection(),
+      size = map.getSize(),
+      bottomLeft = map.getCoordinateFromPixel([0, size[1]]),
+      topRight = map.getCoordinateFromPixel([size[0], 0]),
+      extent = [bottomLeft[0], topRight[0], bottomLeft[1], topRight[1]],
+      url = this.imageUrlFunction(extent, size, projection);
+  goog.asserts.assert(goog.isDef(url),
+      'ol.source.SingleImageWMS#imageUrlFunction does not return a url');
+  ol.source.wms.getFeatureInfo(url, pixel, this.getFeatureInfoOptions_, success,
+      opt_error);
 };
