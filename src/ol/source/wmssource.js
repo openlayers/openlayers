@@ -63,29 +63,36 @@ ol.source.wms.getUrl =
 
 
 /**
- * @param {string} url URL as provided by the url function, with added I, J, X
- *     and Y params.
+ * @param {string} url URL as provided by the url function.
+ * @param {ol.Pixel} pixel Pixel.
  * @param {Object} options Options as defined in the source.
  * @param {function(string)} success Callback function for successful queries.
  * @param {function()=} opt_error Optional callback function for unsuccessful
  *     queries.
  */
-ol.source.wms.getFeatureInfo = function(url, options, success, opt_error) {
+ol.source.wms.getFeatureInfo =
+    function(url, pixel, options, success, opt_error) {
+  // TODO: This could be done in a smarter way if the url function was not a
+  // closure
+  url = url.replace('REQUEST=GetMap', 'REQUEST=GetFeatureInfo')
+      .replace(ol.source.wms.regExes.layers, 'LAYERS=$1&QUERY_LAYERS=$1');
   options = goog.isDef(options) ? goog.object.clone(options) : {};
   var localOptions = {
     method: ol.source.WMSGetFeatureInfoMethod.IFRAME,
     params: {}
   };
   goog.object.extend(localOptions, options);
-  var params = {
-    'INFO_FORMAT': 'text/html'
-  };
+  var params = {'INFO_FORMAT': 'text/html'},
+      version = parseFloat(url.match(ol.source.wms.regExes.version)[1]),
+      x = Math.round(pixel[0]),
+      y = Math.round(pixel[1]);
+  if (version >= 1.3) {
+    goog.object.extend(params, {'I': x, 'J': y});
+  } else {
+    goog.object.extend(params, {'X': x, 'Y': y});
+  }
   goog.object.extend(params, localOptions.params);
   url = goog.uri.utils.appendParamsFromMap(url, params);
-  // TODO: This could be done in a smarter way if the url function was not a
-  // closure
-  url = url.replace('REQUEST=GetMap', 'REQUEST=GetFeatureInfo')
-      .replace(/LAYERS=([^&]+)/, 'LAYERS=$1&QUERY_LAYERS=$1');
   if (localOptions.method == ol.source.WMSGetFeatureInfoMethod.IFRAME) {
     goog.global.setTimeout(function() {
       success('<iframe seamless src="' + url + '"></iframe>');
@@ -100,4 +107,13 @@ ol.source.wms.getFeatureInfo = function(url, options, success, opt_error) {
       }
     });
   }
+};
+
+
+/**
+ * @enum {RegExp}
+ */
+ol.source.wms.regExes = {
+  layers: (/LAYERS=([^&]+)/),
+  version: (/VERSION=([^&]+)/)
 };

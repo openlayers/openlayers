@@ -5,7 +5,6 @@ goog.provide('ol.source.TiledWMS');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math');
-goog.require('goog.uri.utils');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
@@ -107,22 +106,15 @@ ol.source.TiledWMS.prototype.getFeatureInfoForPixel =
       view2D = map.getView().getView2D(),
       projection = view2D.getProjection(),
       tileGrid = goog.isNull(this.tileGrid) ?
-          ol.tilegrid.getForProjection(projection) : tileGrid,
+          ol.tilegrid.getForProjection(projection) : this.tileGrid,
       tileCoord = tileGrid.getTileCoordForCoordAndResolution(coord,
           view2D.getResolution()),
       tileExtent = tileGrid.getTileCoordExtent(tileCoord),
       offset = map.getPixelFromCoordinate(ol.extent.getTopLeft(tileExtent)),
-      x = Math.round(pixel[0] - offset[0]),
-      y = Math.round(pixel[1] - offset[1]),
       url = this.tileUrlFunction(tileCoord, projection);
   goog.asserts.assert(goog.isDef(url),
       'ol.source.TiledWMS#tileUrlFunction does not return a url');
-  // TODO: X, Y is for WMS 1.1 and I, J for 1.3 - without a closure url
-  // function this could be set conditionally.
-  url = goog.uri.utils.appendParamsFromMap(url, {
-    'X': x, 'I': x,
-    'Y': y, 'J': y
-  });
-  ol.source.wms.getFeatureInfo(url, this.getFeatureInfoOptions_, success,
-      opt_error);
+  ol.source.wms.getFeatureInfo(url,
+      [pixel[0] - offset[0], pixel[1] - offset[1]], this.getFeatureInfoOptions_,
+      success, opt_error);
 };

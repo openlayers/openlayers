@@ -1,7 +1,6 @@
 goog.provide('ol.source.SingleImageWMS');
 
 goog.require('goog.asserts');
-goog.require('goog.uri.utils');
 goog.require('ol.Image');
 goog.require('ol.ImageUrlFunction');
 goog.require('ol.extent');
@@ -92,17 +91,9 @@ ol.source.SingleImageWMS.prototype.getFeatureInfoForPixel =
       bottomLeft = map.getCoordinateFromPixel([0, size[1]]),
       topRight = map.getCoordinateFromPixel([size[0], 0]),
       extent = [bottomLeft[0], topRight[0], bottomLeft[1], topRight[1]],
-      x = pixel[0],
-      y = pixel[1],
       url = this.imageUrlFunction(extent, size, projection);
   goog.asserts.assert(goog.isDef(url),
       'ol.source.SingleImageWMS#imageUrlFunction does not return a url');
-  // TODO: X, Y is for WMS 1.1 and I, J for 1.3 - without a closure url
-  // function this could be set conditionally.
-  url = goog.uri.utils.appendParamsFromMap(url, {
-    'X': x, 'I': x,
-    'Y': y, 'J': y
-  });
-  ol.source.wms.getFeatureInfo(url, this.getFeatureInfoOptions_, success,
+  ol.source.wms.getFeatureInfo(url, pixel, this.getFeatureInfoOptions_, success,
       opt_error);
 };
