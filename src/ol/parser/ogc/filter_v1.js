@@ -28,28 +28,34 @@ ol.parser.ogc.Filter_v1 = function() {
   this.readers = {
     'http://www.opengis.net/ogc': {
       _expression: function(node) {
-        var obj, value = '';
+        var obj, source = '';
         for (var child = node.firstChild; child; child = child.nextSibling) {
           switch (child.nodeType) {
             case 1:
               obj = this.readNode(child);
               if (obj.property) {
-                value += obj.property.getName();
+                var name = obj.property.getName();
+                source += (source !== '') ? '+' + name : name;
               } else if (goog.isDef(obj.value)) {
-                if (obj.value instanceof ol.expr.Literal) {
-                  value += obj.value.getValue();
-                }
+                return obj.value;
               }
               break;
             case 3: // text node
             case 4: // cdata section
-              value += child.nodeValue;
+              if (source !== '') {
+                source += '+';
+              }
+              if (isNaN(goog.string.toNumber(child.nodeValue))) {
+                source += goog.string.quote(goog.string.trim(child.nodeValue));
+              } else {
+                source += goog.string.trim(child.nodeValue);
+              }
               break;
             default:
               break;
           }
         }
-        return ol.expr.parse(goog.string.trim(value));
+        return ol.expr.parse(source);
       },
       'Filter': function(node, obj) {
         var container = {

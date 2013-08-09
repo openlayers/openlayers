@@ -235,6 +235,24 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
 
   });
 
+  describe('_expression reader works as expected', function() {
+    it('_expression reader handles combined propertyname and literal',
+        function() {
+          var xml = '<ogc:UpperBoundary xmlns:ogc="' +
+              'http://www.opengis.net/ogc">10</ogc:UpperBoundary>';
+          var reader = parser.readers['http://www.opengis.net/ogc'][
+              '_expression'];
+          var expr = reader.call(parser, goog.dom.xml.loadXml(
+              xml).documentElement);
+          expect(expr instanceof ol.expr.Literal).to.be.ok();
+          expect(expr.getValue()).to.equal(10);
+          xml = '<ogc:UpperBoundary xmlns:ogc="http://www.opengis.net/ogc">' +
+              'foo<ogc:PropertyName>x</ogc:PropertyName>bar</ogc:UpperBoundary>';
+          expr = reader.call(parser, goog.dom.xml.loadXml(xml).documentElement);
+          expect(expr.evaluate({x: 4})).to.eql('foo4bar');
+        });
+  });
+
 });
 
 goog.require('goog.dom.xml');
