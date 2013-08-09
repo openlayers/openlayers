@@ -40,11 +40,6 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
   this.coordinate_ = null;
 
   /**
-   * @type {boolean}
-   */
-  this.otherInteractionsStopped = false;
-
-  /**
    * @private
    * @type {ol.Pixel}
    */
@@ -52,20 +47,6 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
 
 };
 goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
-
-
-/**
- * IE specific events.
- * See http://msdn.microsoft.com/en-us/library/ie/hh673557(v=vs.85).aspx
- * FIXME: replace with goog.events.EventType enum once we use
- *        goog/events/eventtype.js above r2211
- * @enum {string}
- */
-ol.MapBrowserEvent.IEEventType = {
-  MSPOINTERDOWN: 'MSPointerDown',
-  MSPOINTERMOVE: 'MSPointerMove',
-  MSPOINTERUP: 'MSPointerUp'
-};
 
 
 /**
@@ -111,14 +92,6 @@ ol.MapBrowserEvent.prototype.isMouseActionButton = function() {
 ol.MapBrowserEvent.prototype.preventDefault = function() {
   goog.base(this, 'preventDefault');
   this.browserEvent.preventDefault();
-};
-
-
-/**
- * Stop the interaction chain.
- */
-ol.MapBrowserEvent.prototype.stopOtherInteractions = function() {
-  this.otherInteractionsStopped = true;
 };
 
 
@@ -216,15 +189,15 @@ ol.MapBrowserEventHandler = function(map) {
   this.touchListenerKeys_ = [
     goog.events.listen(element, [
       goog.events.EventType.TOUCHSTART,
-      ol.MapBrowserEvent.IEEventType.MSPOINTERDOWN
+      goog.events.EventType.MSPOINTERDOWN
     ], this.handleTouchStart_, false, this),
     goog.events.listen(element, [
       goog.events.EventType.TOUCHMOVE,
-      ol.MapBrowserEvent.IEEventType.MSPOINTERMOVE
+      goog.events.EventType.MSPOINTERMOVE
     ], this.handleTouchMove_, false, this),
     goog.events.listen(element, [
       goog.events.EventType.TOUCHEND,
-      ol.MapBrowserEvent.IEEventType.MSPOINTERUP
+      goog.events.EventType.MSPOINTERUP
     ], this.handleTouchEnd_, false, this)
   ];
 

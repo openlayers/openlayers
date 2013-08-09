@@ -33,7 +33,7 @@ ol.DeviceOrientation = function(opt_options) {
 
   /**
    * @private
-   * @type {?number}
+   * @type {goog.events.Key}
    */
   this.listenerKey_ = null;
 

@@ -28,6 +28,8 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
     },
     'Box': function(node, container) {
       var coordinates = [];
+      this.readers[this.defaultNamespaceURI]['_inherit'].apply(this,
+          [node, coordinates, container]);
       this.readChildNodes(node, coordinates);
       container.projection = node.getAttribute('srsName');
       container.bounds = [coordinates[0][0][0], coordinates[0][1][0],
@@ -68,9 +70,17 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
     'Polygon': function(geometry) {
       var node = this.createElementNS('gml:Polygon');
       var coordinates = geometry.getCoordinates();
-      this.writeNode('outerBoundaryIs', coordinates[0], null, node);
+      /**
+       * Though there continues to be ambiguity around this, GML references
+       * ISO 19107, which says polygons have counter-clockwise exterior rings
+       * and clockwise interior rings.  The ambiguity comes because the
+       * the Simple Feature Access - SQL spec (ISO 19125-2) says that no
+       * winding order is enforced.  Anyway, we write out counter-clockwise
+       * exterior and clockwise interior here but accept either when reading.
+       */
+      this.writeNode('outerBoundaryIs', coordinates[0].reverse(), null, node);
       for (var i = 1; i < coordinates.length; ++i) {
-        this.writeNode('innerBoundaryIs', coordinates[i], null, node);
+        this.writeNode('innerBoundaryIs', coordinates[i].reverse(), null, node);
       }
       return node;
     },
@@ -105,14 +115,20 @@ goog.inherits(ol.parser.ogc.GML_v2, ol.parser.ogc.GML);
 
 
 /**
- * @param {Object} obj Object structure to write out as XML.
- * @return {string} An string representing the XML document.
+ * @param {ol.parser.ReadFeaturesResult} obj Object structure to write out as
+ * GML.
+ * @param {ol.parser.GMLWriteOptions=} opt_options Write options.
+ * @return {string} A string representing the GML document.
  */
-ol.parser.ogc.GML_v2.prototype.write = function(obj) {
+ol.parser.ogc.GML_v2.prototype.write = function(obj, opt_options) {
+  this.applyWriteOptions(obj, opt_options);
   var root = this.writeNode('FeatureCollection', obj.features,
       'http://www.opengis.net/wfs');
   this.setAttributeNS(
       root, 'http://www.w3.org/2001/XMLSchema-instance',
       'xsi:schemaLocation', this.schemaLocation);
-  return this.serialize(root);
+  var gml = this.serialize(root);
+  delete this.srsName;
+  delete this.axisOrientation;
+  return gml;
 };

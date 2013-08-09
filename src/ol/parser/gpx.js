@@ -234,7 +234,7 @@ goog.inherits(ol.parser.GPX, ol.parser.XML);
 
 /**
  * @param {string|Document|Element|Object} data Data to read.
- * @return {Object} An object representing the document.
+ * @return {ol.parser.ReadFeaturesResult} An object representing the document.
  */
 ol.parser.GPX.prototype.read = function(data) {
   if (goog.isString(data)) {
@@ -243,7 +243,8 @@ ol.parser.GPX.prototype.read = function(data) {
   if (data && data.nodeType == 9) {
     data = data.documentElement;
   }
-  var obj = {};
+  var obj = /** @type {ol.parser.ReadFeaturesResult} */
+      ({metadata: {projection: 'EPSG:4326'}});
   this.readNode(data, obj);
   return obj;
 };
@@ -253,12 +254,12 @@ ol.parser.GPX.prototype.read = function(data) {
  * Parse a GPX document provided as a string.
  * @param {string} str GPX document.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.GPX.prototype.readFeaturesFromString =
     function(str, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(str).features;
+  return this.read(str);
 };
 
 
@@ -266,24 +267,24 @@ ol.parser.GPX.prototype.readFeaturesFromString =
  * Parse a GPX document provided as a DOM structure.
  * @param {Element|Document} node Document or element node.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.GPX.prototype.readFeaturesFromNode =
     function(node, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(node).features;
+  return this.read(node);
 };
 
 
 /**
  * @param {Object} obj Object representing features.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.GPX.prototype.readFeaturesFromObject =
     function(obj, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(obj).features;
+  return this.read(obj);
 };
 
 

@@ -13,8 +13,6 @@ goog.require('goog.asserts');
 goog.require('goog.async.AnimationDelay');
 goog.require('goog.async.Delay');
 goog.require('goog.debug.Console');
-goog.require('goog.debug.Logger');
-goog.require('goog.debug.Logger.Level');
 goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -27,6 +25,8 @@ goog.require('goog.events.KeyHandler');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.MouseWheelHandler.EventType');
+goog.require('goog.log');
+goog.require('goog.log.Level');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
@@ -196,7 +196,7 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {?number}
+   * @type {goog.events.Key}
    */
   this.viewPropertyListenerKey_ = null;
 
@@ -659,6 +659,11 @@ ol.Map.prototype.handleLayersRemove_ = function(collectionEvent) {
  * @param {ol.MapBrowserEvent} mapBrowserEvent The event to handle.
  */
 ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
+  if (goog.isNull(this.frameState_)) {
+    // With no view defined, we cannot translate pixels into geographical
+    // coordinates so interactions cannot be used.
+    return;
+  }
   mapBrowserEvent.frameState = this.frameState_;
   var interactions = this.getInteractions();
   var interactionsArray = /** @type {Array.<ol.interaction.Interaction>} */
@@ -667,8 +672,8 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   if (this.dispatchEvent(mapBrowserEvent) !== false) {
     for (i = interactionsArray.length - 1; i >= 0; i--) {
       var interaction = interactionsArray[i];
-      interaction.handleMapBrowserEvent(mapBrowserEvent);
-      if (mapBrowserEvent.otherInteractionsStopped) {
+      var cont = interaction.handleMapBrowserEvent(mapBrowserEvent);
+      if (!cont) {
         break;
       }
     }
@@ -1164,7 +1169,7 @@ ol.proj.addCommonProjections();
 if (goog.DEBUG) {
   (function() {
     goog.debug.Console.autoInstall();
-    var logger = goog.debug.Logger.getLogger('ol');
-    logger.setLevel(goog.debug.Logger.Level.FINEST);
+    var logger = goog.log.getLogger('ol');
+    logger.setLevel(goog.log.Level.FINEST);
   })();
 }

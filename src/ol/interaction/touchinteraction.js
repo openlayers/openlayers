@@ -126,4 +126,5 @@ ol.interaction.Touch.prototype.handleMapBrowserEvent =
     }
     this.handled_ = handled;
   }
+  return true;
 };

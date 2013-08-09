@@ -1,5 +1,6 @@
 goog.provide('ol.parser.ogc.GML');
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom.xml');
 goog.require('ol.Feature');
 goog.require('ol.geom.Geometry');
@@ -14,6 +15,7 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.parser.StringFeatureParser');
 goog.require('ol.parser.XML');
+goog.require('ol.proj');
 
 
 
@@ -27,8 +29,6 @@ goog.require('ol.parser.XML');
 ol.parser.ogc.GML = function(opt_options) {
   var options = /** @type {ol.parser.GMLOptions} */
       (goog.isDef(opt_options) ? opt_options : {});
-  this.axisOrientation = goog.isDef(options.axisOrientation) ?
-      options.axisOrientation : 'enu';
   this.extractAttributes = goog.isDef(options.extractAttributes) ?
       options.extractAttributes : true;
   this.surface = goog.isDef(options.surface) ?
@@ -39,8 +39,21 @@ ol.parser.ogc.GML = function(opt_options) {
       options.multiCurve : true;
   this.multiSurface = goog.isDef(options.multiSurface) ?
       options.multiSurface : true;
-  this.srsName = goog.isDef(options.srsName) ?
-      options.srsName : null;
+  this.readOptions = options.readOptions;
+  this.writeOptions = options.writeOptions;
+
+  /**
+   * @protected
+   * @type {string|undefined}
+   */
+  this.srsName;
+
+  /**
+   * @protected
+   * @type {string|undefined}
+   */
+  this.axisOrientation;
+
   if (goog.isDef(options.schemaLocation)) {
     this.schemaLocation = options.schemaLocation;
   }
@@ -61,7 +74,18 @@ ol.parser.ogc.GML = function(opt_options) {
     },
     'http://www.opengis.net/gml': {
       '_inherit': function(node, obj, container) {
-        // To be implemented by version specific parsers
+        // Version specific parsers extend this with goog.functions.sequence
+        var srsName;
+        if (!goog.isDef(this.srsName)) {
+          srsName = this.srsName = node.getAttribute('srsName');
+        }
+        if (!goog.isDef(this.axisOrientation)) {
+          if (goog.isDefAndNotNull(srsName)) {
+            this.axisOrientation = ol.proj.get(srsName).getAxisOrientation();
+          } else {
+            this.axisOrientation = 'enu';
+          }
+        }
       },
       'name': function(node, obj) {
         obj.name = this.getChildValue(node);
@@ -126,6 +150,8 @@ ol.parser.ogc.GML = function(opt_options) {
       },
       'Point': function(node, container) {
         var coordinates = [];
+        this.readers[this.defaultNamespaceURI]['_inherit'].apply(this,
+            [node, coordinates, container]);
         this.readChildNodes(node, coordinates);
         var point = {
           type: ol.geom.GeometryType.POINT,
@@ -315,9 +341,9 @@ ol.parser.ogc.GML = function(opt_options) {
   }
   this.writers = {
     'http://www.opengis.net/gml': {
-      'featureMember': function(feature) {
+      'featureMember': function(obj) {
         var node = this.createElementNS('gml:featureMember');
-        this.writeNode('_typeName', feature, this.featureNS, node);
+        this.writeNode('_typeName', obj, this.featureNS, node);
         return node;
       },
       'MultiPoint': function(geometry) {
@@ -455,17 +481,38 @@ goog.inherits(ol.parser.ogc.GML, ol.parser.XML);
 
 /**
  * @param {string|Document|Element|Object} data Data to read.
- * @return {Object} An object representing the document.
+ * @param {ol.parser.GMLReadOptions=} opt_options Read options.
+ * @return {ol.parser.ReadFeaturesResult} An object representing the document.
  */
-ol.parser.ogc.GML.prototype.read = function(data) {
+ol.parser.ogc.GML.prototype.read = function(data, opt_options) {
+  var srsName;
+  if (goog.isDef(opt_options) && goog.isDef(opt_options.srsName)) {
+    srsName = opt_options.srsName;
+  } else if (goog.isDef(this.readOptions) &&
+      goog.isDef(this.readOptions.srsName)) {
+    srsName = this.readOptions.srsName;
+  }
+  if (goog.isDef(srsName)) {
+    this.srsName = goog.isString(srsName) ? srsName : srsName.getCode();
+  }
+  if (goog.isDef(opt_options) && goog.isDef(opt_options.axisOrientation)) {
+    this.axisOrientation = opt_options.axisOrientation;
+  } else if (goog.isDef(this.readOptions) &&
+      goog.isDef(this.readOptions.axisOrientation)) {
+    this.axisOrientation = this.readOptions.axisOrientation;
+  }
   if (typeof data == 'string') {
     data = goog.dom.xml.loadXml(data);
   }
   if (data && data.nodeType == 9) {
     data = data.documentElement;
   }
-  var obj = {features: []};
+  var obj = /** @type {ol.parser.ReadFeaturesResult} */
+      ({features: [], metadata: {}});
   this.readNode(data, obj, true);
+  obj.metadata.projection = this.srsName;
+  delete this.srsName;
+  delete this.axisOrientation;
   return obj;
 };
 
@@ -569,10 +616,41 @@ ol.parser.ogc.GML.prototype.createGeometry = function(container,
  * Parse a GML document provided as a string.
  * @param {string} str GML document.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.ogc.GML.prototype.readFeaturesFromString =
     function(str, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(str).features;
+  return this.read(str);
+};
+
+
+/**
+ * Applies the writeOptions passed into the write function.
+ * @param {ol.parser.ReadFeaturesResult} obj Object structure to write out as
+ * GML.
+ * @param {ol.parser.GMLWriteOptions=} opt_options Write options.
+ */
+ol.parser.ogc.GML.prototype.applyWriteOptions = function(obj, opt_options) {
+  // srsName handling: opt_options -> this.writeOptions -> obj.metadata
+  var srsName;
+  if (goog.isDef(opt_options) && goog.isDef(opt_options.srsName)) {
+    srsName = opt_options.srsName;
+  } else if (goog.isDef(this.writeOptions) &&
+      goog.isDef(this.writeOptions.srsName)) {
+    srsName = this.writeOptions.srsName;
+  } else if (goog.isDef(obj.metadata)) {
+    srsName = obj.metadata.projection;
+  }
+  goog.asserts.assert(goog.isDef(srsName), 'srsName required for writing GML');
+  this.srsName = goog.isString(srsName) ? srsName : srsName.getCode();
+  // axisOrientation handling: opt_options -> this.writeOptions
+  if (goog.isDef(opt_options) && goog.isDef(opt_options.axisOrientation)) {
+    this.axisOrientation = opt_options.axisOrientation;
+  } else if (goog.isDef(this.writeOptions) &&
+      goog.isDef(this.writeOptions.axisOrientation)) {
+    this.axisOrientation = this.writeOptions.axisOrientation;
+  } else {
+    this.axisOrientation = ol.proj.get(this.srsName).getAxisOrientation();
+  }
 };

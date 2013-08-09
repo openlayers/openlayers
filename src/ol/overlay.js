@@ -78,6 +78,12 @@ ol.Overlay = function(options) {
     visible: true
   };
 
+  /**
+   * @private
+   * @type {goog.events.Key}
+   */
+  this.mapPostrenderListenerKey_ = null;
+
   goog.events.listen(
       this, ol.Object.getChangeEventType(ol.OverlayProperty.ELEMENT),
       this.handleElementChanged, false, this);
@@ -280,7 +286,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
   var position = this.getPosition();
   if (!goog.isDef(map) || !map.isDef() || !goog.isDef(position)) {
     if (this.rendered_.visible) {
-      goog.style.showElement(this.element_, false);
+      goog.style.setElementShown(this.element_, false);
       this.rendered_.visible = false;
     }
     return;
@@ -329,7 +335,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
   }
 
   if (!this.rendered_.visible) {
-    goog.style.showElement(this.element_, true);
+    goog.style.setElementShown(this.element_, true);
     this.rendered_.visible = true;
   }
 

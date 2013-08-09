@@ -71,7 +71,7 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
 
   if (goog.isNull(frameState)) {
     if (this.renderedVisible_) {
-      goog.style.showElement(this.layersPane_, false);
+      goog.style.setElementShown(this.layersPane_, false);
       this.renderedVisible_ = false;
     }
     return;
@@ -98,7 +98,7 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
   }
 
   if (!this.renderedVisible_) {
-    goog.style.showElement(this.layersPane_, true);
+    goog.style.setElementShown(this.layersPane_, true);
     this.renderedVisible_ = true;
   }
 

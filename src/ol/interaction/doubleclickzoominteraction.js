@@ -41,6 +41,7 @@ goog.inherits(ol.interaction.DoubleClickZoom, ol.interaction.Interaction);
  */
 ol.interaction.DoubleClickZoom.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
+  var stopEvent = false;
   var browserEvent = mapBrowserEvent.browserEvent;
   if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DBLCLICK &&
       mapBrowserEvent.isMouseActionButton()) {
@@ -52,6 +53,7 @@ ol.interaction.DoubleClickZoom.prototype.handleMapBrowserEvent =
     ol.interaction.Interaction.zoomByDelta(map, view, delta, anchor,
         ol.interaction.DOUBLECLICKZOOM_ANIMATION_DURATION);
     mapBrowserEvent.preventDefault();
-    mapBrowserEvent.stopOtherInteractions();
+    stopEvent = true;
   }
+  return !stopEvent;
 };

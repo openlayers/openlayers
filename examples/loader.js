@@ -1,14 +1,14 @@
 
 
 /**
- * Loader to add the plovr generated script and ol.css to the document.
+ * Loader to add the plovr generated script to the document.
  *
  * The following default values may be overridden with query string
  * parameters:
  *
  *     * hostname - the current hostname (window.location.hostname)
  *     * port - 9810
- *     * mode - ADVANCED
+ *     * mode - RAW
  *     * id - id param in loader.js query string; defaults to 'ol' if not set
  *
  * Usage:
@@ -20,7 +20,7 @@
   var params = {
     hostname: window.location.hostname,
     port: '9810',
-    mode: 'ADVANCED',
+    mode: 'RAW',
     id: 'ol'
   };
   if (window.location.protocol === 'file:' && !params.hostname) {
@@ -59,8 +59,6 @@
     pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(params[key]));
   }
 
-  document.write('<link rel="stylesheet" href="../css/ol.css" ' +
-                 'type="text/css">');
   var url = 'http://' + host + '/compile?' + pairs.join('&');
   document.write('<script type="text/javascript" src="' + url + '"></script>');
 }());

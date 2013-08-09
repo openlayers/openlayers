@@ -18,7 +18,7 @@ ol.parser.DomFeatureParser = function() {};
 /**
  * @param {Element|Document} node Document or element node.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.DomFeatureParser.prototype.readFeaturesFromNode =
     goog.abstractMethod;
@@ -34,7 +34,7 @@ ol.parser.ObjectFeatureParser = function() {};
 /**
  * @param {Object} obj Object representing features.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.ObjectFeatureParser.prototype.readFeaturesFromObject =
     goog.abstractMethod;
@@ -50,7 +50,7 @@ ol.parser.StringFeatureParser = function() {};
 /**
  * @param {string} data String data.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.StringFeatureParser.prototype.readFeaturesFromString =
     goog.abstractMethod;
@@ -65,8 +65,8 @@ ol.parser.AsyncStringFeatureParser = function() {};
 
 /**
  * @param {string} data String data.
- * @param {function(Array.<ol.Feature>)} callback Callback which is called
- * after parsing.
+ * @param {function(ol.parser.ReadFeaturesResult)} callback Callback which is
+ *     called after parsing.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */
 ol.parser.AsyncStringFeatureParser.prototype.readFeaturesFromStringAsync =
@@ -82,8 +82,8 @@ ol.parser.AsyncObjectFeatureParser = function() {};
 
 /**
  * @param {Object} obj Object representing features.
- * @param {function(Array.<ol.Feature>)} callback Callback which is called
- * after parsing.
+ * @param {function(ol.parser.ReadFeaturesResult)} callback Callback which is
+ *     called after parsing.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */
 ol.parser.AsyncObjectFeatureParser.prototype.readFeaturesFromObjectAsync =
@@ -97,6 +97,19 @@ ol.parser.ReadFeaturesCallback;
 
 
 /**
+ * @typedef {{projection: ol.ProjectionLike}}
+ */
+ol.parser.ReadFeaturesMetadata;
+
+
+/**
  * @typedef {{callback: ol.parser.ReadFeaturesCallback}}
  */
 ol.parser.ReadFeaturesOptions;
+
+
+/**
+ * @typedef {{features: Array.<ol.Feature>,
+ *     metadata: ol.parser.ReadFeaturesMetadata}}
+ */
+ol.parser.ReadFeaturesResult;

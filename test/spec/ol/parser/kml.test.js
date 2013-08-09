@@ -52,8 +52,8 @@ describe('ol.parser.kml', function() {
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.KML({maxDepth: 1});
         // we need to supply a callback to get visited NetworkLinks
-        p.read(xml, function(features) {
-          expect(features.length).to.eql(3);
+        p.read(xml, function(obj) {
+          expect(obj.features.length).to.eql(3);
           done();
         });
       });
@@ -63,8 +63,8 @@ describe('ol.parser.kml', function() {
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.KML({maxDepth: 2});
         // we need to supply a callback to get visited NetworkLinks
-        p.read(xml, function(features) {
-          expect(features.length).to.eql(2);
+        p.read(xml, function(obj) {
+          expect(obj.features.length).to.eql(2);
           done();
         });
       });
@@ -74,9 +74,9 @@ describe('ol.parser.kml', function() {
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.KML({maxDepth: 1});
         // we need to supply a callback to get visited NetworkLinks
-        p.read(xml, function(features) {
+        p.read(xml, function(obj) {
           // since maxDepth is 1, we will not get to the second feature
-          expect(features.length).to.eql(1);
+          expect(obj.features.length).to.eql(1);
           done();
         });
       });
@@ -182,45 +182,49 @@ describe('ol.parser.kml', function() {
       var symbolizer = obj.features[0].getSymbolizerLiterals()[0];
       expect(symbolizer instanceof ol.style.LineLiteral).to.be.ok();
       expect(symbolizer.strokeColor).to.eql('#ff0000');
-      expect(symbolizer.opacity).to.eql(0.5294117647058824);
+      expect(symbolizer.strokeOpacity).to.eql(0.5294117647058824);
       expect(symbolizer.strokeWidth).to.eql(10);
     });
-    it('Test style fill (read / write)', function() {
-      var test_style_fill = '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+    it('reads PolyStyle fill', function() {
+      var kml = '<kml xmlns="http://www.opengis.net/kml/2.2">' +
           '<Document><Placemark>    <Style> <PolyStyle> <fill>1</fill> ' +
-          '<color>870000ff</color> <width>10</width> </PolyStyle> </Style>' +
+          '<color>870000ff</color></PolyStyle> </Style>' +
           '<Polygon><outerBoundaryIs><LinearRing><coordinates>' +
           '5.001370157823406,49.26855713824488 8.214706453896161,' +
           '49.630662409673505 8.397385910100951,48.45172350357396 ' +
           '5.001370157823406,49.26855713824488</coordinates></LinearRing>' +
           '</outerBoundaryIs></Polygon></Placemark><Placemark>    <Style> ' +
-          '<PolyStyle><fill>0</fill><color>870000ff</color><width>10</width> ' +
+          '<PolyStyle><fill>0</fill><color>870000ff</color>' +
           '</PolyStyle> </Style>' +
           '<Polygon><outerBoundaryIs><LinearRing><coordinates>' +
           '5.001370157823406,49.26855713824488 8.214706453896161,' +
           '49.630662409673505 8.397385910100951,48.45172350357396 ' +
           '5.001370157823406,49.26855713824488</coordinates></LinearRing>' +
           '</outerBoundaryIs></Polygon></Placemark></Document></kml>';
-      var style_fill_write = '<kml xmlns="http://www.opengis.net/kml/2.2" ' +
+      var p = new ol.parser.KML({extractStyles: true});
+      var obj = p.read(kml);
+      var symbolizer1 = obj.features[0].getSymbolizerLiterals()[0];
+      var symbolizer2 = obj.features[1].getSymbolizerLiterals()[0];
+      expect(symbolizer1.strokeColor).to.be('#ff0000');
+      expect(symbolizer2.fillOpacity).to.be(undefined);
+    });
+    it('writes PolyStyle fill and outline', function() {
+      var kml = '<kml xmlns="http://www.opengis.net/kml/2.2" ' +
           'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
           'xsi:schemaLocation="http://www.opengis.net/kml/2.2 ' +
           'http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd"> ' +
-          '<Document><Placemark>    <Style> <PolyStyle> <fill>1</fill> ' +
-          '<color>870000ff</color> <width>10</width> </PolyStyle> </Style>' +
+          '<Document><Placemark><Style><PolyStyle>' +
+          '<fill>1</fill><outline>0</outline>' +
+          '<color>870000ff</color></PolyStyle> </Style>' +
           '<Polygon><outerBoundaryIs><LinearRing><coordinates>' +
           '5.001370157823406,49.26855713824488 8.214706453896161,' +
           '49.630662409673505 8.397385910100951,48.45172350357396 ' +
           '5.001370157823406,49.26855713824488</coordinates></LinearRing>' +
           '</outerBoundaryIs></Polygon></Placemark></Document></kml>';
       var p = new ol.parser.KML({extractStyles: true});
-      var obj = p.read(test_style_fill);
-      var output = p.write(p.read(style_fill_write));
-      expect(goog.dom.xml.loadXml(style_fill_write)).to.xmleql(
+      var output = p.write(p.read(kml));
+      expect(goog.dom.xml.loadXml(kml)).to.xmleql(
           goog.dom.xml.loadXml(output));
-      var symbolizer1 = obj.features[0].getSymbolizerLiterals()[0];
-      var symbolizer2 = obj.features[1].getSymbolizerLiterals()[0];
-      expect(symbolizer1.fillColor).to.eql('#ff0000');
-      expect(symbolizer2.opacity).to.eql(0);
     });
     it('Test iconStyle (read / write)', function(done) {
       var url = 'spec/ol/parser/kml/iconstyle.kml';
@@ -238,14 +242,63 @@ describe('ol.parser.kml', function() {
       });
     });
   });
+
+  describe('parsing states.kml', function() {
+
+    var features;
+    before(function(done) {
+      afterLoadXml('spec/ol/parser/kml/states.kml', function(xml) {
+        var parser = new ol.parser.KML();
+        var obj;
+        try {
+          obj = parser.read(xml);
+        } catch (err) {
+          return done(err);
+        }
+        if (!obj.features) {
+          return done(new Error('Failed to parse features from doc'));
+        }
+        features = obj.features;
+        done();
+      });
+    });
+
+    it('creates 50 features', function() {
+      expect(features).to.have.length(50);
+    });
+
+    it('creates features with heterogenous geometry collections', function() {
+      // TODO: decide if we should instead create features with multiple geoms
+      var feature = features[0];
+      expect(feature).to.be.a(ol.Feature);
+      var geometry = feature.getGeometry();
+      expect(geometry).to.be.a(ol.geom.GeometryCollection);
+    });
+
+    it('parses Point and MultiPolygon for Alaska', function() {
+      var alaska = goog.array.find(features, function(feature) {
+        return feature.get('name') === 'Alaska';
+      });
+      expect(alaska).to.be.a(ol.Feature);
+      var geometry = alaska.getGeometry();
+      expect(geometry).to.be.a(ol.geom.GeometryCollection);
+      expect(geometry.components).to.have.length(2);
+      expect(geometry.components[0]).to.be.a(ol.geom.Point);
+      expect(geometry.components[1]).to.be.a(ol.geom.MultiPolygon);
+    });
+
+  });
+
 });
 
+goog.require('goog.array');
 goog.require('goog.dom.xml');
 
 goog.require('ol.Feature');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.parser.KML');

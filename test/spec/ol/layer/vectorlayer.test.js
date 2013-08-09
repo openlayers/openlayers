@@ -9,11 +9,12 @@ describe('ol.layer.Vector', function() {
         source: new ol.source.Vector({})
       });
       layer.addFeatures([new ol.Feature(), new ol.Feature()]);
-      expect(layer.getFeatures().length).to.eql(2);
+      expect(goog.object.getCount(layer.featureCache_.getFeaturesObject()))
+          .to.eql(2);
     });
   });
 
-  describe('#getFeatures()', function() {
+  describe('ol.layer.FeatureCache#getFeaturesObject()', function() {
 
     var layer, features;
 
@@ -55,18 +56,18 @@ describe('ol.layer.Vector', function() {
 
     it('can filter by geometry type using its GeometryType index', function() {
       sinon.spy(geomFilter, 'evaluate');
-      var lineStrings = layer.getFeatures(geomFilter);
+      var lineStrings = layer.featureCache_.getFeaturesObject(geomFilter);
       expect(geomFilter.evaluate).to.not.be.called();
-      expect(lineStrings.length).to.eql(4);
-      expect(lineStrings).to.contain(features[4]);
+      expect(goog.object.getCount(lineStrings)).to.eql(4);
+      expect(goog.object.getValues(lineStrings)).to.contain(features[4]);
     });
 
     it('can filter by extent using its RTree', function() {
       sinon.spy(extentFilter, 'evaluate');
-      var subset = layer.getFeatures(extentFilter);
+      var subset = layer.featureCache_.getFeaturesObject(extentFilter);
       expect(extentFilter.evaluate).to.not.be.called();
-      expect(subset.length).to.eql(4);
-      expect(subset).not.to.contain(features[7]);
+      expect(goog.object.getCount(subset)).to.eql(4);
+      expect(goog.object.getValues(subset)).not.to.contain(features[7]);
     });
 
     it('can filter by extent and geometry type using its index', function() {
@@ -76,21 +77,21 @@ describe('ol.layer.Vector', function() {
           ol.expr.LogicalOp.AND, extentFilter, geomFilter);
       sinon.spy(filter1, 'evaluate');
       sinon.spy(filter2, 'evaluate');
-      var subset1 = layer.getFeatures(filter1);
-      var subset2 = layer.getFeatures(filter2);
+      var subset1 = layer.featureCache_.getFeaturesObject(filter1);
+      var subset2 = layer.featureCache_.getFeaturesObject(filter2);
       expect(filter1.evaluate).to.not.be.called();
       expect(filter2.evaluate).to.not.be.called();
-      expect(subset1.length).to.eql(0);
-      expect(subset2.length).to.eql(0);
+      expect(goog.object.getCount(subset1)).to.eql(0);
+      expect(goog.object.getCount(subset2)).to.eql(0);
     });
 
     it('can handle query using the filter\'s evaluate function', function() {
       var filter = new ol.expr.Logical(
           ol.expr.LogicalOp.OR, geomFilter, extentFilter);
       sinon.spy(filter, 'evaluate');
-      var subset = layer.getFeatures(filter);
+      var subset = layer.featureCache_.getFeaturesObject(filter);
       expect(filter.evaluate).to.be.called();
-      expect(subset.length).to.eql(8);
+      expect(goog.object.getCount(subset)).to.eql(8);
     });
 
   });
@@ -177,6 +178,7 @@ describe('ol.layer.Vector', function() {
 });
 
 goog.require('goog.dispose');
+goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.expr');
 goog.require('ol.expr.Logical');

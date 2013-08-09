@@ -126,7 +126,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
 
   if (goog.isNull(frameState)) {
     if (this.renderedVisible_) {
-      goog.style.showElement(this.element, false);
+      goog.style.setElementShown(this.element, false);
       this.renderedVisible_ = false;
     }
     return;
@@ -142,14 +142,15 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
   for (attributionKey in this.attributionElements_) {
     if (attributionKey in visibleAttributions) {
       if (!this.attributionElementRenderedVisible_[attributionKey]) {
-        goog.style.showElement(this.attributionElements_[attributionKey], true);
+        goog.style.setElementShown(
+            this.attributionElements_[attributionKey], true);
         this.attributionElementRenderedVisible_[attributionKey] = true;
       }
       delete visibleAttributions[attributionKey];
     }
     else if (attributionKey in hiddenAttributions) {
       if (this.attributionElementRenderedVisible_[attributionKey]) {
-        goog.style.showElement(
+        goog.style.setElementShown(
             this.attributionElements_[attributionKey], false);
         delete this.attributionElementRenderedVisible_[attributionKey];
       }
@@ -173,7 +174,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
     attributionElement = goog.dom.createElement(goog.dom.TagName.LI);
     attributionElement.innerHTML =
         hiddenAttributions[attributionKey].getHTML();
-    goog.style.showElement(attributionElement, false);
+    goog.style.setElementShown(attributionElement, false);
     goog.dom.appendChild(this.ulElement_, attributionElement);
     this.attributionElements_[attributionKey] = attributionElement;
   }
@@ -181,7 +182,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
   var renderVisible =
       !goog.object.isEmpty(this.attributionElementRenderedVisible_);
   if (this.renderedVisible_ != renderVisible) {
-    goog.style.showElement(this.element, renderVisible);
+    goog.style.setElementShown(this.element, renderVisible);
     this.renderedVisible_ = renderVisible;
   }
 

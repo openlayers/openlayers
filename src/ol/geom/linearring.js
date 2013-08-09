@@ -28,6 +28,42 @@ goog.inherits(ol.geom.LinearRing, ol.geom.LineString);
 
 
 /**
+ * Determine if a vertex array representing a linear ring is in clockwise
+ * order.
+ *
+ * This method comes from Green's Theorem and was mentioned in an answer to a
+ * a Stack Overflow question (http://tinyurl.com/clockwise-method).
+ *
+ * Note that calculating the cross product for each pair of edges could be
+ * avoided by first finding the lowest, rightmost vertex.  See OGR's
+ * implementation for an example of this.
+ * https://github.com/OSGeo/gdal/blob/trunk/gdal/ogr/ogrlinearring.cpp
+ *
+ * @param {ol.geom.VertexArray} coordinates Linear ring coordinates.
+ * @return {boolean} The coordinates are in clockwise order.
+ */
+ol.geom.LinearRing.isClockwise = function(coordinates) {
+  var length = coordinates.length;
+  var edge = 0;
+
+  var last = coordinates[length - 1];
+  var x1 = last[0];
+  var y1 = last[1];
+
+  var x2, y2, coord;
+  for (var i = 0; i < length; ++i) {
+    coord = coordinates[i];
+    x2 = coord[0];
+    y2 = coord[1];
+    edge += (x2 - x1) * (y2 + y1);
+    x1 = x2;
+    y1 = y2;
+  }
+  return edge > 0;
+};
+
+
+/**
  * @inheritDoc
  */
 ol.geom.LinearRing.prototype.getType = function() {

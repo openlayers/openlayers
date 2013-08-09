@@ -66,14 +66,30 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
   var matrixIds = [];
   var origins = [];
   var tileSizes = [];
-  var projection = ol.proj.get(matrixSet['supportedCRS']);
+
+  var supportedCRSPropName = 'supportedCRS';
+  var matrixIdsPropName = 'matrixIds';
+  var identifierPropName = 'identifier';
+  var scaleDenominatorPropName = 'scaleDenominator';
+  var topLeftCornerPropName = 'topLeftCorner';
+  var tileWidthPropName = 'tileWidth';
+  var tileHeightPropName = 'tileHeight';
+
+  var projection = ol.proj.get(matrixSet[supportedCRSPropName]);
   var metersPerUnit = projection.getMetersPerUnit();
-  goog.array.forEach(matrixSet['matrixIds'], function(elt, index, array) {
-    matrixIds.push(elt['identifier']);
-    origins.push(elt['topLeftCorner']);
-    resolutions.push(elt['scaleDenominator'] * 0.28E-3 / metersPerUnit);
-    tileSizes.push([elt['tileWidth'], elt['tileHeight']]);
+
+  goog.array.sort(matrixSet[matrixIdsPropName], function(a, b) {
+    return b[scaleDenominatorPropName] - a[scaleDenominatorPropName];
   });
+
+  goog.array.forEach(matrixSet[matrixIdsPropName],
+      function(elt, index, array) {
+        matrixIds.push(elt[identifierPropName]);
+        origins.push(elt[topLeftCornerPropName]);
+        resolutions.push(elt[scaleDenominatorPropName] * 0.28E-3 /
+            metersPerUnit);
+        tileSizes.push([elt[tileWidthPropName], elt[tileHeightPropName]]);
+      });
 
   return new ol.tilegrid.WMTS({
     origins: origins,

@@ -4,11 +4,12 @@ goog.provide('ol.renderer.webgl.Map');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
+goog.require('goog.log');
+goog.require('goog.log.Logger');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.webgl');
@@ -417,7 +418,7 @@ ol.renderer.webgl.Map.prototype.getProgram = function(
     if (goog.DEBUG) {
       if (!gl.getProgramParameter(program, goog.webgl.LINK_STATUS) &&
           !gl.isContextLost()) {
-        this.logger_.severe(gl.getProgramInfoLog(program));
+        goog.log.error(this.logger_, gl.getProgramInfoLog(program));
       }
     }
     goog.asserts.assert(
@@ -445,7 +446,7 @@ ol.renderer.webgl.Map.prototype.getShader = function(shaderObject) {
     if (goog.DEBUG) {
       if (!gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS) &&
           !gl.isContextLost()) {
-        this.logger_.severe(gl.getShaderInfoLog(shader));
+        goog.log.error(this.logger_, gl.getShaderInfoLog(shader));
       }
     }
     goog.asserts.assert(
@@ -519,10 +520,10 @@ ol.renderer.webgl.Map.prototype.isTileTextureLoaded = function(tile) {
 
 /**
  * @private
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  */
 ol.renderer.webgl.Map.prototype.logger_ =
-    goog.debug.Logger.getLogger('ol.renderer.webgl.Map');
+    goog.log.getLogger('ol.renderer.webgl.Map');
 
 
 /**
@@ -538,7 +539,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   if (goog.isNull(frameState)) {
     if (this.renderedVisible_) {
-      goog.style.showElement(this.canvas_, false);
+      goog.style.setElementShown(this.canvas_, false);
       this.renderedVisible_ = false;
     }
     return false;
@@ -651,7 +652,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   }
 
   if (!this.renderedVisible_) {
-    goog.style.showElement(this.canvas_, true);
+    goog.style.setElementShown(this.canvas_, true);
     this.renderedVisible_ = true;
   }
 

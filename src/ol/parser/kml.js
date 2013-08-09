@@ -184,24 +184,25 @@ ol.parser.KML = function(opt_options) {
         var buckets = goog.array.bucket(parts, function(val) {
           return val.type;
         });
-        // homogeneous collection
+        var obj = {};
         if (goog.object.getCount(buckets) === 1) {
+          // homogeneous collection
           var type = goog.object.getAnyKey(buckets);
           switch (type) {
             case ol.geom.GeometryType.POINT:
-              container.geometry = {
+              obj.geometry = {
                 type: ol.geom.GeometryType.MULTIPOINT,
                 parts: parts
               };
               break;
             case ol.geom.GeometryType.LINESTRING:
-              container.geometry = {
+              obj.geometry = {
                 type: ol.geom.GeometryType.MULTILINESTRING,
                 parts: parts
               };
               break;
             case ol.geom.GeometryType.POLYGON:
-              container.geometry = {
+              obj.geometry = {
                 type: ol.geom.GeometryType.MULTIPOLYGON,
                 parts: parts
               };
@@ -210,10 +211,17 @@ ol.parser.KML = function(opt_options) {
               break;
           }
         } else {
-          container.geometry = {
+          // mixed collection
+          obj.geometry = {
             type: ol.geom.GeometryType.GEOMETRYCOLLECTION,
             parts: parts
           };
+        }
+        if (goog.isArray(container)) {
+          // MultiGeometry nested inside another
+          container.push(obj.geometry);
+        } else {
+          container.geometry = obj.geometry;
         }
       },
       'Point': function(node, container) {
@@ -334,7 +342,7 @@ ol.parser.KML = function(opt_options) {
         this.readChildNodes(node, symbolizer);
         if (symbolizer.color) {
           symbolizer.strokeColor = symbolizer.color.color;
-          symbolizer.opacity = symbolizer.color.opacity;
+          symbolizer.strokeOpacity = symbolizer.color.opacity;
         }
         if (symbolizer.width) {
           symbolizer.strokeWidth = parseFloat(symbolizer.width);
@@ -345,30 +353,31 @@ ol.parser.KML = function(opt_options) {
         obj['symbolizers'].push(new ol.style.Line(symbolizer));
       },
       'PolyStyle': function(node, obj) {
-        var symbolizer = {};
-        this.readChildNodes(node, symbolizer);
-        if (symbolizer.color) {
-          symbolizer.fillColor = symbolizer.color.color;
+        var style = {}; // from KML
+        var symbolizer = {}; // for ol.style.Polygon
+        this.readChildNodes(node, style);
+        // check if poly has fill
+        if (!(style.fill === '0' || style.fill === 'false')) {
+          if (style.color) {
+            symbolizer.fillColor = style.color.color;
+            symbolizer.fillOpacity = style.color.opacity;
+          } else {
+            // KML defaults
+            symbolizer.fillColor = '#ffffff';
+            symbolizer.fillOpacity = 1;
+          }
         }
-        if (symbolizer.fill === '0' || symbolizer.fill === 'false') {
-          // TODO we need a better way in the symbolizer to disable fill
-          // now we are using opacity for this, but it's a workaround
-          // see also: https://github.com/openlayers/ol3/issues/475
-          symbolizer.opacity = 0;
-        } else {
-          symbolizer.opacity = symbolizer.color.opacity;
+        // check if poly has stroke
+        if (!(style.outline === '0' || style.outline === 'false')) {
+          if (style.color) {
+            symbolizer.strokeColor = style.color.color;
+            symbolizer.strokeOpacity = style.color.opacity;
+          } else {
+            // KML defaults
+            symbolizer.strokeColor = '#ffffff';
+            symbolizer.strokeOpacity = 1;
+          }
         }
-        if (symbolizer.width) {
-          symbolizer.strokeWidth = parseFloat(symbolizer.width);
-        }
-        // outline disabled
-        if (symbolizer.outline === '0' || symbolizer.outline === 'false') {
-          symbolizer.strokeWidth = 0;
-        }
-        delete symbolizer.outline;
-        delete symbolizer.width;
-        delete symbolizer.color;
-        delete symbolizer.fill;
         obj['ids'].push(node.getAttribute('id'));
         obj['symbolizers'].push(new ol.style.Polygon(symbolizer));
       },
@@ -615,6 +624,11 @@ ol.parser.KML = function(opt_options) {
         }
       },
       'PolyStyle': function(symbolizerObj) {
+        /**
+         * There is not a 1:1 mapping between KML PolyStyle and
+         * ol.style.Polygon.  In KML, if a PolyStyle has <outline>1</outline>
+         * then the "current" LineStyle is used to stroke the polygon.
+         */
         var node = this.createElementNS('PolyStyle');
         if (symbolizerObj.id) {
           this.setAttributeNS(node, null, 'id', symbolizerObj.id);
@@ -622,21 +636,37 @@ ol.parser.KML = function(opt_options) {
         var symbolizer = symbolizerObj.symbolizer;
         var literal = symbolizer instanceof ol.style.PolygonLiteral ?
             symbolizer : symbolizer.createLiteral();
-        if (literal.opacity !== 0) {
+        var color, opacity;
+        if (literal.fillOpacity !== 0) {
           this.writeNode('fill', '1', null, node);
+          color = literal.fillColor;
+          opacity = literal.fillOpacity;
         } else {
           this.writeNode('fill', '0', null, node);
         }
-        this.writeNode('color', {
-          color: literal.fillColor.substring(1),
-          opacity: literal.opacity
-        }, null, node);
-        this.writeNode('width', literal.strokeWidth, null, node);
+        if (literal.strokeOpacity) {
+          this.writeNode('outline', '1', null, node);
+          color = color || literal.strokeColor;
+          opacity = opacity || literal.strokeOpacity;
+        } else {
+          this.writeNode('outline', '0', null, node);
+        }
+        if (color && opacity) {
+          this.writeNode('color', {
+            color: color.substring(1),
+            opacity: opacity
+          }, null, node);
+        }
         return node;
       },
       'fill': function(fill) {
         var node = this.createElementNS('fill');
         node.appendChild(this.createTextNode(fill));
+        return node;
+      },
+      'outline': function(outline) {
+        var node = this.createElementNS('outline');
+        node.appendChild(this.createTextNode(outline));
         return node;
       },
       'LineStyle': function(symbolizerObj) {
@@ -649,7 +679,7 @@ ol.parser.KML = function(opt_options) {
             symbolizer : symbolizer.createLiteral();
         this.writeNode('color', {
           color: literal.strokeColor.substring(1),
-          opacity: literal.opacity
+          opacity: literal.strokeOpacity
         }, null, node);
         this.writeNode('width', literal.strokeWidth, null, node);
         return node;
@@ -755,6 +785,10 @@ ol.parser.KML = function(opt_options) {
         return node;
       },
       'Polygon': function(geometry) {
+        /**
+         * KML doesn't specify the winding order of coordinates in linear
+         * rings.  So we keep them as they are in the geometries.
+         */
         var node = this.createElementNS('Polygon');
         var coordinates = geometry.getCoordinates();
         this.writeNode('outerBoundaryIs', coordinates[0], null, node);
@@ -809,8 +843,8 @@ goog.inherits(ol.parser.KML, ol.parser.XML);
 
 /**
  * @param {Object} obj Object representing features.
- * @param {function(Array.<ol.Feature>)} callback Callback which is called
- * after parsing.
+ * @param {function(ol.parser.ReadFeaturesResult)} callback Callback which is
+ *     called after parsing.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */
 ol.parser.KML.prototype.readFeaturesFromObjectAsync =
@@ -821,9 +855,9 @@ ol.parser.KML.prototype.readFeaturesFromObjectAsync =
 
 
 /**
- * @param {string} str KML document.
- * @param {function(Array.<ol.Feature>)} callback Callback which is called
- * after parsing.
+ * @param {string} str String data.
+ * @param {function(ol.parser.ReadFeaturesResult)}
+ *     callback Callback which is called after parsing.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */
 ol.parser.KML.prototype.readFeaturesFromStringAsync =
@@ -837,12 +871,12 @@ ol.parser.KML.prototype.readFeaturesFromStringAsync =
  * Parse a KML document provided as a string.
  * @param {string} str KML document.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.KML.prototype.readFeaturesFromString =
     function(str, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(str).features;
+  return /** @type {ol.parser.ReadFeaturesResult} */ (this.read(str));
 };
 
 
@@ -850,24 +884,24 @@ ol.parser.KML.prototype.readFeaturesFromString =
  * Parse a KML document provided as a DOM structure.
  * @param {Element|Document} node Document or element node.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.KML.prototype.readFeaturesFromNode =
     function(node, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(node).features;
+  return /** @type {ol.parser.ReadFeaturesResult} */ (this.read(node));
 };
 
 
 /**
  * @param {Object} obj Object representing features.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
 ol.parser.KML.prototype.readFeaturesFromObject =
     function(obj, opt_options) {
   this.readFeaturesOptions_ = opt_options;
-  return this.read(obj).features;
+  return /** @type {ol.parser.ReadFeaturesResult} */ (this.read(obj));
 };
 
 
@@ -918,9 +952,11 @@ ol.parser.KML.prototype.parseLinks = function(deferreds, obj, done) {
 
 /**
  * @param {string|Document|Element|Object} data Data to read.
- * @param {Function=} opt_callback Optional callback to call when reading
- * is done.
- * @return {Object} An object representing the document.
+ * @param {function(ol.parser.ReadFeaturesResult)=} opt_callback Optional
+ *     callback to call when reading is done. If provided, this method will
+ *     return undefined.
+ * @return {ol.parser.ReadFeaturesResult|undefined} An object representing the
+ *     document if `opt_callback` was not provided.
  */
 ol.parser.KML.prototype.read = function(data, opt_callback) {
   if (goog.isString(data)) {
@@ -929,7 +965,8 @@ ol.parser.KML.prototype.read = function(data, opt_callback) {
   if (data && data.nodeType == 9) {
     data = data.documentElement;
   }
-  var obj = {};
+  var obj = /** @type {ol.parser.ReadFeaturesResult} */
+      ({metadata: {projection: 'EPSG:4326'}});
   this.readNode(data, obj);
   if (goog.isDef(opt_callback)) {
     var deferreds = [];
@@ -943,7 +980,7 @@ ol.parser.KML.prototype.read = function(data, opt_callback) {
               var feature = obj.features[i];
               this.applyStyle_(feature, obj['styles']);
             }
-            opt_callback.call(null, obj.features);
+            opt_callback.call(null, obj);
           }, function() {
             throw new Error('KML: parsing of NetworkLinks failed');
           }, this);
@@ -951,7 +988,6 @@ ol.parser.KML.prototype.read = function(data, opt_callback) {
   } else {
     return obj;
   }
-  return null;
 };
 
 
@@ -1020,7 +1056,7 @@ ol.parser.KML.prototype.createGeometry_ = function(container,
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         coordinates.push(container.geometry.parts[i].coordinates);
       }
-      geometry = ol.geom.MultiPoint.fromParts(coordinates, opt_vertices);
+      geometry = new ol.geom.MultiPoint(coordinates, opt_vertices);
       break;
     case ol.geom.GeometryType.MULTILINESTRING:
       coordinates = [];
@@ -1034,7 +1070,7 @@ ol.parser.KML.prototype.createGeometry_ = function(container,
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         coordinates.push(container.geometry.parts[i].coordinates);
       }
-      geometry = ol.geom.MultiPolygon.fromParts(coordinates, opt_vertices);
+      geometry = new ol.geom.MultiPolygon(coordinates, opt_vertices);
       break;
     case ol.geom.GeometryType.GEOMETRYCOLLECTION:
       var geometries = [];

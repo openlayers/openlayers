@@ -8,7 +8,7 @@ describe('ol.View2D', function() {
       describe('with no options', function() {
         it('gives a correct resolution constraint function', function() {
           var options = {};
-          var fn = ol.View2D.createResolutionConstraint_(options)[0];
+          var fn = ol.View2D.createResolutionConstraint_(options).constraint;
           expect(fn(156543.03392804097, 0, 0))
               .to.roughlyEqual(156543.03392804097, 1e-9);
           expect(fn(78271.51696402048, 0, 0))
@@ -24,12 +24,12 @@ describe('ol.View2D', function() {
                 maxZoom: 3,
                 zoomFactor: 3
               };
-              var parts = ol.View2D.createResolutionConstraint_(options);
-              var maxResolution = parts[1];
+              var info = ol.View2D.createResolutionConstraint_(options);
+              var maxResolution = info.maxResolution;
               expect(maxResolution).to.eql(81);
-              var minResolution = parts[2];
+              var minResolution = info.minResolution;
               expect(minResolution).to.eql(3);
-              var fn = parts[0];
+              var fn = info.constraint;
               expect(fn(82, 0, 0)).to.eql(81);
               expect(fn(81, 0, 0)).to.eql(81);
               expect(fn(27, 0, 0)).to.eql(27);
@@ -44,12 +44,12 @@ describe('ol.View2D', function() {
           var options = {
             resolutions: [97, 76, 65, 54, 0.45]
           };
-          var parts = ol.View2D.createResolutionConstraint_(options);
-          var maxResolution = parts[1];
+          var info = ol.View2D.createResolutionConstraint_(options);
+          var maxResolution = info.maxResolution;
           expect(maxResolution).to.eql(97);
-          var minResolution = parts[2];
+          var minResolution = info.minResolution;
           expect(minResolution).to.eql(0.45);
-          var fn = parts[0];
+          var fn = info.constraint;
           expect(fn(97, 0, 0)).to.eql(97);
           expect(fn(76, 0, 0)).to.eql(76);
           expect(fn(65, 0, 0)).to.eql(65);
@@ -69,6 +69,38 @@ describe('ol.View2D', function() {
       });
     });
 
+  });
+
+  describe('#getZoom', function() {
+    var view;
+    beforeEach(function() {
+      view = new ol.View2D({
+        resolutions: [512, 256, 128, 64, 32, 16]
+      });
+    });
+
+    it('returns correct zoom levels', function() {
+      view.setResolution(undefined);
+      expect(view.getZoom()).to.be(undefined);
+
+      view.setResolution(511);
+      expect(view.getZoom()).to.be(undefined);
+
+      view.setResolution(512);
+      expect(view.getZoom()).to.be(0);
+
+      view.setResolution(64);
+      expect(view.getZoom()).to.be(3);
+
+      view.setResolution(65);
+      expect(view.getZoom()).to.be(undefined);
+
+      view.setResolution(16);
+      expect(view.getZoom()).to.be(5);
+
+      view.setResolution(15);
+      expect(view.getZoom()).to.be(undefined);
+    });
   });
 });
 

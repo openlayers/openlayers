@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="../css/ol.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
@@ -34,22 +35,13 @@
       </div>
 
       <div class="row-fluid">
-
-        <div class="span4">
+        <div class="span6">
           <h4 id="title">Mouse position example</h4>
           <p id="shortdesc">Example of a mouse position control, outside the map.</p>
           <div id="docs">
             <p>See the <a href="mouse-position.js" target="_blank">mouse-position.js source</a> to see how this is done.</p>
           </div>
           <div id="tags">mouse-position, openstreetmap</div>
-        </div>
-        <div class="span8 pull-right">
-          <div id="mouse-position">&nbsp;</div>
-        </div>
-      </div>
-
-      <div class="row-fluid">
-        <div class="span8">
           <form>
             <label>Projection </label>
             <select id="projection">
@@ -60,6 +52,7 @@
             <input id="precision" type="number" min="0" max="12" value="4"/>
           </form>
         </div>
+        <div class="span6" id="mouse-position">&nbsp;</div>
       </div>
 
     </div>
