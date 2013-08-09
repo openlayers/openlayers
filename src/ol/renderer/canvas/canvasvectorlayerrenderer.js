@@ -86,8 +86,7 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    */
   this.tileCache_ = new ol.TileCache(
       ol.renderer.canvas.VectorLayer.TILECACHE_SIZE);
-  // TODO: this is far too coarse, we want extent of added features
-  goog.events.listenOnce(layer, goog.events.EventType.CHANGE,
+  goog.events.listen(layer, goog.events.EventType.CHANGE,
       this.handleLayerChange_, false, this);
 
   /**
@@ -177,10 +176,13 @@ goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
  * @private
  */
 ol.renderer.canvas.VectorLayer.prototype.expireTiles_ = function(opt_extent) {
+  var tileCache = this.tileCache_;
   if (goog.isDef(opt_extent)) {
-    // TODO: implement this
+    var tileRange = this.tileGrid_.getTileRangeForExtentAndZ(opt_extent, 0);
+    tileCache.pruneTileRange(tileRange);
+  } else {
+    tileCache.clear();
   }
-  this.tileCache_.clear();
 };
 
 
@@ -228,9 +230,11 @@ ol.renderer.canvas.VectorLayer.prototype.getFeatureInfoForPixel =
  * @param {function(Array.<ol.Feature>, ol.layer.Layer)} success Callback for
  *     successful queries. The passed arguments are the resulting features
  *     and the layer.
+ * @param {function()=} opt_error Callback for unsuccessful queries.
  */
 ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
-    function(pixel, success) {
+    function(pixel, success, opt_error) {
+  // TODO What do we want to pass to the error callback?
   var map = this.getMap();
   var result = [];
 
@@ -247,7 +251,15 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
     var locationMin = [location[0] - halfMaxWidth, location[1] - halfMaxHeight];
     var locationMax = [location[0] + halfMaxWidth, location[1] + halfMaxHeight];
     var locationBbox = ol.extent.boundingExtent([locationMin, locationMax]);
-    var candidates = layer.getFeaturesObjectForExtent(locationBbox);
+    var candidates = layer.getFeaturesObjectForExtent(locationBbox,
+        map.getView().getView2D().getProjection());
+    if (goog.isNull(candidates)) {
+      // data is not loaded
+      if (goog.isDef(opt_error)) {
+        goog.global.setTimeout(function() { opt_error(); }, 0);
+      }
+      return;
+    }
 
     var candidate, geom, type, symbolBounds, symbolSize, halfWidth, halfHeight,
         coordinates, j;
@@ -295,12 +307,11 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
 
 
 /**
- * @param {goog.events.Event} event Layer change event.
+ * @param {ol.layer.VectorLayerEventObject} event Layer change event.
  * @private
  */
 ol.renderer.canvas.VectorLayer.prototype.handleLayerChange_ = function(event) {
-  // TODO: get rid of this in favor of vector specific events
-  this.expireTiles_();
+  this.expireTiles_(event.extent);
   this.requestMapRenderFrame_();
 };
 
@@ -446,6 +457,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       dirty = false,
       i, type, tileExtent,
       groups, group, j, numGroups, featuresObject, tileHasFeatures;
+  fetchTileData:
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tileCoord = new ol.TileCoord(0, x, y);
@@ -464,7 +476,12 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
           if (!goog.isDef(featuresToRender[type])) {
             featuresToRender[type] = {};
           }
-          featuresObject = layer.getFeaturesObjectForExtent(tileExtent, type);
+          featuresObject = layer.getFeaturesObjectForExtent(tileExtent,
+              projection, type, this.requestMapRenderFrame_);
+          if (goog.isNull(featuresObject)) {
+            deferred = true;
+            break fetchTileData;
+          }
           tileHasFeatures = tileHasFeatures ||
               !goog.object.isEmpty(featuresObject);
           goog.object.extend(featuresToRender[type], featuresObject);
@@ -510,6 +527,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       tile.getContext('2d').drawImage(sketchCanvas,
           (tileRange.minX - tileCoord.x) * tileSize[0],
           (tileCoord.y - tileRange.maxY) * tileSize[1]);
+      // TODO: Create an ol.VectorTile subclass of ol.Tile
       this.tileCache_.set(key, [tile, symbolSizes, maxSymbolSize]);
     }
     finalContext.drawImage(tile,

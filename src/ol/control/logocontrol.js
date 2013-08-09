@@ -73,7 +73,7 @@ ol.control.Logo.prototype.updateElement_ = function(frameState) {
 
   if (goog.isNull(frameState)) {
     if (this.renderedVisible_) {
-      goog.style.showElement(this.element, false);
+      goog.style.setElementShown(this.element, false);
       this.renderedVisible_ = false;
     }
     return;
@@ -104,7 +104,7 @@ ol.control.Logo.prototype.updateElement_ = function(frameState) {
 
   var renderVisible = !goog.object.isEmpty(logos);
   if (this.renderedVisible_ != renderVisible) {
-    goog.style.showElement(this.element, renderVisible);
+    goog.style.setElementShown(this.element, renderVisible);
     this.renderedVisible_ = renderVisible;
   }
 

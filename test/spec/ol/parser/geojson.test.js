@@ -237,7 +237,8 @@ describe('ol.parser.GeoJSON', function() {
           return lookup[type];
         };
 
-        var result = parser.readFeaturesFromString(text, {callback: callback});
+        var result = parser.readFeaturesFromString(text,
+            {callback: callback}).features;
         expect(result.length).to.be(179);
 
         expect(pointVertices.coordinates.length).to.be(0);
@@ -263,6 +264,267 @@ describe('ol.parser.GeoJSON', function() {
             .to.be(true);
       });
     });
+
+  });
+
+  describe('#parseAsFeatureCollection_()', function() {
+
+    it('returns an array of features for FeatureCollection', function() {
+      var pointVertices = new ol.geom.SharedVertices();
+      var lineVertices = new ol.geom.SharedVertices();
+      var polygonVertices = new ol.geom.SharedVertices();
+
+      var lookup = {
+        'point': pointVertices,
+        'linestring': lineVertices,
+        'polygon': polygonVertices,
+        'multipoint': pointVertices,
+        'multilinstring': lineVertices,
+        'multipolygon': polygonVertices
+      };
+
+      var callback = function(feature, type) {
+        return lookup[type];
+      };
+
+      var parser = new ol.parser.GeoJSON();
+      var json = {
+        type: 'FeatureCollection',
+        features: [{
+          type: 'Feature',
+          properties: {
+            foo: 'bar'
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [1, 2]
+          }
+        }, {
+          type: 'Feature',
+          properties: {
+            bam: 'baz'
+          },
+          geometry: {
+            type: 'LineString',
+            coordinates: [[1, 2], [3, 4]]
+          }
+        }]
+      };
+      var features = parser.parseAsFeatureCollection_(json,
+          {callback: callback});
+
+      expect(features.length).to.be(2);
+
+      var first = features[0];
+      expect(first).to.be.a(ol.Feature);
+      expect(first.get('foo')).to.be('bar');
+      expect(first.getGeometry()).to.be.a(ol.geom.Point);
+
+      var second = features[1];
+      expect(second).to.be.a(ol.Feature);
+      expect(second.get('bam')).to.be('baz');
+      expect(second.getGeometry()).to.be.a(ol.geom.LineString);
+
+      expect(pointVertices.coordinates.length).to.be(2);
+      expect(lineVertices.coordinates.length).to.be(4);
+      expect(polygonVertices.coordinates.length).to.be(0);
+    });
+
+    it('returns an array of features for Feature', function() {
+      var pointVertices = new ol.geom.SharedVertices();
+      var lineVertices = new ol.geom.SharedVertices();
+      var polygonVertices = new ol.geom.SharedVertices();
+
+      var lookup = {
+        'point': pointVertices,
+        'linestring': lineVertices,
+        'polygon': polygonVertices,
+        'multipoint': pointVertices,
+        'multilinstring': lineVertices,
+        'multipolygon': polygonVertices
+      };
+
+      var callback = function(feature, type) {
+        return lookup[type];
+      };
+
+      var parser = new ol.parser.GeoJSON();
+      var json = {
+        type: 'Feature',
+        properties: {
+          bam: 'baz'
+        },
+        geometry: {
+          type: 'LineString',
+          coordinates: [[1, 2], [3, 4]]
+        }
+      };
+      var features = parser.parseAsFeatureCollection_(json,
+          {callback: callback});
+
+      expect(features.length).to.be(1);
+
+      var first = features[0];
+      expect(first).to.be.a(ol.Feature);
+      expect(first.get('bam')).to.be('baz');
+      expect(first.getGeometry()).to.be.a(ol.geom.LineString);
+
+      expect(pointVertices.coordinates.length).to.be(0);
+      expect(lineVertices.coordinates.length).to.be(4);
+      expect(polygonVertices.coordinates.length).to.be(0);
+    });
+
+    it('returns an array of features for GeometryCollection', function() {
+      var pointVertices = new ol.geom.SharedVertices();
+      var lineVertices = new ol.geom.SharedVertices();
+      var polygonVertices = new ol.geom.SharedVertices();
+
+      var lookup = {
+        'point': pointVertices,
+        'linestring': lineVertices,
+        'polygon': polygonVertices,
+        'multipoint': pointVertices,
+        'multilinstring': lineVertices,
+        'multipolygon': polygonVertices
+      };
+
+      var callback = function(feature, type) {
+        return lookup[type];
+      };
+
+      var parser = new ol.parser.GeoJSON();
+      var json = {
+        type: 'GeometryCollection',
+        geometries: [{
+          type: 'Point',
+          coordinates: [1, 2]
+        }, {
+          type: 'LineString',
+          coordinates: [[3, 4], [5, 6]]
+        }, {
+          type: 'Polygon',
+          coordinates: [[[7, 8], [9, 10], [11, 12], [7, 8]]]
+        }]
+      };
+      var features = parser.parseAsFeatureCollection_(json,
+          {callback: callback});
+
+      expect(features.length).to.be(3);
+
+      expect(features[0].getGeometry()).to.be.a(ol.geom.Point);
+      expect(features[1].getGeometry()).to.be.a(ol.geom.LineString);
+      expect(features[2].getGeometry()).to.be.a(ol.geom.Polygon);
+
+      expect(pointVertices.coordinates.length).to.be(2);
+      expect(lineVertices.coordinates.length).to.be(4);
+      expect(polygonVertices.coordinates.length).to.be(8);
+    });
+
+    it('returns an array of features for Point', function() {
+      var pointVertices = new ol.geom.SharedVertices();
+      var lineVertices = new ol.geom.SharedVertices();
+      var polygonVertices = new ol.geom.SharedVertices();
+
+      var lookup = {
+        'point': pointVertices,
+        'linestring': lineVertices,
+        'polygon': polygonVertices,
+        'multipoint': pointVertices,
+        'multilinstring': lineVertices,
+        'multipolygon': polygonVertices
+      };
+
+      var callback = function(feature, type) {
+        return lookup[type];
+      };
+
+      var parser = new ol.parser.GeoJSON();
+      var json = {
+        type: 'Point',
+        coordinates: [1, 2]
+      };
+      var features = parser.parseAsFeatureCollection_(json,
+          {callback: callback});
+
+      expect(features.length).to.be(1);
+
+      expect(features[0].getGeometry()).to.be.a(ol.geom.Point);
+
+      expect(pointVertices.coordinates.length).to.be(2);
+      expect(lineVertices.coordinates.length).to.be(0);
+      expect(polygonVertices.coordinates.length).to.be(0);
+    });
+
+    it('returns an array of features for LineString', function() {
+      var pointVertices = new ol.geom.SharedVertices();
+      var lineVertices = new ol.geom.SharedVertices();
+      var polygonVertices = new ol.geom.SharedVertices();
+
+      var lookup = {
+        'point': pointVertices,
+        'linestring': lineVertices,
+        'polygon': polygonVertices,
+        'multipoint': pointVertices,
+        'multilinstring': lineVertices,
+        'multipolygon': polygonVertices
+      };
+
+      var callback = function(feature, type) {
+        return lookup[type];
+      };
+
+      var parser = new ol.parser.GeoJSON();
+      var json = {
+        type: 'LineString',
+        coordinates: [[3, 4], [5, 6]]
+      };
+      var features = parser.parseAsFeatureCollection_(json,
+          {callback: callback});
+
+      expect(features.length).to.be(1);
+
+      expect(features[0].getGeometry()).to.be.a(ol.geom.LineString);
+
+      expect(pointVertices.coordinates.length).to.be(0);
+      expect(lineVertices.coordinates.length).to.be(4);
+      expect(polygonVertices.coordinates.length).to.be(0);
+    });
+
+    it('returns an array of features for Polygon', function() {
+      var pointVertices = new ol.geom.SharedVertices();
+      var lineVertices = new ol.geom.SharedVertices();
+      var polygonVertices = new ol.geom.SharedVertices();
+
+      var lookup = {
+        'point': pointVertices,
+        'linestring': lineVertices,
+        'polygon': polygonVertices,
+        'multipoint': pointVertices,
+        'multilinstring': lineVertices,
+        'multipolygon': polygonVertices
+      };
+
+      var callback = function(feature, type) {
+        return lookup[type];
+      };
+
+      var parser = new ol.parser.GeoJSON();
+      var json = {
+        type: 'Polygon',
+        coordinates: [[[7, 8], [9, 10], [11, 12], [7, 8]]]
+      };
+      var features = parser.parseAsFeatureCollection_(json,
+          {callback: callback});
+
+      expect(features.length).to.be(1);
+
+      expect(features[0].getGeometry()).to.be.a(ol.geom.Polygon);
+
+      expect(pointVertices.coordinates.length).to.be(0);
+      expect(lineVertices.coordinates.length).to.be(0);
+      expect(polygonVertices.coordinates.length).to.be(8);
+    });
+
 
   });
 

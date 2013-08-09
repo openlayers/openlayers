@@ -28,6 +28,8 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
     },
     'Box': function(node, container) {
       var coordinates = [];
+      this.readers[this.defaultNamespaceURI]['_inherit'].apply(this,
+          [node, coordinates, container]);
       this.readChildNodes(node, coordinates);
       container.bounds = [coordinates[0][0][0], coordinates[0][1][0],
         coordinates[0][0][1], coordinates[0][1][1]];
@@ -112,14 +114,20 @@ goog.inherits(ol.parser.ogc.GML_v2, ol.parser.ogc.GML);
 
 
 /**
- * @param {Object} obj Object structure to write out as XML.
- * @return {string} An string representing the XML document.
+ * @param {ol.parser.ReadFeaturesResult} obj Object structure to write out as
+ * GML.
+ * @param {ol.parser.GMLWriteOptions=} opt_options Write options.
+ * @return {string} A string representing the GML document.
  */
-ol.parser.ogc.GML_v2.prototype.write = function(obj) {
+ol.parser.ogc.GML_v2.prototype.write = function(obj, opt_options) {
+  this.applyWriteOptions(obj, opt_options);
   var root = this.writeNode('FeatureCollection', obj.features,
       'http://www.opengis.net/wfs');
   this.setAttributeNS(
       root, 'http://www.w3.org/2001/XMLSchema-instance',
       'xsi:schemaLocation', this.schemaLocation);
-  return this.serialize(root);
+  var gml = this.serialize(root);
+  delete this.srsName;
+  delete this.axisOrientation;
+  return gml;
 };

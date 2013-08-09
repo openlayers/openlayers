@@ -9,28 +9,81 @@ describe('ol.style.ShapeLiteral', function() {
         type: ol.style.ShapeType.CIRCLE,
         size: 4,
         fillColor: '#BADA55',
+        fillOpacity: 0.9,
         strokeColor: '#013',
-        strokeWidth: 3,
-        opacity: 1
+        strokeOpacity: 0.8,
+        strokeWidth: 3
       });
       var equalLiteral = new ol.style.ShapeLiteral({
         type: ol.style.ShapeType.CIRCLE,
         size: 4,
         fillColor: '#BADA55',
+        fillOpacity: 0.9,
         strokeColor: '#013',
-        strokeWidth: 3,
-        opacity: 1
+        strokeOpacity: 0.8,
+        strokeWidth: 3
       });
-      var differentLiteral = new ol.style.ShapeLiteral({
+      var differentSize = new ol.style.ShapeLiteral({
+        type: ol.style.ShapeType.CIRCLE,
+        size: 5,
+        fillColor: '#BADA55',
+        fillOpacity: 0.9,
+        strokeColor: '#013',
+        strokeOpacity: 0.8,
+        strokeWidth: 3
+      });
+      var differentFillColor = new ol.style.ShapeLiteral({
         type: ol.style.ShapeType.CIRCLE,
         size: 4,
-        fillColor: '#013',
+        fillColor: '#ffffff',
+        fillOpacity: 0.9,
         strokeColor: '#013',
-        strokeWidth: 3,
-        opacity: 1
+        strokeOpacity: 0.8,
+        strokeWidth: 3
+      });
+      var differentFillOpacity = new ol.style.ShapeLiteral({
+        type: ol.style.ShapeType.CIRCLE,
+        size: 4,
+        fillColor: '#BADA55',
+        fillOpacity: 0.8,
+        strokeColor: '#013',
+        strokeOpacity: 0.8,
+        strokeWidth: 3
+      });
+      var differentStrokeColor = new ol.style.ShapeLiteral({
+        type: ol.style.ShapeType.CIRCLE,
+        size: 4,
+        fillColor: '#BADA55',
+        fillOpacity: 0.9,
+        strokeColor: '#ffffff',
+        strokeOpacity: 0.8,
+        strokeWidth: 3
+      });
+      var differentStrokeOpacity = new ol.style.ShapeLiteral({
+        type: ol.style.ShapeType.CIRCLE,
+        size: 4,
+        fillColor: '#BADA55',
+        fillOpacity: 0.9,
+        strokeColor: '#013',
+        strokeOpacity: 0.7,
+        strokeWidth: 3
+      });
+      var differentStrokeWidth = new ol.style.ShapeLiteral({
+        type: ol.style.ShapeType.CIRCLE,
+        size: 4,
+        fillColor: '#BADA55',
+        fillOpacity: 0.9,
+        strokeColor: '#013',
+        strokeOpacity: 0.8,
+        strokeWidth: 4
       });
       expect(literal.equals(equalLiteral)).to.be(true);
-      expect(literal.equals(differentLiteral)).to.be(false);
+      expect(literal.equals(differentSize)).to.be(false);
+      expect(literal.equals(differentFillColor)).to.be(false);
+      expect(literal.equals(differentFillOpacity)).to.be(false);
+      expect(literal.equals(differentStrokeColor)).to.be(false);
+      expect(literal.equals(differentStrokeOpacity)).to.be(false);
+      expect(literal.equals(differentStrokeWidth)).to.be(false);
     });
 
   });
@@ -64,7 +117,7 @@ describe('ol.style.Shape', function() {
     it('evaluates expressions with the given feature', function() {
       var symbolizer = new ol.style.Shape({
         size: ol.expr.parse('sizeAttr'),
-        opacity: ol.expr.parse('opacityAttr'),
+        fillOpacity: ol.expr.parse('opacityAttr'),
         fillColor: '#BADA55'
       });
 
@@ -76,43 +129,25 @@ describe('ol.style.Shape', function() {
       var literal = symbolizer.createLiteral(feature);
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.size).to.be(42);
-      expect(literal.opacity).to.be(0.4);
+      expect(literal.fillOpacity).to.be(0.4);
     });
 
     it('can be called without a feature', function() {
       var symbolizer = new ol.style.Shape({
         size: 10,
-        opacity: 1,
         fillColor: '#BADA55',
         strokeColor: '#013',
+        strokeOpacity: 1,
         strokeWidth: 2
       });
 
       var literal = symbolizer.createLiteral();
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.size).to.be(10);
-      expect(literal.opacity).to.be(1);
       expect(literal.fillColor).to.be('#BADA55');
       expect(literal.strokeColor).to.be('#013');
+      expect(literal.strokeOpacity).to.be(1);
       expect(literal.strokeWidth).to.be(2);
-    });
-
-    it('applies default type if none provided', function() {
-      var symbolizer = new ol.style.Shape({
-        size: ol.expr.parse('sizeAttr'),
-        opacity: ol.expr.parse('opacityAttr'),
-        fillColor: '#BADA55'
-      });
-
-      var feature = new ol.Feature({
-        sizeAttr: 42,
-        opacityAttr: 0.4
-      });
-
-      var literal = symbolizer.createLiteral(feature);
-      expect(literal).to.be.a(ol.style.ShapeLiteral);
-      expect(literal.size).to.be(42);
-      expect(literal.opacity).to.be(0.4);
     });
 
   });
@@ -131,6 +166,30 @@ describe('ol.style.Shape', function() {
 
   });
 
+  describe('#getFillOpacity()', function() {
+
+    it('returns the fill opacity', function() {
+      var symbolizer = new ol.style.Shape({
+        fillOpacity: 0.123
+      });
+
+      var opacity = symbolizer.getFillOpacity();
+      expect(opacity).to.be.a(ol.expr.Literal);
+      expect(opacity.getValue()).to.be(0.123);
+    });
+
+    it('returns the default if none provided', function() {
+      var symbolizer = new ol.style.Shape({
+        fillColor: '#ffffff'
+      });
+
+      var opacity = symbolizer.getFillOpacity();
+      expect(opacity).to.be.a(ol.expr.Literal);
+      expect(opacity.getValue()).to.be(0.4);
+    });
+
+  });
+
   describe('#getStrokeColor()', function() {
 
     it('returns the stroke color', function() {
@@ -145,6 +204,31 @@ describe('ol.style.Shape', function() {
 
   });
 
+  describe('#getStrokeOpacity()', function() {
+
+    it('returns the stroke opacity', function() {
+      var symbolizer = new ol.style.Shape({
+        strokeWidth: 1,
+        strokeOpacity: 0.123
+      });
+
+      var opacity = symbolizer.getStrokeOpacity();
+      expect(opacity).to.be.a(ol.expr.Literal);
+      expect(opacity.getValue()).to.be(0.123);
+    });
+
+    it('returns the default if none provided', function() {
+      var symbolizer = new ol.style.Shape({
+        strokeWidth: 1
+      });
+
+      var opacity = symbolizer.getStrokeOpacity();
+      expect(opacity).to.be.a(ol.expr.Literal);
+      expect(opacity.getValue()).to.be(0.8);
+    });
+
+  });
+
   describe('#getStrokeWidth()', function() {
 
     it('returns the stroke width', function() {
@@ -155,21 +239,6 @@ describe('ol.style.Shape', function() {
       var strokeWidth = symbolizer.getStrokeWidth();
       expect(strokeWidth).to.be.a(ol.expr.Literal);
       expect(strokeWidth.getValue()).to.be(10);
-    });
-
-  });
-
-  describe('#getOpacity()', function() {
-
-    it('returns the stroke opacity', function() {
-      var symbolizer = new ol.style.Shape({
-        strokeWidth: 1,
-        opacity: 0.123
-      });
-
-      var opacity = symbolizer.getOpacity();
-      expect(opacity).to.be.a(ol.expr.Literal);
-      expect(opacity.getValue()).to.be(0.123);
     });
 
   });
@@ -216,6 +285,34 @@ describe('ol.style.Shape', function() {
 
   });
 
+  describe('#setFillOpacity()', function() {
+
+    it('sets the fill opacity', function() {
+      var symbolizer = new ol.style.Shape({
+        fillOpacity: 0.5
+      });
+
+      symbolizer.setFillOpacity(new ol.expr.Literal(0.6));
+
+      var fillOpacity = symbolizer.getFillOpacity();
+      expect(fillOpacity).to.be.a(ol.expr.Literal);
+      expect(fillOpacity.getValue()).to.be(0.6);
+    });
+
+    it('throws when not provided an expression', function() {
+      var symbolizer = new ol.style.Shape({
+        fillOpacity: 0.5
+      });
+
+      expect(function() {
+        symbolizer.setFillOpacity(0.4);
+      }).throwException(function(err) {
+        expect(err).to.be.a(goog.asserts.AssertionError);
+      });
+    });
+
+  });
+
   describe('#setStrokeColor()', function() {
 
     it('sets the stroke color', function() {
@@ -237,6 +334,35 @@ describe('ol.style.Shape', function() {
 
       expect(function() {
         symbolizer.setStrokeColor('#0000ff');
+      }).throwException(function(err) {
+        expect(err).to.be.a(goog.asserts.AssertionError);
+      });
+    });
+
+  });
+
+  describe('#setStrokeOpacity()', function() {
+
+    it('sets the stroke opacity', function() {
+      var symbolizer = new ol.style.Shape({
+        strokeWidth: 1,
+        strokeOpacity: 0.123
+      });
+      symbolizer.setStrokeOpacity(new ol.expr.Literal(0.321));
+
+      var opacity = symbolizer.getStrokeOpacity();
+      expect(opacity).to.be.a(ol.expr.Literal);
+      expect(opacity.getValue()).to.be(0.321);
+    });
+
+    it('throws when not provided an expression', function() {
+      var symbolizer = new ol.style.Shape({
+        strokeWidth: 1,
+        strokeOpacity: 1
+      });
+
+      expect(function() {
+        symbolizer.setStrokeOpacity(0.5);
       }).throwException(function(err) {
         expect(err).to.be.a(goog.asserts.AssertionError);
       });
@@ -286,34 +412,6 @@ describe('ol.style.Shape', function() {
 
   });
 
-  describe('#setOpacity()', function() {
-
-    it('sets the stroke opacity', function() {
-      var symbolizer = new ol.style.Shape({
-        strokeWidth: 1,
-        opacity: 0.123
-      });
-      symbolizer.setOpacity(new ol.expr.Literal(0.321));
-
-      var opacity = symbolizer.getOpacity();
-      expect(opacity).to.be.a(ol.expr.Literal);
-      expect(opacity.getValue()).to.be(0.321);
-    });
-
-    it('throws when not provided an expression', function() {
-      var symbolizer = new ol.style.Shape({
-        strokeWidth: 1,
-        opacity: 1
-      });
-
-      expect(function() {
-        symbolizer.setOpacity(0.5);
-      }).throwException(function(err) {
-        expect(err).to.be.a(goog.asserts.AssertionError);
-      });
-    });
-
-  });
 });
 
 goog.require('goog.asserts.AssertionError');

@@ -280,8 +280,7 @@ ol.structs.RTree.prototype.insertSubtree_ = function(node, root) {
  *
  * @param {Array.<ol.structs.RTreeNode>} nodes Array of nodes.
  * @private
- * @return {Array.<Array.<ol.structs.RTreeNode>>} An array of two new arrays
- *     of nodes.
+ * @return {Array.<ol.structs.RTreeNode>} An array of two nodes.
  */
 ol.structs.RTree.prototype.linearSplit_ = function(nodes) {
   var n = this.pickLinear_(nodes);
@@ -298,8 +297,7 @@ ol.structs.RTree.prototype.linearSplit_ = function(nodes) {
  *
  * @param {Array.<ol.structs.RTreeNode>} nodes Array of source nodes.
  * @private
- * @return {Array.<ol.structs.RTreeNode>} An array of two new arrays
- *     of nodes.
+ * @return {Array.<ol.structs.RTreeNode>} An array of two nodes.
  */
 ol.structs.RTree.prototype.pickLinear_ = function(nodes) {
   var lowestHighX = nodes.length - 1;

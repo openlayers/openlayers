@@ -8,7 +8,6 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Feature');
-goog.require('ol.extent');
 goog.require('ol.geom.AbstractCollection');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
@@ -154,7 +153,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderLineStringFeatures_ =
       i, ii, feature, id, currentSize, geometry, components, j, jj, line, dim,
       k, kk, vec, strokeSize;
 
-  context.globalAlpha = symbolizer.opacity;
+  context.globalAlpha = symbolizer.strokeOpacity;
   context.strokeStyle = symbolizer.strokeColor;
   context.lineWidth = symbolizer.strokeWidth;
   context.lineCap = 'round'; // TODO: accept this as a symbolizer property
@@ -307,11 +306,13 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPolygonFeatures_ =
   var context = this.context_,
       strokeColor = symbolizer.strokeColor,
       strokeWidth = symbolizer.strokeWidth,
+      strokeOpacity = symbolizer.strokeOpacity,
       fillColor = symbolizer.fillColor,
+      fillOpacity = symbolizer.fillOpacity,
+      globalAlpha,
       i, ii, geometry, components, j, jj, poly,
       rings, numRings, ring, dim, k, kk, vec;
 
-  context.globalAlpha = symbolizer.opacity;
   if (strokeColor) {
     context.strokeStyle = strokeColor;
     if (strokeWidth) {
@@ -360,7 +361,17 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPolygonFeatures_ =
         }
         if (fillColor && strokeColor) {
           // scenario 3 - fill and stroke each time
+          if (fillOpacity !== globalAlpha) {
+            goog.asserts.assertNumber(fillOpacity);
+            context.globalAlpha = fillOpacity;
+            globalAlpha = fillOpacity;
+          }
           context.fill();
+          if (strokeOpacity !== globalAlpha) {
+            goog.asserts.assertNumber(strokeOpacity);
+            context.globalAlpha = strokeOpacity;
+            globalAlpha = strokeOpacity;
+          }
           context.stroke();
           if (i < ii - 1 || j < jj - 1) {
             context.beginPath();
@@ -372,9 +383,19 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPolygonFeatures_ =
   if (!(fillColor && strokeColor)) {
     if (fillColor) {
       // scenario 2 - fill all at once
+      if (fillOpacity !== globalAlpha) {
+        goog.asserts.assertNumber(fillOpacity);
+        context.globalAlpha = fillOpacity;
+        globalAlpha = fillOpacity;
+      }
       context.fill();
     } else {
       // scenario 1 - stroke all at once
+      if (strokeOpacity !== globalAlpha) {
+        goog.asserts.assertNumber(strokeOpacity);
+        context.globalAlpha = strokeOpacity;
+        globalAlpha = strokeOpacity;
+      }
       context.stroke();
     }
   }
@@ -401,8 +422,6 @@ ol.renderer.canvas.VectorRenderer.renderCircle_ = function(circle) {
   canvas.height = size;
   canvas.width = size;
 
-  context.globalAlpha = circle.opacity;
-
   if (fillColor) {
     context.fillStyle = fillColor;
   }
@@ -417,9 +436,13 @@ ol.renderer.canvas.VectorRenderer.renderCircle_ = function(circle) {
   context.arc(mid, mid, circle.size / 2, 0, twoPi, true);
 
   if (fillColor) {
+    goog.asserts.assertNumber(circle.fillOpacity);
+    context.globalAlpha = circle.fillOpacity;
     context.fill();
   }
   if (strokeColor) {
+    goog.asserts.assertNumber(circle.strokeOpacity);
+    context.globalAlpha = circle.strokeOpacity;
     context.stroke();
   }
   return canvas;
@@ -446,8 +469,7 @@ ol.renderer.canvas.VectorRenderer.getLabelVectors = function(geometry) {
     return [[geometry.get(0), geometry.get(1), 0]];
   }
   if (type == ol.geom.GeometryType.POLYGON) {
-    // TODO: better label placement
-    var coordinates = ol.extent.getCenter(geometry.getBounds());
+    var coordinates = geometry.getInteriorPoint();
     return [[coordinates[0], coordinates[1], 0]];
   }
   throw new Error('Label rendering not implemented for geometry type: ' +

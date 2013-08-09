@@ -1,0 +1,4 @@
+@exportSymbol ol.parser.TopoJSON
+
+@exportProperty ol.parser.TopoJSON.prototype.read
+@exportProperty ol.parser.TopoJSON.read

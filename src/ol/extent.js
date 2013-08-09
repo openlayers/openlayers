@@ -215,7 +215,9 @@ ol.extent.getForView2DAndSize =
   var dy = resolution * size[1] / 2;
   var cosRotation = Math.cos(rotation);
   var sinRotation = Math.sin(rotation);
+  /** @type {Array.<number>} */
   var xs = [-dx, -dx, dx, dx];
+  /** @type {Array.<number>} */
   var ys = [-dy, dy, -dy, dy];
   var i, x, y;
   for (i = 0; i < 4; ++i) {

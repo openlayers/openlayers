@@ -10,6 +10,7 @@ goog.require('ol.expr.Literal');
 goog.require('ol.expr.Logical');
 goog.require('ol.expr.LogicalOp');
 goog.require('ol.expr.functions');
+goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SharedVertices');
 goog.require('ol.layer.Layer');
@@ -200,6 +201,34 @@ ol.layer.FeatureCache.prototype.getFeaturesByIds_ = function(ids) {
 };
 
 
+/**
+ * Remove a feature from the cache.
+ * @param {ol.Feature} feature Feature.
+ */
+ol.layer.FeatureCache.prototype.remove = function(feature) {
+  var id = goog.getUid(feature).toString(),
+      geometry = feature.getGeometry();
+
+  delete this.idLookup_[id];
+
+  // index by geometry type and bounding box
+  if (!goog.isNull(geometry)) {
+    var geometryType = geometry.getType();
+    delete this.geometryTypeIndex_[geometryType][id];
+    this.rTree_.remove(geometry.getBounds(), feature);
+  }
+};
+
+
+/**
+ * TODO: Create a VectorLayerEvent with ADD and REMOVE event types
+ * @typedef {{extent: (ol.Extent|undefined),
+ *            features: (Array.<ol.Feature>|undefined),
+ *            type: goog.events.EventType}}
+ */
+ol.layer.VectorLayerEventObject;
+
+
 
 /**
  * @constructor
@@ -262,11 +291,21 @@ goog.inherits(ol.layer.Vector, ol.layer.Layer);
  * @param {Array.<ol.Feature>} features Array of features.
  */
 ol.layer.Vector.prototype.addFeatures = function(features) {
+  var extent = ol.extent.createEmpty(),
+      feature, geometry;
   for (var i = 0, ii = features.length; i < ii; ++i) {
-    this.featureCache_.add(features[i]);
+    feature = features[i];
+    this.featureCache_.add(feature);
+    geometry = feature.getGeometry();
+    if (!goog.isNull(geometry)) {
+      ol.extent.extend(extent, geometry.getBounds());
+    }
   }
-  // TODO: events for real - listeners want features and extent here
-  this.dispatchEvent(goog.events.EventType.CHANGE);
+  this.dispatchEvent(/** @type {ol.layer.VectorLayerEventObject} */ ({
+    extent: extent,
+    features: features,
+    type: goog.events.EventType.CHANGE
+  }));
 };
 
 
@@ -279,34 +318,26 @@ ol.layer.Vector.prototype.getVectorSource = function() {
 
 
 /**
- * @param {ol.expr.Expression=} opt_expr Expression for filtering.
- * @return {Array.<ol.Feature>} Array of features.
- */
-ol.layer.Vector.prototype.getFeatures = function(opt_expr) {
-  return goog.object.getValues(
-      this.featureCache_.getFeaturesObject(opt_expr));
-};
-
-
-/**
- * @param {ol.expr.Expression=} opt_expr Expression for filtering.
- * @return {Object.<string, ol.Feature>} Features.
- */
-ol.layer.Vector.prototype.getFeaturesObject = function(opt_expr) {
-  return this.featureCache_.getFeaturesObject(opt_expr);
-};
-
-
-/**
- * Get all features whose bounding box intersects the provided extent.
+ * Get all features whose bounding box intersects the provided extent. This
+ * method is intended for being called by the renderer. When null is returned,
+ * the renderer should not waste time rendering, and `opt_callback` is
+ * usually a function that requests a renderFrame, which will be called as soon
+ * as the data for `extent` is available.
  *
  * @param {ol.Extent} extent Bounding extent.
+ * @param {ol.Projection} projection Target projection.
  * @param {ol.geom.GeometryType=} opt_type Optional geometry type.
- * @return {Object.<string, ol.Feature>} Features.
+ * @param {Function=} opt_callback Callback to call when data is parsed.
+ * @return {Object.<string, ol.Feature>} Features or null if source is loading
+ *     data for `extent`.
  */
 ol.layer.Vector.prototype.getFeaturesObjectForExtent = function(extent,
-    opt_type) {
-  return this.featureCache_.getFeaturesObjectForExtent(extent, opt_type);
+    projection, opt_type, opt_callback) {
+  var source = this.getSource();
+  return source.prepareFeatures(this, extent, projection, opt_callback) ==
+      ol.source.VectorLoadState.LOADING ?
+          null :
+          this.featureCache_.getFeaturesObjectForExtent(extent, opt_type);
 };
 
 
@@ -392,8 +423,6 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
  *     one projection.
  */
 ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
-  var features;
-
   var lookup = {};
   lookup[ol.geom.GeometryType.POINT] = this.pointVertices_;
   lookup[ol.geom.GeometryType.LINESTRING] = this.lineVertices_;
@@ -406,8 +435,12 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
     return lookup[type];
   };
 
-  var addFeatures = function(features) {
+  var addFeatures = function(data) {
+    var features = data.features;
     var sourceProjection = this.getSource().getProjection();
+    if (goog.isNull(sourceProjection)) {
+      sourceProjection = data.metadata.projection;
+    }
     var transform = ol.proj.getTransform(sourceProjection, projection);
 
     transform(
@@ -428,26 +461,28 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
     this.addFeatures(features);
   };
 
-  var options = {callback: callback};
+  var options = {callback: callback}, result;
   if (goog.isString(data)) {
     if (goog.isFunction(parser.readFeaturesFromStringAsync)) {
       parser.readFeaturesFromStringAsync(data, goog.bind(addFeatures, this),
           options);
     } else {
-      goog.asserts.assert(goog.isFunction(parser.readFeaturesFromString),
-          'Expected a parser with readFeaturesFromString method.');
-      features = parser.readFeaturesFromString(data, options);
-      addFeatures.call(this, features);
+      goog.asserts.assert(
+          goog.isFunction(parser.readFeaturesFromString),
+          'Expected parser with a readFeaturesFromString method.');
+      result = parser.readFeaturesFromString(data, options);
+      addFeatures.call(this, result);
     }
   } else if (goog.isObject(data)) {
     if (goog.isFunction(parser.readFeaturesFromObjectAsync)) {
       parser.readFeaturesFromObjectAsync(data, goog.bind(addFeatures, this),
           options);
     } else {
-      goog.asserts.assert(goog.isFunction(parser.readFeaturesFromObject),
-          'Expected a parser with a readFeaturesFromObject method.');
-      features = parser.readFeaturesFromObject(data, options);
-      addFeatures.call(this, features);
+      goog.asserts.assert(
+          goog.isFunction(parser.readFeaturesFromObject),
+          'Expected parser with a readFeaturesFromObject method.');
+      result = parser.readFeaturesFromObject(data, options);
+      addFeatures.call(this, result);
     }
   } else {
     // TODO: parse more data types
@@ -461,6 +496,29 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
  */
 ol.layer.Vector.prototype.getTransformFeatureInfo = function() {
   return this.transformFeatureInfo_;
+};
+
+
+/**
+ * Remove features from the layer.
+ * @param {Array.<ol.Feature>} features Features to remove.
+ */
+ol.layer.Vector.prototype.removeFeatures = function(features) {
+  var extent = ol.extent.createEmpty(),
+      feature, geometry;
+  for (var i = 0, ii = features.length; i < ii; ++i) {
+    feature = features[i];
+    this.featureCache_.remove(feature);
+    geometry = feature.getGeometry();
+    if (!goog.isNull(geometry)) {
+      ol.extent.extend(extent, geometry.getBounds());
+    }
+  }
+  this.dispatchEvent(/** @type {ol.layer.VectorLayerEventObject} */ ({
+    extent: extent,
+    features: features,
+    type: goog.events.EventType.CHANGE
+  }));
 };
 
 

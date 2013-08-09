@@ -10,7 +10,7 @@ var map1 = new ol.Map({
     new ol.layer.TileLayer({
       preload: Infinity,
       source: new ol.source.BingMaps({
-        key: 'AlQLZ0-5yk301_ESrmNLma3LYxEKNSg7w-e_knuRfyYFtld-UFvXVs38NOulku3Q',
+        key: 'Ar33pRUvQOdESG8m_T15MUmNz__E1twPo42bFx9jvdDePhX0PNgAcEm44OVTS7tt',
         style: 'Aerial'
       })
     })

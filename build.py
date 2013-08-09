@@ -5,7 +5,7 @@ import gzip
 import json
 import os
 import os.path
-import re
+import regex as re
 import shutil
 import sys
 
@@ -72,7 +72,10 @@ if sys.platform == 'win32':
 else:
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
-    variables.JAVA = 'java'
+    if sys.platform == 'darwin':
+        variables.JAVA = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java'
+    else:
+        variables.JAVA = 'java'
     variables.JAR = 'jar'
     variables.JSDOC = 'jsdoc'
     variables.NODE = 'node'
@@ -142,8 +145,8 @@ SRC = [path
        if path.endswith('.js')
        if path not in SHADER_SRC]
 
-PLOVR_JAR = 'build/plovr-eba786b34df9.jar'
-PLOVR_JAR_MD5 = '20eac8ccc4578676511cf7ccbfc65100'
+PLOVR_JAR = 'build/plovr-81ed862.jar'
+PLOVR_JAR_MD5 = '1c752daaf11ad6220b298e7d2ee2b87d'
 
 PROJ4JS = 'build/proj4js/lib/proj4js-combined.js'
 PROJ4JS_ZIP = 'build/proj4js-1.1.0.zip'
@@ -309,10 +312,10 @@ def examples_star_json(name, match):
                 '../externs/bingmaps.js',
                 '../externs/bootstrap.js',
                 '../externs/geojson.js',
+                '../externs/topojson.js',
                 '../externs/oli.js',
                 '../externs/proj4js.js',
                 '../externs/tilejson.js',
-                '../externs/w3c_device_sensor_event.js',
             ],
         })
         with open(t.name, 'w') as f:
@@ -666,7 +669,7 @@ def check_examples(t):
         [e + '?mode=raw' for e in examples] + \
         [e + '?mode=whitespace' for e in examples] + \
         [e + '?mode=simple' for e in examples] + \
-        examples
+        [e + '?mode=advanced' for e in examples]
     for example in all_examples:
         t.run('%(PHANTOMJS)s', 'bin/check-example.js', example)
 

@@ -15,14 +15,14 @@
  * @property {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
  * @property {Array.<ol.layer.Layer>|undefined} layers Layers to restrict the
  *     query to. All map layers will be queried if not provided.
- * @property {function(Array.<string|undefined>)} success Callback for
+ * @property {function(Array.<Array.<string|undefined>>)} success Callback for
  *     successful queries. The passed argument is the resulting feature
  *     information for each layer, with array indices being the same as in the
  *     passed `layers` array or in the layer collection as returned from
  *     `ol.Map#getLayers()` if no `layers` were provided.
- * @property {function(Object)|undefined} error Callback for unsuccessful
- *     queries. Note that queries with no matching features trigger the success
- *     callback, not the error callback.
+ * @property {function()|undefined} error Callback for unsuccessful queries.
+ *     Note that queries with no matching features trigger the success callback,
+ *     not the error callback.
  */
 
 /**
@@ -35,9 +35,9 @@
  *     each layer, with array indices being the same as in the passed `layers`
  *     array or in the layer collection as returned from `ol.Map#getLayers()` if
  *     no layers were provided.
- * @property {function(Object)|undefined} error Callback for unsuccessful
- *     queries. Note that queries with no matching features trigger the success
- *     callback, not the error callback.
+ * @property {function()|undefined} error Callback for unsuccessful queries.
+ *     Note that queries with no matching features trigger the success callback,
+ *     not the error callback.
  */
 
 /**
@@ -120,32 +120,32 @@
 /**
  * @typedef {Object} ol.animation.BounceOptions
  * @property {number} resolution Resolution.
- * @property {number|undefined} start Start.
- * @property {number|undefined} duration Duration.
+ * @property {number|undefined} start The start time of the animation. Default is immediately.
+ * @property {number|undefined} duration The duration of the animation in milliseconds.
  * @property {function(number):number|undefined} easing Easing function.
  */
 
 /**
  * @typedef {Object} ol.animation.PanOptions
  * @property {ol.Coordinate} source Source.
- * @property {number|undefined} start Start.
- * @property {number|undefined} duration Duration.
+ * @property {number|undefined} start The start time of the animation. Default is immediately.
+ * @property {number|undefined} duration The duration of the animation in milliseconds.
  * @property {function(number):number|undefined} easing Easing function.
  */
 
 /**
  * @typedef {Object} ol.animation.RotateOptions
  * @property {number} rotation Rotation.
- * @property {number|undefined} start Start.
- * @property {number|undefined} duration Duration.
+ * @property {number|undefined} start The start time of the animation. Default is immediately.
+ * @property {number|undefined} duration The duration of the animation in milliseconds.
  * @property {function(number):number|undefined} easing Easing function.
  */
 
 /**
  * @typedef {Object} ol.animation.ZoomOptions
  * @property {number} resolution number Resolution.
- * @property {number|undefined} start Start.
- * @property {number|undefined} duration Duration.
+ * @property {number|undefined} start The start time of the animation. Default is immediately.
+ * @property {number|undefined} duration The duration of the animation in milliseconds.
  * @property {function(number):number|undefined} easing Easing function.
  */
 
@@ -240,6 +240,15 @@
  * @property {ol.Map|undefined} map Map.
  * @property {number|undefined} maxResolution Maximum resolution.
  * @property {number|undefined} minResolution Minimum resolution.
+ */
+
+/**
+ * @typedef {Object} ol.control.ZoomToExtentOptions
+ * @property {string|undefined} className Class name.
+ * @property {ol.Map|undefined} map Map.
+ * @property {Element|undefined} target Target.
+ * @property {ol.Extent|undefined} extent The extent to zoom to. If
+ *     undefined the validity extent of the view projection is used.
  */
 
 /**
@@ -362,9 +371,18 @@
  */
 
 /**
+ * @typedef {Object} ol.parser.GMLReadOptions
+ * @property {string|undefined} axisOrientation The axis orientation.
+ */
+
+/**
+ * @typedef {Object} ol.parser.GMLWriteOptions
+ * @property {ol.ProjectionLike} srsName The srsName to use when writing.
+ * @property {string|undefined} axisOrientation The axis orientation.
+ */
+
+/**
  * @typedef {Object} ol.parser.GMLOptions
- * @property {string|undefined} axisOrientation The axis orientation as
- *     specified in Proj4. The default is 'enu'.
  * @property {boolean|undefined} curve Write gml:Curve instead of
  *     gml:LineString elements. This also affects the elements in multi-part
  *     geometries. Default is `false´. This only applies to GML version 3.
@@ -385,13 +403,13 @@
  *     default is `true´. This only applies to GML version 3.
  * @property {string|undefined} schemaLocation Optional schemaLocation to use
  *     when writing out the GML, this will override the default provided.
- * @property {string|undefined} srsName URI for spatial reference system.
- *     This is optional for single part geometries and mandatory for
- *     collections and multis. If set, the srsName attribute will be written
- *     for all geometries. Default is null.
  * @property {boolean|undefined} surface Write gml:Surface instead of
  *     gml:Polygon elements. This also affects the elements in multi-part
  *     geometries. Default is `false´. This only applies to GML version 3.
+ * @property {ol.parser.GMLReadOptions|undefined} readOptions readOptions to
+ *     use for this instance.
+ * @property {ol.parser.GMLWriteOptions|undefined} writeOptions writeOptions
+ *     to use for this instance.
  */
 
 /**
@@ -448,6 +466,8 @@
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image
  *     requests.
  * @property {ol.Extent|undefined} extent Extent.
+ * @property {ol.source.WMSGetFeatureInfoOptions|undefined}
+ *     getFeatureInfoOptions Options for GetFeatureInfo.
  * @property {Object.<string,*>} params WMS request parameters. At least a
  *     `LAYERS` param is required. `STYLES` is '' by default. `VERSION` is
  *     '1.3.0' by default. `WIDTH`, `HEIGHT`, `BBOX` and `CRS` (`SRS` for WMS
@@ -507,12 +527,29 @@
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image
  *     requests.
  * @property {ol.Extent|undefined} extent Extent.
+ * @property {ol.source.WMSGetFeatureInfoOptions|undefined}
+ *     getFeatureInfoOptions Options for GetFeatureInfo.
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  * @property {number|undefined} maxZoom Maximum zoom.
  * @property {ol.ProjectionLike} projection Projection.
  * @property {string|undefined} url WMS service url.
  * @property {Array.<string>|undefined} urls WMS service urls. Use this instead
  *     of `url` when the WMS supports multiple urls for GetMap requests.
+ */
+
+/**
+ * @typedef {Object} ol.source.VectorOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {Object|string|undefined} data Data to parse.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {ol.parser.Parser} parser Parser instance to parse data
+ *     provided as `data` or fetched from `url`.
+ * @property {ol.ProjectionLike|undefined} projection Projection. Usually the
+ *     projection is provided by the parser, so this only needs to be set if
+ *     the parser does not know the SRS (e.g. in some GML flavors), or if the
+ *     projection determined by the parser needs to be overridden.
+ * @property {string|undefined} url Server url providing the vector data.
  */
 
 /**
@@ -525,6 +562,16 @@
  *    Point collections.
  * @property {ol.ProjectionLike} projection Projection.
  */
+
+
+/**
+ * @typedef {Object} ol.source.WMSGetFeatureInfoOptions
+ * @property {ol.source.WMSGetFeatureInfoMethod} method Method for requesting
+ *     GetFeatureInfo. Default is `ol.source.WMSGetFeatureInfoMethod.IFRAME`.
+ * @property {Object} params Params for the GetFeatureInfo request. Default is
+ *     `{'INFO_FORMAT': 'text/html'}`.
+ */
+
 
 /**
  * @typedef {Object} ol.source.WMTSOptions
@@ -563,9 +610,10 @@
  * @typedef {Object} ol.style.LineOptions
  * @property {string|ol.expr.Expression|undefined} strokeColor Stroke
  *     color as hex color code.
+ * @property {number|ol.expr.Expression|undefined} strokeOpacity Stroke
+ *     opacity (0-1).
  * @property {number|ol.expr.Expression|undefined} strokeWidth Stroke
  *     width in pixels.
- * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
  */
 
 /**
@@ -591,11 +639,14 @@
  * @property {number|ol.expr.Expression|undefined} size Size in pixels.
  * @property {string|ol.expr.Expression|undefined} fillColor Fill color as
  *     hex color code.
+ * @property {number|ol.expr.Expression|undefined} fillOpacity Fill opacity
+ *     (0-1).
  * @property {string|ol.expr.Expression|undefined} strokeColor Stroke
  *     color as hex color code.
+ * @property {number|ol.expr.Expression|undefined} strokeOpacity Stroke opacity
+ *     (0-1).
  * @property {number|ol.expr.Expression|undefined} strokeWidth Stroke
  *     width in pixels.
- * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
  */
 
 /**

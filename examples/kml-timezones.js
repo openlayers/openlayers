@@ -5,7 +5,6 @@ goog.require('ol.expr');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.KML');
-goog.require('ol.proj');
 goog.require('ol.source.Stamen');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Polygon');
@@ -45,9 +44,9 @@ var style = new ol.style.Style({rules: [
   new ol.style.Rule({
     symbolizers: [
       new ol.style.Polygon({
-        fillColor: '#ffff33',
         strokeColor: '#ffffff',
-        opacity: ol.expr.parse('getOpacity()')
+        fillColor: '#ffff33',
+        fillOpacity: ol.expr.parse('getOpacity()')
       })
     ]
   })
@@ -55,7 +54,8 @@ var style = new ol.style.Style({rules: [
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    projection: ol.proj.get('EPSG:4326')
+    parser: new ol.parser.KML({dimension: 2}),
+    url: 'data/kml/timezones.kml'
   }),
   style: style
 });
@@ -103,21 +103,3 @@ map.on(['click', 'mousemove'], function(evt) {
     }
   });
 });
-
-var kml = new ol.parser.KML({dimension: 2});
-
-var url = 'data/kml/timezones.kml';
-var xhr = new XMLHttpRequest();
-xhr.open('GET', url, true);
-
-
-/**
- * onload handler for the XHR request.
- */
-xhr.onload = function() {
-  if (xhr.status == 200) {
-    var projection = map.getView().getProjection();
-    vector.parseFeatures(xhr.responseText, kml, projection);
-  }
-};
-xhr.send();
