@@ -49,7 +49,7 @@ ol.parser.ogc.Filter_v1 = function() {
               break;
           }
         }
-        return ol.expr.parse(value);
+        return ol.expr.parse(goog.string.trim(value));
       },
       'Filter': function(node, obj) {
         var container = {
