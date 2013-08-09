@@ -9,6 +9,9 @@ goog.require('goog.events.EventType');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.control.Control');
 goog.require('ol.css');
+goog.require('ol.interaction.condition');
+goog.require('ol.layer.Vector');
+goog.require('ol.source.Vector');
 
 
 
@@ -20,8 +23,14 @@ goog.require('ol.css');
 ol.control.Select = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
+  this.layer = new ol.layer.Vector({
+    source: new ol.source.Vector({parser: null}),
+    temp: true
+  });
+
   this.layers_ = options.layers;
 
+  // TODO: css
   var className = goog.isDef(options.className) ? options.className :
       'ol-select';
 
@@ -67,7 +76,8 @@ ol.control.Select.prototype.toggleActive_ = function(browserEvent) {
  */
 ol.control.Select.prototype.activate = function() {
   goog.dom.classes.add(this.element, 'active');
-  // TODO: Add box selection
+  this.getMap().addLayer(this.layer);
+  // TODO: Implement box selection
   this.listenerKeys.push(
       goog.events.listen(this.getMap(), ol.MapBrowserEvent.EventType.CLICK,
           this.handleClick, true, this));
@@ -82,6 +92,7 @@ ol.control.Select.prototype.deactivate = function() {
     goog.array.forEach(this.listenerKeys, goog.events.unlistenByKey);
     this.listenerKeys.length = 0;
   }
+  this.getMap().removeLayer(this.layer);
   goog.dom.classes.remove(this.element, 'active');
 };
 
@@ -90,17 +101,53 @@ ol.control.Select.prototype.deactivate = function() {
  * @param {ol.MapBrowserEvent} evt Event.
  */
 ol.control.Select.prototype.handleClick = function(evt) {
+  var clear = true;
+  if (ol.interaction.condition.shiftKeyOnly(evt.browserEvent)) {
+    clear = false;
+  }
+
+  function select(featuresByLayer) {
+    this.select(featuresByLayer, clear);
+  }
+
   this.getMap().getFeatures({
     layers: this.layers_,
     pixel: evt.getPixel(),
-    success: this.select
+    success: goog.bind(select, this)
   });
 };
 
 
 /**
  * @param {Array.<Array.<ol.Feature>>} featuresByLayer Features by layer.
+ * @param {boolean} clear Whether the current layer content should be cleared.
  */
-ol.control.Select.prototype.select = function(featuresByLayer) {
-  // TODO: Do something with the features.
+ol.control.Select.prototype.select = function(featuresByLayer, clear) {
+  for (var i = 0, ii = featuresByLayer.length; i < ii; ++i) {
+    var features = featuresByLayer[i];
+    var numFeatures = features.length;
+    var selectedFeatures = [];
+    var unselectedFeatures = [];
+    for (var j = 0; j < numFeatures; ++j) {
+      var feature = features[j];
+      var selectedFeature = this.layer.getFeatureWithUid(goog.getUid(feature));
+      if (selectedFeature) {
+        // TODO: make toggle configurable
+        unselectedFeatures.push(selectedFeature);
+      } else {
+        selectedFeatures.push(feature);
+      }
+    }
+    var layer = this.layers_[i];
+    if (goog.isFunction(layer.setRenderIntent)) {
+      // TODO: Implement setRenderIntent for ol.layer.Vector
+      layer.setRenderIntent('hidden', selectedFeatures);
+      layer.setRenderIntent('default', unselectedFeatures);
+    }
+    if (clear) {
+      this.layer.clear();
+    }
+    this.layer.removeFeatures(unselectedFeatures);
+    this.layer.addFeatures(selectedFeatures);
+  }
 };

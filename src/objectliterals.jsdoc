@@ -367,6 +367,7 @@
  * @property {number|undefined} opacity Opacity. 0-1. Default is 1.
  * @property {ol.source.Source} source Source for this layer.
  * @property {ol.style.Style|undefined} style Style.
+ * @property {boolean} temp True for temporary layers. For internal use only.
  * @property {boolean|undefined} visible Visibility. Default is true (visible).
  */
 

@@ -202,6 +202,16 @@ ol.layer.FeatureCache.prototype.getFeaturesByIds_ = function(ids) {
 
 
 /**
+ * @param {string} uid Feature uid.
+ * @return {ol.Feature|undefined} The feature with the provided uid if it is in
+ *     the cache, otherwise undefined.
+ */
+ol.layer.FeatureCache.prototype.getFeatureWithUid = function(uid) {
+  return this.idLookup_[uid];
+};
+
+
+/**
  * Remove a feature from the cache.
  * @param {ol.Feature} feature Feature.
  */
@@ -287,6 +297,11 @@ ol.layer.Vector = function(options) {
    */
   this.polygonVertices_ = new ol.geom.SharedVertices();
 
+  /**
+   * @type {boolean} Whether this is a temporary layer
+   */
+  this.temp = goog.isDef(options.temp) ? options.temp : false;
+
 };
 goog.inherits(ol.layer.Vector, ol.layer.Layer);
 
@@ -309,6 +324,17 @@ ol.layer.Vector.prototype.addFeatures = function(features) {
     extent: extent,
     features: features,
     type: ol.layer.VectorLayerEventType.ADD
+  }));
+};
+
+
+/**
+ * Remove all features from the layer.
+ */
+ol.layer.Vector.prototype.clear = function() {
+  this.featureCache_.clear();
+  this.dispatchEvent(/** @type {ol.layer.VectorLayerEventObject} */ ({
+    type: goog.events.EventType.CHANGE
   }));
 };
 
@@ -427,6 +453,16 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
 
 
 /**
+ * @param {string|number} uid Feature uid.
+ * @return {ol.Feature|undefined} The feature with the provided uid if it is on
+ *     the layer, otherwise undefined.
+ */
+ol.layer.Vector.prototype.getFeatureWithUid = function(uid) {
+  return this.featureCache_.getFeatureWithUid(/** @type {string} */ (uid));
+};
+
+
+/**
  * @param {Object|Element|Document|string} data Feature data.
  * @param {ol.parser.Parser} parser Feature parser.
  * @param {ol.Projection} projection This sucks.  The layer should be a view in
@@ -537,7 +573,7 @@ ol.layer.Vector.prototype.removeFeatures = function(features) {
  * @return {string} Feature info.
  */
 ol.layer.Vector.uidTransformFeatureInfo = function(features) {
-  var featureIds = goog.array.map(features,
+  var uids = goog.array.map(features,
       function(feature) { return goog.getUid(feature); });
-  return featureIds.join(', ');
+  return uids.join(', ');
 };
