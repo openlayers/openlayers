@@ -248,7 +248,6 @@ ol.control.OverviewMap.prototype.handleResolutionChanged_ = function(event) {
  * @private
  */
 ol.control.OverviewMap.prototype.handleRotationChanged_ = function(event) {
-  //this.validateExtent_();
   this.updateBox_();
 };
 
