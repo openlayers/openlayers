@@ -9,6 +9,52 @@
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
     <title>Select features example</title>
+    <style type="text/css">
+      /* TODO: remove this after css/button refactoring */
+      .ol-select {
+        position: absolute;
+        background: rgba(255,255,255,0.4);
+        border-radius: 4px;
+        left: 8px;
+        padding: 2px;
+        top: 65px;
+      }
+      @media print {
+        .ol-select {
+          display: none;
+        }
+      }
+      .ol-select a {
+        display: block;
+        margin: 1px;
+        padding: 0;
+        color: white;
+        font-size: 16px;
+        font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+        font-weight: bold;
+        text-decoration: none;
+        text-align: center;
+        height: 22px;
+        width: 22px;
+        background-color: rgba(0, 60, 136, 0.2);
+        border-radius: 2px;
+      }
+      .ol-touch .ol-select a {
+        font-size: 20px;
+        height: 30px;
+        width: 30px;
+        line-height: 26px;
+      }
+      .ol-select.active a {
+          background-color: rgba(0, 60, 136, 0.6);
+      }
+      .ol-select a:hover {
+        background-color: rgba(0, 60, 136, 0.7);
+      }
+      .ol-select a:after {
+          content: "S";
+      }
+    </style>
   </head>
   <body>
 
@@ -38,7 +84,7 @@
 
         <div class="span12">
           <h4 id="title">Select features example</h4>
-          <p id="shortdesc">Example of using the Select control.</p>
+          <p id="shortdesc">Example of using the Select control. Select features by clicking polygons. Hold the Shift-key to add to the selection. Click the 'S' button to toggle the control's active state.</p>
           <div id="docs">
             <p>See the <a href="select-features.js" target="_blank">select-features.js source</a> to see how this is done.</p>
           </div>

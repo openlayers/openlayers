@@ -23,14 +23,28 @@ goog.require('ol.source.Vector');
 ol.control.Select = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.active_ = false;
+
+  /**
+   * @type {ol.layer.Vector}
+   * @protected
+   */
   this.layer = new ol.layer.Vector({
     source: new ol.source.Vector({parser: null}),
     temp: true
   });
 
+  /**
+   * @type {Array.<ol.layer.Layer>}
+   * @private
+   */
   this.layers_ = options.layers;
 
-  // TODO: css
+  // TODO: css/button refactoring
   var className = goog.isDef(options.className) ? options.className :
       'ol-select';
 
@@ -75,12 +89,15 @@ ol.control.Select.prototype.toggleActive_ = function(browserEvent) {
  * Activate the control.
  */
 ol.control.Select.prototype.activate = function() {
-  goog.dom.classes.add(this.element, 'active');
-  this.getMap().addLayer(this.layer);
-  // TODO: Implement box selection
-  this.listenerKeys.push(
-      goog.events.listen(this.getMap(), ol.MapBrowserEvent.EventType.CLICK,
-          this.handleClick, true, this));
+  if (!this.active_) {
+    this.active_ = true;
+    goog.dom.classes.add(this.element, 'active');
+    this.getMap().addLayer(this.layer);
+    // TODO: Implement box selection
+    this.listenerKeys.push(
+        goog.events.listen(this.getMap(), ol.MapBrowserEvent.EventType.CLICK,
+            this.handleClick, true, this));
+  }
 };
 
 
@@ -88,12 +105,15 @@ ol.control.Select.prototype.activate = function() {
  * Dectivate the control.
  */
 ol.control.Select.prototype.deactivate = function() {
-  if (!goog.array.isEmpty(this.listenerKeys)) {
-    goog.array.forEach(this.listenerKeys, goog.events.unlistenByKey);
-    this.listenerKeys.length = 0;
+  if (this.active_) {
+    if (!goog.array.isEmpty(this.listenerKeys)) {
+      goog.array.forEach(this.listenerKeys, goog.events.unlistenByKey);
+      this.listenerKeys.length = 0;
+    }
+    this.getMap().removeLayer(this.layer);
+    goog.dom.classes.remove(this.element, 'active');
+    this.active_ = false;
   }
-  this.getMap().removeLayer(this.layer);
-  goog.dom.classes.remove(this.element, 'active');
 };
 
 
