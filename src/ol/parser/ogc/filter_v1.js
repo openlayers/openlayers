@@ -12,6 +12,8 @@ goog.require('ol.expr.Identifier');
 goog.require('ol.expr.Literal');
 goog.require('ol.expr.Logical');
 goog.require('ol.expr.LogicalOp');
+goog.require('ol.expr.Math');
+goog.require('ol.expr.MathOp');
 goog.require('ol.expr.Not');
 goog.require('ol.expr.functions');
 goog.require('ol.parser.XML');
@@ -28,34 +30,49 @@ ol.parser.ogc.Filter_v1 = function() {
   this.readers = {
     'http://www.opengis.net/ogc': {
       _expression: function(node) {
-        var obj, source = '';
+        var expressions = [];
+        var obj, value, numValue, expr;
         for (var child = node.firstChild; child; child = child.nextSibling) {
           switch (child.nodeType) {
             case 1:
               obj = this.readNode(child);
               if (obj.property) {
-                var name = obj.property.getName();
-                source += (source !== '') ? '+' + name : name;
+                expressions.push(obj.property);
               } else if (goog.isDef(obj.value)) {
                 return obj.value;
               }
               break;
             case 3: // text node
             case 4: // cdata section
-              if (source !== '') {
-                source += '+';
-              }
-              if (isNaN(goog.string.toNumber(child.nodeValue))) {
-                source += goog.string.quote(goog.string.trim(child.nodeValue));
-              } else {
-                source += goog.string.trim(child.nodeValue);
+              value = goog.string.trim(child.nodeValue);
+              // no need to concatenate empty strings
+              if (value) {
+                // check for numeric values
+                numValue = goog.string.toNumber(value);
+                if (!isNaN(numValue)) {
+                  value = numValue;
+                }
+                expressions.push(new ol.expr.Literal(value));
               }
               break;
             default:
               break;
           }
         }
-        return ol.expr.parse(source);
+        // if we have more than one property or literal, we concatenate them
+        var num = expressions.length;
+        if (num === 1) {
+          expr = expressions[0];
+        } else {
+          expr = new ol.expr.Literal('');
+          if (num > 1) {
+            var add = ol.expr.MathOp.ADD;
+            for (var i = 0; i < num; ++i) {
+              expr = new ol.expr.Math(add, expr, expressions[i]);
+            }
+          }
+        }
+        return expr;
       },
       'Filter': function(node, obj) {
         var container = {
