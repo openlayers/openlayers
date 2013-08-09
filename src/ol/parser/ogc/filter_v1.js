@@ -36,9 +36,9 @@ ol.parser.ogc.Filter_v1 = function() {
               if (obj.property) {
                 value += obj.property.getName();
               } else if (goog.isDef(obj.value)) {
-                // TODO adding this to value and then parsing causes
-                // ol.expr.UnexpectedToken on e.g. 10
-                return obj.value;
+                if (obj.value instanceof ol.expr.Literal) {
+                  value += obj.value.getValue();
+                }
               }
               break;
             case 3: // text node
