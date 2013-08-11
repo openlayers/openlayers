@@ -1,0 +1,3 @@
+@exportClass ol.control.Select ol.control.SelectOptions
+@exportProperty ol.control.Select.prototype.activate
+@exportProperty ol.control.Select.prototype.deactivate
