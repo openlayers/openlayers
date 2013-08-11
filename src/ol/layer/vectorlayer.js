@@ -298,7 +298,8 @@ ol.layer.Vector = function(options) {
   this.polygonVertices_ = new ol.geom.SharedVertices();
 
   /**
-   * @type {boolean} Whether this is a temporary layer
+   * True if this is a temporary layer.
+   * @type {boolean}
    */
   this.temp = goog.isDef(options.temp) ? options.temp : false;
 
