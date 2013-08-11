@@ -205,7 +205,7 @@
  * @typedef {Object} ol.control.SelectOptions
  * @property {string|undefined} className CSS class name. Default is 'ol-select'.
  * @property {Element|undefined} element Element.
- * @property {Array.<ol.layer.Layer>|undefined} layers Layers to select features on.
+ * @property {Array.<ol.layer.Layer>} layers Layers to select features on.
  * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
  */
