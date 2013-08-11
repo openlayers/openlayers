@@ -14,6 +14,15 @@ goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
 
 
+/**
+ * @typedef {{layer: ol.layer.Layer,
+ *            selected: (Array.<ol.Feature>|undefined),
+ *            type: goog.events.EventType,
+ *            unselected: (Array.<ol.Feature>|undefined)}}
+ */
+ol.control.SelectEventObject;
+
+
 
 /**
  * @constructor
@@ -169,5 +178,11 @@ ol.control.Select.prototype.select = function(featuresByLayer, clear) {
     }
     this.layer.removeFeatures(unselectedFeatures);
     this.layer.addFeatures(selectedFeatures);
+    this.dispatchEvent(/** @type {ol.control.SelectEventObject} */ ({
+      layer: layer,
+      selected: selectedFeatures,
+      type: goog.events.EventType.CHANGE,
+      unselected: unselectedFeatures
+    }));
   }
 };
