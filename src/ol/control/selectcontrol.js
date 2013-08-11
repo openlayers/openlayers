@@ -130,10 +130,7 @@ ol.control.Select.prototype.deactivate = function() {
  * @param {ol.MapBrowserEvent} evt Event.
  */
 ol.control.Select.prototype.handleClick = function(evt) {
-  var clear = true;
-  if (ol.interaction.condition.shiftKeyOnly(evt.browserEvent)) {
-    clear = false;
-  }
+  var clear = !ol.interaction.condition.shiftKeyOnly(evt.browserEvent);
 
   function select(featuresByLayer) {
     this.select(featuresByLayer, clear);
