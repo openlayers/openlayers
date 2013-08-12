@@ -23,7 +23,7 @@ goog.require('ol.style.PointLiteral');
 goog.require('ol.style.PolygonLiteral');
 goog.require('ol.style.ShapeLiteral');
 goog.require('ol.style.ShapeType');
-goog.require('ol.style.SymbolizerLiteral');
+goog.require('ol.style.Literal');
 goog.require('ol.style.TextLiteral');
 
 
@@ -101,7 +101,7 @@ ol.renderer.canvas.VectorRenderer.prototype.getMaxSymbolSize = function() {
 /**
  * @param {ol.geom.GeometryType} type Geometry type.
  * @param {Array.<ol.Feature>} features Array of features.
- * @param {ol.style.SymbolizerLiteral} symbolizer Symbolizer.
+ * @param {ol.style.Literal} symbolizer Symbolizer.
  * @param {Array} data Additional data.
  * @return {boolean} true if deferred, false if rendered.
  */

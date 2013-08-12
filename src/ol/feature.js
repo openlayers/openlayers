@@ -84,7 +84,7 @@ ol.Feature.prototype.getGeometry = function() {
 
 
 /**
- * @return {Array.<ol.style.SymbolizerLiteral>} Symbolizer literals.
+ * @return {Array.<ol.style.Literal>} Symbolizer literals.
  */
 ol.Feature.prototype.getSymbolizerLiterals = function() {
   var symbolizerLiterals = null;

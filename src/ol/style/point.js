@@ -2,18 +2,18 @@ goog.provide('ol.style.Point');
 goog.provide('ol.style.PointLiteral');
 
 goog.require('ol.style.Symbolizer');
-goog.require('ol.style.SymbolizerLiteral');
+goog.require('ol.style.Literal');
 
 
 
 /**
  * @constructor
- * @extends {ol.style.SymbolizerLiteral}
+ * @extends {ol.style.Literal}
  */
 ol.style.PointLiteral = function() {
   goog.base(this);
 };
-goog.inherits(ol.style.PointLiteral, ol.style.SymbolizerLiteral);
+goog.inherits(ol.style.PointLiteral, ol.style.Literal);
 
 
 

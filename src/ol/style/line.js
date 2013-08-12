@@ -6,7 +6,7 @@ goog.require('ol.expr');
 goog.require('ol.expr.Expression');
 goog.require('ol.expr.Literal');
 goog.require('ol.style.Symbolizer');
-goog.require('ol.style.SymbolizerLiteral');
+goog.require('ol.style.Literal');
 
 
 /**
@@ -20,7 +20,7 @@ ol.style.LineLiteralOptions;
 
 /**
  * @constructor
- * @extends {ol.style.SymbolizerLiteral}
+ * @extends {ol.style.Literal}
  * @param {ol.style.LineLiteralOptions} options Line literal options.
  */
 ol.style.LineLiteral = function(options) {
@@ -42,7 +42,7 @@ ol.style.LineLiteral = function(options) {
   this.strokeWidth = options.strokeWidth;
 
 };
-goog.inherits(ol.style.LineLiteral, ol.style.SymbolizerLiteral);
+goog.inherits(ol.style.LineLiteral, ol.style.Literal);
 
 
 /**

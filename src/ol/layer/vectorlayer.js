@@ -409,7 +409,7 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
         uniqueLiterals[key] = featuresBySymbolizer.length;
         featuresBySymbolizer.push([
           /** @type {Array.<ol.Feature>} */ ([]),
-          /** @type {ol.style.SymbolizerLiteral} */ (literal),
+          /** @type {ol.style.Literal} */ (literal),
           /** @type {Array} */ ([])
         ]);
       }

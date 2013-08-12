@@ -1,5 +1,5 @@
 goog.provide('ol.style.Symbolizer');
-goog.provide('ol.style.SymbolizerLiteral');
+goog.provide('ol.style.Literal');
 
 goog.require('ol.Feature');
 
@@ -8,15 +8,15 @@ goog.require('ol.Feature');
 /**
  * @constructor
  */
-ol.style.SymbolizerLiteral = function() {};
+ol.style.Literal = function() {};
 
 
 /**
- * @param {ol.style.SymbolizerLiteral} symbolizerLiteral Symbolizer literal to
+ * @param {ol.style.Literal} symbolizerLiteral Symbolizer literal to
  *     compare to.
  * @return {boolean} Is the passed symbolizer literal equal to this instance?
  */
-ol.style.SymbolizerLiteral.prototype.equals = goog.abstractMethod;
+ol.style.Literal.prototype.equals = goog.abstractMethod;
 
 
 
@@ -28,6 +28,6 @@ ol.style.Symbolizer = function() {};
 
 /**
  * @param {ol.Feature=} opt_feature Feature for evaluating expressions.
- * @return {ol.style.SymbolizerLiteral} Literal symbolizer.
+ * @return {ol.style.Literal} Literal symbolizer.
  */
 ol.style.Symbolizer.prototype.createLiteral = goog.abstractMethod;

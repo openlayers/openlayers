@@ -6,7 +6,7 @@ goog.require('ol.expr');
 goog.require('ol.expr.Expression');
 goog.require('ol.expr.Literal');
 goog.require('ol.style.Symbolizer');
-goog.require('ol.style.SymbolizerLiteral');
+goog.require('ol.style.Literal');
 
 
 /**
@@ -22,7 +22,7 @@ ol.style.PolygonLiteralOptions;
 
 /**
  * @constructor
- * @extends {ol.style.SymbolizerLiteral}
+ * @extends {ol.style.Literal}
  * @param {ol.style.PolygonLiteralOptions} options Polygon literal options.
  */
 ol.style.PolygonLiteral = function(options) {
@@ -72,7 +72,7 @@ ol.style.PolygonLiteral = function(options) {
       'strokeColor and strokeOpacity and strokeWidth must be set');
 
 };
-goog.inherits(ol.style.PolygonLiteral, ol.style.SymbolizerLiteral);
+goog.inherits(ol.style.PolygonLiteral, ol.style.Literal);
 
 
 /**

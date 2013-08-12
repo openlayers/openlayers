@@ -3,7 +3,7 @@ goog.provide('ol.style.Style');
 goog.require('ol.Feature');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.style.Rule');
-goog.require('ol.style.SymbolizerLiteral');
+goog.require('ol.style.Literal');
 
 
 
@@ -24,7 +24,7 @@ ol.style.Style = function(options) {
 
 /**
  * @param {ol.Feature} feature Feature.
- * @return {Array.<ol.style.SymbolizerLiteral>} Symbolizer literals for the
+ * @return {Array.<ol.style.Literal>} Symbolizer literals for the
  *     feature.
  */
 ol.style.Style.prototype.apply = function(feature) {
@@ -46,7 +46,7 @@ ol.style.Style.prototype.apply = function(feature) {
 
 /**
  * @param {ol.Feature} feature Feature.
- * @return {Array.<ol.style.SymbolizerLiteral>} Default symbolizer literals for
+ * @return {Array.<ol.style.Literal>} Default symbolizer literals for
  *     the feature.
  */
 ol.style.Style.applyDefaultStyle = function(feature) {
