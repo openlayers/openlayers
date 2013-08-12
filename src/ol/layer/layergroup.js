@@ -67,6 +67,24 @@ goog.inherits(ol.layer.LayerGroup, ol.layer.LayerBase);
 
 
 /**
+ * @inheritDoc
+ */
+ol.layer.LayerGroup.prototype.handleLayerChange = function() {
+  if (this.getVisible()) {
+    this.dispatchChangeEvent();
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.layer.LayerGroup.prototype.handleLayerVisibleChange = function() {
+  this.dispatchChangeEvent();
+};
+
+
+/**
  * @param {goog.events.Event} event Event.
  * @private
  */

@@ -67,10 +67,13 @@ ol.layer.LayerBase = function(options) {
     ol.Object.getChangeEventType(ol.layer.LayerProperty.HUE),
     ol.Object.getChangeEventType(ol.layer.LayerProperty.OPACITY),
     ol.Object.getChangeEventType(ol.layer.LayerProperty.SATURATION),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.VISIBLE),
     goog.events.EventType.LOAD
   ],
   this.handleLayerChange, false, this);
+
+  goog.events.listen(this,
+      ol.Object.getChangeEventType(ol.layer.LayerProperty.VISIBLE),
+      this.handleLayerVisibleChange, false, this);
 
 };
 goog.inherits(ol.layer.LayerBase, ol.Object);
@@ -204,7 +207,19 @@ goog.exportProperty(
  * @protected
  */
 ol.layer.LayerBase.prototype.handleLayerChange = function() {
-  this.dispatchChangeEvent();
+  if (this.getVisible() && this.isReady()) {
+    this.dispatchChangeEvent();
+  }
+};
+
+
+/**
+ * @protected
+ */
+ol.layer.LayerBase.prototype.handleLayerVisibleChange = function() {
+  if (this.isReady()) {
+    this.dispatchChangeEvent();
+  }
 };
 
 
