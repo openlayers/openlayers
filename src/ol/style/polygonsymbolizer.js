@@ -1,135 +1,22 @@
-goog.provide('ol.style.Shape');
-goog.provide('ol.style.ShapeLiteral');
-goog.provide('ol.style.ShapeType');
+goog.provide('ol.style.Polygon');
 
 goog.require('goog.asserts');
 goog.require('ol.expr');
 goog.require('ol.expr.Expression');
 goog.require('ol.expr.Literal');
-goog.require('ol.style.Point');
-goog.require('ol.style.PointLiteral');
-
-
-/**
- * @enum {string}
- */
-ol.style.ShapeType = {
-  CIRCLE: 'circle'
-};
-
-
-/**
- * @typedef {{type: (ol.style.ShapeType),
- *            size: (number),
- *            fillColor: (string|undefined),
- *            fillOpacity: (number|undefined),
- *            strokeColor: (string|undefined),
- *            strokeOpacity: (number|undefined),
- *            strokeWidth: (number|undefined)}}
- */
-ol.style.ShapeLiteralOptions;
+goog.require('ol.style.PolygonLiteral');
+goog.require('ol.style.Symbolizer');
 
 
 
 /**
  * @constructor
- * @extends {ol.style.PointLiteral}
- * @param {ol.style.ShapeLiteralOptions} options Shape literal options.
+ * @extends {ol.style.Symbolizer}
+ * @param {ol.style.PolygonOptions} options Polygon options.
  */
-ol.style.ShapeLiteral = function(options) {
+ol.style.Polygon = function(options) {
+  goog.base(this);
 
-  goog.asserts.assertString(options.type, 'type must be a string');
-  /** @type {ol.style.ShapeType} */
-  this.type = options.type;
-
-  goog.asserts.assertNumber(options.size, 'size must be a number');
-  /** @type {number} */
-  this.size = options.size;
-
-  /** @type {string|undefined} */
-  this.fillColor = options.fillColor;
-  if (goog.isDef(options.fillColor)) {
-    goog.asserts.assertString(options.fillColor, 'fillColor must be a string');
-  }
-
-  /** @type {number|undefined} */
-  this.fillOpacity = options.fillOpacity;
-  if (goog.isDef(options.fillOpacity)) {
-    goog.asserts.assertNumber(
-        options.fillOpacity, 'fillOpacity must be a number');
-  }
-
-  /** @type {string|undefined} */
-  this.strokeColor = options.strokeColor;
-  if (goog.isDef(this.strokeColor)) {
-    goog.asserts.assertString(
-        this.strokeColor, 'strokeColor must be a string');
-  }
-
-  /** @type {number|undefined} */
-  this.strokeOpacity = options.strokeOpacity;
-  if (goog.isDef(this.strokeOpacity)) {
-    goog.asserts.assertNumber(
-        this.strokeOpacity, 'strokeOpacity must be a number');
-  }
-
-  /** @type {number|undefined} */
-  this.strokeWidth = options.strokeWidth;
-  if (goog.isDef(this.strokeWidth)) {
-    goog.asserts.assertNumber(
-        this.strokeWidth, 'strokeWidth must be a number');
-  }
-
-  // fill and/or stroke properties must be defined
-  var fillDef = goog.isDef(this.fillColor) && goog.isDef(this.fillOpacity);
-  var strokeDef = goog.isDef(this.strokeColor) &&
-      goog.isDef(this.strokeOpacity) &&
-      goog.isDef(this.strokeWidth);
-  goog.asserts.assert(fillDef || strokeDef,
-      'Either fillColor and fillOpacity or ' +
-      'strokeColor and strokeOpacity and strokeWidth must be set');
-
-};
-goog.inherits(ol.style.ShapeLiteral, ol.style.PointLiteral);
-
-
-/**
- * @inheritDoc
- */
-ol.style.ShapeLiteral.prototype.equals = function(shapeLiteral) {
-  return this.type == shapeLiteral.type &&
-      this.size == shapeLiteral.size &&
-      this.fillColor == shapeLiteral.fillColor &&
-      this.fillOpacity == shapeLiteral.fillOpacity &&
-      this.strokeColor == shapeLiteral.strokeColor &&
-      this.strokeOpacity == shapeLiteral.strokeOpacity &&
-      this.strokeWidth == shapeLiteral.strokeWidth;
-};
-
-
-
-/**
- * @constructor
- * @extends {ol.style.Point}
- * @param {ol.style.ShapeOptions} options Shape options.
- */
-ol.style.Shape = function(options) {
-
-  /**
-   * @type {ol.style.ShapeType}
-   * @private
-   */
-  this.type_ = /** @type {ol.style.ShapeType} */ (goog.isDef(options.type) ?
-      options.type : ol.style.ShapeDefaults.type);
-
-  /**
-   * @type {ol.expr.Expression}
-   * @private
-   */
-  this.size_ = !goog.isDefAndNotNull(options.size) ?
-      new ol.expr.Literal(ol.style.ShapeDefaults.size) :
-      (options.size instanceof ol.expr.Expression) ?
-          options.size : new ol.expr.Literal(options.size);
 
   // fill handling - if any fill property is supplied, use all defaults
   var fillColor = null,
@@ -144,7 +31,7 @@ ol.style.Shape = function(options) {
           new ol.expr.Literal(options.fillColor);
     } else {
       fillColor = new ol.expr.Literal(
-          /** @type {string} */ (ol.style.ShapeDefaults.fillColor));
+          /** @type {string} */ (ol.style.PolygonDefaults.fillColor));
     }
 
     if (goog.isDefAndNotNull(options.fillOpacity)) {
@@ -153,7 +40,7 @@ ol.style.Shape = function(options) {
           new ol.expr.Literal(options.fillOpacity);
     } else {
       fillOpacity = new ol.expr.Literal(
-          /** @type {number} */ (ol.style.ShapeDefaults.fillOpacity));
+          /** @type {number} */ (ol.style.PolygonDefaults.fillOpacity));
     }
 
   }
@@ -186,7 +73,7 @@ ol.style.Shape = function(options) {
           new ol.expr.Literal(options.strokeColor);
     } else {
       strokeColor = new ol.expr.Literal(
-          /** @type {string} */ (ol.style.ShapeDefaults.strokeColor));
+          /** @type {string} */ (ol.style.PolygonDefaults.strokeColor));
     }
 
     if (goog.isDefAndNotNull(options.strokeOpacity)) {
@@ -195,7 +82,7 @@ ol.style.Shape = function(options) {
           new ol.expr.Literal(options.strokeOpacity);
     } else {
       strokeOpacity = new ol.expr.Literal(
-          /** @type {number} */ (ol.style.ShapeDefaults.strokeOpacity));
+          /** @type {number} */ (ol.style.PolygonDefaults.strokeOpacity));
     }
 
     if (goog.isDefAndNotNull(options.strokeWidth)) {
@@ -204,7 +91,7 @@ ol.style.Shape = function(options) {
           new ol.expr.Literal(options.strokeWidth);
     } else {
       strokeWidth = new ol.expr.Literal(
-          /** @type {number} */ (ol.style.ShapeDefaults.strokeWidth));
+          /** @type {number} */ (ol.style.PolygonDefaults.strokeWidth));
     }
 
   }
@@ -236,16 +123,14 @@ ol.style.Shape = function(options) {
       'Stroke or fill properties must be provided');
 
 };
+goog.inherits(ol.style.Polygon, ol.style.Symbolizer);
 
 
 /**
  * @inheritDoc
- * @return {ol.style.ShapeLiteral} Literal shape symbolizer.
+ * @return {ol.style.PolygonLiteral} Literal shape symbolizer.
  */
-ol.style.Shape.prototype.createLiteral = function(opt_feature) {
-
-  var size = ol.expr.evaluateFeature(this.size_, opt_feature);
-  goog.asserts.assertNumber(size, 'size must be a number');
+ol.style.Polygon.prototype.createLiteral = function(opt_feature) {
 
   var fillColor;
   if (!goog.isNull(this.fillColor_)) {
@@ -284,9 +169,7 @@ ol.style.Shape.prototype.createLiteral = function(opt_feature) {
   goog.asserts.assert(fill || stroke,
       'either fill or stroke properties must be defined');
 
-  return new ol.style.ShapeLiteral({
-    type: this.type_,
-    size: size,
+  return new ol.style.PolygonLiteral({
     fillColor: fillColor,
     fillOpacity: fillOpacity,
     strokeColor: strokeColor,
@@ -300,7 +183,7 @@ ol.style.Shape.prototype.createLiteral = function(opt_feature) {
  * Get the fill color.
  * @return {ol.expr.Expression} Fill color.
  */
-ol.style.Shape.prototype.getFillColor = function() {
+ol.style.Polygon.prototype.getFillColor = function() {
   return this.fillColor_;
 };
 
@@ -309,17 +192,8 @@ ol.style.Shape.prototype.getFillColor = function() {
  * Get the fill opacity.
  * @return {ol.expr.Expression} Fill opacity.
  */
-ol.style.Shape.prototype.getFillOpacity = function() {
+ol.style.Polygon.prototype.getFillOpacity = function() {
   return this.fillOpacity_;
-};
-
-
-/**
- * Get the shape size.
- * @return {ol.expr.Expression} Shape size.
- */
-ol.style.Shape.prototype.getSize = function() {
-  return this.size_;
 };
 
 
@@ -327,7 +201,7 @@ ol.style.Shape.prototype.getSize = function() {
  * Get the stroke color.
  * @return {ol.expr.Expression} Stroke color.
  */
-ol.style.Shape.prototype.getStrokeColor = function() {
+ol.style.Polygon.prototype.getStrokeColor = function() {
   return this.strokeColor_;
 };
 
@@ -336,7 +210,7 @@ ol.style.Shape.prototype.getStrokeColor = function() {
  * Get the stroke opacity.
  * @return {ol.expr.Expression} Stroke opacity.
  */
-ol.style.Shape.prototype.getStrokeOpacity = function() {
+ol.style.Polygon.prototype.getStrokeOpacity = function() {
   return this.strokeOpacity_;
 };
 
@@ -345,17 +219,8 @@ ol.style.Shape.prototype.getStrokeOpacity = function() {
  * Get the stroke width.
  * @return {ol.expr.Expression} Stroke width.
  */
-ol.style.Shape.prototype.getStrokeWidth = function() {
+ol.style.Polygon.prototype.getStrokeWidth = function() {
   return this.strokeWidth_;
-};
-
-
-/**
- * Get the shape type.
- * @return {ol.style.ShapeType} Shape type.
- */
-ol.style.Shape.prototype.getType = function() {
-  return this.type_;
 };
 
 
@@ -363,7 +228,7 @@ ol.style.Shape.prototype.getType = function() {
  * Set the fill color.
  * @param {ol.expr.Expression} fillColor Fill color.
  */
-ol.style.Shape.prototype.setFillColor = function(fillColor) {
+ol.style.Polygon.prototype.setFillColor = function(fillColor) {
   goog.asserts.assertInstanceof(fillColor, ol.expr.Expression);
   this.fillColor_ = fillColor;
 };
@@ -373,19 +238,9 @@ ol.style.Shape.prototype.setFillColor = function(fillColor) {
  * Set the fill opacity.
  * @param {ol.expr.Expression} fillOpacity Fill opacity.
  */
-ol.style.Shape.prototype.setFillOpacity = function(fillOpacity) {
+ol.style.Polygon.prototype.setFillOpacity = function(fillOpacity) {
   goog.asserts.assertInstanceof(fillOpacity, ol.expr.Expression);
   this.fillOpacity_ = fillOpacity;
-};
-
-
-/**
- * Set the shape size.
- * @param {ol.expr.Expression} size Shape size.
- */
-ol.style.Shape.prototype.setSize = function(size) {
-  goog.asserts.assertInstanceof(size, ol.expr.Expression);
-  this.size_ = size;
 };
 
 
@@ -393,7 +248,7 @@ ol.style.Shape.prototype.setSize = function(size) {
  * Set the stroke color.
  * @param {ol.expr.Expression} strokeColor Stroke color.
  */
-ol.style.Shape.prototype.setStrokeColor = function(strokeColor) {
+ol.style.Polygon.prototype.setStrokeColor = function(strokeColor) {
   goog.asserts.assertInstanceof(strokeColor, ol.expr.Expression);
   this.strokeColor_ = strokeColor;
 };
@@ -403,7 +258,7 @@ ol.style.Shape.prototype.setStrokeColor = function(strokeColor) {
  * Set the stroke opacity.
  * @param {ol.expr.Expression} strokeOpacity Stroke opacity.
  */
-ol.style.Shape.prototype.setStrokeOpacity = function(strokeOpacity) {
+ol.style.Polygon.prototype.setStrokeOpacity = function(strokeOpacity) {
   goog.asserts.assertInstanceof(strokeOpacity, ol.expr.Expression);
   this.strokeOpacity_ = strokeOpacity;
 };
@@ -413,27 +268,16 @@ ol.style.Shape.prototype.setStrokeOpacity = function(strokeOpacity) {
  * Set the stroke width.
  * @param {ol.expr.Expression} strokeWidth Stroke width.
  */
-ol.style.Shape.prototype.setStrokeWidth = function(strokeWidth) {
+ol.style.Polygon.prototype.setStrokeWidth = function(strokeWidth) {
   goog.asserts.assertInstanceof(strokeWidth, ol.expr.Expression);
   this.strokeWidth_ = strokeWidth;
 };
 
 
 /**
- * Set the shape type.
- * @param {ol.style.ShapeType} type Shape type.
+ * @type {ol.style.PolygonLiteral}
  */
-ol.style.Shape.prototype.setType = function(type) {
-  this.type_ = type;
-};
-
-
-/**
- * @type {ol.style.ShapeLiteral}
- */
-ol.style.ShapeDefaults = new ol.style.ShapeLiteral({
-  type: ol.style.ShapeType.CIRCLE,
-  size: 5,
+ol.style.PolygonDefaults = new ol.style.PolygonLiteral({
   fillColor: '#ffffff',
   fillOpacity: 0.4,
   strokeColor: '#696969',
