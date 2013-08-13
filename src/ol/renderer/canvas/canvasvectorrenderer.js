@@ -258,7 +258,6 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
       goog.vec.Mat4.multVec3(this.transform_, vec, vec);
       context.drawImage(content, vec[0], vec[1], content.width, content.height);
       if(drawIconLabel) {
-    	  alert('Draw Icon Label');
     	  var txtsymbolizer = /** {ol.style.TextLiteral} */ (symbolizer.label);
     	  this.configureContextToText_(txtsymbolizer , context);
     	  var dx, dy;
