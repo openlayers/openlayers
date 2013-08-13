@@ -67,6 +67,24 @@ goog.inherits(ol.layer.LayerGroup, ol.layer.LayerBase);
 
 
 /**
+ * @inheritDoc
+ */
+ol.layer.LayerGroup.prototype.handleLayerChange = function() {
+  if (this.getVisible()) {
+    this.dispatchChangeEvent();
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.layer.LayerGroup.prototype.handleLayerVisibleChange = function() {
+  this.dispatchChangeEvent();
+};
+
+
+/**
  * @param {goog.events.Event} event Event.
  * @private
  */
@@ -92,11 +110,11 @@ ol.layer.LayerGroup.prototype.handleLayersChanged_ = function(event) {
       layer = layersArray[i];
       this.listenerKeys_[goog.getUid(layer).toString()] =
           goog.events.listen(layer, goog.events.EventType.CHANGE,
-              this.handleLayerChange_, false, this);
+              this.handleLayerChange, false, this);
     }
   }
 
-  this.dispatchChangeEvent_();
+  this.dispatchChangeEvent();
 };
 
 
@@ -107,9 +125,9 @@ ol.layer.LayerGroup.prototype.handleLayersChanged_ = function(event) {
 ol.layer.LayerGroup.prototype.handleLayersAdd_ = function(collectionEvent) {
   var layer = /** @type {ol.layer.LayerBase} */ (collectionEvent.elem);
   this.listenerKeys_[goog.getUid(layer).toString()] = goog.events.listen(
-      layer, goog.events.EventType.CHANGE, this.handleLayerChange_, false,
+      layer, goog.events.EventType.CHANGE, this.handleLayerChange, false,
       this);
-  this.dispatchChangeEvent_();
+  this.dispatchChangeEvent();
 };
 
 
@@ -122,23 +140,7 @@ ol.layer.LayerGroup.prototype.handleLayersRemove_ = function(collectionEvent) {
   var key = goog.getUid(layer).toString();
   goog.events.unlistenByKey(this.listenerKeys_[key]);
   delete this.listenerKeys_[key];
-  this.dispatchChangeEvent_();
-};
-
-
-/**
- * @private
- */
-ol.layer.LayerGroup.prototype.handleLayerChange_ = function() {
-  this.dispatchChangeEvent_();
-};
-
-
-/**
- * @private
- */
-ol.layer.LayerGroup.prototype.dispatchChangeEvent_ = function() {
-  this.dispatchEvent(goog.events.EventType.CHANGE);
+  this.dispatchChangeEvent();
 };
 
 
