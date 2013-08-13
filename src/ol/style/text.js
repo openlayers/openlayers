@@ -14,7 +14,9 @@ goog.require('ol.style.SymbolizerLiteral');
  *            fontFamily: string,
  *            fontSize: number,
  *            text: string,
- *            opacity: number}}
+ *            opacity: number,
+ *            textAlign: string,
+ *            textBaseline: string}}
  */
 ol.style.TextLiteralOptions;
 
@@ -47,6 +49,13 @@ ol.style.TextLiteral = function(options) {
   /** @type {number} */
   this.opacity = options.opacity;
 
+  goog.asserts.assertString(options.textAlign, 'textAlign must be a string');
+  /** @type {string} */
+  this.textAlign = options.textAlign;
+  
+  goog.asserts.assertString(options.textBaseline, 'textBaseline must be a string');
+  /** @type {string} */
+  this.textBaseline = options.textBaseline;  
 };
 goog.inherits(ol.style.TextLiteral, ol.style.SymbolizerLiteral);
 
@@ -55,10 +64,13 @@ goog.inherits(ol.style.TextLiteral, ol.style.SymbolizerLiteral);
  * @inheritDoc
  */
 ol.style.TextLiteral.prototype.equals = function(textLiteral) {
+alert('ol.style.TextLiteral.prototype.equals');	
   return this.color == textLiteral.color &&
       this.fontFamily == textLiteral.fontFamily &&
       this.fontSize == textLiteral.fontSize &&
-      this.opacity == textLiteral.opacity;
+      this.opacity == textLiteral.opacity &&
+      this.textAlign == textLiteral.textAlign &&
+      this.textBaseline == textLiteral.textBaseline;
 };
 
 
@@ -113,6 +125,23 @@ ol.style.Text = function(options) {
       (options.opacity instanceof ol.expr.Expression) ?
           options.opacity : new ol.expr.Literal(options.opacity);
 
+  /**
+   * @type {ol.expr.Expression}
+   * @private
+   */
+  this.textAlign_ = !goog.isDef(options.textAlign) ?
+      new ol.expr.Literal(ol.style.TextDefaults.textAlign) :
+      (options.textAlign instanceof ol.expr.Expression) ?
+          options.textAlign : new ol.expr.Literal(options.textAlign);      
+
+  /**
+   * @type {ol.expr.Expression}
+   * @private
+   */
+  this.textBaseline_ = !goog.isDef(options.textBaseline) ?
+      new ol.expr.Literal(ol.style.TextDefaults.textBaseline) :
+      (options.textBaseline instanceof ol.expr.Expression) ?
+          options.textBaseline : new ol.expr.Literal(options.textBaseline);
 };
 goog.inherits(ol.style.Text, ol.style.Symbolizer);
 
@@ -122,7 +151,6 @@ goog.inherits(ol.style.Text, ol.style.Symbolizer);
  * @return {ol.style.TextLiteral} Literal text symbolizer.
  */
 ol.style.Text.prototype.createLiteral = function(opt_feature) {
-
   var color = ol.expr.evaluateFeature(this.color_, opt_feature);
   goog.asserts.assertString(color, 'color must be a string');
 
@@ -138,12 +166,20 @@ ol.style.Text.prototype.createLiteral = function(opt_feature) {
   var opacity = ol.expr.evaluateFeature(this.opacity_, opt_feature);
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
+  var textAlign = ol.expr.evaluateFeature(this.textAlign_, opt_feature);
+  goog.asserts.assertString(textAlign, 'textAlign must be a string');
+
+  var textBaseline = ol.expr.evaluateFeature(this.textBaseline_, opt_feature);
+  goog.asserts.assertString(textBaseline, 'textBaseline must be a string');
+
   return new ol.style.TextLiteral({
     color: color,
     fontFamily: fontFamily,
     fontSize: fontSize,
     text: text,
-    opacity: opacity
+    opacity: opacity,
+    textAlign: textAlign,
+    textBaseline: textBaseline
   });
 };
 
@@ -192,6 +228,21 @@ ol.style.Text.prototype.getText = function() {
   return this.text_;
 };
 
+/**
+ * Get the text align.
+ * @return {ol.expr.Expression} Text align.
+ */
+ol.style.Text.prototype.getTextAlign = function() {
+  return this.textAlign_;
+};
+
+/**
+ * Get the text baseline.
+ * @return {ol.expr.Expression} Text Baseline.
+ */
+ol.style.Text.prototype.getTextBaseline = function() {
+  return this.textBaseline_;
+};
 
 /**
  * Set the font color.
@@ -242,6 +293,23 @@ ol.style.Text.prototype.setText = function(text) {
   this.text_ = text;
 };
 
+/**
+ * Set the text align.
+ * @param {ol.expr.Expression} textAlign Text Align.
+ */
+ol.style.Text.prototype.setTextAlign = function(textAlign) {
+  goog.asserts.assertInstanceof(textAlign, ol.expr.Expression);
+  this.textAlign_ = textAlign;
+};
+
+/**
+ * Set the text baseline.
+ * @param {ol.expr.Expression} textBaseline Text Baseline.
+ */
+ol.style.Text.prototype.setTextBaseline = function(textBaseline) {
+  goog.asserts.assertInstanceof(textBaseline, ol.expr.Expression);
+  this.textBaseline_ = textBaseline;
+};
 
 /**
  * @type {ol.style.TextLiteral}
@@ -251,5 +319,7 @@ ol.style.TextDefaults = new ol.style.TextLiteral({
   fontFamily: 'sans-serif',
   fontSize: 10,
   text: '',
-  opacity: 1
+  opacity: 1,
+  textAlign: 'center',
+  textBaseline: 'middle'
 });

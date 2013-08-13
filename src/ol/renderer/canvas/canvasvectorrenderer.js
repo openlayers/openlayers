@@ -207,7 +207,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
 
   var context = this.context_,
       content, alpha, i, ii, feature, id, size, geometry, components, j, jj,
-      point, vec;
+      point, vec, drawIconLabel=false;
 
   if (symbolizer instanceof ol.style.ShapeLiteral) {
     content = ol.renderer.canvas.VectorRenderer.renderShape(symbolizer);
@@ -216,6 +216,9 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
     content = ol.renderer.canvas.VectorRenderer.renderIcon(
         symbolizer, this.iconLoadedCallback_);
     alpha = symbolizer.opacity;
+    if( goog.isDef(symbolizer.label) && !goog.isNull(symbolizer.label)  ) {
+    	drawIconLabel = true;
+    }
   } else {
     throw new Error('Unsupported symbolizer: ' + symbolizer);
   }
@@ -254,6 +257,31 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
       vec = [point.get(0), point.get(1), 0];
       goog.vec.Mat4.multVec3(this.transform_, vec, vec);
       context.drawImage(content, vec[0], vec[1], content.width, content.height);
+      if(drawIconLabel) {
+    	  alert('Draw Icon Label');
+    	  var txtsymbolizer = /** {ol.style.TextLiteral} */ (symbolizer.label);
+    	  this.configureContextToText_(txtsymbolizer , context);
+    	  var dx, dy;
+    	  if( goog.isDef(symbolizer.labelVAlign) && symbolizer.labelVAlign == 'top') {
+    		  dy = -midHeight;
+    	  } else {
+    		  dy = content.height;
+    	  }
+
+    	  var halign = goog.isDef(symbolizer.labelAlign) ? symbolizer.labelAlign : '';
+    	  switch (halign) {
+	    	  case 'left':
+	    	    dx=0;
+	    	    break;
+	    	  case 'right':
+	    	    dx=content.width;
+	    	    break;
+	    	  default:
+	    		  dx = midWidth;//center Horizontal align
+    	  }
+
+    	  context.fillText(txtsymbolizer.text,vec[0]+dx,vec[1]+dy, content.width);
+      }
     }
   }
   context.restore();
@@ -270,8 +298,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
  */
 ol.renderer.canvas.VectorRenderer.prototype.renderText_ =
     function(features, text, texts) {
-  var context = this.context_,
-      vecs, vec;
+  var context = this.context_, vecs, vec;
 
   if (context.fillStyle !== text.color) {
     context.fillStyle = text.color;
@@ -279,10 +306,9 @@ ol.renderer.canvas.VectorRenderer.prototype.renderText_ =
   context.font = text.fontSize + 'px ' + text.fontFamily;
   context.globalAlpha = text.opacity;
 
-  // TODO: make alignments configurable
-  context.textAlign = 'center';
-  context.textBaseline = 'middle';
-
+  context.textAlign = text.textAlign;
+  context.textBaseline = text.textBaseline;
+	  
   for (var i = 0, ii = features.length; i < ii; ++i) {
     vecs = ol.renderer.canvas.VectorRenderer.getLabelVectors(
         features[i].getGeometry());
@@ -294,6 +320,26 @@ ol.renderer.canvas.VectorRenderer.prototype.renderText_ =
   }
 
 };
+
+/**
+ * @param {ol.style.TextLiteral|undefined} text Text symbolizer.
+ * @param {CanvasRenderingContext2D} context to configure
+ * @private
+ */
+ol.renderer.canvas.VectorRenderer.prototype.configureContextToText_ =
+    function(text, context) {
+
+  goog.asserts.assertInstanceof(text, ol.style.TextLiteral);
+
+  if (context.fillStyle !== text.color) {
+    context.fillStyle = text.color;
+  }
+  context.font = text.fontSize + 'px ' + text.fontFamily;
+  context.globalAlpha = text.opacity;
+
+  context.textAlign = text.textAlign;
+  context.textBaseline = text.textBaseline;
+}
 
 
 /**
