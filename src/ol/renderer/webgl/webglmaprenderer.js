@@ -645,7 +645,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
       gl.uniformMatrix4fv(locations.u_colorMatrix, false,
           layerRenderer.getColorMatrix());
     }
-    gl.uniform1f(locations.u_opacity, layer.getOpacity());
+    gl.uniform1f(locations.u_opacity, layerState.opacity);
     gl.bindTexture(goog.webgl.TEXTURE_2D, layerRenderer.getTexture());
     gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
 
