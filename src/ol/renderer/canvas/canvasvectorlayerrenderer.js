@@ -3,7 +3,6 @@ goog.provide('ol.renderer.canvas.VectorLayer');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
-goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Pixel');
@@ -14,6 +13,7 @@ goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
+goog.require('ol.layer.VectorLayerEventType');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.VectorRenderer');
 goog.require('ol.tilegrid.TileGrid');
@@ -86,8 +86,11 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    */
   this.tileCache_ = new ol.TileCache(
       ol.renderer.canvas.VectorLayer.TILECACHE_SIZE);
-  goog.events.listen(layer, goog.events.EventType.CHANGE,
-      this.handleLayerChange_, false, this);
+  goog.events.listen(layer, [
+    ol.layer.VectorLayerEventType.ADD,
+    ol.layer.VectorLayerEventType.REMOVE
+  ],
+  this.handleLayerChange_, false, this);
 
   /**
    * @private

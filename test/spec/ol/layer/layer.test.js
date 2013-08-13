@@ -46,6 +46,18 @@ describe('ol.layer.Layer', function() {
       expect(layer.getVisible()).to.be(true);
     });
 
+    it('provides default layerState', function() {
+      expect(layer.getLayerState()).to.eql({
+        brightness: 0,
+        contrast: 1,
+        hue: 0,
+        opacity: 1,
+        saturation: 1,
+        visible: true,
+        ready: true
+      });
+    });
+
   });
 
   describe('constructor (options)', function() {
@@ -71,8 +83,87 @@ describe('ol.layer.Layer', function() {
       expect(layer.getSaturation()).to.be(5);
       expect(layer.getVisible()).to.be(false);
       expect(layer.get('foo')).to.be(42);
+      expect(layer.getLayerState()).to.eql({
+        brightness: 0.5,
+        contrast: 10,
+        hue: 180,
+        opacity: 0.5,
+        saturation: 5,
+        visible: false,
+        ready: true
+      });
 
       goog.dispose(layer);
+    });
+
+  });
+
+  describe('#getLayerState', function() {
+
+    var layer;
+
+    beforeEach(function() {
+      layer = new ol.layer.Layer({
+        source: new ol.source.Source({
+          projection: ol.proj.get('EPSG:4326')
+        })
+      });
+    });
+
+    afterEach(function() {
+      goog.dispose(layer);
+    });
+
+    it('returns a layerState from the properties values', function() {
+      layer.setBrightness(-0.7);
+      layer.setContrast(0.3);
+      layer.setHue(-0.3);
+      layer.setOpacity(0.3);
+      layer.setSaturation(0.3);
+      layer.setVisible(false);
+      expect(layer.getLayerState()).to.eql({
+        brightness: -0.7,
+        contrast: 0.3,
+        hue: -0.3,
+        opacity: 0.3,
+        saturation: 0.3,
+        visible: false,
+        ready: true
+      });
+    });
+
+    it('returns a layerState with clamped values', function() {
+      layer.setBrightness(1.5);
+      layer.setContrast(-0.7);
+      layer.setHue(42);
+      layer.setOpacity(-1.5);
+      layer.setSaturation(-0.7);
+      layer.setVisible(false);
+      expect(layer.getLayerState()).to.eql({
+        brightness: 1,
+        contrast: 0,
+        hue: 42,
+        opacity: 0,
+        saturation: 0,
+        visible: false,
+        ready: true
+      });
+
+      layer.setBrightness(-3);
+      layer.setContrast(42);
+      layer.setHue(-100);
+      layer.setOpacity(3);
+      layer.setSaturation(42);
+      layer.setVisible(true);
+      expect(layer.getLayerState()).to.eql({
+        brightness: -1,
+        contrast: 42,
+        hue: -100,
+        opacity: 1,
+        saturation: 42,
+        visible: true,
+        ready: true
+      });
     });
 
   });

@@ -46,7 +46,7 @@
  * @property {ol.Collection|Array.<ol.control.Control>|undefined} controls
  *     Controls initially added to the map.
  * @property {ol.Collection|undefined} interactions Interactions.
- * @property {Array.<ol.layer.Layer>|ol.Collection|undefined} layers Layers.
+ * @property {Array.<ol.layer.LayerBase>|ol.Collection|undefined} layers Layers.
  * @property {ol.RendererHint|undefined} renderer Renderer.
  * @property {Array.<ol.RendererHint>|undefined} renderers Renderers.
  * @property {Element|string|undefined} target The container for the map.
@@ -306,6 +306,16 @@
  */
 
 /**
+ * @typedef {Object} ol.layer.LayerBaseOptions
+ * @property {number|undefined} brightness Brightness.
+ * @property {number|undefined} contrast Contrast.
+ * @property {number|undefined} hue Hue.
+ * @property {number|undefined} opacity Opacity.
+ * @property {number|undefined} saturation Saturation.
+ * @property {boolean|undefined} visible Visibility.
+ */
+
+/**
  * @typedef {Object} ol.layer.LayerOptions
  * @property {number|undefined} brightness Brightness.
  * @property {number|undefined} contrast Contrast.
@@ -314,6 +324,17 @@
  * @property {number|undefined} saturation Saturation.
  * @property {ol.source.Source} source Source for this layer.
  * @property {boolean|undefined} visible Visibility. Default is true (visible).
+ */
+
+/**
+ * @typedef {Object} ol.layer.LayerGroupOptions
+ * @property {number|undefined} brightness Brightness.
+ * @property {number|undefined} contrast Contrast.
+ * @property {number|undefined} hue Hue.
+ * @property {number|undefined} opacity Opacity.
+ * @property {number|undefined} saturation Saturation.
+ * @property {boolean|undefined} visible Visibility.
+ * @property {Array.<ol.layer.LayerBase>|ol.Collection|undefined} layers Child layers.
  */
 
 /**
