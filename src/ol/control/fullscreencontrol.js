@@ -33,29 +33,20 @@ ol.control.FullScreen = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
-  /**
-   * @private
-   * @type {string}
-   */
-  this.cssClassName_ = goog.isDef(options.className) ?
+  var className = goog.isDef(options.className) ?
       options.className : 'ol-full-screen';
 
-  var aElement = goog.dom.createDom(goog.dom.TagName.A, {
-    'href': '#fullScreen',
-    'class': this.cssClassName_ + '-' + goog.dom.fullscreen.isFullScreen()
-  });
-  goog.events.listen(aElement, [
+  var element = goog.dom.createDom(goog.dom.TagName.A,
+      className + ' ' + ol.css.CLASS_BUTTON +
+      (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : ''));
+
+  goog.events.listen(element, [
     goog.events.EventType.CLICK,
     goog.events.EventType.TOUCHEND
   ], this.handleClick_, false, this);
 
   goog.events.listen(goog.global.document, goog.dom.fullscreen.EventType.CHANGE,
       this.handleFullScreenChange_, false, this);
-
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE +
-        (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '')
-  }, aElement);
 
   goog.base(this, {
     element: element,
@@ -104,12 +95,9 @@ ol.control.FullScreen.prototype.handleClick_ = function(browserEvent) {
  * @private
  */
 ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
-  var opened = this.cssClassName_ + '-true';
-  var closed = this.cssClassName_ + '-false';
-  var anchor = goog.dom.getFirstElementChild(this.element);
   if (goog.dom.fullscreen.isFullScreen()) {
-    goog.dom.classes.swap(anchor, closed, opened);
+    goog.dom.classes.add(this.element, ol.css.CLASS_ACTIVE);
   } else {
-    goog.dom.classes.swap(anchor, opened, closed);
+    goog.dom.classes.remove(this.element, ol.css.CLASS_ACTIVE);
   }
 };

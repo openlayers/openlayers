@@ -30,50 +30,73 @@
   position: absolute;
   border: 2px solid red;
 }
-.ol-full-screen {
-  background: rgba(255,255,255,0.4);
+
+.ol-button {
+  display: block;
+  box-sizing: border-box;
+  padding: 6px 10px;
+  font-size: 14px;
+  line-height: 1.428571429;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid #3071a9;
   border-radius: 4px;
-  padding: 2px;
+  color: #fff;
+  background-color: #428bca;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+@media print {
+  .ol-button {
+    display: none;
+  }
+}
+.ol-button:hover {
+  color: #fff;
+  text-decoration: none;
+  background-color: #357ebd;
+}
+
+.ol-button-group .ol-button:first-child {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.ol-button-group .ol-button:not(:first-child):not(:last-child) {
+  border-radius: 0;
+}
+.ol-button-group .ol-button + .ol-button {
+  margin-top: -1px;
+}
+.ol-button-group .ol-button:last-child {
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+
+/* vertical group */
+.ol-button-group {
+  display: inline-block;
+  vertical-align: middle;
+}
+.ol-button-group .ol-button {
+  display: block;
+  float: none;
+  width: 100%;
+}
+/* vertical group end*/
+
+.ol-full-screen {
   position: absolute;
   right: 8px;
   top: 8px;
 }
-@media print {
-  .ol-full-screen {
-    display: none;
-  }
-}
-.ol-full-screen a {
-  background: rgba(0,60,136,0.5);
-  color: white;
-  display: block;
-  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
-  font-size: 18px;
-  font-weight: bold;
-  height: 22px;
-  line-height: 19px;
-  margin: 1px;
-  padding: 0;
-  text-align: center;
-  text-decoration: none;
-  width: 22px;
-}
-a.ol-full-screen-false:after {
+.ol-full-screen:before {
   content: "\2194";
 }
-a.ol-full-screen-true:after {
+.ol-full-screen.ol-active:before {
   content: "\00d7";
 }
 
-.ol-full-screen div {
-  border-radius: 2px;
-}
-.ol-full-screen div a {
-  border-radius: 2px;
-}
-.ol-full-screen a:hover {
-  background: rgba(0,60,136,0.7);
-}
 .ol-logo {
   bottom: 0;
   left: 0;
@@ -91,7 +114,7 @@ a.ol-full-screen-true:after {
 .ol-mouse-position {
   top: 8px;
   right: 8px;
-  position: absolute;  
+  position: absolute;
 }
 
 .ol-scale-line {
@@ -128,50 +151,12 @@ a.ol-full-screen-true:after {
   position: absolute;
   top: 8px;
   left: 8px;
-  background: rgba(255,255,255,0.4);
-  border-radius: 4px;
-  padding: 2px;
 }
-@media print {
-  .ol-zoom {
-    display: none;
-  }
-}
-
-.ol-zoom a {
-  display: block;
-  margin: 1px;
-  padding: 0;
-  color: white;
-  font-size: 18px;
-  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+.ol-zoom-in, .ol-zoom-out {
   font-weight: bold;
-  text-decoration: none;
-  text-align: center;
-  height: 22px;
-  width: 22px;
-  line-height: 19px;
-  background: rgba(0,60,136,0.5);
-}
-.ol-touch .ol-zoom a {
-  font-size: 20px;
-  height: 30px;
-  width: 30px;
-  line-height: 26px;
-}
-.ol-zoom a:hover {
-  background: rgba(0,60,136,0.7);
-}
-
-.ol-zoom-in {
-  border-radius: 2px 2px 0 0;
 }
 .ol-zoom-in:before {
   content: "+";
-}
-
-.ol-zoom-out {
-  border-radius: 0 0 2px 2px;
 }
 .ol-zoom-out:before {
   content: "\2212";
@@ -204,41 +189,10 @@ a.ol-full-screen-true:after {
 }
 .ol-zoom-extent {
   position: absolute;
-  background: rgba(255,255,255,0.4);
-  border-radius: 4px;
-  left: 8px;
-  padding: 2px;
-  top: 65px;
+  top: 100px;
+  left: 8px
 }
-@media print {
-  .ol-zoom-extent {
-    display: none;
-  }
-}
-.ol-zoom-extent a {
-  display: block;
-  margin: 1px;
-  padding: 0;
-  color: white;
-  font-size: 16px;
-  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
-  font-weight: bold;
-  text-decoration: none;
-  text-align: center;
-  height: 22px;
-  width: 22px;
-  background-color: rgba(0, 60, 136, 0.5);
-  border-radius: 2px;
-}
-.ol-touch .ol-zoom-extent a {
-  font-size: 20px;
-  height: 30px;
-  width: 30px;
-  line-height: 26px;
-}
-.ol-zoom-extent a:hover {
-  background-color: rgba(0, 60, 136, 0.7);
-}
-.ol-zoom-extent a:after {
-    content: "E";
+
+.ol-zoom-extent:before {
+  content: "e";
 }

@@ -10,6 +10,7 @@ goog.require('ol.source.OSM');
 var map = new ol.Map({
   controls: ol.control.defaults({}, [
     new ol.control.ZoomToExtent({
+      className: 'ol-zoom-extent goto-bern',
       extent: [
         813079.7791264898,
         848966.9639063801,

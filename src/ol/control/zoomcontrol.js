@@ -32,30 +32,24 @@ ol.control.Zoom = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   var className = goog.isDef(options.className) ? options.className : 'ol-zoom';
-
   var delta = goog.isDef(options.delta) ? options.delta : 1;
 
-  var inElement = goog.dom.createDom(goog.dom.TagName.A, {
-    'href': '#zoomIn',
-    'class': className + '-in'
-  });
+  var inElement = goog.dom.createDom(goog.dom.TagName.A,
+      className + '-in' + ' ' + ol.css.CLASS_BUTTON);
   goog.events.listen(inElement, [
-    goog.events.EventType.TOUCHEND,
-    goog.events.EventType.CLICK
+    goog.events.EventType.CLICK,
+    goog.events.EventType.TOUCHEND
   ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
 
-  var outElement = goog.dom.createDom(goog.dom.TagName.A, {
-    'href': '#zoomOut',
-    'class': className + '-out'
-  });
+  var outElement = goog.dom.createDom(goog.dom.TagName.A,
+      className + '-out' + ' ' + ol.css.CLASS_BUTTON);
   goog.events.listen(outElement, [
-    goog.events.EventType.TOUCHEND,
-    goog.events.EventType.CLICK
+    goog.events.EventType.CLICK,
+    goog.events.EventType.TOUCHEND
   ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, -delta), false, this);
 
-  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE;
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, inElement,
-      outElement);
+  var element = goog.dom.createDom(goog.dom.TagName.DIV,
+      className + ' ' + ol.css.CLASS_BUTTON_GROUP, inElement, outElement);
 
   goog.base(this, {
     element: element,
