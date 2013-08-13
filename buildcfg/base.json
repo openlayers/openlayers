@@ -45,7 +45,8 @@
     "../externs/topojson.js",
     "../externs/oli.js",
     "../externs/proj4js.js",
-    "../externs/tilejson.js"
+    "../externs/tilejson.js",
+    "../externs/html5.js"
   ],
 
   "level": "VERBOSE",
