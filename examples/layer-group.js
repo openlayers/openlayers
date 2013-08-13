@@ -44,7 +44,8 @@ function bindInputs(layerid, layer) {
       .bindTo('checked', layer, 'visible');
   $.each(['opacity', 'hue', 'saturation', 'contrast', 'brightness'],
       function(i, v) {
-        new ol.dom.Input($(layerid + ' .' + v)[0]).bindTo('value', layer, v);
+        new ol.dom.Input($(layerid + ' .' + v)[0])
+            .bindTo('valueAsNumber', layer, v);
       }
   );
 }
