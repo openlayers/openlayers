@@ -9,7 +9,6 @@ goog.require('ol.proj');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Line');
 goog.require('ol.style.Rule');
-goog.require('ol.style.Shape');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 goog.require('ol.style.TextPin');

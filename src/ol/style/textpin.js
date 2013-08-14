@@ -1,6 +1,7 @@
 goog.provide('ol.style.TextPin');
 goog.provide('ol.style.TextPinLiteral');
 
+goog.require('goog.asserts');
 goog.require('ol.expr');
 goog.require('ol.expr.Expression');
 goog.require('ol.expr.Literal');
@@ -8,7 +9,16 @@ goog.require('ol.style.Symbolizer');
 goog.require('ol.style.SymbolizerLiteral');
 goog.require('ol.style.Text');
 goog.require('ol.style.TextDefaults');
-goog.require('ol.style.TextLiteral');
+
+
+/**
+ * @typedef {{color: string,
+ *            fontFamily: string,
+ *            fontSize: number,
+ *            text: string,
+ *            opacity: number}}
+ */
+ol.style.TextPinLiteralOptions;
 
 
 
@@ -45,38 +55,38 @@ ol.style.TextPin = function(options) {
   goog.base(this);
 
   this.color_ = !goog.isDef(options.color) ?
-    new ol.expr.Literal(ol.style.TextDefaults.color) :
-    ((options.color instanceof ol.expr.Expression) ?
-    options.color :
-    new ol.expr.Literal(options.color));
+      new ol.expr.Literal(ol.style.TextDefaults.color) :
+      ((options.color instanceof ol.expr.Expression) ?
+      options.color :
+      new ol.expr.Literal(options.color));
   this.strokeColor_ = !goog.isDef(options.strokeColor) ?
-    new ol.expr.Literal(ol.style.TextDefaults.strokeColor) :
-    (options.strokeColor instanceof ol.expr.Expression) ?
-    options.strokeColor :
-    new ol.expr.Literal(options.strokeColor);
+      new ol.expr.Literal(ol.style.TextDefaults.strokeColor) :
+      (options.strokeColor instanceof ol.expr.Expression) ?
+      options.strokeColor :
+      new ol.expr.Literal(options.strokeColor);
   this.fillColor_ = !goog.isDef(options.fillColor) ?
-    new ol.expr.Literal(ol.style.TextDefaults.fillColor) :
-    (options.fillColor instanceof ol.expr.Expression) ?
-    options.fillColor :
-    new ol.expr.Literal(options.fillColor);
+      new ol.expr.Literal(ol.style.TextDefaults.fillColor) :
+      (options.fillColor instanceof ol.expr.Expression) ?
+      options.fillColor :
+      new ol.expr.Literal(options.fillColor);
   this.fontFamily_ = !goog.isDef(options.fontFamily) ?
-    new ol.expr.Literal(ol.style.TextDefaults.fontFamily) :
-    (options.fontFamily instanceof ol.expr.Expression) ?
-    options.fontFamily :
-    new ol.expr.Literal(options.fontFamily);
+      new ol.expr.Literal(ol.style.TextDefaults.fontFamily) :
+      (options.fontFamily instanceof ol.expr.Expression) ?
+      options.fontFamily :
+      new ol.expr.Literal(options.fontFamily);
   this.fontSize_ = !goog.isDef(options.fontSize) ?
-    new ol.expr.Literal(ol.style.TextDefaults.fontSize) :
-    (options.fontSize instanceof ol.expr.Expression) ?
-    options.fontSize :
-    new ol.expr.Literal(options.fontSize);
+      new ol.expr.Literal(ol.style.TextDefaults.fontSize) :
+      (options.fontSize instanceof ol.expr.Expression) ?
+      options.fontSize :
+      new ol.expr.Literal(options.fontSize);
   this.text_ = (options.text instanceof ol.expr.Expression) ?
-    options.text :
-    new ol.expr.Literal(options.text);
+      options.text :
+      new ol.expr.Literal(options.text);
   this.opacity_ = !goog.isDef(options.opacity) ?
-    new ol.expr.Literal(ol.style.TextDefaults.opacity) :
-    (options.opacity instanceof ol.expr.Expression) ?
-    options.opacity :
-    new ol.expr.Literal(options.opacity);
+      new ol.expr.Literal(ol.style.TextDefaults.opacity) :
+      (options.opacity instanceof ol.expr.Expression) ?
+      options.opacity :
+      new ol.expr.Literal(options.opacity);
 };
 goog.inherits(ol.style.TextPin, ol.style.Symbolizer);
 
@@ -86,11 +96,11 @@ goog.inherits(ol.style.TextPin, ol.style.Symbolizer);
  */
 ol.style.TextPinLiteral.prototype.equals = function(textPinLiteral) {
   return this.color == textPinLiteral.color &&
-    this.strokeColor == textPinLiteral.strokeColor &&
-    this.fillColor == textPinLiteral.fillColor &&
-    this.fontFamily == textPinLiteral.fontFamily &&
-    this.fontSize == textPinLiteral.fontSize &&
-    this.opacity == textPinLiteral.opacity;
+      this.strokeColor == textPinLiteral.strokeColor &&
+      this.fillColor == textPinLiteral.fillColor &&
+      this.fontFamily == textPinLiteral.fontFamily &&
+      this.fontSize == textPinLiteral.fontSize &&
+      this.opacity == textPinLiteral.opacity;
 };
 
 

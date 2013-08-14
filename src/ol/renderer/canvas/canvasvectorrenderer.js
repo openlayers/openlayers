@@ -107,44 +107,44 @@ ol.renderer.canvas.VectorRenderer.prototype.getMaxSymbolSize = function() {
  * @return {boolean} true if deferred, false if rendered.
  */
 ol.renderer.canvas.VectorRenderer.prototype.renderFeaturesByGeometryType =
- function(
+    function(
     type, features, symbolizer, data) {
   var deferred = false;
   if (!(symbolizer instanceof ol.style.TextLiteral)) {
     switch (type) {
-    case ol.geom.GeometryType.POINT:
-    case ol.geom.GeometryType.MULTIPOINT:
-      goog.asserts.assert(symbolizer instanceof ol.style.PointLiteral ||
-          symbolizer instanceof ol.style.TextPinLiteral,
-          'Expected point symbolizer: ' + symbolizer);
-      if (symbolizer instanceof ol.style.PointLiteral) {
-        deferred = this.renderPointFeatures_(features,
-/** @type {ol.style.PointLiteral} */
-        (symbolizer));
-      } else if (symbolizer instanceof ol.style.TextPinLiteral) {
-        deferred = this.renderTextPinFeatures_(features,
- /** @type {ol.style.TextPinLiteral} */
-        (symbolizer));
-      }
-      break;
-    case ol.geom.GeometryType.LINESTRING:
-    case ol.geom.GeometryType.MULTILINESTRING:
-      goog.asserts.assert(symbolizer instanceof ol.style.LineLiteral,
-          'Expected line symbolizer: ' + symbolizer);
-      this.renderLineStringFeatures_(features,
- /** @type {ol.style.LineLiteral} */
-      (symbolizer));
-      break;
-    case ol.geom.GeometryType.POLYGON:
-    case ol.geom.GeometryType.MULTIPOLYGON:
-      goog.asserts.assert(symbolizer instanceof ol.style.PolygonLiteral,
-          'Expected polygon symbolizer: ' + symbolizer);
-      this.renderPolygonFeatures_(features,
- /** @type {ol.style.PolygonLiteral} */
-      (symbolizer));
-      break;
-    default:
-      throw new Error('Rendering not implemented for geometry type: ' + type);
+      case ol.geom.GeometryType.POINT:
+      case ol.geom.GeometryType.MULTIPOINT:
+        goog.asserts.assert(symbolizer instanceof ol.style.PointLiteral ||
+            symbolizer instanceof ol.style.TextPinLiteral,
+            'Expected point symbolizer: ' + symbolizer);
+        if (symbolizer instanceof ol.style.PointLiteral) {
+          deferred = this.renderPointFeatures_(features,
+              /** @type {ol.style.PointLiteral} */
+              (symbolizer));
+        } else if (symbolizer instanceof ol.style.TextPinLiteral) {
+          deferred = this.renderTextPinFeatures_(features,
+              /** @type {ol.style.TextPinLiteral} */
+              (symbolizer));
+        }
+        break;
+      case ol.geom.GeometryType.LINESTRING:
+      case ol.geom.GeometryType.MULTILINESTRING:
+        goog.asserts.assert(symbolizer instanceof ol.style.LineLiteral,
+            'Expected line symbolizer: ' + symbolizer);
+        this.renderLineStringFeatures_(features,
+            /** @type {ol.style.LineLiteral} */
+            (symbolizer));
+        break;
+      case ol.geom.GeometryType.POLYGON:
+      case ol.geom.GeometryType.MULTIPOLYGON:
+        goog.asserts.assert(symbolizer instanceof ol.style.PolygonLiteral,
+            'Expected polygon symbolizer: ' + symbolizer);
+        this.renderPolygonFeatures_(features,
+            /** @type {ol.style.PolygonLiteral} */
+            (symbolizer));
+        break;
+      default:
+        throw new Error('Rendering not implemented for geometry type: ' + type);
     }
   } else {
     this.renderText_(features, symbolizer, data);
@@ -154,8 +154,8 @@ ol.renderer.canvas.VectorRenderer.prototype.renderFeaturesByGeometryType =
 
 
 /**
- * @param {Array.
- *            <ol.Feature>} features Array of line features.
+ * @param {Array.<ol.Feature>}
+ *            features Array of line features.
  * @param {ol.style.LineLiteral}
  *            symbolizer Line symbolizer.
  * @private
@@ -293,7 +293,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderTextPinFeatures_ = function(
     context.fillStyle = symbolizer.fillColor;
     var padding = 6;
     var height = 10;
-    var float = 5;
+    var floating = 5;
 
     context.font = symbolizer.fontSize + 'px ' + symbolizer.fontFamily;
     context.globalAlpha = symbolizer.opacity;
@@ -309,15 +309,19 @@ ol.renderer.canvas.VectorRenderer.prototype.renderTextPinFeatures_ = function(
     var textHeight = symbolizer.fontSize;
 
     context.beginPath();
-    context.moveTo(vec[0], vec[1] - float);
-    context.lineTo(vec[0] + 2, vec[1] - float - height);
-    context.lineTo(vec[0] + textWidth / 2 + padding, vec[1] - float - height);
-    context.lineTo(vec[0] + textWidth / 2 + padding, vec[1] - float - height -
+    context.moveTo(vec[0], vec[1] - floating);
+    context.lineTo(vec[0] + 2, vec[1] - floating - height);
+    context.lineTo(vec[0] + textWidth / 2 + padding, vec[1] - floating -
+        height);
+    context.lineTo(vec[0] + textWidth / 2 + padding, vec[1] - floating -
+        height -
         textHeight - padding * 2);
-    context.lineTo(vec[0] - (textWidth / 2 + padding), vec[1] - float - height -
+    context.lineTo(vec[0] - (textWidth / 2 + padding), vec[1] - floating -
+        height -
         textHeight - padding * 2);
-    context.lineTo(vec[0] - (textWidth / 2 + padding), vec[1] - float - height);
-    context.lineTo(vec[0] - 2, vec[1] - float - height);
+    context.lineTo(vec[0] - (textWidth / 2 + padding), vec[1] - floating -
+        height);
+    context.lineTo(vec[0] - 2, vec[1] - floating - height);
     context.fill();
 
     context.beginPath();
@@ -327,7 +331,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderTextPinFeatures_ = function(
     context.fillStyle = symbolizer.color;
 
     context.beginPath();
-    context.fillText(text, vec[0] - textWidth / 2, vec[1] - height - float -
+    context.fillText(text, vec[0] - textWidth / 2, vec[1] - height - floating -
         padding);
     context.stroke();
   }
