@@ -13,13 +13,15 @@ describe('ol.style.Style', function() {
             symbolizers: [
               new ol.style.Shape({
                 size: 4,
-                fillColor: '#BADA55'
+                fill: new ol.style.Fill({color: '#BADA55'})
               })
             ]
           })
         ]
       });
-      var feature = new ol.Feature();
+      var feature = new ol.Feature({
+        geometry: new ol.geom.Point([1, 2])
+      });
       feature.set('foo', 'bar');
       expect(style.apply(feature).length).to.be(1);
       expect(style.apply(feature)[0].fillColor).to.be('#BADA55');
@@ -38,27 +40,51 @@ describe('ol.style.Style', function() {
 
     it('returns an array with the Shape default for points', function() {
       feature.setGeometry(new ol.geom.Point([0, 0]));
-      var symbolizers = ol.style.Style.applyDefaultStyle(feature);
-      expect(symbolizers.length).to.be(1);
-      expect(symbolizers[0]).to.be.a(ol.style.ShapeLiteral);
-      expect(symbolizers[0].equals(ol.style.ShapeDefaults)).to.be(true);
+
+      var literals = ol.style.Style.applyDefaultStyle(feature);
+      expect(literals).to.have.length(1);
+
+      var literal = literals[0];
+      expect(literal).to.be.a(ol.style.ShapeLiteral);
+      expect(literal.type).to.be(ol.style.ShapeDefaults.type);
+      expect(literal.fillColor).to.be(ol.style.FillDefaults.color);
+      expect(literal.fillOpacity).to.be(ol.style.FillDefaults.opacity);
+      expect(literal.strokeColor).to.be(ol.style.StrokeDefaults.color);
+      expect(literal.strokeOpacity).to.be(ol.style.StrokeDefaults.opacity);
+      expect(literal.strokeWidth).to.be(ol.style.StrokeDefaults.width);
     });
 
     it('returns an array with the Line default for lines', function() {
       feature.setGeometry(new ol.geom.LineString([[0, 0], [1, 1]]));
-      expect(ol.style.Style.applyDefaultStyle(feature)[0]
-          .equals(ol.style.LineDefaults)).to.be(true);
+
+      var literals = ol.style.Style.applyDefaultStyle(feature);
+      expect(literals).to.have.length(1);
+
+      var literal = literals[0];
+      expect(literal).to.be.a(ol.style.LineLiteral);
+      expect(literal.strokeColor).to.be(ol.style.StrokeDefaults.color);
+      expect(literal.strokeOpacity).to.be(ol.style.StrokeDefaults.opacity);
+      expect(literal.strokeWidth).to.be(ol.style.StrokeDefaults.width);
     });
 
     it('returns an array with the Polygon default for polygons', function() {
       feature.setGeometry(new ol.geom.Polygon([[[0, 0], [1, 1], [0, 0]]]));
-      expect(ol.style.Style.applyDefaultStyle(feature)[0]
-          .equals(ol.style.PolygonDefaults)).to.be(true);
+
+      var literals = ol.style.Style.applyDefaultStyle(feature);
+      expect(literals).to.have.length(1);
+
+      var literal = literals[0];
+      expect(literal).to.be.a(ol.style.PolygonLiteral);
+      expect(literal.fillColor).to.be(ol.style.FillDefaults.color);
+      expect(literal.fillOpacity).to.be(ol.style.FillDefaults.opacity);
+      expect(literal.strokeColor).to.be(ol.style.StrokeDefaults.color);
+      expect(literal.strokeOpacity).to.be(ol.style.StrokeDefaults.opacity);
+      expect(literal.strokeWidth).to.be(ol.style.StrokeDefaults.width);
     });
 
   });
 
-  describe('#reduceLiterals', function() {
+  describe('#reduceLiterals_', function() {
 
     it('collapses stroke or fill only literals where possible', function() {
       var literals = [
@@ -73,7 +99,7 @@ describe('ol.style.Style', function() {
         })
       ];
 
-      var reduced = ol.style.Style.reduceLiterals(literals);
+      var reduced = ol.style.Style.reduceLiterals_(literals);
       expect(reduced).to.have.length(1);
 
       var poly = reduced[0];
@@ -100,7 +126,7 @@ describe('ol.style.Style', function() {
         })
       ];
 
-      var reduced = ol.style.Style.reduceLiterals(literals);
+      var reduced = ol.style.Style.reduceLiterals_(literals);
       expect(reduced).to.have.length(2);
 
       var first = reduced[0];
@@ -138,7 +164,7 @@ describe('ol.style.Style', function() {
         })
       ];
 
-      var reduced = ol.style.Style.reduceLiterals(literals);
+      var reduced = ol.style.Style.reduceLiterals_(literals);
       expect(reduced).to.have.length(2);
 
       var first = reduced[0];

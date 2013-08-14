@@ -1,6 +1,7 @@
 goog.provide('ol.style.Icon');
 
 goog.require('goog.asserts');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.expr');
 goog.require('ol.expr.Expression');
 goog.require('ol.expr.Literal');
@@ -70,7 +71,7 @@ ol.style.Icon = function(options) {
  * @inheritDoc
  * @return {ol.style.IconLiteral} Literal shape symbolizer.
  */
-ol.style.Icon.prototype.createLiteral = function(opt_feature) {
+ol.style.Icon.prototype.createLiteral = function(type, opt_feature) {
 
   var url = ol.expr.evaluateFeature(this.url_, opt_feature);
   goog.asserts.assertString(url, 'url must be a string');
@@ -200,10 +201,10 @@ ol.style.Icon.prototype.setWidth = function(width) {
 
 
 /**
- * @type {ol.style.IconLiteral}
+ * @typedef {{opacity: (number),
+ *            rotation: (number)}}
  */
-ol.style.IconDefaults = new ol.style.IconLiteral({
-  url: '#',
+ol.style.IconDefaults = {
   opacity: 1,
   rotation: 0
-});
+};

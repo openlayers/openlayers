@@ -44,10 +44,12 @@ describe('ol.style.Icon', function() {
         widthAttr: 0.42,
         opacityAttr: 0.5,
         rotationAttr: 123,
-        urlAttr: 'http://example.com/1.png'
+        urlAttr: 'http://example.com/1.png',
+        geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT,
+          feature);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.height).to.be(42);
       expect(literal.width).to.be(.42);
@@ -65,7 +67,7 @@ describe('ol.style.Icon', function() {
         url: ol.expr.parse('"http://example.com/1.png"')
       });
 
-      var literal = symbolizer.createLiteral();
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.height).to.be(10);
       expect(literal.width).to.be(20);
@@ -81,7 +83,7 @@ describe('ol.style.Icon', function() {
         url: ol.expr.parse('"http://example.com/1.png"')
       });
 
-      var literal = symbolizer.createLiteral();
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.opacity).to.be(1);
       expect(literal.rotation).to.be(0);
@@ -331,5 +333,7 @@ goog.require('goog.asserts.AssertionError');
 goog.require('ol.Feature');
 goog.require('ol.expr');
 goog.require('ol.expr.Literal');
+goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.Point');
 goog.require('ol.style.Icon');
 goog.require('ol.style.IconLiteral');

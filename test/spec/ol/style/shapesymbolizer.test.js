@@ -7,7 +7,9 @@ describe('ol.style.Shape', function() {
     it('accepts literal values', function() {
       var symbolizer = new ol.style.Shape({
         size: 4,
-        fillColor: '#BADA55'
+        fill: new ol.style.Fill({
+          color: '#ff0000'
+        })
       });
       expect(symbolizer).to.be.a(ol.style.Shape);
     });
@@ -15,7 +17,9 @@ describe('ol.style.Shape', function() {
     it('accepts expressions', function() {
       var symbolizer = new ol.style.Shape({
         size: ol.expr.parse('sizeAttr'),
-        strokeColor: ol.expr.parse('color')
+        stroke: new ol.style.Stroke({
+          color: ol.expr.parse('color')
+        })
       });
       expect(symbolizer).to.be.a(ol.style.Shape);
     });
@@ -27,16 +31,20 @@ describe('ol.style.Shape', function() {
     it('evaluates expressions with the given feature', function() {
       var symbolizer = new ol.style.Shape({
         size: ol.expr.parse('sizeAttr'),
-        fillOpacity: ol.expr.parse('opacityAttr'),
-        fillColor: '#BADA55'
+        fill: new ol.style.Fill({
+          opacity: ol.expr.parse('opacityAttr'),
+          color: '#BADA55'
+        })
       });
 
       var feature = new ol.Feature({
         sizeAttr: 42,
-        opacityAttr: 0.4
+        opacityAttr: 0.4,
+        geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT,
+          feature);
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.size).to.be(42);
       expect(literal.fillOpacity).to.be(0.4);
@@ -45,13 +53,17 @@ describe('ol.style.Shape', function() {
     it('can be called without a feature', function() {
       var symbolizer = new ol.style.Shape({
         size: 10,
-        fillColor: '#BADA55',
-        strokeColor: '#013',
-        strokeOpacity: 1,
-        strokeWidth: 2
+        fill: new ol.style.Fill({
+          color: '#BADA55'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#013',
+          opacity: 1,
+          width: 2
+        })
       });
 
-      var literal = symbolizer.createLiteral();
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.size).to.be(10);
       expect(literal.fillColor).to.be('#BADA55');
@@ -62,93 +74,32 @@ describe('ol.style.Shape', function() {
 
   });
 
-  describe('#getFillColor()', function() {
+  describe('#getFill()', function() {
 
-    it('returns the fill color', function() {
+    it('returns the fill', function() {
       var symbolizer = new ol.style.Shape({
-        fillColor: '#ff0000'
+        fill: new ol.style.Fill({
+          color: '#ff0000'
+        })
       });
 
-      var fillColor = symbolizer.getFillColor();
-      expect(fillColor).to.be.a(ol.expr.Literal);
-      expect(fillColor.getValue()).to.be('#ff0000');
+      var fill = symbolizer.getFill();
+      expect(fill).to.be.a(ol.style.Fill);
     });
 
   });
 
-  describe('#getFillOpacity()', function() {
+  describe('#getStroke()', function() {
 
-    it('returns the fill opacity', function() {
+    it('returns the stroke', function() {
       var symbolizer = new ol.style.Shape({
-        fillOpacity: 0.123
+        stroke: new ol.style.Stroke({
+          color: '#ff0000'
+        })
       });
 
-      var opacity = symbolizer.getFillOpacity();
-      expect(opacity).to.be.a(ol.expr.Literal);
-      expect(opacity.getValue()).to.be(0.123);
-    });
-
-    it('returns the default if none provided', function() {
-      var symbolizer = new ol.style.Shape({
-        fillColor: '#ffffff'
-      });
-
-      var opacity = symbolizer.getFillOpacity();
-      expect(opacity).to.be.a(ol.expr.Literal);
-      expect(opacity.getValue()).to.be(0.4);
-    });
-
-  });
-
-  describe('#getStrokeColor()', function() {
-
-    it('returns the stroke color', function() {
-      var symbolizer = new ol.style.Shape({
-        strokeColor: '#ff0000'
-      });
-
-      var strokeColor = symbolizer.getStrokeColor();
-      expect(strokeColor).to.be.a(ol.expr.Literal);
-      expect(strokeColor.getValue()).to.be('#ff0000');
-    });
-
-  });
-
-  describe('#getStrokeOpacity()', function() {
-
-    it('returns the stroke opacity', function() {
-      var symbolizer = new ol.style.Shape({
-        strokeWidth: 1,
-        strokeOpacity: 0.123
-      });
-
-      var opacity = symbolizer.getStrokeOpacity();
-      expect(opacity).to.be.a(ol.expr.Literal);
-      expect(opacity.getValue()).to.be(0.123);
-    });
-
-    it('returns the default if none provided', function() {
-      var symbolizer = new ol.style.Shape({
-        strokeWidth: 1
-      });
-
-      var opacity = symbolizer.getStrokeOpacity();
-      expect(opacity).to.be.a(ol.expr.Literal);
-      expect(opacity.getValue()).to.be(0.8);
-    });
-
-  });
-
-  describe('#getStrokeWidth()', function() {
-
-    it('returns the stroke width', function() {
-      var symbolizer = new ol.style.Shape({
-        strokeWidth: 10
-      });
-
-      var strokeWidth = symbolizer.getStrokeWidth();
-      expect(strokeWidth).to.be.a(ol.expr.Literal);
-      expect(strokeWidth.getValue()).to.be(10);
+      var stroke = symbolizer.getStroke();
+      expect(stroke).to.be.a(ol.style.Stroke);
     });
 
   });
@@ -157,8 +108,10 @@ describe('ol.style.Shape', function() {
 
     it('returns the shape type', function() {
       var symbolizer = new ol.style.Shape({
-        strokeWidth: 1,
-        opacity: 0.123
+        stroke: new ol.style.Stroke({
+          width: 1,
+          opacity: 0.123
+        })
       });
 
       var type = symbolizer.getType();
@@ -167,27 +120,25 @@ describe('ol.style.Shape', function() {
 
   });
 
-  describe('#setFillColor()', function() {
+  describe('#setFill()', function() {
 
-    it('sets the fill color', function() {
+    it('sets the fill', function() {
       var symbolizer = new ol.style.Shape({
-        fillColor: '#ff0000'
+        stroke: new ol.style.Stroke({color: '#ff0000'})
       });
+      expect(symbolizer.getFill()).to.be(null);
 
-      symbolizer.setFillColor(new ol.expr.Literal('#0000ff'));
-
-      var fillColor = symbolizer.getFillColor();
-      expect(fillColor).to.be.a(ol.expr.Literal);
-      expect(fillColor.getValue()).to.be('#0000ff');
+      symbolizer.setFill(new ol.style.Fill({color: '#0000ff'}));
+      expect(symbolizer.getFill()).to.be.a(ol.style.Fill);
     });
 
-    it('throws when not provided an expression', function() {
+    it('throws when not provided a fill', function() {
       var symbolizer = new ol.style.Shape({
-        fillColor: '#ff0000'
+        fill: new ol.style.Fill({color: '#ff0000'})
       });
 
       expect(function() {
-        symbolizer.setFillColor('#0000ff');
+        symbolizer.setFill('#0000ff');
       }).throwException(function(err) {
         expect(err).to.be.a(goog.asserts.AssertionError);
       });
@@ -195,111 +146,25 @@ describe('ol.style.Shape', function() {
 
   });
 
-  describe('#setFillOpacity()', function() {
+  describe('#setStroke()', function() {
 
-    it('sets the fill opacity', function() {
+    it('sets the stroke', function() {
       var symbolizer = new ol.style.Shape({
-        fillOpacity: 0.5
+        fill: new ol.style.Fill({color: '#ff0000'})
       });
+      expect(symbolizer.getStroke()).to.be(null);
 
-      symbolizer.setFillOpacity(new ol.expr.Literal(0.6));
-
-      var fillOpacity = symbolizer.getFillOpacity();
-      expect(fillOpacity).to.be.a(ol.expr.Literal);
-      expect(fillOpacity.getValue()).to.be(0.6);
+      symbolizer.setStroke(new ol.style.Stroke({color: '#0000ff'}));
+      expect(symbolizer.getStroke()).to.be.a(ol.style.Stroke);
     });
 
-    it('throws when not provided an expression', function() {
+    it('throws when not provided a stroke', function() {
       var symbolizer = new ol.style.Shape({
-        fillOpacity: 0.5
+        stroke: new ol.style.Stroke({color: '#ff0000'})
       });
 
       expect(function() {
-        symbolizer.setFillOpacity(0.4);
-      }).throwException(function(err) {
-        expect(err).to.be.a(goog.asserts.AssertionError);
-      });
-    });
-
-  });
-
-  describe('#setStrokeColor()', function() {
-
-    it('sets the stroke color', function() {
-      var symbolizer = new ol.style.Shape({
-        strokeColor: '#ff0000'
-      });
-
-      symbolizer.setStrokeColor(new ol.expr.Literal('#0000ff'));
-
-      var strokeColor = symbolizer.getStrokeColor();
-      expect(strokeColor).to.be.a(ol.expr.Literal);
-      expect(strokeColor.getValue()).to.be('#0000ff');
-    });
-
-    it('throws when not provided an expression', function() {
-      var symbolizer = new ol.style.Shape({
-        strokeColor: '#ff0000'
-      });
-
-      expect(function() {
-        symbolizer.setStrokeColor('#0000ff');
-      }).throwException(function(err) {
-        expect(err).to.be.a(goog.asserts.AssertionError);
-      });
-    });
-
-  });
-
-  describe('#setStrokeOpacity()', function() {
-
-    it('sets the stroke opacity', function() {
-      var symbolizer = new ol.style.Shape({
-        strokeWidth: 1,
-        strokeOpacity: 0.123
-      });
-      symbolizer.setStrokeOpacity(new ol.expr.Literal(0.321));
-
-      var opacity = symbolizer.getStrokeOpacity();
-      expect(opacity).to.be.a(ol.expr.Literal);
-      expect(opacity.getValue()).to.be(0.321);
-    });
-
-    it('throws when not provided an expression', function() {
-      var symbolizer = new ol.style.Shape({
-        strokeWidth: 1,
-        strokeOpacity: 1
-      });
-
-      expect(function() {
-        symbolizer.setStrokeOpacity(0.5);
-      }).throwException(function(err) {
-        expect(err).to.be.a(goog.asserts.AssertionError);
-      });
-    });
-
-  });
-
-  describe('#setStrokeWidth()', function() {
-
-    it('sets the stroke width', function() {
-      var symbolizer = new ol.style.Shape({
-        strokeWidth: 10
-      });
-      symbolizer.setStrokeWidth(new ol.expr.Literal(20));
-
-      var strokeWidth = symbolizer.getStrokeWidth();
-      expect(strokeWidth).to.be.a(ol.expr.Literal);
-      expect(strokeWidth.getValue()).to.be(20);
-    });
-
-    it('throws when not provided an expression', function() {
-      var symbolizer = new ol.style.Shape({
-        strokeWidth: 10
-      });
-
-      expect(function() {
-        symbolizer.setStrokeWidth(10);
+        symbolizer.setStroke('#0000ff');
       }).throwException(function(err) {
         expect(err).to.be.a(goog.asserts.AssertionError);
       });
@@ -311,8 +176,10 @@ describe('ol.style.Shape', function() {
 
     it('sets the shape type', function() {
       var symbolizer = new ol.style.Shape({
-        strokeWidth: 1,
-        opacity: 0.123
+        stroke: new ol.style.Stroke({
+          width: 1,
+          opacity: 0.123
+        })
       });
       symbolizer.setType(ol.style.ShapeType.CIRCLE);
 
@@ -327,8 +194,12 @@ describe('ol.style.Shape', function() {
 goog.require('goog.asserts.AssertionError');
 
 goog.require('ol.Feature');
+goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.Point');
 goog.require('ol.expr');
 goog.require('ol.expr.Literal');
+goog.require('ol.style.Fill');
 goog.require('ol.style.Shape');
 goog.require('ol.style.ShapeLiteral');
 goog.require('ol.style.ShapeType');
+goog.require('ol.style.Stroke');

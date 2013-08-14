@@ -47,7 +47,8 @@ describe('ol.style.Text', function() {
         opacityAttr: 0.4
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT,
+          feature);
       expect(literal).to.be.a(ol.style.TextLiteral);
       expect(literal.color).to.be('#ff0000');
       expect(literal.fontFamily).to.be('Dingbats');
@@ -65,7 +66,7 @@ describe('ol.style.Text', function() {
         opacity: ol.expr.parse('0.6')
       });
 
-      var literal = symbolizer.createLiteral();
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.TextLiteral);
       expect(literal.color).to.be('#ff0000');
       expect(literal.fontFamily).to.be('Arial');
@@ -79,7 +80,7 @@ describe('ol.style.Text', function() {
         text: 'Test'
       });
 
-      var literal = symbolizer.createLiteral();
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.TextLiteral);
       expect(literal.color).to.be('#000');
       expect(literal.fontFamily).to.be('sans-serif');
@@ -297,5 +298,6 @@ goog.require('ol.Feature');
 goog.require('ol.expr');
 goog.require('ol.expr.Literal');
 goog.require('ol.expr.Literal');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.style.Text');
 goog.require('ol.style.TextLiteral');

@@ -67,7 +67,7 @@ goog.inherits(ol.style.Text, ol.style.Symbolizer);
  * @inheritDoc
  * @return {ol.style.TextLiteral} Literal text symbolizer.
  */
-ol.style.Text.prototype.createLiteral = function(opt_feature) {
+ol.style.Text.prototype.createLiteral = function(type, opt_feature) {
 
   var color = ol.expr.evaluateFeature(this.color_, opt_feature);
   goog.asserts.assertString(color, 'color must be a string');
@@ -190,12 +190,14 @@ ol.style.Text.prototype.setText = function(text) {
 
 
 /**
- * @type {ol.style.TextLiteral}
+ * @typedef {{color: string,
+ *            fontFamily: string,
+ *            fontSize: number,
+ *            opacity: number}}
  */
-ol.style.TextDefaults = new ol.style.TextLiteral({
+ol.style.TextDefaults = {
   color: '#000',
   fontFamily: 'sans-serif',
   fontSize: 10,
-  text: '',
   opacity: 1
-});
+};

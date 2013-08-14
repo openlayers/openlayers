@@ -1,10 +1,14 @@
 goog.provide('ol.style.Style');
 
+goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.geom.GeometryType');
-goog.require('ol.style.Rule');
+goog.require('ol.style.Fill');
 goog.require('ol.style.Literal');
 goog.require('ol.style.PolygonLiteral');
+goog.require('ol.style.Rule');
+goog.require('ol.style.Shape');
+goog.require('ol.style.Stroke');
 
 
 
@@ -31,15 +35,20 @@ ol.style.Style = function(options) {
 ol.style.Style.prototype.apply = function(feature) {
   var rules = this.rules_,
       literals = [],
+      geometry = feature.getGeometry(),
       rule, symbolizers;
-  for (var i = 0, ii = rules.length; i < ii; ++i) {
-    rule = rules[i];
-    if (rule.applies(feature)) {
-      symbolizers = rule.getSymbolizers();
-      for (var j = 0, jj = symbolizers.length; j < jj; ++j) {
-        literals.push(symbolizers[j].createLiteral(feature));
+  var type = geometry ? geometry.getType() : null;
+  if (!goog.isNull(type)) {
+    for (var i = 0, ii = rules.length; i < ii; ++i) {
+      rule = rules[i];
+      if (rule.applies(feature)) {
+        symbolizers = rule.getSymbolizers();
+        for (var j = 0, jj = symbolizers.length; j < jj; ++j) {
+          literals.push(symbolizers[j].createLiteral(type, feature));
+        }
       }
     }
+    literals = ol.style.Style.reduceLiterals_(literals);
   }
   return literals;
 };
@@ -51,32 +60,54 @@ ol.style.Style.prototype.apply = function(feature) {
  *     the feature.
  */
 ol.style.Style.applyDefaultStyle = function(feature) {
-  var geometry = feature.getGeometry(),
-      symbolizerLiterals = [];
-  if (!goog.isNull(geometry)) {
-    var type = geometry.getType();
-    if (type === ol.geom.GeometryType.POINT ||
-        type === ol.geom.GeometryType.MULTIPOINT) {
-      symbolizerLiterals.push(ol.style.ShapeDefaults);
-    } else if (type === ol.geom.GeometryType.LINESTRING ||
-        type === ol.geom.GeometryType.MULTILINESTRING) {
-      symbolizerLiterals.push(ol.style.LineDefaults);
-    } else if (type === ol.geom.GeometryType.LINEARRING ||
-        type === ol.geom.GeometryType.POLYGON ||
-        type === ol.geom.GeometryType.MULTIPOLYGON) {
-      symbolizerLiterals.push(ol.style.PolygonDefaults);
-    }
-  }
-  return symbolizerLiterals;
+  return ol.style.Style.defaults.apply(feature);
 };
 
 
 /**
- * Collapse partial polygon symbolizers.
+ * The default style.
+ * @type {ol.style.Style}
+ */
+ol.style.Style.defaults = new ol.style.Style({
+  rules: [
+    new ol.style.Rule({
+      symbolizers: [
+        new ol.style.Shape({
+          fill: new ol.style.Fill(),
+          stroke: new ol.style.Stroke()
+        }),
+        new ol.style.Fill(),
+        new ol.style.Stroke()
+      ]    
+    })
+  ]
+});
+
+
+/**
+ * Given an array of symbolizers, generate an array of literals.
+ * @param {Array.<ol.style.Symbolizer>} symbolizers List of symbolizers.
+ * @param {ol.geom.GeometryType} type Geometry type.
+ * @param {ol.Feature=} opt_feature Optional feature.
+ * @return {Array.<ol.style.Literal>} Array of literals.
+ */
+ol.style.Style.createLiterals = function(symbolizers, type, opt_feature) {
+  var length = symbolizers.length;
+  var literals = new Array(length);
+  for (var i = 0; i < length; ++i) {
+    literals[i] = symbolizers[i].createLiteral(type, opt_feature);
+  }
+  return ol.style.Style.reduceLiterals_(literals);
+}
+
+
+/**
+ * Collapse partial polygon symbolizers and remove null symbolizers.
  * @param {Array.<ol.style.Literal>} literals Input literals.
  * @return {Array.<ol.style.Literal>} Reduced literals.
+ * @private
  */
-ol.style.Style.reduceLiterals = function(literals) {
+ol.style.Style.reduceLiterals_ = function(literals) {
   var reduced = [];
   var literal, stroke, fill, key, value;
   for (var i = 0, ii = literals.length; i < ii; ++i) {
@@ -116,7 +147,7 @@ ol.style.Style.reduceLiterals = function(literals) {
         // both stroke and fill, proceed
         reduced.push(literal);
       }
-    } else {
+    } else if (literal) {
       reduced.push(literal);
     }
   }

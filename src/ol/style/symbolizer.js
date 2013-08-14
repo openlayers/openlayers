@@ -12,6 +12,7 @@ ol.style.Symbolizer = function() {};
 
 
 /**
+ * @param {ol.geom.GeometryType} type Geometry type.
  * @param {ol.Feature=} opt_feature Feature for evaluating expressions.
  * @return {ol.style.Literal} Literal symbolizer.
  */
