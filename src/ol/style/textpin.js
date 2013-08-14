@@ -44,32 +44,39 @@ goog.inherits(ol.style.TextPinLiteral, ol.style.SymbolizerLiteral);
 ol.style.TextPin = function(options) {
   goog.base(this);
 
-  this.color_ = !goog.isDef(options.color) ? new ol.expr.Literal(
-      ol.style.TextDefaults.color)
-      : ((options.color instanceof ol.expr.Expression) ? options.color
-          : new ol.expr.Literal(options.color));
-  this.strokeColor_ = !goog.isDef(options.strokeColor) ? new ol.expr.Literal(
-      ol.style.TextDefaults.strokeColor)
-      : (options.strokeColor instanceof ol.expr.Expression) ? options.strokeColor
-          : new ol.expr.Literal(options.strokeColor);
-  this.fillColor_ = !goog.isDef(options.fillColor) ? new ol.expr.Literal(
-      ol.style.TextDefaults.fillColor)
-      : (options.fillColor instanceof ol.expr.Expression) ? options.fillColor
-          : new ol.expr.Literal(options.fillColor);
-  this.fontFamily_ = !goog.isDef(options.fontFamily) ? new ol.expr.Literal(
-      ol.style.TextDefaults.fontFamily)
-      : (options.fontFamily instanceof ol.expr.Expression) ? options.fontFamily
-          : new ol.expr.Literal(options.fontFamily);
-  this.fontSize_ = !goog.isDef(options.fontSize) ? new ol.expr.Literal(
-      ol.style.TextDefaults.fontSize)
-      : (options.fontSize instanceof ol.expr.Expression) ? options.fontSize
-          : new ol.expr.Literal(options.fontSize);
-  this.text_ = (options.text instanceof ol.expr.Expression) ? options.text
-      : new ol.expr.Literal(options.text);
-  this.opacity_ = !goog.isDef(options.opacity) ? new ol.expr.Literal(
-      ol.style.TextDefaults.opacity)
-      : (options.opacity instanceof ol.expr.Expression) ? options.opacity
-          : new ol.expr.Literal(options.opacity);
+  this.color_ = !goog.isDef(options.color) ?
+    new ol.expr.Literal(ol.style.TextDefaults.color) :
+    ((options.color instanceof ol.expr.Expression) ?
+    options.color :
+    new ol.expr.Literal(options.color));
+  this.strokeColor_ = !goog.isDef(options.strokeColor) ?
+    new ol.expr.Literal(ol.style.TextDefaults.strokeColor) :
+    (options.strokeColor instanceof ol.expr.Expression) ?
+    options.strokeColor :
+    new ol.expr.Literal(options.strokeColor);
+  this.fillColor_ = !goog.isDef(options.fillColor) ?
+    new ol.expr.Literal(ol.style.TextDefaults.fillColor) :
+    (options.fillColor instanceof ol.expr.Expression) ?
+    options.fillColor :
+    new ol.expr.Literal(options.fillColor);
+  this.fontFamily_ = !goog.isDef(options.fontFamily) ?
+    new ol.expr.Literal(ol.style.TextDefaults.fontFamily) :
+    (options.fontFamily instanceof ol.expr.Expression) ?
+    options.fontFamily :
+    new ol.expr.Literal(options.fontFamily);
+  this.fontSize_ = !goog.isDef(options.fontSize) ?
+    new ol.expr.Literal(ol.style.TextDefaults.fontSize) :
+    (options.fontSize instanceof ol.expr.Expression) ?
+    options.fontSize :
+    new ol.expr.Literal(options.fontSize);
+  this.text_ = (options.text instanceof ol.expr.Expression) ?
+    options.text :
+    new ol.expr.Literal(options.text);
+  this.opacity_ = !goog.isDef(options.opacity) ?
+    new ol.expr.Literal(ol.style.TextDefaults.opacity) :
+    (options.opacity instanceof ol.expr.Expression) ?
+    options.opacity :
+    new ol.expr.Literal(options.opacity);
 };
 goog.inherits(ol.style.TextPin, ol.style.Symbolizer);
 
@@ -78,12 +85,12 @@ goog.inherits(ol.style.TextPin, ol.style.Symbolizer);
  * @inheritDoc
  */
 ol.style.TextPinLiteral.prototype.equals = function(textPinLiteral) {
-  return this.color == textPinLiteral.color
-      && this.strokeColor == textPinLiteral.strokeColor
-      && this.fillColor == textPinLiteral.fillColor
-      && this.fontFamily == textPinLiteral.fontFamily
-      && this.fontSize == textPinLiteral.fontSize
-      && this.opacity == textPinLiteral.opacity;
+  return this.color == textPinLiteral.color &&
+    this.strokeColor == textPinLiteral.strokeColor &&
+    this.fillColor == textPinLiteral.fillColor &&
+    this.fontFamily == textPinLiteral.fontFamily &&
+    this.fontSize == textPinLiteral.fontSize &&
+    this.opacity == textPinLiteral.opacity;
 };
 
 
@@ -127,7 +134,7 @@ ol.style.TextPin.prototype.createLiteral = function(opt_feature) {
 
 /**
  * Get the font color.
- * 
+ *
  * @return {ol.expr.Expression} Font color.
  */
 ol.style.TextPin.prototype.getColor = function() {
@@ -137,7 +144,7 @@ ol.style.TextPin.prototype.getColor = function() {
 
 /**
  * Get the font family.
- * 
+ *
  * @return {ol.expr.Expression} Font family.
  */
 ol.style.TextPin.prototype.getFontFamily = function() {
@@ -147,7 +154,7 @@ ol.style.TextPin.prototype.getFontFamily = function() {
 
 /**
  * Get the font size.
- * 
+ *
  * @return {ol.expr.Expression} Font size.
  */
 ol.style.TextPin.prototype.getFontSize = function() {
@@ -157,7 +164,7 @@ ol.style.TextPin.prototype.getFontSize = function() {
 
 /**
  * Get the opacity.
- * 
+ *
  * @return {ol.expr.Expression} Opacity.
  */
 ol.style.TextPin.prototype.getOpacity = function() {
@@ -167,7 +174,7 @@ ol.style.TextPin.prototype.getOpacity = function() {
 
 /**
  * Get the text.
- * 
+ *
  * @return {ol.expr.Expression} Text.
  */
 ol.style.TextPin.prototype.getText = function() {
@@ -177,7 +184,7 @@ ol.style.TextPin.prototype.getText = function() {
 
 /**
  * Set the font color.
- * 
+ *
  * @param {ol.expr.Expression}
  *            color Font color.
  */
@@ -189,7 +196,7 @@ ol.style.TextPin.prototype.setColor = function(color) {
 
 /**
  * Set the font family.
- * 
+ *
  * @param {ol.expr.Expression}
  *            fontFamily Font family.
  */
@@ -201,7 +208,7 @@ ol.style.TextPin.prototype.setFontFamily = function(fontFamily) {
 
 /**
  * Set the font size.
- * 
+ *
  * @param {ol.expr.Expression}
  *            fontSize Font size.
  */
@@ -213,7 +220,7 @@ ol.style.TextPin.prototype.setFontSize = function(fontSize) {
 
 /**
  * Set the opacity.
- * 
+ *
  * @param {ol.expr.Expression}
  *            opacity Opacity.
  */
@@ -225,7 +232,7 @@ ol.style.TextPin.prototype.setOpacity = function(opacity) {
 
 /**
  * Set the text.
- * 
+ *
  * @param {ol.expr.Expression}
  *            text Text.
  */

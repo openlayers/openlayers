@@ -106,21 +106,24 @@ ol.renderer.canvas.VectorRenderer.prototype.getMaxSymbolSize = function() {
  * @param {Array} data Additional data.
  * @return {boolean} true if deferred, false if rendered.
  */
-ol.renderer.canvas.VectorRenderer.prototype.renderFeaturesByGeometryType = function(
+ol.renderer.canvas.VectorRenderer.prototype.renderFeaturesByGeometryType =
+ function(
     type, features, symbolizer, data) {
   var deferred = false;
   if (!(symbolizer instanceof ol.style.TextLiteral)) {
     switch (type) {
     case ol.geom.GeometryType.POINT:
     case ol.geom.GeometryType.MULTIPOINT:
-      goog.asserts.assert(symbolizer instanceof ol.style.PointLiteral
-          || symbolizer instanceof ol.style.TextPinLiteral,
+      goog.asserts.assert(symbolizer instanceof ol.style.PointLiteral ||
+          symbolizer instanceof ol.style.TextPinLiteral,
           'Expected point symbolizer: ' + symbolizer);
       if (symbolizer instanceof ol.style.PointLiteral) {
-        deferred = this.renderPointFeatures_(features, /** @type {ol.style.PointLiteral} */
+        deferred = this.renderPointFeatures_(features,
+/** @type {ol.style.PointLiteral} */
         (symbolizer));
       } else if (symbolizer instanceof ol.style.TextPinLiteral) {
-        deferred = this.renderTextPinFeatures_(features, /** @type {ol.style.TextPinLiteral} */
+        deferred = this.renderTextPinFeatures_(features,
+ /** @type {ol.style.TextPinLiteral} */
         (symbolizer));
       }
       break;
@@ -128,14 +131,16 @@ ol.renderer.canvas.VectorRenderer.prototype.renderFeaturesByGeometryType = funct
     case ol.geom.GeometryType.MULTILINESTRING:
       goog.asserts.assert(symbolizer instanceof ol.style.LineLiteral,
           'Expected line symbolizer: ' + symbolizer);
-      this.renderLineStringFeatures_(features, /** @type {ol.style.LineLiteral} */
+      this.renderLineStringFeatures_(features,
+ /** @type {ol.style.LineLiteral} */
       (symbolizer));
       break;
     case ol.geom.GeometryType.POLYGON:
     case ol.geom.GeometryType.MULTIPOLYGON:
       goog.asserts.assert(symbolizer instanceof ol.style.PolygonLiteral,
           'Expected polygon symbolizer: ' + symbolizer);
-      this.renderPolygonFeatures_(features, /** @type {ol.style.PolygonLiteral} */
+      this.renderPolygonFeatures_(features,
+ /** @type {ol.style.PolygonLiteral} */
       (symbolizer));
       break;
     default:
@@ -272,15 +277,15 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
 
 
 /**
- * 
- * @param features
- * @param symbolizer
+ * @private
+ * @param {Array.<ol.Feature>} features
+ * @param {ol.style.TextPinLiteral} symbolizer
  */
 ol.renderer.canvas.VectorRenderer.prototype.renderTextPinFeatures_ = function(
     features, symbolizer) {
   var context = this.context_;
 
-  for ( var i = 0; i < features.length; i++) {
+  for (var i = 0; i < features.length; i++) {
     var feature = features[i];
     context.strokeColor = symbolizer.strokeColor;
     context.strokeWidth = symbolizer.strokeWidth;
@@ -307,10 +312,10 @@ ol.renderer.canvas.VectorRenderer.prototype.renderTextPinFeatures_ = function(
     context.moveTo(vec[0], vec[1] - float);
     context.lineTo(vec[0] + 2, vec[1] - float - height);
     context.lineTo(vec[0] + textWidth / 2 + padding, vec[1] - float - height);
-    context.lineTo(vec[0] + textWidth / 2 + padding, vec[1] - float - height
-        - textHeight - padding * 2);
-    context.lineTo(vec[0] - (textWidth / 2 + padding), vec[1] - float - height
-        - textHeight - padding * 2);
+    context.lineTo(vec[0] + textWidth / 2 + padding, vec[1] - float - height -
+        textHeight - padding * 2);
+    context.lineTo(vec[0] - (textWidth / 2 + padding), vec[1] - float - height -
+        textHeight - padding * 2);
     context.lineTo(vec[0] - (textWidth / 2 + padding), vec[1] - float - height);
     context.lineTo(vec[0] - 2, vec[1] - float - height);
     context.fill();
@@ -322,8 +327,8 @@ ol.renderer.canvas.VectorRenderer.prototype.renderTextPinFeatures_ = function(
     context.fillStyle = symbolizer.color;
 
     context.beginPath();
-    context.fillText(text, vec[0] - textWidth / 2, vec[1] - height - float
-        - padding);
+    context.fillText(text, vec[0] - textWidth / 2, vec[1] - height - float -
+        padding);
     context.stroke();
   }
 };
