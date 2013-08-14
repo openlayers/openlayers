@@ -106,39 +106,40 @@ ol.renderer.canvas.VectorRenderer.prototype.getMaxSymbolSize = function() {
  * @param {Array} data Additional data.
  * @return {boolean} true if deferred, false if rendered.
  */
-ol.renderer.canvas.VectorRenderer.prototype.renderFeaturesByGeometryType =
-    function(type, features, symbolizer, data) {
+ol.renderer.canvas.VectorRenderer.prototype.renderFeaturesByGeometryType = function(
+    type, features, symbolizer, data) {
   var deferred = false;
   if (!(symbolizer instanceof ol.style.TextLiteral)) {
     switch (type) {
-      case ol.geom.GeometryType.POINT:
-      case ol.geom.GeometryType.MULTIPOINT:
-        goog.asserts.assert(symbolizer instanceof ol.style.PointLiteral || symbolizer instanceof ol.style.TextPinLiteral,
-            'Expected point symbolizer: ' + symbolizer);
-	if(symbolizer instanceof ol.style.PointLiteral){
-            deferred = this.renderPointFeatures_(
-		features, /** @type {ol.style.PointLiteral} */ (symbolizer));
-	}else if(symbolizer instanceof ol.style.TextPinLiteral){
-            deferred = this.renderTextPinFeatures_(
-		features, /** @type {ol.style.PointLiteral} */ (symbolizer));
-	}
-        break;
-      case ol.geom.GeometryType.LINESTRING:
-      case ol.geom.GeometryType.MULTILINESTRING:
-        goog.asserts.assert(symbolizer instanceof ol.style.LineLiteral,
-            'Expected line symbolizer: ' + symbolizer);
-        this.renderLineStringFeatures_(
-            features, /** @type {ol.style.LineLiteral} */ (symbolizer));
-        break;
-      case ol.geom.GeometryType.POLYGON:
-      case ol.geom.GeometryType.MULTIPOLYGON:
-        goog.asserts.assert(symbolizer instanceof ol.style.PolygonLiteral,
-            'Expected polygon symbolizer: ' + symbolizer);
-        this.renderPolygonFeatures_(
-            features, /** @type {ol.style.PolygonLiteral} */ (symbolizer));
-        break;
-      default:
-        throw new Error('Rendering not implemented for geometry type: ' + type);
+    case ol.geom.GeometryType.POINT:
+    case ol.geom.GeometryType.MULTIPOINT:
+      goog.asserts.assert(symbolizer instanceof ol.style.PointLiteral
+          || symbolizer instanceof ol.style.TextPinLiteral,
+          'Expected point symbolizer: ' + symbolizer);
+      if (symbolizer instanceof ol.style.PointLiteral) {
+        deferred = this.renderPointFeatures_(features, /** @type {ol.style.PointLiteral} */
+        (symbolizer));
+      } else if (symbolizer instanceof ol.style.TextPinLiteral) {
+        deferred = this.renderTextPinFeatures_(features, /** @type {ol.style.TextPinLiteral} */
+        (symbolizer));
+      }
+      break;
+    case ol.geom.GeometryType.LINESTRING:
+    case ol.geom.GeometryType.MULTILINESTRING:
+      goog.asserts.assert(symbolizer instanceof ol.style.LineLiteral,
+          'Expected line symbolizer: ' + symbolizer);
+      this.renderLineStringFeatures_(features, /** @type {ol.style.LineLiteral} */
+      (symbolizer));
+      break;
+    case ol.geom.GeometryType.POLYGON:
+    case ol.geom.GeometryType.MULTIPOLYGON:
+      goog.asserts.assert(symbolizer instanceof ol.style.PolygonLiteral,
+          'Expected polygon symbolizer: ' + symbolizer);
+      this.renderPolygonFeatures_(features, /** @type {ol.style.PolygonLiteral} */
+      (symbolizer));
+      break;
+    default:
+      throw new Error('Rendering not implemented for geometry type: ' + type);
     }
   } else {
     this.renderText_(features, symbolizer, data);
@@ -148,8 +149,10 @@ ol.renderer.canvas.VectorRenderer.prototype.renderFeaturesByGeometryType =
 
 
 /**
- * @param {Array.<ol.Feature>} features Array of line features.
- * @param {ol.style.LineLiteral} symbolizer Line symbolizer.
+ * @param {Array.
+ *            <ol.Feature>} features Array of line features.
+ * @param {ol.style.LineLiteral}
+ *            symbolizer Line symbolizer.
  * @private
  */
 ol.renderer.canvas.VectorRenderer.prototype.renderLineStringFeatures_ =
@@ -267,6 +270,12 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
   return false;
 };
 
+
+/**
+ * 
+ * @param features
+ * @param symbolizer
+ */
 ol.renderer.canvas.VectorRenderer.prototype.renderTextPinFeatures_ = function(
     features, symbolizer) {
   var context = this.context_;
@@ -286,7 +295,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderTextPinFeatures_ = function(
 
     var geometry = feature.getGeometry();
     var coordinates = geometry.getCoordinates();
-    var vec = [ coordinates[0], coordinates[1], 0 ];
+    var vec = [coordinates[0], coordinates[1], 0];
     goog.vec.Mat4.multVec3(this.transform_, vec, vec);
 
     var text = feature.values_.label;
