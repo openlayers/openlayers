@@ -4,9 +4,9 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
 
   var parser = new ol.parser.ogc.Filter_v1_0_0();
 
-  describe('#readwrite', function() {
+  describe('reading and writing', function() {
 
-    it('intersects filter read / written correctly', function(done) {
+    it('handles intersects', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_0_0/intersects.xml';
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
@@ -23,7 +23,7 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       });
     });
 
-    it('within filter read / written correctly', function(done) {
+    it('handles within', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_0_0/within.xml';
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
@@ -39,7 +39,7 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       });
     });
 
-    it('contains filter read / written correctly', function(done) {
+    it('handles contains', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_0_0/contains.xml';
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
@@ -56,18 +56,18 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       });
     });
 
-    it('between filter read / written correctly', function(done) {
+    it('handles between', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_0_0/between.xml';
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
-        expect(filter instanceof ol.expr.Logical).to.be.ok();
+        expect(filter).to.be.a(ol.expr.Logical);
         expect(filter.getOperator()).to.equal(ol.expr.LogicalOp.AND);
-        expect(filter.getLeft() instanceof ol.expr.Comparison).to.be.ok();
+        expect(filter.getLeft()).to.be.a(ol.expr.Comparison);
         expect(filter.getLeft().getOperator()).to.equal(
             ol.expr.ComparisonOp.GTE);
         expect(filter.getLeft().getLeft().getName()).to.equal('number');
         expect(filter.getLeft().getRight().getValue()).to.equal(0);
-        expect(filter.getRight() instanceof ol.expr.Comparison).to.be.ok();
+        expect(filter.getRight()).to.be.a(ol.expr.Comparison);
         expect(filter.getRight().getOperator()).to.equal(
             ol.expr.ComparisonOp.LTE);
         expect(filter.getRight().getLeft().getName()).to.equal('number');
@@ -78,18 +78,18 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       });
     });
 
-    it('between filter read correctly without literals', function(done) {
+    it('handles between without literals', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_0_0/between2.xml';
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
-        expect(filter instanceof ol.expr.Logical).to.be.ok();
+        expect(filter).to.be.a(ol.expr.Logical);
         expect(filter.getOperator()).to.equal(ol.expr.LogicalOp.AND);
-        expect(filter.getLeft() instanceof ol.expr.Comparison).to.be.ok();
+        expect(filter.getLeft()).to.be.a(ol.expr.Comparison);
         expect(filter.getLeft().getOperator()).to.equal(
             ol.expr.ComparisonOp.GTE);
         expect(filter.getLeft().getLeft().getName()).to.equal('number');
         expect(filter.getLeft().getRight().getValue()).to.equal(0);
-        expect(filter.getRight() instanceof ol.expr.Comparison).to.be.ok();
+        expect(filter.getRight()).to.be.a(ol.expr.Comparison);
         expect(filter.getRight().getOperator()).to.equal(
             ol.expr.ComparisonOp.LTE);
         expect(filter.getRight().getLeft().getName()).to.equal('number');
@@ -98,11 +98,11 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       });
     });
 
-    it('null filter read / written correctly', function(done) {
+    it('handles null', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_0_0/null.xml';
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
-        expect(filter instanceof ol.expr.Comparison).to.be.ok();
+        expect(filter).to.be.a(ol.expr.Comparison);
         expect(filter.getLeft().getName()).to.equal('prop');
         expect(filter.getRight().getValue()).to.equal(null);
         var output = parser.write(filter);
@@ -111,7 +111,7 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       });
     });
 
-    it('BBOX written correctly', function(done) {
+    it('writes BBOX', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_0_0/bbox.xml';
       afterLoadXml(url, function(xml) {
         var filter = new ol.expr.Call(
@@ -126,7 +126,7 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       });
     });
 
-    it('BBOX without geometry name written correctly', function(done) {
+    it('writes BBOX without geometry name', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_0_0/bbox_nogeom.xml';
       afterLoadXml(url, function(xml) {
         var filter = new ol.expr.Call(
@@ -161,7 +161,7 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       });
     });
 
-    it('DWithin written correctly', function(done) {
+    it('writes DWithin', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_0_0/dwithin.xml';
       afterLoadXml(url, function(xml) {
         var filter = new ol.expr.Call(new ol.expr.Identifier(
@@ -182,9 +182,9 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
 
   // the Filter Encoding spec doesn't allow for FID filters inside logical
   // filters however, to be liberal, we will write them without complaining
-  describe('#logicalfid', function() {
+  describe('logical fid', function() {
 
-    it('logical filter [OR] with fid filter written correctly', function(done) {
+    it('writes logical [OR] with fid', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_0_0/logicalfeatureid.xml';
       afterLoadXml(url, function(xml) {
         var filter = new ol.expr.Logical(ol.expr.LogicalOp.OR,
@@ -200,7 +200,7 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       });
     });
 
-    it('logical filter [AND] with fid filter written correctly',
+    it('writes logical [AND] with fid',
         function(done) {
           var url = 'spec/ol/parser/ogc/xml/filter_v1_0_0/' +
               'logicalfeatureidand.xml';
@@ -218,7 +218,7 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
           });
         });
 
-    it('logical filter [NOT] with fid filter written correctly',
+    it('writes logical [NOT] with fid',
         function(done) {
           var url = 'spec/ol/parser/ogc/xml/filter_v1_0_0/' +
               'logicalfeatureidnot.xml';
@@ -234,8 +234,8 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
 
   });
 
-  describe('_expression reader works as expected', function() {
-    it('_expression reader handles combined propertyname and literal',
+  describe('_expression reader', function() {
+    it('handles combined propertyname and literal',
         function() {
           var xml = '<ogc:UpperBoundary xmlns:ogc="' +
               'http://www.opengis.net/ogc">10</ogc:UpperBoundary>';
@@ -243,7 +243,7 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
               '_expression'];
           var expr = reader.call(parser, goog.dom.xml.loadXml(
               xml).documentElement);
-          expect(expr instanceof ol.expr.Literal).to.be.ok();
+          expect(expr).to.be.a(ol.expr.Literal);
           expect(expr.getValue()).to.equal(10);
           xml = '<ogc:UpperBoundary xmlns:ogc="http://www.opengis.net/ogc">' +
               'foo<ogc:PropertyName>x</ogc:PropertyName>bar</ogc:UpperBoundary>';

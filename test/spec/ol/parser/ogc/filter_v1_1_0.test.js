@@ -4,9 +4,9 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
 
   var parser = new ol.parser.ogc.Filter_v1_1_0();
 
-  describe('#readwrite', function() {
+  describe('reading and writing', function() {
 
-    it('filter read correctly', function(done) {
+    it('reads filter', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_1_0/test.xml';
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
@@ -45,7 +45,7 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
       });
     });
 
-    it('matchCase read correctly', function() {
+    it('reads matchCase', function() {
       var cases = [{
         str:
             '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
@@ -119,7 +119,7 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
       }
     });
 
-    it('BBOX filter written correctly', function(done) {
+    it('writes BBOX', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_1_0/bbox.xml';
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
@@ -129,7 +129,7 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
       });
     });
 
-    it('BBOX filter without property name written correctly', function(done) {
+    it('writes BBOX without property name', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_1_0/bbox_nogeomname.xml';
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
@@ -139,7 +139,7 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
       });
     });
 
-    it('Intersects filter read / written correctly', function(done) {
+    it('handles intersects', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_1_0/intersects.xml';
       afterLoadXml(url, function(xml) {
         var filter = parser.read(xml);
@@ -149,7 +149,7 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
       });
     });
 
-    it('Filter functions written correctly', function(done) {
+    it('handles functions', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_1_0/function.xml';
       afterLoadXml(url, function(xml) {
         var filter = new ol.expr.Call(new ol.expr.Identifier(
@@ -165,7 +165,7 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
       });
     });
 
-    it('Custom filter functions written correctly', function(done) {
+    it('writes custom functions', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_1_0/customfunction.xml';
       afterLoadXml(url, function(xml) {
         var filter = new ol.expr.Logical(ol.expr.LogicalOp.AND,
@@ -179,7 +179,7 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
       });
     });
 
-    it('Nested filter functions written correctly', function(done) {
+    it('writes nested functions', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_1_0/nestedfunction.xml';
       afterLoadXml(url, function(xml) {
         var filter = new ol.expr.Call(new ol.expr.Identifier(
@@ -197,7 +197,7 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
       });
     });
 
-    it('matchCase written correctly on Like filter', function(done) {
+    it('writes matchCase on like', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_1_0/likematchcase.xml';
       afterLoadXml(url, function(xml) {
         var filter = new ol.expr.Call(
@@ -211,7 +211,7 @@ describe('ol.parser.ogc.Filter_v1_1_0', function() {
       });
     });
 
-    it('sortBy written correctly on Like filter', function(done) {
+    it('writes sortBy on like', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_1_0/sortby.xml';
       afterLoadXml(url, function(xml) {
         var writer = parser.writers['http://www.opengis.net/ogc']['SortBy'];
