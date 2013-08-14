@@ -784,8 +784,8 @@ describe('ol.expr.register()', function() {
     ol.expr.register('myFunc', spy);
     var expr = ol.expr.parse('myFunc(foo, 42)');
     expr.evaluate({foo: 'bar'}, ol.expr.lib);
-    expect(spy.calledOnce);
-    expect(spy.calledWithExactly('bar', 42));
+    expect(spy.calledOnce).to.be(true);
+    expect(spy.calledWithExactly('bar', 42)).to.be(true);
   });
 
   it('allows custom functions to be called with custom this obj', function() {
@@ -793,9 +793,9 @@ describe('ol.expr.register()', function() {
     var expr = ol.expr.parse('myFunc(foo, 42)');
     var that = {};
     expr.evaluate({foo: 'bar'}, ol.expr.lib, that);
-    expect(spy.calledOnce);
-    expect(spy.calledWithExactly('bar', 42));
-    expect(spy.calledOn(that));
+    expect(spy.calledOnce).to.be(true);
+    expect(spy.calledWithExactly('bar', 42)).to.be(true);
+    expect(spy.calledOn(that)).to.be(true);
   });
 
   it('allows overriding existing ol.expr.lib functions', function() {
