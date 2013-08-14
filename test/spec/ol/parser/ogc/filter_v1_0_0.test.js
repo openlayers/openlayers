@@ -234,28 +234,6 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
 
   });
 
-  describe('#date', function() {
-
-    it('date writing works as expected', function(done) {
-      var url = 'spec/ol/parser/ogc/xml/filter_v1_0_0/betweendates.xml';
-      afterLoadXml(url, function(xml) {
-        // ISO 8601: 2010-11-27T18:19:15.123Z
-        var start = new Date(Date.UTC(2010, 10, 27, 18, 19, 15, 123));
-        // ISO 8601: 2011-12-27T18:19:15.123Z
-        var end = new Date(Date.UTC(2011, 11, 27, 18, 19, 15, 123));
-        var filter = new ol.expr.Logical(ol.expr.LogicalOp.AND,
-            new ol.expr.Comparison(ol.expr.ComparisonOp.GTE,
-            new ol.expr.Identifier('when'), new ol.expr.Literal(start)),
-            new ol.expr.Comparison(ol.expr.ComparisonOp.LTE,
-            new ol.expr.Identifier('when'), new ol.expr.Literal(end)));
-        var output = parser.write(filter);
-        expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
-        done();
-      });
-    });
-
-  });
-
   describe('_expression reader works as expected', function() {
     it('_expression reader handles combined propertyname and literal',
         function() {

@@ -346,12 +346,8 @@ ol.parser.ogc.Filter_v1 = function() {
       },
       'Literal': function(expr) {
         goog.asserts.assert(expr instanceof ol.expr.Literal);
-        var value = expr.getValue();
-        if (value instanceof Date) {
-          value = value.toISOString();
-        }
         var node = this.createElementNS('ogc:Literal');
-        node.appendChild(this.createTextNode(value));
+        node.appendChild(this.createTextNode(expr.getValue()));
         return node;
       },
       'LowerBoundary': function(expr) {
