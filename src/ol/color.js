@@ -44,7 +44,7 @@ ol.Color = function(r, g, b, a) {
  */
 ol.Color.createFromString = function(str, opt_a) {
   var rgb = goog.color.hexToRgb(goog.color.parse(str).hex);
-  var a = opt_a || 255;
+  var a = goog.isDef(opt_a) ? opt_a : 1;
   return new ol.Color(rgb[0], rgb[1], rgb[2], a);
 };
 
