@@ -1,4 +1,5 @@
 goog.provide('ol.ImageTile');
+goog.provide('ol.ImageTileConstructor');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -8,6 +9,13 @@ goog.require('goog.object');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileState');
+
+
+/**
+ * @typedef {function(new: ol.ImageTile, ol.TileCoord, ol.TileState, string,
+ *     ?string): ol.ImageTile}
+ */
+ol.ImageTileConstructor;
 
 
 
@@ -52,6 +60,13 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin) {
    */
   this.imageListenerKeys_ = null;
 
+  /**
+   * A unique id for the tile to be used as idendifier for caches.
+   *
+   * @private
+   * @type {string}
+   */
+  this.key_ = goog.getUid(this).toString();
 };
 goog.inherits(ol.ImageTile, ol.Tile);
 
@@ -82,7 +97,7 @@ ol.ImageTile.prototype.getImage = function(opt_context) {
  * @inheritDoc
  */
 ol.ImageTile.prototype.getKey = function() {
-  return this.src_;
+  return this.key_;
 };
 
 
@@ -120,15 +135,25 @@ ol.ImageTile.prototype.handleImageLoad_ = function() {
 ol.ImageTile.prototype.load = function() {
   if (this.state == ol.TileState.IDLE) {
     this.state = ol.TileState.LOADING;
-    goog.asserts.assert(goog.isNull(this.imageListenerKeys_));
-    this.imageListenerKeys_ = [
-      goog.events.listenOnce(this.image_, goog.events.EventType.ERROR,
-          this.handleImageError_, false, this),
-      goog.events.listenOnce(this.image_, goog.events.EventType.LOAD,
-          this.handleImageLoad_, false, this)
-    ];
-    this.image_.src = this.src_;
+    this.loadImage(this.src_);
   }
+};
+
+
+/**
+ * Actually load the image
+ *
+ * @param {string} src The image URL to load.
+ */
+ol.ImageTile.prototype.loadImage = function(src) {
+  goog.asserts.assert(goog.isNull(this.imageListenerKeys_));
+  this.imageListenerKeys_ = [
+    goog.events.listenOnce(this.image_, goog.events.EventType.ERROR,
+        this.handleImageError_, false, this),
+    goog.events.listenOnce(this.image_, goog.events.EventType.LOAD,
+        this.handleImageLoad_, false, this)
+  ];
+  this.image_.src = src;
 };
 
 
