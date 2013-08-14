@@ -107,13 +107,13 @@ ol.style.TextPin.prototype.createLiteral = function(opt_feature) {
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
   return new ol.style.TextPinLiteral({
-    color : color,
-    strokeColor : strokeColor,
-    fillColor : fillColor,
-    fontFamily : fontFamily,
-    fontSize : fontSize,
-    text : text,
-    opacity : opacity
+    color: color,
+    strokeColor: strokeColor,
+    fillColor: fillColor,
+    fontFamily: fontFamily,
+    fontSize: fontSize,
+    text: text,
+    opacity: opacity
   });
 };
 
