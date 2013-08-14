@@ -649,15 +649,15 @@ describe('ol.expr.lib', function() {
 
     it('evaluates to true for features within given extent', function() {
 
-      expect(evaluate(north, nw), true);
-      expect(evaluate(south, nw), false);
-      expect(evaluate(east, nw), false);
-      expect(evaluate(west, nw), true);
+      expect(evaluate(north, nw)).to.be(true);
+      expect(evaluate(south, nw)).to.be(false);
+      expect(evaluate(east, nw)).to.be(false);
+      expect(evaluate(west, nw)).to.be(true);
 
-      expect(evaluate(north, se), false);
-      expect(evaluate(south, se), true);
-      expect(evaluate(east, se), true);
-      expect(evaluate(west, se), false);
+      expect(evaluate(north, se)).to.be(false);
+      expect(evaluate(south, se)).to.be(true);
+      expect(evaluate(east, se)).to.be(true);
+      expect(evaluate(west, se)).to.be(false);
 
     });
 
@@ -684,29 +684,29 @@ describe('ol.expr.lib', function() {
     var none = parse('fid("foo")');
 
     it('evaluates to true if feature id matches', function() {
-      expect(evaluate(odd, one), true);
-      expect(evaluate(odd, three), true);
-      expect(evaluate(even, two), true);
-      expect(evaluate(even, four), true);
-      expect(evaluate(first, one), true);
-      expect(evaluate(last, four), true);
+      expect(evaluate(odd, one)).to.be(true);
+      expect(evaluate(odd, three)).to.be(true);
+      expect(evaluate(even, two)).to.be(true);
+      expect(evaluate(even, four)).to.be(true);
+      expect(evaluate(first, one)).to.be(true);
+      expect(evaluate(last, four)).to.be(true);
     });
 
     it('evaluates to false if feature id doesn\'t match', function() {
-      expect(evaluate(odd, two), false);
-      expect(evaluate(odd, four), false);
-      expect(evaluate(even, one), false);
-      expect(evaluate(even, three), false);
-      expect(evaluate(first, two), false);
-      expect(evaluate(first, three), false);
-      expect(evaluate(first, four), false);
-      expect(evaluate(last, one), false);
-      expect(evaluate(last, two), false);
-      expect(evaluate(last, three), false);
-      expect(evaluate(none, one), false);
-      expect(evaluate(none, two), false);
-      expect(evaluate(none, three), false);
-      expect(evaluate(none, four), false);
+      expect(evaluate(odd, two)).to.be(false);
+      expect(evaluate(odd, four)).to.be(false);
+      expect(evaluate(even, one)).to.be(false);
+      expect(evaluate(even, three)).to.be(false);
+      expect(evaluate(first, two)).to.be(false);
+      expect(evaluate(first, three)).to.be(false);
+      expect(evaluate(first, four)).to.be(false);
+      expect(evaluate(last, one)).to.be(false);
+      expect(evaluate(last, two)).to.be(false);
+      expect(evaluate(last, three)).to.be(false);
+      expect(evaluate(none, one)).to.be(false);
+      expect(evaluate(none, two)).to.be(false);
+      expect(evaluate(none, three)).to.be(false);
+      expect(evaluate(none, four)).to.be(false);
     });
 
   });
@@ -733,27 +733,27 @@ describe('ol.expr.lib', function() {
     var pointOrPoly = parse('geometryType("point") || geometryType("polygon")');
 
     it('distinguishes point features', function() {
-      expect(evaluate(isPoint, point), true);
-      expect(evaluate(isPoint, line), false);
-      expect(evaluate(isPoint, poly), false);
+      expect(evaluate(isPoint, point)).to.be(true);
+      expect(evaluate(isPoint, line)).to.be(false);
+      expect(evaluate(isPoint, poly)).to.be(false);
     });
 
     it('distinguishes line features', function() {
-      expect(evaluate(isLine, point), false);
-      expect(evaluate(isLine, line), true);
-      expect(evaluate(isLine, poly), false);
+      expect(evaluate(isLine, point)).to.be(false);
+      expect(evaluate(isLine, line)).to.be(true);
+      expect(evaluate(isLine, poly)).to.be(false);
     });
 
     it('distinguishes polygon features', function() {
-      expect(evaluate(isPoly, point), false);
-      expect(evaluate(isPoly, line), false);
-      expect(evaluate(isPoly, poly), true);
+      expect(evaluate(isPoly, point)).to.be(false);
+      expect(evaluate(isPoly, line)).to.be(false);
+      expect(evaluate(isPoly, poly)).to.be(true);
     });
 
     it('can be composed in a logical expression', function() {
-      expect(evaluate(pointOrPoly, point), true);
-      expect(evaluate(pointOrPoly, line), false);
-      expect(evaluate(pointOrPoly, poly), true);
+      expect(evaluate(pointOrPoly, point)).to.be(true);
+      expect(evaluate(pointOrPoly, line)).to.be(false);
+      expect(evaluate(pointOrPoly, poly)).to.be(true);
     });
 
   });
