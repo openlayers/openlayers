@@ -280,6 +280,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
  * @private
  * @param {Array.<ol.Feature>} features
  * @param {ol.style.TextPinLiteral} symbolizer
+ * @return {boolean} true if deferred, false if rendered.
  */
 ol.renderer.canvas.VectorRenderer.prototype.renderTextPinFeatures_ = function(
     features, symbolizer) {
@@ -303,7 +304,8 @@ ol.renderer.canvas.VectorRenderer.prototype.renderTextPinFeatures_ = function(
     var vec = [coordinates[0], coordinates[1], 0];
     goog.vec.Mat4.multVec3(this.transform_, vec, vec);
 
-    var text = feature.values_.label;
+    var text =
+        /** @type {string} */ (feature.get('label'));
     var textMetrics = context.measureText(text);
     var textWidth = textMetrics.width;
     var textHeight = symbolizer.fontSize;
@@ -335,6 +337,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderTextPinFeatures_ = function(
         padding);
     context.stroke();
   }
+  return false;
 };
 
 

@@ -649,11 +649,19 @@
 
 /**
  * @typedef {Object} ol.style.TextPinOptions
- * @property {string|ol.expr.Expression|undefined} color Color.
  * @property {string|ol.expr.Expression|undefined} fontFamily Font family.
  * @property {number|ol.expr.Expression|undefined} fontSize Font size in pixels.
  * @property {string|ol.expr.Expression} text Text for the label.
- * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
+ * @property {string|ol.expr.Expression|undefined} fillColor Fill color as
+ *     hex color code.
+ * @property {number|ol.expr.Expression|undefined} fillOpacity Fill opacity
+ *     (0-1).
+ * @property {string|ol.expr.Expression|undefined} strokeColor Stroke
+ *     color as hex color code.
+ * @property {number|ol.expr.Expression|undefined} strokeOpacity Stroke opacity
+ *     (0-1).
+ * @property {number|ol.expr.Expression|undefined} strokeWidth Stroke
+ *     width in pixels.
  */
 
 /**
