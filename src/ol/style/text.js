@@ -1,6 +1,6 @@
 goog.provide('ol.style.Text');
-goog.provide('ol.style.TextLiteral');
 goog.provide('ol.style.TextDefaults');
+goog.provide('ol.style.TextLiteral');
 
 goog.require('goog.asserts');
 goog.require('ol.expr');
