@@ -140,6 +140,27 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       });
     });
 
+    it('reads DWithin', function(done) {
+      var url = 'spec/ol/parser/ogc/xml/filter_v1_0_0/dwithin.xml';
+      afterLoadXml(url, function(xml) {
+        var filter = parser.read(xml);
+        expect(filter).to.be.a(ol.expr.Call);
+        var callee = filter.getCallee();
+        expect(callee).to.be.a(ol.expr.Identifier);
+        var name = callee.getName();
+        expect(name).to.equal(ol.expr.functions.DWITHIN);
+        var args = filter.getArgs();
+        expect(args.length).to.equal(5);
+        var distance = args[1];
+        expect(distance).to.be.a(ol.expr.Literal);
+        expect(distance.getValue()).to.equal(1000);
+        var units = args[2];
+        expect(units).to.be.a(ol.expr.Literal);
+        expect(units.getValue()).to.equal('m');
+        done();
+      });
+    });
+
     it('DWithin written correctly', function(done) {
       var url = 'spec/ol/parser/ogc/xml/filter_v1_0_0/dwithin.xml';
       afterLoadXml(url, function(xml) {

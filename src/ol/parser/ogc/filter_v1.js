@@ -234,7 +234,8 @@ ol.parser.ogc.Filter_v1 = function() {
             ol.expr.functions.DWITHIN);
       },
       'Distance': function(node, obj) {
-        obj.distance = new ol.expr.Literal(this.getChildValue(node));
+        var value = goog.string.toNumber(this.getChildValue(node));
+        obj.distance = new ol.expr.Literal(value);
         obj.distanceUnits = new ol.expr.Literal(node.getAttribute('units'));
       }
     }
