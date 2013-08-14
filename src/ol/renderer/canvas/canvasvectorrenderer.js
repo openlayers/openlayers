@@ -25,6 +25,7 @@ goog.require('ol.style.ShapeLiteral');
 goog.require('ol.style.ShapeType');
 goog.require('ol.style.SymbolizerLiteral');
 goog.require('ol.style.TextLiteral');
+goog.require('ol.style.TextPinLiteral');
 
 
 
@@ -112,10 +113,15 @@ ol.renderer.canvas.VectorRenderer.prototype.renderFeaturesByGeometryType =
     switch (type) {
       case ol.geom.GeometryType.POINT:
       case ol.geom.GeometryType.MULTIPOINT:
-        goog.asserts.assert(symbolizer instanceof ol.style.PointLiteral,
+        goog.asserts.assert(symbolizer instanceof ol.style.PointLiteral || symbolizer instanceof ol.style.TextPinLiteral,
             'Expected point symbolizer: ' + symbolizer);
-        deferred = this.renderPointFeatures_(
-            features, /** @type {ol.style.PointLiteral} */ (symbolizer));
+	if(symbolizer instanceof ol.style.PointLiteral){
+            deferred = this.renderPointFeatures_(
+		features, /** @type {ol.style.PointLiteral} */ (symbolizer));
+	}else if(symbolizer instanceof ol.style.TextPinLiteral){
+            deferred = this.renderTextPinFeatures_(
+		features, /** @type {ol.style.PointLiteral} */ (symbolizer));
+	}
         break;
       case ol.geom.GeometryType.LINESTRING:
       case ol.geom.GeometryType.MULTILINESTRING:
@@ -259,6 +265,54 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
   context.restore();
 
   return false;
+};
+
+ol.renderer.canvas.VectorRenderer.prototype.renderTextPinFeatures_ = function(features,symbolizer){
+    var context = this.context_;
+    
+    for(var i=0;i<features.length;i++){
+	var feature = features[i];
+	context.strokeColor = symbolizer.strokeColor;
+	context.strokeWidth = symbolizer.strokeWidth;
+	context.strokeOpacity = symbolizer.strokeOpacity;
+	context.fillStyle = symbolizer.fillColor;
+	var padding = 6;
+	var height = 10;
+	var float = 5;
+
+    context.font = symbolizer.fontSize + 'px ' + symbolizer.fontFamily;
+    context.globalAlpha = symbolizer.opacity;
+
+	var geometry = feature.getGeometry();
+	var coordinates = geometry.getCoordinates();
+	var vec = [coordinates[0],coordinates[1],0];
+	goog.vec.Mat4.multVec3(this.transform_, vec, vec);
+
+	var text = feature.values_.label;
+	var textMetrics = context.measureText(text);
+	var textWidth = textMetrics.width;
+	var textHeight = symbolizer.fontSize;
+
+	context.beginPath();
+	context.moveTo(vec[0],vec[1]-float);
+	context.lineTo(vec[0]+2,vec[1]-float-height);
+	context.lineTo(vec[0]+textWidth/2+padding,vec[1]-float-height);
+	context.lineTo(vec[0]+textWidth/2+padding,vec[1]-float-height-textHeight-padding*2);
+	context.lineTo(vec[0]-(textWidth/2+padding),vec[1]-float-height-textHeight-padding*2);
+	context.lineTo(vec[0]-(textWidth/2+padding),vec[1]-float-height);
+	context.lineTo(vec[0]-2,vec[1]-float-height);
+	context.fill();
+
+	context.beginPath();
+	context.arc(vec[0], vec[1], 3, 0, Math.PI*2, true);
+	context.fill();
+
+	context.fillStyle = symbolizer.color;
+
+	context.beginPath();
+	context.fillText(text,vec[0]-textWidth/2,vec[1]-height-float-padding);
+	context.stroke();
+    }
 };
 
 
