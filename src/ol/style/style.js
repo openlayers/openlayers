@@ -4,6 +4,7 @@ goog.require('ol.Feature');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.style.Rule');
 goog.require('ol.style.Literal');
+goog.require('ol.style.PolygonLiteral');
 
 
 
@@ -67,4 +68,57 @@ ol.style.Style.applyDefaultStyle = function(feature) {
     }
   }
   return symbolizerLiterals;
+};
+
+
+/**
+ * Collapse partial polygon symbolizers.
+ * @param {Array.<ol.style.Literal>} literals Input literals.
+ * @return {Array.<ol.style.Literal>} Reduced literals.
+ */
+ol.style.Style.reduceLiterals = function(literals) {
+  var reduced = [];
+  var literal, stroke, fill, key, value;
+  for (var i = 0, ii = literals.length; i < ii; ++i) {
+    literal = literals[i];
+    if (literal instanceof ol.style.PolygonLiteral) {
+      if (goog.isDef(literal.strokeColor) &&
+          !goog.isDef(literal.fillColor)) {
+        // stroke only, check for previous fill only
+        if (fill) {
+          for (key in literal) {
+            value = literal[key];
+            if (goog.isDef(value)) {
+              fill[key] = value;
+            }
+          }
+          fill = null;
+        } else {
+          stroke = literal;
+          reduced.push(stroke);
+        }
+      } else if (goog.isDef(literal.fillColor)
+          && !goog.isDef(literal.strokeColor)) {
+        // fill only, check for previous stroke only
+        if (stroke) {
+          for (key in literal) {
+            value = literal[key];
+            if (goog.isDef(value)) {
+              stroke[key] = value;
+            }
+          }
+          stroke = null;
+        } else {
+          fill = literal;
+          reduced.push(fill);
+        }
+      } else {
+        // both stroke and fill, proceed
+        reduced.push(literal);
+      }
+    } else {
+      reduced.push(literal);
+    }
+  }
+  return reduced;
 };
