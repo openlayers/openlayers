@@ -183,3 +183,83 @@ ol.Ellipsoid.prototype.vincentyInitialBearing =
   var vincenty = this.vincenty(c1, c2, opt_minDeltaLambda, opt_maxIterations);
   return vincenty.initialBearing;
 };
+
+
+
+/**
+ * Take a look at http://en.wikipedia.org/wiki/Vincenty%27s_formulae
+ *
+ * @param {ol.Coordinate} c
+ * @param {number} distance
+ * @param {number} bearing
+ * @param {number=} opt_minDeltaSigma Minimum delta sigma for convergence.
+ * @param {number=} opt_maxIterations Maximum iterations.
+ * @return {ol.geom.Point}
+ */
+ol.ellipsoid.Ellipsoid.prototype.vincentyPoint =
+  function(c, distance, bearing, opt_minDeltaSigma, opt_maxIterations) {
+  var minDeltaSigma = goog.isDef(opt_minDeltaSigma) ? opt_minDeltaSigma : 1e-8;
+  var maxIterations = goog.isDef(opt_maxIterations) ? opt_maxIterations : 100;
+
+  var alpha1 = goog.math.toRadians(bearing);
+  var phi1 = goog.math.toRadians(c[1]);
+  var L1 = goog.math.toRadians(c[0]);
+
+  var sinAlpha1 = Math.sin(alpha1);
+  var cosAlpha1 = Math.cos(alpha1);
+  var U1 = Math.atan((1 - this.flattening) * Math.tan(phi1));
+  var tanU1 = (1 - this.flattening) * Math.tan(phi1);
+  var cosU1 = 1 / Math.sqrt(1 + tanU1 * tanU1);
+  var sinU1 = tanU1 * cosU1;
+  var sigma1 = Math.atan2(tanU1, cosAlpha1);
+  var sinAlpha = cosU1 * sinAlpha1;
+  var sinAlphaSquared = sinAlpha * sinAlpha;
+  var cosAlphaSquared = 1 - sinAlphaSquared;
+  var aSquared = this.a * this.a;
+  var bSquared = this.b * this.b;
+  var uSquared = cosAlphaSquared * (aSquared - bSquared) / bSquared;
+  var A = 1 + uSquared / 16384 *
+      (4096 + uSquared * (uSquared * (320 - 175 * uSquared) - 768));
+  var B = uSquared / 1024 *
+      (256 + uSquared * (uSquared * (74 - 47 * uSquared) - 128));
+  var sbA = distance / (this.b * A);
+  var sigma = sbA;
+
+  var sinSigma, cosSigma, cos2SigmaM, cos2SigmaMSquared;
+  var i;
+  for (i = maxIterations; i > 0; i--) {
+    sinSigma = Math.sin(sigma);
+    var sinSigmaSquared = sinSigma * sinSigma;
+    cosSigma = Math.cos(sigma);
+    var twoSigmaM = 2 * sigma1 + sigma;
+    cos2SigmaM = Math.cos(twoSigmaM);
+    cos2SigmaMSquared = cos2SigmaM * cos2SigmaM;
+    var deltaSigma = B * sinSigma *
+      (cos2SigmaM + B / 4 * (cosSigma * (2 * cos2SigmaMSquared - 1) -
+                             B / 6 * cos2SigmaM * (4 * sinSigmaSquared - 3) *
+                             (4 * cos2SigmaMSquared - 3)));
+    if (deltaSigma < minDeltaSigma) {
+      break;
+    }
+    sigma = sbA + deltaSigma;
+  }
+  var sinU1cosSigma = sinU1 * cosSigma;
+  var sinU1sinSigma = sinU1 * sinSigma;
+  var cosU1cosSigma = cosU1 * cosSigma;
+  var cosU1sinSigma = cosU1 * sinSigma;
+
+  var X = sinU1sinSigma - cosU1cosSigma * cosAlpha1;
+  var phi2 = Math.atan2(sinU1cosSigma + cosU1sinSigma * cosAlpha1,
+                        (1 - this.flattening) * Math.sqrt(sinAlphaSquared +
+                                                          X * X));
+  var lambda = Math.atan2(sinSigma * sinAlpha1,
+                            cosU1cosSigma - sinU1sinSigma * cosAlpha1);
+  var C = this.flattening / 16 * cosAlphaSquared *
+      (4 + this.flattening * (4 - 3 * cosAlphaSquared));
+  var L = lambda - (1 - C) * this.flattening *
+      sinAlpha * (sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (2 *
+      cos2SigmaMSquared - 1)));
+  var L2 = L1 + L;
+  return new ol.geom.Point([goog.math.toDegrees(L2),
+                              goog.math.toDegrees(phi2)]);
+};
