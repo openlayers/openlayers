@@ -758,6 +758,74 @@ describe('ol.expr.lib', function() {
 
   });
 
+  describe('like()', function() {
+
+    var one = new ol.Feature({foo: 'bar'});
+    var two = new ol.Feature({foo: 'baz'});
+    var three = new ol.Feature({foo: 'foo'});
+
+    var like = parse('like(foo, "ba")');
+
+    it('First and second feature match, third does not', function() {
+      expect(evaluate(like, one), true);
+      expect(evaluate(like, two), true);
+      expect(evaluate(like, three), false);
+    });
+
+    var uclike = parse('like(foo, "BA")');
+    it('Matchcase is true by default', function() {
+      expect(evaluate(uclike, one), false);
+      expect(evaluate(uclike, two), false);
+      expect(evaluate(uclike, three), false);
+    });
+
+    var ilike = parse('like(foo, "BA", "*", ".", "!", false)');
+    it('Using matchcase false, first two features match again', function() {
+      expect(evaluate(ilike, one), true);
+      expect(evaluate(ilike, two), true);
+      expect(evaluate(uclike, three), false);
+    });
+
+  });
+
+  describe('ieq()', function() {
+
+    var one = new ol.Feature({foo: 'Bar'});
+    var two = new ol.Feature({bar: 'Foo'});
+
+    var ieq1 = parse('ieq(foo, "bar")');
+    var ieq2 = parse('ieq("foo", bar)');
+
+    it('case-insensitive equality for an attribute', function() {
+      expect(evaluate(ieq1, one), true);
+    });
+
+    it('case-insensitive equality for an attribute as second argument',
+        function() {
+          expect(evaluate(ieq2, two), true);
+        });
+
+  });
+
+  describe('ineq()', function() {
+
+    var one = new ol.Feature({foo: 'Bar'});
+    var two = new ol.Feature({bar: 'Foo'});
+
+    var ieq1 = parse('ineq(foo, "bar")');
+    var ieq2 = parse('ineq("foo", bar)');
+
+    it('case-insensitive non-equality for an attribute', function() {
+      expect(evaluate(ieq1, one), false);
+    });
+
+    it('case-insensitive non-equality for an attribute as second argument',
+        function() {
+          expect(evaluate(ieq2, two), false);
+        });
+
+  });
+
 });
 
 describe('ol.expr.register()', function() {

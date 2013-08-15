@@ -310,7 +310,7 @@ ol.parser.ogc.GML = function(opt_options) {
             sharedVertices = callback(feature, geom.type);
           }
         }
-        var geometry = this.createGeometry_({geometry: geom},
+        var geometry = this.createGeometry({geometry: geom},
             sharedVertices);
         if (goog.isDef(geometry)) {
           feature.setGeometry(geometry);
@@ -460,7 +460,7 @@ ol.parser.ogc.GML = function(opt_options) {
       } else if (type === ol.geom.GeometryType.GEOMETRYCOLLECTION) {
         child = this.writeNode('GeometryCollection', geometry, null, node);
       }
-      if (goog.isDef(this.srsName)) {
+      if (goog.isDefAndNotNull(this.srsName)) {
         this.setAttributeNS(child, null, 'srsName', this.srsName);
       }
       return node;
@@ -550,13 +550,12 @@ ol.parser.ogc.GML.prototype.readNode = function(node, obj, opt_first) {
 
 
 /**
- * @private
  * @param {Object} container Geometry container.
  * @param {ol.geom.SharedVertices=} opt_vertices Shared vertices.
  * @return {ol.geom.Geometry} The geometry created.
  */
 // TODO use a mixin since this is also used in the KML parser
-ol.parser.ogc.GML.prototype.createGeometry_ = function(container,
+ol.parser.ogc.GML.prototype.createGeometry = function(container,
     opt_vertices) {
   var geometry = null, coordinates, i, ii;
   switch (container.geometry.type) {
@@ -600,7 +599,7 @@ ol.parser.ogc.GML.prototype.createGeometry_ = function(container,
     case ol.geom.GeometryType.GEOMETRYCOLLECTION:
       var geometries = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
-        geometries.push(this.createGeometry_({
+        geometries.push(this.createGeometry({
           geometry: container.geometry.parts[i]
         }, opt_vertices));
       }

@@ -19,7 +19,7 @@ describe('ol.parser.gml_v2', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         parser.applyWriteOptions(obj);
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
         delete parser.srsName;
@@ -47,7 +47,7 @@ describe('ol.parser.gml_v2', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/multipoint-coordinates.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
@@ -77,7 +77,7 @@ describe('ol.parser.gml_v2', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/linestring-coordinates.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
@@ -106,7 +106,7 @@ describe('ol.parser.gml_v2', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/multilinestring-coordinates.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
@@ -141,7 +141,7 @@ describe('ol.parser.gml_v2', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/polygon-coordinates.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
@@ -166,7 +166,7 @@ describe('ol.parser.gml_v2', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/multipolygon-coordinates.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
@@ -185,7 +185,7 @@ describe('ol.parser.gml_v2', function() {
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.ogc.GML_v2({featureNS: 'http://foo'});
         var obj = p.read(xml);
-        var geom = p.createGeometry_({geometry: obj.geometry});
+        var geom = p.createGeometry({geometry: obj.geometry});
         p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
             [geom]).firstChild;
@@ -230,7 +230,7 @@ describe('ol.parser.gml_v2', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/linearring-coordinates.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
