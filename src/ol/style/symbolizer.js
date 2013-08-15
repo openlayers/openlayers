@@ -12,8 +12,10 @@ ol.style.Symbolizer = function() {};
 
 
 /**
- * @param {ol.geom.GeometryType} type Geometry type.
- * @param {ol.Feature=} opt_feature Feature for evaluating expressions.
+ * Create a literal from the symbolizer given a complete feature or a geometry
+ * type.
+ * @param {ol.geom.GeometryType|ol.Feature} featureOrType Feature for evaluating
+ *     expressions or a geometry type.
  * @return {ol.style.Literal} Literal symbolizer.
  */
 ol.style.Symbolizer.prototype.createLiteral = goog.abstractMethod;

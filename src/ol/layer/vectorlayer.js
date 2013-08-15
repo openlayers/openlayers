@@ -384,50 +384,45 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
   var uniqueLiterals = {},
       featuresBySymbolizer = [],
       style = this.style_,
-      i, j, l, feature, geom, type, symbolizers, literals, numLiterals, literal,
+      i, j, l, feature, symbolizers, literals, numLiterals, literal,
       uniqueLiteral, key, item;
   for (i in features) {
     feature = features[i];
-    geom = feature.getGeometry();
-    if (geom) {
-      type = geom.getType();
-      // feature level symbolizers take precedence
-      symbolizers = feature.getSymbolizers();
-      if (!goog.isNull(symbolizers)) {
-        literals = ol.style.Style.createLiterals(
-            symbolizers, type, feature);
+    // feature level symbolizers take precedence
+    symbolizers = feature.getSymbolizers();
+    if (!goog.isNull(symbolizers)) {
+      literals = ol.style.Style.createLiterals(symbolizers, feature);
+    } else {
+      if (!goog.isNull(style)) {
+        // layer style second
+        literals = style.apply(feature);
       } else {
-        if (!goog.isNull(style)) {
-          // layer style second
-          literals = style.apply(feature);
-        } else {
-          literals = ol.style.Style.applyDefaultStyle(feature);
+        literals = ol.style.Style.applyDefaultStyle(feature);
+      }
+    }
+    numLiterals = literals.length;
+    for (j = 0; j < numLiterals; ++j) {
+      literal = literals[j];
+      for (l in uniqueLiterals) {
+        uniqueLiteral = featuresBySymbolizer[uniqueLiterals[l]][1];
+        if (literal.equals(uniqueLiteral)) {
+          literal = uniqueLiteral;
+          break;
         }
       }
-      numLiterals = literals.length;
-      for (j = 0; j < numLiterals; ++j) {
-        literal = literals[j];
-        for (l in uniqueLiterals) {
-          uniqueLiteral = featuresBySymbolizer[uniqueLiterals[l]][1];
-          if (literal.equals(uniqueLiteral)) {
-            literal = uniqueLiteral;
-            break;
-          }
-        }
-        key = goog.getUid(literal);
-        if (!goog.object.containsKey(uniqueLiterals, key)) {
-          uniqueLiterals[key] = featuresBySymbolizer.length;
-          featuresBySymbolizer.push([
-            /** @type {Array.<ol.Feature>} */ ([]),
-            /** @type {ol.style.Literal} */ (literal),
-            /** @type {Array} */ ([])
-          ]);
-        }
-        item = featuresBySymbolizer[uniqueLiterals[key]];
-        item[0].push(feature);
-        if (literal instanceof ol.style.TextLiteral) {
-          item[2].push(literals[j].text);
-        }
+      key = goog.getUid(literal);
+      if (!goog.object.containsKey(uniqueLiterals, key)) {
+        uniqueLiterals[key] = featuresBySymbolizer.length;
+        featuresBySymbolizer.push([
+          /** @type {Array.<ol.Feature>} */ ([]),
+          /** @type {ol.style.Literal} */ (literal),
+          /** @type {Array} */ ([])
+        ]);
+      }
+      item = featuresBySymbolizer[uniqueLiterals[key]];
+      item[0].push(feature);
+      if (literal instanceof ol.style.TextLiteral) {
+        item[2].push(literals[j].text);
       }
     }
   }

@@ -60,34 +60,42 @@ ol.style.Shape = function(options) {
  * @inheritDoc
  * @return {ol.style.ShapeLiteral} Literal shape symbolizer.
  */
-ol.style.Shape.prototype.createLiteral = function(type, opt_feature) {
-  var literal = null;
+ol.style.Shape.prototype.createLiteral = function(featureOrType) {
+  var feature, type;
+  if (featureOrType instanceof ol.Feature) {
+    feature = featureOrType;
+    var geometry = feature.getGeometry();
+    type = geometry ? geometry.getType() : null;
+  } else {
+    type = featureOrType;
+  }
 
+  var literal = null;
   if (type === ol.geom.GeometryType.POINT ||
       type === ol.geom.GeometryType.MULTIPOINT) {
-    var size = ol.expr.evaluateFeature(this.size_, opt_feature);
+    var size = ol.expr.evaluateFeature(this.size_, feature);
     goog.asserts.assertNumber(size, 'size must be a number');
 
     var fillColor, fillOpacity;
     if (!goog.isNull(this.fill_)) {
-      fillColor = ol.expr.evaluateFeature(this.fill_.getColor(), opt_feature);
+      fillColor = ol.expr.evaluateFeature(this.fill_.getColor(), feature);
       goog.asserts.assertString(
           fillColor, 'fillColor must be a string');
-      fillOpacity = ol.expr.evaluateFeature(this.fill_.getOpacity(), opt_feature);
+      fillOpacity = ol.expr.evaluateFeature(this.fill_.getOpacity(), feature);
       goog.asserts.assertNumber(
           fillOpacity, 'fillOpacity must be a number');
     }
 
     var strokeColor, strokeOpacity, strokeWidth;
     if (!goog.isNull(this.stroke_)) {
-      strokeColor = ol.expr.evaluateFeature(this.stroke_.getColor(), opt_feature);
+      strokeColor = ol.expr.evaluateFeature(this.stroke_.getColor(), feature);
       goog.asserts.assertString(
           strokeColor, 'strokeColor must be a string');
       strokeOpacity = ol.expr.evaluateFeature(this.stroke_.getOpacity(),
-          opt_feature);
+          feature);
       goog.asserts.assertNumber(
           strokeOpacity, 'strokeOpacity must be a number');
-      strokeWidth = ol.expr.evaluateFeature(this.stroke_.getWidth(), opt_feature);
+      strokeWidth = ol.expr.evaluateFeature(this.stroke_.getWidth(), feature);
       goog.asserts.assertNumber(
           strokeWidth, 'strokeWidth must be a number');
     }

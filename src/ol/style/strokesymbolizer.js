@@ -56,17 +56,26 @@ goog.inherits(ol.style.Stroke, ol.style.Symbolizer);
  * @inheritDoc
  * @return {ol.style.LineLiteral|ol.style.PolygonLiteral} Symbolizer literal.
  */
-ol.style.Stroke.prototype.createLiteral = function(type, opt_feature) {
+ol.style.Stroke.prototype.createLiteral = function(featureOrType) {
+  var feature, type;
+  if (featureOrType instanceof ol.Feature) {
+    feature = featureOrType;
+    var geometry = feature.getGeometry();
+    type = geometry ? geometry.getType() : null;
+  } else {
+    type = featureOrType;
+  }
+
   var color = ol.expr.evaluateFeature(
-      this.color_, opt_feature);
+      this.color_, feature);
   goog.asserts.assertString(color, 'color must be a string');
 
   var opacity = ol.expr.evaluateFeature(
-      this.opacity_, opt_feature);
+      this.opacity_, feature);
   goog.asserts.assertNumber(opacity, 'opacity must be a number');
 
   var width = ol.expr.evaluateFeature(
-      this.width_, opt_feature);
+      this.width_, feature);
   goog.asserts.assertNumber(width, 'width must be a number');
 
   var literal = null;
@@ -85,6 +94,7 @@ ol.style.Stroke.prototype.createLiteral = function(type, opt_feature) {
       strokeWidth: width
     });
   }
+
   return literal;
 };
 

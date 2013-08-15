@@ -48,8 +48,7 @@ describe('ol.style.Icon', function() {
         geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT,
-          feature);
+      var literal = symbolizer.createLiteral(feature);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.height).to.be(42);
       expect(literal.width).to.be(.42);

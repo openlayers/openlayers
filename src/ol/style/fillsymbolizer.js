@@ -45,17 +45,25 @@ goog.inherits(ol.style.Fill, ol.style.Symbolizer);
  * @inheritDoc
  * @return {ol.style.PolygonLiteral} Literal shape symbolizer.
  */
-ol.style.Fill.prototype.createLiteral = function(type, opt_feature) {
+ol.style.Fill.prototype.createLiteral = function(featureOrType) {
+  var feature, type;
+  if (featureOrType instanceof ol.Feature) {
+    feature = featureOrType;
+    var geometry = feature.getGeometry();
+    type = geometry ? geometry.getType() : null;
+  } else {
+    type = featureOrType;
+  }
   var literal = null;
 
   if (type === ol.geom.GeometryType.POLYGON ||
       type === ol.geom.GeometryType.MULTIPOLYGON) {
 
-    var color = ol.expr.evaluateFeature(this.color_, opt_feature);
+    var color = ol.expr.evaluateFeature(this.color_, feature);
     goog.asserts.assertString(
         color, 'color must be a string');
 
-    var opacity = ol.expr.evaluateFeature(this.opacity_, opt_feature);
+    var opacity = ol.expr.evaluateFeature(this.opacity_, feature);
     goog.asserts.assertNumber(
         opacity, 'color must be a number');
 

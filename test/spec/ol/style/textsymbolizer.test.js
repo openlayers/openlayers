@@ -47,8 +47,7 @@ describe('ol.style.Text', function() {
         opacityAttr: 0.4
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT,
-          feature);
+      var literal = symbolizer.createLiteral(feature);
       expect(literal).to.be.a(ol.style.TextLiteral);
       expect(literal.color).to.be('#ff0000');
       expect(literal.fontFamily).to.be('Dingbats');

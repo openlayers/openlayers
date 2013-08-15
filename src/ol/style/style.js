@@ -35,22 +35,17 @@ ol.style.Style = function(options) {
 ol.style.Style.prototype.apply = function(feature) {
   var rules = this.rules_,
       literals = [],
-      geometry = feature.getGeometry(),
       rule, symbolizers;
-  var type = geometry ? geometry.getType() : null;
-  if (!goog.isNull(type)) {
-    for (var i = 0, ii = rules.length; i < ii; ++i) {
-      rule = rules[i];
-      if (rule.applies(feature)) {
-        symbolizers = rule.getSymbolizers();
-        for (var j = 0, jj = symbolizers.length; j < jj; ++j) {
-          literals.push(symbolizers[j].createLiteral(type, feature));
-        }
+  for (var i = 0, ii = rules.length; i < ii; ++i) {
+    rule = rules[i];
+    if (rule.applies(feature)) {
+      symbolizers = rule.getSymbolizers();
+      for (var j = 0, jj = symbolizers.length; j < jj; ++j) {
+        literals.push(symbolizers[j].createLiteral(feature));
       }
     }
-    literals = ol.style.Style.reduceLiterals_(literals);
   }
-  return literals;
+  return ol.style.Style.reduceLiterals_(literals);
 };
 
 
@@ -87,15 +82,15 @@ ol.style.Style.defaults = new ol.style.Style({
 /**
  * Given an array of symbolizers, generate an array of literals.
  * @param {Array.<ol.style.Symbolizer>} symbolizers List of symbolizers.
- * @param {ol.geom.GeometryType} type Geometry type.
- * @param {ol.Feature=} opt_feature Optional feature.
+ * @param {ol.Feature|ol.geom.GeometryType} featureOrType Feature or geometry
+ *     type.
  * @return {Array.<ol.style.Literal>} Array of literals.
  */
-ol.style.Style.createLiterals = function(symbolizers, type, opt_feature) {
+ol.style.Style.createLiterals = function(symbolizers, featureOrType) {
   var length = symbolizers.length;
   var literals = new Array(length);
   for (var i = 0; i < length; ++i) {
-    literals[i] = symbolizers[i].createLiteral(type, opt_feature);
+    literals[i] = symbolizers[i].createLiteral(featureOrType);
   }
   return ol.style.Style.reduceLiterals_(literals);
 }

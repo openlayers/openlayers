@@ -32,11 +32,11 @@ describe('ol.style.Stroke', function() {
 
       var feature = new ol.Feature({
         value: 42,
-        widthAttr: 1.5
+        widthAttr: 1.5,
+        geometry: new ol.geom.LineString([[1, 2], [3, 4]])
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.LINESTRING,
-          feature);
+      var literal = symbolizer.createLiteral(feature);
       expect(literal).to.be.a(ol.style.LineLiteral);
       expect(literal.strokeOpacity).to.be(42 / 100);
       expect(literal.strokeWidth).to.be(1.5);

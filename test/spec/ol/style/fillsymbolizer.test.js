@@ -31,11 +31,12 @@ describe('ol.style.Fill', function() {
 
       var feature = new ol.Feature({
         value: 42,
-        fillAttr: '#ff0000'
+        fillAttr: '#ff0000',
+        geometry: new ol.geom.Polygon(
+            [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]])
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POLYGON,
-          feature);
+      var literal = symbolizer.createLiteral(feature);
       expect(literal).to.be.a(ol.style.PolygonLiteral);
       expect(literal.fillOpacity).to.be(42 / 100);
       expect(literal.fillColor).to.be('#ff0000');
@@ -158,5 +159,6 @@ goog.require('ol.Feature');
 goog.require('ol.expr');
 goog.require('ol.expr.Literal');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.Polygon');
 goog.require('ol.style.Fill');
 goog.require('ol.style.PolygonLiteral');

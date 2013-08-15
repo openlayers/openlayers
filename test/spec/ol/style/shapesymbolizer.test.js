@@ -43,8 +43,7 @@ describe('ol.style.Shape', function() {
         geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT,
-          feature);
+      var literal = symbolizer.createLiteral(feature);
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.size).to.be(42);
       expect(literal.fillOpacity).to.be(0.4);
