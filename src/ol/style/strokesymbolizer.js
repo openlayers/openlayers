@@ -82,9 +82,9 @@ ol.style.Stroke.prototype.createLiteral = function(featureOrType) {
   if (type === ol.geom.GeometryType.LINESTRING ||
       type === ol.geom.GeometryType.MULTILINESTRING) {
     literal = new ol.style.LineLiteral({
-      strokeColor: color,
-      strokeOpacity: opacity,
-      strokeWidth: width
+      color: color,
+      opacity: opacity,
+      width: width
     });
   } else if (type === ol.geom.GeometryType.POLYGON ||
       type === ol.geom.GeometryType.MULTIPOLYGON) {

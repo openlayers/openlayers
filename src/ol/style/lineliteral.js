@@ -5,9 +5,9 @@ goog.require('ol.style.Literal');
 
 
 /**
- * @typedef {{strokeColor: (string),
- *            strokeOpacity: (number),
- *            strokeWidth: (number)}}
+ * @typedef {{color: (string),
+ *            opacity: (number),
+ *            width: (number)}}
  */
 ol.style.LineLiteralOptions;
 
@@ -22,19 +22,19 @@ ol.style.LineLiteral = function(options) {
   goog.base(this);
 
   goog.asserts.assertString(
-      options.strokeColor, 'strokeColor must be a string');
+      options.color, 'color must be a string');
   /** @type {string} */
-  this.strokeColor = options.strokeColor;
+  this.color = options.color;
 
   goog.asserts.assertNumber(
-      options.strokeOpacity, 'strokeOpacity must be a number');
+      options.opacity, 'opacity must be a number');
   /** @type {number} */
-  this.strokeOpacity = options.strokeOpacity;
+  this.opacity = options.opacity;
 
   goog.asserts.assertNumber(
-      options.strokeWidth, 'strokeWidth must be a number');
+      options.width, 'width must be a number');
   /** @type {number} */
-  this.strokeWidth = options.strokeWidth;
+  this.width = options.width;
 
 };
 goog.inherits(ol.style.LineLiteral, ol.style.Literal);
@@ -44,7 +44,7 @@ goog.inherits(ol.style.LineLiteral, ol.style.Literal);
  * @inheritDoc
  */
 ol.style.LineLiteral.prototype.equals = function(lineLiteral) {
-  return this.strokeColor == lineLiteral.strokeColor &&
-      this.strokeOpacity == lineLiteral.strokeOpacity &&
-      this.strokeWidth == lineLiteral.strokeWidth;
+  return this.color == lineLiteral.color &&
+      this.opacity == lineLiteral.opacity &&
+      this.width == lineLiteral.width;
 };

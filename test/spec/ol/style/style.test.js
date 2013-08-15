@@ -65,9 +65,9 @@ describe('ol.style.Style', function() {
 
       var literal = literals[0];
       expect(literal).to.be.a(ol.style.LineLiteral);
-      expect(literal.strokeColor).to.be(ol.style.StrokeDefaults.color);
-      expect(literal.strokeOpacity).to.be(ol.style.StrokeDefaults.opacity);
-      expect(literal.strokeWidth).to.be(ol.style.StrokeDefaults.width);
+      expect(literal.color).to.be(ol.style.StrokeDefaults.color);
+      expect(literal.opacity).to.be(ol.style.StrokeDefaults.opacity);
+      expect(literal.width).to.be(ol.style.StrokeDefaults.width);
     });
 
     it('returns an array with the Polygon default for polygons', function() {

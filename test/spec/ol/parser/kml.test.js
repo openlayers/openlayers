@@ -189,9 +189,9 @@ describe('ol.parser.KML', function() {
 
       var literal = stroke.createLiteral(ol.geom.GeometryType.LINESTRING);
       expect(literal).to.be.a(ol.style.LineLiteral);
-      expect(literal.strokeColor).to.eql('#ff0000');
-      expect(literal.strokeOpacity).to.eql(0.5294117647058824);
-      expect(literal.strokeWidth).to.eql(10);
+      expect(literal.color).to.eql('#ff0000');
+      expect(literal.opacity).to.eql(0.5294117647058824);
+      expect(literal.width).to.eql(10);
     });
 
     it('reads PolyStyle fill', function() {

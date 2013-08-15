@@ -668,10 +668,10 @@ ol.parser.KML = function(opt_options) {
         var literal = obj.symbolizer.createLiteral(
             ol.geom.GeometryType.LINESTRING);
         this.writeNode('color', {
-          color: literal.strokeColor.substring(1),
-          opacity: literal.strokeOpacity
+          color: literal.color.substring(1),
+          opacity: literal.opacity
         }, null, node);
-        this.writeNode('width', literal.strokeWidth, null, node);
+        this.writeNode('width', literal.width, null, node);
         return node;
       },
       'color': function(colorObj) {

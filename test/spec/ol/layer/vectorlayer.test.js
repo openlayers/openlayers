@@ -137,9 +137,9 @@ describe('ol.layer.Vector', function() {
       var groups = layer.groupFeaturesBySymbolizerLiteral(features);
       expect(groups.length).to.be(2);
       expect(groups[0][0].length).to.be(1);
-      expect(groups[0][1].strokeColor).to.be('#BADA55');
+      expect(groups[0][1].color).to.be('#BADA55');
       expect(groups[1][0].length).to.be(2);
-      expect(groups[1][1].strokeColor).to.be('#013');
+      expect(groups[1][1].color).to.be('#013');
     });
 
     it('groups equal symbolizers also when defined on features', function() {
@@ -167,7 +167,7 @@ describe('ol.layer.Vector', function() {
       var groups = layer.groupFeaturesBySymbolizerLiteral(features);
       expect(groups).to.have.length(3);
       expect(groups[2][0].length).to.be(2);
-      expect(groups[2][1].strokeWidth).to.be(3);
+      expect(groups[2][1].width).to.be(3);
 
     });
 

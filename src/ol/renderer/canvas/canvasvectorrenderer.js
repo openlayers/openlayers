@@ -153,9 +153,9 @@ ol.renderer.canvas.VectorRenderer.prototype.renderLineStringFeatures_ =
       i, ii, feature, id, currentSize, geometry, components, j, jj, line, dim,
       k, kk, vec, strokeSize;
 
-  context.globalAlpha = symbolizer.strokeOpacity;
-  context.strokeStyle = symbolizer.strokeColor;
-  context.lineWidth = symbolizer.strokeWidth;
+  context.globalAlpha = symbolizer.opacity;
+  context.strokeStyle = symbolizer.color;
+  context.lineWidth = symbolizer.width;
   context.lineCap = 'round'; // TODO: accept this as a symbolizer property
   context.lineJoin = 'round'; // TODO: accept this as a symbolizer property
   strokeSize = context.lineWidth * this.inverseScale_;

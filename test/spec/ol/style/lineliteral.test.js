@@ -6,22 +6,34 @@ describe('ol.style.LineLiteral', function() {
 
     it('identifies equal literals', function() {
       var literal = new ol.style.LineLiteral({
-        strokeWidth: 3,
-        strokeColor: '#BADA55',
-        strokeOpacity: 1
+        width: 3,
+        color: '#BADA55',
+        opacity: 1
       });
       var equalLiteral = new ol.style.LineLiteral({
-        strokeColor: '#BADA55',
-        strokeWidth: 3,
-        strokeOpacity: 1
+        color: '#BADA55',
+        width: 3,
+        opacity: 1
       });
-      var differentLiteral = new ol.style.LineLiteral({
-        strokeColor: '#013',
-        strokeWidth: 3,
-        strokeOpacity: 1
+      var differentColor = new ol.style.LineLiteral({
+        width: 3,
+        color: '#ff0000',
+        opacity: 1
+      });
+      var differentWidth = new ol.style.LineLiteral({
+        width: 3.5,
+        color: '#BADA55',
+        opacity: 1
+      });
+      var differentOpacity = new ol.style.LineLiteral({
+        width: 3,
+        color: '#BADA55',
+        opacity: 0.5
       });
       expect(literal.equals(equalLiteral)).to.be(true);
-      expect(literal.equals(differentLiteral)).to.be(false);
+      expect(literal.equals(differentColor)).to.be(false);
+      expect(literal.equals(differentWidth)).to.be(false);
+      expect(literal.equals(differentOpacity)).to.be(false);
     });
 
   });
