@@ -395,7 +395,7 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
     } else {
       if (!goog.isNull(style)) {
         // layer style second
-        literals = style.apply(feature);
+        literals = style.createLiterals(feature);
       } else {
         literals = ol.style.Style.applyDefaultStyle(feature);
       }

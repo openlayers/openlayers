@@ -28,11 +28,12 @@ ol.style.Style = function(options) {
 
 
 /**
+ * Create an array of symbolizer literals for a feature.
  * @param {ol.Feature} feature Feature.
  * @return {Array.<ol.style.Literal>} Symbolizer literals for the
  *     feature.
  */
-ol.style.Style.prototype.apply = function(feature) {
+ol.style.Style.prototype.createLiterals = function(feature) {
   var rules = this.rules_,
       literals = [],
       rule, symbolizers;
@@ -55,7 +56,7 @@ ol.style.Style.prototype.apply = function(feature) {
  *     the feature.
  */
 ol.style.Style.applyDefaultStyle = function(feature) {
-  return ol.style.Style.defaults.apply(feature);
+  return ol.style.Style.defaults.createLiterals(feature);
 };
 
 

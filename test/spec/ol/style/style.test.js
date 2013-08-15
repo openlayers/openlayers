@@ -2,9 +2,9 @@ goog.provide('ol.test.style.Style');
 
 describe('ol.style.Style', function() {
 
-  describe('#apply()', function() {
+  describe('#createLiterals()', function() {
 
-    it('applies a style to a feature', function() {
+    it('creates symbolizer literals for a feature', function() {
 
       var style = new ol.style.Style({
         rules: [
@@ -23,10 +23,12 @@ describe('ol.style.Style', function() {
         geometry: new ol.geom.Point([1, 2])
       });
       feature.set('foo', 'bar');
-      expect(style.apply(feature).length).to.be(1);
-      expect(style.apply(feature)[0].fillColor).to.be('#BADA55');
+      var literals = style.createLiterals(feature);
+      expect(literals).to.have.length(1);
+      expect(literals[0].fillColor).to.be('#BADA55');
+
       feature.set('foo', 'baz');
-      expect(style.apply(feature).length).to.be(0);
+      expect(style.createLiterals(feature)).to.have.length(0);
     });
 
   });
