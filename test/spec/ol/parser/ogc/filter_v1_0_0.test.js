@@ -235,21 +235,32 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
   });
 
   describe('_expression reader', function() {
-    it('handles combined propertyname and literal',
-        function() {
-          var xml = '<ogc:UpperBoundary xmlns:ogc="' +
-              'http://www.opengis.net/ogc">10</ogc:UpperBoundary>';
-          var reader = parser.readers['http://www.opengis.net/ogc'][
-              '_expression'];
-          var expr = reader.call(parser, goog.dom.xml.loadXml(
-              xml).documentElement);
-          expect(expr).to.be.a(ol.expr.Literal);
-          expect(expr.getValue()).to.equal(10);
-          xml = '<ogc:UpperBoundary xmlns:ogc="http://www.opengis.net/ogc">' +
-              'foo<ogc:PropertyName>x</ogc:PropertyName>bar</ogc:UpperBoundary>';
-          expr = reader.call(parser, goog.dom.xml.loadXml(xml).documentElement);
-          expect(expr.evaluate({x: 4})).to.eql('foo4bar');
-        });
+    it('handles combined propertyname and text', function() {
+      var xml = '<ogc:UpperBoundary xmlns:ogc="' +
+          'http://www.opengis.net/ogc">10</ogc:UpperBoundary>';
+      var reader = parser.readers['http://www.opengis.net/ogc'][
+          '_expression'];
+      var expr = reader.call(parser, goog.dom.xml.loadXml(
+          xml).documentElement);
+      expect(expr).to.be.a(ol.expr.Literal);
+      expect(expr.getValue()).to.equal(10);
+      xml = '<ogc:UpperBoundary xmlns:ogc="http://www.opengis.net/ogc">' +
+          'foo<ogc:PropertyName>x</ogc:PropertyName>bar</ogc:UpperBoundary>';
+      expr = reader.call(parser, goog.dom.xml.loadXml(xml).documentElement);
+      expect(expr.evaluate({x: 4})).to.eql('foo4bar');
+    });
+
+    it('handles combined propertyname and literal', function() {
+      var reader = parser.readers['http://www.opengis.net/ogc'][
+          '_expression'];
+      var xml = '<ogc:UpperBoundary xmlns:ogc="http://www.opengis.net/ogc">' +
+          '<ogc:Literal>bar</ogc:Literal>' +
+          '<ogc:PropertyName>x</ogc:PropertyName>' +
+          '<ogc:Literal>foo</ogc:Literal></ogc:UpperBoundary>';
+      var expr = reader.call(parser, goog.dom.xml.loadXml(xml).documentElement);
+      expect(expr.evaluate({x: 42})).to.eql('bar42foo');
+    });
+
   });
 
 });
