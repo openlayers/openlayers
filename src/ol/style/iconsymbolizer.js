@@ -6,7 +6,6 @@ goog.require('ol.expr.Expression');
 goog.require('ol.expr.Literal');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.style.IconLiteral');
-goog.require('ol.style.IconType');
 goog.require('ol.style.Point');
 goog.require('ol.style.PointLiteral');
 

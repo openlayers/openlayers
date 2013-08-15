@@ -5,6 +5,5 @@
 @exportClass ol.style.Stroke ol.style.StrokeOptions
 @exportClass ol.style.Style ol.style.StyleOptions
 @exportClass ol.style.Text ol.style.TextOptions
-@exportSymbol ol.style.IconType
 @exportSymbol ol.style.ShapeType
 @exportProperty ol.style.ShapeType.CIRCLE

@@ -1,5 +1,4 @@
 goog.provide('ol.style.IconLiteral');
-goog.provide('ol.style.IconType');
 
 goog.require('ol.style.PointLiteral');
 
