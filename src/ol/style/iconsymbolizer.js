@@ -1,10 +1,10 @@
 goog.provide('ol.style.Icon');
 
 goog.require('goog.asserts');
-goog.require('ol.geom.GeometryType');
 goog.require('ol.expr');
 goog.require('ol.expr.Expression');
 goog.require('ol.expr.Literal');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.style.IconLiteral');
 goog.require('ol.style.IconType');
 goog.require('ol.style.Point');

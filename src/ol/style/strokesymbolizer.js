@@ -2,13 +2,13 @@ goog.provide('ol.style.Stroke');
 goog.provide('ol.style.StrokeDefaults');
 
 goog.require('goog.asserts');
-goog.require('ol.geom.GeometryType');
 goog.require('ol.expr');
 goog.require('ol.expr.Expression');
 goog.require('ol.expr.Literal');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.style.LineLiteral');
-goog.require('ol.style.Symbolizer');
 goog.require('ol.style.Literal');
+goog.require('ol.style.Symbolizer');
 
 
 

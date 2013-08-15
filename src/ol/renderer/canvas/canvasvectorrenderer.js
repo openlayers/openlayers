@@ -19,11 +19,11 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.style.IconLiteral');
 goog.require('ol.style.LineLiteral');
+goog.require('ol.style.Literal');
 goog.require('ol.style.PointLiteral');
 goog.require('ol.style.PolygonLiteral');
 goog.require('ol.style.ShapeLiteral');
 goog.require('ol.style.ShapeType');
-goog.require('ol.style.Literal');
 goog.require('ol.style.TextLiteral');
 
 
