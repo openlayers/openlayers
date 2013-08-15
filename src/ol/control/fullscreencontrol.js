@@ -53,7 +53,7 @@ ol.control.FullScreen = function(opt_options) {
       this.handleFullScreenChange_, false, this);
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE +
+    'class': this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
         (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '')
   }, aElement);
 
