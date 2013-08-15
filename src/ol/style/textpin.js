@@ -67,6 +67,11 @@ ol.style.TextPin = function(options) {
       (options.strokeOpacity instanceof ol.expr.Expression) ?
       options.strokeOpacity :
       new ol.expr.Literal(options.strokeOpacity);
+  this.strokeWidth_ = !goog.isDef(options.strokeWidth) ?
+      new ol.expr.Literal(ol.style.TextPinDefaults.strokeWidth) :
+      (options.strokeWidth instanceof ol.expr.Expression) ?
+      options.strokeWidth :
+      new ol.expr.Literal(options.strokeWidth);
   this.fillColor_ = !goog.isDef(options.fillColor) ?
       new ol.expr.Literal(ol.style.TextPinDefaults.fillColor) :
       (options.fillColor instanceof ol.expr.Expression) ?

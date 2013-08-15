@@ -38,9 +38,12 @@ var style = new ol.style.Style({
       text: ol.expr.parse('label'),
       fontFamily: 'Calibri,sans-serif',
       fontSize: 14,
+      fontColor: '#ffffff',
       fillColor: '#333333',
+      fillOpacity: 1,
       strokeColor: '#bada55',
-      color: '#ffffff'
+      strokeWidth: 1,
+      strokeOpacity: 1
     })]
   })]
 });
