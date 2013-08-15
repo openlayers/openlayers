@@ -92,7 +92,7 @@ ol.style.Style.createLiterals = function(symbolizers, featureOrType) {
     literals[i] = symbolizers[i].createLiteral(featureOrType);
   }
   return ol.style.Style.reduceLiterals_(literals);
-}
+};
 
 
 /**
@@ -122,8 +122,8 @@ ol.style.Style.reduceLiterals_ = function(literals) {
           stroke = literal;
           reduced.push(stroke);
         }
-      } else if (goog.isDef(literal.fillColor)
-          && !goog.isDef(literal.strokeColor)) {
+      } else if (goog.isDef(literal.fillColor) &&
+          !goog.isDef(literal.strokeColor)) {
         // fill only, check for previous stroke only
         if (stroke) {
           for (key in literal) {

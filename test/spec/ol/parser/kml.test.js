@@ -337,7 +337,7 @@ goog.require('goog.array');
 goog.require('goog.dom.xml');
 
 goog.require('ol.Feature');
-goog.require('ol.geom.GeometryType')
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');

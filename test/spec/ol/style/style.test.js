@@ -275,7 +275,7 @@ describe('ol.style.Style', function() {
     });
 
 
-  })
+  });
 
 });
 

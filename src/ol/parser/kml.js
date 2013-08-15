@@ -691,7 +691,7 @@ ol.parser.KML = function(opt_options) {
       'IconStyle': function(obj) {
         var node = this.createElementNS('IconStyle');
         this.setAttributeNS(node, null, 'id', obj.id);
-        this.writeNode('Icon', 
+        this.writeNode('Icon',
             obj.symbolizer.createLiteral(ol.geom.GeometryType.POINT).url,
             null, node);
         return node;

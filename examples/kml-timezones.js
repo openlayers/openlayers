@@ -48,7 +48,7 @@ var style = new ol.style.Style({
       opacity: ol.expr.parse('getOpacity()')
     }),
     new ol.style.Stroke({
-      color: '#ffffff',
+      color: '#ffffff'
     })
   ]
 });
