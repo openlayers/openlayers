@@ -33,17 +33,18 @@ describe('ol.style.Style', function() {
 
   });
 
-  describe('ol.style.Style.applyDefaultStyle()', function() {
+  describe('ol.style.Style.defaults.createLiterals(feature)', function() {
     var feature = new ol.Feature();
 
     it('returns an empty array for features without geometry', function() {
-      expect(ol.style.Style.applyDefaultStyle(feature).length).to.be(0);
+      expect(ol.style.Style.defaults.createLiterals(feature))
+          .to.have.length(0);
     });
 
     it('returns an array with the Shape default for points', function() {
       feature.setGeometry(new ol.geom.Point([0, 0]));
 
-      var literals = ol.style.Style.applyDefaultStyle(feature);
+      var literals = ol.style.Style.defaults.createLiterals(feature);
       expect(literals).to.have.length(1);
 
       var literal = literals[0];
@@ -59,7 +60,7 @@ describe('ol.style.Style', function() {
     it('returns an array with the Line default for lines', function() {
       feature.setGeometry(new ol.geom.LineString([[0, 0], [1, 1]]));
 
-      var literals = ol.style.Style.applyDefaultStyle(feature);
+      var literals = ol.style.Style.defaults.createLiterals(feature);
       expect(literals).to.have.length(1);
 
       var literal = literals[0];
@@ -72,7 +73,7 @@ describe('ol.style.Style', function() {
     it('returns an array with the Polygon default for polygons', function() {
       feature.setGeometry(new ol.geom.Polygon([[[0, 0], [1, 1], [0, 0]]]));
 
-      var literals = ol.style.Style.applyDefaultStyle(feature);
+      var literals = ol.style.Style.defaults.createLiterals(feature);
       expect(literals).to.have.length(1);
 
       var literal = literals[0];

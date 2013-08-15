@@ -397,7 +397,7 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
         // layer style second
         literals = style.createLiterals(feature);
       } else {
-        literals = ol.style.Style.applyDefaultStyle(feature);
+        literals = ol.style.Style.defaults.createLiterals(feature);
       }
     }
     numLiterals = literals.length;

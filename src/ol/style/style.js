@@ -51,16 +51,6 @@ ol.style.Style.prototype.createLiterals = function(feature) {
 
 
 /**
- * @param {ol.Feature} feature Feature.
- * @return {Array.<ol.style.Literal>} Default symbolizer literals for
- *     the feature.
- */
-ol.style.Style.applyDefaultStyle = function(feature) {
-  return ol.style.Style.defaults.createLiterals(feature);
-};
-
-
-/**
  * The default style.
  * @type {ol.style.Style}
  */
