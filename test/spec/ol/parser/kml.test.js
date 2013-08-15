@@ -346,6 +346,8 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.parser.KML');
 goog.require('ol.style.Fill');
+goog.require('ol.style.Icon');
+goog.require('ol.style.IconLiteral');
 goog.require('ol.style.LineLiteral');
 goog.require('ol.style.PolygonLiteral');
 goog.require('ol.style.Stroke');

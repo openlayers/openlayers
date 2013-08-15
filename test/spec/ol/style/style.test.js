@@ -280,12 +280,17 @@ describe('ol.style.Style', function() {
 });
 
 goog.require('ol.Feature');
+goog.require('ol.expr');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
+goog.require('ol.style.Fill');
+goog.require('ol.style.LineLiteral');
 goog.require('ol.style.PolygonLiteral');
 goog.require('ol.style.Rule');
 goog.require('ol.style.Shape');
 goog.require('ol.style.ShapeLiteral');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.StrokeDefaults');
 goog.require('ol.style.Style');
 goog.require('ol.style.TextLiteral');

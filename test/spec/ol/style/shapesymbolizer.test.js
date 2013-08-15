@@ -196,7 +196,6 @@ goog.require('ol.Feature');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Point');
 goog.require('ol.expr');
-goog.require('ol.expr.Literal');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Shape');
 goog.require('ol.style.ShapeLiteral');

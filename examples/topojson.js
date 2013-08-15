@@ -7,7 +7,6 @@ goog.require('ol.parser.TopoJSON');
 goog.require('ol.source.TileJSON');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Fill');
-goog.require('ol.style.Rule');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 

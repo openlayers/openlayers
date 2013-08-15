@@ -91,3 +91,4 @@ describe('ol.style.ShapeLiteral', function() {
 });
 
 goog.require('ol.style.ShapeLiteral');
+goog.require('ol.style.ShapeType');

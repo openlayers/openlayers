@@ -186,5 +186,6 @@ goog.require('ol.Feature');
 goog.require('ol.expr');
 goog.require('ol.expr.Literal');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.LineString');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.LineLiteral');
