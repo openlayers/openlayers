@@ -9,6 +9,7 @@ goog.require('ol.style.PolygonLiteral');
 goog.require('ol.style.Rule');
 goog.require('ol.style.Shape');
 goog.require('ol.style.Stroke');
+goog.require('ol.style.Symbolizer');
 
 
 
@@ -24,6 +25,15 @@ ol.style.Style = function(options) {
    */
   this.rules_ = goog.isDef(options.rules) ? options.rules : [];
 
+  /**
+   * Symbolizers that apply if no rules are given or where none of the given
+   * rules apply (these are the "else" symbolizers).
+   * @type {Array.<ol.style.Symbolizer>}
+   * @private
+   */
+  this.symbolizers_ = goog.isDef(options.symbolizers) ?
+      options.symbolizers : [];
+
 };
 
 
@@ -35,18 +45,20 @@ ol.style.Style = function(options) {
  */
 ol.style.Style.prototype.createLiterals = function(feature) {
   var rules = this.rules_,
-      literals = [],
-      rule, symbolizers;
+      symbolizers = [],
+      applies = false,
+      rule;
   for (var i = 0, ii = rules.length; i < ii; ++i) {
     rule = rules[i];
     if (rule.applies(feature)) {
-      symbolizers = rule.getSymbolizers();
-      for (var j = 0, jj = symbolizers.length; j < jj; ++j) {
-        literals.push(symbolizers[j].createLiteral(feature));
-      }
+      applies = true;
+      symbolizers.push.apply(symbolizers, rule.getSymbolizers());
     }
+  } if (!applies) {
+    // these are the "else" symbolizers
+    symbolizers = this.symbolizers_;
   }
-  return ol.style.Style.reduceLiterals_(literals);
+  return ol.style.Style.createLiterals(symbolizers, feature);
 };
 
 
@@ -55,17 +67,13 @@ ol.style.Style.prototype.createLiterals = function(feature) {
  * @type {ol.style.Style}
  */
 ol.style.Style.defaults = new ol.style.Style({
-  rules: [
-    new ol.style.Rule({
-      symbolizers: [
-        new ol.style.Shape({
-          fill: new ol.style.Fill(),
-          stroke: new ol.style.Stroke()
-        }),
-        new ol.style.Fill(),
-        new ol.style.Stroke()
-      ]    
-    })
+  symbolizers: [
+    new ol.style.Shape({
+      fill: new ol.style.Fill(),
+      stroke: new ol.style.Stroke()
+    }),
+    new ol.style.Fill(),
+    new ol.style.Stroke()
   ]
 });
 

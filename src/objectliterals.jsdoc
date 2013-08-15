@@ -642,7 +642,10 @@
 
 /**
  * @typedef {Object} ol.style.StyleOptions
- * @property {Array.<ol.style.Rule>} rules Rules.
+ * @property {Array.<ol.style.Rule>|undefined} rules Rules.
+ * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers
+ *     (that apply if no rules are provided or where none of the provided rules
+ *     apply).
  */
 
 /**

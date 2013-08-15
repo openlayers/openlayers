@@ -41,19 +41,17 @@ ol.expr.register('getOpacity', function() {
   return 0.75 * (1 - delta / 12);
 });
 
-var style = new ol.style.Style({rules: [
-  new ol.style.Rule({
-    symbolizers: [
-      new ol.style.Fill({
-        color: '#ffff33',
-        opacity: ol.expr.parse('getOpacity()')
-      }),
-      new ol.style.Stroke({
-        color: '#ffffff',
-      })
-    ]
-  })
-]});
+var style = new ol.style.Style({
+  symbolizers: [
+    new ol.style.Fill({
+      color: '#ffff33',
+      opacity: ol.expr.parse('getOpacity()')
+    }),
+    new ol.style.Stroke({
+      color: '#ffffff',
+    })
+  ]
+});
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({

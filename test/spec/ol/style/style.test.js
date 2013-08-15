@@ -2,10 +2,40 @@ goog.provide('ol.test.style.Style');
 
 describe('ol.style.Style', function() {
 
+  describe('constructor', function() {
+
+    it('creates a style instance given rules', function() {
+      var style = new ol.style.Style({
+        rules: [
+          new ol.style.Rule({
+            filter: 'foo == "bar"',
+            symbolizers: [
+              new ol.style.Fill({
+                color: '#ff0000'
+              })
+            ]
+          })
+        ]
+      });
+      expect(style).to.be.a(ol.style.Style);
+    });
+
+    it('creates a style instance given only "else" symbolizers', function() {
+      var style = new ol.style.Style({
+        symbolizers: [
+          new ol.style.Fill({
+            color: '#ff0000'
+          })
+        ]
+      });
+      expect(style).to.be.a(ol.style.Style);
+    });
+
+  });
+
   describe('#createLiterals()', function() {
 
     it('creates symbolizer literals for a feature', function() {
-
       var style = new ol.style.Style({
         rules: [
           new ol.style.Rule({
@@ -13,22 +43,81 @@ describe('ol.style.Style', function() {
             symbolizers: [
               new ol.style.Shape({
                 size: 4,
-                fill: new ol.style.Fill({color: '#BADA55'})
+                fill: new ol.style.Fill({
+                  color: ol.expr.parse('fillColor')
+                })
               })
             ]
           })
         ]
       });
       var feature = new ol.Feature({
+        fillColor: '#BADA55',
         geometry: new ol.geom.Point([1, 2])
       });
       feature.set('foo', 'bar');
+
       var literals = style.createLiterals(feature);
       expect(literals).to.have.length(1);
       expect(literals[0].fillColor).to.be('#BADA55');
 
       feature.set('foo', 'baz');
       expect(style.createLiterals(feature)).to.have.length(0);
+    });
+
+    it('uses the "else" symbolizers when no rules are provided', function() {
+      var style = new ol.style.Style({
+        symbolizers: [
+          new ol.style.Stroke({
+            color: '#ff0000'
+          })
+        ]
+      });
+
+      var feature = new ol.Feature({
+        geometry: new ol.geom.LineString([[1, 2], [3, 4]])
+      });
+
+      var literals = style.createLiterals(feature);
+      expect(literals).to.have.length(1);
+      expect(literals[0].color).to.be('#ff0000');
+    });
+
+    it('uses the "else" symbolizers when no rules apply', function() {
+      var style = new ol.style.Style({
+        rules: [
+          new ol.style.Rule({
+            filter: 'name == "match"',
+            symbolizers: [
+              new ol.style.Stroke({
+                color: '#ff00ff'
+              })
+            ]
+          })
+        ],
+        // these are the "else" symbolizers
+        symbolizers: [
+          new ol.style.Stroke({
+            color: '#00ff00'
+          })
+        ]
+      });
+
+      var feature = new ol.Feature({
+        geometry: new ol.geom.LineString([[1, 2], [3, 4]])
+      });
+
+      var literals = style.createLiterals(feature);
+      expect(literals).to.have.length(1);
+      expect(literals[0].color).to.be('#00ff00');
+
+      feature = new ol.Feature({
+        name: 'match',
+        geometry: new ol.geom.LineString([[1, 2], [3, 4]])
+      });
+      literals = style.createLiterals(feature);
+      expect(literals).to.have.length(1);
+      expect(literals[0].color).to.be('#ff00ff');
     });
 
   });

@@ -23,21 +23,19 @@ var vector = new ol.layer.Vector({
     url: 'data/topojson/world-110m.json',
     parser: new ol.parser.TopoJSON()
   }),
-  style: new ol.style.Style({rules: [
-    new ol.style.Rule({
-      symbolizers: [
-        new ol.style.Fill({
-          color: '#BADA55',
-          opacity: 0.5
-        }),
-        new ol.style.Stroke({
-          color: '#FFF',
-          opacity: 1,
-          width: 1.5
-        })
-      ]
-    })
-  ]})
+  style: new ol.style.Style({
+    symbolizers: [
+      new ol.style.Fill({
+        color: '#BADA55',
+        opacity: 0.5
+      }),
+      new ol.style.Stroke({
+        color: '#FFF',
+        opacity: 1,
+        width: 1.5
+      })
+    ]
+  })
 });
 
 var map = new ol.Map({
