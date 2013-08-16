@@ -5,7 +5,10 @@ import gzip
 import json
 import os
 import os.path
-import regex as re
+try:
+    import regex as re
+except ImportError:
+    import re
 import shutil
 import sys
 

@@ -228,7 +228,7 @@
 
 /**
  * @typedef {Object} ol.control.ZoomToExtentOptions
- * @property {string|undefined} className Class name.
+ * @property {string|undefined} className CSS class name. Default is 'ol-zoom-extent'.
  * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
  * @property {ol.Extent|undefined} extent The extent to zoom to. If

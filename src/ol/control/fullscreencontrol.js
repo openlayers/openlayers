@@ -52,10 +52,10 @@ ol.control.FullScreen = function(opt_options) {
   goog.events.listen(goog.global.document, goog.dom.fullscreen.EventType.CHANGE,
       this.handleFullScreenChange_, false, this);
 
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE +
-        (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '')
-  }, aElement);
+  var element = goog.dom.createDom(goog.dom.TagName.DIV,
+      this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
+      (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '') +
+      ' ' + ol.css.CLASS_BUTTON, aElement);
 
   goog.base(this, {
     element: element,

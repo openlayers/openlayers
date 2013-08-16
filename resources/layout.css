@@ -7,6 +7,7 @@ body {
   height: 400px;
   width: 100%;
   background: url(textured_paper.jpeg) repeat;
+  position: relative;
 }
 .ol-attribution {
   max-width: 50%;
