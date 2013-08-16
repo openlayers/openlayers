@@ -39,7 +39,7 @@ ol.parser.ogc.Filter_v1 = function() {
               if (obj.property) {
                 expressions.push(obj.property);
               } else if (goog.isDef(obj.value)) {
-                return obj.value;
+                expressions.push(obj.value);
               }
               break;
             case 3: // text node
