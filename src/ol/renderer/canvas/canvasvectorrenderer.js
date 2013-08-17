@@ -329,9 +329,8 @@ ol.renderer.canvas.VectorRenderer.prototype.renderTextPinFeatures_ = function(
     context.beginPath();
     context.arc(vec[0], vec[1], 3, 0, Math.PI * 2, true);
     context.fill();
-
-    context.fillStyle = symbolizer.color;
-
+    
+    context.fillStyle = symbolizer.fontColor;
     context.beginPath();
     context.fillText(text, vec[0] - textWidth / 2, vec[1] - height - floating -
         padding);
