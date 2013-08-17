@@ -56,7 +56,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     } else if (type === ol.geom.GeometryType.GEOMETRYCOLLECTION) {
       child = this.writeNode('MultiGeometry', geometry, null, node);
     }
-    if (goog.isDef(this.srsName)) {
+    if (goog.isDefAndNotNull(this.srsName)) {
       this.setAttributeNS(child, null, 'srsName', this.srsName);
     }
     return node;
@@ -211,6 +211,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       this.readers[this.defaultNamespaceURI]['_inherit'].apply(this,
           [node, coordinates, container]);
       this.readChildNodes(node, coordinates);
+      container.projection = node.getAttribute('srsName');
       container.bounds = [coordinates[0][0][0][0], coordinates[1][0][0][0],
         coordinates[0][0][0][1], coordinates[1][0][0][1]];
     },
@@ -387,9 +388,9 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       // only 2d for simple features profile
       var pos;
       if (this.axisOrientation.substr(0, 2) === 'en') {
-        pos = (bounds.left + ' ' + bounds.bottom);
+        pos = (bounds[0] + ' ' + bounds[2]);
       } else {
-        pos = (bounds.bottom + ' ' + bounds.left);
+        pos = (bounds[2] + ' ' + bounds[0]);
       }
       var node = this.createElementNS('gml:lowerCorner');
       node.appendChild(this.createTextNode(pos));
@@ -399,9 +400,9 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       // only 2d for simple features profile
       var pos;
       if (this.axisOrientation.substr(0, 2) === 'en') {
-        pos = (bounds.right + ' ' + bounds.top);
+        pos = (bounds[1] + ' ' + bounds[3]);
       } else {
-        pos = (bounds.top + ' ' + bounds.right);
+        pos = (bounds[3] + ' ' + bounds[1]);
       }
       var node = this.createElementNS('gml:upperCorner');
       node.appendChild(this.createTextNode(pos));

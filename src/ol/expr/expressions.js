@@ -277,12 +277,12 @@ ol.expr.Identifier.prototype.getName = function() {
  *
  * @constructor
  * @extends {ol.expr.Expression}
- * @param {string|number|boolean|null} value A literal value.
+ * @param {string|number|boolean|Date|null} value A literal value.
  */
 ol.expr.Literal = function(value) {
 
   /**
-   * @type {string|number|boolean|null}
+   * @type {string|number|boolean|Date|null}
    * @private
    */
   this.value_ = value;
@@ -301,7 +301,7 @@ ol.expr.Literal.prototype.evaluate = function() {
 
 /**
  * Get the literal value.
- * @return {string|number|boolean|null} The literal value.
+ * @return {string|number|boolean|Date|null} The literal value.
  */
 ol.expr.Literal.prototype.getValue = function() {
   return this.value_;

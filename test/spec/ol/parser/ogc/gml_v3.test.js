@@ -17,7 +17,7 @@ describe('ol.parser.gml_v3', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/linearring.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
@@ -34,7 +34,7 @@ describe('ol.parser.gml_v3', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/linestring.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
@@ -61,7 +61,7 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.ogc.GML_v3({curve: true});
         var obj = p.read(xml);
-        var geom = p.createGeometry_({geometry: obj.geometry});
+        var geom = p.createGeometry({geometry: obj.geometry});
         p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
             [geom]).firstChild;
@@ -89,7 +89,7 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.ogc.GML_v3({multiCurve: false});
         var obj = p.read(xml);
-        var geom = p.createGeometry_({geometry: obj.geometry});
+        var geom = p.createGeometry({geometry: obj.geometry});
         p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
             [geom]).firstChild;
@@ -106,7 +106,7 @@ describe('ol.parser.gml_v3', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multicurve-singular.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
@@ -125,7 +125,7 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.ogc.GML_v3({curve: true});
         var obj = p.read(xml);
-        var geom = p.createGeometry_({geometry: obj.geometry});
+        var geom = p.createGeometry({geometry: obj.geometry});
         p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
             [geom]).firstChild;
@@ -154,7 +154,7 @@ describe('ol.parser.gml_v3', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multipoint-singular.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
@@ -183,7 +183,7 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.ogc.GML_v3({multiSurface: false});
         var obj = p.read(xml);
-        var geom = p.createGeometry_({geometry: obj.geometry});
+        var geom = p.createGeometry({geometry: obj.geometry});
         p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
             [geom]).firstChild;
@@ -210,7 +210,7 @@ describe('ol.parser.gml_v3', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/multisurface-singular.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
@@ -228,7 +228,7 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.ogc.GML_v3({surface: true});
         var obj = p.read(xml);
-        var geom = p.createGeometry_({geometry: obj.geometry});
+        var geom = p.createGeometry({geometry: obj.geometry});
         p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
             [geom]).firstChild;
@@ -245,7 +245,7 @@ describe('ol.parser.gml_v3', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/point.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
@@ -261,7 +261,7 @@ describe('ol.parser.gml_v3', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/polygon.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        var geom = parser.createGeometry_({geometry: obj.geometry});
+        var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
             [geom]).firstChild;
@@ -277,7 +277,7 @@ describe('ol.parser.gml_v3', function() {
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.ogc.GML_v3({surface: true});
         var obj = p.read(xml);
-        var geom = p.createGeometry_({geometry: obj.geometry});
+        var geom = p.createGeometry({geometry: obj.geometry});
         p.applyWriteOptions(obj, {srsName: 'foo'});
         var node = p.featureNSWiters_['_geometry'].apply(p,
             [geom]).firstChild;

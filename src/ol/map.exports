@@ -6,6 +6,7 @@
 @exportProperty ol.Map.prototype.getFeatureInfo
 @exportProperty ol.Map.prototype.getFeatures
 @exportProperty ol.Map.prototype.getInteractions
+@exportProperty ol.Map.prototype.getLayers
 @exportProperty ol.Map.prototype.getRenderer
 @exportProperty ol.Map.prototype.removeControl
 @exportProperty ol.Map.prototype.removeLayer

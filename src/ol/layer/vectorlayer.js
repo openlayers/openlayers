@@ -1,8 +1,8 @@
 goog.provide('ol.layer.Vector');
+goog.provide('ol.layer.VectorLayerEventType');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.expr');
@@ -221,10 +221,18 @@ ol.layer.FeatureCache.prototype.remove = function(feature) {
 
 
 /**
- * TODO: Create a VectorLayerEvent with ADD and REMOVE event types
+ * @enum {string}
+ */
+ol.layer.VectorLayerEventType = {
+  ADD: 'add',
+  REMOVE: 'remove'
+};
+
+
+/**
  * @typedef {{extent: (ol.Extent|undefined),
  *            features: (Array.<ol.Feature>|undefined),
- *            type: goog.events.EventType}}
+ *            type: ol.layer.VectorLayerEventType}}
  */
 ol.layer.VectorLayerEventObject;
 
@@ -304,7 +312,7 @@ ol.layer.Vector.prototype.addFeatures = function(features) {
   this.dispatchEvent(/** @type {ol.layer.VectorLayerEventObject} */ ({
     extent: extent,
     features: features,
-    type: goog.events.EventType.CHANGE
+    type: ol.layer.VectorLayerEventType.ADD
   }));
 };
 
@@ -517,7 +525,7 @@ ol.layer.Vector.prototype.removeFeatures = function(features) {
   this.dispatchEvent(/** @type {ol.layer.VectorLayerEventObject} */ ({
     extent: extent,
     features: features,
-    type: goog.events.EventType.CHANGE
+    type: ol.layer.VectorLayerEventType.REMOVE
   }));
 };
 
