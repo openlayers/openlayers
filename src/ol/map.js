@@ -32,8 +32,6 @@ goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Collection');
-goog.require('ol.CollectionEvent');
-goog.require('ol.CollectionEventType');
 goog.require('ol.FrameState');
 goog.require('ol.IView');
 goog.require('ol.MapBrowserEvent');
@@ -55,7 +53,8 @@ goog.require('ol.ViewHint');
 goog.require('ol.control.defaults');
 goog.require('ol.extent');
 goog.require('ol.interaction.defaults');
-goog.require('ol.layer.Layer');
+goog.require('ol.layer.LayerBase');
+goog.require('ol.layer.LayerGroup');
 goog.require('ol.proj');
 goog.require('ol.proj.addCommonProjections');
 goog.require('ol.renderer.Map');
@@ -111,7 +110,7 @@ ol.DEFAULT_RENDERER_HINTS = [
  * @enum {string}
  */
 ol.MapProperty = {
-  LAYERS: 'layers',
+  LAYERGROUP: 'layergroup',
   SIZE: 'size',
   TARGET: 'target',
   VIEW: 'view'
@@ -199,6 +198,12 @@ ol.Map = function(options) {
    * @type {goog.events.Key}
    */
   this.viewPropertyListenerKey_ = null;
+
+  /**
+   * @private
+   * @type {goog.events.Key}
+   */
+  this.layerGroupPropertyListenerKey_ = null;
 
   /**
    * @private
@@ -307,14 +312,9 @@ ol.Map = function(options) {
       goog.bind(this.getTilePriority, this),
       goog.bind(this.handleTileChange_, this));
 
-  /**
-   * @private
-   * @type {Array.<?number>}
-   */
-  this.layersListenerKeys_ = null;
-
-  goog.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.LAYERS),
-      this.handleLayersChanged_, false, this);
+  goog.events.listen(
+      this, ol.Object.getChangeEventType(ol.MapProperty.LAYERGROUP),
+      this.handleLayerGroupChanged_, false, this);
   goog.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.VIEW),
       this.handleViewChanged_, false, this);
   goog.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.SIZE),
@@ -352,10 +352,10 @@ ol.Map.prototype.addControl = function(control) {
 
 /**
  * Adds the given layer to the top of this map.
- * @param {ol.layer.Layer} layer Layer.
+ * @param {ol.layer.LayerBase} layer Layer.
  */
 ol.Map.prototype.addLayer = function(layer) {
-  var layers = this.getLayers();
+  var layers = this.getLayerGroup().getLayers();
   goog.asserts.assert(goog.isDef(layers));
   layers.push(layer);
 };
@@ -465,7 +465,7 @@ ol.Map.prototype.getControls = function() {
  */
 ol.Map.prototype.getFeatureInfo = function(options) {
   var layers = goog.isDefAndNotNull(options.layers) ?
-      options.layers : this.getLayers().getArray();
+      options.layers : this.getLayerGroup().getLayersArray();
   this.getRenderer().getFeatureInfoForPixel(
       options.pixel, layers, options.success, options.error);
 };
@@ -478,7 +478,7 @@ ol.Map.prototype.getFeatureInfo = function(options) {
  */
 ol.Map.prototype.getFeatures = function(options) {
   var layers = goog.isDefAndNotNull(options.layers) ?
-      options.layers : this.getLayers().getArray();
+      options.layers : this.getLayerGroup().getLayersArray();
   this.getRenderer().getFeaturesForPixel(
       options.pixel, layers, options.success, options.error);
 };
@@ -495,16 +495,26 @@ ol.Map.prototype.getInteractions = function() {
 
 
 /**
+ * Get the layergroup associated with this map.
+ * @return {ol.layer.LayerGroup} LayerGroup.
+ */
+ol.Map.prototype.getLayerGroup = function() {
+  return /** @type {ol.layer.LayerGroup} */ (
+      this.get(ol.MapProperty.LAYERGROUP));
+};
+goog.exportProperty(
+    ol.Map.prototype,
+    'getLayerGroup',
+    ol.Map.prototype.getLayerGroup);
+
+
+/**
  * Get the collection of layers associated with this map.
  * @return {ol.Collection} Layers.
  */
 ol.Map.prototype.getLayers = function() {
-  return /** @type {ol.Collection} */ (this.get(ol.MapProperty.LAYERS));
+  return this.getLayerGroup().getLayers();
 };
-goog.exportProperty(
-    ol.Map.prototype,
-    'getLayers',
-    ol.Map.prototype.getLayers);
 
 
 /**
@@ -612,46 +622,6 @@ ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
   } else {
     this.focus_ = mapBrowserEvent.getCoordinate();
   }
-};
-
-
-/**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @private
- */
-ol.Map.prototype.handleLayersAdd_ = function(collectionEvent) {
-  this.render();
-};
-
-
-/**
- * @param {goog.events.Event} event Event.
- * @private
- */
-ol.Map.prototype.handleLayersChanged_ = function(event) {
-  if (!goog.isNull(this.layersListenerKeys_)) {
-    goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
-    this.layersListenerKeys_ = null;
-  }
-  var layers = this.getLayers();
-  if (goog.isDefAndNotNull(layers)) {
-    this.layersListenerKeys_ = [
-      goog.events.listen(layers, ol.CollectionEventType.ADD,
-          this.handleLayersAdd_, false, this),
-      goog.events.listen(layers, ol.CollectionEventType.REMOVE,
-          this.handleLayersRemove_, false, this)
-    ];
-  }
-  this.render();
-};
-
-
-/**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
- * @private
- */
-ol.Map.prototype.handleLayersRemove_ = function(collectionEvent) {
-  this.render();
 };
 
 
@@ -789,6 +759,33 @@ ol.Map.prototype.handleViewChanged_ = function() {
 
 
 /**
+ * @param {goog.events.Event} event Event.
+ * @private
+ */
+ol.Map.prototype.handleLayerGroupPropertyChanged_ = function(event) {
+  this.render();
+};
+
+
+/**
+ * @private
+ */
+ol.Map.prototype.handleLayerGroupChanged_ = function() {
+  if (!goog.isNull(this.layerGroupPropertyListenerKey_)) {
+    goog.events.unlistenByKey(this.layerGroupPropertyListenerKey_);
+    this.layerGroupPropertyListenerKey_ = null;
+  }
+  var layerGroup = this.getLayerGroup();
+  if (goog.isDefAndNotNull(layerGroup)) {
+    this.layerGroupPropertyListenerKey_ = goog.events.listen(
+        layerGroup, ol.ObjectEventType.CHANGE,
+        this.handleLayerGroupPropertyChanged_, false, this);
+  }
+  this.render();
+};
+
+
+/**
  * @return {boolean} Is defined.
  */
 ol.Map.prototype.isDef = function() {
@@ -845,14 +842,14 @@ ol.Map.prototype.removeControl = function(control) {
 
 /**
  * Removes the given layer from the map.
- * @param {ol.layer.Layer} layer Layer.
- * @return {ol.layer.Layer|undefined} The removed layer or undefined if the
+ * @param {ol.layer.LayerBase} layer Layer.
+ * @return {ol.layer.LayerBase|undefined} The removed layer or undefined if the
  *     layer was not found.
  */
 ol.Map.prototype.removeLayer = function(layer) {
-  var layers = this.getLayers();
+  var layers = this.getLayerGroup().getLayers();
   goog.asserts.assert(goog.isDef(layers));
-  return /** @type {ol.layer.Layer|undefined} */ (layers.remove(layer));
+  return /** @type {ol.layer.LayerBase|undefined} */ (layers.remove(layer));
 };
 
 
@@ -869,21 +866,20 @@ ol.Map.prototype.renderFrame_ = function(time) {
   }
 
   var size = this.getSize();
-  var layers = this.getLayers();
-  var layersArray = goog.isDef(layers) ?
-      /** @type {Array.<ol.layer.Layer>} */ (layers.getArray()) : undefined;
   var view = this.getView();
   var view2D = goog.isDef(view) ? this.getView().getView2D() : undefined;
   /** @type {?ol.FrameState} */
   var frameState = null;
-  if (goog.isDef(layersArray) && goog.isDef(size) && goog.isDef(view2D) &&
-      view2D.isDef()) {
+  if (goog.isDef(size) && goog.isDef(view2D) && view2D.isDef()) {
     var viewHints = view.getHints();
+    var obj = this.getLayerGroup().getLayerStatesArray();
+    var layersArray = obj.layers;
+    var layerStatesArray = obj.layerStates;
     var layerStates = {};
     var layer;
     for (i = 0, ii = layersArray.length; i < ii; ++i) {
       layer = layersArray[i];
-      layerStates[goog.getUid(layer)] = layer.getLayerState();
+      layerStates[goog.getUid(layer)] = layerStatesArray[i];
     }
     view2DState = view2D.getView2DState();
     frameState = {
@@ -947,16 +943,16 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
 
 /**
- * Sets the whole collection of layers for this map.
- * @param {ol.Collection} layers Layers.
+ * Sets the layergroup of this map.
+ * @param {ol.layer.LayerGroup} layerGroup Layergroup.
  */
-ol.Map.prototype.setLayers = function(layers) {
-  this.set(ol.MapProperty.LAYERS, layers);
+ol.Map.prototype.setLayerGroup = function(layerGroup) {
+  this.set(ol.MapProperty.LAYERGROUP, layerGroup);
 };
 goog.exportProperty(
     ol.Map.prototype,
-    'setLayers',
-    ol.Map.prototype.setLayers);
+    'setLayerGroup',
+    ol.Map.prototype.setLayerGroup);
 
 
 /**
@@ -1063,18 +1059,9 @@ ol.Map.createOptionsInternal = function(options) {
    */
   var values = {};
 
-  var layers;
-  if (goog.isDef(options.layers)) {
-    if (goog.isArray(options.layers)) {
-      layers = new ol.Collection(goog.array.clone(options.layers));
-    } else {
-      goog.asserts.assertInstanceof(options.layers, ol.Collection);
-      layers = options.layers;
-    }
-  } else {
-    layers = new ol.Collection();
-  }
-  values[ol.MapProperty.LAYERS] = layers;
+  var layerGroup = (options.layers instanceof ol.layer.LayerGroup) ?
+      options.layers : new ol.layer.LayerGroup({layers: options.layers});
+  values[ol.MapProperty.LAYERGROUP] = layerGroup;
 
   values[ol.MapProperty.TARGET] = options.target;
 
