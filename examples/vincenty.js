@@ -62,7 +62,7 @@ for (var i = 1; i < divisionCount; i++) {
     'properties': {'name': i + ''},
     'geometry': {
       'type': 'Point',
-      'coordinates': pd.vertices.coordinates
+      'coordinates': pd.getCoordinates()
     }
   });
 }
