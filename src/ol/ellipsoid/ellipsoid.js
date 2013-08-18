@@ -2,6 +2,7 @@ goog.provide('ol.Ellipsoid');
 
 goog.require('goog.math');
 goog.require('ol.Coordinate');
+goog.require('ol.geom.Point');
 
 
 
@@ -185,7 +186,6 @@ ol.Ellipsoid.prototype.vincentyInitialBearing =
 };
 
 
-
 /**
  * Take a look at http://en.wikipedia.org/wiki/Vincenty%27s_formulae
  *
@@ -196,8 +196,8 @@ ol.Ellipsoid.prototype.vincentyInitialBearing =
  * @param {number=} opt_maxIterations Maximum iterations.
  * @return {ol.geom.Point}
  */
-ol.ellipsoid.Ellipsoid.prototype.vincentyPoint =
-  function(c, distance, bearing, opt_minDeltaSigma, opt_maxIterations) {
+ol.Ellipsoid.prototype.vincentyPoint =
+    function(c, distance, bearing, opt_minDeltaSigma, opt_maxIterations) {
   var minDeltaSigma = goog.isDef(opt_minDeltaSigma) ? opt_minDeltaSigma : 1e-8;
   var maxIterations = goog.isDef(opt_maxIterations) ? opt_maxIterations : 100;
 
@@ -207,7 +207,6 @@ ol.ellipsoid.Ellipsoid.prototype.vincentyPoint =
 
   var sinAlpha1 = Math.sin(alpha1);
   var cosAlpha1 = Math.cos(alpha1);
-  var U1 = Math.atan((1 - this.flattening) * Math.tan(phi1));
   var tanU1 = (1 - this.flattening) * Math.tan(phi1);
   var cosU1 = 1 / Math.sqrt(1 + tanU1 * tanU1);
   var sinU1 = tanU1 * cosU1;
@@ -235,7 +234,7 @@ ol.ellipsoid.Ellipsoid.prototype.vincentyPoint =
     cos2SigmaM = Math.cos(twoSigmaM);
     cos2SigmaMSquared = cos2SigmaM * cos2SigmaM;
     var deltaSigma = B * sinSigma *
-      (cos2SigmaM + B / 4 * (cosSigma * (2 * cos2SigmaMSquared - 1) -
+        (cos2SigmaM + B / 4 * (cosSigma * (2 * cos2SigmaMSquared - 1) -
                              B / 6 * cos2SigmaM * (4 * sinSigmaSquared - 3) *
                              (4 * cos2SigmaMSquared - 3)));
     if (deltaSigma < minDeltaSigma) {
@@ -253,7 +252,7 @@ ol.ellipsoid.Ellipsoid.prototype.vincentyPoint =
                         (1 - this.flattening) * Math.sqrt(sinAlphaSquared +
                                                           X * X));
   var lambda = Math.atan2(sinSigma * sinAlpha1,
-                            cosU1cosSigma - sinU1sinSigma * cosAlpha1);
+      cosU1cosSigma - sinU1sinSigma * cosAlpha1);
   var C = this.flattening / 16 * cosAlphaSquared *
       (4 + this.flattening * (4 - 3 * cosAlphaSquared));
   var L = lambda - (1 - C) * this.flattening *
@@ -261,5 +260,5 @@ ol.ellipsoid.Ellipsoid.prototype.vincentyPoint =
       cos2SigmaMSquared - 1)));
   var L2 = L1 + L;
   return new ol.geom.Point([goog.math.toDegrees(L2),
-                              goog.math.toDegrees(phi2)]);
+        goog.math.toDegrees(phi2)]);
 };
