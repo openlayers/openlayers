@@ -71,14 +71,9 @@ ol.geom.SharedVertices.prototype.add = function(vertices) {
   var vertex, index;
   for (var i = 0; i < count; ++i) {
     vertex = vertices[i];
-    goog.asserts.assert(vertex.length == dimension);
-    if (!offset) {
-      Array.prototype.push.apply(this.coordinates, vertex);
-    } else {
-      index = start + (i * dimension);
-      for (var j = 0; j < dimension; ++j) {
-        this.coordinates[index + j] = vertex[j] - offset[j];
-      }
+    index = start + (i * dimension);
+    for (var j = 0; j < dimension; ++j) {
+      this.coordinates[index + j] = vertex[j] - (offset ? offset[j] : 0);
     }
   }
   var length = this.starts_.push(start);
