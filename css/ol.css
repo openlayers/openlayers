@@ -242,3 +242,72 @@ a.ol-full-screen-true:after {
 .ol-zoom-extent a:after {
     content: "E";
 }
+
+.ol-pan {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+  padding: 2px;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+}
+@media print {
+  .ol-pan {
+    display: none;
+  }
+}
+.ol-pan span {
+  display: block;
+  line-height: 0;
+}
+.ol-pan a {
+  display: inline-block;
+  margin: 0.5px;
+  padding: 0;
+  color: white;
+  font-size: 18px;
+  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  height: 22px;
+  width: 22px;
+  line-height: 19px;
+  background: rgba(0, 60, 136, 0.5);
+}
+.ol-touch .ol-pan a {
+  font-size: 20px;
+  height: 30px;
+  width: 30px;
+  line-height: 26px;
+}
+.ol-pan a:hover {
+  background: rgba(0, 60, 136, 0.7);
+}
+.ol-pan-north {
+  border-radius: 8px 0 0 0;
+}
+.ol-pan-east {
+  border-radius: 0 8px 0 0;
+}
+.ol-pan-south {
+  border-radius: 0 0 8px 0;
+}
+.ol-pan-west {
+  border-radius: 0 0 0 8px;
+}
+.ol-pan-north:after {
+  content: "\21d6";
+}
+.ol-pan-east:after {
+  content: "\21d7";
+}
+.ol-pan-south:after {
+  content: "\21d8";
+}
+.ol-pan-west:after {
+  content: "\21d9";
+}

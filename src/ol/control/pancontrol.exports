@@ -1,0 +1,2 @@
+@exportClass ol.control.Pan ol.control.PanOptions
+@exportProperty ol.control.Pan.prototype.setMap

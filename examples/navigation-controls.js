@@ -1,6 +1,7 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
+goog.require('ol.control.Pan');
 goog.require('ol.control.ZoomToExtent');
 goog.require('ol.control.defaults');
 goog.require('ol.layer.TileLayer');
@@ -16,7 +17,8 @@ var map = new ol.Map({
         5929220.284081122,
         5936863.986909639
       ]
-    })
+    }),
+    new ol.control.Pan()
   ]),
   layers: [
     new ol.layer.TileLayer({
