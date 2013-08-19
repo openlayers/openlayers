@@ -122,9 +122,10 @@ class Class(Exportable):
 
 class ObjectLiteral(Exportable):
 
-    def __init__(self, name):
+    def __init__(self, name, objects):
         Exportable.__init__(self, name)
         self.prop_types = {}
+        self.objects = objects
 
     __repr__ = simplerepr
 
@@ -138,7 +139,12 @@ class ObjectLiteral(Exportable):
         for prop in sorted(self.prop_types.keys()):
             lines.append('\n\n')
             lines.append('/**\n')
-            lines.append(' * @type {%s}\n' % (self.prop_types[prop],))
+            prop_types = self.prop_types[prop].split('|')
+            for i, t in enumerate(prop_types):
+                if t in self.objects and isinstance(self.objects[t], ObjectLiteral):
+                    prop_types[i] = self.objects[t].extern_name()
+            prop_types = '|'.join(prop_types)
+            lines.append(' * @type {%s}\n' % (prop_types,))
             lines.append(' */\n')
             lines.append('%s.prototype.%s;\n' % (self.extern_name(), prop))
         return ''.join(lines)
@@ -221,7 +227,7 @@ def main(argv):
                     name = m.group('name')
                     if name in objects:
                         raise RuntimeError(line)  # Name already defined
-                    object_literal = ObjectLiteral(name)
+                    object_literal = ObjectLiteral(name, objects)
                     objects[name] = object_literal
                     continue
                 m = re.match(r'\*\s*@property\s*{(?P<type>.*)}\s*(?P<prop>\S+)', line)
