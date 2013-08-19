@@ -10,10 +10,10 @@ goog.require('ol.source.BingMaps');
 
 
 var map = new ol.Map({
-  controls: ol.control.defaults({}, [
+  controls: ol.control.defaults().extend([
     new ol.control.FullScreen()
   ]),
-  interactions: ol.interaction.defaults({}, [
+  interactions: ol.interaction.defaults().extend([
     new ol.interaction.DragRotateAndZoom()
   ]),
   layers: [

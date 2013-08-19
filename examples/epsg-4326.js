@@ -22,7 +22,7 @@ var layers = [
 ];
 
 var map = new ol.Map({
-  controls: ol.control.defaults({}, [
+  controls: ol.control.defaults().extend([
     new ol.control.ScaleLine({
       units: ol.control.ScaleLineUnits.DEGREES
     })

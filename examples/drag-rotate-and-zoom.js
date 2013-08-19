@@ -8,7 +8,7 @@ goog.require('ol.source.MapQuestOpenAerial');
 
 
 var map = new ol.Map({
-  interactions: ol.interaction.defaults({}, [
+  interactions: ol.interaction.defaults().extend([
     new ol.interaction.DragRotateAndZoom()
   ]),
   layers: [

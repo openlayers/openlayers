@@ -20,7 +20,7 @@ var mousePositionControl = new ol.control.MousePosition({
 });
 
 var map = new ol.Map({
-  controls: ol.control.defaults({}, [mousePositionControl]),
+  controls: ol.control.defaults().extend([mousePositionControl]),
   layers: [
     new ol.layer.TileLayer({
       source: new ol.source.OSM()

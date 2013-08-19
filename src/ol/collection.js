@@ -86,12 +86,14 @@ ol.Collection.prototype.clear = function() {
 
 /**
  * @param {Array} arr Array.
+ * @return {ol.Collection} This collection.
  */
 ol.Collection.prototype.extend = function(arr) {
   var i, ii;
   for (i = 0, ii = arr.length; i < ii; ++i) {
     this.push(arr[i]);
   }
+  return this;
 };
 
 

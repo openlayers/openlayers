@@ -1,6 +1,9 @@
 // FIXME works for View2D only
 
-goog.provide('ol.animation');
+goog.provide('ol.animation.bounce');
+goog.provide('ol.animation.pan');
+goog.provide('ol.animation.rotate');
+goog.provide('ol.animation.zoom');
 
 goog.require('ol.PreRenderFunction');
 goog.require('ol.ViewHint');
