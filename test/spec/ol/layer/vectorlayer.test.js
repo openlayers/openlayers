@@ -106,9 +106,9 @@ describe('ol.layer.Vector', function() {
         rules: [
           new ol.style.Rule({
             symbolizers: [
-              new ol.style.Line({
-                strokeWidth: 2,
-                strokeColor: ol.expr.parse('colorProperty'),
+              new ol.style.Stroke({
+                width: 2,
+                color: ol.expr.parse('colorProperty'),
                 opacity: 1
               })
             ]
@@ -137,20 +137,20 @@ describe('ol.layer.Vector', function() {
       var groups = layer.groupFeaturesBySymbolizerLiteral(features);
       expect(groups.length).to.be(2);
       expect(groups[0][0].length).to.be(1);
-      expect(groups[0][1].strokeColor).to.be('#BADA55');
+      expect(groups[0][1].color).to.be('#BADA55');
       expect(groups[1][0].length).to.be(2);
-      expect(groups[1][1].strokeColor).to.be('#013');
+      expect(groups[1][1].color).to.be('#013');
     });
 
     it('groups equal symbolizers also when defined on features', function() {
-      var symbolizer = new ol.style.Line({
-        strokeWidth: 3,
-        strokeColor: ol.expr.parse('colorProperty'),
+      var symbolizer = new ol.style.Stroke({
+        width: 3,
+        color: ol.expr.parse('colorProperty'),
         opacity: 1
       });
-      var anotherSymbolizer = new ol.style.Line({
-        strokeWidth: 3,
-        strokeColor: '#BADA55',
+      var anotherSymbolizer = new ol.style.Stroke({
+        width: 3,
+        color: '#BADA55',
         opacity: 1
       });
       var featureWithSymbolizers = new ol.Feature({
@@ -165,9 +165,9 @@ describe('ol.layer.Vector', function() {
       features.push(featureWithSymbolizers, anotherFeatureWithSymbolizers);
 
       var groups = layer.groupFeaturesBySymbolizerLiteral(features);
-      expect(groups.length).to.be(3);
+      expect(groups).to.have.length(3);
       expect(groups[2][0].length).to.be(2);
-      expect(groups[2][1].strokeWidth).to.be(3);
+      expect(groups[2][1].width).to.be(3);
 
     });
 
@@ -188,6 +188,6 @@ goog.require('ol.geom.Point');
 goog.require('ol.proj');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
-goog.require('ol.style.Line');
 goog.require('ol.style.Rule');
+goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
