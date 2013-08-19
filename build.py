@@ -667,9 +667,6 @@ def host_examples(t):
 def check_examples(t):
     examples = ['build/hosted/%(BRANCH)s/' + e for e in EXAMPLES]
     all_examples = \
-        [e + '?mode=raw' for e in examples] + \
-        [e + '?mode=whitespace' for e in examples] + \
-        [e + '?mode=simple' for e in examples] + \
         [e + '?mode=advanced' for e in examples]
     for example in all_examples:
         t.run('%(PHANTOMJS)s', 'bin/check-example.js', example)
