@@ -3,6 +3,7 @@ goog.provide('ol.layer.VectorLayerEventType');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.expr');
