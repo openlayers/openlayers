@@ -42,7 +42,7 @@ var lineStringCollection = ol.geom2.LineStringCollection.pack([
 ]);
 
 var map = new ol.Map({
-  controls: ol.control.defaults({}, [
+  controls: ol.control.defaults().extend([
     new ol.control.MousePosition({
       undefinedHTML: '&nbsp;'
     })

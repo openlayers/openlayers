@@ -8,10 +8,9 @@ goog.require('ol.control.Zoom');
 
 /**
  * @param {ol.control.DefaultsOptions=} opt_options Defaults options.
- * @param {Array.<ol.control.Control>=} opt_controls Additional controls.
  * @return {ol.Collection} Controls.
  */
-ol.control.defaults = function(opt_options, opt_controls) {
+ol.control.defaults = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
@@ -36,13 +35,9 @@ ol.control.defaults = function(opt_options, opt_controls) {
   var zoomControl = goog.isDef(options.zoom) ?
       options.zoom : true;
   if (zoomControl) {
-    var zoomControlOptions = goog.isDef(options.zoomControlOptions) ?
-        options.zoomControlOptions : undefined;
+    var zoomControlOptions = goog.isDef(options.zoomOptions) ?
+        options.zoomOptions : undefined;
     controls.push(new ol.control.Zoom(zoomControlOptions));
-  }
-
-  if (goog.isDef(opt_controls)) {
-    controls.extend(opt_controls);
   }
 
   return controls;

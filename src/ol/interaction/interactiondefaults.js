@@ -6,7 +6,6 @@ goog.require('ol.interaction.DoubleClickZoom');
 goog.require('ol.interaction.DragPan');
 goog.require('ol.interaction.DragRotate');
 goog.require('ol.interaction.DragZoom');
-goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.KeyboardPan');
 goog.require('ol.interaction.KeyboardZoom');
 goog.require('ol.interaction.MouseWheelZoom');
@@ -17,11 +16,9 @@ goog.require('ol.interaction.TouchZoom');
 
 /**
  * @param {ol.interaction.DefaultsOptions=} opt_options Defaults options.
- * @param {Array.<ol.interaction.Interaction>=} opt_interactions Additional
- *     interactions.
  * @return {ol.Collection} Interactions.
  */
-ol.interaction.defaults = function(opt_options, opt_interactions) {
+ol.interaction.defaults = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
@@ -90,10 +87,6 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
       options.shiftDragZoom : true;
   if (shiftDragZoom) {
     interactions.push(new ol.interaction.DragZoom());
-  }
-
-  if (goog.isDef(opt_interactions)) {
-    interactions.extend(opt_interactions);
   }
 
   return interactions;

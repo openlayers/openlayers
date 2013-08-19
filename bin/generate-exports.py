@@ -120,11 +120,84 @@ class Class(Exportable):
         return '%sExport' % self.name
 
 
+class Function(Exportable):
+
+    def __init__(self, name, object_literal, return_type, objects):
+        Exportable.__init__(self, name)
+        self.object_literal = object_literal
+        self.return_type = return_type
+        self.objects = objects
+
+    __repr__ = simplerepr
+
+    def property_object_literal(self, object_literal, prop):
+        prop_object_literal = None
+        types = object_literal.prop_types[prop].split('|')
+        for t in types:
+            if t in self.objects:
+                o = self.objects[t]
+                if isinstance(o, ObjectLiteral):
+                    if prop_object_literal:
+                        raise RuntimeError('Multiple "literal" types found for '
+                            'option %s.%s: %s, %s.' %
+                            (object_literal.name, prop,
+                             prop_object_literal.name, o.name))
+                    prop_object_literal = o
+        return prop_object_literal
+
+    def recursive_export(self, lines, prop, object_literal, local_var=None, depth=1):
+        indent = '  ' * depth
+        if not local_var:
+            local_var = prop.split('.')[-1]
+        lines.append('%s/** @type {%s} */\n' % (indent, object_literal.name))
+        lines.append('%svar %s =\n' % (indent, local_var))
+        lines.append('%s    /** @type {%s} */\n' % (indent, object_literal.name))
+        lines.append('%s    (%s);\n' % (indent, prop))
+        lines.append('%sif (goog.isDefAndNotNull(%s)) {\n' % (indent, prop))
+        for key in sorted(object_literal.prop_types.keys()):
+            prop_object_literal = self.property_object_literal(object_literal, key)
+            if prop_object_literal:
+                lv = self.recursive_export(lines, '%s.%s' % (prop, key),
+                    prop_object_literal, depth=depth + 1)
+                lines.append('%s  %s.%s =\n%s      %s;\n' %
+                    (indent, local_var, key, indent, lv))
+            else:
+                lines.append('%s  %s.%s =\n%s      %s.%s;\n' %
+                    (indent, local_var, key, indent, prop, key))
+        lines.append('%s}\n' % (indent,))
+        return local_var
+
+    def export(self):
+        lines = []
+        local_var = 'arg'
+        lines.append('\n\n')
+        lines.append('/**\n')
+        lines.append(' * @param {%s} options Options.\n' % (self.object_literal.extern_name(),))
+        if self.return_type:
+            lines.append(' * @return {%s} Return value.\n' % (self.return_type,))
+        lines.append(' */\n')
+        lines.append('%s = function(options) {\n' % (self.export_name(),))
+        self.recursive_export(lines, 'options', self.object_literal,
+            local_var=local_var)
+        if self.return_type:
+            lines.append('  return %s(%s);\n' % (self.name, local_var))
+        else:
+            lines.append('  %s(arg);\n' % (self.name,))
+        lines.append('};\n')
+        lines.append('goog.exportSymbol(\n')
+        lines.append('    \'%s\',\n' % (self.name,))
+        lines.append('    %s);\n' % (self.export_name(),))
+        return ''.join(lines)
+
+    def export_name(self):
+        return '%sExport' % self.name
+
 class ObjectLiteral(Exportable):
 
-    def __init__(self, name):
+    def __init__(self, name, objects):
         Exportable.__init__(self, name)
         self.prop_types = {}
+        self.objects = objects
 
     __repr__ = simplerepr
 
@@ -138,7 +211,12 @@ class ObjectLiteral(Exportable):
         for prop in sorted(self.prop_types.keys()):
             lines.append('\n\n')
             lines.append('/**\n')
-            lines.append(' * @type {%s}\n' % (self.prop_types[prop],))
+            prop_types = self.prop_types[prop].split('|')
+            for i, t in enumerate(prop_types):
+                if t in self.objects and isinstance(self.objects[t], ObjectLiteral):
+                    prop_types[i] = self.objects[t].extern_name()
+            prop_types = '|'.join(prop_types)
+            lines.append(' * @type {%s}\n' % (prop_types,))
             lines.append(' */\n')
             lines.append('%s.prototype.%s;\n' % (self.extern_name(), prop))
         return ''.join(lines)
@@ -221,7 +299,7 @@ def main(argv):
                     name = m.group('name')
                     if name in objects:
                         raise RuntimeError(line)  # Name already defined
-                    object_literal = ObjectLiteral(name)
+                    object_literal = ObjectLiteral(name, objects)
                     objects[name] = object_literal
                     continue
                 m = re.match(r'\*\s*@property\s*{(?P<type>.*)}\s*(?P<prop>\S+)', line)
@@ -261,6 +339,22 @@ def main(argv):
                     symbol = Symbol(name, False)
                     objects[name] = symbol
                 symbol.props.add(prop)
+                continue
+            m = re.match(r'@exportFunction\s+(?P<name>\S+)(?:\s+(?P<object_literal_name>\S+))?(?:\s+(?P<return_type>\S+))?\Z', line)
+            if m:
+                name = m.group('name')
+                if name in objects:
+                    raise RuntimeError(line)  # Name already defined
+                object_literal_name = m.group('object_literal_name')
+                if object_literal_name not in objects:
+                    raise RuntimeError(line)
+                object_literal = objects[object_literal_name]
+                if not isinstance(object_literal, ObjectLiteral):
+                    raise RuntimeError(line)
+                return_type = m.group('return_type')
+                function  = Function(name, object_literal, return_type, objects)
+                objects[name] = function
+                requires.add(name)
                 continue
             m = re.match(r'@exportSymbol\s+(?P<name>\S+)(?:\s+(?P<export_as>\S+))?\Z', line)
             if m:
