@@ -45,6 +45,20 @@ goog.inherits(ol.Feature, ol.Object);
 
 
 /**
+ * Create a clone of this feature. Both the feature and its geometry will be
+ * cloned.
+ * @return {ol.Feature} A clone of this feature, with a cloned geometry.
+ */
+ol.Feature.prototype.clone = function() {
+  var clone = new ol.Feature(this.getAttributes());
+  clone.setGeometry(this.getGeometry().clone());
+  clone.featureId_ = this.featureId_;
+  clone.symbolizers_ = this.symbolizers_;
+  return clone;
+};
+
+
+/**
  * Gets a copy of the attributes of this feature.
  * @return {Object.<string, *>} Attributes object.
  */

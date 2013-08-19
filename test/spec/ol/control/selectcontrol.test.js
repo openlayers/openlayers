@@ -120,8 +120,8 @@ describe('ol.control.Select', function() {
     it('can clear a selection before selecting new features', function() {
       select.select([[features[0]]], true);
       select.select([[features[1]]], true);
-      expect(goog.object.getValues(select.layer.featureCache_.idLookup_)[0])
-          .to.eql(features[1]);
+      expect(goog.object.getCount(select.layer.featureCache_.idLookup_))
+          .to.be(1);
     });
 
   });

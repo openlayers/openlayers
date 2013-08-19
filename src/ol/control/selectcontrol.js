@@ -39,6 +39,12 @@ ol.control.Select = function(opt_options) {
   this.active_ = false;
 
   /**
+   * @type {Object.<string, ol.Feature>}
+   * @private
+   */
+  this.featureMap_ = {};
+
+  /**
    * @type {ol.layer.Vector}
    * @protected
    */
@@ -150,31 +156,44 @@ ol.control.Select.prototype.handleClick = function(evt) {
  */
 ol.control.Select.prototype.select = function(featuresByLayer, clear) {
   for (var i = 0, ii = featuresByLayer.length; i < ii; ++i) {
+    var layer = this.layers_[i];
     var features = featuresByLayer[i];
     var numFeatures = features.length;
     var selectedFeatures = [];
+    var featuresToAdd = [];
     var unselectedFeatures = [];
+    var featuresToRemove = [];
     for (var j = 0; j < numFeatures; ++j) {
       var feature = features[j];
-      var selectedFeature = this.layer.getFeatureWithUid(goog.getUid(feature));
-      if (selectedFeature) {
+      var uid = goog.getUid(feature);
+      var clone = this.featureMap_[uid];
+      if (clone) {
         // TODO: make toggle configurable
-        unselectedFeatures.push(selectedFeature);
-      } else {
         selectedFeatures.push(feature);
+        featuresToRemove.push(clone);
+        delete this.featureMap_[uid];
+      }
+      if (clear) {
+        for (var f in this.featureMap_) {
+          unselectedFeatures.push(layer.getFeatureWithUid(f));
+          featuresToRemove.push(this.featureMap_[f]);
+        }
+        this.featureMap_ = {};
+      }
+      if (!clone) {
+        clone = feature.clone();
+        this.featureMap_[uid] = clone;
+        selectedFeatures.push(feature);
+        featuresToAdd.push(clone);
       }
     }
-    var layer = this.layers_[i];
     if (goog.isFunction(layer.setRenderIntent)) {
       // TODO: Implement setRenderIntent for ol.layer.Vector
       layer.setRenderIntent('hidden', selectedFeatures);
       layer.setRenderIntent('default', unselectedFeatures);
     }
-    if (clear) {
-      this.layer.clear();
-    }
-    this.layer.removeFeatures(unselectedFeatures);
-    this.layer.addFeatures(selectedFeatures);
+    this.layer.removeFeatures(featuresToRemove);
+    this.layer.addFeatures(featuresToAdd);
     this.dispatchEvent(/** @type {ol.control.SelectEventObject} */ ({
       layer: layer,
       selected: selectedFeatures,
