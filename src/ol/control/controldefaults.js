@@ -35,8 +35,8 @@ ol.control.defaults = function(opt_options) {
   var zoomControl = goog.isDef(options.zoom) ?
       options.zoom : true;
   if (zoomControl) {
-    var zoomControlOptions = goog.isDef(options.zoomControlOptions) ?
-        options.zoomControlOptions : undefined;
+    var zoomControlOptions = goog.isDef(options.zoomOptions) ?
+        options.zoomOptions : undefined;
     controls.push(new ol.control.Zoom(zoomControlOptions));
   }
 
