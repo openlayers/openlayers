@@ -3,6 +3,7 @@ goog.provide('ol.test.parser.osm');
 describe('ol.parser.osm', function() {
 
     var parser = new ol.parser.OSM();
+    var feature;
 
     describe('Test OSM XAPI parser', function() {
         it('Parser is created', function() {
@@ -12,15 +13,15 @@ describe('ol.parser.osm', function() {
         it('Node read correctly', function(done) {
             var url = 'spec/ol/parser/osm/node.xml';
             afterLoadXml(url, function(xml) {
-                vvv PROBLÉM JE TADY vvv
                 var obj = parser.read(xml);
-                ^^^ PROBLÉM JE TADY ^^^
                 expect(obj.features.length).to.eql(1);
-                //var geom = obj.features[0].getGeometry();
-                //expect(geom).to.be.a(ol.geom.Point);
-                expect(parser).to.be.a(ol.parser.OSM);
-                done();
+                feature = obj.features[0];
             });
+        });
+
+        it('Feature attributes', function() {
+            var geom = feature.getGeometry();
+            expect(geom).to.be.a(ol.geom.Point);
         });
     });
 });

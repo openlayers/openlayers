@@ -6,45 +6,49 @@ goog.provide('ol.parser.OSM');
  */
 ol.parser.OSM = function(opt_options) {
 
+    this.defaultNamespaceURI = "http://openstreetmap.org/";
+
     this.readers = {
-        'osm': function(node, object) {
-            if (!google.isDef(object.features)) {
-                object.features = [];
-            }
-            this.readChildNodes(node, object);
-        },
-        'node': function(node, object) {
-            var container = {properties: {}};
-            var id = node.getAttribute('id');
-            var lat = node.getAttribute('lat');
-            var lon = node.getAttribute('lon');
+        "http://openstreetmap.org/": {
+            'osm': function(node, object) {
+                if (!goog.isDef(object.features)) {
+                    object.features = [];
+                }
+                this.readChildNodes(node, object);
+            },
+            'node': function(node, object) {
+                var container = {properties: {}};
+                var id = node.getAttribute('id');
+                var lat = node.getAttribute('lat');
+                var lon = node.getAttribute('lon');
 
-            // save feature properties to attributes
-            container.properties = {
-                version: node.getAttribute('version'),
-                timestamp: node.getAttribute('timestamp'),
-                changeset: node.getAttribute('changeset'),
-                uid: node.getAttribute('uid'),
-                user: node.getAttribute('user')
-            };
+                // save feature properties to attributes
+                container.properties = {
+                    version: node.getAttribute('version'),
+                    timestamp: node.getAttribute('timestamp'),
+                    changeset: node.getAttribute('changeset'),
+                    uid: node.getAttribute('uid'),
+                    user: node.getAttribute('user')
+                };
 
-            this.readChildNodes(node, container.properties);
+                this.readChildNodes(node, container.properties);
 
-            var feature = new ol.Feature(container.properties);
+                var feature = new ol.Feature(container.properties);
 
-            // set feature attributes
-            var geometry = new ol.geom.Point([lon,lat]);
-            feature.setGeometry(geometry);
+                // set feature attributes
+                var geometry = new ol.geom.Point([lon,lat]);
+                feature.setGeometry(geometry);
 
-            // set feature ID
-            feature.setId(id);
+                // set feature ID
+                feature.setFeatureId(id);
 
-            // push feature to features array
-            object.features.push(feature);
-        },
-        'tag': function(node,object) {
-            object[node.getAttribute('k')] = node.getAttribute('v');
-        }  
+                // push feature to features array
+                object.features.push(feature);
+            },
+            'tag': function(node,object) {
+                object[node.getAttribute('k')] = node.getAttribute('v');
+            }  
+        }
     };
 
     goog.base(this);
