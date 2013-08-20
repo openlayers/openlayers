@@ -10,6 +10,7 @@ goog.provide('ol.expr.Math');
 goog.provide('ol.expr.MathOp');
 goog.provide('ol.expr.Member');
 goog.provide('ol.expr.Not');
+goog.provide('ol.expr.ThisIdentifier');
 
 
 
@@ -623,4 +624,25 @@ ol.expr.Not.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
  */
 ol.expr.Not.prototype.getArgument = function() {
   return this.argument_;
+};
+
+
+
+/**
+ * An identifier for the 'this' keyword.
+ *
+ * @constructor
+ * @extends {ol.expr.Expression}
+ */
+ol.expr.ThisIdentifier = function() {};
+goog.inherits(ol.expr.ThisIdentifier, ol.expr.Expression);
+goog.addSingletonGetter(ol.expr.ThisIdentifier);
+
+
+/**
+ * @inheritDoc
+ */
+ol.expr.ThisIdentifier.prototype.evaluate =
+    function(opt_scope, opt_fns, opt_this) {
+  return opt_this;
 };
