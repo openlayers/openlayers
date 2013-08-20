@@ -24,7 +24,7 @@ var style = new ol.style.Style({
     symbolizers: [
       new ol.style.Shape({
         size: 40,
-        fill:new ol.style.Fill({'color':'#ffffff'})
+        fill: new ol.style.Fill({'color': '#ffffff'})
       }),
       new ol.style.Text({
         color: '#333333',
