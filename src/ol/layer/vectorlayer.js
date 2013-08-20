@@ -350,6 +350,14 @@ ol.layer.Vector.prototype.getVectorSource = function() {
 
 
 /**
+ * @return {ol.style.Style} This layer's style.
+ */
+ol.layer.Vector.prototype.getStyle = function() {
+  return this.style_;
+};
+
+
+/**
  * Get all features whose bounding box intersects the provided extent. This
  * method is intended for being called by the renderer. When null is returned,
  * the renderer should not waste time rendering, and `opt_callback` is

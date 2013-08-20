@@ -1,7 +1,7 @@
 goog.provide('ol.test.control.Select');
 
 describe('ol.control.Select', function() {
-  var map, target, select;
+  var map, target, select, features;
 
   beforeEach(function() {
     target = document.createElement('div');
@@ -11,7 +11,26 @@ describe('ol.control.Select', function() {
     map = new ol.Map({
       target: target
     });
+    features = ol.parser.GeoJSON.read(JSON.stringify({
+      'type': 'FeatureCollection',
+      'features': [{
+        'type': 'Feature',
+        'geometry': {
+          'type': 'Point',
+          'coordinates': [-1, 1]
+        }
+      }, {
+        'type': 'Feature',
+        'geometry': {
+          'type': 'Point',
+          'coordinates': [1, -1]
+        }
+      }]
+    }));
+    var layer = new ol.layer.Vector({source: new ol.source.Vector({})});
+    layer.addFeatures(features);
     select = new ol.control.Select({
+      layers: [layer],
       map: map
     });
   });
@@ -77,51 +96,26 @@ describe('ol.control.Select', function() {
 
   describe('#select', function() {
 
-    var layer, features;
-
-    beforeEach(function() {
-      features = ol.parser.GeoJSON.read(JSON.stringify({
-        'type': 'FeatureCollection',
-        'features': [{
-          'type': 'Feature',
-          'geometry': {
-            'type': 'Point',
-            'coordinates': [-1, 1]
-          }
-        }, {
-          'type': 'Feature',
-          'geometry': {
-            'type': 'Point',
-            'coordinates': [1, -1]
-          }
-        }]
-      }));
-      layer = new ol.layer.Vector({source: new ol.source.Vector({})});
-      layer.addFeatures(features);
-      select.layers_ = [layer];
-    });
-
     it('toggles selection of features', function() {
+      var layer = select.selectionLayers[0];
       select.select([features]);
-      expect(goog.object.getCount(select.layer.featureCache_.idLookup_))
-          .to.be(2);
+      expect(goog.object.getCount(layer.featureCache_.idLookup_)).to.be(2);
       select.select([features]);
-      expect(goog.object.getCount(select.layer.featureCache_.idLookup_))
-          .to.be(0);
+      expect(goog.object.getCount(layer.featureCache_.idLookup_)).to.be(0);
     });
 
     it('can append features to an existing selection', function() {
+      var layer = select.selectionLayers[0];
       select.select([[features[0]]]);
       select.select([[features[1]]]);
-      expect(goog.object.getCount(select.layer.featureCache_.idLookup_))
-          .to.be(2);
+      expect(goog.object.getCount(layer.featureCache_.idLookup_)).to.be(2);
     });
 
     it('can clear a selection before selecting new features', function() {
+      var layer = select.selectionLayers[0];
       select.select([[features[0]]], true);
       select.select([[features[1]]], true);
-      expect(goog.object.getCount(select.layer.featureCache_.idLookup_))
-          .to.be(1);
+      expect(goog.object.getCount(layer.featureCache_.idLookup_)).to.be(1);
     });
 
   });

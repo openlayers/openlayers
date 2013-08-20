@@ -39,25 +39,25 @@ ol.control.Select = function(opt_options) {
   this.active_ = false;
 
   /**
-   * @type {Object.<string, ol.Feature>}
+   * @type {Array.<Object.<string, ol.Feature>>}
    * @private
    */
-  this.featureMap_ = {};
+  this.featureMap_ = [];
 
   /**
-   * @type {ol.layer.Vector}
+   * @type {Array.<ol.layer.Vector>}
    * @protected
    */
-  this.layer = new ol.layer.Vector({
-    source: new ol.source.Vector({parser: null}),
-    temp: true
-  });
+  this.selectionLayers;
 
   /**
    * @type {Array.<ol.layer.Layer>}
    * @private
    */
-  this.layers_ = options.layers;
+  this.layers_ = goog.isDef(options.layers) ? options.layers : [];
+
+  // TODO: handle addition, removal and re-ordering of layers
+  this.createSelectionLayers_();
 
   // TODO: css/button refactoring
   var className = goog.isDef(options.className) ? options.className :
@@ -86,6 +86,23 @@ goog.inherits(ol.control.Select, ol.control.Control);
 
 
 /**
+ * Create a selection layer for each source layer.
+ * @private
+ */
+ol.control.Select.prototype.createSelectionLayers_ = function() {
+  this.selectionLayers = [];
+  for (var i = 0, ii = this.layers_.length; i < ii; ++i) {
+    this.featureMap_.push({});
+    this.selectionLayers.push(new ol.layer.Vector({
+      source: new ol.source.Vector({parser: null}),
+      style: this.layers_[i].getStyle(),
+      temp: true
+    }));
+  }
+};
+
+
+/**
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
@@ -107,10 +124,14 @@ ol.control.Select.prototype.activate = function() {
   if (!this.active_) {
     this.active_ = true;
     goog.dom.classes.add(this.element, 'active');
-    this.getMap().addLayer(this.layer);
+    var map = this.getMap();
+    for (var i = 0, ii = this.selectionLayers.length; i < ii; ++i) {
+      map.addLayer(this.selectionLayers[i]);
+    }
+
     // TODO: Implement box selection
     this.listenerKeys.push(
-        goog.events.listen(this.getMap(), ol.MapBrowserEvent.EventType.CLICK,
+        goog.events.listen(map, ol.MapBrowserEvent.EventType.CLICK,
             this.handleClick, true, this));
   }
 };
@@ -125,7 +146,10 @@ ol.control.Select.prototype.deactivate = function() {
       goog.array.forEach(this.listenerKeys, goog.events.unlistenByKey);
       this.listenerKeys.length = 0;
     }
-    this.getMap().removeLayer(this.layer);
+    var map = this.getMap();
+    for (var i = 0, ii = this.selectionLayers.length; i < ii; ++i) {
+      map.removeLayer(this.selectionLayers[i]);
+    }
     goog.dom.classes.remove(this.element, 'active');
     this.active_ = false;
   }
@@ -157,43 +181,46 @@ ol.control.Select.prototype.handleClick = function(evt) {
 ol.control.Select.prototype.select = function(featuresByLayer, clear) {
   for (var i = 0, ii = featuresByLayer.length; i < ii; ++i) {
     var layer = this.layers_[i];
+    var selectionLayer = this.selectionLayers[i];
     var features = featuresByLayer[i];
     var numFeatures = features.length;
     var selectedFeatures = [];
     var featuresToAdd = [];
     var unselectedFeatures = [];
     var featuresToRemove = [];
+    var featureMap = this.featureMap_[i];
     for (var j = 0; j < numFeatures; ++j) {
       var feature = features[j];
       var uid = goog.getUid(feature);
-      var clone = this.featureMap_[uid];
+      var clone = featureMap[uid];
       if (clone) {
         // TODO: make toggle configurable
         selectedFeatures.push(feature);
         featuresToRemove.push(clone);
-        delete this.featureMap_[uid];
+        delete featureMap[uid];
       }
       if (clear) {
-        for (var f in this.featureMap_) {
+        for (var f in featureMap) {
           unselectedFeatures.push(layer.getFeatureWithUid(f));
-          featuresToRemove.push(this.featureMap_[f]);
+          featuresToRemove.push(featureMap[f]);
         }
-        this.featureMap_ = {};
+        featureMap = {};
+        this.featureMap_[i] = featureMap;
       }
       if (!clone) {
         clone = feature.clone();
-        this.featureMap_[uid] = clone;
+        featureMap[uid] = clone;
         selectedFeatures.push(feature);
         featuresToAdd.push(clone);
       }
     }
     if (goog.isFunction(layer.setRenderIntent)) {
-      // TODO: Implement setRenderIntent for ol.layer.Vector
+      // TODO: Implement setRenderIntent for ol.Layer.Vector
       layer.setRenderIntent('hidden', selectedFeatures);
       layer.setRenderIntent('default', unselectedFeatures);
     }
-    this.layer.removeFeatures(featuresToRemove);
-    this.layer.addFeatures(featuresToAdd);
+    selectionLayer.removeFeatures(featuresToRemove);
+    selectionLayer.addFeatures(featuresToAdd);
     this.dispatchEvent(/** @type {ol.control.SelectEventObject} */ ({
       layer: layer,
       selected: selectedFeatures,
