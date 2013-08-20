@@ -8,8 +8,8 @@ goog.require('ol.layer.Vector');
 goog.require('ol.parser.ogc.GML_v3');
 goog.require('ol.source.MapQuestOpenAerial');
 goog.require('ol.source.Vector');
-goog.require('ol.style.Polygon');
-goog.require('ol.style.Rule');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 var raster = new ol.layer.TileLayer({
@@ -21,21 +21,23 @@ var vector = new ol.layer.Vector({
     parser: new ol.parser.ogc.GML_v3(),
     url: 'data/gml/topp-states-wfs.xml'
   }),
-  style: new ol.style.Style({rules: [
-    new ol.style.Rule({
-      symbolizers: [
-        new ol.style.Polygon({
-          strokeColor: '#bada55'
-        })
-      ]
-    })
-  ]})
+  style: new ol.style.Style({
+    symbolizers: [
+      new ol.style.Fill({
+        color: '#ffffff',
+        opacity: 0.25
+      }),
+      new ol.style.Stroke({
+        color: '#6666ff'
+      })
+    ]
+  })
 });
 
 var selectControl = new ol.control.Select({layers: [vector]});
 
 var map = new ol.Map({
-  controls: ol.control.defaults({}, [selectControl]),
+  controls: ol.control.defaults().extend([selectControl]),
   layers: [raster, vector],
   renderer: ol.RendererHint.CANVAS,
   target: 'map',
