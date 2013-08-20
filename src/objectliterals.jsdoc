@@ -612,23 +612,9 @@
  */
 
 /**
- * @typedef {Object} ol.style.LineOptions
- * @property {string|ol.expr.Expression|undefined} strokeColor Stroke
- *     color as hex color code.
- * @property {number|ol.expr.Expression|undefined} strokeOpacity Stroke
- *     opacity (0-1).
- * @property {number|ol.expr.Expression|undefined} strokeWidth Stroke
- *     width in pixels.
- */
-
-/**
- * @typedef {Object} ol.style.PolygonOptions
- * @property {string|ol.expr.Expression|undefined} fillColor Fill color as
- *     hex color code.
- * @property {string|ol.expr.Expression|undefined} strokeColor Stroke
- *     color as hex color code.
- * @property {number|ol.expr.Expression|undefined} strokeWidth Stroke
- *     width in pixels.
+ * @typedef {Object} ol.style.FillOptions
+ * @property {string|ol.expr.Expression|undefined} color Fill color as hex color
+ *     code.
  * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
  */
 
@@ -642,21 +628,24 @@
  * @typedef {Object} ol.style.ShapeOptions
  * @property {ol.style.ShapeType|undefined} type Type.
  * @property {number|ol.expr.Expression|undefined} size Size in pixels.
- * @property {string|ol.expr.Expression|undefined} fillColor Fill color as
- *     hex color code.
- * @property {number|ol.expr.Expression|undefined} fillOpacity Fill opacity
- *     (0-1).
- * @property {string|ol.expr.Expression|undefined} strokeColor Stroke
- *     color as hex color code.
- * @property {number|ol.expr.Expression|undefined} strokeOpacity Stroke opacity
- *     (0-1).
- * @property {number|ol.expr.Expression|undefined} strokeWidth Stroke
- *     width in pixels.
+ * @property {ol.style.Fill|undefined} fill Fill symbolizer for shape.
+ * @property {ol.style.Stroke|undefined} stroke Stroke symbolizer for shape.
+ */
+
+/**
+ * @typedef {Object} ol.style.StrokeOptions
+ * @property {string|ol.expr.Expression|undefined} color Stroke color as hex
+ *     color code.
+ * @property {number|ol.expr.Expression|undefined} opacity Stroke opacity (0-1).
+ * @property {number|ol.expr.Expression|undefined} width Stroke width in pixels.
  */
 
 /**
  * @typedef {Object} ol.style.StyleOptions
- * @property {Array.<ol.style.Rule>} rules Rules.
+ * @property {Array.<ol.style.Rule>|undefined} rules Rules.
+ * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers
+ *     (that apply if no rules are provided or where none of the provided rules
+ *     apply).
  */
 
 /**

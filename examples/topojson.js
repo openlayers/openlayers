@@ -6,8 +6,8 @@ goog.require('ol.layer.Vector');
 goog.require('ol.parser.TopoJSON');
 goog.require('ol.source.TileJSON');
 goog.require('ol.source.Vector');
-goog.require('ol.style.Polygon');
-goog.require('ol.style.Rule');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 
@@ -22,19 +22,19 @@ var vector = new ol.layer.Vector({
     url: 'data/topojson/world-110m.json',
     parser: new ol.parser.TopoJSON()
   }),
-  style: new ol.style.Style({rules: [
-    new ol.style.Rule({
-      symbolizers: [
-        new ol.style.Polygon({
-          fillColor: '#BADA55',
-          fillOpacity: 0.5,
-          strokeColor: '#FFF',
-          strokeOpacity: 1,
-          strokeWidth: 1.5
-        })
-      ]
-    })
-  ]})
+  style: new ol.style.Style({
+    symbolizers: [
+      new ol.style.Fill({
+        color: '#BADA55',
+        opacity: 0.5
+      }),
+      new ol.style.Stroke({
+        color: '#FFF',
+        opacity: 1,
+        width: 1.5
+      })
+    ]
+  })
 });
 
 var map = new ol.Map({

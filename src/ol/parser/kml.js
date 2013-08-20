@@ -27,11 +27,9 @@ goog.require('ol.parser.DomFeatureParser');
 goog.require('ol.parser.ReadFeaturesOptions');
 goog.require('ol.parser.StringFeatureParser');
 goog.require('ol.parser.XML');
+goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
-goog.require('ol.style.Line');
-goog.require('ol.style.LineLiteral');
-goog.require('ol.style.Polygon');
-goog.require('ol.style.PolygonLiteral');
+goog.require('ol.style.Stroke');
 
 
 
@@ -338,48 +336,48 @@ ol.parser.KML = function(opt_options) {
         }
       },
       'LineStyle': function(node, obj) {
-        var symbolizer = {};
-        this.readChildNodes(node, symbolizer);
-        if (symbolizer.color) {
-          symbolizer.strokeColor = symbolizer.color.color;
-          symbolizer.strokeOpacity = symbolizer.color.opacity;
+        var style = {}; // from KML
+        var options = {}; // for ol.style.Stroke
+        this.readChildNodes(node, style);
+        if (style.color) {
+          options.color = style.color.color;
+          options.opacity = style.color.opacity;
         }
-        if (symbolizer.width) {
-          symbolizer.strokeWidth = parseFloat(symbolizer.width);
+        if (style.width) {
+          options.width = parseFloat(style.width);
         }
-        delete symbolizer.color;
-        delete symbolizer.width;
         obj['ids'].push(node.getAttribute('id'));
-        obj['symbolizers'].push(new ol.style.Line(symbolizer));
+        obj['symbolizers'].push(new ol.style.Stroke(options));
       },
       'PolyStyle': function(node, obj) {
         var style = {}; // from KML
-        var symbolizer = {}; // for ol.style.Polygon
+        var options = {}; // for ol.style.Fill
         this.readChildNodes(node, style);
         // check if poly has fill
         if (!(style.fill === '0' || style.fill === 'false')) {
           if (style.color) {
-            symbolizer.fillColor = style.color.color;
-            symbolizer.fillOpacity = style.color.opacity;
+            options.color = style.color.color;
+            options.opacity = style.color.opacity;
           } else {
             // KML defaults
-            symbolizer.fillColor = '#ffffff';
-            symbolizer.fillOpacity = 1;
+            options.color = '#ffffff';
+            options.opacity = 1;
           }
+          obj['symbolizers'].push(new ol.style.Fill(options));
         }
         // check if poly has stroke
         if (!(style.outline === '0' || style.outline === 'false')) {
           if (style.color) {
-            symbolizer.strokeColor = style.color.color;
-            symbolizer.strokeOpacity = style.color.opacity;
+            options.color = style.color.color;
+            options.opacity = style.color.opacity;
           } else {
             // KML defaults
-            symbolizer.strokeColor = '#ffffff';
-            symbolizer.strokeOpacity = 1;
+            options.color = '#ffffff';
+            options.opacity = 1;
           }
+          obj['symbolizers'].push(new ol.style.Stroke(options));
         }
         obj['ids'].push(node.getAttribute('id'));
-        obj['symbolizers'].push(new ol.style.Polygon(symbolizer));
       },
       'fill': function(node, obj) {
         obj.fill = this.getChildValue(node);
@@ -418,19 +416,19 @@ ol.parser.KML = function(opt_options) {
         };
       },
       'IconStyle': function(node, obj) {
-        var symbolizer = {};
-        this.readChildNodes(node, symbolizer);
-        var scale = symbolizer.scale || 1;
+        var style = {}; // from KML
+        var options = {}; // for ol.style.Icon
+        this.readChildNodes(node, style);
+        var scale = style.scale || 1;
         // set default width and height of icon
         var width = 32 * scale;
         var height = 32 * scale;
         var x, y;
-        delete symbolizer.scale;
-        if (goog.isDef(symbolizer.icon)) {
-          var href = symbolizer.icon.href;
+        if (goog.isDef(style.icon)) {
+          var href = style.icon.href;
           if (goog.isDef(href)) {
-            var w = symbolizer.icon.w;
-            var h = symbolizer.icon.h;
+            var w = style.icon.w;
+            var h = style.icon.h;
             // Settings for Google specific icons that are 64x64
             // We set the width and height to 64 and halve the
             // scale to prevent icons from being too big
@@ -463,45 +461,42 @@ ol.parser.KML = function(opt_options) {
             if (matches) {
               var palette = matches[1];
               var file_extension = matches[2];
-              x = symbolizer.icon.x;
-              y = symbolizer.icon.y;
+              x = style.icon.x;
+              y = style.icon.y;
               var posX = x ? x / 32 : 0;
               var posY = y ? (7 - y / 32) : 7;
               var pos = posY * 8 + posX;
               href = 'http://maps.google.com/mapfiles/kml/pal' +
                   palette + '/icon' + pos + file_extension;
             }
-            symbolizer.opacity = 1;
-            symbolizer.url = href;
+            options.opacity = 1;
+            options.url = href;
           }
         }
-        if (goog.isDef(symbolizer.hotSpot)) {
-          x = symbolizer.hotSpot.x;
-          y = symbolizer.hotSpot.y;
-          var xUnits = symbolizer.hotSpot.xunits,
-              yUnits = symbolizer.hotSpot.yunits;
+        if (goog.isDef(style.hotSpot)) {
+          x = style.hotSpot.x;
+          y = style.hotSpot.y;
+          var xUnits = style.hotSpot.xunits,
+              yUnits = style.hotSpot.yunits;
           if (xUnits === 'pixels') {
-            symbolizer.graphicXOffset = -x * scale;
+            options.xOffset = -x * scale;
           } else if (xUnits === 'insetPixels') {
-            symbolizer.graphicXOffset = -width + (x * scale);
+            options.xOffset = -width + (x * scale);
           } else if (xUnits === 'fraction') {
-            symbolizer.graphicXOffset = -width * x;
+            options.xOffset = -width * x;
           }
           if (yUnits == 'pixels') {
-            symbolizer.graphicYOffset = -height + (y * scale) + 1;
+            options.yOffset = -height + (y * scale) + 1;
           } else if (yUnits == 'insetPixels') {
-            symbolizer.graphicYOffset = -(y * scale) + 1;
+            options.yOffset = -(y * scale) + 1;
           } else if (yUnits == 'fraction') {
-            symbolizer.graphicYOffset = -height * (1 - y) + 1;
+            options.yOffset = -height * (1 - y) + 1;
           }
         }
-        symbolizer.width = width;
-        symbolizer.height = height;
-        delete symbolizer.scale;
-        delete symbolizer.icon;
-        delete symbolizer.hotSpot;
+        options.width = width;
+        options.height = height;
         obj['ids'].push(node.getAttribute('id'));
-        obj['symbolizers'].push(new ol.style.Icon(symbolizer));
+        obj['symbolizers'].push(new ol.style.Icon(options));
       },
       'color': function(node, obj) {
         var kmlColor = this.getChildValue(node);
@@ -611,31 +606,27 @@ ol.parser.KML = function(opt_options) {
         }
         return node;
       },
-      '_symbolizer': function(symbolizerObj) {
-        var symbolizer = symbolizerObj.symbolizer;
+      '_symbolizer': function(obj) {
+        var symbolizer = obj.symbolizer;
         if (symbolizer instanceof ol.style.Icon) {
-          return this.writeNode('IconStyle', symbolizerObj);
-        } else if (symbolizer instanceof ol.style.Line ||
-            symbolizer instanceof ol.style.LineLiteral) {
-          return this.writeNode('LineStyle', symbolizerObj);
-        } else if (symbolizer instanceof ol.style.Polygon ||
-            symbolizer instanceof ol.style.PolygonLiteral) {
-          return this.writeNode('PolyStyle', symbolizerObj);
+          return this.writeNode('IconStyle', obj);
+        } else if (symbolizer instanceof ol.style.Stroke) {
+          return this.writeNode('LineStyle', obj);
+        } else if (symbolizer instanceof ol.style.Fill) {
+          return this.writeNode('PolyStyle', obj);
         }
       },
-      'PolyStyle': function(symbolizerObj) {
+      'PolyStyle': function(obj) {
         /**
-         * There is not a 1:1 mapping between KML PolyStyle and
-         * ol.style.Polygon.  In KML, if a PolyStyle has <outline>1</outline>
+         * In KML, if a PolyStyle has <outline>1</outline>
          * then the "current" LineStyle is used to stroke the polygon.
          */
         var node = this.createElementNS('PolyStyle');
-        if (symbolizerObj.id) {
-          this.setAttributeNS(node, null, 'id', symbolizerObj.id);
+        if (obj.id) {
+          this.setAttributeNS(node, null, 'id', obj.id);
         }
-        var symbolizer = symbolizerObj.symbolizer;
-        var literal = symbolizer instanceof ol.style.PolygonLiteral ?
-            symbolizer : symbolizer.createLiteral();
+        var literal = obj.symbolizer.createLiteral(
+            ol.geom.GeometryType.POLYGON);
         var color, opacity;
         if (literal.fillOpacity !== 0) {
           this.writeNode('fill', '1', null, node);
@@ -669,19 +660,18 @@ ol.parser.KML = function(opt_options) {
         node.appendChild(this.createTextNode(outline));
         return node;
       },
-      'LineStyle': function(symbolizerObj) {
+      'LineStyle': function(obj) {
         var node = this.createElementNS('LineStyle');
-        if (symbolizerObj.id) {
-          this.setAttributeNS(node, null, 'id', symbolizerObj.id);
+        if (obj.id) {
+          this.setAttributeNS(node, null, 'id', obj.id);
         }
-        var symbolizer = symbolizerObj.symbolizer;
-        var literal = symbolizer instanceof ol.style.LineLiteral ?
-            symbolizer : symbolizer.createLiteral();
+        var literal = obj.symbolizer.createLiteral(
+            ol.geom.GeometryType.LINESTRING);
         this.writeNode('color', {
-          color: literal.strokeColor.substring(1),
-          opacity: literal.strokeOpacity
+          color: literal.color.substring(1),
+          opacity: literal.opacity
         }, null, node);
-        this.writeNode('width', literal.strokeWidth, null, node);
+        this.writeNode('width', literal.width, null, node);
         return node;
       },
       'color': function(colorObj) {
@@ -698,10 +688,11 @@ ol.parser.KML = function(opt_options) {
         node.appendChild(this.createTextNode(width));
         return node;
       },
-      'IconStyle': function(symbolizerObj) {
+      'IconStyle': function(obj) {
         var node = this.createElementNS('IconStyle');
-        this.setAttributeNS(node, null, 'id', symbolizerObj.id);
-        this.writeNode('Icon', symbolizerObj.symbolizer.createLiteral().url,
+        this.setAttributeNS(node, null, 'id', obj.id);
+        this.writeNode('Icon',
+            obj.symbolizer.createLiteral(ol.geom.GeometryType.POINT).url,
             null, node);
         return node;
       },
@@ -723,12 +714,14 @@ ol.parser.KML = function(opt_options) {
         }
         this.writeNode('name', feature, null, node);
         this.writeNode('description', feature, null, node);
-        var literals = feature.getSymbolizerLiterals();
         if (goog.isDef(feature.get('styleUrl'))) {
           this.writeNode('styleUrl', feature, null, node);
-        } else if (goog.isDefAndNotNull(literals)) {
+        } else {
           // inline style
-          this.writeNode('_style', {symbolizers: literals}, null, node);
+          var symbolizers = feature.getSymbolizers();
+          if (!goog.isNull(symbolizers)) {
+            this.writeNode('_style', {symbolizers: symbolizers}, null, node);
+          }
         }
         this.writeNode('_geometry', feature.getGeometry(), null, node);
         return node;
@@ -995,14 +988,13 @@ ol.parser.KML.prototype.read = function(data, opt_callback) {
  * @private
  * @param {ol.Feature} feature The feature to apply the style to.
  * @param {Array} styles The style list to search in.
- * @param {Array=} opt_symbolizers Optional symbolizers.
+ * @param {Array.<ol.style.Symbolizer>=} opt_symbolizers Optional symbolizers.
  */
 ol.parser.KML.prototype.applyStyle_ = function(feature, styles,
     opt_symbolizers) {
   var symbolizers = opt_symbolizers;
   var i, ii;
-  if (feature.get('styleUrl') &&
-      feature.getSymbolizerLiterals() === null) {
+  if (feature.get('styleUrl') && feature.getSymbolizers() === null) {
     var styleUrl = feature.get('styleUrl');
     styleUrl = styleUrl.substring(styleUrl.indexOf('#') + 1);
     // look for the style and set in the feature
@@ -1016,14 +1008,6 @@ ol.parser.KML.prototype.applyStyle_ = function(feature, styles,
     }
   }
   if (goog.isDef(symbolizers)) {
-    var geom = feature.getGeometry();
-    if (geom && geom instanceof ol.geom.LineString) {
-      for (i = 0, ii = symbolizers.length; i < ii; i++) {
-        if (symbolizers[i] instanceof ol.style.Polygon) {
-          symbolizers.splice(i, 1);
-        }
-      }
-    }
     feature.setSymbolizers(symbolizers);
   }
 };
