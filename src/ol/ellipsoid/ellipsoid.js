@@ -2,7 +2,6 @@ goog.provide('ol.Ellipsoid');
 
 goog.require('goog.math');
 goog.require('ol.Coordinate');
-goog.require('ol.geom.Point');
 
 
 
@@ -194,7 +193,7 @@ ol.Ellipsoid.prototype.vincentyInitialBearing =
  * @param {number} bearing
  * @param {number=} opt_minDeltaSigma Minimum delta sigma for convergence.
  * @param {number=} opt_maxIterations Maximum iterations.
- * @return {ol.geom.Point}
+ * @return {ol.Coordinate}
  */
 ol.Ellipsoid.prototype.vincentyPoint =
     function(c, distance, bearing, opt_minDeltaSigma, opt_maxIterations) {
@@ -259,6 +258,6 @@ ol.Ellipsoid.prototype.vincentyPoint =
       sinAlpha * (sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (2 *
       cos2SigmaMSquared - 1)));
   var L2 = L1 + L;
-  return new ol.geom.Point([goog.math.toDegrees(L2),
-        goog.math.toDegrees(phi2)]);
+  return [goog.math.toDegrees(L2),
+          goog.math.toDegrees(phi2)];
 };

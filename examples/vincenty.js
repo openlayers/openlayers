@@ -62,7 +62,7 @@ for (var i = 1; i < divisionCount; i++) {
     'properties': {'name': i + ''},
     'geometry': {
       'type': 'Point',
-      'coordinates': pd.getCoordinates()
+      'coordinates': pd
     }
   });
 }
@@ -79,6 +79,8 @@ var cityLayer = new ol.layer.Vector({
   source: citySource
 });
 
+
+
 var map = new ol.Map({
   controls: ol.control.defaults({}, []),
   layers: [
@@ -90,7 +92,7 @@ var map = new ol.Map({
   renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
-    center: [0, 0],
+    center: [6000000, 6000000],
     zoom: 2
   })
 });
