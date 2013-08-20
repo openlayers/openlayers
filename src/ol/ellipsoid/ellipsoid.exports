@@ -1,1 +1,1 @@
-@exportSymbol ol.ellipsoid
+@exportProperty ol.Ellipsoid.prototype.vincentyPoint
