@@ -85,7 +85,7 @@ ol.source.Tile.prototype.findLoadedTiles = function(loadedTilesByZ,
   var tile, tileCoordKey, x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-      tileCoordKey = ol.TileCoord.getKeyZXY(z, x, y);
+      tileCoordKey = this.getKeyZXY(z, x, y);
       if (loadedTilesByZ[z] && loadedTilesByZ[z][tileCoordKey]) {
         continue;
       }
@@ -101,6 +101,18 @@ ol.source.Tile.prototype.findLoadedTiles = function(loadedTilesByZ,
     }
   }
   return fullyCovered;
+};
+
+
+/**
+ * @param {number} z Z.
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @return {string} Key.
+ * @protected
+ */
+ol.source.Tile.prototype.getKeyZXY = function(z, x, y) {
+  return ol.TileCoord.getKeyZXY(z, x, y);
 };
 
 

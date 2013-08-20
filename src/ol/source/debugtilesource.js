@@ -125,7 +125,7 @@ ol.source.TileDebug.prototype.expireCache = function(usedTiles) {
  * @inheritDoc
  */
 ol.source.TileDebug.prototype.getTile = function(z, x, y) {
-  var tileCoordKey = ol.TileCoord.getKeyZXY(z, x, y);
+  var tileCoordKey = this.getKeyZXY(z, x, y);
   if (this.tileCache_.containsKey(tileCoordKey)) {
     return /** @type {!ol.DebugTile_} */ (this.tileCache_.get(tileCoordKey));
   } else {
