@@ -10,6 +10,7 @@ goog.require('ol.parser.GeoJSON');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
+goog.require('ol.style.Fill');
 goog.require('ol.style.Rule');
 goog.require('ol.style.Shape');
 goog.require('ol.style.Style');
@@ -23,7 +24,7 @@ var style = new ol.style.Style({
     symbolizers: [
       new ol.style.Shape({
         size: 40,
-        fillColor: '#ffffff'
+        fill:new ol.style.Fill({'color':'#ffffff'})
       }),
       new ol.style.Text({
         color: '#333333',
@@ -82,7 +83,7 @@ var cityLayer = new ol.layer.Vector({
 
 
 var map = new ol.Map({
-  controls: ol.control.defaults({}, []),
+  controls: ol.control.defaults(),
   layers: [
     new ol.layer.TileLayer({
       source: new ol.source.OSM()
