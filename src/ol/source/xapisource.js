@@ -2,6 +2,7 @@ goog.provide('ol.source.XAPI');
 
 goog.require('goog.net.XhrIo');
 goog.require('ol.proj');
+goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
 
 /**
