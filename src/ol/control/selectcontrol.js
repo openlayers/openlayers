@@ -11,6 +11,7 @@ goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.interaction.condition');
 goog.require('ol.layer.Vector');
+goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.source.Vector');
 
 
@@ -195,7 +196,7 @@ ol.control.Select.prototype.select = function(featuresByLayer, clear) {
       var clone = featureMap[uid];
       if (clone) {
         // TODO: make toggle configurable
-        selectedFeatures.push(feature);
+        unselectedFeatures.push(feature);
         featuresToRemove.push(clone);
         delete featureMap[uid];
       }
@@ -210,14 +211,17 @@ ol.control.Select.prototype.select = function(featuresByLayer, clear) {
       if (!clone) {
         clone = feature.clone();
         featureMap[uid] = clone;
+        clone.renderIntent = ol.layer.VectorLayerRenderIntent.SELECTED;
         selectedFeatures.push(feature);
         featuresToAdd.push(clone);
       }
     }
     if (goog.isFunction(layer.setRenderIntent)) {
       // TODO: Implement setRenderIntent for ol.Layer.Vector
-      layer.setRenderIntent('hidden', selectedFeatures);
-      layer.setRenderIntent('default', unselectedFeatures);
+      layer.setRenderIntent(ol.layer.VectorLayerRenderIntent.HIDDEN,
+          selectedFeatures);
+      layer.setRenderIntent(ol.layer.VectorLayerRenderIntent.DEFAULT,
+          unselectedFeatures);
     }
     selectionLayer.removeFeatures(featuresToRemove);
     selectionLayer.addFeatures(featuresToAdd);

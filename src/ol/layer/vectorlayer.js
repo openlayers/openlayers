@@ -236,7 +236,9 @@ ol.layer.FeatureCache.prototype.remove = function(feature) {
  */
 ol.layer.VectorLayerEventType = {
   ADD: 'add',
-  REMOVE: 'remove'
+  CHANGE: goog.events.EventType.CHANGE,
+  REMOVE: 'remove',
+  SYMBOLIZER: 'symbolizer'
 };
 
 
@@ -336,7 +338,7 @@ ol.layer.Vector.prototype.addFeatures = function(features) {
 ol.layer.Vector.prototype.clear = function() {
   this.featureCache_.clear();
   this.dispatchEvent(/** @type {ol.layer.VectorLayerEventObject} */ ({
-    type: goog.events.EventType.CHANGE
+    type: ol.layer.VectorLayerEventType.CHANGE
   }));
 };
 
@@ -574,6 +576,30 @@ ol.layer.Vector.prototype.removeFeatures = function(features) {
     extent: extent,
     features: features,
     type: ol.layer.VectorLayerEventType.REMOVE
+  }));
+};
+
+
+/**
+ * Changes the renderIntent for an array of features.
+ * @param {string} renderIntent Render intent.
+ * @param {Array.<ol.Feature>} features Features to change the renderIntent for.
+ */
+ol.layer.Vector.prototype.setRenderIntent = function(renderIntent, features) {
+  var extent = ol.extent.createEmpty(),
+      feature, geometry;
+  for (var i = features.length - 1; i >= 0; --i) {
+    feature = features[i];
+    feature.renderIntent = renderIntent;
+    geometry = feature.getGeometry();
+    if (!goog.isNull(geometry)) {
+      ol.extent.extend(extent, geometry.getBounds());
+    }
+  }
+  this.dispatchEvent(/** @type {ol.layer.VectorLayerEventObject} */ ({
+    extent: extent,
+    features: features,
+    type: ol.layer.VectorLayerEventType.SYMBOLIZER
   }));
 };
 

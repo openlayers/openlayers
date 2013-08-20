@@ -2,6 +2,7 @@ goog.provide('ol.Feature');
 
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
+goog.require('ol.layer.VectorLayerRenderIntent');
 
 
 
@@ -33,6 +34,12 @@ ol.Feature = function(opt_values) {
    * @private
    */
   this.geometryName_;
+
+  /**
+   * The render intent for this feature.
+   * @type {ol.layer.VectorLayerRenderIntent|string}
+   */
+  this.renderIntent = ol.layer.VectorLayerRenderIntent.DEFAULT;
 
   /**
    * @type {Array.<ol.style.Symbolizer>}
