@@ -73,7 +73,7 @@ describe('ol.control.Select', function() {
       expect(map.getLayers().getLength()).to.be(0);
       select.activate();
       expect(map.getLayers().getLength()).to.be(1);
-      expect(map.getLayers().getAt(0).temp).to.be(true);
+      expect(map.getLayers().getAt(0).getTemporary()).to.be(true);
       select.deactivate();
       expect(map.getLayers().getLength()).to.be(0);
     });

@@ -303,8 +303,9 @@ ol.layer.Vector = function(options) {
   /**
    * True if this is a temporary layer.
    * @type {boolean}
+   * @private
    */
-  this.temp = goog.isDef(options.temp) ? options.temp : false;
+  this.temp_ = false;
 
 };
 goog.inherits(ol.layer.Vector, ol.layer.Layer);
@@ -340,6 +341,14 @@ ol.layer.Vector.prototype.clear = function() {
   this.dispatchEvent(/** @type {ol.layer.VectorLayerEventObject} */ ({
     type: ol.layer.VectorLayerEventType.CHANGE
   }));
+};
+
+
+/**
+ * @return {boolean} Whether this layer is temporary.
+ */
+ol.layer.Vector.prototype.getTemporary = function() {
+  return this.temp_;
 };
 
 
@@ -601,6 +610,14 @@ ol.layer.Vector.prototype.setRenderIntent = function(renderIntent, features) {
     features: features,
     type: ol.layer.VectorLayerEventType.SYMBOLIZER
   }));
+};
+
+
+/**
+ * @param {boolean} temp Whether this layer is temporary.
+ */
+ol.layer.Vector.prototype.setTemporary = function(temp) {
+  this.temp_ = temp;
 };
 
 

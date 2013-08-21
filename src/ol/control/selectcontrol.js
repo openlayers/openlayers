@@ -94,11 +94,12 @@ ol.control.Select.prototype.createSelectionLayers_ = function() {
   this.selectionLayers = [];
   for (var i = 0, ii = this.layers_.length; i < ii; ++i) {
     this.featureMap_.push({});
-    this.selectionLayers.push(new ol.layer.Vector({
+    var selectionLayer = new ol.layer.Vector({
       source: new ol.source.Vector({parser: null}),
-      style: this.layers_[i].getStyle(),
-      temp: true
-    }));
+      style: this.layers_[i].getStyle()
+    });
+    selectionLayer.setTemporary(true);
+    this.selectionLayers.push(selectionLayer);
   }
 };
 
