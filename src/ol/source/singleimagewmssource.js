@@ -1,6 +1,7 @@
 goog.provide('ol.source.SingleImageWMS');
 
 goog.require('goog.asserts');
+goog.require('goog.object');
 goog.require('ol.Image');
 goog.require('ol.ImageUrlFunction');
 goog.require('ol.extent');
@@ -17,9 +18,16 @@ goog.require('ol.source.wms');
  * @param {ol.source.SingleImageWMSOptions} options Options.
  */
 ol.source.SingleImageWMS = function(options) {
+
+  /**
+   * @private
+   * @type {Object}
+   */
+  this.params_ = options.params;
+
   var imageUrlFunction = goog.isDef(options.url) ?
       ol.ImageUrlFunction.createFromParamsFunction(
-          options.url, options.params, ol.source.wms.getUrl) :
+          options.url, this.params_, ol.source.wms.getUrl) :
       ol.ImageUrlFunction.nullImageUrlFunction;
 
   goog.base(this, {
@@ -53,6 +61,16 @@ ol.source.SingleImageWMS = function(options) {
 
 };
 goog.inherits(ol.source.SingleImageWMS, ol.source.Image);
+
+
+/**
+ * Get the user-provided params, i.e. those passed to the constructor through
+ * the "params" option, and possibly updated using the updateParams method.
+ * @return {Object} Params.
+ */
+ol.source.SingleImageWMS.prototype.getParams = function() {
+  return this.params_;
+};
 
 
 /**
@@ -96,4 +114,15 @@ ol.source.SingleImageWMS.prototype.getFeatureInfoForPixel =
       'ol.source.SingleImageWMS#imageUrlFunction does not return a url');
   ol.source.wms.getFeatureInfo(url, pixel, this.getFeatureInfoOptions_, success,
       opt_error);
+};
+
+
+/**
+ * Update the user-provided params.
+ * @param {Object} params Params.
+ */
+ol.source.SingleImageWMS.prototype.updateParams = function(params) {
+  goog.object.extend(this.params_, params);
+  this.image_ = null;
+  this.dispatchChangeEvent();
 };
