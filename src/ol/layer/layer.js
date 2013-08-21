@@ -28,6 +28,9 @@ ol.layer.Layer = function(options) {
    */
   this.source_ = options.source;
 
+  goog.events.listen(this.source_, goog.events.EventType.CHANGE,
+      this.handleSourceChange_, false, this);
+
   if (!this.source_.isReady()) {
     goog.events.listenOnce(this.source_, goog.events.EventType.LOAD,
         this.handleSourceLoad_, false, this);
@@ -75,6 +78,14 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_obj) {
  */
 ol.layer.Layer.prototype.getSource = function() {
   return this.source_;
+};
+
+
+/**
+ * @private
+ */
+ol.layer.Layer.prototype.handleSourceChange_ = function() {
+  this.dispatchChangeEvent();
 };
 
 
