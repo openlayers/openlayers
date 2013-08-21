@@ -5,6 +5,7 @@ goog.provide('ol.source.TileWMS');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math');
+goog.require('goog.object');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
@@ -33,12 +34,18 @@ ol.source.TileWMS = function(options) {
     urls = ol.TileUrlFunction.expandUrl(options.url);
   }
 
+  /**
+   * @private
+   * @type {Object}
+   */
+  this.params_ = options.params;
+
   if (goog.isDef(urls)) {
     var tileUrlFunctions = goog.array.map(
         urls, function(url) {
           return ol.TileUrlFunction.createFromParamsFunction(
-              url, options.params, ol.source.wms.getUrl);
-        });
+              url, this.params_, ol.source.wms.getUrl);
+        }, this);
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         tileUrlFunctions);
   }
@@ -100,6 +107,25 @@ goog.inherits(ol.source.TileWMS, ol.source.TileImage);
 /**
  * @inheritDoc
  */
+ol.source.TileWMS.prototype.getKeyZXY = function(z, x, y) {
+  return goog.object.getValues(this.params_).join('/') +
+      goog.base(this, 'getKeyZXY', z, x, y);
+};
+
+
+/**
+ * Get the user-provided params, i.e. those passed to the constructor through
+ * the "params" option, and possibly updated using the updateParams method.
+ * @return {Object} Params.
+ */
+ol.source.TileWMS.prototype.getParams = function() {
+  return this.params_;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.source.TileWMS.prototype.getFeatureInfoForPixel =
     function(pixel, map, success, opt_error) {
   var coord = map.getCoordinateFromPixel(pixel),
@@ -117,4 +143,14 @@ ol.source.TileWMS.prototype.getFeatureInfoForPixel =
   ol.source.wms.getFeatureInfo(url,
       [pixel[0] - offset[0], pixel[1] - offset[1]], this.getFeatureInfoOptions_,
       success, opt_error);
+};
+
+
+/**
+ * Update the user-provided params.
+ * @param {Object} params Params.
+ */
+ol.source.TileWMS.prototype.updateParams = function(params) {
+  goog.object.extend(this.params_, params);
+  this.dispatchChangeEvent();
 };
