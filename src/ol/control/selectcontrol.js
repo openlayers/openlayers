@@ -6,6 +6,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.dom.classes');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('ol.CollectionEventType');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.control.Control');
 goog.require('ol.css');
@@ -94,11 +95,13 @@ ol.control.Select.prototype.createSelectionLayers_ = function() {
   this.selectionLayers = [];
   for (var i = 0, ii = this.layers_.length; i < ii; ++i) {
     this.featureMap_.push({});
+    var layer = this.layers_[i];
     var selectionLayer = new ol.layer.Vector({
       source: new ol.source.Vector({parser: null}),
-      style: this.layers_[i].getStyle()
+      style: layer.getStyle()
     });
     selectionLayer.setTemporary(true);
+    selectionLayer.bindTo('visible', layer);
     this.selectionLayers.push(selectionLayer);
   }
 };
@@ -168,11 +171,35 @@ ol.control.Select.prototype.handleClick = function(evt) {
     this.select(featuresByLayer, clear);
   }
 
-  this.getMap().getFeatures({
-    layers: this.layers_,
+  var map = this.getMap();
+  map.getFeatures({
+    layers: goog.array.filter(this.layers_, this.layerFilterFunction, this),
     pixel: evt.getPixel(),
     success: goog.bind(select, this)
   });
+};
+
+
+/**
+ * @param {ol.CollectionEvent} evt Event.
+ */
+ol.control.Select.prototype.handleLayerCollectionChange = function(evt) {
+  var layer = evt.elem;
+  var index = goog.array.indexOf(this.layers_, layer);
+  if (index !== -1) {
+    this.selectionLayers[index].setVisible(
+        evt.type === ol.CollectionEventType.ADD);
+  }
+};
+
+
+/**
+ * @param {ol.layer.Layer} layer Layer.
+ * @param {number} index Index.
+ * @return {boolean} Whether to include the layer.
+ */
+ol.control.Select.prototype.layerFilterFunction = function(layer, index) {
+  return this.selectionLayers[index].getVisible();
 };
 
 
@@ -233,4 +260,16 @@ ol.control.Select.prototype.select = function(featuresByLayer, clear) {
       unselected: unselectedFeatures
     }));
   }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.control.Select.prototype.setMap = function(map) {
+  goog.base(this, 'setMap', map);
+  var layers = map.getLayers();
+  goog.events.listen(layers,
+      [ol.CollectionEventType.ADD, ol.CollectionEventType.REMOVE],
+      this.handleLayerCollectionChange, false, this);
 };
