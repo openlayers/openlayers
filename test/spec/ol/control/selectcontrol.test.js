@@ -97,24 +97,24 @@ describe('ol.control.Select', function() {
   describe('#select', function() {
 
     it('toggles selection of features', function() {
-      var layer = select.selectionLayers[0];
-      select.select([features]);
+      var layer = select.selectionLayers[goog.getUid(select.layers_[0])];
+      select.select([features], select.layers_);
       expect(goog.object.getCount(layer.featureCache_.idLookup_)).to.be(2);
-      select.select([features]);
+      select.select([features], select.layers_);
       expect(goog.object.getCount(layer.featureCache_.idLookup_)).to.be(0);
     });
 
     it('can append features to an existing selection', function() {
-      var layer = select.selectionLayers[0];
-      select.select([[features[0]]]);
-      select.select([[features[1]]]);
+      var layer = select.selectionLayers[goog.getUid(select.layers_[0])];
+      select.select([[features[0]]], select.layers_);
+      select.select([[features[1]]], select.layers_);
       expect(goog.object.getCount(layer.featureCache_.idLookup_)).to.be(2);
     });
 
     it('can clear a selection before selecting new features', function() {
-      var layer = select.selectionLayers[0];
-      select.select([[features[0]]], true);
-      select.select([[features[1]]], true);
+      var layer = select.selectionLayers[goog.getUid(select.layers_[0])];
+      select.select([[features[0]]], select.layers_, true);
+      select.select([[features[1]]], select.layers_, true);
       expect(goog.object.getCount(layer.featureCache_.idLookup_)).to.be(1);
     });
 

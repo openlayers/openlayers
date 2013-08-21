@@ -47,7 +47,7 @@ ol.control.Select = function(opt_options) {
   this.featureMap_ = [];
 
   /**
-   * @type {Array.<ol.layer.Vector>}
+   * @type {Object.<*, ol.layer.Vector>}
    * @protected
    */
   this.selectionLayers;
@@ -91,7 +91,7 @@ goog.inherits(ol.control.Select, ol.control.Control);
  * @private
  */
 ol.control.Select.prototype.createSelectionLayers_ = function() {
-  this.selectionLayers = [];
+  this.selectionLayers = {};
   for (var i = 0, ii = this.layers_.length; i < ii; ++i) {
     this.featureMap_.push({});
     var layer = this.layers_[i];
@@ -101,7 +101,7 @@ ol.control.Select.prototype.createSelectionLayers_ = function() {
     });
     selectionLayer.setTemporary(true);
     selectionLayer.bindTo('visible', layer);
-    this.selectionLayers.push(selectionLayer);
+    this.selectionLayers[goog.getUid(layer)] = selectionLayer;
   }
 };
 
@@ -129,7 +129,7 @@ ol.control.Select.prototype.activate = function() {
     this.active_ = true;
     goog.dom.classes.add(this.element, 'active');
     var map = this.getMap();
-    for (var i = 0, ii = this.selectionLayers.length; i < ii; ++i) {
+    for (var i in this.selectionLayers) {
       map.addLayer(this.selectionLayers[i]);
     }
 
@@ -151,7 +151,7 @@ ol.control.Select.prototype.deactivate = function() {
       this.listenerKeys.length = 0;
     }
     var map = this.getMap();
-    for (var i = 0, ii = this.selectionLayers.length; i < ii; ++i) {
+    for (var i in this.selectionLayers) {
       map.removeLayer(this.selectionLayers[i]);
     }
     goog.dom.classes.remove(this.element, 'active');
@@ -164,15 +164,16 @@ ol.control.Select.prototype.deactivate = function() {
  * @param {ol.MapBrowserEvent} evt Event.
  */
 ol.control.Select.prototype.handleClick = function(evt) {
+  var layers = goog.array.filter(this.layers_, this.layerFilterFunction, this);
   var clear = !ol.interaction.condition.shiftKeyOnly(evt.browserEvent);
 
   function select(featuresByLayer) {
-    this.select(featuresByLayer, clear);
+    this.select(featuresByLayer, layers, clear);
   }
 
   var map = this.getMap();
   map.getFeatures({
-    layers: goog.array.filter(this.layers_, this.layerFilterFunction, this),
+    layers: layers,
     pixel: evt.getPixel(),
     success: goog.bind(select, this)
   });
@@ -183,11 +184,10 @@ ol.control.Select.prototype.handleClick = function(evt) {
  * @param {ol.CollectionEvent} evt Event.
  */
 ol.control.Select.prototype.handleLayerCollectionChange = function(evt) {
-  var layer = evt.elem;
-  var index = goog.array.indexOf(this.layers_, layer);
-  if (index !== -1) {
-    this.selectionLayers[index].setVisible(
-        evt.type === ol.CollectionEventType.ADD);
+  var layer = /** @type {ol.layer.Layer} */ (evt.elem);
+  var selectionLayer = this.selectionLayers[goog.getUid(layer)];
+  if (goog.isDef(selectionLayer)) {
+    selectionLayer.setVisible(evt.type === ol.CollectionEventType.ADD);
   }
 };
 
@@ -198,18 +198,20 @@ ol.control.Select.prototype.handleLayerCollectionChange = function(evt) {
  * @return {boolean} Whether to include the layer.
  */
 ol.control.Select.prototype.layerFilterFunction = function(layer, index) {
-  return this.selectionLayers[index].getVisible();
+  return this.selectionLayers[goog.getUid(layer)].getVisible();
 };
 
 
 /**
  * @param {Array.<Array.<ol.Feature>>} featuresByLayer Features by layer.
+ * @param {Array.<ol.layer.Layer>} layers The queried layers.
  * @param {boolean} clear Whether the current layer content should be cleared.
  */
-ol.control.Select.prototype.select = function(featuresByLayer, clear) {
+ol.control.Select.prototype.select = function(featuresByLayer, layers, clear) {
   for (var i = 0, ii = featuresByLayer.length; i < ii; ++i) {
-    var layer = this.layers_[i];
-    var selectionLayer = this.selectionLayers[i];
+    var layer = layers[i];
+    var selectionLayer =
+        this.selectionLayers[goog.getUid(layer)];
     var features = featuresByLayer[i];
     var numFeatures = features.length;
     var selectedFeatures = [];
