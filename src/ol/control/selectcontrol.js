@@ -58,7 +58,6 @@ ol.control.Select = function(opt_options) {
    */
   this.layers_ = goog.isDef(options.layers) ? options.layers : [];
 
-  // TODO: handle addition, removal and re-ordering of layers
   this.createSelectionLayers_();
 
   // TODO: css/button refactoring
@@ -245,7 +244,6 @@ ol.control.Select.prototype.select = function(featuresByLayer, clear) {
       }
     }
     if (goog.isFunction(layer.setRenderIntent)) {
-      // TODO: Implement setRenderIntent for ol.Layer.Vector
       layer.setRenderIntent(ol.layer.VectorLayerRenderIntent.HIDDEN,
           selectedFeatures);
       layer.setRenderIntent(ol.layer.VectorLayerRenderIntent.DEFAULT,
