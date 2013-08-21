@@ -1,71 +1,5 @@
 goog.provide('ol.test.style.Text');
 
-describe('ol.style.TextLiteral', function() {
-
-  describe('#equals()', function() {
-
-    it('identifies equal literals', function() {
-      var literal = new ol.style.TextLiteral({
-        color: '#ff0000',
-        fontFamily: 'Arial',
-        fontSize: 11,
-        text: 'Test',
-        opacity: 0.5
-      });
-      var equalLiteral = new ol.style.TextLiteral({
-        color: '#ff0000',
-        fontFamily: 'Arial',
-        fontSize: 11,
-        text: 'Test',
-        opacity: 0.5
-      });
-      var differentLiteral1 = new ol.style.TextLiteral({
-        color: '#0000ff',
-        fontFamily: 'Arial',
-        fontSize: 11,
-        text: 'Test',
-        opacity: 0.5
-      });
-      var differentLiteral2 = new ol.style.TextLiteral({
-        color: '#ff0000',
-        fontFamily: 'Dingbats',
-        fontSize: 11,
-        text: 'Test',
-        opacity: 0.5
-      });
-      var differentLiteral3 = new ol.style.TextLiteral({
-        color: '#ff0000',
-        fontFamily: 'Arial',
-        fontSize: 12,
-        text: 'Test',
-        opacity: 0.5
-      });
-      var differentLiteral4 = new ol.style.TextLiteral({
-        color: '#ff0000',
-        fontFamily: 'Arial',
-        fontSize: 11,
-        text: 'Test',
-        opacity: 0.6
-      });
-      var equalLiteral2 = new ol.style.TextLiteral({
-        color: '#ff0000',
-        fontFamily: 'Arial',
-        fontSize: 11,
-        text: 'Text is not compared for equality',
-        opacity: 0.5
-      });
-      expect(literal.equals(equalLiteral)).to.be(true);
-      expect(literal.equals(differentLiteral1)).to.be(false);
-      expect(literal.equals(differentLiteral2)).to.be(false);
-      expect(literal.equals(differentLiteral3)).to.be(false);
-      expect(literal.equals(differentLiteral4)).to.be(false);
-      expect(literal.equals(equalLiteral2)).to.be(true);
-    });
-
-  });
-
-});
-
 describe('ol.style.Text', function() {
 
   describe('constructor', function() {
@@ -131,7 +65,7 @@ describe('ol.style.Text', function() {
         opacity: ol.expr.parse('0.6')
       });
 
-      var literal = symbolizer.createLiteral();
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.TextLiteral);
       expect(literal.color).to.be('#ff0000');
       expect(literal.fontFamily).to.be('Arial');
@@ -145,7 +79,7 @@ describe('ol.style.Text', function() {
         text: 'Test'
       });
 
-      var literal = symbolizer.createLiteral();
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.TextLiteral);
       expect(literal.color).to.be('#000');
       expect(literal.fontFamily).to.be('sans-serif');
@@ -363,5 +297,6 @@ goog.require('ol.Feature');
 goog.require('ol.expr');
 goog.require('ol.expr.Literal');
 goog.require('ol.expr.Literal');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.style.Text');
 goog.require('ol.style.TextLiteral');

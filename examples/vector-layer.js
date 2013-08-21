@@ -7,8 +7,9 @@ goog.require('ol.layer.Vector');
 goog.require('ol.parser.GeoJSON');
 goog.require('ol.source.MapQuestOpenAerial');
 goog.require('ol.source.Vector');
-goog.require('ol.style.Polygon');
+goog.require('ol.style.Fill');
 goog.require('ol.style.Rule');
+goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 
@@ -30,11 +31,13 @@ var vector = new ol.layer.Vector({
   style: new ol.style.Style({rules: [
     new ol.style.Rule({
       symbolizers: [
-        new ol.style.Polygon({
-          strokeColor: '#319FD3',
-          strokeOpacity: 1,
-          fillColor: '#ffffff',
-          fillOpacity: 0.6
+        new ol.style.Fill({
+          color: '#ffffff',
+          opacity: 0.6
+        }),
+        new ol.style.Stroke({
+          color: '#319FD3',
+          opacity: 1
         })
       ]
     }),

@@ -1,5 +1,6 @@
 @exportSymbol ol.Collection
 @exportProperty ol.Collection.prototype.clear
+@exportProperty ol.Collection.prototype.extend
 @exportProperty ol.Collection.prototype.forEach
 @exportProperty ol.Collection.prototype.getAt
 @exportProperty ol.Collection.prototype.getLength

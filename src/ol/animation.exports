@@ -1,4 +1,4 @@
-@exportSymbol ol.animation.bounce
-@exportSymbol ol.animation.pan
-@exportSymbol ol.animation.rotate
-@exportSymbol ol.animation.zoom
+@exportFunction ol.animation.bounce ol.animation.BounceOptions ol.PreRenderFunction
+@exportFunction ol.animation.pan ol.animation.PanOptions ol.PreRenderFunction
+@exportFunction ol.animation.rotate ol.animation.RotateOptions ol.PreRenderFunction
+@exportFunction ol.animation.zoom ol.animation.ZoomOptions ol.PreRenderFunction

@@ -384,15 +384,21 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
   var uniqueLiterals = {},
       featuresBySymbolizer = [],
       style = this.style_,
-      i, j, l, feature, literals, numLiterals, literal, uniqueLiteral, key,
-      item;
+      i, j, l, feature, symbolizers, literals, numLiterals, literal,
+      uniqueLiteral, key, item;
   for (i in features) {
     feature = features[i];
-    literals = feature.getSymbolizerLiterals();
-    if (goog.isNull(literals)) {
-      literals = goog.isNull(style) ?
-          ol.style.Style.applyDefaultStyle(feature) :
-          style.apply(feature);
+    // feature level symbolizers take precedence
+    symbolizers = feature.getSymbolizers();
+    if (!goog.isNull(symbolizers)) {
+      literals = ol.style.Style.createLiterals(symbolizers, feature);
+    } else {
+      if (!goog.isNull(style)) {
+        // layer style second
+        literals = style.createLiterals(feature);
+      } else {
+        literals = ol.style.Style.defaults.createLiterals(feature);
+      }
     }
     numLiterals = literals.length;
     for (j = 0; j < numLiterals; ++j) {
@@ -409,7 +415,7 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
         uniqueLiterals[key] = featuresBySymbolizer.length;
         featuresBySymbolizer.push([
           /** @type {Array.<ol.Feature>} */ ([]),
-          /** @type {ol.style.SymbolizerLiteral} */ (literal),
+          /** @type {ol.style.Literal} */ (literal),
           /** @type {Array} */ ([])
         ]);
       }

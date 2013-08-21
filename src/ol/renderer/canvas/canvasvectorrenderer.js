@@ -19,11 +19,11 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.style.IconLiteral');
 goog.require('ol.style.LineLiteral');
+goog.require('ol.style.Literal');
 goog.require('ol.style.PointLiteral');
 goog.require('ol.style.PolygonLiteral');
 goog.require('ol.style.ShapeLiteral');
 goog.require('ol.style.ShapeType');
-goog.require('ol.style.SymbolizerLiteral');
 goog.require('ol.style.TextLiteral');
 goog.require('ol.style.TextPinLiteral');
 
@@ -102,7 +102,7 @@ ol.renderer.canvas.VectorRenderer.prototype.getMaxSymbolSize = function() {
 /**
  * @param {ol.geom.GeometryType} type Geometry type.
  * @param {Array.<ol.Feature>} features Array of features.
- * @param {ol.style.SymbolizerLiteral} symbolizer Symbolizer.
+ * @param {ol.style.Literal} symbolizer Symbolizer.
  * @param {Array} data Additional data.
  * @return {boolean} true if deferred, false if rendered.
  */
@@ -167,9 +167,9 @@ ol.renderer.canvas.VectorRenderer.prototype.renderLineStringFeatures_ =
       i, ii, feature, id, currentSize, geometry, components, j, jj, line, dim,
       k, kk, vec, strokeSize;
 
-  context.globalAlpha = symbolizer.strokeOpacity;
-  context.strokeStyle = symbolizer.strokeColor;
-  context.lineWidth = symbolizer.strokeWidth;
+  context.globalAlpha = symbolizer.opacity;
+  context.strokeStyle = symbolizer.color;
+  context.lineWidth = symbolizer.width;
   context.lineCap = 'round'; // TODO: accept this as a symbolizer property
   context.lineJoin = 'round'; // TODO: accept this as a symbolizer property
   strokeSize = context.lineWidth * this.inverseScale_;

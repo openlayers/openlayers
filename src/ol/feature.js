@@ -84,18 +84,11 @@ ol.Feature.prototype.getGeometry = function() {
 
 
 /**
- * @return {Array.<ol.style.SymbolizerLiteral>} Symbolizer literals.
+ * Get any symbolizers set directly on the feature.
+ * @return {Array.<ol.style.Symbolizer>} Symbolizers (or null if none).
  */
-ol.Feature.prototype.getSymbolizerLiterals = function() {
-  var symbolizerLiterals = null;
-  if (!goog.isNull(this.symbolizers_)) {
-    var numSymbolizers = this.symbolizers_.length;
-    symbolizerLiterals = new Array(numSymbolizers);
-    for (var i = 0; i < numSymbolizers; ++i) {
-      symbolizerLiterals[i] = this.symbolizers_[i].createLiteral(this);
-    }
-  }
-  return symbolizerLiterals;
+ol.Feature.prototype.getSymbolizers = function() {
+  return this.symbolizers_;
 };
 
 
