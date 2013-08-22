@@ -46,7 +46,9 @@ var vector = new ol.layer.Vector({
   })
 });
 
-var selectControl = new ol.control.Select({layers: [vector]});
+var selectControl = new ol.control.Select({
+  layerFilter: function(layer) { return layer === vector; }
+});
 
 var map = new ol.Map({
   controls: ol.control.defaults().extend([selectControl]),

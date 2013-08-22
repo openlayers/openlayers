@@ -6,7 +6,6 @@ goog.require('goog.dom.TagName');
 goog.require('goog.dom.classes');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('ol.CollectionEventType');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.control.Control');
 goog.require('ol.css');
@@ -41,24 +40,25 @@ ol.control.Select = function(opt_options) {
   this.active_ = false;
 
   /**
-   * @type {Array.<Object.<string, ol.Feature>>}
+   * Mapping between original features and cloned features on selection layers.
+   * @type {Object.<*,Object.<string,ol.Feature>>}
    * @private
    */
-  this.featureMap_ = [];
+  this.featureMap_ = {};
 
   /**
-   * @type {Object.<*, ol.layer.Vector>}
+   * Mapping between original layers and selection layers.
+   * @type {Object.<*,ol.layer.Vector>}
    * @protected
    */
-  this.selectionLayers;
+  this.selectionLayers = {};
 
   /**
-   * @type {Array.<ol.layer.Layer>}
+   * @type {null|function(ol.layer.Layer):boolean}
    * @private
    */
-  this.layers_ = goog.isDef(options.layers) ? options.layers : [];
-
-  this.createSelectionLayers_();
+  this.layerFilter_ = goog.isDef(options.layerFilter) ?
+      options.layerFilter : null;
 
   // TODO: css/button refactoring
   var className = goog.isDef(options.className) ? options.className :
@@ -84,26 +84,6 @@ ol.control.Select = function(opt_options) {
   });
 };
 goog.inherits(ol.control.Select, ol.control.Control);
-
-
-/**
- * Create a selection layer for each source layer.
- * @private
- */
-ol.control.Select.prototype.createSelectionLayers_ = function() {
-  this.selectionLayers = {};
-  for (var i = 0, ii = this.layers_.length; i < ii; ++i) {
-    this.featureMap_.push({});
-    var layer = this.layers_[i];
-    var selectionLayer = new ol.layer.Vector({
-      source: new ol.source.Vector({parser: null}),
-      style: layer.getStyle()
-    });
-    selectionLayer.setTemporary(true);
-    selectionLayer.bindTo('visible', layer);
-    this.selectionLayers[goog.getUid(layer)] = selectionLayer;
-  }
-};
 
 
 /**
@@ -164,41 +144,22 @@ ol.control.Select.prototype.deactivate = function() {
  * @param {ol.MapBrowserEvent} evt Event.
  */
 ol.control.Select.prototype.handleClick = function(evt) {
-  var layers = goog.array.filter(this.layers_, this.layerFilterFunction, this);
+  var map = this.getMap();
+  var layers = map.getLayerGroup().getLayersArray();
+  if (!goog.isNull(this.layerFilter_)) {
+    layers = goog.array.filter(layers, this.layerFilter_);
+  }
   var clear = !ol.interaction.condition.shiftKeyOnly(evt.browserEvent);
 
   function select(featuresByLayer) {
     this.select(featuresByLayer, layers, clear);
   }
 
-  var map = this.getMap();
   map.getFeatures({
     layers: layers,
     pixel: evt.getPixel(),
     success: goog.bind(select, this)
   });
-};
-
-
-/**
- * @param {ol.CollectionEvent} evt Event.
- */
-ol.control.Select.prototype.handleLayerCollectionChange = function(evt) {
-  var layer = /** @type {ol.layer.Layer} */ (evt.elem);
-  var selectionLayer = this.selectionLayers[goog.getUid(layer)];
-  if (goog.isDef(selectionLayer)) {
-    selectionLayer.setVisible(evt.type === ol.CollectionEventType.ADD);
-  }
-};
-
-
-/**
- * @param {ol.layer.Layer} layer Layer.
- * @param {number} index Index.
- * @return {boolean} Whether to include the layer.
- */
-ol.control.Select.prototype.layerFilterFunction = function(layer, index) {
-  return this.selectionLayers[goog.getUid(layer)].getVisible();
 };
 
 
@@ -210,24 +171,35 @@ ol.control.Select.prototype.layerFilterFunction = function(layer, index) {
 ol.control.Select.prototype.select = function(featuresByLayer, layers, clear) {
   for (var i = 0, ii = featuresByLayer.length; i < ii; ++i) {
     var layer = layers[i];
-    var selectionLayer =
-        this.selectionLayers[goog.getUid(layer)];
+    var layerId = goog.getUid(layer);
+    var selectionLayer = this.selectionLayers[layerId];
+    if (!goog.isDef(selectionLayer)) {
+      selectionLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({parser: null}),
+        style: layer.getStyle()
+      });
+      selectionLayer.setTemporary(true);
+      this.getMap().addLayer(selectionLayer);
+      this.selectionLayers[layerId] = selectionLayer;
+      this.featureMap_[layerId] = {};
+    }
+
     var features = featuresByLayer[i];
     var numFeatures = features.length;
     var selectedFeatures = [];
     var featuresToAdd = [];
     var unselectedFeatures = [];
     var featuresToRemove = [];
-    var featureMap = this.featureMap_[i];
+    var featureMap = this.featureMap_[layerId];
     for (var j = 0; j < numFeatures; ++j) {
       var feature = features[j];
-      var uid = goog.getUid(feature);
-      var clone = featureMap[uid];
+      var featureId = goog.getUid(feature);
+      var clone = featureMap[featureId];
       if (clone) {
         // TODO: make toggle configurable
         unselectedFeatures.push(feature);
         featuresToRemove.push(clone);
-        delete featureMap[uid];
+        delete featureMap[featureId];
       }
       if (clear) {
         for (var f in featureMap) {
@@ -235,11 +207,11 @@ ol.control.Select.prototype.select = function(featuresByLayer, layers, clear) {
           featuresToRemove.push(featureMap[f]);
         }
         featureMap = {};
-        this.featureMap_[i] = featureMap;
+        this.featureMap_[layerId] = featureMap;
       }
       if (!clone) {
         clone = feature.clone();
-        featureMap[uid] = clone;
+        featureMap[featureId] = clone;
         clone.renderIntent = ol.layer.VectorLayerRenderIntent.SELECTED;
         selectedFeatures.push(feature);
         featuresToAdd.push(clone);
@@ -260,16 +232,4 @@ ol.control.Select.prototype.select = function(featuresByLayer, layers, clear) {
       unselected: unselectedFeatures
     }));
   }
-};
-
-
-/**
- * @inheritDoc
- */
-ol.control.Select.prototype.setMap = function(map) {
-  goog.base(this, 'setMap', map);
-  var layers = map.getLayers();
-  goog.events.listen(layers,
-      [ol.CollectionEventType.ADD, ol.CollectionEventType.REMOVE],
-      this.handleLayerCollectionChange, false, this);
 };

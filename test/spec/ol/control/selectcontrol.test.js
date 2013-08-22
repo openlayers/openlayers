@@ -1,7 +1,7 @@
 goog.provide('ol.test.control.Select');
 
 describe('ol.control.Select', function() {
-  var map, target, select, features;
+  var map, target, select, vector, features;
 
   beforeEach(function() {
     target = document.createElement('div');
@@ -27,10 +27,10 @@ describe('ol.control.Select', function() {
         }
       }]
     }));
-    var layer = new ol.layer.Vector({source: new ol.source.Vector({})});
-    layer.addFeatures(features);
+    vector = new ol.layer.Vector({source: new ol.source.Vector({})});
+    vector.addFeatures(features);
     select = new ol.control.Select({
-      layers: [layer],
+      layerFilter: function(layer) { return layer === vector; },
       map: map
     });
   });
@@ -69,9 +69,11 @@ describe('ol.control.Select', function() {
   });
 
   describe('#activate and #deactivate', function() {
-    it('adds a temp layer to the map only when active', function() {
+    it('adds a temp layer to the map only when active and in use', function() {
       expect(map.getLayers().getLength()).to.be(0);
       select.activate();
+      expect(map.getLayers().getLength()).to.be(0);
+      select.select([features[0]], [vector]);
       expect(map.getLayers().getLength()).to.be(1);
       expect(map.getLayers().getAt(0).getTemporary()).to.be(true);
       select.deactivate();
@@ -97,24 +99,24 @@ describe('ol.control.Select', function() {
   describe('#select', function() {
 
     it('toggles selection of features', function() {
-      var layer = select.selectionLayers[goog.getUid(select.layers_[0])];
-      select.select([features], select.layers_);
+      select.select([features], [vector]);
+      var layer = select.selectionLayers[goog.getUid(vector)];
       expect(goog.object.getCount(layer.featureCache_.idLookup_)).to.be(2);
-      select.select([features], select.layers_);
+      select.select([features], [vector]);
       expect(goog.object.getCount(layer.featureCache_.idLookup_)).to.be(0);
     });
 
     it('can append features to an existing selection', function() {
-      var layer = select.selectionLayers[goog.getUid(select.layers_[0])];
-      select.select([[features[0]]], select.layers_);
-      select.select([[features[1]]], select.layers_);
+      select.select([[features[0]]], [vector]);
+      select.select([[features[1]]], [vector]);
+      var layer = select.selectionLayers[goog.getUid(vector)];
       expect(goog.object.getCount(layer.featureCache_.idLookup_)).to.be(2);
     });
 
     it('can clear a selection before selecting new features', function() {
-      var layer = select.selectionLayers[goog.getUid(select.layers_[0])];
-      select.select([[features[0]]], select.layers_, true);
-      select.select([[features[1]]], select.layers_, true);
+      select.select([[features[0]]], [vector], true);
+      select.select([[features[1]]], [vector], true);
+      var layer = select.selectionLayers[goog.getUid(vector)];
       expect(goog.object.getCount(layer.featureCache_.idLookup_)).to.be(1);
     });
 
