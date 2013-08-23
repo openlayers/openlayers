@@ -268,6 +268,7 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
 });
 
 goog.require('goog.dom.xml');
+goog.require('ol.Feature');
 goog.require('ol.expr');
 goog.require('ol.expr.Call');
 goog.require('ol.expr.Comparison');
