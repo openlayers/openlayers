@@ -75,17 +75,80 @@ describe('ol.style.Icon', function() {
       expect(literal.url).to.be('http://example.com/1.png');
     });
 
-    it('applies default type if none provided', function() {
+    it('applies default opacity if none provided', function() {
       var symbolizer = new ol.style.Icon({
-        height: ol.expr.parse('10'),
-        width: ol.expr.parse('20'),
-        url: ol.expr.parse('"http://example.com/1.png"')
+        height: 10,
+        width: 20,
+        url: 'http://example.com/1.png'
       });
 
       var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.opacity).to.be(1);
+    });
+
+    it('applies default rotation if none provided', function() {
+      var symbolizer = new ol.style.Icon({
+        height: 10,
+        width: 20,
+        url: 'http://example.com/1.png'
+      });
+
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.rotation).to.be(0);
+    });
+
+    it('casts opacity to number', function() {
+      var symbolizer = new ol.style.Icon({
+        opacity: ol.expr.parse('opacity'),
+        height: 10,
+        width: 20,
+        url: 'http://example.com/1.png'
+      });
+
+      var feature = new ol.Feature({
+        opacity: '0.53',
+        geometry: new ol.geom.Point([1, 2])
+      });
+
+      var literal = symbolizer.createLiteral(feature);
+      expect(literal).to.be.a(ol.style.IconLiteral);
+      expect(literal.opacity).to.be(0.53);
+    });
+
+    it('casts width to number', function() {
+      var symbolizer = new ol.style.Icon({
+        width: ol.expr.parse('width'),
+        height: 10,
+        url: 'http://example.com/1.png'
+      });
+
+      var feature = new ol.Feature({
+        width: '42',
+        geometry: new ol.geom.Point([1, 2])
+      });
+
+      var literal = symbolizer.createLiteral(feature);
+      expect(literal).to.be.a(ol.style.IconLiteral);
+      expect(literal.width).to.be(42);
+    });
+
+    it('casts height to number', function() {
+      var symbolizer = new ol.style.Icon({
+        height: ol.expr.parse('height'),
+        width: 10,
+        url: 'http://example.com/1.png'
+      });
+
+      var feature = new ol.Feature({
+        height: '42',
+        geometry: new ol.geom.Point([1, 2])
+      });
+
+      var literal = symbolizer.createLiteral(feature);
+      expect(literal).to.be.a(ol.style.IconLiteral);
+      expect(literal.height).to.be(42);
     });
 
   });
