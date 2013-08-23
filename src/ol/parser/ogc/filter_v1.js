@@ -12,8 +12,6 @@ goog.require('ol.expr.Identifier');
 goog.require('ol.expr.Literal');
 goog.require('ol.expr.Logical');
 goog.require('ol.expr.LogicalOp');
-goog.require('ol.expr.Math');
-goog.require('ol.expr.MathOp');
 goog.require('ol.expr.Not');
 goog.require('ol.expr.functions');
 goog.require('ol.parser.XML');
@@ -64,13 +62,9 @@ ol.parser.ogc.Filter_v1 = function() {
         if (num === 1) {
           expr = expressions[0];
         } else {
-          expr = new ol.expr.Literal('');
-          if (num > 1) {
-            var add = ol.expr.MathOp.ADD;
-            for (var i = 0; i < num; ++i) {
-              expr = new ol.expr.Math(add, expr, expressions[i]);
-            }
-          }
+          expr = new ol.expr.Call(
+              new ol.expr.Identifier(ol.expr.functions.CONCAT),
+              expressions);
         }
         return expr;
       },
