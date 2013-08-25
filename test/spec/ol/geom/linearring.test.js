@@ -9,13 +9,6 @@ describe('ol.geom.LinearRing', function() {
       expect(ring).to.be.a(ol.geom.LinearRing);
     });
 
-    it('throws when given mismatched dimension', function() {
-      expect(function() {
-        var ring = new ol.geom.LinearRing([[10, 20], [30, 40, 50]]);
-        ring = ring; // suppress gjslint warning about unused variable
-      }).to.throwException();
-    });
-
   });
 
   describe('#dimension', function() {

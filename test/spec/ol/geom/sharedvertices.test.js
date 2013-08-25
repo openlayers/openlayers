@@ -40,6 +40,25 @@ describe('ol.geom.SharedVertices', function() {
       expect(vertices.coordinates).to.eql([1, 2, 3, 4, 5, 6]);
     });
 
+    it('ignores extra dimensions', function() {
+      var vertices = new ol.geom.SharedVertices({dimension: 2});
+      expect(vertices.coordinates.length).to.be(0);
+
+      vertices.add([[1, 2], [3, 4, 5], [6, 7]]);
+      expect(vertices.coordinates).to.eql([1, 2, 3, 4, 6, 7]);
+
+      vertices.add([[8, 9, 10]]);
+      expect(vertices.coordinates).to.eql([1, 2, 3, 4, 6, 7, 8, 9]);
+    });
+
+    it('pads with NaN when dimension not provided', function() {
+      var vertices = new ol.geom.SharedVertices({dimension: 3});
+      expect(vertices.coordinates.length).to.be(0);
+
+      vertices.add([[1, 2], [3, 4, 5], [6, 7]]);
+      expect(vertices.coordinates).to.eql([1, 2, NaN, 3, 4, 5, 6, 7, NaN]);
+    });
+
     it('returns an identifier for coordinate access', function() {
       var vertices = new ol.geom.SharedVertices();
       var id = vertices.add([[1, 2], [3, 4]]);
