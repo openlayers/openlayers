@@ -14,13 +14,6 @@ describe('ol.geom.Polygon', function() {
       expect(poly).to.be.a(ol.geom.Geometry);
     });
 
-    it('throws when given mismatched dimension', function() {
-      expect(function() {
-        var poly = new ol.geom.Polygon([[[10, 20], [30, 40, 50]]]);
-        poly = poly; // suppress gjslint warning about unused variable
-      }).to.throwException();
-    });
-
     it('accepts shared vertices', function() {
       var vertices = new ol.geom.SharedVertices();
       var p1 = new ol.geom.Polygon([outer], vertices);
