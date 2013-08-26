@@ -38,6 +38,15 @@ ol.style.Fill = function(opt_options) {
       (options.opacity instanceof ol.expr.Expression) ?
           options.opacity : new ol.expr.Literal(options.opacity);
 
+  /**
+   * @type {ol.expr.Expression}
+   * @private
+   */
+  this.zIndex_ = !goog.isDefAndNotNull(options.zIndex) ?
+      null :
+      (options.zIndex instanceof ol.expr.Expression) ?
+          options.zIndex : new ol.expr.Literal(options.zIndex);
+
 };
 goog.inherits(ol.style.Fill, ol.style.Symbolizer);
 
@@ -67,9 +76,16 @@ ol.style.Fill.prototype.createLiteral = function(featureOrType) {
     var opacity = Number(ol.expr.evaluateFeature(this.opacity_, feature));
     goog.asserts.assert(!isNaN(opacity), 'opacity must be a number');
 
+    var zIndex;
+    if (!goog.isNull(this.zIndex_)) {
+      zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
+      goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
+    }
+
     literal = new ol.style.PolygonLiteral({
       fillColor: color,
-      fillOpacity: opacity
+      fillOpacity: opacity,
+      zIndex: zIndex
     });
   }
 
@@ -96,6 +112,15 @@ ol.style.Fill.prototype.getOpacity = function() {
 
 
 /**
+ * Get the fill zIndex.
+ * @return {ol.expr.Expression} Fill zIndex.
+ */
+ol.style.Fill.prototype.getZIndex = function() {
+  return this.zIndex_;
+};
+
+
+/**
  * Set the fill color.
  * @param {ol.expr.Expression} color Fill color.
  */
@@ -116,8 +141,18 @@ ol.style.Fill.prototype.setOpacity = function(opacity) {
 
 
 /**
- * @typedef {{color: (string),
- *            opacity: (number)}}
+ * Set the fill zIndex.
+ * @param {ol.expr.Expression} zIndex Fill zIndex.
+ */
+ol.style.Fill.prototype.setZIndex = function(zIndex) {
+  goog.asserts.assertInstanceof(zIndex, ol.expr.Expression);
+  this.zIndex_ = zIndex;
+};
+
+
+/**
+ * @typedef {{fillColor: (string),
+ *            fillOpacity: (number)}}
  */
 ol.style.FillDefaults = {
   color: '#ffffff',

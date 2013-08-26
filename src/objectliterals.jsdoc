@@ -699,6 +699,7 @@
  * @property {string|ol.expr.Expression|undefined} color Fill color as hex color
  *     code.
  * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
+ * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
  */
 
 /**

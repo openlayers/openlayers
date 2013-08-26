@@ -54,12 +54,21 @@ describe('ol.style.PolygonLiteral', function() {
         fillColor: '#BADA55',
         fillOpacity: 0.31
       });
+      var differentZIndex = new ol.style.PolygonLiteral({
+        strokeWidth: 3,
+        strokeColor: '#013',
+        strokeOpacity: 0.4,
+        fillColor: '#BADA55',
+        fillOpacity: 0.3,
+        zIndex: 2
+      });
       expect(literal.equals(equalLiteral)).to.be(true);
       expect(literal.equals(differentStrokeWidth)).to.be(false);
       expect(literal.equals(differentStrokeColor)).to.be(false);
       expect(literal.equals(differentStrokeOpacity)).to.be(false);
       expect(literal.equals(differentFillColor)).to.be(false);
       expect(literal.equals(differentFillOpacity)).to.be(false);
+      expect(literal.equals(differentZIndex)).to.be(false);
     });
 
   });

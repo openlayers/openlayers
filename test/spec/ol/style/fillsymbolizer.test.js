@@ -19,6 +19,15 @@ describe('ol.style.Fill', function() {
       expect(symbolizer).to.be.a(ol.style.Fill);
     });
 
+    it('accepts zIndex', function() {
+      var symbolizer = new ol.style.Fill({
+        opacity: ol.expr.parse('value / 100'),
+        color: ol.expr.parse('fillAttr'),
+        zIndex: 3
+      });
+      expect(symbolizer).to.be.a(ol.style.Fill);
+    });
+
   });
 
   describe('#createLiteral()', function() {
@@ -40,6 +49,7 @@ describe('ol.style.Fill', function() {
       expect(literal).to.be.a(ol.style.PolygonLiteral);
       expect(literal.fillOpacity).to.be(42 / 100);
       expect(literal.fillColor).to.be('#ff0000');
+      expect(literal.zIndex).to.be(undefined);
     });
 
     it('applies default opacity', function() {
@@ -79,6 +89,19 @@ describe('ol.style.Fill', function() {
       var literal = symbolizer.createLiteral(feature);
       expect(literal).to.be.a(ol.style.PolygonLiteral);
       expect(literal.fillOpacity).to.be(0.55);
+    });
+
+    it('handles zIndex', function() {
+      var symbolizer = new ol.style.Fill({
+        opacity: 0.8,
+        zIndex: 2
+      });
+
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POLYGON);
+      expect(literal).to.be.a(ol.style.PolygonLiteral);
+      expect(literal.fillColor).to.be('#ffffff');
+      expect(literal.fillOpacity).to.be(0.8);
+      expect(literal.zIndex).to.be(2);
     });
 
   });
