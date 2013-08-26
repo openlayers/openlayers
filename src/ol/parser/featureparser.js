@@ -3,6 +3,7 @@ goog.provide('ol.parser.AsyncStringFeatureParser');
 goog.provide('ol.parser.DomFeatureParser');
 goog.provide('ol.parser.ObjectFeatureParser');
 goog.provide('ol.parser.ReadFeaturesOptions');
+goog.provide('ol.parser.ReadFeaturesResult');
 goog.provide('ol.parser.StringFeatureParser');
 
 goog.require('ol.Feature');
