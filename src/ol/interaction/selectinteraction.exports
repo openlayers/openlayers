@@ -1,0 +1,2 @@
+@exportClass ol.interaction.Select ol.interaction.SelectOptions
+@exportProperty ol.interaction.Select.prototype.dispose

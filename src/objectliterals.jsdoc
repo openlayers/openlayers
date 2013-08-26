@@ -202,16 +202,6 @@
  */
 
 /**
- * @typedef {Object} ol.control.SelectOptions
- * @property {string|undefined} className CSS class name. Default is 'ol-select'.
- * @property {Element|undefined} element Element.
- * @property {undefined|function(ol.layer.Layer):boolean} layerFilter Filter
- *     function to restrict selection to a subset of layers.
- * @property {ol.Map|undefined} map Map.
- * @property {Element|undefined} target Target.
- */
-
-/**
  * @typedef {Object} ol.control.ScaleLineOptions
  * @property {string|undefined} className CSS Class name. Default is 'ol-scale-line'.
  * @property {ol.Map|undefined} map Map.
@@ -303,6 +293,12 @@
  * @typedef {Object} ol.interaction.KeyboardZoomOptions
  * @property {ol.interaction.ConditionType|undefined} condition Condition.
  * @property {number|undefined} delta Delta.
+ */
+
+/**
+ * @typedef {Object} ol.interaction.SelectOptions
+ * @property {undefined|function(ol.layer.Layer):boolean} layerFilter Filter
+ *     function to restrict selection to a subset of layers.
  */
 
 /**

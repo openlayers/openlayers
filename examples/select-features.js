@@ -1,8 +1,8 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
-goog.require('ol.control.Select');
-goog.require('ol.control.defaults');
+goog.require('ol.interaction.Select');
+goog.require('ol.interaction.defaults');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.ogc.GML_v3');
@@ -46,12 +46,12 @@ var vector = new ol.layer.Vector({
   })
 });
 
-var selectControl = new ol.control.Select({
+var selectInteraction = new ol.interaction.Select({
   layerFilter: function(layer) { return layer === vector; }
 });
 
 var map = new ol.Map({
-  controls: ol.control.defaults().extend([selectControl]),
+  interactions: ol.interaction.defaults().extend([selectInteraction]),
   layers: [raster, vector],
   renderer: ol.RendererHint.CANVAS,
   target: 'map',
@@ -60,5 +60,3 @@ var map = new ol.Map({
     zoom: 4
   })
 });
-
-selectControl.activate();
