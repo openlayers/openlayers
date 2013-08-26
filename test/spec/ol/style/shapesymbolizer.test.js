@@ -24,6 +24,17 @@ describe('ol.style.Shape', function() {
       expect(symbolizer).to.be.a(ol.style.Shape);
     });
 
+    it('accepts zIndex', function() {
+      var symbolizer = new ol.style.Shape({
+        size: 4,
+        fill: new ol.style.Fill({
+          color: '#ff0000'
+        }),
+        zIndex: -1
+      });
+      expect(symbolizer).to.be.a(ol.style.Shape);
+    });
+
   });
 
   describe('#createLiteral()', function() {
@@ -47,6 +58,7 @@ describe('ol.style.Shape', function() {
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.size).to.be(42);
       expect(literal.fillOpacity).to.be(0.4);
+      expect(literal.zIndex).to.be(undefined);
     });
 
     it('can be called without a feature', function() {
@@ -158,6 +170,19 @@ describe('ol.style.Shape', function() {
       var literal = symbolizer.createLiteral(feature);
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.fillOpacity).to.be(0.42);
+    });
+
+    it('handles zIndex', function() {
+      var symbolizer = new ol.style.Shape({
+        stroke: new ol.style.Stroke({
+          color: '#ff0000'
+        }),
+        zIndex: -2
+      });
+
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      expect(literal).to.be.a(ol.style.ShapeLiteral);
+      expect(literal.zIndex).to.be(-2);
     });
 
   });

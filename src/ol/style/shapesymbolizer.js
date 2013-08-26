@@ -53,6 +53,15 @@ ol.style.Shape = function(options) {
   goog.asserts.assert(this.fill_ || this.stroke_,
       'Stroke or fill must be provided');
 
+  /**
+   * @type {ol.expr.Expression}
+   * @private
+   */
+  this.zIndex_ = !goog.isDefAndNotNull(options.zIndex) ?
+      null :
+      (options.zIndex instanceof ol.expr.Expression) ?
+          options.zIndex : new ol.expr.Literal(options.zIndex);
+
 };
 
 
@@ -100,6 +109,12 @@ ol.style.Shape.prototype.createLiteral = function(featureOrType) {
       goog.asserts.assert(!isNaN(strokeWidth), 'strokeWidth must be a number');
     }
 
+    var zIndex;
+    if (!goog.isNull(this.zIndex_)) {
+      zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
+      goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
+    }
+
     literal = new ol.style.ShapeLiteral({
       type: this.type_,
       size: size,
@@ -107,7 +122,8 @@ ol.style.Shape.prototype.createLiteral = function(featureOrType) {
       fillOpacity: fillOpacity,
       strokeColor: strokeColor,
       strokeOpacity: strokeOpacity,
-      strokeWidth: strokeWidth
+      strokeWidth: strokeWidth,
+      zIndex: zIndex
     });
   }
 
@@ -152,6 +168,15 @@ ol.style.Shape.prototype.getType = function() {
 
 
 /**
+ * Get the shape zIndex.
+ * @return {ol.expr.Expression} Shape zIndex.
+ */
+ol.style.Shape.prototype.getZIndex = function() {
+  return this.zIndex_;
+};
+
+
+/**
  * Set the fill.
  * @param {ol.style.Fill} fill Shape fill.
  */
@@ -191,6 +216,16 @@ ol.style.Shape.prototype.setStroke = function(stroke) {
  */
 ol.style.Shape.prototype.setType = function(type) {
   this.type_ = type;
+};
+
+
+/**
+ * Set the shape zIndex.
+ * @param {ol.expr.Expression} zIndex Shape zIndex.
+ */
+ol.style.Shape.prototype.setZIndex = function(zIndex) {
+  goog.asserts.assertInstanceof(zIndex, ol.expr.Expression);
+  this.zIndex_ = zIndex;
 };
 
 

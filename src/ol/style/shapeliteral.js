@@ -20,7 +20,8 @@ ol.style.ShapeType = {
  *            fillOpacity: (number|undefined),
  *            strokeColor: (string|undefined),
  *            strokeOpacity: (number|undefined),
- *            strokeWidth: (number|undefined)}}
+ *            strokeWidth: (number|undefined),
+ *            zIndex: (number|undefined)}}
  */
 ol.style.ShapeLiteralOptions;
 
@@ -84,6 +85,9 @@ ol.style.ShapeLiteral = function(options) {
       'Either fillColor and fillOpacity or ' +
       'strokeColor and strokeOpacity and strokeWidth must be set');
 
+  /** @type {number|undefined} */
+  this.zIndex = options.zIndex;
+
 };
 goog.inherits(ol.style.ShapeLiteral, ol.style.PointLiteral);
 
@@ -91,12 +95,13 @@ goog.inherits(ol.style.ShapeLiteral, ol.style.PointLiteral);
 /**
  * @inheritDoc
  */
-ol.style.ShapeLiteral.prototype.equals = function(shapeLiteral) {
-  return this.type == shapeLiteral.type &&
-      this.size == shapeLiteral.size &&
-      this.fillColor == shapeLiteral.fillColor &&
-      this.fillOpacity == shapeLiteral.fillOpacity &&
-      this.strokeColor == shapeLiteral.strokeColor &&
-      this.strokeOpacity == shapeLiteral.strokeOpacity &&
-      this.strokeWidth == shapeLiteral.strokeWidth;
+ol.style.ShapeLiteral.prototype.equals = function(other) {
+  return this.type == other.type &&
+      this.size == other.size &&
+      this.fillColor == other.fillColor &&
+      this.fillOpacity == other.fillOpacity &&
+      this.strokeColor == other.strokeColor &&
+      this.strokeOpacity == other.strokeOpacity &&
+      this.strokeWidth == other.strokeWidth &&
+      this.zIndex == other.zIndex;
 };

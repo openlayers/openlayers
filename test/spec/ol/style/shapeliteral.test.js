@@ -77,6 +77,16 @@ describe('ol.style.ShapeLiteral', function() {
         strokeOpacity: 0.8,
         strokeWidth: 4
       });
+      var differentZIndex = new ol.style.ShapeLiteral({
+        type: ol.style.ShapeType.CIRCLE,
+        size: 4,
+        fillColor: '#BADA55',
+        fillOpacity: 0.9,
+        strokeColor: '#013',
+        strokeOpacity: 0.8,
+        strokeWidth: 3,
+        zIndex: -1
+      });
       expect(literal.equals(equalLiteral)).to.be(true);
       expect(literal.equals(differentSize)).to.be(false);
       expect(literal.equals(differentFillColor)).to.be(false);
@@ -84,6 +94,7 @@ describe('ol.style.ShapeLiteral', function() {
       expect(literal.equals(differentStrokeColor)).to.be(false);
       expect(literal.equals(differentStrokeOpacity)).to.be(false);
       expect(literal.equals(differentStrokeWidth)).to.be(false);
+      expect(literal.equals(differentZIndex)).to.be(false);
     });
 
   });

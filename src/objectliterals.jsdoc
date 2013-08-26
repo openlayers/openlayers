@@ -721,6 +721,7 @@
  * @property {number|ol.expr.Expression|undefined} size Size in pixels.
  * @property {ol.style.Fill|undefined} fill Fill symbolizer for shape.
  * @property {ol.style.Stroke|undefined} stroke Stroke symbolizer for shape.
+ * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
  */
 
 /**
