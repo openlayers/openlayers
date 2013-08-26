@@ -30,10 +30,17 @@ describe('ol.style.LineLiteral', function() {
         color: '#BADA55',
         opacity: 0.5
       });
+      var differentZIndex = new ol.style.LineLiteral({
+        width: 3,
+        color: '#BADA55',
+        opacity: 1,
+        zIndex: 3
+      });
       expect(literal.equals(equalLiteral)).to.be(true);
       expect(literal.equals(differentColor)).to.be(false);
       expect(literal.equals(differentWidth)).to.be(false);
       expect(literal.equals(differentOpacity)).to.be(false);
+      expect(literal.equals(differentZIndex)).to.be(false);
     });
 
   });

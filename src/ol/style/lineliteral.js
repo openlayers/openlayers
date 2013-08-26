@@ -7,7 +7,8 @@ goog.require('ol.style.Literal');
 /**
  * @typedef {{color: (string),
  *            opacity: (number),
- *            width: (number)}}
+ *            width: (number),
+ *            zIndex: (number|undefined)}}
  */
 ol.style.LineLiteralOptions;
 
@@ -36,6 +37,9 @@ ol.style.LineLiteral = function(options) {
   /** @type {number} */
   this.width = options.width;
 
+  /** @type {number|undefined} */
+  this.zIndex = options.zIndex;
+
 };
 goog.inherits(ol.style.LineLiteral, ol.style.Literal);
 
@@ -43,8 +47,9 @@ goog.inherits(ol.style.LineLiteral, ol.style.Literal);
 /**
  * @inheritDoc
  */
-ol.style.LineLiteral.prototype.equals = function(lineLiteral) {
-  return this.color == lineLiteral.color &&
-      this.opacity == lineLiteral.opacity &&
-      this.width == lineLiteral.width;
+ol.style.LineLiteral.prototype.equals = function(other) {
+  return this.color == other.color &&
+      this.opacity == other.opacity &&
+      this.width == other.width &&
+      this.zIndex == other.zIndex;
 };

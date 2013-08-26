@@ -728,6 +728,7 @@
  *     color code.
  * @property {number|ol.expr.Expression|undefined} opacity Stroke opacity (0-1).
  * @property {number|ol.expr.Expression|undefined} width Stroke width in pixels.
+ * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
  */
 
 /**

@@ -49,6 +49,15 @@ ol.style.Stroke = function(opt_options) {
       (options.width instanceof ol.expr.Expression) ?
           options.width : new ol.expr.Literal(options.width);
 
+  /**
+   * @type {ol.expr.Expression}
+   * @private
+   */
+  this.zIndex_ = !goog.isDefAndNotNull(options.zIndex) ?
+      null :
+      (options.zIndex instanceof ol.expr.Expression) ?
+          options.zIndex : new ol.expr.Literal(options.zIndex);
+
 };
 goog.inherits(ol.style.Stroke, ol.style.Symbolizer);
 
@@ -79,20 +88,28 @@ ol.style.Stroke.prototype.createLiteral = function(featureOrType) {
       this.width_, feature));
   goog.asserts.assert(!isNaN(width), 'width must be a number');
 
+  var zIndex;
+  if (!goog.isNull(this.zIndex_)) {
+    zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
+    goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
+  }
+
   var literal = null;
   if (type === ol.geom.GeometryType.LINESTRING ||
       type === ol.geom.GeometryType.MULTILINESTRING) {
     literal = new ol.style.LineLiteral({
       color: color,
       opacity: opacity,
-      width: width
+      width: width,
+      zIndex: zIndex
     });
   } else if (type === ol.geom.GeometryType.POLYGON ||
       type === ol.geom.GeometryType.MULTIPOLYGON) {
     literal = new ol.style.PolygonLiteral({
       strokeColor: color,
       strokeOpacity: opacity,
-      strokeWidth: width
+      strokeWidth: width,
+      zIndex: zIndex
     });
   }
 
@@ -128,6 +145,15 @@ ol.style.Stroke.prototype.getWidth = function() {
 
 
 /**
+ * Get the stroke zIndex.
+ * @return {ol.expr.Expression} Stroke zIndex.
+ */
+ol.style.Stroke.prototype.getZIndex = function() {
+  return this.zIndex_;
+};
+
+
+/**
  * Set the stroke color.
  * @param {ol.expr.Expression} color Stroke color.
  */
@@ -158,9 +184,19 @@ ol.style.Stroke.prototype.setWidth = function(width) {
 
 
 /**
- * @typedef {{color: (string),
- *            opacity: (number),
- *            width: (number)}}
+ * Set the stroke zIndex.
+ * @param {ol.expr.Expression} zIndex Stroke zIndex.
+ */
+ol.style.Stroke.prototype.setZIndex = function(zIndex) {
+  goog.asserts.assertInstanceof(zIndex, ol.expr.Expression);
+  this.zIndex_ = zIndex;
+};
+
+
+/**
+ * @typedef {{strokeColor: (string),
+ *            strokeOpacity: (number),
+ *            strokeWidth: (number)}}
  */
 ol.style.StrokeDefaults = {
   color: '#696969',

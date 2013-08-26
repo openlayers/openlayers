@@ -20,6 +20,15 @@ describe('ol.style.Stroke', function() {
       expect(symbolizer).to.be.a(ol.style.Stroke);
     });
 
+    it('accepts zIndex', function() {
+      var symbolizer = new ol.style.Stroke({
+        opacity: ol.expr.parse('value / 100'),
+        width: ol.expr.parse('widthAttr'),
+        zIndex: 5
+      });
+      expect(symbolizer).to.be.a(ol.style.Stroke);
+    });
+
   });
 
   describe('#createLiteral()', function() {
@@ -40,6 +49,7 @@ describe('ol.style.Stroke', function() {
       expect(literal).to.be.a(ol.style.LineLiteral);
       expect(literal.opacity).to.be(42 / 100);
       expect(literal.width).to.be(1.5);
+      expect(literal.zIndex).to.be(undefined);
     });
 
     it('applies the default values', function() {
