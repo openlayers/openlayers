@@ -26,6 +26,18 @@ describe('ol.style.Text', function() {
       expect(symbolizer).to.be.a(ol.style.Text);
     });
 
+    it('accepts zIndex', function() {
+      var symbolizer = new ol.style.Text({
+        color: '#ff0000',
+        fontFamily: 'Arial',
+        fontSize: 11,
+        text: 'Test',
+        opacity: 0.6,
+        zIndex: 3
+      });
+      expect(symbolizer).to.be.a(ol.style.Text);
+    });
+
   });
 
   describe('#createLiteral()', function() {

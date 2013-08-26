@@ -54,12 +54,21 @@ describe('ol.style.TextLiteral', function() {
         text: 'Text is not compared for equality',
         opacity: 0.5
       });
+      var differentZIndex = new ol.style.TextLiteral({
+        color: '#ff0000',
+        fontFamily: 'Arial',
+        fontSize: 11,
+        text: 'Test',
+        opacity: 0.5,
+        zIndex: 3
+      });
       expect(literal.equals(equalLiteral)).to.be(true);
       expect(literal.equals(differentLiteral1)).to.be(false);
       expect(literal.equals(differentLiteral2)).to.be(false);
       expect(literal.equals(differentLiteral3)).to.be(false);
       expect(literal.equals(differentLiteral4)).to.be(false);
       expect(literal.equals(equalLiteral2)).to.be(true);
+      expect(literal.equals(differentZIndex)).to.be(false);
     });
 
   });

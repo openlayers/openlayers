@@ -60,6 +60,15 @@ ol.style.Text = function(options) {
       (options.opacity instanceof ol.expr.Expression) ?
           options.opacity : new ol.expr.Literal(options.opacity);
 
+  /**
+   * @type {ol.expr.Expression}
+   * @private
+   */
+  this.zIndex_ = !goog.isDefAndNotNull(options.zIndex) ?
+      null :
+      (options.zIndex instanceof ol.expr.Expression) ?
+          options.zIndex : new ol.expr.Literal(options.zIndex);
+
 };
 goog.inherits(ol.style.Text, ol.style.Symbolizer);
 
@@ -93,12 +102,19 @@ ol.style.Text.prototype.createLiteral = function(featureOrType) {
   var opacity = Number(ol.expr.evaluateFeature(this.opacity_, feature));
   goog.asserts.assert(!isNaN(opacity), 'opacity must be a number');
 
+  var zIndex;
+  if (!goog.isNull(this.zIndex_)) {
+    zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
+    goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
+  }
+
   return new ol.style.TextLiteral({
     color: color,
     fontFamily: fontFamily,
     fontSize: fontSize,
     text: text,
-    opacity: opacity
+    opacity: opacity,
+    zIndex: zIndex
   });
 };
 
@@ -149,6 +165,15 @@ ol.style.Text.prototype.getText = function() {
 
 
 /**
+ * Get the zIndex.
+ * @return {ol.expr.Expression} Text.
+ */
+ol.style.Text.prototype.getZIndex = function() {
+  return this.zIndex_;
+};
+
+
+/**
  * Set the font color.
  * @param {ol.expr.Expression} color Font color.
  */
@@ -195,6 +220,16 @@ ol.style.Text.prototype.setOpacity = function(opacity) {
 ol.style.Text.prototype.setText = function(text) {
   goog.asserts.assertInstanceof(text, ol.expr.Expression);
   this.text_ = text;
+};
+
+
+/**
+ * Set the zIndex.
+ * @param {ol.expr.Expression} zIndex Text.
+ */
+ol.style.Text.prototype.setZIndex = function(zIndex) {
+  goog.asserts.assertInstanceof(zIndex, ol.expr.Expression);
+  this.zIndex_ = zIndex;
 };
 
 
