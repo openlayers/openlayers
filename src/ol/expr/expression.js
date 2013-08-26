@@ -95,6 +95,7 @@ ol.expr.lib = {};
  * @enum {string}
  */
 ol.expr.functions = {
+  CONCAT: 'concat',
   EXTENT: 'extent',
   FID: 'fid',
   GEOMETRY_TYPE: 'geometryType',
@@ -105,6 +106,22 @@ ol.expr.functions = {
   LIKE: 'like',
   IEQ: 'ieq',
   INEQ: 'ineq'
+};
+
+
+/**
+ * Concatenate strings.  All provided arguments will be cast to string and
+ * concatenated.
+ * @param {...string} var_args Strings to concatenate.
+ * @return {string} All input arguments concatenated as strings.
+ * @this {ol.Feature}
+ */
+ol.expr.lib[ol.expr.functions.CONCAT] = function(var_args) {
+  var str = '';
+  for (var i = 0, ii = arguments.length; i < ii; ++i) {
+    str += String(arguments[i]);
+  }
+  return str;
 };
 
 
