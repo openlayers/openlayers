@@ -90,21 +90,21 @@ ol.style.Icon.prototype.createLiteral = function(featureOrType) {
 
     var width;
     if (!goog.isNull(this.width_)) {
-      width = ol.expr.evaluateFeature(this.width_, feature);
-      goog.asserts.assertNumber(width, 'width must be a number');
+      width = Number(ol.expr.evaluateFeature(this.width_, feature));
+      goog.asserts.assert(!isNaN(width), 'width must be a number');
     }
 
     var height;
     if (!goog.isNull(this.height_)) {
-      height = ol.expr.evaluateFeature(this.height_, feature);
+      height = Number(ol.expr.evaluateFeature(this.height_, feature));
       goog.asserts.assertNumber(height, 'height must be a number');
     }
 
-    var opacity = ol.expr.evaluateFeature(this.opacity_, feature);
-    goog.asserts.assertNumber(opacity, 'opacity must be a number');
+    var opacity = Number(ol.expr.evaluateFeature(this.opacity_, feature));
+    goog.asserts.assert(!isNaN(opacity), 'opacity must be a number');
 
-    var rotation = ol.expr.evaluateFeature(this.rotation_, feature);
-    goog.asserts.assertNumber(rotation, 'rotation must be a number');
+    var rotation = Number(ol.expr.evaluateFeature(this.rotation_, feature));
+    goog.asserts.assert(!isNaN(rotation), 'rotation must be a number');
 
     literal = new ol.style.IconLiteral({
       url: url,

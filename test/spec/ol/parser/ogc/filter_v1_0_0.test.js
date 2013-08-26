@@ -235,6 +235,8 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
   });
 
   describe('_expression reader', function() {
+    var evaluate = ol.expr.evaluateFeature;
+
     it('handles combined propertyname and text', function() {
       var xml = '<ogc:UpperBoundary xmlns:ogc="' +
           'http://www.opengis.net/ogc">10</ogc:UpperBoundary>';
@@ -247,7 +249,7 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       xml = '<ogc:UpperBoundary xmlns:ogc="http://www.opengis.net/ogc">' +
           'foo<ogc:PropertyName>x</ogc:PropertyName>bar</ogc:UpperBoundary>';
       expr = reader.call(parser, goog.dom.xml.loadXml(xml).documentElement);
-      expect(expr.evaluate({x: 4})).to.eql('foo4bar');
+      expect(evaluate(expr, new ol.Feature({x: 4}))).to.eql('foo4bar');
     });
 
     it('handles combined propertyname and literal', function() {
@@ -258,7 +260,7 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
           '<ogc:PropertyName>x</ogc:PropertyName>' +
           '<ogc:Literal>foo</ogc:Literal></ogc:UpperBoundary>';
       var expr = reader.call(parser, goog.dom.xml.loadXml(xml).documentElement);
-      expect(expr.evaluate({x: 42})).to.eql('bar42foo');
+      expect(evaluate(expr, new ol.Feature({x: 42}))).to.eql('bar42foo');
     });
 
   });
@@ -266,6 +268,7 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
 });
 
 goog.require('goog.dom.xml');
+goog.require('ol.Feature');
 goog.require('ol.expr');
 goog.require('ol.expr.Call');
 goog.require('ol.expr.Comparison');

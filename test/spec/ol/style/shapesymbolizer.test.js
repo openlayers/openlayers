@@ -71,6 +71,95 @@ describe('ol.style.Shape', function() {
       expect(literal.strokeWidth).to.be(2);
     });
 
+    it('casts size to number', function() {
+      var symbolizer = new ol.style.Shape({
+        size: ol.expr.parse('size'),
+        fill: new ol.style.Fill({
+          color: '#BADA55'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#013',
+          opacity: 1,
+          width: 2
+        })
+      });
+
+      var feature = new ol.Feature({
+        size: '42',
+        geometry: new ol.geom.Point([1, 2])
+      });
+
+      var literal = symbolizer.createLiteral(feature);
+      expect(literal).to.be.a(ol.style.ShapeLiteral);
+      expect(literal.size).to.be(42);
+    });
+
+    it('casts stroke width to number', function() {
+      var symbolizer = new ol.style.Shape({
+        fill: new ol.style.Fill({
+          color: '#BADA55'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#013',
+          opacity: 1,
+          width: ol.expr.parse('strokeWidth')
+        })
+      });
+
+      var feature = new ol.Feature({
+        strokeWidth: '4.2',
+        geometry: new ol.geom.Point([1, 2])
+      });
+
+      var literal = symbolizer.createLiteral(feature);
+      expect(literal).to.be.a(ol.style.ShapeLiteral);
+      expect(literal.strokeWidth).to.be(4.2);
+    });
+
+    it('casts stroke opacity to number', function() {
+      var symbolizer = new ol.style.Shape({
+        fill: new ol.style.Fill({
+          color: '#BADA55'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#013',
+          opacity: ol.expr.parse('strokeOpacity'),
+          width: 3
+        })
+      });
+
+      var feature = new ol.Feature({
+        strokeOpacity: '.2',
+        geometry: new ol.geom.Point([1, 2])
+      });
+
+      var literal = symbolizer.createLiteral(feature);
+      expect(literal).to.be.a(ol.style.ShapeLiteral);
+      expect(literal.strokeOpacity).to.be(0.2);
+    });
+
+    it('casts fill opacity to number', function() {
+      var symbolizer = new ol.style.Shape({
+        fill: new ol.style.Fill({
+          opacity: ol.expr.parse('fillOpacity'),
+          color: '#BADA55'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#013',
+          width: 3
+        })
+      });
+
+      var feature = new ol.Feature({
+        fillOpacity: '.42',
+        geometry: new ol.geom.Point([1, 2])
+      });
+
+      var literal = symbolizer.createLiteral(feature);
+      expect(literal).to.be.a(ol.style.ShapeLiteral);
+      expect(literal.fillOpacity).to.be(0.42);
+    });
+
   });
 
   describe('#getFill()', function() {

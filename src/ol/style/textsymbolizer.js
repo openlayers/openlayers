@@ -84,14 +84,14 @@ ol.style.Text.prototype.createLiteral = function(featureOrType) {
   var fontFamily = ol.expr.evaluateFeature(this.fontFamily_, feature);
   goog.asserts.assertString(fontFamily, 'fontFamily must be a string');
 
-  var fontSize = ol.expr.evaluateFeature(this.fontSize_, feature);
-  goog.asserts.assertNumber(fontSize, 'fontSize must be a number');
+  var fontSize = Number(ol.expr.evaluateFeature(this.fontSize_, feature));
+  goog.asserts.assert(!isNaN(fontSize), 'fontSize must be a number');
 
   var text = ol.expr.evaluateFeature(this.text_, feature);
   goog.asserts.assertString(text, 'text must be a string');
 
-  var opacity = ol.expr.evaluateFeature(this.opacity_, feature);
-  goog.asserts.assertNumber(opacity, 'opacity must be a number');
+  var opacity = Number(ol.expr.evaluateFeature(this.opacity_, feature));
+  goog.asserts.assert(!isNaN(opacity), 'opacity must be a number');
 
   return new ol.style.TextLiteral({
     color: color,

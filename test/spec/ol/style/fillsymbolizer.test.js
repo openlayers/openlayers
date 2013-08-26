@@ -64,6 +64,23 @@ describe('ol.style.Fill', function() {
       expect(literal.fillOpacity).to.be(0.8);
     });
 
+    it('casts opacity to number', function() {
+      var symbolizer = new ol.style.Fill({
+        opacity: ol.expr.parse('opacity'),
+        color: '#ff00ff'
+      });
+
+      var feature = new ol.Feature({
+        opacity: '0.55',
+        geometry: new ol.geom.Polygon(
+            [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]])
+      });
+
+      var literal = symbolizer.createLiteral(feature);
+      expect(literal).to.be.a(ol.style.PolygonLiteral);
+      expect(literal.fillOpacity).to.be(0.55);
+    });
+
   });
 
   describe('#getColor()', function() {
