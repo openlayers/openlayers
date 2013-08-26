@@ -592,9 +592,13 @@ ol.layer.Vector.prototype.removeFeatures = function(features) {
 /**
  * Changes the renderIntent for an array of features.
  * @param {string} renderIntent Render intent.
- * @param {Array.<ol.Feature>} features Features to change the renderIntent for.
+ * @param {Array.<ol.Feature>=} opt_features Features to change the renderIntent
+ *     for. If not provided, all features will be changed.
  */
-ol.layer.Vector.prototype.setRenderIntent = function(renderIntent, features) {
+ol.layer.Vector.prototype.setRenderIntent =
+    function(renderIntent, opt_features) {
+  var features = goog.isDef(opt_features) ? opt_features :
+      goog.object.getValues(this.featureCache_.getFeaturesObject());
   var extent = ol.extent.createEmpty(),
       feature, geometry;
   for (var i = features.length - 1; i >= 0; --i) {
