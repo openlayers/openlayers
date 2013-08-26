@@ -692,6 +692,7 @@
  *     point to the center of the icon (positive values shift image left).
  * @property {number|ol.expr.Expression|undefined} yOffset Pixel offset from the
  *     point to the center of the icon (positive values shift image down).
+ * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
  */
 
 /**

@@ -54,12 +54,21 @@ describe('ol.style.IconLiteral', function() {
         rotation: 0.1,
         url: 'http://example.com/2.png'
       });
+      var differentZIndex = new ol.style.IconLiteral({
+        height: 10,
+        width: 20,
+        opacity: 1,
+        rotation: 0.1,
+        url: 'http://example.com/1.png',
+        zIndex: 20
+      });
       expect(literal.equals(equalLiteral)).to.be(true);
       expect(literal.equals(differentLiteral1)).to.be(false);
       expect(literal.equals(differentLiteral2)).to.be(false);
       expect(literal.equals(differentLiteral3)).to.be(false);
       expect(literal.equals(differentLiteral4)).to.be(false);
       expect(literal.equals(differentLiteral5)).to.be(false);
+      expect(literal.equals(differentZIndex)).to.be(false);
     });
 
   });

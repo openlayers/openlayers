@@ -30,6 +30,18 @@ describe('ol.style.Icon', function() {
       expect(symbolizer).to.be.a(ol.style.Icon);
     });
 
+    it('accepts zIndex', function() {
+      var symbolizer = new ol.style.Icon({
+        height: ol.expr.parse('10'),
+        width: ol.expr.parse('20'),
+        opacity: ol.expr.parse('1'),
+        rotation: ol.expr.parse('0.1'),
+        url: ol.expr.parse('"http://example.com/1.png"'),
+        zIndex: 3
+      });
+      expect(symbolizer).to.be.a(ol.style.Icon);
+    });
+
   });
 
   describe('#createLiteral()', function() {
@@ -65,6 +77,7 @@ describe('ol.style.Icon', function() {
       expect(literal.xOffset).to.be(20);
       expect(literal.yOffset).to.be(30);
       expect(literal.url).to.be('http://example.com/1.png');
+      expect(literal.zIndex).to.be(undefined);
     });
 
     it('can be called without a feature', function() {
@@ -221,6 +234,20 @@ describe('ol.style.Icon', function() {
       var literal = symbolizer.createLiteral(feature);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.yOffset).to.be(42);
+    });
+
+    it('handles zIndex', function() {
+      var symbolizer = new ol.style.Icon({
+        height: ol.expr.parse('10'),
+        width: ol.expr.parse('20'),
+        url: ol.expr.parse('"http://example.com/1.png"'),
+        zIndex: 4
+      });
+
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      expect(literal).to.be.a(ol.style.IconLiteral);
+      expect(literal.xOffset).to.be(0);
+      expect(literal.zIndex).to.be(4);
     });
 
   });

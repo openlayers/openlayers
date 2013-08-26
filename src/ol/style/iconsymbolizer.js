@@ -81,6 +81,15 @@ ol.style.Icon = function(options) {
       (options.yOffset instanceof ol.expr.Expression) ?
           options.yOffset : new ol.expr.Literal(options.yOffset);
 
+  /**
+   * @type {ol.expr.Expression}
+   * @private
+   */
+  this.zIndex_ = !goog.isDefAndNotNull(options.zIndex) ?
+      null :
+      (options.zIndex instanceof ol.expr.Expression) ?
+          options.zIndex : new ol.expr.Literal(options.zIndex);
+
 };
 
 
@@ -130,6 +139,12 @@ ol.style.Icon.prototype.createLiteral = function(featureOrType) {
     var yOffset = Number(ol.expr.evaluateFeature(this.yOffset_, feature));
     goog.asserts.assert(!isNaN(yOffset), 'yOffset must be a number');
 
+    var zIndex;
+    if (!goog.isNull(this.zIndex_)) {
+      zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
+      goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
+    }
+
     literal = new ol.style.IconLiteral({
       url: url,
       width: width,
@@ -137,7 +152,8 @@ ol.style.Icon.prototype.createLiteral = function(featureOrType) {
       opacity: opacity,
       rotation: rotation,
       xOffset: xOffset,
-      yOffset: yOffset
+      yOffset: yOffset,
+      zIndex: zIndex
     });
   }
 
@@ -209,6 +225,15 @@ ol.style.Icon.prototype.getYOffset = function() {
 
 
 /**
+ * Get the zIndex.
+ * @return {ol.expr.Expression} Icon zIndex.
+ */
+ol.style.Icon.prototype.getZIndex = function() {
+  return this.zIndex_;
+};
+
+
+/**
  * Set the height.
  * @param {ol.expr.Expression} height Icon height.
  */
@@ -275,6 +300,16 @@ ol.style.Icon.prototype.setXOffset = function(xOffset) {
 ol.style.Icon.prototype.setYOffset = function(yOffset) {
   goog.asserts.assertInstanceof(yOffset, ol.expr.Expression);
   this.yOffset_ = yOffset;
+};
+
+
+/**
+ * Set the zIndex.
+ * @param {ol.expr.Expression} zIndex Icon zIndex.
+ */
+ol.style.Icon.prototype.setZIndex = function(zIndex) {
+  goog.asserts.assertInstanceof(zIndex, ol.expr.Expression);
+  this.zIndex_ = zIndex;
 };
 
 
