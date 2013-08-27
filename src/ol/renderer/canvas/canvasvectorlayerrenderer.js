@@ -266,7 +266,7 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
     }
 
     var candidate, geom, type, symbolBounds, symbolSize, symbolOffset,
-        halfWidth, halfHeight, coordinates, j;
+        halfWidth, halfHeight, uid, coordinates, j;
     for (var id in candidates) {
       candidate = candidates[id];
       geom = candidate.getGeometry();
@@ -275,8 +275,9 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
           type === ol.geom.GeometryType.MULTIPOINT) {
         // For points, check if the pixel coordinate is inside the candidate's
         // symbol
-        symbolSize = symbolSizes[goog.getUid(candidate)];
-        symbolOffset = symbolOffsets[goog.getUid(candidate)];
+        uid = goog.getUid(candidate);
+        symbolSize = symbolSizes[uid];
+        symbolOffset = symbolOffsets[uid];
         halfWidth = symbolSize[0] / 2;
         halfHeight = symbolSize[1] / 2;
         symbolBounds = ol.extent.boundingExtent([
