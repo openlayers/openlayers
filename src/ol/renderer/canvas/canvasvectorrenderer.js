@@ -209,6 +209,8 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
       content, alpha, i, ii, feature, id, size, geometry, components, j, jj,
       point, vec;
 
+  var xOffset = 0;
+  var yOffset = 0;
   if (symbolizer instanceof ol.style.ShapeLiteral) {
     content = ol.renderer.canvas.VectorRenderer.renderShape(symbolizer);
     alpha = 1;
@@ -216,6 +218,8 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
     content = ol.renderer.canvas.VectorRenderer.renderIcon(
         symbolizer, this.iconLoadedCallback_);
     alpha = symbolizer.opacity;
+    xOffset = symbolizer.xOffset;
+    yOffset = symbolizer.yOffset;
   } else {
     throw new Error('Unsupported symbolizer: ' + symbolizer);
   }
@@ -253,7 +257,8 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
       point = components[j];
       vec = [point.get(0), point.get(1), 0];
       goog.vec.Mat4.multVec3(this.transform_, vec, vec);
-      context.drawImage(content, vec[0], vec[1], content.width, content.height);
+      context.drawImage(content, vec[0] + xOffset, vec[1] + yOffset,
+          content.width, content.height);
     }
   }
   context.restore();

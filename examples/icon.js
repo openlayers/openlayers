@@ -36,7 +36,8 @@ var data = {
 var style = new ol.style.Style({
   symbolizers: [
     new ol.style.Icon({
-      url: 'icon.png'
+      url: 'icon.png',
+      yOffset: -32
     })
   ]
 });
