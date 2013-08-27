@@ -74,6 +74,12 @@ ol.renderer.canvas.VectorRenderer =
   this.symbolSizes_ = {};
 
   /**
+   * @type {Object.<number, Array.<number>>}
+   * @private
+   */
+  this.symbolOffsets_ = {};
+
+  /**
    * @type {Array.<number>}
    * @private
    */
@@ -87,6 +93,14 @@ ol.renderer.canvas.VectorRenderer =
  */
 ol.renderer.canvas.VectorRenderer.prototype.getSymbolSizes = function() {
   return this.symbolSizes_;
+};
+
+
+/**
+ * @return {Object.<number, Array.<number>>} Symbolizer offsets.
+ */
+ol.renderer.canvas.VectorRenderer.prototype.getSymbolOffsets = function() {
+  return this.symbolOffsets_;
 };
 
 
@@ -232,6 +246,8 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
   var midHeight = content.height / 2;
   var contentWidth = content.width * this.inverseScale_;
   var contentHeight = content.height * this.inverseScale_;
+  var contentXOffset = xOffset * this.inverseScale_;
+  var contentYOffset = yOffset * this.inverseScale_;
   context.save();
   context.setTransform(1, 0, 0, 1, -midWidth, -midHeight);
   context.globalAlpha = alpha;
@@ -242,9 +258,13 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
     this.symbolSizes_[id] = goog.isDef(size) ?
         [Math.max(size[0], contentWidth), Math.max(size[1], contentHeight)] :
         [contentWidth, contentHeight];
+    this.symbolOffsets_[id] =
+        [xOffset * this.inverseScale_, yOffset * this.inverseScale_];
     this.maxSymbolSize_ =
-        [Math.max(this.maxSymbolSize_[0], this.symbolSizes_[id][0]),
-          Math.max(this.maxSymbolSize_[1], this.symbolSizes_[id][1])];
+        [Math.max(this.maxSymbolSize_[0],
+            this.symbolSizes_[id][0] + 2 * Math.abs(contentXOffset)),
+          Math.max(this.maxSymbolSize_[1],
+              this.symbolSizes_[id][1] + 2 * Math.abs(contentYOffset))];
     geometry = feature.getGeometry();
     if (geometry instanceof ol.geom.Point) {
       components = [geometry];
