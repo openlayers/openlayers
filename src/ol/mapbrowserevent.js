@@ -310,6 +310,9 @@ ol.MapBrowserEventHandler.prototype.relayEvent_ = function(browserEvent) {
  */
 ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
   // prevent context menu
+  // When the IE pointer events are used, this prevents a
+  // 'mousedown' from being fired after this event for the primary
+  // contact (first finger on the screen or mouse)
   browserEvent.preventDefault();
   this.down_ = browserEvent;
   this.dragged_ = false;
