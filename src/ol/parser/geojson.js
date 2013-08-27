@@ -150,7 +150,7 @@ ol.parser.GeoJSON.prototype.parseAsFeatureCollection_ = function(json,
     }
   }
   var projection = 'EPSG:4326';
-  if (goog.isDef(json.crs)) {
+  if (goog.isDefAndNotNull(json.crs)) {
     var crs = json.crs;
     if (crs.type === 'name') {
       projection = (/** GeoJSONCRSName */ (crs.properties)).name;
