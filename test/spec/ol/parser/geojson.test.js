@@ -403,6 +403,71 @@ describe('ol.parser.GeoJSON', function() {
       expect(result.metadata.projection).to.be('EPSG:1234');
     });
 
+    it('accepts null crs', function() {
+      var pointVertices = new ol.geom.SharedVertices();
+      var lineVertices = new ol.geom.SharedVertices();
+      var polygonVertices = new ol.geom.SharedVertices();
+
+      var lookup = {
+        'point': pointVertices,
+        'linestring': lineVertices,
+        'polygon': polygonVertices,
+        'multipoint': pointVertices,
+        'multilinstring': lineVertices,
+        'multipolygon': polygonVertices
+      };
+
+      var callback = function(feature, type) {
+        return lookup[type];
+      };
+
+      var parser = new ol.parser.GeoJSON();
+      var json = {
+        type: 'FeatureCollection',
+        crs: null,
+        features: [{
+          type: 'Feature',
+          properties: {
+            foo: 'bar'
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [1, 2]
+          }
+        }, {
+          type: 'Feature',
+          properties: {
+            bam: 'baz'
+          },
+          geometry: {
+            type: 'LineString',
+            coordinates: [[1, 2], [3, 4]]
+          }
+        }]
+      };
+      var result = parser.parseAsFeatureCollection_(json,
+          {callback: callback});
+      var features = result.features;
+
+      expect(features.length).to.be(2);
+
+      var first = features[0];
+      expect(first).to.be.a(ol.Feature);
+      expect(first.get('foo')).to.be('bar');
+      expect(first.getGeometry()).to.be.a(ol.geom.Point);
+
+      var second = features[1];
+      expect(second).to.be.a(ol.Feature);
+      expect(second.get('bam')).to.be('baz');
+      expect(second.getGeometry()).to.be.a(ol.geom.LineString);
+
+      expect(pointVertices.coordinates.length).to.be(2);
+      expect(lineVertices.coordinates.length).to.be(4);
+      expect(polygonVertices.coordinates.length).to.be(0);
+
+      expect(result.metadata.projection).to.be('EPSG:4326');
+    });
+
     it('generates an array of features for Feature', function() {
       var pointVertices = new ol.geom.SharedVertices();
       var lineVertices = new ol.geom.SharedVertices();
