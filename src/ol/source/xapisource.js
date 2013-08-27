@@ -66,13 +66,16 @@ ol.source.XAPI.prototype.prepareFeatures = function(layer, extent, projection,
 ol.source.XAPI.prototype.getUrl = function(extent, params) {
 
     params = params || {};
-
-    var baseParams = {
-    };
-
+    var path = ""; 
+    var baseParams = {};
     var bboxValues = [extent[0], extent[1], extent[2], extent[3]];
-    baseParams['bbox'] = bboxValues.join(',');
+    var i;
 
+    baseParams.bbox = bboxValues.join(',');
     goog.object.extend(baseParams, params);
+
+    for (i in baseParams) {
+
+    }
     return goog.uri.utils.appendParamsFromMap(this.url, baseParams);
 };

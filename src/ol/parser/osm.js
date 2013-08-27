@@ -1,3 +1,4 @@
+goog.require('ol.parser.XML');
 goog.provide('ol.parser.OSM');
 
 /**
@@ -19,8 +20,8 @@ ol.parser.OSM = function(opt_options) {
             'node': function(node, object) {
                 var container = {properties: {}};
                 var id = node.getAttribute('id');
-                var lat = node.getAttribute('lat');
-                var lon = node.getAttribute('lon');
+                var lat = parseFloat(node.getAttribute('lat'));
+                var lon = parseFloat(node.getAttribute('lon'));
 
                 // save feature properties to attributes
                 container.properties = {
@@ -37,6 +38,7 @@ ol.parser.OSM = function(opt_options) {
 
                 // set feature attributes
                 var geometry = new ol.geom.Point([lon,lat]);
+                console.log(geometry);
                 feature.setGeometry(geometry);
 
                 // set feature ID
@@ -79,4 +81,17 @@ ol.parser.OSM.prototype.read = function(data, opt_callback) {
         return obj;
     }
     return null;
+};
+
+
+/**
+ * Parse a XAPI document provided as a string.
+ * @param {string} str XAPI document.
+ * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
+ * @return {Array.<ol.Feature>} Array of features.
+ */
+ol.parser.OSM.prototype.readFeaturesFromString =
+    function(str, opt_options) {
+  this.readFeaturesOptions_ = opt_options;
+  return this.read(str).features;
 };
