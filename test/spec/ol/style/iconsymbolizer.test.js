@@ -10,7 +10,9 @@ describe('ol.style.Icon', function() {
         width: 20,
         opacity: 1,
         rotation: 0.1,
-        url: 'http://example.com/1.png'
+        url: 'http://example.com/1.png',
+        xOffset: 10,
+        yOffset: 15
       });
       expect(symbolizer).to.be.a(ol.style.Icon);
     });
@@ -21,7 +23,9 @@ describe('ol.style.Icon', function() {
         width: ol.expr.parse('20'),
         opacity: ol.expr.parse('1'),
         rotation: ol.expr.parse('0.1'),
-        url: ol.expr.parse('"http://example.com/1.png"')
+        url: ol.expr.parse('"http://example.com/1.png"'),
+        xOffset: ol.expr.parse('xOffset'),
+        yOffset: ol.expr.parse('yOffset')
       });
       expect(symbolizer).to.be.a(ol.style.Icon);
     });
@@ -36,7 +40,9 @@ describe('ol.style.Icon', function() {
         width: ol.expr.parse('widthAttr'),
         opacity: ol.expr.parse('opacityAttr'),
         rotation: ol.expr.parse('rotationAttr'),
-        url: ol.expr.parse('urlAttr')
+        url: ol.expr.parse('urlAttr'),
+        xOffset: ol.expr.parse('xOffset'),
+        yOffset: ol.expr.parse('yOffset')
       });
 
       var feature = new ol.Feature({
@@ -45,6 +51,8 @@ describe('ol.style.Icon', function() {
         opacityAttr: 0.5,
         rotationAttr: 123,
         urlAttr: 'http://example.com/1.png',
+        xOffset: 20,
+        yOffset: 30,
         geometry: new ol.geom.Point([1, 2])
       });
 
@@ -54,6 +62,8 @@ describe('ol.style.Icon', function() {
       expect(literal.width).to.be(.42);
       expect(literal.opacity).to.be(0.5);
       expect(literal.rotation).to.be(123);
+      expect(literal.xOffset).to.be(20);
+      expect(literal.yOffset).to.be(30);
       expect(literal.url).to.be('http://example.com/1.png');
     });
 
@@ -63,6 +73,8 @@ describe('ol.style.Icon', function() {
         width: ol.expr.parse('20'),
         opacity: ol.expr.parse('1'),
         rotation: ol.expr.parse('0.1'),
+        xOffset: ol.expr.parse('10'),
+        yOffset: ol.expr.parse('20'),
         url: ol.expr.parse('"http://example.com/1.png"')
       });
 
@@ -72,6 +84,8 @@ describe('ol.style.Icon', function() {
       expect(literal.width).to.be(20);
       expect(literal.opacity).to.be(1);
       expect(literal.rotation).to.be(0.1);
+      expect(literal.xOffset).to.be(10);
+      expect(literal.yOffset).to.be(20);
       expect(literal.url).to.be('http://example.com/1.png');
     });
 
@@ -149,6 +163,64 @@ describe('ol.style.Icon', function() {
       var literal = symbolizer.createLiteral(feature);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.height).to.be(42);
+    });
+
+    it('applies default xOffset if none', function() {
+      var symbolizer = new ol.style.Icon({
+        height: 10,
+        width: 20,
+        url: 'http://example.com/1.png'
+      });
+
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      expect(literal).to.be.a(ol.style.IconLiteral);
+      expect(literal.xOffset).to.be(0);
+    });
+
+    it('casts xOffset to number', function() {
+      var symbolizer = new ol.style.Icon({
+        xOffset: ol.expr.parse('xOffset'),
+        width: 10,
+        url: 'http://example.com/1.png'
+      });
+
+      var feature = new ol.Feature({
+        xOffset: '42',
+        geometry: new ol.geom.Point([1, 2])
+      });
+
+      var literal = symbolizer.createLiteral(feature);
+      expect(literal).to.be.a(ol.style.IconLiteral);
+      expect(literal.xOffset).to.be(42);
+    });
+
+    it('applies default yOffset if none', function() {
+      var symbolizer = new ol.style.Icon({
+        height: 10,
+        width: 20,
+        url: 'http://example.com/1.png'
+      });
+
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      expect(literal).to.be.a(ol.style.IconLiteral);
+      expect(literal.yOffset).to.be(0);
+    });
+
+    it('casts yOffset to number', function() {
+      var symbolizer = new ol.style.Icon({
+        yOffset: ol.expr.parse('yOffset'),
+        width: 10,
+        url: 'http://example.com/1.png'
+      });
+
+      var feature = new ol.Feature({
+        yOffset: '42',
+        geometry: new ol.geom.Point([1, 2])
+      });
+
+      var literal = symbolizer.createLiteral(feature);
+      expect(literal).to.be.a(ol.style.IconLiteral);
+      expect(literal.yOffset).to.be(42);
     });
 
   });

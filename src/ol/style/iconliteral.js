@@ -4,11 +4,13 @@ goog.require('ol.style.PointLiteral');
 
 
 /**
- * @typedef {{url: (string),
+ * @typedef {{url: string,
  *            width: (number|undefined),
  *            height: (number|undefined),
- *            opacity: (number),
- *            rotation: (number)}}
+ *            opacity: number,
+ *            rotation: number,
+ *            xOffset: number,
+ *            yOffset: number}}
  */
 ol.style.IconLiteralOptions;
 
@@ -36,6 +38,12 @@ ol.style.IconLiteral = function(options) {
   /** @type {number} */
   this.rotation = options.rotation;
 
+  /** @type {number} */
+  this.xOffset = options.xOffset;
+
+  /** @type {number} */
+  this.yOffset = options.yOffset;
+
 };
 goog.inherits(ol.style.IconLiteral, ol.style.PointLiteral);
 
@@ -48,5 +56,7 @@ ol.style.IconLiteral.prototype.equals = function(iconLiteral) {
       this.width == iconLiteral.width &&
       this.height == iconLiteral.height &&
       this.opacity == iconLiteral.opacity &&
-      this.rotation == iconLiteral.rotation;
+      this.rotation == iconLiteral.rotation &&
+      this.xOffset == iconLiteral.xOffset &&
+      this.yOffset == iconLiteral.yOffset;
 };
