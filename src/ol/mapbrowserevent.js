@@ -185,11 +185,11 @@ ol.MapBrowserEventHandler = function(map) {
       goog.events.EventType.TOUCHSTART,
       goog.events.EventType.MSPOINTERDOWN
     ], this.handleTouchStart_, false, this),
-    goog.events.listen(element, [
+    goog.events.listen(goog.global.document, [
       goog.events.EventType.TOUCHMOVE,
       goog.events.EventType.MSPOINTERMOVE
     ], this.handleTouchMove_, false, this),
-    goog.events.listen(element, [
+    goog.events.listen(goog.global.document, [
       goog.events.EventType.TOUCHEND,
       goog.events.EventType.MSPOINTERUP
     ], this.handleTouchEnd_, false, this)
