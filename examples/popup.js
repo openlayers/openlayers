@@ -4,11 +4,15 @@ goog.require('ol.View2D');
 goog.require('ol.coordinate');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.proj');
-goog.require('ol.source.MapQuestOpenAerial');
+goog.require('ol.source.TileJSON');
 
 
 var layer = new ol.layer.TileLayer({
-  source: new ol.source.MapQuestOpenAerial()
+  source: new ol.source.TileJSON({
+    url: 'http://api.tiles.mapbox.com/v3/' +
+        'mapbox.natural-earth-hypso-bathy.jsonp',
+    crossOrigin: 'anonymous'
+  })
 });
 
 var map = new ol.Map({
