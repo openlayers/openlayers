@@ -1,6 +1,7 @@
 
 goog.provide('ol.interaction.Touch');
 
+goog.require('goog.asserts');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('ol.MapBrowserEvent');
@@ -59,22 +60,41 @@ ol.interaction.Touch.centroid = function(touches) {
 
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
+ * @return {boolean} Whether the event is a touchstart, touchmove
+ *     or touchend event.
+ * @private
+ */
+ol.interaction.Touch.isTouchEvent_ = function(mapBrowserEvent) {
+  var type = mapBrowserEvent.type;
+  return (
+      type === ol.MapBrowserEvent.EventType.TOUCHSTART ||
+      type === ol.MapBrowserEvent.EventType.TOUCHMOVE ||
+      type === ol.MapBrowserEvent.EventType.TOUCHEND);
+};
+
+
+/**
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
  * @private
  */
 ol.interaction.Touch.prototype.updateTrackedTouches_ =
     function(mapBrowserEvent) {
-  var event = mapBrowserEvent.browserEvent.getBrowserEvent();
-  if (goog.isDef(event.targetTouches)) {
-    // W3C touch events
-    this.targetTouches = event.targetTouches;
-  } else {
-    // IE pointer event
-    if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.TOUCHEND) {
-      delete this.trackedTouches_[event.pointerId];
+  if (ol.interaction.Touch.isTouchEvent_(mapBrowserEvent)) {
+    var event = mapBrowserEvent.browserEvent.getBrowserEvent();
+    if (goog.isDef(event.targetTouches)) {
+      // W3C touch events
+      this.targetTouches = event.targetTouches;
+    } else if (goog.isDef(event.pointerId)) {
+      // IE pointer event
+      if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.TOUCHEND) {
+        delete this.trackedTouches_[event.pointerId];
+      } else {
+        this.trackedTouches_[event.pointerId] = event;
+      }
+      this.targetTouches = goog.object.getValues(this.trackedTouches_);
     } else {
-      this.trackedTouches_[event.pointerId] = event;
+      goog.asserts.fail('unknown touch event model');
     }
-    this.targetTouches = goog.object.getValues(this.trackedTouches_);
   }
 };
 
