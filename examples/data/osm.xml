@@ -1,0 +1,2759 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Overpass API">
+<note>The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.</note>
+<meta osm_base="2013-08-27T09:58:01Z"/>
+
+  <node id="335798852" lat="50.0912890" lon="14.4274599" version="1" timestamp="2009-01-23T23:03:01Z" changeset="830159" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="340201464" lat="50.0860989" lon="14.4353132" version="1" timestamp="2009-02-03T13:03:53Z" changeset="93238" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="340323300" lat="50.0839581" lon="14.4326396" version="2" timestamp="2013-02-22T13:14:03Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="umístěná kamera na Opletalova  VO"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Jeruzalemská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="344482816" lat="50.0835403" lon="14.4541790" version="1" timestamp="2009-02-11T18:21:54Z" changeset="348230" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="344514582" lat="50.0819692" lon="14.4224798" version="1" timestamp="2009-02-11T20:24:00Z" changeset="366111" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="355658944" lat="50.0817367" lon="14.4251158" version="1" timestamp="2009-03-04T18:31:27Z" changeset="734836" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="374104930" lat="50.0995721" lon="14.4847733" version="1" timestamp="2009-04-13T15:31:35Z" changeset="475431" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="374358938" lat="50.0994488" lon="14.4949052" version="1" timestamp="2009-04-13T21:11:19Z" changeset="483051" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="451727221" lat="50.0896007" lon="14.3992668" version="3" timestamp="2013-05-20T07:44:17Z" changeset="16203840" uid="39504" user="malenki">
+    <tag k="camery:count" v="1"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="514998642" lat="50.0981317" lon="14.4091256" version="2" timestamp="2013-05-20T07:44:17Z" changeset="16203840" uid="39504" user="malenki">
+    <tag k="camery:count" v="2"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="surveillance" v="outdoor"/>
+  </node>
+  <node id="632723412" lat="50.0678347" lon="14.4020921" version="2" timestamp="2012-11-26T19:03:20Z" changeset="14048988" uid="1086177" user="jajada">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Radlická"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="678084433" lat="50.0975813" lon="14.4350137" version="1" timestamp="2010-03-29T23:54:26Z" changeset="4272111" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="693932623" lat="50.0953507" lon="14.3495615" version="1" timestamp="2010-04-12T00:19:11Z" changeset="4400492" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="693944436" lat="50.0996342" lon="14.4331624" version="1" timestamp="2010-04-12T00:32:57Z" changeset="4400492" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="693944438" lat="50.0994000" lon="14.4331352" version="1" timestamp="2010-04-12T00:32:57Z" changeset="4400492" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="765048994" lat="50.0893851" lon="14.4633757" version="1" timestamp="2010-06-05T12:38:52Z" changeset="4907834" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="772608754" lat="50.0923555" lon="14.4112232" version="1" timestamp="2010-06-14T12:58:09Z" changeset="4987670" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="772608755" lat="50.0923972" lon="14.4114633" version="1" timestamp="2010-06-14T12:58:10Z" changeset="4987670" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="note" v="nahoře na sloupu na rohu zdi"/>
+  </node>
+  <node id="772608756" lat="50.0927118" lon="14.4117425" version="1" timestamp="2010-06-14T12:58:10Z" changeset="4987670" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="785999462" lat="50.0917300" lon="14.4406526" version="2" timestamp="2013-03-12T09:12:54Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Sokolovská "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="794587313" lat="50.0857513" lon="14.4472468" version="1" timestamp="2010-06-28T17:00:53Z" changeset="5098997" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="794638627" lat="50.0882003" lon="14.4602064" version="1" timestamp="2010-06-28T17:53:19Z" changeset="5098997" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="source" v="norc"/>
+  </node>
+  <node id="794668303" lat="50.0853279" lon="14.4310183" version="2" timestamp="2013-02-25T11:59:17Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Jeruzalémská 995 - roh"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="U půjčovny-Jeruzalémská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="798146770" lat="50.0837056" lon="14.4278337" version="1" timestamp="2010-07-01T10:44:13Z" changeset="5119573" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="821153183" lat="50.0852871" lon="14.4225661" version="1" timestamp="2010-07-16T19:54:10Z" changeset="5237451" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="821153186" lat="50.0847849" lon="14.4222532" version="1" timestamp="2010-07-16T19:54:10Z" changeset="5237451" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="821153189" lat="50.0849366" lon="14.4217189" version="1" timestamp="2010-07-16T19:54:10Z" changeset="5237451" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="821153205" lat="50.0852882" lon="14.4225196" version="1" timestamp="2010-07-16T19:54:10Z" changeset="5237451" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="821153209" lat="50.0849380" lon="14.4217612" version="1" timestamp="2010-07-16T19:54:11Z" changeset="5237451" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="821201638" lat="50.0817469" lon="14.4263494" version="1" timestamp="2010-07-16T20:27:44Z" changeset="5237451" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="859285603" lat="50.0801876" lon="14.4285317" version="2" timestamp="2013-02-22T12:31:39Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Václavské nám. 56/802 - Palác Blaník"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kůň Václ.nám. - Taxi"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="859285606" lat="50.0799999" lon="14.4286138" version="2" timestamp="2013-02-22T12:31:39Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Václavské náměstí 56/802 - dům"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Krakovská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="871309143" lat="50.0860622" lon="14.4317703" version="1" timestamp="2010-08-21T01:36:28Z" changeset="5547937" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="871336436" lat="50.0819817" lon="14.4247838" version="1" timestamp="2010-08-21T02:04:38Z" changeset="5547937" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="871336443" lat="50.0819320" lon="14.4247310" version="1" timestamp="2010-08-21T02:04:38Z" changeset="5547937" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="871338812" lat="50.0812695" lon="14.4231968" version="1" timestamp="2010-08-21T02:08:03Z" changeset="5547937" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="871338815" lat="50.0812321" lon="14.4231761" version="1" timestamp="2010-08-21T02:08:03Z" changeset="5547937" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="871339489" lat="50.0808626" lon="14.4238547" version="2" timestamp="2013-02-25T13:02:32Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Vodičkova 23 dům"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vodičkova-Václ.nám.23"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="956616582" lat="50.0846667" lon="14.4042554" version="1" timestamp="2010-10-19T02:52:08Z" changeset="6089003" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="956616584" lat="50.0819808" lon="14.4045761" version="1" timestamp="2010-10-19T02:52:08Z" changeset="6089003" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="956616585" lat="50.0828062" lon="14.4043329" version="1" timestamp="2010-10-19T02:52:08Z" changeset="6089003" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="967521075" lat="50.0703030" lon="14.4195338" version="1" timestamp="2010-10-28T03:02:20Z" changeset="6204367" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="1035789923" lat="50.0825021" lon="14.4233426" version="1" timestamp="2010-12-12T15:18:28Z" changeset="6637300" uid="190711" user="Zulu">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="surveillance" v="outdoor"/>
+  </node>
+  <node id="1035789925" lat="50.0825597" lon="14.4238170" version="1" timestamp="2010-12-12T15:18:28Z" changeset="6637300" uid="190711" user="Zulu">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="surveillance" v="outdoor"/>
+  </node>
+  <node id="1035789941" lat="50.0825938" lon="14.4240977" version="1" timestamp="2010-12-12T15:18:28Z" changeset="6637300" uid="190711" user="Zulu">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="surveillance" v="outdoor"/>
+  </node>
+  <node id="1035789943" lat="50.0825441" lon="14.4236888" version="1" timestamp="2010-12-12T15:18:28Z" changeset="6637300" uid="190711" user="Zulu">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="surveillance" v="outdoor"/>
+  </node>
+  <node id="1134865433" lat="50.0785328" lon="14.4193999" version="1" timestamp="2011-02-04T02:13:40Z" changeset="7179604" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="1259716058" lat="50.0975616" lon="14.3592865" version="1" timestamp="2011-04-25T16:05:13Z" changeset="7961486" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="1295583939" lat="50.0786003" lon="14.4069707" version="2" timestamp="2012-10-17T13:57:19Z" changeset="13532279" uid="979662" user="morgenthaler">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="1308340964" lat="50.0649709" lon="14.4304300" version="2" timestamp="2013-03-14T16:03:46Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v=" Nuselský most"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="1675119772" lat="50.0718974" lon="14.4385865" version="1" timestamp="2012-03-14T22:58:14Z" changeset="10983553" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="1675127627" lat="50.0699067" lon="14.4388982" version="1" timestamp="2012-03-14T23:11:19Z" changeset="10983553" uid="3516" user="BiIbo">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="1784625132" lat="50.0721377" lon="14.4042178" version="3" timestamp="2013-02-28T12:02:12Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Lidická 42"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="1788265215" lat="50.0830061" lon="14.4218949" version="2" timestamp="2013-02-25T10:47:13Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Národní třída - Jungmanovo nám."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="1805887871" lat="50.0719061" lon="14.4039187" version="2" timestamp="2013-02-28T12:02:12Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Lidická 42/284"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="1968034959" lat="50.1033642" lon="14.4344892" version="1" timestamp="2012-10-16T07:39:58Z" changeset="13515245" uid="979662" user="morgenthaler">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="kamera: roh Schnirchova - Šimáčkova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="1968036927" lat="50.0997039" lon="14.4324011" version="1" timestamp="2012-10-16T07:41:14Z" changeset="13515245" uid="979662" user="morgenthaler">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="kamera - ÚOOÚ"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="1968037999" lat="50.0996867" lon="14.4327444" version="1" timestamp="2012-10-16T07:41:57Z" changeset="13515245" uid="979662" user="morgenthaler">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="kamera ÚOOÚ - 2"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="1968351972" lat="50.1032825" lon="14.4316340" version="2" timestamp="2013-03-05T08:46:40Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Dukelských hrdinů - Strojnická"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="1969887614" lat="50.0861788" lon="14.4136095" version="2" timestamp="2013-02-22T13:30:21Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Staroměstská věž"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="1973130816" lat="50.0986372" lon="14.4367733" version="2" timestamp="2013-03-05T08:51:19Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Bubenská 1"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="1988205093" lat="50.0741131" lon="14.4315106" version="1" timestamp="2012-10-29T12:34:01Z" changeset="13673367" uid="1001158" user="Furinka">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="1988205094" lat="50.0736435" lon="14.4314915" version="1" timestamp="2012-10-29T12:34:01Z" changeset="13673367" uid="1001158" user="Furinka">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2048755338" lat="50.0856797" lon="14.4353193" version="2" timestamp="2012-12-03T20:43:56Z" changeset="14144656" uid="1106887" user="musled">
+    <tag k="man_made" v="surveillance"/>
+  </node>
+  <node id="2048757191" lat="50.0853974" lon="14.4354910" version="2" timestamp="2013-02-25T13:14:28Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vrchlického sady 6."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2048758471" lat="50.0845507" lon="14.4348473" version="2" timestamp="2013-02-25T13:14:28Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vrchlického sady 5."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2048764237" lat="50.0840220" lon="14.4333292" version="2" timestamp="2013-02-25T13:14:28Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vrchlického sady 3."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2048767040" lat="50.0831532" lon="14.4326800" version="2" timestamp="2013-02-25T13:14:28Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vrchlického sady 2."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2048767177" lat="50.0824303" lon="14.4333023" version="2" timestamp="2013-02-25T13:14:28Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vrchlického sady 1."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2048767428" lat="50.0834561" lon="14.4337100" version="3" timestamp="2013-06-10T18:15:42Z" changeset="16499855" uid="152074" user="beweta">
+    <tag k="designation" v="Wilsonova 80 - nová budova"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Hlavní nádraží I"/>
+    <tag k="name:de" v="Hauptbahnhof I"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2048767947" lat="50.0838623" lon="14.4340533" version="4" timestamp="2013-06-10T18:15:42Z" changeset="16499855" uid="152074" user="beweta">
+    <tag k="designation" v="Wilsonova 80 - nová budova"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Hlavní nádraží II"/>
+    <tag k="name:de" v="Hauptbahnhof II"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2157888314" lat="50.0891526" lon="14.3489415" version="2" timestamp="2013-03-05T07:06:28Z" changeset="15255002" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Petřinách - Šantrochova "/>
+    <tag k="operator" v="City"/>
+    <tag k="ref" v="646"/>
+    <tag k="source" v="http://www.praha6.cz/obrazek/kamery/temp/646.jpg"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2157919357" lat="50.0897583" lon="14.3636561" version="2" timestamp="2013-03-05T07:48:50Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="designation" v="U nemocnice 1200 "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="UVN Střešovice"/>
+    <tag k="operator" v="City"/>
+    <tag k="ref" v="619"/>
+    <tag k="source" v="http://www.praha6.cz/obrazek/kamery/temp/619.jpg"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2157931918" lat="50.0883405" lon="14.3436575" version="2" timestamp="2013-03-04T15:28:54Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Petřinách 72- pevná"/>
+    <tag k="operator" v="City"/>
+    <tag k="ref" v="610"/>
+    <tag k="source" v="http://www.praha6.cz/obrazek/kamery/temp/610.jpg"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2157941814" lat="50.0871804" lon="14.3405301" version="2" timestamp="2013-03-04T15:12:44Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Heyrovského náměstí - Na Petřinách"/>
+    <tag k="operator" v="City"/>
+    <tag k="ref" v="645"/>
+    <tag k="source" v="http://www.praha6.cz/obrazek/kamery/temp/645.jpg"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166837834" lat="50.0904019" lon="14.4369018" version="1" timestamp="2013-02-22T12:07:45Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Na Poříčí 50 VO 105058"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Těšnov VO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166837840" lat="50.0833322" lon="14.4224152" version="1" timestamp="2013-02-22T12:07:45Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="28.října 12/767"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="28.října"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166837841" lat="50.0853389" lon="14.4248694" version="1" timestamp="2013-02-22T12:07:45Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Na Příkopě 19 - palác Myslbek"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Myslbek"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166837844" lat="50.0774284" lon="14.4161389" version="1" timestamp="2013-02-22T12:07:45Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Myslíkova 1275/12(Na Zderaze 1275/15)-roh fasáda "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Myslíkova-Pštrossova -pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166837850" lat="50.0774353" lon="14.4162461" version="1" timestamp="2013-02-22T12:07:45Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Myslíkova 1275/12(Na Zderaze 1275/15)-roh fasáda "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Myslíkova- Pštrosova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166837855" lat="50.0887877" lon="14.4363117" version="1" timestamp="2013-02-22T12:07:45Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Na Florenci 21"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Florenci VO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166837861" lat="50.0832461" lon="14.4184911" version="1" timestamp="2013-02-22T12:07:45Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Na Perštýně 11/347 - dům"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Perštýně 11"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166837866" lat="50.0867469" lon="14.4275412" version="1" timestamp="2013-02-22T12:07:45Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Příkopě"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166837872" lat="50.0896998" lon="14.4332755" version="1" timestamp="2013-02-22T12:07:45Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Na Poříčí 22/1045 -roh"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Poříčí 22"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166837881" lat="50.0904364" lon="14.4366824" version="2" timestamp="2013-03-12T09:11:36Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="designation" v="Na Poříčí 50 VO 105058"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Těšnov VO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166839335" lat="50.0912830" lon="14.4202078" version="1" timestamp="2013-02-22T12:10:55Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Dušní 17/900 -dům"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Bílkova-Dušní"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166839336" lat="50.0897738" lon="14.4261006" version="1" timestamp="2013-02-22T12:10:55Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Benediktská 1- dům(PČR)"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Benediktská 1"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166840334" lat="50.0896185" lon="14.4207944" version="1" timestamp="2013-02-22T12:13:14Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Dušní 7/1083 - (obchodní akademie)"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Dušní 7"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166841147" lat="50.0895449" lon="14.4208327" version="1" timestamp="2013-02-22T12:14:28Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Dušní 7/1083 - (obchodní akademie)"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vězeňská - Dušní - pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166841920" lat="50.0910352" lon="14.4163132" version="1" timestamp="2013-02-22T12:15:34Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Dvořákovo nábřeží - Břehová 7"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Břehová 7 "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166842782" lat="50.0917390" lon="14.4176330" version="1" timestamp="2013-02-22T12:16:38Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Dvořákovo nábřeží  VO 101879(právnická fakulta)"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Dvořákovo nábřeží"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166844552" lat="50.0923086" lon="14.4173593" version="1" timestamp="2013-02-22T12:19:23Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Nábřeží Edwarda Beneše (mostní konstrukce)"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Pod Čechovým mostem"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166844553" lat="50.0922638" lon="14.4175551" version="1" timestamp="2013-02-22T12:19:23Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Nábřeží Edwarda Beneše VO 702456"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Čechův most VO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166853955" lat="50.0803615" lon="14.4294883" version="1" timestamp="2013-02-22T12:25:32Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Václavské nám.53"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Sv. Václav I."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166853956" lat="50.0803649" lon="14.4295472" version="1" timestamp="2013-02-22T12:25:32Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Václavské nám. 53 "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Václavské nám-VO u sv.Václava"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166853957" lat="50.0798451" lon="14.4301936" version="1" timestamp="2013-02-22T12:25:32Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Václavské nám.59 - VO 102807"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Sv. Václav II."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166853958" lat="50.0799312" lon="14.4301883" version="1" timestamp="2013-02-22T12:25:32Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Václavské nám. 59 VO 102807(Bílá labuť)"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Čelakovského sady - VO muzeum"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166853959" lat="50.0795955" lon="14.4300086" version="1" timestamp="2013-02-22T12:25:32Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Václ.nám.-horní část "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166855115" lat="50.0811721" lon="14.4283939" version="1" timestamp="2013-02-22T12:26:42Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Václavské nám.- Jalta"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Sv. Václav III."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166855116" lat="50.0811704" lon="14.4283188" version="1" timestamp="2013-02-22T12:26:42Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Václavské náměstí -  Jalta VO"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Václavské náměstí -  Jalta VO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166855926" lat="50.0822393" lon="14.4268891" version="1" timestamp="2013-02-22T12:29:29Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Václavské náměstí 29 "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Václavské náměstí 29 - Hvězda"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166855927" lat="50.0826747" lon="14.4250277" version="1" timestamp="2013-02-22T12:29:29Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Václavské náměstí 22"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Václavské náměstí 22"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166857343" lat="50.0824854" lon="14.4266102" version="1" timestamp="2013-02-22T12:32:34Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Václavské nám. 21 - pasáž"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Debenhams pasáž"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166858012" lat="50.0813649" lon="14.4137919" version="1" timestamp="2013-02-22T12:34:17Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Divadelní - mostní konstrukce"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Divadelní "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166860249" lat="50.0873594" lon="14.4332969" version="1" timestamp="2013-02-22T12:37:41Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Hybernská - nádraží"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166860250" lat="50.0873387" lon="14.4323260" version="1" timestamp="2013-02-22T12:37:42Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Havlíčkova 1/1030 - dům"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Dlážděná - Hybernská 7"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166860251" lat="50.0871116" lon="14.4352710" version="1" timestamp="2013-02-22T12:37:42Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Hybernská-Opletalova VO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166864875" lat="50.0872699" lon="14.4286353" version="1" timestamp="2013-02-22T12:41:29Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Obec.dům - pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166865539" lat="50.0875521" lon="14.4287157" version="1" timestamp="2013-02-22T12:42:53Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Hybernská"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="U Hybernů VO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166869960" lat="50.0907048" lon="14.4258029" version="1" timestamp="2013-02-22T12:46:23Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Dlouhá-Rybná 33/732 "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166869961" lat="50.0877793" lon="14.4334257" version="1" timestamp="2013-02-22T12:46:23Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Masarykovo nádraží "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Masarykovo nádraží "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166870254" lat="50.0811257" lon="14.4333130" version="1" timestamp="2013-02-22T12:47:26Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Wilsonova 372"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Garáže SLOVAN"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166875997" lat="50.0827298" lon="14.4339246" version="1" timestamp="2013-02-22T12:52:02Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Wilsonova třída (podjezd stanoviště TAXI)"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Hlavní nádraží III."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166880523" lat="50.0947624" lon="14.4101548" version="1" timestamp="2013-02-22T12:53:08Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Gogolova VO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166883006" lat="50.0842891" lon="14.4201219" version="1" timestamp="2013-02-22T12:56:11Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Havelská- Michalská 512"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166888273" lat="50.0930003" lon="14.4283885" version="1" timestamp="2013-02-22T13:02:30Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Nové Mlýny"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166888277" lat="50.0926665" lon="14.4301856" version="1" timestamp="2013-02-22T13:02:30Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Lannova 2 -roh"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Lannova 2 "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166888279" lat="50.0927078" lon="14.4275141" version="1" timestamp="2013-02-22T13:02:30Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Revoluční 30"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Lannová - Revoluční 30"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166888280" lat="50.0931036" lon="14.4307006" version="1" timestamp="2013-02-22T13:02:30Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Lannova park 1 VO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166888281" lat="50.0885916" lon="14.4326318" version="1" timestamp="2013-02-22T13:02:30Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Havlíčkova - Na Florenci"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166888284" lat="50.0934410" lon="14.4293651" version="1" timestamp="2013-02-22T13:02:30Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Nábřeží L. Svobody, sloup "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Lannova park 2"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166896710" lat="50.0819002" lon="14.4220853" version="1" timestamp="2013-02-22T13:08:24Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Jungmannova 35 - Charvátova 41 MHMP"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Charvátova-Vladislavova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166896711" lat="50.0818520" lon="14.4222999" version="1" timestamp="2013-02-22T13:08:24Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Jungmannova 35 - Charvátova 41 MHMP"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Charvátova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166896712" lat="50.0819622" lon="14.4222677" version="1" timestamp="2013-02-22T13:08:24Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Jungmannova 35 - Charvátova 41 MHMP"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Jungmannova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166898361" lat="50.0880804" lon="14.4253496" version="1" timestamp="2013-02-22T13:10:07Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Jakubská 6/676 -roh"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Jakubská 6"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166900409" lat="50.0825628" lon="14.4318003" version="1" timestamp="2013-02-22T13:14:03Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Washingtonova 25"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Opletalova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166904632" lat="50.0905775" lon="14.4100046" version="1" timestamp="2013-02-22T13:18:23Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Klárov "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166904633" lat="50.0905809" lon="14.4101602" version="1" timestamp="2013-02-22T13:18:23Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Klárov VO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166904634" lat="50.0908975" lon="14.4096774" version="1" timestamp="2013-02-22T13:18:23Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Klárov - Malostranská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166904635" lat="50.0821067" lon="14.4157875" version="1" timestamp="2013-02-22T13:18:23Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Karoliny Světlé - Krocínova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166906757" lat="50.0933307" lon="14.4282007" version="1" timestamp="2013-02-22T13:19:34Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Nové Mlýny"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kotviště lodí"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166908304" lat="50.0853527" lon="14.4246066" version="1" timestamp="2013-02-22T13:22:47Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Na Příkopě - u Slovanského domu"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Příkopě x Panská-Myslbek"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166908305" lat="50.0854387" lon="14.4249338" version="1" timestamp="2013-02-22T13:22:47Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Na Příkopě 19 - palác Myslbek - střecha"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Příkopě - u Slovanského domu"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166908306" lat="50.0870186" lon="14.4274765" version="1" timestamp="2013-02-22T13:22:47Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="KOB - Na Příkopě 33 -  dům"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="KOB 28.října -Můstek"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166909910" lat="50.0793528" lon="14.4167638" version="1" timestamp="2013-02-22T13:24:52Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Křemencova -Opatovická"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166909911" lat="50.0860170" lon="14.4140387" version="1" timestamp="2013-02-22T13:24:52Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Křižovnické náměstí 2"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166919165" lat="50.0861650" lon="14.4134486" version="1" timestamp="2013-02-22T13:30:21Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Staroměstská most. věž IV"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166919166" lat="50.0860790" lon="14.4133896" version="1" timestamp="2013-02-22T13:30:21Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Staroměstská most. věž II"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166919167" lat="50.0863853" lon="14.4134754" version="1" timestamp="2013-02-22T13:30:21Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Staroměstská most. věž VI"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166919168" lat="50.0860755" lon="14.4131857" version="1" timestamp="2013-02-22T13:30:21Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Staroměstská most. věž I"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166919169" lat="50.0862683" lon="14.4134593" version="1" timestamp="2013-02-22T13:30:21Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Staroměstská most. věž V"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166919170" lat="50.0860377" lon="14.4135505" version="1" timestamp="2013-02-22T13:30:21Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Staroměstská most. věž III"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166919171" lat="50.0861409" lon="14.4138402" version="1" timestamp="2013-02-22T13:30:21Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Staroměstská most. věž VIII"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166919172" lat="50.0863027" lon="14.4137061" version="1" timestamp="2013-02-22T13:30:21Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Staroměstská most. věž VII"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166923599" lat="50.0872355" lon="14.4072473" version="1" timestamp="2013-02-22T13:36:12Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Malostranská most. věž VII"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166923600" lat="50.0873525" lon="14.4073171" version="1" timestamp="2013-02-22T13:36:12Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Malostranská most. věž VIII"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166923601" lat="50.0871351" lon="14.4072133" version="1" timestamp="2013-02-22T13:36:12Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Malostranská most. věž VI"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166923602" lat="50.0873456" lon="14.4065982" version="1" timestamp="2013-02-22T13:36:13Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Mostecká 2/58 - Dražického nám. Hotel"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Mostecká 2/"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166923603" lat="50.0872527" lon="14.4068557" version="1" timestamp="2013-02-22T13:36:13Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Malostranská věž"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166923604" lat="50.0872045" lon="14.4070220" version="1" timestamp="2013-02-22T13:36:13Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Malostranská most. věž II"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166923605" lat="50.0873284" lon="14.4071561" version="1" timestamp="2013-02-22T13:36:13Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Malostranská most. věž I"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166923606" lat="50.0870737" lon="14.4069630" version="1" timestamp="2013-02-22T13:36:13Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Malostranská most. věž IV"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166923607" lat="50.0871150" lon="14.4068504" version="1" timestamp="2013-02-22T13:36:13Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Malostranská most. věž III"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166923608" lat="50.0870909" lon="14.4070971" version="1" timestamp="2013-02-22T13:36:13Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Karlův most - mostní věž- ochoz  "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Malostranská most. věž V"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166924971" lat="50.0892730" lon="14.4181961" version="1" timestamp="2013-02-22T13:39:33Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Maislova-Široká 7"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166924972" lat="50.0897308" lon="14.4184107" version="1" timestamp="2013-02-22T13:39:33Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Maislova 18"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166926864" lat="50.0884160" lon="14.4020170" version="1" timestamp="2013-02-22T13:41:38Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Malostranské náměstí 13"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Malostranské nám.-Nerudova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166926865" lat="50.0882852" lon="14.4020546" version="1" timestamp="2013-02-22T13:41:38Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Malostranské nám. 13/258 - dům"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Morový sloup"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166927281" lat="50.0882577" lon="14.4041199" version="1" timestamp="2013-02-22T13:42:10Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Malostranské nám."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166931370" lat="50.0874317" lon="14.4173861" version="1" timestamp="2013-02-22T13:47:29Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Mariánské nám. 1/98 - dům"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Marianske namesti 1"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166931374" lat="50.0755885" lon="14.4139016" version="1" timestamp="2013-02-22T13:47:29Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Rašinovo nábřeží VO 102126"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Mánes VO-pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166931378" lat="50.0756038" lon="14.4137490" version="1" timestamp="2013-02-22T13:47:29Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Rašinovo nábřeží VO 102126"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Mánes"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166931379" lat="50.0873697" lon="14.4173110" version="1" timestamp="2013-02-22T13:47:29Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Mariánské náměstí 1/98 "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Mariánské náměstí 1/98 Taxi"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166938393" lat="50.0881338" lon="14.4208625" version="1" timestamp="2013-02-22T13:51:21Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Staroměstské nám. 932/6"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="MMR ČR - pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166938394" lat="50.0816007" lon="14.4198323" version="1" timestamp="2013-02-22T13:51:21Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Spálená (stanice Metra - přístřešek)"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Metro Národní - Tesco"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166938395" lat="50.0882164" lon="14.4209266" version="1" timestamp="2013-02-22T13:51:22Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Staroměstské nám. 932/6"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="MMR ČR"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166971286" lat="50.0811463" lon="14.4282168" version="1" timestamp="2013-02-22T14:09:24Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Václ. náměstí - sloup VO 102 491"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Hvězda taxi"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166971287" lat="50.0812461" lon="14.4281900" version="1" timestamp="2013-02-22T14:09:24Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Václ. náměstí - sloup VO 102 491"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Jalta VO - Taxi"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2166976674" lat="50.0793494" lon="14.4155997" version="1" timestamp="2013-02-22T14:12:02Z" changeset="15122532" uid="1234904" user="vaja">
+    <tag k="designation" v="Pštrosova 27/218 - roh"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Struze-Pštrosová 27"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173202712" lat="50.0877724" lon="14.4187057" version="1" timestamp="2013-02-25T10:44:24Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="nám.Franze Kafky 1/16 dům MHMP "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="nám.Franze Kafky "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173202713" lat="50.0878447" lon="14.4187325" version="1" timestamp="2013-02-25T10:44:24Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="nám. Franze Kafky 1/16 - dům MHMP-fasáda"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="nám. Franze Kafky - taxi"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173204688" lat="50.0812530" lon="14.4134647" version="1" timestamp="2013-02-25T10:47:13Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Národní divadlo VO "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173205443" lat="50.0853424" lon="14.4138295" version="1" timestamp="2013-02-25T10:48:56Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Smetanovo nábřeží,VO 102010"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Novotného lávka"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173207533" lat="50.0868431" lon="14.4210151" version="1" timestamp="2013-02-25T10:52:40Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Staroměstské nam. 22/481 - Střecha"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Orloj I."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173207534" lat="50.0868087" lon="14.4210634" version="1" timestamp="2013-02-25T10:52:40Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Staroměstské nam. 22/481 - Střecha"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Orloj II."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173212297" lat="50.0864851" lon="14.4251645" version="1" timestamp="2013-02-25T10:57:54Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Ovocný trh 12/573 - dům"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Ovocný trh- Myslbek"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173212298" lat="50.0868999" lon="14.4258270" version="1" timestamp="2013-02-25T10:57:54Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Ovocný trh 14"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Ovocný trh- Celetná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173221196" lat="50.0886294" lon="14.4155568" version="1" timestamp="2013-02-25T11:01:34Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Křižovnická sloup VO 101 761"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Palachovo namesti"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173221201" lat="50.0886673" lon="14.4155649" version="1" timestamp="2013-02-25T11:01:34Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Křižovnická sloup VO 101 761"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Palachovo náměstí taxi"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173223001" lat="50.0899717" lon="14.4192422" version="1" timestamp="2013-02-25T11:04:22Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Pařížská 20 "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Pařížská 20 "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173227748" lat="50.0926734" lon="14.4092751" version="1" timestamp="2013-02-25T11:08:05Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="U Bruských kasáren - sloup VO 100043"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Pod bruskou"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173227754" lat="50.0838106" lon="14.4209936" version="1" timestamp="2013-02-25T11:08:05Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Perlová 1- roh"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Perlová- rytířská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173235466" lat="50.0876020" lon="14.3886784" version="1" timestamp="2013-02-25T11:11:46Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Pohořelec VO "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173237685" lat="50.0833424" lon="14.4277503" version="2" timestamp="2013-03-08T18:12:22Z" changeset="15293162" uid="1234904" user="vaja">
+    <tag k="designation" v="Jindřišská 909 "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Politických vězňů 2 -Jindřišská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173237686" lat="50.0814424" lon="14.4314382" version="1" timestamp="2013-02-25T11:15:24Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Politických vězňů"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Politických vězňů"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173240009" lat="50.0879256" lon="14.4193119" version="1" timestamp="2013-02-25T11:20:28Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="nám. France Kafky  1/16 "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Pomník J.Husa II"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173240010" lat="50.0868680" lon="14.4210339" version="1" timestamp="2013-02-25T11:20:28Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Staroměstské nam. 22"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Pomník J.Husa I"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173243303" lat="50.0891646" lon="14.4283429" version="1" timestamp="2013-02-25T11:23:33Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="nám. Republiky,"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Revoluční - Truhlářská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173265458" lat="50.0924669" lon="14.4267148" version="1" timestamp="2013-02-25T11:40:33Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Řásnovka "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Řásnovka-Hradební"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173270289" lat="50.0844939" lon="14.4290671" version="1" timestamp="2013-02-25T11:46:44Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Jindřišská 381"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Jindřišská "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173270688" lat="50.0854250" lon="14.4298235" version="1" timestamp="2013-02-25T11:47:43Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Smetanovo nábřeží"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173279247" lat="50.0827849" lon="14.4132126" version="1" timestamp="2013-02-25T11:59:17Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Smetanovo nábřeží"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173279248" lat="50.0876278" lon="14.3891853" version="1" timestamp="2013-02-25T11:59:17Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Pohořelec"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="socha J.Nepomucký"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173307114" lat="50.0797556" lon="14.4258887" version="1" timestamp="2013-02-25T12:25:25Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Štěpánská VO "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Štěpánská - V Jámě"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173307115" lat="50.0786884" lon="14.4241399" version="1" timestamp="2013-02-25T12:25:25Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Navrátilova 15/144"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Školská-Navrátilova 15"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173307116" lat="50.0790912" lon="14.4046939" version="1" timestamp="2013-02-25T12:25:25Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Újezd"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Sochy obětem Komunismu"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173307117" lat="50.0929866" lon="14.4272995" version="1" timestamp="2013-02-25T12:25:25Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Revoluční 30"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Štefánikův most"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173307118" lat="50.0888635" lon="14.4177830" version="1" timestamp="2013-02-25T12:25:25Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Žatecká 14/55"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Široká-Žatecká 14"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173307119" lat="50.0796902" lon="14.4258243" version="1" timestamp="2013-02-25T12:25:25Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Štěpánská VO "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Štěpánská - V Jámě VO -pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173309015" lat="50.0774284" lon="14.4251538" version="1" timestamp="2013-02-25T12:28:33Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Žitná 23"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Štěpánská VO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173309016" lat="50.0774629" lon="14.4252289" version="1" timestamp="2013-02-25T12:28:33Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Žitná 23"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Štěpánská VO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173323332" lat="50.0817659" lon="14.4068074" version="1" timestamp="2013-02-25T12:48:54Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Všehrdova 5/445 - dům"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Všehrdova 5"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173323333" lat="50.0880753" lon="14.4254756" version="1" timestamp="2013-02-25T12:48:54Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Templová 5/474 - roh"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Templová 5"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173323334" lat="50.0900165" lon="14.4171071" version="1" timestamp="2013-02-25T12:48:54Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="U Starého hřbitova 3A/243 - (Židovské muzeum)"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="U Starého hřbitova "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173323335" lat="50.0822961" lon="14.4194836" version="1" timestamp="2013-02-25T12:48:54Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Národní třída 26 "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Tesco"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173323336" lat="50.0876519" lon="14.4245798" version="1" timestamp="2013-02-25T12:48:54Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Štupartská 12/595 - fasáda"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Štupartská 12"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173324363" lat="50.0797418" lon="14.4273478" version="1" timestamp="2013-02-25T12:50:12Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Ve Smečkách 599/29-fasáda domu 2.patro"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Ve Smečkách "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173327164" lat="50.0878068" lon="14.4143766" version="1" timestamp="2013-02-25T12:57:20Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Veleslavínova 2A"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Veleslavínova 2A"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173327165" lat="50.0796799" lon="14.4272727" version="1" timestamp="2013-02-25T12:57:20Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Ve Smečkách 599/29-fasáda domu 2.patro"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Ve Smečkách-pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173329579" lat="50.0813150" lon="14.4199074" version="1" timestamp="2013-02-25T12:59:18Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Spálená (stanice Metra - přístřešek, vodotrysk)"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vladislavova Metro "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173329580" lat="50.0793287" lon="14.4216025" version="1" timestamp="2013-02-25T12:59:18Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Lazarská 7/15 -dům"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vladislavova ulice"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173332787" lat="50.0801067" lon="14.4235069" version="1" timestamp="2013-02-25T13:00:40Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vodičkova - Školská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173333217" lat="50.0795490" lon="14.4223321" version="1" timestamp="2013-02-25T13:01:23Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vodičkova-Jungmannova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173341631" lat="50.0846610" lon="14.4338873" version="1" timestamp="2013-02-25T13:14:27Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vrchlického sady 4."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2173341632" lat="50.0822444" lon="14.4323153" version="1" timestamp="2013-02-25T13:14:28Z" changeset="15159822" uid="1234904" user="vaja">
+    <tag k="designation" v="Washingtonova 23/1568 -roh"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Washingtonova 23"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174743594" lat="50.0713380" lon="14.4245047" version="1" timestamp="2013-02-26T08:08:29Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Viničná 1- mateřská školka"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Apolinářská-Viničná  "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174743595" lat="50.0747810" lon="14.4390261" version="1" timestamp="2013-02-26T08:08:29Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Blanická"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174744779" lat="50.0725913" lon="14.4425830" version="1" timestamp="2013-02-26T08:12:04Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Francouzská 46"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174744780" lat="50.0714344" lon="14.4295848" version="1" timestamp="2013-02-26T08:12:04Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Sokolská 22/1867 dům"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Fügnerovo náměstí"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174745292" lat="50.0756279" lon="14.4296491" version="1" timestamp="2013-02-26T08:13:03Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="náměstí I.P.Pavlova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174746456" lat="50.0755040" lon="14.4291771" version="1" timestamp="2013-02-26T08:15:09Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="IP Pavlova"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Ječná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174746457" lat="50.0757691" lon="14.4203741" version="1" timestamp="2013-02-26T08:15:09Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Karl.Nám. - ulice Ječná "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Ječná VO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174748755" lat="50.0648543" lon="14.4177348" version="1" timestamp="2013-02-26T08:21:46Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Vyšehradský hřbitov, Štulcova"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kapitula SO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174748756" lat="50.0638996" lon="14.4198403" version="1" timestamp="2013-02-26T08:21:46Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="K rotundě "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174753888" lat="50.0757897" lon="14.4194943" version="2" timestamp="2013-05-03T20:41:40Z" changeset="15965684" uid="152074" user="beweta">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Karlovo náměstí"/>
+    <tag k="name:de" v="Karlsplatz"/>
+    <tag k="name:ru" v="Карлова площадь"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174753889" lat="50.0759481" lon="14.4190866" version="1" timestamp="2013-02-26T08:29:17Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Karl.nám. - roh SpálenáxŽitná"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Spálená-Žitná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174753890" lat="50.0768776" lon="14.4202185" version="2" timestamp="2013-05-03T20:41:40Z" changeset="15965684" uid="152074" user="beweta">
+    <tag k="designation" v="Karl.Nám. - uvnitř parku"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Park Karlovo nám. I."/>
+    <tag k="name:de" v="Karlsplatz-Park I"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174753891" lat="50.0752974" lon="14.4196552" version="2" timestamp="2013-05-03T20:41:41Z" changeset="15965684" uid="152074" user="beweta">
+    <tag k="designation" v="Karl.Nám. - uvnitř parku"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Park Karlovo nám. II"/>
+    <tag k="name:de" v="Karlsplatz-Park II"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174753892" lat="50.0736448" lon="14.4193334" version="1" timestamp="2013-02-26T08:29:18Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Karl.nám. - ulice U Nemocnice"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Park Karlovo nám.III J8 (U Nemocnice)"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174762903" lat="50.0646890" lon="14.4180459" version="1" timestamp="2013-02-26T08:47:06Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kostel-Vyšehradský hřbitov, Štulcova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174767184" lat="50.0750461" lon="14.4302553" version="1" timestamp="2013-02-26T08:51:24Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="IP Pavlova"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Legerova-Nuselský most"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174768287" lat="50.0729631" lon="14.4274551" version="1" timestamp="2013-02-26T08:52:22Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Na Bojišti 2/1950 dům"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Bojišti 2"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174769671" lat="50.0668722" lon="14.4320631" version="1" timestamp="2013-02-26T08:55:00Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Na Folimance 2-sportovní hala - roh"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Folimance 2-"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174775511" lat="50.0748016" lon="14.4374329" version="1" timestamp="2013-02-26T08:58:27Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="nám. Míru - Francouzská "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="nám.Míru - Sv. Ludmila"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174775516" lat="50.0734624" lon="14.4149292" version="1" timestamp="2013-02-26T08:58:27Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Gorazdova 1/357 roh"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Moráni 3 - Gorazdova  "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174777872" lat="50.0752044" lon="14.4350618" version="1" timestamp="2013-02-26T09:00:36Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Náměstí Míru 20/600 - roh"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Náměstí Míru 20"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174780520" lat="50.0768191" lon="14.4151706" version="1" timestamp="2013-02-26T09:02:30Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Náplavní "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174785457" lat="50.0695097" lon="14.4298262" version="1" timestamp="2013-02-26T09:09:09Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Sokolská 4/1882 - střecha"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Nuselský most-Transgas"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174785461" lat="50.0656808" lon="14.4282276" version="1" timestamp="2013-02-26T09:09:09Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Oldřichova VO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174788240" lat="50.0730802" lon="14.4143498" version="1" timestamp="2013-02-26T09:13:11Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Palackého nábřeží"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Palackého nám. VO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174788244" lat="50.0725362" lon="14.4145698" version="1" timestamp="2013-02-26T09:13:11Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Palackého nábřeží "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Palackého náměstí VO-Pevná-park"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174788247" lat="50.0729218" lon="14.4147843" version="1" timestamp="2013-02-26T09:13:11Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Palackého nábřeží "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Palackého nám. VO-pevná socha"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174790917" lat="50.0647407" lon="14.4174129" version="1" timestamp="2013-02-26T09:14:48Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Vyšehradský hřbitov, Štulcova"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Slavín"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174806546" lat="50.0762579" lon="14.4439078" version="1" timestamp="2013-02-26T09:25:41Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Slezská - Šumavská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174806547" lat="50.0706047" lon="14.4168765" version="1" timestamp="2013-02-26T09:25:41Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Pod Slovany 16"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Trojická-Pod Slovany  "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174807411" lat="50.0755556" lon="14.4319719" version="1" timestamp="2013-02-26T09:27:19Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Jugoslávská 11"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Tylovo náměstí"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174808472" lat="50.0744298" lon="14.4167531" version="1" timestamp="2013-02-26T09:29:05Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Trojanova 13/339 roh"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Václavská "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174812035" lat="50.0790017" lon="14.4336564" version="1" timestamp="2013-02-26T09:31:53Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Vinohradská"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vinohradská -Španělská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174815950" lat="50.0657186" lon="14.4204813" version="1" timestamp="2013-02-26T09:35:17Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="designation" v="Vratislavova 31 roh"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vratislavova 31"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2174815951" lat="50.0771411" lon="14.4418663" version="1" timestamp="2013-02-26T09:35:17Z" changeset="15170199" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vinohradská-Budečská "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175330583" lat="50.0848846" lon="14.4535905" version="1" timestamp="2013-02-26T17:11:15Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="designation" v="Havlíčkovo náměstí 10/300 "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Havlíčkovo náměstí 10"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175330584" lat="50.0843373" lon="14.4703651" version="1" timestamp="2013-02-26T17:11:15Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="designation" v="Olšanská"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="J. Želivského - Olšanská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175338990" lat="50.0869532" lon="14.4606608" version="1" timestamp="2013-02-26T17:14:30Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="designation" v="Jeseniova 41/449"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Jeseniova 42"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175338995" lat="50.0863715" lon="14.4592875" version="1" timestamp="2013-02-26T17:14:31Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Jeseniova "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175341430" lat="50.0823615" lon="14.4522172" version="1" timestamp="2013-02-26T17:18:47Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="designation" v="Čajkovského sloup"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kubelíkova "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175343923" lat="50.0808503" lon="14.4511926" version="1" timestamp="2013-02-26T17:23:41Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Mahlerovy sady"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175373611" lat="50.0776006" lon="14.4491917" version="1" timestamp="2013-02-26T17:39:06Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="nám. J. z Poděbrad"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175373612" lat="50.0770876" lon="14.4670558" version="2" timestamp="2013-02-26T17:41:58Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="designation" v="Slezská sloup"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="nám. J. z Lobkovic"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175379753" lat="50.0775351" lon="14.4671089" version="1" timestamp="2013-02-26T17:41:58Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="nám.J.z Lobkovic"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175394803" lat="50.0830981" lon="14.4593358" version="1" timestamp="2013-02-26T17:49:57Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="designation" v="Olšanské náměstí"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Olšanské náměstí VO - web"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175394804" lat="50.0833046" lon="14.4589979" version="1" timestamp="2013-02-26T17:49:57Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Olšanské náměstí"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175394805" lat="50.0832358" lon="14.4644696" version="1" timestamp="2013-02-26T17:49:57Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Olšanská 2"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175394807" lat="50.0903675" lon="14.4679618" version="1" timestamp="2013-02-26T17:49:57Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Ohrada ( Koněvova - J. Želivského"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175398961" lat="50.0800916" lon="14.4510663" version="1" timestamp="2013-02-26T17:51:36Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="designation" v="Mahlerovy sady"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Ondříčkova-Milešovská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175406586" lat="50.0867020" lon="14.4522119" version="1" timestamp="2013-02-26T17:54:39Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="designation" v="Prokopova ulice"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Prokopovo náměstí"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175406602" lat="50.0867123" lon="14.4520027" version="1" timestamp="2013-02-26T17:54:39Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="designation" v="Prokopova ul. "/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Prokopovo náměstí VO-pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175421552" lat="50.0858518" lon="14.4394124" version="1" timestamp="2013-02-26T17:58:54Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Seifertova - Příběnická DP-pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175421553" lat="50.0859516" lon="14.4392944" version="1" timestamp="2013-02-26T17:58:54Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Seifertova - Příběnická"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175430498" lat="50.0850773" lon="14.4457209" version="1" timestamp="2013-02-26T18:01:58Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="designation" v="Seifertova 51- dům"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Seifrtova-park před stadionem"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175430530" lat="50.0850154" lon="14.4458175" version="1" timestamp="2013-02-26T18:01:58Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Seifertova 51-Husinecká"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175480333" lat="50.0917373" lon="14.4982010" version="1" timestamp="2013-02-26T18:12:58Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="designation" v="Českobrodská"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Spojovací - Koněvova VO - pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175480338" lat="50.0876347" lon="14.4530836" version="1" timestamp="2013-02-26T18:12:59Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Tachovské náměstí"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175480342" lat="50.0787951" lon="14.4610632" version="1" timestamp="2013-02-26T18:12:59Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vinohradská - Jičínská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175480345" lat="50.0919782" lon="14.4978845" version="1" timestamp="2013-02-26T18:12:59Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="designation" v="Českobrodská"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Spojovací - Koněvova VO - pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175480347" lat="50.0918853" lon="14.4981581" version="1" timestamp="2013-02-26T18:12:59Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="designation" v="Českobrodská"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Spojovací - Koněvova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175496955" lat="50.0783924" lon="14.4747746" version="1" timestamp="2013-02-26T18:17:59Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Metro Želivského "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2175496960" lat="50.0774284" lon="14.4567287" version="1" timestamp="2013-02-26T18:17:59Z" changeset="15175860" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vinohradská 110"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177310729" lat="50.0597163" lon="14.4327069" version="1" timestamp="2013-02-27T15:47:25Z" changeset="15187103" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="5.května 51 - WEB"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177310736" lat="50.0597058" lon="14.4327822" version="2" timestamp="2013-03-14T15:05:04Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="designation" v="5.května 51"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="5.května 51 - WEB dopravní kamera"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177334848" lat="50.0648061" lon="14.4403726" version="1" timestamp="2013-02-27T16:10:35Z" changeset="15187103" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Bělehradská 5 "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177337722" lat="50.0566064" lon="14.4335598" version="1" timestamp="2013-02-27T16:12:31Z" changeset="15187103" uid="1234904" user="vaja">
+    <tag k="designation" v="nám. Hrdinů 3/1634"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Centrotex IPB Real"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177365101" lat="50.0625368" lon="14.4329804" version="1" timestamp="2013-02-27T16:26:50Z" changeset="15187103" uid="1234904" user="vaja">
+    <tag k="designation" v="Kongresová 1"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="hotel Corinthia"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177365109" lat="50.0625161" lon="14.4321329" version="1" timestamp="2013-02-27T16:26:50Z" changeset="15187103" uid="1234904" user="vaja">
+    <tag k="designation" v="Kongresová 1"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="hotel CorinthiaTowers"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177381384" lat="50.0625574" lon="14.4297301" version="1" timestamp="2013-02-27T16:41:59Z" changeset="15187103" uid="1234904" user="vaja">
+    <tag k="designation" v="5. Května 65/1640"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kongresové centrum"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177403227" lat="50.0615656" lon="14.4257277" version="1" timestamp="2013-02-27T17:06:23Z" changeset="15187103" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Pankráci 5/995"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177409633" lat="50.0624748" lon="14.4352228" version="1" timestamp="2013-02-27T17:12:19Z" changeset="15187103" uid="1234904" user="vaja">
+    <tag k="designation" v="Na  Vítězné pláňi 7/1160"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na  Vítězné pláňi 7"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177416469" lat="50.0644962" lon="14.4409091" version="1" timestamp="2013-02-27T17:19:27Z" changeset="15187103" uid="1234904" user="vaja">
+    <tag k="designation" v="Bělehradská"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Nám. Bratří Synků VO-pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177418999" lat="50.0647131" lon="14.4404799" version="1" timestamp="2013-02-27T17:23:25Z" changeset="15187103" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Náměstí bratří Synků 1"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177419009" lat="50.0639521" lon="14.4410753" version="1" timestamp="2013-02-27T17:23:25Z" changeset="15187103" uid="1234904" user="vaja">
+    <tag k="designation" v="Náměstí bratří Synků 8"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Náměstí bratří Synků 8"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177446548" lat="50.0602363" lon="14.4494385" version="1" timestamp="2013-02-27T17:42:45Z" changeset="15187103" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Nuselská-Kloboučnická VO-pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177446577" lat="50.0603672" lon="14.4496209" version="1" timestamp="2013-02-27T17:42:46Z" changeset="15187103" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Nuselská-Kloboučnická VO-pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177446612" lat="50.0600986" lon="14.4497925" version="1" timestamp="2013-02-27T17:42:47Z" changeset="15187103" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Nuselská-Kloboučnická"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177464101" lat="50.0590792" lon="14.4198591" version="1" timestamp="2013-02-27T17:55:38Z" changeset="15187103" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Podolská 33/158"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177464108" lat="50.0617240" lon="14.4358450" version="2" timestamp="2013-07-08T06:20:25Z" changeset="16868890" uid="161619" user="FvGordon">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Petra Rezka"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2177464376" lat="50.0639159" lon="14.4248855" version="1" timestamp="2013-02-27T17:56:32Z" changeset="15187103" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Slavojova 12/86"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178286726" lat="50.0761581" lon="14.4039053" version="1" timestamp="2013-02-28T12:07:10Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="designation" v="Štefánikova 41"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Arbesovo náměstí 4"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178290094" lat="50.0743644" lon="14.4034493" version="1" timestamp="2013-02-28T12:12:04Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="TSK Štefánikova 23 web"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178290097" lat="50.0743541" lon="14.4035942" version="1" timestamp="2013-02-28T12:12:04Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="designation" v="Štefánikova 23"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="TSK Štefánikova 23 "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178297958" lat="50.0732282" lon="14.3956495" version="1" timestamp="2013-02-28T12:23:24Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Grafická-Kmochova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178306948" lat="50.0739444" lon="14.3948823" version="1" timestamp="2013-02-28T12:33:50Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Holečkova 41 "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178306953" lat="50.0704807" lon="14.4087065" version="1" timestamp="2013-02-28T12:33:50Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="designation" v="Svornosti 19/952"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Jindřicha Plachty - Svornosti 19"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178306959" lat="50.0781514" lon="14.4020546" version="1" timestamp="2013-02-28T12:33:51Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Holečkova - Drtinova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178306960" lat="50.0812840" lon="14.4079501" version="1" timestamp="2013-02-28T12:33:51Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="designation" v="Vítězná 1"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vítězná - Janáčkovo nábř"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178309051" lat="50.0688727" lon="14.4009710" version="1" timestamp="2013-02-28T12:36:16Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Ostrovského 24"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178315709" lat="50.0656429" lon="14.3887884" version="1" timestamp="2013-02-28T12:42:34Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="U Šalamounky 2/2664"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178331539" lat="50.0714620" lon="14.3962449" version="1" timestamp="2013-02-28T13:02:45Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Mozartova 8 - roh"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178331981" lat="50.0687832" lon="14.4047636" version="1" timestamp="2013-02-28T13:03:48Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Knížecí"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178332705" lat="50.0714413" lon="14.4000000" version="1" timestamp="2013-02-28T13:06:01Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="designation" v="Kováků 34/213"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Plzeňská - Kováků 34"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178333473" lat="50.0716799" lon="14.4009543" version="1" timestamp="2013-02-28T13:07:51Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="designation" v="Radlická 2/608"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Plzeňská - Radlická"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178333474" lat="50.0718338" lon="14.4027251" version="1" timestamp="2013-02-28T13:07:51Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Plzeňská - Stropežnického"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178334761" lat="50.0708767" lon="14.4025535" version="1" timestamp="2013-02-28T13:09:10Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Stroupežnického - Bozděchova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178341767" lat="50.0789053" lon="14.4051928" version="1" timestamp="2013-02-28T13:16:32Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="náměstí Kinských 5/234"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178341768" lat="50.0712279" lon="14.4048816" version="1" timestamp="2013-02-28T13:16:33Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Nádražní 118"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178341769" lat="50.0718511" lon="14.3881500" version="1" timestamp="2013-02-28T13:16:33Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Plzeňská 796/82"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178345155" lat="50.0693892" lon="14.3740255" version="1" timestamp="2013-02-28T13:17:54Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Zámyšli 501/1"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178355471" lat="50.0614485" lon="14.4102782" version="1" timestamp="2013-02-28T13:26:15Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Smíchovské nádraží I."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178355474" lat="50.0628949" lon="14.4098491" version="1" timestamp="2013-02-28T13:26:15Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Smíchovské nádraží II."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178355475" lat="50.0703671" lon="14.3756026" version="1" timestamp="2013-02-28T13:26:15Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="pošta Plzeňská 139"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178356924" lat="50.0734520" lon="14.4082666" version="1" timestamp="2013-02-28T13:30:07Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Zborovská 8"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178356925" lat="50.0777555" lon="14.4071883" version="1" timestamp="2013-02-28T13:30:07Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Zborovská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2178356926" lat="50.0766125" lon="14.4073385" version="1" timestamp="2013-02-28T13:30:07Z" changeset="15195880" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Zborovská- pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185621723" lat="50.0837556" lon="14.3710321" version="1" timestamp="2013-03-04T14:44:00Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Bělohorská 70"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185621724" lat="50.0839690" lon="14.3643803" version="1" timestamp="2013-03-04T14:44:00Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Bělohorská 128/1690"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185621725" lat="50.0846505" lon="14.3755651" version="1" timestamp="2013-03-04T14:44:00Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Pod Marjánkou 2/1900"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185622257" lat="50.0863646" lon="14.3855965" version="1" timestamp="2013-03-04T14:44:45Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Diskařská,Bělohorská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185627643" lat="50.0978304" lon="14.4008768" version="1" timestamp="2013-03-04T14:53:13Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Dejvická 1/176"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185627644" lat="50.0985340" lon="14.3994636" version="1" timestamp="2013-03-04T14:53:13Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Dejvická-Čkalova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185627645" lat="50.0857313" lon="14.3831343" version="1" timestamp="2013-03-04T14:53:13Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Bělohorská-Vaníčkova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185632057" lat="50.1000721" lon="14.3872863" version="1" timestamp="2013-03-04T14:58:17Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Evropská - Gymnazijní  "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185632062" lat="50.1012352" lon="14.4025105" version="1" timestamp="2013-03-04T14:58:17Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Eliášova č.31/791"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185635427" lat="50.0960599" lon="14.3472139" version="1" timestamp="2013-03-04T15:01:04Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Evropská - Vokovická "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185635758" lat="50.0981038" lon="14.3582863" version="1" timestamp="2013-03-04T15:01:46Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Evropská 677"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185640043" lat="50.0936060" lon="14.2980975" version="1" timestamp="2013-03-04T15:05:48Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Evropská-K letišti"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185642180" lat="50.0926355" lon="14.3211860" version="1" timestamp="2013-03-04T15:09:03Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Evropská-Vlastina"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185642190" lat="50.1003233" lon="14.3889439" version="1" timestamp="2013-03-04T15:09:03Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Evropská-Studenská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185644808" lat="50.0962456" lon="14.3471927" version="1" timestamp="2013-03-04T15:10:30Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Evropská-U Vokovické školy "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185647594" lat="50.0888463" lon="14.3865675" version="1" timestamp="2013-03-04T15:15:09Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Hládkov-Morstadtova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185649335" lat="50.0972263" lon="14.4043344" version="1" timestamp="2013-03-04T15:17:20Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Milady Horákové - Metro A"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185652222" lat="50.0970474" lon="14.4035244" version="1" timestamp="2013-03-04T15:21:52Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Hradčanská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185654333" lat="50.0966620" lon="14.3619126" version="1" timestamp="2013-03-04T15:25:19Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Krátký Lán 5/275"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185654334" lat="50.0984101" lon="14.3978060" version="1" timestamp="2013-03-04T15:25:19Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kafkova-Kyjevská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185654335" lat="50.0988746" lon="14.3965507" version="1" timestamp="2013-03-04T15:25:19Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kafkova 17/588"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185654663" lat="50.0837556" lon="14.3712521" version="1" timestamp="2013-03-04T15:26:35Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Bělohorská č.63/493"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2185656680" lat="50.0881785" lon="14.3437380" version="1" timestamp="2013-03-04T15:28:54Z" changeset="15247341" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Petřinách 72"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186729280" lat="50.0882611" lon="14.3702275" version="1" timestamp="2013-03-05T07:09:48Z" changeset="15255002" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Petynce- Na Zástřelu"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186737667" lat="50.0874489" lon="14.3828714" version="1" timestamp="2013-03-05T07:17:20Z" changeset="15255002" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Parléřova - Panenská "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186737670" lat="50.1009220" lon="14.3995923" version="1" timestamp="2013-03-05T07:17:20Z" changeset="15255002" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="nám.Svobody - Čkalova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186740166" lat="50.0876898" lon="14.3850655" version="1" timestamp="2013-03-05T07:20:12Z" changeset="15255002" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Parléřova 4/118"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186740167" lat="50.0858518" lon="14.3668372" version="1" timestamp="2013-03-05T07:20:12Z" changeset="15255002" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Patočkova-Junácká"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186741459" lat="50.0953095" lon="14.3966151" version="1" timestamp="2013-03-05T07:23:28Z" changeset="15255002" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="M.Horákové - Svatovítská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186741460" lat="50.0848983" lon="14.3789929" version="1" timestamp="2013-03-05T07:23:28Z" changeset="15255002" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Bělohorská č.9/274"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186743791" lat="50.0871460" lon="14.3723303" version="1" timestamp="2013-03-05T07:28:38Z" changeset="15255002" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Radimova-Kajetánka"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186743794" lat="50.0875177" lon="14.3663866" version="1" timestamp="2013-03-05T07:28:38Z" changeset="15255002" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Radimova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186750596" lat="50.0878757" lon="14.3486089" version="1" timestamp="2013-03-05T07:37:57Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Šantrochova ZŠ "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186759891" lat="50.1007878" lon="14.3848938" version="1" timestamp="2013-03-05T07:42:51Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Šárecká - Mydlářka"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186761415" lat="50.1028902" lon="14.3917066" version="1" timestamp="2013-03-05T07:44:28Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Technická 4/1902"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186762215" lat="50.0963316" lon="14.4055629" version="1" timestamp="2013-03-05T07:46:44Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Valech"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186762216" lat="50.0949895" lon="14.4036746" version="1" timestamp="2013-03-05T07:46:44Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Tychonova-U Písecké brány"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186764345" lat="50.0971093" lon="14.3982619" version="1" timestamp="2013-03-05T07:50:08Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Václavkova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186773440" lat="50.1006399" lon="14.3943942" version="1" timestamp="2013-03-05T07:59:42Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vítězné nám.-Metro"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186773441" lat="50.1006089" lon="14.3960947" version="1" timestamp="2013-03-05T07:59:43Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vítězné nám.- Čs. Armády "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186773442" lat="50.1006227" lon="14.3953222" version="1" timestamp="2013-03-05T07:59:43Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vítězné nám.-střed "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186773444" lat="50.0804269" lon="14.3903762" version="1" timestamp="2013-03-05T07:59:43Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vaníčkova - Chaloupeckého "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186773997" lat="50.1002889" lon="14.3944907" version="1" timestamp="2013-03-05T08:00:39Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vítězné náměstí metro"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186774896" lat="50.0893522" lon="14.3081343" version="1" timestamp="2013-03-05T08:01:46Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vlastina 36/350"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186777613" lat="50.0799105" lon="14.3472409" version="1" timestamp="2013-03-05T08:03:24Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vypich-Bělohorská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186780245" lat="50.0829604" lon="14.3785852" version="1" timestamp="2013-03-05T08:04:57Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Za Strahovem 23/1105"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186782575" lat="50.1016859" lon="14.3907035" version="1" timestamp="2013-03-05T08:07:51Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Zikova 4- Vítězné nám."/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186782576" lat="50.1021952" lon="14.3884826" version="1" timestamp="2013-03-05T08:07:51Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Zikova 4- Vítězné nám.- zastávka MHD"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186786167" lat="50.0901577" lon="14.3085149" version="2" timestamp="2013-03-05T08:25:51Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Ciolkovského 1/853"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186801438" lat="50.0986303" lon="14.4120378" version="1" timestamp="2013-03-05T08:29:19Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="AC Sparta-pok. Č. 4-Král.obora "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186801445" lat="50.0987955" lon="14.4124025" version="1" timestamp="2013-03-05T08:29:19Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="AC Sparta-pokladna č.4"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186801451" lat="50.0986200" lon="14.4123328" version="1" timestamp="2013-03-05T08:29:19Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="AC Sparta-pok. Č. 4-parkoviště pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186818678" lat="50.0977046" lon="14.4072527" version="1" timestamp="2013-03-05T08:35:00Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Sparta VO-pevná-Hradčany"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186818679" lat="50.0995078" lon="14.4172949" version="1" timestamp="2013-03-05T08:35:00Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Sparta VO-pevná-U Sparty"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186818680" lat="50.0992119" lon="14.4170481" version="1" timestamp="2013-03-05T08:35:00Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Sparta - tram.zas. VO pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186819483" lat="50.0992531" lon="14.4177562" version="1" timestamp="2013-03-05T08:37:01Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Sparta -M.Horákové"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186828349" lat="50.0987748" lon="14.4345308" version="1" timestamp="2013-03-05T08:46:40Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Strossmayerovo náměstí"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186828350" lat="50.1011044" lon="14.4327981" version="1" timestamp="2013-03-05T08:46:40Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Dukelských Hrdinů 45/47"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186831124" lat="50.0980006" lon="14.4369555" version="1" timestamp="2013-03-05T08:51:19Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Bubenečské nábřeží "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186831361" lat="50.0990432" lon="14.4367570" version="1" timestamp="2013-03-05T08:52:07Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Bubenská 1 - kulturní dům Vltavská-střecha budovy"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2186832382" lat="50.0983378" lon="14.4367892" version="1" timestamp="2013-03-05T08:54:10Z" changeset="15255196" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Nergeliho viadukt"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187149941" lat="50.1033822" lon="14.4559509" version="1" timestamp="2013-03-05T13:38:40Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Dělnická-Jankovcova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187162105" lat="50.1019027" lon="14.4504363" version="1" timestamp="2013-03-05T13:52:54Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Tusarova 35/429"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187162106" lat="50.1018270" lon="14.4540411" version="1" timestamp="2013-03-05T13:52:55Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="designation" v="Tusarova 1271/60"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Tusarova - Armáda spásy"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187162107" lat="50.1017238" lon="14.4538373" version="1" timestamp="2013-03-05T13:52:55Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="designation" v="Tusarova 1271/60"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Tusarova - Armáda spásy- pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187165354" lat="50.1019577" lon="14.4474000" version="1" timestamp="2013-03-05T13:56:54Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Tusarova 790/21, Osadní - roh Základní školy"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187165355" lat="50.1005126" lon="14.4501144" version="1" timestamp="2013-03-05T13:56:54Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Jateční - Komunardů VO"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187165360" lat="50.1021229" lon="14.4471210" version="1" timestamp="2013-03-05T13:56:54Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Tusarova  21/790"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187165763" lat="50.1004437" lon="14.4504684" version="1" timestamp="2013-03-05T13:57:29Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Jateční - park "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187168701" lat="50.1008704" lon="14.4465631" version="1" timestamp="2013-03-05T13:59:23Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Jateční 17/1457"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187178098" lat="50.0992497" lon="14.4356358" version="1" timestamp="2013-03-05T14:08:28Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Farského 1/1385 - Kostel sv. Antonína - roh"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187180074" lat="50.1003130" lon="14.4305986" version="1" timestamp="2013-03-05T14:10:32Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Františka Křížka 26/736"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187180075" lat="50.0972883" lon="14.4310171" version="1" timestamp="2013-03-05T14:10:32Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Fr.Křížka 2/490"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187180399" lat="50.1005091" lon="14.4357324" version="1" timestamp="2013-03-05T14:11:20Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Heřmanova,Farského"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187182630" lat="50.1027010" lon="14.4240809" version="1" timestamp="2013-03-05T14:16:32Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="U akademie 2/172"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187186056" lat="50.1017100" lon="14.4166726" version="1" timestamp="2013-03-05T14:19:45Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Korunovační 29/630"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187188365" lat="50.0972366" lon="14.4249499" version="1" timestamp="2013-03-05T14:21:38Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kostelní 42/1320"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187191747" lat="50.0951306" lon="14.4155354" version="1" timestamp="2013-03-05T14:25:49Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kyvadlo - pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187191748" lat="50.0947314" lon="14.4160289" version="1" timestamp="2013-03-05T14:25:49Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kyvadlo - vlajka pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187193954" lat="50.0951856" lon="14.4162649" version="1" timestamp="2013-03-05T14:27:01Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kyvadlo-vlajkový stožár býval. památníku Stalina"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187210472" lat="50.0997693" lon="14.4223213" version="1" timestamp="2013-03-05T14:41:15Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="M. Horákové 384/83"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187211656" lat="50.1002875" lon="14.4239277" version="1" timestamp="2013-03-05T14:43:05Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Letenské náměstí 6"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187237412" lat="50.0994390" lon="14.4385809" version="1" timestamp="2013-03-05T15:16:25Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Metro Vltavská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187249687" lat="50.1004320" lon="14.4360111" version="1" timestamp="2013-03-05T15:26:36Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="designation" v="Heřmanova 1388"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Řezáčovo náměstí"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187254308" lat="50.0944716" lon="14.4370735" version="2" timestamp="2013-04-12T16:08:15Z" changeset="15702795" uid="152074" user="beweta">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Hlávkův most"/>
+    <tag k="name:de" v="Hlávka-Brücke"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187269228" lat="50.0985580" lon="14.4120914" version="1" timestamp="2013-03-05T15:50:33Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Milady Horákové 98"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2187273054" lat="50.0987783" lon="14.4364566" version="1" timestamp="2013-03-05T15:54:37Z" changeset="15258658" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Bubenská 1 - wilsonova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197191197" lat="50.0905327" lon="14.4373149" version="1" timestamp="2013-03-12T09:11:36Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Florenc - Billa "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197202080" lat="50.0901472" lon="14.4419390" version="1" timestamp="2013-03-12T09:17:57Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Florenc V.příjezd"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197202084" lat="50.0898857" lon="14.4415099" version="1" timestamp="2013-03-12T09:17:57Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Florenc-nástupiště -pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197202088" lat="50.0892249" lon="14.4400186" version="1" timestamp="2013-03-12T09:17:57Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Florenc III.nást. 52"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197202092" lat="50.0891078" lon="14.4404906" version="1" timestamp="2013-03-12T09:17:57Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Florenc II.nást. 25"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197202095" lat="50.0897755" lon="14.4409198" version="1" timestamp="2013-03-12T09:17:57Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Florenc IV.nást. 7"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197202099" lat="50.0892317" lon="14.4408018" version="1" timestamp="2013-03-12T09:17:57Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Florenc I.nást. 2"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197202102" lat="50.0899407" lon="14.4418425" version="1" timestamp="2013-03-12T09:17:57Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Florenc IV VO -pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197217573" lat="50.0896516" lon="14.4518632" version="1" timestamp="2013-03-12T09:32:44Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Invalidovna - Park 3"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197217580" lat="50.0900233" lon="14.4539875" version="1" timestamp="2013-03-12T09:32:44Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Invalidovna - Park 4"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197217582" lat="50.0903124" lon="14.4555110" version="1" timestamp="2013-03-12T09:32:44Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Invalidovna - Park 5"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197217587" lat="50.0886060" lon="14.4468646" version="1" timestamp="2013-03-12T09:32:44Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Invalidovna - Park 1"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197217591" lat="50.0892799" lon="14.4495243" version="1" timestamp="2013-03-12T09:32:44Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Invalidovna - Park 2"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197328287" lat="50.0972091" lon="14.4644159" version="1" timestamp="2013-03-12T10:03:33Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Invalidovna Metro"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197328290" lat="50.0909732" lon="14.4587296" version="1" timestamp="2013-03-12T10:03:33Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Invalidovna - Park 7 - otočná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197328293" lat="50.0907667" lon="14.4568843" version="1" timestamp="2013-03-12T10:03:33Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Invalidovna - Park 6"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197328296" lat="50.0914145" lon="14.4602542" version="1" timestamp="2013-03-12T10:03:33Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Invalidovna - Park 8 - otočná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197359825" lat="50.0952269" lon="14.4599527" version="1" timestamp="2013-03-12T10:15:12Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kaizlovy sady5"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197359826" lat="50.0948071" lon="14.4601244" version="1" timestamp="2013-03-12T10:15:12Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kaizlovy sady7"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197359827" lat="50.0944492" lon="14.4604355" version="1" timestamp="2013-03-12T10:15:12Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kaizlovy sady8 -otočná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197359828" lat="50.0946557" lon="14.4594699" version="1" timestamp="2013-03-12T10:15:12Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kaizlovy sady6"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197359829" lat="50.0954541" lon="14.4592339" version="1" timestamp="2013-03-12T10:15:12Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kaizlovy sady2"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197359830" lat="50.0956881" lon="14.4596631" version="1" timestamp="2013-03-12T10:15:12Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kaizlovy sady3"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197359831" lat="50.0949929" lon="14.4589662" version="1" timestamp="2013-03-12T10:15:12Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kaizlovy sady4"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197359832" lat="50.0953990" lon="14.4586867" version="1" timestamp="2013-03-12T10:15:12Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kaizlovy sady1"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197371419" lat="50.0929625" lon="14.4464559" version="1" timestamp="2013-03-12T10:19:28Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Karlínské náměstí-Sokolovská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197371428" lat="50.0923705" lon="14.4474322" version="1" timestamp="2013-03-12T10:19:28Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Karlínské náměstí"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197371436" lat="50.0908218" lon="14.4486660" version="1" timestamp="2013-03-12T10:19:28Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Karlínské nám. 316/7"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197371443" lat="50.0908218" lon="14.4489986" version="1" timestamp="2013-03-12T10:19:28Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Karlínské nám. 316/7"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197371449" lat="50.0907340" lon="14.4478587" version="1" timestamp="2013-03-12T10:19:28Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Karlínské náměstí 7"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197396751" lat="50.0933651" lon="14.4517881" version="1" timestamp="2013-03-12T10:30:18Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Křižíkova-Metro II"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197396752" lat="50.0936645" lon="14.4516218" version="1" timestamp="2013-03-12T10:30:18Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Křižíkova-Metro I"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197447285" lat="50.1030588" lon="14.4742060" version="1" timestamp="2013-03-12T11:04:49Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Novákových - Palmovka"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197447286" lat="50.1029934" lon="14.4741792" version="1" timestamp="2013-03-12T11:04:49Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Novákových - Palmovka - VO - pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197454119" lat="50.1033685" lon="14.4739002" version="1" timestamp="2013-03-12T11:14:07Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Zenklova 12/351 pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197454120" lat="50.1031379" lon="14.4741202" version="1" timestamp="2013-03-12T11:14:07Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Zenklova 12/351- pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197454121" lat="50.1032343" lon="14.4738573" version="1" timestamp="2013-03-12T11:14:08Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Palmovka KB,Zenklova 12"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197464730" lat="50.0909767" lon="14.4530434" version="1" timestamp="2013-03-12T11:24:27Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Pernerova - Thámova VO -otočná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197464735" lat="50.0911901" lon="14.4419766" version="1" timestamp="2013-03-12T11:24:27Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Prvního Pluku 17/320"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197464748" lat="50.0910868" lon="14.4427812" version="1" timestamp="2013-03-12T11:24:27Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Prvního pluku 6/172"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197464752" lat="50.0909732" lon="14.4531507" version="1" timestamp="2013-03-12T11:24:27Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Pernerova - Thámova VO -pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197582862" lat="50.1030313" lon="14.5033401" version="1" timestamp="2013-03-12T12:53:53Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Freyova - U Harfy"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197599960" lat="50.1031311" lon="14.4926596" version="1" timestamp="2013-03-12T13:00:42Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Českomoravská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197606455" lat="50.1006915" lon="14.4909805" version="1" timestamp="2013-03-12T13:03:45Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Spojovací-Novovysočanská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197606456" lat="50.1007259" lon="14.4911200" version="1" timestamp="2013-03-12T13:03:45Z" changeset="15337218" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Spojovací-Novovysočanská VO-pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197708594" lat="50.0755040" lon="14.4591749" version="1" timestamp="2013-03-12T14:19:16Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Benešovská - Říčanská VO-pevná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197708599" lat="50.0755487" lon="14.4592285" version="1" timestamp="2013-03-12T14:19:16Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Benešovská - Říčanská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197711694" lat="50.0768225" lon="14.4892478" version="1" timestamp="2013-03-12T14:20:15Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Černokostelecká-Starostrašnická"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197715257" lat="50.0716858" lon="14.4468636" version="1" timestamp="2013-03-12T14:21:14Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Donská - Krymská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197718849" lat="50.0688555" lon="14.4679243" version="1" timestamp="2013-03-12T14:23:28Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="designation" v="Vršovická"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Eden -vstup č.3"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197726230" lat="50.0670926" lon="14.4486875" version="1" timestamp="2013-03-12T14:26:16Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Sámova- U Vršov.nádr"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197733666" lat="50.0679568" lon="14.4686753" version="1" timestamp="2013-03-12T14:30:06Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="designation" v="Vršovická 1527/68"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Slavia - Bělocerkevská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197733668" lat="50.0674920" lon="14.4690722" version="1" timestamp="2013-03-12T14:30:06Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="designation" v="Vršovická 1527/68"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Slavia - otočná"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197733672" lat="50.0674782" lon="14.4683749" version="1" timestamp="2013-03-12T14:30:06Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="designation" v="Vršovická 1527/68"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Slavia - hlavní vchod "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197735017" lat="50.0658529" lon="14.4495028" version="1" timestamp="2013-03-12T14:31:20Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vršovická 10"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197739187" lat="50.0678363" lon="14.4641209" version="1" timestamp="2013-03-12T14:33:52Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vršovická 1429/68"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197739190" lat="50.0660320" lon="14.4521475" version="1" timestamp="2013-03-12T14:33:52Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vršovická-Petrohradská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197764366" lat="50.0741682" lon="14.4492454" version="1" timestamp="2013-03-12T14:45:28Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Hradešínská-Dykova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197764370" lat="50.0697749" lon="14.4524801" version="1" timestamp="2013-03-12T14:45:28Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Moskevská 21/120"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197764378" lat="50.0720404" lon="14.4507903" version="1" timestamp="2013-03-12T14:45:28Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Francouzská - Moskevská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197772076" lat="50.0715859" lon="14.4779557" version="1" timestamp="2013-03-12T14:51:19Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Litevská 1/1282"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197772079" lat="50.0704979" lon="14.4600386" version="1" timestamp="2013-03-12T14:51:19Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="designation" v="Kodaňská 32/689"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Kodaňská-28.pluku"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197772965" lat="50.0702053" lon="14.4681013" version="1" timestamp="2013-03-12T14:53:42Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Novorossijská 2/1042"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197772966" lat="50.0683872" lon="14.4580162" version="1" timestamp="2013-03-12T14:53:42Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Moskevská - Slovinská "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197774061" lat="50.0818245" lon="14.5006955" version="1" timestamp="2013-03-12T14:55:16Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Počernická-Plaňanská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197783967" lat="50.0671786" lon="14.4550604" version="1" timestamp="2013-03-12T15:01:55Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Sportovní 846"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197785999" lat="50.0723296" lon="14.4903153" version="1" timestamp="2013-03-12T15:03:19Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="V Olšinách "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197806002" lat="50.0699262" lon="14.4776609" version="1" timestamp="2013-03-12T15:17:49Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vladivostocká - Litevská "/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197806004" lat="50.0690036" lon="14.4559509" version="1" timestamp="2013-03-12T15:17:49Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Žitomírská-Moskevská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197806007" lat="50.0675850" lon="14.4645661" version="1" timestamp="2013-03-12T15:17:49Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Turkmenská 8/1417"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2197806008" lat="50.0725293" lon="14.4831056" version="1" timestamp="2013-03-12T15:17:49Z" changeset="15340599" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Ruská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2199352513" lat="50.0636938" lon="14.3014610" version="1" timestamp="2013-03-13T10:10:56Z" changeset="15349034" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vondroušova 1193/45"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2199352514" lat="50.0626470" lon="14.3034727" version="1" timestamp="2013-03-13T10:10:56Z" changeset="15349034" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vondroušova 1150"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2199353469" lat="50.0641863" lon="14.3100977" version="1" timestamp="2013-03-13T10:12:51Z" changeset="15349034" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Slánská 2"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2199353470" lat="50.0637214" lon="14.3084777" version="1" timestamp="2013-03-13T10:12:51Z" changeset="15349034" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Jiránkova 1135/6"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2199360566" lat="50.0680980" lon="14.3026573" version="1" timestamp="2013-03-13T10:17:07Z" changeset="15349034" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Španielova 1303/72"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2199360567" lat="50.0653812" lon="14.3054414" version="1" timestamp="2013-03-13T10:17:07Z" changeset="15349034" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Makovského 3/1145"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2199360568" lat="50.0690552" lon="14.3000502" version="1" timestamp="2013-03-13T10:17:07Z" changeset="15349034" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na Moklině"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2199360569" lat="50.0658667" lon="14.2997176" version="1" timestamp="2013-03-13T10:17:07Z" changeset="15349034" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Galandova 1232"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2199360570" lat="50.0648819" lon="14.3088961" version="1" timestamp="2013-03-13T10:17:07Z" changeset="15349034" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Makovského 1392b/2"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2199366125" lat="50.0692584" lon="14.3090570" version="1" timestamp="2013-03-13T10:22:16Z" changeset="15349034" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Žufanova 1093/14-střecha"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2201709109" lat="50.0930141" lon="14.4170428" version="1" timestamp="2013-03-14T15:06:06Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Čechův most"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2201746243" lat="50.0867949" lon="14.3395216" version="1" timestamp="2013-03-14T15:22:55Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Heyrovského náměstí"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2201763469" lat="50.0627709" lon="14.4318807" version="1" timestamp="2013-03-14T15:34:09Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Hotel Corinthia"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2201763470" lat="50.0654018" lon="14.2989022" version="1" timestamp="2013-03-14T15:34:09Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Na chobotě"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2201763471" lat="50.0943046" lon="14.4269401" version="1" timestamp="2013-03-14T15:34:09Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Štefánikův most"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2201767408" lat="50.0760204" lon="14.4347883" version="1" timestamp="2013-03-14T15:37:03Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v=" Anglická - Italská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2201769391" lat="50.0570265" lon="14.4711268" version="1" timestamp="2013-03-14T15:40:45Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v=" Bohdalecká - U Plynárny"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2201769392" lat="50.1009255" lon="14.4432104" version="1" timestamp="2013-03-14T15:40:45Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Argentinská - Jateční"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2201770987" lat="50.1020094" lon="14.5032543" version="1" timestamp="2013-03-14T15:42:28Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Českomoravská - Freyova 2"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2201777057" lat="50.0770910" lon="14.4316608" version="1" timestamp="2013-03-14T15:52:10Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Demínka (Anglická - Škrétova)"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2201777059" lat="50.0737309" lon="14.4303733" version="1" timestamp="2013-03-14T15:52:10Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Legerova - Rumunská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2201777060" lat="50.0776143" lon="14.4194567" version="1" timestamp="2013-03-14T15:52:10Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Karlovo nám. - Odborů"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2201777061" lat="50.0755900" lon="14.4117105" version="1" timestamp="2013-03-14T15:52:11Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Jiráskův most"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2201780217" lat="50.0888531" lon="14.4149077" version="1" timestamp="2013-03-14T15:57:32Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Náměstí Jana Palacha"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2201780218" lat="50.0793253" lon="14.4303090" version="1" timestamp="2013-03-14T15:57:32Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Muzeum"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2201790963" lat="50.0732317" lon="14.4141299" version="1" timestamp="2013-03-14T16:03:46Z" changeset="15363455" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Palackého náměstí. dopravní kamera"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208728702" lat="50.0926082" lon="14.4273548" version="1" timestamp="2013-03-18T19:07:32Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Řásnovka - Štefánikův most"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208767526" lat="50.0764266" lon="14.4554788" version="2" timestamp="2013-03-18T19:29:21Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Slezská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208788494" lat="50.0780447" lon="14.4361776" version="1" timestamp="2013-03-18T19:36:34Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vinohradská - Italská"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208795196" lat="50.0781686" lon="14.4730741" version="1" timestamp="2013-03-18T19:37:52Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Votická"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208813802" lat="50.0682461" lon="14.4145590" version="1" timestamp="2013-03-18T19:42:18Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Výtoň"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208824746" lat="50.0806334" lon="14.4321007" version="1" timestamp="2013-03-18T19:44:42Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Wilsonova k parku"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208833841" lat="50.0858243" lon="14.4365961" version="1" timestamp="2013-03-18T19:47:49Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Wilsonova k P-7"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208841350" lat="50.1019921" lon="14.4329697" version="1" timestamp="2013-03-18T19:50:32Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Veletržní, Duk.hrdinů 45"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208844451" lat="50.0804406" lon="14.3456584" version="1" timestamp="2013-03-18T19:52:22Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Vypich"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208850627" lat="50.1013315" lon="14.3920821" version="1" timestamp="2013-03-18T19:54:58Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Zikova - Vítězné náměstí"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208867354" lat="50.0960116" lon="14.4399220" version="1" timestamp="2013-03-18T20:03:59Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="štvanice"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208877246" lat="50.0864817" lon="14.4117481" version="1" timestamp="2013-03-18T20:12:56Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Karlův most"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208887975" lat="50.0829191" lon="14.3840784" version="1" timestamp="2013-03-18T20:19:00Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="jihovýchodní svah Strahova"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208924309" lat="50.0905602" lon="14.3813533" version="1" timestamp="2013-03-18T20:37:21Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="koupaliště Petynka"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208936569" lat="50.0888876" lon="14.3823618" version="1" timestamp="2013-03-18T20:43:26Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Webkamera zachycuje městský okruh v Praze: Malovanka - Pelc Tyrolka (Tunel Blanka): Strahovský tunel, Malovanka, Prašný most, Hradčanská, U Vorlíků, Letná, Trója, Pelc-Tyrolka"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208940342" lat="50.0753043" lon="14.4361562" version="2" timestamp="2013-04-12T16:08:14Z" changeset="15702795" uid="152074" user="beweta">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="náměstí Míru"/>
+    <tag k="name:de" v="Friedensplatz"/>
+    <tag k="name:ru" v="площадь Мира"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208944438" lat="50.0835318" lon="14.3950111" version="1" timestamp="2013-03-18T20:46:16Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Petřínská rozhledna"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208964081" lat="50.0860721" lon="14.4131965" version="1" timestamp="2013-03-18T20:54:02Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Aktuální pohled z pravého břehu Vltavy na panorama Pražského hradu s katedrálou sv. Víta a detail Karlova mostu"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2208964084" lat="50.0902780" lon="14.4007617" version="1" timestamp="2013-03-18T20:54:02Z" changeset="15411965" uid="1234904" user="vaja">
+    <tag k="man_made" v="surveillance"/>
+    <tag k="name" v="Pražský hrad- pohled z Opletalovy č.5"/>
+    <tag k="surveillance" v="public"/>
+  </node>
+  <node id="2312517664" lat="50.0943074" lon="14.4029453" version="1" timestamp="2013-05-20T07:44:13Z" changeset="16203840" uid="39504" user="malenki">
+    <tag k="camery:count" v="6"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="surveillance" v="outdoor"/>
+  </node>
+  <node id="2312517667" lat="50.0943850" lon="14.4033523" version="1" timestamp="2013-05-20T07:44:13Z" changeset="16203840" uid="39504" user="malenki">
+    <tag k="camery:count" v="6"/>
+    <tag k="man_made" v="surveillance"/>
+    <tag k="surveillance" v="outdoor"/>
+  </node>
+
+</osm>
