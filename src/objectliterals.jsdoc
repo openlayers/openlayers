@@ -608,7 +608,11 @@
  * @property {number|ol.expr.Expression|undefined} opacity Icon opacity
  *     (0-1).
  * @property {number|ol.expr.Expression|undefined} rotation Rotation in
- *     degrees (0-360).
+ *     radians (positive rotation clockwise).
+ * @property {number|ol.expr.Expression|undefined} xOffset Pixel offset from the
+ *     point to the center of the icon (positive values shift image left).
+ * @property {number|ol.expr.Expression|undefined} yOffset Pixel offset from the
+ *     point to the center of the icon (positive values shift image down).
  */
 
 /**

@@ -34,9 +34,22 @@ var GeoJSONCRS = function() {};
 
 
 /**
- * @type {!Object.<string, *>}
+ * @type {!GeoJSONCRSName|!GeoJSONLink}
  */
 GeoJSONCRS.prototype.properties;
+
+
+
+/**
+ * @constructor
+ */
+var GeoJSONCRSName = function() {};
+
+
+/**
+ * @type {string}
+ */
+GeoJSONCRSName.prototype.name;
 
 
 
@@ -106,3 +119,17 @@ GeoJSONFeatureCollection.prototype.features;
  * @type {!Array.<number>|undefined}
  */
 GeoJSONFeatureCollection.prototype.bbox;
+
+
+
+/**
+ * @constructor
+ * @extends {GeoJSONObject}
+ */
+var GeoJSONLink = function() {};
+
+
+/**
+ * @type {string}
+ */
+GeoJSONLink.prototype.href;

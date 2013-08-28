@@ -74,7 +74,7 @@ describe('ol.style.Text', function() {
       expect(literal.opacity).to.be(0.6);
     });
 
-    it('applies default type if none provided', function() {
+    it('applies defaults if none provided', function() {
       var symbolizer = new ol.style.Text({
         text: 'Test'
       });
@@ -86,6 +86,34 @@ describe('ol.style.Text', function() {
       expect(literal.fontSize).to.be(10);
       expect(literal.text).to.be('Test');
       expect(literal.opacity).to.be(1);
+    });
+
+    it('casts size to number', function() {
+      var symbolizer = new ol.style.Text({
+        text: 'test',
+        fontSize: ol.expr.parse('size')
+      });
+
+      var feature = new ol.Feature({
+        size: '42'
+      });
+
+      var literal = symbolizer.createLiteral(feature);
+      expect(literal.fontSize).to.be(42);
+    });
+
+    it('casts opacity to number', function() {
+      var symbolizer = new ol.style.Text({
+        text: 'test',
+        opacity: ol.expr.parse('opacity')
+      });
+
+      var feature = new ol.Feature({
+        opacity: '0.42'
+      });
+
+      var literal = symbolizer.createLiteral(feature);
+      expect(literal.opacity).to.be(0.42);
     });
 
   });

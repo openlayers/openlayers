@@ -10,13 +10,6 @@ describe('ol.geom.LineString', function() {
       expect(line).to.be.a(ol.geom.Geometry);
     });
 
-    it('throws when given mismatched dimension', function() {
-      expect(function() {
-        var line = new ol.geom.LineString([[10, 20], [30, 40, 50]]);
-        line = line; // suppress gjslint warning about unused variable
-      }).to.throwException();
-    });
-
     it('accepts shared vertices', function() {
       var vertices = new ol.geom.SharedVertices();
       var l1 = new ol.geom.LineString([[10, 20], [30, 40]], vertices);
