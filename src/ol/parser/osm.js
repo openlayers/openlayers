@@ -2,15 +2,16 @@ goog.require('ol.parser.XML');
 goog.provide('ol.parser.OSM');
 
 /**
- * @construtor
+ * @constructor
  * @extends {ol.parser.XML}
+ * @param {object} opt_options parser options
  */
 ol.parser.OSM = function(opt_options) {
 
-    this.defaultNamespaceURI = "http://openstreetmap.org/";
+    this.defaultNamespaceURI = 'http://openstreetmap.org/';
 
     this.readers = {
-        "http://openstreetmap.org/": {
+        'http://openstreetmap.org/': {
             'osm': function(node, object) {
                 if (!goog.isDef(object.features)) {
                     object.features = [];
@@ -36,9 +37,18 @@ ol.parser.OSM = function(opt_options) {
 
                 var feature = new ol.Feature(container.properties);
 
+                // shared vertices are used
+                var sharedVertices;
+                if (this.readFeaturesOptions_) {
+                    var callback = this.readFeaturesOptions_.callback;
+                    if (callback) {
+                        sharedVertices = callback(feature,
+                                ol.geom.GeometryType.POINT);
+                    }
+                }
+
                 // set feature attributes
-                var geometry = new ol.geom.Point([lon,lat]);
-                console.log(geometry);
+                var geometry = new ol.geom.Point([lon, lat], sharedVertices);
                 feature.setGeometry(geometry);
 
                 // set feature ID
@@ -47,15 +57,14 @@ ol.parser.OSM = function(opt_options) {
                 // push feature to features array
                 object.features.push(feature);
             },
-            'tag': function(node,object) {
+            'tag': function(node, object) {
                 object[node.getAttribute('k')] = node.getAttribute('v');
-            }  
+            }
         }
     };
 
     goog.base(this);
 };
-
 goog.inherits(ol.parser.OSM, ol.parser.XML);
 
 
@@ -73,7 +82,7 @@ ol.parser.OSM.prototype.read = function(data, opt_callback) {
         data = data.documentElement;
     }
     var obj = {};
-    this.readNode(data,obj);
+    this.readNode(data, obj);
     if (goog.isDef(opt_callback)) {
         opt_callback.call(null, [obj]);
     }
