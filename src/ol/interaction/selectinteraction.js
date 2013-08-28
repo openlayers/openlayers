@@ -2,24 +2,13 @@ goog.provide('ol.interaction.Select');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.Feature');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.condition');
 goog.require('ol.layer.Vector');
 goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.source.Vector');
-
-
-/**
- * @typedef {{layer: ol.layer.Layer,
- *            map: ol.Map,
- *            selected: (Array.<ol.Feature>|undefined),
- *            type: goog.events.EventType,
- *            unselected: (Array.<ol.Feature>|undefined)}}
- */
-ol.interaction.SelectEventObject;
 
 
 
@@ -181,12 +170,6 @@ ol.interaction.Select.prototype.select =
     }
     selectionLayer.removeFeatures(featuresToRemove);
     selectionLayer.addFeatures(featuresToAdd);
-    this.dispatchEvent(/** @type {ol.interaction.SelectEventObject} */ ({
-      layer: layer,
-      map: map,
-      selected: selectedFeatures,
-      type: goog.events.EventType.CHANGE,
-      unselected: unselectedFeatures
-    }));
+    // TODO: Dispatch an event with selectedFeatures and unselectedFeatures
   }
 };
