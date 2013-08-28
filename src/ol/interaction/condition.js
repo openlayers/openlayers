@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.ConditionType');
 goog.provide('ol.interaction.condition');
 
+goog.require('goog.dom.TagName');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
 
