@@ -124,13 +124,6 @@ ol.MapBrowserEventHandler = function(map) {
   this.map_ = map;
 
   /**
-   * Whether one of the mouse button is pressed.
-   * @type {boolean}
-   * @private
-   */
-  this.pressed_ = false;
-
-  /**
    * @type {boolean}
    * @private
    */
@@ -232,11 +225,10 @@ ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handleMouseUp_ = function(browserEvent) {
-  if (this.pressed_) {
+  if (this.down_) {
     this.down_ = null;
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
-    this.pressed_ = false;
     if (this.dragged_) {
       var newEvent = new ol.MapBrowserEvent(
           ol.MapBrowserEvent.EventType.DRAGEND, this.map_, browserEvent);
@@ -254,9 +246,8 @@ ol.MapBrowserEventHandler.prototype.handleMouseDown_ = function(browserEvent) {
   var newEvent = new ol.MapBrowserEvent(
       ol.MapBrowserEvent.EventType.DOWN, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
-  if (!this.pressed_) {
+  if (!this.down_) {
     this.down_ = browserEvent;
-    this.pressed_ = true;
     this.dragged_ = false;
     this.dragListenerKeys_ = [
       goog.events.listen(goog.global.document, goog.events.EventType.MOUSEMOVE,
