@@ -16,6 +16,7 @@ describe('ol.parser.osm', function() {
                 var obj = parser.read(xml);
                 expect(obj.features.length).to.eql(1);
                 feature = obj.features[0];
+                done();
             });
         });
 
