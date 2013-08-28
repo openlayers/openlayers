@@ -35,12 +35,21 @@ ol.CollectionEvent = function(type, opt_elem, opt_target) {
   goog.base(this, type, opt_target);
 
   /**
+   * @private
    * @type {*}
    */
-  this.elem = opt_elem;
+  this.elem_ = opt_elem;
 
 };
 goog.inherits(ol.CollectionEvent, goog.events.Event);
+
+
+/**
+ * @return {*} The element to which this event pertains.
+ */
+ol.CollectionEvent.prototype.getElement = function() {
+  return this.elem_;
+};
 
 
 /**
