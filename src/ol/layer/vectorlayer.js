@@ -245,11 +245,7 @@ ol.layer.VectorLayerEventObject;
  */
 ol.layer.Vector = function(options) {
 
-  goog.base(this, {
-    opacity: options.opacity,
-    source: options.source,
-    visible: options.visible
-  });
+  goog.base(this, /** @type {ol.layer.LayerOptions} */ (options));
 
   /**
    * @private
