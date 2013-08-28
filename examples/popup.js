@@ -38,7 +38,7 @@ var closer = document.getElementById('popup-closer');
  * @return {boolean} Don't follow the href.
  */
 closer.onclick = function() {
-  container.style.visibility = 'hidden';
+  container.style.display = 'none';
   return false;
 };
 
@@ -63,6 +63,6 @@ map.on('click', function(evt) {
   overlay.setPosition(coordinate);
   content.innerHTML = '<p>The location you clicked was:</p><code>' + hdms +
       '</code>';
-  container.style.visibility = 'visible';
+  container.style.display = 'block';
 
 });
