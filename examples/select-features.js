@@ -25,7 +25,7 @@ var vector = new ol.layer.Vector({
   style: new ol.style.Style({
     rules: [
       new ol.style.Rule({
-        filter: 'this.renderIntent == "selected"',
+        filter: 'renderIntent("selected")',
         symbolizers: [
           new ol.style.Fill({
             color: '#ffffff',

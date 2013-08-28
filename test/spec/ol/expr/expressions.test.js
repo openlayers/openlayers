@@ -624,25 +624,6 @@ describe('ol.expr.Not', function() {
 });
 
 
-describe('ol.expr.ThisIdentifier', function() {
-
-  describe('#getInstance()', function() {
-    it('has a getInstance method to return the singleton', function() {
-      expect(ol.expr.ThisIdentifier.getInstance())
-          .to.be.a(ol.expr.ThisIdentifier);
-    });
-  });
-
-  describe('#evaluate()', function() {
-    it('evaluates to the passed scope', function() {
-      expect(ol.expr.ThisIdentifier.getInstance()
-          .evaluate(undefined, undefined, 'foo')).to.be('foo');
-    });
-  });
-
-});
-
-
 goog.require('ol.expr.Call');
 goog.require('ol.expr.Comparison');
 goog.require('ol.expr.ComparisonOp');
@@ -655,4 +636,3 @@ goog.require('ol.expr.Math');
 goog.require('ol.expr.MathOp');
 goog.require('ol.expr.Member');
 goog.require('ol.expr.Not');
-goog.require('ol.expr.ThisIdentifier');

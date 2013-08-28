@@ -516,8 +516,7 @@ ol.expr.Lexer.prototype.scanIdentifier_ = function(code) {
   if (id.length === 1) {
     type = ol.expr.TokenType.IDENTIFIER;
   } else if (this.isKeyword_(id)) {
-    type = (id === 'this') ?
-        ol.expr.TokenType.THIS_IDENTIFIER : ol.expr.TokenType.KEYWORD;
+    type = ol.expr.TokenType.KEYWORD;
   } else if (id === 'null') {
     type = ol.expr.TokenType.NULL_LITERAL;
   } else if (id === 'true' || id === 'false') {

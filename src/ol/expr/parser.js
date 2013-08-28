@@ -30,7 +30,6 @@ goog.require('ol.expr.Math');
 goog.require('ol.expr.MathOp');
 goog.require('ol.expr.Member');
 goog.require('ol.expr.Not');
-goog.require('ol.expr.ThisIdentifier');
 goog.require('ol.expr.Token');
 goog.require('ol.expr.TokenType');
 goog.require('ol.expr.UnexpectedToken');
@@ -196,16 +195,6 @@ ol.expr.Parser.prototype.createLiteral_ = function(value) {
 ol.expr.Parser.prototype.createMemberExpression_ = function(object,
     property) {
   return new ol.expr.Member(object, property);
-};
-
-
-/**
- * Create a 'this' identifier.
- * @return {ol.expr.ThisIdentifier} The 'this' identifier.
- * @private
- */
-ol.expr.Parser.prototype.createThisIdentifier_ = function() {
-  return ol.expr.ThisIdentifier.getInstance();
 };
 
 
@@ -445,8 +434,6 @@ ol.expr.Parser.prototype.parsePrimaryExpression_ = function(lexer) {
     expr = this.createLiteral_(token.value === 'true');
   } else if (type === ol.expr.TokenType.NULL_LITERAL) {
     expr = this.createLiteral_(null);
-  } else if (type === ol.expr.TokenType.THIS_IDENTIFIER) {
-    expr = this.createThisIdentifier_();
   } else {
     throw new ol.expr.UnexpectedToken(token);
   }

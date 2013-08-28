@@ -92,12 +92,6 @@ describe('ol.expr.parse()', function() {
       expect(expr.evaluate(scope)).to.be(42);
     });
 
-    it('parses member expressions in the \'this\' scope', function() {
-      var expr = ol.expr.parse('this.foo');
-      var thisScope = {foo: 'bar'};
-      expect(expr.evaluate(undefined, undefined, thisScope)).to.be('bar');
-    });
-
     it('consumes whitespace as expected', function() {
       var expr = ol.expr.parse(' foo . bar . baz ');
       expect(expr).to.be.a(ol.expr.Member);
@@ -875,6 +869,24 @@ describe('ol.expr.lib', function() {
         function() {
           expect(evaluate(ieq2, two), false);
         });
+
+  });
+
+  describe('renderIntent()', function() {
+
+    var feature = new ol.Feature();
+    feature.renderIntent = 'foo';
+
+    var isFoo = parse('renderIntent("foo")');
+    var isBar = parse('renderIntent("bar")');
+
+    it('True when renderIntent matches', function() {
+      expect(evaluate(isFoo, feature), true);
+    });
+
+    it('False when renderIntent does not match', function() {
+      expect(evaluate(isBar, feature), false);
+    });
 
   });
 
