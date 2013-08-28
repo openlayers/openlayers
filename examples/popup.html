@@ -9,26 +9,47 @@
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
     <style type="text/css">
-      #popup-container {
+      .ol-popup {
+        position: absolute;
         background-color: white;
+        -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
         padding: 15px 20px;
         border-radius: 10px;
-        margin-left: -30px;
-        margin-bottom: 10px;
+        border: 1px solid #cccccc;
+        bottom: 12px;
+        left: -50px;
       }
-      #popup-closer {
+      .ol-popup:after, .ol-popup:before {
+        top: 100%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+      }
+      .ol-popup:after {
+        border-top-color: white;
+        border-width: 10px;
+        left: 48px;
+        margin-left: -10px;
+      }
+      .ol-popup:before {
+        border-top-color: #cccccc;
+        border-width: 11px;
+        left: 48px;
+        margin-left: -11px;
+      }
+      .ol-popup-closer {
+        text-decoration: none;
         position: absolute;
         top: 2px;
         right: 8px;
       }
-      #popup-arrow {
-        position: absolute;
-        bottom: 1px;
-        width: 0px;
-        height: 0px;
-        border-left: 10px solid transparent;
-        border-right: 10px solid transparent;
-        border-top: 10px solid white;
+      .ol-popup-closer:after {
+        content: "✖";
       }
     </style>
     <title>Popup example</title>
@@ -54,10 +75,9 @@
       <div class="row-fluid">
         <div class="span12">
           <div id="map" class="map">
-            <div id="popup-container">
-                <a href="#" id="popup-closer">✖</a>
+            <div id="popup" class="ol-popup">
+                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
                 <div id="popup-content"></div>
-                <div id="popup-arrow"></div>
             </div>
           </div>
         </div>
@@ -70,7 +90,7 @@
           <p id="shortdesc">Uses an overlay to create a popup.</p>
           <div id="docs">
             <p>
-              Click on the map to get a popup.  The popup is composed of a few basic elements: a container, a close button, a place for the content, and an element to represent the little arrow at the bottom.  To anchor the popup to the map, an <code>ol.Overlay</code> is created with the popup container.  A listener is registered for the map's <code>click</code> event to render the popup, and another listener is set as the <code>click</code> handler for the close button to hide the popup.
+              Click on the map to get a popup.  The popup is composed of a few basic elements: a container, a close button, and a place for the content.  To anchor the popup to the map, an <code>ol.Overlay</code> is created with the popup container.  A listener is registered for the map's <code>click</code> event to render the popup, and another listener is set as the <code>click</code> handler for the close button to hide the popup.
             </p>
             <p>
               See the <a href="popup.js" target="_blank">popup.js source</a> to see how this is done.

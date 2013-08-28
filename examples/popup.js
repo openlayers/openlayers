@@ -28,7 +28,7 @@ var map = new ol.Map({
 /**
  * Elements that make up the popup.
  */
-var container = document.getElementById('popup-container');
+var container = document.getElementById('popup');
 var content = document.getElementById('popup-content');
 var closer = document.getElementById('popup-closer');
 
@@ -39,6 +39,7 @@ var closer = document.getElementById('popup-closer');
  */
 closer.onclick = function() {
   container.style.display = 'none';
+  closer.blur();
   return false;
 };
 
@@ -61,7 +62,7 @@ map.on('click', function(evt) {
       coordinate, 'EPSG:3857', 'EPSG:4326'));
 
   overlay.setPosition(coordinate);
-  content.innerHTML = '<p>The location you clicked was:</p><code>' + hdms +
+  content.innerHTML = '<p>You clicked here:</p><code>' + hdms +
       '</code>';
   container.style.display = 'block';
 
