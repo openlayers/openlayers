@@ -34,24 +34,6 @@ describe('ol.Feature', function() {
 
   });
 
-  describe('#clone()', function() {
-
-    it('creates a clone with a cloned geometry', function() {
-      var feature = new ol.Feature({
-        loc: new ol.geom.Point([10, 20]),
-        foo: 'bar'
-      });
-      feature.setFeatureId('foo');
-      var clone = feature.clone();
-      expect(clone).to.not.be(feature);
-      expect(clone.get('foo')).to.be('bar');
-      expect(clone.getFeatureId()).to.be('foo');
-      expect(clone.getGeometry()).to.not.be(feature.getGeometry());
-      expect(clone.getGeometry().getCoordinates()).to.eql([10, 20]);
-    });
-
-  });
-
   describe('#get()', function() {
 
     it('returns values set at construction', function() {

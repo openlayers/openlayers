@@ -162,9 +162,12 @@ ol.interaction.Select.prototype.select =
         featuresToRemove.push(clone);
         delete featureMap[featureId];
       } else if (!(featureId in oldFeatureMap)) {
-        clone = feature.clone();
-        featureMap[featureId] = clone;
+        clone = new ol.Feature(feature.getAttributes());
+        clone.setGeometry(feature.getGeometry().clone());
+        clone.setFeatureId(feature.getFeatureId());
+        clone.setSymbolizers(feature.getSymbolizers());
         clone.renderIntent = ol.layer.VectorLayerRenderIntent.SELECTED;
+        featureMap[featureId] = clone;
         selectedFeatures.push(feature);
         featuresToAdd.push(clone);
       }
