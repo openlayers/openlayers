@@ -4,7 +4,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('ol.MapBrowserEvent.EventType');
+goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.condition');
 goog.require('ol.layer.Vector');
@@ -30,6 +30,13 @@ ol.interaction.SelectEventObject;
  */
 ol.interaction.Select = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
+
+  /**
+   * @private
+   * @type {ol.interaction.ConditionType}
+   */
+  this.condition_ = goog.isDef(options.condition) ?
+      options.condition : ol.interaction.condition.clickEventOnly;
 
   /**
    * Mapping between original features and cloned features on selection layers.
@@ -76,13 +83,14 @@ ol.interaction.Select.prototype.disposeInternal = function() {
  * @inheritDoc.
  */
 ol.interaction.Select.prototype.handleMapBrowserEvent = function(evt) {
-  if (evt.type === ol.MapBrowserEvent.EventType.CLICK) {
+  var browserEvent = evt.browserEvent;
+  if (this.condition_(browserEvent)) {
     var map = evt.map;
     var layers = map.getLayerGroup().getLayersArray();
     if (!goog.isNull(this.layerFilter_)) {
       layers = goog.array.filter(layers, this.layerFilter_);
     }
-    var clear = !ol.interaction.condition.shiftKeyOnly(evt.browserEvent);
+    var clear = !ol.interaction.condition.shiftKeyOnly(browserEvent);
 
     var select = function(featuresByLayer) {
       this.select(map, featuresByLayer, layers, clear);

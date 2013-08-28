@@ -244,7 +244,7 @@
 /**
  * @typedef {Object} ol.interaction.DragPanOptions
  * @property {ol.Kinetic|undefined} kinetic Kinetic.
- * @property {ol.interaction.ConditionType|undefined} condition Conditon.
+ * @property {ol.interaction.ConditionType|undefined} condition Condition.
  */
 
 /**
@@ -297,6 +297,7 @@
 
 /**
  * @typedef {Object} ol.interaction.SelectOptions
+ * @property {ol.interaction.ConditionType|undefined} condition Condition.
  * @property {undefined|function(ol.layer.Layer):boolean} layerFilter Filter
  *     function to restrict selection to a subset of layers.
  */

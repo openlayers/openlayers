@@ -1,7 +1,7 @@
 goog.provide('ol.interaction.ConditionType');
 goog.provide('ol.interaction.condition');
 
-goog.require('goog.dom.TagName');
+goog.require('goog.events.EventType');
 goog.require('goog.functions');
 
 
@@ -40,6 +40,15 @@ ol.interaction.condition.altShiftKeysOnly = function(browserEvent) {
  * @return {boolean} True.
  */
 ol.interaction.condition.always = goog.functions.TRUE;
+
+
+/**
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @return {boolean} True if only the shift key is pressed.
+ */
+ol.interaction.condition.clickEventOnly = function(browserEvent) {
+  return browserEvent.type == goog.events.EventType.CLICK;
+};
 
 
 /**
