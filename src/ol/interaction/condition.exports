@@ -4,3 +4,4 @@
 @exportSymbol ol.interaction.condition.noModifierKeys
 @exportSymbol ol.interaction.condition.platformModifierKeyOnly
 @exportSymbol ol.interaction.condition.shiftKeyOnly
+@exportSymbol ol.interaction.condition.targetNotEditable

@@ -71,13 +71,13 @@ ol.style.Stroke.prototype.createLiteral = function(featureOrType) {
       this.color_, feature);
   goog.asserts.assertString(color, 'color must be a string');
 
-  var opacity = ol.expr.evaluateFeature(
-      this.opacity_, feature);
-  goog.asserts.assertNumber(opacity, 'opacity must be a number');
+  var opacity = Number(ol.expr.evaluateFeature(
+      this.opacity_, feature));
+  goog.asserts.assert(!isNaN(opacity), 'opacity must be a number');
 
-  var width = ol.expr.evaluateFeature(
-      this.width_, feature);
-  goog.asserts.assertNumber(width, 'width must be a number');
+  var width = Number(ol.expr.evaluateFeature(
+      this.width_, feature));
+  goog.asserts.assert(!isNaN(width), 'width must be a number');
 
   var literal = null;
   if (type === ol.geom.GeometryType.LINESTRING ||

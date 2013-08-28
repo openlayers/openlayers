@@ -15,6 +15,7 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SharedVertices');
 goog.require('ol.parser.Parser');
 goog.require('ol.parser.ReadFeaturesOptions');
+goog.require('ol.parser.ReadFeaturesResult');
 goog.require('ol.parser.StringFeatureParser');
 
 
@@ -63,8 +64,7 @@ ol.parser.GeoJSON.read = function(str) {
 ol.parser.GeoJSON.prototype.readFeaturesFromString =
     function(str, opt_options) {
   var json = /** @type {GeoJSONFeatureCollection} */ (JSON.parse(str));
-  return {features: this.parseAsFeatureCollection_(json, opt_options),
-    metadata: {projection: 'EPSG:4326'}};
+  return this.parseAsFeatureCollection_(json, opt_options);
 };
 
 
@@ -77,8 +77,7 @@ ol.parser.GeoJSON.prototype.readFeaturesFromString =
  */
 ol.parser.GeoJSON.prototype.readFeaturesFromObject =
     function(object, opt_options) {
-  return {features: this.parseAsFeatureCollection_(object, opt_options),
-    metadata: {projection: 'EPSG:4326'}};
+  return this.parseAsFeatureCollection_(object, opt_options);
 };
 
 
@@ -119,7 +118,8 @@ ol.parser.GeoJSON.prototype.parse_ = function(json, opt_options) {
 /**
  * @param {GeoJSONObject} json GeoJSON object.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
- * @return {Array.<ol.Feature>} Parsed object coerced into array of features.
+ * @return {ol.parser.ReadFeaturesResult} Parsed object coerced into array of
+ *     features.
  * @private
  */
 ol.parser.GeoJSON.prototype.parseAsFeatureCollection_ = function(json,
@@ -149,7 +149,14 @@ ol.parser.GeoJSON.prototype.parseAsFeatureCollection_ = function(json,
       }
     }
   }
-  return features;
+  var projection = 'EPSG:4326';
+  if (goog.isDefAndNotNull(json.crs)) {
+    var crs = json.crs;
+    if (crs.type === 'name') {
+      projection = (/** GeoJSONCRSName */ (crs.properties)).name;
+    }
+  }
+  return {features: features, metadata: {projection: projection}};
 };
 
 

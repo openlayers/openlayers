@@ -8,6 +8,9 @@
 @exportProperty ol.geom.GeometryType.MULTIPOLYGON
 @exportProperty ol.geom.GeometryType.GEOMETRYCOLLECTION
 
+@exportSymbol ol.geom.Geometry
+@exportProperty ol.geom.Geometry.prototype.getCoordinates
+
 @exportSymbol ol.geom.Point
 @exportSymbol ol.geom.LineString
 @exportSymbol ol.geom.Polygon

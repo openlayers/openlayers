@@ -483,11 +483,6 @@ ol.expr.Math.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
   var result;
   var rightVal = this.right_.evaluate(opt_scope, opt_fns, opt_this);
   var leftVal = this.left_.evaluate(opt_scope, opt_fns, opt_this);
-  /**
-   * TODO: throw if rightVal, leftVal not numbers - this would require the use
-   * of a concat function for strings but it would let us serialize these as
-   * math functions where available elsewhere
-   */
 
   var op = this.operator_;
   if (op === ol.expr.MathOp.ADD) {

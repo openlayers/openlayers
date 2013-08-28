@@ -64,9 +64,8 @@ ol.style.Fill.prototype.createLiteral = function(featureOrType) {
     goog.asserts.assertString(
         color, 'color must be a string');
 
-    var opacity = ol.expr.evaluateFeature(this.opacity_, feature);
-    goog.asserts.assertNumber(
-        opacity, 'color must be a number');
+    var opacity = Number(ol.expr.evaluateFeature(this.opacity_, feature));
+    goog.asserts.assert(!isNaN(opacity), 'opacity must be a number');
 
     literal = new ol.style.PolygonLiteral({
       fillColor: color,
