@@ -18,6 +18,7 @@ var raster = new ol.layer.TileLayer({
 });
 
 var vector = new ol.layer.Vector({
+  id: 'vector',
   source: new ol.source.Vector({
     parser: new ol.parser.ogc.GML_v3(),
     url: 'data/gml/topp-states-wfs.xml'
@@ -47,7 +48,7 @@ var vector = new ol.layer.Vector({
 });
 
 var selectInteraction = new ol.interaction.Select({
-  layerFilter: function(layer) { return layer === vector; }
+  layerFilter: function(layer) { return layer.get('id') == 'vector'; }
 });
 
 var map = new ol.Map({
