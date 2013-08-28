@@ -36,7 +36,7 @@ ol.interaction.Select = function(opt_options) {
    * @type {ol.interaction.ConditionType}
    */
   this.condition_ = goog.isDef(options.condition) ?
-      options.condition : ol.interaction.condition.clickEventOnly;
+      options.condition : ol.interaction.condition.clickOnly;
 
   /**
    * Mapping between original features and cloned features on selection layers.

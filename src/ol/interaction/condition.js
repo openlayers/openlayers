@@ -44,9 +44,9 @@ ol.interaction.condition.always = goog.functions.TRUE;
 
 /**
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
- * @return {boolean} True if only the shift key is pressed.
+ * @return {boolean} True only the event is a click event.
  */
-ol.interaction.condition.clickEventOnly = function(browserEvent) {
+ol.interaction.condition.clickOnly = function(browserEvent) {
   return browserEvent.type == goog.events.EventType.CLICK;
 };
 
