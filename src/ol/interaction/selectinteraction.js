@@ -92,14 +92,15 @@ ol.interaction.Select.prototype.handleMapBrowserEvent = function(evt) {
     }
     var clear = !ol.interaction.condition.shiftKeyOnly(browserEvent);
 
+    var that = this;
     var select = function(featuresByLayer) {
-      this.select(map, featuresByLayer, layers, clear);
+      that.select(map, featuresByLayer, layers, clear);
     };
 
     map.getFeatures({
       layers: layers,
       pixel: evt.getPixel(),
-      success: goog.bind(select, this)
+      success: select
     });
   }
   // TODO: Implement box selection
