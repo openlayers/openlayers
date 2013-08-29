@@ -45,7 +45,7 @@ ol.source.Vector = function(options) {
 
   /**
    * @private
-   * @type {string|undefined}
+   * @type {goog.Uri|null|string}
    */
   this.url_ = options.url;
 
@@ -71,10 +71,10 @@ goog.inherits(ol.source.Vector, ol.source.Source);
 ol.source.Vector.prototype.prepareFeatures = function(layer, extent, projection,
     opt_callback) {
   // TODO: Implement strategies. BBOX aware strategies will need the extent.
-  if (goog.isDef(this.url_) &&
+  if (goog.isDef(this.getUrl()) &&
       this.loadState_ == ol.source.VectorLoadState.IDLE) {
     this.loadState_ = ol.source.VectorLoadState.LOADING;
-    goog.net.XhrIo.send(this.url_, goog.bind(function(event) {
+    goog.net.XhrIo.send(this.getUrl(), goog.bind(function(event) {
       var xhr = event.target;
       if (xhr.isSuccess()) {
         // TODO: Get source projection from data if supported by parser.
@@ -94,4 +94,20 @@ ol.source.Vector.prototype.prepareFeatures = function(layer, extent, projection,
     this.loadState_ = ol.source.VectorLoadState.LOADED;
   }
   return this.loadState_;
+};
+
+
+/**
+ * @param {string} url new url to be set for this resource
+ */
+ol.source.Vector.prototype.setUrl = function(url) {
+  this.url_ = url;
+};
+
+
+/**
+ * @return {goog.Uri|null|string} url
+ */
+ol.source.Vector.prototype.getUrl = function() {
+  return this.url_;
 };
