@@ -1,6 +1,5 @@
 goog.provide('ol.test.source.Vector');
 
-
 describe('ol.source.Vector', function() {
 
   describe('constructor', function() {

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Overpass API">
+    <note>The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.</note>
+    <meta osm_base="2013-08-16T07:36:01Z"/>
+    <node id="340323300" lat="50.0839581" lon="14.4326396" version="2" timestamp="2013-02-22T13:14:03Z" changeset="15122532" uid="1234904" user="vaja">
+        <tag k="designation" v="umístěná kamera na Opletalova VO"/>
+        <tag k="man_made" v="surveillance"/>
+        <tag k="name" v="Jeruzalemská"/>
+        <tag k="surveillance" v="public"/>
+    </node>
+</osm>
