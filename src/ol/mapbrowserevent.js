@@ -124,12 +124,6 @@ ol.MapBrowserEventHandler = function(map) {
   this.map_ = map;
 
   /**
-   * @type {Object}
-   * @private
-   */
-  this.previous_ = null;
-
-  /**
    * @type {boolean}
    * @private
    */
@@ -231,11 +225,10 @@ ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handleMouseUp_ = function(browserEvent) {
-  if (this.previous_) {
+  if (this.down_) {
     this.down_ = null;
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
-    this.previous_ = null;
     if (this.dragged_) {
       var newEvent = new ol.MapBrowserEvent(
           ol.MapBrowserEvent.EventType.DRAGEND, this.map_, browserEvent);
@@ -253,12 +246,8 @@ ol.MapBrowserEventHandler.prototype.handleMouseDown_ = function(browserEvent) {
   var newEvent = new ol.MapBrowserEvent(
       ol.MapBrowserEvent.EventType.DOWN, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
-  if (!this.previous_) {
+  if (!this.down_) {
     this.down_ = browserEvent;
-    this.previous_ = {
-      clientX: browserEvent.clientX,
-      clientY: browserEvent.clientY
-    };
     this.dragged_ = false;
     this.dragListenerKeys_ = [
       goog.events.listen(goog.global.document, goog.events.EventType.MOUSEMOVE,
@@ -284,10 +273,6 @@ ol.MapBrowserEventHandler.prototype.handleMouseMove_ = function(browserEvent) {
         ol.MapBrowserEvent.EventType.DRAGSTART, this.map_, this.down_);
     this.dispatchEvent(newEvent);
   }
-  this.previous_ = {
-    clientX: browserEvent.clientX,
-    clientY: browserEvent.clientY
-  };
   newEvent = new ol.MapBrowserEvent(
       ol.MapBrowserEvent.EventType.DRAG, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
@@ -310,6 +295,9 @@ ol.MapBrowserEventHandler.prototype.relayEvent_ = function(browserEvent) {
  */
 ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
   // prevent context menu
+  // When the IE pointer events are used, this prevents a
+  // 'mousedown' from being fired after this event for the primary
+  // contact (first finger on the screen or mouse)
   browserEvent.preventDefault();
   this.down_ = browserEvent;
   this.dragged_ = false;
