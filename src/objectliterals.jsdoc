@@ -519,7 +519,7 @@
  * @property {ol.ProjectionLike|undefined} projection Projection. EPSG:4326
  *     is assumed if not defined. TODO: Get projection from the parser instead
  *     of assuming EPSG:4326.
- * @property {string|undefined} url Server url providing the vector data.
+ * @property {string|null|goog.Uri} url Server url providing the vector data.
  */
 
 /**
@@ -551,6 +551,21 @@
  * @property {string|undefined} url Url.
  * @property {number|undefined} maxZoom Maximum zoom.
  * @property {Array.<string>|undefined} urls Urls.
+ */
+
+/**
+ * @typedef {Object} ol.source.XAPIoptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {Object|string|undefined} data Data to parse.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {ol.parser.Parser} parser Parser instance to parse data
+ *     provided as `data` or fetched from `url`.
+ * @property {ol.ProjectionLike|undefined} projection Projection. EPSG:4326
+ *     is assumed if not defined. TODO: Get projection from the parser instead
+ *     of assuming EPSG:4326.
+ * @property {string|null|goog.Uri} url Server url providing the vector data.
+ * @property {Object|undefined} params aditional parameters according to XAPI interface
  */
 
 /**

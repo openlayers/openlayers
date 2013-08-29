@@ -1,23 +1,28 @@
 goog.require('goog.net.XhrIo');
-goog.require('ol.parser.OSM');
+goog.require('goog.object');
+goog.require('goog.string');
 goog.require('ol.proj');
-goog.require('ol.source.OSM');
+goog.require('ol.source.Vector');
 
 goog.provide('ol.source.XAPI');
 
+
+
 /**
  * @constructor
- * @extends {ol.source.Source}
- * @param {ol.source.XAPIOptions} options Vector source options.
+ * @extends {ol.source.Vector}
+ * @param {ol.source.XAPIoptions} options Vector source options.
  */
 ol.source.XAPI = function(options) {
 
+  this.setUrl(goog.isDef(options.url) ?
+      options.url : 'http://xapi.openstreetmap.org/api/0.6/');
+
   /**
    * url of openstreetmap xapi service
-   * @type {string|undefined}
+   * @type {goog.Uri|undefined|string}
    */
-  this.url = goog.isDef(options.url) ?
-      options.url : 'http://xapi.openstreetmap.org/api/0.6/';
+  this.url = this.getUrl();
 
   /**
    * type on of 'node', 'way', 'relation', or '*'
@@ -27,28 +32,15 @@ ol.source.XAPI = function(options) {
 
   /**
    * aditional parameters according to XAPI interface
-   * @type {ol.source.XAPIParameters}
+   * @type {Object}
    */
   this.params = goog.isDef(options.params) ? options.params : {};
 
-  var attributions;
-  if (goog.isDef(options.attributions)) {
-    attributions = options.attributions;
-  } else if (goog.isDef(options.attribution)) {
-    attributions = [options.attribution];
-  } else {
-    attributions = ol.source.OSM.ATTRIBUTIONS;
-  }
-
-  goog.base(this, {
-    attributions: attributions,
-    parser: new ol.parser.OSM(),
-    projection: goog.isDef(options.projection) ?
-        options.projection : ol.proj.get('EPSG:4326')
-  });
+  goog.base(this, options);
 
 };
 goog.inherits(ol.source.XAPI, ol.source.Vector);
+
 
 /**
  * @param {ol.layer.Vector} layer Layer that parses the data.
@@ -61,15 +53,16 @@ goog.inherits(ol.source.XAPI, ol.source.Vector);
 ol.source.XAPI.prototype.prepareFeatures = function(layer, extent, projection,
     opt_callback) {
 
-    // transform coordinates, if needed
-    if (projection && projection.getCode() !== 'EPSG:4326') {
-        extent = ol.proj.transform(extent, projection, 'EPSG:4326');
-    }
-    // parepare this.url_ first, than run prepareFeatures from parent class
-    this.url_ = this.getUrl(extent, this.params, this.type);
-    return ol.source.XAPI.superClass_.prepareFeatures.call(this,
-            layer, extent, projection, opt_callback);
+  // transform coordinates, if needed
+  if (projection && projection.getCode() !== 'EPSG:4326') {
+    extent = ol.proj.transform(extent, projection, 'EPSG:4326');
+  }
+  // parepare this.url_ first, than run prepareFeatures from parent class
+  this.setUrl(this.getFeaturesUrl(extent, this.params, this.type));
+  return ol.source.XAPI.superClass_.prepareFeatures.call(this,
+      layer, extent, projection, opt_callback);
 };
+
 
 /**
  * Creates url used for xapi query
@@ -78,27 +71,26 @@ ol.source.XAPI.prototype.prepareFeatures = function(layer, extent, projection,
  * @param {Object.<string>} type on of 'node', 'way', 'relation', or '*'
  * @return {string} WMS GetMap request URL.
  */
-ol.source.XAPI.prototype.getUrl = function(extent, params, type) {
+ol.source.XAPI.prototype.getFeaturesUrl = function(extent, params, type) {
 
-    params = params || {};
-    type = type || this.type;
-    type = type || this.type;
-    var path;
-    var baseParams = {};
-    var bboxValues = [extent[0], extent[1], extent[2], extent[3]];
-    var i;
-    var query_array = [];
-    var query;
+  params = params || {};
+  type = type || this.type;
+  type = type || this.type;
+  var baseParams = {};
+  var bboxValues = [extent[0], extent[1], extent[2], extent[3]];
+  var i;
+  var query_array = [];
+  var query;
 
-    baseParams.bbox = bboxValues.join(',');
-    goog.object.extend(baseParams, params);
+  baseParams.bbox = bboxValues.join(',');
+  goog.object.extend(baseParams, params);
 
-    for (i in baseParams) {
-        query_array.push(
-                goog.string.buildString('[', i, '=', baseParams[i], ']'));
-    }
-    query = goog.string.escapeString(
-            goog.string.buildString.apply(this, query_array));
+  for (i in baseParams) {
+    query_array.push(
+        goog.string.buildString('[', i, '=', baseParams[i], ']'));
+  }
+  query = goog.string.escapeString(
+      goog.string.buildString.apply(this, query_array));
 
-    return goog.string.buildString(this.url, type, query);
+  return goog.string.buildString(this.url, type, query);
 };

@@ -98,7 +98,7 @@ ol.source.Vector.prototype.prepareFeatures = function(layer, extent, projection,
 
 
 /**
- * @param {string} url new url to be set for this resource
+ * @param {goog.Uri|null|string} url new url to be set for this resource
  */
 ol.source.Vector.prototype.setUrl = function(url) {
   this.url_ = url;
