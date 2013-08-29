@@ -10,12 +10,13 @@
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
     <style type="text/css">
       .ol-popup {
+        display: none;
         position: absolute;
         background-color: white;
         -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
         -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
         filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-        padding: 15px 20px;
+        padding: 15px;
         border-radius: 10px;
         border: 1px solid #cccccc;
         bottom: 12px;
@@ -90,7 +91,7 @@
           <p id="shortdesc">Uses an overlay to create a popup.</p>
           <div id="docs">
             <p>
-              Click on the map to get a popup.  The popup is composed of a few basic elements: a container, a close button, and a place for the content.  To anchor the popup to the map, an <code>ol.Overlay</code> is created with the popup container.  A listener is registered for the map's <code>click</code> event to render the popup, and another listener is set as the <code>click</code> handler for the close button to hide the popup.
+              Click on the map to get a popup.  The popup is composed of a few basic elements: a container, a close button, and a place for the content.  To anchor the popup to the map, an <code>ol.Overlay</code> is created with the popup container.  A listener is registered for the map's <code>click</code> event to display the popup, and another listener is set as the <code>click</code> handler for the close button to hide the popup.
             </p>
             <p>
               See the <a href="popup.js" target="_blank">popup.js source</a> to see how this is done.
