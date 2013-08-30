@@ -1,3 +1,5 @@
+goog.provide('ol.geom');
+
 goog.require('ol.coordinate');
 
 
