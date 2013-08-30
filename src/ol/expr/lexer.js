@@ -85,7 +85,6 @@ ol.expr.TokenType = {
   NUMERIC_LITERAL: 'Numeric',
   PUNCTUATOR: 'Punctuator',
   STRING_LITERAL: 'String',
-  THIS_IDENTIFIER: 'This',
   UNKNOWN: 'Unknown'
 };
 
