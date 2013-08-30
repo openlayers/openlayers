@@ -17,6 +17,7 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
+goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.style.IconLiteral');
 goog.require('ol.style.LineLiteral');
 goog.require('ol.style.Literal');
@@ -176,6 +177,9 @@ ol.renderer.canvas.VectorRenderer.prototype.renderLineStringFeatures_ =
   context.beginPath();
   for (i = 0, ii = features.length; i < ii; ++i) {
     feature = features[i];
+    if (feature.renderIntent === ol.layer.VectorLayerRenderIntent.HIDDEN) {
+      continue;
+    }
     id = goog.getUid(feature);
     currentSize = goog.isDef(this.symbolSizes_[id]) ?
         this.symbolSizes_[id] : [0];
@@ -253,6 +257,9 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
   context.globalAlpha = alpha;
   for (i = 0, ii = features.length; i < ii; ++i) {
     feature = features[i];
+    if (feature.renderIntent === ol.layer.VectorLayerRenderIntent.HIDDEN) {
+      continue;
+    }
     id = goog.getUid(feature);
     size = this.symbolSizes_[id];
     this.symbolSizes_[id] = goog.isDef(size) ?
@@ -296,7 +303,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
 ol.renderer.canvas.VectorRenderer.prototype.renderText_ =
     function(features, text, texts) {
   var context = this.context_,
-      vecs, vec;
+      feature, vecs, vec;
 
   if (context.fillStyle !== text.color) {
     context.fillStyle = text.color;
@@ -309,8 +316,12 @@ ol.renderer.canvas.VectorRenderer.prototype.renderText_ =
   context.textBaseline = 'middle';
 
   for (var i = 0, ii = features.length; i < ii; ++i) {
+    feature = features[i];
+    if (feature.renderIntent === ol.layer.VectorLayerRenderIntent.HIDDEN) {
+      continue;
+    }
     vecs = ol.renderer.canvas.VectorRenderer.getLabelVectors(
-        features[i].getGeometry());
+        feature.getGeometry());
     for (var j = 0, jj = vecs.length; j < jj; ++j) {
       vec = vecs[j];
       goog.vec.Mat4.multVec3(this.transform_, vec, vec);
@@ -336,7 +347,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPolygonFeatures_ =
       fillOpacity = symbolizer.fillOpacity,
       globalAlpha,
       i, ii, geometry, components, j, jj, poly,
-      rings, numRings, ring, dim, k, kk, vec;
+      rings, numRings, ring, dim, k, kk, vec, feature;
 
   if (strokeColor) {
     context.strokeStyle = strokeColor;
@@ -359,7 +370,11 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPolygonFeatures_ =
    */
   context.beginPath();
   for (i = 0, ii = features.length; i < ii; ++i) {
-    geometry = features[i].getGeometry();
+    feature = features[i];
+    if (feature.renderIntent === ol.layer.VectorLayerRenderIntent.HIDDEN) {
+      continue;
+    }
+    geometry = feature.getGeometry();
     if (geometry instanceof ol.geom.Polygon) {
       components = [geometry];
     } else {
