@@ -51,10 +51,11 @@ xhr.onload = function() {
       'http://gpp3-wxs.ign.fr/static/logos/IGN/IGN.gif'
     ];
 
-    var attribution = new ol.Attribution(
-        '<a href="http://www.geoportail.fr/" target="_blank">' +
-        '<img src="http://api.ign.fr/geoportail/api/js/latest/' +
-        'theme/geoportal/img/logo_gp.gif"></a>');
+    var attribution = new ol.Attribution({
+      html: '<a href="http://www.geoportail.fr/" target="_blank">' +
+          '<img src="http://api.ign.fr/geoportail/api/js/latest/' +
+          'theme/geoportal/img/logo_gp.gif"></a>'
+    });
 
     var sourceOptions;
     var source;

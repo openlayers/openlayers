@@ -18,10 +18,12 @@ var layers = [
     source: new ol.source.SingleImageWMS({
       url: 'http://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
-      attributions: [new ol.Attribution(
-          '&copy; ' +
-          '<a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">' +
-          'Pixelmap 1:1000000 / geo.admin.ch</a>')],
+      attributions: [new ol.Attribution({
+        html: '&copy; ' +
+            '<a href="http://www.geo.admin.ch/internet/geoportal/' +
+            'en/home.html">' +
+            'Pixelmap 1:1000000 / geo.admin.ch</a>'
+      })],
       params: {
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
         'FORMAT': 'image/jpeg'
@@ -33,10 +35,12 @@ var layers = [
     source: new ol.source.SingleImageWMS({
       url: 'http://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
-      attributions: [new ol.Attribution(
-          '&copy; ' +
-          '<a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">' +
-          'National parks / geo.admin.ch</a>')],
+      attributions: [new ol.Attribution({
+        html: '&copy; ' +
+            '<a href="http://www.geo.admin.ch/internet/geoportal/' +
+            'en/home.html">' +
+            'National parks / geo.admin.ch</a>'
+      })],
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
       extent: extent
     })
