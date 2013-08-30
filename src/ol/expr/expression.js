@@ -99,6 +99,7 @@ ol.expr.functions = {
   EXTENT: 'extent',
   FID: 'fid',
   GEOMETRY_TYPE: 'geometryType',
+  RENDER_INTENT: 'renderIntent',
   INTERSECTS: 'intersects',
   CONTAINS: 'contains',
   DWITHIN: 'dwithin',
@@ -249,6 +250,17 @@ ol.expr.lib[ol.expr.functions.GEOMETRY_TYPE] = function(type) {
     same = geometry.getType() === type;
   }
   return same;
+};
+
+
+/**
+ * Determine if a feature's renderIntent matches the given one.
+ * @param {string} renderIntent Render intent.
+ * @return {boolean} The feature's renderIntent matches the given one.
+ * @this {ol.Feature}
+ */
+ol.expr.lib[ol.expr.functions.RENDER_INTENT] = function(renderIntent) {
+  return this.renderIntent == renderIntent;
 };
 
 

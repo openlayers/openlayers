@@ -88,7 +88,9 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
       ol.renderer.canvas.VectorLayer.TILECACHE_SIZE);
   goog.events.listen(layer, [
     ol.layer.VectorLayerEventType.ADD,
-    ol.layer.VectorLayerEventType.REMOVE
+    ol.layer.VectorLayerEventType.CHANGE,
+    ol.layer.VectorLayerEventType.REMOVE,
+    ol.layer.VectorLayerEventType.INTENTCHANGE
   ],
   this.handleLayerChange_, false, this);
 

@@ -28,6 +28,19 @@ ol.geom.Geometry.prototype.dimension;
 
 
 /**
+ * Create a clone of this geometry. The clone will not be represented in any
+ * shared structure.
+ * @return {ol.geom.Geometry} The cloned geometry.
+ */
+ol.geom.Geometry.prototype.clone = function() {
+  var clone = new this.constructor(this.getCoordinates());
+  clone.bounds_ = this.bounds_;
+  clone.dimension = this.dimension;
+  return clone;
+};
+
+
+/**
  * Get the rectangular 2D envelope for this geoemtry.
  * @return {ol.Extent} The bounding rectangular envelope.
  */

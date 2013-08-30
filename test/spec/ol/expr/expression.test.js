@@ -872,6 +872,24 @@ describe('ol.expr.lib', function() {
 
   });
 
+  describe('renderIntent()', function() {
+
+    var feature = new ol.Feature();
+    feature.renderIntent = 'foo';
+
+    var isFoo = parse('renderIntent("foo")');
+    var isBar = parse('renderIntent("bar")');
+
+    it('True when renderIntent matches', function() {
+      expect(evaluate(isFoo, feature), true);
+    });
+
+    it('False when renderIntent does not match', function() {
+      expect(evaluate(isBar, feature), false);
+    });
+
+  });
+
 });
 
 describe('ol.expr.register()', function() {
