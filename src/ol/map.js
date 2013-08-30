@@ -363,7 +363,8 @@ ol.Map.prototype.addLayer = function(layer) {
 
 /**
  * Add a prerender function. This can be used for attaching animations to
- * be performed before setting the map's center.
+ * be performed before setting the map's center.  The {@link ol.animation} 
+ * namespace provides several static methods for creating prerender functions.
  * @param {ol.PreRenderFunction} preRenderFunction Pre-render function.
  */
 ol.Map.prototype.addPreRenderFunction = function(preRenderFunction) {
@@ -374,7 +375,7 @@ ol.Map.prototype.addPreRenderFunction = function(preRenderFunction) {
 
 /**
  * Add prerender functions. This can be used for attaching animations to
- * be performed before setting the map's center.
+ * be performed before setting the map's center.  See {@link ol.animation}
  * @param {Array.<ol.PreRenderFunction>} preRenderFunctions
  *     Pre-render functions.
  */
