@@ -2,7 +2,6 @@
 
 goog.provide('ol.interaction.Interaction');
 
-goog.require('goog.events.EventTarget');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.animation.pan');
 goog.require('ol.animation.rotate');
@@ -13,12 +12,9 @@ goog.require('ol.easing');
 
 /**
  * @constructor
- * @extends {goog.events.EventTarget}
  */
 ol.interaction.Interaction = function() {
-  goog.base(this);
 };
-goog.inherits(ol.interaction.Interaction, goog.events.EventTarget);
 
 
 /**
