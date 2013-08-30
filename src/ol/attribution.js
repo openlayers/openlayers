@@ -11,31 +11,31 @@ goog.require('ol.TileRange');
  *
  *     source: new ol.source.OSM({
  *       attributions: [
- *       new ol.Attribution(
- *         'All maps &copy; ' +
- *         '<a href="http://www.opencyclemap.org/">OpenCycleMap</a>'),
+ *       new ol.Attribution({
+ *         html: 'All maps &copy; ' +
+ *             '<a href="http://www.opencyclemap.org/">OpenCycleMap</a>'
+ *       }),
  *       ol.source.OSM.DATA_ATTRIBUTION
  *     ],
  *     ..
  *
  * @constructor
- * @param {string} html The markup to use for display of the attribution.
- * @param {Object.<string, Array.<ol.TileRange>>=} opt_tileRanges Tile ranges
- *     (FOR INTERNAL USE ONLY).
+ * @param {ol.AttributionOptions} options Attribution options.
  */
-ol.Attribution = function(html, opt_tileRanges) {
+ol.Attribution = function(options) {
 
   /**
    * @private
    * @type {string}
    */
-  this.html_ = html;
+  this.html_ = options.html;
 
   /**
    * @private
    * @type {Object.<string, Array.<ol.TileRange>>}
    */
-  this.tileRanges_ = opt_tileRanges || null;
+  this.tileRanges_ = goog.isDef(options.tileRanges) ?
+      options.tileRanges : null;
 
 };
 

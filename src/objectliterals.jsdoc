@@ -1,4 +1,11 @@
 /**
+ * @typedef {Object} ol.AttributionOptions
+ * @property {string} html HTML markup for this attribution.
+ * @property {Object.<string, Array.<ol.TileRange>>|undefined} tileRanges
+ *     Tile ranges (FOR INTERNAL USE ONLY).
+ */
+
+/**
  * @typedef {Object} ol.DeviceOrientationOptions
  * @property {boolean|undefined} tracking Tracking.
  */
