@@ -1,7 +1,7 @@
-goog.provide('ol.ProjectionLike');
 goog.provide('ol.ProjectionUnits');
 goog.provide('ol.proj');
 goog.provide('ol.proj.Projection');
+goog.provide('ol.proj.ProjectionLike');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -27,9 +27,9 @@ ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof Proj4js == 'object';
 /**
  * A projection as {@link ol.proj.Projection}, SRS identifier string or
  * undefined.
- * @typedef {ol.proj.Projection|string|undefined} ol.ProjectionLike
+ * @typedef {ol.proj.Projection|string|undefined} ol.proj.ProjectionLike
  */
-ol.ProjectionLike;
+ol.proj.ProjectionLike;
 
 
 /**
@@ -455,8 +455,8 @@ ol.proj.removeTransform = function(source, destination) {
 
 
 /**
- * @param {ol.ProjectionLike} projectionLike Either a code string which is a
- *     combination of authority and identifier such as "EPSG:4326", or an
+ * @param {ol.proj.ProjectionLike} projectionLike Either a code string which is
+ *     a combination of authority and identifier such as "EPSG:4326", or an
  *     existing projection object, or undefined.
  * @return {ol.proj.Projection} Projection.
  */
@@ -537,8 +537,8 @@ ol.proj.equivalent = function(projection1, projection2) {
  * function to convert a coordinates array from the source projection to the
  * destination projection.
  *
- * @param {ol.ProjectionLike} source Source.
- * @param {ol.ProjectionLike} destination Destination.
+ * @param {ol.proj.ProjectionLike} source Source.
+ * @param {ol.proj.ProjectionLike} destination Destination.
  * @return {ol.TransformFunction} Transform.
  */
 ol.proj.getTransform = function(source, destination) {
@@ -672,8 +672,8 @@ ol.proj.cloneTransform = function(input, opt_output, opt_dimension) {
 
 /**
  * @param {ol.Coordinate} point Point.
- * @param {ol.ProjectionLike} source Source.
- * @param {ol.ProjectionLike} destination Destination.
+ * @param {ol.proj.ProjectionLike} source Source.
+ * @param {ol.proj.ProjectionLike} destination Destination.
  * @return {ol.Coordinate} Point.
  */
 ol.proj.transform = function(point, source, destination) {

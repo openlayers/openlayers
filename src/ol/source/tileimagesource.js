@@ -20,7 +20,7 @@ goog.require('ol.tilegrid.TileGrid');
  *            extent: (ol.Extent|undefined),
  *            logo: (string|undefined),
  *            opaque: (boolean|undefined),
- *            projection: ol.ProjectionLike,
+ *            projection: ol.proj.ProjectionLike,
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
  */

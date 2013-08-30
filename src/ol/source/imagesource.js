@@ -17,7 +17,7 @@ goog.require('ol.source.Source');
  *            crossOrigin: (null|string|undefined),
  *            extent: (null|ol.Extent|undefined),
  *            logo: (string|undefined),
- *            projection: ol.ProjectionLike,
+ *            projection: ol.proj.ProjectionLike,
  *            resolutions: (Array.<number>|undefined),
  *            imageUrlFunction: (ol.ImageUrlFunctionType|
  *                undefined)}}
