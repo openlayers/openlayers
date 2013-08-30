@@ -113,7 +113,10 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function() {
           [tileGrid.getTileRangeForExtentAndZ(attributionExtent, z)];
     }
     this.setAttributions([
-      new ol.Attribution(tileJSON.attribution, tileRanges)
+      new ol.Attribution({
+        html: tileJSON.attribution,
+        tileRanges: tileRanges
+      })
     ]);
   }
 

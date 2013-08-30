@@ -44,21 +44,24 @@ goog.inherits(ol.source.OSM, ol.source.XYZ);
  * @const
  * @type {ol.Attribution}
  */
-ol.source.OSM.DATA_ATTRIBUTION = new ol.Attribution(
-    'Data &copy; <a href="http://www.openstreetmap.org/">OpenStreetMap</a> ' +
-    'contributors, ' +
-    '<a href="http://www.openstreetmap.org/copyright">ODbL</a>');
+ol.source.OSM.DATA_ATTRIBUTION = new ol.Attribution({
+  html: 'Data &copy; ' +
+      '<a href="http://www.openstreetmap.org/">OpenStreetMap</a> ' +
+      'contributors, ' +
+      '<a href="http://www.openstreetmap.org/copyright">ODbL</a>'
+});
 
 
 /**
  * @const
  * @type {ol.Attribution}
  */
-ol.source.OSM.TILE_ATTRIBUTION = new ol.Attribution(
-    'Tiles &copy; ' +
-    '<a href="http://www.openstreetmap.org/">OpenStreetMap</a> ' +
-    'contributors, ' +
-    '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>');
+ol.source.OSM.TILE_ATTRIBUTION = new ol.Attribution({
+  html: 'Tiles &copy; ' +
+      '<a href="http://www.openstreetmap.org/">OpenStreetMap</a> ' +
+      'contributors, ' +
+      '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>'
+});
 
 
 /**
