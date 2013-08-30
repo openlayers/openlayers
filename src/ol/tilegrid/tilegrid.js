@@ -3,13 +3,13 @@ goog.provide('ol.tilegrid.TileGrid');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.Coordinate');
-goog.require('ol.ProjectionUnits');
 goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.proj.Projection');
+goog.require('ol.proj.Units');
 
 
 /**
@@ -412,7 +412,7 @@ ol.tilegrid.createForProjection =
     function(projection, opt_maxZoom, opt_tileSize) {
   var projectionExtent = projection.getExtent();
   var size = goog.isNull(projectionExtent) ?
-      360 * ol.METERS_PER_UNIT[ol.ProjectionUnits.DEGREES] /
+      360 * ol.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
           projection.getMetersPerUnit() :
       Math.max(projectionExtent[2] - projectionExtent[0],
           projectionExtent[3] - projectionExtent[1]);

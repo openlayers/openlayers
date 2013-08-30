@@ -4,11 +4,11 @@ goog.provide('ol.proj.EPSG21781');
 
 goog.require('goog.asserts');
 goog.require('goog.math');
-goog.require('ol.ProjectionUnits');
 goog.require('ol.ellipsoid.BESSEL1841');
 goog.require('ol.proj');
 goog.require('ol.proj.EPSG4326');
 goog.require('ol.proj.Projection');
+goog.require('ol.proj.Units');
 
 
 
@@ -23,7 +23,7 @@ ol.proj.CH = function(options) {
     code: options.code,
     extent: options.extent,
     global: false,
-    units: ol.ProjectionUnits.METERS
+    units: ol.proj.Units.METERS
   });
 };
 goog.inherits(ol.proj.CH, ol.proj.Projection);

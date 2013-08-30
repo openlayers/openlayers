@@ -1,7 +1,7 @@
-goog.provide('ol.ProjectionUnits');
 goog.provide('ol.proj');
 goog.provide('ol.proj.Projection');
 goog.provide('ol.proj.ProjectionLike');
+goog.provide('ol.proj.Units');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -35,7 +35,7 @@ ol.proj.ProjectionLike;
 /**
  * @enum {string}
  */
-ol.ProjectionUnits = {
+ol.proj.Units = {
   DEGREES: 'degrees',
   FEET: 'ft',
   METERS: 'm'
@@ -43,13 +43,13 @@ ol.ProjectionUnits = {
 
 
 /**
- * @const {Object.<ol.ProjectionUnits, number>} Meters per unit lookup table.
+ * @const {Object.<ol.proj.Units, number>} Meters per unit lookup table.
  */
 ol.METERS_PER_UNIT = {};
-ol.METERS_PER_UNIT[ol.ProjectionUnits.DEGREES] =
+ol.METERS_PER_UNIT[ol.proj.Units.DEGREES] =
     2 * Math.PI * ol.sphere.NORMAL.radius / 360;
-ol.METERS_PER_UNIT[ol.ProjectionUnits.FEET] = 0.3048;
-ol.METERS_PER_UNIT[ol.ProjectionUnits.METERS] = 1;
+ol.METERS_PER_UNIT[ol.proj.Units.FEET] = 0.3048;
+ol.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
 
 
 
@@ -67,7 +67,7 @@ ol.proj.Projection = function(options) {
 
   /**
    * @private
-   * @type {ol.ProjectionUnits}
+   * @type {ol.proj.Units}
    */
   this.units_ = options.units;
 
@@ -132,7 +132,7 @@ ol.proj.Projection.prototype.getPointResolution = goog.abstractMethod;
 
 /**
  * Get the units of this projection.
- * @return {ol.ProjectionUnits} Units.
+ * @return {ol.proj.Units} Units.
  */
 ol.proj.Projection.prototype.getUnits = function() {
   return this.units_;
@@ -199,7 +199,7 @@ ol.proj.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
  */
 ol.Proj4jsProjection_ = function(proj4jsProj, options) {
 
-  var units = /** @type {ol.ProjectionUnits} */ (proj4jsProj.units);
+  var units = /** @type {ol.proj.Units} */ (proj4jsProj.units);
 
   var config = /** @type {ol.ProjectionOptions} */ ({
     units: units,
@@ -242,7 +242,7 @@ ol.Proj4jsProjection_.prototype.getMetersPerUnit = function() {
  */
 ol.Proj4jsProjection_.prototype.getPointResolution =
     function(resolution, point) {
-  if (this.getUnits() == ol.ProjectionUnits.DEGREES) {
+  if (this.getUnits() == ol.proj.Units.DEGREES) {
     return resolution;
   } else {
     // Estimate point resolution by transforming the center pixel to EPSG:4326,
@@ -267,7 +267,7 @@ ol.Proj4jsProjection_.prototype.getPointResolution =
     var height = ol.sphere.NORMAL.haversineDistance(
         vertices.slice(4, 6), vertices.slice(6, 8));
     var pointResolution = (width + height) / 2;
-    if (this.getUnits() == ol.ProjectionUnits.FEET) {
+    if (this.getUnits() == ol.proj.Units.FEET) {
       // The radius of the normal sphere is defined in meters, so we must
       // convert back to feet.
       pointResolution /= 0.3048;

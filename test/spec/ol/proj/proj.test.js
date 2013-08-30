@@ -272,7 +272,7 @@ describe('ol.proj', function() {
   describe('ol.proj.removeTransform()', function() {
 
     var extent = [180, -90, 180, 90];
-    var units = ol.ProjectionUnits.DEGREES;
+    var units = ol.proj.Units.DEGREES;
 
     it('removes functions cached by addTransform', function() {
       var foo = new ol.proj.Projection({
@@ -341,7 +341,7 @@ describe('ol.proj', function() {
       });
       expect(epsg21781.getCode()).to.eql('EPSG:21781');
       expect(epsg21781.getExtent()).to.be(extent);
-      expect(epsg21781.getUnits()).to.be(ol.ProjectionUnits.METERS);
+      expect(epsg21781.getUnits()).to.be(ol.proj.Units.METERS);
       expect(epsg21781.isGlobal()).to.not.be();
     });
 
@@ -351,7 +351,7 @@ describe('ol.proj', function() {
 
 
 goog.require('goog.array');
-goog.require('ol.ProjectionUnits');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
+goog.require('ol.proj.Units');
 goog.require('ol.proj.common');

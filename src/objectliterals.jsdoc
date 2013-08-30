@@ -85,7 +85,7 @@
  * Object literal with config options for the projection.
  * @typedef {Object} ol.ProjectionOptions
  * @property {string} code The SRS identifier code, e.g. 'EPSG:4326'.
- * @property {ol.ProjectionUnits} units Units.
+ * @property {ol.proj.Units} units Units.
  * @property {ol.Extent|undefined} extent The validity extent for the SRS.
  * @property {string|undefined} axisOrientation The axis orientation as
  *     specified in Proj4. The default is 'enu'.

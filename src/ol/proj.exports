@@ -7,10 +7,10 @@
 @exportProperty ol.proj.Projection.prototype.getMetersPerUnit
 @exportProperty ol.proj.Projection.prototype.isGlobal
 
-@exportSymbol ol.ProjectionUnits
-@exportProperty ol.ProjectionUnits.DEGREES
-@exportProperty ol.ProjectionUnits.FEET
-@exportProperty ol.ProjectionUnits.METERS
+@exportSymbol ol.proj.Units
+@exportProperty ol.proj.Units.DEGREES
+@exportProperty ol.proj.Units.FEET
+@exportProperty ol.proj.Units.METERS
 
 @exportSymbol ol.proj.addProjection
 @exportSymbol ol.proj.get

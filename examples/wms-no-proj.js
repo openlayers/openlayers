@@ -1,11 +1,11 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.ProjectionUnits');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj.Projection');
+goog.require('ol.proj.Units');
 goog.require('ol.source.ImageWMS');
 goog.require('ol.source.TileWMS');
 
@@ -47,7 +47,7 @@ var layers = [
 // projection object.
 var projection = new ol.proj.Projection({
   code: 'EPSG:21781',
-  units: ol.ProjectionUnits.METERS
+  units: ol.proj.Units.METERS
 });
 
 var map = new ol.Map({

@@ -1,8 +1,8 @@
 goog.provide('ol.proj.EPSG4326');
 
-goog.require('ol.ProjectionUnits');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
+goog.require('ol.proj.Units');
 
 
 
@@ -15,7 +15,7 @@ goog.require('ol.proj.Projection');
 ol.proj.EPSG4326 = function(code, opt_axisOrientation) {
   goog.base(this, {
     code: code,
-    units: ol.ProjectionUnits.DEGREES,
+    units: ol.proj.Units.DEGREES,
     extent: ol.proj.EPSG4326.EXTENT,
     axisOrientation: opt_axisOrientation,
     global: true

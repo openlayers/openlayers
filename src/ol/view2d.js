@@ -7,7 +7,6 @@ goog.require('goog.asserts');
 goog.require('ol.Constraints');
 goog.require('ol.IView2D');
 goog.require('ol.IView3D');
-goog.require('ol.ProjectionUnits');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
 goog.require('ol.RotationConstraintType');
@@ -17,6 +16,7 @@ goog.require('ol.coordinate');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
+goog.require('ol.proj.Units');
 
 
 /**
@@ -496,7 +496,7 @@ ol.View2D.createResolutionConstraint_ = function(options) {
           .getExtent();
       var size = goog.isNull(projectionExtent) ?
           // use an extent that can fit the whole world if need be
-          360 * ol.METERS_PER_UNIT[ol.ProjectionUnits.DEGREES] /
+          360 * ol.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
               ol.METERS_PER_UNIT[projection.getUnits()] :
           Math.max(projectionExtent[2] - projectionExtent[0],
               projectionExtent[3] - projectionExtent[1]);
