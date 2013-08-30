@@ -2,7 +2,7 @@ goog.provide('ol.geom.SharedVertices');
 
 goog.require('goog.asserts');
 goog.require('ol.Coordinate');
-goog.require('ol.geom.VertexArray');
+goog.require('ol.CoordinateArray');
 
 
 /**
@@ -60,7 +60,7 @@ ol.geom.SharedVertices = function(opt_options) {
 
 /**
  * Adds a vertex array to the shared coordinate array.
- * @param {ol.geom.VertexArray} vertices Array of vertices.
+ * @param {ol.CoordinateArray} vertices Array of vertices.
  * @return {number} Index used to reference the added vertex array.
  */
 ol.geom.SharedVertices.prototype.add = function(vertices) {
