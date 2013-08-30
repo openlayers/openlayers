@@ -90,7 +90,7 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
     ol.layer.VectorLayerEventType.ADD,
     ol.layer.VectorLayerEventType.CHANGE,
     ol.layer.VectorLayerEventType.REMOVE,
-    ol.layer.VectorLayerEventType.SYMBOLIZER
+    ol.layer.VectorLayerEventType.INTENTCHANGE
   ],
   this.handleLayerChange_, false, this);
 

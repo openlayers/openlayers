@@ -238,7 +238,7 @@ ol.layer.VectorLayerEventType = {
   ADD: 'add',
   CHANGE: goog.events.EventType.CHANGE,
   REMOVE: 'remove',
-  SYMBOLIZER: 'symbolizer'
+  INTENTCHANGE: 'intentchange'
 };
 
 
@@ -612,7 +612,7 @@ ol.layer.Vector.prototype.setRenderIntent =
   this.dispatchEvent(/** @type {ol.layer.VectorLayerEventObject} */ ({
     extent: extent,
     features: features,
-    type: ol.layer.VectorLayerEventType.SYMBOLIZER
+    type: ol.layer.VectorLayerEventType.INTENTCHANGE
   }));
 };
 
