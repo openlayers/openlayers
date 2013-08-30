@@ -119,31 +119,31 @@
 
 /**
  * @typedef {Object} ol.animation.BounceOptions
- * @property {number} resolution Resolution.
+ * @property {number} resolution The resolution to start the bounce from, typically `map.getView().getResolution()`.
  * @property {number|undefined} start The start time of the animation. Default is immediately.
- * @property {number|undefined} duration The duration of the animation in milliseconds.
- * @property {function(number):number|undefined} easing Easing function.
+ * @property {number|undefined} duration The duration of the animation in milliseconds. Default is 1000.
+ * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.inAndOut`
  */
 
 /**
  * @typedef {Object} ol.animation.PanOptions
- * @property {ol.Coordinate} source Source.
+ * @property {ol.Coordinate} source The location to start panning from, typically `map.getView().getCenter()`.
  * @property {number|undefined} start The start time of the animation. Default is immediately.
- * @property {number|undefined} duration The duration of the animation in milliseconds.
- * @property {function(number):number|undefined} easing Easing function.
+ * @property {number|undefined} duration The duration of the animation in milliseconds. Default is 1000.
+ * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.inAndOut`
  */
 
 /**
  * @typedef {Object} ol.animation.RotateOptions
- * @property {number} rotation Rotation.
+ * @property {number} rotation The rotation to apply, in radians.
  * @property {number|undefined} start The start time of the animation. Default is immediately.
- * @property {number|undefined} duration The duration of the animation in milliseconds.
- * @property {function(number):number|undefined} easing Easing function.
+ * @property {number|undefined} duration The duration of the animation in milliseconds.  Default is 1000.
+ * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.inAndOut`
  */
 
 /**
  * @typedef {Object} ol.animation.ZoomOptions
- * @property {number} resolution number Resolution.
+ * @property {number} resolution number The resolution to begin zooming from, typically `map.getView().getResolution()`.
  * @property {number|undefined} start The start time of the animation. Default is immediately.
  * @property {number|undefined} duration The duration of the animation in milliseconds.
  * @property {function(number):number|undefined} easing Easing function.
