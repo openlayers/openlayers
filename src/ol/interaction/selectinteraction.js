@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.Select');
 
 goog.require('goog.array');
+goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Interaction');
@@ -53,21 +54,6 @@ goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 
 
 /**
- * @inheritDoc
- */
-ol.interaction.Select.prototype.disposeInternal = function() {
-  for (var m in this.selectionLayers) {
-    var selectionLayers = this.selectionLayers[m].layers;
-    var map = this.selectionLayers[m].map;
-    for (var l in selectionLayers) {
-      map.removeLayer(selectionLayers[l]);
-    }
-  }
-  goog.base(this, 'disposeInternal');
-};
-
-
-/**
  * @inheritDoc.
  */
 ol.interaction.Select.prototype.handleMapBrowserEvent = function(evt) {
@@ -105,12 +91,12 @@ ol.interaction.Select.prototype.handleMapBrowserEvent = function(evt) {
 ol.interaction.Select.prototype.select =
     function(map, featuresByLayer, layers, clear) {
   var mapId = goog.getUid(map);
+  if (!(mapId in this.selectionLayers)) {
+    this.selectionLayers[mapId] = {map: map, layers: {}};
+  }
   for (var i = 0, ii = featuresByLayer.length; i < ii; ++i) {
     var layer = layers[i];
     var layerId = goog.getUid(layer);
-    if (!(mapId in this.selectionLayers)) {
-      this.selectionLayers[mapId] = {map: map, layers: {}};
-    }
     var selectionLayer = this.selectionLayers[mapId].layers[layerId];
     if (!goog.isDef(selectionLayer)) {
       selectionLayer = new ol.layer.Vector({
@@ -123,21 +109,25 @@ ol.interaction.Select.prototype.select =
       this.featureMap_[layerId] = {};
     }
 
+    var selectedFeatures, unselectedFeatures;
+    if (goog.isFunction(layer.setRenderIntent)) {
+      selectedFeatures = [];
+      unselectedFeatures = [];
+    }
     var features = featuresByLayer[i];
     var numFeatures = features.length;
-    var selectedFeatures = [];
     var featuresToAdd = [];
-    var unselectedFeatures = [];
     var featuresToRemove = [];
     var featureMap = this.featureMap_[layerId];
     var oldFeatureMap = featureMap;
     if (clear) {
       for (var f in featureMap) {
-        unselectedFeatures.push(layer.getFeatureWithUid(f));
+        if (goog.isDef(unselectedFeatures)) {
+          unselectedFeatures.push(layer.getFeatureWithUid(f));
+        }
         featuresToRemove.push(featureMap[f]);
+        delete featureMap[f];
       }
-      featureMap = {};
-      this.featureMap_[layerId] = featureMap;
     }
     for (var j = 0; j < numFeatures; ++j) {
       var feature = features[j];
@@ -145,9 +135,11 @@ ol.interaction.Select.prototype.select =
       var clone = featureMap[featureId];
       if (clone) {
         // TODO: make toggle configurable
-        unselectedFeatures.push(feature);
-        featuresToRemove.push(clone);
+        if (goog.isDef(unselectedFeatures)) {
+          unselectedFeatures.push(feature);
+        }
         delete featureMap[featureId];
+        featuresToRemove.push(clone);
       } else if (!(featureId in oldFeatureMap)) {
         clone = new ol.Feature(feature.getAttributes());
         clone.setGeometry(feature.getGeometry().clone());
@@ -155,7 +147,9 @@ ol.interaction.Select.prototype.select =
         clone.setSymbolizers(feature.getSymbolizers());
         clone.renderIntent = ol.layer.VectorLayerRenderIntent.SELECTED;
         featureMap[featureId] = clone;
-        selectedFeatures.push(feature);
+        if (goog.isDef(selectedFeatures)) {
+          selectedFeatures.push(feature);
+        }
         featuresToAdd.push(clone);
       }
     }
@@ -167,6 +161,11 @@ ol.interaction.Select.prototype.select =
     }
     selectionLayer.removeFeatures(featuresToRemove);
     selectionLayer.addFeatures(featuresToAdd);
+    if (goog.object.getCount(featureMap) == 0) {
+      map.removeLayer(selectionLayer);
+      delete this.selectionLayers[mapId].layers[layerId];
+      delete this.featureMap_[layerId];
+    }
     // TODO: Dispatch an event with selectedFeatures and unselectedFeatures
   }
 };
