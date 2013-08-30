@@ -275,12 +275,12 @@ describe('ol.proj', function() {
     var units = ol.ProjectionUnits.DEGREES;
 
     it('removes functions cached by addTransform', function() {
-      var foo = new ol.Projection({
+      var foo = new ol.proj.Projection({
         code: 'foo',
         units: units,
         extent: extent
       });
-      var bar = new ol.Projection({
+      var bar = new ol.proj.Projection({
         code: 'bar',
         units: units,
         extent: extent
@@ -298,7 +298,7 @@ describe('ol.proj', function() {
 
   });
 
-  describe('ol.Projection.prototype.getMetersPerUnit()', function() {
+  describe('ol.proj.Projection.prototype.getMetersPerUnit()', function() {
 
     beforeEach(function() {
       Proj4js.defs['EPSG:26782'] =
@@ -351,7 +351,7 @@ describe('ol.proj', function() {
 
 
 goog.require('goog.array');
-goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');
 goog.require('ol.proj');
+goog.require('ol.proj.Projection');
 goog.require('ol.proj.common');

@@ -2,12 +2,11 @@ goog.provide('ol.IView2D');
 goog.provide('ol.View2DState');
 
 goog.require('ol.Coordinate');
-goog.require('ol.Projection');
 
 
 /**
  * @typedef {{center: ol.Coordinate,
- *            projection: ol.Projection,
+ *            projection: ol.proj.Projection,
  *            resolution: number,
  *            rotation: number}}
  */
@@ -31,7 +30,7 @@ ol.IView2D.prototype.getCenter = function() {
 
 
 /**
- * @return {ol.Projection|undefined} Map projection.
+ * @return {ol.proj.Projection|undefined} Map projection.
  */
 ol.IView2D.prototype.getProjection = function() {
 };

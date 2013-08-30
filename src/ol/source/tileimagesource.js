@@ -4,7 +4,6 @@ goog.require('goog.asserts');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.ImageTile');
-goog.require('ol.Projection');
 goog.require('ol.Tile');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');

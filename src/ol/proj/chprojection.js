@@ -4,18 +4,18 @@ goog.provide('ol.proj.EPSG21781');
 
 goog.require('goog.asserts');
 goog.require('goog.math');
-goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');
 goog.require('ol.ellipsoid.BESSEL1841');
 goog.require('ol.proj');
 goog.require('ol.proj.EPSG4326');
+goog.require('ol.proj.Projection');
 
 
 
 /**
  * Internal base class for Swiss grid projections.
  * @constructor
- * @extends {ol.Projection}
+ * @extends {ol.proj.Projection}
  * @param {{code: string, extent: ol.Extent}} options Options.
  */
 ol.proj.CH = function(options) {
@@ -26,7 +26,7 @@ ol.proj.CH = function(options) {
     units: ol.ProjectionUnits.METERS
   });
 };
-goog.inherits(ol.proj.CH, ol.Projection);
+goog.inherits(ol.proj.CH, ol.proj.Projection);
 
 
 /**

@@ -1,11 +1,11 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
+goog.require('ol.proj.Projection');
 goog.require('ol.source.ImageWMS');
 goog.require('ol.source.TileWMS');
 
@@ -45,7 +45,7 @@ var layers = [
 // A minimal projection object is configured with only the SRS code and the map
 // units. No client side coordinate transforms are possible with such a
 // projection object.
-var projection = new ol.Projection({
+var projection = new ol.proj.Projection({
   code: 'EPSG:21781',
   units: ol.ProjectionUnits.METERS
 });

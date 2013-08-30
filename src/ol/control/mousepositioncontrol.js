@@ -12,10 +12,10 @@ goog.require('goog.style');
 goog.require('ol.CoordinateFormatType');
 goog.require('ol.Object');
 goog.require('ol.Pixel');
-goog.require('ol.Projection');
 goog.require('ol.TransformFunction');
 goog.require('ol.control.Control');
 goog.require('ol.proj');
+goog.require('ol.proj.Projection');
 
 
 /**
@@ -80,7 +80,7 @@ ol.control.MousePosition = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Projection}
+   * @type {ol.proj.Projection}
    */
   this.mapProjection_ = null;
 
@@ -139,10 +139,10 @@ goog.exportProperty(
 
 
 /**
- * @return {ol.Projection|undefined} projection.
+ * @return {ol.proj.Projection|undefined} projection.
  */
 ol.control.MousePosition.prototype.getProjection = function() {
-  return /** @type {ol.Projection|undefined} */ (
+  return /** @type {ol.proj.Projection|undefined} */ (
       this.get(ol.control.MousePositionProperty.PROJECTION));
 };
 goog.exportProperty(
@@ -204,7 +204,7 @@ goog.exportProperty(
 
 
 /**
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  */
 ol.control.MousePosition.prototype.setProjection = function(projection) {
   this.set(ol.control.MousePositionProperty.PROJECTION, projection);

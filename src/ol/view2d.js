@@ -7,7 +7,6 @@ goog.require('goog.asserts');
 goog.require('ol.Constraints');
 goog.require('ol.IView2D');
 goog.require('ol.IView3D');
-goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
@@ -17,6 +16,7 @@ goog.require('ol.View');
 goog.require('ol.coordinate');
 goog.require('ol.extent');
 goog.require('ol.proj');
+goog.require('ol.proj.Projection');
 
 
 /**
@@ -234,7 +234,7 @@ ol.View2D.prototype.calculateExtent = function(size) {
  * @inheritDoc
  */
 ol.View2D.prototype.getProjection = function() {
-  return /** @type {ol.Projection|undefined} */ (
+  return /** @type {ol.proj.Projection|undefined} */ (
       this.get(ol.View2DProperty.PROJECTION));
 };
 goog.exportProperty(
@@ -425,7 +425,7 @@ goog.exportProperty(
 
 /**
  * Set the projection of this view.
- * @param {ol.Projection|undefined} projection Projection.
+ * @param {ol.proj.Projection|undefined} projection Projection.
  */
 ol.View2D.prototype.setProjection = function(projection) {
   this.set(ol.View2DProperty.PROJECTION, projection);

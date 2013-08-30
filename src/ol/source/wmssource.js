@@ -29,7 +29,7 @@ ol.source.WMSGetFeatureInfoMethod = {
  * @param {Object.<string, string|number>} params Request parameters.
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Size.
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  * @return {string} WMS GetMap request URL.
  */
 ol.source.wms.getUrl =

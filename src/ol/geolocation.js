@@ -9,7 +9,6 @@ goog.require('goog.events.EventType');
 goog.require('goog.math');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
-goog.require('ol.Projection');
 goog.require('ol.proj');
 
 
@@ -254,10 +253,10 @@ goog.exportProperty(
 
 /**
  * Get the projection associated with the position.
- * @return {ol.Projection|undefined} projection.
+ * @return {ol.proj.Projection|undefined} projection.
  */
 ol.Geolocation.prototype.getProjection = function() {
-  return /** @type {ol.Projection|undefined} */ (
+  return /** @type {ol.proj.Projection|undefined} */ (
       this.get(ol.GeolocationProperty.PROJECTION));
 };
 goog.exportProperty(
@@ -312,7 +311,7 @@ goog.exportProperty(
 
 /**
  * Set the projection to use for transforming the coordinates.
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  */
 ol.Geolocation.prototype.setProjection = function(projection) {
   this.set(ol.GeolocationProperty.PROJECTION, projection);

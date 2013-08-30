@@ -7,7 +7,6 @@ goog.require('ol.Extent');
 goog.require('ol.Image');
 goog.require('ol.ImageUrlFunction');
 goog.require('ol.ImageUrlFunctionType');
-goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.array');
 goog.require('ol.source.Source');
@@ -78,7 +77,7 @@ goog.inherits(ol.source.Image, ol.source.Source);
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {ol.Size} size Size.
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  * @return {ol.Image} Single image.
  */
 ol.source.Image.prototype.createImage =
@@ -112,7 +111,7 @@ ol.source.Image.prototype.findNearestResolution =
 /**
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  * @return {ol.Image} Single image.
  */
 ol.source.Image.prototype.getImage = goog.abstractMethod;
