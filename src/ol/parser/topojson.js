@@ -1,5 +1,6 @@
 goog.provide('ol.parser.TopoJSON');
 
+goog.require('ol.Coordinate');
 goog.require('ol.Feature');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
@@ -8,7 +9,6 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.geom.Vertex');
 goog.require('ol.geom.VertexArray');
 goog.require('ol.parser.Parser');
 goog.require('ol.parser.ReadFeaturesOptions');
@@ -419,7 +419,7 @@ ol.parser.TopoJSON.prototype.transformArc_ = function(arc, scale, translate) {
  * Apply a linear transform to a vertex.  The provided vertex is modified in
  * place.
  *
- * @param {ol.geom.Vertex} vertex Vertex.
+ * @param {ol.Coordinate} vertex Vertex.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
  * @private

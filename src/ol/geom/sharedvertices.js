@@ -1,13 +1,13 @@
 goog.provide('ol.geom.SharedVertices');
 
 goog.require('goog.asserts');
-goog.require('ol.geom.Vertex');
+goog.require('ol.Coordinate');
 goog.require('ol.geom.VertexArray');
 
 
 /**
  * @typedef {{dimension: (number),
- *            offset: (ol.geom.Vertex|undefined)}}
+ *            offset: (ol.Coordinate|undefined)}}
  */
 ol.geom.SharedVerticesOptions;
 
