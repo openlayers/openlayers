@@ -101,7 +101,7 @@ ol.interaction.Select.prototype.select =
     if (!goog.isDef(selectionLayer)) {
       selectionLayer = new ol.layer.Vector({
         source: new ol.source.Vector({parser: null}),
-        style: goog.isFunction(layer.getStyle) ? layer.getStyle() : null
+        style: layer instanceof ol.layer.Vector ? layer.getStyle() : null
       });
       selectionLayer.setTemporary(true);
       map.addLayer(selectionLayer);
