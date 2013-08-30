@@ -57,7 +57,7 @@ var map = new ol.Map({
   renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
-    center: [-10997171.194994785, 5206335.565590534],
+    center: [-11000000, 4600000],
     zoom: 4
   })
 });
