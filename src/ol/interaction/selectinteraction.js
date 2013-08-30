@@ -1,7 +1,6 @@
 goog.provide('ol.interaction.Select');
 
 goog.require('goog.array');
-goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Interaction');
@@ -114,11 +113,9 @@ ol.interaction.Select.prototype.select =
     }
     var selectionLayer = this.selectionLayers[mapId].layers[layerId];
     if (!goog.isDef(selectionLayer)) {
-      goog.asserts.assertFunction(layer.getStyle,
-          'At least one of the layers has no "getStyle()" function.');
       selectionLayer = new ol.layer.Vector({
         source: new ol.source.Vector({parser: null}),
-        style: layer.getStyle()
+        style: goog.isFunction(layer.getStyle) ? layer.getStyle() : null
       });
       selectionLayer.setTemporary(true);
       map.addLayer(selectionLayer);

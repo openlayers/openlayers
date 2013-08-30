@@ -67,6 +67,19 @@ ol.style.Style.prototype.createLiterals = function(feature) {
  * @type {ol.style.Style}
  */
 ol.style.Style.defaults = new ol.style.Style({
+  rules: [
+    new ol.style.Rule({
+      filter: 'renderIntent("select")',
+      symbolizers: [
+        new ol.style.Shape({
+          fill: new ol.style.Fill(ol.style.FillDefaultsSelect),
+          stroke: new ol.style.Stroke(ol.style.StrokeDefaultsSelect)
+        }),
+        new ol.style.Fill(ol.style.FillDefaultsSelect),
+        new ol.style.Stroke(ol.style.StrokeDefaultsSelect)
+      ]
+    })
+  ],
   symbolizers: [
     new ol.style.Shape({
       fill: new ol.style.Fill(),

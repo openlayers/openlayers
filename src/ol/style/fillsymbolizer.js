@@ -116,10 +116,20 @@ ol.style.Fill.prototype.setOpacity = function(opacity) {
 
 
 /**
- * @typedef {{fillColor: (string),
- *            fillOpacity: (number)}}
+ * @typedef {{color: (string),
+ *            opacity: (number)}}
  */
 ol.style.FillDefaults = {
   color: '#ffffff',
   opacity: 0.4
+};
+
+
+/**
+ * @typedef {{color: (string),
+ *            opacity: (number)}}
+ */
+ol.style.FillDefaultsSelect = {
+  color: '#ffffff',
+  opacity: 0.7
 };

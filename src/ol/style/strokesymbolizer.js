@@ -158,12 +158,24 @@ ol.style.Stroke.prototype.setWidth = function(width) {
 
 
 /**
- * @typedef {{strokeColor: (string),
- *            strokeOpacity: (number),
- *            strokeWidth: (number)}}
+ * @typedef {{color: (string),
+ *            opacity: (number),
+ *            width: (number)}}
  */
 ol.style.StrokeDefaults = {
   color: '#696969',
   opacity: 0.75,
   width: 1.5
+};
+
+
+/**
+ * @typedef {{color: (string),
+ *            opacity: (number),
+ *            width: (number)}}
+ */
+ol.style.StrokeDefaultsSelect = {
+  color: '#696969',
+  opacity: 0.9,
+  width: 2.0
 };
