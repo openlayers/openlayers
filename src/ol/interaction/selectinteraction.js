@@ -126,8 +126,9 @@ ol.interaction.Select.prototype.select =
           unselectedFeatures.push(layer.getFeatureWithUid(f));
         }
         featuresToRemove.push(featureMap[f]);
-        delete featureMap[f];
       }
+      featureMap = {};
+      this.featureMap_[layerId] = featureMap;
     }
     for (var j = 0; j < numFeatures; ++j) {
       var feature = features[j];
