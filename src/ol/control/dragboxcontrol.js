@@ -14,8 +14,7 @@ goog.require('ol.control.Control');
 
 
 /**
- * @typedef {{map: (ol.Map|undefined),
- *            startCoordinate: ol.Coordinate}}
+ * @typedef {{startCoordinate: ol.Coordinate}}
  */
 ol.control.DragBoxOptions;
 
@@ -43,8 +42,7 @@ ol.control.DragBox = function(options) {
   this.startCoordinate_ = options.startCoordinate;
 
   goog.base(this, {
-    element: element,
-    map: options.map
+    element: element
   });
 
 };

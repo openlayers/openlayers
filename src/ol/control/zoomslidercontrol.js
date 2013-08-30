@@ -91,8 +91,7 @@ ol.control.ZoomSlider = function(opt_options) {
   ], this.handleContainerClick_, false, this);
 
   goog.base(this, {
-    element: element,
-    map: options.map
+    element: element
   });
 };
 goog.inherits(ol.control.ZoomSlider, ol.control.Control);

@@ -118,7 +118,6 @@ ol.control.ScaleLine = function(opt_options) {
 
   goog.base(this, {
     element: this.element_,
-    map: options.map,
     target: options.target
   });
 
