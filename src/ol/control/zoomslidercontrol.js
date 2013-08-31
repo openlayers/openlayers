@@ -33,9 +33,7 @@ ol.control.ZOOMSLIDER_ANIMATION_DURATION = 200;
  *
  * Example:
  *
- *     var zoomslider = new ol.control.ZoomSlider({
- *       map: map
- *     });
+ *     map.addControl(new ol.control.ZoomSlider());
  *
  * @constructor
  * @extends {ol.control.Control}
