@@ -26,9 +26,8 @@ var createMap = function(divId) {
       zoom: 2
     })
   });
-  zoomslider = new ol.control.ZoomSlider({
-    map: map
-  });
+  zoomslider = new ol.control.ZoomSlider();
+  map.addControl(zoomslider);
   return map;
 };
 
