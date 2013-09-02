@@ -265,6 +265,12 @@ ol.Map = function(options) {
   this.interactions_ = optionsInternal.interactions;
 
   /**
+   * @type {ol.Collection}
+   * @private
+   */
+  this.overlays_ = optionsInternal.overlays;
+
+  /**
    * @type {ol.renderer.Map}
    * @private
    */
@@ -334,6 +340,14 @@ ol.Map = function(options) {
         control.setMap(this);
       }, this);
 
+  this.overlays_.forEach(
+      /**
+       * @param {ol.Overlay} overlay Overlay.
+       */
+      function(overlay) {
+        overlay.setMap(this);
+      }, this);
+
 };
 goog.inherits(ol.Map, ol.Object);
 
@@ -358,6 +372,18 @@ ol.Map.prototype.addLayer = function(layer) {
   var layers = this.getLayerGroup().getLayers();
   goog.asserts.assert(goog.isDef(layers));
   layers.push(layer);
+};
+
+
+/**
+ * Add the given overlay to the map.
+ * @param {ol.Overlay} overlay Overlay.
+ */
+ol.Map.prototype.addOverlay = function(overlay) {
+  var overlays = this.getOverlays();
+  goog.asserts.assert(goog.isDef(overlays));
+  overlays.push(overlay);
+  overlay.setMap(this);
 };
 
 
@@ -456,6 +482,14 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
  */
 ol.Map.prototype.getControls = function() {
   return this.controls_;
+};
+
+
+/**
+ * @return {ol.Collection} Overlays.
+ */
+ol.Map.prototype.getOverlays = function() {
+  return this.overlays_;
 };
 
 
@@ -855,6 +889,23 @@ ol.Map.prototype.removeLayer = function(layer) {
 
 
 /**
+ * Remove the given overlay from the map.
+ * @param {ol.Overlay} overlay Overlay.
+ * @return {ol.Overlay|undefined} The removed overlay of undefined
+ *     if the overlay was not found.
+ */
+ol.Map.prototype.removeOverlay = function(overlay) {
+  var overlays = this.getOverlays();
+  goog.asserts.assert(goog.isDef(overlays));
+  if (goog.isDef(overlays.remove(overlay))) {
+    overlay.setMap(null);
+    return overlay;
+  }
+  return undefined;
+};
+
+
+/**
  * @param {number} time Time.
  * @private
  */
@@ -1042,6 +1093,7 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
 /**
  * @typedef {{controls: ol.Collection,
  *            interactions: ol.Collection,
+ *            overlays: ol.Collection,
  *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
  *            values: Object.<string, *>}}
@@ -1123,9 +1175,22 @@ ol.Map.createOptionsInternal = function(options) {
   var interactions = goog.isDef(options.interactions) ?
       options.interactions : ol.interaction.defaults();
 
+  var overlays;
+  if (goog.isDef(options.overlays)) {
+    if (goog.isArray(options.overlays)) {
+      overlays = new ol.Collection(goog.array.clone(options.overlays));
+    } else {
+      goog.asserts.assertInstanceof(options.overlays, ol.Collection);
+      overlays = options.overlays;
+    }
+  } else {
+    overlays = new ol.Collection();
+  }
+
   return {
     controls: controls,
     interactions: interactions,
+    overlays: overlays,
     rendererConstructor: rendererConstructor,
     values: values
   };
