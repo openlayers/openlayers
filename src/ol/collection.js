@@ -120,6 +120,10 @@ ol.Collection.prototype.forEach = function(f, opt_obj) {
 
 
 /**
+ * Get a reference to the underlying Array object. Warning: if the array
+ * is mutated, no events will be dispatched by the collection, and the
+ * collection's "length" property won't be in sync with the actual length
+ * of the array.
  * @return {Array} Array.
  */
 ol.Collection.prototype.getArray = function() {
