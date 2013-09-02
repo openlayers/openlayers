@@ -1,5 +1,7 @@
 goog.provide('ol.parser.TopoJSON');
 
+goog.require('ol.Coordinate');
+goog.require('ol.CoordinateArray');
 goog.require('ol.Feature');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
@@ -8,8 +10,6 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.geom.Vertex');
-goog.require('ol.geom.VertexArray');
 goog.require('ol.parser.Parser');
 goog.require('ol.parser.ReadFeaturesOptions');
 goog.require('ol.parser.StringFeatureParser');
@@ -41,8 +41,8 @@ goog.addSingletonGetter(ol.parser.TopoJSON);
  * Concatenate arcs into a coordinate array.
  * @param {Array.<number>} indices Indices of arcs to concatenate.  Negative
  *     values indicate arcs need to be reversed.
- * @param {Array.<ol.geom.VertexArray>} arcs Arcs (already transformed).
- * @return {ol.geom.VertexArray} Coordinate array.
+ * @param {Array.<ol.CoordinateArray>} arcs Arcs (already transformed).
+ * @return {ol.CoordinateArray} Coordinate array.
  * @private
  */
 ol.parser.TopoJSON.prototype.concatenateArcs_ = function(indices, arcs) {
@@ -117,7 +117,7 @@ ol.parser.TopoJSON.prototype.readFeaturesFromObject =
  * Create a feature from a TopoJSON geometry object.
  *
  * @param {TopoJSONGeometry} object TopoJSON geometry object.
- * @param {Array.<ol.geom.VertexArray>} arcs Array of arcs.
+ * @param {Array.<ol.CoordinateArray>} arcs Array of arcs.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
@@ -163,7 +163,7 @@ ol.parser.TopoJSON.prototype.readFeatureFromGeometry_ = function(object, arcs,
  *
  * @param {TopoJSONGeometryCollection} collection TopoJSON GeometryCollection
  *     object.
- * @param {Array.<ol.geom.VertexArray>} arcs Array of arcs.
+ * @param {Array.<ol.CoordinateArray>} arcs Array of arcs.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
@@ -217,7 +217,7 @@ ol.parser.TopoJSON.prototype.readFeaturesFromTopology_ = function(
  * Create a linestring from a TopoJSON geometry object.
  *
  * @param {TopoJSONLineString} object TopoJSON object.
- * @param {Array.<ol.geom.VertexArray>} arcs Array of arcs.
+ * @param {Array.<ol.CoordinateArray>} arcs Array of arcs.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.geom.LineString} Geometry.
  * @private
@@ -239,7 +239,7 @@ ol.parser.TopoJSON.prototype.readLineString_ = function(object, arcs,
  * Create a multi-linestring from a TopoJSON geometry object.
  *
  * @param {TopoJSONMultiLineString} object TopoJSON object.
- * @param {Array.<ol.geom.VertexArray>} arcs Array of arcs.
+ * @param {Array.<ol.CoordinateArray>} arcs Array of arcs.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.geom.MultiLineString} Geometry.
  * @private
@@ -293,7 +293,7 @@ ol.parser.TopoJSON.prototype.readMultiPoint_ = function(object, scale,
  * Create a multi-polygon from a TopoJSON geometry object.
  *
  * @param {TopoJSONMultiPolygon} object TopoJSON object.
- * @param {Array.<ol.geom.VertexArray>} arcs Array of arcs.
+ * @param {Array.<ol.CoordinateArray>} arcs Array of arcs.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.geom.MultiPolygon} Geometry.
  * @private
@@ -353,7 +353,7 @@ ol.parser.TopoJSON.prototype.readPoint_ = function(object, scale, translate,
  * Create a polygon from a TopoJSON geometry object.
  *
  * @param {TopoJSONPolygon} object TopoJSON object.
- * @param {Array.<ol.geom.VertexArray>} arcs Array of arcs.
+ * @param {Array.<ol.CoordinateArray>} arcs Array of arcs.
  * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.geom.Polygon} Geometry.
  * @private
@@ -380,7 +380,7 @@ ol.parser.TopoJSON.prototype.readPolygon_ = function(object, arcs,
  * Apply a linear transform to array of arcs.  The provided array of arcs is
  * modified in place.
  *
- * @param {Array.<ol.geom.VertexArray>} arcs Array of arcs.
+ * @param {Array.<ol.CoordinateArray>} arcs Array of arcs.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
  * @private
@@ -395,7 +395,7 @@ ol.parser.TopoJSON.prototype.transformArcs_ = function(arcs, scale, translate) {
 /**
  * Apply a linear transform to an arc.  The provided arc is modified in place.
  *
- * @param {ol.geom.VertexArray} arc Arc.
+ * @param {ol.CoordinateArray} arc Arc.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
  * @private
@@ -419,7 +419,7 @@ ol.parser.TopoJSON.prototype.transformArc_ = function(arc, scale, translate) {
  * Apply a linear transform to a vertex.  The provided vertex is modified in
  * place.
  *
- * @param {ol.geom.Vertex} vertex Vertex.
+ * @param {ol.Coordinate} vertex Vertex.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
  * @private

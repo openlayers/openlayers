@@ -1,18 +1,18 @@
 goog.provide('ol.geom.MultiPoint');
 
 goog.require('goog.asserts');
+goog.require('ol.CoordinateArray');
 goog.require('ol.geom.AbstractCollection');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.SharedVertices');
-goog.require('ol.geom.VertexArray');
 
 
 
 /**
  * @constructor
  * @extends {ol.geom.AbstractCollection}
- * @param {ol.geom.VertexArray} coordinates Coordinates array.
+ * @param {ol.CoordinateArray} coordinates Coordinates array.
  * @param {ol.geom.SharedVertices=} opt_shared Shared vertices.
  */
 ol.geom.MultiPoint = function(coordinates, opt_shared) {

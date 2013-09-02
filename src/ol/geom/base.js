@@ -1,19 +1,6 @@
-goog.provide('ol.geom.Vertex');
-goog.provide('ol.geom.VertexArray');
+goog.provide('ol.geom');
 
 goog.require('ol.coordinate');
-
-
-/**
- * @typedef {Array.<number>}
- */
-ol.geom.Vertex;
-
-
-/**
- * @typedef {Array.<ol.geom.Vertex>}
- */
-ol.geom.VertexArray;
 
 
 /**
