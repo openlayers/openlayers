@@ -63,9 +63,9 @@ var map = new ol.Map({
 var element = document.getElementById('popup');
 
 var popup = new ol.Overlay({
-  map: map,
   element: element
 });
+map.addOverlay(popup);
 
 
 map.on('click', function(evt) {

@@ -24,17 +24,18 @@ var map = new ol.Map({
 
 // Vienna label
 var vienna = new ol.Overlay({
-  map: map,
   position: ol.proj.transform(
       [16.3725, 48.208889], 'EPSG:4326', 'EPSG:3857'),
   element: document.getElementById('vienna')
 });
+map.addOverlay(vienna);
 
 // Popup showing the position the user clicked
 var popup = new ol.Overlay({
-  map: map,
   element: document.getElementById('popup')
 });
+map.addOverlay(popup);
+
 map.on('click', function(evt) {
   var element = popup.getElement();
   var coordinate = evt.getCoordinate();
