@@ -39,27 +39,6 @@ exports.handlers = {
     if (/\.js$/.test(e.filename)) {
       collectExports(e.source);
     }
-  },
-  
-  newDoclet: function(e) {
-    if (api.indexOf(e.doclet.longname) > -1) {
-      // Add params of API symbols to the API
-      var names, name;
-      var params = e.doclet.params;
-      if (params) {
-        for (var i = 0, ii = params.length; i < ii; ++i) {
-          names = params[i].type.names;
-          if (names) {
-            for (var j = 0, jj=names.length; j < jj; ++j) {
-              name = names[j];
-              if (api.indexOf(name) === -1) {
-                api.push(name);
-              }
-            }
-          }
-        }
-      }
-    }
   }
   
 };
