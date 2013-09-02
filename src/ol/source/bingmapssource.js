@@ -131,7 +131,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                 }
               }
             });
-        return new ol.Attribution(html, tileRanges);
+        return new ol.Attribution({html: html, tileRanges: tileRanges});
       });
   this.setAttributions(attributions);
 

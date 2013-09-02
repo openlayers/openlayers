@@ -14,9 +14,10 @@ goog.require('ol.source.XYZ');
 ol.source.MapQuestOSM = function() {
 
   var attributions = [
-    new ol.Attribution(
-        'Tiles Courtesy of ' +
-        '<a href="http://www.mapquest.com/" target="_blank">MapQuest</a>'),
+    new ol.Attribution({
+      html: 'Tiles Courtesy of ' +
+          '<a href="http://www.mapquest.com/" target="_blank">MapQuest</a>'
+    }),
     ol.source.OSM.DATA_ATTRIBUTION
   ];
 
@@ -41,12 +42,14 @@ goog.inherits(ol.source.MapQuestOSM, ol.source.XYZ);
 ol.source.MapQuestOpenAerial = function() {
 
   var attributions = [
-    new ol.Attribution(
-        'Tiles Courtesy of ' +
-        '<a href="http://www.mapquest.com/" target="_blank">MapQuest</a>'),
-    new ol.Attribution(
-        'Portions Courtesy NASA/JPL-Caltech and ' +
-        'U.S. Depart. of Agriculture, Farm Service Agency')
+    new ol.Attribution({
+      html: 'Tiles Courtesy of ' +
+          '<a href="http://www.mapquest.com/" target="_blank">MapQuest</a>'
+    }),
+    new ol.Attribution({
+      html: 'Portions Courtesy NASA/JPL-Caltech and ' +
+          'U.S. Depart. of Agriculture, Farm Service Agency'
+    })
   ];
 
   goog.base(this, {
