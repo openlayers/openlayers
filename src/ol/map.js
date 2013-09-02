@@ -652,11 +652,6 @@ ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
   var type = opt_type || browserEvent.type;
   var mapBrowserEvent = new ol.MapBrowserEvent(type, this, browserEvent);
   this.handleMapBrowserEvent(mapBrowserEvent);
-  if (type == goog.events.EventType.MOUSEOUT) {
-    this.focus_ = null;
-  } else {
-    this.focus_ = mapBrowserEvent.getCoordinate();
-  }
 };
 
 
@@ -668,6 +663,11 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
     // With no view defined, we cannot translate pixels into geographical
     // coordinates so interactions cannot be used.
     return;
+  }
+  if (mapBrowserEvent.type == goog.events.EventType.MOUSEOUT) {
+    this.focus_ = null;
+  } else {
+    this.focus_ = mapBrowserEvent.getCoordinate();
   }
   mapBrowserEvent.frameState = this.frameState_;
   var interactions = this.getInteractions();
