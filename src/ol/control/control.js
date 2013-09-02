@@ -45,10 +45,6 @@ ol.control.Control = function(options) {
    */
   this.listenerKeys = [];
 
-  if (goog.isDef(options.map)) {
-    this.setMap(options.map);
-  }
-
 };
 goog.inherits(ol.control.Control, ol.Object);
 

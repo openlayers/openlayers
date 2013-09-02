@@ -6,11 +6,10 @@ describe('ol.control.ZoomSlider', function() {
   beforeEach(function() {
     target = document.createElement('div');
     document.body.appendChild(target);
+    zoomslider = new ol.control.ZoomSlider();
     map = new ol.Map({
-      target: target
-    });
-    zoomslider = new ol.control.ZoomSlider({
-      map: map
+      target: target,
+      controls: [zoomslider]
     });
   });
 
