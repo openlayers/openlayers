@@ -60,7 +60,6 @@
  * Object literal with config options for the overlay.
  * @typedef {Object} ol.OverlayOptions
  * @property {Element|undefined} element The overlay element.
- * @property {ol.Map|undefined} map The map to overlay onto.
  * @property {ol.Coordinate|undefined} position The overlay position in map
  *     projection.
  * @property {ol.OverlayPositioning|undefined} positioning Positioning.
