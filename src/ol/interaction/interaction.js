@@ -2,7 +2,6 @@
 
 goog.provide('ol.interaction.Interaction');
 
-goog.require('goog.Disposable');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.animation.pan');
 goog.require('ol.animation.rotate');
@@ -13,12 +12,9 @@ goog.require('ol.easing');
 
 /**
  * @constructor
- * @extends {goog.Disposable}
  */
 ol.interaction.Interaction = function() {
-  goog.base(this);
 };
-goog.inherits(ol.interaction.Interaction, goog.Disposable);
 
 
 /**
