@@ -42,7 +42,6 @@ ol.OverlayPositioning = {
  * Example:
  *
  *     var popup = new ol.Overlay({
- *       map: map,
  *       element: document.getElementById('popup')
  *     });
  *     popup.setPosition(coordinate);
@@ -109,9 +108,6 @@ ol.Overlay = function(options) {
   }
   if (goog.isDef(options.positioning)) {
     this.setPositioning(options.positioning);
-  }
-  if (goog.isDef(options.map)) {
-    this.setMap(options.map);
   }
 
 };

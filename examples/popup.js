@@ -7,24 +7,6 @@ goog.require('ol.proj');
 goog.require('ol.source.TileJSON');
 
 
-var layer = new ol.layer.TileLayer({
-  source: new ol.source.TileJSON({
-    url: 'http://api.tiles.mapbox.com/v3/' +
-        'mapbox.natural-earth-hypso-bathy.jsonp',
-    crossOrigin: 'anonymous'
-  })
-});
-
-var map = new ol.Map({
-  layers: [layer],
-  target: 'map',
-  view: new ol.View2D({
-    center: [0, 0],
-    zoom: 2
-  })
-});
-
-
 /**
  * Elements that make up the popup.
  */
@@ -48,8 +30,29 @@ closer.onclick = function() {
  * Create an overlay to anchor the popup to the map.
  */
 var overlay = new ol.Overlay({
-  map: map,
   element: container
+});
+
+
+/**
+ * Create the map.
+ */
+var map = new ol.Map({
+  layers: [
+    new ol.layer.TileLayer({
+      source: new ol.source.TileJSON({
+        url: 'http://api.tiles.mapbox.com/v3/' +
+            'mapbox.natural-earth-hypso-bathy.jsonp',
+        crossOrigin: 'anonymous'
+      })
+    })
+  ],
+  overlays: [overlay],
+  target: 'map',
+  view: new ol.View2D({
+    center: [0, 0],
+    zoom: 2
+  })
 });
 
 

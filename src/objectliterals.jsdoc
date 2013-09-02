@@ -54,6 +54,8 @@
  *     Controls initially added to the map.
  * @property {ol.Collection|undefined} interactions Interactions.
  * @property {Array.<ol.layer.LayerBase>|ol.Collection|undefined} layers Layers.
+ * @property {ol.Collection|Array.<ol.Overlay>|undefined} overlays
+ *     Overlays initially added to the map.
  * @property {ol.RendererHint|undefined} renderer Renderer.
  * @property {Array.<ol.RendererHint>|undefined} renderers Renderers.
  * @property {Element|string|undefined} target The container for the map.
@@ -65,7 +67,6 @@
  * Object literal with config options for the overlay.
  * @typedef {Object} ol.OverlayOptions
  * @property {Element|undefined} element The overlay element.
- * @property {ol.Map|undefined} map The map to overlay onto.
  * @property {ol.Coordinate|undefined} position The overlay position in map
  *     projection.
  * @property {ol.OverlayPositioning|undefined} positioning Positioning.
