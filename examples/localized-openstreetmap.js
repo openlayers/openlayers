@@ -11,9 +11,10 @@ var map = new ol.Map({
     new ol.layer.TileLayer({
       source: new ol.source.OSM({
         attributions: [
-          new ol.Attribution(
-              'All maps &copy; ' +
-              '<a href="http://www.opencyclemap.org/">OpenCycleMap</a>'),
+          new ol.Attribution({
+            html: 'All maps &copy; ' +
+                '<a href="http://www.opencyclemap.org/">OpenCycleMap</a>'
+          }),
           ol.source.OSM.DATA_ATTRIBUTION
         ],
         url: 'http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
