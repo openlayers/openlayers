@@ -4,11 +4,11 @@ goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.KML');
-goog.require('ol.source.TiledWMS');
+goog.require('ol.source.TileWMS');
 goog.require('ol.source.Vector');
 
 var raster = new ol.layer.TileLayer({
-  source: new ol.source.TiledWMS({
+  source: new ol.source.TileWMS({
     url: 'http://vmap0.tiles.osgeo.org/wms/vmap0',
     crossOrigin: null,
     params: {

@@ -5,12 +5,12 @@ goog.require('ol.control.ScaleLine');
 goog.require('ol.control.ScaleLineUnits');
 goog.require('ol.control.defaults');
 goog.require('ol.layer.TileLayer');
-goog.require('ol.source.TiledWMS');
+goog.require('ol.source.TileWMS');
 
 
 var layers = [
   new ol.layer.TileLayer({
-    source: new ol.source.TiledWMS({
+    source: new ol.source.TileWMS({
       url: 'http://vmap0.tiles.osgeo.org/wms/vmap0',
       params: {
         'VERSION': '1.1.1',

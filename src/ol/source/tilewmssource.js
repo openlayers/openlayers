@@ -1,6 +1,6 @@
 // FIXME add minZoom support
 
-goog.provide('ol.source.TiledWMS');
+goog.provide('ol.source.TileWMS');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -18,9 +18,9 @@ goog.require('ol.source.wms');
  * @constructor
  * @extends {ol.source.ImageTileSource}
  * @implements {ol.source.FeatureInfoSource}
- * @param {ol.source.TiledWMSOptions} options Tiled WMS options.
+ * @param {ol.source.TileWMSOptions} options Tiled WMS options.
  */
-ol.source.TiledWMS = function(options) {
+ol.source.TileWMS = function(options) {
 
   var tileGrid;
   if (goog.isDef(options.tileGrid)) {
@@ -94,13 +94,13 @@ ol.source.TiledWMS = function(options) {
       options.getFeatureInfoOptions : {};
 
 };
-goog.inherits(ol.source.TiledWMS, ol.source.ImageTileSource);
+goog.inherits(ol.source.TileWMS, ol.source.ImageTileSource);
 
 
 /**
  * @inheritDoc
  */
-ol.source.TiledWMS.prototype.getFeatureInfoForPixel =
+ol.source.TileWMS.prototype.getFeatureInfoForPixel =
     function(pixel, map, success, opt_error) {
   var coord = map.getCoordinateFromPixel(pixel),
       view2D = map.getView().getView2D(),
@@ -113,7 +113,7 @@ ol.source.TiledWMS.prototype.getFeatureInfoForPixel =
       offset = map.getPixelFromCoordinate(ol.extent.getTopLeft(tileExtent)),
       url = this.tileUrlFunction(tileCoord, projection);
   goog.asserts.assert(goog.isDef(url),
-      'ol.source.TiledWMS#tileUrlFunction does not return a url');
+      'ol.source.TileWMS#tileUrlFunction does not return a url');
   ol.source.wms.getFeatureInfo(url,
       [pixel[0] - offset[0], pixel[1] - offset[1]], this.getFeatureInfoOptions_,
       success, opt_error);
