@@ -417,7 +417,7 @@ libtess.GluTesselator.prototype.gluTessNormal = function(x, y, z) {
  * Specify callbacks. See README. A null or undefined opt_fn removes current callback.
  *
  * @param {libtess.gluEnum} which [description].
- * @param {?function()=} opt_fn [description].
+ * @param {?Function=} opt_fn [description].
  */
 libtess.GluTesselator.prototype.gluTessCallback = function(which, opt_fn) {
   var fn = !opt_fn ? null : opt_fn;
