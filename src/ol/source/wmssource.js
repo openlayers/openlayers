@@ -65,7 +65,8 @@ ol.source.wms.getUrl =
 /**
  * @param {string} url URL as provided by the url function.
  * @param {ol.Pixel} pixel Pixel.
- * @param {Object} options Options as defined in the source.
+ * @param {ol.source.WMSGetFeatureInfoOptions} options Options as defined in the
+ *     source.
  * @param {function(string)} success Callback function for successful queries.
  * @param {function()=} opt_error Optional callback function for unsuccessful
  *     queries.
@@ -76,11 +77,12 @@ ol.source.wms.getFeatureInfo =
   // closure
   url = url.replace('REQUEST=GetMap', 'REQUEST=GetFeatureInfo')
       .replace(ol.source.wms.regExes.layers, 'LAYERS=$1&QUERY_LAYERS=$1');
-  options = goog.isDef(options) ? goog.object.clone(options) : {};
-  var localOptions = {
+  options = /** @type {ol.source.WMSGetFeatureInfoOptions} */
+      (goog.isDef(options) ? goog.object.clone(options) : {});
+  var localOptions = /** @type {ol.source.WMSGetFeatureInfoOptions} */ ({
     method: ol.source.WMSGetFeatureInfoMethod.IFRAME,
     params: {}
-  };
+  });
   goog.object.extend(localOptions, options);
   var params = {'INFO_FORMAT': 'text/html'},
       version = parseFloat(url.match(ol.source.wms.regExes.version)[1]),
