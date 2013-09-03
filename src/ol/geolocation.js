@@ -295,7 +295,9 @@ goog.exportProperty(
 
 /**
  * Get the tracking options.
- * @return {GeolocationPositionOptions|undefined} Tracking options.
+ * @see http://www.w3.org/TR/geolocation-API/#position-options
+ * @return {GeolocationPositionOptions|undefined} HTML 5 Gelocation
+ * tracking options.
  */
 ol.Geolocation.prototype.getTrackingOptions = function() {
   return /** @type {GeolocationPositionOptions|undefined} */ (
@@ -335,7 +337,9 @@ goog.exportProperty(
 
 /**
  * Set the tracking options.
- * @param {GeolocationPositionOptions} options Tracking options.
+ * @see http://www.w3.org/TR/geolocation-API/#position-options
+ * @param {GeolocationPositionOptions} options HTML 5 Geolocation
+ * tracking options.
  */
 ol.Geolocation.prototype.setTrackingOptions = function(options) {
   this.set(ol.GeolocationProperty.TRACKING_OPTIONS, options);
