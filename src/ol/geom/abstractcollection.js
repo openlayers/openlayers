@@ -1,5 +1,6 @@
 goog.provide('ol.geom.AbstractCollection');
 
+goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 
 
