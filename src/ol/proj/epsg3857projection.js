@@ -44,8 +44,8 @@ ol.proj.EPSG3857.HALF_SIZE = Math.PI * ol.proj.EPSG3857.RADIUS;
  * @type {ol.Extent}
  */
 ol.proj.EPSG3857.EXTENT = [
-  -ol.proj.EPSG3857.HALF_SIZE, ol.proj.EPSG3857.HALF_SIZE,
-  -ol.proj.EPSG3857.HALF_SIZE, ol.proj.EPSG3857.HALF_SIZE
+  [-ol.proj.EPSG3857.HALF_SIZE, -ol.proj.EPSG3857.HALF_SIZE],
+  [ol.proj.EPSG3857.HALF_SIZE, ol.proj.EPSG3857.HALF_SIZE]
 ];
 
 
