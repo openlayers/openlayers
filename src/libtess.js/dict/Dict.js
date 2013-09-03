@@ -82,7 +82,7 @@ libtess.Dict = function(frame, leq) {
 libtess.Dict.prototype.deleteDict = function() {
   // TODO(bckenny): unnecessary, I think.
   // for (var node = libtess.head.next; node !== libtess.head; node = node.next) {
-  // memFree(node);
+  //   memFree(node);
   // }
   // memFree(dict);
 
