@@ -174,6 +174,7 @@ libtess.tessmono.discardExterior = function(mesh) {
  *
  * @param {libtess.GluMesh} mesh [description].
  * @param {number} value Winding number to set (int).
+ * @param {boolean} keepOnlyBoundary Keep only boundary.
  */
 libtess.tessmono.setWindingNumber = function(mesh, value, keepOnlyBoundary) {
   var eNext;
