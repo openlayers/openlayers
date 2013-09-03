@@ -68,7 +68,7 @@ ol.geom.Point.prototype.getBounds = function() {
   if (goog.isNull(this.bounds_)) {
     var x = this.get(0),
         y = this.get(1);
-    this.bounds_ = [x, x, y, y];
+    this.bounds_ = [[x, y], [x, y]];
   }
   return this.bounds_;
 };
