@@ -28,8 +28,8 @@
  */
 
 /**
- * @author Eric Veach, July 1994
- * @author Brendan Kenny
+ * @author ericv@cs.stanford.edu (Eric Veach)
+ * @author bckenny@google.com (Brendan Kenny)
  */
 
 // requre libtess.GluHalfEdge
