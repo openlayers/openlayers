@@ -84,10 +84,10 @@ ol.structs.RTree.recalculateExtent_ = function(node) {
     ol.extent.empty(extent);
   } else {
     var firstNodeExtent = node.nodes[0].extent;
-    extent[0] = firstNodeExtent[0];
-    extent[1] = firstNodeExtent[1];
-    extent[2] = firstNodeExtent[2];
-    extent[3] = firstNodeExtent[3];
+    extent[0][0] = firstNodeExtent[0][0];
+    extent[1][0] = firstNodeExtent[1][0];
+    extent[0][1] = firstNodeExtent[0][1];
+    extent[1][1] = firstNodeExtent[1][1];
     var i;
     for (i = 1; i < n; ++i) {
       ol.extent.extend(extent, node.nodes[i].extent);
@@ -151,19 +151,19 @@ ol.structs.RTree.prototype.chooseLeafSubtree_ = function(rect, root) {
       }
       // Area of new enlarged rectangle
       var oldLRatio = ol.structs.RTree.squarifiedRatio_(
-          lTree.extent[1] - lTree.extent[0],
-          lTree.extent[3] - lTree.extent[2],
+          lTree.extent[1][0] - lTree.extent[0][0],
+          lTree.extent[1][1] - lTree.extent[0][1],
           lTree.nodes.length + 1);
 
       // Enlarge rectangle to fit new rectangle
-      var nw = (lTree.extent[1] > rect.extent[1] ?
-          lTree.extent[1] : rect.extent[1]) -
-          (lTree.extent[0] < rect.extent[0] ?
-          lTree.extent[0] : rect.extent[0]);
-      var nh = (lTree.extent[3] > rect.extent[3] ?
-          lTree.extent[3] : rect.extent[3]) -
-          (lTree.extent[2] < rect.extent[2] ?
-          lTree.extent[2] : rect.extent[2]);
+      var nw = (lTree.extent[1][0] > rect.extent[1][0] ?
+          lTree.extent[1][0] : rect.extent[1][0]) -
+          (lTree.extent[0][0] < rect.extent[0][0] ?
+          lTree.extent[0][0] : rect.extent[0][0]);
+      var nh = (lTree.extent[1][1] > rect.extent[1][1] ?
+          lTree.extent[1][1] : rect.extent[1][1]) -
+          (lTree.extent[0][1] < rect.extent[0][1] ?
+          lTree.extent[0][1] : rect.extent[0][1]);
 
       // Area of new enlarged rectangle
       var lRatio = ol.structs.RTree.squarifiedRatio_(
@@ -210,7 +210,7 @@ ol.structs.RTree.prototype.insertSubtree_ = function(node, root) {
   // Initial insertion is special because we resize the Tree and we don't
   // care about any overflow (seriously, how can the first object overflow?)
   if (root.nodes.length === 0) {
-    root.extent = node.extent.concat();
+    root.extent = ol.extent.clone(node.extent);
     root.nodes.push(node);
     return;
   }
@@ -253,7 +253,7 @@ ol.structs.RTree.prototype.insertSubtree_ = function(node, root) {
       }
 
       if (bc.nodes.length <= this.maxWidth_) { // Start Resizeing Up the Tree
-        workingObject = {extent: bc.extent.concat()};
+        workingObject = {extent: ol.extent.clone(bc.extent)};
       } else { // Otherwise Split this Node
         // linearSplit_() returns an array containing two new nodes
         // formed from the split of the previous node's overflow
@@ -269,7 +269,7 @@ ol.structs.RTree.prototype.insertSubtree_ = function(node, root) {
     } else { // Otherwise Do Resize
       //Just keep applying the new bounding rectangle to the parents..
       ol.extent.extend(bc.extent, workingObject.extent);
-      workingObject = ({extent: bc.extent.concat()});
+      workingObject = ({extent: ol.extent.clone(bc.extent)});
     }
   } while (treeStack.length > 0);
 };
@@ -308,21 +308,21 @@ ol.structs.RTree.prototype.pickLinear_ = function(nodes) {
 
   for (var i = nodes.length - 2; i >= 0; --i) {
     var l = nodes[i];
-    if (l.extent[0] > nodes[highestLowX].extent[0]) {
+    if (l.extent[0][0] > nodes[highestLowX].extent[0][0]) {
       highestLowX = i;
-    } else if (l.extent[1] < nodes[lowestHighX].extent[2]) {
+    } else if (l.extent[1][0] < nodes[lowestHighX].extent[0][1]) {
       lowestHighX = i;
     }
-    if (l.extent[2] > nodes[highestLowY].extent[2]) {
+    if (l.extent[0][1] > nodes[highestLowY].extent[0][1]) {
       highestLowY = i;
-    } else if (l.extent[3] < nodes[lowestHighY].extent[3]) {
+    } else if (l.extent[1][1] < nodes[lowestHighY].extent[1][1]) {
       lowestHighY = i;
     }
   }
-  var dx = Math.abs(nodes[lowestHighX].extent[1] -
-      nodes[highestLowX].extent[0]);
-  var dy = Math.abs(nodes[lowestHighY].extent[3] -
-      nodes[highestLowY].extent[2]);
+  var dx = Math.abs(nodes[lowestHighX].extent[1][0] -
+      nodes[highestLowX].extent[0][0]);
+  var dy = Math.abs(nodes[lowestHighY].extent[1][1] -
+      nodes[highestLowY].extent[0][1]);
   if (dx > dy) {
     if (lowestHighX > highestLowX) {
       t1 = nodes.splice(lowestHighX, 1)[0];
@@ -342,9 +342,9 @@ ol.structs.RTree.prototype.pickLinear_ = function(nodes) {
   }
   return [
     /** @type {ol.structs.RTreeNode} */
-    ({extent: t1.extent.concat(), nodes: [t1]}),
+    ({extent: ol.extent.clone(t1.extent), nodes: [t1]}),
     /** @type {ol.structs.RTreeNode} */
-    ({extent: t2.extent.concat(), nodes: [t2]})
+    ({extent: ol.extent.clone(t2.extent), nodes: [t2]})
   ];
 };
 
@@ -359,10 +359,10 @@ ol.structs.RTree.prototype.pickLinear_ = function(nodes) {
  */
 ol.structs.RTree.prototype.pickNext_ = function(nodes, a, b) {
   // Area of new enlarged rectangle
-  var areaA = ol.structs.RTree.squarifiedRatio_(a.extent[1] - a.extent[0],
-      a.extent[3] - a.extent[2], a.nodes.length + 1);
-  var areaB = ol.structs.RTree.squarifiedRatio_(b.extent[1] - b.extent[0],
-      b.extent[3] - b.extent[2], b.nodes.length + 1);
+  var areaA = ol.structs.RTree.squarifiedRatio_(a.extent[1][0] - a.extent[0][0],
+      a.extent[1][1] - a.extent[0][1], a.nodes.length + 1);
+  var areaB = ol.structs.RTree.squarifiedRatio_(b.extent[1][0] - b.extent[0][0],
+      b.extent[1][1] - b.extent[0][1], b.nodes.length + 1);
   var highAreaDelta;
   var highAreaNode;
   var lowestGrowthGroup;
@@ -371,20 +371,20 @@ ol.structs.RTree.prototype.pickNext_ = function(nodes, a, b) {
     var l = nodes[i];
 
     var newAreaA = [
-      a.extent[0] < l.extent[0] ? a.extent[0] : l.extent[0],
-      a.extent[1] > l.extent[1] ? a.extent[1] : l.extent[1],
-      a.extent[2] < l.extent[2] ? a.extent[2] : l.extent[2],
-      a.extent[3] > l.extent[3] ? a.extent[3] : l.extent[3]
+      a.extent[0][0] < l.extent[0][0] ? a.extent[0][0] : l.extent[0][0],
+      a.extent[1][0] > l.extent[1][0] ? a.extent[1][0] : l.extent[1][0],
+      a.extent[0][1] < l.extent[0][1] ? a.extent[0][1] : l.extent[0][1],
+      a.extent[1][1] > l.extent[1][1] ? a.extent[1][1] : l.extent[1][1]
     ];
     var changeNewAreaA = Math.abs(ol.structs.RTree.squarifiedRatio_(
         newAreaA[1] - newAreaA[0],
         newAreaA[3] - newAreaA[2], a.nodes.length + 2) - areaA);
 
     var newAreaB = [
-      b.extent[0] < l.extent[0] ? b.extent[0] : l.extent[0],
-      b.extent[1] > l.extent[1] ? b.extent[1] : l.extent[1],
-      b.extent[2] < l.extent[2] ? b.extent[2] : l.extent[2],
-      b.extent[3] > l.extent[3] ? b.extent[3] : l.extent[3]
+      b.extent[0][0] < l.extent[0][0] ? b.extent[0][0] : l.extent[0][0],
+      b.extent[1][0] > l.extent[1][0] ? b.extent[1][0] : l.extent[1][0],
+      b.extent[0][1] < l.extent[0][1] ? b.extent[0][1] : l.extent[0][1],
+      b.extent[1][1] > l.extent[1][1] ? b.extent[1][1] : l.extent[1][1]
     ];
     var changeNewAreaB = Math.abs(ol.structs.RTree.squarifiedRatio_(
         newAreaB[1] - newAreaB[0], newAreaB[3] - newAreaB[2],
@@ -466,7 +466,7 @@ ol.structs.RTree.prototype.removeSubtree_ = function(rect, obj, root) {
 
   /** @type {ol.structs.RTreeNode} */
   var workingObject = /** @type {ol.structs.RTreeNode} */
-      ({extent: rect.extent.concat(), target: obj});
+      ({extent: ol.extent.clone(rect.extent), target: obj});
 
   countStack.push(root.nodes.length);
   hitStack.push(root);
