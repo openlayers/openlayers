@@ -107,12 +107,16 @@ ol.layer.FeatureCache.prototype.getFeaturesObject = function(opt_expr) {
     } else if (name === ol.expr.functions.EXTENT) {
       var args = /** @type {ol.expr.Call} */ (opt_expr).getArgs();
       goog.asserts.assert(args.length === 4);
-      var extent = [];
       for (var i = 0; i < 4; ++i) {
         goog.asserts.assert(args[i] instanceof ol.expr.Literal);
-        extent[i] = /** @type {ol.expr.Literal} */ (args[i]).evaluate();
-        goog.asserts.assertNumber(extent[i]);
       }
+      var extent = [[
+        /** @type {ol.expr.Literal} */ (args[0]).evaluate(),
+        /** @type {ol.expr.Literal} */ (args[1]).evaluate()
+      ], [
+        /** @type {ol.expr.Literal} */ (args[2]).evaluate(),
+        /** @type {ol.expr.Literal} */ (args[3]).evaluate()
+      ]];
       features = this.rTree_.searchReturningObject(extent);
     } else {
       // not a call expression, check logical
@@ -133,13 +137,16 @@ ol.layer.FeatureCache.prototype.getFeaturesObject = function(opt_expr) {
             } else if (name === ol.expr.functions.EXTENT) {
               args = /** @type {ol.expr.Call} */ (expr).getArgs();
               goog.asserts.assert(args.length === 4);
-              extent = [];
               for (var j = 0; j < 4; ++j) {
                 goog.asserts.assert(args[j] instanceof ol.expr.Literal);
-                extent[j] =
-                    /** @type {ol.expr.Literal} */ (args[j]).evaluate();
-                goog.asserts.assertNumber(extent[j]);
               }
+              extent = [[
+                /** @type {ol.expr.Literal} */ (args[0]).evaluate(),
+                /** @type {ol.expr.Literal} */ (args[1]).evaluate()
+              ], [
+                /** @type {ol.expr.Literal} */ (args[2]).evaluate(),
+                /** @type {ol.expr.Literal} */ (args[3]).evaluate()
+              ]];
             }
           }
           if (type && extent) {
