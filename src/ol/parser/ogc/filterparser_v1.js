@@ -184,10 +184,10 @@ ol.parser.ogc.Filter_v1 = function() {
         if (goog.isDef(container.geometry)) {
           args.push(new ol.expr.Literal(this.gml_.createGeometry(container)));
         } else {
-          args = [new ol.expr.Literal(container.bounds[0]),
-                new ol.expr.Literal(container.bounds[1]),
-                new ol.expr.Literal(container.bounds[2]),
-                new ol.expr.Literal(container.bounds[3])];
+          args = [new ol.expr.Literal(container.bounds[0][0]),
+                new ol.expr.Literal(container.bounds[0][1]),
+                new ol.expr.Literal(container.bounds[1][0]),
+                new ol.expr.Literal(container.bounds[1][1])];
         }
         if (goog.isDef(container.distance)) {
           args.push(container.distance);
