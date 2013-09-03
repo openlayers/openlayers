@@ -35,6 +35,9 @@
 // require libtess
 /*global libtess */
 
+goog.provide('libtess.CachedVertex');
+goog.require('libtess');
+
 
 
 /**

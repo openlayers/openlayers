@@ -35,6 +35,10 @@
 // require libtess
 /*global libtess */
 
+goog.provide('libtess.Dict');
+goog.require('libtess');
+goog.require('libtess.DictNode');
+
 
 // TODO(bckenny): better typing for DictKey? actually libtess.ActiveRegion
 /** @typedef {Object} */

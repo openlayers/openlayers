@@ -37,6 +37,12 @@
 // require libtess.GluVertex
 /*global libtess */
 
+goog.provide('libtess.GluMesh');
+goog.require('libtess');
+goog.require('libtess.GluFace');
+goog.require('libtess.GluHalfEdge');
+goog.require('libtess.GluVertex');
+
 
 
 /**

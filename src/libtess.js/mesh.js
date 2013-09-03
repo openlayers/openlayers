@@ -39,12 +39,14 @@
 // require libtess.GluVertex
 /*global libtess */
 
+goog.provide('libtess.mesh');
+goog.require('libtess');
+goog.require('libtess.GluFace');
+goog.require('libtess.GluHalfEdge');
+goog.require('libtess.GluVertex');
+
 // TODO(bckenny): could maybe merge GluMesh and mesh.js since these are
 // operations on the mesh
-
-libtess.mesh = function() {
-
-};
 
 /****************** Basic Edge Operations **********************/
 

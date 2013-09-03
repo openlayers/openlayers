@@ -36,6 +36,9 @@
 // require libtess.Dict
 /*global libtess */
 
+goog.provide('libtess.DictNode');
+goog.require('libtess');
+
 // TODO(bckenny): better typing for DictKey?
 
 

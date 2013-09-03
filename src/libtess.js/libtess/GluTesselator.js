@@ -40,6 +40,16 @@
 // require libtess.sweep
 /*global libtess */
 
+goog.provide('libtess.GluTesselator');
+goog.require('libtess');
+goog.require('libtess.CachedVertex');
+goog.require('libtess.GluMesh');
+goog.require('libtess.mesh');
+goog.require('libtess.normal');
+goog.require('libtess.render');
+goog.require('libtess.sweep');
+goog.require('libtess.tessmono');
+
 // TODO(bckenny): options for just triangles, just tristrips, single tristrip w/ resets
 // other primitives with index buffer? would have to add a better tristrip extractor
 // monotone poly -> tristrip seems possible...

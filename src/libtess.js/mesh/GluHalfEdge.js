@@ -38,6 +38,9 @@
 // require libtess.ActiveRegion
 /*global libtess */
 
+goog.provide('libtess.GluHalfEdge');
+goog.require('libtess');
+
 
 
 /**

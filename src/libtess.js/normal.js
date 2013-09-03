@@ -36,9 +36,8 @@
 // require libtess.GluTesselator
 /*global libtess */
 
-libtess.normal = function() {
-
-};
+goog.provide('libtess.normal');
+goog.require('libtess');
 
 
 // TODO(bckenny): NOTE:

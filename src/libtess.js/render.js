@@ -40,11 +40,11 @@
 // require libtess.GluMesh
 /*global libtess */
 
+goog.provide('libtess.render');
+goog.require('libtess');
+goog.require('libtess.FaceCount');
+
 // TODO(bckenny): most of these doc strings are probably more internal comments
-
-libtess.render = function() {
-
-};
 
 
 /**

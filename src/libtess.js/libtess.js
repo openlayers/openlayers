@@ -32,11 +32,7 @@
  * @author bckenny@google.com (Brendan Kenny)
  */
 
-
-/**
- * Base namespace.
- */
-var libtess = libtess || {};
+goog.provide('libtess');
 
 
 /**

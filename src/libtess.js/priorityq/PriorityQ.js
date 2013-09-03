@@ -36,6 +36,10 @@
 // require libtess.PriorityQHeap
 /*global libtess */
 
+goog.provide('libtess.PriorityQ');
+goog.require('libtess');
+goog.require('libtess.PriorityQHeap');
+
 // TODO(bckenny): preallocating arrays may actually be hurting us in sort
 // performance (esp if theres some undefs in there)
 

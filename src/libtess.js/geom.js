@@ -40,10 +40,8 @@
 // require libtess.GluVertex
 /*global libtess */
 
-
-libtess.geom = function() {
-
-};
+goog.provide('libtess.geom');
+goog.require('libtess');
 
 
 /**

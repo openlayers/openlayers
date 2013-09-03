@@ -35,6 +35,9 @@
 // require libtess
 /*global libtess */
 
+goog.provide('libtess.PQNode');
+goog.require('libtess');
+
 // TODO(bckenny): maybe just have these created inline as literals
 // (or unboxed directly - PQHandle is just an array index number)
 

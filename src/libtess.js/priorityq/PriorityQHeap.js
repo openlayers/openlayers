@@ -37,6 +37,11 @@
 // require libtess.PQHandleElem
 /*global libtess */
 
+goog.provide('libtess.PriorityQHeap');
+goog.require('libtess');
+goog.require('libtess.PQHandleElem');
+goog.require('libtess.PQNode');
+
 // TODO(bckenny): keys appear to always be GluVertex in this case?
 
 

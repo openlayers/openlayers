@@ -37,6 +37,9 @@
 // require libtess.GluTesselator
 /*global libtess */
 
+goog.provide('libtess.FaceCount');
+goog.require('libtess');
+
 // TODO(bckenny): Used only in private functions of render.js
 
 

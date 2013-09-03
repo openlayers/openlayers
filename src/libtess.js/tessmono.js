@@ -38,9 +38,10 @@
 // require libtess.GluMesh
 /*global libtess */
 
-libtess.tessmono = function() {
-
-};
+goog.provide('libtess.tessmono');
+goog.require('libtess');
+goog.require('libtess.geom');
+goog.require('libtess.mesh');
 
 
 /**

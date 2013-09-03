@@ -38,6 +38,15 @@
 // require libtess.PriorityQ
 /*global libtess */
 
+goog.provide('libtess.sweep');
+goog.require('libtess');
+goog.require('libtess.ActiveRegion');
+goog.require('libtess.Dict');
+goog.require('libtess.GluVertex');
+goog.require('libtess.PriorityQ');
+goog.require('libtess.geom');
+goog.require('libtess.mesh');
+
 // TODO(bckenny): a number of these never return null (as opposed to original) and should be typed appropriately
 
 /*
@@ -69,10 +78,6 @@
  *   its associated vertex.  (This says that these edges exist only
  *   when it is necessary.)
  */
-
-libtess.sweep = function() {
-
-};
 
 
 /**

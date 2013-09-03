@@ -36,6 +36,9 @@
 // requre libtess.GluHalfEdge
 /*global libtess */
 
+goog.provide('libtess.GluFace');
+goog.require('libtess');
+
 
 
 /**

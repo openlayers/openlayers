@@ -38,6 +38,9 @@
 // require libtess.GluHalfEdge
 /*global libtess */
 
+goog.provide('libtess.ActiveRegion');
+goog.require('libtess.DictNode');
+
 // TODO(bckenny): apparently only visible outside of sweep for debugging routines.
 // find out if we can hide
 

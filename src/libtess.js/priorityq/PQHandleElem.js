@@ -35,6 +35,9 @@
 // require libtess
 /*global libtess */
 
+goog.provide('libtess.PQHandleElem');
+goog.require('libtess');
+
 // TODO(bckenny): more specific typing on key
 
 
