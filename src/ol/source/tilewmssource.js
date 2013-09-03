@@ -75,10 +75,11 @@ ol.source.TileWMS = function(options) {
     extent = goog.isDef(extent) ? extent : projectionExtent;
 
     if (!goog.isNull(extent) && projection.isGlobal() &&
-        extent[0] === projectionExtent[0] &&
-        extent[1] === projectionExtent[1]) {
+        extent[0][0] === projectionExtent[0][0] &&
+        extent[1][0] === projectionExtent[1][0]) {
       var numCols = Math.ceil(
-          (extent[1] - extent[0]) / (tileExtent[1] - tileExtent[0]));
+          (extent[1][0] - extent[0][0]) /
+          (tileExtent[1][0] - tileExtent[0][0]));
       x = goog.math.modulo(x, numCols);
       tileExtent = tileGrid.getTileCoordExtent(
           new ol.TileCoord(tileCoord.z, x, tileCoord.y));

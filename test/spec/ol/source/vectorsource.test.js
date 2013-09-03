@@ -20,7 +20,7 @@ describe('ol.source.Vector', function() {
       var layer = new ol.layer.Vector({
         source: source
       });
-      source.prepareFeatures(layer, [-180, 180, -90, 90],
+      source.prepareFeatures(layer, [[-180, -90], [180, 90]],
           ol.proj.get('EPSG:4326'),
           function() {
             expect(source.loadState_).to.be(ol.source.VectorLoadState.LOADED);
@@ -66,7 +66,7 @@ describe('ol.source.Vector', function() {
       var layer = new ol.layer.Vector({
         source: source
       });
-      source.prepareFeatures(layer, [-180, 180, -90, 90],
+      source.prepareFeatures(layer, [[-180, -90], [180, 90]],
           ol.proj.get('EPSG:4326'),
           function() {
             expect(source.loadState_).to.be(ol.source.VectorLoadState.LOADED);

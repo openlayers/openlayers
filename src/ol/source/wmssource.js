@@ -54,8 +54,8 @@ ol.source.wms.getUrl =
 
   var axisOrientation = projection.getAxisOrientation();
   var bboxValues = (wms13 && axisOrientation.substr(0, 2) == 'ne') ?
-      [extent[2], extent[0], extent[3], extent[1]] :
-      [extent[0], extent[2], extent[1], extent[3]];
+      [extent[0][1], extent[0][0], extent[1][1], extent[1][0]] :
+      [extent[0][0], extent[0][1], extent[1][0], extent[1][1]];
   baseParams['BBOX'] = bboxValues.join(',');
 
   return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);
