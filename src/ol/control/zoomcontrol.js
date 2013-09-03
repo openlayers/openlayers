@@ -79,7 +79,7 @@ ol.control.Zoom.prototype.zoomByDelta_ = function(delta, browserEvent) {
   var view = map.getView().getView2D();
   var currentResolution = view.getResolution();
   if (goog.isDef(currentResolution)) {
-    map.addPreRenderFunction(ol.animation.zoom({
+    map.beforeRender(ol.animation.zoom({
       resolution: currentResolution,
       duration: ol.control.ZOOM_DURATION,
       easing: ol.easing.easeOut

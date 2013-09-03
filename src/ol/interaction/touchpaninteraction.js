@@ -87,7 +87,7 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
       var angle = this.kinetic_.getAngle();
       var center = view.getCenter();
       this.kineticPreRenderFn_ = this.kinetic_.pan(center);
-      map.addPreRenderFunction(this.kineticPreRenderFn_);
+      map.beforeRender(this.kineticPreRenderFn_);
       var centerpx = map.getPixelFromCoordinate(center);
       var dest = map.getCoordinateFromPixel([
         centerpx[0] - distance * Math.cos(angle),
