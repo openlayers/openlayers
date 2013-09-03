@@ -48,12 +48,13 @@ libtess.mesh = function() {
 
 /****************** Basic Edge Operations **********************/
 
+
 /**
  * makeEdge creates one edge, two vertices, and a loop (face).
  * The loop consists of the two new half-edges.
  *
- * @param {libtess.GluMesh} mesh [description]
- * @return {libtess.GluHalfEdge} [description]
+ * @param {libtess.GluMesh} mesh [description].
+ * @return {libtess.GluHalfEdge} [description].
  */
 libtess.mesh.makeEdge = function(mesh) {
   // TODO(bckenny): probably move to GluMesh, but needs Make* methods with it
@@ -62,11 +63,12 @@ libtess.mesh.makeEdge = function(mesh) {
 
   // complete edge with vertices and face (see mesh.makeEdgePair_)
   libtess.mesh.makeVertex_(e, mesh.vHead);
-  libtess.mesh.makeVertex_(e.sym, mesh.vHead );
+  libtess.mesh.makeVertex_(e.sym, mesh.vHead);
   libtess.mesh.makeFace_(e, mesh.fHead);
 
   return e;
 };
+
 
 /**
  * meshSplice(eOrg, eDst) is the basic operation for changing the
@@ -92,8 +94,8 @@ libtess.mesh.makeEdge = function(mesh) {
  * If eDst == eOrg.oNext, the new vertex will have a single edge.
  * If eDst == eOrg.oPrev(), the old vertex will have a single edge.
  *
- * @param {libtess.GluHalfEdge} eOrg [description]
- * @param {libtess.GluHalfEdge} eDst [description]
+ * @param {libtess.GluHalfEdge} eOrg [description].
+ * @param {libtess.GluHalfEdge} eDst [description].
  */
 libtess.mesh.meshSplice = function(eOrg, eDst) {
   // TODO: more descriptive name?
@@ -135,6 +137,7 @@ libtess.mesh.meshSplice = function(eOrg, eDst) {
   }
 };
 
+
 /**
  * deleteEdge(eDel) removes the edge eDel. There are several cases:
  * if (eDel.lFace != eDel.rFace()), we join two loops into one; the loop
@@ -146,7 +149,7 @@ libtess.mesh.meshSplice = function(eOrg, eDst) {
  * plus a few calls to memFree, but this would allocate and delete
  * unnecessary vertices and faces.
  *
- * @param {libtess.GluHalfEdge} eDel [description]
+ * @param {libtess.GluHalfEdge} eDel [description].
  */
 libtess.mesh.deleteEdge = function(eDel) {
   var eDelSym = eDel.sym;
@@ -160,7 +163,7 @@ libtess.mesh.deleteEdge = function(eDel) {
     libtess.mesh.killFace_(eDel.lFace, eDel.rFace());
   }
 
-  if (eDel.oNext === eDel ) {
+  if (eDel.oNext === eDel) {
     libtess.mesh.killVertex_(eDel.org, null);
 
   } else {
@@ -178,7 +181,7 @@ libtess.mesh.deleteEdge = function(eDel) {
 
   // Claim: the mesh is now in a consistent state, except that eDel.org
   // may have been deleted.  Now we disconnect eDel.dst().
-  if (eDelSym.oNext === eDelSym ) {
+  if (eDelSym.oNext === eDelSym) {
     libtess.mesh.killVertex_(eDelSym.org, null);
     libtess.mesh.killFace_(eDelSym.lFace, null);
 
@@ -199,13 +202,14 @@ libtess.mesh.deleteEdge = function(eDel) {
  * operations above.  They are provided for convenience and efficiency.
  */
 
+
 /**
  * addEdgeVertex(eOrg) creates a new edge eNew such that
  * eNew == eOrg.lNext, and eNew.dst() is a newly created vertex.
  * eOrg and eNew will have the same left face.
  *
- * @param {libtess.GluHalfEdge} eOrg [description]
- * @return {libtess.GluHalfEdge} [description]
+ * @param {libtess.GluHalfEdge} eOrg [description].
+ * @return {libtess.GluHalfEdge} [description].
  */
 libtess.mesh.addEdgeVertex = function(eOrg) {
   // TODO(bckenny): why is it named this?
@@ -219,20 +223,21 @@ libtess.mesh.addEdgeVertex = function(eOrg) {
   // Set the vertex and face information
   eNew.org = eOrg.dst();
 
-  libtess.mesh.makeVertex_(eNewSym, eNew.org );
+  libtess.mesh.makeVertex_(eNewSym, eNew.org);
 
   eNew.lFace = eNewSym.lFace = eOrg.lFace;
 
   return eNew;
 };
 
+
 /**
  * splitEdge(eOrg) splits eOrg into two edges eOrg and eNew,
  * such that eNew == eOrg.lNext. The new vertex is eOrg.dst() == eNew.org.
  * eOrg and eNew will have the same left face.
  *
- * @param {libtess.GluHalfEdge} eOrg [description]
- * @return {!libtess.GluHalfEdge} [description]
+ * @param {libtess.GluHalfEdge} eOrg [description].
+ * @return {!libtess.GluHalfEdge} [description].
  */
 libtess.mesh.splitEdge = function(eOrg) {
   var tempHalfEdge = libtess.mesh.addEdgeVertex(eOrg);
@@ -252,6 +257,7 @@ libtess.mesh.splitEdge = function(eOrg) {
   return eNew;
 };
 
+
 /**
  * connect(eOrg, eDst) creates a new edge from eOrg.dst()
  * to eDst.org, and returns the corresponding half-edge eNew.
@@ -263,9 +269,9 @@ libtess.mesh.splitEdge = function(eOrg) {
  * If (eOrg.lNext == eDst), the old face is reduced to a single edge.
  * If (eOrg.lNext.lNext == eDst), the old face is reduced to two edges.
  *
- * @param {libtess.GluHalfEdge} eOrg [description]
- * @param {libtess.GluHalfEdge} eDst [description]
- * @return {!libtess.GluHalfEdge} [description]
+ * @param {libtess.GluHalfEdge} eOrg [description].
+ * @param {libtess.GluHalfEdge} eDst [description].
+ * @return {!libtess.GluHalfEdge} [description].
  */
 libtess.mesh.connect = function(eOrg, eDst) {
   var joiningLoops = false;
@@ -292,12 +298,13 @@ libtess.mesh.connect = function(eOrg, eDst) {
 
   if (!joiningLoops) {
     // We split one loop into two -- the new loop is eNew.lFace
-    libtess.mesh.makeFace_(eNew, eOrg.lFace );
+    libtess.mesh.makeFace_(eNew, eOrg.lFace);
   }
   return eNew;
 };
 
 /******************** Other Operations **********************/
+
 
 /**
  * zapFace(fZap) destroys a face and removes it from the
@@ -307,7 +314,7 @@ libtess.mesh.connect = function(eOrg, eDst) {
  * An entire mesh can be deleted by zapping its faces, one at a time,
  * in any order. Zapped faces cannot be used in further mesh operations!
  *
- * @param {libtess.GluFace} fZap [description]
+ * @param {libtess.GluFace} fZap [description].
  */
 libtess.mesh.zapFace = function(fZap) {
   var eStart = fZap.anEdge;
@@ -343,7 +350,7 @@ libtess.mesh.zapFace = function(fZap) {
       }
       libtess.mesh.killEdge_(e);
     }
-  } while(e !== eStart);
+  } while (e !== eStart);
 
   // delete from circular doubly-linked list
   var fPrev = fZap.prev;
@@ -355,13 +362,14 @@ libtess.mesh.zapFace = function(fZap) {
   // TODO(bckenny): probably null at callsite
 };
 
+
 /**
  * meshUnion() forms the union of all structures in
  * both meshes, and returns the new mesh (the old meshes are destroyed).
  *
- * @param {libtess.GluMesh} mesh1 [description]
- * @param {libtess.GluMesh} mesh2 [description]
- * @return {libtess.GluMesh} [description]
+ * @param {libtess.GluMesh} mesh1 [description].
+ * @param {libtess.GluMesh} mesh2 [description].
+ * @return {libtess.GluMesh} [description].
  */
 libtess.mesh.meshUnion = function(mesh1, mesh2) {
   // TODO(bceknny): probably move to GluMesh method
@@ -400,9 +408,10 @@ libtess.mesh.meshUnion = function(mesh1, mesh2) {
   return mesh1;
 };
 
+
 /**
  * deleteMesh(mesh) will free all storage for any valid mesh.
- * @param {libtess.GluMesh} mesh [description]
+ * @param {libtess.GluMesh} mesh [description].
  */
 libtess.mesh.deleteMesh = function(mesh) {
   // TODO(bckenny): unnecessary, I think.
@@ -412,6 +421,7 @@ libtess.mesh.deleteMesh = function(mesh) {
 
 /************************ Utility Routines ************************/
 
+
 /**
  * Creates a new pair of half-edges which form their own loop.
  * No vertex or face structures are allocated, but these must be assigned
@@ -420,8 +430,8 @@ libtess.mesh.deleteMesh = function(mesh) {
  * TODO(bckenny): warning about eNext strictly being first of pair? (see code)
  *
  * @private
- * @param {libtess.GluHalfEdge} eNext [description]
- * @return {libtess.GluHalfEdge} [description]
+ * @param {libtess.GluHalfEdge} eNext [description].
+ * @return {libtess.GluHalfEdge} [description].
  */
 libtess.mesh.makeEdgePair_ = function(eNext) {
   var e = new libtess.GluHalfEdge();
@@ -430,7 +440,7 @@ libtess.mesh.makeEdgePair_ = function(eNext) {
   // TODO(bckenny): how do we ensure this? see above comment in jsdoc
   // Make sure eNext points to the first edge of the edge pair
   // if (eNext->Sym < eNext ) { eNext = eNext->Sym; }
-  
+
   // NOTE(bckenny): check this for bugs in current implementation!
 
   // Insert in circular doubly-linked list before eNext.
@@ -452,6 +462,7 @@ libtess.mesh.makeEdgePair_ = function(eNext) {
   return e;
 };
 
+
 /**
  * splice_ is best described by the Guibas/Stolfi paper or the
  * CS348a notes. Basically, it modifies the mesh so that
@@ -460,8 +471,8 @@ libtess.mesh.makeEdgePair_ = function(eNext) {
  * For more explanation see mesh.meshSplice below.
  *
  * @private
- * @param {libtess.GluHalfEdge} a [description]
- * @param {libtess.GluHalfEdge} b [description]
+ * @param {libtess.GluHalfEdge} a [description].
+ * @param {libtess.GluHalfEdge} b [description].
  */
 libtess.mesh.splice_ = function(a, b) {
   var aONext = a.oNext;
@@ -473,6 +484,7 @@ libtess.mesh.splice_ = function(a, b) {
   b.oNext = aONext;
 };
 
+
 /**
  * makeVertex_(eOrig, vNext) attaches a new vertex and makes it the
  * origin of all edges in the vertex loop to which eOrig belongs. "vNext" gives
@@ -483,8 +495,8 @@ libtess.mesh.splice_ = function(a, b) {
  * NOTE: unlike original, acutally allocates new vertex.
  *
  * @private
- * @param {libtess.GluHalfEdge} eOrig [description]
- * @param {libtess.GluVertex} vNext [description]
+ * @param {libtess.GluHalfEdge} eOrig [description].
+ * @param {libtess.GluVertex} vNext [description].
  */
 libtess.mesh.makeVertex_ = function(eOrig, vNext) {
   // insert in circular doubly-linked list before vNext
@@ -502,8 +514,9 @@ libtess.mesh.makeVertex_ = function(eOrig, vNext) {
   do {
     e.org = vNew;
     e = e.oNext;
-  } while(e !== eOrig);
+  } while (e !== eOrig);
 };
+
 
 /**
  * makeFace_(eOrig, fNext) attaches a new face and makes it the left
@@ -515,8 +528,8 @@ libtess.mesh.makeVertex_ = function(eOrig, vNext) {
  * NOTE: unlike original, acutally allocates new face.
  *
  * @private
- * @param {libtess.GluHalfEdge} eOrig [description]
- * @param {libtess.GluFace} fNext [description]
+ * @param {libtess.GluHalfEdge} eOrig [description].
+ * @param {libtess.GluFace} fNext [description].
  */
 libtess.mesh.makeFace_ = function(eOrig, fNext) {
   // insert in circular doubly-linked list before fNext
@@ -536,15 +549,16 @@ libtess.mesh.makeFace_ = function(eOrig, fNext) {
   do {
     e.lFace = fNew;
     e = e.lNext;
-  } while(e !== eOrig);
+  } while (e !== eOrig);
 };
+
 
 /**
  * killEdge_ destroys an edge (the half-edges eDel and eDel.sym),
  * and removes from the global edge list.
  *
  * @private
- * @param {libtess.GluHalfEdge} eDel [description]
+ * @param {libtess.GluHalfEdge} eDel [description].
  */
 libtess.mesh.killEdge_ = function(eDel) {
   // TODO(bckenny): in this case, no need to worry(?), but check when checking mesh.makeEdgePair_
@@ -561,13 +575,14 @@ libtess.mesh.killEdge_ = function(eDel) {
   // TODO(bckenny): need to null at callsites?
 };
 
+
 /**
  * killVertex_ destroys a vertex and removes it from the global
  * vertex list. It updates the vertex loop to point to a given new vertex.
  *
  * @private
- * @param {libtess.GluVertex} vDel [description]
- * @param {libtess.GluVertex} newOrg [description]
+ * @param {libtess.GluVertex} vDel [description].
+ * @param {libtess.GluVertex} newOrg [description].
  */
 libtess.mesh.killVertex_ = function(vDel, newOrg) {
   var eStart = vDel.anEdge;
@@ -577,7 +592,7 @@ libtess.mesh.killVertex_ = function(vDel, newOrg) {
   do {
     e.org = newOrg;
     e = e.oNext;
-  } while(e !== eStart);
+  } while (e !== eStart);
 
   // delete from circular doubly-linked list
   var vPrev = vDel.prev;
@@ -589,13 +604,14 @@ libtess.mesh.killVertex_ = function(vDel, newOrg) {
   // TODO(bckenny): need to null at callsites?
 };
 
+
 /**
  * killFace_ destroys a face and removes it from the global face
  * list. It updates the face loop to point to a given new face.
  *
  * @private
- * @param {libtess.GluFace} fDel [description]
- * @param {libtess.GluFace} newLFace [description]
+ * @param {libtess.GluFace} fDel [description].
+ * @param {libtess.GluFace} newLFace [description].
  */
 libtess.mesh.killFace_ = function(fDel, newLFace) {
   var eStart = fDel.anEdge;
@@ -605,7 +621,7 @@ libtess.mesh.killFace_ = function(fDel, newLFace) {
   do {
     e.lFace = newLFace;
     e = e.lNext;
-  } while(e !== eStart);
+  } while (e !== eStart);
 
   // delete from circular doubly-linked list
   var fPrev = fDel.prev;

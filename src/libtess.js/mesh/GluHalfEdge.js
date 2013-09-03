@@ -38,6 +38,8 @@
 // require libtess.ActiveRegion
 /*global libtess */
 
+
+
 /**
  * The fundamental data structure is the "half-edge". Two half-edges
  * go together to make an edge, but they point in opposite directions.
@@ -63,12 +65,12 @@
  * e.sym stores a pointer in the opposite direction, thus it is
  * always true that e.sym.next.sym.next === e.
  *
- * @param {libtess.GluHalfEdge=} opt_nextEdge [description]
+ * @param {libtess.GluHalfEdge=} opt_nextEdge [description].
  * @constructor
  */
 libtess.GluHalfEdge = function(opt_nextEdge) {
   // TODO(bckenny): are these the right defaults? (from gl_meshNewMesh requirements)
-  
+
   /**
    * doubly-linked list (prev==sym->next)
    * @type {!libtess.GluHalfEdge}
@@ -108,7 +110,7 @@ libtess.GluHalfEdge = function(opt_nextEdge) {
 
   // Internal data (keep hidden)
   // NOTE(bckenny): can't be private, though...
-  
+
   /**
    * a region with this upper edge (see sweep.js)
    * @type {libtess.ActiveRegion}
@@ -126,65 +128,73 @@ libtess.GluHalfEdge = function(opt_nextEdge) {
 // TODO(bckenny): using methods as aliases for sym connections for now.
 // not sure about this approach. getters? renames?
 
+
 /**
  * [rFace description]
- * @return {libtess.GluFace} [description]
+ * @return {libtess.GluFace} [description].
  */
 libtess.GluHalfEdge.prototype.rFace = function() {
   return this.sym.lFace;
 };
 
+
 /**
  * [dst description]
- * @return {libtess.GluVertex} [description]
+ * @return {libtess.GluVertex} [description].
  */
 libtess.GluHalfEdge.prototype.dst = function() {
   return this.sym.org;
 };
 
+
 /**
  * [oPrev description]
- * @return {libtess.GluHalfEdge} [description]
+ * @return {libtess.GluHalfEdge} [description].
  */
 libtess.GluHalfEdge.prototype.oPrev = function() {
   return this.sym.lNext;
 };
 
+
 /**
  * [lPrev description]
- * @return {libtess.GluHalfEdge} [description]
+ * @return {libtess.GluHalfEdge} [description].
  */
 libtess.GluHalfEdge.prototype.lPrev = function() {
   return this.oNext.sym;
 };
 
+
 /**
  * [dPrev description]
- * @return {libtess.GluHalfEdge} [description]
+ * @return {libtess.GluHalfEdge} [description].
  */
 libtess.GluHalfEdge.prototype.dPrev = function() {
   return this.lNext.sym;
 };
 
+
 /**
  * [rPrev description]
- * @return {libtess.GluHalfEdge} [description]
+ * @return {libtess.GluHalfEdge} [description].
  */
 libtess.GluHalfEdge.prototype.rPrev = function() {
   return this.sym.oNext;
 };
 
+
 /**
  * [dNext description]
- * @return {libtess.GluHalfEdge} [description]
+ * @return {libtess.GluHalfEdge} [description].
  */
 libtess.GluHalfEdge.prototype.dNext = function() {
   return this.rPrev().sym;
 };
 
+
 /**
  * [rNext description]
- * @return {libtess.GluHalfEdge} [description]
+ * @return {libtess.GluHalfEdge} [description].
  */
 libtess.GluHalfEdge.prototype.rNext = function() {
   return this.oPrev().sym;

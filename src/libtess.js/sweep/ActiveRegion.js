@@ -41,6 +41,8 @@
 // TODO(bckenny): apparently only visible outside of sweep for debugging routines.
 // find out if we can hide
 
+
+
 /**
  * For each pair of adjacent edges crossing the sweep line, there is
  * an ActiveRegion to represent the region between them. The active
@@ -75,13 +77,13 @@ libtess.ActiveRegion = function() {
    * @type {boolean}
    */
   this.inside = false;
-  
+
   /**
    * marks fake edges at t = +/-infinity
    * @type {boolean}
    */
   this.sentinel = false;
-  
+
   /**
    * Marks regions where the upper or lower edge has changed, but we haven't
    * checked whether they intersect yet.
@@ -97,18 +99,20 @@ libtess.ActiveRegion = function() {
   this.fixUpperEdge = false;
 };
 
+
 /**
  * [regionBelow description]
- * @return {libtess.ActiveRegion} [description]
+ * @return {libtess.ActiveRegion} [description].
  */
 libtess.ActiveRegion.prototype.regionBelow = function() {
   // TODO(bckenny): better typing? or is cast unavoidable
   return /** @type {libtess.ActiveRegion} */ (this.nodeUp.getPred().getKey());
 };
 
+
 /**
  * [regionAbove description]
- * @return {libtess.ActiveRegion} [description]
+ * @return {libtess.ActiveRegion} [description].
  */
 libtess.ActiveRegion.prototype.regionAbove = function() {
   // TODO(bckenny): better typing? or is cast unavoidable

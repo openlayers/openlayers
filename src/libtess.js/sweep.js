@@ -74,6 +74,7 @@ libtess.sweep = function() {
 
 };
 
+
 /**
  * Make the sentinel coordinates big enough that they will never be
  * merged with real input features.  (Even with the largest possible
@@ -84,6 +85,7 @@ libtess.sweep = function() {
  * @type {number}
  */
 libtess.sweep.SENTINEL_COORD_ = 4 * libtess.GLU_TESS_MAX_COORD;
+
 
 /**
  * Because vertices at exactly the same location are merged together
@@ -98,6 +100,7 @@ libtess.sweep.SENTINEL_COORD_ = 4 * libtess.GLU_TESS_MAX_COORD;
  */
 libtess.sweep.TOLERANCE_NONZERO_ = false;
 
+
 /**
  * computeInterior(tess) computes the planar arrangement specified
  * by the given contours, and further subdivides this arrangement
@@ -105,7 +108,7 @@ libtess.sweep.TOLERANCE_NONZERO_ = false;
  * to the polygon, according to the rule given by tess.windingRule.
  * Each interior region is guaranteed be monotone.
  *
- * @param {libtess.GluTesselator} tess [description]
+ * @param {libtess.GluTesselator} tess [description].
  */
 libtess.sweep.computeInterior = function(tess) {
   tess.fatalError = false;
@@ -121,12 +124,12 @@ libtess.sweep.computeInterior = function(tess) {
   // TODO(bckenny): don't need the cast if pq's key is better typed
   var v;
   while ((v = /** @type {libtess.GluVertex} */(tess.pq.extractMin())) !== null) {
-    for ( ;; ) {
+    for (;; ) {
       var vNext = /** @type {libtess.GluVertex} */(tess.pq.minimum());
       if (vNext === null || !libtess.geom.vertEq(vNext, v)) {
         break;
       }
-      
+
       /* Merge together all vertices at exactly the same location.
        * This is more efficient than processing them one at a time,
        * simplifies the code (see connectLeftDegenerate), and is also
@@ -161,19 +164,19 @@ libtess.sweep.computeInterior = function(tess) {
 };
 
 
-
 /**
  * When we merge two edges into one, we need to compute the combined
  * winding of the new edge.
  * @private
- * @param {libtess.GluHalfEdge} eDst [description]
- * @param {libtess.GluHalfEdge} eSrc [description]
+ * @param {libtess.GluHalfEdge} eDst [description].
+ * @param {libtess.GluHalfEdge} eSrc [description].
  */
 libtess.sweep.addWinding_ = function(eDst, eSrc) {
   // NOTE(bckenny): from AddWinding macro
   eDst.winding += eSrc.winding;
   eDst.sym.winding += eSrc.sym.winding;
 };
+
 
 /**
  * Both edges must be directed from right to left (this is the canonical
@@ -187,10 +190,10 @@ libtess.sweep.addWinding_ = function(eDst, eSrc) {
  * we sort the edges by slope (they would otherwise compare equally).
  *
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.ActiveRegion} reg1 [description]
- * @param {libtess.ActiveRegion} reg2 [description]
- * @return {boolean} [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.ActiveRegion} reg1 [description].
+ * @param {libtess.ActiveRegion} reg2 [description].
+ * @return {boolean} [description].
  */
 libtess.sweep.edgeLeq_ = function(tess, reg1, reg2) {
   var event = tess.event;
@@ -221,11 +224,12 @@ libtess.sweep.edgeLeq_ = function(tess, reg1, reg2) {
   return (t1 >= t2);
 };
 
+
 /**
  * [deleteRegion_ description]
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.ActiveRegion} reg [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.ActiveRegion} reg [description].
  */
 libtess.sweep.deleteRegion_ = function(tess, reg) {
   if (reg.fixUpperEdge) {
@@ -244,11 +248,12 @@ libtess.sweep.deleteRegion_ = function(tess, reg) {
   // TODO(bckenny): may need to null at callsite
 };
 
+
 /**
  * Replace an upper edge which needs fixing (see connectRightVertex).
  * @private
- * @param {libtess.ActiveRegion} reg [description]
- * @param {libtess.GluHalfEdge} newEdge [description]
+ * @param {libtess.ActiveRegion} reg [description].
+ * @param {libtess.GluHalfEdge} newEdge [description].
  */
 libtess.sweep.fixUpperEdge_ = function(reg, newEdge) {
   libtess.assert(reg.fixUpperEdge);
@@ -259,11 +264,12 @@ libtess.sweep.fixUpperEdge_ = function(reg, newEdge) {
   newEdge.activeRegion = reg;
 };
 
+
 /**
  * Find the region above the uppermost edge with the same origin.
  * @private
- * @param {libtess.ActiveRegion} reg [description]
- * @return {libtess.ActiveRegion} [description]
+ * @param {libtess.ActiveRegion} reg [description].
+ * @return {libtess.ActiveRegion} [description].
  */
 libtess.sweep.topLeftRegion_ = function(reg) {
   var org = reg.eUp.org;
@@ -284,11 +290,12 @@ libtess.sweep.topLeftRegion_ = function(reg) {
   return reg;
 };
 
+
 /**
  * Find the region above the uppermost edge with the same destination.
  * @private
- * @param {libtess.ActiveRegion} reg [description]
- * @return {libtess.ActiveRegion} [description]
+ * @param {libtess.ActiveRegion} reg [description].
+ * @return {libtess.ActiveRegion} [description].
  */
 libtess.sweep.topRightRegion_ = function(reg) {
   var dst = reg.eUp.dst();
@@ -300,6 +307,7 @@ libtess.sweep.topRightRegion_ = function(reg) {
   return reg;
 };
 
+
 /**
  * Add a new active region to the sweep line, *somewhere* below "regAbove"
  * (according to where the new edge belongs in the sweep-line dictionary).
@@ -307,9 +315,9 @@ libtess.sweep.topRightRegion_ = function(reg) {
  * Winding number and "inside" flag are not updated.
  *
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.ActiveRegion} regAbove [description]
- * @param {libtess.GluHalfEdge} eNewUp [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.ActiveRegion} regAbove [description].
+ * @param {libtess.GluHalfEdge} eNewUp [description].
  */
 libtess.sweep.addRegionBelow_ = function(tess, regAbove, eNewUp) {
   var regNew = new libtess.ActiveRegion();
@@ -321,15 +329,16 @@ libtess.sweep.addRegionBelow_ = function(tess, regAbove, eNewUp) {
   return regNew;
 };
 
+
 /**
  * [isWindingInside_ description]
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {number} n int
- * @return {boolean} [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {number} n int.
+ * @return {boolean} [description].
  */
 libtess.sweep.isWindingInside_ = function(tess, n) {
-  switch(tess.windingRule) {
+  switch (tess.windingRule) {
     case libtess.windingRule.GLU_TESS_WINDING_ODD:
       return ((n & 1) !== 0);
     case libtess.windingRule.GLU_TESS_WINDING_NONZERO:
@@ -347,16 +356,18 @@ libtess.sweep.isWindingInside_ = function(tess, n) {
   return false;
 };
 
+
 /**
  * [computeWinding_ description]
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.ActiveRegion} reg [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.ActiveRegion} reg [description].
  */
 libtess.sweep.computeWinding_ = function(tess, reg) {
   reg.windingNumber = reg.regionAbove().windingNumber + reg.eUp.winding;
   reg.inside = libtess.sweep.isWindingInside_(tess, reg.windingNumber);
 };
+
 
 /**
  * Delete a region from the sweep line. This happens when the upper
@@ -366,8 +377,8 @@ libtess.sweep.computeWinding_ = function(tess, reg) {
  * changing, this face may not have even existed until now).
  *
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.ActiveRegion} reg [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.ActiveRegion} reg [description].
  */
 libtess.sweep.finishRegion_ = function(tess, reg) {
   // TODO(bckenny): may need to null reg at callsite
@@ -379,6 +390,7 @@ libtess.sweep.finishRegion_ = function(tess, reg) {
   f.anEdge = e;   // optimization for tessmono.tessellateMonoRegion() // TODO(bckenny): how so?
   libtess.sweep.deleteRegion_(tess, reg);
 };
+
 
 /**
  * We are given a vertex with one or more left-going edges. All affected
@@ -393,10 +405,10 @@ libtess.sweep.finishRegion_ = function(tess, reg) {
  * same as in the dictionary.
  *
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.ActiveRegion} regFirst [description]
- * @param {libtess.ActiveRegion} regLast [description]
- * @return {libtess.GluHalfEdge} [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.ActiveRegion} regFirst [description].
+ * @param {libtess.ActiveRegion} regLast [description].
+ * @return {libtess.GluHalfEdge} [description].
  */
 libtess.sweep.finishLeftRegions_ = function(tess, regFirst, regLast) {
   var regPrev = regFirst;
@@ -439,6 +451,7 @@ libtess.sweep.finishLeftRegions_ = function(tess, regFirst, regLast) {
   return ePrev;
 };
 
+
 /**
  * Purpose: insert right-going edges into the edge dictionary, and update
  * winding numbers and mesh connectivity appropriately. All right-going
@@ -450,12 +463,12 @@ libtess.sweep.finishLeftRegions_ = function(tess, regFirst, regLast) {
  * should be null.
  *
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.ActiveRegion} regUp [description]
- * @param {libtess.GluHalfEdge} eFirst [description]
- * @param {libtess.GluHalfEdge} eLast [description]
- * @param {libtess.GluHalfEdge} eTopLeft [description]
- * @param {boolean} cleanUp [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.ActiveRegion} regUp [description].
+ * @param {libtess.GluHalfEdge} eFirst [description].
+ * @param {libtess.GluHalfEdge} eLast [description].
+ * @param {libtess.GluHalfEdge} eTopLeft [description].
+ * @param {boolean} cleanUp [description].
  */
 libtess.sweep.addRightEdges_ = function(tess, regUp, eFirst, eLast, eTopLeft, cleanUp) {
   var firstTime = true;
@@ -477,7 +490,7 @@ libtess.sweep.addRightEdges_ = function(tess, regUp, eFirst, eLast, eTopLeft, cl
   var regPrev = regUp;
   var ePrev = eTopLeft;
   var reg;
-  for( ;; ) {
+  for (;; ) {
     reg = regPrev.regionBelow();
     e = reg.eUp.sym;
     if (e.org !== ePrev.org) {
@@ -515,14 +528,15 @@ libtess.sweep.addRightEdges_ = function(tess, regUp, eFirst, eLast, eTopLeft, cl
   }
 };
 
+
 /**
  * [callCombine_ description]
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.GluVertex} isect [description]
- * @param {Array.<Object>} data [description]
- * @param {Array.<number>} weights [description]
- * @param {boolean} needed [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.GluVertex} isect [description].
+ * @param {Array.<Object>} data [description].
+ * @param {Array.<number>} weights [description].
+ * @param {boolean} needed [description].
  */
 libtess.sweep.callCombine_ = function(tess, isect, data, weights, needed) {
   // Copy coord data in case the callback changes it.
@@ -549,13 +563,14 @@ libtess.sweep.callCombine_ = function(tess, isect, data, weights, needed) {
   }
 };
 
+
 /**
  * Two vertices with idential coordinates are combined into one.
  * e1.org is kept, while e2.org is discarded.
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.GluHalfEdge} e1 [description]
- * @param {libtess.GluHalfEdge} e2 [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.GluHalfEdge} e1 [description].
+ * @param {libtess.GluHalfEdge} e2 [description].
  */
 libtess.sweep.spliceMergeVertices_ = function(tess, e1, e2) {
   // TODO(bckenny): better way to init these? save them?
@@ -568,6 +583,7 @@ libtess.sweep.spliceMergeVertices_ = function(tess, e1, e2) {
   libtess.mesh.meshSplice(e1, e2);
 };
 
+
 /**
  * Find some weights which describe how the intersection vertex is
  * a linear combination of org and dst. Each of the two edges
@@ -576,11 +592,11 @@ libtess.sweep.spliceMergeVertices_ = function(tess, e1, e2) {
  * relative distance to "isect".
  *
  * @private
- * @param {libtess.GluVertex} isect [description]
- * @param {libtess.GluVertex} org [description]
- * @param {libtess.GluVertex} dst [description]
- * @param {Array.<number>} weights [description]
- * @param {number} weightIndex Index into weights for first weight to supply
+ * @param {libtess.GluVertex} isect [description].
+ * @param {libtess.GluVertex} org [description].
+ * @param {libtess.GluVertex} dst [description].
+ * @param {Array.<number>} weights [description].
+ * @param {number} weightIndex Index into weights for first weight to supply.
  */
 libtess.sweep.vertexWeights_ = function(isect, org, dst, weights, weightIndex) {
   // TODO(bckenny): think through how we can use L1dist here and be correct for coords
@@ -594,22 +610,23 @@ libtess.sweep.vertexWeights_ = function(isect, org, dst, weights, weightIndex) {
   var i1 = weightIndex + 1;
   weights[i0] = 0.5 * t2 / (t1 + t2);
   weights[i1] = 0.5 * t1 / (t1 + t2);
-  isect.coords[0] += weights[i0]*org.coords[0] + weights[i1]*dst.coords[0];
-  isect.coords[1] += weights[i0]*org.coords[1] + weights[i1]*dst.coords[1];
-  isect.coords[2] += weights[i0]*org.coords[2] + weights[i1]*dst.coords[2];
+  isect.coords[0] += weights[i0] * org.coords[0] + weights[i1] * dst.coords[0];
+  isect.coords[1] += weights[i0] * org.coords[1] + weights[i1] * dst.coords[1];
+  isect.coords[2] += weights[i0] * org.coords[2] + weights[i1] * dst.coords[2];
 };
+
 
 /**
  * We've computed a new intersection point, now we need a "data" pointer
  * from the user so that we can refer to this new vertex in the
  * rendering callbacks.
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.GluVertex} isect [description]
- * @param {libtess.GluVertex} orgUp [description]
- * @param {libtess.GluVertex} dstUp [description]
- * @param {libtess.GluVertex} orgLo [description]
- * @param {libtess.GluVertex} dstLo [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.GluVertex} isect [description].
+ * @param {libtess.GluVertex} orgUp [description].
+ * @param {libtess.GluVertex} dstUp [description].
+ * @param {libtess.GluVertex} orgLo [description].
+ * @param {libtess.GluVertex} dstLo [description].
  */
 libtess.sweep.getIntersectData_ = function(tess, isect, orgUp, dstUp, orgLo, dstLo) {
   // TODO(bckenny): called for every intersection event, should these be from a pool?
@@ -632,6 +649,7 @@ libtess.sweep.getIntersectData_ = function(tess, isect, orgUp, dstUp, orgLo, dst
 
   libtess.sweep.callCombine_(tess, isect, data, weights, true);
 };
+
 
 /**
  * Check the upper and lower edge of regUp, to make sure that the
@@ -659,9 +677,9 @@ libtess.sweep.getIntersectData_ = function(tess, isect, orgUp, dstUp, orgLo, dst
  * Basically this is a combinatorial solution to a numerical problem.
  *
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.ActiveRegion} regUp [description]
- * @return {boolean} [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.ActiveRegion} regUp [description].
+ * @return {boolean} [description].
  */
 libtess.sweep.checkForRightSplice_ = function(tess, regUp) {
   // TODO(bckenny): fully learn how these two checks work
@@ -703,6 +721,7 @@ libtess.sweep.checkForRightSplice_ = function(tess, regUp) {
   return true;
 };
 
+
 /**
  * Check the upper and lower edge of regUp to make sure that the
  * eUp.dst() is above eLo, or eLo.dst() is below eUp (depending on which
@@ -722,9 +741,9 @@ libtess.sweep.checkForRightSplice_ = function(tess, regUp) {
  * other edge.
  *
  * @private
- * @param {libtess.GluTesselator} tess description]
- * @param {libtess.ActiveRegion} regUp [description]
- * @return {boolean} [description]
+ * @param {libtess.GluTesselator} tess description].
+ * @param {libtess.ActiveRegion} regUp [description].
+ * @return {boolean} [description].
  */
 libtess.sweep.checkForLeftSplice_ = function(tess, regUp) {
   var regLo = regUp.regionBelow();
@@ -760,6 +779,7 @@ libtess.sweep.checkForLeftSplice_ = function(tess, regUp) {
   return true;
 };
 
+
 /**
  * Check the upper and lower edges of the given region to see if
  * they intersect. If so, create the intersection and add it
@@ -770,9 +790,9 @@ libtess.sweep.checkForLeftSplice_ = function(tess, regUp) {
  * checked for intersections, and possibly regUp has been deleted.
  *
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.ActiveRegion} regUp [description]
- * @return {boolean} [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.ActiveRegion} regUp [description].
+ * @return {boolean} [description].
  */
 libtess.sweep.checkForIntersect_ = function(tess, regUp) {
   var regLo = regUp.regionBelow();
@@ -787,7 +807,7 @@ libtess.sweep.checkForIntersect_ = function(tess, regUp) {
 
   libtess.assert(!libtess.geom.vertEq(dstLo, dstUp));
   libtess.assert(libtess.geom.edgeSign(dstUp, tess.event, orgUp) <= 0);
-  libtess.assert(libtess.geom.edgeSign(dstLo, tess.event, orgLo) >= 0 );
+  libtess.assert(libtess.geom.edgeSign(dstLo, tess.event, orgLo) >= 0);
   libtess.assert(orgUp !== tess.event && orgLo !== tess.event);
   libtess.assert(!regUp.fixUpperEdge && !regLo.fixUpperEdge);
 
@@ -814,10 +834,10 @@ libtess.sweep.checkForIntersect_ = function(tess, regUp) {
   }
 
   // At this point the edges intersect, at least marginally
-  libtess.sweepDebugEvent( tess );
+  libtess.sweepDebugEvent(tess);
 
   libtess.geom.edgeIntersect(dstUp, orgUp, dstLo, orgLo, isect);
-  
+
   // The following properties are guaranteed:
   libtess.assert(Math.min(orgUp.t, dstUp.t) <= isect.t);
   libtess.assert(isect.t <= Math.max(orgLo.t, dstLo.t));
@@ -926,6 +946,7 @@ libtess.sweep.checkForIntersect_ = function(tess, regUp) {
   return false;
 };
 
+
 /**
  * When the upper or lower edge of any region changes, the region is
  * marked "dirty". This routine walks through all the dirty regions
@@ -934,13 +955,13 @@ libtess.sweep.checkForIntersect_ = function(tess, regUp) {
  * new dirty regions can be created as we make changes to restore
  * the invariants.
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.ActiveRegion} regUp [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.ActiveRegion} regUp [description].
  */
 libtess.sweep.walkDirtyRegions_ = function(tess, regUp) {
   var regLo = regUp.regionBelow();
 
-  for ( ;; ) {
+  for (;; ) {
     // Find the lowest dirty region (we walk from the bottom up).
     while (regLo.dirty) {
       regUp = regLo;
@@ -1013,6 +1034,7 @@ libtess.sweep.walkDirtyRegions_ = function(tess, regUp) {
   }
 };
 
+
 /**
  * Purpose: connect a "right" vertex vEvent (one where all edges go left)
  * to the unprocessed portion of the mesh. Since there are no right-going
@@ -1045,9 +1067,9 @@ libtess.sweep.walkDirtyRegions_ = function(tess, regUp) {
  * closest one, in which case we won't need to make any changes.
  *
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.ActiveRegion} regUp [description]
- * @param {libtess.GluHalfEdge} eBottomLeft [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.ActiveRegion} regUp [description].
+ * @param {libtess.GluHalfEdge} eBottomLeft [description].
  */
 libtess.sweep.connectRightVertex_ = function(tess, regUp, eBottomLeft) {
   var eTopLeft = eBottomLeft.oNext;
@@ -1096,14 +1118,15 @@ libtess.sweep.connectRightVertex_ = function(tess, regUp, eBottomLeft) {
   libtess.sweep.walkDirtyRegions_(tess, regUp);
 };
 
+
 /**
  * The event vertex lies exacty on an already-processed edge or vertex.
  * Adding the new vertex involves splicing it into the already-processed
  * part of the mesh.
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.ActiveRegion} regUp [description]
- * @param {libtess.GluVertex} vEvent [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.ActiveRegion} regUp [description].
+ * @param {libtess.GluVertex} vEvent [description].
  */
 libtess.sweep.connectLeftDegenerate_ = function(tess, regUp, vEvent) {
   var e = regUp.eUp;
@@ -1114,7 +1137,7 @@ libtess.sweep.connectLeftDegenerate_ = function(tess, regUp, vEvent) {
     libtess.sweep.spliceMergeVertices_(tess, e, vEvent.anEdge);
     return;
   }
-  
+
   if (!libtess.geom.vertEq(e.dst(), vEvent)) {
     // General case -- splice vEvent into edge e which passes through it
     libtess.mesh.splitEdge(e.sym);
@@ -1126,7 +1149,7 @@ libtess.sweep.connectLeftDegenerate_ = function(tess, regUp, vEvent) {
     }
 
     libtess.mesh.meshSplice(vEvent.anEdge, e);
-    
+
     // recurse
     libtess.sweep.sweepEvent_(tess, vEvent);
     return;
@@ -1144,7 +1167,7 @@ libtess.sweep.connectLeftDegenerate_ = function(tess, regUp, vEvent) {
   if (reg.fixUpperEdge) {
     // Here e.dst() has only a single fixable edge going right.
     // We can delete it since now we have some real right-going edges.
-    
+
     // there are some left edges too
     libtess.assert(eTopLeft !== eTopRight);
     libtess.sweep.deleteRegion_(tess, reg); // TODO(bckenny): something to null?
@@ -1160,6 +1183,7 @@ libtess.sweep.connectLeftDegenerate_ = function(tess, regUp, vEvent) {
 
   libtess.sweep.addRightEdges_(tess, regUp, eTopRight.oNext, eLast, eTopLeft, true);
 };
+
 
 /**
  * Connect a "left" vertex (one where both edges go right)
@@ -1177,8 +1201,8 @@ libtess.sweep.connectLeftDegenerate_ = function(tess, regUp, vEvent) {
  *  - merging with an already-processed portion of U or L
  *
  * @private
- * @param {libtess.GluTesselator} tess   [description]
- * @param {libtess.GluVertex} vEvent [description]
+ * @param {libtess.GluTesselator} tess   [description].
+ * @param {libtess.GluVertex} vEvent [description].
  */
 libtess.sweep.connectLeftVertex_ = function(tess, vEvent) {
   // TODO(bckenny): tmp only used for sweep. better to keep tmp across calls?
@@ -1228,17 +1252,18 @@ libtess.sweep.connectLeftVertex_ = function(tess, vEvent) {
   }
 };
 
+
 /**
  * Does everything necessary when the sweep line crosses a vertex.
  * Updates the mesh and the edge dictionary.
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.GluVertex} vEvent [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.GluVertex} vEvent [description].
  */
 libtess.sweep.sweepEvent_ = function(tess, vEvent) {
   tess.event = vEvent; // for access in edgeLeq_ // TODO(bckenny): wuh?
-  libtess.sweepDebugEvent( tess );
-  
+  libtess.sweepDebugEvent(tess);
+
   /* Check if this vertex is the right endpoint of an edge that is
    * already in the dictionary.  In this case we don't need to waste
    * time searching for the location to insert new edges.
@@ -1279,12 +1304,13 @@ libtess.sweep.sweepEvent_ = function(tess, vEvent) {
   }
 };
 
+
 /**
  * We add two sentinel edges above and below all other edges,
  * to avoid special cases at the top and bottom.
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {number} t [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {number} t [description].
  */
 libtess.sweep.addSentinel_ = function(tess, t) {
   var reg = new libtess.ActiveRegion();
@@ -1306,11 +1332,12 @@ libtess.sweep.addSentinel_ = function(tess, t) {
   reg.nodeUp = tess.dict.insert(reg);
 };
 
+
 /**
  * We maintain an ordering of edge intersections with the sweep line.
  * This order is maintained in a dynamic dictionary.
  * @private
- * @param {libtess.GluTesselator} tess [description]
+ * @param {libtess.GluTesselator} tess [description].
  */
 libtess.sweep.initEdgeDict_ = function(tess) {
   // TODO(bckenny): need to cast edgeLeq_?
@@ -1321,10 +1348,11 @@ libtess.sweep.initEdgeDict_ = function(tess) {
   libtess.sweep.addSentinel_(tess, libtess.sweep.SENTINEL_COORD_);
 };
 
+
 /**
  * [doneEdgeDict_ description]
  * @private
- * @param {libtess.GluTesselator} tess [description]
+ * @param {libtess.GluTesselator} tess [description].
  */
 libtess.sweep.doneEdgeDict_ = function(tess) {
   var fixedEdges = 0;
@@ -1346,10 +1374,11 @@ libtess.sweep.doneEdgeDict_ = function(tess) {
   tess.dict = null;
 };
 
+
 /**
  * Remove zero-length edges, and contours with fewer than 3 vertices.
  * @private
- * @param {libtess.GluTesselator} tess [description]
+ * @param {libtess.GluTesselator} tess [description].
  */
 libtess.sweep.removeDegenerateEdges_ = function(tess) {
   var eHead = tess.mesh.eHead;
@@ -1358,7 +1387,7 @@ libtess.sweep.removeDegenerateEdges_ = function(tess) {
   for (var e = eHead.next; e !== eHead; e = eNext) {
     eNext = e.next;
     var eLNext = e.lNext;
-    
+
     if (libtess.geom.vertEq(e.org, e.dst()) && e.lNext.lNext !== e) {
       // Zero-length edge, contour has at least 3 edges
       libtess.sweep.spliceMergeVertices_(tess, eLNext, e); // deletes e.org
@@ -1376,7 +1405,7 @@ libtess.sweep.removeDegenerateEdges_ = function(tess) {
         libtess.mesh.deleteEdge(eLNext);
       }
 
-      if (e === eNext || e === eNext.sym ) {
+      if (e === eNext || e === eNext.sym) {
         eNext = eNext.next;
       }
       libtess.mesh.deleteEdge(e);
@@ -1384,11 +1413,12 @@ libtess.sweep.removeDegenerateEdges_ = function(tess) {
   }
 };
 
+
 /**
  * Construct priority queue and insert all vertices into it, which determines
  * the order in which vertices cross the sweep line.
  * @private
- * @param {libtess.GluTesselator} tess [description]
+ * @param {libtess.GluTesselator} tess [description].
  */
 libtess.sweep.initPriorityQ_ = function(tess) {
   // TODO(bckenny): libtess.geom.vertLeq needs cast?
@@ -1405,16 +1435,18 @@ libtess.sweep.initPriorityQ_ = function(tess) {
   pq.init();
 };
 
+
 /**
  * [donePriorityQ_ description]
  * @private
- * @param {libtess.GluTesselator} tess [description]
+ * @param {libtess.GluTesselator} tess [description].
  */
 libtess.sweep.donePriorityQ_ = function(tess) {
   // TODO(bckenny): probably don't need deleteQ. check that function for comment
   tess.pq.deleteQ();
   tess.pq = null;
 };
+
 
 /**
  * Delete any degenerate faces with only two edges. walkDirtyRegions()
@@ -1431,7 +1463,7 @@ libtess.sweep.donePriorityQ_ = function(tess) {
  * will sometimes be keeping a pointer to that edge.
  *
  * @private
- * @param {libtess.GluMesh} mesh [description]
+ * @param {libtess.GluMesh} mesh [description].
  */
 libtess.sweep.removeDegenerateFaces_ = function(mesh) {
   var fNext;

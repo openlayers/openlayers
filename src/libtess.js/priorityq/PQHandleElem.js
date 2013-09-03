@@ -37,6 +37,8 @@
 
 // TODO(bckenny): more specific typing on key
 
+
+
 /**
  * [PQHandleElem description]
  * @constructor
@@ -49,7 +51,7 @@ libtess.PQHandleElem = function() {
    * @type {libtess.PQKey}
    */
   this.key = null;
-  
+
   /**
    * [node description]
    * @type {libtess.PQHandle}
@@ -57,14 +59,15 @@ libtess.PQHandleElem = function() {
   this.node = 0;
 };
 
+
 /**
  * Allocate a PQHandleElem array of size size. If oldArray is not null, its
  * contents are copied to the beginning of the new array. The rest of the array
  * is filled with new PQHandleElems.
  *
- * @param {?Array.<libtess.PQHandleElem>} oldArray [description]
- * @param {number} size [description]
- * @return {Array.<libtess.PQHandleElem>} [description]
+ * @param {?Array.<libtess.PQHandleElem>} oldArray [description].
+ * @param {number} size [description].
+ * @return {Array.<libtess.PQHandleElem>} [description].
  */
 libtess.PQHandleElem.realloc = function(oldArray, size) {
   var newArray = new Array(size);

@@ -40,6 +40,7 @@ libtess.normal = function() {
 
 };
 
+
 // TODO(bckenny): NOTE:
 /* The "feature merging" is not intended to be complete.  There are
  * special cases where edges are nearly parallel to the sweep line
@@ -62,6 +63,7 @@ libtess.normal = function() {
  */
 libtess.normal.S_UNIT_X_ = 1.0;
 
+
 /**
  * @type {number}
  * @private
@@ -69,15 +71,16 @@ libtess.normal.S_UNIT_X_ = 1.0;
  */
 libtess.normal.S_UNIT_Y_ = 0.0;
 
+
 /**
  * projectPolygon determines the polygon normal
  * and projects vertices onto the plane of the polygon.
  *
- * @param {libtess.GluTesselator} tess [description]
+ * @param {libtess.GluTesselator} tess [description].
  */
 libtess.normal.projectPolygon = function(tess) {
   var computedNormal = false;
-  
+
   var norm = [0, 0, 0];
   norm[0] = tess.normal[0]; // TODO(bckenny): better way to init these?
   norm[1] = tess.normal[1];
@@ -97,8 +100,8 @@ libtess.normal.projectPolygon = function(tess) {
     libtess.normal.normalize_(norm);
 
     sUnit[i] = 0;
-    sUnit[(i+1)%3] = libtess.normal.S_UNIT_X_;
-    sUnit[(i+2)%3] = libtess.normal.S_UNIT_Y_;
+    sUnit[(i + 1) % 3] = libtess.normal.S_UNIT_X_;
+    sUnit[(i + 2) % 3] = libtess.normal.S_UNIT_Y_;
 
     // Now make it exactly perpendicular
     var w = libtess.normal.dot_(sUnit, norm);
@@ -108,20 +111,20 @@ libtess.normal.projectPolygon = function(tess) {
     libtess.normal.normalize_(sUnit);
 
     // Choose tUnit so that (sUnit,tUnit,norm) form a right-handed frame
-    tUnit[0] = norm[1]*sUnit[2] - norm[2]*sUnit[1];
-    tUnit[1] = norm[2]*sUnit[0] - norm[0]*sUnit[2];
-    tUnit[2] = norm[0]*sUnit[1] - norm[1]*sUnit[0];
+    tUnit[0] = norm[1] * sUnit[2] - norm[2] * sUnit[1];
+    tUnit[1] = norm[2] * sUnit[0] - norm[0] * sUnit[2];
+    tUnit[2] = norm[0] * sUnit[1] - norm[1] * sUnit[0];
     libtess.normal.normalize_(tUnit);
 
   } else {
     // Project perpendicular to a coordinate axis -- better numerically
     sUnit[i] = 0;
-    sUnit[(i+1)%3] = libtess.normal.S_UNIT_X_;
-    sUnit[(i+2)%3] = libtess.normal.S_UNIT_Y_;
-    
+    sUnit[(i + 1) % 3] = libtess.normal.S_UNIT_X_;
+    sUnit[(i + 2) % 3] = libtess.normal.S_UNIT_Y_;
+
     tUnit[i] = 0;
-    tUnit[(i+1)%3] = (norm[i] > 0) ? -libtess.normal.S_UNIT_Y_ : libtess.normal.S_UNIT_Y_;
-    tUnit[(i+2)%3] = (norm[i] > 0) ? libtess.normal.S_UNIT_X_ : -libtess.normal.S_UNIT_X_;
+    tUnit[(i + 1) % 3] = (norm[i] > 0) ? -libtess.normal.S_UNIT_Y_ : libtess.normal.S_UNIT_Y_;
+    tUnit[(i + 2) % 3] = (norm[i] > 0) ? libtess.normal.S_UNIT_X_ : -libtess.normal.S_UNIT_X_;
   }
 
   // Project the vertices onto the sweep plane
@@ -136,24 +139,26 @@ libtess.normal.projectPolygon = function(tess) {
   }
 };
 
+
 /**
  * Dot product.
  * @private
- * @param {Array.<number>} u [description]
- * @param {Array.<number>} v [description]
- * @return {number} [description]
+ * @param {Array.<number>} u [description].
+ * @param {Array.<number>} v [description].
+ * @return {number} [description].
  */
 libtess.normal.dot_ = function(u, v) {
-  return u[0]*v[0] + u[1]*v[1] + u[2]*v[2];
+  return u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
 };
+
 
 /**
  * Normalize vector v
  * @private
- * @param {Array.<number>} v [description]
+ * @param {Array.<number>} v [description].
  */
 libtess.normal.normalize_ = function(v) {
-  var len = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
+  var len = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
 
   libtess.assert(len > 0);
   len = Math.sqrt(len);
@@ -162,10 +167,11 @@ libtess.normal.normalize_ = function(v) {
   v[2] /= len;
 };
 
+
 /**
  * Returns the index of the longest component of vector v.
  * @private
- * @param {Array.<number>} v [description]
+ * @param {Array.<number>} v [description].
  * @return {number} The index of the longest component.
  */
 libtess.normal.longAxis_ = function(v) {
@@ -181,12 +187,13 @@ libtess.normal.longAxis_ = function(v) {
   return i;
 };
 
+
 /**
  * [computeNormal description]
  *
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {Array.<number>} norm [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {Array.<number>} norm [description].
  */
 libtess.normal.computeNormal_ = function(tess, norm) {
   // TODO(bckenny): better way to init these
@@ -238,10 +245,10 @@ libtess.normal.computeNormal_ = function(tess, norm) {
     d2[0] = v.coords[0] - v2.coords[0];
     d2[1] = v.coords[1] - v2.coords[1];
     d2[2] = v.coords[2] - v2.coords[2];
-    tNorm[0] = d1[1]*d2[2] - d1[2]*d2[1];
-    tNorm[1] = d1[2]*d2[0] - d1[0]*d2[2];
-    tNorm[2] = d1[0]*d2[1] - d1[1]*d2[0];
-    var tLen2 = tNorm[0]*tNorm[0] + tNorm[1]*tNorm[1] + tNorm[2]*tNorm[2];
+    tNorm[0] = d1[1] * d2[2] - d1[2] * d2[1];
+    tNorm[1] = d1[2] * d2[0] - d1[0] * d2[2];
+    tNorm[2] = d1[0] * d2[1] - d1[1] * d2[0];
+    var tLen2 = tNorm[0] * tNorm[0] + tNorm[1] * tNorm[1] + tNorm[2] * tNorm[2];
     if (tLen2 > maxLen2) {
       maxLen2 = tLen2;
       norm[0] = tNorm[0];
@@ -257,11 +264,12 @@ libtess.normal.computeNormal_ = function(tess, norm) {
   }
 };
 
+
 /**
  * [checkOrientation description]
  *
  * @private
- * @param {libtess.GluTesselator} tess [description]
+ * @param {libtess.GluTesselator} tess [description].
  */
 libtess.normal.checkOrientation_ = function(tess) {
   // When we compute the normal automatically, we choose the orientation
@@ -274,7 +282,7 @@ libtess.normal.checkOrientation_ = function(tess) {
     do {
       area += (e.org.s - e.dst().s) * (e.org.t + e.dst().t);
       e = e.lNext;
-    } while(e !== f.anEdge);
+    } while (e !== f.anEdge);
   }
 
   if (area < 0) {

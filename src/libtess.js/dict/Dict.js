@@ -35,18 +35,21 @@
 // require libtess
 /*global libtess */
 
+
 // TODO(bckenny): better typing for DictKey? actually libtess.ActiveRegion
 /** @typedef {Object} */
 libtess.dictKey;
 
 // TODO(bckenny): better typing for all of this, really. no need not to eg use tess as frame directly
 
+
+
 /**
  * [Dict description]
  *
  * @constructor
- * @param {Object} frame [description]
- * @param {function(Object, Object, Object): boolean} leq [description]
+ * @param {Object} frame [description].
+ * @param {function(Object, Object, Object): boolean} leq [description].
  */
 libtess.Dict = function(frame, leq) {
   /**
@@ -72,29 +75,31 @@ libtess.Dict = function(frame, leq) {
   this.leq_ = /** @type {function(Object, libtess.dictKey, libtess.dictKey): boolean} */(leq);
 };
 
+
 /**
  * [deleteDict description]
  */
 libtess.Dict.prototype.deleteDict = function() {
   // TODO(bckenny): unnecessary, I think.
   // for (var node = libtess.head.next; node !== libtess.head; node = node.next) {
-    // memFree(node);
+  // memFree(node);
   // }
   // memFree(dict);
-  
+
   // NOTE(bckenny): nulled at callsite (sweep.doneEdgeDict_)
 };
 
+
 /**
  * [insertBefore description]
- * @param {libtess.DictNode} node [description]
- * @param {Object} key [description]
- * @return {libtess.DictNode} [description]
+ * @param {libtess.DictNode} node [description].
+ * @param {Object} key [description].
+ * @return {libtess.DictNode} [description].
  */
 libtess.Dict.prototype.insertBefore = function(node, key) {
   do {
     node = node.prev;
-  } while(node.key !== null && !this.leq_(this.frame, node.key, key));
+  } while (node.key !== null && !this.leq_(this.frame, node.key, key));
 
   var newNode = new libtess.DictNode();
 
@@ -107,19 +112,21 @@ libtess.Dict.prototype.insertBefore = function(node, key) {
   return newNode;
 };
 
+
 /**
  * [insert description]
- * @param {Object} key [description]
- * @return {libtess.DictNode} [description]
+ * @param {Object} key [description].
+ * @return {libtess.DictNode} [description].
  */
 libtess.Dict.prototype.insert = function(key) {
   // NOTE(bckenny): from a macro in dict.h/dict-list.h
   return this.insertBefore(this.head, key);
 };
 
+
 /**
  * [deleteNode description]
- * @param {libtess.DictNode} node [description]
+ * @param {libtess.DictNode} node [description].
  */
 libtess.Dict.prototype.deleteNode = function(node) {
   // NOTE(bckenny): nulled at callsite (sweep.deleteRegion_)
@@ -128,36 +135,39 @@ libtess.Dict.prototype.deleteNode = function(node) {
   // memFree( node ); TODO(bckenny)
 };
 
+
 /**
  * Search returns the node with the smallest key greater than or equal
  * to the given key. If there is no such key, returns a node whose
  * key is null. Similarly, max(d).getSucc() has a null key, etc.
  *
- * @param {Object} key [description]
- * @return {libtess.DictNode} [description]
+ * @param {Object} key [description].
+ * @return {libtess.DictNode} [description].
  */
 libtess.Dict.prototype.search = function(key) {
   var node = this.head;
 
   do {
     node = node.next;
-  } while(node.key !== null && !this.leq_(this.frame, key, node.key));
+  } while (node.key !== null && !this.leq_(this.frame, key, node.key));
 
   return node;
 };
 
+
 /**
  * [getMin description]
- * @return {libtess.DictNode} [description]
+ * @return {libtess.DictNode} [description].
  */
 libtess.Dict.prototype.getMin = function() {
   // NOTE(bckenny): from a macro in dict.h/dict-list.h
   return this.head.next;
 };
 
+
 /**
  * [getMax description]
- * @return {libtess.DictNode} [description]
+ * @return {libtess.DictNode} [description].
  */
 libtess.Dict.prototype.getMax = function() {
   // NOTE(bckenny): from a macro in dict.h/dict-list.h

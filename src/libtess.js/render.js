@@ -46,6 +46,7 @@ libtess.render = function() {
 
 };
 
+
 /**
  * [SIGN_INCONSISTENT_ description]
  * @type {number}
@@ -53,6 +54,7 @@ libtess.render = function() {
  * @const
  */
 libtess.render.SIGN_INCONSISTENT_ = 2;
+
 
 /**
  * render.renderMesh(tess, mesh) takes a mesh and breaks it into triangle
@@ -62,18 +64,18 @@ libtess.render.SIGN_INCONSISTENT_ = 2;
  *
  * The rendering output is provided as callbacks (see the api).
  *
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.GluMesh} mesh [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.GluMesh} mesh [description].
  */
 libtess.render.renderMesh = function(tess, mesh) {
   // Make a list of separate triangles so we can render them all at once
   tess.lonelyTriList = null;
 
   var f;
-  for(f = mesh.fHead.next; f !== mesh.fHead; f = f.next) {
+  for (f = mesh.fHead.next; f !== mesh.fHead; f = f.next) {
     f.marked = false;
   }
-  for(f = mesh.fHead.next; f !== mesh.fHead; f = f.next) {
+  for (f = mesh.fHead.next; f !== mesh.fHead; f = f.next) {
     // We examine all faces in an arbitrary order.  Whenever we find
     // an unprocessed face F, we output a group of faces including F
     // whose size is maximum.
@@ -94,8 +96,8 @@ libtess.render.renderMesh = function(tess, mesh) {
  * contour for each face marked "inside". The rendering output is
  * provided as callbacks (see the api).
  *
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.GluMesh} mesh [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.GluMesh} mesh [description].
  */
 libtess.render.renderBoundary = function(tess, mesh) {
   for (var f = mesh.fHead.next; f !== mesh.fHead; f = f.next) {
@@ -113,6 +115,7 @@ libtess.render.renderBoundary = function(tess, mesh) {
   }
 };
 
+
 /**
  * render.renderCache(tess) takes a single contour and tries to render it
  * as a triangle fan. This handles convex polygons, as well as some
@@ -121,8 +124,8 @@ libtess.render.renderBoundary = function(tess, mesh) {
  * Returns true if the polygon was successfully rendered. The rendering
  * output is provided as callbacks (see the api).
  *
- * @param {libtess.GluTesselator} tess [description]
- * @return {boolean} [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @return {boolean} [description].
  */
 libtess.render.renderCache = function(tess) {
   if (tess.cacheCount < 3) {
@@ -150,7 +153,7 @@ libtess.render.renderCache = function(tess) {
   }
 
   // make sure we do the right thing for each winding rule
-  switch(tess.windingRule) {
+  switch (tess.windingRule) {
     case libtess.windingRule.GLU_TESS_WINDING_ODD:
     case libtess.windingRule.GLU_TESS_WINDING_NONZERO:
       break;
@@ -180,11 +183,11 @@ libtess.render.renderCache = function(tess) {
 
   tess.callVertexOrVertexData(tess.cache[v0].data);
   if (sign > 0) {
-    for (vc = v0+1; vc < vn; ++vc) {
+    for (vc = v0 + 1; vc < vn; ++vc) {
       tess.callVertexOrVertexData(tess.cache[vc].data);
     }
   } else {
-    for(vc = vn-1; vc > v0; --vc) {
+    for (vc = vn - 1; vc > v0; --vc) {
       tess.callVertexOrVertexData(tess.cache[vc].data);
     }
   }
@@ -196,18 +199,19 @@ libtess.render.renderCache = function(tess) {
 /**
  * Returns true if face has been marked temporarily.
  * @private
- * @param {libtess.GluFace} f [description]
- * @return {boolean} [description]
+ * @param {libtess.GluFace} f [description].
+ * @return {boolean} [description].
  */
 libtess.render.marked_ = function(f) {
   // NOTE(bckenny): originally macro
   return (!f.inside || f.marked);
 };
 
+
 /**
  * [freeTrail description]
  * @private
- * @param {libtess.GluFace} t [description]
+ * @param {libtess.GluFace} t [description].
  */
 libtess.render.freeTrail_ = function(t) {
   // NOTE(bckenny): originally macro
@@ -217,22 +221,23 @@ libtess.render.freeTrail_ = function(t) {
   }
 };
 
+
 /**
  * eOrig.lFace is the face we want to render. We want to find the size
  * of a maximal fan around eOrig.org. To do this we just walk around
  * the origin vertex as far as possible in both directions.
  * @private
- * @param {libtess.GluHalfEdge} eOrig [description]
- * @return {libtess.FaceCount} [description]
+ * @param {libtess.GluHalfEdge} eOrig [description].
+ * @return {libtess.FaceCount} [description].
  */
 libtess.render.maximumFan_ = function(eOrig) {
   // TODO(bckenny): probably have dest FaceCount passed in (see renderMaximumFaceGroup)
   var newFace = new libtess.FaceCount(0, null, libtess.render.renderFan_);
-  
+
   var trail = null;
   var e;
 
-  for(e = eOrig; !libtess.render.marked_(e.lFace); e = e.oNext) {
+  for (e = eOrig; !libtess.render.marked_(e.lFace); e = e.oNext) {
     // NOTE(bckenny): AddToTrail(e.lFace, trail) macro
     e.lFace.trail = trail;
     trail = e.lFace;
@@ -240,7 +245,7 @@ libtess.render.maximumFan_ = function(eOrig) {
 
     ++newFace.size;
   }
-  for(e = eOrig; !libtess.render.marked_(e.rFace()); e = e.oPrev()) {
+  for (e = eOrig; !libtess.render.marked_(e.rFace()); e = e.oPrev()) {
     // NOTE(bckenny): AddToTrail(e.rFace(), trail) macro
     e.rFace().trail = trail;
     trail = e.rFace();
@@ -254,6 +259,7 @@ libtess.render.maximumFan_ = function(eOrig) {
   return newFace;
 };
 
+
 /**
  * Here we are looking for a maximal strip that contains the vertices
  * eOrig.org, eOrig.dst(), eOrig.lNext.dst() (in that order or the
@@ -265,8 +271,8 @@ libtess.render.maximumFan_ = function(eOrig) {
  * We walk the strip starting on a side with an even number of triangles;
  * if both side have an odd number, we are forced to shorten one side.
  * @private
- * @param {libtess.GluHalfEdge} eOrig [description]
- * @return {libtess.FaceCount} [description]
+ * @param {libtess.GluHalfEdge} eOrig [description].
+ * @return {libtess.FaceCount} [description].
  */
 libtess.render.maximumStrip_ = function(eOrig) {
   // TODO(bckenny): probably have dest FaceCount passed in (see renderMaximumFaceGroup)
@@ -335,14 +341,15 @@ libtess.render.maximumStrip_ = function(eOrig) {
   return newFace;
 };
 
+
 /**
  * Render as many CCW triangles as possible in a fan starting from
  * edge "e". The fan *should* contain exactly "size" triangles
  * (otherwise we've goofed up somewhere).
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.GluHalfEdge} e [description]
- * @param {number} size [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.GluHalfEdge} e [description].
+ * @param {number} size [description].
  */
 libtess.render.renderFan_ = function(tess, e, size) {
   tess.callBeginOrBeginData(libtess.primitiveType.GL_TRIANGLE_FAN);
@@ -360,14 +367,15 @@ libtess.render.renderFan_ = function(tess, e, size) {
   tess.callEndOrEndData();
 };
 
+
 /**
  * Render as many CCW triangles as possible in a strip starting from
  * edge e. The strip *should* contain exactly "size" triangles
  * (otherwise we've goofed up somewhere).
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.GluHalfEdge} e [description]
- * @param {number} size [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.GluHalfEdge} e [description].
+ * @param {number} size [description].
  */
 libtess.render.renderStrip_ = function(tess, e, size) {
   tess.callBeginOrBeginData(libtess.primitiveType.GL_TRIANGLE_STRIP);
@@ -393,13 +401,14 @@ libtess.render.renderStrip_ = function(tess, e, size) {
   tess.callEndOrEndData();
 };
 
+
 /**
  * Just add the triangle to a triangle list, so we can render all
  * the separate triangles at once.
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.GluHalfEdge} e [description]
- * @param {number} size [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.GluHalfEdge} e [description].
+ * @param {number} size [description].
  */
 libtess.render.renderTriangle_ = function(tess, e, size) {
   libtess.assert(size === 1);
@@ -409,6 +418,7 @@ libtess.render.renderTriangle_ = function(tess, e, size) {
   e.lFace.marked = true;
 };
 
+
 /**
  * We want to find the largest triangle fan or strip of unmarked faces
  * which includes the given face fOrig. There are 3 possible fans
@@ -417,8 +427,8 @@ libtess.render.renderTriangle_ = function(tess, e, size) {
  * is to try all of these, and take the primitive which uses the most
  * triangles (a greedy approach).
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.GluFace} fOrig [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.GluFace} fOrig [description].
  */
 libtess.render.renderMaximumFaceGroup_ = function(tess, fOrig) {
   var e = fOrig.anEdge;
@@ -460,12 +470,13 @@ libtess.render.renderMaximumFaceGroup_ = function(tess, fOrig) {
   max.render(tess, max.eStart, max.size);
 };
 
+
 /**
  * Now we render all the separate triangles which could not be
  * grouped into a triangle fan or strip.
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {libtess.GluFace} head [description]
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {libtess.GluFace} head [description].
  */
 libtess.render.renderLonelyTriangles_ = function(tess, head) {
   // TODO(bckenny): edgeState needs to be boolean, but != on first call
@@ -476,7 +487,7 @@ libtess.render.renderLonelyTriangles_ = function(tess, head) {
 
   tess.callBeginOrBeginData(libtess.primitiveType.GL_TRIANGLES);
 
-  for(; f !== null; f = f.trail) {
+  for (; f !== null; f = f.trail) {
     // Loop once for each edge (there will always be 3 edges)
     var e = f.anEdge;
     do {
@@ -499,6 +510,7 @@ libtess.render.renderLonelyTriangles_ = function(tess, head) {
   tess.callEndOrEndData();
 };
 
+
 /**
  * If check==false, we compute the polygon normal and place it in norm[].
  * If check==true, we check that each triangle in the fan from v0 has a
@@ -507,10 +519,10 @@ libtess.render.renderLonelyTriangles_ = function(tess, head) {
  * are degenerate return 0; otherwise (no consistent orientation) return
  * render.SIGN_INCONSISTENT_.
  * @private
- * @param {libtess.GluTesselator} tess [description]
- * @param {Array.<number>} norm [description]
- * @param {boolean} check [description]
- * @return {number} int
+ * @param {libtess.GluTesselator} tess [description].
+ * @param {Array.<number>} norm [description].
+ * @param {boolean} check [description].
+ * @return {number} int.
  */
 libtess.render.computeNormal_ = function(tess, norm, check) {
   /* Find the polygon normal. It is important to get a reasonable
@@ -537,7 +549,7 @@ libtess.render.computeNormal_ = function(tess, norm, check) {
   var vc = v0 + 1;
   var vert0 = tess.cache[v0];
   var vertc = tess.cache[vc];
-  
+
   var xc = vertc.coords[0] - vert0.coords[0];
   var yc = vertc.coords[1] - vert0.coords[1];
   var zc = vertc.coords[2] - vert0.coords[2];
@@ -554,11 +566,11 @@ libtess.render.computeNormal_ = function(tess, norm, check) {
 
     // Compute (vp - v0) cross (vc - v0)
     var n = [0, 0, 0]; // TODO(bckenny): better init?
-    n[0] = yp*zc - zp*yc;
-    n[1] = zp*xc - xp*zc;
-    n[2] = xp*yc - yp*xc;
+    n[0] = yp * zc - zp * yc;
+    n[1] = zp * xc - xp * zc;
+    n[2] = xp * yc - yp * xc;
 
-    var dot = n[0]*norm[0] + n[1]*norm[1] + n[2]*norm[2];
+    var dot = n[0] * norm[0] + n[1] * norm[1] + n[2] * norm[2];
     if (!check) {
       // Reverse the contribution of back-facing triangles to get
       // a reasonable normal for self-intersecting polygons (see above)

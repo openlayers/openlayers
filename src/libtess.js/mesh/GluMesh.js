@@ -37,6 +37,8 @@
 // require libtess.GluVertex
 /*global libtess */
 
+
+
 /**
  * Creates a new mesh with no edges, no vertices,
  * and no loops (what we usually call a "face").
@@ -61,7 +63,7 @@ libtess.GluMesh = function() {
    * @type {libtess.GluHalfEdge}
    */
   this.eHead = new libtess.GluHalfEdge();
-  
+
   /**
    * and its symmetric counterpart
    * @type {libtess.GluHalfEdge}
@@ -72,6 +74,7 @@ libtess.GluMesh = function() {
   this.eHead.sym = this.eHeadSym;
   this.eHeadSym.sym = this.eHead;
 };
+
 
 // TODO(bckenny): #ifndef NDEBUG
 /**
@@ -85,7 +88,7 @@ libtess.GluMesh.prototype.checkMesh = function() {
   var fHead = this.fHead;
   var vHead = this.vHead;
   var eHead = this.eHead;
-  
+
   var e;
 
   // faces
@@ -101,7 +104,7 @@ libtess.GluMesh.prototype.checkMesh = function() {
       libtess.assert(e.oNext.sym.lNext === e);
       libtess.assert(e.lFace === f);
       e = e.lNext;
-    } while(e !== f.anEdge);
+    } while (e !== f.anEdge);
   }
   libtess.assert(f.prev === fPrev && f.anEdge === null && f.data === null);
 
@@ -118,7 +121,7 @@ libtess.GluMesh.prototype.checkMesh = function() {
       libtess.assert(e.oNext.sym.lNext === e);
       libtess.assert(e.org === v);
       e = e.oNext;
-    } while(e !== v.anEdge);
+    } while (e !== v.anEdge);
   }
   libtess.assert(v.prev === vPrev && v.anEdge === null && v.data === null);
 

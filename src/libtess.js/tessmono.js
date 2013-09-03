@@ -42,6 +42,7 @@ libtess.tessmono = function() {
 
 };
 
+
 /**
  * tessellateMonoRegion(face) tessellates a monotone region
  * (what else would it do??). The region must consist of a single
@@ -52,7 +53,7 @@ libtess.tessmono = function() {
  * Tessellation consists of adding interior edges (actually pairs of
  * half-edges), to split the region into non-overlapping triangles.
  * @private
- * @param {libtess.GluFace} face [description]
+ * @param {libtess.GluFace} face [description].
  */
 libtess.tessmono.tessellateMonoRegion_ = function(face) {
   /* The basic idea is explained in Preparata and Shamos (which I don''t
@@ -84,7 +85,7 @@ libtess.tessmono.tessellateMonoRegion_ = function(face) {
 
   for (; libtess.geom.vertLeq(up.dst(), up.org); up = up.lPrev()) { }
   for (; libtess.geom.vertLeq(up.org, up.dst()); up = up.lNext) { }
-  
+
   var lo = up.lPrev();
 
   var tempHalfEdge;
@@ -95,7 +96,7 @@ libtess.tessmono.tessellateMonoRegion_ = function(face) {
       // are CW, given that the upper and lower chains are truly monotone.
       while (lo.lNext !== up && (libtess.geom.edgeGoesLeft(lo.lNext) ||
           libtess.geom.edgeSign(lo.org, lo.dst(), lo.lNext.dst()) <= 0)) {
-        
+
         tempHalfEdge = libtess.mesh.connect(lo.lNext, lo);
         lo = tempHalfEdge.sym;
       }
@@ -105,7 +106,7 @@ libtess.tessmono.tessellateMonoRegion_ = function(face) {
       // lo.org is on the left. We can make CCW triangles from up.dst().
       while (lo.lNext !== up && (libtess.geom.edgeGoesRight(up.lPrev()) ||
           libtess.geom.edgeSign(up.dst(), up.org, up.lPrev().org) >= 0)) {
-  
+
         tempHalfEdge = libtess.mesh.connect(up, up.lPrev());
         up = tempHalfEdge.sym;
       }
@@ -122,12 +123,13 @@ libtess.tessmono.tessellateMonoRegion_ = function(face) {
   }
 };
 
+
 /**
  * tessellateInterior(mesh) tessellates each region of
  * the mesh which is marked "inside" the polygon. Each such region
  * must be monotone.
  *
- * @param {libtess.GluMesh} mesh [description]
+ * @param {libtess.GluMesh} mesh [description].
  */
 libtess.tessmono.tessellateInterior = function(mesh) {
   var next;
@@ -140,13 +142,14 @@ libtess.tessmono.tessellateInterior = function(mesh) {
   }
 };
 
+
 /**
  * discardExterior(mesh) zaps (ie. sets to null) all faces
  * which are not marked "inside" the polygon. Since further mesh operations
  * on null faces are not allowed, the main purpose is to clean up the
  * mesh so that exterior loops are not represented in the data structure.
  *
- * @param {libtess.GluMesh} mesh [description]
+ * @param {libtess.GluMesh} mesh [description].
  */
 libtess.tessmono.discardExterior = function(mesh) {
   var next;
@@ -159,6 +162,7 @@ libtess.tessmono.discardExterior = function(mesh) {
   }
 };
 
+
 /**
  * setWindingNumber(mesh, value, keepOnlyBoundary) resets the
  * winding numbers on all edges so that regions marked "inside" the
@@ -168,7 +172,7 @@ libtess.tessmono.discardExterior = function(mesh) {
  * If keepOnlyBoundary is true, it also deletes all edges which do not
  * separate an interior region from an exterior one.
  *
- * @param {libtess.GluMesh} mesh [description]
+ * @param {libtess.GluMesh} mesh [description].
  * @param {number} value Winding number to set (int).
  */
 libtess.tessmono.setWindingNumber = function(mesh, value, keepOnlyBoundary) {
@@ -179,7 +183,7 @@ libtess.tessmono.setWindingNumber = function(mesh, value, keepOnlyBoundary) {
     if (e.rFace().inside !== e.lFace.inside) {
       // This is a boundary edge (one side is interior, one is exterior).
       e.winding = (e.lFace.inside) ? value : -value;
-    
+
     } else {
       // Both regions are interior, or both are exterior.
       if (!keepOnlyBoundary) {

@@ -36,14 +36,16 @@
 // requre libtess.GluHalfEdge
 /*global libtess */
 
+
+
 /**
  * Each face has a pointer to the next and previous faces in the
  * circular list, and a pointer to a half-edge with this face as
  * the left face (null if this is the dummy header). There is also
  * a field "data" for client data.
  *
- * @param {libtess.GluFace=} opt_nextFace [description]
- * @param {libtess.GluFace=} opt_prevFace [description]
+ * @param {libtess.GluFace=} opt_nextFace [description].
+ * @param {libtess.GluFace=} opt_prevFace [description].
  * @constructor
  */
 libtess.GluFace = function(opt_nextFace, opt_prevFace) {
@@ -66,7 +68,7 @@ libtess.GluFace = function(opt_nextFace, opt_prevFace) {
    * @type {libtess.GluHalfEdge}
    */
   this.anEdge = null;
-  
+
   /**
    * room for client's data
    * @type {Object}
@@ -78,13 +80,13 @@ libtess.GluFace = function(opt_nextFace, opt_prevFace) {
    * @type {libtess.GluFace}
    */
   this.trail = null;
-  
+
   /**
    * Flag for conversion to strips.
    * @type {boolean}
    */
   this.marked = false;
-  
+
   /**
    * This face is in the polygon interior.
    * @type {boolean}

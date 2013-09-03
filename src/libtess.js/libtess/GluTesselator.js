@@ -47,6 +47,8 @@
 // TODO(bckenny): create more javascript-y API, e.g. make gluTessEndPolygon async,
 // don't require so many temp objects created
 
+
+
 /**
  * [GluTesselator description]
  *
@@ -97,13 +99,13 @@ libtess.GluTesselator = function() {
    */
   this.normal = [0, 0, 0];
   // TODO(bckenny): better way to init these arrays?
-  
+
   /**
    * unit vector in s-direction (debugging)
    * @type {Array.<number>}
    */
   this.sUnit = [0, 0, 0];
-  
+
   /**
    * unit vector in t-direction (debugging)
    * @type {Array.<number>}
@@ -270,7 +272,7 @@ libtess.GluTesselator = function() {
    */
   this.emptyCache = false;
   // TODO(bckenny): possibly rename to be clear it's a boolean
-  
+
   /**
    * number of cached vertices
    * @type {number}
@@ -289,6 +291,7 @@ libtess.GluTesselator = function() {
   }
 };
 
+
 /**
  * Destory the tesselator object. See README.
  */
@@ -298,10 +301,11 @@ libtess.GluTesselator.prototype.gluDeleteTess = function() {
   // memFree(tess); TODO(bckenny)
 };
 
+
 /**
  * Set properties for control over tesselation. See README.
- * @param {libtess.gluEnum} which [description]
- * @param {number|boolean} value [description]
+ * @param {libtess.gluEnum} which [description].
+ * @param {number|boolean} value [description].
  */
 libtess.GluTesselator.prototype.gluTessProperty = function(which, value) {
   // TODO(bckenny): split into more setters?
@@ -342,10 +346,11 @@ libtess.GluTesselator.prototype.gluTessProperty = function(which, value) {
   this.callErrorOrErrorData(libtess.gluEnum.GLU_INVALID_VALUE);
 };
 
+
 /**
  * Returns tessellator property
- * @param {libtess.gluEnum} which [description]
- * @return {number|boolean} [description]
+ * @param {libtess.gluEnum} which [description].
+ * @return {number|boolean} [description].
  */
 libtess.GluTesselator.prototype.gluGetTessProperty = function(which) {
   // TODO(bckenny): as above, split into more getters? and improve on switch statement
@@ -373,9 +378,10 @@ libtess.GluTesselator.prototype.gluGetTessProperty = function(which) {
     default:
       this.callErrorOrErrorData(libtess.gluEnum.GLU_INVALID_ENUM);
       break;
-   }
-   return false;
+  }
+  return false;
 };
+
 
 /**
  * Lets the user supply the polygon normal, if known.  All input data
@@ -386,9 +392,9 @@ libtess.GluTesselator.prototype.gluGetTessProperty = function(which) {
  * you know that all polygons lie in the x-y plane, call
  * "tess.gluTessNormal(0.0, 0.0, 1.0)" before rendering any polygons.
  *
- * @param {number} x [description]
- * @param {number} y [description]
- * @param {number} z [description]
+ * @param {number} x [description].
+ * @param {number} y [description].
+ * @param {number} z [description].
  */
 libtess.GluTesselator.prototype.gluTessNormal = function(x, y, z) {
   this.normal[0] = x;
@@ -396,17 +402,18 @@ libtess.GluTesselator.prototype.gluTessNormal = function(x, y, z) {
   this.normal[2] = z;
 };
 
+
 /**
  * Specify callbacks. See README. A null or undefined opt_fn removes current callback.
  *
- * @param {libtess.gluEnum} which [description]
- * @param {?function()=} opt_fn [description]
+ * @param {libtess.gluEnum} which [description].
+ * @param {?function()=} opt_fn [description].
  */
 libtess.GluTesselator.prototype.gluTessCallback = function(which, opt_fn) {
   var fn = !opt_fn ? null : opt_fn;
   // TODO(bckenny): better opt_fn typing?
 
-  switch(which) {
+  switch (which) {
     case libtess.gluEnum.GLU_TESS_BEGIN:
       this.callBegin_ = /** @type {function(libtess.primitiveType)} */ (fn);
       return;
@@ -473,12 +480,13 @@ libtess.GluTesselator.prototype.gluTessCallback = function(which, opt_fn) {
   }
 };
 
+
 /**
  * Specify a vertex and associated data. Must be within calls to
  * beginContour/endContour. See README.
  *
- * @param {Array.<number>} coords [description]
- * @param {Object} data [description]
+ * @param {Array.<number>} coords [description].
+ * @param {Object} data [description].
  */
 libtess.GluTesselator.prototype.gluTessVertex = function(coords, data) {
   var tooLarge = false;
@@ -523,9 +531,10 @@ libtess.GluTesselator.prototype.gluTessVertex = function(coords, data) {
   this.addVertex_(clamped, data);
 };
 
+
 /**
  * [gluTessBeginPolygon description]
- * @param {Object} data Client data for current polygon
+ * @param {Object} data Client data for current polygon.
  */
 libtess.GluTesselator.prototype.gluTessBeginPolygon = function(data) {
   this.requireState_(libtess.tessState.T_DORMANT);
@@ -537,6 +546,7 @@ libtess.GluTesselator.prototype.gluTessBeginPolygon = function(data) {
 
   this.polygonData_ = data;
 };
+
 
 /**
  * [gluTessBeginContour description]
@@ -555,6 +565,7 @@ libtess.GluTesselator.prototype.gluTessBeginContour = function() {
   }
 };
 
+
 /**
  * [gluTessEndContour description]
  */
@@ -562,6 +573,7 @@ libtess.GluTesselator.prototype.gluTessEndContour = function() {
   this.requireState_(libtess.tessState.T_IN_CONTOUR);
   this.state = libtess.tessState.T_IN_POLYGON;
 };
+
 
 /**
  * [gluTessEndPolygon description]
@@ -644,6 +656,7 @@ libtess.GluTesselator.prototype.gluTessEndPolygon = function() {
   this.mesh = null;
 };
 
+
 /**
  * Return the tessellator to its original dormant state.
  * @private
@@ -657,10 +670,11 @@ libtess.GluTesselator.prototype.makeDormant_ = function() {
   this.mesh = null;
 };
 
+
 /**
  * [requireState_ description]
  * @private
- * @param {libtess.tessState} state [description]
+ * @param {libtess.tessState} state [description].
  */
 libtess.GluTesselator.prototype.requireState_ = function(state) {
   if (this.state !== state) {
@@ -668,10 +682,11 @@ libtess.GluTesselator.prototype.requireState_ = function(state) {
   }
 };
 
+
 /**
  * [gotoState_ description]
  * @private
- * @param  {libtess.tessState} newState [description]
+ * @param  {libtess.tessState} newState [description].
  */
 libtess.GluTesselator.prototype.gotoState_ = function(newState) {
   while (this.state !== newState) {
@@ -711,11 +726,12 @@ libtess.GluTesselator.prototype.gotoState_ = function(newState) {
   }
 };
 
+
 /**
  * [addVertex_ description]
  * @private
- * @param {Array.<number>} coords [description]
- * @param {Object} data [description]
+ * @param {Array.<number>} coords [description].
+ * @param {Object} data [description].
  */
 libtess.GluTesselator.prototype.addVertex_ = function(coords, data) {
   var e = this.lastEdge_;
@@ -736,7 +752,7 @@ libtess.GluTesselator.prototype.addVertex_ = function(coords, data) {
   e.org.coords[0] = coords[0];
   e.org.coords[1] = coords[1];
   e.org.coords[2] = coords[2];
-  
+
   // The winding of an edge says how the winding number changes as we
   // cross from the edge''s right face to its left face.  We add the
   // vertices in such an order that a CCW contour will add +1 to
@@ -747,11 +763,12 @@ libtess.GluTesselator.prototype.addVertex_ = function(coords, data) {
   this.lastEdge_ = e;
 };
 
+
 /**
  * [cacheVertex_ description]
  * @private
- * @param {Array.<number>} coords [description]
- * @param {Object} data [description]
+ * @param {Array.<number>} coords [description].
+ * @param {Object} data [description].
  */
 libtess.GluTesselator.prototype.cacheVertex_ = function(coords, data) {
   var v = this.cache[this.cacheCount];
@@ -762,6 +779,7 @@ libtess.GluTesselator.prototype.cacheVertex_ = function(coords, data) {
   v.coords[2] = coords[2];
   ++this.cacheCount;
 };
+
 
 /**
  * [emptyCache_ description]
@@ -780,13 +798,14 @@ libtess.GluTesselator.prototype.emptyCache_ = function() {
   this.emptyCache = false;
 };
 
+
 // TODO(bckenny): all following conditional callbacks could be simplified
 // TODO(bckenny): using null for now, but may rework
 // TODO(bckenny): should add documentation that references in callback are volatile (or make a copy)
 // see README callback descriptions
 /**
  * [callBeginOrBeginData description]
- * @param {libtess.primitiveType} type [description]
+ * @param {libtess.primitiveType} type [description].
  */
 libtess.GluTesselator.prototype.callBeginOrBeginData = function(type) {
   if (this.callBeginData_) {
@@ -797,9 +816,10 @@ libtess.GluTesselator.prototype.callBeginOrBeginData = function(type) {
   }
 };
 
+
 /**
  * [callVertexOrVertexData description]
- * @param {Object} data [description]
+ * @param {Object} data [description].
  */
 libtess.GluTesselator.prototype.callVertexOrVertexData = function(data) {
   if (this.callVertexData_) {
@@ -810,9 +830,10 @@ libtess.GluTesselator.prototype.callVertexOrVertexData = function(data) {
   }
 };
 
+
 /**
  * [callEdgeFlagOrEdgeFlagData description]
- * @param {boolean} flag [description]
+ * @param {boolean} flag [description].
  */
 libtess.GluTesselator.prototype.callEdgeFlagOrEdgeFlagData = function(flag) {
   if (this.callEdgeFlagData_) {
@@ -822,6 +843,7 @@ libtess.GluTesselator.prototype.callEdgeFlagOrEdgeFlagData = function(flag) {
     this.callEdgeFlag_(flag);
   }
 };
+
 
 /**
  * [callEndOrEndData description]
@@ -835,12 +857,13 @@ libtess.GluTesselator.prototype.callEndOrEndData = function() {
   }
 };
 
+
 /**
  * [callCombineOrCombineData description]
- * @param {Array.<number>} coords [description]
- * @param {Array.<Object>} data [description]
- * @param {Array.<number>} weight [description]
- * @return {Object} Interpolated vertex
+ * @param {Array.<number>} coords [description].
+ * @param {Array.<Object>} data [description].
+ * @param {Array.<number>} weight [description].
+ * @return {Object} Interpolated vertex.
  */
 libtess.GluTesselator.prototype.callCombineOrCombineData =
     function(coords, data, weight) {
@@ -860,10 +883,11 @@ libtess.GluTesselator.prototype.callCombineOrCombineData =
   return interpData;
 };
 
+
 // TODO(bckenny): combine the enums in libtess
 /**
  * [callErrorOrErrorData description]
- * @param {(libtess.errorType|libtess.gluEnum)} errno [description]
+ * @param {(libtess.errorType|libtess.gluEnum)} errno [description].
  */
 libtess.GluTesselator.prototype.callErrorOrErrorData = function(errno) {
   if (this.callErrorData_) {

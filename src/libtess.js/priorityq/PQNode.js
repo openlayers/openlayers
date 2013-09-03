@@ -38,6 +38,8 @@
 // TODO(bckenny): maybe just have these created inline as literals
 // (or unboxed directly - PQHandle is just an array index number)
 
+
+
 /**
  * [PQNode description]
  * @constructor
@@ -50,14 +52,15 @@ libtess.PQNode = function() {
   this.handle = 0;
 };
 
+
 /**
  * Allocate a PQNode array of size size. If oldArray is not null, its contents
  * are copied to the beginning of the new array. The rest of the array is
  * filled with new PQNodes.
  *
- * @param {?Array.<libtess.PQNode>} oldArray [description]
- * @param {number} size [description]
- * @return {Array.<libtess.PQNode>} [description]
+ * @param {?Array.<libtess.PQNode>} oldArray [description].
+ * @param {number} size [description].
+ * @return {Array.<libtess.PQNode>} [description].
  */
 libtess.PQNode.realloc = function(oldArray, size) {
   var newArray = new Array(size);

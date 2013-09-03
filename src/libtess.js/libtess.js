@@ -32,13 +32,15 @@
  * @author Brendan Kenny
  */
 
+
 /**
  * Base namespace.
  */
 var libtess = libtess || {};
 
+
 /**
- * @define {boolean} [DEBUG description]
+ * @define {boolean} [DEBUG description].
  */
 libtess.DEBUG = false;
 
@@ -55,6 +57,7 @@ libtess.assert = function(condition, opt_message) {
   }
 };
 
+
 /**
  * [sweepDebugEvent description]
  * @param {libtess.GluTesselator} tess
@@ -64,6 +67,7 @@ libtess.sweepDebugEvent = function(tess) {
   // sweep event updated
 };
 
+
 /**
  * [GLU_TESS_MAX_COORD description]
  * @type {number}
@@ -71,6 +75,7 @@ libtess.sweepDebugEvent = function(tess) {
  */
 libtess.GLU_TESS_MAX_COORD = 1e150;
 // NOTE(bckenny): from glu.pl generator
+
 
 /**
  * [TRUE_PROJECT description]
@@ -80,6 +85,7 @@ libtess.GLU_TESS_MAX_COORD = 1e150;
  */
 libtess.TRUE_PROJECT = false;
 
+
 /**
  * We cache vertex data for single-contour polygons so that we can
  * try a quick-and-dirty decomposition first.
@@ -88,12 +94,14 @@ libtess.TRUE_PROJECT = false;
  */
 libtess.TESS_MAX_CACHE = 100;
 
+
 /**
  * [GLU_TESS_DEFAULT_TOLERANCE description]
  * @type {number}
  * @const
  */
 libtess.GLU_TESS_DEFAULT_TOLERANCE = 0.0;
+
 
 /**
  * The begin/end calls must be properly nested. We keep track of
@@ -107,6 +115,7 @@ libtess.tessState = {
   T_IN_POLYGON: 1,
   T_IN_CONTOUR: 2
 };
+
 
 /**
  * The input contours parition the plane into regions. A winding
@@ -139,6 +148,7 @@ libtess.windingRule = {
   GLU_TESS_WINDING_ABS_GEQ_TWO: 100134
 };
 
+
 /**
  * The type of primitive return from a "begin" callback. GL_LINE_LOOP is only
  * returned when GLU_TESS_BOUNDARY_ONLY is true. Values of enum match WebGL
@@ -155,6 +165,7 @@ libtess.primitiveType = {
   GL_TRIANGLE_FAN: 6
 };
 
+
 /**
  * The types of errors provided to error callback.
  * @enum {number}
@@ -169,6 +180,7 @@ libtess.errorType = {
   GLU_TESS_COORD_TOO_LARGE: 100155,
   GLU_TESS_NEED_COMBINE_CALLBACK: 100156
 };
+
 
 /**
  * GLU enums necessary for this project.
@@ -203,8 +215,10 @@ libtess.gluEnum = {
   GLU_TESS_COMBINE_DATA: 100111
 };
 
+
 /** @typedef {number} */
 libtess.PQHandle;
+
 
 // TODO(bckenny): better typing on key?
 /** @typedef {Object} */

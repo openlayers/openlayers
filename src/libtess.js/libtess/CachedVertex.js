@@ -35,6 +35,8 @@
 // require libtess
 /*global libtess */
 
+
+
 /**
  * Cached vertex data for single-countour polygons for quick-and-dirty
  * decomposition.
@@ -47,7 +49,7 @@ libtess.CachedVertex = function() {
    */
   this.coords = [0, 0, 0];
   // TODO(bckenny): better way to init?
-  
+
   /**
    * [data description]
    * @type {Object}

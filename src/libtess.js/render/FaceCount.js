@@ -39,15 +39,17 @@
 
 // TODO(bckenny): Used only in private functions of render.js
 
+
+
 /**
  * This structure remembers the information we need about a primitive
  * to be able to render it later, once we have determined which
  * primitive is able to use the most triangles.
   *
  * @constructor
- * @param {number} size [description]
- * @param {libtess.GluHalfEdge} eStart [description]
- * @param {!function(libtess.GluTesselator, libtess.GluHalfEdge, number)} renderFunction [description]
+ * @param {number} size [description].
+ * @param {libtess.GluHalfEdge} eStart [description].
+ * @param {!function(libtess.GluTesselator, libtess.GluHalfEdge, number)} renderFunction [description].
  */
 libtess.FaceCount = function(size, eStart, renderFunction) {
   /**
