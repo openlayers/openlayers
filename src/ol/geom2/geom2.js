@@ -2,6 +2,7 @@ goog.provide('ol.geom2');
 
 goog.require('goog.asserts');
 goog.require('ol.Extent');
+goog.require('ol.extent');
 
 
 /**
@@ -10,21 +11,19 @@ goog.require('ol.Extent');
  * @return {ol.Extent} Extent.
  */
 ol.geom2.getExtent = function(buf, dim) {
-  var extent = new Array(2 * dim);
-  var extentIndex = 0;
-  var i;
-  for (i = 0; i < dim; ++i) {
-    extent[extentIndex++] = Infinity;
-    extent[extentIndex++] = -Infinity;
+  var extent = ol.extent.createEmpty(); // TODO: make this accept a dimension
+  for (var i = 0; i < dim; ++i) {
+    extent[0][i] = Infinity;
+    extent[1][i] = -Infinity;
   }
   var bufArr = buf.getArray();
   buf.forEachRange(function(start, stop) {
-    var extentIndex, i, j;
+    var i, j, value;
     for (i = start; i < stop; i += dim) {
-      extentIndex = 0;
       for (j = 0; j < dim; ++j) {
-        extent[extentIndex++] = Math.min(extent[2 * j], bufArr[i + j]);
-        extent[extentIndex++] = Math.max(extent[2 * j + 1], bufArr[i + j]);
+        value = bufArr[i + j];
+        extent[0][j] = Math.min(extent[0][j], value);
+        extent[1][j] = Math.max(extent[1][j], value);
       }
     }
   });

@@ -13,22 +13,22 @@ describe('ol.geom2', function() {
 
     it('returns the expected extent', function() {
       var extent = ol.geom2.getExtent(buf, dim);
-      expect(extent).to.eql([0, 10, 1, 11]);
+      expect(extent).to.eql([[0, 1], [10, 11]]);
     });
 
     it('returns the expect extent in three dimensions', function() {
       var extent = ol.geom2.getExtent(buf, 3);
-      expect(extent).to.eql([0, 9, 1, 10, 2, 11]);
+      expect(extent).to.eql([[0, 1, 2], [9, 10, 11]]);
     });
 
     it('returns the expect extent in four dimensions', function() {
       var extent = ol.geom2.getExtent(buf, 4);
-      expect(extent).to.eql([0, 8, 1, 9, 2, 10, 3, 11]);
+      expect(extent).to.eql([[0, 1, 2, 3], [8, 9, 10, 11]]);
     });
 
     it('returns the expect extent in six dimensions', function() {
       var extent = ol.geom2.getExtent(buf, 6);
-      expect(extent).to.eql([0, 6, 1, 7, 2, 8, 3, 9, 4, 10, 5, 11]);
+      expect(extent).to.eql([[0, 1, 2, 3, 4, 5], [6, 7, 8, 9, 10, 11]]);
     });
 
   });
