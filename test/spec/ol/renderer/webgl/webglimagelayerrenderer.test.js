@@ -17,7 +17,7 @@ describe('ol.renderer.webgl.ImageLayer', function() {
       });
       var layer = new ol.layer.Image({
         source: new ol.source.Image({
-          extent: [0, 1, 0, 1]
+          extent: [[0, 0], [1, 1]]
         })
       });
       renderer = new ol.renderer.webgl.ImageLayer(map.getRenderer(), layer);
@@ -32,7 +32,7 @@ describe('ol.renderer.webgl.ImageLayer', function() {
 
       // image size is 1024, 768
       // image resolution is 10
-      imageExtent = [0, 10240, 0, 7680];
+      imageExtent = [[0, 0], [10240, 7680]];
     });
 
     afterEach(function() {
