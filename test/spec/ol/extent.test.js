@@ -3,6 +3,19 @@ goog.provide('ol.test.extent');
 
 describe('ol.extent', function() {
 
+  describe('clone', function() {
+
+    it('creates a copy of an extent', function() {
+      var extent = ol.extent.createOrUpdate(1, 2, 3, 4);
+      var clone = ol.extent.clone(extent);
+      expect(ol.extent.equals(extent, clone)).to.be(true);
+
+      ol.extent.extendCoordinate(extent, [10, 20]);
+      expect(ol.extent.equals(extent, clone)).to.be(false);
+    });
+
+  });
+
   describe('containsCoordinate', function() {
 
     describe('positive', function() {

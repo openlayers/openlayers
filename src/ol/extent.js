@@ -49,6 +49,17 @@ ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
 
 
 /**
+ * Creates a clone of an extent.
+ *
+ * @param {ol.Extent} extent Extent to clone.
+ * @return {ol.Extent} The clone.
+ */
+ol.extent.clone = function(extent) {
+  return [[extent[0][0], extent[0][1]], [extent[1][0], extent[1][1]]];
+};
+
+
+/**
  * Checks if the passed coordinate is contained or on the edge of the extent.
  *
  * @param {ol.Extent} extent Extent.
