@@ -224,6 +224,12 @@ ol.Map = function(options) {
    * @private
    * @type {Element}
    */
+  this.target_ = null;
+
+  /**
+   * @private
+   * @type {Element}
+   */
   this.overlayContainer_ = goog.dom.createDom(goog.dom.TagName.DIV,
       'ol-overlaycontainer');
   goog.events.listen(this.overlayContainer_, [
@@ -451,10 +457,11 @@ ol.Map.prototype.getRenderer = function() {
 
 /**
  * Get the element in which this map is rendered.
- * @return {Element|undefined} Target.
+ * @return {Element|string|undefined} Target.
  */
 ol.Map.prototype.getTarget = function() {
-  return /** @type {Element|undefined} */ (this.get(ol.MapProperty.TARGET));
+  return /** @type {Element|string|undefined} */ (
+      this.get(ol.MapProperty.TARGET));
 };
 goog.exportProperty(
     ol.Map.prototype,
@@ -743,15 +750,20 @@ ol.Map.prototype.handleSizeChanged_ = function() {
  * @private
  */
 ol.Map.prototype.handleTargetChanged_ = function() {
-  // target may be undefined, null or an Element. If it's not
-  // an Element we remove the viewport from the DOM. If it's
-  // an Element we append the viewport element to it.
+  // target may be undefined, null, a string or an Element.
+  // If it's a string we convert it to an Element before proceeding.
+  // If it's not now an Element we remove the viewport from the DOM.
+  // If it's an Element we append the viewport element to it.
   var target = this.getTarget();
-  if (!goog.dom.isElement(target)) {
+  if (goog.isDef(target)) {
+    this.target_ = goog.dom.getElement(target);
+  } else {
+    this.target_ = null;
+  }
+  if (goog.isNull(this.target_)) {
     goog.dom.removeNode(this.viewport_);
   } else {
-    goog.asserts.assert(goog.isDefAndNotNull(target));
-    goog.dom.appendChild(target, this.viewport_);
+    goog.dom.appendChild(this.target_, this.viewport_);
   }
   this.updateSize();
   // updateSize calls setSize, so no need to call this.render
@@ -1025,9 +1037,6 @@ goog.exportProperty(
  * @param {Element|string|undefined} target Target.
  */
 ol.Map.prototype.setTarget = function(target) {
-  if (goog.isDef(target)) {
-    target = goog.dom.getElement(target);
-  }
   this.set(ol.MapProperty.TARGET, target);
 };
 goog.exportProperty(
@@ -1065,12 +1074,11 @@ ol.Map.prototype.unfreezeRendering = function() {
  * third-party code changes the size of the map viewport.
  */
 ol.Map.prototype.updateSize = function() {
-  var target = this.getTarget();
-  if (goog.isDef(target)) {
-    var size = goog.style.getSize(target);
-    this.setSize([size.width, size.height]);
-  } else {
+  if (goog.isNull(this.target_)) {
     this.setSize(undefined);
+  } else {
+    var size = goog.style.getSize(this.target_);
+    this.setSize([size.width, size.height]);
   }
 };
 
