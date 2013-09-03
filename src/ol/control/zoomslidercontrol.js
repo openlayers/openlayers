@@ -275,7 +275,7 @@ ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
     }
   } else {
     goog.asserts.assert(goog.isDef(this.currentResolution_));
-    map.addPreRenderFunction(ol.animation.zoom({
+    map.beforeRender(ol.animation.zoom({
       resolution: this.currentResolution_,
       duration: ol.control.ZOOMSLIDER_ANIMATION_DURATION,
       easing: ol.easing.easeOut

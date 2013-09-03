@@ -2,8 +2,7 @@
 @exportProperty ol.Map.prototype.addControl
 @exportProperty ol.Map.prototype.addLayer
 @exportProperty ol.Map.prototype.addOverlay
-@exportProperty ol.Map.prototype.addPreRenderFunction
-@exportProperty ol.Map.prototype.addPreRenderFunctions
+@exportProperty ol.Map.prototype.beforeRender
 @exportProperty ol.Map.prototype.getControls
 @exportProperty ol.Map.prototype.getFeatureInfo
 @exportProperty ol.Map.prototype.getFeatures

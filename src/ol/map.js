@@ -388,27 +388,14 @@ ol.Map.prototype.addOverlay = function(overlay) {
 
 
 /**
- * Add a prerender function. This can be used for attaching animations to
- * be performed before setting the map's center.  The {@link ol.animation}
+ * Add functions to be called before rendering. This can be used for attaching
+ * animations before updating the map's view.  The {@link ol.animation}
  * namespace provides several static methods for creating prerender functions.
- * @param {ol.PreRenderFunction} preRenderFunction Pre-render function.
+ * @param {...ol.PreRenderFunction} var_args Any number of pre-render functions.
  */
-ol.Map.prototype.addPreRenderFunction = function(preRenderFunction) {
+ol.Map.prototype.beforeRender = function(var_args) {
   this.requestRenderFrame();
-  this.preRenderFunctions_.push(preRenderFunction);
-};
-
-
-/**
- * Add prerender functions. This can be used for attaching animations to
- * be performed before setting the map's center.  See {@link ol.animation}
- * @param {Array.<ol.PreRenderFunction>} preRenderFunctions
- *     Pre-render functions.
- */
-ol.Map.prototype.addPreRenderFunctions = function(preRenderFunctions) {
-  this.requestRenderFrame();
-  Array.prototype.push.apply(
-      this.preRenderFunctions_, preRenderFunctions);
+  Array.prototype.push.apply(this.preRenderFunctions_, arguments);
 };
 
 

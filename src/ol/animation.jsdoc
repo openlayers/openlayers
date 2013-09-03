@@ -1,11 +1,11 @@
 /**
- * The {ol.animation} static methods are designed to be used with the {@link ol.Map#addPreRenderFunction} and {@link ol.Map#addPreRenderFunctions} methods.  For example:
+ * The {ol.animation} static methods are designed to be used with the {@link ol.Map#beforeRender} method.  For example:
  *
  *     var map = new ol.Map({ ... });
  *     var zoom = ol.animation.zoom({
  *       resolution: map.getView().getResolution()
  *     });
- *     map.addPreRenderFunction(zoom);
+ *     map.beforeRender(zoom);
  *     map.getView().setResolution(map.getView().getResolution() * 2);
  *
  * @namespace ol.animation
