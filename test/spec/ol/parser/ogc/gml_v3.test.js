@@ -9,7 +9,7 @@ describe('ol.parser.gml_v3', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/envelope.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        expect(obj.bounds).to.eql([1, 3, 2, 4]);
+        expect(obj.bounds).to.eql([[1, 2], [3, 4]]);
         done();
       });
     });
