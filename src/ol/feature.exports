@@ -3,6 +3,4 @@
 @exportProperty ol.Feature.prototype.getFeatureId
 @exportProperty ol.Feature.prototype.getGeometry
 @exportProperty ol.Feature.prototype.set
-@exportProperty ol.Feature.prototype.setFeatureId
 @exportProperty ol.Feature.prototype.setGeometry
-@exportProperty ol.Feature.prototype.setSymbolizers
