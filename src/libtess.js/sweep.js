@@ -318,6 +318,7 @@ libtess.sweep.topRightRegion_ = function(reg) {
  * @param {libtess.GluTesselator} tess [description].
  * @param {libtess.ActiveRegion} regAbove [description].
  * @param {libtess.GluHalfEdge} eNewUp [description].
+ * @return {libtess.ActiveRegion} regNew.
  */
 libtess.sweep.addRegionBelow_ = function(tess, regAbove, eNewUp) {
   var regNew = new libtess.ActiveRegion();
