@@ -185,11 +185,11 @@ ol.MapBrowserEventHandler = function(map) {
       goog.events.EventType.TOUCHSTART,
       goog.events.EventType.MSPOINTERDOWN
     ], this.handleTouchStart_, false, this),
-    goog.events.listen(element, [
+    goog.events.listen(goog.global.document, [
       goog.events.EventType.TOUCHMOVE,
       goog.events.EventType.MSPOINTERMOVE
     ], this.handleTouchMove_, false, this),
-    goog.events.listen(element, [
+    goog.events.listen(goog.global.document, [
       goog.events.EventType.TOUCHEND,
       goog.events.EventType.MSPOINTERUP
     ], this.handleTouchEnd_, false, this)
@@ -312,10 +312,16 @@ ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handleTouchMove_ = function(browserEvent) {
-  this.dragged_ = true;
-  var newEvent = new ol.MapBrowserEvent(
-      ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
-  this.dispatchEvent(newEvent);
+  if (this.down_) {
+    // 'touchmove' events are dispatched only when this.down_ is set
+    // (set after a touch start) to prevent unwanted events when the
+    // mouse hover the page. This only happens with the IE pointer
+    // event system.
+    this.dragged_ = true;
+    var newEvent = new ol.MapBrowserEvent(
+        ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
+    this.dispatchEvent(newEvent);
+  }
 };
 
 
