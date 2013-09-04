@@ -52,7 +52,7 @@ goog.require('ol.View2D');
 goog.require('ol.ViewHint');
 goog.require('ol.control');
 goog.require('ol.extent');
-goog.require('ol.interaction.defaults');
+goog.require('ol.interaction');
 goog.require('ol.layer.LayerBase');
 goog.require('ol.layer.LayerGroup');
 goog.require('ol.proj');
