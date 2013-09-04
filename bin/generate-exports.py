@@ -354,7 +354,8 @@ def main(argv):
                 return_type = m.group('return_type')
                 function  = Function(name, object_literal, return_type, objects)
                 objects[name] = function
-                requires.add(name)
+                # The require should only be for the namespace, not the function
+                requires.add('.'.join(name.split('.')[0:-1]))
                 continue
             m = re.match(r'@exportSymbol\s+(?P<name>\S+)(?:\s+(?P<export_as>\S+))?\Z', line)
             if m:
