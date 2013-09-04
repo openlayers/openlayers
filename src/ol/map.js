@@ -50,7 +50,7 @@ goog.require('ol.TileQueue');
 goog.require('ol.View');
 goog.require('ol.View2D');
 goog.require('ol.ViewHint');
-goog.require('ol.control.defaults');
+goog.require('ol.control');
 goog.require('ol.extent');
 goog.require('ol.interaction.defaults');
 goog.require('ol.layer.LayerBase');

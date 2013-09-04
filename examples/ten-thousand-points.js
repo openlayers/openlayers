@@ -1,8 +1,8 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
+goog.require('ol.control');
 goog.require('ol.control.MousePosition');
-goog.require('ol.control.defaults');
 goog.require('ol.geom2.LineStringCollection');
 goog.require('ol.geom2.PointCollection');
 goog.require('ol.layer.TileLayer');
