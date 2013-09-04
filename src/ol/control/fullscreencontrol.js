@@ -80,7 +80,9 @@ ol.control.FullScreen.prototype.handleClick_ = function(browserEvent) {
   if (goog.dom.fullscreen.isFullScreen()) {
     goog.dom.fullscreen.exitFullScreen();
   } else {
-    var element = map.getTarget();
+    var target = map.getTarget();
+    goog.asserts.assert(goog.isDefAndNotNull(target));
+    var element = goog.dom.getElement(target);
     goog.asserts.assert(goog.isDefAndNotNull(element));
     if (this.keys_) {
       goog.dom.fullscreen.requestFullScreenWithKeys(element);
