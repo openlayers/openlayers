@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-from collections import defaultdict
-from itertools import ifilter
 from operator import attrgetter
 from optparse import OptionParser
 import re
