@@ -1,7 +1,12 @@
+goog.provide('ol.style');
 goog.provide('ol.style.Style');
 
 goog.require('goog.object');
 goog.require('ol.Feature');
+goog.require('ol.expr.Call');
+goog.require('ol.expr.Identifier');
+goog.require('ol.expr.Literal');
+goog.require('ol.expr.functions');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Literal');
@@ -65,30 +70,70 @@ ol.style.Style.prototype.createLiterals = function(feature) {
 /**
  * The default style.
  * @type {ol.style.Style}
+ * @private
  */
-ol.style.Style.defaults = new ol.style.Style({
-  rules: [
-    new ol.style.Rule({
-      filter: 'renderIntent("select")',
+ol.style.default_ = null;
+
+
+/**
+ * Get the default style.
+ * @return {ol.style.Style} The default style.
+ */
+ol.style.getDefault = function() {
+  if (goog.isNull(ol.style.default_)) {
+    ol.style.default_ = new ol.style.Style({
+      rules: [
+        new ol.style.Rule({
+          filter: new ol.expr.Call(
+              new ol.expr.Identifier(ol.expr.functions.RENDER_INTENT),
+              [new ol.expr.Literal('select')]),
+          symbolizers: [
+            new ol.style.Shape({
+              fill: new ol.style.Fill({
+                color: '#ffffff',
+                opacity: 0.7
+              }),
+              stroke: new ol.style.Stroke({
+                color: '#696969',
+                opacity: 0.9,
+                width: 2.0
+              })
+            }),
+            new ol.style.Fill({
+              color: '#ffffff',
+              opacity: 0.7
+            }),
+            new ol.style.Stroke({
+              color: '#696969',
+              opacity: 0.9,
+              width: 2.0
+            })
+          ]
+        })
+      ],
       symbolizers: [
         new ol.style.Shape({
-          fill: new ol.style.Fill(ol.style.FillDefaultsSelect),
-          stroke: new ol.style.Stroke(ol.style.StrokeDefaultsSelect)
+          fill: new ol.style.Fill(),
+          stroke: new ol.style.Stroke()
         }),
-        new ol.style.Fill(ol.style.FillDefaultsSelect),
-        new ol.style.Stroke(ol.style.StrokeDefaultsSelect)
+        new ol.style.Fill(),
+        new ol.style.Stroke()
       ]
-    })
-  ],
-  symbolizers: [
-    new ol.style.Shape({
-      fill: new ol.style.Fill(),
-      stroke: new ol.style.Stroke()
-    }),
-    new ol.style.Fill(),
-    new ol.style.Stroke()
-  ]
-});
+    });
+  }
+  return ol.style.default_;
+};
+
+
+/**
+ * Set the default style.
+ * @param {ol.style.Style} style The new default style.
+ * @return {ol.style.Style} The default style.
+ */
+ol.style.setDefault = function(style) {
+  ol.style.default_ = style;
+  return style;
+};
 
 
 /**

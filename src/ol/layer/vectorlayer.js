@@ -18,6 +18,7 @@ goog.require('ol.layer.Layer');
 goog.require('ol.proj');
 goog.require('ol.source.Vector');
 goog.require('ol.structs.RTree');
+goog.require('ol.style');
 goog.require('ol.style.Style');
 goog.require('ol.style.TextLiteral');
 
@@ -436,12 +437,11 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
     if (!goog.isNull(symbolizers)) {
       literals = ol.style.Style.createLiterals(symbolizers, feature);
     } else {
-      if (!goog.isNull(style)) {
-        // layer style second
-        literals = style.createLiterals(feature);
-      } else {
-        literals = ol.style.Style.defaults.createLiterals(feature);
+      // layer style second
+      if (goog.isNull(style)) {
+        style = ol.style.getDefault();
       }
+      literals = style.createLiterals(feature);
     }
     numLiterals = literals.length;
     for (j = 0; j < numLiterals; ++j) {
