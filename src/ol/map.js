@@ -224,12 +224,6 @@ ol.Map = function(options) {
    * @private
    * @type {Element}
    */
-  this.target_ = null;
-
-  /**
-   * @private
-   * @type {Element}
-   */
   this.overlayContainer_ = goog.dom.createDom(goog.dom.TagName.DIV,
       'ol-overlaycontainer');
   goog.events.listen(this.overlayContainer_, [
@@ -741,16 +735,19 @@ ol.Map.prototype.handleTargetChanged_ = function() {
   // If it's a string we convert it to an Element before proceeding.
   // If it's not now an Element we remove the viewport from the DOM.
   // If it's an Element we append the viewport element to it.
+
   var target = this.getTarget();
-  if (goog.isDef(target)) {
-    this.target_ = goog.dom.getElement(target);
-  } else {
-    this.target_ = null;
-  }
-  if (goog.isNull(this.target_)) {
+
+  /**
+   * @type {Element}
+   */
+  var targetElement = goog.isDef(target) ?
+      goog.dom.getElement(target) : null;
+
+  if (goog.isNull(targetElement)) {
     goog.dom.removeNode(this.viewport_);
   } else {
-    goog.dom.appendChild(this.target_, this.viewport_);
+    goog.dom.appendChild(targetElement, this.viewport_);
   }
   this.updateSize();
   // updateSize calls setSize, so no need to call this.render
@@ -1061,10 +1058,18 @@ ol.Map.prototype.unfreezeRendering = function() {
  * third-party code changes the size of the map viewport.
  */
 ol.Map.prototype.updateSize = function() {
-  if (goog.isNull(this.target_)) {
+  var target = this.getTarget();
+
+  /**
+   * @type {Element}
+   */
+  var targetElement = goog.isDef(target) ?
+      goog.dom.getElement(target) : null;
+
+  if (goog.isNull(targetElement)) {
     this.setSize(undefined);
   } else {
-    var size = goog.style.getSize(this.target_);
+    var size = goog.style.getSize(targetElement);
     this.setSize([size.width, size.height]);
   }
 };
