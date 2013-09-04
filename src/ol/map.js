@@ -56,7 +56,7 @@ goog.require('ol.interaction.defaults');
 goog.require('ol.layer.LayerBase');
 goog.require('ol.layer.LayerGroup');
 goog.require('ol.proj');
-goog.require('ol.proj.addCommonProjections');
+goog.require('ol.proj.common');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Map');
 goog.require('ol.renderer.canvas.SUPPORTED');
@@ -1217,7 +1217,7 @@ ol.RendererHints.createFromQueryData = function(opt_queryData) {
 };
 
 
-ol.proj.addCommonProjections();
+ol.proj.common.add();
 
 
 if (goog.DEBUG) {
