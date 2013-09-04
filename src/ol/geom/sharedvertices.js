@@ -3,7 +3,6 @@ goog.provide('ol.geom.SharedVertices');
 goog.require('goog.asserts');
 goog.require('ol.Coordinate');
 goog.require('ol.CoordinateArray');
-goog.require('ol.geom'); // TODO: remove this when #958 is addressed
 
 
 /**
