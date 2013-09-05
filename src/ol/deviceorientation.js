@@ -21,11 +21,8 @@ ol.DeviceOrientationProperty = {
 
 
 /**
- * @class
  * The ol.DeviceOrientation class provides access to HTML 5 DeviceOrientation
  * information and events.
- *
- * See http://dev.w3.org/geo/api/spec-source-orientation.
  *
  * Many new computers, and especially mobile phones
  * and tablets, provide hardware support for device orientation. Web
@@ -138,7 +135,7 @@ ol.DeviceOrientation.prototype.orientationChange_ = function(browserEvent) {
 
 
 /**
- * @return {number|undefined} alpha The alpha value of the DeviceOrientation,
+ * @return {number|undefined} The alpha value of the DeviceOrientation,
  * in radians.
  */
 ol.DeviceOrientation.prototype.getAlpha = function() {
@@ -152,7 +149,7 @@ goog.exportProperty(
 
 
 /**
- * @return {number|undefined} beta The beta value of the DeviceOrientation,
+ * @return {number|undefined} The beta value of the DeviceOrientation,
  * in radians.
  */
 ol.DeviceOrientation.prototype.getBeta = function() {
@@ -166,7 +163,7 @@ goog.exportProperty(
 
 
 /**
- * @return {number|undefined} gamma The gamma value of the DeviceOrientation,
+ * @return {number|undefined} The gamma value of the DeviceOrientation,
  * in radians.
  */
 ol.DeviceOrientation.prototype.getGamma = function() {
@@ -180,7 +177,7 @@ goog.exportProperty(
 
 
 /**
- * @return {number|undefined} heading The heading of the device relative to
+ * @return {number|undefined} The heading of the device relative to
  * north, in radians, normalizing for different browser behavior.
  */
 ol.DeviceOrientation.prototype.getHeading = function() {
@@ -195,7 +192,7 @@ goog.exportProperty(
 
 /**
  * Are we tracking the device's orientation?
- * @return {boolean} tracking.
+ * @return {boolean} The current tracking state, true if tracking is on.
  */
 ol.DeviceOrientation.prototype.getTracking = function() {
   return /** @type {boolean} */ (
@@ -225,7 +222,8 @@ ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
 
 
 /**
- * @param {boolean} tracking Enable or disable tracking.
+ * Enable or disable tracking of DeviceOrientation events.
+ * @param {boolean} tracking True to enable and false to disable tracking.
  */
 ol.DeviceOrientation.prototype.setTracking = function(tracking) {
   this.set(ol.DeviceOrientationProperty.TRACKING, tracking);
