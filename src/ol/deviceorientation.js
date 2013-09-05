@@ -21,8 +21,9 @@ ol.DeviceOrientationProperty = {
 
 
 /**
- * The ol.DeviceOrientation class provides access to HTML 5 DeviceOrientation
- * information and events.
+ * The ol.DeviceOrientation class provides access to DeviceOrientation
+ * information and events, see the [HTML 5 DeviceOrientation Specification](
+ * http://dev.w3.org/geo/api/spec-source-orientation) for more details.
  *
  * Many new computers, and especially mobile phones
  * and tablets, provide hardware support for device orientation. Web
