@@ -24,7 +24,7 @@ var webglMap = new ol.Map({
   renderer: ol.RendererHint.WEBGL,
   target: 'webglMap'
 });
-webglMap.bindTo('layers', domMap);
+webglMap.bindTo('layergroup', domMap);
 webglMap.bindTo('view', domMap);
 
 
@@ -32,5 +32,5 @@ var canvasMap = new ol.Map({
   renderer: ol.RendererHint.CANVAS,
   target: 'canvasMap'
 });
-canvasMap.bindTo('layers', domMap);
+canvasMap.bindTo('layergroup', domMap);
 canvasMap.bindTo('view', domMap);
