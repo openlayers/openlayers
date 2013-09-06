@@ -1,4 +1,5 @@
 goog.provide('ol.webgl');
+goog.provide('ol.webgl.SUPPORTED');
 goog.provide('ol.webgl.WebGLContextEventType');
 
 goog.require('goog.dom');
