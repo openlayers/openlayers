@@ -51,6 +51,12 @@ ol.renderer.dom.TileLayer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.renderedRevision_ = 0;
+
+  /**
+   * @private
    * @type {Object.<number, ol.renderer.dom.TileLayerZ_>}
    */
   this.tileLayerZs_ = {};
@@ -145,6 +151,19 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
 
   }
 
+  // If the tile source revision changes, we destroy the existing DOM structure
+  // so that a new one will be created.  It would be more efficient to modify
+  // the existing structure.
+  var tileLayerZ, tileLayerZKey;
+  if (this.renderedRevision_ != tileSource.getRevision()) {
+    for (tileLayerZKey in this.tileLayerZs_) {
+      tileLayerZ = this.tileLayerZs_[+tileLayerZKey];
+      goog.dom.removeNode(tileLayerZ.target);
+    }
+    this.tileLayerZs_ = {};
+    this.renderedRevision_ = tileSource.getRevision();
+  }
+
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
   goog.array.sort(zs);
@@ -152,8 +171,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   /** @type {Object.<number, boolean>} */
   var newTileLayerZKeys = {};
 
-  var iz, iziz;
-  var tileCoordKey, tileCoordOrigin, tileLayerZ, tileLayerZKey, tilesToDraw;
+  var iz, iziz, tileCoordKey, tileCoordOrigin, tilesToDraw;
   for (iz = 0, iziz = zs.length; iz < iziz; ++iz) {
     tileLayerZKey = zs[iz];
     if (tileLayerZKey in this.tileLayerZs_) {
