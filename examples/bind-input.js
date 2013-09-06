@@ -4,6 +4,20 @@ goog.require('ol.View2D');
 goog.require('ol.dom.Input');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.source.OSM');
+goog.require('ol.webgl.SUPPORTED');
+
+
+if (!ol.webgl.SUPPORTED) {
+  var inputs = document.getElementsByClassName('webgl');
+  for (var i = 0, len = inputs.length; i < len; i++) {
+    inputs[i].disabled = true;
+  }
+  var info = document.getElementById('no-webgl');
+  /**
+   * display warning message
+   */
+  info.style.display = '';
+}
 
 var layer = new ol.layer.TileLayer({
   source: new ol.source.OSM()
