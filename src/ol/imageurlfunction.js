@@ -5,8 +5,8 @@ goog.require('ol.Size');
 
 
 /**
- * @typedef {function(this:ol.source.Source, ol.Extent, ol.Size, ol.Projection):
- *     (string|undefined)}
+ * @typedef {function(this:ol.source.ImageSource, ol.Extent, ol.Size,
+ *     ol.Projection): (string|undefined)}
  */
 ol.ImageUrlFunctionType;
 
@@ -22,6 +22,7 @@ ol.ImageUrlFunction.createFromParamsFunction =
     function(baseUrl, params, paramsFunction) {
   return (
       /**
+       * @this {ol.source.ImageSource}
        * @param {ol.Extent} extent Extent.
        * @param {ol.Size} size Size.
        * @param {ol.Projection} projection Projection.
@@ -34,6 +35,7 @@ ol.ImageUrlFunction.createFromParamsFunction =
 
 
 /**
+ * @this {ol.source.ImageSource}
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Size.
  * @return {string|undefined} Image URL.
