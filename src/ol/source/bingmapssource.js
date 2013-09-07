@@ -88,6 +88,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                     .replace('{culture}', culture);
                 return (
                     /**
+                     * @this {ol.source.BingMaps}
                      * @param {ol.TileCoord} tileCoord Tile coordinate.
                      * @param {ol.Projection} projection Projection.
                      * @return {string|undefined} Tile URL.
