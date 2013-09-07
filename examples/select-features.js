@@ -1,8 +1,8 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
+goog.require('ol.interaction');
 goog.require('ol.interaction.Select');
-goog.require('ol.interaction.defaults');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.ogc.GML_v3');

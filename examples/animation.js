@@ -1,9 +1,7 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
-goog.require('ol.animation.bounce');
-goog.require('ol.animation.pan');
-goog.require('ol.animation.rotate');
+goog.require('ol.animation');
 goog.require('ol.easing');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.proj');

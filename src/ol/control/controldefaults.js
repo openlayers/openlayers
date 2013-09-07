@@ -1,4 +1,4 @@
-goog.provide('ol.control.defaults');
+goog.provide('ol.control');
 
 goog.require('ol.Collection');
 goog.require('ol.control.Attribution');

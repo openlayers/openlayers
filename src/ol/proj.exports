@@ -13,10 +13,11 @@
 @exportProperty ol.ProjectionUnits.METERS
 
 @exportSymbol ol.proj.addProjection
-@exportSymbol ol.proj.addCommonProjections
 @exportSymbol ol.proj.get
 @exportSymbol ol.proj.getTransform
 @exportSymbol ol.proj.getTransformFromProjections
 @exportSymbol ol.proj.transform
 @exportSymbol ol.proj.transformWithProjections
 @exportSymbol ol.proj.configureProj4jsProjection
+
+@exportSymbol ol.proj.common.add
