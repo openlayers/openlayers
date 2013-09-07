@@ -94,7 +94,6 @@ ol.source.WMTS = function(options) {
             }
             var url = template;
             for (var key in localContext) {
-              // FIXME: should we filter properties with hasOwnProperty?
               url = url.replace('{' + key + '}', localContext[key])
                   .replace('%7B' + key + '%7D', localContext[key]);
             }
