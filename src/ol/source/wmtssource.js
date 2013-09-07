@@ -75,10 +75,12 @@ ol.source.WMTS = function(options) {
   function createFromWMTSTemplate(template) {
     return (
         /**
+         * @this {ol.source.WMTS}
          * @param {ol.TileCoord} tileCoord Tile coordinate.
+         * @param {ol.Projection} projection Projection.
          * @return {string|undefined} Tile URL.
          */
-        function(tileCoord) {
+        function(tileCoord, projection) {
           if (goog.isNull(tileCoord)) {
             return undefined;
           } else {
@@ -122,7 +124,13 @@ ol.source.WMTS = function(options) {
   var tmpExtent = ol.extent.createEmpty();
   var tmpTileCoord = new ol.TileCoord(0, 0, 0);
   tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
-      function(tileCoord, projection) {
+      /**
+       * @param {ol.TileCoord} tileCoord Tile coordinate.
+       * @param {ol.Projection} projection Projection.
+       * @param {ol.TileCoord=} opt_tileCoord Tile coordinate.
+       * @return {ol.TileCoord} Tile coordinate.
+       */
+      function(tileCoord, projection, opt_tileCoord) {
         var tileGrid = this.getTileGrid();
         goog.asserts.assert(!goog.isNull(tileGrid));
         if (tileGrid.getResolutions().length <= tileCoord.z) {
