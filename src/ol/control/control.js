@@ -45,10 +45,6 @@ ol.control.Control = function(options) {
    */
   this.listenerKeys = [];
 
-  if (goog.isDef(options.map)) {
-    this.setMap(options.map);
-  }
-
 };
 goog.inherits(ol.control.Control, ol.Object);
 
@@ -77,7 +73,7 @@ ol.control.Control.prototype.getMap = function() {
  * UI.
  * @param {ol.MapEvent} mapEvent Map event.
  */
-ol.control.Control.prototype.handleMapPostrender = function(mapEvent) {};
+ol.control.Control.prototype.handleMapPostrender = goog.nullFunction;
 
 
 /**
@@ -99,8 +95,7 @@ ol.control.Control.prototype.setMap = function(map) {
     var target = goog.isDef(this.target_) ?
         this.target_ : map.getOverlayContainer();
     goog.dom.appendChild(target, this.element);
-    if (this.handleMapPostrender !==
-        ol.control.Control.prototype.handleMapPostrender) {
+    if (this.handleMapPostrender !== goog.nullFunction) {
       this.listenerKeys.push(goog.events.listen(map,
           ol.MapEventType.POSTRENDER, this.handleMapPostrender, false, this));
     }

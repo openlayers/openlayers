@@ -1,17 +1,18 @@
 goog.provide('ol.geom.LineString');
 
 goog.require('goog.asserts');
+goog.require('ol.CoordinateArray');
+goog.require('ol.geom');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SharedVertices');
-goog.require('ol.geom.VertexArray');
 
 
 
 /**
  * @constructor
  * @extends {ol.geom.Geometry}
- * @param {ol.geom.VertexArray} coordinates Vertex array (e.g.
+ * @param {ol.CoordinateArray} coordinates Vertex array (e.g.
  *    [[x0, y0], [x1, y1]]).
  * @param {ol.geom.SharedVertices=} opt_shared Shared vertices.
  */
@@ -67,7 +68,7 @@ ol.geom.LineString.prototype.get = function(index, dim) {
 
 /**
  * @inheritDoc
- * @return {ol.geom.VertexArray} Coordinates array.
+ * @return {ol.CoordinateArray} Coordinates array.
  */
 ol.geom.LineString.prototype.getCoordinates = function() {
   var count = this.getCount();

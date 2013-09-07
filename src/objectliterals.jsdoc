@@ -1,4 +1,11 @@
 /**
+ * @typedef {Object} ol.AttributionOptions
+ * @property {string} html HTML markup for this attribution.
+ * @property {Object.<string, Array.<ol.TileRange>>|undefined} tileRanges
+ *     Tile ranges (FOR INTERNAL USE ONLY).
+ */
+
+/**
  * @typedef {Object} ol.DeviceOrientationOptions
  * @property {boolean|undefined} tracking Tracking.
  */
@@ -47,6 +54,8 @@
  *     Controls initially added to the map.
  * @property {ol.Collection|undefined} interactions Interactions.
  * @property {Array.<ol.layer.LayerBase>|ol.Collection|undefined} layers Layers.
+ * @property {ol.Collection|Array.<ol.Overlay>|undefined} overlays
+ *     Overlays initially added to the map.
  * @property {ol.RendererHint|undefined} renderer Renderer.
  * @property {Array.<ol.RendererHint>|undefined} renderers Renderers.
  * @property {Element|string|undefined} target The container for the map.
@@ -58,7 +67,6 @@
  * Object literal with config options for the overlay.
  * @typedef {Object} ol.OverlayOptions
  * @property {Element|undefined} element The overlay element.
- * @property {ol.Map|undefined} map The map to overlay onto.
  * @property {ol.Coordinate|undefined} position The overlay position in map
  *     projection.
  * @property {ol.OverlayPositioning|undefined} positioning Positioning.
@@ -119,31 +127,31 @@
 
 /**
  * @typedef {Object} ol.animation.BounceOptions
- * @property {number} resolution Resolution.
+ * @property {number} resolution The resolution to start the bounce from, typically `map.getView().getResolution()`.
  * @property {number|undefined} start The start time of the animation. Default is immediately.
- * @property {number|undefined} duration The duration of the animation in milliseconds.
- * @property {function(number):number|undefined} easing Easing function.
+ * @property {number|undefined} duration The duration of the animation in milliseconds. Default is 1000.
+ * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.inAndOut`
  */
 
 /**
  * @typedef {Object} ol.animation.PanOptions
- * @property {ol.Coordinate} source Source.
+ * @property {ol.Coordinate} source The location to start panning from, typically `map.getView().getCenter()`.
  * @property {number|undefined} start The start time of the animation. Default is immediately.
- * @property {number|undefined} duration The duration of the animation in milliseconds.
- * @property {function(number):number|undefined} easing Easing function.
+ * @property {number|undefined} duration The duration of the animation in milliseconds. Default is 1000.
+ * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.inAndOut`
  */
 
 /**
  * @typedef {Object} ol.animation.RotateOptions
- * @property {number} rotation Rotation.
+ * @property {number} rotation The rotation to apply, in radians.
  * @property {number|undefined} start The start time of the animation. Default is immediately.
- * @property {number|undefined} duration The duration of the animation in milliseconds.
- * @property {function(number):number|undefined} easing Easing function.
+ * @property {number|undefined} duration The duration of the animation in milliseconds.  Default is 1000.
+ * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.inAndOut`
  */
 
 /**
  * @typedef {Object} ol.animation.ZoomOptions
- * @property {number} resolution number Resolution.
+ * @property {number} resolution number The resolution to begin zooming from, typically `map.getView().getResolution()`.
  * @property {number|undefined} start The start time of the animation. Default is immediately.
  * @property {number|undefined} duration The duration of the animation in milliseconds.
  * @property {function(number):number|undefined} easing Easing function.
@@ -152,14 +160,12 @@
 /**
  * @typedef {Object} ol.control.AttributionOptions
  * @property {string|undefined} className CSS class name. Default is 'ol-attribution'.
- * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
  */
 
  /**
   * @typedef {Object} ol.control.ControlOptions
   * @property {Element|undefined} element Element.
-  * @property {ol.Map|undefined} map Map.
   * @property {Element|undefined} target Target.
   */
 
@@ -178,14 +184,12 @@
  * @typedef {Object} ol.control.FullScreenOptions
  * @property {string|undefined} className CSS class name. Default is 'ol-full-screen'.
  * @property {boolean|undefined} keys Full keyboard access.
- * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
  */
 
 /**
  * @typedef {Object} ol.control.LogoOptions
  * @property {string|undefined} className CSS class name. Default is 'ol-logo'.
- * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
  */
 
@@ -194,7 +198,6 @@
  * @property {string|undefined} className CSS class name. Default is 'ol-mouse-position'.
  * @property {ol.CoordinateFormatType|undefined} coordinateFormat Coordinate
  *     format.
- * @property {ol.Map|undefined} map Map.
  * @property {ol.ProjectionLike} projection Projection.
  * @property {Element|undefined} target Target.
  * @property {string|undefined} undefinedHTML Markup for undefined coordinates.
@@ -204,7 +207,6 @@
 /**
  * @typedef {Object} ol.control.ScaleLineOptions
  * @property {string|undefined} className CSS Class name. Default is 'ol-scale-line'.
- * @property {ol.Map|undefined} map Map.
  * @property {number|undefined} minWidth Minimum width in pixels.
  * @property {Element|undefined} target Target.
  * @property {ol.control.ScaleLineUnits|undefined} units Units.
@@ -214,14 +216,12 @@
  * @typedef {Object} ol.control.ZoomOptions
  * @property {string|undefined} className CSS class name. Default is 'ol-zoom'.
  * @property {number|undefined} delta The zoom delta applied on each click.
- * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
  */
 
 /**
  * @typedef {Object} ol.control.ZoomSliderOptions
  * @property {string|undefined} className CSS class name.
- * @property {ol.Map|undefined} map Map.
  * @property {number|undefined} maxResolution Maximum resolution.
  * @property {number|undefined} minResolution Minimum resolution.
  */
@@ -229,7 +229,6 @@
 /**
  * @typedef {Object} ol.control.ZoomToExtentOptions
  * @property {string|undefined} className Class name.
- * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
  * @property {ol.Extent|undefined} extent The extent to zoom to. If
  *     undefined the validity extent of the view projection is used.
@@ -244,7 +243,7 @@
 /**
  * @typedef {Object} ol.interaction.DragPanOptions
  * @property {ol.Kinetic|undefined} kinetic Kinetic.
- * @property {ol.interaction.ConditionType|undefined} condition Conditon.
+ * @property {ol.interaction.ConditionType|undefined} condition Condition.
  */
 
 /**
@@ -293,6 +292,13 @@
  * @typedef {Object} ol.interaction.KeyboardZoomOptions
  * @property {ol.interaction.ConditionType|undefined} condition Condition.
  * @property {number|undefined} delta Delta.
+ */
+
+/**
+ * @typedef {Object} ol.interaction.SelectOptions
+ * @property {ol.interaction.ConditionType|undefined} condition Condition.
+ * @property {undefined|function(ol.layer.Layer):boolean} layerFilter Filter
+ *     function to restrict selection to a subset of layers.
  */
 
 /**

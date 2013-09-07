@@ -37,9 +37,9 @@ geolocation.on('change', function() {
 });
 
 var marker = new ol.Overlay({
-  map: map,
   element: /** @type {Element} */ ($('<i/>').addClass('icon-flag').get(0))
 });
+map.addOverlay(marker);
 // bind the marker position to the device location.
 marker.bindTo('position', geolocation);
 

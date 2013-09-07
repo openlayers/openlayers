@@ -34,14 +34,6 @@ ol.control.MousePositionProperty = {
  * shown in the top right corner of the map but this can be changed by using
  * a css selector .ol-mouse-position.
  *
- * Example:
- *
- *     var map = new ol.Map({
- *       controls: ol.control.defaults({}, [
- *         new ol.control.MousePosition({projection: ol.proj.get('EPSG:4326')})
- *       ]),
- *       ...
- *
  * @constructor
  * @extends {ol.control.Control}
  * @param {ol.control.MousePositionOptions=} opt_options Mouse position options.
@@ -59,7 +51,6 @@ ol.control.MousePosition = function(opt_options) {
 
   goog.base(this, {
     element: element,
-    map: options.map,
     target: options.target
   });
 

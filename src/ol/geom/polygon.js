@@ -1,12 +1,12 @@
 goog.provide('ol.geom.Polygon');
 
 goog.require('goog.asserts');
+goog.require('ol.CoordinateArray');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.SharedVertices');
-goog.require('ol.geom.VertexArray');
 
 
 
@@ -19,7 +19,7 @@ goog.require('ol.geom.VertexArray');
  *
  * @constructor
  * @extends {ol.geom.Geometry}
- * @param {Array.<ol.geom.VertexArray>} coordinates Array of rings.  First
+ * @param {Array.<ol.CoordinateArray>} coordinates Array of rings.  First
  *    is outer, any remaining are inner.
  * @param {ol.geom.SharedVertices=} opt_shared Shared vertices.
  */
@@ -89,7 +89,7 @@ ol.geom.Polygon.prototype.getBounds = function() {
 
 
 /**
- * @return {Array.<ol.geom.VertexArray>} Coordinates array.
+ * @return {Array.<ol.CoordinateArray>} Coordinates array.
  */
 ol.geom.Polygon.prototype.getCoordinates = function() {
   var count = this.rings.length;

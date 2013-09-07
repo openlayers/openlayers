@@ -2,6 +2,7 @@ goog.provide('ol.Feature');
 
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
+goog.require('ol.layer.VectorLayerRenderIntent');
 
 
 
@@ -33,6 +34,12 @@ ol.Feature = function(opt_values) {
    * @private
    */
   this.geometryName_;
+
+  /**
+   * The render intent for this feature.
+   * @type {ol.layer.VectorLayerRenderIntent|string}
+   */
+  this.renderIntent = ol.layer.VectorLayerRenderIntent.DEFAULT;
 
   /**
    * @type {Array.<ol.style.Symbolizer>}
@@ -109,7 +116,7 @@ ol.Feature.prototype.set = function(key, value) {
  * Set the feature's commonly used identifier. This identifier is usually the
  * unique id in the source store.
  *
- * @param {string} featureId The feature's identifier.
+ * @param {string|undefined} featureId The feature's identifier.
  */
 ol.Feature.prototype.setFeatureId = function(featureId) {
   this.featureId_ = featureId;

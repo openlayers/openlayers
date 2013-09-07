@@ -36,8 +36,8 @@ var data = {
 var style = new ol.style.Style({
   symbolizers: [
     new ol.style.Icon({
-      url: 'icon.png',
-      yOffset: -32
+      url: 'data/icon.png',
+      yOffset: -22
     })
   ]
 });
@@ -63,9 +63,9 @@ var map = new ol.Map({
 var element = document.getElementById('popup');
 
 var popup = new ol.Overlay({
-  map: map,
   element: element
 });
+map.addOverlay(popup);
 
 
 map.on('click', function(evt) {

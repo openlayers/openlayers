@@ -41,7 +41,6 @@ ol.control.Attribution = function(opt_options) {
 
   goog.base(this, {
     element: element,
-    map: options.map,
     target: options.target
   });
 

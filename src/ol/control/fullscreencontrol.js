@@ -17,14 +17,6 @@ goog.require('ol.css');
  * Provides a button that when clicked fills up the full screen with the map.
  * When in full screen mode, a close button is shown to exit full screen mode.
  *
- * Example:
- *
- *     var map = new ol.Map({
- *       controls: ol.control.defaults({}, [
- *         new ol.control.FullScreen()
- *       ]),
- *       ...
- *
  * @constructor
  * @extends {ol.control.Control}
  * @param {ol.control.FullScreenOptions=} opt_options Options.
@@ -59,7 +51,6 @@ ol.control.FullScreen = function(opt_options) {
 
   goog.base(this, {
     element: element,
-    map: options.map,
     target: options.target
   });
 
@@ -89,7 +80,9 @@ ol.control.FullScreen.prototype.handleClick_ = function(browserEvent) {
   if (goog.dom.fullscreen.isFullScreen()) {
     goog.dom.fullscreen.exitFullScreen();
   } else {
-    var element = map.getTarget();
+    var target = map.getTarget();
+    goog.asserts.assert(goog.isDefAndNotNull(target));
+    var element = goog.dom.getElement(target);
     goog.asserts.assert(goog.isDefAndNotNull(element));
     if (this.keys_) {
       goog.dom.fullscreen.requestFullScreenWithKeys(element);

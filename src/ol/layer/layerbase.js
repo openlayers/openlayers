@@ -1,9 +1,9 @@
-goog.require('goog.events');
-goog.require('goog.events.EventType');
 goog.provide('ol.layer.LayerBase');
 goog.provide('ol.layer.LayerProperty');
 goog.provide('ol.layer.LayerState');
 
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol.Object');

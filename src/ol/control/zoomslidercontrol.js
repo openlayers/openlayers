@@ -33,9 +33,7 @@ ol.control.ZOOMSLIDER_ANIMATION_DURATION = 200;
  *
  * Example:
  *
- *     var zoomslider = new ol.control.ZoomSlider({
- *       map: map
- *     });
+ *     map.addControl(new ol.control.ZoomSlider());
  *
  * @constructor
  * @extends {ol.control.Control}
@@ -91,8 +89,7 @@ ol.control.ZoomSlider = function(opt_options) {
   ], this.handleContainerClick_, false, this);
 
   goog.base(this, {
-    element: element,
-    map: options.map
+    element: element
   });
 };
 goog.inherits(ol.control.ZoomSlider, ol.control.Control);
@@ -278,7 +275,7 @@ ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
     }
   } else {
     goog.asserts.assert(goog.isDef(this.currentResolution_));
-    map.addPreRenderFunction(ol.animation.zoom({
+    map.beforeRender(ol.animation.zoom({
       resolution: this.currentResolution_,
       duration: ol.control.ZOOMSLIDER_ANIMATION_DURATION,
       easing: ol.easing.easeOut

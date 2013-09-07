@@ -1,4 +1,5 @@
 goog.provide('ol.canvas');
+goog.provide('ol.canvas.SUPPORTED');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');

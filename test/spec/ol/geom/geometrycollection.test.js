@@ -55,6 +55,23 @@ describe('ol.geom.GeometryCollection', function() {
 
   });
 
+  describe('#clone()', function() {
+
+    it('has a working clone method', function() {
+      var point = new ol.geom.Point([10, 20]);
+      var line = new ol.geom.LineString([[10, 20], [30, 40]]);
+      var poly = new ol.geom.Polygon([outer, inner1, inner2]);
+      var multi = new ol.geom.GeometryCollection([point, line, poly]);
+      var clone = multi.clone();
+      expect(clone).to.not.be(multi);
+      var components = clone.components;
+      expect(components[0]).to.eql([10, 20]);
+      expect(components[1]).to.eql([[10, 20], [30, 40]]);
+      expect(components[2]).to.eql([outer, inner1, inner2]);
+    });
+
+  });
+
   describe('#getBounds()', function() {
 
     it('returns the bounding extent', function() {
