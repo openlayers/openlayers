@@ -127,6 +127,6 @@ goog.require('goog.dom');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.RendererHints');
+goog.require('ol.interaction');
 goog.require('ol.interaction.DoubleClickZoom');
 goog.require('ol.interaction.MouseWheelZoom');
-goog.require('ol.interaction.defaults');

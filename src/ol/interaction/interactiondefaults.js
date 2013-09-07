@@ -1,4 +1,4 @@
-goog.provide('ol.interaction.defaults');
+goog.provide('ol.interaction');
 
 goog.require('ol.Collection');
 goog.require('ol.Kinetic');

@@ -460,17 +460,23 @@ def build_check_requires_timestamp(t):
             self.children = {}
 
         def _build_re(self, key):
-            if len(self.children) == 1:
+            if key == '*':
+                assert len(self.children) == 0
+                # We want to match `.doIt` but not `.SomeClass` or `.more.stuff`
+                return '(?=\\.[a-z]\\w*\\b(?!\\.))'
+            elif len(self.children) == 1:
                 child_key, child = next(self.children.iteritems())
-                child_re = '\\.' + child._build_re(child_key)
+                child_re = child._build_re(child_key)
+                if child_key != '*':
+                    child_re = '\\.' + child_re
                 if self.present:
                     return key + '(' + child_re + ')?'
                 else:
                     return key + child_re
             elif self.children:
-                children_re = '(?:\\.(?:' + '|'.join(
-                    self.children[k]._build_re(k)
-                    for k in sorted(self.children.keys())) + '))'
+                children_re = '(?:' + '|'.join(
+                    ('\\.' if k != '*' else '') + self.children[k]._build_re(k)
+                    for k in sorted(self.children.keys())) + ')'
                 if self.present:
                     return key + children_re + '?'
                 else:
@@ -488,7 +494,14 @@ def build_check_requires_timestamp(t):
             if component not in node.children:
                 node.children[component] = Node()
             node = node.children[component]
-        node.present = True
+        if component[0].islower():
+            # We've arrived at a namespace provide like `ol.foo`.
+            # In this case, we want to match uses like `ol.foo.doIt()` but
+            # not match things like `new ol.foo.SomeClass()`.
+            # For this purpose, we use the special wildcard key for the child.
+            node.children['*'] = Node()
+        else:
+            node.present = True
     provide_res = [child.build_re(key)
                    for key, child in root.children.iteritems()]
     missing_count = 0
