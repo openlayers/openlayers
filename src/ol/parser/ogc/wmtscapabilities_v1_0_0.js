@@ -8,6 +8,9 @@ goog.require('ol.proj');
 
 
 /**
+ * Read [WMTS](http://www.opengeospatial.org/standards/wmts) capabilities
+ * version 1.0
+ *
  * @constructor
  * @extends {ol.parser.XML}
  */

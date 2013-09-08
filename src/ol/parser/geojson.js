@@ -21,6 +21,8 @@ goog.require('ol.parser.StringFeatureParser');
 
 
 /**
+ * Read and write [GeoJSON](http://geojson.org/)
+ *
  * @constructor
  * @implements {ol.parser.StringFeatureParser}
  * @extends {ol.parser.Parser}

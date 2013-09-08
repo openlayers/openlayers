@@ -6,6 +6,8 @@ goog.require('ol.parser.XML');
 
 
 /**
+ * Read [WMS](http://www.opengeospatial.org/standards/wms) capabilities
+ *
  * @constructor
  * @extends {ol.parser.XML}
  */

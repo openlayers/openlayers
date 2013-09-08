@@ -5,6 +5,8 @@ goog.require('ol.parser.ogc.WMTSCapabilities_v1_0_0');
 
 
 /**
+ * Read [WMTS](http://www.opengeospatial.org/standards/wmts) capabilities
+ *
  * @constructor
  * @param {Object=} opt_options Options which will be set on this object.
  * @extends {ol.parser.ogc.Versioned}

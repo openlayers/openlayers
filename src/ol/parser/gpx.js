@@ -16,6 +16,8 @@ goog.require('ol.parser.XML');
 
 
 /**
+ * Read and write [GPX](http://www.topografix.com/gpx.asp) version 1.1
+ *
  * @constructor
  * @implements {ol.parser.DomFeatureParser}
  * @implements {ol.parser.StringFeatureParser}
