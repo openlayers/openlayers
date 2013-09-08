@@ -8,7 +8,8 @@ goog.require('ol.extent');
 
 
 /**
- * @typedef {function(ol.TileCoord, ol.Projection): (string|undefined)}
+ * @typedef {function(this: ol.source.ImageTileSource, ol.TileCoord,
+ *     ol.Projection): (string|undefined)}
  */
 ol.TileUrlFunctionType;
 
@@ -20,6 +21,7 @@ ol.TileUrlFunctionType;
 ol.TileUrlFunction.createFromTemplate = function(template) {
   return (
       /**
+       * @this {ol.source.ImageTileSource}
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
        * @param {ol.Projection} projection Projection.
        * @return {string|undefined} Tile URL.
@@ -56,6 +58,7 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
   }
   return (
       /**
+       * @this {ol.source.ImageTileSource}
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
        * @param {ol.Projection} projection Projection.
        * @return {string|undefined} Tile URL.
@@ -84,6 +87,7 @@ ol.TileUrlFunction.createFromParamsFunction =
   var tmpExtent = ol.extent.createEmpty();
   return (
       /**
+       * @this {ol.source.ImageTileSource}
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
        * @param {ol.Projection} projection Projection.
        * @return {string|undefined} Tile URL.
@@ -106,6 +110,7 @@ ol.TileUrlFunction.createFromParamsFunction =
 
 
 /**
+ * @this {ol.source.ImageTileSource}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {ol.Projection} projection Projection.
  * @return {string|undefined} Tile URL.
@@ -126,6 +131,7 @@ ol.TileUrlFunction.withTileCoordTransform =
   var tmpTileCoord = new ol.TileCoord(0, 0, 0);
   return (
       /**
+       * @this {ol.source.ImageTileSource}
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
        * @param {ol.Projection} projection Projection.
        * @return {string|undefined} Tile URL.
