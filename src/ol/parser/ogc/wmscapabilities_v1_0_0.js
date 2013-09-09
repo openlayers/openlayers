@@ -7,6 +7,9 @@ goog.require('ol.parser.ogc.WMSCapabilities_v1_1_0');
 
 
 /**
+ * Read [WMS](http://www.opengeospatial.org/standards/wms) capabilities
+ * version 1.0.0
+ *
  * @constructor
  * @extends {ol.parser.ogc.WMSCapabilities_v1_1_0}
  */
