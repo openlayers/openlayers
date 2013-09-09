@@ -11,7 +11,7 @@ goog.require('ol.TileCoord');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
-goog.require('ol.source.TileSource');
+goog.require('ol.source.Tile');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -31,7 +31,7 @@ ol.source.ImageTileOptions;
 
 /**
  * @constructor
- * @extends {ol.source.TileSource}
+ * @extends {ol.source.Tile}
  * @param {ol.source.ImageTileOptions} options Image tile options.
  */
 ol.source.ImageTileSource = function(options) {
@@ -67,7 +67,7 @@ ol.source.ImageTileSource = function(options) {
   this.tileCache_ = new ol.TileCache();
 
 };
-goog.inherits(ol.source.ImageTileSource, ol.source.TileSource);
+goog.inherits(ol.source.ImageTileSource, ol.source.Tile);
 
 
 /**

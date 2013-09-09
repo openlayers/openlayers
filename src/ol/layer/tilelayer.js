@@ -1,7 +1,7 @@
 goog.provide('ol.layer.TileLayer');
 
 goog.require('ol.layer.Layer');
-goog.require('ol.source.TileSource');
+goog.require('ol.source.Tile');
 
 
 /**
@@ -42,10 +42,10 @@ goog.exportProperty(
 
 
 /**
- * @return {ol.source.TileSource} Source.
+ * @return {ol.source.Tile} Source.
  */
 ol.layer.TileLayer.prototype.getTileSource = function() {
-  return /** @type {ol.source.TileSource} */ (this.getSource());
+  return /** @type {ol.source.Tile} */ (this.getSource());
 };
 
 

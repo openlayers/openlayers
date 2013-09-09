@@ -7,7 +7,7 @@ goog.require('ol.Tile');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
 goog.require('ol.TileState');
-goog.require('ol.source.TileSource');
+goog.require('ol.source.Tile');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -83,7 +83,7 @@ ol.DebugTile_.prototype.getImage = function(opt_context) {
 
 /**
  * @constructor
- * @extends {ol.source.TileSource}
+ * @extends {ol.source.Tile}
  * @param {ol.source.DebugTileSourceOptions} options Debug tile options.
  */
 ol.source.DebugTileSource = function(options) {
@@ -102,7 +102,7 @@ ol.source.DebugTileSource = function(options) {
   this.tileCache_ = new ol.TileCache();
 
 };
-goog.inherits(ol.source.DebugTileSource, ol.source.TileSource);
+goog.inherits(ol.source.DebugTileSource, ol.source.Tile);
 
 
 /**

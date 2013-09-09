@@ -1,14 +1,14 @@
 goog.provide('ol.test.source.TileSource');
 
-describe('ol.source.TileSource', function() {
+describe('ol.source.Tile', function() {
 
   describe('constructor', function() {
     it('returns a tile source', function() {
-      var source = new ol.source.TileSource({
+      var source = new ol.source.Tile({
         projection: ol.proj.get('EPSG:4326')
       });
       expect(source).to.be.a(ol.source.Source);
-      expect(source).to.be.a(ol.source.TileSource);
+      expect(source).to.be.a(ol.source.Tile);
     });
   });
 
@@ -188,7 +188,7 @@ describe('ol.source.TileSource', function() {
  * 256x256 tiles.
  *
  * @constructor
- * @extends {ol.source.TileSource}
+ * @extends {ol.source.Tile}
  * @param {Object.<string, boolean>} loaded Lookup of already loaded tiles.
  */
 ol.test.source.MockTileSource = function(loaded) {
@@ -213,7 +213,7 @@ ol.test.source.MockTileSource = function(loaded) {
   this.loaded_ = loaded;
 
 };
-goog.inherits(ol.test.source.MockTileSource, ol.source.TileSource);
+goog.inherits(ol.test.source.MockTileSource, ol.source.Tile);
 
 
 /**
@@ -231,7 +231,7 @@ describe('ol.test.source.MockTileSource', function() {
   describe('constructor', function() {
     it('creates a tile source', function() {
       var source = new ol.test.source.MockTileSource({});
-      expect(source).to.be.a(ol.source.TileSource);
+      expect(source).to.be.a(ol.source.Tile);
       expect(source).to.be.a(ol.test.source.MockTileSource);
     });
   });
@@ -270,5 +270,5 @@ goog.require('ol.TileCoord');
 goog.require('ol.TileState');
 goog.require('ol.proj');
 goog.require('ol.source.Source');
-goog.require('ol.source.TileSource');
+goog.require('ol.source.Tile');
 goog.require('ol.tilegrid.TileGrid');
