@@ -529,7 +529,7 @@
  */
 
 /**
- * @typedef {Object} ol.source.TiledWMSOptions
+ * @typedef {Object} ol.source.TileWMSOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {Object.<string,*>} params WMS request parameters. At least a
  *     `LAYERS` param is required. `STYLES` is '' by default. `VERSION` is

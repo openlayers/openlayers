@@ -3,7 +3,7 @@ goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.source.MapQuestOpenAerial');
-goog.require('ol.source.TiledWMS');
+goog.require('ol.source.TileWMS');
 
 
 var layers = [
@@ -11,7 +11,7 @@ var layers = [
     source: new ol.source.MapQuestOpenAerial()
   }),
   new ol.layer.TileLayer({
-    source: new ol.source.TiledWMS({
+    source: new ol.source.TileWMS({
       url: 'http://demo.opengeo.org/geoserver/wms',
       params: {'LAYERS': 'topp:states', 'TILED': true},
       extent: [-13884991, -7455066, 2870341, 6338219]
