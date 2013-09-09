@@ -92,8 +92,11 @@ ol.View2D = function(opt_options) {
    * @type {Object.<string, *>}
    */
   var values = {};
-  values[ol.View2DProperty.CENTER] = goog.isDef(options.center) ?
-      options.center : null;
+
+  if (goog.isDef(options.center)) {
+    values[ol.View2DProperty.CENTER] = options.center;
+  }
+
   values[ol.View2DProperty.PROJECTION] = ol.proj.createProjection(
       options.projection, 'EPSG:3857');
 
@@ -405,8 +408,7 @@ ol.View2D.prototype.fitExtent = function(extent, size) {
  * @return {boolean} Is defined.
  */
 ol.View2D.prototype.isDef = function() {
-  return goog.isDefAndNotNull(this.getCenter()) &&
-      goog.isDef(this.getResolution());
+  return goog.isDef(this.getCenter()) && goog.isDef(this.getResolution());
 };
 
 
