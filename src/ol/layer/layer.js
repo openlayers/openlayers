@@ -4,14 +4,14 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
-goog.require('ol.layer.LayerBase');
+goog.require('ol.layer.Base');
 goog.require('ol.source.Source');
 
 
 
 /**
  * @constructor
- * @extends {ol.layer.LayerBase}
+ * @extends {ol.layer.Base}
  * @param {ol.layer.LayerOptions} options Layer options.
  */
 ol.layer.Layer = function(options) {
@@ -37,7 +37,7 @@ ol.layer.Layer = function(options) {
   }
 
 };
-goog.inherits(ol.layer.Layer, ol.layer.LayerBase);
+goog.inherits(ol.layer.Layer, ol.layer.Base);
 
 
 /**

@@ -4,15 +4,15 @@ goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
-goog.require('ol.layer.ImageLayer');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Image');
+goog.require('ol.layer.Tile');
 goog.require('ol.source.SingleImageWMS');
-goog.require('ol.source.TiledWMS');
+goog.require('ol.source.TileWMS');
 
 
 var layers = [
-  new ol.layer.TileLayer({
-    source: new ol.source.TiledWMS({
+  new ol.layer.Tile({
+    source: new ol.source.TileWMS({
       attributions: [new ol.Attribution({
         html: '&copy; ' +
             '<a href="http://www.geo.admin.ch/internet/geoportal/' +
@@ -27,7 +27,7 @@ var layers = [
       url: 'http://wms.geo.admin.ch/'
     })
   }),
-  new ol.layer.ImageLayer({
+  new ol.layer.Image({
     source: new ol.source.SingleImageWMS({
       attributions: [new ol.Attribution({
         html: '&copy; ' +

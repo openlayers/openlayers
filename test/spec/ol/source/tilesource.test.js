@@ -1,14 +1,14 @@
 goog.provide('ol.test.source.TileSource');
 
-describe('ol.source.TileSource', function() {
+describe('ol.source.Tile', function() {
 
   describe('constructor', function() {
     it('returns a tile source', function() {
-      var source = new ol.source.TileSource({
+      var source = new ol.source.Tile({
         projection: ol.proj.get('EPSG:4326')
       });
       expect(source).to.be.a(ol.source.Source);
-      expect(source).to.be.a(ol.source.TileSource);
+      expect(source).to.be.a(ol.source.Tile);
     });
   });
 
@@ -16,7 +16,7 @@ describe('ol.source.TileSource', function() {
 
     it('adds no tiles if none are already loaded', function() {
       // a source with no loaded tiles
-      var source = new ol.test.source.MockTileSource({});
+      var source = new ol.test.source.TileMock({});
 
       var loadedTilesByZ = {};
       var grid = source.getTileGrid();
@@ -35,7 +35,7 @@ describe('ol.source.TileSource', function() {
 
     it('adds loaded tiles to the lookup (z: 0)', function() {
       // a source with no loaded tiles
-      var source = new ol.test.source.MockTileSource({
+      var source = new ol.test.source.TileMock({
         '0/0/0': true,
         '1/0/0': true
       });
@@ -59,7 +59,7 @@ describe('ol.source.TileSource', function() {
 
     it('adds loaded tiles to the lookup (z: 1)', function() {
       // a source with no loaded tiles
-      var source = new ol.test.source.MockTileSource({
+      var source = new ol.test.source.TileMock({
         '0/0/0': true,
         '1/0/0': true
       });
@@ -83,7 +83,7 @@ describe('ol.source.TileSource', function() {
 
     it('returns true when all tiles are already loaded', function() {
       // a source with no loaded tiles
-      var source = new ol.test.source.MockTileSource({
+      var source = new ol.test.source.TileMock({
         '1/0/0': true,
         '1/0/1': true,
         '1/1/0': true,
@@ -105,7 +105,7 @@ describe('ol.source.TileSource', function() {
 
     it('returns true when all tiles are already loaded (part 2)', function() {
       // a source with no loaded tiles
-      var source = new ol.test.source.MockTileSource({});
+      var source = new ol.test.source.TileMock({});
 
       var loadedTilesByZ = {
         '1': {
@@ -131,7 +131,7 @@ describe('ol.source.TileSource', function() {
 
     it('returns false when all tiles are already loaded', function() {
       // a source with no loaded tiles
-      var source = new ol.test.source.MockTileSource({
+      var source = new ol.test.source.TileMock({
         '1/0/0': true,
         '1/0/1': true,
         '1/1/0': true,
@@ -154,7 +154,7 @@ describe('ol.source.TileSource', function() {
 
     it('returns false when all tiles are already loaded (part 2)', function() {
       // a source with no loaded tiles
-      var source = new ol.test.source.MockTileSource({});
+      var source = new ol.test.source.TileMock({});
 
       var loadedTilesByZ = {
         '1': {
@@ -188,10 +188,10 @@ describe('ol.source.TileSource', function() {
  * 256x256 tiles.
  *
  * @constructor
- * @extends {ol.source.TileSource}
+ * @extends {ol.source.Tile}
  * @param {Object.<string, boolean>} loaded Lookup of already loaded tiles.
  */
-ol.test.source.MockTileSource = function(loaded) {
+ol.test.source.TileMock = function(loaded) {
   var extent = [-180, 180, -180, 180];
   var tileGrid = new ol.tilegrid.TileGrid({
     resolutions: [360 / 256, 180 / 256, 90 / 256, 45 / 256],
@@ -213,32 +213,32 @@ ol.test.source.MockTileSource = function(loaded) {
   this.loaded_ = loaded;
 
 };
-goog.inherits(ol.test.source.MockTileSource, ol.source.TileSource);
+goog.inherits(ol.test.source.TileMock, ol.source.Tile);
 
 
 /**
  * @inheritDoc
  */
-ol.test.source.MockTileSource.prototype.getTile = function(z, x, y) {
+ol.test.source.TileMock.prototype.getTile = function(z, x, y) {
   var key = ol.TileCoord.getKeyZXY(z, x, y);
   var tileState = this.loaded_[key] ? ol.TileState.LOADED : ol.TileState.IDLE;
   return new ol.Tile(new ol.TileCoord(z, x, y), tileState);
 };
 
 
-describe('ol.test.source.MockTileSource', function() {
+describe('ol.test.source.TileMock', function() {
 
   describe('constructor', function() {
     it('creates a tile source', function() {
-      var source = new ol.test.source.MockTileSource({});
-      expect(source).to.be.a(ol.source.TileSource);
-      expect(source).to.be.a(ol.test.source.MockTileSource);
+      var source = new ol.test.source.TileMock({});
+      expect(source).to.be.a(ol.source.Tile);
+      expect(source).to.be.a(ol.test.source.TileMock);
     });
   });
 
   describe('#getTile()', function() {
     it('returns a tile with state based on constructor arg', function() {
-      var source = new ol.test.source.MockTileSource({
+      var source = new ol.test.source.TileMock({
         '0/0/0': true,
         '1/0/0': true
       });
@@ -270,5 +270,5 @@ goog.require('ol.TileCoord');
 goog.require('ol.TileState');
 goog.require('ol.proj');
 goog.require('ol.source.Source');
-goog.require('ol.source.TileSource');
+goog.require('ol.source.Tile');
 goog.require('ol.tilegrid.TileGrid');

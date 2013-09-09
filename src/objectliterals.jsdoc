@@ -53,7 +53,7 @@
  * @property {ol.Collection|Array.<ol.control.Control>|undefined} controls
  *     Controls initially added to the map.
  * @property {ol.Collection|undefined} interactions Interactions.
- * @property {Array.<ol.layer.LayerBase>|ol.Collection|undefined} layers Layers.
+ * @property {Array.<ol.layer.Base>|ol.Collection|undefined} layers Layers.
  * @property {ol.Collection|Array.<ol.Overlay>|undefined} overlays
  *     Overlays initially added to the map.
  * @property {ol.RendererHint|undefined} renderer Renderer.
@@ -312,7 +312,7 @@
  */
 
 /**
- * @typedef {Object} ol.layer.LayerBaseOptions
+ * @typedef {Object} ol.layer.BaseOptions
  * @property {number|undefined} brightness Brightness.
  * @property {number|undefined} contrast Contrast.
  * @property {number|undefined} hue Hue.
@@ -333,18 +333,18 @@
  */
 
 /**
- * @typedef {Object} ol.layer.LayerGroupOptions
+ * @typedef {Object} ol.layer.GroupOptions
  * @property {number|undefined} brightness Brightness.
  * @property {number|undefined} contrast Contrast.
  * @property {number|undefined} hue Hue.
  * @property {number|undefined} opacity Opacity.
  * @property {number|undefined} saturation Saturation.
  * @property {boolean|undefined} visible Visibility.
- * @property {Array.<ol.layer.LayerBase>|ol.Collection|undefined} layers Child layers.
+ * @property {Array.<ol.layer.Base>|ol.Collection|undefined} layers Child layers.
  */
 
 /**
- * @typedef {Object} ol.layer.TileLayerOptions
+ * @typedef {Object} ol.layer.TileOptions
  * @property {number|undefined} brightness Brightness.
  * @property {number|undefined} contrast Contrast.
  * @property {number|undefined} hue Hue.
@@ -457,7 +457,7 @@
  */
 
 /**
- * @typedef {Object} ol.source.DebugTileSourceOptions
+ * @typedef {Object} ol.source.TileDebugOptions
  * @property {ol.Extent|undefined} extent Extent.
  * @property {ol.ProjectionLike} projection Projection.
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
@@ -529,7 +529,7 @@
  */
 
 /**
- * @typedef {Object} ol.source.TiledWMSOptions
+ * @typedef {Object} ol.source.TileWMSOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {Object.<string,*>} params WMS request parameters. At least a
  *     `LAYERS` param is required. `STYLES` is '' by default. `VERSION` is
@@ -564,7 +564,7 @@
  */
 
 /**
- * @typedef {Object} ol.source.VectorSource2Options
+ * @typedef {Object} ol.source.Vector2Options
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {Array.<ol.geom2.LineStringCollection>|undefined}

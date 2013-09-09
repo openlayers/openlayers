@@ -1,13 +1,13 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.source.BingMaps');
 
 
 var map1 = new ol.Map({
   layers: [
-    new ol.layer.TileLayer({
+    new ol.layer.Tile({
       preload: Infinity,
       source: new ol.source.BingMaps({
         key: 'Ar33pRUvQOdESG8m_T15MUmNz__E1twPo42bFx9jvdDePhX0PNgAcEm44OVTS7tt',
@@ -25,7 +25,7 @@ var map1 = new ol.Map({
 
 var map2 = new ol.Map({
   layers: [
-    new ol.layer.TileLayer({
+    new ol.layer.Tile({
       preload: 0, // default value
       source: new ol.source.BingMaps({
         key: 'Ar33pRUvQOdESG8m_T15MUmNz__E1twPo42bFx9jvdDePhX0PNgAcEm44OVTS7tt',

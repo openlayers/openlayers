@@ -1,7 +1,7 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.parser.ogc.WMTSCapabilities');
 goog.require('ol.source.WMTS');
 
@@ -27,11 +27,11 @@ xhr.onload = function() {
     capabilities = parser.read(xhr.responseXML);
     map = new ol.Map({
       layers: [
-        new ol.layer.TileLayer({
+        new ol.layer.Tile({
           source: new ol.source.WMTS(ol.source.WMTS.optionsFromCapabilities(
               capabilities, 'fmzk'))
         }),
-        new ol.layer.TileLayer({
+        new ol.layer.Tile({
           source: new ol.source.WMTS(ol.source.WMTS.optionsFromCapabilities(
               capabilities, 'beschriftung'))
         })

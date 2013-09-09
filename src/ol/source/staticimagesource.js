@@ -4,13 +4,13 @@ goog.require('ol.Image');
 goog.require('ol.ImageUrlFunctionType');
 goog.require('ol.extent');
 goog.require('ol.proj');
-goog.require('ol.source.ImageSource');
+goog.require('ol.source.Image');
 
 
 
 /**
  * @constructor
- * @extends {ol.source.ImageSource}
+ * @extends {ol.source.Image}
  * @param {ol.source.StaticImageOptions} options Static image options.
  */
 ol.source.StaticImage = function(options) {
@@ -40,7 +40,7 @@ ol.source.StaticImage = function(options) {
       imageExtent, imageResolution, imageSize, projection);
 
 };
-goog.inherits(ol.source.StaticImage, ol.source.ImageSource);
+goog.inherits(ol.source.StaticImage, ol.source.Image);
 
 
 /**

@@ -1,13 +1,13 @@
 goog.provide('ol.test.layer.LayerGroup');
 
-describe('ol.layer.LayerGroup', function() {
+describe('ol.layer.Group', function() {
 
   describe('constructor (defaults)', function() {
 
     var layerGroup;
 
     beforeEach(function() {
-      layerGroup = new ol.layer.LayerGroup();
+      layerGroup = new ol.layer.Group();
     });
 
     afterEach(function() {
@@ -15,7 +15,7 @@ describe('ol.layer.LayerGroup', function() {
     });
 
     it('creates an instance', function() {
-      expect(layerGroup).to.be.a(ol.layer.LayerGroup);
+      expect(layerGroup).to.be.a(ol.layer.Group);
     });
 
     it('provides default brightness', function() {
@@ -69,7 +69,7 @@ describe('ol.layer.LayerGroup', function() {
           projection: 'EPSG:4326'
         })
       });
-      var layerGroup = new ol.layer.LayerGroup({
+      var layerGroup = new ol.layer.Group({
         layers: [layer],
         brightness: 0.5,
         contrast: 10,
@@ -109,7 +109,7 @@ describe('ol.layer.LayerGroup', function() {
     var layerGroup;
 
     beforeEach(function() {
-      layerGroup = new ol.layer.LayerGroup();
+      layerGroup = new ol.layer.Group();
     });
 
     afterEach(function() {
@@ -180,7 +180,7 @@ describe('ol.layer.LayerGroup', function() {
         })
       });
       var layers = new ol.Collection([layer]);
-      var layerGroup = new ol.layer.LayerGroup();
+      var layerGroup = new ol.layer.Group();
 
       layerGroup.setLayers(layers);
       expect(layerGroup.getLayers()).to.be(layers);
@@ -204,7 +204,7 @@ describe('ol.layer.LayerGroup', function() {
     var obj;
 
     it('returns an empty array if no layer', function() {
-      layerGroup = new ol.layer.LayerGroup();
+      layerGroup = new ol.layer.Group();
 
       obj = layerGroup.getLayerStatesArray();
       layersArray = obj.layers;
@@ -235,7 +235,7 @@ describe('ol.layer.LayerGroup', function() {
     });
 
     it('does not transform layerStates by default', function() {
-      layerGroup = new ol.layer.LayerGroup({
+      layerGroup = new ol.layer.Group({
         layers: [layer1, layer2]
       });
 
@@ -256,7 +256,7 @@ describe('ol.layer.LayerGroup', function() {
     });
 
     it('transforms layerStates correctly', function() {
-      layerGroup = new ol.layer.LayerGroup({
+      layerGroup = new ol.layer.Group({
         layers: [layer1, layer2],
         brightness: 0.5,
         contrast: 10,
@@ -292,6 +292,6 @@ describe('ol.layer.LayerGroup', function() {
 
 goog.require('goog.dispose');
 goog.require('ol.layer.Layer');
-goog.require('ol.layer.LayerGroup');
+goog.require('ol.layer.Group');
 goog.require('ol.source.Source');
 goog.require('ol.Collection');
