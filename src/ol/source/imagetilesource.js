@@ -1,4 +1,4 @@
-goog.provide('ol.source.ImageTileSource');
+goog.provide('ol.source.TileImage');
 
 goog.require('goog.asserts');
 goog.require('ol.Attribution');
@@ -34,7 +34,7 @@ ol.source.ImageTileOptions;
  * @extends {ol.source.Tile}
  * @param {ol.source.ImageTileOptions} options Image tile options.
  */
-ol.source.ImageTileSource = function(options) {
+ol.source.TileImage = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
@@ -67,13 +67,13 @@ ol.source.ImageTileSource = function(options) {
   this.tileCache_ = new ol.TileCache();
 
 };
-goog.inherits(ol.source.ImageTileSource, ol.source.Tile);
+goog.inherits(ol.source.TileImage, ol.source.Tile);
 
 
 /**
  * @inheritDoc
  */
-ol.source.ImageTileSource.prototype.canExpireCache = function() {
+ol.source.TileImage.prototype.canExpireCache = function() {
   return this.tileCache_.canExpireCache();
 };
 
@@ -81,7 +81,7 @@ ol.source.ImageTileSource.prototype.canExpireCache = function() {
 /**
  * @inheritDoc
  */
-ol.source.ImageTileSource.prototype.expireCache = function(usedTiles) {
+ol.source.TileImage.prototype.expireCache = function(usedTiles) {
   this.tileCache_.expireCache(usedTiles);
 };
 
@@ -89,7 +89,7 @@ ol.source.ImageTileSource.prototype.expireCache = function(usedTiles) {
 /**
  * @inheritDoc
  */
-ol.source.ImageTileSource.prototype.getTile = function(z, x, y, projection) {
+ol.source.TileImage.prototype.getTile = function(z, x, y, projection) {
   var tileCoordKey = ol.TileCoord.getKeyZXY(z, x, y);
   if (this.tileCache_.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache_.get(tileCoordKey));
@@ -111,7 +111,7 @@ ol.source.ImageTileSource.prototype.getTile = function(z, x, y, projection) {
 /**
  * @inheritDoc
  */
-ol.source.ImageTileSource.prototype.useTile = function(z, x, y) {
+ol.source.TileImage.prototype.useTile = function(z, x, y) {
   var tileCoordKey = ol.TileCoord.getKeyZXY(z, x, y);
   if (this.tileCache_.containsKey(tileCoordKey)) {
     this.tileCache_.get(tileCoordKey);

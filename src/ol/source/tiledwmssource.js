@@ -9,14 +9,14 @@ goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
 goog.require('ol.source.FeatureInfoSource');
-goog.require('ol.source.ImageTileSource');
+goog.require('ol.source.TileImage');
 goog.require('ol.source.wms');
 
 
 
 /**
  * @constructor
- * @extends {ol.source.ImageTileSource}
+ * @extends {ol.source.TileImage}
  * @implements {ol.source.FeatureInfoSource}
  * @param {ol.source.TiledWMSOptions} options Tiled WMS options.
  */
@@ -94,7 +94,7 @@ ol.source.TiledWMS = function(options) {
       options.getFeatureInfoOptions : {};
 
 };
-goog.inherits(ol.source.TiledWMS, ol.source.ImageTileSource);
+goog.inherits(ol.source.TiledWMS, ol.source.TileImage);
 
 
 /**
