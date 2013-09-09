@@ -333,7 +333,7 @@
  */
 
 /**
- * @typedef {Object} ol.layer.LayerGroupOptions
+ * @typedef {Object} ol.layer.GroupOptions
  * @property {number|undefined} brightness Brightness.
  * @property {number|undefined} contrast Contrast.
  * @property {number|undefined} hue Hue.

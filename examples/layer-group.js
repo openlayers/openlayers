@@ -2,7 +2,7 @@ goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.dom.Input');
-goog.require('ol.layer.LayerGroup');
+goog.require('ol.layer.Group');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.proj');
 goog.require('ol.source.MapQuestOpenAerial');
@@ -12,7 +12,7 @@ var map = new ol.Map({
   layers: [
     new ol.layer.TileLayer({
       source: new ol.source.MapQuestOpenAerial()
-    }), new ol.layer.LayerGroup({
+    }), new ol.layer.Group({
       layers: [
         new ol.layer.TileLayer({
           source: new ol.source.TileJSON({
@@ -51,7 +51,7 @@ function bindInputs(layerid, layer) {
 }
 map.getLayers().forEach(function(layer, i) {
   bindInputs('#layer' + i, layer);
-  if (layer instanceof ol.layer.LayerGroup) {
+  if (layer instanceof ol.layer.Group) {
     layer.getLayers().forEach(function(sublayer, j) {
       bindInputs('#layer' + i + j, sublayer);
     });

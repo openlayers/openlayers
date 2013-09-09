@@ -54,7 +54,7 @@ goog.require('ol.control');
 goog.require('ol.extent');
 goog.require('ol.interaction');
 goog.require('ol.layer.Base');
-goog.require('ol.layer.LayerGroup');
+goog.require('ol.layer.Group');
 goog.require('ol.proj');
 goog.require('ol.proj.common');
 goog.require('ol.renderer.Map');
@@ -519,10 +519,10 @@ ol.Map.prototype.getInteractions = function() {
 
 /**
  * Get the layergroup associated with this map.
- * @return {ol.layer.LayerGroup} LayerGroup.
+ * @return {ol.layer.Group} LayerGroup.
  */
 ol.Map.prototype.getLayerGroup = function() {
-  return /** @type {ol.layer.LayerGroup} */ (
+  return /** @type {ol.layer.Group} */ (
       this.get(ol.MapProperty.LAYERGROUP));
 };
 goog.exportProperty(
@@ -993,7 +993,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
 /**
  * Sets the layergroup of this map.
- * @param {ol.layer.LayerGroup} layerGroup Layergroup.
+ * @param {ol.layer.Group} layerGroup Layergroup.
  */
 ol.Map.prototype.setLayerGroup = function(layerGroup) {
   this.set(ol.MapProperty.LAYERGROUP, layerGroup);
@@ -1113,8 +1113,8 @@ ol.Map.createOptionsInternal = function(options) {
    */
   var values = {};
 
-  var layerGroup = (options.layers instanceof ol.layer.LayerGroup) ?
-      options.layers : new ol.layer.LayerGroup({layers: options.layers});
+  var layerGroup = (options.layers instanceof ol.layer.Group) ?
+      options.layers : new ol.layer.Group({layers: options.layers});
   values[ol.MapProperty.LAYERGROUP] = layerGroup;
 
   values[ol.MapProperty.TARGET] = options.target;
