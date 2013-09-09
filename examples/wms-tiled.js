@@ -1,16 +1,16 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.source.MapQuestOpenAerial');
 goog.require('ol.source.TileWMS');
 
 
 var layers = [
-  new ol.layer.TileLayer({
+  new ol.layer.Tile({
     source: new ol.source.MapQuestOpenAerial()
   }),
-  new ol.layer.TileLayer({
+  new ol.layer.Tile({
     source: new ol.source.TileWMS({
       url: 'http://demo.opengeo.org/geoserver/wms',
       params: {'LAYERS': 'topp:states', 'TILED': true},

@@ -5,7 +5,7 @@ goog.require('ol.control');
 goog.require('ol.control.MousePosition');
 goog.require('ol.coordinate');
 goog.require('ol.dom.Input');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
 
@@ -22,7 +22,7 @@ var mousePositionControl = new ol.control.MousePosition({
 var map = new ol.Map({
   controls: ol.control.defaults().extend([mousePositionControl]),
   layers: [
-    new ol.layer.TileLayer({
+    new ol.layer.Tile({
       source: new ol.source.OSM()
     })
   ],

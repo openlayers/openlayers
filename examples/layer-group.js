@@ -3,25 +3,25 @@ goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.dom.Input');
 goog.require('ol.layer.Group');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.MapQuestOpenAerial');
 goog.require('ol.source.TileJSON');
 
 var map = new ol.Map({
   layers: [
-    new ol.layer.TileLayer({
+    new ol.layer.Tile({
       source: new ol.source.MapQuestOpenAerial()
     }), new ol.layer.Group({
       layers: [
-        new ol.layer.TileLayer({
+        new ol.layer.Tile({
           source: new ol.source.TileJSON({
             url: 'http://api.tiles.mapbox.com/v3/' +
                 'mapbox.20110804-hoa-foodinsecurity-3month.jsonp',
             crossOrigin: 'anonymous'
           })
         }),
-        new ol.layer.TileLayer({
+        new ol.layer.Tile({
           source: new ol.source.TileJSON({
             url: 'http://api.tiles.mapbox.com/v3/' +
                 'mapbox.world-borders-light.jsonp',

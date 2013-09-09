@@ -1,7 +1,7 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.GeoJSON');
 goog.require('ol.source.TileWMS');
@@ -10,7 +10,7 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 
-var wms = new ol.layer.TileLayer({
+var wms = new ol.layer.Tile({
   source: new ol.source.TileWMS({
     url: 'http://demo.opengeo.org/geoserver/wms',
     params: {'LAYERS': 'ne:ne'}

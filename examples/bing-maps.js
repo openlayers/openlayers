@@ -1,7 +1,7 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.BingMaps');
 
@@ -9,7 +9,7 @@ goog.require('ol.source.BingMaps');
 var styles = ['Road', 'Aerial', 'AerialWithLabels'];
 var layers = [];
 for (var i = 0; i < styles.length; ++i) {
-  layers.push(new ol.layer.TileLayer({
+  layers.push(new ol.layer.Tile({
     visible: false,
     preload: Infinity,
     source: new ol.source.BingMaps({

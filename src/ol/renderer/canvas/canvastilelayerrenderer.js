@@ -15,7 +15,7 @@ goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.extent');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
 
@@ -25,7 +25,7 @@ goog.require('ol.renderer.canvas.Layer');
  * @constructor
  * @extends {ol.renderer.canvas.Layer}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
- * @param {ol.layer.TileLayer} tileLayer Tile layer.
+ * @param {ol.layer.Tile} tileLayer Tile layer.
  */
 ol.renderer.canvas.TileLayer = function(mapRenderer, tileLayer) {
 
@@ -87,10 +87,10 @@ ol.renderer.canvas.TileLayer.prototype.getImage = function() {
 
 /**
  * @protected
- * @return {ol.layer.TileLayer} Tile layer.
+ * @return {ol.layer.Tile} Tile layer.
  */
 ol.renderer.canvas.TileLayer.prototype.getTileLayer = function() {
-  return /** @type {ol.layer.TileLayer} */ (this.getLayer());
+  return /** @type {ol.layer.Tile} */ (this.getLayer());
 };
 
 

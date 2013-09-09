@@ -129,7 +129,7 @@ ol.MapProperty = {
  *         zoom: 1
  *       }),
  *       layers: [
- *         new ol.layer.TileLayer({
+ *         new ol.layer.Tile({
  *           source: new ol.source.MapQuestOSM()
  *         })
  *       ],

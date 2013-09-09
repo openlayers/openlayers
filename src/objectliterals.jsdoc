@@ -344,7 +344,7 @@
  */
 
 /**
- * @typedef {Object} ol.layer.TileLayerOptions
+ * @typedef {Object} ol.layer.TileOptions
  * @property {number|undefined} brightness Brightness.
  * @property {number|undefined} contrast Contrast.
  * @property {number|undefined} hue Hue.

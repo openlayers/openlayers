@@ -2,7 +2,7 @@ goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.expr');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.GeoJSON');
 goog.require('ol.source.MapQuestOpenAerial');
@@ -14,7 +14,7 @@ goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 
 
-var raster = new ol.layer.TileLayer({
+var raster = new ol.layer.Tile({
   source: new ol.source.MapQuestOpenAerial()
 });
 
