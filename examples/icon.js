@@ -85,7 +85,7 @@ map.on('click', function(evt) {
         });
         $(element).popover('show');
       } else {
-        $(element).popover('hide');
+        $(element).popover('destroy');
       }
     }
   });
