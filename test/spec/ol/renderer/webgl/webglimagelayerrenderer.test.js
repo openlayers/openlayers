@@ -16,7 +16,7 @@ describe('ol.renderer.webgl.ImageLayer', function() {
         target: document.createElement('div')
       });
       var layer = new ol.layer.ImageLayer({
-        source: new ol.source.ImageSource({
+        source: new ol.source.Image({
           extent: [0, 1, 0, 1]
         })
       });
@@ -81,5 +81,5 @@ goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
 goog.require('ol.Map');
 goog.require('ol.layer.ImageLayer');
-goog.require('ol.source.ImageSource');
+goog.require('ol.source.Image');
 goog.require('ol.renderer.webgl.ImageLayer');

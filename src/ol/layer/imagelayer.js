@@ -1,7 +1,7 @@
 goog.provide('ol.layer.ImageLayer');
 
 goog.require('ol.layer.Layer');
-goog.require('ol.source.ImageSource');
+goog.require('ol.source.Image');
 
 
 
@@ -17,8 +17,8 @@ goog.inherits(ol.layer.ImageLayer, ol.layer.Layer);
 
 
 /**
- * @return {ol.source.ImageSource} Single image source.
+ * @return {ol.source.Image} Single image source.
  */
 ol.layer.ImageLayer.prototype.getImageSource = function() {
-  return /** @type {ol.source.ImageSource} */ (this.getSource());
+  return /** @type {ol.source.Image} */ (this.getSource());
 };

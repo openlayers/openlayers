@@ -1,4 +1,4 @@
-goog.provide('ol.source.ImageSource');
+goog.provide('ol.source.Image');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -23,16 +23,16 @@ goog.require('ol.source.Source');
  *            imageUrlFunction: (ol.ImageUrlFunctionType|
  *                undefined)}}
  */
-ol.source.ImageSourceOptions;
+ol.source.ImageOptions;
 
 
 
 /**
  * @constructor
  * @extends {ol.source.Source}
- * @param {ol.source.ImageSourceOptions} options Single image source options.
+ * @param {ol.source.ImageOptions} options Single image source options.
  */
-ol.source.ImageSource = function(options) {
+ol.source.Image = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
@@ -70,7 +70,7 @@ ol.source.ImageSource = function(options) {
           }, true));
 
 };
-goog.inherits(ol.source.ImageSource, ol.source.Source);
+goog.inherits(ol.source.Image, ol.source.Source);
 
 
 /**
@@ -81,7 +81,7 @@ goog.inherits(ol.source.ImageSource, ol.source.Source);
  * @param {ol.Projection} projection Projection.
  * @return {ol.Image} Single image.
  */
-ol.source.ImageSource.prototype.createImage =
+ol.source.Image.prototype.createImage =
     function(extent, resolution, size, projection) {
   var image = null;
   var imageUrl = this.imageUrlFunction(extent, size, projection);
@@ -99,7 +99,7 @@ ol.source.ImageSource.prototype.createImage =
  * @param {number} resolution Resolution.
  * @return {number} Resolution.
  */
-ol.source.ImageSource.prototype.findNearestResolution =
+ol.source.Image.prototype.findNearestResolution =
     function(resolution) {
   if (!goog.isNull(this.resolutions_)) {
     var idx = ol.array.linearFindNearest(this.resolutions_, resolution, 0);
@@ -115,4 +115,4 @@ ol.source.ImageSource.prototype.findNearestResolution =
  * @param {ol.Projection} projection Projection.
  * @return {ol.Image} Single image.
  */
-ol.source.ImageSource.prototype.getImage = goog.abstractMethod;
+ol.source.Image.prototype.getImage = goog.abstractMethod;
