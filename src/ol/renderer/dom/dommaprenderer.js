@@ -5,7 +5,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('ol.css');
-goog.require('ol.layer.ImageLayer');
+goog.require('ol.layer.Image');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.dom.ImageLayer');
@@ -53,7 +53,7 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
   var layerRenderer;
   if (layer instanceof ol.layer.TileLayer) {
     layerRenderer = new ol.renderer.dom.TileLayer(this, layer);
-  } else if (layer instanceof ol.layer.ImageLayer) {
+  } else if (layer instanceof ol.layer.Image) {
     layerRenderer = new ol.renderer.dom.ImageLayer(this, layer);
   } else {
     goog.asserts.fail();

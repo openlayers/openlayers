@@ -17,7 +17,7 @@ goog.require('ol.FrameState');
 goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.css');
-goog.require('ol.layer.ImageLayer');
+goog.require('ol.layer.Image');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.layer.VectorLayer2');
 goog.require('ol.renderer.Map');
@@ -301,7 +301,7 @@ ol.renderer.webgl.Map.prototype.bindTileTexture =
 ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
   if (layer instanceof ol.layer.TileLayer) {
     return new ol.renderer.webgl.TileLayer(this, layer);
-  } else if (layer instanceof ol.layer.ImageLayer) {
+  } else if (layer instanceof ol.layer.Image) {
     return new ol.renderer.webgl.ImageLayer(this, layer);
   } else if (layer instanceof ol.layer.VectorLayer2) {
     return new ol.renderer.webgl.VectorLayer2(this, layer);

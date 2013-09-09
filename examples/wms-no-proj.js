@@ -4,7 +4,7 @@ goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
-goog.require('ol.layer.ImageLayer');
+goog.require('ol.layer.Image');
 goog.require('ol.layer.TileLayer');
 goog.require('ol.source.SingleImageWMS');
 goog.require('ol.source.TiledWMS');
@@ -27,7 +27,7 @@ var layers = [
       url: 'http://wms.geo.admin.ch/'
     })
   }),
-  new ol.layer.ImageLayer({
+  new ol.layer.Image({
     source: new ol.source.SingleImageWMS({
       attributions: [new ol.Attribution({
         html: '&copy; ' +

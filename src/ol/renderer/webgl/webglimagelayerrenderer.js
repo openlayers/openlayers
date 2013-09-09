@@ -10,7 +10,7 @@ goog.require('ol.Extent');
 goog.require('ol.Image');
 goog.require('ol.ImageState');
 goog.require('ol.ViewHint');
-goog.require('ol.layer.ImageLayer');
+goog.require('ol.layer.Image');
 goog.require('ol.renderer.webgl.Layer');
 
 
@@ -19,7 +19,7 @@ goog.require('ol.renderer.webgl.Layer');
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
- * @param {ol.layer.ImageLayer} imageLayer Tile layer.
+ * @param {ol.layer.Image} imageLayer Tile layer.
  */
 ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
 
@@ -73,10 +73,10 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
 
 /**
  * @protected
- * @return {ol.layer.ImageLayer} Tile layer.
+ * @return {ol.layer.Image} Tile layer.
  */
 ol.renderer.webgl.ImageLayer.prototype.getImageLayer = function() {
-  return /** @type {ol.layer.ImageLayer} */ (this.getLayer());
+  return /** @type {ol.layer.Image} */ (this.getLayer());
 };
 
 
