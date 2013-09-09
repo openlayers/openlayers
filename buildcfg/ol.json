@@ -21,7 +21,7 @@
     "../externs/oli.js",
     "../externs/proj4js.js",
     "../externs/tilejson.js",
-    "../externs/html5.js"
+    "../externs/closure-compiler.js"
   ],
 
   "inherits": "base.json",

@@ -316,7 +316,7 @@ def examples_star_json(name, match):
                 '../externs/oli.js',
                 '../externs/proj4js.js',
                 '../externs/tilejson.js',
-                '../externs/html5.js',
+                '../externs/closure-compiler.js',
             ],
         })
         with open(t.name, 'w') as f:
