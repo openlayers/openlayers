@@ -6,7 +6,7 @@ goog.require('ol.Projection');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
 goog.require('ol.proj');
-goog.require('ol.source.ImageTileSource');
+goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.XYZ');
 
 
@@ -28,7 +28,7 @@ ol.source.XYZOptions;
 
 /**
  * @constructor
- * @extends {ol.source.ImageTileSource}
+ * @extends {ol.source.TileImage}
  * @param {ol.source.XYZOptions} options XYZ options.
  */
 ol.source.XYZ = function(options) {
@@ -72,4 +72,4 @@ ol.source.XYZ = function(options) {
   });
 
 };
-goog.inherits(ol.source.XYZ, ol.source.ImageTileSource);
+goog.inherits(ol.source.XYZ, ol.source.TileImage);

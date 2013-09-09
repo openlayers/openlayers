@@ -12,7 +12,7 @@ goog.require('ol.Tile');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.extent');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.math');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.tilelayer.shader');
@@ -24,7 +24,7 @@ goog.require('ol.structs.Buffer');
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
- * @param {ol.layer.TileLayer} tileLayer Tile layer.
+ * @param {ol.layer.Tile} tileLayer Tile layer.
  */
 ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
@@ -88,10 +88,10 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
 
 /**
  * @protected
- * @return {ol.layer.TileLayer} Tile layer.
+ * @return {ol.layer.Tile} Tile layer.
  */
 ol.renderer.webgl.TileLayer.prototype.getTileLayer = function() {
-  return /** @type {ol.layer.TileLayer} */ (this.getLayer());
+  return /** @type {ol.layer.Tile} */ (this.getLayer());
 };
 
 

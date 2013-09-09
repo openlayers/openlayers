@@ -2,7 +2,7 @@ goog.require('ol.Attribution');
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
-goog.require('ol.layer.ImageLayer');
+goog.require('ol.layer.Image');
 goog.require('ol.proj');
 goog.require('ol.source.SingleImageWMS');
 
@@ -14,7 +14,7 @@ var projection = ol.proj.configureProj4jsProjection({
 
 var extent = [420000, 900000, 30000, 350000];
 var layers = [
-  new ol.layer.ImageLayer({
+  new ol.layer.Image({
     source: new ol.source.SingleImageWMS({
       url: 'http://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
@@ -31,7 +31,7 @@ var layers = [
       extent: extent
     })
   }),
-  new ol.layer.ImageLayer({
+  new ol.layer.Image({
     source: new ol.source.SingleImageWMS({
       url: 'http://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',

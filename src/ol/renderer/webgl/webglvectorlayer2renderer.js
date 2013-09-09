@@ -13,7 +13,7 @@ goog.require('ol.renderer.webgl.vectorlayer2.shader.PointCollection');
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
- * @param {ol.layer.VectorLayer2} vectorLayer2 Vector layer.
+ * @param {ol.layer.Vector2} vectorLayer2 Vector layer.
  */
 ol.renderer.webgl.VectorLayer2 = function(mapRenderer, vectorLayer2) {
 
@@ -45,10 +45,10 @@ goog.inherits(ol.renderer.webgl.VectorLayer2, ol.renderer.webgl.Layer);
 
 
 /**
- * @return {ol.layer.VectorLayer2} Vector layer.
+ * @return {ol.layer.Vector2} Vector layer.
  */
 ol.renderer.webgl.VectorLayer2.prototype.getVectorLayer = function() {
-  return /** @type {ol.layer.VectorLayer2} */ (this.getLayer());
+  return /** @type {ol.layer.Vector2} */ (this.getLayer());
 };
 
 

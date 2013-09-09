@@ -5,14 +5,14 @@ goog.require('ol.Image');
 goog.require('ol.ImageUrlFunction');
 goog.require('ol.extent');
 goog.require('ol.source.FeatureInfoSource');
-goog.require('ol.source.ImageSource');
+goog.require('ol.source.Image');
 goog.require('ol.source.wms');
 
 
 
 /**
  * @constructor
- * @extends {ol.source.ImageSource}
+ * @extends {ol.source.Image}
  * @implements {ol.source.FeatureInfoSource}
  * @param {ol.source.SingleImageWMSOptions} options Options.
  */
@@ -52,7 +52,7 @@ ol.source.SingleImageWMS = function(options) {
       options.ratio : 1.5;
 
 };
-goog.inherits(ol.source.SingleImageWMS, ol.source.ImageSource);
+goog.inherits(ol.source.SingleImageWMS, ol.source.Image);
 
 
 /**

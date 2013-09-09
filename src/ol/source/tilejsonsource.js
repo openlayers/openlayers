@@ -15,7 +15,7 @@ goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
 goog.require('ol.proj');
-goog.require('ol.source.ImageTileSource');
+goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.XYZ');
 
 
@@ -38,7 +38,7 @@ goog.exportSymbol('grid', grid);
 
 /**
  * @constructor
- * @extends {ol.source.ImageTileSource}
+ * @extends {ol.source.TileImage}
  * @param {ol.source.TileJSONOptions} options TileJSON options.
  */
 ol.source.TileJSON = function(options) {
@@ -62,7 +62,7 @@ ol.source.TileJSON = function(options) {
   this.deferred_.addCallback(this.handleTileJSONResponse, this);
 
 };
-goog.inherits(ol.source.TileJSON, ol.source.ImageTileSource);
+goog.inherits(ol.source.TileJSON, ol.source.TileImage);
 
 
 /**

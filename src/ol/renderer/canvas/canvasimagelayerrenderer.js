@@ -6,7 +6,7 @@ goog.require('goog.vec.Mat4');
 goog.require('ol.Image');
 goog.require('ol.ImageState');
 goog.require('ol.ViewHint');
-goog.require('ol.layer.ImageLayer');
+goog.require('ol.layer.Image');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
 
@@ -16,7 +16,7 @@ goog.require('ol.renderer.canvas.Layer');
  * @constructor
  * @extends {ol.renderer.canvas.Layer}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
- * @param {ol.layer.ImageLayer} imageLayer Single image layer.
+ * @param {ol.layer.Image} imageLayer Single image layer.
  */
 ol.renderer.canvas.ImageLayer = function(mapRenderer, imageLayer) {
 
@@ -49,10 +49,10 @@ ol.renderer.canvas.ImageLayer.prototype.getImage = function() {
 
 /**
  * @protected
- * @return {ol.layer.ImageLayer} Single image layer.
+ * @return {ol.layer.Image} Single image layer.
  */
 ol.renderer.canvas.ImageLayer.prototype.getImageLayer = function() {
-  return /** @type {ol.layer.ImageLayer} */ (this.getLayer());
+  return /** @type {ol.layer.Image} */ (this.getLayer());
 };
 
 

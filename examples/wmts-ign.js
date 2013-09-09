@@ -2,7 +2,7 @@ goog.require('ol.Attribution');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.parser.ogc.WMTSCapabilities');
 goog.require('ol.source.WMTS');
 
@@ -70,7 +70,7 @@ xhr.onload = function() {
       sourceOptions.attributions = [attribution];
       sourceOptions.logo = layerLogos[i];
       source = new ol.source.WMTS(sourceOptions);
-      layer = new ol.layer.TileLayer({source: source});
+      layer = new ol.layer.Tile({source: source});
       map.addLayer(layer);
     }
 

@@ -1,4 +1,4 @@
-goog.provide('ol.layer.LayerGroup');
+goog.provide('ol.layer.Group');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -10,14 +10,13 @@ goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Object');
-goog.require('ol.layer.Layer');
-goog.require('ol.layer.LayerBase');
+goog.require('ol.layer.Base');
 
 
 /**
  * @enum {string}
  */
-ol.layer.LayerGroupProperty = {
+ol.layer.GroupProperty = {
   LAYERS: 'layers'
 };
 
@@ -25,13 +24,13 @@ ol.layer.LayerGroupProperty = {
 
 /**
  * @constructor
- * @extends {ol.layer.LayerBase}
- * @param {ol.layer.LayerGroupOptions=} opt_options Layer options.
+ * @extends {ol.layer.Base}
+ * @param {ol.layer.GroupOptions=} opt_options Layer options.
  */
-ol.layer.LayerGroup = function(opt_options) {
+ol.layer.Group = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
-  var baseOptions = /** @type {ol.layer.LayerGroupOptions} */
+  var baseOptions = /** @type {ol.layer.GroupOptions} */
       (goog.object.clone(options));
   delete baseOptions.layers;
 
@@ -46,7 +45,7 @@ ol.layer.LayerGroup = function(opt_options) {
   this.listenerKeys_ = null;
 
   goog.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.LayerGroupProperty.LAYERS),
+      ol.Object.getChangeEventType(ol.layer.GroupProperty.LAYERS),
       this.handleLayersChanged_, false, this);
 
   if (goog.isDef(layers)) {
@@ -63,13 +62,13 @@ ol.layer.LayerGroup = function(opt_options) {
   this.setLayers(layers);
 
 };
-goog.inherits(ol.layer.LayerGroup, ol.layer.LayerBase);
+goog.inherits(ol.layer.Group, ol.layer.Base);
 
 
 /**
  * @inheritDoc
  */
-ol.layer.LayerGroup.prototype.handleLayerChange = function() {
+ol.layer.Group.prototype.handleLayerChange = function() {
   if (this.getVisible()) {
     this.dispatchChangeEvent();
   }
@@ -79,7 +78,7 @@ ol.layer.LayerGroup.prototype.handleLayerChange = function() {
 /**
  * @inheritDoc
  */
-ol.layer.LayerGroup.prototype.handleLayerVisibleChange = function() {
+ol.layer.Group.prototype.handleLayerVisibleChange = function() {
   this.dispatchChangeEvent();
 };
 
@@ -88,7 +87,7 @@ ol.layer.LayerGroup.prototype.handleLayerVisibleChange = function() {
  * @param {goog.events.Event} event Event.
  * @private
  */
-ol.layer.LayerGroup.prototype.handleLayersChanged_ = function(event) {
+ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
   if (!goog.isNull(this.listenerKeys_)) {
     goog.array.forEach(
         goog.object.getValues(this.listenerKeys_), goog.events.unlistenByKey);
@@ -122,8 +121,8 @@ ol.layer.LayerGroup.prototype.handleLayersChanged_ = function(event) {
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  * @private
  */
-ol.layer.LayerGroup.prototype.handleLayersAdd_ = function(collectionEvent) {
-  var layer = /** @type {ol.layer.LayerBase} */ (collectionEvent.getElement());
+ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
+  var layer = /** @type {ol.layer.Base} */ (collectionEvent.getElement());
   this.listenerKeys_[goog.getUid(layer).toString()] = goog.events.listen(
       layer, goog.events.EventType.CHANGE, this.handleLayerChange, false,
       this);
@@ -135,8 +134,8 @@ ol.layer.LayerGroup.prototype.handleLayersAdd_ = function(collectionEvent) {
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  * @private
  */
-ol.layer.LayerGroup.prototype.handleLayersRemove_ = function(collectionEvent) {
-  var layer = /** @type {ol.layer.LayerBase} */ (collectionEvent.getElement());
+ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
+  var layer = /** @type {ol.layer.Base} */ (collectionEvent.getElement());
   var key = goog.getUid(layer).toString();
   goog.events.unlistenByKey(this.listenerKeys_[key]);
   delete this.listenerKeys_[key];
@@ -147,32 +146,32 @@ ol.layer.LayerGroup.prototype.handleLayersRemove_ = function(collectionEvent) {
 /**
  * @return {ol.Collection} Collection of layers.
  */
-ol.layer.LayerGroup.prototype.getLayers = function() {
+ol.layer.Group.prototype.getLayers = function() {
   return /** @type {ol.Collection} */ (this.get(
-      ol.layer.LayerGroupProperty.LAYERS));
+      ol.layer.GroupProperty.LAYERS));
 };
 goog.exportProperty(
-    ol.layer.LayerGroup.prototype,
+    ol.layer.Group.prototype,
     'getLayers',
-    ol.layer.LayerGroup.prototype.getLayers);
+    ol.layer.Group.prototype.getLayers);
 
 
 /**
  * @param {ol.Collection} layers Collection of layers.
  */
-ol.layer.LayerGroup.prototype.setLayers = function(layers) {
-  this.set(ol.layer.LayerGroupProperty.LAYERS, layers);
+ol.layer.Group.prototype.setLayers = function(layers) {
+  this.set(ol.layer.GroupProperty.LAYERS, layers);
 };
 goog.exportProperty(
-    ol.layer.LayerGroup.prototype,
+    ol.layer.Group.prototype,
     'setLayers',
-    ol.layer.LayerGroup.prototype.setLayers);
+    ol.layer.Group.prototype.setLayers);
 
 
 /**
  * @inheritDoc
  */
-ol.layer.LayerGroup.prototype.getLayersArray = function(opt_array) {
+ol.layer.Group.prototype.getLayersArray = function(opt_array) {
   var array = (goog.isDef(opt_array)) ? opt_array : [];
   this.getLayers().forEach(function(layer) {
     layer.getLayersArray(array);
@@ -184,7 +183,7 @@ ol.layer.LayerGroup.prototype.getLayersArray = function(opt_array) {
 /**
  * @inheritDoc
  */
-ol.layer.LayerGroup.prototype.getLayerStatesArray = function(opt_obj) {
+ol.layer.Group.prototype.getLayerStatesArray = function(opt_obj) {
   var obj = (goog.isDef(opt_obj)) ? opt_obj : {
     layers: [],
     layerStates: []
@@ -216,7 +215,7 @@ ol.layer.LayerGroup.prototype.getLayerStatesArray = function(opt_obj) {
 /**
  * @inheritDoc
  */
-ol.layer.LayerGroup.prototype.isReady = function() {
+ol.layer.Group.prototype.isReady = function() {
   return null === goog.array.find(
       this.getLayers().getArray(), function(elt, index, array) {
         return !elt.isReady();
