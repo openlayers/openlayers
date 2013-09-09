@@ -53,7 +53,7 @@ goog.require('ol.ViewHint');
 goog.require('ol.control');
 goog.require('ol.extent');
 goog.require('ol.interaction');
-goog.require('ol.layer.LayerBase');
+goog.require('ol.layer.Base');
 goog.require('ol.layer.LayerGroup');
 goog.require('ol.proj');
 goog.require('ol.proj.common');
@@ -366,7 +366,7 @@ ol.Map.prototype.addControl = function(control) {
 
 /**
  * Adds the given layer to the top of this map.
- * @param {ol.layer.LayerBase} layer Layer.
+ * @param {ol.layer.Base} layer Layer.
  */
 ol.Map.prototype.addLayer = function(layer) {
   var layers = this.getLayerGroup().getLayers();
@@ -874,14 +874,14 @@ ol.Map.prototype.removeControl = function(control) {
 
 /**
  * Removes the given layer from the map.
- * @param {ol.layer.LayerBase} layer Layer.
- * @return {ol.layer.LayerBase|undefined} The removed layer or undefined if the
+ * @param {ol.layer.Base} layer Layer.
+ * @return {ol.layer.Base|undefined} The removed layer or undefined if the
  *     layer was not found.
  */
 ol.Map.prototype.removeLayer = function(layer) {
   var layers = this.getLayerGroup().getLayers();
   goog.asserts.assert(goog.isDef(layers));
-  return /** @type {ol.layer.LayerBase|undefined} */ (layers.remove(layer));
+  return /** @type {ol.layer.Base|undefined} */ (layers.remove(layer));
 };
 
 
