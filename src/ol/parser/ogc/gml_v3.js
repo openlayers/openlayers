@@ -9,6 +9,9 @@ goog.require('ol.parser.ogc.GML');
 
 
 /**
+ * Read and write [GML](http://www.opengeospatial.org/standards/gml)
+ * version 3.1.1
+ *
  * @constructor
  * @param {ol.parser.GMLOptions=} opt_options Optional configuration object.
  * @extends {ol.parser.ogc.GML}

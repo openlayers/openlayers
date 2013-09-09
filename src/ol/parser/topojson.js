@@ -17,6 +17,8 @@ goog.require('ol.parser.StringFeatureParser');
 
 
 /**
+ * Read [TopoJSON](https://github.com/mbostock/topojson)
+ *
  * @constructor
  * @implements {ol.parser.StringFeatureParser}
  * @extends {ol.parser.Parser}

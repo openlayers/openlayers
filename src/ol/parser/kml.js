@@ -34,6 +34,9 @@ goog.require('ol.style.Stroke');
 
 
 /**
+ * Read and write [KML](http://www.opengeospatial.org/standards/kml)
+ * version 2.2
+ *
  * @constructor
  * @implements {ol.parser.DomFeatureParser}
  * @implements {ol.parser.StringFeatureParser}
