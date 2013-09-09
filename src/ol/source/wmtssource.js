@@ -43,6 +43,13 @@ ol.source.WMTS = function(options) {
    */
   this.dimensions_ = options.dimensions || {};
 
+  /**
+   * @private
+   * @type {string}
+   */
+  this.coordKeyPrefix_ = '';
+  this.resetCoordKeyPrefix_();
+
   // FIXME: should we guess this requestEncoding from options.url(s)
   //        structure? that would mean KVP only if a template is not provided.
   var requestEncoding = goog.isDef(options.requestEncoding) ?
@@ -192,8 +199,20 @@ ol.source.WMTS.prototype.getDimensions = function() {
  * @inheritDoc
  */
 ol.source.WMTS.prototype.getKeyZXY = function(z, x, y) {
-  return goog.object.getValues(this.dimensions_).join('/') +
-      goog.base(this, 'getKeyZXY', z, x, y);
+  return this.coordKeyPrefix_ + goog.base(this, 'getKeyZXY', z, x, y);
+};
+
+
+/**
+ * @private
+ */
+ol.source.WMTS.prototype.resetCoordKeyPrefix_ = function() {
+  var i = 0;
+  var res = [];
+  for (var key in this.dimensions_) {
+    res[i++] = key + '-' + this.dimensions_[key];
+  }
+  this.coordKeyPrefix_ = res.join('/');
 };
 
 
@@ -203,6 +222,7 @@ ol.source.WMTS.prototype.getKeyZXY = function(z, x, y) {
  */
 ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
   goog.object.extend(this.dimensions_, dimensions);
+  this.resetCoordKeyPrefix_();
   this.dispatchChangeEvent();
 };
 

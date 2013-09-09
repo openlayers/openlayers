@@ -40,6 +40,13 @@ ol.source.TileWMS = function(options) {
    */
   this.params_ = options.params;
 
+  /**
+   * @private
+   * @type {string}
+   */
+  this.coordKeyPrefix_ = '';
+  this.resetCoordKeyPrefix_();
+
   if (goog.isDef(urls)) {
     var tileUrlFunctions = goog.array.map(
         urls, function(url) {
@@ -108,8 +115,7 @@ goog.inherits(ol.source.TileWMS, ol.source.TileImage);
  * @inheritDoc
  */
 ol.source.TileWMS.prototype.getKeyZXY = function(z, x, y) {
-  return goog.object.getValues(this.params_).join('/') +
-      goog.base(this, 'getKeyZXY', z, x, y);
+  return this.coordKeyPrefix_ + goog.base(this, 'getKeyZXY', z, x, y);
 };
 
 
@@ -147,10 +153,24 @@ ol.source.TileWMS.prototype.getFeatureInfoForPixel =
 
 
 /**
+ * @private
+ */
+ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
+  var i = 0;
+  var res = [];
+  for (var key in this.params_) {
+    res[i++] = key + '-' + this.params_[key];
+  }
+  this.coordKeyPrefix_ = res.join('/');
+};
+
+
+/**
  * Update the user-provided params.
  * @param {Object} params Params.
  */
 ol.source.TileWMS.prototype.updateParams = function(params) {
   goog.object.extend(this.params_, params);
+  this.resetCoordKeyPrefix_();
   this.dispatchChangeEvent();
 };
