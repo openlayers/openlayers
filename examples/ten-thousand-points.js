@@ -6,7 +6,7 @@ goog.require('ol.control.MousePosition');
 goog.require('ol.geom2.LineStringCollection');
 goog.require('ol.geom2.PointCollection');
 goog.require('ol.layer.Tile');
-goog.require('ol.layer.VectorLayer2');
+goog.require('ol.layer.Vector2');
 goog.require('ol.source.OSM');
 goog.require('ol.source.Vector2');
 goog.require('ol.webgl.SUPPORTED');
@@ -59,7 +59,7 @@ if (!ol.webgl.SUPPORTED) {
       new ol.layer.Tile({
         source: new ol.source.OSM()
       }),
-      new ol.layer.VectorLayer2({
+      new ol.layer.Vector2({
         source: new ol.source.Vector2({
           lineStringCollections: [lineStringCollection],
           projection: 'EPSG:3857',
