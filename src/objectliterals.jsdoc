@@ -457,7 +457,7 @@
  */
 
 /**
- * @typedef {Object} ol.source.DebugTileSourceOptions
+ * @typedef {Object} ol.source.TileDebugOptions
  * @property {ol.Extent|undefined} extent Extent.
  * @property {ol.ProjectionLike} projection Projection.
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.

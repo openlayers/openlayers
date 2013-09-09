@@ -1,4 +1,4 @@
-goog.provide('ol.source.DebugTileSource');
+goog.provide('ol.source.TileDebug');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -84,9 +84,9 @@ ol.DebugTile_.prototype.getImage = function(opt_context) {
 /**
  * @constructor
  * @extends {ol.source.Tile}
- * @param {ol.source.DebugTileSourceOptions} options Debug tile options.
+ * @param {ol.source.TileDebugOptions} options Debug tile options.
  */
-ol.source.DebugTileSource = function(options) {
+ol.source.TileDebug = function(options) {
 
   goog.base(this, {
     extent: options.extent,
@@ -102,13 +102,13 @@ ol.source.DebugTileSource = function(options) {
   this.tileCache_ = new ol.TileCache();
 
 };
-goog.inherits(ol.source.DebugTileSource, ol.source.Tile);
+goog.inherits(ol.source.TileDebug, ol.source.Tile);
 
 
 /**
  * @inheritDoc
  */
-ol.source.DebugTileSource.prototype.canExpireCache = function() {
+ol.source.TileDebug.prototype.canExpireCache = function() {
   return this.tileCache_.canExpireCache();
 };
 
@@ -116,7 +116,7 @@ ol.source.DebugTileSource.prototype.canExpireCache = function() {
 /**
  * @inheritDoc
  */
-ol.source.DebugTileSource.prototype.expireCache = function(usedTiles) {
+ol.source.TileDebug.prototype.expireCache = function(usedTiles) {
   this.tileCache_.expireCache(usedTiles);
 };
 
@@ -124,7 +124,7 @@ ol.source.DebugTileSource.prototype.expireCache = function(usedTiles) {
 /**
  * @inheritDoc
  */
-ol.source.DebugTileSource.prototype.getTile = function(z, x, y) {
+ol.source.TileDebug.prototype.getTile = function(z, x, y) {
   var tileCoordKey = ol.TileCoord.getKeyZXY(z, x, y);
   if (this.tileCache_.containsKey(tileCoordKey)) {
     return /** @type {!ol.DebugTile_} */ (this.tileCache_.get(tileCoordKey));
