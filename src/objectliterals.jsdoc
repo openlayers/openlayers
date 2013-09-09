@@ -564,7 +564,7 @@
  */
 
 /**
- * @typedef {Object} ol.source.VectorSource2Options
+ * @typedef {Object} ol.source.Vector2Options
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {Array.<ol.geom2.LineStringCollection>|undefined}
