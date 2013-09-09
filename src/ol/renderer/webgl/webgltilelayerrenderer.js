@@ -72,6 +72,12 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
    */
   this.renderedFramebufferExtent_ = null;
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.renderedRevision_ = -1;
+
 };
 goog.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
 
@@ -138,7 +144,8 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
 
   var framebufferExtent;
   if (!goog.isNull(this.renderedTileRange_) &&
-      this.renderedTileRange_.equals(tileRange)) {
+      this.renderedTileRange_.equals(tileRange) &&
+      this.renderedRevision_ == tileSource.getRevision()) {
     framebufferExtent = this.renderedFramebufferExtent_;
   } else {
 
@@ -255,9 +262,11 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     if (allTilesLoaded) {
       this.renderedTileRange_ = tileRange;
       this.renderedFramebufferExtent_ = framebufferExtent;
+      this.renderedRevision_ = tileSource.getRevision();
     } else {
       this.renderedTileRange_ = null;
       this.renderedFramebufferExtent_ = null;
+      this.renderedRevision_ = -1;
       frameState.animate = true;
     }
 

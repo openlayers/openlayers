@@ -45,6 +45,12 @@ ol.source.Source = function(options) {
    */
   this.logo_ = options.logo;
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.revision_ = 0;
+
 };
 goog.inherits(ol.source.Source, goog.events.EventTarget);
 
@@ -53,6 +59,7 @@ goog.inherits(ol.source.Source, goog.events.EventTarget);
  * @protected
  */
 ol.source.Source.prototype.dispatchChangeEvent = function() {
+  ++this.revision_;
   this.dispatchEvent(goog.events.EventType.CHANGE);
 };
 
@@ -61,6 +68,7 @@ ol.source.Source.prototype.dispatchChangeEvent = function() {
  * @protected
  */
 ol.source.Source.prototype.dispatchLoadEvent = function() {
+  ++this.revision_;
   this.dispatchEvent(goog.events.EventType.LOAD);
 };
 
@@ -101,6 +109,14 @@ ol.source.Source.prototype.getProjection = function() {
  * @return {Array.<number>|undefined} Resolutions.
  */
 ol.source.Source.prototype.getResolutions = goog.abstractMethod;
+
+
+/**
+ * @return {number} Revision.
+ */
+ol.source.Source.prototype.getRevision = function() {
+  return this.revision_;
+};
 
 
 /**
