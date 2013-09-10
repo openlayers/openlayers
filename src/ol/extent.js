@@ -44,15 +44,7 @@ ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
   var maxX = Math.max.apply(null, xs);
   var minY = Math.min.apply(null, ys);
   var maxY = Math.max.apply(null, ys);
-  if (goog.isDef(opt_extent)) {
-    opt_extent[0] = minX;
-    opt_extent[1] = maxX;
-    opt_extent[2] = minY;
-    opt_extent[3] = maxY;
-    return opt_extent;
-  } else {
-    return [minX, maxX, minY, maxY];
-  }
+  return ol.extent.createOrUpdate(minX, maxX, minY, maxY, opt_extent);
 };
 
 
