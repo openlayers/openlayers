@@ -19,7 +19,7 @@ goog.require('ol.source.wms');
  * @constructor
  * @extends {ol.source.TileImage}
  * @implements {ol.source.FeatureInfoSource}
- * @param {ol.source.TileWMSOptions} options Tiled WMS options.
+ * @param {ol.source.TileWMSOptions} options Tile WMS options.
  */
 ol.source.TileWMS = function(options) {
 
