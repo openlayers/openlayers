@@ -588,7 +588,7 @@
  * @typedef {Object} ol.source.WMTSOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {string|null|undefined} crossOrigin crossOrigin setting for image
- *     requeests.
+ *     requests.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {ol.tilegrid.WMTS} tileGrid Tile grid.
  * @property {ol.ProjectionLike} projection Projection.
@@ -596,6 +596,7 @@
  *     encoding.
  * @property {string} layer Layer.
  * @property {string} style Style.
+ * @property {string|undefined} version WMTS version. Default to '1.0.0'.
  * @property {string|undefined} format Format.
  * @property {string} matrixSet Matrix set.
  * @property {Object|undefined} dimensions Dimensions.
