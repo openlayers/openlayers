@@ -130,7 +130,7 @@
  * @property {number} resolution The resolution to start the bounce from, typically `map.getView().getResolution()`.
  * @property {number|undefined} start The start time of the animation. Default is immediately.
  * @property {number|undefined} duration The duration of the animation in milliseconds. Default is 1000.
- * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.inAndOut`
+ * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.upAndDown`
  */
 
 /**
