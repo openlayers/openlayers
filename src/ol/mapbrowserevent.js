@@ -130,12 +130,12 @@ ol.MapBrowserEventHandler = function(map) {
   this.dragged_ = false;
 
   /**
-   * Timestamp for the first click of a double click. Will be set back to 0
-   * as soon as a double click is detected.
-   * @type {?number}
+   * Timestamp for the first tap of a double tap. Will be set back to 0
+   * as soon as a double tap is detected.
+   * @type {number}
    * @private
    */
-  this.timestamp_ = null;
+  this.timestamp_ = 0;
 
   /**
    * @type {Array.<number>}
@@ -328,18 +328,18 @@ ol.MapBrowserEventHandler.prototype.handleTouchMove_ = function(browserEvent) {
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
-  var newEvent = new ol.MapBrowserEvent(
-      ol.MapBrowserEvent.EventType.TOUCHEND, this.map_, browserEvent);
-  this.dispatchEvent(newEvent);
+  this.relayEvent_(browserEvent);
   if (!this.dragged_) {
     var now = goog.now();
-    if (!this.timestamp_ || now - this.timestamp_ > 250) {
+    if (this.timestamp_ === 0 || now - this.timestamp_ > 250) {
       this.timestamp_ = now;
     } else {
       this.timestamp_ = 0;
     }
-    if (!goog.isNull(this.down_)) {
-      this.click_(this.down_);
+    if (!goog.isNull(this.down_) && this.timestamp_ === 0) {
+      var newEvent = new ol.MapBrowserEvent(
+          ol.MapBrowserEvent.EventType.DBLTAP, this.map_, this.down_);
+      this.dispatchEvent(newEvent);
     }
   }
   this.down_ = null;
@@ -373,6 +373,7 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
 ol.MapBrowserEvent.EventType = {
   CLICK: goog.events.EventType.CLICK,
   DBLCLICK: goog.events.EventType.DBLCLICK,
+  DBLTAP: 'dbltap',
   DOWN: 'down',
   DRAGSTART: 'dragstart',
   DRAG: 'drag',
