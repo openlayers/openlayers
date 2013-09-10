@@ -150,6 +150,12 @@ ol.MapBrowserEventHandler = function(map) {
   this.dragListenerKeys_ = null;
 
   /**
+   * @type {number|undefined}
+   * @private
+   */
+  this.singleClickTimeoutId_ = undefined;
+
+  /**
    * @type {Array.<number>}
    * @private
    */
@@ -164,8 +170,10 @@ ol.MapBrowserEventHandler = function(map) {
   var element = this.map_.getViewport();
   this.listenerKeys_ = [
     goog.events.listen(element,
-        [goog.events.EventType.CLICK, goog.events.EventType.CONTEXTMENU,
-          goog.events.EventType.DBLCLICK],
+        goog.events.EventType.CLICK,
+        this.handleClick_, false, this),
+    goog.events.listen(element,
+        [goog.events.EventType.CONTEXTMENU, goog.events.EventType.DBLCLICK],
         this.relayEvent_, false, this),
     goog.events.listen(element,
         goog.events.EventType.MOUSEDOWN,
@@ -195,6 +203,29 @@ ol.MapBrowserEventHandler = function(map) {
 
 };
 goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
+
+
+/**
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @private
+ */
+ol.MapBrowserEventHandler.prototype.handleClick_ = function(browserEvent) {
+  this.relayEvent_(browserEvent);
+  if (!this.dragged_) {
+    if (goog.isDef(this.singleClickTimeoutId_)) {
+      goog.global.clearTimeout(this.singleClickTimeoutId_);
+      this.singleClickTimeoutId_ = undefined;
+    } else {
+      this.singleClickTimeoutId_ = goog.global.setTimeout(
+          goog.bind(function(be) {
+            var newEvent = new ol.MapBrowserEvent(
+                ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_, be);
+            this.dispatchEvent(newEvent);
+            this.singleClickTimeoutId_ = undefined;
+          }, this, browserEvent), 250);
+    }
+  }
+};
 
 
 /**
@@ -351,6 +382,7 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
  */
 ol.MapBrowserEvent.EventType = {
   CLICK: goog.events.EventType.CLICK,
+  CONTEXTMENU: goog.events.EventType.CONTEXTMENU,
   DBLCLICK: goog.events.EventType.DBLCLICK,
   DBLTAP: 'dbltap',
   DOWN: 'down',
@@ -362,5 +394,5 @@ ol.MapBrowserEvent.EventType = {
   TOUCHEND: goog.events.EventType.TOUCHEND,
   MOUSEMOVE: goog.events.EventType.MOUSEMOVE,
   MOUSEOUT: goog.events.EventType.MOUSEOUT,
-  CONTEXTMENU: goog.events.EventType.CONTEXTMENU
+  SINGLECLICK: 'singleclick'
 };
