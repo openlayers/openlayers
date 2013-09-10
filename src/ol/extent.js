@@ -87,16 +87,16 @@ ol.extent.createEmpty = function() {
  * @param {number} maxX Maximum X.
  * @param {number} minY Minimum Y.
  * @param {number} maxY Maximum Y.
- * @param {ol.Extent|undefined} extent Extent.
+ * @param {ol.Extent=} opt_extent Destination extent.
  * @return {ol.Extent} Extent.
  */
-ol.extent.createOrUpdate = function(minX, maxX, minY, maxY, extent) {
-  if (goog.isDef(extent)) {
-    extent[0] = minX;
-    extent[1] = maxX;
-    extent[2] = minY;
-    extent[3] = maxY;
-    return extent;
+ol.extent.createOrUpdate = function(minX, maxX, minY, maxY, opt_extent) {
+  if (goog.isDef(opt_extent)) {
+    opt_extent[0] = minX;
+    opt_extent[1] = maxX;
+    opt_extent[2] = minY;
+    opt_extent[3] = maxY;
+    return opt_extent;
   } else {
     return [minX, maxX, minY, maxY];
   }
