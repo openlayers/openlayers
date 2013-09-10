@@ -979,6 +979,15 @@ ol.Map.prototype.renderFrame_ = function(time) {
     }
     Array.prototype.push.apply(
         this.postRenderFunctions_, frameState.postRenderFunctions);
+
+    var idle = this.preRenderFunctions_.length == 0 &&
+        !frameState.animate &&
+        !frameState.viewHints[ol.ViewHint.ANIMATING] &&
+        !frameState.viewHints[ol.ViewHint.INTERACTING];
+
+    if (idle) {
+      this.dispatchEvent(new ol.MapEvent(ol.MapEventType.MOVEEND, this));
+    }
   }
 
   this.dispatchEvent(
