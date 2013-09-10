@@ -90,7 +90,7 @@ ol.source.TileImage.prototype.expireCache = function(usedTiles) {
  * @inheritDoc
  */
 ol.source.TileImage.prototype.getTile = function(z, x, y, projection) {
-  var tileCoordKey = ol.TileCoord.getKeyZXY(z, x, y);
+  var tileCoordKey = this.getKeyZXY(z, x, y);
   if (this.tileCache_.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache_.get(tileCoordKey));
   } else {
@@ -112,7 +112,7 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, projection) {
  * @inheritDoc
  */
 ol.source.TileImage.prototype.useTile = function(z, x, y) {
-  var tileCoordKey = ol.TileCoord.getKeyZXY(z, x, y);
+  var tileCoordKey = this.getKeyZXY(z, x, y);
   if (this.tileCache_.containsKey(tileCoordKey)) {
     this.tileCache_.get(tileCoordKey);
   }
