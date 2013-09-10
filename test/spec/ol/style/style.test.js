@@ -122,56 +122,68 @@ describe('ol.style.Style', function() {
 
   });
 
-  describe('ol.style.Style.defaults.createLiterals(feature)', function() {
-    var feature = new ol.Feature();
+  describe('ol.style.getDefault()', function() {
+    var style = ol.style.getDefault();
 
-    it('returns an empty array for features without geometry', function() {
-      expect(ol.style.Style.defaults.createLiterals(feature))
-          .to.have.length(0);
+    it('is a ol.style.Style instance', function() {
+      expect(style).to.be.a(ol.style.Style);
     });
 
-    it('returns an array with the Shape default for points', function() {
-      feature.setGeometry(new ol.geom.Point([0, 0]));
+    describe('#createLiterals()', function() {
 
-      var literals = ol.style.Style.defaults.createLiterals(feature);
-      expect(literals).to.have.length(1);
+      it('returns an empty array for features without geometry', function() {
+        var feature = new ol.Feature();
+        expect(style.createLiterals(feature))
+            .to.have.length(0);
+      });
 
-      var literal = literals[0];
-      expect(literal).to.be.a(ol.style.ShapeLiteral);
-      expect(literal.type).to.be(ol.style.ShapeDefaults.type);
-      expect(literal.fillColor).to.be(ol.style.FillDefaults.color);
-      expect(literal.fillOpacity).to.be(ol.style.FillDefaults.opacity);
-      expect(literal.strokeColor).to.be(ol.style.StrokeDefaults.color);
-      expect(literal.strokeOpacity).to.be(ol.style.StrokeDefaults.opacity);
-      expect(literal.strokeWidth).to.be(ol.style.StrokeDefaults.width);
-    });
+      it('returns an array with the Shape default for points', function() {
+        var feature = new ol.Feature();
+        feature.setGeometry(new ol.geom.Point([0, 0]));
 
-    it('returns an array with the Line default for lines', function() {
-      feature.setGeometry(new ol.geom.LineString([[0, 0], [1, 1]]));
+        var literals = style.createLiterals(feature);
+        expect(literals).to.have.length(1);
 
-      var literals = ol.style.Style.defaults.createLiterals(feature);
-      expect(literals).to.have.length(1);
+        var literal = literals[0];
+        expect(literal).to.be.a(ol.style.ShapeLiteral);
+        expect(literal.type).to.be(ol.style.ShapeDefaults.type);
+        expect(literal.fillColor).to.be(ol.style.FillDefaults.color);
+        expect(literal.fillOpacity).to.be(ol.style.FillDefaults.opacity);
+        expect(literal.strokeColor).to.be(ol.style.StrokeDefaults.color);
+        expect(literal.strokeOpacity).to.be(ol.style.StrokeDefaults.opacity);
+        expect(literal.strokeWidth).to.be(ol.style.StrokeDefaults.width);
+      });
 
-      var literal = literals[0];
-      expect(literal).to.be.a(ol.style.LineLiteral);
-      expect(literal.color).to.be(ol.style.StrokeDefaults.color);
-      expect(literal.opacity).to.be(ol.style.StrokeDefaults.opacity);
-      expect(literal.width).to.be(ol.style.StrokeDefaults.width);
-    });
+      it('returns an array with the Line default for lines', function() {
+        var feature = new ol.Feature();
+        feature.setGeometry(new ol.geom.LineString([[0, 0], [1, 1]]));
 
-    it('returns an array with the Polygon default for polygons', function() {
-      feature.setGeometry(new ol.geom.Polygon([[[0, 0], [1, 1], [0, 0]]]));
+        var literals = style.createLiterals(feature);
+        expect(literals).to.have.length(1);
 
-      var literals = ol.style.Style.defaults.createLiterals(feature);
-      expect(literals).to.have.length(1);
+        var literal = literals[0];
+        expect(literal).to.be.a(ol.style.LineLiteral);
+        expect(literal.color).to.be(ol.style.StrokeDefaults.color);
+        expect(literal.opacity).to.be(ol.style.StrokeDefaults.opacity);
+        expect(literal.width).to.be(ol.style.StrokeDefaults.width);
+      });
 
-      var literal = literals[0];
-      expect(literal).to.be.a(ol.style.PolygonLiteral);
-      expect(literal.fillColor).to.be(ol.style.FillDefaults.color);
-      expect(literal.fillOpacity).to.be(ol.style.FillDefaults.opacity);
-      expect(literal.strokeColor).to.be(ol.style.StrokeDefaults.color);
-      expect(literal.strokeOpacity).to.be(ol.style.StrokeDefaults.opacity);
-      expect(literal.strokeWidth).to.be(ol.style.StrokeDefaults.width);
+      it('returns an array with the Polygon default for polygons', function() {
+        var feature = new ol.Feature();
+        feature.setGeometry(new ol.geom.Polygon([[[0, 0], [1, 1], [0, 0]]]));
+
+        var literals = style.createLiterals(feature);
+        expect(literals).to.have.length(1);
+
+        var literal = literals[0];
+        expect(literal).to.be.a(ol.style.PolygonLiteral);
+        expect(literal.fillColor).to.be(ol.style.FillDefaults.color);
+        expect(literal.fillOpacity).to.be(ol.style.FillDefaults.opacity);
+        expect(literal.strokeColor).to.be(ol.style.StrokeDefaults.color);
+        expect(literal.strokeOpacity).to.be(ol.style.StrokeDefaults.opacity);
+        expect(literal.strokeWidth).to.be(ol.style.StrokeDefaults.width);
+      });
+
     });
 
   });
@@ -284,6 +296,7 @@ goog.require('ol.expr');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
+goog.require('ol.style');
 goog.require('ol.style.Fill');
 goog.require('ol.style.LineLiteral');
 goog.require('ol.style.PolygonLiteral');
