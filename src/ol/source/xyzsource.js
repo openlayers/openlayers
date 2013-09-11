@@ -1,7 +1,6 @@
 goog.provide('ol.source.XYZ');
 
 goog.require('ol.Attribution');
-goog.require('ol.Projection');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
 goog.require('ol.proj');
