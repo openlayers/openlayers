@@ -25,14 +25,14 @@ goog.require('ol.tilegrid.TileGrid');
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
  */
-ol.source.ImageTileOptions;
+ol.source.TileImageOptions;
 
 
 
 /**
  * @constructor
  * @extends {ol.source.Tile}
- * @param {ol.source.ImageTileOptions} options Image tile options.
+ * @param {ol.source.TileImageOptions} options Image tile options.
  */
 ol.source.TileImage = function(options) {
 
