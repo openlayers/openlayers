@@ -1,4 +1,4 @@
-goog.provide('ol.source.StaticImage');
+goog.provide('ol.source.ImageStatic');
 
 goog.require('ol.Image');
 goog.require('ol.ImageUrlFunctionType');
@@ -11,11 +11,11 @@ goog.require('ol.source.Image');
 /**
  * @constructor
  * @extends {ol.source.Image}
- * @param {ol.source.StaticImageOptions} options Static image options.
+ * @param {ol.source.ImageStaticOptions} options Options.
  */
-ol.source.StaticImage = function(options) {
+ol.source.ImageStatic = function(options) {
 
-  var imageFunction = ol.source.StaticImage.createImageFunction(
+  var imageFunction = ol.source.ImageStatic.createImageFunction(
       options.url);
 
   var imageExtent = options.imageExtent;
@@ -40,13 +40,13 @@ ol.source.StaticImage = function(options) {
       imageExtent, imageResolution, imageSize, projection);
 
 };
-goog.inherits(ol.source.StaticImage, ol.source.Image);
+goog.inherits(ol.source.ImageStatic, ol.source.Image);
 
 
 /**
  * @inheritDoc
  */
-ol.source.StaticImage.prototype.getImage =
+ol.source.ImageStatic.prototype.getImage =
     function(extent, resolution, projection) {
   if (ol.extent.intersects(extent, this.image_.getExtent())) {
     return this.image_;
@@ -59,7 +59,7 @@ ol.source.StaticImage.prototype.getImage =
  * @param {string|undefined} url URL.
  * @return {ol.ImageUrlFunctionType} Function.
  */
-ol.source.StaticImage.createImageFunction = function(url) {
+ol.source.ImageStatic.createImageFunction = function(url) {
   return (
       /**
        * @param {ol.Extent} extent Extent.
