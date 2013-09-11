@@ -1,4 +1,4 @@
-goog.provide('ol.source.SingleImageWMS');
+goog.provide('ol.source.ImageWMS');
 
 goog.require('goog.asserts');
 goog.require('goog.object');
@@ -15,9 +15,9 @@ goog.require('ol.source.wms');
  * @constructor
  * @extends {ol.source.Image}
  * @implements {ol.source.FeatureInfoSource}
- * @param {ol.source.SingleImageWMSOptions} options Options.
+ * @param {ol.source.ImageWMSOptions} options Options.
  */
-ol.source.SingleImageWMS = function(options) {
+ol.source.ImageWMS = function(options) {
 
   /**
    * @private
@@ -60,7 +60,7 @@ ol.source.SingleImageWMS = function(options) {
       options.ratio : 1.5;
 
 };
-goog.inherits(ol.source.SingleImageWMS, ol.source.Image);
+goog.inherits(ol.source.ImageWMS, ol.source.Image);
 
 
 /**
@@ -68,7 +68,7 @@ goog.inherits(ol.source.SingleImageWMS, ol.source.Image);
  * the "params" option, and possibly updated using the updateParams method.
  * @return {Object} Params.
  */
-ol.source.SingleImageWMS.prototype.getParams = function() {
+ol.source.ImageWMS.prototype.getParams = function() {
   return this.params_;
 };
 
@@ -76,7 +76,7 @@ ol.source.SingleImageWMS.prototype.getParams = function() {
 /**
  * @inheritDoc
  */
-ol.source.SingleImageWMS.prototype.getImage =
+ol.source.ImageWMS.prototype.getImage =
     function(extent, resolution, projection) {
   resolution = this.findNearestResolution(resolution);
 
@@ -101,7 +101,7 @@ ol.source.SingleImageWMS.prototype.getImage =
 /**
  * @inheritDoc
  */
-ol.source.SingleImageWMS.prototype.getFeatureInfoForPixel =
+ol.source.ImageWMS.prototype.getFeatureInfoForPixel =
     function(pixel, map, success, opt_error) {
   var view2D = map.getView().getView2D(),
       projection = view2D.getProjection(),
@@ -111,7 +111,7 @@ ol.source.SingleImageWMS.prototype.getFeatureInfoForPixel =
       extent = [bottomLeft[0], topRight[0], bottomLeft[1], topRight[1]],
       url = this.imageUrlFunction(extent, size, projection);
   goog.asserts.assert(goog.isDef(url),
-      'ol.source.SingleImageWMS#imageUrlFunction does not return a url');
+      'ol.source.ImageWMS#imageUrlFunction does not return a url');
   ol.source.wms.getFeatureInfo(url, pixel, this.getFeatureInfoOptions_, success,
       opt_error);
 };
@@ -121,7 +121,7 @@ ol.source.SingleImageWMS.prototype.getFeatureInfoForPixel =
  * Update the user-provided params.
  * @param {Object} params Params.
  */
-ol.source.SingleImageWMS.prototype.updateParams = function(params) {
+ol.source.ImageWMS.prototype.updateParams = function(params) {
   goog.object.extend(this.params_, params);
   this.image_ = null;
   this.dispatchChangeEvent();

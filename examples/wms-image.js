@@ -3,8 +3,8 @@ goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
+goog.require('ol.source.ImageWMS');
 goog.require('ol.source.MapQuestOpenAerial');
-goog.require('ol.source.SingleImageWMS');
 
 
 var layers = [
@@ -12,7 +12,7 @@ var layers = [
     source: new ol.source.MapQuestOpenAerial()
   }),
   new ol.layer.Image({
-    source: new ol.source.SingleImageWMS({
+    source: new ol.source.ImageWMS({
       url: 'http://demo.opengeo.org/geoserver/wms',
       params: {'LAYERS': 'topp:states'},
       extent: [-13884991, -7455066, 2870341, 6338219]
