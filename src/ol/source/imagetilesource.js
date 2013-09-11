@@ -109,6 +109,19 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, projection) {
 
 
 /**
+ * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
+ */
+ol.source.TileImage.prototype.setTileUrlFunction = function(tileUrlFunction) {
+  // FIXME It should be possible to be more intelligent and avoid clearing the
+  // FIXME cache.  The tile URL function would need to be incorporated into the
+  // FIXME cache key somehow.
+  this.tileCache_.clear();
+  this.tileUrlFunction = tileUrlFunction;
+  this.dispatchChangeEvent();
+};
+
+
+/**
  * @inheritDoc
  */
 ol.source.TileImage.prototype.useTile = function(z, x, y) {
