@@ -613,7 +613,8 @@
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
  * @property {ol.ProjectionLike} projection Projection.
- * @property {number} maxZoom Max zoom.
+ * @property {number|undefined} maxZoom Optional max zoom level.  The default is
+ *     18.
  * @property {number|undefined} minZoom Unsupported (TODO: remove this).
  * @property {ol.TileUrlFunctionType|undefined} tileUrlFunction Optional
  *     function to get tile URL given a tile coordinate and the projection.

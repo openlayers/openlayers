@@ -33,8 +33,10 @@ ol.source.XYZ = function(options) {
         ol.TileUrlFunction.expandUrl(options.url));
   }
 
+  var maxZoom = goog.isDef(options.maxZoom) ? options.maxZoom : 18;
+
   var tileGrid = new ol.tilegrid.XYZ({
-    maxZoom: options.maxZoom
+    maxZoom: maxZoom
   });
 
   var tileCoordTransform = tileGrid.createTileCoordTransform({
