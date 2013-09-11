@@ -23,8 +23,6 @@ ol.source.OSM = function(opt_options) {
     attributions = ol.source.OSM.ATTRIBUTIONS;
   }
 
-  var maxZoom = goog.isDef(options.maxZoom) ? options.maxZoom : 18;
-
   var url = goog.isDef(options.url) ?
       options.url : 'http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
@@ -32,7 +30,7 @@ ol.source.OSM = function(opt_options) {
     attributions: attributions,
     crossOrigin: 'anonymous',
     opaque: true,
-    maxZoom: maxZoom,
+    maxZoom: options.maxZoom,
     url: url
   });
 

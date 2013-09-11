@@ -1,28 +1,11 @@
 goog.provide('ol.source.XYZ');
-goog.provide('ol.source.XYZOptions');
 
 goog.require('ol.Attribution');
-goog.require('ol.Projection');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
 goog.require('ol.proj');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.XYZ');
-
-
-/**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *            crossOrigin: (string|undefined),
- *            extent: (ol.Extent|undefined),
- *            logo: (string|undefined),
- *            maxZoom: number,
- *            minZoom: (number|undefined),
- *            projection: (ol.Projection|undefined),
- *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
- *            url: (string|undefined),
- *            urls: (Array.<string>|undefined)}}
- */
-ol.source.XYZOptions;
 
 
 
@@ -49,9 +32,10 @@ ol.source.XYZ = function(options) {
         ol.TileUrlFunction.expandUrl(options.url));
   }
 
+  var maxZoom = goog.isDef(options.maxZoom) ? options.maxZoom : 18;
+
   var tileGrid = new ol.tilegrid.XYZ({
-    maxZoom: options.maxZoom,
-    minZoom: options.minZoom
+    maxZoom: maxZoom
   });
 
   var tileCoordTransform = tileGrid.createTileCoordTransform({
