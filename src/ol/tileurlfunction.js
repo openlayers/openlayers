@@ -15,6 +15,12 @@ ol.TileUrlFunctionType;
 
 
 /**
+ * @typedef {function(ol.TileCoord, ol.Projection, ol.TileCoord=): ol.TileCoord}
+ */
+ol.TileCoordTransformType;
+
+
+/**
  * @param {string} template Template.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
@@ -121,8 +127,7 @@ ol.TileUrlFunction.nullTileUrlFunction = function(tileCoord, projection) {
 
 
 /**
- * @param {function(ol.TileCoord, ol.Projection, ol.TileCoord=): ol.TileCoord}
- *     transformFn Transform function.
+ * @param {ol.TileCoordTransformType} transformFn Transform function.
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
