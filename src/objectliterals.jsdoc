@@ -606,6 +606,24 @@
  */
 
 /**
+ * @typedef {Object} ol.source.XYZOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {null|string|undefined} crossOrigin Cross origin setting for image
+ *     requests.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {ol.ProjectionLike} projection Projection.
+ * @property {number} maxZoom Max zoom.
+ * @property {number|undefined} minZoom Unsupported (TODO: remove this).
+ * @property {ol.TileUrlFunctionType|undefined} tileUrlFunction Optional
+ *     function to get tile URL given a tile coordinate and the projection.
+ *     Required if url or urls are not provided.
+ * @property {string|undefined} url URL template.  Must include '{x}', '{y}',
+ *     and '{z}' placeholders.
+ * @property {Array.<string>|undefined} urls An array of URL templates.
+ */
+
+/**
  * @typedef {Object} ol.style.IconOptions
  * @property {string|ol.expr.Expression} url Icon image url.
  * @property {number|ol.expr.Expression|undefined} width Width of the icon

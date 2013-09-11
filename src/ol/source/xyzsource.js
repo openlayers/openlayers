@@ -1,5 +1,4 @@
 goog.provide('ol.source.XYZ');
-goog.provide('ol.source.XYZOptions');
 
 goog.require('ol.Attribution');
 goog.require('ol.Projection');
@@ -8,21 +7,6 @@ goog.require('ol.TileUrlFunctionType');
 goog.require('ol.proj');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.XYZ');
-
-
-/**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *            crossOrigin: (string|undefined),
- *            extent: (ol.Extent|undefined),
- *            logo: (string|undefined),
- *            maxZoom: number,
- *            minZoom: (number|undefined),
- *            projection: (ol.Projection|undefined),
- *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
- *            url: (string|undefined),
- *            urls: (Array.<string>|undefined)}}
- */
-ol.source.XYZOptions;
 
 
 

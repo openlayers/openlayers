@@ -1,1 +1,1 @@
-@exportSymbol ol.source.XYZ
+@exportClass ol.source.XYZ ol.source.XYZOptions
