@@ -300,7 +300,7 @@ def main(argv):
                     object_literal = ObjectLiteral(name, objects)
                     objects[name] = object_literal
                     continue
-                m = re.match(r'\*\s*@property\s*{(?P<type>.*)}\s*(?P<prop>\S+)', line)
+                m = re.match(r'\*\s*@property\s*{(?P<type>.*?)}\s*(?P<prop>\S+)', line)
                 if m:
                     assert object_literal is not None
                     prop = m.group('prop')
