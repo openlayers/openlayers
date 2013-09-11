@@ -109,6 +109,16 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, projection) {
 
 
 /**
+ * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
+ */
+ol.source.TileImage.prototype.setTileUrlFunction = function(tileUrlFunction) {
+  this.tileCache_.clear();
+  this.tileUrlFunction = tileUrlFunction;
+  this.dispatchChangeEvent();
+};
+
+
+/**
  * @inheritDoc
  */
 ol.source.TileImage.prototype.useTile = function(z, x, y) {
