@@ -50,8 +50,7 @@ ol.source.XYZ = function(options) {
   }
 
   var tileGrid = new ol.tilegrid.XYZ({
-    maxZoom: options.maxZoom,
-    minZoom: options.minZoom
+    maxZoom: options.maxZoom
   });
 
   var tileCoordTransform = tileGrid.createTileCoordTransform({
