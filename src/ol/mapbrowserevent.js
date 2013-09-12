@@ -381,18 +381,20 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
  * @enum {string}
  */
 ol.MapBrowserEvent.EventType = {
+  // native browser events
   CLICK: goog.events.EventType.CLICK,
   CONTEXTMENU: goog.events.EventType.CONTEXTMENU,
   DBLCLICK: goog.events.EventType.DBLCLICK,
-  DBLTAP: 'dbltap',
-  DOWN: 'down',
-  DRAGSTART: 'dragstart',
-  DRAG: 'drag',
-  DRAGEND: 'dragend',
   TOUCHSTART: goog.events.EventType.TOUCHSTART,
   TOUCHMOVE: goog.events.EventType.TOUCHMOVE,
   TOUCHEND: goog.events.EventType.TOUCHEND,
   MOUSEMOVE: goog.events.EventType.MOUSEMOVE,
   MOUSEOUT: goog.events.EventType.MOUSEOUT,
+  // custom events
+  DBLTAP: 'dbltap',
+  DOWN: 'down',
+  DRAGSTART: 'dragstart',
+  DRAG: 'drag',
+  DRAGEND: 'dragend',
   SINGLECLICK: 'singleclick'
 };
