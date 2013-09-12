@@ -20,6 +20,7 @@ module.exports = function(karma) {
       'test/test-extensions.js',
       'build/proj4js/lib/proj4js-combined.js',
       'http://localhost:9810/compile?id=test&mode=RAW',
+      {pattern: 'test/**/*.json', watched: false, included: false},
       {pattern: 'test/**/*.geojson', watched: false, included: false},
       {pattern: 'test/**/*.kml', watched: false, included: false},
       {pattern: 'test/**/*.xml', watched: false, included: false},
