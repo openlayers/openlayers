@@ -702,7 +702,7 @@ def proj4js_zip(t):
     t.info('downloaded %r', t.name)
 
 
-virtual('test-deps', INTERNAL_SRC, PROJ4JS, 'build/test/requireall.js')
+virtual('test-deps', 'plovr', INTERNAL_SRC, PROJ4JS, 'build/test/requireall.js')
 
 
 @target('test', 'test-deps', phony=True)
