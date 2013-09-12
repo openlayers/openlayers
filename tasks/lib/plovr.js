@@ -13,15 +13,18 @@ var path = require('path');
 var base = process.cwd();
 
 // get the most recent plovr.jar
-var plovr = glob.sync('build/plovr*.jar', {cwd: base})
-    .sort(function(a, b) {
-      return fs.statSync(a).mtime.getTime() - fs.statSync(b).mtime.getTime();
-    })
-    .pop();
+function getPlovr() {
+  var plovr = glob.sync('build/plovr*.jar', {cwd: base})
+      .sort(function(a, b) {
+        return fs.statSync(a).mtime.getTime() - fs.statSync(b).mtime.getTime();
+      })
+      .pop();
 
-if (!plovr) {
-  console.error('Unable to find plovr.jar.  Run `npm install` first');
-  process.exit(1);
+  if (!plovr) {
+    console.error('Unable to find plovr.jar.  Run `npm install` first');
+    process.exit(1);
+  }
+  return plovr;
 }
 
 var builds = ['buildcfg/ol.json', 'buildcfg/ol-all.json'];
@@ -42,6 +45,8 @@ exports.start = function(callback, timeout) {
   if (server) {
     throw new Error('Server already started');
   }
+
+  var plovr = getPlovr();
 
   // start up the plovr server
   server = cp.spawn(
