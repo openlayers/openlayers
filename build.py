@@ -313,7 +313,6 @@ def examples_star_json(name, match):
                 '../externs/bootstrap.js',
                 '../externs/geojson.js',
                 '../externs/topojson.js',
-                '../externs/oli.js',
                 '../externs/proj4js.js',
                 '../externs/tilejson.js',
                 '../externs/closure-compiler.js',
