@@ -59,7 +59,8 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
     var keyEvent = /** @type {goog.events.KeyEvent} */
         (mapBrowserEvent.browserEvent);
     var keyCode = keyEvent.keyCode;
-    if (this.condition_(keyEvent) && (keyCode == goog.events.KeyCodes.DOWN ||
+    if (this.condition_(mapBrowserEvent) &&
+        (keyCode == goog.events.KeyCodes.DOWN ||
         keyCode == goog.events.KeyCodes.LEFT ||
         keyCode == goog.events.KeyCodes.RIGHT ||
         keyCode == goog.events.KeyCodes.UP)) {

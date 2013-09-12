@@ -117,8 +117,7 @@ ol.interaction.DragRotateAndZoom.prototype.handleDragEnd =
  */
 ol.interaction.DragRotateAndZoom.prototype.handleDragStart =
     function(mapBrowserEvent) {
-  var browserEvent = mapBrowserEvent.browserEvent;
-  if (this.condition_(browserEvent)) {
+  if (this.condition_(mapBrowserEvent)) {
     this.lastAngle_ = undefined;
     this.lastMagnitude_ = undefined;
     return true;

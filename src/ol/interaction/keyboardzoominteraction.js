@@ -56,7 +56,7 @@ ol.interaction.KeyboardZoom.prototype.handleMapBrowserEvent =
     var keyEvent = /** @type {goog.events.KeyEvent} */
         (mapBrowserEvent.browserEvent);
     var charCode = keyEvent.charCode;
-    if (this.condition_(keyEvent) &&
+    if (this.condition_(mapBrowserEvent) &&
         (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0))) {
       var map = mapBrowserEvent.map;
       var delta = (charCode == '+'.charCodeAt(0)) ? this.delta_ : -this.delta_;
