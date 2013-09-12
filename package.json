@@ -1,0 +1,25 @@
+{
+  "name": "openlayers",
+  "version": "3.0.0-alpha",
+  "description": "Mapping library",
+  "homepage": "http://ol3js.org/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openlayers/ol3.git"
+  },
+  "bugs": "https://github.com/openlayers/ol3/issues",
+  "devDependencies": {
+    "karma": "0.10",
+    "karma-mocha": "0.1",
+    "glob": "3.2.6",
+    "grunt": "0.4.1",
+    "grunt-cli": "0.1.9",
+    "grunt-openlayers": "0.2.0",
+    "mocha": "1.12.1"
+  },
+  "scripts": {
+    "postinstall": "grunt build",
+    "test": "grunt karma:single",
+    "start": "grunt watch"
+  }
+}
