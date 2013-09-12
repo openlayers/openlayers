@@ -14,7 +14,6 @@ goog.require('ol.Object');
  *
  * @constructor
  * @extends {ol.Object}
- * @implements {oli.control.Control}
  * @param {ol.control.ControlOptions} options Control options.
  */
 ol.control.Control = function(options) {
