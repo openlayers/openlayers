@@ -19,7 +19,7 @@
   },
   "scripts": {
     "postinstall": "grunt build",
-    "test": "grunt karma:phantom",
+    "test": "grunt karma:single",
     "start": "grunt watch"
   }
 }
