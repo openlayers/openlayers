@@ -14,6 +14,7 @@ goog.require('ol.interaction.condition');
 
 
 /**
+ * Allows the user to pan the map by clickng and dragging.
  * @constructor
  * @extends {ol.interaction.Drag}
  * @param {ol.interaction.DragPanOptions=} opt_options Options.

@@ -21,6 +21,7 @@ ol.interaction.KEYBOARD_PAN_DURATION = 100;
 
 
 /**
+ * Allows the user to pan the map using keyboard arrows.
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {ol.interaction.KeyboardPanOptions=} opt_options Options.

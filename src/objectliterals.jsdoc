@@ -52,7 +52,9 @@
  * @typedef {Object} ol.MapOptions
  * @property {ol.Collection|Array.<ol.control.Control>|undefined} controls
  *     Controls initially added to the map.
- * @property {ol.Collection|undefined} interactions Interactions.
+ * @property {ol.Collection|undefined} interactions A collection of
+ *     {@link ol.interaction} instances that allow the user to interact with
+ *     the map.
  * @property {Array.<ol.layer.Base>|ol.Collection|undefined} layers Layers.
  * @property {ol.Collection|Array.<ol.Overlay>|undefined} overlays
  *     Overlays initially added to the map.
@@ -237,28 +239,36 @@
 /**
  * @typedef {Object} ol.interaction.DoubleClickZoomOptions
  * @property {number|undefined} delta The zoom delta applied on each double
- *    click.
+ *     click, default is 1.
  */
 
 /**
  * @typedef {Object} ol.interaction.DragPanOptions
- * @property {ol.Kinetic|undefined} kinetic Kinetic.
- * @property {ol.interaction.ConditionType|undefined} condition Condition.
+ * @property {ol.Kinetic|undefined} kinetic Kinetic inertia to apply to the pan.
+ * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is no modifiers.
  */
 
 /**
  * @typedef {Object} ol.interaction.DragRotateOptions
- * @property {ol.interaction.ConditionType|undefined} condition Condition.
+ * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is both shift and alt keys.
  */
 
 /**
  * @typedef {Object} ol.interaction.DragRotateAndZoomOptions
- * @property {ol.interaction.ConditionType|undefined} condition Condition.
+ * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is shify key.
  */
 
 /**
  * @typedef {Object} ol.interaction.DragZoomOptions
- * @property {ol.interaction.ConditionType|undefined} condition Condition.
+ * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is shift key.
  */
 
 /**
@@ -284,26 +294,34 @@
 
 /**
  * @typedef {Object} ol.interaction.KeyboardPanOptions
- * @property {ol.interaction.ConditionType|undefined} condition Condition.
- * @property {number|undefined} pixelDelta Pixel delta
+ * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is no modifiers.
+ * @property {number|undefined} pixelDelta Pixel The amount to pan on each key
+ *     press
  */
 
 /**
  * @typedef {Object} ol.interaction.KeyboardZoomOptions
- * @property {ol.interaction.ConditionType|undefined} condition Condition.
- * @property {number|undefined} delta Delta.
+ * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is no modifiers.
+ * @property {number|undefined} delta The amount to zoom on each key press.
  */
 
 /**
  * @typedef {Object} ol.interaction.SelectOptions
- * @property {ol.interaction.ConditionType|undefined} condition Condition.
+ * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is on mouse click only.
  * @property {undefined|function(ol.layer.Layer):boolean} layerFilter Filter
  *     function to restrict selection to a subset of layers.
  */
 
 /**
  * @typedef {Object} ol.interaction.TouchPanOptions
- * @property {ol.Kinetic|undefined} kinetic Kinetic.
+ * @property {ol.Kinetic|undefined} kinetic Kinetic inertia to apply to the
+ *     pan.
  */
 
 /**

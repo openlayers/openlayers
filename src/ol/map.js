@@ -508,7 +508,10 @@ ol.Map.prototype.getFeatures = function(options) {
 
 
 /**
- * Gets the collection on interactions associated with this map.
+ * Gets the collection of {@link ol.interaction} instances
+ * associated with this map.  Modifying this collection
+ * changes the interactions associated with the map.
+ *
  * Interactions are used for e.g. pan, zoom and rotate.
  * @return {ol.Collection} Interactions.
  */

@@ -12,6 +12,7 @@ goog.require('ol.interaction.Interaction');
 
 
 /**
+ * Base class for interactions that drag the map.
  * @constructor
  * @extends {ol.interaction.Interaction}
  */
