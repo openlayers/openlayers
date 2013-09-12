@@ -9,12 +9,13 @@
   },
   "bugs": "https://github.com/openlayers/ol3/issues",
   "devDependencies": {
-    "karma": "0.9.3",
-    "karma-mocha": "0.0.1",
+    "karma": "0.10",
+    "karma-mocha": "0.1",
     "glob": "3.2.6",
-    "grunt-cli": "0.1.9",
     "grunt": "0.4.1",
-    "grunt-openlayers": "0.2.0"
+    "grunt-cli": "0.1.9",
+    "grunt-openlayers": "0.2.0",
+    "mocha": "1.12.1"
   },
   "scripts": {
     "postinstall": "grunt build",

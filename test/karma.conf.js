@@ -2,15 +2,10 @@
 
 /**
  * Export function for configuring Karma.
- * Note that this configuration syntax is new in the 0.9.x (unstable) release
- * stream.  Until it is supported in a stable release (0.10), the docs can be
- * found in the Karma repo
- * (e.g. https://github.com/karma-runner/karma/blob/v0.9.3/docs/)
- *
- * @param {Object} karma Karma DSL object.
+ * @param {Object} config Karma config object.
  */
-module.exports = function(karma) {
-  karma.configure({
+module.exports = function(config) {
+  config.set({
     basePath: '../',
     urlRoot: '/base/test',
     frameworks: ['mocha'],
