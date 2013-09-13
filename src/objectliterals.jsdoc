@@ -378,6 +378,14 @@
  */
 
 /**
+ * @typedef {Object} ol.interaction.ModifyOptions
+ * @property {undefined|function(ol.layer.Layer):boolean} layerFilter Filter
+ *     function to restrict modification to a subset of layers.
+ * @property {number|undefined} pixelTolerance Pixel tolerance for considering
+ *     the pointer close enough to a vertex for editing. Default is 20 pixels.
+ */
+
+/**
  * @typedef {Object} ol.interaction.SelectOptions
  * @property {ol.events.ConditionType|undefined} addCondition A conditional
  *     modifier (e.g. shift key) that determines if the selection is added to
