@@ -1,4 +1,3 @@
-@exportSymbol ol.interaction.conditionType
 @exportSymbol ol.interaction.condition.altKeyOnly
 @exportSymbol ol.interaction.condition.altShiftKeysOnly
 @exportSymbol ol.interaction.condition.always
