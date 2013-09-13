@@ -1,0 +1,29 @@
+@exportSymbol ol.geom.GeometryType
+@exportProperty ol.geom.GeometryType.POINT
+@exportProperty ol.geom.GeometryType.LINEARRING
+@exportProperty ol.geom.GeometryType.LINESTRING
+@exportProperty ol.geom.GeometryType.POLYGON
+@exportProperty ol.geom.GeometryType.MULTIPOINT
+@exportProperty ol.geom.GeometryType.MULTILINESTRING
+@exportProperty ol.geom.GeometryType.MULTIPOLYGON
+@exportProperty ol.geom.GeometryType.GEOMETRYCOLLECTION
+
+@exportSymbol ol.geom.Geometry
+
+@exportSymbol ol.geom.Point
+@exportProperty ol.geom.Point.prototype.getCoordinates
+
+@exportSymbol ol.geom.LineString
+@exportProperty ol.geom.LineString.prototype.getCoordinates
+
+@exportSymbol ol.geom.Polygon
+@exportProperty ol.geom.Polygon.prototype.getCoordinates
+
+@exportSymbol ol.geom.MultiPoint
+@exportProperty ol.geom.MultiPoint.prototype.getCoordinates
+
+@exportSymbol ol.geom.MultiLineString
+@exportProperty ol.geom.MultiLineString.prototype.getCoordinates
+
+@exportSymbol ol.geom.MultiPolygon
+@exportProperty ol.geom.MultiPolygon.prototype.getCoordinates

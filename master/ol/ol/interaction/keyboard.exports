@@ -1,3 +1,0 @@
-@exportSymbol ol.interaction.Keyboard
-@exportProperty ol.interaction.Keyboard.prototype.addCallback
-

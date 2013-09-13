@@ -1,0 +1,8 @@
+@exportClass ol.View2D ol.View2DOptions
+@exportProperty ol.View2D.prototype.calculateExtent
+@exportProperty ol.View2D.prototype.constrainResolution
+@exportProperty ol.View2D.prototype.constrainRotation
+@exportProperty ol.View2D.prototype.fitExtent
+@exportProperty ol.View2D.prototype.getView2D
+@exportProperty ol.View2D.prototype.getZoom
+@exportProperty ol.View2D.prototype.setZoom

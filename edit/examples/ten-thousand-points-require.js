@@ -1,0 +1,12 @@
+goog.require('ol.Map');
+goog.require('ol.RendererHint');
+goog.require('ol.View2D');
+goog.require('ol.control');
+goog.require('ol.control.MousePosition');
+goog.require('ol.geom2.LineStringCollection');
+goog.require('ol.geom2.PointCollection');
+goog.require('ol.layer.Tile');
+goog.require('ol.layer.Vector2');
+goog.require('ol.source.OSM');
+goog.require('ol.source.Vector2');
+goog.require('ol.webgl.SUPPORTED');

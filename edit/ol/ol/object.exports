@@ -1,0 +1,12 @@
+@exportSymbol ol.Object
+@exportProperty ol.Object.prototype.bindTo
+@exportProperty ol.Object.prototype.get
+@exportProperty ol.Object.prototype.notify
+@exportProperty ol.Object.prototype.on
+@exportProperty ol.Object.prototype.once
+@exportProperty ol.Object.prototype.set
+@exportProperty ol.Object.prototype.setValues
+@exportProperty ol.Object.prototype.un
+@exportProperty ol.Object.prototype.unByKey
+@exportProperty ol.Object.prototype.unbind
+@exportProperty ol.Object.prototype.unbindAll

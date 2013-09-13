@@ -1,0 +1,16 @@
+@exportSymbol ol.extent.boundingExtent
+@exportSymbol ol.extent.containsCoordinate
+@exportSymbol ol.extent.containsExtent
+@exportSymbol ol.extent.equals
+@exportSymbol ol.extent.extend
+@exportSymbol ol.extent.getBottomLeft
+@exportSymbol ol.extent.getBottomRight
+@exportSymbol ol.extent.getCenter
+@exportSymbol ol.extent.getHeight
+@exportSymbol ol.extent.getSize
+@exportSymbol ol.extent.getTopLeft
+@exportSymbol ol.extent.getTopRight
+@exportSymbol ol.extent.getWidth
+@exportSymbol ol.extent.intersects
+@exportSymbol ol.extent.isEmpty
+@exportSymbol ol.extent.transform

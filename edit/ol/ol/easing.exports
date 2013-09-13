@@ -1,0 +1,7 @@
+@exportSymbol ol.easing.bounce
+@exportSymbol ol.easing.easeIn
+@exportSymbol ol.easing.easeOut
+@exportSymbol ol.easing.elastic
+@exportSymbol ol.easing.inAndOut
+@exportSymbol ol.easing.linear
+@exportSymbol ol.easing.upAndDown

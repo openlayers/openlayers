@@ -1,3 +1,0 @@
-@exportSymbol ol.parser.GeoJSON
-
-@exportProperty ol.parser.GeoJSON.prototype.read

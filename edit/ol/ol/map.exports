@@ -1,0 +1,24 @@
+@exportClass ol.Map ol.MapOptions
+@exportProperty ol.Map.prototype.addControl
+@exportProperty ol.Map.prototype.addLayer
+@exportProperty ol.Map.prototype.addOverlay
+@exportProperty ol.Map.prototype.beforeRender
+@exportProperty ol.Map.prototype.getControls
+@exportProperty ol.Map.prototype.getFeatureInfo
+@exportProperty ol.Map.prototype.getFeatures
+@exportProperty ol.Map.prototype.getInteractions
+@exportProperty ol.Map.prototype.getLayers
+@exportProperty ol.Map.prototype.getOverlays
+@exportProperty ol.Map.prototype.getRenderer
+@exportProperty ol.Map.prototype.removeControl
+@exportProperty ol.Map.prototype.removeLayer
+@exportProperty ol.Map.prototype.removeOverlay
+@exportProperty ol.Map.prototype.updateSize
+
+@exportSymbol ol.RendererHint
+@exportProperty ol.RendererHint.CANVAS
+@exportProperty ol.RendererHint.DOM
+@exportProperty ol.RendererHint.WEBGL
+
+@exportSymbol ol.RendererHints
+@exportProperty ol.RendererHints.createFromQueryData

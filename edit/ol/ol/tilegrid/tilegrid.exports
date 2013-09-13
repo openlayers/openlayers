@@ -1,0 +1,5 @@
+@exportClass ol.tilegrid.TileGrid ol.tilegrid.TileGridOptions
+@exportProperty ol.tilegrid.TileGrid.prototype.getMinZoom
+@exportProperty ol.tilegrid.TileGrid.prototype.getOrigin
+@exportProperty ol.tilegrid.TileGrid.prototype.getResolutions
+@exportProperty ol.tilegrid.TileGrid.prototype.getTileSize

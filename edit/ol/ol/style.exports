@@ -1,0 +1,9 @@
+@exportClass ol.style.Fill ol.style.FillOptions
+@exportClass ol.style.Icon ol.style.IconOptions
+@exportClass ol.style.Rule ol.style.RuleOptions
+@exportClass ol.style.Shape ol.style.ShapeOptions
+@exportClass ol.style.Stroke ol.style.StrokeOptions
+@exportClass ol.style.Style ol.style.StyleOptions
+@exportClass ol.style.Text ol.style.TextOptions
+@exportSymbol ol.style.ShapeType
+@exportProperty ol.style.ShapeType.CIRCLE

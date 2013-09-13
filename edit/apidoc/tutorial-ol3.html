@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>OpenLayers 3 API Documentation - Tutorial: OpenLayers 3 Architecture</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="../resources/layout.css" type="text/css">
+    <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
+</head>
+
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="./">OpenLayers 3 API Documentation - Tutorial: OpenLayers 3 Architecture</a>
+      <ul class="nav pull-right">
+        <li><iframe class="github-watch-button" src="http://ghbtns.com/github-btn.html?user=openlayers&repo=ol3&type=watch&count=true"
+allowtransparency="true" frameborder="0" scrolling="0" height="20" width="90"></iframe></li>
+        <li><a href="https://twitter.com/share" class="twitter-share-button" data-count="none" data-hashtags="openlayers">&nbsp;</a></li>
+        <li><div class="g-plusone-wrapper"><div class="g-plusone" data-size="medium" data-annotation="none"></div></div></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div id="main">    
+    <section>
+    
+<header>
+    
+
+    <h2>OpenLayers 3 Architecture</h2>
+</header>  
+
+<article>
+    <h1>CLASS HIERARCHY</h1>
+
+<div class="highlight"><pre lang="">goog.math.Coordinate  // Simple 2D point
+|
++- TileCoord
+
+goog.math.Box
+|
++- Extent // The extent of a single object in two dimensions, projection not stored
+|
++- TileBounds  // A range of tiles in two dimensions, integer coordinates, z not stored
+
+
+Projection
+
+
+goog.events.EventTarget
+|
++- MVCObject
+|  |
+|  +- Camera
+|  |
+|  +- Control
+|  |  |
+|  |  +- ?
+|  |
+|  +- Layer
+|  |  |
+|  |  +- TileLayer
+|  |  |  |
+|  |  |  +- TMSTileLayer
+|  |  |  |
+|  |  |  +- WMTSTileLayer
+|  |  |  |
+|  |  |  +- XYZTileLayer / OSMTileLayer
+|  |  |
+|  |  +- VectorLayer
+|  |  |
+|  |  +- ImageLayer
+|  |
+|  +- LayerRenderer
+|  |
+|  +- LayerRendererOptions
+|  |
+|  +- Map
+|  |
+|  +- MapRenderer
+|  |  |
+|  |  +- HTMLMapRenderer
+|  |  |
+|  |  +- WebGLMapRenderer
+|  |
+|  +- MVCArray
+|  |  |
+|  |  +- ControlArray
+|  |  |
+|  |  +- LayerViewArray
+|
+|  +- TileQueue
+|
++- Tile
+</pre></div>
+
+<h2>Layer renderer hierarchy</h2>
+
+<div class="highlight"><pre lang="">goog.events.EventTarget
+|
++- MVCObject
+   |
+   +- LayerRenderer
+      |
+      +- SingleTileLayerRenderer
+      |  |
+      |  +- HTMLSingleTileLayerRenderer
+      |  |
+      |  +- WebGLSingleTileLayerRenderer
+      |
+      +- TileLayerRenderer
+      |  |
+      |  +- HTMLTileLayerRenderer
+      |  |
+      |  +- WebGLTileLayerRenderer
+      |
+      +- VectorLayerRenderer
+      |  |
+      |  +- HTMLVectorLayerRenderer
+      |  |  |
+      |  |  +- SVGHTMLVectorLayerRenderer
+      |  |  |
+      |  |  +- Canvas2DHTMLVectorLayerRenderer
+      |  |  |
+      |  |  +- VMLHTMLVectorLayerRenderer
+      |  |
+      |  +- WebGLVectorLayerRenderer
+</pre></div>
+
+<h1>OBJECT PROPERTIES AND METHODS</h1>
+
+<p>Notation:</p>
+
+<ul>
+<li><code>property type</code>  property with type, trailing ? indicates unsure, getters and setters are assumed to exist.</li>
+<li><code>f(args) -> type</code>  function taking args returning type.</li>
+<li><code>f(args) -> type = something</code>  f is a trivial wrapper around something.</li>
+<li><code>fires 'x'</code>  fires events of type 'x'.</li>
+</ul>
+
+<p>Principles:</p>
+
+<ul>
+<li>All non-trivial objects inherit from <code>MVCObject</code>.</li>
+<li>All non-trivial collections are either <code>MVCArrays</code> or a child class thereof.</li>
+<li>Resolutions are <code>Array.<number></code>, infinitely scalable resources (e.g. vectore layers) have resolutions == null.</li>
+</ul>
+
+<div class="highlight"><pre lang="">MVCObject
+  as Google Maps MVCObject
+  freeze()
+  unfreeze()
+
+TileCoord
+  clone() -> TileCoord
+  getHash() -> number
+
+TileBounds
+  forEachTileCoord(z, function(tileCoord))
+
+Tile
+  tileCoord TileCoord
+  url string
+  state UNLOADED | LOADING | LOADED
+  fires 'loaded' // when loaded
+  fires 'aborted'  // when loading is aborted
+
+Camera
+   position goog.math.Coordinate
+   resolution number
+   rotation number
+
+Layer
+   projections Array.<Projection>
+   extent Extent
+   getResolutions() -> Array.<number>|null
+   fires 'change' // when data changes
+
+LayerArray
+   getResolutions() -> Array.<number>|null
+   getMaxResolution() = this.getResolutions()[0] | null
+
+LayerRendererOptions
+   layer Layer
+   visible boolean
+   opacity number
+   brightness number
+   color number
+   hue number
+   saturation number
+
+Map
+   projection Projection
+   renderer Renderer
+   layers LayerArray
+   addLayer(layer) = layers.push(layer)
+   getExtent() -> Extent
+   getMaxResolution() = layers.getMaxResolution()
+
+TileGrid
+   resolutions Array.<number>
+   extent ol.Extent
+   xEast boolean
+   ySouth boolean
+   origin(s) Coord|Array.<Coord>
+   tileSize goog.math.Size
+   forEachTileCoordChild(tileCoord, function(z, TileBounds))
+   forEachTileCoordParent(tileCoord, function(z, TileBounds))
+   getExtentTileBounds(z, extent) -> TileBounds
+   getTileCoord(coordinate) -> TileCoord
+   getTileCoordCenter(tileCoord) -> goog.math.Coordinate
+   getTileCoordExtent(tileCoord) -> ol.Extent
+   getTileCoordResolution(tileCoord) -> number
+   getZForResolution(resolution) -> number
+
+TileLayer
+   tileGrid TileGrid
+   tileUrl function(tileCoord) -> string
+   getTileCoordUrl(tileCoord) -> string = this.tileUrl(tileCoord)
+
+TileQueue
+   camera Camera  // or maybe MVCArray.<Camera> ?
+   getTileCoordPriority(tileCoord) -> number  // private
+   enqueueTile(Tile)
+
+VectorLayer
+   forEachFeature(resolution, extent, projection, function(Feature))
+
+Renderer
+   target HTMLDivElement
+   map Map
+   camera Camera
+   getCapabilities() -> Array.<string>  // maybe ?
+</pre></div>
+
+<p>Questions:</p>
+
+<ul>
+<li>Store tile layer extent in TileLayer or in TileGrid?  (not clear)</li>
+</ul>
+
+<p>Two concepts: tile coordinate system range and and available data extent.
+TileGrid extent is range (or validity extent) of the tile coordinate system.
+TileLayer extent is the available data extent. A particular TileGrid may range
+from 0,0 to 10,10. My cache may conform to that grid but I may only have tiles
+ranging from 2,2 to 8,8. When you need to wrap multiple worlds, you pay
+attention to the TileGrid extent. When you need to decide whether or not to
+bother requesting a tile, you pay attention to the TileLayer extent.</p>
+
+<ul>
+<li>Who determines "best" resolution?  (static function?)</li>
+</ul>
+
+<p>Todo: if tile layer extent stored in TileLayer rather than TileGrid then extent
+will occasionally need to be passed to TileGrid functions for cropping.</p>
+
+<h1>DESIGN ASSERTIONS</h1>
+
+<p>Map</p>
+
+<ul>
+<li>A map has a renderer (the map renderer).</li>
+<li>A map has a camera.</li>
+<li>Multiple maps can share the same camera.</li>
+<li>A map has a layer list.</li>
+</ul>
+
+<p>Layer </p>
+
+<ul>
+<li>A layer can have multiple projections (the supported projections).</li>
+<li>A layer advertizes the projections it supports.</li>
+<li>A layer returns no data if asked data for an unsupported projection.</li>
+</ul>
+
+<p>LayerRendererOptions</p>
+
+<ul>
+<li>A layer renderer options object stores view-related states for a layer.</li>
+<li>Options include visibility, opacity, saturation, hue, etc.</li>
+<li>A layer renderer options object has a layer.</li>
+<li>Multiple layer renderer options can share the same layer.</li>
+<li>In other words a layer can be viewed in different manners.</li>
+</ul>
+
+<p>Renderer</p>
+
+<ul>
+<li>The map renderer responds to events.</li>
+<li>The map renderer receives events from the camera.</li>
+<li>The map renderer creates layer renderers.</li>
+</ul>
+
+<p>Control</p>
+
+<ul>
+<li>A control may listen to map events.</li>
+<li>A control may listen to camera events.</li>
+<li>A map navigation control acts on the camera.</li>
+</ul>
+
+<p>MVC</p>
+
+<ul>
+<li>Types can be described in MVC terms.</li>
+<li>Models don't know what rendering means.</li>
+<li>Maps are models.</li>
+<li>Layers are models.</li>
+<li>Layer views are models (sorry!).</li>
+<li>Cameras are models.</li>
+<li>Layer lists are collections.</li>
+<li>Renderers are views.</li>
+<li>Controls are views or controllers or both.</li>
+<li>An attribution control is a view.</li>
+<li>A map navigation control is a controller.</li>
+<li>A zoom slider control is both a view and a controller.</li>
+</ul>
+</article>
+
+</section>  
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ol.Attribution.html">ol.Attribution</a></li><li><a href="ol.Collection.html">ol.Collection</a></li><li><a href="ol.DeviceOrientation.html">ol.DeviceOrientation</a></li><li><a href="ol.Feature.html">ol.Feature</a></li><li><a href="ol.Geolocation.html">ol.Geolocation</a></li><li><a href="ol.Map.html">ol.Map</a></li><li><a href="ol.MapBrowserEvent.html">ol.MapBrowserEvent</a></li><li><a href="ol.Object.html">ol.Object</a></li><li><a href="ol.Overlay.html">ol.Overlay</a></li><li><a href="ol.Projection.html">ol.Projection</a></li><li><a href="ol.View2D.html">ol.View2D</a></li><li><a href="ol.control.Attribution.html">ol.control.Attribution</a></li><li><a href="ol.control.Control.html">ol.control.Control</a></li><li><a href="ol.control.FullScreen.html">ol.control.FullScreen</a></li><li><a href="ol.control.Logo.html">ol.control.Logo</a></li><li><a href="ol.control.MousePosition.html">ol.control.MousePosition</a></li><li><a href="ol.control.ScaleLine.html">ol.control.ScaleLine</a></li><li><a href="ol.control.Zoom.html">ol.control.Zoom</a></li><li><a href="ol.control.ZoomSlider.html">ol.control.ZoomSlider</a></li><li><a href="ol.control.ZoomToExtent.html">ol.control.ZoomToExtent</a></li><li><a href="ol.dom.Input.html">ol.dom.Input</a></li><li><a href="ol.geom.Geometry.html">ol.geom.Geometry</a></li><li><a href="ol.geom.LineString.html">ol.geom.LineString</a></li><li><a href="ol.geom.MultiLineString.html">ol.geom.MultiLineString</a></li><li><a href="ol.geom.MultiPoint.html">ol.geom.MultiPoint</a></li><li><a href="ol.geom.MultiPolygon.html">ol.geom.MultiPolygon</a></li><li><a href="ol.geom.Point.html">ol.geom.Point</a></li><li><a href="ol.geom.Polygon.html">ol.geom.Polygon</a></li><li><a href="ol.geom.SharedVertices.html">ol.geom.SharedVertices</a></li><li><a href="ol.geom2.LineStringCollection.html">ol.geom2.LineStringCollection</a></li><li><a href="ol.geom2.PointCollection.html">ol.geom2.PointCollection</a></li><li><a href="ol.interaction.DragRotateAndZoom.html">ol.interaction.DragRotateAndZoom</a></li><li><a href="ol.interaction.Modify.html">ol.interaction.Modify</a></li><li><a href="ol.interaction.Select.html">ol.interaction.Select</a></li><li><a href="ol.layer.Group.html">ol.layer.Group</a></li><li><a href="ol.layer.Image.html">ol.layer.Image</a></li><li><a href="ol.layer.Layer.html">ol.layer.Layer</a></li><li><a href="ol.layer.Tile.html">ol.layer.Tile</a></li><li><a href="ol.layer.Vector.html">ol.layer.Vector</a></li><li><a href="ol.layer.Vector2.html">ol.layer.Vector2</a></li><li><a href="ol.parser.GPX.html">ol.parser.GPX</a></li><li><a href="ol.parser.GeoJSON.html">ol.parser.GeoJSON</a></li><li><a href="ol.parser.KML.html">ol.parser.KML</a></li><li><a href="ol.parser.TopoJSON.html">ol.parser.TopoJSON</a></li><li><a href="ol.parser.WKT.html">ol.parser.WKT</a></li><li><a href="ol.parser.ogc.GML_v2.html">ol.parser.ogc.GML_v2</a></li><li><a href="ol.parser.ogc.GML_v3.html">ol.parser.ogc.GML_v3</a></li><li><a href="ol.parser.ogc.WMSCapabilities.html">ol.parser.ogc.WMSCapabilities</a></li><li><a href="ol.parser.ogc.WMTSCapabilities.html">ol.parser.ogc.WMTSCapabilities</a></li><li><a href="ol.source.BingMaps.html">ol.source.BingMaps</a></li><li><a href="ol.source.ImageStatic.html">ol.source.ImageStatic</a></li><li><a href="ol.source.ImageWMS.html">ol.source.ImageWMS</a></li><li><a href="ol.source.MapQuestOSM.html">ol.source.MapQuestOSM</a></li><li><a href="ol.source.MapQuestOpenAerial.html">ol.source.MapQuestOpenAerial</a></li><li><a href="ol.source.OSM.html">ol.source.OSM</a></li><li><a href="ol.source.Stamen.html">ol.source.Stamen</a></li><li><a href="ol.source.Tile.html">ol.source.Tile</a></li><li><a href="ol.source.TileDebug.html">ol.source.TileDebug</a></li><li><a href="ol.source.TileJSON.html">ol.source.TileJSON</a></li><li><a href="ol.source.TileWMS.html">ol.source.TileWMS</a></li><li><a href="ol.source.Vector.html">ol.source.Vector</a></li><li><a href="ol.source.Vector2.html">ol.source.Vector2</a></li><li><a href="ol.source.WMTS.html">ol.source.WMTS</a></li><li><a href="ol.source.XYZ.html">ol.source.XYZ</a></li><li><a href="ol.structs.Buffer.html">ol.structs.Buffer</a></li><li><a href="ol.style.Fill.html">ol.style.Fill</a></li><li><a href="ol.style.Icon.html">ol.style.Icon</a></li><li><a href="ol.style.Rule.html">ol.style.Rule</a></li><li><a href="ol.style.Shape.html">ol.style.Shape</a></li><li><a href="ol.style.Stroke.html">ol.style.Stroke</a></li><li><a href="ol.style.Style.html">ol.style.Style</a></li><li><a href="ol.style.Text.html">ol.style.Text</a></li><li><a href="ol.tilegrid.TileGrid.html">ol.tilegrid.TileGrid</a></li><li><a href="ol.tilegrid.WMTS.html">ol.tilegrid.WMTS</a></li><li><a href="ol.tilegrid.XYZ.html">ol.tilegrid.XYZ</a></li></ul><h3>Namespaces</h3><ul><li><a href="ol.html">ol</a></li><li><a href="ol.animation.html">ol.animation</a></li><li><a href="ol.control.html">ol.control</a></li><li><a href="ol.expr.html">ol.expr</a></li><li><a href="ol.geom.html">ol.geom</a></li><li><a href="ol.layer.html">ol.layer</a></li><li><a href="ol.parser.html">ol.parser</a></li><li><a href="ol.proj.html">ol.proj</a></li><li><a href="ol.source.html">ol.source</a></li><li><a href="ol.style.html">ol.style</a></li><li><a href="ol.tilegrid.html">ol.tilegrid</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-ol3.html">OpenLayers 3 Architecture</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Meters per unit lookup table.">Meters per unit lookup table.</a></li><li><a href="global.html#grid">grid</a></li><li>{boolean}</li><li>{number}</li><li>{string}</li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="../resources/social-links.js" type="text/javascript"></script>
+</body>
+</html>
