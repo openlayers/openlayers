@@ -1,3 +1,0 @@
-@exportSymbol ol.parser.KML
-@exportProperty ol.parser.KML.prototype.read
-@exportProperty ol.parser.KML.prototype.write
