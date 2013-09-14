@@ -318,7 +318,16 @@ ol.parser.KML = function(opt_options) {
             value += ':00';
           }
         }
-        container.whens.push(goog.date.fromIsoString(value).date_);
+        var date = goog.date.fromIsoString(value);
+        if (!goog.isNull(date)) {
+          /**
+           * Older Closure Library did not provide a date property on
+           * goog.date.DateTime.  When we get rid of Plovr, this can be
+           * simplified to use the date property.
+           */
+          date = new Date(date.getTime());
+        }
+        container.whens.push(date);
       },
       '_trackPointAttribute': function(node, container) {
         var name = node.nodeName.split(':').pop();
