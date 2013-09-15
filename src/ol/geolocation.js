@@ -1,7 +1,6 @@
 // FIXME handle geolocation not supported
 
 goog.provide('ol.Geolocation');
-goog.provide('ol.Geolocation.SUPPORTED');
 goog.provide('ol.GeolocationProperty');
 
 goog.require('goog.events');
@@ -144,6 +143,10 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
  * @type {boolean}
  */
 ol.Geolocation.SUPPORTED = 'geolocation' in goog.global.navigator;
+goog.exportProperty(
+    ol.Geolocation,
+    'SUPPORTED',
+    ol.Geolocation.SUPPORTED);
 
 
 /**
