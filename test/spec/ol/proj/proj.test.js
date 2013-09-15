@@ -4,11 +4,9 @@ describe('ol.proj', function() {
 
   beforeEach(function() {
     ol.proj.common.add();
-    sinon.spy(ol.proj, 'addTransform');
   });
 
   afterEach(function() {
-    ol.proj.addTransform.restore();
     ol.proj.clearAllProjections();
   });
 
