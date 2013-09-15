@@ -3,6 +3,14 @@ goog.provide('ol.test.proj.EPSG3857');
 
 describe('ol.proj.EPSG3857', function() {
 
+  beforeEach(function() {
+    ol.proj.common.add();
+  });
+
+  afterEach(function() {
+    ol.proj.clearAllProjections();
+  });
+
   describe('getPointResolution', function() {
 
     it('returns the correct point scale at the equator', function() {
@@ -44,4 +52,5 @@ describe('ol.proj.EPSG3857', function() {
 
 
 goog.require('ol.proj');
+goog.require('ol.proj.common');
 goog.require('ol.proj.EPSG3857');

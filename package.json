@@ -1,0 +1,19 @@
+{
+  "name": "openlayers",
+  "version": "3.0.0-beta",
+  "description": "Mapping library",
+  "scripts": {
+    "start": "node tasks/serve.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/openlayers/ol3.git"
+  },
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/openlayers/ol3/issues"
+  },
+  "devDependencies": {
+    "closure-util": "*"
+  }
+}
