@@ -3,24 +3,13 @@ goog.provide('ol.test.proj');
 describe('ol.proj', function() {
 
   beforeEach(function() {
+    ol.proj.common.add();
     sinon.spy(ol.proj, 'addTransform');
   });
 
   afterEach(function() {
-    var argsForCall = ol.proj.addTransform.args;
-    for (var i = 0, ii = argsForCall.length; i < ii; ++i) {
-      try {
-        ol.proj.removeTransform.apply(ol.proj, argsForCall[i].splice(0, 2));
-      } catch (error) {
-        if (error instanceof goog.asserts.AssertionError) {
-          // The removeTransform function may have been called explicitly by the
-          // tests, so we pass.
-        } else {
-          throw error;
-        }
-      }
-    }
     ol.proj.addTransform.restore();
+    ol.proj.clearAllProjections();
   });
 
   describe('projection equivalence', function() {
@@ -364,7 +353,7 @@ describe('ol.proj', function() {
 
 
 goog.require('goog.array');
-goog.require('goog.asserts.AssertionError');
 goog.require('ol.Projection');
 goog.require('ol.ProjectionUnits');
 goog.require('ol.proj');
+goog.require('ol.proj.common');
