@@ -142,10 +142,9 @@ ol.Object.getSetterName = function(key) {
  * @param {string} key Key.
  * @param {ol.Object} target Target.
  * @param {string=} opt_targetKey Target key.
- * @param {boolean=} opt_noNotify No notify.
  */
 ol.Object.prototype.bindTo =
-    function(key, target, opt_targetKey, opt_noNotify) {
+    function(key, target, opt_targetKey) {
   var targetKey = opt_targetKey || key;
   this.unbind(key);
   var eventType = ol.Object.getChangeEventType(targetKey);
@@ -155,10 +154,7 @@ ol.Object.prototype.bindTo =
   }, undefined, this);
   var accessors = ol.Object.getAccessors(this);
   accessors[key] = {target: target, key: targetKey};
-  var noNotify = opt_noNotify || false;
-  if (!noNotify) {
-    this.notifyInternal_(key);
-  }
+  this.notifyInternal_(key);
 };
 
 
