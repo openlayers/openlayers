@@ -9,7 +9,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
   beforeEach(function() {
     resolutions = [1000, 500, 250, 100];
-    extent = [[0, 0], [100000, 100000]];
+    extent = [0, 0, 100000, 100000];
     origin = [0, 0];
     origins = [];
     tileSize = [100, 100];
@@ -462,22 +462,22 @@ describe('ol.tilegrid.TileGrid', function() {
       var tileCoordExtent;
 
       tileCoordExtent = tileGrid.getTileCoordExtent(new ol.TileCoord(0, 0, 0));
-      expect(tileCoordExtent[0][0]).to.eql(0);
-      expect(tileCoordExtent[1][0]).to.eql(100000);
-      expect(tileCoordExtent[0][1]).to.eql(0);
-      expect(tileCoordExtent[1][1]).to.eql(100000);
+      expect(tileCoordExtent[0]).to.eql(0);
+      expect(tileCoordExtent[2]).to.eql(100000);
+      expect(tileCoordExtent[1]).to.eql(0);
+      expect(tileCoordExtent[3]).to.eql(100000);
 
       tileCoordExtent = tileGrid.getTileCoordExtent(new ol.TileCoord(3, 9, 0));
-      expect(tileCoordExtent[0][0]).to.eql(90000);
-      expect(tileCoordExtent[1][0]).to.eql(100000);
-      expect(tileCoordExtent[0][1]).to.eql(0);
-      expect(tileCoordExtent[1][1]).to.eql(10000);
+      expect(tileCoordExtent[0]).to.eql(90000);
+      expect(tileCoordExtent[2]).to.eql(100000);
+      expect(tileCoordExtent[1]).to.eql(0);
+      expect(tileCoordExtent[3]).to.eql(10000);
 
       tileCoordExtent = tileGrid.getTileCoordExtent(new ol.TileCoord(3, 0, 9));
-      expect(tileCoordExtent[0][0]).to.eql(0);
-      expect(tileCoordExtent[1][0]).to.eql(10000);
-      expect(tileCoordExtent[0][1]).to.eql(90000);
-      expect(tileCoordExtent[1][1]).to.eql(100000);
+      expect(tileCoordExtent[0]).to.eql(0);
+      expect(tileCoordExtent[2]).to.eql(10000);
+      expect(tileCoordExtent[1]).to.eql(90000);
+      expect(tileCoordExtent[3]).to.eql(100000);
     });
   });
 
@@ -529,7 +529,7 @@ describe('ol.tilegrid.TileGrid', function() {
         origin: origin,
         tileSize: tileSize
       });
-      var e = [[45000, 5000], [55000, 15000]];
+      var e = [45000, 5000, 55000, 15000];
       var tileRange;
 
       tileRange = tileGrid.getTileRangeForExtentAndZ(e, 0);

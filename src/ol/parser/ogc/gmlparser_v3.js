@@ -3,7 +3,6 @@ goog.provide('ol.parser.ogc.GML_v3');
 goog.require('goog.array');
 goog.require('goog.functions');
 goog.require('goog.object');
-goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.parser.ogc.GML');
 
@@ -216,7 +215,10 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
           [node, coordinates, container]);
       this.readChildNodes(node, coordinates);
       container.projection = node.getAttribute('srsName');
-      container.bounds = ol.extent.clone(coordinates);
+      container.bounds = [
+        coordinates[0][0], coordinates[0][1],
+        coordinates[1][0], coordinates[1][1]
+      ];
     },
     'lowerCorner': function(node, envelope) {
       var coordinates = [];
@@ -391,9 +393,9 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       // only 2d for simple features profile
       var pos;
       if (this.axisOrientation.substr(0, 2) === 'en') {
-        pos = (bounds[0][0] + ' ' + bounds[0][1]);
+        pos = (bounds[0] + ' ' + bounds[1]);
       } else {
-        pos = (bounds[0][1] + ' ' + bounds[0][0]);
+        pos = (bounds[1] + ' ' + bounds[0]);
       }
       var node = this.createElementNS('gml:lowerCorner');
       node.appendChild(this.createTextNode(pos));
@@ -403,9 +405,9 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       // only 2d for simple features profile
       var pos;
       if (this.axisOrientation.substr(0, 2) === 'en') {
-        pos = (bounds[1][0] + ' ' + bounds[1][1]);
+        pos = (bounds[2] + ' ' + bounds[3]);
       } else {
-        pos = (bounds[1][1] + ' ' + bounds[1][0]);
+        pos = (bounds[3] + ' ' + bounds[2]);
       }
       var node = this.createElementNS('gml:upperCorner');
       node.appendChild(this.createTextNode(pos));

@@ -31,13 +31,12 @@ ol.parser.ogc.WMSCapabilities_v1 = function() {
       },
       'BoundingBox': function(node, obj) {
         var bbox = {};
-        bbox['bbox'] = [[
+        bbox['bbox'] = [
           parseFloat(node.getAttribute('minx')),
-          parseFloat(node.getAttribute('miny'))
-        ], [
+          parseFloat(node.getAttribute('miny')),
           parseFloat(node.getAttribute('maxx')),
           parseFloat(node.getAttribute('maxy'))
-        ]];
+        ];
         var res = {
           x: parseFloat(node.getAttribute('resx')),
           y: parseFloat(node.getAttribute('resy'))

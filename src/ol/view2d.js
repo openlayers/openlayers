@@ -226,7 +226,7 @@ ol.View2D.prototype.calculateExtent = function(size) {
   var maxX = center[0] + resolution * size[0] / 2;
   var minY = center[1] - resolution * size[1] / 2;
   var maxY = center[1] + resolution * size[1] / 2;
-  return [[minX, minY], [maxX, maxY]];
+  return [minX, minY, maxX, maxY];
 };
 
 
@@ -262,8 +262,8 @@ goog.exportProperty(
  * @return {number} Resolution.
  */
 ol.View2D.prototype.getResolutionForExtent = function(extent, size) {
-  var xResolution = (extent[1][0] - extent[0][0]) / size[0];
-  var yResolution = (extent[1][1] - extent[0][1]) / size[1];
+  var xResolution = (extent[2] - extent[0]) / size[0];
+  var yResolution = (extent[3] - extent[1]) / size[1];
   return Math.max(xResolution, yResolution);
 };
 
@@ -498,8 +498,8 @@ ol.View2D.createResolutionConstraint_ = function(options) {
           // use an extent that can fit the whole world if need be
           360 * ol.METERS_PER_UNIT[ol.ProjectionUnits.DEGREES] /
               ol.METERS_PER_UNIT[projection.getUnits()] :
-          Math.max(projectionExtent[1][0] - projectionExtent[0][0],
-              projectionExtent[1][1] - projectionExtent[0][1]);
+          Math.max(projectionExtent[2] - projectionExtent[0],
+              projectionExtent[3] - projectionExtent[1]);
       maxResolution = size / ol.DEFAULT_TILE_SIZE;
     }
     var maxZoom = options.maxZoom;

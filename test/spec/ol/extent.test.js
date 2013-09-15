@@ -20,7 +20,7 @@ describe('ol.extent', function() {
 
     describe('positive', function() {
       it('returns true', function() {
-        var extent = [[1, 2], [3, 4]];
+        var extent = [1, 2, 3, 4];
         expect(ol.extent.containsCoordinate(extent, [1, 2])).to.be.ok();
         expect(ol.extent.containsCoordinate(extent, [1, 3])).to.be.ok();
         expect(ol.extent.containsCoordinate(extent, [1, 4])).to.be.ok();
@@ -35,7 +35,7 @@ describe('ol.extent', function() {
 
     describe('negative', function() {
       it('returns false', function() {
-        var extent = [[1, 2], [3, 4]];
+        var extent = [1, 2, 3, 4];
         expect(ol.extent.containsCoordinate(extent, [0, 1])).to.not.be();
         expect(ol.extent.containsCoordinate(extent, [0, 2])).to.not.be();
         expect(ol.extent.containsCoordinate(extent, [0, 3])).to.not.be();
@@ -58,7 +58,7 @@ describe('ol.extent', function() {
 
   describe('getCenter', function() {
     it('returns the expected center', function() {
-      var extent = [[1, 2], [3, 4]];
+      var extent = [1, 2, 3, 4];
       var center = ol.extent.getCenter(extent);
       expect(center[0]).to.eql(2);
       expect(center[1]).to.eql(3);
@@ -70,53 +70,53 @@ describe('ol.extent', function() {
     it('works for a unit square', function() {
       var extent = ol.extent.getForView2DAndSize(
           [0, 0], 1, 0, [1, 1]);
-      expect(extent[0][0]).to.be(-0.5);
-      expect(extent[1][0]).to.be(0.5);
-      expect(extent[0][1]).to.be(-0.5);
-      expect(extent[1][1]).to.be(0.5);
+      expect(extent[0]).to.be(-0.5);
+      expect(extent[2]).to.be(0.5);
+      expect(extent[1]).to.be(-0.5);
+      expect(extent[3]).to.be(0.5);
     });
 
     it('works for center', function() {
       var extent = ol.extent.getForView2DAndSize(
           [5, 10], 1, 0, [1, 1]);
-      expect(extent[0][0]).to.be(4.5);
-      expect(extent[1][0]).to.be(5.5);
-      expect(extent[0][1]).to.be(9.5);
-      expect(extent[1][1]).to.be(10.5);
+      expect(extent[0]).to.be(4.5);
+      expect(extent[2]).to.be(5.5);
+      expect(extent[1]).to.be(9.5);
+      expect(extent[3]).to.be(10.5);
     });
 
     it('works for rotation', function() {
       var extent = ol.extent.getForView2DAndSize(
           [0, 0], 1, Math.PI / 4, [1, 1]);
-      expect(extent[0][0]).to.roughlyEqual(-Math.sqrt(0.5), 1e-9);
-      expect(extent[1][0]).to.roughlyEqual(Math.sqrt(0.5), 1e-9);
-      expect(extent[0][1]).to.roughlyEqual(-Math.sqrt(0.5), 1e-9);
-      expect(extent[1][1]).to.roughlyEqual(Math.sqrt(0.5), 1e-9);
+      expect(extent[0]).to.roughlyEqual(-Math.sqrt(0.5), 1e-9);
+      expect(extent[2]).to.roughlyEqual(Math.sqrt(0.5), 1e-9);
+      expect(extent[1]).to.roughlyEqual(-Math.sqrt(0.5), 1e-9);
+      expect(extent[3]).to.roughlyEqual(Math.sqrt(0.5), 1e-9);
     });
 
     it('works for resolution', function() {
       var extent = ol.extent.getForView2DAndSize(
           [0, 0], 2, 0, [1, 1]);
-      expect(extent[0][0]).to.be(-1);
-      expect(extent[1][0]).to.be(1);
-      expect(extent[0][1]).to.be(-1);
-      expect(extent[1][1]).to.be(1);
+      expect(extent[0]).to.be(-1);
+      expect(extent[2]).to.be(1);
+      expect(extent[1]).to.be(-1);
+      expect(extent[3]).to.be(1);
     });
 
     it('works for size', function() {
       var extent = ol.extent.getForView2DAndSize(
           [0, 0], 1, 0, [10, 5]);
-      expect(extent[0][0]).to.be(-5);
-      expect(extent[1][0]).to.be(5);
-      expect(extent[0][1]).to.be(-2.5);
-      expect(extent[1][1]).to.be(2.5);
+      expect(extent[0]).to.be(-5);
+      expect(extent[2]).to.be(5);
+      expect(extent[1]).to.be(-2.5);
+      expect(extent[3]).to.be(2.5);
     });
 
   });
 
   describe('getSize', function() {
     it('returns the expected size', function() {
-      var extent = [[0, 1], [2, 4]];
+      var extent = [0, 1, 2, 4];
       var size = ol.extent.getSize(extent);
       expect(size).to.eql([2, 3]);
     });
@@ -126,40 +126,40 @@ describe('ol.extent', function() {
 
     it('returns the expected value', function() {
       var intersects = ol.extent.intersects;
-      var extent = [[50, 50], [100, 100]];
+      var extent = [50, 50, 100, 100];
       expect(intersects(extent, extent)).to.be(true);
-      expect(intersects(extent, [[20, 20], [80, 80]])).to.be(true);
-      expect(intersects(extent, [[20, 50], [80, 100]])).to.be(true);
-      expect(intersects(extent, [[20, 80], [80, 120]])).to.be(true);
-      expect(intersects(extent, [[50, 20], [100, 80]])).to.be(true);
-      expect(intersects(extent, [[50, 80], [100, 120]])).to.be(true);
-      expect(intersects(extent, [[80, 20], [120, 80]])).to.be(true);
-      expect(intersects(extent, [[80, 50], [120, 100]])).to.be(true);
-      expect(intersects(extent, [[80, 80], [120, 120]])).to.be(true);
-      expect(intersects(extent, [[20, 20], [120, 120]])).to.be(true);
-      expect(intersects(extent, [[70, 70], [80, 80]])).to.be(true);
-      expect(intersects(extent, [[10, 10], [30, 30]])).to.be(false);
-      expect(intersects(extent, [[30, 10], [70, 30]])).to.be(false);
-      expect(intersects(extent, [[50, 10], [100, 30]])).to.be(false);
-      expect(intersects(extent, [[80, 10], [120, 30]])).to.be(false);
-      expect(intersects(extent, [[120, 10], [140, 30]])).to.be(false);
-      expect(intersects(extent, [[10, 30], [30, 70]])).to.be(false);
-      expect(intersects(extent, [[120, 30], [140, 70]])).to.be(false);
-      expect(intersects(extent, [[10, 50], [30, 100]])).to.be(false);
-      expect(intersects(extent, [[120, 50], [140, 100]])).to.be(false);
-      expect(intersects(extent, [[10, 80], [30, 120]])).to.be(false);
-      expect(intersects(extent, [[120, 80], [140, 120]])).to.be(false);
-      expect(intersects(extent, [[10, 120], [30, 140]])).to.be(false);
-      expect(intersects(extent, [[30, 120], [70, 140]])).to.be(false);
-      expect(intersects(extent, [[50, 120], [100, 140]])).to.be(false);
-      expect(intersects(extent, [[80, 120], [120, 140]])).to.be(false);
-      expect(intersects(extent, [[120, 120], [140, 140]])).to.be(false);
+      expect(intersects(extent, [20, 20, 80, 80])).to.be(true);
+      expect(intersects(extent, [20, 50, 80, 100])).to.be(true);
+      expect(intersects(extent, [20, 80, 80, 120])).to.be(true);
+      expect(intersects(extent, [50, 20, 100, 80])).to.be(true);
+      expect(intersects(extent, [50, 80, 100, 120])).to.be(true);
+      expect(intersects(extent, [80, 20, 120, 80])).to.be(true);
+      expect(intersects(extent, [80, 50, 120, 100])).to.be(true);
+      expect(intersects(extent, [80, 80, 120, 120])).to.be(true);
+      expect(intersects(extent, [20, 20, 120, 120])).to.be(true);
+      expect(intersects(extent, [70, 70, 80, 80])).to.be(true);
+      expect(intersects(extent, [10, 10, 30, 30])).to.be(false);
+      expect(intersects(extent, [30, 10, 70, 30])).to.be(false);
+      expect(intersects(extent, [50, 10, 100, 30])).to.be(false);
+      expect(intersects(extent, [80, 10, 120, 30])).to.be(false);
+      expect(intersects(extent, [120, 10, 140, 30])).to.be(false);
+      expect(intersects(extent, [10, 30, 30, 70])).to.be(false);
+      expect(intersects(extent, [120, 30, 140, 70])).to.be(false);
+      expect(intersects(extent, [10, 50, 30, 100])).to.be(false);
+      expect(intersects(extent, [120, 50, 140, 100])).to.be(false);
+      expect(intersects(extent, [10, 80, 30, 120])).to.be(false);
+      expect(intersects(extent, [120, 80, 140, 120])).to.be(false);
+      expect(intersects(extent, [10, 120, 30, 140])).to.be(false);
+      expect(intersects(extent, [30, 120, 70, 140])).to.be(false);
+      expect(intersects(extent, [50, 120, 100, 140])).to.be(false);
+      expect(intersects(extent, [80, 120, 120, 140])).to.be(false);
+      expect(intersects(extent, [120, 120, 140, 140])).to.be(false);
     });
   });
 
   describe('normalize', function() {
     it('returns the expected coordinate', function() {
-      var extent = [[0, 1], [2, 3]];
+      var extent = [0, 1, 2, 3];
       var coordinate;
 
       coordinate = ol.extent.normalize(extent, [1, 2]);
@@ -186,18 +186,18 @@ describe('ol.extent', function() {
 
   describe('scaleFromCenter', function() {
     it('scales the extent from its center', function() {
-      var extent = [[1, 1], [3, 3]];
+      var extent = [1, 1, 3, 3];
       ol.extent.scaleFromCenter(extent, 2);
-      expect(extent[0][0]).to.eql(0);
-      expect(extent[1][0]).to.eql(4);
-      expect(extent[0][1]).to.eql(0);
-      expect(extent[1][1]).to.eql(4);
+      expect(extent[0]).to.eql(0);
+      expect(extent[2]).to.eql(4);
+      expect(extent[1]).to.eql(0);
+      expect(extent[3]).to.eql(4);
     });
   });
 
   describe('toString', function() {
     it('returns the expected string', function() {
-      var extent = [[0, 1], [2, 3]];
+      var extent = [0, 1, 2, 3];
       expect(ol.extent.toString(extent)).to.eql('(0, 2, 1, 3)');
     });
   });
@@ -206,16 +206,16 @@ describe('ol.extent', function() {
 
     it('does transform', function() {
       var transformFn = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
-      var sourceExtent = [[-15, -30], [45, 60]];
+      var sourceExtent = [-15, -30, 45, 60];
       var destinationExtent = ol.extent.transform(sourceExtent, transformFn);
       expect(destinationExtent).not.to.be(undefined);
       expect(destinationExtent).not.to.be(null);
       // FIXME check values with third-party tool
-      expect(destinationExtent[0][0])
+      expect(destinationExtent[0])
           .to.roughlyEqual(-1669792.3618991037, 1e-9);
-      expect(destinationExtent[1][0]).to.roughlyEqual(5009377.085697311, 1e-9);
-      expect(destinationExtent[0][1]).to.roughlyEqual(-3503549.843504376, 1e-8);
-      expect(destinationExtent[1][1]).to.roughlyEqual(8399737.889818361, 1e-9);
+      expect(destinationExtent[2]).to.roughlyEqual(5009377.085697311, 1e-9);
+      expect(destinationExtent[1]).to.roughlyEqual(-3503549.843504376, 1e-8);
+      expect(destinationExtent[3]).to.roughlyEqual(8399737.889818361, 1e-9);
     });
 
     it('takes arbitrary function', function() {
@@ -232,14 +232,14 @@ describe('ol.extent', function() {
         }
         return output;
       };
-      var sourceExtent = [[-15, -30], [45, 60]];
+      var sourceExtent = [-15, -30, 45, 60];
       var destinationExtent = ol.extent.transform(sourceExtent, transformFn);
       expect(destinationExtent).not.to.be(undefined);
       expect(destinationExtent).not.to.be(null);
-      expect(destinationExtent[0][0]).to.be(-45);
-      expect(destinationExtent[1][0]).to.be(15);
-      expect(destinationExtent[0][1]).to.be(-60);
-      expect(destinationExtent[1][1]).to.be(30);
+      expect(destinationExtent[0]).to.be(-45);
+      expect(destinationExtent[2]).to.be(15);
+      expect(destinationExtent[1]).to.be(-60);
+      expect(destinationExtent[3]).to.be(30);
     });
 
   });

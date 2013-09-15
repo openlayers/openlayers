@@ -348,8 +348,8 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
       for (tileCoordKey in tilesToDraw) {
         tile = tilesToDraw[tileCoordKey];
         tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
-        x = (tileExtent[0][0] - origin[0]) / tileResolution;
-        y = (origin[1] - tileExtent[1][1]) / tileResolution;
+        x = (tileExtent[0] - origin[0]) / tileResolution;
+        y = (origin[1] - tileExtent[3]) / tileResolution;
         width = scale * tileSize[0];
         height = scale * tileSize[1];
         tileState = tile.getState();

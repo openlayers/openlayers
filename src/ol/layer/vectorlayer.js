@@ -110,13 +110,12 @@ ol.layer.FeatureCache.prototype.getFeaturesObject = function(opt_expr) {
       for (var i = 0; i < 4; ++i) {
         goog.asserts.assert(args[i] instanceof ol.expr.Literal);
       }
-      var extent = [[
+      var extent = [
         /** @type {ol.expr.Literal} */ (args[0]).evaluate(),
-        /** @type {ol.expr.Literal} */ (args[1]).evaluate()
-      ], [
+        /** @type {ol.expr.Literal} */ (args[1]).evaluate(),
         /** @type {ol.expr.Literal} */ (args[2]).evaluate(),
         /** @type {ol.expr.Literal} */ (args[3]).evaluate()
-      ]];
+      ];
       features = this.rTree_.searchReturningObject(extent);
     } else {
       // not a call expression, check logical

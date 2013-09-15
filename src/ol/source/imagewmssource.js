@@ -89,8 +89,8 @@ ol.source.ImageWMS.prototype.getImage =
 
   extent = extent.slice();
   ol.extent.scaleFromCenter(extent, this.ratio_);
-  var width = (extent[1][0] - extent[0][0]) / resolution;
-  var height = (extent[1][1] - extent[0][1]) / resolution;
+  var width = (extent[2] - extent[0]) / resolution;
+  var height = (extent[3] - extent[1]) / resolution;
   var size = [width, height];
 
   this.image_ = this.createImage(extent, resolution, size, projection);

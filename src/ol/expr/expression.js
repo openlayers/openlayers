@@ -144,7 +144,7 @@ ol.expr.lib[ol.expr.functions.EXTENT] = function(minX, minY, maxX, maxY,
       this.get(opt_attribute) : this.getGeometry();
   if (geometry) {
     intersects = ol.extent.intersects(geometry.getBounds(),
-        [[minX, minY], [maxX, maxY]]);
+        [minX, minY, maxX, maxY]);
   }
   return intersects;
 };

@@ -30,7 +30,7 @@ goog.inherits(ol.proj.EPSG4326, ol.Projection);
  * @const
  * @type {ol.Extent}
  */
-ol.proj.EPSG4326.EXTENT = [[-180, -90], [180, 90]];
+ol.proj.EPSG4326.EXTENT = [-180, -90, 180, 90];
 
 
 /**

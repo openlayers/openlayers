@@ -477,10 +477,10 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         tilesToRender[key] = tileCoord;
       } else if (idle) {
         tileExtent = tileGrid.getTileCoordExtent(tileCoord);
-        tileExtent[0][0] -= tileGutter;
-        tileExtent[1][0] += tileGutter;
-        tileExtent[0][1] -= tileGutter;
-        tileExtent[1][1] += tileGutter;
+        tileExtent[0] -= tileGutter;
+        tileExtent[2] += tileGutter;
+        tileExtent[1] -= tileGutter;
+        tileExtent[3] += tileGutter;
         tileHasFeatures = false;
         for (i = 0; i < numTypes; ++i) {
           type = types[i];

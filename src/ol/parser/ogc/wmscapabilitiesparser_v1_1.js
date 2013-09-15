@@ -47,13 +47,12 @@ ol.parser.ogc.WMSCapabilities_v1_1 = function() {
       obj['userSymbols'] = userSymbols;
     },
     'LatLonBoundingBox': function(node, obj) {
-      obj['llbbox'] = [[
+      obj['llbbox'] = [
         parseFloat(node.getAttribute('minx')),
-        parseFloat(node.getAttribute('miny'))
-      ], [
+        parseFloat(node.getAttribute('miny')),
         parseFloat(node.getAttribute('maxx')),
         parseFloat(node.getAttribute('maxy'))
-      ]];
+      ];
     },
     'BoundingBox': function(node, obj) {
       var bbox = bboxreader.apply(this, arguments);

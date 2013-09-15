@@ -90,8 +90,8 @@ describe('ol.proj.EPSG21781', function() {
     var fromEPSG4326 = ol.proj.getTransform('EPSG:4326', 'EPSG:21781');
     var toEPSG4326 = ol.proj.getTransform('EPSG:21781', 'EPSG:4326');
     var roundTripped, x, y;
-    for (x = extent[0][0]; x < extent[1][0]; x += 50000) {
-      for (y = extent[0][1]; y < extent[1][1]; y += 50000) {
+    for (x = extent[0]; x < extent[2]; x += 50000) {
+      for (y = extent[1]; y < extent[3]; y += 50000) {
         roundTripped = fromEPSG4326(toEPSG4326([x, y]));
         expect(roundTripped).to.be.an(Array);
         expect(roundTripped).to.have.length(2);

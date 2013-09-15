@@ -204,7 +204,7 @@ describe('ol.parser.gml_v2', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/box-coord.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        expect(obj.bounds).to.eql([[1, 2], [3, 4]]);
+        expect(obj.bounds).to.eql([1, 2, 3, 4]);
         done();
       });
     });
@@ -212,7 +212,7 @@ describe('ol.parser.gml_v2', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/box-coordinates.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        expect(obj.bounds).to.eql([[1, 2], [3, 4]]);
+        expect(obj.bounds).to.eql([1, 2, 3, 4]);
         done();
       });
     });

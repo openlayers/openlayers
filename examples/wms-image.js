@@ -15,7 +15,7 @@ var layers = [
     source: new ol.source.ImageWMS({
       url: 'http://demo.opengeo.org/geoserver/wms',
       params: {'LAYERS': 'topp:states'},
-      extent: [[-13884991, 2870341], [-7455066, 6338219]]
+      extent: [-13884991, 2870341, -7455066, 6338219]
     })
   })
 ];

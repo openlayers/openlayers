@@ -84,10 +84,10 @@ ol.structs.RTree.recalculateExtent_ = function(node) {
     ol.extent.empty(extent);
   } else {
     var firstNodeExtent = node.nodes[0].extent;
-    extent[0][0] = firstNodeExtent[0][0];
-    extent[1][0] = firstNodeExtent[1][0];
-    extent[0][1] = firstNodeExtent[0][1];
-    extent[1][1] = firstNodeExtent[1][1];
+    extent[0] = firstNodeExtent[0];
+    extent[2] = firstNodeExtent[2];
+    extent[1] = firstNodeExtent[1];
+    extent[3] = firstNodeExtent[3];
     var i;
     for (i = 1; i < n; ++i) {
       ol.extent.extend(extent, node.nodes[i].extent);
@@ -151,19 +151,19 @@ ol.structs.RTree.prototype.chooseLeafSubtree_ = function(rect, root) {
       }
       // Area of new enlarged rectangle
       var oldLRatio = ol.structs.RTree.squarifiedRatio_(
-          lTree.extent[1][0] - lTree.extent[0][0],
-          lTree.extent[1][1] - lTree.extent[0][1],
+          lTree.extent[2] - lTree.extent[0],
+          lTree.extent[3] - lTree.extent[1],
           lTree.nodes.length + 1);
 
       // Enlarge rectangle to fit new rectangle
-      var nw = (lTree.extent[1][0] > rect.extent[1][0] ?
-          lTree.extent[1][0] : rect.extent[1][0]) -
-          (lTree.extent[0][0] < rect.extent[0][0] ?
-          lTree.extent[0][0] : rect.extent[0][0]);
-      var nh = (lTree.extent[1][1] > rect.extent[1][1] ?
-          lTree.extent[1][1] : rect.extent[1][1]) -
-          (lTree.extent[0][1] < rect.extent[0][1] ?
-          lTree.extent[0][1] : rect.extent[0][1]);
+      var nw = (lTree.extent[2] > rect.extent[2] ?
+          lTree.extent[2] : rect.extent[2]) -
+          (lTree.extent[0] < rect.extent[0] ?
+          lTree.extent[0] : rect.extent[0]);
+      var nh = (lTree.extent[3] > rect.extent[3] ?
+          lTree.extent[3] : rect.extent[3]) -
+          (lTree.extent[1] < rect.extent[1] ?
+          lTree.extent[1] : rect.extent[1]);
 
       // Area of new enlarged rectangle
       var lRatio = ol.structs.RTree.squarifiedRatio_(
@@ -308,21 +308,21 @@ ol.structs.RTree.prototype.pickLinear_ = function(nodes) {
 
   for (var i = nodes.length - 2; i >= 0; --i) {
     var l = nodes[i];
-    if (l.extent[0][0] > nodes[highestLowX].extent[0][0]) {
+    if (l.extent[0] > nodes[highestLowX].extent[0]) {
       highestLowX = i;
-    } else if (l.extent[1][0] < nodes[lowestHighX].extent[0][1]) {
+    } else if (l.extent[2] < nodes[lowestHighX].extent[1]) {
       lowestHighX = i;
     }
-    if (l.extent[0][1] > nodes[highestLowY].extent[0][1]) {
+    if (l.extent[1] > nodes[highestLowY].extent[1]) {
       highestLowY = i;
-    } else if (l.extent[1][1] < nodes[lowestHighY].extent[1][1]) {
+    } else if (l.extent[3] < nodes[lowestHighY].extent[3]) {
       lowestHighY = i;
     }
   }
-  var dx = Math.abs(nodes[lowestHighX].extent[1][0] -
-      nodes[highestLowX].extent[0][0]);
-  var dy = Math.abs(nodes[lowestHighY].extent[1][1] -
-      nodes[highestLowY].extent[0][1]);
+  var dx = Math.abs(nodes[lowestHighX].extent[2] -
+      nodes[highestLowX].extent[0]);
+  var dy = Math.abs(nodes[lowestHighY].extent[3] -
+      nodes[highestLowY].extent[1]);
   if (dx > dy) {
     if (lowestHighX > highestLowX) {
       t1 = nodes.splice(lowestHighX, 1)[0];
@@ -359,10 +359,10 @@ ol.structs.RTree.prototype.pickLinear_ = function(nodes) {
  */
 ol.structs.RTree.prototype.pickNext_ = function(nodes, a, b) {
   // Area of new enlarged rectangle
-  var areaA = ol.structs.RTree.squarifiedRatio_(a.extent[1][0] - a.extent[0][0],
-      a.extent[1][1] - a.extent[0][1], a.nodes.length + 1);
-  var areaB = ol.structs.RTree.squarifiedRatio_(b.extent[1][0] - b.extent[0][0],
-      b.extent[1][1] - b.extent[0][1], b.nodes.length + 1);
+  var areaA = ol.structs.RTree.squarifiedRatio_(a.extent[2] - a.extent[0],
+      a.extent[3] - a.extent[1], a.nodes.length + 1);
+  var areaB = ol.structs.RTree.squarifiedRatio_(b.extent[2] - b.extent[0],
+      b.extent[3] - b.extent[1], b.nodes.length + 1);
   var highAreaDelta;
   var highAreaNode;
   var lowestGrowthGroup;
@@ -371,20 +371,20 @@ ol.structs.RTree.prototype.pickNext_ = function(nodes, a, b) {
     var l = nodes[i];
 
     var newAreaA = [
-      a.extent[0][0] < l.extent[0][0] ? a.extent[0][0] : l.extent[0][0],
-      a.extent[1][0] > l.extent[1][0] ? a.extent[1][0] : l.extent[1][0],
-      a.extent[0][1] < l.extent[0][1] ? a.extent[0][1] : l.extent[0][1],
-      a.extent[1][1] > l.extent[1][1] ? a.extent[1][1] : l.extent[1][1]
+      a.extent[0] < l.extent[0] ? a.extent[0] : l.extent[0],
+      a.extent[2] > l.extent[2] ? a.extent[2] : l.extent[2],
+      a.extent[1] < l.extent[1] ? a.extent[1] : l.extent[1],
+      a.extent[3] > l.extent[3] ? a.extent[3] : l.extent[3]
     ];
     var changeNewAreaA = Math.abs(ol.structs.RTree.squarifiedRatio_(
         newAreaA[1] - newAreaA[0],
         newAreaA[3] - newAreaA[2], a.nodes.length + 2) - areaA);
 
     var newAreaB = [
-      b.extent[0][0] < l.extent[0][0] ? b.extent[0][0] : l.extent[0][0],
-      b.extent[1][0] > l.extent[1][0] ? b.extent[1][0] : l.extent[1][0],
-      b.extent[0][1] < l.extent[0][1] ? b.extent[0][1] : l.extent[0][1],
-      b.extent[1][1] > l.extent[1][1] ? b.extent[1][1] : l.extent[1][1]
+      b.extent[0] < l.extent[0] ? b.extent[0] : l.extent[0],
+      b.extent[2] > l.extent[2] ? b.extent[2] : l.extent[2],
+      b.extent[1] < l.extent[1] ? b.extent[1] : l.extent[1],
+      b.extent[3] > l.extent[3] ? b.extent[3] : l.extent[3]
     ];
     var changeNewAreaB = Math.abs(ol.structs.RTree.squarifiedRatio_(
         newAreaB[1] - newAreaB[0], newAreaB[3] - newAreaB[2],

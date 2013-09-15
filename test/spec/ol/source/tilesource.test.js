@@ -192,7 +192,7 @@ describe('ol.source.Tile', function() {
  * @param {Object.<string, boolean>} loaded Lookup of already loaded tiles.
  */
 ol.test.source.TileMock = function(loaded) {
-  var extent = [[-180, -180], [180, 180]];
+  var extent = [-180, -180, 180, 180];
   var tileGrid = new ol.tilegrid.TileGrid({
     resolutions: [360 / 256, 180 / 256, 90 / 256, 45 / 256],
     extent: extent,

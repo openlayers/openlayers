@@ -64,10 +64,10 @@ describe('ol.geom.MultiPolygon', function() {
         [outer1, inner1a, inner1b],
         [outer2]]);
       var bounds = multi.getBounds();
-      expect(bounds[0][0]).to.be(0);
-      expect(bounds[1][0]).to.be(20);
-      expect(bounds[0][1]).to.be(0);
-      expect(bounds[1][1]).to.be(50);
+      expect(bounds[0]).to.be(0);
+      expect(bounds[2]).to.be(20);
+      expect(bounds[1]).to.be(0);
+      expect(bounds[3]).to.be(50);
     });
 
   });

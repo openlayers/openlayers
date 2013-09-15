@@ -47,8 +47,8 @@ describe('ol.parser.TopoJSON', function() {
       expect(geometry).to.be.a(ol.geom.Polygon);
 
       expect(geometry.getBounds()).to.eql([
-        [-70.08100810081008, 12.417091709170947],
-        [-69.9009900990099, 12.608069195591469]
+        -70.08100810081008, 12.417091709170947,
+        -69.9009900990099, 12.608069195591469
       ]);
     });
 
@@ -88,15 +88,15 @@ describe('ol.parser.TopoJSON', function() {
         var firstGeom = first.getGeometry();
         expect(firstGeom).to.be.a(ol.geom.MultiPolygon);
         expect(firstGeom.getBounds()).to.eql(
-            [[-180, -85.60903777459777], [180, 83.64513000000002]]);
+            [-180, -85.60903777459777, 180, 83.64513000000002]);
 
         var last = result.features[177];
         expect(last).to.be.a(ol.Feature);
         var lastGeom = last.getGeometry();
         expect(lastGeom).to.be.a(ol.geom.Polygon);
         expect(lastGeom.getBounds()).to.eql([
-          [25.26325263252633, -22.271802279310577],
-          [32.848528485284874, -15.50833810039586]
+          25.26325263252633, -22.271802279310577,
+          32.848528485284874, -15.50833810039586
         ]);
 
         done();

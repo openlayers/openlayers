@@ -17,8 +17,8 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1_wmsc', function() {
         tileset = tilesets[0];
         expect(tilesets.length).to.eql(2);
         var bbox = [
-          [-13697515.466796875, 5165920.118906248],
-          [-13619243.94984375, 5244191.635859374]
+          -13697515.466796875, 5165920.118906248,
+          -13619243.94984375, 5244191.635859374
         ];
         expect(tileset.bbox['EPSG:900913'].bbox).to.eql(bbox);
         expect(tileset.format).to.eql('image/png');

@@ -9,10 +9,10 @@ goog.require('ol.source.ImageWMS');
 
 var projection = ol.proj.configureProj4jsProjection({
   code: 'EPSG:21781',
-  extent: [[485869.5728, 76443.1884], [837076.5648, 299941.7864]]
+  extent: [485869.5728, 76443.1884, 837076.5648, 299941.7864]
 });
 
-var extent = [[420000, 30000], [900000, 350000]];
+var extent = [420000, 30000, 900000, 350000];
 var layers = [
   new ol.layer.Image({
     source: new ol.source.ImageWMS({

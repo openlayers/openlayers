@@ -50,8 +50,8 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         var abstr = 'Highly simplified road layout of Manhattan in New York..';
         expect(layer['abstract']).to.eql(abstr);
         var bbox = [
-          [-74.08769307536667, 40.660618924633326],
-          [-73.84653192463333, 40.90178007536667]
+          -74.08769307536667, 40.660618924633326,
+          -73.84653192463333, 40.90178007536667
         ];
         expect(layer.llbbox).to.eql(bbox);
         expect(layer.styles.length).to.eql(1);
@@ -89,13 +89,13 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         expect(layers['ROADS_RIVERS'].srs).to.eql(srs);
         expect(layers['Temperature'].srs).to.eql({'EPSG:4326': true});
         var bbox = layers['ROADS_RIVERS'].bbox['EPSG:26986'];
-        expect(bbox.bbox).to.eql([[189000, 834000], [285000, 962000]]);
+        expect(bbox.bbox).to.eql([189000, 834000, 285000, 962000]);
         expect(bbox.res).to.eql({x: 1, y: 1});
         bbox = layers['ROADS_RIVERS'].bbox['EPSG:4326'];
-        expect(bbox.bbox).to.eql([[-71.63, 41.75], [-70.78, 42.90]]);
+        expect(bbox.bbox).to.eql([-71.63, 41.75, -70.78, 42.90]);
         expect(bbox.res).to.eql({x: 0.01, y: 0.01});
         bbox = layers['ROADS_1M'].bbox['EPSG:26986'];
-        expect(bbox.bbox).to.eql([[189000, 834000], [285000, 962000]]);
+        expect(bbox.bbox).to.eql([189000, 834000, 285000, 962000]);
         expect(bbox.res).to.eql({x: 1, y: 1});
         expect(identifiers).to.be.ok();
         expect('DIF_ID' in identifiers).to.be.ok();

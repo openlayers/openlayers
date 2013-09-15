@@ -126,7 +126,7 @@ ol.geom.LineString.prototype.getBounds = function() {
         maxY = y;
       }
     }
-    this.bounds_ = [[minX, minY], [maxX, maxY]];
+    this.bounds_ = [minX, minY, maxX, maxY];
   }
   return this.bounds_;
 };

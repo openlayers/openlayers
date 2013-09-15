@@ -202,7 +202,7 @@ describe('ol.parser.GeoJSON', function() {
         var firstGeom = first.getGeometry();
         expect(firstGeom).to.be.a(ol.geom.Polygon);
         expect(ol.extent.equals(firstGeom.getBounds(),
-            [[60.52843, 29.318572], [75.158028, 38.486282]]))
+            [60.52843, 29.318572, 75.158028, 38.486282]))
             .to.be(true);
 
         var last = result[178];
@@ -212,7 +212,7 @@ describe('ol.parser.GeoJSON', function() {
         var lastGeom = last.getGeometry();
         expect(lastGeom).to.be.a(ol.geom.Polygon);
         expect(ol.extent.equals(lastGeom.getBounds(),
-            [[25.264226, -22.271612], [32.849861, -15.507787]]))
+            [25.264226, -22.271612, 32.849861, -15.507787]))
             .to.be(true);
         done();
       });
@@ -251,7 +251,7 @@ describe('ol.parser.GeoJSON', function() {
         var firstGeom = first.getGeometry();
         expect(firstGeom).to.be.a(ol.geom.Polygon);
         expect(ol.extent.equals(firstGeom.getBounds(),
-            [[60.52843, 29.318572], [75.158028, 38.486282]]))
+            [60.52843, 29.318572, 75.158028, 38.486282]))
             .to.be(true);
 
         var last = result[178];
@@ -260,7 +260,7 @@ describe('ol.parser.GeoJSON', function() {
         var lastGeom = last.getGeometry();
         expect(lastGeom).to.be.a(ol.geom.Polygon);
         expect(ol.extent.equals(lastGeom.getBounds(),
-            [[25.264226, -22.271612], [32.849861, -15.507787]]))
+            [25.264226, -22.271612, 32.849861, -15.507787]))
             .to.be(true);
       });
     });
