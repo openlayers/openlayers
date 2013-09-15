@@ -232,11 +232,11 @@ ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution =
     function(extent, resolution, opt_tileRange) {
   var tileCoord = ol.tilegrid.TileGrid.tmpTileCoord_;
   this.getTileCoordForXYAndResolution_(
-      extent[0], extent[2], resolution, false, tileCoord);
+      extent[0], extent[1], resolution, false, tileCoord);
   var minX = tileCoord.x;
   var minY = tileCoord.y;
   this.getTileCoordForXYAndResolution_(
-      extent[1], extent[3], resolution, true, tileCoord);
+      extent[2], extent[3], resolution, true, tileCoord);
   return ol.TileRange.createOrUpdate(
       minX, tileCoord.x, minY, tileCoord.y, opt_tileRange);
 };
@@ -414,8 +414,8 @@ ol.tilegrid.createForProjection =
   var size = goog.isNull(projectionExtent) ?
       360 * ol.METERS_PER_UNIT[ol.ProjectionUnits.DEGREES] /
           projection.getMetersPerUnit() :
-      Math.max(projectionExtent[1] - projectionExtent[0],
-          projectionExtent[3] - projectionExtent[2]);
+      Math.max(projectionExtent[2] - projectionExtent[0],
+          projectionExtent[3] - projectionExtent[1]);
   var maxZoom = goog.isDef(opt_maxZoom) ?
       opt_maxZoom : ol.DEFAULT_MAX_ZOOM;
   var tileSize = goog.isDef(opt_tileSize) ?

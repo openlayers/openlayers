@@ -1,5 +1,6 @@
 goog.provide('ol.geom.AbstractCollection');
 
+goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 
 
@@ -38,22 +39,12 @@ goog.inherits(ol.geom.AbstractCollection, ol.geom.Geometry);
  */
 ol.geom.AbstractCollection.prototype.getBounds = function() {
   if (goog.isNull(this.bounds)) {
-    var minX,
-        minY = minX = Infinity,
-        maxX,
-        maxY = maxX = -Infinity,
-        components = this.components,
-        len = components.length,
-        bounds, i;
-
-    for (i = 0; i < len; ++i) {
-      bounds = components[i].getBounds();
-      minX = Math.min(bounds[0], minX);
-      maxX = Math.max(bounds[1], maxX);
-      minY = Math.min(bounds[2], minY);
-      maxY = Math.max(bounds[3], maxY);
+    var bounds = ol.extent.createEmpty();
+    var components = this.components;
+    for (var i = 0, ii = components.length; i < ii; ++i) {
+      ol.extent.extend(bounds, components[i].getBounds());
     }
-    this.bounds = [minX, maxX, minY, maxY];
+    this.bounds = bounds;
   }
   return this.bounds;
 };

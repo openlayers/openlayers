@@ -170,11 +170,11 @@ ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ =
   goog.vec.Mat4.rotateZ(projectionMatrix, -viewRotation);
   goog.vec.Mat4.translate(projectionMatrix,
       imageExtent[0] - viewCenter[0],
-      imageExtent[2] - viewCenter[1],
+      imageExtent[1] - viewCenter[1],
       0);
   goog.vec.Mat4.scale(projectionMatrix,
-      (imageExtent[1] - imageExtent[0]) / 2,
-      (imageExtent[3] - imageExtent[2]) / 2,
+      (imageExtent[2] - imageExtent[0]) / 2,
+      (imageExtent[3] - imageExtent[1]) / 2,
       1);
   goog.vec.Mat4.translate(projectionMatrix, 1, 1, 0);
 

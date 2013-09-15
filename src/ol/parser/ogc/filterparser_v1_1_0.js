@@ -130,9 +130,12 @@ ol.parser.ogc.Filter_v1_1_0 = function() {
       goog.asserts.assert(args[2] instanceof ol.expr.Literal);
       goog.asserts.assert(args[3] instanceof ol.expr.Literal);
       goog.asserts.assert(args[4] instanceof ol.expr.Literal);
-      var property = args[5], bbox = [args[0].getValue(), args[1].getValue(),
-            args[2].getValue(), args[3].getValue()],
-          projection = args[4].getValue();
+      var bbox = [
+        args[0].getValue(), args[1].getValue(),
+        args[2].getValue(), args[3].getValue()
+      ];
+      var projection = args[4].getValue();
+      var property = args[5];
       // PropertyName is optional in 1.1.0
       if (goog.isDefAndNotNull(property)) {
         this.writeNode('PropertyName', property, null, node);
@@ -187,8 +190,10 @@ ol.parser.ogc.Filter_v1_1_0.prototype.writeSpatial_ = function(filter, name) {
     goog.asserts.assert(args[1] instanceof ol.expr.Literal);
     goog.asserts.assert(args[2] instanceof ol.expr.Literal);
     goog.asserts.assert(args[3] instanceof ol.expr.Literal);
-    bbox = [args[0].getValue(), args[1].getValue(), args[2].getValue(),
-          args[3].getValue()];
+    bbox = [
+      args[0].getValue(), args[1].getValue(),
+      args[2].getValue(), args[3].getValue()
+    ];
     projection = args[4];
     property = args[5];
   } else if (args[0] instanceof ol.expr.Literal &&

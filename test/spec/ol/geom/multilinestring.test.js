@@ -62,8 +62,8 @@ describe('ol.geom.MultiLineString', function() {
         [[20, 30], [40, 50]]]);
       var bounds = multi.getBounds();
       expect(bounds[0]).to.be(10);
-      expect(bounds[1]).to.be(40);
-      expect(bounds[2]).to.be(20);
+      expect(bounds[2]).to.be(40);
+      expect(bounds[1]).to.be(20);
       expect(bounds[3]).to.be(50);
     });
 

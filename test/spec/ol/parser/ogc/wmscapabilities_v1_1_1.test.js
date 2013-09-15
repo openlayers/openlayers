@@ -49,8 +49,10 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1', function() {
         expect(layer.title).to.eql('Manhattan (NY) roads');
         var abstr = 'Highly simplified road layout of Manhattan in New York..';
         expect(layer['abstract']).to.eql(abstr);
-        var bbox = [-74.08769307536667, 40.660618924633326,
-          -73.84653192463333, 40.90178007536667];
+        var bbox = [
+          -74.08769307536667, 40.660618924633326,
+          -73.84653192463333, 40.90178007536667
+        ];
         expect(layer.llbbox).to.eql(bbox);
         expect(layer.styles.length).to.eql(1);
         expect(layer.styles[0].name).to.eql('tiger_roads');
