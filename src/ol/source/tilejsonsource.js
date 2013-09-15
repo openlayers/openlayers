@@ -69,15 +69,15 @@ goog.inherits(ol.source.TileJSON, ol.source.TileImage);
  * @protected
  */
 ol.source.TileJSON.prototype.handleTileJSONResponse = function() {
-
   var tileJSON = ol.tilejson.grids_.pop();
 
   var epsg4326Projection = ol.proj.get('EPSG:4326');
 
   var extent;
   if (goog.isDef(tileJSON.bounds)) {
-    var bounds = tileJSON.bounds;
-    var epsg4326Extent = [bounds[0], bounds[2], bounds[1], bounds[3]];
+    var epsg4326Extent = [
+      tileJSON.bounds.slice(0, 2), tileJSON.bounds.slice(2)
+    ];
     var transform = ol.proj.getTransformFromProjections(
         epsg4326Projection, this.getProjection());
     extent = ol.extent.transform(epsg4326Extent, transform);

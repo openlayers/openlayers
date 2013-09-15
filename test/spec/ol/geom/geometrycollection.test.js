@@ -80,8 +80,8 @@ describe('ol.geom.GeometryCollection', function() {
       var multi = new ol.geom.GeometryCollection([point, line]);
       var bounds = multi.getBounds();
       expect(bounds[0]).to.be(1);
-      expect(bounds[1]).to.be(30);
-      expect(bounds[2]).to.be(2);
+      expect(bounds[2]).to.be(30);
+      expect(bounds[1]).to.be(2);
       expect(bounds[3]).to.be(40);
     });
 

@@ -35,8 +35,10 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
           [node, coordinates, container]);
       this.readChildNodes(node, coordinates);
       container.projection = node.getAttribute('srsName');
-      container.bounds = [coordinates[0][0][0], coordinates[0][1][0],
-        coordinates[0][0][1], coordinates[0][1][1]];
+      container.bounds = [
+        coordinates[0][0][0], coordinates[0][0][1],
+        coordinates[0][1][0], coordinates[0][1][1]
+      ];
     }
   });
   goog.object.extend(this.writers['http://www.opengis.net/gml'], {
@@ -104,8 +106,11 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
     },
     'Box': function(extent) {
       var node = this.createElementNS('gml:Box');
-      this.writeNode('coordinates', [[extent[0], extent[1]],
-            [extent[2], extent[3]]], null, node);
+      var coordinates = [
+        [extent[0], extent[1]],
+        [extent[2], extent[3]]
+      ];
+      this.writeNode('coordinates', coordinates, null, node);
       // srsName attribute is optional for gml:Box
       if (goog.isDefAndNotNull(this.srsName)) {
         node.setAttribute('srsName', this.srsName);

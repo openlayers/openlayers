@@ -198,7 +198,7 @@ describe('ol.geom2.PointCollection', function() {
 
       it('returns the expected value', function() {
         var extent = pc.getExtent();
-        expect(extent).to.eql([0, 2, 1, 3]);
+        expect(extent).to.eql([0, 1, 2, 3]);
       });
 
     });

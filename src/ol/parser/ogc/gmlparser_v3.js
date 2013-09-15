@@ -113,7 +113,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
         if (coords.length === 2) {
           obj.push([coords.reverse()]);
         } else if (coords.length === 3) {
-          obj.push([coords[1], coords[0], coords[2]]);
+          obj.push([[coords[1], coords[0], coords[2]]]);
         }
       }
     },
@@ -215,20 +215,22 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
           [node, coordinates, container]);
       this.readChildNodes(node, coordinates);
       container.projection = node.getAttribute('srsName');
-      container.bounds = [coordinates[0][0][0][0], coordinates[1][0][0][0],
-        coordinates[0][0][0][1], coordinates[1][0][0][1]];
+      container.bounds = [
+        coordinates[0][0], coordinates[0][1],
+        coordinates[1][0], coordinates[1][1]
+      ];
     },
     'lowerCorner': function(node, envelope) {
       var coordinates = [];
       this.readers[this.defaultNamespaceURI]['pos'].apply(this,
           [node, coordinates]);
-      envelope.push(coordinates);
+      envelope.push(coordinates[0][0]);
     },
     'upperCorner': function(node, envelope) {
       var coordinates = [];
       this.readers[this.defaultNamespaceURI]['pos'].apply(this,
           [node, coordinates]);
-      envelope.push(coordinates);
+      envelope.push(coordinates[0][0]);
     }
   });
   goog.object.extend(this.writers['http://www.opengis.net/gml'], {
@@ -391,9 +393,9 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       // only 2d for simple features profile
       var pos;
       if (this.axisOrientation.substr(0, 2) === 'en') {
-        pos = (bounds[0] + ' ' + bounds[2]);
+        pos = (bounds[0] + ' ' + bounds[1]);
       } else {
-        pos = (bounds[2] + ' ' + bounds[0]);
+        pos = (bounds[1] + ' ' + bounds[0]);
       }
       var node = this.createElementNS('gml:lowerCorner');
       node.appendChild(this.createTextNode(pos));
@@ -403,9 +405,9 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       // only 2d for simple features profile
       var pos;
       if (this.axisOrientation.substr(0, 2) === 'en') {
-        pos = (bounds[1] + ' ' + bounds[3]);
+        pos = (bounds[2] + ' ' + bounds[3]);
       } else {
-        pos = (bounds[3] + ' ' + bounds[1]);
+        pos = (bounds[3] + ' ' + bounds[2]);
       }
       var node = this.createElementNS('gml:upperCorner');
       node.appendChild(this.createTextNode(pos));

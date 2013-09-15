@@ -52,7 +52,7 @@ describe('ol.layer.Vector', function() {
     });
 
     var geomFilter = ol.expr.parse('geometryType("linestring")');
-    var extentFilter = ol.expr.parse('extent(16, 16.3, 48, 48.3)');
+    var extentFilter = ol.expr.parse('extent(16, 48, 16.3, 48.3)');
 
     it('can filter by geometry type using its GeometryType index', function() {
       sinon.spy(geomFilter, 'evaluate');

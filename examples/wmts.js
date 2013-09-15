@@ -39,7 +39,7 @@ var map = new ol.Map({
           matrixIds: matrixIds
         }),
         style: '_null',
-        extent: [-13682835, -13667473, 5204068, 5221690]
+        extent: [-13682835, 5204068, -13667473, 5221690]
       })
     })
   ],

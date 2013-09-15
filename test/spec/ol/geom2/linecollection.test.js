@@ -189,7 +189,7 @@ describe('ol.geom2.LineStringCollection', function() {
     describe('getExtent', function() {
 
       it('returns the expected extent', function() {
-        expect(lsc.getExtent()).to.eql([0, 2, 1, 3]);
+        expect(lsc.getExtent()).to.eql([0, 1, 2, 3]);
       });
 
     });
@@ -268,7 +268,7 @@ describe('ol.geom2.LineStringCollection', function() {
     describe('getExtent', function() {
 
       it('returns the expected value', function() {
-        expect(lsc.getExtent()).to.eql([0, 8, 1, 9]);
+        expect(lsc.getExtent()).to.eql([0, 1, 8, 9]);
       });
 
     });
