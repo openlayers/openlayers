@@ -1,5 +1,4 @@
 goog.provide('ol.DeviceOrientation');
-goog.provide('ol.DeviceOrientation.SUPPORTED');
 goog.provide('ol.DeviceOrientationProperty');
 
 goog.require('goog.events');
@@ -107,6 +106,10 @@ ol.DeviceOrientation.prototype.disposeInternal = function() {
  * @type {boolean}
  */
 ol.DeviceOrientation.SUPPORTED = 'DeviceOrientationEvent' in window;
+goog.exportProperty(
+    ol.DeviceOrientation,
+    'SUPPORTED',
+    ol.DeviceOrientation.SUPPORTED);
 
 
 /**
