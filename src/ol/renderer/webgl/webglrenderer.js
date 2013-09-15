@@ -1,6 +1,6 @@
-goog.provide('ol.renderer.webgl.SUPPORTED');
+goog.provide('ol.renderer.webgl');
 
-goog.require('ol.webgl.SUPPORTED');
+goog.require('ol.webgl');
 
 
 /**

@@ -1,5 +1,4 @@
 goog.provide('ol.webgl');
-goog.provide('ol.webgl.SUPPORTED');
 goog.provide('ol.webgl.WebGLContextEventType');
 
 goog.require('goog.dom');
@@ -64,3 +63,4 @@ ol.webgl.SUPPORTED = (function() {
     return false;
   }
 })();
+goog.exportSymbol('ol.webgl.SUPPORTED', ol.webgl.SUPPORTED);
