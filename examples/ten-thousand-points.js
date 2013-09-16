@@ -9,7 +9,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector2');
 goog.require('ol.source.OSM');
 goog.require('ol.source.Vector2');
-goog.require('ol.webgl.SUPPORTED');
+goog.require('ol.webgl');
 
 
 // WARNING
