@@ -338,6 +338,19 @@ ol.extent.toString = function(extent) {
 
 
 /**
+ * @param {ol.Extent} extent1 Extent 1.
+ * @param {ol.Extent} extent2 Extent 2.
+ * @return {boolean} Touches.
+ */
+ol.extent.touches = function(extent1, extent2) {
+  var intersects = ol.extent.intersects(extent1, extent2);
+  return intersects &&
+      (extent1[0] == extent2[2] || extent1[2] == extent2[0] ||
+       extent1[1] == extent2[3] || extent1[3] == extent2[1]);
+};
+
+
+/**
  * @param {ol.Extent} extent Extent.
  * @param {ol.TransformFunction} transformFn Transform function.
  * @param {ol.Extent=} opt_extent Destination extent.
