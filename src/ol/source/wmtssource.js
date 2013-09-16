@@ -165,7 +165,8 @@ ol.source.WMTS = function(options) {
           tmpTileCoord.y = tileCoord.y;
           tileExtent = tileGrid.getTileCoordExtent(tmpTileCoord, tmpExtent);
         }
-        if (!ol.extent.intersects(tileExtent, extent)) {
+        if (!ol.extent.intersects(tileExtent, extent) ||
+            ol.extent.touches(tileExtent, extent)) {
           return null;
         }
         return new ol.TileCoord(tileCoord.z, x, y);
