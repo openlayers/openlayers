@@ -1,4 +1,4 @@
-goog.provide('ol.renderer.dom.SUPPORTED');
+goog.provide('ol.renderer.dom');
 
 
 /**
