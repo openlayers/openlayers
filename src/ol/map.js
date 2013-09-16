@@ -240,11 +240,14 @@ ol.Map = function(options) {
       this.handleMapBrowserEvent, false, this);
   this.registerDisposable(mapBrowserEventHandler);
 
-  // FIXME we probably shouldn't listen on document...
-  var keyHandler = new goog.events.KeyHandler(goog.global.document);
-  goog.events.listen(keyHandler, goog.events.KeyHandler.EventType.KEY,
+  /**
+   * @private
+   * @type {goog.events.KeyHandler}
+   */
+  this.keyHandler_ = new goog.events.KeyHandler();
+  goog.events.listen(this.keyHandler_, goog.events.KeyHandler.EventType.KEY,
       this.handleBrowserEvent, false, this);
-  this.registerDisposable(keyHandler);
+  this.registerDisposable(this.keyHandler_);
 
   var mouseWheelHandler = new goog.events.MouseWheelHandler(this.viewport_);
   goog.events.listen(mouseWheelHandler,
@@ -745,11 +748,19 @@ ol.Map.prototype.handleTargetChanged_ = function() {
   var targetElement = goog.isDef(target) ?
       goog.dom.getElement(target) : null;
 
+  this.keyHandler_.detach();
+
   if (goog.isNull(targetElement)) {
     goog.dom.removeNode(this.viewport_);
   } else {
     goog.dom.appendChild(targetElement, this.viewport_);
+
+    // The key handler is attached to the user-provided target. So the key
+    // handler will only trigger events when the target element is focused
+    // (requiring that the target element has a tabindex attribute).
+    this.keyHandler_.attach(targetElement);
   }
+
   this.updateSize();
   // updateSize calls setSize, so no need to call this.render
   // ourselves here.
