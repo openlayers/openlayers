@@ -75,12 +75,9 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function() {
 
   var extent;
   if (goog.isDef(tileJSON.bounds)) {
-    var epsg4326Extent = [
-      tileJSON.bounds.slice(0, 2), tileJSON.bounds.slice(2)
-    ];
     var transform = ol.proj.getTransformFromProjections(
         epsg4326Projection, this.getProjection());
-    extent = ol.extent.transform(epsg4326Extent, transform);
+    extent = ol.extent.transform(tileJSON.bounds, transform);
     this.setExtent(extent);
   }
 
