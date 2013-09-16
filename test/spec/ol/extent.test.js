@@ -122,7 +122,7 @@ describe('ol.extent', function() {
     });
   });
 
-  describe('intersect', function() {
+  describe('intersects', function() {
 
     it('returns the expected value', function() {
       var intersects = ol.extent.intersects;
@@ -154,6 +154,23 @@ describe('ol.extent', function() {
       expect(intersects(extent, [50, 120, 100, 140])).to.be(false);
       expect(intersects(extent, [80, 120, 120, 140])).to.be(false);
       expect(intersects(extent, [120, 120, 140, 140])).to.be(false);
+    });
+  });
+
+  describe('touches', function() {
+
+    it('returns the expected value', function() {
+      var touches = ol.extent.touches;
+      var extent = [50, 50, 100, 100];
+      expect(touches(extent, [20, 20, 80, 80])).to.be(false);
+      expect(touches(extent, [20, 20, 50, 80])).to.be(true);
+      expect(touches(extent, [20, 20, 50, 40])).to.be(false);
+      expect(touches(extent, [100, 20, 140, 80])).to.be(true);
+      expect(touches(extent, [100, 20, 140, 40])).to.be(false);
+      expect(touches(extent, [20, 20, 80, 50])).to.be(true);
+      expect(touches(extent, [20, 20, 40, 50])).to.be(false);
+      expect(touches(extent, [20, 100, 80, 140])).to.be(true);
+      expect(touches(extent, [20, 100, 40, 140])).to.be(false);
     });
   });
 
