@@ -10,12 +10,12 @@ goog.require('goog.events');
 goog.require('goog.math');
 goog.require('goog.style');
 goog.require('ol.Object');
-goog.require('ol.ProjectionUnits');
 goog.require('ol.TransformFunction');
 goog.require('ol.View2DState');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.proj');
+goog.require('ol.proj.Units');
 goog.require('ol.sphere.NORMAL');
 
 
@@ -197,7 +197,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
 
   var cosLatitude;
   var units = this.getUnits();
-  if (projectionUnits == ol.ProjectionUnits.DEGREES &&
+  if (projectionUnits == ol.proj.Units.DEGREES &&
       (units == ol.control.ScaleLineUnits.METRIC ||
        units == ol.control.ScaleLineUnits.IMPERIAL)) {
 
@@ -205,10 +205,10 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     this.toEPSG4326_ = null;
     cosLatitude = Math.cos(goog.math.toRadians(center[1]));
     pointResolution *= Math.PI * cosLatitude * ol.sphere.NORMAL.radius / 180;
-    projectionUnits = ol.ProjectionUnits.METERS;
+    projectionUnits = ol.proj.Units.METERS;
 
-  } else if ((projectionUnits == ol.ProjectionUnits.FEET ||
-      projectionUnits == ol.ProjectionUnits.METERS) &&
+  } else if ((projectionUnits == ol.proj.Units.FEET ||
+      projectionUnits == ol.proj.Units.METERS) &&
       units == ol.control.ScaleLineUnits.DEGREES) {
 
     // Convert pointResolution from meters or feet to degrees
@@ -218,11 +218,11 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     }
     cosLatitude = Math.cos(goog.math.toRadians(this.toEPSG4326_(center)[1]));
     var radius = ol.sphere.NORMAL.radius;
-    if (projectionUnits == ol.ProjectionUnits.FEET) {
+    if (projectionUnits == ol.proj.Units.FEET) {
       radius /= 0.3048;
     }
     pointResolution *= 180 / (Math.PI * cosLatitude * radius);
-    projectionUnits = ol.ProjectionUnits.DEGREES;
+    projectionUnits = ol.proj.Units.DEGREES;
 
   } else {
     this.toEPSG4326_ = null;
@@ -231,9 +231,9 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
   goog.asserts.assert(
       ((units == ol.control.ScaleLineUnits.METRIC ||
         units == ol.control.ScaleLineUnits.IMPERIAL) &&
-       projectionUnits == ol.ProjectionUnits.METERS) ||
+       projectionUnits == ol.proj.Units.METERS) ||
       (units == ol.control.ScaleLineUnits.DEGREES &&
-       projectionUnits == ol.ProjectionUnits.DEGREES));
+       projectionUnits == ol.proj.Units.DEGREES));
 
   var nominalCount = this.minWidth_ * pointResolution;
   var suffix = '';

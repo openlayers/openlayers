@@ -16,7 +16,7 @@ goog.require('ol.tilegrid.TileGrid');
  *            extent: (ol.Extent|undefined),
  *            logo: (string|undefined),
  *            opaque: (boolean|undefined),
- *            projection: ol.ProjectionLike,
+ *            projection: ol.proj.ProjectionLike,
  *            tileGrid: (ol.tilegrid.TileGrid|undefined)}}
  */
 ol.source.TileOptions;
@@ -136,7 +136,7 @@ ol.source.Tile.prototype.getResolutions = function() {
  * @param {number} z Tile coordinate z.
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
- * @param {ol.Projection=} opt_projection Projection.
+ * @param {ol.proj.Projection=} opt_projection Projection.
  * @return {!ol.Tile} Tile.
  */
 ol.source.Tile.prototype.getTile = goog.abstractMethod;

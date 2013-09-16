@@ -383,7 +383,7 @@ ol.layer.Vector.prototype.getStyle = function() {
  * as the data for `extent` is available.
  *
  * @param {ol.Extent} extent Bounding extent.
- * @param {ol.Projection} projection Target projection.
+ * @param {ol.proj.Projection} projection Target projection.
  * @param {ol.geom.GeometryType=} opt_type Optional geometry type.
  * @param {Function=} opt_callback Callback to call when data is parsed.
  * @return {Object.<string, ol.Feature>} Features or null if source is loading
@@ -492,8 +492,8 @@ ol.layer.Vector.prototype.getFeatureWithUid = function(uid) {
 /**
  * @param {Object|Element|Document|string} data Feature data.
  * @param {ol.parser.Parser} parser Feature parser.
- * @param {ol.Projection} projection This sucks.  The layer should be a view in
- *     one projection.
+ * @param {ol.proj.Projection} projection This sucks.  The layer should be a
+ *     view in one projection.
  */
 ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
   var lookup = {};

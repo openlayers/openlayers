@@ -47,7 +47,7 @@ describe('ol.proj.EPSG2056', function() {
   beforeEach(function() {
     ol.proj.EPSG2056.add();
     epsg2056 = ol.proj.get('EPSG:2056');
-    expect(epsg2056).to.be.an(ol.Projection);
+    expect(epsg2056).to.be.an(ol.proj.Projection);
   });
 
   it('transforms from EPSG:2056 to EPSG:4326', function() {
@@ -82,7 +82,7 @@ describe('ol.proj.EPSG21781', function() {
   beforeEach(function() {
     ol.proj.EPSG21781.add();
     epsg21781 = ol.proj.get('EPSG:21781');
-    expect(epsg21781).to.be.an(ol.Projection);
+    expect(epsg21781).to.be.an(ol.proj.Projection);
   });
 
   it('maintains accuracy when round-tripping', function() {
@@ -127,8 +127,8 @@ describe('ol.proj.EPSG21781', function() {
 
 
 goog.require('goog.math');
-goog.require('ol.Projection');
 goog.require('ol.proj');
 goog.require('ol.proj.CH');
 goog.require('ol.proj.EPSG2056');
 goog.require('ol.proj.EPSG21781');
+goog.require('ol.proj.Projection');

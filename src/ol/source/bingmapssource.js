@@ -90,7 +90,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                     /**
                      * @this {ol.source.BingMaps}
                      * @param {ol.TileCoord} tileCoord Tile coordinate.
-                     * @param {ol.Projection} projection Projection.
+                     * @param {ol.proj.Projection} projection Projection.
                      * @return {string|undefined} Tile URL.
                      */
                     function(tileCoord, projection) {

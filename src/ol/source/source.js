@@ -20,7 +20,7 @@ ol.source.Source = function(options) {
 
   /**
    * @private
-   * @type {ol.Projection}
+   * @type {ol.proj.Projection}
    */
   this.projection_ = ol.proj.get(options.projection);
 
@@ -98,7 +98,7 @@ ol.source.Source.prototype.getLogo = function() {
 
 
 /**
- * @return {ol.Projection} Projection.
+ * @return {ol.proj.Projection} Projection.
  */
 ol.source.Source.prototype.getProjection = function() {
   return this.projection_;
@@ -150,7 +150,7 @@ ol.source.Source.prototype.setLogo = function(logo) {
 
 
 /**
- * @param {ol.Projection} projection Projetion.
+ * @param {ol.proj.Projection} projection Projetion.
  */
 ol.source.Source.prototype.setProjection = function(projection) {
   this.projection_ = projection;
