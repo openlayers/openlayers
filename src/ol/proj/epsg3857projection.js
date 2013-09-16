@@ -2,27 +2,27 @@ goog.provide('ol.proj.EPSG3857');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('ol.Projection');
-goog.require('ol.ProjectionUnits');
 goog.require('ol.math');
 goog.require('ol.proj');
+goog.require('ol.proj.Projection');
+goog.require('ol.proj.Units');
 
 
 
 /**
  * @constructor
- * @extends {ol.Projection}
+ * @extends {ol.proj.Projection}
  * @param {string} code Code.
  */
 ol.proj.EPSG3857 = function(code) {
   goog.base(this, {
     code: code,
-    units: ol.ProjectionUnits.METERS,
+    units: ol.proj.Units.METERS,
     extent: ol.proj.EPSG3857.EXTENT,
     global: true
   });
 };
-goog.inherits(ol.proj.EPSG3857, ol.Projection);
+goog.inherits(ol.proj.EPSG3857, ol.proj.Projection);
 
 
 /**
@@ -67,7 +67,7 @@ ol.proj.EPSG3857.CODES = [
  * Projections equal to EPSG:3857.
  *
  * @const
- * @type {Array.<ol.Projection>}
+ * @type {Array.<ol.proj.Projection>}
  */
 ol.proj.EPSG3857.PROJECTIONS = goog.array.map(
     ol.proj.EPSG3857.CODES,

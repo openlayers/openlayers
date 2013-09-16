@@ -95,7 +95,7 @@ ol.source.WMTS = function(options) {
         /**
          * @this {ol.source.WMTS}
          * @param {ol.TileCoord} tileCoord Tile coordinate.
-         * @param {ol.Projection} projection Projection.
+         * @param {ol.proj.Projection} projection Projection.
          * @return {string|undefined} Tile URL.
          */
         function(tileCoord, projection) {
@@ -136,7 +136,7 @@ ol.source.WMTS = function(options) {
   tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       /**
        * @param {ol.TileCoord} tileCoord Tile coordinate.
-       * @param {ol.Projection} projection Projection.
+       * @param {ol.proj.Projection} projection Projection.
        * @param {ol.TileCoord=} opt_tileCoord Tile coordinate.
        * @return {ol.TileCoord} Tile coordinate.
        */

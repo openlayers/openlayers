@@ -3,13 +3,13 @@ goog.provide('ol.tilegrid.TileGrid');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.Coordinate');
-goog.require('ol.Projection');
-goog.require('ol.ProjectionUnits');
 goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.array');
 goog.require('ol.extent');
+goog.require('ol.proj.Projection');
+goog.require('ol.proj.Units');
 
 
 /**
@@ -106,8 +106,8 @@ ol.tilegrid.TileGrid.tmpTileCoord_ = new ol.TileCoord(0, 0, 0);
 /**
  * @param {{extent: (ol.Extent|undefined),
  *          wrapX: (boolean|undefined)}=} opt_options Options.
- * @return {function(ol.TileCoord, ol.Projection, ol.TileCoord=): ol.TileCoord}
- *     Tile coordinate transform.
+ * @return {function(ol.TileCoord, ol.proj.Projection, ol.TileCoord=):
+ *     ol.TileCoord} Tile coordinate transform.
  */
 ol.tilegrid.TileGrid.prototype.createTileCoordTransform = goog.abstractMethod;
 
@@ -389,7 +389,7 @@ ol.tilegrid.TileGrid.prototype.getZForResolution = function(resolution) {
 
 
 /**
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  * @return {ol.tilegrid.TileGrid} Default tile grid for the passed projection.
  */
 ol.tilegrid.getForProjection = function(projection) {
@@ -403,7 +403,7 @@ ol.tilegrid.getForProjection = function(projection) {
 
 
 /**
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  * @param {number=} opt_maxZoom Maximum zoom level.
  * @param {ol.Size=} opt_tileSize Tile size.
  * @return {ol.tilegrid.TileGrid} TileGrid instance.
@@ -412,7 +412,7 @@ ol.tilegrid.createForProjection =
     function(projection, opt_maxZoom, opt_tileSize) {
   var projectionExtent = projection.getExtent();
   var size = goog.isNull(projectionExtent) ?
-      360 * ol.METERS_PER_UNIT[ol.ProjectionUnits.DEGREES] /
+      360 * ol.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
           projection.getMetersPerUnit() :
       Math.max(projectionExtent[2] - projectionExtent[0],
           projectionExtent[3] - projectionExtent[1]);

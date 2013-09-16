@@ -4,7 +4,6 @@ goog.require('goog.asserts');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.ImageTile');
-goog.require('ol.Projection');
 goog.require('ol.Tile');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
@@ -21,7 +20,7 @@ goog.require('ol.tilegrid.TileGrid');
  *            extent: (ol.Extent|undefined),
  *            logo: (string|undefined),
  *            opaque: (boolean|undefined),
- *            projection: ol.ProjectionLike,
+ *            projection: ol.proj.ProjectionLike,
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
  */

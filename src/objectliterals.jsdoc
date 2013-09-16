@@ -14,7 +14,7 @@
  * @typedef {Object} ol.GeolocationOptions
  * @property {boolean|undefined} tracking Tracking.
  * @property {GeolocationPositionOptions|undefined} trackingOptions Tracking options.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  */
 
 /**
@@ -85,7 +85,7 @@
  * Object literal with config options for the projection.
  * @typedef {Object} ol.ProjectionOptions
  * @property {string} code The SRS identifier code, e.g. 'EPSG:4326'.
- * @property {ol.ProjectionUnits} units Units.
+ * @property {ol.proj.Units} units Units.
  * @property {ol.Extent|undefined} extent The validity extent for the SRS.
  * @property {string|undefined} axisOrientation The axis orientation as
  *     specified in Proj4. The default is 'enu'.
@@ -108,7 +108,7 @@
  * @property {number|undefined} maxZoom The maximum zoom level used to determine
  *     the resolution constraint. It is used together with `maxResolution` and
  *     `zoomFactor`. Default is 28.
- * @property {ol.ProjectionLike} projection The projection. Default is
+ * @property {ol.proj.ProjectionLike} projection The projection. Default is
  *     `EPSG:3857` (Spherical Mercator).
  * @property {number|undefined} resolution The initial resolution for the view.
  *     The units are `projection` units per pixel (e.g. meters per pixel).
@@ -198,7 +198,7 @@
  * @property {string|undefined} className CSS class name. Default is 'ol-mouse-position'.
  * @property {ol.CoordinateFormatType|undefined} coordinateFormat Coordinate
  *     format.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {Element|undefined} target Target.
  * @property {string|undefined} undefinedHTML Markup for undefined coordinates.
  *     Default is '' (empty string).
@@ -388,7 +388,7 @@
 
 /**
  * @typedef {Object} ol.parser.GMLWriteOptions
- * @property {ol.ProjectionLike} srsName The srsName to use when writing.
+ * @property {ol.proj.ProjectionLike} srsName The srsName to use when writing.
  * @property {string|undefined} axisOrientation The axis orientation.
  */
 
@@ -459,7 +459,7 @@
 /**
  * @typedef {Object} ol.source.TileDebugOptions
  * @property {ol.Extent|undefined} extent Extent.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  */
 
@@ -483,7 +483,7 @@
  *     `LAYERS` param is required. `STYLES` is '' by default. `VERSION` is
  *     '1.3.0' by default. `WIDTH`, `HEIGHT`, `BBOX` and `CRS` (`SRS` for WMS
  *     version < 1.3.0) will be set dynamically.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {number|undefined} ratio Ratio. 1 means image requests are the size
  *     of the map viewport, 2 means twice the size of the map viewport, and so
  *     on.
@@ -497,7 +497,7 @@
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  */
 
 /**
@@ -517,7 +517,7 @@
  * @property {ol.Extent|undefined} extent Extent.
  * @property {ol.Extent|undefined} imageExtent Extent of the image.
  * @property {ol.Size|undefined} imageSize Size of the image.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {string|undefined} url Url.
  */
 
@@ -542,7 +542,7 @@
  *     getFeatureInfoOptions Options for GetFeatureInfo.
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  * @property {number|undefined} maxZoom Maximum zoom.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {string|undefined} url WMS service url.
  * @property {Array.<string>|undefined} urls WMS service urls. Use this instead
  *     of `url` when the WMS supports multiple urls for GetMap requests.
@@ -556,7 +556,7 @@
  * @property {string|undefined} logo Logo.
  * @property {ol.parser.Parser} parser Parser instance to parse data
  *     provided as `data` or fetched from `url`.
- * @property {ol.ProjectionLike|undefined} projection Projection. Usually the
+ * @property {ol.proj.ProjectionLike|undefined} projection Projection. Usually the
  *     projection is provided by the parser, so this only needs to be set if
  *     the parser does not know the SRS (e.g. in some GML flavors), or if the
  *     projection determined by the parser needs to be overridden.
@@ -571,7 +571,7 @@
  *    lineStringCollections Line string collections.
  * @property {Array.<ol.geom2.PointCollection>|undefined} pointCollections
  *    Point collections.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  */
 
 
@@ -591,7 +591,7 @@
  *     requests.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {ol.tilegrid.WMTS} tileGrid Tile grid.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {ol.source.WMTSRequestEncoding|undefined} requestEncoding Request
  *     encoding.
  * @property {string} layer Layer.
@@ -612,7 +612,7 @@
  *     requests.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {number|undefined} maxZoom Optional max zoom level.  The default is
  *     18.
  * @property {number|undefined} minZoom Unsupported (TODO: remove this).

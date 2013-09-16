@@ -196,7 +196,7 @@ ol.renderer.Layer.prototype.updateUsedTiles =
  * @param {function(ol.Tile): boolean} isLoadedFunction Function to
  *     determine if the tile is loaded.
  * @param {ol.source.Tile} tileSource Tile source.
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  * @protected
  * @return {function(number, number, number): ol.Tile} Returns a tile if it is
  *     loaded.
@@ -243,7 +243,7 @@ ol.renderer.Layer.prototype.snapCenterToPixel =
  * @param {ol.FrameState} frameState Frame state.
  * @param {ol.source.Tile} tileSource Tile source.
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  * @param {ol.Extent} extent Extent.
  * @param {number} currentZ Current Z.
  * @param {number} preload Load low resolution tiles up to 'preload' levels.

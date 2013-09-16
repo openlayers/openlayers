@@ -64,7 +64,7 @@ ol.source.ImageStatic.createImageFunction = function(url) {
       /**
        * @param {ol.Extent} extent Extent.
        * @param {ol.Size} size Size.
-       * @param {ol.Projection} projection Projection.
+       * @param {ol.proj.Projection} projection Projection.
        * @return {string|undefined} URL.
        */
       function(extent, size, projection) {

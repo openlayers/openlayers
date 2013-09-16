@@ -98,7 +98,7 @@ ol.parser.ReadFeaturesCallback;
 
 
 /**
- * @typedef {{projection: ol.ProjectionLike}}
+ * @typedef {{projection: ol.proj.ProjectionLike}}
  */
 ol.parser.ReadFeaturesMetadata;
 
