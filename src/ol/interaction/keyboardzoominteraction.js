@@ -33,8 +33,7 @@ ol.interaction.KeyboardZoom = function(opt_options) {
    * @type {ol.interaction.ConditionType}
    */
   this.condition_ = goog.isDef(options.condition) ? options.condition :
-      goog.functions.and(ol.interaction.condition.noModifierKeys,
-          ol.interaction.condition.targetNotEditable);
+          ol.interaction.condition.targetNotEditable;
 
   /**
    * @private
