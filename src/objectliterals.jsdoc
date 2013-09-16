@@ -337,6 +337,8 @@
  * @property {number|undefined} opacity Opacity.
  * @property {number|undefined} saturation Saturation.
  * @property {boolean|undefined} visible Visibility.
+ * @property {number|undefined} minResolution MinResolution.
+ * @property {number|undefined} maxResolution MaxResolution.
  */
 
 /**
@@ -348,6 +350,8 @@
  * @property {number|undefined} saturation Saturation.
  * @property {ol.source.Source} source Source for this layer.
  * @property {boolean|undefined} visible Visibility. Default is true (visible).
+ * @property {number|undefined} minResolution MinResolution.
+ * @property {number|undefined} maxResolution MaxResolution.
  */
 
 /**
@@ -358,6 +362,8 @@
  * @property {number|undefined} opacity Opacity.
  * @property {number|undefined} saturation Saturation.
  * @property {boolean|undefined} visible Visibility.
+ * @property {number|undefined} minResolution MinResolution.
+ * @property {number|undefined} maxResolution MaxResolution.
  * @property {Array.<ol.layer.Base>|ol.Collection|undefined} layers Child layers.
  */
 
@@ -371,6 +377,8 @@
  * @property {number|undefined} saturation Saturation.
  * @property {ol.source.Source} source Source for this layer.
  * @property {boolean|undefined} visible Visibility. Default is true (visible).
+ * @property {number|undefined} minResolution MinResolution.
+ * @property {number|undefined} maxResolution MaxResolution.
  */
 
 /**
@@ -383,6 +391,8 @@
  * @property {ol.source.Source} source Source for this layer.
  * @property {ol.style.Style|undefined} style Style.
  * @property {boolean|undefined} visible Visibility. Default is true (visible).
+ * @property {number|undefined} minResolution MinResolution.
+ * @property {number|undefined} maxResolution MaxResolution.
  */
 
 /**
