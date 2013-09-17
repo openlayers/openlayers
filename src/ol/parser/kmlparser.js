@@ -128,7 +128,7 @@ ol.parser.KML = function(opt_options) {
             }
             var feature = new ol.Feature(container.properties);
             if (!goog.isNull(id)) {
-              feature.setFeatureId(id);
+              feature.setId(id);
             }
             var geom = track.points[i];
             if (geom) {
@@ -156,7 +156,7 @@ ol.parser.KML = function(opt_options) {
           }
           feature = new ol.Feature(container.properties);
           if (!goog.isNull(id)) {
-            feature.setFeatureId(id);
+            feature.setId(id);
           }
           if (container.geometry) {
             sharedVertices = undefined;
@@ -720,7 +720,7 @@ ol.parser.KML = function(opt_options) {
       },
       '_feature': function(feature) {
         var node = this.createElementNS('Placemark');
-        var fid = feature.getFeatureId();
+        var fid = feature.getId();
         if (goog.isDef(fid)) {
           node.setAttribute('id', fid);
         }

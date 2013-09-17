@@ -74,7 +74,7 @@ ol.Feature.prototype.getAttributes = function() {
  *
  * @return {string|undefined} The feature's identifier.
  */
-ol.Feature.prototype.getFeatureId = function() {
+ol.Feature.prototype.getId = function() {
   return this.featureId_;
 };
 
@@ -118,7 +118,7 @@ ol.Feature.prototype.set = function(key, value) {
  *
  * @param {string|undefined} featureId The feature's identifier.
  */
-ol.Feature.prototype.setFeatureId = function(featureId) {
+ol.Feature.prototype.setId = function(featureId) {
   this.featureId_ = featureId;
 };
 

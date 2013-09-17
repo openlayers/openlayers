@@ -712,16 +712,16 @@ describe('ol.expr.lib', function() {
   describe('fid()', function() {
 
     var one = new ol.Feature();
-    one.setFeatureId('one');
+    one.setId('one');
 
     var two = new ol.Feature();
-    two.setFeatureId('two');
+    two.setId('two');
 
     var three = new ol.Feature();
-    three.setFeatureId('three');
+    three.setId('three');
 
     var four = new ol.Feature();
-    four.setFeatureId('four');
+    four.setId('four');
 
     var odd = parse('fid("one", "three")');
     var even = parse('fid("two", "four")');
