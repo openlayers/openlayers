@@ -4,7 +4,6 @@ goog.provide('ol.interaction.KeyboardZoom');
 
 goog.require('goog.asserts');
 goog.require('goog.events.KeyHandler.EventType');
-goog.require('goog.functions');
 goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.condition');
