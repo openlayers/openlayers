@@ -109,7 +109,7 @@ ol.TileCoord.createOrUpdate = function(z, x, y, tileCoord) {
  * @return {string} Key.
  */
 ol.TileCoord.getKeyZXY = function(z, x, y) {
-  return [z, x, y].join('/');
+  return z + '/' + x + '/' + y;
 };
 
 
