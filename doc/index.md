@@ -17,4 +17,4 @@ A map in OpenLayers is essentially a staple of layers that is viewed from the to
 Contributing
 ------------
 See [CONTRIBUTING.md](https://github.com/openlayers/ol3/blob/master/CONTRIBUTING.md) for instructions
-on building and tesing OpenLayers. The file does also describe how to commit your changes to OpenLayers.
+on building and testing OpenLayers. The file does also describes how to commit your changes to OpenLayers.
