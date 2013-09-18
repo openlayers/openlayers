@@ -17,6 +17,7 @@ ol.interaction.KEYBOARD_ZOOM_DURATION = 100;
 
 
 /**
+ * Allows the user to zoom the map using keyboard + and -.
  * @constructor
  * @param {ol.interaction.KeyboardZoomOptions=} opt_options Options.
  * @extends {ol.interaction.Interaction}
