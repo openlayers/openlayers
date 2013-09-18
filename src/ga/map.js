@@ -2,6 +2,7 @@ goog.provide('ga.Map');
 
 goog.require('ol.Map');
 goog.require('ol.View2D');
+goog.require('ol.control.ScaleLine');
 goog.require('ol.proj.EPSG21781');
 
 
@@ -36,5 +37,7 @@ ga.Map = function(options) {
   options.view = view;
 
   goog.base(this, options);
+
+  this.addControl(new ol.control.ScaleLine());
 };
 goog.inherits(ga.Map, ol.Map);
