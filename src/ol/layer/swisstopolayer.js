@@ -100,7 +100,7 @@ ga.layer.RESOLUTIONS = [
 /**
  * @param {string} layer layer id.
  * @param {Object} options source options.
- * @return {ol.source.WMST}
+ * @return {ol.source.WMTS}
  */
 ga.source.wmts = function(layer, options) {
   var resolutions = ga.layer.RESOLUTIONS.splice(
@@ -134,7 +134,7 @@ ga.source.wmts = function(layer, options) {
 /**
  * @param {string} layer layer id.
  * @param {Object} options source options.
- * @return {ol.source.WMS}
+ * @return {ol.source.TileWMS}
  */
 ga.source.wms = function(layer, options) {
   return new ol.source.TileWMS({
