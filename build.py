@@ -771,7 +771,8 @@ The most common targets are:
   serve            - Serves files through plovr, usually on port 9810.
   lint             - Runs gjslint on all sourcefiles to enforce specific syntax.
   build            - Builds singlefile versions of OpenLayers JavaScript and
-                     CSS.
+                     CSS. This is also the default build target which runs when
+                     no target is specified.
   test             - Runs the testsuite and displays the results.
   check            - Runs the lint-target, builds some OpenLayers files, and
                      then runs test. Many developers call this target often
@@ -792,6 +793,8 @@ Other less frequently used targets are:
   todo             - is an alias for the fixme-target
   plovr            - Fetches the required plovr.jar. Usually called by other
                      targets that depend on plovr.
+
+If no target is given, the build-target will be executed.
 
 The above list is not complete, please see the sourceode for not-mentioned and
 only seldomly called targets.
