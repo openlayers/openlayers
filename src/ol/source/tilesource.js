@@ -111,9 +111,7 @@ ol.source.Tile.prototype.findLoadedTiles = function(loadedTilesByZ,
  * @return {string} Key.
  * @protected
  */
-ol.source.Tile.prototype.getKeyZXY = function(z, x, y) {
-  return ol.TileCoord.getKeyZXY(z, x, y);
-};
+ol.source.Tile.prototype.getKeyZXY = ol.TileCoord.getKeyZXY;
 
 
 /**
