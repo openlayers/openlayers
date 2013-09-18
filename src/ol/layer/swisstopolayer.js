@@ -15,7 +15,7 @@ goog.require('ol.tilegrid.WMTS');
 
 /**
  * @param {string} layer layer id.
- * @return {ol.layer.Tile|ol.layer.Group}
+ * @return {ol.layer.Tile|ol.layer.Group} Layer instance.
  */
 ga.layer = function(layer) {
   if (layer in ga.layer.SwisstopoLayerConfig) {
@@ -40,6 +40,7 @@ ga.layer = function(layer) {
       });
     }
   }
+  return null;
 };
 
 
@@ -111,7 +112,7 @@ ga.source.wmts = function(layer, options) {
     matrixIds: goog.array.range(resolutions.length)
   });
   var extension = (options.format || 'image/png').split('/')[1];
-  return new ol.source.WMTS({
+  return new ol.source.WMTS( /** @type {ol.source.WMTSOptions} */({
     opaque: goog.isDef(options.opaque) ? options.opaque : false,
     attributions: [
       new ol.Attribution({
@@ -127,7 +128,7 @@ ga.source.wmts = function(layer, options) {
     dimensions: {
       'Time': options.time || options.times[0]
     }
-  });
+  }));
 };
 
 
