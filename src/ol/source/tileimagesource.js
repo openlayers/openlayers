@@ -7,6 +7,7 @@ goog.require('ol.ImageTile');
 goog.require('ol.Tile');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
+goog.require('ol.TileLoadFunctionType');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
@@ -22,6 +23,7 @@ goog.require('ol.tilegrid.TileGrid');
  *            opaque: (boolean|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
+ *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
  */
 ol.source.TileImageOptions;
@@ -65,8 +67,24 @@ ol.source.TileImage = function(options) {
    */
   this.tileCache_ = new ol.TileCache();
 
+  /**
+   * @private
+   * @type {ol.TileLoadFunctionType}
+   */
+  this.tileLoadFunction_ = goog.isDef(options.tileLoadFunction) ?
+      options.tileLoadFunction : ol.source.TileImage.defaultTileLoadFunction;
+
 };
 goog.inherits(ol.source.TileImage, ol.source.Tile);
+
+
+/**
+ * @param {ol.ImageTile} imageTile Image tile.
+ * @param {string} src Source.
+ */
+ol.source.TileImage.defaultTileLoadFunction = function(imageTile, src) {
+  imageTile.getImage().src = src;
+};
 
 
 /**
@@ -100,7 +118,8 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, projection) {
         tileCoord,
         goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,
         goog.isDef(tileUrl) ? tileUrl : '',
-        this.crossOrigin_);
+        this.crossOrigin_,
+        this.tileLoadFunction_);
     this.tileCache_.set(tileCoordKey, tile);
     return tile;
   }
