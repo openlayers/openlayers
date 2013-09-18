@@ -108,7 +108,6 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   }
 
   var context = this.context_;
-  context.setTransform(1, 0, 0, 1, 0, 0);
   context.clearRect(0, 0, size[0], size[1]);
 
   this.calculateMatrices2D(frameState);
@@ -150,6 +149,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
             goog.vec.Mat4.getElement(transform, 1, 3));
 
         context.drawImage(image, 0, 0);
+        context.setTransform(1, 0, 0, 1, 0, 0);
       }
     }
 
