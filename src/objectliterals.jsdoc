@@ -519,7 +519,7 @@
  * @property {ol.ProjectionLike|undefined} projection Projection. EPSG:4326
  *     is assumed if not defined. TODO: Get projection from the parser instead
  *     of assuming EPSG:4326.
- * @property {string|null|goog.Uri} url Server url providing the vector data.
+ * @property {string|undefined} url Server url providing the vector data.
  */
 
 /**
@@ -564,7 +564,7 @@
  * @property {ol.ProjectionLike|undefined} projection Projection. EPSG:4326
  *     is assumed if not defined. TODO: Get projection from the parser instead
  *     of assuming EPSG:4326.
- * @property {string|null|goog.Uri} url Server url providing the vector data.
+ * @property {string|undefined} url Server url providing the vector data.
  * @property {Object|undefined} params aditional parameters according to XAPI interface
  */
 
