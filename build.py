@@ -755,5 +755,47 @@ def check_dependencies(t):
     print 'For certain targets all above programs need to be present.'
 
 
+@target('help')
+def display_help(t):
+    print '''
+build.py - The OpenLayers 3 build script.
+
+Usage:
+  ./build.py [options] [target]                         (on Unix-based machines)
+  <python-executable.exe> build.py [options] [target]   (on Windows machines)
+
+There is one option:
+  -c               - Cleans up the repository from previous builds.
+
+The most common targets are:
+  serve            - Serves files through plovr, usually on port 9810.
+  lint             - Runs gjslint on all sourcefiles to enforce specific syntax.
+  build            - Builds singlefile versions of OpenLayers JavaScript and
+                     CSS.
+  test             - Runs the testsuite and displays the results.
+  check            - Runs the lint-target, builds some OpenLayers files, and
+                     then runs test. Many developers call this target often
+                     while working on the code.
+  help             - Shows this help.
+
+Other less frequently used targets are:
+  doc              - Builds the API-Documentation using JSDoc3.
+  integration-test - Builds all examples in various modes and usually tales a
+                     long time to finish. This target calls the following
+                     targets: lint, build, build-all, test, build-examples,
+                     check-examples and doc.
+  reallyclean      - Remove untracked files from the repository.
+  checkdeps        - Checks whether all required development software is
+                     installed on your machine.
+  fixme            - Will print a list of parts of the code that are marked
+                     with either TODO or FIXME.
+  todo             - is an alias for the fixme-target
+  plovr            - Fetches the required plovr.jar. Usually called by other
+                     targets that depend on plovr.
+
+The above list is not complete, please see the sourceode for not-mentioned and
+only seldomly called targets.
+    '''
+
 if __name__ == '__main__':
     main()
