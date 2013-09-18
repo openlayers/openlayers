@@ -11,6 +11,8 @@ goog.require('ol.interaction.Touch');
 
 
 /**
+ * Allows the user to pan the map by touching and dragging
+ * on a touch screen.
  * @constructor
  * @extends {ol.interaction.Touch}
  * @param {ol.interaction.TouchPanOptions=} opt_options Options.
