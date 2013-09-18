@@ -45,7 +45,7 @@ ol.source.Vector = function(options) {
 
   /**
    * @private
-   * @type {goog.Uri|null|string}
+   * @type {string|undefined}
    */
   this.url_ = options.url;
 
@@ -74,7 +74,8 @@ ol.source.Vector.prototype.prepareFeatures = function(layer, extent, projection,
   if (goog.isDef(this.getUrl()) &&
       this.loadState_ == ol.source.VectorLoadState.IDLE) {
     this.loadState_ = ol.source.VectorLoadState.LOADING;
-    goog.net.XhrIo.send(this.getUrl(), goog.bind(function(event) {
+    var url = this.getUrl() || null;
+    goog.net.XhrIo.send(url, goog.bind(function(event) {
       var xhr = event.target;
       if (xhr.isSuccess()) {
         // TODO: Get source projection from data if supported by parser.
@@ -98,7 +99,7 @@ ol.source.Vector.prototype.prepareFeatures = function(layer, extent, projection,
 
 
 /**
- * @param {goog.Uri|null|string} url new url to be set for this resource
+ * @param {string|undefined} url new url to be set for this resource
  */
 ol.source.Vector.prototype.setUrl = function(url) {
   this.url_ = url;
@@ -106,7 +107,7 @@ ol.source.Vector.prototype.setUrl = function(url) {
 
 
 /**
- * @return {goog.Uri|null|string} url
+ * @return {string|undefined} url
  */
 ol.source.Vector.prototype.getUrl = function() {
   return this.url_;
