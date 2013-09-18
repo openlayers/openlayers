@@ -616,6 +616,8 @@
  * @property {number|undefined} maxZoom Optional max zoom level.  The default is
  *     18.
  * @property {number|undefined} minZoom Unsupported (TODO: remove this).
+ * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
+ *     function to load a tile given a URL.
  * @property {ol.TileUrlFunctionType|undefined} tileUrlFunction Optional
  *     function to get tile URL given a tile coordinate and the projection.
  *     Required if url or urls are not provided.
