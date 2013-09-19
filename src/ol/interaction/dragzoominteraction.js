@@ -29,6 +29,9 @@ ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED =
 
 
 /**
+ * Allows the user to zoom the map by clicking and dragging on the map,
+ * normally combined with an {@link ol.interaction.condition} that limits
+ * it to when the shift key is held down.
  * @constructor
  * @extends {ol.interaction.Drag}
  * @param {ol.interaction.DragZoomOptions=} opt_options Options.

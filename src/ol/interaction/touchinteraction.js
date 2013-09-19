@@ -13,6 +13,7 @@ goog.require('ol.interaction.Interaction');
 
 
 /**
+ * Base class for touch interactions.
  * @constructor
  * @extends {ol.interaction.Interaction}
  */

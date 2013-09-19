@@ -39,6 +39,7 @@ ol.interaction.condition.altShiftKeysOnly = function(mapBrowserEvent) {
 
 
 /**
+ * Always true.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True.
  */
@@ -47,7 +48,7 @@ ol.interaction.condition.always = goog.functions.TRUE;
 
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- * @return {boolean} True only the event is a click event.
+ * @return {boolean} True if the event is a click event.
  */
 ol.interaction.condition.clickOnly = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
@@ -57,7 +58,7 @@ ol.interaction.condition.clickOnly = function(mapBrowserEvent) {
 
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- * @return {boolean} True if only the no modifier keys are pressed.
+ * @return {boolean} True only if there no modifier keys are pressed.
  */
 ol.interaction.condition.noModifierKeys = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
@@ -96,7 +97,7 @@ ol.interaction.condition.shiftKeyOnly = function(mapBrowserEvent) {
 
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- * @return {boolean} True if the target element is not editable.
+ * @return {boolean} True only if the target element is not editable.
  */
 ol.interaction.condition.targetNotEditable = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;

@@ -13,6 +13,7 @@ goog.require('ol.source.Vector');
 
 
 /**
+ * Allows the user to select features on the map.
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {ol.interaction.SelectOptions=} opt_options Options.

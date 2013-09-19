@@ -707,7 +707,7 @@ virtual('test-deps', INTERNAL_SRC, PROJ4JS, 'build/test/requireall.js')
 
 @target('test', 'test-deps', phony=True)
 def test(t):
-    t.run('%(PHANTOMJS)s', 'test/mocha-phantomjs.coffee', 'test/ol.html')
+    t.run('%(PHANTOMJS)s', 'test/mocha-phantomjs.js', 'test/ol.html')
 
 
 @target('fixme', phony=True)
