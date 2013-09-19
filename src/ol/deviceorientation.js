@@ -105,7 +105,7 @@ ol.DeviceOrientation.prototype.disposeInternal = function() {
  * @const
  * @type {boolean}
  */
-ol.DeviceOrientation.SUPPORTED = 'DeviceOrientationEvent' in window;
+ol.DeviceOrientation.SUPPORTED = 'DeviceOrientationEvent' in goog.global;
 goog.exportProperty(
     ol.DeviceOrientation,
     'SUPPORTED',
@@ -220,7 +220,7 @@ ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
   if (ol.DeviceOrientation.SUPPORTED) {
     var tracking = this.getTracking();
     if (tracking && goog.isNull(this.listenerKey_)) {
-      this.listenerKey_ = goog.events.listen(window, 'deviceorientation',
+      this.listenerKey_ = goog.events.listen(goog.global, 'deviceorientation',
           this.orientationChange_, false, this);
     } else if (!tracking && !goog.isNull(this.listenerKey_)) {
       goog.events.unlistenByKey(this.listenerKey_);
