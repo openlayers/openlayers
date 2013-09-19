@@ -1,4 +1,7 @@
 ;(function() {
+  if (window.location.host === 'localhost:3000') {
+    return;
+  }
   var container = document.querySelector('.navbar .navbar-inner .container'),
       form = document.createElement('form'),
       select = document.createElement('select'),
