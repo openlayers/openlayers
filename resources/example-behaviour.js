@@ -1,7 +1,6 @@
-;(function(){
-  var container = document.querySelector('.navbar ul.pull-right'),
-      li = document.createElement('li'),
-      div = document.createElement('div'),
+;(function() {
+  var container = document.querySelector('.navbar .navbar-inner .container'),
+      form = document.createElement('form'),
       select = document.createElement('select'),
       possibleModes = {
         'raw' : 'Development',
@@ -35,6 +34,9 @@
       }
       pairs.push(adjusted);
     }
+    if (pairs.length === 0) {
+      pairs[0] = 'mode=' + encodeURIComponent(newMode);
+    }
     location.href = baseUrl + '?' + pairs.join('&');
   };
 
@@ -52,10 +54,8 @@
   select.addEventListener('change', modeChangedMethod);
   select.className = 'input-medium';
   
-  div.className = 'input-prepend';
-  div.innerHTML = '<span class="add-on"><i class="icon-refresh"></i></span>';
-  div.appendChild(select);
+  form.className = 'navbar-form pull-right';
+  form.appendChild(select);
 
-  li.appendChild(div);
-  container.appendChild(li);
+  container.appendChild(form);
 })();
