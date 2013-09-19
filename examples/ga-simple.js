@@ -6,7 +6,7 @@ goog.require('ol.View2D');
 var map = new ga.Map({
   // Add GeoAdmin layers
   layers: [
-    ga.layer('ch.swisstopo.pixelkarte-farbe')
+    ga.layer.create('ch.swisstopo.pixelkarte-farbe')
   ],
   // Define the div where the map is placed
   target: 'map',

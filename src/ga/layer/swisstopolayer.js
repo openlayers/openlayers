@@ -17,7 +17,7 @@ goog.require('ol.tilegrid.WMTS');
  * @param {string} layer layer id.
  * @return {ol.layer.Tile|ol.layer.Group} Layer instance.
  */
-ga.layer = function(layer) {
+ga.layer.create = function(layer) {
   if (layer in ga.layer.SwisstopoLayerConfig) {
     var layerConfig = ga.layer.SwisstopoLayerConfig[layer];
 
