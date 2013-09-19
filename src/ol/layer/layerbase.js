@@ -19,8 +19,8 @@ ol.layer.LayerProperty = {
   OPACITY: 'opacity',
   SATURATION: 'saturation',
   VISIBLE: 'visible',
-  MAXRESOLUTION: 'maxresolution',
-  MINRESOLUTION: 'minresolution'
+  MAX_RESOLUTION: 'maxResolution',
+  MIN_RESOLUTION: 'minResolution'
 };
 
 
@@ -77,8 +77,8 @@ ol.layer.Base = function(options) {
     ol.Object.getChangeEventType(ol.layer.LayerProperty.HUE),
     ol.Object.getChangeEventType(ol.layer.LayerProperty.OPACITY),
     ol.Object.getChangeEventType(ol.layer.LayerProperty.SATURATION),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.MAXRESOLUTION),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.MINRESOLUTION),
+    ol.Object.getChangeEventType(ol.layer.LayerProperty.MAX_RESOLUTION),
+    ol.Object.getChangeEventType(ol.layer.LayerProperty.MIN_RESOLUTION),
     goog.events.EventType.LOAD
   ],
   this.handleLayerChange, false, this);
@@ -188,7 +188,7 @@ ol.layer.Base.prototype.getLayerStatesArray = goog.abstractMethod;
  */
 ol.layer.Base.prototype.getMaxResolution = function() {
   return /** @type {number} */ (
-      this.get(ol.layer.LayerProperty.MAXRESOLUTION));
+      this.get(ol.layer.LayerProperty.MAX_RESOLUTION));
 };
 goog.exportProperty(
     ol.layer.Base.prototype,
@@ -201,7 +201,7 @@ goog.exportProperty(
  */
 ol.layer.Base.prototype.getMinResolution = function() {
   return /** @type {number} */ (
-      this.get(ol.layer.LayerProperty.MINRESOLUTION));
+      this.get(ol.layer.LayerProperty.MIN_RESOLUTION));
 };
 goog.exportProperty(
     ol.layer.Base.prototype,
@@ -334,7 +334,7 @@ goog.exportProperty(
  * @param {number} maxResolution MaxResolution.
  */
 ol.layer.Base.prototype.setMaxResolution = function(maxResolution) {
-  this.set(ol.layer.LayerProperty.MAXRESOLUTION, maxResolution);
+  this.set(ol.layer.LayerProperty.MAX_RESOLUTION, maxResolution);
 };
 goog.exportProperty(
     ol.layer.Base.prototype,
@@ -346,7 +346,7 @@ goog.exportProperty(
  * @param {number} minResolution MinResolution.
  */
 ol.layer.Base.prototype.setMinResolution = function(minResolution) {
-  this.set(ol.layer.LayerProperty.MINRESOLUTION, minResolution);
+  this.set(ol.layer.LayerProperty.MIN_RESOLUTION, minResolution);
 };
 goog.exportProperty(
     ol.layer.Base.prototype,
