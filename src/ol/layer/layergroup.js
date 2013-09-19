@@ -206,6 +206,10 @@ ol.layer.Group.prototype.getLayerStatesArray = function(opt_obj) {
     layerState.opacity *= ownLayerState.opacity;
     layerState.saturation *= ownLayerState.saturation;
     layerState.visible = layerState.visible && ownLayerState.visible;
+    layerState.maxResolution = Math.min(
+        layerState.maxResolution, ownLayerState.maxResolution);
+    layerState.minResolution = Math.max(
+        layerState.minResolution, ownLayerState.minResolution);
   }
 
   return obj;

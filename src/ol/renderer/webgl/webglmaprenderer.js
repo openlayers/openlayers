@@ -551,12 +551,15 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   ++this.textureCacheFrameMarkerCount_;
 
   var layersArray = frameState.layersArray;
+  var viewResolution = frameState.view2DState.resolution;
   var i, ii, layer, layerRenderer, layerState;
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
     layer = layersArray[i];
     layerRenderer = this.getLayerRenderer(layer);
     layerState = frameState.layerStates[goog.getUid(layer)];
-    if (layerState.visible && layerState.ready) {
+    if (layerState.visible && layerState.ready &&
+        viewResolution < layerState.maxResolution &&
+        viewResolution >= layerState.minResolution) {
       layerRenderer.renderFrame(frameState, layerState);
     }
   }
@@ -580,10 +583,11 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   var currentProgram = null;
   var locations;
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
-
     layer = layersArray[i];
     layerState = frameState.layerStates[goog.getUid(layer)];
-    if (!layerState.visible || !layerState.ready) {
+    if (!layerState.visible || !layerState.ready ||
+        viewResolution >= layerState.maxResolution ||
+        viewResolution < layerState.minResolution) {
       continue;
     }
     var useColor =
