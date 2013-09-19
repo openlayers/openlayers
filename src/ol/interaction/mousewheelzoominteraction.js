@@ -30,6 +30,7 @@ ol.interaction.MOUSEWHEELZOOM_TIMEOUT_DURATION = 80;
 
 
 /**
+ * Allows the user to zoom the map by scrolling the mouse wheel.
  * @constructor
  * @extends {ol.interaction.Interaction}
  */
