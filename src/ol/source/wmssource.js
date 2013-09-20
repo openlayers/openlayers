@@ -25,7 +25,7 @@ ol.source.WMSGetFeatureInfoMethod = {
 
 
 /**
- * @param {string} baseUrl WMS base url.
+ * @param {string} baseUrl WMS base URL.
  * @param {Object.<string, string|number>} params Request parameters.
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Size.
