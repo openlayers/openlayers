@@ -7,10 +7,10 @@
       select = document.createElement('select'),
       possibleModes = {
         'raw' : 'Development',
-        'compiled': 'Production'
+        'advanced': 'Production'
       },
       urlMode = window.location.href.match(/mode=([a-z0-9\-]+)\&?/i),
-      curMode = urlMode ? urlMode[1] : 'compiled',
+      curMode = urlMode ? urlMode[1] : 'advanced',
       option,
       modeIdx,
       mode,
