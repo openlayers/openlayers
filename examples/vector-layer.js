@@ -72,7 +72,7 @@ map.on(['click', 'mousemove'], function(evt) {
     success: function(featuresByLayer) {
       var features = featuresByLayer[0];
       document.getElementById('info').innerHTML = features.length > 0 ?
-          features[0].getFeatureId() + ': ' + features[0].get('name') :
+          features[0].getId() + ': ' + features[0].get('name') :
           '&nbsp;';
     }
   });

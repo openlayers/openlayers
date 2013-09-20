@@ -154,7 +154,7 @@ ol.parser.TopoJSON.prototype.readFeatureFromGeometry_ = function(object, arcs,
   var feature = new ol.Feature();
   feature.setGeometry(geometry);
   if (goog.isDef(object.id)) {
-    feature.setFeatureId(String(object.id));
+    feature.setId(String(object.id));
   }
   return feature;
 };

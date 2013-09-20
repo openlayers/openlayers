@@ -145,7 +145,7 @@ ol.interaction.Select.prototype.select =
       } else if (!(featureId in oldFeatureMap)) {
         clone = new ol.Feature(feature.getAttributes());
         clone.setGeometry(feature.getGeometry().clone());
-        clone.setFeatureId(feature.getFeatureId());
+        clone.setId(feature.getId());
         clone.setSymbolizers(feature.getSymbolizers());
         clone.renderIntent = ol.layer.VectorLayerRenderIntent.SELECTED;
         featureMap[featureId] = clone;
