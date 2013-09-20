@@ -174,7 +174,7 @@ ol.parser.GeoJSON.prototype.parseFeature_ = function(json, opt_options) {
       options = opt_options || {};
   var feature = new ol.Feature(json.properties);
   if (goog.isDef(json.id)) {
-    feature.setFeatureId(json.id);
+    feature.setId(json.id);
   }
   if (geomJson) {
     var type = geomJson.type;

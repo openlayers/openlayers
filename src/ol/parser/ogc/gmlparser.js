@@ -320,7 +320,7 @@ ol.parser.ogc.GML = function(opt_options) {
       var fid = node.getAttribute('fid') ||
           this.getAttributeNS(node, this.defaultNamespaceURI, 'id');
       if (!goog.isNull(fid)) {
-        feature.setFeatureId(fid);
+        feature.setId(fid);
       }
       obj.features.push(feature);
     },
@@ -419,7 +419,7 @@ ol.parser.ogc.GML = function(opt_options) {
     '_typeName': function(feature) {
       var node = this.createElementNS('feature:' + this.featureType,
           this.featureNS);
-      var fid = feature.getFeatureId();
+      var fid = feature.getId();
       if (goog.isDef(fid)) {
         this.setAttributeNS(node, this.defaultNamespaceURI, 'fid', fid);
       }

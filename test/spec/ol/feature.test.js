@@ -18,8 +18,8 @@ describe('ol.Feature', function() {
 
     it('can store the feature\'s commonly used id', function() {
       var feature = new ol.Feature();
-      feature.setFeatureId('foo');
-      expect(feature.getFeatureId()).to.be('foo');
+      feature.setId('foo');
+      expect(feature.getId()).to.be('foo');
     });
 
     it('will set the default geometry', function() {

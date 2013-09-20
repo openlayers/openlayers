@@ -158,7 +158,7 @@ ol.expr.lib[ol.expr.functions.EXTENT] = function(minX, minY, maxX, maxY,
  */
 ol.expr.lib[ol.expr.functions.FID] = function(var_args) {
   var matches = false;
-  var id = this.getFeatureId();
+  var id = this.getId();
   if (goog.isDef(id)) {
     for (var i = 0, ii = arguments.length; i < ii; ++i) {
       if (arguments[i] === id) {
