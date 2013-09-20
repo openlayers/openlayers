@@ -140,7 +140,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
 
   this.ready_ = true;
 
-  this.dispatchLoadEvent();
+  this.dispatchChangeEvent();
 
 };
 
