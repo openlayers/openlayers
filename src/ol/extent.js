@@ -328,16 +328,6 @@ ol.extent.scaleFromCenter = function(extent, value) {
 
 
 /**
- * @param {ol.Extent} extent Extent.
- * @return {string} String.
- */
-ol.extent.toString = function(extent) {
-  return '(' + [extent[0], extent[2], extent[1],
-    extent[3]].join(', ') + ')';
-};
-
-
-/**
  * @param {ol.Extent} extent1 Extent 1.
  * @param {ol.Extent} extent2 Extent 2.
  * @return {boolean} Touches.
