@@ -71,6 +71,14 @@ ol.Tile.prototype.getKey = function() {
 
 
 /**
+ * @return {ol.TileCoord}
+ */
+ol.Tile.prototype.getTileCoord = function() {
+  return this.tileCoord;
+};
+
+
+/**
  * @return {ol.TileState} State.
  */
 ol.Tile.prototype.getState = function() {
