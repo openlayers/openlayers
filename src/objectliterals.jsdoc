@@ -487,6 +487,15 @@
  */
 
 /**
+ * @typedef {Object} ol.source.AcetateOptions
+ * @property {string} layer Layer.
+ * @property {number|undefined} minZoom Minimum zoom.
+ * @property {number|undefined} maxZoom Maximum zoom.
+ * @property {boolean|undefined} opaque Whether the layer is opaque.
+ * @property {string|undefined} url Url.
+ */
+
+/**
  * @typedef {Object} ol.source.BingMapsOptions
  * @property {string|undefined} culture Culture.
  * @property {string} key Bing Maps API key. Get yours at
