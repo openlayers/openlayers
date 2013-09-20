@@ -527,7 +527,7 @@
  *     on.
  * @property {Array.<number>|undefined} resolutions Resolutions. If specified,
  *     requests will be made for these resolutions only.
- * @property {string|undefined} url WMS service url.
+ * @property {string|undefined} url WMS service URL.
  */
 
 /**
@@ -544,7 +544,7 @@
  * @property {number|undefined} minZoom Minimum zoom.
  * @property {number|undefined} maxZoom Maximum zoom.
  * @property {boolean|undefined} opaque Whether the layer is opaque.
- * @property {string|undefined} url Url.
+ * @property {string|undefined} url URL.
  */
 
 /**
@@ -556,14 +556,14 @@
  * @property {ol.Extent|undefined} imageExtent Extent of the image.
  * @property {ol.Size|undefined} imageSize Size of the image.
  * @property {ol.proj.ProjectionLike} projection Projection.
- * @property {string|undefined} url Url.
+ * @property {string|undefined} url URL.
  */
 
 /**
  * @typedef {Object} ol.source.TileJSONOptions
  * @property {null|string|undefined} crossOrigin crossOriin setting for image
  *     requests.
- * @property {string} url Url.
+ * @property {string} url URL.
  */
 
 /**
@@ -581,7 +581,7 @@
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  * @property {number|undefined} maxZoom Maximum zoom.
  * @property {ol.proj.ProjectionLike} projection Projection.
- * @property {string|undefined} url WMS service url.
+ * @property {string|undefined} url WMS service URL.
  * @property {Array.<string>|undefined} urls WMS service urls. Use this instead
  *     of `url` when the WMS supports multiple urls for GetMap requests.
  */
@@ -638,7 +638,7 @@
  * @property {string|undefined} format Format.
  * @property {string} matrixSet Matrix set.
  * @property {Object|undefined} dimensions Dimensions.
- * @property {string|undefined} url Url.
+ * @property {string|undefined} url URL.
  * @property {number|undefined} maxZoom Maximum zoom.
  * @property {Array.<string>|undefined} urls Urls.
  */
@@ -666,7 +666,7 @@
 
 /**
  * @typedef {Object} ol.style.IconOptions
- * @property {string|ol.expr.Expression} url Icon image url.
+ * @property {string|ol.expr.Expression} url Icon image URL.
  * @property {number|ol.expr.Expression|undefined} width Width of the icon
  *     in pixels.  Default is the width of the icon image.
  * @property {number|ol.expr.Expression|undefined} height Height of the
