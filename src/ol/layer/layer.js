@@ -31,21 +31,8 @@ ol.layer.Layer = function(options) {
   goog.events.listen(this.source_, goog.events.EventType.CHANGE,
       this.handleSourceChange_, false, this);
 
-  if (!this.source_.isReady()) {
-    goog.events.listenOnce(this.source_, goog.events.EventType.LOAD,
-        this.handleSourceLoad_, false, this);
-  }
-
 };
 goog.inherits(ol.layer.Layer, ol.layer.Base);
-
-
-/**
- * @private
- */
-ol.layer.Layer.prototype.dispatchLoadEvent_ = function() {
-  this.dispatchEvent(goog.events.EventType.LOAD);
-};
 
 
 /**
@@ -86,14 +73,6 @@ ol.layer.Layer.prototype.getSource = function() {
  */
 ol.layer.Layer.prototype.handleSourceChange_ = function() {
   this.dispatchChangeEvent();
-};
-
-
-/**
- * @private
- */
-ol.layer.Layer.prototype.handleSourceLoad_ = function() {
-  this.dispatchLoadEvent_();
 };
 
 
