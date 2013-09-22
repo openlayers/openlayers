@@ -24,11 +24,18 @@ ol.source.ImageWMS = function(opt_options) {
 
   goog.base(this, {
     attributions: options.attributions,
-    crossOrigin: options.crossOrigin,
     extent: options.extent,
+    logo: options.logo,
     projection: options.projection,
     resolutions: options.resolutions
   });
+
+  /**
+   * @private
+   * @type {?string}
+   */
+  this.crossOrigin_ =
+      goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
 
   /**
    * @private
@@ -181,8 +188,8 @@ ol.source.ImageWMS.prototype.getImage =
 
   var url = goog.uri.utils.appendParamsFromMap(this.url_, params);
 
-  this.image_ = new ol.Image(extent, resolution, pixelRatio, url,
-      this.crossOrigin, this.getAttributions());
+  this.image_ = new ol.Image(extent, resolution, pixelRatio,
+      this.getAttributions(), url, this.crossOrigin_);
   return this.image_;
 
 };

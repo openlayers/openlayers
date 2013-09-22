@@ -7,7 +7,7 @@ goog.require('goog.vec.Mat4');
 goog.require('goog.webgl');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
-goog.require('ol.Image');
+goog.require('ol.ImageBase');
 goog.require('ol.ImageState');
 goog.require('ol.ViewHint');
 goog.require('ol.layer.Image');
@@ -29,7 +29,7 @@ ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
   /**
    * The last rendered image.
    * @private
-   * @type {?ol.Image}
+   * @type {?ol.ImageBase}
    */
   this.image_ = null;
 
@@ -38,7 +38,7 @@ goog.inherits(ol.renderer.webgl.ImageLayer, ol.renderer.webgl.Layer);
 
 
 /**
- * @param {ol.Image} image Image.
+ * @param {ol.ImageBase} image Image.
  * @private
  * @return {WebGLTexture} Texture.
  */
