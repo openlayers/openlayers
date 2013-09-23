@@ -559,6 +559,8 @@
  * @typedef {Object} ol.source.TileJSONOptions
  * @property {null|string|undefined} crossOrigin crossOriin setting for image
  *     requests.
+ * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
+ *     function to load a tile given a URL.
  * @property {string} url URL.
  */
 
