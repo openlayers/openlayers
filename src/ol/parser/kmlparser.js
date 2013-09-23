@@ -148,12 +148,8 @@ ol.parser.KML = function(opt_options) {
             obj.features.push(feature);
           }
         } else if (goog.isDef(container.geometry)) {
-          var styleUrl = container.properties['styleUrl'];
-          if (goog.isDef(styleUrl)) {
-            if (!goog.string.startsWith(styleUrl, '#')) {
-              obj.links.push({href: styleUrl});
-            }
-          }
+          this.parseStyleUrl(obj, container.properties['styleUrl']);
+
           feature = new ol.Feature(container.properties);
           if (!goog.isNull(id)) {
             feature.setId(id);
@@ -172,23 +168,17 @@ ol.parser.KML = function(opt_options) {
             }
           }
           var symbolizers = undefined;
-          if (goog.isDef(container.styleUrl)) {
-            feature.set('styleUrl', container.styleUrl);
-
-          } else if (goog.isDef(container.styles)) {
+          if (goog.isDef(container.styles)) {
             symbolizers = container.styles[0].symbolizers;
 
           } else if (goog.isDef(container.styleMaps)) {
             var styleMap = container.styleMaps[0];
-
             for (var i = 0, ii = styleMap.pairs.length; i < ii; i++) {
               var pair = styleMap.pairs[i];
-
               if (pair.key === 'normal') {
-
                 if (goog.isDef(pair.styleUrl)) {
+                  this.parseStyleUrl(obj, pair.styleUrl);
                   feature.set('styleUrl', pair.styleUrl); 
-
                 } else if (goog.isDef(pair.styles)) {
                   symbolizers = pair.styles[0].symbolizers; 
                 }
@@ -376,12 +366,6 @@ ol.parser.KML = function(opt_options) {
         }
         this.readChildNodes(node, pair);
         obj['pairs'].push(pair);
-      },
-      'key': function(node, obj) {
-        obj.key = this.getChildValue(node);
-      },
-      'styleUrl': function(node, obj) {
-        obj.styleUrl = this.getChildValue(node);
       },
       'Style': function(node, obj) {
         if (this.extractStyles === true) {
@@ -961,6 +945,20 @@ ol.parser.KML.prototype.readFeaturesFromObject =
 
 
 /**
+ * Parse the link contained in styleUrl, if it exists.
+ * @param {Object} obj The returned object from the parser.
+ * @param {String} styleUrl The style url to parse.
+ */
+ol.parser.KML.prototype.parseStyleUrl = function(obj, styleUrl) {
+  if (goog.isDef(styleUrl)) {
+    if (!goog.string.startsWith(styleUrl, '#')) {
+      obj.links.push({href: styleUrl});
+    }
+  } 
+};
+
+
+/**
  * @param {Array} deferreds List of deferred instances.
  * @param {Object} obj The returned object from the parser.
  * @param {Function} done A callback for when all links have been retrieved.
@@ -1033,7 +1031,7 @@ ol.parser.KML.prototype.read = function(data, opt_callback) {
           function(datas) {
             for (var i = 0, ii = obj.features.length; i < ii; ++i) {
               var feature = obj.features[i];
-              this.applyStyle_(feature, obj['styles']);
+              this.applyStyle_(feature, obj['styles'], obj['styleMaps']);
             }
             opt_callback.call(null, obj);
           }, function() {
