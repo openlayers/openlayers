@@ -506,6 +506,8 @@
  * @property {ol.Attribution|undefined} attribution Attribution.
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {number|undefined} maxZoom Max zoom.
+ * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
+ *     function to load a tile given a URL.
  * @property {string|undefined} url URL.
  */
 
