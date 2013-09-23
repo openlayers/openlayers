@@ -1,8 +1,7 @@
 {
     "opts": {
         "recurse": true,
-        "template": "doc/template",
-        "tutorials": "doc/tutorials"
+        "template": "apidoc/template"
     },
     "tags": {
         "allowUnknownTags": true
@@ -13,8 +12,8 @@
     },
     "plugins": [
         "plugins/markdown",
-        "doc/plugins/inheritdoc",
-        "doc/plugins/exports"
+        "apidoc/plugins/inheritdoc",
+        "apidoc/plugins/exports"
     ],
     "markdown": {
         "parser": "gfm"
