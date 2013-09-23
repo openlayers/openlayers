@@ -167,7 +167,7 @@ virtual('default', 'build')
 
 
 virtual('integration-test', 'lint', 'build', 'build-all',
-        'test', 'build-examples', 'check-examples', 'doc')
+        'test', 'build-examples', 'check-examples', 'apidoc')
 
 
 virtual('build', 'build/ol.css', 'build/ol.js',
@@ -591,14 +591,14 @@ def plovr_jar(t):
     t.info('downloaded %r', t.name)
 
 
-virtual('doc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
+virtual('apidoc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
 @target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), 'host-resources',
         'build/src/external/src/exports.js', 'build/src/external/src/types.js',
-        SRC, SHADER_SRC, ifind('doc/template'))
+        SRC, SHADER_SRC, ifind('apidoc/template'))
 def jsdoc_BRANCH_timestamp(t):
-    t.run('%(JSDOC)s', '-c', 'doc/conf.json', 'src', 'doc/index.md',
+    t.run('%(JSDOC)s', '-c', 'apidoc/conf.json', 'src', 'apidoc/index.md',
           '-d', 'build/hosted/%(BRANCH)s/apidoc')
     t.touch()
 
@@ -780,11 +780,11 @@ The most common targets are:
   help             - Shows this help.
 
 Other less frequently used targets are:
-  doc              - Builds the API-Documentation using JSDoc3.
+  apidoc           - Builds the API-Documentation using JSDoc3.
   integration-test - Builds all examples in various modes and usually tales a
                      long time to finish. This target calls the following
                      targets: lint, build, build-all, test, build-examples,
-                     check-examples and doc.
+                     check-examples and apidoc.
   reallyclean      - Remove untracked files from the repository.
   checkdeps        - Checks whether all required development software is
                      installed on your machine.
