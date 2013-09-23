@@ -172,10 +172,31 @@ ol.parser.KML = function(opt_options) {
             }
           }
           var symbolizers = undefined;
-          if (goog.isDef(container.styles)) {
+          if (goog.isDef(container.styleUrl)) {
+            feature.set('styleUrl', container.styleUrl);
+
+          } else if (goog.isDef(container.styles)) {
             symbolizers = container.styles[0].symbolizers;
+
+          } else if (goog.isDef(container.styleMaps)) {
+            var styleMap = container.styleMaps[0];
+
+            for (var i = 0, ii = styleMap.pairs.length; i < ii; i++) {
+              var pair = styleMap.pairs[i];
+
+              if (pair.key === 'normal') {
+
+                if (goog.isDef(pair.styleUrl)) {
+                  feature.set('styleUrl', pair.styleUrl); 
+
+                } else if (goog.isDef(pair.styles)) {
+                  symbolizers = pair.styles[0].symbolizers; 
+                }
+              }
+            }
           }
-          this.applyStyle_(feature, obj['styles'], symbolizers);
+
+          this.applyStyle_(feature, obj['styles'], obj['styleMaps'], symbolizers);
           obj.features.push(feature);
         }
       },
@@ -332,6 +353,35 @@ ol.parser.KML = function(opt_options) {
       '_trackPointAttribute': function(node, container) {
         var name = node.nodeName.split(':').pop();
         container.attributes[name].push(this.getChildValue(node));
+      },
+      'StyleMap': function(node, obj) {
+        if (this.extractStyles === true) {
+          if (!obj['styleMaps']) {
+            obj['styleMaps'] = [];
+          }
+          var styleMap = {'pairs':[], 'ids': []};
+          var id = node.getAttribute('id');
+          if (!goog.isNull(id)) {
+            styleMap['id'] = id;
+          }
+          this.readChildNodes(node, styleMap);
+          obj['styleMaps'].push(styleMap);
+        }
+      },
+      'Pair': function(node, obj) {
+        var pair = {};
+        var id = node.getAttribute('id');
+        if (!goog.isNull(id)) {
+          pair['id'] = id;
+        }
+        this.readChildNodes(node, pair);
+        obj['pairs'].push(pair);
+      },
+      'key': function(node, obj) {
+        obj.key = this.getChildValue(node);
+      },
+      'styleUrl': function(node, obj) {
+        obj.styleUrl = this.getChildValue(node);
       },
       'Style': function(node, obj) {
         if (this.extractStyles === true) {
@@ -1000,17 +1050,40 @@ ol.parser.KML.prototype.read = function(data, opt_callback) {
  * @private
  * @param {ol.Feature} feature The feature to apply the style to.
  * @param {Array} styles The style list to search in.
+ * @param {Array} styleMaps The styleMap list to search in.
  * @param {Array.<ol.style.Symbolizer>=} opt_symbolizers Optional symbolizers.
  */
-ol.parser.KML.prototype.applyStyle_ = function(feature, styles,
+ol.parser.KML.prototype.applyStyle_ = function(feature, styles, styleMaps,
     opt_symbolizers) {
   var symbolizers = opt_symbolizers;
   var i, ii;
   if (feature.get('styleUrl') && feature.getSymbolizers() === null) {
     var styleUrl = feature.get('styleUrl');
     styleUrl = styleUrl.substring(styleUrl.indexOf('#') + 1);
+
+    // look for the styleMap and set in the feature
+    if (goog.isDef(styleMaps)) {
+      for (i = 0, ii = styleMaps.length; i < ii; ++i) {
+        var styleMap = styleMaps[i];
+        if (styleMap['id'] === styleUrl) {
+          for (var j = 0, jj = styleMap.pairs.length; j < jj; j++) {
+            var pair = styleMap.pairs[j];
+            if (pair.key === 'normal') {
+              if (goog.isDef(pair.styleUrl)) {
+                styleUrl = pair.styleUrl;
+                styleUrl = styleUrl.substring(styleUrl.indexOf('#') + 1); 
+              } else if (goog.isDef(pair.styles)) {
+                symbolizers = pair.styles[0]['symbolizers']; 
+              }
+            }
+          }
+          break;
+        }
+      }
+    }  
+
     // look for the style and set in the feature
-    if (goog.isDef(styles)) {
+    if (!goog.isDef(symbolizers) && goog.isDef(styles)) {
       for (i = 0, ii = styles.length; i < ii; ++i) {
         if (styles[i]['id'] === styleUrl) {
           symbolizers = styles[i]['symbolizers'];
@@ -1018,6 +1091,7 @@ ol.parser.KML.prototype.applyStyle_ = function(feature, styles,
         }
       }
     }
+    
   }
   if (goog.isDef(symbolizers)) {
     feature.setSymbolizers(symbolizers);
