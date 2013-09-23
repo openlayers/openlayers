@@ -179,6 +179,7 @@ ol.source.WMTS = function(options) {
     extent: options.extent,
     projection: options.projection,
     tileGrid: tileGrid,
+    tileLoadFunction: options.tileLoadFunction,
     tileUrlFunction: tileUrlFunction
   });
 

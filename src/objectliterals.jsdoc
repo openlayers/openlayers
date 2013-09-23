@@ -640,6 +640,8 @@
  * @property {Object|undefined} dimensions Dimensions.
  * @property {string|undefined} url URL.
  * @property {number|undefined} maxZoom Maximum zoom.
+ * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
+ *     function to load a tile given a URL.
  * @property {Array.<string>|undefined} urls Urls.
  */
 
