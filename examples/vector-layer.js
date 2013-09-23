@@ -2,7 +2,7 @@ goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.expr');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.GeoJSON');
 goog.require('ol.source.MapQuestOpenAerial');
@@ -14,7 +14,7 @@ goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 
 
-var raster = new ol.layer.TileLayer({
+var raster = new ol.layer.Tile({
   source: new ol.source.MapQuestOpenAerial()
 });
 
@@ -72,7 +72,7 @@ map.on(['click', 'mousemove'], function(evt) {
     success: function(featuresByLayer) {
       var features = featuresByLayer[0];
       document.getElementById('info').innerHTML = features.length > 0 ?
-          features[0].getFeatureId() + ': ' + features[0].get('name') :
+          features[0].getId() + ': ' + features[0].get('name') :
           '&nbsp;';
     }
   });

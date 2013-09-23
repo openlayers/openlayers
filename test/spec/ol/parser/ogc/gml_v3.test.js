@@ -9,7 +9,7 @@ describe('ol.parser.gml_v3', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v3/envelope.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        expect(obj.bounds).to.eql([1, 3, 2, 4]);
+        expect(obj.bounds).to.eql([1, 2, 3, 4]);
         done();
       });
     });
@@ -306,7 +306,7 @@ describe('ol.parser.gml_v3', function() {
         expect(feature.getGeometry() instanceof
             ol.geom.MultiPolygon).to.be.ok();
         var attributes = feature.getAttributes();
-        expect(feature.getFeatureId()).to.eql('states.1');
+        expect(feature.getId()).to.eql('states.1');
         expect(attributes['STATE_NAME']).to.eql('Illinois');
         expect(attributes['STATE_FIPS']).to.eql('17');
         expect(attributes['SUB_REGION']).to.eql('E N Cen');
@@ -326,7 +326,7 @@ describe('ol.parser.gml_v3', function() {
         expect(feature.getGeometry() instanceof
             ol.geom.MultiPolygon).to.be.ok();
         var attributes = feature.getAttributes();
-        expect(feature.getFeatureId()).to.eql('states.1');
+        expect(feature.getId()).to.eql('states.1');
         expect(attributes['STATE_NAME']).to.eql('Illinois');
         expect(attributes['STATE_FIPS']).to.eql('17');
         expect(attributes['SUB_REGION']).to.eql('E N Cen');

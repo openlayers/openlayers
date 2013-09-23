@@ -1,1 +1,1 @@
-@exportClass ol.layer.LayerGroup ol.layer.LayerGroupOptions
+@exportClass ol.layer.Group ol.layer.GroupOptions

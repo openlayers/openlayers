@@ -18,6 +18,7 @@ goog.require('ol.layer.Layer');
 goog.require('ol.proj');
 goog.require('ol.source.Vector');
 goog.require('ol.structs.RTree');
+goog.require('ol.style');
 goog.require('ol.style.Style');
 goog.require('ol.style.TextLiteral');
 
@@ -106,12 +107,15 @@ ol.layer.FeatureCache.prototype.getFeaturesObject = function(opt_expr) {
     } else if (name === ol.expr.functions.EXTENT) {
       var args = /** @type {ol.expr.Call} */ (opt_expr).getArgs();
       goog.asserts.assert(args.length === 4);
-      var extent = [];
       for (var i = 0; i < 4; ++i) {
         goog.asserts.assert(args[i] instanceof ol.expr.Literal);
-        extent[i] = /** @type {ol.expr.Literal} */ (args[i]).evaluate();
-        goog.asserts.assertNumber(extent[i]);
       }
+      var extent = [
+        /** @type {ol.expr.Literal} */ (args[0]).evaluate(),
+        /** @type {ol.expr.Literal} */ (args[1]).evaluate(),
+        /** @type {ol.expr.Literal} */ (args[2]).evaluate(),
+        /** @type {ol.expr.Literal} */ (args[3]).evaluate()
+      ];
       features = this.rTree_.searchReturningObject(extent);
     } else {
       // not a call expression, check logical
@@ -132,13 +136,16 @@ ol.layer.FeatureCache.prototype.getFeaturesObject = function(opt_expr) {
             } else if (name === ol.expr.functions.EXTENT) {
               args = /** @type {ol.expr.Call} */ (expr).getArgs();
               goog.asserts.assert(args.length === 4);
-              extent = [];
               for (var j = 0; j < 4; ++j) {
                 goog.asserts.assert(args[j] instanceof ol.expr.Literal);
-                extent[j] =
-                    /** @type {ol.expr.Literal} */ (args[j]).evaluate();
-                goog.asserts.assertNumber(extent[j]);
               }
+              extent = [[
+                /** @type {ol.expr.Literal} */ (args[0]).evaluate(),
+                /** @type {ol.expr.Literal} */ (args[1]).evaluate()
+              ], [
+                /** @type {ol.expr.Literal} */ (args[2]).evaluate(),
+                /** @type {ol.expr.Literal} */ (args[3]).evaluate()
+              ]];
             }
           }
           if (type && extent) {
@@ -376,7 +383,7 @@ ol.layer.Vector.prototype.getStyle = function() {
  * as the data for `extent` is available.
  *
  * @param {ol.Extent} extent Bounding extent.
- * @param {ol.Projection} projection Target projection.
+ * @param {ol.proj.Projection} projection Target projection.
  * @param {ol.geom.GeometryType=} opt_type Optional geometry type.
  * @param {Function=} opt_callback Callback to call when data is parsed.
  * @return {Object.<string, ol.Feature>} Features or null if source is loading
@@ -436,12 +443,11 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
     if (!goog.isNull(symbolizers)) {
       literals = ol.style.Style.createLiterals(symbolizers, feature);
     } else {
-      if (!goog.isNull(style)) {
-        // layer style second
-        literals = style.createLiterals(feature);
-      } else {
-        literals = ol.style.Style.defaults.createLiterals(feature);
+      // layer style second
+      if (goog.isNull(style)) {
+        style = ol.style.getDefault();
       }
+      literals = style.createLiterals(feature);
     }
     numLiterals = literals.length;
     for (j = 0; j < numLiterals; ++j) {
@@ -486,8 +492,8 @@ ol.layer.Vector.prototype.getFeatureWithUid = function(uid) {
 /**
  * @param {Object|Element|Document|string} data Feature data.
  * @param {ol.parser.Parser} parser Feature parser.
- * @param {ol.Projection} projection This sucks.  The layer should be a view in
- *     one projection.
+ * @param {ol.proj.Projection} projection This sucks.  The layer should be a
+ *     view in one projection.
  */
 ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
   var lookup = {};

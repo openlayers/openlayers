@@ -54,7 +54,9 @@ describe('ol.layer.Layer', function() {
         opacity: 1,
         saturation: 1,
         visible: true,
-        ready: true
+        ready: true,
+        maxResolution: Infinity,
+        minResolution: 0
       });
     });
 
@@ -73,6 +75,8 @@ describe('ol.layer.Layer', function() {
         opacity: 0.5,
         saturation: 5,
         visible: false,
+        maxResolution: 500,
+        minResolution: 0.25,
         foo: 42
       });
 
@@ -82,6 +86,8 @@ describe('ol.layer.Layer', function() {
       expect(layer.getOpacity()).to.be(0.5);
       expect(layer.getSaturation()).to.be(5);
       expect(layer.getVisible()).to.be(false);
+      expect(layer.getMaxResolution()).to.be(500);
+      expect(layer.getMinResolution()).to.be(0.25);
       expect(layer.get('foo')).to.be(42);
       expect(layer.getLayerState()).to.eql({
         brightness: 0.5,
@@ -90,7 +96,9 @@ describe('ol.layer.Layer', function() {
         opacity: 0.5,
         saturation: 5,
         visible: false,
-        ready: true
+        ready: true,
+        maxResolution: 500,
+        minResolution: 0.25
       });
 
       goog.dispose(layer);
@@ -121,6 +129,8 @@ describe('ol.layer.Layer', function() {
       layer.setOpacity(0.3);
       layer.setSaturation(0.3);
       layer.setVisible(false);
+      layer.setMaxResolution(500);
+      layer.setMinResolution(0.25);
       expect(layer.getLayerState()).to.eql({
         brightness: -0.7,
         contrast: 0.3,
@@ -128,7 +138,9 @@ describe('ol.layer.Layer', function() {
         opacity: 0.3,
         saturation: 0.3,
         visible: false,
-        ready: true
+        ready: true,
+        maxResolution: 500,
+        minResolution: 0.25
       });
     });
 
@@ -146,7 +158,9 @@ describe('ol.layer.Layer', function() {
         opacity: 0,
         saturation: 0,
         visible: false,
-        ready: true
+        ready: true,
+        maxResolution: Infinity,
+        minResolution: 0
       });
 
       layer.setBrightness(-3);
@@ -162,7 +176,9 @@ describe('ol.layer.Layer', function() {
         opacity: 1,
         saturation: 42,
         visible: true,
-        ready: true
+        ready: true,
+        maxResolution: Infinity,
+        minResolution: 0
       });
     });
 

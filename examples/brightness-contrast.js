@@ -1,9 +1,9 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.source.MapQuestOpenAerial');
-goog.require('ol.webgl.SUPPORTED');
+goog.require('ol.webgl');
 
 
 function setResetBrightnessButtonHTML() {
@@ -22,7 +22,7 @@ if (!ol.webgl.SUPPORTED) {
    */
   info.style.display = '';
 } else {
-  var layer = new ol.layer.TileLayer({
+  var layer = new ol.layer.Tile({
     source: new ol.source.MapQuestOpenAerial()
   });
 

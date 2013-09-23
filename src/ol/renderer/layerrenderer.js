@@ -10,7 +10,7 @@ goog.require('ol.TileState');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerState');
 goog.require('ol.source.Source');
-goog.require('ol.source.TileSource');
+goog.require('ol.source.Tile');
 
 
 
@@ -121,7 +121,7 @@ ol.renderer.Layer.prototype.renderIfReadyAndVisible = function() {
 
 /**
  * @param {ol.FrameState} frameState Frame state.
- * @param {ol.source.TileSource} tileSource Tile source.
+ * @param {ol.source.Tile} tileSource Tile source.
  * @protected
  */
 ol.renderer.Layer.prototype.scheduleExpireCache =
@@ -169,7 +169,7 @@ ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
 
 /**
  * @param {Object.<string, Object.<string, ol.TileRange>>} usedTiles Used tiles.
- * @param {ol.source.TileSource} tileSource Tile source.
+ * @param {ol.source.Tile} tileSource Tile source.
  * @param {number} z Z.
  * @param {ol.TileRange} tileRange Tile range.
  * @protected
@@ -195,8 +195,8 @@ ol.renderer.Layer.prototype.updateUsedTiles =
 /**
  * @param {function(ol.Tile): boolean} isLoadedFunction Function to
  *     determine if the tile is loaded.
- * @param {ol.source.TileSource} tileSource Tile source.
- * @param {ol.Projection} projection Projection.
+ * @param {ol.source.Tile} tileSource Tile source.
+ * @param {ol.proj.Projection} projection Projection.
  * @protected
  * @return {function(number, number, number): ol.Tile} Returns a tile if it is
  *     loaded.
@@ -241,9 +241,9 @@ ol.renderer.Layer.prototype.snapCenterToPixel =
  *   discarded by the tile queue
  * - enqueues missing tiles
  * @param {ol.FrameState} frameState Frame state.
- * @param {ol.source.TileSource} tileSource Tile source.
+ * @param {ol.source.Tile} tileSource Tile source.
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  * @param {ol.Extent} extent Extent.
  * @param {number} currentZ Current Z.
  * @param {number} preload Load low resolution tiles up to 'preload' levels.

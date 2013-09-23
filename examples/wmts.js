@@ -2,7 +2,7 @@ goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.extent');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
 goog.require('ol.source.WMTS');
@@ -22,11 +22,11 @@ for (var z = 0; z < 26; ++z) {
 
 var map = new ol.Map({
   layers: [
-    new ol.layer.TileLayer({
+    new ol.layer.Tile({
       source: new ol.source.OSM(),
       opacity: 0.7
     }),
-    new ol.layer.TileLayer({
+    new ol.layer.Tile({
       source: new ol.source.WMTS({
         url: 'http://v2.suite.opengeo.org/geoserver/gwc/service/wmts/',
         layer: 'medford:buildings',
@@ -39,7 +39,7 @@ var map = new ol.Map({
           matrixIds: matrixIds
         }),
         style: '_null',
-        extent: [-13682835, -13667473, 5204068, 5221690]
+        extent: [-13682835, 5204068, -13667473, 5221690]
       })
     })
   ],

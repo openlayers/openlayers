@@ -10,7 +10,7 @@ goog.require('ol.Extent');
 goog.require('ol.Image');
 goog.require('ol.ImageState');
 goog.require('ol.ViewHint');
-goog.require('ol.layer.ImageLayer');
+goog.require('ol.layer.Image');
 goog.require('ol.renderer.webgl.Layer');
 
 
@@ -19,7 +19,7 @@ goog.require('ol.renderer.webgl.Layer');
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
- * @param {ol.layer.ImageLayer} imageLayer Tile layer.
+ * @param {ol.layer.Image} imageLayer Tile layer.
  */
 ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
 
@@ -73,10 +73,10 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
 
 /**
  * @protected
- * @return {ol.layer.ImageLayer} Tile layer.
+ * @return {ol.layer.Image} Tile layer.
  */
 ol.renderer.webgl.ImageLayer.prototype.getImageLayer = function() {
-  return /** @type {ol.layer.ImageLayer} */ (this.getLayer());
+  return /** @type {ol.layer.Image} */ (this.getLayer());
 };
 
 
@@ -170,11 +170,11 @@ ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ =
   goog.vec.Mat4.rotateZ(projectionMatrix, -viewRotation);
   goog.vec.Mat4.translate(projectionMatrix,
       imageExtent[0] - viewCenter[0],
-      imageExtent[2] - viewCenter[1],
+      imageExtent[1] - viewCenter[1],
       0);
   goog.vec.Mat4.scale(projectionMatrix,
-      (imageExtent[1] - imageExtent[0]) / 2,
-      (imageExtent[3] - imageExtent[2]) / 2,
+      (imageExtent[2] - imageExtent[0]) / 2,
+      (imageExtent[3] - imageExtent[1]) / 2,
       1);
   goog.vec.Mat4.translate(projectionMatrix, 1, 1, 0);
 

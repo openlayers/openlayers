@@ -1,5 +1,4 @@
 goog.provide('ol.DeviceOrientation');
-goog.provide('ol.DeviceOrientation.SUPPORTED');
 goog.provide('ol.DeviceOrientationProperty');
 
 goog.require('goog.events');
@@ -106,7 +105,11 @@ ol.DeviceOrientation.prototype.disposeInternal = function() {
  * @const
  * @type {boolean}
  */
-ol.DeviceOrientation.SUPPORTED = 'DeviceOrientationEvent' in window;
+ol.DeviceOrientation.SUPPORTED = 'DeviceOrientationEvent' in goog.global;
+goog.exportProperty(
+    ol.DeviceOrientation,
+    'SUPPORTED',
+    ol.DeviceOrientation.SUPPORTED);
 
 
 /**
@@ -122,6 +125,11 @@ ol.DeviceOrientation.prototype.orientationChange_ = function(browserEvent) {
     // event.absolute is undefined in iOS.
     if (goog.isBoolean(event.absolute) && event.absolute) {
       this.set(ol.DeviceOrientationProperty.HEADING, alpha);
+    } else if (goog.isDefAndNotNull(event.webkitCompassHeading) &&
+               goog.isDefAndNotNull(event.webkitCompassAccuracy) &&
+               event.webkitCompassAccuracy != -1) {
+      var heading = goog.math.toRadians(event.webkitCompassHeading);
+      this.set(ol.DeviceOrientationProperty.HEADING, heading);
     }
   }
   if (goog.isDefAndNotNull(event.beta)) {
@@ -212,7 +220,7 @@ ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
   if (ol.DeviceOrientation.SUPPORTED) {
     var tracking = this.getTracking();
     if (tracking && goog.isNull(this.listenerKey_)) {
-      this.listenerKey_ = goog.events.listen(window, 'deviceorientation',
+      this.listenerKey_ = goog.events.listen(goog.global, 'deviceorientation',
           this.orientationChange_, false, this);
     } else if (!tracking && !goog.isNull(this.listenerKey_)) {
       goog.events.unlistenByKey(this.listenerKey_);

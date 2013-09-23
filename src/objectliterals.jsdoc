@@ -14,7 +14,7 @@
  * @typedef {Object} ol.GeolocationOptions
  * @property {boolean|undefined} tracking Tracking.
  * @property {GeolocationPositionOptions|undefined} trackingOptions Tracking options.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  */
 
 /**
@@ -52,8 +52,10 @@
  * @typedef {Object} ol.MapOptions
  * @property {ol.Collection|Array.<ol.control.Control>|undefined} controls
  *     Controls initially added to the map.
- * @property {ol.Collection|undefined} interactions Interactions.
- * @property {Array.<ol.layer.LayerBase>|ol.Collection|undefined} layers Layers.
+ * @property {ol.Collection|undefined} interactions A collection of
+ *     {@link ol.interaction|ol.interaction.Interaction} instances that allow the user to interact with
+ *     the map.
+ * @property {Array.<ol.layer.Base>|ol.Collection|undefined} layers Layers.
  * @property {ol.Collection|Array.<ol.Overlay>|undefined} overlays
  *     Overlays initially added to the map.
  * @property {ol.RendererHint|undefined} renderer Renderer.
@@ -85,7 +87,7 @@
  * Object literal with config options for the projection.
  * @typedef {Object} ol.ProjectionOptions
  * @property {string} code The SRS identifier code, e.g. 'EPSG:4326'.
- * @property {ol.ProjectionUnits} units Units.
+ * @property {ol.proj.Units} units Units.
  * @property {ol.Extent|undefined} extent The validity extent for the SRS.
  * @property {string|undefined} axisOrientation The axis orientation as
  *     specified in Proj4. The default is 'enu'.
@@ -108,7 +110,7 @@
  * @property {number|undefined} maxZoom The maximum zoom level used to determine
  *     the resolution constraint. It is used together with `maxResolution` and
  *     `zoomFactor`. Default is 28.
- * @property {ol.ProjectionLike} projection The projection. Default is
+ * @property {ol.proj.ProjectionLike} projection The projection. Default is
  *     `EPSG:3857` (Spherical Mercator).
  * @property {number|undefined} resolution The initial resolution for the view.
  *     The units are `projection` units per pixel (e.g. meters per pixel).
@@ -130,7 +132,7 @@
  * @property {number} resolution The resolution to start the bounce from, typically `map.getView().getResolution()`.
  * @property {number|undefined} start The start time of the animation. Default is immediately.
  * @property {number|undefined} duration The duration of the animation in milliseconds. Default is 1000.
- * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.inAndOut`
+ * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.upAndDown`
  */
 
 /**
@@ -198,7 +200,7 @@
  * @property {string|undefined} className CSS class name. Default is 'ol-mouse-position'.
  * @property {ol.CoordinateFormatType|undefined} coordinateFormat Coordinate
  *     format.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {Element|undefined} target Target.
  * @property {string|undefined} undefinedHTML Markup for undefined coordinates.
  *     Default is '' (empty string).
@@ -237,28 +239,36 @@
 /**
  * @typedef {Object} ol.interaction.DoubleClickZoomOptions
  * @property {number|undefined} delta The zoom delta applied on each double
- *    click.
+ *     click, default is 1.
  */
 
 /**
  * @typedef {Object} ol.interaction.DragPanOptions
- * @property {ol.Kinetic|undefined} kinetic Kinetic.
- * @property {ol.interaction.ConditionType|undefined} condition Condition.
+ * @property {ol.Kinetic|undefined} kinetic Kinetic inertia to apply to the pan.
+ * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is no modifiers.
  */
 
 /**
  * @typedef {Object} ol.interaction.DragRotateOptions
- * @property {ol.interaction.ConditionType|undefined} condition Condition.
+ * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is both shift and alt keys.
  */
 
 /**
  * @typedef {Object} ol.interaction.DragRotateAndZoomOptions
- * @property {ol.interaction.ConditionType|undefined} condition Condition.
+ * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is shify key.
  */
 
 /**
  * @typedef {Object} ol.interaction.DragZoomOptions
- * @property {ol.interaction.ConditionType|undefined} condition Condition.
+ * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is shift key.
  */
 
 /**
@@ -284,26 +294,34 @@
 
 /**
  * @typedef {Object} ol.interaction.KeyboardPanOptions
- * @property {ol.interaction.ConditionType|undefined} condition Condition.
- * @property {number|undefined} pixelDelta Pixel delta
+ * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is no modifiers.
+ * @property {number|undefined} pixelDelta Pixel The amount to pan on each key
+ *     press
  */
 
 /**
  * @typedef {Object} ol.interaction.KeyboardZoomOptions
- * @property {ol.interaction.ConditionType|undefined} condition Condition.
- * @property {number|undefined} delta Delta.
+ * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is no modifiers.
+ * @property {number|undefined} delta The amount to zoom on each key press.
  */
 
 /**
  * @typedef {Object} ol.interaction.SelectOptions
- * @property {ol.interaction.ConditionType|undefined} condition Condition.
+ * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is on mouse click only.
  * @property {undefined|function(ol.layer.Layer):boolean} layerFilter Filter
  *     function to restrict selection to a subset of layers.
  */
 
 /**
  * @typedef {Object} ol.interaction.TouchPanOptions
- * @property {ol.Kinetic|undefined} kinetic Kinetic.
+ * @property {ol.Kinetic|undefined} kinetic Kinetic inertia to apply to the
+ *     pan.
  */
 
 /**
@@ -312,13 +330,17 @@
  */
 
 /**
- * @typedef {Object} ol.layer.LayerBaseOptions
+ * @typedef {Object} ol.layer.BaseOptions
  * @property {number|undefined} brightness Brightness.
  * @property {number|undefined} contrast Contrast.
  * @property {number|undefined} hue Hue.
  * @property {number|undefined} opacity Opacity.
  * @property {number|undefined} saturation Saturation.
  * @property {boolean|undefined} visible Visibility.
+ * @property {number|undefined} minResolution The minimum resolution
+ *      (inclusive) at which this layer will be visible.
+ * @property {number|undefined} maxResolution The maximum resolution
+ *      (exclusive) below which this layer will be visible.
  */
 
 /**
@@ -330,21 +352,29 @@
  * @property {number|undefined} saturation Saturation.
  * @property {ol.source.Source} source Source for this layer.
  * @property {boolean|undefined} visible Visibility. Default is true (visible).
+ * @property {number|undefined} minResolution The minimum resolution
+ *      (inclusive) at which this layer will be visible.
+ * @property {number|undefined} maxResolution The maximum resolution
+ *      (exclusive) below which this layer will be visible.
  */
 
 /**
- * @typedef {Object} ol.layer.LayerGroupOptions
+ * @typedef {Object} ol.layer.GroupOptions
  * @property {number|undefined} brightness Brightness.
  * @property {number|undefined} contrast Contrast.
  * @property {number|undefined} hue Hue.
  * @property {number|undefined} opacity Opacity.
  * @property {number|undefined} saturation Saturation.
  * @property {boolean|undefined} visible Visibility.
- * @property {Array.<ol.layer.LayerBase>|ol.Collection|undefined} layers Child layers.
+ * @property {number|undefined} minResolution The minimum resolution
+ *      (inclusive) at which this layer will be visible.
+ * @property {number|undefined} maxResolution The maximum resolution
+ *      (exclusive) below which this layer will be visible.
+ * @property {Array.<ol.layer.Base>|ol.Collection|undefined} layers Child layers.
  */
 
 /**
- * @typedef {Object} ol.layer.TileLayerOptions
+ * @typedef {Object} ol.layer.TileOptions
  * @property {number|undefined} brightness Brightness.
  * @property {number|undefined} contrast Contrast.
  * @property {number|undefined} hue Hue.
@@ -353,6 +383,10 @@
  * @property {number|undefined} saturation Saturation.
  * @property {ol.source.Source} source Source for this layer.
  * @property {boolean|undefined} visible Visibility. Default is true (visible).
+ * @property {number|undefined} minResolution The minimum resolution
+ *      (inclusive) at which this layer will be visible.
+ * @property {number|undefined} maxResolution The maximum resolution
+ *      (exclusive) below which this layer will be visible.
  */
 
 /**
@@ -365,6 +399,10 @@
  * @property {ol.source.Source} source Source for this layer.
  * @property {ol.style.Style|undefined} style Style.
  * @property {boolean|undefined} visible Visibility. Default is true (visible).
+ * @property {number|undefined} minResolution The minimum resolution
+ *      (inclusive) at which this layer will be visible.
+ * @property {number|undefined} maxResolution The maximum resolution
+ *      (exclusive) below which this layer will be visible.
  */
 
 /**
@@ -388,7 +426,7 @@
 
 /**
  * @typedef {Object} ol.parser.GMLWriteOptions
- * @property {ol.ProjectionLike} srsName The srsName to use when writing.
+ * @property {ol.proj.ProjectionLike} srsName The srsName to use when writing.
  * @property {string|undefined} axisOrientation The axis orientation.
  */
 
@@ -457,9 +495,9 @@
  */
 
 /**
- * @typedef {Object} ol.source.DebugTileSourceOptions
+ * @typedef {Object} ol.source.TileDebugOptions
  * @property {ol.Extent|undefined} extent Extent.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  */
 
@@ -472,7 +510,7 @@
  */
 
 /**
- * @typedef {Object} ol.source.SingleImageWMSOptions
+ * @typedef {Object} ol.source.ImageWMSOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image
  *     requests.
@@ -483,13 +521,13 @@
  *     `LAYERS` param is required. `STYLES` is '' by default. `VERSION` is
  *     '1.3.0' by default. `WIDTH`, `HEIGHT`, `BBOX` and `CRS` (`SRS` for WMS
  *     version < 1.3.0) will be set dynamically.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {number|undefined} ratio Ratio. 1 means image requests are the size
  *     of the map viewport, 2 means twice the size of the map viewport, and so
  *     on.
  * @property {Array.<number>|undefined} resolutions Resolutions. If specified,
  *     requests will be made for these resolutions only.
- * @property {string|undefined} url WMS service url.
+ * @property {string|undefined} url WMS service URL.
  */
 
 /**
@@ -497,7 +535,7 @@
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  */
 
 /**
@@ -506,30 +544,30 @@
  * @property {number|undefined} minZoom Minimum zoom.
  * @property {number|undefined} maxZoom Maximum zoom.
  * @property {boolean|undefined} opaque Whether the layer is opaque.
- * @property {string|undefined} url Url.
+ * @property {string|undefined} url URL.
  */
 
 /**
- * @typedef {Object} ol.source.StaticImageOptions
+ * @typedef {Object} ol.source.ImageStaticOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image
  *     requests.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {ol.Extent|undefined} imageExtent Extent of the image.
  * @property {ol.Size|undefined} imageSize Size of the image.
- * @property {ol.ProjectionLike} projection Projection.
- * @property {string|undefined} url Url.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {string|undefined} url URL.
  */
 
 /**
  * @typedef {Object} ol.source.TileJSONOptions
  * @property {null|string|undefined} crossOrigin crossOriin setting for image
  *     requests.
- * @property {string} url Url.
+ * @property {string} url URL.
  */
 
 /**
- * @typedef {Object} ol.source.TiledWMSOptions
+ * @typedef {Object} ol.source.TileWMSOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {Object.<string,*>} params WMS request parameters. At least a
  *     `LAYERS` param is required. `STYLES` is '' by default. `VERSION` is
@@ -542,8 +580,8 @@
  *     getFeatureInfoOptions Options for GetFeatureInfo.
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  * @property {number|undefined} maxZoom Maximum zoom.
- * @property {ol.ProjectionLike} projection Projection.
- * @property {string|undefined} url WMS service url.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {string|undefined} url WMS service URL.
  * @property {Array.<string>|undefined} urls WMS service urls. Use this instead
  *     of `url` when the WMS supports multiple urls for GetMap requests.
  */
@@ -556,7 +594,7 @@
  * @property {string|undefined} logo Logo.
  * @property {ol.parser.Parser} parser Parser instance to parse data
  *     provided as `data` or fetched from `url`.
- * @property {ol.ProjectionLike|undefined} projection Projection. Usually the
+ * @property {ol.proj.ProjectionLike|undefined} projection Projection. Usually the
  *     projection is provided by the parser, so this only needs to be set if
  *     the parser does not know the SRS (e.g. in some GML flavors), or if the
  *     projection determined by the parser needs to be overridden.
@@ -564,14 +602,14 @@
  */
 
 /**
- * @typedef {Object} ol.source.VectorSource2Options
+ * @typedef {Object} ol.source.Vector2Options
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {Array.<ol.geom2.LineStringCollection>|undefined}
  *    lineStringCollections Line string collections.
  * @property {Array.<ol.geom2.PointCollection>|undefined} pointCollections
  *    Point collections.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  */
 
 
@@ -588,25 +626,47 @@
  * @typedef {Object} ol.source.WMTSOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {string|null|undefined} crossOrigin crossOrigin setting for image
- *     requeests.
+ *     requests.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {ol.tilegrid.WMTS} tileGrid Tile grid.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {ol.source.WMTSRequestEncoding|undefined} requestEncoding Request
  *     encoding.
  * @property {string} layer Layer.
  * @property {string} style Style.
+ * @property {string|undefined} version WMTS version. Default to '1.0.0'.
  * @property {string|undefined} format Format.
  * @property {string} matrixSet Matrix set.
  * @property {Object|undefined} dimensions Dimensions.
- * @property {string|undefined} url Url.
+ * @property {string|undefined} url URL.
  * @property {number|undefined} maxZoom Maximum zoom.
  * @property {Array.<string>|undefined} urls Urls.
  */
 
 /**
+ * @typedef {Object} ol.source.XYZOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {null|string|undefined} crossOrigin Cross origin setting for image
+ *     requests.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {number|undefined} maxZoom Optional max zoom level.  The default is
+ *     18.
+ * @property {number|undefined} minZoom Unsupported (TODO: remove this).
+ * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
+ *     function to load a tile given a URL.
+ * @property {ol.TileUrlFunctionType|undefined} tileUrlFunction Optional
+ *     function to get tile URL given a tile coordinate and the projection.
+ *     Required if url or urls are not provided.
+ * @property {string|undefined} url URL template.  Must include '{x}', '{y}',
+ *     and '{z}' placeholders.
+ * @property {Array.<string>|undefined} urls An array of URL templates.
+ */
+
+/**
  * @typedef {Object} ol.style.IconOptions
- * @property {string|ol.expr.Expression} url Icon image url.
+ * @property {string|ol.expr.Expression} url Icon image URL.
  * @property {number|ol.expr.Expression|undefined} width Width of the icon
  *     in pixels.  Default is the width of the icon image.
  * @property {number|ol.expr.Expression|undefined} height Height of the

@@ -15,6 +15,9 @@ ol.interaction.DRAGROTATE_ANIMATION_DURATION = 250;
 
 
 /**
+ * Allows the user to rotate the map by clicking and dragging on the map,
+ * normally combined with an {@link ol.interaction.condition} that limits
+ * it to when the alt and shift keys are held down.
  * @constructor
  * @extends {ol.interaction.Drag}
  * @param {ol.interaction.DragRotateOptions=} opt_options Options.
@@ -83,7 +86,7 @@ ol.interaction.DragRotate.prototype.handleDragEnd = function(mapBrowserEvent) {
 ol.interaction.DragRotate.prototype.handleDragStart =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
-  if (browserEvent.isMouseActionButton() && this.condition_(browserEvent)) {
+  if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
     map.requestRenderFrame();
     this.lastAngle_ = undefined;

@@ -49,8 +49,8 @@ describe('ol.geom.Point', function() {
       var point = new ol.geom.Point([10, 20]);
       var bounds = point.getBounds();
       expect(bounds[0]).to.be(10);
-      expect(bounds[1]).to.be(10);
-      expect(bounds[2]).to.be(20);
+      expect(bounds[2]).to.be(10);
+      expect(bounds[1]).to.be(20);
       expect(bounds[3]).to.be(20);
     });
 

@@ -2,9 +2,9 @@ goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.dom.Input');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
-goog.require('ol.webgl.SUPPORTED');
+goog.require('ol.webgl');
 
 
 if (!ol.webgl.SUPPORTED) {
@@ -19,7 +19,7 @@ if (!ol.webgl.SUPPORTED) {
   info.style.display = '';
 }
 
-var layer = new ol.layer.TileLayer({
+var layer = new ol.layer.Tile({
   source: new ol.source.OSM()
 });
 var map = new ol.Map({

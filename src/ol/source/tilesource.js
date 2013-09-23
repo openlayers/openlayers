@@ -1,5 +1,5 @@
-goog.provide('ol.source.TileSource');
-goog.provide('ol.source.TileSourceOptions');
+goog.provide('ol.source.Tile');
+goog.provide('ol.source.TileOptions');
 
 goog.require('goog.functions');
 goog.require('ol.Attribution');
@@ -16,19 +16,19 @@ goog.require('ol.tilegrid.TileGrid');
  *            extent: (ol.Extent|undefined),
  *            logo: (string|undefined),
  *            opaque: (boolean|undefined),
- *            projection: ol.ProjectionLike,
+ *            projection: ol.proj.ProjectionLike,
  *            tileGrid: (ol.tilegrid.TileGrid|undefined)}}
  */
-ol.source.TileSourceOptions;
+ol.source.TileOptions;
 
 
 
 /**
  * @constructor
  * @extends {ol.source.Source}
- * @param {ol.source.TileSourceOptions} options Tile source options.
+ * @param {ol.source.TileOptions} options Tile source options.
  */
-ol.source.TileSource = function(options) {
+ol.source.Tile = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
@@ -50,19 +50,19 @@ ol.source.TileSource = function(options) {
   this.tileGrid = goog.isDef(options.tileGrid) ? options.tileGrid : null;
 
 };
-goog.inherits(ol.source.TileSource, ol.source.Source);
+goog.inherits(ol.source.Tile, ol.source.Source);
 
 
 /**
  * @return {boolean} Can expire cache.
  */
-ol.source.TileSource.prototype.canExpireCache = goog.functions.FALSE;
+ol.source.Tile.prototype.canExpireCache = goog.functions.FALSE;
 
 
 /**
  * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
  */
-ol.source.TileSource.prototype.expireCache = goog.abstractMethod;
+ol.source.Tile.prototype.expireCache = goog.abstractMethod;
 
 
 /**
@@ -78,14 +78,14 @@ ol.source.TileSource.prototype.expireCache = goog.abstractMethod;
  * @param {ol.TileRange} tileRange Tile range.
  * @return {boolean} The tile range is fully covered with loaded tiles.
  */
-ol.source.TileSource.prototype.findLoadedTiles = function(loadedTilesByZ,
+ol.source.Tile.prototype.findLoadedTiles = function(loadedTilesByZ,
     getTileIfLoaded, z, tileRange) {
   // FIXME this could be more efficient about filling partial holes
   var fullyCovered = true;
   var tile, tileCoordKey, x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-      tileCoordKey = ol.TileCoord.getKeyZXY(z, x, y);
+      tileCoordKey = this.getKeyZXY(z, x, y);
       if (loadedTilesByZ[z] && loadedTilesByZ[z][tileCoordKey]) {
         continue;
       }
@@ -105,9 +105,19 @@ ol.source.TileSource.prototype.findLoadedTiles = function(loadedTilesByZ,
 
 
 /**
+ * @param {number} z Z.
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @return {string} Key.
+ * @protected
+ */
+ol.source.Tile.prototype.getKeyZXY = ol.TileCoord.getKeyZXY;
+
+
+/**
  * @return {boolean} Opaque.
  */
-ol.source.TileSource.prototype.getOpaque = function() {
+ol.source.Tile.prototype.getOpaque = function() {
   return this.opaque_;
 };
 
@@ -115,7 +125,7 @@ ol.source.TileSource.prototype.getOpaque = function() {
 /**
  * @inheritDoc
  */
-ol.source.TileSource.prototype.getResolutions = function() {
+ol.source.Tile.prototype.getResolutions = function() {
   return this.tileGrid.getResolutions();
 };
 
@@ -124,16 +134,16 @@ ol.source.TileSource.prototype.getResolutions = function() {
  * @param {number} z Tile coordinate z.
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
- * @param {ol.Projection=} opt_projection Projection.
+ * @param {ol.proj.Projection=} opt_projection Projection.
  * @return {!ol.Tile} Tile.
  */
-ol.source.TileSource.prototype.getTile = goog.abstractMethod;
+ol.source.Tile.prototype.getTile = goog.abstractMethod;
 
 
 /**
  * @return {ol.tilegrid.TileGrid} Tile grid.
  */
-ol.source.TileSource.prototype.getTileGrid = function() {
+ol.source.Tile.prototype.getTileGrid = function() {
   return this.tileGrid;
 };
 
@@ -144,4 +154,4 @@ ol.source.TileSource.prototype.getTileGrid = function() {
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
  */
-ol.source.TileSource.prototype.useTile = goog.nullFunction;
+ol.source.Tile.prototype.useTile = goog.nullFunction;

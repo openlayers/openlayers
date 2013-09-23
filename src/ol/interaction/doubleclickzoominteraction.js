@@ -16,6 +16,8 @@ ol.interaction.DOUBLECLICKZOOM_ANIMATION_DURATION = 250;
 
 
 /**
+ * Allows the user to zoom by double-clicking on the map.
+ *
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {ol.interaction.DoubleClickZoomOptions=} opt_options Options.

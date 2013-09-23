@@ -17,6 +17,8 @@ ol.interaction.TOUCHZOOM_ANIMATION_DURATION = 400;
 
 
 /**
+ * Allows the user to zoom the map by pinching with two fingers
+ * on a touch screen.
  * @constructor
  * @extends {ol.interaction.Touch}
  */

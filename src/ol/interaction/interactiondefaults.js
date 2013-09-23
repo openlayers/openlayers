@@ -1,4 +1,4 @@
-goog.provide('ol.interaction.defaults');
+goog.provide('ol.interaction');
 
 goog.require('ol.Collection');
 goog.require('ol.Kinetic');
@@ -15,8 +15,17 @@ goog.require('ol.interaction.TouchZoom');
 
 
 /**
+ * This method is a convenience method to create a set of interactions
+ * to be used with an {@link ol.Map}.  Specific interactions can be excluded by
+ * setting the appropriate option to false in the constructor options,
+ * but the order of the interactions is fixed.  If you want to specify a
+ * different order for interactions, you will need to create your own
+ * {@link ol.interaction} instances and insert them into an
+ * {@link ol.Collection} in the order you want before creating your ol.Map
+ * instance.
  * @param {ol.interaction.DefaultsOptions=} opt_options Defaults options.
- * @return {ol.Collection} Interactions.
+ * @return {ol.Collection} A collection of interactions to be used with
+ * the ol.Map constructor's interactions option.
  */
 ol.interaction.defaults = function(opt_options) {
 

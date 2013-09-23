@@ -1,1 +1,1 @@
-@exportClass ol.layer.TileLayer ol.layer.TileLayerOptions
+@exportClass ol.layer.Tile ol.layer.TileOptions

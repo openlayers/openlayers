@@ -1,16 +1,16 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
+goog.require('ol.control');
 goog.require('ol.control.ScaleLine');
 goog.require('ol.control.ScaleLineUnits');
-goog.require('ol.control.defaults');
-goog.require('ol.layer.TileLayer');
-goog.require('ol.source.TiledWMS');
+goog.require('ol.layer.Tile');
+goog.require('ol.source.TileWMS');
 
 
 var layers = [
-  new ol.layer.TileLayer({
-    source: new ol.source.TiledWMS({
+  new ol.layer.Tile({
+    source: new ol.source.TileWMS({
       url: 'http://vmap0.tiles.osgeo.org/wms/vmap0',
       params: {
         'VERSION': '1.1.1',

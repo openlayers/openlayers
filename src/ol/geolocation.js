@@ -1,7 +1,6 @@
 // FIXME handle geolocation not supported
 
 goog.provide('ol.Geolocation');
-goog.provide('ol.Geolocation.SUPPORTED');
 goog.provide('ol.GeolocationProperty');
 
 goog.require('goog.events');
@@ -9,7 +8,6 @@ goog.require('goog.events.EventType');
 goog.require('goog.math');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
-goog.require('ol.Projection');
 goog.require('ol.proj');
 
 
@@ -32,7 +30,8 @@ ol.GeolocationProperty = {
 
 /**
  * Helper class for providing HTML5 Geolocation capabilities.
- * HTML5 Geolocation is used to locate a user's position.
+ * The [Geolocation API](http://dev.w3.org/geo/api/spec-source.html)
+ * is used to locate a user's position.
  *
  * Example:
  *
@@ -143,6 +142,10 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
  * @type {boolean}
  */
 ol.Geolocation.SUPPORTED = 'geolocation' in goog.global.navigator;
+goog.exportProperty(
+    ol.Geolocation,
+    'SUPPORTED',
+    ol.Geolocation.SUPPORTED);
 
 
 /**
@@ -253,10 +256,10 @@ goog.exportProperty(
 
 /**
  * Get the projection associated with the position.
- * @return {ol.Projection|undefined} projection.
+ * @return {ol.proj.Projection|undefined} projection.
  */
 ol.Geolocation.prototype.getProjection = function() {
-  return /** @type {ol.Projection|undefined} */ (
+  return /** @type {ol.proj.Projection|undefined} */ (
       this.get(ol.GeolocationProperty.PROJECTION));
 };
 goog.exportProperty(
@@ -311,7 +314,7 @@ goog.exportProperty(
 
 /**
  * Set the projection to use for transforming the coordinates.
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  */
 ol.Geolocation.prototype.setProjection = function(projection) {
   this.set(ol.GeolocationProperty.PROJECTION, projection);

@@ -16,6 +16,9 @@ goog.require('ol.css');
 /**
  * Provides a button that when clicked fills up the full screen with the map.
  * When in full screen mode, a close button is shown to exit full screen mode.
+ * The [Fullscreen API](http://www.w3.org/TR/fullscreen/) is used to
+ * toggle the map in full screen mode.
+ *
  *
  * @constructor
  * @extends {ol.control.Control}

@@ -25,11 +25,11 @@ ol.source.WMSGetFeatureInfoMethod = {
 
 
 /**
- * @param {string} baseUrl WMS base url.
+ * @param {string} baseUrl WMS base URL.
  * @param {Object.<string, string|number>} params Request parameters.
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Size.
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  * @return {string} WMS GetMap request URL.
  */
 ol.source.wms.getUrl =
@@ -54,8 +54,8 @@ ol.source.wms.getUrl =
 
   var axisOrientation = projection.getAxisOrientation();
   var bboxValues = (wms13 && axisOrientation.substr(0, 2) == 'ne') ?
-      [extent[2], extent[0], extent[3], extent[1]] :
-      [extent[0], extent[2], extent[1], extent[3]];
+      [extent[1], extent[0], extent[3], extent[2]] :
+      [extent[0], extent[1], extent[2], extent[3]];
   baseParams['BBOX'] = bboxValues.join(',');
 
   return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);

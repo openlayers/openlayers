@@ -129,22 +129,22 @@ ol.expr.lib[ol.expr.functions.CONCAT] = function(var_args) {
 /**
  * Determine if a feature's extent intersects the provided extent.
  * @param {number} minX Minimum x-coordinate value.
- * @param {number} maxX Maximum x-coordinate value.
  * @param {number} minY Minimum y-coordinate value.
+ * @param {number} maxX Maximum x-coordinate value.
  * @param {number} maxY Maximum y-coordinate value.
  * @param {string=} opt_projection Projection of the extent.
  * @param {string=} opt_attribute Name of the geometry attribute to use.
  * @return {boolean} The provided extent intersects the feature's extent.
  * @this {ol.Feature}
  */
-ol.expr.lib[ol.expr.functions.EXTENT] = function(minX, maxX, minY, maxY,
+ol.expr.lib[ol.expr.functions.EXTENT] = function(minX, minY, maxX, maxY,
     opt_projection, opt_attribute) {
   var intersects = false;
   var geometry = goog.isDef(opt_attribute) ?
       this.get(opt_attribute) : this.getGeometry();
   if (geometry) {
     intersects = ol.extent.intersects(geometry.getBounds(),
-        [minX, maxX, minY, maxY]);
+        [minX, minY, maxX, maxY]);
   }
   return intersects;
 };
@@ -158,7 +158,7 @@ ol.expr.lib[ol.expr.functions.EXTENT] = function(minX, maxX, minY, maxY,
  */
 ol.expr.lib[ol.expr.functions.FID] = function(var_args) {
   var matches = false;
-  var id = this.getFeatureId();
+  var id = this.getId();
   if (goog.isDef(id)) {
     for (var i = 0, ii = arguments.length; i < ii; ++i) {
       if (arguments[i] === id) {

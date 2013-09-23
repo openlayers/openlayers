@@ -12,12 +12,14 @@ describe('ol.renderer.webgl.ImageLayer', function() {
     var imageExtent;
 
     beforeEach(function() {
+      ol.proj.common.add();
+
       map = new ol.Map({
         target: document.createElement('div')
       });
-      var layer = new ol.layer.ImageLayer({
-        source: new ol.source.ImageSource({
-          extent: [0, 1, 0, 1]
+      var layer = new ol.layer.Image({
+        source: new ol.source.Image({
+          extent: [0, 0, 1, 1]
         })
       });
       renderer = new ol.renderer.webgl.ImageLayer(map.getRenderer(), layer);
@@ -32,7 +34,7 @@ describe('ol.renderer.webgl.ImageLayer', function() {
 
       // image size is 1024, 768
       // image resolution is 10
-      imageExtent = [0, 10240, 0, 7680];
+      imageExtent = [0, 0, 10240, 7680];
     });
 
     afterEach(function() {
@@ -80,6 +82,7 @@ goog.require('goog.dispose');
 goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
 goog.require('ol.Map');
-goog.require('ol.layer.ImageLayer');
-goog.require('ol.source.ImageSource');
+goog.require('ol.proj.common');
+goog.require('ol.layer.Image');
+goog.require('ol.source.Image');
 goog.require('ol.renderer.webgl.ImageLayer');

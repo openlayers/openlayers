@@ -13,6 +13,7 @@ goog.require('ol.source.Vector');
 
 
 /**
+ * Allows the user to select features on the map.
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {ol.interaction.SelectOptions=} opt_options Options.
@@ -56,15 +57,15 @@ goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 /**
  * @inheritDoc.
  */
-ol.interaction.Select.prototype.handleMapBrowserEvent = function(evt) {
-  var browserEvent = evt.browserEvent;
-  if (this.condition_(browserEvent)) {
-    var map = evt.map;
+ol.interaction.Select.prototype.handleMapBrowserEvent =
+    function(mapBrowserEvent) {
+  if (this.condition_(mapBrowserEvent)) {
+    var map = mapBrowserEvent.map;
     var layers = map.getLayerGroup().getLayersArray();
     if (!goog.isNull(this.layerFilter_)) {
       layers = goog.array.filter(layers, this.layerFilter_);
     }
-    var clear = !ol.interaction.condition.shiftKeyOnly(browserEvent);
+    var clear = !ol.interaction.condition.shiftKeyOnly(mapBrowserEvent);
 
     var that = this;
     var select = function(featuresByLayer) {
@@ -73,7 +74,7 @@ ol.interaction.Select.prototype.handleMapBrowserEvent = function(evt) {
 
     map.getFeatures({
       layers: layers,
-      pixel: evt.getPixel(),
+      pixel: mapBrowserEvent.getPixel(),
       success: select
     });
   }
@@ -144,7 +145,7 @@ ol.interaction.Select.prototype.select =
       } else if (!(featureId in oldFeatureMap)) {
         clone = new ol.Feature(feature.getAttributes());
         clone.setGeometry(feature.getGeometry().clone());
-        clone.setFeatureId(feature.getFeatureId());
+        clone.setId(feature.getId());
         clone.setSymbolizers(feature.getSymbolizers());
         clone.renderIntent = ol.layer.VectorLayerRenderIntent.SELECTED;
         featureMap[featureId] = clone;

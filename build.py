@@ -316,7 +316,7 @@ def examples_star_json(name, match):
                 '../externs/oli.js',
                 '../externs/proj4js.js',
                 '../externs/tilejson.js',
-                '../externs/html5.js',
+                '../externs/closure-compiler.js',
             ],
         })
         with open(t.name, 'w') as f:
@@ -460,17 +460,23 @@ def build_check_requires_timestamp(t):
             self.children = {}
 
         def _build_re(self, key):
-            if len(self.children) == 1:
+            if key == '*':
+                assert len(self.children) == 0
+                # We want to match `.doIt` but not `.SomeClass` or `.more.stuff`
+                return '(?=\\.[a-z]\\w*\\b(?!\\.))'
+            elif len(self.children) == 1:
                 child_key, child = next(self.children.iteritems())
-                child_re = '\\.' + child._build_re(child_key)
+                child_re = child._build_re(child_key)
+                if child_key != '*':
+                    child_re = '\\.' + child_re
                 if self.present:
                     return key + '(' + child_re + ')?'
                 else:
                     return key + child_re
             elif self.children:
-                children_re = '(?:\\.(?:' + '|'.join(
-                    self.children[k]._build_re(k)
-                    for k in sorted(self.children.keys())) + '))'
+                children_re = '(?:' + '|'.join(
+                    ('\\.' if k != '*' else '') + self.children[k]._build_re(k)
+                    for k in sorted(self.children.keys())) + ')'
                 if self.present:
                     return key + children_re + '?'
                 else:
@@ -488,7 +494,14 @@ def build_check_requires_timestamp(t):
             if component not in node.children:
                 node.children[component] = Node()
             node = node.children[component]
-        node.present = True
+        if component[0].islower():
+            # We've arrived at a namespace provide like `ol.foo`.
+            # In this case, we want to match uses like `ol.foo.doIt()` but
+            # not match things like `new ol.foo.SomeClass()`.
+            # For this purpose, we use the special wildcard key for the child.
+            node.children['*'] = Node()
+        else:
+            node.present = True
     provide_res = [child.build_re(key)
                    for key, child in root.children.iteritems()]
     missing_count = 0
@@ -694,7 +707,7 @@ virtual('test-deps', INTERNAL_SRC, PROJ4JS, 'build/test/requireall.js')
 
 @target('test', 'test-deps', phony=True)
 def test(t):
-    t.run('%(PHANTOMJS)s', 'test/mocha-phantomjs.coffee', 'test/ol.html')
+    t.run('%(PHANTOMJS)s', 'test/mocha-phantomjs.js', 'test/ol.html')
 
 
 @target('fixme', phony=True)
@@ -741,6 +754,51 @@ def check_dependencies(t):
         print 'Program "%s" seems to be %s.' % (exe, status)
     print 'For certain targets all above programs need to be present.'
 
+
+@target('help')
+def display_help(t):
+    print '''
+build.py - The OpenLayers 3 build script.
+
+Usage:
+  ./build.py [options] [target]                         (on Unix-based machines)
+  <python-executable.exe> build.py [options] [target]   (on Windows machines)
+
+There is one option:
+  -c               - Cleans up the repository from previous builds.
+
+The most common targets are:
+  serve            - Serves files through plovr, usually on port 9810.
+  lint             - Runs gjslint on all sourcefiles to enforce specific syntax.
+  build            - Builds singlefile versions of OpenLayers JavaScript and
+                     CSS. This is also the default build target which runs when
+                     no target is specified.
+  test             - Runs the testsuite and displays the results.
+  check            - Runs the lint-target, builds some OpenLayers files, and
+                     then runs test. Many developers call this target often
+                     while working on the code.
+  help             - Shows this help.
+
+Other less frequently used targets are:
+  doc              - Builds the API-Documentation using JSDoc3.
+  integration-test - Builds all examples in various modes and usually tales a
+                     long time to finish. This target calls the following
+                     targets: lint, build, build-all, test, build-examples,
+                     check-examples and doc.
+  reallyclean      - Remove untracked files from the repository.
+  checkdeps        - Checks whether all required development software is
+                     installed on your machine.
+  fixme            - Will print a list of parts of the code that are marked
+                     with either TODO or FIXME.
+  todo             - is an alias for the fixme-target
+  plovr            - Fetches the required plovr.jar. Usually called by other
+                     targets that depend on plovr.
+
+If no target is given, the build-target will be executed.
+
+The above list is not complete, please see the sourceode for not-mentioned and
+only seldomly called targets.
+    '''
 
 if __name__ == '__main__':
     main()

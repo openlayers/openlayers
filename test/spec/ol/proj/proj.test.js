@@ -3,24 +3,11 @@ goog.provide('ol.test.proj');
 describe('ol.proj', function() {
 
   beforeEach(function() {
-    sinon.spy(ol.proj, 'addTransform');
+    ol.proj.common.add();
   });
 
   afterEach(function() {
-    var argsForCall = ol.proj.addTransform.args;
-    for (var i = 0, ii = argsForCall.length; i < ii; ++i) {
-      try {
-        ol.proj.removeTransform.apply(ol.proj, argsForCall[i].splice(0, 2));
-      } catch (error) {
-        if (error instanceof goog.asserts.AssertionError) {
-          // The removeTransform function may have been called explicitly by the
-          // tests, so we pass.
-        } else {
-          throw error;
-        }
-      }
-    }
-    ol.proj.addTransform.restore();
+    ol.proj.clearAllProjections();
   });
 
   describe('projection equivalence', function() {
@@ -284,16 +271,16 @@ describe('ol.proj', function() {
 
   describe('ol.proj.removeTransform()', function() {
 
-    var extent = [180, 180, -90, 90];
-    var units = ol.ProjectionUnits.DEGREES;
+    var extent = [180, -90, 180, 90];
+    var units = ol.proj.Units.DEGREES;
 
     it('removes functions cached by addTransform', function() {
-      var foo = new ol.Projection({
+      var foo = new ol.proj.Projection({
         code: 'foo',
         units: units,
         extent: extent
       });
-      var bar = new ol.Projection({
+      var bar = new ol.proj.Projection({
         code: 'bar',
         units: units,
         extent: extent
@@ -311,7 +298,7 @@ describe('ol.proj', function() {
 
   });
 
-  describe('ol.Projection.prototype.getMetersPerUnit()', function() {
+  describe('ol.proj.Projection.prototype.getMetersPerUnit()', function() {
 
     beforeEach(function() {
       Proj4js.defs['EPSG:26782'] =
@@ -347,14 +334,14 @@ describe('ol.proj', function() {
     });
 
     it('returns a configured projection', function() {
-      var extent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
+      var extent = [485869.5728, 76443.1884, 837076.5648, 299941.7864];
       var epsg21781 = ol.proj.configureProj4jsProjection({
         code: 'EPSG:21781',
         extent: extent
       });
       expect(epsg21781.getCode()).to.eql('EPSG:21781');
       expect(epsg21781.getExtent()).to.be(extent);
-      expect(epsg21781.getUnits()).to.be(ol.ProjectionUnits.METERS);
+      expect(epsg21781.getUnits()).to.be(ol.proj.Units.METERS);
       expect(epsg21781.isGlobal()).to.not.be();
     });
 
@@ -364,7 +351,7 @@ describe('ol.proj', function() {
 
 
 goog.require('goog.array');
-goog.require('goog.asserts.AssertionError');
-goog.require('ol.Projection');
-goog.require('ol.ProjectionUnits');
 goog.require('ol.proj');
+goog.require('ol.proj.Projection');
+goog.require('ol.proj.Units');
+goog.require('ol.proj.common');

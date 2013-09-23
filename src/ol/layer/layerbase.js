@@ -1,4 +1,4 @@
-goog.provide('ol.layer.LayerBase');
+goog.provide('ol.layer.Base');
 goog.provide('ol.layer.LayerProperty');
 goog.provide('ol.layer.LayerState');
 
@@ -18,7 +18,9 @@ ol.layer.LayerProperty = {
   HUE: 'hue',
   OPACITY: 'opacity',
   SATURATION: 'saturation',
-  VISIBLE: 'visible'
+  VISIBLE: 'visible',
+  MAX_RESOLUTION: 'maxResolution',
+  MIN_RESOLUTION: 'minResolution'
 };
 
 
@@ -29,7 +31,9 @@ ol.layer.LayerProperty = {
  *            opacity: number,
  *            ready: boolean,
  *            saturation: number,
- *            visible: boolean}}
+ *            visible: boolean,
+ *            maxResolution: number,
+ *            minResolution: number}}
  */
 ol.layer.LayerState;
 
@@ -38,9 +42,9 @@ ol.layer.LayerState;
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {ol.layer.LayerBaseOptions} options Layer options.
+ * @param {ol.layer.BaseOptions} options Layer options.
  */
-ol.layer.LayerBase = function(options) {
+ol.layer.Base = function(options) {
 
   goog.base(this);
 
@@ -58,6 +62,12 @@ ol.layer.LayerBase = function(options) {
   values.saturation = goog.isDef(values.saturation) ? values.saturation : 1;
   /** @type {boolean} */
   values.visible = goog.isDef(values.visible) ? values.visible : true;
+  /** @type {number} */
+  values.maxResolution = goog.isDef(values.maxResolution) ?
+      values.maxResolution : Infinity;
+  /** @type {number} */
+  values.minResolution = goog.isDef(values.minResolution) ?
+      values.minResolution : 0;
 
   this.setValues(values);
 
@@ -67,6 +77,8 @@ ol.layer.LayerBase = function(options) {
     ol.Object.getChangeEventType(ol.layer.LayerProperty.HUE),
     ol.Object.getChangeEventType(ol.layer.LayerProperty.OPACITY),
     ol.Object.getChangeEventType(ol.layer.LayerProperty.SATURATION),
+    ol.Object.getChangeEventType(ol.layer.LayerProperty.MAX_RESOLUTION),
+    ol.Object.getChangeEventType(ol.layer.LayerProperty.MIN_RESOLUTION),
     goog.events.EventType.LOAD
   ],
   this.handleLayerChange, false, this);
@@ -76,13 +88,13 @@ ol.layer.LayerBase = function(options) {
       this.handleLayerVisibleChange, false, this);
 
 };
-goog.inherits(ol.layer.LayerBase, ol.Object);
+goog.inherits(ol.layer.Base, ol.Object);
 
 
 /**
  * @protected
  */
-ol.layer.LayerBase.prototype.dispatchChangeEvent = function() {
+ol.layer.Base.prototype.dispatchChangeEvent = function() {
   this.dispatchEvent(goog.events.EventType.CHANGE);
 };
 
@@ -90,43 +102,43 @@ ol.layer.LayerBase.prototype.dispatchChangeEvent = function() {
 /**
  * @return {number} Brightness.
  */
-ol.layer.LayerBase.prototype.getBrightness = function() {
+ol.layer.Base.prototype.getBrightness = function() {
   return /** @type {number} */ (this.get(ol.layer.LayerProperty.BRIGHTNESS));
 };
 goog.exportProperty(
-    ol.layer.LayerBase.prototype,
+    ol.layer.Base.prototype,
     'getBrightness',
-    ol.layer.LayerBase.prototype.getBrightness);
+    ol.layer.Base.prototype.getBrightness);
 
 
 /**
  * @return {number} Contrast.
  */
-ol.layer.LayerBase.prototype.getContrast = function() {
+ol.layer.Base.prototype.getContrast = function() {
   return /** @type {number} */ (this.get(ol.layer.LayerProperty.CONTRAST));
 };
 goog.exportProperty(
-    ol.layer.LayerBase.prototype,
+    ol.layer.Base.prototype,
     'getContrast',
-    ol.layer.LayerBase.prototype.getContrast);
+    ol.layer.Base.prototype.getContrast);
 
 
 /**
  * @return {number} Hue.
  */
-ol.layer.LayerBase.prototype.getHue = function() {
+ol.layer.Base.prototype.getHue = function() {
   return /** @type {number} */ (this.get(ol.layer.LayerProperty.HUE));
 };
 goog.exportProperty(
-    ol.layer.LayerBase.prototype,
+    ol.layer.Base.prototype,
     'getHue',
-    ol.layer.LayerBase.prototype.getHue);
+    ol.layer.Base.prototype.getHue);
 
 
 /**
  * @return {ol.layer.LayerState} Layer state.
  */
-ol.layer.LayerBase.prototype.getLayerState = function() {
+ol.layer.Base.prototype.getLayerState = function() {
   var brightness = this.getBrightness();
   var contrast = this.getContrast();
   var hue = this.getHue();
@@ -134,6 +146,8 @@ ol.layer.LayerBase.prototype.getLayerState = function() {
   var ready = this.isReady();
   var saturation = this.getSaturation();
   var visible = this.getVisible();
+  var maxResolution = this.getMaxResolution();
+  var minResolution = this.getMinResolution();
   return {
     brightness: goog.isDef(brightness) ? goog.math.clamp(brightness, -1, 1) : 0,
     contrast: goog.isDef(contrast) ? Math.max(contrast, 0) : 1,
@@ -141,7 +155,9 @@ ol.layer.LayerBase.prototype.getLayerState = function() {
     opacity: goog.isDef(opacity) ? goog.math.clamp(opacity, 0, 1) : 1,
     ready: ready,
     saturation: goog.isDef(saturation) ? Math.max(saturation, 0) : 1,
-    visible: goog.isDef(visible) ? !!visible : true
+    visible: goog.isDef(visible) ? !!visible : true,
+    maxResolution: goog.isDef(maxResolution) ? maxResolution : Infinity,
+    minResolution: goog.isDef(minResolution) ? Math.max(minResolution, 0) : 0
   };
 };
 
@@ -151,7 +167,7 @@ ol.layer.LayerBase.prototype.getLayerState = function() {
  *     modified in place).
  * @return {Array.<ol.layer.Layer>} Array of layers.
  */
-ol.layer.LayerBase.prototype.getLayersArray = goog.abstractMethod;
+ol.layer.Base.prototype.getLayersArray = goog.abstractMethod;
 
 
 /**
@@ -164,49 +180,75 @@ ol.layer.LayerBase.prototype.getLayersArray = goog.abstractMethod;
  *     layerStates: Array.<ol.layer.LayerState>}} Object that store both the
  *     layers and the layerStates.
  */
-ol.layer.LayerBase.prototype.getLayerStatesArray = goog.abstractMethod;
+ol.layer.Base.prototype.getLayerStatesArray = goog.abstractMethod;
+
+
+/**
+ * @return {number} MaxResolution.
+ */
+ol.layer.Base.prototype.getMaxResolution = function() {
+  return /** @type {number} */ (
+      this.get(ol.layer.LayerProperty.MAX_RESOLUTION));
+};
+goog.exportProperty(
+    ol.layer.Base.prototype,
+    'getMaxResolution',
+    ol.layer.Base.prototype.getMaxResolution);
+
+
+/**
+ * @return {number} MinResolution.
+ */
+ol.layer.Base.prototype.getMinResolution = function() {
+  return /** @type {number} */ (
+      this.get(ol.layer.LayerProperty.MIN_RESOLUTION));
+};
+goog.exportProperty(
+    ol.layer.Base.prototype,
+    'getMinResolution',
+    ol.layer.Base.prototype.getMinResolution);
 
 
 /**
  * @return {number} Opacity.
  */
-ol.layer.LayerBase.prototype.getOpacity = function() {
+ol.layer.Base.prototype.getOpacity = function() {
   return /** @type {number} */ (this.get(ol.layer.LayerProperty.OPACITY));
 };
 goog.exportProperty(
-    ol.layer.LayerBase.prototype,
+    ol.layer.Base.prototype,
     'getOpacity',
-    ol.layer.LayerBase.prototype.getOpacity);
+    ol.layer.Base.prototype.getOpacity);
 
 
 /**
  * @return {number} Saturation.
  */
-ol.layer.LayerBase.prototype.getSaturation = function() {
+ol.layer.Base.prototype.getSaturation = function() {
   return /** @type {number} */ (this.get(ol.layer.LayerProperty.SATURATION));
 };
 goog.exportProperty(
-    ol.layer.LayerBase.prototype,
+    ol.layer.Base.prototype,
     'getSaturation',
-    ol.layer.LayerBase.prototype.getSaturation);
+    ol.layer.Base.prototype.getSaturation);
 
 
 /**
  * @return {boolean} Visible.
  */
-ol.layer.LayerBase.prototype.getVisible = function() {
+ol.layer.Base.prototype.getVisible = function() {
   return /** @type {boolean} */ (this.get(ol.layer.LayerProperty.VISIBLE));
 };
 goog.exportProperty(
-    ol.layer.LayerBase.prototype,
+    ol.layer.Base.prototype,
     'getVisible',
-    ol.layer.LayerBase.prototype.getVisible);
+    ol.layer.Base.prototype.getVisible);
 
 
 /**
  * @protected
  */
-ol.layer.LayerBase.prototype.handleLayerChange = function() {
+ol.layer.Base.prototype.handleLayerChange = function() {
   if (this.getVisible() && this.isReady()) {
     this.dispatchChangeEvent();
   }
@@ -216,7 +258,7 @@ ol.layer.LayerBase.prototype.handleLayerChange = function() {
 /**
  * @protected
  */
-ol.layer.LayerBase.prototype.handleLayerVisibleChange = function() {
+ol.layer.Base.prototype.handleLayerVisibleChange = function() {
   if (this.isReady()) {
     this.dispatchChangeEvent();
   }
@@ -226,7 +268,7 @@ ol.layer.LayerBase.prototype.handleLayerVisibleChange = function() {
 /**
  * @return {boolean} Is ready.
  */
-ol.layer.LayerBase.prototype.isReady = goog.abstractMethod;
+ol.layer.Base.prototype.isReady = goog.abstractMethod;
 
 
 /**
@@ -249,13 +291,13 @@ ol.layer.LayerBase.prototype.isReady = goog.abstractMethod;
  *
  * @param {number} brightness Brightness.
  */
-ol.layer.LayerBase.prototype.setBrightness = function(brightness) {
+ol.layer.Base.prototype.setBrightness = function(brightness) {
   this.set(ol.layer.LayerProperty.BRIGHTNESS, brightness);
 };
 goog.exportProperty(
-    ol.layer.LayerBase.prototype,
+    ol.layer.Base.prototype,
     'setBrightness',
-    ol.layer.LayerBase.prototype.setBrightness);
+    ol.layer.Base.prototype.setBrightness);
 
 
 /**
@@ -265,13 +307,13 @@ goog.exportProperty(
  *
  * @param {number} contrast Contrast.
  */
-ol.layer.LayerBase.prototype.setContrast = function(contrast) {
+ol.layer.Base.prototype.setContrast = function(contrast) {
   this.set(ol.layer.LayerProperty.CONTRAST, contrast);
 };
 goog.exportProperty(
-    ol.layer.LayerBase.prototype,
+    ol.layer.Base.prototype,
     'setContrast',
-    ol.layer.LayerBase.prototype.setContrast);
+    ol.layer.Base.prototype.setContrast);
 
 
 /**
@@ -279,25 +321,49 @@ goog.exportProperty(
  * unchanged.  Other values are radians around the color circle.
  * @param {number} hue Hue.
  */
-ol.layer.LayerBase.prototype.setHue = function(hue) {
+ol.layer.Base.prototype.setHue = function(hue) {
   this.set(ol.layer.LayerProperty.HUE, hue);
 };
 goog.exportProperty(
-    ol.layer.LayerBase.prototype,
+    ol.layer.Base.prototype,
     'setHue',
-    ol.layer.LayerBase.prototype.setHue);
+    ol.layer.Base.prototype.setHue);
+
+
+/**
+ * @param {number} maxResolution MaxResolution.
+ */
+ol.layer.Base.prototype.setMaxResolution = function(maxResolution) {
+  this.set(ol.layer.LayerProperty.MAX_RESOLUTION, maxResolution);
+};
+goog.exportProperty(
+    ol.layer.Base.prototype,
+    'setMaxResolution',
+    ol.layer.Base.prototype.setMaxResolution);
+
+
+/**
+ * @param {number} minResolution MinResolution.
+ */
+ol.layer.Base.prototype.setMinResolution = function(minResolution) {
+  this.set(ol.layer.LayerProperty.MIN_RESOLUTION, minResolution);
+};
+goog.exportProperty(
+    ol.layer.Base.prototype,
+    'setMinResolution',
+    ol.layer.Base.prototype.setMinResolution);
 
 
 /**
  * @param {number} opacity Opacity.
  */
-ol.layer.LayerBase.prototype.setOpacity = function(opacity) {
+ol.layer.Base.prototype.setOpacity = function(opacity) {
   this.set(ol.layer.LayerProperty.OPACITY, opacity);
 };
 goog.exportProperty(
-    ol.layer.LayerBase.prototype,
+    ol.layer.Base.prototype,
     'setOpacity',
-    ol.layer.LayerBase.prototype.setOpacity);
+    ol.layer.Base.prototype.setOpacity);
 
 
 /**
@@ -308,22 +374,22 @@ goog.exportProperty(
  *
  * @param {number} saturation Saturation.
  */
-ol.layer.LayerBase.prototype.setSaturation = function(saturation) {
+ol.layer.Base.prototype.setSaturation = function(saturation) {
   this.set(ol.layer.LayerProperty.SATURATION, saturation);
 };
 goog.exportProperty(
-    ol.layer.LayerBase.prototype,
+    ol.layer.Base.prototype,
     'setSaturation',
-    ol.layer.LayerBase.prototype.setSaturation);
+    ol.layer.Base.prototype.setSaturation);
 
 
 /**
  * @param {boolean} visible Visible.
  */
-ol.layer.LayerBase.prototype.setVisible = function(visible) {
+ol.layer.Base.prototype.setVisible = function(visible) {
   this.set(ol.layer.LayerProperty.VISIBLE, visible);
 };
 goog.exportProperty(
-    ol.layer.LayerBase.prototype,
+    ol.layer.Base.prototype,
     'setVisible',
-    ol.layer.LayerBase.prototype.setVisible);
+    ol.layer.Base.prototype.setVisible);

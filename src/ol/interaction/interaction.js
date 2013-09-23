@@ -3,9 +3,7 @@
 goog.provide('ol.interaction.Interaction');
 
 goog.require('ol.MapBrowserEvent');
-goog.require('ol.animation.pan');
-goog.require('ol.animation.rotate');
-goog.require('ol.animation.zoom');
+goog.require('ol.animation');
 goog.require('ol.easing');
 
 

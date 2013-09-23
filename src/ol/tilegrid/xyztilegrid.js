@@ -59,7 +59,7 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
   return (
       /**
        * @param {ol.TileCoord} tileCoord Tile coordinate.
-       * @param {ol.Projection} projection Projection.
+       * @param {ol.proj.Projection} projection Projection.
        * @param {ol.TileCoord=} opt_tileCoord Destination tile coordinate.
        * @return {ol.TileCoord} Tile coordinate.
        */
