@@ -53,6 +53,19 @@ ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
 
 
 /**
+ * Increase an extent by the provided value.
+ * @param {ol.Extent} extent The extent to buffer.
+ * @param {number} value The amount by wich the extent should be buffered.
+ */
+ol.extent.buffer = function(extent, value) {
+  extent[0] -= value;
+  extent[1] -= value;
+  extent[2] += value;
+  extent[3] += value;
+};
+
+
+/**
  * Creates a clone of an extent.
  *
  * @param {ol.Extent} extent Extent to clone.
