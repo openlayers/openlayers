@@ -8,6 +8,15 @@ goog.require('ol.Extent');
 goog.require('ol.proj');
 
 
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *            extent: (ol.Extent|undefined),
+ *            logo: (string|undefined),
+ *            projection: ol.proj.ProjectionLike}}
+ */
+ol.source.SourceOptions;
+
+
 
 /**
  * @constructor
