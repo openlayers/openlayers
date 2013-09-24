@@ -497,6 +497,12 @@
  */
 
 /**
+ * @typedef {Object} ol.source.MapQuestOptions
+ * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
+ *     function to load a tile given a URL.
+ */
+
+/**
  * @typedef {Object} ol.source.TileDebugOptions
  * @property {ol.Extent|undefined} extent Extent.
  * @property {ol.proj.ProjectionLike} projection Projection.
