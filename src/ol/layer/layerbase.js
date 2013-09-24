@@ -78,8 +78,7 @@ ol.layer.Base = function(options) {
     ol.Object.getChangeEventType(ol.layer.LayerProperty.OPACITY),
     ol.Object.getChangeEventType(ol.layer.LayerProperty.SATURATION),
     ol.Object.getChangeEventType(ol.layer.LayerProperty.MAX_RESOLUTION),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.MIN_RESOLUTION),
-    goog.events.EventType.LOAD
+    ol.Object.getChangeEventType(ol.layer.LayerProperty.MIN_RESOLUTION)
   ],
   this.handleLayerChange, false, this);
 

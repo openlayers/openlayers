@@ -65,15 +65,6 @@ ol.source.Source.prototype.dispatchChangeEvent = function() {
 
 
 /**
- * @protected
- */
-ol.source.Source.prototype.dispatchLoadEvent = function() {
-  ++this.revision_;
-  this.dispatchEvent(goog.events.EventType.LOAD);
-};
-
-
-/**
  * @return {Array.<ol.Attribution>} Attributions.
  */
 ol.source.Source.prototype.getAttributions = function() {
