@@ -24,5 +24,6 @@ body, h1, h2, h3, h4, p, li, td, th {
 }
 .navbar-inverse .brand {
   color: white;
+  padding: 5px;
 }
 
