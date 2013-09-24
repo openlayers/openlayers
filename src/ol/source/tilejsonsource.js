@@ -119,7 +119,7 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function() {
 
   this.ready_ = true;
 
-  this.dispatchLoadEvent();
+  this.dispatchChangeEvent();
 
 };
 
