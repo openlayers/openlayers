@@ -1,18 +1,29 @@
 goog.provide('ol.source.Source');
+goog.provide('ol.source.State');
 
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
-goog.require('goog.functions');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.proj');
 
 
 /**
+ * @enum {number}
+ */
+ol.source.State = {
+  LOADING: 0,
+  READY: 1,
+  ERROR: 2
+};
+
+
+/**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *            extent: (ol.Extent|undefined),
  *            logo: (string|undefined),
- *            projection: ol.proj.ProjectionLike}}
+ *            projection: ol.proj.ProjectionLike,
+ *            state: (ol.source.State|undefined)}}
  */
 ol.source.SourceOptions;
 
@@ -53,6 +64,13 @@ ol.source.Source = function(options) {
    * @type {string|undefined}
    */
   this.logo_ = options.logo;
+
+  /**
+   * @private
+   * @type {ol.source.State}
+   */
+  this.state_ = goog.isDef(options.state) ?
+      options.state : ol.source.State.READY;
 
   /**
    * @private
@@ -120,9 +138,11 @@ ol.source.Source.prototype.getRevision = function() {
 
 
 /**
- * @return {boolean} Is ready.
+ * @return {ol.source.State} State.
  */
-ol.source.Source.prototype.isReady = goog.functions.TRUE;
+ol.source.Source.prototype.getState = function() {
+  return this.state_;
+};
 
 
 /**
@@ -146,6 +166,16 @@ ol.source.Source.prototype.setExtent = function(extent) {
  */
 ol.source.Source.prototype.setLogo = function(logo) {
   this.logo_ = logo;
+};
+
+
+/**
+ * @param {ol.source.State} state State.
+ * @protected
+ */
+ol.source.Source.prototype.setState = function(state) {
+  this.state_ = state;
+  this.dispatchChangeEvent();
 };
 
 
