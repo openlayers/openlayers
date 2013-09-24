@@ -1,4 +1,5 @@
 @import url(font-awesome/css/font-awesome.min.css);
+@import url(http://fonts.googleapis.com/css?family=Quattrocento+Sans:400,400italic,700);
 
 body {
   padding-top: 60px;
@@ -15,7 +16,13 @@ body {
   display: none;
 }
 
-/* padding for social links to match bootstrap nav links */
-.nav>li>.twitter-share-button, .nav>li>.g-plusone-wrapper, .nav>li>.github-watch-button {
-  padding: 10px 10px 0px;
+body, h1, h2, h3, h4, p, li, td, th {
+  font-family: Quattrocento Sans;
 }
+.navbar-inverse .navbar-inner {
+  background: #1F6B75;
+}
+.navbar-inverse .brand {
+  color: white;
+}
+
