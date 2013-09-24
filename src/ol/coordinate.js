@@ -7,13 +7,14 @@ goog.require('goog.math');
 
 
 /**
+ * A function that formats a {@link ol.Coordinate} into a string.
  * @typedef {function((ol.Coordinate|undefined)): string}
  */
 ol.CoordinateFormatType;
 
 
 /**
- * An array representing a coordinate.
+ * An array of numbers representing a coordinate.
  * @typedef {Array.<number>} ol.Coordinate
  */
 ol.Coordinate;

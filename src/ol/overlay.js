@@ -45,6 +45,7 @@ ol.OverlayPositioning = {
  *       element: document.getElementById('popup')
  *     });
  *     popup.setPosition(coordinate);
+ *     map.addOverlay(popup);
  *
  * @constructor
  * @extends {ol.Object}

@@ -22,7 +22,7 @@ ol.control.ZOOM_DURATION = 250;
 /**
  * Create a new control with 2 buttons, one for zoom in and one for zoom out.
  * This control is part of the default controls of a map. To style this control
- * use css selectors .ol-zoom-in and .ol-zoom-out.
+ * use css selectors `.ol-zoom-in` and `.ol-zoom-out`.
  * @constructor
  * @extends {ol.control.Control}
  * @param {ol.control.ZoomOptions=} opt_options Zoom options.

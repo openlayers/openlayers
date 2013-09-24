@@ -8,6 +8,7 @@ goog.require('ol.TransformFunction');
 
 
 /**
+ * An array of numbers representing an extent: `[minx, miny, maxx, maxy]`.
  * @typedef {Array.<number>}
  */
 ol.Extent;
