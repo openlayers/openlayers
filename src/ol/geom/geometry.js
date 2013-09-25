@@ -2,22 +2,13 @@ goog.provide('ol.geom.Geometry');
 goog.provide('ol.geom.GeometryType');
 
 goog.require('ol.Extent');
-goog.require('ol.geom.SharedVertices');
 
 
 
 /**
  * @constructor
  */
-ol.geom.Geometry = function() {
-
-  /**
-   * @type {ol.geom.SharedVertices}
-   * @protected
-   */
-  this.vertices = null;
-
-};
+ol.geom.Geometry = function() {};
 
 
 /**
@@ -28,8 +19,7 @@ ol.geom.Geometry.prototype.dimension;
 
 
 /**
- * Create a clone of this geometry. The clone will not be represented in any
- * shared structure.
+ * Create a clone of this geometry.
  * @return {ol.geom.Geometry} The cloned geometry.
  */
 ol.geom.Geometry.prototype.clone = function() {
@@ -54,19 +44,17 @@ ol.geom.Geometry.prototype.getCoordinates = goog.abstractMethod;
 
 
 /**
- * Get the shared vertices for this geometry.
- * @return {ol.geom.SharedVertices} The shared vertices.
- */
-ol.geom.Geometry.prototype.getSharedVertices = function() {
-  return this.vertices;
-};
-
-
-/**
  * Get the geometry type.
  * @return {ol.geom.GeometryType} The geometry type.
  */
 ol.geom.Geometry.prototype.getType = goog.abstractMethod;
+
+
+/**
+ * Transform a geometry in place.
+ * @param {ol.TransformFunction} transform Transform function.
+ */
+ol.geom.Geometry.prototype.transform = goog.abstractMethod;
 
 
 /**
