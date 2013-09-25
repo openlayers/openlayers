@@ -781,7 +781,7 @@ The most common targets are:
 
 Other less frequently used targets are:
   apidoc           - Builds the API-Documentation using JSDoc3.
-  integration-test - Builds all examples in various modes and usually tales a
+  integration-test - Builds all examples in various modes and usually takes a
                      long time to finish. This target calls the following
                      targets: lint, build, build-all, test, build-examples,
                      check-examples and apidoc.
@@ -796,8 +796,8 @@ Other less frequently used targets are:
 
 If no target is given, the build-target will be executed.
 
-The above list is not complete, please see the sourceode for not-mentioned and
-only seldomly called targets.
+The above list is not complete, please see the source code for not-mentioned
+and only seldomly called targets.
     '''
 
 if __name__ == '__main__':
