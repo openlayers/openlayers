@@ -303,15 +303,7 @@ ol.parser.ogc.GML = function(opt_options) {
       var feature = new ol.Feature(container.properties);
       var geom = container.geometry;
       if (geom) {
-        var sharedVertices = undefined;
-        if (this.readFeaturesOptions_) {
-          var callback = this.readFeaturesOptions_.callback;
-          if (callback) {
-            sharedVertices = callback(feature, geom.type);
-          }
-        }
-        var geometry = this.createGeometry({geometry: geom},
-            sharedVertices);
+        var geometry = this.createGeometry({geometry: geom});
         if (goog.isDef(geometry)) {
           feature.setGeometry(geometry);
         }
@@ -551,57 +543,51 @@ ol.parser.ogc.GML.prototype.readNode = function(node, obj, opt_first) {
 
 /**
  * @param {Object} container Geometry container.
- * @param {ol.geom.SharedVertices=} opt_vertices Shared vertices.
  * @return {ol.geom.Geometry} The geometry created.
  */
 // TODO use a mixin since this is also used in the KML parser
-ol.parser.ogc.GML.prototype.createGeometry = function(container,
-    opt_vertices) {
+ol.parser.ogc.GML.prototype.createGeometry = function(container) {
   var geometry = null, coordinates, i, ii;
   switch (container.geometry.type) {
     case ol.geom.GeometryType.POINT:
-      geometry = new ol.geom.Point(container.geometry.coordinates,
-          opt_vertices);
+      geometry = new ol.geom.Point(container.geometry.coordinates);
       break;
     case ol.geom.GeometryType.LINEARRING:
-      geometry = new ol.geom.LinearRing(container.geometry.coordinates,
-          opt_vertices);
+      geometry = new ol.geom.LinearRing(container.geometry.coordinates);
       break;
     case ol.geom.GeometryType.LINESTRING:
-      geometry = new ol.geom.LineString(container.geometry.coordinates,
-          opt_vertices);
+      geometry = new ol.geom.LineString(container.geometry.coordinates);
       break;
     case ol.geom.GeometryType.POLYGON:
-      geometry = new ol.geom.Polygon(container.geometry.coordinates,
-          opt_vertices);
+      geometry = new ol.geom.Polygon(container.geometry.coordinates);
       break;
     case ol.geom.GeometryType.MULTIPOINT:
       coordinates = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         coordinates.push(container.geometry.parts[i].coordinates);
       }
-      geometry = new ol.geom.MultiPoint(coordinates, opt_vertices);
+      geometry = new ol.geom.MultiPoint(coordinates);
       break;
     case ol.geom.GeometryType.MULTILINESTRING:
       coordinates = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         coordinates.push(container.geometry.parts[i].coordinates);
       }
-      geometry = new ol.geom.MultiLineString(coordinates, opt_vertices);
+      geometry = new ol.geom.MultiLineString(coordinates);
       break;
     case ol.geom.GeometryType.MULTIPOLYGON:
       coordinates = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         coordinates.push(container.geometry.parts[i].coordinates);
       }
-      geometry = new ol.geom.MultiPolygon(coordinates, opt_vertices);
+      geometry = new ol.geom.MultiPolygon(coordinates);
       break;
     case ol.geom.GeometryType.GEOMETRYCOLLECTION:
       var geometries = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         geometries.push(this.createGeometry({
           geometry: container.geometry.parts[i]
-        }, opt_vertices));
+        }));
       }
       geometry = new ol.geom.GeometryCollection(geometries);
       break;
@@ -615,12 +601,9 @@ ol.parser.ogc.GML.prototype.createGeometry = function(container,
 /**
  * Parse a GML document provided as a string.
  * @param {string} str GML document.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.ogc.GML.prototype.readFeaturesFromString =
-    function(str, opt_options) {
-  this.readFeaturesOptions_ = opt_options;
+ol.parser.ogc.GML.prototype.readFeaturesFromString = function(str) {
   return this.read(str);
 };
 

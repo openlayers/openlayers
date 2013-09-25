@@ -3,7 +3,6 @@ goog.provide('ol.parser.TopoJSON');
 goog.require('ol.Coordinate');
 goog.require('ol.CoordinateArray');
 goog.require('ol.Feature');
-goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
@@ -11,7 +10,6 @@ goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.parser.Parser');
-goog.require('ol.parser.ReadFeaturesOptions');
 goog.require('ol.parser.StringFeatureParser');
 
 
@@ -23,18 +21,7 @@ goog.require('ol.parser.StringFeatureParser');
  * @implements {ol.parser.StringFeatureParser}
  * @extends {ol.parser.Parser}
  */
-ol.parser.TopoJSON = function() {
-
-  /**
-   * Common feature for all shared vertex creation.
-   * // TODO: make feature optional in shared vertex callback
-   *
-   * @type {ol.Feature}
-   * @private
-   */
-  this.feature_ = new ol.Feature();
-
-};
+ol.parser.TopoJSON = function() {};
 goog.inherits(ol.parser.TopoJSON, ol.parser.Parser);
 goog.addSingletonGetter(ol.parser.TopoJSON);
 
@@ -65,6 +52,10 @@ ol.parser.TopoJSON.prototype.concatenateArcs_ = function(indices, arcs) {
     }
     coordinates.push.apply(coordinates, arc);
   }
+  // provide fresh copies of coordinate arrays
+  for (var j = 0, jj = coordinates.length; j < jj; ++j) {
+    coordinates[j] = coordinates[j].slice();
+  }
   return coordinates;
 };
 
@@ -84,17 +75,17 @@ ol.parser.TopoJSON.prototype.read = function(str) {
  * Create features from a TopoJSON topology string.
  *
  * @param {string} str TopoJSON topology string.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.TopoJSON.prototype.readFeaturesFromString =
-    function(str, opt_options) {
+ol.parser.TopoJSON.prototype.readFeaturesFromString = function(str) {
   var topology = /** @type {TopoJSONTopology} */ (JSON.parse(str));
   if (topology.type !== 'Topology') {
     throw new Error('Not a "Topology" type object');
   }
-  return {features: this.readFeaturesFromTopology_(topology, opt_options),
-    metadata: {projection: 'EPSG:4326'}};
+  return {
+    features: this.readFeaturesFromTopology_(topology),
+    metadata: {projection: 'EPSG:4326'}
+  };
 };
 
 
@@ -102,16 +93,16 @@ ol.parser.TopoJSON.prototype.readFeaturesFromString =
  * Create features from a TopoJSON topology object.
  *
  * @param {TopoJSONTopology} topology TopoJSON topology object.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.TopoJSON.prototype.readFeaturesFromObject =
-    function(topology, opt_options) {
+ol.parser.TopoJSON.prototype.readFeaturesFromObject = function(topology) {
   if (topology.type !== 'Topology') {
     throw new Error('Not a "Topology" type object');
   }
-  return {features: this.readFeaturesFromTopology_(topology, opt_options),
-    metadata: {projection: 'EPSG:4326'}};
+  return {
+    features: this.readFeaturesFromTopology_(topology),
+    metadata: {projection: 'EPSG:4326'}
+  };
 };
 
 
@@ -122,32 +113,30 @@ ol.parser.TopoJSON.prototype.readFeaturesFromObject =
  * @param {Array.<ol.CoordinateArray>} arcs Array of arcs.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.Feature} Feature.
  * @private
  */
 ol.parser.TopoJSON.prototype.readFeatureFromGeometry_ = function(object, arcs,
-    scale, translate, opt_options) {
+    scale, translate) {
   var geometry;
   var type = object.type;
   if (type === 'Point') {
     geometry = this.readPoint_(/** @type {TopoJSONPoint} */ (object), scale,
-        translate, opt_options);
+        translate);
   } else if (type === 'LineString') {
     geometry = this.readLineString_(/** @type {TopoJSONLineString} */ (object),
-        arcs, opt_options);
+        arcs);
   } else if (type === 'Polygon') {
-    geometry = this.readPolygon_(/** @type {TopoJSONPolygon} */ (object), arcs,
-        opt_options);
+    geometry = this.readPolygon_(/** @type {TopoJSONPolygon} */ (object), arcs);
   } else if (type === 'MultiPoint') {
     geometry = this.readMultiPoint_(/** @type {TopoJSONMultiPoint} */ (object),
-        scale, translate, opt_options);
+        scale, translate);
   } else if (type === 'MultiLineString') {
     geometry = this.readMultiLineString_(
-        /** @type {TopoJSONMultiLineString} */(object), arcs, opt_options);
+        /** @type {TopoJSONMultiLineString} */(object), arcs);
   } else if (type === 'MultiPolygon') {
     geometry = this.readMultiPolygon_(
-        /** @type {TopoJSONMultiPolygon} */ (object), arcs, opt_options);
+        /** @type {TopoJSONMultiPolygon} */ (object), arcs);
   } else {
     throw new Error('Unsupported geometry type: ' + type);
   }
@@ -168,18 +157,17 @@ ol.parser.TopoJSON.prototype.readFeatureFromGeometry_ = function(object, arcs,
  * @param {Array.<ol.CoordinateArray>} arcs Array of arcs.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {Array.<ol.Feature>} Array of features.
  * @private
  */
 ol.parser.TopoJSON.prototype.readFeaturesFromGeometryCollection_ = function(
-    collection, arcs, scale, translate, opt_options) {
+    collection, arcs, scale, translate) {
   var geometries = collection.geometries;
   var num = geometries.length;
   var features = new Array(num);
   for (var i = 0; i < num; ++i) {
     features[i] = this.readFeatureFromGeometry_(geometries[i], arcs, scale,
-        translate, opt_options);
+        translate);
   }
   return features;
 };
@@ -187,12 +175,10 @@ ol.parser.TopoJSON.prototype.readFeaturesFromGeometryCollection_ = function(
 
 /**
  * @param {TopoJSONTopology} topology TopoJSON object.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {Array.<ol.Feature>} Parsed features.
  * @private
  */
-ol.parser.TopoJSON.prototype.readFeaturesFromTopology_ = function(
-    topology, opt_options) {
+ol.parser.TopoJSON.prototype.readFeaturesFromTopology_ = function(topology) {
   var transform = topology.transform;
   var scale = transform.scale;
   var translate = transform.translate;
@@ -204,11 +190,11 @@ ol.parser.TopoJSON.prototype.readFeaturesFromTopology_ = function(
     if (objects[key].type === 'GeometryCollection') {
       features.push.apply(features, this.readFeaturesFromGeometryCollection_(
           /** @type {TopoJSONGeometryCollection} */ (objects[key]),
-          arcs, scale, translate, opt_options));
+          arcs, scale, translate));
     } else {
       features.push(this.readFeatureFromGeometry_(
           /** @type {TopoJSONGeometry} */ (objects[key]),
-          arcs, scale, translate, opt_options));
+          arcs, scale, translate));
     }
   }
   return features;
@@ -220,20 +206,12 @@ ol.parser.TopoJSON.prototype.readFeaturesFromTopology_ = function(
  *
  * @param {TopoJSONLineString} object TopoJSON object.
  * @param {Array.<ol.CoordinateArray>} arcs Array of arcs.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.geom.LineString} Geometry.
  * @private
  */
-ol.parser.TopoJSON.prototype.readLineString_ = function(object, arcs,
-    opt_options) {
+ol.parser.TopoJSON.prototype.readLineString_ = function(object, arcs) {
   var coordinates = this.concatenateArcs_(object.arcs, arcs);
-  // TODO: make feature optional in callback
-  var callback = opt_options && opt_options.callback;
-  var sharedVertices;
-  if (callback) {
-    sharedVertices = callback(this.feature_, ol.geom.GeometryType.LINESTRING);
-  }
-  return new ol.geom.LineString(coordinates, sharedVertices);
+  return new ol.geom.LineString(coordinates);
 };
 
 
@@ -242,26 +220,17 @@ ol.parser.TopoJSON.prototype.readLineString_ = function(object, arcs,
  *
  * @param {TopoJSONMultiLineString} object TopoJSON object.
  * @param {Array.<ol.CoordinateArray>} arcs Array of arcs.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.geom.MultiLineString} Geometry.
  * @private
  */
-ol.parser.TopoJSON.prototype.readMultiLineString_ = function(object, arcs,
-    opt_options) {
+ol.parser.TopoJSON.prototype.readMultiLineString_ = function(object, arcs) {
   var array = object.arcs; // I'm out of good names
   var num = array.length;
   var coordinates = new Array(num);
   for (var i = 0; i < num; ++i) {
     coordinates[i] = this.concatenateArcs_(array[i], arcs);
   }
-  // TODO: make feature optional in callback
-  var callback = opt_options && opt_options.callback;
-  var sharedVertices;
-  if (callback) {
-    sharedVertices = callback(this.feature_,
-        ol.geom.GeometryType.MULTILINESTRING);
-  }
-  return new ol.geom.MultiLineString(coordinates, sharedVertices);
+  return new ol.geom.MultiLineString(coordinates);
 };
 
 
@@ -271,23 +240,16 @@ ol.parser.TopoJSON.prototype.readMultiLineString_ = function(object, arcs,
  * @param {TopoJSONMultiPoint} object TopoJSON object.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.geom.MultiPoint} Geometry.
  * @private
  */
 ol.parser.TopoJSON.prototype.readMultiPoint_ = function(object, scale,
-    translate, opt_options) {
+    translate) {
   var coordinates = object.coordinates;
   for (var i = 0, ii = coordinates.length; i < ii; ++i) {
     this.transformVertex_(coordinates[i], scale, translate);
   }
-  // TODO: make feature optional in callback
-  var callback = opt_options && opt_options.callback;
-  var sharedVertices;
-  if (callback) {
-    sharedVertices = callback(this.feature_, ol.geom.GeometryType.MULTIPOINT);
-  }
-  return new ol.geom.MultiPoint(coordinates, sharedVertices);
+  return new ol.geom.MultiPoint(coordinates);
 };
 
 
@@ -296,12 +258,10 @@ ol.parser.TopoJSON.prototype.readMultiPoint_ = function(object, scale,
  *
  * @param {TopoJSONMultiPolygon} object TopoJSON object.
  * @param {Array.<ol.CoordinateArray>} arcs Array of arcs.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.geom.MultiPolygon} Geometry.
  * @private
  */
-ol.parser.TopoJSON.prototype.readMultiPolygon_ = function(object, arcs,
-    opt_options) {
+ol.parser.TopoJSON.prototype.readMultiPolygon_ = function(object, arcs) {
   var array = object.arcs;
   var numPolys = array.length;
   var coordinates = new Array(numPolys);
@@ -317,13 +277,7 @@ ol.parser.TopoJSON.prototype.readMultiPolygon_ = function(object, arcs,
     }
     coordinates[i] = ringCoords;
   }
-  // TODO: make feature optional in callback
-  var callback = opt_options && opt_options.callback;
-  var sharedVertices;
-  if (callback) {
-    sharedVertices = callback(this.feature_, ol.geom.GeometryType.MULTIPOLYGON);
-  }
-  return new ol.geom.MultiPolygon(coordinates, sharedVertices);
+  return new ol.geom.MultiPolygon(coordinates);
 };
 
 
@@ -333,21 +287,13 @@ ol.parser.TopoJSON.prototype.readMultiPolygon_ = function(object, arcs,
  * @param {TopoJSONPoint} object TopoJSON object.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.geom.Point} Geometry.
  * @private
  */
-ol.parser.TopoJSON.prototype.readPoint_ = function(object, scale, translate,
-    opt_options) {
+ol.parser.TopoJSON.prototype.readPoint_ = function(object, scale, translate) {
   var coordinates = object.coordinates;
   this.transformVertex_(coordinates, scale, translate);
-  // TODO: make feature optional in callback
-  var callback = opt_options && opt_options.callback;
-  var sharedVertices;
-  if (callback) {
-    sharedVertices = callback(this.feature_, ol.geom.GeometryType.POINT);
-  }
-  return new ol.geom.Point(coordinates, sharedVertices);
+  return new ol.geom.Point(coordinates);
 };
 
 
@@ -356,25 +302,17 @@ ol.parser.TopoJSON.prototype.readPoint_ = function(object, scale, translate,
  *
  * @param {TopoJSONPolygon} object TopoJSON object.
  * @param {Array.<ol.CoordinateArray>} arcs Array of arcs.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.geom.Polygon} Geometry.
  * @private
  */
-ol.parser.TopoJSON.prototype.readPolygon_ = function(object, arcs,
-    opt_options) {
+ol.parser.TopoJSON.prototype.readPolygon_ = function(object, arcs) {
   var array = object.arcs; // I'm out of good names
   var num = array.length;
   var coordinates = new Array(num);
   for (var i = 0; i < num; ++i) {
     coordinates[i] = this.concatenateArcs_(array[i], arcs);
   }
-  // TODO: make feature optional in callback
-  var callback = opt_options && opt_options.callback;
-  var sharedVertices;
-  if (callback) {
-    sharedVertices = callback(this.feature_, ol.geom.GeometryType.POLYGON);
-  }
-  return new ol.geom.Polygon(coordinates, sharedVertices);
+  return new ol.geom.Polygon(coordinates);
 };
 
 
