@@ -178,15 +178,16 @@ ol.parser.KML = function(opt_options) {
               if (pair.key === 'normal') {
                 if (goog.isDef(pair.styleUrl)) {
                   this.parseStyleUrl(obj, pair.styleUrl);
-                  feature.set('styleUrl', pair.styleUrl); 
+                  feature.set('styleUrl', pair.styleUrl);
                 } else if (goog.isDef(pair.styles)) {
-                  symbolizers = pair.styles[0].symbolizers; 
+                  symbolizers = pair.styles[0].symbolizers;
                 }
               }
             }
           }
 
-          this.applyStyle_(feature, obj['styles'], obj['styleMaps'], symbolizers);
+          this.applyStyle_(feature, obj['styles'], obj['styleMaps'],
+              symbolizers);
           obj.features.push(feature);
         }
       },
@@ -349,7 +350,7 @@ ol.parser.KML = function(opt_options) {
           if (!obj['styleMaps']) {
             obj['styleMaps'] = [];
           }
-          var styleMap = {'pairs':[], 'ids': []};
+          var styleMap = {'pairs': []};
           var id = node.getAttribute('id');
           if (!goog.isNull(id)) {
             styleMap['id'] = id;
@@ -634,6 +635,11 @@ ol.parser.KML = function(opt_options) {
             this.writeNode('_style', options.styles[i], null, node);
           }
         }
+        if (goog.isDef(options.styleMaps)) {
+          for (i = 0, ii = options.styleMaps.length; i < ii; ++i) {
+            this.writeNode('_styleMap', options.styleMaps[i], null, node);
+          }
+        }
         for (i = 0, ii = options.features.length; i < ii; ++i) {
           this.writeNode('_feature', options.features[i], null, node);
         }
@@ -652,6 +658,16 @@ ol.parser.KML = function(opt_options) {
         }
         return node;
       },
+      '_styleMap': function(styleMap) {
+        var node = this.createElementNS('StyleMap');
+        if (goog.isDef(styleMap.id)) {
+          this.setAttributeNS(node, null, 'id', styleMap.id);
+        }
+        for (var i = 0, ii = styleMap.pairs.length; i < ii; ++i) {
+          this.writeNode('Pair', styleMap.pairs[i], null, node);
+        }
+        return node;
+      },
       '_symbolizer': function(obj) {
         var symbolizer = obj.symbolizer;
         if (symbolizer instanceof ol.style.Icon) {
@@ -661,6 +677,28 @@ ol.parser.KML = function(opt_options) {
         } else if (symbolizer instanceof ol.style.Fill) {
           return this.writeNode('PolyStyle', obj);
         }
+      },
+      'Pair': function(pair) {
+        var node = this.createElementNS('Pair');
+        if (goog.isDef(pair.id)) {
+          this.setAttributeNS(node, null, 'id', pair.id);
+        }
+        if (goog.isDef(pair.key)) {
+          this.writeNode('key', pair.key, null, node);
+        }
+        if (goog.isDef(pair.styleUrl)) {
+          this.writeNode('styleUrl', pair.styleUrl, null, node);
+        } else if (goog.isDef(pair.styles)) {
+          for (var i = 0, ii = pair.styles.length; i < ii; ++i) {
+            this.writeNode('_style', pair.styles[i], null, node);
+          }
+        }
+        return node;
+      },
+      'key': function(key) {
+        var node = this.createElementNS('key');
+        node.appendChild(this.createTextNode(key));
+        return node;
       },
       'PolyStyle': function(obj) {
         /**
@@ -761,7 +799,7 @@ ol.parser.KML = function(opt_options) {
         this.writeNode('name', feature, null, node);
         this.writeNode('description', feature, null, node);
         if (goog.isDef(feature.get('styleUrl'))) {
-          this.writeNode('styleUrl', feature, null, node);
+          this.writeNode('styleUrl', feature.get('styleUrl'), null, node);
         } else {
           // inline style
           var symbolizers = feature.getSymbolizers();
@@ -788,8 +826,7 @@ ol.parser.KML = function(opt_options) {
           return node;
         }
       },
-      'styleUrl': function(feature) {
-        var styleUrl = feature.get('styleUrl');
+      'styleUrl': function(styleUrl) {
         var node = this.createElementNS('styleUrl');
         node.appendChild(this.createTextNode(styleUrl));
         return node;
@@ -947,14 +984,14 @@ ol.parser.KML.prototype.readFeaturesFromObject =
 /**
  * Parse the link contained in styleUrl, if it exists.
  * @param {Object} obj The returned object from the parser.
- * @param {String} styleUrl The style url to parse.
+ * @param {string} styleUrl The style url to parse.
  */
 ol.parser.KML.prototype.parseStyleUrl = function(obj, styleUrl) {
   if (goog.isDef(styleUrl)) {
     if (!goog.string.startsWith(styleUrl, '#')) {
       obj.links.push({href: styleUrl});
     }
-  } 
+  }
 };
 
 
@@ -1069,16 +1106,16 @@ ol.parser.KML.prototype.applyStyle_ = function(feature, styles, styleMaps,
             if (pair.key === 'normal') {
               if (goog.isDef(pair.styleUrl)) {
                 styleUrl = pair.styleUrl;
-                styleUrl = styleUrl.substring(styleUrl.indexOf('#') + 1); 
+                styleUrl = styleUrl.substring(styleUrl.indexOf('#') + 1);
               } else if (goog.isDef(pair.styles)) {
-                symbolizers = pair.styles[0]['symbolizers']; 
+                symbolizers = pair.styles[0]['symbolizers'];
               }
             }
           }
           break;
         }
       }
-    }  
+    }
 
     // look for the style and set in the feature
     if (!goog.isDef(symbolizers) && goog.isDef(styles)) {
@@ -1089,7 +1126,7 @@ ol.parser.KML.prototype.applyStyle_ = function(feature, styles, styleMaps,
         }
       }
     }
-    
+
   }
   if (goog.isDef(symbolizers)) {
     feature.setSymbolizers(symbolizers);
