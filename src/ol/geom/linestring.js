@@ -112,3 +112,18 @@ ol.geom.LineString.prototype.distanceFromCoordinate = function(coordinate) {
   }
   return Math.sqrt(dist2);
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.LineString.prototype.transform = function(transform) {
+  var coordinates = this.getCoordinates();
+  var dimension = this.dimension;
+  var coord;
+  for (var i = 0, ii = coordinates.length; i < ii; ++i) {
+    coord = coordinates[i];
+    transform(coord, coord, dimension);
+  }
+  this.bounds_ = null;
+};

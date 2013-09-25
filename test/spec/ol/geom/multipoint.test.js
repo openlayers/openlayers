@@ -68,8 +68,37 @@ describe('ol.geom.MultiPoint', function() {
 
   });
 
+  describe('#transform', function() {
+
+    var forward = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
+    var inverse = ol.proj.getTransform('EPSG:3857', 'EPSG:4326');
+
+    it('forward transforms a multi-point', function() {
+      var multi = new ol.geom.MultiPoint([[10, 20], [30, 40]]);
+      multi.transform(forward);
+
+      expect(multi.components[0].get(0)).to.roughlyEqual(1113195, 1);
+      expect(multi.components[0].get(1)).to.roughlyEqual(2273031, 1);
+      expect(multi.components[1].get(0)).to.roughlyEqual(3339584, 1);
+      expect(multi.components[1].get(1)).to.roughlyEqual(4865942, 1);
+    });
+
+    it('inverse transforms a multi-point', function() {
+      var multi = new ol.geom.MultiPoint(
+          [[1113195, 2273031], [3339584, 4865942]]);
+      multi.transform(inverse);
+
+      expect(multi.components[0].get(0)).to.roughlyEqual(10, 0.001);
+      expect(multi.components[0].get(1)).to.roughlyEqual(20, 0.001);
+      expect(multi.components[1].get(0)).to.roughlyEqual(30, 0.001);
+      expect(multi.components[1].get(1)).to.roughlyEqual(40, 0.001);
+    });
+
+  });
+
 });
 
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Point');
+goog.require('ol.proj');

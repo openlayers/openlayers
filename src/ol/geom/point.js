@@ -75,3 +75,13 @@ ol.geom.Point.prototype.getCoordinates = function() {
 ol.geom.Point.prototype.getType = function() {
   return ol.geom.GeometryType.POINT;
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.Point.prototype.transform = function(transform) {
+  var coordinates = this.getCoordinates();
+  transform(coordinates, coordinates, this.dimension);
+  this.bounds_ = null;
+};

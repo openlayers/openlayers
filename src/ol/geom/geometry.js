@@ -2,6 +2,7 @@ goog.provide('ol.geom.Geometry');
 goog.provide('ol.geom.GeometryType');
 
 goog.require('ol.Extent');
+goog.require('ol.TransformFunction');
 
 
 

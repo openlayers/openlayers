@@ -87,8 +87,68 @@ describe('ol.geom.Polygon', function() {
 
   });
 
+  describe('#transform()', function() {
+
+    var forward = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
+    var inverse = ol.proj.getTransform('EPSG:3857', 'EPSG:4326');
+
+    var gg, sm;
+    beforeEach(function() {
+      gg = [
+        [[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]],
+        [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]],
+        [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]]
+      ];
+
+      sm = [[
+        [0, 0], [0, 1118890], [1113195, 1118890], [1113195, 0], [0, 0]
+      ], [
+        [111319, 111325], [222639, 111325], [222639, 222684],
+        [111319, 222684], [111319, 111325]
+      ], [
+        [890556, 893464], [1001875, 893464], [1001875, 1006021],
+        [890556, 1006021], [890556, 893464]
+      ]];
+
+    });
+
+    it('forward transforms a polygon in place', function() {
+
+      var poly = new ol.geom.Polygon(gg);
+      poly.transform(forward);
+      var coordinates = poly.getCoordinates();
+      var ring;
+      for (var i = 0, ii = coordinates.length; i < ii; ++i) {
+        var ring = coordinates[i];
+        for (var j = 0, jj = ring.length; j < jj; ++j) {
+          expect(ring[j][0]).to.roughlyEqual(sm[i][j][0], 1);
+          expect(ring[j][1]).to.roughlyEqual(sm[i][j][1], 1);
+        }
+      }
+
+    });
+
+    it('inverse transforms a polygon in place', function() {
+
+      var poly = new ol.geom.Polygon(sm);
+      poly.transform(inverse);
+      var coordinates = poly.getCoordinates();
+      var ring;
+      for (var i = 0, ii = coordinates.length; i < ii; ++i) {
+        var ring = coordinates[i];
+        for (var j = 0, jj = ring.length; j < jj; ++j) {
+          expect(ring[j][0]).to.roughlyEqual(gg[i][j][0], 0.001);
+          expect(ring[j][1]).to.roughlyEqual(gg[i][j][1], 0.001);
+        }
+      }
+
+    });
+
+  });
+
 });
 
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.Polygon');
+goog.require('ol.proj');

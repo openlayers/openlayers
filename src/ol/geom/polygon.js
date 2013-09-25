@@ -163,3 +163,14 @@ ol.geom.Polygon.prototype.getInteriorPoint = function() {
 
   return this.labelPoint_;
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.Polygon.prototype.transform = function(transform) {
+  var rings = this.rings;
+  for (var i = 0, ii = rings.length; i < ii; ++i) {
+    rings[i].transform(transform);
+  }
+};
