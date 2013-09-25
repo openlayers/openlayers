@@ -32,7 +32,7 @@ var style = new ol.style.Style({
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    parser: new ol.parser.KML({dimension: 2}),
+    parser: new ol.parser.KML(),
     url: 'data/kml/2012_Earthquakes_Mag5.kml'
   }),
   style: style

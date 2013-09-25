@@ -52,8 +52,6 @@ ol.parser.KML = function(opt_options) {
       options.extractStyles : false;
   this.schemaLocation = 'http://www.opengis.net/kml/2.2 ' +
       'http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd';
-  // TODO re-evaluate once shared structures support 3D
-  this.dimension = goog.isDef(options.dimension) ? options.dimension : 3;
   this.maxDepth = goog.isDef(options.maxDepth) ? options.maxDepth : 0;
   this.trackAttributes = goog.isDef(options.trackAttributes) ?
       options.trackAttributes : null;
@@ -263,8 +261,7 @@ ol.parser.KML = function(opt_options) {
         for (var i = 0, ii = coords.length; i < ii; i++) {
           var array = coords[i].replace(reg.removeSpace, '').split(',');
           var pair = [];
-          var jj = Math.min(array.length, this.dimension);
-          for (var j = 0; j < jj; j++) {
+          for (var j = 0, jj = array.length; j < jj; j++) {
             pair.push(parseFloat(array[j]));
           }
           coordArray.push(pair);
@@ -544,7 +541,7 @@ ol.parser.KML = function(opt_options) {
       'coord': function(node, container) {
         var str = this.getChildValue(node);
         var coords = str.replace(this.regExes.trimSpace, '').split(/\s+/);
-        for (var i = 0, ii = this.dimension; i < ii; ++i) {
+        for (var i = 0, ii = coords.length; i < ii; ++i) {
           coords[i] = parseFloat(coords[i]);
         }
         var point = {
