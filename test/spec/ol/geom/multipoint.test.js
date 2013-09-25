@@ -10,13 +10,6 @@ describe('ol.geom.MultiPoint', function() {
       expect(multi).to.be.a(ol.geom.Geometry);
     });
 
-    it('throws when given with insufficient dimensions', function() {
-      expect(function() {
-        var multi = new ol.geom.MultiPoint([1]);
-        multi = multi; // suppress gjslint warning about unused variable
-      }).to.throwException();
-    });
-
   });
 
   describe('#components', function() {
@@ -28,20 +21,6 @@ describe('ol.geom.MultiPoint', function() {
       expect(multi.components[0]).to.be.a(ol.geom.Point);
       expect(multi.components[1]).to.be.a(ol.geom.Point);
 
-    });
-
-  });
-
-  describe('#dimension', function() {
-
-    it('can be 2', function() {
-      var multi = new ol.geom.MultiPoint([[10, 20], [30, 40]]);
-      expect(multi.dimension).to.be(2);
-    });
-
-    it('can be 3', function() {
-      var multi = new ol.geom.MultiPoint([[10, 20, 30], [30, 40, 50]]);
-      expect(multi.dimension).to.be(3);
     });
 
   });

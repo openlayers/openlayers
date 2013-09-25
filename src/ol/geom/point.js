@@ -23,12 +23,6 @@ ol.geom.Point = function(coordinates) {
   this.coordinates_ = coordinates;
 
   /**
-   * @type {number}
-   */
-  this.dimension = coordinates.length;
-  goog.asserts.assert(this.dimension >= 2);
-
-  /**
    * @type {ol.Extent}
    * @private
    */
@@ -82,6 +76,6 @@ ol.geom.Point.prototype.getType = function() {
  */
 ol.geom.Point.prototype.transform = function(transform) {
   var coordinates = this.getCoordinates();
-  transform(coordinates, coordinates, this.dimension);
+  transform(coordinates, coordinates, coordinates.length);
   this.bounds_ = null;
 };

@@ -23,20 +23,6 @@ ol.geom.GeometryCollection = function(geometries) {
    */
   this.components = geometries;
 
-  var dimension = 0;
-  for (var i = 0, ii = geometries.length; i < ii; ++i) {
-    if (goog.isDef(dimension)) {
-      dimension = geometries[i].dimension;
-    } else {
-      goog.asserts.assert(dimension == geometries[i].dimension);
-    }
-  }
-
-  /**
-   * @type {number}
-   */
-  this.dimension = dimension;
-
 };
 goog.inherits(ol.geom.GeometryCollection, ol.geom.AbstractCollection);
 

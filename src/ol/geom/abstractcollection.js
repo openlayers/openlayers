@@ -15,11 +15,6 @@ ol.geom.AbstractCollection = function() {
   goog.base(this);
 
   /**
-   * @type {number}
-   */
-  this.dimension;
-
-  /**
    * @type {Array.<ol.geom.Geometry>}
    */
   this.components = null;

@@ -27,11 +27,6 @@ ol.geom.MultiPoint = function(coordinates) {
     this.components[i] = new ol.geom.Point(coordinates[i]);
   }
 
-  /**
-   * @type {number}
-   */
-  this.dimension = coordinates[0].length;
-
 };
 goog.inherits(ol.geom.MultiPoint, ol.geom.AbstractCollection);
 

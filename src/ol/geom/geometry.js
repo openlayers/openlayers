@@ -13,20 +13,11 @@ ol.geom.Geometry = function() {};
 
 
 /**
- * The dimension of this geometry (2 or 3).
- * @type {number}
- */
-ol.geom.Geometry.prototype.dimension;
-
-
-/**
  * Create a clone of this geometry.
  * @return {ol.geom.Geometry} The cloned geometry.
  */
 ol.geom.Geometry.prototype.clone = function() {
-  var clone = new this.constructor(this.getCoordinates());
-  clone.dimension = this.dimension;
-  return clone;
+  return new this.constructor(this.getCoordinates());
 };
 
 

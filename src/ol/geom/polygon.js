@@ -54,12 +54,6 @@ ol.geom.Polygon = function(coordinates) {
     this.rings[i] = new ol.geom.LinearRing(ringCoords);
   }
 
-  /**
-   * @type {number}
-   */
-  this.dimension = coordinates[0][0].length;
-  goog.asserts.assert(this.dimension >= 2);
-
 };
 goog.inherits(ol.geom.Polygon, ol.geom.Geometry);
 

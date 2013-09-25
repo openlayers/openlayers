@@ -27,12 +27,6 @@ ol.geom.LineString = function(coordinates) {
   this.coordinates_ = coordinates;
 
   /**
-   * @type {number}
-   */
-  this.dimension = coordinates[0].length;
-  goog.asserts.assert(this.dimension >= 2);
-
-  /**
    * @type {ol.Extent}
    * @private
    */
@@ -119,11 +113,10 @@ ol.geom.LineString.prototype.distanceFromCoordinate = function(coordinate) {
  */
 ol.geom.LineString.prototype.transform = function(transform) {
   var coordinates = this.getCoordinates();
-  var dimension = this.dimension;
   var coord;
   for (var i = 0, ii = coordinates.length; i < ii; ++i) {
     coord = coordinates[i];
-    transform(coord, coord, dimension);
+    transform(coord, coord, coord.length);
   }
   this.bounds_ = null;
 };

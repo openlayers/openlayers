@@ -10,27 +10,6 @@ describe('ol.geom.Point', function() {
       expect(point).to.be.a(ol.geom.Geometry);
     });
 
-    it('throws when given with insufficient dimensions', function() {
-      expect(function() {
-        var point = new ol.geom.Point([1]);
-        point = point; // suppress gjslint warning about unused variable
-      }).to.throwException();
-    });
-
-  });
-
-  describe('#dimension', function() {
-
-    it('can be 2', function() {
-      var point = new ol.geom.Point([10, 20]);
-      expect(point.dimension).to.be(2);
-    });
-
-    it('can be 3', function() {
-      var point = new ol.geom.Point([10, 20, 30]);
-      expect(point.dimension).to.be(3);
-    });
-
   });
 
   describe('#getBounds()', function() {

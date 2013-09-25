@@ -28,11 +28,6 @@ ol.geom.MultiPolygon = function(coordinates) {
     this.components[i] = new ol.geom.Polygon(coordinates[i]);
   }
 
-  /**
-   * @type {number}
-   */
-  this.dimension = coordinates[0][0][0].length;
-
 };
 goog.inherits(ol.geom.MultiPolygon, ol.geom.AbstractCollection);
 

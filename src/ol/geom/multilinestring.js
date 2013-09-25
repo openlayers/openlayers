@@ -27,11 +27,6 @@ ol.geom.MultiLineString = function(coordinates) {
     this.components[i] = new ol.geom.LineString(coordinates[i]);
   }
 
-  /**
-   * @type {number}
-   */
-  this.dimension = coordinates[0][0].length;
-
 };
 goog.inherits(ol.geom.MultiLineString, ol.geom.AbstractCollection);
 

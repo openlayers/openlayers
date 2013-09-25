@@ -51,20 +51,6 @@ describe('ol.geom.Polygon', function() {
 
   });
 
-  describe('#dimension', function() {
-
-    it('can be 2', function() {
-      var poly = new ol.geom.Polygon([outer, inner1, inner2]);
-      expect(poly.dimension).to.be(2);
-    });
-
-    it('can be 3', function() {
-      var poly = new ol.geom.Polygon([[[10, 20, 30], [40, 50, 60]]]);
-      expect(poly.dimension).to.be(3);
-    });
-
-  });
-
   describe('#getBounds()', function() {
 
     it('returns the bounding extent', function() {
