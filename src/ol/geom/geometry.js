@@ -25,7 +25,6 @@ ol.geom.Geometry.prototype.dimension;
  */
 ol.geom.Geometry.prototype.clone = function() {
   var clone = new this.constructor(this.getCoordinates());
-  clone.bounds_ = this.bounds_;
   clone.dimension = this.dimension;
   return clone;
 };
