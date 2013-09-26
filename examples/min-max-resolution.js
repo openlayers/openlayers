@@ -1,4 +1,5 @@
 goog.require('ol.Map');
+goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
@@ -25,6 +26,7 @@ var map = new ol.Map({
       maxResolution: 20000
     })
   ],
+  renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: new ol.View2D({
     center: [653600, 5723680],
