@@ -492,6 +492,14 @@
  * @property {string} key Bing Maps API key. Get yours at
  *     http://bingmapsportal.com/.
  * @property {string} style Style.
+ * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
+ *     function to load a tile given a URL.
+ */
+
+/**
+ * @typedef {Object} ol.source.MapQuestOptions
+ * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
+ *     function to load a tile given a URL.
  */
 
 /**
@@ -506,6 +514,8 @@
  * @property {ol.Attribution|undefined} attribution Attribution.
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {number|undefined} maxZoom Max zoom.
+ * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
+ *     function to load a tile given a URL.
  * @property {string|undefined} url URL.
  */
 
@@ -536,6 +546,8 @@
  * @property {number|undefined} minZoom Minimum zoom.
  * @property {number|undefined} maxZoom Maximum zoom.
  * @property {boolean|undefined} opaque Whether the layer is opaque.
+ * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
+ *     function to load a tile given a URL.
  * @property {string|undefined} url URL.
  */
 
@@ -555,6 +567,8 @@
  * @typedef {Object} ol.source.TileJSONOptions
  * @property {null|string|undefined} crossOrigin crossOriin setting for image
  *     requests.
+ * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
+ *     function to load a tile given a URL.
  * @property {string} url URL.
  */
 
@@ -573,6 +587,8 @@
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  * @property {number|undefined} maxZoom Maximum zoom.
  * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
+ *     function to load a tile given a URL.
  * @property {string|undefined} url WMS service URL.
  * @property {Array.<string>|undefined} urls WMS service urls. Use this instead
  *     of `url` when the WMS supports multiple urls for GetMap requests.
@@ -632,6 +648,8 @@
  * @property {Object|undefined} dimensions Dimensions.
  * @property {string|undefined} url URL.
  * @property {number|undefined} maxZoom Maximum zoom.
+ * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
+ *     function to load a tile given a URL.
  * @property {Array.<string>|undefined} urls Urls.
  */
 

@@ -24,7 +24,8 @@ ol.source.BingMaps = function(options) {
   goog.base(this, {
     crossOrigin: 'anonymous',
     opaque: true,
-    projection: ol.proj.get('EPSG:3857')
+    projection: ol.proj.get('EPSG:3857'),
+    tileLoadFunction: options.tileLoadFunction
   });
 
   /**

@@ -31,6 +31,7 @@ ol.source.OSM = function(opt_options) {
     crossOrigin: 'anonymous',
     opaque: true,
     maxZoom: options.maxZoom,
+    tileLoadFunction: options.tileLoadFunction,
     url: url
   });
 
