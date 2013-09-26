@@ -291,7 +291,7 @@ describe('ol.parser.KML', function() {
         var obj = p.read(xml);
         var output = p.write(obj);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
-        
+
         var symbolizers = obj.features[0].getSymbolizers();
         expect(symbolizers).to.have.length(1);
 
