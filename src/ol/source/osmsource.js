@@ -17,8 +17,6 @@ ol.source.OSM = function(opt_options) {
   var attributions;
   if (goog.isDef(options.attributions)) {
     attributions = options.attributions;
-  } else if (goog.isDef(options.attribution)) {
-    attributions = [options.attribution];
   } else {
     attributions = ol.source.OSM.ATTRIBUTIONS;
   }
