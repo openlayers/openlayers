@@ -168,19 +168,19 @@ ol.parser.KML = function(opt_options) {
             }
           }
           var symbolizers = undefined;
-          if (goog.isDef(container.styles)) {
-            symbolizers = container.styles[0].symbolizers;
+          if (goog.isDef(container['styles'])) {
+            symbolizers = container['styles'][0]['symbolizers'];
 
-          } else if (goog.isDef(container.styleMaps)) {
-            var styleMap = container.styleMaps[0];
-            for (var i = 0, ii = styleMap.pairs.length; i < ii; i++) {
-              var pair = styleMap.pairs[i];
+          } else if (goog.isDef(container['styleMaps'])) {
+            var styleMap = container['styleMaps'][0];
+            for (var i = 0, ii = styleMap['pairs'].length; i < ii; i++) {
+              var pair = styleMap['pairs'][i];
               if (pair.key === 'normal') {
-                if (goog.isDef(pair.styleUrl)) {
-                  this.parseStyleUrl(obj, pair.styleUrl);
-                  feature.set('styleUrl', pair.styleUrl);
-                } else if (goog.isDef(pair.styles)) {
-                  symbolizers = pair.styles[0].symbolizers;
+                if (goog.isDef(pair['styleUrl'])) {
+                  this.parseStyleUrl(obj, pair['styleUrl']);
+                  feature.set('styleUrl', pair['styleUrl']);
+                } else if (goog.isDef(pair['styles'])) {
+                  symbolizers = pair['styles'][0]['symbolizers'];
                 }
               }
             }
@@ -1101,14 +1101,14 @@ ol.parser.KML.prototype.applyStyle_ = function(feature, styles, styleMaps,
       for (i = 0, ii = styleMaps.length; i < ii; ++i) {
         var styleMap = styleMaps[i];
         if (styleMap['id'] === styleUrl) {
-          for (var j = 0, jj = styleMap.pairs.length; j < jj; j++) {
-            var pair = styleMap.pairs[j];
+          for (var j = 0, jj = styleMap['pairs'].length; j < jj; j++) {
+            var pair = styleMap['pairs'][j];
             if (pair.key === 'normal') {
-              if (goog.isDef(pair.styleUrl)) {
-                styleUrl = pair.styleUrl;
+              if (goog.isDef(pair['styleUrl'])) {
+                styleUrl = pair['styleUrl'];
                 styleUrl = styleUrl.substring(styleUrl.indexOf('#') + 1);
-              } else if (goog.isDef(pair.styles)) {
-                symbolizers = pair.styles[0]['symbolizers'];
+              } else if (goog.isDef(pair['styles'])) {
+                symbolizers = pair['styles'][0]['symbolizers'];
               }
             }
           }
