@@ -41,22 +41,6 @@ describe('ol.geom.MultiPolygon', function() {
 
   });
 
-  describe('#dimension', function() {
-
-    it('can be 2', function() {
-      var multi = new ol.geom.MultiPolygon([
-        [outer1, inner1a, inner1b],
-        [outer2]]);
-      expect(multi.dimension).to.be(2);
-    });
-
-    it('can be 3', function() {
-      var multi = new ol.geom.MultiPolygon([[[[10, 20, 30], [40, 50, 60]]]]);
-      expect(multi.dimension).to.be(3);
-    });
-
-  });
-
   describe('#getBounds()', function() {
 
     it('returns the bounding extent', function() {

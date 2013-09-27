@@ -11,20 +11,6 @@ describe('ol.geom.LinearRing', function() {
 
   });
 
-  describe('#dimension', function() {
-
-    it('can be 2', function() {
-      var ring = new ol.geom.LinearRing([[10, 20], [30, 40]]);
-      expect(ring.dimension).to.be(2);
-    });
-
-    it('can be 3', function() {
-      var ring = new ol.geom.LinearRing([[10, 20, 30], [40, 50, 60]]);
-      expect(ring.dimension).to.be(3);
-    });
-
-  });
-
   describe('#getCoordinates()', function() {
 
     it('is an array', function() {

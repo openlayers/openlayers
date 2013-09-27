@@ -13,7 +13,6 @@ goog.require('ol.expr.LogicalOp');
 goog.require('ol.expr.functions');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.SharedVertices');
 goog.require('ol.layer.Layer');
 goog.require('ol.proj');
 goog.require('ol.source.Vector');
@@ -287,27 +286,6 @@ ol.layer.Vector = function(options) {
       options.transformFeatureInfo : ol.layer.Vector.uidTransformFeatureInfo;
 
   /**
-   * TODO: this means we need to know dimension at construction
-   * @type {ol.geom.SharedVertices}
-   * @private
-   */
-  this.pointVertices_ = new ol.geom.SharedVertices();
-
-  /**
-   * TODO: this means we need to know dimension at construction
-   * @type {ol.geom.SharedVertices}
-   * @private
-   */
-  this.lineVertices_ = new ol.geom.SharedVertices();
-
-  /**
-   * TODO: this means we need to know dimension at construction
-   * @type {ol.geom.SharedVertices}
-   * @private
-   */
-  this.polygonVertices_ = new ol.geom.SharedVertices();
-
-  /**
    * True if this is a temporary layer.
    * @type {boolean}
    * @private
@@ -400,30 +378,6 @@ ol.layer.Vector.prototype.getFeaturesObjectForExtent = function(extent,
 
 
 /**
- * @return {ol.geom.SharedVertices} Shared line vertices.
- */
-ol.layer.Vector.prototype.getLineVertices = function() {
-  return this.lineVertices_;
-};
-
-
-/**
- * @return {ol.geom.SharedVertices} Shared point vertices.
- */
-ol.layer.Vector.prototype.getPointVertices = function() {
-  return this.pointVertices_;
-};
-
-
-/**
- * @return {ol.geom.SharedVertices} Shared polygon vertices.
- */
-ol.layer.Vector.prototype.getPolygonVertices = function() {
-  return this.polygonVertices_;
-};
-
-
-/**
  * @param {Object.<string, ol.Feature>} features Features.
  * @param {number} resolution Map resolution.
  * @return {Array.<Array>} symbolizers for features. Each array in this array
@@ -497,17 +451,6 @@ ol.layer.Vector.prototype.getFeatureWithUid = function(uid) {
  *     view in one projection.
  */
 ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
-  var lookup = {};
-  lookup[ol.geom.GeometryType.POINT] = this.pointVertices_;
-  lookup[ol.geom.GeometryType.LINESTRING] = this.lineVertices_;
-  lookup[ol.geom.GeometryType.POLYGON] = this.polygonVertices_;
-  lookup[ol.geom.GeometryType.MULTIPOINT] = this.pointVertices_;
-  lookup[ol.geom.GeometryType.MULTILINESTRING] = this.lineVertices_;
-  lookup[ol.geom.GeometryType.MULTIPOLYGON] = this.polygonVertices_;
-
-  var callback = function(feature, type) {
-    return lookup[type];
-  };
 
   var addFeatures = function(data) {
     var features = data.features;
@@ -516,46 +459,35 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
       sourceProjection = data.metadata.projection;
     }
     var transform = ol.proj.getTransform(sourceProjection, projection);
-
-    transform(
-        this.pointVertices_.coordinates,
-        this.pointVertices_.coordinates,
-        this.pointVertices_.getDimension());
-
-    transform(
-        this.lineVertices_.coordinates,
-        this.lineVertices_.coordinates,
-        this.lineVertices_.getDimension());
-
-    transform(
-        this.polygonVertices_.coordinates,
-        this.polygonVertices_.coordinates,
-        this.polygonVertices_.getDimension());
-
+    var geometry = null;
+    for (var i = 0, ii = features.length; i < ii; ++i) {
+      geometry = features[i].getGeometry();
+      if (!goog.isNull(geometry)) {
+        geometry.transform(transform);
+      }
+    }
     this.addFeatures(features);
   };
 
-  var options = {callback: callback}, result;
+  var result;
   if (goog.isString(data)) {
     if (goog.isFunction(parser.readFeaturesFromStringAsync)) {
-      parser.readFeaturesFromStringAsync(data, goog.bind(addFeatures, this),
-          options);
+      parser.readFeaturesFromStringAsync(data, goog.bind(addFeatures, this));
     } else {
       goog.asserts.assert(
           goog.isFunction(parser.readFeaturesFromString),
           'Expected parser with a readFeaturesFromString method.');
-      result = parser.readFeaturesFromString(data, options);
+      result = parser.readFeaturesFromString(data);
       addFeatures.call(this, result);
     }
   } else if (goog.isObject(data)) {
     if (goog.isFunction(parser.readFeaturesFromObjectAsync)) {
-      parser.readFeaturesFromObjectAsync(data, goog.bind(addFeatures, this),
-          options);
+      parser.readFeaturesFromObjectAsync(data, goog.bind(addFeatures, this));
     } else {
       goog.asserts.assert(
           goog.isFunction(parser.readFeaturesFromObject),
           'Expected parser with a readFeaturesFromObject method.');
-      result = parser.readFeaturesFromObject(data, options);
+      result = parser.readFeaturesFromObject(data);
       addFeatures.call(this, result);
     }
   } else {

@@ -165,7 +165,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderLineStringFeatures_ =
     function(features, symbolizer) {
 
   var context = this.context_,
-      i, ii, feature, id, currentSize, geometry, components, j, jj, line, dim,
+      i, ii, feature, id, currentSize, geometry, components, j, jj, line,
       k, kk, vec, strokeSize;
 
   context.globalAlpha = symbolizer.opacity;
@@ -197,7 +197,6 @@ ol.renderer.canvas.VectorRenderer.prototype.renderLineStringFeatures_ =
     }
     for (j = 0, jj = components.length; j < jj; ++j) {
       line = components[j];
-      dim = line.dimension;
       for (k = 0, kk = line.getCount(); k < kk; ++k) {
         vec = [line.get(k, 0), line.get(k, 1), 0];
         goog.vec.Mat4.multVec3(this.transform_, vec, vec);
@@ -347,7 +346,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPolygonFeatures_ =
       fillOpacity = symbolizer.fillOpacity,
       globalAlpha,
       i, ii, geometry, components, j, jj, poly,
-      rings, numRings, ring, dim, k, kk, vec, feature;
+      rings, numRings, ring, k, kk, vec, feature;
 
   if (strokeColor) {
     context.strokeStyle = strokeColor;
@@ -384,7 +383,6 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPolygonFeatures_ =
     }
     for (j = 0, jj = components.length; j < jj; ++j) {
       poly = components[j];
-      dim = poly.dimension;
       rings = poly.rings;
       numRings = rings.length;
       if (numRings > 0) {

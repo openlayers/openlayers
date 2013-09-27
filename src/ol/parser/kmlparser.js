@@ -20,11 +20,9 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.geom.SharedVertices');
 goog.require('ol.parser.AsyncObjectFeatureParser');
 goog.require('ol.parser.AsyncStringFeatureParser');
 goog.require('ol.parser.DomFeatureParser');
-goog.require('ol.parser.ReadFeaturesOptions');
 goog.require('ol.parser.StringFeatureParser');
 goog.require('ol.parser.XML');
 goog.require('ol.style.Fill');
@@ -54,8 +52,6 @@ ol.parser.KML = function(opt_options) {
       options.extractStyles : false;
   this.schemaLocation = 'http://www.opengis.net/kml/2.2 ' +
       'http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd';
-  // TODO re-evaluate once shared structures support 3D
-  this.dimension = goog.isDef(options.dimension) ? options.dimension : 3;
   this.maxDepth = goog.isDef(options.maxDepth) ? options.maxDepth : 0;
   this.trackAttributes = goog.isDef(options.trackAttributes) ?
       options.trackAttributes : null;
@@ -104,7 +100,6 @@ ol.parser.KML = function(opt_options) {
       },
       'Placemark': function(node, obj) {
         var container = {properties: {}};
-        var sharedVertices, callback;
         var id = node.getAttribute('id');
         this.readChildNodes(node, container);
         if (goog.isDef(container.track)) {
@@ -132,15 +127,7 @@ ol.parser.KML = function(opt_options) {
             }
             var geom = track.points[i];
             if (geom) {
-              sharedVertices = undefined;
-              if (this.readFeaturesOptions_) {
-                callback = this.readFeaturesOptions_.callback;
-                if (callback) {
-                  sharedVertices = callback(feature, geom.type);
-                }
-              }
-              var geometry = this.createGeometry_({geometry: geom},
-                  sharedVertices);
+              var geometry = this.createGeometry_({geometry: geom});
               if (goog.isDef(geometry)) {
                 feature.setGeometry(geometry);
               }
@@ -159,14 +146,7 @@ ol.parser.KML = function(opt_options) {
             feature.setId(id);
           }
           if (container.geometry) {
-            sharedVertices = undefined;
-            if (this.readFeaturesOptions_) {
-              callback = this.readFeaturesOptions_.callback;
-              if (callback) {
-                sharedVertices = callback(feature, container.geometry.type);
-              }
-            }
-            geometry = this.createGeometry_(container, sharedVertices);
+            geometry = this.createGeometry_(container);
             if (goog.isDef(geometry)) {
               feature.setGeometry(geometry);
             }
@@ -281,8 +261,7 @@ ol.parser.KML = function(opt_options) {
         for (var i = 0, ii = coords.length; i < ii; i++) {
           var array = coords[i].replace(reg.removeSpace, '').split(',');
           var pair = [];
-          var jj = Math.min(array.length, this.dimension);
-          for (var j = 0; j < jj; j++) {
+          for (var j = 0, jj = array.length; j < jj; j++) {
             pair.push(parseFloat(array[j]));
           }
           coordArray.push(pair);
@@ -562,7 +541,7 @@ ol.parser.KML = function(opt_options) {
       'coord': function(node, container) {
         var str = this.getChildValue(node);
         var coords = str.replace(this.regExes.trimSpace, '').split(/\s+/);
-        for (var i = 0, ii = this.dimension; i < ii; ++i) {
+        for (var i = 0, ii = coords.length; i < ii; ++i) {
           coords[i] = parseFloat(coords[i]);
         }
         var point = {
@@ -850,11 +829,8 @@ goog.inherits(ol.parser.KML, ol.parser.XML);
  * @param {Object} obj Object representing features.
  * @param {function(ol.parser.ReadFeaturesResult)} callback Callback which is
  *     called after parsing.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */
-ol.parser.KML.prototype.readFeaturesFromObjectAsync =
-    function(obj, callback, opt_options) {
-  this.readFeaturesOptions_ = opt_options;
+ol.parser.KML.prototype.readFeaturesFromObjectAsync = function(obj, callback) {
   this.read(obj, callback);
 };
 
@@ -863,11 +839,8 @@ ol.parser.KML.prototype.readFeaturesFromObjectAsync =
  * @param {string} str String data.
  * @param {function(ol.parser.ReadFeaturesResult)}
  *     callback Callback which is called after parsing.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  */
-ol.parser.KML.prototype.readFeaturesFromStringAsync =
-    function(str, callback, opt_options) {
-  this.readFeaturesOptions_ = opt_options;
+ol.parser.KML.prototype.readFeaturesFromStringAsync = function(str, callback) {
   this.read(str, callback);
 };
 
@@ -875,12 +848,9 @@ ol.parser.KML.prototype.readFeaturesFromStringAsync =
 /**
  * Parse a KML document provided as a string.
  * @param {string} str KML document.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.KML.prototype.readFeaturesFromString =
-    function(str, opt_options) {
-  this.readFeaturesOptions_ = opt_options;
+ol.parser.KML.prototype.readFeaturesFromString = function(str) {
   return /** @type {ol.parser.ReadFeaturesResult} */ (this.read(str));
 };
 
@@ -888,24 +858,18 @@ ol.parser.KML.prototype.readFeaturesFromString =
 /**
  * Parse a KML document provided as a DOM structure.
  * @param {Element|Document} node Document or element node.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.KML.prototype.readFeaturesFromNode =
-    function(node, opt_options) {
-  this.readFeaturesOptions_ = opt_options;
+ol.parser.KML.prototype.readFeaturesFromNode = function(node) {
   return /** @type {ol.parser.ReadFeaturesResult} */ (this.read(node));
 };
 
 
 /**
  * @param {Object} obj Object representing features.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.KML.prototype.readFeaturesFromObject =
-    function(obj, opt_options) {
-  this.readFeaturesOptions_ = opt_options;
+ol.parser.KML.prototype.readFeaturesFromObject = function(obj) {
   return /** @type {ol.parser.ReadFeaturesResult} */ (this.read(obj));
 };
 
@@ -1028,52 +992,47 @@ ol.parser.KML.prototype.applyStyle_ = function(feature, styles,
 /**
  * @private
  * @param {Object} container Geometry container.
- * @param {ol.geom.SharedVertices=} opt_vertices Shared vertices.
  * @return {ol.geom.Geometry} The geometry created.
  */
-ol.parser.KML.prototype.createGeometry_ = function(container,
-    opt_vertices) {
+ol.parser.KML.prototype.createGeometry_ = function(container) {
   var geometry = null, coordinates, i, ii;
   switch (container.geometry.type) {
     case ol.geom.GeometryType.POINT:
-      geometry = new ol.geom.Point(container.geometry.coordinates,
-          opt_vertices);
+      geometry = new ol.geom.Point(container.geometry.coordinates);
       break;
     case ol.geom.GeometryType.LINESTRING:
-      geometry = new ol.geom.LineString(container.geometry.coordinates,
-          opt_vertices);
+      geometry = new ol.geom.LineString(container.geometry.coordinates);
       break;
     case ol.geom.GeometryType.POLYGON:
-      geometry = new ol.geom.Polygon(container.geometry.coordinates,
-          opt_vertices);
+      geometry = new ol.geom.Polygon(container.geometry.coordinates);
       break;
     case ol.geom.GeometryType.MULTIPOINT:
       coordinates = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         coordinates.push(container.geometry.parts[i].coordinates);
       }
-      geometry = new ol.geom.MultiPoint(coordinates, opt_vertices);
+      geometry = new ol.geom.MultiPoint(coordinates);
       break;
     case ol.geom.GeometryType.MULTILINESTRING:
       coordinates = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         coordinates.push(container.geometry.parts[i].coordinates);
       }
-      geometry = new ol.geom.MultiLineString(coordinates, opt_vertices);
+      geometry = new ol.geom.MultiLineString(coordinates);
       break;
     case ol.geom.GeometryType.MULTIPOLYGON:
       coordinates = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         coordinates.push(container.geometry.parts[i].coordinates);
       }
-      geometry = new ol.geom.MultiPolygon(coordinates, opt_vertices);
+      geometry = new ol.geom.MultiPolygon(coordinates);
       break;
     case ol.geom.GeometryType.GEOMETRYCOLLECTION:
       var geometries = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         geometries.push(this.createGeometry_({
           geometry: container.geometry.parts[i]
-        }, opt_vertices));
+        }));
       }
       geometry = new ol.geom.GeometryCollection(geometries);
       break;
