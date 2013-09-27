@@ -7,8 +7,25 @@ goog.require('ol.proj.EPSG21781');
 goog.require('ol.RendererHint');
 
 
-
 /**
+ * @class
+ * The map is the core component of the GeoAdmin API. In its minimal configuration it
+ * needs a view, one or more geoadmin layers, and a target container:
+ *
+ *     var map = new ga.Map({
+ *       view: new ol.View2D({
+ *         center: [600000, 200000]
+ *       }),
+ *       layers: [
+ *         ga.layer.create('ch.swisstopo.pixelkarte-farbe')
+ *       ],
+ *       target: 'map'
+ *     });
+ *
+ * The above snippet creates a map with a GeoAdmin layer on a 2D view and
+ * renders it to a DOM element with the id 'map'.
+ * The coordinate system EPSG:21781 is automatically set.
+ *
  * @constructor
  * @extends {ol.Map}
  * @param {ol.MapOptions} options Map options.
