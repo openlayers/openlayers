@@ -567,6 +567,12 @@
  * @todo stability experimental
  */
 
+ /**
+ * @typedef {Object} ol.parser.SLDReadOptions
+ * @property {ol.proj.Units} units The units to use in scale to resolution
+ *     calculations.
+ */
+
 /**
  * @typedef {Object} ol.source.BingMapsOptions
  * @property {string|undefined} culture Culture.

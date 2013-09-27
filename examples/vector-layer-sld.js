@@ -1,6 +1,8 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
+goog.require('ol.control');
+goog.require('ol.control.ScaleLine');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.GeoJSON');
@@ -22,7 +24,20 @@ xhr.open('GET', 'data/countries.sld', true);
  */
 xhr.onload = function() {
   if (xhr.status == 200) {
-    var sld = new ol.parser.ogc.SLD().read(xhr.responseText);
+    var map = new ol.Map({
+      controls: ol.control.defaults().extend([
+        new ol.control.ScaleLine()
+      ]),
+      layers: [raster],
+      renderer: ol.RendererHint.CANVAS,
+      target: 'map',
+      view: new ol.View2D({
+        center: [0, 0],
+        zoom: 1
+      })
+    });
+    var units = map.getView().getProjection().getUnits();
+    var sld = new ol.parser.ogc.SLD().read(xhr.responseText, units);
     var style = sld.namedLayers['countries'].userStyles[0];
     var vector = new ol.layer.Vector({
       source: new ol.source.Vector({
@@ -31,15 +46,7 @@ xhr.onload = function() {
       }),
       style: style
     });
-    new ol.Map({
-      layers: [raster, vector],
-      renderer: ol.RendererHint.CANVAS,
-      target: 'map',
-      view: new ol.View2D({
-        center: [0, 0],
-        zoom: 1
-      })
-    });
+    map.getLayers().push(vector);
   }
 };
 xhr.send();

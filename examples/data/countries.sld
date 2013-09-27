@@ -25,6 +25,7 @@
           </sld:PolygonSymbolizer>
         </sld:Rule>
         <sld:Rule>  
+          <sld:MaxScaleDenominator>20000000</sld:MaxScaleDenominator>
           <sld:TextSymbolizer>
             <sld:Label>
               <ogc:PropertyName>name</ogc:PropertyName>

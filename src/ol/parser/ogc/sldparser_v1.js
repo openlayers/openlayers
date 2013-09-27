@@ -76,10 +76,12 @@ ol.parser.ogc.SLD_v1 = function() {
         rule.elseFilter = true;
       },
       'MinScaleDenominator': function(node, rule) {
-        rule.minScaleDenominator = parseFloat(this.getChildValue(node));
+        rule.minResolution = this.getResolutionFromScale_(
+            parseFloat(this.getChildValue(node)));
       },
       'MaxScaleDenominator': function(node, rule) {
-        rule.maxScaleDenominator = parseFloat(this.getChildValue(node));
+        rule.maxResolution = this.getResolutionFromScale_(
+            parseFloat(this.getChildValue(node)));
       },
       'TextSymbolizer': function(node, rule) {
         var config = {};
@@ -188,6 +190,7 @@ ol.parser.ogc.SLD_v1 = function() {
         var ogcreaders = this.readers['http://www.opengis.net/ogc'];
         var radius = ogcreaders._expression.call(this, node);
         if (goog.isDef(radius)) {
+          symbolizer.haloRadius = radius;
         }
       },
       'RasterSymbolizer': function(node, rule) {
@@ -413,10 +416,30 @@ ol.parser.ogc.SLD_v1.cssMap_ = {
 
 
 /**
+ * @private
+ * @param {number} scaleDenominator The scale denominator to convert to
+ * resolution.
+ * @return {number} resolution.
+ */
+ol.parser.ogc.SLD_v1.prototype.getResolutionFromScale_ =
+    function(scaleDenominator) {
+  var dpi = 25.4 / 0.28;
+  var mpu = ol.METERS_PER_UNIT[this.units];
+  return 1 / ((1 / scaleDenominator) * (mpu * 39.37) * dpi);
+};
+
+
+/**
  * @param {string|Document|Element} data Data to read.
+ * @param {ol.parser.SLDReadOptions=} opt_options Read options.
  * @return {Object} An object representing the document.
  */
-ol.parser.ogc.SLD_v1.prototype.read = function(data) {
+ol.parser.ogc.SLD_v1.prototype.read = function(data, opt_options) {
+  var units = 'm';
+  if (goog.isDef(opt_options) && goog.isDef(opt_options.units)) {
+    units = opt_options.units;
+  }
+  this.units = units;
   if (goog.isString(data)) {
     data = goog.dom.xml.loadXml(data);
   }
@@ -425,5 +448,6 @@ ol.parser.ogc.SLD_v1.prototype.read = function(data) {
   }
   var obj = {namedLayers: {}};
   this.readNode(data, obj);
+  delete this.units;
   return obj;
 };
