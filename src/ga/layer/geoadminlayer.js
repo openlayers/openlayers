@@ -18,8 +18,8 @@ goog.require('ol.tilegrid.WMTS');
  * @return {ol.layer.Tile|ol.layer.Group} Layer instance.
  */
 ga.layer.create = function(layer) {
-  if (layer in ga.layer.SwisstopoLayerConfig) {
-    var layerConfig = ga.layer.SwisstopoLayerConfig[layer];
+  if (layer in ga.layer.GeoadminLayerConfig) {
+    var layerConfig = ga.layer.GeoadminLayerConfig[layer];
 
     layerConfig.type = layerConfig.type || 'wmts';
     if (layerConfig.type == 'group') {
@@ -47,7 +47,7 @@ ga.layer.create = function(layer) {
 /**
  * @type {Object.<string, Object>}
  */
-ga.layer.SwisstopoLayerConfig = {
+ga.layer.GeoadminLayerConfig = {
   // 'defaults': {
   //   attribution: 'swisstopo',
   //   format: 'image/png',
