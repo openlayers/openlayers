@@ -425,12 +425,13 @@ ol.layer.Vector.prototype.getPolygonVertices = function() {
 
 /**
  * @param {Object.<string, ol.Feature>} features Features.
+ * @param {number} resolution Map resolution.
  * @return {Array.<Array>} symbolizers for features. Each array in this array
  *     contains 3 items: an array of features, the symbolizer literal, and
  *     an array with optional additional data for each feature.
  */
 ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
-    function(features) {
+    function(features, resolution) {
   var uniqueLiterals = {},
       featuresBySymbolizer = [],
       style = this.style_,
@@ -447,7 +448,7 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
       if (goog.isNull(style)) {
         style = ol.style.getDefault();
       }
-      literals = style.createLiterals(feature);
+      literals = style.createLiterals(feature, resolution);
     }
     numLiterals = literals.length;
     for (j = 0; j < numLiterals; ++j) {

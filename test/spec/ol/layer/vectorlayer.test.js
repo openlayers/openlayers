@@ -134,7 +134,7 @@ describe('ol.layer.Vector', function() {
         })
       ];
 
-      var groups = layer.groupFeaturesBySymbolizerLiteral(features);
+      var groups = layer.groupFeaturesBySymbolizerLiteral(features, 1);
       expect(groups.length).to.be(2);
       expect(groups[0][0].length).to.be(1);
       expect(groups[0][1].color).to.be('#BADA55');
@@ -164,7 +164,7 @@ describe('ol.layer.Vector', function() {
       anotherFeatureWithSymbolizers.setSymbolizers([anotherSymbolizer]);
       features.push(featureWithSymbolizers, anotherFeatureWithSymbolizers);
 
-      var groups = layer.groupFeaturesBySymbolizerLiteral(features);
+      var groups = layer.groupFeaturesBySymbolizerLiteral(features, 1);
       expect(groups).to.have.length(3);
       expect(groups[2][0].length).to.be(2);
       expect(groups[2][1].width).to.be(3);

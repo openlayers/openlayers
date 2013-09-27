@@ -18,11 +18,6 @@ var raster = new ol.layer.Tile({
   source: new ol.source.MapQuestOpenAerial()
 });
 
-// TODO: discuss scale dependent rules
-ol.expr.register('resolution', function() {
-  return map.getView().getView2D().getResolution();
-});
-
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
     parser: new ol.parser.GeoJSON(),
@@ -42,7 +37,7 @@ var vector = new ol.layer.Vector({
       ]
     }),
     new ol.style.Rule({
-      filter: 'resolution() < 5000',
+      maxResolution: 5000,
       symbolizers: [
         new ol.style.Text({
           color: '#000000',
