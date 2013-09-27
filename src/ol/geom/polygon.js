@@ -1,9 +1,12 @@
 goog.provide('ol.geom.Polygon');
 
 goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('ol.CoordinateArray');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryEvent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LinearRing');
 
@@ -38,7 +41,7 @@ ol.geom.Polygon = function(coordinates) {
    * @private
    */
   this.rings_ = new Array(numRings);
-  var ringCoords;
+  var ringCoords, ring;
   for (var i = 0; i < numRings; ++i) {
     ringCoords = coordinates[i];
     if (i === 0) {
@@ -52,7 +55,10 @@ ol.geom.Polygon = function(coordinates) {
         ringCoords.reverse();
       }
     }
-    this.rings_[i] = new ol.geom.LinearRing(ringCoords);
+    ring = new ol.geom.LinearRing(ringCoords);
+    goog.events.listen(ring, goog.events.EventType.CHANGE,
+        this.handleRingChange_, false, this);
+    this.rings_[i] = ring;
   }
 
 };
@@ -95,6 +101,24 @@ ol.geom.Polygon.prototype.getType = function() {
  */
 ol.geom.Polygon.prototype.getRings = function() {
   return this.rings_;
+};
+
+
+/**
+ * Listener for ring change events.
+ * @param {ol.geom.GeometryEvent} evt Geometry event.
+ * @private
+ */
+ol.geom.Polygon.prototype.handleRingChange_ = function(evt) {
+  var ring = evt.target;
+  var oldExtent = null;
+  if (ring === this.rings_[0]) {
+    oldExtent = evt.oldExtent;
+  } else {
+    oldExtent = this.getBounds();
+  }
+  this.dispatchEvent(new ol.geom.GeometryEvent(goog.events.EventType.CHANGE,
+      this, oldExtent));
 };
 
 

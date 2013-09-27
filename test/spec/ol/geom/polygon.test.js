@@ -132,8 +132,51 @@ describe('ol.geom.Polygon', function() {
 
   });
 
+  describe('change event', function() {
+
+    var outer, inner;
+    beforeEach(function() {
+      outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
+      inner = [[2, 2], [2, 8], [8, 8], [8, 2], [2, 2]];
+    });
+
+    it('is fired when outer ring is modified', function(done) {
+      var poly = new ol.geom.Polygon([outer, inner]);
+      var rings = poly.getRings();
+      var bounds = poly.getBounds();
+      goog.events.listen(poly, 'change', function(evt) {
+        expect(evt.target).to.be(poly);
+        expect(evt.oldExtent).to.eql(bounds);
+        expect(evt.target.getBounds()).to.eql([0, 0, 11, 10]);
+        done();
+      });
+
+      var outerCoords = rings[0].getCoordinates();
+      outerCoords[1][0] = 11;
+      rings[0].setCoordinates(outerCoords);
+    });
+
+    it('is fired when inner ring is modified', function(done) {
+      var poly = new ol.geom.Polygon([outer, inner]);
+      var rings = poly.getRings();
+      var bounds = poly.getBounds();
+      goog.events.listen(poly, 'change', function(evt) {
+        expect(evt.target).to.be(poly);
+        expect(evt.oldExtent).to.eql(bounds);
+        expect(evt.target.getBounds()).to.eql([0, 0, 10, 10]);
+        done();
+      });
+
+      var innerCoords = rings[1].getCoordinates();
+      innerCoords[1][0] = 3;
+      rings[1].setCoordinates(innerCoords);
+    });
+
+  });
+
 });
 
+goog.require('goog.events');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.Polygon');
