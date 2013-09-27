@@ -15,11 +15,6 @@ ol.geom.AbstractCollection = function() {
   goog.base(this);
 
   /**
-   * @type {number}
-   */
-  this.dimension;
-
-  /**
    * @type {Array.<ol.geom.Geometry>}
    */
   this.components = null;
@@ -67,3 +62,15 @@ ol.geom.AbstractCollection.prototype.getCoordinates = function() {
  * @inheritDoc
  */
 ol.geom.AbstractCollection.prototype.getType = goog.abstractMethod;
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.AbstractCollection.prototype.transform = function(transform) {
+  var components = this.components;
+  for (var i = 0, ii = components.length; i < ii; ++i) {
+    components[i].transform(transform);
+  }
+  this.bounds = null;
+};

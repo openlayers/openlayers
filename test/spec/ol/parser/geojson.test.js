@@ -218,74 +218,11 @@ describe('ol.parser.GeoJSON', function() {
       });
     });
 
-    it('parses countries.geojson with shared vertices', function() {
-      afterLoadText('spec/ol/parser/geojson/countries.geojson', function(text) {
-        var pointVertices = new ol.geom.SharedVertices();
-        var lineVertices = new ol.geom.SharedVertices();
-        var polygonVertices = new ol.geom.SharedVertices();
-
-        var lookup = {
-          'point': pointVertices,
-          'linestring': lineVertices,
-          'polygon': polygonVertices,
-          'multipoint': pointVertices,
-          'multilinstring': lineVertices,
-          'multipolygon': polygonVertices
-        };
-
-        var callback = function(feature, type) {
-          return lookup[type];
-        };
-
-        var result = parser.readFeaturesFromString(text,
-            {callback: callback}).features;
-        expect(result.length).to.be(179);
-
-        expect(pointVertices.coordinates.length).to.be(0);
-        expect(lineVertices.coordinates.length).to.be(0);
-        expect(polygonVertices.coordinates.length).to.be(21344);
-
-        var first = result[0];
-        expect(first).to.be.a(ol.Feature);
-        expect(first.get('name')).to.be('Afghanistan');
-        var firstGeom = first.getGeometry();
-        expect(firstGeom).to.be.a(ol.geom.Polygon);
-        expect(ol.extent.equals(firstGeom.getBounds(),
-            [60.52843, 29.318572, 75.158028, 38.486282]))
-            .to.be(true);
-
-        var last = result[178];
-        expect(last).to.be.a(ol.Feature);
-        expect(last.get('name')).to.be('Zimbabwe');
-        var lastGeom = last.getGeometry();
-        expect(lastGeom).to.be.a(ol.geom.Polygon);
-        expect(ol.extent.equals(lastGeom.getBounds(),
-            [25.264226, -22.271612, 32.849861, -15.507787]))
-            .to.be(true);
-      });
-    });
-
   });
 
   describe('#parseAsFeatureCollection_()', function() {
 
     it('generates an array of features for FeatureCollection', function() {
-      var pointVertices = new ol.geom.SharedVertices();
-      var lineVertices = new ol.geom.SharedVertices();
-      var polygonVertices = new ol.geom.SharedVertices();
-
-      var lookup = {
-        'point': pointVertices,
-        'linestring': lineVertices,
-        'polygon': polygonVertices,
-        'multipoint': pointVertices,
-        'multilinstring': lineVertices,
-        'multipolygon': polygonVertices
-      };
-
-      var callback = function(feature, type) {
-        return lookup[type];
-      };
 
       var parser = new ol.parser.GeoJSON();
       var json = {
@@ -310,8 +247,7 @@ describe('ol.parser.GeoJSON', function() {
           }
         }]
       };
-      var result = parser.parseAsFeatureCollection_(json,
-          {callback: callback});
+      var result = parser.parseAsFeatureCollection_(json);
       var features = result.features;
 
       expect(features.length).to.be(2);
@@ -326,30 +262,10 @@ describe('ol.parser.GeoJSON', function() {
       expect(second.get('bam')).to.be('baz');
       expect(second.getGeometry()).to.be.a(ol.geom.LineString);
 
-      expect(pointVertices.coordinates.length).to.be(2);
-      expect(lineVertices.coordinates.length).to.be(4);
-      expect(polygonVertices.coordinates.length).to.be(0);
-
       expect(result.metadata.projection).to.be('EPSG:4326');
     });
 
     it('reads named crs from top-level object', function() {
-      var pointVertices = new ol.geom.SharedVertices();
-      var lineVertices = new ol.geom.SharedVertices();
-      var polygonVertices = new ol.geom.SharedVertices();
-
-      var lookup = {
-        'point': pointVertices,
-        'linestring': lineVertices,
-        'polygon': polygonVertices,
-        'multipoint': pointVertices,
-        'multilinstring': lineVertices,
-        'multipolygon': polygonVertices
-      };
-
-      var callback = function(feature, type) {
-        return lookup[type];
-      };
 
       var parser = new ol.parser.GeoJSON();
       var json = {
@@ -380,8 +296,7 @@ describe('ol.parser.GeoJSON', function() {
           }
         }]
       };
-      var result = parser.parseAsFeatureCollection_(json,
-          {callback: callback});
+      var result = parser.parseAsFeatureCollection_(json);
       var features = result.features;
 
       expect(features.length).to.be(2);
@@ -396,30 +311,10 @@ describe('ol.parser.GeoJSON', function() {
       expect(second.get('bam')).to.be('baz');
       expect(second.getGeometry()).to.be.a(ol.geom.LineString);
 
-      expect(pointVertices.coordinates.length).to.be(2);
-      expect(lineVertices.coordinates.length).to.be(4);
-      expect(polygonVertices.coordinates.length).to.be(0);
-
       expect(result.metadata.projection).to.be('EPSG:1234');
     });
 
     it('accepts null crs', function() {
-      var pointVertices = new ol.geom.SharedVertices();
-      var lineVertices = new ol.geom.SharedVertices();
-      var polygonVertices = new ol.geom.SharedVertices();
-
-      var lookup = {
-        'point': pointVertices,
-        'linestring': lineVertices,
-        'polygon': polygonVertices,
-        'multipoint': pointVertices,
-        'multilinstring': lineVertices,
-        'multipolygon': polygonVertices
-      };
-
-      var callback = function(feature, type) {
-        return lookup[type];
-      };
 
       var parser = new ol.parser.GeoJSON();
       var json = {
@@ -445,8 +340,7 @@ describe('ol.parser.GeoJSON', function() {
           }
         }]
       };
-      var result = parser.parseAsFeatureCollection_(json,
-          {callback: callback});
+      var result = parser.parseAsFeatureCollection_(json);
       var features = result.features;
 
       expect(features.length).to.be(2);
@@ -461,30 +355,10 @@ describe('ol.parser.GeoJSON', function() {
       expect(second.get('bam')).to.be('baz');
       expect(second.getGeometry()).to.be.a(ol.geom.LineString);
 
-      expect(pointVertices.coordinates.length).to.be(2);
-      expect(lineVertices.coordinates.length).to.be(4);
-      expect(polygonVertices.coordinates.length).to.be(0);
-
       expect(result.metadata.projection).to.be('EPSG:4326');
     });
 
     it('generates an array of features for Feature', function() {
-      var pointVertices = new ol.geom.SharedVertices();
-      var lineVertices = new ol.geom.SharedVertices();
-      var polygonVertices = new ol.geom.SharedVertices();
-
-      var lookup = {
-        'point': pointVertices,
-        'linestring': lineVertices,
-        'polygon': polygonVertices,
-        'multipoint': pointVertices,
-        'multilinstring': lineVertices,
-        'multipolygon': polygonVertices
-      };
-
-      var callback = function(feature, type) {
-        return lookup[type];
-      };
 
       var parser = new ol.parser.GeoJSON();
       var json = {
@@ -497,8 +371,7 @@ describe('ol.parser.GeoJSON', function() {
           coordinates: [[1, 2], [3, 4]]
         }
       };
-      var result = parser.parseAsFeatureCollection_(json,
-          {callback: callback});
+      var result = parser.parseAsFeatureCollection_(json);
       var features = result.features;
 
       expect(features.length).to.be(1);
@@ -508,30 +381,10 @@ describe('ol.parser.GeoJSON', function() {
       expect(first.get('bam')).to.be('baz');
       expect(first.getGeometry()).to.be.a(ol.geom.LineString);
 
-      expect(pointVertices.coordinates.length).to.be(0);
-      expect(lineVertices.coordinates.length).to.be(4);
-      expect(polygonVertices.coordinates.length).to.be(0);
-
       expect(result.metadata.projection).to.be('EPSG:4326');
     });
 
     it('generates an array of features for GeometryCollection', function() {
-      var pointVertices = new ol.geom.SharedVertices();
-      var lineVertices = new ol.geom.SharedVertices();
-      var polygonVertices = new ol.geom.SharedVertices();
-
-      var lookup = {
-        'point': pointVertices,
-        'linestring': lineVertices,
-        'polygon': polygonVertices,
-        'multipoint': pointVertices,
-        'multilinstring': lineVertices,
-        'multipolygon': polygonVertices
-      };
-
-      var callback = function(feature, type) {
-        return lookup[type];
-      };
 
       var parser = new ol.parser.GeoJSON();
       var json = {
@@ -547,8 +400,7 @@ describe('ol.parser.GeoJSON', function() {
           coordinates: [[[7, 8], [9, 10], [11, 12], [7, 8]]]
         }]
       };
-      var result = parser.parseAsFeatureCollection_(json,
-          {callback: callback});
+      var result = parser.parseAsFeatureCollection_(json);
       var features = result.features;
 
       expect(features.length).to.be(3);
@@ -557,123 +409,56 @@ describe('ol.parser.GeoJSON', function() {
       expect(features[1].getGeometry()).to.be.a(ol.geom.LineString);
       expect(features[2].getGeometry()).to.be.a(ol.geom.Polygon);
 
-      expect(pointVertices.coordinates.length).to.be(2);
-      expect(lineVertices.coordinates.length).to.be(4);
-      expect(polygonVertices.coordinates.length).to.be(8);
-
       expect(result.metadata.projection).to.be('EPSG:4326');
     });
 
     it('generates an array of features for Point', function() {
-      var pointVertices = new ol.geom.SharedVertices();
-      var lineVertices = new ol.geom.SharedVertices();
-      var polygonVertices = new ol.geom.SharedVertices();
-
-      var lookup = {
-        'point': pointVertices,
-        'linestring': lineVertices,
-        'polygon': polygonVertices,
-        'multipoint': pointVertices,
-        'multilinstring': lineVertices,
-        'multipolygon': polygonVertices
-      };
-
-      var callback = function(feature, type) {
-        return lookup[type];
-      };
 
       var parser = new ol.parser.GeoJSON();
       var json = {
         type: 'Point',
         coordinates: [1, 2]
       };
-      var result = parser.parseAsFeatureCollection_(json,
-          {callback: callback});
+      var result = parser.parseAsFeatureCollection_(json);
       var features = result.features;
 
       expect(features.length).to.be(1);
 
       expect(features[0].getGeometry()).to.be.a(ol.geom.Point);
 
-      expect(pointVertices.coordinates.length).to.be(2);
-      expect(lineVertices.coordinates.length).to.be(0);
-      expect(polygonVertices.coordinates.length).to.be(0);
-
       expect(result.metadata.projection).to.be('EPSG:4326');
     });
 
     it('generates an array of features for LineString', function() {
-      var pointVertices = new ol.geom.SharedVertices();
-      var lineVertices = new ol.geom.SharedVertices();
-      var polygonVertices = new ol.geom.SharedVertices();
-
-      var lookup = {
-        'point': pointVertices,
-        'linestring': lineVertices,
-        'polygon': polygonVertices,
-        'multipoint': pointVertices,
-        'multilinstring': lineVertices,
-        'multipolygon': polygonVertices
-      };
-
-      var callback = function(feature, type) {
-        return lookup[type];
-      };
 
       var parser = new ol.parser.GeoJSON();
       var json = {
         type: 'LineString',
         coordinates: [[3, 4], [5, 6]]
       };
-      var result = parser.parseAsFeatureCollection_(json,
-          {callback: callback});
+      var result = parser.parseAsFeatureCollection_(json);
       var features = result.features;
 
       expect(features.length).to.be(1);
 
       expect(features[0].getGeometry()).to.be.a(ol.geom.LineString);
 
-      expect(pointVertices.coordinates.length).to.be(0);
-      expect(lineVertices.coordinates.length).to.be(4);
-      expect(polygonVertices.coordinates.length).to.be(0);
-
       expect(result.metadata.projection).to.be('EPSG:4326');
     });
 
     it('generates an array of features for Polygon', function() {
-      var pointVertices = new ol.geom.SharedVertices();
-      var lineVertices = new ol.geom.SharedVertices();
-      var polygonVertices = new ol.geom.SharedVertices();
-
-      var lookup = {
-        'point': pointVertices,
-        'linestring': lineVertices,
-        'polygon': polygonVertices,
-        'multipoint': pointVertices,
-        'multilinstring': lineVertices,
-        'multipolygon': polygonVertices
-      };
-
-      var callback = function(feature, type) {
-        return lookup[type];
-      };
 
       var parser = new ol.parser.GeoJSON();
       var json = {
         type: 'Polygon',
         coordinates: [[[7, 8], [9, 10], [11, 12], [7, 8]]]
       };
-      var result = parser.parseAsFeatureCollection_(json,
-          {callback: callback});
+      var result = parser.parseAsFeatureCollection_(json);
       var features = result.features;
 
       expect(features.length).to.be(1);
 
       expect(features[0].getGeometry()).to.be.a(ol.geom.Polygon);
-
-      expect(pointVertices.coordinates.length).to.be(0);
-      expect(lineVertices.coordinates.length).to.be(0);
-      expect(polygonVertices.coordinates.length).to.be(8);
 
       expect(result.metadata.projection).to.be('EPSG:4326');
     });
@@ -690,5 +475,4 @@ goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.geom.SharedVertices');
 goog.require('ol.parser.GeoJSON');

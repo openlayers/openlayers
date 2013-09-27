@@ -22,7 +22,7 @@ var raster = new ol.layer.Tile({
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
     parser: new ol.parser.KML({
-      maxDepth: 1, dimension: 2, extractStyles: true, extractAttributes: true
+      maxDepth: 1, extractStyles: true, extractAttributes: true
     }),
     url: 'data/kml/lines.kml'
   })

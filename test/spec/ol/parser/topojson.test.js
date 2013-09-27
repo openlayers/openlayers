@@ -56,32 +56,11 @@ describe('ol.parser.TopoJSON', function() {
 
   describe('#readFeaturesFromString()', function() {
 
-    it('parses world-110m.geojson with shared vertices', function(done) {
+    it('parses world-110m.geojson', function(done) {
       afterLoadText('spec/ol/parser/topojson/world-110m.json', function(text) {
 
-        var pointVertices = new ol.geom.SharedVertices();
-        var lineVertices = new ol.geom.SharedVertices();
-        var polygonVertices = new ol.geom.SharedVertices();
-
-        var lookup = {
-          'point': pointVertices,
-          'linestring': lineVertices,
-          'polygon': polygonVertices,
-          'multipoint': pointVertices,
-          'multilinstring': lineVertices,
-          'multipolygon': polygonVertices
-        };
-
-        var callback = function(feature, type) {
-          return lookup[type];
-        };
-
-        var result = parser.readFeaturesFromString(text, {callback: callback});
+        var result = parser.readFeaturesFromString(text);
         expect(result.features.length).to.be(178);
-
-        expect(pointVertices.coordinates.length).to.be(0);
-        expect(lineVertices.coordinates.length).to.be(0);
-        expect(polygonVertices.coordinates.length).to.be(31400);
 
         var first = result.features[0];
         expect(first).to.be.a(ol.Feature);
@@ -110,6 +89,5 @@ describe('ol.parser.TopoJSON', function() {
 goog.require('ol.Feature');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Polygon');
-goog.require('ol.geom.SharedVertices');
 goog.require('ol.parser.Parser');
 goog.require('ol.parser.TopoJSON');
