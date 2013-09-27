@@ -58,11 +58,16 @@ ol.style.Rule = function(options) {
 
 /**
  * @param {ol.Feature} feature Feature.
+ * @param {number} resolution Map resolution.
  * @return {boolean} Does the rule apply to the feature?
  */
-ol.style.Rule.prototype.applies = function(feature) {
-  return goog.isNull(this.filter_) ?
-      true : !!ol.expr.evaluateFeature(this.filter_, feature);
+ol.style.Rule.prototype.applies = function(feature, resolution) {
+  var applies = resolution >= this.minResolution_ &&
+      resolution < this.maxResolution_;
+  if (applies && !goog.isNull(this.filter_)) {
+    applies = !!ol.expr.evaluateFeature(this.filter_, feature);
+  }
+  return applies;
 };
 
 
