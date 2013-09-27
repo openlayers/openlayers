@@ -14,6 +14,7 @@ goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
 goog.require('ol.layer.VectorLayerEventType');
+goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.VectorRenderer');
 goog.require('ol.tilegrid.TileGrid');
@@ -271,6 +272,9 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
         halfWidth, halfHeight, uid, coordinates, j;
     for (var id in candidates) {
       candidate = candidates[id];
+      if (candidate.renderIntent == ol.layer.VectorLayerRenderIntent.HIDDEN) {
+        continue;
+      }
       geom = candidate.getGeometry();
       type = geom.getType();
       if (type === ol.geom.GeometryType.POINT ||
