@@ -108,20 +108,22 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   }
 
   var context = this.context_;
-  context.setTransform(1, 0, 0, 1, 0, 0);
   context.clearRect(0, 0, size[0], size[1]);
 
   this.calculateMatrices2D(frameState);
 
   var layerStates = frameState.layerStates;
   var layersArray = frameState.layersArray;
+  var viewResolution = frameState.view2DState.resolution;
   var i, ii, image, layer, layerRenderer, layerState, transform;
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
 
     layer = layersArray[i];
     layerRenderer = this.getLayerRenderer(layer);
     layerState = layerStates[goog.getUid(layer)];
-    if (!layerState.visible || !layerState.ready) {
+    if (!layerState.visible || !layerState.ready ||
+        viewResolution >= layerState.maxResolution ||
+        viewResolution < layerState.minResolution) {
       continue;
     }
     layerRenderer.renderFrame(frameState, layerState);
@@ -150,6 +152,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
             goog.vec.Mat4.getElement(transform, 1, 3));
 
         context.drawImage(image, 0, 0);
+        context.setTransform(1, 0, 0, 1, 0, 0);
       }
     }
 

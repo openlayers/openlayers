@@ -13,7 +13,7 @@ describe('ol.parser.KML', function() {
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         expect(obj.features.length).to.eql(1);
         var geom = obj.features[0].getGeometry();
-        expect(obj.features[0].getFeatureId()).to.eql('KML.Polygon');
+        expect(obj.features[0].getId()).to.eql('KML.Polygon');
         expect(geom instanceof ol.geom.Polygon).to.be.ok();
         expect(geom.dimension).to.eql(3);
         done();
@@ -90,7 +90,7 @@ describe('ol.parser.KML', function() {
             'itself \n       at the height of the underlying terrain.';
         expect(obj.features[0].get('description')).to.eql(description);
         expect(obj.features[0].get('foo')).to.eql('bar');
-        expect(obj.features[0].getFeatureId()).to.eql('foobarbaz');
+        expect(obj.features[0].getId()).to.eql('foobarbaz');
         done();
       });
     });

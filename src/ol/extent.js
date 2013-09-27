@@ -8,6 +8,7 @@ goog.require('ol.TransformFunction');
 
 
 /**
+ * An array of numbers representing an extent: `[minx, miny, maxx, maxy]`.
  * @typedef {Array.<number>}
  */
 ol.Extent;
@@ -324,16 +325,6 @@ ol.extent.scaleFromCenter = function(extent, value) {
   extent[2] += deltaX;
   extent[1] -= deltaY;
   extent[3] += deltaY;
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @return {string} String.
- */
-ol.extent.toString = function(extent) {
-  return '(' + [extent[0], extent[2], extent[1],
-    extent[3]].join(', ') + ')';
 };
 
 

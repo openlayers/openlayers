@@ -8,6 +8,15 @@ goog.require('ol.Extent');
 goog.require('ol.proj');
 
 
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *            extent: (ol.Extent|undefined),
+ *            logo: (string|undefined),
+ *            projection: ol.proj.ProjectionLike}}
+ */
+ol.source.SourceOptions;
+
+
 
 /**
  * @constructor
@@ -61,15 +70,6 @@ goog.inherits(ol.source.Source, goog.events.EventTarget);
 ol.source.Source.prototype.dispatchChangeEvent = function() {
   ++this.revision_;
   this.dispatchEvent(goog.events.EventType.CHANGE);
-};
-
-
-/**
- * @protected
- */
-ol.source.Source.prototype.dispatchLoadEvent = function() {
-  ++this.revision_;
-  this.dispatchEvent(goog.events.EventType.LOAD);
 };
 
 

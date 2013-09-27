@@ -173,8 +173,8 @@ ol.style.Icon.prototype.getRotation = function() {
 
 
 /**
- * Get the url.
- * @return {ol.expr.Expression} Icon url.
+ * Get the URL.
+ * @return {ol.expr.Expression} Icon URL.
  */
 ol.style.Icon.prototype.getUrl = function() {
   return this.url_;
@@ -239,8 +239,8 @@ ol.style.Icon.prototype.setRotation = function(rotation) {
 
 
 /**
- * Set the url.
- * @param {ol.expr.Expression} url Icon url.
+ * Set the URL.
+ * @param {ol.expr.Expression} url Icon URL.
  */
 ol.style.Icon.prototype.setUrl = function(url) {
   goog.asserts.assertInstanceof(url, ol.expr.Expression);

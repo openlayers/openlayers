@@ -212,13 +212,6 @@ describe('ol.extent', function() {
     });
   });
 
-  describe('toString', function() {
-    it('returns the expected string', function() {
-      var extent = [0, 1, 2, 3];
-      expect(ol.extent.toString(extent)).to.eql('(0, 2, 1, 3)');
-    });
-  });
-
   describe('transform', function() {
 
     it('does transform', function() {

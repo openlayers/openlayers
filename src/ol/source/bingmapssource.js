@@ -24,7 +24,8 @@ ol.source.BingMaps = function(options) {
   goog.base(this, {
     crossOrigin: 'anonymous',
     opaque: true,
-    projection: ol.proj.get('EPSG:3857')
+    projection: ol.proj.get('EPSG:3857'),
+    tileLoadFunction: options.tileLoadFunction
   });
 
   /**
@@ -140,7 +141,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
 
   this.ready_ = true;
 
-  this.dispatchLoadEvent();
+  this.dispatchChangeEvent();
 
 };
 

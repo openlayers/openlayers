@@ -32,7 +32,7 @@ var vector = new ol.layer.Vector({
   }),
   transformFeatureInfo: function(features) {
     return features.length > 0 ?
-        features[0].getFeatureId() + ': ' + features[0].get('name') : '&nbsp;';
+        features[0].getId() + ': ' + features[0].get('name') : '&nbsp;';
   }
 });
 

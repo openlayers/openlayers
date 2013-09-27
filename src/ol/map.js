@@ -11,9 +11,8 @@ goog.require('goog.Uri.QueryData');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.async.AnimationDelay');
-goog.require('goog.async.Delay');
+goog.require('goog.async.nextTick');
 goog.require('goog.debug.Console');
-goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.ViewportSizeMonitor');
@@ -309,12 +308,6 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {goog.async.Delay}
-   */
-  this.postRenderDelay_ = new goog.async.Delay(this.handlePostRender, 0, this);
-
-  /**
-   * @private
    * @type {ol.TileQueue}
    */
   this.tileQueue_ = new ol.TileQueue(
@@ -417,7 +410,6 @@ ol.Map.prototype.removePreRenderFunction = function(preRenderFunction) {
  */
 ol.Map.prototype.disposeInternal = function() {
   goog.dom.removeNode(this.viewport_);
-  goog.dispose(this.postRenderDelay_);
   goog.base(this, 'disposeInternal');
 };
 
@@ -1008,9 +1000,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
   this.dispatchEvent(
       new ol.MapEvent(ol.MapEventType.POSTRENDER, this, frameState));
 
-  if (!this.postRenderDelay_.isActive()) {
-    this.postRenderDelay_.start();
-  }
+  goog.async.nextTick(this.handlePostRender, this);
 
 };
 

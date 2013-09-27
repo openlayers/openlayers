@@ -98,6 +98,7 @@ ol.source.TileWMS = function(options) {
     tileGrid: options.tileGrid,
     opaque: !transparent,
     projection: options.projection,
+    tileLoadFunction: options.tileLoadFunction,
     tileUrlFunction: ol.TileUrlFunction.withTileCoordTransform(
         tileCoordTransform, tileUrlFunction)
   });
@@ -147,7 +148,7 @@ ol.source.TileWMS.prototype.getFeatureInfoForPixel =
       offset = map.getPixelFromCoordinate(ol.extent.getTopLeft(tileExtent)),
       url = this.tileUrlFunction(tileCoord, projection);
   goog.asserts.assert(goog.isDef(url),
-      'ol.source.TileWMS#tileUrlFunction does not return a url');
+      'ol.source.TileWMS#tileUrlFunction does not return a URL');
   ol.source.wms.getFeatureInfo(url,
       [pixel[0] - offset[0], pixel[1] - offset[1]], this.getFeatureInfoOptions_,
       success, opt_error);

@@ -111,7 +111,7 @@ ol.source.ImageWMS.prototype.getFeatureInfoForPixel =
       extent = [bottomLeft[0], topRight[0], bottomLeft[1], topRight[1]],
       url = this.imageUrlFunction(extent, size, projection);
   goog.asserts.assert(goog.isDef(url),
-      'ol.source.ImageWMS#imageUrlFunction does not return a url');
+      'ol.source.ImageWMS#imageUrlFunction does not return a URL');
   ol.source.wms.getFeatureInfo(url, pixel, this.getFeatureInfoOptions_, success,
       opt_error);
 };

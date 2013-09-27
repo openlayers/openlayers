@@ -45,7 +45,8 @@ ol.source.TileJSON = function(options) {
 
   goog.base(this, {
     crossOrigin: options.crossOrigin,
-    projection: ol.proj.get('EPSG:3857')
+    projection: ol.proj.get('EPSG:3857'),
+    tileLoadFunction: options.tileLoadFunction
   });
 
   /**
@@ -119,7 +120,7 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function() {
 
   this.ready_ = true;
 
-  this.dispatchLoadEvent();
+  this.dispatchChangeEvent();
 
 };
 
