@@ -509,7 +509,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
 
   renderByGeometryType:
   for (type in featuresToRender) {
-    groups = layer.groupFeaturesBySymbolizerLiteral(featuresToRender[type]);
+    groups = layer.groupFeaturesBySymbolizerLiteral(
+        featuresToRender[type], tileResolution);
     numGroups = groups.length;
     for (j = 0; j < numGroups; ++j) {
       group = groups[j];

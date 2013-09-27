@@ -45,17 +45,18 @@ ol.style.Style = function(options) {
 /**
  * Create an array of symbolizer literals for a feature.
  * @param {ol.Feature} feature Feature.
+ * @param {number} resolution Map resolution.
  * @return {Array.<ol.style.Literal>} Symbolizer literals for the
  *     feature.
  */
-ol.style.Style.prototype.createLiterals = function(feature) {
+ol.style.Style.prototype.createLiterals = function(feature, resolution) {
   var rules = this.rules_,
       symbolizers = [],
       applies = false,
       rule;
   for (var i = 0, ii = rules.length; i < ii; ++i) {
     rule = rules[i];
-    if (rule.applies(feature)) {
+    if (rule.applies(feature, resolution)) {
       applies = true;
       symbolizers.push.apply(symbolizers, rule.getSymbolizers());
     }
