@@ -229,9 +229,10 @@ ol.parser.WKT.prototype.encodeMultiLineString_ = function(geom) {
  */
 ol.parser.WKT.prototype.encodePolygon_ = function(geom) {
   var array = [];
-  for (var i = 0, ii = geom.rings.length; i < ii; ++i) {
+  var rings = geom.getRings();
+  for (var i = 0, ii = rings.length; i < ii; ++i) {
     array.push('(' + this.encodeLineString_.apply(this,
-        [geom.rings[i]]) + ')');
+        [rings[i]]) + ')');
   }
   return array.join(',');
 };

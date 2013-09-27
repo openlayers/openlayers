@@ -155,7 +155,7 @@ ol.parser.GPX = function(opt_options) {
         var desc = attributes['description'] || this.defaultDesc;
         this.writeNode('desc', desc, undefined, node);
         var geom = feature.getGeometry();
-        var i, ii;
+        var i, ii, rings;
         if (geom instanceof ol.geom.LineString) {
           this.writeNode('trkseg', feature.getGeometry(), undefined, node);
         } else if (geom instanceof ol.geom.MultiLineString) {
@@ -163,8 +163,9 @@ ol.parser.GPX = function(opt_options) {
             this.writeNode('trkseg', geom.components[i], undefined, node);
           }
         } else if (geom instanceof ol.geom.Polygon) {
-          for (i = 0, ii = geom.rings.length; i < ii; ++i) {
-            this.writeNode('trkseg', geom.rings[i], undefined, node);
+          rings = geom.getRings();
+          for (i = 0, ii = rings.length; i < ii; ++i) {
+            this.writeNode('trkseg', rings[i], undefined, node);
           }
         }
         return node;

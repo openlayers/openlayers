@@ -16,15 +16,15 @@ describe('ol.geom.Polygon', function() {
 
   });
 
-  describe('#rings', function() {
+  describe('#getRings()', function() {
 
-    it('is an array of LinearRing', function() {
+    it('returns an array of LinearRing', function() {
       var poly = new ol.geom.Polygon([outer, inner1, inner2]);
-
-      expect(poly.rings.length).to.be(3);
-      expect(poly.rings[0]).to.be.a(ol.geom.LinearRing);
-      expect(poly.rings[1]).to.be.a(ol.geom.LinearRing);
-      expect(poly.rings[2]).to.be.a(ol.geom.LinearRing);
+      var rings = poly.getRings();
+      expect(rings.length).to.be(3);
+      expect(rings[0]).to.be.a(ol.geom.LinearRing);
+      expect(rings[1]).to.be.a(ol.geom.LinearRing);
+      expect(rings[2]).to.be.a(ol.geom.LinearRing);
     });
 
     var isClockwise = ol.geom.LinearRing.isClockwise;
@@ -34,7 +34,7 @@ describe('ol.geom.Polygon', function() {
       expect(isClockwise(outer)).to.be(false);
 
       var poly = new ol.geom.Polygon([outer]);
-      var ring = poly.rings[0];
+      var ring = poly.getRings()[0];
       expect(isClockwise(ring.getCoordinates())).to.be(true);
     });
 
@@ -44,7 +44,7 @@ describe('ol.geom.Polygon', function() {
       expect(isClockwise(inner)).to.be(true);
 
       var poly = new ol.geom.Polygon([outer, inner]);
-      var ring = poly.rings[1];
+      var ring = poly.getRings()[1];
       expect(isClockwise(ring.getCoordinates())).to.be(false);
     });
 

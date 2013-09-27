@@ -150,10 +150,11 @@ describe('ol.parser.GeoJSON', function() {
 
       var obj = parser.read(str);
       expect(obj).to.be.a(ol.geom.Polygon);
-      expect(obj.rings.length).to.be(3);
-      expect(obj.rings[0]).to.be.a(ol.geom.LinearRing);
-      expect(obj.rings[1]).to.be.a(ol.geom.LinearRing);
-      expect(obj.rings[2]).to.be.a(ol.geom.LinearRing);
+      var rings = obj.getRings();
+      expect(rings.length).to.be(3);
+      expect(rings[0]).to.be.a(ol.geom.LinearRing);
+      expect(rings[1]).to.be.a(ol.geom.LinearRing);
+      expect(rings[2]).to.be.a(ol.geom.LinearRing);
     });
 
     it('parses geometry collection', function() {
