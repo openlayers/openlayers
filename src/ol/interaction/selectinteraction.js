@@ -29,6 +29,13 @@ ol.interaction.Select = function(opt_options) {
       options.condition : ol.interaction.condition.clickOnly;
 
   /**
+   * @private
+   * @type {ol.interaction.ConditionType}
+   */
+  this.addCondition_ = goog.isDef(options.addCondition) ?
+      options.addCondition : ol.interaction.condition.shiftKeyOnly;
+
+  /**
    * Mapping between original features and cloned features on selection layers.
    * @type {Object.<*,Object.<*,ol.Feature>>}
    * @private
@@ -65,7 +72,7 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
     if (!goog.isNull(this.layerFilter_)) {
       layers = goog.array.filter(layers, this.layerFilter_);
     }
-    var clear = !ol.interaction.condition.shiftKeyOnly(mapBrowserEvent);
+    var clear = !this.addCondition_(mapBrowserEvent);
 
     var that = this;
     var select = function(featuresByLayer) {
