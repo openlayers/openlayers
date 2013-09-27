@@ -39,6 +39,20 @@ ol.style.Rule = function(options) {
   this.symbolizers_ = goog.isDef(options.symbolizers) ?
       options.symbolizers : [];
 
+  /**
+   * @type {number}
+   * @private
+   */
+  this.minResolution_ = goog.isDef(options.minResolution) ?
+      options.minResolution : 0;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.maxResolution_ = goog.isDef(options.maxResolution) ?
+      options.maxResolution : Infinity;
+
 };
 
 

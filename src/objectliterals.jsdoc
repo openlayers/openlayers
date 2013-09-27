@@ -700,6 +700,12 @@
 /**
  * @typedef {Object} ol.style.RuleOptions
  * @property {ol.expr.Expression|string|undefined} filter Filter.
+ * @property {number|undefined} maxResolution Optional maximum resolution.  If
+ *     a value is provided, the rule will apply at resolutions less than
+ *     this value.
+ * @property {number|undefined} minResolution Optional minimum resolution.  If
+ *     a value is provided, the rule will apply at resolutions greater than or
+ *     equal to this value.
  * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers.
  */
 

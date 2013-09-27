@@ -2,6 +2,31 @@ goog.provide('ol.test.style.Rule');
 
 describe('ol.style.Rule', function() {
 
+  describe('constructor', function() {
+
+    it('accepts a filter option', function() {
+      var rule = new ol.style.Rule({
+        filter: 'foo == "bar"'
+      });
+      expect(rule).to.be.a(ol.style.Rule);
+    });
+
+    it('accepts a minResolution option', function() {
+      var rule = new ol.style.Rule({
+        minResolution: 10
+      });
+      expect(rule).to.be.a(ol.style.Rule);
+    });
+
+    it('accepts a maxResolution option', function() {
+      var rule = new ol.style.Rule({
+        maxResolution: 100
+      });
+      expect(rule).to.be.a(ol.style.Rule);
+    });
+
+  });
+
   describe('#applies()', function() {
     var feature = new ol.Feature(),
         rule;
