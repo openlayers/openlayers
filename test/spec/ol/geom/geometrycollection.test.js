@@ -36,25 +36,6 @@ describe('ol.geom.GeometryCollection', function() {
 
   });
 
-  describe('#dimension', function() {
-
-    it('can be 2', function() {
-      var point = new ol.geom.Point([10, 20]);
-      var line = new ol.geom.LineString([[10, 20], [30, 40]]);
-      var poly = new ol.geom.Polygon([outer, inner1, inner2]);
-      var multi = new ol.geom.GeometryCollection([point, line, poly]);
-      expect(multi.dimension).to.be(2);
-    });
-
-    it('can be 3', function() {
-      var multi = new ol.geom.GeometryCollection([
-        new ol.geom.Point([30, 40, 50])
-      ]);
-      expect(multi.dimension).to.be(3);
-    });
-
-  });
-
   describe('#clone()', function() {
 
     it('has a working clone method', function() {

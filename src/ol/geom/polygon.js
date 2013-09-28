@@ -6,7 +6,6 @@ goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LinearRing');
-goog.require('ol.geom.SharedVertices');
 
 
 
@@ -21,31 +20,16 @@ goog.require('ol.geom.SharedVertices');
  * @extends {ol.geom.Geometry}
  * @param {Array.<ol.CoordinateArray>} coordinates Array of rings.  First
  *    is outer, any remaining are inner.
- * @param {ol.geom.SharedVertices=} opt_shared Shared vertices.
  */
-ol.geom.Polygon = function(coordinates, opt_shared) {
+ol.geom.Polygon = function(coordinates) {
   goog.base(this);
   goog.asserts.assert(goog.isArray(coordinates[0][0]));
-
-  var vertices = opt_shared,
-      dimension;
-
-  if (!goog.isDef(vertices)) {
-    // try to get dimension from first vertex in first ring
-    dimension = coordinates[0][0].length;
-    vertices = new ol.geom.SharedVertices({dimension: dimension});
-  }
 
   /**
    * @private
    * @type {ol.Coordinate}
    */
   this.labelPoint_ = null;
-
-  /**
-   * @type {ol.geom.SharedVertices}
-   */
-  this.vertices = vertices;
 
   var numRings = coordinates.length;
 
@@ -67,14 +51,8 @@ ol.geom.Polygon = function(coordinates, opt_shared) {
         ringCoords.reverse();
       }
     }
-    this.rings[i] = new ol.geom.LinearRing(ringCoords, vertices);
+    this.rings[i] = new ol.geom.LinearRing(ringCoords);
   }
-
-  /**
-   * @type {number}
-   */
-  this.dimension = vertices.getDimension();
-  goog.asserts.assert(this.dimension >= 2);
 
 };
 goog.inherits(ol.geom.Polygon, ol.geom.Geometry);
@@ -178,4 +156,15 @@ ol.geom.Polygon.prototype.getInteriorPoint = function() {
   }
 
   return this.labelPoint_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.Polygon.prototype.transform = function(transform) {
+  var rings = this.rings;
+  for (var i = 0, ii = rings.length; i < ii; ++i) {
+    rings[i].transform(transform);
+  }
 };
