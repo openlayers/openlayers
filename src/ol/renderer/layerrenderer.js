@@ -10,6 +10,7 @@ goog.require('ol.TileState');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.LayerState');
 goog.require('ol.source.Source');
+goog.require('ol.source.State');
 goog.require('ol.source.Tile');
 
 
@@ -113,7 +114,7 @@ ol.renderer.Layer.prototype.renderFrame = goog.abstractMethod;
  */
 ol.renderer.Layer.prototype.renderIfReadyAndVisible = function() {
   var layer = this.getLayer();
-  if (layer.getVisible() && layer.isReady()) {
+  if (layer.getVisible() && layer.getSourceState() == ol.source.State.READY) {
     this.getMap().render();
   }
 };

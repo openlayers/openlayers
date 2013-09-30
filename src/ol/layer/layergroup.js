@@ -11,6 +11,7 @@ goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Object');
 goog.require('ol.layer.Base');
+goog.require('ol.source.State');
 
 
 /**
@@ -205,6 +206,7 @@ ol.layer.Group.prototype.getLayerStatesArray = function(opt_obj) {
     layerState.hue += ownLayerState.hue;
     layerState.opacity *= ownLayerState.opacity;
     layerState.saturation *= ownLayerState.saturation;
+    layerState.sourceState = this.getSourceState();
     layerState.visible = layerState.visible && ownLayerState.visible;
     layerState.maxResolution = Math.min(
         layerState.maxResolution, ownLayerState.maxResolution);
@@ -219,9 +221,31 @@ ol.layer.Group.prototype.getLayerStatesArray = function(opt_obj) {
 /**
  * @inheritDoc
  */
-ol.layer.Group.prototype.isReady = function() {
-  return null === goog.array.find(
-      this.getLayers().getArray(), function(elt, index, array) {
-        return !elt.isReady();
-      });
+ol.layer.Group.prototype.getSourceState = function() {
+  // Return the layer group's source state based on the best source state of its
+  // children:
+  // - if any child is READY, return READY
+  // - otherwise, if any child is LOADING, return LOADING
+  // - otherwise, all children must be in ERROR, return ERROR
+  // - otherwise, there are no children, return READY
+  var layerSourceStates = [0, 0, 0];
+  var layers = this.getLayers().getArray();
+  var n = layers.length;
+  var i;
+  for (i = 0; i < n; ++i) {
+    var layerSourceState = layers[i].getSourceState();
+    goog.asserts.assert(layerSourceState < layerSourceStates.length);
+    ++layerSourceStates[layerSourceState];
+  }
+  if (layerSourceStates[ol.source.State.READY]) {
+    return ol.source.State.READY;
+  } else if (layerSourceStates[ol.source.State.LOADING]) {
+    return ol.source.State.LOADING;
+  } else if (layerSourceStates[ol.source.State.ERROR]) {
+    goog.asserts.assert(layerSourceStates[ol.source.State.ERROR] == n);
+    return ol.source.State.ERROR;
+  } else {
+    goog.asserts.assert(n === 0);
+    return ol.source.State.READY;
+  }
 };

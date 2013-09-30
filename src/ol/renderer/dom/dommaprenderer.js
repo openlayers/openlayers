@@ -10,6 +10,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.dom.ImageLayer');
 goog.require('ol.renderer.dom.TileLayer');
+goog.require('ol.source.State');
 
 
 
@@ -84,7 +85,7 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
     layer = layersArray[i];
     layerRenderer = this.getLayerRenderer(layer);
     layerState = frameState.layerStates[goog.getUid(layer)];
-    if (layerState.ready) {
+    if (layerState.sourceState == ol.source.State.READY) {
       layerRenderer.renderFrame(frameState, layerState);
     }
   }

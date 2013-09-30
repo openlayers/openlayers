@@ -17,6 +17,7 @@ goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.canvas.VectorLayer');
 goog.require('ol.size');
+goog.require('ol.source.State');
 
 
 
@@ -121,7 +122,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     layer = layersArray[i];
     layerRenderer = this.getLayerRenderer(layer);
     layerState = layerStates[goog.getUid(layer)];
-    if (!layerState.visible || !layerState.ready ||
+    if (!layerState.visible ||
+        layerState.sourceState != ol.source.State.READY ||
         viewResolution >= layerState.maxResolution ||
         viewResolution < layerState.minResolution) {
       continue;
