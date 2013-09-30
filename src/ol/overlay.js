@@ -280,11 +280,16 @@ goog.exportProperty(
 
 
 /**
+ * Set the positioning for this overlay.
  * @param {ol.OverlayPositioning|undefined} positioning Positioning.
  */
 ol.Overlay.prototype.setPositioning = function(positioning) {
   this.set(ol.OverlayProperty.POSITIONING, positioning);
 };
+goog.exportProperty(
+    ol.Overlay.prototype,
+    'setPositioning',
+    ol.Overlay.prototype.setPositioning);
 
 
 /**
