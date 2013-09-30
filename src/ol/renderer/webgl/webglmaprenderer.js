@@ -27,6 +27,7 @@ goog.require('ol.renderer.webgl.VectorLayer2');
 goog.require('ol.renderer.webgl.map.shader.Color');
 goog.require('ol.renderer.webgl.map.shader.Default');
 goog.require('ol.size');
+goog.require('ol.source.State');
 goog.require('ol.structs.Buffer');
 goog.require('ol.structs.IntegerSet');
 goog.require('ol.structs.LRUCache');
@@ -557,7 +558,8 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     layer = layersArray[i];
     layerRenderer = this.getLayerRenderer(layer);
     layerState = frameState.layerStates[goog.getUid(layer)];
-    if (layerState.visible && layerState.ready &&
+    if (layerState.visible &&
+        layerState.sourceState == ol.source.State.READY &&
         viewResolution < layerState.maxResolution &&
         viewResolution >= layerState.minResolution) {
       layerRenderer.renderFrame(frameState, layerState);
@@ -585,7 +587,8 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
     layer = layersArray[i];
     layerState = frameState.layerStates[goog.getUid(layer)];
-    if (!layerState.visible || !layerState.ready ||
+    if (!layerState.visible ||
+        layerState.sourceState != ol.source.State.READY ||
         viewResolution >= layerState.maxResolution ||
         viewResolution < layerState.minResolution) {
       continue;
