@@ -4,6 +4,7 @@ goog.provide('ol.View2D');
 goog.provide('ol.View2DProperty');
 
 goog.require('goog.asserts');
+goog.require('ol.CenterConstraint');
 goog.require('ol.Constraints');
 goog.require('ol.IView2D');
 goog.require('ol.IView3D');
@@ -112,6 +113,7 @@ ol.View2D = function(opt_options) {
    */
   this.minResolution_ = resolutionConstraintInfo.minResolution;
 
+  var centerConstraint = ol.View2D.createCenterConstraint_(options);
   var resolutionConstraint = resolutionConstraintInfo.constraint;
   var rotationConstraint = ol.View2D.createRotationConstraint_(options);
 
@@ -119,8 +121,8 @@ ol.View2D = function(opt_options) {
    * @private
    * @type {ol.Constraints}
    */
-  this.constraints_ = new ol.Constraints(resolutionConstraint,
-      rotationConstraint);
+  this.constraints_ = new ol.Constraints(
+      centerConstraint, resolutionConstraint, rotationConstraint);
 
   if (goog.isDef(options.resolution)) {
     values[ol.View2DProperty.RESOLUTION] = options.resolution;
@@ -169,6 +171,15 @@ ol.View2D.prototype.calculateCenterZoom = function(resolution, anchor) {
     center = [x, y];
   }
   return center;
+};
+
+
+/**
+ * @param {ol.Coordinate|undefined} center Center.
+ * @return {ol.Coordinate|undefined} Constrained center.
+ */
+ol.View2D.prototype.constrainCenter = function(center) {
+  return this.constraints_.center(center);
 };
 
 
@@ -469,6 +480,20 @@ goog.exportProperty(
 ol.View2D.prototype.setZoom = function(zoom) {
   var resolution = this.constrainResolution(this.maxResolution_, zoom, 0);
   this.setResolution(resolution);
+};
+
+
+/**
+ * @param {ol.View2DOptions} options View2D options.
+ * @private
+ * @return {ol.CenterConstraintType}
+ */
+ol.View2D.createCenterConstraint_ = function(options) {
+  if (goog.isDef(options.extent)) {
+    return ol.CenterConstraint.createExtent(options.extent);
+  } else {
+    return ol.CenterConstraint.none;
+  }
 };
 
 
