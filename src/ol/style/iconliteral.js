@@ -1,5 +1,6 @@
 goog.provide('ol.style.IconLiteral');
 
+goog.require('goog.asserts');
 goog.require('ol.style.PointLiteral');
 
 
@@ -11,7 +12,7 @@ goog.require('ol.style.PointLiteral');
  *            rotation: number,
  *            xOffset: number,
  *            yOffset: number,
- *            zIndex: (number|undefined)}}
+ *            zIndex: number}}
  */
 ol.style.IconLiteralOptions;
 
@@ -45,7 +46,9 @@ ol.style.IconLiteral = function(options) {
   /** @type {number} */
   this.yOffset = options.yOffset;
 
-  /** @type {number|undefined} */
+  goog.asserts.assertNumber(
+      options.zIndex, 'zIndex must be a number');
+  /** @type {number} */
   this.zIndex = options.zIndex;
 
 };

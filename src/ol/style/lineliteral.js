@@ -5,10 +5,10 @@ goog.require('ol.style.Literal');
 
 
 /**
- * @typedef {{color: (string),
- *            opacity: (number),
- *            width: (number),
- *            zIndex: (number|undefined)}}
+ * @typedef {{color: string,
+ *            opacity: number,
+ *            width: number,
+ *            zIndex: number}}
  */
 ol.style.LineLiteralOptions;
 
@@ -37,7 +37,9 @@ ol.style.LineLiteral = function(options) {
   /** @type {number} */
   this.width = options.width;
 
-  /** @type {number|undefined} */
+  goog.asserts.assertNumber(
+      options.zIndex, 'zIndex must be a number');
+  /** @type {number} */
   this.zIndex = options.zIndex;
 
 };

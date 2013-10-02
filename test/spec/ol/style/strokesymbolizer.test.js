@@ -49,7 +49,7 @@ describe('ol.style.Stroke', function() {
       expect(literal).to.be.a(ol.style.LineLiteral);
       expect(literal.opacity).to.be(42 / 100);
       expect(literal.width).to.be(1.5);
-      expect(literal.zIndex).to.be(undefined);
+      expect(literal.zIndex).to.be(0);
     });
 
     it('applies the default values', function() {
@@ -60,6 +60,7 @@ describe('ol.style.Stroke', function() {
       expect(literal.color).to.be('#696969');
       expect(literal.opacity).to.be(0.75);
       expect(literal.width).to.be(1.5);
+      expect(literal.zIndex).to.be(0);
     });
 
   });

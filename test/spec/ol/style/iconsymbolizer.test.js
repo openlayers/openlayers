@@ -77,7 +77,7 @@ describe('ol.style.Icon', function() {
       expect(literal.xOffset).to.be(20);
       expect(literal.yOffset).to.be(30);
       expect(literal.url).to.be('http://example.com/1.png');
-      expect(literal.zIndex).to.be(undefined);
+      expect(literal.zIndex).to.be(0);
     });
 
     it('can be called without a feature', function() {
@@ -248,6 +248,35 @@ describe('ol.style.Icon', function() {
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.xOffset).to.be(0);
       expect(literal.zIndex).to.be(4);
+    });
+
+    it('applies default zIndex if none', function() {
+      var symbolizer = new ol.style.Icon({
+        height: 10,
+        width: 20,
+        url: 'http://example.com/1.png'
+      });
+
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      expect(literal).to.be.a(ol.style.IconLiteral);
+      expect(literal.zIndex).to.be(0);
+    });
+
+    it('casts zIndex to number', function() {
+      var symbolizer = new ol.style.Icon({
+        zIndex: ol.expr.parse('zIndex'),
+        width: 10,
+        url: 'http://example.com/1.png'
+      });
+
+      var feature = new ol.Feature({
+        zIndex: '42',
+        geometry: new ol.geom.Point([1, 2])
+      });
+
+      var literal = symbolizer.createLiteral(feature);
+      expect(literal).to.be.a(ol.style.IconLiteral);
+      expect(literal.zIndex).to.be(42);
     });
 
   });

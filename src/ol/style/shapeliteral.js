@@ -21,7 +21,7 @@ ol.style.ShapeType = {
  *            strokeColor: (string|undefined),
  *            strokeOpacity: (number|undefined),
  *            strokeWidth: (number|undefined),
- *            zIndex: (number|undefined)}}
+ *            zIndex: number}}
  */
 ol.style.ShapeLiteralOptions;
 
@@ -85,7 +85,9 @@ ol.style.ShapeLiteral = function(options) {
       'Either fillColor and fillOpacity or ' +
       'strokeColor and strokeOpacity and strokeWidth must be set');
 
-  /** @type {number|undefined} */
+  goog.asserts.assertNumber(
+      options.zIndex, 'zIndex must be a number');
+  /** @type {number} */
   this.zIndex = options.zIndex;
 
 };

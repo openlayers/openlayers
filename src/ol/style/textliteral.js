@@ -10,7 +10,7 @@ goog.require('ol.style.Literal');
  *            fontSize: number,
  *            text: string,
  *            opacity: number,
- *            zIndex: (number|undefined)}}
+ *            zIndex: number}}
  */
 ol.style.TextLiteralOptions;
 
@@ -43,7 +43,8 @@ ol.style.TextLiteral = function(options) {
   /** @type {number} */
   this.opacity = options.opacity;
 
-  /** @type {number|undefined} */
+  goog.asserts.assertNumber(options.zIndex, 'zIndex must be a number');
+  /** @type {number} */
   this.zIndex = options.zIndex;
 
 };

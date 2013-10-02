@@ -54,7 +54,7 @@ ol.style.Stroke = function(opt_options) {
    * @private
    */
   this.zIndex_ = !goog.isDefAndNotNull(options.zIndex) ?
-      null :
+      new ol.expr.Literal(ol.style.StrokeDefaults.zIndex) :
       (options.zIndex instanceof ol.expr.Expression) ?
           options.zIndex : new ol.expr.Literal(options.zIndex);
 
@@ -88,11 +88,8 @@ ol.style.Stroke.prototype.createLiteral = function(featureOrType) {
       this.width_, feature));
   goog.asserts.assert(!isNaN(width), 'width must be a number');
 
-  var zIndex;
-  if (!goog.isNull(this.zIndex_)) {
-    zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
-    goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
-  }
+  var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
+  goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
 
   var literal = null;
   if (type === ol.geom.GeometryType.LINESTRING ||
@@ -194,24 +191,28 @@ ol.style.Stroke.prototype.setZIndex = function(zIndex) {
 
 
 /**
- * @typedef {{strokeColor: (string),
- *            strokeOpacity: (number),
- *            strokeWidth: (number)}}
+ * @typedef {{strokeColor: string,
+ *            strokeOpacity: number,
+ *            strokeWidth: number,
+ *            zIndex: number}}
  */
 ol.style.StrokeDefaults = {
   color: '#696969',
   opacity: 0.75,
-  width: 1.5
+  width: 1.5,
+  zIndex: 0
 };
 
 
 /**
- * @typedef {{color: (string),
- *            opacity: (number),
- *            width: (number)}}
+ * @typedef {{color: string,
+ *            opacity: number,
+ *            width: number,
+ *            zIndex: number}}
  */
 ol.style.StrokeDefaultsSelect = {
   color: '#696969',
   opacity: 0.9,
-  width: 2.0
+  width: 2.0,
+  zIndex: 0
 };

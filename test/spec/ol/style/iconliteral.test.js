@@ -10,49 +10,56 @@ describe('ol.style.IconLiteral', function() {
         width: 20,
         opacity: 1,
         rotation: 0.1,
-        url: 'http://example.com/1.png'
+        url: 'http://example.com/1.png',
+        zIndex: 0
       });
       var equalLiteral = new ol.style.IconLiteral({
         height: 10,
         width: 20,
         opacity: 1,
         rotation: 0.1,
-        url: 'http://example.com/1.png'
+        url: 'http://example.com/1.png',
+        zIndex: 0
       });
-      var differentLiteral1 = new ol.style.IconLiteral({
+      var differentHeight = new ol.style.IconLiteral({
         height: 11,
         width: 20,
         opacity: 1,
         rotation: 0.1,
-        url: 'http://example.com/1.png'
+        url: 'http://example.com/1.png',
+        zIndex: 0
       });
-      var differentLiteral2 = new ol.style.IconLiteral({
+      var differentWidth = new ol.style.IconLiteral({
         height: 10,
         width: 2,
         opacity: 1,
         rotation: 0.1,
-        url: 'http://example.com/1.png'
+        url: 'http://example.com/1.png',
+        zIndex: 0
       });
-      var differentLiteral3 = new ol.style.IconLiteral({
+      var differentOpacity = new ol.style.IconLiteral({
         height: 10,
         width: 20,
         opacity: 0.5,
         rotation: 0.1,
-        url: 'http://example.com/1.png'
+        url: 'http://example.com/1.png',
+        zIndex: 0
       });
-      var differentLiteral4 = new ol.style.IconLiteral({
+      var differentRotation = new ol.style.IconLiteral({
         height: 10,
         width: 20,
         opacity: 1,
         rotation: 0.2,
-        url: 'http://example.com/1.png'
+        url: 'http://example.com/1.png',
+        zIndex: 0
       });
-      var differentLiteral5 = new ol.style.IconLiteral({
+      var differentUrl = new ol.style.IconLiteral({
         height: 10,
         width: 20,
         opacity: 1,
         rotation: 0.1,
-        url: 'http://example.com/2.png'
+        url: 'http://example.com/2.png',
+        zIndex: 0
       });
       var differentZIndex = new ol.style.IconLiteral({
         height: 10,
@@ -63,11 +70,11 @@ describe('ol.style.IconLiteral', function() {
         zIndex: 20
       });
       expect(literal.equals(equalLiteral)).to.be(true);
-      expect(literal.equals(differentLiteral1)).to.be(false);
-      expect(literal.equals(differentLiteral2)).to.be(false);
-      expect(literal.equals(differentLiteral3)).to.be(false);
-      expect(literal.equals(differentLiteral4)).to.be(false);
-      expect(literal.equals(differentLiteral5)).to.be(false);
+      expect(literal.equals(differentHeight)).to.be(false);
+      expect(literal.equals(differentWidth)).to.be(false);
+      expect(literal.equals(differentOpacity)).to.be(false);
+      expect(literal.equals(differentRotation)).to.be(false);
+      expect(literal.equals(differentUrl)).to.be(false);
       expect(literal.equals(differentZIndex)).to.be(false);
     });
 

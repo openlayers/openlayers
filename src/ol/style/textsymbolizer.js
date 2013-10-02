@@ -65,7 +65,7 @@ ol.style.Text = function(options) {
    * @private
    */
   this.zIndex_ = !goog.isDefAndNotNull(options.zIndex) ?
-      null :
+      new ol.expr.Literal(ol.style.TextDefaults.zIndex) :
       (options.zIndex instanceof ol.expr.Expression) ?
           options.zIndex : new ol.expr.Literal(options.zIndex);
 
@@ -102,11 +102,8 @@ ol.style.Text.prototype.createLiteral = function(featureOrType) {
   var opacity = Number(ol.expr.evaluateFeature(this.opacity_, feature));
   goog.asserts.assert(!isNaN(opacity), 'opacity must be a number');
 
-  var zIndex;
-  if (!goog.isNull(this.zIndex_)) {
-    zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
-    goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
-  }
+  var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
+  goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
 
   return new ol.style.TextLiteral({
     color: color,
@@ -237,11 +234,13 @@ ol.style.Text.prototype.setZIndex = function(zIndex) {
  * @typedef {{color: string,
  *            fontFamily: string,
  *            fontSize: number,
- *            opacity: number}}
+ *            opacity: number,
+ *            zIndex: number}}
  */
 ol.style.TextDefaults = {
   color: '#000',
   fontFamily: 'sans-serif',
   fontSize: 10,
-  opacity: 1
+  opacity: 1,
+  zIndex: 0
 };

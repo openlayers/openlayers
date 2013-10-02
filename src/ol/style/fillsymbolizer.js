@@ -43,7 +43,7 @@ ol.style.Fill = function(opt_options) {
    * @private
    */
   this.zIndex_ = !goog.isDefAndNotNull(options.zIndex) ?
-      null :
+      new ol.expr.Literal(ol.style.FillDefaults.zIndex) :
       (options.zIndex instanceof ol.expr.Expression) ?
           options.zIndex : new ol.expr.Literal(options.zIndex);
 
@@ -76,11 +76,8 @@ ol.style.Fill.prototype.createLiteral = function(featureOrType) {
     var opacity = Number(ol.expr.evaluateFeature(this.opacity_, feature));
     goog.asserts.assert(!isNaN(opacity), 'opacity must be a number');
 
-    var zIndex;
-    if (!goog.isNull(this.zIndex_)) {
-      zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
-      goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
-    }
+    var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
+    goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
 
     literal = new ol.style.PolygonLiteral({
       fillColor: color,
@@ -151,10 +148,12 @@ ol.style.Fill.prototype.setZIndex = function(zIndex) {
 
 
 /**
- * @typedef {{fillColor: (string),
- *            fillOpacity: (number)}}
+ * @typedef {{fillColor: string,
+ *            fillOpacity: number,
+ *            zIndex: number}}
  */
 ol.style.FillDefaults = {
   color: '#ffffff',
-  opacity: 0.4
+  opacity: 0.4,
+  zIndex: 0
 };

@@ -86,7 +86,7 @@ ol.style.Icon = function(options) {
    * @private
    */
   this.zIndex_ = !goog.isDefAndNotNull(options.zIndex) ?
-      null :
+      new ol.expr.Literal(ol.style.IconDefaults.zIndex) :
       (options.zIndex instanceof ol.expr.Expression) ?
           options.zIndex : new ol.expr.Literal(options.zIndex);
 
@@ -139,11 +139,8 @@ ol.style.Icon.prototype.createLiteral = function(featureOrType) {
     var yOffset = Number(ol.expr.evaluateFeature(this.yOffset_, feature));
     goog.asserts.assert(!isNaN(yOffset), 'yOffset must be a number');
 
-    var zIndex;
-    if (!goog.isNull(this.zIndex_)) {
-      zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
-      goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
-    }
+    var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
+    goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
 
     literal = new ol.style.IconLiteral({
       url: url,
@@ -317,11 +314,13 @@ ol.style.Icon.prototype.setZIndex = function(zIndex) {
  * @typedef {{opacity: number,
  *            rotation: number,
  *            xOffset: number,
- *            yOffset: number}}
+ *            yOffset: number,
+ *            zIndex: number}}
  */
 ol.style.IconDefaults = {
   opacity: 1,
   rotation: 0,
   xOffset: 0,
-  yOffset: 0
+  yOffset: 0,
+  zIndex: 0
 };

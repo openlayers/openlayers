@@ -58,7 +58,7 @@ ol.style.Shape = function(options) {
    * @private
    */
   this.zIndex_ = !goog.isDefAndNotNull(options.zIndex) ?
-      null :
+      new ol.expr.Literal(ol.style.ShapeDefaults.zIndex) :
       (options.zIndex instanceof ol.expr.Expression) ?
           options.zIndex : new ol.expr.Literal(options.zIndex);
 
@@ -109,11 +109,8 @@ ol.style.Shape.prototype.createLiteral = function(featureOrType) {
       goog.asserts.assert(!isNaN(strokeWidth), 'strokeWidth must be a number');
     }
 
-    var zIndex;
-    if (!goog.isNull(this.zIndex_)) {
-      zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
-      goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
-    }
+    var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
+    goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
 
     literal = new ol.style.ShapeLiteral({
       type: this.type_,
@@ -230,10 +227,12 @@ ol.style.Shape.prototype.setZIndex = function(zIndex) {
 
 
 /**
- * @typedef {{type: (ol.style.ShapeType),
- *            size: (number)}}
+ * @typedef {{type: ol.style.ShapeType,
+ *            size: number,
+ *            zIndex: number}}
  */
 ol.style.ShapeDefaults = {
   type: ol.style.ShapeType.CIRCLE,
-  size: 5
+  size: 5,
+  zIndex: 0
 };
