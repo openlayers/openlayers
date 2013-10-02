@@ -60,3 +60,13 @@ ol.Color.equals = function(color1, color2) {
           color1.b == color2.b &&
           color1.a == color2.a);
 };
+
+
+/**
+ * @param {string} s String.
+ * @return {ol.Color} Color.
+ */
+ol.Color.parse = function(s) {
+  var rgb = goog.color.hexToRgb(goog.color.parse(s).hex);
+  return new ol.Color(rgb[0], rgb[1], rgb[2], 1);
+};
