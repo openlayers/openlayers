@@ -87,7 +87,8 @@ goog.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
  */
 ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
   var mapRenderer = this.getWebGLMapRenderer();
-  mapRenderer.deleteBuffer(this.arrayBuffer_);
+  var context = mapRenderer.getContext();
+  context.deleteBuffer(this.arrayBuffer_);
   goog.base(this, 'disposeInternal');
 };
 
@@ -117,6 +118,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     function(frameState, layerState) {
 
   var mapRenderer = this.getWebGLMapRenderer();
+  var context = mapRenderer.getContext();
   var gl = mapRenderer.getGL();
 
   var view2DState = frameState.view2DState;
@@ -172,15 +174,14 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     gl.clear(goog.webgl.COLOR_BUFFER_BIT);
     gl.disable(goog.webgl.BLEND);
 
-    var program = mapRenderer.getProgram(
-        this.fragmentShader_, this.vertexShader_);
+    var program = context.getProgram(this.fragmentShader_, this.vertexShader_);
     gl.useProgram(program);
     if (goog.isNull(this.locations_)) {
       this.locations_ =
           new ol.renderer.webgl.tilelayer.shader.Locations(gl, program);
     }
 
-    mapRenderer.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
+    context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
     gl.enableVertexAttribArray(this.locations_.a_position);
     gl.vertexAttribPointer(
         this.locations_.a_position, 2, goog.webgl.FLOAT, false, 16, 0);
