@@ -202,17 +202,3 @@ ol.style.StrokeDefaults = {
   width: 1.5,
   zIndex: 0
 };
-
-
-/**
- * @typedef {{color: string,
- *            opacity: number,
- *            width: number,
- *            zIndex: number}}
- */
-ol.style.StrokeDefaultsSelect = {
-  color: '#696969',
-  opacity: 0.9,
-  width: 2.0,
-  zIndex: 0
-};
