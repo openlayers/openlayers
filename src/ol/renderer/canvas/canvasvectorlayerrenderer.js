@@ -16,7 +16,7 @@ goog.require('ol.layer.Vector');
 goog.require('ol.layer.VectorLayerEventType');
 goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.renderer.canvas.Layer');
-goog.require('ol.renderer.canvas.VectorRenderer');
+goog.require('ol.renderer.canvas.Vector');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -450,7 +450,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   sketchCanvas.width = sketchWidth;
   sketchCanvas.height = sketchHeight;
 
-  var sketchCanvasRenderer = new ol.renderer.canvas.VectorRenderer(
+  var sketchCanvasRenderer = new ol.renderer.canvas.Vector(
       sketchCanvas, sketchTransform, this.requestMapRenderFrame_);
 
   // clear/resize final canvas
