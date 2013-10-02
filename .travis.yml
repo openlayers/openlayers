@@ -1,8 +1,7 @@
 before_install:
   - "sudo pip install http://closure-linter.googlecode.com/files/closure_linter-latest.tar.gz"
-  - "sudo pip install regex"
+  - "sudo pip install -r requirements.txt"
   - "git clone --depth=50 https://github.com/jsdoc3/jsdoc build/jsdoc"
-  - "git clone https://code.google.com/p/glsl-unit/ build/glsl-unit"
 
 before_script:
   - "./build.py plovr"

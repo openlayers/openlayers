@@ -82,8 +82,6 @@ else:
     variables.PYTHON = 'python'
     variables.PHANTOMJS = 'phantomjs'
 
-TEMPLATE_GLSL_COMPILER_JS = 'build/glsl-unit/bin/template_glsl_compiler.js'
-
 variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
@@ -243,17 +241,16 @@ def build_src_external_src_types_js(t):
              '--typedef', 'src/objectliterals.jsdoc')
 
 
-if os.path.exists(TEMPLATE_GLSL_COMPILER_JS):
-    for glsl_src in GLSL_SRC:
-        def shader_src_helper(glsl_src):
-            @target(glsl_src.replace('.glsl', 'shader.js'), glsl_src,
-                    'src/ol/webgl/shader.mustache')
-            def shader_src(t):
-                t.run('%(NODE)s', TEMPLATE_GLSL_COMPILER_JS,
-                      '--input', glsl_src,
-                      '--template', 'src/ol/webgl/shader.mustache',
-                      '--output', t.name)
-        shader_src_helper(glsl_src)
+for glsl_src in GLSL_SRC:
+    def shader_src_helper(glsl_src):
+        @target(glsl_src.replace('.glsl', 'shader.js'), glsl_src,
+                'src/ol/webgl/shader.mustache', 'bin/pyglslunit.py')
+        def shader_src(t):
+            t.run('%(PYTHON)s', 'bin/pyglslunit.py',
+                  '--input', glsl_src,
+                  '--template', 'src/ol/webgl/shader.mustache',
+                  '--output', t.name)
+    shader_src_helper(glsl_src)
 
 
 def _build_require_list(dependencies, output_file_name):
