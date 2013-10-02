@@ -142,10 +142,6 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
  * @type {boolean}
  */
 ol.Geolocation.SUPPORTED = 'geolocation' in goog.global.navigator;
-goog.exportProperty(
-    ol.Geolocation,
-    'SUPPORTED',
-    ol.Geolocation.SUPPORTED);
 
 
 /**

@@ -106,10 +106,6 @@ ol.DeviceOrientation.prototype.disposeInternal = function() {
  * @type {boolean}
  */
 ol.DeviceOrientation.SUPPORTED = 'DeviceOrientationEvent' in goog.global;
-goog.exportProperty(
-    ol.DeviceOrientation,
-    'SUPPORTED',
-    ol.DeviceOrientation.SUPPORTED);
 
 
 /**
