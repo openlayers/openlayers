@@ -42,7 +42,9 @@ ol.interaction.Interaction.pan = function(
         easing: ol.easing.linear
       }));
     }
-    view.setCenter([currentCenter[0] + delta[0], currentCenter[1] + delta[1]]);
+    var center = view.constrainCenter(
+        [currentCenter[0] + delta[0], currentCenter[1] + delta[1]]);
+    view.setCenter(center);
   }
 };
 
