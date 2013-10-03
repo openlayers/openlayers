@@ -34,6 +34,35 @@ describe('ol.geom.Point', function() {
 
   });
 
+  describe('#setCoordinates()', function() {
+
+    it('updates the coordinates', function() {
+      var point = new ol.geom.Point([10, 20]);
+      point.setCoordinates([30, 40]);
+      expect(point.getCoordinates()).to.eql([30, 40]);
+    });
+
+    it('invalidates bounds', function() {
+      var point = new ol.geom.Point([10, 20]);
+      point.setCoordinates([30, 40]);
+      expect(point.getBounds()).to.eql([30, 40, 30, 40]);
+    });
+
+    it('triggers a change event', function(done) {
+      var point = new ol.geom.Point([10, 20]);
+      expect(point.getBounds()).to.eql([10, 20, 10, 20]);
+      goog.events.listen(point, 'change', function(evt) {
+        expect(evt.target).to.equal(point);
+        expect(evt.oldExtent).to.eql([10, 20, 10, 20]);
+        expect(evt.target.getBounds()).to.eql([30, 40, 30, 40]);
+        expect(evt.target.getCoordinates()).to.eql([30, 40]);
+        done();
+      });
+      point.setCoordinates([30, 40]);
+    });
+
+  });
+
   describe('#transform()', function() {
 
     var forward = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
@@ -57,6 +86,7 @@ describe('ol.geom.Point', function() {
 
 });
 
+goog.require('goog.events');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.Point');
 goog.require('ol.proj');

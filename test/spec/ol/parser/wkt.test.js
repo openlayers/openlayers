@@ -75,9 +75,10 @@ describe('ol.parser.WKT', function() {
     var wkt = 'POLYGON((30 10,10 20,20 40,40 40,30 10))';
     var geom = parser.read(wkt);
     expect(geom.getType()).to.eql(ol.geom.GeometryType.POLYGON);
-    expect(geom.rings.length).to.eql(1);
-    expect(geom.rings[0].getType()).to.eql(ol.geom.GeometryType.LINEARRING);
-    expect(geom.rings[0].getCoordinates()).to.eql(
+    var rings = geom.getRings();
+    expect(rings.length).to.eql(1);
+    expect(rings[0].getType()).to.eql(ol.geom.GeometryType.LINEARRING);
+    expect(rings[0].getCoordinates()).to.eql(
         [[30, 10], [10, 20], [20, 40], [40, 40], [30, 10]]);
     expect(parser.write(geom)).to.eql(wkt);
 
@@ -85,12 +86,13 @@ describe('ol.parser.WKT', function() {
     wkt = 'POLYGON((35 10,10 20,15 40,45 45,35 10),(20 30,30 20,35 35,20 30))';
     geom = parser.read(wkt);
     expect(geom.getType()).to.eql(ol.geom.GeometryType.POLYGON);
-    expect(geom.rings.length).to.eql(2);
-    expect(geom.rings[0].getType()).to.eql(ol.geom.GeometryType.LINEARRING);
-    expect(geom.rings[1].getType()).to.eql(ol.geom.GeometryType.LINEARRING);
-    expect(geom.rings[0].getCoordinates()).to.eql(
+    var rings = geom.getRings();
+    expect(rings.length).to.eql(2);
+    expect(rings[0].getType()).to.eql(ol.geom.GeometryType.LINEARRING);
+    expect(rings[1].getType()).to.eql(ol.geom.GeometryType.LINEARRING);
+    expect(rings[0].getCoordinates()).to.eql(
         [[35, 10], [10, 20], [15, 40], [45, 45], [35, 10]]);
-    expect(geom.rings[1].getCoordinates()).to.eql(
+    expect(rings[1].getCoordinates()).to.eql(
         [[20, 30], [30, 20], [35, 35], [20, 30]]);
     expect(parser.write(geom)).to.eql(wkt);
 
@@ -98,9 +100,10 @@ describe('ol.parser.WKT', function() {
     wkt = 'POLYGON ( (30 10, 10 20, 20 40, 40 40, 30 10) )';
     geom = parser.read(wkt);
     expect(geom.getType()).to.eql(ol.geom.GeometryType.POLYGON);
-    expect(geom.rings.length).to.eql(1);
-    expect(geom.rings[0].getType()).to.eql(ol.geom.GeometryType.LINEARRING);
-    expect(geom.rings[0].getCoordinates()).to.eql(
+    var rings = geom.getRings();
+    expect(rings.length).to.eql(1);
+    expect(rings[0].getType()).to.eql(ol.geom.GeometryType.LINEARRING);
+    expect(rings[0].getCoordinates()).to.eql(
         [[30, 10], [10, 20], [20, 40], [40, 40], [30, 10]]);
   });
 
@@ -113,13 +116,13 @@ describe('ol.parser.WKT', function() {
     expect(geom.components.length).to.eql(2);
     expect(geom.components[0].getType()).to.eql(ol.geom.GeometryType.POLYGON);
     expect(geom.components[1].getType()).to.eql(ol.geom.GeometryType.POLYGON);
-    expect(geom.components[0].rings.length).to.eql(1);
-    expect(geom.components[1].rings.length).to.eql(2);
-    expect(geom.components[0].rings[0].getCoordinates()).to.eql(
+    expect(geom.components[0].getRings().length).to.eql(1);
+    expect(geom.components[1].getRings().length).to.eql(2);
+    expect(geom.components[0].getRings()[0].getCoordinates()).to.eql(
         [[40, 40], [45, 30], [20, 45], [40, 40]]);
-    expect(geom.components[1].rings[0].getCoordinates()).to.eql(
+    expect(geom.components[1].getRings()[0].getCoordinates()).to.eql(
         [[20, 35], [45, 20], [30, 5], [10, 10], [10, 30], [20, 35]]);
-    expect(geom.components[1].rings[1].getCoordinates()).to.eql(
+    expect(geom.components[1].getRings()[1].getCoordinates()).to.eql(
         [[30, 20], [20, 25], [20, 15], [30, 20]]);
     expect(parser.write(geom)).to.eql(wkt);
 
@@ -132,13 +135,13 @@ describe('ol.parser.WKT', function() {
     expect(geom.components.length).to.eql(2);
     expect(geom.components[0].getType()).to.eql(ol.geom.GeometryType.POLYGON);
     expect(geom.components[1].getType()).to.eql(ol.geom.GeometryType.POLYGON);
-    expect(geom.components[0].rings.length).to.eql(1);
-    expect(geom.components[1].rings.length).to.eql(2);
-    expect(geom.components[0].rings[0].getCoordinates()).to.eql(
+    expect(geom.components[0].getRings().length).to.eql(1);
+    expect(geom.components[1].getRings().length).to.eql(2);
+    expect(geom.components[0].getRings()[0].getCoordinates()).to.eql(
         [[40, 40], [45, 30], [20, 45], [40, 40]]);
-    expect(geom.components[1].rings[0].getCoordinates()).to.eql(
+    expect(geom.components[1].getRings()[0].getCoordinates()).to.eql(
         [[20, 35], [45, 20], [30, 5], [10, 10], [10, 30], [20, 35]]);
-    expect(geom.components[1].rings[1].getCoordinates()).to.eql(
+    expect(geom.components[1].getRings()[1].getCoordinates()).to.eql(
         [[30, 20], [20, 25], [20, 15], [30, 20]]);
   });
 

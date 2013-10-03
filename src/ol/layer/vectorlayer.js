@@ -3,9 +3,11 @@ goog.provide('ol.layer.VectorEventType');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.object');
 goog.require('ol.Feature');
+goog.require('ol.FeatureEventType');
 goog.require('ol.extent');
 goog.require('ol.layer.Layer');
 goog.require('ol.proj');
@@ -114,16 +116,18 @@ ol.layer.FeatureCache.prototype.getFeatureWithUid = function(uid) {
 /**
  * Remove a feature from the cache.
  * @param {ol.Feature} feature Feature.
+ * @param {ol.Extent=} opt_extent Optional extent (used when the current feature
+ *     extent is different than the one in the index).
  */
-ol.layer.FeatureCache.prototype.remove = function(feature) {
+ol.layer.FeatureCache.prototype.remove = function(feature, opt_extent) {
   var id = goog.getUid(feature).toString(),
       geometry = feature.getGeometry();
 
   delete this.idLookup_[id];
-
   // index by bounding box
   if (!goog.isNull(geometry)) {
-    this.rTree_.remove(geometry.getBounds(), feature);
+    var extent = goog.isDef(opt_extent) ? opt_extent : geometry.getBounds();
+    this.rTree_.remove(extent, feature);
   }
 };
 
@@ -181,9 +185,34 @@ ol.layer.Vector.prototype.addFeatures = function(features) {
     if (!goog.isNull(geometry)) {
       ol.extent.extend(extent, geometry.getBounds());
     }
+    goog.events.listen(feature, ol.FeatureEventType.CHANGE,
+        this.handleFeatureChange_, false, this);
   }
   this.dispatchEvent(new ol.layer.VectorEvent(ol.layer.VectorEventType.ADD,
       features, [extent]));
+};
+
+
+/**
+ * Listener for feature change events.
+ * @param {ol.FeatureEvent} evt The feature change event.
+ * @private
+ */
+ol.layer.Vector.prototype.handleFeatureChange_ = function(evt) {
+  goog.asserts.assertInstanceof(evt.target, ol.Feature);
+  var feature = /** @type {ol.Feature} */ (evt.target);
+  var extents = [];
+  if (!goog.isNull(evt.oldExtent)) {
+    extents.push(evt.oldExtent);
+  }
+  var geometry = feature.getGeometry();
+  if (!goog.isNull(geometry)) {
+    this.featureCache_.remove(feature, evt.oldExtent);
+    this.featureCache_.add(feature);
+    extents.push(geometry.getBounds());
+  }
+  this.dispatchEvent(new ol.layer.VectorEvent(ol.layer.VectorEventType.CHANGE,
+      [feature], extents));
 };
 
 
@@ -193,7 +222,7 @@ ol.layer.Vector.prototype.addFeatures = function(features) {
 ol.layer.Vector.prototype.clear = function() {
   this.featureCache_.clear();
   this.dispatchEvent(
-      new ol.layer.VectorEvent(ol.layer.VectorEventType.CHANGE, [], []));
+      new ol.layer.VectorEvent(ol.layer.VectorEventType.REMOVE, [], []));
 };
 
 

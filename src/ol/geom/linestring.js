@@ -1,10 +1,12 @@
 goog.provide('ol.geom.LineString');
 
 goog.require('goog.asserts');
+goog.require('goog.events.EventType');
 goog.require('ol.CoordinateArray');
 goog.require('ol.extent');
 goog.require('ol.geom');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryEvent');
 goog.require('ol.geom.GeometryType');
 
 
@@ -109,6 +111,19 @@ ol.geom.LineString.prototype.distanceFromCoordinate = function(coordinate) {
 
 
 /**
+ * Update the linestring coordinates.
+ * @param {ol.CoordinateArray} coordinates Coordinates array.
+ */
+ol.geom.LineString.prototype.setCoordinates = function(coordinates) {
+  var oldBounds = this.bounds_;
+  this.bounds_ = null;
+  this.coordinates_ = coordinates;
+  this.dispatchEvent(new ol.geom.GeometryEvent(goog.events.EventType.CHANGE,
+      this, oldBounds));
+};
+
+
+/**
  * @inheritDoc
  */
 ol.geom.LineString.prototype.transform = function(transform) {
@@ -118,5 +133,5 @@ ol.geom.LineString.prototype.transform = function(transform) {
     coord = coordinates[i];
     transform(coord, coord, coord.length);
   }
-  this.bounds_ = null;
+  this.setCoordinates(coordinates); // for change event
 };

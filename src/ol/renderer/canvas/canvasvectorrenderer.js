@@ -362,7 +362,7 @@ ol.renderer.canvas.Vector.prototype.renderPolygonFeatures_ =
     }
     for (j = 0, jj = components.length; j < jj; ++j) {
       poly = components[j];
-      rings = poly.rings;
+      rings = poly.getRings();
       numRings = rings.length;
       if (numRings > 0) {
         // TODO: scenario 4
