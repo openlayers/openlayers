@@ -147,6 +147,37 @@ describe('ol.layer.Vector', function() {
 
   });
 
+  describe('ol.layer.VectorEvent', function() {
+
+    var layer, features;
+
+    beforeEach(function() {
+      features = [
+        new ol.Feature({
+          g: new ol.geom.Point([16.0, 48.0])
+        }),
+        new ol.Feature({
+          g: new ol.geom.LineString([[17.0, 49.0], [17.1, 49.1]])
+        })
+      ];
+      layer = new ol.layer.Vector({
+        source: new ol.source.Vector({})
+      });
+      layer.addFeatures(features);
+    });
+
+    it('dispatches events on feature change', function(done) {
+      layer.on('featurechange', function(evt) {
+        expect(evt.features[0]).to.be(features[0]);
+        expect(evt.extents[0]).to.eql(features[0].getGeometry().getBounds());
+        done();
+      });
+      features[0].set('foo', 'bar');
+
+    });
+
+  });
+
 });
 
 goog.require('goog.dispose');
