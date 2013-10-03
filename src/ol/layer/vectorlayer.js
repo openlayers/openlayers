@@ -1,8 +1,9 @@
 goog.provide('ol.layer.Vector');
-goog.provide('ol.layer.VectorLayerEventType');
+goog.provide('ol.layer.VectorEventType');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.events.Event');
 goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.extent');
@@ -127,25 +128,6 @@ ol.layer.FeatureCache.prototype.remove = function(feature) {
 };
 
 
-/**
- * @enum {string}
- */
-ol.layer.VectorLayerEventType = {
-  ADD: 'add',
-  CHANGE: 'featurechange',
-  REMOVE: 'remove',
-  INTENTCHANGE: 'intentchange'
-};
-
-
-/**
- * @typedef {{extent: (ol.Extent|undefined),
- *            features: (Array.<ol.Feature>|undefined),
- *            type: ol.layer.VectorLayerEventType}}
- */
-ol.layer.VectorLayerEventObject;
-
-
 
 /**
  * @constructor
@@ -200,11 +182,8 @@ ol.layer.Vector.prototype.addFeatures = function(features) {
       ol.extent.extend(extent, geometry.getBounds());
     }
   }
-  this.dispatchEvent(/** @type {ol.layer.VectorLayerEventObject} */ ({
-    extent: extent,
-    features: features,
-    type: ol.layer.VectorLayerEventType.ADD
-  }));
+  this.dispatchEvent(new ol.layer.VectorEvent(ol.layer.VectorEventType.ADD,
+      features, [extent]));
 };
 
 
@@ -213,9 +192,8 @@ ol.layer.Vector.prototype.addFeatures = function(features) {
  */
 ol.layer.Vector.prototype.clear = function() {
   this.featureCache_.clear();
-  this.dispatchEvent(/** @type {ol.layer.VectorLayerEventObject} */ ({
-    type: ol.layer.VectorLayerEventType.CHANGE
-  }));
+  this.dispatchEvent(
+      new ol.layer.VectorEvent(ol.layer.VectorEventType.CHANGE, [], []));
 };
 
 
@@ -409,11 +387,8 @@ ol.layer.Vector.prototype.removeFeatures = function(features) {
       ol.extent.extend(extent, geometry.getBounds());
     }
   }
-  this.dispatchEvent(/** @type {ol.layer.VectorLayerEventObject} */ ({
-    extent: extent,
-    features: features,
-    type: ol.layer.VectorLayerEventType.REMOVE
-  }));
+  this.dispatchEvent(new ol.layer.VectorEvent(ol.layer.VectorEventType.REMOVE,
+      features, [extent]));
 };
 
 
@@ -437,11 +412,8 @@ ol.layer.Vector.prototype.setRenderIntent =
       ol.extent.extend(extent, geometry.getBounds());
     }
   }
-  this.dispatchEvent(/** @type {ol.layer.VectorLayerEventObject} */ ({
-    extent: extent,
-    features: features,
-    type: ol.layer.VectorLayerEventType.INTENTCHANGE
-  }));
+  this.dispatchEvent(new ol.layer.VectorEvent(
+      ol.layer.VectorEventType.INTENTCHANGE, features, [extent]));
 };
 
 
@@ -461,4 +433,41 @@ ol.layer.Vector.uidTransformFeatureInfo = function(features) {
   var uids = goog.array.map(features,
       function(feature) { return goog.getUid(feature); });
   return uids.join(', ');
+};
+
+
+
+/**
+ * @constructor
+ * @extends {goog.events.Event}
+ * @param {string} type Event type.
+ * @param {Array.<ol.Feature>} features Features associated with the event.
+ * @param {Array.<ol.Extent>} extents Any extents associated with the event.
+ */
+ol.layer.VectorEvent = function(type, features, extents) {
+
+  goog.base(this, type);
+
+  /**
+   * @type {Array.<ol.Feature>}
+   */
+  this.features = features;
+
+  /**
+   * @type {Array.<ol.Extent>}
+   */
+  this.extents = extents;
+
+};
+goog.inherits(ol.layer.VectorEvent, goog.events.Event);
+
+
+/**
+ * @enum {string}
+ */
+ol.layer.VectorEventType = {
+  ADD: 'featureadd',
+  CHANGE: 'featurechange',
+  REMOVE: 'featureremove',
+  INTENTCHANGE: 'intentchange'
 };
