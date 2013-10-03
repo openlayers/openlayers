@@ -102,21 +102,6 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
   this.tileArchetype_ = null;
 
   /**
-   * Geometry types in rendering order.
-   * TODO: these will go away shortly (in favor of one call per symbolizer type)
-   * @private
-   * @type {Array.<ol.geom.GeometryType>}
-   */
-  this.geometryTypes_ = [
-    ol.geom.GeometryType.POINT,
-    ol.geom.GeometryType.MULTIPOINT,
-    ol.geom.GeometryType.LINESTRING,
-    ol.geom.GeometryType.MULTILINESTRING,
-    ol.geom.GeometryType.POLYGON,
-    ol.geom.GeometryType.MULTIPOLYGON
-  ];
-
-  /**
    * @private
    * @type {number}
    */
@@ -464,14 +449,10 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var tilesOnSketchCanvas = {};
   // TODO make gutter configurable?
   var tileGutter = 15 * tileResolution;
-  var tile, tileCoord, key, x, y;
-  // render features by geometry type
-  var types = this.geometryTypes_,
-      numTypes = types.length,
-      deferred = false,
-      dirty = false,
-      i, type, tileExtent,
-      groups, group, j, numGroups, featuresObject, tileHasFeatures;
+  var tile, tileCoord, key, x, y, i, type;
+  var deferred = false;
+  var dirty = false;
+  var tileExtent, groups, group, j, numGroups, featuresObject, tileHasFeatures;
   fetchTileData:
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
@@ -486,21 +467,15 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         tileExtent[1] -= tileGutter;
         tileExtent[3] += tileGutter;
         tileHasFeatures = false;
-        for (i = 0; i < numTypes; ++i) {
-          type = types[i];
-          if (!goog.isDef(featuresToRender[type])) {
-            featuresToRender[type] = {};
-          }
-          featuresObject = layer.getFeaturesObjectForExtent(tileExtent,
-              projection, type, this.requestMapRenderFrame_);
-          if (goog.isNull(featuresObject)) {
-            deferred = true;
-            break fetchTileData;
-          }
-          tileHasFeatures = tileHasFeatures ||
-              !goog.object.isEmpty(featuresObject);
-          goog.object.extend(featuresToRender[type], featuresObject);
+        featuresObject = layer.getFeaturesObjectForExtent(tileExtent,
+            projection, this.requestMapRenderFrame_);
+        if (goog.isNull(featuresObject)) {
+          deferred = true;
+          break fetchTileData;
         }
+        tileHasFeatures = tileHasFeatures ||
+            !goog.object.isEmpty(featuresObject);
+        goog.object.extend(featuresToRender, featuresObject);
         if (tileHasFeatures) {
           tilesOnSketchCanvas[key] = tileCoord;
         }
@@ -511,19 +486,15 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   }
   this.dirty_ = dirty;
 
-  renderByGeometryType:
-  for (type in featuresToRender) {
-    groups = layer.groupFeaturesBySymbolizerLiteral(
-        featuresToRender[type], tileResolution);
-    numGroups = groups.length;
-    for (j = 0; j < numGroups; ++j) {
-      group = groups[j];
-      deferred = sketchCanvasRenderer.renderFeaturesByGeometryType(
-          /** @type {ol.geom.GeometryType} */ (type),
-          group[0], group[1], group[2]);
-      if (deferred) {
-        break renderByGeometryType;
-      }
+  groups = layer.groupFeaturesBySymbolizerLiteral(featuresToRender,
+      tileResolution);
+  numGroups = groups.length;
+  for (j = 0; j < numGroups; ++j) {
+    group = groups[j];
+    deferred = sketchCanvasRenderer.renderFeatures(group[0], group[1],
+        group[2]);
+    if (deferred) {
+      break;
     }
   }
 
