@@ -115,6 +115,34 @@ describe('ol.layer.Vector', function() {
 
     });
 
+    it('sorts groups by zIndex', function() {
+      var symbolizer = new ol.style.Stroke({
+        width: 3,
+        color: '#BADA55',
+        opacity: 1,
+        zIndex: 1
+      });
+      var anotherSymbolizer = new ol.style.Stroke({
+        width: 3,
+        color: '#BADA55',
+        opacity: 1
+      });
+      var featureWithSymbolizers = new ol.Feature({
+        g: new ol.geom.LineString([[-10, -10], [-10, 10]])
+      });
+      featureWithSymbolizers.setSymbolizers([symbolizer]);
+      var anotherFeatureWithSymbolizers = new ol.Feature({
+        g: new ol.geom.LineString([[-10, 10], [-10, -10]])
+      });
+      anotherFeatureWithSymbolizers.setSymbolizers([anotherSymbolizer]);
+      features = [featureWithSymbolizers, anotherFeatureWithSymbolizers];
+
+      var groups = layer.groupFeaturesBySymbolizerLiteral(features, 1);
+      expect(groups).to.have.length(2);
+      expect(groups[0][1].zIndex).to.be(0);
+      expect(groups[1][1].zIndex).to.be(1);
+    });
+
     goog.dispose(layer);
 
   });

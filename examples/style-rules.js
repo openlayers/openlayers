@@ -22,7 +22,8 @@ var style = new ol.style.Style({rules: [
       new ol.style.Stroke({
         color: ol.expr.parse('color'),
         width: 4,
-        opacity: 1
+        opacity: 1,
+        zIndex: 1
       })
     ]
   }),
