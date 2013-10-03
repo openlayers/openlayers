@@ -678,9 +678,16 @@ describe('ol.expr.lib', function() {
     var counter = parse('counter()');
     var counterWithStart = parse('counter(1000)');
     var start = evaluate(counter);
-    expect(evaluate(counter).to.be(start + 1));
-    expect(evaluate(counter).to.be(start + 2));
-    expect(evaluate(counterWithStart).to.be(start + 3 + 1000));
+
+    it('increases the counter with every call', function() {
+      expect(evaluate(counter).to.be(start + 1));
+      expect(evaluate(counter).to.be(start + 2));
+    });
+
+    it('increases the counter, starting with a custom value', function() {
+      expect(evaluate(counterWithStart).to.be(start + 3 + 1000));
+    });
+
   });
 
   describe('extent()', function() {
