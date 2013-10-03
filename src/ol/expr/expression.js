@@ -129,7 +129,7 @@ ol.expr.lib[ol.expr.functions.CONCAT] = function(var_args) {
 
 /**
  * Returns a counter which increases every time this function is called.
- * @param {number=} opt_start Start. If not provided, the counter starts at 0.
+ * @param {number=} opt_start Start. If not provided, the counter starts at 1.
  * @return {number} Counter.
  */
 ol.expr.lib[ol.expr.functions.COUNTER] = (function() {
