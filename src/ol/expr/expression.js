@@ -96,6 +96,7 @@ ol.expr.lib = {};
  */
 ol.expr.functions = {
   CONCAT: 'concat',
+  COUNTER: 'counter',
   EXTENT: 'extent',
   FID: 'fid',
   GEOMETRY_TYPE: 'geometryType',
@@ -124,6 +125,23 @@ ol.expr.lib[ol.expr.functions.CONCAT] = function(var_args) {
   }
   return str;
 };
+
+
+/**
+ * Returns a counter which increases every time this function is called.
+ * @param {number=} opt_start Start. If not provided, the counter starts at 0.
+ * @return {number} Counter.
+ */
+ol.expr.lib[ol.expr.functions.COUNTER] = (function() {
+  var counter = 0;
+  return function(opt_start) {
+    var result = ++counter;
+    if (goog.isDef(opt_start)) {
+      result += opt_start;
+    }
+    return result;
+  };
+})();
 
 
 /**
