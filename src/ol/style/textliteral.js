@@ -9,7 +9,8 @@ goog.require('ol.style.Literal');
  *            fontFamily: string,
  *            fontSize: number,
  *            text: string,
- *            opacity: number}}
+ *            opacity: number,
+ *            zIndex: number}}
  */
 ol.style.TextLiteralOptions;
 
@@ -42,6 +43,10 @@ ol.style.TextLiteral = function(options) {
   /** @type {number} */
   this.opacity = options.opacity;
 
+  goog.asserts.assertNumber(options.zIndex, 'zIndex must be a number');
+  /** @type {number} */
+  this.zIndex = options.zIndex;
+
 };
 goog.inherits(ol.style.TextLiteral, ol.style.Literal);
 
@@ -49,9 +54,10 @@ goog.inherits(ol.style.TextLiteral, ol.style.Literal);
 /**
  * @inheritDoc
  */
-ol.style.TextLiteral.prototype.equals = function(textLiteral) {
-  return this.color == textLiteral.color &&
-      this.fontFamily == textLiteral.fontFamily &&
-      this.fontSize == textLiteral.fontSize &&
-      this.opacity == textLiteral.opacity;
+ol.style.TextLiteral.prototype.equals = function(other) {
+  return this.color == other.color &&
+      this.fontFamily == other.fontFamily &&
+      this.fontSize == other.fontSize &&
+      this.opacity == other.opacity &&
+      this.zIndex == other.zIndex;
 };

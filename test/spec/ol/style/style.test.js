@@ -194,12 +194,14 @@ describe('ol.style.Style', function() {
       var literals = [
         new ol.style.PolygonLiteral({
           fillColor: '#ff0000',
-          fillOpacity: 0.5
+          fillOpacity: 0.5,
+          zIndex: 0
         }),
         new ol.style.PolygonLiteral({
           strokeColor: '#00ff00',
           strokeOpacity: 0.6,
-          strokeWidth: 3
+          strokeWidth: 3,
+          zIndex: 0
         })
       ];
 
@@ -221,12 +223,14 @@ describe('ol.style.Style', function() {
           fillOpacity: 0.5,
           strokeColor: '#00ff00',
           strokeOpacity: 0.6,
-          strokeWidth: 3
+          strokeWidth: 3,
+          zIndex: 0
         }),
         new ol.style.PolygonLiteral({
           strokeColor: '#0000ff',
           strokeOpacity: 0.7,
-          strokeWidth: 1
+          strokeWidth: 1,
+          zIndex: 0
         })
       ];
 
@@ -253,18 +257,21 @@ describe('ol.style.Style', function() {
         new ol.style.PolygonLiteral({
           strokeColor: '#00ff00',
           strokeOpacity: 0.6,
-          strokeWidth: 3
+          strokeWidth: 3,
+          zIndex: 0
         }),
         new ol.style.PolygonLiteral({
           fillColor: '#ff0000',
-          fillOpacity: 0.5
+          fillOpacity: 0.5,
+          zIndex: 0
         }),
         new ol.style.TextLiteral({
           color: '#ffffff',
           fontFamily: 'Arial',
           fontSize: 11,
           text: 'Test',
-          opacity: 0.5
+          opacity: 0.5,
+          zIndex: 0
         })
       ];
 

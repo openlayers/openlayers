@@ -12,7 +12,8 @@ describe('ol.style.ShapeLiteral', function() {
         fillOpacity: 0.9,
         strokeColor: '#013',
         strokeOpacity: 0.8,
-        strokeWidth: 3
+        strokeWidth: 3,
+        zIndex: 0
       });
       var equalLiteral = new ol.style.ShapeLiteral({
         type: ol.style.ShapeType.CIRCLE,
@@ -21,7 +22,8 @@ describe('ol.style.ShapeLiteral', function() {
         fillOpacity: 0.9,
         strokeColor: '#013',
         strokeOpacity: 0.8,
-        strokeWidth: 3
+        strokeWidth: 3,
+        zIndex: 0
       });
       var differentSize = new ol.style.ShapeLiteral({
         type: ol.style.ShapeType.CIRCLE,
@@ -30,7 +32,8 @@ describe('ol.style.ShapeLiteral', function() {
         fillOpacity: 0.9,
         strokeColor: '#013',
         strokeOpacity: 0.8,
-        strokeWidth: 3
+        strokeWidth: 3,
+        zIndex: 0
       });
       var differentFillColor = new ol.style.ShapeLiteral({
         type: ol.style.ShapeType.CIRCLE,
@@ -39,7 +42,8 @@ describe('ol.style.ShapeLiteral', function() {
         fillOpacity: 0.9,
         strokeColor: '#013',
         strokeOpacity: 0.8,
-        strokeWidth: 3
+        strokeWidth: 3,
+        zIndex: 0
       });
       var differentFillOpacity = new ol.style.ShapeLiteral({
         type: ol.style.ShapeType.CIRCLE,
@@ -48,7 +52,8 @@ describe('ol.style.ShapeLiteral', function() {
         fillOpacity: 0.8,
         strokeColor: '#013',
         strokeOpacity: 0.8,
-        strokeWidth: 3
+        strokeWidth: 3,
+        zIndex: 0
       });
       var differentStrokeColor = new ol.style.ShapeLiteral({
         type: ol.style.ShapeType.CIRCLE,
@@ -57,7 +62,8 @@ describe('ol.style.ShapeLiteral', function() {
         fillOpacity: 0.9,
         strokeColor: '#ffffff',
         strokeOpacity: 0.8,
-        strokeWidth: 3
+        strokeWidth: 3,
+        zIndex: 0
       });
       var differentStrokeOpacity = new ol.style.ShapeLiteral({
         type: ol.style.ShapeType.CIRCLE,
@@ -66,7 +72,8 @@ describe('ol.style.ShapeLiteral', function() {
         fillOpacity: 0.9,
         strokeColor: '#013',
         strokeOpacity: 0.7,
-        strokeWidth: 3
+        strokeWidth: 3,
+        zIndex: 0
       });
       var differentStrokeWidth = new ol.style.ShapeLiteral({
         type: ol.style.ShapeType.CIRCLE,
@@ -75,7 +82,18 @@ describe('ol.style.ShapeLiteral', function() {
         fillOpacity: 0.9,
         strokeColor: '#013',
         strokeOpacity: 0.8,
-        strokeWidth: 4
+        strokeWidth: 4,
+        zIndex: 0
+      });
+      var differentZIndex = new ol.style.ShapeLiteral({
+        type: ol.style.ShapeType.CIRCLE,
+        size: 4,
+        fillColor: '#BADA55',
+        fillOpacity: 0.9,
+        strokeColor: '#013',
+        strokeOpacity: 0.8,
+        strokeWidth: 3,
+        zIndex: -1
       });
       expect(literal.equals(equalLiteral)).to.be(true);
       expect(literal.equals(differentSize)).to.be(false);
@@ -84,6 +102,7 @@ describe('ol.style.ShapeLiteral', function() {
       expect(literal.equals(differentStrokeColor)).to.be(false);
       expect(literal.equals(differentStrokeOpacity)).to.be(false);
       expect(literal.equals(differentStrokeWidth)).to.be(false);
+      expect(literal.equals(differentZIndex)).to.be(false);
     });
 
   });

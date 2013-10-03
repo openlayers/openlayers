@@ -9,7 +9,8 @@ goog.require('ol.style.Literal');
  *            fillOpacity: (number|undefined),
  *            strokeColor: (string|undefined),
  *            strokeOpacity: (number|undefined),
- *            strokeWidth: (number|undefined)}}
+ *            strokeWidth: (number|undefined),
+ *            zIndex: number}}
  */
 ol.style.PolygonLiteralOptions;
 
@@ -66,6 +67,11 @@ ol.style.PolygonLiteral = function(options) {
       'Either fillColor and fillOpacity or ' +
       'strokeColor and strokeOpacity and strokeWidth must be set');
 
+  goog.asserts.assertNumber(
+      options.zIndex, 'zIndex must be a number');
+  /** @type {number} */
+  this.zIndex = options.zIndex;
+
 };
 goog.inherits(ol.style.PolygonLiteral, ol.style.Literal);
 
@@ -73,10 +79,11 @@ goog.inherits(ol.style.PolygonLiteral, ol.style.Literal);
 /**
  * @inheritDoc
  */
-ol.style.PolygonLiteral.prototype.equals = function(polygonLiteral) {
-  return this.fillColor == polygonLiteral.fillColor &&
-      this.fillOpacity == polygonLiteral.fillOpacity &&
-      this.strokeColor == polygonLiteral.strokeColor &&
-      this.strokeOpacity == polygonLiteral.strokeOpacity &&
-      this.strokeWidth == polygonLiteral.strokeWidth;
+ol.style.PolygonLiteral.prototype.equals = function(other) {
+  return this.fillColor == other.fillColor &&
+      this.fillOpacity == other.fillOpacity &&
+      this.strokeColor == other.strokeColor &&
+      this.strokeOpacity == other.strokeOpacity &&
+      this.strokeWidth == other.strokeWidth &&
+      this.zIndex == other.zIndex;
 };
