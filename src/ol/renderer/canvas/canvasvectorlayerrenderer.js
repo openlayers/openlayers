@@ -13,7 +13,7 @@ goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
-goog.require('ol.layer.VectorLayerEventType');
+goog.require('ol.layer.VectorEventType');
 goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.Vector');
@@ -88,10 +88,10 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
   this.tileCache_ = new ol.TileCache(
       ol.renderer.canvas.VectorLayer.TILECACHE_SIZE);
   goog.events.listen(layer, [
-    ol.layer.VectorLayerEventType.ADD,
-    ol.layer.VectorLayerEventType.CHANGE,
-    ol.layer.VectorLayerEventType.REMOVE,
-    ol.layer.VectorLayerEventType.INTENTCHANGE
+    ol.layer.VectorEventType.ADD,
+    ol.layer.VectorEventType.CHANGE,
+    ol.layer.VectorEventType.REMOVE,
+    ol.layer.VectorEventType.INTENTCHANGE
   ],
   this.handleLayerChange_, false, this);
 
@@ -163,14 +163,18 @@ goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 /**
  * Get rid cached tiles.  If the optional extent is provided, only tiles that
  * intersect that extent will be removed.
- * @param {ol.Extent=} opt_extent extent Expire tiles within this extent only.
+ * @param {Array.<ol.Extent>} extents extent Expire tiles within the provided
+ *     extents.  If the array is empty, all tiles will be expired.
  * @private
  */
-ol.renderer.canvas.VectorLayer.prototype.expireTiles_ = function(opt_extent) {
+ol.renderer.canvas.VectorLayer.prototype.expireTiles_ = function(extents) {
   var tileCache = this.tileCache_;
-  if (goog.isDef(opt_extent)) {
-    var tileRange = this.tileGrid_.getTileRangeForExtentAndZ(opt_extent, 0);
-    tileCache.pruneTileRange(tileRange);
+  var length = extents.length;
+  if (length > 0) {
+    for (var i = 0; i < length; ++i) {
+      tileCache.pruneTileRange(
+          this.tileGrid_.getTileRangeForExtentAndZ(extents[i], 0));
+    }
   } else {
     tileCache.clear();
   }
@@ -307,11 +311,11 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
 
 
 /**
- * @param {ol.layer.VectorLayerEventObject} event Layer change event.
+ * @param {ol.layer.VectorEvent} event Vector layer event.
  * @private
  */
 ol.renderer.canvas.VectorLayer.prototype.handleLayerChange_ = function(event) {
-  this.expireTiles_(event.extent);
+  this.expireTiles_(event.extents);
   this.requestMapRenderFrame_();
 };
 
