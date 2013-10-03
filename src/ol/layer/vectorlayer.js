@@ -320,7 +320,7 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
       }
     }
   }
-  featuresBySymbolizer.sort(this.sortByZIndex);
+  featuresBySymbolizer.sort(this.sortByZIndex_);
   return featuresBySymbolizer;
 };
 
@@ -457,11 +457,12 @@ ol.layer.Vector.prototype.setTemporary = function(temp) {
 
 /**
  * Sort function for `groupFeaturesBySymbolizerLiteral`.
+ * @private
  * @param {Array} a 1st item for the sort comparison.
  * @param {Array} b 2nd item for the sort comparison.
  * @return {number} Comparison result.
  */
-ol.layer.Vector.prototype.sortByZIndex = function(a, b) {
+ol.layer.Vector.prototype.sortByZIndex_ = function(a, b) {
   return a[1].zIndex - b[1].zIndex;
 };
 
