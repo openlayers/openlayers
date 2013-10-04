@@ -109,11 +109,6 @@ ol.interaction.Modify.prototype.addLayer = function(layer) {
   var editData = selectionLayer.getEditData();
   if (goog.isNull(editData.rTree)) {
     editData.rTree = new ol.structs.RTree();
-    var vertexFeature = new ol.Feature();
-    vertexFeature.renderIntent = ol.layer.VectorLayerRenderIntent.HIDDEN;
-    vertexFeature.setGeometry(new ol.geom.Point([NaN, NaN]));
-    selectionLayer.addFeatures([vertexFeature]);
-    editData.vertexFeature = vertexFeature;
   }
   this.addIndex_(selectionLayer,
       goog.object.getValues(selectionData.selectedFeaturesByFeatureUid));
@@ -154,6 +149,27 @@ ol.interaction.Modify.prototype.addSegments_ =
       this.addSegments_(selectionLayer, feature, rings[j]);
     }
   }
+};
+
+
+/**
+ * @param {ol.layer.Vector} selectionLayer Selection layer.
+ * @param {ol.Coordinate} coordinates Coordinates.
+ * @return {ol.Feature} Vertex feature.
+ */
+ol.interaction.Modify.prototype.createOrUpdateVertexFeature =
+    function(selectionLayer, coordinates) {
+  var editData = selectionLayer.getEditData();
+  var vertexFeature = editData.vertexFeature;
+  if (goog.isNull(vertexFeature)) {
+    vertexFeature = new ol.Feature({g: new ol.geom.Point(coordinates)});
+    selectionLayer.addFeatures([vertexFeature]);
+    editData.vertexFeature = vertexFeature;
+  } else {
+    var geometry = vertexFeature.getGeometry();
+    geometry.setCoordinates(coordinates);
+  }
+  return vertexFeature;
 };
 
 
@@ -223,12 +239,10 @@ ol.interaction.Modify.prototype.handleDrag = function(evt) {
     geometry.setCoordinates(coordinates);
 
     var editData = selectionLayer.getEditData();
-    var vertexFeature = editData.vertexFeature;
-    var vertexGeometry = vertexFeature.getGeometry();
     var segment = segmentData[0];
     editData.rTree.remove(ol.extent.boundingExtent(segment), segmentData);
     segment[index] = vertex;
-    vertexGeometry.setCoordinates(vertex);
+    this.createOrUpdateVertexFeature(selectionLayer, vertex);
     editData.rTree.insert(ol.extent.boundingExtent(segment), segmentData,
         goog.getUid(feature));
   }
@@ -293,7 +307,6 @@ ol.interaction.Modify.prototype.handleMouseMove_ = function(evt) {
       if (segments.length > 0) {
         segments.sort(sortByDistance);
         var segment = segments[0][0]; // the closest segment
-        var geometry = vertexFeature.getGeometry();
         var vertex = /** @type {ol.Coordinate} */
             (ol.coordinate.closestOnSegment(pixelCoordinate, segment));
         var vertexPixel = map.getPixelFromCoordinate(vertex);
@@ -309,11 +322,13 @@ ol.interaction.Modify.prototype.handleMouseMove_ = function(evt) {
             vertex = squaredDist1 > squaredDist2 ? segment[1] : segment[0];
             renderIntent = ol.layer.VectorLayerRenderIntent.TEMPORARY;
           }
-          geometry.setCoordinates(vertex);
+          vertexFeature =
+              this.createOrUpdateVertexFeature(selectionLayer, vertex);
           this.modifiable_ = true;
         }
       }
-      if (vertexFeature.renderIntent != renderIntent) {
+      if (!goog.isNull(vertexFeature) &&
+          vertexFeature.renderIntent != renderIntent) {
         selectionLayer.setRenderIntent(renderIntent, [vertexFeature]);
       }
     }
