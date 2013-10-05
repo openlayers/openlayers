@@ -1,7 +1,9 @@
 goog.provide('ol.geom.AbstractCollection');
 
+goog.require('goog.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryEvent');
 
 
 
@@ -16,6 +18,7 @@ ol.geom.AbstractCollection = function() {
 
   /**
    * @type {Array.<ol.geom.Geometry>}
+   * @protected
    */
   this.components = null;
 
@@ -46,6 +49,14 @@ ol.geom.AbstractCollection.prototype.getBounds = function() {
 
 
 /**
+ * @return {Array.<ol.geom.Geometry>} Components.
+ */
+ol.geom.AbstractCollection.prototype.getComponents = function() {
+  return this.components;
+};
+
+
+/**
  * @inheritDoc
  */
 ol.geom.AbstractCollection.prototype.getCoordinates = function() {
@@ -62,6 +73,26 @@ ol.geom.AbstractCollection.prototype.getCoordinates = function() {
  * @inheritDoc
  */
 ol.geom.AbstractCollection.prototype.getType = goog.abstractMethod;
+
+
+/**
+ * Listener for component change events.
+ * @param {ol.geom.GeometryEvent} evt Geometry event.
+ * @protected
+ */
+ol.geom.AbstractCollection.prototype.handleComponentChange = function(evt) {
+  this.bounds = null;
+  var oldExtent = ol.extent.createEmpty();
+  var components = this.components;
+  for (var i = components.length - 1; i >= 0; --i) {
+    var component = components[i];
+    ol.extent.extend(oldExtent,
+        component === evt.target && !goog.isNull(evt.oldExtent) ?
+            evt.oldExtent : component.getBounds());
+  }
+  this.dispatchEvent(new ol.geom.GeometryEvent(goog.events.EventType.CHANGE,
+      this, oldExtent));
+};
 
 
 /**

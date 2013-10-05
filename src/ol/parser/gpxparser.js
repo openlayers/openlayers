@@ -159,8 +159,9 @@ ol.parser.GPX = function(opt_options) {
         if (geom instanceof ol.geom.LineString) {
           this.writeNode('trkseg', feature.getGeometry(), undefined, node);
         } else if (geom instanceof ol.geom.MultiLineString) {
-          for (i = 0, ii = geom.components.length; i < ii; ++i) {
-            this.writeNode('trkseg', geom.components[i], undefined, node);
+          var components = geom.getComponents();
+          for (i = 0, ii = components.length; i < ii; ++i) {
+            this.writeNode('trkseg', components[i], undefined, node);
           }
         } else if (geom instanceof ol.geom.Polygon) {
           rings = geom.getRings();

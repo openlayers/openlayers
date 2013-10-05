@@ -349,8 +349,9 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     },
     'MultiCurve': function(geometry) {
       var node = this.createElementNS('gml:MultiCurve');
-      for (var i = 0, len = geometry.components.length; i < len; ++i) {
-        this.writeNode('curveMember', geometry.components[i], null, node);
+      var components = geometry.getComponents();
+      for (var i = 0, len = components.length; i < len; ++i) {
+        this.writeNode('curveMember', components[i], null, node);
       }
       return node;
     },
@@ -365,8 +366,9 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
     },
     'MultiSurface': function(geometry) {
       var node = this.createElementNS('gml:MultiSurface');
-      for (var i = 0, len = geometry.components.length; i < len; ++i) {
-        this.writeNode('surfaceMember', geometry.components[i], null, node);
+      var components = geometry.getComponents();
+      for (var i = 0, len = components.length; i < len; ++i) {
+        this.writeNode('surfaceMember', components[i], null, node);
       }
       return node;
     },

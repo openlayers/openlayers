@@ -340,8 +340,9 @@ ol.parser.ogc.GML = function(opt_options) {
       },
       'MultiPoint': function(geometry) {
         var node = this.createElementNS('gml:MultiPoint');
-        for (var i = 0, ii = geometry.components.length; i < ii; ++i) {
-          this.writeNode('pointMember', geometry.components[i], null, node);
+        var components = geometry.getComponents();
+        for (var i = 0, ii = components.length; i < ii; ++i) {
+          this.writeNode('pointMember', components[i], null, node);
         }
         return node;
       },
@@ -352,9 +353,9 @@ ol.parser.ogc.GML = function(opt_options) {
       },
       'MultiLineString': function(geometry) {
         var node = this.createElementNS('gml:MultiLineString');
-        for (var i = 0, ii = geometry.components.length; i < ii; ++i) {
-          this.writeNode('lineStringMember', geometry.components[i], null,
-              node);
+        var components = geometry.getComponents();
+        for (var i = 0, ii = components.length; i < ii; ++i) {
+          this.writeNode('lineStringMember', components[i], null, node);
         }
         return node;
       },
@@ -365,8 +366,9 @@ ol.parser.ogc.GML = function(opt_options) {
       },
       'MultiPolygon': function(geometry) {
         var node = this.createElementNS('gml:MultiPolygon');
-        for (var i = 0, ii = geometry.components.length; i < ii; ++i) {
-          this.writeNode('polygonMember', geometry.components[i], null, node);
+        var components = geometry.getComponents();
+        for (var i = 0, ii = components.length; i < ii; ++i) {
+          this.writeNode('polygonMember', components[i], null, node);
         }
         return node;
       },
@@ -377,8 +379,9 @@ ol.parser.ogc.GML = function(opt_options) {
       },
       'GeometryCollection': function(geometry) {
         var node = this.createElementNS('gml:GeometryCollection');
-        for (var i = 0, ii = geometry.components.length; i < ii; ++i) {
-          this.writeNode('geometryMember', geometry.components[i], null, node);
+        var components = geometry.getComponents();
+        for (var i = 0, ii = components.length; i < ii; ++i) {
+          this.writeNode('geometryMember', components[i], null, node);
         }
         return node;
       },

@@ -315,8 +315,9 @@ ol.parser.GeoJSON.prototype.encodeGeometry_ = function(geometry) {
  */
 ol.parser.GeoJSON.prototype.encodeGeometryCollection_ = function(collection) {
   var geometries = [];
-  for (var i = 0, ii = collection.components.length; i < ii; ++i) {
-    geometries.push(this.encodeGeometry_(collection.components[i]));
+  var components = collection.getComponents();
+  for (var i = 0, ii = components.length; i < ii; ++i) {
+    geometries.push(this.encodeGeometry_(components[i]));
   }
   return /** @type {GeoJSONGeometryCollection} */({
     type: 'GeometryCollection',

@@ -172,7 +172,7 @@ ol.renderer.canvas.Vector.prototype.renderLineStringFeatures_ =
     } else {
       goog.asserts.assert(geometry instanceof ol.geom.MultiLineString,
           'Expected MultiLineString');
-      components = geometry.components;
+      components = geometry.getComponents();
     }
     for (j = 0, jj = components.length; j < jj; ++j) {
       line = components[j];
@@ -256,7 +256,7 @@ ol.renderer.canvas.Vector.prototype.renderPointFeatures_ =
     } else {
       goog.asserts.assert(geometry instanceof ol.geom.MultiPoint,
           'Expected MultiPoint');
-      components = geometry.components;
+      components = geometry.getComponents();
     }
     for (j = 0, jj = components.length; j < jj; ++j) {
       point = components[j];
@@ -358,7 +358,7 @@ ol.renderer.canvas.Vector.prototype.renderPolygonFeatures_ =
     } else {
       goog.asserts.assert(geometry instanceof ol.geom.MultiPolygon,
           'Expected MultiPolygon');
-      components = geometry.components;
+      components = geometry.getComponents();
     }
     for (j = 0, jj = components.length; j < jj; ++j) {
       poly = components[j];
@@ -472,7 +472,7 @@ ol.renderer.canvas.Vector.renderCircle_ = function(circle) {
  */
 ol.renderer.canvas.Vector.getLabelVectors = function(geometry) {
   if (geometry instanceof ol.geom.AbstractCollection) {
-    var components = geometry.components;
+    var components = geometry.getComponents();
     var numComponents = components.length;
     var result = [];
     for (var i = 0; i < numComponents; ++i) {

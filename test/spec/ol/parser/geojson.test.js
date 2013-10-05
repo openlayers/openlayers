@@ -101,10 +101,10 @@ describe('ol.parser.GeoJSON', function() {
       ]);
       var geojson = parser.write(collection);
       var got = parser.read(geojson);
-      expect(collection.components.length).to.equal(got.length);
-      for (var i = 0, ii = collection.components.length; i < ii; ++i) {
-        expect(collection.components[i].getCoordinates()).to.eql(
-            got[i].getCoordinates());
+      var components = collection.getComponents();
+      expect(components.length).to.equal(got.length);
+      for (var i = 0, ii = components.length; i < ii; ++i) {
+        expect(components[i].getCoordinates()).to.eql(got[i].getCoordinates());
       }
     });
 
