@@ -79,8 +79,9 @@ ol.interaction.Modify.prototype.addIndex_ = function(layer, features) {
     var feature = features[i];
     var geometry = feature.getGeometry();
     if (geometry instanceof ol.geom.AbstractCollection) {
-      for (var j = 0, jj = geometry.components.length; j < jj; ++j) {
-        this.addSegments_(layer, feature, geometry.components[j]);
+      var components = geometry.getComponents();
+      for (var j = 0, jj = components.length; j < jj; ++j) {
+        this.addSegments_(layer, feature, components[j]);
       }
     } else {
       this.addSegments_(layer, feature, geometry);
