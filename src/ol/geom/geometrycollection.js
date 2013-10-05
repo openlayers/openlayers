@@ -42,7 +42,7 @@ ol.geom.GeometryCollection.prototype.clone = function() {
   var numComponents = this.components.length;
   var components = new Array(numComponents);
   for (var i = 0; i < numComponents; ++i) {
-    components[i] = this.components[i];
+    components[i] = this.components[i].clone();
   }
   return new ol.geom.GeometryCollection(components);
 };
