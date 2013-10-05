@@ -80,8 +80,7 @@ ol.interaction.Modify.prototype.addIndex_ = function(layer, features) {
     var geometry = feature.getGeometry();
     if (geometry instanceof ol.geom.AbstractCollection) {
       for (var j = 0, jj = geometry.components.length; j < jj; ++j) {
-        this.addSegments_(layer, feature, geometry.components[j],
-            [[geometry.components, j]]);
+        this.addSegments_(layer, feature, geometry.components[j]);
       }
     } else {
       this.addSegments_(layer, feature, geometry);
@@ -130,23 +129,16 @@ ol.interaction.Modify.prototype.addLayer = function(layer) {
  * @param {ol.layer.Vector} selectionLayer Selection layer.
  * @param {ol.Feature} feature Feature to add segments for.
  * @param {ol.geom.Geometry} geometry Geometry to add segments for.
- * @param {Array=} opt_parent Parent structure on the feature that the geometry
- *     belongs to. This array has two values:
- *     [0] the parent array;
- *     [1] the index of the geometry in the parent array.
  * @private
  */
 ol.interaction.Modify.prototype.addSegments_ =
-    function(selectionLayer, feature, geometry, opt_parent) {
+    function(selectionLayer, feature, geometry) {
   var uid = goog.getUid(feature);
   var rTree = selectionLayer.getEditData().rTree;
   var vertex, segment, segmentData, coordinates;
   if (geometry instanceof ol.geom.Point) {
     vertex = geometry.getCoordinates();
     segmentData = [[vertex, vertex], feature, geometry, NaN];
-    if (goog.isDef(opt_parent)) {
-      segmentData.push(opt_parent);
-    }
     rTree.insert(geometry.getBounds(), segmentData, uid);
   } else if (geometry instanceof ol.geom.LineString ||
       geometry instanceof ol.geom.LinearRing) {
@@ -154,16 +146,12 @@ ol.interaction.Modify.prototype.addSegments_ =
     for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       segment = coordinates.slice(i, i + 2);
       segmentData = [segment, feature, geometry, i];
-      if (opt_parent) {
-        segmentData.push(opt_parent);
-      }
       rTree.insert(ol.extent.boundingExtent(segment), segmentData, uid);
     }
   } else if (geometry instanceof ol.geom.Polygon) {
     var rings = geometry.getRings();
     for (var j = 0, jj = rings.length; j < jj; ++j) {
-      this.addSegments_(selectionLayer, feature, rings[j],
-          [rings, j]);
+      this.addSegments_(selectionLayer, feature, rings[j]);
     }
   }
 };
@@ -357,41 +345,23 @@ ol.interaction.Modify.prototype.insertVertex_ =
   var index = segmentData[3];
   var coordinates = geometry.getCoordinates();
   coordinates.splice(index + 1, 0, vertex);
-  var oldGeometry = geometry;
-  geometry = new geometry.constructor(coordinates);
-  var parent;
-  if (segmentData.length > 4) {
-    parent = segmentData[4];
-    parent[0][parent[1]] = geometry;
-    feature.getGeometry().invalidateBounds();
-  } else {
-    feature.setGeometry(geometry);
-  }
+  geometry.setCoordinates(coordinates);
   var rTree = selectionLayer.getEditData().rTree;
   rTree.remove(ol.extent.boundingExtent(segment), segmentData);
   var uid = goog.getUid(feature);
   var allSegments = rTree.search(geometry.getBounds(), uid);
   for (var i = 0, ii = allSegments.length; i < ii; ++i) {
     var allSegmentsData = allSegments[i];
-    if (allSegmentsData[2] === oldGeometry) {
-      allSegmentsData[2] = geometry;
-      if (allSegmentsData[3] > index) {
-        ++allSegmentsData[3];
-      }
+    if (allSegmentsData[2] === geometry && allSegmentsData[3] > index) {
+      ++allSegmentsData[3];
     }
   }
   var newSegment = [segment[0], vertex];
   var newSegmentData = [newSegment, feature, geometry, index];
-  if (goog.isDef(parent)) {
-    newSegmentData.push(parent);
-  }
   rTree.insert(ol.extent.boundingExtent(newSegment), newSegmentData, uid);
   this.dragSegments_.push([selectionLayer, newSegmentData, 1]);
   newSegment = [vertex, segment[1]];
   newSegmentData = [newSegment, feature, geometry, index + 1];
-  if (goog.isDef(parent)) {
-    newSegmentData.push(parent);
-  }
   rTree.insert(ol.extent.boundingExtent(newSegment), newSegmentData, uid);
   this.dragSegments_.push([selectionLayer, newSegmentData, 0]);
 };
