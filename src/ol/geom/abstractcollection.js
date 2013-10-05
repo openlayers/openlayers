@@ -76,7 +76,7 @@ ol.geom.AbstractCollection.prototype.getType = goog.abstractMethod;
 
 
 /**
- * Listener for ring change events.
+ * Listener for component change events.
  * @param {ol.geom.GeometryEvent} evt Geometry event.
  * @protected
  */
