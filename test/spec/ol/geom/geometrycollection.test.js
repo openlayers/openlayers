@@ -28,10 +28,11 @@ describe('ol.geom.GeometryCollection', function() {
       var poly = new ol.geom.Polygon([outer, inner1, inner2]);
       var multi = new ol.geom.GeometryCollection([point, line, poly]);
 
-      expect(multi.components.length).to.be(3);
-      expect(multi.components[0]).to.be.a(ol.geom.Point);
-      expect(multi.components[1]).to.be.a(ol.geom.LineString);
-      expect(multi.components[2]).to.be.a(ol.geom.Polygon);
+      var components = multi.getComponents();
+      expect(components.length).to.be(3);
+      expect(components[0]).to.be.a(ol.geom.Point);
+      expect(components[1]).to.be.a(ol.geom.LineString);
+      expect(components[2]).to.be.a(ol.geom.Polygon);
     });
 
   });
@@ -45,10 +46,10 @@ describe('ol.geom.GeometryCollection', function() {
       var multi = new ol.geom.GeometryCollection([point, line, poly]);
       var clone = multi.clone();
       expect(clone).to.not.be(multi);
-      var components = clone.components;
-      expect(components[0]).to.eql([10, 20]);
-      expect(components[1]).to.eql([[10, 20], [30, 40]]);
-      expect(components[2]).to.eql([outer, inner1, inner2]);
+      var components = clone.getComponents();
+      expect(components[0].getCoordinates()).to.eql([10, 20]);
+      expect(components[1].getCoordinates()).to.eql([[10, 20], [30, 40]]);
+      expect(components[2].getCoordinates()).to.eql([outer, inner1, inner2]);
     });
 
   });

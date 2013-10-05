@@ -118,10 +118,11 @@ describe('ol.parser.KML', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var geom = obj.features[0].getGeometry();
+        var components = geom.getComponents();
         expect(geom instanceof ol.geom.GeometryCollection).to.be.ok();
-        expect(geom.components.length).to.eql(2);
-        expect(geom.components[0] instanceof ol.geom.LineString).to.be.ok();
-        expect(geom.components[1] instanceof ol.geom.Point).to.be.ok();
+        expect(components.length).to.eql(2);
+        expect(components[0] instanceof ol.geom.LineString).to.be.ok();
+        expect(components[1] instanceof ol.geom.Point).to.be.ok();
         done();
       });
     });
@@ -346,9 +347,10 @@ describe('ol.parser.KML', function() {
       expect(alaska).to.be.a(ol.Feature);
       var geometry = alaska.getGeometry();
       expect(geometry).to.be.a(ol.geom.GeometryCollection);
-      expect(geometry.components).to.have.length(2);
-      expect(geometry.components[0]).to.be.a(ol.geom.Point);
-      expect(geometry.components[1]).to.be.a(ol.geom.MultiPolygon);
+      var components = geometry.getComponents();
+      expect(components).to.have.length(2);
+      expect(components[0]).to.be.a(ol.geom.Point);
+      expect(components[1]).to.be.a(ol.geom.MultiPolygon);
     });
 
   });

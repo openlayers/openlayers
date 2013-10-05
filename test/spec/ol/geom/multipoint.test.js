@@ -17,9 +17,10 @@ describe('ol.geom.MultiPoint', function() {
     it('is an array of points', function() {
       var multi = new ol.geom.MultiPoint([[10, 20], [30, 40]]);
 
-      expect(multi.components.length).to.be(2);
-      expect(multi.components[0]).to.be.a(ol.geom.Point);
-      expect(multi.components[1]).to.be.a(ol.geom.Point);
+      var components = multi.getComponents();
+      expect(components.length).to.be(2);
+      expect(components[0]).to.be.a(ol.geom.Point);
+      expect(components[1]).to.be.a(ol.geom.Point);
 
     });
 
@@ -56,10 +57,11 @@ describe('ol.geom.MultiPoint', function() {
       var multi = new ol.geom.MultiPoint([[10, 20], [30, 40]]);
       multi.transform(forward);
 
-      expect(multi.components[0].get(0)).to.roughlyEqual(1113195, 1);
-      expect(multi.components[0].get(1)).to.roughlyEqual(2273031, 1);
-      expect(multi.components[1].get(0)).to.roughlyEqual(3339584, 1);
-      expect(multi.components[1].get(1)).to.roughlyEqual(4865942, 1);
+      var components = multi.getComponents();
+      expect(components[0].get(0)).to.roughlyEqual(1113195, 1);
+      expect(components[0].get(1)).to.roughlyEqual(2273031, 1);
+      expect(components[1].get(0)).to.roughlyEqual(3339584, 1);
+      expect(components[1].get(1)).to.roughlyEqual(4865942, 1);
     });
 
     it('inverse transforms a multi-point', function() {
@@ -67,10 +69,11 @@ describe('ol.geom.MultiPoint', function() {
           [[1113195, 2273031], [3339584, 4865942]]);
       multi.transform(inverse);
 
-      expect(multi.components[0].get(0)).to.roughlyEqual(10, 0.001);
-      expect(multi.components[0].get(1)).to.roughlyEqual(20, 0.001);
-      expect(multi.components[1].get(0)).to.roughlyEqual(30, 0.001);
-      expect(multi.components[1].get(1)).to.roughlyEqual(40, 0.001);
+      var components = multi.getComponents();
+      expect(components[0].get(0)).to.roughlyEqual(10, 0.001);
+      expect(components[0].get(1)).to.roughlyEqual(20, 0.001);
+      expect(components[1].get(0)).to.roughlyEqual(30, 0.001);
+      expect(components[1].get(1)).to.roughlyEqual(40, 0.001);
     });
 
   });

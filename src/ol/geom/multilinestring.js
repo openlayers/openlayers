@@ -1,6 +1,8 @@
 goog.provide('ol.geom.MultiLineString');
 
 goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('ol.CoordinateArray');
 goog.require('ol.geom.AbstractCollection');
 goog.require('ol.geom.GeometryType');
@@ -21,10 +23,14 @@ ol.geom.MultiLineString = function(coordinates) {
 
   /**
    * @type {Array.<ol.geom.LineString>}
+   * @protected
    */
   this.components = new Array(numParts);
   for (var i = 0; i < numParts; ++i) {
-    this.components[i] = new ol.geom.LineString(coordinates[i]);
+    var component = new ol.geom.LineString(coordinates[i]);
+    this.components[i] = component;
+    goog.events.listen(component, goog.events.EventType.CHANGE,
+        this.handleComponentChange, false, this);
   }
 
 };

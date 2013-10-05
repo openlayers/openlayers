@@ -823,8 +823,9 @@ ol.parser.KML = function(opt_options) {
       },
       'MultiGeometry': function(geometry) {
         var node = this.createElementNS('MultiGeometry');
-        for (var i = 0, ii = geometry.components.length; i < ii; ++i) {
-          this.writeNode('_geometry', geometry.components[i], null, node);
+        var components = geometry.getComponents();
+        for (var i = 0, ii = components.length; i < ii; ++i) {
+          this.writeNode('_geometry', components[i], null, node);
         }
         return node;
       },
