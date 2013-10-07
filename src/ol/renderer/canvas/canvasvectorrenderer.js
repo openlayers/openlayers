@@ -293,6 +293,15 @@ ol.renderer.canvas.Vector.prototype.renderText_ =
   context.textAlign = 'center';
   context.textBaseline = 'middle';
 
+  var stroke = false;
+  if (goog.isDef(text.strokeColor)) {
+    stroke = true;
+    goog.asserts.assertString(text.strokeColor);
+    context.strokeStyle = text.strokeColor;
+    goog.asserts.assertNumber(text.strokeWidth);
+    context.lineWidth = text.strokeWidth;
+  }
+
   for (var i = 0, ii = features.length; i < ii; ++i) {
     feature = features[i];
     if (feature.renderIntent === ol.layer.VectorLayerRenderIntent.HIDDEN) {
@@ -303,6 +312,16 @@ ol.renderer.canvas.Vector.prototype.renderText_ =
     for (var j = 0, jj = vecs.length; j < jj; ++j) {
       vec = vecs[j];
       goog.vec.Mat4.multVec3(this.transform_, vec, vec);
+      if (stroke) {
+        if (text.strokeOpacity !== text.opacity) {
+          goog.asserts.assertNumber(text.strokeOpacity);
+          context.globalAlpha = text.strokeOpacity;
+        }
+        context.strokeText(texts[i], vec[0], vec[1]);
+        if (text.strokeOpacity !== text.opacity) {
+          context.globalAlpha = text.opacity;
+        }
+      }
       context.fillText(texts[i], vec[0], vec[1]);
     }
   }
