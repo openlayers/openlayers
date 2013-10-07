@@ -293,6 +293,7 @@
  * @property {boolean|undefined} touchRotate Whether touch rotate is desired.
  * @property {boolean|undefined} touchZoom Whether touch zoom is desired.
  * @property {number|undefined} zoomDelta Zoom delta.
+ * @property {number|undefined} zoomDuration Zoom duration.
  */
 
 /**
