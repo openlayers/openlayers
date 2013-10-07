@@ -10,6 +10,9 @@ goog.require('ol.style.Literal');
  *            fontSize: number,
  *            text: string,
  *            opacity: number,
+ *            strokeColor: (string|undefined),
+ *            strokeOpacity: (number|undefined),
+ *            strokeWidth: (number|undefined),
  *            zIndex: number}}
  */
 ol.style.TextLiteralOptions;
@@ -43,6 +46,37 @@ ol.style.TextLiteral = function(options) {
   /** @type {number} */
   this.opacity = options.opacity;
 
+  /** @type {string|undefined} */
+  this.strokeColor = options.strokeColor;
+  if (goog.isDef(this.strokeColor)) {
+    goog.asserts.assertString(
+        this.strokeColor, 'strokeColor must be a string');
+  }
+
+  /** @type {number|undefined} */
+  this.strokeOpacity = options.strokeOpacity;
+  if (goog.isDef(this.strokeOpacity)) {
+    goog.asserts.assertNumber(
+        this.strokeOpacity, 'strokeOpacity must be a number');
+  }
+
+  /** @type {number|undefined} */
+  this.strokeWidth = options.strokeWidth;
+  if (goog.isDef(this.strokeWidth)) {
+    goog.asserts.assertNumber(
+        this.strokeWidth, 'strokeWidth must be a number');
+  }
+
+  // if any stroke property is defined, all must be defined
+  var strokeDef = goog.isDef(this.strokeColor) &&
+      goog.isDef(this.strokeOpacity) &&
+      goog.isDef(this.strokeWidth);
+  var strokeUndef = !goog.isDef(this.strokeColor) &&
+      !goog.isDef(this.strokeOpacity) &&
+      !goog.isDef(this.strokeWidth);
+  goog.asserts.assert(strokeDef || strokeUndef,
+      'If any stroke property is defined, all must be defined');
+
   goog.asserts.assertNumber(options.zIndex, 'zIndex must be a number');
   /** @type {number} */
   this.zIndex = options.zIndex;
@@ -59,5 +93,8 @@ ol.style.TextLiteral.prototype.equals = function(other) {
       this.fontFamily == other.fontFamily &&
       this.fontSize == other.fontSize &&
       this.opacity == other.opacity &&
+      this.strokeColor == other.strokeColor &&
+      this.strokeOpacity == other.strokeOpacity &&
+      this.strokeWidth == other.strokeWidth &&
       this.zIndex == other.zIndex;
 };
