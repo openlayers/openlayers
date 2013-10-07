@@ -217,6 +217,7 @@
 
 /**
  * @typedef {Object} ol.control.ZoomOptions
+ * @property {number|undefined} duration Animation duration. Default is 250ms.
  * @property {string|undefined} className CSS class name. Default is `ol-zoom`.
  * @property {number|undefined} delta The zoom delta applied on each click.
  * @property {Element|undefined} target Target.
