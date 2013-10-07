@@ -2,6 +2,11 @@
 
 @exportSymbol ol.OverlayPositioning
 @exportProperty ol.OverlayPositioning.BOTTOM_LEFT
+@exportProperty ol.OverlayPositioning.BOTTOM_CENTER
 @exportProperty ol.OverlayPositioning.BOTTOM_RIGHT
+@exportProperty ol.OverlayPositioning.CENTER_LEFT
+@exportProperty ol.OverlayPositioning.CENTER_CENTER
+@exportProperty ol.OverlayPositioning.CENTER_RIGHT
 @exportProperty ol.OverlayPositioning.TOP_LEFT
+@exportProperty ol.OverlayPositioning.TOP_CENTER
 @exportProperty ol.OverlayPositioning.TOP_RIGHT
