@@ -344,6 +344,11 @@
  */
 
 /**
+ * @typedef {Object} ol.interaction.TouchZoomOptions
+ * @property {number|undefined} duration Animation duration. Default is 400ms.
+ */
+
+/**
  * @typedef {Object} ol.layer.BaseOptions
  * @property {number|undefined} brightness Brightness.
  * @property {number|undefined} contrast Contrast.
