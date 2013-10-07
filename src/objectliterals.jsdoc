@@ -240,6 +240,7 @@
 
 /**
  * @typedef {Object} ol.interaction.DoubleClickZoomOptions
+ * @property {number|undefined} duration Animation duration. Default is 250ms.
  * @property {number|undefined} delta The zoom delta applied on each double
  *     click, default is 1.
  */
