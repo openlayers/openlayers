@@ -21,14 +21,11 @@ goog.require('ol.geom.GeometryType');
  * @return {*} The result of the expression.
  */
 ol.expr.evaluateFeature = function(expr, opt_feature) {
-  var result;
+  var scope;
   if (goog.isDef(opt_feature)) {
-    result = expr.evaluate(
-        opt_feature.getAttributes(), ol.expr.lib, opt_feature);
-  } else {
-    result = expr.evaluate();
+    scope = opt_feature.getAttributes();
   }
-  return result;
+  return expr.evaluate(scope, ol.expr.lib, opt_feature);
 };
 
 
