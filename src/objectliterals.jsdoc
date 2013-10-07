@@ -306,6 +306,7 @@
 
 /**
  * @typedef {Object} ol.interaction.KeyboardZoomOptions
+ * @property {number|undefined} duration Animation duration. Default is 100ms.
  * @property {ol.interaction.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is no modifiers.
