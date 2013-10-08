@@ -27,7 +27,7 @@ var vector = new ol.layer.Vector({
     new ol.style.Rule({
       symbolizers: [
         new ol.style.Fill({
-          color: '#ffffff',
+          color: 'white',
           opacity: 0.6
         }),
         new ol.style.Stroke({
@@ -40,10 +40,14 @@ var vector = new ol.layer.Vector({
       maxResolution: 5000,
       symbolizers: [
         new ol.style.Text({
-          color: '#000000',
+          color: 'black',
           text: ol.expr.parse('name'),
           fontFamily: 'Calibri,sans-serif',
-          fontSize: 12
+          fontSize: 12,
+          stroke: new ol.style.Stroke({
+            color: 'white',
+            width: 3
+          })
         })
       ]
     })

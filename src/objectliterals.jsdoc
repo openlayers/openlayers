@@ -762,6 +762,7 @@
  * @property {number|ol.expr.Expression|undefined} fontSize Font size in pixels.
  * @property {string|ol.expr.Expression} text Text for the label.
  * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
+ * @property {ol.style.Stroke|undefined} stroke Stroke symbolizer for text.
  * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
  */
 
