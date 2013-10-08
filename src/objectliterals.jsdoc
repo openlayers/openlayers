@@ -217,6 +217,7 @@
 
 /**
  * @typedef {Object} ol.control.ZoomOptions
+ * @property {number|undefined} duration Animation duration. Default is 250ms.
  * @property {string|undefined} className CSS class name. Default is `ol-zoom`.
  * @property {number|undefined} delta The zoom delta applied on each click.
  * @property {Element|undefined} target Target.
@@ -239,6 +240,7 @@
 
 /**
  * @typedef {Object} ol.interaction.DoubleClickZoomOptions
+ * @property {number|undefined} duration Animation duration. Default is 250ms.
  * @property {number|undefined} delta The zoom delta applied on each double
  *     click, default is 1.
  */
@@ -291,6 +293,7 @@
  * @property {boolean|undefined} touchRotate Whether touch rotate is desired.
  * @property {boolean|undefined} touchZoom Whether touch zoom is desired.
  * @property {number|undefined} zoomDelta Zoom delta.
+ * @property {number|undefined} zoomDuration Zoom duration.
  */
 
 /**
@@ -304,10 +307,16 @@
 
 /**
  * @typedef {Object} ol.interaction.KeyboardZoomOptions
+ * @property {number|undefined} duration Animation duration. Default is 100ms.
  * @property {ol.interaction.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is no modifiers.
  * @property {number|undefined} delta The amount to zoom on each key press.
+ */
+
+/**
+ * @typedef {Object} ol.interaction.MouseWheelZoomOptions
+ * @property {number|undefined} duration Animation duration. Default is 250ms.
  */
 
 /**
@@ -333,6 +342,11 @@
 /**
  * @typedef {Object} ol.interaction.TouchRotateOptions
  * @property {number|undefined} threshold Minimal angle to start a rotation.
+ */
+
+/**
+ * @typedef {Object} ol.interaction.TouchZoomOptions
+ * @property {number|undefined} duration Animation duration. Default is 400ms.
  */
 
 /**
