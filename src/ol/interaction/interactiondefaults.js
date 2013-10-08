@@ -45,7 +45,8 @@ ol.interaction.defaults = function(opt_options) {
       options.doubleClickZoom : true;
   if (doubleClickZoom) {
     interactions.push(new ol.interaction.DoubleClickZoom({
-      delta: options.zoomDelta
+      delta: options.zoomDelta,
+      duration: options.zoomDuration
     }));
   }
 
@@ -66,7 +67,9 @@ ol.interaction.defaults = function(opt_options) {
   var touchZoom = goog.isDef(options.touchZoom) ?
       options.touchZoom : true;
   if (touchZoom) {
-    interactions.push(new ol.interaction.TouchZoom());
+    interactions.push(new ol.interaction.TouchZoom({
+      duration: options.zoomDuration
+    }));
   }
 
   var dragPan = goog.isDef(options.dragPan) ?
@@ -82,14 +85,17 @@ ol.interaction.defaults = function(opt_options) {
   if (keyboard) {
     interactions.push(new ol.interaction.KeyboardPan());
     interactions.push(new ol.interaction.KeyboardZoom({
-      delta: options.zoomDelta
+      delta: options.zoomDelta,
+      duration: options.zoomDuration
     }));
   }
 
   var mouseWheelZoom = goog.isDef(options.mouseWheelZoom) ?
       options.mouseWheelZoom : true;
   if (mouseWheelZoom) {
-    interactions.push(new ol.interaction.MouseWheelZoom());
+    interactions.push(new ol.interaction.MouseWheelZoom({
+      duration: options.zoomDuration
+    }));
   }
 
   var shiftDragZoom = goog.isDef(options.shiftDragZoom) ?

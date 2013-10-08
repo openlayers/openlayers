@@ -9,12 +9,6 @@ goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.condition');
 
 
-/**
- * @define {number} Zoom duration.
- */
-ol.interaction.KEYBOARD_ZOOM_DURATION = 100;
-
-
 
 /**
  * Allows the user to zoom the map using keyboard + and -.
@@ -41,6 +35,12 @@ ol.interaction.KeyboardZoom = function(opt_options) {
    */
   this.delta_ = goog.isDef(options.delta) ? options.delta : 1;
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.duration_ = goog.isDef(options.duration) ? options.duration : 100;
+
 };
 goog.inherits(ol.interaction.KeyboardZoom, ol.interaction.Interaction);
 
@@ -62,8 +62,8 @@ ol.interaction.KeyboardZoom.prototype.handleMapBrowserEvent =
       map.requestRenderFrame();
       // FIXME works for View2D only
       var view = map.getView().getView2D();
-      ol.interaction.Interaction.zoomByDelta(map, view, delta, undefined,
-          ol.interaction.KEYBOARD_ZOOM_DURATION);
+      ol.interaction.Interaction.zoomByDelta(
+          map, view, delta, undefined, this.duration_);
       mapBrowserEvent.preventDefault();
       stopEvent = true;
     }
