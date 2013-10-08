@@ -204,7 +204,7 @@ goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
  * @private
  */
 ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
-  if (!this.dragged_) {
+  if (!this.dragged_ && ol.MapBrowserEvent.isMouseActionButton(browserEvent)) {
     var newEvent;
     var type = browserEvent.type;
     if (this.timestamp_ === 0 || type == goog.events.EventType.DBLCLICK) {
