@@ -7,12 +7,12 @@
 
 /**
  * @typedef {Object} ol.DeviceOrientationOptions
- * @property {boolean|undefined} tracking Tracking.
+ * @property {boolean|undefined} tracking Start tracking. Default is false.
  */
 
 /**
  * @typedef {Object} ol.GeolocationOptions
- * @property {boolean|undefined} tracking Tracking.
+ * @property {boolean|undefined} tracking Start Tracking. Default is false.
  * @property {GeolocationPositionOptions|undefined} trackingOptions Tracking options.
  * @property {ol.proj.ProjectionLike} projection Projection.
  */

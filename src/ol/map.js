@@ -136,7 +136,7 @@ ol.MapProperty = {
  *     });
  *
  * The above snippet creates a map with a MapQuest OSM layer on a 2D view and
- * renders it to a DOM element with the id 'map'.
+ * renders it to a DOM element with the id `map`.
  *
  * @constructor
  * @extends {ol.Object}
