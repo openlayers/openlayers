@@ -61,6 +61,12 @@ ol.style.Text = function(options) {
           options.opacity : new ol.expr.Literal(options.opacity);
 
   /**
+   * @type {ol.style.Stroke}
+   * @private
+   */
+  this.stroke_ = goog.isDefAndNotNull(options.stroke) ? options.stroke : null;
+
+  /**
    * @type {ol.expr.Expression}
    * @private
    */
@@ -102,6 +108,20 @@ ol.style.Text.prototype.createLiteral = function(featureOrType) {
   var opacity = Number(ol.expr.evaluateFeature(this.opacity_, feature));
   goog.asserts.assert(!isNaN(opacity), 'opacity must be a number');
 
+  var strokeColor, strokeOpacity, strokeWidth;
+  if (!goog.isNull(this.stroke_)) {
+    strokeColor = ol.expr.evaluateFeature(this.stroke_.getColor(), feature);
+    goog.asserts.assertString(
+        strokeColor, 'strokeColor must be a string');
+    strokeOpacity = Number(ol.expr.evaluateFeature(
+        this.stroke_.getOpacity(), feature));
+    goog.asserts.assert(!isNaN(strokeOpacity),
+        'strokeOpacity must be a number');
+    strokeWidth = Number(ol.expr.evaluateFeature(
+        this.stroke_.getWidth(), feature));
+    goog.asserts.assert(!isNaN(strokeWidth), 'strokeWidth must be a number');
+  }
+
   var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
   goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
 
@@ -111,6 +131,9 @@ ol.style.Text.prototype.createLiteral = function(featureOrType) {
     fontSize: fontSize,
     text: text,
     opacity: opacity,
+    strokeColor: strokeColor,
+    strokeOpacity: strokeOpacity,
+    strokeWidth: strokeWidth,
     zIndex: zIndex
   });
 };

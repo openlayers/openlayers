@@ -38,6 +38,19 @@ describe('ol.style.Text', function() {
       expect(symbolizer).to.be.a(ol.style.Text);
     });
 
+    it('accepts stroke', function() {
+      var symbolizer = new ol.style.Text({
+        color: '#000000',
+        text: 'Test',
+        stroke: new ol.style.Stroke({
+          color: '#ff0000',
+          width: 2,
+          opacity: 0.5
+        })
+      });
+      expect(symbolizer).to.be.a(ol.style.Text);
+    });
+
   });
 
   describe('#createLiteral()', function() {
@@ -126,6 +139,36 @@ describe('ol.style.Text', function() {
 
       var literal = symbolizer.createLiteral(feature);
       expect(literal.opacity).to.be(0.42);
+    });
+
+    it('evaluates stroke expressions', function() {
+      var symbolizer = new ol.style.Text({
+        text: 'test',
+        stroke: new ol.style.Stroke({
+          width: ol.expr.parse('strokeWidth')
+        })
+      });
+
+      var feature = new ol.Feature({
+        strokeWidth: '4.2'
+      });
+
+      var literal = symbolizer.createLiteral(feature);
+      expect(literal.strokeWidth).to.be(4.2);
+    });
+
+    it('applies stroke defaults', function() {
+      var symbolizer = new ol.style.Text({
+        text: 'test',
+        stroke: new ol.style.Stroke({
+          width: 2
+        })
+      });
+
+      var literal = symbolizer.createLiteral();
+      expect(literal.strokeWidth).to.be(2);
+      expect(literal.strokeColor).to.be('#696969');
+      expect(literal.strokeOpacity).to.be(0.75);
     });
 
   });
@@ -338,5 +381,6 @@ goog.require('ol.expr');
 goog.require('ol.expr.Literal');
 goog.require('ol.expr.Literal');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.style.Stroke');
 goog.require('ol.style.Text');
 goog.require('ol.style.TextLiteral');
