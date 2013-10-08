@@ -182,7 +182,7 @@ ol.Geolocation.prototype.positionError_ = function(error) {
 
 /**
  * Get the accuracy of the position in meters.
- * @return {number|undefined} accuracy in meters.
+ * @return {number|undefined} Position accuracy in meters.
  */
 ol.Geolocation.prototype.getAccuracy = function() {
   return /** @type {number|undefined} */ (
@@ -210,7 +210,7 @@ goog.exportProperty(
 
 /**
  * Get the altitude accuracy of the position.
- * @return {number|undefined} Altitude accuracy.
+ * @return {number|undefined} Altitude accuracy in meters.
  */
 ol.Geolocation.prototype.getAltitudeAccuracy = function() {
   return /** @type {number|undefined} */ (
