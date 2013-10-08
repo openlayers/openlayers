@@ -207,3 +207,19 @@ ol.style.Style.reduceLiterals_ = function(literals) {
   }
   return reduced;
 };
+
+
+/**
+ * @return {Array.<ol.style.Rule>}
+ */
+ol.style.Style.prototype.getRules = function() {
+  return this.rules_;
+};
+
+
+/**
+ * @param {Array.<ol.style.Rule>} rules The rules to set.
+ */
+ol.style.Style.prototype.setRules = function(rules) {
+  this.rules_ = rules;
+};

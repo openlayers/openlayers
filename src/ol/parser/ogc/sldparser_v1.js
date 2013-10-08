@@ -1,9 +1,12 @@
 goog.provide('ol.parser.ogc.SLD_v1');
+goog.require('goog.asserts');
 goog.require('goog.dom.xml');
 goog.require('goog.object');
+goog.require('ol.expr.Literal');
 goog.require('ol.parser.XML');
 goog.require('ol.parser.ogc.Filter_v1_0_0');
 goog.require('ol.style.Fill');
+goog.require('ol.style.Icon');
 goog.require('ol.style.Rule');
 goog.require('ol.style.Shape');
 goog.require('ol.style.Stroke');
@@ -76,11 +79,11 @@ ol.parser.ogc.SLD_v1 = function() {
         rule.elseFilter = true;
       },
       'MinScaleDenominator': function(node, rule) {
-        rule.minResolution = this.getResolutionFromScale_(
+        rule.minResolution = this.getResolutionFromScaleDenominator_(
             parseFloat(this.getChildValue(node)));
       },
       'MaxScaleDenominator': function(node, rule) {
-        rule.maxResolution = this.getResolutionFromScale_(
+        rule.maxResolution = this.getResolutionFromScaleDenominator_(
             parseFloat(this.getChildValue(node)));
       },
       'TextSymbolizer': function(node, rule) {
@@ -230,53 +233,56 @@ ol.parser.ogc.SLD_v1 = function() {
         );
       },
       'PolygonSymbolizer': function(node, rule) {
-        var config = {
-          fill: false,
-          stroke: false
-        };
+        var config = {};
         this.readChildNodes(node, config);
         config.zIndex = this.featureTypeCounter;
-        if (config.fill === true) {
+        if (goog.isDef(config.fill)) {
           var fill = {
-            color: config['fillColor'],
-            opacity: config['fillOpacity']
+            color: config.fill.fillColor,
+            opacity: config.fill.fillOpacity
           };
           rule.symbolizers.push(
               new ol.style.Fill(fill)
           );
+          delete config.fill;
         }
-        if (config.stroke === true) {
+        if (goog.isDef(config.stroke)) {
           var stroke = {
-            color: config['strokeColor'],
-            opacity: config['strokeOpacity'],
-            width: config['strokeWidth']
+            color: config.stroke.strokeColor,
+            opacity: config.stroke.strokeOpacity,
+            width: config.stroke.strokeWidth
           };
           rule.symbolizers.push(
               new ol.style.Stroke(stroke)
           );
+          delete config.stroke;
         }
 
       },
       'PointSymbolizer': function(node, rule) {
-        var config = {
-          fill: null,
-          stroke: null,
-          graphic: null
-        };
+        var config = {};
         this.readChildNodes(node, config);
         config.zIndex = this.featureTypeCounter;
+        if (config.fill) {
+          config.fill = new ol.style.Fill(config.fill);
+        }
+        if (config.stroke) {
+          config.stroke = new ol.style.Stroke(config.stroke);
+        }
         // TODO shape or icon?
         rule.symbolizers.push(
             new ol.style.Shape(config)
         );
       },
       'Stroke': function(node, symbolizer) {
-        symbolizer.stroke = true;
-        this.readChildNodes(node, symbolizer);
+        var stroke = {};
+        this.readChildNodes(node, stroke);
+        symbolizer.stroke = stroke;
       },
       'Fill': function(node, symbolizer) {
-        symbolizer.fill = true;
-        this.readChildNodes(node, symbolizer);
+        var fill = {};
+        this.readChildNodes(node, fill);
+        symbolizer.fill = fill;
       },
       'CssParameter': function(node, symbolizer) {
         var cssProperty = node.getAttribute('name');
@@ -382,6 +388,353 @@ ol.parser.ogc.SLD_v1 = function() {
       }
     }
   };
+  this.writers = {
+    'http://www.opengis.net/sld': {
+      'StyledLayerDescriptor': function(sld) {
+        var node = this.createElementNS('sld:StyledLayerDescriptor');
+        node.setAttribute('version', this.version);
+        if (goog.isDef(sld.name)) {
+          this.writeNode('Name', sld.name, null, node);
+        }
+        if (goog.isDef(sld.title)) {
+          this.writeNode('Title', sld.title, null, node);
+        }
+        if (goog.isDef(sld.description)) {
+          this.writeNode('Abstract', sld.description, null, node);
+        }
+        goog.object.forEach(sld.namedLayers, function(layer) {
+          this.writeNode('NamedLayer', layer, null, node);
+        }, this);
+        return node;
+      },
+      'Name': function(name) {
+        var node = this.createElementNS('sld:Name');
+        node.appendChild(this.createTextNode(name));
+        return node;
+      },
+      'Title': function(title) {
+        var node = this.createElementNS('sld:Title');
+        node.appendChild(this.createTextNode(title));
+        return node;
+      },
+      'Abstract': function(description) {
+        var node = this.createElementNS('sld:Abstract');
+        node.appendChild(this.createTextNode(description));
+        return node;
+      },
+      'NamedLayer': function(layer) {
+        var node = this.createElementNS('sld:NamedLayer');
+        this.writeNode('Name', layer.name, null, node);
+        var i, ii;
+        if (layer.namedStyles) {
+          for (i = 0, ii = layer.namedStyles.length; i < ii; ++i) {
+            this.writeNode('NamedStyle', layer.namedStyles[i], null, node);
+          }
+        }
+        if (layer.userStyles) {
+          for (i = 0, ii = layer.userStyles.length; i < ii; ++i) {
+            this.writeNode('UserStyle', layer.userStyles[i], null, node);
+          }
+        }
+        return node;
+      },
+      'NamedStyle': function(name) {
+        var node = this.createElementNS('sld:NamedStyle');
+        this.writeNode('Name', name, null, node);
+        return node;
+      },
+      'UserStyle': function(style) {
+        var node = this.createElementNS('sld:UserStyle');
+        if (style.name) {
+          this.writeNode('Name', style.name, null, node);
+        }
+        if (style.title) {
+          this.writeNode('Title', style.title, null, node);
+        }
+        if (style.description) {
+          this.writeNode('Abstract', style.description, null, node);
+        }
+        if (style.isDefault) {
+          this.writeNode('IsDefault', style.isDefault, null, node);
+        }
+        if (style.rules) {
+          // group style objects by symbolizer zIndex
+          var rulesByZ = {
+            0: []
+          };
+          var zValues = [0];
+          var rule, ruleMap, symbolizer, zIndex, clone;
+          for (var i = 0, ii = style.rules.length; i < ii; ++i) {
+            rule = style.rules[i];
+            var symbolizers = rule.getSymbolizers();
+            if (symbolizers) {
+              ruleMap = {};
+              for (var j = 0, jj = symbolizers.length; j < jj; ++j) {
+                symbolizer = symbolizers[j];
+                zIndex = symbolizer.zIndex;
+                if (!(zIndex in ruleMap)) {
+                  // TODO check if clone works?
+                  clone = goog.object.clone(rule);
+                  clone.setSymbolizers([]);
+                  ruleMap[zIndex] = clone;
+                }
+                // TODO check if clone works
+                ruleMap[zIndex].getSymbolizers().push(
+                    goog.object.clone(symbolizer));
+              }
+              for (zIndex in ruleMap) {
+                if (!(zIndex in rulesByZ)) {
+                  zValues.push(zIndex);
+                  rulesByZ[zIndex] = [];
+                }
+                rulesByZ[zIndex].push(ruleMap[zIndex]);
+              }
+            } else {
+              // no symbolizers in rule
+              rulesByZ[0].push(goog.object.clone(rule));
+            }
+          }
+          // write one FeatureTypeStyle per zIndex
+          zValues.sort();
+          var rules;
+          for (var i = 0, ii = zValues.length; i < ii; ++i) {
+            rules = rulesByZ[zValues[i]];
+            if (rules.length > 0) {
+              clone = goog.object.clone(style);
+              clone.setRules(rulesByZ[zValues[i]]);
+              this.writeNode('FeatureTypeStyle', clone, null, node);
+            }
+          }
+        } else {
+          this.writeNode('FeatureTypeStyle', style, null, node);
+        }
+        return node;
+      },
+      'IsDefault': function(bool) {
+        var node = this.createElementNS('sld:IsDefault');
+        node.appendChild(this.createTextNode((bool) ? '1' : '0'));
+        return node;
+      },
+      'FeatureTypeStyle': function(style) {
+        var node = this.createElementNS('sld:FeatureTypeStyle');
+        // OpenLayers currently stores no Name, Title, Abstract,
+        // FeatureTypeName, or SemanticTypeIdentifier information
+        // related to FeatureTypeStyle
+        // add in rules
+        var rules = style.getRules();
+        for (var i = 0, ii = rules.length; i < ii; ++i) {
+          this.writeNode('Rule', rules[i], null, node);
+        }
+        return node;
+      },
+      'Rule': function(rule) {
+        var node = this.createElementNS('sld:Rule');
+        var filter = rule.getFilter();
+        if (rule.name) {
+          this.writeNode('Name', rule.name, null, node);
+        }
+        if (rule.title) {
+          this.writeNode('Title', rule.title, null, node);
+        }
+        if (rule.description) {
+          this.writeNode('Abstract', rule.description, null, node);
+        }
+        if (rule.elseFilter) {
+          this.writeNode('ElseFilter', null, null, node);
+        } else if (filter) {
+          this.writeNode('Filter', filter, 'http://www.opengis.net/ogc', node);
+        }
+        var minResolution = rule.getMinResolution();
+        if (minResolution > 0) {
+          this.writeNode('MinScaleDenominator',
+              this.getScaleDenominatorFromResolution_(minResolution),
+              null, node);
+        }
+        var maxResolution = rule.getMaxResolution();
+        if (maxResolution < Infinity) {
+          this.writeNode('MaxScaleDenominator',
+              this.getScaleDenominatorFromResolution_(maxResolution),
+              null, node);
+        }
+        var type, symbolizer, symbolizers = rule.getSymbolizers();
+        if (symbolizers) {
+          for (var i = 0, ii = symbolizers.length; i < ii; ++i) {
+            symbolizer = symbolizers[i];
+            // TODO other types of symbolizers
+            if (symbolizer instanceof ol.style.Text) {
+              type = 'Text';
+            } else if (symbolizer instanceof ol.style.Stroke) {
+              type = 'Line';
+            } else if (symbolizer instanceof ol.style.Fill) {
+              type = 'Polygon';
+            } else if (symbolizer instanceof ol.style.Shape ||
+                symbolizer instanceof ol.style.Icon) {
+              type = 'Point';
+            }
+            if (goog.isDef(type)) {
+              this.writeNode(type + 'Symbolizer', symbolizer, null, node);
+            }
+          }
+        }
+        return node;
+      },
+      'PointSymbolizer': function(symbolizer) {
+        var node = this.createElementNS('sld:PointSymbolizer');
+        this.writeNode('Graphic', symbolizer, null, node);
+        return node;
+      },
+      'Mark': function(symbolizer) {
+        var node = this.createElementNS('sld:Mark');
+        this.writeNode('WellKnownName', symbolizer.getType(), null, node);
+        var fill = symbolizer.getFill();
+        if (!goog.isNull(fill)) {
+          this.writeNode('Fill', fill, null, node);
+        }
+        var stroke = symbolizer.getStroke();
+        if (!goog.isNull(stroke)) {
+          this.writeNode('Stroke', stroke, null, node);
+        }
+        return node;
+      },
+      'WellKnownName': function(name) {
+        var node = this.createElementNS('sld:WellKnownName');
+        node.appendChild(this.createTextNode(name));
+        return node;
+      },
+      'Graphic': function(symbolizer) {
+        var node = this.createElementNS('sld:Graphic');
+        var size;
+        if (symbolizer instanceof ol.style.Icon) {
+          this.writeNode('ExternalGraphic', symbolizer, null, node);
+          var opacity = symbolizer.getOpacity();
+          goog.asserts.assert(opacity instanceof ol.expr.Literal,
+              'Only ol.expr.Literal supported for graphicOpacity');
+          this.writeNode('Opacity', opacity.getValue(), null, node);
+          size = symbolizer.getWidth();
+        } else if (symbolizer instanceof ol.style.Shape) {
+          this.writeNode('Mark', symbolizer, null, node);
+          size = symbolizer.getSize();
+        }
+        goog.asserts.assert(size instanceof ol.expr.Literal,
+            'Only ol.expr.Literal supported for in Size');
+        this.writeNode('Size', size.getValue(), null, node);
+        if (symbolizer instanceof ol.style.Icon) {
+          var rotation = symbolizer.getRotation();
+          goog.asserts.assert(rotation instanceof ol.expr.Literal,
+              'Only ol.expr.Literal supported for rotation');
+          this.writeNode('Rotation', rotation.getValue(), null, node);
+        }
+        return node;
+      },
+      'PolygonSymbolizer': function(symbolizer) {
+        var node = this.createElementNS('sld:PolygonSymbolizer');
+        this.writeNode('Fill', symbolizer, null, node);
+        return node;
+      },
+      'Fill': function(symbolizer) {
+        var node = this.createElementNS('sld:Fill');
+        var fillColor = symbolizer.getColor();
+        var msg = 'Only ol.expr.Literal supported for Fill properties';
+        goog.asserts.assert(fillColor instanceof ol.expr.Literal, msg);
+        this.writeNode('CssParameter', {
+          value: fillColor.getValue(),
+          key: 'fillColor'
+        }, null, node);
+        var fillOpacity = symbolizer.getOpacity();
+        goog.asserts.assert(fillOpacity instanceof ol.expr.Literal, msg);
+        this.writeNode('CssParameter', {
+          value: fillOpacity.getValue(),
+          key: 'fillOpacity'
+        }, null, node);
+        return node;
+      },
+      'TextSymbolizer': function(symbolizer) {
+        var node = this.createElementNS('sld:TextSymbolizer');
+        var text = symbolizer.getText();
+        // TODO in SLD optional, but in ol3 required?
+        this.writeNode('Label', text, null, node);
+        // TODO in SLD optional, but in ol3 required?
+        this.writeNode('Font', symbolizer, null, node);
+        // TODO map align to labelAnchorPoint etc.
+        var stroke = symbolizer.getStroke();
+        if (!goog.isNull(stroke)) {
+          this.writeNode('Halo', stroke, null, node);
+        }
+        return node;
+      },
+      'LineSymbolizer': function(symbolizer) {
+        var node = this.createElementNS('sld:LineSymbolizer');
+        this.writeNode('Stroke', symbolizer, null, node);
+        return node;
+      },
+      'Stroke': function(symbolizer) {
+        var node = this.createElementNS('sld:Stroke');
+        var strokeColor = symbolizer.getColor();
+        var msg = 'SLD writing of stroke properties only supported ' +
+            'for ol.expr.Literal';
+        goog.asserts.assert(strokeColor instanceof ol.expr.Literal, msg);
+        this.writeNode('CssParameter', {
+          value: strokeColor.getValue(),
+          key: 'strokeColor'
+        }, null, node);
+        var strokeOpacity = symbolizer.getOpacity();
+        goog.asserts.assert(strokeOpacity instanceof ol.expr.Literal, msg);
+        this.writeNode('CssParameter', {
+          value: strokeOpacity.getValue(),
+          key: 'strokeOpacity'
+        }, null, node);
+        var strokeWidth = symbolizer.getWidth();
+        goog.asserts.assert(strokeWidth instanceof ol.expr.Literal, msg);
+        this.writeNode('CssParameter', {
+          value: strokeWidth.getValue(),
+          key: 'strokeWidth'
+        }, null, node);
+        // TODO strokeDashstyle and strokeLinecap
+        return node;
+      },
+      'CssParameter': function(obj) {
+        // not handling ogc:expressions for now
+        var node = this.createElementNS('sld:CssParameter');
+        node.setAttribute('name',
+            ol.parser.ogc.SLD_v1.getCssProperty_(obj.key));
+        node.appendChild(this.createTextNode(obj.value));
+        return node;
+      },
+      'Label': function(label) {
+        var node = this.createElementNS('sld:Label');
+        this.filter_.writeOgcExpression(label, node);
+        return node;
+      },
+      'Font': function(symbolizer) {
+        var node = this.createElementNS('sld:Font');
+        this.writeNode('CssParameter', {
+          key: 'fontFamily',
+          value: symbolizer.getFontFamily().getValue()
+        }, null, node);
+        this.writeNode('CssParameter', {
+          key: 'fontSize',
+          value: symbolizer.getFontSize().getValue()
+        }, null, node);
+        // TODO fontWeight and fontStyle
+        return node;
+      },
+      'MinScaleDenominator': function(scale) {
+        var node = this.createElementNS('sld:MinScaleDenominator');
+        node.appendChild(this.createTextNode(scale));
+        return node;
+      },
+      'MaxScaleDenominator': function(scale) {
+        var node = this.createElementNS('sld:MaxScaleDenominator');
+        node.appendChild(this.createTextNode(scale));
+        return node;
+      },
+      'Size': function(value) {
+        var node = this.createElementNS('sld:Size');
+        this.filter_.writeOgcExpression(value, node);
+        return node;
+      }
+    }
+  };
   this.filter_ = new ol.parser.ogc.Filter_v1_0_0();
   for (var uri in this.filter_.readers) {
     for (var key in this.filter_.readers[uri]) {
@@ -389,6 +742,15 @@ ol.parser.ogc.SLD_v1 = function() {
         this.readers[uri] = {};
       }
       this.readers[uri][key] = goog.bind(this.filter_.readers[uri][key],
+          this.filter_);
+    }
+  }
+  for (var uri in this.filter_.writers) {
+    for (var key in this.filter_.writers[uri]) {
+      if (!goog.isDef(this.writers[uri])) {
+        this.writers[uri] = {};
+      }
+      this.writers[uri][key] = goog.bind(this.filter_.writers[uri][key],
           this.filter_);
     }
   }
@@ -417,15 +779,43 @@ ol.parser.ogc.SLD_v1.cssMap_ = {
 
 /**
  * @private
+ * @param {string} sym Symbolizer property.
+ * @return {string|undefined} The css property that matches the symbolizer
+ *     property.
+ */
+ol.parser.ogc.SLD_v1.getCssProperty_ = function(sym) {
+  return goog.object.findKey(ol.parser.ogc.SLD_v1.cssMap_,
+      function(value, key, obj) {
+        return (sym === value);
+      }
+  );
+};
+
+
+/**
+ * @private
  * @param {number} scaleDenominator The scale denominator to convert to
  * resolution.
  * @return {number} resolution.
  */
-ol.parser.ogc.SLD_v1.prototype.getResolutionFromScale_ =
+ol.parser.ogc.SLD_v1.prototype.getResolutionFromScaleDenominator_ =
     function(scaleDenominator) {
   var dpi = 25.4 / 0.28;
   var mpu = ol.METERS_PER_UNIT[this.units];
   return 1 / ((1 / scaleDenominator) * (mpu * 39.37) * dpi);
+};
+
+
+/**
+ * @private
+ * @param {number} resolution The resolution to convert to scale denominator.
+ * @return {number} scale denominator.
+ */
+ol.parser.ogc.SLD_v1.prototype.getScaleDenominatorFromResolution_ =
+    function(resolution) {
+  var dpi = 25.4 / 0.28;
+  var mpu = ol.METERS_PER_UNIT[this.units];
+  return resolution * mpu * 39.37 * dpi;
 };
 
 
@@ -450,4 +840,25 @@ ol.parser.ogc.SLD_v1.prototype.read = function(data, opt_options) {
   this.readNode(data, obj);
   delete this.units;
   return obj;
+};
+
+
+/**
+ * @param {Object} style The style to write out.
+ * @param {ol.parser.SLDWriteOptions=} opt_options Write options.
+ * @return {string} The serialized SLD.
+ */
+ol.parser.ogc.SLD_v1.prototype.write = function(style, opt_options) {
+  var units = 'm';
+  if (goog.isDef(opt_options) && goog.isDef(opt_options.units)) {
+    units = opt_options.units;
+  }
+  this.units = units;
+  var root = this.writeNode('StyledLayerDescriptor', style);
+  this.setAttributeNS(
+      root, 'http://www.w3.org/2001/XMLSchema-instance',
+      'xsi:schemaLocation', this.schemaLocation);
+  var result = this.serialize(root);
+  delete this.units;
+  return result;
 };

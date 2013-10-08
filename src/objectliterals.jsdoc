@@ -573,6 +573,12 @@
  *     calculations.
  */
 
+ /**
+ * @typedef {Object} ol.parser.SLDWriteOptions
+ * @property {ol.proj.Units} units The units to use in resolution to scale
+ *     calculations.
+ */
+
 /**
  * @typedef {Object} ol.source.BingMapsOptions
  * @property {string|undefined} culture Culture.

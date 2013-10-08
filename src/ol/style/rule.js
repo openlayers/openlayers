@@ -78,3 +78,27 @@ ol.style.Rule.prototype.applies = function(feature, resolution) {
 ol.style.Rule.prototype.getSymbolizers = function() {
   return this.symbolizers_;
 };
+
+
+/**
+ * @return {ol.expr.Expression}
+ */
+ol.style.Rule.prototype.getFilter = function() {
+  return this.filter_;
+};
+
+
+/**
+ * @return {number}
+ */
+ol.style.Rule.prototype.getMinResolution = function() {
+  return this.minResolution_;
+};
+
+
+/**
+ * @return {number}
+ */
+ol.style.Rule.prototype.getMaxResolution = function() {
+  return this.maxResolution_;
+};

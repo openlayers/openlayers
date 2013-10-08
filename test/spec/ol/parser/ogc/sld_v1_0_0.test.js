@@ -56,6 +56,7 @@ describe('ol.parser.ogc.SLD_v1_0_0', function() {
         expect(second.getSymbolizers().length).to.equal(2);
         expect(second.getSymbolizers()[0]).to.be.a(ol.style.Fill);
         expect(second.getSymbolizers()[1]).to.be.a(ol.style.Stroke);
+        window.console.log(parser.write(obj));
         done();
       });
     });
