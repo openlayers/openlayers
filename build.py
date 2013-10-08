@@ -72,10 +72,7 @@ if sys.platform == 'win32':
 else:
     variables.GIT = 'git'
     variables.GJSLINT = 'gjslint'
-    if sys.platform == 'darwin':
-        variables.JAVA = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java'
-    else:
-        variables.JAVA = 'java'
+    variables.JAVA = 'java'
     variables.JAR = 'jar'
     variables.JSDOC = 'jsdoc'
     variables.NODE = 'node'
