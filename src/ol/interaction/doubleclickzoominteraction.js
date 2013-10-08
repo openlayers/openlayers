@@ -46,7 +46,7 @@ ol.interaction.DoubleClickZoom.prototype.handleMapBrowserEvent =
   var stopEvent = false;
   var browserEvent = mapBrowserEvent.browserEvent;
   if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DBLCLICK &&
-      mapBrowserEvent.isMouseActionButton()) {
+      ol.MapBrowserEvent.isMouseActionButton(browserEvent)) {
     var map = mapBrowserEvent.map;
     var anchor = mapBrowserEvent.getCoordinate();
     var delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
