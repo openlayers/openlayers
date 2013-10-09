@@ -269,6 +269,7 @@ describe('ol.style.Style', function() {
           color: '#ffffff',
           fontFamily: 'Arial',
           fontSize: 11,
+          fontWeight: 'normal',
           text: 'Test',
           opacity: 0.5,
           zIndex: 0

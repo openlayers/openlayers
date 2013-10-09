@@ -286,7 +286,13 @@ ol.renderer.canvas.Vector.prototype.renderText_ =
   if (context.fillStyle !== text.color) {
     context.fillStyle = text.color;
   }
-  context.font = text.fontSize + 'px ' + text.fontFamily;
+
+  // font shorthand values must be given in the correct order
+  // see http://www.w3.org/TR/CSS21/fonts.html#font-shorthand
+  context.font = text.fontWeight + ' ' +
+      text.fontSize + 'px ' +
+      text.fontFamily;
+
   context.globalAlpha = text.opacity;
 
   // TODO: make alignments configurable

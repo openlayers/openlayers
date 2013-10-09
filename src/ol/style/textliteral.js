@@ -8,6 +8,7 @@ goog.require('ol.style.Literal');
  * @typedef {{color: string,
  *            fontFamily: string,
  *            fontSize: number,
+ *            fontWeight: string,
  *            text: string,
  *            opacity: number,
  *            strokeColor: (string|undefined),
@@ -37,6 +38,10 @@ ol.style.TextLiteral = function(options) {
   goog.asserts.assertNumber(options.fontSize, 'fontSize must be a number');
   /** @type {number} */
   this.fontSize = options.fontSize;
+
+  goog.asserts.assertString(options.fontWeight, 'fontWeight must be a string');
+  /** @type {string} */
+  this.fontWeight = options.fontWeight;
 
   goog.asserts.assertString(options.text, 'text must be a string');
   /** @type {string} */
@@ -92,6 +97,7 @@ ol.style.TextLiteral.prototype.equals = function(other) {
   return this.color == other.color &&
       this.fontFamily == other.fontFamily &&
       this.fontSize == other.fontSize &&
+      this.fontWeight == other.fontWeight &&
       this.opacity == other.opacity &&
       this.strokeColor == other.strokeColor &&
       this.strokeOpacity == other.strokeOpacity &&
