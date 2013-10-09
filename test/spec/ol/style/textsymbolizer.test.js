@@ -109,6 +109,7 @@ describe('ol.style.Text', function() {
       expect(literal.color).to.be('#000');
       expect(literal.fontFamily).to.be('sans-serif');
       expect(literal.fontSize).to.be(10);
+      expect(literal.fontWeight).to.be('normal');
       expect(literal.text).to.be('Test');
       expect(literal.opacity).to.be(1);
     });
@@ -216,6 +217,20 @@ describe('ol.style.Text', function() {
 
   });
 
+  describe('#getFontWeight()', function() {
+
+    it('returns the font size', function() {
+      var symbolizer = new ol.style.Text({
+        fontWeight: 'bold'
+      });
+
+      var fontWeight = symbolizer.getFontWeight();
+      expect(fontWeight).to.be.a(ol.expr.Literal);
+      expect(fontWeight.getValue()).to.be('bold');
+    });
+
+  });
+
   describe('#getOpacity()', function() {
 
     it('returns the opacity', function() {
@@ -307,6 +322,33 @@ describe('ol.style.Text', function() {
 
       expect(function() {
         symbolizer.setFontSize(10);
+      }).throwException(function(err) {
+        expect(err).to.be.a(goog.asserts.AssertionError);
+      });
+    });
+
+  });
+
+  describe('#setFontWeight()', function() {
+
+    it('sets the font size', function() {
+      var symbolizer = new ol.style.Text({
+        fontWeight: 'bold'
+      });
+      symbolizer.setFontWeight(new ol.expr.Literal('900'));
+
+      var fontWeight = symbolizer.getFontWeight();
+      expect(fontWeight).to.be.a(ol.expr.Literal);
+      expect(fontWeight.getValue()).to.be('900');
+    });
+
+    it('throws when not provided an expression', function() {
+      var symbolizer = new ol.style.Text({
+        fontWeight: 'lighter'
+      });
+
+      expect(function() {
+        symbolizer.setFontWeight('bolder');
       }).throwException(function(err) {
         expect(err).to.be.a(goog.asserts.AssertionError);
       });

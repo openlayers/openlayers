@@ -48,6 +48,15 @@ ol.style.Text = function(options) {
    * @type {ol.expr.Expression}
    * @private
    */
+  this.fontWeight_ = !goog.isDef(options.fontWeight) ?
+      new ol.expr.Literal(ol.style.TextDefaults.fontWeight) :
+      (options.fontWeight instanceof ol.expr.Expression) ?
+          options.fontWeight : new ol.expr.Literal(options.fontWeight);
+
+  /**
+   * @type {ol.expr.Expression}
+   * @private
+   */
   this.text_ = (options.text instanceof ol.expr.Expression) ?
       options.text : new ol.expr.Literal(options.text);
 
@@ -102,6 +111,9 @@ ol.style.Text.prototype.createLiteral = function(featureOrType) {
   var fontSize = Number(ol.expr.evaluateFeature(this.fontSize_, feature));
   goog.asserts.assert(!isNaN(fontSize), 'fontSize must be a number');
 
+  var fontWeight = ol.expr.evaluateFeature(this.fontWeight_, feature);
+  goog.asserts.assertString(fontWeight, 'fontWeight must be a string');
+
   var text = ol.expr.evaluateFeature(this.text_, feature);
   goog.asserts.assertString(text, 'text must be a string');
 
@@ -129,6 +141,7 @@ ol.style.Text.prototype.createLiteral = function(featureOrType) {
     color: color,
     fontFamily: fontFamily,
     fontSize: fontSize,
+    fontWeight: fontWeight,
     text: text,
     opacity: opacity,
     strokeColor: strokeColor,
@@ -163,6 +176,15 @@ ol.style.Text.prototype.getFontFamily = function() {
  */
 ol.style.Text.prototype.getFontSize = function() {
   return this.fontSize_;
+};
+
+
+/**
+ * Get the font weight.
+ * @return {ol.expr.Expression} Font weight.
+ */
+ol.style.Text.prototype.getFontWeight = function() {
+  return this.fontWeight_;
 };
 
 
@@ -224,6 +246,16 @@ ol.style.Text.prototype.setFontSize = function(fontSize) {
 
 
 /**
+ * Set the font weight.
+ * @param {ol.expr.Expression} fontWeight Font weight.
+ */
+ol.style.Text.prototype.setFontWeight = function(fontWeight) {
+  goog.asserts.assertInstanceof(fontWeight, ol.expr.Expression);
+  this.fontWeight_ = fontWeight;
+};
+
+
+/**
  * Set the opacity.
  * @param {ol.expr.Expression} opacity Opacity.
  */
@@ -257,6 +289,7 @@ ol.style.Text.prototype.setZIndex = function(zIndex) {
  * @typedef {{color: string,
  *            fontFamily: string,
  *            fontSize: number,
+ *            fontWeight: string,
  *            opacity: number,
  *            zIndex: number}}
  */
@@ -264,6 +297,7 @@ ol.style.TextDefaults = {
   color: '#000',
   fontFamily: 'sans-serif',
   fontSize: 10,
+  fontWeight: 'normal',
   opacity: 1,
   zIndex: 0
 };

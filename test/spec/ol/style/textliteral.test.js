@@ -9,6 +9,7 @@ describe('ol.style.TextLiteral', function() {
         color: '#ff0000',
         fontFamily: 'Arial',
         fontSize: 11,
+        fontWeight: 'normal',
         text: 'Test',
         opacity: 0.5,
         zIndex: 0
@@ -22,6 +23,7 @@ describe('ol.style.TextLiteral', function() {
         color: '#ff0000',
         fontFamily: 'Arial',
         fontSize: 11,
+        fontWeight: 'normal',
         text: 'Test',
         opacity: 0.5,
         strokeColor: '#ff0000',
@@ -38,6 +40,7 @@ describe('ol.style.TextLiteral', function() {
           color: '#ff0000',
           fontFamily: 'Arial',
           fontSize: 11,
+          fontWeight: 'normal',
           text: 'Test',
           opacity: 0.5,
           strokeColor: '#ff0000',
@@ -57,6 +60,7 @@ describe('ol.style.TextLiteral', function() {
         color: '#ff0000',
         fontFamily: 'Arial',
         fontSize: 11,
+        fontWeight: 'normal',
         text: 'Test',
         opacity: 0.5,
         zIndex: 0
@@ -65,6 +69,7 @@ describe('ol.style.TextLiteral', function() {
         color: '#ff0000',
         fontFamily: 'Arial',
         fontSize: 11,
+        fontWeight: 'normal',
         text: 'Test',
         opacity: 0.5,
         zIndex: 0
@@ -73,6 +78,7 @@ describe('ol.style.TextLiteral', function() {
         color: '#0000ff',
         fontFamily: 'Arial',
         fontSize: 11,
+        fontWeight: 'normal',
         text: 'Test',
         opacity: 0.5,
         zIndex: 0
@@ -81,6 +87,7 @@ describe('ol.style.TextLiteral', function() {
         color: '#ff0000',
         fontFamily: 'Dingbats',
         fontSize: 11,
+        fontWeight: 'normal',
         text: 'Test',
         opacity: 0.5,
         zIndex: 0
@@ -89,6 +96,16 @@ describe('ol.style.TextLiteral', function() {
         color: '#ff0000',
         fontFamily: 'Arial',
         fontSize: 12,
+        fontWeight: 'normal',
+        text: 'Test',
+        opacity: 0.5,
+        zIndex: 0
+      });
+      var differentFontWeight = new ol.style.TextLiteral({
+        color: '#ff0000',
+        fontFamily: 'Arial',
+        fontSize: 11,
+        fontWeight: 'bold',
         text: 'Test',
         opacity: 0.5,
         zIndex: 0
@@ -97,6 +114,7 @@ describe('ol.style.TextLiteral', function() {
         color: '#ff0000',
         fontFamily: 'Arial',
         fontSize: 11,
+        fontWeight: 'normal',
         text: 'Test',
         opacity: 0.6,
         zIndex: 0
@@ -105,6 +123,7 @@ describe('ol.style.TextLiteral', function() {
         color: '#ff0000',
         fontFamily: 'Arial',
         fontSize: 11,
+        fontWeight: 'normal',
         text: 'Text is not compared for equality',
         opacity: 0.5,
         zIndex: 0
@@ -113,6 +132,7 @@ describe('ol.style.TextLiteral', function() {
         color: '#ff0000',
         fontFamily: 'Arial',
         fontSize: 11,
+        fontWeight: 'normal',
         text: 'Test',
         opacity: 0.5,
         zIndex: 3
@@ -121,6 +141,7 @@ describe('ol.style.TextLiteral', function() {
       expect(literal.equals(differentColor)).to.be(false);
       expect(literal.equals(differentFontFamily)).to.be(false);
       expect(literal.equals(differentFontSize)).to.be(false);
+      expect(literal.equals(differentFontWeight)).to.be(false);
       expect(literal.equals(differentOpacity)).to.be(false);
       expect(literal.equals(equalLiteral2)).to.be(true);
       expect(literal.equals(differentZIndex)).to.be(false);
