@@ -252,20 +252,24 @@ ol.MapBrowserEventHandler.prototype.handleMouseUp_ = function(browserEvent) {
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handleMouseDown_ = function(browserEvent) {
-  var newEvent = new ol.MapBrowserEvent(
-      ol.MapBrowserEvent.EventType.DOWN, this.map_, browserEvent);
-  this.dispatchEvent(newEvent);
-  if (!this.down_) {
-    this.down_ = browserEvent;
-    this.dragged_ = false;
-    this.dragListenerKeys_ = [
-      goog.events.listen(goog.global.document, goog.events.EventType.MOUSEMOVE,
-          this.handleMouseMove_, false, this),
-      goog.events.listen(goog.global.document, goog.events.EventType.MOUSEUP,
-          this.handleMouseUp_, false, this)
-    ];
-    // prevent browser image dragging with the dom renderer
-    browserEvent.preventDefault();
+  if (browserEvent.isMouseActionButton()) {
+    var newEvent = new ol.MapBrowserEvent(
+        ol.MapBrowserEvent.EventType.DOWN, this.map_, browserEvent);
+    this.dispatchEvent(newEvent);
+    if (!this.down_) {
+      this.down_ = browserEvent;
+      this.dragged_ = false;
+      this.dragListenerKeys_ = [
+        goog.events.listen(
+            goog.global.document, goog.events.EventType.MOUSEMOVE,
+            this.handleMouseMove_, false, this),
+        goog.events.listen(
+            goog.global.document, goog.events.EventType.MOUSEUP,
+            this.handleMouseUp_, false, this)
+      ];
+      // prevent browser image dragging with the dom renderer
+      browserEvent.preventDefault();
+    }
   }
 };
 

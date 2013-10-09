@@ -88,10 +88,8 @@ ol.interaction.DragZoom.prototype.handleDragEnd =
 /**
  * @inheritDoc
  */
-ol.interaction.DragZoom.prototype.handleDragStart =
-    function(mapBrowserEvent) {
-  var browserEvent = mapBrowserEvent.browserEvent;
-  if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
+ol.interaction.DragZoom.prototype.handleDragStart = function(mapBrowserEvent) {
+  if (this.condition_(mapBrowserEvent)) {
     this.dragBox_ = new ol.control.DragBox({
       startCoordinate: this.startCoordinate
     });
