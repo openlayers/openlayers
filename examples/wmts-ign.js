@@ -75,9 +75,10 @@ xhr.onload = function() {
     }
 
     var view = new ol.View2D();
-    view.fitExtent([
-      257596.65942095537, 6250898.984085131,
-      262082.55751844167, 6251854.446938695], map.getSize());
+    view.fitExtent(
+        [257596.65942095537, 6250898.984085131,
+         262082.55751844167, 6251854.446938695],
+        /** @type {ol.Size} */ (map.getSize()));
     map.setView(view);
   }
 };
