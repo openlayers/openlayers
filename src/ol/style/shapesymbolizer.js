@@ -20,6 +20,7 @@ goog.require('ol.style.Stroke');
  * @param {ol.style.ShapeOptions} options Shape options.
  */
 ol.style.Shape = function(options) {
+  goog.base(this);
 
   /**
    * @type {ol.style.ShapeType}
@@ -63,6 +64,7 @@ ol.style.Shape = function(options) {
           options.zIndex : new ol.expr.Literal(options.zIndex);
 
 };
+goog.inherits(ol.style.Shape, ol.style.Point);
 
 
 /**

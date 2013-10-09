@@ -12,6 +12,7 @@ describe('ol.style.Shape', function() {
         })
       });
       expect(symbolizer).to.be.a(ol.style.Shape);
+      expect(symbolizer).to.be.a(ol.style.Point);
     });
 
     it('accepts expressions', function() {
@@ -329,6 +330,7 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Point');
 goog.require('ol.expr');
 goog.require('ol.style.Fill');
+goog.require('ol.style.Point');
 goog.require('ol.style.Shape');
 goog.require('ol.style.ShapeLiteral');
 goog.require('ol.style.ShapeType');
