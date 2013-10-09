@@ -130,14 +130,6 @@ ol.MapBrowserEventHandler = function(map) {
   this.dragged_ = false;
 
   /**
-   * Timestamp for the first tap of a double tap. Will be set back to 0
-   * as soon as a double tap is detected.
-   * @type {number}
-   * @private
-   */
-  this.timestamp_ = 0;
-
-  /**
    * @type {Array.<number>}
    * @private
    */
@@ -154,6 +146,12 @@ ol.MapBrowserEventHandler = function(map) {
    * @private
    */
   this.singleClickTimeoutId_ = undefined;
+
+  /**
+   * @type {number|undefined}
+   * @private
+   */
+  this.tapTimeoutId_ = undefined;
 
   /**
    * @type {boolean}
@@ -316,9 +314,7 @@ ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
   this.touchDetected_ = true;
   this.down_ = browserEvent;
   this.dragged_ = false;
-  var newEvent = new ol.MapBrowserEvent(
-      ol.MapBrowserEvent.EventType.TOUCHSTART, this.map_, browserEvent);
-  this.dispatchEvent(newEvent);
+  this.relayEvent_(browserEvent);
 };
 
 
@@ -346,20 +342,26 @@ ol.MapBrowserEventHandler.prototype.handleTouchMove_ = function(browserEvent) {
  */
 ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
   this.relayEvent_(browserEvent);
-  if (!this.dragged_) {
-    var now = goog.now();
-    if (this.timestamp_ === 0 || now - this.timestamp_ > 250) {
-      this.timestamp_ = now;
-    } else {
-      this.timestamp_ = 0;
-    }
-    if (!goog.isNull(this.down_) && this.timestamp_ === 0) {
+  if (!this.dragged_ && !goog.isNull(this.down_)) {
+    if (goog.isDef(this.tapTimeoutId_)) {
+      goog.global.clearTimeout(this.tapTimeoutId_);
+      this.tapTimeoutId_ = undefined;
       var newEvent = new ol.MapBrowserEvent(
           ol.MapBrowserEvent.EventType.DBLTAP, this.map_, this.down_);
       this.dispatchEvent(newEvent);
+      this.down_ = null;
+    } else {
+      this.tapTimeoutId_ = goog.global.setTimeout(
+          goog.bind(function() {
+            var newEvent = new ol.MapBrowserEvent(
+                ol.MapBrowserEvent.EventType.SINGLETAP, this.map_,
+                this.down_);
+            this.dispatchEvent(newEvent);
+            this.tapTimeoutId_ = undefined;
+            this.down_ = null;
+          }, this), 250);
     }
   }
-  this.down_ = null;
 };
 
 
@@ -403,5 +405,6 @@ ol.MapBrowserEvent.EventType = {
   DRAGSTART: 'dragstart',
   DRAG: 'drag',
   DRAGEND: 'dragend',
-  SINGLECLICK: 'singleclick'
+  SINGLECLICK: 'singleclick',
+  SINGLETAP: 'singletap'
 };
