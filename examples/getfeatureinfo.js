@@ -46,7 +46,7 @@ var map = new ol.Map({
   })
 });
 
-map.on('singleclick', function(evt) {
+map.on(['singleclick', 'singletap'], function(evt) {
   map.getFeatureInfo({
     pixel: evt.getPixel(),
     success: function(featureInfoByLayer) {
