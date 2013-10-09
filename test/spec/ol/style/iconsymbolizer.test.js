@@ -15,6 +15,7 @@ describe('ol.style.Icon', function() {
         yOffset: 15
       });
       expect(symbolizer).to.be.a(ol.style.Icon);
+      expect(symbolizer).to.be.a(ol.style.Point);
     });
 
     it('accepts expressions', function() {
@@ -527,3 +528,4 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Point');
 goog.require('ol.style.Icon');
 goog.require('ol.style.IconLiteral');
+goog.require('ol.style.Point');

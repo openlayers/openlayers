@@ -17,6 +17,7 @@ goog.require('ol.style.Point');
  * @param {ol.style.IconOptions} options Icon options.
  */
 ol.style.Icon = function(options) {
+  goog.base(this);
 
   goog.asserts.assert(options.url, 'url must be set');
 
@@ -91,6 +92,7 @@ ol.style.Icon = function(options) {
           options.zIndex : new ol.expr.Literal(options.zIndex);
 
 };
+goog.inherits(ol.style.Icon, ol.style.Point);
 
 
 /**
