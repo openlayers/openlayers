@@ -176,18 +176,15 @@ ol.MapBrowserEventHandler = function(map) {
     goog.events.listen(element,
         goog.events.EventType.CLICK,
         this.handleClick_, false, this),
-    goog.events.listen(element,
-        [goog.events.EventType.CONTEXTMENU, goog.events.EventType.DBLCLICK],
-        this.relayEvent_, false, this),
+    goog.events.listen(element, [
+      goog.events.EventType.CONTEXTMENU,
+      goog.events.EventType.DBLCLICK,
+      goog.events.EventType.MOUSEMOVE,
+      goog.events.EventType.MOUSEOUT
+    ], this.relayEvent_, false, this),
     goog.events.listen(element,
         goog.events.EventType.MOUSEDOWN,
-        this.handleMouseDown_, false, this),
-    goog.events.listen(element,
-        goog.events.EventType.MOUSEMOVE,
-        this.relayEvent_, false, this),
-    goog.events.listen(element,
-        goog.events.EventType.MOUSEOUT,
-        this.relayEvent_, false, this)
+        this.handleMouseDown_, false, this)
   ];
   // touch events
   this.touchListenerKeys_ = [
