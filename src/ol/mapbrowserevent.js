@@ -156,6 +156,12 @@ ol.MapBrowserEventHandler = function(map) {
   this.singleClickTimeoutId_ = undefined;
 
   /**
+   * @type {boolean}
+   * @private
+   */
+  this.touchDetected_ = false;
+
+  /**
    * @type {Array.<number>}
    * @private
    */
@@ -211,7 +217,7 @@ goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
  */
 ol.MapBrowserEventHandler.prototype.handleClick_ = function(browserEvent) {
   this.relayEvent_(browserEvent);
-  if (!this.dragged_) {
+  if (!this.touchDetected_ && !this.dragged_) {
     if (goog.isDef(this.singleClickTimeoutId_)) {
       goog.global.clearTimeout(this.singleClickTimeoutId_);
       this.singleClickTimeoutId_ = undefined;
@@ -307,6 +313,7 @@ ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
   // 'mousedown' from being fired after this event for the primary
   // contact (first finger on the screen or mouse)
   browserEvent.preventDefault();
+  this.touchDetected_ = true;
   this.down_ = browserEvent;
   this.dragged_ = false;
   var newEvent = new ol.MapBrowserEvent(
