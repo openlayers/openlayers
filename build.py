@@ -169,7 +169,7 @@ virtual('default', 'build')
 
 
 virtual('integration-test', 'lint', 'build', 'build-all',
-        'test', 'build-examples', 'check-examples', 'apidoc')
+        'test', 'build/examples/all.combined.js', 'check-examples', 'apidoc')
 
 
 virtual('build', 'build/ol.css', 'build/ol.js',
