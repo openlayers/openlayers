@@ -65,19 +65,12 @@
     }
   }
 
-  // CLOSURE_NO_DEPS has an effect in "raw" and "whitespace" modes only (i.e.
-  // when COMPILED is false). In "raw" mode we use our own deps file
-  // (ol-deps.js), so we set CLOSURE_NO_DEPS to true to prevent Google
-  // Library's base.js script to load deps.js. In "whitespace" mode
-  // no deps file is needed at all, yet base.js will attempt to load deps.js
-  // if CLOSURE_NO_DEPS is not set to true.
-  window.CLOSURE_NO_DEPS = true;
-
   var scriptId = encodeURIComponent(scriptParams.id);
   document.write('<link rel="stylesheet" href="../build/ol.css" type="text/css">');
   if (mode != 'raw') {
     document.write('<scr' + 'ipt type="text/javascript" src="../build/' + oljs + '"></scr' + 'ipt>');
   } else {
+    window.CLOSURE_NO_DEPS = true; // we've got our own deps file
     document.write('<scr' + 'ipt type="text/javascript" src="../closure-library/closure/goog/base.js"></scr' + 'ipt>');
     document.write('<scr' + 'ipt type="text/javascript" src="../build/ol-deps.js"></scr' + 'ipt>');
     document.write('<scr' + 'ipt type="text/javascript" src="' + scriptId + '-require.js"></scr' + 'ipt>');
