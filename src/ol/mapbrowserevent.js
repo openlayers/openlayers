@@ -317,7 +317,9 @@ ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
   this.touchDetected_ = true;
   this.down_ = browserEvent;
   this.dragged_ = false;
-  this.relayEvent_(browserEvent);
+  var newEvent = new ol.MapBrowserEvent(
+      ol.MapBrowserEvent.EventType.TOUCHSTART, this.map_, browserEvent);
+  this.dispatchEvent(newEvent);
 };
 
 
@@ -344,12 +346,15 @@ ol.MapBrowserEventHandler.prototype.handleTouchMove_ = function(browserEvent) {
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
-  this.relayEvent_(browserEvent);
+  var newEvent;
+  newEvent = new ol.MapBrowserEvent(
+      ol.MapBrowserEvent.EventType.TOUCHEND, this.map_, browserEvent);
+  this.dispatchEvent(newEvent);
   if (!this.dragged_ && !goog.isNull(this.down_)) {
     if (goog.isDef(this.tapTimeoutId_)) {
       goog.global.clearTimeout(this.tapTimeoutId_);
       this.tapTimeoutId_ = undefined;
-      var newEvent = new ol.MapBrowserEvent(
+      newEvent = new ol.MapBrowserEvent(
           ol.MapBrowserEvent.EventType.DBLTAP, this.map_, this.down_);
       this.dispatchEvent(newEvent);
       this.down_ = null;
