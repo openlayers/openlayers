@@ -89,6 +89,8 @@ ol.parser.ogc.SLD_v1 = function() {
       'TextSymbolizer': function(node, rule) {
         var config = {};
         this.readChildNodes(node, config);
+        config.color = config.fill.fillColor;
+        delete config.fill;
         config.zIndex = this.featureTypeCounter;
         rule.symbolizers.push(
             new ol.style.Text(/** @type {ol.style.TextOptions} */(config))
@@ -182,18 +184,24 @@ ol.parser.ogc.SLD_v1 = function() {
         this.readChildNodes(node, symbolizer);
       },
       'Halo': function(node, symbolizer) {
-        // halo has a fill, so send fresh object
         var obj = {};
         this.readChildNodes(node, obj);
-        symbolizer.haloRadius = obj.haloRadius;
-        symbolizer.haloColor = obj['fillColor'];
-        symbolizer.haloOpacity = obj['fillOpacity'];
+        symbolizer.stroke = new ol.style.Stroke({
+          color: goog.isDef(obj.fill.fillColor) ? obj.fill.fillColor :
+              ol.parser.ogc.SLD_v1.defaults_.haloColor,
+          width: goog.isDef(obj.haloRadius) ? obj.haloRadius * 2 :
+              ol.parser.ogc.SLD_v1.defaults_.haloRadius,
+          opacity: goog.isDef(obj.fill.fillOpacity) ? obj.fill.fillOpacity :
+              ol.parser.ogc.SLD_v1.defaults_.haloOpacity
+        });
       },
       'Radius': function(node, symbolizer) {
         var ogcreaders = this.readers['http://www.opengis.net/ogc'];
         var radius = ogcreaders._expression.call(this, node);
+        goog.asserts.assertInstanceof(radius, ol.expr.Literal,
+            'radius expected to be an ol.expr.Literal');
         if (goog.isDef(radius)) {
-          symbolizer.haloRadius = radius;
+          symbolizer.haloRadius = radius.getValue();
         }
       },
       'RasterSymbolizer': function(node, rule) {
@@ -238,8 +246,10 @@ ol.parser.ogc.SLD_v1 = function() {
         config.zIndex = this.featureTypeCounter;
         if (goog.isDef(config.fill)) {
           var fill = {
-            color: config.fill.fillColor,
-            opacity: config.fill.fillOpacity
+            color: config.fill.fillColor.getValue(),
+            opacity: goog.isDef(config.fill.fillOpacity) ?
+                config.fill.fillOpacity :
+                ol.parser.ogc.SLD_v1.defaults_.fillOpacity
           };
           rule.symbolizers.push(
               new ol.style.Fill(fill)
@@ -248,9 +258,13 @@ ol.parser.ogc.SLD_v1 = function() {
         }
         if (goog.isDef(config.stroke)) {
           var stroke = {
-            color: config.stroke.strokeColor,
-            opacity: config.stroke.strokeOpacity,
-            width: config.stroke.strokeWidth
+            color: config.stroke.strokeColor.getValue(),
+            opacity: goog.isDef(config.stroke.strokeOpacity) ?
+                config.stroke.strokeOpacity :
+                ol.parser.ogc.SLD_v1.defaults_.strokeOpacity,
+            width: goog.isDef(config.stroke.strokeWidth) ?
+                config.stroke.strokeWidth :
+                ol.parser.ogc.SLD_v1.defaults_.strokeWidth
           };
           rule.symbolizers.push(
               new ol.style.Stroke(stroke)
@@ -607,7 +621,7 @@ ol.parser.ogc.SLD_v1 = function() {
         if (symbolizer instanceof ol.style.Icon) {
           this.writeNode('ExternalGraphic', symbolizer, null, node);
           var opacity = symbolizer.getOpacity();
-          goog.asserts.assert(opacity instanceof ol.expr.Literal,
+          goog.asserts.assertInstanceof(opacity, ol.expr.Literal,
               'Only ol.expr.Literal supported for graphicOpacity');
           this.writeNode('Opacity', opacity.getValue(), null, node);
           size = symbolizer.getWidth();
@@ -615,12 +629,12 @@ ol.parser.ogc.SLD_v1 = function() {
           this.writeNode('Mark', symbolizer, null, node);
           size = symbolizer.getSize();
         }
-        goog.asserts.assert(size instanceof ol.expr.Literal,
+        goog.asserts.assertInstanceof(size, ol.expr.Literal,
             'Only ol.expr.Literal supported for in Size');
         this.writeNode('Size', size.getValue(), null, node);
         if (symbolizer instanceof ol.style.Icon) {
           var rotation = symbolizer.getRotation();
-          goog.asserts.assert(rotation instanceof ol.expr.Literal,
+          goog.asserts.assertInstanceof(rotation, ol.expr.Literal,
               'Only ol.expr.Literal supported for rotation');
           this.writeNode('Rotation', rotation.getValue(), null, node);
         }
@@ -635,13 +649,13 @@ ol.parser.ogc.SLD_v1 = function() {
         var node = this.createElementNS('sld:Fill');
         var fillColor = symbolizer.getColor();
         var msg = 'Only ol.expr.Literal supported for Fill properties';
-        goog.asserts.assert(fillColor instanceof ol.expr.Literal, msg);
+        goog.asserts.assertInstanceof(fillColor, ol.expr.Literal, msg);
         this.writeNode('CssParameter', {
           value: fillColor.getValue(),
           key: 'fillColor'
         }, null, node);
         var fillOpacity = symbolizer.getOpacity();
-        goog.asserts.assert(fillOpacity instanceof ol.expr.Literal, msg);
+        goog.asserts.assertInstanceof(fillOpacity, ol.expr.Literal, msg);
         this.writeNode('CssParameter', {
           value: fillOpacity.getValue(),
           key: 'fillOpacity'
@@ -660,6 +674,24 @@ ol.parser.ogc.SLD_v1 = function() {
         if (!goog.isNull(stroke)) {
           this.writeNode('Halo', stroke, null, node);
         }
+        var color = symbolizer.getColor();
+        goog.asserts.assertInstanceof(color, ol.expr.Literal,
+            'font color should be ol.expr.Literal');
+        this.writeNode('Fill', symbolizer, null, node);
+        return node;
+      },
+      'Halo': function(symbolizer) {
+        var node = this.createElementNS('sld:Halo');
+        goog.asserts.assertInstanceof(symbolizer.getWidth(), ol.expr.Literal,
+            'Only ol.expr.Literal supported for haloRadius');
+        this.writeNode('Radius', symbolizer.getWidth().getValue() / 2, null,
+            node);
+        this.writeNode('Fill', symbolizer, null, node);
+        return node;
+      },
+      'Radius': function(value) {
+        var node = this.createElementNS('sld:Radius');
+        node.appendChild(this.createTextNode(value));
         return node;
       },
       'LineSymbolizer': function(symbolizer) {
@@ -672,19 +704,19 @@ ol.parser.ogc.SLD_v1 = function() {
         var strokeColor = symbolizer.getColor();
         var msg = 'SLD writing of stroke properties only supported ' +
             'for ol.expr.Literal';
-        goog.asserts.assert(strokeColor instanceof ol.expr.Literal, msg);
+        goog.asserts.assertInstanceof(strokeColor, ol.expr.Literal, msg);
         this.writeNode('CssParameter', {
           value: strokeColor.getValue(),
           key: 'strokeColor'
         }, null, node);
         var strokeOpacity = symbolizer.getOpacity();
-        goog.asserts.assert(strokeOpacity instanceof ol.expr.Literal, msg);
+        goog.asserts.assertInstanceof(strokeOpacity, ol.expr.Literal, msg);
         this.writeNode('CssParameter', {
           value: strokeOpacity.getValue(),
           key: 'strokeOpacity'
         }, null, node);
         var strokeWidth = symbolizer.getWidth();
-        goog.asserts.assert(strokeWidth instanceof ol.expr.Literal, msg);
+        goog.asserts.assertInstanceof(strokeWidth, ol.expr.Literal, msg);
         this.writeNode('CssParameter', {
           value: strokeWidth.getValue(),
           key: 'strokeWidth'
@@ -694,11 +726,14 @@ ol.parser.ogc.SLD_v1 = function() {
       },
       'CssParameter': function(obj) {
         // not handling ogc:expressions for now
-        var node = this.createElementNS('sld:CssParameter');
-        node.setAttribute('name',
-            ol.parser.ogc.SLD_v1.getCssProperty_(obj.key));
-        node.appendChild(this.createTextNode(obj.value));
-        return node;
+        var name = ol.parser.ogc.SLD_v1.getCssProperty_(obj.key);
+        if (goog.isDef(name) && obj.value !==
+            ol.parser.ogc.SLD_v1.defaults_[obj.key]) {
+          var node = this.createElementNS('sld:CssParameter');
+          node.setAttribute('name', name);
+          node.appendChild(this.createTextNode(obj.value));
+          return node;
+        }
       },
       'Label': function(label) {
         var node = this.createElementNS('sld:Label');
@@ -774,6 +809,19 @@ ol.parser.ogc.SLD_v1.cssMap_ = {
   'font-size': 'fontSize',
   'font-weight': 'fontWeight',
   'font-style': 'fontStyle'
+};
+
+
+/**
+ * @private
+ */
+ol.parser.ogc.SLD_v1.defaults_ = {
+  fillOpacity: 1,
+  strokeOpacity: 1,
+  strokeWidth: 1,
+  haloColor: '#FFFFFF',
+  haloOpacity: 1,
+  haloRadius: 1
 };
 
 

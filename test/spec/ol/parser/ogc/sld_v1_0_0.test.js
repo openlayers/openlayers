@@ -26,7 +26,7 @@ describe('ol.parser.ogc.SLD_v1_0_0', function() {
         expect(first.getSymbolizers()[0]).to.be.a(ol.style.Fill);
         expect(first.getSymbolizers()[0].getColor().getValue()).to.equal(
             '#ffffff');
-        expect(first.getSymbolizers()[0].getOpacity().getValue()).to.equal(0.4);
+        expect(first.getSymbolizers()[0].getOpacity().getValue()).to.equal(1);
         expect(first.getSymbolizers()[1]).to.be.a(ol.style.Stroke);
         expect(first.getSymbolizers()[1].getColor().getValue()).to.equal(
             '#000000');
@@ -47,7 +47,7 @@ describe('ol.parser.ogc.SLD_v1_0_0', function() {
         expect(first.getSymbolizers()[2].getText().getArgs()[2].getValue()).
             to.equal('label');
         expect(first.getSymbolizers()[2].getColor().getValue()).to.equal(
-            ol.style.TextDefaults.color);
+            '#000000');
         expect(first.getSymbolizers()[2].getFontFamily().getValue()).to.equal(
             'Arial');
         // TODO add tests for haloRadius and haloColor
