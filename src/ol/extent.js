@@ -1,5 +1,6 @@
 goog.provide('ol.Extent');
 goog.provide('ol.extent');
+goog.provide('ol.extent.Corner');
 goog.provide('ol.extent.Relationship');
 
 goog.require('goog.asserts');
@@ -15,6 +16,18 @@ goog.require('ol.TransformFunction');
  * @api
  */
 ol.Extent;
+
+
+/**
+ * Extent corner.
+ * @enum {string}
+ */
+ol.extent.Corner = {
+  BOTTOM_LEFT: 'bottom-left',
+  BOTTOM_RIGHT: 'bottom-right',
+  TOP_LEFT: 'top-left',
+  TOP_RIGHT: 'top-right'
+};
 
 
 /**
@@ -453,6 +466,30 @@ ol.extent.getBottomRight = function(extent) {
  */
 ol.extent.getCenter = function(extent) {
   return [(extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2];
+};
+
+
+/**
+ * Get a corner coordinate of an extent.
+ * @param {ol.Extent} extent Extent.
+ * @param {ol.extent.Corner} corner Corner.
+ * @return {ol.Coordinate} Corner coordinate.
+ */
+ol.extent.getCorner = function(extent, corner) {
+  var coordinate;
+  if (corner === ol.extent.Corner.BOTTOM_LEFT) {
+    coordinate = ol.extent.getBottomLeft(extent);
+  } else if (corner === ol.extent.Corner.BOTTOM_RIGHT) {
+    coordinate = ol.extent.getBottomRight(extent);
+  } else if (corner === ol.extent.Corner.TOP_LEFT) {
+    coordinate = ol.extent.getTopLeft(extent);
+  } else if (corner === ol.extent.Corner.TOP_RIGHT) {
+    coordinate = ol.extent.getTopRight(extent);
+  } else {
+    goog.asserts.fail('Invalid corner: %s', corner);
+  }
+  goog.asserts.assert(goog.isDef(coordinate));
+  return coordinate;
 };
 
 
