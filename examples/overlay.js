@@ -37,14 +37,16 @@ map.addOverlay(marker);
 var vienna = new ol.Overlay({
   position: pos,
   element: document.getElementById('vienna'),
-  stopEvent: true
+  stopEvent: true,
+  insertFirst: true
 });
 map.addOverlay(vienna);
 
 // Popup showing the position the user clicked
 var popup = new ol.Overlay({
   element: document.getElementById('popup'),
-  stopEvent: true
+  stopEvent: true,
+  insertFirst: true
 });
 map.addOverlay(popup);
 
