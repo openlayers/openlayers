@@ -8,7 +8,6 @@ goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.style');
-goog.require('ol.BrowserFeature');
 goog.require('ol.Coordinate');
 goog.require('ol.FrameState');
 goog.require('ol.MapEvent');
@@ -75,12 +74,13 @@ ol.MapBrowserEvent.prototype.getPixel = function() {
 
 
 /**
+ * @param {goog.events.BrowserEvent} event
  * @return {boolean} Do we have a left click?
  */
-ol.MapBrowserEvent.prototype.isMouseActionButton = function() {
-  // always assume a left-click on touch devices
-  return ol.BrowserFeature.HAS_TOUCH ||
-      this.browserEvent.isMouseActionButton();
+ol.MapBrowserEvent.isMouseActionButton = function(event) {
+  // always assume a left-click on touch devices (when button is undefined)
+  // see https://code.google.com/p/closure-library/issues/detail?id=597
+  return goog.isDef(event.button) ? event.isMouseActionButton() : true;
 };
 
 
@@ -204,7 +204,7 @@ goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
  * @private
  */
 ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
-  if (!this.dragged_) {
+  if (!this.dragged_ && ol.MapBrowserEvent.isMouseActionButton(browserEvent)) {
     var newEvent;
     var type = browserEvent.type;
     if (this.timestamp_ === 0 || type == goog.events.EventType.DBLCLICK) {
