@@ -36,13 +36,15 @@ map.addOverlay(marker);
 // Vienna label
 var vienna = new ol.Overlay({
   position: pos,
-  element: document.getElementById('vienna')
+  element: document.getElementById('vienna'),
+  stopEvent: true
 });
 map.addOverlay(vienna);
 
 // Popup showing the position the user clicked
 var popup = new ol.Overlay({
-  element: document.getElementById('popup')
+  element: document.getElementById('popup'),
+  stopEvent: true
 });
 map.addOverlay(popup);
 

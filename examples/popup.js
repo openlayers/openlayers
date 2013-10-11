@@ -31,7 +31,8 @@ closer.onclick = function() {
  * Create an overlay to anchor the popup to the map.
  */
 var overlay = new ol.Overlay({
-  element: container
+  element: container,
+  stopEvent: true
 });
 
 

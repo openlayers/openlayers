@@ -93,7 +93,7 @@ ol.control.Control.prototype.setMap = function(map) {
   this.map_ = map;
   if (!goog.isNull(this.map_)) {
     var target = goog.isDef(this.target_) ?
-        this.target_ : map.getOverlayContainer();
+        this.target_ : map.getOverlayContainerStopEvent();
     goog.dom.appendChild(target, this.element);
     if (this.handleMapPostrender !== goog.nullFunction) {
       this.listenerKeys.push(goog.events.listen(map,
