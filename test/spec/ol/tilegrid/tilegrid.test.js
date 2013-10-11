@@ -161,6 +161,18 @@ describe('ol.tilegrid.TileGrid', function() {
     });
   });
 
+  describe('createForExtent', function() {
+    it('allows creation of tile grid from extent', function() {
+      var extent = ol.extent.createOrUpdate(-100, -100, 100, 100);
+      var grid = ol.tilegrid.createForExtent(extent);
+      expect(grid).to.be.a(ol.tilegrid.TileGrid);
+
+      var resolutions = grid.getResolutions();
+      expect(resolutions.length).to.be(ol.DEFAULT_MAX_ZOOM + 1);
+      expect(grid.getOrigin()).to.eql([-100, -100]);
+    });
+  });
+
   describe('createForProjection', function() {
 
     it('allows easier creation of a tile grid', function() {
@@ -198,6 +210,50 @@ describe('ol.tilegrid.TileGrid', function() {
       expect(resolutions[5]).to.be(
           360 * ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
           ol.DEFAULT_TILE_SIZE / Math.pow(2, 5));
+    });
+
+    it('assumes origin is bottom-left', function() {
+      var projection = ol.proj.get('EPSG:3857');
+      var grid = ol.tilegrid.createForProjection(projection);
+      var origin = grid.getOrigin();
+      var half = ol.proj.EPSG3857.HALF_SIZE;
+      expect(origin).to.eql([-half, -half]);
+    });
+
+    it('accepts bottom-left as corner', function() {
+      var projection = ol.proj.get('EPSG:3857');
+      var grid = ol.tilegrid.createForProjection(
+          projection, undefined, undefined, ol.extent.Corner.BOTTOM_LEFT);
+      var origin = grid.getOrigin();
+      var half = ol.proj.EPSG3857.HALF_SIZE;
+      expect(origin).to.eql([-half, -half]);
+    });
+
+    it('accepts bottom-right as corner', function() {
+      var projection = ol.proj.get('EPSG:3857');
+      var grid = ol.tilegrid.createForProjection(
+          projection, undefined, undefined, ol.extent.Corner.BOTTOM_RIGHT);
+      var origin = grid.getOrigin();
+      var half = ol.proj.EPSG3857.HALF_SIZE;
+      expect(origin).to.eql([half, -half]);
+    });
+
+    it('accepts top-left as corner', function() {
+      var projection = ol.proj.get('EPSG:3857');
+      var grid = ol.tilegrid.createForProjection(
+          projection, undefined, undefined, ol.extent.Corner.TOP_LEFT);
+      var origin = grid.getOrigin();
+      var half = ol.proj.EPSG3857.HALF_SIZE;
+      expect(origin).to.eql([-half, half]);
+    });
+
+    it('accepts top-right as corner', function() {
+      var projection = ol.proj.get('EPSG:3857');
+      var grid = ol.tilegrid.createForProjection(
+          projection, undefined, undefined, ol.extent.Corner.TOP_RIGHT);
+      var origin = grid.getOrigin();
+      var half = ol.proj.EPSG3857.HALF_SIZE;
+      expect(origin).to.eql([half, half]);
     });
 
   });
@@ -643,8 +699,12 @@ describe('ol.tilegrid.TileGrid', function() {
 });
 
 goog.require('ol.Coordinate');
+goog.require('ol.extent');
+goog.require('ol.extent.Corner');
 goog.require('ol.proj');
 goog.require('ol.proj.METERS_PER_UNIT');
+goog.require('ol.proj');
+goog.require('ol.proj.EPSG3857');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
 goog.require('ol.tilegrid.TileGrid');
