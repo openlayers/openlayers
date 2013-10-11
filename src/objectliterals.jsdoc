@@ -166,11 +166,11 @@
  * @property {Element|undefined} target Target.
  */
 
- /**
-  * @typedef {Object} ol.control.ControlOptions
-  * @property {Element|undefined} element Element.
-  * @property {Element|undefined} target Target.
-  */
+/**
+ * @typedef {Object} ol.control.ControlOptions
+ * @property {Element|undefined} element Element.
+ * @property {Element|undefined} target Target.
+ */
 
 /**
  * @typedef {Object} ol.control.DefaultsOptions
