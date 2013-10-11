@@ -225,13 +225,21 @@ ol.Map = function(options) {
    */
   this.overlayContainer_ = goog.dom.createDom(goog.dom.TagName.DIV,
       'ol-overlaycontainer');
-  goog.events.listen(this.overlayContainer_, [
+  goog.dom.appendChild(this.viewport_, this.overlayContainer_);
+
+  /**
+   * @private
+   * @type {Element}
+   */
+  this.overlayContainerStopEvent_ = goog.dom.createDom(goog.dom.TagName.DIV,
+      'ol-overlaycontainer-stopevent');
+  goog.events.listen(this.overlayContainerStopEvent_, [
     goog.events.EventType.CLICK,
     goog.events.EventType.DBLCLICK,
     ol.BrowserFeature.HAS_TOUCH ?
         goog.events.EventType.TOUCHSTART : goog.events.EventType.MOUSEDOWN
   ], goog.events.Event.stopPropagation);
-  goog.dom.appendChild(this.viewport_, this.overlayContainer_);
+  goog.dom.appendChild(this.viewport_, this.overlayContainerStopEvent_);
 
   var mapBrowserEventHandler = new ol.MapBrowserEventHandler(this);
   goog.events.listen(mapBrowserEventHandler,
@@ -591,11 +599,21 @@ ol.Map.prototype.getViewport = function() {
 
 /**
  * @return {Element} The map's overlay container. Elements added to this
- * container won't let mousedown and touchstart events through to the map, so
- * clicks and gestures on an overlay don't trigger any MapBrowserEvent.
+ * container will let mousedown and touchstart events through to the map, so
+ * clicks and gestures on an overlay will trigger MapBrowserEvent events.
  */
 ol.Map.prototype.getOverlayContainer = function() {
   return this.overlayContainer_;
+};
+
+
+/**
+ * @return {Element} The map's overlay container. Elements added to this
+ * container won't let mousedown and touchstart events through to the map, so
+ * clicks and gestures on an overlay don't trigger any MapBrowserEvent.
+ */
+ol.Map.prototype.getOverlayContainerStopEvent = function() {
+  return this.overlayContainerStopEvent_;
 };
 
 
