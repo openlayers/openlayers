@@ -96,83 +96,6 @@ ol.parser.ogc.SLD_v1 = function() {
             new ol.style.Text(/** @type {ol.style.TextOptions} */(config))
         );
       },
-      'LabelPlacement': function(node, symbolizer) {
-        this.readChildNodes(node, symbolizer);
-      },
-      'PointPlacement': function(node, symbolizer) {
-        var config = {};
-        this.readChildNodes(node, config);
-        config.labelRotation = config.rotation;
-        delete config.rotation;
-        var labelAlign,
-            x = symbolizer.labelAnchorPointX,
-            y = symbolizer.labelAnchorPointY;
-        if (x <= 1 / 3) {
-          labelAlign = 'l';
-        } else if (x > 1 / 3 && x < 2 / 3) {
-          labelAlign = 'c';
-        } else if (x >= 2 / 3) {
-          labelAlign = 'r';
-        }
-        if (y <= 1 / 3) {
-          labelAlign += 'b';
-        } else if (y > 1 / 3 && y < 2 / 3) {
-          labelAlign += 'm';
-        } else if (y >= 2 / 3) {
-          labelAlign += 't';
-        }
-        config.labelAlign = labelAlign;
-        goog.object.extend(symbolizer, config);
-      },
-      'AnchorPoint': function(node, symbolizer) {
-        this.readChildNodes(node, symbolizer);
-      },
-      'AnchorPointX': function(node, symbolizer) {
-        var ogcreaders = this.readers['http://www.opengis.net/ogc'];
-        var labelAnchorPointX = ogcreaders._expression.call(this, node);
-        // always string, could be empty string
-        if (labelAnchorPointX) {
-          symbolizer.labelAnchorPointX = labelAnchorPointX;
-        }
-      },
-      'AnchorPointY': function(node, symbolizer) {
-        var ogcreaders = this.readers['http://www.opengis.net/ogc'];
-        var labelAnchorPointY = ogcreaders._expression.call(this, node);
-        // always string, could be empty string
-        if (labelAnchorPointY) {
-          symbolizer.labelAnchorPointY = labelAnchorPointY;
-        }
-      },
-      'Displacement': function(node, symbolizer) {
-        this.readChildNodes(node, symbolizer);
-      },
-      'DisplacementX': function(node, symbolizer) {
-        var ogcreaders = this.readers['http://www.opengis.net/ogc'];
-        var labelXOffset = ogcreaders._expression.call(this, node);
-        // always string, could be empty string
-        if (labelXOffset) {
-          symbolizer.labelXOffset = labelXOffset;
-        }
-      },
-      'DisplacementY': function(node, symbolizer) {
-        var ogcreaders = this.readers['http://www.opengis.net/ogc'];
-        var labelYOffset = ogcreaders._expression.call(this, node);
-        // always string, could be empty string
-        if (labelYOffset) {
-          symbolizer.labelYOffset = labelYOffset;
-        }
-      },
-      'LinePlacement': function(node, symbolizer) {
-        this.readChildNodes(node, symbolizer);
-      },
-      'PerpendicularOffset': function(node, symbolizer) {
-        var ogcreaders = this.readers['http://www.opengis.net/ogc'];
-        var labelPerpendicularOffset = ogcreaders._expression.call(this, node);
-        // always string, could be empty string
-        if (labelPerpendicularOffset) {
-          symbolizer.labelPerpendicularOffset = labelPerpendicularOffset;
-        }
-      },
       'Label': function(node, symbolizer) {
         var ogcreaders = this.readers['http://www.opengis.net/ogc'];
         var value = ogcreaders._expression.call(this, node);
@@ -203,34 +126,6 @@ ol.parser.ogc.SLD_v1 = function() {
         if (goog.isDef(radius)) {
           symbolizer.haloRadius = radius.getValue();
         }
-      },
-      'RasterSymbolizer': function(node, rule) {
-        var config = {};
-        this.readChildNodes(node, config);
-        config.zIndex = this.featureTypeCounter;
-        /* TODO
-        rule.symbolizers.push(
-          new OpenLayers.Symbolizer.Raster(config)
-        );
-        */
-      },
-      'Geometry': function(node, obj) {
-        obj.geometry = {};
-        this.readChildNodes(node, obj.geometry);
-      },
-      'ColorMap': function(node, symbolizer) {
-        symbolizer.colorMap = [];
-        this.readChildNodes(node, symbolizer.colorMap);
-      },
-      'ColorMapEntry': function(node, colorMap) {
-        var q = node.getAttribute('quantity');
-        var o = node.getAttribute('opacity');
-        colorMap.push({
-          color: node.getAttribute('color'),
-          quantity: q !== null ? parseFloat(q) : undefined,
-          label: node.getAttribute('label') || undefined,
-          opacity: o !== null ? parseFloat(o) : undefined
-        });
       },
       'LineSymbolizer': function(node, rule) {
         var config = {};
