@@ -72,6 +72,8 @@
  * @property {ol.Coordinate|undefined} position The overlay position in map
  *     projection.
  * @property {ol.OverlayPositioning|undefined} positioning Positioning.
+ * @property {boolean|undefined} stopEvent Whether event propagation to the map
+ * 	should be stopped. Default is `false`.
  */
 
 /**
