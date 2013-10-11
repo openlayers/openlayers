@@ -544,14 +544,11 @@ ol.parser.ogc.SLD_v1 = function() {
       'Rule': function(rule) {
         var node = this.createElementNS('sld:Rule');
         var filter = rule.getFilter();
-        if (rule.name) {
-          this.writeNode('Name', rule.name, null, node);
+        if (!goog.isNull(rule.getName())) {
+          this.writeNode('Name', rule.getName(), null, node);
         }
-        if (rule.title) {
+        if (!goog.isNull(rule.getTitle())) {
           this.writeNode('Title', rule.title, null, node);
-        }
-        if (rule.description) {
-          this.writeNode('Abstract', rule.description, null, node);
         }
         if (rule.elseFilter) {
           this.writeNode('ElseFilter', null, null, node);

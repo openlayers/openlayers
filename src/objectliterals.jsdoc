@@ -819,6 +819,8 @@
  *     a value is provided, the rule will apply at resolutions greater than or
  *     equal to this value.
  * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers.
+ * @property {string|undefined} name Name.
+ * @property {string|undefined} title Title.
  * @todo stability experimental
  */
 

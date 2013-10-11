@@ -54,6 +54,20 @@ ol.style.Rule = function(options) {
   this.maxResolution_ = goog.isDef(options.maxResolution) ?
       options.maxResolution : Infinity;
 
+  /**
+   * @type {?string}
+   * @private
+   */
+  this.name_ = goog.isDef(options.name) ?
+      options.name : null;
+
+  /**
+   * @type {?string}
+   * @private
+   */
+  this.title_ = goog.isDef(options.title) ?
+      options.title : null;
+
 };
 
 
@@ -101,4 +115,20 @@ ol.style.Rule.prototype.getMinResolution = function() {
  */
 ol.style.Rule.prototype.getMaxResolution = function() {
   return this.maxResolution_;
+};
+
+
+/**
+ * @return {?string}
+ */
+ol.style.Rule.prototype.getName = function() {
+  return this.name_;
+};
+
+
+/**
+ * @return {?string}
+ */
+ol.style.Rule.prototype.getTitle = function() {
+  return this.title_;
 };
