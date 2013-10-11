@@ -79,7 +79,9 @@
  *     projection.
  * @property {ol.OverlayPositioning|undefined} positioning Positioning.
  * @property {boolean|undefined} stopEvent Whether event propagation to the map
- * 	should be stopped. Default is `false`.
+ *     should be stopped. Default is `false`.
+ * @property {boolean|undefined} insertFirst Whether the overlay is inserted
+ *     first in the container div, or appended. Default is `false`.
  * @todo stability experimental
  */
 
