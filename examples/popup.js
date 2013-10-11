@@ -32,7 +32,8 @@ closer.onclick = function() {
  */
 var overlay = new ol.Overlay({
   element: container,
-  stopEvent: true
+  stopEvent: true,
+  insertFirst: true
 });
 
 
