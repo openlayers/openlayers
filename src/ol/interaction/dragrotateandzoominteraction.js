@@ -67,12 +67,12 @@ goog.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Drag);
  */
 ol.interaction.DragRotateAndZoom.prototype.handleDrag =
     function(mapBrowserEvent) {
-  var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
   var size = map.getSize();
+  var offset = mapBrowserEvent.getPixel();
   var delta = new goog.math.Vec2(
-      browserEvent.offsetX - size[0] / 2,
-      size[1] / 2 - browserEvent.offsetY);
+      offset[0] - size[0] / 2,
+      size[1] / 2 - offset[1]);
   var theta = Math.atan2(delta.y, delta.x);
   var magnitude = delta.magnitude();
   // FIXME works for View2D only
