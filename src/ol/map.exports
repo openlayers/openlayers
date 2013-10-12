@@ -4,6 +4,7 @@
 @exportProperty ol.Map.prototype.addOverlay
 @exportProperty ol.Map.prototype.beforeRender
 @exportProperty ol.Map.prototype.getControls
+@exportProperty ol.Map.prototype.getEventCoordinate
 @exportProperty ol.Map.prototype.getEventPixel
 @exportProperty ol.Map.prototype.getFeatureInfo
 @exportProperty ol.Map.prototype.getFeatures
