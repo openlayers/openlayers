@@ -17,5 +17,16 @@ http://kml-samples.googlecode.com/svn/trunk/kml/Style/styles.kml
     </IconStyle>
   </Style>
 
+  <StyleMap id="sunIconMap">
+    <Pair>
+      <key>normal</key>
+      <styleUrl>#blueIcons</styleUrl>
+    </Pair>
+    <Pair>
+      <key>highlight</key>
+      <styleUrl>#blueIcons</styleUrl>
+    </Pair>
+  </StyleMap>
+
 </Document>
 </kml>

@@ -8,12 +8,6 @@ goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.interaction.Interaction');
 
 
-/**
- * @define {number} Animation duration.
- */
-ol.interaction.DOUBLECLICKZOOM_ANIMATION_DURATION = 250;
-
-
 
 /**
  * Allows the user to zoom by double-clicking on the map.
@@ -34,6 +28,12 @@ ol.interaction.DoubleClickZoom = function(opt_options) {
 
   goog.base(this);
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.duration_ = goog.isDef(options.duration) ? options.duration : 250;
+
 };
 goog.inherits(ol.interaction.DoubleClickZoom, ol.interaction.Interaction);
 
@@ -52,8 +52,8 @@ ol.interaction.DoubleClickZoom.prototype.handleMapBrowserEvent =
     var delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
     // FIXME works for View2D only
     var view = map.getView().getView2D();
-    ol.interaction.Interaction.zoomByDelta(map, view, delta, anchor,
-        ol.interaction.DOUBLECLICKZOOM_ANIMATION_DURATION);
+    ol.interaction.Interaction.zoomByDelta(
+        map, view, delta, anchor, this.duration_);
     mapBrowserEvent.preventDefault();
     stopEvent = true;
   }

@@ -69,16 +69,16 @@ ol.layer.Layer.prototype.getSource = function() {
 
 
 /**
- * @private
- */
-ol.layer.Layer.prototype.handleSourceChange_ = function() {
-  this.dispatchChangeEvent();
+  * @inheritDoc
+  */
+ol.layer.Layer.prototype.getSourceState = function() {
+  return this.getSource().getState();
 };
 
 
 /**
- * @inheritDoc
+ * @private
  */
-ol.layer.Layer.prototype.isReady = function() {
-  return this.getSource().isReady();
+ol.layer.Layer.prototype.handleSourceChange_ = function() {
+  this.dispatchChangeEvent();
 };

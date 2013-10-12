@@ -13,10 +13,10 @@ goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
-goog.require('ol.layer.VectorLayerEventType');
+goog.require('ol.layer.VectorEventType');
 goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.renderer.canvas.Layer');
-goog.require('ol.renderer.canvas.VectorRenderer');
+goog.require('ol.renderer.canvas.Vector');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -88,10 +88,10 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
   this.tileCache_ = new ol.TileCache(
       ol.renderer.canvas.VectorLayer.TILECACHE_SIZE);
   goog.events.listen(layer, [
-    ol.layer.VectorLayerEventType.ADD,
-    ol.layer.VectorLayerEventType.CHANGE,
-    ol.layer.VectorLayerEventType.REMOVE,
-    ol.layer.VectorLayerEventType.INTENTCHANGE
+    ol.layer.VectorEventType.ADD,
+    ol.layer.VectorEventType.CHANGE,
+    ol.layer.VectorEventType.REMOVE,
+    ol.layer.VectorEventType.INTENTCHANGE
   ],
   this.handleLayerChange_, false, this);
 
@@ -100,21 +100,6 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    * @type {HTMLCanvasElement}
    */
   this.tileArchetype_ = null;
-
-  /**
-   * Geometry types in rendering order.
-   * TODO: these will go away shortly (in favor of one call per symbolizer type)
-   * @private
-   * @type {Array.<ol.geom.GeometryType>}
-   */
-  this.geometryTypes_ = [
-    ol.geom.GeometryType.POINT,
-    ol.geom.GeometryType.MULTIPOINT,
-    ol.geom.GeometryType.LINESTRING,
-    ol.geom.GeometryType.MULTILINESTRING,
-    ol.geom.GeometryType.POLYGON,
-    ol.geom.GeometryType.MULTIPOLYGON
-  ];
 
   /**
    * @private
@@ -178,14 +163,18 @@ goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 /**
  * Get rid cached tiles.  If the optional extent is provided, only tiles that
  * intersect that extent will be removed.
- * @param {ol.Extent=} opt_extent extent Expire tiles within this extent only.
+ * @param {Array.<ol.Extent>} extents extent Expire tiles within the provided
+ *     extents.  If the array is empty, all tiles will be expired.
  * @private
  */
-ol.renderer.canvas.VectorLayer.prototype.expireTiles_ = function(opt_extent) {
+ol.renderer.canvas.VectorLayer.prototype.expireTiles_ = function(extents) {
   var tileCache = this.tileCache_;
-  if (goog.isDef(opt_extent)) {
-    var tileRange = this.tileGrid_.getTileRangeForExtentAndZ(opt_extent, 0);
-    tileCache.pruneTileRange(tileRange);
+  var length = extents.length;
+  if (length > 0) {
+    for (var i = 0; i < length; ++i) {
+      tileCache.pruneTileRange(
+          this.tileGrid_.getTileRangeForExtentAndZ(extents[i], 0));
+    }
   } else {
     tileCache.clear();
   }
@@ -322,11 +311,11 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
 
 
 /**
- * @param {ol.layer.VectorLayerEventObject} event Layer change event.
+ * @param {ol.layer.VectorEvent} event Vector layer event.
  * @private
  */
 ol.renderer.canvas.VectorLayer.prototype.handleLayerChange_ = function(event) {
-  this.expireTiles_(event.extent);
+  this.expireTiles_(event.extents);
   this.requestMapRenderFrame_();
 };
 
@@ -450,7 +439,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   sketchCanvas.width = sketchWidth;
   sketchCanvas.height = sketchHeight;
 
-  var sketchCanvasRenderer = new ol.renderer.canvas.VectorRenderer(
+  var sketchCanvasRenderer = new ol.renderer.canvas.Vector(
       sketchCanvas, sketchTransform, this.requestMapRenderFrame_);
 
   // clear/resize final canvas
@@ -464,14 +453,10 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var tilesOnSketchCanvas = {};
   // TODO make gutter configurable?
   var tileGutter = 15 * tileResolution;
-  var tile, tileCoord, key, x, y;
-  // render features by geometry type
-  var types = this.geometryTypes_,
-      numTypes = types.length,
-      deferred = false,
-      dirty = false,
-      i, type, tileExtent,
-      groups, group, j, numGroups, featuresObject, tileHasFeatures;
+  var tile, tileCoord, key, x, y, i, type;
+  var deferred = false;
+  var dirty = false;
+  var tileExtent, groups, group, j, numGroups, featuresObject, tileHasFeatures;
   fetchTileData:
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
@@ -486,21 +471,15 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         tileExtent[1] -= tileGutter;
         tileExtent[3] += tileGutter;
         tileHasFeatures = false;
-        for (i = 0; i < numTypes; ++i) {
-          type = types[i];
-          if (!goog.isDef(featuresToRender[type])) {
-            featuresToRender[type] = {};
-          }
-          featuresObject = layer.getFeaturesObjectForExtent(tileExtent,
-              projection, type, this.requestMapRenderFrame_);
-          if (goog.isNull(featuresObject)) {
-            deferred = true;
-            break fetchTileData;
-          }
-          tileHasFeatures = tileHasFeatures ||
-              !goog.object.isEmpty(featuresObject);
-          goog.object.extend(featuresToRender[type], featuresObject);
+        featuresObject = layer.getFeaturesObjectForExtent(tileExtent,
+            projection, this.requestMapRenderFrame_);
+        if (goog.isNull(featuresObject)) {
+          deferred = true;
+          break fetchTileData;
         }
+        tileHasFeatures = tileHasFeatures ||
+            !goog.object.isEmpty(featuresObject);
+        goog.object.extend(featuresToRender, featuresObject);
         if (tileHasFeatures) {
           tilesOnSketchCanvas[key] = tileCoord;
         }
@@ -511,19 +490,15 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   }
   this.dirty_ = dirty;
 
-  renderByGeometryType:
-  for (type in featuresToRender) {
-    groups = layer.groupFeaturesBySymbolizerLiteral(
-        featuresToRender[type], tileResolution);
-    numGroups = groups.length;
-    for (j = 0; j < numGroups; ++j) {
-      group = groups[j];
-      deferred = sketchCanvasRenderer.renderFeaturesByGeometryType(
-          /** @type {ol.geom.GeometryType} */ (type),
-          group[0], group[1], group[2]);
-      if (deferred) {
-        break renderByGeometryType;
-      }
+  groups = layer.groupFeaturesBySymbolizerLiteral(featuresToRender,
+      tileResolution);
+  numGroups = groups.length;
+  for (j = 0; j < numGroups; ++j) {
+    group = groups[j];
+    deferred = sketchCanvasRenderer.renderFeatures(group[0], group[1],
+        group[2]);
+    if (deferred) {
+      break;
     }
   }
 

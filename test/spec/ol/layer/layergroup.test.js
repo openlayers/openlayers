@@ -50,7 +50,7 @@ describe('ol.layer.Group', function() {
         opacity: 1,
         saturation: 1,
         visible: true,
-        ready: true,
+        sourceState: ol.source.State.READY,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -98,7 +98,7 @@ describe('ol.layer.Group', function() {
         opacity: 0.5,
         saturation: 5,
         visible: false,
-        ready: true,
+        sourceState: ol.source.State.READY,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -140,7 +140,7 @@ describe('ol.layer.Group', function() {
         opacity: 0.3,
         saturation: 0.3,
         visible: false,
-        ready: true,
+        sourceState: ol.source.State.READY,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -160,7 +160,7 @@ describe('ol.layer.Group', function() {
         opacity: 0,
         saturation: 0,
         visible: false,
-        ready: true,
+        sourceState: ol.source.State.READY,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -178,7 +178,7 @@ describe('ol.layer.Group', function() {
         opacity: 1,
         saturation: 42,
         visible: true,
-        ready: true,
+        sourceState: ol.source.State.READY,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -297,7 +297,7 @@ describe('ol.layer.Group', function() {
         opacity: 0.25,
         saturation: 25,
         visible: false,
-        ready: true,
+        sourceState: ol.source.State.READY,
         maxResolution: 150,
         minResolution: 0.25
       });
@@ -316,4 +316,5 @@ goog.require('goog.dispose');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Group');
 goog.require('ol.source.Source');
+goog.require('ol.source.State');
 goog.require('ol.Collection');

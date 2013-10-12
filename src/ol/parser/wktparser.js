@@ -171,8 +171,9 @@ ol.parser.WKT.prototype.encodePoint_ = function(geom) {
  */
 ol.parser.WKT.prototype.encodeMultiPoint_ = function(geom) {
   var array = [];
-  for (var i = 0, ii = geom.components.length; i < ii; ++i) {
-    array.push('(' + this.encodePoint_.apply(this, [geom.components[i]]) + ')');
+  var components = geom.getComponents();
+  for (var i = 0, ii = components.length; i < ii; ++i) {
+    array.push('(' + this.encodePoint_.apply(this, [components[i]]) + ')');
   }
   return array.join(',');
 };
@@ -185,8 +186,9 @@ ol.parser.WKT.prototype.encodeMultiPoint_ = function(geom) {
  */
 ol.parser.WKT.prototype.encodeGeometryCollection_ = function(geom) {
   var array = [];
-  for (var i = 0, ii = geom.components.length; i < ii; ++i) {
-    array.push(this.encode_.apply(this, [geom.components[i]]));
+  var components = geom.getComponents();
+  for (var i = 0, ii = components.length; i < ii; ++i) {
+    array.push(this.encode_.apply(this, [components[i]]));
   }
   return array.join(',');
 };
@@ -214,9 +216,10 @@ ol.parser.WKT.prototype.encodeLineString_ = function(geom) {
  */
 ol.parser.WKT.prototype.encodeMultiLineString_ = function(geom) {
   var array = [];
-  for (var i = 0, ii = geom.components.length; i < ii; ++i) {
+  var components = geom.getComponents();
+  for (var i = 0, ii = components.length; i < ii; ++i) {
     array.push('(' + this.encodeLineString_.apply(this,
-        [geom.components[i]]) + ')');
+        [components[i]]) + ')');
   }
   return array.join(',');
 };
@@ -229,9 +232,10 @@ ol.parser.WKT.prototype.encodeMultiLineString_ = function(geom) {
  */
 ol.parser.WKT.prototype.encodePolygon_ = function(geom) {
   var array = [];
-  for (var i = 0, ii = geom.rings.length; i < ii; ++i) {
+  var rings = geom.getRings();
+  for (var i = 0, ii = rings.length; i < ii; ++i) {
     array.push('(' + this.encodeLineString_.apply(this,
-        [geom.rings[i]]) + ')');
+        [rings[i]]) + ')');
   }
   return array.join(',');
 };
@@ -244,9 +248,9 @@ ol.parser.WKT.prototype.encodePolygon_ = function(geom) {
  */
 ol.parser.WKT.prototype.encodeMultiPolygon_ = function(geom) {
   var array = [];
-  for (var i = 0, ii = geom.components.length; i < ii; ++i) {
-    array.push('(' + this.encodePolygon_.apply(this,
-        [geom.components[i]]) + ')');
+  var components = geom.getComponents();
+  for (var i = 0, ii = components.length; i < ii; ++i) {
+    array.push('(' + this.encodePolygon_.apply(this, [components[i]]) + ')');
   }
   return array.join(',');
 };

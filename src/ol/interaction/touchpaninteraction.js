@@ -69,6 +69,7 @@ ol.interaction.TouchPan.prototype.handleTouchMove = function(mapBrowserEvent) {
     ol.coordinate.scale(center, view2DState.resolution);
     ol.coordinate.rotate(center, view2DState.rotation);
     ol.coordinate.add(center, view2DState.center);
+    center = view.constrainCenter(center);
     map.requestRenderFrame();
     view.setCenter(center);
   }
@@ -95,6 +96,7 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
         centerpx[0] - distance * Math.cos(angle),
         centerpx[1] - distance * Math.sin(angle)
       ]);
+      dest = view.constrainCenter(dest);
       view.setCenter(dest);
     }
     map.requestRenderFrame();

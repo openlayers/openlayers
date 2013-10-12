@@ -21,9 +21,10 @@ describe('ol.geom.MultiLineString', function() {
         [[10, 20], [30, 40]],
         [[20, 30], [40, 50]]]);
 
-      expect(multi.components.length).to.be(2);
-      expect(multi.components[0]).to.be.a(ol.geom.LineString);
-      expect(multi.components[1]).to.be.a(ol.geom.LineString);
+      var components = multi.getComponents();
+      expect(components.length).to.be(2);
+      expect(components[0]).to.be.a(ol.geom.LineString);
+      expect(components[1]).to.be.a(ol.geom.LineString);
 
     });
 

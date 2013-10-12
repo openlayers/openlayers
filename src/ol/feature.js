@@ -1,7 +1,13 @@
 goog.provide('ol.Feature');
+goog.provide('ol.FeatureEvent');
+goog.provide('ol.FeatureEventType');
 
+goog.require('goog.events');
+goog.require('goog.events.Event');
+goog.require('goog.events.EventType');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryEvent');
 goog.require('ol.layer.VectorLayerRenderIntent');
 
 
@@ -100,15 +106,43 @@ ol.Feature.prototype.getSymbolizers = function() {
 
 
 /**
+ * Listener for geometry change events.
+ * @param {ol.geom.GeometryEvent} evt Geometry event.
+ * @private
+ */
+ol.Feature.prototype.handleGeometryChange_ = function(evt) {
+  this.dispatchEvent(new ol.FeatureEvent(
+      ol.FeatureEventType.CHANGE, this, evt.oldExtent));
+};
+
+
+/**
  * @inheritDoc
  * @param {string} key Key.
  * @param {*} value Value.
  */
 ol.Feature.prototype.set = function(key, value) {
-  if (!goog.isDef(this.geometryName_) && (value instanceof ol.geom.Geometry)) {
-    this.geometryName_ = key;
+  var geometry = this.getGeometry();
+  var oldExtent = null;
+  if (goog.isDefAndNotNull(geometry)) {
+    oldExtent = geometry.getBounds();
+    if (key === this.geometryName_) {
+      goog.events.unlisten(geometry, goog.events.EventType.CHANGE,
+          this.handleGeometryChange_, false, this);
+    }
+  }
+  if (value instanceof ol.geom.Geometry) {
+    if (!goog.isDef(this.geometryName_)) {
+      this.geometryName_ = key;
+    }
+    if (key === this.geometryName_) {
+      goog.events.listen(value, goog.events.EventType.CHANGE,
+          this.handleGeometryChange_, false, this);
+    }
   }
   goog.base(this, 'set', key, value);
+  this.dispatchEvent(new ol.FeatureEvent(
+      ol.FeatureEventType.CHANGE, this, oldExtent));
 };
 
 
@@ -150,3 +184,28 @@ ol.Feature.prototype.setSymbolizers = function(symbolizers) {
  * @type {string}
  */
 ol.Feature.DEFAULT_GEOMETRY = 'geometry';
+
+
+/**
+ * @enum {string}
+ */
+ol.FeatureEventType = {
+  CHANGE: 'featurechange'
+};
+
+
+
+/**
+ * Constructor for feature events.
+ * @constructor
+ * @extends {goog.events.Event}
+ * @param {string} type Event type.
+ * @param {ol.Feature} target The target feature.
+ * @param {ol.Extent} oldExtent The previous geometry extent.
+ */
+ol.FeatureEvent = function(type, target, oldExtent) {
+  goog.base(this, type, target);
+
+  this.oldExtent = oldExtent;
+};
+goog.inherits(ol.FeatureEvent, goog.events.Event);

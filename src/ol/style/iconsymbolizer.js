@@ -17,6 +17,7 @@ goog.require('ol.style.Point');
  * @param {ol.style.IconOptions} options Icon options.
  */
 ol.style.Icon = function(options) {
+  goog.base(this);
 
   goog.asserts.assert(options.url, 'url must be set');
 
@@ -81,7 +82,17 @@ ol.style.Icon = function(options) {
       (options.yOffset instanceof ol.expr.Expression) ?
           options.yOffset : new ol.expr.Literal(options.yOffset);
 
+  /**
+   * @type {ol.expr.Expression}
+   * @private
+   */
+  this.zIndex_ = !goog.isDefAndNotNull(options.zIndex) ?
+      new ol.expr.Literal(ol.style.IconDefaults.zIndex) :
+      (options.zIndex instanceof ol.expr.Expression) ?
+          options.zIndex : new ol.expr.Literal(options.zIndex);
+
 };
+goog.inherits(ol.style.Icon, ol.style.Point);
 
 
 /**
@@ -130,6 +141,9 @@ ol.style.Icon.prototype.createLiteral = function(featureOrType) {
     var yOffset = Number(ol.expr.evaluateFeature(this.yOffset_, feature));
     goog.asserts.assert(!isNaN(yOffset), 'yOffset must be a number');
 
+    var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
+    goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
+
     literal = new ol.style.IconLiteral({
       url: url,
       width: width,
@@ -137,7 +151,8 @@ ol.style.Icon.prototype.createLiteral = function(featureOrType) {
       opacity: opacity,
       rotation: rotation,
       xOffset: xOffset,
-      yOffset: yOffset
+      yOffset: yOffset,
+      zIndex: zIndex
     });
   }
 
@@ -205,6 +220,15 @@ ol.style.Icon.prototype.getXOffset = function() {
  */
 ol.style.Icon.prototype.getYOffset = function() {
   return this.yOffset_;
+};
+
+
+/**
+ * Get the zIndex.
+ * @return {ol.expr.Expression} Icon zIndex.
+ */
+ol.style.Icon.prototype.getZIndex = function() {
+  return this.zIndex_;
 };
 
 
@@ -279,14 +303,26 @@ ol.style.Icon.prototype.setYOffset = function(yOffset) {
 
 
 /**
+ * Set the zIndex.
+ * @param {ol.expr.Expression} zIndex Icon zIndex.
+ */
+ol.style.Icon.prototype.setZIndex = function(zIndex) {
+  goog.asserts.assertInstanceof(zIndex, ol.expr.Expression);
+  this.zIndex_ = zIndex;
+};
+
+
+/**
  * @typedef {{opacity: number,
  *            rotation: number,
  *            xOffset: number,
- *            yOffset: number}}
+ *            yOffset: number,
+ *            zIndex: number}}
  */
 ol.style.IconDefaults = {
   opacity: 1,
   rotation: 0,
   xOffset: 0,
-  yOffset: 0
+  yOffset: 0,
+  zIndex: 0
 };

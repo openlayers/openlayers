@@ -26,6 +26,31 @@ describe('ol.style.Text', function() {
       expect(symbolizer).to.be.a(ol.style.Text);
     });
 
+    it('accepts zIndex', function() {
+      var symbolizer = new ol.style.Text({
+        color: '#ff0000',
+        fontFamily: 'Arial',
+        fontSize: 11,
+        text: 'Test',
+        opacity: 0.6,
+        zIndex: 3
+      });
+      expect(symbolizer).to.be.a(ol.style.Text);
+    });
+
+    it('accepts stroke', function() {
+      var symbolizer = new ol.style.Text({
+        color: '#000000',
+        text: 'Test',
+        stroke: new ol.style.Stroke({
+          color: '#ff0000',
+          width: 2,
+          opacity: 0.5
+        })
+      });
+      expect(symbolizer).to.be.a(ol.style.Text);
+    });
+
   });
 
   describe('#createLiteral()', function() {
@@ -84,6 +109,7 @@ describe('ol.style.Text', function() {
       expect(literal.color).to.be('#000');
       expect(literal.fontFamily).to.be('sans-serif');
       expect(literal.fontSize).to.be(10);
+      expect(literal.fontWeight).to.be('normal');
       expect(literal.text).to.be('Test');
       expect(literal.opacity).to.be(1);
     });
@@ -114,6 +140,36 @@ describe('ol.style.Text', function() {
 
       var literal = symbolizer.createLiteral(feature);
       expect(literal.opacity).to.be(0.42);
+    });
+
+    it('evaluates stroke expressions', function() {
+      var symbolizer = new ol.style.Text({
+        text: 'test',
+        stroke: new ol.style.Stroke({
+          width: ol.expr.parse('strokeWidth')
+        })
+      });
+
+      var feature = new ol.Feature({
+        strokeWidth: '4.2'
+      });
+
+      var literal = symbolizer.createLiteral(feature);
+      expect(literal.strokeWidth).to.be(4.2);
+    });
+
+    it('applies stroke defaults', function() {
+      var symbolizer = new ol.style.Text({
+        text: 'test',
+        stroke: new ol.style.Stroke({
+          width: 2
+        })
+      });
+
+      var literal = symbolizer.createLiteral();
+      expect(literal.strokeWidth).to.be(2);
+      expect(literal.strokeColor).to.be('#696969');
+      expect(literal.strokeOpacity).to.be(0.75);
     });
 
   });
@@ -157,6 +213,20 @@ describe('ol.style.Text', function() {
       var fontSize = symbolizer.getFontSize();
       expect(fontSize).to.be.a(ol.expr.Literal);
       expect(fontSize.getValue()).to.be(42);
+    });
+
+  });
+
+  describe('#getFontWeight()', function() {
+
+    it('returns the font size', function() {
+      var symbolizer = new ol.style.Text({
+        fontWeight: 'bold'
+      });
+
+      var fontWeight = symbolizer.getFontWeight();
+      expect(fontWeight).to.be.a(ol.expr.Literal);
+      expect(fontWeight.getValue()).to.be('bold');
     });
 
   });
@@ -259,6 +329,33 @@ describe('ol.style.Text', function() {
 
   });
 
+  describe('#setFontWeight()', function() {
+
+    it('sets the font size', function() {
+      var symbolizer = new ol.style.Text({
+        fontWeight: 'bold'
+      });
+      symbolizer.setFontWeight(new ol.expr.Literal('900'));
+
+      var fontWeight = symbolizer.getFontWeight();
+      expect(fontWeight).to.be.a(ol.expr.Literal);
+      expect(fontWeight.getValue()).to.be('900');
+    });
+
+    it('throws when not provided an expression', function() {
+      var symbolizer = new ol.style.Text({
+        fontWeight: 'lighter'
+      });
+
+      expect(function() {
+        symbolizer.setFontWeight('bolder');
+      }).throwException(function(err) {
+        expect(err).to.be.a(goog.asserts.AssertionError);
+      });
+    });
+
+  });
+
   describe('#setOpacity()', function() {
 
     it('sets the opacity', function() {
@@ -326,5 +423,6 @@ goog.require('ol.expr');
 goog.require('ol.expr.Literal');
 goog.require('ol.expr.Literal');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.style.Stroke');
 goog.require('ol.style.Text');
 goog.require('ol.style.TextLiteral');

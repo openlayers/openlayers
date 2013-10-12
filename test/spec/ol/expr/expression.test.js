@@ -674,6 +674,25 @@ describe('ol.expr.lib', function() {
 
   });
 
+  describe('counter()', function() {
+
+    it('increases the counter with every call', function() {
+      var counter = parse('counter()');
+      var start = evaluate(counter);
+      expect(evaluate(counter)).to.be(start + 1);
+      expect(evaluate(counter)).to.be(start + 2);
+    });
+
+    it('increases the counter, starting with a custom value', function() {
+      var counterWithStart = parse('counter(1000)');
+      var start = evaluate(counterWithStart);
+      expect(start > 1000).to.be(true);
+      expect(evaluate(counterWithStart)).to.be(start + 1);
+      expect(evaluate(counterWithStart)).to.be(start + 2);
+    });
+
+  });
+
   describe('extent()', function() {
 
     var nw = new ol.Feature({

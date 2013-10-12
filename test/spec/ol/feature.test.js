@@ -155,6 +155,28 @@ describe('ol.Feature', function() {
 
     });
 
+    it('triggers a featurechange event', function(done) {
+      var feature = new ol.Feature();
+      goog.events.listen(feature, 'featurechange', function(evt) {
+        expect(evt.target).to.be(feature);
+        expect(evt.oldExtent).to.be(null);
+        done();
+      });
+      feature.set('foo', 'bar');
+    });
+
+    it('triggers a featurechange event with oldExtent', function(done) {
+      var feature = new ol.Feature({
+        geom: new ol.geom.Point([15, 30])
+      });
+      goog.events.listen(feature, 'featurechange', function(evt) {
+        expect(evt.target).to.be(feature);
+        expect(evt.oldExtent).to.eql([15, 30, 15, 30]);
+        done();
+      });
+      feature.setGeometry(new ol.geom.Point([1, 2]));
+    });
+
   });
 
   describe('#setGeometry()', function() {
@@ -197,11 +219,34 @@ describe('ol.Feature', function() {
       expect(feature.getGeometry()).to.be(point);
     });
 
+    it('triggers a featurechange event', function(done) {
+      var feature = new ol.Feature();
+      goog.events.listen(feature, 'featurechange', function(evt) {
+        expect(evt.target).to.be(feature);
+        done();
+      });
+      feature.setGeometry('foo', point);
+    });
+
+    it('triggers a featurechange event with old extent', function(done) {
+      var first = new ol.geom.Point([10, 20]);
+      var feature = new ol.Feature({geom: first});
+      var second = new ol.geom.Point([20, 30]);
+      goog.events.listen(feature, 'featurechange', function(evt) {
+        expect(evt.target).to.be(feature);
+        expect(evt.target.getGeometry()).to.be(second);
+        expect(evt.oldExtent).to.eql(first.getBounds());
+        done();
+      });
+      feature.setGeometry(second);
+    });
+
   });
 
 });
 
 
+goog.require('goog.events');
 goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');

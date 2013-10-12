@@ -7,12 +7,12 @@
 
 /**
  * @typedef {Object} ol.DeviceOrientationOptions
- * @property {boolean|undefined} tracking Tracking.
+ * @property {boolean|undefined} tracking Start tracking. Default is false.
  */
 
 /**
  * @typedef {Object} ol.GeolocationOptions
- * @property {boolean|undefined} tracking Tracking.
+ * @property {boolean|undefined} tracking Start Tracking. Default is false.
  * @property {GeolocationPositionOptions|undefined} trackingOptions Tracking options.
  * @property {ol.proj.ProjectionLike} projection Projection.
  */
@@ -72,6 +72,8 @@
  * @property {ol.Coordinate|undefined} position The overlay position in map
  *     projection.
  * @property {ol.OverlayPositioning|undefined} positioning Positioning.
+ * @property {boolean|undefined} stopEvent Whether event propagation to the map
+ * 	should be stopped. Default is `false`.
  */
 
 /**
@@ -101,6 +103,7 @@
  * @property {ol.Coordinate|undefined} center The initial center for the view.
  *     The coordinate system for the center is specified with the `projection`
  *     option.
+ * @property {ol.Extent|undefined} extent The extent to constraint the center to.
  * @property {number|undefined} maxResolution The maximum resolution used to
  *     determine the resolution constraint. It is used together with `maxZoom`
  *     and `zoomFactor`. If unspecified it is calculated in such a way that the
@@ -165,11 +168,11 @@
  * @property {Element|undefined} target Target.
  */
 
- /**
-  * @typedef {Object} ol.control.ControlOptions
-  * @property {Element|undefined} element Element.
-  * @property {Element|undefined} target Target.
-  */
+/**
+ * @typedef {Object} ol.control.ControlOptions
+ * @property {Element|undefined} element Element.
+ * @property {Element|undefined} target Target.
+ */
 
 /**
  * @typedef {Object} ol.control.DefaultsOptions
@@ -216,6 +219,7 @@
 
 /**
  * @typedef {Object} ol.control.ZoomOptions
+ * @property {number|undefined} duration Animation duration. Default is 250ms.
  * @property {string|undefined} className CSS class name. Default is `ol-zoom`.
  * @property {number|undefined} delta The zoom delta applied on each click.
  * @property {Element|undefined} target Target.
@@ -238,6 +242,7 @@
 
 /**
  * @typedef {Object} ol.interaction.DoubleClickZoomOptions
+ * @property {number|undefined} duration Animation duration. Default is 250ms.
  * @property {number|undefined} delta The zoom delta applied on each double
  *     click, default is 1.
  */
@@ -290,6 +295,7 @@
  * @property {boolean|undefined} touchRotate Whether touch rotate is desired.
  * @property {boolean|undefined} touchZoom Whether touch zoom is desired.
  * @property {number|undefined} zoomDelta Zoom delta.
+ * @property {number|undefined} zoomDuration Zoom duration.
  */
 
 /**
@@ -303,10 +309,16 @@
 
 /**
  * @typedef {Object} ol.interaction.KeyboardZoomOptions
+ * @property {number|undefined} duration Animation duration. Default is 100ms.
  * @property {ol.interaction.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is no modifiers.
  * @property {number|undefined} delta The amount to zoom on each key press.
+ */
+
+/**
+ * @typedef {Object} ol.interaction.MouseWheelZoomOptions
+ * @property {number|undefined} duration Animation duration. Default is 250ms.
  */
 
 /**
@@ -332,6 +344,11 @@
 /**
  * @typedef {Object} ol.interaction.TouchRotateOptions
  * @property {number|undefined} threshold Minimal angle to start a rotation.
+ */
+
+/**
+ * @typedef {Object} ol.interaction.TouchZoomOptions
+ * @property {number|undefined} duration Animation duration. Default is 400ms.
  */
 
 /**
@@ -691,6 +708,7 @@
  *     point to the center of the icon (positive values shift image left).
  * @property {number|ol.expr.Expression|undefined} yOffset Pixel offset from the
  *     point to the center of the icon (positive values shift image down).
+ * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
  */
 
 /**
@@ -698,6 +716,7 @@
  * @property {string|ol.expr.Expression|undefined} color Fill color as hex color
  *     code.
  * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
+ * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
  */
 
 /**
@@ -718,6 +737,7 @@
  * @property {number|ol.expr.Expression|undefined} size Size in pixels.
  * @property {ol.style.Fill|undefined} fill Fill symbolizer for shape.
  * @property {ol.style.Stroke|undefined} stroke Stroke symbolizer for shape.
+ * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
  */
 
 /**
@@ -726,6 +746,7 @@
  *     color code.
  * @property {number|ol.expr.Expression|undefined} opacity Stroke opacity (0-1).
  * @property {number|ol.expr.Expression|undefined} width Stroke width in pixels.
+ * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
  */
 
 /**
@@ -741,8 +762,11 @@
  * @property {string|ol.expr.Expression|undefined} color Color.
  * @property {string|ol.expr.Expression|undefined} fontFamily Font family.
  * @property {number|ol.expr.Expression|undefined} fontSize Font size in pixels.
+ * @property {string|ol.expr.Expression|undefined} fontWeight Font weight.
  * @property {string|ol.expr.Expression} text Text for the label.
  * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
+ * @property {ol.style.Stroke|undefined} stroke Stroke symbolizer for text.
+ * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
  */
 
 /**

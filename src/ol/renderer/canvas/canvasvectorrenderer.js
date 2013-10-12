@@ -1,4 +1,4 @@
-goog.provide('ol.renderer.canvas.VectorRenderer');
+goog.provide('ol.renderer.canvas.Vector');
 
 
 goog.require('goog.asserts');
@@ -36,7 +36,7 @@ goog.require('ol.style.TextLiteral');
  * @param {function()=} opt_iconLoadedCallback Callback for deferred rendering
  *     when images need to be loaded before rendering.
  */
-ol.renderer.canvas.VectorRenderer =
+ol.renderer.canvas.Vector =
     function(canvas, transform, opt_iconLoadedCallback) {
 
   var context = /** @type {CanvasRenderingContext2D} */
@@ -92,7 +92,7 @@ ol.renderer.canvas.VectorRenderer =
 /**
  * @return {Object.<number, Array.<number>>} Symbolizer sizes.
  */
-ol.renderer.canvas.VectorRenderer.prototype.getSymbolSizes = function() {
+ol.renderer.canvas.Vector.prototype.getSymbolSizes = function() {
   return this.symbolSizes_;
 };
 
@@ -100,7 +100,7 @@ ol.renderer.canvas.VectorRenderer.prototype.getSymbolSizes = function() {
 /**
  * @return {Object.<number, Array.<number>>} Symbolizer offsets.
  */
-ol.renderer.canvas.VectorRenderer.prototype.getSymbolOffsets = function() {
+ol.renderer.canvas.Vector.prototype.getSymbolOffsets = function() {
   return this.symbolOffsets_;
 };
 
@@ -108,48 +108,27 @@ ol.renderer.canvas.VectorRenderer.prototype.getSymbolOffsets = function() {
 /**
  * @return {Array.<number>} Maximum symbolizer size.
  */
-ol.renderer.canvas.VectorRenderer.prototype.getMaxSymbolSize = function() {
+ol.renderer.canvas.Vector.prototype.getMaxSymbolSize = function() {
   return this.maxSymbolSize_;
 };
 
 
 /**
- * @param {ol.geom.GeometryType} type Geometry type.
  * @param {Array.<ol.Feature>} features Array of features.
  * @param {ol.style.Literal} symbolizer Symbolizer.
  * @param {Array} data Additional data.
  * @return {boolean} true if deferred, false if rendered.
  */
-ol.renderer.canvas.VectorRenderer.prototype.renderFeaturesByGeometryType =
-    function(type, features, symbolizer, data) {
+ol.renderer.canvas.Vector.prototype.renderFeatures =
+    function(features, symbolizer, data) {
   var deferred = false;
-  if (!(symbolizer instanceof ol.style.TextLiteral)) {
-    switch (type) {
-      case ol.geom.GeometryType.POINT:
-      case ol.geom.GeometryType.MULTIPOINT:
-        goog.asserts.assert(symbolizer instanceof ol.style.PointLiteral,
-            'Expected point symbolizer: ' + symbolizer);
-        deferred = this.renderPointFeatures_(
-            features, /** @type {ol.style.PointLiteral} */ (symbolizer));
-        break;
-      case ol.geom.GeometryType.LINESTRING:
-      case ol.geom.GeometryType.MULTILINESTRING:
-        goog.asserts.assert(symbolizer instanceof ol.style.LineLiteral,
-            'Expected line symbolizer: ' + symbolizer);
-        this.renderLineStringFeatures_(
-            features, /** @type {ol.style.LineLiteral} */ (symbolizer));
-        break;
-      case ol.geom.GeometryType.POLYGON:
-      case ol.geom.GeometryType.MULTIPOLYGON:
-        goog.asserts.assert(symbolizer instanceof ol.style.PolygonLiteral,
-            'Expected polygon symbolizer: ' + symbolizer);
-        this.renderPolygonFeatures_(
-            features, /** @type {ol.style.PolygonLiteral} */ (symbolizer));
-        break;
-      default:
-        throw new Error('Rendering not implemented for geometry type: ' + type);
-    }
-  } else {
+  if (symbolizer instanceof ol.style.PointLiteral) {
+    deferred = this.renderPointFeatures_(features, symbolizer);
+  } else if (symbolizer instanceof ol.style.LineLiteral) {
+    this.renderLineStringFeatures_(features, symbolizer);
+  } else if (symbolizer instanceof ol.style.PolygonLiteral) {
+    this.renderPolygonFeatures_(features, symbolizer);
+  } else if (symbolizer instanceof ol.style.TextLiteral) {
     this.renderText_(features, symbolizer, data);
   }
   return deferred;
@@ -161,7 +140,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderFeaturesByGeometryType =
  * @param {ol.style.LineLiteral} symbolizer Line symbolizer.
  * @private
  */
-ol.renderer.canvas.VectorRenderer.prototype.renderLineStringFeatures_ =
+ol.renderer.canvas.Vector.prototype.renderLineStringFeatures_ =
     function(features, symbolizer) {
 
   var context = this.context_,
@@ -193,7 +172,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderLineStringFeatures_ =
     } else {
       goog.asserts.assert(geometry instanceof ol.geom.MultiLineString,
           'Expected MultiLineString');
-      components = geometry.components;
+      components = geometry.getComponents();
     }
     for (j = 0, jj = components.length; j < jj; ++j) {
       line = components[j];
@@ -219,7 +198,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderLineStringFeatures_ =
  * @return {boolean} true if deferred, false if rendered.
  * @private
  */
-ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
+ol.renderer.canvas.Vector.prototype.renderPointFeatures_ =
     function(features, symbolizer) {
 
   var context = this.context_,
@@ -229,10 +208,10 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
   var xOffset = 0;
   var yOffset = 0;
   if (symbolizer instanceof ol.style.ShapeLiteral) {
-    content = ol.renderer.canvas.VectorRenderer.renderShape(symbolizer);
+    content = ol.renderer.canvas.Vector.renderShape(symbolizer);
     alpha = 1;
   } else if (symbolizer instanceof ol.style.IconLiteral) {
-    content = ol.renderer.canvas.VectorRenderer.renderIcon(
+    content = ol.renderer.canvas.Vector.renderIcon(
         symbolizer, this.iconLoadedCallback_);
     alpha = symbolizer.opacity;
     xOffset = symbolizer.xOffset;
@@ -277,7 +256,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
     } else {
       goog.asserts.assert(geometry instanceof ol.geom.MultiPoint,
           'Expected MultiPoint');
-      components = geometry.components;
+      components = geometry.getComponents();
     }
     for (j = 0, jj = components.length; j < jj; ++j) {
       point = components[j];
@@ -299,7 +278,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPointFeatures_ =
  * @param {Array} texts Label text for each feature.
  * @private
  */
-ol.renderer.canvas.VectorRenderer.prototype.renderText_ =
+ol.renderer.canvas.Vector.prototype.renderText_ =
     function(features, text, texts) {
   var context = this.context_,
       feature, vecs, vec;
@@ -307,23 +286,48 @@ ol.renderer.canvas.VectorRenderer.prototype.renderText_ =
   if (context.fillStyle !== text.color) {
     context.fillStyle = text.color;
   }
-  context.font = text.fontSize + 'px ' + text.fontFamily;
+
+  // font shorthand values must be given in the correct order
+  // see http://www.w3.org/TR/CSS21/fonts.html#font-shorthand
+  context.font = text.fontWeight + ' ' +
+      text.fontSize + 'px ' +
+      text.fontFamily;
+
   context.globalAlpha = text.opacity;
 
   // TODO: make alignments configurable
   context.textAlign = 'center';
   context.textBaseline = 'middle';
 
+  var stroke = false;
+  if (goog.isDef(text.strokeColor)) {
+    stroke = true;
+    goog.asserts.assertString(text.strokeColor);
+    context.strokeStyle = text.strokeColor;
+    goog.asserts.assertNumber(text.strokeWidth);
+    context.lineWidth = text.strokeWidth;
+  }
+
   for (var i = 0, ii = features.length; i < ii; ++i) {
     feature = features[i];
     if (feature.renderIntent === ol.layer.VectorLayerRenderIntent.HIDDEN) {
       continue;
     }
-    vecs = ol.renderer.canvas.VectorRenderer.getLabelVectors(
+    vecs = ol.renderer.canvas.Vector.getLabelVectors(
         feature.getGeometry());
     for (var j = 0, jj = vecs.length; j < jj; ++j) {
       vec = vecs[j];
       goog.vec.Mat4.multVec3(this.transform_, vec, vec);
+      if (stroke) {
+        if (text.strokeOpacity !== text.opacity) {
+          goog.asserts.assertNumber(text.strokeOpacity);
+          context.globalAlpha = text.strokeOpacity;
+        }
+        context.strokeText(texts[i], vec[0], vec[1]);
+        if (text.strokeOpacity !== text.opacity) {
+          context.globalAlpha = text.opacity;
+        }
+      }
       context.fillText(texts[i], vec[0], vec[1]);
     }
   }
@@ -336,7 +340,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderText_ =
  * @param {ol.style.PolygonLiteral} symbolizer Polygon symbolizer.
  * @private
  */
-ol.renderer.canvas.VectorRenderer.prototype.renderPolygonFeatures_ =
+ol.renderer.canvas.Vector.prototype.renderPolygonFeatures_ =
     function(features, symbolizer) {
   var context = this.context_,
       strokeColor = symbolizer.strokeColor,
@@ -379,11 +383,11 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPolygonFeatures_ =
     } else {
       goog.asserts.assert(geometry instanceof ol.geom.MultiPolygon,
           'Expected MultiPolygon');
-      components = geometry.components;
+      components = geometry.getComponents();
     }
     for (j = 0, jj = components.length; j < jj; ++j) {
       poly = components[j];
-      rings = poly.rings;
+      rings = poly.getRings();
       numRings = rings.length;
       if (numRings > 0) {
         // TODO: scenario 4
@@ -445,7 +449,7 @@ ol.renderer.canvas.VectorRenderer.prototype.renderPolygonFeatures_ =
  * @return {!HTMLCanvasElement} Canvas element.
  * @private
  */
-ol.renderer.canvas.VectorRenderer.renderCircle_ = function(circle) {
+ol.renderer.canvas.Vector.renderCircle_ = function(circle) {
   var strokeWidth = circle.strokeWidth || 0,
       size = circle.size + (2 * strokeWidth) + 1,
       mid = size / 2,
@@ -491,14 +495,14 @@ ol.renderer.canvas.VectorRenderer.renderCircle_ = function(circle) {
  * @param {ol.geom.Geometry} geometry Geometry.
  * @return {Array.<goog.vec.Vec3.AnyType>} Renderable geometry vectors.
  */
-ol.renderer.canvas.VectorRenderer.getLabelVectors = function(geometry) {
+ol.renderer.canvas.Vector.getLabelVectors = function(geometry) {
   if (geometry instanceof ol.geom.AbstractCollection) {
-    var components = geometry.components;
+    var components = geometry.getComponents();
     var numComponents = components.length;
     var result = [];
     for (var i = 0; i < numComponents; ++i) {
       result.push.apply(result,
-          ol.renderer.canvas.VectorRenderer.getLabelVectors(components[i]));
+          ol.renderer.canvas.Vector.getLabelVectors(components[i]));
     }
     return result;
   }
@@ -519,10 +523,10 @@ ol.renderer.canvas.VectorRenderer.getLabelVectors = function(geometry) {
  * @param {ol.style.ShapeLiteral} shape Shape symbolizer.
  * @return {!HTMLCanvasElement} Canvas element.
  */
-ol.renderer.canvas.VectorRenderer.renderShape = function(shape) {
+ol.renderer.canvas.Vector.renderShape = function(shape) {
   var canvas;
   if (shape.type === ol.style.ShapeType.CIRCLE) {
-    canvas = ol.renderer.canvas.VectorRenderer.renderCircle_(shape);
+    canvas = ol.renderer.canvas.Vector.renderCircle_(shape);
   } else {
     throw new Error('Unsupported shape type: ' + shape);
   }
@@ -536,22 +540,22 @@ ol.renderer.canvas.VectorRenderer.renderShape = function(shape) {
  *     the icon is loaded and rendering will work without deferring.
  * @return {HTMLImageElement} image element of null if deferred.
  */
-ol.renderer.canvas.VectorRenderer.renderIcon = function(icon, opt_callback) {
+ol.renderer.canvas.Vector.renderIcon = function(icon, opt_callback) {
   var url = icon.url;
-  var image = ol.renderer.canvas.VectorRenderer.icons_[url];
+  var image = ol.renderer.canvas.Vector.icons_[url];
   var deferred = false;
   if (!goog.isDef(image)) {
     deferred = true;
     image = /** @type {HTMLImageElement} */
         (goog.dom.createElement(goog.dom.TagName.IMG));
     goog.events.listenOnce(image, goog.events.EventType.ERROR,
-        goog.bind(ol.renderer.canvas.VectorRenderer.handleIconError_, null,
+        goog.bind(ol.renderer.canvas.Vector.handleIconError_, null,
             opt_callback),
-        false, ol.renderer.canvas.VectorRenderer.renderIcon);
+        false, ol.renderer.canvas.Vector.renderIcon);
     goog.events.listenOnce(image, goog.events.EventType.LOAD,
-        goog.bind(ol.renderer.canvas.VectorRenderer.handleIconLoad_, null,
+        goog.bind(ol.renderer.canvas.Vector.handleIconLoad_, null,
             opt_callback),
-        false, ol.renderer.canvas.VectorRenderer.renderIcon);
+        false, ol.renderer.canvas.Vector.renderIcon);
     image.setAttribute('src', url);
   } else if (!goog.isNull(image)) {
     var width = icon.width,
@@ -575,7 +579,7 @@ ol.renderer.canvas.VectorRenderer.renderIcon = function(icon, opt_callback) {
  * @type {Object.<string, HTMLImageElement>}
  * @private
  */
-ol.renderer.canvas.VectorRenderer.icons_ = {};
+ol.renderer.canvas.Vector.icons_ = {};
 
 
 /**
@@ -583,12 +587,12 @@ ol.renderer.canvas.VectorRenderer.icons_ = {};
  * @param {Event=} opt_event Event.
  * @private
  */
-ol.renderer.canvas.VectorRenderer.handleIconError_ =
+ol.renderer.canvas.Vector.handleIconError_ =
     function(opt_callback, opt_event) {
   if (goog.isDef(opt_event)) {
     var url = opt_event.target.getAttribute('src');
-    ol.renderer.canvas.VectorRenderer.icons_[url] = null;
-    ol.renderer.canvas.VectorRenderer.handleIconLoad_(opt_callback, opt_event);
+    ol.renderer.canvas.Vector.icons_[url] = null;
+    ol.renderer.canvas.Vector.handleIconLoad_(opt_callback, opt_event);
   }
 };
 
@@ -598,11 +602,11 @@ ol.renderer.canvas.VectorRenderer.handleIconError_ =
  * @param {Event=} opt_event Event.
  * @private
  */
-ol.renderer.canvas.VectorRenderer.handleIconLoad_ =
+ol.renderer.canvas.Vector.handleIconLoad_ =
     function(opt_callback, opt_event) {
   if (goog.isDef(opt_event)) {
     var url = opt_event.target.getAttribute('src');
-    ol.renderer.canvas.VectorRenderer.icons_[url] =
+    ol.renderer.canvas.Vector.icons_[url] =
         /** @type {HTMLImageElement} */ (opt_event.target);
   }
   if (goog.isDef(opt_callback)) {

@@ -73,13 +73,15 @@ describe('ol.parser.GeoJSON', function() {
     it('encodes point', function() {
       var point = new ol.geom.Point([10, 20]);
       var geojson = parser.write(point);
-      expect(point).to.eql(parser.read(geojson));
+      expect(point.getCoordinates()).to.eql(
+          parser.read(geojson).getCoordinates());
     });
 
     it('encodes linestring', function() {
       var linestring = new ol.geom.LineString([[10, 20], [30, 40]]);
       var geojson = parser.write(linestring);
-      expect(linestring).to.eql(parser.read(geojson));
+      expect(linestring.getCoordinates()).to.eql(
+          parser.read(geojson).getCoordinates());
     });
 
     it('encodes polygon', function() {
@@ -88,7 +90,8 @@ describe('ol.parser.GeoJSON', function() {
           inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
       var polygon = new ol.geom.Polygon([outer, inner1, inner2]);
       var geojson = parser.write(polygon);
-      expect(polygon).to.eql(parser.read(geojson));
+      expect(polygon.getCoordinates()).to.eql(
+          parser.read(geojson).getCoordinates());
     });
 
     it('encodes geometry collection', function() {
@@ -97,9 +100,12 @@ describe('ol.parser.GeoJSON', function() {
         new ol.geom.LineString([[30, 40], [50, 60]])
       ]);
       var geojson = parser.write(collection);
-      // surprised to see read return an Array of geometries instead of
-      // a true ol.geom.GeometryCollection, so compare collection.components
-      expect(collection.components).to.eql(parser.read(geojson));
+      var got = parser.read(geojson);
+      var components = collection.getComponents();
+      expect(components.length).to.equal(got.length);
+      for (var i = 0, ii = components.length; i < ii; ++i) {
+        expect(components[i].getCoordinates()).to.eql(got[i].getCoordinates());
+      }
     });
 
     it('encodes feature collection', function() {
@@ -107,9 +113,18 @@ describe('ol.parser.GeoJSON', function() {
           array = parser.read(str);
       var geojson = parser.write(array);
       var result = parser.read(geojson);
+      expect(array.length).to.equal(result.length);
+      var got, exp, gotAttr, expAttr;
       for (var i = 0, ii = array.length; i < ii; ++i) {
-        expect(array[i].getGeometry()).to.eql(result[i].getGeometry());
-        expect(array[i].getAttributes()).to.eql(result[i].getAttributes());
+        got = array[i];
+        exp = result[i];
+        expect(got.getGeometry().getCoordinates()).to.eql(
+            exp.getGeometry().getCoordinates());
+        gotAttr = got.getAttributes();
+        delete gotAttr.geometry;
+        expAttr = exp.getAttributes();
+        delete expAttr.geometry;
+        expect(gotAttr).to.eql(expAttr);
       }
     });
 
@@ -150,10 +165,11 @@ describe('ol.parser.GeoJSON', function() {
 
       var obj = parser.read(str);
       expect(obj).to.be.a(ol.geom.Polygon);
-      expect(obj.rings.length).to.be(3);
-      expect(obj.rings[0]).to.be.a(ol.geom.LinearRing);
-      expect(obj.rings[1]).to.be.a(ol.geom.LinearRing);
-      expect(obj.rings[2]).to.be.a(ol.geom.LinearRing);
+      var rings = obj.getRings();
+      expect(rings.length).to.be(3);
+      expect(rings[0]).to.be.a(ol.geom.LinearRing);
+      expect(rings[1]).to.be.a(ol.geom.LinearRing);
+      expect(rings[2]).to.be.a(ol.geom.LinearRing);
     });
 
     it('parses geometry collection', function() {

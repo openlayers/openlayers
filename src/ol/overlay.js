@@ -29,8 +29,13 @@ ol.OverlayProperty = {
  */
 ol.OverlayPositioning = {
   BOTTOM_LEFT: 'bottom-left',
+  BOTTOM_CENTER: 'bottom-center',
   BOTTOM_RIGHT: 'bottom-right',
+  CENTER_LEFT: 'center-left',
+  CENTER_CENTER: 'center-center',
+  CENTER_RIGHT: 'center-right',
   TOP_LEFT: 'top-left',
+  TOP_CENTER: 'top-center',
   TOP_RIGHT: 'top-right'
 };
 
@@ -54,6 +59,12 @@ ol.OverlayPositioning = {
 ol.Overlay = function(options) {
 
   goog.base(this);
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.stopEvent_ = goog.isDef(options.stopEvent) ? options.stopEvent : false;
 
   /**
    * @private
@@ -197,8 +208,10 @@ ol.Overlay.prototype.handleMapChanged = function() {
     this.mapPostrenderListenerKey_ = goog.events.listen(map,
         ol.MapEventType.POSTRENDER, this.handleMapPostrender, false, this);
     this.updatePixelPosition_();
-    goog.dom.append(
-        /** @type {!Node} */ (map.getOverlayContainer()), this.element_);
+    goog.dom.append(/** @type {!Node} */ (
+        this.stopEvent_ ? map.getOverlayContainerStopEvent() :
+                          map.getOverlayContainer()),
+        this.element_);
   }
 };
 
@@ -295,6 +308,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
   var style = this.element_.style;
   var positioning = this.getPositioning();
   if (positioning == ol.OverlayPositioning.BOTTOM_RIGHT ||
+      positioning == ol.OverlayPositioning.CENTER_RIGHT ||
       positioning == ol.OverlayPositioning.TOP_RIGHT) {
     if (this.rendered_.left_ !== '') {
       this.rendered_.left_ = style.left = '';
@@ -307,27 +321,40 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
     if (this.rendered_.right_ !== '') {
       this.rendered_.right_ = style.right = '';
     }
-    var left = Math.round(pixel[0]) + 'px';
+    var offsetX = 0;
+    if (positioning == ol.OverlayPositioning.BOTTOM_CENTER ||
+        positioning == ol.OverlayPositioning.CENTER_CENTER ||
+        positioning == ol.OverlayPositioning.TOP_CENTER) {
+      offsetX = goog.style.getSize(this.element_).width / 2;
+    }
+    var left = Math.round(pixel[0] - offsetX) + 'px';
     if (this.rendered_.left_ != left) {
       this.rendered_.left_ = style.left = left;
     }
   }
-  if (positioning == ol.OverlayPositioning.TOP_LEFT ||
-      positioning == ol.OverlayPositioning.TOP_RIGHT) {
-    if (this.rendered_.bottom_ !== '') {
-      this.rendered_.bottom_ = style.bottom = '';
-    }
-    var top = Math.round(pixel[1]) + 'px';
-    if (this.rendered_.top_ != top) {
-      this.rendered_.top_ = style.top = top;
-    }
-  } else {
+  if (positioning == ol.OverlayPositioning.BOTTOM_LEFT ||
+      positioning == ol.OverlayPositioning.BOTTOM_CENTER ||
+      positioning == ol.OverlayPositioning.BOTTOM_RIGHT) {
     if (this.rendered_.top_ !== '') {
       this.rendered_.top_ = style.top = '';
     }
     var bottom = Math.round(mapSize[1] - pixel[1]) + 'px';
     if (this.rendered_.bottom_ != bottom) {
       this.rendered_.bottom_ = style.bottom = bottom;
+    }
+  } else {
+    if (this.rendered_.bottom_ !== '') {
+      this.rendered_.bottom_ = style.bottom = '';
+    }
+    var offsetY = 0;
+    if (positioning == ol.OverlayPositioning.CENTER_LEFT ||
+        positioning == ol.OverlayPositioning.CENTER_CENTER ||
+        positioning == ol.OverlayPositioning.CENTER_RIGHT) {
+      offsetY = goog.style.getSize(this.element_).height / 2;
+    }
+    var top = Math.round(pixel[1] - offsetY) + 'px';
+    if (this.rendered_.top_ != top) {
+      this.rendered_.top_ = style.top = top;
     }
   }
 
