@@ -431,6 +431,17 @@ ol.Map.prototype.freezeRendering = function() {
 
 
 /**
+ * Returns the map pixel position for a a browser event.
+ * @param {Event} event Event.
+ * @return {ol.Pixel} Pixel.
+ */
+ol.Map.prototype.getEventPixel = function(event) {
+  var eventPosition = goog.style.getRelativePosition(event, this.viewport_);
+  return [eventPosition.x, eventPosition.y];
+};
+
+
+/**
  * Get the map's renderer.
  * @return {ol.renderer.Map} Renderer.
  */
