@@ -433,6 +433,16 @@ ol.Map.prototype.freezeRendering = function() {
 /**
  * Returns the map pixel position for a a browser event.
  * @param {Event} event Event.
+ * @return {ol.Coordinate} Coordinate.
+ */
+ol.Map.prototype.getEventCoordinate = function(event) {
+  return this.getCoordinateFromPixel(this.getEventPixel(event));
+};
+
+
+/**
+ * Returns the geographical coordinate for a browser event.
+ * @param {Event} event Event.
  * @return {ol.Pixel} Pixel.
  */
 ol.Map.prototype.getEventPixel = function(event) {
