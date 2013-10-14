@@ -12,9 +12,9 @@ others can be used via [Proj4js](http://trac.osgeo.org/proj4js/).
 
 Maps and Layers
 ---------------
-A map in OpenLayers is essentially a staple of layers that is viewed from the top. Layers are responsible for retieving data and displaying it.
+A map in OpenLayers is essentially a staple of layers that is viewed from the top. Layers are responsible for retrieving data and displaying it.
 
 Contributing
 ------------
 See [CONTRIBUTING.md](https://github.com/openlayers/ol3/blob/master/CONTRIBUTING.md) for instructions
-on building and testing OpenLayers. The file does also describes how to commit your changes to OpenLayers.
+on building and testing OpenLayers. The file does also describe how to commit your changes to OpenLayers.
