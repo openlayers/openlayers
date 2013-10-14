@@ -53,7 +53,8 @@ goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
  */
 ol.MapBrowserEvent.prototype.getCoordinate = function() {
   if (goog.isNull(this.coordinate_)) {
-    this.coordinate_ = this.map.getCoordinateFromPixel(this.getPixel());
+    this.coordinate_ = this.map.getEventCoordinate(
+        this.browserEvent.getBrowserEvent());
   }
   return this.coordinate_;
 };
