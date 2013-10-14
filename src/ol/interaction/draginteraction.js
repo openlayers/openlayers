@@ -39,12 +39,12 @@ ol.interaction.Drag = function() {
   /**
    * @type {number}
    */
-  this.offsetX = 0;
+  this.deltaX = 0;
 
   /**
    * @type {number}
    */
-  this.offsetY = 0;
+  this.deltaY = 0;
 
   /**
    * @type {ol.Coordinate}
