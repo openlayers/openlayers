@@ -85,8 +85,7 @@ ol.interaction.DragRotate.prototype.handleDragEnd = function(mapBrowserEvent) {
  */
 ol.interaction.DragRotate.prototype.handleDragStart =
     function(mapBrowserEvent) {
-  var browserEvent = mapBrowserEvent.browserEvent;
-  if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
+  if (this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
     map.requestRenderFrame();
     this.lastAngle_ = undefined;

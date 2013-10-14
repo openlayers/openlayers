@@ -2,8 +2,8 @@ goog.provide('ol.interaction.ConditionType');
 goog.provide('ol.interaction.condition');
 
 goog.require('goog.dom.TagName');
-goog.require('goog.events.EventType');
 goog.require('goog.functions');
+goog.require('ol.MapBrowserEvent.EventType');
 
 
 /**
@@ -48,11 +48,10 @@ ol.interaction.condition.always = goog.functions.TRUE;
 
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- * @return {boolean} True if the event is a click event.
+ * @return {boolean} True if the event is a singleclick event.
  */
-ol.interaction.condition.clickOnly = function(mapBrowserEvent) {
-  var browserEvent = mapBrowserEvent.browserEvent;
-  return browserEvent.type == goog.events.EventType.CLICK;
+ol.interaction.condition.singleClickOnly = function(mapBrowserEvent) {
+  return mapBrowserEvent.type == ol.MapBrowserEvent.EventType.SINGLECLICK;
 };
 
 
