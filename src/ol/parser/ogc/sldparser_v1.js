@@ -84,7 +84,8 @@ ol.parser.ogc.SLD_v1 = function() {
       'TextSymbolizer': function(node, rule) {
         var config = {};
         this.readChildNodes(node, config);
-        config.color = config.fill.fillColor;
+        config.color = goog.isDef(config.fill) ? config.fill.fillColor :
+            ol.parser.ogc.SLD_v1.defaults_.fontColor;
         delete config.fill;
         config.zIndex = this.featureTypeCounter;
         rule.symbolizers.push(
@@ -639,7 +640,8 @@ ol.parser.ogc.SLD_v1.defaults_ = {
   haloColor: '#FFFFFF',
   haloOpacity: 1,
   haloRadius: 1,
-  fillColor: '#808080'
+  fillColor: '#808080',
+  fontColor: '#000000'
 };
 
 
