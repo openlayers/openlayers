@@ -173,15 +173,38 @@ ol.parser.ogc.SLD_v1 = function() {
         this.readChildNodes(node, config);
         config.zIndex = this.featureTypeCounter;
         if (config.fill) {
-          config.fill = new ol.style.Fill(config.fill);
+          var fillConfig = {
+            color: goog.isDef(config.fill.fillColor) ?
+                config.fill.fillColor :
+                ol.parser.ogc.SLD_v1.defaults_.fillColor,
+            opacity: goog.isDef(config.fill.fillOpacity) ?
+                config.fill.fillOpacity :
+                ol.parser.ogc.SLD_v1.defaults_.fillOpacity
+          };
+          config.fill = new ol.style.Fill(fillConfig);
         }
         if (config.stroke) {
-          config.stroke = new ol.style.Stroke(config.stroke);
+          var strokeConfig = {
+            color: goog.isDef(config.stroke.strokeColor) ?
+                config.stroke.strokeColor :
+                ol.parser.ogc.SLD_v1.defaults_.strokeColor,
+            width: goog.isDef(config.stroke.strokeWidth) ?
+                config.stroke.strokeWidth :
+                ol.parser.ogc.SLD_v1.defaults_.strokeWidth,
+            opacity: goog.isDef(config.stroke.strokeOpacity) ?
+                config.stroke.strokeOpacity :
+                ol.parser.ogc.SLD_v1.defaults_.strokeOpacity
+          };
+          config.stroke = new ol.style.Stroke(strokeConfig);
         }
-        // TODO shape or icon?
-        rule.symbolizers.push(
-            new ol.style.Shape(config)
-        );
+        var symbolizer;
+        if (goog.isDef(config.externalGraphic)) {
+          config.width = config.height = config.size;
+          symbolizer = new ol.style.Icon(config);
+        } else {
+          symbolizer = new ol.style.Shape(config);
+        }
+        rule.symbolizers.push(symbolizer);
       },
       'Stroke': function(node, symbolizer) {
         var stroke = {};
@@ -196,35 +219,18 @@ ol.parser.ogc.SLD_v1 = function() {
       'CssParameter': function(node, symbolizer) {
         var cssProperty = node.getAttribute('name');
         var symProperty = ol.parser.ogc.SLD_v1.cssMap_[cssProperty];
-        // for labels, fill should map to fontColor and fill-opacity
-        // to fontOpacity
-        if (symbolizer.label) {
-          if (cssProperty === 'fill') {
-            symProperty = 'fontColor';
-          } else if (cssProperty === 'fill-opacity') {
-            symProperty = 'fontOpacity';
-          }
-        }
         if (symProperty) {
-          // Limited support for parsing of OGC expressions
           var ogcreaders = this.readers['http://www.opengis.net/ogc'];
-          var value = ogcreaders._expression.call(this, node);
-          // always string, could be an empty string
-          if (value) {
-            symbolizer[symProperty] = value;
-          }
+          symbolizer[symProperty] = ogcreaders._expression.call(this, node);
         }
       },
       'Graphic': function(node, symbolizer) {
-        symbolizer.graphic = true;
         var graphic = {};
         // painter's order not respected here, clobber previous with next
         this.readChildNodes(node, graphic);
         // directly properties with names that match symbolizer properties
         var properties = [
-          'stroke', 'strokeColor', 'strokeWidth', 'strokeOpacity',
-          'strokeLinecap', 'fill', 'fillColor', 'fillOpacity',
-          'graphicName', 'rotation', 'graphicFormat'
+          'stroke', 'fill', 'rotation', 'opacity'
         ];
         var prop, value;
         for (var i = 0, ii = properties.length; i < ii; ++i) {
@@ -235,23 +241,20 @@ ol.parser.ogc.SLD_v1 = function() {
           }
         }
         // set other generic properties with specific graphic property names
-        if (goog.isDef(graphic.opacity)) {
-          symbolizer.graphicOpacity = graphic.opacity;
+        if (goog.isDef(graphic.graphicName)) {
+          symbolizer.type = graphic.graphicName;
         }
         if (goog.isDef(graphic.size)) {
           var pointRadius = graphic.size / 2;
           if (isNaN(pointRadius)) {
             // likely a property name
-            symbolizer.graphicWidth = graphic.size;
+            symbolizer.size = graphic.size;
           } else {
-            symbolizer.pointRadius = graphic.size / 2;
+            symbolizer.size = graphic.size / 2;
           }
         }
         if (goog.isDef(graphic.href)) {
-          symbolizer.externalGraphic = graphic.href;
-        }
-        if (goog.isDef(graphic.rotation)) {
-          symbolizer.rotation = graphic.rotation;
+          symbolizer.url = graphic.href;
         }
       },
       'ExternalGraphic': function(node, graphic) {
@@ -265,27 +268,15 @@ ol.parser.ogc.SLD_v1 = function() {
       },
       'Opacity': function(node, obj) {
         var ogcreaders = this.readers['http://www.opengis.net/ogc'];
-        var opacity = ogcreaders._expression.call(this, node);
-        // always string, could be empty string
-        if (opacity) {
-          obj.opacity = opacity;
-        }
+        obj.opacity = ogcreaders._expression.call(this, node);
       },
       'Size': function(node, obj) {
         var ogcreaders = this.readers['http://www.opengis.net/ogc'];
-        var size = ogcreaders._expression.call(this, node);
-        // always string, could be empty string
-        if (size) {
-          obj.size = size;
-        }
+        obj.size = ogcreaders._expression.call(this, node);
       },
       'Rotation': function(node, obj) {
         var ogcreaders = this.readers['http://www.opengis.net/ogc'];
-        var rotation = ogcreaders._expression.call(this, node);
-        // always string, could be empty string
-        if (rotation) {
-          obj.rotation = rotation;
-        }
+        obj.rotation = ogcreaders._expression.call(this, node);
       },
       'OnlineResource': function(node, obj) {
         obj.href = this.getAttributeNS(
@@ -521,9 +512,7 @@ ol.parser.ogc.SLD_v1 = function() {
           this.writeNode('Mark', symbolizer, null, node);
           size = symbolizer.getSize();
         }
-        goog.asserts.assertInstanceof(size, ol.expr.Literal,
-            'Only ol.expr.Literal supported for in Size');
-        this.writeNode('Size', size.getValue(), null, node);
+        this.writeNode('Size', size, null, node);
         if (symbolizer instanceof ol.style.Icon) {
           var rotation = symbolizer.getRotation();
           goog.asserts.assertInstanceof(rotation, ol.expr.Literal,
@@ -619,8 +608,7 @@ ol.parser.ogc.SLD_v1 = function() {
       'CssParameter': function(obj) {
         // not handling ogc:expressions for now
         var name = ol.parser.ogc.SLD_v1.getCssProperty_(obj.key);
-        if (goog.isDef(name) && obj.value !==
-            ol.parser.ogc.SLD_v1.defaults_[obj.key]) {
+        if (goog.isDef(name)) {
           var node = this.createElementNS('sld:CssParameter');
           node.setAttribute('name', name);
           node.appendChild(this.createTextNode(obj.value));
@@ -711,9 +699,11 @@ ol.parser.ogc.SLD_v1.defaults_ = {
   fillOpacity: 1,
   strokeOpacity: 1,
   strokeWidth: 1,
+  strokeColor: '#000000',
   haloColor: '#FFFFFF',
   haloOpacity: 1,
-  haloRadius: 1
+  haloRadius: 1,
+  fillColor: '#808080'
 };
 
 
