@@ -40,6 +40,19 @@ ol.style.Style = function(options) {
   this.symbolizers_ = goog.isDef(options.symbolizers) ?
       options.symbolizers : [];
 
+  /**
+   * @type {?string}
+   * @private
+   */
+  this.name_ = goog.isDef(options.name) ?
+      options.name : null;
+
+  /**
+   * @type {?string}
+   * @private
+   */
+  this.title_ = goog.isDef(options.title) ?
+      options.title : null;
 };
 
 
@@ -222,4 +235,28 @@ ol.style.Style.prototype.getRules = function() {
  */
 ol.style.Style.prototype.setRules = function(rules) {
   this.rules_ = rules;
+};
+
+
+/**
+ * @return {Array.<ol.style.Symbolizer>}
+ */
+ol.style.Style.prototype.getSymbolizers = function() {
+  return this.symbolizers_;
+};
+
+
+/**
+ * @return {?string}
+ */
+ol.style.Style.prototype.getName = function() {
+  return this.name_;
+};
+
+
+/**
+ * @return {?string}
+ */
+ol.style.Style.prototype.getTitle = function() {
+  return this.title_;
 };

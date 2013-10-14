@@ -57,11 +57,6 @@ ol.parser.ogc.SLD_v1 = function() {
         this.readChildNodes(node, obj);
         layer.userStyles.push(new ol.style.Style(obj));
       },
-      'IsDefault': function(node, style) {
-        if (this.getChildValue(node) === '1') {
-          style.isDefault = true;
-        }
-      },
       'FeatureTypeStyle': function(node, style) {
         ++this.featureTypeCounter;
         var obj = {
@@ -200,7 +195,8 @@ ol.parser.ogc.SLD_v1 = function() {
         var symbolizer;
         if (goog.isDef(config.externalGraphic)) {
           config.width = config.height = config.size;
-          symbolizer = new ol.style.Icon(config);
+          symbolizer = new ol.style.Icon(
+              /** @type {ol.style.IconOptions} */(config));
         } else {
           symbolizer = new ol.style.Shape(config);
         }
@@ -345,85 +341,29 @@ ol.parser.ogc.SLD_v1 = function() {
       },
       'UserStyle': function(style) {
         var node = this.createElementNS('sld:UserStyle');
-        if (style.name) {
-          this.writeNode('Name', style.name, null, node);
+        var name = style.getName(), title = style.getTitle();
+        if (!goog.isNull(name)) {
+          this.writeNode('Name', name, null, node);
         }
-        if (style.title) {
-          this.writeNode('Title', style.title, null, node);
+        if (!goog.isNull(title)) {
+          this.writeNode('Title', title, null, node);
         }
-        if (style.description) {
-          this.writeNode('Abstract', style.description, null, node);
-        }
-        if (style.isDefault) {
-          this.writeNode('IsDefault', style.isDefault, null, node);
-        }
-        if (style.rules) {
-          // group style objects by symbolizer zIndex
-          var rulesByZ = {
-            0: []
-          };
-          var zValues = [0];
-          var rule, ruleMap, symbolizer, zIndex, clone;
-          for (var i = 0, ii = style.rules.length; i < ii; ++i) {
-            rule = style.rules[i];
-            var symbolizers = rule.getSymbolizers();
-            if (symbolizers) {
-              ruleMap = {};
-              for (var j = 0, jj = symbolizers.length; j < jj; ++j) {
-                symbolizer = symbolizers[j];
-                zIndex = symbolizer.zIndex;
-                if (!(zIndex in ruleMap)) {
-                  // TODO check if clone works?
-                  clone = goog.object.clone(rule);
-                  clone.setSymbolizers([]);
-                  ruleMap[zIndex] = clone;
-                }
-                // TODO check if clone works
-                ruleMap[zIndex].getSymbolizers().push(
-                    goog.object.clone(symbolizer));
-              }
-              for (zIndex in ruleMap) {
-                if (!(zIndex in rulesByZ)) {
-                  zValues.push(zIndex);
-                  rulesByZ[zIndex] = [];
-                }
-                rulesByZ[zIndex].push(ruleMap[zIndex]);
-              }
-            } else {
-              // no symbolizers in rule
-              rulesByZ[0].push(goog.object.clone(rule));
-            }
-          }
-          // write one FeatureTypeStyle per zIndex
-          zValues.sort();
-          var rules;
-          for (var i = 0, ii = zValues.length; i < ii; ++i) {
-            rules = rulesByZ[zValues[i]];
-            if (rules.length > 0) {
-              clone = goog.object.clone(style);
-              clone.setRules(rulesByZ[zValues[i]]);
-              this.writeNode('FeatureTypeStyle', clone, null, node);
-            }
-          }
-        } else {
-          this.writeNode('FeatureTypeStyle', style, null, node);
-        }
-        return node;
-      },
-      'IsDefault': function(bool) {
-        var node = this.createElementNS('sld:IsDefault');
-        node.appendChild(this.createTextNode((bool) ? '1' : '0'));
+        // TODO sorting by zIndex
+        this.writeNode('FeatureTypeStyle', style, null, node);
         return node;
       },
       'FeatureTypeStyle': function(style) {
         var node = this.createElementNS('sld:FeatureTypeStyle');
-        // OpenLayers currently stores no Name, Title, Abstract,
-        // FeatureTypeName, or SemanticTypeIdentifier information
-        // related to FeatureTypeStyle
-        // add in rules
         var rules = style.getRules();
         for (var i = 0, ii = rules.length; i < ii; ++i) {
           this.writeNode('Rule', rules[i], null, node);
+        }
+        var symbolizers = style.getSymbolizers();
+        if (symbolizers.length > 0) {
+          // wrap this in a Rule with an ElseFilter
+          var rule = new ol.style.Rule({symbolizers: symbolizers});
+          rule.elseFilter = true;
+          this.writeNode('Rule', rule, null, node);
         }
         return node;
       },
@@ -436,7 +376,7 @@ ol.parser.ogc.SLD_v1 = function() {
         if (!goog.isNull(rule.getTitle())) {
           this.writeNode('Title', rule.title, null, node);
         }
-        if (rule.elseFilter) {
+        if (rule.elseFilter === true) {
           this.writeNode('ElseFilter', null, null, node);
         } else if (filter) {
           this.writeNode('Filter', filter, 'http://www.opengis.net/ogc', node);
@@ -457,7 +397,6 @@ ol.parser.ogc.SLD_v1 = function() {
         if (symbolizers) {
           for (var i = 0, ii = symbolizers.length; i < ii; ++i) {
             symbolizer = symbolizers[i];
-            // TODO other types of symbolizers
             if (symbolizer instanceof ol.style.Text) {
               type = 'Text';
             } else if (symbolizer instanceof ol.style.Stroke) {
@@ -546,11 +485,8 @@ ol.parser.ogc.SLD_v1 = function() {
       'TextSymbolizer': function(symbolizer) {
         var node = this.createElementNS('sld:TextSymbolizer');
         var text = symbolizer.getText();
-        // TODO in SLD optional, but in ol3 required?
         this.writeNode('Label', text, null, node);
-        // TODO in SLD optional, but in ol3 required?
         this.writeNode('Font', symbolizer, null, node);
-        // TODO map align to labelAnchorPoint etc.
         var stroke = symbolizer.getStroke();
         if (!goog.isNull(stroke)) {
           this.writeNode('Halo', stroke, null, node);

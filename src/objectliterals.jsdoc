@@ -850,6 +850,8 @@
  * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers
  *     (that apply if no rules are provided or where none of the provided rules
  *     apply).
+ * @property {string|undefined} name Name.
+ * @property {string|undefined} title Title.
  * @todo stability experimental
  */
 
