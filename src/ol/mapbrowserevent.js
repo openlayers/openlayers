@@ -7,7 +7,6 @@ goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
-goog.require('goog.style');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Coordinate');
 goog.require('ol.FrameState');
@@ -66,9 +65,7 @@ ol.MapBrowserEvent.prototype.getCoordinate = function() {
  */
 ol.MapBrowserEvent.prototype.getPixel = function() {
   if (goog.isNull(this.pixel_)) {
-    var eventPosition = goog.style.getRelativePosition(
-        this.browserEvent, this.map.getViewport());
-    this.pixel_ = [eventPosition.x, eventPosition.y];
+    this.pixel_ = this.map.getEventPixel(this.browserEvent.getBrowserEvent());
   }
   return this.pixel_;
 };
