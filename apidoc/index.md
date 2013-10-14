@@ -12,7 +12,7 @@ others can be used via [Proj4js](http://trac.osgeo.org/proj4js/).
 
 Maps and Layers
 ---------------
-A map in OpenLayers is essentially a staple of layers that is viewed from the top. Layers are responsible for retieving data and displaying it.
+A map in OpenLayers is essentially a staple of layers that is viewed from the top. Layers are responsible for retrieving data and displaying it.
 
 Contributing
 ------------
