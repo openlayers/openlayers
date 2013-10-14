@@ -144,8 +144,12 @@ ol.renderer.canvas.Vector.prototype.renderLineStringFeatures_ =
     function(features, symbolizer) {
 
   var context = this.context_,
-      i, ii, feature, id, currentSize, geometry, components, j, jj, line,
-      k, kk, vec, strokeSize;
+      i, ii, feature, id, currentSize, geometry, components, j, jj,
+      coordinates, coordinate, k, kk, strokeSize;
+
+  var vec = [NaN, NaN, 0];
+  var pixel = [NaN, NaN];
+  var lastPixel = [NaN, NaN];
 
   context.globalAlpha = symbolizer.opacity;
   context.strokeStyle = symbolizer.color;
@@ -175,14 +179,24 @@ ol.renderer.canvas.Vector.prototype.renderLineStringFeatures_ =
       components = geometry.getComponents();
     }
     for (j = 0, jj = components.length; j < jj; ++j) {
-      line = components[j];
-      for (k = 0, kk = line.getCount(); k < kk; ++k) {
-        vec = [line.get(k, 0), line.get(k, 1), 0];
+      coordinates = components[j].getCoordinates();
+      for (k = 0, kk = coordinates.length; k < kk; ++k) {
+        coordinate = coordinates[k];
+        vec[0] = coordinate[0];
+        vec[1] = coordinate[1];
         goog.vec.Mat4.multVec3(this.transform_, vec, vec);
         if (k === 0) {
+          lastPixel[0] = NaN;
+          lastPixel[1] = NaN;
           context.moveTo(vec[0], vec[1]);
         } else {
-          context.lineTo(vec[0], vec[1]);
+          pixel[0] = Math.round(vec[0]);
+          pixel[1] = Math.round(vec[1]);
+          if (pixel[0] !== lastPixel[0] || pixel[1] !== lastPixel[1]) {
+            context.lineTo(vec[0], vec[1]);
+            lastPixel[0] = pixel[0];
+            lastPixel[1] = pixel[1];
+          }
         }
       }
     }
