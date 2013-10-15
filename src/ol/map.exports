@@ -12,6 +12,7 @@
 @exportProperty ol.Map.prototype.getLayers
 @exportProperty ol.Map.prototype.getOverlays
 @exportProperty ol.Map.prototype.getRenderer
+@exportProperty ol.Map.prototype.getViewport
 @exportProperty ol.Map.prototype.removeControl
 @exportProperty ol.Map.prototype.removeLayer
 @exportProperty ol.Map.prototype.removeOverlay
