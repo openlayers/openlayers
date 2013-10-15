@@ -166,7 +166,7 @@ virtual('default', 'build')
 
 
 virtual('integration-test', 'lint', 'build', 'build-all',
-        'test', 'build-examples', 'check-examples', 'apidoc')
+        'test', 'build/examples/all.combined.js', 'check-examples', 'apidoc')
 
 
 virtual('build', 'build/ol.css', 'build/ol.js',
@@ -280,7 +280,8 @@ def build_src_internal_types_js(t):
              '--typedef', 'src/objectliterals.jsdoc')
 
 
-virtual('build-examples', 'examples', EXAMPLES_COMBINED)
+virtual('build-examples', 'examples', 'build/examples/all.combined.js',
+        EXAMPLES_COMBINED)
 
 
 virtual('examples', 'examples/example-list.xml', EXAMPLES_JSON)
@@ -294,6 +295,20 @@ def examples_examples_list_xml(t):
 @target('examples/example-list.js', 'bin/exampleparser.py', EXAMPLES)
 def examples_examples_list_js(t):
     t.run('%(PYTHON)s', 'bin/exampleparser.py', 'examples', 'examples')
+
+
+@target('build/examples/all.combined.js', 'build/examples/all.js', PLOVR_JAR,
+        SRC, INTERNAL_SRC, SHADER_SRC, LIBTESS_JS_SRC,
+        'buildcfg/base.json', 'build/examples/all.json')
+def build_examples_all_combined_js(t):
+    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build',
+             'buildcfg/examples-all.json')
+    report_sizes(t)
+
+
+@target('build/examples/all.js', EXAMPLES_SRC)
+def build_examples_all_js(t):
+    t.output('bin/combine-examples.py', t.dependencies)
 
 
 @rule(r'\Abuild/examples/(?P<id>.*).json\Z')

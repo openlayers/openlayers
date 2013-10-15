@@ -1,0 +1,20 @@
+{
+    "externs": [
+        "//json.js", 
+        "//jquery-1.7.js", 
+        "../externs/bingmaps.js", 
+        "../externs/bootstrap.js", 
+        "../externs/geojson.js", 
+        "../externs/topojson.js", 
+        "../externs/oli.js", 
+        "../externs/proj4js.js", 
+        "../externs/tilejson.js", 
+        "../externs/closure-compiler.js"
+    ], 
+    "id": "simple", 
+    "inherits": "base.json", 
+    "inputs": [
+        "../build/examples/all.js", 
+        "../build/src/internal/src/types.js"
+    ]
+}
