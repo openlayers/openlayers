@@ -733,14 +733,15 @@ ol.Map.prototype.handlePostRender = function() {
   if (!tileQueue.isEmpty()) {
     var maxTotalLoading = 16;
     var maxNewLoads = maxTotalLoading;
+    var tileSourceCount = 0;
     if (!goog.isNull(frameState)) {
       var hints = frameState.viewHints;
       if (hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING]) {
         maxTotalLoading = 8;
         maxNewLoads = 2;
       }
+      tileSourceCount = goog.object.getCount(frameState.wantedTiles);
     }
-    var tileSourceCount = goog.object.getCount(frameState.wantedTiles);
     maxTotalLoading *= tileSourceCount;
     maxNewLoads *= tileSourceCount;
     if (tileQueue.getTilesLoading() < maxTotalLoading) {
