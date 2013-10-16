@@ -238,8 +238,8 @@ ol.renderer.canvas.Vector.prototype.renderPointFeatures_ =
     return true;
   }
 
-  var midWidth = content.width / 2;
-  var midHeight = content.height / 2;
+  var midWidth = Math.floor(content.width / 2);
+  var midHeight = Math.floor(content.height / 2);
   var contentWidth = content.width * this.inverseScale_;
   var contentHeight = content.height * this.inverseScale_;
   var contentXOffset = xOffset * this.inverseScale_;
@@ -276,7 +276,8 @@ ol.renderer.canvas.Vector.prototype.renderPointFeatures_ =
       point = components[j];
       vec = [point.get(0), point.get(1), 0];
       goog.vec.Mat4.multVec3(this.transform_, vec, vec);
-      context.drawImage(content, vec[0] + xOffset, vec[1] + yOffset,
+      context.drawImage(content, Math.round(vec[0] + xOffset),
+          Math.round(vec[1] + yOffset),
           content.width, content.height);
     }
   }
