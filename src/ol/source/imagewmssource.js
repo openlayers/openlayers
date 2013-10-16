@@ -16,6 +16,7 @@ goog.require('ol.source.wms');
  * @extends {ol.source.Image}
  * @implements {ol.source.FeatureInfoSource}
  * @param {ol.source.ImageWMSOptions} options Options.
+ * @todo stability experimental
  */
 ol.source.ImageWMS = function(options) {
 
@@ -103,13 +104,11 @@ ol.source.ImageWMS.prototype.getImage =
  */
 ol.source.ImageWMS.prototype.getFeatureInfoForPixel =
     function(pixel, map, success, opt_error) {
-  var view2D = map.getView().getView2D(),
-      projection = view2D.getProjection(),
-      size = map.getSize(),
-      bottomLeft = map.getCoordinateFromPixel([0, size[1]]),
-      topRight = map.getCoordinateFromPixel([size[0], 0]),
-      extent = [bottomLeft[0], topRight[0], bottomLeft[1], topRight[1]],
-      url = this.imageUrlFunction(extent, size, projection);
+  var view = map.getView().getView2D();
+  var size = map.getSize();
+  goog.asserts.assert(goog.isDefAndNotNull(size));
+  var extent = view.calculateExtent(size);
+  var url = this.imageUrlFunction(extent, size, view.getProjection());
   goog.asserts.assert(goog.isDef(url),
       'ol.source.ImageWMS#imageUrlFunction does not return a URL');
   ol.source.wms.getFeatureInfo(url, pixel, this.getFeatureInfoOptions_, success,

@@ -31,8 +31,7 @@ closer.onclick = function() {
  * Create an overlay to anchor the popup to the map.
  */
 var overlay = new ol.Overlay({
-  element: container,
-  stopEvent: true
+  element: container
 });
 
 
@@ -62,7 +61,7 @@ var map = new ol.Map({
 /**
  * Add a click handler to the map to render the popup.
  */
-map.on('click', function(evt) {
+map.on('singleclick', function(evt) {
   var coordinate = evt.getCoordinate();
   var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
       coordinate, 'EPSG:3857', 'EPSG:4326'));

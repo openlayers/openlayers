@@ -14,6 +14,7 @@ goog.require('ol.geom.Point');
  * @constructor
  * @extends {ol.geom.AbstractCollection}
  * @param {ol.CoordinateArray} coordinates Coordinates array.
+ * @todo stability experimental
  */
 ol.geom.MultiPoint = function(coordinates) {
   goog.base(this);

@@ -25,6 +25,7 @@ goog.require('ol.tilegrid.TileGrid');
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined)}}
+ * @todo stability experimental
  */
 ol.source.TileImageOptions;
 
@@ -34,6 +35,7 @@ ol.source.TileImageOptions;
  * @constructor
  * @extends {ol.source.Tile}
  * @param {ol.source.TileImageOptions} options Image tile options.
+ * @todo stability experimental
  */
 ol.source.TileImage = function(options) {
 

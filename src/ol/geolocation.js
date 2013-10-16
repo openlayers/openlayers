@@ -46,6 +46,7 @@ ol.GeolocationProperty = {
  * @constructor
  * @extends {ol.Object}
  * @param {ol.GeolocationOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.Geolocation = function(opt_options) {
 
@@ -140,6 +141,7 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
  * Is HTML5 geolocation supported in the current browser?
  * @const
  * @type {boolean}
+ * @todo stability experimental
  */
 ol.Geolocation.SUPPORTED = 'geolocation' in goog.global.navigator;
 
@@ -183,6 +185,7 @@ ol.Geolocation.prototype.positionError_ = function(error) {
 /**
  * Get the accuracy of the position in meters.
  * @return {number|undefined} Position accuracy in meters.
+ * @todo stability experimental
  */
 ol.Geolocation.prototype.getAccuracy = function() {
   return /** @type {number|undefined} */ (
@@ -197,6 +200,7 @@ goog.exportProperty(
 /**
  * Get the altitude associated with the position.
  * @return {number|undefined} The altitude in meters above the mean sea level.
+ * @todo stability experimental
  */
 ol.Geolocation.prototype.getAltitude = function() {
   return /** @type {number|undefined} */ (
@@ -211,6 +215,7 @@ goog.exportProperty(
 /**
  * Get the altitude accuracy of the position.
  * @return {number|undefined} Altitude accuracy in meters.
+ * @todo stability experimental
  */
 ol.Geolocation.prototype.getAltitudeAccuracy = function() {
   return /** @type {number|undefined} */ (
@@ -225,6 +230,7 @@ goog.exportProperty(
 /**
  * Get the heading as radians clockwise from North.
  * @return {number|undefined} Heading.
+ * @todo stability experimental
  */
 ol.Geolocation.prototype.getHeading = function() {
   return /** @type {number|undefined} */ (
@@ -239,6 +245,7 @@ goog.exportProperty(
 /**
  * Get the position of the device.
  * @return {ol.Coordinate|undefined} position.
+ * @todo stability experimental
  */
 ol.Geolocation.prototype.getPosition = function() {
   return /** @type {ol.Coordinate|undefined} */ (
@@ -253,6 +260,7 @@ goog.exportProperty(
 /**
  * Get the projection associated with the position.
  * @return {ol.proj.Projection|undefined} projection.
+ * @todo stability experimental
  */
 ol.Geolocation.prototype.getProjection = function() {
   return /** @type {ol.proj.Projection|undefined} */ (
@@ -267,6 +275,7 @@ goog.exportProperty(
 /**
  * Get the speed in meters per second.
  * @return {number|undefined} Speed.
+ * @todo stability experimental
  */
 ol.Geolocation.prototype.getSpeed = function() {
   return /** @type {number|undefined} */ (
@@ -281,6 +290,7 @@ goog.exportProperty(
 /**
  * Are we tracking the user's position?
  * @return {boolean} tracking.
+ * @todo stability experimental
  */
 ol.Geolocation.prototype.getTracking = function() {
   return /** @type {boolean} */ (
@@ -297,6 +307,7 @@ goog.exportProperty(
  * @see http://www.w3.org/TR/geolocation-API/#position-options
  * @return {GeolocationPositionOptions|undefined} HTML 5 Gelocation
  * tracking options.
+ * @todo stability experimental
  */
 ol.Geolocation.prototype.getTrackingOptions = function() {
   return /** @type {GeolocationPositionOptions|undefined} */ (
@@ -311,6 +322,7 @@ goog.exportProperty(
 /**
  * Set the projection to use for transforming the coordinates.
  * @param {ol.proj.Projection} projection Projection.
+ * @todo stability experimental
  */
 ol.Geolocation.prototype.setProjection = function(projection) {
   this.set(ol.GeolocationProperty.PROJECTION, projection);
@@ -324,6 +336,7 @@ goog.exportProperty(
 /**
  * Enable/disable tracking.
  * @param {boolean} tracking Enable or disable tracking.
+ * @todo stability experimental
  */
 ol.Geolocation.prototype.setTracking = function(tracking) {
   this.set(ol.GeolocationProperty.TRACKING, tracking);
@@ -339,6 +352,7 @@ goog.exportProperty(
  * @see http://www.w3.org/TR/geolocation-API/#position-options
  * @param {GeolocationPositionOptions} options HTML 5 Geolocation
  * tracking options.
+ * @todo stability experimental
  */
 ol.Geolocation.prototype.setTrackingOptions = function(options) {
   this.set(ol.GeolocationProperty.TRACKING_OPTIONS, options);

@@ -12,6 +12,7 @@ goog.require('ol.TransformFunction');
 /**
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @todo stability experimental
  */
 ol.geom.Geometry = function() {
   goog.base(this);
@@ -76,6 +77,7 @@ goog.inherits(ol.geom.GeometryEvent, goog.events.Event);
  * Geometry types.
  *
  * @enum {string}
+ * @todo stability experimental
  */
 ol.geom.GeometryType = {
   POINT: 'point',

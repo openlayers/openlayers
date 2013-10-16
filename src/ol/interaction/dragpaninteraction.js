@@ -7,9 +7,9 @@ goog.require('ol.Kinetic');
 goog.require('ol.PreRenderFunction');
 goog.require('ol.View2D');
 goog.require('ol.coordinate');
-goog.require('ol.interaction.ConditionType');
+goog.require('ol.events.ConditionType');
+goog.require('ol.events.condition');
 goog.require('ol.interaction.Drag');
-goog.require('ol.interaction.condition');
 
 
 
@@ -18,6 +18,7 @@ goog.require('ol.interaction.condition');
  * @constructor
  * @extends {ol.interaction.Drag}
  * @param {ol.interaction.DragPanOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.DragPan = function(opt_options) {
 
@@ -27,10 +28,10 @@ ol.interaction.DragPan = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.interaction.ConditionType}
+   * @type {ol.events.ConditionType}
    */
   this.condition_ = goog.isDef(options.condition) ?
-      options.condition : ol.interaction.condition.noModifierKeys;
+      options.condition : ol.events.condition.noModifierKeys;
 
   /**
    * @private

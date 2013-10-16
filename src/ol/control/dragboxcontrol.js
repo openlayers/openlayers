@@ -11,10 +11,13 @@ goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.Pixel');
 goog.require('ol.control.Control');
+goog.require('ol.events.ConditionType');
+goog.require('ol.events.condition');
 
 
 /**
- * @typedef {{startCoordinate: ol.Coordinate}}
+ * @typedef {{startCoordinate: ol.Coordinate,
+ *            condition: (ol.events.ConditionType|undefined)}}
  */
 ol.control.DragBoxOptions;
 
@@ -24,10 +27,18 @@ ol.control.DragBoxOptions;
  * @constructor
  * @extends {ol.control.Control}
  * @param {ol.control.DragBoxOptions} options Drag box options.
+ * @todo stability experimental
  */
 ol.control.DragBox = function(options) {
 
   var element = goog.dom.createDom(goog.dom.TagName.DIV, 'ol-dragbox');
+
+  /**
+   * @private
+   * @type {ol.events.ConditionType}
+   */
+  this.condition_ = goog.isDef(options.condition) ?
+      options.condition : ol.events.condition.always;
 
   /**
    * @type {ol.Pixel|undefined}
@@ -71,14 +82,16 @@ ol.control.DragBox.prototype.setMap = function(map) {
  * @private
  */
 ol.control.DragBox.prototype.updateBox_ = function(mapBrowserEvent) {
-  var map = this.getMap();
-  var coordinate = mapBrowserEvent.getCoordinate();
-  goog.asserts.assert(goog.isDef(coordinate));
-  var currentPixel = map.getPixelFromCoordinate(coordinate);
-  goog.style.setPosition(this.element,
-      Math.min(currentPixel[0], this.startPixel_[0]),
-      Math.min(currentPixel[1], this.startPixel_[1]));
-  goog.style.setBorderBoxSize(this.element, new goog.math.Size(
-      Math.abs(currentPixel[0] - this.startPixel_[0]),
-      Math.abs(currentPixel[1] - this.startPixel_[1])));
+  if (this.condition_(mapBrowserEvent)) {
+    var map = this.getMap();
+    var coordinate = mapBrowserEvent.getCoordinate();
+    goog.asserts.assert(goog.isDef(coordinate));
+    var currentPixel = map.getPixelFromCoordinate(coordinate);
+    goog.style.setPosition(this.element,
+        Math.min(currentPixel[0], this.startPixel_[0]),
+        Math.min(currentPixel[1], this.startPixel_[1]));
+    goog.style.setBorderBoxSize(this.element, new goog.math.Size(
+        Math.abs(currentPixel[0] - this.startPixel_[0]),
+        Math.abs(currentPixel[1] - this.startPixel_[1])));
+  }
 };

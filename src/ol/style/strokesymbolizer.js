@@ -17,6 +17,7 @@ goog.require('ol.style.Symbolizer');
  * @constructor
  * @extends {ol.style.Symbolizer}
  * @param {ol.style.StrokeOptions=} opt_options Stroke options.
+ * @todo stability experimental
  */
 ol.style.Stroke = function(opt_options) {
   goog.base(this);

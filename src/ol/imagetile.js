@@ -20,6 +20,7 @@ goog.require('ol.TileState');
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
+ * @todo stability experimental
  */
 ol.ImageTile =
     function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
@@ -67,6 +68,7 @@ goog.inherits(ol.ImageTile, ol.Tile);
 
 /**
  * @inheritDoc
+ * @todo stability experimental
  */
 ol.ImageTile.prototype.getImage = function(opt_context) {
   if (goog.isDef(opt_context)) {

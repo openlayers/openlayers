@@ -15,6 +15,7 @@ goog.require('ol.style.Point');
  * @constructor
  * @extends {ol.style.Point}
  * @param {ol.style.IconOptions} options Icon options.
+ * @todo stability experimental
  */
 ol.style.Icon = function(options) {
   goog.base(this);
