@@ -3,6 +3,7 @@ goog.provide('ol.MapBrowserEvent.EventType');
 goog.provide('ol.MapBrowserEventHandler');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventTarget');
@@ -122,18 +123,16 @@ ol.MapBrowserEventHandler = function(map) {
   this.map_ = map;
 
   /**
+   * @type {number}
+   * @private
+   */
+  this.clickTimeoutId_ = 0;
+
+  /**
    * @type {boolean}
    * @private
    */
   this.dragged_ = false;
-
-  /**
-   * Timestamp for the first click of a double click. Will be set back to 0
-   * as soon as a double click is detected.
-   * @type {?number}
-   * @private
-   */
-  this.timestamp_ = null;
 
   /**
    * @type {Array.<number>}
@@ -199,7 +198,7 @@ ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
   if (!this.dragged_) {
     var newEvent;
     var type = browserEvent.type;
-    if (this.timestamp_ === 0 || type == goog.events.EventType.DBLCLICK) {
+    if (type == goog.events.EventType.DBLCLICK) {
       newEvent = new ol.MapBrowserEvent(
           ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, browserEvent);
       this.dispatchEvent(newEvent);
@@ -326,17 +325,26 @@ ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
       ol.MapBrowserEvent.EventType.TOUCHEND, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
   if (!this.dragged_) {
-    var now = goog.now();
-    if (!this.timestamp_ || now - this.timestamp_ > 250) {
-      this.timestamp_ = now;
+    goog.asserts.assert(!goog.isNull(this.down_));
+    if (this.clickTimeoutId_ !== 0) {
+      // double-click
+      goog.global.clearTimeout(this.clickTimeoutId_);
+      this.clickTimeoutId_ = 0;
+      newEvent = new ol.MapBrowserEvent(
+          ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, this.down_);
+      this.dispatchEvent(newEvent);
+      this.down_ = null;
     } else {
-      this.timestamp_ = 0;
-    }
-    if (!goog.isNull(this.down_)) {
-      this.click_(this.down_);
+      // click
+      this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
+        this.clickTimeoutId_ = 0;
+        newEvent = new ol.MapBrowserEvent(
+            ol.MapBrowserEvent.EventType.CLICK, this.map_, this.down_);
+        this.dispatchEvent(newEvent);
+        this.down_ = null;
+      }, this), 250);
     }
   }
-  this.down_ = null;
 };
 
 
