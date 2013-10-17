@@ -59,8 +59,10 @@ info.tooltip({
   animation: false,
   trigger: 'manual'
 });
-map.on(['click', 'mousemove'], function(evt) {
-  var pixel = evt.getPixel();
+
+// FIXME support touch devices
+$(map.getViewport()).on('mousemove', function(evt) {
+  var pixel = map.getEventPixel(evt.originalEvent);
   info.css({
     left: pixel[0] + 'px',
     top: (pixel[1] - 15) + 'px'

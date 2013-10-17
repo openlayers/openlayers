@@ -39,9 +39,11 @@ var map = new ol.Map({
   })
 });
 
-map.on(['click', 'mousemove'], function(evt) {
+// FIXME support touch devices
+$(map.getViewport()).on('mousemove', function(evt) {
+  var pixel = map.getEventPixel(evt.originalEvent);
   map.getFeatures({
-    pixel: evt.getPixel(),
+    pixel: pixel,
     layers: [vector],
     success: function(featuresByLayer) {
       var features = featuresByLayer[0];
