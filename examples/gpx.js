@@ -28,9 +28,7 @@ var map = new ol.Map({
   })
 });
 
-// FIXME support touch devices
-$(map.getViewport()).on('mousemove', function(evt) {
-  var pixel = map.getEventPixel(evt.originalEvent);
+var displayFeatureInfo = function(pixel) {
   map.getFeatures({
     pixel: pixel,
     layers: [vector],
@@ -43,4 +41,14 @@ $(map.getViewport()).on('mousemove', function(evt) {
       document.getElementById('info').innerHTML = info.join(', ') || '&nbsp;';
     }
   });
+};
+
+$(map.getViewport()).on('mousemove', function(evt) {
+  var pixel = map.getEventPixel(evt.originalEvent);
+  displayFeatureInfo(pixel);
+});
+
+map.on('click', function(evt) {
+  var pixel = evt.getPixel();
+  displayFeatureInfo(pixel);
 });
