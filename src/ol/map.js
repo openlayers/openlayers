@@ -237,7 +237,9 @@ ol.Map = function(options) {
     goog.events.EventType.CLICK,
     goog.events.EventType.DBLCLICK,
     ol.BrowserFeature.HAS_TOUCH ?
-        goog.events.EventType.TOUCHSTART : goog.events.EventType.MOUSEDOWN
+        goog.events.EventType.TOUCHSTART : goog.events.EventType.MOUSEDOWN,
+    ol.BrowserFeature.HAS_TOUCH ?
+        goog.events.EventType.TOUCHEND : goog.events.EventType.MOUSEUP
   ], goog.events.Event.stopPropagation);
   goog.dom.appendChild(this.viewport_, this.overlayContainerStopEvent_);
 
