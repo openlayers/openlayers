@@ -446,8 +446,22 @@ ol.Map.prototype.getEventCoordinate = function(event) {
  * @return {ol.Pixel} Pixel.
  */
 ol.Map.prototype.getEventPixel = function(event) {
-  var eventPosition = goog.style.getRelativePosition(event, this.viewport_);
-  return [eventPosition.x, eventPosition.y];
+  // goog.style.getRelativePosition is based on event.targetTouches,
+  // but touchend and touchcancel events have no targetTouches when
+  // the last finger is removed from the screen.
+  // So we ourselves compute the position of touch events.
+  // See https://code.google.com/p/closure-library/issues/detail?id=588
+  if (goog.isDef(event.changedTouches)) {
+    var touch = event.changedTouches.item(0);
+    var viewportPosition = goog.style.getClientPosition(this.viewport_);
+    return [
+      touch.clientX - viewportPosition.x,
+      touch.clientY - viewportPosition.y
+    ];
+  } else {
+    var eventPosition = goog.style.getRelativePosition(event, this.viewport_);
+    return [eventPosition.x, eventPosition.y];
+  }
 };
 
 
