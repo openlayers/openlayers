@@ -655,6 +655,7 @@
  * @property {string|null|undefined} crossOrigin crossOrigin setting for image
  *     requests.
  * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
  * @property {ol.tilegrid.WMTS} tileGrid Tile grid.
  * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {ol.source.WMTSRequestEncoding|undefined} requestEncoding Request
