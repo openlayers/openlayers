@@ -706,12 +706,7 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
     // coordinates so interactions cannot be used.
     return;
   }
-  if (mapBrowserEvent.type == goog.events.EventType.MOUSEOUT ||
-      mapBrowserEvent.type == goog.events.EventType.TOUCHEND) {
-    this.focus_ = null;
-  } else {
-    this.focus_ = mapBrowserEvent.getCoordinate();
-  }
+  this.focus_ = mapBrowserEvent.getCoordinate();
   mapBrowserEvent.frameState = this.frameState_;
   var interactions = this.getInteractions();
   var interactionsArray = /** @type {Array.<ol.interaction.Interaction>} */
