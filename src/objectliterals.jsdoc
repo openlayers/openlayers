@@ -603,6 +603,7 @@
  * @property {ol.Extent|undefined} extent Extent.
  * @property {ol.source.WMSGetFeatureInfoOptions|undefined}
  *     getFeatureInfoOptions Options for GetFeatureInfo.
+ * @property {string|undefined} logo Logo.
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  * @property {number|undefined} maxZoom Maximum zoom.
  * @property {ol.proj.ProjectionLike} projection Projection.
