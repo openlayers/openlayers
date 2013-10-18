@@ -289,7 +289,7 @@
 /**
  * @typedef {Object} ol.interaction.DragPanOptions
  * @property {ol.Kinetic|undefined} kinetic Kinetic inertia to apply to the pan.
- * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is no modifiers.
  * @todo stability experimental
@@ -297,7 +297,7 @@
 
 /**
  * @typedef {Object} ol.interaction.DragRotateOptions
- * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is both shift and alt keys.
  * @todo stability experimental
@@ -305,7 +305,7 @@
 
 /**
  * @typedef {Object} ol.interaction.DragRotateAndZoomOptions
- * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is shify key.
  * @todo stability experimental
@@ -313,7 +313,7 @@
 
 /**
  * @typedef {Object} ol.interaction.DragZoomOptions
- * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is shift key.
  * @todo stability experimental
@@ -344,7 +344,7 @@
 
 /**
  * @typedef {Object} ol.interaction.KeyboardPanOptions
- * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is no modifiers.
  * @property {number|undefined} pixelDelta Pixel The amount to pan on each key
@@ -355,7 +355,7 @@
 /**
  * @typedef {Object} ol.interaction.KeyboardZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `100`.
- * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is no modifiers.
  * @property {number|undefined} delta The amount to zoom on each key press.
@@ -370,11 +370,11 @@
 
 /**
  * @typedef {Object} ol.interaction.SelectOptions
- * @property {ol.interaction.ConditionType|undefined} addCondition A conditional
+ * @property {ol.events.ConditionType|undefined} addCondition A conditional
  *     modifier (e.g. shift key) that determines if the selection is added to
  *     the current selection. By default, a shift-click adds to the current
  *     selection.
- * @property {ol.interaction.ConditionType|undefined} condition A conditional
+ * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (e.g. shift key) that determines if the interaction is active
  *     (i.e. selection occurs) or not. By default, a click with no modifier keys
  *     toggles the selection.

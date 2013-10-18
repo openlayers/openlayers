@@ -4,9 +4,9 @@ goog.provide('ol.interaction.KeyboardZoom');
 
 goog.require('goog.asserts');
 goog.require('goog.events.KeyHandler.EventType');
-goog.require('ol.interaction.ConditionType');
+goog.require('ol.events.ConditionType');
+goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.condition');
 
 
 
@@ -25,10 +25,10 @@ ol.interaction.KeyboardZoom = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.interaction.ConditionType}
+   * @type {ol.events.ConditionType}
    */
   this.condition_ = goog.isDef(options.condition) ? options.condition :
-          ol.interaction.condition.targetNotEditable;
+          ol.events.condition.targetNotEditable;
 
   /**
    * @private
