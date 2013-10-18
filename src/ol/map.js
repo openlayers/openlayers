@@ -237,7 +237,9 @@ ol.Map = function(options) {
     goog.events.EventType.CLICK,
     goog.events.EventType.DBLCLICK,
     ol.BrowserFeature.HAS_TOUCH ?
-        goog.events.EventType.TOUCHSTART : goog.events.EventType.MOUSEDOWN
+        goog.events.EventType.TOUCHSTART : goog.events.EventType.MOUSEDOWN,
+    ol.BrowserFeature.HAS_TOUCH ?
+        goog.events.EventType.TOUCHEND : goog.events.EventType.MOUSEUP
   ], goog.events.Event.stopPropagation);
   goog.dom.appendChild(this.viewport_, this.overlayContainerStopEvent_);
 
@@ -704,12 +706,7 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
     // coordinates so interactions cannot be used.
     return;
   }
-  if (mapBrowserEvent.type == goog.events.EventType.MOUSEOUT ||
-      mapBrowserEvent.type == goog.events.EventType.TOUCHEND) {
-    this.focus_ = null;
-  } else {
-    this.focus_ = mapBrowserEvent.getCoordinate();
-  }
+  this.focus_ = mapBrowserEvent.getCoordinate();
   mapBrowserEvent.frameState = this.frameState_;
   var interactions = this.getInteractions();
   var interactionsArray = /** @type {Array.<ol.interaction.Interaction>} */
