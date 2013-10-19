@@ -12,13 +12,6 @@ describe('ol.geom.MultiLineString', function() {
       expect(multi).to.be.a(ol.geom.Geometry);
     });
 
-    it('throws when given with insufficient dimensions', function() {
-      expect(function() {
-        var multi = new ol.geom.MultiLineString([1]);
-        multi = multi; // suppress gjslint warning about unused variable
-      }).to.throwException();
-    });
-
   });
 
   describe('#components', function() {
@@ -28,28 +21,11 @@ describe('ol.geom.MultiLineString', function() {
         [[10, 20], [30, 40]],
         [[20, 30], [40, 50]]]);
 
-      expect(multi.components.length).to.be(2);
-      expect(multi.components[0]).to.be.a(ol.geom.LineString);
-      expect(multi.components[1]).to.be.a(ol.geom.LineString);
+      var components = multi.getComponents();
+      expect(components.length).to.be(2);
+      expect(components[0]).to.be.a(ol.geom.LineString);
+      expect(components[1]).to.be.a(ol.geom.LineString);
 
-    });
-
-  });
-
-  describe('#dimension', function() {
-
-    it('can be 2', function() {
-      var multi = new ol.geom.MultiLineString([
-        [[10, 20], [30, 40]],
-        [[20, 30], [40, 50]]]);
-      expect(multi.dimension).to.be(2);
-    });
-
-    it('can be 3', function() {
-      var multi = new ol.geom.MultiLineString([
-        [[10, 20, 30], [30, 40, 50]],
-        [[20, 30, 40], [40, 50, 60]]]);
-      expect(multi.dimension).to.be(3);
     });
 
   });

@@ -15,6 +15,7 @@ goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
 goog.require('ol.proj');
+goog.require('ol.source.State');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.XYZ');
 
@@ -45,14 +46,10 @@ ol.source.TileJSON = function(options) {
 
   goog.base(this, {
     crossOrigin: options.crossOrigin,
-    projection: ol.proj.get('EPSG:3857')
+    projection: ol.proj.get('EPSG:3857'),
+    state: ol.source.State.LOADING,
+    tileLoadFunction: options.tileLoadFunction
   });
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.ready_ = false;
 
   /**
    * @private
@@ -117,16 +114,6 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function() {
     ]);
   }
 
-  this.ready_ = true;
+  this.setState(ol.source.State.READY);
 
-  this.dispatchLoadEvent();
-
-};
-
-
-/**
- * @inheritDoc
- */
-ol.source.TileJSON.prototype.isReady = function() {
-  return this.ready_;
 };

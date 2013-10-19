@@ -1,12 +1,14 @@
 goog.provide('ol.geom.Polygon');
 
 goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('ol.CoordinateArray');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryEvent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LinearRing');
-goog.require('ol.geom.SharedVertices');
 
 
 
@@ -21,20 +23,10 @@ goog.require('ol.geom.SharedVertices');
  * @extends {ol.geom.Geometry}
  * @param {Array.<ol.CoordinateArray>} coordinates Array of rings.  First
  *    is outer, any remaining are inner.
- * @param {ol.geom.SharedVertices=} opt_shared Shared vertices.
  */
-ol.geom.Polygon = function(coordinates, opt_shared) {
+ol.geom.Polygon = function(coordinates) {
   goog.base(this);
   goog.asserts.assert(goog.isArray(coordinates[0][0]));
-
-  var vertices = opt_shared,
-      dimension;
-
-  if (!goog.isDef(vertices)) {
-    // try to get dimension from first vertex in first ring
-    dimension = coordinates[0][0].length;
-    vertices = new ol.geom.SharedVertices({dimension: dimension});
-  }
 
   /**
    * @private
@@ -42,18 +34,14 @@ ol.geom.Polygon = function(coordinates, opt_shared) {
    */
   this.labelPoint_ = null;
 
-  /**
-   * @type {ol.geom.SharedVertices}
-   */
-  this.vertices = vertices;
-
   var numRings = coordinates.length;
 
   /**
    * @type {Array.<ol.geom.LinearRing>}
+   * @private
    */
-  this.rings = new Array(numRings);
-  var ringCoords;
+  this.rings_ = new Array(numRings);
+  var ringCoords, ring;
   for (var i = 0; i < numRings; ++i) {
     ringCoords = coordinates[i];
     if (i === 0) {
@@ -67,14 +55,11 @@ ol.geom.Polygon = function(coordinates, opt_shared) {
         ringCoords.reverse();
       }
     }
-    this.rings[i] = new ol.geom.LinearRing(ringCoords, vertices);
+    ring = new ol.geom.LinearRing(ringCoords);
+    goog.events.listen(ring, goog.events.EventType.CHANGE,
+        this.handleRingChange_, false, this);
+    this.rings_[i] = ring;
   }
-
-  /**
-   * @type {number}
-   */
-  this.dimension = vertices.getDimension();
-  goog.asserts.assert(this.dimension >= 2);
 
 };
 goog.inherits(ol.geom.Polygon, ol.geom.Geometry);
@@ -84,7 +69,7 @@ goog.inherits(ol.geom.Polygon, ol.geom.Geometry);
  * @inheritDoc
  */
 ol.geom.Polygon.prototype.getBounds = function() {
-  return this.rings[0].getBounds();
+  return this.rings_[0].getBounds();
 };
 
 
@@ -92,10 +77,10 @@ ol.geom.Polygon.prototype.getBounds = function() {
  * @return {Array.<ol.CoordinateArray>} Coordinates array.
  */
 ol.geom.Polygon.prototype.getCoordinates = function() {
-  var count = this.rings.length;
+  var count = this.rings_.length;
   var coordinates = new Array(count);
   for (var i = 0; i < count; ++i) {
-    coordinates[i] = this.rings[i].getCoordinates();
+    coordinates[i] = this.rings_[i].getCoordinates();
   }
   return coordinates;
 };
@@ -110,6 +95,34 @@ ol.geom.Polygon.prototype.getType = function() {
 
 
 /**
+ * Get polygon rings.
+ * @return {Array.<ol.geom.LinearRing>} Array of rings.  The first ring is the
+ *     exterior and any additional rings are interior.
+ */
+ol.geom.Polygon.prototype.getRings = function() {
+  return this.rings_;
+};
+
+
+/**
+ * Listener for ring change events.
+ * @param {ol.geom.GeometryEvent} evt Geometry event.
+ * @private
+ */
+ol.geom.Polygon.prototype.handleRingChange_ = function(evt) {
+  var ring = evt.target;
+  var oldExtent = null;
+  if (ring === this.rings_[0]) {
+    oldExtent = evt.oldExtent;
+  } else {
+    oldExtent = this.getBounds();
+  }
+  this.dispatchEvent(new ol.geom.GeometryEvent(goog.events.EventType.CHANGE,
+      this, oldExtent));
+};
+
+
+/**
  * Check whether a given coordinate is inside this polygon. Note that this is a
  * fast and simple check - points on an edge or vertex of the polygon or one of
  * its inner rings are either classified inside or outside.
@@ -118,7 +131,7 @@ ol.geom.Polygon.prototype.getType = function() {
  * @return {boolean} Whether the coordinate is inside the polygon.
  */
 ol.geom.Polygon.prototype.containsCoordinate = function(coordinate) {
-  var rings = this.rings;
+  var rings = this.rings_;
   /** @type {boolean} */
   var containsCoordinate;
   for (var i = 0, ii = rings.length; i < ii; ++i) {
@@ -144,7 +157,7 @@ ol.geom.Polygon.prototype.getInteriorPoint = function() {
   if (goog.isNull(this.labelPoint_)) {
     var center = ol.extent.getCenter(this.getBounds()),
         resultY = center[1],
-        vertices = this.rings[0].getCoordinates(),
+        vertices = this.rings_[0].getCoordinates(),
         intersections = [],
         maxLength = 0,
         i, vertex1, vertex2, x, segmentLength, resultX;
@@ -178,4 +191,15 @@ ol.geom.Polygon.prototype.getInteriorPoint = function() {
   }
 
   return this.labelPoint_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.Polygon.prototype.transform = function(transform) {
+  var rings = this.rings_;
+  for (var i = 0, ii = rings.length; i < ii; ++i) {
+    rings[i].transform(transform);
+  }
 };

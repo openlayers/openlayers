@@ -1,11 +1,12 @@
 goog.provide('ol.geom.MultiPolygon');
 
 goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('ol.CoordinateArray');
 goog.require('ol.geom.AbstractCollection');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Polygon');
-goog.require('ol.geom.SharedVertices');
 
 
 
@@ -14,35 +15,24 @@ goog.require('ol.geom.SharedVertices');
  * @extends {ol.geom.AbstractCollection}
  * @param {Array.<Array.<ol.CoordinateArray>>} coordinates Coordinates
  *    array.
- * @param {ol.geom.SharedVertices=} opt_shared Shared vertices.
  */
-ol.geom.MultiPolygon = function(coordinates, opt_shared) {
+ol.geom.MultiPolygon = function(coordinates) {
   goog.base(this);
   goog.asserts.assert(goog.isArray(coordinates[0][0][0]));
-
-  var vertices = opt_shared,
-      dimension;
-
-  if (!goog.isDef(vertices)) {
-    // try to get dimension from first vertex in first ring of the first poly
-    dimension = coordinates[0][0][0].length;
-    vertices = new ol.geom.SharedVertices({dimension: dimension});
-  }
 
   var numParts = coordinates.length;
 
   /**
    * @type {Array.<ol.geom.Polygon>}
+   * @protected
    */
   this.components = new Array(numParts);
   for (var i = 0; i < numParts; ++i) {
-    this.components[i] = new ol.geom.Polygon(coordinates[i], vertices);
+    var component = new ol.geom.Polygon(coordinates[i]);
+    this.components[i] = component;
+    goog.events.listen(component, goog.events.EventType.CHANGE,
+        this.handleComponentChange, false, this);
   }
-
-  /**
-   * @type {number}
-   */
-  this.dimension = vertices.getDimension();
 
 };
 goog.inherits(ol.geom.MultiPolygon, ol.geom.AbstractCollection);
@@ -78,14 +68,13 @@ ol.geom.MultiPolygon.prototype.containsCoordinate = function(coordinate) {
  * Create a multi-polygon geometry from an array of polygon geometries.
  *
  * @param {Array.<ol.geom.Polygon>} geometries Array of geometries.
- * @param {ol.geom.SharedVertices=} opt_shared Shared vertices.
  * @return {ol.geom.MultiPolygon} A new geometry.
  */
-ol.geom.MultiPolygon.fromParts = function(geometries, opt_shared) {
+ol.geom.MultiPolygon.fromParts = function(geometries) {
   var count = geometries.length;
   var coordinates = new Array(count);
   for (var i = 0; i < count; ++i) {
     coordinates[i] = geometries[i].getCoordinates();
   }
-  return new ol.geom.MultiPolygon(coordinates, opt_shared);
+  return new ol.geom.MultiPolygon(coordinates);
 };

@@ -1,42 +1,30 @@
 goog.provide('ol.geom.Geometry');
+goog.provide('ol.geom.GeometryEvent');
 goog.provide('ol.geom.GeometryType');
 
+goog.require('goog.events.Event');
+goog.require('goog.events.EventTarget');
 goog.require('ol.Extent');
-goog.require('ol.geom.SharedVertices');
+goog.require('ol.TransformFunction');
 
 
 
 /**
  * @constructor
+ * @extends {goog.events.EventTarget}
  */
 ol.geom.Geometry = function() {
-
-  /**
-   * @type {ol.geom.SharedVertices}
-   * @protected
-   */
-  this.vertices = null;
-
+  goog.base(this);
 };
+goog.inherits(ol.geom.Geometry, goog.events.EventTarget);
 
 
 /**
- * The dimension of this geometry (2 or 3).
- * @type {number}
- */
-ol.geom.Geometry.prototype.dimension;
-
-
-/**
- * Create a clone of this geometry. The clone will not be represented in any
- * shared structure.
+ * Create a clone of this geometry.
  * @return {ol.geom.Geometry} The cloned geometry.
  */
 ol.geom.Geometry.prototype.clone = function() {
-  var clone = new this.constructor(this.getCoordinates());
-  clone.bounds_ = this.bounds_;
-  clone.dimension = this.dimension;
-  return clone;
+  return new this.constructor(this.getCoordinates());
 };
 
 
@@ -54,19 +42,34 @@ ol.geom.Geometry.prototype.getCoordinates = goog.abstractMethod;
 
 
 /**
- * Get the shared vertices for this geometry.
- * @return {ol.geom.SharedVertices} The shared vertices.
- */
-ol.geom.Geometry.prototype.getSharedVertices = function() {
-  return this.vertices;
-};
-
-
-/**
  * Get the geometry type.
  * @return {ol.geom.GeometryType} The geometry type.
  */
 ol.geom.Geometry.prototype.getType = goog.abstractMethod;
+
+
+/**
+ * Transform a geometry in place.
+ * @param {ol.TransformFunction} transform Transform function.
+ */
+ol.geom.Geometry.prototype.transform = goog.abstractMethod;
+
+
+
+/**
+ * Constructor for geometry events.
+ * @constructor
+ * @extends {goog.events.Event}
+ * @param {string} type Event type.
+ * @param {ol.geom.Geometry} target The target geometry.
+ * @param {ol.Extent} oldExtent The previous geometry extent.
+ */
+ol.geom.GeometryEvent = function(type, target, oldExtent) {
+  goog.base(this, type, target);
+
+  this.oldExtent = oldExtent;
+};
+goog.inherits(ol.geom.GeometryEvent, goog.events.Event);
 
 
 /**

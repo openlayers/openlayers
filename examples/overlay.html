@@ -9,6 +9,14 @@
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
     <style type="text/css">
+      #marker {
+        width: 20px;
+        height: 20px;
+        border: 1px solid #088;
+        border-radius: 10px;
+        background-color: #0FF;
+        opacity: 0.5;
+      }
       #vienna {
         text-decoration: none;
         color: white;
@@ -27,7 +35,7 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="./">OpenLayers 3 Examples</a>          
+          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>          
         </div>
       </div>
     </div>
@@ -60,6 +68,7 @@
     <div style="display: none;">
       <!-- Clickable label for Vienna -->
       <a class="overlay" id="vienna" target="_blank" href="http://en.wikipedia.org/wiki/Vienna">Vienna</a>
+      <div id="marker" title="Marker"></div>
       <!-- Popup -->
       <div id="popup" title="Welcome to ol3"></div>
     </div>

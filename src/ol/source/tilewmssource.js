@@ -98,6 +98,7 @@ ol.source.TileWMS = function(options) {
     tileGrid: options.tileGrid,
     opaque: !transparent,
     projection: options.projection,
+    tileLoadFunction: options.tileLoadFunction,
     tileUrlFunction: ol.TileUrlFunction.withTileCoordTransform(
         tileCoordTransform, tileUrlFunction)
   });

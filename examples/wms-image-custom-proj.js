@@ -54,6 +54,7 @@ var map = new ol.Map({
   view: new ol.View2D({
     projection: projection,
     center: [660000, 190000],
+    extent: extent,
     zoom: 2
   })
 });

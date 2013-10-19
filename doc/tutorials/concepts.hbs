@@ -1,0 +1,73 @@
+---
+title: Basic Concepts
+layout: doc.hbs
+---
+
+# Basic Concepts
+
+## Map
+The core component of OpenLayers 3 is the map (`ol.Map`). It is rendered to a `target` container (e.g. a `div` element on the web page that contains the map). All map properties can either be configured at construction time, or by using setter methods, e.g. `setTarget()`.
+
+```xml
+<div id="map" style="width: 100%, height: 400px"></div>
+<script>
+  var map = new ol.Map({target: 'map'});
+</script>
+```
+
+## View
+`ol.Map` is not responsible for things like center, zoom level and projection of the map. Instead, these are properties of an `ol.View` instance - typically an `ol.View2D` for 2D maps. The reason for this abstraction is the idea of instantly switching e.g. between a 2D and a tilted 3D view, without the need to maintain two copies of the `layers`.
+
+```js
+  map.setView(new ol.View2D({
+    center: [0, 0],
+    zoom: 2
+  }));
+```
+
+An `ol.View2D` also has a `projection`. The projection determines the coordinate system of the `center` and the units for map resolution calculations. If not specified (like in the above snippet), the default projection is Spherical Mercator (EPSG:3857), with meters as map units.
+
+The `zoom` option is a convenient way to specify the map resolution. The available zoom levels are determined by `maxZoom` (default: 28), `zoomFactor` (default: 2) and `maxResolution` (default is calculated in such a way that the projection's validity extent fits in a 256x256 pixel tile). Starting at zoom level 0 with a resolution of `maxResolution` units per pixel, subsequent zoom levels are calculated by dividing the previous zoom level's resolution by `zoomFactor`, until zoom level `maxZoom` is reached.
+
+
+## Source
+To get remote data for a layer, OpenLayers 3 uses `ol.source.Source` subclasses. These are available for free and commercial map tile services like OpenStreetMap or Bing, for OGC sources like WMS or WMTS, and for vector data in formats like GeoJSON or KML.
+
+```js
+  var osmSource = new ol.source.OSM();
+```
+
+## Layer
+A layer is a visual representation of data from a `source`. OpenLayers 3 has three basic types of layers: `ol.layer.Tile`, `ol.layer.Image` and `ol.layer.Vector`.
+
+`ol.layer.Tile` is for layer sources that provide pre-rendered, tiled images in grids that are organized by zoom levels for specific resolutions.
+
+`ol.layer.Image` is for server rendered images that are available for arbitrary extents and resolutions.
+
+`ol.layer.Vector` is for vector data that is rendered client-side.
+
+```js
+  var osmLayer = new ol.layer.Tile({source: osmSource});
+  map.addLayer(osmLayer);
+```
+
+## Putting it all together
+
+
+The above snippets can be conflated to a self contained map configuration with view and layers:
+
+```xml
+<div id="map" style="width: 100%, height: 400px"></div>
+<script>
+  new ol.Map({
+    layers: [
+      new ol.layer.Tile({source: new ol.source.OSM()})
+    ],
+    view: new ol.View2D({
+      center: [0, 0],
+      zoom: 2
+    }),
+    target: 'map'
+  });
+</script>
+```

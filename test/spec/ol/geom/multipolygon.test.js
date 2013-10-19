@@ -33,26 +33,11 @@ describe('ol.geom.MultiPolygon', function() {
         [outer1, inner1a, inner1b],
         [outer2]]);
 
-      expect(multi.components.length).to.be(2);
-      expect(multi.components[0]).to.be.a(ol.geom.Polygon);
-      expect(multi.components[1]).to.be.a(ol.geom.Polygon);
+      var components = multi.getComponents();
+      expect(components.length).to.be(2);
+      expect(components[0]).to.be.a(ol.geom.Polygon);
+      expect(components[1]).to.be.a(ol.geom.Polygon);
 
-    });
-
-  });
-
-  describe('#dimension', function() {
-
-    it('can be 2', function() {
-      var multi = new ol.geom.MultiPolygon([
-        [outer1, inner1a, inner1b],
-        [outer2]]);
-      expect(multi.dimension).to.be(2);
-    });
-
-    it('can be 3', function() {
-      var multi = new ol.geom.MultiPolygon([[[[10, 20, 30], [40, 50, 60]]]]);
-      expect(multi.dimension).to.be(3);
     });
 
   });
@@ -85,9 +70,53 @@ describe('ol.geom.MultiPolygon', function() {
 
   });
 
+  describe('change event', function() {
+
+    var outer, inner;
+    beforeEach(function() {
+      outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
+      inner = [[2, 2], [2, 8], [8, 8], [8, 2], [2, 2]];
+    });
+
+    it('is fired when outer ring is modified', function(done) {
+      var multi = new ol.geom.MultiPolygon([[outer, inner], [outer, inner]]);
+      var components = multi.getComponents();
+      var bounds = multi.getBounds();
+      goog.events.listen(multi, 'change', function(evt) {
+        expect(evt.target).to.be(multi);
+        expect(evt.oldExtent).to.eql(bounds);
+        expect(evt.target.getBounds()).to.eql([0, 0, 11, 10]);
+        done();
+      });
+
+      var outerOne = components[0].getRings()[0];
+      var outerCoords = outerOne.getCoordinates();
+      outerCoords[1][0] = 11;
+      outerOne.setCoordinates(outerCoords);
+    });
+
+    it('is fired when inner ring is modified', function(done) {
+      var multi = new ol.geom.MultiPolygon([[outer, inner], [outer, inner]]);
+      var components = multi.getComponents();
+      var bounds = multi.getBounds();
+      goog.events.listen(multi, 'change', function(evt) {
+        expect(evt.target).to.be(multi);
+        expect(evt.oldExtent).to.eql(bounds);
+        expect(evt.target.getBounds()).to.eql([0, 0, 10, 10]);
+        done();
+      });
+
+      var innerTwo = components[1].getRings()[1];
+      var innerCoords = innerTwo.getCoordinates();
+      innerCoords[1][0] = 3;
+      innerTwo.setCoordinates(innerCoords);
+    });
+
+  });
 
 });
 
+goog.require('goog.events');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Polygon');

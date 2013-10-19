@@ -22,7 +22,7 @@ var raster = new ol.layer.Tile({
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
     parser: new ol.parser.KML({
-      maxDepth: 1, dimension: 2, extractStyles: true, extractAttributes: true
+      maxDepth: 1, extractStyles: true, extractAttributes: true
     }),
     url: 'data/kml/lines.kml'
   })
@@ -39,9 +39,9 @@ var map = new ol.Map({
   })
 });
 
-map.on(['click', 'mousemove'], function(evt) {
+var displayFeatureInfo = function(pixel) {
   map.getFeatures({
-    pixel: evt.getPixel(),
+    pixel: pixel,
     layers: [vector],
     success: function(featuresByLayer) {
       var features = featuresByLayer[0];
@@ -52,4 +52,14 @@ map.on(['click', 'mousemove'], function(evt) {
       document.getElementById('info').innerHTML = info.join(', ') || '&nbsp';
     }
   });
+};
+
+$(map.getViewport()).on('mousemove', function(evt) {
+  var pixel = map.getEventPixel(evt.originalEvent);
+  displayFeatureInfo(pixel);
+});
+
+map.on('click', function(evt) {
+  var pixel = evt.getPixel();
+  displayFeatureInfo(pixel);
 });

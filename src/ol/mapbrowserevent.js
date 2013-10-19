@@ -3,11 +3,11 @@ goog.provide('ol.MapBrowserEvent.EventType');
 goog.provide('ol.MapBrowserEventHandler');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
-goog.require('goog.style');
 goog.require('ol.BrowserFeature');
 goog.require('ol.Coordinate');
 goog.require('ol.FrameState');
@@ -54,7 +54,8 @@ goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
  */
 ol.MapBrowserEvent.prototype.getCoordinate = function() {
   if (goog.isNull(this.coordinate_)) {
-    this.coordinate_ = this.map.getCoordinateFromPixel(this.getPixel());
+    this.coordinate_ = this.map.getEventCoordinate(
+        this.browserEvent.getBrowserEvent());
   }
   return this.coordinate_;
 };
@@ -66,9 +67,7 @@ ol.MapBrowserEvent.prototype.getCoordinate = function() {
  */
 ol.MapBrowserEvent.prototype.getPixel = function() {
   if (goog.isNull(this.pixel_)) {
-    var eventPosition = goog.style.getRelativePosition(
-        this.browserEvent, this.map.getViewport());
-    this.pixel_ = [eventPosition.x, eventPosition.y];
+    this.pixel_ = this.map.getEventPixel(this.browserEvent.getBrowserEvent());
   }
   return this.pixel_;
 };
@@ -124,18 +123,16 @@ ol.MapBrowserEventHandler = function(map) {
   this.map_ = map;
 
   /**
+   * @type {number}
+   * @private
+   */
+  this.clickTimeoutId_ = 0;
+
+  /**
    * @type {boolean}
    * @private
    */
   this.dragged_ = false;
-
-  /**
-   * Timestamp for the first click of a double click. Will be set back to 0
-   * as soon as a double click is detected.
-   * @type {?number}
-   * @private
-   */
-  this.timestamp_ = null;
 
   /**
    * @type {Array.<number>}
@@ -168,16 +165,7 @@ ol.MapBrowserEventHandler = function(map) {
         this.click_, false, this),
     goog.events.listen(element,
         goog.events.EventType.MOUSEDOWN,
-        this.handleMouseDown_, false, this),
-    goog.events.listen(element,
-        goog.events.EventType.MOUSEMOVE,
-        this.relayEvent_, false, this),
-    goog.events.listen(element,
-        goog.events.EventType.MOUSEOUT,
-        this.relayEvent_, false, this),
-    goog.events.listen(element,
-        goog.events.EventType.CONTEXTMENU,
-        this.relayEvent_, false, this)
+        this.handleMouseDown_, false, this)
   ];
   // touch events
   this.touchListenerKeys_ = [
@@ -207,7 +195,7 @@ ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
   if (!this.dragged_) {
     var newEvent;
     var type = browserEvent.type;
-    if (this.timestamp_ === 0 || type == goog.events.EventType.DBLCLICK) {
+    if (type == goog.events.EventType.DBLCLICK) {
       newEvent = new ol.MapBrowserEvent(
           ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, browserEvent);
       this.dispatchEvent(newEvent);
@@ -334,17 +322,26 @@ ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
       ol.MapBrowserEvent.EventType.TOUCHEND, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
   if (!this.dragged_) {
-    var now = goog.now();
-    if (!this.timestamp_ || now - this.timestamp_ > 250) {
-      this.timestamp_ = now;
+    goog.asserts.assert(!goog.isNull(this.down_));
+    if (this.clickTimeoutId_ !== 0) {
+      // double-click
+      goog.global.clearTimeout(this.clickTimeoutId_);
+      this.clickTimeoutId_ = 0;
+      newEvent = new ol.MapBrowserEvent(
+          ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, this.down_);
+      this.dispatchEvent(newEvent);
+      this.down_ = null;
     } else {
-      this.timestamp_ = 0;
-    }
-    if (!goog.isNull(this.down_)) {
-      this.click_(this.down_);
+      // click
+      this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
+        this.clickTimeoutId_ = 0;
+        newEvent = new ol.MapBrowserEvent(
+            ol.MapBrowserEvent.EventType.CLICK, this.map_, this.down_);
+        this.dispatchEvent(newEvent);
+        this.down_ = null;
+      }, this), 250);
     }
   }
-  this.down_ = null;
 };
 
 
@@ -381,8 +378,5 @@ ol.MapBrowserEvent.EventType = {
   DRAGEND: 'dragend',
   TOUCHSTART: goog.events.EventType.TOUCHSTART,
   TOUCHMOVE: goog.events.EventType.TOUCHMOVE,
-  TOUCHEND: goog.events.EventType.TOUCHEND,
-  MOUSEMOVE: goog.events.EventType.MOUSEMOVE,
-  MOUSEOUT: goog.events.EventType.MOUSEOUT,
-  CONTEXTMENU: goog.events.EventType.CONTEXTMENU
+  TOUCHEND: goog.events.EventType.TOUCHEND
 };

@@ -15,7 +15,6 @@ describe('ol.parser.KML', function() {
         var geom = obj.features[0].getGeometry();
         expect(obj.features[0].getId()).to.eql('KML.Polygon');
         expect(geom instanceof ol.geom.Polygon).to.be.ok();
-        expect(geom.dimension).to.eql(3);
         done();
       });
     });
@@ -28,7 +27,6 @@ describe('ol.parser.KML', function() {
         expect(obj.features.length).to.eql(2);
         var geom = obj.features[0].getGeometry();
         expect(geom instanceof ol.geom.LineString).to.be.ok();
-        expect(geom.dimension).to.eql(3);
         geom = obj.features[1].getGeometry();
         expect(geom instanceof ol.geom.LineString).to.be.ok();
         done();
@@ -43,7 +41,6 @@ describe('ol.parser.KML', function() {
         expect(obj.features.length).to.eql(1);
         var geom = obj.features[0].getGeometry();
         expect(geom instanceof ol.geom.Point).to.be.ok();
-        expect(geom.dimension).to.eql(3);
         done();
       });
     });
@@ -121,10 +118,11 @@ describe('ol.parser.KML', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var geom = obj.features[0].getGeometry();
+        var components = geom.getComponents();
         expect(geom instanceof ol.geom.GeometryCollection).to.be.ok();
-        expect(geom.components.length).to.eql(2);
-        expect(geom.components[0] instanceof ol.geom.LineString).to.be.ok();
-        expect(geom.components[1] instanceof ol.geom.Point).to.be.ok();
+        expect(components.length).to.eql(2);
+        expect(components[0] instanceof ol.geom.LineString).to.be.ok();
+        expect(components[1] instanceof ol.geom.Point).to.be.ok();
         done();
       });
     });
@@ -283,6 +281,31 @@ describe('ol.parser.KML', function() {
         done();
       });
     });
+
+    it('handles styleMap (read / write)', function(done) {
+      var url = 'spec/ol/parser/kml/stylemap.kml';
+      afterLoadXml(url, function(xml) {
+        var p = new ol.parser.KML({extractStyles: true});
+        var obj = p.read(xml);
+        var output = p.write(obj);
+        expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
+
+        var symbolizers = obj.features[0].getSymbolizers();
+        expect(symbolizers).to.have.length(1);
+
+        var symbolizer = symbolizers[0];
+        expect(symbolizer).to.be.a(ol.style.Icon);
+
+        var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+        expect(literal).to.be.a(ol.style.IconLiteral);
+
+        var url = 'http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
+        expect(literal.url).to.eql(url);
+        expect(literal.width).to.eql(32);
+        expect(literal.height).to.eql(32);
+        done();
+      });
+    });
   });
 
   describe('parsing states.kml', function() {
@@ -324,9 +347,10 @@ describe('ol.parser.KML', function() {
       expect(alaska).to.be.a(ol.Feature);
       var geometry = alaska.getGeometry();
       expect(geometry).to.be.a(ol.geom.GeometryCollection);
-      expect(geometry.components).to.have.length(2);
-      expect(geometry.components[0]).to.be.a(ol.geom.Point);
-      expect(geometry.components[1]).to.be.a(ol.geom.MultiPolygon);
+      var components = geometry.getComponents();
+      expect(components).to.have.length(2);
+      expect(components[0]).to.be.a(ol.geom.Point);
+      expect(components[1]).to.be.a(ol.geom.MultiPolygon);
     });
 
   });

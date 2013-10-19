@@ -7,6 +7,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol.Object');
+goog.require('ol.source.State');
 
 
 /**
@@ -29,8 +30,8 @@ ol.layer.LayerProperty = {
  *            contrast: number,
  *            hue: number,
  *            opacity: number,
- *            ready: boolean,
  *            saturation: number,
+ *            sourceState: ol.source.State,
  *            visible: boolean,
  *            maxResolution: number,
  *            minResolution: number}}
@@ -78,8 +79,7 @@ ol.layer.Base = function(options) {
     ol.Object.getChangeEventType(ol.layer.LayerProperty.OPACITY),
     ol.Object.getChangeEventType(ol.layer.LayerProperty.SATURATION),
     ol.Object.getChangeEventType(ol.layer.LayerProperty.MAX_RESOLUTION),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.MIN_RESOLUTION),
-    goog.events.EventType.LOAD
+    ol.Object.getChangeEventType(ol.layer.LayerProperty.MIN_RESOLUTION)
   ],
   this.handleLayerChange, false, this);
 
@@ -143,8 +143,8 @@ ol.layer.Base.prototype.getLayerState = function() {
   var contrast = this.getContrast();
   var hue = this.getHue();
   var opacity = this.getOpacity();
-  var ready = this.isReady();
   var saturation = this.getSaturation();
+  var sourceState = this.getSourceState();
   var visible = this.getVisible();
   var maxResolution = this.getMaxResolution();
   var minResolution = this.getMinResolution();
@@ -153,8 +153,8 @@ ol.layer.Base.prototype.getLayerState = function() {
     contrast: goog.isDef(contrast) ? Math.max(contrast, 0) : 1,
     hue: goog.isDef(hue) ? hue : 0,
     opacity: goog.isDef(opacity) ? goog.math.clamp(opacity, 0, 1) : 1,
-    ready: ready,
     saturation: goog.isDef(saturation) ? Math.max(saturation, 0) : 1,
+    sourceState: sourceState,
     visible: goog.isDef(visible) ? !!visible : true,
     maxResolution: goog.isDef(maxResolution) ? maxResolution : Infinity,
     minResolution: goog.isDef(minResolution) ? Math.max(minResolution, 0) : 0
@@ -234,6 +234,12 @@ goog.exportProperty(
 
 
 /**
+ * @return {ol.source.State} Source state.
+ */
+ol.layer.Base.prototype.getSourceState = goog.abstractMethod;
+
+
+/**
  * @return {boolean} Visible.
  */
 ol.layer.Base.prototype.getVisible = function() {
@@ -249,7 +255,7 @@ goog.exportProperty(
  * @protected
  */
 ol.layer.Base.prototype.handleLayerChange = function() {
-  if (this.getVisible() && this.isReady()) {
+  if (this.getVisible() && this.getSourceState() == ol.source.State.READY) {
     this.dispatchChangeEvent();
   }
 };
@@ -259,16 +265,10 @@ ol.layer.Base.prototype.handleLayerChange = function() {
  * @protected
  */
 ol.layer.Base.prototype.handleLayerVisibleChange = function() {
-  if (this.isReady()) {
+  if (this.getSourceState() == ol.source.State.READY) {
     this.dispatchChangeEvent();
   }
 };
-
-
-/**
- * @return {boolean} Is ready.
- */
-ol.layer.Base.prototype.isReady = goog.abstractMethod;
 
 
 /**

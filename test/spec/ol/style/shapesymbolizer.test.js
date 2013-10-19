@@ -12,6 +12,7 @@ describe('ol.style.Shape', function() {
         })
       });
       expect(symbolizer).to.be.a(ol.style.Shape);
+      expect(symbolizer).to.be.a(ol.style.Point);
     });
 
     it('accepts expressions', function() {
@@ -20,6 +21,17 @@ describe('ol.style.Shape', function() {
         stroke: new ol.style.Stroke({
           color: ol.expr.parse('color')
         })
+      });
+      expect(symbolizer).to.be.a(ol.style.Shape);
+    });
+
+    it('accepts zIndex', function() {
+      var symbolizer = new ol.style.Shape({
+        size: 4,
+        fill: new ol.style.Fill({
+          color: '#ff0000'
+        }),
+        zIndex: -1
       });
       expect(symbolizer).to.be.a(ol.style.Shape);
     });
@@ -47,6 +59,7 @@ describe('ol.style.Shape', function() {
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.size).to.be(42);
       expect(literal.fillOpacity).to.be(0.4);
+      expect(literal.zIndex).to.be(0);
     });
 
     it('can be called without a feature', function() {
@@ -158,6 +171,37 @@ describe('ol.style.Shape', function() {
       var literal = symbolizer.createLiteral(feature);
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.fillOpacity).to.be(0.42);
+    });
+
+    it('handles zIndex', function() {
+      var symbolizer = new ol.style.Shape({
+        stroke: new ol.style.Stroke({
+          color: '#ff0000'
+        }),
+        zIndex: -2
+      });
+
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      expect(literal).to.be.a(ol.style.ShapeLiteral);
+      expect(literal.zIndex).to.be(-2);
+    });
+
+    it('casts zIndex to number', function() {
+      var symbolizer = new ol.style.Shape({
+        fill: new ol.style.Fill({
+          color: '#BADA55'
+        }),
+        zIndex: ol.expr.parse('zIndex')
+      });
+
+      var feature = new ol.Feature({
+        zIndex: '42',
+        geometry: new ol.geom.Point([1, 2])
+      });
+
+      var literal = symbolizer.createLiteral(feature);
+      expect(literal).to.be.a(ol.style.ShapeLiteral);
+      expect(literal.zIndex).to.be(42);
     });
 
   });
@@ -286,6 +330,7 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Point');
 goog.require('ol.expr');
 goog.require('ol.style.Fill');
+goog.require('ol.style.Point');
 goog.require('ol.style.Shape');
 goog.require('ol.style.ShapeLiteral');
 goog.require('ol.style.ShapeType');

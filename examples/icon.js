@@ -1,5 +1,6 @@
 goog.require('ol.Map');
 goog.require('ol.Overlay');
+goog.require('ol.OverlayPositioning');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
@@ -63,7 +64,8 @@ var map = new ol.Map({
 var element = document.getElementById('popup');
 
 var popup = new ol.Overlay({
-  element: element
+  element: element,
+  positioning: ol.OverlayPositioning.BOTTOM_CENTER
 });
 map.addOverlay(popup);
 

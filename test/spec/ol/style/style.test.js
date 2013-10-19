@@ -57,12 +57,12 @@ describe('ol.style.Style', function() {
       });
       feature.set('foo', 'bar');
 
-      var literals = style.createLiterals(feature);
+      var literals = style.createLiterals(feature, 1);
       expect(literals).to.have.length(1);
       expect(literals[0].fillColor).to.be('#BADA55');
 
       feature.set('foo', 'baz');
-      expect(style.createLiterals(feature)).to.have.length(0);
+      expect(style.createLiterals(feature, 1)).to.have.length(0);
     });
 
     it('uses the "else" symbolizers when no rules are provided', function() {
@@ -78,7 +78,7 @@ describe('ol.style.Style', function() {
         geometry: new ol.geom.LineString([[1, 2], [3, 4]])
       });
 
-      var literals = style.createLiterals(feature);
+      var literals = style.createLiterals(feature, 1);
       expect(literals).to.have.length(1);
       expect(literals[0].color).to.be('#ff0000');
     });
@@ -107,7 +107,7 @@ describe('ol.style.Style', function() {
         geometry: new ol.geom.LineString([[1, 2], [3, 4]])
       });
 
-      var literals = style.createLiterals(feature);
+      var literals = style.createLiterals(feature, 1);
       expect(literals).to.have.length(1);
       expect(literals[0].color).to.be('#00ff00');
 
@@ -115,7 +115,7 @@ describe('ol.style.Style', function() {
         name: 'match',
         geometry: new ol.geom.LineString([[1, 2], [3, 4]])
       });
-      literals = style.createLiterals(feature);
+      literals = style.createLiterals(feature, 1);
       expect(literals).to.have.length(1);
       expect(literals[0].color).to.be('#ff00ff');
     });
@@ -133,7 +133,7 @@ describe('ol.style.Style', function() {
 
       it('returns an empty array for features without geometry', function() {
         var feature = new ol.Feature();
-        expect(style.createLiterals(feature))
+        expect(style.createLiterals(feature, 1))
             .to.have.length(0);
       });
 
@@ -141,7 +141,7 @@ describe('ol.style.Style', function() {
         var feature = new ol.Feature();
         feature.setGeometry(new ol.geom.Point([0, 0]));
 
-        var literals = style.createLiterals(feature);
+        var literals = style.createLiterals(feature, 1);
         expect(literals).to.have.length(1);
 
         var literal = literals[0];
@@ -158,7 +158,7 @@ describe('ol.style.Style', function() {
         var feature = new ol.Feature();
         feature.setGeometry(new ol.geom.LineString([[0, 0], [1, 1]]));
 
-        var literals = style.createLiterals(feature);
+        var literals = style.createLiterals(feature, 1);
         expect(literals).to.have.length(1);
 
         var literal = literals[0];
@@ -172,7 +172,7 @@ describe('ol.style.Style', function() {
         var feature = new ol.Feature();
         feature.setGeometry(new ol.geom.Polygon([[[0, 0], [1, 1], [0, 0]]]));
 
-        var literals = style.createLiterals(feature);
+        var literals = style.createLiterals(feature, 1);
         expect(literals).to.have.length(1);
 
         var literal = literals[0];
@@ -194,12 +194,14 @@ describe('ol.style.Style', function() {
       var literals = [
         new ol.style.PolygonLiteral({
           fillColor: '#ff0000',
-          fillOpacity: 0.5
+          fillOpacity: 0.5,
+          zIndex: 0
         }),
         new ol.style.PolygonLiteral({
           strokeColor: '#00ff00',
           strokeOpacity: 0.6,
-          strokeWidth: 3
+          strokeWidth: 3,
+          zIndex: 0
         })
       ];
 
@@ -221,12 +223,14 @@ describe('ol.style.Style', function() {
           fillOpacity: 0.5,
           strokeColor: '#00ff00',
           strokeOpacity: 0.6,
-          strokeWidth: 3
+          strokeWidth: 3,
+          zIndex: 0
         }),
         new ol.style.PolygonLiteral({
           strokeColor: '#0000ff',
           strokeOpacity: 0.7,
-          strokeWidth: 1
+          strokeWidth: 1,
+          zIndex: 0
         })
       ];
 
@@ -253,18 +257,22 @@ describe('ol.style.Style', function() {
         new ol.style.PolygonLiteral({
           strokeColor: '#00ff00',
           strokeOpacity: 0.6,
-          strokeWidth: 3
+          strokeWidth: 3,
+          zIndex: 0
         }),
         new ol.style.PolygonLiteral({
           fillColor: '#ff0000',
-          fillOpacity: 0.5
+          fillOpacity: 0.5,
+          zIndex: 0
         }),
         new ol.style.TextLiteral({
           color: '#ffffff',
           fontFamily: 'Arial',
           fontSize: 11,
+          fontWeight: 'normal',
           text: 'Test',
-          opacity: 0.5
+          opacity: 0.5,
+          zIndex: 0
         })
       ];
 

@@ -9,7 +9,6 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.parser.DomFeatureParser');
 goog.require('ol.parser.ObjectFeatureParser');
-goog.require('ol.parser.ReadFeaturesOptions');
 goog.require('ol.parser.StringFeatureParser');
 goog.require('ol.parser.XML');
 
@@ -58,14 +57,7 @@ ol.parser.GPX = function(opt_options) {
                 parseFloat(node.getAttribute('lat'))];
           this.readChildNodes(node, properties);
           var feature = new ol.Feature(properties);
-          var sharedVertices;
-          if (this.readFeaturesOptions_) {
-            var callback = this.readFeaturesOptions_.callback;
-            if (callback) {
-              sharedVertices = callback(feature, ol.geom.GeometryType.POINT);
-            }
-          }
-          var geometry = new ol.geom.Point(coordinates, sharedVertices);
+          var geometry = new ol.geom.Point(coordinates);
           feature.setGeometry(geometry);
           obj.features.push(feature);
         }
@@ -82,15 +74,7 @@ ol.parser.GPX = function(opt_options) {
           };
           this.readChildNodes(node, container);
           var feature = new ol.Feature(container.properties);
-          var sharedVertices;
-          if (this.readFeaturesOptions_) {
-            var callback = this.readFeaturesOptions_.callback;
-            if (callback) {
-              sharedVertices = callback(feature, type);
-            }
-          }
-          var geometry = new ol.geom.LineString(container.geometry.coordinates,
-              sharedVertices);
+          var geometry = new ol.geom.LineString(container.geometry.coordinates);
           feature.setGeometry(geometry);
           obj.features.push(feature);
         }
@@ -171,16 +155,18 @@ ol.parser.GPX = function(opt_options) {
         var desc = attributes['description'] || this.defaultDesc;
         this.writeNode('desc', desc, undefined, node);
         var geom = feature.getGeometry();
-        var i, ii;
+        var i, ii, rings;
         if (geom instanceof ol.geom.LineString) {
           this.writeNode('trkseg', feature.getGeometry(), undefined, node);
         } else if (geom instanceof ol.geom.MultiLineString) {
-          for (i = 0, ii = geom.components.length; i < ii; ++i) {
-            this.writeNode('trkseg', geom.components[i], undefined, node);
+          var components = geom.getComponents();
+          for (i = 0, ii = components.length; i < ii; ++i) {
+            this.writeNode('trkseg', components[i], undefined, node);
           }
         } else if (geom instanceof ol.geom.Polygon) {
-          for (i = 0, ii = geom.rings.length; i < ii; ++i) {
-            this.writeNode('trkseg', geom.rings[i], undefined, node);
+          rings = geom.getRings();
+          for (i = 0, ii = rings.length; i < ii; ++i) {
+            this.writeNode('trkseg', rings[i], undefined, node);
           }
         }
         return node;
@@ -255,12 +241,9 @@ ol.parser.GPX.prototype.read = function(data) {
 /**
  * Parse a GPX document provided as a string.
  * @param {string} str GPX document.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Reader options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.GPX.prototype.readFeaturesFromString =
-    function(str, opt_options) {
-  this.readFeaturesOptions_ = opt_options;
+ol.parser.GPX.prototype.readFeaturesFromString = function(str) {
   return this.read(str);
 };
 
@@ -268,24 +251,18 @@ ol.parser.GPX.prototype.readFeaturesFromString =
 /**
  * Parse a GPX document provided as a DOM structure.
  * @param {Element|Document} node Document or element node.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.GPX.prototype.readFeaturesFromNode =
-    function(node, opt_options) {
-  this.readFeaturesOptions_ = opt_options;
+ol.parser.GPX.prototype.readFeaturesFromNode = function(node) {
   return this.read(node);
 };
 
 
 /**
  * @param {Object} obj Object representing features.
- * @param {ol.parser.ReadFeaturesOptions=} opt_options Feature reading options.
  * @return {ol.parser.ReadFeaturesResult} Features and metadata.
  */
-ol.parser.GPX.prototype.readFeaturesFromObject =
-    function(obj, opt_options) {
-  this.readFeaturesOptions_ = opt_options;
+ol.parser.GPX.prototype.readFeaturesFromObject = function(obj) {
   return this.read(obj);
 };
 

@@ -1,5 +1,6 @@
 goog.require('ol.Map');
 goog.require('ol.Overlay');
+goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.coordinate');
 goog.require('ol.layer.Tile');
@@ -30,7 +31,8 @@ closer.onclick = function() {
  * Create an overlay to anchor the popup to the map.
  */
 var overlay = new ol.Overlay({
-  element: container
+  element: container,
+  stopEvent: true
 });
 
 
@@ -47,6 +49,7 @@ var map = new ol.Map({
       })
     })
   ],
+  renderers: ol.RendererHints.createFromQueryData(),
   overlays: [overlay],
   target: 'map',
   view: new ol.View2D({

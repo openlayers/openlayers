@@ -3,7 +3,6 @@ goog.provide('ol.geom.LinearRing');
 goog.require('ol.CoordinateArray');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
-goog.require('ol.geom.SharedVertices');
 
 
 
@@ -12,10 +11,9 @@ goog.require('ol.geom.SharedVertices');
  * @extends {ol.geom.LineString}
  * @param {ol.CoordinateArray} coordinates Vertex array (e.g.
  *    [[x0, y0], [x1, y1]]).
- * @param {ol.geom.SharedVertices=} opt_shared Shared vertices.
  */
-ol.geom.LinearRing = function(coordinates, opt_shared) {
-  goog.base(this, coordinates, opt_shared);
+ol.geom.LinearRing = function(coordinates) {
+  goog.base(this, coordinates);
 
   /**
    * We're intentionally not enforcing that rings be closed right now.  This

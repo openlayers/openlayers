@@ -11,8 +11,8 @@ goog.require('goog.dom.TagName');
  * @type {Array.<string>}
  */
 ol.webgl.CONTEXT_IDS_ = [
+  'experimental-webgl',
   'webgl',
-  'webgl-experimental',
   'webkit-3d',
   'moz-webgl'
 ];
@@ -63,4 +63,3 @@ ol.webgl.SUPPORTED = (function() {
     return false;
   }
 })();
-goog.exportSymbol('ol.webgl.SUPPORTED', ol.webgl.SUPPORTED);

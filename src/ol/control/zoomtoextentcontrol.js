@@ -14,7 +14,7 @@ goog.require('ol.css');
 /**
  * Create a control that adds a button, which, when pressed, changes
  * the map view to a specific extent. To style this control use the
- * css selector .ol-zoom-extent.
+ * css selector `.ol-zoom-extent`.
  * @constructor
  * @extends {ol.control.Control}
  * @param {ol.control.ZoomToExtentOptions=} opt_options Options.
