@@ -143,7 +143,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
         var dw = image.width * goog.vec.Mat4.getElement(transform, 0, 0);
         var dh = image.height * goog.vec.Mat4.getElement(transform, 1, 1);
         context.drawImage(image, 0, 0, image.width, image.height,
-            dx, dy, dw, dh);
+            Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
       } else {
         context.setTransform(
             goog.vec.Mat4.getElement(transform, 0, 0),

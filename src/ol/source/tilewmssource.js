@@ -95,6 +95,7 @@ ol.source.TileWMS = function(options) {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
     extent: extent,
+    logo: options.logo,
     tileGrid: options.tileGrid,
     opaque: !transparent,
     projection: options.projection,
