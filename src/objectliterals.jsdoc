@@ -30,7 +30,8 @@
  *     then it gets set by using `window.devicePixelRatio`.
  * @property {ol.Collection|Array.<ol.interaction.Interaction>|undefined} interactions
  *     Interactions that are initially added to the map.
- * @property {Element|Document|undefined} keyboardEventTarget The element to listen to keyboard events on.
+ * @property {Element|Document|string|undefined} keyboardEventTarget
+ *     The element to listen to keyboard events on.
  *     This determines when the `KeyboardPan` and `KeyboardZoom` interactions trigger. For example, if
  *     this option is set to `document` the keyboard interactions will always trigger. If this option
  *     is not specified, the element the library listens to keyboard events on is the map target (i.e.

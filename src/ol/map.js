@@ -1336,8 +1336,14 @@ ol.Map.createOptionsInternal = function(options) {
   /**
    * @type {Element|Document}
    */
-  var keyboardEventTarget = goog.isDef(options.keyboardEventTarget) ?
-      options.keyboardEventTarget : null;
+  var keyboardEventTarget = null;
+  if (goog.isDef(options.keyboardEventTarget)) {
+    // cannot use goog.dom.getElement because its argument cannot be
+    // of type Document
+    keyboardEventTarget = goog.isString(options.keyboardEventTarget) ?
+        document.getElementById(options.keyboardEventTarget) :
+        options.keyboardEventTarget;
+  }
 
   /**
    * @type {Object.<string, *>}
