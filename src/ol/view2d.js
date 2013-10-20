@@ -436,6 +436,7 @@ goog.exportProperty(
 
 /**
  * Set the projection of this view.
+ * Warning! This code is not yet implemented. Function should not be used.
  * @param {ol.proj.Projection|undefined} projection Projection.
  */
 ol.View2D.prototype.setProjection = function(projection) {
