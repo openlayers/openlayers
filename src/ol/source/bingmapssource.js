@@ -58,7 +58,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
       response.statusDescription != 'OK' ||
       response.authenticationResultCode != 'ValidCredentials' ||
       response.resourceSets.length != 1 ||
-      response.resourceSets[0].length != 1) {
+      response.resourceSets[0].resources.length != 1) {
     this.setState(ol.source.State.ERROR);
     return;
   }
