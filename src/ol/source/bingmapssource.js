@@ -54,17 +54,18 @@ goog.inherits(ol.source.BingMaps, ol.source.TileImage);
 ol.source.BingMaps.prototype.handleImageryMetadataResponse =
     function(response) {
 
-  goog.asserts.assert(
-      response.authenticationResultCode == 'ValidCredentials');
-  goog.asserts.assert(response.statusCode == 200);
-  goog.asserts.assert(response.statusDescription == 'OK');
+  if (response.statusCode != 200 ||
+      response.statusDescription != 'OK' ||
+      response.authenticationResultCode != 'ValidCredentials' ||
+      response.resourceSets.length != 1 ||
+      response.resourceSets[0].length != 1) {
+    this.setState(ol.source.State.ERROR);
+    return;
+  }
 
   var brandLogoUri = response.brandLogoUri;
   //var copyright = response.copyright;  // FIXME do we need to display this?
-  goog.asserts.assert(response.resourceSets.length == 1);
-  var resourceSet = response.resourceSets[0];
-  goog.asserts.assert(resourceSet.resources.length == 1);
-  var resource = resourceSet.resources[0];
+  var resource = response.resourceSets[0].resources[0];
 
   var tileGrid = new ol.tilegrid.XYZ({
     minZoom: resource.zoomMin,
