@@ -236,10 +236,12 @@ ol.Map = function(options) {
   goog.events.listen(this.overlayContainerStopEvent_, [
     goog.events.EventType.CLICK,
     goog.events.EventType.DBLCLICK,
-    ol.BrowserFeature.HAS_TOUCH ?
-        goog.events.EventType.TOUCHSTART : goog.events.EventType.MOUSEDOWN,
-    ol.BrowserFeature.HAS_TOUCH ?
-        goog.events.EventType.TOUCHEND : goog.events.EventType.MOUSEUP
+    goog.events.EventType.MOUSEDOWN,
+    goog.events.EventType.MOUSEUP,
+    goog.events.EventType.TOUCHSTART,
+    goog.events.EventType.TOUCHEND,
+    goog.events.EventType.MSPOINTERDOWN,
+    goog.events.EventType.MSPOINTERUP
   ], goog.events.Event.stopPropagation);
   goog.dom.appendChild(this.viewport_, this.overlayContainerStopEvent_);
 
