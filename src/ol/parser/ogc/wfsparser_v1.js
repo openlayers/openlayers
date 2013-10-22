@@ -58,6 +58,40 @@ goog.inherits(ol.parser.ogc.WFS_v1, ol.parser.XML);
 
 
 /**
+ * @param {ol.parser.ogc.Filter_v1_0_0|ol.parser.ogc.Filter_v1_1_0} filter The
+ *     Filter parser to use.
+ * @protected
+ */
+ol.parser.ogc.WFS_v1.prototype.setFilterParser = function(filter) {
+  this.filter_ = filter;
+  for (var uri in this.filter_.readers) {
+    for (var key in this.filter_.readers[uri]) {
+      if (!goog.isDef(this.readers[uri])) {
+        this.readers[uri] = {};
+      }
+      // do not overwrite any readers
+      if (!goog.isDef(this.readers[uri][key])) {
+        this.readers[uri][key] = goog.bind(this.filter_.readers[uri][key],
+            this.filter_);
+      }
+    }
+  }
+  for (uri in this.filter_.writers) {
+    for (key in this.filter_.writers[uri]) {
+      if (!goog.isDef(this.writers[uri])) {
+        this.writers[uri] = {};
+      }
+      // do not overwrite any writers
+      if (!goog.isDef(this.writers[uri][key])) {
+        this.writers[uri][key] = goog.bind(this.filter_.writers[uri][key],
+            this.filter_);
+      }
+    }
+  }
+};
+
+
+/**
  * @param {string|Document|Element} data Data to read.
  * @return {Object} An object representing the document.
  */

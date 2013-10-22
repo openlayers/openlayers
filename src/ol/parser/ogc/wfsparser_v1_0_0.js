@@ -74,25 +74,7 @@ ol.parser.ogc.WFS_v1_0_0 = function(opt_options) {
       return node;
     }
   });
-  this.filter_ = new ol.parser.ogc.Filter_v1_0_0();
-  for (var uri in this.filter_.readers) {
-    for (var key in this.filter_.readers[uri]) {
-      if (!goog.isDef(this.readers[uri])) {
-        this.readers[uri] = {};
-      }
-      this.readers[uri][key] = goog.bind(this.filter_.readers[uri][key],
-          this.filter_);
-    }
-  }
-  for (uri in this.filter_.writers) {
-    for (key in this.filter_.writers[uri]) {
-      if (!goog.isDef(this.writers[uri])) {
-        this.writers[uri] = {};
-      }
-      this.writers[uri][key] = goog.bind(this.filter_.writers[uri][key],
-          this.filter_);
-    }
-  }
+  this.setFilterParser(new ol.parser.ogc.Filter_v1_0_0());
 };
 goog.inherits(ol.parser.ogc.WFS_v1_0_0,
     ol.parser.ogc.WFS_v1);

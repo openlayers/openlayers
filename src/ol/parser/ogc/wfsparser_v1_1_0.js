@@ -2,6 +2,7 @@ goog.provide('ol.parser.ogc.WFS_v1_1_0');
 
 goog.require('goog.functions');
 goog.require('goog.object');
+goog.require('ol.parser.ogc.Filter_v1_1_0');
 goog.require('ol.parser.ogc.WFS_v1');
 
 
@@ -36,9 +37,11 @@ ol.parser.ogc.WFS_v1_1_0 = function() {
       this.readChildNodes(node, obj);
     },
     'Feature': function(node, container) {
-      var obj = {fids: []};
+      var obj = {};
       this.readChildNodes(node, obj);
-      container.insertIds.push(obj.fids[0]);
+      for (var key in obj.fids) {
+        container.insertIds.push(key);
+      }
     }
   });
   goog.object.extend(this.writers[this.defaultNamespaceURI], {
@@ -88,7 +91,7 @@ ol.parser.ogc.WFS_v1_1_0 = function() {
       return node;
     }
   });
-  // TODO ogc and gml namespaces
+  this.setFilterParser(new ol.parser.ogc.Filter_v1_1_0());
 };
 goog.inherits(ol.parser.ogc.WFS_v1_1_0,
     ol.parser.ogc.WFS_v1);
