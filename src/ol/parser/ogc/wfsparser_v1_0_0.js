@@ -63,9 +63,8 @@ ol.parser.ogc.WFS_v1_0_0 = function(opt_options) {
       }
       if (goog.isDef(options.propertyNames)) {
         for (var i = 0, ii = options.propertyNames.length; i < ii; i++) {
-          this.writeNode('ogc:PropertyName', {
-            property: options.propertyNames[i]
-          }, 'http://www.opengis.net/ogc', node);
+          this.writeNode('PropertyName', options.propertyNames[i],
+              'http://www.opengis.net/ogc', node);
         }
       }
       if (goog.isDef(options.filter)) {

@@ -42,11 +42,13 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
           node.setAttribute('maxFeatures', options.maxFeatures);
         }
       }
-      // TODO set xsi:schemaLocation
       for (var i = 0, ii = this.featureTypes.length; i < ii; i++) {
         options.featureType = this.featureTypes[i];
         this.writeNode('Query', options, null, node);
       }
+      this.setAttributeNS(
+          node, 'http://www.w3.org/2001/XMLSchema-instance',
+          'xsi:schemaLocation', this.schemaLocation);
       return node;
     }
   };

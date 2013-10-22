@@ -37,6 +37,20 @@ describe('ol.parser.ogc.WFS_v1_0_0', function() {
       });
     });
 
+    it('handles writing GetFeature with PropertyName', function(done) {
+      var url = 'spec/ol/parser/ogc/xml/wfs_v1_0_0/getfeature0.xml';
+      afterLoadXml(url, function(xml) {
+        var p = new ol.parser.ogc.WFS_v1_0_0({featureTypes: ['states'],
+          featurePrefix: 'topp', featureNS: 'http://www.openplans.org/topp'});
+        var output = p.writers[p.defaultNamespaceURI]['GetFeature'].apply(
+            p, [{propertyNames: [new ol.expr.Identifier('STATE_NAME'),
+                  new ol.expr.Identifier('STATE_FIPS'),
+                  new ol.expr.Identifier('STATE_ABBR')]}]);
+        expect(goog.dom.xml.loadXml(p.serialize(output))).to.xmleql(xml);
+        done();
+      });
+    });
+
   });
 
 });

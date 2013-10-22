@@ -77,7 +77,7 @@ ol.parser.ogc.WFS_v1_1_0 = function() {
         }
       }
       if (goog.isDef(options.filter)) {
-        this.writeNode('ogc:Filter', options.filter,
+        this.writeNode('Filter', options.filter,
             'http://www.opengis.net/ogc', node);
       }
       return node;
