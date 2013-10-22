@@ -596,6 +596,13 @@
  */
 
 /**
+ * @typedef {Object} ol.parser.WFSOptions
+ * @property {Array.<string>} featureTypes The feature types to use.
+ * @property {string} featureNS The featureNS to use.
+ * @property {string} featurePrefix The prefix to use for the featureNS.
+ */
+
+/**
  * @typedef {Object} ol.source.BingMapsOptions
  * @property {string|undefined} culture Culture code. Default is `en-us`.
  * @property {string} key Bing Maps API key. Get yours at

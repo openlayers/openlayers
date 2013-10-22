@@ -1,0 +1,10 @@
+<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:BBOX>
+            <ogc:PropertyName>the_geom</ogc:PropertyName>
+            <gml:Box xmlns:gml="http://www.opengis.net/gml">
+                <gml:coordinates decimal="." cs="," ts=" ">1,2 3,4</gml:coordinates>
+            </gml:Box>
+        </ogc:BBOX>
+    </ogc:Filter>
+</wfs:Query>
