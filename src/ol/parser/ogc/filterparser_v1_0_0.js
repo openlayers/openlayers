@@ -91,12 +91,14 @@ ol.parser.ogc.Filter_v1_0_0 = function() {
       goog.asserts.assert(args[1] instanceof ol.expr.Literal);
       goog.asserts.assert(args[2] instanceof ol.expr.Literal);
       goog.asserts.assert(args[3] instanceof ol.expr.Literal);
-      goog.asserts.assert(args[4] instanceof ol.expr.Literal);
       var bbox = [
         args[0].getValue(), args[1].getValue(),
         args[2].getValue(), args[3].getValue()
       ];
-      var projection = args[4].getValue();
+      var projection;
+      if (args[4] instanceof ol.expr.Literal) {
+        projection = args[4].getValue();
+      }
       var property = args[5];
       // PropertyName is mandatory in 1.0.0, but e.g. GeoServer also
       // accepts filters without it.
