@@ -54,7 +54,9 @@ ol.parser.ogc.WFS_v1_1_0 = function() {
           var options = obj.options;
           var node = obj.node;
           if (goog.isDef(options)) {
-            node.setAttribute('resultType', options.resultType);
+            if (goog.isDef(options.resultType)) {
+              node.setAttribute('resultType', options.resultType);
+            }
             if (goog.isDef(options.startIndex)) {
               node.setAttribute('startIndex', options.startIndex);
             }
