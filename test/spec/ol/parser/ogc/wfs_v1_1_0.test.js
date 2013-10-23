@@ -29,6 +29,21 @@ describe('ol.parser.ogc.WFS_v1_1_0', function() {
         done();
       });
     });
+
+    it('handles read of boundedBy on the FeatureCollection', function(done) {
+      var url = 'spec/ol/parser/ogc/xml/wfs_v1_1_0/boundedBy.xml';
+      afterLoadXml(url, function(xml) {
+        // the XML does not contain a version attribute on the root node
+        var p = new ol.parser.ogc.WFS_v1_1_0();
+        var obj = p.read(xml);
+        expect(obj.bounds[0]).to.equal(3197.88);
+        expect(obj.bounds[1]).to.equal(306457.313);
+        expect(obj.bounds[2]).to.equal(280339.156);
+        expect(obj.bounds[3]).to.equal(613850.438);
+        done();
+      });
+    });
+
   });
 
 });

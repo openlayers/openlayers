@@ -9,18 +9,22 @@ goog.require('ol.parser.ogc.WFS_v1');
 
 /**
  * @constructor
+* @param {ol.parser.WFSOptions=} opt_options
+ *     Optional configuration object.
  * @extends {ol.parser.ogc.WFS_v1}
  */
-ol.parser.ogc.WFS_v1_1_0 = function() {
-  goog.base(this);
+ol.parser.ogc.WFS_v1_1_0 = function(opt_options) {
+  goog.base(this, opt_options);
   this.version = '1.1.0';
   this.schemaLocation = this.defaultNamespaceURI + ' ' +
       'http://schemas.opengis.net/wfs/1.1.0/wfs.xsd';
   goog.object.extend(this.readers[this.defaultNamespaceURI], {
     'FeatureCollection': goog.functions.sequence(
         function(node, obj) {
-          obj.numberOfFeatures = parseInt(
-              node.getAttribute('numberOfFeatures'), 10);
+          var numberOfFeatures = node.getAttribute('numberOfFeatures');
+          if (!goog.isNull(numberOfFeatures)) {
+            obj.numberOfFeatures = parseInt(numberOfFeatures, 10);
+          }
         },
         this.readers['http://www.opengis.net/wfs']['FeatureCollection']
     ),
