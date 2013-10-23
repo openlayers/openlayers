@@ -22,8 +22,7 @@ describe('ol.parser.ogc.WFS_v1_0_0', function() {
     it('handles writing Query with BBOX Filter', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wfs_v1_0_0/query0.xml';
       afterLoadXml(url, function(xml) {
-        var p = new ol.parser.ogc.WFS_v1_0_0({featureTypes: ['states'],
-          featurePrefix: 'topp', featureNS: 'http://www.openplans.org/topp'});
+        var p = new ol.parser.ogc.WFS_v1_0_0();
         var filter = new ol.expr.Call(
             new ol.expr.Identifier(ol.expr.functions.EXTENT),
             [new ol.expr.Literal(1), new ol.expr.Literal(2),
@@ -31,7 +30,12 @@ describe('ol.parser.ogc.WFS_v1_0_0', function() {
               undefined,
               new ol.expr.Identifier('the_geom')]);
         var output = p.writers[p.defaultNamespaceURI]['Query'].apply(
-            p, [{filter: filter, featureType: 'states'}]);
+            p, [{
+              filter: filter,
+              featureType: 'states',
+              featureNS: 'http://www.openplans.org/topp',
+              featurePrefix: 'topp'
+            }]);
         expect(goog.dom.xml.loadXml(p.serialize(output))).to.xmleql(xml);
         done();
       });
@@ -40,12 +44,16 @@ describe('ol.parser.ogc.WFS_v1_0_0', function() {
     it('handles writing GetFeature with PropertyName', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wfs_v1_0_0/getfeature0.xml';
       afterLoadXml(url, function(xml) {
-        var p = new ol.parser.ogc.WFS_v1_0_0({featureTypes: ['states'],
-          featurePrefix: 'topp', featureNS: 'http://www.openplans.org/topp'});
+        var p = new ol.parser.ogc.WFS_v1_0_0();
         var output = p.writers[p.defaultNamespaceURI]['GetFeature'].apply(
-            p, [{propertyNames: [new ol.expr.Identifier('STATE_NAME'),
-                  new ol.expr.Identifier('STATE_FIPS'),
-                  new ol.expr.Identifier('STATE_ABBR')]}]);
+            p, [{
+              propertyNames: [new ol.expr.Identifier('STATE_NAME'),
+                new ol.expr.Identifier('STATE_FIPS'),
+                new ol.expr.Identifier('STATE_ABBR')],
+              featureNS: 'http://www.openplans.org/topp',
+              featurePrefix: 'topp',
+              featureTypes: ['states']
+            }]);
         expect(goog.dom.xml.loadXml(p.serialize(output))).to.xmleql(xml);
         done();
       });

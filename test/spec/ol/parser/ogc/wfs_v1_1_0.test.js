@@ -44,10 +44,40 @@ describe('ol.parser.ogc.WFS_v1_1_0', function() {
       });
     });
 
+    it('handles writing Query with BBOX Filter', function(done) {
+      var url = 'spec/ol/parser/ogc/xml/wfs_v1_1_0/query0.xml';
+      afterLoadXml(url, function(xml) {
+        var p = new ol.parser.ogc.WFS_v1_1_0();
+        var srs = 'urn:ogc:def:crs:EPSG::4326';
+        var filter = new ol.expr.Call(
+            new ol.expr.Identifier(ol.expr.functions.EXTENT),
+            [new ol.expr.Literal(1), new ol.expr.Literal(2),
+              new ol.expr.Literal(3), new ol.expr.Literal(4),
+              new ol.expr.Literal(srs),
+              new ol.expr.Identifier('the_geom')]);
+        p.getFilterParser().getGmlParser().axisOrientation =
+            ol.proj.get(srs).getAxisOrientation();
+        var output = p.writers[p.defaultNamespaceURI]['Query'].apply(
+            p, [{
+              srsName: srs,
+              filter: filter,
+              featureType: 'states',
+              featureNS: 'http://www.openplans.org/topp',
+              featurePrefix: 'topp'
+            }]);
+        expect(goog.dom.xml.loadXml(p.serialize(output))).to.xmleql(xml);
+        done();
+      });
+    });
+
   });
 
 });
 
 goog.require('goog.dom.xml');
+goog.require('ol.expr.Call');
+goog.require('ol.expr.Identifier');
+goog.require('ol.expr.Literal');
 goog.require('ol.parser.ogc.WFS');
 goog.require('ol.parser.ogc.WFS_v1_1_0');
+goog.require('ol.proj');

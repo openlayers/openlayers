@@ -19,8 +19,7 @@ ol.ENABLE_WFS_1_1_0 = true;
 
 /**
  * @constructor
- * @param {ol.parser.WFSOptions=} opt_options
- *     Optional configuration object.
+ * @param {Object=} opt_options Options which will be set on this object.
  * @extends {ol.parser.ogc.Versioned}
  */
 ol.parser.ogc.WFS = function(opt_options) {

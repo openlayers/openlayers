@@ -581,6 +581,14 @@ ol.parser.ogc.Filter_v1.prototype.aggregateLogical_ = function(filters,
 
 
 /**
+ * @return {ol.parser.ogc.GML_v2|ol.parser.ogc.GML_v3}
+ */
+ol.parser.ogc.Filter_v1.prototype.getGmlParser = function() {
+  return this.gml_;
+};
+
+
+/**
  * @param {ol.parser.ogc.GML_v2|ol.parser.ogc.GML_v3} gml The GML parser to
  *     use.
  * @protected

@@ -9,12 +9,10 @@ goog.require('ol.parser.ogc.WFS_v1');
 
 /**
  * @constructor
- * @param {ol.parser.WFSOptions=} opt_options
- *     Optional configuration object.
  * @extends {ol.parser.ogc.WFS_v1}
  */
-ol.parser.ogc.WFS_v1_0_0 = function(opt_options) {
-  goog.base(this, opt_options);
+ol.parser.ogc.WFS_v1_0_0 = function() {
+  goog.base(this);
   this.version = '1.0.0';
   this.schemaLocation = this.defaultNamespaceURI + ' ' +
       'http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd';
@@ -43,23 +41,15 @@ ol.parser.ogc.WFS_v1_0_0 = function(opt_options) {
   });
   goog.object.extend(this.writers[this.defaultNamespaceURI], {
     'Query': function(options) {
-      // TODO see if we really need properties on the instance
-      /*goog.object.extend(options, {
-        featureNS: this.featureNS,
-        featurePrefix: this.featurePrefix,
-        featureType: this.featureType,
-        srsName: this.srsName,
-        srsNameInQuery: this.srsNameInQuery
-      });*/
-      var prefix = goog.isDef(this.featurePrefix) ? this.featurePrefix +
+      var prefix = goog.isDef(options.featurePrefix) ? options.featurePrefix +
           ':' : '';
       var node = this.createElementNS('wfs:Query');
       node.setAttribute('typeName', prefix + options.featureType);
       if (goog.isDef(options.srsNameInQuery) && goog.isDef(options.srsName)) {
         node.setAttribute('srsName', options.srsName);
       }
-      if (goog.isDef(this.featureNS)) {
-        node.setAttribute('xmlns:' + this.featurePrefix, this.featureNS);
+      if (goog.isDef(options.featureNS)) {
+        node.setAttribute('xmlns:' + options.featurePrefix, options.featureNS);
       }
       if (goog.isDef(options.propertyNames)) {
         for (var i = 0, ii = options.propertyNames.length; i < ii; i++) {

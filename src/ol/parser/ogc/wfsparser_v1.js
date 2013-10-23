@@ -6,16 +6,9 @@ goog.require('ol.parser.XML');
 
 /**
  * @constructor
- * @param {ol.parser.WFSOptions=} opt_options
- *     Optional configuration object.
  * @extends {ol.parser.XML}
  */
-ol.parser.ogc.WFS_v1 = function(opt_options) {
-  if (goog.isDef(opt_options)) {
-    this.featureTypes = opt_options.featureTypes;
-    this.featurePrefix = opt_options.featurePrefix;
-    this.featureNS = opt_options.featureNS;
-  }
+ol.parser.ogc.WFS_v1 = function() {
   this.defaultNamespaceURI = 'http://www.opengis.net/wfs';
   // TODO set errorProperty
   this.readers = {};
@@ -42,8 +35,8 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
           node.setAttribute('maxFeatures', options.maxFeatures);
         }
       }
-      for (var i = 0, ii = this.featureTypes.length; i < ii; i++) {
-        options.featureType = this.featureTypes[i];
+      for (var i = 0, ii = options.featureTypes.length; i < ii; i++) {
+        options.featureType = options.featureTypes[i];
         this.writeNode('Query', options, null, node);
       }
       this.setAttributeNS(
@@ -55,6 +48,14 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
   goog.base(this);
 };
 goog.inherits(ol.parser.ogc.WFS_v1, ol.parser.XML);
+
+
+/**
+ * @return {ol.parser.ogc.Filter_v1_0_0|ol.parser.ogc.Filter_v1_1_0}
+ */
+ol.parser.ogc.WFS_v1.prototype.getFilterParser = function() {
+  return this.filter_;
+};
 
 
 /**
