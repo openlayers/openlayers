@@ -1,1 +1,4 @@
 @exportClass ol.layer.Vector ol.layer.VectorLayerOptions
+@exportProperty ol.layer.Vector.prototype.addFeatures
+@exportProperty ol.layer.Vector.prototype.removeFeatures
+@exportProperty ol.layer.Vector.prototype.clear
