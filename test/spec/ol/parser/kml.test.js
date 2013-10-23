@@ -18,6 +18,19 @@ describe('ol.parser.KML', function() {
         done();
       });
     });
+    it('Linearring read / written correctly', function(done) {
+      var url = 'spec/ol/parser/kml/linearring.kml';
+      afterLoadXml(url, function(xml) {
+        var obj = parser.read(xml);
+        var output = parser.write(obj);
+        //expect(output).to.be(true);
+        expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
+        expect(obj.features.length).to.eql(1);
+        var geom = obj.features[0].getGeometry();
+        expect(geom instanceof ol.geom.LinearRing).to.be.ok();
+        done();
+      });
+    });
     it('Linestring read / written correctly', function(done) {
       var url = 'spec/ol/parser/kml/linestring.kml';
       afterLoadXml(url, function(xml) {
@@ -120,9 +133,11 @@ describe('ol.parser.KML', function() {
         var geom = obj.features[0].getGeometry();
         var components = geom.getComponents();
         expect(geom instanceof ol.geom.GeometryCollection).to.be.ok();
-        expect(components.length).to.eql(2);
-        expect(components[0] instanceof ol.geom.LineString).to.be.ok();
-        expect(components[1] instanceof ol.geom.Point).to.be.ok();
+        expect(components.length).to.eql(4);
+        expect(components[0] instanceof ol.geom.Polygon).to.be.ok();
+        expect(components[1] instanceof ol.geom.LinearRing).to.be.ok();
+        expect(components[2] instanceof ol.geom.LineString).to.be.ok();
+        expect(components[3] instanceof ol.geom.Point).to.be.ok();
         done();
       });
     });
@@ -364,6 +379,7 @@ goog.require('ol.Feature');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');

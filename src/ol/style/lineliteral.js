@@ -50,7 +50,8 @@ goog.inherits(ol.style.LineLiteral, ol.style.Literal);
  * @inheritDoc
  */
 ol.style.LineLiteral.prototype.equals = function(other) {
-  return this.color == other.color &&
+  return other instanceof ol.style.LineLiteral &&
+      this.color == other.color &&
       this.opacity == other.opacity &&
       this.width == other.width &&
       this.zIndex == other.zIndex;

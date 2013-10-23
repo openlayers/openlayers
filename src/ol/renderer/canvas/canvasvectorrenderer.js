@@ -10,6 +10,7 @@ goog.require('goog.vec.Mat4');
 goog.require('ol.Feature');
 goog.require('ol.geom.AbstractCollection');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
@@ -171,7 +172,16 @@ ol.renderer.canvas.Vector.prototype.renderLineStringFeatures_ =
     this.maxSymbolSize_ = [Math.max(currentSize[0], this.maxSymbolSize_[0]),
           Math.max(currentSize[0], this.maxSymbolSize_[1])];
     geometry = feature.getGeometry();
-    if (geometry instanceof ol.geom.LineString) {
+
+    if (geometry instanceof ol.geom.GeometryCollection) {
+      components = [];
+      var tmpComponents = geometry.getComponents();
+      for (j = 0, jj = tmpComponents.length; j < jj; j++) {
+        if (tmpComponents[j] instanceof ol.geom.LineString) {
+          components.push(tmpComponents[j]);
+        }
+      }
+    } else if (geometry instanceof ol.geom.LineString) {
       components = [geometry];
     } else {
       goog.asserts.assert(geometry instanceof ol.geom.MultiLineString,
@@ -265,7 +275,16 @@ ol.renderer.canvas.Vector.prototype.renderPointFeatures_ =
           Math.max(this.maxSymbolSize_[1],
               this.symbolSizes_[id][1] + 2 * Math.abs(contentYOffset))];
     geometry = feature.getGeometry();
-    if (geometry instanceof ol.geom.Point) {
+
+    if (geometry instanceof ol.geom.GeometryCollection) {
+      components = [];
+      var tmpComponents = geometry.getComponents();
+      for (j = 0, jj = tmpComponents.length; j < jj; j++) {
+        if (tmpComponents[j] instanceof ol.geom.Point) {
+          components.push(tmpComponents[j]);
+        }
+      }
+    } else if (geometry instanceof ol.geom.Point) {
       components = [geometry];
     } else {
       goog.asserts.assert(geometry instanceof ol.geom.MultiPoint,
@@ -397,7 +416,16 @@ ol.renderer.canvas.Vector.prototype.renderPolygonFeatures_ =
       continue;
     }
     geometry = feature.getGeometry();
-    if (geometry instanceof ol.geom.Polygon) {
+
+    if (geometry instanceof ol.geom.GeometryCollection) {
+      components = [];
+      var tmpComponents = geometry.getComponents();
+      for (j = 0, jj = tmpComponents.length; j < jj; j++) {
+        if (tmpComponents[j] instanceof ol.geom.Polygon) {
+          components.push(tmpComponents[j]);
+        }
+      }
+    } else if (geometry instanceof ol.geom.Polygon) {
       components = [geometry];
     } else {
       goog.asserts.assert(geometry instanceof ol.geom.MultiPolygon,

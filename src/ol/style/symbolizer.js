@@ -16,6 +16,6 @@ ol.style.Symbolizer = function() {};
  * type.
  * @param {ol.geom.GeometryType|ol.Feature} featureOrType Feature for evaluating
  *     expressions or a geometry type.
- * @return {ol.style.Literal} Literal symbolizer.
+ * @return {Array|ol.style.Literal} Literal symbolizer.
  */
 ol.style.Symbolizer.prototype.createLiteral = goog.abstractMethod;

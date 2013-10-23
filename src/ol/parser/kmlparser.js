@@ -15,6 +15,7 @@ goog.require('ol.geom.AbstractCollection');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
@@ -263,8 +264,29 @@ ol.parser.KML = function(opt_options) {
       'outerBoundaryIs': function(node, coordinates) {
         this.readChildNodes(node, coordinates);
       },
-      'LinearRing': function(node, coordinates) {
+      'innerBoundaryIs': function(node, coordinates) {
         this.readChildNodes(node, coordinates);
+      },
+      'LinearRing': function(node, container) {
+        if (node.parentNode.localName === 'outerBoundaryIs' ||
+            node.parentNode.localName === 'innerBoundaryIs') {
+          // inside a Polygon geometry
+          this.readChildNodes(node, container);
+        } else {
+          // in the case of a standalone LinearRing geometry
+          var coordinates = [];
+          this.readChildNodes(node, coordinates);
+          var linearring = {
+            type: ol.geom.GeometryType.LINEARRING,
+            coordinates: coordinates[0]
+          };
+          // in the case of a multi geometry this is parts
+          if (goog.isArray(container)) {
+            container.push(linearring);
+          } else {
+            container.geometry = linearring;
+          }
+        }
       },
       'coordinates': function(node, coordinates) {
         var coordstr = this.getChildValue(node);
@@ -280,9 +302,6 @@ ol.parser.KML = function(opt_options) {
           coordArray.push(pair);
         }
         coordinates.push(coordArray);
-      },
-      'innerBoundaryIs': function(node, coordinates) {
-        this.readChildNodes(node, coordinates);
       },
       'Folder': function(node, obj) {
         this.readChildNodes(node, obj);
@@ -814,6 +833,8 @@ ol.parser.KML = function(opt_options) {
       '_geometry': function(geometry) {
         if (geometry instanceof ol.geom.Point) {
           return this.writeNode('Point', geometry);
+        } else if (geometry instanceof ol.geom.LinearRing) {
+          return this.writeNode('LinearRing', geometry.getCoordinates());
         } else if (geometry instanceof ol.geom.LineString) {
           return this.writeNode('LineString', geometry);
         } else if (geometry instanceof ol.geom.Polygon) {
@@ -1113,6 +1134,9 @@ ol.parser.KML.prototype.createGeometry_ = function(container) {
       break;
     case ol.geom.GeometryType.LINESTRING:
       geometry = new ol.geom.LineString(container.geometry.coordinates);
+      break;
+    case ol.geom.GeometryType.LINEARRING:
+      geometry = new ol.geom.LinearRing(container.geometry.coordinates);
       break;
     case ol.geom.GeometryType.POLYGON:
       geometry = new ol.geom.Polygon(container.geometry.coordinates);

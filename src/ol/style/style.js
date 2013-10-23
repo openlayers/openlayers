@@ -146,10 +146,14 @@ ol.style.setDefault = function(style) {
  * @return {Array.<ol.style.Literal>} Array of literals.
  */
 ol.style.Style.createLiterals = function(symbolizers, featureOrType) {
-  var length = symbolizers.length;
-  var literals = new Array(length);
-  for (var i = 0; i < length; ++i) {
-    literals[i] = symbolizers[i].createLiteral(featureOrType);
+  var literals = [];
+  for (var i = 0; i < symbolizers.length; ++i) {
+    var literal = symbolizers[i].createLiteral(featureOrType);
+    if (goog.isArray(literal)) {
+      literals = literals.concat(literal);
+    } else {
+      literals.push(literal);
+    }
   }
   return ol.style.Style.reduceLiterals_(literals);
 };
