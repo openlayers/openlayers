@@ -1,7 +1,9 @@
 goog.provide('ol.parser.ogc.WFS_v1_1_0');
 
+goog.require('goog.asserts');
 goog.require('goog.functions');
 goog.require('goog.object');
+goog.require('ol.expr.Identifier');
 goog.require('ol.parser.ogc.Filter_v1_1_0');
 goog.require('ol.parser.ogc.WFS_v1');
 
@@ -47,18 +49,23 @@ ol.parser.ogc.WFS_v1_1_0 = function() {
     }
   });
   goog.object.extend(this.writers[this.defaultNamespaceURI], {
-    'GetFeature': function(options) {
-      var node = this.writers['http://www.opengis.net/wfs']['GetFeature'].
-          apply(this, arguments);
-      if (goog.isDef(options)) {
-        node.setAttribute('resultType', options.resultType);
-        if (goog.isDef(options.startIndex)) {
-          node.setAttribute('startIndex', options.startIndex);
-        }
-        node.setAttribute('count', options.count);
-      }
-      return node;
-    },
+    'GetFeature': goog.functions.compose(
+        function(obj) {
+          var options = obj.options;
+          var node = obj.node;
+          if (goog.isDef(options)) {
+            node.setAttribute('resultType', options.resultType);
+            if (goog.isDef(options.startIndex)) {
+              node.setAttribute('startIndex', options.startIndex);
+            }
+            if (goog.isDef(options.count)) {
+              node.setAttribute('count', options.count);
+            }
+          }
+          return node;
+        },
+        this.writers['http://www.opengis.net/wfs']['GetFeature']
+    ),
     'Query': function(options) {
       var prefix = goog.isDef(options.featurePrefix) ? options.featurePrefix +
           ':' : '';
@@ -70,9 +77,7 @@ ol.parser.ogc.WFS_v1_1_0 = function() {
       }
       if (goog.isDef(options.propertyNames)) {
         for (var i = 0, ii = options.propertyNames.length; i < ii; i++) {
-          this.writeNode('wfs:PropertyName', {
-            property: options.propertyNames[i]
-          }, null, node);
+          this.writeNode('PropertyName', options.propertyNames[i], null, node);
         }
       }
       if (goog.isDef(options.filter)) {
@@ -82,8 +87,9 @@ ol.parser.ogc.WFS_v1_1_0 = function() {
       return node;
     },
     'PropertyName': function(obj) {
+      goog.asserts.assertInstanceof(obj, ol.expr.Identifier);
       var node = this.createElementNS('wfs:PropertyName');
-      node.appendChild(this.createTextNode(obj.property));
+      node.appendChild(this.createTextNode(obj.getName()));
       return node;
     }
   });

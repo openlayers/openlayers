@@ -1,6 +1,7 @@
 goog.provide('ol.parser.ogc.WFS_v1_0_0');
 
 goog.require('goog.array');
+goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('ol.parser.ogc.Filter_v1_0_0');
 goog.require('ol.parser.ogc.WFS_v1');
@@ -40,6 +41,12 @@ ol.parser.ogc.WFS_v1_0_0 = function() {
     }
   });
   goog.object.extend(this.writers[this.defaultNamespaceURI], {
+    'GetFeature': goog.functions.compose(
+        function(obj) {
+          return obj.node;
+        },
+        this.writers['http://www.opengis.net/wfs']['GetFeature']
+    ),
     'Query': function(options) {
       var prefix = goog.isDef(options.featurePrefix) ? options.featurePrefix +
           ':' : '';

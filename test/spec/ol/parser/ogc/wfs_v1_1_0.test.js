@@ -68,6 +68,27 @@ describe('ol.parser.ogc.WFS_v1_1_0', function() {
         expect(goog.dom.xml.loadXml(p.serialize(output))).to.xmleql(xml);
         done();
       });
+
+    });
+
+    it('handles writing GetFeature with PropertyName', function(done) {
+      var url = 'spec/ol/parser/ogc/xml/wfs_v1_1_0/getfeature0.xml';
+      afterLoadXml(url, function(xml) {
+        var p = new ol.parser.ogc.WFS_v1_1_0();
+        var output = p.writers[p.defaultNamespaceURI]['GetFeature'].apply(
+            p, [{
+              resultType: 'hits',
+              srsName: 'urn:ogc:def:crs:EPSG::4326',
+              propertyNames: [new ol.expr.Identifier('STATE_NAME'),
+                new ol.expr.Identifier('STATE_FIPS'),
+                new ol.expr.Identifier('STATE_ABBR')],
+              featureNS: 'http://www.openplans.org/topp',
+              featurePrefix: 'topp',
+              featureTypes: ['states']
+            }]);
+        expect(goog.dom.xml.loadXml(p.serialize(output))).to.xmleql(xml);
+        done();
+      });
     });
 
   });

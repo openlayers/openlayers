@@ -42,7 +42,7 @@ ol.parser.ogc.WFS_v1 = function() {
       this.setAttributeNS(
           node, 'http://www.w3.org/2001/XMLSchema-instance',
           'xsi:schemaLocation', this.schemaLocation);
-      return node;
+      return {node: node, options: options};
     }
   };
   goog.base(this);
