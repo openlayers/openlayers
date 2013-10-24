@@ -329,6 +329,15 @@ describe('ol.parser.gml_v2', function() {
         done();
       });
     });
+    it('GML file created by OGR read correctly', function(done) {
+      var url = 'spec/ol/parser/ogc/xml/gml_v2/ogr.xml';
+      afterLoadXml(url, function(xml) {
+        var obj = parser.read(xml);
+        expect(obj.features.length).to.equal(12);
+        done();
+      });
+    });
+
   });
 });
 
