@@ -597,9 +597,16 @@
 
 /**
  * @typedef {Object} ol.parser.WFSOptions
+ * @property {string} featureNS The feature namespace to use.
+ * @property {string} featurePrefix The prefix for the namespace.
  * @property {Array.<string>} featureTypes The feature types to use.
- * @property {string} featureNS The featureNS to use.
- * @property {string} featurePrefix The prefix to use for the featureNS.
+ */
+
+/**
+ * @typedef {Object} ol.parser.WFSNative
+ * @property {string} vendorId The vendor id to use.
+ * @property {boolean} safeToIgnore Is it safe to ignore?
+ * @property {string} value The value of the Native element.
  */
 
 /**

@@ -21,6 +21,7 @@ ol.parser.ogc.WFS_v1 = function() {
   this.writers = {};
   this.writers[this.defaultNamespaceURI] = {
     'GetFeature': function(options) {
+      options = /** @type {ol.parser.WFSOptions} */(options);
       var node = this.createElementNS('wfs:GetFeature');
       node.setAttribute('service', 'WFS');
       node.setAttribute('version', this.version);
@@ -43,6 +44,46 @@ ol.parser.ogc.WFS_v1 = function() {
           node, 'http://www.w3.org/2001/XMLSchema-instance',
           'xsi:schemaLocation', this.schemaLocation);
       return {node: node, options: options};
+    },
+    'Transaction': function(obj) {
+      obj = obj || {};
+      var options = obj.options || {};
+      var node = this.createElementNS('wfs:Transaction');
+      node.setAttribute('service', 'WFS');
+      node.setAttribute('version', this.version);
+      if (goog.isDef(options.handle)) {
+        node.setAttribute('handle', options.handle);
+      }
+      var i, ii;
+      var features = obj.features;
+      if (goog.isDefAndNotNull(features)) {
+        // TODO implement multi option for geometry types
+        var name, feature;
+        for (i = 0, ii = features.length; i < ii; ++i) {
+          feature = features[i];
+          // TODO Update (use feature.getOriginal())
+          // TODO Insert and Delete
+          if (goog.isDef(name)) {
+            this.writeNode(name, {
+              feature: feature,
+              options: options
+            }, null, node);
+          }
+        }
+      }
+      if (goog.isDef(options.nativeElements)) {
+        for (i = 0, ii = options.nativeElements.length; i < ii; ++i) {
+          this.writeNode('Native', options.nativeElements[i], null, node);
+        }
+      }
+      return node;
+    },
+    'Native': function(nativeElement) {
+      var node = this.createElementNS('wfs:Native');
+      node.setAttribute('vendorId', nativeElement.vendorId);
+      node.setAttribute('safeToIgnore', nativeElement.safeToIgnore);
+      node.appendChild(this.createTextNode(nativeElement.value));
+      return node;
     }
   };
   goog.base(this);
@@ -115,7 +156,7 @@ ol.parser.ogc.WFS_v1.prototype.read = function(data) {
  * @return {string} A serialized WFS transaction.
  */
 ol.parser.ogc.WFS_v1.prototype.write = function(features, options) {
-  var root = this.writeNode('wfs:Transaction', {features: features,
+  var root = this.writeNode('Transaction', {features: features,
     options: options});
   this.setAttributeNS(
       root, 'http://www.w3.org/2001/XMLSchema-instance',
