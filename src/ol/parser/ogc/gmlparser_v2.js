@@ -54,8 +54,7 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
       for (var i = 0; i < numCoordinates; ++i) {
         var coord = coordinates[i];
         var part = goog.array.concat(coord);
-        if (goog.isDef(this.axisOrientation) &&
-            this.axisOrientation.substr(0, 2) !== 'en') {
+        if (this.axisOrientation.substr(0, 2) !== 'en') {
           part[0] = coord[1];
           part[1] = coord[0];
         }

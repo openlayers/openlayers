@@ -29,6 +29,7 @@ describe('ol.parser.ogc.WFS_v1_0_0', function() {
               new ol.expr.Literal(3), new ol.expr.Literal(4),
               undefined,
               new ol.expr.Identifier('the_geom')]);
+        p.getFilterParser().getGmlParser().axisOrientation = 'enu';
         var output = p.writers[p.defaultNamespaceURI]['Query'].apply(
             p, [{
               filter: filter,
