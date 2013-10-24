@@ -35,6 +35,7 @@ ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED =
  * @constructor
  * @extends {ol.interaction.Drag}
  * @param {ol.interaction.DragZoomOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.DragZoom = function(opt_options) {
 

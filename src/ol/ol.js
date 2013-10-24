@@ -9,6 +9,7 @@ goog.provide('ol');
  * linter complains with:
  *
  * "Missing newline between constructor and goog.inherits"
+ * @todo stability experimental
  */
 ol.inherits =
     goog.inherits;

@@ -16,6 +16,7 @@ goog.require('ol.geom.GeometryType');
  * @constructor
  * @extends {ol.geom.AbstractCollection}
  * @param {Array.<ol.geom.Geometry>} geometries Array of geometries.
+ * @todo stability experimental
  */
 ol.geom.GeometryCollection = function(geometries) {
   goog.base(this);

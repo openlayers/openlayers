@@ -18,6 +18,7 @@ goog.require('ol.tilegrid.TileGrid');
  *            opaque: (boolean|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            tileGrid: (ol.tilegrid.TileGrid|undefined)}}
+ * @todo stability experimental
  */
 ol.source.TileOptions;
 
@@ -27,6 +28,7 @@ ol.source.TileOptions;
  * @constructor
  * @extends {ol.source.Source}
  * @param {ol.source.TileOptions} options Tile source options.
+ * @todo stability experimental
  */
 ol.source.Tile = function(options) {
 

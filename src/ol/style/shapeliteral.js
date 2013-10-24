@@ -7,6 +7,7 @@ goog.require('ol.style.PointLiteral');
 
 /**
  * @enum {string}
+ * @todo stability experimental
  */
 ol.style.ShapeType = {
   CIRCLE: 'circle'

@@ -10,6 +10,7 @@ goog.require('ol.source.Vector2');
  * @constructor
  * @extends {ol.layer.Layer}
  * @param {ol.layer.LayerOptions} options Options.
+ * @todo stability experimental
  */
 ol.layer.Vector2 = function(options) {
   goog.base(this, options);

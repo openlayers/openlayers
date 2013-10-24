@@ -43,6 +43,7 @@ ol.ENABLE_WMSCAPS_1_1_1_WMSC = true;
  * @constructor
  * @param {Object=} opt_options Options which will be set on this object.
  * @extends {ol.parser.ogc.Versioned}
+ * @todo stability experimental
  */
 ol.parser.ogc.WMSCapabilities = function(opt_options) {
   opt_options = opt_options || {};

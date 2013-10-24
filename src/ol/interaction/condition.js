@@ -15,6 +15,7 @@ ol.interaction.ConditionType;
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the alt key is pressed.
+ * @todo stability experimental
  */
 ol.interaction.condition.altKeyOnly = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
@@ -28,6 +29,7 @@ ol.interaction.condition.altKeyOnly = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the alt and shift keys are pressed.
+ * @todo stability experimental
  */
 ol.interaction.condition.altShiftKeysOnly = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
@@ -42,6 +44,7 @@ ol.interaction.condition.altShiftKeysOnly = function(mapBrowserEvent) {
  * Always true.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True.
+ * @todo stability experimental
  */
 ol.interaction.condition.always = goog.functions.TRUE;
 
@@ -49,6 +52,7 @@ ol.interaction.condition.always = goog.functions.TRUE;
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if the event is a click event.
+ * @todo stability experimental
  */
 ol.interaction.condition.clickOnly = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
@@ -59,6 +63,7 @@ ol.interaction.condition.clickOnly = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True only if there no modifier keys are pressed.
+ * @todo stability experimental
  */
 ol.interaction.condition.noModifierKeys = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
@@ -72,6 +77,7 @@ ol.interaction.condition.noModifierKeys = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the platform modifier key is pressed.
+ * @todo stability experimental
  */
 ol.interaction.condition.platformModifierKeyOnly = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
@@ -85,6 +91,7 @@ ol.interaction.condition.platformModifierKeyOnly = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the shift key is pressed.
+ * @todo stability experimental
  */
 ol.interaction.condition.shiftKeyOnly = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
@@ -98,6 +105,7 @@ ol.interaction.condition.shiftKeyOnly = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True only if the target element is not editable.
+ * @todo stability experimental
  */
 ol.interaction.condition.targetNotEditable = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
