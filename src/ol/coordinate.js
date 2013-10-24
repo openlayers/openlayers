@@ -9,6 +9,7 @@ goog.require('goog.math');
 /**
  * A function that formats a {@link ol.Coordinate} into a string.
  * @typedef {function((ol.Coordinate|undefined)): string}
+ * @todo stability experimental
  */
 ol.CoordinateFormatType;
 
@@ -16,6 +17,7 @@ ol.CoordinateFormatType;
 /**
  * An array of numbers representing a coordinate.
  * @typedef {Array.<number>} ol.Coordinate
+ * @todo stability experimental
  */
 ol.Coordinate;
 
@@ -23,6 +25,7 @@ ol.Coordinate;
 /**
  * An array of coordinate arrays.
  * @typedef {Array.<ol.Coordinate>}
+ * @todo stability experimental
  */
 ol.CoordinateArray;
 
@@ -42,6 +45,7 @@ ol.coordinate.add = function(coordinate, delta) {
 /**
  * @param {number=} opt_precision Precision.
  * @return {ol.CoordinateFormatType} Coordinate format.
+ * @todo stability experimental
  */
 ol.coordinate.createStringXY = function(opt_precision) {
   return (
@@ -114,6 +118,7 @@ ol.coordinate.squaredDistance = function(coord1, coord2) {
 /**
  * @param {ol.Coordinate|undefined} coordinate Coordinate.
  * @return {string} Hemisphere, degrees, minutes and seconds.
+ * @todo stability experimental
  */
 ol.coordinate.toStringHDMS = function(coordinate) {
   if (goog.isDef(coordinate)) {
@@ -129,6 +134,7 @@ ol.coordinate.toStringHDMS = function(coordinate) {
  * @param {ol.Coordinate|undefined} coordinate Coordinate.
  * @param {number=} opt_precision Precision.
  * @return {string} XY.
+ * @todo stability experimental
  */
 ol.coordinate.toStringXY = function(coordinate, opt_precision) {
   if (goog.isDef(coordinate)) {
@@ -146,6 +152,7 @@ ol.coordinate.toStringXY = function(coordinate, opt_precision) {
  * @param {Array} array The array with coordinates.
  * @param {string} axis the axis info.
  * @return {ol.Coordinate} The coordinate created.
+ * @todo stability experimental
  */
 ol.coordinate.fromProjectedArray = function(array, axis) {
   var firstAxis = axis.charAt(0);

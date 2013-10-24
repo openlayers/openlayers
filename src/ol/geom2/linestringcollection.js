@@ -21,6 +21,7 @@ ol.geom2.LineString;
  * @param {ol.structs.Buffer} buf Buffer.
  * @param {Object.<string, number>=} opt_ranges Ranges.
  * @param {number=} opt_dim Dimension.
+ * @todo stability experimental
  */
 ol.geom2.LineStringCollection = function(buf, opt_ranges, opt_dim) {
 
@@ -61,6 +62,7 @@ ol.geom2.LineStringCollection.createEmpty = function(capacity, opt_dim) {
  * @param {number=} opt_capacity Capacity.
  * @param {number=} opt_dim Dimension.
  * @return {ol.geom2.LineStringCollection} Line string collection.
+ * @todo stability experimental
  */
 ol.geom2.LineStringCollection.pack =
     function(unpackedLineStrings, opt_capacity, opt_dim) {

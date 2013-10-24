@@ -374,6 +374,7 @@ virtual('lint', 'build/lint-timestamp', 'build/lint-generated-timestamp',
 def build_lint_src_timestamp(t):
     t.run('%(GJSLINT)s',
           '--jslint_error=all',
+          '--custom_jsdoc_tags=todo',
           '--strict',
           t.newer(t.dependencies))
     t.touch()
@@ -390,6 +391,7 @@ def build_lint_generated_timestamp(t):
           '--jslint_error=all',
           # ignore error for max line length (for these auto-generated sources)
           '--disable=110',
+          '--custom_jsdoc_tags=todo',
           # for a complete list of error codes to allow, see
           # http://closure-linter.googlecode.com/svn/trunk/closure_linter/errors.py
           '--limited_doc_files=%s' % (','.join(limited_doc_files),),

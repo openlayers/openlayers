@@ -41,6 +41,7 @@ goog.exportSymbol('grid', grid);
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {ol.source.TileJSONOptions} options TileJSON options.
+ * @todo stability experimental
  */
 ol.source.TileJSON = function(options) {
 

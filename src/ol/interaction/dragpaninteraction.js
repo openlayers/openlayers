@@ -18,6 +18,7 @@ goog.require('ol.interaction.condition');
  * @constructor
  * @extends {ol.interaction.Drag}
  * @param {ol.interaction.DragPanOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.DragPan = function(opt_options) {
 

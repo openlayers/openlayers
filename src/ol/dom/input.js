@@ -29,6 +29,7 @@ ol.dom.InputProperty = {
  * @constructor
  * @extends {ol.Object}
  * @param {Element} target Target element.
+ * @todo stability experimental
  */
 ol.dom.Input = function(target) {
   goog.base(this);
@@ -58,6 +59,7 @@ goog.inherits(ol.dom.Input, ol.Object);
 /**
  * If the input is a checkbox, return whether or not the checbox is checked.
  * @return {boolean|undefined} checked.
+ * @todo stability experimental
  */
 ol.dom.Input.prototype.getChecked = function() {
   return /** @type {boolean} */ (this.get(ol.dom.InputProperty.CHECKED));
@@ -71,6 +73,7 @@ goog.exportProperty(
 /**
  * Get the value of the input.
  * @return {string|undefined} input value.
+ * @todo stability experimental
  */
 ol.dom.Input.prototype.getValue = function() {
   return /** @type {string} */ (this.get(ol.dom.InputProperty.VALUE));
@@ -84,6 +87,7 @@ goog.exportProperty(
 /**
  * Get the value of the input as a number.
  * @return {number|null|undefined} input value as number.
+ * @todo stability experimental
  */
 ol.dom.Input.prototype.getValueAsNumber = function() {
   return /** @type {number} */ (this.get(ol.dom.InputProperty.VALUE_AS_NUMBER));
@@ -97,6 +101,7 @@ goog.exportProperty(
 /**
  * Sets the value of the input.
  * @param {string} value Value.
+ * @todo stability experimental
  */
 ol.dom.Input.prototype.setValue = function(value) {
   this.set(ol.dom.InputProperty.VALUE, value);
@@ -110,6 +115,7 @@ goog.exportProperty(
 /**
  * Sets the number value of the input.
  * @param {number} value Number value.
+ * @todo stability experimental
  */
 ol.dom.Input.prototype.setValueAsNumber = function(value) {
   this.set(ol.dom.InputProperty.VALUE_AS_NUMBER, value);
@@ -123,6 +129,7 @@ goog.exportProperty(
 /**
  * Set whether or not a checkbox is checked.
  * @param {boolean} checked Checked.
+ * @todo stability experimental
  */
 ol.dom.Input.prototype.setChecked = function(checked) {
   this.set(ol.dom.InputProperty.CHECKED, checked);

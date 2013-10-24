@@ -23,6 +23,7 @@ goog.require('ol.css');
  * @constructor
  * @extends {ol.control.Control}
  * @param {ol.control.FullScreenOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.control.FullScreen = function(opt_options) {
 

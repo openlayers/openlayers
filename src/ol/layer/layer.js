@@ -13,6 +13,7 @@ goog.require('ol.source.Source');
  * @constructor
  * @extends {ol.layer.Base}
  * @param {ol.layer.LayerOptions} options Layer options.
+ * @todo stability experimental
  */
 ol.layer.Layer = function(options) {
 
@@ -62,6 +63,7 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_obj) {
 
 /**
  * @return {ol.source.Source} Source.
+ * @todo stability experimental
  */
 ol.layer.Layer.prototype.getSource = function() {
   return this.source_;

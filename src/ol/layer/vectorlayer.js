@@ -137,6 +137,7 @@ ol.layer.FeatureCache.prototype.remove = function(feature, opt_extent) {
  * @constructor
  * @extends {ol.layer.Layer}
  * @param {ol.layer.VectorLayerOptions} options Vector layer options.
+ * @todo stability experimental
  */
 ol.layer.Vector = function(options) {
 
