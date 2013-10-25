@@ -23,7 +23,6 @@ describe('ol.parser.KML', function() {
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
         var output = parser.write(obj);
-        //expect(output).to.be(true);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         expect(obj.features.length).to.eql(1);
         var geom = obj.features[0].getGeometry();
