@@ -25,6 +25,7 @@ ol.interaction.KEYBOARD_PAN_DURATION = 100;
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {ol.interaction.KeyboardPanOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.KeyboardPan = function(opt_options) {
 

@@ -9,6 +9,7 @@ goog.require('ol.source.Image');
  * @constructor
  * @extends {ol.layer.Layer}
  * @param {ol.layer.LayerOptions} options Layer options.
+ * @todo stability experimental
  */
 ol.layer.Image = function(options) {
   goog.base(this, options);

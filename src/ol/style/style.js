@@ -21,6 +21,7 @@ goog.require('ol.style.Symbolizer');
 /**
  * @constructor
  * @param {ol.style.StyleOptions} options Style options.
+ * @todo stability experimental
  */
 ol.style.Style = function(options) {
 

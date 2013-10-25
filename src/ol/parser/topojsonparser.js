@@ -20,6 +20,7 @@ goog.require('ol.parser.StringFeatureParser');
  * @constructor
  * @implements {ol.parser.StringFeatureParser}
  * @extends {ol.parser.Parser}
+ * @todo stability experimental
  */
 ol.parser.TopoJSON = function() {};
 goog.inherits(ol.parser.TopoJSON, ol.parser.Parser);

@@ -15,6 +15,7 @@ goog.require('ol.interaction.condition');
  * @constructor
  * @param {ol.interaction.KeyboardZoomOptions=} opt_options Options.
  * @extends {ol.interaction.Interaction}
+ * @todo stability experimental
  */
 ol.interaction.KeyboardZoom = function(opt_options) {
 

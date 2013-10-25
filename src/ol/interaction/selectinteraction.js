@@ -17,6 +17,7 @@ goog.require('ol.source.Vector');
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {ol.interaction.SelectOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.Select = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};

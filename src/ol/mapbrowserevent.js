@@ -23,6 +23,7 @@ goog.require('ol.Pixel');
  * @param {ol.Map} map Map.
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @param {?ol.FrameState=} opt_frameState Frame state.
+ * @todo stability experimental
  */
 ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
 
@@ -51,6 +52,7 @@ goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
 
 /**
  * @return {ol.Coordinate} Coordinate.
+ * @todo stability experimental
  */
 ol.MapBrowserEvent.prototype.getCoordinate = function() {
   if (goog.isNull(this.coordinate_)) {
@@ -64,6 +66,7 @@ ol.MapBrowserEvent.prototype.getCoordinate = function() {
 /**
  * Get pixel offset of the event from the top-left corner of the map viewport.
  * @return {ol.Pixel} Pixel offset.
+ * @todo stability experimental
  */
 ol.MapBrowserEvent.prototype.getPixel = function() {
   if (goog.isNull(this.pixel_)) {
@@ -87,6 +90,7 @@ ol.MapBrowserEvent.prototype.isMouseActionButton = function() {
  * Prevents the default browser action.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/event.preventDefault
  * @override
+ * @todo stability experimental
  */
 ol.MapBrowserEvent.prototype.preventDefault = function() {
   goog.base(this, 'preventDefault');
@@ -98,6 +102,7 @@ ol.MapBrowserEvent.prototype.preventDefault = function() {
  * Prevents further propagation of the current event.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/event.stopPropagation
  * @override
+ * @todo stability experimental
  */
 ol.MapBrowserEvent.prototype.stopPropagation = function() {
   goog.base(this, 'stopPropagation');

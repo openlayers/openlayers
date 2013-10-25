@@ -3,11 +3,13 @@
  * @property {string} html HTML markup for this attribution.
  * @property {Object.<string, Array.<ol.TileRange>>|undefined} tileRanges
  *     Tile ranges (FOR INTERNAL USE ONLY).
+ * @todo stability experimental
  */
 
 /**
  * @typedef {Object} ol.DeviceOrientationOptions
  * @property {boolean|undefined} tracking Start tracking. Default is false.
+ * @todo stability experimental
  */
 
 /**
@@ -15,6 +17,7 @@
  * @property {boolean|undefined} tracking Start Tracking. Default is false.
  * @property {GeolocationPositionOptions|undefined} trackingOptions Tracking options.
  * @property {ol.proj.ProjectionLike} projection Projection.
+ * @todo stability experimental
  */
 
 /**
@@ -30,6 +33,7 @@
  * @property {function()|undefined} error Callback for unsuccessful queries.
  *     Note that queries with no matching features trigger the success callback,
  *     not the error callback.
+ * @todo stability experimental
  */
 
 /**
@@ -45,6 +49,7 @@
  * @property {function()|undefined} error Callback for unsuccessful queries.
  *     Note that queries with no matching features trigger the success callback,
  *     not the error callback.
+ * @todo stability experimental
  */
 
 /**
@@ -63,6 +68,7 @@
  * @property {Element|string|undefined} target The container for the map.
  * @property {ol.IView|undefined} view The map's view. Currently
  *     {@link ol.View2D} is available as view.
+ * @todo stability experimental
  */
 
 /**
@@ -74,6 +80,7 @@
  * @property {ol.OverlayPositioning|undefined} positioning Positioning.
  * @property {boolean|undefined} stopEvent Whether event propagation to the map
  * 	should be stopped. Default is `false`.
+ * @todo stability experimental
  */
 
 /**
@@ -83,6 +90,7 @@
  * @property {ol.Extent|undefined} extent The validity extent for the SRS.
  * @property {boolean|undefined} global Whether the projection is valid for the
  *     whole globe. Default is false.
+ * @todo stability experimental
  */
 
 /**
@@ -95,6 +103,7 @@
  *     specified in Proj4. The default is `enu`.
  * @property {boolean|undefined} global Whether the projection is valid for the
  *     whole globe. Default is false.
+ * @todo stability experimental
  */
 
 /**
@@ -131,6 +140,7 @@
  * @property {number|undefined} zoomFactor The zoom factor used to determine the
  *     resolution constraint. Used together with `maxResolution` and `maxZoom`.
  *     Default is 2.
+ * @todo stability experimental
  */
 
 /**
@@ -139,6 +149,7 @@
  * @property {number|undefined} start The start time of the animation. Default is immediately.
  * @property {number|undefined} duration The duration of the animation in milliseconds. Default is 1000.
  * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.upAndDown`
+ * @todo stability experimental
  */
 
 /**
@@ -147,6 +158,7 @@
  * @property {number|undefined} start The start time of the animation. Default is immediately.
  * @property {number|undefined} duration The duration of the animation in milliseconds. Default is 1000.
  * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.inAndOut`
+ * @todo stability experimental
  */
 
 /**
@@ -155,6 +167,7 @@
  * @property {number|undefined} start The start time of the animation. Default is immediately.
  * @property {number|undefined} duration The duration of the animation in milliseconds.  Default is 1000.
  * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.inAndOut`
+ * @todo stability experimental
  */
 
 /**
@@ -163,18 +176,21 @@
  * @property {number|undefined} start The start time of the animation. Default is immediately.
  * @property {number|undefined} duration The duration of the animation in milliseconds.
  * @property {function(number):number|undefined} easing Easing function.
+ * @todo stability experimental
  */
 
 /**
  * @typedef {Object} ol.control.AttributionOptions
  * @property {string|undefined} className CSS class name. Default is `ol-attribution`.
  * @property {Element|undefined} target Target.
+ * @todo stability experimental
  */
 
 /**
  * @typedef {Object} ol.control.ControlOptions
  * @property {Element|undefined} element Element.
  * @property {Element|undefined} target Target.
+ * @todo stability experimental
  */
 
 /**
@@ -186,6 +202,7 @@
  * @property {ol.control.LogoOptions|undefined} logoOptions Logo options.
  * @property {boolean|undefined} zoom Zoom.
  * @property {ol.control.ZoomOptions|undefined} zoomOptions Zoom options.
+ * @todo stability experimental
  */
 
 /**
@@ -193,12 +210,14 @@
  * @property {string|undefined} className CSS class name. Default is `ol-full-screen`.
  * @property {boolean|undefined} keys Full keyboard access.
  * @property {Element|undefined} target Target.
+ * @todo stability experimental
  */
 
 /**
  * @typedef {Object} ol.control.LogoOptions
  * @property {string|undefined} className CSS class name. Default is `ol-logo`.
  * @property {Element|undefined} target Target.
+ * @todo stability experimental
  */
 
 /**
@@ -210,6 +229,7 @@
  * @property {Element|undefined} target Target.
  * @property {string|undefined} undefinedHTML Markup for undefined coordinates.
  *     Default is `` (empty string).
+ * @todo stability experimental
  */
 
 /**
@@ -218,6 +238,7 @@
  * @property {number|undefined} minWidth Minimum width in pixels.
  * @property {Element|undefined} target Target.
  * @property {ol.control.ScaleLineUnits|undefined} units Units.
+ * @todo stability experimental
  */
 
 /**
@@ -226,6 +247,7 @@
  * @property {string|undefined} className CSS class name. Default is `ol-zoom`.
  * @property {number|undefined} delta The zoom delta applied on each click.
  * @property {Element|undefined} target Target.
+ * @todo stability experimental
  */
 
 /**
@@ -233,6 +255,7 @@
  * @property {string|undefined} className CSS class name.
  * @property {number|undefined} maxResolution Maximum resolution.
  * @property {number|undefined} minResolution Minimum resolution.
+ * @todo stability experimental
  */
 
 /**
@@ -241,6 +264,7 @@
  * @property {Element|undefined} target Target.
  * @property {ol.Extent|undefined} extent The extent to zoom to. If
  *     undefined the validity extent of the view projection is used.
+ * @todo stability experimental
  */
 
 /**
@@ -248,6 +272,7 @@
  * @property {number|undefined} duration Animation duration. Default is 250ms.
  * @property {number|undefined} delta The zoom delta applied on each double
  *     click, default is 1.
+ * @todo stability experimental
  */
 
 /**
@@ -256,6 +281,7 @@
  * @property {ol.interaction.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is no modifiers.
+ * @todo stability experimental
  */
 
 /**
@@ -263,6 +289,7 @@
  * @property {ol.interaction.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is both shift and alt keys.
+ * @todo stability experimental
  */
 
 /**
@@ -270,6 +297,7 @@
  * @property {ol.interaction.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is shify key.
+ * @todo stability experimental
  */
 
 /**
@@ -277,6 +305,7 @@
  * @property {ol.interaction.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is shift key.
+ * @todo stability experimental
  */
 
 /**
@@ -299,6 +328,7 @@
  * @property {boolean|undefined} touchZoom Whether touch zoom is desired.
  * @property {number|undefined} zoomDelta Zoom delta.
  * @property {number|undefined} zoomDuration Zoom duration.
+ * @todo stability experimental
  */
 
 /**
@@ -308,6 +338,7 @@
  *     or not, default is no modifiers.
  * @property {number|undefined} pixelDelta Pixel The amount to pan on each key
  *     press
+ * @todo stability experimental
  */
 
 /**
@@ -317,11 +348,13 @@
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is no modifiers.
  * @property {number|undefined} delta The amount to zoom on each key press.
+ * @todo stability experimental
  */
 
 /**
  * @typedef {Object} ol.interaction.MouseWheelZoomOptions
  * @property {number|undefined} duration Animation duration. Default is 250ms.
+ * @todo stability experimental
  */
 
 /**
@@ -336,22 +369,26 @@
  *     toggles the selection.
  * @property {undefined|function(ol.layer.Layer):boolean} layerFilter Filter
  *     function to restrict selection to a subset of layers.
+ * @todo stability experimental
  */
 
 /**
  * @typedef {Object} ol.interaction.TouchPanOptions
  * @property {ol.Kinetic|undefined} kinetic Kinetic inertia to apply to the
  *     pan.
+ * @todo stability experimental
  */
 
 /**
  * @typedef {Object} ol.interaction.TouchRotateOptions
  * @property {number|undefined} threshold Minimal angle to start a rotation.
+ * @todo stability experimental
  */
 
 /**
  * @typedef {Object} ol.interaction.TouchZoomOptions
  * @property {number|undefined} duration Animation duration. Default is 400ms.
+ * @todo stability experimental
  */
 
 /**
@@ -366,6 +403,7 @@
  *      (inclusive) at which this layer will be visible.
  * @property {number|undefined} maxResolution The maximum resolution
  *      (exclusive) below which this layer will be visible.
+ * @todo stability experimental
  */
 
 /**
@@ -381,6 +419,7 @@
  *      (inclusive) at which this layer will be visible.
  * @property {number|undefined} maxResolution The maximum resolution
  *      (exclusive) below which this layer will be visible.
+ * @todo stability experimental
  */
 
 /**
@@ -396,6 +435,7 @@
  * @property {number|undefined} maxResolution The maximum resolution
  *      (exclusive) below which this layer will be visible.
  * @property {Array.<ol.layer.Base>|ol.Collection|undefined} layers Child layers.
+ * @todo stability experimental
  */
 
 /**
@@ -412,6 +452,7 @@
  *      (inclusive) at which this layer will be visible.
  * @property {number|undefined} maxResolution The maximum resolution
  *      (exclusive) below which this layer will be visible.
+ * @todo stability experimental
  */
 
 /**
@@ -428,6 +469,7 @@
  *      (inclusive) at which this layer will be visible.
  * @property {number|undefined} maxResolution The maximum resolution
  *      (exclusive) below which this layer will be visible.
+ * @todo stability experimental
  */
 
 /**
@@ -440,17 +482,20 @@
  *     Default is 0, which means we don't follow network links at all.
  * @property {Array.<string>|undefined} trackAttributes Track attributes to
  *     parse.
+ * @todo stability experimental
  */
 
 /**
  * @typedef {Object} ol.parser.GMLReadOptions
  * @property {string|undefined} axisOrientation The axis orientation.
+ * @todo stability experimental
  */
 
 /**
  * @typedef {Object} ol.parser.GMLWriteOptions
  * @property {ol.proj.ProjectionLike} srsName The srsName to use when writing.
  * @property {string|undefined} axisOrientation The axis orientation.
+ * @todo stability experimental
  */
 
 /**
@@ -482,6 +527,7 @@
  *     use for this instance.
  * @property {ol.parser.GMLWriteOptions|undefined} writeOptions writeOptions
  *     to use for this instance.
+ * @todo stability experimental
  */
 
 /**
@@ -499,6 +545,7 @@
  *     Default is `true´.
  * @property {boolean|undefined} extractRoutes Extract routes from GPX.
  *     Default is `true´.
+ * @todo stability experimental
  */
 
 /**
@@ -507,6 +554,7 @@
  *     out.
  * @property {Object|undefined} metadata Metadata key/value pair with keys:
  *     name, desc and author.
+ * @todo stability experimental
  */
 
 /**
@@ -517,12 +565,14 @@
  * @property {string} style Style.
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
+ * @todo stability experimental
  */
 
 /**
  * @typedef {Object} ol.source.MapQuestOptions
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
+ * @todo stability experimental
  */
 
 /**
@@ -530,6 +580,7 @@
  * @property {ol.Extent|undefined} extent Extent.
  * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
+ * @todo stability experimental
  */
 
 /**
@@ -539,6 +590,7 @@
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
  * @property {string|undefined} url URL.
+ * @todo stability experimental
  */
 
 /**
@@ -560,6 +612,7 @@
  * @property {Array.<number>|undefined} resolutions Resolutions. If specified,
  *     requests will be made for these resolutions only.
  * @property {string|undefined} url WMS service URL.
+ * @todo stability experimental
  */
 
 /**
@@ -571,6 +624,7 @@
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
  * @property {string|undefined} url URL.
+ * @todo stability experimental
  */
 
 /**
@@ -583,6 +637,7 @@
  * @property {ol.Size|undefined} imageSize Size of the image.
  * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {string|undefined} url URL.
+ * @todo stability experimental
  */
 
 /**
@@ -592,6 +647,7 @@
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
  * @property {string} url URL.
+ * @todo stability experimental
  */
 
 /**
@@ -615,6 +671,7 @@
  * @property {string|undefined} url WMS service URL.
  * @property {Array.<string>|undefined} urls WMS service urls. Use this instead
  *     of `url` when the WMS supports multiple urls for GetMap requests.
+ * @todo stability experimental
  */
 
 /**
@@ -630,6 +687,7 @@
  *     the parser does not know the SRS (e.g. in some GML flavors), or if the
  *     projection determined by the parser needs to be overridden.
  * @property {string|undefined} url Server url providing the vector data.
+ * @todo stability experimental
  */
 
 /**
@@ -641,6 +699,7 @@
  * @property {Array.<ol.geom2.PointCollection>|undefined} pointCollections
  *    Point collections.
  * @property {ol.proj.ProjectionLike} projection Projection.
+ * @todo stability experimental
  */
 
 
@@ -650,6 +709,7 @@
  *     GetFeatureInfo. Default is `ol.source.WMSGetFeatureInfoMethod.IFRAME`.
  * @property {Object} params Params for the GetFeatureInfo request. Default is
  *     `{'INFO_FORMAT': 'text/html'}`.
+ * @todo stability experimental
  */
 
 
@@ -675,6 +735,7 @@
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
  * @property {Array.<string>|undefined} urls Urls.
+ * @todo stability experimental
  */
 
 /**
@@ -696,6 +757,7 @@
  * @property {string|undefined} url URL template.  Must include `{x}`, `{y}`,
  *     and `{z}` placeholders.
  * @property {Array.<string>|undefined} urls An array of URL templates.
+ * @todo stability experimental
  */
 
 /**
@@ -714,6 +776,7 @@
  * @property {number|ol.expr.Expression|undefined} yOffset Pixel offset from the
  *     point to the center of the icon (positive values shift image down).
  * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
+ * @todo stability experimental
  */
 
 /**
@@ -722,6 +785,7 @@
  *     code.
  * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
  * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
+ * @todo stability experimental
  */
 
 /**
@@ -734,6 +798,7 @@
  *     a value is provided, the rule will apply at resolutions greater than or
  *     equal to this value.
  * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers.
+ * @todo stability experimental
  */
 
 /**
@@ -743,6 +808,7 @@
  * @property {ol.style.Fill|undefined} fill Fill symbolizer for shape.
  * @property {ol.style.Stroke|undefined} stroke Stroke symbolizer for shape.
  * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
+ * @todo stability experimental
  */
 
 /**
@@ -752,6 +818,7 @@
  * @property {number|ol.expr.Expression|undefined} opacity Stroke opacity (0-1).
  * @property {number|ol.expr.Expression|undefined} width Stroke width in pixels.
  * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
+ * @todo stability experimental
  */
 
 /**
@@ -760,6 +827,7 @@
  * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers
  *     (that apply if no rules are provided or where none of the provided rules
  *     apply).
+ * @todo stability experimental
  */
 
 /**
@@ -772,6 +840,7 @@
  * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
  * @property {ol.style.Stroke|undefined} stroke Stroke symbolizer for text.
  * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
+ * @todo stability experimental
  */
 
 /**
@@ -782,6 +851,7 @@
  * @property {!Array.<number>} resolutions Resolutions.
  * @property {ol.Size|undefined} tileSize Tile size.
  * @property {Array.<ol.Size>|undefined} tileSizes Tile sizes.
+ * @todo stability experimental
  */
 
 /**
@@ -792,9 +862,11 @@
  * @property {!Array.<string>} matrixIds matrix IDs.
  * @property {ol.Size|undefined} tileSize Tile size.
  * @property {Array.<ol.Size>|undefined} tileSizes Tile sizes.
+ * @todo stability experimental
  */
 
 /**
  * @typedef {Object} ol.tilegrid.XYZOptions
  * @property {number} maxZoom Maximum zoom.
+ * @todo stability experimental
  */

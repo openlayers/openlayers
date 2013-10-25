@@ -16,6 +16,7 @@ goog.require('ol.source.wms');
  * @extends {ol.source.Image}
  * @implements {ol.source.FeatureInfoSource}
  * @param {ol.source.ImageWMSOptions} options Options.
+ * @todo stability experimental
  */
 ol.source.ImageWMS = function(options) {
 

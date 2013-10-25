@@ -9,6 +9,7 @@ goog.require('goog.uri.utils');
 /**
  * Method to use to get WMS feature info.
  * @enum {string}
+ * @todo stability experimental
  */
 ol.source.WMSGetFeatureInfoMethod = {
   /**
