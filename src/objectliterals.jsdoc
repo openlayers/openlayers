@@ -102,8 +102,9 @@
  * @typedef {Object} ol.View2DOptions
  * @property {ol.Coordinate|undefined} center The initial center for the view.
  *     The coordinate system for the center is specified with the `projection`
- *     option.
- * @property {ol.Extent|undefined} extent The extent to constraint the center to.
+ *     option. Default is null.
+ * @property {ol.Extent|undefined} extent The extent that constrains the center,
+ *     in other words, center cannot be set outside this extent. Default is none
  * @property {number|undefined} maxResolution The maximum resolution used to
  *     determine the resolution constraint. It is used together with `maxZoom`
  *     and `zoomFactor`. If unspecified it is calculated in such a way that the
@@ -117,16 +118,18 @@
  *     `EPSG:3857` (Spherical Mercator).
  * @property {number|undefined} resolution The initial resolution for the view.
  *     The units are `projection` units per pixel (e.g. meters per pixel).
+ *     An alternative to setting this is to set `zoom`.
  * @property {Array.<number>|undefined} resolutions Resolutions to determine the
  *     resolution constraint. If set the `maxResolution`, `maxZoom` and
  *     `zoomFactor` options are ignored.
  * @property {number|undefined} rotation The initial rotation for the view
- *     in radians (positive rotation clockwise).
- * @property {number|undefined} zoom Zoom level used to calculate the initial
- *     resolution for the view. The initial resolution is determined using the
+ *     in radians (positive rotation clockwise). Default is 0.
+ * @property {number|undefined} zoom Only used if `resolution` is not defined.
+ *     Zoom level used to calculate the initial resolution for the view.
+ *     The initial resolution is determined using the
  *     `ol.View2D#constrainResolution` method.
  * @property {number|undefined} zoomFactor The zoom factor used to determine the
- *     resolution constraint. It is together with `maxResolution` and `maxZoom`.
+ *     resolution constraint. Used together with `maxResolution` and `maxZoom`.
  *     Default is 2.
  */
 
