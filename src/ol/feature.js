@@ -52,7 +52,7 @@ ol.Feature = function(opt_values) {
    * @type {Array.<ol.style.Symbolizer>}
    * @private
    */
-  this.symbolizers_ = null;
+  this.symbolizers_;
 
 };
 goog.inherits(ol.Feature, ol.Object);
