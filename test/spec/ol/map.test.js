@@ -51,6 +51,52 @@ describe('ol.RendererHints', function() {
 
 describe('ol.Map', function() {
 
+  describe('contstructor', function() {
+    it('creates a new map', function() {
+      var map = new ol.Map({});
+      expect(map).to.be.a(ol.Map);
+    });
+
+    it('creates a set of default interactions', function() {
+      var map = new ol.Map({});
+      var interactions = map.getInteractions();
+      var length = interactions.getLength();
+      expect(length).to.be.greaterThan(0);
+
+      for (var i = 0; i < length; ++i) {
+        expect(interactions.getAt(i).getMap()).to.be(map);
+      }
+    });
+  });
+
+  describe('#addInteraction()', function() {
+    it('adds an interaction to the map', function() {
+      var map = new ol.Map({});
+      var interaction = new ol.interaction.Interaction();
+
+      var before = map.getInteractions().getLength();
+      map.addInteraction(interaction);
+      var after = map.getInteractions().getLength();
+      expect(after).to.be(before + 1);
+      expect(interaction.getMap()).to.be(map);
+    });
+  });
+
+  describe('#removeInteraction()', function() {
+    it('removes an interaction from the map', function() {
+      var map = new ol.Map({});
+      var interaction = new ol.interaction.Interaction();
+
+      var before = map.getInteractions().getLength();
+      map.addInteraction(interaction);
+
+      map.removeInteraction(interaction);
+      expect(map.getInteractions().getLength()).to.be(before);
+
+      expect(interaction.getMap()).to.be(null);
+    });
+  });
+
   describe('dispose', function() {
     var map;
 
@@ -128,5 +174,6 @@ goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.RendererHints');
 goog.require('ol.interaction');
+goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.DoubleClickZoom');
 goog.require('ol.interaction.MouseWheelZoom');
