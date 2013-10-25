@@ -12,6 +12,22 @@ goog.require('ol.easing');
  * @constructor
  */
 ol.interaction.Interaction = function() {
+
+  /**
+   * @private
+   * @type {ol.Map}
+   */
+  this.map_ = null;
+
+};
+
+
+/**
+ * Get the map associated with this interaction.
+ * @return {ol.Map} Map.
+ */
+ol.interaction.Interaction.prototype.getMap = function() {
+  return this.map_;
 };
 
 
@@ -23,6 +39,17 @@ ol.interaction.Interaction = function() {
  */
 ol.interaction.Interaction.prototype.handleMapBrowserEvent =
     goog.abstractMethod;
+
+
+/**
+ * Remove the interaction from its current map and attach it to the new map.
+ * Subclasses may set up event handlers to get notified about changes to
+ * the map here.
+ * @param {ol.Map} map Map.
+ */
+ol.interaction.Interaction.prototype.setMap = function(map) {
+  this.map_ = map;
+};
 
 
 /**
