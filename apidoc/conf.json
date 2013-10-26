@@ -13,7 +13,8 @@
     "plugins": [
         "plugins/markdown",
         "apidoc/plugins/inheritdoc",
-        "apidoc/plugins/exports"
+        "apidoc/plugins/exports",
+        "apidoc/plugins/observable"
     ],
     "markdown": {
         "parser": "gfm"
