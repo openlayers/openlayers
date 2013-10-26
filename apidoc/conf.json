@@ -13,10 +13,16 @@
     "plugins": [
         "plugins/markdown",
         "apidoc/plugins/inheritdoc",
-        "apidoc/plugins/exports"
+        "apidoc/plugins/exports",
+        "apidoc/plugins/todo",
+        "apidoc/plugins/observable",
+        "apidoc/plugins/stability"
     ],
     "markdown": {
         "parser": "gfm"
+    },
+    "stability": {
+      "levels": ["deprecated","experimental","unstable","stable","frozen","locked"]
     },
     "templates": {
         "cleverLinks": false,
