@@ -111,7 +111,8 @@
  * @typedef {Object} ol.View2DOptions
  * @property {ol.Coordinate|undefined} center The initial center for the view.
  *     The coordinate system for the center is specified with the `projection`
- *     option. Default is null.
+ *     option. Default is null, and layer sources will not be fetched if this
+ *     is not set.
  * @property {ol.Extent|undefined} extent The extent that constrains the center,
  *     in other words, center cannot be set outside this extent. Default is none
  * @property {number|undefined} maxResolution The maximum resolution used to
@@ -127,7 +128,9 @@
  *     `EPSG:3857` (Spherical Mercator).
  * @property {number|undefined} resolution The initial resolution for the view.
  *     The units are `projection` units per pixel (e.g. meters per pixel).
- *     An alternative to setting this is to set `zoom`.
+ *     An alternative to setting this is to set `zoom`. Default is undefined,
+ *     and layer sources will not be fetched if neither this nor `zoom` are
+ *     defined.
  * @property {Array.<number>|undefined} resolutions Resolutions to determine the
  *     resolution constraint. If set the `maxResolution`, `maxZoom` and
  *     `zoomFactor` options are ignored.
