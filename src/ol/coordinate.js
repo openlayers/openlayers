@@ -43,7 +43,7 @@ ol.coordinate.add = function(coordinate, delta) {
 
 
 /**
- * @param {number=} opt_precision Precision.
+ * @param {number=} opt_precision Precision. Default is `0`.
  * @return {ol.CoordinateFormatType} Coordinate format.
  * @todo stability experimental
  */
@@ -78,16 +78,15 @@ ol.coordinate.degreesToStringHDMS_ = function(degrees, hemispheres) {
 /**
  * @param {ol.Coordinate|undefined} coordinate Coordinate.
  * @param {string} template Template.
- * @param {number=} opt_precision Precision.
+ * @param {number=} opt_precision Precision. Default is `0`.
  * @return {string} Formated coordinate.
  * @todo stability experimental
  */
 ol.coordinate.format = function(coordinate, template, opt_precision) {
   if (goog.isDef(coordinate)) {
-    var precision = opt_precision || 0;
     return template
-      .replace('{x}', coordinate[0].toFixed(precision))
-      .replace('{y}', coordinate[1].toFixed(precision));
+      .replace('{x}', coordinate[0].toFixed(opt_precision))
+      .replace('{y}', coordinate[1].toFixed(opt_precision));
   } else {
     return '';
   }
@@ -151,7 +150,7 @@ ol.coordinate.toStringHDMS = function(coordinate) {
 
 /**
  * @param {ol.Coordinate|undefined} coordinate Coordinate.
- * @param {number=} opt_precision Precision.
+ * @param {number=} opt_precision Precision. Default is `0`.
  * @return {string} XY.
  * @todo stability experimental
  */
