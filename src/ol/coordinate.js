@@ -76,6 +76,25 @@ ol.coordinate.degreesToStringHDMS_ = function(degrees, hemispheres) {
 
 
 /**
+ * @param {ol.Coordinate|undefined} coordinate Coordinate.
+ * @param {string} template Template.
+ * @param {number=} opt_precision Precision.
+ * @return {string} Formated coordinate.
+ * @todo stability experimental
+ */
+ol.coordinate.format = function(coordinate, template, opt_precision) {
+  if (goog.isDef(coordinate)) {
+    var precision = opt_precision || 0;
+    return template
+      .replace('{x}', coordinate[0].toFixed(precision))
+      .replace('{y}', coordinate[1].toFixed(precision));
+  } else {
+    return '';
+  }
+};
+
+
+/**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} angle Angle.
  * @return {ol.Coordinate} Coordinate.
@@ -137,13 +156,7 @@ ol.coordinate.toStringHDMS = function(coordinate) {
  * @todo stability experimental
  */
 ol.coordinate.toStringXY = function(coordinate, opt_precision) {
-  if (goog.isDef(coordinate)) {
-    var precision = opt_precision || 0;
-    return coordinate[0].toFixed(precision) + ', ' +
-        coordinate[1].toFixed(precision);
-  } else {
-    return '';
-  }
+  return ol.coordinate.format(coordinate, '{x}, {y}', opt_precision);
 };
 
 
