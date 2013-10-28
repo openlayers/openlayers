@@ -1,0 +1,9 @@
+<?js
+var data = obj;
+var self = this;
+
+if (data.stability) { ?>
+<div class="stability stability-<?js= stability ?>">Stability: <?js= data.stability ?></div>
+<?js } else { ?>
+<div class="stability">Stability: not documented</div>
+<?js } ?>
