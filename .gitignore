@@ -1,4 +1,6 @@
 *.pyc
+*.iml
+.idea
 /build
 /examples/*.html.png
 /examples/example-list.js
