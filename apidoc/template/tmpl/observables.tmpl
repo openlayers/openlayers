@@ -7,8 +7,7 @@
   <tr>
     <th>Name</th>
     <th>Type</th>
-    <th>Get</th>
-    <th>Set</th>
+    <th>Settable</th>
     <th>Event</th>
     <th class="last">Description</th>
   </tr>
@@ -19,7 +18,6 @@
       var self = this;
       props.forEach(function(prop) {
         if (!prop) { return; }
-        var getter = 'yes';
         var setter = prop.readonly ? 'no' : 'yes';
   ?>
 
@@ -30,7 +28,6 @@
       <?js= self.partial('type.tmpl', prop.type.names) ?>
       <?js } ?>
       </td>
-      <td class="getter"><?js= getter ?></td>
       <td class="setter"><?js= setter ?></td>
       <td class="event"><code>change:<?js= prop.name ?></code></td>
       <td class="description last"><?js= prop.description ?></td>
