@@ -43,18 +43,19 @@ ol.coordinate.add = function(coordinate, delta) {
 
 
 /**
- * @param {number=} opt_precision Precision. Default is `0`.
+ * @param {number=} opt_fractionDigits The number of digits to include
+ *    after the decimal point. Default is `0`.
  * @return {ol.CoordinateFormatType} Coordinate format.
  * @todo stability experimental
  */
-ol.coordinate.createStringXY = function(opt_precision) {
+ol.coordinate.createStringXY = function(opt_fractionDigits) {
   return (
       /**
        * @param {ol.Coordinate|undefined} coordinate Coordinate.
        * @return {string} String XY.
        */
       function(coordinate) {
-        return ol.coordinate.toStringXY(coordinate, opt_precision);
+        return ol.coordinate.toStringXY(coordinate, opt_fractionDigits);
       });
 };
 
@@ -77,16 +78,18 @@ ol.coordinate.degreesToStringHDMS_ = function(degrees, hemispheres) {
 
 /**
  * @param {ol.Coordinate|undefined} coordinate Coordinate.
- * @param {string} template Template.
- * @param {number=} opt_precision Precision. Default is `0`.
+ * @param {string} template A template string with `{x}` and `{y}` placeholders
+ *     that will be replaced by first and second coordinate values.
+ * @param {number=} opt_fractionDigits The number of digits to include
+ *    after the decimal point. Default is `0`.
  * @return {string} Formated coordinate.
  * @todo stability experimental
  */
-ol.coordinate.format = function(coordinate, template, opt_precision) {
+ol.coordinate.format = function(coordinate, template, opt_fractionDigits) {
   if (goog.isDef(coordinate)) {
     return template
-      .replace('{x}', coordinate[0].toFixed(opt_precision))
-      .replace('{y}', coordinate[1].toFixed(opt_precision));
+      .replace('{x}', coordinate[0].toFixed(opt_fractionDigits))
+      .replace('{y}', coordinate[1].toFixed(opt_fractionDigits));
   } else {
     return '';
   }
@@ -150,12 +153,13 @@ ol.coordinate.toStringHDMS = function(coordinate) {
 
 /**
  * @param {ol.Coordinate|undefined} coordinate Coordinate.
- * @param {number=} opt_precision Precision. Default is `0`.
+ * @param {number=} opt_fractionDigits The number of digits to include
+ *    after the decimal point. Default is `0`.
  * @return {string} XY.
  * @todo stability experimental
  */
-ol.coordinate.toStringXY = function(coordinate, opt_precision) {
-  return ol.coordinate.format(coordinate, '{x}, {y}', opt_precision);
+ol.coordinate.toStringXY = function(coordinate, opt_fractionDigits) {
+  return ol.coordinate.format(coordinate, '{x}, {y}', opt_fractionDigits);
 };
 
 
