@@ -18,6 +18,7 @@ ol.layer.TileProperty = {
  * @extends {ol.layer.Layer}
  * @param {ol.layer.TileOptions} options Tile layer options.
  * @todo stability experimental
+ * @todo observable preload {number} the level to preload tiles up to
  */
 ol.layer.Tile = function(options) {
 

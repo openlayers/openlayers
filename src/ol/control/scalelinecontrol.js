@@ -51,6 +51,8 @@ ol.control.ScaleLineUnits = {
  * @extends {ol.control.Control}
  * @param {ol.control.ScaleLineOptions=} opt_options Scale line options.
  * @todo stability experimental
+ * @todo observable units {ol.control.ScaleLineUnits} the units to use in the
+ *       scale line
  */
 ol.control.ScaleLine = function(opt_options) {
 

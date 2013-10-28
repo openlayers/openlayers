@@ -38,6 +38,10 @@ ol.control.MousePositionProperty = {
  * @extends {ol.control.Control}
  * @param {ol.control.MousePositionOptions=} opt_options Mouse position options.
  * @todo stability experimental
+ * @todo observable projection {ol.proj.Projection} the projection to report
+ *       mouse position in
+ * @todo observable coordinateFormat {string} the format to render the current
+ *       position in
  */
 ol.control.MousePosition = function(opt_options) {
 

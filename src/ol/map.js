@@ -143,6 +143,12 @@ ol.MapProperty = {
  * @extends {ol.Object}
  * @param {ol.MapOptions} options Map options.
  * @todo stability experimental
+ * @todo observable layergroup {ol.layer.LayerGroup} a layer group containing
+ *       the layers in this map.
+ * @todo observable size {ol.Size} the size in pixels of the map in the DOM
+ * @todo observable target {string|Element} the Element or id of the Element
+ *       that the map is rendered in.
+ * @todo observable view {ol.IView} the view that controls this map
  */
 ol.Map = function(options) {
 
