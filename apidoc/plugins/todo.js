@@ -15,7 +15,7 @@ exports.defineTags = function(dictionary) {
         var readonly = parts.length > 3 && parts[3] === 'readonly';
         var description = (readonly ? parts.slice(4) : parts.slice(3)).join(' ');
         doclet.observables.push({
-          name: parts[2],
+          name: parts[1],
           type: {
             names: tag.value.type.names
           },
