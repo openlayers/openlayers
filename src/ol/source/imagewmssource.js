@@ -113,6 +113,14 @@ ol.source.ImageWMS.prototype.getFeatureInfoForPixel =
       url = this.imageUrlFunction(extent, size, projection);
   goog.asserts.assert(goog.isDef(url),
       'ol.source.ImageWMS#imageUrlFunction does not return a URL');
+  if (view2D.getRotation()) {
+    var coordinate = map.getCoordinateFromPixel(pixel);
+    goog.asserts.assert(!goog.isNull(coordinate));
+    var dx = coordinate[0] - topRight[0];
+    var dy = topRight[1] - coordinate[1];
+    var resolution = view2D.getResolution();
+    pixel = [dx * resolution, dy * resolution];
+  }
   ol.source.wms.getFeatureInfo(url, pixel, this.getFeatureInfoOptions_, success,
       opt_error);
 };
