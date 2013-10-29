@@ -342,6 +342,14 @@
  */
 
 /**
+ * @typedef {Object} ol.interaction.DrawOptions
+ * @property {ol.layer.Vector} layer Destination layer for the features.
+ * @property {ol.interaction.DrawMode} mode Drawing mode ('point', 'linestring',
+ *     or 'polygon').
+ * @todo stability experimental
+ */
+
+/**
  * @typedef {Object} ol.interaction.KeyboardPanOptions
  * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
