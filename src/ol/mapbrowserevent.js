@@ -266,6 +266,10 @@ ol.MapBrowserEventHandler.prototype.handleMouseMove_ = function(browserEvent) {
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
+  if (!goog.isNull(this.mousedownListenerKey_)) {
+    goog.events.unlistenByKey(this.mousedownListenerKey_);
+    this.mousedownListenerKey_ = null;
+  }
   // prevent context menu
   // When the IE pointer events are used, this prevents a
   // 'mousedown' from being fired after this event for the primary
