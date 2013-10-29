@@ -143,13 +143,13 @@ ol.MapBrowserEventHandler = function(map) {
    * @type {Array.<number>}
    * @private
    */
-  this.listenerKeys_ = null;
+  this.dragListenerKeys_ = null;
 
   /**
-   * @type {Array.<number>}
+   * @type {goog.events.Key}
    * @private
    */
-  this.dragListenerKeys_ = null;
+  this.mousedownListenerKey_ = null;
 
   /**
    * @type {Array.<number>}
@@ -164,14 +164,11 @@ ol.MapBrowserEventHandler = function(map) {
   this.down_ = null;
 
   var element = this.map_.getViewport();
-  this.listenerKeys_ = [
-    goog.events.listen(element,
-        [goog.events.EventType.CLICK, goog.events.EventType.DBLCLICK],
-        this.click_, false, this),
-    goog.events.listen(element,
-        goog.events.EventType.MOUSEDOWN,
-        this.handleMouseDown_, false, this)
-  ];
+
+  this.mousedownListenerKey_ = goog.events.listen(element,
+      goog.events.EventType.MOUSEDOWN,
+      this.handleMouseDown_, false, this);
+
   // touch events
   this.touchListenerKeys_ = [
     goog.events.listen(element, [
@@ -196,19 +193,22 @@ goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
-  if (!this.dragged_) {
-    var newEvent;
-    var type = browserEvent.type;
-    if (type == goog.events.EventType.DBLCLICK) {
-      newEvent = new ol.MapBrowserEvent(
-          ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, browserEvent);
-      this.dispatchEvent(newEvent);
-    } else {
-      newEvent = new ol.MapBrowserEvent(
+ol.MapBrowserEventHandler.prototype.emulateClick_ = function(browserEvent) {
+  if (this.clickTimeoutId_ !== 0) {
+    // double-click
+    goog.global.clearTimeout(this.clickTimeoutId_);
+    this.clickTimeoutId_ = 0;
+    var newEvent = new ol.MapBrowserEvent(
+        ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, browserEvent);
+    this.dispatchEvent(newEvent);
+  } else {
+    // click
+    this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
+      this.clickTimeoutId_ = 0;
+      var newEvent = new ol.MapBrowserEvent(
           ol.MapBrowserEvent.EventType.CLICK, this.map_, browserEvent);
       this.dispatchEvent(newEvent);
-    }
+    }, this), 250);
   }
 };
 
@@ -219,13 +219,15 @@ ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
  */
 ol.MapBrowserEventHandler.prototype.handleMouseUp_ = function(browserEvent) {
   if (this.down_) {
-    this.down_ = null;
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
     if (this.dragged_) {
       var newEvent = new ol.MapBrowserEvent(
           ol.MapBrowserEvent.EventType.DRAGEND, this.map_, browserEvent);
       this.dispatchEvent(newEvent);
+      this.down_ = null;
+    } else {
+      this.emulateClick_(browserEvent);
     }
   }
 };
@@ -239,18 +241,16 @@ ol.MapBrowserEventHandler.prototype.handleMouseDown_ = function(browserEvent) {
   var newEvent = new ol.MapBrowserEvent(
       ol.MapBrowserEvent.EventType.DOWN, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
-  if (!this.down_) {
-    this.down_ = browserEvent;
-    this.dragged_ = false;
-    this.dragListenerKeys_ = [
-      goog.events.listen(goog.global.document, goog.events.EventType.MOUSEMOVE,
-          this.handleMouseMove_, false, this),
-      goog.events.listen(goog.global.document, goog.events.EventType.MOUSEUP,
-          this.handleMouseUp_, false, this)
-    ];
-    // prevent browser image dragging with the dom renderer
-    browserEvent.preventDefault();
-  }
+  this.down_ = browserEvent;
+  this.dragged_ = false;
+  this.dragListenerKeys_ = [
+    goog.events.listen(goog.global.document, goog.events.EventType.MOUSEMOVE,
+        this.handleMouseMove_, false, this),
+    goog.events.listen(goog.global.document, goog.events.EventType.MOUSEUP,
+        this.handleMouseUp_, false, this)
+  ];
+  // prevent browser image dragging with the dom renderer
+  browserEvent.preventDefault();
 };
 
 
@@ -328,24 +328,7 @@ ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
   this.dispatchEvent(newEvent);
   if (!this.dragged_) {
     goog.asserts.assert(!goog.isNull(this.down_));
-    if (this.clickTimeoutId_ !== 0) {
-      // double-click
-      goog.global.clearTimeout(this.clickTimeoutId_);
-      this.clickTimeoutId_ = 0;
-      newEvent = new ol.MapBrowserEvent(
-          ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, this.down_);
-      this.dispatchEvent(newEvent);
-      this.down_ = null;
-    } else {
-      // click
-      this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
-        this.clickTimeoutId_ = 0;
-        newEvent = new ol.MapBrowserEvent(
-            ol.MapBrowserEvent.EventType.CLICK, this.map_, this.down_);
-        this.dispatchEvent(newEvent);
-        this.down_ = null;
-      }, this), 250);
-    }
+    this.emulateClick_(this.down_);
   }
 };
 
@@ -354,9 +337,9 @@ ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
  * FIXME empty description for jsdoc
  */
 ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
-  if (!goog.isNull(this.listenerKeys_)) {
-    goog.array.forEach(this.listenerKeys_, goog.events.unlistenByKey);
-    this.listenerKeys_ = null;
+  if (!goog.isNull(this.mousedownListenerKey_)) {
+    goog.events.unlistenByKey(this.mousedownListenerKey_);
+    this.mousedownListenerKey_ = null;
   }
   if (!goog.isNull(this.dragListenerKeys_)) {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
