@@ -140,20 +140,23 @@ ol.source.TileWMS.prototype.getParams = function() {
  */
 ol.source.TileWMS.prototype.getFeatureInfoForPixel =
     function(pixel, map, success, opt_error) {
-  var coord = map.getCoordinateFromPixel(pixel),
-      view2D = map.getView().getView2D(),
-      projection = view2D.getProjection(),
-      tileGrid = goog.isNull(this.tileGrid) ?
-          ol.tilegrid.getForProjection(projection) : this.tileGrid,
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(coord,
-          view2D.getResolution()),
-      tileExtent = tileGrid.getTileCoordExtent(tileCoord),
-      offset = map.getPixelFromCoordinate(ol.extent.getTopLeft(tileExtent)),
-      url = this.tileUrlFunction(tileCoord, projection);
+  var coordinate = map.getCoordinateFromPixel(pixel);
+  var view = map.getView().getView2D();
+  var projection = view.getProjection();
+  var tileGrid = goog.isNull(this.tileGrid) ?
+      ol.tilegrid.getForProjection(projection) : this.tileGrid;
+  var tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate,
+      view.getResolution());
+  var url = this.tileUrlFunction(tileCoord, projection);
   goog.asserts.assert(goog.isDef(url),
       'ol.source.TileWMS#tileUrlFunction does not return a URL');
-  ol.source.wms.getFeatureInfo(url,
-      [pixel[0] - offset[0], pixel[1] - offset[1]], this.getFeatureInfoOptions_,
+  var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
+  var topLeft = ol.extent.getTopLeft(tileExtent);
+  var dx = coordinate[0] - topLeft[0];
+  var dy = topLeft[1] - coordinate[1];
+  var resolution = view.getResolution();
+  pixel = [dx * resolution, dy * resolution];
+  ol.source.wms.getFeatureInfo(url, pixel, this.getFeatureInfoOptions_,
       success, opt_error);
 };
 
