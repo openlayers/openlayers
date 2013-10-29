@@ -265,16 +265,6 @@ ol.MapBrowserEventHandler.prototype.handleMouseMove_ = function(browserEvent) {
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.relayEvent_ = function(browserEvent) {
-  this.dispatchEvent(new ol.MapBrowserEvent(
-      browserEvent.type, this.map_, browserEvent));
-};
-
-
-/**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
- * @private
- */
 ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
   // prevent context menu
   // When the IE pointer events are used, this prevents a
