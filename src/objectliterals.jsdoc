@@ -8,13 +8,13 @@
 
 /**
  * @typedef {Object} ol.DeviceOrientationOptions
- * @property {boolean|undefined} tracking Start tracking. Default is false.
+ * @property {boolean|undefined} tracking Start tracking. Default is `false`.
  * @todo stability experimental
  */
 
 /**
  * @typedef {Object} ol.GeolocationOptions
- * @property {boolean|undefined} tracking Start Tracking. Default is false.
+ * @property {boolean|undefined} tracking Start Tracking. Default is `false`.
  * @property {GeolocationPositionOptions|undefined} trackingOptions Tracking options.
  * @property {ol.proj.ProjectionLike} projection Projection.
  * @todo stability experimental
@@ -89,7 +89,7 @@
  * @property {string} code The SRS identifier code, e.g. `EPSG:31256`.
  * @property {ol.Extent|undefined} extent The validity extent for the SRS.
  * @property {boolean|undefined} global Whether the projection is valid for the
- *     whole globe. Default is false.
+ *     whole globe. Default is `false`.
  * @todo stability experimental
  */
 
@@ -102,7 +102,7 @@
  * @property {string|undefined} axisOrientation The axis orientation as
  *     specified in Proj4. The default is `enu`.
  * @property {boolean|undefined} global Whether the projection is valid for the
- *     whole globe. Default is false.
+ *     whole globe. Default is `false`.
  * @todo stability experimental
  */
 
@@ -111,38 +111,39 @@
  * @typedef {Object} ol.View2DOptions
  * @property {ol.Coordinate|undefined} center The initial center for the view.
  *     The coordinate system for the center is specified with the `projection`
- *     option. Default is null, and layer sources will not be fetched if this
- *     is not set.
+ *     option. Default is `undefined`, and layer sources will not be fetched if
+ *       this is not set.
  * @property {ol.Extent|undefined} extent The extent that constrains the center,
- *     in other words, center cannot be set outside this extent. Default is none
+ *     in other words, center cannot be set outside this extent.
+ *     Default is `undefined`.
  * @property {number|undefined} maxResolution The maximum resolution used to
  *     determine the resolution constraint. It is used together with `maxZoom`
  *     and `zoomFactor`. If unspecified it is calculated in such a way that the
  *     projection's validity extent fits in a 256x256 px tile. If the projection
  *     is Spherical Mercator (the default) then `maxResolution` defaults to
- *     40075016.68557849 / 256 = 156543.03392804097.
+ *     `40075016.68557849 / 256 = 156543.03392804097`.
  * @property {number|undefined} maxZoom The maximum zoom level used to determine
  *     the resolution constraint. It is used together with `maxResolution` and
- *     `zoomFactor`. Default is 28.
+ *     `zoomFactor`. Default is `28`.
  * @property {ol.proj.ProjectionLike} projection The projection. Default is
  *     `EPSG:3857` (Spherical Mercator).
  * @property {number|undefined} resolution The initial resolution for the view.
  *     The units are `projection` units per pixel (e.g. meters per pixel).
- *     An alternative to setting this is to set `zoom`. Default is undefined,
+ *     An alternative to setting this is to set `zoom`. Default is `undefined`,
  *     and layer sources will not be fetched if neither this nor `zoom` are
  *     defined.
  * @property {Array.<number>|undefined} resolutions Resolutions to determine the
  *     resolution constraint. If set the `maxResolution`, `maxZoom` and
  *     `zoomFactor` options are ignored.
  * @property {number|undefined} rotation The initial rotation for the view
- *     in radians (positive rotation clockwise). Default is 0.
+ *     in radians (positive rotation clockwise). Default is `0`.
  * @property {number|undefined} zoom Only used if `resolution` is not defined.
  *     Zoom level used to calculate the initial resolution for the view.
  *     The initial resolution is determined using the
  *     `ol.View2D#constrainResolution` method.
  * @property {number|undefined} zoomFactor The zoom factor used to determine the
  *     resolution constraint. Used together with `maxResolution` and `maxZoom`.
- *     Default is 2.
+ *     Default is `2`.
  * @todo stability experimental
  */
 
@@ -150,7 +151,7 @@
  * @typedef {Object} ol.animation.BounceOptions
  * @property {number} resolution The resolution to start the bounce from, typically `map.getView().getResolution()`.
  * @property {number|undefined} start The start time of the animation. Default is immediately.
- * @property {number|undefined} duration The duration of the animation in milliseconds. Default is 1000.
+ * @property {number|undefined} duration The duration of the animation in milliseconds. Default is `1000`.
  * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.upAndDown`
  * @todo stability experimental
  */
@@ -159,7 +160,7 @@
  * @typedef {Object} ol.animation.PanOptions
  * @property {ol.Coordinate} source The location to start panning from, typically `map.getView().getCenter()`.
  * @property {number|undefined} start The start time of the animation. Default is immediately.
- * @property {number|undefined} duration The duration of the animation in milliseconds. Default is 1000.
+ * @property {number|undefined} duration The duration of the animation in milliseconds. Default is `1000`.
  * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.inAndOut`
  * @todo stability experimental
  */
@@ -168,7 +169,7 @@
  * @typedef {Object} ol.animation.RotateOptions
  * @property {number} rotation The rotation to apply, in radians.
  * @property {number|undefined} start The start time of the animation. Default is immediately.
- * @property {number|undefined} duration The duration of the animation in milliseconds.  Default is 1000.
+ * @property {number|undefined} duration The duration of the animation in milliseconds.  Default is `1000`.
  * @property {function(number):number|undefined} easing The easing function to use.  Default is `ol.easing.inAndOut`
  * @todo stability experimental
  */
@@ -177,7 +178,7 @@
  * @typedef {Object} ol.animation.ZoomOptions
  * @property {number} resolution number The resolution to begin zooming from, typically `map.getView().getResolution()`.
  * @property {number|undefined} start The start time of the animation. Default is immediately.
- * @property {number|undefined} duration The duration of the animation in milliseconds.
+ * @property {number|undefined} duration The duration of the animation in milliseconds. Default is `1000`.
  * @property {function(number):number|undefined} easing Easing function.
  * @todo stability experimental
  */
@@ -246,7 +247,7 @@
 
 /**
  * @typedef {Object} ol.control.ZoomOptions
- * @property {number|undefined} duration Animation duration. Default is 250ms.
+ * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {string|undefined} className CSS class name. Default is `ol-zoom`.
  * @property {number|undefined} delta The zoom delta applied on each click.
  * @property {Element|undefined} target Target.
@@ -272,9 +273,9 @@
 
 /**
  * @typedef {Object} ol.interaction.DoubleClickZoomOptions
- * @property {number|undefined} duration Animation duration. Default is 250ms.
+ * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {number|undefined} delta The zoom delta applied on each double
- *     click, default is 1.
+ *     click, default is `1`.
  * @todo stability experimental
  */
 
@@ -312,7 +313,7 @@
  */
 
 /**
- * Interactions for the map. Default is true for all options.
+ * Interactions for the map. Default is `true` for all options.
  * @typedef {Object} ol.interaction.DefaultsOptions
  * @property {boolean|undefined} altShiftDragRotate Whether Alt-Shift-drag
  *     rotate is desired.
@@ -346,7 +347,7 @@
 
 /**
  * @typedef {Object} ol.interaction.KeyboardZoomOptions
- * @property {number|undefined} duration Animation duration. Default is 100ms.
+ * @property {number|undefined} duration Animation duration in milliseconds. Default is `100`.
  * @property {ol.interaction.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is no modifiers.
@@ -356,7 +357,7 @@
 
 /**
  * @typedef {Object} ol.interaction.MouseWheelZoomOptions
- * @property {number|undefined} duration Animation duration. Default is 250ms.
+ * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @todo stability experimental
  */
 
@@ -390,7 +391,7 @@
 
 /**
  * @typedef {Object} ol.interaction.TouchZoomOptions
- * @property {number|undefined} duration Animation duration. Default is 400ms.
+ * @property {number|undefined} duration Animation duration in milliseconds. Default is `400`.
  * @todo stability experimental
  */
 
@@ -414,10 +415,10 @@
  * @property {number|undefined} brightness Brightness.
  * @property {number|undefined} contrast Contrast.
  * @property {number|undefined} hue Hue.
- * @property {number|undefined} opacity Opacity. 0-1. Default is 1.
+ * @property {number|undefined} opacity Opacity. 0-1. Default is `1`.
  * @property {number|undefined} saturation Saturation.
  * @property {ol.source.Source} source Source for this layer.
- * @property {boolean|undefined} visible Visibility. Default is true (visible).
+ * @property {boolean|undefined} visible Visibility. Default is `true` (visible).
  * @property {number|undefined} minResolution The minimum resolution
  *      (inclusive) at which this layer will be visible.
  * @property {number|undefined} maxResolution The maximum resolution
@@ -446,11 +447,11 @@
  * @property {number|undefined} brightness Brightness.
  * @property {number|undefined} contrast Contrast.
  * @property {number|undefined} hue Hue.
- * @property {number|undefined} opacity Opacity. 0-1. Default is 1.
+ * @property {number|undefined} opacity Opacity. 0-1. Default is `1`.
  * @property {number|undefined} preload Preload.
  * @property {number|undefined} saturation Saturation.
  * @property {ol.source.Source} source Source for this layer.
- * @property {boolean|undefined} visible Visibility. Default is true (visible).
+ * @property {boolean|undefined} visible Visibility. Default is `true` (visible).
  * @property {number|undefined} minResolution The minimum resolution
  *      (inclusive) at which this layer will be visible.
  * @property {number|undefined} maxResolution The maximum resolution
@@ -464,10 +465,10 @@
  *     Function to render an array of
  *     features into feature info markup. If not provided, a comma separated
  *     list of the unique ids of the resulting features will be returned.
- * @property {number|undefined} opacity Opacity. 0-1. Default is 1.
+ * @property {number|undefined} opacity Opacity. 0-1. Default is `1`.
  * @property {ol.source.Source} source Source for this layer.
  * @property {ol.style.Style|undefined} style Style.
- * @property {boolean|undefined} visible Visibility. Default is true (visible).
+ * @property {boolean|undefined} visible Visibility. Default is `true` (visible).
  * @property {number|undefined} minResolution The minimum resolution
  *      (inclusive) at which this layer will be visible.
  * @property {number|undefined} maxResolution The maximum resolution
@@ -478,11 +479,11 @@
 /**
  * @typedef {Object} ol.parser.KMLOptions
  * @property {boolean|undefined} extractAttributes Should we extract attributes
- *     from the KML? Default is `true´.
+ *     from the KML? Default is `true`.
  * @property {boolean|undefined} extractStyles Should we extract styles from the
  *     KML? Default is `false`.
  * @property {number|undefined} maxDepth Maximum depth to follow network links.
- *     Default is 0, which means we don't follow network links at all.
+ *     Default is `0`, which means we don't follow network links at all.
  * @property {Array.<string>|undefined} trackAttributes Track attributes to
  *     parse.
  * @todo stability experimental
@@ -505,27 +506,27 @@
  * @typedef {Object} ol.parser.GMLOptions
  * @property {boolean|undefined} curve Write gml:Curve instead of
  *     gml:LineString elements. This also affects the elements in multi-part
- *     geometries. Default is `false´. This only applies to GML version 3.
+ *     geometries. Default is `false`. This only applies to GML version 3.
  * @property {boolean|undefined} extractAttributes Should we extract attributes
- *     from the GML? Default is `true´.
+ *     from the GML? Default is `true`.
  * @property {string|undefined} featureNS The feature namespace. If not set it
  *     will be automatically configured from the GML.
  * @property {Array.<string>|string|undefined} featureType The local
  *     (without prefix) feature typeName(s).
  * @property {string|undefined} geometryName Name of geometry element.
- *     Defaults to `geometry´. If null, it will be set on <read> when the
+ *     Defaults to `geometry`. If null, it will be set on <read> when the
  *     first geometry is parsed.
  * @property {boolean|undefined} multiCurve Write gml:MultiCurve instead of
  *     gml:MultiLineString. Since the latter is deprecated in GML 3, the
- *     default is `true´. This only applies to GML version 3.
+ *     default is `true`. This only applies to GML version 3.
  * @property {boolean|undefined} multiSurface Write gml:multiSurface instead
  *     of gml:MultiPolygon. Since the latter is deprecated in GML 3, the
- *     default is `true´. This only applies to GML version 3.
+ *     default is `true`. This only applies to GML version 3.
  * @property {string|undefined} schemaLocation Optional schemaLocation to use
  *     when writing out the GML, this will override the default provided.
  * @property {boolean|undefined} surface Write gml:Surface instead of
  *     gml:Polygon elements. This also affects the elements in multi-part
- *     geometries. Default is `false´. This only applies to GML version 3.
+ *     geometries. Default is `false`. This only applies to GML version 3.
  * @property {ol.parser.GMLReadOptions|undefined} readOptions readOptions to
  *     use for this instance.
  * @property {ol.parser.GMLWriteOptions|undefined} writeOptions writeOptions
@@ -536,18 +537,18 @@
 /**
  * @typedef {Object} ol.parser.GPXOptions
  * @property {string|undefined} creator The creator attribute to be added to
- *     the written GPX files. Defaults to `OpenLayers´.
+ *     the written GPX files. Defaults to `OpenLayers`.
  * @property {string|undefined} defaultDesc Default description for the
  *     waypoints/tracks in the case where the feature has no `description`
  *     attribute. Default is `No description available`.
  * @property {boolean|undefined} extractAttributes Should we extract attributes
- *     from the GPX? Default is `true´.
+ *     from the GPX? Default is `true`.
  * @property {boolean|undefined} extractWaypoints Extract waypoints from GPX.
- *     Default is `true´.
+ *     Default is `true`.
  * @property {boolean|undefined} extractTracks Extract tracks from GPX.
- *     Default is `true´.
+ *     Default is `true`.
  * @property {boolean|undefined} extractRoutes Extract routes from GPX.
- *     Default is `true´.
+ *     Default is `true`.
  * @todo stability experimental
  */
 
@@ -749,8 +750,7 @@
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
  * @property {ol.proj.ProjectionLike} projection Projection.
- * @property {number|undefined} maxZoom Optional max zoom level.  The default is
- *     18.
+ * @property {number|undefined} maxZoom Optional max zoom level. Default is `18`.
  * @property {number|undefined} minZoom Unsupported (TODO: remove this).
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
