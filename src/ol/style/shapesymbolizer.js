@@ -1,7 +1,6 @@
 goog.provide('ol.style.Shape');
 
 goog.require('goog.asserts');
-goog.require('ol.Feature');
 goog.require('ol.expr');
 goog.require('ol.expr.Expression');
 goog.require('ol.expr.Literal');
@@ -72,14 +71,10 @@ goog.inherits(ol.style.Shape, ol.style.Point);
  * @inheritDoc
  * @return {ol.style.ShapeLiteral} Literal shape symbolizer.
  */
-ol.style.Shape.prototype.createLiteral = function(featureOrType) {
-  var feature, type;
-  if (featureOrType instanceof ol.Feature) {
-    feature = featureOrType;
+ol.style.Shape.prototype.createLiteral = function(feature, type) {
+  if (goog.isDefAndNotNull(feature) && !type) {
     var geometry = feature.getGeometry();
-    type = geometry ? geometry.getType() : null;
-  } else {
-    type = featureOrType;
+    type = geometry ? geometry.getType() : undefined;
   }
 
   var literal = null;

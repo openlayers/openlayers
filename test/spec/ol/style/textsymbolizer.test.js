@@ -72,7 +72,7 @@ describe('ol.style.Text', function() {
         opacityAttr: 0.4
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.TextLiteral);
       expect(literal.color).to.be('#ff0000');
       expect(literal.fontFamily).to.be('Dingbats');
@@ -90,7 +90,8 @@ describe('ol.style.Text', function() {
         opacity: ol.expr.parse('0.6')
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      var literal = symbolizer.createLiteral(undefined,
+          ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.TextLiteral);
       expect(literal.color).to.be('#ff0000');
       expect(literal.fontFamily).to.be('Arial');
@@ -104,7 +105,8 @@ describe('ol.style.Text', function() {
         text: 'Test'
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      var literal = symbolizer.createLiteral(undefined,
+          ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.TextLiteral);
       expect(literal.color).to.be('#000');
       expect(literal.fontFamily).to.be('sans-serif');
@@ -124,7 +126,7 @@ describe('ol.style.Text', function() {
         size: '42'
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal.fontSize).to.be(42);
     });
 
@@ -138,7 +140,7 @@ describe('ol.style.Text', function() {
         opacity: '0.42'
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal.opacity).to.be(0.42);
     });
 
@@ -154,7 +156,7 @@ describe('ol.style.Text', function() {
         strokeWidth: '4.2'
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal.strokeWidth).to.be(4.2);
     });
 

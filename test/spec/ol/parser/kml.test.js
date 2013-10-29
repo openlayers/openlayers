@@ -199,7 +199,8 @@ describe('ol.parser.KML', function() {
       var stroke = symbolizers[0];
       expect(stroke).to.be.a(ol.style.Stroke);
 
-      var literal = stroke.createLiteral(ol.geom.GeometryType.LINESTRING);
+      var literal = stroke.createLiteral(undefined,
+          ol.geom.GeometryType.LINESTRING);
       expect(literal).to.be.a(ol.style.LineLiteral);
       expect(literal.color).to.eql('#ff0000');
       expect(literal.opacity).to.eql(0.5294117647058824);
@@ -231,7 +232,7 @@ describe('ol.parser.KML', function() {
       expect(symbolizers[1]).to.be.a(ol.style.Stroke);
 
       var literals = ol.style.Style.createLiterals(
-          symbolizers, ol.geom.GeometryType.POLYGON);
+          symbolizers, undefined, ol.geom.GeometryType.POLYGON);
       expect(literals).to.have.length(1);
 
       var literal = literals[0];
@@ -244,7 +245,7 @@ describe('ol.parser.KML', function() {
       expect(symbolizers[0]).to.be.a(ol.style.Stroke);
 
       var literals = ol.style.Style.createLiterals(
-          symbolizers, ol.geom.GeometryType.POLYGON);
+          symbolizers, undefined, ol.geom.GeometryType.POLYGON);
       expect(literals).to.have.length(1);
 
       literal = literals[0];
@@ -285,7 +286,8 @@ describe('ol.parser.KML', function() {
         var symbolizer = symbolizers[0];
         expect(symbolizer).to.be.a(ol.style.Icon);
 
-        var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+        var literal = symbolizer.createLiteral(undefined,
+            ol.geom.GeometryType.POINT);
         expect(literal).to.be.a(ol.style.IconLiteral);
 
         var url = 'http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
@@ -310,7 +312,8 @@ describe('ol.parser.KML', function() {
         var symbolizer = symbolizers[0];
         expect(symbolizer).to.be.a(ol.style.Icon);
 
-        var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+        var literal = symbolizer.createLiteral(undefined,
+            ol.geom.GeometryType.POINT);
         expect(literal).to.be.a(ol.style.IconLiteral);
 
         var url = 'http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';

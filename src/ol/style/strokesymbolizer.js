@@ -2,7 +2,6 @@ goog.provide('ol.style.Stroke');
 goog.provide('ol.style.StrokeDefaults');
 
 goog.require('goog.asserts');
-goog.require('ol.Feature');
 goog.require('ol.expr');
 goog.require('ol.expr.Expression');
 goog.require('ol.expr.Literal');
@@ -65,19 +64,14 @@ goog.inherits(ol.style.Stroke, ol.style.Symbolizer);
 
 /**
  * @inheritDoc
- * @return {Array|ol.style.LineLiteral|ol.style.PolygonLiteral} Symbolizer
+ * @return {ol.style.LineLiteral|ol.style.PolygonLiteral} Symbolizer
  *  literal.
  */
-ol.style.Stroke.prototype.createLiteral = function(featureOrType) {
-  var feature, type;
-  if (featureOrType instanceof ol.Feature) {
-    feature = featureOrType;
+ol.style.Stroke.prototype.createLiteral = function(feature, type) {
+  if (goog.isDefAndNotNull(feature) && !type) {
     var geometry = feature.getGeometry();
-    type = geometry ? geometry.getType() : null;
-  } else {
-    type = featureOrType;
+    type = geometry ? geometry.getType() : undefined;
   }
-
   var color = ol.expr.evaluateFeature(
       this.color_, feature);
   goog.asserts.assertString(color, 'color must be a string');
@@ -93,33 +87,27 @@ ol.style.Stroke.prototype.createLiteral = function(featureOrType) {
   var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
   goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
 
-  var literals = [];
+  var literal = null;
   if (type === ol.geom.GeometryType.LINEARRING ||
       type === ol.geom.GeometryType.LINESTRING ||
-      type === ol.geom.GeometryType.MULTILINESTRING ||
-      type === ol.geom.GeometryType.GEOMETRYCOLLECTION) {
-    var lineLiteral = new ol.style.LineLiteral({
+      type === ol.geom.GeometryType.MULTILINESTRING) {
+    literal = new ol.style.LineLiteral({
       color: color,
       opacity: opacity,
       width: width,
       zIndex: zIndex
     });
-    literals.push(lineLiteral);
-  }
-  if (type === ol.geom.GeometryType.POLYGON ||
-      type === ol.geom.GeometryType.MULTIPOLYGON ||
-      type === ol.geom.GeometryType.GEOMETRYCOLLECTION) {
-    var polygonLiteral = new ol.style.PolygonLiteral({
+
+  } else if (type === ol.geom.GeometryType.POLYGON ||
+      type === ol.geom.GeometryType.MULTIPOLYGON) {
+    literal = new ol.style.PolygonLiteral({
       strokeColor: color,
       strokeOpacity: opacity,
       strokeWidth: width,
       zIndex: zIndex
     });
-    literals.push(polygonLiteral);
   }
-
-
-  return (literals.length === 1) ? literals[0] : literals;
+  return literal;
 };
 
 

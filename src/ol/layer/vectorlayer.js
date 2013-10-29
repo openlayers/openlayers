@@ -293,7 +293,7 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
     // feature level symbolizers take precedence
     symbolizers = feature.getSymbolizers();
     if (!goog.isNull(symbolizers)) {
-      literals = ol.style.Style.createLiterals(symbolizers, feature);
+      literals = ol.style.Style.createLiterals(symbolizers, feature, undefined);
     } else {
       // layer style second
       if (goog.isNull(style)) {

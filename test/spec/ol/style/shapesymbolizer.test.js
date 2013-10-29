@@ -55,7 +55,7 @@ describe('ol.style.Shape', function() {
         geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.size).to.be(42);
       expect(literal.fillOpacity).to.be(0.4);
@@ -75,7 +75,8 @@ describe('ol.style.Shape', function() {
         })
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      var literal = symbolizer.createLiteral(undefined,
+          ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.size).to.be(10);
       expect(literal.fillColor).to.be('#BADA55');
@@ -102,7 +103,7 @@ describe('ol.style.Shape', function() {
         geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.size).to.be(42);
     });
@@ -124,7 +125,7 @@ describe('ol.style.Shape', function() {
         geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.strokeWidth).to.be(4.2);
     });
@@ -146,7 +147,7 @@ describe('ol.style.Shape', function() {
         geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.strokeOpacity).to.be(0.2);
     });
@@ -168,7 +169,7 @@ describe('ol.style.Shape', function() {
         geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.fillOpacity).to.be(0.42);
     });
@@ -181,7 +182,8 @@ describe('ol.style.Shape', function() {
         zIndex: -2
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      var literal = symbolizer.createLiteral(undefined,
+          ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.zIndex).to.be(-2);
     });
@@ -199,7 +201,7 @@ describe('ol.style.Shape', function() {
         geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.ShapeLiteral);
       expect(literal.zIndex).to.be(42);
     });

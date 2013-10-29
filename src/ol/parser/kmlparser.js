@@ -708,7 +708,7 @@ ol.parser.KML = function(opt_options) {
         if (obj.id) {
           this.setAttributeNS(node, null, 'id', obj.id);
         }
-        var literal = obj.symbolizer.createLiteral(
+        var literal = obj.symbolizer.createLiteral(undefined,
             ol.geom.GeometryType.POLYGON);
         var color, opacity;
         if (literal.fillOpacity !== 0) {
@@ -748,7 +748,7 @@ ol.parser.KML = function(opt_options) {
         if (obj.id) {
           this.setAttributeNS(node, null, 'id', obj.id);
         }
-        var literal = obj.symbolizer.createLiteral(
+        var literal = obj.symbolizer.createLiteral(undefined,
             ol.geom.GeometryType.LINESTRING);
         this.writeNode('color', {
           color: literal.color.substring(1),
@@ -775,7 +775,8 @@ ol.parser.KML = function(opt_options) {
         var node = this.createElementNS('IconStyle');
         this.setAttributeNS(node, null, 'id', obj.id);
         this.writeNode('Icon',
-            obj.symbolizer.createLiteral(ol.geom.GeometryType.POINT).url,
+            obj.symbolizer.createLiteral(undefined,
+                ol.geom.GeometryType.POINT).url,
             null, node);
         return node;
       },

@@ -1,7 +1,6 @@
 goog.provide('ol.style.Fill');
 
 goog.require('goog.asserts');
-goog.require('ol.Feature');
 goog.require('ol.expr');
 goog.require('ol.expr.Expression');
 goog.require('ol.expr.Literal');
@@ -56,20 +55,15 @@ goog.inherits(ol.style.Fill, ol.style.Symbolizer);
  * @inheritDoc
  * @return {ol.style.PolygonLiteral} Literal shape symbolizer.
  */
-ol.style.Fill.prototype.createLiteral = function(featureOrType) {
-  var feature, type;
-  if (featureOrType instanceof ol.Feature) {
-    feature = featureOrType;
+ol.style.Fill.prototype.createLiteral = function(feature, type) {
+  if (goog.isDefAndNotNull(feature) && !type) {
     var geometry = feature.getGeometry();
-    type = geometry ? geometry.getType() : null;
-  } else {
-    type = featureOrType;
+    type = geometry ? geometry.getType() : undefined;
   }
-  var literal = null;
 
+  var literal = null;
   if (type === ol.geom.GeometryType.POLYGON ||
-      type === ol.geom.GeometryType.MULTIPOLYGON ||
-      type === ol.geom.GeometryType.GEOMETRYCOLLECTION) {
+      type === ol.geom.GeometryType.MULTIPOLYGON) {
 
     var color = ol.expr.evaluateFeature(this.color_, feature);
     goog.asserts.assertString(

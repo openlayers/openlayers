@@ -65,7 +65,7 @@ ol.style.Style.prototype.createLiterals = function(feature, resolution) {
     // these are the "else" symbolizers
     symbolizers = this.symbolizers_;
   }
-  return ol.style.Style.createLiterals(symbolizers, feature);
+  return ol.style.Style.createLiterals(symbolizers, feature, undefined);
 };
 
 
@@ -141,17 +141,39 @@ ol.style.setDefault = function(style) {
 /**
  * Given an array of symbolizers, generate an array of literals.
  * @param {Array.<ol.style.Symbolizer>} symbolizers List of symbolizers.
- * @param {ol.Feature|ol.geom.GeometryType} featureOrType Feature or geometry
- *     type.
+ * @param {ol.Feature} feature Feature.
+ * @param {undefined|ol.geom.GeometryType} type geometry type.
  * @return {Array.<ol.style.Literal>} Array of literals.
  */
-ol.style.Style.createLiterals = function(symbolizers, featureOrType) {
+ol.style.Style.createLiterals = function(symbolizers, feature, type) {
+
   var literals = [];
-  for (var i = 0; i < symbolizers.length; ++i) {
-    var literal = symbolizers[i].createLiteral(featureOrType);
-    if (goog.isArray(literal)) {
-      literals = literals.concat(literal);
-    } else {
+  var geometries = [];
+  if (goog.isDefAndNotNull(feature) && !type) {
+    var geometry = feature.getGeometry();
+    type = geometry ? geometry.getType() : undefined;
+
+    if (type === ol.geom.GeometryType.GEOMETRYCOLLECTION) {
+      geometries = feature.getGeometry().getComponents();
+
+    } else if (geometry) {
+      geometries = [feature.getGeometry()];
+    }
+
+  }
+
+  if (geometries.length > 0) {
+    for (var j = 0; j < geometries.length; ++j) {
+      type = geometries[j].getType();
+
+      for (var i = 0; i < symbolizers.length; ++i) {
+        var literal = symbolizers[i].createLiteral(feature, type);
+        literals.push(literal);
+      }
+    }
+  } else {
+    for (var i = 0; i < symbolizers.length; ++i) {
+      var literal = symbolizers[i].createLiteral(feature, type);
       literals.push(literal);
     }
   }
