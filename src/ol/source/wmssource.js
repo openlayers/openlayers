@@ -13,7 +13,7 @@ goog.require('goog.uri.utils');
  */
 ol.source.WMSGetFeatureInfoMethod = {
   /**
-   * Load the info in an IFRAME. Only works with 'text/html and 'text/plain' as
+   * Load the info in an IFRAME. Only works with `text/html` and `text/plain` as
    * `INFO_FORMAT`.
    */
   IFRAME: 'iframe',

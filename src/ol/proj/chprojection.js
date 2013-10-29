@@ -141,7 +141,7 @@ ol.proj.CH.add = function() {
  * @param {number} offsetX X offset.
  * @param {Array.<number>} input Input array of coordinate values.
  * @param {Array.<number>=} opt_output Output array of coordinate values.
- * @param {number=} opt_dimension Dimension (default is 2).
+ * @param {number=} opt_dimension Dimension (default is `2`).
  * @private
  * @return {Array.<number>} Output array of coordinate values.
  */
@@ -190,7 +190,7 @@ ol.proj.CH.fromEPSG4326Approximate_ =
  * @param {number} offsetX X offset.
  * @param {Array.<number>} input Input array of coordinate values.
  * @param {Array.<number>=} opt_output Output array of coordinate values.
- * @param {number=} opt_dimension Dimension (default is 2).
+ * @param {number=} opt_dimension Dimension (default is `2`).
  * @private
  * @return {Array.<number>} Output array of coordinate values.
  */
@@ -243,7 +243,7 @@ ol.proj.CH.fromEPSG4326Rigorous_ =
  * @param {number} offsetX X offset.
  * @param {Array.<number>} input Input array of coordinate values.
  * @param {Array.<number>=} opt_output Output array of coordinate values.
- * @param {number=} opt_dimension Dimension (default is 2).
+ * @param {number=} opt_dimension Dimension (default is `2`).
  * @private
  * @return {Array.<number>} Output array of coordinate values.
  */
@@ -292,7 +292,7 @@ ol.proj.CH.toEPSG4326Approximate_ =
  * @param {number} offsetX X offset.
  * @param {Array.<number>} input Input array of coordinate values.
  * @param {Array.<number>=} opt_output Output array of coordinate values.
- * @param {number=} opt_dimension Dimension (default is 2).
+ * @param {number=} opt_dimension Dimension (default is `2`).
  * @private
  * @return {Array.<number>} Output array of coordinate values.
  */
@@ -353,7 +353,7 @@ ol.proj.CH.toEPSG4326Rigorous_ =
  * @param {number} offsetX X offset.
  * @param {Array.<number>} input Input array of coordinate values.
  * @param {Array.<number>=} opt_output Output array of coordinate values.
- * @param {number=} opt_dimension Dimension (default is 2).
+ * @param {number=} opt_dimension Dimension (default is `2`).
  * @private
  * @return {Array.<number>} Output array of coordinate values.
  */

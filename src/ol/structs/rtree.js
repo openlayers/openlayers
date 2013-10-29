@@ -44,7 +44,7 @@ ol.structs.RTreeNode;
 
 /**
  * @constructor
- * @param {number=} opt_maxWidth Width before a node is split. Default is 6.
+ * @param {number=} opt_maxWidth Width before a node is split. Default is `6`.
  */
 ol.structs.RTree = function(opt_maxWidth) {
 
