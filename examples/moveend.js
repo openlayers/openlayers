@@ -1,6 +1,7 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
+goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
@@ -32,14 +33,14 @@ function wrapLon(value) {
 function onMoveEnd(evt) {
   var map = evt.map;
   var extent = map.getView().calculateExtent(map.getSize());
-  var leftBottom = ol.proj.transform(
-      [extent[0], extent[2]], 'EPSG:3857', 'EPSG:4326');
-  var rightTop = ol.proj.transform(
-      [extent[1], extent[3]], 'EPSG:3857', 'EPSG:4326');
-  display('left', wrapLon(leftBottom[0]));
-  display('bottom', leftBottom[1]);
-  display('right', wrapLon(rightTop[0]));
-  display('top', rightTop[1]);
+  var bottomLeft = ol.proj.transform(ol.extent.getBottomLeft(extent),
+      'EPSG:3857', 'EPSG:4326');
+  var topRight = ol.proj.transform(ol.extent.getTopRight(extent),
+      'EPSG:3857', 'EPSG:4326');
+  display('left', wrapLon(bottomLeft[0]));
+  display('bottom', bottomLeft[1]);
+  display('right', wrapLon(topRight[0]));
+  display('top', topRight[1]);
 }
 
 map.on('moveend', onMoveEnd);
