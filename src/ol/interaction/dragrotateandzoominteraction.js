@@ -4,10 +4,10 @@ goog.provide('ol.interaction.DragRotateAndZoom');
 
 goog.require('goog.asserts');
 goog.require('goog.math.Vec2');
-goog.require('ol.interaction.ConditionType');
+goog.require('ol.events.ConditionType');
+goog.require('ol.events.condition');
 goog.require('ol.interaction.Drag');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.condition');
 
 
 /**
@@ -36,10 +36,10 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.interaction.ConditionType}
+   * @type {ol.events.ConditionType}
    */
   this.condition_ = goog.isDef(options.condition) ?
-      options.condition : ol.interaction.condition.shiftKeyOnly;
+      options.condition : ol.events.condition.shiftKeyOnly;
 
   /**
    * @private

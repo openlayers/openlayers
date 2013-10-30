@@ -1,0 +1,7 @@
+@exportSymbol ol.events.condition.altKeyOnly
+@exportSymbol ol.events.condition.altShiftKeysOnly
+@exportSymbol ol.events.condition.always
+@exportSymbol ol.events.condition.noModifierKeys
+@exportSymbol ol.events.condition.platformModifierKeyOnly
+@exportSymbol ol.events.condition.shiftKeyOnly
+@exportSymbol ol.events.condition.targetNotEditable

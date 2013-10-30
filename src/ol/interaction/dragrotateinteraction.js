@@ -1,10 +1,10 @@
 goog.provide('ol.interaction.DragRotate');
 
 goog.require('goog.asserts');
-goog.require('ol.interaction.ConditionType');
+goog.require('ol.events.ConditionType');
+goog.require('ol.events.condition');
 goog.require('ol.interaction.Drag');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.condition');
 
 
 /**
@@ -16,7 +16,7 @@ ol.interaction.DRAGROTATE_ANIMATION_DURATION = 250;
 
 /**
  * Allows the user to rotate the map by clicking and dragging on the map,
- * normally combined with an {@link ol.interaction.condition} that limits
+ * normally combined with an {@link ol.events.condition} that limits
  * it to when the alt and shift keys are held down.
  * @constructor
  * @extends {ol.interaction.Drag}
@@ -30,10 +30,10 @@ ol.interaction.DragRotate = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.interaction.ConditionType}
+   * @type {ol.events.ConditionType}
    */
   this.condition_ = goog.isDef(options.condition) ?
-      options.condition : ol.interaction.condition.altShiftKeysOnly;
+      options.condition : ol.events.condition.altShiftKeysOnly;
 
   /**
    * @private
