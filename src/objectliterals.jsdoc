@@ -79,7 +79,14 @@
  *     projection.
  * @property {ol.OverlayPositioning|undefined} positioning Positioning.
  * @property {boolean|undefined} stopEvent Whether event propagation to the map
- * 	should be stopped. Default is `false`.
+ *     viewport should be stopped. Default is `true`. If `true` the overlay is
+ *     placed in the same container as that of the controls
+ *     (`ol-overlaycontainer-stopevent`).
+ * @property {boolean|undefined} insertFirst Whether the overlay is inserted
+ *     first in the overlay container, or appended. Default is `true`. If the
+ *     overlay is placed in the same container as that of the controls (see
+ *     the `stopEvent` option) you will probably set `insertFirst` to `true`
+ *     so the overlay is displayed below the controls.
  * @todo stability experimental
  */
 
