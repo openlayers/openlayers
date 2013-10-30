@@ -36,23 +36,30 @@ var visible = new ol.dom.Input(document.getElementById('visible'));
 visible.bindTo('checked', layer, 'visible');
 
 var opacity = new ol.dom.Input(document.getElementById('opacity'));
-opacity.bindTo('valueAsNumber', layer, 'opacity');
+opacity.bindTo('value', layer, 'opacity')
+    .transform(parseFloat, String);
 
 var hue = new ol.dom.Input(document.getElementById('hue'));
-hue.bindTo('valueAsNumber', layer, 'hue');
+hue.bindTo('value', layer, 'hue')
+    .transform(parseFloat, String);
 
 var saturation = new ol.dom.Input(document.getElementById('saturation'));
-saturation.bindTo('valueAsNumber', layer, 'saturation');
+saturation.bindTo('value', layer, 'saturation')
+    .transform(parseFloat, String);
 
 var contrast = new ol.dom.Input(document.getElementById('contrast'));
-contrast.bindTo('valueAsNumber', layer, 'contrast');
+contrast.bindTo('value', layer, 'contrast')
+    .transform(parseFloat, String);
 
 var brightness = new ol.dom.Input(document.getElementById('brightness'));
-brightness.bindTo('valueAsNumber', layer, 'brightness');
+brightness.bindTo('value', layer, 'brightness')
+    .transform(parseFloat, String);
 
 
 var rotation = new ol.dom.Input(document.getElementById('rotation'));
-rotation.bindTo('valueAsNumber', map.getView(), 'rotation');
+rotation.bindTo('value', map.getView(), 'rotation')
+    .transform(parseFloat, String);
 
 var resolution = new ol.dom.Input(document.getElementById('resolution'));
-resolution.bindTo('valueAsNumber', map.getView(), 'resolution');
+resolution.bindTo('value', map.getView(), 'resolution')
+    .transform(parseFloat, String);
