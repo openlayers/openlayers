@@ -46,7 +46,8 @@ ol.interaction.Draw = function(options) {
    * @type {number}
    * @private
    */
-  this.snapTolerance_ = 15;
+  this.snapTolerance_ = goog.isDef(options.snapTolerance) ?
+      options.snapTolerance : 12;
 
   /**
    * Draw mode.
@@ -232,21 +233,24 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
     last[1] = coordinate[1];
     geometry.setCoordinates(last);
   } else {
-    this.sketchPoint_.getGeometry().setCoordinates(coordinate);
+    var potentiallyDone = false;
     if (this.mode_ === ol.interaction.DrawMode.LINESTRING) {
       coordinates = geometry.getCoordinates();
-      last = coordinates[coordinates.length - 1];
-      last[0] = coordinate[0];
-      last[1] = coordinate[1];
-      geometry.setCoordinates(coordinates);
+      potentiallyDone = coordinates.length > 2;
     } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
-      var ring = geometry.getRings()[0];
-      coordinates = ring.getCoordinates();
-      last = coordinates[coordinates.length - 1];
-      last[0] = coordinate[0];
-      last[1] = coordinate[1];
-      ring.setCoordinates(coordinates);
+      geometry = geometry.getRings()[0];
+      coordinates = geometry.getCoordinates();
+      potentiallyDone = coordinates.length > 3;
     }
+    if (potentiallyDone && this.atFinish_(event)) {
+      // snap to finish
+      coordinate = this.finishCoordinate_.slice();
+    }
+    this.sketchPoint_.getGeometry().setCoordinates(coordinate);
+    last = coordinates[coordinates.length - 1];
+    last[0] = coordinate[0];
+    last[1] = coordinate[1];
+    geometry.setCoordinates(coordinates);
   }
 };
 
