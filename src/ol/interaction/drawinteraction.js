@@ -292,6 +292,13 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
   }
   this.sketchLayer_.removeFeatures(features);
   sketchFeature.setRenderIntent(ol.layer.VectorLayerRenderIntent.DEFAULT);
+  var geometry = sketchFeature.getGeometry();
+  if (this.mode_ === ol.interaction.DrawMode.LINESTRING) {
+    var geometry = sketchFeature.getGeometry();
+    var coordinates = geometry.getCoordinates();
+    coordinates.pop();
+    geometry.setCoordinates(coordinates);
+  }
   this.layer_.addFeatures([sketchFeature]);
 };
 
