@@ -148,7 +148,10 @@ ol.dom.Input.prototype.handleInputChanged_ = function() {
     this.setChecked(this.target_.checked);
   } else {
     this.setValue(this.target_.value);
-    this.setValueAsNumber(this.target_.valueAsNumber);
+    var number = this.target_.valueAsNumber;
+    if (goog.isDef(number) && !isNaN(number)) {
+      this.setValueAsNumber(number);
+    }
   }
 };
 
