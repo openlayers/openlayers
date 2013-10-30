@@ -173,12 +173,25 @@ ol.interaction.Draw.prototype.handleMove_ = function(event) {
  * @private
  */
 ol.interaction.Draw.prototype.atFinish_ = function(event) {
-  var map = event.map;
-  var finishPixel = map.getPixelFromCoordinate(this.finishCoordinate_);
-  var pixel = event.getPixel();
-  var dx = pixel[0] - finishPixel[0];
-  var dy = pixel[1] - finishPixel[1];
-  return Math.sqrt(dx * dx + dy * dy) <= this.snapTolerance_;
+  var at = false;
+  if (this.sketchFeature_) {
+    var geometry = this.sketchFeature_.getGeometry();
+    var potentiallyDone = false;
+    if (this.mode_ === ol.interaction.DrawMode.LINESTRING) {
+      potentiallyDone = geometry.getCoordinates().length > 2;
+    } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
+      potentiallyDone = geometry.getRings()[0].getCoordinates().length > 3;
+    }
+    if (potentiallyDone) {
+      var map = event.map;
+      var finishPixel = map.getPixelFromCoordinate(this.finishCoordinate_);
+      var pixel = event.getPixel();
+      var dx = pixel[0] - finishPixel[0];
+      var dy = pixel[1] - finishPixel[1];
+      at = Math.sqrt(dx * dx + dy * dy) <= this.snapTolerance_;
+    }
+  }
+  return at;
 };
 
 
@@ -233,16 +246,13 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
     last[1] = coordinate[1];
     geometry.setCoordinates(last);
   } else {
-    var potentiallyDone = false;
     if (this.mode_ === ol.interaction.DrawMode.LINESTRING) {
       coordinates = geometry.getCoordinates();
-      potentiallyDone = coordinates.length > 2;
     } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
       geometry = geometry.getRings()[0];
       coordinates = geometry.getCoordinates();
-      potentiallyDone = coordinates.length > 3;
     }
-    if (potentiallyDone && this.atFinish_(event)) {
+    if (this.atFinish_(event)) {
       // snap to finish
       coordinate = this.finishCoordinate_.slice();
     }
