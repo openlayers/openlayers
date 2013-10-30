@@ -53,6 +53,19 @@ var vector = new ol.layer.Vector({
             zIndex: 1
           })
         ]
+      }),
+      new ol.style.Rule({
+        filter: 'renderIntent("future")',
+        symbolizers: [
+          new ol.style.Shape({
+            fill: new ol.style.Fill({
+              color: '#0099ff',
+              opacity: 1
+            }),
+            size: 16,
+            zIndex: 1
+          })
+        ]
       })
     ],
     symbolizers: [

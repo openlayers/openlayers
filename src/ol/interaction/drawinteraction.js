@@ -69,6 +69,13 @@ ol.interaction.Draw = function(options) {
    */
   this.sketchFeature_ = null;
 
+  /**
+   * Sketch point.
+   * @type {ol.Feature}
+   * @private
+   */
+  this.sketchPoint_ = null;
+
 };
 goog.inherits(ol.interaction.Draw, ol.interaction.Interaction);
 
@@ -181,20 +188,31 @@ ol.interaction.Draw.prototype.atStart_ = function(event) {
 ol.interaction.Draw.prototype.startDrawing_ = function(event) {
   var start = event.getCoordinate();
   this.startCoordinate_ = start;
-  var feature = new ol.Feature();
-  feature.setRenderIntent(ol.layer.VectorLayerRenderIntent.SELECTED);
+  var sketchFeature = new ol.Feature();
+  sketchFeature.setRenderIntent(ol.layer.VectorLayerRenderIntent.SELECTED);
+  var features = [sketchFeature];
   var geometry;
   if (this.mode_ === ol.interaction.DrawMode.POINT) {
     geometry = new ol.geom.Point(start.slice());
-  } else if (this.mode_ === ol.interaction.DrawMode.LINESTRING) {
-    geometry = new ol.geom.LineString([start.slice(), start.slice()]);
-  } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
-    geometry = new ol.geom.Polygon([[start.slice(), start.slice()]]);
+  } else {
+    var sketchPoint = new ol.Feature({
+      geom: new ol.geom.Point(start.slice())
+    });
+    sketchPoint.setRenderIntent(ol.layer.VectorLayerRenderIntent.FUTURE);
+    this.sketchPoint_ = sketchPoint;
+    features.push(sketchPoint);
+
+    if (this.mode_ === ol.interaction.DrawMode.LINESTRING) {
+      geometry = new ol.geom.LineString([start.slice(), start.slice()]);
+    } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
+      geometry = new ol.geom.Polygon([[start.slice(), start.slice()]]);
+    }
   }
   goog.asserts.assert(goog.isDef(geometry));
-  feature.setGeometry(geometry);
-  this.sketchFeature_ = feature;
-  this.sketchLayer_.addFeatures([feature]);
+  sketchFeature.setGeometry(geometry);
+  this.sketchFeature_ = sketchFeature;
+
+  this.sketchLayer_.addFeatures(features);
 };
 
 
@@ -212,19 +230,22 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
     last[0] = coordinate[0];
     last[1] = coordinate[1];
     geometry.setCoordinates(last);
-  } else if (this.mode_ === ol.interaction.DrawMode.LINESTRING) {
-    coordinates = geometry.getCoordinates();
-    last = coordinates[coordinates.length - 1];
-    last[0] = coordinate[0];
-    last[1] = coordinate[1];
-    geometry.setCoordinates(coordinates);
-  } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
-    var ring = geometry.getRings()[0];
-    coordinates = ring.getCoordinates();
-    last = coordinates[coordinates.length - 1];
-    last[0] = coordinate[0];
-    last[1] = coordinate[1];
-    ring.setCoordinates(coordinates);
+  } else {
+    this.sketchPoint_.getGeometry().setCoordinates(coordinate);
+    if (this.mode_ === ol.interaction.DrawMode.LINESTRING) {
+      coordinates = geometry.getCoordinates();
+      last = coordinates[coordinates.length - 1];
+      last[0] = coordinate[0];
+      last[1] = coordinate[1];
+      geometry.setCoordinates(coordinates);
+    } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
+      var ring = geometry.getRings()[0];
+      coordinates = ring.getCoordinates();
+      last = coordinates[coordinates.length - 1];
+      last[0] = coordinate[0];
+      last[1] = coordinate[1];
+      ring.setCoordinates(coordinates);
+    }
   }
 };
 
@@ -258,10 +279,14 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
  */
 ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
   this.startCoordinate_ = null;
-  var feature = this.sketchFeature_;
-  this.sketchLayer_.removeFeatures([feature]);
-  feature.setRenderIntent(ol.layer.VectorLayerRenderIntent.DEFAULT);
-  this.layer_.addFeatures([feature]);
+  var sketchFeature = this.sketchFeature_;
+  var features = [sketchFeature];
+  if (this.mode_ !== ol.interaction.DrawMode.POINT) {
+    features.push(this.sketchPoint_);
+  }
+  this.sketchLayer_.removeFeatures(features);
+  sketchFeature.setRenderIntent(ol.layer.VectorLayerRenderIntent.DEFAULT);
+  this.layer_.addFeatures([sketchFeature]);
 };
 
 
