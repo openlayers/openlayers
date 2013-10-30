@@ -56,11 +56,12 @@ ol.interaction.Draw = function(options) {
   this.mode_ = options.mode;
 
   /**
-   * Start coordinate for the feature.
+   * Finish coordinate for the feature (first point for polygons, last point for
+   * linestrings).
    * @type {ol.Coordinate}
    * @private
    */
-  this.startCoordinate_ = null;
+  this.finishCoordinate_ = null;
 
   /**
    * Sketch feature.
@@ -102,7 +103,7 @@ ol.interaction.Draw.prototype.setMap = function(map) {
   } else {
     // removing from a map, clean up
     this.sketchLayer_ = null;
-    this.startCoordinate_ = null;
+    this.finishCoordinate_ = null;
     this.sketchFeature_ = null;
   }
 
@@ -135,10 +136,10 @@ ol.interaction.Draw.prototype.handleMapBrowserEvent = function(event) {
  * @private
  */
 ol.interaction.Draw.prototype.handleClick_ = function(event) {
-  if (goog.isNull(this.startCoordinate_)) {
+  if (goog.isNull(this.finishCoordinate_)) {
     this.startDrawing_(event);
   } else if (this.mode_ === ol.interaction.DrawMode.POINT ||
-      this.atStart_(event)) {
+      this.atFinish_(event)) {
     this.finishDrawing_(event);
   } else {
     this.addToDrawing_(event);
@@ -155,9 +156,9 @@ ol.interaction.Draw.prototype.handleClick_ = function(event) {
  */
 ol.interaction.Draw.prototype.handleMove_ = function(event) {
   if (this.mode_ === ol.interaction.DrawMode.POINT &&
-      goog.isNull(this.startCoordinate_)) {
+      goog.isNull(this.finishCoordinate_)) {
     this.startDrawing_(event);
-  } else if (!goog.isNull(this.startCoordinate_)) {
+  } else if (!goog.isNull(this.finishCoordinate_)) {
     this.modifyDrawing_(event);
   }
   return true;
@@ -170,12 +171,12 @@ ol.interaction.Draw.prototype.handleMove_ = function(event) {
  * @return {boolean} The event is within the snapping tolerance of the start.
  * @private
  */
-ol.interaction.Draw.prototype.atStart_ = function(event) {
+ol.interaction.Draw.prototype.atFinish_ = function(event) {
   var map = event.map;
-  var startPixel = map.getPixelFromCoordinate(this.startCoordinate_);
+  var finishPixel = map.getPixelFromCoordinate(this.finishCoordinate_);
   var pixel = event.getPixel();
-  var dx = pixel[0] - startPixel[0];
-  var dy = pixel[1] - startPixel[1];
+  var dx = pixel[0] - finishPixel[0];
+  var dy = pixel[1] - finishPixel[1];
   return Math.sqrt(dx * dx + dy * dy) <= this.snapTolerance_;
 };
 
@@ -187,7 +188,7 @@ ol.interaction.Draw.prototype.atStart_ = function(event) {
  */
 ol.interaction.Draw.prototype.startDrawing_ = function(event) {
   var start = event.getCoordinate();
-  this.startCoordinate_ = start;
+  this.finishCoordinate_ = start;
   var sketchFeature = new ol.Feature();
   sketchFeature.setRenderIntent(ol.layer.VectorLayerRenderIntent.SELECTED);
   var features = [sketchFeature];
@@ -260,6 +261,7 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
   var geometry = this.sketchFeature_.getGeometry();
   var coordinates, last;
   if (this.mode_ === ol.interaction.DrawMode.LINESTRING) {
+    this.finishCoordinate_ = coordinate.slice();
     coordinates = geometry.getCoordinates();
     coordinates.push(coordinate.slice());
     geometry.setCoordinates(coordinates);
@@ -278,7 +280,7 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
  * @private
  */
 ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
-  this.startCoordinate_ = null;
+  this.finishCoordinate_ = null;
   var sketchFeature = this.sketchFeature_;
   var features = [sketchFeature];
   if (this.mode_ !== ol.interaction.DrawMode.POINT) {
