@@ -67,13 +67,13 @@ ol.Overlay = function(options) {
    * @type {boolean}
    */
   this.insertFirst_ = goog.isDef(options.insertFirst) ?
-      options.insertFirst : false;
+      options.insertFirst : true;
 
   /**
    * @private
    * @type {boolean}
    */
-  this.stopEvent_ = goog.isDef(options.stopEvent) ? options.stopEvent : false;
+  this.stopEvent_ = goog.isDef(options.stopEvent) ? options.stopEvent : true;
 
   /**
    * @private
