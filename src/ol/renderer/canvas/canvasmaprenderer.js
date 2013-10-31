@@ -6,7 +6,6 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.style');
-goog.require('goog.vec.Mat4');
 goog.require('ol.css');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
@@ -14,7 +13,7 @@ goog.require('ol.layer.Vector');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.TileLayer');
-goog.require('ol.renderer.canvas.VectorLayer');
+goog.require('ol.renderer.canvas.VectorLayer2');
 goog.require('ol.source.State');
 
 
@@ -64,7 +63,7 @@ ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
   } else if (layer instanceof ol.layer.Tile) {
     return new ol.renderer.canvas.TileLayer(this, layer);
   } else if (layer instanceof ol.layer.Vector) {
-    return new ol.renderer.canvas.VectorLayer(this, layer);
+    return new ol.renderer.canvas.VectorLayer2(this, layer);
   } else {
     goog.asserts.fail();
     return null;
