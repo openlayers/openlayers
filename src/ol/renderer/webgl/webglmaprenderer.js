@@ -21,8 +21,6 @@ goog.require('ol.layer.Tile');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.TileLayer');
-goog.require('ol.renderer.webgl.map.shader.Color');
-goog.require('ol.renderer.webgl.map.shader.Default');
 goog.require('ol.source.State');
 goog.require('ol.structs.Buffer');
 goog.require('ol.structs.LRUCache');
@@ -92,18 +90,6 @@ ol.renderer.webgl.Map = function(container, map) {
       this.handleWebGLContextLost, false, this);
   goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.RESTORED,
       this.handleWebGLContextRestored, false, this);
-
-  /**
-   * @private
-   * @type {ol.renderer.webgl.map.shader.Color.Locations}
-   */
-  this.colorLocations_ = null;
-
-  /**
-   * @private
-   * @type {ol.renderer.webgl.map.shader.Default.Locations}
-   */
-  this.defaultLocations_ = null;
 
   /**
    * @private
@@ -319,8 +305,6 @@ ol.renderer.webgl.Map.prototype.getTileTextureQueue = function() {
  */
 ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
   event.preventDefault();
-  this.colorLocations_ = null;
-  this.defaultLocations_ = null;
   this.textureCache_.clear();
   this.textureCacheFrameMarkerCount_ = 0;
   goog.object.forEach(this.getLayerRenderers(), function(layerRenderer) {
@@ -425,80 +409,16 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
 
-  var locations;
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
     layer = layersArray[i];
     layerState = frameState.layerStates[goog.getUid(layer)];
-    if (!layerState.visible ||
-        layerState.sourceState != ol.source.State.READY ||
-        viewResolution >= layerState.maxResolution ||
-        viewResolution < layerState.minResolution) {
-      continue;
+    if (layerState.visible &&
+        layerState.sourceState == ol.source.State.READY &&
+        viewResolution < layerState.maxResolution &&
+        viewResolution >= layerState.minResolution) {
+      layerRenderer = this.getLayerRenderer(layer);
+      layerRenderer.composeFrame(frameState, layerState, context);
     }
-    var useColor =
-        layerState.brightness ||
-        layerState.contrast != 1 ||
-        layerState.hue ||
-        layerState.saturation != 1;
-
-    var fragmentShader, vertexShader;
-    if (useColor) {
-      fragmentShader = ol.renderer.webgl.map.shader.ColorFragment.getInstance();
-      vertexShader = ol.renderer.webgl.map.shader.ColorVertex.getInstance();
-    } else {
-      fragmentShader =
-          ol.renderer.webgl.map.shader.DefaultFragment.getInstance();
-      vertexShader = ol.renderer.webgl.map.shader.DefaultVertex.getInstance();
-    }
-
-    var program = context.getProgram(fragmentShader, vertexShader);
-
-    if (useColor) {
-      if (goog.isNull(this.colorLocations_)) {
-        locations =
-            new ol.renderer.webgl.map.shader.Color.Locations(gl, program);
-        this.colorLocations_ = locations;
-      } else {
-        locations = this.colorLocations_;
-      }
-    } else {
-      if (goog.isNull(this.defaultLocations_)) {
-        locations =
-            new ol.renderer.webgl.map.shader.Default.Locations(gl, program);
-        this.defaultLocations_ = locations;
-      } else {
-        locations = this.defaultLocations_;
-      }
-    }
-
-    if (context.useProgram(program)) {
-      gl.enableVertexAttribArray(locations.a_position);
-      gl.vertexAttribPointer(
-          locations.a_position, 2, goog.webgl.FLOAT, false, 16, 0);
-      gl.enableVertexAttribArray(locations.a_texCoord);
-      gl.vertexAttribPointer(
-          locations.a_texCoord, 2, goog.webgl.FLOAT, false, 16, 8);
-      gl.uniform1i(locations.u_texture, 0);
-    }
-
-    layerRenderer = this.getLayerRenderer(layer);
-    gl.uniformMatrix4fv(
-        locations.u_texCoordMatrix, false, layerRenderer.getTexCoordMatrix());
-    gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
-        layerRenderer.getProjectionMatrix());
-    if (useColor) {
-      gl.uniformMatrix4fv(locations.u_colorMatrix, false,
-          layerRenderer.getColorMatrix(
-              layerState.brightness,
-              layerState.contrast,
-              layerState.hue,
-              layerState.saturation
-          ));
-    }
-    gl.uniform1f(locations.u_opacity, layerState.opacity);
-    gl.bindTexture(goog.webgl.TEXTURE_2D, layerRenderer.getTexture());
-    gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
-
   }
 
   if (!this.renderedVisible_) {
