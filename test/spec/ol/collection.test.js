@@ -270,6 +270,15 @@ describe('ol.collection', function() {
       expect(collection.getAt(0)).to.eql(1);
       expect(collection.getAt(1)).to.eql(2);
     });
+    it('fires events', function() {
+      var collection = new ol.Collection();
+      var elems = [];
+      goog.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
+        elems.push(e.getElement());
+      });
+      collection.extend([1, 2]);
+      expect(elems).to.eql([1, 2]);
+    });
   });
 
 });
