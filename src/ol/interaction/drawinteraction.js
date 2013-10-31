@@ -125,6 +125,8 @@ ol.interaction.Draw.prototype.handleMapBrowserEvent = function(event) {
     pass = this.handleClick_(event);
   } else if (event.type === ol.MapBrowserEvent.EventType.MOUSEMOVE) {
     pass = this.handleMove_(event);
+  } else if (event.type === ol.MapBrowserEvent.EventType.DBLCLICK) {
+    pass = false;
   }
   return pass;
 };
