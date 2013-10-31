@@ -71,7 +71,7 @@ var popup = new ol.Overlay({
 map.addOverlay(popup);
 
 
-map.on('click', function(evt) {
+map.on('singleclick', function(evt) {
   map.getFeatures({
     pixel: evt.getPixel(),
     layers: [vector],

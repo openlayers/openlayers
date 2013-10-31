@@ -195,7 +195,7 @@ ol.MapBrowserEventHandler.prototype.emulateClick_ = function(browserEvent) {
     this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
       this.clickTimeoutId_ = 0;
       var newEvent = new ol.MapBrowserEvent(
-          ol.MapBrowserEvent.EventType.CLICK, this.map_, browserEvent);
+          ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_, browserEvent);
       this.dispatchEvent(newEvent);
     }, this), 250);
   }
@@ -341,12 +341,12 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
  * @enum {string}
  */
 ol.MapBrowserEvent.EventType = {
-  CLICK: goog.events.EventType.CLICK,
   DBLCLICK: goog.events.EventType.DBLCLICK,
   DOWN: 'down',
   DRAGSTART: 'dragstart',
   DRAG: 'drag',
   DRAGEND: 'dragend',
+  SINGLECLICK: 'singleclick',
   TOUCHSTART: goog.events.EventType.TOUCHSTART,
   TOUCHMOVE: goog.events.EventType.TOUCHMOVE,
   TOUCHEND: goog.events.EventType.TOUCHEND

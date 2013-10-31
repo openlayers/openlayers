@@ -48,7 +48,7 @@ $(map.getViewport()).on('mousemove', function(evt) {
   displayFeatureInfo(pixel);
 });
 
-map.on('click', function(evt) {
+map.on('singleclick', function(evt) {
   var pixel = evt.getPixel();
   displayFeatureInfo(pixel);
 });
