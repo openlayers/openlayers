@@ -578,7 +578,7 @@
  *     function to load a tile given a URL.
  * @todo stability experimental
  */
- 
+
 /**
  * @typedef {Object} ol.source.MapGuideOptions
  * @property {string} url The mapagent url
