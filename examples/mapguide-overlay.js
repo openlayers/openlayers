@@ -68,7 +68,8 @@ function initMap(json) {
     renderers: [ol.RendererHint.CANVAS, ol.RendererHint.DOM],
     target: 'map',
     view: new ol.View2D({
-      center: [-87.7302542509315, 43.744459064634],
+      //center: [-87.7302542509315, 43.744459064634],
+      center: [((bounds[0] + bounds[2]) / 2), ((bounds[1] + bounds[3]) / 2)],
       projection: projCode,
       zoom: 12
     })
