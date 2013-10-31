@@ -24,6 +24,7 @@ goog.require('ol.layer.VectorLayerRenderIntent');
  * @constructor
  * @extends {ol.Object}
  * @param {Object.<string, *>=} opt_values Attributes.
+ * @todo stability experimental
  */
 ol.Feature = function(opt_values) {
 
@@ -60,6 +61,7 @@ goog.inherits(ol.Feature, ol.Object);
 /**
  * Gets a copy of the attributes of this feature.
  * @return {Object.<string, *>} Attributes object.
+ * @todo stability experimental
  */
 ol.Feature.prototype.getAttributes = function() {
   var keys = this.getKeys(),
@@ -79,6 +81,7 @@ ol.Feature.prototype.getAttributes = function() {
  * the unique id in the source store.
  *
  * @return {string|undefined} The feature's identifier.
+ * @todo stability experimental
  */
 ol.Feature.prototype.getId = function() {
   return this.featureId_;
@@ -88,6 +91,7 @@ ol.Feature.prototype.getId = function() {
 /**
  * Get the geometry associated with this feature.
  * @return {ol.geom.Geometry} The geometry (or null if none).
+ * @todo stability experimental
  */
 ol.Feature.prototype.getGeometry = function() {
   return goog.isDef(this.geometryName_) ?
@@ -120,6 +124,7 @@ ol.Feature.prototype.handleGeometryChange_ = function(evt) {
  * @inheritDoc
  * @param {string} key Key.
  * @param {*} value Value.
+ * @todo stability experimental
  */
 ol.Feature.prototype.set = function(key, value) {
   var geometry = this.getGeometry();
@@ -160,6 +165,7 @@ ol.Feature.prototype.setId = function(featureId) {
 /**
  * Set the geometry to be associated with this feature after its creation.
  * @param {ol.geom.Geometry} geometry The geometry.
+ * @todo stability experimental
  */
 ol.Feature.prototype.setGeometry = function(geometry) {
   if (!goog.isDef(this.geometryName_)) {

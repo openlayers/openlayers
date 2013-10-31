@@ -3,9 +3,9 @@ goog.provide('ol.interaction.Select');
 goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol.Feature');
-goog.require('ol.interaction.ConditionType');
+goog.require('ol.events.ConditionType');
+goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.condition');
 goog.require('ol.layer.Vector');
 goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.source.Vector');
@@ -17,23 +17,24 @@ goog.require('ol.source.Vector');
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {ol.interaction.SelectOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.Select = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
-   * @type {ol.interaction.ConditionType}
+   * @type {ol.events.ConditionType}
    */
   this.condition_ = goog.isDef(options.condition) ?
-      options.condition : ol.interaction.condition.clickOnly;
+      options.condition : ol.events.condition.singleClick;
 
   /**
    * @private
-   * @type {ol.interaction.ConditionType}
+   * @type {ol.events.ConditionType}
    */
   this.addCondition_ = goog.isDef(options.addCondition) ?
-      options.addCondition : ol.interaction.condition.shiftKeyOnly;
+      options.addCondition : ol.events.condition.shiftKeyOnly;
 
   /**
    * Mapping between original features and cloned features on selection layers.

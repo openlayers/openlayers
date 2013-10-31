@@ -8,6 +8,7 @@ goog.require('ol.parser.Parser');
 /**
  * @constructor
  * @extends {ol.parser.Parser}
+ * @todo stability experimental
  */
 ol.parser.XML = function() {
   if (goog.global.ActiveXObject) {

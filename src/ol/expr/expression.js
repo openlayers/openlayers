@@ -34,6 +34,7 @@ ol.expr.evaluateFeature = function(expr, opt_feature) {
  * @param {string} source The expression source (e.g. `'foo + 2'`).
  * @return {ol.expr.Expression} An expression instance that can be
  *     evaluated within some scope to provide a value.
+ * @todo stability experimental
  */
 ol.expr.parse = function(source) {
   var parser = new ol.expr.Parser();
@@ -47,6 +48,7 @@ ol.expr.parse = function(source) {
  * @param {function(this:ol.Feature)} func The function to be called in an
  *     expression.  This function will be called with a feature as the `this`
  *     argument when the expression is evaluated in the context of a features.
+ * @todo stability experimental
  */
 ol.expr.register = function(name, func) {
   ol.expr.lib[name] = func;

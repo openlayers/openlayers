@@ -93,6 +93,15 @@
     <?js } ?>
     
     <?js
+        var observables = doc.observables;
+        if (observables && observables.length && observables.forEach) {
+    ?>
+        <h3 class="subsection-title">Observable Properties</h3>
+        <dl><?js= self.partial('observables.tmpl', observables) ?></dl>
+
+    <?js } ?>
+
+    <?js
         var members = self.find({kind: 'member', memberof: title === 'Globals'? {isUndefined: true} : doc.longname});
         if (members && members.length && members.forEach) { 
     ?>

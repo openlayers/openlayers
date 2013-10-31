@@ -42,6 +42,7 @@ goog.require('ol.style.Stroke');
  * @implements {ol.parser.AsyncStringFeatureParser}
  * @param {ol.parser.KMLOptions=} opt_options Optional configuration object.
  * @extends {ol.parser.XML}
+ * @todo stability experimental
  */
 ol.parser.KML = function(opt_options) {
   var options = /** @type {ol.parser.KMLOptions} */

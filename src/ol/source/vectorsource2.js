@@ -11,6 +11,7 @@ goog.require('ol.source.Source');
  * @constructor
  * @extends {ol.source.Source}
  * @param {ol.source.Vector2Options} options Options.
+ * @todo stability experimental
  */
 ol.source.Vector2 = function(options) {
 

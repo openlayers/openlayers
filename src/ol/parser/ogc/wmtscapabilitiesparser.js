@@ -10,6 +10,7 @@ goog.require('ol.parser.ogc.WMTSCapabilities_v1_0_0');
  * @constructor
  * @param {Object=} opt_options Options which will be set on this object.
  * @extends {ol.parser.ogc.Versioned}
+ * @todo stability experimental
  */
 ol.parser.ogc.WMTSCapabilities = function(opt_options) {
   opt_options = opt_options || {};

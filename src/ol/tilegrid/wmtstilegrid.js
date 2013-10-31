@@ -11,6 +11,7 @@ goog.require('ol.tilegrid.TileGrid');
  * @constructor
  * @extends {ol.tilegrid.TileGrid}
  * @param {ol.tilegrid.WMTSOptions} options WMTS options.
+ * @todo stability experimental
  */
 ol.tilegrid.WMTS = function(options) {
 
@@ -48,6 +49,7 @@ ol.tilegrid.WMTS.prototype.getMatrixId = function(z) {
 
 /**
  * @return {Array.<string>} MatrixIds.
+ * @todo stability experimental
  */
 ol.tilegrid.WMTS.prototype.getMatrixIds = function() {
   return this.matrixIds_;

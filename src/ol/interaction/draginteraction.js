@@ -115,9 +115,9 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
       goog.asserts.assertInstanceof(browserEvent, goog.events.BrowserEvent);
       this.deltaX = browserEvent.clientX - this.startX;
       this.deltaY = browserEvent.clientY - this.startY;
-      this.handleDragEnd(mapBrowserEvent);
       view.setHint(ol.ViewHint.INTERACTING, -1);
       this.dragging_ = false;
+      this.handleDragEnd(mapBrowserEvent);
     }
   } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAGSTART) {
     goog.asserts.assertInstanceof(browserEvent, goog.events.BrowserEvent);

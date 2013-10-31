@@ -9,10 +9,11 @@ goog.require('goog.uri.utils');
 /**
  * Method to use to get WMS feature info.
  * @enum {string}
+ * @todo stability experimental
  */
 ol.source.WMSGetFeatureInfoMethod = {
   /**
-   * Load the info in an IFRAME. Only works with 'text/html and 'text/plain' as
+   * Load the info in an IFRAME. Only works with `text/html` and `text/plain` as
    * `INFO_FORMAT`.
    */
   IFRAME: 'iframe',
