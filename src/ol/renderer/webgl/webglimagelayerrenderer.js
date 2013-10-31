@@ -83,7 +83,7 @@ ol.renderer.webgl.ImageLayer.prototype.getImageLayer = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.renderFrame =
+ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
   var gl = this.getWebGLMapRenderer().getGL();

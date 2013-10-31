@@ -55,7 +55,7 @@ ol.renderer.dom.ImageLayer.prototype.getImageLayer = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.dom.ImageLayer.prototype.renderFrame =
+ol.renderer.dom.ImageLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
   var view2DState = frameState.view2DState;

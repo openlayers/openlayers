@@ -406,7 +406,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
         layerState.sourceState == ol.source.State.READY &&
         viewResolution < layerState.maxResolution &&
         viewResolution >= layerState.minResolution) {
-      layerRenderer.renderFrame(frameState, layerState);
+      layerRenderer.prepareFrame(frameState, layerState);
     }
   }
 

@@ -340,7 +340,7 @@ ol.renderer.canvas.VectorLayer.prototype.handleLayerChange_ = function(event) {
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorLayer.prototype.renderFrame =
+ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
   // TODO: consider bailing out here if rendered center and resolution
@@ -378,8 +378,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   }
 
   if (goog.isNull(tileGrid)) {
-    // We should only get here when the first call to renderFrame happens during
-    // an animation. Try again in the next renderFrame call.
+    // We should only get here when the first call to prepareFrame happens
+    // during an animation. Try again in the next prepareFrame call.
     return;
   }
 

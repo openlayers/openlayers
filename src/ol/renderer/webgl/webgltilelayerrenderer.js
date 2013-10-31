@@ -114,7 +114,7 @@ ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.TileLayer.prototype.renderFrame =
+ol.renderer.webgl.TileLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
   var mapRenderer = this.getWebGLMapRenderer();

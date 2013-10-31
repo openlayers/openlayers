@@ -105,7 +105,7 @@ ol.renderer.canvas.TileLayer.prototype.getTransform = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.TileLayer.prototype.renderFrame =
+ol.renderer.canvas.TileLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
   //
@@ -137,12 +137,12 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   //   or (3) the canvas tile range doesn't contain the required tile
   //   range. This canvas tile range invalidation thing is related to
   //   an optimization where we attempt to redraw as few pixels as
-  //   possible on each renderFrame call.
+  //   possible on each prepareFrame call.
   //
   // - If the canvas tile range has been invalidated we reset
   //   renderedCanvasTileRange_ and reset the renderedTiles_ array.
   //   The renderedTiles_ array is the structure used to determine
-  //   the canvas pixels that need not be redrawn from one renderFrame
+  //   the canvas pixels that need not be redrawn from one prepareFrame
   //   call to another. It records while tile has been rendered at
   //   which position in the canvas.
   //

@@ -67,7 +67,7 @@ ol.renderer.canvas.ImageLayer.prototype.getTransform = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.ImageLayer.prototype.renderFrame =
+ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
   var view2DState = frameState.view2DState;

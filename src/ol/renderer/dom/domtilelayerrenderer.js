@@ -77,7 +77,7 @@ ol.renderer.dom.TileLayer.prototype.getTileLayer = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.dom.TileLayer.prototype.renderFrame =
+ol.renderer.dom.TileLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
   if (!layerState.visible) {

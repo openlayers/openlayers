@@ -120,7 +120,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
         viewResolution < layerState.minResolution) {
       continue;
     }
-    layerRenderer.renderFrame(frameState, layerState);
+    layerRenderer.prepareFrame(frameState, layerState);
 
     image = layerRenderer.getImage();
     if (!goog.isNull(image)) {
