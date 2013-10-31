@@ -54,8 +54,8 @@ ol.events.condition.always = goog.functions.TRUE;
  * @return {boolean} True if the event is a click event.
  * @todo stability experimental
  */
-ol.events.condition.clickOnly = function(mapBrowserEvent) {
-  return mapBrowserEvent.type == ol.MapBrowserEvent.EventType.CLICK;
+ol.events.condition.singleClick = function(mapBrowserEvent) {
+  return mapBrowserEvent.type == ol.MapBrowserEvent.EventType.SINGLECLICK;
 };
 
 
