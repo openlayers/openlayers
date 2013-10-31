@@ -47,7 +47,7 @@ var popup = new ol.Overlay({
 });
 map.addOverlay(popup);
 
-map.on('click', function(evt) {
+map.on('singleclick', function(evt) {
   var element = popup.getElement();
   var coordinate = evt.getCoordinate();
   var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(

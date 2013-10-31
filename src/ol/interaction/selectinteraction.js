@@ -27,7 +27,7 @@ ol.interaction.Select = function(opt_options) {
    * @type {ol.events.ConditionType}
    */
   this.condition_ = goog.isDef(options.condition) ?
-      options.condition : ol.events.condition.clickOnly;
+      options.condition : ol.events.condition.singleClick;
 
   /**
    * @private
