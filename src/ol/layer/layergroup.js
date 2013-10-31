@@ -28,6 +28,8 @@ ol.layer.GroupProperty = {
  * @extends {ol.layer.Base}
  * @param {ol.layer.GroupOptions=} opt_options Layer options.
  * @todo stability experimental
+ * @todo observable layers {ol.Collection} collection of layers that are part
+ *       of this group
  */
 ol.layer.Group = function(opt_options) {
 

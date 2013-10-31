@@ -47,6 +47,23 @@ ol.GeolocationProperty = {
  * @extends {ol.Object}
  * @param {ol.GeolocationOptions=} opt_options Options.
  * @todo stability experimental
+ * @todo observable accuracy {number} readonly the accuracy of the position
+ *       measurement
+ * @todo observable altitude {number} readonly the altitude of the position in
+ *       meters above mean sea level
+ * @todo observable altitudeAccuracy {number} readonly the accuracy of the
+ *       altitude measurement
+ * @todo observable heading {number} readonly the heading of the device in
+ *       radians from norht
+ * @todo observable position {ol.Coordinate} readonly the current position of
+ *       the device reported in the current projection
+ * @todo observable projection {ol.proj.Projection} readonly the projection to
+ *       report the position in
+ * @todo observable speed {number} readonly the instantaneous speed of the
+ *       device in meters per second
+ * @todo observable tracking {number} track the device's position.
+ * @todo observable trackingOptions {number} PositionOptions as defined by the
+ *       HTML5 Geolocation spec at http://dev.w3.org/geo/api/spec-source.html
  */
 ol.Geolocation = function(opt_options) {
 

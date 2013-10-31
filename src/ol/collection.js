@@ -67,6 +67,7 @@ ol.CollectionProperty = {
  * @extends {ol.Object}
  * @param {Array=} opt_array Array.
  * @todo stability experimental
+ * @todo observable length {number} readonly the length of the array
  */
 ol.Collection = function(opt_array) {
 

@@ -86,6 +86,10 @@ ol.View2DProperty = {
  * @extends {ol.View}
  * @param {ol.View2DOptions=} opt_options View2D options.
  * @todo stability experimental
+ * @todo observable center {ol.Coordinate} the center of the view
+ * @todo observable projection {ol.proj.Projection} the projection of the view
+ * @todo observable resolution {number} the resolution of the view
+ * @todo observable rotation {number} the rotation of the view
  */
 ol.View2D = function(opt_options) {
   goog.base(this);

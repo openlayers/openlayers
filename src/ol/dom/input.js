@@ -30,6 +30,10 @@ ol.dom.InputProperty = {
  * @extends {ol.Object}
  * @param {Element} target Target element.
  * @todo stability experimental
+ * @todo observable value {string} the value of the Input
+ * @todo observable valueAsNumber {number} the value of the Input, converted to
+ *       a number if possible
+ * @todo observable checked {boolean} the checked state of the Input
  */
 ol.dom.Input = function(target) {
   goog.base(this);

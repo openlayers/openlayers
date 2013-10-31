@@ -57,6 +57,12 @@ ol.OverlayPositioning = {
  * @extends {ol.Object}
  * @param {ol.OverlayOptions} options Overlay options.
  * @todo stability experimental
+ * @todo observable element {Element} the Element containing the overlay
+ * @todo observable map {ol.Map} the map that the overlay is part of
+ * @todo observable position {ol.Coordinate} the spatial point that the overlay
+ *       is anchored at
+ * @todo observable positioning {ol.OverlayPositioning} how the overlay is
+ *       positioned relative to its point on the map
  */
 ol.Overlay = function(options) {
 
