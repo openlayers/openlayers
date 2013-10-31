@@ -379,19 +379,26 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   this.textureCache_.set((-frameState.index).toString(), null);
   ++this.textureCacheFrameMarkerCount_;
 
+  var layersToDraw = [];
   var layersArray = frameState.layersArray;
   var viewResolution = frameState.view2DState.resolution;
   var i, ii, layer, layerRenderer, layerState;
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
     layer = layersArray[i];
-    layerRenderer = this.getLayerRenderer(layer);
     layerState = frameState.layerStates[goog.getUid(layer)];
     if (layerState.visible &&
         layerState.sourceState == ol.source.State.READY &&
         viewResolution < layerState.maxResolution &&
         viewResolution >= layerState.minResolution) {
-      layerRenderer.prepareFrame(frameState, layerState);
+      layersToDraw.push(layer);
     }
+  }
+
+  for (i = 0, ii = layersToDraw.length; i < ii; ++i) {
+    layer = layersToDraw[i];
+    layerRenderer = this.getLayerRenderer(layer);
+    layerState = frameState.layerStates[goog.getUid(layer)];
+    layerRenderer.prepareFrame(frameState, layerState);
   }
 
   var size = frameState.size;
@@ -409,16 +416,11 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
 
-  for (i = 0, ii = layersArray.length; i < ii; ++i) {
-    layer = layersArray[i];
+  for (i = 0, ii = layersToDraw.length; i < ii; ++i) {
+    layer = layersToDraw[i];
     layerState = frameState.layerStates[goog.getUid(layer)];
-    if (layerState.visible &&
-        layerState.sourceState == ol.source.State.READY &&
-        viewResolution < layerState.maxResolution &&
-        viewResolution >= layerState.minResolution) {
-      layerRenderer = this.getLayerRenderer(layer);
-      layerRenderer.composeFrame(frameState, layerState, context);
-    }
+    layerRenderer = this.getLayerRenderer(layer);
+    layerRenderer.composeFrame(frameState, layerState, context);
   }
 
   if (!this.renderedVisible_) {
