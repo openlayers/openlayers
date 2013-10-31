@@ -141,10 +141,16 @@ ol.MapBrowserEventHandler = function(map) {
   this.mousedownListenerKey_ = null;
 
   /**
-   * @type {Array.<number>}
+   * @type {goog.events.Key}
    * @private
    */
-  this.touchListenerKeys_ = null;
+  this.pointerdownListenerKey_ = null;
+
+  /**
+   * @type {goog.events.Key}
+   * @private
+   */
+  this.touchstartListenerKey_ = null;
 
   /**
    * @type {goog.events.BrowserEvent}
@@ -158,21 +164,13 @@ ol.MapBrowserEventHandler = function(map) {
       goog.events.EventType.MOUSEDOWN,
       this.handleMouseDown_, false, this);
 
-  // touch events
-  this.touchListenerKeys_ = [
-    goog.events.listen(element, [
+  this.pointerdownListenerKey_ = goog.events.listen(element,
+      goog.events.EventType.MSPOINTERDOWN,
+      this.handlePointerDown_, false, this);
+
+  this.touchstartListenerKey_ = goog.events.listen(element,
       goog.events.EventType.TOUCHSTART,
-      goog.events.EventType.MSPOINTERDOWN
-    ], this.handleTouchStart_, false, this),
-    goog.events.listen(goog.global.document, [
-      goog.events.EventType.TOUCHMOVE,
-      goog.events.EventType.MSPOINTERMOVE
-    ], this.handleTouchMove_, false, this),
-    goog.events.listen(goog.global.document, [
-      goog.events.EventType.TOUCHEND,
-      goog.events.EventType.MSPOINTERUP
-    ], this.handleTouchEnd_, false, this)
-  ];
+      this.handleTouchStart_, false, this);
 
 };
 goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
@@ -227,6 +225,17 @@ ol.MapBrowserEventHandler.prototype.handleMouseUp_ = function(browserEvent) {
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handleMouseDown_ = function(browserEvent) {
+  if (!goog.isNull(this.pointerdownListenerKey_)) {
+    // mouse device detected - unregister the pointerdown and touchstart
+    // listeners
+    goog.events.unlistenByKey(this.pointerdownListenerKey_);
+    this.pointerdownListenerKey_ = null;
+
+    goog.asserts.assert(!goog.isNull(this.touchstartListenerKey_));
+    goog.events.unlistenByKey(this.touchstartListenerKey_);
+    this.touchstartListenerKey_ = null;
+  }
+
   var newEvent = new ol.MapBrowserEvent(
       ol.MapBrowserEvent.EventType.DOWN, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
@@ -265,20 +274,48 @@ ol.MapBrowserEventHandler.prototype.handleMouseMove_ = function(browserEvent) {
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
+ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
+    function(browserEvent) {
   if (!goog.isNull(this.mousedownListenerKey_)) {
+    // pointer device detected - unregister the mousedown and touchstart
+    // listeners
     goog.events.unlistenByKey(this.mousedownListenerKey_);
     this.mousedownListenerKey_ = null;
+
+    goog.asserts.assert(!goog.isNull(this.touchstartListenerKey_));
+    goog.events.unlistenByKey(this.touchstartListenerKey_);
+    this.touchstartListenerKey_ = null;
   }
-  // prevent context menu
-  // When the IE pointer events are used, this prevents a
-  // 'mousedown' from being fired after this event for the primary
-  // contact (first finger on the screen or mouse)
-  browserEvent.preventDefault();
-  this.down_ = browserEvent;
-  this.dragged_ = false;
+
   var newEvent = new ol.MapBrowserEvent(
       ol.MapBrowserEvent.EventType.TOUCHSTART, this.map_, browserEvent);
+  this.dispatchEvent(newEvent);
+
+  this.down_ = browserEvent;
+  this.dragged_ = false;
+  this.dragListenerKeys_ = [
+    goog.events.listen(goog.global.document,
+        goog.events.EventType.MSPOINTERMOVE,
+        this.handlePointerMove_, false, this),
+    goog.events.listen(goog.global.document, goog.events.EventType.MSPOINTERUP,
+        this.handlePointerUp_, false, this)
+  ];
+
+  // FIXME check if/when this is necessary
+  // prevent context menu
+  browserEvent.preventDefault();
+};
+
+
+/**
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @private
+ */
+ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
+    function(browserEvent) {
+  this.dragged_ = true;
+  var newEvent = new ol.MapBrowserEvent(
+      ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
 };
 
@@ -287,17 +324,61 @@ ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.handleTouchMove_ = function(browserEvent) {
-  if (this.down_) {
-    // 'touchmove' events are dispatched only when this.down_ is set
-    // (set after a touch start) to prevent unwanted events when the
-    // mouse hover the page. This only happens with the IE pointer
-    // event system.
-    this.dragged_ = true;
-    var newEvent = new ol.MapBrowserEvent(
-        ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
-    this.dispatchEvent(newEvent);
+ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
+  var newEvent = new ol.MapBrowserEvent(
+      ol.MapBrowserEvent.EventType.TOUCHEND, this.map_, browserEvent);
+  this.dispatchEvent(newEvent);
+  goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
+  if (!this.dragged_) {
+    goog.asserts.assert(!goog.isNull(this.down_));
+    this.emulateClick_(this.down_);
   }
+};
+
+
+/**
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @private
+ */
+ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
+  if (!goog.isNull(this.mousedownListenerKey_)) {
+    // touch device detected - unregister the mousedown and pointerdown
+    // listeners
+    goog.events.unlistenByKey(this.mousedownListenerKey_);
+    this.mousedownListenerKey_ = null;
+
+    goog.asserts.assert(!goog.isNull(this.pointerdownListenerKey_));
+    goog.events.unlistenByKey(this.pointerdownListenerKey_);
+    this.pointerdownListenerKey_ = null;
+  }
+
+  var newEvent = new ol.MapBrowserEvent(
+      ol.MapBrowserEvent.EventType.TOUCHSTART, this.map_, browserEvent);
+  this.dispatchEvent(newEvent);
+
+  this.down_ = browserEvent;
+  this.dragged_ = false;
+  this.dragListenerKeys_ = [
+    goog.events.listen(goog.global.document, goog.events.EventType.TOUCHMOVE,
+        this.handleTouchMove_, false, this),
+    goog.events.listen(goog.global.document, goog.events.EventType.TOUCHEND,
+        this.handleTouchEnd_, false, this)
+  ];
+
+  // FIXME check if/when this is necessary
+  browserEvent.preventDefault();
+};
+
+
+/**
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @private
+ */
+ol.MapBrowserEventHandler.prototype.handleTouchMove_ = function(browserEvent) {
+  this.dragged_ = true;
+  var newEvent = new ol.MapBrowserEvent(
+      ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
+  this.dispatchEvent(newEvent);
 };
 
 
@@ -309,6 +390,7 @@ ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
   var newEvent = new ol.MapBrowserEvent(
       ol.MapBrowserEvent.EventType.TOUCHEND, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
+  goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
   if (!this.dragged_) {
     goog.asserts.assert(!goog.isNull(this.down_));
     this.emulateClick_(this.down_);
@@ -324,13 +406,17 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
     goog.events.unlistenByKey(this.mousedownListenerKey_);
     this.mousedownListenerKey_ = null;
   }
+  if (!goog.isNull(this.pointerdownListenerKey_)) {
+    goog.events.unlistenByKey(this.pointerdownListenerKey_);
+    this.pointerdownListenerKey_ = null;
+  }
+  if (!goog.isNull(this.touchstartListenerKey_)) {
+    goog.events.unlistenByKey(this.touchstartListenerKey_);
+    this.touchstartListenerKey_ = null;
+  }
   if (!goog.isNull(this.dragListenerKeys_)) {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
-  }
-  if (!goog.isNull(this.touchListenerKeys_)) {
-    goog.array.forEach(this.touchListenerKeys_, goog.events.unlistenByKey);
-    this.touchListenerKeys_ = null;
   }
   goog.base(this, 'disposeInternal');
 };
