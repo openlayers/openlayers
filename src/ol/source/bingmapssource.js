@@ -50,6 +50,17 @@ goog.inherits(ol.source.BingMaps, ol.source.TileImage);
 
 
 /**
+ * @const
+ * @type {ol.Attribution}
+ */
+ol.source.BingMaps.TOS_ATTRIBUTION = new ol.Attribution({
+  html: '<a class="ol-attribution-bing-tos" target="_blank" ' +
+      'href="http://www.microsoft.com/maps/product/terms.html">' +
+      'Terms of Use</a>'
+});
+
+
+/**
  * @param {BingMapsImageryMetadataResponse} response Response.
  */
 ol.source.BingMaps.prototype.handleImageryMetadataResponse =
@@ -118,7 +129,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
               var minZ = coverageArea.zoomMin;
               var maxZ = coverageArea.zoomMax;
               var bbox = coverageArea.bbox;
-              var epsg4326Extent = [bbox[1], bbox[3], bbox[0], bbox[2]];
+              var epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
               var extent = ol.extent.transform(epsg4326Extent, transform);
               var tileRange, z, zKey;
               for (z = minZ; z <= maxZ; ++z) {
@@ -133,6 +144,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
             });
         return new ol.Attribution({html: html, tileRanges: tileRanges});
       });
+  attributions.push(ol.source.BingMaps.TOS_ATTRIBUTION);
   this.setAttributions(attributions);
 
   this.setLogo(brandLogoUri);
