@@ -175,7 +175,7 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     gl.disable(goog.webgl.BLEND);
 
     var program = context.getProgram(this.fragmentShader_, this.vertexShader_);
-    gl.useProgram(program);
+    context.useProgram(program);
     if (goog.isNull(this.locations_)) {
       this.locations_ =
           new ol.renderer.webgl.tilelayer.shader.Locations(gl, program);

@@ -425,7 +425,6 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
 
-  var currentProgram = null;
   var locations;
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
     layer = layersArray[i];
@@ -453,29 +452,26 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     }
 
     var program = context.getProgram(fragmentShader, vertexShader);
-    if (program != currentProgram) {
 
-      gl.useProgram(program);
-      currentProgram = program;
-
-      if (useColor) {
-        if (goog.isNull(this.colorLocations_)) {
-          locations =
-              new ol.renderer.webgl.map.shader.Color.Locations(gl, program);
-          this.colorLocations_ = locations;
-        } else {
-          locations = this.colorLocations_;
-        }
+    if (useColor) {
+      if (goog.isNull(this.colorLocations_)) {
+        locations =
+            new ol.renderer.webgl.map.shader.Color.Locations(gl, program);
+        this.colorLocations_ = locations;
       } else {
-        if (goog.isNull(this.defaultLocations_)) {
-          locations =
-              new ol.renderer.webgl.map.shader.Default.Locations(gl, program);
-          this.defaultLocations_ = locations;
-        } else {
-          locations = this.defaultLocations_;
-        }
+        locations = this.colorLocations_;
       }
+    } else {
+      if (goog.isNull(this.defaultLocations_)) {
+        locations =
+            new ol.renderer.webgl.map.shader.Default.Locations(gl, program);
+        this.defaultLocations_ = locations;
+      } else {
+        locations = this.defaultLocations_;
+      }
+    }
 
+    if (context.useProgram(program)) {
       gl.enableVertexAttribArray(locations.a_position);
       gl.vertexAttribPointer(
           locations.a_position, 2, goog.webgl.FLOAT, false, 16, 0);
@@ -483,7 +479,6 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
       gl.vertexAttribPointer(
           locations.a_texCoord, 2, goog.webgl.FLOAT, false, 16, 8);
       gl.uniform1i(locations.u_texture, 0);
-
     }
 
     layerRenderer = this.getLayerRenderer(layer);

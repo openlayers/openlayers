@@ -56,6 +56,12 @@ ol.webgl.Context = function(canvas, gl) {
    */
   this.programCache_ = {};
 
+  /**
+   * @private
+   * @type {WebGLProgram}
+   */
+  this.currentProgram_ = null;
+
   goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.LOST,
       this.handleWebGLContextLost, false, this);
   goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.RESTORED,
@@ -226,6 +232,7 @@ ol.webgl.Context.prototype.handleWebGLContextLost = function() {
   goog.object.clear(this.bufferCache_);
   goog.object.clear(this.shaderCache_);
   goog.object.clear(this.programCache_);
+  this.currentProgram_ = null;
 };
 
 
@@ -233,6 +240,22 @@ ol.webgl.Context.prototype.handleWebGLContextLost = function() {
  * FIXME empy description for jsdoc
  */
 ol.webgl.Context.prototype.handleWebGLContextRestored = function() {
+};
+
+
+/**
+ * @param {WebGLProgram} program Program.
+ * @return {boolean} Changed.
+ */
+ol.webgl.Context.prototype.useProgram = function(program) {
+  if (program == this.currentProgram_) {
+    return false;
+  } else {
+    var gl = this.getGL();
+    gl.useProgram(program);
+    this.currentProgram_ = program;
+    return true;
+  }
 };
 
 
