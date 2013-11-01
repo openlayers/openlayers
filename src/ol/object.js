@@ -231,15 +231,31 @@ ol.Object.prototype.notifyInternal_ = function(key) {
 
 /**
  * Listen for a certain type of event.
- * @param {string|Array.<string>} type The event type or array of event types.
+ * @param {string|Array.<string>|Object} type The event type or array of event
+ *     types.
  * @param {Function} listener The listener function.
- * @param {Object=} opt_scope Object is whose scope to call
- *     the listener.
- * @return {goog.events.Key} Unique key for the listener.
+ * @param {Object=} opt_scope Object is whose scope to call the listener.
+ * @return {goog.events.Key|Object} Unique key for the listener, or an object
+ *     of keys by event type if called with an object literal for the type
+ *     parameter.
  * @todo stability experimental
  */
 ol.Object.prototype.on = function(type, listener, opt_scope) {
-  return goog.events.listen(this, type, listener, false, opt_scope);
+  if (goog.isObject(type) && !goog.isArray(type)) {
+    var keys = {};
+    goog.object.forEach(type, function(obj, type) {
+      var listener = goog.isFunction(obj) ?
+          obj : goog.object.containsKey(obj, 'fn') ? obj['fn'] : null;
+      if (listener) {
+        var scope = goog.isObject(obj) &&
+                    goog.object.containsKey(obj, 'scope') ? obj['scope'] : null;
+      }
+      keys[type] = this.on(type, listener, scope);
+    }, this);
+    return keys;
+  } else {
+    return goog.events.listen(this, type, listener, false, opt_scope);
+  }
 };
 
 
