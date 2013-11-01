@@ -346,7 +346,10 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
       ol.MapBrowserEvent.EventType.TOUCHEND, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
   goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
-  if (!this.dragged_) {
+
+  // We emulate click event only on mouse left button action,
+  // on touch devices isMouseActionButton always returns true.
+  if (!this.dragged_ && browserEvent.isMouseActionButton()) {
     goog.asserts.assert(!goog.isNull(this.down_));
     this.emulateClick_(this.down_);
   }
