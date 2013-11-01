@@ -1274,8 +1274,17 @@ ol.Map.createOptionsInternal = function(options) {
     controls = ol.control.defaults();
   }
 
-  var interactions = goog.isDef(options.interactions) ?
-      options.interactions : ol.interaction.defaults();
+  var interactions;
+  if (goog.isDef(options.interactions)) {
+    if (goog.isArray(options.interactions)) {
+      interactions = new ol.Collection(goog.array.clone(options.interactions));
+    } else {
+      goog.asserts.assertInstanceof(options.interactions, ol.Collection);
+      interactions = options.interactions;
+    }
+  } else {
+    interactions = ol.interaction.defaults();
+  }
 
   var overlays;
   if (goog.isDef(options.overlays)) {
