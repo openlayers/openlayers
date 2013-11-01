@@ -35,8 +35,12 @@ var vector = new ol.layer.Vector({
             opacity: 0.2
           }),
           new ol.style.Stroke({
-            color: '#0033ff',
-            width: 2
+            color: 'white',
+            width: 5
+          }),
+          new ol.style.Stroke({
+            color: '#0099ff',
+            width: 3
           })
         ]
       }),
@@ -45,10 +49,15 @@ var vector = new ol.layer.Vector({
         symbolizers: [
           new ol.style.Shape({
             fill: new ol.style.Fill({
-              color: '#0033ff',
+              color: '#0099ff',
               opacity: 1
             }),
-            size: 16
+            stroke: new ol.style.Stroke({
+              color: 'white',
+              opacity: 0.75
+            }),
+            size: 14,
+            zIndex: 1
           })
         ]
       }),
@@ -60,7 +69,12 @@ var vector = new ol.layer.Vector({
               color: '#00ff33',
               opacity: 1
             }),
-            size: 16
+            stroke: new ol.style.Stroke({
+              color: 'white',
+              opacity: 0.75
+            }),
+            size: 14,
+            zIndex: 1
           })
         ]
       })
@@ -71,7 +85,8 @@ var vector = new ol.layer.Vector({
         opacity: 0.1
       }),
       new ol.style.Stroke({
-        color: '#ffcc33'
+        color: '#ffcc33',
+        width: 2
       })
     ]
   })
