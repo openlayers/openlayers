@@ -160,6 +160,15 @@ ol.MapBrowserEventHandler = function(map) {
 
   var element = this.map_.getViewport();
 
+  this.relayedListenerKeys_ = [
+    goog.events.listen(element,
+        goog.events.EventType.MOUSEMOVE,
+        this.relayEvent_, false, this),
+    goog.events.listen(element,
+        goog.events.EventType.CLICK,
+        this.relayEvent_, false, this)
+  ];
+
   this.mousedownListenerKey_ = goog.events.listen(element,
       goog.events.EventType.MOUSEDOWN,
       this.handleMouseDown_, false, this);
@@ -402,6 +411,10 @@ ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
  * FIXME empty description for jsdoc
  */
 ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
+  if (!goog.isNull(this.relayedListenerKeys_)) {
+    goog.array.forEach(this.relayedListenerKeys_, goog.events.unlistenByKey);
+    this.relayedListenerKeys_ = null;
+  }
   if (!goog.isNull(this.mousedownListenerKey_)) {
     goog.events.unlistenByKey(this.mousedownListenerKey_);
     this.mousedownListenerKey_ = null;
@@ -423,11 +436,25 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
 
 
 /**
+ * Wrap and relay a browser event.  Note that this requires that the type
+ * string for the MapBrowserEvent matches the BrowserEvent type.
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @private
+ */
+ol.MapBrowserEventHandler.prototype.relayEvent_ = function(browserEvent) {
+  this.dispatchEvent(new ol.MapBrowserEvent(
+      browserEvent.type, this.map_, browserEvent));
+};
+
+
+/**
  * Constants for event names.
  * @enum {string}
  */
 ol.MapBrowserEvent.EventType = {
+  CLICK: goog.events.EventType.CLICK,
   DBLCLICK: goog.events.EventType.DBLCLICK,
+  MOUSEMOVE: goog.events.EventType.MOUSEMOVE,
   DOWN: 'down',
   DRAGSTART: 'dragstart',
   DRAG: 'drag',
