@@ -322,10 +322,18 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
  */
 ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
     function(browserEvent) {
-  this.dragged_ = true;
-  var newEvent = new ol.MapBrowserEvent(
-      ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
-  this.dispatchEvent(newEvent);
+  // Fix IE10 on windows Surface : When you tap the tablet, it triggers
+  // multiple pointermove events between pointerdown and pointerup with
+  // the exact same coordinates of the pointerdown event. To avoid a
+  // 'false' touchmove event to be dispatched , we test if the pointermove
+  // event has different coordinates.
+  if (browserEvent.clientX != this.down_.clientX ||
+      browserEvent.clientY != this.down_.clientY) {
+    this.dragged_ = true;
+    var newEvent = new ol.MapBrowserEvent(
+        ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
+    this.dispatchEvent(newEvent);
+  }
 };
 
 
