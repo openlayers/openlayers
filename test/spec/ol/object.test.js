@@ -7,6 +7,141 @@ describe('ol.Object', function() {
     o = new ol.Object();
   });
 
+  describe('using on to', function() {
+
+    var listener1, listener2;
+    var scope;
+    var event;
+
+    beforeEach(function() {
+      listener1 = sinon.spy();
+      listener2 = sinon.spy();
+      event = {};
+      scope = {};
+    });
+
+    describe('add one listener', function() {
+
+      it('should return a key', function() {
+        expect(o.on('add', function() {})).to.not.be(undefined);
+      });
+
+      it('should notify a listener when called', function() {
+        o.on('add', listener1);
+        o.dispatchEvent('add', event);
+        expect(listener1).to.be.called();
+        expect(listener1.calledWith(event)).to.be.true;
+      });
+
+      it('should notify a listener each time it is called', function() {
+        o.on('add', listener1);
+        o.dispatchEvent('add', event);
+        o.dispatchEvent('add', event);
+        expect(listener1).to.be.called();
+        expect(listener1.calledWith(event)).to.be.true;
+        expect(listener1.callCount).to.be(2);
+      });
+
+      it('should have the correct scope', function() {
+        o.on('add', listener1, scope);
+        o.dispatchEvent('add', event);
+        expect(listener1.calledOn(scope)).to.be.true;
+        expect(listener1.calledOn(event)).to.be.false;
+      });
+
+    });
+
+    describe('add multiple listeners to the same event', function() {
+
+      it('should call them all', function() {
+        o.on('add', listener1);
+        o.on('add', listener2);
+        o.dispatchEvent('add', {});
+        expect(listener1).to.be.called();
+        expect(listener2).to.be.called();
+      });
+
+    });
+
+    describe('add listeners by object literal', function() {
+
+      it('should call them correctly', function() {
+        o.on({
+          'add': listener1,
+          'remove': listener2
+        });
+        o.dispatchEvent('add', {});
+        expect(listener1).to.be.called();
+        expect(listener2).to.not.be.called();
+
+        o.dispatchEvent('remove', {});
+        expect(listener2).to.be.called();
+      });
+
+      it('should call them with the right scope', function() {
+        o.on({
+          'add': {'fn': listener1, 'scope': scope}
+        });
+        o.dispatchEvent('add', event);
+        expect(listener1).to.be.called();
+        expect(listener1.calledWith(event)).to.be.true;
+        expect(listener1.calledOn(scope)).to.be.true;
+      });
+
+    });
+
+    describe('add listeners once', function() {
+
+      it('should only call them once', function() {
+        o.once('add', listener1);
+        o.dispatchEvent('add', {});
+        expect(listener1).to.be.called();
+        expect(listener1.callCount).to.be(1);
+      });
+
+    });
+
+  });
+
+  describe('using un', function() {
+
+    var listener1, listener2;
+
+    beforeEach(function() {
+      listener1 = sinon.spy();
+      listener2 = sinon.spy();
+    });
+
+    describe('remove listeners', function() {
+
+      it('by key should not call them', function() {
+        o.on('add', listener1);
+        o.on('add', listener2);
+        o.dispatchEvent('add', {});
+        expect(listener1).to.be.called();
+        expect(listener2).to.be.called();
+        o.un('add', listener1);
+        o.dispatchEvent('add', {});
+        expect(listener2.callCount).to.be(2);
+        expect(listener1.callCount).to.be(1);
+      });
+
+      it('by key should not call them', function() {
+        var key1 = o.on('add', listener1);
+        o.on('add', listener2);
+        o.dispatchEvent('add', {});
+        expect(listener1).to.be.called();
+        expect(listener2).to.be.called();
+        o.unByKey(key1);
+        o.dispatchEvent('add', {});
+        expect(listener2.callCount).to.be(2);
+        expect(listener1.callCount).to.be(1);
+      });
+
+    });
+
+  });
+
   describe('get and set', function() {
 
     describe('get an unset property', function() {
