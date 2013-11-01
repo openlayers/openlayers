@@ -103,9 +103,8 @@ ol.interaction.Draw.prototype.setMap = function(map) {
     map.addLayer(this.sketchLayer_);
   } else {
     // removing from a map, clean up
+    this.abortDrawing_();
     this.sketchLayer_ = null;
-    this.finishCoordinate_ = null;
-    this.sketchFeature_ = null;
   }
 
   goog.base(this, 'setMap', map);
@@ -291,20 +290,14 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
 
 
 /**
- * Finish the drawing.
+ * Stop drawing and add the sketch feature to the target layer.
  * @param {ol.MapBrowserEvent} event Event.
  * @private
  */
 ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
-  this.finishCoordinate_ = null;
-  var sketchFeature = this.sketchFeature_;
-  var features = [sketchFeature];
-  if (this.mode_ !== ol.interaction.DrawMode.POINT) {
-    features.push(this.sketchPoint_);
-  }
-  this.sketchLayer_.removeFeatures(features);
+  var sketchFeature = this.abortDrawing_();
+  goog.asserts.assert(!goog.isNull(sketchFeature));
   sketchFeature.setRenderIntent(ol.layer.VectorLayerRenderIntent.DEFAULT);
-  var geometry = sketchFeature.getGeometry();
   if (this.mode_ === ol.interaction.DrawMode.LINESTRING) {
     var geometry = sketchFeature.getGeometry();
     var coordinates = geometry.getCoordinates();
@@ -316,11 +309,36 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
 
 
 /**
+ * Stop drawing without adding the sketch feature to the target layer.
+ * @return {ol.Feature} The sketch feature (or null if none).
+ * @private
+ */
+ol.interaction.Draw.prototype.abortDrawing_ = function() {
+  this.finishCoordinate_ = null;
+  var sketchFeature = this.sketchFeature_;
+  if (!goog.isNull(sketchFeature)) {
+    var features = [sketchFeature];
+    this.sketchFeature_ = null;
+    if (this.mode_ !== ol.interaction.DrawMode.POINT) {
+      features.push(this.sketchPoint_);
+      this.sketchPoint_ = null;
+    }
+    this.sketchLayer_.removeFeatures(features);
+  }
+  return sketchFeature;
+};
+
+
+/**
  * Set the drawing mode.
+ * TODO: Decide if we want interactions to be purely event driven - if so, this
+ * method would be removed, and users would remove this interaction and create a
+ * new one with the desired mode instead.
  * @param {ol.interaction.DrawMode} mode Draw mode ('point', 'linestring', or
  *     'polygon').
  */
 ol.interaction.Draw.prototype.setMode = function(mode) {
+  this.abortDrawing_();
   this.mode_ = mode;
 };
 
