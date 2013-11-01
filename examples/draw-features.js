@@ -83,10 +83,23 @@ var vector = new ol.layer.Vector({
   })
 });
 
+var modeSelect = document.getElementById('mode');
+
 var draw = new ol.interaction.Draw({
   layer: vector,
-  mode: /** @type {ol.interaction.DrawMode} */ ('polygon')
+  mode: /** @type {ol.interaction.DrawMode} */
+      (modeSelect.options[modeSelect.selectedIndex].value)
 });
+
+
+/**
+ * Let user change the draw mode.
+ * @param {Event} e Change event.
+ */
+modeSelect.onchange = function(e) {
+  draw.setMode(/** @type {ol.interaction.DrawMode} */
+      (modeSelect.options[modeSelect.selectedIndex].value));
+};
 
 var map = new ol.Map({
   interactions: ol.interaction.defaults().extend([draw]),
