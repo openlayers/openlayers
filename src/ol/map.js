@@ -356,6 +356,14 @@ ol.Map = function(options) {
         control.setMap(this);
       }, this);
 
+  this.interactions_.forEach(
+      /**
+       * @param {ol.interaction.Interaction} interaction Interaction.
+       */
+      function(interaction) {
+        interaction.setMap(this);
+      }, this);
+
   this.overlays_.forEach(
       /**
        * @param {ol.Overlay} overlay Overlay.
@@ -378,6 +386,18 @@ ol.Map.prototype.addControl = function(control) {
   goog.asserts.assert(goog.isDef(controls));
   controls.push(control);
   control.setMap(this);
+};
+
+
+/**
+ * Add the given interaction to the map.
+ * @param {ol.interaction.Interaction} interaction Interaction to add.
+ */
+ol.Map.prototype.addInteraction = function(interaction) {
+  var interactions = this.getInteractions();
+  goog.asserts.assert(goog.isDef(interactions));
+  interactions.push(interaction);
+  interaction.setMap(this);
 };
 
 
@@ -956,6 +976,24 @@ ol.Map.prototype.removeControl = function(control) {
     return control;
   }
   return undefined;
+};
+
+
+/**
+ * Remove the given interaction from the map.
+ * @param {ol.interaction.Interaction} interaction Interaction to remove.
+ * @return {ol.interaction.Interaction|undefined} The removed interaction (or
+ *     undefined if the interaction was not found).
+ */
+ol.Map.prototype.removeInteraction = function(interaction) {
+  var removed;
+  var interactions = this.getInteractions();
+  goog.asserts.assert(goog.isDef(interactions));
+  if (goog.isDef(interactions.remove(interaction))) {
+    interaction.setMap(null);
+    removed = interaction;
+  }
+  return removed;
 };
 
 
