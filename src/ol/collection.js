@@ -22,6 +22,14 @@ ol.CollectionEventType = {
 };
 
 
+/**
+ * @enum {string}
+ */
+ol.CollectionEventProperty = {
+  ELEMENT: 'element'
+};
+
+
 
 /**
  * @constructor
@@ -34,22 +42,14 @@ ol.CollectionEvent = function(type, opt_elem, opt_target) {
 
   goog.base(this, type, opt_target);
 
-  /**
-   * @private
-   * @type {*}
-   */
-  this.elem_ = opt_elem;
+  this[ol.CollectionEventProperty.ELEMENT] = opt_elem;
 
 };
 goog.inherits(ol.CollectionEvent, goog.events.Event);
-
-
-/**
- * @return {*} The element to which this event pertains.
- */
-ol.CollectionEvent.prototype.getElement = function() {
-  return this.elem_;
-};
+goog.exportProperty(
+    ol.CollectionEvent.prototype,
+    ol.CollectionEventProperty.ELEMENT,
+    ol.CollectionEvent.prototype[ol.CollectionEventProperty]);
 
 
 /**
