@@ -22,6 +22,14 @@ ol.interaction.KEYBOARD_PAN_DURATION = 100;
 
 /**
  * Allows the user to pan the map using keyboard arrows.
+ * Note that, although this interaction is by default included in maps,
+ * the keys can only be used when browser focus is on the element to which
+ * the keyboard events are attached. By default, this is the map div,
+ * though you can change this with the `keyboardTargetElement` in
+ * {@link ol.map}. `document` never loses focus but, for any other element,
+ * focus will have to be on, and returned to, this element if the keys are to
+ * function.
+ * See also {@link ol.interaction.KeyboardZoom}.
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {ol.interaction.KeyboardPanOptions=} opt_options Options.
