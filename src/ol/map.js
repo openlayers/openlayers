@@ -514,7 +514,9 @@ ol.Map.prototype.getRenderer = function() {
 
 
 /**
- * Get the element in which this map is rendered.
+ * Get the target in which this map is rendered.
+ * Note that this returns what is entered as an option or in setTarget:
+ * if that was an element, it returns an element; if a string, it returns that.
  * @return {Element|string|undefined} Target.
  * @todo stability experimental
  */
