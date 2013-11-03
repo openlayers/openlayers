@@ -56,17 +56,32 @@
  * Object literal with config options for the map.
  * @typedef {Object} ol.MapOptions
  * @property {ol.Collection|Array.<ol.control.Control>|undefined} controls
- *     Controls initially added to the map.
+ *     The default controls are defined in {@link ol.control#DefaultsOptions}.
+ *     This can be overridden by supplying control instances here. To add to the
+ *     defaults, use `ol.control.defaults().extend()`.
  * @property {ol.Collection|Array.<ol.interaction.Interaction>|undefined}
- *     interactions Interactions that are initially added to the map.
- * @property {Array.<ol.layer.Base>|ol.Collection|undefined} layers Layers.
+ *     interactions The default interactions are defined in
+ *     {@link ol.interaction#DefaultsOptions}. This can be overridden by supplying
+ *     interaction instances here.
+ * @property {Array.<ol.layer.Base>|ol.Collection|undefined} layers Layers. If
+ *     this is not defined, a map with no data will be rendered.
  * @property {ol.Collection|Array.<ol.Overlay>|undefined} overlays
- *     Overlays initially added to the map.
+ *     Overlays initially added to the map. Default is none.
  * @property {ol.RendererHint|undefined} renderer Renderer.
- * @property {Array.<ol.RendererHint>|undefined} renderers Renderers.
- * @property {Element|string|undefined} target The container for the map.
+ * @property {Array.<ol.RendererHint>|undefined} renderers Renderers. By
+ *     default, WebGL, Canvas and DOM renderers are tested for support in that
+ *     order; the first supported will be used. One or more `ol.RendererHint`
+ *     can be supplied here to override this. Alternatively, the static function
+ *     `ol.RendererHints.createFromQueryData()` can be given, which means the
+ *     renderers can be defined as a comma-separated list in the querystring;
+ *     this option is used in the hosted examples.
+ *     Note that at present only the Canvas renderer supports vector data.
+ * @property {Element|string|undefined} target The container for the map, either
+ *     the element itself or the string `id` of the element. The map cannot
+ *     render without this.
  * @property {ol.IView|undefined} view The map's view. Currently
- *     {@link ol.View2D} is available as view.
+ *     {@link ol.View2D} is available as view. If this is not defined, layer
+ *     sources will not be fetched, and a map with no data will be rendered.
  * @todo stability experimental
  */
 
