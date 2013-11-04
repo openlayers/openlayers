@@ -150,7 +150,9 @@ ol.renderer.canvas.VectorLayer2.prototype.prepareFrame =
         -(origin[0] + halfWidth * viewResolution),
         -(origin[1] - halfHeight * viewResolution),
         0);
-    var renderer = new ol.renderer.canvas.Vector(canvas, coordsTransform,
+    var context = /** @type {CanvasRenderingContext2D} */
+        (canvas.getContext('2d'));
+    var renderer = new ol.renderer.canvas.Vector(context, coordsTransform,
         this.requestMapRenderFrame_);
 
     var groups = vectorLayer.groupFeaturesBySymbolizerLiteral(features,
