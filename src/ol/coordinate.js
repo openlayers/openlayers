@@ -43,6 +43,45 @@ ol.coordinate.add = function(coordinate, delta) {
 
 
 /**
+ * Calculates the point closest to the passed coordinate on the passed segment.
+ * This is the foot of the perpendicular of the coordinate to the segment when
+ * the foot is on the segment, or the closest segment coordinate when the foot
+ * is outside the segment.
+ *
+ * @param {ol.Coordinate} coordinate The coordinate.
+ * @param {Array.<ol.Coordinate>} segment The two coordinates of the segment.
+ * @return {ol.Coordinate} The foot of the perpendicular of the coordinate to
+ *     the segment.
+ */
+ol.coordinate.closestOnSegment = function(coordinate, segment) {
+  var x0 = coordinate[0];
+  var y0 = coordinate[1];
+  var start = segment[0];
+  var end = segment[1];
+  var x1 = start[0];
+  var y1 = start[1];
+  var x2 = end[0];
+  var y2 = end[1];
+  var dx = x2 - x1;
+  var dy = y2 - y1;
+  var along = (dx == 0 && dy == 0) ? 0 :
+      ((dx * (x0 - x1)) + (dy * (y0 - y1))) / ((dx * dx + dy * dy) || 0);
+  var x, y;
+  if (along <= 0) {
+    x = x1;
+    y = y1;
+  } else if (along >= 1) {
+    x = x2;
+    y = y2;
+  } else {
+    x = x1 + along * dx;
+    y = y1 + along * dy;
+  }
+  return [x, y];
+};
+
+
+/**
  * @param {number=} opt_fractionDigits The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {ol.CoordinateFormatType} Coordinate format.
@@ -133,6 +172,19 @@ ol.coordinate.squaredDistance = function(coord1, coord2) {
   var dx = coord1[0] - coord2[0];
   var dy = coord1[1] - coord2[1];
   return dx * dx + dy * dy;
+};
+
+
+/**
+ * Calculate the squared distance from a coordinate to a line segment.
+ *
+ * @param {ol.Coordinate} coordinate Coordinate of the point.
+ * @param {Array.<ol.Coordinate>} segment Line segment (2 coordinates).
+ * @return {number} Squared distance from the point to the line segment.
+ */
+ol.coordinate.squaredDistanceToSegment = function(coordinate, segment) {
+  return ol.coordinate.squaredDistance(coordinate,
+      ol.coordinate.closestOnSegment(coordinate, segment));
 };
 
 
