@@ -3,6 +3,16 @@ goog.provide('ol.test.extent');
 
 describe('ol.extent', function() {
 
+  describe('buffer', function() {
+
+    it('buffers an extent by some value', function() {
+      var extent = [-10, -20, 10, 20];
+      ol.extent.buffer(extent, 15);
+      expect(extent).to.eql([-25, -35, 25, 35]);
+    });
+
+  });
+
   describe('clone', function() {
 
     it('creates a copy of an extent', function() {
