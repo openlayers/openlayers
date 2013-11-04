@@ -68,41 +68,8 @@ goog.inherits(ol.renderer.canvas.VectorLayer2, ol.renderer.canvas.Layer);
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorLayer2.prototype.getImage = function() {
-  return this.canvas_;
-};
-
-
-/**
- * @return {ol.layer.Vector} Vector layer.
- */
-ol.renderer.canvas.VectorLayer2.prototype.getVectorLayer = function() {
-  return /** @type {ol.layer.Vector} */ (this.getLayer());
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.canvas.VectorLayer2.prototype.getTransform = function() {
-  return this.transform_;
-};
-
-
-/**
- * @param {ol.layer.VectorEvent} event Vector layer event.
- * @private
- */
-ol.renderer.canvas.VectorLayer2.prototype.handleLayerChange_ = function(event) {
-  this.requestMapRenderFrame_();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.canvas.VectorLayer2.prototype.prepareFrame =
-    function(frameState, layerState) {
+ol.renderer.canvas.VectorLayer2.prototype.composeFrame =
+    function(frameState, layerState, context) {
 
   var extent = frameState.extent;
   var view2DState = frameState.view2DState;
@@ -128,12 +95,8 @@ ol.renderer.canvas.VectorLayer2.prototype.prepareFrame =
     this.renderedResolution_ = viewResolution;
     this.renderedExtent_ = extent;
 
-    var canvasWidth = ol.extent.getWidth(extent) / viewResolution;
-    var canvasHeight = ol.extent.getHeight(extent) / viewResolution;
-
-    var canvas = this.canvas_;
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
+    var canvasWidth = frameState.size[0];
+    var canvasHeight = frameState.size[1];
 
     var halfWidth = canvasWidth;
     var halfHeight = canvasHeight;
@@ -150,8 +113,6 @@ ol.renderer.canvas.VectorLayer2.prototype.prepareFrame =
         -(origin[0] + halfWidth * viewResolution),
         -(origin[1] - halfHeight * viewResolution),
         0);
-    var context = /** @type {CanvasRenderingContext2D} */
-        (canvas.getContext('2d'));
     var renderer = new ol.renderer.canvas.Vector(context, coordsTransform,
         this.requestMapRenderFrame_);
 
@@ -186,4 +147,45 @@ ol.renderer.canvas.VectorLayer2.prototype.prepareFrame =
       (viewCenter[1] - this.renderedExtent_[3]) / this.renderedResolution_,
       0);
 
+  goog.base(this, 'composeFrame', frameState, layerState, context);
+
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.canvas.VectorLayer2.prototype.getImage = function() {
+  return this.canvas_;
+};
+
+
+/**
+ * @return {ol.layer.Vector} Vector layer.
+ */
+ol.renderer.canvas.VectorLayer2.prototype.getVectorLayer = function() {
+  return /** @type {ol.layer.Vector} */ (this.getLayer());
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.canvas.VectorLayer2.prototype.getTransform = function() {
+  return this.transform_;
+};
+
+
+/**
+ * @param {ol.layer.VectorEvent} event Vector layer event.
+ * @private
+ */
+ol.renderer.canvas.VectorLayer2.prototype.handleLayerChange_ = function(event) {
+  this.requestMapRenderFrame_();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.canvas.VectorLayer2.prototype.prepareFrame = goog.nullFunction;
