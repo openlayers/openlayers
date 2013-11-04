@@ -140,8 +140,6 @@ ol.renderer.canvas.VectorLayer2.prototype.composeFrame =
       (viewCenter[1] - this.renderedExtent_[3]) / this.renderedResolution_,
       0);
 
-  goog.base(this, 'composeFrame', frameState, layerState, context);
-
 };
 
 
