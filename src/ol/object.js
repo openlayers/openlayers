@@ -63,6 +63,8 @@ ol.ObjectAccessor = function(target, key) {
 ol.ObjectAccessor.prototype.transform = function(from, to) {
   this.from = from;
   this.to = to;
+
+  this.target.notify(this.key);
 };
 
 
