@@ -39,9 +39,8 @@ projectionSelect.on('change:value', function() {
   mousePositionControl.setProjection(ol.proj.get(projectionSelect.getValue()));
 });
 
-var precisionInput = new ol.dom.Input(document.getElementById('precision'));
-precisionInput.on('change:value', function() {
-  var precision = /** @type {number} */ (precisionInput.getValueAsNumber());
-  var format = ol.coordinate.createStringXY(precision);
+var precisionInput = document.getElementById('precision');
+precisionInput.addEventListener('change', function() {
+  var format = ol.coordinate.createStringXY(precisionInput.valueAsNumber);
   mousePositionControl.setCoordinateFormat(format);
-});
+}, false);
