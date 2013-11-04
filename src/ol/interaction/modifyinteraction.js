@@ -280,8 +280,8 @@ ol.interaction.Modify.prototype.handleMouseMove_ = function(evt) {
   var pixel = evt.getPixel();
   var pixelCoordinate = map.getCoordinateFromPixel(pixel);
   var sortByDistance = function(a, b) {
-    return ol.coordinate.closestOnSegment(pixelCoordinate, a[0])[2] -
-        ol.coordinate.closestOnSegment(pixelCoordinate, b[0])[2];
+    return ol.coordinate.squaredDistanceToSegment(pixelCoordinate, a[0]) -
+        ol.coordinate.squaredDistanceToSegment(pixelCoordinate, b[0]);
   };
 
   var lowerLeft = map.getCoordinateFromPixel(
@@ -308,8 +308,7 @@ ol.interaction.Modify.prototype.handleMouseMove_ = function(evt) {
       if (segments.length > 0) {
         segments.sort(sortByDistance);
         var segment = segments[0][0]; // the closest segment
-        var vertex = /** @type {ol.Coordinate} */
-            (ol.coordinate.closestOnSegment(pixelCoordinate, segment));
+        var vertex = (ol.coordinate.closestOnSegment(pixelCoordinate, segment));
         var vertexPixel = map.getPixelFromCoordinate(vertex);
         if (Math.sqrt(ol.coordinate.squaredDistance(pixel, vertexPixel)) <=
             this.pixelTolerance_) {
