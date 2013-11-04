@@ -228,8 +228,8 @@ ol.renderer.Layer.prototype.createGetTileIfLoadedFunction =
 ol.renderer.Layer.prototype.snapCenterToPixel =
     function(center, resolution, size) {
   return [
-    resolution * (Math.round(center[0] / resolution) + (size[0] % 2) / 2),
-    resolution * (Math.round(center[1] / resolution) + (size[1] % 2) / 2)
+    resolution * (((center[0] / resolution) | 0) + (size[0] % 2) / 2),
+    resolution * (((center[1] / resolution) | 0) + (size[1] % 2) / 2)
   ];
 };
 

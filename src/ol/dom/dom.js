@@ -76,7 +76,7 @@ ol.dom.transformElement2D = function(element, transform, opt_precision) {
   } else {
     // FIXME check this code!
     var style = element.style;
-    style.left = Math.round(goog.vec.Mat4.getElement(transform, 0, 3)) + 'px';
-    style.top = Math.round(goog.vec.Mat4.getElement(transform, 1, 3)) + 'px';
+    style.left = (goog.vec.Mat4.getElement(transform, 0, 3) | 0) + 'px';
+    style.top = (goog.vec.Mat4.getElement(transform, 1, 3) | 0) + 'px';
   }
 };
