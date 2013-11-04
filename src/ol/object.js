@@ -191,9 +191,13 @@ ol.Object.prototype.get = function(key) {
  * @return {Array.<string>} List of property names.
  */
 ol.Object.prototype.getKeys = function() {
-  var keys = goog.object.getKeys(ol.Object.getAccessors(this)).concat(
-      goog.object.getKeys(this.values_));
-  goog.array.removeDuplicates(keys);
+  var keys = goog.object.getKeys(this.values_);
+  var accessors = ol.Object.getAccessors(this);
+  if (!goog.object.isEmpty(accessors)) {
+    keys = goog.object.getKeys(accessors).concat(keys);
+    goog.array.removeDuplicates(keys);
+  }
+
   return keys;
 };
 
