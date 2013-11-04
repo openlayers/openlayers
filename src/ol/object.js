@@ -142,7 +142,7 @@ ol.Object.getAccessors = function(obj) {
 
 
 /**
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @return {string} Change name.
  */
 ol.Object.getChangeEventType = function(key) {
@@ -207,7 +207,7 @@ ol.Object.getSetterName = function(key) {
  *         }
  *       );
  *
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @param {ol.Object} target Target.
  * @param {string=} opt_targetKey Target key.
  * @return {ol.ObjectAccessor}
@@ -231,7 +231,7 @@ ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
 
 /**
  * Gets a value.
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @return {*} Value.
  * @todo stability experimental
  */
@@ -291,7 +291,7 @@ ol.Object.prototype.getKeys = function() {
  * Notify all observers of a change on this property. This notifies both
  * objects that are bound to the object's property as well as the object
  * that it is bound to.
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @todo stability experimental
  */
 ol.Object.prototype.notify = function(key) {
@@ -308,7 +308,7 @@ ol.Object.prototype.notify = function(key) {
 
 
 /**
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @private
  */
 ol.Object.prototype.notifyInternal_ = function(key) {
@@ -348,7 +348,7 @@ ol.Object.prototype.once = function(type, listener, opt_scope) {
 
 /**
  * Sets a value.
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @param {*} value Value.
  * @todo stability experimental
  */
@@ -394,7 +394,7 @@ ol.Object.prototype.setValues = function(values) {
 /**
  * Removes a binding. Unbinding will set the unbound property to the current
  *     value. The object will not be notified, as the value has not changed.
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @todo stability experimental
  */
 ol.Object.prototype.unbind = function(key) {

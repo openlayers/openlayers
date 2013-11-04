@@ -12,7 +12,7 @@ goog.require('ol.geom.GeometryType');
 /**
  * @constructor
  * @extends {ol.geom.Geometry}
- * @param {ol.Coordinate} coordinates Coordinate values (e.g. [x, y]).
+ * @param {ol.Coordinate} coordinates Coordinate values (e.g. `[x, y]`).
  * @todo stability experimental
  */
 ol.geom.Point = function(coordinates) {

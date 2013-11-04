@@ -62,8 +62,9 @@ ol.GeolocationProperty = {
  * @todo observable speed {number} readonly the instantaneous speed of the
  *       device in meters per second
  * @todo observable tracking {number} track the device's position.
- * @todo observable trackingOptions {number} PositionOptions as defined by the
- *       HTML5 Geolocation spec at http://dev.w3.org/geo/api/spec-source.html
+ * @todo observable trackingOptions {GeolocationPositionOptions} PositionOptions
+ *       as defined by the HTML5 Geolocation spec at
+ *       http://dev.w3.org/geo/api/spec-source.html
  */
 ol.Geolocation = function(opt_options) {
 
