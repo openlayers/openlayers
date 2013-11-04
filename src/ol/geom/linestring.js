@@ -5,7 +5,6 @@ goog.require('goog.events.EventType');
 goog.require('ol.CoordinateArray');
 goog.require('ol.coordinate');
 goog.require('ol.extent');
-goog.require('ol.geom');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryEvent');
 goog.require('ol.geom.GeometryType');

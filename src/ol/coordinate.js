@@ -43,13 +43,15 @@ ol.coordinate.add = function(coordinate, delta) {
 
 
 /**
+ * Calculates the point closest to the passed coordinate on the passed segment.
+ * This is the foot of the perpendicular of the coordinate to the segment when
+ * the foot is on the segment, or the closest segment coordinate when the foot
+ * is outside the segment.
+ *
  * @param {ol.Coordinate} coordinate The coordinate.
  * @param {Array.<ol.Coordinate>} segment The two coordinates of the segment.
- * @return {Array} An array compatible with ol.Coordinate, but with 4 vaules:
- *     [0] x-coordinate of the point closest to the given point on the segment;
- *     [1] y-coordinate of the point closest to the given point on the segment;
- *     [2] squared distance between given point and segment;
- *     [3] describes how far between the two segment points the given point is.
+ * @return {ol.Coordinate} The foot of the perpendicular of the coordinate to
+ *     the segment.
  */
 ol.coordinate.closestOnSegment = function(coordinate, segment) {
   var x0 = coordinate[0];
@@ -75,9 +77,7 @@ ol.coordinate.closestOnSegment = function(coordinate, segment) {
     x = x1 + along * dx;
     y = y1 + along * dy;
   }
-  var xDist = x - x0;
-  var yDist = y - y0;
-  return [x, y, xDist * xDist + yDist * yDist, along];
+  return [x, y];
 };
 
 
@@ -183,7 +183,8 @@ ol.coordinate.squaredDistance = function(coord1, coord2) {
  * @return {number} Squared distance from the point to the line segment.
  */
 ol.coordinate.squaredDistanceToSegment = function(coordinate, segment) {
-  return ol.coordinate.closestOnSegment(coordinate, segment)[2];
+  return ol.coordinate.squaredDistance(coordinate,
+      ol.coordinate.closestOnSegment(coordinate, segment));
 };
 
 
