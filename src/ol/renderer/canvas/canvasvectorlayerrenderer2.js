@@ -1,7 +1,6 @@
 goog.provide('ol.renderer.canvas.VectorLayer2');
 
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.vec.Mat4');
 goog.require('ol.extent');
 goog.require('ol.layer.Vector');
@@ -19,14 +18,6 @@ goog.require('ol.renderer.canvas.Vector');
 ol.renderer.canvas.VectorLayer2 = function(mapRenderer, layer) {
 
   goog.base(this, mapRenderer, layer);
-
-  /**
-   * Final canvas made available to the map renderer.
-   * @private
-   * @type {HTMLCanvasElement}
-   */
-  this.canvas_ = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
 
   /**
    * @private
@@ -140,14 +131,6 @@ ol.renderer.canvas.VectorLayer2.prototype.composeFrame =
       (viewCenter[1] - this.renderedExtent_[3]) / this.renderedResolution_,
       0);
 
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.canvas.VectorLayer2.prototype.getImage = function() {
-  return this.canvas_;
 };
 
 
