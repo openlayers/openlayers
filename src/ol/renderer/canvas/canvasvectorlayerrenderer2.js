@@ -3,7 +3,6 @@ goog.provide('ol.renderer.canvas.VectorLayer2');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.vec.Mat4');
-goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.layer.Vector');
 goog.require('ol.renderer.canvas.Layer');
@@ -80,54 +79,48 @@ ol.renderer.canvas.VectorLayer2.prototype.composeFrame =
 
   var vectorLayer = this.getVectorLayer();
 
-  var hints = frameState.viewHints;
+  var features = vectorLayer.getFeaturesObjectForExtent(extent,
+      viewProjection, this.requestMapRenderFrame_);
 
-  if (this.renderedResolution_ === 0 ||
-      (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING])) {
+  if (goog.isNull(features)) {
+    return;
+  }
 
-    var features = vectorLayer.getFeaturesObjectForExtent(extent,
-        viewProjection, this.requestMapRenderFrame_);
+  this.renderedResolution_ = viewResolution;
+  this.renderedExtent_ = extent;
 
-    if (goog.isNull(features)) {
-      return;
-    }
+  var canvasWidth = frameState.size[0];
+  var canvasHeight = frameState.size[1];
 
-    this.renderedResolution_ = viewResolution;
-    this.renderedExtent_ = extent;
+  var halfWidth = canvasWidth;
+  var halfHeight = canvasHeight;
 
-    var canvasWidth = frameState.size[0];
-    var canvasHeight = frameState.size[1];
+  // transform for map coords to sketch canvas pixel coords
+  var coordsTransform = this.coordsTransform_;
+  var origin = ol.extent.getTopLeft(extent);
+  goog.vec.Mat4.makeIdentity(coordsTransform);
+  goog.vec.Mat4.translate(coordsTransform,
+      halfWidth, halfHeight, 0);
+  goog.vec.Mat4.scale(coordsTransform,
+      1 / viewResolution, -1 / viewResolution, 1);
+  goog.vec.Mat4.translate(coordsTransform,
+      -(origin[0] + halfWidth * viewResolution),
+      -(origin[1] - halfHeight * viewResolution),
+      0);
+  var renderer = new ol.renderer.canvas.Vector(context, coordsTransform,
+      this.requestMapRenderFrame_);
 
-    var halfWidth = canvasWidth;
-    var halfHeight = canvasHeight;
+  var groups = vectorLayer.groupFeaturesBySymbolizerLiteral(features,
+      viewResolution);
 
-    // transform for map coords to sketch canvas pixel coords
-    var coordsTransform = this.coordsTransform_;
-    var origin = ol.extent.getTopLeft(extent);
-    goog.vec.Mat4.makeIdentity(coordsTransform);
-    goog.vec.Mat4.translate(coordsTransform,
-        halfWidth, halfHeight, 0);
-    goog.vec.Mat4.scale(coordsTransform,
-        1 / viewResolution, -1 / viewResolution, 1);
-    goog.vec.Mat4.translate(coordsTransform,
-        -(origin[0] + halfWidth * viewResolution),
-        -(origin[1] - halfHeight * viewResolution),
-        0);
-    var renderer = new ol.renderer.canvas.Vector(context, coordsTransform,
-        this.requestMapRenderFrame_);
+  var i, ii, group, deferred;
 
-    var groups = vectorLayer.groupFeaturesBySymbolizerLiteral(features,
-        viewResolution);
-
-    var i, ii, group, deferred;
-
-    ii = groups.length;
-    for (i = 0; i < ii; ++i) {
-      group = groups[i];
-      deferred = renderer.renderFeatures(group[0], group[1], group[2]);
-      if (deferred) {
-        break;
-      }
+  ii = groups.length;
+  for (i = 0; i < ii; ++i) {
+    group = groups[i];
+    deferred = renderer.renderFeatures(group[0], group[1], group[2]);
+    if (deferred) {
+      break;
     }
   }
 
