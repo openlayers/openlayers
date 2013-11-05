@@ -42,7 +42,7 @@ describe('ol.control.Control\'s target', function() {
     });
     it('ignores non-existing target id', function() {
       var ctrl = new ol.control.Control({target: 'doesnotexist'});
-      expect(ctrl.target_).to.equal(undefined);
+      expect(ctrl.target_).to.equal(null);
       goog.dispose(ctrl);
     });
   });
