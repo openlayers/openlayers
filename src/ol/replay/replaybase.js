@@ -5,6 +5,7 @@ goog.provide('ol.replay.StrokeStyle');
 
 goog.require('goog.vec.Mat4');
 goog.require('ol.Color');
+goog.require('ol.replay');
 
 
 /**
