@@ -1,5 +1,5 @@
-goog.provide('ol.replay.BatchBase');
-goog.provide('ol.replay.CanvasBase');
+goog.provide('ol.replay.Base');
+goog.provide('ol.replay.Batch');
 goog.provide('ol.replay.FillStyle');
 goog.provide('ol.replay.StrokeStyle');
 
@@ -34,7 +34,7 @@ ol.replay.StrokeStyle;
 /**
  * @constructor
  */
-ol.replay.BatchBase = function() {
+ol.replay.Batch = function() {
 };
 
 
@@ -44,55 +44,55 @@ ol.replay.BatchBase = function() {
  * @param {number} stride Stride.
  * @param {boolean} close Close.
  */
-ol.replay.BatchBase.prototype.addPath = goog.abstractMethod;
+ol.replay.Batch.prototype.addPath = goog.abstractMethod;
 
 
 /**
  * FIXME empty description for jsdoc
  */
-ol.replay.BatchBase.prototype.beginPath = goog.abstractMethod;
+ol.replay.Batch.prototype.beginPath = goog.abstractMethod;
 
 
 /**
  * FIXME empty description for jsdoc
  */
-ol.replay.BatchBase.prototype.draw = goog.abstractMethod;
+ol.replay.Batch.prototype.draw = goog.abstractMethod;
 
 
 /**
  * @param {ol.replay.FillStyle} fillStyle Fill style.
  */
-ol.replay.BatchBase.prototype.setFillStyle = goog.abstractMethod;
+ol.replay.Batch.prototype.setFillStyle = goog.abstractMethod;
 
 
 /**
  * @param {ol.replay.StrokeStyle} strokeStyle Stroke style.
  */
-ol.replay.BatchBase.prototype.setStrokeStyle = goog.abstractMethod;
+ol.replay.Batch.prototype.setStrokeStyle = goog.abstractMethod;
 
 
 
 /**
  * @constructor
  */
-ol.replay.CanvasBase = function() {
+ol.replay.Base = function() {
 };
 
 
 /**
  * @param {ol.replay.BatchType} batchType Batch type.
- * @return {ol.replay.BatchBase} Batch.
+ * @return {ol.replay.Batch} Batch.
  */
-ol.replay.CanvasBase.prototype.createBatch = goog.abstractMethod;
+ol.replay.Base.prototype.createBatch = goog.abstractMethod;
 
 
 /**
- * @param {ol.replay.BatchBase} batch Batch.
+ * @param {ol.replay.Batch} batch Batch.
  */
-ol.replay.CanvasBase.prototype.drawBatch = goog.abstractMethod;
+ol.replay.Base.prototype.drawBatch = goog.abstractMethod;
 
 
 /**
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  */
-ol.replay.CanvasBase.prototype.setTransform = goog.abstractMethod;
+ol.replay.Base.prototype.setTransform = goog.abstractMethod;

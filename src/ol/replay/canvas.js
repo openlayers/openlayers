@@ -4,8 +4,8 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
 goog.require('ol.replay');
-goog.require('ol.replay.BatchBase');
-goog.require('ol.replay.CanvasBase');
+goog.require('ol.replay.Base');
+goog.require('ol.replay.Batch');
 goog.require('ol.replay.FillStyle');
 goog.require('ol.replay.StrokeStyle');
 
@@ -37,7 +37,7 @@ ol.replay.CanvasInstruction;
 
 /**
  * @constructor
- * @extends {ol.replay.BatchBase}
+ * @extends {ol.replay.Batch}
  * @param {ol.replay.BatchType} type Type.
  * FIXME make this private?
  * FIXME accumulate all coordinates between style sets in a single array.
@@ -66,7 +66,7 @@ ol.replay.CanvasBatch = function(type) {
   this.path_ = [];
 
 };
-goog.inherits(ol.replay.CanvasBatch, ol.replay.BatchBase);
+goog.inherits(ol.replay.CanvasBatch, ol.replay.Batch);
 
 
 /**
@@ -204,7 +204,7 @@ ol.replay.CanvasBatch.prototype.drawInternal = function(context, transform) {
 
 /**
  * @constructor
- * @extends {ol.replay.CanvasBase}
+ * @extends {ol.replay.Base}
  * @param {CanvasRenderingContext2D} context Context.
  */
 ol.replay.Canvas = function(context) {
@@ -224,7 +224,7 @@ ol.replay.Canvas = function(context) {
   this.transform_ = goog.vec.Mat4.createNumberIdentity();
 
 };
-goog.inherits(ol.replay.Canvas, ol.replay.CanvasBase);
+goog.inherits(ol.replay.Canvas, ol.replay.Base);
 
 
 /**
