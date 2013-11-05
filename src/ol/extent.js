@@ -24,9 +24,7 @@ ol.Extent;
  */
 ol.extent.boundingExtent = function(coordinates) {
   var extent = ol.extent.createEmpty();
-  var n = coordinates.length;
-  var i;
-  for (i = 0; i < n; ++i) {
+  for (var i = 0, ii = coordinates.length; i < ii; ++i) {
     ol.extent.extendCoordinate(extent, coordinates[i]);
   }
   return extent;
