@@ -579,6 +579,18 @@
  */
 
 /**
+ * @typedef {Object} ol.source.MapGuideOptions
+ * @property {string} url The mapagent url
+ * @property {number} metersPerUnit The meters-per-unit value
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {boolean} useOverlay If true, will use GETDYNAMICMAPOVERLAYIMAGE
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {Array.<number>|undefined} resolutions Resolutions. If specified,
+ *     requests will be made for these resolutions only.
+ * @property {Object} params additional parameters
+ */
+
+/**
  * @typedef {Object} ol.source.MapQuestOptions
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
