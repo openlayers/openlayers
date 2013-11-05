@@ -42,15 +42,6 @@ ol.layer.FeatureCache = function() {
 
 
 /**
- * Clear the cache.
- */
-ol.layer.FeatureCache.prototype.clear = function() {
-  this.idLookup_ = {};
-  this.rTree_ = new ol.structs.RTree();
-};
-
-
-/**
  * Add a feature to the cache.
  * @param {ol.Feature} feature Feature to be cached.
  */
@@ -64,6 +55,32 @@ ol.layer.FeatureCache.prototype.add = function(feature) {
   if (!goog.isNull(geometry)) {
     this.rTree_.insert(geometry.getBounds(), feature);
   }
+};
+
+
+/**
+ * Clear the cache.
+ */
+ol.layer.FeatureCache.prototype.clear = function() {
+  this.idLookup_ = {};
+  this.rTree_ = new ol.structs.RTree();
+};
+
+
+/**
+ * Get features by ids.
+ * @param {Array.<string>} ids Array of (internal) identifiers.
+ * @return {Array.<ol.Feature>} Array of features.
+ * @private
+ */
+ol.layer.FeatureCache.prototype.getFeaturesByIds_ = function(ids) {
+  var len = ids.length,
+      features = new Array(len),
+      i;
+  for (i = 0; i < len; ++i) {
+    features[i] = this.idLookup_[ids[i]];
+  }
+  return features;
 };
 
 
@@ -83,23 +100,6 @@ ol.layer.FeatureCache.prototype.getFeaturesObject = function() {
  */
 ol.layer.FeatureCache.prototype.getFeaturesObjectForExtent = function(extent) {
   return this.rTree_.searchReturningObject(extent);
-};
-
-
-/**
- * Get features by ids.
- * @param {Array.<string>} ids Array of (internal) identifiers.
- * @return {Array.<ol.Feature>} Array of features.
- * @private
- */
-ol.layer.FeatureCache.prototype.getFeaturesByIds_ = function(ids) {
-  var len = ids.length,
-      features = new Array(len),
-      i;
-  for (i = 0; i < len; ++i) {
-    features[i] = this.idLookup_[ids[i]];
-  }
-  return features;
 };
 
 
@@ -195,59 +195,12 @@ ol.layer.Vector.prototype.addFeatures = function(features) {
 
 
 /**
- * Listener for feature change events.
- * @param {ol.FeatureEvent} evt The feature change event.
- * @private
- */
-ol.layer.Vector.prototype.handleFeatureChange_ = function(evt) {
-  goog.asserts.assertInstanceof(evt.target, ol.Feature);
-  var feature = /** @type {ol.Feature} */ (evt.target);
-  var extents = [];
-  if (!goog.isNull(evt.oldExtent)) {
-    extents.push(evt.oldExtent);
-  }
-  var geometry = feature.getGeometry();
-  if (!goog.isNull(geometry)) {
-    this.featureCache_.remove(feature, evt.oldExtent);
-    this.featureCache_.add(feature);
-    extents.push(geometry.getBounds());
-  }
-  this.dispatchEvent(new ol.layer.VectorEvent(ol.layer.VectorEventType.CHANGE,
-      [feature], extents));
-};
-
-
-/**
  * Remove all features from the layer.
  */
 ol.layer.Vector.prototype.clear = function() {
   this.featureCache_.clear();
   this.dispatchEvent(
       new ol.layer.VectorEvent(ol.layer.VectorEventType.REMOVE, [], []));
-};
-
-
-/**
- * @return {boolean} Whether this layer is temporary.
- */
-ol.layer.Vector.prototype.getTemporary = function() {
-  return this.temp_;
-};
-
-
-/**
- * @return {ol.source.Vector} Source.
- */
-ol.layer.Vector.prototype.getVectorSource = function() {
-  return /** @type {ol.source.Vector} */ (this.getSource());
-};
-
-
-/**
- * @return {ol.style.Style} This layer's style.
- */
-ol.layer.Vector.prototype.getStyle = function() {
-  return this.style_;
 };
 
 
@@ -271,6 +224,48 @@ ol.layer.Vector.prototype.getFeaturesObjectForExtent = function(extent,
       ol.source.VectorLoadState.LOADING ?
           null :
           this.featureCache_.getFeaturesObjectForExtent(extent);
+};
+
+
+/**
+ * @param {string|number} uid Feature uid.
+ * @return {ol.Feature|undefined} The feature with the provided uid if it is on
+ *     the layer, otherwise undefined.
+ */
+ol.layer.Vector.prototype.getFeatureWithUid = function(uid) {
+  return this.featureCache_.getFeatureWithUid(/** @type {string} */ (uid));
+};
+
+
+/**
+ * @return {boolean} Whether this layer is temporary.
+ */
+ol.layer.Vector.prototype.getTemporary = function() {
+  return this.temp_;
+};
+
+
+/**
+ * @return {function(Array.<ol.Feature>):string} Feature info function.
+ */
+ol.layer.Vector.prototype.getTransformFeatureInfo = function() {
+  return this.transformFeatureInfo_;
+};
+
+
+/**
+ * @return {ol.style.Style} This layer's style.
+ */
+ol.layer.Vector.prototype.getStyle = function() {
+  return this.style_;
+};
+
+
+/**
+ * @return {ol.source.Vector} Source.
+ */
+ol.layer.Vector.prototype.getVectorSource = function() {
+  return /** @type {ol.source.Vector} */ (this.getSource());
 };
 
 
@@ -333,12 +328,25 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
 
 
 /**
- * @param {string|number} uid Feature uid.
- * @return {ol.Feature|undefined} The feature with the provided uid if it is on
- *     the layer, otherwise undefined.
+ * Listener for feature change events.
+ * @param {ol.FeatureEvent} evt The feature change event.
+ * @private
  */
-ol.layer.Vector.prototype.getFeatureWithUid = function(uid) {
-  return this.featureCache_.getFeatureWithUid(/** @type {string} */ (uid));
+ol.layer.Vector.prototype.handleFeatureChange_ = function(evt) {
+  goog.asserts.assertInstanceof(evt.target, ol.Feature);
+  var feature = /** @type {ol.Feature} */ (evt.target);
+  var extents = [];
+  if (!goog.isNull(evt.oldExtent)) {
+    extents.push(evt.oldExtent);
+  }
+  var geometry = feature.getGeometry();
+  if (!goog.isNull(geometry)) {
+    this.featureCache_.remove(feature, evt.oldExtent);
+    this.featureCache_.add(feature);
+    extents.push(geometry.getBounds());
+  }
+  this.dispatchEvent(new ol.layer.VectorEvent(ol.layer.VectorEventType.CHANGE,
+      [feature], extents));
 };
 
 
@@ -392,14 +400,6 @@ ol.layer.Vector.prototype.parseFeatures = function(data, parser, projection) {
     // TODO: parse more data types
     throw new Error('Data type not supported: ' + data);
   }
-};
-
-
-/**
- * @return {function(Array.<ol.Feature>):string} Feature info function.
- */
-ol.layer.Vector.prototype.getTransformFeatureInfo = function() {
-  return this.transformFeatureInfo_;
 };
 
 
