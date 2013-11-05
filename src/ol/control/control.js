@@ -30,7 +30,7 @@ ol.control.Control = function(options) {
 
   /**
    * @private
-   * @type {?Element}
+   * @type {Element}
    */
   this.target_ = goog.isDef(options.target) ?
       goog.dom.getElement(options.target) : null;
