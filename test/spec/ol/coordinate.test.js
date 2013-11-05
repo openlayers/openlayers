@@ -1,6 +1,6 @@
 goog.provide('ol.test.coordinate');
 
-describe.only('ol.coordinate', function() {
+describe('ol.coordinate', function() {
 
   describe('#closestOnSegment', function() {
     it('can handle points where the foot of the perpendicular is closest',
