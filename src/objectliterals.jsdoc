@@ -430,6 +430,16 @@
  */
 
 /**
+ * @typedef {Object} ol.source.GeoJSONOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {string|undefined} logo Logo.
+ * @property {GeoJSONObject|undefined} geoJSON Object.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {string|undefined} string String.
+ * @proprtty {string|undefined} url URL.
+ */
+
+/**
  * @typedef {Object} ol.source.MapQuestOptions
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
