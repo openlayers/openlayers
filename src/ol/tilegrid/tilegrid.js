@@ -223,7 +223,7 @@ ol.tilegrid.TileGrid.prototype.getTileRangeExtent =
   var maxX = origin[0] + (tileRange.maxX + 1) * tileSize[0] * resolution;
   var minY = origin[1] + tileRange.minY * tileSize[1] * resolution;
   var maxY = origin[1] + (tileRange.maxY + 1) * tileSize[1] * resolution;
-  return ol.extent.createOrUpdate(minX, maxX, minY, maxY, opt_extent);
+  return ol.extent.createOrUpdate(minX, minY, maxX, maxY, opt_extent);
 };
 
 
@@ -287,10 +287,10 @@ ol.tilegrid.TileGrid.prototype.getTileCoordExtent =
   var resolution = this.getResolution(tileCoord.z);
   var tileSize = this.getTileSize(tileCoord.z);
   var minX = origin[0] + tileCoord.x * tileSize[0] * resolution;
-  var maxX = minX + tileSize[0] * resolution;
   var minY = origin[1] + tileCoord.y * tileSize[1] * resolution;
+  var maxX = minX + tileSize[0] * resolution;
   var maxY = minY + tileSize[1] * resolution;
-  return ol.extent.createOrUpdate(minX, maxX, minY, maxY, opt_extent);
+  return ol.extent.createOrUpdate(minX, minY, maxX, maxY, opt_extent);
 };
 
 
