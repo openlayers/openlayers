@@ -60,6 +60,12 @@ ol.replay.Batch.prototype.draw = goog.abstractMethod;
 
 
 /**
+ * @return {ol.Extent} Extent.
+ */
+ol.replay.Batch.prototype.getExtent = goog.abstractMethod;
+
+
+/**
  * @param {ol.replay.FillStyle} fillStyle Fill style.
  */
 ol.replay.Batch.prototype.setFillStyle = goog.abstractMethod;
