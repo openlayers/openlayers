@@ -463,20 +463,20 @@ describe('ol.tilegrid.TileGrid', function() {
 
       tileCoordExtent = tileGrid.getTileCoordExtent(new ol.TileCoord(0, 0, 0));
       expect(tileCoordExtent[0]).to.eql(0);
-      expect(tileCoordExtent[2]).to.eql(100000);
       expect(tileCoordExtent[1]).to.eql(0);
+      expect(tileCoordExtent[2]).to.eql(100000);
       expect(tileCoordExtent[3]).to.eql(100000);
 
       tileCoordExtent = tileGrid.getTileCoordExtent(new ol.TileCoord(3, 9, 0));
       expect(tileCoordExtent[0]).to.eql(90000);
-      expect(tileCoordExtent[2]).to.eql(100000);
       expect(tileCoordExtent[1]).to.eql(0);
+      expect(tileCoordExtent[2]).to.eql(100000);
       expect(tileCoordExtent[3]).to.eql(10000);
 
       tileCoordExtent = tileGrid.getTileCoordExtent(new ol.TileCoord(3, 0, 9));
       expect(tileCoordExtent[0]).to.eql(0);
-      expect(tileCoordExtent[2]).to.eql(10000);
       expect(tileCoordExtent[1]).to.eql(90000);
+      expect(tileCoordExtent[2]).to.eql(10000);
       expect(tileCoordExtent[3]).to.eql(100000);
     });
   });
