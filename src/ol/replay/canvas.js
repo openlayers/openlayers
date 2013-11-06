@@ -3,6 +3,7 @@ goog.provide('ol.replay.Canvas');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
+goog.require('ol.extent');
 goog.require('ol.replay');
 goog.require('ol.replay.Base');
 goog.require('ol.replay.Batch');
@@ -65,6 +66,12 @@ ol.replay.CanvasBatch = function(type) {
    */
   this.path_ = [];
 
+  /**
+   * @private
+   * @type {ol.Extent}
+   */
+  this.extent_ = ol.extent.createEmpty();
+
 };
 goog.inherits(ol.replay.CanvasBatch, ol.replay.Batch);
 
@@ -86,6 +93,7 @@ ol.replay.CanvasBatch.prototype.addPath = function(path, stride, close) {
     for (i = 0; i < m; i += stride) {
       this.path_[j++] = path[i];
       this.path_[j++] = path[i + 1];
+      ol.extent.extendXY(this.extent_, path[i], path[i + 1]);
     }
   }
   this.instructions_.push(/** @type {ol.replay.CanvasInstruction} */ ({
@@ -114,6 +122,14 @@ ol.replay.CanvasBatch.prototype.draw = function() {
   this.instructions_.push(/** @type {ol.replay.CanvasInstruction} */ ({
     command: ol.replay.CanvasInstructionId.DRAW
   }));
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.replay.CanvasBatch.prototype.getExtent = function() {
+  return this.extent_;
 };
 
 
