@@ -10,6 +10,7 @@ goog.require('ol.Feature');
 goog.require('ol.FeatureEventType');
 goog.require('ol.extent');
 goog.require('ol.layer.Layer');
+goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.proj');
 goog.require('ol.source.Vector');
 goog.require('ol.structs.RTree');
@@ -449,6 +450,57 @@ ol.layer.Vector.prototype.setRenderIntent =
 
 
 /**
+ * Sets an array of features as selected.
+ * @param {Array.<ol.Feature>} features Array of features to be selected
+ * @param {boolean=} opt_tempSelectLayer Temporary selection layer elsewhere
+ */
+ol.layer.Vector.prototype.selectFeatures =
+    function(features, opt_tempSelectLayer) {
+  if (features.length > 0) {
+    if (goog.isDef(opt_tempSelectLayer) && opt_tempSelectLayer) {
+      this.setRenderIntent(ol.layer.VectorLayerRenderIntent.HIDDEN, features);
+    } else {
+      this.setRenderIntent(ol.layer.VectorLayerRenderIntent.SELECTED, features);
+    }
+    var extent = ol.extent.createEmpty(),
+        feature, geometry;
+    for (var i = 0, ii = features.length; i < ii; ++i) {
+      feature = features[i];
+      geometry = feature.getGeometry();
+      if (!goog.isNull(geometry)) {
+        ol.extent.extend(extent, geometry.getBounds());
+      }
+    }
+    this.dispatchEvent(new ol.layer.VectorEvent(
+        ol.layer.VectorEventType.SELECT, features, [extent]));
+  }
+};
+
+
+/**
+ * Sets an array of features as unselected.
+ * @param {Array.<ol.Feature>} features Array of features to be unselected
+ */
+ol.layer.Vector.prototype.unselectFeatures =
+    function(features) {
+  if (features.length > 0) {
+    this.setRenderIntent(ol.layer.VectorLayerRenderIntent.DEFAULT, features);
+    var extent = ol.extent.createEmpty(),
+        feature, geometry;
+    for (var i = 0, ii = features.length; i < ii; ++i) {
+      feature = features[i];
+      geometry = feature.getGeometry();
+      if (!goog.isNull(geometry)) {
+        ol.extent.extend(extent, geometry.getBounds());
+      }
+    }
+    this.dispatchEvent(new ol.layer.VectorEvent(
+        ol.layer.VectorEventType.UNSELECT, features, [extent]));
+  }
+};
+
+
+/**
  * @param {boolean} temp Whether this layer is temporary.
  */
 ol.layer.Vector.prototype.setTemporary = function(temp) {
@@ -512,5 +564,7 @@ ol.layer.VectorEventType = {
   ADD: 'featureadd',
   CHANGE: 'featurechange',
   REMOVE: 'featureremove',
+  SELECT: 'featureselect',
+  UNSELECT: 'featureunselect',
   INTENTCHANGE: 'intentchange'
 };
