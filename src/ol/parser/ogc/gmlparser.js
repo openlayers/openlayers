@@ -72,6 +72,11 @@ ol.parser.ogc.GML = function(opt_options) {
         this.readChildNodes(node, obj);
       }
     },
+    'http://ogr.maptools.org/': {
+      'FeatureCollection': function(node, obj) {
+        this.readChildNodes(node, obj);
+      }
+    },
     'http://www.opengis.net/gml': {
       '_inherit': function(node, obj, container) {
         // Version specific parsers extend this with goog.functions.sequence
@@ -531,7 +536,7 @@ ol.parser.ogc.GML.prototype.readNode = function(node, obj, opt_first) {
     this.featureNS = null;
   }
   // featureType auto-configuration
-  if (!this.featureNS && (!(node.namespaceURI in this.readers) &&
+  if (!this.featureNS && (
       node.parentNode.namespaceURI == this.defaultNamespaceURI &&
       (/^(.*:)?featureMembers?$/).test(node.parentNode.nodeName))) {
     this.featureType = node.nodeName.split(':').pop();
