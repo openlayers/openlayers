@@ -2,6 +2,23 @@ goog.provide('ol.test.coordinate');
 
 describe('ol.coordinate', function() {
 
+  describe('#format', function() {
+    var coordinate;
+    beforeEach(function() {
+      coordinate = [6.6123, 46.7919];
+    });
+
+    it('rounds the values', function() {
+      var string = ol.coordinate.format(coordinate, '{x} {y}', 0);
+      expect(string).to.eql('7 47');
+    });
+
+    it('handles the optional fractionDigits param', function() {
+      var string = ol.coordinate.format(coordinate, '{x} {y}', 3);
+      expect(string).to.eql('6.612 46.792');
+    });
+  });
+
   describe('#closestOnSegment', function() {
     it('can handle points where the foot of the perpendicular is closest',
         function() {
