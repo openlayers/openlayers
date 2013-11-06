@@ -43,10 +43,10 @@ ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
   goog.asserts.assert(xs.length > 0);
   goog.asserts.assert(ys.length > 0);
   var minX = Math.min.apply(null, xs);
-  var maxX = Math.max.apply(null, xs);
   var minY = Math.min.apply(null, ys);
+  var maxX = Math.max.apply(null, xs);
   var maxY = Math.max.apply(null, ys);
-  return ol.extent.createOrUpdate(minX, maxX, minY, maxY, opt_extent);
+  return ol.extent.createOrUpdate(minX, minY, maxX, maxY, opt_extent);
 };
 
 
@@ -114,18 +114,18 @@ ol.extent.createEmpty = function() {
 
 /**
  * @param {number} minX Minimum X.
- * @param {number} maxX Maximum X.
  * @param {number} minY Minimum Y.
+ * @param {number} maxX Maximum X.
  * @param {number} maxY Maximum Y.
  * @param {ol.Extent=} opt_extent Destination extent.
  * @return {ol.Extent} Extent.
  * @todo stability experimental
  */
-ol.extent.createOrUpdate = function(minX, maxX, minY, maxY, opt_extent) {
+ol.extent.createOrUpdate = function(minX, minY, maxX, maxY, opt_extent) {
   if (goog.isDef(opt_extent)) {
     opt_extent[0] = minX;
-    opt_extent[2] = maxX;
     opt_extent[1] = minY;
+    opt_extent[2] = maxX;
     opt_extent[3] = maxY;
     return opt_extent;
   } else {
