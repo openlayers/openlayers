@@ -451,7 +451,7 @@ describe('ol.tilegrid.TileGrid', function() {
     });
   });
 
-  describe('getTileCoordExent', function() {
+  describe('getTileCoordExtent', function() {
     it('returns the expected extend', function() {
       var tileGrid = new ol.tilegrid.TileGrid({
         resolutions: resolutions,
