@@ -21,38 +21,6 @@
  */
 
 /**
- * @typedef {Object} ol.GetFeatureInfoOptions
- * @property {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
- * @property {Array.<ol.layer.Layer>|undefined} layers Layers to restrict the
- *     query to. All map layers will be queried if not provided.
- * @property {function(Array.<Array.<string|undefined>>)} success Callback for
- *     successful queries. The passed argument is the resulting feature
- *     information for each layer, with array indices being the same as in the
- *     passed `layers` array or in the layer collection as returned from
- *     `ol.Map#getLayers()` if no `layers` were provided.
- * @property {function()|undefined} error Callback for unsuccessful queries.
- *     Note that queries with no matching features trigger the success callback,
- *     not the error callback.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} ol.GetFeaturesOptions
- * @property {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
- * @property {Array.<ol.layer.Layer>|undefined} layers Layers to restrict the
- *     query to. All layers will be queried if not provided.
- * @property {function(Array.<Array.<ol.Feature|undefined>>)} success Callback
- *     for successful queries. The passed argument is the resulting features for
- *     each layer, with array indices being the same as in the passed `layers`
- *     array or in the layer collection as returned from `ol.Map#getLayers()` if
- *     no layers were provided.
- * @property {function()|undefined} error Callback for unsuccessful queries.
- *     Note that queries with no matching features trigger the success callback,
- *     not the error callback.
- * @todo stability experimental
- */
-
-/**
  * Object literal with config options for the map.
  * @typedef {Object} ol.MapOptions
  * @property {ol.Collection|Array.<ol.control.Control>|undefined} controls
@@ -342,16 +310,6 @@
  */
 
 /**
- * @typedef {Object} ol.interaction.DrawOptions
- * @property {ol.layer.Vector} layer Destination layer for the features.
- * @property {number|undefined} snapTolerance Pixel distance for snapping to the
- *     drawing finish (default is 12).
- * @property {ol.geom.GeometryType} type Drawing type ('point', 'linestring',
- *     'polygon', 'multipoint', 'multilinestring', or 'multipolygon').
- * @todo stability experimental
- */
-
-/**
  * @typedef {Object} ol.interaction.KeyboardPanOptions
  * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
@@ -374,29 +332,6 @@
 /**
  * @typedef {Object} ol.interaction.MouseWheelZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} ol.interaction.ModifyOptions
- * @property {undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer):boolean} layers
- *     Layers or filter function to restrict modification to a subset of layers.
- * @property {number|undefined} pixelTolerance Pixel tolerance for considering
- *     the pointer close enough to a vertex for editing. Default is 20 pixels.
- */
-
-/**
- * @typedef {Object} ol.interaction.SelectOptions
- * @property {ol.events.ConditionType|undefined} addCondition A conditional
- *     modifier (e.g. shift key) that determines if the selection is added to
- *     the current selection. By default, a shift-click adds to the current
- *     selection.
- * @property {ol.events.ConditionType|undefined} condition A conditional
- *     modifier (e.g. shift key) that determines if the interaction is active
- *     (i.e. selection occurs) or not. By default, a click with no modifier keys
- *     toggles the selection.
- * @property {undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer):boolean} layers
- *     Layers or filter function to restrict selection to a subset of layers.
  * @todo stability experimental
  */
 
@@ -484,108 +419,6 @@
  */
 
 /**
- * @typedef {Object} ol.layer.VectorLayerOptions
- * @property {function(Array.<ol.Feature>):string|undefined} transformFeatureInfo
- *     Function to render an array of
- *     features into feature info markup. If not provided, a comma separated
- *     list of the unique ids of the resulting features will be returned.
- * @property {number|undefined} opacity Opacity. 0-1. Default is `1`.
- * @property {ol.source.Source} source Source for this layer.
- * @property {ol.style.Style|undefined} style Style.
- * @property {boolean|undefined} visible Visibility. Default is `true` (visible).
- * @property {number|undefined} minResolution The minimum resolution
- *      (inclusive) at which this layer will be visible.
- * @property {number|undefined} maxResolution The maximum resolution
- *      (exclusive) below which this layer will be visible.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} ol.parser.KMLOptions
- * @property {boolean|undefined} extractAttributes Should we extract attributes
- *     from the KML? Default is `true`.
- * @property {boolean|undefined} extractStyles Should we extract styles from the
- *     KML? Default is `false`.
- * @property {number|undefined} maxDepth Maximum depth to follow network links.
- *     Default is `0`, which means we don't follow network links at all.
- * @property {Array.<string>|undefined} trackAttributes Track attributes to
- *     parse.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} ol.parser.GMLReadOptions
- * @property {string|undefined} axisOrientation The axis orientation.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} ol.parser.GMLWriteOptions
- * @property {ol.proj.ProjectionLike} srsName The srsName to use when writing.
- * @property {string|undefined} axisOrientation The axis orientation.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} ol.parser.GMLOptions
- * @property {boolean|undefined} curve Write gml:Curve instead of
- *     gml:LineString elements. This also affects the elements in multi-part
- *     geometries. Default is `false`. This only applies to GML version 3.
- * @property {boolean|undefined} extractAttributes Should we extract attributes
- *     from the GML? Default is `true`.
- * @property {string|undefined} featureNS The feature namespace. If not set it
- *     will be automatically configured from the GML.
- * @property {Array.<string>|string|undefined} featureType The local
- *     (without prefix) feature typeName(s).
- * @property {string|undefined} geometryName Name of geometry element.
- *     Defaults to `geometry`. If null, it will be set on <read> when the
- *     first geometry is parsed.
- * @property {boolean|undefined} multiCurve Write gml:MultiCurve instead of
- *     gml:MultiLineString. Since the latter is deprecated in GML 3, the
- *     default is `true`. This only applies to GML version 3.
- * @property {boolean|undefined} multiSurface Write gml:multiSurface instead
- *     of gml:MultiPolygon. Since the latter is deprecated in GML 3, the
- *     default is `true`. This only applies to GML version 3.
- * @property {string|undefined} schemaLocation Optional schemaLocation to use
- *     when writing out the GML, this will override the default provided.
- * @property {boolean|undefined} surface Write gml:Surface instead of
- *     gml:Polygon elements. This also affects the elements in multi-part
- *     geometries. Default is `false`. This only applies to GML version 3.
- * @property {ol.parser.GMLReadOptions|undefined} readOptions readOptions to
- *     use for this instance.
- * @property {ol.parser.GMLWriteOptions|undefined} writeOptions writeOptions
- *     to use for this instance.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} ol.parser.GPXOptions
- * @property {string|undefined} creator The creator attribute to be added to
- *     the written GPX files. Defaults to `OpenLayers`.
- * @property {string|undefined} defaultDesc Default description for the
- *     waypoints/tracks in the case where the feature has no `description`
- *     attribute. Default is `No description available`.
- * @property {boolean|undefined} extractAttributes Should we extract attributes
- *     from the GPX? Default is `true`.
- * @property {boolean|undefined} extractWaypoints Extract waypoints from GPX.
- *     Default is `true`.
- * @property {boolean|undefined} extractTracks Extract tracks from GPX.
- *     Default is `true`.
- * @property {boolean|undefined} extractRoutes Extract routes from GPX.
- *     Default is `true`.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} ol.parser.GPXWriteOptions
- * @property {Array.<ol.Feature>|ol.Feature} features The features to write
- *     out.
- * @property {Object|undefined} metadata Metadata key/value pair with keys:
- *     name, desc and author.
- * @todo stability experimental
- */
-
-/**
  * @typedef {Object} ol.source.BingMapsOptions
  * @property {string|undefined} culture Culture.
  * @property {string} key Bing Maps API key. Get yours at
@@ -627,8 +460,6 @@
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image
  *     requests.
  * @property {ol.Extent|undefined} extent Extent.
- * @property {ol.source.WMSGetFeatureInfoOptions|undefined}
- *     getFeatureInfoOptions Options for GetFeatureInfo.
  * @property {Object.<string,*>} params WMS request parameters. At least a
  *     `LAYERS` param is required. `STYLES` is `` by default. `VERSION` is
  *     `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX` and `CRS` (`SRS` for WMS
@@ -688,8 +519,6 @@
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image
  *     requests.
  * @property {ol.Extent|undefined} extent Extent.
- * @property {ol.source.WMSGetFeatureInfoOptions|undefined}
- *     getFeatureInfoOptions Options for GetFeatureInfo.
  * @property {string|undefined} logo Logo.
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  * @property {number|undefined} maxZoom Maximum zoom.
@@ -701,33 +530,6 @@
  *     of `url` when the WMS supports multiple urls for GetMap requests.
  * @todo stability experimental
  */
-
-/**
- * @typedef {Object} ol.source.VectorOptions
- * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
- * @property {Object|string|undefined} data Data to parse.
- * @property {ol.Extent|undefined} extent Extent.
- * @property {string|undefined} logo Logo.
- * @property {ol.parser.Parser} parser Parser instance to parse data
- *     provided as `data` or fetched from `url`.
- * @property {ol.proj.ProjectionLike|undefined} projection Projection. Usually the
- *     projection is provided by the parser, so this only needs to be set if
- *     the parser does not know the SRS (e.g. in some GML flavors), or if the
- *     projection determined by the parser needs to be overridden.
- * @property {string|undefined} url Server url providing the vector data.
- * @todo stability experimental
- */
-
-
-/**
- * @typedef {Object} ol.source.WMSGetFeatureInfoOptions
- * @property {ol.source.WMSGetFeatureInfoMethod} method Method for requesting
- *     GetFeatureInfo. Default is `ol.source.WMSGetFeatureInfoMethod.IFRAME`.
- * @property {Object} params Params for the GetFeatureInfo request. Default is
- *     `{'INFO_FORMAT': 'text/html'}`.
- * @todo stability experimental
- */
-
 
 /**
  * @typedef {Object} ol.source.WMTSOptions
@@ -772,89 +574,6 @@
  * @property {string|undefined} url URL template.  Must include `{x}`, `{y}`,
  *     and `{z}` placeholders.
  * @property {Array.<string>|undefined} urls An array of URL templates.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} ol.style.IconOptions
- * @property {string|ol.expr.Expression} url Icon image URL.
- * @property {number|ol.expr.Expression|undefined} width Width of the icon
- *     in pixels.  Default is the width of the icon image.
- * @property {number|ol.expr.Expression|undefined} height Height of the
- *     icon in pixels. Default is the height of the icon image.
- * @property {number|ol.expr.Expression|undefined} opacity Icon opacity
- *     (0-1).
- * @property {number|ol.expr.Expression|undefined} rotation Rotation in
- *     radians (positive rotation clockwise).
- * @property {number|ol.expr.Expression|undefined} xOffset Pixel offset from the
- *     point to the center of the icon (positive values shift image left).
- * @property {number|ol.expr.Expression|undefined} yOffset Pixel offset from the
- *     point to the center of the icon (positive values shift image down).
- * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} ol.style.FillOptions
- * @property {string|ol.expr.Expression|undefined} color Fill color as hex color
- *     code.
- * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
- * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} ol.style.RuleOptions
- * @property {ol.expr.Expression|string|undefined} filter Filter.
- * @property {number|undefined} maxResolution Optional maximum resolution.  If
- *     a value is provided, the rule will apply at resolutions less than
- *     this value.
- * @property {number|undefined} minResolution Optional minimum resolution.  If
- *     a value is provided, the rule will apply at resolutions greater than or
- *     equal to this value.
- * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} ol.style.ShapeOptions
- * @property {ol.style.ShapeType|undefined} type Type.
- * @property {number|ol.expr.Expression|undefined} size Size in pixels.
- * @property {ol.style.Fill|undefined} fill Fill symbolizer for shape.
- * @property {ol.style.Stroke|undefined} stroke Stroke symbolizer for shape.
- * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} ol.style.StrokeOptions
- * @property {string|ol.expr.Expression|undefined} color Stroke color as hex
- *     color code.
- * @property {number|ol.expr.Expression|undefined} opacity Stroke opacity (0-1).
- * @property {number|ol.expr.Expression|undefined} width Stroke width in pixels.
- * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} ol.style.StyleOptions
- * @property {Array.<ol.style.Rule>|undefined} rules Rules.
- * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers
- *     (that apply if no rules are provided or where none of the provided rules
- *     apply).
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} ol.style.TextOptions
- * @property {string|ol.expr.Expression|undefined} color Color.
- * @property {string|ol.expr.Expression|undefined} fontFamily Font family.
- * @property {number|ol.expr.Expression|undefined} fontSize Font size in pixels.
- * @property {string|ol.expr.Expression|undefined} fontWeight Font weight.
- * @property {string|ol.expr.Expression} text Text for the label.
- * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
- * @property {ol.style.Stroke|undefined} stroke Stroke symbolizer for text.
- * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
  * @todo stability experimental
  */
 

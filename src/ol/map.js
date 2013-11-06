@@ -564,34 +564,6 @@ ol.Map.prototype.getOverlays = function() {
 
 
 /**
- * Get feature information for a pixel on the map.
- *
- * @param {ol.GetFeatureInfoOptions} options Options.
- * @todo stability experimental
- */
-ol.Map.prototype.getFeatureInfo = function(options) {
-  var layers = goog.isDefAndNotNull(options.layers) ?
-      options.layers : this.getLayerGroup().getLayersArray();
-  this.getRenderer().getFeatureInfoForPixel(
-      options.pixel, layers, options.success, options.error);
-};
-
-
-/**
- * Get features for a pixel on the map.
- *
- * @param {ol.GetFeaturesOptions} options Options.
- * @todo stability experimental
- */
-ol.Map.prototype.getFeatures = function(options) {
-  var layers = goog.isDefAndNotNull(options.layers) ?
-      options.layers : this.getLayerGroup().getLayersArray();
-  this.getRenderer().getFeaturesForPixel(
-      options.pixel, layers, options.success, options.error);
-};
-
-
-/**
  * Gets the collection of
  * {@link ol.interaction|ol.interaction.Interaction} instances
  * associated with this map.  Modifying this collection

@@ -3,13 +3,11 @@
 goog.provide('ol.source.TileWMS');
 
 goog.require('goog.array');
-goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
-goog.require('ol.source.FeatureInfoSource');
 goog.require('ol.source.TileImage');
 goog.require('ol.source.wms');
 
@@ -18,7 +16,6 @@ goog.require('ol.source.wms');
 /**
  * @constructor
  * @extends {ol.source.TileImage}
- * @implements {ol.source.FeatureInfoSource}
  * @param {ol.source.TileWMSOptions} options Tile WMS options.
  * @todo stability experimental
  */
@@ -105,13 +102,6 @@ ol.source.TileWMS = function(options) {
         tileCoordTransform, tileUrlFunction)
   });
 
-  /**
-   * @private
-   * @type {ol.source.WMSGetFeatureInfoOptions}
-   */
-  this.getFeatureInfoOptions_ = goog.isDef(options.getFeatureInfoOptions) ?
-      options.getFeatureInfoOptions : {};
-
 };
 goog.inherits(ol.source.TileWMS, ol.source.TileImage);
 
@@ -132,29 +122,6 @@ ol.source.TileWMS.prototype.getKeyZXY = function(z, x, y) {
  */
 ol.source.TileWMS.prototype.getParams = function() {
   return this.params_;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.source.TileWMS.prototype.getFeatureInfoForPixel =
-    function(pixel, map, success, opt_error) {
-  var coord = map.getCoordinateFromPixel(pixel),
-      view2D = map.getView().getView2D(),
-      projection = view2D.getProjection(),
-      tileGrid = goog.isNull(this.tileGrid) ?
-          ol.tilegrid.getForProjection(projection) : this.tileGrid,
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(coord,
-          view2D.getResolution()),
-      tileExtent = tileGrid.getTileCoordExtent(tileCoord),
-      offset = map.getPixelFromCoordinate(ol.extent.getTopLeft(tileExtent)),
-      url = this.tileUrlFunction(tileCoord, projection);
-  goog.asserts.assert(goog.isDef(url),
-      'ol.source.TileWMS#tileUrlFunction does not return a URL');
-  ol.source.wms.getFeatureInfo(url,
-      [pixel[0] - offset[0], pixel[1] - offset[1]], this.getFeatureInfoOptions_,
-      success, opt_error);
 };
 
 

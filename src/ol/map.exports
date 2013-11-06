@@ -7,8 +7,6 @@
 @exportProperty ol.Map.prototype.getControls
 @exportProperty ol.Map.prototype.getEventCoordinate
 @exportProperty ol.Map.prototype.getEventPixel
-@exportProperty ol.Map.prototype.getFeatureInfo
-@exportProperty ol.Map.prototype.getFeatures
 @exportProperty ol.Map.prototype.getInteractions
 @exportProperty ol.Map.prototype.getLayers
 @exportProperty ol.Map.prototype.getOverlays

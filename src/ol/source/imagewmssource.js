@@ -5,7 +5,6 @@ goog.require('goog.object');
 goog.require('ol.Image');
 goog.require('ol.ImageUrlFunction');
 goog.require('ol.extent');
-goog.require('ol.source.FeatureInfoSource');
 goog.require('ol.source.Image');
 goog.require('ol.source.wms');
 
@@ -14,7 +13,6 @@ goog.require('ol.source.wms');
 /**
  * @constructor
  * @extends {ol.source.Image}
- * @implements {ol.source.FeatureInfoSource}
  * @param {ol.source.ImageWMSOptions} options Options.
  * @todo stability experimental
  */
@@ -39,13 +37,6 @@ ol.source.ImageWMS = function(options) {
     resolutions: options.resolutions,
     imageUrlFunction: imageUrlFunction
   });
-
-  /**
-   * @private
-   * @type {ol.source.WMSGetFeatureInfoOptions}
-   */
-  this.getFeatureInfoOptions_ = goog.isDef(options.getFeatureInfoOptions) ?
-      options.getFeatureInfoOptions : {};
 
   /**
    * @private
@@ -96,23 +87,6 @@ ol.source.ImageWMS.prototype.getImage =
 
   this.image_ = this.createImage(extent, resolution, size, projection);
   return this.image_;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.source.ImageWMS.prototype.getFeatureInfoForPixel =
-    function(pixel, map, success, opt_error) {
-  var view = map.getView().getView2D();
-  var size = map.getSize();
-  goog.asserts.assert(goog.isDefAndNotNull(size));
-  var extent = view.calculateExtent(size);
-  var url = this.imageUrlFunction(extent, size, view.getProjection());
-  goog.asserts.assert(goog.isDef(url),
-      'ol.source.ImageWMS#imageUrlFunction does not return a URL');
-  ol.source.wms.getFeatureInfo(url, pixel, this.getFeatureInfoOptions_, success,
-      opt_error);
 };
 
 
