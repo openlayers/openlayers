@@ -98,17 +98,6 @@ describe('ol.structs.RTree', function() {
       expect(goog.object.getCount(rTree.search([5, 5, 6, 6]))).to.be(0);
     });
 
-    it('filters by type', function() {
-      rTree.insert([2, 2, 3, 3], 7, 'type1');
-
-      var result;
-      result = rTree.search([1, 2, 4, 4], 'type1');
-      expect(result).to.contain(7);
-      expect(result.length).to.be(1);
-      result = rTree.search([1, 2, 4, 4]);
-      expect(result.length).to.be(3);
-    });
-
     it('can return objects instead of arrays', function() {
       var obj = {foo: 'bar'};
       rTree.insert([5, 5, 5, 5], obj);
