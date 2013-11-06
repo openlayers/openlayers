@@ -164,10 +164,8 @@ ol.interaction.Select.prototype.select =
       }
     }
     if (goog.isFunction(layer.setRenderIntent)) {
-      layer.setRenderIntent(ol.layer.VectorLayerRenderIntent.HIDDEN,
-          selectedFeatures);
-      layer.setRenderIntent(ol.layer.VectorLayerRenderIntent.DEFAULT,
-          unselectedFeatures);
+      layer.selectFeatures(selectedFeatures, true);
+      layer.unselectFeatures(unselectedFeatures);
     }
     selectionLayer.removeFeatures(featuresToRemove);
     selectionLayer.addFeatures(featuresToAdd);
@@ -176,6 +174,5 @@ ol.interaction.Select.prototype.select =
       delete this.selectionLayers[mapId].layers[layerId];
       delete this.featureMap_[layerId];
     }
-    // TODO: Dispatch an event with selectedFeatures and unselectedFeatures
   }
 };
