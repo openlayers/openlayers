@@ -532,6 +532,16 @@
  */
 
 /**
+ * @typedef {Object} ol.source.VectorOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {Array.<ol.Feature>|undefined} features Features.
+ * @property {string|undefined} logo Logo.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {ol.source.State|undefined} state State.
+ */
+
+/**
  * @typedef {Object} ol.source.WMTSOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {string|null|undefined} crossOrigin crossOrigin setting for image
