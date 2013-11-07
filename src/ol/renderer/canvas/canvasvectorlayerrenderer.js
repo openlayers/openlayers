@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
@@ -102,6 +103,13 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
   this.tileArchetype_ = null;
 
   /**
+   * The maximum symbol size ever rendered for this layer (in pixels).
+   * @private
+   * @type {number}
+   */
+  this.maxSymbolPixelDim_ = 0;
+
+  /**
    * @private
    * @type {number}
    */
@@ -168,12 +176,18 @@ goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
  * @private
  */
 ol.renderer.canvas.VectorLayer.prototype.expireTiles_ = function(extents) {
+  // buffer by max symbolizer size at rendered resolution
+  var resolution = this.renderedResolution_;
+  goog.asserts.assertNumber(resolution);
   var tileCache = this.tileCache_;
   var length = extents.length;
+  var extent;
   if (length > 0) {
     for (var i = 0; i < length; ++i) {
+      extent = ol.extent.clone(extents[i]);
+      ol.extent.buffer(extent, this.maxSymbolPixelDim_ * resolution / 2);
       tileCache.pruneTileRange(
-          this.tileGrid_.getTileRangeForExtentAndZ(extents[i], 0));
+          this.tileGrid_.getTileRangeForExtentAndZ(extent, 0));
     }
   } else {
     tileCache.clear();
@@ -509,6 +523,11 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var symbolSizes = sketchCanvasRenderer.getSymbolSizes(),
       maxSymbolSize = sketchCanvasRenderer.getMaxSymbolSize(),
       symbolOffsets = sketchCanvasRenderer.getSymbolOffsets();
+
+  // keep track of maximum pixel size for symbols rendered on this layer
+  this.maxSymbolPixelDim_ = Math.max(maxSymbolSize[0] / tileResolution,
+      maxSymbolSize[1] / tileResolution);
+
   for (key in tilesToRender) {
     tileCoord = tilesToRender[key];
     if (this.tileCache_.containsKey(key)) {

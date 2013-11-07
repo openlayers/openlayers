@@ -13,6 +13,15 @@ goog.require('ol.source.Source');
  * @constructor
  * @extends {ol.layer.Base}
  * @param {ol.layer.LayerOptions} options Layer options.
+ * @todo stability experimental
+ * @todo observable brightness {number} the brightness of the layer
+ * @todo observable contrast {number} the contrast of the layer
+ * @todo observable hue {number} the hue of the layer
+ * @todo observable opacity {number} the opacity of the layer
+ * @todo observable saturation {number} the saturation of the layer
+ * @todo observable visible {boolean} the visiblity of the layer
+ * @todo observable maxResolution {number} the maximum resolution of the layer
+ * @todo observable minResolution {number} the minimum resolution of the layer
  */
 ol.layer.Layer = function(options) {
 
@@ -62,6 +71,7 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_obj) {
 
 /**
  * @return {ol.source.Source} Source.
+ * @todo stability experimental
  */
 ol.layer.Layer.prototype.getSource = function() {
   return this.source_;

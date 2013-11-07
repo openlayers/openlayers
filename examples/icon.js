@@ -65,12 +65,13 @@ var element = document.getElementById('popup');
 
 var popup = new ol.Overlay({
   element: element,
-  positioning: ol.OverlayPositioning.BOTTOM_CENTER
+  positioning: ol.OverlayPositioning.BOTTOM_CENTER,
+  stopEvent: false
 });
 map.addOverlay(popup);
 
 
-map.on('click', function(evt) {
+map.on('singleclick', function(evt) {
   map.getFeatures({
     pixel: evt.getPixel(),
     layers: [vector],

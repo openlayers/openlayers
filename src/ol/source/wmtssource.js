@@ -29,6 +29,7 @@ ol.source.WMTSRequestEncoding = {
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {ol.source.WMTSOptions} options WMTS options.
+ * @todo stability experimental
  */
 ol.source.WMTS = function(options) {
 
@@ -177,6 +178,7 @@ ol.source.WMTS = function(options) {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
     extent: options.extent,
+    logo: options.logo,
     projection: options.projection,
     tileGrid: tileGrid,
     tileLoadFunction: options.tileLoadFunction,
@@ -192,6 +194,7 @@ goog.inherits(ol.source.WMTS, ol.source.TileImage);
  * "dimensions" option, and possibly updated using the updateDimensions
  * method.
  * @return {Object} Dimensions.
+ * @todo stability experimental
  */
 ol.source.WMTS.prototype.getDimensions = function() {
   return this.dimensions_;
@@ -222,6 +225,7 @@ ol.source.WMTS.prototype.resetCoordKeyPrefix_ = function() {
 /**
  * Update the dimensions.
  * @param {Object} dimensions Dimensions.
+ * @todo stability experimental
  */
 ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
   goog.object.extend(this.dimensions_, dimensions);
@@ -234,6 +238,7 @@ ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
  * @param {Object} wmtsCap An object representing the capabilities document.
  * @param {string} layer The layer identifier.
  * @return {ol.source.WMTSOptions} WMTS source options object.
+ * @todo stability experimental
  */
 ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, layer) {
 

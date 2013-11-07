@@ -23,6 +23,7 @@ goog.require('ol.geom.LinearRing');
  * @extends {ol.geom.Geometry}
  * @param {Array.<ol.CoordinateArray>} coordinates Array of rings.  First
  *    is outer, any remaining are inner.
+ * @todo stability experimental
  */
 ol.geom.Polygon = function(coordinates) {
   goog.base(this);
@@ -75,6 +76,7 @@ ol.geom.Polygon.prototype.getBounds = function() {
 
 /**
  * @return {Array.<ol.CoordinateArray>} Coordinates array.
+ * @todo stability experimental
  */
 ol.geom.Polygon.prototype.getCoordinates = function() {
   var count = this.rings_.length;

@@ -13,6 +13,7 @@ goog.require('ol.parser.ogc.GML');
  * @constructor
  * @param {ol.parser.GMLOptions=} opt_options Optional configuration object.
  * @extends {ol.parser.ogc.GML}
+ * @todo stability experimental
  */
 ol.parser.ogc.GML_v2 = function(opt_options) {
   this.schemaLocation = 'http://www.opengis.net/gml ' +
@@ -127,6 +128,7 @@ goog.inherits(ol.parser.ogc.GML_v2, ol.parser.ogc.GML);
  * GML.
  * @param {ol.parser.GMLWriteOptions=} opt_options Write options.
  * @return {string} A string representing the GML document.
+ * @todo stability experimental
  */
 ol.parser.ogc.GML_v2.prototype.write = function(obj, opt_options) {
   this.applyWriteOptions(obj, opt_options);

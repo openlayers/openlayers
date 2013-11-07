@@ -15,6 +15,7 @@ goog.require('ol.style.Symbolizer');
  * @constructor
  * @extends {ol.style.Symbolizer}
  * @param {ol.style.FillOptions=} opt_options Polygon options.
+ * @todo stability experimental
  */
 ol.style.Fill = function(opt_options) {
   goog.base(this);

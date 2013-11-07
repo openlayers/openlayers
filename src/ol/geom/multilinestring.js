@@ -14,6 +14,7 @@ goog.require('ol.geom.LineString');
  * @constructor
  * @extends {ol.geom.AbstractCollection}
  * @param {Array.<ol.CoordinateArray>} coordinates Coordinates array.
+ * @todo stability experimental
  */
 ol.geom.MultiLineString = function(coordinates) {
   goog.base(this);

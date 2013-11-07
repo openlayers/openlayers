@@ -8,5 +8,6 @@ goog.provide('ol.TransformFunction');
  * returns the output array.
  *
  * @typedef {function(Array.<number>, Array.<number>=, number=): Array.<number>}
+ * @todo stability experimental
  */
 ol.TransformFunction;

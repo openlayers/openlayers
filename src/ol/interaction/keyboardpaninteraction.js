@@ -8,9 +8,9 @@ goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.functions');
 goog.require('ol.View2D');
 goog.require('ol.coordinate');
-goog.require('ol.interaction.ConditionType');
+goog.require('ol.events.ConditionType');
+goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.condition');
 
 
 /**
@@ -25,6 +25,7 @@ ol.interaction.KEYBOARD_PAN_DURATION = 100;
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {ol.interaction.KeyboardPanOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.KeyboardPan = function(opt_options) {
 
@@ -34,11 +35,11 @@ ol.interaction.KeyboardPan = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.interaction.ConditionType}
+   * @type {ol.events.ConditionType}
    */
   this.condition_ = goog.isDef(options.condition) ? options.condition :
-      goog.functions.and(ol.interaction.condition.noModifierKeys,
-          ol.interaction.condition.targetNotEditable);
+      goog.functions.and(ol.events.condition.noModifierKeys,
+          ol.events.condition.targetNotEditable);
 
   /**
    * @private

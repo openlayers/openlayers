@@ -18,6 +18,7 @@ goog.require('ol.style.Stroke');
  * @constructor
  * @extends {ol.style.Point}
  * @param {ol.style.ShapeOptions} options Shape options.
+ * @todo stability experimental
  */
 ol.style.Shape = function(options) {
   goog.base(this);
