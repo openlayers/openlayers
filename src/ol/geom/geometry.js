@@ -14,14 +14,32 @@ ol.geom.GeometryType = {
 };
 
 
+/**
+ * @enum {string}
+ */
+ol.geom.GeometryLayout = {
+  XY: 'XY',
+  XYZ: 'XYZ',
+  XYM: 'XYM',
+  XYZM: 'XYZM'
+};
+
+
 
 /**
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
-ol.geom.Geometry = function() {
+ol.geom.Geometry = function(opt_layout) {
 
   goog.base(this);
+
+  /**
+   * @protected
+   * @type {ol.geom.GeometryLayout}
+   */
+  this.layout = goog.isDef(opt_layout) ? opt_layout : ol.geom.GeometryLayout.XY;
 
   /**
    * @protected
@@ -62,10 +80,26 @@ ol.geom.Geometry.prototype.getExtent = goog.abstractMethod;
 
 
 /**
+ * @return {ol.geom.GeometryLayout} Layout.
+ */
+ol.geom.Geometry.prototype.getLayout = function() {
+  return this.layout;
+};
+
+
+/**
  * @return {number} Revision.
  */
 ol.geom.Geometry.prototype.getRevision = function() {
   return this.revision;
+};
+
+
+/**
+ * @return {number} Stride.
+ */
+ol.geom.Geometry.prototype.getStride = function() {
+  return this.layout.length;
 };
 
 
