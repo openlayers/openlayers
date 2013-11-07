@@ -251,7 +251,7 @@ ol.Object.prototype.notifyInternal_ = function(key) {
 /**
  * Listen for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
- * @param {Function} listener The listener function.
+ * @param {function(?): ?} listener The listener function.
  * @param {Object=} opt_scope Object is whose scope to call
  *     the listener.
  * @return {goog.events.Key} Unique key for the listener.
@@ -265,7 +265,7 @@ ol.Object.prototype.on = function(type, listener, opt_scope) {
 /**
  * Listen once for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
- * @param {Function} listener The listener function.
+ * @param {function(?): ?} listener The listener function.
  * @param {Object=} opt_scope Object is whose scope to call
  *     the listener.
  * @return {goog.events.Key} Unique key for the listener.
@@ -343,7 +343,7 @@ ol.Object.prototype.unbind = function(key) {
 /**
  * Unlisten for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
- * @param {Function} listener The listener function.
+ * @param {function(?): ?} listener The listener function.
  * @param {Object=} opt_scope Object is whose scope to call
  *     the listener.
  * @todo stability experimental
@@ -354,9 +354,9 @@ ol.Object.prototype.un = function(type, listener, opt_scope) {
 
 
 /**
- * Removes an event listener which was added with listen() by the key returned
- *     by on().
- * @param {?number} key Key.
+ * Removes an event listener which was added with `listen()` by the key returned
+ * by `on()` or `once()`.
+ * @param {goog.events.Key} key Key.
  * @todo stability experimental
  */
 ol.Object.prototype.unByKey = function(key) {

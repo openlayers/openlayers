@@ -20,7 +20,7 @@ ol.TilePriorityFunction;
  * @extends {ol.structs.PriorityQueue}
  * @param {ol.TilePriorityFunction} tilePriorityFunction
  *     Tile priority function.
- * @param {Function} tileChangeCallback
+ * @param {function(): ?} tileChangeCallback
  *     Function called on each tile change event.
  */
 ol.TileQueue = function(tilePriorityFunction, tileChangeCallback) {
@@ -44,7 +44,7 @@ ol.TileQueue = function(tilePriorityFunction, tileChangeCallback) {
 
   /**
    * @private
-   * @type {Function}
+   * @type {function(): ?}
    */
   this.tileChangeCallback_ = tileChangeCallback;
 
