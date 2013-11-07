@@ -106,12 +106,21 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
 
   var vectorLayer = this.getVectorLayer();
   var vectorSource = vectorLayer.getVectorSource();
+  var frameStateExtent = frameState.extent;
 
   if (this.renderedResolution_ == frameState.view2DState.resolution &&
       this.renderedRevision_ == vectorSource.getRevision() &&
-      ol.extent.containsExtent(this.renderedExtent_, frameState.extent)) {
+      ol.extent.containsExtent(this.renderedExtent_, frameStateExtent)) {
     return;
   }
+
+  var extent = this.renderedExtent_;
+  var xBuffer = ol.extent.getWidth(frameStateExtent) / 4;
+  var yBuffer = ol.extent.getHeight(frameStateExtent) / 4;
+  extent[0] = frameStateExtent[0] - xBuffer;
+  extent[1] = frameStateExtent[1] - yBuffer;
+  extent[2] = frameStateExtent[2] + xBuffer;
+  extent[3] = frameStateExtent[3] + yBuffer;
 
   // FIXME dispose of old batchGroup in post render
   goog.dispose(this.batchGroup_);
@@ -122,14 +131,13 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
     styleFunction = ol.style.DefaultStyleFunction;
   }
   var batchGroup = new ol.replay.canvas.BatchGroup();
-  vectorSource.forEachFeatureInExtent(frameState.extent, function(feature) {
+  vectorSource.forEachFeatureInExtent(extent, function(feature) {
     var style = styleFunction(feature);
     ol.renderer.vector.renderFeature(batchGroup, feature, style);
   }, this);
 
   this.renderedResolution_ = frameState.view2DState.resolution;
   this.renderedRevision_ = vectorSource.getRevision();
-  this.renderedExtent_ = frameState.extent;
   if (!batchGroup.isEmpty()) {
     this.batchGroup_ = batchGroup;
   }
