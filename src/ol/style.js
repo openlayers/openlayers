@@ -57,9 +57,9 @@ ol.style.stroke.equals = function(strokeStyle1, strokeStyle2) {
 
 
 /**
- * @typedef {{fill: ol.style.Fill,
- *            image: ol.style.Image,
- *            stroke: ol.style.Stroke,
+ * @typedef {{fill: ?ol.style.Fill,
+ *            image: ?ol.style.Image,
+ *            stroke: ?ol.style.Stroke,
  *            zIndex: number}}
  */
 ol.style.Style;
