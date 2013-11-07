@@ -9,6 +9,7 @@ goog.require('ol.parser.DomFeatureParser');
 goog.require('ol.parser.ObjectFeatureParser');
 goog.require('ol.parser.StringFeatureParser');
 goog.require('ol.parser.XML');
+goog.require('ol.parser.ogc.GML_v3');
 
 
 
@@ -25,32 +26,6 @@ goog.require('ol.parser.XML');
 ol.parser.GeoRSS = function() {
   this.defaultNamespaceURI = 'http://www.georss.org/georss';
   this.readers = {};
-  this.readers['http://backend.userland.com/rss2'] = {
-    'rss': function(node, obj) {
-      obj.features = [];
-      this.readChildNodes(node, obj);
-    },
-    'item': function(node, obj) {
-      var item = {};
-      item.properties = {};
-      this.readChildNodes(node, item);
-      var feature = new ol.Feature(item.properties);
-      obj.features.push(feature);
-      if (goog.isDef(item.geometry) || (goog.isDef(item.lon) &&
-          goog.isDef(item.lat))) {
-        var geometry = goog.isDef(item.geometry) ? item.geometry :
-            new ol.geom.Point([item.lon, item.lat]);
-        feature.setGeometry(geometry);
-      }
-    },
-    '*': function(node, obj) {
-      if (goog.isDef(obj.properties)) {
-        var local = node.localName || node.nodeName.split(':').pop();
-        var value = this.getChildValue(node);
-        obj.properties[local] = value;
-      }
-    }
-  };
   this.readers['http://www.w3.org/2003/01/geo/wgs84_pos#'] = {
     'long': function(node, obj) {
       obj.lon = parseFloat(this.getChildValue(node));
@@ -82,6 +57,9 @@ ol.parser.GeoRSS = function() {
       }
     }
   };
+  // since the rss xmlns is not very clear, i.e.
+  // some use http://backend.userland.com/rss2 but it's also often omitted, we
+  // are better off putting the rss, item and * readers here.
   this.readers[this.defaultNamespaceURI] = {
     'point': function(node, obj) {
       var str = this.getChildValue(node).replace(
@@ -101,8 +79,50 @@ ol.parser.GeoRSS = function() {
         [extent[3], extent[0]],
         [extent[1], extent[0]]
       ]]);
+    },
+    'rss': function(node, obj) {
+      obj.features = [];
+      this.readChildNodes(node, obj);
+    },
+    'channel': function(node, obj) {
+      this.readChildNodes(node, obj);
+    },
+    'item': function(node, obj) {
+      var item = {};
+      item.properties = {};
+      this.readChildNodes(node, item);
+      var feature = new ol.Feature(item.properties);
+      obj.features.push(feature);
+      if (goog.isDef(item.geometry) || (goog.isDef(item.lon) &&
+          goog.isDef(item.lat))) {
+        var geometry = goog.isDef(item.geometry) ? item.geometry :
+            new ol.geom.Point([item.lon, item.lat]);
+        feature.setGeometry(geometry);
+      }
+    },
+    'where': function(node, obj) {
+      var gml = {};
+      this.readChildNodes(node, gml);
+      obj.geometry = this.gml_.createGeometry(gml);
+    },
+    '*': function(node, obj) {
+      if (goog.isDef(obj.properties)) {
+        var local = node.localName || node.nodeName.split(':').pop();
+        var value = this.getChildValue(node);
+        obj.properties[local] = value;
+      }
     }
   };
+  this.gml_ = new ol.parser.ogc.GML_v3();
+  for (var uri in this.gml_.readers) {
+    for (var key in this.gml_.readers[uri]) {
+      if (!goog.isDef(this.readers[uri])) {
+        this.readers[uri] = {};
+      }
+      this.readers[uri][key] = goog.bind(this.gml_.readers[uri][key],
+          this.gml_);
+    }
+  }
   goog.base(this);
 };
 goog.inherits(ol.parser.GeoRSS, ol.parser.XML);
