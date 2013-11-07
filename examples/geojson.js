@@ -31,6 +31,13 @@ var geoJSONSource = new ol.source.GeoJSON(
               'type': 'LineString',
               'coordinates': [[-1e7, 1e7], [1e7, -1e7]]
             }
+          },
+          {
+            'type': 'Feature',
+            'geometry': {
+              'type': 'Polygon',
+              'coordinates': [[[-5e6, -5e6], [0, 5e6], [5e6, -5e6]]]
+            }
           }
         ]
       }
