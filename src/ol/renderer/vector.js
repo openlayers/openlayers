@@ -30,6 +30,9 @@ ol.renderer.vector.renderFeature = function(batchGroup, feature, style) {
  */
 ol.renderer.vector.renderLineStringGeometry_ =
     function(batchGroup, geometry, style) {
+  if (goog.isNull(style.stroke)) {
+    return;
+  }
   goog.asserts.assert(geometry instanceof ol.geom.LineString);
   var lineStringGeometry = /** @type {ol.geom.LineString} */ (geometry);
   window.console.log({batchingLineString: lineStringGeometry}); // FIXME
