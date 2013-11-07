@@ -82,6 +82,29 @@ ol.replay.canvas.Batch = function() {
 
 
 /**
+ * @param {Array.<Array.<number>>} coordinates Coordinates.
+ * @param {boolean} close Close.
+ * @private
+ * @return {number} End.
+ */
+ol.replay.canvas.Batch.prototype.appendCoordinates_ =
+    function(coordinates, close) {
+  goog.asserts.assert(!goog.isNull(this.state_));
+  var end = this.coordinates_.length;
+  var i, ii;
+  for (i = 0, ii = coordinates.length; i < ii; ++i) {
+    this.coordinates_[end++] = coordinates[i][0];
+    this.coordinates_[end++] = coordinates[i][1];
+  }
+  if (close) {
+    this.coordinates_[end++] = coordinates[0][0];
+    this.coordinates_[end++] = coordinates[0][1];
+  }
+  return end;
+};
+
+
+/**
  * @private
  */
 ol.replay.canvas.Batch.prototype.beginPath_ = function() {
@@ -148,17 +171,10 @@ ol.replay.canvas.Batch.prototype.drawLineStringGeometry =
     function(lineStringGeometry) {
   goog.asserts.assert(!goog.isNull(this.state_));
   this.beginPath_();
-  var coordinates = this.coordinates_;
-  var lineStringCoordinates = lineStringGeometry.getCoordinates();
-  var i = coordinates.length;
-  var j, jj;
-  for (j = 0, jj = lineStringCoordinates.length; j < jj; ++j) {
-    coordinates[i++] = lineStringCoordinates[j][0];
-    coordinates[i++] = lineStringCoordinates[j][1];
-  }
+  var end = this.appendCoordinates_(lineStringGeometry.getCoordinates(), false);
   this.instructions_.push({
-    type: ol.replay.canvas.InstructionType.DRAW_LINE_STRING_GEOMETRY,
-    argument: i
+    type: ol.replay.canvas.InstructionType.MOVE_TO_LINE_TO,
+    argument: end
   });
   this.state_.strokePending = true;
 };
