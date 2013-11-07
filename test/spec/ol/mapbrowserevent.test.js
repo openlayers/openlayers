@@ -51,8 +51,40 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
   });
+
+  describe('#getDown()', function() {
+
+    var handler;
+    beforeEach(function() {
+      handler = new ol.MapBrowserEventHandler(new ol.Map({}));
+    });
+
+    it('returns null if no "down" type event has been handled', function() {
+      expect(handler.getDown()).to.be(null);
+    });
+
+    it('returns an event after handleMouseDown_ has been called', function() {
+      var event = new goog.events.BrowserEvent({});
+      handler.handleMouseDown_(event);
+      expect(handler.getDown()).to.be(event);
+    });
+
+    it('returns an event after handlePointerDown_ has been called', function() {
+      var event = new goog.events.BrowserEvent({});
+      handler.handlePointerDown_(event);
+      expect(handler.getDown()).to.be(event);
+    });
+
+    it('returns an event after handleTouchStart_ has been called', function() {
+      var event = new goog.events.BrowserEvent({});
+      handler.handleTouchStart_(event);
+      expect(handler.getDown()).to.be(event);
+    });
+
+  });
 });
 
 goog.require('goog.events');
+goog.require('goog.events.BrowserEvent');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserEventHandler');
