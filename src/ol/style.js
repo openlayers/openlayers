@@ -1,6 +1,7 @@
 goog.provide('ol.style.DefaultStyleFunction');
 goog.provide('ol.style.Style');
 goog.provide('ol.style.StyleFunction');
+goog.provide('ol.style.fill');
 goog.provide('ol.style.stroke');
 
 goog.require('goog.functions');
@@ -11,6 +12,19 @@ goog.require('goog.functions');
  *            opacity: number}}
  */
 ol.style.Fill;
+
+
+/**
+ * @param {?ol.style.Fill} fillStyle1 Fill style 1.
+ * @param {?ol.style.Fill} fillStyle2 Fill style 2.
+ * @return {boolean} Equals.
+ */
+ol.style.fill.equals = function(fillStyle1, fillStyle2) {
+  return fillStyle1 === fillStyle2 || (
+      !goog.isNull(fillStyle1) && !goog.isNull(fillStyle2) &&
+      fillStyle1.color == fillStyle2.color &&
+      fillStyle1.opacity == fillStyle2.opacity);
+};
 
 
 /**
