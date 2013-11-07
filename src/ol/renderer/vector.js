@@ -38,7 +38,7 @@ ol.renderer.vector.renderLineStringGeometry_ =
   window.console.log({batchingLineString: lineStringGeometry}); // FIXME
   var batch = batchGroup.getBatch(
       style.zIndex, ol.replay.BatchType.STROKE_LINE);
-  batch.setStrokeStyle(style.stroke);
+  batch.setFillStrokeStyle(null, style.stroke);
   batch.drawLineStringGeometry(lineStringGeometry);
 };
 

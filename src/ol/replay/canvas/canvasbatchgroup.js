@@ -10,6 +10,7 @@ goog.require('goog.object');
 goog.require('ol.replay');
 goog.require('ol.replay.IBatch');
 goog.require('ol.replay.IBatchGroup');
+goog.require('ol.style.fill');
 goog.require('ol.style.stroke');
 
 
@@ -19,16 +20,18 @@ goog.require('ol.style.stroke');
 ol.replay.canvas.InstructionType = {
   BEGIN_PATH: 0,
   CLOSE_PATH: 1,
-  DRAW_LINE_STRING_GEOMETRY: 2,
-  FILL: 3,
-  SET_STROKE_STYLE: 4,
-  STROKE: 5
+  FILL: 2,
+  MOVE_TO_LINE_TO: 3,
+  SET_FILL_STYLE: 4,
+  SET_STROKE_STYLE: 5,
+  STROKE: 6
 };
 
 
 /**
  * @typedef {{beginPath: boolean,
  *            fillPending: boolean,
+ *            fillStyle: ?ol.style.Fill,
  *            strokePending: boolean,
  *            strokeStyle: ?ol.style.Stroke}}
  */
@@ -74,6 +77,7 @@ ol.replay.canvas.Batch = function() {
   this.state_ = {
     beginPath: true,
     fillPending: false,
+    fillStyle: null,
     strokePending: false,
     strokeStyle: null
   };
@@ -139,16 +143,21 @@ ol.replay.canvas.Batch.prototype.draw = function(context, transform) {
         ol.replay.canvas.InstructionType.CLOSE_PATH) {
       context.closePath();
     } else if (instruction.type ==
-        ol.replay.canvas.InstructionType.DRAW_LINE_STRING_GEOMETRY) {
+        ol.replay.canvas.InstructionType.FILL) {
+      context.fill();
+    } else if (instruction.type ==
+        ol.replay.canvas.InstructionType.MOVE_TO_LINE_TO) {
       context.moveTo(pixelCoordinates[i], pixelCoordinates[i + 1]);
       goog.asserts.assert(goog.isNumber(instruction.argument));
-      var ii = /** @type {number} */ (instruction.argument);
-      for (i += 2; i < ii; i += 2) {
+      var end = /** @type {number} */ (instruction.argument);
+      for (i += 2; i < end; i += 2) {
         context.lineTo(pixelCoordinates[i], pixelCoordinates[i + 1]);
       }
     } else if (instruction.type ==
-        ol.replay.canvas.InstructionType.FILL) {
-      context.fill();
+        ol.replay.canvas.InstructionType.SET_FILL_STYLE) {
+      goog.asserts.assert(goog.isObject(instruction.argument));
+      var fillStyle = /** @type {ol.style.Fill} */ (instruction.argument);
+      context.fillStyle = fillStyle.color;
     } else if (instruction.type ==
         ol.replay.canvas.InstructionType.SET_STROKE_STYLE) {
       goog.asserts.assert(goog.isObject(instruction.argument));
@@ -176,6 +185,26 @@ ol.replay.canvas.Batch.prototype.drawLineStringGeometry =
     type: ol.replay.canvas.InstructionType.MOVE_TO_LINE_TO,
     argument: end
   });
+  this.state_.strokePending = true;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.replay.canvas.Batch.prototype.drawPolygonGeometry =
+    function(polygonGeometry) {
+  goog.asserts.assert(!goog.isNull(this.state_));
+  var rings = polygonGeometry.getRings();
+  var i, ii;
+  for (i = 0, ii = rings.length; i < ii; ++i) {
+    this.beginPath_();
+    this.instructions_.push({
+      type: ol.replay.canvas.InstructionType.MOVE_TO_LINE_TO,
+      argument: this.appendCoordinates_(rings[i], true)
+    });
+  }
+  this.state_.fillPending = true;
   this.state_.strokePending = true;
 };
 
@@ -217,11 +246,19 @@ ol.replay.canvas.Batch.prototype.flush_ = function(finish) {
 /**
  * @inheritDoc
  */
-ol.replay.canvas.Batch.prototype.setStrokeStyle = function(strokeStyle) {
+ol.replay.canvas.Batch.prototype.setFillStrokeStyle =
+    function(fillStyle, strokeStyle) {
   goog.asserts.assert(!goog.isNull(this.state_));
   // FIXME should only change styles before draws
-  if (goog.isNull(this.state_.strokeStyle) ||
-      !ol.style.stroke.equals(this.state_.strokeStyle, strokeStyle)) {
+  if (!ol.style.fill.equals(this.state_.fillStyle, fillStyle)) {
+    this.flush_(false);
+    this.instructions_.push({
+      type: ol.replay.canvas.InstructionType.SET_FILL_STYLE,
+      argument: fillStyle
+    });
+    this.state_.fillStyle = fillStyle;
+  }
+  if (!ol.style.stroke.equals(this.state_.strokeStyle, strokeStyle)) {
     this.flush_(false);
     this.instructions_.push({
       type: ol.replay.canvas.InstructionType.SET_STROKE_STYLE,
@@ -320,5 +357,8 @@ ol.replay.canvas.BatchGroup.prototype.isEmpty = function() {
  * @type {Object.<ol.replay.BatchType, function(new: ol.replay.canvas.Batch)>}
  */
 ol.replay.canvas.BATCH_CONSTRUCTORS_ = {
-  'strokeLine': ol.replay.canvas.Batch
+  'fillRing': ol.replay.canvas.Batch,
+  'fillStrokeRing': ol.replay.canvas.Batch,
+  'strokeLine': ol.replay.canvas.Batch,
+  'strokeRing': ol.replay.canvas.Batch
 };

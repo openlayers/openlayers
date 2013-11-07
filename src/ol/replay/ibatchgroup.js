@@ -9,9 +9,9 @@ goog.require('goog.functions');
  */
 ol.replay.BatchType = {
   FILL_RING: 'fillRing',
+  FILL_STROKE_RING: 'fillStrokeRing',
   POINT: 'point',
   STROKE_LINE: 'strokeLine',
-  STROKE_FILL_RING: 'strokeFillRing',
   STROKE_RING: 'strokeRing'
 };
 
@@ -33,9 +33,18 @@ ol.replay.IBatch.prototype.drawLineStringGeometry =
 
 
 /**
- * @param {ol.style.Stroke} strokeStyle Stroke style.
+ * @param {ol.geom.Polygon} polygonGeometry Polygon geometry.
  */
-ol.replay.IBatch.prototype.setStrokeStyle = function(strokeStyle) {
+ol.replay.IBatch.prototype.drawPolygonGeometry = function(polygonGeometry) {
+};
+
+
+/**
+ * @param {?ol.style.Fill} fillStyle Fill style.
+ * @param {?ol.style.Stroke} strokeStyle Stroke style.
+ */
+ol.replay.IBatch.prototype.setFillStrokeStyle =
+    function(fillStyle, strokeStyle) {
 };
 
 
