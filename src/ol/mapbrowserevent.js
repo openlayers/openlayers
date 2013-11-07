@@ -221,7 +221,6 @@ ol.MapBrowserEventHandler.prototype.handleMouseUp_ = function(browserEvent) {
       var newEvent = new ol.MapBrowserEvent(
           ol.MapBrowserEvent.EventType.DRAGEND, this.map_, browserEvent);
       this.dispatchEvent(newEvent);
-      this.down_ = null;
     } else if (browserEvent.isMouseActionButton()) {
       this.emulateClick_(browserEvent);
     }
