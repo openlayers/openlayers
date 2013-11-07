@@ -3,6 +3,7 @@ goog.provide('ol.parser.GeoRSS');
 goog.require('goog.array');
 goog.require('goog.dom.xml');
 goog.require('ol.Feature');
+goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.parser.DomFeatureParser');
@@ -67,6 +68,28 @@ ol.parser.GeoRSS = function() {
       // reverse to get correct axis order
       var coordinates = goog.array.map(str.split(' '), parseFloat).reverse();
       obj.geometry = new ol.geom.Point(coordinates);
+    },
+    'line': function(node, obj) {
+      var str = this.getChildValue(node).replace(
+          this.regExes.trimSpace, '');
+      var coord = goog.array.map(str.split(' '), parseFloat);
+      var coordinates = [];
+      for (var i = 0, ii = coord.length; i < ii; ++i) {
+        coordinates.push(coord[i + 1], coord[i]);
+        i += 1;
+      }
+      obj.geometry = new ol.geom.LineString([coordinates]);
+    },
+    'polygon': function(node, obj) {
+      var str = this.getChildValue(node).replace(
+          this.regExes.trimSpace, '');
+      var coord = goog.array.map(str.split(' '), parseFloat);
+      var coordinates = [];
+      for (var i = 0, ii = coord.length; i < ii; ++i) {
+        coordinates.push(coord[i + 1], coord[i]);
+        i += 1;
+      }
+      obj.geometry = new ol.geom.Polygon([[coordinates]]);
     },
     'box': function(node, obj) {
       var str = this.getChildValue(node).replace(
