@@ -1,3 +1,10 @@
+// FIXME add MultiPoint
+// FIXME add MultiLineString
+// FIXME add MultiPolygon
+// FIXME add GeometryCollection
+// FIXME add Z and M support
+// FIXME use flat coordinate arrays
+
 goog.provide('ol.geom.Geometry');
 
 goog.require('goog.events.EventTarget');
