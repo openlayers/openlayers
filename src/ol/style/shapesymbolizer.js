@@ -73,10 +73,11 @@ goog.inherits(ol.style.Shape, ol.style.Point);
  * @return {ol.style.ShapeLiteral} Literal shape symbolizer.
  */
 ol.style.Shape.prototype.createLiteral = function(featureOrType) {
-  var feature, type;
+  var attributes, geometry, feature, type;
   if (featureOrType instanceof ol.Feature) {
     feature = featureOrType;
-    var geometry = feature.getGeometry();
+    attributes = feature.getAttributes();
+    geometry = feature.getGeometry();
     type = geometry ? geometry.getType() : null;
   } else {
     type = featureOrType;
@@ -85,34 +86,37 @@ ol.style.Shape.prototype.createLiteral = function(featureOrType) {
   var literal = null;
   if (type === ol.geom.GeometryType.POINT ||
       type === ol.geom.GeometryType.MULTIPOINT) {
-    var size = Number(ol.expr.evaluateFeature(this.size_, feature));
+    var size = Number(ol.expr.evaluateFeature(this.size_, feature, attributes));
     goog.asserts.assert(!isNaN(size), 'size must be a number');
 
     var fillColor, fillOpacity;
     if (!goog.isNull(this.fill_)) {
-      fillColor = ol.expr.evaluateFeature(this.fill_.getColor(), feature);
+      fillColor = ol.expr.evaluateFeature(this.fill_.getColor(), feature,
+          attributes);
       goog.asserts.assertString(
           fillColor, 'fillColor must be a string');
-      fillOpacity = Number(ol.expr.evaluateFeature(
-          this.fill_.getOpacity(), feature));
+      fillOpacity = Number(ol.expr.evaluateFeature(this.fill_.getOpacity(),
+          feature, attributes));
       goog.asserts.assert(!isNaN(fillOpacity), 'fillOpacity must be a number');
     }
 
     var strokeColor, strokeOpacity, strokeWidth;
     if (!goog.isNull(this.stroke_)) {
-      strokeColor = ol.expr.evaluateFeature(this.stroke_.getColor(), feature);
+      strokeColor = ol.expr.evaluateFeature(this.stroke_.getColor(), feature,
+          attributes);
       goog.asserts.assertString(
           strokeColor, 'strokeColor must be a string');
       strokeOpacity = Number(ol.expr.evaluateFeature(
-          this.stroke_.getOpacity(), feature));
+          this.stroke_.getOpacity(), feature, attributes));
       goog.asserts.assert(!isNaN(strokeOpacity),
           'strokeOpacity must be a number');
       strokeWidth = Number(ol.expr.evaluateFeature(
-          this.stroke_.getWidth(), feature));
+          this.stroke_.getWidth(), feature, attributes));
       goog.asserts.assert(!isNaN(strokeWidth), 'strokeWidth must be a number');
     }
 
-    var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
+    var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature,
+        attributes));
     goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
 
     literal = new ol.style.ShapeLiteral({

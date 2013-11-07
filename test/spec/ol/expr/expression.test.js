@@ -637,39 +637,39 @@ describe('ol.expr.lib', function() {
     });
 
     it('concatenates strings', function() {
-      expect(evaluate(parse('concat(str, "after")'), feature))
-          .to.be('barafter');
-      expect(evaluate(parse('concat("before", str)'), feature))
-          .to.be('beforebar');
-      expect(evaluate(parse('concat("a", str, "b")'), feature))
-          .to.be('abarb');
+      expect(evaluate(parse('concat(str, "after")'), feature,
+          feature.getAttributes())).to.be('barafter');
+      expect(evaluate(parse('concat("before", str)'), feature,
+          feature.getAttributes())).to.be('beforebar');
+      expect(evaluate(parse('concat("a", str, "b")'), feature,
+          feature.getAttributes())).to.be('abarb');
     });
 
     it('concatenates numbers as strings', function() {
-      expect(evaluate(parse('concat(num, 0)'), feature))
-          .to.be('420');
-      expect(evaluate(parse('concat(0, num)'), feature))
-          .to.be('042');
-      expect(evaluate(parse('concat(42, 42)'), feature))
-          .to.be('4242');
-      expect(evaluate(parse('concat(str, num)'), feature))
-          .to.be('bar42');
+      expect(evaluate(parse('concat(num, 0)'), feature,
+          feature.getAttributes())).to.be('420');
+      expect(evaluate(parse('concat(0, num)'), feature,
+          feature.getAttributes())).to.be('042');
+      expect(evaluate(parse('concat(42, 42)'), feature,
+          feature.getAttributes())).to.be('4242');
+      expect(evaluate(parse('concat(str, num)'), feature,
+          feature.getAttributes())).to.be('bar42');
     });
 
     it('concatenates booleans as strings', function() {
-      expect(evaluate(parse('concat(bool, "foo")'), feature))
-          .to.be('falsefoo');
-      expect(evaluate(parse('concat(true, str)'), feature))
-          .to.be('truebar');
-      expect(evaluate(parse('concat(true, false)'), feature))
-          .to.be('truefalse');
+      expect(evaluate(parse('concat(bool, "foo")'), feature,
+          feature.getAttributes())).to.be('falsefoo');
+      expect(evaluate(parse('concat(true, str)'), feature,
+          feature.getAttributes())).to.be('truebar');
+      expect(evaluate(parse('concat(true, false)'), feature,
+          feature.getAttributes())).to.be('truefalse');
     });
 
     it('concatenates nulls as strings', function() {
-      expect(evaluate(parse('concat(nul, "foo")'), feature))
-          .to.be('nullfoo');
-      expect(evaluate(parse('concat(str, null)'), feature))
-          .to.be('barnull');
+      expect(evaluate(parse('concat(nul, "foo")'), feature,
+          feature.getAttributes())).to.be('nullfoo');
+      expect(evaluate(parse('concat(str, null)'), feature,
+          feature.getAttributes())).to.be('barnull');
     });
 
   });
@@ -832,23 +832,23 @@ describe('ol.expr.lib', function() {
     var like = parse('like(foo, "ba")');
 
     it('First and second feature match, third does not', function() {
-      expect(evaluate(like, one), true);
-      expect(evaluate(like, two), true);
-      expect(evaluate(like, three), false);
+      expect(evaluate(like, one, one.getAttributes()), true);
+      expect(evaluate(like, two, two.getAttributes()), true);
+      expect(evaluate(like, three, three.getAttributes()), false);
     });
 
     var uclike = parse('like(foo, "BA")');
     it('Matchcase is true by default', function() {
-      expect(evaluate(uclike, one), false);
-      expect(evaluate(uclike, two), false);
-      expect(evaluate(uclike, three), false);
+      expect(evaluate(uclike, one, one.getAttributes()), false);
+      expect(evaluate(uclike, two, two.getAttributes()), false);
+      expect(evaluate(uclike, three, three.getAttributes()), false);
     });
 
     var ilike = parse('like(foo, "BA", "*", ".", "!", false)');
     it('Using matchcase false, first two features match again', function() {
-      expect(evaluate(ilike, one), true);
-      expect(evaluate(ilike, two), true);
-      expect(evaluate(uclike, three), false);
+      expect(evaluate(ilike, one, one.getAttributes()), true);
+      expect(evaluate(ilike, two, two.getAttributes()), true);
+      expect(evaluate(uclike, three, three.getAttributes()), false);
     });
 
   });
@@ -862,12 +862,12 @@ describe('ol.expr.lib', function() {
     var ieq2 = parse('ieq("foo", bar)');
 
     it('case-insensitive equality for an attribute', function() {
-      expect(evaluate(ieq1, one), true);
+      expect(evaluate(ieq1, one, one.getAttributes()), true);
     });
 
     it('case-insensitive equality for an attribute as second argument',
         function() {
-          expect(evaluate(ieq2, two), true);
+          expect(evaluate(ieq2, two, two.getAttributes()), true);
         });
 
   });
@@ -881,12 +881,12 @@ describe('ol.expr.lib', function() {
     var ieq2 = parse('ineq("foo", bar)');
 
     it('case-insensitive non-equality for an attribute', function() {
-      expect(evaluate(ieq1, one), false);
+      expect(evaluate(ieq1, one, one.getAttributes()), false);
     });
 
     it('case-insensitive non-equality for an attribute as second argument',
         function() {
-          expect(evaluate(ieq2, two), false);
+          expect(evaluate(ieq2, two, two.getAttributes()), false);
         });
 
   });

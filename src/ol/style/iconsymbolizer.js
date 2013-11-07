@@ -101,10 +101,11 @@ goog.inherits(ol.style.Icon, ol.style.Point);
  * @return {ol.style.IconLiteral} Literal shape symbolizer.
  */
 ol.style.Icon.prototype.createLiteral = function(featureOrType) {
-  var feature, type;
+  var attributes, geometry, feature, type;
   if (featureOrType instanceof ol.Feature) {
     feature = featureOrType;
-    var geometry = feature.getGeometry();
+    attributes = feature.getAttributes();
+    geometry = feature.getGeometry();
     type = geometry ? geometry.getType() : null;
   } else {
     type = featureOrType;
@@ -114,35 +115,42 @@ ol.style.Icon.prototype.createLiteral = function(featureOrType) {
   if (type === ol.geom.GeometryType.POINT ||
       type === ol.geom.GeometryType.MULTIPOINT) {
 
-    var url = ol.expr.evaluateFeature(this.url_, feature);
+    var url = ol.expr.evaluateFeature(this.url_, feature, attributes);
     goog.asserts.assertString(url, 'url must be a string');
     goog.asserts.assert(url != '#', 'url must not be "#"');
 
     var width;
     if (!goog.isNull(this.width_)) {
-      width = Number(ol.expr.evaluateFeature(this.width_, feature));
+      width = Number(ol.expr.evaluateFeature(this.width_, feature,
+          attributes));
       goog.asserts.assert(!isNaN(width), 'width must be a number');
     }
 
     var height;
     if (!goog.isNull(this.height_)) {
-      height = Number(ol.expr.evaluateFeature(this.height_, feature));
+      height = Number(ol.expr.evaluateFeature(this.height_, feature,
+          attributes));
       goog.asserts.assertNumber(height, 'height must be a number');
     }
 
-    var opacity = Number(ol.expr.evaluateFeature(this.opacity_, feature));
+    var opacity = Number(ol.expr.evaluateFeature(this.opacity_, feature,
+        attributes));
     goog.asserts.assert(!isNaN(opacity), 'opacity must be a number');
 
-    var rotation = Number(ol.expr.evaluateFeature(this.rotation_, feature));
+    var rotation = Number(ol.expr.evaluateFeature(this.rotation_, feature,
+        attributes));
     goog.asserts.assert(!isNaN(rotation), 'rotation must be a number');
 
-    var xOffset = Number(ol.expr.evaluateFeature(this.xOffset_, feature));
+    var xOffset = Number(ol.expr.evaluateFeature(this.xOffset_, feature,
+        attributes));
     goog.asserts.assert(!isNaN(xOffset), 'xOffset must be a number');
 
-    var yOffset = Number(ol.expr.evaluateFeature(this.yOffset_, feature));
+    var yOffset = Number(ol.expr.evaluateFeature(this.yOffset_, feature,
+        attributes));
     goog.asserts.assert(!isNaN(yOffset), 'yOffset must be a number');
 
-    var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
+    var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature,
+        attributes));
     goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
 
     literal = new ol.style.IconLiteral({
