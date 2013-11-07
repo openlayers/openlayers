@@ -1,3 +1,5 @@
+// FIXME decide how to handle fill opacity
+
 goog.provide('ol.style.DefaultStyleFunction');
 goog.provide('ol.style.Style');
 goog.provide('ol.style.StyleFunction');
@@ -76,7 +78,7 @@ ol.style.StyleFunction;
  * @type {ol.style.Fill}
  */
 ol.style.DEFAULT_FILL_STYLE = {
-  color: 'red',
+  color: 'rgba(255, 0, 0, 0.1)',
   opacity: 0.1
 };
 
