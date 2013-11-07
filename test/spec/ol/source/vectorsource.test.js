@@ -17,10 +17,20 @@ describe('ol.source.Vector', function() {
       vectorSource = new ol.source.Vector();
     });
 
-    describe('#getFeatures', function() {
+    describe('#forEachFeatureInExtent', function() {
+
+      it('does not call the callback', function() {
+        var f = sinon.spy();
+        vectorSource.forEachFeatureInExtent(infiniteExtent, f);
+        expect(f).not.to.be.called();
+      });
+
+    });
+
+    describe('#getAllFeaturesInExtent', function() {
 
       it('returns an empty array', function() {
-        var features = vectorSource.getFeatures(infiniteExtent);
+        var features = vectorSource.getAllFeaturesInExtent(infiniteExtent);
         expect(features).to.be.an(Array);
         expect(features).to.be.empty();
       });
@@ -31,7 +41,7 @@ describe('ol.source.Vector', function() {
 
       it('can add a single point feature', function() {
         vectorSource.addFeature(pointFeature);
-        var features = vectorSource.getFeatures(infiniteExtent);
+        var features = vectorSource.getAllFeaturesInExtent(infiniteExtent);
         expect(features).to.be.an(Array);
         expect(features).to.have.length(1);
         expect(features[0]).to.be(pointFeature);
@@ -64,10 +74,31 @@ describe('ol.source.Vector', function() {
       });
     });
 
-    describe('#getFeatures', function() {
+    describe('#forEachFeatureInExtent', function() {
+
+      it('is called the expected number of times', function() {
+        var f = sinon.spy();
+        vectorSource.forEachFeatureInExtent(infiniteExtent, f);
+        expect(f.callCount).to.be(10);
+      });
+
+      it('allows breaking out', function() {
+        var count = 0;
+        var result = vectorSource.forEachFeatureInExtent(infiniteExtent,
+            function(f) {
+              return ++count == 5;
+            });
+        expect(result).to.be(true);
+        expect(count).to.be(5);
+      });
+
+    });
+
+    describe('#getAllFeaturesInExtent', function() {
 
       it('returns the expected number of features', function() {
-        expect(vectorSource.getFeatures(infiniteExtent)).have.length(10);
+        expect(vectorSource.getAllFeaturesInExtent(infiniteExtent)).
+            to.have.length(10);
       });
 
     });
@@ -78,7 +109,8 @@ describe('ol.source.Vector', function() {
         var i;
         for (i = features.length - 1; i >= 0; --i) {
           vectorSource.removeFeature(features[i]);
-          expect(vectorSource.getFeatures(infiniteExtent)).have.length(i);
+          expect(vectorSource.getAllFeaturesInExtent(infiniteExtent)).
+              have.length(i);
         }
       });
 
@@ -102,11 +134,14 @@ describe('ol.source.Vector', function() {
 
       if (false) {
         it('keeps the R-Tree index up to date', function() {
-          expect(vectorSource.getFeatures([0, 0, 1, 1])).to.have.length(10);
+          expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
+              to.have.length(10);
           features[0].getGeometry().setCoordinate([100, 100]);
-          expect(vectorSource.getFeatures([0, 0, 1, 1])).to.have.length(9);
+          expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
+              to.have.length(9);
           features[0].getGeometry().setCoordinate([0.5, 0.5]);
-          expect(vectorSource.getFeatures([0, 0, 1, 1])).to.have.length(10);
+          expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
+              to.have.length(10);
         });
       }
 
@@ -123,9 +158,11 @@ describe('ol.source.Vector', function() {
 
       if (false) {
         it('keeps the R-Tree index up to date', function() {
-          expect(vectorSource.getFeatures([0, 0, 1, 1])).to.have.length(10);
+          expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
+              to.have.length(10);
           features[0].setGeometry(new ol.geom.Point([100, 100]));
-          expect(vectorSource.getFeatures([0, 0, 1, 1])).to.have.length(9);
+          expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
+              to.have.length(9);
         });
       }
     });

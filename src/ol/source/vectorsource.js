@@ -70,9 +70,30 @@ ol.source.Vector.prototype.addFeature = function(feature) {
 
 /**
  * @param {ol.Extent} extent Extent.
+ * @param {function(this: T, ol.Feature): S} f Callback.
+ * @param {T=} opt_obj The object to be used a the value of 'this' within f.
+ * @return {S|undefined}
+ * @template T,S
+ */
+ol.source.Vector.prototype.forEachFeatureInExtent =
+    function(extent, f, opt_obj) {
+  var features = this.getAllFeaturesInExtent(extent);
+  var i, ii;
+  for (i = 0, ii = features.length; i < ii; ++i) {
+    var result = f.call(opt_obj, features[i]);
+    if (result) {
+      return result;
+    }
+  }
+  return undefined;
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
  * @return {Array.<ol.Feature>} Features.
  */
-ol.source.Vector.prototype.getFeatures = function(extent) {
+ol.source.Vector.prototype.getAllFeaturesInExtent = function(extent) {
   return this.rTree_.search(extent);
 };
 
