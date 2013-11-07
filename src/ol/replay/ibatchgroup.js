@@ -48,6 +48,13 @@ ol.replay.IBatchGroup = function() {
 
 
 /**
+ * FIXME empty description for jsdoc
+ */
+ol.replay.IBatchGroup.prototype.finish = function() {
+};
+
+
+/**
  * @param {number} zIndex Z index.
  * @param {ol.replay.BatchType} batchType Batch type.
  * @return {ol.replay.IBatch} Batch.
