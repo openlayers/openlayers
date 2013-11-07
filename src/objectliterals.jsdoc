@@ -419,6 +419,22 @@
  */
 
 /**
+ * @typedef {Object} ol.layer.VectorOptions
+ * @property {number|undefined} brightness Brightness.
+ * @property {number|undefined} contrast Contrast.
+ * @property {number|undefined} hue Hue.
+ * @property {number|undefined} minResolution The minimum resolution
+ *      (inclusive) at which this layer will be visible.
+ * @property {number|undefined} maxResolution The maximum resolution
+ *      (exclusive) below which this layer will be visible.
+ * @property {number|undefined} opacity Opacity. 0-1. Default is `1`.
+ * @property {number|undefined} saturation Saturation.
+ * @property {ol.source.Vector} source Source.
+ * @property {ol.style.StyleFunction|undefined} styleFunction Style function.
+ * @property {boolean|undefined} visible Visibility. Default is `true` (visible).
+ */
+
+/**
  * @typedef {Object} ol.source.BingMapsOptions
  * @property {string|undefined} culture Culture.
  * @property {string} key Bing Maps API key. Get yours at
