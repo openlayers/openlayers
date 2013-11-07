@@ -136,6 +136,65 @@ ol.parser.GeoRSS = function() {
       }
     }
   };
+  this.writers = {};
+  this.writers[this.defaultNamespaceURI] = {
+    '_feature': function(feature) {
+      var node = this.createElementNS('item',
+          'http://backend.userland.com/rss2');
+      var geometry = feature.getGeometry();
+      var title = feature.get('title'),
+          description = feature.get('description');
+      if (goog.isDef(title)) {
+        this.writeNode('_attribute', {name: 'title', value: title}, null, node);
+      }
+      if (goog.isDef(description)) {
+        this.writeNode('_attribute', {name: 'description', value: description},
+            null, node);
+      }
+      if (geometry instanceof ol.geom.Point) {
+        this.writeNode('point', geometry, null, node);
+      }
+      else if (geometry instanceof ol.geom.LineString) {
+        this.writeNode('line', geometry, null, node);
+      }
+      else if (geometry instanceof ol.geom.Polygon) {
+        this.writeNode('polygon', geometry, null, node);
+      }
+      return node;
+    },
+    '_attribute': function(obj) {
+      var node = this.createElementNS(obj.name,
+          'http://backend.userland.com/rss2');
+      node.appendChild(this.createTextNode(obj.value));
+      return node;
+    },
+    'point': function(geometry) {
+      var node = this.createElementNS('georss:point');
+      var coordinates = geometry.getCoordinates();
+      node.appendChild(this.createTextNode(coordinates.reverse().join(' ')));
+      return node;
+    },
+    'line': function(geometry) {
+      var node = this.createElementNS('georss:line');
+      var coordinates = geometry.getCoordinates();
+      var parts = new Array(coordinates.length);
+      for (var i = 0, ii = coordinates.length; i < ii; ++i) {
+        parts[i] = coordinates[i].reverse().join(' ');
+      }
+      node.appendChild(this.createTextNode(parts.join(' ')));
+      return node;
+    },
+    'polygon': function(geometry) {
+      var node = this.createElementNS('georss:polygon');
+      var coordinates = geometry.getCoordinates()[0];
+      var parts = new Array(coordinates.length);
+      for (var i = 0, ii = coordinates.length; i < ii; ++i) {
+        parts[i] = coordinates[i].reverse().join(' ');
+      }
+      node.appendChild(this.createTextNode(parts.join(' ')));
+      return node;
+    }
+  };
   this.gml_ = new ol.parser.ogc.GML_v3();
   for (var uri in this.gml_.readers) {
     for (var key in this.gml_.readers[uri]) {
@@ -195,4 +254,19 @@ ol.parser.GeoRSS.prototype.readFeaturesFromNode = function(node) {
  */
 ol.parser.GeoRSS.prototype.readFeaturesFromObject = function(obj) {
   return this.read(obj);
+};
+
+
+/**
+ * @param {ol.parser.GeoRSSWriteOptions} obj Object structure to write out
+ *     as GeoRSS.
+ * @return {string} An string representing the GeoRSS document.
+ */
+ol.parser.GeoRSS.prototype.write = function(obj) {
+  var features = goog.isArray(obj.features) ? obj.features : [obj.features];
+  var root = this.createElementNS('rss', 'http://backend.userland.com/rss2');
+  for (var i = 0, ii = features.length; i < ii; i++) {
+    this.writeNode('_feature', features[i], undefined, root);
+  }
+  return this.serialize(root);
 };

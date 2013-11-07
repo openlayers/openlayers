@@ -482,6 +482,13 @@
  * @todo stability experimental
  */
 
+ /**
+ * @typedef {Object} ol.parser.GeoRSSWriteOptions
+ * @property {Array.<ol.Feature>|ol.Feature} features The features to write
+ *     out.
+ * @todo stability experimental
+ */
+
 /**
  * @typedef {Object} ol.parser.KMLOptions
  * @property {boolean|undefined} extractAttributes Should we extract attributes
