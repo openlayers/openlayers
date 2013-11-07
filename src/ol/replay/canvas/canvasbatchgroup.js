@@ -291,7 +291,6 @@ ol.replay.canvas.BatchGroup = function() {
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  */
 ol.replay.canvas.BatchGroup.prototype.draw = function(context, transform) {
-  window.console.log('drawing batch');
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.batchesByZIndex_), Number);
   goog.array.sort(zs);

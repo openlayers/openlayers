@@ -35,7 +35,6 @@ ol.renderer.vector.renderLineStringGeometry_ =
   }
   goog.asserts.assert(geometry instanceof ol.geom.LineString);
   var lineStringGeometry = /** @type {ol.geom.LineString} */ (geometry);
-  window.console.log({batchingLineString: lineStringGeometry}); // FIXME
   var batch = batchGroup.getBatch(
       style.zIndex, ol.replay.BatchType.STROKE_LINE);
   batch.setFillStrokeStyle(null, style.stroke);
@@ -53,7 +52,7 @@ ol.renderer.vector.renderPointGeometry_ =
     function(batchGroup, geometry, style) {
   goog.asserts.assert(geometry instanceof ol.geom.Point);
   var pointGeometry = /** @type {ol.geom.Point} */ (geometry);
-  window.console.log({batchingPoint: pointGeometry}); // FIXME
+  pointGeometry = pointGeometry; // FIXME
 };
 
 
@@ -81,7 +80,6 @@ ol.renderer.vector.renderPolygonGeometry_ =
   }
   goog.asserts.assert(geometry instanceof ol.geom.Polygon);
   var polygonGeometry = /** @type {ol.geom.Polygon} */ (geometry);
-  window.console.log({batchingPolygon: polygonGeometry}); // FIXME
   var batch = batchGroup.getBatch(style.zIndex, batchType);
   batch.setFillStrokeStyle(style.fill, style.stroke);
   batch.drawPolygonGeometry(polygonGeometry);
