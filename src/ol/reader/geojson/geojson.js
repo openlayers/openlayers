@@ -119,6 +119,7 @@ ol.reader.GeoJSON.readString = function(string, callback) {
 
 
 /**
+ * @const
  * @private
  * @type {Object.<string, function(GeoJSONGeometry): ol.geom.Geometry>}
  */
@@ -130,6 +131,7 @@ ol.reader.GeoJSON.GEOMETRY_READERS_ = {
 
 
 /**
+ * @const
  * @private
  * @type {Object.<string, function(*, function(ol.Feature): *): *>}
  */
