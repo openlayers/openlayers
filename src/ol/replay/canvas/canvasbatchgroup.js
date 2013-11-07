@@ -17,9 +17,22 @@ goog.require('ol.style.stroke');
  * @enum {number}
  */
 ol.replay.canvas.InstructionType = {
-  DRAW_LINE_STRING_GEOMETRY: 0,
-  SET_STROKE_STYLE: 1
+  BEGIN_PATH: 0,
+  CLOSE_PATH: 1,
+  DRAW_LINE_STRING_GEOMETRY: 2,
+  FILL: 3,
+  SET_STROKE_STYLE: 4,
+  STROKE: 5
 };
+
+
+/**
+ * @typedef {{beginPath: boolean,
+ *            fillPending: boolean,
+ *            strokePending: boolean,
+ *            strokeStyle: ?ol.style.Stroke}}
+ */
+ol.replay.canvas.State;
 
 
 /**
@@ -56,10 +69,29 @@ ol.replay.canvas.Batch = function() {
 
   /**
    * @private
-   * @type {?ol.style.Stroke}
+   * @type {?ol.replay.canvas.State}
    */
-  this.currentStrokeStyle_ = null;
+  this.state_ = {
+    beginPath: true,
+    fillPending: false,
+    strokePending: false,
+    strokeStyle: null
+  };
 
+};
+
+
+/**
+ * @private
+ */
+ol.replay.canvas.Batch.prototype.beginPath_ = function() {
+  goog.asserts.assert(!goog.isNull(this.state_));
+  if (this.state_.beginPath) {
+    this.instructions_.push({
+      type: ol.replay.canvas.InstructionType.BEGIN_PATH
+    });
+    this.state_.beginPath = false;
+  }
 };
 
 
@@ -68,54 +100,43 @@ ol.replay.canvas.Batch = function() {
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  */
 ol.replay.canvas.Batch.prototype.draw = function(context, transform) {
+  goog.asserts.assert(goog.isNull(this.state_));
   var pixelCoordinates = ol.replay.transformCoordinates(
       this.coordinates_, transform, this.pixelCoordinates_);
   this.pixelCoordinates_ = pixelCoordinates;  // FIXME ?
-  var begunPath = false;
-  var fillPending = false;
-  var strokePending = false;
-  var flushPath = function() {
-    if (strokePending || fillPending) {
-      if (strokePending) {
-        context.stroke();
-        strokePending = false;
-      }
-      if (fillPending) {
-        context.fill();
-        fillPending = false;
-      }
-      context.beginPath();
-      begunPath = true;
-    }
-  };
   var instructions = this.instructions_;
   var i = 0;
   var j, jj;
   for (j = 0, jj = instructions.length; j < jj; ++j) {
     var instruction = instructions[j];
     if (instruction.type ==
+        ol.replay.canvas.InstructionType.BEGIN_PATH) {
+      context.beginPath();
+    } else if (instruction.type ==
+        ol.replay.canvas.InstructionType.CLOSE_PATH) {
+      context.closePath();
+    } else if (instruction.type ==
         ol.replay.canvas.InstructionType.DRAW_LINE_STRING_GEOMETRY) {
-      if (!begunPath) {
-        context.beginPath();
-        begunPath = true;
-      }
       context.moveTo(pixelCoordinates[i], pixelCoordinates[i + 1]);
       goog.asserts.assert(goog.isNumber(instruction.argument));
       var ii = /** @type {number} */ (instruction.argument);
       for (i += 2; i < ii; i += 2) {
         context.lineTo(pixelCoordinates[i], pixelCoordinates[i + 1]);
       }
-      strokePending = true;
+    } else if (instruction.type ==
+        ol.replay.canvas.InstructionType.FILL) {
+      context.fill();
     } else if (instruction.type ==
         ol.replay.canvas.InstructionType.SET_STROKE_STYLE) {
-      flushPath();
       goog.asserts.assert(goog.isObject(instruction.argument));
       var strokeStyle = /** @type {ol.style.Stroke} */ (instruction.argument);
       context.strokeStyle = strokeStyle.color;
       context.lineWidth = strokeStyle.width;
+    } else if (instruction.type ==
+        ol.replay.canvas.InstructionType.STROKE) {
+      context.stroke();
     }
   }
-  flushPath();
   goog.asserts.assert(i == pixelCoordinates.length);
 };
 
@@ -125,6 +146,8 @@ ol.replay.canvas.Batch.prototype.draw = function(context, transform) {
  */
 ol.replay.canvas.Batch.prototype.drawLineStringGeometry =
     function(lineStringGeometry) {
+  goog.asserts.assert(!goog.isNull(this.state_));
+  this.beginPath_();
   var coordinates = this.coordinates_;
   var lineStringCoordinates = lineStringGeometry.getCoordinates();
   var i = coordinates.length;
@@ -137,6 +160,41 @@ ol.replay.canvas.Batch.prototype.drawLineStringGeometry =
     type: ol.replay.canvas.InstructionType.DRAW_LINE_STRING_GEOMETRY,
     argument: i
   });
+  this.state_.strokePending = true;
+};
+
+
+/**
+ * FIXME empty description for jsdoc
+ */
+ol.replay.canvas.Batch.prototype.finish = function() {
+  goog.asserts.assert(!goog.isNull(this.state_));
+  this.flush_(true);
+  this.state_ = null;
+};
+
+
+/**
+ * @param {boolean} finish Finish.
+ * @private
+ */
+ol.replay.canvas.Batch.prototype.flush_ = function(finish) {
+  goog.asserts.assert(!goog.isNull(this.state_));
+  if (this.state_.fillPending || this.state_.strokePending) {
+    if (this.state_.fillPending) {
+      this.instructions_.push({
+        type: ol.replay.canvas.InstructionType.FILL
+      });
+      this.state_.fillPending = false;
+    }
+    if (this.state_.strokePending) {
+      this.instructions_.push({
+        type: ol.replay.canvas.InstructionType.STROKE
+      });
+      this.state_.strokePending = false;
+    }
+    this.state_.beginPath = true;
+  }
 };
 
 
@@ -144,13 +202,16 @@ ol.replay.canvas.Batch.prototype.drawLineStringGeometry =
  * @inheritDoc
  */
 ol.replay.canvas.Batch.prototype.setStrokeStyle = function(strokeStyle) {
-  if (goog.isNull(this.currentStrokeStyle_) ||
-      !ol.style.stroke.equals(this.currentStrokeStyle_, strokeStyle)) {
+  goog.asserts.assert(!goog.isNull(this.state_));
+  // FIXME should only change styles before draws
+  if (goog.isNull(this.state_.strokeStyle) ||
+      !ol.style.stroke.equals(this.state_.strokeStyle, strokeStyle)) {
+    this.flush_(false);
     this.instructions_.push({
       type: ol.replay.canvas.InstructionType.SET_STROKE_STYLE,
       argument: strokeStyle
     });
-    this.currentStrokeStyle_ = strokeStyle;
+    this.state_.strokeStyle = strokeStyle;
   }
 };
 
@@ -188,6 +249,21 @@ ol.replay.canvas.BatchGroup.prototype.draw = function(context, transform) {
     for (batchType in batches) {
       var batch = batches[batchType];
       batch.draw(context, transform);
+    }
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.replay.canvas.BatchGroup.prototype.finish = function() {
+  var zKey;
+  for (zKey in this.batchesByZIndex_) {
+    var batches = this.batchesByZIndex_[zKey];
+    var batchKey;
+    for (batchKey in batches) {
+      batches[batchKey].finish();
     }
   }
 };
