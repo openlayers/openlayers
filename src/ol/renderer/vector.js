@@ -65,9 +65,26 @@ ol.renderer.vector.renderPointGeometry_ =
  */
 ol.renderer.vector.renderPolygonGeometry_ =
     function(batchGroup, geometry, style) {
+  var batchType;
+  if (goog.isNull(style.fill)) {
+    if (goog.isNull(style.stroke)) {
+      return;
+    } else {
+      batchType = ol.replay.BatchType.STROKE_RING;
+    }
+  } else {
+    if (goog.isNull(style.stroke)) {
+      batchType = ol.replay.BatchType.FILL_RING;
+    } else {
+      batchType = ol.replay.BatchType.FILL_STROKE_RING;
+    }
+  }
   goog.asserts.assert(geometry instanceof ol.geom.Polygon);
   var polygonGeometry = /** @type {ol.geom.Polygon} */ (geometry);
   window.console.log({batchingPolygon: polygonGeometry}); // FIXME
+  var batch = batchGroup.getBatch(style.zIndex, batchType);
+  batch.setFillStrokeStyle(style.fill, style.stroke);
+  batch.drawPolygonGeometry(polygonGeometry);
 };
 
 
