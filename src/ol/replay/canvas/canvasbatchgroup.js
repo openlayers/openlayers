@@ -6,7 +6,6 @@ goog.provide('ol.replay.canvas.BatchGroup');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('ol.replay');
 goog.require('ol.replay.IBatch');
@@ -218,7 +217,9 @@ ol.replay.canvas.BatchGroup.prototype.getBatch = function(zIndex, batchType) {
 /**
  * @inheritDoc
  */
-ol.replay.canvas.BatchGroup.prototype.isEmpty = goog.functions.FALSE; // FIXME
+ol.replay.canvas.BatchGroup.prototype.isEmpty = function() {
+  return goog.object.isEmpty(this.batchesByZIndex_);
+};
 
 
 /**

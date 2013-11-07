@@ -136,6 +136,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
     var style = styleFunction(feature);
     ol.renderer.vector.renderFeature(batchGroup, feature, style);
   }, this);
+  batchGroup.finish();
 
   this.renderedResolution_ = frameState.view2DState.resolution;
   this.renderedRevision_ = vectorSource.getRevision();
