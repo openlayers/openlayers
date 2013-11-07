@@ -1,6 +1,7 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
 goog.require('goog.vec.Mat4');
+goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.vector');
@@ -104,6 +105,11 @@ ol.renderer.canvas.VectorLayer.prototype.getVectorLayer = function() {
  */
 ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
     function(frameState, layerState) {
+
+  if (frameState.viewHints[ol.ViewHint.ANIMATING] ||
+      frameState.viewHints[ol.ViewHint.INTERACTING]) {
+    return;
+  }
 
   var vectorLayer = this.getVectorLayer();
   var vectorSource = vectorLayer.getVectorSource();
