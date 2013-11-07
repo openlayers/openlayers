@@ -15,9 +15,9 @@ goog.require('goog.events.EventType');
  * @enum {string}
  */
 ol.geom.GeometryType = {
-  POINT: 'point',
-  LINE_STRING: 'line_string',
-  POLYGON: 'polygon'
+  POINT: 'Point',
+  LINE_STRING: 'LineString',
+  POLYGON: 'Polygon'
 };
 
 
