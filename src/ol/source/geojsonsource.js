@@ -27,12 +27,11 @@ ol.source.GeoJSON = function(opt_options) {
     projection: projection
   });
 
-  var addFeature = goog.bind(this.addFeature, this);
   if (goog.isDef(options.geoJSON)) {
-    ol.reader.GeoJSON.readObject(options.geoJSON, addFeature);
+    ol.reader.GeoJSON.readObject(options.geoJSON, this.addFeature, this);
   }
   if (goog.isDef(options.string)) {
-    ol.reader.GeoJSON.readString(options.string, addFeature);
+    ol.reader.GeoJSON.readString(options.string, this.addFeature, this);
   }
 
 };
