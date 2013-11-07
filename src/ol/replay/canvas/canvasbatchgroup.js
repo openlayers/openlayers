@@ -11,6 +11,7 @@ goog.require('goog.object');
 goog.require('ol.replay');
 goog.require('ol.replay.IBatch');
 goog.require('ol.replay.IBatchGroup');
+goog.require('ol.style.stroke');
 
 
 /**
@@ -53,6 +54,12 @@ ol.replay.canvas.Batch = function() {
    * @type {Array.<number>}
    */
   this.pixelCoordinates_ = [];
+
+  /**
+   * @private
+   * @type {?ol.style.Stroke}
+   */
+  this.currentStrokeStyle_ = null;
 
 };
 
@@ -138,10 +145,14 @@ ol.replay.canvas.Batch.prototype.drawLineStringGeometry =
  * @inheritDoc
  */
 ol.replay.canvas.Batch.prototype.setStrokeStyle = function(strokeStyle) {
-  this.instructions_.push({
-    type: ol.replay.canvas.InstructionType.SET_STROKE_STYLE,
-    argument: strokeStyle
-  });
+  if (goog.isNull(this.currentStrokeStyle_) ||
+      !ol.style.stroke.equals(this.currentStrokeStyle_, strokeStyle)) {
+    this.instructions_.push({
+      type: ol.replay.canvas.InstructionType.SET_STROKE_STYLE,
+      argument: strokeStyle
+    });
+    this.currentStrokeStyle_ = strokeStyle;
+  }
 };
 
 
