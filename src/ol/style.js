@@ -1,6 +1,7 @@
 goog.provide('ol.style.DefaultStyleFunction');
 goog.provide('ol.style.Style');
 goog.provide('ol.style.StyleFunction');
+goog.provide('ol.style.stroke');
 
 goog.require('goog.functions');
 
@@ -26,6 +27,18 @@ ol.style.Image;
  *            width: number}}
  */
 ol.style.Stroke;
+
+
+/**
+ * @param {ol.style.Stroke} strokeStyle1 Stroke style 1.
+ * @param {ol.style.Stroke} strokeStyle2 Stroke style 2.
+ * @return {boolean} Equals.
+ */
+ol.style.stroke.equals = function(strokeStyle1, strokeStyle2) {
+  return strokeStyle1 === strokeStyle2 || (
+      strokeStyle1.color == strokeStyle2.color &&
+      strokeStyle1.width == strokeStyle2.width);
+};
 
 
 /**
