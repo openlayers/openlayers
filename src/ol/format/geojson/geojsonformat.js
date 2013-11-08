@@ -7,6 +7,7 @@ goog.provide('ol.format.GeoJSON');
 goog.require('goog.asserts');
 goog.require('goog.json');
 goog.require('ol.Feature');
+goog.require('ol.format.IReader');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPolygon');
@@ -17,6 +18,7 @@ goog.require('ol.geom.Polygon');
 
 /**
  * @constructor
+ * @implements {ol.format.IReader}
  */
 ol.format.GeoJSON = function() {
 };
@@ -124,30 +126,21 @@ ol.format.GeoJSON.readFeatureCollection_ = function(object, callback, opt_obj) {
 
 
 /**
- * @param {GeoJSONObject} object Object.
- * @param {function(this: S, ol.Feature): T} callback Callback.
- * @param {S=} opt_obj Scope.
- * @return {T} Callback result.
- * @template S,T
+ * @inheritDoc
  */
-ol.format.GeoJSON.readObject = function(object, callback, opt_obj) {
-  var objectReader = ol.format.GeoJSON.OBJECT_READERS_[object.type];
+ol.format.GeoJSON.prototype.readObject = function(object, callback, opt_obj) {
+  var geoJSONObject = /** @type {GeoJSONObject} */ (object);
+  var objectReader = ol.format.GeoJSON.OBJECT_READERS_[geoJSONObject.type];
   goog.asserts.assert(goog.isDef(objectReader));
-  return objectReader(object, callback, opt_obj);
+  return objectReader(geoJSONObject, callback, opt_obj);
 };
 
 
 /**
- * @param {string} string String.
- * @param {function(ol.Feature): T} callback Callback.
- * @param {S=} opt_obj Scope.
- * @return {T} Callback result.
- * @template S,T
+ * @inheritDoc
  */
-ol.format.GeoJSON.readString = function(string, callback, opt_obj) {
-  var object = goog.json.parse(string);
-  return ol.format.GeoJSON.readObject(
-      /** @type {GeoJSONObject} */ (object), callback);
+ol.format.GeoJSON.prototype.readString = function(string, callback, opt_obj) {
+  return this.readObject(goog.json.parse(string), callback, opt_obj);
 };
 
 

@@ -44,7 +44,7 @@ var styleFunction = function(feature) {
 };
 
 var vectorSource = new ol.source.Vector();
-ol.format.GeoJSON.readObject({
+new ol.format.GeoJSON().readObject({
   'type': 'FeatureCollection',
   'features': [
     {

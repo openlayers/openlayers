@@ -47,10 +47,12 @@ describe('ol.format.GeoJSON', function() {
     'features': [pointGeoJSON, lineStringGeoJSON, polygonGeoJSON]
   };
 
+  var format = new ol.format.GeoJSON();
+
   describe('readObject', function() {
 
     it('can read a single point feature', function() {
-      var feature = ol.format.GeoJSON.readObject(pointGeoJSON, function(f) {
+      var feature = format.readObject(pointGeoJSON, function(f) {
         return f;
       });
       expect(feature).to.be.an(ol.Feature);
@@ -61,7 +63,7 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('can read a single line string feature', function() {
-      var feature = ol.format.GeoJSON.readObject(lineStringGeoJSON,
+      var feature = format.readObject(lineStringGeoJSON,
           function(f) {
             return f;
           });
@@ -75,7 +77,7 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('can read a single polygon feature', function() {
-      var feature = ol.format.GeoJSON.readObject(polygonGeoJSON, function(f) {
+      var feature = format.readObject(polygonGeoJSON, function(f) {
         return f;
       });
       expect(feature).to.be.an(ol.Feature);
@@ -90,7 +92,7 @@ describe('ol.format.GeoJSON', function() {
 
     it('can read a feature collection', function() {
       var features = [];
-      ol.format.GeoJSON.readObject(featureCollectionGeoJSON, function(f) {
+      format.readObject(featureCollectionGeoJSON, function(f) {
         features.push(f);
       });
       expect(features).to.have.length(3);
