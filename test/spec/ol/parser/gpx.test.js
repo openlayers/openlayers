@@ -5,7 +5,7 @@ describe('ol.parser.gpx', function() {
   var parser = new ol.parser.GPX();
 
   describe('Test GPX parser', function() {
-    it('Read works correctly', function() {
+    it('Read works correctly', function(done) {
       var url = 'spec/ol/parser/gpx/data.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
@@ -35,6 +35,7 @@ describe('ol.parser.gpx', function() {
               [-0.166259525, 51.3576354272]]);
         expect(attributes['name']).to.eql('Track');
         expect(attributes['type']).to.eql('Track');
+        done();
       });
     });
     it('Write works correctly for points', function() {
