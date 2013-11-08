@@ -2,22 +2,23 @@
 (function(global) {
 
   function afterLoad(type, path, next) {
-    goog.net.XhrIo.send(path, function(event) {
-      var xhr = event.target;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', path, true);
+    xhr.onload = function() {
       var data;
-      if (xhr.isSuccess()) {
+      if (xhr.status == 200) {
         if (type === 'xml') {
-          data = xhr.getResponseXml();
-        } else if (type === 'json') {
-          data = xhr.getResponseJson();
+          data = xhr.responseXML;
         } else {
-          data = xhr.getResponseText();
+          data = xhr.responseText;
         }
       } else {
-        throw new Error(path + ' loading failed: ' + xhr.getStatus());
+        throw new Error(path + ' loading failed: ' + xhr.status);
       }
       next(data);
-    });
+      xhr = null;
+    };
+    xhr.send();
   }
 
 
