@@ -176,6 +176,20 @@ ol.Feature.prototype.setGeometry = function(geometry) {
 
 
 /**
+ * Changes the renderIntent for this feature.
+ * @param {string} renderIntent Render intent.
+ */
+ol.Feature.prototype.setRenderIntent = function(renderIntent) {
+  this.renderIntent = renderIntent;
+  var geometry = this.getGeometry();
+  if (!goog.isNull(geometry)) {
+    this.dispatchEvent(new ol.FeatureEvent(
+        ol.FeatureEventType.INTENTCHANGE, this, geometry.getBounds()));
+  }
+};
+
+
+/**
  * Set the symbolizers to be used for this feature.
  * @param {Array.<ol.style.Symbolizer>} symbolizers Symbolizers for this
  *     feature. If set, these take precedence over layer style.
@@ -196,7 +210,8 @@ ol.Feature.DEFAULT_GEOMETRY = 'geometry';
  * @enum {string}
  */
 ol.FeatureEventType = {
-  CHANGE: 'featurechange'
+  CHANGE: 'featurechange',
+  INTENTCHANGE: 'featureintentchange'
 };
 
 

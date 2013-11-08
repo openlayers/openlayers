@@ -119,10 +119,8 @@ ol.interaction.Select.prototype.select =
     }
 
     var selectedFeatures, unselectedFeatures;
-    if (goog.isFunction(layer.setRenderIntent)) {
-      selectedFeatures = [];
-      unselectedFeatures = [];
-    }
+    selectedFeatures = [];
+    unselectedFeatures = [];
     var features = featuresByLayer[i];
     var numFeatures = features.length;
     var featuresToAdd = [];
@@ -131,9 +129,7 @@ ol.interaction.Select.prototype.select =
     var oldFeatureMap = featureMap;
     if (clear) {
       for (var f in featureMap) {
-        if (goog.isDef(unselectedFeatures)) {
-          unselectedFeatures.push(layer.getFeatureWithUid(f));
-        }
+        unselectedFeatures.push(layer.getFeatureWithUid(f));
         featuresToRemove.push(featureMap[f]);
       }
       featureMap = {};
@@ -145,9 +141,7 @@ ol.interaction.Select.prototype.select =
       var clone = featureMap[featureId];
       if (clone) {
         // TODO: make toggle configurable
-        if (goog.isDef(unselectedFeatures)) {
-          unselectedFeatures.push(feature);
-        }
+        unselectedFeatures.push(feature);
         delete featureMap[featureId];
         featuresToRemove.push(clone);
       } else if (!(featureId in oldFeatureMap)) {
@@ -157,17 +151,17 @@ ol.interaction.Select.prototype.select =
         clone.setSymbolizers(feature.getSymbolizers());
         clone.renderIntent = ol.layer.VectorLayerRenderIntent.SELECTED;
         featureMap[featureId] = clone;
-        if (goog.isDef(selectedFeatures)) {
-          selectedFeatures.push(feature);
-        }
+        selectedFeatures.push(feature);
         featuresToAdd.push(clone);
       }
     }
-    if (goog.isFunction(layer.setRenderIntent)) {
-      layer.setRenderIntent(ol.layer.VectorLayerRenderIntent.HIDDEN,
-          selectedFeatures);
-      layer.setRenderIntent(ol.layer.VectorLayerRenderIntent.DEFAULT,
-          unselectedFeatures);
+    for (var j = selectedFeatures.length - 1; j >= 0; --j) {
+      selectedFeatures[j].setRenderIntent(
+          ol.layer.VectorLayerRenderIntent.HIDDEN);
+    }
+    for (var j = unselectedFeatures.length - 1; j >= 0; --j) {
+      unselectedFeatures[j].setRenderIntent(
+          ol.layer.VectorLayerRenderIntent.DEFAULT);
     }
     selectionLayer.removeFeatures(featuresToRemove);
     selectionLayer.addFeatures(featuresToAdd);

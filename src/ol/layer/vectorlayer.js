@@ -188,6 +188,8 @@ ol.layer.Vector.prototype.addFeatures = function(features) {
     }
     goog.events.listen(feature, ol.FeatureEventType.CHANGE,
         this.handleFeatureChange_, false, this);
+    goog.events.listen(feature, ol.FeatureEventType.INTENTCHANGE,
+        this.handleIntentChange_, false, this);
   }
   this.dispatchEvent(new ol.layer.VectorEvent(ol.layer.VectorEventType.ADD,
       features, [extent]));
@@ -214,6 +216,20 @@ ol.layer.Vector.prototype.handleFeatureChange_ = function(evt) {
   }
   this.dispatchEvent(new ol.layer.VectorEvent(ol.layer.VectorEventType.CHANGE,
       [feature], extents));
+};
+
+
+/**
+ * Listener for render intent change events of features.
+ * @param {ol.FeatureEvent} evt The feature intent change event.
+ * @private
+ */
+ol.layer.Vector.prototype.handleIntentChange_ = function(evt) {
+  goog.asserts.assertInstanceof(evt.target, ol.Feature);
+  var feature = /** @type {ol.Feature} */ (evt.target);
+  this.dispatchEvent(new ol.layer.VectorEvent(
+      ol.layer.VectorEventType.INTENTCHANGE, [feature],
+      [feature.getGeometry().getBounds()]));
 };
 
 
@@ -424,31 +440,6 @@ ol.layer.Vector.prototype.removeFeatures = function(features) {
 
 
 /**
- * Changes the renderIntent for an array of features.
- * @param {string} renderIntent Render intent.
- * @param {Array.<ol.Feature>=} opt_features Features to change the renderIntent
- *     for. If not provided, all features will be changed.
- */
-ol.layer.Vector.prototype.setRenderIntent =
-    function(renderIntent, opt_features) {
-  var features = goog.isDef(opt_features) ? opt_features :
-      goog.object.getValues(this.featureCache_.getFeaturesObject());
-  var extent = ol.extent.createEmpty(),
-      feature, geometry;
-  for (var i = features.length - 1; i >= 0; --i) {
-    feature = features[i];
-    feature.renderIntent = renderIntent;
-    geometry = feature.getGeometry();
-    if (!goog.isNull(geometry)) {
-      ol.extent.extend(extent, geometry.getBounds());
-    }
-  }
-  this.dispatchEvent(new ol.layer.VectorEvent(
-      ol.layer.VectorEventType.INTENTCHANGE, features, [extent]));
-};
-
-
-/**
  * @param {boolean} temp Whether this layer is temporary.
  */
 ol.layer.Vector.prototype.setTemporary = function(temp) {
@@ -511,6 +502,6 @@ goog.inherits(ol.layer.VectorEvent, goog.events.Event);
 ol.layer.VectorEventType = {
   ADD: 'featureadd',
   CHANGE: 'featurechange',
-  REMOVE: 'featureremove',
-  INTENTCHANGE: 'intentchange'
+  INTENTCHANGE: 'featureintentchange',
+  REMOVE: 'featureremove'
 };
