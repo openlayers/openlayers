@@ -411,9 +411,11 @@ ol.replay.canvas.BatchGroup = function() {
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
+ * @param {ol.Extent} extent Extent.
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  */
-ol.replay.canvas.BatchGroup.prototype.draw = function(context, transform) {
+ol.replay.canvas.BatchGroup.prototype.draw =
+    function(context, extent, transform) {
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.batchesByZIndex_), Number);
   goog.array.sort(zs);
@@ -423,7 +425,9 @@ ol.replay.canvas.BatchGroup.prototype.draw = function(context, transform) {
     var batchType;
     for (batchType in batches) {
       var batch = batches[batchType];
-      batch.draw(context, transform);
+      if (ol.extent.intersects(extent, batch.getExtent())) {
+        batch.draw(context, transform);
+      }
     }
   }
 };

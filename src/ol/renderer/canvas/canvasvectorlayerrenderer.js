@@ -87,7 +87,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
       0);
 
   context.globalAlpha = layerState.opacity;
-  batchGroup.draw(context, transform);
+  batchGroup.draw(context, frameState.extent, transform);
 
 };
 
