@@ -1,5 +1,4 @@
 // FIXME add MultiPoint
-// FIXME add MultiLineString
 // FIXME add MultiPolygon
 // FIXME add GeometryCollection
 // FIXME add Z and M support
@@ -17,7 +16,8 @@ goog.require('goog.events.EventType');
 ol.geom.GeometryType = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
-  POLYGON: 'Polygon'
+  POLYGON: 'Polygon',
+  MULTI_LINE_STRING: 'MultiLineString'
 };
 
 
