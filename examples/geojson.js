@@ -11,6 +11,16 @@ goog.require('ol.style.DefaultStyleFunction');
 
 var styleFunction = function(feature) {
   switch (feature.getGeometry().getType()) {
+    case ol.geom.GeometryType.POLYGON:
+      return {
+        stroke: {
+          color: 'blue',
+          width: 3
+        },
+        fill: {
+          color: 'rgba(0, 0, 255, 0.1)'
+        }
+      };
     case ol.geom.GeometryType.MULTI_LINE_STRING:
       return {
         stroke: {
@@ -23,6 +33,9 @@ var styleFunction = function(feature) {
         stroke: {
           color: 'yellow',
           width: 1
+        },
+        fill: {
+          color: 'rgba(255, 255, 0, 0.1)'
         }
       };
     default:
