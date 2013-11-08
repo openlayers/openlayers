@@ -64,7 +64,7 @@ ol.replay.IBatchGroup.prototype.finish = function() {
 
 
 /**
- * @param {number} zIndex Z index.
+ * @param {number|undefined} zIndex Z index.
  * @param {ol.replay.BatchType} batchType Batch type.
  * @return {ol.replay.IBatch} Batch.
  */

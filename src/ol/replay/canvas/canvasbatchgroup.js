@@ -325,7 +325,7 @@ ol.replay.canvas.BatchGroup.prototype.finish = function() {
  * @inheritDoc
  */
 ol.replay.canvas.BatchGroup.prototype.getBatch = function(zIndex, batchType) {
-  var zIndexKey = zIndex.toString();
+  var zIndexKey = goog.isDef(zIndex) ? zIndex.toString() : '0';
   var batches = this.batchesByZIndex_[zIndexKey];
   if (!goog.isDef(batches)) {
     batches = {};
