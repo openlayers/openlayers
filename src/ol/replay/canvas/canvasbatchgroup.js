@@ -212,6 +212,33 @@ ol.replay.canvas.Batch.prototype.drawMultiLineStringGeometry =
 /**
  * @inheritDoc
  */
+ol.replay.canvas.Batch.prototype.drawMultiPolygonGeometry =
+    function(multiPolygonGeometry) {
+  goog.asserts.assert(!goog.isNull(this.state_));
+  var ringss = multiPolygonGeometry.getRingss();
+  var i, ii;
+  for (i = 0, ii = ringss.length; i < ii; ++i) {
+    var rings = ringss[i];
+    var j, jj;
+    for (j = 0, jj = rings.length; j < jj; ++j) {
+      this.beginPath_();
+      this.instructions_.push({
+        type: ol.replay.canvas.InstructionType.MOVE_TO_LINE_TO,
+        argument: this.appendCoordinates_(rings[j], true)
+      });
+      this.instructions_.push({
+        type: ol.replay.canvas.InstructionType.CLOSE_PATH
+      });
+    }
+  }
+  this.state_.fillPending = true;
+  this.state_.strokePending = true;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.replay.canvas.Batch.prototype.drawPolygonGeometry =
     function(polygonGeometry) {
   goog.asserts.assert(!goog.isNull(this.state_));

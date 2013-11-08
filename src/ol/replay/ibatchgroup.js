@@ -42,6 +42,14 @@ ol.replay.IBatch.prototype.drawMultiLineStringGeometry =
 
 
 /**
+ * @param {ol.geom.MultiPolygon} multiPolygonGeometry Multi polygon geometry.
+ */
+ol.replay.IBatch.prototype.drawMultiPolygonGeometry =
+    function(multiPolygonGeometry) {
+};
+
+
+/**
  * @param {ol.geom.Polygon} polygonGeometry Polygon geometry.
  */
 ol.replay.IBatch.prototype.drawPolygonGeometry = function(polygonGeometry) {
