@@ -2,25 +2,22 @@
 (function(global) {
 
   function afterLoad(type, path, next) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', path, true);
-    xhr.onload = function() {
+    var client = new XMLHttpRequest();
+    client.open('GET', path, true);
+    client.onload = function() {
       var data;
-      if (xhr.status == 200) {
-        if (type === 'xml') {
-          data = xhr.responseXML;
-        } else {
-          data = xhr.responseText;
-        }
+      if (type === 'xml') {
+        data = client.responseXML;
       } else {
-        throw new Error(path + ' loading failed: ' + xhr.status);
+        data = client.responseText;
+      }
+      if (!data) {
+        throw new Error(path + ' loading failed: ' + client.status);
       }
       next(data);
-      xhr = null;
     };
-    xhr.send();
+    client.send();
   }
-
 
   /**
    * @param {string} path Relative path to file (e.g. 'spec/ol/foo.json').
