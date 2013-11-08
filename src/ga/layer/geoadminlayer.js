@@ -88,7 +88,7 @@ ga.source.wmts = function(layer, options) {
     crossOrigin: 'anonymous',
     requestEncoding: 'REST',
     dimensions: {
-      'Time':  options.timestamps && options.timestamps[0]
+      'Time': options.timestamps && options.timestamps[0]
     }
   }));
 };

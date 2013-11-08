@@ -3,10 +3,10 @@ goog.provide('ga.Map');
 goog.require('goog.asserts');
 goog.require('goog.net.Jsonp');
 goog.require('ol.Map');
+goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.control.ScaleLine');
 goog.require('ol.proj.EPSG21781');
-goog.require('ol.RendererHint');
 goog.require('ol.source.State');
 
 
@@ -34,16 +34,16 @@ goog.require('ol.source.State');
  * @param {ol.MapOptions} options Map options.
  */
 ga.Map = function(options) {
-   
+
   this.layernames = options.layernames || ['ch.swisstopo.pixelkarte-farbe-pk25.noscale'];
-    
+
   var uri = new goog.Uri(
       '//api3.geo.admin.ch/rest/services/all/MapServer/layersconfig');
   var jsonp = new goog.net.Jsonp(uri, 'callback');
   jsonp.send({
     'lang': 'de'
   }, goog.bind(this.handleLayerConfigResponse, this));
-  
+
   var renderer = ol.RendererHint.CANVAS;
   if (goog.isDefAndNotNull(options.renderer)) {
     renderer = options.renderer;
@@ -70,36 +70,24 @@ ga.Map = function(options) {
       view.setRotation(options.view.getRotation());
     }
     delete options.view;
-  } 
+  }
   options.view = view;
 
-
   goog.base(this, options);
-  
-  
-  
-  
 
   this.addControl(new ol.control.ScaleLine());
-  
-  
 };
 goog.inherits(ga.Map, ol.Map);
 
 ga.Map.prototype.handleLayerConfigResponse =
-    function(response) { 
-        if (response.statusCode != 200 || 
+    function(response) {
+        if (response.statusCode != 200 ||
             (response.layers && response.layers.length > 0))
-            
-            ga.layer.GeoadminLayerConfig = response.layers;
-        
+
+       ga.layer.GeoadminLayerConfig = response.layers;
+
        for (var name in this.layernames) {
-           
-       
-          
-                       
             var layer = ga.layer.create(this.layernames[name]);
             this.addLayer(layer);
        }
-    
  };
