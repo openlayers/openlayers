@@ -325,8 +325,8 @@ ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
   // Fix IE10 on windows Surface : When you tap the tablet, it triggers
   // multiple pointermove events between pointerdown and pointerup with
   // the exact same coordinates of the pointerdown event. To avoid a
-  // 'false' touchmove event to be dispatched , we test if the pointermove
-  // event has different coordinates.
+  // 'false' touchmove event to be dispatched , we test if the pointer
+  // effectively moved.
   if (browserEvent.clientX != this.down_.clientX ||
       browserEvent.clientY != this.down_.clientY) {
     this.dragged_ = true;
@@ -347,8 +347,10 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
   this.dispatchEvent(newEvent);
   goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
 
-  // We emulate click event only on mouse left button action,
-  // on touch devices isMouseActionButton always returns true.
+  // We emulate click event on left mouse button click, touch contact, and pen
+  // contact. isMouseActionButton returns true in these cases (evt.button is set
+  // to 0).
+  // See http://www.w3.org/TR/pointerevents/#button-states .
   if (!this.dragged_ && browserEvent.isMouseActionButton()) {
     goog.asserts.assert(!goog.isNull(this.down_));
     this.emulateClick_(this.down_);
