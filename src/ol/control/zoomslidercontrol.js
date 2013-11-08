@@ -83,10 +83,9 @@ ol.control.ZoomSlider = function(opt_options) {
 
   this.dragger_ = this.createDraggable_(element);
 
-  // FIXME currently only a do nothing function is bound.
   goog.events.listen(element, [
     goog.events.EventType.TOUCHEND,
-    goog.events.EventType.CLICK
+    goog.events.EventType.MOUSEUP
   ], this.handleContainerClick_, false, this);
 
   goog.base(this, {
@@ -178,7 +177,20 @@ ol.control.ZoomSlider.prototype.handleMapPostrender = function(mapEvent) {
  * @private
  */
 ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
-  // TODO implement proper resolution calculation according to browserEvent
+  var map = this.getMap();
+  var view = map.getView().getView2D();
+  var resolution;
+  var amountDragged = this.amountDragged_(browserEvent.offsetX,
+      browserEvent.offsetY);
+  resolution = this.resolutionForAmount_(amountDragged);
+  goog.asserts.assert(goog.isDef(resolution));
+  map.beforeRender(ol.animation.zoom({
+    resolution: resolution,
+    duration: ol.control.ZOOMSLIDER_ANIMATION_DURATION,
+    easing: ol.easing.easeOut
+  }));
+  resolution = view.constrainResolution(resolution);
+  view.setResolution(resolution);
 };
 
 
@@ -207,17 +219,18 @@ ol.control.ZoomSlider.prototype.positionThumbForResolution_ = function(res) {
  * Calculates the amount the thumb has been dragged to allow for calculation
  * of the corresponding resolution.
  *
- * @param {goog.fx.DragDropEvent} e The dragdropevent.
+ * @param {number} x A distance in pixel relative to the left of the slider
+ * @param {number} y A distance in pixel relative to the top of the slider
  * @return {number} The amount the thumb has been dragged.
  * @private
  */
-ol.control.ZoomSlider.prototype.amountDragged_ = function(e) {
+ol.control.ZoomSlider.prototype.amountDragged_ = function(x, y) {
   var draggerLimits = this.dragger_.limits,
       amount = 0;
   if (this.direction_ === ol.control.ZoomSlider.direction.HORIZONTAL) {
-    amount = (e.left - draggerLimits.left) / draggerLimits.width;
+    amount = (x - draggerLimits.left) / draggerLimits.width;
   } else {
-    amount = (e.top - draggerLimits.top) / draggerLimits.height;
+    amount = (y - draggerLimits.top) / draggerLimits.height;
   }
   return amount;
 };
@@ -268,7 +281,7 @@ ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
   var view = map.getView().getView2D();
   var resolution;
   if (e.type === goog.fx.Dragger.EventType.DRAG) {
-    var amountDragged = this.amountDragged_(e);
+    var amountDragged = this.amountDragged_(e.left, e.top);
     resolution = this.resolutionForAmount_(amountDragged);
     if (resolution !== this.currentResolution_) {
       this.currentResolution_ = resolution;
@@ -283,6 +296,9 @@ ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
     }));
     resolution = view.constrainResolution(this.currentResolution_);
     view.setResolution(resolution);
+    // Stop mouseup event
+    e.browserEvent.stopPropagation();
+    e.browserEvent.preventDefault();
   }
 };
 
