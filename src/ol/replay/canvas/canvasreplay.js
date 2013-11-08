@@ -28,34 +28,25 @@ ol.replay.canvas.Instruction = {
 };
 
 
-/**
- * @typedef {{beginPath: boolean,
- *            fillPending: boolean,
- *            fillStyle: ?ol.style.Fill,
- *            strokePending: boolean,
- *            strokeStyle: ?ol.style.Stroke}}
- */
-ol.replay.canvas.State;
-
-
 
 /**
  * @constructor
  * @implements {ol.replay.IBatch}
+ * @protected
  */
 ol.replay.canvas.Batch = function() {
 
   /**
-   * @private
+   * @protected
    * @type {Array}
    */
-  this.instructions_ = [];
+  this.instructions = [];
 
   /**
-   * @private
+   * @protected
    * @type {Array.<number>}
    */
-  this.coordinates_ = [];
+  this.coordinates = [];
 
   /**
    * @private
@@ -63,53 +54,28 @@ ol.replay.canvas.Batch = function() {
    */
   this.pixelCoordinates_ = [];
 
-  /**
-   * @private
-   * @type {?ol.replay.canvas.State}
-   */
-  this.state_ = {
-    beginPath: true,
-    fillPending: false,
-    fillStyle: null,
-    strokePending: false,
-    strokeStyle: null
-  };
-
 };
 
 
 /**
  * @param {Array.<Array.<number>>} coordinates Coordinates.
  * @param {boolean} close Close.
- * @private
+ * @protected
  * @return {number} End.
  */
-ol.replay.canvas.Batch.prototype.appendCoordinates_ =
+ol.replay.canvas.Batch.prototype.appendCoordinates =
     function(coordinates, close) {
-  goog.asserts.assert(!goog.isNull(this.state_));
-  var end = this.coordinates_.length;
+  var end = this.coordinates.length;
   var i, ii;
   for (i = 0, ii = coordinates.length; i < ii; ++i) {
-    this.coordinates_[end++] = coordinates[i][0];
-    this.coordinates_[end++] = coordinates[i][1];
+    this.coordinates[end++] = coordinates[i][0];
+    this.coordinates[end++] = coordinates[i][1];
   }
   if (close) {
-    this.coordinates_[end++] = coordinates[0][0];
-    this.coordinates_[end++] = coordinates[0][1];
+    this.coordinates[end++] = coordinates[0][0];
+    this.coordinates[end++] = coordinates[0][1];
   }
   return end;
-};
-
-
-/**
- * @private
- */
-ol.replay.canvas.Batch.prototype.beginPath_ = function() {
-  goog.asserts.assert(!goog.isNull(this.state_));
-  if (this.state_.beginPath) {
-    this.instructions_.push([ol.replay.canvas.Instruction.BEGIN_PATH]);
-    this.state_.beginPath = false;
-  }
 };
 
 
@@ -118,11 +84,10 @@ ol.replay.canvas.Batch.prototype.beginPath_ = function() {
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  */
 ol.replay.canvas.Batch.prototype.draw = function(context, transform) {
-  goog.asserts.assert(goog.isNull(this.state_));
   var pixelCoordinates = ol.replay.transformCoordinates(
-      this.coordinates_, transform, this.pixelCoordinates_);
+      this.coordinates, transform, this.pixelCoordinates_);
   this.pixelCoordinates_ = pixelCoordinates;  // FIXME ?
-  var instructions = this.instructions_;
+  var instructions = this.instructions;
   var i = 0;
   var j, jj;
   for (j = 0, jj = instructions.length; j < jj; ++j) {
@@ -161,104 +126,107 @@ ol.replay.canvas.Batch.prototype.draw = function(context, transform) {
 /**
  * @inheritDoc
  */
-ol.replay.canvas.Batch.prototype.drawLineStringGeometry =
-    function(lineStringGeometry) {
-  goog.asserts.assert(!goog.isNull(this.state_));
-  this.beginPath_();
-  var end = this.appendCoordinates_(lineStringGeometry.getCoordinates(), false);
-  this.instructions_.push([ol.replay.canvas.Instruction.MOVE_TO_LINE_TO, end]);
-  this.state_.strokePending = true;
-};
+ol.replay.canvas.Batch.prototype.drawLineStringGeometry = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
 ol.replay.canvas.Batch.prototype.drawMultiLineStringGeometry =
-    function(multiLineStringGeometry) {
-  goog.asserts.assert(!goog.isNull(this.state_));
-  var coordinatess = multiLineStringGeometry.getCoordinatess();
-  var i, ii;
-  for (i = 0, ii = coordinatess.length; i < ii; ++i) {
-    this.beginPath_();
-    var end = this.appendCoordinates_(coordinatess[i], false);
-    this.instructions_.push(
-        [ol.replay.canvas.Instruction.MOVE_TO_LINE_TO, end]);
-  }
-  this.state_.strokePending = true;
-};
+    goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.replay.canvas.Batch.prototype.drawMultiPolygonGeometry =
-    function(multiPolygonGeometry) {
-  goog.asserts.assert(!goog.isNull(this.state_));
-  var ringss = multiPolygonGeometry.getRingss();
-  var i, ii;
-  for (i = 0, ii = ringss.length; i < ii; ++i) {
-    var rings = ringss[i];
-    var j, jj;
-    for (j = 0, jj = rings.length; j < jj; ++j) {
-      this.beginPath_();
-      var end = this.appendCoordinates_(rings[j], true);
-      this.instructions_.push(
-          [ol.replay.canvas.Instruction.MOVE_TO_LINE_TO, end],
-          [ol.replay.canvas.Instruction.CLOSE_PATH]);
-    }
-  }
-  this.state_.fillPending = true;
-  this.state_.strokePending = true;
-};
+ol.replay.canvas.Batch.prototype.drawPolygonGeometry = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.replay.canvas.Batch.prototype.drawPolygonGeometry =
-    function(polygonGeometry) {
-  goog.asserts.assert(!goog.isNull(this.state_));
-  var rings = polygonGeometry.getRings();
-  var i, ii;
-  for (i = 0, ii = rings.length; i < ii; ++i) {
-    this.beginPath_();
-    var end = this.appendCoordinates_(rings[i], true);
-    this.instructions_.push(
-        [ol.replay.canvas.Instruction.MOVE_TO_LINE_TO, end],
-        [ol.replay.canvas.Instruction.CLOSE_PATH]);
-  }
-  this.state_.fillPending = true;
-  this.state_.strokePending = true;
-};
+ol.replay.canvas.Batch.prototype.drawMultiPolygonGeometry = goog.abstractMethod;
 
 
 /**
  * FIXME empty description for jsdoc
  */
-ol.replay.canvas.Batch.prototype.finish = function() {
-  goog.asserts.assert(!goog.isNull(this.state_));
-  this.flush_(true);
-  this.state_ = null;
+ol.replay.canvas.Batch.prototype.finish = goog.nullFunction;
+
+
+/**
+ * @inheritDoc
+ */
+ol.replay.canvas.Batch.prototype.setFillStrokeStyle = goog.abstractMethod;
+
+
+
+/**
+ * @constructor
+ * @extends {ol.replay.canvas.Batch}
+ * @protected
+ */
+ol.replay.canvas.LineStringBatch = function() {
+
+  goog.base(this);
+
+  /**
+   * @private
+   * @type {{currentStrokeStyle: ?ol.style.Stroke,
+   *         lastDraw: number,
+   *         strokeStyle: ?ol.style.Stroke}|null}
+   */
+  this.state_ = {
+    currentStrokeStyle: null,
+    lastDraw: 0,
+    strokeStyle: null
+  };
+
+};
+goog.inherits(ol.replay.canvas.LineStringBatch, ol.replay.canvas.Batch);
+
+
+/**
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates.
+ * @private
+ */
+ol.replay.canvas.LineStringBatch.prototype.drawCoordinates_ =
+    function(coordinates) {
+  var state = this.state_;
+  if (!ol.style.stroke.equals(state.currentStrokeStyle, state.strokeStyle)) {
+    if (state.lastDraw != this.coordinates.length) {
+      this.instructions.push([ol.replay.canvas.Instruction.STROKE]);
+    }
+    this.instructions.push(
+        [ol.replay.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle],
+        [ol.replay.canvas.Instruction.BEGIN_PATH]);
+    state.currentStrokeStyle = state.strokeStyle;
+  }
+  var end = this.appendCoordinates(coordinates, false);
+  this.instructions.push([ol.replay.canvas.Instruction.MOVE_TO_LINE_TO, end]);
 };
 
 
 /**
- * @param {boolean} finish Finish.
- * @private
+ * @inheritDoc
  */
-ol.replay.canvas.Batch.prototype.flush_ = function(finish) {
+ol.replay.canvas.LineStringBatch.prototype.drawLineStringGeometry =
+    function(lineStringGeometry) {
   goog.asserts.assert(!goog.isNull(this.state_));
-  if (this.state_.fillPending || this.state_.strokePending) {
-    if (this.state_.fillPending) {
-      this.instructions_.push([ol.replay.canvas.Instruction.FILL]);
-      this.state_.fillPending = false;
-    }
-    if (this.state_.strokePending) {
-      this.instructions_.push([ol.replay.canvas.Instruction.STROKE]);
-      this.state_.strokePending = false;
-    }
-    this.state_.beginPath = true;
+  this.drawCoordinates_(lineStringGeometry.getCoordinates());
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.replay.canvas.LineStringBatch.prototype.drawMultiLineStringGeometry =
+    function(multiLineStringGeometry) {
+  goog.asserts.assert(!goog.isNull(this.state_));
+  var coordinatess = multiLineStringGeometry.getCoordinatess();
+  var i, ii;
+  for (i = 0, ii = coordinatess.length; i < ii; ++i) {
+    this.drawCoordinates_(coordinatess[i]);
   }
 };
 
@@ -266,21 +234,144 @@ ol.replay.canvas.Batch.prototype.flush_ = function(finish) {
 /**
  * @inheritDoc
  */
-ol.replay.canvas.Batch.prototype.setFillStrokeStyle =
+ol.replay.canvas.LineStringBatch.prototype.finish = function() {
+  var state = this.state_;
+  goog.asserts.assert(!goog.isNull(state));
+  if (state.lastDraw != this.coordinates.length) {
+    this.instructions.push([ol.replay.canvas.Instruction.STROKE]);
+  }
+  this.state_ = null;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.replay.canvas.LineStringBatch.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
   goog.asserts.assert(!goog.isNull(this.state_));
-  // FIXME should only change styles before draws
-  if (!ol.style.fill.equals(this.state_.fillStyle, fillStyle)) {
-    this.flush_(false);
-    this.instructions_.push(
-        [ol.replay.canvas.Instruction.SET_FILL_STYLE, fillStyle]);
-    this.state_.fillStyle = fillStyle;
+  goog.asserts.assert(goog.isNull(fillStyle));
+  goog.asserts.assert(!goog.isNull(strokeStyle));
+  this.state_.strokeStyle = strokeStyle;
+};
+
+
+
+/**
+ * @constructor
+ * @extends {ol.replay.canvas.Batch}
+ * @protected
+ */
+ol.replay.canvas.PolygonBatch = function() {
+
+  goog.base(this);
+
+  /**
+   * @private
+   * @type {{currentFillStyle: ?ol.style.Fill,
+   *         currentStrokeStyle: ?ol.style.Stroke,
+   *         fillStyle: ?ol.style.Fill,
+   *         strokeStyle: ?ol.style.Stroke}|null}
+   */
+  this.state_ = {
+    currentFillStyle: null,
+    currentStrokeStyle: null,
+    fillStyle: null,
+    strokeStyle: null
+  };
+
+};
+goog.inherits(ol.replay.canvas.PolygonBatch, ol.replay.canvas.Batch);
+
+
+/**
+ * @param {Array.<Array.<ol.Coordinate>>} rings Rings.
+ * @private
+ */
+ol.replay.canvas.PolygonBatch.prototype.drawRings_ = function(rings) {
+  var state = this.state_;
+  this.instructions.push([ol.replay.canvas.Instruction.BEGIN_PATH]);
+  var i, ii;
+  for (i = 0, ii = rings.length; i < ii; ++i) {
+    var end = this.appendCoordinates(rings[i], true);
+    this.instructions.push(
+        [ol.replay.canvas.Instruction.MOVE_TO_LINE_TO, end],
+        [ol.replay.canvas.Instruction.CLOSE_PATH]);
   }
-  if (!ol.style.stroke.equals(this.state_.strokeStyle, strokeStyle)) {
-    this.flush_(false);
-    this.instructions_.push(
-        [ol.replay.canvas.Instruction.SET_STROKE_STYLE, strokeStyle]);
-    this.state_.strokeStyle = strokeStyle;
+  // FIXME is it quicker to fill and stroke each polygon individually,
+  // FIXME or all polygons together?
+  if (!goog.isNull(state.fillStyle)) {
+    this.instructions.push([ol.replay.canvas.Instruction.FILL]);
+  }
+  if (!goog.isNull(state.strokeStyle)) {
+    this.instructions.push([ol.replay.canvas.Instruction.STROKE]);
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.replay.canvas.PolygonBatch.prototype.drawPolygonGeometry =
+    function(polygonGeometry) {
+  goog.asserts.assert(!goog.isNull(this.state_));
+  this.setFillStrokeStyles_();
+  this.drawRings_(polygonGeometry.getRings());
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.replay.canvas.PolygonBatch.prototype.drawMultiPolygonGeometry =
+    function(multiPolygonGeometry) {
+  goog.asserts.assert(!goog.isNull(this.state_));
+  this.setFillStrokeStyles_();
+  var ringss = multiPolygonGeometry.getRingss();
+  var i, ii;
+  for (i = 0, ii = ringss.length; i < ii; ++i) {
+    this.drawRings_(ringss[i]);
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.replay.canvas.PolygonBatch.prototype.finish = function() {
+  goog.asserts.assert(!goog.isNull(this.state_));
+  this.state_ = null;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.replay.canvas.PolygonBatch.prototype.setFillStrokeStyle =
+    function(fillStyle, strokeStyle) {
+  goog.asserts.assert(!goog.isNull(this.state_));
+  goog.asserts.assert(!goog.isNull(fillStyle) || !goog.isNull(strokeStyle));
+  this.state_.fillStyle = fillStyle;
+  this.state_.strokeStyle = strokeStyle;
+};
+
+
+/**
+ * @private
+ */
+ol.replay.canvas.PolygonBatch.prototype.setFillStrokeStyles_ = function() {
+  var state = this.state_;
+  if (!goog.isNull(state.fillStyle) &&
+      !ol.style.fill.equals(state.currentFillStyle, state.fillStyle)) {
+    this.instructions.push(
+        [ol.replay.canvas.Instruction.SET_FILL_STYLE, state.fillStyle]);
+    state.currentFillStyle = state.fillStyle;
+  }
+  if (!goog.isNull(state.strokeStyle) &&
+      !ol.style.stroke.equals(state.currentStrokeStyle, state.strokeStyle)) {
+    this.instructions.push(
+        [ol.replay.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle]);
+    state.currentStrokeStyle = state.strokeStyle;
   }
 };
 
@@ -372,8 +463,6 @@ ol.replay.canvas.BatchGroup.prototype.isEmpty = function() {
  * @type {Object.<ol.replay.BatchType, function(new: ol.replay.canvas.Batch)>}
  */
 ol.replay.canvas.BATCH_CONSTRUCTORS_ = {
-  'fillRing': ol.replay.canvas.Batch,
-  'fillStrokeRing': ol.replay.canvas.Batch,
-  'strokeLine': ol.replay.canvas.Batch,
-  'strokeRing': ol.replay.canvas.Batch
+  'LineString': ol.replay.canvas.LineStringBatch,
+  'Polygon': ol.replay.canvas.PolygonBatch
 };

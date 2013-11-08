@@ -38,7 +38,7 @@ ol.renderer.vector.renderLineStringGeometry_ =
   goog.asserts.assert(geometry instanceof ol.geom.LineString);
   var lineStringGeometry = /** @type {ol.geom.LineString} */ (geometry);
   var batch = batchGroup.getBatch(
-      style.zIndex, ol.replay.BatchType.STROKE_LINE);
+      style.zIndex, ol.replay.BatchType.LINE_STRING);
   batch.setFillStrokeStyle(null, style.stroke);
   batch.drawLineStringGeometry(lineStringGeometry);
 };
@@ -59,7 +59,7 @@ ol.renderer.vector.renderMultiLineStringGeometry_ =
   var multiLineStringGeometry = /** @type {ol.geom.MultiLineString} */
       (geometry);
   var batch = batchGroup.getBatch(
-      style.zIndex, ol.replay.BatchType.STROKE_LINE);
+      style.zIndex, ol.replay.BatchType.LINE_STRING);
   batch.setFillStrokeStyle(null, style.stroke);
   batch.drawMultiLineStringGeometry(multiLineStringGeometry);
 };
@@ -80,8 +80,8 @@ ol.renderer.vector.renderMultiPolygonGeometry_ =
   var multiPolygonGeometry = /** @type {ol.geom.MultiPolygon} */
       (geometry);
   var batch = batchGroup.getBatch(
-      style.zIndex, ol.replay.BatchType.STROKE_LINE);
-  batch.setFillStrokeStyle(null, style.stroke);
+      style.zIndex, ol.replay.BatchType.POLYGON);
+  batch.setFillStrokeStyle(style.fill, style.stroke);
   batch.drawMultiPolygonGeometry(multiPolygonGeometry);
 };
 
@@ -108,23 +108,12 @@ ol.renderer.vector.renderPointGeometry_ =
  */
 ol.renderer.vector.renderPolygonGeometry_ =
     function(batchGroup, geometry, style) {
-  var batchType;
-  if (goog.isNull(style.fill)) {
-    if (goog.isNull(style.stroke)) {
-      return;
-    } else {
-      batchType = ol.replay.BatchType.STROKE_RING;
-    }
-  } else {
-    if (goog.isNull(style.stroke)) {
-      batchType = ol.replay.BatchType.FILL_RING;
-    } else {
-      batchType = ol.replay.BatchType.FILL_STROKE_RING;
-    }
+  if (goog.isNull(style.fill) && goog.isNull(style.stroke)) {
+    return;
   }
   goog.asserts.assert(geometry instanceof ol.geom.Polygon);
   var polygonGeometry = /** @type {ol.geom.Polygon} */ (geometry);
-  var batch = batchGroup.getBatch(style.zIndex, batchType);
+  var batch = batchGroup.getBatch(style.zIndex, ol.replay.BatchType.POLYGON);
   batch.setFillStrokeStyle(style.fill, style.stroke);
   batch.drawPolygonGeometry(polygonGeometry);
 };

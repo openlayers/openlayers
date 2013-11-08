@@ -8,11 +8,9 @@ goog.require('goog.functions');
  * @enum {string}
  */
 ol.replay.BatchType = {
-  FILL_RING: 'fillRing',
-  FILL_STROKE_RING: 'fillStrokeRing',
-  POINT: 'point',
-  STROKE_LINE: 'strokeLine',
-  STROKE_RING: 'strokeRing'
+  IMAGE: 'Image',
+  LINE_STRING: 'LineString',
+  POLYGON: 'Polygon'
 };
 
 
