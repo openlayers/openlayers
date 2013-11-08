@@ -48,46 +48,7 @@ ga.layer.create = function(layer) {
 /**
  * @type {Object.<string, Object>}
  */
-ga.layer.GeoadminLayerConfig = {
-  // 'defaults': {
-  //   attribution: 'swisstopo',
-  //   format: 'image/png',
-  //   minZoom: 0,
-  //   maxZoom: 26,
-  //   opaque: false,
-  //   type: 'wmts'
-  // },
-  'ch.swisstopo.swissimage': {
-    format: 'image/jpeg',
-    times: [20130422, 20120809, 20120225, 20110914, 20110228],
-    opaque: true,
-    maxZoom: 27
-  },
-  'ch.swisstopo.pixelkarte-farbe': {
-    format: 'image/jpeg',
-    times: [20130213],
-    opaque: true
-  },
-  'ch.bfe.kleinwasserkraftpotentiale': {
-    attribution: 'OFEN',
-    times: [20120531],
-    opacity: 0.5
-  },
-  'ch.swisstopo.hiks-dufour': {
-    times: [18450101, 19391231, 18441231],
-    opaque: true,
-    maxZoom: 26
-  },
-  'ch.bfe.sachplan-geologie-tiefenlager': {
-    type: 'wms'
-  },
-  'ch.kantone.cadastralwebmap-farbe': {
-    type: 'wms',
-    layers: 'ch.swisstopo.swisstlm3d5D-karte-farbe.mapproxy,' +
-        'ch.kantone.cadastralwebmap-farbe',
-    format: 'image/jpeg'
-  }
-};
+ga.layer.GeoadminLayerConfig2 = {};
 
 
 /**
@@ -112,7 +73,7 @@ ga.source.wmts = function(layer, options) {
     resolutions: resolutions,
     matrixIds: goog.array.range(resolutions.length)
   });
-  var extension = (options.format || 'image/png').split('/')[1];
+  var extension = options.format || 'png';
   return new ol.source.WMTS( /** @type {ol.source.WMTSOptions} */({
     opaque: goog.isDef(options.opaque) ? options.opaque : false,
     attributions: [
@@ -127,7 +88,7 @@ ga.source.wmts = function(layer, options) {
     crossOrigin: 'anonymous',
     requestEncoding: 'REST',
     dimensions: {
-      'Time': options.time || options.times[0]
+      'Time':  options.timestamps && options.timestamps[0]
     }
   }));
 };
