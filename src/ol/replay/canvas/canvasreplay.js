@@ -1,12 +1,11 @@
-// FIXME store coordinates in batchgroup?
 // FIXME flattened coordinates
-// FIXME per-batch extent tests
 
 goog.provide('ol.replay.canvas.BatchGroup');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
+goog.require('ol.extent');
 goog.require('ol.replay');
 goog.require('ol.replay.IBatch');
 goog.require('ol.replay.IBatchGroup');
@@ -54,6 +53,12 @@ ol.replay.canvas.Batch = function() {
    */
   this.pixelCoordinates_ = [];
 
+  /**
+   * @private
+   * @type {ol.Extent}
+   */
+  this.extent_ = ol.extent.createEmpty();
+
 };
 
 
@@ -66,10 +71,13 @@ ol.replay.canvas.Batch = function() {
 ol.replay.canvas.Batch.prototype.appendCoordinates =
     function(coordinates, close) {
   var end = this.coordinates.length;
+  var extent = this.extent_;
   var i, ii;
   for (i = 0, ii = coordinates.length; i < ii; ++i) {
-    this.coordinates[end++] = coordinates[i][0];
-    this.coordinates[end++] = coordinates[i][1];
+    var coordinate = coordinates[i];
+    this.coordinates[end++] = coordinate[0];
+    this.coordinates[end++] = coordinate[1];
+    ol.extent.extendCoordinate(extent, coordinate);
   }
   if (close) {
     this.coordinates[end++] = coordinates[0][0];
@@ -152,6 +160,14 @@ ol.replay.canvas.Batch.prototype.drawMultiPolygonGeometry = goog.abstractMethod;
  * FIXME empty description for jsdoc
  */
 ol.replay.canvas.Batch.prototype.finish = goog.nullFunction;
+
+
+/**
+ * @return {ol.Extent} Extent.
+ */
+ol.replay.canvas.Batch.prototype.getExtent = function() {
+  return this.extent_;
+};
 
 
 /**
