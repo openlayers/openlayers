@@ -5,6 +5,22 @@ goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.GeoJSON');
 goog.require('ol.source.OSM');
+goog.require('ol.style.DefaultStyleFunction');
+
+
+var styleFunction = function(feature) {
+  switch (feature.getGeometry().getType()) {
+    case ol.geom.GeometryType.MULTI_LINE_STRING:
+      return {
+        stroke: {
+          color: 'green',
+          width: 1
+        }
+      };
+    default:
+      return ol.style.DefaultStyleFunction(feature);
+  }
+};
 
 var geoJSONSource = new ol.source.GeoJSON(
     /** @type {ol.source.GeoJSONOptions} */ ({
@@ -61,7 +77,8 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     }),
     new ol.layer.Vector({
-      source: geoJSONSource
+      source: geoJSONSource,
+      styleFunction: styleFunction
     })
   ],
   renderer: ol.RendererHint.CANVAS,
