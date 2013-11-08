@@ -3,7 +3,6 @@ goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.reader');
 goog.require('ol.reader.GeoJSON');
 goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
@@ -31,7 +30,8 @@ var styleFunction = function(feature) {
   }
 };
 
-var features = ol.reader.readAllFromObject(ol.reader.GeoJSON.readObject, {
+var vectorSource = new ol.source.Vector();
+ol.reader.GeoJSON.readObject({
   'type': 'FeatureCollection',
   'features': [
     {
@@ -86,7 +86,7 @@ var features = ol.reader.readAllFromObject(ol.reader.GeoJSON.readObject, {
       }
     }
   ]
-});
+}, vectorSource.addFeature, vectorSource);
 
 var map = new ol.Map({
   layers: [
@@ -94,9 +94,7 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     }),
     new ol.layer.Vector({
-      source: new ol.source.Vector({
-        features: features
-      }),
+      source: vectorSource,
       styleFunction: styleFunction
     })
   ],
