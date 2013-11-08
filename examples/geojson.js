@@ -58,21 +58,21 @@ ol.format.GeoJSON.readObject({
       'type': 'Feature',
       'geometry': {
         'type': 'LineString',
-        'coordinates': [[-1e7, -1e7], [1e7, 1e7]]
+        'coordinates': [[4e6, -2e6], [8e6, 2e6]]
       }
     },
     {
       'type': 'Feature',
       'geometry': {
         'type': 'LineString',
-        'coordinates': [[-1e7, 1e7], [1e7, -1e7]]
+        'coordinates': [[4e6, 2e6], [8e6, -2e6]]
       }
     },
     {
       'type': 'Feature',
       'geometry': {
         'type': 'Polygon',
-        'coordinates': [[[-5e6, -5e6], [0, 5e6], [5e6, -5e6]]]
+        'coordinates': [[[-5e6, -1e6], [-4e6, 1e6], [-3e6, -1e6]]]
       }
     },
     {
