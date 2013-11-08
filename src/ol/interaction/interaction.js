@@ -2,6 +2,7 @@
 
 goog.provide('ol.interaction.Interaction');
 
+goog.require('goog.events.EventTarget');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.animation');
 goog.require('ol.easing');
@@ -10,8 +11,10 @@ goog.require('ol.easing');
 
 /**
  * @constructor
+ * @extends {goog.events.EventTarget}
  */
 ol.interaction.Interaction = function() {
+  goog.base(this);
 
   /**
    * @private
@@ -20,6 +23,7 @@ ol.interaction.Interaction = function() {
   this.map_ = null;
 
 };
+goog.inherits(ol.interaction.Interaction, goog.events.EventTarget);
 
 
 /**

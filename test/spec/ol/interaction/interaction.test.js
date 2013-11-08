@@ -7,6 +7,7 @@ describe('ol.interaction.Interaction', function() {
     it('creates a new interaction', function() {
       var interaction = new ol.interaction.Interaction();
       expect(interaction).to.be.a(ol.interaction.Interaction);
+      expect(interaction).to.be.a(goog.events.EventTarget);
     });
 
   });
@@ -46,5 +47,6 @@ describe('ol.interaction.Interaction', function() {
 
 });
 
+goog.require('goog.events.EventTarget');
 goog.require('ol.Map');
 goog.require('ol.interaction.Interaction');
