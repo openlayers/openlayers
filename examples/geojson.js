@@ -17,6 +17,13 @@ var styleFunction = function(feature) {
           width: 1
         }
       };
+    case ol.geom.GeometryType.MULTI_POLYGON:
+      return {
+        stroke: {
+          color: 'yellow',
+          width: 1
+        }
+      };
     default:
       return ol.style.DefaultStyleFunction(feature);
   }
@@ -64,6 +71,17 @@ var geoJSONSource = new ol.source.GeoJSON(
                 [[1e6, -7.5e5], [1e6, 7.5e5]],
                 [[-7.5e5, -1e6], [7.5e5, -1e6]],
                 [[-7.5e5, 1e6], [7.5e5, 1e6]]
+              ]
+            }
+          },
+          {
+            'type': 'Feature',
+            'geometry': {
+              'type': 'MultiPolygon',
+              'coordinates': [
+                [[[-5e6, 6e6], [-5e6, 8e6], [-3e6, 8e6], [-3e6, 6e6]]],
+                [[[-2e6, 6e6], [-2e6, 8e6], [0e6, 8e6], [0e6, 6e6]]],
+                [[[1e6, 6e6], [1e6, 8e6], [3e6, 8e6], [3e6, 6e6]]]
               ]
             }
           }
