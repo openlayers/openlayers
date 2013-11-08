@@ -48,7 +48,7 @@ ga.layer.create = function(layer) {
 /**
  * @type {Object.<string, Object>}
  */
-ga.layer.GeoadminLayerConfig2 = {};
+ga.layer.GeoadminLayerConfig = {};
 
 
 /**
