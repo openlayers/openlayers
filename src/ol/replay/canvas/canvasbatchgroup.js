@@ -192,6 +192,26 @@ ol.replay.canvas.Batch.prototype.drawLineStringGeometry =
 /**
  * @inheritDoc
  */
+ol.replay.canvas.Batch.prototype.drawMultiLineStringGeometry =
+    function(multiLineStringGeometry) {
+  goog.asserts.assert(!goog.isNull(this.state_));
+  var coordinatess = multiLineStringGeometry.getCoordinatess();
+  var i, ii;
+  for (i = 0, ii = coordinatess.length; i < ii; ++i) {
+    this.beginPath_();
+    var end = this.appendCoordinates_(coordinatess[i], false);
+    this.instructions_.push({
+      type: ol.replay.canvas.InstructionType.MOVE_TO_LINE_TO,
+      argument: end
+    });
+  }
+  this.state_.strokePending = true;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.replay.canvas.Batch.prototype.drawPolygonGeometry =
     function(polygonGeometry) {
   goog.asserts.assert(!goog.isNull(this.state_));
