@@ -17,7 +17,7 @@ goog.require('ol.style.stroke');
 /**
  * @enum {number}
  */
-ol.replay.canvas.InstructionType = {
+ol.replay.canvas.Instruction = {
   BEGIN_PATH: 0,
   CLOSE_PATH: 1,
   FILL: 2,
@@ -38,13 +38,6 @@ ol.replay.canvas.InstructionType = {
 ol.replay.canvas.State;
 
 
-/**
- * @typedef {{argument: ?,
- *            type: ol.replay.canvas.InstructionType}}
- */
-ol.replay.canvas.Instruction;
-
-
 
 /**
  * @constructor
@@ -54,7 +47,7 @@ ol.replay.canvas.Batch = function() {
 
   /**
    * @private
-   * @type {Array.<ol.replay.canvas.Instruction>}
+   * @type {Array}
    */
   this.instructions_ = [];
 
@@ -114,9 +107,7 @@ ol.replay.canvas.Batch.prototype.appendCoordinates_ =
 ol.replay.canvas.Batch.prototype.beginPath_ = function() {
   goog.asserts.assert(!goog.isNull(this.state_));
   if (this.state_.beginPath) {
-    this.instructions_.push({
-      type: ol.replay.canvas.InstructionType.BEGIN_PATH
-    });
+    this.instructions_.push([ol.replay.canvas.Instruction.BEGIN_PATH]);
     this.state_.beginPath = false;
   }
 };
@@ -136,36 +127,30 @@ ol.replay.canvas.Batch.prototype.draw = function(context, transform) {
   var j, jj;
   for (j = 0, jj = instructions.length; j < jj; ++j) {
     var instruction = instructions[j];
-    if (instruction.type ==
-        ol.replay.canvas.InstructionType.BEGIN_PATH) {
+    var type = instruction[0];
+    if (type == ol.replay.canvas.Instruction.BEGIN_PATH) {
       context.beginPath();
-    } else if (instruction.type ==
-        ol.replay.canvas.InstructionType.CLOSE_PATH) {
+    } else if (type == ol.replay.canvas.Instruction.CLOSE_PATH) {
       context.closePath();
-    } else if (instruction.type ==
-        ol.replay.canvas.InstructionType.FILL) {
+    } else if (type == ol.replay.canvas.Instruction.FILL) {
       context.fill();
-    } else if (instruction.type ==
-        ol.replay.canvas.InstructionType.MOVE_TO_LINE_TO) {
+    } else if (type == ol.replay.canvas.Instruction.MOVE_TO_LINE_TO) {
       context.moveTo(pixelCoordinates[i], pixelCoordinates[i + 1]);
-      goog.asserts.assert(goog.isNumber(instruction.argument));
-      var end = /** @type {number} */ (instruction.argument);
+      goog.asserts.assert(goog.isNumber(instruction[1]));
+      var end = /** @type {number} */ (instruction[1]);
       for (i += 2; i < end; i += 2) {
         context.lineTo(pixelCoordinates[i], pixelCoordinates[i + 1]);
       }
-    } else if (instruction.type ==
-        ol.replay.canvas.InstructionType.SET_FILL_STYLE) {
-      goog.asserts.assert(goog.isObject(instruction.argument));
-      var fillStyle = /** @type {ol.style.Fill} */ (instruction.argument);
+    } else if (type == ol.replay.canvas.Instruction.SET_FILL_STYLE) {
+      goog.asserts.assert(goog.isObject(instruction[1]));
+      var fillStyle = /** @type {ol.style.Fill} */ (instruction[1]);
       context.fillStyle = fillStyle.color;
-    } else if (instruction.type ==
-        ol.replay.canvas.InstructionType.SET_STROKE_STYLE) {
-      goog.asserts.assert(goog.isObject(instruction.argument));
-      var strokeStyle = /** @type {ol.style.Stroke} */ (instruction.argument);
+    } else if (type == ol.replay.canvas.Instruction.SET_STROKE_STYLE) {
+      goog.asserts.assert(goog.isObject(instruction[1]));
+      var strokeStyle = /** @type {ol.style.Stroke} */ (instruction[1]);
       context.strokeStyle = strokeStyle.color;
       context.lineWidth = strokeStyle.width;
-    } else if (instruction.type ==
-        ol.replay.canvas.InstructionType.STROKE) {
+    } else if (type == ol.replay.canvas.Instruction.STROKE) {
       context.stroke();
     }
   }
@@ -181,10 +166,7 @@ ol.replay.canvas.Batch.prototype.drawLineStringGeometry =
   goog.asserts.assert(!goog.isNull(this.state_));
   this.beginPath_();
   var end = this.appendCoordinates_(lineStringGeometry.getCoordinates(), false);
-  this.instructions_.push({
-    type: ol.replay.canvas.InstructionType.MOVE_TO_LINE_TO,
-    argument: end
-  });
+  this.instructions_.push([ol.replay.canvas.Instruction.MOVE_TO_LINE_TO, end]);
   this.state_.strokePending = true;
 };
 
@@ -200,10 +182,8 @@ ol.replay.canvas.Batch.prototype.drawMultiLineStringGeometry =
   for (i = 0, ii = coordinatess.length; i < ii; ++i) {
     this.beginPath_();
     var end = this.appendCoordinates_(coordinatess[i], false);
-    this.instructions_.push({
-      type: ol.replay.canvas.InstructionType.MOVE_TO_LINE_TO,
-      argument: end
-    });
+    this.instructions_.push(
+        [ol.replay.canvas.Instruction.MOVE_TO_LINE_TO, end]);
   }
   this.state_.strokePending = true;
 };
@@ -222,13 +202,10 @@ ol.replay.canvas.Batch.prototype.drawMultiPolygonGeometry =
     var j, jj;
     for (j = 0, jj = rings.length; j < jj; ++j) {
       this.beginPath_();
-      this.instructions_.push({
-        type: ol.replay.canvas.InstructionType.MOVE_TO_LINE_TO,
-        argument: this.appendCoordinates_(rings[j], true)
-      });
-      this.instructions_.push({
-        type: ol.replay.canvas.InstructionType.CLOSE_PATH
-      });
+      var end = this.appendCoordinates_(rings[j], true);
+      this.instructions_.push(
+          [ol.replay.canvas.Instruction.MOVE_TO_LINE_TO, end],
+          [ol.replay.canvas.Instruction.CLOSE_PATH]);
     }
   }
   this.state_.fillPending = true;
@@ -246,13 +223,10 @@ ol.replay.canvas.Batch.prototype.drawPolygonGeometry =
   var i, ii;
   for (i = 0, ii = rings.length; i < ii; ++i) {
     this.beginPath_();
-    this.instructions_.push({
-      type: ol.replay.canvas.InstructionType.MOVE_TO_LINE_TO,
-      argument: this.appendCoordinates_(rings[i], true)
-    });
-    this.instructions_.push({
-      type: ol.replay.canvas.InstructionType.CLOSE_PATH
-    });
+    var end = this.appendCoordinates_(rings[i], true);
+    this.instructions_.push(
+        [ol.replay.canvas.Instruction.MOVE_TO_LINE_TO, end],
+        [ol.replay.canvas.Instruction.CLOSE_PATH]);
   }
   this.state_.fillPending = true;
   this.state_.strokePending = true;
@@ -277,15 +251,11 @@ ol.replay.canvas.Batch.prototype.flush_ = function(finish) {
   goog.asserts.assert(!goog.isNull(this.state_));
   if (this.state_.fillPending || this.state_.strokePending) {
     if (this.state_.fillPending) {
-      this.instructions_.push({
-        type: ol.replay.canvas.InstructionType.FILL
-      });
+      this.instructions_.push([ol.replay.canvas.Instruction.FILL]);
       this.state_.fillPending = false;
     }
     if (this.state_.strokePending) {
-      this.instructions_.push({
-        type: ol.replay.canvas.InstructionType.STROKE
-      });
+      this.instructions_.push([ol.replay.canvas.Instruction.STROKE]);
       this.state_.strokePending = false;
     }
     this.state_.beginPath = true;
@@ -302,18 +272,14 @@ ol.replay.canvas.Batch.prototype.setFillStrokeStyle =
   // FIXME should only change styles before draws
   if (!ol.style.fill.equals(this.state_.fillStyle, fillStyle)) {
     this.flush_(false);
-    this.instructions_.push({
-      type: ol.replay.canvas.InstructionType.SET_FILL_STYLE,
-      argument: fillStyle
-    });
+    this.instructions_.push(
+        [ol.replay.canvas.Instruction.SET_FILL_STYLE, fillStyle]);
     this.state_.fillStyle = fillStyle;
   }
   if (!ol.style.stroke.equals(this.state_.strokeStyle, strokeStyle)) {
     this.flush_(false);
-    this.instructions_.push({
-      type: ol.replay.canvas.InstructionType.SET_STROKE_STYLE,
-      argument: strokeStyle
-    });
+    this.instructions_.push(
+        [ol.replay.canvas.Instruction.SET_STROKE_STYLE, strokeStyle]);
     this.state_.strokeStyle = strokeStyle;
   }
 };
