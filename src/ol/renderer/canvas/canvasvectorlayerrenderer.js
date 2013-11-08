@@ -329,7 +329,9 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
  * @private
  */
 ol.renderer.canvas.VectorLayer.prototype.handleLayerChange_ = function(event) {
-  this.expireTiles_(event.extents);
+  if (goog.isDef(this.renderedResolution_)) {
+    this.expireTiles_(event.extents);
+  }
   this.requestMapRenderFrame_();
 };
 
