@@ -3,6 +3,7 @@ goog.provide('ol.renderer.vector');
 goog.require('goog.asserts');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.replay.IBatchGroup');
@@ -70,6 +71,27 @@ ol.renderer.vector.renderMultiLineStringGeometry_ =
  * @param {ol.style.Style} style Style.
  * @private
  */
+ol.renderer.vector.renderMultiPolygonGeometry_ =
+    function(batchGroup, geometry, style) {
+  if (goog.isNull(style.stroke) && goog.isNull(style.fill)) {
+    return;
+  }
+  goog.asserts.assert(geometry instanceof ol.geom.MultiPolygon);
+  var multiPolygonGeometry = /** @type {ol.geom.MultiPolygon} */
+      (geometry);
+  var batch = batchGroup.getBatch(
+      style.zIndex, ol.replay.BatchType.STROKE_LINE);
+  batch.setFillStrokeStyle(null, style.stroke);
+  batch.drawMultiPolygonGeometry(multiPolygonGeometry);
+};
+
+
+/**
+ * @param {ol.replay.IBatchGroup} batchGroup Batch group.
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {ol.style.Style} style Style.
+ * @private
+ */
 ol.renderer.vector.renderPointGeometry_ =
     function(batchGroup, geometry, style) {
   goog.asserts.assert(geometry instanceof ol.geom.Point);
@@ -119,5 +141,6 @@ ol.renderer.vector.GEOMETRY_RENDERERS_ = {
   'Point': ol.renderer.vector.renderPointGeometry_,
   'LineString': ol.renderer.vector.renderLineStringGeometry_,
   'Polygon': ol.renderer.vector.renderPolygonGeometry_,
-  'MultiLineString': ol.renderer.vector.renderMultiLineStringGeometry_
+  'MultiLineString': ol.renderer.vector.renderMultiLineStringGeometry_,
+  'MultiPolygon': ol.renderer.vector.renderMultiPolygonGeometry_
 };
