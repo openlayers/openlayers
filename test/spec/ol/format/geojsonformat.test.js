@@ -1,7 +1,7 @@
 goog.provide('ol.test.reader.GeoJSON');
 
 
-describe('ol.reader.GeoJSON', function() {
+describe('ol.format.GeoJSON', function() {
 
   var pointGeoJSON = {
     'type': 'Feature',
@@ -50,7 +50,7 @@ describe('ol.reader.GeoJSON', function() {
   describe('readObject', function() {
 
     it('can read a single point feature', function() {
-      var feature = ol.reader.GeoJSON.readObject(pointGeoJSON, function(f) {
+      var feature = ol.format.GeoJSON.readObject(pointGeoJSON, function(f) {
         return f;
       });
       expect(feature).to.be.an(ol.Feature);
@@ -61,7 +61,7 @@ describe('ol.reader.GeoJSON', function() {
     });
 
     it('can read a single line string feature', function() {
-      var feature = ol.reader.GeoJSON.readObject(lineStringGeoJSON,
+      var feature = ol.format.GeoJSON.readObject(lineStringGeoJSON,
           function(f) {
             return f;
           });
@@ -75,7 +75,7 @@ describe('ol.reader.GeoJSON', function() {
     });
 
     it('can read a single polygon feature', function() {
-      var feature = ol.reader.GeoJSON.readObject(polygonGeoJSON, function(f) {
+      var feature = ol.format.GeoJSON.readObject(polygonGeoJSON, function(f) {
         return f;
       });
       expect(feature).to.be.an(ol.Feature);
@@ -90,7 +90,7 @@ describe('ol.reader.GeoJSON', function() {
 
     it('can read a feature collection', function() {
       var features = [];
-      ol.reader.GeoJSON.readObject(featureCollectionGeoJSON, function(f) {
+      ol.format.GeoJSON.readObject(featureCollectionGeoJSON, function(f) {
         features.push(f);
       });
       expect(features).to.have.length(3);
@@ -105,7 +105,7 @@ describe('ol.reader.GeoJSON', function() {
 
 
 goog.require('ol.Feature');
+goog.require('ol.format.GeoJSON');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.reader.GeoJSON');

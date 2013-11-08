@@ -1,9 +1,9 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
+goog.require('ol.format.GeoJSON');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.reader.GeoJSON');
 goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
 goog.require('ol.style.DefaultStyleFunction');
@@ -31,7 +31,7 @@ var styleFunction = function(feature) {
 };
 
 var vectorSource = new ol.source.Vector();
-ol.reader.GeoJSON.readObject({
+ol.format.GeoJSON.readObject({
   'type': 'FeatureCollection',
   'features': [
     {

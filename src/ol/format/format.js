@@ -1,4 +1,4 @@
-goog.provide('ol.reader');
+goog.provide('ol.format');
 
 
 /**
@@ -8,7 +8,7 @@ goog.provide('ol.reader');
  * @return {Array.<ol.Feature>}
  * @template S,T
  */
-ol.reader.readAllFromObject = function(reader, object) {
+ol.format.readAllFromObject = function(reader, object) {
   var features = [];
   reader(object, function(feature) {
     features.push(feature);

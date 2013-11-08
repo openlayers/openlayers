@@ -2,7 +2,7 @@
 // FIXME reprojection
 // FIXME support other geometry types
 
-goog.provide('ol.reader.GeoJSON');
+goog.provide('ol.format.GeoJSON');
 
 goog.require('goog.asserts');
 goog.require('goog.json');
@@ -18,7 +18,7 @@ goog.require('ol.geom.Polygon');
 /**
  * @constructor
  */
-ol.reader.GeoJSON = function() {
+ol.format.GeoJSON = function() {
 };
 
 
@@ -27,7 +27,7 @@ ol.reader.GeoJSON = function() {
  * @private
  * @return {ol.geom.Point} Point.
  */
-ol.reader.GeoJSON.readPointGeometry_ = function(geometry) {
+ol.format.GeoJSON.readPointGeometry_ = function(geometry) {
   goog.asserts.assert(geometry.type == 'Point');
   return new ol.geom.Point(geometry.coordinates);
 };
@@ -38,7 +38,7 @@ ol.reader.GeoJSON.readPointGeometry_ = function(geometry) {
  * @private
  * @return {ol.geom.LineString} LineString.
  */
-ol.reader.GeoJSON.readLineStringGeometry_ = function(geometry) {
+ol.format.GeoJSON.readLineStringGeometry_ = function(geometry) {
   goog.asserts.assert(geometry.type == 'LineString');
   return new ol.geom.LineString(geometry.coordinates);
 };
@@ -49,7 +49,7 @@ ol.reader.GeoJSON.readLineStringGeometry_ = function(geometry) {
  * @private
  * @return {ol.geom.MultiLineString} MultiLineString.
  */
-ol.reader.GeoJSON.readMultiLineStringGeometry_ = function(geometry) {
+ol.format.GeoJSON.readMultiLineStringGeometry_ = function(geometry) {
   goog.asserts.assert(geometry.type == 'MultiLineString');
   return new ol.geom.MultiLineString(geometry.coordinates);
 };
@@ -60,7 +60,7 @@ ol.reader.GeoJSON.readMultiLineStringGeometry_ = function(geometry) {
  * @private
  * @return {ol.geom.MultiPolygon} MultiPolygon.
  */
-ol.reader.GeoJSON.readMultiPolygonGeometry_ = function(geometry) {
+ol.format.GeoJSON.readMultiPolygonGeometry_ = function(geometry) {
   goog.asserts.assert(geometry.type == 'MultiPolygon');
   return new ol.geom.MultiPolygon(geometry.coordinates);
 };
@@ -71,7 +71,7 @@ ol.reader.GeoJSON.readMultiPolygonGeometry_ = function(geometry) {
  * @private
  * @return {ol.geom.Polygon} Polygon.
  */
-ol.reader.GeoJSON.readPolygonGeometry_ = function(geometry) {
+ol.format.GeoJSON.readPolygonGeometry_ = function(geometry) {
   goog.asserts.assert(geometry.type == 'Polygon');
   return new ol.geom.Polygon(geometry.coordinates);
 };
@@ -85,11 +85,11 @@ ol.reader.GeoJSON.readPolygonGeometry_ = function(geometry) {
  * @return {T} Callback result.
  * @template S,T
  */
-ol.reader.GeoJSON.readFeature_ = function(object, callback, opt_obj) {
+ol.format.GeoJSON.readFeature_ = function(object, callback, opt_obj) {
   goog.asserts.assert(object.type == 'Feature');
   var feature = /** @type {GeoJSONFeature} */ (object);
   var geometryReader =
-      ol.reader.GeoJSON.GEOMETRY_READERS_[feature.geometry.type];
+      ol.format.GeoJSON.GEOMETRY_READERS_[feature.geometry.type];
   goog.asserts.assert(goog.isDef(geometryReader));
   var geometry = geometryReader(feature.geometry);
   var f = new ol.Feature(geometry);
@@ -108,13 +108,13 @@ ol.reader.GeoJSON.readFeature_ = function(object, callback, opt_obj) {
  * @return {T|undefined} Callback result.
  * @template S,T
  */
-ol.reader.GeoJSON.readFeatureCollection_ = function(object, callback, opt_obj) {
+ol.format.GeoJSON.readFeatureCollection_ = function(object, callback, opt_obj) {
   goog.asserts.assert(object.type == 'FeatureCollection');
   var featureCollection = /** @type {GeoJSONFeatureCollection} */ (object);
   var features = featureCollection.features;
   var i, ii;
   for (i = 0, ii = features.length; i < ii; ++i) {
-    var result = ol.reader.GeoJSON.readFeature_(features[i], callback, opt_obj);
+    var result = ol.format.GeoJSON.readFeature_(features[i], callback, opt_obj);
     if (result) {
       return result;
     }
@@ -130,8 +130,8 @@ ol.reader.GeoJSON.readFeatureCollection_ = function(object, callback, opt_obj) {
  * @return {T} Callback result.
  * @template S,T
  */
-ol.reader.GeoJSON.readObject = function(object, callback, opt_obj) {
-  var objectReader = ol.reader.GeoJSON.OBJECT_READERS_[object.type];
+ol.format.GeoJSON.readObject = function(object, callback, opt_obj) {
+  var objectReader = ol.format.GeoJSON.OBJECT_READERS_[object.type];
   goog.asserts.assert(goog.isDef(objectReader));
   return objectReader(object, callback, opt_obj);
 };
@@ -144,9 +144,9 @@ ol.reader.GeoJSON.readObject = function(object, callback, opt_obj) {
  * @return {T} Callback result.
  * @template S,T
  */
-ol.reader.GeoJSON.readString = function(string, callback, opt_obj) {
+ol.format.GeoJSON.readString = function(string, callback, opt_obj) {
   var object = goog.json.parse(string);
-  return ol.reader.GeoJSON.readObject(
+  return ol.format.GeoJSON.readObject(
       /** @type {GeoJSONObject} */ (object), callback);
 };
 
@@ -156,12 +156,12 @@ ol.reader.GeoJSON.readString = function(string, callback, opt_obj) {
  * @private
  * @type {Object.<string, function(GeoJSONGeometry): ol.geom.Geometry>}
  */
-ol.reader.GeoJSON.GEOMETRY_READERS_ = {
-  'Point': ol.reader.GeoJSON.readPointGeometry_,
-  'LineString': ol.reader.GeoJSON.readLineStringGeometry_,
-  'Polygon': ol.reader.GeoJSON.readPolygonGeometry_,
-  'MultiLineString': ol.reader.GeoJSON.readMultiLineStringGeometry_,
-  'MultiPolygon': ol.reader.GeoJSON.readMultiPolygonGeometry_
+ol.format.GeoJSON.GEOMETRY_READERS_ = {
+  'Point': ol.format.GeoJSON.readPointGeometry_,
+  'LineString': ol.format.GeoJSON.readLineStringGeometry_,
+  'Polygon': ol.format.GeoJSON.readPolygonGeometry_,
+  'MultiLineString': ol.format.GeoJSON.readMultiLineStringGeometry_,
+  'MultiPolygon': ol.format.GeoJSON.readMultiPolygonGeometry_
 };
 
 
@@ -170,7 +170,7 @@ ol.reader.GeoJSON.GEOMETRY_READERS_ = {
  * @private
  * @type {Object.<string, function(GeoJSONObject, function(ol.Feature): *, *): *>}
  */
-ol.reader.GeoJSON.OBJECT_READERS_ = {
-  'Feature': ol.reader.GeoJSON.readFeature_,
-  'FeatureCollection': ol.reader.GeoJSON.readFeatureCollection_
+ol.format.GeoJSON.OBJECT_READERS_ = {
+  'Feature': ol.format.GeoJSON.readFeature_,
+  'FeatureCollection': ol.format.GeoJSON.readFeatureCollection_
 };
