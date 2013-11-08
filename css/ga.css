@@ -1,0 +1,20 @@
+@import url("ol.css");
+
+.ol-scale-line {
+    background-color: rgba(255, 255, 255, 0.7);
+    left: 0;
+    bottom: 0;
+}
+
+.ol-scale-line-inner {
+    border: 2px solid #000;
+    border-top: none;
+    color: #000;
+    font-weight: bold;
+}
+
+.ol-attribution {
+    background-color: rgba(255, 255, 255, 0.7);
+    color: #000;
+    font-weight: bold;
+}
