@@ -6,6 +6,8 @@ goog.require('ol.View2D');
 var map = new ga.Map({
   // Define the div where the map is placed
   target: 'map',
+  // layer to add
+  layernames: ['ch.swisstopo.pixelkarte-farbe-pk25.noscale'],
   // Create a 2D view
   view: new ol.View2D({
     // Define the default resolution
