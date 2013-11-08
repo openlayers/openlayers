@@ -8,6 +8,7 @@ goog.require('goog.asserts');
 goog.require('goog.json');
 goog.require('ol.Feature');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 
@@ -39,6 +40,17 @@ ol.reader.GeoJSON.readPointGeometry_ = function(geometry) {
 ol.reader.GeoJSON.readLineStringGeometry_ = function(geometry) {
   goog.asserts.assert(geometry.type == 'LineString');
   return new ol.geom.LineString(geometry.coordinates);
+};
+
+
+/**
+ * @param {GeoJSONGeometry} geometry Geometry.
+ * @private
+ * @return {ol.geom.MultiLineString} MultiLineString.
+ */
+ol.reader.GeoJSON.readMultiLineStringGeometry_ = function(geometry) {
+  goog.asserts.assert(geometry.type == 'MultiLineString');
+  return new ol.geom.MultiLineString(geometry.coordinates);
 };
 
 
@@ -135,7 +147,8 @@ ol.reader.GeoJSON.readString = function(string, callback, opt_obj) {
 ol.reader.GeoJSON.GEOMETRY_READERS_ = {
   'Point': ol.reader.GeoJSON.readPointGeometry_,
   'LineString': ol.reader.GeoJSON.readLineStringGeometry_,
-  'Polygon': ol.reader.GeoJSON.readPolygonGeometry_
+  'Polygon': ol.reader.GeoJSON.readPolygonGeometry_,
+  'MultiLineString': ol.reader.GeoJSON.readMultiLineStringGeometry_
 };
 
 
