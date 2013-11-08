@@ -1,5 +1,4 @@
 // FIXME add MultiPoint
-// FIXME add MultiPolygon
 // FIXME add GeometryCollection
 // FIXME add Z and M support
 // FIXME use flat coordinate arrays
@@ -17,7 +16,8 @@ ol.geom.GeometryType = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
   POLYGON: 'Polygon',
-  MULTI_LINE_STRING: 'MultiLineString'
+  MULTI_LINE_STRING: 'MultiLineString',
+  MULTI_POLYGON: 'MultiPolygon'
 };
 
 
