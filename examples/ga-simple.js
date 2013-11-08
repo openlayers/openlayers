@@ -4,10 +4,6 @@ goog.require('ol.View2D');
 
 // Create a GeoAdmin Map
 var map = new ga.Map({
-  // Add GeoAdmin layers
-  layers: [
-    ga.layer.create('ch.swisstopo.pixelkarte-farbe')
-  ],
   // Define the div where the map is placed
   target: 'map',
   // Create a 2D view
@@ -21,3 +17,6 @@ var map = new ga.Map({
     center: [561666.5, 185569.5]
   })
 });
+
+
+
