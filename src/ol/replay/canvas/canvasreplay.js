@@ -418,7 +418,7 @@ ol.replay.canvas.PolygonBatch.prototype.drawMultiPolygonGeometry =
     function(multiPolygonGeometry) {
   goog.asserts.assert(!goog.isNull(this.state_));
   this.setFillStrokeStyles_();
-  var ringss = multiPolygonGeometry.getRingss();
+  var ringss = multiPolygonGeometry.getCoordinates();
   var i, ii;
   for (i = 0, ii = ringss.length; i < ii; ++i) {
     this.drawRings_(ringss[i]);
