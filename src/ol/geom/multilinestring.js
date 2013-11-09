@@ -1,7 +1,5 @@
 goog.provide('ol.geom.MultiLineString');
 
-goog.require('goog.asserts');
-goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 
 
@@ -9,45 +7,39 @@ goog.require('ol.geom.Geometry');
 /**
  * @constructor
  * @extends {ol.geom.Geometry}
- * @param {ol.geom.RawMultiLineString} coordinatess Coordinatess.
+ * @param {ol.geom.RawMultiLineString} coordinates Coordinates.
+ * @param {ol.geom.Layout=} opt_layout Layout.
  */
-ol.geom.MultiLineString = function(coordinatess) {
+ol.geom.MultiLineString = function(coordinates, opt_layout) {
 
   goog.base(this);
 
   /**
+   * @type {Array.<number>}
    * @private
-   * @type {ol.geom.RawMultiLineString}
    */
-  this.coordinatess_ = coordinatess;
+  this.ends_ = [];
+
+  this.setCoordinates(coordinates, opt_layout);
 
 };
 goog.inherits(ol.geom.MultiLineString, ol.geom.Geometry);
 
 
 /**
- * @return {ol.geom.RawMultiLineString} Coordinatess.
+ * @return {ol.geom.RawMultiLineString} Coordinates.
  */
-ol.geom.MultiLineString.prototype.getCoordinatess = function() {
-  return this.coordinatess_;
+ol.geom.MultiLineString.prototype.getCoordinates = function() {
+  return ol.geom.inflateCoordinatess(
+      this.flatCoordinates, 0, this.ends_, this.stride);
 };
 
 
 /**
- * @inheritDoc
+ * @return {Array.<number>} Ends.
  */
-ol.geom.MultiLineString.prototype.getExtent = function(opt_extent) {
-  if (this.extentRevision != this.revision) {
-    this.extent = ol.extent.createOrUpdateEmpty(this.extent);
-    var coordinatess = this.coordinatess_;
-    var i, ii;
-    for (i = 0, ii = coordinatess.length; i < ii; ++i) {
-      this.extent = ol.extent.extendCoordinates(this.extent, coordinatess[i]);
-    }
-    this.extentRevision = this.revision;
-  }
-  goog.asserts.assert(goog.isDef(this.extent));
-  return ol.extent.returnOrUpdate(this.extent, opt_extent);
+ol.geom.MultiLineString.prototype.getEnds = function() {
+  return this.ends_;
 };
 
 
@@ -60,25 +52,13 @@ ol.geom.MultiLineString.prototype.getType = function() {
 
 
 /**
- * @param {ol.geom.RawMultiLineString} coordinatess Coordinatess.
+ * @param {ol.geom.RawMultiLineString} coordinates Coordinates.
+ * @param {ol.geom.Layout=} opt_layout Layout.
  */
-ol.geom.MultiLineString.prototype.setCoordinatess = function(coordinatess) {
-  this.coordinatess_ = coordinatess;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.geom.MultiLineString.prototype.transform = function(transformFn) {
-  var coordinatess = this.coordinatess_;
-  var i, ii;
-  for (i = 0, ii = coordinatess.length; i < ii; ++i) {
-    var coordinates = coordinatess[i];
-    var j, jj;
-    for (j = 0, jj = coordinates.length; j < jj; ++j) {
-      var coordinate = coordinates[j];
-      transformFn(coordinate, coordinate, 2);
-    }
-  }
+ol.geom.MultiLineString.prototype.setCoordinates =
+    function(coordinates, opt_layout) {
+  this.setLayout(opt_layout, coordinates, 2);
+  ol.geom.deflateCoordinatess(
+      this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
+  this.dispatchChangeEvent();
 };

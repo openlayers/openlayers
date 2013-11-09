@@ -239,7 +239,7 @@ ol.replay.canvas.LineStringBatch.prototype.drawLineStringGeometry =
 ol.replay.canvas.LineStringBatch.prototype.drawMultiLineStringGeometry =
     function(multiLineStringGeometry) {
   goog.asserts.assert(!goog.isNull(this.state_));
-  var coordinatess = multiLineStringGeometry.getCoordinatess();
+  var coordinatess = multiLineStringGeometry.getCoordinates();
   var i, ii;
   for (i = 0, ii = coordinatess.length; i < ii; ++i) {
     this.drawCoordinates_(coordinatess[i]);
