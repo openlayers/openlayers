@@ -372,31 +372,6 @@ ol.replay.canvas.PolygonBatch.prototype.drawFlatCoordinatess_ =
 
 
 /**
- * @param {Array.<Array.<ol.Coordinate>>} rings Rings.
- * @private
- */
-ol.replay.canvas.PolygonBatch.prototype.drawRings_ = function(rings) {
-  var state = this.state_;
-  this.instructions.push([ol.replay.canvas.Instruction.BEGIN_PATH]);
-  var i, ii;
-  for (i = 0, ii = rings.length; i < ii; ++i) {
-    var end = this.appendCoordinates(rings[i], true);
-    this.instructions.push(
-        [ol.replay.canvas.Instruction.MOVE_TO_LINE_TO, end],
-        [ol.replay.canvas.Instruction.CLOSE_PATH]);
-  }
-  // FIXME is it quicker to fill and stroke each polygon individually,
-  // FIXME or all polygons together?
-  if (!goog.isNull(state.fillStyle)) {
-    this.instructions.push([ol.replay.canvas.Instruction.FILL]);
-  }
-  if (!goog.isNull(state.strokeStyle)) {
-    this.instructions.push([ol.replay.canvas.Instruction.STROKE]);
-  }
-};
-
-
-/**
  * @inheritDoc
  */
 ol.replay.canvas.PolygonBatch.prototype.drawPolygonGeometry =
