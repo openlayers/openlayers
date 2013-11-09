@@ -417,11 +417,17 @@ ol.replay.canvas.PolygonBatch.prototype.drawPolygonGeometry =
 ol.replay.canvas.PolygonBatch.prototype.drawMultiPolygonGeometry =
     function(multiPolygonGeometry) {
   goog.asserts.assert(!goog.isNull(this.state_));
+  ol.extent.extend(this.extent_, multiPolygonGeometry.getExtent());
   this.setFillStrokeStyles_();
-  var ringss = multiPolygonGeometry.getCoordinates();
+  var endss = multiPolygonGeometry.getEndss();
+  var flatCoordinates = multiPolygonGeometry.getFlatCoordinates();
+  var stride = multiPolygonGeometry.getStride();
+  var offset = 0;
   var i, ii;
-  for (i = 0, ii = ringss.length; i < ii; ++i) {
-    this.drawRings_(ringss[i]);
+  for (i = 0, ii = endss.length; i < ii; ++i) {
+    var ends = endss[i];
+    this.drawFlatCoordinatess_(flatCoordinates, offset, ends, stride);
+    offset = ends[ends.length - 1];
   }
 };
 
