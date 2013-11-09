@@ -279,7 +279,11 @@ ol.replay.canvas.LineStringBatch.prototype.drawFlatCoordinates_ =
 ol.replay.canvas.LineStringBatch.prototype.drawLineStringGeometry =
     function(lineStringGeometry) {
   goog.asserts.assert(!goog.isNull(this.state_));
-  this.drawCoordinates_(lineStringGeometry.getCoordinates());
+  ol.extent.extend(this.extent_, lineStringGeometry.getExtent());
+  var flatCoordinates = lineStringGeometry.getFlatCoordinates();
+  var stride = lineStringGeometry.getStride();
+  this.drawFlatCoordinates_(
+      flatCoordinates, 0, flatCoordinates.length, stride);
 };
 
 
