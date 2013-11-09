@@ -1,5 +1,3 @@
-// FIXME flattened coordinates
-
 goog.provide('ol.replay.canvas.BatchGroup');
 
 goog.require('goog.array');
