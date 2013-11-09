@@ -87,7 +87,8 @@ ol.interaction.Select.prototype.select =
     var layer = layers[i];
 
     var featuresToSelect = featuresByLayer[i];
-    var selectedFeatures = layer.getFeatures(this.selectedFeaturesFilter);
+    var selectedFeatures = layer.getFeatures(
+        ol.layer.Vector.selectedFeaturesFilter);
     if (clear) {
       for (var j = selectedFeatures.length - 1; j >= 0; --j) {
         selectedFeatures[j].setRenderIntent(
@@ -104,13 +105,4 @@ ol.interaction.Select.prototype.select =
     }
     // TODO: Dispatch an event with selectedFeatures and unselectedFeatures
   }
-};
-
-
-/**
- * @param {ol.Feature} feature Feature.
- * @return {boolean} Whether the feature is selected.
- */
-ol.interaction.Select.prototype.selectedFeaturesFilter = function(feature) {
-  return feature.renderIntent == ol.layer.VectorLayerRenderIntent.SELECTED;
 };

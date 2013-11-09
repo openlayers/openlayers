@@ -10,6 +10,7 @@ goog.require('ol.Feature');
 goog.require('ol.FeatureEventType');
 goog.require('ol.extent');
 goog.require('ol.layer.Layer');
+goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.proj');
 goog.require('ol.source.Vector');
 goog.require('ol.structs.RTree');
@@ -465,6 +466,15 @@ ol.layer.Vector.uidTransformFeatureInfo = function(features) {
   var uids = goog.array.map(features,
       function(feature) { return goog.getUid(feature); });
   return uids.join(', ');
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature.
+ * @return {boolean} Whether the feature is selected.
+ */
+ol.layer.Vector.selectedFeaturesFilter = function(feature) {
+  return feature.renderIntent == ol.layer.VectorLayerRenderIntent.SELECTED;
 };
 
 
