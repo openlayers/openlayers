@@ -16,6 +16,7 @@ goog.require('ol.interaction.Touch');
  * @constructor
  * @extends {ol.interaction.Touch}
  * @param {ol.interaction.TouchPanOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.TouchPan = function(opt_options) {
 

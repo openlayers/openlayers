@@ -1,6 +1,7 @@
 @exportSymbol ol.extent.boundingExtent
 @exportSymbol ol.extent.containsCoordinate
 @exportSymbol ol.extent.containsExtent
+@exportSymbol ol.extent.createEmpty
 @exportSymbol ol.extent.equals
 @exportSymbol ol.extent.extend
 @exportSymbol ol.extent.getBottomLeft

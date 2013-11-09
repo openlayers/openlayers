@@ -15,6 +15,7 @@ goog.require('ol.geom.Polygon');
  * @extends {ol.geom.AbstractCollection}
  * @param {Array.<Array.<ol.CoordinateArray>>} coordinates Coordinates
  *    array.
+ * @todo stability experimental
  */
 ol.geom.MultiPolygon = function(coordinates) {
   goog.base(this);

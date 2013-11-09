@@ -96,8 +96,12 @@ ol.structs.LRUCache.prototype.containsKey = function(key) {
 
 
 /**
- * @param {Function} f Function.
- * @param {Object=} opt_obj Object.
+ * @param {function(this: S, *, string, ol.structs.LRUCache): ?} f The function
+ *     to call for every entry from the oldest to the newer. This function takes
+ *     3 arguments (the entry value, the entry key and the LRUCache object).
+ *     The return value is ignored.
+ * @param {S=} opt_obj The object to be used as the value of 'this' within f.
+ * @template S
  */
 ol.structs.LRUCache.prototype.forEach = function(f, opt_obj) {
   var entry = this.oldest_;

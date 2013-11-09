@@ -2,6 +2,7 @@
 
 goog.provide('ol.interaction.Interaction');
 
+goog.require('goog.events.EventTarget');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.animation');
 goog.require('ol.easing');
@@ -10,8 +11,27 @@ goog.require('ol.easing');
 
 /**
  * @constructor
+ * @extends {goog.events.EventTarget}
  */
 ol.interaction.Interaction = function() {
+  goog.base(this);
+
+  /**
+   * @private
+   * @type {ol.Map}
+   */
+  this.map_ = null;
+
+};
+goog.inherits(ol.interaction.Interaction, goog.events.EventTarget);
+
+
+/**
+ * Get the map associated with this interaction.
+ * @return {ol.Map} Map.
+ */
+ol.interaction.Interaction.prototype.getMap = function() {
+  return this.map_;
 };
 
 
@@ -23,6 +43,17 @@ ol.interaction.Interaction = function() {
  */
 ol.interaction.Interaction.prototype.handleMapBrowserEvent =
     goog.abstractMethod;
+
+
+/**
+ * Remove the interaction from its current map and attach it to the new map.
+ * Subclasses may set up event handlers to get notified about changes to
+ * the map here.
+ * @param {ol.Map} map Map.
+ */
+ol.interaction.Interaction.prototype.setMap = function(map) {
+  this.map_ = map;
+};
 
 
 /**

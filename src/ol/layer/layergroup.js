@@ -27,6 +27,9 @@ ol.layer.GroupProperty = {
  * @constructor
  * @extends {ol.layer.Base}
  * @param {ol.layer.GroupOptions=} opt_options Layer options.
+ * @todo stability experimental
+ * @todo observable layers {ol.Collection} collection of layers that are part
+ *       of this group
  */
 ol.layer.Group = function(opt_options) {
 
@@ -146,6 +149,7 @@ ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
 
 /**
  * @return {ol.Collection} Collection of layers.
+ * @todo stability experimental
  */
 ol.layer.Group.prototype.getLayers = function() {
   return /** @type {ol.Collection} */ (this.get(
@@ -159,6 +163,7 @@ goog.exportProperty(
 
 /**
  * @param {ol.Collection} layers Collection of layers.
+ * @todo stability experimental
  */
 ol.layer.Group.prototype.setLayers = function(layers) {
   this.set(ol.layer.GroupProperty.LAYERS, layers);

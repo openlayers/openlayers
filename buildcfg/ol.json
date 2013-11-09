@@ -31,7 +31,7 @@
     "../build/src/external/src/types.js"
   ],
 
-  "output-wrapper": "(function(){%output%})();",
+  "output-wrapper": "// OpenLayers 3. see http://ol3js.org/\n(function(){%output%})();",
 
   "paths": [
     "../src"

@@ -19,6 +19,7 @@ ol.geom2.Point;
  * @constructor
  * @param {ol.structs.Buffer} buf Buffer.
  * @param {number=} opt_dim Dimension.
+ * @todo stability experimental
  */
 ol.geom2.PointCollection = function(buf, opt_dim) {
 
@@ -40,6 +41,7 @@ ol.geom2.PointCollection = function(buf, opt_dim) {
  * @param {number} capacity Capacity.
  * @param {number=} opt_dim Dimension.
  * @return {ol.geom2.PointCollection} Point collection.
+ * @todo stability experimental
  */
 ol.geom2.PointCollection.createEmpty = function(capacity, opt_dim) {
   var dim = goog.isDef(opt_dim) ? opt_dim : 2;
@@ -54,6 +56,7 @@ ol.geom2.PointCollection.createEmpty = function(capacity, opt_dim) {
  * @param {number=} opt_capacity Capacity.
  * @param {number=} opt_dim Dimension.
  * @return {ol.geom2.PointCollection} Point collection.
+ * @todo stability experimental
  */
 ol.geom2.PointCollection.pack =
     function(unpackedPoints, opt_capacity, opt_dim) {
@@ -72,6 +75,7 @@ ol.geom2.PointCollection.pack =
 /**
  * @param {ol.geom2.Point} point Point.
  * @return {number} Offset.
+ * @todo stability experimental
  */
 ol.geom2.PointCollection.prototype.add = function(point) {
   goog.asserts.assert(point.length == this.dim);

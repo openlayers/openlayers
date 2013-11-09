@@ -11,13 +11,13 @@ goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.Pixel');
 goog.require('ol.control.Control');
-goog.require('ol.interaction.ConditionType');
-goog.require('ol.interaction.condition');
+goog.require('ol.events.ConditionType');
+goog.require('ol.events.condition');
 
 
 /**
  * @typedef {{startCoordinate: ol.Coordinate,
- *            condition: (ol.interaction.ConditionType|undefined)}}
+ *            condition: (ol.events.ConditionType|undefined)}}
  */
 ol.control.DragBoxOptions;
 
@@ -27,6 +27,7 @@ ol.control.DragBoxOptions;
  * @constructor
  * @extends {ol.control.Control}
  * @param {ol.control.DragBoxOptions} options Drag box options.
+ * @todo stability experimental
  */
 ol.control.DragBox = function(options) {
 
@@ -34,10 +35,10 @@ ol.control.DragBox = function(options) {
 
   /**
    * @private
-   * @type {ol.interaction.ConditionType}
+   * @type {ol.events.ConditionType}
    */
   this.condition_ = goog.isDef(options.condition) ?
-      options.condition : ol.interaction.condition.always;
+      options.condition : ol.events.condition.always;
 
   /**
    * @type {ol.Pixel|undefined}

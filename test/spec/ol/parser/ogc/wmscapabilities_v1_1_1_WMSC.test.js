@@ -57,5 +57,4 @@ describe('ol.parser.ogc.wmscapabilities_v1_1_1_wmsc', function() {
 
 });
 
-goog.require('goog.net.XhrIo');
 goog.require('ol.parser.ogc.WMSCapabilities');

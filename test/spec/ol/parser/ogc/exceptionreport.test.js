@@ -9,10 +9,8 @@ describe('ol.parser.ogc.exceptionreport', function() {
 
     it('OCG WMS 1.3.0 exceptions', function(done) {
       var url = 'spec/ol/parser/ogc/xml/exceptionreport/wms1_3_0.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        var result = parser.read(xhr.getResponseXml());
-        var exceptions = result.exceptionReport.exceptions;
+      afterLoadXml(url, function(xml) {
+        var exceptions = parser.read(xml).exceptionReport.exceptions;
         expect(exceptions.length).to.be(4);
         var str = 'Plain text message about an error.';
         expect(goog.string.trim(exceptions[0].text)).to.be(str);
@@ -37,10 +35,8 @@ describe('ol.parser.ogc.exceptionreport', function() {
 
     it('test read exception OWSCommon 1.0.0', function(done) {
       var url = 'spec/ol/parser/ogc/xml/exceptionreport/ows1_0_0.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        var result = parser.read(xhr.getResponseXml());
-        var report = result.exceptionReport;
+      afterLoadXml(url, function(xml) {
+        var report = parser.read(xml).exceptionReport;
         var exception = report.exceptions[0];
 
         expect(report.version).to.eql('1.0.0');
@@ -57,10 +53,8 @@ describe('ol.parser.ogc.exceptionreport', function() {
 
     it('test read exception OWSCommon 1.1.0', function(done) {
       var url = 'spec/ol/parser/ogc/xml/exceptionreport/ows1_1_0.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        var result = parser.read(xhr.getResponseXml());
-        var report = result.exceptionReport;
+      afterLoadXml(url, function(xml) {
+        var report = parser.read(xml).exceptionReport;
         var exception = report.exceptions[0];
 
         expect(report.version).to.eql('1.1.0');
@@ -76,6 +70,5 @@ describe('ol.parser.ogc.exceptionreport', function() {
   });
 });
 
-goog.require('goog.net.XhrIo');
 goog.require('goog.string');
 goog.require('ol.parser.ogc.ExceptionReport');

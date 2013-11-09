@@ -9,6 +9,7 @@ goog.require('goog.math');
 /**
  * A function that formats a {@link ol.Coordinate} into a string.
  * @typedef {function((ol.Coordinate|undefined)): string}
+ * @todo stability experimental
  */
 ol.CoordinateFormatType;
 
@@ -16,6 +17,7 @@ ol.CoordinateFormatType;
 /**
  * An array of numbers representing a coordinate.
  * @typedef {Array.<number>} ol.Coordinate
+ * @todo stability experimental
  */
 ol.Coordinate;
 
@@ -23,6 +25,7 @@ ol.Coordinate;
 /**
  * An array of coordinate arrays.
  * @typedef {Array.<ol.Coordinate>}
+ * @todo stability experimental
  */
 ol.CoordinateArray;
 
@@ -40,17 +43,58 @@ ol.coordinate.add = function(coordinate, delta) {
 
 
 /**
- * @param {number=} opt_precision Precision.
- * @return {ol.CoordinateFormatType} Coordinate format.
+ * Calculates the point closest to the passed coordinate on the passed segment.
+ * This is the foot of the perpendicular of the coordinate to the segment when
+ * the foot is on the segment, or the closest segment coordinate when the foot
+ * is outside the segment.
+ *
+ * @param {ol.Coordinate} coordinate The coordinate.
+ * @param {Array.<ol.Coordinate>} segment The two coordinates of the segment.
+ * @return {ol.Coordinate} The foot of the perpendicular of the coordinate to
+ *     the segment.
  */
-ol.coordinate.createStringXY = function(opt_precision) {
+ol.coordinate.closestOnSegment = function(coordinate, segment) {
+  var x0 = coordinate[0];
+  var y0 = coordinate[1];
+  var start = segment[0];
+  var end = segment[1];
+  var x1 = start[0];
+  var y1 = start[1];
+  var x2 = end[0];
+  var y2 = end[1];
+  var dx = x2 - x1;
+  var dy = y2 - y1;
+  var along = (dx == 0 && dy == 0) ? 0 :
+      ((dx * (x0 - x1)) + (dy * (y0 - y1))) / ((dx * dx + dy * dy) || 0);
+  var x, y;
+  if (along <= 0) {
+    x = x1;
+    y = y1;
+  } else if (along >= 1) {
+    x = x2;
+    y = y2;
+  } else {
+    x = x1 + along * dx;
+    y = y1 + along * dy;
+  }
+  return [x, y];
+};
+
+
+/**
+ * @param {number=} opt_fractionDigits The number of digits to include
+ *    after the decimal point. Default is `0`.
+ * @return {ol.CoordinateFormatType} Coordinate format.
+ * @todo stability experimental
+ */
+ol.coordinate.createStringXY = function(opt_fractionDigits) {
   return (
       /**
        * @param {ol.Coordinate|undefined} coordinate Coordinate.
        * @return {string} String XY.
        */
       function(coordinate) {
-        return ol.coordinate.toStringXY(coordinate, opt_precision);
+        return ol.coordinate.toStringXY(coordinate, opt_fractionDigits);
       });
 };
 
@@ -68,6 +112,26 @@ ol.coordinate.degreesToStringHDMS_ = function(degrees, hemispheres) {
       Math.floor((x / 60) % 60) + '\u2032 ' +
       Math.floor(x % 60) + '\u2033 ' +
       hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
+};
+
+
+/**
+ * @param {ol.Coordinate|undefined} coordinate Coordinate.
+ * @param {string} template A template string with `{x}` and `{y}` placeholders
+ *     that will be replaced by first and second coordinate values.
+ * @param {number=} opt_fractionDigits The number of digits to include
+ *    after the decimal point. Default is `0`.
+ * @return {string} Formated coordinate.
+ * @todo stability experimental
+ */
+ol.coordinate.format = function(coordinate, template, opt_fractionDigits) {
+  if (goog.isDef(coordinate)) {
+    return template
+      .replace('{x}', coordinate[0].toFixed(opt_fractionDigits))
+      .replace('{y}', coordinate[1].toFixed(opt_fractionDigits));
+  } else {
+    return '';
+  }
 };
 
 
@@ -112,8 +176,22 @@ ol.coordinate.squaredDistance = function(coord1, coord2) {
 
 
 /**
+ * Calculate the squared distance from a coordinate to a line segment.
+ *
+ * @param {ol.Coordinate} coordinate Coordinate of the point.
+ * @param {Array.<ol.Coordinate>} segment Line segment (2 coordinates).
+ * @return {number} Squared distance from the point to the line segment.
+ */
+ol.coordinate.squaredDistanceToSegment = function(coordinate, segment) {
+  return ol.coordinate.squaredDistance(coordinate,
+      ol.coordinate.closestOnSegment(coordinate, segment));
+};
+
+
+/**
  * @param {ol.Coordinate|undefined} coordinate Coordinate.
  * @return {string} Hemisphere, degrees, minutes and seconds.
+ * @todo stability experimental
  */
 ol.coordinate.toStringHDMS = function(coordinate) {
   if (goog.isDef(coordinate)) {
@@ -127,17 +205,13 @@ ol.coordinate.toStringHDMS = function(coordinate) {
 
 /**
  * @param {ol.Coordinate|undefined} coordinate Coordinate.
- * @param {number=} opt_precision Precision.
+ * @param {number=} opt_fractionDigits The number of digits to include
+ *    after the decimal point. Default is `0`.
  * @return {string} XY.
+ * @todo stability experimental
  */
-ol.coordinate.toStringXY = function(coordinate, opt_precision) {
-  if (goog.isDef(coordinate)) {
-    var precision = opt_precision || 0;
-    return coordinate[0].toFixed(precision) + ', ' +
-        coordinate[1].toFixed(precision);
-  } else {
-    return '';
-  }
+ol.coordinate.toStringXY = function(coordinate, opt_fractionDigits) {
+  return ol.coordinate.format(coordinate, '{x}, {y}', opt_fractionDigits);
 };
 
 
@@ -146,6 +220,7 @@ ol.coordinate.toStringXY = function(coordinate, opt_precision) {
  * @param {Array} array The array with coordinates.
  * @param {string} axis the axis info.
  * @return {ol.Coordinate} The coordinate created.
+ * @todo stability experimental
  */
 ol.coordinate.fromProjectedArray = function(array, axis) {
   var firstAxis = axis.charAt(0);

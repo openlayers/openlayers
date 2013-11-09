@@ -21,6 +21,7 @@ goog.require('ol.TileRange');
  *
  * @constructor
  * @param {ol.AttributionOptions} options Attribution options.
+ * @todo stability experimental
  */
 ol.Attribution = function(options) {
 

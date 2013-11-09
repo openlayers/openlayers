@@ -29,26 +29,25 @@ var pos = ol.proj.transform([16.3725, 48.208889], 'EPSG:4326', 'EPSG:3857');
 var marker = new ol.Overlay({
   position: pos,
   positioning: ol.OverlayPositioning.CENTER_CENTER,
-  element: document.getElementById('marker')
+  element: document.getElementById('marker'),
+  stopEvent: false
 });
 map.addOverlay(marker);
 
 // Vienna label
 var vienna = new ol.Overlay({
   position: pos,
-  element: document.getElementById('vienna'),
-  stopEvent: true
+  element: document.getElementById('vienna')
 });
 map.addOverlay(vienna);
 
 // Popup showing the position the user clicked
 var popup = new ol.Overlay({
-  element: document.getElementById('popup'),
-  stopEvent: true
+  element: document.getElementById('popup')
 });
 map.addOverlay(popup);
 
-map.on('click', function(evt) {
+map.on('singleclick', function(evt) {
   var element = popup.getElement();
   var coordinate = evt.getCoordinate();
   var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(

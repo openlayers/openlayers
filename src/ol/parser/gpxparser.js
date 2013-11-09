@@ -23,6 +23,7 @@ goog.require('ol.parser.XML');
  * @implements {ol.parser.ObjectFeatureParser}
  * @param {ol.parser.GPXOptions=} opt_options Optional configuration object.
  * @extends {ol.parser.XML}
+ * @todo stability experimental
  */
 ol.parser.GPX = function(opt_options) {
   var options = /** @type {ol.parser.GPXOptions} */

@@ -17,6 +17,8 @@ ol.layer.TileProperty = {
  * @constructor
  * @extends {ol.layer.Layer}
  * @param {ol.layer.TileOptions} options Tile layer options.
+ * @todo stability experimental
+ * @todo observable preload {number} the level to preload tiles up to
  */
 ol.layer.Tile = function(options) {
 
@@ -31,6 +33,7 @@ goog.inherits(ol.layer.Tile, ol.layer.Layer);
 
 /**
  * @return {number} Preload.
+ * @todo stability experimental
  */
 ol.layer.Tile.prototype.getPreload = function() {
   return /** @type {number} */ (this.get(ol.layer.TileProperty.PRELOAD));
@@ -51,6 +54,7 @@ ol.layer.Tile.prototype.getTileSource = function() {
 
 /**
  * @param {number} preload Preload.
+ * @todo stability experimental
  */
 ol.layer.Tile.prototype.setPreload = function(preload) {
   this.set(ol.layer.TileProperty.PRELOAD, preload);

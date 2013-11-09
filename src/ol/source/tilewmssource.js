@@ -20,6 +20,7 @@ goog.require('ol.source.wms');
  * @extends {ol.source.TileImage}
  * @implements {ol.source.FeatureInfoSource}
  * @param {ol.source.TileWMSOptions} options Tile WMS options.
+ * @todo stability experimental
  */
 ol.source.TileWMS = function(options) {
 
@@ -95,6 +96,7 @@ ol.source.TileWMS = function(options) {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
     extent: extent,
+    logo: options.logo,
     tileGrid: options.tileGrid,
     opaque: !transparent,
     projection: options.projection,
@@ -126,6 +128,7 @@ ol.source.TileWMS.prototype.getKeyZXY = function(z, x, y) {
  * Get the user-provided params, i.e. those passed to the constructor through
  * the "params" option, and possibly updated using the updateParams method.
  * @return {Object} Params.
+ * @todo stability experimental
  */
 ol.source.TileWMS.prototype.getParams = function() {
   return this.params_;
@@ -171,6 +174,7 @@ ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
 /**
  * Update the user-provided params.
  * @param {Object} params Params.
+ * @todo stability experimental
  */
 ol.source.TileWMS.prototype.updateParams = function(params) {
   goog.object.extend(this.params_, params);

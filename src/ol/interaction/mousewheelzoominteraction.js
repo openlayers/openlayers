@@ -28,6 +28,7 @@ ol.interaction.MOUSEWHEELZOOM_TIMEOUT_DURATION = 80;
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {ol.interaction.MouseWheelZoomOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.MouseWheelZoom = function(opt_options) {
 

@@ -34,5 +34,4 @@ describe('ol.parser.ogc.wmscapabilities_v1_0_0', function() {
 
 });
 
-goog.require('goog.net.XhrIo');
 goog.require('ol.parser.ogc.WMSCapabilities');
