@@ -55,7 +55,7 @@ var distance = v.distance;
 var initialBearing = v.initialBearing;
 var divisionCount = 20;
 for (var i = 1; i < divisionCount; i++) {
-  var pd = ol.ellipsoid.WGS84.vincentyPoint(cityFeatures[0].
+  var pd = ol.ellipsoid.WGS84.vincentyDirect(cityFeatures[0].
       geometry.coordinates, distance / divisionCount * i, initialBearing);
   cityFeatures.push({
     'type': 'Feature',

@@ -195,69 +195,54 @@ ol.Ellipsoid.prototype.vincentyInitialBearing =
  * @param {number=} opt_maxIterations Maximum iterations.
  * @return {ol.Coordinate}
  */
-ol.Ellipsoid.prototype.vincentyPoint =
+ol.Ellipsoid.prototype.vincentyDirect =
     function(c, distance, bearing, opt_minDeltaSigma, opt_maxIterations) {
   var minDeltaSigma = goog.isDef(opt_minDeltaSigma) ? opt_minDeltaSigma : 1e-8;
   var maxIterations = goog.isDef(opt_maxIterations) ? opt_maxIterations : 100;
 
-  var alpha1 = goog.math.toRadians(bearing);
-  var phi1 = goog.math.toRadians(c[1]);
-  var L1 = goog.math.toRadians(c[0]);
+  var a = this.a;
+  var b = this.b;
+  var f = this.flattening;
 
+  var s = distance;
+  var alpha1 = goog.math.toRadians(bearing);
   var sinAlpha1 = Math.sin(alpha1);
   var cosAlpha1 = Math.cos(alpha1);
-  var tanU1 = (1 - this.flattening) * Math.tan(phi1);
-  var cosU1 = 1 / Math.sqrt(1 + tanU1 * tanU1);
-  var sinU1 = tanU1 * cosU1;
+
+  var tanU1 = (1 - f) * Math.tan(goog.math.toRadians(c[1]));
+  var cosU1 = 1 / Math.sqrt((1 + tanU1 * tanU1)), sinU1 = tanU1 * cosU1;
   var sigma1 = Math.atan2(tanU1, cosAlpha1);
   var sinAlpha = cosU1 * sinAlpha1;
-  var sinAlphaSquared = sinAlpha * sinAlpha;
-  var cosAlphaSquared = 1 - sinAlphaSquared;
-  var aSquared = this.a * this.a;
-  var bSquared = this.b * this.b;
-  var uSquared = cosAlphaSquared * (aSquared - bSquared) / bSquared;
-  var A = 1 + uSquared / 16384 *
-      (4096 + uSquared * (uSquared * (320 - 175 * uSquared) - 768));
-  var B = uSquared / 1024 *
-      (256 + uSquared * (uSquared * (74 - 47 * uSquared) - 128));
-  var sbA = distance / (this.b * A);
-  var sigma = sbA;
+  var cosSqAlpha = 1 - sinAlpha * sinAlpha;
+  var uSq = cosSqAlpha * (a * a - b * b) / (b * b);
+  var A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
+  var B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
 
-  var sinSigma, cosSigma, cos2SigmaM, cos2SigmaMSquared;
-  var i;
-  for (i = maxIterations; i > 0; i--) {
-    sinSigma = Math.sin(sigma);
-    var sinSigmaSquared = sinSigma * sinSigma;
-    cosSigma = Math.cos(sigma);
-    var twoSigmaM = 2 * sigma1 + sigma;
-    cos2SigmaM = Math.cos(twoSigmaM);
-    cos2SigmaMSquared = cos2SigmaM * cos2SigmaM;
-    var deltaSigma = B * sinSigma *
-        (cos2SigmaM + B / 4 * (cosSigma * (2 * cos2SigmaMSquared - 1) -
-                             B / 6 * cos2SigmaM * (4 * sinSigmaSquared - 3) *
-                             (4 * cos2SigmaMSquared - 3)));
-    if (deltaSigma < minDeltaSigma) {
-      break;
-    }
-    sigma = sbA + deltaSigma;
+  var sigma = s / (b * A), sigmaP = 2 * Math.PI;
+  while (Math.abs(sigma - sigmaP) > minDeltaSigma && maxIterations-- > 0) {
+    var cos2SigmaM = Math.cos(2 * sigma1 + sigma);
+    var sinSigma = Math.sin(sigma);
+    var cosSigma = Math.cos(sigma);
+    var deltaSigma =
+        B * sinSigma * (cos2SigmaM + B / 4 *
+        (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) -
+        B / 6 * cos2SigmaM * (-3 + 4 * sinSigma * sinSigma) *
+        (-3 + 4 * cos2SigmaM * cos2SigmaM)));
+    sigmaP = sigma;
+    sigma = s / (b * A) + deltaSigma;
   }
-  var sinU1cosSigma = sinU1 * cosSigma;
-  var sinU1sinSigma = sinU1 * sinSigma;
-  var cosU1cosSigma = cosU1 * cosSigma;
-  var cosU1sinSigma = cosU1 * sinSigma;
 
-  var X = sinU1sinSigma - cosU1cosSigma * cosAlpha1;
-  var phi2 = Math.atan2(sinU1cosSigma + cosU1sinSigma * cosAlpha1,
-                        (1 - this.flattening) * Math.sqrt(sinAlphaSquared +
-                                                          X * X));
+  var tmp = sinU1 * sinSigma - cosU1 * cosSigma * cosAlpha1;
+  var lat2 = Math.atan2(sinU1 * cosSigma + cosU1 * sinSigma * cosAlpha1,
+      (1 - f) * Math.sqrt(sinAlpha * sinAlpha + tmp * tmp));
   var lambda = Math.atan2(sinSigma * sinAlpha1,
-      cosU1cosSigma - sinU1sinSigma * cosAlpha1);
-  var C = this.flattening / 16 * cosAlphaSquared *
-      (4 + this.flattening * (4 - 3 * cosAlphaSquared));
-  var L = lambda - (1 - C) * this.flattening *
-      sinAlpha * (sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (2 *
-      cos2SigmaMSquared - 1)));
-  var L2 = L1 + L;
-  return [goog.math.toDegrees(L2),
-          goog.math.toDegrees(phi2)];
+      cosU1 * cosSigma - sinU1 * sinSigma * cosAlpha1);
+  var C = f / 16 * cosSqAlpha * (4 + f * (4 - 3 * cosSqAlpha));
+  var L = lambda - (1 - C) * f * sinAlpha *
+      (sigma + C * sinSigma * (cos2SigmaM + C * cosSigma *
+      (-1 + 2 * cos2SigmaM * cos2SigmaM)));
+  var lon2 = (goog.math.toRadians(c[0]) + L + 3 * Math.PI) %
+      (2 * Math.PI) - Math.PI;
+
+  return [goog.math.toDegrees(lon2), goog.math.toDegrees(lat2)];
 };

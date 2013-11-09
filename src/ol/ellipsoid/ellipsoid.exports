@@ -1,2 +1,2 @@
 @exportProperty ol.Ellipsoid.prototype.vincenty
-@exportProperty ol.Ellipsoid.prototype.vincentyPoint
+@exportProperty ol.Ellipsoid.prototype.vincentyDirect
