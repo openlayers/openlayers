@@ -340,6 +340,38 @@ goog.inherits(ol.replay.canvas.PolygonBatch, ol.replay.canvas.Batch);
 
 
 /**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {Array.<number>} ends Ends.
+ * @param {number} stride Stride.
+ * @private
+ */
+ol.replay.canvas.PolygonBatch.prototype.drawFlatCoordinatess_ =
+    function(flatCoordinates, offset, ends, stride) {
+  var state = this.state_;
+  this.instructions.push([ol.replay.canvas.Instruction.BEGIN_PATH]);
+  var i, ii;
+  for (i = 0, ii = ends.length; i < ii; ++i) {
+    var end = ends[i];
+    var myEnd =
+        this.appendFlatCoordinates(flatCoordinates, offset, end, stride, true);
+    this.instructions.push(
+        [ol.replay.canvas.Instruction.MOVE_TO_LINE_TO, myEnd],
+        [ol.replay.canvas.Instruction.CLOSE_PATH]);
+    offset = end;
+  }
+  // FIXME is it quicker to fill and stroke each polygon individually,
+  // FIXME or all polygons together?
+  if (!goog.isNull(state.fillStyle)) {
+    this.instructions.push([ol.replay.canvas.Instruction.FILL]);
+  }
+  if (!goog.isNull(state.strokeStyle)) {
+    this.instructions.push([ol.replay.canvas.Instruction.STROKE]);
+  }
+};
+
+
+/**
  * @param {Array.<Array.<ol.Coordinate>>} rings Rings.
  * @private
  */
