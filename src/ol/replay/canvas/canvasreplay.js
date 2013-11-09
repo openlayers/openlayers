@@ -63,31 +63,6 @@ ol.replay.canvas.Batch = function() {
 
 
 /**
- * @param {Array.<Array.<number>>} coordinates Coordinates.
- * @param {boolean} close Close.
- * @protected
- * @return {number} End.
- */
-ol.replay.canvas.Batch.prototype.appendCoordinates =
-    function(coordinates, close) {
-  var end = this.coordinates.length;
-  var extent = this.extent_;
-  var i, ii;
-  for (i = 0, ii = coordinates.length; i < ii; ++i) {
-    var coordinate = coordinates[i];
-    this.coordinates[end++] = coordinate[0];
-    this.coordinates[end++] = coordinate[1];
-    ol.extent.extendCoordinate(extent, coordinate);
-  }
-  if (close) {
-    this.coordinates[end++] = coordinates[0][0];
-    this.coordinates[end++] = coordinates[0][1];
-  }
-  return end;
-};
-
-
-/**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
