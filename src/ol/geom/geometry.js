@@ -1,12 +1,12 @@
 // FIXME add MultiPoint
 // FIXME add GeometryCollection
-// FIXME add Z and M support
-// FIXME use flat coordinate arrays
 
 goog.provide('ol.geom.Geometry');
 
+goog.require('goog.asserts');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
+goog.require('ol.extent');
 
 
 /**
@@ -24,7 +24,7 @@ ol.geom.GeometryType = {
 /**
  * @enum {string}
  */
-ol.geom.GeometryLayout = {
+ol.geom.Layout = {
   XY: 'XY',
   XYZ: 'XYZ',
   XYM: 'XYM',
@@ -36,17 +36,28 @@ ol.geom.GeometryLayout = {
 /**
  * @constructor
  * @extends {goog.events.EventTarget}
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
-ol.geom.Geometry = function(opt_layout) {
+ol.geom.Geometry = function() {
 
   goog.base(this);
 
   /**
    * @protected
-   * @type {ol.geom.GeometryLayout}
+   * @type {ol.geom.Layout}
    */
-  this.layout = goog.isDef(opt_layout) ? opt_layout : ol.geom.GeometryLayout.XY;
+  this.layout = ol.geom.Layout.XY;
+
+  /**
+   * @protected
+   * @type {number}
+   */
+  this.stride = 2;
+
+  /**
+   * @protected
+   * @type {Array.<number>}
+   */
+  this.flatCoordinates = [];
 
   /**
    * @protected
@@ -83,11 +94,27 @@ ol.geom.Geometry.prototype.dispatchChangeEvent = function() {
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} extent Extent.
  */
-ol.geom.Geometry.prototype.getExtent = goog.abstractMethod;
+ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
+  if (this.extentRevision != this.revision) {
+    this.extent = ol.extent.createOrUpdateFromFlatCoordinates(
+        this.flatCoordinates, this.stride, this.extent);
+    this.extentRevision = this.revision;
+  }
+  goog.asserts.assert(goog.isDef(this.extent));
+  return ol.extent.returnOrUpdate(this.extent, opt_extent);
+};
 
 
 /**
- * @return {ol.geom.GeometryLayout} Layout.
+ * @return {Array.<number>} Flat coordinates.
+ */
+ol.geom.Geometry.prototype.getFlatCoordinates = function() {
+  return this.flatCoordinates;
+};
+
+
+/**
+ * @return {ol.geom.Layout} Layout.
  */
 ol.geom.Geometry.prototype.getLayout = function() {
   return this.layout;
@@ -106,7 +133,7 @@ ol.geom.Geometry.prototype.getRevision = function() {
  * @return {number} Stride.
  */
 ol.geom.Geometry.prototype.getStride = function() {
-  return this.layout.length;
+  return this.stride;
 };
 
 
@@ -117,9 +144,59 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 
 
 /**
+ * @param {ol.geom.Layout|undefined} layout Layout.
+ * @param {Array} coordinates Coordinates.
+ * @param {number} nesting Nesting.
+ * @protected
+ */
+ol.geom.Geometry.prototype.setLayout =
+    function(layout, coordinates, nesting) {
+  var stride;
+  if (goog.isDef(layout)) {
+    if (layout == ol.geom.Layout.XY) {
+      stride = 2;
+    } else if (layout == ol.geom.Layout.XYZ) {
+      stride = 3;
+    } else if (layout == ol.geom.Layout.XYM) {
+      stride = 3;
+    } else if (layout == ol.geom.Layout.XYZM) {
+      stride = 4;
+    } else {
+      throw new Error('unsupported layout: ' + layout);
+    }
+  } else {
+    var i;
+    for (i = 0; i < nesting; ++i) {
+      if (coordinates.length === 0) {
+        this.layout = ol.geom.Layout.XY;
+        this.stride = 2;
+        return;
+      } else {
+        coordinates = coordinates[0];
+      }
+    }
+    stride = coordinates.length;
+    if (stride == 2) {
+      layout = ol.geom.Layout.XY;
+    } else if (stride == 3) {
+      layout = ol.geom.Layout.XYZ;
+    } else if (stride == 4) {
+      layout = ol.geom.Layout.XYZM;
+    } else {
+      throw new Error('unsupported stride: ' + stride);
+    }
+  }
+  this.layout = layout;
+  this.stride = stride;
+};
+
+
+/**
  * @param {ol.TransformFunction} transformFn Transform.
  */
-ol.geom.Geometry.prototype.transform = goog.abstractMethod;
+ol.geom.Geometry.prototype.transform = function(transformFn) {
+  transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
+};
 
 
 /**
