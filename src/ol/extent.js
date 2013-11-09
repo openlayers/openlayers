@@ -168,6 +168,19 @@ ol.extent.createOrUpdateFromCoordinates = function(coordinates, opt_extent) {
 
 
 /**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} stride Stride.
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.createOrUpdateFromFlatCoordinates =
+    function(flatCoordinates, stride, opt_extent) {
+  var extent = ol.extent.createOrUpdateEmpty(opt_extent);
+  return ol.extent.extendFlatCoordinates(extent, flatCoordinates, stride);
+};
+
+
+/**
  * @param {Array.<Array.<ol.Coordinate>>} rings Rings.
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} Extent.
