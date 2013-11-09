@@ -128,7 +128,7 @@ describe('ol.source.Vector', function() {
       it('fires a change event', function() {
         var listener = sinon.spy();
         goog.events.listen(vectorSource, 'change', listener);
-        features[0].getGeometry().setCoordinate([100, 100]);
+        features[0].getGeometry().setCoordinates([100, 100]);
         expect(listener).to.be.called();
       });
 
@@ -136,10 +136,10 @@ describe('ol.source.Vector', function() {
         it('keeps the R-Tree index up to date', function() {
           expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
               to.have.length(10);
-          features[0].getGeometry().setCoordinate([100, 100]);
+          features[0].getGeometry().setCoordinates([100, 100]);
           expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
               to.have.length(9);
-          features[0].getGeometry().setCoordinate([0.5, 0.5]);
+          features[0].getGeometry().setCoordinates([0.5, 0.5]);
           expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
               to.have.length(10);
         });

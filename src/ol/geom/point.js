@@ -9,27 +9,21 @@ goog.require('ol.geom.Geometry');
 /**
  * @constructor
  * @extends {ol.geom.Geometry}
- * @param {ol.geom.RawPoint} coordinate Coordinate.
+ * @param {ol.geom.RawPoint} coordinates Coordinates.
+ * @param {ol.geom.Layout=} opt_layout Layout.
  */
-ol.geom.Point = function(coordinate) {
-
+ol.geom.Point = function(coordinates, opt_layout) {
   goog.base(this);
-
-  /**
-   * @private
-   * @type {ol.geom.RawPoint}
-   */
-  this.coordinate_ = coordinate;
-
+  this.setCoordinates(coordinates, opt_layout);
 };
 goog.inherits(ol.geom.Point, ol.geom.Geometry);
 
 
 /**
- * @return {ol.geom.RawPoint} Coordinate.
+ * @return {ol.geom.RawPoint} Coordinates.
  */
-ol.geom.Point.prototype.getCoordinate = function() {
-  return this.coordinate_;
+ol.geom.Point.prototype.getCoordinates = function() {
+  return this.flatCoordinates.slice();
 };
 
 
@@ -39,7 +33,7 @@ ol.geom.Point.prototype.getCoordinate = function() {
 ol.geom.Point.prototype.getExtent = function(opt_extent) {
   if (this.extentRevision != this.revision) {
     this.extent = ol.extent.createOrUpdateFromCoordinate(
-        this.coordinate_, this.extent);
+        this.flatCoordinates, this.extent);
     this.extentRevision = this.revision;
   }
   goog.asserts.assert(goog.isDef(this.extent));
@@ -56,9 +50,11 @@ ol.geom.Point.prototype.getType = function() {
 
 
 /**
- * @param {ol.geom.RawPoint} coordinate Coordinate.
+ * @param {ol.geom.RawPoint} coordinates Coordinates.
+ * @param {ol.geom.Layout=} opt_layout Layout.
  */
-ol.geom.Point.prototype.setCoordinate = function(coordinate) {
-  this.coordinate_ = coordinate;
+ol.geom.Point.prototype.setCoordinates = function(coordinates, opt_layout) {
+  this.setLayout(opt_layout, coordinates, 0);
+  this.flatCoordinates = coordinates;
   this.dispatchChangeEvent();
 };

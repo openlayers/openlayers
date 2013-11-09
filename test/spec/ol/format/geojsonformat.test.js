@@ -58,7 +58,7 @@ describe('ol.format.GeoJSON', function() {
       expect(feature).to.be.an(ol.Feature);
       var geometry = feature.getGeometry();
       expect(geometry).to.be.an(ol.geom.Point);
-      expect(geometry.getCoordinate()).to.eql([102.0, 0.5]);
+      expect(geometry.getCoordinates()).to.eql([102.0, 0.5]);
       expect(feature.get('prop0')).to.be('value0');
     });
 
