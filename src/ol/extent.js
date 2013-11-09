@@ -261,6 +261,21 @@ ol.extent.extendCoordinates = function(extent, coordinates) {
 
 /**
  * @param {ol.Extent} extent Extent.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} stride Stride.
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.extendFlatCoordinates = function(extent, flatCoordinates, stride) {
+  var i, ii;
+  for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
+    ol.extent.extendXY(extent, flatCoordinates[i], flatCoordinates[i + 1]);
+  }
+  return extent;
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
  * @param {Array.<Array.<ol.Coordinate>>} rings Rings.
  * @return {ol.Extent} Extent.
  */
