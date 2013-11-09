@@ -120,3 +120,46 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
  * @param {ol.TransformFunction} transformFn Transform.
  */
 ol.geom.Geometry.prototype.transform = goog.abstractMethod;
+
+
+/**
+ * @typedef {ol.Coordinate}
+ */
+ol.geom.RawPoint;
+
+
+/**
+ * @typedef {Array.<ol.Coordinate>}
+ */
+ol.geom.RawLineString;
+
+
+/**
+ * @typedef {Array.<ol.Coordinate>}
+ *
+ */
+ol.geom.RawLinearRing;
+
+
+/**
+ * @typedef {Array.<ol.geom.RawLinearRing>}
+ */
+ol.geom.RawPolygon;
+
+
+/**
+ * @typedef {Array.<ol.geom.RawPoint>}
+ */
+ol.geom.RawMultiPoint;
+
+
+/**
+ * @typedef {Array.<ol.geom.RawLineString>}
+ */
+ol.geom.RawMultiLineString;
+
+
+/**
+ * @typedef {Array.<ol.geom.RawPolygon>}
+ */
+ol.geom.RawMultiPolygon;
