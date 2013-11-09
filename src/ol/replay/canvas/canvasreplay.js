@@ -402,8 +402,12 @@ ol.replay.canvas.PolygonBatch.prototype.drawRings_ = function(rings) {
 ol.replay.canvas.PolygonBatch.prototype.drawPolygonGeometry =
     function(polygonGeometry) {
   goog.asserts.assert(!goog.isNull(this.state_));
+  ol.extent.extend(this.extent_, polygonGeometry.getExtent());
   this.setFillStrokeStyles_();
-  this.drawRings_(polygonGeometry.getRings());
+  var ends = polygonGeometry.getEnds();
+  var flatCoordinates = polygonGeometry.getFlatCoordinates();
+  var stride = polygonGeometry.getStride();
+  this.drawFlatCoordinatess_(flatCoordinates, 0, ends, stride);
 };
 
 
