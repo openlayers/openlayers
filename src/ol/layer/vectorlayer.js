@@ -268,6 +268,24 @@ ol.layer.Vector.prototype.getStyle = function() {
 
 
 /**
+ * Returns an array of features that match a filter. This will not fetch data,
+ * it only considers features that are loaded already.
+ * @param {function(ol.Feature):boolean} filter Filter function.
+ * @return {Array.<ol.Feature>} Features that match the filter.
+ */
+ol.layer.Vector.prototype.getFeatures = function(filter) {
+  var features = this.featureCache_.getFeaturesObject();
+  var result = [];
+  for (var f in features) {
+    if (filter(features[f]) === true) {
+      result.push(features[f]);
+    }
+  }
+  return result;
+};
+
+
+/**
  * Get all features whose bounding box intersects the provided extent. This
  * method is intended for being called by the renderer. When null is returned,
  * the renderer should not waste time rendering, and `opt_callback` is
