@@ -1,4 +1,3 @@
-// FIXME add MultiPoint
 // FIXME add GeometryCollection
 
 goog.provide('ol.geom.Geometry');
@@ -16,6 +15,7 @@ ol.geom.GeometryType = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
   POLYGON: 'Polygon',
+  MULTI_POINT: 'MultiPoint',
   MULTI_LINE_STRING: 'MultiLineString',
   MULTI_POLYGON: 'MultiPolygon'
 };
