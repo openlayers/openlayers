@@ -249,6 +249,31 @@ ol.replay.canvas.LineStringBatch.prototype.drawCoordinates_ =
 
 
 /**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
+ * @private
+ */
+ol.replay.canvas.LineStringBatch.prototype.drawFlatCoordinates_ =
+    function(flatCoordinates, offset, end, stride) {
+  var state = this.state_;
+  if (!ol.style.stroke.equals(state.currentStrokeStyle, state.strokeStyle)) {
+    if (state.lastDraw != this.coordinates.length) {
+      this.instructions.push([ol.replay.canvas.Instruction.STROKE]);
+    }
+    this.instructions.push(
+        [ol.replay.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle],
+        [ol.replay.canvas.Instruction.BEGIN_PATH]);
+    state.currentStrokeStyle = state.strokeStyle;
+  }
+  var myEnd = this.appendFlatCoordinates(
+      flatCoordinates, offset, end, stride, false);
+  this.instructions.push([ol.replay.canvas.Instruction.MOVE_TO_LINE_TO, myEnd]);
+};
+
+
+/**
  * @inheritDoc
  */
 ol.replay.canvas.LineStringBatch.prototype.drawLineStringGeometry =
