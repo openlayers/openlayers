@@ -88,6 +88,31 @@ ol.replay.canvas.Batch.prototype.appendCoordinates =
 
 
 /**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
+ * @param {boolean} close Close.
+ * @protected
+ * @return {number} My end.
+ */
+ol.replay.canvas.Batch.prototype.appendFlatCoordinates =
+    function(flatCoordinates, offset, end, stride, close) {
+  var myEnd = this.coordinates.length;
+  var i;
+  for (i = offset; i < end; i += stride) {
+    this.coordinates[myEnd++] = flatCoordinates[i];
+    this.coordinates[myEnd++] = flatCoordinates[i + 1];
+  }
+  if (close) {
+    this.coordinates[myEnd++] = flatCoordinates[offset];
+    this.coordinates[myEnd++] = flatCoordinates[offset + 1];
+  }
+  return myEnd;
+};
+
+
+/**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  */
