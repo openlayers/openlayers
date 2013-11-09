@@ -228,27 +228,6 @@ goog.inherits(ol.replay.canvas.LineStringBatch, ol.replay.canvas.Batch);
 
 
 /**
- * @param {Array.<ol.Coordinate>} coordinates Coordinates.
- * @private
- */
-ol.replay.canvas.LineStringBatch.prototype.drawCoordinates_ =
-    function(coordinates) {
-  var state = this.state_;
-  if (!ol.style.stroke.equals(state.currentStrokeStyle, state.strokeStyle)) {
-    if (state.lastDraw != this.coordinates.length) {
-      this.instructions.push([ol.replay.canvas.Instruction.STROKE]);
-    }
-    this.instructions.push(
-        [ol.replay.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle],
-        [ol.replay.canvas.Instruction.BEGIN_PATH]);
-    state.currentStrokeStyle = state.strokeStyle;
-  }
-  var end = this.appendCoordinates(coordinates, false);
-  this.instructions.push([ol.replay.canvas.Instruction.MOVE_TO_LINE_TO, end]);
-};
-
-
-/**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
