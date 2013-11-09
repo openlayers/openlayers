@@ -85,6 +85,10 @@ ol.interaction.Select.prototype.select =
     function(map, featuresByLayer, layers, clear) {
   for (var i = 0, ii = featuresByLayer.length; i < ii; ++i) {
     var layer = layers[i];
+    if (!(layer instanceof ol.layer.Vector)) {
+      // TODO Support non-vector layers and remove this
+      continue;
+    }
 
     var featuresToSelect = featuresByLayer[i];
     var selectedFeatures = layer.getFeatures(
