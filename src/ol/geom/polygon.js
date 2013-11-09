@@ -1,7 +1,5 @@
 goog.provide('ol.geom.Polygon');
 
-goog.require('goog.asserts');
-goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 
 
@@ -9,40 +7,39 @@ goog.require('ol.geom.Geometry');
 /**
  * @constructor
  * @extends {ol.geom.Geometry}
- * @param {ol.geom.RawPolygon} rings Rings.
+ * @param {ol.geom.RawPolygon} coordinates Coordinates.
+ * @param {ol.geom.Layout=} opt_layout Layout.
  */
-ol.geom.Polygon = function(rings) {
+ol.geom.Polygon = function(coordinates, opt_layout) {
 
   goog.base(this);
 
   /**
+   * @type {Array.<number>}
    * @private
-   * @type {ol.geom.RawPolygon}
    */
-  this.rings_ = rings;
+  this.ends_ = [];
+
+  this.setCoordinates(coordinates, opt_layout);
 
 };
 goog.inherits(ol.geom.Polygon, ol.geom.Geometry);
 
 
 /**
- * @inheritDoc
+ * @return {ol.geom.RawPolygon} Coordinates.
  */
-ol.geom.Polygon.prototype.getExtent = function(opt_extent) {
-  if (this.extentRevision != this.revision) {
-    this.extent = ol.extent.createOrUpdateFromRings(this.rings_, this.extent);
-    this.extentRevision = this.revision;
-  }
-  goog.asserts.assert(goog.isDef(this.extent));
-  return ol.extent.returnOrUpdate(this.extent, opt_extent);
+ol.geom.Polygon.prototype.getCoordinates = function() {
+  return ol.geom.inflateCoordinatess(
+      this.flatCoordinates, 0, this.ends_, this.stride);
 };
 
 
 /**
- * @return {ol.geom.RawPolygon} Rings.
+ * @return {Array.<number>} Ends.
  */
-ol.geom.Polygon.prototype.getRings = function() {
-  return this.rings_;
+ol.geom.Polygon.prototype.getEnds = function() {
+  return this.ends_;
 };
 
 
@@ -55,26 +52,13 @@ ol.geom.Polygon.prototype.getType = function() {
 
 
 /**
- * @param {ol.geom.RawPolygon} rings Rings.
+ * @param {ol.geom.RawPolygon} coordinates Coordinates.
+ * @param {ol.geom.Layout=} opt_layout Layout.
  */
-ol.geom.Polygon.prototype.setRings = function(rings) {
-  this.rings_ = rings;
+ol.geom.Polygon.prototype.setCoordinates =
+    function(coordinates, opt_layout) {
+  this.setLayout(opt_layout, coordinates, 2);
+  ol.geom.deflateCoordinatess(
+      this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
   this.dispatchChangeEvent();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.geom.Polygon.prototype.transform = function(transformFn) {
-  var rings = this.rings_;
-  var i, ii;
-  for (i = 0, ii = rings.length; i < ii; ++i) {
-    var coordinates = rings[i];
-    var j, jj;
-    for (j = 0, jj = coordinates.length; j < jj; ++j) {
-      var coordinate = coordinates[j];
-      transformFn(coordinate, coordinate, 2);
-    }
-  }
 };

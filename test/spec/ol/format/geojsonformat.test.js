@@ -83,7 +83,7 @@ describe('ol.format.GeoJSON', function() {
       expect(feature).to.be.an(ol.Feature);
       var geometry = feature.getGeometry();
       expect(geometry).to.be.an(ol.geom.Polygon);
-      expect(geometry.getRings()).to.eql([[
+      expect(geometry.getCoordinates()).to.eql([[
         [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]
       ]]);
       expect(feature.get('prop0')).to.be('value0');
