@@ -69,11 +69,11 @@ goog.inherits(ol.interaction.Modify, ol.interaction.Drag);
 
 
 /**
- * @param {ol.layer.VectorLayerEventObject} evt Event object.
+ * @param {ol.layer.Vector} layer The vector layer.
+ * @param {Array.<ol.Feature>} features Array of features.
+ * @private
  */
-ol.interaction.Modify.prototype.addIndex = function(evt) {
-  var layer = evt.target;
-  var features = evt.features;
+ol.interaction.Modify.prototype.addIndex_ = function(layer, features) {
   for (var i = 0, ii = features.length; i < ii; ++i) {
     var feature = features[i];
     var geometry = feature.getGeometry();
@@ -86,6 +86,16 @@ ol.interaction.Modify.prototype.addIndex = function(evt) {
       this.addSegments_(layer, feature, geometry);
     }
   }
+};
+
+
+/**
+ * Listen for feature additions.
+ * @param {ol.layer.VectorLayerEventObject} evt Event object.
+ * @private
+ */
+ol.interaction.Modify.prototype.handleFeaturesAdded_ = function(evt) {
+  this.addIndex_(evt.target, evt.features);
 };
 
 
@@ -104,11 +114,11 @@ ol.interaction.Modify.prototype.addLayer = function(layer) {
     selectionLayer.addFeatures([vertexFeature]);
     editData.vertexFeature = vertexFeature;
   }
-  this.addIndex(/** @type {ol.layer.VectorLayerEventObject} */
-      ({target: selectionLayer, features: goog.object.getValues(
-          selectionData.selectedFeaturesByFeatureUid)}));
+  this.addIndex_(selectionLayer,
+      goog.object.getValues(selectionData.selectedFeaturesByFeatureUid));
+
   goog.events.listen(selectionLayer, ol.layer.VectorLayerEventType.ADD,
-      this.addIndex, false, this);
+      this.handleFeaturesAdded_, false, this);
   goog.events.listen(selectionLayer, ol.layer.VectorLayerEventType.REMOVE,
       this.removeIndex, false, this);
 };
@@ -270,8 +280,10 @@ ol.interaction.Modify.prototype.handleMouseMove_ = function(evt) {
     var layer = layers[i];
     var selectionLayer = layer.getSelectionData().layer;
     if (!goog.isNull(selectionLayer)) {
-      if (goog.isNull(goog.events.getListener(selectionLayer,
-          ol.layer.VectorLayerEventType.ADD, this.addIndex, false, this))) {
+      var listener = goog.events.getListener(selectionLayer,
+          ol.layer.VectorLayerEventType.ADD,
+          this.handleFeaturesAdded_, false, this);
+      if (goog.isNull(listener)) {
         this.addLayer(layer);
       }
       var editData = selectionLayer.getEditData();
