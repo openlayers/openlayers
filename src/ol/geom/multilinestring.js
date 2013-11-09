@@ -65,3 +65,20 @@ ol.geom.MultiLineString.prototype.getType = function() {
 ol.geom.MultiLineString.prototype.setCoordinatess = function(coordinatess) {
   this.coordinatess_ = coordinatess;
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.MultiLineString.prototype.transform = function(transformFn) {
+  var coordinatess = this.coordinatess_;
+  var i, ii;
+  for (i = 0, ii = coordinatess.length; i < ii; ++i) {
+    var coordinates = coordinatess[i];
+    var j, jj;
+    for (j = 0, jj = coordinates.length; j < jj; ++j) {
+      var coordinate = coordinates[j];
+      transformFn(coordinate, coordinate, 2);
+    }
+  }
+};

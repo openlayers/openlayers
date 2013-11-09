@@ -114,3 +114,9 @@ ol.geom.Geometry.prototype.getStride = function() {
  * @return {ol.geom.GeometryType} Geometry type.
  */
 ol.geom.Geometry.prototype.getType = goog.abstractMethod;
+
+
+/**
+ * @param {ol.TransformFunction} transformFn Transform.
+ */
+ol.geom.Geometry.prototype.transform = goog.abstractMethod;

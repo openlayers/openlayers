@@ -61,3 +61,20 @@ ol.geom.Polygon.prototype.setRings = function(rings) {
   this.rings_ = rings;
   this.dispatchChangeEvent();
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.Polygon.prototype.transform = function(transformFn) {
+  var rings = this.rings_;
+  var i, ii;
+  for (i = 0, ii = rings.length; i < ii; ++i) {
+    var coordinates = rings[i];
+    var j, jj;
+    for (j = 0, jj = coordinates.length; j < jj; ++j) {
+      var coordinate = coordinates[j];
+      transformFn(coordinate, coordinate, 2);
+    }
+  }
+};

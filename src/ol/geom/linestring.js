@@ -62,3 +62,16 @@ ol.geom.LineString.prototype.setCoordinates = function(coordinates) {
   this.coordinates_ = coordinates;
   this.dispatchChangeEvent();
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.LineString.prototype.transform = function(transformFn) {
+  var coordinates = this.coordinates_;
+  var i, ii;
+  for (i = 0, ii = coordinates.length; i < ii; ++i) {
+    var coordinate = coordinates[i];
+    transformFn(coordinate, coordinate, 2);
+  }
+};

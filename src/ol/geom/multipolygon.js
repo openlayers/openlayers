@@ -65,3 +65,24 @@ ol.geom.MultiPolygon.prototype.setRingss = function(ringss) {
   this.ringss_ = ringss;
   this.dispatchChangeEvent();
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.MultiPolygon.prototype.transform = function(transformFn) {
+  var ringss = this.ringss_;
+  var i, ii;
+  for (i = 0, ii = ringss.length; i < ii; ++i) {
+    var rings = ringss[i];
+    var j, jj;
+    for (j = 0, jj = rings.length; j < jj; ++j) {
+      var coordinates = rings[j];
+      var k, kk;
+      for (k = 0, kk = coordinates.length; k < kk; ++k) {
+        var coordinate = coordinates[k];
+        transformFn(coordinate, coordinate, 2);
+      }
+    }
+  }
+};
