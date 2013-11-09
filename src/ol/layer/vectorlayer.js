@@ -104,16 +104,6 @@ ol.layer.FeatureCache.prototype.getFeaturesByIds_ = function(ids) {
 
 
 /**
- * @param {string} uid Feature uid.
- * @return {ol.Feature|undefined} The feature with the provided uid if it is in
- *     the cache, otherwise undefined.
- */
-ol.layer.FeatureCache.prototype.getFeatureWithUid = function(uid) {
-  return this.idLookup_[uid];
-};
-
-
-/**
  * Remove a feature from the cache.
  * @param {ol.Feature} feature Feature.
  * @param {ol.Extent=} opt_extent Optional extent (used when the current feature
@@ -363,16 +353,6 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
   }
   featuresBySymbolizer.sort(this.sortByZIndex_);
   return featuresBySymbolizer;
-};
-
-
-/**
- * @param {string|number} uid Feature uid.
- * @return {ol.Feature|undefined} The feature with the provided uid if it is on
- *     the layer, otherwise undefined.
- */
-ol.layer.Vector.prototype.getFeatureWithUid = function(uid) {
-  return this.featureCache_.getFeatureWithUid(/** @type {string} */ (uid));
 };
 
 
