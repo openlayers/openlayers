@@ -293,10 +293,16 @@ ol.replay.canvas.LineStringBatch.prototype.drawLineStringGeometry =
 ol.replay.canvas.LineStringBatch.prototype.drawMultiLineStringGeometry =
     function(multiLineStringGeometry) {
   goog.asserts.assert(!goog.isNull(this.state_));
-  var coordinatess = multiLineStringGeometry.getCoordinates();
+  ol.extent.extend(this.extent_, multiLineStringGeometry.getExtent());
+  var ends = multiLineStringGeometry.getEnds();
+  var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
+  var stride = multiLineStringGeometry.getStride();
+  var offset = 0;
   var i, ii;
-  for (i = 0, ii = coordinatess.length; i < ii; ++i) {
-    this.drawCoordinates_(coordinatess[i]);
+  for (i = 0, ii = ends.length; i < ii; ++i) {
+    var end = ends[i];
+    this.drawFlatCoordinates_(flatCoordinates, offset, end, stride);
+    offset = end;
   }
 };
 
