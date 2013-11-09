@@ -9,7 +9,7 @@ goog.require('ol.geom.Geometry');
 /**
  * @constructor
  * @extends {ol.geom.Geometry}
- * @param {Array.<ol.Coordinate>} coordinates Coordinates.
+ * @param {ol.geom.RawLineString} coordinates Coordinates.
  */
 ol.geom.LineString = function(coordinates) {
 
@@ -17,7 +17,7 @@ ol.geom.LineString = function(coordinates) {
 
   /**
    * @private
-   * @type {Array.<Array.<number>>}
+   * @type {ol.geom.RawLineString}
    */
   this.coordinates_ = coordinates;
 
@@ -26,7 +26,7 @@ goog.inherits(ol.geom.LineString, ol.geom.Geometry);
 
 
 /**
- * @return {Array.<Array.<number>>} Coordinates.
+ * @return {ol.geom.RawLineString} Coordinates.
  */
 ol.geom.LineString.prototype.getCoordinates = function() {
   return this.coordinates_;
@@ -56,7 +56,7 @@ ol.geom.LineString.prototype.getType = function() {
 
 
 /**
- * @param {Array.<ol.Coordinate>} coordinates Coordinates.
+ * @param {ol.geom.RawLineString} coordinates Coordinates.
  */
 ol.geom.LineString.prototype.setCoordinates = function(coordinates) {
   this.coordinates_ = coordinates;

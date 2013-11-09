@@ -9,7 +9,7 @@ goog.require('ol.geom.Geometry');
 /**
  * @constructor
  * @extends {ol.geom.Geometry}
- * @param {Array.<Array.<Array.<ol.Coordinate>>>} ringss Ringss.
+ * @param {ol.geom.RawMultiPolygon} ringss Ringss.
  */
 ol.geom.MultiPolygon = function(ringss) {
 
@@ -17,7 +17,7 @@ ol.geom.MultiPolygon = function(ringss) {
 
   /**
    * @private
-   * @type {Array.<Array.<Array.<ol.Coordinate>>>}
+   * @type {ol.geom.RawMultiPolygon}
    */
   this.ringss_ = ringss;
 
@@ -43,7 +43,7 @@ ol.geom.MultiPolygon.prototype.getExtent = function(opt_extent) {
 
 
 /**
- * @return {Array.<Array.<Array.<ol.Coordinate>>>} Ringss.
+ * @return {ol.geom.RawMultiPolygon} Ringss.
  */
 ol.geom.MultiPolygon.prototype.getRingss = function() {
   return this.ringss_;
@@ -59,7 +59,7 @@ ol.geom.MultiPolygon.prototype.getType = function() {
 
 
 /**
- * @param {Array.<Array.<Array.<ol.Coordinate>>>} ringss Ringss.
+ * @param {ol.geom.RawMultiPolygon} ringss Ringss.
  */
 ol.geom.MultiPolygon.prototype.setRingss = function(ringss) {
   this.ringss_ = ringss;

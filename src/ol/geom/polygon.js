@@ -9,7 +9,7 @@ goog.require('ol.geom.Geometry');
 /**
  * @constructor
  * @extends {ol.geom.Geometry}
- * @param {Array.<Array.<ol.Coordinate>>} rings Rings.
+ * @param {ol.geom.RawPolygon} rings Rings.
  */
 ol.geom.Polygon = function(rings) {
 
@@ -17,7 +17,7 @@ ol.geom.Polygon = function(rings) {
 
   /**
    * @private
-   * @type {Array.<Array.<ol.Coordinate>>}
+   * @type {ol.geom.RawPolygon}
    */
   this.rings_ = rings;
 
@@ -39,7 +39,7 @@ ol.geom.Polygon.prototype.getExtent = function(opt_extent) {
 
 
 /**
- * @return {Array.<Array.<ol.Coordinate>>} Rings.
+ * @return {ol.geom.RawPolygon} Rings.
  */
 ol.geom.Polygon.prototype.getRings = function() {
   return this.rings_;
@@ -55,7 +55,7 @@ ol.geom.Polygon.prototype.getType = function() {
 
 
 /**
- * @param {Array.<Array.<ol.Coordinate>>} rings Rings.
+ * @param {ol.geom.RawPolygon} rings Rings.
  */
 ol.geom.Polygon.prototype.setRings = function(rings) {
   this.rings_ = rings;

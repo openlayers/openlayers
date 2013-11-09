@@ -9,7 +9,7 @@ goog.require('ol.geom.Geometry');
 /**
  * @constructor
  * @extends {ol.geom.Geometry}
- * @param {Array.<Array.<ol.Coordinate>>} coordinatess Coordinatess.
+ * @param {ol.geom.RawMultiLineString} coordinatess Coordinatess.
  */
 ol.geom.MultiLineString = function(coordinatess) {
 
@@ -17,7 +17,7 @@ ol.geom.MultiLineString = function(coordinatess) {
 
   /**
    * @private
-   * @type {Array.<Array.<ol.Coordinate>>}
+   * @type {ol.geom.RawMultiLineString}
    */
   this.coordinatess_ = coordinatess;
 
@@ -26,7 +26,7 @@ goog.inherits(ol.geom.MultiLineString, ol.geom.Geometry);
 
 
 /**
- * @return {Array.<Array.<ol.Coordinate>>} Coordinatess.
+ * @return {ol.geom.RawMultiLineString} Coordinatess.
  */
 ol.geom.MultiLineString.prototype.getCoordinatess = function() {
   return this.coordinatess_;
@@ -60,7 +60,7 @@ ol.geom.MultiLineString.prototype.getType = function() {
 
 
 /**
- * @param {Array.<Array.<ol.Coordinate>>} coordinatess Coordinatess.
+ * @param {ol.geom.RawMultiLineString} coordinatess Coordinatess.
  */
 ol.geom.MultiLineString.prototype.setCoordinatess = function(coordinatess) {
   this.coordinatess_ = coordinatess;

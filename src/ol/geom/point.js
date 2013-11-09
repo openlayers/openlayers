@@ -9,7 +9,7 @@ goog.require('ol.geom.Geometry');
 /**
  * @constructor
  * @extends {ol.geom.Geometry}
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.geom.RawPoint} coordinate Coordinate.
  */
 ol.geom.Point = function(coordinate) {
 
@@ -17,7 +17,7 @@ ol.geom.Point = function(coordinate) {
 
   /**
    * @private
-   * @type {Array.<number>}
+   * @type {ol.geom.RawPoint}
    */
   this.coordinate_ = coordinate;
 
@@ -26,7 +26,7 @@ goog.inherits(ol.geom.Point, ol.geom.Geometry);
 
 
 /**
- * @return {ol.Coordinate} Coordinate.
+ * @return {ol.geom.RawPoint} Coordinate.
  */
 ol.geom.Point.prototype.getCoordinate = function() {
   return this.coordinate_;
@@ -56,7 +56,7 @@ ol.geom.Point.prototype.getType = function() {
 
 
 /**
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.geom.RawPoint} coordinate Coordinate.
  */
 ol.geom.Point.prototype.setCoordinate = function(coordinate) {
   this.coordinate_ = coordinate;
