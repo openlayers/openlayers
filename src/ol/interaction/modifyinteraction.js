@@ -172,7 +172,8 @@ ol.interaction.Modify.prototype.addSegments_ =
 ol.interaction.Modify.prototype.handleDragStart = function(evt) {
   this.dragSegments_ = [];
   for (var i = 0, ii = this.layers_.length; i < ii; ++i) {
-    var selectionData = this.layers_[i].getSelectionData();
+    var layer = this.layers_[i];
+    var selectionData = layer.getSelectionData();
     var selectionLayer = selectionData.layer;
     if (!goog.isNull(selectionLayer)) {
       var editData = selectionLayer.getEditData();
@@ -186,16 +187,22 @@ ol.interaction.Modify.prototype.handleDragStart = function(evt) {
         for (var j = 0, jj = segments.length; j < jj; ++j) {
           var segmentData = segments[j];
           var segment = segmentData[0];
+          var feature = segmentData[1];
+          var featureId = goog.getUid(feature);
+          var original = selectionData.featuresBySelectedFeatureUid[featureId];
           if (vertexFeature.renderIntent ==
               ol.layer.VectorLayerRenderIntent.TEMPORARY) {
             if (ol.coordinate.equals(segment[0], vertex)) {
               this.dragSegments_.push([selectionLayer, segmentData, 0]);
-            } else {
+              feature.setOriginal(original);
+            } else if (ol.coordinate.equals(segment[1], vertex)) {
               this.dragSegments_.push([selectionLayer, segmentData, 1]);
+              feature.setOriginal(original);
             }
           } else if (
               ol.coordinate.squaredDistanceToSegment(vertex, segment) === 0) {
             insertVertices.push([selectionLayer, segmentData, vertex]);
+            feature.setOriginal(original);
           }
         }
         for (j = insertVertices.length - 1; j >= 0; --j) {
