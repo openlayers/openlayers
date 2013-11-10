@@ -1,7 +1,9 @@
+goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.format.GeoJSON');
+goog.require('ol.geom.LineString');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.OSM');
@@ -107,15 +109,35 @@ new ol.format.GeoJSON().readObject({
   ]
 }, vectorSource.addFeature, vectorSource);
 
+var vectorLayer = new ol.layer.Vector({
+  source: vectorSource,
+  styleFunction: styleFunction
+});
+var tmpFeature = new ol.Feature(
+    new ol.geom.LineString([[-5e6, -5e6], [5e6, -5e6]]));
+var tmpStyle = {
+  fill: null,
+  image: null,
+  stroke: {
+    color: 'magenta',
+    width: 5
+  }
+};
+vectorLayer.on('postrender', function(event) {
+  var render = event.getRender();
+  render.drawFeature(tmpFeature, tmpStyle);
+  var context = event.getContext();
+  if (!goog.isNull(context)) {
+    context.clearRect(0, 0, 10, 10);
+  }
+});
+
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
       source: new ol.source.OSM()
     }),
-    new ol.layer.Vector({
-      source: vectorSource,
-      styleFunction: styleFunction
-    })
+    vectorLayer
   ],
   renderer: ol.RendererHint.CANVAS,
   target: 'map',
