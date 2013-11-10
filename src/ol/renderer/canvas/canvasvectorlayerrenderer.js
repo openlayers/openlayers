@@ -144,7 +144,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
 
   // FIXME dispose of old replayGroup in post render
   goog.dispose(this.replayGroup_);
-  this.replayGroup = null;
+  this.replayGroup_ = null;
 
   var styleFunction = vectorLayer.getStyleFunction();
   if (!goog.isDef(styleFunction)) {
