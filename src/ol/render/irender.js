@@ -10,6 +10,14 @@ ol.render.IRender = function() {
 
 
 /**
+ * @param {ol.Feature} feature Feature.
+ * @param {ol.style.Style} style Style.
+ */
+ol.render.IRender.prototype.drawFeature = function(feature, style) {
+};
+
+
+/**
  * @param {ol.geom.Point} pointGeometry Point geometry.
  */
 ol.render.IRender.prototype.drawPointGeometry = function(pointGeometry) {
