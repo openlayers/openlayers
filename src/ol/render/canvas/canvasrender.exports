@@ -1,0 +1,9 @@
+@exportProperty ol.render.canvas.Render.prototype.drawFeature
+@exportProperty ol.render.canvas.Render.prototype.drawPointGeometry
+@exportProperty ol.render.canvas.Render.prototype.drawLineStringGeometry
+@exportProperty ol.render.canvas.Render.prototype.drawPolygonGeometry
+@exportProperty ol.render.canvas.Render.prototype.drawMultiPointGeometry
+@exportProperty ol.render.canvas.Render.prototype.drawMultiLineStringGeometry
+@exportProperty ol.render.canvas.Render.prototype.drawMultiPointGeometry
+@exportProperty ol.render.canvas.Render.prototype.setFillStrokeStyle
+@exportProperty ol.render.canvas.Render.prototype.setImageStyle
