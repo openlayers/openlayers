@@ -91,8 +91,8 @@ ol.render.canvas.Batch.prototype.appendFlatCoordinates =
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  */
 ol.render.canvas.Batch.prototype.draw = function(context, transform) {
-  var pixelCoordinates = ol.render.transformCoordinates(
-      this.coordinates, transform, this.pixelCoordinates_);
+  var pixelCoordinates = ol.render.transformFlatCoordinates(
+      this.coordinates, 2, transform, this.pixelCoordinates_);
   this.pixelCoordinates_ = pixelCoordinates;  // FIXME ?
   var instructions = this.instructions;
   var i = 0;
