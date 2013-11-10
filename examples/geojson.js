@@ -7,10 +7,16 @@ goog.require('ol.layer.Vector');
 goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
 goog.require('ol.style.DefaultStyleFunction');
+goog.require('ol.symbol');
 
 
+var image = ol.symbol.renderCircle(5, null, {color: 'red'});
 var styleFunction = function(feature) {
   switch (feature.getGeometry().getType()) {
+    case ol.geom.GeometryType.POINT:
+      return {
+        image: image
+      };
     case ol.geom.GeometryType.POLYGON:
       return {
         stroke: {
