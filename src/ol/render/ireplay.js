@@ -1,5 +1,5 @@
-goog.provide('ol.replay.IBatch');
-goog.provide('ol.replay.IBatchGroup');
+goog.provide('ol.render.IReplayBatch');
+goog.provide('ol.render.IReplayBatchGroup');
 
 goog.require('goog.functions');
 
@@ -7,7 +7,7 @@ goog.require('goog.functions');
 /**
  * @enum {string}
  */
-ol.replay.BatchType = {
+ol.render.BatchType = {
   IMAGE: 'Image',
   LINE_STRING: 'LineString',
   POLYGON: 'Polygon'
@@ -18,21 +18,21 @@ ol.replay.BatchType = {
 /**
  * @interface
  */
-ol.replay.IBatch = function() {
+ol.render.IReplayBatch = function() {
 };
 
 
 /**
  * @param {ol.geom.Point} pointGeometry Point geometry.
  */
-ol.replay.IBatch.prototype.drawPointGeometry = function(pointGeometry) {
+ol.render.IReplayBatch.prototype.drawPointGeometry = function(pointGeometry) {
 };
 
 
 /**
  * @param {ol.geom.LineString} lineStringGeometry Line string geometry.
  */
-ol.replay.IBatch.prototype.drawLineStringGeometry =
+ol.render.IReplayBatch.prototype.drawLineStringGeometry =
     function(lineStringGeometry) {
 };
 
@@ -41,7 +41,7 @@ ol.replay.IBatch.prototype.drawLineStringGeometry =
  * @param {ol.geom.MultiLineString} multiLineStringGeometry
  *     Multi line string geometry.
  */
-ol.replay.IBatch.prototype.drawMultiLineStringGeometry =
+ol.render.IReplayBatch.prototype.drawMultiLineStringGeometry =
     function(multiLineStringGeometry) {
 };
 
@@ -49,7 +49,7 @@ ol.replay.IBatch.prototype.drawMultiLineStringGeometry =
 /**
  * @param {ol.geom.MultiPoint} multiPointGeometry MultiPoint geometry.
  */
-ol.replay.IBatch.prototype.drawMultiPointGeometry =
+ol.render.IReplayBatch.prototype.drawMultiPointGeometry =
     function(multiPointGeometry) {
 };
 
@@ -57,7 +57,7 @@ ol.replay.IBatch.prototype.drawMultiPointGeometry =
 /**
  * @param {ol.geom.MultiPolygon} multiPolygonGeometry Multi polygon geometry.
  */
-ol.replay.IBatch.prototype.drawMultiPolygonGeometry =
+ol.render.IReplayBatch.prototype.drawMultiPolygonGeometry =
     function(multiPolygonGeometry) {
 };
 
@@ -65,7 +65,8 @@ ol.replay.IBatch.prototype.drawMultiPolygonGeometry =
 /**
  * @param {ol.geom.Polygon} polygonGeometry Polygon geometry.
  */
-ol.replay.IBatch.prototype.drawPolygonGeometry = function(polygonGeometry) {
+ol.render.IReplayBatch.prototype.drawPolygonGeometry =
+    function(polygonGeometry) {
 };
 
 
@@ -73,7 +74,7 @@ ol.replay.IBatch.prototype.drawPolygonGeometry = function(polygonGeometry) {
  * @param {?ol.style.Fill} fillStyle Fill style.
  * @param {?ol.style.Stroke} strokeStyle Stroke style.
  */
-ol.replay.IBatch.prototype.setFillStrokeStyle =
+ol.render.IReplayBatch.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
 };
 
@@ -81,7 +82,7 @@ ol.replay.IBatch.prototype.setFillStrokeStyle =
 /**
  * @param {?ol.style.Image} imageStyle Image style.
  */
-ol.replay.IBatch.prototype.setImageStyle = function(imageStyle) {
+ol.render.IReplayBatch.prototype.setImageStyle = function(imageStyle) {
 };
 
 
@@ -89,28 +90,28 @@ ol.replay.IBatch.prototype.setImageStyle = function(imageStyle) {
 /**
  * @interface
  */
-ol.replay.IBatchGroup = function() {
+ol.render.IReplayBatchGroup = function() {
 };
 
 
 /**
  * FIXME empty description for jsdoc
  */
-ol.replay.IBatchGroup.prototype.finish = function() {
+ol.render.IReplayBatchGroup.prototype.finish = function() {
 };
 
 
 /**
  * @param {number|undefined} zIndex Z index.
- * @param {ol.replay.BatchType} batchType Batch type.
- * @return {ol.replay.IBatch} Batch.
+ * @param {ol.render.BatchType} batchType Batch type.
+ * @return {ol.render.IReplayBatch} Batch.
  */
-ol.replay.IBatchGroup.prototype.getBatch = function(zIndex, batchType) {
+ol.render.IReplayBatchGroup.prototype.getBatch = function(zIndex, batchType) {
 };
 
 
 /**
  * @return {boolean} Is empty.
  */
-ol.replay.IBatchGroup.prototype.isEmpty = function() {
+ol.render.IReplayBatchGroup.prototype.isEmpty = function() {
 };

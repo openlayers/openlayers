@@ -1,4 +1,4 @@
-goog.provide('ol.replay');
+goog.provide('ol.render');
 
 goog.require('goog.vec.Mat4');
 
@@ -9,7 +9,7 @@ goog.require('goog.vec.Mat4');
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed coordinates.
  */
-ol.replay.transformCoordinates = function(coordinates, transform, opt_dest) {
+ol.render.transformCoordinates = function(coordinates, transform, opt_dest) {
   var m00 = goog.vec.Mat4.getElement(transform, 0, 0);
   var m10 = goog.vec.Mat4.getElement(transform, 1, 0);
   var m01 = goog.vec.Mat4.getElement(transform, 0, 1);

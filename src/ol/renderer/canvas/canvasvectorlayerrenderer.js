@@ -3,9 +3,9 @@ goog.provide('ol.renderer.canvas.VectorLayer');
 goog.require('goog.vec.Mat4');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
+goog.require('ol.render.canvas.BatchGroup');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.vector');
-goog.require('ol.replay.canvas.BatchGroup');
 goog.require('ol.style.DefaultStyleFunction');
 
 
@@ -46,7 +46,7 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, vectorLayer) {
 
   /**
    * @private
-   * @type {ol.replay.canvas.BatchGroup}
+   * @type {ol.render.canvas.BatchGroup}
    */
   this.batchGroup_ = null;
 
@@ -137,7 +137,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   if (!goog.isDef(styleFunction)) {
     styleFunction = ol.style.DefaultStyleFunction;
   }
-  var batchGroup = new ol.replay.canvas.BatchGroup();
+  var batchGroup = new ol.render.canvas.BatchGroup();
   vectorSource.forEachFeatureInExtent(extent, function(feature) {
     var style = styleFunction(feature);
     ol.renderer.vector.renderFeature(batchGroup, feature, style);

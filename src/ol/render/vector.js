@@ -7,12 +7,12 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.replay.IBatchGroup');
+goog.require('ol.render.IReplayBatchGroup');
 goog.require('ol.style.Style');
 
 
 /**
- * @param {ol.replay.IBatchGroup} batchGroup Batch group.
+ * @param {ol.render.IReplayBatchGroup} batchGroup Batch group.
  * @param {ol.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  */
@@ -26,7 +26,7 @@ ol.renderer.vector.renderFeature = function(batchGroup, feature, style) {
 
 
 /**
- * @param {ol.replay.IBatchGroup} batchGroup Batch group.
+ * @param {ol.render.IReplayBatchGroup} batchGroup Batch group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @private
@@ -39,14 +39,14 @@ ol.renderer.vector.renderLineStringGeometry_ =
   goog.asserts.assert(geometry instanceof ol.geom.LineString);
   var lineStringGeometry = /** @type {ol.geom.LineString} */ (geometry);
   var batch = batchGroup.getBatch(
-      style.zIndex, ol.replay.BatchType.LINE_STRING);
+      style.zIndex, ol.render.BatchType.LINE_STRING);
   batch.setFillStrokeStyle(null, style.stroke);
   batch.drawLineStringGeometry(lineStringGeometry);
 };
 
 
 /**
- * @param {ol.replay.IBatchGroup} batchGroup Batch group.
+ * @param {ol.render.IReplayBatchGroup} batchGroup Batch group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @private
@@ -60,14 +60,14 @@ ol.renderer.vector.renderMultiLineStringGeometry_ =
   var multiLineStringGeometry = /** @type {ol.geom.MultiLineString} */
       (geometry);
   var batch = batchGroup.getBatch(
-      style.zIndex, ol.replay.BatchType.LINE_STRING);
+      style.zIndex, ol.render.BatchType.LINE_STRING);
   batch.setFillStrokeStyle(null, style.stroke);
   batch.drawMultiLineStringGeometry(multiLineStringGeometry);
 };
 
 
 /**
- * @param {ol.replay.IBatchGroup} batchGroup Batch group.
+ * @param {ol.render.IReplayBatchGroup} batchGroup Batch group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @private
@@ -81,14 +81,14 @@ ol.renderer.vector.renderMultiPolygonGeometry_ =
   var multiPolygonGeometry = /** @type {ol.geom.MultiPolygon} */
       (geometry);
   var batch = batchGroup.getBatch(
-      style.zIndex, ol.replay.BatchType.POLYGON);
+      style.zIndex, ol.render.BatchType.POLYGON);
   batch.setFillStrokeStyle(style.fill, style.stroke);
   batch.drawMultiPolygonGeometry(multiPolygonGeometry);
 };
 
 
 /**
- * @param {ol.replay.IBatchGroup} batchGroup Batch group.
+ * @param {ol.render.IReplayBatchGroup} batchGroup Batch group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @private
@@ -100,14 +100,14 @@ ol.renderer.vector.renderPointGeometry_ =
   }
   goog.asserts.assert(geometry instanceof ol.geom.Point);
   var pointGeometry = /** @type {ol.geom.Point} */ (geometry);
-  var batch = batchGroup.getBatch(style.zIndex, ol.replay.BatchType.IMAGE);
+  var batch = batchGroup.getBatch(style.zIndex, ol.render.BatchType.IMAGE);
   batch.setImageStyle(style.image);
   batch.drawPointGeometry(pointGeometry);
 };
 
 
 /**
- * @param {ol.replay.IBatchGroup} batchGroup Batch group.
+ * @param {ol.render.IReplayBatchGroup} batchGroup Batch group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @private
@@ -119,14 +119,14 @@ ol.renderer.vector.renderMultiPointGeometry_ =
   }
   goog.asserts.assert(geometry instanceof ol.geom.MultiPoint);
   var multiPointGeometry = /** @type {ol.geom.MultiPoint} */ (geometry);
-  var batch = batchGroup.getBatch(style.zIndex, ol.replay.BatchType.IMAGE);
+  var batch = batchGroup.getBatch(style.zIndex, ol.render.BatchType.IMAGE);
   batch.setImageStyle(style.image);
   batch.drawMultiPointGeometry(multiPointGeometry);
 };
 
 
 /**
- * @param {ol.replay.IBatchGroup} batchGroup Batch group.
+ * @param {ol.render.IReplayBatchGroup} batchGroup Batch group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @private
@@ -138,7 +138,7 @@ ol.renderer.vector.renderPolygonGeometry_ =
   }
   goog.asserts.assert(geometry instanceof ol.geom.Polygon);
   var polygonGeometry = /** @type {ol.geom.Polygon} */ (geometry);
-  var batch = batchGroup.getBatch(style.zIndex, ol.replay.BatchType.POLYGON);
+  var batch = batchGroup.getBatch(style.zIndex, ol.render.BatchType.POLYGON);
   batch.setFillStrokeStyle(style.fill, style.stroke);
   batch.drawPolygonGeometry(polygonGeometry);
 };
@@ -148,8 +148,8 @@ ol.renderer.vector.renderPolygonGeometry_ =
  * @const
  * @private
  * @type {Object.<ol.geom.GeometryType,
- *                function(
- *                    ol.replay.IBatchGroup, ol.geom.Geometry, ol.style.Style)>}
+ *                function(ol.render.IReplayBatchGroup, ol.geom.Geometry,
+ *                         ol.style.Style)>}
  */
 ol.renderer.vector.GEOMETRY_RENDERERS_ = {
   'Point': ol.renderer.vector.renderPointGeometry_,
