@@ -121,6 +121,20 @@ ol.render.canvas.Render.prototype.drawRings_ =
 /**
  * @inheritDoc
  */
+ol.render.canvas.Render.prototype.drawFeature = function(feature, style) {
+  this.setFillStrokeStyle(style.fill, style.stroke);
+  this.setImageStyle(style.image);
+  var geometry = feature.getGeometry();
+  var renderGeometry =
+      ol.render.canvas.Render.GEOMETRY_RENDERES_[geometry.getType()];
+  goog.asserts.assert(goog.isDef(renderGeometry));
+  renderGeometry.call(this, geometry);
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.render.canvas.Render.prototype.drawPointGeometry =
     ol.render.canvas.Render.prototype.drawImages_;
 
@@ -248,4 +262,21 @@ ol.render.canvas.Render.prototype.setFillStrokeStyle =
  */
 ol.render.canvas.Render.prototype.setImageStyle = function(imageStyle) {
   this.state_.imageStyle = imageStyle;
+};
+
+
+/**
+ * @const
+ * @private
+ * @type {Object.<ol.geom.GeometryType,
+ *                function(this: ol.render.canvas.Render, ol.geom.Geometry)>}
+ */
+ol.render.canvas.Render.GEOMETRY_RENDERES_ = {
+  'Point': ol.render.canvas.Render.prototype.drawPointGeometry,
+  'LineString': ol.render.canvas.Render.prototype.drawLineStringGeometry,
+  'Polygon': ol.render.canvas.Render.prototype.drawPolygonGeometry,
+  'MultiPoint': ol.render.canvas.Render.prototype.drawMultiPointGeometry,
+  'MultiLineString':
+      ol.render.canvas.Render.prototype.drawMultiLineStringGeometry,
+  'MultiPolygon': ol.render.canvas.Render.prototype.drawMultiPolygonGeometry
 };
