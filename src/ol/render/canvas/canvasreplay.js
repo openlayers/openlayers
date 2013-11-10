@@ -148,6 +148,12 @@ ol.render.canvas.Batch.prototype.draw = function(context, transform) {
 /**
  * @inheritDoc
  */
+ol.render.canvas.Batch.prototype.drawFeature = goog.abstractMethod;
+
+
+/**
+ * @inheritDoc
+ */
 ol.render.canvas.Batch.prototype.drawLineStringGeometry = goog.abstractMethod;
 
 
