@@ -436,6 +436,7 @@ goog.inherits(ol.render.canvas.PolygonBatch, ol.render.canvas.Batch);
  * @param {Array.<number>} ends Ends.
  * @param {number} stride Stride.
  * @private
+ * @return {number} End.
  */
 ol.render.canvas.PolygonBatch.prototype.drawFlatCoordinatess_ =
     function(flatCoordinates, offset, ends, stride) {
@@ -459,6 +460,7 @@ ol.render.canvas.PolygonBatch.prototype.drawFlatCoordinatess_ =
   if (!goog.isNull(state.strokeStyle)) {
     this.instructions.push([ol.render.canvas.Instruction.STROKE]);
   }
+  return offset;
 };
 
 
@@ -491,9 +493,8 @@ ol.render.canvas.PolygonBatch.prototype.drawMultiPolygonGeometry =
   var offset = 0;
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
-    var ends = endss[i];
-    this.drawFlatCoordinatess_(flatCoordinates, offset, ends, stride);
-    offset = ends[ends.length - 1];
+    offset = this.drawFlatCoordinatess_(
+        flatCoordinates, offset, endss[i], stride);
   }
 };
 
