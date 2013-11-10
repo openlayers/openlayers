@@ -1,4 +1,5 @@
 // FIXME decide default snapToPixel behaviour
+// FIXME add option to apply snapToPixel to all coordinates?
 
 goog.provide('ol.render.canvas.BatchGroup');
 

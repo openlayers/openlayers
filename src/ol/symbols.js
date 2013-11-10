@@ -1,3 +1,7 @@
+// FIXME check size when stroked
+// FIXME move to ol.render?
+// FIXME find a sensible caching strategy
+
 goog.provide('ol.symbol');
 
 goog.require('goog.dom');
