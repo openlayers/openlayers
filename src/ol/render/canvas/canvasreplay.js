@@ -1,3 +1,5 @@
+// FIXME decide default snapToPixel behaviour
+
 goog.provide('ol.render.canvas.BatchGroup');
 
 goog.require('goog.array');
@@ -108,10 +110,13 @@ ol.render.canvas.Batch.prototype.draw = function(context, transform) {
       end = /** @type {number} */ (instruction[1]);
       var imageStyle = /** @type {ol.style.Image} */ (instruction[2]);
       for (; i < end; i += 2) {
-        context.drawImage(
-            imageStyle.image,
-            pixelCoordinates[i] - imageStyle.anchor[0],
-            pixelCoordinates[i + 1] - imageStyle.anchor[1]);
+        var x = pixelCoordinates[i] - imageStyle.anchor[0];
+        var y = pixelCoordinates[i + 1] - imageStyle.anchor[1];
+        if (imageStyle.snapToPixel) {
+          x = (x + 0.5) | 0;
+          y = (y + 0.5) | 0;
+        }
+        context.drawImage(imageStyle.image, x, y);
       }
     } else if (type == ol.render.canvas.Instruction.FILL) {
       context.fill();

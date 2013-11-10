@@ -40,6 +40,7 @@ ol.symbol.renderCircle = function(radius, fillStyle, strokeStyle) {
     anchor: [size / 2, size / 2],
     image: canvas,
     rotation: 0,
+    snapToPixel: undefined,
     subtractViewRotation: false
   };
 

@@ -1,4 +1,5 @@
 // FIXME decide how to handle fill opacity
+// FIXME decide default value for snapToPixel
 
 goog.provide('ol.style');
 goog.provide('ol.style.DefaultStyleFunction');
@@ -32,6 +33,7 @@ ol.style.fill.equals = function(fillStyle1, fillStyle2) {
  * @typedef {{anchor: Array.<number>,
  *            image: (HTMLCanvasElement|HTMLVideoElement|Image),
  *            rotation: number,
+ *            snapToPixel: (boolean|undefined),
  *            subtractViewRotation: boolean}}
  */
 ol.style.Image;
@@ -89,6 +91,7 @@ ol.style.DEFAULT_IMAGE_STYLE = {
   anchor: [0, 0],
   image: null, // FIXME
   rotation: 0.0,
+  snapToPixel: undefined,
   subtractViewRotation: false
 };
 

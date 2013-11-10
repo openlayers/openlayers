@@ -1,5 +1,6 @@
 // FIXME complete missing functionality
 // FIXME factor out drawImage
+// FIXME apply snapToPixel
 // FIXME factor out moveTo/lineTo
 
 goog.provide('ol.render.canvas.Render');
