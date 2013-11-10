@@ -99,7 +99,7 @@ ol.replay.canvas.Batch.prototype.draw = function(context, transform) {
   var end, j, jj;
   for (j = 0, jj = instructions.length; j < jj; ++j) {
     var instruction = instructions[j];
-    var type = instruction[0];
+    var type = /** @type {ol.replay.canvas.Instruction} */ (instruction[0]);
     if (type == ol.replay.canvas.Instruction.BEGIN_PATH) {
       context.beginPath();
     } else if (type == ol.replay.canvas.Instruction.CLOSE_PATH) {
