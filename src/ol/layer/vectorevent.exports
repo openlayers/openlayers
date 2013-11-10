@@ -1,0 +1,3 @@
+@exportProperty ol.layer.VectorEvent.prototype.getContext
+@exportProperty ol.layer.VectorEvent.prototype.getGL
+@exportProperty ol.layer.VectorEvent.prototype.getRender
