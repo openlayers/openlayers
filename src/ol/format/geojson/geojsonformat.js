@@ -19,8 +19,9 @@ goog.require('ol.geom.Polygon');
 /**
  * @constructor
  * @implements {ol.format.IReader}
+ * @param {ol.format.GeoJSONOptions=} opt_options Options.
  */
-ol.format.GeoJSON = function() {
+ol.format.GeoJSON = function(opt_options) {
 };
 
 

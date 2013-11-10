@@ -246,6 +246,11 @@
  */
 
 /**
+ * @typedef {Object} ol.format.GeoJSONOptions
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ */
+
+/**
  * @typedef {Object} ol.interaction.DoubleClickZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {number|undefined} delta The zoom delta applied on each double
