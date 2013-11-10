@@ -5,7 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.render');
-goog.require('ol.render.IReplayBatch');
+goog.require('ol.render.IRender');
 goog.require('ol.render.IReplayBatchGroup');
 goog.require('ol.style.fill');
 goog.require('ol.style.stroke');
@@ -29,7 +29,7 @@ ol.render.canvas.Instruction = {
 
 /**
  * @constructor
- * @implements {ol.render.IReplayBatch}
+ * @implements {ol.render.IRender}
  * @protected
  */
 ol.render.canvas.Batch = function() {
