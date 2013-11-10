@@ -1,0 +1,4 @@
+@exportSymbol ol.geom.Geometry
+@exportProperty ol.geom.Geometry.prototype.getExtent
+@exportProperty ol.geom.Geometry.prototype.getLayout
+@exportProperty ol.geom.Geometry.prototype.transform

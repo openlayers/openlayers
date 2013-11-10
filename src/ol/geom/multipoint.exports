@@ -1,0 +1,5 @@
+@exportSymbol ol.geom.MultiPoint
+@exportProperty ol.geom.MultiPoint.prototype.getCoordinates
+@exportProperty ol.geom.MultiPoint.prototype.getExtent
+@exportProperty ol.geom.MultiPoint.prototype.getType
+@exportProperty ol.geom.MultiPoint.prototype.setCoordinates
