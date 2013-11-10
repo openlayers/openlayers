@@ -1,7 +1,4 @@
-// FIXME complete missing functionality
-// FIXME factor out drawImage
-// FIXME apply snapToPixel
-// FIXME factor out moveTo/lineTo
+// FIXME test, especially polygons with holes and multipolygons
 
 goog.provide('ol.render.canvas.Render');
 
@@ -55,43 +52,84 @@ ol.render.canvas.Render = function(context, transform) {
 
 
 /**
- * @inheritDoc
+ * @param {ol.geom.Point|ol.geom.MultiPoint} geometry Geometry.
+ * @private
  */
-ol.render.canvas.Render.prototype.drawPointGeometry = function(pointGeometry) {
+ol.render.canvas.Render.prototype.drawImages_ = function(geometry) {
   var context = this.context_;
   var imageStyle = this.state_.imageStyle;
   if (goog.isNull(imageStyle)) {
     return;
   }
   var pixelCoordinates = ol.render.transformGeometry(
-      pointGeometry, this.transform_, this.pixelCoordinates_);
-  context.drawImage(
-      imageStyle.image,
-      pixelCoordinates[0] - imageStyle.anchor[0],
-      pixelCoordinates[1] - imageStyle.anchor[1]);
+      geometry, this.transform_, this.pixelCoordinates_);
+  var i, ii;
+  for (i = 0, ii = pixelCoordinates.length; i < ii; i += 2) {
+    var x = pixelCoordinates[i] - imageStyle.anchor[0];
+    var y = pixelCoordinates[i + 1] - imageStyle.anchor[1];
+    if (imageStyle.snapToPixel) {
+      x = (x + 0.5) | 0;
+      y = (y + 0.5) | 0;
+    }
+    context.drawImage(imageStyle.image, x, y);
+  }
+};
+
+
+/**
+ * @param {Array.<number>} pixelCoordinates Pixel coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {boolean} close Close.
+ * @private
+ * @return {number} end End.
+ */
+ol.render.canvas.Render.prototype.moveToLineTo_ =
+    function(pixelCoordinates, offset, end, close) {
+  var context = this.context_;
+  context.moveTo(pixelCoordinates[offset], pixelCoordinates[offset + 1]);
+  var i;
+  for (i = offset + 2; i < end; i += 2) {
+    context.lineTo(pixelCoordinates[i], pixelCoordinates[i + 1]);
+  }
+  if (close) {
+    context.lineTo(pixelCoordinates[offset], pixelCoordinates[offset + 1]);
+  }
+  return end;
+};
+
+
+/**
+ * @param {Array.<number>} pixelCoordinates Pixel coordinates.
+ * @param {number} offset Offset.
+ * @param {Array.<number>} ends Ends.
+ * @private
+ * @return {number} End.
+ */
+ol.render.canvas.Render.prototype.drawRings_ =
+    function(pixelCoordinates, offset, ends) {
+  var context = this.context_;
+  var i, ii;
+  for (i = 0, ii = ends.length; i < ii; ++i) {
+    offset = this.moveToLineTo_(pixelCoordinates, offset, ends[i], true);
+    context.closePath(); // FIXME is this needed here?
+  }
+  return offset;
 };
 
 
 /**
  * @inheritDoc
  */
+ol.render.canvas.Render.prototype.drawPointGeometry =
+    ol.render.canvas.Render.prototype.drawImages_;
+
+
+/**
+ * @inheritDoc
+ */
 ol.render.canvas.Render.prototype.drawMultiPointGeometry =
-    function(multiPointGeometry) {
-  var context = this.context_;
-  var imageStyle = this.state_.imageStyle;
-  if (goog.isNull(imageStyle)) {
-    return;
-  }
-  var pixelCoordinates = ol.render.transformGeometry(
-      multiPointGeometry, this.transform_, this.pixelCoordinates_);
-  var i, ii;
-  for (i = 0, ii = pixelCoordinates.length; i < ii; i += 2) {
-    context.drawImage(
-        imageStyle.image,
-        pixelCoordinates[i] - imageStyle.anchor[0],
-        pixelCoordinates[i + 1] - imageStyle.anchor[1]);
-  }
-};
+    ol.render.canvas.Render.prototype.drawImages_;
 
 
 /**
@@ -106,11 +144,7 @@ ol.render.canvas.Render.prototype.drawLineStringGeometry =
   var pixelCoordinates = ol.render.transformGeometry(
       lineStringGeometry, this.transform_, this.pixelCoordinates_);
   context.beginPath();
-  context.moveTo(pixelCoordinates[0], pixelCoordinates[1]);
-  var i, ii;
-  for (i = 2, ii = pixelCoordinates.length; i < ii; ++i) {
-    context.lineTo(pixelCoordinates[i], pixelCoordinates[i + 1]);
-  }
+  this.moveToLineTo_(pixelCoordinates, 0, pixelCoordinates.length, false);
   context.stroke();
 };
 
@@ -119,21 +153,75 @@ ol.render.canvas.Render.prototype.drawLineStringGeometry =
  * @inheritDoc
  */
 ol.render.canvas.Render.prototype.drawMultiLineStringGeometry =
-    goog.abstractMethod; // FIXME
+    function(multiLineStringGeometry) {
+  if (goog.isNull(this.state_.strokeStyle)) {
+    return;
+  }
+  var context = this.context_;
+  var pixelCoordinates = ol.render.transformGeometry(
+      multiLineStringGeometry, this.transform_, this.pixelCoordinates_);
+  context.beginPath();
+  var ends = multiLineStringGeometry.getEnds();
+  var offset = 0;
+  var i, ii;
+  for (i = 0, ii = ends.length; i < ii; ++i) {
+    offset = this.moveToLineTo_(pixelCoordinates, offset, ends[i], false);
+  }
+  context.stroke();
+};
 
 
 /**
  * @inheritDoc
  */
 ol.render.canvas.Render.prototype.drawPolygonGeometry =
-    goog.abstractMethod; // FIXME
+    function(polygonGeometry) {
+  var state = this.state_;
+  if (goog.isNull(this.fillStyle) && goog.isNull(this.strokeStyle)) {
+    return;
+  }
+  var context = this.context_;
+  var pixelCoordinates = ol.render.transformGeometry(
+      polygonGeometry, this.transform_, this.pixelCoordinates_);
+  var ends = polygonGeometry.getEnds();
+  context.beginPath();
+  this.drawRings_(pixelCoordinates, 0, ends);
+  if (!goog.isNull(state.fillStyle)) {
+    context.fill();
+  }
+  if (!goog.isNull(state.strokeStyle)) {
+    context.stroke();
+  }
+};
 
 
 /**
  * @inheritDoc
  */
 ol.render.canvas.Render.prototype.drawMultiPolygonGeometry =
-    goog.abstractMethod; // FIXME
+    function(multiPolygonGeometry) {
+  var state = this.state_;
+  if (goog.isNull(this.fillStyle) && goog.isNull(this.strokeStyle)) {
+    return;
+  }
+  var context = this.context_;
+  var pixelCoordinates = ol.render.transformGeometry(
+      multiPolygonGeometry, this.transform_, this.pixelCoordinates_);
+  var endss = multiPolygonGeometry.getEndss();
+  var offset = 0;
+  var i, ii;
+  for (i = 0, ii = endss.length; i < ii; ++i) {
+    var ends = endss[i];
+    context.beginPath();
+    offset = this.drawRings_(pixelCoordinates, offset, ends);
+    if (!goog.isNull(state.fillStyle)) {
+      context.fill();
+    }
+    if (!goog.isNull(state.strokeStyle)) {
+      context.stroke();
+    }
+  }
+};
 
 
 /**
