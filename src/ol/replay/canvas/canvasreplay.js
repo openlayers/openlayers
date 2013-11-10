@@ -142,12 +142,6 @@ ol.replay.canvas.Batch.prototype.draw = function(context, transform) {
 /**
  * @inheritDoc
  */
-ol.replay.canvas.Batch.prototype.drawImage = goog.abstractMethod;
-
-
-/**
- * @inheritDoc
- */
 ol.replay.canvas.Batch.prototype.drawLineStringGeometry = goog.abstractMethod;
 
 

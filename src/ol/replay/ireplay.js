@@ -23,15 +23,6 @@ ol.replay.IBatch = function() {
 
 
 /**
- * @param {number} x X.
- * @param {number} y Y.
- * @param {Image|HTMLCanvasElement|HTMLVideoElement} image Image.
- */
-ol.replay.IBatch.prototype.drawImage = function(x, y, image) {
-};
-
-
-/**
  * @param {ol.geom.Point} pointGeometry Point geometry.
  */
 ol.replay.IBatch.prototype.drawPointGeometry = function(pointGeometry) {
