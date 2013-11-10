@@ -155,6 +155,7 @@ ol.renderer.vector.GEOMETRY_RENDERERS_ = {
   'Point': ol.renderer.vector.renderPointGeometry_,
   'LineString': ol.renderer.vector.renderLineStringGeometry_,
   'Polygon': ol.renderer.vector.renderPolygonGeometry_,
+  'MultiPoint': ol.renderer.vector.renderMultiPointGeometry_,
   'MultiLineString': ol.renderer.vector.renderMultiLineStringGeometry_,
   'MultiPolygon': ol.renderer.vector.renderMultiPolygonGeometry_
 };
