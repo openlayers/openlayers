@@ -1,3 +1,5 @@
+// NOCOMPILE
+// FIXME don't rely on goog.* functions
 goog.require('goog.asserts');
 goog.require('goog.functions');
 goog.require('goog.net.XhrIo');
