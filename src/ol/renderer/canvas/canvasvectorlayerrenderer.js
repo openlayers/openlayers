@@ -5,7 +5,7 @@ goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.layer.VectorEvent');
 goog.require('ol.layer.VectorEventType');
-goog.require('ol.render.canvas.Render');
+goog.require('ol.render.canvas.Immediate');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.vector');
@@ -94,7 +94,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
 
   var vectorLayer = this.getVectorLayer();
   if (vectorLayer.hasListener(ol.layer.VectorEventType.POSTRENDER)) {
-    var render = new ol.render.canvas.Render(context, transform);
+    var render = new ol.render.canvas.Immediate(context, transform);
     var postRenderEvent = new ol.layer.VectorEvent(
         ol.layer.VectorEventType.POSTRENDER, vectorLayer, render, context,
         null);

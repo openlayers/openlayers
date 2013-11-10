@@ -1,6 +1,6 @@
 // FIXME test, especially polygons with holes and multipolygons
 
-goog.provide('ol.render.canvas.Render');
+goog.provide('ol.render.canvas.Immediate');
 
 goog.require('goog.asserts');
 goog.require('ol.render');
@@ -16,7 +16,7 @@ goog.require('ol.style.stroke');
  * @param {CanvasRenderingContext2D} context Context.
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  */
-ol.render.canvas.Render = function(context, transform) {
+ol.render.canvas.Immediate = function(context, transform) {
 
   /**
    * @private
@@ -55,7 +55,7 @@ ol.render.canvas.Render = function(context, transform) {
  * @param {ol.geom.Point|ol.geom.MultiPoint} geometry Geometry.
  * @private
  */
-ol.render.canvas.Render.prototype.drawImages_ = function(geometry) {
+ol.render.canvas.Immediate.prototype.drawImages_ = function(geometry) {
   var context = this.context_;
   var imageStyle = this.state_.imageStyle;
   if (goog.isNull(imageStyle)) {
@@ -84,7 +84,7 @@ ol.render.canvas.Render.prototype.drawImages_ = function(geometry) {
  * @private
  * @return {number} end End.
  */
-ol.render.canvas.Render.prototype.moveToLineTo_ =
+ol.render.canvas.Immediate.prototype.moveToLineTo_ =
     function(pixelCoordinates, offset, end, close) {
   var context = this.context_;
   context.moveTo(pixelCoordinates[offset], pixelCoordinates[offset + 1]);
@@ -106,7 +106,7 @@ ol.render.canvas.Render.prototype.moveToLineTo_ =
  * @private
  * @return {number} End.
  */
-ol.render.canvas.Render.prototype.drawRings_ =
+ol.render.canvas.Immediate.prototype.drawRings_ =
     function(pixelCoordinates, offset, ends) {
   var context = this.context_;
   var i, ii;
@@ -121,12 +121,12 @@ ol.render.canvas.Render.prototype.drawRings_ =
 /**
  * @inheritDoc
  */
-ol.render.canvas.Render.prototype.drawFeature = function(feature, style) {
+ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
   this.setFillStrokeStyle(style.fill, style.stroke);
   this.setImageStyle(style.image);
   var geometry = feature.getGeometry();
   var renderGeometry =
-      ol.render.canvas.Render.GEOMETRY_RENDERES_[geometry.getType()];
+      ol.render.canvas.Immediate.GEOMETRY_RENDERES_[geometry.getType()];
   goog.asserts.assert(goog.isDef(renderGeometry));
   renderGeometry.call(this, geometry);
 };
@@ -135,21 +135,21 @@ ol.render.canvas.Render.prototype.drawFeature = function(feature, style) {
 /**
  * @inheritDoc
  */
-ol.render.canvas.Render.prototype.drawPointGeometry =
-    ol.render.canvas.Render.prototype.drawImages_;
+ol.render.canvas.Immediate.prototype.drawPointGeometry =
+    ol.render.canvas.Immediate.prototype.drawImages_;
 
 
 /**
  * @inheritDoc
  */
-ol.render.canvas.Render.prototype.drawMultiPointGeometry =
-    ol.render.canvas.Render.prototype.drawImages_;
+ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
+    ol.render.canvas.Immediate.prototype.drawImages_;
 
 
 /**
  * @inheritDoc
  */
-ol.render.canvas.Render.prototype.drawLineStringGeometry =
+ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
     function(lineStringGeometry) {
   if (goog.isNull(this.state_.strokeStyle)) {
     return;
@@ -166,7 +166,7 @@ ol.render.canvas.Render.prototype.drawLineStringGeometry =
 /**
  * @inheritDoc
  */
-ol.render.canvas.Render.prototype.drawMultiLineStringGeometry =
+ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
     function(multiLineStringGeometry) {
   if (goog.isNull(this.state_.strokeStyle)) {
     return;
@@ -188,7 +188,7 @@ ol.render.canvas.Render.prototype.drawMultiLineStringGeometry =
 /**
  * @inheritDoc
  */
-ol.render.canvas.Render.prototype.drawPolygonGeometry =
+ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
     function(polygonGeometry) {
   var state = this.state_;
   if (goog.isNull(this.fillStyle) && goog.isNull(this.strokeStyle)) {
@@ -212,7 +212,7 @@ ol.render.canvas.Render.prototype.drawPolygonGeometry =
 /**
  * @inheritDoc
  */
-ol.render.canvas.Render.prototype.drawMultiPolygonGeometry =
+ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
     function(multiPolygonGeometry) {
   var state = this.state_;
   if (goog.isNull(this.fillStyle) && goog.isNull(this.strokeStyle)) {
@@ -241,7 +241,7 @@ ol.render.canvas.Render.prototype.drawMultiPolygonGeometry =
 /**
  * @inheritDoc
  */
-ol.render.canvas.Render.prototype.setFillStrokeStyle =
+ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
   var context = this.context_;
   var state = this.state_;
@@ -260,7 +260,7 @@ ol.render.canvas.Render.prototype.setFillStrokeStyle =
 /**
  * @inheritDoc
  */
-ol.render.canvas.Render.prototype.setImageStyle = function(imageStyle) {
+ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
   this.state_.imageStyle = imageStyle;
 };
 
@@ -269,14 +269,14 @@ ol.render.canvas.Render.prototype.setImageStyle = function(imageStyle) {
  * @const
  * @private
  * @type {Object.<ol.geom.GeometryType,
- *                function(this: ol.render.canvas.Render, ol.geom.Geometry)>}
+ *                function(this: ol.render.canvas.Immediate, ol.geom.Geometry)>}
  */
-ol.render.canvas.Render.GEOMETRY_RENDERES_ = {
-  'Point': ol.render.canvas.Render.prototype.drawPointGeometry,
-  'LineString': ol.render.canvas.Render.prototype.drawLineStringGeometry,
-  'Polygon': ol.render.canvas.Render.prototype.drawPolygonGeometry,
-  'MultiPoint': ol.render.canvas.Render.prototype.drawMultiPointGeometry,
+ol.render.canvas.Immediate.GEOMETRY_RENDERES_ = {
+  'Point': ol.render.canvas.Immediate.prototype.drawPointGeometry,
+  'LineString': ol.render.canvas.Immediate.prototype.drawLineStringGeometry,
+  'Polygon': ol.render.canvas.Immediate.prototype.drawPolygonGeometry,
+  'MultiPoint': ol.render.canvas.Immediate.prototype.drawMultiPointGeometry,
   'MultiLineString':
-      ol.render.canvas.Render.prototype.drawMultiLineStringGeometry,
-  'MultiPolygon': ol.render.canvas.Render.prototype.drawMultiPolygonGeometry
+      ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry,
+  'MultiPolygon': ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry
 };
