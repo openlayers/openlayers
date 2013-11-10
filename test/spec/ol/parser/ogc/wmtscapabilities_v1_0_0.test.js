@@ -8,9 +8,8 @@ describe('ol.parser.ogc.wmtscapabilities_v1_0_0', function() {
     it('Test ows', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wmtscapabilities_v1_0_0/' +
           'ogcsample.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        var obj = parser.read(xhr.getResponseXml());
+      afterLoadXml(url, function(xml) {
+        var obj = parser.read(xml);
         var serviceIdentification = obj.serviceIdentification;
         var serviceProvider = obj.serviceProvider;
         var operationsMetadata = obj.operationsMetadata;
@@ -57,9 +56,8 @@ describe('ol.parser.ogc.wmtscapabilities_v1_0_0', function() {
     it('Test layers', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wmtscapabilities_v1_0_0/' +
           'ogcsample.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        var obj = parser.read(xhr.getResponseXml());
+      afterLoadXml(url, function(xml) {
+        var obj = parser.read(xml);
         var contents = obj.contents;
         var layer = contents.layers[0];
         var wgs84Bbox = layer.bounds;
@@ -128,9 +126,8 @@ describe('ol.parser.ogc.wmtscapabilities_v1_0_0', function() {
     it('Test tileMatrixSets', function(done) {
       var url = 'spec/ol/parser/ogc/xml/wmtscapabilities_v1_0_0/' +
           'ogcsample.xml';
-      goog.net.XhrIo.send(url, function(e) {
-        var xhr = e.target;
-        var obj = parser.read(xhr.getResponseXml());
+      afterLoadXml(url, function(xml) {
+        var obj = parser.read(xml);
         var tileMatrixSets = obj.contents.tileMatrixSets;
         var bigWorld = tileMatrixSets['BigWorld'];
 
@@ -159,5 +156,4 @@ describe('ol.parser.ogc.wmtscapabilities_v1_0_0', function() {
   });
 });
 
-goog.require('goog.net.XhrIo');
 goog.require('ol.parser.ogc.WMTSCapabilities');
