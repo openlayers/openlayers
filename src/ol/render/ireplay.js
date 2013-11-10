@@ -1,4 +1,4 @@
-goog.provide('ol.render.IReplayBatchGroup');
+goog.provide('ol.render.IReplayReplayGroup');
 
 goog.require('goog.functions');
 goog.require('ol.render.IRender');
@@ -7,7 +7,7 @@ goog.require('ol.render.IRender');
 /**
  * @enum {string}
  */
-ol.render.BatchType = {
+ol.render.ReplayType = {
   IMAGE: 'Image',
   LINE_STRING: 'LineString',
   POLYGON: 'Polygon'
@@ -18,28 +18,29 @@ ol.render.BatchType = {
 /**
  * @interface
  */
-ol.render.IReplayBatchGroup = function() {
+ol.render.IReplayReplayGroup = function() {
 };
 
 
 /**
  * FIXME empty description for jsdoc
  */
-ol.render.IReplayBatchGroup.prototype.finish = function() {
+ol.render.IReplayReplayGroup.prototype.finish = function() {
 };
 
 
 /**
  * @param {number|undefined} zIndex Z index.
- * @param {ol.render.BatchType} batchType Batch type.
- * @return {ol.render.IRender} Batch.
+ * @param {ol.render.ReplayType} replayType Replay type.
+ * @return {ol.render.IRender} Replay.
  */
-ol.render.IReplayBatchGroup.prototype.getBatch = function(zIndex, batchType) {
+ol.render.IReplayReplayGroup.prototype.getReplay =
+    function(zIndex, replayType) {
 };
 
 
 /**
  * @return {boolean} Is empty.
  */
-ol.render.IReplayBatchGroup.prototype.isEmpty = function() {
+ol.render.IReplayReplayGroup.prototype.isEmpty = function() {
 };

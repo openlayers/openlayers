@@ -5,8 +5,8 @@ goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.layer.VectorEvent');
 goog.require('ol.layer.VectorEventType');
-goog.require('ol.render.canvas.BatchGroup');
 goog.require('ol.render.canvas.Render');
+goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.vector');
 goog.require('ol.style.DefaultStyleFunction');
@@ -49,9 +49,9 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, vectorLayer) {
 
   /**
    * @private
-   * @type {ol.render.canvas.BatchGroup}
+   * @type {ol.render.canvas.ReplayGroup}
    */
-  this.batchGroup_ = null;
+  this.replayGroup_ = null;
 
 };
 goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
@@ -63,8 +63,8 @@ goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     function(frameState, layerState, context) {
 
-  var batchGroup = this.batchGroup_;
-  if (goog.isNull(batchGroup)) {
+  var replayGroup = this.replayGroup_;
+  if (goog.isNull(replayGroup)) {
     return;
   }
 
@@ -90,7 +90,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
       0);
 
   context.globalAlpha = layerState.opacity;
-  batchGroup.draw(context, frameState.extent, transform);
+  replayGroup.draw(context, frameState.extent, transform);
 
   var vectorLayer = this.getVectorLayer();
   if (vectorLayer.hasListener(ol.layer.VectorEventType.POSTRENDER)) {
@@ -141,25 +141,25 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   extent[2] = frameStateExtent[2] + xBuffer;
   extent[3] = frameStateExtent[3] + yBuffer;
 
-  // FIXME dispose of old batchGroup in post render
-  goog.dispose(this.batchGroup_);
-  this.batchGroup = null;
+  // FIXME dispose of old replayGroup in post render
+  goog.dispose(this.replayGroup_);
+  this.replayGroup = null;
 
   var styleFunction = vectorLayer.getStyleFunction();
   if (!goog.isDef(styleFunction)) {
     styleFunction = ol.style.DefaultStyleFunction;
   }
-  var batchGroup = new ol.render.canvas.BatchGroup();
+  var replayGroup = new ol.render.canvas.ReplayGroup();
   vectorSource.forEachFeatureInExtent(extent, function(feature) {
     var style = styleFunction(feature);
-    ol.renderer.vector.renderFeature(batchGroup, feature, style);
+    ol.renderer.vector.renderFeature(replayGroup, feature, style);
   }, this);
-  batchGroup.finish();
+  replayGroup.finish();
 
   this.renderedResolution_ = frameState.view2DState.resolution;
   this.renderedRevision_ = vectorSource.getRevision();
-  if (!batchGroup.isEmpty()) {
-    this.batchGroup_ = batchGroup;
+  if (!replayGroup.isEmpty()) {
+    this.replayGroup_ = replayGroup;
   }
 
 };

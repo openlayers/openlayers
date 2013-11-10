@@ -1,7 +1,7 @@
 // FIXME decide default snapToPixel behaviour
 // FIXME add option to apply snapToPixel to all coordinates?
 
-goog.provide('ol.render.canvas.BatchGroup');
+goog.provide('ol.render.canvas.ReplayGroup');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -9,7 +9,7 @@ goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.render');
 goog.require('ol.render.IRender');
-goog.require('ol.render.IReplayBatchGroup');
+goog.require('ol.render.IReplayReplayGroup');
 goog.require('ol.style.fill');
 goog.require('ol.style.stroke');
 
@@ -35,7 +35,7 @@ ol.render.canvas.Instruction = {
  * @implements {ol.render.IRender}
  * @protected
  */
-ol.render.canvas.Batch = function() {
+ol.render.canvas.Replay = function() {
 
   /**
    * @protected
@@ -73,7 +73,7 @@ ol.render.canvas.Batch = function() {
  * @protected
  * @return {number} My end.
  */
-ol.render.canvas.Batch.prototype.appendFlatCoordinates =
+ol.render.canvas.Replay.prototype.appendFlatCoordinates =
     function(flatCoordinates, offset, end, stride, close) {
   var myEnd = this.coordinates.length;
   var i;
@@ -93,7 +93,7 @@ ol.render.canvas.Batch.prototype.appendFlatCoordinates =
  * @param {CanvasRenderingContext2D} context Context.
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  */
-ol.render.canvas.Batch.prototype.draw = function(context, transform) {
+ol.render.canvas.Replay.prototype.draw = function(context, transform) {
   var pixelCoordinates = ol.render.transformFlatCoordinates(
       this.coordinates, 2, transform, this.pixelCoordinates_);
   this.pixelCoordinates_ = pixelCoordinates;  // FIXME ?
@@ -148,56 +148,57 @@ ol.render.canvas.Batch.prototype.draw = function(context, transform) {
 /**
  * @inheritDoc
  */
-ol.render.canvas.Batch.prototype.drawFeature = goog.abstractMethod;
+ol.render.canvas.Replay.prototype.drawFeature = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.render.canvas.Batch.prototype.drawLineStringGeometry = goog.abstractMethod;
+ol.render.canvas.Replay.prototype.drawLineStringGeometry = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.render.canvas.Batch.prototype.drawMultiLineStringGeometry =
+ol.render.canvas.Replay.prototype.drawMultiLineStringGeometry =
     goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.render.canvas.Batch.prototype.drawPointGeometry = goog.abstractMethod;
+ol.render.canvas.Replay.prototype.drawPointGeometry = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.render.canvas.Batch.prototype.drawMultiPointGeometry = goog.abstractMethod;
+ol.render.canvas.Replay.prototype.drawMultiPointGeometry = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.render.canvas.Batch.prototype.drawPolygonGeometry = goog.abstractMethod;
+ol.render.canvas.Replay.prototype.drawPolygonGeometry = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.render.canvas.Batch.prototype.drawMultiPolygonGeometry = goog.abstractMethod;
+ol.render.canvas.Replay.prototype.drawMultiPolygonGeometry =
+    goog.abstractMethod;
 
 
 /**
  * FIXME empty description for jsdoc
  */
-ol.render.canvas.Batch.prototype.finish = goog.nullFunction;
+ol.render.canvas.Replay.prototype.finish = goog.nullFunction;
 
 
 /**
  * @return {ol.Extent} Extent.
  */
-ol.render.canvas.Batch.prototype.getExtent = function() {
+ol.render.canvas.Replay.prototype.getExtent = function() {
   return this.extent_;
 };
 
@@ -205,22 +206,22 @@ ol.render.canvas.Batch.prototype.getExtent = function() {
 /**
  * @inheritDoc
  */
-ol.render.canvas.Batch.prototype.setFillStrokeStyle = goog.abstractMethod;
+ol.render.canvas.Replay.prototype.setFillStrokeStyle = goog.abstractMethod;
 
 
 /**
  * @inheritDoc
  */
-ol.render.canvas.Batch.prototype.setImageStyle = goog.abstractMethod;
+ol.render.canvas.Replay.prototype.setImageStyle = goog.abstractMethod;
 
 
 
 /**
  * @constructor
- * @extends {ol.render.canvas.Batch}
+ * @extends {ol.render.canvas.Replay}
  * @protected
  */
-ol.render.canvas.ImageBatch = function() {
+ol.render.canvas.ImageReplay = function() {
 
   goog.base(this);
 
@@ -231,7 +232,7 @@ ol.render.canvas.ImageBatch = function() {
   this.imageStyle_ = null;
 
 };
-goog.inherits(ol.render.canvas.ImageBatch, ol.render.canvas.Batch);
+goog.inherits(ol.render.canvas.ImageReplay, ol.render.canvas.Replay);
 
 
 /**
@@ -242,7 +243,7 @@ goog.inherits(ol.render.canvas.ImageBatch, ol.render.canvas.Batch);
  * @private
  * @return {number} My end.
  */
-ol.render.canvas.ImageBatch.prototype.drawCoordinates_ =
+ol.render.canvas.ImageReplay.prototype.drawCoordinates_ =
     function(flatCoordinates, offset, end, stride) {
   return this.appendFlatCoordinates(
       flatCoordinates, offset, end, stride, false);
@@ -252,7 +253,7 @@ ol.render.canvas.ImageBatch.prototype.drawCoordinates_ =
 /**
  * @inheritDoc
  */
-ol.render.canvas.ImageBatch.prototype.drawPointGeometry =
+ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
     function(pointGeometry) {
   goog.asserts.assert(!goog.isNull(this.imageStyle_));
   ol.extent.extend(this.extent_, pointGeometry.getExtent());
@@ -268,7 +269,7 @@ ol.render.canvas.ImageBatch.prototype.drawPointGeometry =
 /**
  * @inheritDoc
  */
-ol.render.canvas.ImageBatch.prototype.drawMultiPointGeometry =
+ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
     function(multiPointGeometry) {
   goog.asserts.assert(!goog.isNull(this.imageStyle_));
   ol.extent.extend(this.extent_, multiPointGeometry.getExtent());
@@ -284,7 +285,7 @@ ol.render.canvas.ImageBatch.prototype.drawMultiPointGeometry =
 /**
  * @inheritDoc
  */
-ol.render.canvas.ImageBatch.prototype.finish = function() {
+ol.render.canvas.ImageReplay.prototype.finish = function() {
   // FIXME this doesn't really protect us against further calls to draw*Geometry
   this.imageStyle_ = null;
 };
@@ -293,7 +294,7 @@ ol.render.canvas.ImageBatch.prototype.finish = function() {
 /**
  * @inheritDoc
  */
-ol.render.canvas.ImageBatch.prototype.setImageStyle = function(imageStyle) {
+ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   this.imageStyle_ = imageStyle;
 };
 
@@ -301,10 +302,10 @@ ol.render.canvas.ImageBatch.prototype.setImageStyle = function(imageStyle) {
 
 /**
  * @constructor
- * @extends {ol.render.canvas.Batch}
+ * @extends {ol.render.canvas.Replay}
  * @protected
  */
-ol.render.canvas.LineStringBatch = function() {
+ol.render.canvas.LineStringReplay = function() {
 
   goog.base(this);
 
@@ -321,7 +322,7 @@ ol.render.canvas.LineStringBatch = function() {
   };
 
 };
-goog.inherits(ol.render.canvas.LineStringBatch, ol.render.canvas.Batch);
+goog.inherits(ol.render.canvas.LineStringReplay, ol.render.canvas.Replay);
 
 
 /**
@@ -332,7 +333,7 @@ goog.inherits(ol.render.canvas.LineStringBatch, ol.render.canvas.Batch);
  * @private
  * @return {number} end.
  */
-ol.render.canvas.LineStringBatch.prototype.drawFlatCoordinates_ =
+ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ =
     function(flatCoordinates, offset, end, stride) {
   var state = this.state_;
   if (!ol.style.stroke.equals(state.currentStrokeStyle, state.strokeStyle)) {
@@ -354,7 +355,7 @@ ol.render.canvas.LineStringBatch.prototype.drawFlatCoordinates_ =
 /**
  * @inheritDoc
  */
-ol.render.canvas.LineStringBatch.prototype.drawLineStringGeometry =
+ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
     function(lineStringGeometry) {
   goog.asserts.assert(!goog.isNull(this.state_));
   ol.extent.extend(this.extent_, lineStringGeometry.getExtent());
@@ -368,7 +369,7 @@ ol.render.canvas.LineStringBatch.prototype.drawLineStringGeometry =
 /**
  * @inheritDoc
  */
-ol.render.canvas.LineStringBatch.prototype.drawMultiLineStringGeometry =
+ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
     function(multiLineStringGeometry) {
   goog.asserts.assert(!goog.isNull(this.state_));
   ol.extent.extend(this.extent_, multiLineStringGeometry.getExtent());
@@ -387,7 +388,7 @@ ol.render.canvas.LineStringBatch.prototype.drawMultiLineStringGeometry =
 /**
  * @inheritDoc
  */
-ol.render.canvas.LineStringBatch.prototype.finish = function() {
+ol.render.canvas.LineStringReplay.prototype.finish = function() {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   if (state.lastDraw != this.coordinates.length) {
@@ -400,7 +401,7 @@ ol.render.canvas.LineStringBatch.prototype.finish = function() {
 /**
  * @inheritDoc
  */
-ol.render.canvas.LineStringBatch.prototype.setFillStrokeStyle =
+ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
   goog.asserts.assert(!goog.isNull(this.state_));
   goog.asserts.assert(goog.isNull(fillStyle));
@@ -412,10 +413,10 @@ ol.render.canvas.LineStringBatch.prototype.setFillStrokeStyle =
 
 /**
  * @constructor
- * @extends {ol.render.canvas.Batch}
+ * @extends {ol.render.canvas.Replay}
  * @protected
  */
-ol.render.canvas.PolygonBatch = function() {
+ol.render.canvas.PolygonReplay = function() {
 
   goog.base(this);
 
@@ -434,7 +435,7 @@ ol.render.canvas.PolygonBatch = function() {
   };
 
 };
-goog.inherits(ol.render.canvas.PolygonBatch, ol.render.canvas.Batch);
+goog.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
 
 
 /**
@@ -445,7 +446,7 @@ goog.inherits(ol.render.canvas.PolygonBatch, ol.render.canvas.Batch);
  * @private
  * @return {number} End.
  */
-ol.render.canvas.PolygonBatch.prototype.drawFlatCoordinatess_ =
+ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
     function(flatCoordinates, offset, ends, stride) {
   var state = this.state_;
   this.instructions.push([ol.render.canvas.Instruction.BEGIN_PATH]);
@@ -474,7 +475,7 @@ ol.render.canvas.PolygonBatch.prototype.drawFlatCoordinatess_ =
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonBatch.prototype.drawPolygonGeometry =
+ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
     function(polygonGeometry) {
   goog.asserts.assert(!goog.isNull(this.state_));
   ol.extent.extend(this.extent_, polygonGeometry.getExtent());
@@ -489,7 +490,7 @@ ol.render.canvas.PolygonBatch.prototype.drawPolygonGeometry =
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonBatch.prototype.drawMultiPolygonGeometry =
+ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
     function(multiPolygonGeometry) {
   goog.asserts.assert(!goog.isNull(this.state_));
   ol.extent.extend(this.extent_, multiPolygonGeometry.getExtent());
@@ -509,7 +510,7 @@ ol.render.canvas.PolygonBatch.prototype.drawMultiPolygonGeometry =
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonBatch.prototype.finish = function() {
+ol.render.canvas.PolygonReplay.prototype.finish = function() {
   goog.asserts.assert(!goog.isNull(this.state_));
   this.state_ = null;
 };
@@ -518,7 +519,7 @@ ol.render.canvas.PolygonBatch.prototype.finish = function() {
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonBatch.prototype.setFillStrokeStyle =
+ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
   goog.asserts.assert(!goog.isNull(this.state_));
   goog.asserts.assert(!goog.isNull(fillStyle) || !goog.isNull(strokeStyle));
@@ -530,7 +531,7 @@ ol.render.canvas.PolygonBatch.prototype.setFillStrokeStyle =
 /**
  * @private
  */
-ol.render.canvas.PolygonBatch.prototype.setFillStrokeStyles_ = function() {
+ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
   var state = this.state_;
   if (!goog.isNull(state.fillStyle) &&
       !ol.style.fill.equals(state.currentFillStyle, state.fillStyle)) {
@@ -550,16 +551,16 @@ ol.render.canvas.PolygonBatch.prototype.setFillStrokeStyles_ = function() {
 
 /**
  * @constructor
- * @implements {ol.render.IReplayBatchGroup}
+ * @implements {ol.render.IReplayReplayGroup}
  */
-ol.render.canvas.BatchGroup = function() {
+ol.render.canvas.ReplayGroup = function() {
 
   /**
    * @private
    * @type {Object.<string,
-   *        Object.<ol.render.BatchType, ol.render.canvas.Batch>>}
+   *        Object.<ol.render.ReplayType, ol.render.canvas.Replay>>}
    */
-  this.batchesByZIndex_ = {};
+  this.replayesByZIndex_ = {};
 
 };
 
@@ -569,19 +570,19 @@ ol.render.canvas.BatchGroup = function() {
  * @param {ol.Extent} extent Extent.
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  */
-ol.render.canvas.BatchGroup.prototype.draw =
+ol.render.canvas.ReplayGroup.prototype.draw =
     function(context, extent, transform) {
   /** @type {Array.<number>} */
-  var zs = goog.array.map(goog.object.getKeys(this.batchesByZIndex_), Number);
+  var zs = goog.array.map(goog.object.getKeys(this.replayesByZIndex_), Number);
   goog.array.sort(zs);
   var i, ii;
   for (i = 0, ii = zs.length; i < ii; ++i) {
-    var batches = this.batchesByZIndex_[zs[i].toString()];
-    var batchType;
-    for (batchType in batches) {
-      var batch = batches[batchType];
-      if (ol.extent.intersects(extent, batch.getExtent())) {
-        batch.draw(context, transform);
+    var replayes = this.replayesByZIndex_[zs[i].toString()];
+    var replayType;
+    for (replayType in replayes) {
+      var replay = replayes[replayType];
+      if (ol.extent.intersects(extent, replay.getExtent())) {
+        replay.draw(context, transform);
       }
     }
   }
@@ -591,13 +592,13 @@ ol.render.canvas.BatchGroup.prototype.draw =
 /**
  * @inheritDoc
  */
-ol.render.canvas.BatchGroup.prototype.finish = function() {
+ol.render.canvas.ReplayGroup.prototype.finish = function() {
   var zKey;
-  for (zKey in this.batchesByZIndex_) {
-    var batches = this.batchesByZIndex_[zKey];
-    var batchKey;
-    for (batchKey in batches) {
-      batches[batchKey].finish();
+  for (zKey in this.replayesByZIndex_) {
+    var replayes = this.replayesByZIndex_[zKey];
+    var replayKey;
+    for (replayKey in replayes) {
+      replayes[replayKey].finish();
     }
   }
 };
@@ -606,39 +607,40 @@ ol.render.canvas.BatchGroup.prototype.finish = function() {
 /**
  * @inheritDoc
  */
-ol.render.canvas.BatchGroup.prototype.getBatch = function(zIndex, batchType) {
+ol.render.canvas.ReplayGroup.prototype.getReplay =
+    function(zIndex, replayType) {
   var zIndexKey = goog.isDef(zIndex) ? zIndex.toString() : '0';
-  var batches = this.batchesByZIndex_[zIndexKey];
-  if (!goog.isDef(batches)) {
-    batches = {};
-    this.batchesByZIndex_[zIndexKey] = batches;
+  var replayes = this.replayesByZIndex_[zIndexKey];
+  if (!goog.isDef(replayes)) {
+    replayes = {};
+    this.replayesByZIndex_[zIndexKey] = replayes;
   }
-  var batch = batches[batchType];
-  if (!goog.isDef(batch)) {
-    var constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[batchType];
+  var replay = replayes[replayType];
+  if (!goog.isDef(replay)) {
+    var constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
     goog.asserts.assert(goog.isDef(constructor));
-    batch = new constructor();
-    batches[batchType] = batch;
+    replay = new constructor();
+    replayes[replayType] = replay;
   }
-  return batch;
+  return replay;
 };
 
 
 /**
  * @inheritDoc
  */
-ol.render.canvas.BatchGroup.prototype.isEmpty = function() {
-  return goog.object.isEmpty(this.batchesByZIndex_);
+ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
+  return goog.object.isEmpty(this.replayesByZIndex_);
 };
 
 
 /**
  * @const
  * @private
- * @type {Object.<ol.render.BatchType, function(new: ol.render.canvas.Batch)>}
+ * @type {Object.<ol.render.ReplayType, function(new: ol.render.canvas.Replay)>}
  */
 ol.render.canvas.BATCH_CONSTRUCTORS_ = {
-  'Image': ol.render.canvas.ImageBatch,
-  'LineString': ol.render.canvas.LineStringBatch,
-  'Polygon': ol.render.canvas.PolygonBatch
+  'Image': ol.render.canvas.ImageReplay,
+  'LineString': ol.render.canvas.LineStringReplay,
+  'Polygon': ol.render.canvas.PolygonReplay
 };
