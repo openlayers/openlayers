@@ -8,6 +8,7 @@ goog.require('ol.source.Vector');
  * @enum {string}
  */
 ol.layer.VectorProperty = {
+  RENDER_FEATURE_FUNCTION: 'renderFeatureFunction',
   STYLE_FUNCTION: 'styleFunction'
 };
 
@@ -35,6 +36,19 @@ goog.inherits(ol.layer.Vector, ol.layer.Layer);
 
 
 /**
+ * @return {function(ol.Feature): boolean|undefined} Render feature function.
+ */
+ol.layer.Vector.prototype.getRenderFeatureFunction = function() {
+  return /** @type {function(ol.Feature): boolean|undefined} */ (
+      this.get(ol.layer.VectorProperty.RENDER_FEATURE_FUNCTION));
+};
+goog.exportProperty(
+    ol.layer.Vector.prototype,
+    'getRenderFeatureFunction',
+    ol.layer.Vector.prototype.getRenderFeatureFunction);
+
+
+/**
  * @return {ol.style.StyleFunction|undefined} Style function.
  */
 ol.layer.Vector.prototype.getStyleFunction = function() {
@@ -53,6 +67,21 @@ goog.exportProperty(
 ol.layer.Vector.prototype.getVectorSource = function() {
   return /** @type {ol.source.Vector} */ (this.getSource());
 };
+
+
+/**
+ * @param {function(ol.Feature): boolean|undefined} renderFeatureFunction
+ *     Render feature function.
+ */
+ol.layer.Vector.prototype.setRenderFeatureFunction =
+    function(renderFeatureFunction) {
+  this.set(
+      ol.layer.VectorProperty.RENDER_FEATURE_FUNCTION, renderFeatureFunction);
+};
+goog.exportProperty(
+    ol.layer.Vector.prototype,
+    'setRenderFeatureFunction',
+    ol.layer.Vector.prototype.setRenderFeatureFunction);
 
 
 /**
