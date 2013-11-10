@@ -1,8 +1,10 @@
 // FIXME test, especially polygons with holes and multipolygons
+// FIXME need to handle large thick features (where pixel size matters)
 
 goog.provide('ol.render.canvas.Immediate');
 
 goog.require('goog.asserts');
+goog.require('ol.extent');
 goog.require('ol.render');
 goog.require('ol.render.IRender');
 goog.require('ol.style.fill');
@@ -14,15 +16,22 @@ goog.require('ol.style.stroke');
  * @constructor
  * @implements {ol.render.IRender}
  * @param {CanvasRenderingContext2D} context Context.
+ * @param {ol.Extent} extent Extent.
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  */
-ol.render.canvas.Immediate = function(context, transform) {
+ol.render.canvas.Immediate = function(context, extent, transform) {
 
   /**
    * @private
    * @type {CanvasRenderingContext2D}
    */
   this.context_ = context;
+
+  /**
+   * @private
+   * @type {ol.Extent}
+   */
+  this.extent_ = extent;
 
   /**
    * @private
@@ -58,7 +67,8 @@ ol.render.canvas.Immediate = function(context, transform) {
 ol.render.canvas.Immediate.prototype.drawImages_ = function(geometry) {
   var context = this.context_;
   var imageStyle = this.state_.imageStyle;
-  if (goog.isNull(imageStyle)) {
+  if (!ol.extent.intersects(this.extent_, geometry.getExtent()) ||
+      goog.isNull(imageStyle)) {
     return;
   }
   var pixelCoordinates = ol.render.transformGeometry(
@@ -122,9 +132,12 @@ ol.render.canvas.Immediate.prototype.drawRings_ =
  * @inheritDoc
  */
 ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
+  var geometry = feature.getGeometry();
+  if (!ol.extent.intersects(this.extent_, geometry.getExtent())) {
+    return;
+  }
   this.setFillStrokeStyle(style.fill, style.stroke);
   this.setImageStyle(style.image);
-  var geometry = feature.getGeometry();
   var renderGeometry =
       ol.render.canvas.Immediate.GEOMETRY_RENDERES_[geometry.getType()];
   goog.asserts.assert(goog.isDef(renderGeometry));
@@ -151,7 +164,8 @@ ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
  */
 ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
     function(lineStringGeometry) {
-  if (goog.isNull(this.state_.strokeStyle)) {
+  if (!ol.extent.intersects(this.extent_, lineStringGeometry.getExtent()) ||
+      goog.isNull(this.state_.strokeStyle)) {
     return;
   }
   var context = this.context_;
@@ -168,7 +182,9 @@ ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
  */
 ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
     function(multiLineStringGeometry) {
-  if (goog.isNull(this.state_.strokeStyle)) {
+  var geometryExtent = multiLineStringGeometry.getExtent();
+  if (!ol.extent.intersects(this.extent_, geometryExtent) ||
+      goog.isNull(this.state_.strokeStyle)) {
     return;
   }
   var context = this.context_;
@@ -190,6 +206,9 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
  */
 ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
     function(polygonGeometry) {
+  if (!ol.extent.intersects(this.extent_, polygonGeometry.getExtent())) {
+    return;
+  }
   var state = this.state_;
   if (goog.isNull(this.fillStyle) && goog.isNull(this.strokeStyle)) {
     return;
@@ -214,6 +233,9 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
  */
 ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
     function(multiPolygonGeometry) {
+  if (!ol.extent.intersects(this.extent_, multiPolygonGeometry.getExtent())) {
+    return;
+  }
   var state = this.state_;
   if (goog.isNull(this.fillStyle) && goog.isNull(this.strokeStyle)) {
     return;

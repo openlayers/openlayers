@@ -94,7 +94,8 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
 
   var vectorLayer = this.getVectorLayer();
   if (vectorLayer.hasListener(ol.layer.VectorEventType.POSTRENDER)) {
-    var render = new ol.render.canvas.Immediate(context, transform);
+    var render = new ol.render.canvas.Immediate(
+        context, frameState.extent, transform);
     var postRenderEvent = new ol.layer.VectorEvent(
         ol.layer.VectorEventType.POSTRENDER, vectorLayer, render, context,
         null);
