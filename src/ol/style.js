@@ -1,5 +1,6 @@
 // FIXME decide how to handle fill opacity
 
+goog.provide('ol.style');
 goog.provide('ol.style.DefaultStyleFunction');
 goog.provide('ol.style.Style');
 goog.provide('ol.style.StyleFunction');
@@ -10,8 +11,7 @@ goog.require('goog.functions');
 
 
 /**
- * @typedef {{color: string,
- *            opacity: number}}
+ * @typedef {{color: string}}
  */
 ol.style.Fill;
 
@@ -24,8 +24,7 @@ ol.style.Fill;
 ol.style.fill.equals = function(fillStyle1, fillStyle2) {
   return fillStyle1 === fillStyle2 || (
       !goog.isNull(fillStyle1) && !goog.isNull(fillStyle2) &&
-      fillStyle1.color == fillStyle2.color &&
-      fillStyle1.opacity == fillStyle2.opacity);
+      fillStyle1.color == fillStyle2.color);
 };
 
 
@@ -78,8 +77,7 @@ ol.style.StyleFunction;
  * @type {ol.style.Fill}
  */
 ol.style.DEFAULT_FILL_STYLE = {
-  color: 'rgba(255, 0, 0, 0.1)',
-  opacity: 0.1
+  color: 'rgba(255, 0, 0, 0.1)'
 };
 
 
