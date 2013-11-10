@@ -323,6 +323,7 @@ goog.inherits(ol.render.canvas.LineStringBatch, ol.render.canvas.Batch);
  * @param {number} end End.
  * @param {number} stride Stride.
  * @private
+ * @return {number} end.
  */
 ol.render.canvas.LineStringBatch.prototype.drawFlatCoordinates_ =
     function(flatCoordinates, offset, end, stride) {
@@ -339,6 +340,7 @@ ol.render.canvas.LineStringBatch.prototype.drawFlatCoordinates_ =
   var myEnd = this.appendFlatCoordinates(
       flatCoordinates, offset, end, stride, false);
   this.instructions.push([ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myEnd]);
+  return end;
 };
 
 
@@ -369,9 +371,8 @@ ol.render.canvas.LineStringBatch.prototype.drawMultiLineStringGeometry =
   var offset = 0;
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
-    var end = ends[i];
-    this.drawFlatCoordinates_(flatCoordinates, offset, end, stride);
-    offset = end;
+    offset = this.drawFlatCoordinates_(
+        flatCoordinates, offset, ends[i], stride);
   }
 };
 
