@@ -1,1 +1,2 @@
 @exportClass ol.source.Vector ol.source.VectorOptions
+@exportProperty ol.source.Vector.prototype.addFeature
