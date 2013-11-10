@@ -151,6 +151,7 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
  */
 ol.geom.Geometry.prototype.setLayout =
     function(layout, coordinates, nesting) {
+  /** @type {number} */
   var stride;
   if (goog.isDef(layout)) {
     if (layout == ol.geom.Layout.XY) {
@@ -175,7 +176,7 @@ ol.geom.Geometry.prototype.setLayout =
         coordinates = coordinates[0];
       }
     }
-    stride = coordinates.length;
+    stride = (/** @type {Array} */ (coordinates)).length;
     if (stride == 2) {
       layout = ol.geom.Layout.XY;
     } else if (stride == 3) {
