@@ -3,6 +3,7 @@ goog.provide('ol.renderer.vector');
 goog.require('goog.asserts');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
@@ -94,9 +95,33 @@ ol.renderer.vector.renderMultiPolygonGeometry_ =
  */
 ol.renderer.vector.renderPointGeometry_ =
     function(batchGroup, geometry, style) {
+  if (goog.isNull(style.image)) {
+    return;
+  }
   goog.asserts.assert(geometry instanceof ol.geom.Point);
   var pointGeometry = /** @type {ol.geom.Point} */ (geometry);
-  pointGeometry = pointGeometry; // FIXME
+  var batch = batchGroup.getBatch(style.zIndex, ol.replay.BatchType.IMAGE);
+  batch.setImageStyle(style.image);
+  batch.drawPointGeometry(pointGeometry);
+};
+
+
+/**
+ * @param {ol.replay.IBatchGroup} batchGroup Batch group.
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {ol.style.Style} style Style.
+ * @private
+ */
+ol.renderer.vector.renderMultiPointGeometry_ =
+    function(batchGroup, geometry, style) {
+  if (goog.isNull(style.image)) {
+    return;
+  }
+  goog.asserts.assert(geometry instanceof ol.geom.MultiPoint);
+  var multiPointGeometry = /** @type {ol.geom.MultiPoint} */ (geometry);
+  var batch = batchGroup.getBatch(style.zIndex, ol.replay.BatchType.IMAGE);
+  batch.setImageStyle(style.image);
+  batch.drawMultiPointGeometry(multiPointGeometry);
 };
 
 
