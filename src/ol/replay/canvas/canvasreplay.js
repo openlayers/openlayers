@@ -17,11 +17,12 @@ goog.require('ol.style.stroke');
 ol.replay.canvas.Instruction = {
   BEGIN_PATH: 0,
   CLOSE_PATH: 1,
-  FILL: 2,
-  MOVE_TO_LINE_TO: 3,
-  SET_FILL_STYLE: 4,
-  SET_STROKE_STYLE: 5,
-  STROKE: 6
+  DRAW_IMAGE: 2,
+  FILL: 3,
+  MOVE_TO_LINE_TO: 4,
+  SET_FILL_STYLE: 5,
+  SET_STROKE_STYLE: 6,
+  STROKE: 7
 };
 
 
@@ -95,7 +96,7 @@ ol.replay.canvas.Batch.prototype.draw = function(context, transform) {
   this.pixelCoordinates_ = pixelCoordinates;  // FIXME ?
   var instructions = this.instructions;
   var i = 0;
-  var j, jj;
+  var end, j, jj;
   for (j = 0, jj = instructions.length; j < jj; ++j) {
     var instruction = instructions[j];
     var type = instruction[0];
@@ -103,12 +104,21 @@ ol.replay.canvas.Batch.prototype.draw = function(context, transform) {
       context.beginPath();
     } else if (type == ol.replay.canvas.Instruction.CLOSE_PATH) {
       context.closePath();
+    } else if (type == ol.replay.canvas.Instruction.DRAW_IMAGE) {
+      end = /** @type {number} */ (instruction[1]);
+      var imageStyle = /** @type {ol.style.Image} */ (instruction[2]);
+      for (; i < end; i += 2) {
+        context.drawImage(
+            imageStyle.image,
+            pixelCoordinates[i] - imageStyle.anchor[0],
+            pixelCoordinates[i + 1] - imageStyle.anchor[1]);
+      }
     } else if (type == ol.replay.canvas.Instruction.FILL) {
       context.fill();
     } else if (type == ol.replay.canvas.Instruction.MOVE_TO_LINE_TO) {
       context.moveTo(pixelCoordinates[i], pixelCoordinates[i + 1]);
       goog.asserts.assert(goog.isNumber(instruction[1]));
-      var end = /** @type {number} */ (instruction[1]);
+      end = /** @type {number} */ (instruction[1]);
       for (i += 2; i < end; i += 2) {
         context.lineTo(pixelCoordinates[i], pixelCoordinates[i + 1]);
       }
@@ -190,6 +200,96 @@ ol.replay.canvas.Batch.prototype.getExtent = function() {
  * @inheritDoc
  */
 ol.replay.canvas.Batch.prototype.setFillStrokeStyle = goog.abstractMethod;
+
+
+/**
+ * @inheritDoc
+ */
+ol.replay.canvas.Batch.prototype.setImageStyle = goog.abstractMethod;
+
+
+
+/**
+ * @constructor
+ * @extends {ol.replay.canvas.Batch}
+ * @protected
+ */
+ol.replay.canvas.ImageBatch = function() {
+
+  goog.base(this);
+
+  /**
+   * @private
+   * @type {?ol.style.Image}
+   */
+  this.imageStyle_ = null;
+
+};
+goog.inherits(ol.replay.canvas.ImageBatch, ol.replay.canvas.Batch);
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
+ * @private
+ * @return {number} My end.
+ */
+ol.replay.canvas.ImageBatch.prototype.drawCoordinates_ =
+    function(flatCoordinates, offset, end, stride) {
+  return this.appendFlatCoordinates(
+      flatCoordinates, offset, end, stride, false);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.replay.canvas.ImageBatch.prototype.drawPointGeometry =
+    function(pointGeometry) {
+  goog.asserts.assert(!goog.isNull(this.imageStyle_));
+  ol.extent.extend(this.extent_, pointGeometry.getExtent());
+  var flatCoordinates = pointGeometry.getFlatCoordinates();
+  var stride = pointGeometry.getStride();
+  var myEnd = this.drawCoordinates_(
+      flatCoordinates, 0, flatCoordinates.length, stride);
+  this.instructions.push(
+      [ol.replay.canvas.Instruction.DRAW_IMAGE, myEnd, this.imageStyle_]);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.replay.canvas.ImageBatch.prototype.drawMultiPointGeometry =
+    function(multiPointGeometry) {
+  goog.asserts.assert(!goog.isNull(this.imageStyle_));
+  ol.extent.extend(this.extent_, multiPointGeometry.getExtent());
+  var flatCoordinates = multiPointGeometry.getFlatCoordinates();
+  var stride = multiPointGeometry.getStride();
+  var myEnd = this.drawCoordinates_(
+      flatCoordinates, 0, flatCoordinates.length, stride);
+  this.instructions.push(
+      [ol.replay.canvas.Instruction.DRAW_IMAGE, myEnd, this.imageStyle_]);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.replay.canvas.ImageBatch.prototype.finish = function() {
+  // FIXME this doesn't really protect us against further calls to draw*Geometry
+  this.imageStyle_ = null;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.replay.canvas.ImageBatch.prototype.setImageStyle = function(imageStyle) {
+  this.imageStyle_ = imageStyle;
+};
 
 
 
@@ -530,6 +630,7 @@ ol.replay.canvas.BatchGroup.prototype.isEmpty = function() {
  * @type {Object.<ol.replay.BatchType, function(new: ol.replay.canvas.Batch)>}
  */
 ol.replay.canvas.BATCH_CONSTRUCTORS_ = {
+  'Image': ol.replay.canvas.ImageBatch,
   'LineString': ol.replay.canvas.LineStringBatch,
   'Polygon': ol.replay.canvas.PolygonBatch
 };
