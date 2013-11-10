@@ -23,6 +23,22 @@ ol.replay.IBatch = function() {
 
 
 /**
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @param {Image|HTMLCanvasElement|HTMLVideoElement} image Image.
+ */
+ol.replay.IBatch.prototype.drawImage = function(x, y, image) {
+};
+
+
+/**
+ * @param {ol.geom.Point} pointGeometry Point geometry.
+ */
+ol.replay.IBatch.prototype.drawPointGeometry = function(pointGeometry) {
+};
+
+
+/**
  * @param {ol.geom.LineString} lineStringGeometry Line string geometry.
  */
 ol.replay.IBatch.prototype.drawLineStringGeometry =
@@ -36,6 +52,14 @@ ol.replay.IBatch.prototype.drawLineStringGeometry =
  */
 ol.replay.IBatch.prototype.drawMultiLineStringGeometry =
     function(multiLineStringGeometry) {
+};
+
+
+/**
+ * @param {ol.geom.MultiPoint} multiPointGeometry MultiPoint geometry.
+ */
+ol.replay.IBatch.prototype.drawMultiPointGeometry =
+    function(multiPointGeometry) {
 };
 
 
@@ -60,6 +84,13 @@ ol.replay.IBatch.prototype.drawPolygonGeometry = function(polygonGeometry) {
  */
 ol.replay.IBatch.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
+};
+
+
+/**
+ * @param {?ol.style.Image} imageStyle Image style.
+ */
+ol.replay.IBatch.prototype.setImageStyle = function(imageStyle) {
 };
 
 
