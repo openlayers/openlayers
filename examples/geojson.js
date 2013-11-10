@@ -10,7 +10,7 @@ goog.require('ol.style.DefaultStyleFunction');
 goog.require('ol.symbol');
 
 
-var image = ol.symbol.renderCircle(5, null, {color: 'red'});
+var image = ol.symbol.renderCircle(5, null, {color: 'red', width: 1});
 var styleFunction = function(feature) {
   switch (feature.getGeometry().getType()) {
     case ol.geom.GeometryType.POINT:
