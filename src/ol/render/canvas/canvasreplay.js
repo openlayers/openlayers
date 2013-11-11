@@ -312,12 +312,12 @@ ol.render.canvas.LineStringReplay = function() {
   /**
    * @private
    * @type {{currentStrokeStyle: ?ol.style.Stroke,
-   *         lastDraw: number,
+   *         lastStroke: number,
    *         strokeStyle: ?ol.style.Stroke}|null}
    */
   this.state_ = {
     currentStrokeStyle: null,
-    lastDraw: 0,
+    lastStroke: 0,
     strokeStyle: null
   };
 
@@ -337,8 +337,9 @@ ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ =
     function(flatCoordinates, offset, end, stride) {
   var state = this.state_;
   if (!ol.style.stroke.equals(state.currentStrokeStyle, state.strokeStyle)) {
-    if (state.lastDraw != this.coordinates.length) {
+    if (state.lastStroke != this.coordinates.length) {
       this.instructions.push([ol.render.canvas.Instruction.STROKE]);
+      state.lastStroke = this.coordinates.length;
     }
     this.instructions.push(
         [ol.render.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle],
@@ -391,7 +392,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
 ol.render.canvas.LineStringReplay.prototype.finish = function() {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
-  if (state.lastDraw != this.coordinates.length) {
+  if (state.lastStroke != this.coordinates.length) {
     this.instructions.push([ol.render.canvas.Instruction.STROKE]);
   }
   this.state_ = null;
