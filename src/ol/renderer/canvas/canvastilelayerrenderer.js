@@ -53,7 +53,7 @@ ol.renderer.canvas.TileLayer = function(mapRenderer, tileLayer) {
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.transform_ = goog.vec.Mat4.createNumber();
+  this.imageTransform_ = goog.vec.Mat4.createNumber();
 
   /**
    * @private
@@ -97,8 +97,8 @@ ol.renderer.canvas.TileLayer.prototype.getTileLayer = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.TileLayer.prototype.getTransform = function() {
-  return this.transform_;
+ol.renderer.canvas.TileLayer.prototype.getImageTransform = function() {
+  return this.imageTransform_;
 };
 
 
@@ -166,9 +166,9 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   //   etc.). manageTilePyramid is what enqueue tiles in the tile
   //   queue for loading.
   //
-  // - The last step involves updating the transform matrix, which
-  //   will be used by the map renderer for the final composition
-  //   and positioning.
+  // - The last step involves updating the image transform matrix,
+  //   which will be used by the map renderer for the final
+  //   composition and positioning.
   //
 
   var view2DState = frameState.view2DState;
@@ -382,18 +382,18 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   this.scheduleExpireCache(frameState, tileSource);
   this.updateLogos(frameState, tileSource);
 
-  var transform = this.transform_;
-  goog.vec.Mat4.makeIdentity(transform);
-  goog.vec.Mat4.translate(transform,
+  var imageTransform = this.imageTransform_;
+  goog.vec.Mat4.makeIdentity(imageTransform);
+  goog.vec.Mat4.translate(imageTransform,
       frameState.size[0] / 2, frameState.size[1] / 2, 0);
-  goog.vec.Mat4.rotateZ(transform, view2DState.rotation);
+  goog.vec.Mat4.rotateZ(imageTransform, view2DState.rotation);
   goog.vec.Mat4.scale(
-      transform,
+      imageTransform,
       tileResolution / view2DState.resolution,
       tileResolution / view2DState.resolution,
       1);
   goog.vec.Mat4.translate(
-      transform,
+      imageTransform,
       (origin[0] - center[0]) / tileResolution,
       (center[1] - origin[1]) / tileResolution,
       0);

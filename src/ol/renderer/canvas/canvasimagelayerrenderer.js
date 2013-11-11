@@ -32,7 +32,7 @@ ol.renderer.canvas.ImageLayer = function(mapRenderer, imageLayer) {
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.transform_ = goog.vec.Mat4.createNumber();
+  this.imageTransform_ = goog.vec.Mat4.createNumber();
 
 };
 goog.inherits(ol.renderer.canvas.ImageLayer, ol.renderer.canvas.Layer);
@@ -59,8 +59,8 @@ ol.renderer.canvas.ImageLayer.prototype.getImageLayer = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.ImageLayer.prototype.getTransform = function() {
-  return this.transform_;
+ol.renderer.canvas.ImageLayer.prototype.getImageTransform = function() {
+  return this.imageTransform_;
 };
 
 
@@ -101,18 +101,18 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
 
     var imageExtent = image.getExtent();
     var imageResolution = image.getResolution();
-    var transform = this.transform_;
-    goog.vec.Mat4.makeIdentity(transform);
-    goog.vec.Mat4.translate(transform,
+    var imageTransform = this.imageTransform_;
+    goog.vec.Mat4.makeIdentity(imageTransform);
+    goog.vec.Mat4.translate(imageTransform,
         frameState.size[0] / 2, frameState.size[1] / 2, 0);
-    goog.vec.Mat4.rotateZ(transform, viewRotation);
+    goog.vec.Mat4.rotateZ(imageTransform, viewRotation);
     goog.vec.Mat4.scale(
-        transform,
+        imageTransform,
         imageResolution / viewResolution,
         imageResolution / viewResolution,
         1);
     goog.vec.Mat4.translate(
-        transform,
+        imageTransform,
         (imageExtent[0] - viewCenter[0]) / imageResolution,
         (viewCenter[1] - imageExtent[3]) / imageResolution,
         0);
