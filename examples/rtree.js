@@ -8,9 +8,9 @@ goog.require('ol.extent');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.layer.Vector');
+goog.require('ol.shape');
 goog.require('ol.source.Vector');
 goog.require('ol.structs.RTree');
-goog.require('ol.symbol');
 
 
 /**
@@ -58,7 +58,7 @@ var vectorSource = new ol.source.Vector({
 });
 
 var style = {
-  image: ol.symbol.renderCircle(3, null, {color: 'red', width: 1})
+  image: ol.shape.renderCircle(3, null, {color: 'red', width: 1})
 };
 
 var colors = ['red', 'orange', 'yellow', 'blue', 'green', 'indigo', 'violet'];

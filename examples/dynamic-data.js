@@ -3,8 +3,8 @@ goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.layer.Tile');
+goog.require('ol.shape');
 goog.require('ol.source.MapQuestOpenAerial');
-goog.require('ol.symbol');
 
 
 var map = new ol.Map({
@@ -24,7 +24,7 @@ map.beforeRender(function(map, frameState) {
   frameState.animate = true;
   return true;
 });
-var imageStyle = ol.symbol.renderCircle(5, {
+var imageStyle = ol.shape.renderCircle(5, {
   color: 'yellow'
 }, {
   color: 'red',

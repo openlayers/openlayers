@@ -6,13 +6,13 @@ goog.require('ol.format.GeoJSON');
 goog.require('ol.geom.LineString');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
+goog.require('ol.shape');
 goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
 goog.require('ol.style.DefaultStyleFunction');
-goog.require('ol.symbol');
 
 
-var image = ol.symbol.renderCircle(5, null, {color: 'red', width: 1});
+var image = ol.shape.renderCircle(5, null, {color: 'red', width: 1});
 var styleFunction = function(feature) {
   switch (feature.getGeometry().getType()) {
     case ol.geom.Type.POINT:

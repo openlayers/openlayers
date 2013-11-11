@@ -2,7 +2,7 @@
 // FIXME move to ol.render?
 // FIXME find a sensible caching strategy
 
-goog.provide('ol.symbol');
+goog.provide('ol.shape');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -15,7 +15,7 @@ goog.require('ol.style');
  * @param {?ol.style.Stroke} strokeStyle Stroke style.
  * @return {ol.style.Image} Image.
  */
-ol.symbol.renderCircle = function(radius, fillStyle, strokeStyle) {
+ol.shape.renderCircle = function(radius, fillStyle, strokeStyle) {
 
   var canvas = /** @type {HTMLCanvasElement} */
       (goog.dom.createElement(goog.dom.TagName.CANVAS));
