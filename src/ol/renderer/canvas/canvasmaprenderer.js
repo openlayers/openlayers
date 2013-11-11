@@ -130,7 +130,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     var render = new ol.render.canvas.Immediate(
         context, frameState.extent, frameState.coordinateToPixelMatrix);
     var postComposeEvent = new ol.render.RenderEvent(
-        ol.render.RenderEventType.POSTCOMPOSE, map, render, context, null);
+        ol.render.RenderEventType.POSTCOMPOSE, map, render, frameState, context,
+        null);
     map.dispatchEvent(postComposeEvent);
   }
 

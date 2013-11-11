@@ -54,17 +54,17 @@ goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     function(frameState, layerState, context) {
 
-  // FIXME should be able to avoid call to getTransform here if no postcompose
-  // FIXME listeners or replay group
-  var transform = this.getTransform(frameState);
+  /** @type {goog.vec.Mat4.AnyType|undefined} */
+  var transform;
 
   var replayGroup = this.replayGroup_;
   if (!goog.isNull(replayGroup)) {
+    transform = this.getTransform(frameState);
     context.globalAlpha = layerState.opacity;
     replayGroup.draw(context, frameState.extent, transform);
   }
 
-  this.dispatchPostComposeEvent(context, frameState.extent, transform);
+  this.dispatchPostComposeEvent(context, frameState, transform);
 
 };
 

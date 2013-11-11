@@ -64,27 +64,28 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
     }
   }
 
-  // FIXME should be able to avoid call to getTransform here if no postcompose
-  // FIXME listeners
-  var transform = this.getTransform(frameState);
-  this.dispatchPostComposeEvent(context, frameState.extent, transform);
+  this.dispatchPostComposeEvent(context, frameState);
 
 };
 
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Extent} extent Extent.
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {ol.FrameState} frameState Frame state.
+ * @param {goog.vec.Mat4.AnyType=} opt_transform Transform.
  * @protected
  */
 ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent =
-    function(context, extent, transform) {
+    function(context, frameState, opt_transform) {
   var layer = this.getLayer();
   if (layer.hasListener(ol.render.RenderEventType.POSTCOMPOSE)) {
-    var render = new ol.render.canvas.Immediate(context, extent, transform);
+    var transform = goog.isDef(opt_transform) ?
+        opt_transform : this.getTransform(frameState);
+    var render = new ol.render.canvas.Immediate(context, frameState.extent,
+        transform);
     var postComposeEvent = new ol.render.RenderEvent(
-        ol.render.RenderEventType.POSTCOMPOSE, layer, render, context, null);
+        ol.render.RenderEventType.POSTCOMPOSE, layer, render, frameState,
+        context, null);
     layer.dispatchEvent(postComposeEvent);
   }
 };
