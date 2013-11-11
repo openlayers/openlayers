@@ -22,12 +22,6 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, vectorLayer) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
-   */
-  this.transform_ = goog.vec.Mat4.createNumber();
-
-  /**
-   * @private
    * @type {number}
    */
   this.renderedRevision_ = -1;
@@ -60,26 +54,9 @@ goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     function(frameState, layerState, context) {
 
-  var view2DState = frameState.view2DState;
-  var viewCenter = view2DState.center;
-  var viewResolution = view2DState.resolution;
-  var viewRotation = view2DState.rotation;
-
-  var transform = this.transform_;
-  goog.vec.Mat4.makeIdentity(transform);
-  goog.vec.Mat4.translate(transform,
-      frameState.size[0] / 2,
-      frameState.size[1] / 2,
-      0);
-  goog.vec.Mat4.scale(transform,
-      1 / viewResolution,
-      -1 / viewResolution,
-      1);
-  goog.vec.Mat4.rotateZ(transform, -viewRotation);
-  goog.vec.Mat4.translate(transform,
-      -viewCenter[0],
-      -viewCenter[1],
-      0);
+  // FIXME should be able to avoid call to getTransform here if no postcompose
+  // FIXME listeners or replay group
+  var transform = this.getTransform(frameState);
 
   var replayGroup = this.replayGroup_;
   if (!goog.isNull(replayGroup)) {

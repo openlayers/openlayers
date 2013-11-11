@@ -16,7 +16,15 @@ goog.require('ol.renderer.Layer');
  * @param {ol.layer.Layer} layer Layer.
  */
 ol.renderer.canvas.Layer = function(mapRenderer, layer) {
+
   goog.base(this, mapRenderer, layer);
+
+  /**
+   * @private
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.transform_ = goog.vec.Mat4.createNumber();
+
 };
 goog.inherits(ol.renderer.canvas.Layer, ol.renderer.Layer);
 
@@ -87,3 +95,24 @@ ol.renderer.canvas.Layer.prototype.getImage = goog.abstractMethod;
  * @return {!goog.vec.Mat4.Number} Image transform.
  */
 ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
+
+
+/**
+ * @param {ol.FrameState} frameState Frame state.
+ * @protected
+ * @return {!goog.vec.Mat4.Number} Transform.
+ */
+ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
+  var view2DState = frameState.view2DState;
+  var center = view2DState.center;
+  var resolution = view2DState.resolution;
+  var rotation = view2DState.rotation;
+  var size = frameState.size;
+  var transform = this.transform_;
+  goog.vec.Mat4.makeIdentity(transform);
+  goog.vec.Mat4.translate(transform, size[0] / 2, size[1] / 2, 0);
+  goog.vec.Mat4.scale(transform, 1 / resolution, -1 / resolution, 1);
+  goog.vec.Mat4.rotateZ(transform, -rotation);
+  goog.vec.Mat4.translate(transform, -center[0], -center[1], 0);
+  return transform;
+};
