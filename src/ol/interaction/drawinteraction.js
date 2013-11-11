@@ -348,20 +348,6 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
 
 
 /**
- * Set the drawing mode.
- * TODO: Decide if we want interactions to be purely event driven - if so, this
- * method would be removed, and users would remove this interaction and create a
- * new one with the desired mode instead.
- * @param {ol.interaction.DrawMode} mode Draw mode ('point', 'linestring', or
- *     'polygon').
- */
-ol.interaction.Draw.prototype.setMode = function(mode) {
-  this.abortDrawing_();
-  this.mode_ = mode;
-};
-
-
-/**
  * Draw mode.
  * @enum {string}
  */

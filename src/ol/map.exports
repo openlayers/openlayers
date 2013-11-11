@@ -1,5 +1,6 @@
 @exportClass ol.Map ol.MapOptions
 @exportProperty ol.Map.prototype.addControl
+@exportProperty ol.Map.prototype.addInteraction
 @exportProperty ol.Map.prototype.addLayer
 @exportProperty ol.Map.prototype.addOverlay
 @exportProperty ol.Map.prototype.beforeRender
@@ -14,6 +15,7 @@
 @exportProperty ol.Map.prototype.getRenderer
 @exportProperty ol.Map.prototype.getViewport
 @exportProperty ol.Map.prototype.removeControl
+@exportProperty ol.Map.prototype.removeInteraction
 @exportProperty ol.Map.prototype.removeLayer
 @exportProperty ol.Map.prototype.removeOverlay
 @exportProperty ol.Map.prototype.updateSize

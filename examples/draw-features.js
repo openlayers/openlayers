@@ -87,26 +87,7 @@ var vector = new ol.layer.Vector({
   })
 });
 
-var modeSelect = document.getElementById('mode');
-
-var draw = new ol.interaction.Draw({
-  layer: vector,
-  mode: /** @type {ol.interaction.DrawMode} */
-      (modeSelect.options[modeSelect.selectedIndex].value)
-});
-
-
-/**
- * Let user change the draw mode.
- * @param {Event} e Change event.
- */
-modeSelect.onchange = function(e) {
-  draw.setMode(/** @type {ol.interaction.DrawMode} */
-      (modeSelect.options[modeSelect.selectedIndex].value));
-};
-
 var map = new ol.Map({
-  interactions: ol.interaction.defaults().extend([draw]),
   layers: [raster, vector],
   renderer: ol.RendererHint.CANVAS,
   target: 'map',
@@ -115,3 +96,27 @@ var map = new ol.Map({
     zoom: 4
   })
 });
+
+var modeSelect = document.getElementById('mode');
+
+var draw; // global so we can remove it later
+function addInteraction() {
+  draw = new ol.interaction.Draw({
+    layer: vector,
+    mode: /** @type {ol.interaction.DrawMode} */
+        (modeSelect.options[modeSelect.selectedIndex].value)
+  });
+  map.addInteraction(draw);
+}
+
+
+/**
+ * Let user change the draw mode.
+ * @param {Event} e Change event.
+ */
+modeSelect.onchange = function(e) {
+  map.removeInteraction(draw);
+  addInteraction();
+};
+
+addInteraction();
