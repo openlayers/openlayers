@@ -6,11 +6,11 @@ goog.provide('ol.interaction.DragZoom');
 goog.require('goog.asserts');
 goog.require('ol.Size');
 goog.require('ol.View2D');
-goog.require('ol.control.DragBox');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.extent');
 goog.require('ol.interaction.Drag');
+goog.require('ol.render.DragBox');
 
 
 /**
@@ -51,11 +51,10 @@ ol.interaction.DragZoom = function(opt_options) {
       options.condition : ol.events.condition.shiftKeyOnly;
 
   /**
-   * @type {ol.control.DragBox}
+   * @type {ol.render.DragBox}
    * @private
    */
-  this.dragBox_ = null;
-
+  this.dragBox_ = new ol.render.DragBox();
 
 };
 goog.inherits(ol.interaction.DragZoom, ol.interaction.Drag);
@@ -64,10 +63,18 @@ goog.inherits(ol.interaction.DragZoom, ol.interaction.Drag);
 /**
  * @inheritDoc
  */
+ol.interaction.DragZoom.prototype.handleDrag = function(mapBrowserEvent) {
+  this.dragBox_.setCoordinates(
+      this.startCoordinate, mapBrowserEvent.getCoordinate());
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.interaction.DragZoom.prototype.handleDragEnd =
     function(mapBrowserEvent) {
   this.dragBox_.setMap(null);
-  this.dragBox_ = null;
   if (this.deltaX * this.deltaX + this.deltaY * this.deltaY >=
       ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED) {
     var map = mapBrowserEvent.map;
@@ -93,9 +100,7 @@ ol.interaction.DragZoom.prototype.handleDragStart =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
-    this.dragBox_ = new ol.control.DragBox({
-      startCoordinate: this.startCoordinate
-    });
+    this.dragBox_.setCoordinates(this.startCoordinate, this.startCoordinate);
     this.dragBox_.setMap(mapBrowserEvent.map);
     return true;
   } else {
