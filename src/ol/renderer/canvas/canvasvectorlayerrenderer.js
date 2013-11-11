@@ -93,13 +93,13 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
   replayGroup.draw(context, frameState.extent, transform);
 
   var vectorLayer = this.getVectorLayer();
-  if (vectorLayer.hasListener(ol.render.RenderEventType.POSTRENDER)) {
+  if (vectorLayer.hasListener(ol.render.RenderEventType.POSTCOMPOSE)) {
     var render = new ol.render.canvas.Immediate(
         context, frameState.extent, transform);
-    var postRenderEvent = new ol.render.RenderEvent(
-        ol.render.RenderEventType.POSTRENDER, vectorLayer, render, context,
+    var postComposeEvent = new ol.render.RenderEvent(
+        ol.render.RenderEventType.POSTCOMPOSE, vectorLayer, render, context,
         null);
-    vectorLayer.dispatchEvent(postRenderEvent);
+    vectorLayer.dispatchEvent(postComposeEvent);
   }
 
 };

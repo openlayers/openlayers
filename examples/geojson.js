@@ -123,7 +123,7 @@ var tmpStyle = {
     width: 5
   }
 };
-vectorLayer.on('postrender', function(event) {
+vectorLayer.on('postcompose', function(event) {
   var render = event.getRender();
   render.drawFeature(tmpFeature, tmpStyle);
   var context = event.getContext();
