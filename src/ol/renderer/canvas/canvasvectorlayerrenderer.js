@@ -3,9 +3,6 @@ goog.provide('ol.renderer.canvas.VectorLayer');
 goog.require('goog.vec.Mat4');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
-goog.require('ol.render.RenderEvent');
-goog.require('ol.render.RenderEventType');
-goog.require('ol.render.canvas.Immediate');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.vector');
@@ -92,15 +89,9 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
   context.globalAlpha = layerState.opacity;
   replayGroup.draw(context, frameState.extent, transform);
 
-  var vectorLayer = this.getVectorLayer();
-  if (vectorLayer.hasListener(ol.render.RenderEventType.POSTCOMPOSE)) {
-    var render = new ol.render.canvas.Immediate(
-        context, frameState.extent, transform);
-    var postComposeEvent = new ol.render.RenderEvent(
-        ol.render.RenderEventType.POSTCOMPOSE, vectorLayer, render, context,
-        null);
-    vectorLayer.dispatchEvent(postComposeEvent);
   }
+
+  this.dispatchPostComposeEvent(context, frameState.extent, transform);
 
 };
 

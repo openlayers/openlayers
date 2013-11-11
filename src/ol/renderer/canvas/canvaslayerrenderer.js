@@ -2,6 +2,9 @@ goog.provide('ol.renderer.canvas.Layer');
 
 goog.require('goog.vec.Mat4');
 goog.require('ol.layer.Layer');
+goog.require('ol.render.RenderEvent');
+goog.require('ol.render.RenderEventType');
+goog.require('ol.render.canvas.Immediate');
 goog.require('ol.renderer.Layer');
 
 
@@ -53,6 +56,24 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
     }
   }
 
+};
+
+
+/**
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {ol.Extent} extent Extent.
+ * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @protected
+ */
+ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent =
+    function(context, extent, transform) {
+  var layer = this.getLayer();
+  if (layer.hasListener(ol.render.RenderEventType.POSTCOMPOSE)) {
+    var render = new ol.render.canvas.Immediate(context, extent, transform);
+    var postComposeEvent = new ol.render.RenderEvent(
+        ol.render.RenderEventType.POSTCOMPOSE, layer, render, context, null);
+    layer.dispatchEvent(postComposeEvent);
+  }
 };
 
 
