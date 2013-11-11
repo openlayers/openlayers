@@ -218,9 +218,12 @@ ol.layer.Vector.prototype.handleFeatureChange_ = function(evt) {
 ol.layer.Vector.prototype.handleIntentChange_ = function(evt) {
   goog.asserts.assertInstanceof(evt.target, ol.Feature);
   var feature = /** @type {ol.Feature} */ (evt.target);
-  this.dispatchEvent(new ol.layer.VectorEvent(
-      ol.layer.VectorEventType.INTENTCHANGE, [feature],
-      [feature.getGeometry().getBounds()]));
+  var geometry = feature.getGeometry();
+  if (!goog.isNull(geometry)) {
+    this.dispatchEvent(new ol.layer.VectorEvent(
+        ol.layer.VectorEventType.INTENTCHANGE, [feature],
+        [geometry.getBounds()]));
+  }
 };
 
 
