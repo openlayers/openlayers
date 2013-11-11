@@ -10,6 +10,7 @@ goog.require('ol.Feature');
 goog.require('ol.FeatureEventType');
 goog.require('ol.extent');
 goog.require('ol.layer.Layer');
+goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.proj');
 goog.require('ol.source.Vector');
 goog.require('ol.structs.RTree');
@@ -104,16 +105,6 @@ ol.layer.FeatureCache.prototype.getFeaturesByIds_ = function(ids) {
 
 
 /**
- * @param {string} uid Feature uid.
- * @return {ol.Feature|undefined} The feature with the provided uid if it is in
- *     the cache, otherwise undefined.
- */
-ol.layer.FeatureCache.prototype.getFeatureWithUid = function(uid) {
-  return this.idLookup_[uid];
-};
-
-
-/**
  * Remove a feature from the cache.
  * @param {ol.Feature} feature Feature.
  * @param {ol.Extent=} opt_extent Optional extent (used when the current feature
@@ -188,6 +179,8 @@ ol.layer.Vector.prototype.addFeatures = function(features) {
     }
     goog.events.listen(feature, ol.FeatureEventType.CHANGE,
         this.handleFeatureChange_, false, this);
+    goog.events.listen(feature, ol.FeatureEventType.INTENTCHANGE,
+        this.handleIntentChange_, false, this);
   }
   this.dispatchEvent(new ol.layer.VectorEvent(ol.layer.VectorEventType.ADD,
       features, [extent]));
@@ -214,6 +207,23 @@ ol.layer.Vector.prototype.handleFeatureChange_ = function(evt) {
   }
   this.dispatchEvent(new ol.layer.VectorEvent(ol.layer.VectorEventType.CHANGE,
       [feature], extents));
+};
+
+
+/**
+ * Listener for render intent change events of features.
+ * @param {ol.FeatureEvent} evt The feature intent change event.
+ * @private
+ */
+ol.layer.Vector.prototype.handleIntentChange_ = function(evt) {
+  goog.asserts.assertInstanceof(evt.target, ol.Feature);
+  var feature = /** @type {ol.Feature} */ (evt.target);
+  var geometry = feature.getGeometry();
+  if (!goog.isNull(geometry)) {
+    this.dispatchEvent(new ol.layer.VectorEvent(
+        ol.layer.VectorEventType.INTENTCHANGE, [feature],
+        [geometry.getBounds()]));
+  }
 };
 
 
@@ -248,6 +258,30 @@ ol.layer.Vector.prototype.getVectorSource = function() {
  */
 ol.layer.Vector.prototype.getStyle = function() {
   return this.style_;
+};
+
+
+/**
+ * Returns an array of features that match a filter. This will not fetch data,
+ * it only considers features that are loaded already.
+ * @param {(function(ol.Feature):boolean)=} opt_filter Filter function.
+ * @return {Array.<ol.Feature>} Features that match the filter, or all features
+ *     if no filter was provided.
+ */
+ol.layer.Vector.prototype.getFeatures = function(opt_filter) {
+  var result;
+  var features = this.featureCache_.getFeaturesObject();
+  if (goog.isDef(opt_filter)) {
+    result = [];
+    for (var f in features) {
+      if (opt_filter(features[f]) === true) {
+        result.push(features[f]);
+      }
+    }
+  } else {
+    result = goog.object.getValues(features);
+  }
+  return result;
 };
 
 
@@ -333,16 +367,6 @@ ol.layer.Vector.prototype.groupFeaturesBySymbolizerLiteral =
 
 
 /**
- * @param {string|number} uid Feature uid.
- * @return {ol.Feature|undefined} The feature with the provided uid if it is on
- *     the layer, otherwise undefined.
- */
-ol.layer.Vector.prototype.getFeatureWithUid = function(uid) {
-  return this.featureCache_.getFeatureWithUid(/** @type {string} */ (uid));
-};
-
-
-/**
  * @param {Object|Element|Document|string} data Feature data.
  * @param {ol.parser.Parser} parser Feature parser.
  * @param {ol.proj.Projection} projection This sucks.  The layer should be a
@@ -424,31 +448,6 @@ ol.layer.Vector.prototype.removeFeatures = function(features) {
 
 
 /**
- * Changes the renderIntent for an array of features.
- * @param {string} renderIntent Render intent.
- * @param {Array.<ol.Feature>=} opt_features Features to change the renderIntent
- *     for. If not provided, all features will be changed.
- */
-ol.layer.Vector.prototype.setRenderIntent =
-    function(renderIntent, opt_features) {
-  var features = goog.isDef(opt_features) ? opt_features :
-      goog.object.getValues(this.featureCache_.getFeaturesObject());
-  var extent = ol.extent.createEmpty(),
-      feature, geometry;
-  for (var i = features.length - 1; i >= 0; --i) {
-    feature = features[i];
-    feature.renderIntent = renderIntent;
-    geometry = feature.getGeometry();
-    if (!goog.isNull(geometry)) {
-      ol.extent.extend(extent, geometry.getBounds());
-    }
-  }
-  this.dispatchEvent(new ol.layer.VectorEvent(
-      ol.layer.VectorEventType.INTENTCHANGE, features, [extent]));
-};
-
-
-/**
  * @param {boolean} temp Whether this layer is temporary.
  */
 ol.layer.Vector.prototype.setTemporary = function(temp) {
@@ -476,6 +475,15 @@ ol.layer.Vector.uidTransformFeatureInfo = function(features) {
   var uids = goog.array.map(features,
       function(feature) { return goog.getUid(feature); });
   return uids.join(', ');
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature.
+ * @return {boolean} Whether the feature is selected.
+ */
+ol.layer.Vector.selectedFeaturesFilter = function(feature) {
+  return feature.getRenderIntent() == ol.layer.VectorLayerRenderIntent.SELECTED;
 };
 
 
@@ -511,6 +519,6 @@ goog.inherits(ol.layer.VectorEvent, goog.events.Event);
 ol.layer.VectorEventType = {
   ADD: 'featureadd',
   CHANGE: 'featurechange',
-  REMOVE: 'featureremove',
-  INTENTCHANGE: 'intentchange'
+  INTENTCHANGE: 'featureintentchange',
+  REMOVE: 'featureremove'
 };

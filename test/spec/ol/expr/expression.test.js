@@ -894,7 +894,7 @@ describe('ol.expr.lib', function() {
   describe('renderIntent()', function() {
 
     var feature = new ol.Feature();
-    feature.renderIntent = 'foo';
+    feature.setRenderIntent('foo');
 
     var isFoo = parse('renderIntent("foo")');
     var isBar = parse('renderIntent("bar")');
