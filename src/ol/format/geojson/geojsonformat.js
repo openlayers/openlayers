@@ -96,6 +96,7 @@ ol.format.GeoJSON.readFeature_ = function(object, callback, opt_obj) {
   goog.asserts.assert(goog.isDef(geometryReader));
   var geometry = geometryReader(feature.geometry);
   var f = new ol.Feature(geometry);
+  f.setId(feature.id);
   if (goog.isDef(feature.properties)) {
     f.setValues(feature.properties);
   }
