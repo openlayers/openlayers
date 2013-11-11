@@ -64,6 +64,11 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
     }
   }
 
+  // FIXME should be able to avoid call to getTransform here if no postcompose
+  // FIXME listeners
+  var transform = this.getTransform(frameState);
+  this.dispatchPostComposeEvent(context, frameState.extent, transform);
+
 };
 
 
