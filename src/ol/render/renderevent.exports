@@ -1,0 +1,3 @@
+@exportProperty ol.render.RenderEvent.prototype.getContext
+@exportProperty ol.render.RenderEvent.prototype.getGL
+@exportProperty ol.render.RenderEvent.prototype.getRender

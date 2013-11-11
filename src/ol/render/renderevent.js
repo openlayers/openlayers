@@ -1,5 +1,5 @@
-goog.provide('ol.layer.VectorEvent');
-goog.provide('ol.layer.VectorEventType');
+goog.provide('ol.render.RenderEvent');
+goog.provide('ol.render.RenderEventType');
 
 goog.require('goog.events.Event');
 goog.require('ol.render.IRender');
@@ -8,7 +8,7 @@ goog.require('ol.render.IRender');
 /**
  * @enum {string}
  */
-ol.layer.VectorEventType = {
+ol.render.RenderEventType = {
   POSTRENDER: 'postrender'
 };
 
@@ -17,13 +17,13 @@ ol.layer.VectorEventType = {
 /**
  * @constructor
  * @extends {goog.events.Event}
- * @param {ol.layer.VectorEventType} type Type.
+ * @param {ol.render.RenderEventType} type Type.
  * @param {Object=} opt_target Target.
  * @param {ol.render.IRender=} opt_render Render.
  * @param {?CanvasRenderingContext2D=} opt_context Context.
  * @param {?WebGLRenderingContext=} opt_gl GL.
  */
-ol.layer.VectorEvent =
+ol.render.RenderEvent =
     function(type, opt_target, opt_render, opt_context, opt_gl) {
 
   goog.base(this, type, opt_target);
@@ -47,13 +47,13 @@ ol.layer.VectorEvent =
   this.gl_ = opt_gl;
 
 };
-goog.inherits(ol.layer.VectorEvent, goog.events.Event);
+goog.inherits(ol.render.RenderEvent, goog.events.Event);
 
 
 /**
  * @return {CanvasRenderingContext2D|null|undefined} Context.
  */
-ol.layer.VectorEvent.prototype.getContext = function() {
+ol.render.RenderEvent.prototype.getContext = function() {
   return this.context_;
 };
 
@@ -61,7 +61,7 @@ ol.layer.VectorEvent.prototype.getContext = function() {
 /**
  * @return {WebGLRenderingContext|null|undefined} GL.
  */
-ol.layer.VectorEvent.prototype.getGL = function() {
+ol.render.RenderEvent.prototype.getGL = function() {
   return this.gl_;
 };
 
@@ -69,6 +69,6 @@ ol.layer.VectorEvent.prototype.getGL = function() {
 /**
  * @return {ol.render.IRender|undefined} Render.
  */
-ol.layer.VectorEvent.prototype.getRender = function() {
+ol.render.RenderEvent.prototype.getRender = function() {
   return this.render_;
 };
