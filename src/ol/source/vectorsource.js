@@ -71,6 +71,26 @@ ol.source.Vector.prototype.addFeature = function(feature) {
 
 
 /**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {function(this: T, ol.Feature): S} f Callback.
+ * @param {T=} opt_obj The object to be used a the value of 'this' within f.
+ * @return {S|undefined}
+ * @template T,S
+ */
+ol.source.Vector.prototype.forEachFeatureAtCoordinate =
+    function(coordinate, f, opt_obj) {
+  var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
+  return this.forEachFeatureInExtent(extent, function(feature) {
+    if (feature.getGeometry().containsCoordinate(coordinate)) {
+      return f.call(opt_obj, feature);
+    } else {
+      return undefined;
+    }
+  });
+};
+
+
+/**
  * @param {ol.Extent} extent Extent.
  * @param {function(this: T, ol.Feature): S} f Callback.
  * @param {T=} opt_obj The object to be used a the value of 'this' within f.
