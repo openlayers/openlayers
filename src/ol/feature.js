@@ -45,8 +45,9 @@ ol.Feature = function(opt_values) {
   /**
    * The render intent for this feature.
    * @type {ol.layer.VectorLayerRenderIntent|string}
+   * @private
    */
-  this.renderIntent = ol.layer.VectorLayerRenderIntent.DEFAULT;
+  this.renderIntent_ = ol.layer.VectorLayerRenderIntent.DEFAULT;
 
   /**
    * @type {Array.<ol.style.Symbolizer>}
@@ -176,11 +177,20 @@ ol.Feature.prototype.setGeometry = function(geometry) {
 
 
 /**
+ * Gets the renderIntent for this feature.
+ * @return {string} Render intent.
+ */
+ol.Feature.prototype.getRenderIntent = function() {
+  return this.renderIntent_;
+};
+
+
+/**
  * Changes the renderIntent for this feature.
  * @param {string} renderIntent Render intent.
  */
 ol.Feature.prototype.setRenderIntent = function(renderIntent) {
-  this.renderIntent = renderIntent;
+  this.renderIntent_ = renderIntent;
   var geometry = this.getGeometry();
   if (!goog.isNull(geometry)) {
     this.dispatchEvent(new ol.FeatureEvent(

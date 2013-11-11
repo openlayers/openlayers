@@ -483,7 +483,7 @@ ol.layer.Vector.uidTransformFeatureInfo = function(features) {
  * @return {boolean} Whether the feature is selected.
  */
 ol.layer.Vector.selectedFeaturesFilter = function(feature) {
-  return feature.renderIntent == ol.layer.VectorLayerRenderIntent.SELECTED;
+  return feature.getRenderIntent() == ol.layer.VectorLayerRenderIntent.SELECTED;
 };
 
 

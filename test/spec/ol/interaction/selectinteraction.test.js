@@ -47,7 +47,7 @@ describe('ol.interaction.Select', function() {
   describe('#select', function() {
 
     var selectedFeaturesFilter = function(feature) {
-      return feature.renderIntent == 'selected';
+      return feature.getRenderIntent() == 'selected';
     };
 
     it('toggles selection of features', function() {

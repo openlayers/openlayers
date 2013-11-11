@@ -102,8 +102,8 @@ ol.interaction.Select.prototype.select =
     for (var j = featuresToSelect.length - 1; j >= 0; --j) {
       var feature = featuresToSelect[j];
       // TODO: Make toggle configurable
-      feature.setRenderIntent(
-          feature.renderIntent == ol.layer.VectorLayerRenderIntent.SELECTED ?
+      feature.setRenderIntent(feature.getRenderIntent() ==
+          ol.layer.VectorLayerRenderIntent.SELECTED ?
               ol.layer.VectorLayerRenderIntent.DEFAULT :
               ol.layer.VectorLayerRenderIntent.SELECTED);
     }
