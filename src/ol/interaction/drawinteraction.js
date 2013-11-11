@@ -78,6 +78,15 @@ ol.interaction.Draw = function(options) {
    */
   this.sketchPoint_ = null;
 
+  /**
+   * Squared tolerance for handling click events.  If the squared distance
+   * between a down and click event is greater than this tolerance, click events
+   * will not be handled.
+   * @type {number}
+   * @private
+   */
+  this.squaredClickTolerance_ = 4;
+
 };
 goog.inherits(ol.interaction.Draw, ol.interaction.Interaction);
 
@@ -138,15 +147,24 @@ ol.interaction.Draw.prototype.handleMapBrowserEvent = function(event) {
  * @private
  */
 ol.interaction.Draw.prototype.handleClick_ = function(event) {
-  if (goog.isNull(this.finishCoordinate_)) {
-    this.startDrawing_(event);
-  } else if (this.mode_ === ol.interaction.DrawMode.POINT ||
-      this.atFinish_(event)) {
-    this.finishDrawing_(event);
-  } else {
-    this.addToDrawing_(event);
+  var downPx = event.map.getEventPixel(event.target.getDown());
+  var clickPx = event.getPixel();
+  var dx = downPx[0] - clickPx[0];
+  var dy = downPx[1] - clickPx[1];
+  var squaredDistance = dx * dx + dy * dy;
+  var pass = true;
+  if (squaredDistance <= this.squaredClickTolerance_) {
+    if (goog.isNull(this.finishCoordinate_)) {
+      this.startDrawing_(event);
+    } else if (this.mode_ === ol.interaction.DrawMode.POINT ||
+        this.atFinish_(event)) {
+      this.finishDrawing_(event);
+    } else {
+      this.addToDrawing_(event);
+    }
+    pass = false;
   }
-  return false;
+  return pass;
 };
 
 
