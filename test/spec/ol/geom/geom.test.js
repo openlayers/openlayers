@@ -32,6 +32,7 @@ describe('ol.geom', function() {
       expect(ends).to.eql([4, 8]);
       expect(flatCoordinates).to.eql([1, 2, 3, 4, 5, 6, 7, 8]);
     });
+
   });
 
   describe('ol.geom.inflateCoordinates', function() {
@@ -50,6 +51,7 @@ describe('ol.geom', function() {
           0, [4, 8], 2);
       expect(coordinatess).to.eql([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]);
     });
+
   });
 
 });
