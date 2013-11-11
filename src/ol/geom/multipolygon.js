@@ -27,18 +27,7 @@ goog.inherits(ol.geom.MultiPolygon, ol.geom.Geometry);
 
 
 /**
- * @param {ol.Coordinate} coordinate Coordinate.
- * @return {boolean} Contains coordinate.
- */
-ol.geom.MultiPolygon.prototype.containsCoordinate = function(coordinate) {
-  return this.containsXY(coordinate[0], coordinate[1]);
-};
-
-
-/**
- * @param {number} x X.
- * @param {number} y Y.
- * @return {boolean} Contains (x, y).
+ * @inheritDoc
  */
 ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
   return ol.geom.flatLinearRingssContainsXY(

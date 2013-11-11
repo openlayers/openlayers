@@ -5,6 +5,7 @@ goog.provide('ol.geom.Geometry');
 goog.require('goog.asserts');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
+goog.require('goog.functions');
 goog.require('ol.extent');
 
 
@@ -79,6 +80,23 @@ ol.geom.Geometry = function() {
 
 };
 goog.inherits(ol.geom.Geometry, goog.events.EventTarget);
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {boolean} Contains coordinate.
+ */
+ol.geom.Geometry.prototype.containsCoordinate = function(coordinate) {
+  return this.containsXY(coordinate[0], coordinate[1]);
+};
+
+
+/**
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @return {boolean} Contains (x, y).
+ */
+ol.geom.Geometry.prototype.containsXY = goog.functions.FALSE;
 
 
 /**
