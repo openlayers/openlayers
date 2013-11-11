@@ -264,16 +264,22 @@ ol.layer.Vector.prototype.getStyle = function() {
 /**
  * Returns an array of features that match a filter. This will not fetch data,
  * it only considers features that are loaded already.
- * @param {function(ol.Feature):boolean} filter Filter function.
- * @return {Array.<ol.Feature>} Features that match the filter.
+ * @param {(function(ol.Feature):boolean)=} opt_filter Filter function.
+ * @return {Array.<ol.Feature>} Features that match the filter, or all features
+ *     if no filter was provided.
  */
-ol.layer.Vector.prototype.getFeatures = function(filter) {
+ol.layer.Vector.prototype.getFeatures = function(opt_filter) {
+  var result;
   var features = this.featureCache_.getFeaturesObject();
-  var result = [];
-  for (var f in features) {
-    if (filter(features[f]) === true) {
-      result.push(features[f]);
+  if (goog.isDef(opt_filter)) {
+    result = [];
+    for (var f in features) {
+      if (opt_filter(features[f]) === true) {
+        result.push(features[f]);
+      }
     }
+  } else {
+    result = goog.object.getValues(features);
   }
   return result;
 };
