@@ -112,6 +112,19 @@ ol.source.Vector.prototype.forEachFeatureInExtent =
 
 
 /**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {Array.<ol.Feature>} Features.
+ */
+ol.source.Vector.prototype.getAllFeaturesAtCoordinate = function(coordinate) {
+  var features = [];
+  this.forEachFeatureAtCoordinate(coordinate, function(feature) {
+    features.push(feature);
+  });
+  return features;
+};
+
+
+/**
  * @param {ol.Extent} extent Extent.
  * @return {Array.<ol.Feature>} Features.
  */
