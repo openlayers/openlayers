@@ -60,11 +60,6 @@ goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     function(frameState, layerState, context) {
 
-  var replayGroup = this.replayGroup_;
-  if (goog.isNull(replayGroup)) {
-    return;
-  }
-
   var view2DState = frameState.view2DState;
   var viewCenter = view2DState.center;
   var viewResolution = view2DState.resolution;
@@ -86,9 +81,10 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
       -viewCenter[1],
       0);
 
-  context.globalAlpha = layerState.opacity;
-  replayGroup.draw(context, frameState.extent, transform);
-
+  var replayGroup = this.replayGroup_;
+  if (!goog.isNull(replayGroup)) {
+    context.globalAlpha = layerState.opacity;
+    replayGroup.draw(context, frameState.extent, transform);
   }
 
   this.dispatchPostComposeEvent(context, frameState.extent, transform);
