@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
-    <title>Countries example</title>
+    <title>Vector layer example</title>
   </head>
   <body>
 
@@ -30,20 +30,26 @@
 
       <div class="row-fluid">
 
-        <div class="span12">
-          <h4 id="title">Countries example</h4>
-          <p id="shortdesc">Example of a loading GeoJSON map.</p>
+        <div class="span4">
+          <h4 id="title">Vector layer example</h4>
+          <p id="shortdesc">Example of a countries vector layer with country information on hover and country labels at higher zoom levels.</p>
           <div id="docs">
-            <p>See the <a href="countries.js" target="_blank">countries.js source</a> to see how this is done.</p>
+            <p>See the <a href="vector-layer.js" target="_blank">vector-layer.js source</a> to see how this is done.</p>
           </div>
-          <div id="tags">geojson</div>
+          <div id="tags">vector, geojson, style</div>
+        </div>
+        <div class="span4 offset4">
+          <div id="info" class="alert alert-success">
+            &nbsp;
+          </div>
         </div>
 
       </div>
 
     </div>
 
-    <script src="loader.js?id=countries" type="text/javascript"></script>
+    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="loader.js?id=vector-layer" type="text/javascript"></script>
     <script src="../resources/example-behaviour.js" type="text/javascript"></script>
 
   </body>

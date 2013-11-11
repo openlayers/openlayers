@@ -27,12 +27,13 @@ var map = new ol.Map({
   })
 });
 
+var vectorSource = new ol.source.Vector();
+
 goog.net.XhrIo.send('data/countries.geojson', function(event) {
   var xhrIo = /** @type {goog.net.XhrIo} */ (event.target);
   if (xhrIo.isSuccess()) {
     var format = new ol.format.GeoJSON();
     var object = xhrIo.getResponseJson();
-    var vectorSource = new ol.source.Vector();
     goog.asserts.assert(goog.isDefAndNotNull(object));
     var transformFn = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
     format.readObject(object, function(feature) {
@@ -53,4 +54,23 @@ goog.net.XhrIo.send('data/countries.geojson', function(event) {
       })
     }));
   }
+});
+
+var displayFeatureInfo = function(pixel) {
+  var coordinate = map.getCoordinateFromPixel(pixel);
+  var features = vectorSource.getAllFeaturesAtCoordinate(coordinate);
+  var innerHTML = features.length ?
+      features[0].getId() + ': ' + features[0].get('name') :
+      '&nbsp;';
+  document.getElementById('info').innerHTML = innerHTML;
+};
+
+$(map.getViewport()).on('mousemove', function(evt) {
+  var pixel = map.getEventPixel(evt.originalEvent);
+  displayFeatureInfo(pixel);
+});
+
+map.on('singleclick', function(evt) {
+  var pixel = evt.getPixel();
+  displayFeatureInfo(pixel);
 });
