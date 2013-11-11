@@ -198,8 +198,11 @@
 
 /**
  * @typedef {Object} ol.control.ControlOptions
- * @property {Element|undefined} element Element.
- * @property {Element|undefined} target Target.
+ * @property {Element|undefined} element The element is the control's container
+ *     element. This only needs to be specified if you're developing a custom
+ *     control.
+ * @property {Element|string|undefined} target Specify a target if you want the
+ *     control to be rendered outside of the map's viewport.
  * @todo stability experimental
  */
 
