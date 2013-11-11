@@ -441,6 +441,10 @@ ol.layer.Vector.prototype.removeFeatures = function(features) {
     if (!goog.isNull(geometry)) {
       ol.extent.extend(extent, geometry.getBounds());
     }
+    goog.events.unlisten(feature, ol.FeatureEventType.CHANGE,
+        this.handleFeatureChange_, false, this);
+    goog.events.unlisten(feature, ol.FeatureEventType.INTENTCHANGE,
+        this.handleIntentChange_, false, this);
   }
   this.dispatchEvent(new ol.layer.VectorEvent(ol.layer.VectorEventType.REMOVE,
       features, [extent]));
