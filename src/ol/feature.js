@@ -26,6 +26,12 @@ ol.Feature = function(geometryOrValues) {
 
   /**
    * @private
+   * @type {number|string|undefined}
+   */
+  this.id_ = undefined;
+
+  /**
+   * @private
    * @type {number}
    */
   this.revision_ = 0;
@@ -75,6 +81,14 @@ goog.exportProperty(
 
 
 /**
+ * @return {number|string|undefined} Id.
+ */
+ol.Feature.prototype.getId = function() {
+  return this.id_;
+};
+
+
+/**
  * @return {number} Revision.
  */
 ol.Feature.prototype.getRevision = function() {
@@ -117,3 +131,11 @@ goog.exportProperty(
     ol.Feature.prototype,
     'setGeometry',
     ol.Feature.prototype.setGeometry);
+
+
+/**
+ * @param {number|string|undefined} id Id.
+ */
+ol.Feature.prototype.setId = function(id) {
+  this.id_ = id;
+};
