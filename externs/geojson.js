@@ -96,6 +96,12 @@ GeoJSONFeature.prototype.geometry;
 
 
 /**
+ * @type {number|string|undefined}
+ */
+GeoJSONFeature.prototype.id;
+
+
+/**
  * @type {Object.<string, *>}
  */
 GeoJSONFeature.prototype.properties;
