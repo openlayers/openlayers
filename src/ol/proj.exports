@@ -1,4 +1,5 @@
 @exportClass ol.proj.Projection ol.ProjectionOptions
+@exportProperty ol.proj.Projection.prototype.getCode
 @exportProperty ol.proj.Projection.prototype.getExtent
 
 @exportSymbol ol.proj.Units
