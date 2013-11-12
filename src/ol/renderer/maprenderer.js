@@ -93,7 +93,7 @@ ol.renderer.Map.prototype.disposeInternal = function() {
 
 
 /**
- * @return {Element} Canvas.
+ * @return {HTMLCanvasElement} Canvas.
  */
 ol.renderer.Map.prototype.getCanvas = goog.functions.NULL;
 
