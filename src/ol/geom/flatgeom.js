@@ -2,7 +2,6 @@ goog.provide('ol.geom.flat');
 
 goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
-goog.require('ol.geom.Geometry');
 
 
 /**
@@ -172,18 +171,4 @@ ol.geom.flat.transform2D =
     dest.length = i;
   }
   return dest;
-};
-
-
-/**
- * @param {ol.geom.Geometry} geometry Geometry.
- * @param {goog.vec.Mat4.AnyType} transform Transform.
- * @param {Array.<number>=} opt_dest Destination.
- * @return {Array.<number>} Transformed flat coordinates.
- */
-ol.geom.flat.transformGeometry2D = function(geometry, transform, opt_dest) {
-  var flatCoordinates = geometry.getFlatCoordinates();
-  var stride = geometry.getStride();
-  return ol.geom.flat.transform2D(
-      flatCoordinates, stride, transform, opt_dest);
 };
