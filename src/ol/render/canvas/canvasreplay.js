@@ -98,21 +98,23 @@ ol.render.canvas.Replay.prototype.draw = function(context, transform) {
       this.coordinates, 2, transform, this.pixelCoordinates_);
   this.pixelCoordinates_ = pixelCoordinates;  // FIXME ?
   var instructions = this.instructions;
-  var i = 0;
-  var end, j, jj;
-  for (j = 0, jj = instructions.length; j < jj; ++j) {
-    var instruction = instructions[j];
+  var i = 0; // instruction index
+  var ii = instructions.length; // end of instructions
+  var d = 0; // data index
+  var dd; // end of per-instruction data
+  for (; i < ii; ++i) {
+    var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
     if (type == ol.render.canvas.Instruction.BEGIN_PATH) {
       context.beginPath();
     } else if (type == ol.render.canvas.Instruction.CLOSE_PATH) {
       context.closePath();
     } else if (type == ol.render.canvas.Instruction.DRAW_IMAGE) {
-      end = /** @type {number} */ (instruction[1]);
+      dd = /** @type {number} */ (instruction[1]);
       var imageStyle = /** @type {ol.style.Image} */ (instruction[2]);
-      for (; i < end; i += 2) {
-        var x = pixelCoordinates[i] - imageStyle.anchor[0];
-        var y = pixelCoordinates[i + 1] - imageStyle.anchor[1];
+      for (; d < dd; d += 2) {
+        var x = pixelCoordinates[d] - imageStyle.anchor[0];
+        var y = pixelCoordinates[d + 1] - imageStyle.anchor[1];
         if (imageStyle.snapToPixel) {
           x = (x + 0.5) | 0;
           y = (y + 0.5) | 0;
@@ -122,11 +124,11 @@ ol.render.canvas.Replay.prototype.draw = function(context, transform) {
     } else if (type == ol.render.canvas.Instruction.FILL) {
       context.fill();
     } else if (type == ol.render.canvas.Instruction.MOVE_TO_LINE_TO) {
-      context.moveTo(pixelCoordinates[i], pixelCoordinates[i + 1]);
+      context.moveTo(pixelCoordinates[d], pixelCoordinates[d + 1]);
       goog.asserts.assert(goog.isNumber(instruction[1]));
-      end = /** @type {number} */ (instruction[1]);
-      for (i += 2; i < end; i += 2) {
-        context.lineTo(pixelCoordinates[i], pixelCoordinates[i + 1]);
+      dd = /** @type {number} */ (instruction[1]);
+      for (d += 2; d < dd; d += 2) {
+        context.lineTo(pixelCoordinates[d], pixelCoordinates[d + 1]);
       }
     } else if (type == ol.render.canvas.Instruction.SET_FILL_STYLE) {
       goog.asserts.assert(goog.isObject(instruction[1]));
@@ -141,7 +143,10 @@ ol.render.canvas.Replay.prototype.draw = function(context, transform) {
       context.stroke();
     }
   }
-  goog.asserts.assert(i == pixelCoordinates.length);
+  // assert that all data were consumed
+  goog.asserts.assert(d == pixelCoordinates.length);
+  // assert that all instructions were consumed
+  goog.asserts.assert(i == instructions.length);
 };
 
 
