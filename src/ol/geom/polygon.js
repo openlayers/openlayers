@@ -40,7 +40,7 @@ ol.geom.Polygon.prototype.containsXY = function(x, y) {
  * @return {ol.geom.RawPolygon} Coordinates.
  */
 ol.geom.Polygon.prototype.getCoordinates = function() {
-  return ol.geom.inflateCoordinatess(
+  return ol.geom.flat.inflateCoordinatess(
       this.flatCoordinates, 0, this.ends_, this.stride);
 };
 

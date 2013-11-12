@@ -22,7 +22,7 @@ goog.inherits(ol.geom.LineString, ol.geom.Geometry);
  * @return {ol.geom.RawLineString} Coordinates.
  */
 ol.geom.LineString.prototype.getCoordinates = function() {
-  return ol.geom.inflateCoordinates(
+  return ol.geom.flat.inflateCoordinates(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 

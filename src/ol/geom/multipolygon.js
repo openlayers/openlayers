@@ -40,7 +40,7 @@ ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
  * @return {ol.geom.RawMultiPolygon} Coordinates.
  */
 ol.geom.MultiPolygon.prototype.getCoordinates = function() {
-  return ol.geom.inflateCoordinatesss(
+  return ol.geom.flat.inflateCoordinatesss(
       this.flatCoordinates, 0, this.endss_, this.stride);
 };
 

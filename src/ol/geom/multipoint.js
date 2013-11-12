@@ -22,7 +22,7 @@ goog.inherits(ol.geom.MultiPoint, ol.geom.Geometry);
  * @return {ol.geom.RawMultiPoint} Coordinates.
  */
 ol.geom.MultiPoint.prototype.getCoordinates = function() {
-  return ol.geom.inflateCoordinates(
+  return ol.geom.flat.inflateCoordinates(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 

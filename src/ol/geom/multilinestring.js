@@ -31,7 +31,7 @@ goog.inherits(ol.geom.MultiLineString, ol.geom.Geometry);
  * @return {ol.geom.RawMultiLineString} Coordinates.
  */
 ol.geom.MultiLineString.prototype.getCoordinates = function() {
-  return ol.geom.inflateCoordinatess(
+  return ol.geom.flat.inflateCoordinatess(
       this.flatCoordinates, 0, this.ends_, this.stride);
 };
 
