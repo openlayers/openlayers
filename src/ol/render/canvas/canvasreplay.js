@@ -102,13 +102,15 @@ ol.render.canvas.Replay.prototype.draw = function(context, transform) {
   var ii = instructions.length; // end of instructions
   var d = 0; // data index
   var dd; // end of per-instruction data
-  for (; i < ii; ++i) {
+  while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
     if (type == ol.render.canvas.Instruction.BEGIN_PATH) {
       context.beginPath();
+      ++i;
     } else if (type == ol.render.canvas.Instruction.CLOSE_PATH) {
       context.closePath();
+      ++i;
     } else if (type == ol.render.canvas.Instruction.DRAW_IMAGE) {
       dd = /** @type {number} */ (instruction[1]);
       var imageStyle = /** @type {ol.style.Image} */ (instruction[2]);
@@ -121,8 +123,10 @@ ol.render.canvas.Replay.prototype.draw = function(context, transform) {
         }
         context.drawImage(imageStyle.image, x, y);
       }
+      ++i;
     } else if (type == ol.render.canvas.Instruction.FILL) {
       context.fill();
+      ++i;
     } else if (type == ol.render.canvas.Instruction.MOVE_TO_LINE_TO) {
       context.moveTo(pixelCoordinates[d], pixelCoordinates[d + 1]);
       goog.asserts.assert(goog.isNumber(instruction[1]));
@@ -130,17 +134,24 @@ ol.render.canvas.Replay.prototype.draw = function(context, transform) {
       for (d += 2; d < dd; d += 2) {
         context.lineTo(pixelCoordinates[d], pixelCoordinates[d + 1]);
       }
+      ++i;
     } else if (type == ol.render.canvas.Instruction.SET_FILL_STYLE) {
       goog.asserts.assert(goog.isObject(instruction[1]));
       var fillStyle = /** @type {ol.style.Fill} */ (instruction[1]);
       context.fillStyle = fillStyle.color;
+      ++i;
     } else if (type == ol.render.canvas.Instruction.SET_STROKE_STYLE) {
       goog.asserts.assert(goog.isObject(instruction[1]));
       var strokeStyle = /** @type {ol.style.Stroke} */ (instruction[1]);
       context.strokeStyle = strokeStyle.color;
       context.lineWidth = strokeStyle.width;
+      ++i;
     } else if (type == ol.render.canvas.Instruction.STROKE) {
       context.stroke();
+      ++i;
+    } else {
+      goog.asserts.fail();
+      ++i; // consume the instruction anyway, to avoid an infite loop
     }
   }
   // assert that all data were consumed
