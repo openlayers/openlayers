@@ -70,9 +70,10 @@ ol.renderer.webgl.Map = function(container, map) {
 
   /**
    * @private
-   * @type {Element}
+   * @type {HTMLCanvasElement}
    */
-  this.canvas_ = goog.dom.createElement(goog.dom.TagName.CANVAS);
+  this.canvas_ = /** @type {HTMLCanvasElement} */
+      (goog.dom.createElement(goog.dom.TagName.CANVAS));
   this.canvas_.height = container.clientHeight;
   this.canvas_.width = container.clientWidth;
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;

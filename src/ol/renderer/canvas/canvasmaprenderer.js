@@ -33,9 +33,10 @@ ol.renderer.canvas.Map = function(container, map) {
 
   /**
    * @private
-   * @type {Element}
+   * @type {HTMLCanvasElement}
    */
-  this.canvas_ = goog.dom.createElement(goog.dom.TagName.CANVAS);
+  this.canvas_ = /** @type {HTMLCanvasElement} */
+      (goog.dom.createElement(goog.dom.TagName.CANVAS));
   this.canvas_.height = container.clientHeight;
   this.canvas_.width = container.clientWidth;
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
@@ -57,7 +58,8 @@ ol.renderer.canvas.Map = function(container, map) {
    * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.context_ = this.canvas_.getContext('2d');
+  this.context_ = /** @type {CanvasRenderingContext2D} */
+      (this.canvas_.getContext('2d'));
 
 };
 goog.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
