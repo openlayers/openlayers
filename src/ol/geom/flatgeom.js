@@ -156,18 +156,18 @@ ol.geom.flat.linearRingContainsXY =
     function(flatCoordinates, offset, end, stride, x, y) {
   // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
   var contains = false;
-  var xi = flatCoordinates[offset];
-  var yi = flatCoordinates[offset + 1];
+  var x1 = flatCoordinates[offset];
+  var y1 = flatCoordinates[offset + 1];
   for (offset += stride; offset < end; offset += stride) {
-    var xj = flatCoordinates[offset];
-    var yj = flatCoordinates[offset + 1];
-    var intersect = ((yi > y) != (yj > y)) &&
-        (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+    var x2 = flatCoordinates[offset];
+    var y2 = flatCoordinates[offset + 1];
+    var intersect = ((y1 > y) != (y2 > y)) &&
+        (x < (x2 - x1) * (y - y1) / (y2 - y1) + x1);
     if (intersect) {
       contains = !contains;
     }
-    xi = xj;
-    yi = yj;
+    x1 = x2;
+    y1 = y2;
   }
   return contains;
 };
