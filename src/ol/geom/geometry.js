@@ -4,6 +4,7 @@ goog.provide('ol.geom.GeometryType');
 
 goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
+goog.require('goog.object');
 goog.require('ol.Extent');
 goog.require('ol.TransformFunction');
 
@@ -25,7 +26,7 @@ goog.inherits(ol.geom.Geometry, goog.events.EventTarget);
  * @return {ol.geom.Geometry} The cloned geometry.
  */
 ol.geom.Geometry.prototype.clone = function() {
-  return new this.constructor(this.getCoordinates());
+  return new this.constructor(goog.object.unsafeClone(this.getCoordinates()));
 };
 
 
