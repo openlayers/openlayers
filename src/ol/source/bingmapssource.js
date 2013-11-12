@@ -23,6 +23,15 @@ goog.require('ol.tilegrid.XYZ');
  */
 ol.source.BingMaps = function(options) {
 
+  if (!goog.isDef(options.key)) {
+    throw new Error('Bing Maps source needs an API key, see ' +
+        'http://msdn.microsoft.com/en-us/library/ff428642.aspx for more info');
+  }
+
+  if (!goog.isDef(options.style)) {
+    options.style = 'Road';
+  }
+
   goog.base(this, {
     crossOrigin: 'anonymous',
     opaque: true,
