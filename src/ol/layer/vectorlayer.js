@@ -262,6 +262,17 @@ ol.layer.Vector.prototype.getStyle = function() {
 
 
 /**
+ * Set a style for this layer.
+ * @param {ol.style.Style} style Style.
+ */
+ol.layer.Vector.prototype.setStyle = function(style) {
+  this.style_ = style;
+  this.dispatchEvent(
+      new ol.layer.VectorEvent(ol.layer.VectorEventType.CHANGE, [], []));
+};
+
+
+/**
  * Returns an array of features that match a filter. This will not fetch data,
  * it only considers features that are loaded already.
  * @param {(function(ol.Feature):boolean)=} opt_filter Filter function.
