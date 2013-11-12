@@ -95,11 +95,3 @@ ol.geom.Point.prototype.transform = function(transform) {
   transform(coordinates, coordinates, coordinates.length);
   this.setCoordinates(coordinates); // for change event
 };
-
-
-/**
- * @inheritDoc
- */
-ol.geom.Point.prototype.invalidateBounds = function() {
-  this.bounds_ = null;
-};
