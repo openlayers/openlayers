@@ -66,8 +66,8 @@ ol.render.IRender.prototype.drawPolygonGeometry =
 
 
 /**
- * @param {?ol.style.Fill} fillStyle Fill style.
- * @param {?ol.style.Stroke} strokeStyle Stroke style.
+ * @param {ol.style.Fill} fillStyle Fill style.
+ * @param {ol.style.Stroke} strokeStyle Stroke style.
  */
 ol.render.IRender.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
@@ -75,7 +75,7 @@ ol.render.IRender.prototype.setFillStrokeStyle =
 
 
 /**
- * @param {?ol.style.Image} imageStyle Image style.
+ * @param {ol.style.Image} imageStyle Image style.
  */
 ol.render.IRender.prototype.setImageStyle = function(imageStyle) {
 };

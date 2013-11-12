@@ -227,7 +227,7 @@ ol.render.canvas.ImageReplay = function() {
 
   /**
    * @private
-   * @type {?ol.style.Image}
+   * @type {ol.style.Image}
    */
   this.imageStyle_ = null;
 
@@ -255,7 +255,9 @@ ol.render.canvas.ImageReplay.prototype.drawCoordinates_ =
  */
 ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
     function(pointGeometry) {
-  goog.asserts.assert(!goog.isNull(this.imageStyle_));
+  if (!goog.isDefAndNotNull(this.imageStyle_)) {
+    return;
+  }
   ol.extent.extend(this.extent_, pointGeometry.getExtent());
   var flatCoordinates = pointGeometry.getFlatCoordinates();
   var stride = pointGeometry.getStride();
@@ -271,7 +273,9 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
  */
 ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
     function(multiPointGeometry) {
-  goog.asserts.assert(!goog.isNull(this.imageStyle_));
+  if (!goog.isDefAndNotNull(this.imageStyle_)) {
+    return;
+  }
   ol.extent.extend(this.extent_, multiPointGeometry.getExtent());
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
   var stride = multiPointGeometry.getStride();
@@ -311,9 +315,9 @@ ol.render.canvas.LineStringReplay = function() {
 
   /**
    * @private
-   * @type {{currentStrokeStyle: ?ol.style.Stroke,
+   * @type {{currentStrokeStyle: ol.style.Stroke,
    *         lastStroke: number,
-   *         strokeStyle: ?ol.style.Stroke}|null}
+   *         strokeStyle: ol.style.Stroke}|null}
    */
   this.state_ = {
     currentStrokeStyle: null,
@@ -336,15 +340,17 @@ goog.inherits(ol.render.canvas.LineStringReplay, ol.render.canvas.Replay);
 ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ =
     function(flatCoordinates, offset, end, stride) {
   var state = this.state_;
-  if (!ol.style.stroke.equals(state.currentStrokeStyle, state.strokeStyle)) {
+  var strokeStyle = state.strokeStyle;
+  goog.asserts.assert(goog.isDefAndNotNull(strokeStyle));
+  if (!ol.style.stroke.equals(state.currentStrokeStyle, strokeStyle)) {
     if (state.lastStroke != this.coordinates.length) {
       this.instructions.push([ol.render.canvas.Instruction.STROKE]);
       state.lastStroke = this.coordinates.length;
     }
     this.instructions.push(
-        [ol.render.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle],
+        [ol.render.canvas.Instruction.SET_STROKE_STYLE, strokeStyle],
         [ol.render.canvas.Instruction.BEGIN_PATH]);
-    state.currentStrokeStyle = state.strokeStyle;
+    state.currentStrokeStyle = strokeStyle;
   }
   var myEnd = this.appendFlatCoordinates(
       flatCoordinates, offset, end, stride, false);
@@ -358,7 +364,12 @@ ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ =
  */
 ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
     function(lineStringGeometry) {
-  goog.asserts.assert(!goog.isNull(this.state_));
+  var state = this.state_;
+  goog.asserts.assert(!goog.isNull(state));
+  var strokeStyle = state.strokeStyle;
+  if (!goog.isDefAndNotNull(strokeStyle)) {
+    return;
+  }
   ol.extent.extend(this.extent_, lineStringGeometry.getExtent());
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
@@ -372,7 +383,12 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
  */
 ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
     function(multiLineStringGeometry) {
-  goog.asserts.assert(!goog.isNull(this.state_));
+  var state = this.state_;
+  goog.asserts.assert(!goog.isNull(state));
+  var strokeStyle = state.strokeStyle;
+  if (!goog.isDefAndNotNull(strokeStyle)) {
+    return;
+  }
   ol.extent.extend(this.extent_, multiLineStringGeometry.getExtent());
   var ends = multiLineStringGeometry.getEnds();
   var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
@@ -423,10 +439,10 @@ ol.render.canvas.PolygonReplay = function() {
 
   /**
    * @private
-   * @type {{currentFillStyle: ?ol.style.Fill,
-   *         currentStrokeStyle: ?ol.style.Stroke,
-   *         fillStyle: ?ol.style.Fill,
-   *         strokeStyle: ?ol.style.Stroke}|null}
+   * @type {{currentFillStyle: ol.style.Fill,
+   *         currentStrokeStyle: ol.style.Stroke,
+   *         fillStyle: ol.style.Fill,
+   *         strokeStyle: ol.style.Stroke}|null}
    */
   this.state_ = {
     currentFillStyle: null,
@@ -463,10 +479,10 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
   }
   // FIXME is it quicker to fill and stroke each polygon individually,
   // FIXME or all polygons together?
-  if (!goog.isNull(state.fillStyle)) {
+  if (goog.isDefAndNotNull(state.fillStyle)) {
     this.instructions.push([ol.render.canvas.Instruction.FILL]);
   }
-  if (!goog.isNull(state.strokeStyle)) {
+  if (goog.isDefAndNotNull(state.strokeStyle)) {
     this.instructions.push([ol.render.canvas.Instruction.STROKE]);
   }
   return offset;
@@ -478,7 +494,12 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
  */
 ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
     function(polygonGeometry) {
-  goog.asserts.assert(!goog.isNull(this.state_));
+  var state = this.state_;
+  goog.asserts.assert(!goog.isNull(state));
+  if (!goog.isDefAndNotNull(state.fillStyle) &&
+      !goog.isDefAndNotNull(state.strokeStyle)) {
+    return;
+  }
   ol.extent.extend(this.extent_, polygonGeometry.getExtent());
   this.setFillStrokeStyles_();
   var ends = polygonGeometry.getEnds();
@@ -493,7 +514,12 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
  */
 ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
     function(multiPolygonGeometry) {
-  goog.asserts.assert(!goog.isNull(this.state_));
+  var state = this.state_;
+  goog.asserts.assert(!goog.isNull(state));
+  if (!goog.isDefAndNotNull(state.fillStyle) &&
+      !goog.isDefAndNotNull(state.strokeStyle)) {
+    return;
+  }
   ol.extent.extend(this.extent_, multiPolygonGeometry.getExtent());
   this.setFillStrokeStyles_();
   var endss = multiPolygonGeometry.getEndss();
@@ -523,7 +549,6 @@ ol.render.canvas.PolygonReplay.prototype.finish = function() {
 ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
   goog.asserts.assert(!goog.isNull(this.state_));
-  goog.asserts.assert(!goog.isNull(fillStyle) || !goog.isNull(strokeStyle));
   this.state_.fillStyle = fillStyle;
   this.state_.strokeStyle = strokeStyle;
 };
@@ -534,13 +559,13 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
  */
 ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
   var state = this.state_;
-  if (!goog.isNull(state.fillStyle) &&
+  if (goog.isDefAndNotNull(state.fillStyle) &&
       !ol.style.fill.equals(state.currentFillStyle, state.fillStyle)) {
     this.instructions.push(
         [ol.render.canvas.Instruction.SET_FILL_STYLE, state.fillStyle]);
     state.currentFillStyle = state.fillStyle;
   }
-  if (!goog.isNull(state.strokeStyle) &&
+  if (goog.isDefAndNotNull(state.strokeStyle) &&
       !ol.style.stroke.equals(state.currentStrokeStyle, state.strokeStyle)) {
     this.instructions.push(
         [ol.render.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle]);

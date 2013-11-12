@@ -11,8 +11,8 @@ goog.require('ol.style');
 
 /**
  * @param {number} radius Radius.
- * @param {?ol.style.Fill} fillStyle Fill style.
- * @param {?ol.style.Stroke} strokeStyle Stroke style.
+ * @param {ol.style.Fill} fillStyle Fill style.
+ * @param {ol.style.Stroke} strokeStyle Stroke style.
  * @return {ol.style.Image} Image.
  */
 ol.shape.renderCircle = function(radius, fillStyle, strokeStyle) {

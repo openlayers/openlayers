@@ -12,20 +12,30 @@ goog.require('goog.functions');
 
 
 /**
- * @typedef {{color: string}}
+ * @typedef {{color: string}|null|undefined}
  */
 ol.style.Fill;
 
 
 /**
- * @param {?ol.style.Fill} fillStyle1 Fill style 1.
- * @param {?ol.style.Fill} fillStyle2 Fill style 2.
+ * @param {ol.style.Fill} fillStyle1 Fill style 1.
+ * @param {ol.style.Fill} fillStyle2 Fill style 2.
  * @return {boolean} Equals.
  */
 ol.style.fill.equals = function(fillStyle1, fillStyle2) {
-  return fillStyle1 === fillStyle2 || (
-      !goog.isNull(fillStyle1) && !goog.isNull(fillStyle2) &&
-      fillStyle1.color == fillStyle2.color);
+  if (goog.isDefAndNotNull(fillStyle1)) {
+    if (goog.isDefAndNotNull(fillStyle2)) {
+      return fillStyle1 === fillStyle2 || fillStyle1.color == fillStyle2.color;
+    } else {
+      return false;
+    }
+  } else {
+    if (goog.isDefAndNotNull(fillStyle2)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 };
 
 
@@ -34,35 +44,46 @@ ol.style.fill.equals = function(fillStyle1, fillStyle2) {
  *            image: (HTMLCanvasElement|HTMLVideoElement|Image),
  *            rotation: number,
  *            snapToPixel: (boolean|undefined),
- *            subtractViewRotation: boolean}}
+ *            subtractViewRotation: boolean}|null|undefined}
  */
 ol.style.Image;
 
 
 /**
  * @typedef {{color: string,
- *            width: number}}
+ *            width: number}|null|undefined}
  */
 ol.style.Stroke;
 
 
 /**
- * @param {?ol.style.Stroke} strokeStyle1 Stroke style 1.
- * @param {?ol.style.Stroke} strokeStyle2 Stroke style 2.
+ * @param {ol.style.Stroke} strokeStyle1 Stroke style 1.
+ * @param {ol.style.Stroke} strokeStyle2 Stroke style 2.
  * @return {boolean} Equals.
  */
 ol.style.stroke.equals = function(strokeStyle1, strokeStyle2) {
-  return strokeStyle1 === strokeStyle2 || (
-      !goog.isNull(strokeStyle1) && !goog.isNull(strokeStyle2) &&
-      strokeStyle1.color == strokeStyle2.color &&
-      strokeStyle1.width == strokeStyle2.width);
+  if (goog.isDefAndNotNull(strokeStyle1)) {
+    if (goog.isDefAndNotNull(strokeStyle2)) {
+      return strokeStyle1 === strokeStyle2 ||
+          (strokeStyle1.color == strokeStyle2.color &&
+           strokeStyle1.width == strokeStyle2.width);
+    } else {
+      return false;
+    }
+  } else {
+    if (goog.isDefAndNotNull(strokeStyle2)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 };
 
 
 /**
- * @typedef {{fill: ?ol.style.Fill,
- *            image: ?ol.style.Image,
- *            stroke: ?ol.style.Stroke,
+ * @typedef {{fill: ol.style.Fill,
+ *            image: ol.style.Image,
+ *            stroke: ol.style.Stroke,
  *            zIndex: (number|undefined)}}
  */
 ol.style.Style;

@@ -40,9 +40,9 @@ ol.render.canvas.Immediate = function(context, extent, transform) {
 
   /**
    * @private
-   * @type {{fillStyle: ?ol.style.Fill,
-   *         imageStyle: ?ol.style.Image,
-   *         strokeStyle: ?ol.style.Stroke}}
+   * @type {{fillStyle: ol.style.Fill,
+   *         imageStyle: ol.style.Image,
+   *         strokeStyle: ol.style.Stroke}}
    */
   this.state_ = {
     fillStyle: null,
@@ -67,7 +67,7 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(geometry) {
   var context = this.context_;
   var imageStyle = this.state_.imageStyle;
   if (!ol.extent.intersects(this.extent_, geometry.getExtent()) ||
-      goog.isNull(imageStyle)) {
+      !goog.isDefAndNotNull(imageStyle)) {
     return;
   }
   var pixelCoordinates = ol.geom.transformGeometry2D(
@@ -164,7 +164,7 @@ ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
 ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
     function(lineStringGeometry) {
   if (!ol.extent.intersects(this.extent_, lineStringGeometry.getExtent()) ||
-      goog.isNull(this.state_.strokeStyle)) {
+      !goog.isDefAndNotNull(this.state_.strokeStyle)) {
     return;
   }
   var context = this.context_;
@@ -183,7 +183,7 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
     function(multiLineStringGeometry) {
   var geometryExtent = multiLineStringGeometry.getExtent();
   if (!ol.extent.intersects(this.extent_, geometryExtent) ||
-      goog.isNull(this.state_.strokeStyle)) {
+      !goog.isDefAndNotNull(this.state_.strokeStyle)) {
     return;
   }
   var context = this.context_;
@@ -209,7 +209,8 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
     return;
   }
   var state = this.state_;
-  if (goog.isNull(this.fillStyle) && goog.isNull(this.strokeStyle)) {
+  if (!goog.isDefAndNotNull(state.fillStyle) &&
+      !goog.isDefAndNotNull(state.strokeStyle)) {
     return;
   }
   var context = this.context_;
@@ -218,10 +219,10 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
   var ends = polygonGeometry.getEnds();
   context.beginPath();
   this.drawRings_(pixelCoordinates, 0, ends);
-  if (!goog.isNull(state.fillStyle)) {
+  if (goog.isDefAndNotNull(state.fillStyle)) {
     context.fill();
   }
-  if (!goog.isNull(state.strokeStyle)) {
+  if (goog.isDefAndNotNull(state.strokeStyle)) {
     context.stroke();
   }
 };
@@ -236,7 +237,8 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
     return;
   }
   var state = this.state_;
-  if (goog.isNull(this.fillStyle) && goog.isNull(this.strokeStyle)) {
+  if (!goog.isDefAndNotNull(state.fillStyle) &&
+      !goog.isDefAndNotNull(state.strokeStyle)) {
     return;
   }
   var context = this.context_;
@@ -249,10 +251,10 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
     var ends = endss[i];
     context.beginPath();
     offset = this.drawRings_(pixelCoordinates, offset, ends);
-    if (!goog.isNull(state.fillStyle)) {
+    if (goog.isDefAndNotNull(state.fillStyle)) {
       context.fill();
     }
-    if (!goog.isNull(state.strokeStyle)) {
+    if (goog.isDefAndNotNull(state.strokeStyle)) {
       context.stroke();
     }
   }
@@ -267,12 +269,16 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
   var context = this.context_;
   var state = this.state_;
   if (!ol.style.fill.equals(state.fillStyle, fillStyle)) {
-    context.fillStyle = fillStyle.color;
+    if (goog.isDefAndNotNull(fillStyle)) {
+      context.fillStyle = fillStyle.color;
+    }
     state.fillStyle = fillStyle;
   }
   if (!ol.style.stroke.equals(state.strokeStyle, strokeStyle)) {
-    context.strokeStyle = strokeStyle.color;
-    context.lineWidth = strokeStyle.width;
+    if (goog.isDefAndNotNull(strokeStyle)) {
+      context.strokeStyle = strokeStyle.color;
+      context.lineWidth = strokeStyle.width;
+    }
     state.strokeStyle = strokeStyle;
   }
 };
