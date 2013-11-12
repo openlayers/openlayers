@@ -7,7 +7,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.extent');
-goog.require('ol.render');
+goog.require('ol.geom.flat');
 goog.require('ol.render.IRender');
 goog.require('ol.render.IReplayReplayGroup');
 goog.require('ol.style.fill');
@@ -94,7 +94,7 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates =
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  */
 ol.render.canvas.Replay.prototype.draw = function(context, transform) {
-  var pixelCoordinates = ol.render.transformFlatCoordinates(
+  var pixelCoordinates = ol.geom.flat.transform2D(
       this.coordinates, 2, transform, this.pixelCoordinates_);
   this.pixelCoordinates_ = pixelCoordinates;  // FIXME ?
   var instructions = this.instructions;

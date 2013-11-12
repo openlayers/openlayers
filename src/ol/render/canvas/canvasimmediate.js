@@ -5,7 +5,7 @@ goog.provide('ol.render.canvas.Immediate');
 
 goog.require('goog.asserts');
 goog.require('ol.extent');
-goog.require('ol.render');
+goog.require('ol.geom.flat');
 goog.require('ol.render.IRender');
 goog.require('ol.style.fill');
 goog.require('ol.style.stroke');
@@ -71,7 +71,7 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(geometry) {
       goog.isNull(imageStyle)) {
     return;
   }
-  var pixelCoordinates = ol.render.transformGeometry(
+  var pixelCoordinates = ol.geom.flat.transformGeometry2D(
       geometry, this.transform_, this.pixelCoordinates_);
   var i, ii;
   for (i = 0, ii = pixelCoordinates.length; i < ii; i += 2) {
@@ -169,7 +169,7 @@ ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
     return;
   }
   var context = this.context_;
-  var pixelCoordinates = ol.render.transformGeometry(
+  var pixelCoordinates = ol.geom.flat.transformGeometry2D(
       lineStringGeometry, this.transform_, this.pixelCoordinates_);
   context.beginPath();
   this.moveToLineTo_(pixelCoordinates, 0, pixelCoordinates.length, false);
@@ -188,7 +188,7 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
     return;
   }
   var context = this.context_;
-  var pixelCoordinates = ol.render.transformGeometry(
+  var pixelCoordinates = ol.geom.flat.transformGeometry2D(
       multiLineStringGeometry, this.transform_, this.pixelCoordinates_);
   context.beginPath();
   var ends = multiLineStringGeometry.getEnds();
@@ -214,7 +214,7 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
     return;
   }
   var context = this.context_;
-  var pixelCoordinates = ol.render.transformGeometry(
+  var pixelCoordinates = ol.geom.flat.transformGeometry2D(
       polygonGeometry, this.transform_, this.pixelCoordinates_);
   var ends = polygonGeometry.getEnds();
   context.beginPath();
@@ -241,7 +241,7 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
     return;
   }
   var context = this.context_;
-  var pixelCoordinates = ol.render.transformGeometry(
+  var pixelCoordinates = ol.geom.flat.transformGeometry2D(
       multiPolygonGeometry, this.transform_, this.pixelCoordinates_);
   var endss = multiPolygonGeometry.getEndss();
   var offset = 0;

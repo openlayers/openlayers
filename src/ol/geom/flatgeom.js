@@ -1,4 +1,4 @@
-goog.provide('ol.render');
+goog.provide('ol.geom.flat');
 
 goog.require('goog.vec.Mat4');
 goog.require('ol.geom.Geometry');
@@ -11,7 +11,7 @@ goog.require('ol.geom.Geometry');
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed coordinates.
  */
-ol.render.transformFlatCoordinates =
+ol.geom.flat.transform2D =
     function(flatCoordinates, stride, transform, opt_dest) {
   var m00 = goog.vec.Mat4.getElement(transform, 0, 0);
   var m10 = goog.vec.Mat4.getElement(transform, 1, 0);
@@ -41,9 +41,9 @@ ol.render.transformFlatCoordinates =
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed flat coordinates.
  */
-ol.render.transformGeometry = function(geometry, transform, opt_dest) {
+ol.geom.flat.transformGeometry2D = function(geometry, transform, opt_dest) {
   var flatCoordinates = geometry.getFlatCoordinates();
   var stride = geometry.getStride();
-  return ol.render.transformFlatCoordinates(
+  return ol.geom.flat.transform2D(
       flatCoordinates, stride, transform, opt_dest);
 };
