@@ -33,7 +33,7 @@ describe('ol.format.GeoJSON', function() {
     'geometry': {
       'type': 'Polygon',
       'coordinates': [[
-        [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]
+        [100.0, 0.0], [100.0, 1.0], [101.0, 1.0], [101.0, 0.0]
       ]]
     },
     'properties': {
@@ -84,7 +84,7 @@ describe('ol.format.GeoJSON', function() {
       var geometry = feature.getGeometry();
       expect(geometry).to.be.an(ol.geom.Polygon);
       expect(geometry.getCoordinates()).to.eql([[
-        [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]
+        [100.0, 0.0], [100.0, 1.0], [101.0, 1.0], [101.0, 0.0]
       ]]);
       expect(feature.get('prop0')).to.be('value0');
       expect(feature.get('prop1')).to.eql({'this': 'that'});
