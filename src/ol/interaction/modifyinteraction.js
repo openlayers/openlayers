@@ -3,7 +3,9 @@ goog.provide('ol.interaction.Modify');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
+goog.require('goog.functions');
 goog.require('goog.object');
+goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.ViewHint');
@@ -15,10 +17,22 @@ goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Drag');
+goog.require('ol.layer.Layer');
 goog.require('ol.layer.Vector');
 goog.require('ol.layer.VectorEventType');
 goog.require('ol.layer.VectorLayerRenderIntent');
+goog.require('ol.source.Vector');
 goog.require('ol.structs.RTree');
+
+
+/**
+ * @typedef {{feature: ol.Feature,
+ *            geometry: ol.geom.Geometry,
+ *            index: (number|undefined),
+ *            style: ol.style.Style,
+ *            segment: (Array.<ol.Extent>|undefined)}}
+ */
+ol.interaction.SegmentDataType;
 
 
 
@@ -32,24 +46,45 @@ ol.interaction.Modify = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
+  var layerFilter = options.layers;
+  if (!goog.isDef(layerFilter)) {
+    layerFilter = goog.functions.TRUE;
+  } else if (goog.isArray(layerFilter)) {
+    layerFilter = function(layer) {return options.layers.indexOf(layer) > -1;};
+  }
+
   /**
    * @type {null|function(ol.layer.Layer):boolean}
    * @private
    */
-  this.layerFilter_ = goog.isDef(options.layerFilter) ?
-      options.layerFilter : null;
+  this.layerFilter_ = goog.isDef(layerFilter) ? layerFilter : null;
 
   /**
-   * @type {Array.<ol.layer.Layer>}
+   * Temporary sketch layer.
+   * @type {ol.layer.Vector}
    * @private
    */
-  this.layers_ = null;
+  this.sketchLayer_ = null;
+
+  /**
+   * Editing vertex.
+   * @type {ol.Feature}
+   * @private
+   */
+  this.vertexFeature_ = null;
 
   /**
    * @type {boolean}
    * @private
    */
   this.modifiable_ = false;
+
+  /**
+   * Segment RTree for each layer
+   * @type {Object.<*, ol.structs.RTree>}
+   * @private
+   */
+  this.rTree_ = null;
 
   /**
    * @type {number}
@@ -70,21 +105,140 @@ goog.inherits(ol.interaction.Modify, ol.interaction.Drag);
 
 
 /**
- * @param {ol.layer.Vector} layer The vector layer.
- * @param {Array.<ol.Feature>} features Array of features.
+ * @inheritDoc
+ */
+ol.interaction.Modify.prototype.setMap = function(map) {
+  var oldMap = this.getMap();
+  var layers;
+  if (!goog.isNull(oldMap)) {
+    oldMap.removeLayer(this.sketchLayer_);
+    layers = oldMap.getLayerGroup().getLayers();
+    goog.asserts.assert(goog.isDef(layers));
+    layers.unlisten(ol.CollectionEventType.ADD, this.handleLayerAdded_, false,
+        this);
+    layers.unlisten(ol.CollectionEventType.REMOVE, this.handleLayerRemoved_,
+        false, this);
+  }
+
+  if (!goog.isNull(map)) {
+    if (goog.isNull(this.rTree_)) {
+      this.rTree_ = new ol.structs.RTree();
+    }
+    if (goog.isNull(this.sketchLayer_)) {
+      var sketchLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({parser: null})
+      });
+      this.sketchLayer_ = sketchLayer;
+      sketchLayer.setTemporary(true);
+      map.addLayer(sketchLayer);
+    }
+    layers = map.getLayerGroup().getLayers();
+    goog.asserts.assert(goog.isDef(layers));
+    var that = this;
+    layers.forEach(function(layer) { that.addLayer(layer); });
+    layers.listen(ol.CollectionEventType.ADD, this.handleLayerAdded_, false,
+        this);
+    layers.listen(ol.CollectionEventType.REMOVE, this.handleLayerRemoved_,
+        false, this);
+  } else {
+    // removing from a map, clean up
+    this.rTree_ = null;
+    this.sketchLayer_ = null;
+  }
+
+  goog.base(this, 'setMap', map);
+};
+
+
+/**
+ * @param {ol.CollectionEvent} evt Event.
  * @private
  */
-ol.interaction.Modify.prototype.addIndex_ = function(layer, features) {
+ol.interaction.Modify.prototype.handleLayerAdded_ = function(evt) {
+  var layer = evt.getElement();
+  goog.asserts.assertInstanceof(layer, ol.layer.Layer);
+  if (this.layerFilter_(layer)) {
+    this.addLayer(layer);
+  }
+};
+
+
+/**
+ * Add a layer for modification.
+ * @param {ol.layer.Layer} layer Layer.
+ */
+ol.interaction.Modify.prototype.addLayer = function(layer) {
+  if (layer instanceof ol.layer.Vector && !layer.getTemporary()) {
+    this.addIndex_(layer.getFeatures(ol.layer.Vector.selectedFeaturesFilter),
+        layer);
+    goog.events.listen(layer, ol.layer.VectorEventType.INTENTCHANGE,
+        this.handleIntentChange_, false, this);
+  }
+};
+
+
+/**
+ * @param {ol.CollectionEvent} evt Event.
+ * @private
+ */
+ol.interaction.Modify.prototype.handleLayerRemoved_ = function(evt) {
+  var layer = evt.getElement();
+  goog.asserts.assertInstanceof(layer, ol.layer.Layer);
+  if (this.layerFilter_(layer)) {
+    this.removeLayer(layer);
+  }
+};
+
+
+/**
+ * Remove a layer for modification.
+ * @param {ol.layer.Layer} layer Layer.
+ */
+ol.interaction.Modify.prototype.removeLayer = function(layer) {
+  if (layer instanceof ol.layer.Vector && !layer.getTemporary()) {
+    this.removeIndex_(
+        layer.getFeatures(ol.layer.Vector.selectedFeaturesFilter));
+    goog.events.unlisten(layer, ol.layer.VectorEventType.INTENTCHANGE,
+        this.handleIntentChange_, false, this);
+  }
+};
+
+
+/**
+ * @param {Array.<ol.Feature>} features Array of features.
+ * @param {ol.layer.Vector} layer Layer the features belong to.
+ * @private
+ */
+ol.interaction.Modify.prototype.addIndex_ = function(features, layer) {
   for (var i = 0, ii = features.length; i < ii; ++i) {
     var feature = features[i];
     var geometry = feature.getGeometry();
     if (geometry instanceof ol.geom.AbstractCollection) {
       var components = geometry.getComponents();
       for (var j = 0, jj = components.length; j < jj; ++j) {
-        this.addSegments_(layer, feature, components[j]);
+        this.addSegments_(feature, components[j], layer);
       }
     } else {
-      this.addSegments_(layer, feature, geometry);
+      this.addSegments_(feature, geometry, layer);
+    }
+  }
+};
+
+
+/**
+ * @param {Array.<ol.Feature>} features Array of features.
+ * @private
+ */
+ol.interaction.Modify.prototype.removeIndex_ = function(features) {
+  var rTree = this.rTree_;
+  for (var i = 0, ii = features.length; i < ii; ++i) {
+    var feature = features[i];
+    var segmentDataMatches = rTree.search(feature.getGeometry().getBounds(),
+        goog.getUid(feature));
+    for (var j = segmentDataMatches.length - 1; j >= 0; --j) {
+      var segmentDataMatch = segmentDataMatches[j];
+      rTree.remove(ol.extent.boundingExtent(segmentDataMatch.segment),
+          segmentDataMatch);
     }
   }
 };
@@ -95,80 +249,83 @@ ol.interaction.Modify.prototype.addIndex_ = function(layer, features) {
  * @param {ol.layer.VectorEvent} evt Event object.
  * @private
  */
-ol.interaction.Modify.prototype.handleFeaturesAdded_ = function(evt) {
-  goog.asserts.assertInstanceof(evt.target, ol.layer.Vector);
-  this.addIndex_(/** @type {ol.layer.Vector} */ (evt.target), evt.features);
-};
-
-
-/**
- * @param {ol.layer.Layer} layer Layer.
- */
-ol.interaction.Modify.prototype.addLayer = function(layer) {
-  var selectionData = layer.getSelectionData();
-  var selectionLayer = selectionData.layer;
-  var editData = selectionLayer.getEditData();
-  if (goog.isNull(editData.rTree)) {
-    editData.rTree = new ol.structs.RTree();
+ol.interaction.Modify.prototype.handleIntentChange_ = function(evt) {
+  var layer = evt.target;
+  goog.asserts.assertInstanceof(layer, ol.layer.Vector);
+  var features = evt.features;
+  for (var i = 0, ii = features.length; i < ii; ++i) {
+    var feature = features[i];
+    var renderIntent = feature.getRenderIntent();
+    if (renderIntent == ol.layer.VectorLayerRenderIntent.SELECTED) {
+      this.addIndex_([feature], layer);
+    } else {
+      this.removeIndex_([feature]);
+    }
   }
-  this.addIndex_(selectionLayer,
-      goog.object.getValues(selectionData.selectedFeaturesByFeatureUid));
-
-  goog.events.listen(selectionLayer, ol.layer.VectorEventType.ADD,
-      this.handleFeaturesAdded_, false, this);
-  goog.events.listen(selectionLayer, ol.layer.VectorEventType.REMOVE,
-      this.handleFeaturesRemoved_, false, this);
 };
 
 
 /**
- * @param {ol.layer.Vector} selectionLayer Selection layer.
  * @param {ol.Feature} feature Feature to add segments for.
  * @param {ol.geom.Geometry} geometry Geometry to add segments for.
+ * @param {ol.layer.Vector} layer Vector layer to add segments for.
  * @private
  */
 ol.interaction.Modify.prototype.addSegments_ =
-    function(selectionLayer, feature, geometry) {
+    function(feature, geometry, layer) {
   var uid = goog.getUid(feature);
-  var rTree = selectionLayer.getEditData().rTree;
-  var vertex, segment, segmentData, coordinates;
+  var rTree = this.rTree_;
+  var segment, segmentData, coordinates;
   if (geometry instanceof ol.geom.Point) {
-    vertex = geometry.getCoordinates();
-    segmentData = [[vertex, vertex], feature, geometry, NaN];
+    segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+      feature: feature,
+      geometry: geometry,
+      style: layer.getStyle()
+    });
     rTree.insert(geometry.getBounds(), segmentData, uid);
   } else if (geometry instanceof ol.geom.LineString ||
       geometry instanceof ol.geom.LinearRing) {
     coordinates = geometry.getCoordinates();
     for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       segment = coordinates.slice(i, i + 2);
-      segmentData = [segment, feature, geometry, i];
+      segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+        feature: feature,
+        geometry: geometry,
+        index: i,
+        style: layer.getStyle(),
+        segment: segment
+      });
       rTree.insert(ol.extent.boundingExtent(segment), segmentData, uid);
     }
   } else if (geometry instanceof ol.geom.Polygon) {
     var rings = geometry.getRings();
     for (var j = 0, jj = rings.length; j < jj; ++j) {
-      this.addSegments_(selectionLayer, feature, rings[j]);
+      this.addSegments_(feature, rings[j], layer);
     }
   }
 };
 
 
 /**
- * @param {ol.layer.Vector} selectionLayer Selection layer.
+ * @param {ol.style.Style} style Style of the layer that the feature being
+ *     modified belongs to.
  * @param {ol.Coordinate} coordinates Coordinates.
  * @return {ol.Feature} Vertex feature.
+ * @private
  */
-ol.interaction.Modify.prototype.createOrUpdateVertexFeature =
-    function(selectionLayer, coordinates) {
-  var editData = selectionLayer.getEditData();
-  var vertexFeature = editData.vertexFeature;
+ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ =
+    function(style, coordinates) {
+  var vertexFeature = this.vertexFeature_;
   if (goog.isNull(vertexFeature)) {
     vertexFeature = new ol.Feature({g: new ol.geom.Point(coordinates)});
-    selectionLayer.addFeatures([vertexFeature]);
-    editData.vertexFeature = vertexFeature;
+    this.vertexFeature_ = vertexFeature;
+    this.sketchLayer_.addFeatures([vertexFeature]);
   } else {
     var geometry = vertexFeature.getGeometry();
     geometry.setCoordinates(coordinates);
+  }
+  if (this.sketchLayer_.getStyle() !== style) {
+    this.sketchLayer_.setStyle(style);
   }
   return vertexFeature;
 };
@@ -179,44 +336,41 @@ ol.interaction.Modify.prototype.createOrUpdateVertexFeature =
  */
 ol.interaction.Modify.prototype.handleDragStart = function(evt) {
   this.dragSegments_ = [];
-  for (var i = 0, ii = this.layers_.length; i < ii; ++i) {
-    var layer = this.layers_[i];
-    var selectionData = layer.getSelectionData();
-    var selectionLayer = selectionData.layer;
-    if (!goog.isNull(selectionLayer)) {
-      var editData = selectionLayer.getEditData();
-      var vertexFeature = editData.vertexFeature;
-      var insertVertices = [];
-      if (!goog.isNull(vertexFeature) && vertexFeature.renderIntent !=
-          ol.layer.VectorLayerRenderIntent.HIDDEN) {
-        var vertex = vertexFeature.getGeometry().getCoordinates();
-        var vertexExtent = ol.extent.boundingExtent([vertex]);
-        var segments = editData.rTree.search(vertexExtent);
-        for (var j = 0, jj = segments.length; j < jj; ++j) {
-          var segmentData = segments[j];
-          var segment = segmentData[0];
-          var feature = segmentData[1];
-          var featureId = goog.getUid(feature);
-          var original = selectionData.featuresBySelectedFeatureUid[featureId];
-          if (vertexFeature.renderIntent ==
-              ol.layer.VectorLayerRenderIntent.TEMPORARY) {
-            if (ol.coordinate.equals(segment[0], vertex)) {
-              this.dragSegments_.push([selectionLayer, segmentData, 0]);
-              feature.setOriginal(original);
-            } else if (ol.coordinate.equals(segment[1], vertex)) {
-              this.dragSegments_.push([selectionLayer, segmentData, 1]);
-              feature.setOriginal(original);
-            }
-          } else if (
-              ol.coordinate.squaredDistanceToSegment(vertex, segment) === 0) {
-            insertVertices.push([selectionLayer, segmentData, vertex]);
-            feature.setOriginal(original);
-          }
-        }
-        for (j = insertVertices.length - 1; j >= 0; --j) {
-          this.insertVertex_.apply(this, insertVertices[j]);
-        }
+  var vertexFeature = this.vertexFeature_;
+  var renderIntent = vertexFeature.getRenderIntent();
+  if (goog.isDef(vertexFeature) &&
+      renderIntent != ol.layer.VectorLayerRenderIntent.HIDDEN) {
+    var insertVertices = [];
+    var vertex = vertexFeature.getGeometry().getCoordinates();
+    var vertexExtent = ol.extent.boundingExtent([vertex]);
+    var segmentDataMatches = this.rTree_.search(vertexExtent);
+    var distinctFeatures = {};
+    for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
+      var segmentDataMatch = segmentDataMatches[i];
+      var segment = segmentDataMatch.segment;
+      if (!(goog.getUid(segmentDataMatch.feature) in distinctFeatures)) {
+        var feature = segmentDataMatch.feature;
+        distinctFeatures[goog.getUid(feature)] = true;
+        var original = new ol.Feature(feature.getAttributes());
+        original.setGeometry(feature.getGeometry().clone());
+        original.setId(feature.getId());
+        original.setOriginal(feature.getOriginal());
+        original.setSymbolizers(feature.getSymbolizers());
+        feature.setOriginal(original);
       }
+      if (renderIntent == ol.layer.VectorLayerRenderIntent.TEMPORARY) {
+        if (ol.coordinate.equals(segment[0], vertex)) {
+          this.dragSegments_.push([segmentDataMatch, 0]);
+        } else if (ol.coordinate.equals(segment[1], vertex)) {
+          this.dragSegments_.push([segmentDataMatch, 1]);
+        }
+      } else if (
+          ol.coordinate.squaredDistanceToSegment(vertex, segment) === 0) {
+        insertVertices.push([segmentDataMatch, vertex]);
+      }
+    }
+    for (i = insertVertices.length - 1; i >= 0; --i) {
+      this.insertVertex_.apply(this, insertVertices[i]);
     }
   }
   return this.modifiable_;
@@ -230,22 +384,28 @@ ol.interaction.Modify.prototype.handleDrag = function(evt) {
   var vertex = evt.getCoordinate();
   for (var i = 0, ii = this.dragSegments_.length; i < ii; ++i) {
     var dragSegment = this.dragSegments_[i];
-    var selectionLayer = dragSegment[0];
-    var segmentData = dragSegment[1];
-    var feature = segmentData[1];
-    var geometry = segmentData[2];
+    var segmentData = dragSegment[0];
+    var feature = segmentData.feature;
+    var geometry = segmentData.geometry;
     var coordinates = geometry.getCoordinates();
-    var index = dragSegment[2];
-    coordinates[segmentData[3] + index] = vertex;
-    geometry.setCoordinates(coordinates);
 
-    var editData = selectionLayer.getEditData();
-    var segment = segmentData[0];
-    editData.rTree.remove(ol.extent.boundingExtent(segment), segmentData);
-    segment[index] = vertex;
-    this.createOrUpdateVertexFeature(selectionLayer, vertex);
-    editData.rTree.insert(ol.extent.boundingExtent(segment), segmentData,
-        goog.getUid(feature));
+    var oldBounds, newBounds;
+    if (geometry instanceof ol.geom.Point) {
+      oldBounds = geometry.getBounds();
+      geometry.setCoordinates(vertex);
+      newBounds = geometry.getBounds();
+    } else {
+      var index = dragSegment[1];
+      coordinates[segmentData.index + index] = vertex;
+      geometry.setCoordinates(coordinates);
+      var segment = segmentData.segment;
+      oldBounds = ol.extent.boundingExtent(segment);
+      segment[index] = vertex;
+      newBounds = ol.extent.boundingExtent(segment);
+    }
+    this.createOrUpdateVertexFeature_(segmentData.style, vertex);
+    this.rTree_.remove(oldBounds, segmentData);
+    this.rTree_.insert(newBounds, segmentData, goog.getUid(feature));
   }
 };
 
@@ -271,17 +431,11 @@ ol.interaction.Modify.prototype.handleMapBrowserEvent =
  */
 ol.interaction.Modify.prototype.handleMouseMove_ = function(evt) {
   var map = evt.map;
-  var layers = goog.array.filter(map.getLayerGroup().getLayers().getArray(),
-      this.ignoreTemporaryLayersFilter_);
-  if (!goog.isNull(this.layerFilter_)) {
-    layers = goog.array.filter(layers, this.layerFilter_);
-  }
-  this.layers_ = layers;
   var pixel = evt.getPixel();
   var pixelCoordinate = map.getCoordinateFromPixel(pixel);
   var sortByDistance = function(a, b) {
-    return ol.coordinate.squaredDistanceToSegment(pixelCoordinate, a[0]) -
-        ol.coordinate.squaredDistanceToSegment(pixelCoordinate, b[0]);
+    return ol.coordinate.squaredDistanceToSegment(pixelCoordinate, a.segment) -
+        ol.coordinate.squaredDistanceToSegment(pixelCoordinate, b.segment);
   };
 
   var lowerLeft = map.getCoordinateFromPixel(
@@ -289,115 +443,83 @@ ol.interaction.Modify.prototype.handleMouseMove_ = function(evt) {
   var upperRight = map.getCoordinateFromPixel(
       [pixel[0] + this.pixelTolerance_, pixel[1] - this.pixelTolerance_]);
   var box = ol.extent.boundingExtent([lowerLeft, upperRight]);
-  var vertexFeature;
+
   this.modifiable_ = false;
-  for (var i = layers.length - 1; i >= 0; --i) {
-    var layer = layers[i];
-    var selectionLayer = layer.getSelectionData().layer;
-    if (!goog.isNull(selectionLayer)) {
-      var listener = goog.events.getListener(selectionLayer,
-          ol.layer.VectorEventType.ADD,
-          this.handleFeaturesAdded_, false, this);
-      if (goog.isNull(listener)) {
-        this.addLayer(layer);
+  var vertexFeature = this.vertexFeature_;
+  var rTree = this.rTree_;
+  var segmentDataMatches = rTree.search(box);
+  var renderIntent = ol.layer.VectorLayerRenderIntent.HIDDEN;
+  if (segmentDataMatches.length > 0) {
+    segmentDataMatches.sort(sortByDistance);
+    var segmentDataMatch = segmentDataMatches[0];
+    var segment = segmentDataMatch.segment; // the closest segment
+    var vertex = (ol.coordinate.closestOnSegment(pixelCoordinate, segment));
+    var vertexPixel = map.getPixelFromCoordinate(vertex);
+    if (Math.sqrt(ol.coordinate.squaredDistance(pixel, vertexPixel)) <=
+        this.pixelTolerance_) {
+      var pixel1 = map.getPixelFromCoordinate(segment[0]);
+      var pixel2 = map.getPixelFromCoordinate(segment[1]);
+      var squaredDist1 = ol.coordinate.squaredDistance(vertexPixel, pixel1);
+      var squaredDist2 = ol.coordinate.squaredDistance(vertexPixel, pixel2);
+      var dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
+      renderIntent = ol.layer.VectorLayerRenderIntent.FUTURE;
+      if (dist <= 10) {
+        vertex = squaredDist1 > squaredDist2 ? segment[1] : segment[0];
+        renderIntent = ol.layer.VectorLayerRenderIntent.TEMPORARY;
       }
-      var editData = selectionLayer.getEditData();
-      vertexFeature = editData.vertexFeature;
-      var segments = editData.rTree.search(box);
-      var renderIntent = ol.layer.VectorLayerRenderIntent.HIDDEN;
-      if (segments.length > 0) {
-        segments.sort(sortByDistance);
-        var segment = segments[0][0]; // the closest segment
-        var vertex = (ol.coordinate.closestOnSegment(pixelCoordinate, segment));
-        var vertexPixel = map.getPixelFromCoordinate(vertex);
-        if (Math.sqrt(ol.coordinate.squaredDistance(pixel, vertexPixel)) <=
-            this.pixelTolerance_) {
-          var pixel1 = map.getPixelFromCoordinate(segment[0]);
-          var pixel2 = map.getPixelFromCoordinate(segment[1]);
-          var squaredDist1 = ol.coordinate.squaredDistance(vertexPixel, pixel1);
-          var squaredDist2 = ol.coordinate.squaredDistance(vertexPixel, pixel2);
-          var dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
-          renderIntent = ol.layer.VectorLayerRenderIntent.FUTURE;
-          if (dist <= 10) {
-            vertex = squaredDist1 > squaredDist2 ? segment[1] : segment[0];
-            renderIntent = ol.layer.VectorLayerRenderIntent.TEMPORARY;
-          }
-          vertexFeature =
-              this.createOrUpdateVertexFeature(selectionLayer, vertex);
-          this.modifiable_ = true;
-        }
-      }
-      if (!goog.isNull(vertexFeature) &&
-          vertexFeature.renderIntent != renderIntent) {
-        selectionLayer.setRenderIntent(renderIntent, [vertexFeature]);
-      }
+      vertexFeature = this.createOrUpdateVertexFeature_(segmentDataMatch.style,
+          vertex);
+      this.modifiable_ = true;
     }
+  }
+
+  if (!goog.isNull(vertexFeature) &&
+      renderIntent != vertexFeature.getRenderIntent()) {
+    vertexFeature.setRenderIntent(renderIntent);
   }
 };
 
 
 /**
- * @param {ol.layer.Layer} layer Layer.
- * @return {boolean} Whether the layer is no temporary vector layer.
- * @private
- */
-ol.interaction.Modify.prototype.ignoreTemporaryLayersFilter_ = function(layer) {
-  return !(layer instanceof ol.layer.Vector && layer.getTemporary());
-};
-
-
-/**
- * @param {ol.layer.Vector} selectionLayer Selection layer.
- * @param {Array} segmentData Segment data.
+ * @param {ol.interaction.SegmentDataType} segmentData Segment data.
  * @param {ol.Coordinate} vertex Vertex.
  * @private
  */
 ol.interaction.Modify.prototype.insertVertex_ =
-    function(selectionLayer, segmentData, vertex) {
-  var segment = segmentData[0];
-  var feature = segmentData[1];
-  var geometry = segmentData[2];
-  var index = segmentData[3];
+    function(segmentData, vertex) {
+  var segment = segmentData.segment;
+  var feature = segmentData.feature;
+  var geometry = segmentData.geometry;
+  var index = segmentData.index;
   var coordinates = geometry.getCoordinates();
   coordinates.splice(index + 1, 0, vertex);
   geometry.setCoordinates(coordinates);
-  var rTree = selectionLayer.getEditData().rTree;
+  var rTree = this.rTree_;
+  goog.asserts.assert(goog.isDef(segment));
   rTree.remove(ol.extent.boundingExtent(segment), segmentData);
-  var uid = goog.getUid(feature);
-  var allSegments = rTree.search(geometry.getBounds(), uid);
-  for (var i = 0, ii = allSegments.length; i < ii; ++i) {
-    var allSegmentsData = allSegments[i];
-    if (allSegmentsData[2] === geometry && allSegmentsData[3] > index) {
-      ++allSegmentsData[3];
+  var featureUid = goog.getUid(feature);
+  var segmentDataMatches = this.rTree_.search(geometry.getBounds(), featureUid);
+  for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
+    var segmentDataMatch = segmentDataMatches[i];
+    if (segmentDataMatch.geometry === geometry &&
+        segmentDataMatch.index > index) {
+      ++segmentDataMatch.index;
     }
   }
-  var newSegment = [segment[0], vertex];
-  var newSegmentData = [newSegment, feature, geometry, index];
-  rTree.insert(ol.extent.boundingExtent(newSegment), newSegmentData, uid);
-  this.dragSegments_.push([selectionLayer, newSegmentData, 1]);
-  newSegment = [vertex, segment[1]];
-  newSegmentData = [newSegment, feature, geometry, index + 1];
-  rTree.insert(ol.extent.boundingExtent(newSegment), newSegmentData, uid);
-  this.dragSegments_.push([selectionLayer, newSegmentData, 0]);
-};
-
-
-/**
- * Listen for feature removals.
- * @param {ol.layer.VectorEvent} evt Event object.
- * @private
- */
-ol.interaction.Modify.prototype.handleFeaturesRemoved_ = function(evt) {
-  var layer = evt.target;
-  var rTree = layer.getEditData().rTree;
-  var features = evt.features;
-  for (var i = 0, ii = features.length; i < ii; ++i) {
-    var feature = features[i];
-    var segments = rTree.search(feature.getGeometry().getBounds(),
-        goog.getUid(feature));
-    for (var j = segments.length - 1; j >= 0; --j) {
-      var segment = segments[j];
-      rTree.remove(ol.extent.boundingExtent(segment[0]), segment);
-    }
-  }
+  var newSegmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+    style: segmentData.style,
+    segment: [segment[0], vertex],
+    feature: feature,
+    geometry: geometry,
+    index: index
+  });
+  rTree.insert(ol.extent.boundingExtent(newSegmentData.segment), newSegmentData,
+      featureUid);
+  this.dragSegments_.push([newSegmentData, 1]);
+  newSegmentData = goog.object.clone(newSegmentData);
+  newSegmentData.segment = [vertex, segment[1]];
+  newSegmentData.index += 1;
+  rTree.insert(ol.extent.boundingExtent(newSegmentData.segment), newSegmentData,
+      featureUid);
+  this.dragSegments_.push([newSegmentData, 0]);
 };
