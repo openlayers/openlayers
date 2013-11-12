@@ -31,7 +31,7 @@ goog.inherits(ol.geom.MultiPolygon, ol.geom.Geometry);
  * @inheritDoc
  */
 ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
-  return ol.geom.flatLinearRingssContainsXY(
+  return ol.geom.flat.linearRingssContainsXY(
       this.flatCoordinates, 0, this.endss_, this.stride, x, y);
 };
 

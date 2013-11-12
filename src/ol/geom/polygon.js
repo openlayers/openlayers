@@ -31,7 +31,7 @@ goog.inherits(ol.geom.Polygon, ol.geom.Geometry);
  * @inheritDoc
  */
 ol.geom.Polygon.prototype.containsXY = function(x, y) {
-  return ol.geom.flatLinearRingsContainsXY(
+  return ol.geom.flat.linearRingsContainsXY(
       this.flatCoordinates, 0, this.ends_, this.stride, x, y);
 };
 
