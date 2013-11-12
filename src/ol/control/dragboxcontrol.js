@@ -53,7 +53,8 @@ ol.control.DragBox = function(options) {
   this.startCoordinate_ = options.startCoordinate;
 
   goog.base(this, {
-    element: element
+    element: element,
+    target: options.target
   });
 
 };
