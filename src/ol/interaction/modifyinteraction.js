@@ -114,6 +114,7 @@ ol.interaction.Modify.prototype.setMap = function(map) {
     oldMap.removeLayer(this.sketchLayer_);
     layers = oldMap.getLayerGroup().getLayers();
     goog.asserts.assert(goog.isDef(layers));
+    layers.forEach(goog.bind(this.removeLayer, this));
     layers.unlisten(ol.CollectionEventType.ADD, this.handleLayerAdded_, false,
         this);
     layers.unlisten(ol.CollectionEventType.REMOVE, this.handleLayerRemoved_,
@@ -134,8 +135,7 @@ ol.interaction.Modify.prototype.setMap = function(map) {
     }
     layers = map.getLayerGroup().getLayers();
     goog.asserts.assert(goog.isDef(layers));
-    var that = this;
-    layers.forEach(function(layer) { that.addLayer(layer); });
+    layers.forEach(goog.bind(this.addLayer, this));
     layers.listen(ol.CollectionEventType.ADD, this.handleLayerAdded_, false,
         this);
     layers.listen(ol.CollectionEventType.REMOVE, this.handleLayerRemoved_,
@@ -155,11 +155,8 @@ ol.interaction.Modify.prototype.setMap = function(map) {
  * @private
  */
 ol.interaction.Modify.prototype.handleLayerAdded_ = function(evt) {
-  var layer = evt.getElement();
-  goog.asserts.assertInstanceof(layer, ol.layer.Layer);
-  if (this.layerFilter_(layer)) {
-    this.addLayer(layer);
-  }
+  goog.asserts.assertInstanceof(evt.getElement, ol.layer.Layer);
+  this.addLayer(evt.getElement);
 };
 
 
@@ -168,7 +165,8 @@ ol.interaction.Modify.prototype.handleLayerAdded_ = function(evt) {
  * @param {ol.layer.Layer} layer Layer.
  */
 ol.interaction.Modify.prototype.addLayer = function(layer) {
-  if (layer instanceof ol.layer.Vector && !layer.getTemporary()) {
+  if (this.layerFilter_(layer) && layer instanceof ol.layer.Vector &&
+      !layer.getTemporary()) {
     this.addIndex_(layer.getFeatures(ol.layer.Vector.selectedFeaturesFilter),
         layer);
     goog.events.listen(layer, ol.layer.VectorEventType.INTENTCHANGE,
@@ -182,11 +180,8 @@ ol.interaction.Modify.prototype.addLayer = function(layer) {
  * @private
  */
 ol.interaction.Modify.prototype.handleLayerRemoved_ = function(evt) {
-  var layer = evt.getElement();
-  goog.asserts.assertInstanceof(layer, ol.layer.Layer);
-  if (this.layerFilter_(layer)) {
-    this.removeLayer(layer);
-  }
+  goog.asserts.assertInstanceof(evt.getElement, ol.layer.Layer);
+  this.removeLayer(evt.getElement());
 };
 
 
@@ -195,7 +190,8 @@ ol.interaction.Modify.prototype.handleLayerRemoved_ = function(evt) {
  * @param {ol.layer.Layer} layer Layer.
  */
 ol.interaction.Modify.prototype.removeLayer = function(layer) {
-  if (layer instanceof ol.layer.Vector && !layer.getTemporary()) {
+  if (this.layerFilter_(layer) && layer instanceof ol.layer.Vector &&
+      !layer.getTemporary()) {
     this.removeIndex_(
         layer.getFeatures(ol.layer.Vector.selectedFeaturesFilter));
     goog.events.unlisten(layer, ol.layer.VectorEventType.INTENTCHANGE,
@@ -497,8 +493,8 @@ ol.interaction.Modify.prototype.insertVertex_ =
   var rTree = this.rTree_;
   goog.asserts.assert(goog.isDef(segment));
   rTree.remove(ol.extent.boundingExtent(segment), segmentData);
-  var featureUid = goog.getUid(feature);
-  var segmentDataMatches = this.rTree_.search(geometry.getBounds(), featureUid);
+  var uid = goog.getUid(feature);
+  var segmentDataMatches = this.rTree_.search(geometry.getBounds(), uid);
   for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
     var segmentDataMatch = segmentDataMatches[i];
     if (segmentDataMatch.geometry === geometry &&
@@ -514,12 +510,12 @@ ol.interaction.Modify.prototype.insertVertex_ =
     index: index
   });
   rTree.insert(ol.extent.boundingExtent(newSegmentData.segment), newSegmentData,
-      featureUid);
+      uid);
   this.dragSegments_.push([newSegmentData, 1]);
   newSegmentData = goog.object.clone(newSegmentData);
   newSegmentData.segment = [vertex, segment[1]];
   newSegmentData.index += 1;
   rTree.insert(ol.extent.boundingExtent(newSegmentData.segment), newSegmentData,
-      featureUid);
+      uid);
   this.dragSegments_.push([newSegmentData, 0]);
 };
