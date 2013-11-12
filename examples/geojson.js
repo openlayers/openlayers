@@ -9,7 +9,6 @@ goog.require('ol.layer.Vector');
 goog.require('ol.shape');
 goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
-goog.require('ol.style.DefaultStyleFunction');
 
 
 var image = ol.shape.renderCircle(5, null, {color: 'red', width: 1});
@@ -47,7 +46,15 @@ var styleFunction = function(feature) {
         }
       };
     default:
-      return ol.style.DefaultStyleFunction(feature);
+      return {
+        stroke: {
+          color: 'red',
+          width: 2
+        },
+        fill: {
+          color: 'rgba(255, 0, 0, 0.1)'
+        }
+      };
   }
 };
 
