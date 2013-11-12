@@ -1,6 +1,7 @@
 goog.provide('ol.geom.Polygon');
 
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.flat');
 
 
 
@@ -67,7 +68,7 @@ ol.geom.Polygon.prototype.getType = function() {
 ol.geom.Polygon.prototype.setCoordinates =
     function(coordinates, opt_layout) {
   this.setLayout(opt_layout, coordinates, 2);
-  ol.geom.deflateCoordinatess(
+  ol.geom.flat.deflateCoordinatess(
       this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
   ol.geom.orientFlatLinearRings(
       this.flatCoordinates, 0, this.ends_, this.stride);

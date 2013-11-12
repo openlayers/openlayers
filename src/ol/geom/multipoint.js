@@ -1,6 +1,7 @@
 goog.provide('ol.geom.MultiPoint');
 
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.flat');
 
 
 
@@ -41,6 +42,7 @@ ol.geom.MultiPoint.prototype.getType = function() {
 ol.geom.MultiPoint.prototype.setCoordinates =
     function(coordinates, opt_layout) {
   this.setLayout(opt_layout, coordinates, 1);
-  ol.geom.deflateCoordinates(this.flatCoordinates, 0, coordinates, this.stride);
+  ol.geom.flat.deflateCoordinates(
+      this.flatCoordinates, 0, coordinates, this.stride);
   this.dispatchChangeEvent();
 };

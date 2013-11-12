@@ -1,6 +1,7 @@
 goog.provide('ol.geom.MultiPolygon');
 
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.flat');
 
 
 
@@ -67,7 +68,7 @@ ol.geom.MultiPolygon.prototype.getType = function() {
 ol.geom.MultiPolygon.prototype.setCoordinates =
     function(coordinates, opt_layout) {
   this.setLayout(opt_layout, coordinates, 3);
-  ol.geom.deflateCoordinatesss(
+  ol.geom.flat.deflateCoordinatesss(
       this.flatCoordinates, 0, coordinates, this.stride, this.endss_);
   ol.geom.orientFlatLinearRingss(
       this.flatCoordinates, 0, this.endss_, this.stride);
