@@ -1,6 +1,4 @@
 // NOCOMPILE
-// FIXME don't rely on goog.* functions
-goog.require('goog.functions');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
@@ -26,6 +24,15 @@ var map = new ol.Map({
 });
 
 var vectorSource = new ol.source.Vector();
+var style = {
+  fill: {
+    color: 'rgba(255, 255, 255, 0.6)'
+  },
+  stroke: {
+    color: '#319FD3',
+    width: 1
+  }
+};
 
 $.get('data/countries.geojson', function(data) {
   var format = new ol.format.GeoJSON();
@@ -38,14 +45,9 @@ $.get('data/countries.geojson', function(data) {
   });
   map.getLayers().push(new ol.layer.Vector({
     source: vectorSource,
-    styleFunction: goog.functions.constant({
-      fill: {
-        color: 'rgba(255, 255, 255, 0.6)'
-      },
-      stroke: {
-        color: '#319FD3'
-      }
-    })
+    styleFunction: function(feature) {
+      return style;
+    }
   }));
 });
 
