@@ -1,7 +1,7 @@
-goog.provide('ol.test.geom');
+goog.provide('ol.test.geom.flat');
 
 
-describe('ol.geom', function() {
+describe('ol.geom.flat', function() {
 
   describe('ol.geom.flat.deflateCoordinates', function() {
 
