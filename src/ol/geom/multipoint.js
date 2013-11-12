@@ -30,7 +30,7 @@ ol.geom.MultiPoint.prototype.getCoordinates = function() {
  * @inheritDoc
  */
 ol.geom.MultiPoint.prototype.getType = function() {
-  return ol.geom.GeometryType.MULTI_POINT;
+  return ol.geom.Type.MULTI_POINT;
 };
 
 

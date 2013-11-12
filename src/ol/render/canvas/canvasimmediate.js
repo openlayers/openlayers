@@ -290,7 +290,7 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
 /**
  * @const
  * @private
- * @type {Object.<ol.geom.GeometryType,
+ * @type {Object.<ol.geom.Type,
  *                function(this: ol.render.canvas.Immediate, ol.geom.Geometry)>}
  */
 ol.render.canvas.Immediate.GEOMETRY_RENDERES_ = {

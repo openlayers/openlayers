@@ -30,7 +30,7 @@ ol.geom.LineString.prototype.getCoordinates = function() {
  * @inheritDoc
  */
 ol.geom.LineString.prototype.getType = function() {
-  return ol.geom.GeometryType.LINE_STRING;
+  return ol.geom.Type.LINE_STRING;
 };
 
 

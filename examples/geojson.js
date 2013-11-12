@@ -15,11 +15,11 @@ goog.require('ol.symbol');
 var image = ol.symbol.renderCircle(5, null, {color: 'red', width: 1});
 var styleFunction = function(feature) {
   switch (feature.getGeometry().getType()) {
-    case ol.geom.GeometryType.POINT:
+    case ol.geom.Type.POINT:
       return {
         image: image
       };
-    case ol.geom.GeometryType.POLYGON:
+    case ol.geom.Type.POLYGON:
       return {
         stroke: {
           color: 'blue',
@@ -29,14 +29,14 @@ var styleFunction = function(feature) {
           color: 'rgba(0, 0, 255, 0.1)'
         }
       };
-    case ol.geom.GeometryType.MULTI_LINE_STRING:
+    case ol.geom.Type.MULTI_LINE_STRING:
       return {
         stroke: {
           color: 'green',
           width: 1
         }
       };
-    case ol.geom.GeometryType.MULTI_POLYGON:
+    case ol.geom.Type.MULTI_POLYGON:
       return {
         stroke: {
           color: 'yellow',

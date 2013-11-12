@@ -12,7 +12,7 @@ goog.require('ol.extent');
 /**
  * @enum {string}
  */
-ol.geom.GeometryType = {
+ol.geom.Type = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
   POLYGON: 'Polygon',
@@ -156,7 +156,7 @@ ol.geom.Geometry.prototype.getStride = function() {
 
 
 /**
- * @return {ol.geom.GeometryType} Geometry type.
+ * @return {ol.geom.Type} Geometry type.
  */
 ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 

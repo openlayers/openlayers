@@ -56,7 +56,7 @@ ol.geom.Polygon.prototype.getEnds = function() {
  * @inheritDoc
  */
 ol.geom.Polygon.prototype.getType = function() {
-  return ol.geom.GeometryType.POLYGON;
+  return ol.geom.Type.POLYGON;
 };
 
 

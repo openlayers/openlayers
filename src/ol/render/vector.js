@@ -148,7 +148,7 @@ ol.renderer.vector.renderPolygonGeometry_ =
 /**
  * @const
  * @private
- * @type {Object.<ol.geom.GeometryType,
+ * @type {Object.<ol.geom.Type,
  *                function(ol.render.IReplayReplayGroup, ol.geom.Geometry,
  *                         ol.style.Style)>}
  */
