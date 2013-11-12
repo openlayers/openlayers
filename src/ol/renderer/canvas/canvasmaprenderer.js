@@ -10,8 +10,8 @@ goog.require('ol.css');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.render.RenderEvent');
-goog.require('ol.render.RenderEventType');
+goog.require('ol.render.Event');
+goog.require('ol.render.EventType');
 goog.require('ol.render.canvas.Immediate');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.ImageLayer');
@@ -126,12 +126,11 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   }
 
   var map = this.getMap();
-  if (map.hasListener(ol.render.RenderEventType.POSTCOMPOSE)) {
+  if (map.hasListener(ol.render.EventType.POSTCOMPOSE)) {
     var render = new ol.render.canvas.Immediate(
         context, frameState.extent, frameState.coordinateToPixelMatrix);
-    var postComposeEvent = new ol.render.RenderEvent(
-        ol.render.RenderEventType.POSTCOMPOSE, map, render, frameState, context,
-        null);
+    var postComposeEvent = new ol.render.Event(ol.render.EventType.POSTCOMPOSE,
+        map, render, frameState, context, null);
     map.dispatchEvent(postComposeEvent);
   }
 

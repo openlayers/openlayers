@@ -2,8 +2,8 @@ goog.provide('ol.renderer.canvas.Layer');
 
 goog.require('goog.vec.Mat4');
 goog.require('ol.layer.Layer');
-goog.require('ol.render.RenderEvent');
-goog.require('ol.render.RenderEventType');
+goog.require('ol.render.Event');
+goog.require('ol.render.EventType');
 goog.require('ol.render.canvas.Immediate');
 goog.require('ol.renderer.Layer');
 
@@ -78,14 +78,13 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
 ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent =
     function(context, frameState, opt_transform) {
   var layer = this.getLayer();
-  if (layer.hasListener(ol.render.RenderEventType.POSTCOMPOSE)) {
+  if (layer.hasListener(ol.render.EventType.POSTCOMPOSE)) {
     var transform = goog.isDef(opt_transform) ?
         opt_transform : this.getTransform(frameState);
     var render = new ol.render.canvas.Immediate(context, frameState.extent,
         transform);
-    var postComposeEvent = new ol.render.RenderEvent(
-        ol.render.RenderEventType.POSTCOMPOSE, layer, render, frameState,
-        context, null);
+    var postComposeEvent = new ol.render.Event(ol.render.EventType.POSTCOMPOSE,
+        layer, render, frameState, context, null);
     layer.dispatchEvent(postComposeEvent);
   }
 };

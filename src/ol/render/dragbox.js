@@ -5,7 +5,7 @@ goog.provide('ol.render.DragBox');
 goog.require('goog.Disposable');
 goog.require('goog.events');
 goog.require('ol.geom.Polygon');
-goog.require('ol.render.RenderEventType');
+goog.require('ol.render.EventType');
 goog.require('ol.style.Style');
 
 
@@ -70,7 +70,7 @@ ol.render.DragBox.prototype.disposeInternal = function() {
 
 
 /**
- * @param {ol.render.RenderEvent} event Event.
+ * @param {ol.render.Event} event Event.
  * @private
  */
 ol.render.DragBox.prototype.handleMapPostCompose_ = function(event) {
@@ -115,8 +115,8 @@ ol.render.DragBox.prototype.setMap = function(map) {
   this.map_ = map;
   if (!goog.isNull(this.map_)) {
     this.postComposeListenKey_ = goog.events.listen(
-        map, ol.render.RenderEventType.POSTCOMPOSE,
-        this.handleMapPostCompose_, false, this);
+        map, ol.render.EventType.POSTCOMPOSE, this.handleMapPostCompose_, false,
+        this);
     this.requestMapRenderFrame_();
   }
 };
