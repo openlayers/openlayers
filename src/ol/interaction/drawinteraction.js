@@ -1,5 +1,4 @@
 goog.provide('ol.interaction.Draw');
-goog.provide('ol.interaction.DrawMode');
 
 goog.require('goog.asserts');
 
@@ -8,7 +7,11 @@ goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Interaction');
@@ -50,11 +53,18 @@ ol.interaction.Draw = function(options) {
       options.snapTolerance : 12;
 
   /**
-   * Draw mode.
+   * Geometry type.
+   * @type {ol.geom.GeometryType}
+   * @private
+   */
+  this.type_ = options.type;
+
+  /**
+   * Drawing mode (derived from geometry type.
    * @type {ol.interaction.DrawMode}
    * @private
    */
-  this.mode_ = options.mode;
+  this.mode_ = ol.interaction.Draw.getMode_(this.type_);
 
   /**
    * Finish coordinate for the feature (first point for polygons, last point for
@@ -322,6 +332,20 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
     coordinates.pop();
     geometry.setCoordinates(coordinates);
   }
+  // cast multi-part geometries
+  if (this.type_ === ol.geom.GeometryType.MULTIPOINT) {
+    sketchFeature.setGeometry(
+        new ol.geom.MultiPoint(
+            [sketchFeature.getGeometry().getCoordinates()]));
+  } else if (this.type_ === ol.geom.GeometryType.MULTILINESTRING) {
+    sketchFeature.setGeometry(
+        new ol.geom.MultiLineString(
+            [sketchFeature.getGeometry().getCoordinates()]));
+  } else if (this.type_ === ol.geom.GeometryType.MULTIPOLYGON) {
+    sketchFeature.setGeometry(
+        new ol.geom.MultiPolygon(
+            [sketchFeature.getGeometry().getCoordinates()]));
+  }
   this.layer_.addFeatures([sketchFeature]);
 };
 
@@ -348,7 +372,32 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
 
 
 /**
- * Draw mode.
+ * Get the drawing mode.  The mode for mult-part geometries is the same as for
+ * their single-part cousins.
+ * @param {ol.geom.GeometryType} type Geometry type.
+ * @return {ol.interaction.DrawMode} Drawing mode.
+ * @private
+ */
+ol.interaction.Draw.getMode_ = function(type) {
+  var mode;
+  if (type === ol.geom.GeometryType.POINT ||
+      type === ol.geom.GeometryType.MULTIPOINT) {
+    mode = ol.interaction.DrawMode.POINT;
+  } else if (type === ol.geom.GeometryType.LINESTRING ||
+      type === ol.geom.GeometryType.MULTILINESTRING) {
+    mode = ol.interaction.DrawMode.LINESTRING;
+  } else if (type === ol.geom.GeometryType.POLYGON ||
+      type === ol.geom.GeometryType.MULTIPOLYGON) {
+    mode = ol.interaction.DrawMode.POLYGON;
+  }
+  goog.asserts.assert(goog.isDef(mode));
+  return mode;
+};
+
+
+/**
+ * Draw mode.  This collapses multi-part geometry types with their single-part
+ * cousins.
  * @enum {string}
  */
 ol.interaction.DrawMode = {

@@ -346,8 +346,8 @@
  * @property {ol.layer.Vector} layer Destination layer for the features.
  * @property {number|undefined} snapTolerance Pixel distance for snapping to the
  *     drawing finish (default is 12).
- * @property {ol.interaction.DrawMode} mode Drawing mode ('point', 'linestring',
- *     or 'polygon').
+ * @property {ol.geom.GeometryType} type Drawing type ('point', 'linestring',
+ *     'polygon', 'multipoint', 'multilinestring', or 'multipolygon').
  * @todo stability experimental
  */
 

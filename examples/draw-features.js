@@ -97,24 +97,24 @@ var map = new ol.Map({
   })
 });
 
-var modeSelect = document.getElementById('mode');
+var typeSelect = document.getElementById('type');
 
 var draw; // global so we can remove it later
 function addInteraction() {
   draw = new ol.interaction.Draw({
     layer: vector,
-    mode: /** @type {ol.interaction.DrawMode} */
-        (modeSelect.options[modeSelect.selectedIndex].value)
+    type: /** @type {ol.geom.GeometryType} */
+        (typeSelect.options[typeSelect.selectedIndex].value)
   });
   map.addInteraction(draw);
 }
 
 
 /**
- * Let user change the draw mode.
+ * Let user change the geometry type.
  * @param {Event} e Change event.
  */
-modeSelect.onchange = function(e) {
+typeSelect.onchange = function(e) {
   map.removeInteraction(draw);
   addInteraction();
 };
