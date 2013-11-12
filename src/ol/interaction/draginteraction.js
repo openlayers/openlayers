@@ -27,8 +27,9 @@ ol.interaction.Drag = function() {
   this.dragging_ = false;
 
   /**
-   * @type {number} Delta for INTERACTING view hint. Subclasses that do not want
-   *     the INTERACTING hint to be set should override this to 0.
+   * Delta for INTERACTING view hint. Subclasses that do not want the
+   * INTERACTING hint to be set should override this to 0.
+   * @type {number}
    */
   this.interactingHint = 1;
 
