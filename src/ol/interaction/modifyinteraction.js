@@ -115,7 +115,7 @@ ol.interaction.Modify.prototype.setMap = function(map) {
     oldMap.removeLayer(this.sketchLayer_);
     layers = oldMap.getLayerGroup().getLayers();
     goog.asserts.assert(goog.isDef(layers));
-    layers.forEach(goog.bind(this.removeLayer, this));
+    layers.forEach(goog.bind(this.removeLayer_, this));
     layers.unlisten(ol.CollectionEventType.ADD, this.handleLayerAdded_, false,
         this);
     layers.unlisten(ol.CollectionEventType.REMOVE, this.handleLayerRemoved_,
@@ -136,7 +136,7 @@ ol.interaction.Modify.prototype.setMap = function(map) {
     }
     layers = map.getLayerGroup().getLayers();
     goog.asserts.assert(goog.isDef(layers));
-    layers.forEach(goog.bind(this.addLayer, this));
+    layers.forEach(goog.bind(this.addLayer_, this));
     layers.listen(ol.CollectionEventType.ADD, this.handleLayerAdded_, false,
         this);
     layers.listen(ol.CollectionEventType.REMOVE, this.handleLayerRemoved_,
@@ -157,15 +157,16 @@ ol.interaction.Modify.prototype.setMap = function(map) {
  */
 ol.interaction.Modify.prototype.handleLayerAdded_ = function(evt) {
   goog.asserts.assertInstanceof(evt.getElement, ol.layer.Layer);
-  this.addLayer(evt.getElement);
+  this.addLayer_(evt.getElement);
 };
 
 
 /**
  * Add a layer for modification.
  * @param {ol.layer.Layer} layer Layer.
+ * @private
  */
-ol.interaction.Modify.prototype.addLayer = function(layer) {
+ol.interaction.Modify.prototype.addLayer_ = function(layer) {
   if (this.layerFilter_(layer) && layer instanceof ol.layer.Vector &&
       !layer.getTemporary()) {
     this.addIndex_(layer.getFeatures(ol.layer.Vector.selectedFeaturesFilter),
@@ -182,15 +183,16 @@ ol.interaction.Modify.prototype.addLayer = function(layer) {
  */
 ol.interaction.Modify.prototype.handleLayerRemoved_ = function(evt) {
   goog.asserts.assertInstanceof(evt.getElement, ol.layer.Layer);
-  this.removeLayer(evt.getElement());
+  this.removeLayer_(evt.getElement());
 };
 
 
 /**
  * Remove a layer for modification.
  * @param {ol.layer.Layer} layer Layer.
+ * @private
  */
-ol.interaction.Modify.prototype.removeLayer = function(layer) {
+ol.interaction.Modify.prototype.removeLayer_ = function(layer) {
   if (this.layerFilter_(layer) && layer instanceof ol.layer.Vector &&
       !layer.getTemporary()) {
     this.removeIndex_(
