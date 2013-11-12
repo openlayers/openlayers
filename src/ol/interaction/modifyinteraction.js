@@ -52,12 +52,13 @@ ol.interaction.Modify = function(opt_options) {
   } else if (goog.isArray(layerFilter)) {
     layerFilter = function(layer) {return options.layers.indexOf(layer) > -1;};
   }
+  goog.asserts.assertFunction(layerFilter);
 
   /**
-   * @type {null|function(ol.layer.Layer):boolean}
+   * @type {function(ol.layer.Layer):boolean}
    * @private
    */
-  this.layerFilter_ = goog.isDef(layerFilter) ? layerFilter : null;
+  this.layerFilter_ = layerFilter;
 
   /**
    * Temporary sketch layer.
