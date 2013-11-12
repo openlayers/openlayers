@@ -54,18 +54,18 @@ describe('ol.geom.flat', function() {
 
   });
 
-  describe('ol.geom.flatLinearRingIsClockwise', function() {
+  describe('ol.geom.flat.linearRingIsClockwise', function() {
 
     it('identifies clockwise rings', function() {
       var flatCoordinates = [0, 1, 1, 4, 4, 3, 3, 0];
-      var isClockwise = ol.geom.flatLinearRingIsClockwise(
+      var isClockwise = ol.geom.flat.linearRingIsClockwise(
           flatCoordinates, 0, flatCoordinates.length, 2);
       expect(isClockwise).to.be(true);
     });
 
     it('identifies anti-clockwise rings', function() {
       var flatCoordinates = [2, 2, 3, 2, 3, 3, 2, 3];
-      var isClockwise = ol.geom.flatLinearRingIsClockwise(
+      var isClockwise = ol.geom.flat.linearRingIsClockwise(
           flatCoordinates, 0, flatCoordinates.length, 2);
       expect(isClockwise).to.be(false);
     });
