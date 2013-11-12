@@ -15,11 +15,11 @@ goog.require('ol.style.DefaultStyleFunction');
 var image = ol.shape.renderCircle(5, null, {color: 'red', width: 1});
 var styleFunction = function(feature) {
   switch (feature.getGeometry().getType()) {
-    case ol.geom.Type.POINT:
+    case 'Point':
       return {
         image: image
       };
-    case ol.geom.Type.POLYGON:
+    case 'Polygon':
       return {
         stroke: {
           color: 'blue',
@@ -29,14 +29,14 @@ var styleFunction = function(feature) {
           color: 'rgba(0, 0, 255, 0.1)'
         }
       };
-    case ol.geom.Type.MULTI_LINE_STRING:
+    case 'MultiLineString':
       return {
         stroke: {
           color: 'green',
           width: 1
         }
       };
-    case ol.geom.Type.MULTI_POLYGON:
+    case 'MultiPolygon':
       return {
         stroke: {
           color: 'yellow',
