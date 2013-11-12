@@ -164,7 +164,7 @@ ol.dom.Input.prototype.handleInputChanged_ = function() {
  * @private
  */
 ol.dom.Input.prototype.handleCheckedChanged_ = function() {
-  this.target_.checked = this.getChecked() ? 'checked' : undefined;
+  this.target_.checked = this.getChecked();
 };
 
 
