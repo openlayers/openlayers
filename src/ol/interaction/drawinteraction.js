@@ -326,25 +326,23 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
   var sketchFeature = this.abortDrawing_();
   goog.asserts.assert(!goog.isNull(sketchFeature));
   sketchFeature.setRenderIntent(ol.layer.VectorLayerRenderIntent.DEFAULT);
+  var geometry = sketchFeature.getGeometry();
+  var coordinates = geometry.getCoordinates();
   if (this.mode_ === ol.interaction.DrawMode.LINESTRING) {
-    var geometry = sketchFeature.getGeometry();
-    var coordinates = geometry.getCoordinates();
+    // remove the redundant last point
     coordinates.pop();
     geometry.setCoordinates(coordinates);
+  } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
+    // force clockwise order for exterior ring
+    sketchFeature.setGeometry(new ol.geom.Polygon(coordinates));
   }
   // cast multi-part geometries
   if (this.type_ === ol.geom.GeometryType.MULTIPOINT) {
-    sketchFeature.setGeometry(
-        new ol.geom.MultiPoint(
-            [sketchFeature.getGeometry().getCoordinates()]));
+    sketchFeature.setGeometry(new ol.geom.MultiPoint([coordinates]));
   } else if (this.type_ === ol.geom.GeometryType.MULTILINESTRING) {
-    sketchFeature.setGeometry(
-        new ol.geom.MultiLineString(
-            [sketchFeature.getGeometry().getCoordinates()]));
+    sketchFeature.setGeometry(new ol.geom.MultiLineString([coordinates]));
   } else if (this.type_ === ol.geom.GeometryType.MULTIPOLYGON) {
-    sketchFeature.setGeometry(
-        new ol.geom.MultiPolygon(
-            [sketchFeature.getGeometry().getCoordinates()]));
+    sketchFeature.setGeometry(new ol.geom.MultiPolygon([coordinates]));
   }
   this.layer_.addFeatures([sketchFeature]);
 };
