@@ -391,7 +391,7 @@ ol.geom.orientFlatLinearRings =
         flatCoordinates, offset, end, stride);
     var reverse = i === 0 ? !isClockwise : isClockwise;
     if (reverse) {
-      ol.geom.reverseFlatCoordinates(flatCoordinates, offset, end, stride);
+      ol.geom.flat.reverseCoordinates(flatCoordinates, offset, end, stride);
     }
     offset = end;
   }
@@ -414,27 +414,6 @@ ol.geom.orientFlatLinearRingss =
         flatCoordinates, offset, endss[i], stride);
   }
   return offset;
-};
-
-
-/**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- * @param {number} offset Offset.
- * @param {number} end End.
- * @param {number} stride Stride.
- */
-ol.geom.reverseFlatCoordinates =
-    function(flatCoordinates, offset, end, stride) {
-  while (offset < end - stride) {
-    var i;
-    for (i = 0; i < stride; ++i) {
-      var tmp = flatCoordinates[offset + i];
-      flatCoordinates[offset + i] = flatCoordinates[end - stride + i];
-      flatCoordinates[end - stride + i] = tmp;
-    }
-    offset += stride;
-    end -= stride;
-  }
 };
 
 
