@@ -34,7 +34,7 @@ ol.render.IRender.prototype.drawLineStringGeometry =
 
 /**
  * @param {ol.geom.MultiLineString} multiLineStringGeometry
- *     Multi line string geometry.
+ *     MultiLineString geometry.
  */
 ol.render.IRender.prototype.drawMultiLineStringGeometry =
     function(multiLineStringGeometry) {
@@ -50,7 +50,7 @@ ol.render.IRender.prototype.drawMultiPointGeometry =
 
 
 /**
- * @param {ol.geom.MultiPolygon} multiPolygonGeometry Multi polygon geometry.
+ * @param {ol.geom.MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
  */
 ol.render.IRender.prototype.drawMultiPolygonGeometry =
     function(multiPolygonGeometry) {
