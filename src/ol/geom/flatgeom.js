@@ -259,6 +259,48 @@ ol.geom.flat.linearRingssContainsXY =
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
+ * @param {Array.<number>} ends Ends.
+ * @param {number} stride Stride.
+ * @return {number} End.
+ */
+ol.geom.flat.orientLinearRings =
+    function(flatCoordinates, offset, ends, stride) {
+  var i, ii;
+  for (i = 0, ii = ends.length; i < ii; ++i) {
+    var end = ends[i];
+    var isClockwise = ol.geom.flat.linearRingIsClockwise(
+        flatCoordinates, offset, end, stride);
+    var reverse = i === 0 ? !isClockwise : isClockwise;
+    if (reverse) {
+      ol.geom.flat.reverseCoordinates(flatCoordinates, offset, end, stride);
+    }
+    offset = end;
+  }
+  return offset;
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {Array.<Array.<number>>} endss Endss.
+ * @param {number} stride Stride.
+ * @return {number} End.
+ */
+ol.geom.flat.orientLinearRingss =
+    function(flatCoordinates, offset, endss, stride) {
+  var i, ii;
+  for (i = 0, ii = endss.length; i < ii; ++i) {
+    offset = ol.geom.flat.orientLinearRings(
+        flatCoordinates, offset, endss[i], stride);
+  }
+  return offset;
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
  */

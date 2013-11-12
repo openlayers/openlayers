@@ -70,7 +70,7 @@ ol.geom.Polygon.prototype.setCoordinates =
   this.setLayout(opt_layout, coordinates, 2);
   ol.geom.flat.deflateCoordinatess(
       this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
-  ol.geom.orientFlatLinearRings(
+  ol.geom.flat.orientLinearRings(
       this.flatCoordinates, 0, this.ends_, this.stride);
   this.dispatchChangeEvent();
 };
