@@ -17,6 +17,7 @@ goog.require('ol.events.condition');
 
 /**
  * @typedef {{startCoordinate: ol.Coordinate,
+ *            target: (Element|undefined),
  *            condition: (ol.events.ConditionType|undefined)}}
  */
 ol.control.DragBoxOptions;
