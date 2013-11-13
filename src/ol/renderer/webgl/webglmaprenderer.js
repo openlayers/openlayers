@@ -19,11 +19,9 @@ goog.require('ol.Tile');
 goog.require('ol.css');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector2');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.TileLayer');
-goog.require('ol.renderer.webgl.VectorLayer2');
 goog.require('ol.renderer.webgl.map.shader.Color');
 goog.require('ol.renderer.webgl.map.shader.Default');
 goog.require('ol.size');
@@ -305,8 +303,6 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
     return new ol.renderer.webgl.TileLayer(this, layer);
   } else if (layer instanceof ol.layer.Image) {
     return new ol.renderer.webgl.ImageLayer(this, layer);
-  } else if (layer instanceof ol.layer.Vector2) {
-    return new ol.renderer.webgl.VectorLayer2(this, layer);
   } else {
     goog.asserts.fail();
     return null;
