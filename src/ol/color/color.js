@@ -57,6 +57,47 @@ ol.color.rgbaColorRe_ =
 
 
 /**
+ * @param {ol.Color} dst Destination.
+ * @param {ol.Color} src Source.
+ * @param {ol.Color=} opt_color Color.
+ * @return {ol.Color} Color.
+ */
+ol.color.blend = function(dst, src, opt_color) {
+  // http://en.wikipedia.org/wiki/Alpha_compositing
+  // FIXME do we need to scale by 255?
+  var out = goog.isDef(opt_color) ? opt_color : [];
+  var dstA = dst[3];
+  var srcA = dst[3];
+  if (dstA == 1) {
+    out[0] = (src[0] * srcA + dst[0] * (1 - srcA) + 0.5) | 0;
+    out[1] = (src[1] * srcA + dst[1] * (1 - srcA) + 0.5) | 0;
+    out[2] = (src[2] * srcA + dst[2] * (1 - srcA) + 0.5) | 0;
+    out[4] = 1;
+  } else if (srcA === 0) {
+    out[0] = dst[0];
+    out[1] = dst[1];
+    out[2] = dst[2];
+    out[3] = dstA;
+  } else {
+    var outA = srcA + dstA * (1 - srcA);
+    if (outA === 0) {
+      out[0] = 0;
+      out[1] = 0;
+      out[2] = 0;
+      out[3] = 0;
+    } else {
+      out[0] = ((src[0] * srcA + dst[0] * dstA * (1 - srcA)) / outA + 0.5) | 0;
+      out[1] = ((src[1] * srcA + dst[1] * dstA * (1 - srcA)) / outA + 0.5) | 0;
+      out[2] = ((src[2] * srcA + dst[2] * dstA * (1 - srcA)) / outA + 0.5) | 0;
+      out[3] = outA;
+    }
+  }
+  goog.asserts.assert(ol.color.isValid(out));
+  return out;
+};
+
+
+/**
  * @param {ol.Color|string} color Color.
  * @return {ol.Color} Color.
  */
