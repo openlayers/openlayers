@@ -68,7 +68,7 @@ ol.tilegrid.Zoomify.prototype.createTileCoordTransform = function(opt_options) {
         if (!goog.isNull(tileRangeByZ)) {
           tmpTileCoord.z = z;
           tmpTileCoord.x = x;
-          tmpTileCoord.y = y;
+          tmpTileCoord.y = -y - 1;
           if (!tileRangeByZ[z].contains(tmpTileCoord)) {
             return null;
           }
