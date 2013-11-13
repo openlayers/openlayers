@@ -1,15 +1,16 @@
-// ol.color is based on goog.color and goog.color.alpha
-// goog.color and goog.color.alpha use a hex string representation that encodes
-// each channel as a byte (a two character hex string).  This causes occasional
-// loss of precision and rounding errors, especially in the alpha channel.
-// FIXME don't use goog.color or goog.color.alpha
+// We can't use goog.color or goog.color.alpha because they interally use a hex
+// string representation that encodes each channel in a single byte.  This
+// causes occasional loss of precision and rounding errors, especially in the
+// alpha channel.
+
 // FIXME move the color matrix code from ol.renderer.webgl.Layer to here
 
 goog.provide('ol.color');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.color');
-goog.require('goog.color.alpha');
+goog.require('goog.color.names');
 goog.require('goog.math');
 goog.require('goog.vec.Mat4');
 
@@ -21,6 +22,32 @@ goog.require('goog.vec.Mat4');
  * @typedef {Array.<number>}
  */
 ol.Color;
+
+
+/**
+ * @type {RegExp}
+ * @private
+ * This RegExp matches # followed by 3, 4, 6, or 8 hex digits.
+ */
+ol.color.hexColorRe_ = /^#(?:[0-9a-f]{3,4}){1,2}$/i;
+
+
+/**
+ * @type {RegExp}
+ * @private
+ * @see goog.color.rgbColorRe_
+ */
+ol.color.rgbColorRe_ =
+    /^(?:rgb)?\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2})\)$/i;
+
+
+/**
+ * @type {RegExp}
+ * @private
+ * @see goog.color.alpha.rgbaColorRe_
+ */
+ol.color.rgbaColorRe_ =
+    /^(?:rgba)?\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|1|0\.\d{0,10})\)$/i;
 
 
 /**
@@ -87,17 +114,50 @@ ol.color.fromString = (function() {
  */
 ol.color.fromStringInternal_ = function(s) {
 
-  /** @preserveTry */
-  try {
-    var rgba = goog.color.alpha.parse(s);
-    return goog.color.alpha.hexToRgba(rgba.hex);
-  } catch (e) {
-    // goog.color.alpha.parse throws an Error on named and rgb-style colors.
-    var rgb = goog.color.parse(s);
-    var result = goog.color.hexToRgb(rgb.hex);
-    result.push(1);
-    return result;
+  var isHex = false;
+  if (goog.color.names.hasOwnProperty(s)) {
+    s = goog.color.names[s];
+    isHex = true;
   }
+
+  var r, g, b, a, color, match;
+  if (isHex || (match = ol.color.hexColorRe_.exec(s))) { // hex
+    var n = s.length - 1; // number of hex digits
+    goog.asserts.assert(goog.array.indexOf([3, 4, 6, 8], n) != -1);
+    var d = n < 6 ? 1 : 2; // number of digits per channel
+    r = parseInt(s.substr(1 + 0 * d, d), 16);
+    g = parseInt(s.substr(1 + 1 * d, d), 16);
+    b = parseInt(s.substr(1 + 2 * d, d), 16);
+    if (d == 1) {
+      r = (r << 4) + r;
+      g = (g << 4) + g;
+      b = (b << 4) + b;
+    }
+    if ((n >> 1) & 1) {
+      a = 1;
+    } else { // has alpha channel
+      a = parseInt(s.substr(1 + 3 * d, d), 16) / (d == 1 ? 15 : 255);
+    }
+    color = [r, g, b, a];
+    goog.asserts.assert(ol.color.isValid(color));
+    return color;
+  } else if ((match = ol.color.rgbaColorRe_.exec(s))) { // rgba()
+    r = Number(match[1]);
+    g = Number(match[2]);
+    b = Number(match[3]);
+    a = Number(match[4]);
+    color = [r, g, b, a];
+    return ol.color.normalize(color, color);
+  } else if ((match = ol.color.rgbColorRe_.exec(s))) { // rgb()
+    r = Number(match[1]);
+    g = Number(match[2]);
+    b = Number(match[3]);
+    color = [r, g, b, 1];
+    return ol.color.normalize(color, color);
+  } else {
+    throw new Error(s + ' is not a valid color');
+  }
+
 };
 
 
