@@ -4,6 +4,7 @@
 goog.provide('ol.render.canvas.Immediate');
 
 goog.require('goog.asserts');
+goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.render.IRender');
 goog.require('ol.style.fill');
@@ -270,13 +271,13 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
   var state = this.state_;
   if (!ol.style.fill.equals(state.fillStyle, fillStyle)) {
     if (goog.isDefAndNotNull(fillStyle)) {
-      context.fillStyle = fillStyle.color;
+      context.fillStyle = ol.color.asString(fillStyle.color);
     }
     state.fillStyle = fillStyle;
   }
   if (!ol.style.stroke.equals(state.strokeStyle, strokeStyle)) {
     if (goog.isDefAndNotNull(strokeStyle)) {
-      context.strokeStyle = strokeStyle.color;
+      context.strokeStyle = ol.color.asString(strokeStyle.color);
       context.lineWidth = strokeStyle.width;
     }
     state.strokeStyle = strokeStyle;

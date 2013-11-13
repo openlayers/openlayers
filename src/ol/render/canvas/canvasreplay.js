@@ -6,6 +6,7 @@ goog.provide('ol.render.canvas.ReplayGroup');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
+goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.geom.flat');
 goog.require('ol.render.IRender');
@@ -138,12 +139,12 @@ ol.render.canvas.Replay.prototype.draw = function(context, transform) {
     } else if (type == ol.render.canvas.Instruction.SET_FILL_STYLE) {
       goog.asserts.assert(goog.isObject(instruction[1]));
       var fillStyle = /** @type {ol.style.Fill} */ (instruction[1]);
-      context.fillStyle = fillStyle.color;
+      context.fillStyle = ol.color.asString(fillStyle.color);
       ++i;
     } else if (type == ol.render.canvas.Instruction.SET_STROKE_STYLE) {
       goog.asserts.assert(goog.isObject(instruction[1]));
       var strokeStyle = /** @type {ol.style.Stroke} */ (instruction[1]);
-      context.strokeStyle = strokeStyle.color;
+      context.strokeStyle = ol.color.asString(strokeStyle.color);
       context.lineWidth = strokeStyle.width;
       ++i;
     } else if (type == ol.render.canvas.Instruction.STROKE) {

@@ -1,4 +1,3 @@
-// FIXME decide how to handle fill opacity
 // FIXME decide default value for snapToPixel
 
 goog.provide('ol.style');
@@ -9,10 +8,11 @@ goog.provide('ol.style.fill');
 goog.provide('ol.style.stroke');
 
 goog.require('goog.functions');
+goog.require('ol.color');
 
 
 /**
- * @typedef {{color: string}|null|undefined}
+ * @typedef {{color: (ol.Color|string)}|null|undefined}
  */
 ol.style.Fill;
 
@@ -25,7 +25,8 @@ ol.style.Fill;
 ol.style.fill.equals = function(fillStyle1, fillStyle2) {
   if (goog.isDefAndNotNull(fillStyle1)) {
     if (goog.isDefAndNotNull(fillStyle2)) {
-      return fillStyle1 === fillStyle2 || fillStyle1.color == fillStyle2.color;
+      return fillStyle1 === fillStyle2 ||
+          ol.color.stringOrColorEquals(fillStyle1.color, fillStyle2.color);
     } else {
       return false;
     }
@@ -50,7 +51,7 @@ ol.style.Image;
 
 
 /**
- * @typedef {{color: string,
+ * @typedef {{color: (ol.Color|string),
  *            width: number}|null|undefined}
  */
 ol.style.Stroke;
@@ -65,7 +66,8 @@ ol.style.stroke.equals = function(strokeStyle1, strokeStyle2) {
   if (goog.isDefAndNotNull(strokeStyle1)) {
     if (goog.isDefAndNotNull(strokeStyle2)) {
       return strokeStyle1 === strokeStyle2 ||
-          (strokeStyle1.color == strokeStyle2.color &&
+          (ol.color.stringOrColorEquals(strokeStyle1.color,
+                                        strokeStyle2.color) &&
            strokeStyle1.width == strokeStyle2.width);
     } else {
       return false;

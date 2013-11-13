@@ -6,6 +6,7 @@ goog.provide('ol.shape');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('ol.color');
 goog.require('ol.style');
 
 
@@ -31,11 +32,11 @@ ol.shape.renderCircle = function(radius, fillStyle, strokeStyle) {
   context.arc(size / 2, size / 2, radius, 0, 2 * Math.PI, true);
 
   if (goog.isDefAndNotNull(fillStyle)) {
-    context.fillStyle = fillStyle.color;
+    context.fillStyle = ol.color.asString(fillStyle.color);
     context.fill();
   }
   if (goog.isDefAndNotNull(strokeStyle)) {
-    context.strokeStyle = strokeStyle.color;
+    context.strokeStyle = ol.color.asString(strokeStyle.color);
     context.lineWidth = strokeStyle.width;
     context.stroke();
   }
