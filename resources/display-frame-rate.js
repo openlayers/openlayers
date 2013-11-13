@@ -8,6 +8,10 @@
     return;
   }
 
+  if (!window.requestAnimationFrame) {
+    return;
+  }
+
   var fpsElement = document.createElement('span');
   fpsElement.style.color = 'white';
 
