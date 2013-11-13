@@ -1,15 +1,13 @@
-// FIXME move colorMatrix_ elsewhere?
-
 goog.provide('ol.renderer.webgl.Layer');
 
 goog.require('goog.vec.Mat4');
 goog.require('goog.webgl');
 goog.require('ol.FrameState');
+goog.require('ol.color.Matrix');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
 goog.require('ol.renderer.webgl.map.shader.Color');
 goog.require('ol.renderer.webgl.map.shader.Default');
-goog.require('ol.vec.Mat4');
 
 
 
@@ -55,57 +53,9 @@ ol.renderer.webgl.Layer = function(mapRenderer, layer) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Float32}
+   * @type {ol.color.Matrix}
    */
-  this.colorMatrix_ = goog.vec.Mat4.createFloat32();
-
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.brightness_ = undefined;
-
-  /**
-   * @private
-   * @type {!goog.vec.Mat4.Float32}
-   */
-  this.brightnessMatrix_ = goog.vec.Mat4.createFloat32();
-
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.contrast_ = undefined;
-
-  /**
-   * @private
-   * @type {!goog.vec.Mat4.Float32}
-   */
-  this.contrastMatrix_ = goog.vec.Mat4.createFloat32();
-
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.hue_ = undefined;
-
-  /**
-   * @private
-   * @type {!goog.vec.Mat4.Float32}
-   */
-  this.hueMatrix_ = goog.vec.Mat4.createFloat32();
-
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.saturation_ = undefined;
-
-  /**
-   * @private
-   * @type {!goog.vec.Mat4.Float32}
-   */
-  this.saturationMatrix_ = goog.vec.Mat4.createFloat32();
+  this.colorMatrix_ = new ol.color.Matrix();
 
   /**
    * @private
@@ -241,7 +191,7 @@ ol.renderer.webgl.Layer.prototype.composeFrame =
       this.getProjectionMatrix());
   if (useColor) {
     gl.uniformMatrix4fv(locations.u_colorMatrix, false,
-        this.getColorMatrix(
+        this.colorMatrix_.getMatrix(
             layerState.brightness,
             layerState.contrast,
             layerState.hue,
@@ -252,43 +202,6 @@ ol.renderer.webgl.Layer.prototype.composeFrame =
   gl.bindTexture(goog.webgl.TEXTURE_2D, this.getTexture());
   gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
 
-};
-
-
-/**
- * @param {number} brightness Brightness.
- * @param {number} contrast Contrast.
- * @param {number} hue Hue.
- * @param {number} saturation Saturation.
- * @return {!goog.vec.Mat4.Float32} Color matrix.
- */
-ol.renderer.webgl.Layer.prototype.getColorMatrix = function(
-    brightness, contrast, hue, saturation) {
-  var colorMatrixDirty = false;
-  if (brightness !== this.brightness_) {
-    ol.vec.Mat4.makeBrightness(this.brightnessMatrix_, brightness);
-    this.brightness_ = brightness;
-    colorMatrixDirty = true;
-  }
-  if (contrast !== this.contrast_) {
-    ol.vec.Mat4.makeContrast(this.contrastMatrix_, contrast);
-    this.contrast_ = contrast;
-    colorMatrixDirty = true;
-  }
-  if (hue !== this.hue_) {
-    ol.vec.Mat4.makeHue(this.hueMatrix_, hue);
-    this.hue_ = hue;
-    colorMatrixDirty = true;
-  }
-  if (saturation !== this.saturation_) {
-    ol.vec.Mat4.makeSaturation(this.saturationMatrix_, saturation);
-    this.saturation_ = saturation;
-    colorMatrixDirty = true;
-  }
-  if (colorMatrixDirty) {
-    this.updateColorMatrix_();
-  }
-  return this.colorMatrix_;
 };
 
 
@@ -332,17 +245,4 @@ ol.renderer.webgl.Layer.prototype.handleWebGLContextLost = function() {
   this.texture = null;
   this.framebuffer = null;
   this.framebufferDimension = undefined;
-};
-
-
-/**
- * @private
- */
-ol.renderer.webgl.Layer.prototype.updateColorMatrix_ = function() {
-  var colorMatrix = this.colorMatrix_;
-  goog.vec.Mat4.makeIdentity(colorMatrix);
-  goog.vec.Mat4.multMat(colorMatrix, this.contrastMatrix_, colorMatrix);
-  goog.vec.Mat4.multMat(colorMatrix, this.brightnessMatrix_, colorMatrix);
-  goog.vec.Mat4.multMat(colorMatrix, this.saturationMatrix_, colorMatrix);
-  goog.vec.Mat4.multMat(colorMatrix, this.hueMatrix_, colorMatrix);
 };

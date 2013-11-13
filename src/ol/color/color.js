@@ -3,8 +3,6 @@
 // causes occasional loss of precision and rounding errors, especially in the
 // alpha channel.
 
-// FIXME move the color matrix code from ol.renderer.webgl.Layer to here
-
 goog.provide('ol.color');
 
 goog.require('goog.array');
