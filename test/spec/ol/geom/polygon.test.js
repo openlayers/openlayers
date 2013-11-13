@@ -1,4 +1,4 @@
-// FIXME why do the xit tests below fail? I don't understand!
+// FIXME why do the skip tests below fail? I don't understand!
 
 goog.provide('ol.test.geom.Polygon');
 
@@ -283,7 +283,7 @@ describe('ol.geom.Polygon', function() {
       expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
     });
 
-    xit('does not contain outside coordinates', function() {
+    it.skip('does not contain outside coordinates', function() {
       expect(polygon.containsCoordinate(outsideOuter)).to.be(false);
     });
 
@@ -296,7 +296,7 @@ describe('ol.geom.Polygon', function() {
       expect(polygon.containsCoordinate(insideInner2)).to.be(false);
     });
 
-    xit('fails in strange ways', function() {
+    it.skip('fails in strange ways', function() {
       expect(polygon.containsCoordinate([0, 0])).to.be(false);
     });
 
