@@ -11,7 +11,6 @@ goog.require('ol.Object');
  */
 ol.dom.InputProperty = {
   VALUE: 'value',
-  VALUE_AS_NUMBER: 'valueAsNumber',
   CHECKED: 'checked'
 };
 
@@ -51,9 +50,6 @@ ol.dom.Input = function(target) {
       ol.Object.getChangeEventType(ol.dom.InputProperty.VALUE),
       this.handleValueChanged_, false, this);
   goog.events.listen(this,
-      ol.Object.getChangeEventType(ol.dom.InputProperty.VALUE_AS_NUMBER),
-      this.handleValueAsNumberChanged_, false, this);
-  goog.events.listen(this,
       ol.Object.getChangeEventType(ol.dom.InputProperty.CHECKED),
       this.handleCheckedChanged_, false, this);
 };
@@ -89,20 +85,6 @@ goog.exportProperty(
 
 
 /**
- * Get the value of the input as a number.
- * @return {number|null|undefined} input value as number.
- * @todo stability experimental
- */
-ol.dom.Input.prototype.getValueAsNumber = function() {
-  return /** @type {number} */ (this.get(ol.dom.InputProperty.VALUE_AS_NUMBER));
-};
-goog.exportProperty(
-    ol.dom.Input.prototype,
-    'getValueAsNumber',
-    ol.dom.Input.prototype.getValueAsNumber);
-
-
-/**
  * Sets the value of the input.
  * @param {string} value Value.
  * @todo stability experimental
@@ -114,20 +96,6 @@ goog.exportProperty(
     ol.dom.Input.prototype,
     'setValue',
     ol.dom.Input.prototype.setValue);
-
-
-/**
- * Sets the number value of the input.
- * @param {number} value Number value.
- * @todo stability experimental
- */
-ol.dom.Input.prototype.setValueAsNumber = function(value) {
-  this.set(ol.dom.InputProperty.VALUE_AS_NUMBER, value);
-};
-goog.exportProperty(
-    ol.dom.Input.prototype,
-    'setValueAsNumber',
-    ol.dom.Input.prototype.setValueAsNumber);
 
 
 /**
@@ -152,10 +120,6 @@ ol.dom.Input.prototype.handleInputChanged_ = function() {
     this.setChecked(this.target_.checked);
   } else {
     this.setValue(this.target_.value);
-    var number = this.target_.valueAsNumber;
-    if (goog.isDef(number) && !isNaN(number)) {
-      this.setValueAsNumber(number);
-    }
   }
 };
 
@@ -173,13 +137,4 @@ ol.dom.Input.prototype.handleCheckedChanged_ = function() {
  */
 ol.dom.Input.prototype.handleValueChanged_ = function() {
   this.target_.value = this.getValue();
-};
-
-
-/**
- * @private
- */
-ol.dom.Input.prototype.handleValueAsNumberChanged_ = function() {
-  // firefox raises an exception if this.target_.valueAsNumber is set instead
-  this.target_.value = this.getValueAsNumber();
 };

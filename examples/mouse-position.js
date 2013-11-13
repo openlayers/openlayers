@@ -35,9 +35,16 @@ var map = new ol.Map({
 });
 
 var projectionSelect = new ol.dom.Input(document.getElementById('projection'));
-projectionSelect.on('change:value', function() {
-  mousePositionControl.setProjection(ol.proj.get(projectionSelect.getValue()));
-});
+projectionSelect.bindTo('value', mousePositionControl, 'projection')
+  .transform(
+    function(code) {
+      // projectionSelect.value -> mousePositionControl.projection
+      return ol.proj.get(/** @type {string} */ (code));
+    },
+    function(projection) {
+      // mousePositionControl.projection -> projectionSelect.value
+      return projection.getCode();
+    });
 
 var precisionInput = document.getElementById('precision');
 precisionInput.addEventListener('change', function() {

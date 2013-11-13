@@ -473,6 +473,95 @@ describe('ol.Object', function() {
       expect(o.getKeys()).to.eql(['K']);
     });
   });
+
+  describe('transforms', function() {
+
+    describe('with multiple binds to a single property', function() {
+
+      var original, plusOne, asString;
+
+      beforeEach(function() {
+        original = new ol.Object();
+        original.set('x', 1);
+        plusOne = new ol.Object();
+        plusOne.bindTo('x', original).transform(
+            function(x) { return x - 1; },
+            function(x) { return x + 1; }
+        );
+        asString = new ol.Object();
+        asString.bindTo('x', original).transform(
+            function(x) { return +x; },
+            function(x) { return x + ''; }
+        );
+      });
+
+      it('returns the expected value', function() {
+        expect(original.get('x')).to.be(1);
+        expect(plusOne.get('x')).to.be(2);
+        expect(asString.get('x')).to.be('1');
+      });
+
+      it('allows the original value to be set correctly', function() {
+        original.set('x', 2);
+        expect(plusOne.get('x')).to.be(3);
+        expect(asString.get('x')).to.be('2');
+      });
+
+      it('allows the transformed values to be set correctly', function() {
+        plusOne.set('x', 3);
+        expect(original.get('x')).to.be(2);
+        expect(asString.get('x')).to.be('2');
+        asString.set('x', '3');
+        expect(original.get('x')).to.be(3);
+        expect(plusOne.get('x')).to.be(4);
+      });
+
+    });
+
+    describe('with transitive binds', function() {
+
+      var original, plusOne, plusOneAsString;
+
+      beforeEach(function() {
+        original = new ol.Object();
+        original.set('x', 1);
+        plusOne = new ol.Object();
+        plusOne.bindTo('x', original).transform(
+            function(x) { return x - 1; },
+            function(x) { return x + 1; }
+        );
+        plusOneAsString = new ol.Object();
+        plusOneAsString.bindTo('x', plusOne).transform(
+            parseFloat,
+            function(x) { return x + ''; }
+        );
+      });
+
+      it('returns the expected value', function() {
+        expect(original.get('x')).to.be(1);
+        expect(plusOne.get('x')).to.be(2);
+        expect(plusOneAsString.get('x')).to.be('2');
+      });
+
+      it('allows the original value to be set correctly', function() {
+        original.set('x', 2);
+        expect(plusOne.get('x')).to.be(3);
+        expect(plusOneAsString.get('x')).to.be('3');
+      });
+
+      it('allows the transformed values to be set correctly', function() {
+        plusOne.set('x', 3);
+        expect(original.get('x')).to.be(2);
+        expect(plusOneAsString.get('x')).to.be('3');
+        plusOneAsString.set('x', '4');
+        expect(original.get('x')).to.be(3);
+        expect(plusOne.get('x')).to.be(4);
+      });
+
+    });
+
+  });
+
 });
 
 
