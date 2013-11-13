@@ -395,8 +395,8 @@
  *     modifier (e.g. shift key) that determines if the interaction is active
  *     (i.e. selection occurs) or not. By default, a click with no modifier keys
  *     toggles the selection.
- * @property {undefined|function(ol.layer.Layer):boolean} layerFilter Filter
- *     function to restrict selection to a subset of layers.
+ * @property {undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer):boolean} layers
+ *     Layers or filter function to restrict selection to a subset of layers.
  * @todo stability experimental
  */
 

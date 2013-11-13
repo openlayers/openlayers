@@ -47,12 +47,12 @@ var vector = new ol.layer.Vector({
   })
 });
 
-var selectInteraction = new ol.interaction.Select({
-  layerFilter: function(layer) { return layer.get('id') == 'vector'; }
+var select = new ol.interaction.Select({
+  layers: [vector]
 });
 
 var map = new ol.Map({
-  interactions: ol.interaction.defaults().extend([selectInteraction]),
+  interactions: ol.interaction.defaults().extend([select]),
   layers: [raster, vector],
   renderer: ol.RendererHint.CANVAS,
   target: 'map',

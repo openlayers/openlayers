@@ -30,7 +30,7 @@ describe('ol.interaction.Select', function() {
     vector = new ol.layer.Vector({source: new ol.source.Vector({})});
     vector.addFeatures(features);
     select = new ol.interaction.Select({
-      layerFilter: function(layer) { return layer === vector; }
+      layers: [vector]
     });
     map.getInteractions().push(select);
   });
