@@ -146,7 +146,7 @@ ol.source.Zoomify = function(options) {
             ctx.drawImage(this, 0, 0);
 
             // Change original image
-            image = new Image() ;
+            image = new Image();
             image.src = canvas.toDataURL();
           }
         }
@@ -159,7 +159,7 @@ ol.source.Zoomify = function(options) {
     resolutions: resolutions
   });
   var tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
-      tileGrid.createTileCoordTransform(),
+      tileGrid.createTileCoordTransform({extent: [0, 0].concat(this.size_)}),
       createFromUrl(this.url_));
 
 
