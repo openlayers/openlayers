@@ -37,6 +37,8 @@ goog.inherits(ol.renderer.canvas.Layer, ol.renderer.Layer);
 ol.renderer.canvas.Layer.prototype.composeFrame =
     function(frameState, layerState, context) {
 
+  this.dispatchPreComposeEvent(context, frameState);
+
   var image = this.getImage();
   if (!goog.isNull(image)) {
     var imageTransform = this.getImageTransform();
@@ -70,6 +72,28 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
 
 
 /**
+ * @param {ol.render.EventType} type Event type.
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {ol.FrameState} frameState Frame state.
+ * @param {goog.vec.Mat4.AnyType=} opt_transform Transform.
+ * @private
+ */
+ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ =
+    function(type, context, frameState, opt_transform) {
+  var layer = this.getLayer();
+  if (layer.hasListener(type)) {
+    var transform = goog.isDef(opt_transform) ?
+        opt_transform : this.getTransform(frameState);
+    var render = new ol.render.canvas.Immediate(context, frameState.extent,
+        transform);
+    var composeEvent = new ol.render.Event(type, layer, render, frameState,
+        context, null);
+    layer.dispatchEvent(composeEvent);
+  }
+};
+
+
+/**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {ol.FrameState} frameState Frame state.
  * @param {goog.vec.Mat4.AnyType=} opt_transform Transform.
@@ -77,16 +101,21 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
  */
 ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent =
     function(context, frameState, opt_transform) {
-  var layer = this.getLayer();
-  if (layer.hasListener(ol.render.EventType.POSTCOMPOSE)) {
-    var transform = goog.isDef(opt_transform) ?
-        opt_transform : this.getTransform(frameState);
-    var render = new ol.render.canvas.Immediate(context, frameState.extent,
-        transform);
-    var postComposeEvent = new ol.render.Event(ol.render.EventType.POSTCOMPOSE,
-        layer, render, frameState, context, null);
-    layer.dispatchEvent(postComposeEvent);
-  }
+  this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, context,
+      frameState, opt_transform);
+};
+
+
+/**
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {ol.FrameState} frameState Frame state.
+ * @param {goog.vec.Mat4.AnyType=} opt_transform Transform.
+ * @protected
+ */
+ol.renderer.canvas.Layer.prototype.dispatchPreComposeEvent =
+    function(context, frameState, opt_transform) {
+  this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, context,
+      frameState, opt_transform);
 };
 
 

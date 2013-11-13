@@ -9,7 +9,8 @@ goog.require('ol.render.IRender');
  * @enum {string}
  */
 ol.render.EventType = {
-  POSTCOMPOSE: 'postcompose'
+  POSTCOMPOSE: 'postcompose',
+  PRECOMPOSE: 'precompose'
 };
 
 
