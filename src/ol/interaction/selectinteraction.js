@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.Select');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
@@ -34,12 +35,19 @@ ol.interaction.Select = function(opt_options) {
   this.addCondition_ = goog.isDef(options.addCondition) ?
       options.addCondition : ol.events.condition.shiftKeyOnly;
 
+  var layerFilter = options.layers;
+  if (!goog.isDef(layerFilter)) {
+    layerFilter = goog.functions.TRUE;
+  } else if (goog.isArray(layerFilter)) {
+    layerFilter = function(layer) {return options.layers.indexOf(layer) > -1;};
+  }
+  goog.asserts.assertFunction(layerFilter);
+
   /**
-   * @type {null|function(ol.layer.Layer):boolean}
+   * @type {function(ol.layer.Layer):boolean}
    * @private
    */
-  this.layerFilter_ = goog.isDef(options.layerFilter) ?
-      options.layerFilter : null;
+  this.layerFilter_ = layerFilter;
 
   goog.base(this);
 };
@@ -53,10 +61,8 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
   if (this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
-    var layers = map.getLayerGroup().getLayersArray();
-    if (!goog.isNull(this.layerFilter_)) {
-      layers = goog.array.filter(layers, this.layerFilter_);
-    }
+    var layers = goog.array.filter(
+        map.getLayerGroup().getLayersArray(), this.layerFilter_);
     var clear = !this.addCondition_(mapBrowserEvent);
 
     var that = this;
