@@ -49,6 +49,34 @@ ol.color.rgbaColorRe_ =
 
 
 /**
+ * @param {ol.Color|string} color Color.
+ * @return {ol.Color} Color.
+ */
+ol.color.asArray = function(color) {
+  if (goog.isArray(color)) {
+    return color;
+  } else {
+    goog.asserts.assert(goog.isString(color));
+    return ol.color.fromString(color);
+  }
+};
+
+
+/**
+ * @param {ol.Color|string} color Color.
+ * @return {string} String.
+ */
+ol.color.asString = function(color) {
+  if (goog.isString(color)) {
+    return color;
+  } else {
+    goog.asserts.assert(goog.isArray(color));
+    return ol.color.toString(color);
+  }
+};
+
+
+/**
  * @param {ol.Color} color1 Color1.
  * @param {ol.Color} color2 Color2.
  * @return {boolean} Equals.
