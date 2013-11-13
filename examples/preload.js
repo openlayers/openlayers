@@ -11,7 +11,7 @@ var map1 = new ol.Map({
       preload: Infinity,
       source: new ol.source.BingMaps({
         key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3',
-        style: 'Aerial'
+        imagerySet: 'Aerial'
       })
     })
   ],
@@ -29,7 +29,7 @@ var map2 = new ol.Map({
       preload: 0, // default value
       source: new ol.source.BingMaps({
         key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3',
-        style: 'AerialWithLabels'
+        imagerySet: 'AerialWithLabels'
       })
     })
   ],
