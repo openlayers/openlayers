@@ -92,9 +92,7 @@ var vector = new ol.layer.Vector({
   })
 });
 
-var select = new ol.interaction.Select({
-  layers: [vector]
-});
+var select = new ol.interaction.Select();
 
 var modify = new ol.interaction.Modify();
 

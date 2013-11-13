@@ -47,9 +47,7 @@ var vector = new ol.layer.Vector({
   })
 });
 
-var select = new ol.interaction.Select({
-  layers: [vector]
-});
+var select = new ol.interaction.Select();
 
 var map = new ol.Map({
   interactions: ol.interaction.defaults().extend([select]),

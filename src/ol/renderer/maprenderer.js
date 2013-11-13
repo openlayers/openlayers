@@ -113,10 +113,11 @@ ol.renderer.Map.prototype.getFeatureInfoForPixel =
     function(pixel, layers, success, opt_error) {
   var numLayers = layers.length;
   var featureInfo = new Array(numLayers);
+  var callbackCount = 0;
   var callback = function(layerFeatureInfo, layer) {
     featureInfo[goog.array.indexOf(layers, layer)] = layerFeatureInfo;
-    --numLayers;
-    if (!numLayers) {
+    --callbackCount;
+    if (callbackCount <= 0) {
       success(featureInfo);
     }
   };
@@ -126,9 +127,8 @@ ol.renderer.Map.prototype.getFeatureInfoForPixel =
     layer = layers[i];
     layerRenderer = this.getLayerRenderer(layer);
     if (goog.isFunction(layerRenderer.getFeatureInfoForPixel)) {
+      ++callbackCount;
       layerRenderer.getFeatureInfoForPixel(pixel, callback, opt_error);
-    } else {
-      --numLayers;
     }
   }
 };
@@ -149,10 +149,11 @@ ol.renderer.Map.prototype.getFeaturesForPixel =
     function(pixel, layers, success, opt_error) {
   var numLayers = layers.length;
   var features = new Array(numLayers);
+  var callbackCount = 0;
   var callback = function(layerFeatures, layer) {
     features[goog.array.indexOf(layers, layer)] = layerFeatures;
-    --numLayers;
-    if (!numLayers) {
+    --callbackCount;
+    if (callbackCount <= 0) {
       success(features);
     }
   };
@@ -162,9 +163,8 @@ ol.renderer.Map.prototype.getFeaturesForPixel =
     layer = layers[i];
     layerRenderer = this.getLayerRenderer(layer);
     if (goog.isFunction(layerRenderer.getFeaturesForPixel)) {
+      ++callbackCount;
       layerRenderer.getFeaturesForPixel(pixel, callback, opt_error);
-    } else {
-      --numLayers;
     }
   }
 };
