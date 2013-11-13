@@ -124,7 +124,7 @@ ol.style.DEFAULT_IMAGE_STYLE = {
  * @type {ol.style.Stroke}
  */
 ol.style.DEFAULT_STROKE_STYLE = {
-  color: 'red',
+  color: '#ff0000',
   width: 3
 };
 

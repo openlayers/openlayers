@@ -14,6 +14,14 @@ goog.require('goog.vec.Mat4');
 
 
 /**
+ * @define {boolean} Enable named colors.
+ * Enabling named colors adds about 3KB uncompressed / 1.5KB compressed to the
+ * final build size.
+ */
+ol.color.ENABLE_NAMED_COLORS = true;
+
+
+/**
  * A color represented as a short array [red, green, blue, alpha].
  * red, green, and blue should be integers in the range 0..255 inclusive.
  * alpha should be a float in the range 0..1 inclusive.
@@ -153,7 +161,7 @@ ol.color.fromString = (function() {
 ol.color.fromStringInternal_ = function(s) {
 
   var isHex = false;
-  if (goog.color.names.hasOwnProperty(s)) {
+  if (ol.color.ENABLE_NAMED_COLORS && goog.color.names.hasOwnProperty(s)) {
     s = goog.color.names[s];
     isHex = true;
   }

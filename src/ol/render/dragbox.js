@@ -51,7 +51,7 @@ ol.render.DragBox = function(opt_style) {
     },
     image: null,
     stroke: {
-      color: 'red',
+      color: '#ff0000',
       width: 1
     },
     zIndex: 0
