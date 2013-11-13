@@ -590,7 +590,7 @@
  * @property {string|undefined} culture Culture.
  * @property {string} key Bing Maps API key. Get yours at
  *     http://bingmapsportal.com/.
- * @property {string} style Style.
+ * @property {string} imagerySet Type of imagery.
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
  * @todo stability experimental
