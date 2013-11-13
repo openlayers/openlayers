@@ -1,6 +1,7 @@
 goog.provide('ol.source.Zoomify');
 
 goog.require('goog.array');
+goog.require('ol.Image');
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.proj');
@@ -122,6 +123,38 @@ ol.source.Zoomify = function(options) {
     );
   };
 
+  /**
+   * Resize small tiles. Warning : needs a good crossOrigin handling.
+   *
+   * @param  {ol.ImageTile} imageTile Current tile
+   * @param  {String} src Src url
+   */
+  var tileLoadFunction = function(imageTile, src) {
+    var image = imageTile.getImage();
+
+    // Bad image size (only if correct crossOrigin handling)
+    if (image.crossOrigin) {
+      image.onload = function() {
+        if (this.width < ol.DEFAULT_TILE_SIZE ||
+            this.height < ol.DEFAULT_TILE_SIZE) {
+          // Copy image data into the canvas
+          var canvas = document.createElement('canvas');
+          if (canvas.getContext) {
+            canvas.width = ol.DEFAULT_TILE_SIZE;
+            canvas.height = ol.DEFAULT_TILE_SIZE;
+            var ctx = canvas.getContext('2d');
+            ctx.drawImage(this, 0, 0);
+
+            // Change original image
+            image = new Image() ;
+            image.src = canvas.toDataURL();
+          }
+        }
+      };
+    }
+    image.src = src;
+  };
+
   var tileGrid = new ol.tilegrid.Zoomify({
     resolutions: resolutions
   });
@@ -135,7 +168,8 @@ ol.source.Zoomify = function(options) {
     crossOrigin: options.crossOrigin,
     logo: options.logo,
     tileGrid: tileGrid,
-    tileUrlFunction: tileUrlFunction
+    tileUrlFunction: tileUrlFunction,
+    tileLoadFunction: tileLoadFunction
   });
 
 };
