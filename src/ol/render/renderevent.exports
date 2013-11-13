@@ -1,3 +1,4 @@
 @exportProperty ol.render.Event.prototype.getContext
+@exportProperty ol.render.Event.prototype.getFrameState
 @exportProperty ol.render.Event.prototype.getGL
 @exportProperty ol.render.Event.prototype.getRender
