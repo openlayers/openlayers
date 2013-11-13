@@ -37,7 +37,7 @@ ol.shape.renderCircle = function(radius, fillStyle, strokeStyle) {
   }
   if (goog.isDefAndNotNull(strokeStyle)) {
     context.strokeStyle = ol.color.asString(strokeStyle.color);
-    context.lineWidth = strokeStyle.width;
+    context.lineWidth = goog.isDef(strokeStyle.width) ? strokeStyle.width : 1;
     context.stroke();
   }
 

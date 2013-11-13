@@ -278,7 +278,7 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
   if (!ol.style.stroke.equals(state.strokeStyle, strokeStyle)) {
     if (goog.isDefAndNotNull(strokeStyle)) {
       context.strokeStyle = ol.color.asString(strokeStyle.color);
-      context.lineWidth = strokeStyle.width;
+      context.lineWidth = goog.isDef(strokeStyle.width) ? strokeStyle.width : 1;
     }
     state.strokeStyle = strokeStyle;
   }

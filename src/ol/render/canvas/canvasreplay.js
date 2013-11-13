@@ -145,7 +145,7 @@ ol.render.canvas.Replay.prototype.draw = function(context, transform) {
       goog.asserts.assert(goog.isObject(instruction[1]));
       var strokeStyle = /** @type {ol.style.Stroke} */ (instruction[1]);
       context.strokeStyle = ol.color.asString(strokeStyle.color);
-      context.lineWidth = strokeStyle.width;
+      context.lineWidth = goog.isDef(strokeStyle.width) ? strokeStyle.width : 1;
       ++i;
     } else if (type == ol.render.canvas.Instruction.STROKE) {
       context.stroke();
