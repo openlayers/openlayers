@@ -6,6 +6,7 @@ goog.provide('ol.style.Style');
 goog.provide('ol.style.StyleFunction');
 goog.provide('ol.style.fill');
 goog.provide('ol.style.stroke');
+goog.provide('ol.style.text');
 
 goog.require('goog.functions');
 goog.require('ol.color');
@@ -83,9 +84,45 @@ ol.style.stroke.equals = function(strokeStyle1, strokeStyle2) {
 
 
 /**
+ * @typedef {{font: (string|undefined),
+ *            text: (string|undefined),
+ *            textAlign: (string|undefined),
+ *            textBaseline: (string|undefined)}|null|undefined}
+ */
+ol.style.Text;
+
+
+/**
+ * @param {ol.style.Text} textStyle1 Text style 1.
+ * @param {ol.style.Text} textStyle2 Text style 2.
+ * @return {boolean} Equals.
+ */
+ol.style.text.equals = function(textStyle1, textStyle2) {
+  if (goog.isDefAndNotNull(textStyle1)) {
+    if (goog.isDefAndNotNull(textStyle2)) {
+      return textStyle1 === textStyle2 || (
+          textStyle1.font == textStyle2.font &&
+          textStyle1.text == textStyle2.text &&
+          textStyle1.textAlign == textStyle2.textAlign &&
+          textStyle1.textBaseline == textStyle2.textBaseline);
+    } else {
+      return false;
+    }
+  } else {
+    if (goog.isDefAndNotNull(textStyle2)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+};
+
+
+/**
  * @typedef {{fill: ol.style.Fill,
  *            image: ol.style.Image,
  *            stroke: ol.style.Stroke,
+ *            text: ol.style.Text,
  *            zIndex: (number|undefined)}}
  */
 ol.style.Style;
@@ -131,6 +168,18 @@ ol.style.DEFAULT_STROKE_STYLE = {
 
 /**
  * @const
+ * @type {ol.style.Text}
+ */
+ol.style.DEFAULT_TEXT_STYLE = {
+  font: '10px sans-serif',
+  text: undefined,
+  textAlign: 'start',
+  textBaseline: 'alphabetic'
+};
+
+
+/**
+ * @const
  * @type {number}
  */
 ol.style.DEFAULT_Z_INDEX = 0;
@@ -144,6 +193,7 @@ ol.style.DEFAULT_STYLE = {
   fill: ol.style.DEFAULT_FILL_STYLE,
   image: ol.style.DEFAULT_IMAGE_STYLE,
   stroke: ol.style.DEFAULT_STROKE_STYLE,
+  text: ol.style.DEFAULT_TEXT_STYLE,
   zIndex: ol.style.DEFAULT_Z_INDEX
 };
 

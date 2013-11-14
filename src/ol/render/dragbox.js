@@ -54,6 +54,7 @@ ol.render.DragBox = function(opt_style) {
       color: '#ff0000',
       width: 1
     },
+    text: null,
     zIndex: 0
   };
 
