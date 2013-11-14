@@ -21,17 +21,8 @@ describe('ol.color', function() {
       expect(ol.color.fromString('#087')).to.eql([0, 136, 119, 1]);
     });
 
-    it('can parse 4-digit hex colors', function() {
-      expect(ol.color.fromString('#1234')).to.eql([17, 34, 51, 68 / 255]);
-    });
-
     it('can parse 6-digit hex colors', function() {
       expect(ol.color.fromString('#56789a')).to.eql([86, 120, 154, 1]);
-    });
-
-    it('can parse 8-digit hex colors', function() {
-      expect(ol.color.fromString('#bcdef012')).to.eql(
-          [188, 222, 240, 18 / 255]);
     });
 
     it('can parse rgb colors', function() {

@@ -33,9 +33,17 @@ ol.Color;
 /**
  * @type {RegExp}
  * @private
- * This RegExp matches # followed by 3, 4, 6, or 8 hex digits.
+ * This RegExp matches # followed by 3 or 6 hex digits.
  */
-ol.color.hexColorRe_ = /^#(?:[0-9a-f]{3,4}){1,2}$/i;
+ol.color.hexColorRe_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
+
+
+/**
+ * @type {RegExp}
+ * @private
+ * This RegExp matches # followed by 4 or 8 hex digits.
+ */
+ol.color.hexaColorRe_ = /^#(?:[0-9a-f]{4}){1,2}$/i;
 
 
 /**
@@ -210,8 +218,8 @@ ol.color.fromStringInternal_ = function(s) {
   var r, g, b, a, color, match;
   if (isHex || (match = ol.color.hexColorRe_.exec(s))) { // hex
     var n = s.length - 1; // number of hex digits
-    goog.asserts.assert(goog.array.indexOf([3, 4, 6, 8], n) != -1);
-    var d = n < 6 ? 1 : 2; // number of digits per channel
+    goog.asserts.assert(n == 3 || n == 6);
+    var d = n == 3 ? 1 : 2; // number of digits per channel
     r = parseInt(s.substr(1 + 0 * d, d), 16);
     g = parseInt(s.substr(1 + 1 * d, d), 16);
     b = parseInt(s.substr(1 + 2 * d, d), 16);
@@ -220,11 +228,7 @@ ol.color.fromStringInternal_ = function(s) {
       g = (g << 4) + g;
       b = (b << 4) + b;
     }
-    if ((n >> 1) & 1) {
-      a = 1;
-    } else { // has alpha channel
-      a = parseInt(s.substr(1 + 3 * d, d), 16) / (d == 1 ? 15 : 255);
-    }
+    a = 1;
     color = [r, g, b, a];
     goog.asserts.assert(ol.color.isValid(color));
     return color;
