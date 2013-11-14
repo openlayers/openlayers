@@ -47,7 +47,7 @@ ol.render.DragBox = function(opt_style) {
    */
   this.style_ = goog.isDef(opt_style) ? opt_style : {
     fill: {
-      color: 'rgba(255, 0, 0, 0.1)'
+      color: 'rgba(255,0,0,0.1)'
     },
     image: null,
     stroke: {

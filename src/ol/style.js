@@ -102,7 +102,7 @@ ol.style.StyleFunction;
  * @type {ol.style.Fill}
  */
 ol.style.DEFAULT_FILL_STYLE = {
-  color: 'rgba(255, 0, 0, 0.1)'
+  color: 'rgba(255,0,0,0.1)'
 };
 
 
