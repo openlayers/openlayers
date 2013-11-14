@@ -10,7 +10,8 @@ goog.require('ol.render.IRender');
 ol.render.ReplayType = {
   IMAGE: 'Image',
   LINE_STRING: 'LineString',
-  POLYGON: 'Polygon'
+  POLYGON: 'Polygon',
+  TEXT: 'Text'
 };
 
 

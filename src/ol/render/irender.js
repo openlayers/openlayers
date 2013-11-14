@@ -79,3 +79,10 @@ ol.render.IRender.prototype.setFillStrokeStyle =
  */
 ol.render.IRender.prototype.setImageStyle = function(imageStyle) {
 };
+
+
+/**
+ * @param {ol.style.Text} textStyle Text style.
+ */
+ol.render.IRender.prototype.setTextStyle = function(textStyle) {
+};

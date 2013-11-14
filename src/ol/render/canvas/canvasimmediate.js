@@ -294,6 +294,12 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
 
 
 /**
+ * @inheritDoc
+ */
+ol.render.canvas.Immediate.prototype.setTextStyle = goog.abstractMethod;
+
+
+/**
  * @const
  * @private
  * @type {Object.<ol.geom.Type,

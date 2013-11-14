@@ -232,6 +232,12 @@ ol.render.canvas.Replay.prototype.setFillStrokeStyle = goog.abstractMethod;
 ol.render.canvas.Replay.prototype.setImageStyle = goog.abstractMethod;
 
 
+/**
+ * @inheritDoc
+ */
+ol.render.canvas.Replay.prototype.setTextStyle = goog.abstractMethod;
+
+
 
 /**
  * @constructor
