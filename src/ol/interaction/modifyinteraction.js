@@ -100,7 +100,6 @@ ol.interaction.Modify = function(opt_options) {
    */
   this.dragSegments_ = null;
 
-  this.interactingHint = 0;
 };
 goog.inherits(ol.interaction.Modify, ol.interaction.Drag);
 
