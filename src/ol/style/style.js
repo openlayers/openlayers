@@ -15,6 +15,7 @@ goog.require('ol.style.Rule');
 goog.require('ol.style.Shape');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Symbolizer');
+goog.require('ol.style.TextLiteral');
 
 
 
@@ -79,6 +80,71 @@ ol.style.Style.prototype.createLiterals = function(feature, resolution) {
     symbolizers = this.symbolizers_;
   }
   return ol.style.Style.createLiterals(symbolizers, feature);
+};
+
+
+/**
+ * @param {Object.<string, ol.Feature>} features Features.
+ * @param {number} resolution Map resolution.
+ * @return {Array.<Array>} symbolizers for features. Each array in this array
+ *     contains 3 items: an array of features, the symbolizer literal, and
+ *     an array with optional additional data for each feature.
+ */
+ol.style.Style.prototype.groupFeaturesBySymbolizerLiteral =
+    function(features, resolution) {
+  var uniqueLiterals = {},
+      featuresBySymbolizer = [],
+      i, j, l, feature, symbolizers, literals, numLiterals, literal,
+      uniqueLiteral, key, item;
+  for (i in features) {
+    feature = features[i];
+    // feature level symbolizers take precedence
+    symbolizers = feature.getSymbolizers();
+    if (!goog.isNull(symbolizers)) {
+      literals = ol.style.Style.createLiterals(symbolizers, feature);
+    } else {
+      literals = this.createLiterals(feature, resolution);
+    }
+    numLiterals = literals.length;
+    for (j = 0; j < numLiterals; ++j) {
+      literal = literals[j];
+      for (l in uniqueLiterals) {
+        uniqueLiteral = featuresBySymbolizer[uniqueLiterals[l]][1];
+        if (literal.equals(uniqueLiteral)) {
+          literal = uniqueLiteral;
+          break;
+        }
+      }
+      key = goog.getUid(literal);
+      if (!goog.object.containsKey(uniqueLiterals, key)) {
+        uniqueLiterals[key] = featuresBySymbolizer.length;
+        featuresBySymbolizer.push([
+          /** @type {Array.<ol.Feature>} */ ([]),
+          /** @type {ol.style.Literal} */ (literal),
+          /** @type {Array} */ ([])
+        ]);
+      }
+      item = featuresBySymbolizer[uniqueLiterals[key]];
+      item[0].push(feature);
+      if (literal instanceof ol.style.TextLiteral) {
+        item[2].push(literals[j].text);
+      }
+    }
+  }
+  featuresBySymbolizer.sort(this.sortByZIndex_);
+  return featuresBySymbolizer;
+};
+
+
+/**
+ * Sort function for `groupFeaturesBySymbolizerLiteral`.
+ * @private
+ * @param {Array} a 1st item for the sort comparison.
+ * @param {Array} b 2nd item for the sort comparison.
+ * @return {number} Comparison result.
+ */
+ol.style.Style.prototype.sortByZIndex_ = function(a, b) {
+  return a[1].zIndex - b[1].zIndex;
 };
 
 

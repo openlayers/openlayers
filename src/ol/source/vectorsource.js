@@ -13,9 +13,6 @@ goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.Source');
 goog.require('ol.structs.RTree');
-goog.require('ol.style');
-goog.require('ol.style.Style');
-goog.require('ol.style.TextLiteral');
 
 
 /**
@@ -147,66 +144,6 @@ ol.source.Vector.prototype.getFeaturesObjectForExtent = function(extent,
     lookup = this.featureCache_.getFeaturesObjectForExtent(extent);
   }
   return lookup;
-};
-
-
-/**
- * TODO: This should be a ol.style.Style method.
- * @param {ol.style.Style} style Style.
- * @param {Object.<string, ol.Feature>} features Features.
- * @param {number} resolution Map resolution.
- * @return {Array.<Array>} symbolizers for features. Each array in this array
- *     contains 3 items: an array of features, the symbolizer literal, and
- *     an array with optional additional data for each feature.
- */
-ol.source.Vector.prototype.groupFeaturesBySymbolizerLiteral =
-    function(style, features, resolution) {
-  var uniqueLiterals = {},
-      featuresBySymbolizer = [],
-      i, j, l, feature, symbolizers, literals, numLiterals, literal,
-      uniqueLiteral, key, item;
-  for (i in features) {
-    feature = features[i];
-    // feature level symbolizers take precedence
-    symbolizers = feature.getSymbolizers();
-    if (!goog.isNull(symbolizers)) {
-      literals = ol.style.Style.createLiterals(symbolizers, feature);
-    } else {
-      // layer style second
-      if (goog.isNull(style)) {
-        style = ol.style.getDefault();
-      }
-      literals = style.createLiterals(feature, resolution);
-    }
-    numLiterals = literals.length;
-    for (j = 0; j < numLiterals; ++j) {
-      literal = literals[j];
-      for (l in uniqueLiterals) {
-        uniqueLiteral = featuresBySymbolizer[uniqueLiterals[l]][1];
-        if (literal.equals(uniqueLiteral)) {
-          literal = uniqueLiteral;
-          break;
-        }
-      }
-      key = goog.getUid(literal);
-      if (!goog.object.containsKey(uniqueLiterals, key)) {
-        uniqueLiterals[key] = featuresBySymbolizer.length;
-        featuresBySymbolizer.push([
-          /** @type {Array.<ol.Feature>} */ ([]),
-          /** @type {ol.style.Literal} */ (literal),
-          /** @type {Array} */ ([])
-        ]);
-      }
-      item = featuresBySymbolizer[uniqueLiterals[key]];
-      item[0].push(feature);
-      if (literal instanceof ol.style.TextLiteral) {
-        item[2].push(literals[j].text);
-      }
-    }
-  }
-  // TODO: move sort function to ol.style.Style
-  featuresBySymbolizer.sort(this.sortByZIndex_);
-  return featuresBySymbolizer;
 };
 
 
@@ -362,18 +299,6 @@ ol.source.Vector.prototype.removeFeatures = function(features) {
   }
   this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.REMOVE,
       features, [extent]));
-};
-
-
-/**
- * Sort function for `groupFeaturesBySymbolizerLiteral`.
- * @private
- * @param {Array} a 1st item for the sort comparison.
- * @param {Array} b 2nd item for the sort comparison.
- * @return {number} Comparison result.
- */
-ol.source.Vector.prototype.sortByZIndex_ = function(a, b) {
-  return a[1].zIndex - b[1].zIndex;
 };
 
 

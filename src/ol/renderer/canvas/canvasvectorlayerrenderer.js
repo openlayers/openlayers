@@ -18,6 +18,7 @@ goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.Vector');
 goog.require('ol.source.VectorEventType');
+goog.require('ol.style');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -475,7 +476,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var dirty = false;
   var layer = this.getVectorLayer();
   var source = layer.getSource();
-  var tileExtent, groups, group, j, numGroups, featuresObject, tileHasFeatures;
+  var tileExtent, featuresObject, tileHasFeatures;
   fetchTileData:
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
@@ -509,10 +510,15 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   }
   this.dirty_ = dirty;
 
-  groups = source.groupFeaturesBySymbolizerLiteral(layer.getStyle(),
+  var style = layer.getStyle();
+  if (goog.isNull(style)) {
+    style = ol.style.getDefault();
+  }
+  var groups = style.groupFeaturesBySymbolizerLiteral(
       featuresToRender, tileResolution);
-  numGroups = groups.length;
-  for (j = 0; j < numGroups; ++j) {
+  var numGroups = groups.length;
+  var group;
+  for (var j = 0; j < numGroups; ++j) {
     group = groups[j];
     deferred = sketchCanvasRenderer.renderFeatures(group[0], group[1],
         group[2]);
