@@ -305,16 +305,6 @@ ol.source.Vector.prototype.handleIntentChange_ = function(evt) {
 
 
 /**
- * Remove all features from the layer.
- */
-ol.source.Vector.prototype.clear = function() {
-  this.featureCache_.clear();
-  this.dispatchEvent(
-      new ol.source.VectorEvent(ol.source.VectorEventType.REMOVE, [], []));
-};
-
-
-/**
  * @param {ol.Extent} extent Extent that needs to be fetched.
  * @param {ol.proj.Projection} projection Projection of the view.
  * @param {function()=} opt_callback Callback which is called when features are
