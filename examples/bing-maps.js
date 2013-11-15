@@ -14,7 +14,7 @@ for (var i = 0; i < styles.length; ++i) {
     preload: Infinity,
     source: new ol.source.BingMaps({
       key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3',
-      style: styles[i]
+      imagerySet: styles[i]
     })
   }));
 }

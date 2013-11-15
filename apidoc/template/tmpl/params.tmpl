@@ -97,7 +97,7 @@
                 </td>
             <?js } ?>
             
-            <td class="description last"><?js= (param.optional ? "(Optional) " : "") + param.description ?><?js if (param.subparams) { ?>
+            <td class="description last"><?js= param.description ?><?js if (param.subparams) { ?>
                 <h6>Properties</h6>
                 <?js= self.partial('params.tmpl', param.subparams) ?>
             <?js } ?></td>

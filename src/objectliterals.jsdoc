@@ -342,6 +342,16 @@
  */
 
 /**
+ * @typedef {Object} ol.interaction.DrawOptions
+ * @property {ol.layer.Vector} layer Destination layer for the features.
+ * @property {number|undefined} snapTolerance Pixel distance for snapping to the
+ *     drawing finish (default is 12).
+ * @property {ol.geom.GeometryType} type Drawing type ('point', 'linestring',
+ *     'polygon', 'multipoint', 'multilinestring', or 'multipolygon').
+ * @todo stability experimental
+ */
+
+/**
  * @typedef {Object} ol.interaction.KeyboardPanOptions
  * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
@@ -368,6 +378,14 @@
  */
 
 /**
+ * @typedef {Object} ol.interaction.ModifyOptions
+ * @property {undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer):boolean} layers
+ *     Layers or filter function to restrict modification to a subset of layers.
+ * @property {number|undefined} pixelTolerance Pixel tolerance for considering
+ *     the pointer close enough to a vertex for editing. Default is 20 pixels.
+ */
+
+/**
  * @typedef {Object} ol.interaction.SelectOptions
  * @property {ol.events.ConditionType|undefined} addCondition A conditional
  *     modifier (e.g. shift key) that determines if the selection is added to
@@ -377,8 +395,8 @@
  *     modifier (e.g. shift key) that determines if the interaction is active
  *     (i.e. selection occurs) or not. By default, a click with no modifier keys
  *     toggles the selection.
- * @property {undefined|function(ol.layer.Layer):boolean} layerFilter Filter
- *     function to restrict selection to a subset of layers.
+ * @property {undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer):boolean} layers
+ *     Layers or filter function to restrict selection to a subset of layers.
  * @todo stability experimental
  */
 
@@ -572,7 +590,7 @@
  * @property {string|undefined} culture Culture.
  * @property {string} key Bing Maps API key. Get yours at
  *     http://bingmapsportal.com/.
- * @property {string} style Style.
+ * @property {string} imagerySet Type of imagery.
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
  * @todo stability experimental
@@ -697,18 +715,6 @@
  *     the parser does not know the SRS (e.g. in some GML flavors), or if the
  *     projection determined by the parser needs to be overridden.
  * @property {string|undefined} url Server url providing the vector data.
- * @todo stability experimental
- */
-
-/**
- * @typedef {Object} ol.source.Vector2Options
- * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
- * @property {ol.Extent|undefined} extent Extent.
- * @property {Array.<ol.geom2.LineStringCollection>|undefined}
- *    lineStringCollections Line string collections.
- * @property {Array.<ol.geom2.PointCollection>|undefined} pointCollections
- *    Point collections.
- * @property {ol.proj.ProjectionLike} projection Projection.
  * @todo stability experimental
  */
 

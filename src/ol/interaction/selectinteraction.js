@@ -1,14 +1,13 @@
 goog.provide('ol.interaction.Select');
 
 goog.require('goog.array');
-goog.require('goog.object');
+goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.layer.Vector');
 goog.require('ol.layer.VectorLayerRenderIntent');
-goog.require('ol.source.Vector');
 
 
 
@@ -36,26 +35,19 @@ ol.interaction.Select = function(opt_options) {
   this.addCondition_ = goog.isDef(options.addCondition) ?
       options.addCondition : ol.events.condition.shiftKeyOnly;
 
-  /**
-   * Mapping between original features and cloned features on selection layers.
-   * @type {Object.<*,Object.<*,ol.Feature>>}
-   * @private
-   */
-  this.featureMap_ = {};
+  var layerFilter = options.layers;
+  if (!goog.isDef(layerFilter)) {
+    layerFilter = goog.functions.TRUE;
+  } else if (goog.isArray(layerFilter)) {
+    layerFilter = function(layer) {return options.layers.indexOf(layer) > -1;};
+  }
+  goog.asserts.assertFunction(layerFilter);
 
   /**
-   * Mapping between original layers and selection layers, by map.
-   * @type {Object.<*,{map:ol.Map,layers:Object.<*,ol.layer.Vector>}>}
-   * @protected
-   */
-  this.selectionLayers = {};
-
-  /**
-   * @type {null|function(ol.layer.Layer):boolean}
+   * @type {function(ol.layer.Layer):boolean}
    * @private
    */
-  this.layerFilter_ = goog.isDef(options.layerFilter) ?
-      options.layerFilter : null;
+  this.layerFilter_ = layerFilter;
 
   goog.base(this);
 };
@@ -69,10 +61,8 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
   if (this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
-    var layers = map.getLayerGroup().getLayersArray();
-    if (!goog.isNull(this.layerFilter_)) {
-      layers = goog.array.filter(layers, this.layerFilter_);
-    }
+    var layers = goog.array.filter(
+        map.getLayerGroup().getLayersArray(), this.layerFilter_);
     var clear = !this.addCondition_(mapBrowserEvent);
 
     var that = this;
@@ -99,82 +89,29 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
  */
 ol.interaction.Select.prototype.select =
     function(map, featuresByLayer, layers, clear) {
-  var mapId = goog.getUid(map);
-  if (!(mapId in this.selectionLayers)) {
-    this.selectionLayers[mapId] = {map: map, layers: {}};
-  }
   for (var i = 0, ii = featuresByLayer.length; i < ii; ++i) {
     var layer = layers[i];
-    var layerId = goog.getUid(layer);
-    var selectionLayer = this.selectionLayers[mapId].layers[layerId];
-    if (!goog.isDef(selectionLayer)) {
-      selectionLayer = new ol.layer.Vector({
-        source: new ol.source.Vector({parser: null}),
-        style: layer instanceof ol.layer.Vector ? layer.getStyle() : null
-      });
-      selectionLayer.setTemporary(true);
-      map.addLayer(selectionLayer);
-      this.selectionLayers[mapId].layers[layerId] = selectionLayer;
-      this.featureMap_[layerId] = {};
+    if (!(layer instanceof ol.layer.Vector)) {
+      // TODO Support non-vector layers and remove this
+      continue;
     }
 
-    var selectedFeatures, unselectedFeatures;
-    if (goog.isFunction(layer.setRenderIntent)) {
-      selectedFeatures = [];
-      unselectedFeatures = [];
-    }
-    var features = featuresByLayer[i];
-    var numFeatures = features.length;
-    var featuresToAdd = [];
-    var featuresToRemove = [];
-    var featureMap = this.featureMap_[layerId];
-    var oldFeatureMap = featureMap;
+    var featuresToSelect = featuresByLayer[i];
+    var selectedFeatures = layer.getFeatures(
+        ol.layer.Vector.selectedFeaturesFilter);
     if (clear) {
-      for (var f in featureMap) {
-        if (goog.isDef(unselectedFeatures)) {
-          unselectedFeatures.push(layer.getFeatureWithUid(f));
-        }
-        featuresToRemove.push(featureMap[f]);
-      }
-      featureMap = {};
-      this.featureMap_[layerId] = featureMap;
-    }
-    for (var j = 0; j < numFeatures; ++j) {
-      var feature = features[j];
-      var featureId = goog.getUid(feature);
-      var clone = featureMap[featureId];
-      if (clone) {
-        // TODO: make toggle configurable
-        if (goog.isDef(unselectedFeatures)) {
-          unselectedFeatures.push(feature);
-        }
-        delete featureMap[featureId];
-        featuresToRemove.push(clone);
-      } else if (!(featureId in oldFeatureMap)) {
-        clone = new ol.Feature(feature.getAttributes());
-        clone.setGeometry(feature.getGeometry().clone());
-        clone.setId(feature.getId());
-        clone.setSymbolizers(feature.getSymbolizers());
-        clone.renderIntent = ol.layer.VectorLayerRenderIntent.SELECTED;
-        featureMap[featureId] = clone;
-        if (goog.isDef(selectedFeatures)) {
-          selectedFeatures.push(feature);
-        }
-        featuresToAdd.push(clone);
+      for (var j = selectedFeatures.length - 1; j >= 0; --j) {
+        selectedFeatures[j].setRenderIntent(
+            ol.layer.VectorLayerRenderIntent.DEFAULT);
       }
     }
-    if (goog.isFunction(layer.setRenderIntent)) {
-      layer.setRenderIntent(ol.layer.VectorLayerRenderIntent.HIDDEN,
-          selectedFeatures);
-      layer.setRenderIntent(ol.layer.VectorLayerRenderIntent.DEFAULT,
-          unselectedFeatures);
-    }
-    selectionLayer.removeFeatures(featuresToRemove);
-    selectionLayer.addFeatures(featuresToAdd);
-    if (goog.object.getCount(featureMap) == 0) {
-      map.removeLayer(selectionLayer);
-      delete this.selectionLayers[mapId].layers[layerId];
-      delete this.featureMap_[layerId];
+    for (var j = featuresToSelect.length - 1; j >= 0; --j) {
+      var feature = featuresToSelect[j];
+      // TODO: Make toggle configurable
+      feature.setRenderIntent(feature.getRenderIntent() ==
+          ol.layer.VectorLayerRenderIntent.SELECTED ?
+              ol.layer.VectorLayerRenderIntent.DEFAULT :
+              ol.layer.VectorLayerRenderIntent.SELECTED);
     }
     // TODO: Dispatch an event with selectedFeatures and unselectedFeatures
   }

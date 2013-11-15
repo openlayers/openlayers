@@ -43,10 +43,18 @@ ol.Feature = function(opt_values) {
   this.geometryName_;
 
   /**
+   * Original of this feature when it was modified.
+   * @type {ol.Feature}
+   * @private
+   */
+  this.original_ = null;
+
+  /**
    * The render intent for this feature.
    * @type {ol.layer.VectorLayerRenderIntent|string}
+   * @private
    */
-  this.renderIntent = ol.layer.VectorLayerRenderIntent.DEFAULT;
+  this.renderIntent_ = ol.layer.VectorLayerRenderIntent.DEFAULT;
 
   /**
    * @type {Array.<ol.style.Symbolizer>}
@@ -97,6 +105,15 @@ ol.Feature.prototype.getGeometry = function() {
   return goog.isDef(this.geometryName_) ?
       /** @type {ol.geom.Geometry} */ (this.get(this.geometryName_)) :
       null;
+};
+
+
+/**
+ * Get the original of this feature when it was modified.
+ * @return {ol.Feature} Original.
+ */
+ol.Feature.prototype.getOriginal = function() {
+  return this.original_;
 };
 
 
@@ -176,6 +193,38 @@ ol.Feature.prototype.setGeometry = function(geometry) {
 
 
 /**
+ * Set the original of this feature when it was modified.
+ * @param {ol.Feature} original Original.
+ */
+ol.Feature.prototype.setOriginal = function(original) {
+  this.original_ = original;
+};
+
+
+/**
+ * Gets the renderIntent for this feature.
+ * @return {string} Render intent.
+ */
+ol.Feature.prototype.getRenderIntent = function() {
+  return this.renderIntent_;
+};
+
+
+/**
+ * Changes the renderIntent for this feature.
+ * @param {string} renderIntent Render intent.
+ */
+ol.Feature.prototype.setRenderIntent = function(renderIntent) {
+  this.renderIntent_ = renderIntent;
+  var geometry = this.getGeometry();
+  if (!goog.isNull(geometry)) {
+    this.dispatchEvent(new ol.FeatureEvent(
+        ol.FeatureEventType.INTENTCHANGE, this, geometry.getBounds()));
+  }
+};
+
+
+/**
  * Set the symbolizers to be used for this feature.
  * @param {Array.<ol.style.Symbolizer>} symbolizers Symbolizers for this
  *     feature. If set, these take precedence over layer style.
@@ -196,7 +245,8 @@ ol.Feature.DEFAULT_GEOMETRY = 'geometry';
  * @enum {string}
  */
 ol.FeatureEventType = {
-  CHANGE: 'featurechange'
+  CHANGE: 'featurechange',
+  INTENTCHANGE: 'featureintentchange'
 };
 
 

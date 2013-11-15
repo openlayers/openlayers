@@ -186,6 +186,17 @@ goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
 
 
 /**
+ * Get the last "down" type event.  This will be set on mousedown,
+ * touchstart, and pointerdown.
+ * @return {goog.events.BrowserEvent} The most recent "down" type event (or null
+ * if none have occurred).
+ */
+ol.MapBrowserEventHandler.prototype.getDown = function() {
+  return this.down_;
+};
+
+
+/**
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
@@ -221,7 +232,6 @@ ol.MapBrowserEventHandler.prototype.handleMouseUp_ = function(browserEvent) {
       var newEvent = new ol.MapBrowserEvent(
           ol.MapBrowserEvent.EventType.DRAGEND, this.map_, browserEvent);
       this.dispatchEvent(newEvent);
-      this.down_ = null;
     } else if (browserEvent.isMouseActionButton()) {
       this.emulateClick_(browserEvent);
     }

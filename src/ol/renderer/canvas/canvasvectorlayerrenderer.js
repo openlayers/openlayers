@@ -275,7 +275,8 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
         halfWidth, halfHeight, uid, coordinates, j;
     for (var id in candidates) {
       candidate = candidates[id];
-      if (candidate.renderIntent == ol.layer.VectorLayerRenderIntent.HIDDEN) {
+      if (candidate.getRenderIntent() ==
+          ol.layer.VectorLayerRenderIntent.HIDDEN) {
         continue;
       }
       geom = candidate.getGeometry();

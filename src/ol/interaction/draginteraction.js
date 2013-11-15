@@ -27,6 +27,13 @@ ol.interaction.Drag = function() {
   this.dragging_ = false;
 
   /**
+   * Delta for INTERACTING view hint. Subclasses that do not want the
+   * INTERACTING hint to be set should override this to 0.
+   * @type {number}
+   */
+  this.interactingHint = 1;
+
+  /**
    * @type {number}
    */
   this.startX = 0;
@@ -58,6 +65,14 @@ ol.interaction.Drag = function() {
 
 };
 goog.inherits(ol.interaction.Drag, ol.interaction.Interaction);
+
+
+/**
+ * @return {boolean} Whether we're dragging.
+ */
+ol.interaction.Drag.prototype.getDragging = function() {
+  return this.dragging_;
+};
 
 
 /**
@@ -115,7 +130,7 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
       goog.asserts.assertInstanceof(browserEvent, goog.events.BrowserEvent);
       this.deltaX = browserEvent.clientX - this.startX;
       this.deltaY = browserEvent.clientY - this.startY;
-      view.setHint(ol.ViewHint.INTERACTING, -1);
+      view.setHint(ol.ViewHint.INTERACTING, -this.interactingHint);
       this.dragging_ = false;
       this.handleDragEnd(mapBrowserEvent);
     }
@@ -131,7 +146,7 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
         (mapBrowserEvent.getCoordinate());
     var handled = this.handleDragStart(mapBrowserEvent);
     if (handled) {
-      view.setHint(ol.ViewHint.INTERACTING, 1);
+      view.setHint(ol.ViewHint.INTERACTING, this.interactingHint);
       this.dragging_ = true;
       mapBrowserEvent.preventDefault();
       stopEvent = true;
