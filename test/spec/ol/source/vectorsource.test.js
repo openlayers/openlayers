@@ -121,13 +121,13 @@ describe('ol.source.Vector', function() {
 
   });
 
-  describe('#prepareFeatures', function() {
+  describe('#prepareFeatures_', function() {
     it('loads and parses data from a file', function(done) {
       var source = new ol.source.Vector({
         url: 'spec/ol/parser/geojson/countries.geojson',
         parser: new ol.parser.GeoJSON()
       });
-      source.prepareFeatures([-180, -90, 180, 90],
+      source.prepareFeatures_([-180, -90, 180, 90],
           ol.proj.get('EPSG:4326'),
           function() {
             expect(source.loadState_).to.be(ol.source.VectorLoadState.LOADED);
@@ -170,7 +170,7 @@ describe('ol.source.Vector', function() {
         parser: new ol.parser.GeoJSON(),
         projection: ol.proj.get('EPSG:4326')
       });
-      source.prepareFeatures([-180, -90, 180, 90],
+      source.prepareFeatures_([-180, -90, 180, 90],
           ol.proj.get('EPSG:4326'),
           function() {
             expect(source.loadState_).to.be(ol.source.VectorLoadState.LOADED);

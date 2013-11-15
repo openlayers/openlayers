@@ -141,7 +141,7 @@ ol.source.Vector.prototype.getFeatures = function(opt_filter) {
  */
 ol.source.Vector.prototype.getFeaturesObjectForExtent = function(extent,
     projection, opt_callback) {
-  var state = this.prepareFeatures(extent, projection, opt_callback);
+  var state = this.prepareFeatures_(extent, projection, opt_callback);
   var lookup = null;
   if (state !== ol.source.VectorLoadState.LOADING) {
     lookup = this.featureCache_.getFeaturesObjectForExtent(extent);
@@ -214,8 +214,9 @@ ol.source.Vector.prototype.groupFeaturesBySymbolizerLiteral =
  * @param {Object|Element|Document|string} data Feature data.
  * @param {ol.proj.Projection} projection This sucks.  The layer should be a
  *     view in one projection.
+ * @private
  */
-ol.source.Vector.prototype.parseFeatures = function(data, projection) {
+ol.source.Vector.prototype.parseFeatures_ = function(data, projection) {
 
   var addFeatures = function(data) {
     var features = data.features;
@@ -319,8 +320,9 @@ ol.source.Vector.prototype.clear = function() {
  * @param {function()=} opt_callback Callback which is called when features are
  *     parsed after loading.
  * @return {ol.source.VectorLoadState} The current load state.
+ * @private
  */
-ol.source.Vector.prototype.prepareFeatures = function(extent, projection,
+ol.source.Vector.prototype.prepareFeatures_ = function(extent, projection,
     opt_callback) {
   // TODO: Implement strategies. BBOX aware strategies will need the extent.
   if (goog.isDef(this.url_) &&
@@ -330,7 +332,7 @@ ol.source.Vector.prototype.prepareFeatures = function(extent, projection,
       var xhr = event.target;
       if (xhr.isSuccess()) {
         // TODO: Get source projection from data if supported by parser.
-        this.parseFeatures(xhr.getResponseText(), projection);
+        this.parseFeatures_(xhr.getResponseText(), projection);
         this.loadState_ = ol.source.VectorLoadState.LOADED;
         if (goog.isDef(opt_callback)) {
           opt_callback();
@@ -341,7 +343,7 @@ ol.source.Vector.prototype.prepareFeatures = function(extent, projection,
       }
     }, this));
   } else if (!goog.isNull(this.data_)) {
-    this.parseFeatures(this.data_, projection);
+    this.parseFeatures_(this.data_, projection);
     this.data_ = null;
     this.loadState_ = ol.source.VectorLoadState.LOADED;
   }
