@@ -9,6 +9,8 @@ goog.require('ol.control.ScaleLine');
 goog.require('ol.proj.EPSG21781');
 goog.require('ol.source.State');
 
+goog.require('ga.Tooltip');
+
 
 /**
  * @class
@@ -67,6 +69,10 @@ ga.Map = function(options) {
   goog.base(this, options);
 
   this.addControl(new ol.control.ScaleLine());
+
+  var tooltip = new ga.Tooltip();
+  tooltip.setMap(this);
+  this.registerDisposable(tooltip);
 };
 goog.inherits(ga.Map, ol.Map);
 
