@@ -26,7 +26,10 @@
     -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
     filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-    padding: 15px;
+    padding-top: 20px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
     border-radius: 10px;
     border: 1px solid #cccccc;
     bottom: 12px;
@@ -67,4 +70,32 @@
 }
 .ga-tooltip-closer:after {
     content: "✖";
+}
+
+.htmlpopup-container {
+  width: 100%;
+  font-size: 14px;
+}
+.htmlpopup-container span {
+  font-weight: bold;
+}
+.htmlpopup-container .htmlpopup-header {
+  background-color: #E9E9E9;
+  padding: 7px;
+}
+.htmlpopup-container .htmlpopup-content {
+  padding: 7px;
+}
+.htmlpopup-container .htmlpopup-content table {
+  width: 100%;
+  border: 0;
+}
+.htmlpopup-container .htmlpopup-content table td {
+  vertical-align: top;
+}
+.htmlpopup-container .htmlpopup-content table .cell-left {
+  width: 150px;
+}
+.htmlpopup-container .htmlpopup-content table .cell-left-large {
+  width: 320px;
 }
