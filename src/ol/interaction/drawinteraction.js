@@ -256,7 +256,7 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
   sketchFeature.setGeometry(geometry);
   this.sketchFeature_ = sketchFeature;
 
-  this.sketchLayer_.addFeatures(features);
+  this.sketchLayer_.getVectorSource().addFeatures(features);
 };
 
 
@@ -344,7 +344,7 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
   } else if (this.type_ === ol.geom.GeometryType.MULTIPOLYGON) {
     sketchFeature.setGeometry(new ol.geom.MultiPolygon([coordinates]));
   }
-  this.layer_.addFeatures([sketchFeature]);
+  this.layer_.getVectorSource().addFeatures([sketchFeature]);
 };
 
 
@@ -363,7 +363,7 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
       features.push(this.sketchPoint_);
       this.sketchPoint_ = null;
     }
-    this.sketchLayer_.removeFeatures(features);
+    this.sketchLayer_.getVectorSource().removeFeatures(features);
   }
   return sketchFeature;
 };

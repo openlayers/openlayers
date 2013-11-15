@@ -97,7 +97,7 @@ ol.interaction.Select.prototype.select =
     }
 
     var featuresToSelect = featuresByLayer[i];
-    var selectedFeatures = layer.getFeatures(
+    var selectedFeatures = layer.getVectorSource().getFeatures(
         ol.layer.Vector.selectedFeaturesFilter);
     if (clear) {
       for (var j = selectedFeatures.length - 1; j >= 0; --j) {

@@ -18,9 +18,9 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Drag');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Vector');
-goog.require('ol.layer.VectorEventType');
 goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.source.Vector');
+goog.require('ol.source.VectorEventType');
 goog.require('ol.structs.RBush');
 
 
@@ -58,6 +58,13 @@ ol.interaction.Modify = function(opt_options) {
    * @private
    */
   this.layerFilter_ = layerFilter;
+
+  /**
+   * Layer lookup.  Keys source id to layer.
+   * @type {Object.<number, ol.layer.Vector>}
+   * @private
+   */
+  this.layerLookup_ = null;
 
   /**
    * Temporary sketch layer.
@@ -121,6 +128,7 @@ ol.interaction.Modify.prototype.setMap = function(map) {
   }
 
   if (!goog.isNull(map)) {
+    this.layerLookup_ = {};
     if (goog.isNull(this.rBush_)) {
       this.rBush_ = new ol.structs.RBush();
     }
@@ -141,6 +149,7 @@ ol.interaction.Modify.prototype.setMap = function(map) {
         false, this);
   } else {
     // removing from a map, clean up
+    this.layerLookup_ = null;
     this.rBush_ = null;
     this.sketchLayer_ = null;
   }
@@ -168,9 +177,11 @@ ol.interaction.Modify.prototype.handleLayerAdded_ = function(evt) {
 ol.interaction.Modify.prototype.addLayer_ = function(layer) {
   if (this.layerFilter_(layer) && layer instanceof ol.layer.Vector &&
       !layer.getTemporary()) {
-    this.addIndex_(layer.getFeatures(ol.layer.Vector.selectedFeaturesFilter),
+    var source = layer.getVectorSource();
+    this.layerLookup_[goog.getUid(source)] = layer;
+    this.addIndex_(source.getFeatures(ol.layer.Vector.selectedFeaturesFilter),
         layer);
-    goog.events.listen(layer, ol.layer.VectorEventType.INTENTCHANGE,
+    goog.events.listen(source, ol.source.VectorEventType.INTENTCHANGE,
         this.handleIntentChange_, false, this);
   }
 };
@@ -195,9 +206,11 @@ ol.interaction.Modify.prototype.handleLayerRemoved_ = function(evt) {
 ol.interaction.Modify.prototype.removeLayer_ = function(layer) {
   if (this.layerFilter_(layer) && layer instanceof ol.layer.Vector &&
       !layer.getTemporary()) {
+    var source = layer.getVectorSource();
+    delete this.layerLookup_[goog.getUid(source)];
     this.removeIndex_(
-        layer.getFeatures(ol.layer.Vector.selectedFeaturesFilter));
-    goog.events.unlisten(layer, ol.layer.VectorEventType.INTENTCHANGE,
+        source.getFeatures(ol.layer.Vector.selectedFeaturesFilter));
+    goog.events.unlisten(source, ol.source.VectorEventType.INTENTCHANGE,
         this.handleIntentChange_, false, this);
   }
 };
@@ -248,11 +261,13 @@ ol.interaction.Modify.prototype.removeIndex_ = function(features) {
 
 /**
  * Listen for feature additions.
- * @param {ol.layer.VectorEvent} evt Event object.
+ * @param {ol.source.VectorEvent} evt Event object.
  * @private
  */
 ol.interaction.Modify.prototype.handleIntentChange_ = function(evt) {
-  var layer = evt.target;
+  var source = evt.target;
+  goog.asserts.assertInstanceof(source, ol.source.Vector);
+  var layer = this.layerLookup_[goog.getUid(source)];
   goog.asserts.assertInstanceof(layer, ol.layer.Vector);
   var features = evt.features;
   for (var i = 0, ii = features.length; i < ii; ++i) {
@@ -322,7 +337,7 @@ ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ =
   if (goog.isNull(vertexFeature)) {
     vertexFeature = new ol.Feature({g: new ol.geom.Point(coordinates)});
     this.vertexFeature_ = vertexFeature;
-    this.sketchLayer_.addFeatures([vertexFeature]);
+    this.sketchLayer_.getVectorSource().addFeatures([vertexFeature]);
   } else {
     var geometry = vertexFeature.getGeometry();
     geometry.setCoordinates(coordinates);

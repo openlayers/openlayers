@@ -14,10 +14,10 @@ goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
-goog.require('ol.layer.VectorEventType');
 goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.Vector');
+goog.require('ol.source.VectorEventType');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -88,13 +88,15 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    */
   this.tileCache_ = new ol.TileCache(
       ol.renderer.canvas.VectorLayer.TILECACHE_SIZE);
-  goog.events.listen(layer, [
-    ol.layer.VectorEventType.ADD,
-    ol.layer.VectorEventType.CHANGE,
-    ol.layer.VectorEventType.REMOVE,
-    ol.layer.VectorEventType.INTENTCHANGE
+
+  var source = layer.getSource();
+  goog.events.listen(source, [
+    ol.source.VectorEventType.ADD,
+    ol.source.VectorEventType.CHANGE,
+    ol.source.VectorEventType.REMOVE,
+    ol.source.VectorEventType.INTENTCHANGE
   ],
-  this.handleLayerChange_, false, this);
+  this.handleSourceChange_, false, this);
 
   /**
    * @private
@@ -245,7 +247,7 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
   var map = this.getMap();
   var result = [];
 
-  var layer = this.getLayer();
+  var source = this.getVectorLayer().getSource();
   var location = map.getCoordinateFromPixel(pixel);
   var tileCoord = this.tileGrid_.getTileCoordForCoordAndZ(location, 0);
   var key = tileCoord.toString();
@@ -259,7 +261,7 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
     var locationMin = [location[0] - halfMaxWidth, location[1] - halfMaxHeight];
     var locationMax = [location[0] + halfMaxWidth, location[1] + halfMaxHeight];
     var locationBbox = ol.extent.boundingExtent([locationMin, locationMax]);
-    var candidates = layer.getFeaturesObjectForExtent(locationBbox,
+    var candidates = source.getFeaturesObjectForExtent(locationBbox,
         map.getView().getView2D().getProjection());
     if (goog.isNull(candidates)) {
       // data is not loaded
@@ -319,15 +321,16 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
       }
     }
   }
+  var layer = this.getLayer();
   goog.global.setTimeout(function() { success(result, layer); }, 0);
 };
 
 
 /**
- * @param {ol.layer.VectorEvent} event Vector layer event.
+ * @param {ol.source.VectorEvent} event Vector layer event.
  * @private
  */
-ol.renderer.canvas.VectorLayer.prototype.handleLayerChange_ = function(event) {
+ol.renderer.canvas.VectorLayer.prototype.handleSourceChange_ = function(event) {
   if (goog.isDef(this.renderedResolution_)) {
     this.expireTiles_(event.extents);
   }
@@ -348,7 +351,6 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       resolution = view2DState.resolution,
       projection = view2DState.projection,
       extent = frameState.extent,
-      layer = this.getVectorLayer(),
       tileGrid = this.tileGrid_,
       tileSize = [512, 512],
       idle = !frameState.viewHints[ol.ViewHint.ANIMATING] &&
@@ -471,6 +473,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var tile, tileCoord, key, x, y, i, type;
   var deferred = false;
   var dirty = false;
+  var layer = this.getVectorLayer();
+  var source = layer.getSource();
   var tileExtent, groups, group, j, numGroups, featuresObject, tileHasFeatures;
   fetchTileData:
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
@@ -486,7 +490,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         tileExtent[1] -= tileGutter;
         tileExtent[3] += tileGutter;
         tileHasFeatures = false;
-        featuresObject = layer.getFeaturesObjectForExtent(tileExtent,
+        featuresObject = source.getFeaturesObjectForExtent(tileExtent,
             projection, this.requestMapRenderFrame_);
         if (goog.isNull(featuresObject)) {
           deferred = true;
@@ -505,8 +509,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   }
   this.dirty_ = dirty;
 
-  groups = layer.groupFeaturesBySymbolizerLiteral(featuresToRender,
-      tileResolution);
+  groups = source.groupFeaturesBySymbolizerLiteral(layer.getStyle(),
+      featuresToRender, tileResolution);
   numGroups = groups.length;
   for (j = 0; j < numGroups; ++j) {
     group = groups[j];

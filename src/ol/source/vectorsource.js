@@ -1,8 +1,21 @@
+goog.provide('ol.source.FeatureCache');
 goog.provide('ol.source.Vector');
+goog.provide('ol.source.VectorEventType');
 
 goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.Event');
 goog.require('goog.net.XhrIo');
+goog.require('goog.object');
+goog.require('ol.Feature');
+goog.require('ol.FeatureEventType');
+goog.require('ol.extent');
+goog.require('ol.proj');
 goog.require('ol.source.Source');
+goog.require('ol.structs.RTree');
+goog.require('ol.style');
+goog.require('ol.style.Style');
+goog.require('ol.style.TextLiteral');
 
 
 /**
@@ -20,10 +33,11 @@ ol.source.VectorLoadState = {
 /**
  * @constructor
  * @extends {ol.source.Source}
- * @param {ol.source.VectorOptions} options Vector source options.
+ * @param {ol.source.VectorOptions=} opt_options Vector source options.
  * @todo stability experimental
  */
-ol.source.Vector = function(options) {
+ol.source.Vector = function(opt_options) {
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
@@ -49,6 +63,12 @@ ol.source.Vector = function(options) {
    */
   this.url_ = options.url;
 
+  /**
+   * @type {ol.source.FeatureCache}
+   * @private
+   */
+  this.featureCache_ = new ol.source.FeatureCache();
+
   goog.base(this, {
     attributions: options.attributions,
     extent: options.extent,
@@ -60,14 +80,247 @@ goog.inherits(ol.source.Vector, ol.source.Source);
 
 
 /**
- * @param {ol.layer.Vector} layer Layer that parses the data.
+ * @param {Array.<ol.Feature>} features Array of features.
+ */
+ol.source.Vector.prototype.addFeatures = function(features) {
+  var extent = ol.extent.createEmpty(),
+      feature, geometry;
+  for (var i = 0, ii = features.length; i < ii; ++i) {
+    feature = features[i];
+    this.featureCache_.add(feature);
+    geometry = feature.getGeometry();
+    if (!goog.isNull(geometry)) {
+      ol.extent.extend(extent, geometry.getBounds());
+    }
+    goog.events.listen(feature, ol.FeatureEventType.CHANGE,
+        this.handleFeatureChange_, false, this);
+    goog.events.listen(feature, ol.FeatureEventType.INTENTCHANGE,
+        this.handleIntentChange_, false, this);
+  }
+  this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.ADD,
+      features, [extent]));
+};
+
+
+/**
+ * Returns an array of features that match a filter. This will not fetch data,
+ * it only considers features that are loaded already.
+ * @param {(function(ol.Feature):boolean)=} opt_filter Filter function.
+ * @return {Array.<ol.Feature>} Features that match the filter, or all features
+ *     if no filter was provided.
+ */
+ol.source.Vector.prototype.getFeatures = function(opt_filter) {
+  var result;
+  var features = this.featureCache_.getFeaturesObject();
+  if (goog.isDef(opt_filter)) {
+    result = [];
+    for (var f in features) {
+      if (opt_filter(features[f]) === true) {
+        result.push(features[f]);
+      }
+    }
+  } else {
+    result = goog.object.getValues(features);
+  }
+  return result;
+};
+
+
+/**
+ * Get all features whose bounding box intersects the provided extent. This
+ * method is intended for being called by the renderer. When null is returned,
+ * the renderer should not waste time rendering, and `opt_callback` is
+ * usually a function that requests a renderFrame, which will be called as soon
+ * as the data for `extent` is available.
+ *
+ * @param {ol.Extent} extent Bounding extent.
+ * @param {ol.proj.Projection} projection Target projection.
+ * @param {function()=} opt_callback Callback to call when data is parsed.
+ * @return {Object.<string, ol.Feature>} Features or null if source is loading
+ *     data for `extent`.
+ */
+ol.source.Vector.prototype.getFeaturesObjectForExtent = function(extent,
+    projection, opt_callback) {
+  var state = this.prepareFeatures(extent, projection, opt_callback);
+  var lookup = null;
+  if (state !== ol.source.VectorLoadState.LOADING) {
+    lookup = this.featureCache_.getFeaturesObjectForExtent(extent);
+  }
+  return lookup;
+};
+
+
+/**
+ * TODO: This should be a ol.style.Style method.
+ * @param {ol.style.Style} style Style.
+ * @param {Object.<string, ol.Feature>} features Features.
+ * @param {number} resolution Map resolution.
+ * @return {Array.<Array>} symbolizers for features. Each array in this array
+ *     contains 3 items: an array of features, the symbolizer literal, and
+ *     an array with optional additional data for each feature.
+ */
+ol.source.Vector.prototype.groupFeaturesBySymbolizerLiteral =
+    function(style, features, resolution) {
+  var uniqueLiterals = {},
+      featuresBySymbolizer = [],
+      i, j, l, feature, symbolizers, literals, numLiterals, literal,
+      uniqueLiteral, key, item;
+  for (i in features) {
+    feature = features[i];
+    // feature level symbolizers take precedence
+    symbolizers = feature.getSymbolizers();
+    if (!goog.isNull(symbolizers)) {
+      literals = ol.style.Style.createLiterals(symbolizers, feature);
+    } else {
+      // layer style second
+      if (goog.isNull(style)) {
+        style = ol.style.getDefault();
+      }
+      literals = style.createLiterals(feature, resolution);
+    }
+    numLiterals = literals.length;
+    for (j = 0; j < numLiterals; ++j) {
+      literal = literals[j];
+      for (l in uniqueLiterals) {
+        uniqueLiteral = featuresBySymbolizer[uniqueLiterals[l]][1];
+        if (literal.equals(uniqueLiteral)) {
+          literal = uniqueLiteral;
+          break;
+        }
+      }
+      key = goog.getUid(literal);
+      if (!goog.object.containsKey(uniqueLiterals, key)) {
+        uniqueLiterals[key] = featuresBySymbolizer.length;
+        featuresBySymbolizer.push([
+          /** @type {Array.<ol.Feature>} */ ([]),
+          /** @type {ol.style.Literal} */ (literal),
+          /** @type {Array} */ ([])
+        ]);
+      }
+      item = featuresBySymbolizer[uniqueLiterals[key]];
+      item[0].push(feature);
+      if (literal instanceof ol.style.TextLiteral) {
+        item[2].push(literals[j].text);
+      }
+    }
+  }
+  // TODO: move sort function to ol.style.Style
+  featuresBySymbolizer.sort(this.sortByZIndex_);
+  return featuresBySymbolizer;
+};
+
+
+/**
+ * @param {Object|Element|Document|string} data Feature data.
+ * @param {ol.proj.Projection} projection This sucks.  The layer should be a
+ *     view in one projection.
+ */
+ol.source.Vector.prototype.parseFeatures = function(data, projection) {
+
+  var addFeatures = function(data) {
+    var features = data.features;
+    var sourceProjection = this.getProjection();
+    if (goog.isNull(sourceProjection)) {
+      sourceProjection = data.metadata.projection;
+    }
+    var transform = ol.proj.getTransform(sourceProjection, projection);
+    var geometry = null;
+    for (var i = 0, ii = features.length; i < ii; ++i) {
+      geometry = features[i].getGeometry();
+      if (!goog.isNull(geometry)) {
+        geometry.transform(transform);
+      }
+    }
+    this.addFeatures(features);
+  };
+
+  var result;
+  var parser = this.parser_;
+  if (goog.isString(data)) {
+    if (goog.isFunction(parser.readFeaturesFromStringAsync)) {
+      parser.readFeaturesFromStringAsync(data, goog.bind(addFeatures, this));
+    } else {
+      goog.asserts.assert(
+          goog.isFunction(parser.readFeaturesFromString),
+          'Expected parser with a readFeaturesFromString method.');
+      result = parser.readFeaturesFromString(data);
+      addFeatures.call(this, result);
+    }
+  } else if (goog.isObject(data)) {
+    if (goog.isFunction(parser.readFeaturesFromObjectAsync)) {
+      parser.readFeaturesFromObjectAsync(data, goog.bind(addFeatures, this));
+    } else {
+      goog.asserts.assert(
+          goog.isFunction(parser.readFeaturesFromObject),
+          'Expected parser with a readFeaturesFromObject method.');
+      result = parser.readFeaturesFromObject(data);
+      addFeatures.call(this, result);
+    }
+  } else {
+    // TODO: parse more data types
+    throw new Error('Data type not supported: ' + data);
+  }
+};
+
+
+/**
+ * Listener for feature change events.
+ * @param {ol.FeatureEvent} evt The feature change event.
+ * @private
+ */
+ol.source.Vector.prototype.handleFeatureChange_ = function(evt) {
+  goog.asserts.assertInstanceof(evt.target, ol.Feature);
+  var feature = /** @type {ol.Feature} */ (evt.target);
+  var extents = [];
+  if (!goog.isNull(evt.oldExtent)) {
+    extents.push(evt.oldExtent);
+  }
+  var geometry = feature.getGeometry();
+  if (!goog.isNull(geometry)) {
+    this.featureCache_.remove(feature, evt.oldExtent);
+    this.featureCache_.add(feature);
+    extents.push(geometry.getBounds());
+  }
+  this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.CHANGE,
+      [feature], extents));
+};
+
+
+/**
+ * Listener for render intent change events of features.
+ * @param {ol.FeatureEvent} evt The feature intent change event.
+ * @private
+ */
+ol.source.Vector.prototype.handleIntentChange_ = function(evt) {
+  goog.asserts.assertInstanceof(evt.target, ol.Feature);
+  var feature = /** @type {ol.Feature} */ (evt.target);
+  var geometry = feature.getGeometry();
+  if (!goog.isNull(geometry)) {
+    this.dispatchEvent(new ol.source.VectorEvent(
+        ol.source.VectorEventType.INTENTCHANGE, [feature],
+        [geometry.getBounds()]));
+  }
+};
+
+
+/**
+ * Remove all features from the layer.
+ */
+ol.source.Vector.prototype.clear = function() {
+  this.featureCache_.clear();
+  this.dispatchEvent(
+      new ol.source.VectorEvent(ol.source.VectorEventType.REMOVE, [], []));
+};
+
+
+/**
  * @param {ol.Extent} extent Extent that needs to be fetched.
  * @param {ol.proj.Projection} projection Projection of the view.
  * @param {function()=} opt_callback Callback which is called when features are
  *     parsed after loading.
  * @return {ol.source.VectorLoadState} The current load state.
  */
-ol.source.Vector.prototype.prepareFeatures = function(layer, extent, projection,
+ol.source.Vector.prototype.prepareFeatures = function(extent, projection,
     opt_callback) {
   // TODO: Implement strategies. BBOX aware strategies will need the extent.
   if (goog.isDef(this.url_) &&
@@ -77,7 +330,7 @@ ol.source.Vector.prototype.prepareFeatures = function(layer, extent, projection,
       var xhr = event.target;
       if (xhr.isSuccess()) {
         // TODO: Get source projection from data if supported by parser.
-        layer.parseFeatures(xhr.getResponseText(), this.parser_, projection);
+        this.parseFeatures(xhr.getResponseText(), projection);
         this.loadState_ = ol.source.VectorLoadState.LOADED;
         if (goog.isDef(opt_callback)) {
           opt_callback();
@@ -88,9 +341,186 @@ ol.source.Vector.prototype.prepareFeatures = function(layer, extent, projection,
       }
     }, this));
   } else if (!goog.isNull(this.data_)) {
-    layer.parseFeatures(this.data_, this.parser_, projection);
+    this.parseFeatures(this.data_, projection);
     this.data_ = null;
     this.loadState_ = ol.source.VectorLoadState.LOADED;
   }
   return this.loadState_;
+};
+
+
+/**
+ * Remove features from the layer.
+ * @param {Array.<ol.Feature>} features Features to remove.
+ */
+ol.source.Vector.prototype.removeFeatures = function(features) {
+  var extent = ol.extent.createEmpty(),
+      feature, geometry;
+  for (var i = 0, ii = features.length; i < ii; ++i) {
+    feature = features[i];
+    this.featureCache_.remove(feature);
+    geometry = feature.getGeometry();
+    if (!goog.isNull(geometry)) {
+      ol.extent.extend(extent, geometry.getBounds());
+    }
+    goog.events.unlisten(feature, ol.FeatureEventType.CHANGE,
+        this.handleFeatureChange_, false, this);
+    goog.events.unlisten(feature, ol.FeatureEventType.INTENTCHANGE,
+        this.handleIntentChange_, false, this);
+  }
+  this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.REMOVE,
+      features, [extent]));
+};
+
+
+/**
+ * Sort function for `groupFeaturesBySymbolizerLiteral`.
+ * @private
+ * @param {Array} a 1st item for the sort comparison.
+ * @param {Array} b 2nd item for the sort comparison.
+ * @return {number} Comparison result.
+ */
+ol.source.Vector.prototype.sortByZIndex_ = function(a, b) {
+  return a[1].zIndex - b[1].zIndex;
+};
+
+
+
+/**
+ * @constructor
+ * @extends {goog.events.Event}
+ * @param {string} type Event type.
+ * @param {Array.<ol.Feature>} features Features associated with the event.
+ * @param {Array.<ol.Extent>} extents Any extents associated with the event.
+ */
+ol.source.VectorEvent = function(type, features, extents) {
+
+  goog.base(this, type);
+
+  /**
+   * @type {Array.<ol.Feature>}
+   */
+  this.features = features;
+
+  /**
+   * @type {Array.<ol.Extent>}
+   */
+  this.extents = extents;
+
+};
+goog.inherits(ol.source.VectorEvent, goog.events.Event);
+
+
+/**
+ * @enum {string}
+ */
+ol.source.VectorEventType = {
+  ADD: 'featureadd',
+  CHANGE: 'featurechange',
+  INTENTCHANGE: 'featureintentchange',
+  REMOVE: 'featureremove'
+};
+
+
+
+/**
+ * @constructor
+ */
+ol.source.FeatureCache = function() {
+
+  /**
+   * @type {Object.<string, ol.Feature>}
+   * @private
+   */
+  this.idLookup_;
+
+  /**
+   * @type {ol.structs.RTree}
+   * @private
+   */
+  this.rTree_;
+
+  this.clear();
+
+};
+
+
+/**
+ * Clear the cache.
+ */
+ol.source.FeatureCache.prototype.clear = function() {
+  this.idLookup_ = {};
+  this.rTree_ = new ol.structs.RTree();
+};
+
+
+/**
+ * Add a feature to the cache.
+ * @param {ol.Feature} feature Feature to be cached.
+ */
+ol.source.FeatureCache.prototype.add = function(feature) {
+  var id = goog.getUid(feature).toString(),
+      geometry = feature.getGeometry();
+
+  this.idLookup_[id] = feature;
+
+  // index by bounding box
+  if (!goog.isNull(geometry)) {
+    this.rTree_.insert(geometry.getBounds(), feature);
+  }
+};
+
+
+/**
+ * @return {Object.<string, ol.Feature>} Object of features, keyed by id.
+ */
+ol.source.FeatureCache.prototype.getFeaturesObject = function() {
+  return this.idLookup_;
+};
+
+
+/**
+ * Get all features whose bounding box intersects the provided extent.
+ *
+ * @param {ol.Extent} extent Bounding extent.
+ * @return {Object.<string, ol.Feature>} Features.
+ */
+ol.source.FeatureCache.prototype.getFeaturesObjectForExtent = function(extent) {
+  return this.rTree_.searchReturningObject(extent);
+};
+
+
+/**
+ * Get features by ids.
+ * @param {Array.<string>} ids Array of (internal) identifiers.
+ * @return {Array.<ol.Feature>} Array of features.
+ * @private
+ */
+ol.source.FeatureCache.prototype.getFeaturesByIds_ = function(ids) {
+  var len = ids.length,
+      features = new Array(len),
+      i;
+  for (i = 0; i < len; ++i) {
+    features[i] = this.idLookup_[ids[i]];
+  }
+  return features;
+};
+
+
+/**
+ * Remove a feature from the cache.
+ * @param {ol.Feature} feature Feature.
+ * @param {ol.Extent=} opt_extent Optional extent (used when the current feature
+ *     extent is different than the one in the index).
+ */
+ol.source.FeatureCache.prototype.remove = function(feature, opt_extent) {
+  var id = goog.getUid(feature).toString(),
+      geometry = feature.getGeometry();
+
+  delete this.idLookup_[id];
+  // index by bounding box
+  if (!goog.isNull(geometry)) {
+    var extent = goog.isDef(opt_extent) ? opt_extent : geometry.getBounds();
+    this.rTree_.remove(extent, feature);
+  }
 };
