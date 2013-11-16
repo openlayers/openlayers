@@ -8,6 +8,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
+goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.fx.Dragger');
 goog.require('goog.fx.Dragger.EventType');
@@ -88,6 +89,8 @@ ol.control.ZoomSlider = function(opt_options) {
 
   goog.events.listen(sliderElement, goog.events.EventType.CLICK,
       this.handleContainerClick_, false, this);
+  goog.events.listen(thumbElement, goog.events.EventType.CLICK,
+      goog.events.Event.stopPropagation);
 
   goog.base(this, {
     element: sliderElement
