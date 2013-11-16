@@ -209,17 +209,18 @@ ol.control.ZoomSlider.prototype.positionThumbForResolution_ = function(res) {
  * Calculates the amount the thumb has been dragged to allow for calculation
  * of the corresponding resolution.
  *
- * @param {goog.fx.DragDropEvent} e The dragdropevent.
+ * @param {number} x Pixel position relative to the left of the slider.
+ * @param {number} y Pixel position relative to the top of the slider.
  * @return {number} The amount the thumb has been dragged.
  * @private
  */
-ol.control.ZoomSlider.prototype.amountDragged_ = function(e) {
+ol.control.ZoomSlider.prototype.amountDragged_ = function(x, y) {
   var draggerLimits = this.dragger_.limits,
       amount = 0;
   if (this.direction_ === ol.control.ZoomSlider.direction.HORIZONTAL) {
-    amount = (e.left - draggerLimits.left) / draggerLimits.width;
+    amount = (x - draggerLimits.left) / draggerLimits.width;
   } else {
-    amount = (e.top - draggerLimits.top) / draggerLimits.height;
+    amount = (y - draggerLimits.top) / draggerLimits.height;
   }
   return amount;
 };
@@ -270,7 +271,7 @@ ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
   var view = map.getView().getView2D();
   var resolution;
   if (e.type === goog.fx.Dragger.EventType.DRAG) {
-    var amountDragged = this.amountDragged_(e);
+    var amountDragged = this.amountDragged_(e.left, e.top);
     resolution = this.resolutionForAmount_(amountDragged);
     if (resolution !== this.currentResolution_) {
       this.currentResolution_ = resolution;
