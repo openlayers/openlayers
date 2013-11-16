@@ -2,7 +2,6 @@ goog.provide('ol.style.Stroke');
 goog.provide('ol.style.StrokeDefaults');
 
 goog.require('goog.asserts');
-goog.require('ol.Feature');
 goog.require('ol.expr');
 goog.require('ol.expr.Expression');
 goog.require('ol.expr.Literal');
@@ -65,18 +64,14 @@ goog.inherits(ol.style.Stroke, ol.style.Symbolizer);
 
 /**
  * @inheritDoc
- * @return {ol.style.LineLiteral|ol.style.PolygonLiteral} Symbolizer literal.
+ * @return {ol.style.LineLiteral|ol.style.PolygonLiteral} Symbolizer
+ *  literal.
  */
-ol.style.Stroke.prototype.createLiteral = function(featureOrType) {
-  var feature, type;
-  if (featureOrType instanceof ol.Feature) {
-    feature = featureOrType;
+ol.style.Stroke.prototype.createLiteral = function(feature, type) {
+  if (goog.isDefAndNotNull(feature) && !type) {
     var geometry = feature.getGeometry();
-    type = geometry ? geometry.getType() : null;
-  } else {
-    type = featureOrType;
+    type = geometry ? geometry.getType() : undefined;
   }
-
   var color = ol.expr.evaluateFeature(
       this.color_, feature);
   goog.asserts.assertString(color, 'color must be a string');
@@ -93,7 +88,8 @@ ol.style.Stroke.prototype.createLiteral = function(featureOrType) {
   goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
 
   var literal = null;
-  if (type === ol.geom.GeometryType.LINESTRING ||
+  if (type === ol.geom.GeometryType.LINEARRING ||
+      type === ol.geom.GeometryType.LINESTRING ||
       type === ol.geom.GeometryType.MULTILINESTRING) {
     literal = new ol.style.LineLiteral({
       color: color,
@@ -101,6 +97,7 @@ ol.style.Stroke.prototype.createLiteral = function(featureOrType) {
       width: width,
       zIndex: zIndex
     });
+
   } else if (type === ol.geom.GeometryType.POLYGON ||
       type === ol.geom.GeometryType.MULTIPOLYGON) {
     literal = new ol.style.PolygonLiteral({
@@ -110,7 +107,6 @@ ol.style.Stroke.prototype.createLiteral = function(featureOrType) {
       zIndex: zIndex
     });
   }
-
   return literal;
 };
 

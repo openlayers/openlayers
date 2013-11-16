@@ -45,7 +45,7 @@ describe('ol.style.Stroke', function() {
         geometry: new ol.geom.LineString([[1, 2], [3, 4]])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.LineLiteral);
       expect(literal.opacity).to.be(42 / 100);
       expect(literal.width).to.be(1.5);
@@ -55,7 +55,8 @@ describe('ol.style.Stroke', function() {
     it('applies the default values', function() {
       var symbolizer = new ol.style.Stroke({});
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.LINESTRING);
+      var literal = symbolizer.createLiteral(undefined,
+          ol.geom.GeometryType.LINESTRING);
       expect(literal).to.be.a(ol.style.LineLiteral);
       expect(literal.color).to.be('#696969');
       expect(literal.opacity).to.be(0.75);

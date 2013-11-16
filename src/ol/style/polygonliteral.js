@@ -80,7 +80,8 @@ goog.inherits(ol.style.PolygonLiteral, ol.style.Literal);
  * @inheritDoc
  */
 ol.style.PolygonLiteral.prototype.equals = function(other) {
-  return this.fillColor == other.fillColor &&
+  return other instanceof ol.style.PolygonLiteral &&
+      this.fillColor == other.fillColor &&
       this.fillOpacity == other.fillOpacity &&
       this.strokeColor == other.strokeColor &&
       this.strokeOpacity == other.strokeOpacity &&

@@ -1,7 +1,6 @@
 goog.provide('ol.style.Text');
 
 goog.require('goog.asserts');
-goog.require('ol.Feature');
 goog.require('ol.expr');
 goog.require('ol.expr.Expression');
 goog.require('ol.expr.Literal');
@@ -92,14 +91,10 @@ goog.inherits(ol.style.Text, ol.style.Symbolizer);
  * @inheritDoc
  * @return {ol.style.TextLiteral} Literal text symbolizer.
  */
-ol.style.Text.prototype.createLiteral = function(featureOrType) {
-  var feature, type;
-  if (featureOrType instanceof ol.Feature) {
-    feature = featureOrType;
+ol.style.Text.prototype.createLiteral = function(feature, type) {
+  if (goog.isDefAndNotNull(feature) && !type) {
     var geometry = feature.getGeometry();
-    type = geometry ? geometry.getType() : null;
-  } else {
-    type = featureOrType;
+    type = geometry ? geometry.getType() : undefined;
   }
 
   var color = ol.expr.evaluateFeature(this.color_, feature);

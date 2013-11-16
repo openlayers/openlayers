@@ -69,7 +69,7 @@ describe('ol.style.Icon', function() {
         geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.height).to.be(42);
       expect(literal.width).to.be(.42);
@@ -92,7 +92,8 @@ describe('ol.style.Icon', function() {
         url: ol.expr.parse('"http://example.com/1.png"')
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      var literal = symbolizer.createLiteral(undefined,
+          ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.height).to.be(10);
       expect(literal.width).to.be(20);
@@ -110,7 +111,8 @@ describe('ol.style.Icon', function() {
         url: 'http://example.com/1.png'
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      var literal = symbolizer.createLiteral(undefined,
+          ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.opacity).to.be(1);
     });
@@ -122,7 +124,8 @@ describe('ol.style.Icon', function() {
         url: 'http://example.com/1.png'
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      var literal = symbolizer.createLiteral(undefined,
+          ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.rotation).to.be(0);
     });
@@ -140,7 +143,7 @@ describe('ol.style.Icon', function() {
         geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.opacity).to.be(0.53);
     });
@@ -157,7 +160,7 @@ describe('ol.style.Icon', function() {
         geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.width).to.be(42);
     });
@@ -174,7 +177,7 @@ describe('ol.style.Icon', function() {
         geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.height).to.be(42);
     });
@@ -186,7 +189,8 @@ describe('ol.style.Icon', function() {
         url: 'http://example.com/1.png'
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      var literal = symbolizer.createLiteral(undefined,
+          ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.xOffset).to.be(0);
     });
@@ -203,7 +207,7 @@ describe('ol.style.Icon', function() {
         geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.xOffset).to.be(42);
     });
@@ -215,7 +219,8 @@ describe('ol.style.Icon', function() {
         url: 'http://example.com/1.png'
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      var literal = symbolizer.createLiteral(undefined,
+          ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.yOffset).to.be(0);
     });
@@ -232,7 +237,7 @@ describe('ol.style.Icon', function() {
         geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.yOffset).to.be(42);
     });
@@ -245,7 +250,8 @@ describe('ol.style.Icon', function() {
         zIndex: 4
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      var literal = symbolizer.createLiteral(undefined,
+          ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.xOffset).to.be(0);
       expect(literal.zIndex).to.be(4);
@@ -258,7 +264,8 @@ describe('ol.style.Icon', function() {
         url: 'http://example.com/1.png'
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POINT);
+      var literal = symbolizer.createLiteral(undefined,
+          ol.geom.GeometryType.POINT);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.zIndex).to.be(0);
     });
@@ -275,7 +282,7 @@ describe('ol.style.Icon', function() {
         geometry: new ol.geom.Point([1, 2])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.IconLiteral);
       expect(literal.zIndex).to.be(42);
     });

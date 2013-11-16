@@ -45,7 +45,7 @@ describe('ol.style.Fill', function() {
             [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.PolygonLiteral);
       expect(literal.fillOpacity).to.be(42 / 100);
       expect(literal.fillColor).to.be('#ff0000');
@@ -57,7 +57,8 @@ describe('ol.style.Fill', function() {
         color: '#ff0000'
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POLYGON);
+      var literal = symbolizer.createLiteral(undefined,
+          ol.geom.GeometryType.POLYGON);
       expect(literal).to.be.a(ol.style.PolygonLiteral);
       expect(literal.fillColor).to.be('#ff0000');
       expect(literal.fillOpacity).to.be(0.4);
@@ -68,7 +69,8 @@ describe('ol.style.Fill', function() {
         opacity: 0.8
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POLYGON);
+      var literal = symbolizer.createLiteral(undefined,
+          ol.geom.GeometryType.POLYGON);
       expect(literal).to.be.a(ol.style.PolygonLiteral);
       expect(literal.fillColor).to.be('#ffffff');
       expect(literal.fillOpacity).to.be(0.8);
@@ -86,7 +88,7 @@ describe('ol.style.Fill', function() {
             [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.PolygonLiteral);
       expect(literal.fillOpacity).to.be(0.55);
     });
@@ -97,7 +99,8 @@ describe('ol.style.Fill', function() {
         zIndex: 2
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POLYGON);
+      var literal = symbolizer.createLiteral(undefined,
+          ol.geom.GeometryType.POLYGON);
       expect(literal).to.be.a(ol.style.PolygonLiteral);
       expect(literal.fillColor).to.be('#ffffff');
       expect(literal.fillOpacity).to.be(0.8);
@@ -109,7 +112,8 @@ describe('ol.style.Fill', function() {
         opacity: 0.8
       });
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.POLYGON);
+      var literal = symbolizer.createLiteral(undefined,
+          ol.geom.GeometryType.POLYGON);
       expect(literal).to.be.a(ol.style.PolygonLiteral);
       expect(literal.zIndex).to.be(0);
     });
@@ -126,7 +130,7 @@ describe('ol.style.Fill', function() {
             [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]])
       });
 
-      var literal = symbolizer.createLiteral(feature);
+      var literal = symbolizer.createLiteral(feature, undefined);
       expect(literal).to.be.a(ol.style.PolygonLiteral);
       expect(literal.zIndex).to.be(11);
     });

@@ -94,7 +94,8 @@ goog.inherits(ol.style.TextLiteral, ol.style.Literal);
  * @inheritDoc
  */
 ol.style.TextLiteral.prototype.equals = function(other) {
-  return this.color == other.color &&
+  return other instanceof ol.style.TextLiteral &&
+      this.color == other.color &&
       this.fontFamily == other.fontFamily &&
       this.fontSize == other.fontSize &&
       this.fontWeight == other.fontWeight &&

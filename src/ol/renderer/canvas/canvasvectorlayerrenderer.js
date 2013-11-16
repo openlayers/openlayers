@@ -271,52 +271,68 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
       return;
     }
 
-    var candidate, geom, type, symbolBounds, symbolSize, symbolOffset,
-        halfWidth, halfHeight, uid, coordinates, j;
+    var candidate, symbolBounds, symbolSize, symbolOffset, halfWidth,
+        halfHeight, uid, coordinates, j, k, components;
     for (var id in candidates) {
       candidate = candidates[id];
       if (candidate.getRenderIntent() ==
           ol.layer.VectorLayerRenderIntent.HIDDEN) {
         continue;
       }
-      geom = candidate.getGeometry();
-      type = geom.getType();
-      if (type === ol.geom.GeometryType.POINT ||
-          type === ol.geom.GeometryType.MULTIPOINT) {
-        // For points, check if the pixel coordinate is inside the candidate's
-        // symbol
-        uid = goog.getUid(candidate);
-        symbolSize = symbolSizes[uid];
-        symbolOffset = symbolOffsets[uid];
-        halfWidth = symbolSize[0] / 2;
-        halfHeight = symbolSize[1] / 2;
-        symbolBounds = ol.extent.boundingExtent([
-          [location[0] - halfWidth - symbolOffset[0],
-            location[1] - halfHeight + symbolOffset[1]],
-          [location[0] + halfWidth - symbolOffset[0],
-            location[1] + halfHeight + symbolOffset[1]]
-        ]);
-        coordinates = geom.getCoordinates();
-        if (!goog.isArray(coordinates[0])) {
-          coordinates = [coordinates];
-        }
-        for (j = coordinates.length - 1; j >= 0; --j) {
-          if (ol.extent.containsCoordinate(symbolBounds, coordinates[j])) {
+
+      if (candidate.getGeometry().getType() ===
+          ol.geom.GeometryType.GEOMETRYCOLLECTION) {
+        components = candidate.getGeometry().getComponents();
+      } else {
+        components = [candidate.getGeometry()];
+      }
+      for (k = components.length - 1; k >= 0; --k) {
+        var geom, type;
+        geom = components[k];
+        type = geom.getType();
+
+        if (type === ol.geom.GeometryType.POINT ||
+            type === ol.geom.GeometryType.MULTIPOINT) {
+          // For points, check if the pixel coordinate is inside the candidate's
+          // symbol
+          uid = goog.getUid(candidate);
+          symbolSize = symbolSizes[uid];
+          symbolOffset = symbolOffsets[uid];
+          halfWidth = symbolSize[0] / 2;
+          halfHeight = symbolSize[1] / 2;
+          symbolBounds = ol.extent.boundingExtent([
+            [location[0] - halfWidth - symbolOffset[0],
+              location[1] - halfHeight + symbolOffset[1]],
+            [location[0] + halfWidth - symbolOffset[0],
+              location[1] + halfHeight + symbolOffset[1]]
+          ]);
+          coordinates = geom.getCoordinates();
+          if (!goog.isArray(coordinates[0])) {
+            coordinates = [coordinates];
+          }
+          for (j = coordinates.length - 1; j >= 0; --j) {
+            if (ol.extent.containsCoordinate(symbolBounds, coordinates[j])) {
+              result.push(candidate);
+              break;
+            }
+          }
+          if (result.length > 0) {
+            break;
+          }
+        } else if (goog.isFunction(geom.containsCoordinate)) {
+          // For polygons, check if the pixel location is inside the polygon
+          if (geom.containsCoordinate(location)) {
             result.push(candidate);
             break;
           }
-        }
-      } else if (goog.isFunction(geom.containsCoordinate)) {
-        // For polygons, check if the pixel location is inside the polygon
-        if (geom.containsCoordinate(location)) {
-          result.push(candidate);
-        }
-      } else if (goog.isFunction(geom.distanceFromCoordinate)) {
-        // For lines, check if the distance to the pixel location is
-        // within the rendered line width
-        if (2 * geom.distanceFromCoordinate(location) <=
-            symbolSizes[goog.getUid(candidate)][0]) {
-          result.push(candidate);
+        } else if (goog.isFunction(geom.distanceFromCoordinate)) {
+          // For lines, check if the distance to the pixel location is
+          // within the rendered line width
+          if (2 * geom.distanceFromCoordinate(location) <=
+              symbolSizes[goog.getUid(candidate)][0]) {
+            result.push(candidate);
+            break;
+          }
         }
       }
     }

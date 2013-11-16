@@ -7,6 +7,24 @@
     <name>SF Marina Harbor Master</name>
     <visibility>0</visibility>
     <MultiGeometry>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <coordinates>
+              -122.4425587930444,37.80666418607323,0
+              -122.4428379594768,37.80663578323093,0
+              -122.4425587930444,37.80666418607323,0
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+      <LinearRing>
+        <coordinates>
+          -122.4425587930444,37.80666418607323,0
+          -122.4428379594768,37.80663578323093,0
+          -122.4425587930444,37.80666418607323,0
+        </coordinates>
+      </LinearRing>
       <LineString>
         <!-- north wall -->
         <coordinates>

@@ -93,6 +93,19 @@
         <color>7d00ffff</color>
       </PolyStyle>
     </Style>
+    <Style id="multigeom">
+      <IconStyle>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pal3/icon19.png</href>
+        </Icon>
+      </IconStyle>
+      <LineStyle>
+        <width>3</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>7d00ff00</color>
+      </PolyStyle>
+    </Style>
     <Style id="noDrivingDirections">
       <BalloonStyle>
         <text><![CDATA[
@@ -277,6 +290,75 @@
         <Point>
           <coordinates>-112.292238941097,36.15520916122063,630</coordinates>
         </Point>
+      </Placemark>
+      <Placemark>
+        <name>Default LinearRing</name>
+        <description>A LinearRing </description>
+        <styleUrl>#blueLineRedPoly</styleUrl>
+        <LinearRing>
+          <coordinates>
+            -112.36,36.0944,630
+            -112.41,36.0988,630
+            -112.38,36.0014,630
+            -112.36,36.0944,630
+          </coordinates>
+        </LinearRing>
+      </Placemark>
+      <Placemark>
+        <name>Default Polygon</name>
+        <description>A Polygon</description>
+        <styleUrl>#transYellowPoly</styleUrl>
+        <Polygon>
+          <outerBoundaryIs>
+            <LinearRing>
+              <coordinates>
+            -112.36,36.1944,630
+            -112.41,36.1988,630
+            -112.41,36.1014,630
+            -112.38,36.1014,630
+            -112.36,36.1944,630
+              </coordinates>
+            </LinearRing>
+          </outerBoundaryIs>
+        </Polygon>
+      </Placemark>
+      <Placemark>
+        <name>Default GeometryCollection</name>
+        <description>A GeometryCollection (Polygon,LinearRing,Line,Point)</description>
+        <styleUrl>#multigeom</styleUrl>
+        <MultiGeometry>
+          <Point>
+            <coordinates>-112.21,36.1014,630</coordinates>
+          </Point>
+          <LineString>
+            <coordinates>
+            -112.16,36.1944,630
+            -112.21,36.0014,630 
+            </coordinates>
+          </LineString>
+          <LinearRing>
+            <coordinates>
+            -112.16,36.0944,630
+            -112.21,36.0988,630
+            -112.21,36.0014,630
+            -112.18,36.0014,630
+            -112.16,36.0944,630
+            </coordinates>
+          </LinearRing>
+          <Polygon>
+            <outerBoundaryIs>
+              <LinearRing>
+                <coordinates>
+            -112.16,36.1944,630
+            -112.21,36.1988,630
+            -112.21,36.1014,630
+            -112.18,36.1014,630
+            -112.16,36.1944,630
+                </coordinates>
+              </LinearRing>
+            </outerBoundaryIs>
+          </Polygon>
+        </MultiGeometry>
       </Placemark>
     </Folder>
   </Document>

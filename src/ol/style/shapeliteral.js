@@ -99,7 +99,8 @@ goog.inherits(ol.style.ShapeLiteral, ol.style.PointLiteral);
  * @inheritDoc
  */
 ol.style.ShapeLiteral.prototype.equals = function(other) {
-  return this.type == other.type &&
+  return other instanceof ol.style.ShapeLiteral &&
+      this.type == other.type &&
       this.size == other.size &&
       this.fillColor == other.fillColor &&
       this.fillOpacity == other.fillOpacity &&
