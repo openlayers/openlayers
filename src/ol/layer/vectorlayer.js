@@ -3,8 +3,8 @@ goog.provide('ol.layer.Vector');
 goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol.Feature');
+goog.require('ol.FeatureRenderIntent');
 goog.require('ol.layer.Layer');
-goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.source.Vector');
 goog.require('ol.source.VectorEventType');
 goog.require('ol.style');
@@ -120,5 +120,5 @@ ol.layer.Vector.uidTransformFeatureInfo = function(features) {
  * @return {boolean} Whether the feature is selected.
  */
 ol.layer.Vector.selectedFeaturesFilter = function(feature) {
-  return feature.getRenderIntent() == ol.layer.VectorLayerRenderIntent.SELECTED;
+  return feature.getRenderIntent() == ol.FeatureRenderIntent.SELECTED;
 };

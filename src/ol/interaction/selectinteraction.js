@@ -3,11 +3,11 @@ goog.provide('ol.interaction.Select');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.Feature');
+goog.require('ol.FeatureRenderIntent');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.layer.Vector');
-goog.require('ol.layer.VectorLayerRenderIntent');
 
 
 
@@ -102,16 +102,16 @@ ol.interaction.Select.prototype.select =
     if (clear) {
       for (var j = selectedFeatures.length - 1; j >= 0; --j) {
         selectedFeatures[j].setRenderIntent(
-            ol.layer.VectorLayerRenderIntent.DEFAULT);
+            ol.FeatureRenderIntent.DEFAULT);
       }
     }
     for (var j = featuresToSelect.length - 1; j >= 0; --j) {
       var feature = featuresToSelect[j];
       // TODO: Make toggle configurable
       feature.setRenderIntent(feature.getRenderIntent() ==
-          ol.layer.VectorLayerRenderIntent.SELECTED ?
-              ol.layer.VectorLayerRenderIntent.DEFAULT :
-              ol.layer.VectorLayerRenderIntent.SELECTED);
+          ol.FeatureRenderIntent.SELECTED ?
+              ol.FeatureRenderIntent.DEFAULT :
+              ol.FeatureRenderIntent.SELECTED);
     }
     // TODO: Dispatch an event with selectedFeatures and unselectedFeatures
   }

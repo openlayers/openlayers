@@ -6,6 +6,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
+goog.require('ol.FeatureRenderIntent');
 goog.require('ol.Pixel');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
@@ -14,7 +15,6 @@ goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
-goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.Vector');
 goog.require('ol.source.VectorEventType');
@@ -277,7 +277,7 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
     for (var id in candidates) {
       candidate = candidates[id];
       if (candidate.getRenderIntent() ==
-          ol.layer.VectorLayerRenderIntent.HIDDEN) {
+          ol.FeatureRenderIntent.HIDDEN) {
         continue;
       }
       geom = candidate.getGeometry();
