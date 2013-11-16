@@ -88,10 +88,8 @@ ol.control.ZoomSlider = function(opt_options) {
   ], this.handleSliderChange_, undefined, this);
 
   // FIXME currently only a do nothing function is bound.
-  goog.events.listen(sliderElement, [
-    goog.events.EventType.TOUCHEND,
-    goog.events.EventType.CLICK
-  ], this.handleContainerClick_, false, this);
+  goog.events.listen(sliderElement, goog.events.EventType.CLICK,
+      this.handleContainerClick_, false, this);
 
   goog.base(this, {
     element: sliderElement
