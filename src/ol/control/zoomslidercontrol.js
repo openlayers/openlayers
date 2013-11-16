@@ -76,21 +76,21 @@ ol.control.ZoomSlider = function(opt_options) {
 
   var className = goog.isDef(options.className) ?
       options.className : 'ol-zoomslider';
-  var sliderCssCls = className + ' ' + ol.css.CLASS_UNSELECTABLE;
-  var thumbCssCls = className + '-thumb' + ' ' + ol.css.CLASS_UNSELECTABLE;
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, sliderCssCls,
-      goog.dom.createDom(goog.dom.TagName.DIV, thumbCssCls));
+  var thumbElement = goog.dom.createDom(goog.dom.TagName.DIV,
+      [className + '-thumb', ol.css.CLASS_UNSELECTABLE]);
+  var sliderElement = goog.dom.createDom(goog.dom.TagName.DIV,
+      [className, ol.css.CLASS_UNSELECTABLE], thumbElement);
 
-  this.dragger_ = this.createDraggable_(element);
+  this.dragger_ = this.createDraggable_(sliderElement);
 
   // FIXME currently only a do nothing function is bound.
-  goog.events.listen(element, [
+  goog.events.listen(sliderElement, [
     goog.events.EventType.TOUCHEND,
     goog.events.EventType.CLICK
   ], this.handleContainerClick_, false, this);
 
   goog.base(this, {
-    element: element
+    element: sliderElement
   });
 };
 goog.inherits(ol.control.ZoomSlider, ol.control.Control);
