@@ -1,6 +1,5 @@
 // FIXME works for View2D only
 // FIXME should possibly show tooltip when dragging?
-// FIXME should possibly be adjustable by clicking on container
 
 goog.provide('ol.control.ZoomSlider');
 
@@ -87,7 +86,6 @@ ol.control.ZoomSlider = function(opt_options) {
     goog.fx.Dragger.EventType.END
   ], this.handleSliderChange_, undefined, this);
 
-  // FIXME currently only a do nothing function is bound.
   goog.events.listen(sliderElement, goog.events.EventType.CLICK,
       this.handleContainerClick_, false, this);
 
@@ -180,7 +178,20 @@ ol.control.ZoomSlider.prototype.handleMapPostrender = function(mapEvent) {
  * @private
  */
 ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
-  // TODO implement proper resolution calculation according to browserEvent
+  var map = this.getMap();
+  var view = map.getView().getView2D();
+  var resolution;
+  var amountDragged = this.amountDragged_(browserEvent.offsetX,
+      browserEvent.offsetY);
+  resolution = this.resolutionForAmount_(amountDragged);
+  goog.asserts.assert(goog.isDef(resolution));
+  map.beforeRender(ol.animation.zoom({
+    resolution: resolution,
+    duration: ol.control.ZOOMSLIDER_ANIMATION_DURATION,
+    easing: ol.easing.easeOut
+  }));
+  resolution = view.constrainResolution(resolution);
+  view.setResolution(resolution);
 };
 
 
