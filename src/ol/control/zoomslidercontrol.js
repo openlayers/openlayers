@@ -68,12 +68,6 @@ ol.control.ZoomSlider = function(opt_options) {
    */
   this.sliderInitialized_ = false;
 
-  /**
-   * @private
-   * @type {Array.<?number>}
-   */
-  this.draggerListenerKeys_ = null;
-
   var className = goog.isDef(options.className) ?
       options.className : 'ol-zoomslider';
   var thumbElement = goog.dom.createDom(goog.dom.TagName.DIV,
@@ -81,7 +75,17 @@ ol.control.ZoomSlider = function(opt_options) {
   var sliderElement = goog.dom.createDom(goog.dom.TagName.DIV,
       [className, ol.css.CLASS_UNSELECTABLE], thumbElement);
 
-  this.dragger_ = this.createDraggable_(sliderElement);
+  /**
+   * @type {goog.fx.Dragger}
+   * @private
+   */
+  this.dragger_ = new goog.fx.Dragger(thumbElement);
+  this.registerDisposable(this.dragger_);
+
+  goog.events.listen(this.dragger_, [
+    goog.fx.Dragger.EventType.DRAG,
+    goog.fx.Dragger.EventType.END
+  ], this.handleSliderChange_, undefined, this);
 
   // FIXME currently only a do nothing function is bound.
   goog.events.listen(sliderElement, [
@@ -284,28 +288,4 @@ ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
     resolution = view.constrainResolution(this.currentResolution_);
     view.setResolution(resolution);
   }
-};
-
-
-/**
- * Actually enable draggable behaviour for the thumb of the zoomslider and bind
- * relvant event listeners.
- *
- * @param {Element} elem The element for the slider.
- * @return {goog.fx.Dragger} The actual goog.fx.Dragger instance.
- * @private
- */
-ol.control.ZoomSlider.prototype.createDraggable_ = function(elem) {
-  if (!goog.isNull(this.draggerListenerKeys_)) {
-    goog.array.forEach(this.draggerListenerKeys_, goog.events.unlistenByKey);
-    this.draggerListenerKeys_ = null;
-  }
-  var dragger = new goog.fx.Dragger(elem.childNodes[0]);
-  this.draggerListenerKeys_ = [
-    goog.events.listen(dragger, [
-      goog.fx.Dragger.EventType.DRAG,
-      goog.fx.Dragger.EventType.END
-    ], this.handleSliderChange_, undefined, this)
-  ];
-  return dragger;
 };
