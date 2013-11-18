@@ -93,48 +93,55 @@ goog.inherits(ol.style.Text, ol.style.Symbolizer);
  * @return {ol.style.TextLiteral} Literal text symbolizer.
  */
 ol.style.Text.prototype.createLiteral = function(featureOrType) {
-  var feature, type;
+  var attributes, geometry, feature, type;
   if (featureOrType instanceof ol.Feature) {
     feature = featureOrType;
-    var geometry = feature.getGeometry();
+    attributes = feature.getAttributes();
+    geometry = feature.getGeometry();
     type = geometry ? geometry.getType() : null;
   } else {
     type = featureOrType;
   }
 
-  var color = ol.expr.evaluateFeature(this.color_, feature);
+  var color = ol.expr.evaluateFeature(this.color_, feature, attributes);
   goog.asserts.assertString(color, 'color must be a string');
 
-  var fontFamily = ol.expr.evaluateFeature(this.fontFamily_, feature);
+  var fontFamily = ol.expr.evaluateFeature(this.fontFamily_, feature,
+      attributes);
   goog.asserts.assertString(fontFamily, 'fontFamily must be a string');
 
-  var fontSize = Number(ol.expr.evaluateFeature(this.fontSize_, feature));
+  var fontSize = Number(ol.expr.evaluateFeature(this.fontSize_, feature,
+      attributes));
   goog.asserts.assert(!isNaN(fontSize), 'fontSize must be a number');
 
-  var fontWeight = ol.expr.evaluateFeature(this.fontWeight_, feature);
+  var fontWeight = ol.expr.evaluateFeature(this.fontWeight_, feature,
+      attributes);
   goog.asserts.assertString(fontWeight, 'fontWeight must be a string');
 
-  var text = ol.expr.evaluateFeature(this.text_, feature);
+  var text = ol.expr.evaluateFeature(this.text_, feature, attributes);
   goog.asserts.assertString(text, 'text must be a string');
 
-  var opacity = Number(ol.expr.evaluateFeature(this.opacity_, feature));
+  var opacity = Number(ol.expr.evaluateFeature(this.opacity_, feature,
+      attributes));
   goog.asserts.assert(!isNaN(opacity), 'opacity must be a number');
 
   var strokeColor, strokeOpacity, strokeWidth;
   if (!goog.isNull(this.stroke_)) {
-    strokeColor = ol.expr.evaluateFeature(this.stroke_.getColor(), feature);
+    strokeColor = ol.expr.evaluateFeature(this.stroke_.getColor(), feature,
+        attributes);
     goog.asserts.assertString(
         strokeColor, 'strokeColor must be a string');
     strokeOpacity = Number(ol.expr.evaluateFeature(
-        this.stroke_.getOpacity(), feature));
+        this.stroke_.getOpacity(), feature, attributes));
     goog.asserts.assert(!isNaN(strokeOpacity),
         'strokeOpacity must be a number');
     strokeWidth = Number(ol.expr.evaluateFeature(
-        this.stroke_.getWidth(), feature));
+        this.stroke_.getWidth(), feature, attributes));
     goog.asserts.assert(!isNaN(strokeWidth), 'strokeWidth must be a number');
   }
 
-  var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
+  var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature,
+      attributes));
   goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
 
   return new ol.style.TextLiteral({

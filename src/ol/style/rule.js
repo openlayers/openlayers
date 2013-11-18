@@ -66,7 +66,8 @@ ol.style.Rule.prototype.applies = function(feature, resolution) {
   var applies = resolution >= this.minResolution_ &&
       resolution < this.maxResolution_;
   if (applies && !goog.isNull(this.filter_)) {
-    applies = !!ol.expr.evaluateFeature(this.filter_, feature);
+    applies = !!ol.expr.evaluateFeature(this.filter_, feature,
+        feature.getAttributes());
   }
   return applies;
 };

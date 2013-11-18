@@ -249,7 +249,9 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
       xml = '<ogc:UpperBoundary xmlns:ogc="http://www.opengis.net/ogc">' +
           'foo<ogc:PropertyName>x</ogc:PropertyName>bar</ogc:UpperBoundary>';
       expr = reader.call(parser, goog.dom.xml.loadXml(xml).documentElement);
-      expect(evaluate(expr, new ol.Feature({x: 4}))).to.eql('foo4bar');
+      var feature = new ol.Feature({x: 4});
+      expect(evaluate(expr, feature, feature.getAttributes()))
+          .to.eql('foo4bar');
     });
 
     it('handles combined propertyname and literal', function() {
@@ -260,7 +262,9 @@ describe('ol.parser.ogc.Filter_v1_0_0', function() {
           '<ogc:PropertyName>x</ogc:PropertyName>' +
           '<ogc:Literal>foo</ogc:Literal></ogc:UpperBoundary>';
       var expr = reader.call(parser, goog.dom.xml.loadXml(xml).documentElement);
-      expect(evaluate(expr, new ol.Feature({x: 42}))).to.eql('bar42foo');
+      var feature = new ol.Feature({x: 42});
+      expect(evaluate(expr, feature, feature.getAttributes()))
+          .to.eql('bar42foo');
     });
 
   });

@@ -57,10 +57,11 @@ goog.inherits(ol.style.Fill, ol.style.Symbolizer);
  * @return {ol.style.PolygonLiteral} Literal shape symbolizer.
  */
 ol.style.Fill.prototype.createLiteral = function(featureOrType) {
-  var feature, type;
+  var attributes, geometry, feature, type;
   if (featureOrType instanceof ol.Feature) {
     feature = featureOrType;
-    var geometry = feature.getGeometry();
+    attributes = feature.getAttributes();
+    geometry = feature.getGeometry();
     type = geometry ? geometry.getType() : null;
   } else {
     type = featureOrType;
@@ -70,14 +71,16 @@ ol.style.Fill.prototype.createLiteral = function(featureOrType) {
   if (type === ol.geom.GeometryType.POLYGON ||
       type === ol.geom.GeometryType.MULTIPOLYGON) {
 
-    var color = ol.expr.evaluateFeature(this.color_, feature);
+    var color = ol.expr.evaluateFeature(this.color_, feature, attributes);
     goog.asserts.assertString(
         color, 'color must be a string');
 
-    var opacity = Number(ol.expr.evaluateFeature(this.opacity_, feature));
+    var opacity = Number(ol.expr.evaluateFeature(this.opacity_, feature,
+        attributes));
     goog.asserts.assert(!isNaN(opacity), 'opacity must be a number');
 
-    var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
+    var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature,
+        attributes));
     goog.asserts.assert(!isNaN(zIndex), 'zIndex must be a number');
 
     literal = new ol.style.PolygonLiteral({

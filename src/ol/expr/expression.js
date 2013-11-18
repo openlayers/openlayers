@@ -18,14 +18,11 @@ goog.require('ol.geom.GeometryType');
  *
  * @param {ol.expr.Expression} expr The expression.
  * @param {ol.Feature=} opt_feature The feature.
+ * @param {Object.<string, *>=} opt_attributes The feature attributes.
  * @return {*} The result of the expression.
  */
-ol.expr.evaluateFeature = function(expr, opt_feature) {
-  var scope;
-  if (goog.isDef(opt_feature)) {
-    scope = opt_feature.getAttributes();
-  }
-  return expr.evaluate(scope, ol.expr.lib, opt_feature);
+ol.expr.evaluateFeature = function(expr, opt_feature, opt_attributes) {
+  return expr.evaluate(opt_attributes, ol.expr.lib, opt_feature);
 };
 
 
