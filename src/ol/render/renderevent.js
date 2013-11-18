@@ -23,10 +23,11 @@ ol.render.EventType = {
  * @param {ol.render.IRender=} opt_render Render.
  * @param {ol.FrameState=} opt_frameState Frame state.
  * @param {?CanvasRenderingContext2D=} opt_context Context.
- * @param {?WebGLRenderingContext=} opt_gl GL.
+ * @param {?ol.webgl.Context=} opt_glContext WebGL Context.
  */
 ol.render.Event = function(
-    type, opt_target, opt_render, opt_frameState, opt_context, opt_gl) {
+    type, opt_target, opt_render, opt_frameState, opt_context,
+    opt_glContext) {
 
   goog.base(this, type, opt_target);
 
@@ -49,10 +50,10 @@ ol.render.Event = function(
   this.context_ = opt_context;
 
   /**
-   * @type {WebGLRenderingContext|null|undefined}
+   * @type {ol.webgl.Context|null|undefined}
    * @private
    */
-  this.gl_ = opt_gl;
+  this.glContext_ = opt_glContext;
 
 };
 goog.inherits(ol.render.Event, goog.events.Event);
@@ -75,10 +76,10 @@ ol.render.Event.prototype.getFrameState = function() {
 
 
 /**
- * @return {WebGLRenderingContext|null|undefined} GL.
+ * @return {ol.webgl.Context|null|undefined} GL context.
  */
-ol.render.Event.prototype.getGL = function() {
-  return this.gl_;
+ol.render.Event.prototype.getGlContext = function() {
+  return this.glContext_;
 };
 
 
