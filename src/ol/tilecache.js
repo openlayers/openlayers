@@ -16,7 +16,7 @@ ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK = 2048;
 
 /**
  * @constructor
- * @extends {ol.structs.LRUCache}
+ * @extends {ol.structs.LRUCache.<ol.Tile>}
  * @param {number=} opt_highWaterMark High water mark.
  */
 ol.TileCache = function(opt_highWaterMark) {
@@ -48,10 +48,7 @@ ol.TileCache.prototype.canExpireCache = function() {
 ol.TileCache.prototype.expireCache = function(usedTiles) {
   var tile, zKey;
   while (this.canExpireCache()) {
-    tile = /** @type {ol.Tile} */ (this.peekLast());
-    // TODO: Enforce ol.Tile in ol.TileCache#set
-    goog.asserts.assert(tile instanceof ol.Tile,
-        'ol.TileCache#expireCache only works with ol.Tile values.');
+    tile = this.peekLast();
     zKey = tile.tileCoord.z.toString();
     if (zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
       break;
