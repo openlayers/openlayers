@@ -41,14 +41,6 @@ ol.color.hexColorRe_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
 /**
  * @type {RegExp}
  * @private
- * This RegExp matches # followed by 4 or 8 hex digits.
- */
-ol.color.hexaColorRe_ = /^#(?:[0-9a-f]{4}){1,2}$/i;
-
-
-/**
- * @type {RegExp}
- * @private
  * @see goog.color.rgbColorRe_
  */
 ol.color.rgbColorRe_ =
