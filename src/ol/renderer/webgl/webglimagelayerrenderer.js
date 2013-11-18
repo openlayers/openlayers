@@ -132,7 +132,7 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
   if (!goog.isNull(image)) {
     goog.asserts.assert(!goog.isNull(texture));
 
-    var canvas = this.getWebGLMapRenderer().getCanvas();
+    var canvas = this.getWebGLMapRenderer().getContext().getCanvas();
 
     this.updateProjectionMatrix_(canvas.width, canvas.height,
         viewCenter, viewResolution, viewRotation, image.getExtent());

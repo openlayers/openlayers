@@ -3,7 +3,6 @@ goog.provide('ol.renderer.Map');
 goog.require('goog.Disposable');
 goog.require('goog.asserts');
 goog.require('goog.dispose');
-goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.FrameState');
@@ -89,12 +88,6 @@ ol.renderer.Map.prototype.disposeInternal = function() {
   });
   goog.base(this, 'disposeInternal');
 };
-
-
-/**
- * @return {HTMLCanvasElement} Canvas.
- */
-ol.renderer.Map.prototype.getCanvas = goog.functions.NULL;
 
 
 /**

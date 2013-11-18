@@ -268,14 +268,6 @@ ol.renderer.webgl.Map.prototype.expireCache_ = function(map, frameState) {
 
 
 /**
- * @inheritDoc
- */
-ol.renderer.webgl.Map.prototype.getCanvas = function() {
-  return this.canvas_;
-};
-
-
-/**
  * @return {ol.webgl.Context}
  */
 ol.renderer.webgl.Map.prototype.getContext = function() {
