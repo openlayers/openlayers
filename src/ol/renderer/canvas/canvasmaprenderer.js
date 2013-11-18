@@ -75,6 +75,25 @@ ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
 
 
 /**
+ * @param {ol.render.EventType} type Event type.
+ * @param {ol.FrameState} frameState Frame state.
+ * @private
+ */
+ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
+    function(type, frameState) {
+  var map = this.getMap();
+  var context = this.context_;
+  if (map.hasListener(type)) {
+    var render = new ol.render.canvas.Immediate(
+        context, frameState.extent, frameState.coordinateToPixelMatrix);
+    var composeEvent = new ol.render.Event(type, map, render, frameState,
+        context, null);
+    map.dispatchEvent(composeEvent);
+  }
+};
+
+
+/**
  * @inheritDoc
  */
 ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
@@ -99,6 +118,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   this.calculateMatrices2D(frameState);
 
+  this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
+
   var layerStates = frameState.layerStates;
   var layersArray = frameState.layersArray;
   var viewResolution = frameState.view2DState.resolution;
@@ -118,14 +139,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     layerRenderer.composeFrame(frameState, layerState, context);
   }
 
-  var map = this.getMap();
-  if (map.hasListener(ol.render.EventType.POSTCOMPOSE)) {
-    var render = new ol.render.canvas.Immediate(
-        context, frameState.extent, frameState.coordinateToPixelMatrix);
-    var postComposeEvent = new ol.render.Event(ol.render.EventType.POSTCOMPOSE,
-        map, render, frameState, context, null);
-    map.dispatchEvent(postComposeEvent);
-  }
+  this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, frameState);
 
   if (!this.renderedVisible_) {
     goog.style.setElementShown(this.canvas_, true);
