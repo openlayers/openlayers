@@ -40,7 +40,7 @@ ol.render.canvas.Replay = function() {
 
   /**
    * @protected
-   * @type {Array}
+   * @type {Array.<*>}
    */
   this.instructions = [];
 
