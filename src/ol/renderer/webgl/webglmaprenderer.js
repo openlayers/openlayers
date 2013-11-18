@@ -106,7 +106,7 @@ ol.renderer.webgl.Map = function(container, map) {
 
   /**
    * @private
-   * @type {ol.structs.PriorityQueue}
+   * @type {ol.structs.PriorityQueue.<Array>}
    */
   this.tileTextureQueue_ = new ol.structs.PriorityQueue(
       /**
@@ -291,7 +291,7 @@ ol.renderer.webgl.Map.prototype.getGL = function() {
 
 
 /**
- * @return {ol.structs.PriorityQueue} Tile texture queue.
+ * @return {ol.structs.PriorityQueue.<Array>} Tile texture queue.
  */
 ol.renderer.webgl.Map.prototype.getTileTextureQueue = function() {
   return this.tileTextureQueue_;
