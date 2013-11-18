@@ -9,6 +9,7 @@ goog.require('ol.extent');
 goog.require('ol.render.IRender');
 goog.require('ol.style.fill');
 goog.require('ol.style.stroke');
+goog.require('ol.style.text');
 
 
 
@@ -43,12 +44,14 @@ ol.render.canvas.Immediate = function(context, extent, transform) {
    * @private
    * @type {{fillStyle: ol.style.Fill,
    *         imageStyle: ol.style.Image,
-   *         strokeStyle: ol.style.Stroke}}
+   *         strokeStyle: ol.style.Stroke,
+   *         textStyle: ol.style.Text}}
    */
   this.state_ = {
     fillStyle: null,
     imageStyle: null,
-    strokeStyle: null
+    strokeStyle: null,
+    textStyle: null
   };
 
   /**
@@ -82,6 +85,39 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(geometry) {
       y = (y + 0.5) | 0;
     }
     context.drawImage(imageStyle.image, x, y);
+  }
+};
+
+
+/**
+ * @param {ol.geom.Point|ol.geom.MultiPoint} geometry Geometry.
+ * @private
+ */
+ol.render.canvas.Immediate.prototype.drawText_ = function(geometry) {
+  var context = this.context_;
+  var state = this.state_;
+  var fillStyle = state.fillStyle;
+  var strokeStyle = state.strokeStyle;
+  var textStyle = state.textStyle;
+  if (!ol.extent.intersects(this.extent_, geometry.getExtent()) ||
+      !goog.isDefAndNotNull(textStyle) || !goog.isDef(textStyle.text) ||
+      (!goog.isDefAndNotNull(fillStyle) &&
+       !goog.isDefAndNotNull(strokeStyle))) {
+    return;
+  }
+  var pixelCoordinates = ol.geom.transformGeometry2D(
+      geometry, this.transform_, this.pixelCoordinates_);
+  var i, ii;
+  for (i = 0, ii = pixelCoordinates.length; i < ii; i += 2) {
+    var x = pixelCoordinates[i];
+    var y = pixelCoordinates[i + 1];
+    // FIXME stroke before fill or fill before stroke?
+    if (goog.isDefAndNotNull(strokeStyle)) {
+      context.strokeText(textStyle.text, x, y);
+    }
+    if (goog.isDefAndNotNull(fillStyle)) {
+      context.fillText(textStyle.text, x, y);
+    }
   }
 };
 
@@ -149,14 +185,20 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
  * @inheritDoc
  */
 ol.render.canvas.Immediate.prototype.drawPointGeometry =
-    ol.render.canvas.Immediate.prototype.drawImages_;
+    function(pointGeometry) {
+  this.drawImages_(pointGeometry);
+  this.drawText_(pointGeometry);
+};
 
 
 /**
  * @inheritDoc
  */
 ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
-    ol.render.canvas.Immediate.prototype.drawImages_;
+    function(multiPointGeometry) {
+  this.drawImages_(multiPointGeometry);
+  this.drawText_(multiPointGeometry);
+};
 
 
 /**
@@ -296,7 +338,21 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
 /**
  * @inheritDoc
  */
-ol.render.canvas.Immediate.prototype.setTextStyle = goog.abstractMethod;
+ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
+  var context = this.context_;
+  var state = this.state_;
+  if (!ol.style.text.equals(state.textStyle, textStyle)) {
+    if (goog.isDefAndNotNull(textStyle)) {
+      context.font = goog.isDef(textStyle.font) ?
+          textStyle.font : '10px sans-serif';
+      context.textAlign = goog.isDef(textStyle.textAlign) ?
+          textStyle.textAlign : 'start';
+      context.textBaseline = goog.isDef(textStyle.textBaseline) ?
+          textStyle.textBaseline : 'alphabetic';
+    }
+    state.textStyle = textStyle;
+  }
+};
 
 
 /**
