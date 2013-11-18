@@ -110,15 +110,20 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   goog.dispose(this.replayGroup_);
   this.replayGroup_ = null;
 
+  /** @type {function(ol.Feature): ol.style.Style|undefined} */
   var styleFunction = vectorLayer.getStyleFunction();
   if (!goog.isDef(styleFunction)) {
     styleFunction = ol.style.DefaultStyleFunction;
   }
   var replayGroup = new ol.render.canvas.ReplayGroup();
-  vectorSource.forEachFeatureInExtent(extent, function(feature) {
-    var style = styleFunction(feature);
-    ol.renderer.vector.renderFeature(replayGroup, feature, style);
-  }, this);
+  vectorSource.forEachFeatureInExtent(extent,
+      /**
+       * @param {ol.Feature} feature Feature.
+       */
+      function(feature) {
+        var style = styleFunction(feature);
+        ol.renderer.vector.renderFeature(replayGroup, feature, style);
+      }, this);
   replayGroup.finish();
 
   this.renderedResolution_ = frameState.view2DState.resolution;
