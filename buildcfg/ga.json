@@ -1,0 +1,16 @@
+{
+
+  "id": "ga",
+
+  "css-allowed-unrecognized-properties": [
+    "user-select"
+  ],
+
+  "css-inputs": [
+    "../css/ga.css"
+  ],
+
+  "css-output-file": "../build/ga.css",
+
+  "inherits": "ol.json"
+}
