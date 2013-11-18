@@ -335,9 +335,9 @@ ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ =
 ol.interaction.Modify.prototype.handleDragStart = function(evt) {
   this.dragSegments_ = [];
   var vertexFeature = this.vertexFeature_;
-  var renderIntent = vertexFeature.getRenderIntent();
-  if (goog.isDef(vertexFeature) &&
-      renderIntent != ol.layer.VectorLayerRenderIntent.HIDDEN) {
+  if (!goog.isNull(vertexFeature) && vertexFeature.getRenderIntent() !=
+      ol.layer.VectorLayerRenderIntent.HIDDEN) {
+    var renderIntent = vertexFeature.getRenderIntent();
     var insertVertices = [];
     var vertex = vertexFeature.getGeometry().getCoordinates();
     var vertexExtent = ol.extent.boundingExtent([vertex]);
