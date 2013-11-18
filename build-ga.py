@@ -2,9 +2,7 @@
 
 from build import *
 
-
 from pake import targets,TargetCollection, DuplicateTargetError
-
 
 # Monkey patching build.py to allow redefining targets by 
 def add(self, target, force=True):
@@ -16,7 +14,6 @@ def add(self, target, force=True):
         self.targets[target.name] = target
         if self.default is None:
             self.default = target
-
 
 from types import MethodType
 targets.add = MethodType(add, targets, TargetCollection)
@@ -39,21 +36,21 @@ def build_ga_css(t):
     t.touch()
 
 @target('build/ga.js', PLOVR_JAR, SRC, EXTERNAL_SRC, SHADER_SRC,
-        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json')
+        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ga.json')
 def build_ga_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ol.json')
+    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ga.json')
     report_sizes(t)
 
 
 @target('build/ga-simple.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
+        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ga.json',
         'buildcfg/ol-simple.json')
 def build_ga_simple_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ol-simple.json')
     report_sizes(t)
 
 @target('build/ga-whitespace.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
+        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ga.json',
         'buildcfg/ga-whitespace.json')
 def build_ga_whitespace_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR,
