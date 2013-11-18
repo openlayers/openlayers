@@ -54,12 +54,12 @@ goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     function(frameState, layerState, context) {
 
-  /** @type {goog.vec.Mat4.AnyType|undefined} */
-  var transform;
+  var transform = this.getTransform(frameState);
+
+  this.dispatchPreComposeEvent(context, frameState, transform);
 
   var replayGroup = this.replayGroup_;
   if (!goog.isNull(replayGroup)) {
-    transform = this.getTransform(frameState);
     context.globalAlpha = layerState.opacity;
     replayGroup.draw(context, frameState.extent, transform);
   }
