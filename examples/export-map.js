@@ -19,14 +19,9 @@ var map = new ol.Map({
   })
 });
 
-var exportJPEGElement = document.getElementById('export-jpeg');
 var exportPNGElement = document.getElementById('export-png');
 
-if ('download' in exportJPEGElement && 'download' in exportPNGElement) {
-  exportJPEGElement.addEventListener('click', function(e) {
-    e.target.href = map.getRenderer().getCanvas().toDataURL('image/jpeg');
-  }, false);
-
+if ('download' in exportPNGElement) {
   exportPNGElement.addEventListener('click', function(e) {
     e.target.href = map.getRenderer().getCanvas().toDataURL('image/png');
   }, false);
