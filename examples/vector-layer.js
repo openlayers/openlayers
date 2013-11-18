@@ -33,10 +33,10 @@ var style = {
   }
 };
 
-$.get('data/countries.geojson', function(data) {
+$.getJSON('data/countries.geojson', function(data) {
   var format = new ol.format.GeoJSON();
   var transformFn = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
-  format.readString(data, function(feature) {
+  format.readObject(data, function(feature) {
     var geometry = feature.getGeometry();
     geometry.transform(transformFn);
     feature.setGeometry(geometry);
