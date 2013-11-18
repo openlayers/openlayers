@@ -5,6 +5,8 @@ goog.require('goog.webgl');
 goog.require('ol.FrameState');
 goog.require('ol.color.Matrix');
 goog.require('ol.layer.Layer');
+goog.require('ol.render.Event');
+goog.require('ol.render.EventType');
 goog.require('ol.renderer.Layer');
 goog.require('ol.renderer.webgl.map.shader.Color');
 goog.require('ol.renderer.webgl.map.shader.Default');
@@ -135,6 +137,9 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer =
 ol.renderer.webgl.Layer.prototype.composeFrame =
     function(frameState, layerState, context) {
 
+  this.dispatchComposeEvent_(
+      ol.render.EventType.PRECOMPOSE, context, frameState);
+
   var gl = context.getGL();
 
   var useColor =
@@ -202,6 +207,26 @@ ol.renderer.webgl.Layer.prototype.composeFrame =
   gl.bindTexture(goog.webgl.TEXTURE_2D, this.getTexture());
   gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
 
+  this.dispatchComposeEvent_(
+      ol.render.EventType.POSTCOMPOSE, context, frameState);
+
+};
+
+
+/**
+ * @param {ol.render.EventType} type Event type.
+ * @param {ol.webgl.Context} context WebGL context.
+ * @param {ol.FrameState} frameState Frame state.
+ * @private
+ */
+ol.renderer.webgl.Layer.prototype.dispatchComposeEvent_ =
+    function(type, context, frameState) {
+  var layer = this.getLayer();
+  if (layer.hasListener(type)) {
+    var composeEvent = new ol.render.Event(
+        type, layer, null, frameState, null, context);
+    layer.dispatchEvent(composeEvent);
+  }
 };
 
 
