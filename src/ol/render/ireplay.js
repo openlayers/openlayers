@@ -1,4 +1,4 @@
-goog.provide('ol.render.IReplayReplayGroup');
+goog.provide('ol.render.IReplayGroup');
 
 goog.require('goog.functions');
 goog.require('ol.render.IRender');
@@ -19,14 +19,14 @@ ol.render.ReplayType = {
 /**
  * @interface
  */
-ol.render.IReplayReplayGroup = function() {
+ol.render.IReplayGroup = function() {
 };
 
 
 /**
  * FIXME empty description for jsdoc
  */
-ol.render.IReplayReplayGroup.prototype.finish = function() {
+ol.render.IReplayGroup.prototype.finish = function() {
 };
 
 
@@ -35,7 +35,7 @@ ol.render.IReplayReplayGroup.prototype.finish = function() {
  * @param {ol.render.ReplayType} replayType Replay type.
  * @return {ol.render.IRender} Replay.
  */
-ol.render.IReplayReplayGroup.prototype.getReplay =
+ol.render.IReplayGroup.prototype.getReplay =
     function(zIndex, replayType) {
 };
 
@@ -43,5 +43,5 @@ ol.render.IReplayReplayGroup.prototype.getReplay =
 /**
  * @return {boolean} Is empty.
  */
-ol.render.IReplayReplayGroup.prototype.isEmpty = function() {
+ol.render.IReplayGroup.prototype.isEmpty = function() {
 };

@@ -10,7 +10,7 @@ goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.geom.flat');
 goog.require('ol.render.IRender');
-goog.require('ol.render.IReplayReplayGroup');
+goog.require('ol.render.IReplayGroup');
 goog.require('ol.style.fill');
 goog.require('ol.style.stroke');
 
@@ -600,7 +600,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
 
 /**
  * @constructor
- * @implements {ol.render.IReplayReplayGroup}
+ * @implements {ol.render.IReplayGroup}
  */
 ol.render.canvas.ReplayGroup = function() {
 

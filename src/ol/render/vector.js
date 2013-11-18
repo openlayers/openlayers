@@ -7,12 +7,12 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.render.IReplayReplayGroup');
+goog.require('ol.render.IReplayGroup');
 goog.require('ol.style.Style');
 
 
 /**
- * @param {ol.render.IReplayReplayGroup} replayGroup Replay group.
+ * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  */
@@ -26,7 +26,7 @@ ol.renderer.vector.renderFeature = function(replayGroup, feature, style) {
 
 
 /**
- * @param {ol.render.IReplayReplayGroup} replayGroup Replay group.
+ * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @private
@@ -46,7 +46,7 @@ ol.renderer.vector.renderLineStringGeometry_ =
 
 
 /**
- * @param {ol.render.IReplayReplayGroup} replayGroup Replay group.
+ * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @private
@@ -67,7 +67,7 @@ ol.renderer.vector.renderMultiLineStringGeometry_ =
 
 
 /**
- * @param {ol.render.IReplayReplayGroup} replayGroup Replay group.
+ * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @private
@@ -88,7 +88,7 @@ ol.renderer.vector.renderMultiPolygonGeometry_ =
 
 
 /**
- * @param {ol.render.IReplayReplayGroup} replayGroup Replay group.
+ * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @private
@@ -107,7 +107,7 @@ ol.renderer.vector.renderPointGeometry_ =
 
 
 /**
- * @param {ol.render.IReplayReplayGroup} replayGroup Replay group.
+ * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @private
@@ -126,7 +126,7 @@ ol.renderer.vector.renderMultiPointGeometry_ =
 
 
 /**
- * @param {ol.render.IReplayReplayGroup} replayGroup Replay group.
+ * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @private
@@ -149,7 +149,7 @@ ol.renderer.vector.renderPolygonGeometry_ =
  * @const
  * @private
  * @type {Object.<ol.geom.Type,
- *                function(ol.render.IReplayReplayGroup, ol.geom.Geometry,
+ *                function(ol.render.IReplayGroup, ol.geom.Geometry,
  *                         ol.style.Style)>}
  */
 ol.renderer.vector.GEOMETRY_RENDERERS_ = {
