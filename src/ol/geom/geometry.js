@@ -192,7 +192,7 @@ ol.geom.Geometry.prototype.setLayout =
         this.stride = 2;
         return;
       } else {
-        coordinates = coordinates[0];
+        coordinates = /** @type {Array} */ (coordinates[0]);
       }
     }
     stride = (/** @type {Array} */ (coordinates)).length;
