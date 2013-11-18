@@ -31,26 +31,26 @@ ol.Color;
 
 
 /**
+ * This RegExp matches # followed by 3 or 6 hex digits.
  * @type {RegExp}
  * @private
- * This RegExp matches # followed by 3 or 6 hex digits.
  */
 ol.color.hexColorRe_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
 
 
 /**
+ * @see goog.color.rgbColorRe_
  * @type {RegExp}
  * @private
- * @see goog.color.rgbColorRe_
  */
 ol.color.rgbColorRe_ =
     /^(?:rgb)?\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2})\)$/i;
 
 
 /**
+ * @see goog.color.alpha.rgbaColorRe_
  * @type {RegExp}
  * @private
- * @see goog.color.alpha.rgbaColorRe_
  */
 ol.color.rgbaColorRe_ =
     /^(?:rgba)?\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|1|0\.\d{0,10})\)$/i;
