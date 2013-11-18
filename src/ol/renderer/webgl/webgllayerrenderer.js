@@ -10,6 +10,7 @@ goog.require('ol.render.EventType');
 goog.require('ol.renderer.Layer');
 goog.require('ol.renderer.webgl.map.shader.Color');
 goog.require('ol.renderer.webgl.map.shader.Default');
+goog.require('ol.structs.Buffer');
 
 
 
@@ -22,6 +23,17 @@ goog.require('ol.renderer.webgl.map.shader.Default');
 ol.renderer.webgl.Layer = function(mapRenderer, layer) {
 
   goog.base(this, mapRenderer, layer);
+
+  /**
+   * @private
+   * @type {ol.structs.Buffer}
+   */
+  this.arrayBuffer_ = new ol.structs.Buffer([
+    -1, -1, 0, 0,
+    1, -1, 1, 0,
+    -1, 1, 0, 1,
+    1, 1, 1, 1
+  ]);
 
   /**
    * @protected
@@ -139,6 +151,8 @@ ol.renderer.webgl.Layer.prototype.composeFrame =
 
   this.dispatchComposeEvent_(
       ol.render.EventType.PRECOMPOSE, context, frameState);
+
+  context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
 
   var gl = context.getGL();
 

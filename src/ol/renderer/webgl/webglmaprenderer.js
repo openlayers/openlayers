@@ -24,7 +24,6 @@ goog.require('ol.renderer.Map');
 goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.TileLayer');
 goog.require('ol.source.State');
-goog.require('ol.structs.Buffer');
 goog.require('ol.structs.LRUCache');
 goog.require('ol.structs.PriorityQueue');
 goog.require('ol.webgl');
@@ -92,17 +91,6 @@ ol.renderer.webgl.Map = function(container, map) {
       this.handleWebGLContextLost, false, this);
   goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.RESTORED,
       this.handleWebGLContextRestored, false, this);
-
-  /**
-   * @private
-   * @type {ol.structs.Buffer}
-   */
-  this.arrayBuffer_ = new ol.structs.Buffer([
-    -1, -1, 0, 0,
-    1, -1, 1, 0,
-    -1, 1, 0, 1,
-    1, 1, 1, 1
-  ]);
 
   /**
    * @private
@@ -425,7 +413,6 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   gl.enable(goog.webgl.BLEND);
   gl.viewport(0, 0, size[0], size[1]);
 
-  context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
   this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
 
   for (i = 0, ii = layersToDraw.length; i < ii; ++i) {
