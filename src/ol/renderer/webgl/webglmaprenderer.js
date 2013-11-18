@@ -77,7 +77,7 @@ ol.renderer.webgl.Map = function(container, map) {
     antialias: true,
     depth: false,
     preserveDrawingBuffer: false,
-    stencil: false
+    stencil: true
   });
   goog.asserts.assert(!goog.isNull(this.gl_));
 
@@ -333,6 +333,7 @@ ol.renderer.webgl.Map.prototype.initializeGL_ = function() {
   gl.disable(goog.webgl.CULL_FACE);
   gl.disable(goog.webgl.DEPTH_TEST);
   gl.disable(goog.webgl.SCISSOR_TEST);
+  gl.disable(goog.webgl.STENCIL_TEST);
 };
 
 
