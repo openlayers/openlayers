@@ -53,7 +53,7 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
    * @private
    * @type {ol.structs.Buffer}
    */
-  this.arrayBuffer_ = new ol.structs.Buffer([
+  this.renderArrayBuffer_ = new ol.structs.Buffer([
     0, 0, 0, 1,
     1, 0, 1, 1,
     0, 1, 0, 0,
@@ -88,7 +88,7 @@ goog.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
 ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
   var mapRenderer = this.getWebGLMapRenderer();
   var context = mapRenderer.getContext();
-  context.deleteBuffer(this.arrayBuffer_);
+  context.deleteBuffer(this.renderArrayBuffer_);
   goog.base(this, 'disposeInternal');
 };
 
@@ -181,7 +181,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
           new ol.renderer.webgl.tilelayer.shader.Locations(gl, program);
     }
 
-    context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
+    context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.renderArrayBuffer_);
     gl.enableVertexAttribArray(this.locations_.a_position);
     gl.vertexAttribPointer(
         this.locations_.a_position, 2, goog.webgl.FLOAT, false, 16, 0);
