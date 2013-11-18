@@ -47,13 +47,10 @@ ol.render.DragBox = function(opt_style) {
    */
   this.style_ = goog.isDef(opt_style) ? opt_style : {
     fill: {
-      color: 'rgba(255,0,0,0.1)'
+      color: 'rgba(0,0,0,0.5)'
     },
     image: null,
-    stroke: {
-      color: '#ff0000',
-      width: 1
-    },
+    stroke: null,
     text: null,
     zIndex: 0
   };
@@ -78,12 +75,24 @@ ol.render.DragBox.prototype.handleMapPostCompose_ = function(event) {
   var render = event.getRender();
   var startCoordinate = this.startCoordinate_;
   var endCoordinate = this.endCoordinate_;
-  var coordinates = [[
-    [startCoordinate[0], startCoordinate[1]],
-    [startCoordinate[0], endCoordinate[1]],
-    [endCoordinate[0], endCoordinate[1]],
-    [endCoordinate[0], startCoordinate[1]]
-  ]];
+
+  var extent = event.getFrameState().extent;
+  var coordinates = [
+    // outer ring
+    [
+      [extent[0], extent[1]],
+      [extent[0], extent[3]],
+      [extent[2], extent[3]],
+      [extent[2], extent[1]]
+    ],
+    // inner ring
+    [
+      startCoordinate,
+      [startCoordinate[0], endCoordinate[1]],
+      endCoordinate,
+      [endCoordinate[0], startCoordinate[1]]
+    ]
+  ];
   var geometry = new ol.geom.Polygon(coordinates);
   var style = this.style_;
   render.setFillStrokeStyle(style.fill, style.stroke);

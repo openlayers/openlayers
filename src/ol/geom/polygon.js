@@ -65,8 +65,7 @@ ol.geom.Polygon.prototype.getType = function() {
  * @param {ol.geom.RawPolygon} coordinates Coordinates.
  * @param {ol.geom.Layout=} opt_layout Layout.
  */
-ol.geom.Polygon.prototype.setCoordinates =
-    function(coordinates, opt_layout) {
+ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
   this.setLayout(opt_layout, coordinates, 2);
   ol.geom.flat.deflateCoordinatess(
       this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
