@@ -211,7 +211,8 @@ ol.color.fromStringInternal_ = function(s) {
 
   var isHex = false;
   if (ol.color.ENABLE_NAMED_COLORS && goog.color.names.hasOwnProperty(s)) {
-    s = goog.color.names[s];
+    // goog.color.names does not have a type declaration, so add a typecast
+    s = /** @type {string} */ (goog.color.names[s]);
     isHex = true;
   }
 
