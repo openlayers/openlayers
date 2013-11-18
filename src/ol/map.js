@@ -504,16 +504,6 @@ ol.Map.prototype.getEventPixel = function(event) {
 
 
 /**
- * Get the map's renderer.
- * @return {ol.renderer.Map} Renderer.
- * @todo stability experimental
- */
-ol.Map.prototype.getRenderer = function() {
-  return this.renderer_;
-};
-
-
-/**
  * Get the target in which this map is rendered.
  * Note that this returns what is entered as an option or in setTarget:
  * if that was an element, it returns an element; if a string, it returns that.
