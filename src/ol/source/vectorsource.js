@@ -224,13 +224,16 @@ ol.source.Vector.prototype.getFeatures = function(opt_filter) {
  *
  * @param {ol.Extent} extent Bounding extent.
  * @param {ol.proj.Projection} projection Target projection.
- * @return {Object.<string, ol.Feature>} Features lookup object.
+ * @param {function(this: T, ol.Feature)} callback Callback called with each
+ *     feature.
+ * @param {T=} opt_thisArg The object to be used as the value of 'this' for
+ *     the callback.
+ * @template T
  */
-ol.source.Vector.prototype.getFeaturesObjectForExtent = function(extent,
-    projection) {
-  // TODO: create forEachFeatureInExtent method instead
+ol.source.Vector.prototype.forEachFeatureInExtent = function(extent,
+    projection, callback, opt_thisArg) {
   // TODO: transform if requested project is different than loaded projection
-  return this.featureCache_.getFeaturesObjectForExtent(extent);
+  this.featureCache_.forEach(extent, callback, opt_thisArg);
 };
 
 
@@ -394,13 +397,19 @@ ol.source.FeatureCache.prototype.getFeaturesObject = function() {
 
 
 /**
- * Get all features whose bounding box intersects the provided extent.
+ * Operate on each feature whose bounding box intersects the provided extent.
  *
  * @param {ol.Extent} extent Bounding extent.
- * @return {Object.<string, ol.Feature>} Features.
+ * @param {function(this: T, ol.Feature)} callback Callback called with each
+ *     feature.
+ * @param {T=} opt_thisArg The object to be used as the value of 'this' for
+ *     the callback.
+ * @template T
  */
-ol.source.FeatureCache.prototype.getFeaturesObjectForExtent = function(extent) {
-  return this.rTree_.searchReturningObject(extent);
+ol.source.FeatureCache.prototype.forEach =
+    function(extent, callback, opt_thisArg) {
+  this.rTree_.forEach(
+      extent, /** @type {function(Object)} */ (callback), opt_thisArg);
 };
 
 

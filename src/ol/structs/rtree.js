@@ -499,8 +499,7 @@ ol.structs.RTree.prototype.removeSubtree_ = function(rect, obj, root) {
             ol.structs.RTree.recalculateExtent_(tree);
             workingObject.target = undefined;
             if (tree.nodes.length < this.minWidth_) { // Underflow
-              workingObject.nodes = /** @type {Array} */
-                  (this.searchSubtree_(tree, true, [], tree));
+              workingObject.nodes = this.searchSubtree_(tree, true, [], tree);
             }
             break;
           } else if (goog.isDef(lTree.nodes)) {
@@ -528,15 +527,13 @@ ol.structs.RTree.prototype.removeSubtree_ = function(rect, obj, root) {
       workingObject.nodes.length = 0;
       if (hitStack.length === 0 && tree.nodes.length <= 1) {
         // Underflow..on root!
-        workingObject.nodes = /** @type {Array} */
-            (this.searchSubtree_(tree, true, workingObject.nodes, tree));
+        this.searchSubtree_(tree, true, workingObject.nodes, tree);
         tree.nodes.length = 0;
         hitStack.push(tree);
         countStack.push(1);
       } else if (hitStack.length > 0 && tree.nodes.length < this.minWidth_) {
         // Underflow..AGAIN!
-        workingObject.nodes = /** @type {Array} */
-            (this.searchSubtree_(tree, true, workingObject.nodes, tree));
+        this.searchSubtree_(tree, true, workingObject.nodes, tree);
         tree.nodes.length = 0;
       } else {
         workingObject.nodes = undefined; // Just start resizing
@@ -562,24 +559,24 @@ ol.structs.RTree.prototype.removeSubtree_ = function(rect, obj, root) {
  */
 ol.structs.RTree.prototype.search = function(extent, opt_type) {
   var rect = /** @type {ol.structs.RTreeNode} */ ({extent: extent});
-  return /** @type {Array} */ (
-      this.searchSubtree_(rect, false, [], this.rootTree_, opt_type));
+  return this.searchSubtree_(rect, false, [], this.rootTree_, opt_type);
 };
 
 
 /**
- * Non-recursive search function
+ * Search in the given extent and call the callback with each result.
  *
- * @param {ol.Extent} extent Extent.
- * @param {string|number=} opt_type Optional type of the objects we want to
- *     find.
- * @return {Object} Result. Keys are UIDs of the values.
+ * @param {ol.Extent} extent Extent to search.
+ * @param {function(this: T, Object)} callback Callback called with each result.
+ * @param {T=} opt_thisArg The object to be used as the value of 'this' for
+ *     the callback.
  * @this {ol.structs.RTree}
+ * @template T
  */
-ol.structs.RTree.prototype.searchReturningObject = function(extent, opt_type) {
+ol.structs.RTree.prototype.forEach = function(extent, callback, opt_thisArg) {
   var rect = /** @type {ol.structs.RTreeNode} */ ({extent: extent});
-  return /** @type {Object} */ (
-      this.searchSubtree_(rect, false, [], this.rootTree_, opt_type, true));
+  this.searchSubtree_(
+      rect, false, [], this.rootTree_, undefined, callback, opt_thisArg);
 };
 
 
@@ -588,17 +585,19 @@ ol.structs.RTree.prototype.searchReturningObject = function(extent, opt_type) {
  *
  * @param {ol.structs.RTreeNode} rect Rectangle.
  * @param {boolean} returnNode Do we return nodes?
- * @param {Array|Object} result Result.
+ * @param {Array} result Result.
  * @param {ol.structs.RTreeNode} root Root.
  * @param {string|number=} opt_type Optional type to search for.
- * @param {boolean=} opt_resultAsObject If set, result will be an object keyed
- *     by UID.
+ * @param {function(this: T, Object)=} opt_callback Callback called with each
+ *     result.
+ * @param {T=} opt_thisArg The object to be used as the value of 'this' for
+ *     the callback.
  * @private
- * @return {Array|Object} Result.
+ * @template T
+ * @return {Array} Result.
  */
 ol.structs.RTree.prototype.searchSubtree_ = function(
-    rect, returnNode, result, root, opt_type, opt_resultAsObject) {
-  var resultObject = {};
+    rect, returnNode, result, root, opt_type, opt_callback, opt_thisArg) {
   var hitStack = []; // Contains the elements that overlap
 
   if (!ol.extent.intersects(rect.extent, root.extent)) {
@@ -621,8 +620,8 @@ ol.structs.RTree.prototype.searchSubtree_ = function(
             // walk all the way in to the leaf to know that we don't need it
             if (!goog.isDef(opt_type) || lTree.type == opt_type) {
               var obj = lTree.leaf;
-              if (goog.isDef(opt_resultAsObject)) {
-                resultObject[goog.getUid(obj).toString()] = obj;
+              if (goog.isDef(opt_callback)) {
+                opt_callback.call(opt_thisArg, obj);
               } else {
                 result.push(obj);
               }
@@ -635,9 +634,5 @@ ol.structs.RTree.prototype.searchSubtree_ = function(
     }
   } while (hitStack.length > 0);
 
-  if (goog.isDef(opt_resultAsObject)) {
-    return resultObject;
-  } else {
-    return result;
-  }
+  return result;
 };

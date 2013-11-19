@@ -1,6 +1,7 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
 goog.require('goog.asserts');
+goog.require('goog.async.nextTick');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
@@ -247,12 +248,13 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
     function(pixel, success, opt_error) {
   // TODO What do we want to pass to the error callback?
   var map = this.getMap();
-  var result = [];
+  var features = [];
 
   var source = this.getVectorLayer().getSource();
   var location = map.getCoordinateFromPixel(pixel);
   var tileCoord = this.tileGrid_.getTileCoordForCoordAndZ(location, 0);
   var key = tileCoord.toString();
+
   if (this.tileCache_.containsKey(key)) {
     var cachedTile = this.tileCache_.get(key);
     var symbolSizes = cachedTile[1];
@@ -262,24 +264,15 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
     var halfMaxHeight = maxSymbolSize[1] / 2;
     var locationMin = [location[0] - halfMaxWidth, location[1] - halfMaxHeight];
     var locationMax = [location[0] + halfMaxWidth, location[1] + halfMaxHeight];
-    var locationBbox = ol.extent.boundingExtent([locationMin, locationMax]);
-    var candidates = source.getFeaturesObjectForExtent(locationBbox,
-        map.getView().getView2D().getProjection());
-    if (goog.isNull(candidates)) {
-      // data is not loaded
-      if (goog.isDef(opt_error)) {
-        goog.global.setTimeout(function() { opt_error(); }, 0);
-      }
-      return;
-    }
+    var extent = ol.extent.boundingExtent([locationMin, locationMax]);
+    var projection = map.getView().getView2D().getProjection();
 
-    var candidate, geom, type, symbolBounds, symbolSize, symbolOffset,
-        halfWidth, halfHeight, uid, coordinates, j;
-    for (var id in candidates) {
-      candidate = candidates[id];
-      if (candidate.getRenderIntent() ==
-          ol.FeatureRenderIntent.HIDDEN) {
-        continue;
+    source.forEachFeatureInExtent(extent, projection, function(candidate) {
+      var geom, type, symbolBounds, symbolSize, symbolOffset,
+          halfWidth, halfHeight, uid, coordinates, j;
+
+      if (candidate.getRenderIntent() == ol.FeatureRenderIntent.HIDDEN) {
+        return;
       }
       geom = candidate.getGeometry();
       type = geom.getType();
@@ -304,27 +297,30 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
         }
         for (j = coordinates.length - 1; j >= 0; --j) {
           if (ol.extent.containsCoordinate(symbolBounds, coordinates[j])) {
-            result.push(candidate);
+            features.push(candidate);
             break;
           }
         }
       } else if (goog.isFunction(geom.containsCoordinate)) {
         // For polygons, check if the pixel location is inside the polygon
         if (geom.containsCoordinate(location)) {
-          result.push(candidate);
+          features.push(candidate);
         }
       } else if (goog.isFunction(geom.distanceFromCoordinate)) {
         // For lines, check if the distance to the pixel location is
         // within the rendered line width
         if (2 * geom.distanceFromCoordinate(location) <=
             symbolSizes[goog.getUid(candidate)][0]) {
-          result.push(candidate);
+          features.push(candidate);
         }
       }
-    }
+
+    });
   }
   var layer = this.getLayer();
-  goog.global.setTimeout(function() { success(result, layer); }, 0);
+  goog.async.nextTick(function() {
+    success(features, layer);
+  });
 };
 
 
@@ -482,10 +478,9 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   // TODO make gutter configurable?
   var tileGutter = 15 * tileResolution;
   var tile, tileCoord, key, x, y, i, type;
-  var deferred = false;
   var dirty = false;
   var tileExtent, featuresObject, tileHasFeatures;
-  fetchTileData:
+
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tileCoord = new ol.TileCoord(0, x, y);
@@ -499,15 +494,11 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         tileExtent[1] -= tileGutter;
         tileExtent[3] += tileGutter;
         tileHasFeatures = false;
-        featuresObject = source.getFeaturesObjectForExtent(
-            tileExtent, projection);
-        if (goog.isNull(featuresObject)) {
-          deferred = true;
-          break fetchTileData;
-        }
-        tileHasFeatures = tileHasFeatures ||
-            !goog.object.isEmpty(featuresObject);
-        goog.object.extend(featuresToRender, featuresObject);
+        source.forEachFeatureInExtent(
+            tileExtent, projection, function(feature) {
+              featuresToRender[goog.getUid(feature)] = feature;
+              tileHasFeatures = true;
+            });
         if (tileHasFeatures) {
           tilesOnSketchCanvas[key] = tileCoord;
         }
@@ -525,6 +516,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var groups = style.groupFeaturesBySymbolizerLiteral(
       featuresToRender, tileResolution);
   var numGroups = groups.length;
+  var deferred = false;
   var group;
   for (var j = 0; j < numGroups; ++j) {
     group = groups[j];
