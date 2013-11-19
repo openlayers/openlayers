@@ -32,8 +32,8 @@ describe('ol.source.wms', function() {
           [5, 10], {params: {'INFO_FORMAT': 'text/plain'}},
           function(info) {
             expect(info).to.eql('<iframe seamless src="' +
-                '?REQUEST=GetFeatureInfo&VERSION=1.3&LAYERS=foo&QUERY_LAYERS=' +
-                'foo&INFO_FORMAT=text%2Fplain&I=5&J=10"></iframe>');
+                '?request=GetFeatureInfo&version=1.3&layers=foo&query_layers=' +
+                'foo&info_format=text%2Fplain&i=5&j=10"></iframe>');
             done();
           });
     });
@@ -47,12 +47,12 @@ describe('ol.source.wms', function() {
     });
     it('overrides any existing parameters', function(done) {
       ol.source.wms.getFeatureInfo('?REQUEST=GetMap&VERSION=1.3&LAYERS=' +
-          'foo&STYLES=x',
+          'foo&styles=x',
           [5, 10], {params: {'INFO_FORMAT': 'text/plain', STYLES: 'y'}},
           function(info) {
             expect(info).to.eql('<iframe seamless src="' +
-                '?REQUEST=GetFeatureInfo&VERSION=1.3&LAYERS=foo&QUERY_LAYERS=' +
-                'foo&INFO_FORMAT=text%2Fplain&I=5&J=10&STYLES=y"></iframe>');
+                '?request=GetFeatureInfo&version=1.3&layers=foo&query_layers=' +
+                'foo&styles=y&info_format=text%2Fplain&i=5&j=10"></iframe>');
             done();
           });
     });
