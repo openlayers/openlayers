@@ -178,6 +178,36 @@ describe('ol.source.Vector', function() {
 
   });
 
+  describe('featureadd event', function() {
+
+    it('is dispatched after features load', function(done) {
+      var source = new ol.source.Vector();
+      var features = [
+        new ol.Feature({g: new ol.geom.Point([10, 5])}),
+        new ol.Feature({g: new ol.geom.Point([-10, -5])})
+      ];
+
+      goog.events.listen(source, ol.source.VectorEventType.ADD,
+          function(evt) {
+            var features = evt.features;
+            expect(features).to.be.an('array');
+            expect(features).to.have.length(2);
+            expect(features).to.contain(features[0]);
+            expect(features).to.contain(features[1]);
+
+            var extents = evt.extents;
+            expect(extents).to.be.an('array');
+            expect(extents).to.have.length(1);
+            expect(extents[0]).to.be.eql([-10, -5, 10, 5]);
+
+            done();
+          });
+
+      source.addFeatures(features);
+    });
+
+  });
+
   describe('featurechange event', function() {
 
     var source, features;
