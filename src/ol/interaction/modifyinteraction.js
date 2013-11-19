@@ -156,8 +156,9 @@ ol.interaction.Modify.prototype.setMap = function(map) {
  * @private
  */
 ol.interaction.Modify.prototype.handleLayerAdded_ = function(evt) {
-  goog.asserts.assertInstanceof(evt.getElement, ol.layer.Layer);
-  this.addLayer_(evt.getElement);
+  var layer = evt.getElement();
+  goog.asserts.assertInstanceof(layer, ol.layer.Layer);
+  this.addLayer_(layer);
 };
 
 
@@ -182,8 +183,9 @@ ol.interaction.Modify.prototype.addLayer_ = function(layer) {
  * @private
  */
 ol.interaction.Modify.prototype.handleLayerRemoved_ = function(evt) {
-  goog.asserts.assertInstanceof(evt.getElement, ol.layer.Layer);
-  this.removeLayer_(evt.getElement());
+  var layer = evt.getElement();
+  goog.asserts.assertInstanceof(layer, ol.layer.Layer);
+  this.removeLayer_(layer);
 };
 
 
