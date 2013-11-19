@@ -1,6 +1,7 @@
 goog.provide('ol.source.FeatureCache');
 goog.provide('ol.source.Vector');
 goog.provide('ol.source.VectorEventType');
+goog.provide('ol.source.VectorLoadState');
 
 goog.require('goog.asserts');
 goog.require('goog.async.nextTick');
