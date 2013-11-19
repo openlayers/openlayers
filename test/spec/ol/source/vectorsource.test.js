@@ -100,6 +100,28 @@ describe('ol.source.Vector', function() {
 
   });
 
+  describe('#removeFeatures()', function() {
+
+    it('removes cached features', function() {
+      var features = [new ol.Feature(), new ol.Feature()];
+      var source = new ol.source.Vector({features: features});
+
+      expect(source.getFeatures()).to.have.length(2);
+      source.removeFeatures(features);
+      expect(source.getFeatures()).to.have.length(0);
+    });
+
+    it('removes cached features', function() {
+      var features = [new ol.Feature(), new ol.Feature()];
+      var source = new ol.source.Vector({features: features});
+
+      expect(source.getFeatures()).to.have.length(2);
+      source.removeFeatures([features[0]]);
+      expect(source.getFeatures()).to.eql([features[1]]);
+    });
+
+  });
+
   describe('#forEachFeatureInExtent()', function() {
 
     var features = [
@@ -180,7 +202,7 @@ describe('ol.source.Vector', function() {
 
   describe('featureadd event', function() {
 
-    it('is dispatched after features load', function(done) {
+    it('is dispatched after features are added', function(done) {
       var source = new ol.source.Vector();
       var features = [
         new ol.Feature({g: new ol.geom.Point([10, 5])}),
@@ -204,6 +226,36 @@ describe('ol.source.Vector', function() {
           });
 
       source.addFeatures(features);
+    });
+
+  });
+
+  describe('featureremove event', function() {
+
+    it('is dispatched after features are removed', function(done) {
+      var features = [
+        new ol.Feature({g: new ol.geom.Point([10, 5])}),
+        new ol.Feature({g: new ol.geom.Point([-10, -5])})
+      ];
+      var source = new ol.source.Vector({features: features});
+
+      goog.events.listen(source, ol.source.VectorEventType.REMOVE,
+          function(evt) {
+            var features = evt.features;
+            expect(features).to.be.an('array');
+            expect(features).to.have.length(2);
+            expect(features).to.contain(features[0]);
+            expect(features).to.contain(features[1]);
+
+            var extents = evt.extents;
+            expect(extents).to.be.an('array');
+            expect(extents).to.have.length(1);
+            expect(extents[0]).to.be.eql([-10, -5, 10, 5]);
+
+            done();
+          });
+
+      source.removeFeatures(features);
     });
 
   });
