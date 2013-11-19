@@ -75,14 +75,14 @@ goog.inherits(ol.Feature, ol.Object);
  */
 ol.Feature.prototype.getAttributes = function(opt_nonGeometry) {
   var keys = this.getKeys(),
+      includeGeometry = !opt_nonGeometry,
       len = keys.length,
       attributes = {},
-      i, key;
+      i, value, key;
   for (i = 0; i < len; ++ i) {
     key = keys[i];
-    var value = this.get(key);
-    if (!goog.isDef(opt_nonGeometry) || opt_nonGeometry === false ||
-        (opt_nonGeometry === true && !(value instanceof ol.geom.Geometry))) {
+    value = this.get(key);
+    if (includeGeometry || !(value instanceof ol.geom.Geometry)) {
       attributes[key] = value;
     }
   }
