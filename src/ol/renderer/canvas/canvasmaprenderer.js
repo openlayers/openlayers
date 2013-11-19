@@ -15,7 +15,6 @@ goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.canvas.VectorLayer');
-goog.require('ol.size');
 goog.require('ol.source.State');
 
 
@@ -95,7 +94,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   }
 
   var size = frameState.size;
-  if (!ol.size.equals([this.canvas_.width, this.canvas_.height], size)) {
+  if (this.canvas_.width != size[0] || this.canvas_.height != size[1]) {
     this.canvas_.width = size[0];
     this.canvas_.height = size[1];
   }

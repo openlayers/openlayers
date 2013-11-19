@@ -23,7 +23,6 @@ goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.TileLayer');
 goog.require('ol.renderer.webgl.map.shader.Color');
 goog.require('ol.renderer.webgl.map.shader.Default');
-goog.require('ol.size');
 goog.require('ol.source.State');
 goog.require('ol.structs.Buffer');
 goog.require('ol.structs.IntegerSet');
@@ -555,7 +554,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   }
 
   var size = frameState.size;
-  if (!ol.size.equals([this.canvas_.width, this.canvas_.height], size)) {
+  if (this.canvas_.width != size[0] || this.canvas_.height != size[1]) {
     this.canvas_.width = size[0];
     this.canvas_.height = size[1];
   }
