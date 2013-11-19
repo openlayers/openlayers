@@ -718,16 +718,19 @@
 /**
  * @typedef {Object} ol.source.VectorOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
- * @property {Object|string|undefined} data Data to parse.
+ * @property {Array.<ol.Feature>|undefined} features Any features to be added
+ *     to the source.  Providing features is an alternative to providing
+ *     `url` and `parser` options.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
- * @property {ol.parser.Parser} parser Parser instance to parse data
- *     provided as `data` or fetched from `url`.
+ * @property {ol.parser.Parser|undefined} parser Parser instance to parse data
+ *     fetched from `url`.
  * @property {ol.proj.ProjectionLike|undefined} projection Projection. Usually the
  *     projection is provided by the parser, so this only needs to be set if
  *     the parser does not know the SRS (e.g. in some GML flavors), or if the
  *     projection determined by the parser needs to be overridden.
- * @property {string|undefined} url Server url providing the vector data.
+ * @property {string|undefined} url Server url providing the vector data.  If
+ *     provided, the `parser` option must also be supplied.
  * @todo stability experimental
  */
 

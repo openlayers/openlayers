@@ -92,6 +92,7 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
 
   var source = layer.getSource();
   goog.events.listen(source, [
+    ol.source.VectorEventType.LOAD,
     ol.source.VectorEventType.ADD,
     ol.source.VectorEventType.CHANGE,
     ol.source.VectorEventType.REMOVE,
@@ -428,6 +429,15 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   }
 
   /**
+   * Let the source to know what data extent we want loaded.  As there may
+   * already be features loaded, we continue with rendering after this request.
+   * If this results in loading new features, a new rendering will be triggered.
+   */
+  var layer = this.getVectorLayer();
+  var source = layer.getVectorSource();
+  source.load(tileRangeExtent, projection);
+
+  /**
    * Prepare the sketch canvas.  This covers the currently visible tile range
    * and will have rendered all newly visible features.
    */
@@ -474,8 +484,6 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var tile, tileCoord, key, x, y, i, type;
   var deferred = false;
   var dirty = false;
-  var layer = this.getVectorLayer();
-  var source = layer.getSource();
   var tileExtent, featuresObject, tileHasFeatures;
   fetchTileData:
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
@@ -491,8 +499,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         tileExtent[1] -= tileGutter;
         tileExtent[3] += tileGutter;
         tileHasFeatures = false;
-        featuresObject = source.getFeaturesObjectForExtent(tileExtent,
-            projection, this.requestMapRenderFrame_);
+        featuresObject = source.getFeaturesObjectForExtent(
+            tileExtent, projection);
         if (goog.isNull(featuresObject)) {
           deferred = true;
           break fetchTileData;

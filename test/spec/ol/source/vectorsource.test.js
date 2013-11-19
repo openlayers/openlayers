@@ -21,69 +21,6 @@ describe('ol.source.Vector', function() {
     });
   });
 
-  describe('#prepareFeatures_', function() {
-    it('loads and parses data from a file', function(done) {
-      var source = new ol.source.Vector({
-        url: 'spec/ol/parser/geojson/countries.geojson',
-        parser: new ol.parser.GeoJSON()
-      });
-      source.prepareFeatures_([-180, -90, 180, 90],
-          ol.proj.get('EPSG:4326'),
-          function() {
-            expect(source.loadState_).to.be(ol.source.VectorLoadState.LOADED);
-            expect(goog.object.getCount(
-                source.featureCache_.getFeaturesObject())).to.be(179);
-            done();
-          });
-    });
-
-    it('parses inline data', function() {
-      var source = new ol.source.Vector({
-        data: {
-          'type': 'FeatureCollection',
-          'features': [{
-            'type': 'Feature',
-            'geometry': {
-              'type': 'Point',
-              'coordinates': [0, -6000000]
-            }
-          }, {
-            'type': 'Feature',
-            'geometry': {
-              'type': 'Point',
-              'coordinates': [-6000000, 0]
-            }
-          }, {
-            'type': 'Feature',
-            'geometry': {
-              'type': 'Point',
-              'coordinates': [0, 6000000]
-            }
-          }, {
-            'type': 'Feature',
-            'geometry': {
-              'type': 'Point',
-              'coordinates': [6000000, 0]
-            }
-          }]
-        },
-        parser: new ol.parser.GeoJSON(),
-        projection: ol.proj.get('EPSG:4326')
-      });
-      source.prepareFeatures_([-180, -90, 180, 90],
-          ol.proj.get('EPSG:4326'),
-          function() {
-            expect(source.loadState_).to.be(ol.source.VectorLoadState.LOADED);
-            expect(goog.object.getCount(
-                source.featureCache_.getFeaturesObject())).to.be(4);
-            done();
-          });
-    });
-
-
-
-  });
-
   describe('featurechange event', function() {
 
     var source, features;
@@ -151,8 +88,6 @@ goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
-goog.require('ol.parser.GeoJSON');
-goog.require('ol.proj');
 goog.require('ol.source.FeatureCache');
 goog.require('ol.source.Source');
 goog.require('ol.source.Vector');

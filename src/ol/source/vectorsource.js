@@ -3,6 +3,7 @@ goog.provide('ol.source.Vector');
 goog.provide('ol.source.VectorEventType');
 
 goog.require('goog.asserts');
+goog.require('goog.async.nextTick');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.net.XhrIo');
@@ -36,17 +37,12 @@ ol.source.VectorLoadState = {
 ol.source.Vector = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
-  /**
-   * @private
-   * @type {Object|string}
-   */
-  this.data_ = goog.isDef(options.data) ? options.data : null;
-
-  /**
-   * @private
-   * @type {ol.source.VectorLoadState}
-   */
-  this.loadState_ = ol.source.VectorLoadState.IDLE;
+  goog.base(this, {
+    attributions: options.attributions,
+    extent: options.extent,
+    logo: options.logo,
+    projection: options.projection
+  });
 
   /**
    * @private
@@ -61,22 +57,125 @@ ol.source.Vector = function(opt_options) {
   this.url_ = options.url;
 
   /**
+   * @private
+   * @type {ol.source.VectorLoadState}
+   */
+  this.loadState_ = goog.isDef(this.url_) ?
+      ol.source.VectorLoadState.IDLE : ol.source.VectorLoadState.LOADED;
+
+  /**
    * @type {ol.source.FeatureCache}
    * @private
    */
   this.featureCache_ = new ol.source.FeatureCache();
 
-  goog.base(this, {
-    attributions: options.attributions,
-    extent: options.extent,
-    logo: options.logo,
-    projection: options.projection
-  });
+  // add any user provided features
+  if (goog.isDef(options.features)) {
+    this.addFeatures(options.features);
+  }
+
 };
 goog.inherits(ol.source.Vector, ol.source.Source);
 
 
 /**
+ * Request for new features to be loaded.
+ * @param {ol.Extent} extent Desired extent.
+ * @param {ol.proj.Projection} projection Desired projection.
+ * @return {boolean} New features will be loaded.
+ */
+ol.source.Vector.prototype.load = function(extent, projection) {
+  var requested = false;
+  if (this.loadState_ === ol.source.VectorLoadState.IDLE) {
+    goog.asserts.assertString(this.url_);
+    this.loadState_ = ol.source.VectorLoadState.LOADING;
+    goog.net.XhrIo.send(this.url_, goog.bind(function(event) {
+      var xhr = event.target;
+      if (xhr.isSuccess()) {
+        // parsing may be asynchronous, so we don't set load state here
+        this.parseFeaturesString_(xhr.getResponseText(), projection);
+      } else {
+        this.loadState_ = ol.source.VectorLoadState.ERROR;
+      }
+    }, this));
+    requested = true;
+  }
+  return requested;
+};
+
+
+/**
+ * Parse features from a string.
+ * @param {string} data Feature data.
+ * @param {ol.proj.Projection} projection The target projection.
+ * @private
+ */
+ol.source.Vector.prototype.parseFeaturesString_ = function(data, projection) {
+  if (goog.isFunction(this.parser_.readFeaturesFromStringAsync)) {
+    this.parser_.readFeaturesFromStringAsync(data, goog.bind(function(result) {
+      this.handleReadResult_(result, projection);
+    }, this));
+  } else {
+    goog.asserts.assert(
+        goog.isFunction(this.parser_.readFeaturesFromString),
+        'Expected parser with a readFeaturesFromString method.');
+    this.handleReadResult_(
+        this.parser_.readFeaturesFromString(data), projection);
+  }
+};
+
+
+/**
+ * Handle the read result from a parser.
+ * TODO: make parsers accept a target projection (see #1287)
+ * @param {ol.parser.ReadFeaturesResult} result Read features result.
+ * @param {ol.proj.Projection} projection The desired projection.
+ * @private
+ */
+ol.source.Vector.prototype.handleReadResult_ = function(result, projection) {
+  var features = result.features;
+  var sourceProjection = this.getProjection();
+  if (goog.isNull(sourceProjection)) {
+    sourceProjection = result.metadata.projection;
+  }
+  var transform = ol.proj.getTransform(sourceProjection, projection);
+  var extent = ol.extent.createEmpty();
+  var geometry = null;
+  var feature;
+  for (var i = 0, ii = features.length; i < ii; ++i) {
+    feature = features[i];
+    geometry = feature.getGeometry();
+    if (!goog.isNull(geometry)) {
+      geometry.transform(transform);
+      ol.extent.extend(extent, geometry.getBounds());
+    }
+    this.loadFeature_(feature);
+  }
+  this.loadState_ = ol.source.VectorLoadState.LOADED;
+  // called in the next tick to normalize load event for sync/async parsing
+  goog.async.nextTick(function() {
+    this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.LOAD,
+        features, [extent]));
+  }, this);
+};
+
+
+/**
+ * Load a feature.
+ * @param {ol.Feature} feature Feature to load.
+ * @private
+ */
+ol.source.Vector.prototype.loadFeature_ = function(feature) {
+  goog.events.listen(feature, ol.FeatureEventType.CHANGE,
+      this.handleFeatureChange_, false, this);
+  goog.events.listen(feature, ol.FeatureEventType.INTENTCHANGE,
+      this.handleIntentChange_, false, this);
+  this.featureCache_.add(feature);
+};
+
+
+/**
+ * Add newly created features to the source.
  * @param {Array.<ol.Feature>} features Array of features.
  */
 ol.source.Vector.prototype.addFeatures = function(features) {
@@ -84,15 +183,11 @@ ol.source.Vector.prototype.addFeatures = function(features) {
       feature, geometry;
   for (var i = 0, ii = features.length; i < ii; ++i) {
     feature = features[i];
-    this.featureCache_.add(feature);
+    this.loadFeature_(feature);
     geometry = feature.getGeometry();
     if (!goog.isNull(geometry)) {
       ol.extent.extend(extent, geometry.getBounds());
     }
-    goog.events.listen(feature, ol.FeatureEventType.CHANGE,
-        this.handleFeatureChange_, false, this);
-    goog.events.listen(feature, ol.FeatureEventType.INTENTCHANGE,
-        this.handleIntentChange_, false, this);
   }
   this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.ADD,
       features, [extent]));
@@ -125,79 +220,17 @@ ol.source.Vector.prototype.getFeatures = function(opt_filter) {
 
 /**
  * Get all features whose bounding box intersects the provided extent. This
- * method is intended for being called by the renderer. When null is returned,
- * the renderer should not waste time rendering, and `opt_callback` is
- * usually a function that requests a renderFrame, which will be called as soon
- * as the data for `extent` is available.
+ * method is intended for being called by the renderer.
  *
  * @param {ol.Extent} extent Bounding extent.
  * @param {ol.proj.Projection} projection Target projection.
- * @param {function()=} opt_callback Callback to call when data is parsed.
- * @return {Object.<string, ol.Feature>} Features or null if source is loading
- *     data for `extent`.
+ * @return {Object.<string, ol.Feature>} Features lookup object.
  */
 ol.source.Vector.prototype.getFeaturesObjectForExtent = function(extent,
-    projection, opt_callback) {
-  var state = this.prepareFeatures_(extent, projection, opt_callback);
-  var lookup = null;
-  if (state !== ol.source.VectorLoadState.LOADING) {
-    lookup = this.featureCache_.getFeaturesObjectForExtent(extent);
-  }
-  return lookup;
-};
-
-
-/**
- * @param {Object|Element|Document|string} data Feature data.
- * @param {ol.proj.Projection} projection This sucks.  The layer should be a
- *     view in one projection.
- * @private
- */
-ol.source.Vector.prototype.parseFeatures_ = function(data, projection) {
-
-  var addFeatures = function(data) {
-    var features = data.features;
-    var sourceProjection = this.getProjection();
-    if (goog.isNull(sourceProjection)) {
-      sourceProjection = data.metadata.projection;
-    }
-    var transform = ol.proj.getTransform(sourceProjection, projection);
-    var geometry = null;
-    for (var i = 0, ii = features.length; i < ii; ++i) {
-      geometry = features[i].getGeometry();
-      if (!goog.isNull(geometry)) {
-        geometry.transform(transform);
-      }
-    }
-    this.addFeatures(features);
-  };
-
-  var result;
-  var parser = this.parser_;
-  if (goog.isString(data)) {
-    if (goog.isFunction(parser.readFeaturesFromStringAsync)) {
-      parser.readFeaturesFromStringAsync(data, goog.bind(addFeatures, this));
-    } else {
-      goog.asserts.assert(
-          goog.isFunction(parser.readFeaturesFromString),
-          'Expected parser with a readFeaturesFromString method.');
-      result = parser.readFeaturesFromString(data);
-      addFeatures.call(this, result);
-    }
-  } else if (goog.isObject(data)) {
-    if (goog.isFunction(parser.readFeaturesFromObjectAsync)) {
-      parser.readFeaturesFromObjectAsync(data, goog.bind(addFeatures, this));
-    } else {
-      goog.asserts.assert(
-          goog.isFunction(parser.readFeaturesFromObject),
-          'Expected parser with a readFeaturesFromObject method.');
-      result = parser.readFeaturesFromObject(data);
-      addFeatures.call(this, result);
-    }
-  } else {
-    // TODO: parse more data types
-    throw new Error('Data type not supported: ' + data);
-  }
+    projection) {
+  // TODO: create forEachFeatureInExtent method instead
+  // TODO: transform if requested project is different than loaded projection
+  return this.featureCache_.getFeaturesObjectForExtent(extent);
 };
 
 
@@ -238,43 +271,6 @@ ol.source.Vector.prototype.handleIntentChange_ = function(evt) {
         ol.source.VectorEventType.INTENTCHANGE, [feature],
         [geometry.getBounds()]));
   }
-};
-
-
-/**
- * @param {ol.Extent} extent Extent that needs to be fetched.
- * @param {ol.proj.Projection} projection Projection of the view.
- * @param {function()=} opt_callback Callback which is called when features are
- *     parsed after loading.
- * @return {ol.source.VectorLoadState} The current load state.
- * @private
- */
-ol.source.Vector.prototype.prepareFeatures_ = function(extent, projection,
-    opt_callback) {
-  // TODO: Implement strategies. BBOX aware strategies will need the extent.
-  if (goog.isDef(this.url_) &&
-      this.loadState_ == ol.source.VectorLoadState.IDLE) {
-    this.loadState_ = ol.source.VectorLoadState.LOADING;
-    goog.net.XhrIo.send(this.url_, goog.bind(function(event) {
-      var xhr = event.target;
-      if (xhr.isSuccess()) {
-        // TODO: Get source projection from data if supported by parser.
-        this.parseFeatures_(xhr.getResponseText(), projection);
-        this.loadState_ = ol.source.VectorLoadState.LOADED;
-        if (goog.isDef(opt_callback)) {
-          opt_callback();
-        }
-      } else {
-        // TODO: Error handling.
-        this.loadState_ = ol.source.VectorLoadState.ERROR;
-      }
-    }, this));
-  } else if (!goog.isNull(this.data_)) {
-    this.parseFeatures_(this.data_, projection);
-    this.data_ = null;
-    this.loadState_ = ol.source.VectorLoadState.LOADED;
-  }
-  return this.loadState_;
 };
 
 
@@ -332,6 +328,7 @@ goog.inherits(ol.source.VectorEvent, goog.events.Event);
  * @enum {string}
  */
 ol.source.VectorEventType = {
+  LOAD: 'featureload',
   ADD: 'featureadd',
   CHANGE: 'featurechange',
   INTENTCHANGE: 'featureintentchange',

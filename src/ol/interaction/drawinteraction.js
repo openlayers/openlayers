@@ -113,7 +113,7 @@ ol.interaction.Draw.prototype.setMap = function(map) {
   if (!goog.isNull(map)) {
     if (goog.isNull(this.sketchLayer_)) {
       var layer = new ol.layer.Vector({
-        source: new ol.source.Vector({parser: null}),
+        source: new ol.source.Vector(),
         style: this.layer_.getStyle()
       });
       layer.setTemporary(true);

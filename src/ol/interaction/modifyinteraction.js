@@ -134,7 +134,7 @@ ol.interaction.Modify.prototype.setMap = function(map) {
     }
     if (goog.isNull(this.sketchLayer_)) {
       var sketchLayer = new ol.layer.Vector({
-        source: new ol.source.Vector({parser: null})
+        source: new ol.source.Vector()
       });
       this.sketchLayer_ = sketchLayer;
       sketchLayer.setTemporary(true);
