@@ -14,7 +14,6 @@ goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol.FrameState');
-goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.css');
 goog.require('ol.layer.Image');
@@ -82,12 +81,6 @@ ol.renderer.webgl.Map = function(container, map) {
    * @type {boolean}
    */
   this.renderedVisible_ = true;
-
-  /**
-   * @private
-   * @type {ol.Size}
-   */
-  this.canvasSize_ = [container.clientHeight, container.clientWidth];
 
   /**
    * @private
@@ -564,10 +557,9 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   }
 
   var size = frameState.size;
-  if (!ol.size.equals(this.canvasSize_, size)) {
+  if (!ol.size.equals([this.canvas_.width, this.canvas_.height], size)) {
     this.canvas_.width = size[0];
     this.canvas_.height = size[1];
-    this.canvasSize_ = size;
   }
 
   gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
