@@ -187,7 +187,8 @@ def build_ol_css(t):
 @target('build/ol.js', PLOVR_JAR, SRC, EXTERNAL_SRC, SHADER_SRC,
         LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json')
 def build_ol_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ol.json')
+    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
+            PLOVR_JAR, 'build', 'buildcfg/ol.json')
     report_sizes(t)
 
 
@@ -195,7 +196,8 @@ def build_ol_js(t):
         LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
         'buildcfg/ol-simple.json')
 def build_ol_simple_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ol-simple.json')
+    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
+            PLOVR_JAR, 'build', 'buildcfg/ol-simple.json')
     report_sizes(t)
 
 
@@ -203,8 +205,8 @@ def build_ol_simple_js(t):
         LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
         'buildcfg/ol-whitespace.json')
 def build_ol_whitespace_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR,
-             'build', 'buildcfg/ol-whitespace.json')
+    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
+            PLOVR_JAR, 'build', 'buildcfg/ol-whitespace.json')
     report_sizes(t)
 
 
@@ -214,7 +216,8 @@ virtual('build-all', 'build/ol-all.js')
 @target('build/ol-all.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
         LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol-all.json')
 def build_ol_all_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
+    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
+            PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
 
 
 @target('build/src/external/externs/types.js', 'bin/generate-exports.py',
@@ -301,8 +304,8 @@ def examples_examples_list_js(t):
         SRC, INTERNAL_SRC, SHADER_SRC, LIBTESS_JS_SRC,
         'buildcfg/base.json', 'build/examples/all.json')
 def build_examples_all_combined_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build',
-             'buildcfg/examples-all.json')
+    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
+            PLOVR_JAR, 'build', 'buildcfg/examples-all.json')
     report_sizes(t)
 
 
@@ -343,8 +346,9 @@ def examples_star_json(name, match):
 @rule(r'\Abuild/examples/(?P<id>.*).combined.js\Z')
 def examples_star_combined_js(name, match):
     def action(t):
-        t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build',
-                 'build/examples/%(id)s.json' % match.groupdict())
+        t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
+                PLOVR_JAR, 'build', 'build/examples/%(id)s.json' %
+                match.groupdict())
         report_sizes(t)
     dependencies = [PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC, LIBTESS_JS_SRC,
                     'buildcfg/base.json',
