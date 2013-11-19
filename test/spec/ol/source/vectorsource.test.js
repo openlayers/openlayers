@@ -63,6 +63,41 @@ describe('ol.source.Vector', function() {
       source.addFeatures(features);
       expect(source.getFeatures()).to.eql(features);
     });
+
+  });
+
+  describe('#getFeatures()', function() {
+
+    it('gets features cached on the source', function() {
+      var source = new ol.source.Vector({
+        features: [new ol.Feature()]
+      });
+      source.addFeatures([new ol.Feature()]);
+
+      var features = source.getFeatures();
+      expect(features).to.be.an('array');
+      expect(features).to.have.length(2);
+    });
+
+    it('accepts a filter function', function() {
+      var features = [
+        new ol.Feature({name: 'a'}),
+        new ol.Feature({name: 'b'}),
+        new ol.Feature({name: 'c'}),
+        new ol.Feature({name: 'd'})
+      ];
+      var source = new ol.source.Vector({features: features});
+
+      var results = source.getFeatures(function(feature) {
+        return feature.get('name') > 'b';
+      });
+
+      expect(results).to.be.an('array');
+      expect(results).to.have.length(2);
+      expect(results).to.contain(features[2]);
+      expect(results).to.contain(features[3]);
+    });
+
   });
 
   describe('featurechange event', function() {
