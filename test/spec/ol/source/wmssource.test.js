@@ -45,6 +45,17 @@ describe('ol.source.wms', function() {
             done();
           });
     });
+    it('overrides any existing parameters', function(done) {
+      ol.source.wms.getFeatureInfo('?REQUEST=GetMap&VERSION=1.3&LAYERS=' +
+          'foo&STYLES=x',
+          [5, 10], {params: {'INFO_FORMAT': 'text/plain', STYLES: 'y'}},
+          function(info) {
+            expect(info).to.eql('<iframe seamless src="' +
+                '?REQUEST=GetFeatureInfo&VERSION=1.3&LAYERS=foo&QUERY_LAYERS=' +
+                'foo&INFO_FORMAT=text%2Fplain&I=5&J=10&STYLES=y"></iframe>');
+            done();
+          });
+    });
   });
 
 });

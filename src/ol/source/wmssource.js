@@ -95,6 +95,11 @@ ol.source.wms.getFeatureInfo =
     goog.object.extend(params, {'X': x, 'Y': y});
   }
   goog.object.extend(params, localOptions.params);
+  for (var key in params) {
+    if (goog.uri.utils.hasParam(url, key)) {
+      url = goog.uri.utils.removeParam(url, key);
+    }
+  }
   url = goog.uri.utils.appendParamsFromMap(url, params);
   if (localOptions.method == ol.source.WMSGetFeatureInfoMethod.IFRAME) {
     goog.global.setTimeout(function() {
