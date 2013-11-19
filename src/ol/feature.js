@@ -81,7 +81,7 @@ ol.Feature.prototype.getAttributes = function(opt_nonGeometry) {
   for (i = 0; i < len; ++ i) {
     key = keys[i];
     var value = this.get(key);
-    if (!goog.isDef(opt_nonGeometry) || opt_nonGeometry == false ||
+    if (!goog.isDef(opt_nonGeometry) || opt_nonGeometry === false ||
         (opt_nonGeometry === true && !(value instanceof ol.geom.Geometry))) {
       attributes[key] = value;
     }
