@@ -100,6 +100,51 @@ describe('ol.source.Vector', function() {
 
   });
 
+  describe('#forEachFeatureInExtent()', function() {
+
+    var features = [
+      new ol.Feature({geom: new ol.geom.Point([-100, 50])}),
+      new ol.Feature({geom: new ol.geom.Point([100, 50])}),
+      new ol.Feature({geom: new ol.geom.Point([100, -50])}),
+      new ol.Feature({geom: new ol.geom.Point([-100, -50])})
+    ];
+    var source = new ol.source.Vector({features: features});
+    var gg = ol.proj.get('EPSG:4326');
+
+    it('calls callback with each feature in the extent', function() {
+      var callback = sinon.spy();
+      source.forEachFeatureInExtent([-180, -90, 180, 90], gg, callback);
+      expect(callback.callCount).to.be(4);
+      expect(callback.calledWith(sinon.match.same(features[0]))).to.be(true);
+      expect(callback.calledWith(sinon.match.same(features[1]))).to.be(true);
+      expect(callback.calledWith(sinon.match.same(features[2]))).to.be(true);
+      expect(callback.calledWith(sinon.match.same(features[3]))).to.be(true);
+    });
+
+    it('accepts a this argument', function() {
+      var callback = sinon.spy();
+      var thisArg = {};
+      source.forEachFeatureInExtent(
+          [-180, -90, 180, 90], gg, callback, thisArg);
+      expect(callback.calledOn(thisArg)).to.be(true);
+    });
+
+    it('works with a subset of features', function() {
+      var callback = sinon.spy();
+      source.forEachFeatureInExtent([-100, -50, -100, 50], gg, callback);
+      expect(callback.callCount).to.be(2);
+      expect(callback.calledWith(sinon.match.same(features[0]))).to.be(true);
+      expect(callback.calledWith(sinon.match.same(features[3]))).to.be(true);
+    });
+
+    it('works with no features', function() {
+      var callback = sinon.spy();
+      source.forEachFeatureInExtent([-110, -50, -110, -50], gg, callback);
+      expect(callback.called).to.be(false);
+    });
+
+  });
+
   describe('featurechange event', function() {
 
     var source, features;
