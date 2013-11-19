@@ -145,6 +145,39 @@ describe('ol.source.Vector', function() {
 
   });
 
+  describe('featureload event', function() {
+
+    var gg = ol.proj.get('EPSG:4326');
+    var world = [-180, -90, 180, 90];
+
+    it('is dispatched after features load', function(done) {
+      var source = new ol.source.Vector({
+        url: url,
+        parser: new ol.parser.GeoJSON()
+      });
+      expect(source.loadState_).to.be(ol.source.VectorLoadState.IDLE);
+      var triggered = source.load(world, gg);
+      expect(triggered).to.be(true);
+      expect(source.loadState_).to.be(ol.source.VectorLoadState.LOADING);
+      goog.events.listen(source, ol.source.VectorEventType.LOAD,
+          function(evt) {
+            var features = evt.features;
+            expect(features).to.be.an('array');
+            expect(features).to.have.length(1);
+            expect(features[0]).to.be.an(ol.Feature);
+
+            var extents = evt.extents;
+            expect(extents).to.be.an('array');
+            expect(extents).to.have.length(1);
+            expect(extents[0]).to.be.eql([1, 2, 1, 2]);
+
+            expect(source.loadState_).to.be(ol.source.VectorLoadState.LOADED);
+            done();
+          });
+    });
+
+  });
+
   describe('featurechange event', function() {
 
     var source, features;
