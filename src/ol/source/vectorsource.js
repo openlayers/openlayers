@@ -414,23 +414,6 @@ ol.source.FeatureCache.prototype.forEach =
 
 
 /**
- * Get features by ids.
- * @param {Array.<string>} ids Array of (internal) identifiers.
- * @return {Array.<ol.Feature>} Array of features.
- * @private
- */
-ol.source.FeatureCache.prototype.getFeaturesByIds_ = function(ids) {
-  var len = ids.length,
-      features = new Array(len),
-      i;
-  for (i = 0; i < len; ++i) {
-    features[i] = this.idLookup_[ids[i]];
-  }
-  return features;
-};
-
-
-/**
  * Remove a feature from the cache.
  * @param {ol.Feature} feature Feature.
  * @param {ol.Extent=} opt_extent Optional extent (used when the current feature
