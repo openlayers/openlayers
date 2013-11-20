@@ -37,6 +37,8 @@ ol.renderer.canvas.Map = function(container, map) {
    */
   this.canvas_ = /** @type {HTMLCanvasElement} */
       (goog.dom.createElement(goog.dom.TagName.CANVAS));
+  this.canvas_.style.width = '100%';
+  this.canvas_.style.height = '100%';
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
   goog.dom.insertChildAt(container, this.canvas_, 0);
 
@@ -113,7 +115,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     this.canvas_.width = size[0];
     this.canvas_.height = size[1];
   } else {
-    context.clearRect(0, 0, size[0], size[1]);
+    context.clearRect(0, 0, this.canvas_.width, this.canvas_.height);
   }
 
   this.calculateMatrices2D(frameState);

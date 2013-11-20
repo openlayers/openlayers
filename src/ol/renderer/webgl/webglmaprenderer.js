@@ -60,6 +60,8 @@ ol.renderer.webgl.Map = function(container, map) {
    */
   this.canvas_ = /** @type {HTMLCanvasElement} */
       (goog.dom.createElement(goog.dom.TagName.CANVAS));
+  this.canvas_.style.width = '100%';
+  this.canvas_.style.height = '100%';
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
   goog.dom.insertChildAt(container, this.canvas_, 0);
 
@@ -412,7 +414,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   gl.clearColor(0, 0, 0, 0);
   gl.clear(goog.webgl.COLOR_BUFFER_BIT);
   gl.enable(goog.webgl.BLEND);
-  gl.viewport(0, 0, size[0], size[1]);
+  gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
 
   this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
 
