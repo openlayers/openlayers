@@ -9,52 +9,56 @@ goog.require('ol.layer.Vector');
 goog.require('ol.shape');
 goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
 
 
-var image = ol.shape.renderCircle(5, null, {color: 'red', width: 1});
+var image = ol.shape.renderCircle(5, null,
+    new ol.style.Stroke({color: 'red', width: 1}));
 var styleFunction = function(feature) {
   switch (feature.getGeometry().getType()) {
     case 'Point':
-      return {
+      return new ol.style.Style({
         image: image
-      };
+      });
     case 'Polygon':
-      return {
-        stroke: {
+      return new ol.style.Style({
+        stroke: new ol.style.Stroke({
           color: 'blue',
           width: 3
-        },
-        fill: {
+        }),
+        fill: new ol.style.Fill({
           color: 'rgba(0, 0, 255, 0.1)'
-        }
-      };
+        })
+      });
     case 'MultiLineString':
-      return {
-        stroke: {
+      return new ol.style.Style({
+        stroke: new ol.style.Stroke({
           color: 'green',
           width: 1
-        }
-      };
+        })
+      });
     case 'MultiPolygon':
-      return {
-        stroke: {
+      return new ol.style.Style({
+        stroke: new ol.style.Stroke({
           color: 'yellow',
           width: 1
-        },
-        fill: {
+        }),
+        fill: new ol.style.Fill({
           color: 'rgba(255, 255, 0, 0.1)'
-        }
-      };
+        })
+      });
     default:
-      return {
-        stroke: {
+      return new ol.style.Style({
+        stroke: new ol.style.Stroke({
           color: 'red',
           width: 2
-        },
-        fill: {
+        }),
+        fill: new ol.style.Fill({
           color: 'rgba(255, 0, 0, 0.1)'
-        }
-      };
+        })
+      });
   }
 };
 
@@ -125,10 +129,10 @@ var tmpFeature = new ol.Feature(
 var tmpStyle = {
   fill: null,
   image: null,
-  stroke: {
+  stroke: new ol.style.Stroke({
     color: 'magenta',
     width: 5
-  }
+  })
 };
 vectorLayer.on('postcompose', function(event) {
   var render = event.getRender();
