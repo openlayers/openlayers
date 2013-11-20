@@ -3,12 +3,6 @@ goog.provide('ol.style.Fill');
 goog.require('ol.color');
 
 
-/**
- * @typedef {{color: (ol.Color|string)}}
- */
-ol.style.FillOptions;
-
-
 
 /**
  * @constructor
