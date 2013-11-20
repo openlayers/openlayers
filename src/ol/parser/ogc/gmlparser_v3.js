@@ -22,9 +22,10 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       'http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
       '1.0.0/gmlsf.xsd';
   goog.base(this, opt_options);
-  this.featureNSWiters_['_geometry'] = function(geometry) {
-    var node = this.createElementNS('feature:' + this.geometryName,
+  this.featureNSWiters_['_geometry'] = function(obj) {
+    var node = this.createElementNS('feature:' + obj.name,
         this.featureNS);
+    var geometry = obj.value;
     var type = geometry.getType(), child;
     if (type === ol.geom.GeometryType.POINT) {
       child = this.writeNode('Point', geometry, null, node);

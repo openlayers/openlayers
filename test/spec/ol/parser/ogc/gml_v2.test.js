@@ -21,7 +21,7 @@ describe('ol.parser.gml_v2', function() {
         parser.applyWriteOptions(obj);
         var geom = parser.createGeometry({geometry: obj.geometry});
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -50,7 +50,7 @@ describe('ol.parser.gml_v2', function() {
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -80,7 +80,7 @@ describe('ol.parser.gml_v2', function() {
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -109,7 +109,7 @@ describe('ol.parser.gml_v2', function() {
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -144,7 +144,7 @@ describe('ol.parser.gml_v2', function() {
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -169,7 +169,7 @@ describe('ol.parser.gml_v2', function() {
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -188,7 +188,7 @@ describe('ol.parser.gml_v2', function() {
         var geom = p.createGeometry({geometry: obj.geometry});
         p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete p.srsName;
         delete p.axisOrientation;
         expect(goog.dom.xml.loadXml(p.serialize(node))).to.xmleql(xml);
@@ -233,7 +233,7 @@ describe('ol.parser.gml_v2', function() {
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
