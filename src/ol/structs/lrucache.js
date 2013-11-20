@@ -10,6 +10,7 @@ goog.require('goog.object');
  * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring
  * items from the cache is the responsibility of the user.
  * @constructor
+ * @template T
  */
 ol.structs.LRUCache = function() {
 
@@ -96,7 +97,7 @@ ol.structs.LRUCache.prototype.containsKey = function(key) {
 
 
 /**
- * @param {function(this: S, *, string, ol.structs.LRUCache): ?} f The function
+ * @param {function(this: S, T, string, ol.structs.LRUCache): ?} f The function
  *     to call for every entry from the oldest to the newer. This function takes
  *     3 arguments (the entry value, the entry key and the LRUCache object).
  *     The return value is ignored.
@@ -114,7 +115,7 @@ ol.structs.LRUCache.prototype.forEach = function(f, opt_obj) {
 
 /**
  * @param {string} key Key.
- * @return {*} Value.
+ * @return {T} Value.
  */
 ol.structs.LRUCache.prototype.get = function(key) {
   var entry = this.entries_[key];
@@ -175,7 +176,7 @@ ol.structs.LRUCache.prototype.getValues = function() {
 
 
 /**
- * @return {*} Last value.
+ * @return {T} Last value.
  */
 ol.structs.LRUCache.prototype.peekLast = function() {
   goog.asserts.assert(!goog.isNull(this.oldest_));
@@ -193,7 +194,7 @@ ol.structs.LRUCache.prototype.peekLastKey = function() {
 
 
 /**
- * @return {*} value Value.
+ * @return {T} value Value.
  */
 ol.structs.LRUCache.prototype.pop = function() {
   goog.asserts.assert(!goog.isNull(this.oldest_));
@@ -215,7 +216,7 @@ ol.structs.LRUCache.prototype.pop = function() {
 
 /**
  * @param {string} key Key.
- * @param {*} value Value.
+ * @param {T} value Value.
  */
 ol.structs.LRUCache.prototype.set = function(key, value) {
   goog.asserts.assert(!(key in {}));

@@ -28,7 +28,6 @@ goog.inherits(ol.renderer.dom.Layer, ol.renderer.Layer);
 
 
 /**
- * @protected
  * @return {!Element} Target.
  */
 ol.renderer.dom.Layer.prototype.getTarget = function() {

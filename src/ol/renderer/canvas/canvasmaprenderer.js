@@ -111,7 +111,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
 
     layer = layersArray[i];
-    layerRenderer = this.getLayerRenderer(layer);
+    layerRenderer =
+        /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
     layerState = layerStates[goog.getUid(layer)];
     if (!layerState.visible ||
         layerState.sourceState != ol.source.State.READY ||
@@ -133,6 +134,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
         var dy = goog.vec.Mat4.getElement(transform, 1, 3);
         var dw = image.width * goog.vec.Mat4.getElement(transform, 0, 0);
         var dh = image.height * goog.vec.Mat4.getElement(transform, 1, 1);
+        goog.asserts.assert(goog.isNumber(image.width));
+        goog.asserts.assert(goog.isNumber(image.height));
         context.drawImage(image, 0, 0, image.width, image.height,
             Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
       } else {

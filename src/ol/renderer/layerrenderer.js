@@ -129,10 +129,16 @@ ol.renderer.Layer.prototype.scheduleExpireCache =
     function(frameState, tileSource) {
   if (tileSource.canExpireCache()) {
     frameState.postRenderFunctions.push(
-        goog.partial(function(tileSource, map, frameState) {
-          var tileSourceKey = goog.getUid(tileSource).toString();
-          tileSource.expireCache(frameState.usedTiles[tileSourceKey]);
-        }, tileSource));
+        goog.partial(
+            /**
+             * @param {ol.source.Tile} tileSource Tile source.
+             * @param {ol.Map} map Map.
+             * @param {ol.FrameState} frameState Frame state.
+             */
+            function(tileSource, map, frameState) {
+              var tileSourceKey = goog.getUid(tileSource).toString();
+              tileSource.expireCache(frameState.usedTiles[tileSourceKey]);
+            }, tileSource));
   }
 };
 
