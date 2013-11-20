@@ -11,8 +11,8 @@ goog.require('ol.extent');
 goog.require('ol.geom.flat');
 goog.require('ol.render.IRender');
 goog.require('ol.render.IReplayGroup');
-goog.require('ol.style.fill');
-goog.require('ol.style.stroke');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
 
 
 /**
@@ -365,7 +365,7 @@ ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ =
   var state = this.state_;
   var strokeStyle = state.strokeStyle;
   goog.asserts.assert(goog.isDefAndNotNull(strokeStyle));
-  if (!ol.style.stroke.equals(state.currentStrokeStyle, strokeStyle)) {
+  if (!ol.style.Stroke.equals(state.currentStrokeStyle, strokeStyle)) {
     if (state.lastStroke != this.coordinates.length) {
       this.instructions.push([ol.render.canvas.Instruction.STROKE]);
       state.lastStroke = this.coordinates.length;
@@ -583,13 +583,13 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
 ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
   var state = this.state_;
   if (goog.isDefAndNotNull(state.fillStyle) &&
-      !ol.style.fill.equals(state.currentFillStyle, state.fillStyle)) {
+      !ol.style.Fill.equals(state.currentFillStyle, state.fillStyle)) {
     this.instructions.push(
         [ol.render.canvas.Instruction.SET_FILL_STYLE, state.fillStyle]);
     state.currentFillStyle = state.fillStyle;
   }
   if (goog.isDefAndNotNull(state.strokeStyle) &&
-      !ol.style.stroke.equals(state.currentStrokeStyle, state.strokeStyle)) {
+      !ol.style.Stroke.equals(state.currentStrokeStyle, state.strokeStyle)) {
     this.instructions.push(
         [ol.render.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle]);
     state.currentStrokeStyle = state.strokeStyle;
