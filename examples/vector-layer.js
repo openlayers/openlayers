@@ -55,6 +55,7 @@ $.getJSON('data/countries.geojson', function(data) {
 
 var highlight;
 var displayFeatureInfo = function(pixel) {
+  var oldHighlight = highlight;
   var coordinate = map.getCoordinateFromPixel(pixel);
   var features = vectorSource.getAllFeaturesAtCoordinate(coordinate);
   var info = document.getElementById('info');
@@ -66,7 +67,9 @@ var displayFeatureInfo = function(pixel) {
     info.innerHTML = '&nbsp;';
     highlight = undefined;
   }
-  map.render();
+  if (highlight !== oldHighlight) {
+    map.render();
+  }
 };
 
 $(map.getViewport()).on('mousemove', function(evt) {
