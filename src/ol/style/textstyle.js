@@ -27,11 +27,6 @@ ol.style.Text = function(options) {
    * @type {string|undefined}
    */
   this.textBaseline = options.textBaseline;
-
-  /**
-   * @type {number}
-   */
-  this.width = options.width;
 };
 
 
