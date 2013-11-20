@@ -652,6 +652,16 @@
  */
 
 /**
+ * @typedef {Object} ol.style.StyleOptions
+ * @property {ol.style.Fill|undefined} fill Fill style.
+ * @property {ol.style.Image|undefined} image Image style.
+ * @property {ol.style.Stroke|undefined} stroke Stroke style.
+ * @property {ol.style.Text|undefined} text Text style.
+ * @property {number|undefined} zIndex Z index.
+ * @todo stability experimental
+ */
+
+/**
  * @typedef {Object} ol.tilegrid.TileGridOptions
  * @property {number|undefined} minZoom Minimum zoom.
  * @property {ol.Coordinate|undefined} origin Origin.

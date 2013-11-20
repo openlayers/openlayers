@@ -1,20 +1,8 @@
-// FIXME export ol.style.Style
-
 goog.provide('ol.style.Style');
 goog.provide('ol.style.StyleFunction');
 
 goog.require('ol.style.Fill');
 goog.require('ol.style.Image');
-
-
-/**
- * @typedef {{fill: (ol.style.Fill|undefined),
- *            image: (ol.style.Image|undefined),
- *            stroke: (ol.style.Stroke|undefined),
- *            text: (ol.style.Text|undefined),
- *            zIndex: (number|undefined)}}
- */
-ol.style.StyleOptions;
 
 
 
