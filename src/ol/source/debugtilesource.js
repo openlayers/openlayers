@@ -61,7 +61,8 @@ ol.DebugTile_.prototype.getImage = function(opt_context) {
     canvas.width = tileSize[0];
     canvas.height = tileSize[1];
 
-    var context = canvas.getContext('2d');
+    var context = /** @type {CanvasRenderingContext2D} */
+        (canvas.getContext('2d'));
 
     context.strokeStyle = 'black';
     context.strokeRect(0.5, 0.5, tileSize[0] + 0.5, tileSize[1] + 0.5);
