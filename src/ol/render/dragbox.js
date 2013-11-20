@@ -6,6 +6,7 @@ goog.require('goog.Disposable');
 goog.require('goog.events');
 goog.require('ol.geom.Polygon');
 goog.require('ol.render.EventType');
+goog.require('ol.style.Fill');
 goog.require('ol.style.Style');
 
 
@@ -45,15 +46,15 @@ ol.render.DragBox = function(opt_style) {
    * @private
    * @type {ol.style.Style}
    */
-  this.style_ = goog.isDef(opt_style) ? opt_style : {
-    fill: {
+  this.style_ = goog.isDef(opt_style) ? opt_style : new ol.style.Style({
+    fill: new ol.style.Fill({
       color: 'rgba(0,0,0,0.5)'
-    },
+    }),
     image: null,
     stroke: null,
     text: null,
     zIndex: 0
-  };
+  });
 
 };
 goog.inherits(ol.render.DragBox, goog.Disposable);
