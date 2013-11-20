@@ -7,9 +7,9 @@ goog.require('goog.asserts');
 goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.render.IRender');
-goog.require('ol.style.fill');
-goog.require('ol.style.stroke');
-goog.require('ol.style.text');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Text');
 
 
 
@@ -311,13 +311,13 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
   var context = this.context_;
   var state = this.state_;
-  if (!ol.style.fill.equals(state.fillStyle, fillStyle)) {
+  if (!ol.style.Fill.equals(state.fillStyle, fillStyle)) {
     if (goog.isDefAndNotNull(fillStyle)) {
       context.fillStyle = ol.color.asString(fillStyle.color);
     }
     state.fillStyle = fillStyle;
   }
-  if (!ol.style.stroke.equals(state.strokeStyle, strokeStyle)) {
+  if (!ol.style.Stroke.equals(state.strokeStyle, strokeStyle)) {
     if (goog.isDefAndNotNull(strokeStyle)) {
       context.strokeStyle = ol.color.asString(strokeStyle.color);
       context.lineWidth = goog.isDef(strokeStyle.width) ? strokeStyle.width : 1;
@@ -341,7 +341,7 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
 ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
   var context = this.context_;
   var state = this.state_;
-  if (!ol.style.text.equals(state.textStyle, textStyle)) {
+  if (!ol.style.Text.equals(state.textStyle, textStyle)) {
     if (goog.isDefAndNotNull(textStyle)) {
       context.font = goog.isDef(textStyle.font) ?
           textStyle.font : '10px sans-serif';
