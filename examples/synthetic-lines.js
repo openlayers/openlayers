@@ -5,6 +5,8 @@ goog.require('ol.View2D');
 goog.require('ol.geom.LineString');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
 
 
 var count = 10000;
@@ -40,12 +42,12 @@ var vector = new ol.layer.Vector({
     features: features
   }),
   styleFunction: function(feature) {
-    return {
-      stroke: {
+    return new ol.style.Style({
+      stroke: new ol.style.Stroke({
         color: '#666666',
         width: 1
-      }
-    };
+      })
+    });
   }
 });
 
