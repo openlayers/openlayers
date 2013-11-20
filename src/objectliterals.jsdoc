@@ -625,6 +625,17 @@
  */
 
 /**
+ * @typedef {Object} ol.style.ImageOptions
+ * @property {Array.<number>} anchor Anchor.
+ * @property {HTMLCanvasElement|HTMLVideoElement|Image} image Image.
+ * @property {number} rotation Rotation.
+ * @property {boolean|undefined} snapToPixel Whether the image should be
+ *     snapped to the closed pixel at rendering time.
+ * @property {boolean} subtractViewRotation Whether the image should be
+ *     rotated with the view or not.
+ */
+
+/**
  * @typedef {Object} ol.tilegrid.TileGridOptions
  * @property {number|undefined} minZoom Minimum zoom.
  * @property {ol.Coordinate|undefined} origin Origin.

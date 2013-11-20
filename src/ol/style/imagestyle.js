@@ -1,17 +1,6 @@
-// FIXME export ol.style.Image
 // FIXME decide default value for snapToPixel
 
 goog.provide('ol.style.Image');
-
-
-/**
- * @typedef {{anchor: Array.<number>,
- *            image: (HTMLCanvasElement|HTMLVideoElement|Image),
- *            rotation: number,
- *            snapToPixel: (boolean|undefined),
- *            subtractViewRotation: boolean}}
- */
-ol.style.ImageOptions;
 
 
 
