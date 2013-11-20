@@ -7,6 +7,8 @@ goog.require('ol.geom.Point');
 goog.require('ol.layer.Vector');
 goog.require('ol.shape');
 goog.require('ol.source.Vector');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
 
 
 var count = 20000;
@@ -23,12 +25,14 @@ for (var i = 0; i < count; ++i) {
 
 var styles = {
   '10': {
-    image: ol.shape.renderCircle(
-        5, {color: '#666666'}, {color: '#bada55', width: 1})
+    image: ol.shape.renderCircle(5,
+        new ol.style.Fill({color: '#666666'}),
+        new ol.style.Stroke({color: '#bada55', width: 1}))
   },
   '20': {
-    image: ol.shape.renderCircle(
-        10, {color: '#666666'}, {color: '#bada55', width: 1})
+    image: ol.shape.renderCircle(10,
+        new ol.style.Fill({color: '#666666'}),
+        new ol.style.Stroke({color: '#bada55', width: 1}))
   }
 };
 
