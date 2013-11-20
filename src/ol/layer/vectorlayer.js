@@ -8,7 +8,7 @@ goog.require('ol.source.Vector');
  * @enum {string}
  */
 ol.layer.VectorProperty = {
-  RENDER_FEATURE_FUNCTION: 'renderFeatureFunction',
+  RENDER_GEOMETRY_FUNCTION: 'renderGeometryFunction',
   STYLE_FUNCTION: 'styleFunction'
 };
 
@@ -36,16 +36,17 @@ goog.inherits(ol.layer.Vector, ol.layer.Layer);
 
 
 /**
- * @return {function(ol.Feature): boolean|undefined} Render feature function.
+ * @return {function(ol.geom.Geometry): boolean|undefined} Render geometry
+ *     function.
  */
-ol.layer.Vector.prototype.getRenderFeatureFunction = function() {
-  return /** @type {function(ol.Feature): boolean|undefined} */ (
-      this.get(ol.layer.VectorProperty.RENDER_FEATURE_FUNCTION));
+ol.layer.Vector.prototype.getRenderGeometryFunction = function() {
+  return /** @type {function(ol.geom.Geometry): boolean|undefined} */ (
+      this.get(ol.layer.VectorProperty.RENDER_GEOMETRY_FUNCTION));
 };
 goog.exportProperty(
     ol.layer.Vector.prototype,
-    'getRenderFeatureFunction',
-    ol.layer.Vector.prototype.getRenderFeatureFunction);
+    'getRenderGeometryFunction',
+    ol.layer.Vector.prototype.getRenderGeometryFunction);
 
 
 /**
@@ -70,18 +71,18 @@ ol.layer.Vector.prototype.getVectorSource = function() {
 
 
 /**
- * @param {function(ol.Feature): boolean|undefined} renderFeatureFunction
- *     Render feature function.
+ * @param {function(ol.geom.Geometry): boolean|undefined} renderGeometryFunction
+ *     Render geometry function.
  */
-ol.layer.Vector.prototype.setRenderFeatureFunction =
-    function(renderFeatureFunction) {
+ol.layer.Vector.prototype.setRenderGeometryFunction =
+    function(renderGeometryFunction) {
   this.set(
-      ol.layer.VectorProperty.RENDER_FEATURE_FUNCTION, renderFeatureFunction);
+      ol.layer.VectorProperty.RENDER_GEOMETRY_FUNCTION, renderGeometryFunction);
 };
 goog.exportProperty(
     ol.layer.Vector.prototype,
-    'setRenderFeatureFunction',
-    ol.layer.Vector.prototype.setRenderFeatureFunction);
+    'setRenderGeometryFunction',
+    ol.layer.Vector.prototype.setRenderGeometryFunction);
 
 
 /**
