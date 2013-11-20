@@ -133,10 +133,6 @@ var tmpStyle = {
 vectorLayer.on('postcompose', function(event) {
   var render = event.getRender();
   render.drawFeature(tmpFeature, tmpStyle);
-  var context = event.getContext();
-  if (context !== null) {
-    context.clearRect(0, 0, 10, 10);
-  }
 });
 
 var map = new ol.Map({
