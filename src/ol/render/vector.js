@@ -36,7 +36,7 @@ ol.renderer.vector.renderLineStringGeometry_ =
   if (goog.isNull(style.stroke)) {
     return;
   }
-  goog.asserts.assert(geometry instanceof ol.geom.LineString);
+  goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
   var lineStringGeometry = /** @type {ol.geom.LineString} */ (geometry);
   var replay = replayGroup.getReplay(
       style.zIndex, ol.render.ReplayType.LINE_STRING);
@@ -56,7 +56,7 @@ ol.renderer.vector.renderMultiLineStringGeometry_ =
   if (goog.isNull(style.stroke)) {
     return;
   }
-  goog.asserts.assert(geometry instanceof ol.geom.MultiLineString);
+  goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString);
   var multiLineStringGeometry = /** @type {ol.geom.MultiLineString} */
       (geometry);
   var replay = replayGroup.getReplay(
@@ -77,7 +77,7 @@ ol.renderer.vector.renderMultiPolygonGeometry_ =
   if (goog.isNull(style.stroke) && goog.isNull(style.fill)) {
     return;
   }
-  goog.asserts.assert(geometry instanceof ol.geom.MultiPolygon);
+  goog.asserts.assertInstanceof(geometry, ol.geom.MultiPolygon);
   var multiPolygonGeometry = /** @type {ol.geom.MultiPolygon} */
       (geometry);
   var replay = replayGroup.getReplay(
@@ -98,7 +98,7 @@ ol.renderer.vector.renderPointGeometry_ =
   if (goog.isNull(style.image)) {
     return;
   }
-  goog.asserts.assert(geometry instanceof ol.geom.Point);
+  goog.asserts.assertInstanceof(geometry, ol.geom.Point);
   var pointGeometry = /** @type {ol.geom.Point} */ (geometry);
   var replay = replayGroup.getReplay(style.zIndex, ol.render.ReplayType.IMAGE);
   replay.setImageStyle(style.image);
@@ -117,7 +117,7 @@ ol.renderer.vector.renderMultiPointGeometry_ =
   if (goog.isNull(style.image)) {
     return;
   }
-  goog.asserts.assert(geometry instanceof ol.geom.MultiPoint);
+  goog.asserts.assertInstanceof(geometry, ol.geom.MultiPoint);
   var multiPointGeometry = /** @type {ol.geom.MultiPoint} */ (geometry);
   var replay = replayGroup.getReplay(style.zIndex, ol.render.ReplayType.IMAGE);
   replay.setImageStyle(style.image);
@@ -136,7 +136,7 @@ ol.renderer.vector.renderPolygonGeometry_ =
   if (goog.isNull(style.fill) && goog.isNull(style.stroke)) {
     return;
   }
-  goog.asserts.assert(geometry instanceof ol.geom.Polygon);
+  goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
   var polygonGeometry = /** @type {ol.geom.Polygon} */ (geometry);
   var replay = replayGroup.getReplay(
       style.zIndex, ol.render.ReplayType.POLYGON);
