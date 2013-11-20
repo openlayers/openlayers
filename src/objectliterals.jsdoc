@@ -636,6 +636,13 @@
  */
 
 /**
+ * @typedef {Object} ol.style.StrokeOptions
+ * @property {ol.Color|string} color Color.
+ * @property {number} width Width.
+ * @todo stability experimental
+ */
+
+/**
  * @typedef {Object} ol.tilegrid.TileGridOptions
  * @property {number|undefined} minZoom Minimum zoom.
  * @property {ol.Coordinate|undefined} origin Origin.

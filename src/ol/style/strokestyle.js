@@ -3,13 +3,6 @@ goog.provide('ol.style.Stroke');
 goog.require('ol.color');
 
 
-/**
- * @typedef {{color: (ol.Color|string),
- *            width: number}}
- */
-ol.style.StrokeOptions;
-
-
 
 /**
  * @constructor
