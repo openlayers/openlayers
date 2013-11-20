@@ -68,7 +68,7 @@ var displayFeatureInfo = function(pixel) {
     highlight = undefined;
   }
   if (highlight !== oldHighlight) {
-    map.render();
+    map.requestRenderFrame();
   }
 };
 
