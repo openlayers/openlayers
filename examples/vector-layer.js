@@ -7,6 +7,9 @@ goog.require('ol.layer.Vector');
 goog.require('ol.proj');
 goog.require('ol.source.MapQuestOpenAerial');
 goog.require('ol.source.Vector');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
 
 var map = new ol.Map({
   layers: [
@@ -23,15 +26,15 @@ var map = new ol.Map({
 });
 
 var vectorSource = new ol.source.Vector();
-var style = {
-  fill: {
+var style = new ol.style.Style({
+  fill: new ol.style.Fill({
     color: 'rgba(255, 255, 255, 0.6)'
-  },
-  stroke: {
+  }),
+  stroke: new ol.style.Stroke({
     color: '#319FD3',
     width: 1
-  }
-};
+  })
+});
 
 $.getJSON('data/countries.geojson', function(data) {
   var format = new ol.format.GeoJSON();
