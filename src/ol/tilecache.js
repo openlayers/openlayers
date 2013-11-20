@@ -48,7 +48,7 @@ ol.TileCache.prototype.canExpireCache = function() {
 ol.TileCache.prototype.expireCache = function(usedTiles) {
   var tile, zKey;
   while (this.canExpireCache()) {
-    tile = this.peekLast();
+    tile = /** @type {ol.Tile} */ (this.peekLast());
     zKey = tile.tileCoord.z.toString();
     if (zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
       break;
