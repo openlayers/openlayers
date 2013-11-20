@@ -1,15 +1,6 @@
 goog.provide('ol.style.Text');
 
 
-/**
- * @typedef {{font: (string|undefined),
- *            text: (string|undefined),
- *            textAlign: (string|undefined),
- *            textBaseline: (string|undefined)}}
- */
-ol.style.TextOptions;
-
-
 
 /**
  * @constructor
