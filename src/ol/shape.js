@@ -7,7 +7,9 @@ goog.provide('ol.shape');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('ol.color');
-goog.require('ol.style');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Image');
+goog.require('ol.style.Stroke');
 
 
 /**
@@ -41,12 +43,12 @@ ol.shape.renderCircle = function(radius, fillStyle, strokeStyle) {
     context.stroke();
   }
 
-  return {
+  return new ol.style.Image({
     anchor: [size / 2, size / 2],
     image: canvas,
     rotation: 0,
     snapToPixel: undefined,
     subtractViewRotation: false
-  };
+  });
 
 };
