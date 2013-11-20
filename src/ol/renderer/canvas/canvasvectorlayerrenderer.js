@@ -6,7 +6,6 @@ goog.require('ol.extent');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.vector');
-goog.require('ol.style.DefaultStyleFunction');
 
 
 
@@ -110,11 +109,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   goog.dispose(this.replayGroup_);
   this.replayGroup_ = null;
 
-  /** @type {function(ol.Feature): ol.style.Style|undefined} */
   var styleFunction = vectorLayer.getStyleFunction();
-  if (!goog.isDef(styleFunction)) {
-    styleFunction = ol.style.DefaultStyleFunction;
-  }
   var replayGroup = new ol.render.canvas.ReplayGroup();
   vectorSource.forEachFeatureInExtent(extent,
       /**
