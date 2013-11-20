@@ -1,0 +1,70 @@
+goog.provide('ol.style.Text');
+
+
+/**
+ * @typedef {{font: (string|undefined),
+ *            text: (string|undefined),
+ *            textAlign: (string|undefined),
+ *            textBaseline: (string|undefined)}}
+ */
+ol.style.TextOptions;
+
+
+
+/**
+ * @constructor
+ * @param {ol.style.TextOptions} options Options.
+ */
+ol.style.Text = function(options) {
+
+  /**
+   * @type {string|undefined}
+   */
+  this.font = options.font;
+
+  /**
+   * @type {string|undefined}
+   */
+  this.text = options.text;
+
+  /**
+   * @type {string|undefined}
+   */
+  this.textAlign = options.textAlign;
+
+  /**
+   * @type {string|undefined}
+   */
+  this.textBaseline = options.textBaseline;
+
+  /**
+   * @type {number}
+   */
+  this.width = options.width;
+};
+
+
+/**
+ * @param {ol.style.Text} textStyle1 Text style 1.
+ * @param {ol.style.Text} textStyle2 Text style 2.
+ * @return {boolean} Equals.
+ */
+ol.style.Text.equals = function(textStyle1, textStyle2) {
+  if (!goog.isNull(textStyle1)) {
+    if (!goog.isNull(textStyle2)) {
+      return textStyle1 === textStyle2 || (
+          textStyle1.font == textStyle2.font &&
+          textStyle1.text == textStyle2.text &&
+          textStyle1.textAlign == textStyle2.textAlign &&
+          textStyle1.textBaseline == textStyle2.textBaseline);
+    } else {
+      return false;
+    }
+  } else {
+    if (!goog.isNull(textStyle2)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+};
