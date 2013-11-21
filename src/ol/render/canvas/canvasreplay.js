@@ -127,15 +127,16 @@ ol.render.canvas.Replay.prototype.draw = function(context, transform) {
       ++i;
     } else if (type == ol.render.canvas.Instruction.DRAW_IMAGE) {
       dd = /** @type {number} */ (instruction[1]);
-      var anchor = /** @type {ol.Pixel} */ (instruction[2]);
-      var width = /** @type {number} */ (instruction[3]);
-      var height = /** @type {number} */ (instruction[4]);
+      var anchorX = /** @type {number} */ (instruction[2]);
+      var anchorY = /** @type {number} */ (instruction[3]);
+      var width = /** @type {number} */ (instruction[4]);
+      var height = /** @type {number} */ (instruction[5]);
       var image =  /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */
-          (instruction[5]);
-      var snapToPixel = /** @type {boolean|undefined} */ (instruction[6]);
+          (instruction[6]);
+      var snapToPixel = /** @type {boolean|undefined} */ (instruction[7]);
       for (; d < dd; d += 2) {
-        var x = pixelCoordinates[d] - anchor[0];
-        var y = pixelCoordinates[d + 1] - anchor[1];
+        var x = pixelCoordinates[d] - anchorX;
+        var y = pixelCoordinates[d + 1] - anchorY;
         if (snapToPixel) {
           x = (x + 0.5) | 0;
           y = (y + 0.5) | 0;
@@ -267,9 +268,15 @@ ol.render.canvas.ImageReplay = function() {
 
   /**
    * @private
-   * @type {ol.Pixel}
+   * @type {number}
    */
-  this.anchor_ = null;
+  this.anchorX_ = undefined;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.anchorY_ = undefined;
 
   /**
    * @private
@@ -322,7 +329,8 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
   if (goog.isNull(this.image_)) {
     return;
   }
-  goog.asserts.assert(!goog.isNull(this.anchor_));
+  goog.asserts.assert(goog.isDef(this.anchorX_));
+  goog.asserts.assert(goog.isDef(this.anchorY_));
   goog.asserts.assert(goog.isDef(this.height_));
   goog.asserts.assert(goog.isDef(this.width_));
   ol.extent.extend(this.extent_, pointGeometry.getExtent());
@@ -332,7 +340,7 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
       flatCoordinates, 0, flatCoordinates.length, stride);
   this.instructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myEnd,
-    this.anchor_, this.width_, this.height_,
+    this.anchorX_, this.anchorY_, this.width_, this.height_,
     this.image_, this.snapToPixel_
   ]);
 };
@@ -346,7 +354,8 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
   if (goog.isNull(this.image_)) {
     return;
   }
-  goog.asserts.assert(!goog.isNull(this.anchor_));
+  goog.asserts.assert(goog.isDef(this.anchorX_));
+  goog.asserts.assert(goog.isDef(this.anchorY_));
   goog.asserts.assert(goog.isDef(this.height_));
   goog.asserts.assert(goog.isDef(this.width_));
   ol.extent.extend(this.extent_, multiPointGeometry.getExtent());
@@ -356,7 +365,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
       flatCoordinates, 0, flatCoordinates.length, stride);
   this.instructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myEnd,
-    this.anchor_, this.width_, this.height_,
+    this.anchorX_, this.anchorY_, this.width_, this.height_,
     this.image_, this.snapToPixel_
   ]);
 };
@@ -367,7 +376,8 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
  */
 ol.render.canvas.ImageReplay.prototype.finish = function() {
   // FIXME this doesn't really protect us against further calls to draw*Geometry
-  this.anchor_ = null;
+  this.anchorX_ = undefined;
+  this.anchorY_ = undefined;
   this.image_ = null;
   this.height_ = undefined;
   this.width_ = undefined;
@@ -383,7 +393,8 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   goog.asserts.assert(!goog.isNull(imageStyle.anchor));
   goog.asserts.assert(goog.isDef(imageStyle.size));
   goog.asserts.assert(!goog.isNull(imageStyle.image));
-  this.anchor_ = imageStyle.anchor;
+  this.anchorX_ = imageStyle.anchor[0];
+  this.anchorY_ = imageStyle.anchor[1];
   this.image_ = imageStyle.image;
   this.width_ = imageStyle.size[0];
   this.height_ = imageStyle.size[1];
