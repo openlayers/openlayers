@@ -2,6 +2,7 @@
 
 goog.provide('ol.interaction.Interaction');
 
+goog.require('goog.events.EventTarget');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.animation');
 goog.require('ol.easing');
@@ -10,8 +11,27 @@ goog.require('ol.easing');
 
 /**
  * @constructor
+ * @extends {goog.events.EventTarget}
  */
 ol.interaction.Interaction = function() {
+  goog.base(this);
+
+  /**
+   * @private
+   * @type {ol.Map}
+   */
+  this.map_ = null;
+
+};
+goog.inherits(ol.interaction.Interaction, goog.events.EventTarget);
+
+
+/**
+ * Get the map associated with this interaction.
+ * @return {ol.Map} Map.
+ */
+ol.interaction.Interaction.prototype.getMap = function() {
+  return this.map_;
 };
 
 
@@ -26,6 +46,17 @@ ol.interaction.Interaction.prototype.handleMapBrowserEvent =
 
 
 /**
+ * Remove the interaction from its current map and attach it to the new map.
+ * Subclasses may set up event handlers to get notified about changes to
+ * the map here.
+ * @param {ol.Map} map Map.
+ */
+ol.interaction.Interaction.prototype.setMap = function(map) {
+  this.map_ = map;
+};
+
+
+/**
  * @param {ol.Map} map Map.
  * @param {ol.View2D} view View.
  * @param {ol.Coordinate} delta Delta.
@@ -35,14 +66,16 @@ ol.interaction.Interaction.pan = function(
     map, view, delta, opt_duration) {
   var currentCenter = view.getCenter();
   if (goog.isDef(currentCenter)) {
-    if (goog.isDef(opt_duration)) {
-      map.addPreRenderFunction(ol.animation.pan({
+    if (goog.isDef(opt_duration) && opt_duration > 0) {
+      map.beforeRender(ol.animation.pan({
         source: currentCenter,
         duration: opt_duration,
         easing: ol.easing.linear
       }));
     }
-    view.setCenter([currentCenter[0] + delta[0], currentCenter[1] + delta[1]]);
+    var center = view.constrainCenter(
+        [currentCenter[0] + delta[0], currentCenter[1] + delta[1]]);
+    view.setCenter(center);
   }
 };
 
@@ -75,14 +108,14 @@ ol.interaction.Interaction.rotateWithoutConstraints =
     var currentRotation = view.getRotation();
     var currentCenter = view.getCenter();
     if (goog.isDef(currentRotation) && goog.isDef(currentCenter) &&
-        goog.isDef(opt_duration)) {
-      map.addPreRenderFunction(ol.animation.rotate({
+        goog.isDef(opt_duration) && opt_duration > 0) {
+      map.beforeRender(ol.animation.rotate({
         rotation: currentRotation,
         duration: opt_duration,
         easing: ol.easing.easeOut
       }));
       if (goog.isDef(opt_anchor)) {
-        map.addPreRenderFunction(ol.animation.pan({
+        map.beforeRender(ol.animation.pan({
           source: currentCenter,
           duration: opt_duration,
           easing: ol.easing.easeOut
@@ -154,14 +187,14 @@ ol.interaction.Interaction.zoomWithoutConstraints =
     var currentResolution = view.getResolution();
     var currentCenter = view.getCenter();
     if (goog.isDef(currentResolution) && goog.isDef(currentCenter) &&
-        goog.isDef(opt_duration)) {
-      map.addPreRenderFunction(ol.animation.zoom({
+        goog.isDef(opt_duration) && opt_duration > 0) {
+      map.beforeRender(ol.animation.zoom({
         resolution: currentResolution,
         duration: opt_duration,
         easing: ol.easing.easeOut
       }));
       if (goog.isDef(opt_anchor)) {
-        map.addPreRenderFunction(ol.animation.pan({
+        map.beforeRender(ol.animation.pan({
           source: currentCenter,
           duration: opt_duration,
           easing: ol.easing.easeOut

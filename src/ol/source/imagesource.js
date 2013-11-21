@@ -1,4 +1,4 @@
-goog.provide('ol.source.ImageSource');
+goog.provide('ol.source.Image');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -7,7 +7,6 @@ goog.require('ol.Extent');
 goog.require('ol.Image');
 goog.require('ol.ImageUrlFunction');
 goog.require('ol.ImageUrlFunctionType');
-goog.require('ol.Projection');
 goog.require('ol.Size');
 goog.require('ol.array');
 goog.require('ol.source.Source');
@@ -18,21 +17,23 @@ goog.require('ol.source.Source');
  *            crossOrigin: (null|string|undefined),
  *            extent: (null|ol.Extent|undefined),
  *            logo: (string|undefined),
- *            projection: ol.ProjectionLike,
+ *            projection: ol.proj.ProjectionLike,
  *            resolutions: (Array.<number>|undefined),
  *            imageUrlFunction: (ol.ImageUrlFunctionType|
  *                undefined)}}
+ * @todo stability experimental
  */
-ol.source.ImageSourceOptions;
+ol.source.ImageOptions;
 
 
 
 /**
  * @constructor
  * @extends {ol.source.Source}
- * @param {ol.source.ImageSourceOptions} options Single image source options.
+ * @param {ol.source.ImageOptions} options Single image source options.
+ * @todo stability experimental
  */
-ol.source.ImageSource = function(options) {
+ol.source.Image = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
@@ -70,7 +71,7 @@ ol.source.ImageSource = function(options) {
           }, true));
 
 };
-goog.inherits(ol.source.ImageSource, ol.source.Source);
+goog.inherits(ol.source.Image, ol.source.Source);
 
 
 /**
@@ -78,10 +79,10 @@ goog.inherits(ol.source.ImageSource, ol.source.Source);
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {ol.Size} size Size.
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  * @return {ol.Image} Single image.
  */
-ol.source.ImageSource.prototype.createImage =
+ol.source.Image.prototype.createImage =
     function(extent, resolution, size, projection) {
   var image = null;
   var imageUrl = this.imageUrlFunction(extent, size, projection);
@@ -99,7 +100,7 @@ ol.source.ImageSource.prototype.createImage =
  * @param {number} resolution Resolution.
  * @return {number} Resolution.
  */
-ol.source.ImageSource.prototype.findNearestResolution =
+ol.source.Image.prototype.findNearestResolution =
     function(resolution) {
   if (!goog.isNull(this.resolutions_)) {
     var idx = ol.array.linearFindNearest(this.resolutions_, resolution, 0);
@@ -112,7 +113,7 @@ ol.source.ImageSource.prototype.findNearestResolution =
 /**
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  * @return {ol.Image} Single image.
  */
-ol.source.ImageSource.prototype.getImage = goog.abstractMethod;
+ol.source.Image.prototype.getImage = goog.abstractMethod;

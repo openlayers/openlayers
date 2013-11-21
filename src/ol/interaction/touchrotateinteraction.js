@@ -17,9 +17,12 @@ ol.interaction.TOUCHROTATE_ANIMATION_DURATION = 250;
 
 
 /**
+ * Allows the user to rotate the map by twisting with two fingers
+ * on a touch screen.
  * @constructor
  * @extends {ol.interaction.Touch}
  * @param {ol.interaction.TouchRotateOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.TouchRotate = function(opt_options) {
 

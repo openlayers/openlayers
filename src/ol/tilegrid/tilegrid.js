@@ -3,13 +3,13 @@ goog.provide('ol.tilegrid.TileGrid');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.Coordinate');
-goog.require('ol.Projection');
-goog.require('ol.ProjectionUnits');
 goog.require('ol.Size');
 goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.array');
 goog.require('ol.extent');
+goog.require('ol.proj.Projection');
+goog.require('ol.proj.Units');
 
 
 /**
@@ -28,6 +28,7 @@ ol.DEFAULT_MAX_ZOOM = 42;
 /**
  * @constructor
  * @param {ol.tilegrid.TileGridOptions} options Tile grid options.
+ * @todo stability experimental
  */
 ol.tilegrid.TileGrid = function(options) {
 
@@ -106,8 +107,8 @@ ol.tilegrid.TileGrid.tmpTileCoord_ = new ol.TileCoord(0, 0, 0);
 /**
  * @param {{extent: (ol.Extent|undefined),
  *          wrapX: (boolean|undefined)}=} opt_options Options.
- * @return {function(ol.TileCoord, ol.Projection, ol.TileCoord=): ol.TileCoord}
- *     Tile coordinate transform.
+ * @return {function(ol.TileCoord, ol.proj.Projection, ol.TileCoord=):
+ *     ol.TileCoord} Tile coordinate transform.
  */
 ol.tilegrid.TileGrid.prototype.createTileCoordTransform = goog.abstractMethod;
 
@@ -138,6 +139,7 @@ ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange =
 
 /**
  * @return {number} Max zoom.
+ * @todo stability experimental
  */
 ol.tilegrid.TileGrid.prototype.getMaxZoom = function() {
   return this.maxZoom;
@@ -146,6 +148,7 @@ ol.tilegrid.TileGrid.prototype.getMaxZoom = function() {
 
 /**
  * @return {number} Min zoom.
+ * @todo stability experimental
  */
 ol.tilegrid.TileGrid.prototype.getMinZoom = function() {
   return this.minZoom;
@@ -155,6 +158,7 @@ ol.tilegrid.TileGrid.prototype.getMinZoom = function() {
 /**
  * @param {number} z Z.
  * @return {ol.Coordinate} Origin.
+ * @todo stability experimental
  */
 ol.tilegrid.TileGrid.prototype.getOrigin = function(z) {
   if (!goog.isNull(this.origin_)) {
@@ -179,6 +183,7 @@ ol.tilegrid.TileGrid.prototype.getResolution = function(z) {
 
 /**
  * @return {Array.<number>} Resolutions.
+ * @todo stability experimental
  */
 ol.tilegrid.TileGrid.prototype.getResolutions = function() {
   return this.resolutions_;
@@ -232,11 +237,11 @@ ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution =
     function(extent, resolution, opt_tileRange) {
   var tileCoord = ol.tilegrid.TileGrid.tmpTileCoord_;
   this.getTileCoordForXYAndResolution_(
-      extent[0], extent[2], resolution, false, tileCoord);
+      extent[0], extent[1], resolution, false, tileCoord);
   var minX = tileCoord.x;
   var minY = tileCoord.y;
   this.getTileCoordForXYAndResolution_(
-      extent[1], extent[3], resolution, true, tileCoord);
+      extent[2], extent[3], resolution, true, tileCoord);
   return ol.TileRange.createOrUpdate(
       minX, tileCoord.x, minY, tileCoord.y, opt_tileRange);
 };
@@ -367,6 +372,7 @@ ol.tilegrid.TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
 /**
  * @param {number} z Z.
  * @return {ol.Size} Tile size.
+ * @todo stability experimental
  */
 ol.tilegrid.TileGrid.prototype.getTileSize = function(z) {
   if (!goog.isNull(this.tileSize_)) {
@@ -389,7 +395,7 @@ ol.tilegrid.TileGrid.prototype.getZForResolution = function(resolution) {
 
 
 /**
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  * @return {ol.tilegrid.TileGrid} Default tile grid for the passed projection.
  */
 ol.tilegrid.getForProjection = function(projection) {
@@ -403,7 +409,7 @@ ol.tilegrid.getForProjection = function(projection) {
 
 
 /**
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  * @param {number=} opt_maxZoom Maximum zoom level.
  * @param {ol.Size=} opt_tileSize Tile size.
  * @return {ol.tilegrid.TileGrid} TileGrid instance.
@@ -412,10 +418,10 @@ ol.tilegrid.createForProjection =
     function(projection, opt_maxZoom, opt_tileSize) {
   var projectionExtent = projection.getExtent();
   var size = goog.isNull(projectionExtent) ?
-      360 * ol.METERS_PER_UNIT[ol.ProjectionUnits.DEGREES] /
+      360 * ol.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
           projection.getMetersPerUnit() :
-      Math.max(projectionExtent[1] - projectionExtent[0],
-          projectionExtent[3] - projectionExtent[2]);
+      Math.max(projectionExtent[2] - projectionExtent[0],
+          projectionExtent[3] - projectionExtent[1]);
   var maxZoom = goog.isDef(opt_maxZoom) ?
       opt_maxZoom : ol.DEFAULT_MAX_ZOOM;
   var tileSize = goog.isDef(opt_tileSize) ?

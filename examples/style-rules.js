@@ -1,15 +1,16 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
-goog.require('ol.control.defaults');
+goog.require('ol.control');
 goog.require('ol.expr');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.GeoJSON');
 goog.require('ol.proj');
 goog.require('ol.source.Vector');
-goog.require('ol.style.Line');
+goog.require('ol.style.Fill');
 goog.require('ol.style.Rule');
 goog.require('ol.style.Shape');
+goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 
@@ -18,25 +19,26 @@ var style = new ol.style.Style({rules: [
   new ol.style.Rule({
     filter: 'where == "outer"',
     symbolizers: [
-      new ol.style.Line({
-        strokeColor: ol.expr.parse('color'),
-        strokeWidth: 4,
-        strokeOpacity: 1
+      new ol.style.Stroke({
+        color: ol.expr.parse('color'),
+        width: 4,
+        opacity: 1,
+        zIndex: 1
       })
     ]
   }),
   new ol.style.Rule({
     filter: 'where == "inner"',
     symbolizers: [
-      new ol.style.Line({
-        strokeColor: '#013',
-        strokeWidth: 4,
-        strokeOpacity: 1
+      new ol.style.Stroke({
+        color: '#013',
+        width: 4,
+        opacity: 1
       }),
-      new ol.style.Line({
-        strokeColor: ol.expr.parse('color'),
-        strokeWidth: 2,
-        strokeOpacity: 1
+      new ol.style.Stroke({
+        color: ol.expr.parse('color'),
+        width: 2,
+        opacity: 1
       })
     ]
   }),
@@ -45,7 +47,7 @@ var style = new ol.style.Style({rules: [
     symbolizers: [
       new ol.style.Shape({
         size: 40,
-        fillColor: '#013'
+        fill: new ol.style.Fill({color: '#013'})
       }),
       new ol.style.Text({
         color: '#bada55',

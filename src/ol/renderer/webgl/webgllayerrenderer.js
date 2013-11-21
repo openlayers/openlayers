@@ -59,37 +59,51 @@ ol.renderer.webgl.Layer = function(mapRenderer, layer) {
 
   /**
    * @private
-   * @type {boolean}
+   * @type {number|undefined}
    */
-  this.colorMatrixDirty_ = true;
+  this.brightness_ = undefined;
 
   /**
    * @private
    * @type {!goog.vec.Mat4.Float32}
    */
   this.brightnessMatrix_ = goog.vec.Mat4.createFloat32();
-  this.updateBrightnessMatrix_();
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.contrast_ = undefined;
 
   /**
    * @private
    * @type {!goog.vec.Mat4.Float32}
    */
   this.contrastMatrix_ = goog.vec.Mat4.createFloat32();
-  this.updateContrastMatrix_();
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.hue_ = undefined;
 
   /**
    * @private
    * @type {!goog.vec.Mat4.Float32}
    */
   this.hueMatrix_ = goog.vec.Mat4.createFloat32();
-  this.updateHueMatrix_();
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.saturation_ = undefined;
 
   /**
    * @private
    * @type {!goog.vec.Mat4.Float32}
    */
   this.saturationMatrix_ = goog.vec.Mat4.createFloat32();
-  this.updateSaturationMatrix_();
 
 };
 goog.inherits(ol.renderer.webgl.Layer, ol.renderer.Layer);
@@ -110,12 +124,18 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer =
       this.framebufferDimension != framebufferDimension) {
 
     frameState.postRenderFunctions.push(
-        goog.partial(function(gl, framebuffer, texture) {
-          if (!gl.isContextLost()) {
-            gl.deleteFramebuffer(framebuffer);
-            gl.deleteTexture(texture);
-          }
-        }, gl, this.framebuffer, this.texture));
+        goog.partial(
+            /**
+             * @param {WebGLRenderingContext} gl GL.
+             * @param {WebGLFramebuffer} framebuffer Framebuffer.
+             * @param {WebGLTexture} texture Texture.
+             */
+            function(gl, framebuffer, texture) {
+              if (!gl.isContextLost()) {
+                gl.deleteFramebuffer(framebuffer);
+                gl.deleteTexture(texture);
+              }
+            }, gl, this.framebuffer, this.texture));
 
     var texture = gl.createTexture();
     gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
@@ -144,10 +164,36 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer =
 
 
 /**
+ * @param {number} brightness Brightness.
+ * @param {number} contrast Contrast.
+ * @param {number} hue Hue.
+ * @param {number} saturation Saturation.
  * @return {!goog.vec.Mat4.Float32} Color matrix.
  */
-ol.renderer.webgl.Layer.prototype.getColorMatrix = function() {
-  if (this.colorMatrixDirty_) {
+ol.renderer.webgl.Layer.prototype.getColorMatrix = function(
+    brightness, contrast, hue, saturation) {
+  var colorMatrixDirty = false;
+  if (brightness !== this.brightness_) {
+    ol.vec.Mat4.makeBrightness(this.brightnessMatrix_, brightness);
+    this.brightness_ = brightness;
+    colorMatrixDirty = true;
+  }
+  if (contrast !== this.contrast_) {
+    ol.vec.Mat4.makeContrast(this.contrastMatrix_, contrast);
+    this.contrast_ = contrast;
+    colorMatrixDirty = true;
+  }
+  if (hue !== this.hue_) {
+    ol.vec.Mat4.makeHue(this.hueMatrix_, hue);
+    this.hue_ = hue;
+    colorMatrixDirty = true;
+  }
+  if (saturation !== this.saturation_) {
+    ol.vec.Mat4.makeSaturation(this.saturationMatrix_, saturation);
+    this.saturation_ = saturation;
+    colorMatrixDirty = true;
+  }
+  if (colorMatrixDirty) {
     this.updateColorMatrix_();
   }
   return this.colorMatrix_;
@@ -188,58 +234,12 @@ ol.renderer.webgl.Layer.prototype.getProjectionMatrix = function() {
 
 
 /**
- * @inheritDoc
- */
-ol.renderer.webgl.Layer.prototype.handleLayerBrightnessChange = function() {
-  this.updateBrightnessMatrix_();
-  this.renderIfReadyAndVisible();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Layer.prototype.handleLayerContrastChange = function() {
-  this.updateContrastMatrix_();
-  this.renderIfReadyAndVisible();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Layer.prototype.handleLayerHueChange = function() {
-  this.updateHueMatrix_();
-  this.renderIfReadyAndVisible();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Layer.prototype.handleLayerSaturationChange = function() {
-  this.updateSaturationMatrix_();
-  this.renderIfReadyAndVisible();
-};
-
-
-/**
  * Handle webglcontextlost.
  */
 ol.renderer.webgl.Layer.prototype.handleWebGLContextLost = function() {
   this.texture = null;
   this.framebuffer = null;
   this.framebufferDimension = undefined;
-};
-
-
-/**
- * @private
- */
-ol.renderer.webgl.Layer.prototype.updateBrightnessMatrix_ = function() {
-  var brightness = this.getLayer().getBrightness();
-  ol.vec.Mat4.makeBrightness(this.brightnessMatrix_, brightness);
-  this.colorMatrixDirty_ = true;
 };
 
 
@@ -253,35 +253,4 @@ ol.renderer.webgl.Layer.prototype.updateColorMatrix_ = function() {
   goog.vec.Mat4.multMat(colorMatrix, this.brightnessMatrix_, colorMatrix);
   goog.vec.Mat4.multMat(colorMatrix, this.saturationMatrix_, colorMatrix);
   goog.vec.Mat4.multMat(colorMatrix, this.hueMatrix_, colorMatrix);
-  this.colorMatrixDirty_ = false;
-};
-
-
-/**
- * @private
- */
-ol.renderer.webgl.Layer.prototype.updateContrastMatrix_ = function() {
-  var contrast = this.getLayer().getContrast();
-  ol.vec.Mat4.makeContrast(this.contrastMatrix_, contrast);
-  this.colorMatrixDirty_ = true;
-};
-
-
-/**
- * @private
- */
-ol.renderer.webgl.Layer.prototype.updateHueMatrix_ = function() {
-  var hue = this.getLayer().getHue();
-  ol.vec.Mat4.makeHue(this.hueMatrix_, hue);
-  this.colorMatrixDirty_ = true;
-};
-
-
-/**
- * @private
- */
-ol.renderer.webgl.Layer.prototype.updateSaturationMatrix_ = function() {
-  var saturation = this.getLayer().getSaturation();
-  ol.vec.Mat4.makeSaturation(this.saturationMatrix_, saturation);
-  this.colorMatrixDirty_ = true;
 };

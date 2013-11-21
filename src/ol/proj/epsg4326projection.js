@@ -1,27 +1,27 @@
 goog.provide('ol.proj.EPSG4326');
 
-goog.require('ol.Projection');
-goog.require('ol.ProjectionUnits');
 goog.require('ol.proj');
+goog.require('ol.proj.Projection');
+goog.require('ol.proj.Units');
 
 
 
 /**
  * @constructor
- * @extends {ol.Projection}
+ * @extends {ol.proj.Projection}
  * @param {string} code Code.
  * @param {string=} opt_axisOrientation Axis orientation.
  */
 ol.proj.EPSG4326 = function(code, opt_axisOrientation) {
   goog.base(this, {
     code: code,
-    units: ol.ProjectionUnits.DEGREES,
+    units: ol.proj.Units.DEGREES,
     extent: ol.proj.EPSG4326.EXTENT,
     axisOrientation: opt_axisOrientation,
     global: true
   });
 };
-goog.inherits(ol.proj.EPSG4326, ol.Projection);
+goog.inherits(ol.proj.EPSG4326, ol.proj.Projection);
 
 
 /**
@@ -30,14 +30,14 @@ goog.inherits(ol.proj.EPSG4326, ol.Projection);
  * @const
  * @type {ol.Extent}
  */
-ol.proj.EPSG4326.EXTENT = [-180, 180, -90, 90];
+ol.proj.EPSG4326.EXTENT = [-180, -90, 180, 90];
 
 
 /**
  * Projections equal to EPSG:4326.
  *
  * @const
- * @type {Array.<ol.Projection>}
+ * @type {Array.<ol.proj.Projection>}
  */
 ol.proj.EPSG4326.PROJECTIONS = [
   new ol.proj.EPSG4326('CRS:84'),

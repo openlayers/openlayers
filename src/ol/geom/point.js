@@ -1,46 +1,29 @@
 goog.provide('ol.geom.Point');
 
 goog.require('goog.asserts');
+goog.require('goog.events.EventType');
+goog.require('ol.Coordinate');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryEvent');
 goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.SharedVertices');
-goog.require('ol.geom.Vertex');
 
 
 
 /**
  * @constructor
  * @extends {ol.geom.Geometry}
- * @param {ol.geom.Vertex} coordinates Coordinates array (e.g. [x, y]).
- * @param {ol.geom.SharedVertices=} opt_shared Shared vertices.
+ * @param {ol.Coordinate} coordinates Coordinate values (e.g. `[x, y]`).
+ * @todo stability experimental
  */
-ol.geom.Point = function(coordinates, opt_shared) {
+ol.geom.Point = function(coordinates) {
   goog.base(this);
 
-  var vertices = opt_shared,
-      dimension;
-
-  if (!goog.isDef(vertices)) {
-    dimension = coordinates.length;
-    vertices = new ol.geom.SharedVertices({dimension: dimension});
-  }
-
   /**
-   * @type {ol.geom.SharedVertices}
-   */
-  this.vertices = vertices;
-
-  /**
-   * @type {number}
+   * Point coordinate values.
+   * @type {ol.Coordinate}
    * @private
    */
-  this.sharedId_ = vertices.add([coordinates]);
-
-  /**
-   * @type {number}
-   */
-  this.dimension = vertices.getDimension();
-  goog.asserts.assert(this.dimension >= 2);
+  this.coordinates_ = coordinates;
 
   /**
    * @type {ol.Extent}
@@ -57,7 +40,7 @@ goog.inherits(ol.geom.Point, ol.geom.Geometry);
  * @return {number} The coordinate value.
  */
 ol.geom.Point.prototype.get = function(dim) {
-  return this.vertices.get(this.sharedId_, 0, dim);
+  return this.getCoordinates()[dim];
 };
 
 
@@ -68,7 +51,7 @@ ol.geom.Point.prototype.getBounds = function() {
   if (goog.isNull(this.bounds_)) {
     var x = this.get(0),
         y = this.get(1);
-    this.bounds_ = [x, x, y, y];
+    this.bounds_ = [x, y, x, y];
   }
   return this.bounds_;
 };
@@ -76,14 +59,10 @@ ol.geom.Point.prototype.getBounds = function() {
 
 /**
  * @inheritDoc
- * @return {ol.geom.Vertex} Coordinates array.
+ * @return {ol.Coordinate} Coordinates array.
  */
 ol.geom.Point.prototype.getCoordinates = function() {
-  var coordinates = new Array(this.dimension);
-  for (var i = 0; i < this.dimension; ++i) {
-    coordinates[i] = this.get(i);
-  }
-  return coordinates;
+  return this.coordinates_;
 };
 
 
@@ -96,9 +75,23 @@ ol.geom.Point.prototype.getType = function() {
 
 
 /**
- * Get the identifier used to mark this point in the shared vertices structure.
- * @return {number} The identifier.
+ * Update the point coordinates.
+ * @param {ol.Coordinate} coordinates Coordinates array.
  */
-ol.geom.Point.prototype.getSharedId = function() {
-  return this.sharedId_;
+ol.geom.Point.prototype.setCoordinates = function(coordinates) {
+  var oldBounds = this.bounds_;
+  this.bounds_ = null;
+  this.coordinates_ = coordinates;
+  this.dispatchEvent(new ol.geom.GeometryEvent(goog.events.EventType.CHANGE,
+      this, oldBounds));
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.Point.prototype.transform = function(transform) {
+  var coordinates = this.getCoordinates();
+  transform(coordinates, coordinates, coordinates.length);
+  this.setCoordinates(coordinates); // for change event
 };

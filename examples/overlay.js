@@ -1,14 +1,15 @@
 goog.require('ol.Map');
 goog.require('ol.Overlay');
+goog.require('ol.OverlayPositioning');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.coordinate');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.MapQuestOpenAerial');
 
 
-var layer = new ol.layer.TileLayer({
+var layer = new ol.layer.Tile({
   source: new ol.source.MapQuestOpenAerial()
 });
 
@@ -22,20 +23,31 @@ var map = new ol.Map({
   })
 });
 
+var pos = ol.proj.transform([16.3725, 48.208889], 'EPSG:4326', 'EPSG:3857');
+
+// Vienna marker
+var marker = new ol.Overlay({
+  position: pos,
+  positioning: ol.OverlayPositioning.CENTER_CENTER,
+  element: document.getElementById('marker'),
+  stopEvent: false
+});
+map.addOverlay(marker);
+
 // Vienna label
 var vienna = new ol.Overlay({
-  map: map,
-  position: ol.proj.transform(
-      [16.3725, 48.208889], 'EPSG:4326', 'EPSG:3857'),
+  position: pos,
   element: document.getElementById('vienna')
 });
+map.addOverlay(vienna);
 
 // Popup showing the position the user clicked
 var popup = new ol.Overlay({
-  map: map,
   element: document.getElementById('popup')
 });
-map.on('click', function(evt) {
+map.addOverlay(popup);
+
+map.on('singleclick', function(evt) {
   var element = popup.getElement();
   var coordinate = evt.getCoordinate();
   var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(

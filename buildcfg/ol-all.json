@@ -10,7 +10,8 @@
     "../externs/topojson.js",
     "../externs/oli.js",
     "../externs/proj4js.js",
-    "../externs/tilejson.js"
+    "../externs/tilejson.js",
+    "../externs/closure-compiler.js"
   ],
 
   "inherits": "base.json",

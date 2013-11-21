@@ -20,7 +20,8 @@
     "../externs/topojson.js",
     "../externs/oli.js",
     "../externs/proj4js.js",
-    "../externs/tilejson.js"
+    "../externs/tilejson.js",
+    "../externs/closure-compiler.js"
   ],
 
   "inherits": "base.json",
@@ -30,7 +31,7 @@
     "../build/src/external/src/types.js"
   ],
 
-  "output-wrapper": "(function(){%output%})();",
+  "output-wrapper": "// OpenLayers 3. see http://ol3js.org/\n(function(){%output%})();",
 
   "paths": [
     "../src"

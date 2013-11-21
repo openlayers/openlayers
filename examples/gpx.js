@@ -1,13 +1,13 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.GPX');
 goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
 
-var raster = new ol.layer.TileLayer({
+var raster = new ol.layer.Tile({
   source: new ol.source.OSM()
 });
 
@@ -28,9 +28,9 @@ var map = new ol.Map({
   })
 });
 
-map.on(['click', 'mousemove'], function(evt) {
+var displayFeatureInfo = function(pixel) {
   map.getFeatures({
-    pixel: evt.getPixel(),
+    pixel: pixel,
     layers: [vector],
     success: function(featuresByLayer) {
       var features = featuresByLayer[0];
@@ -41,4 +41,14 @@ map.on(['click', 'mousemove'], function(evt) {
       document.getElementById('info').innerHTML = info.join(', ') || '&nbsp;';
     }
   });
+};
+
+$(map.getViewport()).on('mousemove', function(evt) {
+  var pixel = map.getEventPixel(evt.originalEvent);
+  displayFeatureInfo(pixel);
+});
+
+map.on('singleclick', function(evt) {
+  var pixel = evt.getPixel();
+  displayFeatureInfo(pixel);
 });

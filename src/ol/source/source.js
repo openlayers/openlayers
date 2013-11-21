@@ -1,11 +1,32 @@
 goog.provide('ol.source.Source');
+goog.provide('ol.source.State');
 
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
-goog.require('goog.functions');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.proj');
+
+
+/**
+ * @enum {number}
+ */
+ol.source.State = {
+  LOADING: 0,
+  READY: 1,
+  ERROR: 2
+};
+
+
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *            extent: (ol.Extent|undefined),
+ *            logo: (string|undefined),
+ *            projection: ol.proj.ProjectionLike,
+ *            state: (ol.source.State|undefined)}}
+ * @todo stability experimental
+ */
+ol.source.SourceOptions;
 
 
 
@@ -13,6 +34,7 @@ goog.require('ol.proj');
  * @constructor
  * @extends {goog.events.EventTarget}
  * @param {ol.source.SourceOptions} options Source options.
+ * @todo stability experimental
  */
 ol.source.Source = function(options) {
 
@@ -20,7 +42,7 @@ ol.source.Source = function(options) {
 
   /**
    * @private
-   * @type {ol.Projection}
+   * @type {ol.proj.Projection}
    */
   this.projection_ = ol.proj.get(options.projection);
 
@@ -45,6 +67,19 @@ ol.source.Source = function(options) {
    */
   this.logo_ = options.logo;
 
+  /**
+   * @private
+   * @type {ol.source.State}
+   */
+  this.state_ = goog.isDef(options.state) ?
+      options.state : ol.source.State.READY;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.revision_ = 0;
+
 };
 goog.inherits(ol.source.Source, goog.events.EventTarget);
 
@@ -52,8 +87,9 @@ goog.inherits(ol.source.Source, goog.events.EventTarget);
 /**
  * @protected
  */
-ol.source.Source.prototype.dispatchLoadEvent = function() {
-  this.dispatchEvent(goog.events.EventType.LOAD);
+ol.source.Source.prototype.dispatchChangeEvent = function() {
+  ++this.revision_;
+  this.dispatchEvent(goog.events.EventType.CHANGE);
 };
 
 
@@ -82,7 +118,7 @@ ol.source.Source.prototype.getLogo = function() {
 
 
 /**
- * @return {ol.Projection} Projection.
+ * @return {ol.proj.Projection} Projection.
  */
 ol.source.Source.prototype.getProjection = function() {
   return this.projection_;
@@ -96,9 +132,19 @@ ol.source.Source.prototype.getResolutions = goog.abstractMethod;
 
 
 /**
- * @return {boolean} Is ready.
+ * @return {number} Revision.
  */
-ol.source.Source.prototype.isReady = goog.functions.TRUE;
+ol.source.Source.prototype.getRevision = function() {
+  return this.revision_;
+};
+
+
+/**
+ * @return {ol.source.State} State.
+ */
+ol.source.Source.prototype.getState = function() {
+  return this.state_;
+};
 
 
 /**
@@ -126,7 +172,17 @@ ol.source.Source.prototype.setLogo = function(logo) {
 
 
 /**
- * @param {ol.Projection} projection Projetion.
+ * @param {ol.source.State} state State.
+ * @protected
+ */
+ol.source.Source.prototype.setState = function(state) {
+  this.state_ = state;
+  this.dispatchChangeEvent();
+};
+
+
+/**
+ * @param {ol.proj.Projection} projection Projetion.
  */
 ol.source.Source.prototype.setProjection = function(projection) {
   this.projection_ = projection;

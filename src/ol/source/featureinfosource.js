@@ -4,6 +4,7 @@ goog.provide('ol.source.FeatureInfoSource');
 
 /**
  * @interface
+ * @todo stability experimental
  */
 ol.source.FeatureInfoSource = function() {};
 

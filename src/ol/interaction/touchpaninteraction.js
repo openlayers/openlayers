@@ -11,9 +11,12 @@ goog.require('ol.interaction.Touch');
 
 
 /**
+ * Allows the user to pan the map by touching and dragging
+ * on a touch screen.
  * @constructor
  * @extends {ol.interaction.Touch}
  * @param {ol.interaction.TouchPanOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.TouchPan = function(opt_options) {
 
@@ -67,6 +70,7 @@ ol.interaction.TouchPan.prototype.handleTouchMove = function(mapBrowserEvent) {
     ol.coordinate.scale(center, view2DState.resolution);
     ol.coordinate.rotate(center, view2DState.rotation);
     ol.coordinate.add(center, view2DState.center);
+    center = view.constrainCenter(center);
     map.requestRenderFrame();
     view.setCenter(center);
   }
@@ -87,12 +91,13 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
       var angle = this.kinetic_.getAngle();
       var center = view.getCenter();
       this.kineticPreRenderFn_ = this.kinetic_.pan(center);
-      map.addPreRenderFunction(this.kineticPreRenderFn_);
+      map.beforeRender(this.kineticPreRenderFn_);
       var centerpx = map.getPixelFromCoordinate(center);
       var dest = map.getCoordinateFromPixel([
         centerpx[0] - distance * Math.cos(angle),
         centerpx[1] - distance * Math.sin(angle)
       ]);
+      dest = view.constrainCenter(dest);
       view.setCenter(dest);
     }
     map.requestRenderFrame();

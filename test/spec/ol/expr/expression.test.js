@@ -628,6 +628,71 @@ describe('ol.expr.lib', function() {
   var parse = ol.expr.parse;
   var evaluate = ol.expr.evaluateFeature;
 
+  describe('concat()', function() {
+    var feature = new ol.Feature({
+      str: 'bar',
+      num: 42,
+      bool: false,
+      nul: null
+    });
+
+    it('concatenates strings', function() {
+      expect(evaluate(parse('concat(str, "after")'), feature))
+          .to.be('barafter');
+      expect(evaluate(parse('concat("before", str)'), feature))
+          .to.be('beforebar');
+      expect(evaluate(parse('concat("a", str, "b")'), feature))
+          .to.be('abarb');
+    });
+
+    it('concatenates numbers as strings', function() {
+      expect(evaluate(parse('concat(num, 0)'), feature))
+          .to.be('420');
+      expect(evaluate(parse('concat(0, num)'), feature))
+          .to.be('042');
+      expect(evaluate(parse('concat(42, 42)'), feature))
+          .to.be('4242');
+      expect(evaluate(parse('concat(str, num)'), feature))
+          .to.be('bar42');
+    });
+
+    it('concatenates booleans as strings', function() {
+      expect(evaluate(parse('concat(bool, "foo")'), feature))
+          .to.be('falsefoo');
+      expect(evaluate(parse('concat(true, str)'), feature))
+          .to.be('truebar');
+      expect(evaluate(parse('concat(true, false)'), feature))
+          .to.be('truefalse');
+    });
+
+    it('concatenates nulls as strings', function() {
+      expect(evaluate(parse('concat(nul, "foo")'), feature))
+          .to.be('nullfoo');
+      expect(evaluate(parse('concat(str, null)'), feature))
+          .to.be('barnull');
+    });
+
+  });
+
+  describe('counter()', function() {
+
+    it('increases the counter with every call', function() {
+      var counter = parse('counter()');
+      var start = evaluate(counter);
+      expect(evaluate(counter)).to.be(start + 1);
+      expect(evaluate(counter)).to.be(start + 2);
+    });
+
+    it('increases the counter, starting with a custom value', function() {
+      var counterWithStart = parse('counter(1000)');
+      var start = evaluate(counterWithStart);
+      expect(start > 1000).to.be(true);
+      expect(evaluate(counterWithStart)).to.be(start + 1);
+      expect(evaluate(counterWithStart)).to.be(start + 2);
+    });
+
+  });
+
   describe('extent()', function() {
 
     var nw = new ol.Feature({
@@ -642,22 +707,22 @@ describe('ol.expr.lib', function() {
       ]])
     });
 
-    var north = parse('extent(-100, 100, 40, 60)');
-    var south = parse('extent(-100, 100, -60, -40)');
-    var east = parse('extent(80, 100, -50, 50)');
-    var west = parse('extent(-100, -80, -50, 50)');
+    var north = parse('extent(-100, 40, 100, 60)');
+    var south = parse('extent(-100, -60, 100, -40)');
+    var east = parse('extent(80, -50, 100, 50)');
+    var west = parse('extent(-100, -50, -80, 50)');
 
     it('evaluates to true for features within given extent', function() {
 
-      expect(evaluate(north, nw), true);
-      expect(evaluate(south, nw), false);
-      expect(evaluate(east, nw), false);
-      expect(evaluate(west, nw), true);
+      expect(evaluate(north, nw)).to.be(true);
+      expect(evaluate(south, nw)).to.be(false);
+      expect(evaluate(east, nw)).to.be(false);
+      expect(evaluate(west, nw)).to.be(true);
 
-      expect(evaluate(north, se), false);
-      expect(evaluate(south, se), true);
-      expect(evaluate(east, se), true);
-      expect(evaluate(west, se), false);
+      expect(evaluate(north, se)).to.be(false);
+      expect(evaluate(south, se)).to.be(true);
+      expect(evaluate(east, se)).to.be(true);
+      expect(evaluate(west, se)).to.be(false);
 
     });
 
@@ -666,16 +731,16 @@ describe('ol.expr.lib', function() {
   describe('fid()', function() {
 
     var one = new ol.Feature();
-    one.setFeatureId('one');
+    one.setId('one');
 
     var two = new ol.Feature();
-    two.setFeatureId('two');
+    two.setId('two');
 
     var three = new ol.Feature();
-    three.setFeatureId('three');
+    three.setId('three');
 
     var four = new ol.Feature();
-    four.setFeatureId('four');
+    four.setId('four');
 
     var odd = parse('fid("one", "three")');
     var even = parse('fid("two", "four")');
@@ -684,29 +749,29 @@ describe('ol.expr.lib', function() {
     var none = parse('fid("foo")');
 
     it('evaluates to true if feature id matches', function() {
-      expect(evaluate(odd, one), true);
-      expect(evaluate(odd, three), true);
-      expect(evaluate(even, two), true);
-      expect(evaluate(even, four), true);
-      expect(evaluate(first, one), true);
-      expect(evaluate(last, four), true);
+      expect(evaluate(odd, one)).to.be(true);
+      expect(evaluate(odd, three)).to.be(true);
+      expect(evaluate(even, two)).to.be(true);
+      expect(evaluate(even, four)).to.be(true);
+      expect(evaluate(first, one)).to.be(true);
+      expect(evaluate(last, four)).to.be(true);
     });
 
     it('evaluates to false if feature id doesn\'t match', function() {
-      expect(evaluate(odd, two), false);
-      expect(evaluate(odd, four), false);
-      expect(evaluate(even, one), false);
-      expect(evaluate(even, three), false);
-      expect(evaluate(first, two), false);
-      expect(evaluate(first, three), false);
-      expect(evaluate(first, four), false);
-      expect(evaluate(last, one), false);
-      expect(evaluate(last, two), false);
-      expect(evaluate(last, three), false);
-      expect(evaluate(none, one), false);
-      expect(evaluate(none, two), false);
-      expect(evaluate(none, three), false);
-      expect(evaluate(none, four), false);
+      expect(evaluate(odd, two)).to.be(false);
+      expect(evaluate(odd, four)).to.be(false);
+      expect(evaluate(even, one)).to.be(false);
+      expect(evaluate(even, three)).to.be(false);
+      expect(evaluate(first, two)).to.be(false);
+      expect(evaluate(first, three)).to.be(false);
+      expect(evaluate(first, four)).to.be(false);
+      expect(evaluate(last, one)).to.be(false);
+      expect(evaluate(last, two)).to.be(false);
+      expect(evaluate(last, three)).to.be(false);
+      expect(evaluate(none, one)).to.be(false);
+      expect(evaluate(none, two)).to.be(false);
+      expect(evaluate(none, three)).to.be(false);
+      expect(evaluate(none, four)).to.be(false);
     });
 
   });
@@ -733,27 +798,113 @@ describe('ol.expr.lib', function() {
     var pointOrPoly = parse('geometryType("point") || geometryType("polygon")');
 
     it('distinguishes point features', function() {
-      expect(evaluate(isPoint, point), true);
-      expect(evaluate(isPoint, line), false);
-      expect(evaluate(isPoint, poly), false);
+      expect(evaluate(isPoint, point)).to.be(true);
+      expect(evaluate(isPoint, line)).to.be(false);
+      expect(evaluate(isPoint, poly)).to.be(false);
     });
 
     it('distinguishes line features', function() {
-      expect(evaluate(isLine, point), false);
-      expect(evaluate(isLine, line), true);
-      expect(evaluate(isLine, poly), false);
+      expect(evaluate(isLine, point)).to.be(false);
+      expect(evaluate(isLine, line)).to.be(true);
+      expect(evaluate(isLine, poly)).to.be(false);
     });
 
     it('distinguishes polygon features', function() {
-      expect(evaluate(isPoly, point), false);
-      expect(evaluate(isPoly, line), false);
-      expect(evaluate(isPoly, poly), true);
+      expect(evaluate(isPoly, point)).to.be(false);
+      expect(evaluate(isPoly, line)).to.be(false);
+      expect(evaluate(isPoly, poly)).to.be(true);
     });
 
     it('can be composed in a logical expression', function() {
-      expect(evaluate(pointOrPoly, point), true);
-      expect(evaluate(pointOrPoly, line), false);
-      expect(evaluate(pointOrPoly, poly), true);
+      expect(evaluate(pointOrPoly, point)).to.be(true);
+      expect(evaluate(pointOrPoly, line)).to.be(false);
+      expect(evaluate(pointOrPoly, poly)).to.be(true);
+    });
+
+  });
+
+  describe('like()', function() {
+
+    var one = new ol.Feature({foo: 'bar'});
+    var two = new ol.Feature({foo: 'baz'});
+    var three = new ol.Feature({foo: 'foo'});
+
+    var like = parse('like(foo, "ba")');
+
+    it('First and second feature match, third does not', function() {
+      expect(evaluate(like, one), true);
+      expect(evaluate(like, two), true);
+      expect(evaluate(like, three), false);
+    });
+
+    var uclike = parse('like(foo, "BA")');
+    it('Matchcase is true by default', function() {
+      expect(evaluate(uclike, one), false);
+      expect(evaluate(uclike, two), false);
+      expect(evaluate(uclike, three), false);
+    });
+
+    var ilike = parse('like(foo, "BA", "*", ".", "!", false)');
+    it('Using matchcase false, first two features match again', function() {
+      expect(evaluate(ilike, one), true);
+      expect(evaluate(ilike, two), true);
+      expect(evaluate(uclike, three), false);
+    });
+
+  });
+
+  describe('ieq()', function() {
+
+    var one = new ol.Feature({foo: 'Bar'});
+    var two = new ol.Feature({bar: 'Foo'});
+
+    var ieq1 = parse('ieq(foo, "bar")');
+    var ieq2 = parse('ieq("foo", bar)');
+
+    it('case-insensitive equality for an attribute', function() {
+      expect(evaluate(ieq1, one), true);
+    });
+
+    it('case-insensitive equality for an attribute as second argument',
+        function() {
+          expect(evaluate(ieq2, two), true);
+        });
+
+  });
+
+  describe('ineq()', function() {
+
+    var one = new ol.Feature({foo: 'Bar'});
+    var two = new ol.Feature({bar: 'Foo'});
+
+    var ieq1 = parse('ineq(foo, "bar")');
+    var ieq2 = parse('ineq("foo", bar)');
+
+    it('case-insensitive non-equality for an attribute', function() {
+      expect(evaluate(ieq1, one), false);
+    });
+
+    it('case-insensitive non-equality for an attribute as second argument',
+        function() {
+          expect(evaluate(ieq2, two), false);
+        });
+
+  });
+
+  describe('renderIntent()', function() {
+
+    var feature = new ol.Feature();
+    feature.setRenderIntent('foo');
+
+    var isFoo = parse('renderIntent("foo")');
+    var isBar = parse('renderIntent("bar")');
+
+    it('True when renderIntent matches', function() {
+      expect(evaluate(isFoo, feature), true);
+    });
+
+    it('False when renderIntent does not match', function() {
+      expect(evaluate(isBar, feature), false);
     });
 
   });
@@ -784,8 +935,8 @@ describe('ol.expr.register()', function() {
     ol.expr.register('myFunc', spy);
     var expr = ol.expr.parse('myFunc(foo, 42)');
     expr.evaluate({foo: 'bar'}, ol.expr.lib);
-    expect(spy.calledOnce);
-    expect(spy.calledWithExactly('bar', 42));
+    expect(spy.calledOnce).to.be(true);
+    expect(spy.calledWithExactly('bar', 42)).to.be(true);
   });
 
   it('allows custom functions to be called with custom this obj', function() {
@@ -793,9 +944,9 @@ describe('ol.expr.register()', function() {
     var expr = ol.expr.parse('myFunc(foo, 42)');
     var that = {};
     expr.evaluate({foo: 'bar'}, ol.expr.lib, that);
-    expect(spy.calledOnce);
-    expect(spy.calledWithExactly('bar', 42));
-    expect(spy.calledOn(that));
+    expect(spy.calledOnce).to.be(true);
+    expect(spy.calledWithExactly('bar', 42)).to.be(true);
+    expect(spy.calledOn(that)).to.be(true);
   });
 
   it('allows overriding existing ol.expr.lib functions', function() {

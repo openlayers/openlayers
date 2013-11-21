@@ -1,4 +1,4 @@
-goog.provide('ol.interaction.defaults');
+goog.provide('ol.interaction');
 
 goog.require('ol.Collection');
 goog.require('ol.Kinetic');
@@ -6,7 +6,6 @@ goog.require('ol.interaction.DoubleClickZoom');
 goog.require('ol.interaction.DragPan');
 goog.require('ol.interaction.DragRotate');
 goog.require('ol.interaction.DragZoom');
-goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.KeyboardPan');
 goog.require('ol.interaction.KeyboardZoom');
 goog.require('ol.interaction.MouseWheelZoom');
@@ -16,12 +15,20 @@ goog.require('ol.interaction.TouchZoom');
 
 
 /**
+ * This method is a convenience method to create a set of interactions
+ * to be used with an {@link ol.Map}.  Specific interactions can be excluded by
+ * setting the appropriate option to false in the constructor options,
+ * but the order of the interactions is fixed.  If you want to specify a
+ * different order for interactions, you will need to create your own
+ * {@link ol.interaction} instances and insert them into an
+ * {@link ol.Collection} in the order you want before creating your ol.Map
+ * instance.
  * @param {ol.interaction.DefaultsOptions=} opt_options Defaults options.
- * @param {Array.<ol.interaction.Interaction>=} opt_interactions Additional
- *     interactions.
- * @return {ol.Collection} Interactions.
+ * @return {ol.Collection} A collection of interactions to be used with
+ * the ol.Map constructor's interactions option.
+ * @todo stability experimental
  */
-ol.interaction.defaults = function(opt_options, opt_interactions) {
+ol.interaction.defaults = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
@@ -39,7 +46,8 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
       options.doubleClickZoom : true;
   if (doubleClickZoom) {
     interactions.push(new ol.interaction.DoubleClickZoom({
-      delta: options.zoomDelta
+      delta: options.zoomDelta,
+      duration: options.zoomDuration
     }));
   }
 
@@ -60,7 +68,9 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
   var touchZoom = goog.isDef(options.touchZoom) ?
       options.touchZoom : true;
   if (touchZoom) {
-    interactions.push(new ol.interaction.TouchZoom());
+    interactions.push(new ol.interaction.TouchZoom({
+      duration: options.zoomDuration
+    }));
   }
 
   var dragPan = goog.isDef(options.dragPan) ?
@@ -76,24 +86,23 @@ ol.interaction.defaults = function(opt_options, opt_interactions) {
   if (keyboard) {
     interactions.push(new ol.interaction.KeyboardPan());
     interactions.push(new ol.interaction.KeyboardZoom({
-      delta: options.zoomDelta
+      delta: options.zoomDelta,
+      duration: options.zoomDuration
     }));
   }
 
   var mouseWheelZoom = goog.isDef(options.mouseWheelZoom) ?
       options.mouseWheelZoom : true;
   if (mouseWheelZoom) {
-    interactions.push(new ol.interaction.MouseWheelZoom());
+    interactions.push(new ol.interaction.MouseWheelZoom({
+      duration: options.zoomDuration
+    }));
   }
 
   var shiftDragZoom = goog.isDef(options.shiftDragZoom) ?
       options.shiftDragZoom : true;
   if (shiftDragZoom) {
     interactions.push(new ol.interaction.DragZoom());
-  }
-
-  if (goog.isDef(opt_interactions)) {
-    interactions.extend(opt_interactions);
   }
 
   return interactions;

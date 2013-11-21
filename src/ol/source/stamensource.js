@@ -81,6 +81,7 @@ ol.source.StamenProviderConfig = {
  * @constructor
  * @extends {ol.source.XYZ}
  * @param {ol.source.StamenOptions} options Stamen options.
+ * @todo stability experimental
  */
 ol.source.Stamen = function(options) {
 
@@ -103,6 +104,7 @@ ol.source.Stamen = function(options) {
     // FIXME uncomment the following when tilegrid supports minZoom
     //minZoom: providerConfig.minZoom,
     opaque: layerConfig.opaque,
+    tileLoadFunction: options.tileLoadFunction,
     url: url
   });
 
@@ -114,8 +116,10 @@ goog.inherits(ol.source.Stamen, ol.source.XYZ);
  * @const {Array.<ol.Attribution>}
  */
 ol.source.Stamen.ATTRIBUTIONS = [
-  new ol.Attribution(
-      'Map tiles by <a href="http://stamen.com/">Stamen Design</a>, under ' +
-      '<a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.'),
+  new ol.Attribution({
+    html: 'Map tiles by <a href="http://stamen.com/">Stamen Design</a>, ' +
+        'under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY' +
+        ' 3.0</a>.'
+  }),
   ol.source.OSM.DATA_ATTRIBUTION
 ];

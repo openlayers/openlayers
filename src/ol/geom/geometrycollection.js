@@ -1,6 +1,8 @@
 goog.provide('ol.geom.GeometryCollection');
 
 goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('ol.geom.AbstractCollection');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
@@ -14,31 +16,37 @@ goog.require('ol.geom.GeometryType');
  * @constructor
  * @extends {ol.geom.AbstractCollection}
  * @param {Array.<ol.geom.Geometry>} geometries Array of geometries.
+ * @todo stability experimental
  */
 ol.geom.GeometryCollection = function(geometries) {
   goog.base(this);
 
-  /**
-   * @type {Array.<ol.geom.Geometry>}
-   */
-  this.components = geometries;
-
-  var dimension = 0;
-  for (var i = 0, ii = geometries.length; i < ii; ++i) {
-    if (goog.isDef(dimension)) {
-      dimension = geometries[i].dimension;
-    } else {
-      goog.asserts.assert(dimension == geometries[i].dimension);
-    }
+  for (var i = geometries.length - 1; i >= 0; --i) {
+    goog.events.listen(geometries[i], goog.events.EventType.CHANGE,
+        this.handleComponentChange, false, this);
   }
 
   /**
-   * @type {number}
+   * @type {Array.<ol.geom.Geometry>}
+   * @protected
    */
-  this.dimension = dimension;
+  this.components = geometries;
 
 };
 goog.inherits(ol.geom.GeometryCollection, ol.geom.AbstractCollection);
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.GeometryCollection.prototype.clone = function() {
+  var numComponents = this.components.length;
+  var components = new Array(numComponents);
+  for (var i = 0; i < numComponents; ++i) {
+    components[i] = this.components[i].clone();
+  }
+  return new ol.geom.GeometryCollection(components);
+};
 
 
 /**

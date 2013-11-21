@@ -9,7 +9,7 @@ goog.require('ol.Image');
 goog.require('ol.ImageState');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
-goog.require('ol.layer.ImageLayer');
+goog.require('ol.layer.Image');
 goog.require('ol.renderer.dom.Layer');
 
 
@@ -18,7 +18,7 @@ goog.require('ol.renderer.dom.Layer');
  * @constructor
  * @extends {ol.renderer.dom.Layer}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
- * @param {ol.layer.ImageLayer} imageLayer Image layer.
+ * @param {ol.layer.Image} imageLayer Image layer.
  */
 ol.renderer.dom.ImageLayer = function(mapRenderer, imageLayer) {
   var target = goog.dom.createElement(goog.dom.TagName.DIV);
@@ -45,10 +45,10 @@ goog.inherits(ol.renderer.dom.ImageLayer, ol.renderer.dom.Layer);
 
 /**
  * @protected
- * @return {ol.layer.ImageLayer} Image layer.
+ * @return {ol.layer.Image} Image layer.
  */
 ol.renderer.dom.ImageLayer.prototype.getImageLayer = function() {
-  return /** @type {ol.layer.ImageLayer} */ (this.getLayer());
+  return /** @type {ol.layer.Image} */ (this.getLayer());
 };
 
 

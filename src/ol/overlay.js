@@ -26,11 +26,17 @@ ol.OverlayProperty = {
 
 /**
  * @enum {string}
+ * @todo stability experimental
  */
 ol.OverlayPositioning = {
   BOTTOM_LEFT: 'bottom-left',
+  BOTTOM_CENTER: 'bottom-center',
   BOTTOM_RIGHT: 'bottom-right',
+  CENTER_LEFT: 'center-left',
+  CENTER_CENTER: 'center-center',
+  CENTER_RIGHT: 'center-right',
   TOP_LEFT: 'top-left',
+  TOP_CENTER: 'top-center',
   TOP_RIGHT: 'top-right'
 };
 
@@ -42,18 +48,38 @@ ol.OverlayPositioning = {
  * Example:
  *
  *     var popup = new ol.Overlay({
- *       map: map,
  *       element: document.getElementById('popup')
  *     });
  *     popup.setPosition(coordinate);
+ *     map.addOverlay(popup);
  *
  * @constructor
  * @extends {ol.Object}
  * @param {ol.OverlayOptions} options Overlay options.
+ * @todo stability experimental
+ * @todo observable element {Element} the Element containing the overlay
+ * @todo observable map {ol.Map} the map that the overlay is part of
+ * @todo observable position {ol.Coordinate} the spatial point that the overlay
+ *       is anchored at
+ * @todo observable positioning {ol.OverlayPositioning} how the overlay is
+ *       positioned relative to its point on the map
  */
 ol.Overlay = function(options) {
 
   goog.base(this);
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.insertFirst_ = goog.isDef(options.insertFirst) ?
+      options.insertFirst : true;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.stopEvent_ = goog.isDef(options.stopEvent) ? options.stopEvent : true;
 
   /**
    * @private
@@ -110,9 +136,6 @@ ol.Overlay = function(options) {
   if (goog.isDef(options.positioning)) {
     this.setPositioning(options.positioning);
   }
-  if (goog.isDef(options.map)) {
-    this.setMap(options.map);
-  }
 
 };
 goog.inherits(ol.Overlay, ol.Object);
@@ -121,6 +144,7 @@ goog.inherits(ol.Overlay, ol.Object);
 /**
  * Get the DOM element of this overlay.
  * @return {Element|undefined} Element.
+ * @todo stability experimental
  */
 ol.Overlay.prototype.getElement = function() {
   return /** @type {Element|undefined} */ (
@@ -135,6 +159,7 @@ goog.exportProperty(
 /**
  * Get the map associated with this overlay.
  * @return {ol.Map|undefined} Map.
+ * @todo stability experimental
  */
 ol.Overlay.prototype.getMap = function() {
   return /** @type {ol.Map|undefined} */ (
@@ -149,6 +174,7 @@ goog.exportProperty(
 /**
  * Get the current position of this overlay.
  * @return {ol.Coordinate|undefined} Position.
+ * @todo stability experimental
  */
 ol.Overlay.prototype.getPosition = function() {
   return /** @type {ol.Coordinate|undefined} */ (
@@ -163,6 +189,7 @@ goog.exportProperty(
 /**
  * Get the current positioning of this overlay.
  * @return {ol.OverlayPositioning|undefined} Positioning.
+ * @todo stability experimental
  */
 ol.Overlay.prototype.getPositioning = function() {
   return /** @type {ol.OverlayPositioning|undefined} */ (
@@ -200,8 +227,14 @@ ol.Overlay.prototype.handleMapChanged = function() {
     this.mapPostrenderListenerKey_ = goog.events.listen(map,
         ol.MapEventType.POSTRENDER, this.handleMapPostrender, false, this);
     this.updatePixelPosition_();
-    goog.dom.append(
-        /** @type {!Node} */ (map.getOverlayContainer()), this.element_);
+    var container = this.stopEvent_ ?
+        map.getOverlayContainerStopEvent() : map.getOverlayContainer();
+    if (this.insertFirst_) {
+      goog.dom.insertChildAt(/** @type {!Element} */ (
+          container), this.element_, 0);
+    } else {
+      goog.dom.append(/** @type {!Node} */ (container), this.element_);
+    }
   }
 };
 
@@ -233,6 +266,7 @@ ol.Overlay.prototype.handlePositioningChanged = function() {
 /**
  * Set the DOM element to be associated with this overlay.
  * @param {Element|undefined} element Element.
+ * @todo stability experimental
  */
 ol.Overlay.prototype.setElement = function(element) {
   this.set(ol.OverlayProperty.ELEMENT, element);
@@ -246,6 +280,7 @@ goog.exportProperty(
 /**
  * Set the map to be associated with this overlay.
  * @param {ol.Map|undefined} map Map.
+ * @todo stability experimental
  */
 ol.Overlay.prototype.setMap = function(map) {
   this.set(ol.OverlayProperty.MAP, map);
@@ -259,6 +294,7 @@ goog.exportProperty(
 /**
  * Set the position for this overlay.
  * @param {ol.Coordinate|undefined} position Position.
+ * @todo stability experimental
  */
 ol.Overlay.prototype.setPosition = function(position) {
   this.set(ol.OverlayProperty.POSITION, position);
@@ -270,11 +306,17 @@ goog.exportProperty(
 
 
 /**
+ * Set the positioning for this overlay.
  * @param {ol.OverlayPositioning|undefined} positioning Positioning.
+ * @todo stability experimental
  */
 ol.Overlay.prototype.setPositioning = function(positioning) {
   this.set(ol.OverlayProperty.POSITIONING, positioning);
 };
+goog.exportProperty(
+    ol.Overlay.prototype,
+    'setPositioning',
+    ol.Overlay.prototype.setPositioning);
 
 
 /**
@@ -298,6 +340,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
   var style = this.element_.style;
   var positioning = this.getPositioning();
   if (positioning == ol.OverlayPositioning.BOTTOM_RIGHT ||
+      positioning == ol.OverlayPositioning.CENTER_RIGHT ||
       positioning == ol.OverlayPositioning.TOP_RIGHT) {
     if (this.rendered_.left_ !== '') {
       this.rendered_.left_ = style.left = '';
@@ -310,27 +353,40 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
     if (this.rendered_.right_ !== '') {
       this.rendered_.right_ = style.right = '';
     }
-    var left = Math.round(pixel[0]) + 'px';
+    var offsetX = 0;
+    if (positioning == ol.OverlayPositioning.BOTTOM_CENTER ||
+        positioning == ol.OverlayPositioning.CENTER_CENTER ||
+        positioning == ol.OverlayPositioning.TOP_CENTER) {
+      offsetX = goog.style.getSize(this.element_).width / 2;
+    }
+    var left = Math.round(pixel[0] - offsetX) + 'px';
     if (this.rendered_.left_ != left) {
       this.rendered_.left_ = style.left = left;
     }
   }
-  if (positioning == ol.OverlayPositioning.TOP_LEFT ||
-      positioning == ol.OverlayPositioning.TOP_RIGHT) {
-    if (this.rendered_.bottom_ !== '') {
-      this.rendered_.bottom_ = style.bottom = '';
-    }
-    var top = Math.round(pixel[1]) + 'px';
-    if (this.rendered_.top_ != top) {
-      this.rendered_.top_ = style.top = top;
-    }
-  } else {
+  if (positioning == ol.OverlayPositioning.BOTTOM_LEFT ||
+      positioning == ol.OverlayPositioning.BOTTOM_CENTER ||
+      positioning == ol.OverlayPositioning.BOTTOM_RIGHT) {
     if (this.rendered_.top_ !== '') {
       this.rendered_.top_ = style.top = '';
     }
     var bottom = Math.round(mapSize[1] - pixel[1]) + 'px';
     if (this.rendered_.bottom_ != bottom) {
       this.rendered_.bottom_ = style.bottom = bottom;
+    }
+  } else {
+    if (this.rendered_.bottom_ !== '') {
+      this.rendered_.bottom_ = style.bottom = '';
+    }
+    var offsetY = 0;
+    if (positioning == ol.OverlayPositioning.CENTER_LEFT ||
+        positioning == ol.OverlayPositioning.CENTER_CENTER ||
+        positioning == ol.OverlayPositioning.CENTER_RIGHT) {
+      offsetY = goog.style.getSize(this.element_).height / 2;
+    }
+    var top = Math.round(pixel[1] - offsetY) + 'px';
+    if (this.rendered_.top_ != top) {
+      this.rendered_.top_ = style.top = top;
     }
   }
 

@@ -9,29 +9,25 @@ describe('ol.structs.RTree', function() {
     it('can insert 1k objects', function() {
       var i = 1000;
       while (i > 0) {
-        var bounds = new Array(4);
-        bounds[0] = Math.random() * 10000;
-        bounds[1] = bounds[0] + Math.random() * 500;
-        bounds[2] = Math.random() * 10000;
-        bounds[3] = bounds[2] + Math.random() * 500;
+        var min = [Math.random() * 10000, Math.random() * 10000];
+        var max = [min[0] + Math.random() * 500, min[1] + Math.random() * 500];
+        var bounds = [min[0], min[1], max[0], max[1]];
         rTree.insert(bounds, 'JUST A TEST OBJECT!_' + i);
         i--;
       }
-      expect(goog.object.getCount(rTree.search([0, 10600, 0, 10600])))
+      expect(goog.object.getCount(rTree.search([0, 0, 10600, 10600])))
           .to.be(1000);
     });
     it('can insert 1k more objects', function() {
       var i = 1000;
       while (i > 0) {
-        var bounds = new Array(4);
-        bounds[0] = Math.random() * 10000;
-        bounds[1] = bounds[0] + Math.random() * 500;
-        bounds[2] = Math.random() * 10000;
-        bounds[3] = bounds[2] + Math.random() * 500;
+        var min = [Math.random() * 10000, Math.random() * 10000];
+        var max = [min[0] + Math.random() * 500, min[1] + Math.random() * 500];
+        var bounds = [min[0], min[1], max[0], max[1]];
         rTree.insert(bounds, 'JUST A TEST OBJECT!_' + i);
         i--;
       }
-      expect(goog.object.getCount(rTree.search([0, 10600, 0, 10600])))
+      expect(goog.object.getCount(rTree.search([0, 0, 10600, 10600])))
           .to.be(2000);
     });
   });
@@ -41,11 +37,10 @@ describe('ol.structs.RTree', function() {
       var i = 1000;
       var len = 0;
       while (i > 0) {
-        var bounds = new Array(4);
-        bounds[0] = -(Math.random() * 10000 + 501);
-        bounds[1] = bounds[0] + Math.random() * 500;
-        bounds[2] = -(Math.random() * 10000 + 501);
-        bounds[3] = bounds[2] + Math.random() * 500;
+        var min = [-(Math.random() * 10000 + 501),
+              -(Math.random() * 10000 + 501)];
+        var max = [min[0] + Math.random() * 500, min[1] + Math.random() * 500];
+        var bounds = [min[0], min[1], max[0], max[1]];
         len += rTree.search(bounds).length;
         i--;
       }
@@ -55,11 +50,9 @@ describe('ol.structs.RTree', function() {
       var i = 1000;
       var len = 0;
       while (i > 0) {
-        var bounds = new Array(4);
-        bounds[0] = Math.random() * 10000;
-        bounds[1] = bounds[0] + Math.random() * 500;
-        bounds[2] = Math.random() * 10000;
-        bounds[3] = bounds[2] + Math.random() * 500;
+        var min = [Math.random() * 10000, Math.random() * 10000];
+        var max = [min[0] + Math.random() * 500, min[1] + Math.random() * 500];
+        var bounds = [min[0], min[1], max[0], max[1]];
         len += rTree.search(bounds).length;
         i--;
       }
@@ -70,12 +63,12 @@ describe('ol.structs.RTree', function() {
   describe('deletion', function() {
     var len = 0;
     it('can delete half the RTree', function() {
-      var bounds = [5000, 10500, 0, 10500];
+      var bounds = [5000, 0, 10500, 10500];
       len += rTree.remove(bounds).length;
       expect(len).to.not.be(0);
     });
     it('can delete the other half of the RTree', function() {
-      var bounds = [0, 5000, 0, 10500];
+      var bounds = [0, 0, 5000, 10500];
       len += rTree.remove(bounds).length;
       expect(len).to.be(2000);
     });
@@ -84,42 +77,42 @@ describe('ol.structs.RTree', function() {
   describe('result plausibility and structure', function() {
 
     it('filters by rectangle', function() {
-      rTree.insert([0, 1, 0, 1], 1);
-      rTree.insert([1, 4, 1, 4], 2);
-      rTree.insert([2, 3, 2, 3], 3);
-      rTree.insert([-5, -4, -5, -4], 4);
-      rTree.insert([-4, -1, -4, -1], 5);
-      rTree.insert([-3, -2, -3, -2], 6);
+      rTree.insert([0, 0, 1, 1], 1);
+      rTree.insert([1, 1, 4, 4], 2);
+      rTree.insert([2, 2, 3, 3], 3);
+      rTree.insert([-5, -5, -4, -4], 4);
+      rTree.insert([-4, -4, -1, -1], 5);
+      rTree.insert([-3, -3, -2, -2], 6);
 
       var result;
-      result = goog.object.getValues(rTree.search([2, 3, 2, 3]));
+      result = goog.object.getValues(rTree.search([2, 2, 3, 3]));
       expect(result).to.contain(2);
       expect(result).to.contain(3);
       expect(result.length).to.be(2);
-      result = goog.object.getValues(rTree.search([-1, 2, -1, 2]));
+      result = goog.object.getValues(rTree.search([-1, -1, 2, 2]));
       expect(result).to.contain(1);
       expect(result).to.contain(2);
       expect(result).to.contain(3);
       expect(result).to.contain(5);
       expect(result.length).to.be(4);
-      expect(goog.object.getCount(rTree.search([5, 6, 5, 6]))).to.be(0);
+      expect(goog.object.getCount(rTree.search([5, 5, 6, 6]))).to.be(0);
     });
 
     it('filters by type', function() {
-      rTree.insert([2, 3, 2, 3], 7, 'type1');
+      rTree.insert([2, 2, 3, 3], 7, 'type1');
 
       var result;
-      result = rTree.search([1, 4, 2, 4], 'type1');
+      result = rTree.search([1, 2, 4, 4], 'type1');
       expect(result).to.contain(7);
       expect(result.length).to.be(1);
-      result = rTree.search([1, 4, 2, 4]);
+      result = rTree.search([1, 2, 4, 4]);
       expect(result.length).to.be(3);
     });
 
     it('can return objects instead of arrays', function() {
       var obj = {foo: 'bar'};
       rTree.insert([5, 5, 5, 5], obj);
-      var result = rTree.searchReturningObject([4, 6, 4, 6]);
+      var result = rTree.searchReturningObject([4, 4, 6, 6]);
       expect(result[goog.getUid(obj)]).to.equal(obj);
     });
 

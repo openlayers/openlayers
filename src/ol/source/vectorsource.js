@@ -21,6 +21,7 @@ ol.source.VectorLoadState = {
  * @constructor
  * @extends {ol.source.Source}
  * @param {ol.source.VectorOptions} options Vector source options.
+ * @todo stability experimental
  */
 ol.source.Vector = function(options) {
 
@@ -61,7 +62,7 @@ goog.inherits(ol.source.Vector, ol.source.Source);
 /**
  * @param {ol.layer.Vector} layer Layer that parses the data.
  * @param {ol.Extent} extent Extent that needs to be fetched.
- * @param {ol.Projection} projection Projection of the view.
+ * @param {ol.proj.Projection} projection Projection of the view.
  * @param {function()=} opt_callback Callback which is called when features are
  *     parsed after loading.
  * @return {ol.source.VectorLoadState} The current load state.

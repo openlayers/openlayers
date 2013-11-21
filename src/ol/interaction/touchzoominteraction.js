@@ -9,18 +9,18 @@ goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Touch');
 
 
-/**
- * @define {number} Animation duration.
- */
-ol.interaction.TOUCHZOOM_ANIMATION_DURATION = 400;
-
-
 
 /**
+ * Allows the user to zoom the map by pinching with two fingers
+ * on a touch screen.
  * @constructor
  * @extends {ol.interaction.Touch}
+ * @param {ol.interaction.TouchZoomOptions=} opt_options Options.
+ * @todo stability experimental
  */
-ol.interaction.TouchZoom = function() {
+ol.interaction.TouchZoom = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   goog.base(this);
 
@@ -29,6 +29,12 @@ ol.interaction.TouchZoom = function() {
    * @type {ol.Coordinate}
    */
   this.anchor_ = null;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.duration_ = goog.isDef(options.duration) ? options.duration : 400;
 
   /**
    * @private
@@ -105,7 +111,7 @@ ol.interaction.TouchZoom.prototype.handleTouchEnd =
     // Direction is > 0 if pinching out, and < 0 if pinching in.
     var direction = this.lastScaleDelta_ - 1;
     ol.interaction.Interaction.zoom(map, view, view2DState.resolution,
-        this.anchor_, ol.interaction.TOUCHZOOM_ANIMATION_DURATION, direction);
+        this.anchor_, this.duration_, direction);
     return false;
   } else {
     return true;

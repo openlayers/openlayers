@@ -26,6 +26,11 @@
 .ol-attribution li:not(:last-child):after {
   content: "\2003";
 }
+.ol-attribution-bing-tos {
+  float:right;
+  padding-top: 2px;
+  white-space: nowrap;
+}
 .ol-dragbox {
   position: absolute;
   border: 2px solid red;

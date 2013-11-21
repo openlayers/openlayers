@@ -1,6 +1,7 @@
 goog.provide('ol.TileCoord');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 
 
 /**
@@ -109,7 +110,24 @@ ol.TileCoord.createOrUpdate = function(z, x, y, tileCoord) {
  * @return {string} Key.
  */
 ol.TileCoord.getKeyZXY = function(z, x, y) {
-  return [z, x, y].join('/');
+  return z + '/' + x + '/' + y;
+};
+
+
+/**
+ * @param {Array.<number>=} opt_result Optional array to reuse.
+ * @return {Array.<number>} Array of z, x, y.
+ */
+ol.TileCoord.prototype.getZXY = function(opt_result) {
+  if (goog.isDef(opt_result)) {
+    goog.asserts.assert(opt_result.length == 3);
+    opt_result[0] = this.z;
+    opt_result[1] = this.x;
+    opt_result[2] = this.y;
+    return opt_result;
+  } else {
+    return [this.z, this.x, this.y];
+  }
 };
 
 

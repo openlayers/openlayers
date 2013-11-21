@@ -3,3 +3,4 @@
 /examples/*.html.png
 /examples/example-list.js
 /examples/example-list.xml
+/node_modules/

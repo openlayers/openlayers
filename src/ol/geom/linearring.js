@@ -1,21 +1,20 @@
 goog.provide('ol.geom.LinearRing');
 
+goog.require('ol.CoordinateArray');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
-goog.require('ol.geom.SharedVertices');
-goog.require('ol.geom.VertexArray');
 
 
 
 /**
  * @constructor
  * @extends {ol.geom.LineString}
- * @param {ol.geom.VertexArray} coordinates Vertex array (e.g.
- *    [[x0, y0], [x1, y1]]).
- * @param {ol.geom.SharedVertices=} opt_shared Shared vertices.
+ * @param {ol.CoordinateArray} coordinates Vertex array (e.g.
+ *    `[[x0, y0], [x1, y1]]`).
+ * @todo stability experimental
  */
-ol.geom.LinearRing = function(coordinates, opt_shared) {
-  goog.base(this, coordinates, opt_shared);
+ol.geom.LinearRing = function(coordinates) {
+  goog.base(this, coordinates);
 
   /**
    * We're intentionally not enforcing that rings be closed right now.  This
@@ -39,7 +38,7 @@ goog.inherits(ol.geom.LinearRing, ol.geom.LineString);
  * implementation for an example of this.
  * https://github.com/OSGeo/gdal/blob/trunk/gdal/ogr/ogrlinearring.cpp
  *
- * @param {ol.geom.VertexArray} coordinates Linear ring coordinates.
+ * @param {ol.CoordinateArray} coordinates Linear ring coordinates.
  * @return {boolean} The coordinates are in clockwise order.
  */
 ol.geom.LinearRing.isClockwise = function(coordinates) {

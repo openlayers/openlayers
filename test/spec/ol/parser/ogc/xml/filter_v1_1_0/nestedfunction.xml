@@ -1,0 +1,13 @@
+<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/ogc http://schemas.opengis.net/filter/1.1.0/filter.xsd">
+  <ogc:DWithin>
+    <ogc:PropertyName>the_geom</ogc:PropertyName>
+      <ogc:Function name="collectGeometries">
+        <ogc:Function name="queryCollection">
+          <ogc:Literal>sf:roads</ogc:Literal>
+          <ogc:Literal>the_geom</ogc:Literal>
+          <ogc:Literal>INCLUDE</ogc:Literal>
+        </ogc:Function>
+      </ogc:Function>
+    <ogc:Distance units="meters">200</ogc:Distance>
+  </ogc:DWithin>
+</ogc:Filter>

@@ -1,22 +1,7 @@
 goog.provide('ol.style.Symbolizer');
-goog.provide('ol.style.SymbolizerLiteral');
 
 goog.require('ol.Feature');
-
-
-
-/**
- * @constructor
- */
-ol.style.SymbolizerLiteral = function() {};
-
-
-/**
- * @param {ol.style.SymbolizerLiteral} symbolizerLiteral Symbolizer literal to
- *     compare to.
- * @return {boolean} Is the passed symbolizer literal equal to this instance?
- */
-ol.style.SymbolizerLiteral.prototype.equals = goog.abstractMethod;
+goog.require('ol.style.Literal');
 
 
 
@@ -27,7 +12,10 @@ ol.style.Symbolizer = function() {};
 
 
 /**
- * @param {ol.Feature=} opt_feature Feature for evaluating expressions.
- * @return {ol.style.SymbolizerLiteral} Literal symbolizer.
+ * Create a literal from the symbolizer given a complete feature or a geometry
+ * type.
+ * @param {ol.geom.GeometryType|ol.Feature} featureOrType Feature for evaluating
+ *     expressions or a geometry type.
+ * @return {ol.style.Literal} Literal symbolizer.
  */
 ol.style.Symbolizer.prototype.createLiteral = goog.abstractMethod;

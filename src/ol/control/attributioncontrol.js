@@ -18,10 +18,11 @@ goog.require('ol.css');
  * Create a new attribution control to show all the attributions associated
  * with the layer sources in the map. A default map has this control included.
  * By default it will show in the bottom right portion of the map, but it can
- * be changed by using a css selector for .ol-attribution.
+ * be changed by using a css selector for `.ol-attribution`.
  * @constructor
  * @extends {ol.control.Control}
  * @param {ol.control.AttributionOptions=} opt_options Attribution options.
+ * @todo stability experimental
  */
 ol.control.Attribution = function(opt_options) {
 
@@ -41,7 +42,6 @@ ol.control.Attribution = function(opt_options) {
 
   goog.base(this, {
     element: element,
-    map: options.map,
     target: options.target
   });
 

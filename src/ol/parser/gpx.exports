@@ -1,3 +1,0 @@
-@exportSymbol ol.parser.GPX
-@exportProperty ol.parser.GPX.prototype.read
-@exportProperty ol.parser.GPX.prototype.write

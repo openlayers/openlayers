@@ -6,17 +6,20 @@ goog.require('goog.asserts');
 goog.require('ol.Kinetic');
 goog.require('ol.PreRenderFunction');
 goog.require('ol.View2D');
+goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
-goog.require('ol.interaction.ConditionType');
+goog.require('ol.events.ConditionType');
+goog.require('ol.events.condition');
 goog.require('ol.interaction.Drag');
-goog.require('ol.interaction.condition');
 
 
 
 /**
+ * Allows the user to pan the map by clickng and dragging.
  * @constructor
  * @extends {ol.interaction.Drag}
  * @param {ol.interaction.DragPanOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.DragPan = function(opt_options) {
 
@@ -26,10 +29,10 @@ ol.interaction.DragPan = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.interaction.ConditionType}
+   * @type {ol.events.ConditionType}
    */
   this.condition_ = goog.isDef(options.condition) ?
-      options.condition : ol.interaction.condition.noModifierKeys;
+      options.condition : ol.events.condition.noModifierKeys;
 
   /**
    * @private
@@ -67,6 +70,7 @@ ol.interaction.DragPan.prototype.handleDrag = function(mapBrowserEvent) {
   ];
   ol.coordinate.rotate(newCenter, view2DState.rotation);
   ol.coordinate.add(newCenter, this.startCenter);
+  newCenter = view.constrainCenter(newCenter);
   map.requestRenderFrame();
   view.setCenter(newCenter);
 };
@@ -81,19 +85,21 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
 
   var map = mapBrowserEvent.map;
   var view = map.getView().getView2D();
+  view.setHint(ol.ViewHint.INTERACTING, -1);
 
   if (this.kinetic_ && this.kinetic_.end()) {
     var view2DState = view.getView2DState();
     var distance = this.kinetic_.getDistance();
     var angle = this.kinetic_.getAngle();
     this.kineticPreRenderFn_ = this.kinetic_.pan(view2DState.center);
-    map.addPreRenderFunction(this.kineticPreRenderFn_);
+    map.beforeRender(this.kineticPreRenderFn_);
 
     var centerpx = map.getPixelFromCoordinate(view2DState.center);
     var dest = map.getCoordinateFromPixel([
       centerpx[0] - distance * Math.cos(angle),
       centerpx[1] - distance * Math.sin(angle)
     ]);
+    dest = view.constrainCenter(dest);
     view.setCenter(dest);
   }
   map.requestRenderFrame();
@@ -105,12 +111,13 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
  */
 ol.interaction.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
-  if (browserEvent.isMouseActionButton() && this.condition_(browserEvent)) {
+  if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
     if (this.kinetic_) {
       this.kinetic_.begin();
       this.kinetic_.update(browserEvent.clientX, browserEvent.clientY);
     }
     var map = mapBrowserEvent.map;
+    map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     map.requestRenderFrame();
     return true;
   } else {

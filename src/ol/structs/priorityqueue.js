@@ -15,25 +15,26 @@ goog.require('goog.object');
  * @see http://hg.python.org/cpython/file/2.7/Lib/heapq.py
  *
  * @constructor
- * @param {function(?): number} priorityFunction Priority function.
- * @param {function(?): string} keyFunction Key function.
+ * @param {function(T): number} priorityFunction Priority function.
+ * @param {function(T): string} keyFunction Key function.
+ * @template T
  */
 ol.structs.PriorityQueue = function(priorityFunction, keyFunction) {
 
   /**
-   * @type {function(?): number}
+   * @type {function(T): number}
    * @private
    */
   this.priorityFunction_ = priorityFunction;
 
   /**
-   * @type {function(?): string}
+   * @type {function(T): string}
    * @private
    */
   this.keyFunction_ = keyFunction;
 
   /**
-   * @type {Array}
+   * @type {Array.<T>}
    * @private
    */
   this.elements_ = [];
@@ -88,7 +89,7 @@ ol.structs.PriorityQueue.prototype.clear = function() {
 
 /**
  * Remove and return the highest-priority element. O(log N).
- * @return {*} Element.
+ * @return {T} Element.
  */
 ol.structs.PriorityQueue.prototype.dequeue = function() {
   var elements = this.elements_;
@@ -112,7 +113,7 @@ ol.structs.PriorityQueue.prototype.dequeue = function() {
 
 /**
  * Enqueue an element. O(log N).
- * @param {*} element Element.
+ * @param {T} element Element.
  */
 ol.structs.PriorityQueue.prototype.enqueue = function(element) {
   goog.asserts.assert(!(this.keyFunction_(element) in this.queuedElements_));
@@ -197,7 +198,7 @@ ol.structs.PriorityQueue.prototype.isKeyQueued = function(key) {
 
 
 /**
- * @param {*} element Element.
+ * @param {T} element Element.
  * @return {boolean} Is queued.
  */
 ol.structs.PriorityQueue.prototype.isQueued = function(element) {

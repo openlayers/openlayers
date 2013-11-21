@@ -9,10 +9,11 @@ goog.require('goog.uri.utils');
 /**
  * Method to use to get WMS feature info.
  * @enum {string}
+ * @todo stability experimental
  */
 ol.source.WMSGetFeatureInfoMethod = {
   /**
-   * Load the info in an IFRAME. Only works with 'text/html and 'text/plain' as
+   * Load the info in an IFRAME. Only works with `text/html` and `text/plain` as
    * `INFO_FORMAT`.
    */
   IFRAME: 'iframe',
@@ -25,11 +26,11 @@ ol.source.WMSGetFeatureInfoMethod = {
 
 
 /**
- * @param {string} baseUrl WMS base url.
+ * @param {string} baseUrl WMS base URL.
  * @param {Object.<string, string|number>} params Request parameters.
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Size.
- * @param {ol.Projection} projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  * @return {string} WMS GetMap request URL.
  */
 ol.source.wms.getUrl =
@@ -54,8 +55,8 @@ ol.source.wms.getUrl =
 
   var axisOrientation = projection.getAxisOrientation();
   var bboxValues = (wms13 && axisOrientation.substr(0, 2) == 'ne') ?
-      [extent[2], extent[0], extent[3], extent[1]] :
-      [extent[0], extent[2], extent[1], extent[3]];
+      [extent[1], extent[0], extent[3], extent[2]] :
+      [extent[0], extent[1], extent[2], extent[3]];
   baseParams['BBOX'] = bboxValues.join(',');
 
   return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);
@@ -65,7 +66,8 @@ ol.source.wms.getUrl =
 /**
  * @param {string} url URL as provided by the url function.
  * @param {ol.Pixel} pixel Pixel.
- * @param {Object} options Options as defined in the source.
+ * @param {ol.source.WMSGetFeatureInfoOptions} options Options as defined in the
+ *     source.
  * @param {function(string)} success Callback function for successful queries.
  * @param {function()=} opt_error Optional callback function for unsuccessful
  *     queries.
@@ -76,11 +78,12 @@ ol.source.wms.getFeatureInfo =
   // closure
   url = url.replace('REQUEST=GetMap', 'REQUEST=GetFeatureInfo')
       .replace(ol.source.wms.regExes.layers, 'LAYERS=$1&QUERY_LAYERS=$1');
-  options = goog.isDef(options) ? goog.object.clone(options) : {};
-  var localOptions = {
+  options = /** @type {ol.source.WMSGetFeatureInfoOptions} */
+      (goog.isDef(options) ? goog.object.clone(options) : {});
+  var localOptions = /** @type {ol.source.WMSGetFeatureInfoOptions} */ ({
     method: ol.source.WMSGetFeatureInfoMethod.IFRAME,
     params: {}
-  };
+  });
   goog.object.extend(localOptions, options);
   var params = {'INFO_FORMAT': 'text/html'},
       version = parseFloat(url.match(ol.source.wms.regExes.version)[1]),

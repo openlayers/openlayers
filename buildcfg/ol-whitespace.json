@@ -20,7 +20,8 @@
     "../externs/topojson.js",
     "../externs/oli.js",
     "../externs/proj4js.js",
-    "../externs/tilejson.js"
+    "../externs/tilejson.js",
+    "../externs/closure-compiler.js"
   ],
 
   "inherits": "ol.json",
@@ -32,10 +33,10 @@
 
   "mode": "WHITESPACE",
 
-  // Note: we can't have a (function(){%output%})() output wrapper with
-  // WHITESPACE and SIMPLE modes. See this link for explanations:
-  // https://groups.google.com/forum/#!topic/plovr/gQyZEa2NpsU
-  "output-wrapper": "%output%",
+  "output-wrapper": [
+    "var CLOSURE_NO_DEPS = true;\n",
+    "%output%"
+  ],
 
   "pretty-print": true
 }

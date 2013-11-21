@@ -12,6 +12,7 @@ goog.require('ol.style.Symbolizer');
 /**
  * @constructor
  * @param {ol.style.RuleOptions} options Rule options.
+ * @todo stability experimental
  */
 ol.style.Rule = function(options) {
 
@@ -39,16 +40,35 @@ ol.style.Rule = function(options) {
   this.symbolizers_ = goog.isDef(options.symbolizers) ?
       options.symbolizers : [];
 
+  /**
+   * @type {number}
+   * @private
+   */
+  this.minResolution_ = goog.isDef(options.minResolution) ?
+      options.minResolution : 0;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.maxResolution_ = goog.isDef(options.maxResolution) ?
+      options.maxResolution : Infinity;
+
 };
 
 
 /**
  * @param {ol.Feature} feature Feature.
+ * @param {number} resolution Map resolution.
  * @return {boolean} Does the rule apply to the feature?
  */
-ol.style.Rule.prototype.applies = function(feature) {
-  return goog.isNull(this.filter_) ?
-      true : !!ol.expr.evaluateFeature(this.filter_, feature);
+ol.style.Rule.prototype.applies = function(feature, resolution) {
+  var applies = resolution >= this.minResolution_ &&
+      resolution < this.maxResolution_;
+  if (applies && !goog.isNull(this.filter_)) {
+    applies = !!ol.expr.evaluateFeature(this.filter_, feature);
+  }
+  return applies;
 };
 
 

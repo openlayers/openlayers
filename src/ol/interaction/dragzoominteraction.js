@@ -7,10 +7,10 @@ goog.require('goog.asserts');
 goog.require('ol.Size');
 goog.require('ol.View2D');
 goog.require('ol.control.DragBox');
+goog.require('ol.events.ConditionType');
+goog.require('ol.events.condition');
 goog.require('ol.extent');
-goog.require('ol.interaction.ConditionType');
 goog.require('ol.interaction.Drag');
-goog.require('ol.interaction.condition');
 
 
 /**
@@ -29,9 +29,13 @@ ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED =
 
 
 /**
+ * Allows the user to zoom the map by clicking and dragging on the map,
+ * normally combined with an {@link ol.events.condition} that limits
+ * it to when the shift key is held down.
  * @constructor
  * @extends {ol.interaction.Drag}
  * @param {ol.interaction.DragZoomOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.DragZoom = function(opt_options) {
 
@@ -41,10 +45,10 @@ ol.interaction.DragZoom = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.interaction.ConditionType}
+   * @type {ol.events.ConditionType}
    */
   this.condition_ = goog.isDef(options.condition) ?
-      options.condition : ol.interaction.condition.shiftKeyOnly;
+      options.condition : ol.events.condition.shiftKeyOnly;
 
   /**
    * @type {ol.control.DragBox}
@@ -88,11 +92,11 @@ ol.interaction.DragZoom.prototype.handleDragEnd =
 ol.interaction.DragZoom.prototype.handleDragStart =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
-  if (browserEvent.isMouseActionButton() && this.condition_(browserEvent)) {
+  if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
     this.dragBox_ = new ol.control.DragBox({
-      map: mapBrowserEvent.map,
       startCoordinate: this.startCoordinate
     });
+    this.dragBox_.setMap(mapBrowserEvent.map);
     return true;
   } else {
     return false;

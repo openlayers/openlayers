@@ -1,4 +1,4 @@
-goog.provide('ol.renderer.canvas.SUPPORTED');
+goog.provide('ol.renderer.canvas');
 
 goog.require('ol.canvas');
 
