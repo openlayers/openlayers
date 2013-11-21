@@ -128,9 +128,11 @@ ol.render.canvas.Replay.prototype.draw = function(context, transform) {
     } else if (type == ol.render.canvas.Instruction.DRAW_IMAGE) {
       dd = /** @type {number} */ (instruction[1]);
       var anchor = /** @type {ol.Pixel} */ (instruction[2]);
+      var width = /** @type {number} */ (instruction[3]);
+      var height = /** @type {number} */ (instruction[4]);
       var image =  /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */
-          (instruction[3]);
-      var snapToPixel = /** @type {boolean|undefined} */ (instruction[4]);
+          (instruction[5]);
+      var snapToPixel = /** @type {boolean|undefined} */ (instruction[6]);
       for (; d < dd; d += 2) {
         var x = pixelCoordinates[d] - anchor[0];
         var y = pixelCoordinates[d + 1] - anchor[1];
@@ -138,7 +140,7 @@ ol.render.canvas.Replay.prototype.draw = function(context, transform) {
           x = (x + 0.5) | 0;
           y = (y + 0.5) | 0;
         }
-        context.drawImage(image, x, y);
+        context.drawImage(image, x, y, width, height);
       }
       ++i;
     } else if (type == ol.render.canvas.Instruction.FILL) {
@@ -277,6 +279,18 @@ ol.render.canvas.ImageReplay = function() {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.height_ = undefined;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.width_ = undefined;
+
+  /**
+   * @private
    * @type {boolean|undefined}
    */
   this.snapToPixel_ = undefined;
@@ -309,14 +323,18 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
     return;
   }
   goog.asserts.assert(!goog.isNull(this.anchor_));
+  goog.asserts.assert(goog.isDef(this.height_));
+  goog.asserts.assert(goog.isDef(this.width_));
   ol.extent.extend(this.extent_, pointGeometry.getExtent());
   var flatCoordinates = pointGeometry.getFlatCoordinates();
   var stride = pointGeometry.getStride();
   var myEnd = this.drawCoordinates_(
       flatCoordinates, 0, flatCoordinates.length, stride);
-  this.instructions.push(
-      [ol.render.canvas.Instruction.DRAW_IMAGE, myEnd,
-       this.anchor_, this.image_, this.snapToPixel_]);
+  this.instructions.push([
+    ol.render.canvas.Instruction.DRAW_IMAGE, myEnd,
+    this.anchor_, this.width_, this.height_,
+    this.image_, this.snapToPixel_
+  ]);
 };
 
 
@@ -329,14 +347,18 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
     return;
   }
   goog.asserts.assert(!goog.isNull(this.anchor_));
+  goog.asserts.assert(goog.isDef(this.height_));
+  goog.asserts.assert(goog.isDef(this.width_));
   ol.extent.extend(this.extent_, multiPointGeometry.getExtent());
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
   var stride = multiPointGeometry.getStride();
   var myEnd = this.drawCoordinates_(
       flatCoordinates, 0, flatCoordinates.length, stride);
-  this.instructions.push(
-      [ol.render.canvas.Instruction.DRAW_IMAGE, myEnd,
-       this.anchor_, this.image_, this.snapToPixel_]);
+  this.instructions.push([
+    ol.render.canvas.Instruction.DRAW_IMAGE, myEnd,
+    this.anchor_, this.width_, this.height_,
+    this.image_, this.snapToPixel_
+  ]);
 };
 
 
@@ -347,6 +369,8 @@ ol.render.canvas.ImageReplay.prototype.finish = function() {
   // FIXME this doesn't really protect us against further calls to draw*Geometry
   this.anchor_ = null;
   this.image_ = null;
+  this.height_ = undefined;
+  this.width_ = undefined;
   this.snapToPixel_ = undefined;
 };
 
@@ -357,9 +381,12 @@ ol.render.canvas.ImageReplay.prototype.finish = function() {
 ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   goog.asserts.assert(!goog.isNull(imageStyle));
   goog.asserts.assert(!goog.isNull(imageStyle.anchor));
+  goog.asserts.assert(goog.isDef(imageStyle.size));
   goog.asserts.assert(!goog.isNull(imageStyle.image));
   this.anchor_ = imageStyle.anchor;
   this.image_ = imageStyle.image;
+  this.width_ = imageStyle.size[0];
+  this.height_ = imageStyle.size[1];
   this.snapToPixel_ = imageStyle.snapToPixel;
 };
 

@@ -629,6 +629,7 @@
  * @property {ol.Pixel} anchor Anchor.
  * @property {HTMLCanvasElement|HTMLVideoElement|Image} image Image.
  * @property {number} rotation Rotation.
+ * @property {ol.Size} size Image size in pixel.
  * @property {boolean|undefined} snapToPixel Whether the image should be
  *     snapped to the closed pixel at rendering time.
  * @property {boolean} subtractViewRotation Whether the image should be

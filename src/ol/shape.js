@@ -45,6 +45,7 @@ ol.shape.renderCircle = function(radius, fillStyle, strokeStyle) {
 
   return new ol.style.Image({
     anchor: [size / 2, size / 2],
+    size: [size, size],
     image: canvas,
     rotation: 0,
     snapToPixel: undefined,

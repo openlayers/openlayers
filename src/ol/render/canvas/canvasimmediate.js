@@ -84,7 +84,8 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(geometry) {
       x = (x + 0.5) | 0;
       y = (y + 0.5) | 0;
     }
-    context.drawImage(imageStyle.image, x, y);
+    context.drawImage(imageStyle.image, x, y,
+        imageStyle.size[0], imageStyle.size[1]);
   }
 };
 

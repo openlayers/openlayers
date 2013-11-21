@@ -26,6 +26,11 @@ ol.style.Image = function(options) {
   this.rotation = options.rotation;
 
   /**
+   * @type {ol.Size}
+   */
+  this.size = options.size;
+
+  /**
    * @type {boolean|undefined}
    */
   this.snapToPixel = options.snapToPixel;
