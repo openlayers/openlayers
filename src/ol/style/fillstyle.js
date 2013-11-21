@@ -13,7 +13,7 @@ ol.style.Fill = function(options) {
   /**
    * @type {ol.Color|string}
    */
-  this.color = options.color;
+  this.color = goog.isDef(options.color) ? options.color : null;
 };
 
 
