@@ -157,10 +157,10 @@ ol.render.canvas.Replay.prototype.draw = function(context, transform) {
       context.fillStyle = ol.color.asString(fillStyle.color);
       ++i;
     } else if (type == ol.render.canvas.Instruction.SET_STROKE_STYLE) {
-      goog.asserts.assert(goog.isObject(instruction[1]));
-      var strokeStyle = /** @type {ol.style.Stroke} */ (instruction[1]);
-      context.strokeStyle = ol.color.asString(strokeStyle.color);
-      context.lineWidth = goog.isDef(strokeStyle.width) ? strokeStyle.width : 1;
+      goog.asserts.assert(goog.isString(instruction[1]));
+      goog.asserts.assert(goog.isNumber(instruction[2]));
+      context.strokeStyle = /** @type {string} */ (instruction[1]);
+      context.lineWidth = /** @type {number} */ (instruction[2]);
       ++i;
     } else if (type == ol.render.canvas.Instruction.STROKE) {
       context.stroke();
@@ -353,14 +353,18 @@ ol.render.canvas.LineStringReplay = function() {
 
   /**
    * @private
-   * @type {{currentStrokeStyle: ol.style.Stroke,
+   * @type {{currentStrokeStyle: (string|undefined),
+   *         currentLineWidth: (number|undefined),
    *         lastStroke: number,
-   *         strokeStyle: ol.style.Stroke}|null}
+   *         strokeStyle: (string|undefined),
+   *         lineWidth: (number|undefined)}|null}
    */
   this.state_ = {
-    currentStrokeStyle: null,
+    currentStrokeStyle: undefined,
+    currentLineWidth: undefined,
     lastStroke: 0,
-    strokeStyle: null
+    strokeStyle: undefined,
+    lineWidth: undefined
   };
 
 };
@@ -379,16 +383,21 @@ ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ =
     function(flatCoordinates, offset, end, stride) {
   var state = this.state_;
   var strokeStyle = state.strokeStyle;
-  goog.asserts.assert(goog.isDefAndNotNull(strokeStyle));
-  if (!ol.style.Stroke.equals(state.currentStrokeStyle, strokeStyle)) {
+  var lineWidth = state.lineWidth;
+  goog.asserts.assert(goog.isDef(strokeStyle));
+  goog.asserts.assert(goog.isDef(lineWidth));
+  if (state.currentStrokeStyle != strokeStyle ||
+      state.currentLineWidth != lineWidth) {
     if (state.lastStroke != this.coordinates.length) {
       this.instructions.push([ol.render.canvas.Instruction.STROKE]);
       state.lastStroke = this.coordinates.length;
     }
     this.instructions.push(
-        [ol.render.canvas.Instruction.SET_STROKE_STYLE, strokeStyle],
+        [ol.render.canvas.Instruction.SET_STROKE_STYLE,
+         strokeStyle, lineWidth],
         [ol.render.canvas.Instruction.BEGIN_PATH]);
     state.currentStrokeStyle = strokeStyle;
+    state.currentLineWidth = lineWidth;
   }
   var myEnd = this.appendFlatCoordinates(
       flatCoordinates, offset, end, stride, false);
@@ -405,7 +414,8 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   var strokeStyle = state.strokeStyle;
-  if (!goog.isDefAndNotNull(strokeStyle)) {
+  var lineWidth = state.lineWidth;
+  if (!goog.isDef(strokeStyle) || !goog.isDef(lineWidth)) {
     return;
   }
   ol.extent.extend(this.extent_, lineStringGeometry.getExtent());
@@ -424,7 +434,8 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   var strokeStyle = state.strokeStyle;
-  if (!goog.isDefAndNotNull(strokeStyle)) {
+  var lineWidth = state.lineWidth;
+  if (!goog.isDef(strokeStyle) || !goog.isDef(lineWidth)) {
     return;
   }
   ol.extent.extend(this.extent_, multiLineStringGeometry.getExtent());
@@ -461,7 +472,10 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
   goog.asserts.assert(!goog.isNull(this.state_));
   goog.asserts.assert(goog.isNull(fillStyle));
   goog.asserts.assert(!goog.isNull(strokeStyle));
-  this.state_.strokeStyle = strokeStyle;
+  goog.asserts.assert(goog.isDefAndNotNull(strokeStyle.color));
+  goog.asserts.assert(goog.isDef(strokeStyle.width));
+  this.state_.strokeStyle = ol.color.asString(strokeStyle.color);
+  this.state_.lineWidth = strokeStyle.width;
 };
 
 
