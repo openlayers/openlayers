@@ -4,6 +4,29 @@ goog.require('goog.vec.Mat4');
 
 
 /**
+ * Returns true if mat1 and mat2 represent the same 2D transformation.
+ * @param {goog.vec.Mat4.AnyType} mat1 Matrix 1.
+ * @param {goog.vec.Mat4.AnyType} mat2 Matrix 2.
+ * @return {boolean} Equal 2D.
+ */
+ol.vec.Mat4.equal2D = function(mat1, mat2) {
+  return (
+      goog.vec.Mat4.getElement(mat1, 0, 0) ==
+      goog.vec.Mat4.getElement(mat2, 0, 0) &&
+      goog.vec.Mat4.getElement(mat1, 1, 0) ==
+      goog.vec.Mat4.getElement(mat2, 1, 0) &&
+      goog.vec.Mat4.getElement(mat1, 0, 1) ==
+      goog.vec.Mat4.getElement(mat2, 0, 1) &&
+      goog.vec.Mat4.getElement(mat1, 1, 1) ==
+      goog.vec.Mat4.getElement(mat2, 1, 1) &&
+      goog.vec.Mat4.getElement(mat1, 0, 3) ==
+      goog.vec.Mat4.getElement(mat2, 0, 3) &&
+      goog.vec.Mat4.getElement(mat1, 1, 3) ==
+      goog.vec.Mat4.getElement(mat2, 1, 3));
+};
+
+
+/**
  * Transforms the given vector with the given matrix storing the resulting,
  * transformed vector into resultVec. The input vector is multiplied against the
  * upper 2x4 matrix omitting the projective component.
