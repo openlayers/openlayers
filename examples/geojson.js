@@ -126,14 +126,14 @@ var vectorLayer = new ol.layer.Vector({
 });
 var tmpFeature = new ol.Feature(
     new ol.geom.LineString([[-5e6, -5e6], [5e6, -5e6]]));
-var tmpStyle = {
+var tmpStyle = new ol.style.Style({
   fill: null,
   image: null,
   stroke: new ol.style.Stroke({
     color: 'magenta',
     width: 5
   })
-};
+});
 vectorLayer.on('postcompose', function(event) {
   var render = event.getRender();
   render.drawFeature(tmpFeature, tmpStyle);
