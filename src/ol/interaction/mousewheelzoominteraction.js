@@ -11,12 +11,6 @@ goog.require('ol.interaction.Interaction');
 
 
 /**
- * @define {number} Animation duration.
- */
-ol.interaction.MOUSEWHEELZOOM_ANIMATION_DURATION = 250;
-
-
-/**
  * @define {number} Maximum delta.
  */
 ol.interaction.MOUSEWHEELZOOM_MAXDELTA = 1;
@@ -30,10 +24,15 @@ ol.interaction.MOUSEWHEELZOOM_TIMEOUT_DURATION = 80;
 
 
 /**
+ * Allows the user to zoom the map by scrolling the mouse wheel.
  * @constructor
  * @extends {ol.interaction.Interaction}
+ * @param {ol.interaction.MouseWheelZoomOptions=} opt_options Options.
+ * @todo stability experimental
  */
-ol.interaction.MouseWheelZoom = function() {
+ol.interaction.MouseWheelZoom = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   goog.base(this);
 
@@ -42,6 +41,12 @@ ol.interaction.MouseWheelZoom = function() {
    * @type {number}
    */
   this.delta_ = 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.duration_ = goog.isDef(options.duration) ? options.duration : 250;
 
   /**
    * @private
@@ -112,7 +117,7 @@ ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
 
   map.requestRenderFrame();
   ol.interaction.Interaction.zoomByDelta(map, view, -delta, this.lastAnchor_,
-      ol.interaction.MOUSEWHEELZOOM_ANIMATION_DURATION);
+      this.duration_);
 
   this.delta_ = 0;
   this.lastAnchor_ = null;

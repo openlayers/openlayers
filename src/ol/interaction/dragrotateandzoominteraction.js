@@ -4,10 +4,11 @@ goog.provide('ol.interaction.DragRotateAndZoom');
 
 goog.require('goog.asserts');
 goog.require('goog.math.Vec2');
-goog.require('ol.interaction.ConditionType');
+goog.require('ol.ViewHint');
+goog.require('ol.events.ConditionType');
+goog.require('ol.events.condition');
 goog.require('ol.interaction.Drag');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.condition');
 
 
 /**
@@ -18,9 +19,15 @@ ol.interaction.DRAGROTATEANDZOOM_ANIMATION_DURATION = 400;
 
 
 /**
+ * Allows the user to zoom and rotate the map by clicking and dragging
+ * on the map.  By default, this interaction is limited to when the shift
+ * key is held down.
+ *
+ * This interaction is not included in the default interactions.
  * @constructor
  * @extends {ol.interaction.Drag}
  * @param {ol.interaction.DragRotateAndZoomOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.DragRotateAndZoom = function(opt_options) {
 
@@ -30,10 +37,10 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.interaction.ConditionType}
+   * @type {ol.events.ConditionType}
    */
   this.condition_ = goog.isDef(options.condition) ?
-      options.condition : ol.interaction.condition.shiftKeyOnly;
+      options.condition : ol.events.condition.shiftKeyOnly;
 
   /**
    * @private
@@ -62,12 +69,12 @@ goog.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Drag);
  */
 ol.interaction.DragRotateAndZoom.prototype.handleDrag =
     function(mapBrowserEvent) {
-  var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
   var size = map.getSize();
+  var offset = mapBrowserEvent.getPixel();
   var delta = new goog.math.Vec2(
-      browserEvent.offsetX - size[0] / 2,
-      size[1] / 2 - browserEvent.offsetY);
+      offset[0] - size[0] / 2,
+      size[1] / 2 - offset[1]);
   var theta = Math.atan2(delta.y, delta.x);
   var magnitude = delta.magnitude();
   // FIXME works for View2D only
@@ -99,6 +106,7 @@ ol.interaction.DragRotateAndZoom.prototype.handleDragEnd =
   var map = mapBrowserEvent.map;
   // FIXME works for View2D only
   var view = map.getView().getView2D();
+  view.setHint(ol.ViewHint.INTERACTING, -1);
   var view2DState = view.getView2DState();
   var direction = this.lastScaleDelta_ - 1;
   map.withFrozenRendering(function() {
@@ -117,8 +125,8 @@ ol.interaction.DragRotateAndZoom.prototype.handleDragEnd =
  */
 ol.interaction.DragRotateAndZoom.prototype.handleDragStart =
     function(mapBrowserEvent) {
-  var browserEvent = mapBrowserEvent.browserEvent;
-  if (this.condition_(browserEvent)) {
+  if (this.condition_(mapBrowserEvent)) {
+    mapBrowserEvent.map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     this.lastAngle_ = undefined;
     this.lastMagnitude_ = undefined;
     return true;

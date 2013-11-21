@@ -1,0 +1,10 @@
+<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/ogc http://schemas.opengis.net/filter/1.1.0/filter.xsd">
+  <ogc:Intersects>
+    <ogc:PropertyName>the_geom</ogc:PropertyName>
+    <ogc:Function name="querySingle">
+      <ogc:Literal>sf:restricted</ogc:Literal>
+      <ogc:Literal>the_geom</ogc:Literal>
+      <ogc:Literal>cat=3</ogc:Literal>
+    </ogc:Function>
+  </ogc:Intersects>
+</ogc:Filter>

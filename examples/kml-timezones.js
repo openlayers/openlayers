@@ -2,13 +2,13 @@ goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.expr');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.parser.KML');
 goog.require('ol.source.Stamen');
 goog.require('ol.source.Vector');
-goog.require('ol.style.Polygon');
-goog.require('ol.style.Rule');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 
@@ -40,27 +40,27 @@ ol.expr.register('getOpacity', function() {
   return 0.75 * (1 - delta / 12);
 });
 
-var style = new ol.style.Style({rules: [
-  new ol.style.Rule({
-    symbolizers: [
-      new ol.style.Polygon({
-        fillColor: '#ffff33',
-        strokeColor: '#ffffff',
-        opacity: ol.expr.parse('getOpacity()')
-      })
-    ]
-  })
-]});
+var style = new ol.style.Style({
+  symbolizers: [
+    new ol.style.Fill({
+      color: '#ffff33',
+      opacity: ol.expr.parse('getOpacity()')
+    }),
+    new ol.style.Stroke({
+      color: '#ffffff'
+    })
+  ]
+});
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    parser: new ol.parser.KML({dimension: 2}),
+    parser: new ol.parser.KML(),
     url: 'data/kml/timezones.kml'
   }),
   style: style
 });
 
-var raster = new ol.layer.TileLayer({
+var raster = new ol.layer.Tile({
   source: new ol.source.Stamen({
     layer: 'toner'
   })
@@ -81,8 +81,8 @@ info.tooltip({
   animation: false,
   trigger: 'manual'
 });
-map.on(['click', 'mousemove'], function(evt) {
-  var pixel = evt.getPixel();
+
+var displayFeatureInfo = function(pixel) {
   info.css({
     left: pixel[0] + 'px',
     top: (pixel[1] - 15) + 'px'
@@ -102,4 +102,14 @@ map.on(['click', 'mousemove'], function(evt) {
       }
     }
   });
+};
+
+$(map.getViewport()).on('mousemove', function(evt) {
+  var pixel = map.getEventPixel(evt.originalEvent);
+  displayFeatureInfo(pixel);
+});
+
+map.on('singleclick', function(evt) {
+  var pixel = evt.getPixel();
+  displayFeatureInfo(pixel);
 });

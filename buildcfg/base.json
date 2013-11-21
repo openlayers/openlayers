@@ -6,7 +6,10 @@
     "accessControls": "ERROR",
     "ambiguousFunctionDecl": "ERROR",
     "checkDebuggerStatement": "WARNING",
+    "checkEventfulObjectDisposal": "ERROR",
+    "checkProvides": "ERROR",
     "checkRegExp": "ERROR",
+    "checkStructDictInheritance": "ERROR",
     "checkTypes": "ERROR",
     "checkVars": "ERROR",
     "const": "ERROR",
@@ -14,20 +17,25 @@
     "deprecated": "ERROR",
     "duplicate": "ERROR",
     "duplicateMessage": "ERROR",
+    "es3": "ERROR",
     "es5Strict": "ERROR",
     "externsValidation": "ERROR",
     "fileoverviewTags": "ERROR",
     "globalThis": "ERROR",
     "internetExplorerChecks": "ERROR",
     "invalidCasts": "ERROR",
+    "misplacedTypeAnnotation": "ERROR",
     "missingProperties": "ERROR",
     "nonStandardJsDocs": "ERROR",
     "strictModuleDepCheck": "ERROR",
+    "suspiciousCode": "ERROR",
     "typeInvalidation": "ERROR",
+    "tweakValidation": "ERROR",
     "undefinedNames": "ERROR",
     "undefinedVars": "ERROR",
     "unknownDefines": "ERROR",
     "uselessCode": "ERROR",
+    "violatedModuleDep": "ERROR",
     "visibility": "ERROR"
   },
 
@@ -42,10 +50,11 @@
     "//json.js",
     "../externs/bingmaps.js",
     "../externs/geojson.js",
+    "../externs/topojson.js",
     "../externs/oli.js",
     "../externs/proj4js.js",
     "../externs/tilejson.js",
-    "../externs/w3c_device_sensor_event.js"
+    "../externs/closure-compiler.js"
   ],
 
   "level": "VERBOSE",
@@ -99,7 +108,8 @@
     "goog.debug.logRecordSerializer",
     "goog.debug.makeWhitespaceVisible",
     "goog.debug.normalizeErrorObject",
-    "goog.debug.reflect"
+    "goog.debug.reflect",
+    "goog.log"
   ]
 
 }

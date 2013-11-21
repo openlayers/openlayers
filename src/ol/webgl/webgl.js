@@ -11,8 +11,8 @@ goog.require('goog.dom.TagName');
  * @type {Array.<string>}
  */
 ol.webgl.CONTEXT_IDS_ = [
+  'experimental-webgl',
   'webgl',
-  'webgl-experimental',
   'webkit-3d',
   'moz-webgl'
 ];
@@ -28,7 +28,7 @@ ol.webgl.WebGLContextEventType = {
 
 
 /**
- * @param {Element} canvas Canvas.
+ * @param {HTMLCanvasElement} canvas Canvas.
  * @param {Object=} opt_attributes Attributes.
  * @return {WebGLRenderingContext} WebGL rendering context.
  */
@@ -38,7 +38,7 @@ ol.webgl.getContext = function(canvas, opt_attributes) {
     try {
       context = canvas.getContext(ol.webgl.CONTEXT_IDS_[i], opt_attributes);
       if (!goog.isNull(context)) {
-        return context;
+        return /** @type {!WebGLRenderingContext} */ (context);
       }
     } catch (e) {
     }
@@ -57,7 +57,8 @@ ol.webgl.SUPPORTED = (function() {
     return false;
   }
   try {
-    var canvas = goog.dom.createElement(goog.dom.TagName.CANVAS);
+    var canvas = /** @type {HTMLCanvasElement} */
+        (goog.dom.createElement(goog.dom.TagName.CANVAS));
     return !goog.isNull(ol.webgl.getContext(canvas));
   } catch (e) {
     return false;

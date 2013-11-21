@@ -9,7 +9,8 @@ goog.require('ol.FrameState');
  * @enum {string}
  */
 ol.MapEventType = {
-  POSTRENDER: 'postrender'
+  POSTRENDER: 'postrender',
+  MOVEEND: 'moveend'
 };
 
 

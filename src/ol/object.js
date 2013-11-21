@@ -11,6 +11,7 @@ goog.provide('ol.ObjectEventType');
 goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
+goog.require('goog.functions');
 goog.require('goog.object');
 
 
@@ -19,6 +20,51 @@ goog.require('goog.object');
  */
 ol.ObjectEventType = {
   CHANGE: 'change'
+};
+
+
+
+/**
+ * @constructor
+ * @param {ol.Object} target
+ * @param {string} key
+ * @todo stability experimental
+ */
+ol.ObjectAccessor = function(target, key) {
+
+  /**
+   * @type {ol.Object}
+   */
+  this.target = target;
+
+  /**
+   * @type {string}
+   */
+  this.key = key;
+
+  /**
+   * @type {function(?): ?}
+   */
+  this.from = goog.functions.identity;
+
+  /**
+   * @type {function(?): ?}
+   */
+  this.to = goog.functions.identity;
+};
+
+
+/**
+ * @param {function(?): ?} from A function that transforms the source value
+ *     before it is set to the target.
+ * @param {function(?): ?} to A function that transforms the target value
+ *     before it is set to the source.
+ */
+ol.ObjectAccessor.prototype.transform = function(from, to) {
+  this.from = from;
+  this.to = to;
+
+  this.target.notify(this.key);
 };
 
 
@@ -37,6 +83,7 @@ ol.ObjectProperty = {
  * @constructor
  * @extends {goog.events.EventTarget}
  * @param {Object.<string, *>=} opt_values Values.
+ * @todo stability experimental
  */
 ol.Object = function(opt_values) {
   goog.base(this);
@@ -86,7 +133,7 @@ ol.Object.capitalize = function(str) {
 
 /**
  * @param {ol.Object} obj Object.
- * @return {Object.<string, {target: ol.Object, key: string}>} Accessors.
+ * @return {Object.<string, ol.ObjectAccessor>} Accessors.
  */
 ol.Object.getAccessors = function(obj) {
   return obj[ol.ObjectProperty.ACCESSORS] ||
@@ -95,7 +142,7 @@ ol.Object.getAccessors = function(obj) {
 
 
 /**
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @return {string} Change name.
  */
 ol.Object.getChangeEventType = function(key) {
@@ -118,7 +165,7 @@ ol.Object.getGetterName = function(key) {
 
 /**
  * @param {ol.Object} obj Object.
- * @return {Object.<string, ?number>} Listeners.
+ * @return {Object.<string, goog.events.Key>} Listeners.
  */
 ol.Object.getListeners = function(obj) {
   return obj[ol.ObjectProperty.BINDINGS] ||
@@ -138,14 +185,35 @@ ol.Object.getSetterName = function(key) {
 
 
 /**
- * Binds a View to a Model.
- * @param {string} key Key.
+ * The bindTo method allows you to set up a two-way binding between a
+ * `source` and `target` object. The method returns an
+ * ol.ObjectAccessor with a transform method that lets you transform
+ * values on the way from the source to the target and on the way back.
+ *
+ * For example, if you had two map views (sourceView and targetView)
+ * and you wanted the target view to have double the resolution of the
+ * source view, you could transform the resolution on the way to and
+ * from the target with the following:
+ *
+ *     sourceView.bindTo('resolution', targetView)
+ *       .transform(
+ *         function(sourceResolution) {
+ *           // from sourceView.resolution to targetView.resolution
+ *           return 2 * sourceResolution;
+ *         },
+ *         function(targetResolution) {
+ *           // from targetView.resolution to sourceView.resolution
+ *           return targetResolution / 2;
+ *         }
+ *       );
+ *
+ * @param {string} key Key name.
  * @param {ol.Object} target Target.
  * @param {string=} opt_targetKey Target key.
- * @param {boolean=} opt_noNotify No notify.
+ * @return {ol.ObjectAccessor}
+ * @todo stability experimental
  */
-ol.Object.prototype.bindTo =
-    function(key, target, opt_targetKey, opt_noNotify) {
+ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
   var targetKey = opt_targetKey || key;
   this.unbind(key);
   var eventType = ol.Object.getChangeEventType(targetKey);
@@ -153,19 +221,19 @@ ol.Object.prototype.bindTo =
   listeners[key] = goog.events.listen(target, eventType, function() {
     this.notifyInternal_(key);
   }, undefined, this);
+  var accessor = new ol.ObjectAccessor(target, targetKey);
   var accessors = ol.Object.getAccessors(this);
-  accessors[key] = {target: target, key: targetKey};
-  var noNotify = opt_noNotify || false;
-  if (!noNotify) {
-    this.notifyInternal_(key);
-  }
+  accessors[key] = accessor;
+  this.notifyInternal_(key);
+  return accessor;
 };
 
 
 /**
  * Gets a value.
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @return {*} Value.
+ * @todo stability experimental
  */
 ol.Object.prototype.get = function(key) {
   var value;
@@ -180,6 +248,7 @@ ol.Object.prototype.get = function(key) {
     } else {
       value = target.get(targetKey);
     }
+    value = accessor.to(value);
   } else if (this.values_.hasOwnProperty(key)) {
     value = this.values_[key];
   }
@@ -192,10 +261,29 @@ ol.Object.prototype.get = function(key) {
  * @return {Array.<string>} List of property names.
  */
 ol.Object.prototype.getKeys = function() {
-  var keys = goog.object.getKeys(ol.Object.getAccessors(this)).concat(
-      goog.object.getKeys(this.values_));
-  goog.array.removeDuplicates(keys);
-  return keys;
+  var accessors = ol.Object.getAccessors(this);
+  var keysObject;
+  if (goog.object.isEmpty(this.values_)) {
+    if (goog.object.isEmpty(accessors)) {
+      return [];
+    } else {
+      keysObject = accessors;
+    }
+  } else {
+    if (goog.object.isEmpty(accessors)) {
+      keysObject = this.values_;
+    } else {
+      keysObject = {};
+      var key;
+      for (key in this.values_) {
+        keysObject[key] = true;
+      }
+      for (key in accessors) {
+        keysObject[key] = true;
+      }
+    }
+  }
+  return goog.object.getKeys(keysObject);
 };
 
 
@@ -203,7 +291,8 @@ ol.Object.prototype.getKeys = function() {
  * Notify all observers of a change on this property. This notifies both
  * objects that are bound to the object's property as well as the object
  * that it is bound to.
- * @param {string} key Key.
+ * @param {string} key Key name.
+ * @todo stability experimental
  */
 ol.Object.prototype.notify = function(key) {
   var accessors = ol.Object.getAccessors(this);
@@ -219,7 +308,7 @@ ol.Object.prototype.notify = function(key) {
 
 
 /**
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @private
  */
 ol.Object.prototype.notifyInternal_ = function(key) {
@@ -232,10 +321,11 @@ ol.Object.prototype.notifyInternal_ = function(key) {
 /**
  * Listen for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
- * @param {Function} listener The listener function.
+ * @param {function(?): ?} listener The listener function.
  * @param {Object=} opt_scope Object is whose scope to call
  *     the listener.
- * @return {?number} Unique key for the listener.
+ * @return {goog.events.Key} Unique key for the listener.
+ * @todo stability experimental
  */
 ol.Object.prototype.on = function(type, listener, opt_scope) {
   return goog.events.listen(this, type, listener, false, opt_scope);
@@ -245,10 +335,11 @@ ol.Object.prototype.on = function(type, listener, opt_scope) {
 /**
  * Listen once for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
- * @param {Function} listener The listener function.
+ * @param {function(?): ?} listener The listener function.
  * @param {Object=} opt_scope Object is whose scope to call
  *     the listener.
- * @return {?number} Unique key for the listener.
+ * @return {goog.events.Key} Unique key for the listener.
+ * @todo stability experimental
  */
 ol.Object.prototype.once = function(type, listener, opt_scope) {
   return goog.events.listenOnce(this, type, listener, false, opt_scope);
@@ -257,8 +348,9 @@ ol.Object.prototype.once = function(type, listener, opt_scope) {
 
 /**
  * Sets a value.
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @param {*} value Value.
+ * @todo stability experimental
  */
 ol.Object.prototype.set = function(key, value) {
   var accessors = ol.Object.getAccessors(this);
@@ -267,6 +359,7 @@ ol.Object.prototype.set = function(key, value) {
     var target = accessor.target;
     var targetKey = accessor.key;
     var setterName = ol.Object.getSetterName(targetKey);
+    value = accessor.from(value);
     if (target[setterName]) {
       target[setterName](value);
     } else {
@@ -282,6 +375,7 @@ ol.Object.prototype.set = function(key, value) {
 /**
  * Sets a collection of key-value pairs.
  * @param {Object.<string, *>} values Values.
+ * @todo stability experimental
  */
 ol.Object.prototype.setValues = function(values) {
   var key, value, setterName;
@@ -300,7 +394,8 @@ ol.Object.prototype.setValues = function(values) {
 /**
  * Removes a binding. Unbinding will set the unbound property to the current
  *     value. The object will not be notified, as the value has not changed.
- * @param {string} key Key.
+ * @param {string} key Key name.
+ * @todo stability experimental
  */
 ol.Object.prototype.unbind = function(key) {
   var listeners = ol.Object.getListeners(this);
@@ -319,9 +414,10 @@ ol.Object.prototype.unbind = function(key) {
 /**
  * Unlisten for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
- * @param {Function} listener The listener function.
+ * @param {function(?): ?} listener The listener function.
  * @param {Object=} opt_scope Object is whose scope to call
  *     the listener.
+ * @todo stability experimental
  */
 ol.Object.prototype.un = function(type, listener, opt_scope) {
   goog.events.unlisten(this, type, listener, false, opt_scope);
@@ -329,9 +425,10 @@ ol.Object.prototype.un = function(type, listener, opt_scope) {
 
 
 /**
- * Removes an event listener which was added with listen() by the key returned
- *     by on().
- * @param {?number} key Key.
+ * Removes an event listener which was added with `listen()` by the key returned
+ * by `on()` or `once()`.
+ * @param {goog.events.Key} key Key.
+ * @todo stability experimental
  */
 ol.Object.prototype.unByKey = function(key) {
   goog.events.unlistenByKey(key);
@@ -340,6 +437,7 @@ ol.Object.prototype.unByKey = function(key) {
 
 /**
  * Removes all bindings.
+ * @todo stability experimental
  */
 ol.Object.prototype.unbindAll = function() {
   for (var key in ol.Object.getListeners(this)) {

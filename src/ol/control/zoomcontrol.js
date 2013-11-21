@@ -12,20 +12,15 @@ goog.require('ol.css');
 goog.require('ol.easing');
 
 
-/**
- * @define {number} Zoom duration.
- */
-ol.control.ZOOM_DURATION = 250;
-
-
 
 /**
  * Create a new control with 2 buttons, one for zoom in and one for zoom out.
  * This control is part of the default controls of a map. To style this control
- * use css selectors .ol-zoom-in and .ol-zoom-out.
+ * use css selectors `.ol-zoom-in` and `.ol-zoom-out`.
  * @constructor
  * @extends {ol.control.Control}
  * @param {ol.control.ZoomOptions=} opt_options Zoom options.
+ * @todo stability experimental
  */
 ol.control.Zoom = function(opt_options) {
 
@@ -59,9 +54,14 @@ ol.control.Zoom = function(opt_options) {
 
   goog.base(this, {
     element: element,
-    map: options.map,
     target: options.target
   });
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.duration_ = goog.isDef(options.duration) ? options.duration : 250;
 
 };
 goog.inherits(ol.control.Zoom, ol.control.Control);
@@ -80,11 +80,13 @@ ol.control.Zoom.prototype.zoomByDelta_ = function(delta, browserEvent) {
   var view = map.getView().getView2D();
   var currentResolution = view.getResolution();
   if (goog.isDef(currentResolution)) {
-    map.addPreRenderFunction(ol.animation.zoom({
-      resolution: currentResolution,
-      duration: ol.control.ZOOM_DURATION,
-      easing: ol.easing.easeOut
-    }));
+    if (this.duration_ > 0) {
+      map.beforeRender(ol.animation.zoom({
+        resolution: currentResolution,
+        duration: this.duration_,
+        easing: ol.easing.easeOut
+      }));
+    }
     var newResolution = view.constrainResolution(currentResolution, delta);
     view.setResolution(newResolution);
   }

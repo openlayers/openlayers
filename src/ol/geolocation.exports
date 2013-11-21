@@ -1,2 +1,2 @@
 @exportClass ol.Geolocation ol.GeolocationOptions
-@exportSymbol ol.Geolocation.SUPPORTED
+@exportSymbol ol.Geolocation.SUPPORTED ol.Geolocation.SUPPORTED

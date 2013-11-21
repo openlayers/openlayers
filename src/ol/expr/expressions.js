@@ -277,12 +277,12 @@ ol.expr.Identifier.prototype.getName = function() {
  *
  * @constructor
  * @extends {ol.expr.Expression}
- * @param {string|number|boolean|null} value A literal value.
+ * @param {string|number|boolean|Date|null} value A literal value.
  */
 ol.expr.Literal = function(value) {
 
   /**
-   * @type {string|number|boolean|null}
+   * @type {string|number|boolean|Date|null}
    * @private
    */
   this.value_ = value;
@@ -301,7 +301,7 @@ ol.expr.Literal.prototype.evaluate = function() {
 
 /**
  * Get the literal value.
- * @return {string|number|boolean|null} The literal value.
+ * @return {string|number|boolean|Date|null} The literal value.
  */
 ol.expr.Literal.prototype.getValue = function() {
   return this.value_;
@@ -483,11 +483,6 @@ ol.expr.Math.prototype.evaluate = function(opt_scope, opt_fns, opt_this) {
   var result;
   var rightVal = this.right_.evaluate(opt_scope, opt_fns, opt_this);
   var leftVal = this.left_.evaluate(opt_scope, opt_fns, opt_this);
-  /**
-   * TODO: throw if rightVal, leftVal not numbers - this would require the use
-   * of a concat function for strings but it would let us serialize these as
-   * math functions where available elsewhere
-   */
 
   var op = this.operator_;
   if (op === ol.expr.MathOp.ADD) {

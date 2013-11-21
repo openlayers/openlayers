@@ -1,7 +1,7 @@
-goog.provide('ol.layer.ImageLayer');
+goog.provide('ol.layer.Image');
 
 goog.require('ol.layer.Layer');
-goog.require('ol.source.ImageSource');
+goog.require('ol.source.Image');
 
 
 
@@ -9,16 +9,17 @@ goog.require('ol.source.ImageSource');
  * @constructor
  * @extends {ol.layer.Layer}
  * @param {ol.layer.LayerOptions} options Layer options.
+ * @todo stability experimental
  */
-ol.layer.ImageLayer = function(options) {
+ol.layer.Image = function(options) {
   goog.base(this, options);
 };
-goog.inherits(ol.layer.ImageLayer, ol.layer.Layer);
+goog.inherits(ol.layer.Image, ol.layer.Layer);
 
 
 /**
- * @return {ol.source.ImageSource} Single image source.
+ * @return {ol.source.Image} Single image source.
  */
-ol.layer.ImageLayer.prototype.getImageSource = function() {
-  return /** @type {ol.source.ImageSource} */ (this.getSource());
+ol.layer.Image.prototype.getImageSource = function() {
+  return /** @type {ol.source.Image} */ (this.getSource());
 };

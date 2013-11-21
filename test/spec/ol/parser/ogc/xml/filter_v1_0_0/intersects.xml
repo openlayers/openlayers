@@ -1,0 +1,12 @@
+<Filter xmlns="http://www.opengis.net/ogc" xsi:schemaLocation="http://www.opengis.net/ogc http://schemas.opengis.net/filter/1.0.0/filter.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Intersects>
+    <PropertyName>Geometry</PropertyName>
+    <gml:Polygon xmlns:gml="http://www.opengis.net/gml">
+      <gml:outerBoundaryIs>
+        <gml:LinearRing>
+          <gml:coordinates decimal="." cs="," ts=" ">2488789,289552 2588789,289552 2588789,389552 2488789,389552 2488789,289552</gml:coordinates>
+        </gml:LinearRing>
+      </gml:outerBoundaryIs>
+    </gml:Polygon>
+  </Intersects>
+</Filter>

@@ -1,6 +1,8 @@
 @exportSymbol ol.Collection
 @exportProperty ol.Collection.prototype.clear
+@exportProperty ol.Collection.prototype.extend
 @exportProperty ol.Collection.prototype.forEach
+@exportProperty ol.Collection.prototype.getArray
 @exportProperty ol.Collection.prototype.getAt
 @exportProperty ol.Collection.prototype.getLength
 @exportProperty ol.Collection.prototype.insertAt
@@ -9,3 +11,5 @@
 @exportProperty ol.Collection.prototype.remove
 @exportProperty ol.Collection.prototype.removeAt
 @exportProperty ol.Collection.prototype.setAt
+
+@exportProperty ol.CollectionEvent.prototype.getElement

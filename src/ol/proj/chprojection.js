@@ -4,18 +4,18 @@ goog.provide('ol.proj.EPSG21781');
 
 goog.require('goog.asserts');
 goog.require('goog.math');
-goog.require('ol.Projection');
-goog.require('ol.ProjectionUnits');
 goog.require('ol.ellipsoid.BESSEL1841');
 goog.require('ol.proj');
 goog.require('ol.proj.EPSG4326');
+goog.require('ol.proj.Projection');
+goog.require('ol.proj.Units');
 
 
 
 /**
  * Internal base class for Swiss grid projections.
  * @constructor
- * @extends {ol.Projection}
+ * @extends {ol.proj.Projection}
  * @param {{code: string, extent: ol.Extent}} options Options.
  */
 ol.proj.CH = function(options) {
@@ -23,10 +23,10 @@ ol.proj.CH = function(options) {
     code: options.code,
     extent: options.extent,
     global: false,
-    units: ol.ProjectionUnits.METERS
+    units: ol.proj.Units.METERS
   });
 };
-goog.inherits(ol.proj.CH, ol.Projection);
+goog.inherits(ol.proj.CH, ol.proj.Projection);
 
 
 /**
@@ -141,7 +141,7 @@ ol.proj.CH.add = function() {
  * @param {number} offsetX X offset.
  * @param {Array.<number>} input Input array of coordinate values.
  * @param {Array.<number>=} opt_output Output array of coordinate values.
- * @param {number=} opt_dimension Dimension (default is 2).
+ * @param {number=} opt_dimension Dimension (default is `2`).
  * @private
  * @return {Array.<number>} Output array of coordinate values.
  */
@@ -190,7 +190,7 @@ ol.proj.CH.fromEPSG4326Approximate_ =
  * @param {number} offsetX X offset.
  * @param {Array.<number>} input Input array of coordinate values.
  * @param {Array.<number>=} opt_output Output array of coordinate values.
- * @param {number=} opt_dimension Dimension (default is 2).
+ * @param {number=} opt_dimension Dimension (default is `2`).
  * @private
  * @return {Array.<number>} Output array of coordinate values.
  */
@@ -243,7 +243,7 @@ ol.proj.CH.fromEPSG4326Rigorous_ =
  * @param {number} offsetX X offset.
  * @param {Array.<number>} input Input array of coordinate values.
  * @param {Array.<number>=} opt_output Output array of coordinate values.
- * @param {number=} opt_dimension Dimension (default is 2).
+ * @param {number=} opt_dimension Dimension (default is `2`).
  * @private
  * @return {Array.<number>} Output array of coordinate values.
  */
@@ -292,7 +292,7 @@ ol.proj.CH.toEPSG4326Approximate_ =
  * @param {number} offsetX X offset.
  * @param {Array.<number>} input Input array of coordinate values.
  * @param {Array.<number>=} opt_output Output array of coordinate values.
- * @param {number=} opt_dimension Dimension (default is 2).
+ * @param {number=} opt_dimension Dimension (default is `2`).
  * @private
  * @return {Array.<number>} Output array of coordinate values.
  */
@@ -353,7 +353,7 @@ ol.proj.CH.toEPSG4326Rigorous_ =
  * @param {number} offsetX X offset.
  * @param {Array.<number>} input Input array of coordinate values.
  * @param {Array.<number>=} opt_output Output array of coordinate values.
- * @param {number=} opt_dimension Dimension (default is 2).
+ * @param {number=} opt_dimension Dimension (default is `2`).
  * @private
  * @return {Array.<number>} Output array of coordinate values.
  */
@@ -410,7 +410,7 @@ goog.inherits(ol.proj.EPSG2056, ol.proj.CH);
  * @type {ol.Extent}
  */
 ol.proj.EPSG2056.EXTENT =
-    [2485869.5728, 2837076.5648, 1076443.1884, 1299941.7864];
+    [2485869.5728, 1076443.1884, 2837076.5648, 1299941.7864];
 
 
 /**
@@ -447,7 +447,10 @@ goog.inherits(ol.proj.EPSG21781, ol.proj.CH);
  * @const
  * @type {ol.Extent}
  */
-ol.proj.EPSG21781.EXTENT = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
+ol.proj.EPSG21781.EXTENT = [
+  485869.5728, 76443.1884,
+  837076.5648, 299941.7864
+];
 
 
 /**

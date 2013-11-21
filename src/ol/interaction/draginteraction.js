@@ -6,12 +6,12 @@ goog.require('goog.functions');
 goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
-goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
 
 
 
 /**
+ * Base class for interactions that drag the map.
  * @constructor
  * @extends {ol.interaction.Interaction}
  */
@@ -38,12 +38,12 @@ ol.interaction.Drag = function() {
   /**
    * @type {number}
    */
-  this.offsetX = 0;
+  this.deltaX = 0;
 
   /**
    * @type {number}
    */
-  this.offsetY = 0;
+  this.deltaY = 0;
 
   /**
    * @type {ol.Coordinate}
@@ -57,6 +57,14 @@ ol.interaction.Drag = function() {
 
 };
 goog.inherits(ol.interaction.Drag, ol.interaction.Interaction);
+
+
+/**
+ * @return {boolean} Whether we're dragging.
+ */
+ol.interaction.Drag.prototype.getDragging = function() {
+  return this.dragging_;
+};
 
 
 /**
@@ -114,9 +122,8 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
       goog.asserts.assertInstanceof(browserEvent, goog.events.BrowserEvent);
       this.deltaX = browserEvent.clientX - this.startX;
       this.deltaY = browserEvent.clientY - this.startY;
-      this.handleDragEnd(mapBrowserEvent);
-      view.setHint(ol.ViewHint.INTERACTING, -1);
       this.dragging_ = false;
+      this.handleDragEnd(mapBrowserEvent);
     }
   } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DRAGSTART) {
     goog.asserts.assertInstanceof(browserEvent, goog.events.BrowserEvent);
@@ -130,7 +137,6 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
         (mapBrowserEvent.getCoordinate());
     var handled = this.handleDragStart(mapBrowserEvent);
     if (handled) {
-      view.setHint(ol.ViewHint.INTERACTING, 1);
       this.dragging_ = true;
       mapBrowserEvent.preventDefault();
       stopEvent = true;

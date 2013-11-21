@@ -1,52 +1,38 @@
 goog.provide('ol.geom.MultiPoint');
 
 goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
+goog.require('ol.CoordinateArray');
 goog.require('ol.geom.AbstractCollection');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Point');
-goog.require('ol.geom.SharedVertices');
-goog.require('ol.geom.VertexArray');
 
 
 
 /**
  * @constructor
  * @extends {ol.geom.AbstractCollection}
- * @param {ol.geom.VertexArray} coordinates Coordinates array.
- * @param {ol.geom.SharedVertices=} opt_shared Shared vertices.
+ * @param {ol.CoordinateArray} coordinates Coordinates array.
+ * @todo stability experimental
  */
-ol.geom.MultiPoint = function(coordinates, opt_shared) {
+ol.geom.MultiPoint = function(coordinates) {
   goog.base(this);
   goog.asserts.assert(goog.isArray(coordinates[0]));
-
-  var vertices = opt_shared,
-      dimension;
-
-  if (!goog.isDef(vertices)) {
-    // try to get dimension from first vertex
-    dimension = coordinates[0].length;
-    vertices = new ol.geom.SharedVertices({dimension: dimension});
-  }
-
-  /**
-   * @type {ol.geom.SharedVertices}
-   */
-  this.vertices = vertices;
 
   var numParts = coordinates.length;
 
   /**
    * @type {Array.<ol.geom.Point>}
+   * @protected
    */
   this.components = new Array(numParts);
   for (var i = 0; i < numParts; ++i) {
-    this.components[i] = new ol.geom.Point(coordinates[i], vertices);
+    var component = new ol.geom.Point(coordinates[i]);
+    this.components[i] = component;
+    goog.events.listen(component, goog.events.EventType.CHANGE,
+        this.handleComponentChange, false, this);
   }
-
-  /**
-   * @type {number}
-   */
-  this.dimension = vertices.getDimension();
 
 };
 goog.inherits(ol.geom.MultiPoint, ol.geom.AbstractCollection);
@@ -64,14 +50,13 @@ ol.geom.MultiPoint.prototype.getType = function() {
  * Create a multi-point geometry from an array of point geometries.
  *
  * @param {Array.<ol.geom.Point>} geometries Array of geometries.
- * @param {ol.geom.SharedVertices=} opt_shared Shared vertices.
  * @return {ol.geom.MultiPoint} A new geometry.
  */
-ol.geom.MultiPoint.fromParts = function(geometries, opt_shared) {
+ol.geom.MultiPoint.fromParts = function(geometries) {
   var count = geometries.length;
   var coordinates = new Array(count);
   for (var i = 0; i < count; ++i) {
     coordinates[i] = geometries[i].getCoordinates();
   }
-  return new ol.geom.MultiPoint(coordinates, opt_shared);
+  return new ol.geom.MultiPoint(coordinates);
 };

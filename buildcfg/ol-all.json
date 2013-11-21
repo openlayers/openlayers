@@ -7,10 +7,11 @@
     "../build/src/external/externs/types.js",
     "../externs/bingmaps.js",
     "../externs/geojson.js",
+    "../externs/topojson.js",
     "../externs/oli.js",
     "../externs/proj4js.js",
     "../externs/tilejson.js",
-    "../externs/w3c_device_sensor_event.js"
+    "../externs/closure-compiler.js"
   ],
 
   "inherits": "base.json",

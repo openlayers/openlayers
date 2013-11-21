@@ -2,9 +2,9 @@ goog.require('ol');
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
+goog.require('ol.control');
 goog.require('ol.control.Control');
-goog.require('ol.control.defaults');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
 
@@ -50,7 +50,6 @@ app.RotateNorthControl = function(opt_options) {
 
   ol.control.Control.call(this, {
     element: element,
-    map: options.map,
     target: options.target
   });
 
@@ -64,11 +63,11 @@ ol.inherits(app.RotateNorthControl, ol.control.Control);
 
 
 var map = new ol.Map({
-  controls: ol.control.defaults({}, [
+  controls: ol.control.defaults().extend([
     new app.RotateNorthControl()
   ]),
   layers: [
-    new ol.layer.TileLayer({
+    new ol.layer.Tile({
       source: new ol.source.OSM()
     })
   ],

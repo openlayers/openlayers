@@ -13,6 +13,7 @@ goog.require('ol.animation');
  * @param {number} minVelocity Minimum velocity (pixels/millisecond).
  * @param {number} delay Delay to consider to calculate the kinetic
  *     initial values (milliseconds).
+ * @todo stability experimental
  */
 ol.Kinetic = function(decay, minVelocity, delay) {
 
@@ -108,10 +109,15 @@ ol.Kinetic.prototype.pan = function(source) {
   var initialVelocity = this.initialVelocity_;
   var minVelocity = this.minVelocity_;
   var duration = this.getDuration_();
-  var easingFunction = function(t) {
-    return initialVelocity * (Math.exp((decay * t) * duration) - 1) /
-        (minVelocity - initialVelocity);
-  };
+  var easingFunction = (
+      /**
+       * @param {number} t T.
+       * @return {number} Easing.
+       */
+      function(t) {
+        return initialVelocity * (Math.exp((decay * t) * duration) - 1) /
+            (minVelocity - initialVelocity);
+      });
   return ol.animation.pan({
     source: source,
     duration: duration,

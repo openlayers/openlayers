@@ -5,7 +5,7 @@ import gzip
 import json
 import os
 import os.path
-import re
+import regex as re
 import shutil
 import sys
 
@@ -79,8 +79,6 @@ else:
     variables.PYTHON = 'python'
     variables.PHANTOMJS = 'phantomjs'
 
-TEMPLATE_GLSL_COMPILER_JS = 'build/glsl-unit/bin/template_glsl_compiler.js'
-
 variables.BRANCH = output(
     '%(GIT)s', 'rev-parse', '--abbrev-ref', 'HEAD').strip()
 
@@ -142,8 +140,12 @@ SRC = [path
        if path.endswith('.js')
        if path not in SHADER_SRC]
 
-PLOVR_JAR = 'build/plovr-eba786b34df9.jar'
-PLOVR_JAR_MD5 = '20eac8ccc4578676511cf7ccbfc65100'
+LIBTESS_JS_SRC = [path
+                   for path in ifind('src/libtess.js')
+                   if path.endswith('.js')]
+
+PLOVR_JAR = 'build/plovr-81ed862.jar'
+PLOVR_JAR_MD5 = '1c752daaf11ad6220b298e7d2ee2b87d'
 
 PROJ4JS = 'build/proj4js/lib/proj4js-combined.js'
 PROJ4JS_ZIP = 'build/proj4js-1.1.0.zip'
@@ -164,7 +166,7 @@ virtual('default', 'build')
 
 
 virtual('integration-test', 'lint', 'build', 'build-all',
-        'test', 'build-examples', 'check-examples', 'doc')
+        'test', 'build/examples/all.combined.js', 'check-examples', 'apidoc')
 
 
 virtual('build', 'build/ol.css', 'build/ol.js',
@@ -183,25 +185,28 @@ def build_ol_css(t):
 
 
 @target('build/ol.js', PLOVR_JAR, SRC, EXTERNAL_SRC, SHADER_SRC,
-        'buildcfg/base.json', 'buildcfg/ol.json')
+        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json')
 def build_ol_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ol.json')
+    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
+            PLOVR_JAR, 'build', 'buildcfg/ol.json')
     report_sizes(t)
 
 
 @target('build/ol-simple.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        'buildcfg/base.json', 'buildcfg/ol.json', 'buildcfg/ol-simple.json')
+        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
+        'buildcfg/ol-simple.json')
 def build_ol_simple_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ol-simple.json')
+    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
+            PLOVR_JAR, 'build', 'buildcfg/ol-simple.json')
     report_sizes(t)
 
 
 @target('build/ol-whitespace.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        'buildcfg/base.json', 'buildcfg/ol.json',
+        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol.json',
         'buildcfg/ol-whitespace.json')
 def build_ol_whitespace_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR,
-             'build', 'buildcfg/ol-whitespace.json')
+    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
+            PLOVR_JAR, 'build', 'buildcfg/ol-whitespace.json')
     report_sizes(t)
 
 
@@ -209,9 +214,10 @@ virtual('build-all', 'build/ol-all.js')
 
 
 @target('build/ol-all.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        'buildcfg/base.json', 'buildcfg/ol-all.json')
+        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol-all.json')
 def build_ol_all_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
+    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
+            PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
 
 
 @target('build/src/external/externs/types.js', 'bin/generate-exports.py',
@@ -235,17 +241,16 @@ def build_src_external_src_types_js(t):
              '--typedef', 'src/objectliterals.jsdoc')
 
 
-if os.path.exists(TEMPLATE_GLSL_COMPILER_JS):
-    for glsl_src in GLSL_SRC:
-        def shader_src_helper(glsl_src):
-            @target(glsl_src.replace('.glsl', 'shader.js'), glsl_src,
-                    'src/ol/webgl/shader.mustache')
-            def shader_src(t):
-                t.run('%(NODE)s', TEMPLATE_GLSL_COMPILER_JS,
-                      '--input', glsl_src,
-                      '--template', 'src/ol/webgl/shader.mustache',
-                      '--output', t.name)
-        shader_src_helper(glsl_src)
+for glsl_src in GLSL_SRC:
+    def shader_src_helper(glsl_src):
+        @target(glsl_src.replace('.glsl', 'shader.js'), glsl_src,
+                'src/ol/webgl/shader.mustache', 'bin/pyglslunit.py')
+        def shader_src(t):
+            t.run('%(PYTHON)s', 'bin/pyglslunit.py',
+                  '--input', glsl_src,
+                  '--template', 'src/ol/webgl/shader.mustache',
+                  '--output', t.name)
+    shader_src_helper(glsl_src)
 
 
 def _build_require_list(dependencies, output_file_name):
@@ -260,7 +265,8 @@ def _build_require_list(dependencies, output_file_name):
             f.write('goog.require(\'%s\');\n' % (require,))
 
 
-@target('build/src/internal/src/requireall.js', SRC, SHADER_SRC)
+@target('build/src/internal/src/requireall.js', SRC, SHADER_SRC,
+        LIBTESS_JS_SRC)
 def build_src_internal_src_requireall_js(t):
     _build_require_list(t.dependencies, t.name)
 
@@ -277,7 +283,8 @@ def build_src_internal_types_js(t):
              '--typedef', 'src/objectliterals.jsdoc')
 
 
-virtual('build-examples', 'examples', EXAMPLES_COMBINED)
+virtual('build-examples', 'examples', 'build/examples/all.combined.js',
+        EXAMPLES_COMBINED)
 
 
 virtual('examples', 'examples/example-list.xml', EXAMPLES_JSON)
@@ -291,6 +298,20 @@ def examples_examples_list_xml(t):
 @target('examples/example-list.js', 'bin/exampleparser.py', EXAMPLES)
 def examples_examples_list_js(t):
     t.run('%(PYTHON)s', 'bin/exampleparser.py', 'examples', 'examples')
+
+
+@target('build/examples/all.combined.js', 'build/examples/all.js', PLOVR_JAR,
+        SRC, INTERNAL_SRC, SHADER_SRC, LIBTESS_JS_SRC,
+        'buildcfg/base.json', 'build/examples/all.json')
+def build_examples_all_combined_js(t):
+    t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
+            PLOVR_JAR, 'build', 'buildcfg/examples-all.json')
+    report_sizes(t)
+
+
+@target('build/examples/all.js', EXAMPLES_SRC)
+def build_examples_all_js(t):
+    t.output('bin/combine-examples.py', t.dependencies)
 
 
 @rule(r'\Abuild/examples/(?P<id>.*).json\Z')
@@ -309,10 +330,11 @@ def examples_star_json(name, match):
                 '../externs/bingmaps.js',
                 '../externs/bootstrap.js',
                 '../externs/geojson.js',
+                '../externs/topojson.js',
                 '../externs/oli.js',
                 '../externs/proj4js.js',
                 '../externs/tilejson.js',
-                '../externs/w3c_device_sensor_event.js',
+                '../externs/closure-compiler.js',
             ],
         })
         with open(t.name, 'w') as f:
@@ -324,10 +346,11 @@ def examples_star_json(name, match):
 @rule(r'\Abuild/examples/(?P<id>.*).combined.js\Z')
 def examples_star_combined_js(name, match):
     def action(t):
-        t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build',
-                 'build/examples/%(id)s.json' % match.groupdict())
+        t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
+                PLOVR_JAR, 'build', 'build/examples/%(id)s.json' %
+                match.groupdict())
         report_sizes(t)
-    dependencies = [PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
+    dependencies = [PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC, LIBTESS_JS_SRC,
                     'buildcfg/base.json',
                     'examples/%(id)s.js' % match.groupdict(),
                     'build/examples/%(id)s.json' % match.groupdict()]
@@ -347,13 +370,15 @@ def serve_precommit(t):
 
 
 virtual('lint', 'build/lint-timestamp', 'build/lint-generated-timestamp',
-        'build/check-requires-timestamp', 'build/check-whitespace-timestamp')
+        'build/lint-libtess.js-timestamp', 'build/check-requires-timestamp',
+        'build/check-whitespace-timestamp')
 
 
 @target('build/lint-timestamp', SRC, EXAMPLES_SRC, SPEC, precious=True)
 def build_lint_src_timestamp(t):
     t.run('%(GJSLINT)s',
           '--jslint_error=all',
+          '--custom_jsdoc_tags=todo',
           '--strict',
           t.newer(t.dependencies))
     t.touch()
@@ -370,9 +395,20 @@ def build_lint_generated_timestamp(t):
           '--jslint_error=all',
           # ignore error for max line length (for these auto-generated sources)
           '--disable=110',
+          '--custom_jsdoc_tags=todo',
           # for a complete list of error codes to allow, see
           # http://closure-linter.googlecode.com/svn/trunk/closure_linter/errors.py
           '--limited_doc_files=%s' % (','.join(limited_doc_files),),
+          '--strict',
+          t.newer(t.dependencies))
+    t.touch()
+
+
+@target('build/lint-libtess.js-timestamp', LIBTESS_JS_SRC, precious=True)
+def build_lint_libtess_js_timestamp(t):
+    t.run('%(GJSLINT)s',
+          '--jslint_error=all',
+          '--disable=110',
           '--strict',
           t.newer(t.dependencies))
     t.touch()
@@ -402,7 +438,7 @@ def _strip_comments(lines):
 
 
 @target('build/check-requires-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC,
-        EXAMPLES_SRC, SHADER_SRC, SPEC)
+        EXAMPLES_SRC, SHADER_SRC, LIBTESS_JS_SRC, SPEC)
 def build_check_requires_timestamp(t):
     from zipfile import ZipFile
     unused_count = 0
@@ -456,17 +492,23 @@ def build_check_requires_timestamp(t):
             self.children = {}
 
         def _build_re(self, key):
-            if len(self.children) == 1:
+            if key == '*':
+                assert len(self.children) == 0
+                # We want to match `.doIt` but not `.SomeClass` or `.more.stuff`
+                return '(?=\\.[a-z]\\w*\\b(?!\\.))'
+            elif len(self.children) == 1:
                 child_key, child = next(self.children.iteritems())
-                child_re = '\\.' + child._build_re(child_key)
+                child_re = child._build_re(child_key)
+                if child_key != '*':
+                    child_re = '\\.' + child_re
                 if self.present:
                     return key + '(' + child_re + ')?'
                 else:
                     return key + child_re
             elif self.children:
-                children_re = '(?:\\.(?:' + '|'.join(
-                    self.children[k]._build_re(k)
-                    for k in sorted(self.children.keys())) + '))'
+                children_re = '(?:' + '|'.join(
+                    ('\\.' if k != '*' else '') + self.children[k]._build_re(k)
+                    for k in sorted(self.children.keys())) + ')'
                 if self.present:
                     return key + children_re + '?'
                 else:
@@ -484,7 +526,14 @@ def build_check_requires_timestamp(t):
             if component not in node.children:
                 node.children[component] = Node()
             node = node.children[component]
-        node.present = True
+        if component[0].islower():
+            # We've arrived at a namespace provide like `ol.foo`.
+            # In this case, we want to match uses like `ol.foo.doIt()` but
+            # not match things like `new ol.foo.SomeClass()`.
+            # For this purpose, we use the special wildcard key for the child.
+            node.children['*'] = Node()
+        else:
+            node.present = True
     provide_res = [child.build_re(key)
                    for key, child in root.children.iteritems()]
     missing_count = 0
@@ -534,7 +583,7 @@ def build_check_requires_timestamp(t):
 
 
 @target('build/check-whitespace-timestamp', SRC, INTERNAL_SRC, EXTERNAL_SRC,
-        EXAMPLES_SRC, SPEC, EXPORTS, JSDOC_SRC,
+        EXAMPLES_SRC, SPEC, EXPORTS, JSDOC_SRC, LIBTESS_JS_SRC,
         precious=True)
 def build_check_whitespace_timestamp(t):
     CR_RE = re.compile(r'\r')
@@ -574,14 +623,14 @@ def plovr_jar(t):
     t.info('downloaded %r', t.name)
 
 
-virtual('doc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
+virtual('apidoc', 'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
 
 
 @target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), 'host-resources',
         'build/src/external/src/exports.js', 'build/src/external/src/types.js',
-        SRC, SHADER_SRC, ifind('doc/template'))
+        SRC, SHADER_SRC, ifind('apidoc/template'))
 def jsdoc_BRANCH_timestamp(t):
-    t.run('%(JSDOC)s', '-c', 'doc/conf.json', 'src', 'doc/index.md',
+    t.run('%(JSDOC)s', '-c', 'apidoc/conf.json', 'src', 'apidoc/index.md',
           '-d', 'build/hosted/%(BRANCH)s/apidoc')
     t.touch()
 
@@ -663,10 +712,7 @@ def host_examples(t):
 def check_examples(t):
     examples = ['build/hosted/%(BRANCH)s/' + e for e in EXAMPLES]
     all_examples = \
-        [e + '?mode=raw' for e in examples] + \
-        [e + '?mode=whitespace' for e in examples] + \
-        [e + '?mode=simple' for e in examples] + \
-        examples
+        [e + '?mode=advanced' for e in examples]
     for example in all_examples:
         t.run('%(PHANTOMJS)s', 'bin/check-example.js', example)
 
@@ -693,7 +739,7 @@ virtual('test-deps', INTERNAL_SRC, PROJ4JS, 'build/test/requireall.js')
 
 @target('test', 'test-deps', phony=True)
 def test(t):
-    t.run('%(PHANTOMJS)s', 'test/mocha-phantomjs.coffee', 'test/ol.html')
+    t.run('%(PHANTOMJS)s', 'test/mocha-phantomjs.js', 'test/ol.html')
 
 
 @target('fixme', phony=True)
@@ -740,6 +786,51 @@ def check_dependencies(t):
         print 'Program "%s" seems to be %s.' % (exe, status)
     print 'For certain targets all above programs need to be present.'
 
+
+@target('help')
+def display_help(t):
+    print '''
+build.py - The OpenLayers 3 build script.
+
+Usage:
+  ./build.py [options] [target]                         (on Unix-based machines)
+  <python-executable.exe> build.py [options] [target]   (on Windows machines)
+
+There is one option:
+  -c               - Cleans up the repository from previous builds.
+
+The most common targets are:
+  serve            - Serves files through plovr, usually on port 9810.
+  lint             - Runs gjslint on all sourcefiles to enforce specific syntax.
+  build            - Builds singlefile versions of OpenLayers JavaScript and
+                     CSS. This is also the default build target which runs when
+                     no target is specified.
+  test             - Runs the testsuite and displays the results.
+  check            - Runs the lint-target, builds some OpenLayers files, and
+                     then runs test. Many developers call this target often
+                     while working on the code.
+  help             - Shows this help.
+
+Other less frequently used targets are:
+  apidoc           - Builds the API-Documentation using JSDoc3.
+  integration-test - Builds all examples in various modes and usually takes a
+                     long time to finish. This target calls the following
+                     targets: lint, build, build-all, test, build-examples,
+                     check-examples and apidoc.
+  reallyclean      - Remove untracked files from the repository.
+  checkdeps        - Checks whether all required development software is
+                     installed on your machine.
+  fixme            - Will print a list of parts of the code that are marked
+                     with either TODO or FIXME.
+  todo             - is an alias for the fixme-target
+  plovr            - Fetches the required plovr.jar. Usually called by other
+                     targets that depend on plovr.
+
+If no target is given, the build-target will be executed.
+
+The above list is not complete, please see the source code for not-mentioned
+and only seldomly called targets.
+    '''
 
 if __name__ == '__main__':
     main()

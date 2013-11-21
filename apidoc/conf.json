@@ -1,0 +1,35 @@
+{
+    "opts": {
+        "recurse": true,
+        "template": "apidoc/template"
+    },
+    "tags": {
+        "allowUnknownTags": true
+    },
+    "source": {
+        "includePattern": ".+\\.js(doc)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "plugins": [
+        "plugins/markdown",
+        "apidoc/plugins/inheritdoc",
+        "apidoc/plugins/exports",
+        "apidoc/plugins/todo",
+        "apidoc/plugins/observable",
+        "apidoc/plugins/stability"
+    ],
+    "markdown": {
+        "parser": "gfm"
+    },
+    "stability": {
+      "levels": ["deprecated","experimental","unstable","stable","frozen","locked"]
+    },
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false,
+        "default": {
+            "outputSourceFiles": true
+        }
+    },
+    "jsVersion": 180
+}

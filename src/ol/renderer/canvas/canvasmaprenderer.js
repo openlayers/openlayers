@@ -7,16 +7,15 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
-goog.require('ol.Size');
 goog.require('ol.css');
-goog.require('ol.layer.ImageLayer');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Image');
+goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.canvas.VectorLayer');
-goog.require('ol.size');
+goog.require('ol.source.State');
 
 
 
@@ -32,11 +31,10 @@ ol.renderer.canvas.Map = function(container, map) {
 
   /**
    * @private
-   * @type {Element}
+   * @type {HTMLCanvasElement}
    */
-  this.canvas_ = goog.dom.createElement(goog.dom.TagName.CANVAS);
-  this.canvas_.height = container.clientHeight;
-  this.canvas_.width = container.clientWidth;
+  this.canvas_ = /** @type {HTMLCanvasElement} */
+      (goog.dom.createElement(goog.dom.TagName.CANVAS));
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
   goog.dom.insertChildAt(container, this.canvas_, 0);
 
@@ -48,15 +46,10 @@ ol.renderer.canvas.Map = function(container, map) {
 
   /**
    * @private
-   * @type {ol.Size}
-   */
-  this.canvasSize_ = [container.clientHeight, container.clientWidth];
-
-  /**
-   * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.context_ = this.canvas_.getContext('2d');
+  this.context_ = /** @type {CanvasRenderingContext2D} */
+      (this.canvas_.getContext('2d'));
 
 };
 goog.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
@@ -66,9 +59,9 @@ goog.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
  * @inheritDoc
  */
 ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
-  if (layer instanceof ol.layer.ImageLayer) {
+  if (layer instanceof ol.layer.Image) {
     return new ol.renderer.canvas.ImageLayer(this, layer);
-  } else if (layer instanceof ol.layer.TileLayer) {
+  } else if (layer instanceof ol.layer.Tile) {
     return new ol.renderer.canvas.TileLayer(this, layer);
   } else if (layer instanceof ol.layer.Vector) {
     return new ol.renderer.canvas.VectorLayer(this, layer);
@@ -94,34 +87,37 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   if (goog.isNull(frameState)) {
     if (this.renderedVisible_) {
-      goog.style.showElement(this.canvas_, false);
+      goog.style.setElementShown(this.canvas_, false);
       this.renderedVisible_ = false;
     }
     return;
   }
 
   var size = frameState.size;
-  if (!ol.size.equals(this.canvasSize_, size)) {
+  if (this.canvas_.width != size[0] || this.canvas_.height != size[1]) {
     this.canvas_.width = size[0];
     this.canvas_.height = size[1];
-    this.canvasSize_ = size;
   }
 
   var context = this.context_;
-  context.setTransform(1, 0, 0, 1, 0, 0);
   context.clearRect(0, 0, size[0], size[1]);
 
   this.calculateMatrices2D(frameState);
 
   var layerStates = frameState.layerStates;
   var layersArray = frameState.layersArray;
+  var viewResolution = frameState.view2DState.resolution;
   var i, ii, image, layer, layerRenderer, layerState, transform;
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
 
     layer = layersArray[i];
-    layerRenderer = this.getLayerRenderer(layer);
+    layerRenderer =
+        /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
     layerState = layerStates[goog.getUid(layer)];
-    if (!layerState.visible || !layerState.ready) {
+    if (!layerState.visible ||
+        layerState.sourceState != ol.source.State.READY ||
+        viewResolution >= layerState.maxResolution ||
+        viewResolution < layerState.minResolution) {
       continue;
     }
     layerRenderer.renderFrame(frameState, layerState);
@@ -138,8 +134,10 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
         var dy = goog.vec.Mat4.getElement(transform, 1, 3);
         var dw = image.width * goog.vec.Mat4.getElement(transform, 0, 0);
         var dh = image.height * goog.vec.Mat4.getElement(transform, 1, 1);
+        goog.asserts.assert(goog.isNumber(image.width));
+        goog.asserts.assert(goog.isNumber(image.height));
         context.drawImage(image, 0, 0, image.width, image.height,
-            dx, dy, dw, dh);
+            Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
       } else {
         context.setTransform(
             goog.vec.Mat4.getElement(transform, 0, 0),
@@ -150,13 +148,14 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
             goog.vec.Mat4.getElement(transform, 1, 3));
 
         context.drawImage(image, 0, 0);
+        context.setTransform(1, 0, 0, 1, 0, 0);
       }
     }
 
   }
 
   if (!this.renderedVisible_) {
-    goog.style.showElement(this.canvas_, true);
+    goog.style.setElementShown(this.canvas_, true);
     this.renderedVisible_ = true;
   }
 

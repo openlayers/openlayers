@@ -1,4 +1,4 @@
-goog.provide('ol.source.DebugTileSource');
+goog.provide('ol.source.TileDebug');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -7,7 +7,7 @@ goog.require('ol.Tile');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
 goog.require('ol.TileState');
-goog.require('ol.source.TileSource');
+goog.require('ol.source.Tile');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -61,7 +61,8 @@ ol.DebugTile_.prototype.getImage = function(opt_context) {
     canvas.width = tileSize[0];
     canvas.height = tileSize[1];
 
-    var context = canvas.getContext('2d');
+    var context = /** @type {CanvasRenderingContext2D} */
+        (canvas.getContext('2d'));
 
     context.strokeStyle = 'black';
     context.strokeRect(0.5, 0.5, tileSize[0] + 0.5, tileSize[1] + 0.5);
@@ -83,10 +84,11 @@ ol.DebugTile_.prototype.getImage = function(opt_context) {
 
 /**
  * @constructor
- * @extends {ol.source.TileSource}
- * @param {ol.source.DebugTileSourceOptions} options Debug tile options.
+ * @extends {ol.source.Tile}
+ * @param {ol.source.TileDebugOptions} options Debug tile options.
+ * @todo stability experimental
  */
-ol.source.DebugTileSource = function(options) {
+ol.source.TileDebug = function(options) {
 
   goog.base(this, {
     extent: options.extent,
@@ -102,13 +104,13 @@ ol.source.DebugTileSource = function(options) {
   this.tileCache_ = new ol.TileCache();
 
 };
-goog.inherits(ol.source.DebugTileSource, ol.source.TileSource);
+goog.inherits(ol.source.TileDebug, ol.source.Tile);
 
 
 /**
  * @inheritDoc
  */
-ol.source.DebugTileSource.prototype.canExpireCache = function() {
+ol.source.TileDebug.prototype.canExpireCache = function() {
   return this.tileCache_.canExpireCache();
 };
 
@@ -116,7 +118,7 @@ ol.source.DebugTileSource.prototype.canExpireCache = function() {
 /**
  * @inheritDoc
  */
-ol.source.DebugTileSource.prototype.expireCache = function(usedTiles) {
+ol.source.TileDebug.prototype.expireCache = function(usedTiles) {
   this.tileCache_.expireCache(usedTiles);
 };
 
@@ -124,8 +126,8 @@ ol.source.DebugTileSource.prototype.expireCache = function(usedTiles) {
 /**
  * @inheritDoc
  */
-ol.source.DebugTileSource.prototype.getTile = function(z, x, y) {
-  var tileCoordKey = ol.TileCoord.getKeyZXY(z, x, y);
+ol.source.TileDebug.prototype.getTile = function(z, x, y) {
+  var tileCoordKey = this.getKeyZXY(z, x, y);
   if (this.tileCache_.containsKey(tileCoordKey)) {
     return /** @type {!ol.DebugTile_} */ (this.tileCache_.get(tileCoordKey));
   } else {

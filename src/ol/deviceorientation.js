@@ -1,5 +1,4 @@
 goog.provide('ol.DeviceOrientation');
-goog.provide('ol.DeviceOrientation.SUPPORTED');
 goog.provide('ol.DeviceOrientationProperty');
 
 goog.require('goog.events');
@@ -21,9 +20,65 @@ ol.DeviceOrientationProperty = {
 
 
 /**
+ * The ol.DeviceOrientation class provides access to DeviceOrientation
+ * information and events, see the [HTML 5 DeviceOrientation Specification](
+ * http://dev.w3.org/geo/api/spec-source-orientation) for more details.
+ *
+ * Many new computers, and especially mobile phones
+ * and tablets, provide hardware support for device orientation. Web
+ * developers targetting mobile devices will be especially interested in this
+ * class.
+ *
+ * Device orientation data are relative to a common starting point. For mobile
+ * devices, the starting point is to lay your phone face up on a table with the
+ * top of the phone pointing north. This represents the zero state. All
+ * angles are then relative to this state. For computers, it is the same except
+ * the screen is open at 90 degrees.
+ *
+ * Device orientation is reported as three angles - `alpha`, `beta`, and
+ * `gamma` - relative to the starting position along the three planar axes X, Y
+ * and Z. The X axis runs from the left edge to the right edge through the
+ * middle of the device. Similarly, the Y axis runs from the bottom to the top
+ * of the device through the middle. The Z axis runs from the back to the front
+ * through the middle. In the starting position, the X axis points to the
+ * right, the Y axis points away from you and the Z axis points straight up
+ * from the device lying flat.
+ *
+ * The three angles representing the device orientation are relative to the
+ * three axes. `alpha` indicates how much the device has been rotated around the
+ * Z axis, which is commonly interpreted as the compass heading (see note
+ * below). `beta` indicates how much the device has been rotated around the X
+ * axis, or how much it is tilted from front to back.  `gamma` indicates how
+ * much the device has been rotated around the Y axis, or how much it is tilted
+ * from left to right.
+ *
+ * For most browsers, the `alpha` value returns the compass heading so if the
+ * device points north, it will be 0.  With Safari on iOS, the 0 value of
+ * `alpha` is calculated from when device orientation was first requested.
+ * ol.DeviceOrientation provides the `heading` property which normalizes this
+ * behavior across all browsers for you.
+ *
+ * It is important to note that the HTML 5 DeviceOrientation specification
+ * indicates that `alpha`, `beta` and `gamma` are in degrees while the
+ * equivalent properties in ol.DeviceOrientation are in radians for consistency
+ * with all other uses of angles throughout OpenLayers.
+ *
+ * @see http://dev.w3.org/geo/api/spec-source-orientation
+ *
  * @constructor
  * @extends {ol.Object}
  * @param {ol.DeviceOrientationOptions=} opt_options Options.
+ * @todo stability experimental
+ * @todo observable alpha {number} readonly the euler angle in radians of the
+ *       device from the standard X axis
+ * @todo observable beta {number} readonly the euler angle in radians of the
+ *       device from the planar Z axis
+ * @todo observable gamma {number} readonly the euler angle in radians of the
+ *       device from the planar X axis
+ * @todo observable heading {number} readonly the euler angle in radians of the
+ *       device from the planar Y axis
+ * @todo observable tracking {boolean} the status of tracking changes to alpha,
+ *       beta and gamma.  If true, changes are tracked and reported immediately.
  */
 ol.DeviceOrientation = function(opt_options) {
 
@@ -33,7 +88,7 @@ ol.DeviceOrientation = function(opt_options) {
 
   /**
    * @private
-   * @type {?number}
+   * @type {goog.events.Key}
    */
   this.listenerKey_ = null;
 
@@ -57,11 +112,12 @@ ol.DeviceOrientation.prototype.disposeInternal = function() {
 
 
 /**
- * Is supported.
+ * Indicates if DeviceOrientation is supported in the user's browser.
  * @const
  * @type {boolean}
+ * @todo stability experimental
  */
-ol.DeviceOrientation.SUPPORTED = 'DeviceOrientationEvent' in window;
+ol.DeviceOrientation.SUPPORTED = 'DeviceOrientationEvent' in goog.global;
 
 
 /**
@@ -77,6 +133,11 @@ ol.DeviceOrientation.prototype.orientationChange_ = function(browserEvent) {
     // event.absolute is undefined in iOS.
     if (goog.isBoolean(event.absolute) && event.absolute) {
       this.set(ol.DeviceOrientationProperty.HEADING, alpha);
+    } else if (goog.isDefAndNotNull(event.webkitCompassHeading) &&
+               goog.isDefAndNotNull(event.webkitCompassAccuracy) &&
+               event.webkitCompassAccuracy != -1) {
+      var heading = goog.math.toRadians(event.webkitCompassHeading);
+      this.set(ol.DeviceOrientationProperty.HEADING, heading);
     }
   }
   if (goog.isDefAndNotNull(event.beta)) {
@@ -91,7 +152,9 @@ ol.DeviceOrientation.prototype.orientationChange_ = function(browserEvent) {
 
 
 /**
- * @return {number|undefined} alpha.
+ * @return {number|undefined} The alpha value of the DeviceOrientation,
+ * in radians.
+ * @todo stability experimental
  */
 ol.DeviceOrientation.prototype.getAlpha = function() {
   return /** @type {number|undefined} */ (
@@ -104,7 +167,9 @@ goog.exportProperty(
 
 
 /**
- * @return {number|undefined} beta.
+ * @return {number|undefined} The beta value of the DeviceOrientation,
+ * in radians.
+ * @todo stability experimental
  */
 ol.DeviceOrientation.prototype.getBeta = function() {
   return /** @type {number|undefined} */ (
@@ -117,7 +182,9 @@ goog.exportProperty(
 
 
 /**
- * @return {number|undefined} gamma.
+ * @return {number|undefined} The gamma value of the DeviceOrientation,
+ * in radians.
+ * @todo stability experimental
  */
 ol.DeviceOrientation.prototype.getGamma = function() {
   return /** @type {number|undefined} */ (
@@ -130,7 +197,9 @@ goog.exportProperty(
 
 
 /**
- * @return {number|undefined} heading.
+ * @return {number|undefined} The heading of the device relative to
+ * north, in radians, normalizing for different browser behavior.
+ * @todo stability experimental
  */
 ol.DeviceOrientation.prototype.getHeading = function() {
   return /** @type {number|undefined} */ (
@@ -144,7 +213,8 @@ goog.exportProperty(
 
 /**
  * Are we tracking the device's orientation?
- * @return {boolean} tracking.
+ * @return {boolean} The current tracking state, true if tracking is on.
+ * @todo stability experimental
  */
 ol.DeviceOrientation.prototype.getTracking = function() {
   return /** @type {boolean} */ (
@@ -163,7 +233,7 @@ ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
   if (ol.DeviceOrientation.SUPPORTED) {
     var tracking = this.getTracking();
     if (tracking && goog.isNull(this.listenerKey_)) {
-      this.listenerKey_ = goog.events.listen(window, 'deviceorientation',
+      this.listenerKey_ = goog.events.listen(goog.global, 'deviceorientation',
           this.orientationChange_, false, this);
     } else if (!tracking && !goog.isNull(this.listenerKey_)) {
       goog.events.unlistenByKey(this.listenerKey_);
@@ -174,7 +244,9 @@ ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
 
 
 /**
- * @param {boolean} tracking Enable or disable tracking.
+ * Enable or disable tracking of DeviceOrientation events.
+ * @param {boolean} tracking True to enable and false to disable tracking.
+ * @todo stability experimental
  */
 ol.DeviceOrientation.prototype.setTracking = function(tracking) {
   this.set(ol.DeviceOrientationProperty.TRACKING, tracking);

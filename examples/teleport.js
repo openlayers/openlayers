@@ -1,13 +1,13 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
 
 var map = new ol.Map({
   layers: [
-    new ol.layer.TileLayer({
+    new ol.layer.Tile({
       source: new ol.source.OSM()
     })
   ],
@@ -23,6 +23,6 @@ map.setTarget('map1');
 var teleportButton = document.getElementById('teleport');
 
 teleportButton.addEventListener('click', function() {
-  var target = map.getTarget().id === 'map1' ? 'map2' : 'map1';
+  var target = map.getTarget() === 'map1' ? 'map2' : 'map1';
   map.setTarget(target);
 }, false);

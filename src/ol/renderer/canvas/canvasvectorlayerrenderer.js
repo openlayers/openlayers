@@ -1,9 +1,9 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
-goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Pixel');
@@ -14,8 +14,10 @@ goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
+goog.require('ol.layer.VectorEventType');
+goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.renderer.canvas.Layer');
-goog.require('ol.renderer.canvas.VectorRenderer');
+goog.require('ol.renderer.canvas.Vector');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -86,8 +88,13 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    */
   this.tileCache_ = new ol.TileCache(
       ol.renderer.canvas.VectorLayer.TILECACHE_SIZE);
-  goog.events.listen(layer, goog.events.EventType.CHANGE,
-      this.handleLayerChange_, false, this);
+  goog.events.listen(layer, [
+    ol.layer.VectorEventType.ADD,
+    ol.layer.VectorEventType.CHANGE,
+    ol.layer.VectorEventType.REMOVE,
+    ol.layer.VectorEventType.INTENTCHANGE
+  ],
+  this.handleLayerChange_, false, this);
 
   /**
    * @private
@@ -96,19 +103,11 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
   this.tileArchetype_ = null;
 
   /**
-   * Geometry types in rendering order.
-   * TODO: these will go away shortly (in favor of one call per symbolizer type)
+   * The maximum symbol size ever rendered for this layer (in pixels).
    * @private
-   * @type {Array.<ol.geom.GeometryType>}
+   * @type {number}
    */
-  this.geometryTypes_ = [
-    ol.geom.GeometryType.POINT,
-    ol.geom.GeometryType.MULTIPOINT,
-    ol.geom.GeometryType.LINESTRING,
-    ol.geom.GeometryType.MULTILINESTRING,
-    ol.geom.GeometryType.POLYGON,
-    ol.geom.GeometryType.MULTIPOLYGON
-  ];
+  this.maxSymbolPixelDim_ = 0;
 
   /**
    * @private
@@ -172,14 +171,24 @@ goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 /**
  * Get rid cached tiles.  If the optional extent is provided, only tiles that
  * intersect that extent will be removed.
- * @param {ol.Extent=} opt_extent extent Expire tiles within this extent only.
+ * @param {Array.<ol.Extent>} extents extent Expire tiles within the provided
+ *     extents.  If the array is empty, all tiles will be expired.
  * @private
  */
-ol.renderer.canvas.VectorLayer.prototype.expireTiles_ = function(opt_extent) {
+ol.renderer.canvas.VectorLayer.prototype.expireTiles_ = function(extents) {
+  // buffer by max symbolizer size at rendered resolution
+  var resolution = this.renderedResolution_;
+  goog.asserts.assertNumber(resolution);
   var tileCache = this.tileCache_;
-  if (goog.isDef(opt_extent)) {
-    var tileRange = this.tileGrid_.getTileRangeForExtentAndZ(opt_extent, 0);
-    tileCache.pruneTileRange(tileRange);
+  var length = extents.length;
+  var extent;
+  if (length > 0) {
+    for (var i = 0; i < length; ++i) {
+      extent = ol.extent.clone(extents[i]);
+      ol.extent.buffer(extent, this.maxSymbolPixelDim_ * resolution / 2);
+      tileCache.pruneTileRange(
+          this.tileGrid_.getTileRangeForExtentAndZ(extent, 0));
+    }
   } else {
     tileCache.clear();
   }
@@ -246,6 +255,7 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
     var cachedTile = this.tileCache_.get(key);
     var symbolSizes = cachedTile[1];
     var maxSymbolSize = cachedTile[2];
+    var symbolOffsets = cachedTile[3];
     var halfMaxWidth = maxSymbolSize[0] / 2;
     var halfMaxHeight = maxSymbolSize[1] / 2;
     var locationMin = [location[0] - halfMaxWidth, location[1] - halfMaxHeight];
@@ -261,22 +271,31 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
       return;
     }
 
-    var candidate, geom, type, symbolBounds, symbolSize, halfWidth, halfHeight,
-        coordinates, j;
+    var candidate, geom, type, symbolBounds, symbolSize, symbolOffset,
+        halfWidth, halfHeight, uid, coordinates, j;
     for (var id in candidates) {
       candidate = candidates[id];
+      if (candidate.getRenderIntent() ==
+          ol.layer.VectorLayerRenderIntent.HIDDEN) {
+        continue;
+      }
       geom = candidate.getGeometry();
       type = geom.getType();
       if (type === ol.geom.GeometryType.POINT ||
           type === ol.geom.GeometryType.MULTIPOINT) {
         // For points, check if the pixel coordinate is inside the candidate's
         // symbol
-        symbolSize = symbolSizes[goog.getUid(candidate)];
+        uid = goog.getUid(candidate);
+        symbolSize = symbolSizes[uid];
+        symbolOffset = symbolOffsets[uid];
         halfWidth = symbolSize[0] / 2;
         halfHeight = symbolSize[1] / 2;
-        symbolBounds = ol.extent.boundingExtent(
-            [[location[0] - halfWidth, location[1] - halfHeight],
-              [location[0] + halfWidth, location[1] + halfHeight]]);
+        symbolBounds = ol.extent.boundingExtent([
+          [location[0] - halfWidth - symbolOffset[0],
+            location[1] - halfHeight + symbolOffset[1]],
+          [location[0] + halfWidth - symbolOffset[0],
+            location[1] + halfHeight + symbolOffset[1]]
+        ]);
         coordinates = geom.getCoordinates();
         if (!goog.isArray(coordinates[0])) {
           coordinates = [coordinates];
@@ -307,11 +326,13 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
 
 
 /**
- * @param {ol.layer.VectorLayerEventObject} event Layer change event.
+ * @param {ol.layer.VectorEvent} event Vector layer event.
  * @private
  */
 ol.renderer.canvas.VectorLayer.prototype.handleLayerChange_ = function(event) {
-  this.expireTiles_(event.extent);
+  if (goog.isDef(this.renderedResolution_)) {
+    this.expireTiles_(event.extents);
+  }
   this.requestMapRenderFrame_();
 };
 
@@ -435,7 +456,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   sketchCanvas.width = sketchWidth;
   sketchCanvas.height = sketchHeight;
 
-  var sketchCanvasRenderer = new ol.renderer.canvas.VectorRenderer(
+  var sketchCanvasRenderer = new ol.renderer.canvas.Vector(
       sketchCanvas, sketchTransform, this.requestMapRenderFrame_);
 
   // clear/resize final canvas
@@ -449,14 +470,10 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var tilesOnSketchCanvas = {};
   // TODO make gutter configurable?
   var tileGutter = 15 * tileResolution;
-  var tile, tileCoord, key, x, y;
-  // render features by geometry type
-  var types = this.geometryTypes_,
-      numTypes = types.length,
-      deferred = false,
-      dirty = false,
-      i, type, tileExtent,
-      groups, group, j, numGroups, featuresObject, tileHasFeatures;
+  var tile, tileCoord, key, x, y, i, type;
+  var deferred = false;
+  var dirty = false;
+  var tileExtent, groups, group, j, numGroups, featuresObject, tileHasFeatures;
   fetchTileData:
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
@@ -467,25 +484,19 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       } else if (idle) {
         tileExtent = tileGrid.getTileCoordExtent(tileCoord);
         tileExtent[0] -= tileGutter;
-        tileExtent[1] += tileGutter;
-        tileExtent[2] -= tileGutter;
+        tileExtent[2] += tileGutter;
+        tileExtent[1] -= tileGutter;
         tileExtent[3] += tileGutter;
         tileHasFeatures = false;
-        for (i = 0; i < numTypes; ++i) {
-          type = types[i];
-          if (!goog.isDef(featuresToRender[type])) {
-            featuresToRender[type] = {};
-          }
-          featuresObject = layer.getFeaturesObjectForExtent(tileExtent,
-              projection, type, this.requestMapRenderFrame_);
-          if (goog.isNull(featuresObject)) {
-            deferred = true;
-            break fetchTileData;
-          }
-          tileHasFeatures = tileHasFeatures ||
-              !goog.object.isEmpty(featuresObject);
-          goog.object.extend(featuresToRender[type], featuresObject);
+        featuresObject = layer.getFeaturesObjectForExtent(tileExtent,
+            projection, this.requestMapRenderFrame_);
+        if (goog.isNull(featuresObject)) {
+          deferred = true;
+          break fetchTileData;
         }
+        tileHasFeatures = tileHasFeatures ||
+            !goog.object.isEmpty(featuresObject);
+        goog.object.extend(featuresToRender, featuresObject);
         if (tileHasFeatures) {
           tilesOnSketchCanvas[key] = tileCoord;
         }
@@ -496,18 +507,15 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   }
   this.dirty_ = dirty;
 
-  renderByGeometryType:
-  for (type in featuresToRender) {
-    groups = layer.groupFeaturesBySymbolizerLiteral(featuresToRender[type]);
-    numGroups = groups.length;
-    for (j = 0; j < numGroups; ++j) {
-      group = groups[j];
-      deferred = sketchCanvasRenderer.renderFeaturesByGeometryType(
-          /** @type {ol.geom.GeometryType} */ (type),
-          group[0], group[1], group[2]);
-      if (deferred) {
-        break renderByGeometryType;
-      }
+  groups = layer.groupFeaturesBySymbolizerLiteral(featuresToRender,
+      tileResolution);
+  numGroups = groups.length;
+  for (j = 0; j < numGroups; ++j) {
+    group = groups[j];
+    deferred = sketchCanvasRenderer.renderFeatures(group[0], group[1],
+        group[2]);
+    if (deferred) {
+      break;
     }
   }
 
@@ -516,7 +524,13 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   }
 
   var symbolSizes = sketchCanvasRenderer.getSymbolSizes(),
-      maxSymbolSize = sketchCanvasRenderer.getMaxSymbolSize();
+      maxSymbolSize = sketchCanvasRenderer.getMaxSymbolSize(),
+      symbolOffsets = sketchCanvasRenderer.getSymbolOffsets();
+
+  // keep track of maximum pixel size for symbols rendered on this layer
+  this.maxSymbolPixelDim_ = Math.max(maxSymbolSize[0] / tileResolution,
+      maxSymbolSize[1] / tileResolution);
+
   for (key in tilesToRender) {
     tileCoord = tilesToRender[key];
     if (this.tileCache_.containsKey(key)) {
@@ -528,7 +542,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
           (tileRange.minX - tileCoord.x) * tileSize[0],
           (tileCoord.y - tileRange.maxY) * tileSize[1]);
       // TODO: Create an ol.VectorTile subclass of ol.Tile
-      this.tileCache_.set(key, [tile, symbolSizes, maxSymbolSize]);
+      this.tileCache_.set(key,
+          [tile, symbolSizes, maxSymbolSize, symbolOffsets]);
     }
     finalContext.drawImage(tile,
         tileSize[0] * (tileCoord.x - tileRange.minX),

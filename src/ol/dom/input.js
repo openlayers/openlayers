@@ -17,7 +17,7 @@ ol.dom.InputProperty = {
 
 
 /**
- * Helper class for binding HTML input to an ol.Object
+ * Helper class for binding HTML input to an {@link ol.Object}.
  *
  * Example:
  *
@@ -28,6 +28,11 @@ ol.dom.InputProperty = {
  * @constructor
  * @extends {ol.Object}
  * @param {Element} target Target element.
+ * @todo stability experimental
+ * @todo observable value {string} the value of the Input
+ * @todo observable valueAsNumber {number} the value of the Input, converted to
+ *       a number if possible
+ * @todo observable checked {boolean} the checked state of the Input
  */
 ol.dom.Input = function(target) {
   goog.base(this);
@@ -54,6 +59,7 @@ goog.inherits(ol.dom.Input, ol.Object);
 /**
  * If the input is a checkbox, return whether or not the checbox is checked.
  * @return {boolean|undefined} checked.
+ * @todo stability experimental
  */
 ol.dom.Input.prototype.getChecked = function() {
   return /** @type {boolean} */ (this.get(ol.dom.InputProperty.CHECKED));
@@ -67,6 +73,7 @@ goog.exportProperty(
 /**
  * Get the value of the input.
  * @return {string|undefined} input value.
+ * @todo stability experimental
  */
 ol.dom.Input.prototype.getValue = function() {
   return /** @type {string} */ (this.get(ol.dom.InputProperty.VALUE));
@@ -80,6 +87,7 @@ goog.exportProperty(
 /**
  * Sets the value of the input.
  * @param {string} value Value.
+ * @todo stability experimental
  */
 ol.dom.Input.prototype.setValue = function(value) {
   this.set(ol.dom.InputProperty.VALUE, value);
@@ -93,6 +101,7 @@ goog.exportProperty(
 /**
  * Set whether or not a checkbox is checked.
  * @param {boolean} checked Checked.
+ * @todo stability experimental
  */
 ol.dom.Input.prototype.setChecked = function(checked) {
   this.set(ol.dom.InputProperty.CHECKED, checked);
@@ -119,7 +128,7 @@ ol.dom.Input.prototype.handleInputChanged_ = function() {
  * @private
  */
 ol.dom.Input.prototype.handleCheckedChanged_ = function() {
-  this.target_.checked = this.getChecked() ? 'checked' : undefined;
+  this.target_.checked = this.getChecked();
 };
 
 

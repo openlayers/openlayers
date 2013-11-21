@@ -9,6 +9,7 @@ goog.require('ol.source.XYZ');
  * @constructor
  * @extends {ol.source.XYZ}
  * @param {ol.source.OSMOptions=} opt_options Open Street Map options.
+ * @todo stability experimental
  */
 ol.source.OSM = function(opt_options) {
 
@@ -17,13 +18,9 @@ ol.source.OSM = function(opt_options) {
   var attributions;
   if (goog.isDef(options.attributions)) {
     attributions = options.attributions;
-  } else if (goog.isDef(options.attribution)) {
-    attributions = [options.attribution];
   } else {
     attributions = ol.source.OSM.ATTRIBUTIONS;
   }
-
-  var maxZoom = goog.isDef(options.maxZoom) ? options.maxZoom : 18;
 
   var url = goog.isDef(options.url) ?
       options.url : 'http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -32,7 +29,8 @@ ol.source.OSM = function(opt_options) {
     attributions: attributions,
     crossOrigin: 'anonymous',
     opaque: true,
-    maxZoom: maxZoom,
+    maxZoom: options.maxZoom,
+    tileLoadFunction: options.tileLoadFunction,
     url: url
   });
 
@@ -44,21 +42,24 @@ goog.inherits(ol.source.OSM, ol.source.XYZ);
  * @const
  * @type {ol.Attribution}
  */
-ol.source.OSM.DATA_ATTRIBUTION = new ol.Attribution(
-    'Data &copy; <a href="http://www.openstreetmap.org/">OpenStreetMap</a> ' +
-    'contributors, ' +
-    '<a href="http://www.openstreetmap.org/copyright">ODbL</a>');
+ol.source.OSM.DATA_ATTRIBUTION = new ol.Attribution({
+  html: 'Data &copy; ' +
+      '<a href="http://www.openstreetmap.org/">OpenStreetMap</a> ' +
+      'contributors, ' +
+      '<a href="http://www.openstreetmap.org/copyright">ODbL</a>'
+});
 
 
 /**
  * @const
  * @type {ol.Attribution}
  */
-ol.source.OSM.TILE_ATTRIBUTION = new ol.Attribution(
-    'Tiles &copy; ' +
-    '<a href="http://www.openstreetmap.org/">OpenStreetMap</a> ' +
-    'contributors, ' +
-    '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>');
+ol.source.OSM.TILE_ATTRIBUTION = new ol.Attribution({
+  html: 'Tiles &copy; ' +
+      '<a href="http://www.openstreetmap.org/">OpenStreetMap</a> ' +
+      'contributors, ' +
+      '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>'
+});
 
 
 /**

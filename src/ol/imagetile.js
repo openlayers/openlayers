@@ -7,6 +7,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
+goog.require('ol.TileLoadFunctionType');
 goog.require('ol.TileState');
 
 
@@ -18,8 +19,11 @@ goog.require('ol.TileState');
  * @param {ol.TileState} state State.
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
+ * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
+ * @todo stability experimental
  */
-ol.ImageTile = function(tileCoord, state, src, crossOrigin) {
+ol.ImageTile =
+    function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
 
   goog.base(this, tileCoord, state);
 
@@ -52,12 +56,19 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin) {
    */
   this.imageListenerKeys_ = null;
 
+  /**
+   * @private
+   * @type {ol.TileLoadFunctionType}
+   */
+  this.tileLoadFunction_ = tileLoadFunction;
+
 };
 goog.inherits(ol.ImageTile, ol.Tile);
 
 
 /**
  * @inheritDoc
+ * @todo stability experimental
  */
 ol.ImageTile.prototype.getImage = function(opt_context) {
   if (goog.isDef(opt_context)) {
@@ -127,7 +138,7 @@ ol.ImageTile.prototype.load = function() {
       goog.events.listenOnce(this.image_, goog.events.EventType.LOAD,
           this.handleImageLoad_, false, this)
     ];
-    this.image_.src = this.src_;
+    this.tileLoadFunction_(this, this.src_);
   }
 };
 

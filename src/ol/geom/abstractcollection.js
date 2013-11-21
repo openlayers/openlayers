@@ -1,6 +1,9 @@
 goog.provide('ol.geom.AbstractCollection');
 
+goog.require('goog.events.EventType');
+goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryEvent');
 
 
 
@@ -14,12 +17,8 @@ ol.geom.AbstractCollection = function() {
   goog.base(this);
 
   /**
-   * @type {number}
-   */
-  this.dimension;
-
-  /**
    * @type {Array.<ol.geom.Geometry>}
+   * @protected
    */
   this.components = null;
 
@@ -38,24 +37,22 @@ goog.inherits(ol.geom.AbstractCollection, ol.geom.Geometry);
  */
 ol.geom.AbstractCollection.prototype.getBounds = function() {
   if (goog.isNull(this.bounds)) {
-    var minX,
-        minY = minX = Infinity,
-        maxX,
-        maxY = maxX = -Infinity,
-        components = this.components,
-        len = components.length,
-        bounds, i;
-
-    for (i = 0; i < len; ++i) {
-      bounds = components[i].getBounds();
-      minX = Math.min(bounds[0], minX);
-      maxX = Math.max(bounds[1], maxX);
-      minY = Math.min(bounds[2], minY);
-      maxY = Math.max(bounds[3], maxY);
+    var bounds = ol.extent.createEmpty();
+    var components = this.components;
+    for (var i = 0, ii = components.length; i < ii; ++i) {
+      ol.extent.extend(bounds, components[i].getBounds());
     }
-    this.bounds = [minX, maxX, minY, maxY];
+    this.bounds = bounds;
   }
   return this.bounds;
+};
+
+
+/**
+ * @return {Array.<ol.geom.Geometry>} Components.
+ */
+ol.geom.AbstractCollection.prototype.getComponents = function() {
+  return this.components;
 };
 
 
@@ -76,3 +73,35 @@ ol.geom.AbstractCollection.prototype.getCoordinates = function() {
  * @inheritDoc
  */
 ol.geom.AbstractCollection.prototype.getType = goog.abstractMethod;
+
+
+/**
+ * Listener for component change events.
+ * @param {ol.geom.GeometryEvent} evt Geometry event.
+ * @protected
+ */
+ol.geom.AbstractCollection.prototype.handleComponentChange = function(evt) {
+  this.bounds = null;
+  var oldExtent = ol.extent.createEmpty();
+  var components = this.components;
+  for (var i = components.length - 1; i >= 0; --i) {
+    var component = components[i];
+    ol.extent.extend(oldExtent,
+        component === evt.target && !goog.isNull(evt.oldExtent) ?
+            evt.oldExtent : component.getBounds());
+  }
+  this.dispatchEvent(new ol.geom.GeometryEvent(goog.events.EventType.CHANGE,
+      this, oldExtent));
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.AbstractCollection.prototype.transform = function(transform) {
+  var components = this.components;
+  for (var i = 0, ii = components.length; i < ii; ++i) {
+    components[i].transform(transform);
+  }
+  this.bounds = null;
+};

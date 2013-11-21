@@ -1,6 +1,0 @@
-@exportSymbol ol.interaction.condition.altKeyOnly
-@exportSymbol ol.interaction.condition.altShiftKeysOnly
-@exportSymbol ol.interaction.condition.always
-@exportSymbol ol.interaction.condition.noModifierKeys
-@exportSymbol ol.interaction.condition.platformModifierKeyOnly
-@exportSymbol ol.interaction.condition.shiftKeyOnly
