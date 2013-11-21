@@ -12,8 +12,6 @@ goog.require('ol.extent');
 goog.require('ol.geom.flat');
 goog.require('ol.render.IRender');
 goog.require('ol.render.IReplayGroup');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
 goog.require('ol.vec.Mat4');
 
 
@@ -152,9 +150,8 @@ ol.render.canvas.Replay.prototype.draw = function(context, transform) {
       }
       ++i;
     } else if (type == ol.render.canvas.Instruction.SET_FILL_STYLE) {
-      goog.asserts.assert(goog.isObject(instruction[1]));
-      var fillStyle = /** @type {ol.style.Fill} */ (instruction[1]);
-      context.fillStyle = ol.color.asString(fillStyle.color);
+      goog.asserts.assert(goog.isString(instruction[1]));
+      context.fillStyle = /** @type {string} */ (instruction[1]);
       ++i;
     } else if (type == ol.render.canvas.Instruction.SET_STROKE_STYLE) {
       goog.asserts.assert(goog.isString(instruction[1]));
@@ -491,16 +488,20 @@ ol.render.canvas.PolygonReplay = function() {
 
   /**
    * @private
-   * @type {{currentFillStyle: ol.style.Fill,
-   *         currentStrokeStyle: ol.style.Stroke,
-   *         fillStyle: ol.style.Fill,
-   *         strokeStyle: ol.style.Stroke}|null}
+   * @type {{currentFillColor: (string|undefined),
+   *         currentStrokeStyle: (string|undefined),
+   *         currentLineWidth: (number|undefined),
+   *         fillStyle: (string|undefined),
+   *         strokeStyle: (string|undefined),
+   *         lineWidth: (number|undefined)}|null}
    */
   this.state_ = {
-    currentFillStyle: null,
-    currentStrokeStyle: null,
-    fillStyle: null,
-    strokeStyle: null
+    currentFillColor: undefined,
+    currentStrokeStyle: undefined,
+    currentLineWidth: undefined,
+    fillStyle: undefined,
+    strokeStyle: undefined,
+    lineWidth: undefined
   };
 
 };
@@ -531,10 +532,11 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
   }
   // FIXME is it quicker to fill and stroke each polygon individually,
   // FIXME or all polygons together?
-  if (goog.isDefAndNotNull(state.fillStyle)) {
+  if (goog.isDef(state.fillStyle)) {
     this.instructions.push([ol.render.canvas.Instruction.FILL]);
   }
-  if (goog.isDefAndNotNull(state.strokeStyle)) {
+  if (goog.isDef(state.strokeStyle)) {
+    goog.asserts.assert(goog.isDef(state.lineWidth));
     this.instructions.push([ol.render.canvas.Instruction.STROKE]);
   }
   return offset;
@@ -548,9 +550,13 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
     function(polygonGeometry) {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
-  if (!goog.isDefAndNotNull(state.fillStyle) &&
-      !goog.isDefAndNotNull(state.strokeStyle)) {
+  var fillStyle = state.fillStyle;
+  var strokeStyle = state.strokeStyle;
+  if (!goog.isDef(fillStyle) && !goog.isDef(strokeStyle)) {
     return;
+  }
+  if (goog.isDef(strokeStyle)) {
+    goog.asserts.assert(goog.isDef(state.lineWidth));
   }
   ol.extent.extend(this.extent_, polygonGeometry.getExtent());
   this.setFillStrokeStyles_();
@@ -568,9 +574,13 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
     function(multiPolygonGeometry) {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
-  if (!goog.isDefAndNotNull(state.fillStyle) &&
-      !goog.isDefAndNotNull(state.strokeStyle)) {
+  var fillStyle = state.fillStyle;
+  var strokeStyle = state.strokeStyle;
+  if (!goog.isDef(fillStyle) && !goog.isDef(strokeStyle)) {
     return;
+  }
+  if (goog.isDef(strokeStyle)) {
+    goog.asserts.assert(goog.isDef(state.lineWidth));
   }
   ol.extent.extend(this.extent_, multiPolygonGeometry.getExtent());
   this.setFillStrokeStyles_();
@@ -601,8 +611,17 @@ ol.render.canvas.PolygonReplay.prototype.finish = function() {
 ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
   goog.asserts.assert(!goog.isNull(this.state_));
-  this.state_.fillStyle = fillStyle;
-  this.state_.strokeStyle = strokeStyle;
+  goog.asserts.assert(!goog.isNull(fillStyle) || !goog.isNull(strokeStyle));
+  if (!goog.isNull(fillStyle)) {
+    goog.asserts.assert(goog.isDefAndNotNull(fillStyle.color));
+    this.state_.fillStyle = ol.color.asString(fillStyle.color);
+  }
+  if (!goog.isNull(strokeStyle)) {
+    goog.asserts.assert(goog.isDefAndNotNull(strokeStyle.color));
+    goog.asserts.assert(goog.isDef(strokeStyle.width));
+    this.state_.strokeStyle = ol.color.asString(strokeStyle.color);
+    this.state_.lineWidth = strokeStyle.width;
+  }
 };
 
 
@@ -611,17 +630,24 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
  */
 ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
   var state = this.state_;
-  if (goog.isDefAndNotNull(state.fillStyle) &&
-      !ol.style.Fill.equals(state.currentFillStyle, state.fillStyle)) {
+  var fillStyle = state.fillStyle;
+  var strokeStyle = state.strokeStyle;
+  var lineWidth = state.lineWidth;
+  if (goog.isDef(fillStyle) && state.currentFillColor != fillStyle) {
     this.instructions.push(
-        [ol.render.canvas.Instruction.SET_FILL_STYLE, state.fillStyle]);
-    state.currentFillStyle = state.fillStyle;
+        [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle]);
+    state.currentFillColor = state.fillStyle;
   }
-  if (goog.isDefAndNotNull(state.strokeStyle) &&
-      !ol.style.Stroke.equals(state.currentStrokeStyle, state.strokeStyle)) {
-    this.instructions.push(
-        [ol.render.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle]);
-    state.currentStrokeStyle = state.strokeStyle;
+  if (goog.isDef(strokeStyle)) {
+    goog.asserts.assert(goog.isDef(lineWidth));
+    if (state.currentStrokeStyle != strokeStyle ||
+        state.currentLineWidth != lineWidth) {
+      this.instructions.push(
+          [ol.render.canvas.Instruction.SET_STROKE_STYLE,
+           strokeStyle, lineWidth]);
+      state.currentStrokeStyle = strokeStyle;
+      state.currentLineWidth = lineWidth;
+    }
   }
 };
 
