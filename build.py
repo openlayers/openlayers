@@ -153,13 +153,16 @@ PROJ4JS_ZIP_MD5 = '17caad64cf6ebc6e6fe62f292b134897'
 
 
 def report_sizes(t):
-    t.info('uncompressed: %d bytes', os.stat(t.name).st_size)
     stringio = StringIO()
     gzipfile = gzip.GzipFile(t.name, 'w', 9, stringio)
     with open(t.name) as f:
         shutil.copyfileobj(f, gzipfile)
     gzipfile.close()
-    t.info('  compressed: %d bytes', len(stringio.getvalue()))
+    rawsize = os.stat(t.name).st_size
+    gzipsize = len(stringio.getvalue())
+    savings = '{:.2%}'.format((rawsize - gzipsize)/float(rawsize))
+    t.info('uncompressed: %8d bytes', rawsize)
+    t.info('  compressed: %8d bytes, (saved %s)', gzipsize, savings)
 
 
 virtual('default', 'build')
