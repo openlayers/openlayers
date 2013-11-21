@@ -1,6 +1,7 @@
 goog.provide('ol.Transaction');
 
 goog.require('goog.events');
+goog.require('goog.object');
 goog.require('ol.source.VectorEventType');
 
 
@@ -13,27 +14,24 @@ ol.Transaction = function() {
 
   /**
    * Lookup for newly created features.
-   * @type {Object.<number, ol.Feature>}
+   * @type {Object.<string, ol.Feature>}
    * @private
    */
   this.inserts_ = {};
 
-
   /**
    * Lookup for modified features.
-   * @type {Object.<number, ol.Feature>}
+   * @type {Object.<string, ol.Feature>}
    * @private
    */
   this.updates_ = {};
 
-
   /**
    * Lookup for deleted features.
-   * @type {Object.<number, ol.Feature>}
+   * @type {Object.<string, ol.Feature>}
    * @private
    */
   this.deletes_ = {};
-
 
   /**
    * The vector source associated with this transaction.
@@ -41,6 +39,13 @@ ol.Transaction = function() {
    * @private
    */
   this.source_ = null;
+
+  /**
+   * Flag to indicate that a rollback is underway.
+   * @type {boolean}
+   * @private
+   */
+  this.rollingBack_ = false;
 
 };
 
@@ -56,8 +61,44 @@ ol.Transaction.prototype.reset = function() {
 
 
 /**
+ * Revert all changes tracked by this transaction.
+ */
+ol.Transaction.prototype.rollback = function() {
+  var source = this.source_,
+      id, feature, features;
+
+  if (goog.isNull(source)) {
+    return;
+  }
+
+  // unload all inserted features
+  source.unloadFeatures(goog.object.getValues(this.inserts_));
+
+  // temporarily ignore featurechange events
+  this.rollingBack_ = true;
+
+  // reset all modified features
+  for (id in this.updates_) {
+    this.updates_[id].restoreOriginal();
+  }
+
+  // reload all deleted features
+  features = [];
+  for (id in this.deletes_) {
+    feature = this.deletes_[id];
+    feature.restoreOriginal();
+    features.push(feature);
+    source.loadFeatures(features);
+  }
+
+  this.reset();
+  this.rollingBack_ = false;
+};
+
+
+/**
  * Get a lookup of all inserted features.
- * @return {Object.<number, ol.Feature>} Lookup object keyed by internal id.
+ * @return {Object.<string, ol.Feature>} Lookup object keyed by internal id.
  */
 ol.Transaction.prototype.getInserts = function() {
   return this.inserts_;
@@ -66,7 +107,7 @@ ol.Transaction.prototype.getInserts = function() {
 
 /**
  * Get a lookup of all updated features.
- * @return {Object.<number, ol.Feature>} Lookup object keyed by internal id.
+ * @return {Object.<string, ol.Feature>} Lookup object keyed by internal id.
  */
 ol.Transaction.prototype.getUpdates = function() {
   return this.updates_;
@@ -75,7 +116,7 @@ ol.Transaction.prototype.getUpdates = function() {
 
 /**
  * Get a lookup of all deleted features.
- * @return {Object.<number, ol.Feature>} Lookup object keyed by internal id.
+ * @return {Object.<string, ol.Feature>} Lookup object keyed by internal id.
  */
 ol.Transaction.prototype.getDeletes = function() {
   return this.deletes_;
@@ -121,7 +162,7 @@ ol.Transaction.prototype.handleFeatureAdd_ = function(evt) {
   var feature, id;
   for (var i = 0, len = features.length; i < len; ++i) {
     feature = features[i];
-    id = goog.getUid(feature);
+    id = goog.getUid(feature).toString();
     this.inserts_[id] = feature;
     delete this.updates_[id];
     delete this.deletes_[id];
@@ -135,14 +176,16 @@ ol.Transaction.prototype.handleFeatureAdd_ = function(evt) {
  * @private
  */
 ol.Transaction.prototype.handleFeatureChange_ = function(evt) {
-  var features = evt.features;
-  var feature, id;
-  for (var i = 0, len = features.length; i < len; ++i) {
-    feature = features[i];
-    id = goog.getUid(feature);
-    if (!this.inserts_.hasOwnProperty(id)) {
-      this.updates_[id] = feature;
-      delete this.deletes_[id];
+  if (!this.rollingBack_) {
+    var features = evt.features;
+    var feature, id;
+    for (var i = 0, len = features.length; i < len; ++i) {
+      feature = features[i];
+      id = goog.getUid(feature).toString();
+      if (!this.inserts_.hasOwnProperty(id)) {
+        this.updates_[id] = feature;
+        delete this.deletes_[id];
+      }
     }
   }
 };
@@ -158,7 +201,7 @@ ol.Transaction.prototype.handleFeatureRemove_ = function(evt) {
   var feature, id;
   for (var i = 0, len = features.length; i < len; ++i) {
     feature = features[i];
-    id = goog.getUid(feature);
+    id = goog.getUid(feature).toString();
     if (this.inserts_.hasOwnProperty(id)) {
       delete this.inserts_[id];
     } else {
