@@ -22,13 +22,11 @@ var map = new ol.Map({
     zoom: 2
   })
 });
-map.beforeRender(function(map, frameState) {
-  frameState.animate = true;
-  return true;
-});
+
 var imageStyle = ol.shape.renderCircle(5,
     new ol.style.Fill({color: 'yellow'}),
     new ol.style.Stroke({color: 'red', width: 1}));
+
 var n = 200;
 var omegaTheta = 30000; // Rotation period in ms
 var R = 7e6;
@@ -48,5 +46,6 @@ map.on('postcompose', function(event) {
   }
   render.setImageStyle(imageStyle);
   render.drawMultiPointGeometry(new ol.geom.MultiPoint(coordinates));
+  map.requestRenderFrame();
 });
 map.requestRenderFrame();
