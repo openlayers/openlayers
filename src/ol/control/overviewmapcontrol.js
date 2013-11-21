@@ -166,12 +166,6 @@ ol.control.OverviewMap = function(opt_options) {
     goog.events.EventType.TOUCHEND,
     goog.events.EventType.CLICK
   ], goog.partial(ol.control.OverviewMap.prototype.toggle_), false, this);
-
-  goog.dom.appendChild(options.map.getOverlayContainer(), this.button_);
-
-  if (!this.maximized_) {
-    this.minimize_();
-  }
 };
 goog.inherits(ol.control.OverviewMap, ol.control.Control);
 
@@ -182,6 +176,13 @@ goog.inherits(ol.control.OverviewMap, ol.control.Control);
 ol.control.OverviewMap.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
   if (!goog.isNull(map)) {
+    // add button to main map
+    goog.dom.appendChild(map.getOverlayContainer(), this.button_);
+
+    if (!this.maximized_) {
+      this.minimize_();
+    }
+
     if (this.ovmap_.getLayers().getLength() == 0) {
       if (map.getLayers().getLength() > 0) {
         this.ovmap_.bindTo(ol.MapProperty.LAYERS, map);
