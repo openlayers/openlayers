@@ -41,15 +41,14 @@ var createMap = function(divId, rotate) {
 };
 
 var map1 = createMap('map1', false);
-var overview1 = new ol.control.OverviewMap({
-  map: map1
-});
+var overview1 = new ol.control.OverviewMap();
+map1.addControl(overview1);
 
 var map2 = createMap('map2', false);
 var overview2 = new ol.control.OverviewMap({
-  map: map2,
   maximized: true
 });
+map2.addControl(overview2);
 
 var map3 = createMap('map3', true);
 var overview3 = new ol.control.OverviewMap({
@@ -58,11 +57,11 @@ var overview3 = new ol.control.OverviewMap({
       source: new ol.source.MapQuestOpenAerial()
     })
   ],
-  map: map3,
   maximized: true,
   maxRatio: 0.5,
   minRatio: 0.025
 });
+map3.addControl(overview3);
 
 var rotateClockwise225 = document.getElementById('rotate-cw-22.5d');
 rotateClockwise225.addEventListener('click', function() {
