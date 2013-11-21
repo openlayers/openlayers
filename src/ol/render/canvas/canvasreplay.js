@@ -1,5 +1,6 @@
 // FIXME decide default snapToPixel behaviour
 // FIXME add option to apply snapToPixel to all coordinates?
+// FIXME can eliminate empty set styles and strokes (when all geoms skipped)
 
 goog.provide('ol.render.canvas.ReplayGroup');
 
