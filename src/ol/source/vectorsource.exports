@@ -1,2 +1,3 @@
 @exportClass ol.source.Vector ol.source.VectorOptions
 @exportProperty ol.source.Vector.prototype.addFeature
+@exportProperty ol.source.Vector.prototype.getAllFeaturesAtCoordinate
