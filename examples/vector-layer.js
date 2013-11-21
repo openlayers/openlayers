@@ -86,13 +86,13 @@ map.on('postcompose', function(evt) {
   if (highlight) {
     var render = evt.getRender();
     render.drawFeature(highlight, {
-      stroke: {
+      stroke: new ol.style.Stroke({
         color: '#f00',
         width: 1
-      },
-      fill: {
+      }),
+      fill: new ol.style.Fill({
         color: 'rgba(255,0,0,0.1)'
-      }
+      })
     });
   }
 });
