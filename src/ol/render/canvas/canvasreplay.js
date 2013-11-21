@@ -19,14 +19,15 @@ goog.require('ol.vec.Mat4');
  * @enum {number}
  */
 ol.render.canvas.Instruction = {
-  BEGIN_PATH: 0,
-  CLOSE_PATH: 1,
-  DRAW_IMAGE: 2,
-  FILL: 3,
-  MOVE_TO_LINE_TO: 4,
-  SET_FILL_STYLE: 5,
-  SET_STROKE_STYLE: 6,
-  STROKE: 7
+  BEGIN_GEOMETRY: 0,
+  BEGIN_PATH: 1,
+  CLOSE_PATH: 2,
+  DRAW_IMAGE: 3,
+  FILL: 4,
+  MOVE_TO_LINE_TO: 5,
+  SET_FILL_STYLE: 6,
+  SET_STROKE_STYLE: 7,
+  STROKE: 8
 };
 
 
@@ -122,7 +123,16 @@ ol.render.canvas.Replay.prototype.draw =
   while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
-    if (type == ol.render.canvas.Instruction.BEGIN_PATH) {
+    if (type == ol.render.canvas.Instruction.BEGIN_GEOMETRY) {
+      var geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
+      if (goog.isDef(renderGeometryFunction) &&
+          !renderGeometryFunction(geometry)) {
+        d = /** @type {number} */ (instruction[2]);
+        i = /** @type {number} */ (instruction[3]);
+      } else {
+        ++i;
+      }
+    } else if (type == ol.render.canvas.Instruction.BEGIN_PATH) {
       context.beginPath();
       ++i;
     } else if (type == ol.render.canvas.Instruction.CLOSE_PATH) {
