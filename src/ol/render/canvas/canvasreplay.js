@@ -98,6 +98,19 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates =
 
 
 /**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @protected
+ * @return {Array} Begin geometry instruction.
+ */
+ol.render.canvas.Replay.prototype.beginGeometry = function(geometry) {
+  var beginGeometryInstruction =
+      [ol.render.canvas.Instruction.BEGIN_GEOMETRY, geometry, 0, 0];
+  this.instructions.push(beginGeometryInstruction);
+  return beginGeometryInstruction;
+};
+
+
+/**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  * @param {function(ol.geom.Geometry): boolean|undefined} renderGeometryFunction
@@ -235,6 +248,16 @@ ol.render.canvas.Replay.prototype.drawPolygonGeometry = goog.abstractMethod;
  */
 ol.render.canvas.Replay.prototype.drawMultiPolygonGeometry =
     goog.abstractMethod;
+
+
+/**
+ * @param {Array} beginGeometryInstruction Begin geometry instruction.
+ */
+ol.render.canvas.Replay.prototype.endGeometry =
+    function(beginGeometryInstruction) {
+  beginGeometryInstruction[2] = this.coordinates.length;
+  beginGeometryInstruction[3] = this.instructions.length;
+};
 
 
 /**
@@ -637,15 +660,12 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
   }
   ol.extent.extend(this.extent_, polygonGeometry.getExtent());
   this.setFillStrokeStyles_();
-  var beginGeometryInstruction =
-      [ol.render.canvas.Instruction.BEGIN_GEOMETRY, polygonGeometry, 0, 0];
-  this.instructions.push(beginGeometryInstruction);
+  var beginGeometryInstruction = this.beginGeometry(polygonGeometry);
   var ends = polygonGeometry.getEnds();
   var flatCoordinates = polygonGeometry.getFlatCoordinates();
   var stride = polygonGeometry.getStride();
   this.drawFlatCoordinatess_(flatCoordinates, 0, ends, stride);
-  beginGeometryInstruction[2] = this.coordinates.length;
-  beginGeometryInstruction[3] = this.instructions.length;
+  this.endGeometry(beginGeometryInstruction);
 };
 
 
@@ -666,9 +686,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
   }
   ol.extent.extend(this.extent_, multiPolygonGeometry.getExtent());
   this.setFillStrokeStyles_();
-  var beginGeometryInstruction =
-      [ol.render.canvas.Instruction.BEGIN_GEOMETRY, multiPolygonGeometry, 0, 0];
-  this.instructions.push(beginGeometryInstruction);
+  var beginGeometryInstruction = this.beginGeometry(multiPolygonGeometry);
   var endss = multiPolygonGeometry.getEndss();
   var flatCoordinates = multiPolygonGeometry.getFlatCoordinates();
   var stride = multiPolygonGeometry.getStride();
@@ -678,8 +696,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
     offset = this.drawFlatCoordinatess_(
         flatCoordinates, offset, endss[i], stride);
   }
-  beginGeometryInstruction[2] = this.coordinates.length;
-  beginGeometryInstruction[3] = this.instructions.length;
+  this.endGeometry(beginGeometryInstruction);
 };
 
 
