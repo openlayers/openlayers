@@ -82,17 +82,19 @@ map.on('singleclick', function(evt) {
   displayFeatureInfo(pixel);
 });
 
+var highlightStyle = new ol.style.Style({
+  stroke: new ol.style.Stroke({
+    color: '#f00',
+    width: 1
+  }),
+  fill: new ol.style.Fill({
+    color: 'rgba(255,0,0,0.1)'
+  })
+});
+
 map.on('postcompose', function(evt) {
   if (highlight) {
     var render = evt.getRender();
-    render.drawFeature(highlight, {
-      stroke: new ol.style.Stroke({
-        color: '#f00',
-        width: 1
-      }),
-      fill: new ol.style.Fill({
-        color: 'rgba(255,0,0,0.1)'
-      })
-    });
+    render.drawFeature(highlight, highlightStyle);
   }
 });
