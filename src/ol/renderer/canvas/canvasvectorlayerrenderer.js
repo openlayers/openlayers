@@ -59,8 +59,11 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
 
   var replayGroup = this.replayGroup_;
   if (!goog.isNull(replayGroup)) {
+    var vectorLayer = this.getVectorLayer();
+    var renderGeometryFunction = vectorLayer.getRenderGeometryFunction();
     context.globalAlpha = layerState.opacity;
-    replayGroup.draw(context, frameState.extent, transform);
+    replayGroup.draw(
+        context, frameState.extent, transform, renderGeometryFunction);
   }
 
   this.dispatchPostComposeEvent(context, frameState, transform);

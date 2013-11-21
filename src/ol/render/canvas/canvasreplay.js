@@ -99,8 +99,11 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates =
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {function(ol.geom.Geometry): boolean|undefined} renderGeometryFunction
+ *     Render geometry function.
  */
-ol.render.canvas.Replay.prototype.draw = function(context, transform) {
+ol.render.canvas.Replay.prototype.draw =
+    function(context, transform, renderGeometryFunction) {
   /** @type {Array.<number>} */
   var pixelCoordinates;
   if (ol.vec.Mat4.equal2D(transform, this.renderedTransform_)) {
@@ -737,9 +740,11 @@ ol.render.canvas.ReplayGroup = function() {
  * @param {CanvasRenderingContext2D} context Context.
  * @param {ol.Extent} extent Extent.
  * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {function(ol.geom.Geometry): boolean|undefined} renderGeometryFunction
+ *     Render geometry function.
  */
 ol.render.canvas.ReplayGroup.prototype.draw =
-    function(context, extent, transform) {
+    function(context, extent, transform, renderGeometryFunction) {
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.replayesByZIndex_), Number);
   goog.array.sort(zs);
@@ -750,7 +755,7 @@ ol.render.canvas.ReplayGroup.prototype.draw =
     for (replayType in replayes) {
       var replay = replayes[replayType];
       if (ol.extent.intersects(extent, replay.getExtent())) {
-        replay.draw(context, transform);
+        replay.draw(context, transform, renderGeometryFunction);
       }
     }
   }
