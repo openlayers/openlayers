@@ -21,7 +21,7 @@ ol.style.Image = function(options) {
   this.image = options.image;
 
   /**
-   * @type {number}
+   * @type {number|undefined}
    */
   this.rotation = options.rotation;
 
@@ -36,7 +36,7 @@ ol.style.Image = function(options) {
   this.snapToPixel = options.snapToPixel;
 
   /**
-   * @type {boolean}
+   * @type {boolean|undefined}
    */
   this.subtractViewRotation = options.subtractViewRotation;
 
