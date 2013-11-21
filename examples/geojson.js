@@ -127,8 +127,6 @@ var vectorLayer = new ol.layer.Vector({
 var tmpFeature = new ol.Feature(
     new ol.geom.LineString([[-5e6, -5e6], [5e6, -5e6]]));
 var tmpStyle = new ol.style.Style({
-  fill: null,
-  image: null,
   stroke: new ol.style.Stroke({
     color: 'magenta',
     width: 5
