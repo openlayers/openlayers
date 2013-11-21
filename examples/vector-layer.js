@@ -36,6 +36,7 @@ var style = new ol.style.Style({
   })
 });
 
+var vectorLayer;
 $.getJSON('data/countries.geojson', function(data) {
   var format = new ol.format.GeoJSON();
   var transformFn = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
@@ -45,12 +46,13 @@ $.getJSON('data/countries.geojson', function(data) {
     feature.setGeometry(geometry);
     vectorSource.addFeature(feature);
   });
-  map.getLayers().push(new ol.layer.Vector({
+  vectorLayer = new ol.layer.Vector({
     source: vectorSource,
     styleFunction: function(feature) {
       return style;
     }
-  }));
+  });
+  map.getLayers().push(vectorLayer);
 });
 
 var highlight;
@@ -68,6 +70,13 @@ var displayFeatureInfo = function(coordinate) {
   }
   if (highlight !== oldHighlight) {
     map.requestRenderFrame();
+    if (highlight) {
+      vectorLayer.setRenderGeometryFunction(function(geometry) {
+        return geometry !== highlight.getGeometry();
+      });
+    } else {
+      vectorLayer.setRenderGeometryFunction(undefined);
+    }
   }
 };
 
