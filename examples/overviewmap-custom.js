@@ -1,7 +1,7 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
 // main map
@@ -10,7 +10,7 @@ var mainView = new ol.View2D({
 });
 var map = new ol.Map({
   layers: [
-    new ol.layer.TileLayer({
+    new ol.layer.Tile({
       source: new ol.source.OSM()
     })
   ],
@@ -32,7 +32,7 @@ var setOverviewResolution = function() {
 };
 
 // have both maps share the same layers
-overviewMap.bindTo('layers', map);
+overviewMap.bindTo('layergroup', map);
 
 // make the overview map view's center follow the main map view's center
 overviewMap.getView().bindTo('center', map.getView());
