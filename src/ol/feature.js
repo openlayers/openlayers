@@ -208,6 +208,30 @@ ol.Feature.prototype.setOriginal = function(original) {
 
 
 /**
+ * Reset all feature attributes to their original values.  This only works
+ * when the original values are set via `setOriginal`.
+ */
+ol.Feature.prototype.restoreOriginal = function() {
+  var original = this;
+  while (original.original_) {
+    original = original.original_;
+  }
+  if (original !== this) {
+    var oldValues = this.getAttributes();
+    var newValues = original.getAttributes();
+    this.setValues(newValues);
+    for (var key in oldValues) {
+      if (!newValues.hasOwnProperty(key)) {
+        // TODO: ol.Object.prototype.delete
+        this.set(key, undefined);
+      }
+    }
+  }
+  this.original_ = null;
+};
+
+
+/**
  * Gets the renderIntent for this feature.
  * @return {string} Render intent.
  */
