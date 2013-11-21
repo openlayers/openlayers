@@ -114,8 +114,8 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry) {
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {goog.vec.Mat4.AnyType} transform Transform.
- * @param {function(ol.geom.Geometry): boolean|undefined} renderGeometryFunction
- *     Render geometry function.
+ * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
+ *     geometry function.
  */
 ol.render.canvas.Replay.prototype.draw =
     function(context, transform, renderGeometryFunction) {
@@ -139,12 +139,11 @@ ol.render.canvas.Replay.prototype.draw =
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
     if (type == ol.render.canvas.Instruction.BEGIN_GEOMETRY) {
       var geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
-      if (goog.isDef(renderGeometryFunction) &&
-          !renderGeometryFunction(geometry)) {
+      if (renderGeometryFunction(geometry)) {
+        ++i;
+      } else {
         d = /** @type {number} */ (instruction[2]);
         i = /** @type {number} */ (instruction[3]);
-      } else {
-        ++i;
       }
     } else if (type == ol.render.canvas.Instruction.BEGIN_PATH) {
       context.beginPath();
@@ -795,8 +794,8 @@ ol.render.canvas.ReplayGroup = function() {
  * @param {CanvasRenderingContext2D} context Context.
  * @param {ol.Extent} extent Extent.
  * @param {goog.vec.Mat4.AnyType} transform Transform.
- * @param {function(ol.geom.Geometry): boolean|undefined} renderGeometryFunction
- *     Render geometry function.
+ * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
+ *     geometry function.
  */
 ol.render.canvas.ReplayGroup.prototype.draw =
     function(context, extent, transform, renderGeometryFunction) {

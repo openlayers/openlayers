@@ -1,6 +1,7 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
-goog.require('goog.vec.Mat4');
+goog.require('goog.asserts');
+goog.require('goog.functions');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.render.canvas.ReplayGroup');
@@ -61,6 +62,10 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
   if (!goog.isNull(replayGroup)) {
     var vectorLayer = this.getVectorLayer();
     var renderGeometryFunction = vectorLayer.getRenderGeometryFunction();
+    if (!goog.isDef(renderGeometryFunction)) {
+      renderGeometryFunction = goog.functions.TRUE;
+    }
+    goog.asserts.assert(goog.isFunction(renderGeometryFunction));
     context.globalAlpha = layerState.opacity;
     replayGroup.draw(
         context, frameState.extent, transform, renderGeometryFunction);
