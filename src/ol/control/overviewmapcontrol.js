@@ -185,7 +185,7 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
 
     if (this.ovmap_.getLayers().getLength() == 0) {
       if (map.getLayers().getLength() > 0) {
-        this.ovmap_.bindTo(ol.MapProperty.LAYERS, map);
+        this.ovmap_.bindTo(ol.MapProperty.LAYERGROUP, map);
       }
     }
 
