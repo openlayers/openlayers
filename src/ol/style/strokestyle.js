@@ -13,10 +13,10 @@ ol.style.Stroke = function(options) {
   /**
    * @type {ol.Color|string}
    */
-  this.color = options.color;
+  this.color = goog.isDef(options.color) ? options.color : null;
 
   /**
-   * @type {number}
+   * @type {number|undefined}
    */
   this.width = options.width;
 };

@@ -638,8 +638,8 @@
 
 /**
  * @typedef {Object} ol.style.StrokeOptions
- * @property {ol.Color|string} color Color.
- * @property {number} width Width.
+ * @property {ol.Color|string|undefined} color Color.
+ * @property {number|undefined} width Width.
  * @todo stability experimental
  */
 
