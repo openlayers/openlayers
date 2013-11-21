@@ -13,6 +13,7 @@ goog.require('ol.extent');
 goog.require('ol.geom.flat');
 goog.require('ol.render.IRender');
 goog.require('ol.render.IReplayGroup');
+goog.require('ol.render.canvas');
 goog.require('ol.vec.Mat4');
 
 
@@ -586,10 +587,11 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
   goog.asserts.assert(!goog.isNull(this.state_));
   goog.asserts.assert(goog.isNull(fillStyle));
   goog.asserts.assert(!goog.isNull(strokeStyle));
-  goog.asserts.assert(goog.isDefAndNotNull(strokeStyle.color));
-  goog.asserts.assert(goog.isDef(strokeStyle.width));
-  this.state_.strokeStyle = ol.color.asString(strokeStyle.color);
-  this.state_.lineWidth = strokeStyle.width;
+  this.state_.strokeStyle = !goog.isNull(strokeStyle.color) ?
+      ol.color.asString(strokeStyle.color) :
+          ol.render.canvas.defaultStrokeStyle;
+  this.state_.lineWidth = goog.isDef(strokeStyle.width) ?
+      strokeStyle.width : ol.render.canvas.defaultLineWidth;
 };
 
 
@@ -733,15 +735,22 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
   goog.asserts.assert(!goog.isNull(this.state_));
   goog.asserts.assert(!goog.isNull(fillStyle) || !goog.isNull(strokeStyle));
+  var state = this.state_;
   if (!goog.isNull(fillStyle)) {
-    goog.asserts.assert(goog.isDefAndNotNull(fillStyle.color));
-    this.state_.fillStyle = ol.color.asString(fillStyle.color);
+    state.fillStyle = !goog.isNull(fillStyle.color) ?
+        ol.color.asString(fillStyle.color) : ol.render.canvas.defaultFillStyle;
+  } else {
+    state.fillStyle = undefined;
   }
   if (!goog.isNull(strokeStyle)) {
-    goog.asserts.assert(goog.isDefAndNotNull(strokeStyle.color));
-    goog.asserts.assert(goog.isDef(strokeStyle.width));
-    this.state_.strokeStyle = ol.color.asString(strokeStyle.color);
-    this.state_.lineWidth = strokeStyle.width;
+    state.strokeStyle = !goog.isNull(strokeStyle.color) ?
+        ol.color.asString(strokeStyle.color) :
+            ol.render.canvas.defaultStrokeStyle;
+    state.lineWidth = !goog.isDef(strokeStyle.width) ?
+        strokeStyle.width : ol.render.canvas.defaultLineWidth;
+  } else {
+    state.strokeStyle = undefined;
+    state.lineWidth = undefined;
   }
 };
 
