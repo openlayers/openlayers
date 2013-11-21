@@ -605,7 +605,7 @@ ol.render.canvas.PolygonReplay = function() {
 
   /**
    * @private
-   * @type {{currentFillColor: (string|undefined),
+   * @type {{currentFillStyle: (string|undefined),
    *         currentStrokeStyle: (string|undefined),
    *         currentLineWidth: (number|undefined),
    *         fillStyle: (string|undefined),
@@ -613,7 +613,7 @@ ol.render.canvas.PolygonReplay = function() {
    *         lineWidth: (number|undefined)}|null}
    */
   this.state_ = {
-    currentFillColor: undefined,
+    currentFillStyle: undefined,
     currentStrokeStyle: undefined,
     currentLineWidth: undefined,
     fillStyle: undefined,
@@ -754,10 +754,10 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
   var lineWidth = state.lineWidth;
-  if (goog.isDef(fillStyle) && state.currentFillColor != fillStyle) {
+  if (goog.isDef(fillStyle) && state.currentFillStyle != fillStyle) {
     this.instructions.push(
         [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle]);
-    state.currentFillColor = state.fillStyle;
+    state.currentFillStyle = state.fillStyle;
   }
   if (goog.isDef(strokeStyle)) {
     goog.asserts.assert(goog.isDef(lineWidth));
