@@ -3,8 +3,8 @@ goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.control.OverviewMap');
 goog.require('ol.interaction.DragRotateAndZoom');
-goog.require('ol.interaction.defaults');
-goog.require('ol.layer.TileLayer');
+goog.require('ol.interaction');
+goog.require('ol.layer.Tile');
 goog.require('ol.source.MapQuestOpenAerial');
 goog.require('ol.source.OSM');
 
@@ -21,7 +21,7 @@ var createMap = function(divId, rotate) {
   rotate = rotate || false;
   var mapOptions = {
     layers: [
-      new ol.layer.TileLayer({
+      new ol.layer.Tile({
         source: new ol.source.OSM()
       })
     ],
@@ -54,7 +54,7 @@ var overview2 = new ol.control.OverviewMap({
 var map3 = createMap('map3', true);
 var overview3 = new ol.control.OverviewMap({
   layers: [
-    new ol.layer.TileLayer({
+    new ol.layer.Tile({
       source: new ol.source.MapQuestOpenAerial()
     })
   ],
