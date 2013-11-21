@@ -15,7 +15,7 @@ goog.require('ol.geom.GeometryType');
  * @constructor
  * @extends {ol.geom.Geometry}
  * @param {ol.CoordinateArray} coordinates Array of coordinates (e.g.
- *    [[x0, y0], [x1, y1]]).
+ *    `[[x0, y0], [x1, y1]]`).
  * @todo stability experimental
  */
 ol.geom.LineString = function(coordinates) {
