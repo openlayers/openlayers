@@ -528,10 +528,12 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
   }
   ol.extent.extend(this.extent_, lineStringGeometry.getExtent());
   this.setStrokeStyle_();
+  var beginGeometryInstruction = this.beginGeometry(lineStringGeometry);
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
   this.drawFlatCoordinates_(
       flatCoordinates, 0, flatCoordinates.length, stride);
+  this.endGeometry(beginGeometryInstruction);
 };
 
 
@@ -549,6 +551,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
   }
   ol.extent.extend(this.extent_, multiLineStringGeometry.getExtent());
   this.setStrokeStyle_();
+  var beginGeometryInstruction = this.beginGeometry(multiLineStringGeometry);
   var ends = multiLineStringGeometry.getEnds();
   var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
   var stride = multiLineStringGeometry.getStride();
@@ -558,6 +561,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
     offset = this.drawFlatCoordinates_(
         flatCoordinates, offset, ends[i], stride);
   }
+  this.endGeometry(beginGeometryInstruction);
 };
 
 
