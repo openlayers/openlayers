@@ -54,9 +54,8 @@ $.getJSON('data/countries.geojson', function(data) {
 });
 
 var highlight;
-var displayFeatureInfo = function(pixel) {
+var displayFeatureInfo = function(coordinate) {
   var oldHighlight = highlight;
-  var coordinate = map.getCoordinateFromPixel(pixel);
   var features = vectorSource.getAllFeaturesAtCoordinate(coordinate);
   var info = document.getElementById('info');
   if (features.length > 0) {
@@ -73,13 +72,13 @@ var displayFeatureInfo = function(pixel) {
 };
 
 $(map.getViewport()).on('mousemove', function(evt) {
-  var pixel = map.getEventPixel(evt.originalEvent);
-  displayFeatureInfo(pixel);
+  var coordinate = map.getEventCoordinate(evt.originalEvent);
+  displayFeatureInfo(coordinate);
 });
 
 map.on('singleclick', function(evt) {
-  var pixel = evt.getPixel();
-  displayFeatureInfo(pixel);
+  var coordinate = evt.getCoordinate();
+  displayFeatureInfo(coordinate);
 });
 
 var highlightStyle = new ol.style.Style({
