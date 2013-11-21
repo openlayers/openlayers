@@ -39,8 +39,14 @@ ol.vec.Mat4.equal2D = function(mat1, mat2) {
  *     chained together.
  */
 ol.vec.Mat4.multVec2 = function(mat, vec, resultVec) {
+  var m00 = goog.vec.Mat4.getElement(mat, 0, 0);
+  var m10 = goog.vec.Mat4.getElement(mat, 1, 0);
+  var m01 = goog.vec.Mat4.getElement(mat, 0, 1);
+  var m11 = goog.vec.Mat4.getElement(mat, 1, 1);
+  var m03 = goog.vec.Mat4.getElement(mat, 0, 3);
+  var m13 = goog.vec.Mat4.getElement(mat, 1, 3);
   var x = vec[0], y = vec[1];
-  resultVec[0] = x * mat[0] + y * mat[4] + mat[12];
-  resultVec[1] = x * mat[1] + y * mat[5] + mat[13];
+  resultVec[0] = m00 * x + m01 * y + m03;
+  resultVec[1] = m10 * x + m11 * y + m13;
   return resultVec;
 };
