@@ -6,6 +6,7 @@ goog.provide('ol.render.canvas.ReplayGroup');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
+goog.require('goog.vec.Mat4');
 goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.geom.flat');
@@ -13,6 +14,7 @@ goog.require('ol.render.IRender');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
+goog.require('ol.vec.Mat4');
 
 
 /**
@@ -49,6 +51,12 @@ ol.render.canvas.Replay = function() {
    * @type {Array.<number>}
    */
   this.coordinates = [];
+
+  /**
+   * @private
+   * @type {goog.vec.Mat4.Number}
+   */
+  this.renderedTransform_ = goog.vec.Mat4.createNumber();
 
   /**
    * @private
@@ -95,9 +103,16 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates =
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  */
 ol.render.canvas.Replay.prototype.draw = function(context, transform) {
-  var pixelCoordinates = ol.geom.flat.transform2D(
-      this.coordinates, 2, transform, this.pixelCoordinates_);
-  this.pixelCoordinates_ = pixelCoordinates;  // FIXME ?
+  /** @type {Array.<number>} */
+  var pixelCoordinates;
+  if (ol.vec.Mat4.equal2D(transform, this.renderedTransform_)) {
+    pixelCoordinates = this.pixelCoordinates_;
+  } else {
+    pixelCoordinates = ol.geom.flat.transform2D(
+        this.coordinates, 2, transform, this.pixelCoordinates_);
+    goog.vec.Mat4.setFromArray(this.renderedTransform_, transform);
+    goog.asserts.assert(pixelCoordinates === this.pixelCoordinates_);
+  }
   var instructions = this.instructions;
   var i = 0; // instruction index
   var ii = instructions.length; // end of instructions
