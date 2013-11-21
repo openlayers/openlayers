@@ -127,15 +127,18 @@ ol.render.canvas.Replay.prototype.draw = function(context, transform) {
       ++i;
     } else if (type == ol.render.canvas.Instruction.DRAW_IMAGE) {
       dd = /** @type {number} */ (instruction[1]);
-      var imageStyle = /** @type {ol.style.Image} */ (instruction[2]);
+      var anchor = /** @type {Array.<number>} */ (instruction[2]);
+      var image =  /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */
+          (instruction[3]);
+      var snapToPixel = /** @type {boolean|undefined} */ (instruction[4]);
       for (; d < dd; d += 2) {
-        var x = pixelCoordinates[d] - imageStyle.anchor[0];
-        var y = pixelCoordinates[d + 1] - imageStyle.anchor[1];
-        if (imageStyle.snapToPixel) {
+        var x = pixelCoordinates[d] - anchor[0];
+        var y = pixelCoordinates[d + 1] - anchor[1];
+        if (snapToPixel) {
           x = (x + 0.5) | 0;
           y = (y + 0.5) | 0;
         }
-        context.drawImage(imageStyle.image, x, y);
+        context.drawImage(image, x, y);
       }
       ++i;
     } else if (type == ol.render.canvas.Instruction.FILL) {
@@ -262,9 +265,21 @@ ol.render.canvas.ImageReplay = function() {
 
   /**
    * @private
-   * @type {ol.style.Image}
+   * @type {Array.<number>}
    */
-  this.imageStyle_ = null;
+  this.anchor_ = null;
+
+  /**
+   * @private
+   * @type {HTMLCanvasElement|HTMLVideoElement|Image}
+   */
+  this.image_ = null;
+
+  /**
+   * @private
+   * @type {boolean|undefined}
+   */
+  this.snapToPixel_ = undefined;
 
 };
 goog.inherits(ol.render.canvas.ImageReplay, ol.render.canvas.Replay);
@@ -290,16 +305,18 @@ ol.render.canvas.ImageReplay.prototype.drawCoordinates_ =
  */
 ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
     function(pointGeometry) {
-  if (!goog.isDefAndNotNull(this.imageStyle_)) {
+  if (goog.isNull(this.image_)) {
     return;
   }
+  goog.asserts.assert(!goog.isNull(this.anchor_));
   ol.extent.extend(this.extent_, pointGeometry.getExtent());
   var flatCoordinates = pointGeometry.getFlatCoordinates();
   var stride = pointGeometry.getStride();
   var myEnd = this.drawCoordinates_(
       flatCoordinates, 0, flatCoordinates.length, stride);
   this.instructions.push(
-      [ol.render.canvas.Instruction.DRAW_IMAGE, myEnd, this.imageStyle_]);
+      [ol.render.canvas.Instruction.DRAW_IMAGE, myEnd,
+       this.anchor_, this.image_, this.snapToPixel_]);
 };
 
 
@@ -308,16 +325,18 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
  */
 ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
     function(multiPointGeometry) {
-  if (!goog.isDefAndNotNull(this.imageStyle_)) {
+  if (goog.isNull(this.image_)) {
     return;
   }
+  goog.asserts.assert(!goog.isNull(this.anchor_));
   ol.extent.extend(this.extent_, multiPointGeometry.getExtent());
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
   var stride = multiPointGeometry.getStride();
   var myEnd = this.drawCoordinates_(
       flatCoordinates, 0, flatCoordinates.length, stride);
   this.instructions.push(
-      [ol.render.canvas.Instruction.DRAW_IMAGE, myEnd, this.imageStyle_]);
+      [ol.render.canvas.Instruction.DRAW_IMAGE, myEnd,
+       this.anchor_, this.image_, this.snapToPixel_]);
 };
 
 
@@ -326,7 +345,9 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
  */
 ol.render.canvas.ImageReplay.prototype.finish = function() {
   // FIXME this doesn't really protect us against further calls to draw*Geometry
-  this.imageStyle_ = null;
+  this.anchor_ = null;
+  this.image_ = null;
+  this.snapToPixel_ = undefined;
 };
 
 
@@ -334,7 +355,12 @@ ol.render.canvas.ImageReplay.prototype.finish = function() {
  * @inheritDoc
  */
 ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
-  this.imageStyle_ = imageStyle;
+  goog.asserts.assert(!goog.isNull(imageStyle));
+  goog.asserts.assert(!goog.isNull(imageStyle.anchor));
+  goog.asserts.assert(!goog.isNull(imageStyle.image));
+  this.anchor_ = imageStyle.anchor;
+  this.image_ = imageStyle.image;
+  this.snapToPixel_ = imageStyle.snapToPixel;
 };
 
 
