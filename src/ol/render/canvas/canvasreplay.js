@@ -167,7 +167,7 @@ ol.render.canvas.Replay.prototype.draw = function(context, transform) {
       ++i;
     } else {
       goog.asserts.fail();
-      ++i; // consume the instruction anyway, to avoid an infite loop
+      ++i; // consume the instruction anyway, to avoid an infinite loop
     }
   }
   // assert that all data were consumed
