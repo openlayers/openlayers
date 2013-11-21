@@ -482,6 +482,17 @@ goog.inherits(ol.render.canvas.LineStringReplay, ol.render.canvas.Replay);
  */
 ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ =
     function(flatCoordinates, offset, end, stride) {
+  var myEnd = this.appendFlatCoordinates(
+      flatCoordinates, offset, end, stride, false);
+  this.instructions.push([ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myEnd]);
+  return end;
+};
+
+
+/**
+ * @private
+ */
+ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
   var state = this.state_;
   var strokeStyle = state.strokeStyle;
   var lineWidth = state.lineWidth;
@@ -500,10 +511,6 @@ ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ =
     state.currentStrokeStyle = strokeStyle;
     state.currentLineWidth = lineWidth;
   }
-  var myEnd = this.appendFlatCoordinates(
-      flatCoordinates, offset, end, stride, false);
-  this.instructions.push([ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myEnd]);
-  return end;
 };
 
 
@@ -520,6 +527,7 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
     return;
   }
   ol.extent.extend(this.extent_, lineStringGeometry.getExtent());
+  this.setStrokeStyle_();
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
   this.drawFlatCoordinates_(
@@ -540,6 +548,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
     return;
   }
   ol.extent.extend(this.extent_, multiLineStringGeometry.getExtent());
+  this.setStrokeStyle_();
   var ends = multiLineStringGeometry.getEnds();
   var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
   var stride = multiLineStringGeometry.getStride();
