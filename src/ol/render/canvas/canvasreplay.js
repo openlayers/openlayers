@@ -268,13 +268,13 @@ ol.render.canvas.ImageReplay = function() {
 
   /**
    * @private
-   * @type {number}
+   * @type {number|undefined}
    */
   this.anchorX_ = undefined;
 
   /**
    * @private
-   * @type {number}
+   * @type {number|undefined}
    */
   this.anchorY_ = undefined;
 
@@ -286,13 +286,13 @@ ol.render.canvas.ImageReplay = function() {
 
   /**
    * @private
-   * @type {number}
+   * @type {number|undefined}
    */
   this.height_ = undefined;
 
   /**
    * @private
-   * @type {number}
+   * @type {number|undefined}
    */
   this.width_ = undefined;
 
