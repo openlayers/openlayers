@@ -626,7 +626,7 @@
 
 /**
  * @typedef {Object} ol.style.ImageOptions
- * @property {Array.<number>} anchor Anchor.
+ * @property {ol.Pixel} anchor Anchor.
  * @property {HTMLCanvasElement|HTMLVideoElement|Image} image Image.
  * @property {number} rotation Rotation.
  * @property {boolean|undefined} snapToPixel Whether the image should be

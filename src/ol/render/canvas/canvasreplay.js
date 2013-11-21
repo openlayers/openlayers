@@ -127,7 +127,7 @@ ol.render.canvas.Replay.prototype.draw = function(context, transform) {
       ++i;
     } else if (type == ol.render.canvas.Instruction.DRAW_IMAGE) {
       dd = /** @type {number} */ (instruction[1]);
-      var anchor = /** @type {Array.<number>} */ (instruction[2]);
+      var anchor = /** @type {ol.Pixel} */ (instruction[2]);
       var image =  /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */
           (instruction[3]);
       var snapToPixel = /** @type {boolean|undefined} */ (instruction[4]);
@@ -265,7 +265,7 @@ ol.render.canvas.ImageReplay = function() {
 
   /**
    * @private
-   * @type {Array.<number>}
+   * @type {ol.Pixel}
    */
   this.anchor_ = null;
 

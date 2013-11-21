@@ -11,7 +11,7 @@ goog.provide('ol.style.Image');
 ol.style.Image = function(options) {
 
   /**
-   * @type {Array.<number>}
+   * @type {ol.Pixel}
    */
   this.anchor = options.anchor;
 
