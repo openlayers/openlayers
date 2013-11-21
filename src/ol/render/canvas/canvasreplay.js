@@ -370,6 +370,7 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
   goog.asserts.assert(goog.isDef(this.height_));
   goog.asserts.assert(goog.isDef(this.width_));
   ol.extent.extend(this.extent_, pointGeometry.getExtent());
+  var beginGeometryInstruction = this.beginGeometry(pointGeometry);
   var flatCoordinates = pointGeometry.getFlatCoordinates();
   var stride = pointGeometry.getStride();
   var myEnd = this.drawCoordinates_(
@@ -379,6 +380,7 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
     this.anchorX_, this.anchorY_, this.width_, this.height_,
     this.image_, this.snapToPixel_
   ]);
+  this.endGeometry(beginGeometryInstruction);
 };
 
 
@@ -395,6 +397,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
   goog.asserts.assert(goog.isDef(this.height_));
   goog.asserts.assert(goog.isDef(this.width_));
   ol.extent.extend(this.extent_, multiPointGeometry.getExtent());
+  var beginGeometryInstruction = this.beginGeometry(multiPointGeometry);
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
   var stride = multiPointGeometry.getStride();
   var myEnd = this.drawCoordinates_(
@@ -404,6 +407,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
     this.anchorX_, this.anchorY_, this.width_, this.height_,
     this.image_, this.snapToPixel_
   ]);
+  this.endGeometry(beginGeometryInstruction);
 };
 
 
