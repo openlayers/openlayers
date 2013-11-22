@@ -33,7 +33,7 @@ var createMap = function(divId, rotate) {
     })
   };
   if (rotate) {
-    mapOptions.interactions = ol.interaction.defaults({}, [
+    mapOptions.interactions = ol.interaction.defaults().extend([
       new ol.interaction.DragRotateAndZoom()
     ]);
   }
