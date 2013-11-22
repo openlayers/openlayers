@@ -45,7 +45,8 @@ ol.source.ImageWMS = function(options) {
    * @type {ol.source.WMSGetFeatureInfoOptions}
    */
   this.getFeatureInfoOptions_ = goog.isDef(options.getFeatureInfoOptions) ?
-      options.getFeatureInfoOptions : {};
+      options.getFeatureInfoOptions :
+      /** @type {ol.source.WMSGetFeatureInfoOptions} */ ({});
 
   /**
    * @private
