@@ -4,15 +4,81 @@ goog.provide('ol.dom');
 goog.provide('ol.dom.BrowserFeature');
 
 goog.require('goog.asserts');
+goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.vec.Mat4');
 
 
 /**
+ * http://caniuse.com/#feat=transforms2d
+ * http://caniuse.com/#feat=transforms3d
  * @enum {boolean}
  */
 ol.dom.BrowserFeature = {
-  CAN_USE_CSS_TRANSFORM: false,
-  CAN_USE_CSS_TRANSFORM3D: true
+  CAN_USE_CSS_TRANSFORM: (
+      /**
+       * Detect 2d transform.
+       * Adapted from http://stackoverflow.com/q/5661671/130442
+       * @return {boolean}
+       */
+      function() {
+        if (!window.getComputedStyle) {
+          // this browser is ancient
+          return false;
+        }
+        var el = goog.dom.createElement(goog.dom.TagName.P),
+            has2d,
+            transforms = {
+              'webkitTransform': '-webkit-transform',
+              'OTransform': '-o-transform',
+              'msTransform': '-ms-transform',
+              'MozTransform': '-moz-transform',
+              'transform': 'transform'
+            };
+        goog.dom.appendChild(document.body, el);
+        for (var t in transforms) {
+          if (t in el.style) {
+            el.style[t] = 'translate(1px,1px)';
+            has2d = window.getComputedStyle(el).getPropertyValue(transforms[t]);
+          }
+        }
+        goog.dom.removeNode(el);
+
+        return (goog.isDefAndNotNull(has2d) && has2d.length > 0 &&
+            has2d !== 'none');
+      })(),
+  CAN_USE_CSS_TRANSFORM3D: (
+      /**
+       * Detect 3d transform.
+       * Adapted from http://stackoverflow.com/q/5661671/130442
+       * @return {boolean}
+       */
+      function() {
+        if (!window.getComputedStyle) {
+          // this browser is ancient
+          return false;
+        }
+        var el = goog.dom.createElement(goog.dom.TagName.P),
+            has3d,
+            transforms = {
+              'webkitTransform': '-webkit-transform',
+              'OTransform': '-o-transform',
+              'msTransform': '-ms-transform',
+              'MozTransform': '-moz-transform',
+              'transform': 'transform'
+            };
+        goog.dom.appendChild(document.body, el);
+        for (var t in transforms) {
+          if (t in el.style) {
+            el.style[t] = 'translate3d(1px,1px,1px)';
+            has3d = window.getComputedStyle(el).getPropertyValue(transforms[t]);
+          }
+        }
+        goog.dom.removeNode(el);
+
+        return (goog.isDefAndNotNull(has3d) && has3d.length > 0 &&
+            has3d !== 'none');
+      })()
 };
 
 
@@ -25,6 +91,7 @@ ol.dom.setTransform = function(element, value) {
   style.WebkitTransform = value;
   style.MozTransform = value;
   style.OTransform = value;
+  style.msTransform = value;
   style.transform = value;
 };
 
