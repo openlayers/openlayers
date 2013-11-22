@@ -179,7 +179,7 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
   if (!goog.isNull(map)) {
     // add button to main map
-    goog.dom.appendChild(map.getOverlayContainer(), this.button_);
+    goog.dom.appendChild(map.getOverlayContainerStopEvent(), this.button_);
 
     if (!this.maximized_) {
       this.minimize_();
