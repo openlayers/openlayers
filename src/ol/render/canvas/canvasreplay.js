@@ -746,7 +746,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
     state.strokeStyle = !goog.isNull(strokeStyle.color) ?
         ol.color.asString(strokeStyle.color) :
             ol.render.canvas.defaultStrokeStyle;
-    state.lineWidth = !goog.isDef(strokeStyle.width) ?
+    state.lineWidth = goog.isDef(strokeStyle.width) ?
         strokeStyle.width : ol.render.canvas.defaultLineWidth;
   } else {
     state.strokeStyle = undefined;
