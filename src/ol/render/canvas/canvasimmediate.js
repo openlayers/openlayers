@@ -1,5 +1,6 @@
 // FIXME test, especially polygons with holes and multipolygons
 // FIXME need to handle large thick features (where pixel size matters)
+// FIXME store raw style values for text
 
 goog.provide('ol.render.canvas.Immediate');
 
