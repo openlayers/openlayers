@@ -630,8 +630,8 @@
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image
  *     requests.
  * @property {ol.Extent|undefined} extent Extent.
- * @property {ol.source.WMSGetFeatureInfoOptions|undefined}
- *     getFeatureInfoOptions Options for GetFeatureInfo.
+ * @property {ol.source.WMSGetFeatureInfoOptions|undefined} getFeatureInfoOptions
+ *     Options for GetFeatureInfo.
  * @property {Object.<string,*>} params WMS request parameters. At least a
  *     `LAYERS` param is required. `STYLES` is `` by default. `VERSION` is
  *     `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX` and `CRS` (`SRS` for WMS
@@ -692,8 +692,8 @@
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image
  *     requests.
  * @property {ol.Extent|undefined} extent Extent.
- * @property {ol.source.WMSGetFeatureInfoOptions|undefined}
- *     getFeatureInfoOptions Options for GetFeatureInfo.
+ * @property {ol.source.WMSGetFeatureInfoOptions|undefined} getFeatureInfoOptions
+ *     Options for GetFeatureInfo.
  * @property {string|undefined} logo Logo.
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  * @property {number|undefined} maxZoom Maximum zoom.
@@ -721,17 +721,6 @@
  * @property {string|undefined} url Server url providing the vector data.
  * @todo stability experimental
  */
-
-
-/**
- * @typedef {Object} ol.source.WMSGetFeatureInfoOptions
- * @property {ol.source.WMSGetFeatureInfoMethod} method Method for requesting
- *     GetFeatureInfo. Default is `ol.source.WMSGetFeatureInfoMethod.IFRAME`.
- * @property {Object} params Params for the GetFeatureInfo request. Default is
- *     `{'INFO_FORMAT': 'text/html'}`.
- * @todo stability experimental
- */
-
 
 /**
  * @typedef {Object} ol.source.WMTSOptions

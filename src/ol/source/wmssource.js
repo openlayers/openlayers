@@ -7,6 +7,13 @@ goog.require('goog.uri.utils');
 
 
 /**
+ * @typedef {{method: (ol.source.WMSGetFeatureInfoMethod|undefined),
+ *            params: (Object.<string,string>|undefined)}}
+ */
+ol.source.WMSGetFeatureInfoOptions;
+
+
+/**
  * Method to use to get WMS feature info.
  * @enum {string}
  * @todo stability experimental

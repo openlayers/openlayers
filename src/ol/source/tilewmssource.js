@@ -110,7 +110,8 @@ ol.source.TileWMS = function(options) {
    * @type {ol.source.WMSGetFeatureInfoOptions}
    */
   this.getFeatureInfoOptions_ = goog.isDef(options.getFeatureInfoOptions) ?
-      options.getFeatureInfoOptions : {};
+      options.getFeatureInfoOptions :
+      /** @type {ol.source.WMSGetFeatureInfoOptions} */ ({});
 
 };
 goog.inherits(ol.source.TileWMS, ol.source.TileImage);
