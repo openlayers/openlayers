@@ -531,7 +531,7 @@ ol.Map.prototype.freezeRendering = function() {
 
 /**
  * Returns the geographical coordinate for a browser event.
- * @param {Event} event Event.
+ * @param {Event|goog.events.BrowserEvent} event Event.
  * @return {ol.Coordinate} Coordinate.
  * @todo stability experimental
  */
@@ -542,7 +542,7 @@ ol.Map.prototype.getEventCoordinate = function(event) {
 
 /**
  * Returns the map pixel position for a browser event.
- * @param {Event} event Event.
+ * @param {Event|goog.events.BrowserEvent} event Event.
  * @return {ol.Pixel} Pixel.
  * @todo stability experimental
  */
