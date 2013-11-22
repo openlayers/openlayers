@@ -124,8 +124,11 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
        * @param {ol.Feature} feature Feature.
        */
       function(feature) {
-        var style = styleFunction(feature);
-        ol.renderer.vector.renderFeature(replayGroup, feature, style);
+        var styles = styleFunction(feature);
+        var i, ii = styles.length;
+        for (i = 0; i < ii; ++i) {
+          ol.renderer.vector.renderFeature(replayGroup, feature, styles[i]);
+        }
       }, this);
   replayGroup.finish();
 
