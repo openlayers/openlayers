@@ -1,16 +1,18 @@
 goog.provide('ol.render.canvas');
 
-
-/**
- * @const {string}
- */
-ol.render.canvas.defaultFillStyle = 'black';
+goog.require('ol.color');
 
 
 /**
- * @const {string}
+ * @const {ol.Color}
  */
-ol.render.canvas.defaultStrokeStyle = 'black';
+ol.render.canvas.defaultFillStyle = ol.color.fromString('black');
+
+
+/**
+ * @const {ol.Color}
+ */
+ol.render.canvas.defaultStrokeStyle = ol.color.fromString('black');
 
 
 /**

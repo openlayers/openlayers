@@ -337,15 +337,14 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
   var state = this.state_;
   if (!goog.isNull(fillStyle)) {
-    state.fillStyle = !goog.isNull(fillStyle.color) ?
-        ol.color.asString(fillStyle.color) : ol.render.canvas.defaultFillStyle;
+    state.fillStyle = ol.color.asString(!goog.isNull(fillStyle.color) ?
+        fillStyle.color : ol.render.canvas.defaultFillStyle);
   } else {
     state.fillStyle = undefined;
   }
   if (!goog.isNull(strokeStyle)) {
-    state.strokeStyle = !goog.isNull(strokeStyle.color) ?
-        ol.color.asString(strokeStyle.color) :
-            ol.render.canvas.defaultStrokeStyle;
+    state.strokeStyle = ol.color.asString(!goog.isNull(strokeStyle.color) ?
+        strokeStyle.color : ol.render.canvas.defaultStrokeStyle);
     state.lineWidth = goog.isDef(strokeStyle.width) ?
         strokeStyle.width : ol.render.canvas.defaultLineWidth;
   } else {
