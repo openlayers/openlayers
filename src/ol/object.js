@@ -11,6 +11,7 @@ goog.provide('ol.ObjectEventType');
 goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
+goog.require('goog.functions');
 goog.require('goog.object');
 
 
@@ -19,6 +20,51 @@ goog.require('goog.object');
  */
 ol.ObjectEventType = {
   CHANGE: 'change'
+};
+
+
+
+/**
+ * @constructor
+ * @param {ol.Object} target
+ * @param {string} key
+ * @todo stability experimental
+ */
+ol.ObjectAccessor = function(target, key) {
+
+  /**
+   * @type {ol.Object}
+   */
+  this.target = target;
+
+  /**
+   * @type {string}
+   */
+  this.key = key;
+
+  /**
+   * @type {function(?): ?}
+   */
+  this.from = goog.functions.identity;
+
+  /**
+   * @type {function(?): ?}
+   */
+  this.to = goog.functions.identity;
+};
+
+
+/**
+ * @param {function(?): ?} from A function that transforms the source value
+ *     before it is set to the target.
+ * @param {function(?): ?} to A function that transforms the target value
+ *     before it is set to the source.
+ */
+ol.ObjectAccessor.prototype.transform = function(from, to) {
+  this.from = from;
+  this.to = to;
+
+  this.target.notify(this.key);
 };
 
 
@@ -87,7 +133,7 @@ ol.Object.capitalize = function(str) {
 
 /**
  * @param {ol.Object} obj Object.
- * @return {Object.<string, {target: ol.Object, key: string}>} Accessors.
+ * @return {Object.<string, ol.ObjectAccessor>} Accessors.
  */
 ol.Object.getAccessors = function(obj) {
   return obj[ol.ObjectProperty.ACCESSORS] ||
@@ -96,7 +142,7 @@ ol.Object.getAccessors = function(obj) {
 
 
 /**
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @return {string} Change name.
  */
 ol.Object.getChangeEventType = function(key) {
@@ -139,14 +185,35 @@ ol.Object.getSetterName = function(key) {
 
 
 /**
- * Binds a View to a Model.
- * @param {string} key Key.
+ * The bindTo method allows you to set up a two-way binding between a
+ * `source` and `target` object. The method returns an
+ * ol.ObjectAccessor with a transform method that lets you transform
+ * values on the way from the source to the target and on the way back.
+ *
+ * For example, if you had two map views (sourceView and targetView)
+ * and you wanted the target view to have double the resolution of the
+ * source view, you could transform the resolution on the way to and
+ * from the target with the following:
+ *
+ *     sourceView.bindTo('resolution', targetView)
+ *       .transform(
+ *         function(sourceResolution) {
+ *           // from sourceView.resolution to targetView.resolution
+ *           return 2 * sourceResolution;
+ *         },
+ *         function(targetResolution) {
+ *           // from targetView.resolution to sourceView.resolution
+ *           return targetResolution / 2;
+ *         }
+ *       );
+ *
+ * @param {string} key Key name.
  * @param {ol.Object} target Target.
  * @param {string=} opt_targetKey Target key.
+ * @return {ol.ObjectAccessor}
  * @todo stability experimental
  */
-ol.Object.prototype.bindTo =
-    function(key, target, opt_targetKey) {
+ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
   var targetKey = opt_targetKey || key;
   this.unbind(key);
   var eventType = ol.Object.getChangeEventType(targetKey);
@@ -154,15 +221,17 @@ ol.Object.prototype.bindTo =
   listeners[key] = goog.events.listen(target, eventType, function() {
     this.notifyInternal_(key);
   }, undefined, this);
+  var accessor = new ol.ObjectAccessor(target, targetKey);
   var accessors = ol.Object.getAccessors(this);
-  accessors[key] = {target: target, key: targetKey};
+  accessors[key] = accessor;
   this.notifyInternal_(key);
+  return accessor;
 };
 
 
 /**
  * Gets a value.
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @return {*} Value.
  * @todo stability experimental
  */
@@ -179,6 +248,7 @@ ol.Object.prototype.get = function(key) {
     } else {
       value = target.get(targetKey);
     }
+    value = accessor.to(value);
   } else if (this.values_.hasOwnProperty(key)) {
     value = this.values_[key];
   }
@@ -221,7 +291,7 @@ ol.Object.prototype.getKeys = function() {
  * Notify all observers of a change on this property. This notifies both
  * objects that are bound to the object's property as well as the object
  * that it is bound to.
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @todo stability experimental
  */
 ol.Object.prototype.notify = function(key) {
@@ -238,7 +308,7 @@ ol.Object.prototype.notify = function(key) {
 
 
 /**
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @private
  */
 ol.Object.prototype.notifyInternal_ = function(key) {
@@ -278,7 +348,7 @@ ol.Object.prototype.once = function(type, listener, opt_scope) {
 
 /**
  * Sets a value.
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @param {*} value Value.
  * @todo stability experimental
  */
@@ -289,6 +359,7 @@ ol.Object.prototype.set = function(key, value) {
     var target = accessor.target;
     var targetKey = accessor.key;
     var setterName = ol.Object.getSetterName(targetKey);
+    value = accessor.from(value);
     if (target[setterName]) {
       target[setterName](value);
     } else {
@@ -323,7 +394,7 @@ ol.Object.prototype.setValues = function(values) {
 /**
  * Removes a binding. Unbinding will set the unbound property to the current
  *     value. The object will not be notified, as the value has not changed.
- * @param {string} key Key.
+ * @param {string} key Key name.
  * @todo stability experimental
  */
 ol.Object.prototype.unbind = function(key) {

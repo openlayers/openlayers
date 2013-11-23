@@ -14,19 +14,15 @@ goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol.FrameState');
-goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.css');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector2');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.TileLayer');
-goog.require('ol.renderer.webgl.VectorLayer2');
 goog.require('ol.renderer.webgl.map.shader.Color');
 goog.require('ol.renderer.webgl.map.shader.Default');
-goog.require('ol.size');
 goog.require('ol.source.State');
 goog.require('ol.structs.Buffer');
 goog.require('ol.structs.IntegerSet');
@@ -70,11 +66,10 @@ ol.renderer.webgl.Map = function(container, map) {
 
   /**
    * @private
-   * @type {Element}
+   * @type {HTMLCanvasElement}
    */
-  this.canvas_ = goog.dom.createElement(goog.dom.TagName.CANVAS);
-  this.canvas_.height = container.clientHeight;
-  this.canvas_.width = container.clientWidth;
+  this.canvas_ = /** @type {HTMLCanvasElement} */
+      (goog.dom.createElement(goog.dom.TagName.CANVAS));
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
   goog.dom.insertChildAt(container, this.canvas_, 0);
 
@@ -83,12 +78,6 @@ ol.renderer.webgl.Map = function(container, map) {
    * @type {boolean}
    */
   this.renderedVisible_ = true;
-
-  /**
-   * @private
-   * @type {ol.Size}
-   */
-  this.canvasSize_ = [container.clientHeight, container.clientWidth];
 
   /**
    * @private
@@ -304,8 +293,6 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
     return new ol.renderer.webgl.TileLayer(this, layer);
   } else if (layer instanceof ol.layer.Image) {
     return new ol.renderer.webgl.ImageLayer(this, layer);
-  } else if (layer instanceof ol.layer.Vector2) {
-    return new ol.renderer.webgl.VectorLayer2(this, layer);
   } else {
     goog.asserts.fail();
     return null;
@@ -567,10 +554,9 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   }
 
   var size = frameState.size;
-  if (!ol.size.equals(this.canvasSize_, size)) {
+  if (this.canvas_.width != size[0] || this.canvas_.height != size[1]) {
     this.canvas_.width = size[0];
     this.canvas_.height = size[1];
-    this.canvasSize_ = size;
   }
 
   gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);

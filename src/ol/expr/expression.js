@@ -277,7 +277,7 @@ ol.expr.lib[ol.expr.functions.GEOMETRY_TYPE] = function(type) {
  * @this {ol.Feature}
  */
 ol.expr.lib[ol.expr.functions.RENDER_INTENT] = function(renderIntent) {
-  return this.renderIntent == renderIntent;
+  return this.getRenderIntent() == renderIntent;
 };
 
 

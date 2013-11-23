@@ -93,7 +93,8 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
   var layerKey;
   for (layerKey in this.getLayerRenderers()) {
     if (!(layerKey in layerStates)) {
-      layerRenderer = this.getLayerRendererByKey(layerKey);
+      layerRenderer = /** @type {ol.renderer.dom.Layer} */
+          (this.getLayerRendererByKey(layerKey));
       goog.dom.removeNode(layerRenderer.getTarget());
     }
   }

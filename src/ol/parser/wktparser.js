@@ -2,6 +2,7 @@ goog.provide('ol.parser.WKT');
 
 goog.require('goog.array');
 goog.require('goog.string');
+goog.require('ol.Feature');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
@@ -11,12 +12,14 @@ goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.parser.Parser');
+goog.require('ol.parser.StringFeatureParser');
 
 
 
 /**
  * @constructor
  * @extends {ol.parser.Parser}
+ * @implements {ol.parser.StringFeatureParser}
  * @todo stability experimental
  */
 ol.parser.WKT = function() {
@@ -338,6 +341,24 @@ ol.parser.WKT.prototype.encode_ = function(geom) {
  */
 ol.parser.WKT.prototype.read = function(str) {
   return this.parse_(str);
+};
+
+
+/**
+ * Parse a WKT document provided as a string.
+ * @param {string} str WKT document.
+ * @return {ol.parser.ReadFeaturesResult} Features and metadata.
+ */
+ol.parser.WKT.prototype.readFeaturesFromString = function(str) {
+  var geom = this.read(str);
+  var obj = /** @type {ol.parser.ReadFeaturesResult} */
+      ({});
+  if (goog.isDef(geom)) {
+    var feature = new ol.Feature();
+    feature.setGeometry(geom);
+    obj.features = [feature];
+  }
+  return obj;
 };
 
 

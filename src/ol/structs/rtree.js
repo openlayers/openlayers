@@ -36,7 +36,7 @@ goog.require('ol.extent');
  *            leaf: (Object|undefined),
  *            nodes: (Array.<ol.structs.RTreeNode>|undefined),
  *            target: (Object|undefined),
- *            type: (string|undefined)}}
+ *            type: (string|number|undefined)}}
  */
 ol.structs.RTreeNode;
 
@@ -186,7 +186,8 @@ ol.structs.RTree.prototype.chooseLeafSubtree_ = function(rect, root) {
  *
  * @param {ol.Extent} extent Extent.
  * @param {Object} obj Object to insert.
- * @param {string=} opt_type Optional type to store along with the object.
+ * @param {string|number=} opt_type Optional type to store along with the
+ *     object.
  */
 ol.structs.RTree.prototype.insert = function(extent, obj, opt_type) {
   var node = /** @type {ol.structs.RTreeNode} */
@@ -554,7 +555,8 @@ ol.structs.RTree.prototype.removeSubtree_ = function(rect, obj, root) {
  * Non-recursive search function
  *
  * @param {ol.Extent} extent Extent.
- * @param {string=} opt_type Optional type of the objects we want to find.
+ * @param {string|number=} opt_type Optional type of the objects we want to
+ *     find.
  * @return {Array} Result.
  * @this {ol.structs.RTree}
  */
@@ -569,7 +571,8 @@ ol.structs.RTree.prototype.search = function(extent, opt_type) {
  * Non-recursive search function
  *
  * @param {ol.Extent} extent Extent.
- * @param {string=} opt_type Optional type of the objects we want to find.
+ * @param {string|number=} opt_type Optional type of the objects we want to
+ *     find.
  * @return {Object} Result. Keys are UIDs of the values.
  * @this {ol.structs.RTree}
  */
@@ -587,7 +590,7 @@ ol.structs.RTree.prototype.searchReturningObject = function(extent, opt_type) {
  * @param {boolean} returnNode Do we return nodes?
  * @param {Array|Object} result Result.
  * @param {ol.structs.RTreeNode} root Root.
- * @param {string=} opt_type Optional type to search for.
+ * @param {string|number=} opt_type Optional type to search for.
  * @param {boolean=} opt_resultAsObject If set, result will be an object keyed
  *     by UID.
  * @private

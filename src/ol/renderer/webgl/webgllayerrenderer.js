@@ -124,12 +124,18 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer =
       this.framebufferDimension != framebufferDimension) {
 
     frameState.postRenderFunctions.push(
-        goog.partial(function(gl, framebuffer, texture) {
-          if (!gl.isContextLost()) {
-            gl.deleteFramebuffer(framebuffer);
-            gl.deleteTexture(texture);
-          }
-        }, gl, this.framebuffer, this.texture));
+        goog.partial(
+            /**
+             * @param {WebGLRenderingContext} gl GL.
+             * @param {WebGLFramebuffer} framebuffer Framebuffer.
+             * @param {WebGLTexture} texture Texture.
+             */
+            function(gl, framebuffer, texture) {
+              if (!gl.isContextLost()) {
+                gl.deleteFramebuffer(framebuffer);
+                gl.deleteTexture(texture);
+              }
+            }, gl, this.framebuffer, this.texture));
 
     var texture = gl.createTexture();
     gl.bindTexture(goog.webgl.TEXTURE_2D, texture);

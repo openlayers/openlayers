@@ -186,6 +186,17 @@ goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
 
 
 /**
+ * Get the last "down" type event.  This will be set on mousedown,
+ * touchstart, and pointerdown.
+ * @return {goog.events.BrowserEvent} The most recent "down" type event (or null
+ * if none have occurred).
+ */
+ol.MapBrowserEventHandler.prototype.getDown = function() {
+  return this.down_;
+};
+
+
+/**
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
@@ -221,7 +232,6 @@ ol.MapBrowserEventHandler.prototype.handleMouseUp_ = function(browserEvent) {
       var newEvent = new ol.MapBrowserEvent(
           ol.MapBrowserEvent.EventType.DRAGEND, this.map_, browserEvent);
       this.dispatchEvent(newEvent);
-      this.down_ = null;
     } else if (browserEvent.isMouseActionButton()) {
       this.emulateClick_(browserEvent);
     }
@@ -322,10 +332,18 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
  */
 ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
     function(browserEvent) {
-  this.dragged_ = true;
-  var newEvent = new ol.MapBrowserEvent(
-      ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
-  this.dispatchEvent(newEvent);
+  // Fix IE10 on windows Surface : When you tap the tablet, it triggers
+  // multiple pointermove events between pointerdown and pointerup with
+  // the exact same coordinates of the pointerdown event. To avoid a
+  // 'false' touchmove event to be dispatched , we test if the pointer
+  // effectively moved.
+  if (browserEvent.clientX != this.down_.clientX ||
+      browserEvent.clientY != this.down_.clientY) {
+    this.dragged_ = true;
+    var newEvent = new ol.MapBrowserEvent(
+        ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
+    this.dispatchEvent(newEvent);
+  }
 };
 
 
@@ -338,7 +356,12 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
       ol.MapBrowserEvent.EventType.TOUCHEND, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
   goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
-  if (!this.dragged_) {
+
+  // We emulate click event on left mouse button click, touch contact, and pen
+  // contact. isMouseActionButton returns true in these cases (evt.button is set
+  // to 0).
+  // See http://www.w3.org/TR/pointerevents/#button-states .
+  if (!this.dragged_ && browserEvent.isMouseActionButton()) {
     goog.asserts.assert(!goog.isNull(this.down_));
     this.emulateClick_(this.down_);
   }

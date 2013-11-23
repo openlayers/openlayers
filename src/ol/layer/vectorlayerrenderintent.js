@@ -6,6 +6,8 @@ goog.provide('ol.layer.VectorLayerRenderIntent');
  */
 ol.layer.VectorLayerRenderIntent = {
   DEFAULT: 'default',
+  FUTURE: 'future',
   HIDDEN: 'hidden',
-  SELECTED: 'selected'
+  SELECTED: 'selected',
+  TEMPORARY: 'temporary'
 };

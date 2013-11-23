@@ -10,6 +10,20 @@ describe('ol.geom.Geometry', function() {
     });
   });
 
+  describe('#clone()', function() {
+    it('clones a geometry', function() {
+      var line = new ol.geom.LineString([[0, 0], [1, 1]]);
+      var clone = line.clone();
+      expect(clone.getCoordinates().length).to.be(2);
+      expect(clone.getCoordinates()[0]).to.eql(line.getCoordinates()[0]);
+      expect(clone.getCoordinates()[0]).to.not.be(line.getCoordinates()[0]);
+      var coordinates = clone.getCoordinates();
+      coordinates[0] = [2, 2];
+      clone.setCoordinates(coordinates);
+      expect(clone.getCoordinates()[0]).to.not.eql(line.getCoordinates()[0]);
+    });
+  });
+
 });
 
 describe('ol.geom.GeometryEvent', function() {
@@ -35,3 +49,4 @@ goog.require('goog.events.EventTarget');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryEvent');
 goog.require('ol.geom.Point');
+goog.require('ol.geom.LineString');

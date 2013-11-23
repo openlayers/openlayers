@@ -93,7 +93,7 @@ ol.renderer.Map.prototype.disposeInternal = function() {
 
 
 /**
- * @return {Element} Canvas.
+ * @return {HTMLCanvasElement} Canvas.
  */
 ol.renderer.Map.prototype.getCanvas = goog.functions.NULL;
 
@@ -113,22 +113,20 @@ ol.renderer.Map.prototype.getFeatureInfoForPixel =
     function(pixel, layers, success, opt_error) {
   var numLayers = layers.length;
   var featureInfo = new Array(numLayers);
+  var callbackCount = 0;
   var callback = function(layerFeatureInfo, layer) {
     featureInfo[goog.array.indexOf(layers, layer)] = layerFeatureInfo;
-    --numLayers;
-    if (!numLayers) {
+    --callbackCount;
+    if (callbackCount <= 0) {
       success(featureInfo);
     }
   };
 
-  var layer, layerRenderer;
+  var layerRenderer;
   for (var i = 0; i < numLayers; ++i) {
-    layer = layers[i];
-    layerRenderer = this.getLayerRenderer(layer);
-    if (goog.isFunction(layerRenderer.getFeatureInfoForPixel)) {
-      layerRenderer.getFeatureInfoForPixel(pixel, callback, opt_error);
-    } else {
-      --numLayers;
+    layerRenderer = this.getLayerRenderer(layers[i]);
+    if (layerRenderer.getFeatureInfoForPixel(pixel, callback, opt_error)) {
+      ++callbackCount;
     }
   }
 };
@@ -149,10 +147,11 @@ ol.renderer.Map.prototype.getFeaturesForPixel =
     function(pixel, layers, success, opt_error) {
   var numLayers = layers.length;
   var features = new Array(numLayers);
+  var callbackCount = 0;
   var callback = function(layerFeatures, layer) {
     features[goog.array.indexOf(layers, layer)] = layerFeatures;
-    --numLayers;
-    if (!numLayers) {
+    --callbackCount;
+    if (callbackCount <= 0) {
       success(features);
     }
   };
@@ -162,9 +161,8 @@ ol.renderer.Map.prototype.getFeaturesForPixel =
     layer = layers[i];
     layerRenderer = this.getLayerRenderer(layer);
     if (goog.isFunction(layerRenderer.getFeaturesForPixel)) {
+      ++callbackCount;
       layerRenderer.getFeaturesForPixel(pixel, callback, opt_error);
-    } else {
-      --numLayers;
     }
   }
 };

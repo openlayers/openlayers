@@ -6,7 +6,6 @@ goog.require('goog.functions');
 goog.require('ol.Coordinate');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
-goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
 
 
@@ -58,6 +57,14 @@ ol.interaction.Drag = function() {
 
 };
 goog.inherits(ol.interaction.Drag, ol.interaction.Interaction);
+
+
+/**
+ * @return {boolean} Whether we're dragging.
+ */
+ol.interaction.Drag.prototype.getDragging = function() {
+  return this.dragging_;
+};
 
 
 /**
@@ -115,7 +122,6 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
       goog.asserts.assertInstanceof(browserEvent, goog.events.BrowserEvent);
       this.deltaX = browserEvent.clientX - this.startX;
       this.deltaY = browserEvent.clientY - this.startY;
-      view.setHint(ol.ViewHint.INTERACTING, -1);
       this.dragging_ = false;
       this.handleDragEnd(mapBrowserEvent);
     }
@@ -131,7 +137,6 @@ ol.interaction.Drag.prototype.handleMapBrowserEvent =
         (mapBrowserEvent.getCoordinate());
     var handled = this.handleDragStart(mapBrowserEvent);
     if (handled) {
-      view.setHint(ol.ViewHint.INTERACTING, 1);
       this.dragging_ = true;
       mapBrowserEvent.preventDefault();
       stopEvent = true;

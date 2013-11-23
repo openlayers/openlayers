@@ -78,6 +78,23 @@ describe('ol.Feature', function() {
       expect(attributes.ten).to.be(10);
     });
 
+    it('returns an object with all attributes except geometry', function() {
+      var point = new ol.geom.Point([15, 30]);
+      var feature = new ol.Feature({
+        foo: 'bar',
+        ten: 10,
+        loc: point
+      });
+
+      var attributes = feature.getAttributes(true);
+
+      var keys = goog.object.getKeys(attributes);
+      expect(keys.sort()).to.eql(['foo', 'ten']);
+
+      expect(attributes.foo).to.be('bar');
+      expect(attributes.ten).to.be(10);
+    });
+
   });
 
 

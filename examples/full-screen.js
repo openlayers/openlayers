@@ -20,7 +20,7 @@ var map = new ol.Map({
     new ol.layer.Tile({
       source: new ol.source.BingMaps({
         key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3',
-        style: 'Aerial'
+        imagerySet: 'Aerial'
       })
     })
   ],

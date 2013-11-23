@@ -422,11 +422,10 @@ ol.parser.ogc.GML = function(opt_options) {
         this.writeNode('_geometry', feature.getGeometry(), this.featureNS,
             node);
       }
-      var attributes = feature.getAttributes();
+      var attributes = feature.getAttributes(true);
       for (var name in attributes) {
         var value = attributes[name];
-        if (goog.isDefAndNotNull(value) && !(value instanceof
-            ol.geom.Geometry)) {
+        if (goog.isDefAndNotNull(value)) {
           this.writeNode('_attribute', {name: name, value: value},
               this.featureNS, node);
         }

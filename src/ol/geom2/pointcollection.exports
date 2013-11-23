@@ -1,4 +1,0 @@
-@exportSymbol ol.geom2.PointCollection
-@exportSymbol ol.geom2.PointCollection.createEmpty
-@exportSymbol ol.geom2.PointCollection.pack
-@exportProperty ol.geom2.PointCollection.prototype.add

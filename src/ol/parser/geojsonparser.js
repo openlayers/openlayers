@@ -351,11 +351,7 @@ ol.parser.GeoJSON.prototype.encodeFeatureCollection_ = function(collection) {
  */
 ol.parser.GeoJSON.prototype.encodeFeature_ = function(feature) {
   var geometry = feature.getGeometry(),
-      attributes = feature.getAttributes();
-  var properties = goog.object.filter(attributes,
-      function(element, index, array) {
-        return !(element instanceof ol.geom.Geometry);
-      });
+      properties = feature.getAttributes(true);
   return /** @type {GeoJSONFeature} */({
     type: 'Feature',
     properties: properties,

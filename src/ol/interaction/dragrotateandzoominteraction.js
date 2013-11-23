@@ -4,6 +4,7 @@ goog.provide('ol.interaction.DragRotateAndZoom');
 
 goog.require('goog.asserts');
 goog.require('goog.math.Vec2');
+goog.require('ol.ViewHint');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Drag');
@@ -105,6 +106,7 @@ ol.interaction.DragRotateAndZoom.prototype.handleDragEnd =
   var map = mapBrowserEvent.map;
   // FIXME works for View2D only
   var view = map.getView().getView2D();
+  view.setHint(ol.ViewHint.INTERACTING, -1);
   var view2DState = view.getView2DState();
   var direction = this.lastScaleDelta_ - 1;
   map.withFrozenRendering(function() {
@@ -124,6 +126,7 @@ ol.interaction.DragRotateAndZoom.prototype.handleDragEnd =
 ol.interaction.DragRotateAndZoom.prototype.handleDragStart =
     function(mapBrowserEvent) {
   if (this.condition_(mapBrowserEvent)) {
+    mapBrowserEvent.map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     this.lastAngle_ = undefined;
     this.lastMagnitude_ = undefined;
     return true;
