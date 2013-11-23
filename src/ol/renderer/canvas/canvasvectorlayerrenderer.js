@@ -107,7 +107,7 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    * @private
    * @type {number}
    */
-  this.maxSymbolPixelDim_ = 0;
+  this.maxSymbolPixelDim_ = 30;
 
   /**
    * @private
@@ -468,8 +468,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   var featuresToRender = {};
   var tilesToRender = {};
   var tilesOnSketchCanvas = {};
-  // TODO make gutter configurable?
-  var tileGutter = 15 * tileResolution;
+  var tileGutter = this.maxSymbolPixelDim_ * tileResolution / 2;
   var tile, tileCoord, key, x, y, i, type;
   var deferred = false;
   var dirty = false;
@@ -483,10 +482,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         tilesToRender[key] = tileCoord;
       } else if (idle) {
         tileExtent = tileGrid.getTileCoordExtent(tileCoord);
-        tileExtent[0] -= tileGutter;
-        tileExtent[2] += tileGutter;
-        tileExtent[1] -= tileGutter;
-        tileExtent[3] += tileGutter;
+        ol.extent.buffer(tileExtent, tileGutter);
         tileHasFeatures = false;
         featuresObject = layer.getFeaturesObjectForExtent(tileExtent,
             projection, this.requestMapRenderFrame_);
