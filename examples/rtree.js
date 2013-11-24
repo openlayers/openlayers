@@ -67,15 +67,15 @@ var style = new ol.style.Style({
 var colors = ['red', 'orange', 'yellow', 'blue', 'green', 'indigo', 'violet'];
 var depthStyle = [];
 for (i = 0, ii = colors.length; i < ii; ++i) {
-  depthStyle[i] = {
+  depthStyle[i] = new ol.style.Style({
     fill: null,
     image: null,
-    stroke: {
+    stroke: new ol.style.Stroke({
       color: colors[i],
       width: (7 - i) / 2
-    },
+    }),
     zIndex: i
-  };
+  });
 }
 var extentsByDepth = vectorSource.rTree_.getExtentsByDepth();
 var rtreeExtentFeatures = [];
