@@ -356,6 +356,20 @@ ol.extent.getCenter = function(extent) {
 
 
 /**
+ * @param {ol.Extent} extent1 Extent 1.
+ * @param {ol.Extent} extent2 Extent 2.
+ * @return {number} Enlarged area.
+ */
+ol.extent.getEnlargedArea = function(extent1, extent2) {
+  var minX = Math.min(extent1[0], extent2[0]);
+  var minY = Math.min(extent1[1], extent2[1]);
+  var maxX = Math.max(extent1[2], extent2[2]);
+  var maxY = Math.max(extent1[3], extent2[3]);
+  return (maxX - minX) * (maxY - minY);
+};
+
+
+/**
  * @param {ol.Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
