@@ -94,6 +94,31 @@ ol.structs.RBushNode.compareMinY = function(node1, node2) {
 
 
 /**
+ * @param {boolean} isRoot Is root.
+ * @param {number} minEntries Min entries.
+ * @param {number} maxEntries Max entries.
+ */
+ol.structs.RBushNode.prototype.assertValid =
+    function(isRoot, minEntries, maxEntries) {
+  if (this.height === 0) {
+    goog.asserts.assert(goog.isNull(this.children));
+    goog.asserts.assert(!goog.isNull(this.value));
+  } else {
+    goog.asserts.assert(!goog.isNull(this.children));
+    goog.asserts.assert(goog.isNull(this.value));
+    goog.asserts.assert(isRoot || minEntries <= this.children.length);
+    goog.asserts.assert(this.children.length <= maxEntries);
+    var i, ii;
+    for (i = 0, ii = this.children.length; i < ii; ++i) {
+      var child = this.children[i];
+      goog.asserts.assert(ol.extent.containsExtent(this.extent, child.extent));
+      child.assertValid(false, minEntries, maxEntries);
+    }
+  }
+};
+
+
+/**
  * @param {number} start Start.
  * @param {number} stop Stop.
  * @param {ol.Extent=} opt_extent Extent.
@@ -230,6 +255,14 @@ ol.structs.RBush.prototype.allInExtent = function(extent) {
         values.push(value);
       });
   return values;
+};
+
+
+/**
+ * FIXME empty description for jsdoc
+ */
+ol.structs.RBush.prototype.assertValid = function() {
+  this.root_.assertValid(true, this.minEntries_, this.maxEntries_);
 };
 
 
