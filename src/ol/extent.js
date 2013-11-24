@@ -318,6 +318,15 @@ ol.extent.extendXY = function(extent, x, y) {
 
 /**
  * @param {ol.Extent} extent Extent.
+ * @return {number} Area.
+ */
+ol.extent.getArea = function(extent) {
+  return ol.extent.getWidth(extent) * ol.extent.getHeight(extent);
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
  * @return {ol.Coordinate} Bottom left coordinate.
  * @todo stability experimental
  */
