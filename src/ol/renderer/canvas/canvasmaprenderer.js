@@ -15,6 +15,7 @@ goog.require('ol.render.EventType');
 goog.require('ol.render.canvas.Immediate');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.ImageLayer');
+goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.canvas.VectorLayer');
 goog.require('ol.source.State');
@@ -96,6 +97,17 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
 
 
 /**
+ * @param {ol.layer.Layer} layer Layer.
+ * @return {ol.renderer.canvas.Layer} Canvas layer renderer.
+ */
+ol.renderer.canvas.Map.prototype.getCanvasLayerRenderer = function(layer) {
+  var layerRenderer = this.getLayerRenderer(layer);
+  goog.asserts.assertInstanceof(layerRenderer, ol.renderer.canvas.Layer);
+  return /** @type {ol.renderer.canvas.Layer} */ (layerRenderer);
+};
+
+
+/**
  * @inheritDoc
  */
 ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
@@ -125,11 +137,10 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   var layerStates = frameState.layerStates;
   var layersArray = frameState.layersArray;
   var viewResolution = frameState.view2DState.resolution;
-  var i, ii, layer, layerRenderer, layerState;
+  var canvasLayerRenderer, i, ii, layer, layerState;
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
     layer = layersArray[i];
-    layerRenderer =
-        /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
+    canvasLayerRenderer = this.getCanvasLayerRenderer(layer);
     layerState = layerStates[goog.getUid(layer)];
     if (!layerState.visible ||
         layerState.sourceState != ol.source.State.READY ||
@@ -137,8 +148,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
         viewResolution < layerState.minResolution) {
       continue;
     }
-    layerRenderer.prepareFrame(frameState, layerState);
-    layerRenderer.composeFrame(frameState, layerState, context);
+    canvasLayerRenderer.prepareFrame(frameState, layerState);
+    canvasLayerRenderer.composeFrame(frameState, layerState, context);
   }
 
   this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, frameState);
