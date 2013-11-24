@@ -425,6 +425,15 @@ ol.extent.getIntersectionArea = function(extent1, extent2) {
 
 /**
  * @param {ol.Extent} extent Extent.
+ * @return {number} Margin.
+ */
+ol.extent.getMargin = function(extent) {
+  return ol.extent.getWidth(extent) + ol.extent.getHeight(extent);
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
  * @return {ol.Size} Size.
  * @todo stability experimental
  */
