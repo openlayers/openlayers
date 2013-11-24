@@ -219,6 +219,7 @@ ol.extent.equals = function(extent1, extent2) {
 /**
  * @param {ol.Extent} extent1 Extent 1.
  * @param {ol.Extent} extent2 Extent 2.
+ * @return {ol.Extent} Extent.
  * @todo stability experimental
  */
 ol.extent.extend = function(extent1, extent2) {
@@ -234,6 +235,7 @@ ol.extent.extend = function(extent1, extent2) {
   if (extent2[3] > extent1[3]) {
     extent1[3] = extent2[3];
   }
+  return extent1;
 };
 
 
