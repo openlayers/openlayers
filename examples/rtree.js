@@ -10,39 +10,9 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.layer.Vector');
 goog.require('ol.shape');
 goog.require('ol.source.Vector');
-goog.require('ol.structs.RTree');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
-/**
- * @return {Array.<Array.<ol.Extent>>} Extents at depths.
- */
-ol.structs.RTree.prototype.getExtentsByDepth = function() {
-  var depthFirstSearch =
-      /**
-       * @param {ol.structs.RTreeNode} node Node.
-       * @param {number} depth Depth.
-       * @param {Array.<Array.<ol.Extent>>} result Result.
-       * @return {Array.<Array.<ol.Extent>>} Result.
-       */
-      function(node, depth, result) {
-    if (goog.isDef(result[depth])) {
-      result[depth].push(node.extent);
-    } else {
-      result[depth] = [node.extent];
-    }
-    var nodes = node.nodes;
-    if (goog.isDef(nodes)) {
-      var i, ii;
-      for (i = 0, ii = nodes.length; i < ii; ++i) {
-        depthFirstSearch(nodes[i], depth + 1, result);
-      }
-    }
-    return result;
-  };
-  return depthFirstSearch(this.rootTree_, 0, []);
-};
 
 var i, ii, j, jj;
 
@@ -77,10 +47,22 @@ for (i = 0, ii = colors.length; i < ii; ++i) {
     zIndex: i
   });
 }
-var extentsByDepth = vectorSource.rTree_.getExtentsByDepth();
+var extentsByDepth = [];
+vectorSource.rBush_.forEachNode(function(node) {
+  if (node.height > 0) {
+    if (goog.isDef(extentsByDepth[node.height])) {
+      extentsByDepth[node.height].push(node.extent);
+    } else {
+      extentsByDepth[node.height] = [node.extent];
+    }
+  }
+});
 var rtreeExtentFeatures = [];
 for (i = 0, ii = extentsByDepth.length; i < ii; ++i) {
   var extents = extentsByDepth[i];
+  if (!goog.isDef(extents)) {
+    continue;
+  }
   for (j = 0, jj = extents.length; j < jj; ++j) {
     var extent = extents[j];
     var geometry = new ol.geom.Polygon([[
