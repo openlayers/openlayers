@@ -410,6 +410,20 @@ ol.extent.getHeight = function(extent) {
 
 
 /**
+ * @param {ol.Extent} extent1 Extent 1.
+ * @param {ol.Extent} extent2 Extent 2.
+ * @return {number} Intersection area.
+ */
+ol.extent.getIntersectionArea = function(extent1, extent2) {
+  var minX = Math.max(extent1[0], extent2[0]);
+  var minY = Math.max(extent1[1], extent2[1]);
+  var maxX = Math.min(extent1[2], extent2[2]);
+  var maxY = Math.min(extent1[3], extent2[3]);
+  return Math.max(0, maxX - minX) * Math.max(0, maxY - minY);
+};
+
+
+/**
  * @param {ol.Extent} extent Extent.
  * @return {ol.Size} Size.
  * @todo stability experimental
