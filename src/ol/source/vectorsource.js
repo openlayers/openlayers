@@ -2,7 +2,6 @@
 // FIXME put features in an ol.Collection
 // FIXME make change-detection more refined (notably, geometry hint)
 // FIXME keep R-Tree up-to-date, probably needs a new R-Tree implementation
-// FIXME iterate over R-Treed, needs a new R-Tree implementation
 
 goog.provide('ol.source.Vector');
 
@@ -11,7 +10,7 @@ goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('ol.source.Source');
-goog.require('ol.structs.RTree');
+goog.require('ol.structs.RBush');
 
 
 
@@ -34,9 +33,9 @@ ol.source.Vector = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.structs.RTree}
+   * @type {ol.structs.RBush.<ol.Feature>}
    */
-  this.rTree_ = new ol.structs.RTree();
+  this.rBush_ = new ol.structs.RBush();
 
   /**
    * @private
@@ -65,7 +64,7 @@ ol.source.Vector.prototype.addFeature = function(feature) {
   this.featureChangeKeys_[featureKey] = goog.events.listen(feature,
       goog.events.EventType.CHANGE, this.handleFeatureChange_, false, this);
   var extent = feature.getGeometry().getExtent();
-  this.rTree_.insert(extent, feature);
+  this.rBush_.insert(extent, feature);
   this.dispatchChangeEvent();
 };
 
@@ -99,15 +98,7 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinate =
  */
 ol.source.Vector.prototype.forEachFeatureInExtent =
     function(extent, f, opt_obj) {
-  var features = this.getAllFeaturesInExtent(extent);
-  var i, ii;
-  for (i = 0, ii = features.length; i < ii; ++i) {
-    var result = f.call(opt_obj, features[i]);
-    if (result) {
-      return result;
-    }
-  }
-  return undefined;
+  return this.rBush_.forEachInExtent(extent, f, opt_obj);
 };
 
 
@@ -129,7 +120,7 @@ ol.source.Vector.prototype.getAllFeaturesAtCoordinate = function(coordinate) {
  * @return {Array.<ol.Feature>} Features.
  */
 ol.source.Vector.prototype.getAllFeaturesInExtent = function(extent) {
-  return this.rTree_.search(extent);
+  return this.rBush_.allInExtent(extent);
 };
 
 
@@ -148,8 +139,7 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
  * @param {ol.Feature} feature Feature.
  */
 ol.source.Vector.prototype.removeFeature = function(feature) {
-  var extent = feature.getGeometry().getExtent();
-  this.rTree_.remove(extent, feature);
+  this.rBush_.remove(feature);
   var featureKey = goog.getUid(feature) + '';
   goog.asserts.assert(featureKey in this.featureChangeKeys_);
   goog.events.unlistenByKey(this.featureChangeKeys_[featureKey]);
