@@ -98,8 +98,9 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   var vectorLayer = this.getVectorLayer();
   var vectorSource = vectorLayer.getVectorSource();
   var frameStateExtent = frameState.extent;
+  var frameStateResolution = frameState.view2DState.resolution;
 
-  if (this.renderedResolution_ == frameState.view2DState.resolution &&
+  if (this.renderedResolution_ == frameStateResolution &&
       this.renderedRevision_ == vectorSource.getRevision() &&
       ol.extent.containsExtent(this.renderedExtent_, frameStateExtent)) {
     return;
@@ -124,7 +125,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
        * @param {ol.Feature} feature Feature.
        */
       function(feature) {
-        var styles = styleFunction(feature);
+        var styles = styleFunction(feature, frameStateResolution);
         var i, ii = styles.length;
         for (i = 0; i < ii; ++i) {
           ol.renderer.vector.renderFeature(replayGroup, feature, styles[i]);
@@ -132,7 +133,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
       }, this);
   replayGroup.finish();
 
-  this.renderedResolution_ = frameState.view2DState.resolution;
+  this.renderedResolution_ = frameStateResolution;
   this.renderedRevision_ = vectorSource.getRevision();
   if (!replayGroup.isEmpty()) {
     this.replayGroup_ = replayGroup;

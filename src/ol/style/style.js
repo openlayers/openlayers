@@ -41,6 +41,6 @@ ol.style.Style = function(options) {
 
 
 /**
- * @typedef {function(ol.Feature): Array.<ol.style.Style>}
+ * @typedef {function(ol.Feature, number): Array.<ol.style.Style>}
  */
 ol.style.StyleFunction;
