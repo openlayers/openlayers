@@ -55,6 +55,78 @@ describe('ol.structs.RBush', function() {
 
     });
 
+    describe('#remove', function() {
+
+      it('can remove each object', function() {
+        var i, ii;
+        for (i = 0, ii = objs.length; i < ii; ++i) {
+          expect(rBush.all()).to.contain(objs[i]);
+          rBush.remove(objs[i]);
+          expect(rBush.all()).not.to.contain(objs[i]);
+        }
+      });
+
+    });
+
+  });
+
+  describe('with 100 objects', function() {
+
+    var extents, objs;
+    beforeEach(function() {
+      extents = [];
+      objs = [];
+      var i;
+      for (i = 0; i < 100; ++i) {
+        extents[i] = [i - 0.1, i - 0.1, i + 0.1, i + 0.1];
+        objs[i] = {id: i};
+        rBush.insert(extents[i], objs[i]);
+      }
+    });
+
+    describe('#allInExtent', function() {
+
+      it('returns the expected objects', function() {
+        var i, ii;
+        for (i = 0, ii = objs.length; i < ii; ++i) {
+          expect(rBush.allInExtent(extents[i])).to.eql([objs[i]]);
+        }
+      });
+
+    });
+
+    describe('#remove', function() {
+
+      it('can remove each object in turn', function() {
+        var i, ii;
+        for (i = 0, ii = objs.length; i < ii; ++i) {
+          expect(rBush.allInExtent(extents[i])).to.eql([objs[i]]);
+          rBush.remove(objs[i]);
+          expect(rBush.allInExtent(extents[i])).to.be.empty();
+        }
+        expect(rBush.all()).to.be.empty();
+      });
+
+      it('can remove objects in random order', function() {
+        var i, ii, j;
+        // http://en.wikipedia.org/wiki/Random_permutation
+        var indexes = [];
+        for (i = 0, ii = objs.length; i < ii; ++i) {
+          j = Math.floor(Math.random() * (i + 1));
+          indexes[i] = indexes[j];
+          indexes[j] = i;
+        }
+        for (i = 0, ii = objs.length; i < ii; ++i) {
+          var index = indexes[i];
+          expect(rBush.allInExtent(extents[index])).to.eql([objs[index]]);
+          rBush.remove(objs[index]);
+          expect(rBush.allInExtent(extents[index])).to.be.empty();
+        }
+        expect(rBush.all()).to.be.empty();
+      });
+
+    });
+
   });
 
   describe('with 1000 objects', function() {

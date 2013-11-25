@@ -19,7 +19,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// FIXME removal
 // FIXME bulk inserts
 
 goog.provide('ol.structs.RBush');
@@ -358,6 +357,27 @@ ol.structs.RBush.prototype.clear = function() {
 
 
 /**
+ * @param {Array.<ol.structs.RBushNode.<T>>} path Path.
+ * @private
+ */
+ol.structs.RBush.prototype.condense_ = function(path) {
+  var i;
+  for (i = path.length - 1; i >= 0; --i) {
+    var node = path[i];
+    if (node.children.length === 0) {
+      if (i > 0) {
+        goog.array.remove(path[i - 1].children, node);
+      } else {
+        this.clear();
+      }
+    } else {
+      node.updateExtent();
+    }
+  }
+};
+
+
+/**
  * @param {function(this: S, T): *} callback Callback.
  * @param {S=} opt_obj Scope.
  * @return {*} Callback return value.
@@ -524,8 +544,41 @@ ol.structs.RBush.prototype.remove = function(value) {
  * @private
  */
 ol.structs.RBush.prototype.remove_ = function(extent, value) {
-  // FIXME
-  goog.asserts.fail();
+  var node = this.root_;
+  var index = 0;
+  /** @type {Array.<ol.structs.RBushNode.<T>>} */
+  var path = [node];
+  /** @type {Array.<number>} */
+  var indexes = [0];
+  var child, children, i, ii;
+  while (path.length > 0) {
+    goog.asserts.assert(node.height > 0);
+    if (node.height == 1) {
+      children = node.children;
+      for (i = 0, ii = children.length; i < ii; ++i) {
+        child = children[i];
+        if (child.value === value) {
+          goog.array.removeAt(children, i);
+          this.condense_(path);
+          return;
+        }
+      }
+      ++index;
+    } else if (index < node.children.length) {
+      child = node.children[index];
+      if (ol.extent.containsExtent(child.extent, extent)) {
+        path.push(child);
+        indexes.push(index + 1);
+        node = child;
+        index = 0;
+      } else {
+        ++index;
+      }
+    } else {
+      node = path.pop();
+      index = indexes.pop();
+    }
+  }
 };
 
 
