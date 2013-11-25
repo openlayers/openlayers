@@ -1,7 +1,6 @@
 // FIXME bulk feature upload - suppress events
 // FIXME put features in an ol.Collection
 // FIXME make change-detection more refined (notably, geometry hint)
-// FIXME keep R-Tree up-to-date, probably needs a new R-Tree implementation
 
 goog.provide('ol.source.Vector');
 
@@ -129,8 +128,8 @@ ol.source.Vector.prototype.getAllFeaturesInExtent = function(extent) {
  * @private
  */
 ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
-  //var feature = /** @type {ol.Feature} */ (event.target);
-  // FIXME keep R-Tree up to date
+  var feature = /** @type {ol.Feature} */ (event.target);
+  this.rBush_.update(feature.getGeometry().getExtent(), feature);
   this.dispatchChangeEvent();
 };
 
