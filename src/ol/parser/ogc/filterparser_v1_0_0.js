@@ -169,7 +169,7 @@ ol.parser.ogc.Filter_v1_0_0.prototype.writeSpatial_ = function(filter, name) {
     var child;
     if (geom !== null) {
       child = this.writeNode('_geometry', {value: geom},
-          this.gml_.featureNS).firstChild;
+          this.gmlParser_.featureNS).firstChild;
     } else if (bbox.length === 4) {
       child = this.writeNode('Box', bbox,
           'http://www.opengis.net/gml');
