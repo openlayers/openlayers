@@ -41,18 +41,18 @@ ol.style.Style = function(options) {
       options.symbolizers : [];
 
   /**
-   * @type {?string}
+   * @type {string|undefined}
    * @private
    */
   this.name_ = goog.isDef(options.name) ?
-      options.name : null;
+      options.name : undefined;
 
   /**
-   * @type {?string}
+   * @type {string|undefined}
    * @private
    */
   this.title_ = goog.isDef(options.title) ?
-      options.title : null;
+      options.title : undefined;
 };
 
 
@@ -247,7 +247,7 @@ ol.style.Style.prototype.getSymbolizers = function() {
 
 
 /**
- * @return {?string}
+ * @return {string|undefined}
  */
 ol.style.Style.prototype.getName = function() {
   return this.name_;
@@ -255,7 +255,7 @@ ol.style.Style.prototype.getName = function() {
 
 
 /**
- * @return {?string}
+ * @return {string|undefined}
  */
 ol.style.Style.prototype.getTitle = function() {
   return this.title_;

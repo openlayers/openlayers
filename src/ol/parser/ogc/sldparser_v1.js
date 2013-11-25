@@ -342,10 +342,10 @@ ol.parser.ogc.SLD_v1 = function() {
     'UserStyle': function(style) {
       var node = this.createElementNS('sld:UserStyle');
       var name = style.getName(), title = style.getTitle();
-      if (!goog.isNull(name)) {
+      if (goog.isDef(name)) {
         this.writeNode('Name', name, null, node);
       }
-      if (!goog.isNull(title)) {
+      if (goog.isDef(title)) {
         this.writeNode('Title', title, null, node);
       }
       // TODO sorting by zIndex
@@ -370,11 +370,12 @@ ol.parser.ogc.SLD_v1 = function() {
     'Rule': function(rule) {
       var node = this.createElementNS('sld:Rule');
       var filter = rule.getFilter();
-      if (!goog.isNull(rule.getName())) {
-        this.writeNode('Name', rule.getName(), null, node);
+      var name = rule.getName(), title = rule.getTitle();
+      if (goog.isDef(name)) {
+        this.writeNode('Name', name, null, node);
       }
-      if (!goog.isNull(rule.getTitle())) {
-        this.writeNode('Title', rule.title, null, node);
+      if (goog.isDef(title)) {
+        this.writeNode('Title', title, null, node);
       }
       if (rule.elseFilter === true) {
         this.writeNode('ElseFilter', null, null, node);
