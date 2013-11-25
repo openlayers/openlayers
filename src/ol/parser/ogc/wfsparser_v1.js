@@ -3,6 +3,22 @@ goog.require('goog.dom.xml');
 goog.require('ol.parser.XML');
 
 
+/**
+ * @typedef {{featureNS: string,
+              featurePrefix: string,
+              featureTypes: Array.<string>,
+              handle: string,
+              outputFormat: string,
+              nativeElements: Array.<{
+                vendorId: string,
+                safeToIgnore: boolean,
+                value: string
+              }>,
+              maxFeatures: number}}
+ */
+ol.parser.WFSWriteOptions;
+
+
 
 /**
  * @constructor
@@ -21,7 +37,7 @@ ol.parser.ogc.WFS_v1 = function() {
   this.writers = {};
   this.writers[this.defaultNamespaceURI] = {
     'GetFeature': function(options) {
-      options = /** @type {ol.parser.WFSOptions} */(options);
+      options = /** @type {ol.parser.WFSWriteOptions} */(options);
       var node = this.createElementNS('wfs:GetFeature');
       node.setAttribute('service', 'WFS');
       node.setAttribute('version', this.version);
@@ -47,7 +63,7 @@ ol.parser.ogc.WFS_v1 = function() {
     },
     'Transaction': function(obj) {
       obj = obj || {};
-      var options = obj.options || {};
+      var options = /** {ol.parser.WFSWriteOptions} */(obj.options || {});
       var node = this.createElementNS('wfs:Transaction');
       node.setAttribute('service', 'WFS');
       node.setAttribute('version', this.version);
@@ -152,7 +168,7 @@ ol.parser.ogc.WFS_v1.prototype.read = function(data) {
 
 /**
  * @param {Array.<ol.Feature>} features The features to write out.
- * @param {Object} options Write options.
+ * @param {ol.parser.WFSWriteOptions} options Write options.
  * @return {string} A serialized WFS transaction.
  */
 ol.parser.ogc.WFS_v1.prototype.write = function(features, options) {

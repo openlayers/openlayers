@@ -52,17 +52,15 @@ describe('ol.parser.ogc.WFS', function() {
       var url = 'spec/ol/parser/ogc/xml/wfs_v1/Native.xml';
       afterLoadXml(url, function(xml) {
         var p = new ol.parser.ogc.WFS_v1_1_0();
-        var output = p.write(null, {
-          nativeElements: [{
-            vendorId: 'ORACLE',
-            safeToIgnore: true,
-            value: 'ALTER SESSION ENABLE PARALLEL DML'
-          }, {
-            vendorId: 'ORACLE',
-            safeToIgnore: false,
-            value: 'Another native line goes here'
-          }]
-        });
+        var output = p.write(null, {nativeElements: [{
+          vendorId: 'ORACLE',
+          safeToIgnore: true,
+          value: 'ALTER SESSION ENABLE PARALLEL DML'
+        }, {
+          vendorId: 'ORACLE',
+          safeToIgnore: false,
+          value: 'Another native line goes here'
+        }]});
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
         done();
       });
