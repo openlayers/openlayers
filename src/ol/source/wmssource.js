@@ -1,6 +1,7 @@
 goog.provide('ol.source.WMSGetFeatureInfoMethod');
 goog.provide('ol.source.wms');
 
+goog.require('goog.Uri');
 goog.require('goog.net.XhrIo');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
@@ -102,7 +103,11 @@ ol.source.wms.getFeatureInfo =
     goog.object.extend(params, {'X': x, 'Y': y});
   }
   goog.object.extend(params, localOptions.params);
-  url = goog.uri.utils.appendParamsFromMap(url, params);
+  var uri = new goog.Uri(url, true);
+  for (var key in params) {
+    uri.setParameterValue(key, params[key]);
+  }
+  url = uri.toString();
   if (localOptions.method == ol.source.WMSGetFeatureInfoMethod.IFRAME) {
     goog.global.setTimeout(function() {
       success('<iframe seamless src="' + url + '"></iframe>');
