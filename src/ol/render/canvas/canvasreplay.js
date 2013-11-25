@@ -118,7 +118,7 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry) {
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
  */
-ol.render.canvas.Replay.prototype.draw =
+ol.render.canvas.Replay.prototype.replay =
     function(context, transform, renderGeometryFunction) {
   /** @type {Array.<number>} */
   var pixelCoordinates;
@@ -804,7 +804,7 @@ ol.render.canvas.ReplayGroup = function() {
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
  */
-ol.render.canvas.ReplayGroup.prototype.draw =
+ol.render.canvas.ReplayGroup.prototype.replay =
     function(context, extent, transform, renderGeometryFunction) {
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.replayesByZIndex_), Number);
@@ -816,7 +816,7 @@ ol.render.canvas.ReplayGroup.prototype.draw =
     for (replayType in replayes) {
       var replay = replayes[replayType];
       if (ol.extent.intersects(extent, replay.getExtent())) {
-        replay.draw(context, transform, renderGeometryFunction);
+        replay.replay(context, transform, renderGeometryFunction);
       }
     }
   }

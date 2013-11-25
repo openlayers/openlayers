@@ -67,7 +67,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     }
     goog.asserts.assert(goog.isFunction(renderGeometryFunction));
     context.globalAlpha = layerState.opacity;
-    replayGroup.draw(
+    replayGroup.replay(
         context, frameState.extent, transform, renderGeometryFunction);
   }
 
