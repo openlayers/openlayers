@@ -618,3 +618,19 @@ ol.structs.RBush.prototype.splitRoot_ = function(node1, node2) {
   var children = [node1, node2];
   this.root_ = new ol.structs.RBushNode(extent, height, children, null);
 };
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {T} value Value.
+ */
+ol.structs.RBush.prototype.update = function(extent, value) {
+  var key = this.getKey_(value);
+  var currentExtent = this.valueExtent_[key];
+  goog.asserts.assert(goog.isDef(currentExtent));
+  if (!ol.extent.equals(currentExtent, extent)) {
+    this.remove_(currentExtent, value);
+    this.insert_(extent, value, this.root_.height - 1);
+    this.valueExtent_[key] = extent;
+  }
+};
