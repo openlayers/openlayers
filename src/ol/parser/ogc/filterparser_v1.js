@@ -182,7 +182,8 @@ ol.parser.ogc.Filter_v1 = function() {
         var args = [], container = {};
         this.readChildNodes(node, container);
         if (goog.isDef(container.geometry)) {
-          args.push(new ol.expr.Literal(this.gml_.createGeometry(container)));
+          args.push(new ol.expr.Literal(this.gmlParser_.createGeometry(
+              container)));
         } else {
           args = [new ol.expr.Literal(container.bounds[0]),
                 new ol.expr.Literal(container.bounds[1]),
@@ -581,28 +582,36 @@ ol.parser.ogc.Filter_v1.prototype.aggregateLogical_ = function(filters,
 
 
 /**
+ * @return {ol.parser.ogc.GML_v2|ol.parser.ogc.GML_v3}
+ */
+ol.parser.ogc.Filter_v1.prototype.getGmlParser = function() {
+  return this.gmlParser_;
+};
+
+
+/**
  * @param {ol.parser.ogc.GML_v2|ol.parser.ogc.GML_v3} gml The GML parser to
  *     use.
  * @protected
  */
 ol.parser.ogc.Filter_v1.prototype.setGmlParser = function(gml) {
-  this.gml_ = gml;
-  for (var uri in this.gml_.readers) {
-    for (var key in this.gml_.readers[uri]) {
+  this.gmlParser_ = gml;
+  for (var uri in this.gmlParser_.readers) {
+    for (var key in this.gmlParser_.readers[uri]) {
       if (!goog.isDef(this.readers[uri])) {
         this.readers[uri] = {};
       }
-      this.readers[uri][key] = goog.bind(this.gml_.readers[uri][key],
-          this.gml_);
+      this.readers[uri][key] = goog.bind(this.gmlParser_.readers[uri][key],
+          this.gmlParser_);
     }
   }
-  for (uri in this.gml_.writers) {
-    for (key in this.gml_.writers[uri]) {
+  for (uri in this.gmlParser_.writers) {
+    for (key in this.gmlParser_.writers[uri]) {
       if (!goog.isDef(this.writers[uri])) {
         this.writers[uri] = {};
       }
-      this.writers[uri][key] = goog.bind(this.gml_.writers[uri][key],
-          this.gml_);
+      this.writers[uri][key] = goog.bind(this.gmlParser_.writers[uri][key],
+          this.gmlParser_);
     }
   }
 };

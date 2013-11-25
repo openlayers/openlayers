@@ -148,6 +148,9 @@ ol.parser.ogc.GML = function(opt_options) {
       'polygonMember': function(node, obj) {
         this.readChildNodes(node, obj);
       },
+      'boundedBy': function(node, obj) {
+        this.readChildNodes(node, obj);
+      },
       'Point': function(node, container) {
         var coordinates = [];
         this.readers[this.defaultNamespaceURI]['_inherit'].apply(this,
