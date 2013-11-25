@@ -538,9 +538,6 @@
  *     will be automatically configured from the GML.
  * @property {Array.<string>|string|undefined} featureType The local
  *     (without prefix) feature typeName(s).
- * @property {string|undefined} geometryName Name of geometry element.
- *     Defaults to `geometry`. If null, it will be set on <read> when the
- *     first geometry is parsed.
  * @property {boolean|undefined} multiCurve Write gml:MultiCurve instead of
  *     gml:MultiLineString. Since the latter is deprecated in GML 3, the
  *     default is `true`. This only applies to GML version 3.
