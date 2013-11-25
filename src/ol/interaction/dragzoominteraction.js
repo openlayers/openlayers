@@ -94,7 +94,8 @@ ol.interaction.DragZoom.prototype.handleDragStart =
   var browserEvent = mapBrowserEvent.browserEvent;
   if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
     this.dragBox_ = new ol.control.DragBox({
-      startCoordinate: this.startCoordinate
+      startCoordinate: this.startCoordinate,
+      target: mapBrowserEvent.map.getOverlayContainer()
     });
     this.dragBox_.setMap(mapBrowserEvent.map);
     return true;
