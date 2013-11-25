@@ -220,10 +220,7 @@ ol.renderer.canvas.VectorLayer.prototype.getTransform = function() {
 
 
 /**
- * @param {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
- * @param {function(string, ol.layer.Layer)} success Callback for
- *     successful queries. The passed arguments are the resulting feature
- *     information and the layer.
+ * @inheritDoc
  */
 ol.renderer.canvas.VectorLayer.prototype.getFeatureInfoForPixel =
     function(pixel, success) {
@@ -231,6 +228,7 @@ ol.renderer.canvas.VectorLayer.prototype.getFeatureInfoForPixel =
     success(layer.getTransformFeatureInfo()(features), layer);
   };
   this.getFeaturesForPixel(pixel, callback);
+  return true;
 };
 
 
