@@ -583,6 +583,18 @@
  * @todo stability experimental
  */
 
+ /**
+ * @typedef {Object} ol.parser.SLDReadOptions
+ * @property {ol.proj.Units} units The units to use in scale to resolution
+ *     calculations.
+ */
+
+ /**
+ * @typedef {Object} ol.parser.SLDWriteOptions
+ * @property {ol.proj.Units} units The units to use in resolution to scale
+ *     calculations.
+ */
+
 /**
  * @typedef {Object} ol.source.BingMapsOptions
  * @property {string|undefined} culture Culture code. Default is `en-us`.
@@ -803,6 +815,8 @@
  *     a value is provided, the rule will apply at resolutions greater than or
  *     equal to this value.
  * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers.
+ * @property {string|undefined} name Name.
+ * @property {string|undefined} title Title.
  * @todo stability experimental
  */
 
@@ -832,6 +846,8 @@
  * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers
  *     (that apply if no rules are provided or where none of the provided rules
  *     apply).
+ * @property {string|undefined} name Name.
+ * @property {string|undefined} title Title.
  * @todo stability experimental
  */
 

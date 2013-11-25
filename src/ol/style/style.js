@@ -40,6 +40,19 @@ ol.style.Style = function(options) {
   this.symbolizers_ = goog.isDef(options.symbolizers) ?
       options.symbolizers : [];
 
+  /**
+   * @type {string|undefined}
+   * @private
+   */
+  this.name_ = goog.isDef(options.name) ?
+      options.name : undefined;
+
+  /**
+   * @type {string|undefined}
+   * @private
+   */
+  this.title_ = goog.isDef(options.title) ?
+      options.title : undefined;
 };
 
 
@@ -206,4 +219,44 @@ ol.style.Style.reduceLiterals_ = function(literals) {
     }
   }
   return reduced;
+};
+
+
+/**
+ * @return {Array.<ol.style.Rule>}
+ */
+ol.style.Style.prototype.getRules = function() {
+  return this.rules_;
+};
+
+
+/**
+ * @param {Array.<ol.style.Rule>} rules The rules to set.
+ */
+ol.style.Style.prototype.setRules = function(rules) {
+  this.rules_ = rules;
+};
+
+
+/**
+ * @return {Array.<ol.style.Symbolizer>}
+ */
+ol.style.Style.prototype.getSymbolizers = function() {
+  return this.symbolizers_;
+};
+
+
+/**
+ * @return {string|undefined}
+ */
+ol.style.Style.prototype.getName = function() {
+  return this.name_;
+};
+
+
+/**
+ * @return {string|undefined}
+ */
+ol.style.Style.prototype.getTitle = function() {
+  return this.title_;
 };

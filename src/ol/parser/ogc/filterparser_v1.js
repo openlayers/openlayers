@@ -508,7 +508,14 @@ ol.parser.ogc.Filter_v1.prototype.write = function(filter) {
  */
 ol.parser.ogc.Filter_v1.prototype.writeOgcExpression = function(expr, node) {
   if (expr instanceof ol.expr.Call) {
-    this.writeNode('Function', expr, null, node);
+    if (ol.expr.isLibCall(expr) === ol.expr.functions.CONCAT) {
+      var args = expr.getArgs();
+      for (var i = 0, ii = args.length; i < ii; ++i) {
+        this.writeOgcExpression(args[i], node);
+      }
+    } else {
+      this.writeNode('Function', expr, null, node);
+    }
   } else if (expr instanceof ol.expr.Literal) {
     this.writeNode('Literal', expr, null, node);
   } else if (expr instanceof ol.expr.Identifier) {
