@@ -30,7 +30,7 @@ goog.require('ol.structs.RTree');
  *            geometry: ol.geom.Geometry,
  *            index: (number|undefined),
  *            style: ol.style.Style,
- *            segment: (Array.<ol.Extent>|undefined)}}
+ *            segment: Array.<ol.Extent>}}
  */
 ol.interaction.SegmentDataType;
 
@@ -277,9 +277,11 @@ ol.interaction.Modify.prototype.addSegments_ =
   var rTree = this.rTree_;
   var segment, segmentData, coordinates;
   if (geometry instanceof ol.geom.Point) {
+    coordinates = geometry.getCoordinates();
     segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
       feature: feature,
       geometry: geometry,
+      segment: [coordinates, coordinates],
       style: layer.getStyle()
     });
     rTree.insert(geometry.getBounds(), segmentData, uid);
@@ -389,20 +391,18 @@ ol.interaction.Modify.prototype.handleDrag = function(evt) {
     var geometry = segmentData.geometry;
     var coordinates = geometry.getCoordinates();
 
-    var oldBounds, newBounds;
+    var segment = segmentData.segment;
+    var oldBounds = ol.extent.boundingExtent(segment);
     if (geometry instanceof ol.geom.Point) {
-      oldBounds = geometry.getBounds();
-      geometry.setCoordinates(vertex);
-      newBounds = geometry.getBounds();
+      coordinates = vertex;
+      segment[0] = segment[1] = vertex;
     } else {
       var index = dragSegment[1];
       coordinates[segmentData.index + index] = vertex;
-      geometry.setCoordinates(coordinates);
-      var segment = segmentData.segment;
-      oldBounds = ol.extent.boundingExtent(segment);
       segment[index] = vertex;
-      newBounds = ol.extent.boundingExtent(segment);
     }
+    geometry.setCoordinates(coordinates);
+    var newBounds = ol.extent.boundingExtent(segment);
     this.createOrUpdateVertexFeature_(segmentData.style, vertex);
     this.rTree_.remove(oldBounds, segmentData);
     this.rTree_.insert(newBounds, segmentData, goog.getUid(feature));
