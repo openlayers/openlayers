@@ -20,6 +20,7 @@
 // THE SOFTWARE.
 
 // FIXME bulk inserts
+// FIXME is level argument needed to insert_?
 
 goog.provide('ol.structs.RBush');
 
