@@ -25,23 +25,23 @@ for (var i = 0; i < count; ++i) {
 }
 
 var styles = {
-  '10': new ol.style.Style({
+  '10': [new ol.style.Style({
     image: ol.shape.renderCircle(5,
         new ol.style.Fill({color: '#666666'}),
         new ol.style.Stroke({color: '#bada55', width: 1}))
-  }),
-  '20': new ol.style.Style({
+  })],
+  '20': [new ol.style.Style({
     image: ol.shape.renderCircle(10,
         new ol.style.Fill({color: '#666666'}),
         new ol.style.Stroke({color: '#bada55', width: 1}))
-  })
+  })]
 };
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
     features: features
   }),
-  styleFunction: function(feature) {
+  styleFunction: function(feature, resolution) {
     return styles[feature.get('size')];
   }
 });
