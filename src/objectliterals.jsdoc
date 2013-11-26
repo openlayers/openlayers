@@ -434,6 +434,14 @@
  * @todo stability experimental
  */
 
+ /**
+ * @typedef {Object} ol.interaction.ModifyOptions
+ * @property {undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer):boolean} layers
+ *     Layers or filter function to restrict modification to a subset of layers.
+ * @property {number|undefined} pixelTolerance Pixel tolerance for considering
+ *     the pointer close enough to a vertex for editing. Default is 20 pixels.
+ */
+
 /**
  * @typedef {Object} olx.interaction.TouchRotateOptions
  * @property {number|undefined} threshold Minimal angle in radians to start a rotation.
