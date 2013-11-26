@@ -17,50 +17,48 @@ goog.require('ol.style.Style');
 
 var image = ol.shape.renderCircle(5, null,
     new ol.style.Stroke({color: 'red', width: 1}));
-var styleFunction = function(feature) {
-  switch (feature.getGeometry().getType()) {
-    case 'Point':
-      return new ol.style.Style({
-        image: image
-      });
-    case 'Polygon':
-      return new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: 'blue',
-          width: 3
-        }),
-        fill: new ol.style.Fill({
-          color: 'rgba(0, 0, 255, 0.1)'
-        })
-      });
-    case 'MultiLineString':
-      return new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: 'green',
-          width: 1
-        })
-      });
-    case 'MultiPolygon':
-      return new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: 'yellow',
-          width: 1
-        }),
-        fill: new ol.style.Fill({
-          color: 'rgba(255, 255, 0, 0.1)'
-        })
-      });
-    default:
-      return new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: 'red',
-          width: 2
-        }),
-        fill: new ol.style.Fill({
-          color: 'rgba(255, 0, 0, 0.1)'
-        })
-      });
-  }
+
+var styles = {
+  'Point': [new ol.style.Style({
+    image: image
+  })],
+  'LineString': [new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'green',
+      width: 1
+    })
+  })],
+  'MultiLineString': [new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'green',
+      width: 1
+    })
+  })],
+  'MultiPoint': [new ol.style.Style({
+    image: image
+  })],
+  'MultiPolygon': [new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'yellow',
+      width: 1
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(255, 255, 0, 0.1)'
+    })
+  })],
+  'Polygon': [new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'blue',
+      width: 3
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(0, 0, 255, 0.1)'
+    })
+  })]
+};
+
+var styleFunction = function(feature, resolution) {
+  return styles[feature.getGeometry().getType()];
 };
 
 var vectorSource = new ol.source.Vector();
