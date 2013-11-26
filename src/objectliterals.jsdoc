@@ -627,13 +627,16 @@
 /**
  * @typedef {Object} ol.style.ImageOptions
  * @property {ol.Pixel} anchor Anchor.
- * @property {HTMLCanvasElement|HTMLVideoElement|Image} image Image.
+ * @property {null|string|undefined} crossOrigin crossOrigin setting for image.
+ * @property {HTMLCanvasElement|HTMLVideoElement|Image|undefined} image Image.
+ * @property {ol.style.ImageState|undefined} imageState Image state.
  * @property {number|undefined} rotation Rotation.
  * @property {ol.Size} size Image size in pixel.
  * @property {boolean|undefined} snapToPixel Whether the image should be
  *     snapped to the closed pixel at rendering time.
  * @property {boolean|undefined} subtractViewRotation Whether the image should be
  *     rotated with the view or not.
+ * @property {string|undefined} src Image source URI.
  */
 
 /**
