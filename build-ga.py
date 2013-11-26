@@ -4,6 +4,13 @@ from build import *
 
 from pake import targets,TargetCollection, DuplicateTargetError
 
+def prepend(name, data):
+     f = open(name,'r')
+     temp = f.read()
+     f.close()
+     ob = json.loads(temp) 
+     open(name, "w").write(data + json.dumps(ob['layers'],sort_keys=True,indent=2))
+
 # Monkey patching build.py to allow redefining targets by 
 def add(self, target, force=True):
         """add adds a concrete target to self, overriding it if the target
@@ -20,14 +27,17 @@ targets.add = MethodType(add, targets, TargetCollection)
 
 # We redefine 'build'
 virtual('build', 'build/ga.css', 'build/ga.js',
-        'build/ga-simple.js', 'build/ga-whitespace.js')
+        'build/ga-simple.js', 'build/ga-whitespace.js','build/layersconfig')
 
+        
 # Adding ga custom source directoy
 
 from build import SRC
 SRC.extend([path for path in ifind('src/ga')
        if path.endswith('.js')
        if path not in SHADER_SRC])
+
+AVAILABLE_LANGS = ['de','fr','en','it','rm']
 
 # Custom target for ga
 
@@ -56,6 +66,20 @@ def build_ga_whitespace_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR,
              'build', 'buildcfg/ga-whitespace.json')
     report_sizes(t)
+    
+@target('build/layersconfig', AVAILABLE_LANGS)
+def get_layersconfig(t):
+    for lang in AVAILABLE_LANGS:
+        name = "%s.%s.js" % (t.name, lang)
+        t.info('downloading %r', t.name)
+        t.download('http://api3.geo.admin.ch/rest/services/api/MapServer/layersconfig?lang=%s' % lang)
+        os.rename(t.name, name)
+        t.info('downloaded %r', name)
+        prepend(name, """var layerConfig = """)
+        
+   
+  
+
 
 if __name__ == '__main__':
     main()
