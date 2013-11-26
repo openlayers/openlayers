@@ -9,6 +9,7 @@ goog.require('goog.dom.TagName');
 goog.require('ol.color');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Image');
+goog.require('ol.style.ImageState');
 goog.require('ol.style.Stroke');
 
 
@@ -47,6 +48,7 @@ ol.shape.renderCircle = function(radius, fillStyle, strokeStyle) {
     anchor: [size / 2, size / 2],
     size: [size, size],
     image: canvas,
+    imageState: ol.style.ImageState.LOADED,
     rotation: 0,
     snapToPixel: undefined,
     subtractViewRotation: false
