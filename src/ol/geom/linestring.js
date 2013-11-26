@@ -28,6 +28,15 @@ ol.geom.LineString.prototype.getCoordinates = function() {
 
 
 /**
+ * @return {number} Length.
+ */
+ol.geom.LineString.prototype.getLength = function() {
+  return ol.geom.flat.lineStringLength(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+};
+
+
+/**
  * @inheritDoc
  */
 ol.geom.LineString.prototype.getType = function() {
