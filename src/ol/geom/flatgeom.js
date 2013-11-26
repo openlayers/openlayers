@@ -1,5 +1,6 @@
 goog.provide('ol.geom.flat');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
 
@@ -154,6 +155,7 @@ ol.geom.flat.lineStringLength = function(flatCoordinates, offset, end, stride) {
   var x1 = flatCoordinates[offset];
   var y1 = flatCoordinates[offset + 1];
   var length = 0;
+  var i;
   for (i = offset + stride; i < end; i += stride) {
     var x2 = flatCoordinates[i];
     var y2 = flatCoordinates[i + 1];
@@ -166,6 +168,66 @@ ol.geom.flat.lineStringLength = function(flatCoordinates, offset, end, stride) {
 
 
 /**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
+ * @param {number} fraction Fraction.
+ * @param {ol.Coordinate=} opt_point Point.
+ * @return {ol.Coordinate} Point at fraction along the line string.
+ */
+ol.geom.flat.lineStringInterpolate =
+    function(flatCoordinates, offset, end, stride, fraction, opt_point) {
+  goog.asserts.assert(0 <= fraction && fraction <= 1);
+  var point = goog.isDef(opt_point) ? opt_point : [NaN, NaN];
+  var n = (end - offset) / stride;
+  if (n === 0) {
+    goog.asserts.fail();
+  } else if (n == 1) {
+    point[0] = flatCoordinates[offset];
+    point[1] = flatCoordinates[offset + 1];
+  } else if (n == 2) {
+    point[0] = (1 - fraction) * flatCoordinates[offset] +
+        fraction * flatCoordinates[offset + stride];
+    point[1] = (1 - fraction) * flatCoordinates[offset + 1] +
+        fraction * flatCoordinates[offset + stride + 1];
+  } else {
+    var x1 = flatCoordinates[offset];
+    var y1 = flatCoordinates[offset + 1];
+    var length = 0;
+    var cumulativeLengths = [0];
+    var i;
+    for (i = offset + stride; i < end; i += stride) {
+      var x2 = flatCoordinates[i];
+      var y2 = flatCoordinates[i + 1];
+      length += Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+      cumulativeLengths.push(length);
+      x1 = x2;
+      y1 = y2;
+    }
+    var target = fraction * length;
+    var index = goog.array.binarySearch(cumulativeLengths, target);
+    if (index < 0) {
+      var t = (target - cumulativeLengths[-index - 2]) /
+          (cumulativeLengths[-index - 1] - cumulativeLengths[-index - 2]);
+      var o = offset + (-index - 2) * stride;
+      point[0] = (1 - t) * flatCoordinates[o] + t * flatCoordinates[o + stride];
+      point[1] = (1 - t) * flatCoordinates[o + 1] +
+          t * flatCoordinates[o + stride + 1];
+    } else {
+      point[0] = flatCoordinates[offset + index * stride];
+      point[1] = flatCoordinates[offset + index * stride + 1];
+    }
+  }
+  return point;
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
  * @param {number} x X.
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
