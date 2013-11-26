@@ -26,7 +26,7 @@ var map = new ol.Map({
 });
 
 var vectorSource = new ol.source.Vector();
-var style = new ol.style.Style({
+var styleArray = [new ol.style.Style({
   fill: new ol.style.Fill({
     color: 'rgba(255, 255, 255, 0.6)'
   }),
@@ -34,7 +34,7 @@ var style = new ol.style.Style({
     color: '#319FD3',
     width: 1
   })
-});
+})];
 
 var vectorLayer;
 $.getJSON('data/countries.geojson', function(data) {
@@ -48,8 +48,8 @@ $.getJSON('data/countries.geojson', function(data) {
   });
   vectorLayer = new ol.layer.Vector({
     source: vectorSource,
-    styleFunction: function(feature) {
-      return style;
+    styleFunction: function(feature, resolution) {
+      return styleArray;
     }
   });
   map.getLayers().push(vectorLayer);
