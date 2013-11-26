@@ -1,17 +1,32 @@
 .ol-attribution {
   position: absolute;
   text-align: right;
-  color: #eeeeee;
   bottom: 0;
   right: 0;
-  background: rgba(0,60,136,0.3);
   font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
   padding: 6px;
 }
 .ol-attribution a {
-  color: white;
   text-decoration: none;
 }
+
+/* rgba is not supported on IE <= 8, fall back to black text so that it's readable */
+.ol-attribution {
+  color: #000000;
+}
+.ol-attribution:not([ie8andbelow]) {
+  color: #eeeeee;
+  background: rgba(0,60,136,0.3);
+}
+
+/* white links are unreadable on IE <= 8 with no background, fall back to blue links */
+.ol-attribution a {
+  color: #7b98bc;
+}
+.ol-attribution a:not([ie8andbelow]) {
+  color: white;
+}
+
 .ol-attribution ul {
   margin: 0;
   padding: 0;
@@ -32,12 +47,17 @@
   white-space: nowrap;
 }
 .ol-full-screen {
-  background: rgba(255,255,255,0.4);
+  /* IE <= 8 doesn't support rgba, fall back to a light grey */
+  background: #eee;
   border-radius: 4px;
   padding: 2px;
   position: absolute;
   right: 8px;
   top: 8px;
+}
+.ol-full-screen:not([ie8andbelow]) {
+  /* IE <= 8 doesn't support rgba, fall back to a light grey */
+  background: rgba(255,255,255,0.4);
 }
 @media print {
   .ol-full-screen {
@@ -45,7 +65,8 @@
   }
 }
 .ol-full-screen a {
-  background: rgba(0,60,136,0.5);
+  /* IE <= 8 doesn't support rgba, fall back to a light blue */
+  background: #7b98bc;
   color: white;
   display: block;
   font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
@@ -58,6 +79,10 @@
   text-align: center;
   text-decoration: none;
   width: 22px;
+}
+.ol-full-screen a:not([ie8andbelow]) {
+  /* IE <= 8 doesn't support rgba, fall back to a light blue */
+  background: rgba(0,60,136,0.5);
 }
 a.ol-full-screen-false:after {
   content: "\2194";
@@ -73,6 +98,11 @@ a.ol-full-screen-true:after {
   border-radius: 2px;
 }
 .ol-full-screen a:hover {
+  /* IE <= 8 doesn't support rgba, fall back to a light blue */
+  background: #4c6079;
+}
+.ol-full-screen a:hover:not([ie8andbelow]) {
+  /* IE <= 8 doesn't support rgba, fall back to a light blue */
   background: rgba(0,60,136,0.7);
 }
 .ol-logo {
@@ -92,16 +122,21 @@ a.ol-full-screen-true:after {
 .ol-mouse-position {
   top: 8px;
   right: 8px;
-  position: absolute;  
+  position: absolute;
 }
 
 .ol-scale-line {
-  background: rgba(0,60,136,0.3);
+  /* IE <= 8 doesn't support rgba, fall back to a light blue */
+  background: #95b9e6;
   border-radius: 4px;
   bottom: 8px;
   left: 8px;
   padding: 2px;
   position: absolute;
+}
+.ol-scale-line:not([ie8andbelow]) {
+  /* IE <= 8 doesn't support rgba, fall back to a light blue */
+  background: rgba(0,60,136,0.3);
 }
 .ol-scale-line-inner {
   border: 1px solid #eeeeee;
@@ -129,9 +164,14 @@ a.ol-full-screen-true:after {
   position: absolute;
   top: 8px;
   left: 8px;
-  background: rgba(255,255,255,0.4);
+  /* IE <= 8 doesn't support rgba, fall back to a light grey */
+  background-color: #eee;
   border-radius: 4px;
   padding: 2px;
+}
+/* IE <= 8 doesn't support rgba, fall back to a light grey */
+.ol-zoom:not([ie8andbelow]) {
+  background-color: rgba(255,255,255,0.4);
 }
 @media print {
   .ol-zoom {
@@ -152,7 +192,12 @@ a.ol-full-screen-true:after {
   height: 22px;
   width: 22px;
   line-height: 19px;
-  background: rgba(0,60,136,0.5);
+  /* IE <= 8 doesn't support rgba, fall back to a light blue */
+  background-color: #7b98bc;
+}
+.ol-zoom a:not([ie8andbelow]) {
+  /* IE <= 8 doesn't support rgba, fall back to a light blue */
+  background-color: rgba(0,60,136,0.5);
 }
 .ol-touch .ol-zoom a {
   font-size: 20px;
@@ -163,7 +208,12 @@ a.ol-full-screen-true:after {
 .ol-zoom a:hover {
   color: #fff;
   text-decoration: none;
-  background: rgba(0,60,136,0.7);
+  /* IE <= 8 doesn't support rgba, fall back to a lighter blue */
+  background-color: #4c6079;
+}
+.ol-zoom a:hover:not([ie8andbelow]) {
+  /* IE <= 8 doesn't support rgba, fall back to a lighter blue */
+  background-color: rgba(0,60,136,0.7);
 }
 
 .ol-zoom-in {
@@ -184,7 +234,8 @@ a.ol-full-screen-true:after {
   position: absolute;
   top: 67px;
   left: 8px;
-  background: rgba(255, 255, 255, 0.4);
+  /* IE <= 8 doesn't support rgba, fall back to a light grey */
+  background: #eee;
   border-radius: 4px;
   width: 28px;
   height: 200px;
@@ -193,25 +244,39 @@ a.ol-full-screen-true:after {
   padding: 0;
   margin: 0;
 }
+.ol-zoomslider:not([ie8andbelow]) {
+  /* IE <= 8 doesn't support rgba, fall back to a light grey */
+  background: rgba(255, 255, 255, 0.4);
+}
 .ol-zoomslider-thumb {
   position: absolute;
   display: block;
   padding: 0;
   margin: 2px;
-  background: rgba(0,60,136,0.5);
+  /* IE <= 8 doesn't support rgba, fall back to a lighter blue */
+  background: #7b98bc;
   border-radius: 2px;
   outline: none;
   overflow: hidden;
   height: 20px;
   width: 24px;
 }
+.ol-zoomslider-thumb:not([ie8andbelow]) {
+  /* IE <= 8 doesn't support rgba, fall back to a lighter blue */
+  background: rgba(0,60,136,0.5);
+}
 .ol-zoom-extent {
   position: absolute;
-  background: rgba(255,255,255,0.4);
+  /* IE <= 8 doesn't support rgba, fall back to a light grey */
+  background: #eee;
   border-radius: 4px;
   left: 8px;
   padding: 2px;
   top: 65px;
+}
+.ol-zoom-extent:not([ie8andbelow]) {
+  /* IE <= 8 doesn't support rgba, fall back to a light grey */
+  background: rgba(255,255,255,0.4);
 }
 @media print {
   .ol-zoom-extent {
@@ -230,8 +295,13 @@ a.ol-full-screen-true:after {
   text-align: center;
   height: 22px;
   width: 22px;
-  background-color: rgba(0, 60, 136, 0.5);
+  /* IE <= 8 doesn't support rgba, fall back to a lighter blue */
+  background-color: #7b98bc;
   border-radius: 2px;
+}
+.ol-zoom-extent a:not([ie8andbelow]) {
+  /* IE <= 8 doesn't support rgba, fall back to a lighter blue */
+  background-color: rgba(0, 60, 136, 0.5);
 }
 .ol-touch .ol-zoom-extent a {
   font-size: 20px;
@@ -240,6 +310,11 @@ a.ol-full-screen-true:after {
   line-height: 26px;
 }
 .ol-zoom-extent a:hover {
+  /* IE <= 8 doesn't support rgba, fall back to a lighter blue */
+  background-color: #4c6079;
+}
+.ol-zoom-extent a:hover:not([ie8andbelow]) {
+  /* IE <= 8 doesn't support rgba, fall back to a lighter blue */
   background-color: rgba(0, 60, 136, 0.7);
 }
 .ol-zoom-extent a:after {
