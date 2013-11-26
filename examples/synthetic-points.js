@@ -9,6 +9,7 @@ goog.require('ol.shape');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
 
 
 var count = 20000;
@@ -24,16 +25,16 @@ for (var i = 0; i < count; ++i) {
 }
 
 var styles = {
-  '10': {
+  '10': new ol.style.Style({
     image: ol.shape.renderCircle(5,
         new ol.style.Fill({color: '#666666'}),
         new ol.style.Stroke({color: '#bada55', width: 1}))
-  },
-  '20': {
+  }),
+  '20': new ol.style.Style({
     image: ol.shape.renderCircle(10,
         new ol.style.Fill({color: '#666666'}),
         new ol.style.Stroke({color: '#bada55', width: 1}))
-  }
+  })
 };
 
 var vector = new ol.layer.Vector({
