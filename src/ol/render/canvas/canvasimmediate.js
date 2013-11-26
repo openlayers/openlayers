@@ -452,11 +452,11 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
   if (!ol.style.Text.equals(state.textStyle, textStyle)) {
     if (goog.isDefAndNotNull(textStyle)) {
       context.font = goog.isDef(textStyle.font) ?
-          textStyle.font : '10px sans-serif';
+          textStyle.font : ol.render.canvas.defaultFont;
       context.textAlign = goog.isDef(textStyle.textAlign) ?
-          textStyle.textAlign : 'start';
+          textStyle.textAlign : ol.render.canvas.defaultTextAlign;
       context.textBaseline = goog.isDef(textStyle.textBaseline) ?
-          textStyle.textBaseline : 'alphabetic';
+          textStyle.textBaseline : ol.render.canvas.defaultTextBaseline;
     }
     state.textStyle = textStyle;
   }
