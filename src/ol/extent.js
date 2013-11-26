@@ -67,11 +67,20 @@ ol.extent.buffer = function(extent, value) {
  * Creates a clone of an extent.
  *
  * @param {ol.Extent} extent Extent to clone.
+ * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} The clone.
  * @todo stability experimental
  */
-ol.extent.clone = function(extent) {
-  return extent.slice();
+ol.extent.clone = function(extent, opt_extent) {
+  if (goog.isDef(opt_extent)) {
+    opt_extent[0] = extent[0];
+    opt_extent[1] = extent[1];
+    opt_extent[2] = extent[2];
+    opt_extent[3] = extent[3];
+    return opt_extent;
+  } else {
+    return extent.slice();
+  }
 };
 
 
