@@ -1,12 +1,15 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
 goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.vector');
+goog.require('ol.style.ImageState');
 
 
 
@@ -19,6 +22,12 @@ goog.require('ol.renderer.vector');
 ol.renderer.canvas.VectorLayer = function(mapRenderer, vectorLayer) {
 
   goog.base(this, mapRenderer, vectorLayer);
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.dirty_ = false;
 
   /**
    * @private
@@ -85,13 +94,27 @@ ol.renderer.canvas.VectorLayer.prototype.getVectorLayer = function() {
 
 
 /**
+ * Handle changes in image style state.
+ * @param {goog.events.Event} event Image style change event.
+ * @private
+ */
+ol.renderer.canvas.VectorLayer.prototype.handleImageStyleChange_ =
+    function(event) {
+  var imageStyle = /** @type {ol.style.Image} */ (event.target);
+  if (imageStyle.imageState == ol.style.ImageState.LOADED) {
+    this.renderIfReadyAndVisible();
+  }
+};
+
+
+/**
  * @inheritDoc
  */
 ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
-  if (frameState.viewHints[ol.ViewHint.ANIMATING] ||
-      frameState.viewHints[ol.ViewHint.INTERACTING]) {
+  if (!this.dirty_ && (frameState.viewHints[ol.ViewHint.ANIMATING] ||
+      frameState.viewHints[ol.ViewHint.INTERACTING])) {
     return;
   }
 
@@ -100,7 +123,8 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   var frameStateExtent = frameState.extent;
   var frameStateResolution = frameState.view2DState.resolution;
 
-  if (this.renderedResolution_ == frameStateResolution &&
+  if (!this.dirty_ &&
+      this.renderedResolution_ == frameStateResolution &&
       this.renderedRevision_ == vectorSource.getRevision() &&
       ol.extent.containsExtent(this.renderedExtent_, frameStateExtent)) {
     return;
@@ -118,6 +142,8 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   goog.dispose(this.replayGroup_);
   this.replayGroup_ = null;
 
+  this.dirty_ = false;
+
   var styleFunction = vectorLayer.getStyleFunction();
   var replayGroup = new ol.render.canvas.ReplayGroup();
   vectorSource.forEachFeatureInExtent(extent,
@@ -125,11 +151,9 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
        * @param {ol.Feature} feature Feature.
        */
       function(feature) {
-        var styles = styleFunction(feature, frameStateResolution);
-        var i, ii = styles.length;
-        for (i = 0; i < ii; ++i) {
-          ol.renderer.vector.renderFeature(replayGroup, feature, styles[i]);
-        }
+        this.dirty_ = this.dirty_ ||
+            this.renderFeature(feature, frameStateResolution, styleFunction,
+                replayGroup);
       }, this);
   replayGroup.finish();
 
@@ -139,4 +163,33 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
     this.replayGroup_ = replayGroup;
   }
 
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature.
+ * @param {number} resolution Resolution.
+ * @param {ol.style.StyleFunction} styleFunction Style function.
+ * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
+ * @return {boolean} `true` if an image is loading.
+ */
+ol.renderer.canvas.VectorLayer.prototype.renderFeature =
+    function(feature, resolution, styleFunction, replayGroup) {
+  var loading = false;
+  var styles = styleFunction(feature, resolution);
+  var i, ii, style, imageStyle;
+  for (i = 0, ii = styles.length; i < ii; ++i) {
+    style = styles[i];
+    imageStyle = style.image;
+    if (!goog.isNull(imageStyle) &&
+        imageStyle.imageState == ol.style.ImageState.IDLE) {
+      goog.events.listenOnce(imageStyle, goog.events.EventType.CHANGE,
+          this.handleImageStyleChange_, false, this);
+      imageStyle.load();
+      loading = true;
+    } else {
+      ol.renderer.vector.renderFeature(replayGroup, feature, style);
+    }
+  }
+  return loading;
 };
