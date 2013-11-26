@@ -495,7 +495,7 @@ ol.structs.RBush.prototype.insert = function(extent, value) {
   var key = this.getKey_(value);
   goog.asserts.assert(!this.valueExtent_.hasOwnProperty(key));
   this.insert_(extent, value, this.root_.height - 1);
-  this.valueExtent_[key] = extent;
+  this.valueExtent_[key] = ol.extent.clone(extent);
 };
 
 
@@ -631,6 +631,6 @@ ol.structs.RBush.prototype.update = function(extent, value) {
   if (!ol.extent.equals(currentExtent, extent)) {
     this.remove_(currentExtent, value);
     this.insert_(extent, value, this.root_.height - 1);
-    this.valueExtent_[key] = extent;
+    ol.extent.clone(extent, currentExtent);
   }
 };
