@@ -11,6 +11,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.TileWMS');
 goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
+//goog.require('ga.layer.layerConfig');
 
 
 /**
@@ -19,8 +20,8 @@ goog.require('ol.tilegrid.WMTS');
  * @return {ol.layer.Tile|ol.layer.Group} Layer instance.
  */
 ga.layer.create = function(layer) {
-  if (layer in ga.layer.GeoadminLayerConfig) {
-    var layerConfig = ga.layer.GeoadminLayerConfig[layer];
+  if (layer in ga.layer.layerConfig) {
+    var layerConfig = ga.layer.layerConfig[layer];
 
     layerConfig.type = layerConfig.type || 'wmts';
     if (layerConfig.type == 'group') {
@@ -48,7 +49,7 @@ ga.layer.create = function(layer) {
 /**
  * @type {Object.<string, Object>}
  */
-ga.layer.GeoadminLayerConfig = {};
+ga.layer.layerConfig = layerConfig || {};
 
 
 /**
