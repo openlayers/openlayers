@@ -3,7 +3,9 @@ goog.provide('ol.renderer.dom.Map');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.functions');
 goog.require('goog.style');
+goog.require('goog.userAgent');
 goog.require('ol.css');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
@@ -35,6 +37,14 @@ ol.renderer.dom.Map = function(container, map) {
   style.position = 'absolute';
   style.width = '100%';
   style.height = '100%';
+
+  // in IE < 9, we need to return false from ondragstart to cancel the default
+  // behavior of dragging images, which is interfering with the custom handler
+  // in the Drag interaction subclasses
+  if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9.0')) {
+    this.layersPane_.ondragstart = goog.functions.FALSE;
+    this.layersPane_.onselectstart = goog.functions.FALSE;
+  }
 
   goog.dom.insertChildAt(container, this.layersPane_, 0);
 

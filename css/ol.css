@@ -159,6 +159,11 @@ a.ol-full-screen-true:after {
   -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
+
+  cursor: default;
+}
+.ol-viewport .ol-unselectable:not([ie8andbelow]) {
+  cursor: auto;
 }
 .ol-zoom {
   position: absolute;
