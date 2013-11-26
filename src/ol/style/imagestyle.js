@@ -114,6 +114,12 @@ ol.style.Image.prototype.handleImageError_ = function() {
  */
 ol.style.Image.prototype.handleImageLoad_ = function() {
   this.imageState = ol.style.ImageState.LOADED;
+  if (goog.isNull(this.size)) {
+    this.size = [this.image.width, this.image.height];
+  }
+  if (goog.isNull(this.anchor)) {
+    this.anchor = [this.size[0] / 2, this.size[1] / 2];
+  }
   this.unlistenImage_();
   this.dispatchChangeEvent_();
 };
