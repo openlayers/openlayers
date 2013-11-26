@@ -219,6 +219,24 @@ ol.geom.flat.linearRingIsClockwise =
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
+ * @return {number} Perimeter.
+ */
+ol.geom.flat.linearRingPerimeter =
+    function(flatCoordinates, offset, end, stride) {
+  var perimeter =
+      ol.geom.flat.lineStringLength(flatCoordinates, offset, end, stride);
+  var dx = flatCoordinates[end - stride] - flatCoordinates[offset];
+  var dy = flatCoordinates[end - stride + 1] - flatCoordinates[offset + 1];
+  perimeter += Math.sqrt(dx * dx + dy * dy);
+  return perimeter;
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
  * @param {Array.<number>} ends Ends.
  * @param {number} stride Stride.
  * @param {number} x X.
