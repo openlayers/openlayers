@@ -29,10 +29,10 @@ var vectorSource = new ol.source.Vector({
   features: features
 });
 
-var style = new ol.style.Style({
+var styleArray = [new ol.style.Style({
   image: ol.shape.renderCircle(3, null,
       new ol.style.Stroke({color: 'red', width: 1}))
-});
+})];
 
 var colors = ['red', 'orange', 'yellow', 'blue', 'green', 'indigo', 'violet'];
 var depthStyle = [];
@@ -73,7 +73,7 @@ for (i = 0, ii = extentsByDepth.length; i < ii; ++i) {
     ]]);
     var feature = new ol.Feature({
       'geometry': geometry,
-      'style': depthStyle[i]
+      'styleArray': [depthStyle[i]]
     });
     rtreeExtentFeatures.push(feature);
   }
@@ -81,8 +81,8 @@ for (i = 0, ii = extentsByDepth.length; i < ii; ++i) {
 
 var vector = new ol.layer.Vector({
   source: vectorSource,
-  styleFunction: function(feature) {
-    return style;
+  styleFunction: function(feature, resolution) {
+    return styleArray;
   }
 });
 
@@ -90,8 +90,8 @@ var rtree = new ol.layer.Vector({
   source: new ol.source.Vector({
     features: rtreeExtentFeatures
   }),
-  styleFunction: function(feature) {
-    return feature.get('style');
+  styleFunction: function(feature, resolution) {
+    return feature.get('styleArray');
   }
 });
 
