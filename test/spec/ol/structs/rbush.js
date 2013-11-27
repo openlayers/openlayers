@@ -55,6 +55,27 @@ describe('ol.structs.RBush', function() {
 
     });
 
+    describe('#insert', function() {
+
+      it('throws an exception if called while iterating over all values',
+          function() {
+            expect(function() {
+              rBush.forEach(function(value) {
+                rBush.insert([0, 0, 1, 1], {});
+              });
+            }).to.throwException();
+          });
+
+      it('throws an exception if called while iterating over an extent',
+          function() {
+            expect(function() {
+              rBush.forEachInExtent([-10, -10, 10, 10], function(value) {
+                rBush.insert([0, 0, 1, 1], {});
+              });
+            }).to.throwException();
+          });
+    });
+
     describe('#remove', function() {
 
       it('can remove each object', function() {
@@ -66,6 +87,45 @@ describe('ol.structs.RBush', function() {
         }
       });
 
+      it('throws an exception if called while iterating over all values',
+          function() {
+            expect(function() {
+              rBush.forEach(function(value) {
+                rBush.remove(value);
+              });
+            }).to.throwException();
+          });
+
+      it('throws an exception if called while iterating over an extent',
+          function() {
+            expect(function() {
+              rBush.forEachInExtent([-10, -10, 10, 10], function(value) {
+                rBush.remove(value);
+              });
+            }).to.throwException();
+          });
+
+    });
+
+    describe('#update', function() {
+
+      it('throws an exception if called while iterating over all values',
+          function() {
+            expect(function() {
+              rBush.forEach(function(value) {
+                rBush.update([0, 0, 1, 1], objs[1]);
+              });
+            }).to.throwException();
+          });
+
+      it('throws an exception if called while iterating over an extent',
+          function() {
+            expect(function() {
+              rBush.forEachInExtent([-10, -10, 10, 10], function(value) {
+                rBush.update([0, 0, 1, 1], objs[1]);
+              });
+            }).to.throwException();
+          });
     });
 
   });
