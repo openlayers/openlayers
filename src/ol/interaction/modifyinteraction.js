@@ -6,6 +6,7 @@ goog.require('goog.events');
 goog.require('goog.functions');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
+goog.require('ol.FeatureRenderIntent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
@@ -18,9 +19,8 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Drag');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Vector');
-goog.require('ol.layer.VectorEventType');
-goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.source.Vector');
+goog.require('ol.source.VectorEventType');
 goog.require('ol.structs.RBush');
 
 
@@ -58,6 +58,13 @@ ol.interaction.Modify = function(opt_options) {
    * @private
    */
   this.layerFilter_ = layerFilter;
+
+  /**
+   * Layer lookup.  Keys source id to layer.
+   * @type {Object.<number, ol.layer.Vector>}
+   * @private
+   */
+  this.layerLookup_ = null;
 
   /**
    * Temporary sketch layer.
@@ -121,12 +128,13 @@ ol.interaction.Modify.prototype.setMap = function(map) {
   }
 
   if (!goog.isNull(map)) {
+    this.layerLookup_ = {};
     if (goog.isNull(this.rBush_)) {
       this.rBush_ = new ol.structs.RBush();
     }
     if (goog.isNull(this.sketchLayer_)) {
       var sketchLayer = new ol.layer.Vector({
-        source: new ol.source.Vector({parser: null})
+        source: new ol.source.Vector()
       });
       this.sketchLayer_ = sketchLayer;
       sketchLayer.setTemporary(true);
@@ -141,6 +149,7 @@ ol.interaction.Modify.prototype.setMap = function(map) {
         false, this);
   } else {
     // removing from a map, clean up
+    this.layerLookup_ = null;
     this.rBush_ = null;
     this.sketchLayer_ = null;
   }
@@ -168,9 +177,11 @@ ol.interaction.Modify.prototype.handleLayerAdded_ = function(evt) {
 ol.interaction.Modify.prototype.addLayer_ = function(layer) {
   if (this.layerFilter_(layer) && layer instanceof ol.layer.Vector &&
       !layer.getTemporary()) {
-    this.addIndex_(layer.getFeatures(ol.layer.Vector.selectedFeaturesFilter),
+    var source = layer.getVectorSource();
+    this.layerLookup_[goog.getUid(source)] = layer;
+    this.addIndex_(source.getFeatures(ol.layer.Vector.selectedFeaturesFilter),
         layer);
-    goog.events.listen(layer, ol.layer.VectorEventType.INTENTCHANGE,
+    goog.events.listen(source, ol.source.VectorEventType.INTENTCHANGE,
         this.handleIntentChange_, false, this);
   }
 };
@@ -195,9 +206,11 @@ ol.interaction.Modify.prototype.handleLayerRemoved_ = function(evt) {
 ol.interaction.Modify.prototype.removeLayer_ = function(layer) {
   if (this.layerFilter_(layer) && layer instanceof ol.layer.Vector &&
       !layer.getTemporary()) {
+    var source = layer.getVectorSource();
+    delete this.layerLookup_[goog.getUid(source)];
     this.removeIndex_(
-        layer.getFeatures(ol.layer.Vector.selectedFeaturesFilter));
-    goog.events.unlisten(layer, ol.layer.VectorEventType.INTENTCHANGE,
+        source.getFeatures(ol.layer.Vector.selectedFeaturesFilter));
+    goog.events.unlisten(source, ol.source.VectorEventType.INTENTCHANGE,
         this.handleIntentChange_, false, this);
   }
 };
@@ -248,17 +261,19 @@ ol.interaction.Modify.prototype.removeIndex_ = function(features) {
 
 /**
  * Listen for feature additions.
- * @param {ol.layer.VectorEvent} evt Event object.
+ * @param {ol.source.VectorEvent} evt Event object.
  * @private
  */
 ol.interaction.Modify.prototype.handleIntentChange_ = function(evt) {
-  var layer = evt.target;
+  var source = evt.target;
+  goog.asserts.assertInstanceof(source, ol.source.Vector);
+  var layer = this.layerLookup_[goog.getUid(source)];
   goog.asserts.assertInstanceof(layer, ol.layer.Vector);
   var features = evt.features;
   for (var i = 0, ii = features.length; i < ii; ++i) {
     var feature = features[i];
     var renderIntent = feature.getRenderIntent();
-    if (renderIntent == ol.layer.VectorLayerRenderIntent.SELECTED) {
+    if (renderIntent == ol.FeatureRenderIntent.SELECTED) {
       this.addIndex_([feature], layer);
     } else {
       this.removeIndex_([feature]);
@@ -322,7 +337,7 @@ ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ =
   if (goog.isNull(vertexFeature)) {
     vertexFeature = new ol.Feature({g: new ol.geom.Point(coordinates)});
     this.vertexFeature_ = vertexFeature;
-    this.sketchLayer_.addFeatures([vertexFeature]);
+    this.sketchLayer_.getVectorSource().addFeatures([vertexFeature]);
   } else {
     var geometry = vertexFeature.getGeometry();
     geometry.setCoordinates(coordinates);
@@ -341,7 +356,7 @@ ol.interaction.Modify.prototype.handleDragStart = function(evt) {
   this.dragSegments_ = [];
   var vertexFeature = this.vertexFeature_;
   if (!goog.isNull(vertexFeature) && vertexFeature.getRenderIntent() !=
-      ol.layer.VectorLayerRenderIntent.HIDDEN) {
+      ol.FeatureRenderIntent.HIDDEN) {
     var renderIntent = vertexFeature.getRenderIntent();
     var insertVertices = [];
     var vertex = vertexFeature.getGeometry().getCoordinates();
@@ -360,7 +375,7 @@ ol.interaction.Modify.prototype.handleDragStart = function(evt) {
         original.setSymbolizers(feature.getSymbolizers());
         feature.setOriginal(original);
       }
-      if (renderIntent == ol.layer.VectorLayerRenderIntent.TEMPORARY) {
+      if (renderIntent == ol.FeatureRenderIntent.TEMPORARY) {
         if (ol.coordinate.equals(segment[0], vertex)) {
           dragSegments.push([node, 0]);
         } else if (ol.coordinate.equals(segment[1], vertex)) {
@@ -455,7 +470,7 @@ ol.interaction.Modify.prototype.handleMouseMove_ = function(evt) {
   var vertexFeature = this.vertexFeature_;
   var rBush = this.rBush_;
   var nodes = rBush.getAllInExtent(box);
-  var renderIntent = ol.layer.VectorLayerRenderIntent.HIDDEN;
+  var renderIntent = ol.FeatureRenderIntent.HIDDEN;
   if (nodes.length > 0) {
     nodes.sort(sortByDistance);
     var node = nodes[0];
@@ -469,10 +484,10 @@ ol.interaction.Modify.prototype.handleMouseMove_ = function(evt) {
       var squaredDist1 = ol.coordinate.squaredDistance(vertexPixel, pixel1);
       var squaredDist2 = ol.coordinate.squaredDistance(vertexPixel, pixel2);
       var dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
-      renderIntent = ol.layer.VectorLayerRenderIntent.FUTURE;
+      renderIntent = ol.FeatureRenderIntent.FUTURE;
       if (dist <= 10) {
         vertex = squaredDist1 > squaredDist2 ? segment[1] : segment[0];
-        renderIntent = ol.layer.VectorLayerRenderIntent.TEMPORARY;
+        renderIntent = ol.FeatureRenderIntent.TEMPORARY;
       }
       vertexFeature = this.createOrUpdateVertexFeature_(node.style, vertex);
       this.modifiable_ = true;
