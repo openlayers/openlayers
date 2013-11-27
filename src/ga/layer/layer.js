@@ -49,7 +49,7 @@ ga.layer.create = function(layer) {
 /**
  * @type {Object.<string, Object>}
  */
-ga.layer.layerConfig = layerConfig || {};
+ga.layer.layerConfig = getConfig() || {};
 
 
 /**

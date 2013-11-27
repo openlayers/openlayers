@@ -1,0 +1,7 @@
+/**
+ * @externs
+ */
+
+
+
+function getConfig(){};
