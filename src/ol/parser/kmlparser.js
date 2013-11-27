@@ -75,7 +75,7 @@ ol.parser.KML = function(opt_options) {
       '*': function(node, obj) {
         if (this.extractAttributes === true) {
           var len = node.childNodes.length;
-          if ((len === 1 || len === 2) && (node.firstChild.nodeType === 3 ||
+          if (len > 0 && (node.firstChild.nodeType === 3 ||
               node.firstChild.nodeType === 4)) {
             var readers = this.readers[this.defaultNamespaceURI];
             readers['_attribute'].apply(this, arguments);
