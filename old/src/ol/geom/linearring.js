@@ -10,7 +10,7 @@ goog.require('ol.geom.LineString');
  * @constructor
  * @extends {ol.geom.LineString}
  * @param {ol.CoordinateArray} coordinates Vertex array (e.g.
- *    [[x0, y0], [x1, y1]]).
+ *    `[[x0, y0], [x1, y1]]`).
  * @todo stability experimental
  */
 ol.geom.LinearRing = function(coordinates) {

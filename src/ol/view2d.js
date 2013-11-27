@@ -192,8 +192,8 @@ ol.View2D.prototype.constrainCenter = function(center) {
 /**
  * Get the constrained the resolution of this view.
  * @param {number|undefined} resolution Resolution.
- * @param {number=} opt_delta Delta.
- * @param {number=} opt_direction Direction.
+ * @param {number=} opt_delta Delta. Default is `0`.
+ * @param {number=} opt_direction Direction. Default is `0`.
  * @return {number|undefined} Constrained resolution.
  * @todo stability experimental
  */
@@ -208,7 +208,7 @@ ol.View2D.prototype.constrainResolution = function(
 /**
  * Get the constrained rotation of this view.
  * @param {number|undefined} rotation Rotation.
- * @param {number=} opt_delta Delta.
+ * @param {number=} opt_delta Delta. Default is `0`.
  * @return {number|undefined} Constrained rotation.
  * @todo stability experimental
  */
