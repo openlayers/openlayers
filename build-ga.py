@@ -4,12 +4,12 @@ from build import *
 
 from pake import targets,TargetCollection, DuplicateTargetError
 
-def prepend(name, data):
+def prepend(name, template):
      f = open(name,'r')
      temp = f.read()
      f.close()
      ob = json.loads(temp) 
-     open(name, "w").write(data + json.dumps(ob['layers'],sort_keys=True,indent=2))
+     open(name, "w").write( template % json.dumps(ob['layers'],sort_keys=True,indent=2))
 
 # Monkey patching build.py to allow redefining targets by 
 def add(self, target, force=True):
@@ -54,9 +54,9 @@ def build_ga_js(t):
 
 @target('build/ga-simple.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
         LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ga.json',
-        'buildcfg/ol-simple.json')
+        'buildcfg/ga-simple.json')
 def build_ga_simple_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ol-simple.json')
+    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ga-simple.json')
     report_sizes(t)
 
 @target('build/ga-whitespace.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
@@ -75,9 +75,12 @@ def get_layersconfig(t):
         t.download('http://api3.geo.admin.ch/rest/services/api/MapServer/layersconfig?lang=%s' % lang)
         os.rename(t.name, name)
         t.info('downloaded %r', name)
-        prepend(name, """var layerConfig = """)
+        prepend(name, """function getConfig(){ return %s } """)
         
-   
+@target('serve', PLOVR_JAR, 'test-deps', 'examples')
+def serve(t):
+    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'buildcfg/ol.json',
+          'buildcfg/ga-all.json', EXAMPLES_JSON, 'buildcfg/test.json')
   
 
 
