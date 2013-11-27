@@ -454,7 +454,7 @@ ol.interaction.Modify.prototype.handleMouseMove_ = function(evt) {
   this.modifiable_ = false;
   var vertexFeature = this.vertexFeature_;
   var rBush = this.rBush_;
-  var nodes = rBush.allInExtent(box);
+  var nodes = rBush.getAllInExtent(box);
   var renderIntent = ol.layer.VectorLayerRenderIntent.HIDDEN;
   if (nodes.length > 0) {
     nodes.sort(sortByDistance);
