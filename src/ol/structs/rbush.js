@@ -201,22 +201,6 @@ ol.structs.RBush = function(opt_maxEntries) {
 
 
 /**
- * @return {Array.<T>} All.
- */
-ol.structs.RBush.prototype.all = function() {
-  var values = [];
-  this.forEach(
-      /**
-       * @param {T} value Value.
-       */
-      function(value) {
-        values.push(value);
-      });
-  return values;
-};
-
-
-/**
  * @param {ol.structs.RBushNode.<T>} node Node.
  * @param {function(ol.structs.RBushNode.<T>, ol.structs.RBushNode.<T>): number}
  *     compare Compare.
@@ -517,6 +501,22 @@ ol.structs.RBush.prototype.forEachNode = function(callback, opt_obj) {
     }
   }
   return undefined;
+};
+
+
+/**
+ * @return {Array.<T>} All.
+ */
+ol.structs.RBush.prototype.getAll = function() {
+  var values = [];
+  this.forEach(
+      /**
+       * @param {T} value Value.
+       */
+      function(value) {
+        values.push(value);
+      });
+  return values;
 };
 
 

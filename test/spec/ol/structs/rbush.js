@@ -10,10 +10,10 @@ describe('ol.structs.RBush', function() {
 
   describe('when empty', function() {
 
-    describe('#all', function() {
+    describe('#getAll', function() {
 
       it('returns the expected number of objects', function() {
-        expect(rBush.all()).to.be.empty();
+        expect(rBush.getAll()).to.be.empty();
       });
 
     });
@@ -81,9 +81,9 @@ describe('ol.structs.RBush', function() {
       it('can remove each object', function() {
         var i, ii;
         for (i = 0, ii = objs.length; i < ii; ++i) {
-          expect(rBush.all()).to.contain(objs[i]);
+          expect(rBush.getAll()).to.contain(objs[i]);
           rBush.remove(objs[i]);
-          expect(rBush.all()).not.to.contain(objs[i]);
+          expect(rBush.getAll()).not.to.contain(objs[i]);
         }
       });
 
@@ -164,7 +164,7 @@ describe('ol.structs.RBush', function() {
           rBush.remove(objs[i]);
           expect(rBush.allInExtent(extents[i])).to.be.empty();
         }
-        expect(rBush.all()).to.be.empty();
+        expect(rBush.getAll()).to.be.empty();
       });
 
       it('can remove objects in random order', function() {
@@ -182,7 +182,7 @@ describe('ol.structs.RBush', function() {
           rBush.remove(objs[index]);
           expect(rBush.allInExtent(extents[index])).to.be.empty();
         }
-        expect(rBush.all()).to.be.empty();
+        expect(rBush.getAll()).to.be.empty();
       });
 
     });
@@ -201,10 +201,10 @@ describe('ol.structs.RBush', function() {
       }
     });
 
-    describe('#all', function() {
+    describe('#getAll', function() {
 
       it('returns the expected number of objects', function() {
-        expect(rBush.all().length).to.be(1000);
+        expect(rBush.getAll().length).to.be(1000);
       });
 
     });
