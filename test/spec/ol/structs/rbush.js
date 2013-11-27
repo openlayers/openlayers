@@ -33,15 +33,15 @@ describe('ol.structs.RBush', function() {
       rBush.insert([-3, -3, -2, -2], objs[5]);
     });
 
-    describe('#allInExtent', function() {
+    describe('#getAllInExtent', function() {
 
       it('returns the expected objects', function() {
         var result;
-        result = rBush.allInExtent([2, 2, 3, 3]);
+        result = rBush.getAllInExtent([2, 2, 3, 3]);
         expect(result).to.contain(objs[1]);
         expect(result).to.contain(objs[2]);
         expect(result.length).to.be(2);
-        result = rBush.allInExtent([-1, -1, 2, 2]);
+        result = rBush.getAllInExtent([-1, -1, 2, 2]);
         expect(result).to.contain(objs[0]);
         expect(result).to.contain(objs[1]);
         expect(result).to.contain(objs[2]);
@@ -50,7 +50,7 @@ describe('ol.structs.RBush', function() {
       });
 
       it('returns an empty array when given a disjoint extent', function() {
-        expect(rBush.allInExtent([5, 5, 6, 6]).length).to.be(0);
+        expect(rBush.getAllInExtent([5, 5, 6, 6]).length).to.be(0);
       });
 
     });
@@ -144,12 +144,12 @@ describe('ol.structs.RBush', function() {
       }
     });
 
-    describe('#allInExtent', function() {
+    describe('#getAllInExtent', function() {
 
       it('returns the expected objects', function() {
         var i, ii;
         for (i = 0, ii = objs.length; i < ii; ++i) {
-          expect(rBush.allInExtent(extents[i])).to.eql([objs[i]]);
+          expect(rBush.getAllInExtent(extents[i])).to.eql([objs[i]]);
         }
       });
 
@@ -160,9 +160,9 @@ describe('ol.structs.RBush', function() {
       it('can remove each object in turn', function() {
         var i, ii;
         for (i = 0, ii = objs.length; i < ii; ++i) {
-          expect(rBush.allInExtent(extents[i])).to.eql([objs[i]]);
+          expect(rBush.getAllInExtent(extents[i])).to.eql([objs[i]]);
           rBush.remove(objs[i]);
-          expect(rBush.allInExtent(extents[i])).to.be.empty();
+          expect(rBush.getAllInExtent(extents[i])).to.be.empty();
         }
         expect(rBush.getAll()).to.be.empty();
       });
@@ -178,9 +178,9 @@ describe('ol.structs.RBush', function() {
         }
         for (i = 0, ii = objs.length; i < ii; ++i) {
           var index = indexes[i];
-          expect(rBush.allInExtent(extents[index])).to.eql([objs[index]]);
+          expect(rBush.getAllInExtent(extents[index])).to.eql([objs[index]]);
           rBush.remove(objs[index]);
-          expect(rBush.allInExtent(extents[index])).to.be.empty();
+          expect(rBush.getAllInExtent(extents[index])).to.be.empty();
         }
         expect(rBush.getAll()).to.be.empty();
       });
@@ -209,10 +209,10 @@ describe('ol.structs.RBush', function() {
 
     });
 
-    describe('#allInExtent', function() {
+    describe('#getAllInExtent', function() {
 
       it('returns the expected number of objects', function() {
-        expect(rBush.allInExtent([0, 0, 10600, 10600]).length).to.be(1000);
+        expect(rBush.getAllInExtent([0, 0, 10600, 10600]).length).to.be(1000);
       });
 
       it('can perform 1000 in-extent searches', function() {
@@ -223,7 +223,7 @@ describe('ol.structs.RBush', function() {
           var max = [min[0] + Math.random() * 500,
                      min[1] + Math.random() * 500];
           var extent = [min[0], min[1], max[0], max[1]];
-          n += rBush.allInExtent(extent).length;
+          n += rBush.getAllInExtent(extent).length;
         }
         expect(n).not.to.be(0);
       });
@@ -237,7 +237,7 @@ describe('ol.structs.RBush', function() {
           var max = [min[0] + Math.random() * 500,
                      min[1] + Math.random() * 500];
           var extent = [min[0], min[1], max[0], max[1]];
-          n += rBush.allInExtent(extent).length;
+          n += rBush.getAllInExtent(extent).length;
         }
         expect(n).to.be(0);
       });
@@ -255,7 +255,7 @@ describe('ol.structs.RBush', function() {
           var extent = [min[0], min[1], max[0], max[1]];
           rBush.insert(extent, {id: i});
         }
-        expect(rBush.allInExtent([0, 0, 10600, 10600]).length).to.be(2000);
+        expect(rBush.getAllInExtent([0, 0, 10600, 10600]).length).to.be(2000);
       });
 
     });

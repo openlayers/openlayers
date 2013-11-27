@@ -230,23 +230,6 @@ ol.structs.RBush.prototype.allDistMargin_ = function(node, compare) {
 
 
 /**
- * @param {ol.Extent} extent Extent.
- * @return {Array.<T>} All in extent.
- */
-ol.structs.RBush.prototype.allInExtent = function(extent) {
-  var values = [];
-  this.forEachInExtent(extent,
-      /**
-       * @param {T} value Value.
-       */
-      function(value) {
-        values.push(value);
-      });
-  return values;
-};
-
-
-/**
  * FIXME empty description for jsdoc
  */
 ol.structs.RBush.prototype.assertValid = function() {
@@ -510,6 +493,23 @@ ol.structs.RBush.prototype.forEachNode = function(callback, opt_obj) {
 ol.structs.RBush.prototype.getAll = function() {
   var values = [];
   this.forEach(
+      /**
+       * @param {T} value Value.
+       */
+      function(value) {
+        values.push(value);
+      });
+  return values;
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @return {Array.<T>} All in extent.
+ */
+ol.structs.RBush.prototype.getAllInExtent = function(extent) {
+  var values = [];
+  this.forEachInExtent(extent,
       /**
        * @param {T} value Value.
        */
