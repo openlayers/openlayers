@@ -116,7 +116,7 @@ ol.source.Vector.prototype.forEachFeatureInExtent =
  * @return {Array.<ol.Feature>} Features.
  */
 ol.source.Vector.prototype.getAllFeatures = function() {
-  return this.rBush_.all();
+  return this.rBush_.getAll();
 };
 
 
@@ -138,7 +138,7 @@ ol.source.Vector.prototype.getAllFeaturesAtCoordinate = function(coordinate) {
  * @return {Array.<ol.Feature>} Features.
  */
 ol.source.Vector.prototype.getAllFeaturesInExtent = function(extent) {
-  return this.rBush_.allInExtent(extent);
+  return this.rBush_.getAllInExtent(extent);
 };
 
 
