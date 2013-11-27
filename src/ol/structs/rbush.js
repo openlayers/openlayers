@@ -401,12 +401,12 @@ ol.structs.RBush.prototype.forEach_ = function(node, callback, opt_obj) {
   goog.asserts.assert(!node.isLeaf());
   /** @type {Array.<ol.structs.RBushNode.<T>>} */
   var toVisit = [node];
-  var children, i, ii, result;
+  var children, i, result;
   while (toVisit.length > 0) {
     node = toVisit.pop();
     children = node.children;
     if (node.height == 1) {
-      for (i = 0, ii = children.length; i < ii; ++i) {
+      for (i = children.length - 1; i >= 0; --i) {
         result = callback.call(opt_obj, children[i].value);
         if (result) {
           return result;
