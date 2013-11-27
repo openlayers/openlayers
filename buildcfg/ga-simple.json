@@ -1,17 +1,16 @@
 {
 
-  "id": "ga-whitespace",
-
   // If ambiguate-properties and disambiguate-properties are set to true
   // we get function names like "ol_control_Control_prototype$setMap" in
   // the compiled code when using the SIMPLE compilation. It looks like
   // "ambiguate-properties" and  "disambiguate-properties" are only
-  // appropriate for ADVANCED compilation. To be sure we also don't
-  // set them for WHITESPACE.
+  // appropriate for ADVANCED compilation.
 
   "ambiguate-properties": false,
 
   "disambiguate-properties": false,
+
+  "id": "ga-simple",
 
   "externs": [
     "//json.js",
@@ -32,15 +31,10 @@
     "../build/src/internal/src/types.js"
   ],
 
-  "mode": "WHITESPACE",
+  "mode": "SIMPLE",
 
-  "output-wrapper": [
-    "var CLOSURE_NO_DEPS = true;\n",
-    "%output%"
-  ],
-  "paths": [
-     "../src", "../src/ol", "../src/ga"
-  ],
-
-  "pretty-print": true
+  // Note: we can't have a (function(){%output%})() output wrapper with
+  // WHITESPACE and SIMPLE modes. See this link for explanations:
+  // https://groups.google.com/forum/#!topic/plovr/gQyZEa2NpsU
+  "output-wrapper": "%output%"
 }
