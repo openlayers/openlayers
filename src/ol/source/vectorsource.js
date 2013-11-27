@@ -113,6 +113,14 @@ ol.source.Vector.prototype.forEachFeatureInExtent =
 
 
 /**
+ * @return {Array.<ol.Feature>} Features.
+ */
+ol.source.Vector.prototype.getAllFeatures = function() {
+  return this.rBush_.all();
+};
+
+
+/**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {Array.<ol.Feature>} Features.
  */
