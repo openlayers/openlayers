@@ -70,7 +70,7 @@ ol.source.Vector.prototype.addFeature = function(feature) {
 
 /**
  * @param {function(this: T, ol.Feature): S} f Callback.
- * @param {T=} opt_obj The object to be used a the value of 'this' within f.
+ * @param {T=} opt_obj The object to be used as the value of 'this' within f.
  * @return {S|undefined}
  * @template T,S
  */
@@ -82,7 +82,7 @@ ol.source.Vector.prototype.forEachFeature = function(f, opt_obj) {
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {function(this: T, ol.Feature): S} f Callback.
- * @param {T=} opt_obj The object to be used a the value of 'this' within f.
+ * @param {T=} opt_obj The object to be used as the value of 'this' within f.
  * @return {S|undefined}
  * @template T,S
  */
@@ -102,7 +102,7 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinate =
 /**
  * @param {ol.Extent} extent Extent.
  * @param {function(this: T, ol.Feature): S} f Callback.
- * @param {T=} opt_obj The object to be used a the value of 'this' within f.
+ * @param {T=} opt_obj The object to be used as the value of 'this' within f.
  * @return {S|undefined}
  * @template T,S
  */
