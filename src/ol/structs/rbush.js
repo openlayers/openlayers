@@ -614,7 +614,8 @@ ol.structs.RBush.prototype.remove_ = function(extent, value) {
           return;
         }
       }
-      ++index;
+      node = path.pop();
+      index = indexes.pop();
     } else if (index < node.children.length) {
       child = node.children[index];
       if (ol.extent.containsExtent(child.extent, extent)) {
