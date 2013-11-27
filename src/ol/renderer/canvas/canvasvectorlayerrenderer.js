@@ -177,16 +177,20 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature =
     function(feature, resolution, styleFunction, replayGroup) {
   var loading = false;
   var styles = styleFunction(feature, resolution);
-  var i, ii, style, imageStyle;
+  var i, ii, style, imageStyle, imageState;
   for (i = 0, ii = styles.length; i < ii; ++i) {
     style = styles[i];
     imageStyle = style.image;
-    if (!goog.isNull(imageStyle) &&
-        imageStyle.imageState == ol.style.ImageState.IDLE) {
-      goog.events.listenOnce(imageStyle, goog.events.EventType.CHANGE,
-          this.handleImageStyleChange_, false, this);
-      imageStyle.load();
-      loading = true;
+    if (!goog.isNull(imageStyle)) {
+      if (imageStyle.imageState == ol.style.ImageState.IDLE) {
+        goog.events.listenOnce(imageStyle, goog.events.EventType.CHANGE,
+            this.handleImageStyleChange_, false, this);
+        imageStyle.load();
+      } else if (imageStyle.imageState == ol.style.ImageState.LOADED) {
+        ol.renderer.vector.renderFeature(replayGroup, feature, style);
+      }
+      goog.asserts.assert(imageStyle.imageState != ol.style.ImageState.IDLE);
+      loading = imageStyle.imageState == ol.style.ImageState.LOADING;
     } else {
       ol.renderer.vector.renderFeature(replayGroup, feature, style);
     }
