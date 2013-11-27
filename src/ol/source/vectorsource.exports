@@ -2,3 +2,4 @@
 @exportProperty ol.source.Vector.prototype.addFeature
 @exportProperty ol.source.Vector.prototype.forEachFeature
 @exportProperty ol.source.Vector.prototype.getAllFeaturesAtCoordinate
+@exportProperty ol.source.Vector.prototype.removeFeature
