@@ -189,11 +189,13 @@ ol.structs.RBush = function(opt_maxEntries) {
    */
   this.valueExtent_ = {};
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.readers_ = 0;
+  if (goog.DEBUG) {
+    /**
+     * @private
+     * @type {number}
+     */
+    this.readers_ = 0;
+  }
 
 };
 
@@ -393,11 +395,15 @@ ol.structs.RBush.prototype.condense_ = function(path) {
  * @template S
  */
 ol.structs.RBush.prototype.forEach = function(callback, opt_obj) {
-  ++this.readers_;
-  try {
+  if (goog.DEBUG) {
+    ++this.readers_;
+    try {
+      return this.forEach_(this.root_, callback, opt_obj);
+    } finally {
+      --this.readers_;
+    }
+  } else {
     return this.forEach_(this.root_, callback, opt_obj);
-  } finally {
-    --this.readers_;
   }
 };
 
@@ -443,11 +449,15 @@ ol.structs.RBush.prototype.forEach_ = function(node, callback, opt_obj) {
  */
 ol.structs.RBush.prototype.forEachInExtent =
     function(extent, callback, opt_obj) {
-  ++this.readers_;
-  try {
+  if (goog.DEBUG) {
+    ++this.readers_;
+    try {
+      return this.forEachInExtent_(extent, callback, opt_obj);
+    } finally {
+      --this.readers_;
+    }
+  } else {
     return this.forEachInExtent_(extent, callback, opt_obj);
-  } finally {
-    --this.readers_;
   }
 };
 
@@ -526,7 +536,7 @@ ol.structs.RBush.prototype.getKey_ = function(value) {
  * @param {T} value Value.
  */
 ol.structs.RBush.prototype.insert = function(extent, value) {
-  if (this.readers_) {
+  if (goog.DEBUG && this.readers_) {
     throw Error('cannot insert value while reading');
   }
   var key = this.getKey_(value);
@@ -568,7 +578,7 @@ ol.structs.RBush.prototype.insert_ = function(extent, value, level) {
  * @param {T} value Value.
  */
 ol.structs.RBush.prototype.remove = function(value) {
-  if (this.readers_) {
+  if (goog.DEBUG && this.readers_) {
     throw Error('cannot remove value while reading');
   }
   var key = this.getKey_(value);
@@ -665,7 +675,7 @@ ol.structs.RBush.prototype.splitRoot_ = function(node1, node2) {
  * @param {T} value Value.
  */
 ol.structs.RBush.prototype.update = function(extent, value) {
-  if (this.readers_) {
+  if (goog.DEBUG && this.readers_) {
     throw Error('cannot update value while reading');
   }
   var key = this.getKey_(value);
