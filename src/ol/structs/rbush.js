@@ -379,6 +379,8 @@ ol.structs.RBush.prototype.condense_ = function(path) {
 
 
 /**
+ * Calls a callback function with each node in the tree. Inside the callback,
+ * no tree modifications (insert, update, remove) can be made.
  * @param {function(this: S, T): *} callback Callback.
  * @param {S=} opt_obj Scope.
  * @return {*} Callback return value.
@@ -420,6 +422,8 @@ ol.structs.RBush.prototype.forEach_ = function(node, callback, opt_obj) {
 
 
 /**
+ * Calls a callback function with each node in the provided extent. Inside the
+ * callback, no tree modifications (insert, update, remove) can be made.
  * @param {ol.Extent} extent Extent.
  * @param {function(this: S, T): *} callback Callback.
  * @param {S=} opt_obj Scope.
