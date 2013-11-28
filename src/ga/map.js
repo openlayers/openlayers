@@ -1,10 +1,13 @@
 goog.provide('ga.Map');
 
+goog.require('goog.asserts');
+goog.require('goog.net.Jsonp');
 goog.require('ol.Map');
+goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.control.ScaleLine');
 goog.require('ol.proj.EPSG21781');
-goog.require('ol.RendererHint');
+goog.require('ol.source.State');
 
 
 /**
@@ -31,6 +34,7 @@ goog.require('ol.RendererHint');
  * @param {ol.MapOptions} options Map options.
  */
 ga.Map = function(options) {
+
   var renderer = ol.RendererHint.CANVAS;
   if (goog.isDefAndNotNull(options.renderer)) {
     renderer = options.renderer;
@@ -65,3 +69,4 @@ ga.Map = function(options) {
   this.addControl(new ol.control.ScaleLine());
 };
 goog.inherits(ga.Map, ol.Map);
+

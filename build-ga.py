@@ -4,6 +4,13 @@ from build import *
 
 from pake import targets,TargetCollection, DuplicateTargetError
 
+def prepend(name, template):
+     f = open(name,'r')
+     temp = f.read()
+     f.close()
+     ob = json.loads(temp) 
+     open(name, "w").write( template % json.dumps(ob['layers'],sort_keys=True,indent=2))
+
 # Monkey patching build.py to allow redefining targets by 
 def add(self, target, force=True):
         """add adds a concrete target to self, overriding it if the target
@@ -20,14 +27,17 @@ targets.add = MethodType(add, targets, TargetCollection)
 
 # We redefine 'build'
 virtual('build', 'build/ga.css', 'build/ga.js',
-        'build/ga-simple.js', 'build/ga-whitespace.js')
+        'build/ga-simple.js', 'build/ga-whitespace.js','build/layersconfig')
 
+        
 # Adding ga custom source directoy
 
 from build import SRC
 SRC.extend([path for path in ifind('src/ga')
        if path.endswith('.js')
        if path not in SHADER_SRC])
+
+AVAILABLE_LANGS = ['de','fr','en','it','rm']
 
 # Custom target for ga
 
@@ -44,9 +54,9 @@ def build_ga_js(t):
 
 @target('build/ga-simple.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
         LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ga.json',
-        'buildcfg/ol-simple.json')
+        'buildcfg/ga-simple.json')
 def build_ga_simple_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ol-simple.json')
+    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ga-simple.json')
     report_sizes(t)
 
 @target('build/ga-whitespace.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
@@ -56,6 +66,23 @@ def build_ga_whitespace_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR,
              'build', 'buildcfg/ga-whitespace.json')
     report_sizes(t)
+    
+@target('build/layersconfig', AVAILABLE_LANGS)
+def get_layersconfig(t):
+    for lang in AVAILABLE_LANGS:
+        name = "%s.%s.js" % (t.name, lang)
+        t.info('downloading %r', t.name)
+        t.download('http://api3.geo.admin.ch/rest/services/api/MapServer/layersconfig?lang=%s' % lang)
+        os.rename(t.name, name)
+        t.info('downloaded %r', name)
+        prepend(name, """function getConfig(){ return %s } """)
+        
+@target('serve', PLOVR_JAR, 'test-deps', 'examples')
+def serve(t):
+    t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'buildcfg/ol.json',
+          'buildcfg/ga-all.json', EXAMPLES_JSON, 'buildcfg/test.json')
+  
+
 
 if __name__ == '__main__':
     main()

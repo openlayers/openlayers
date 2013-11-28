@@ -1,17 +1,7 @@
 {
 
-  "id": "ga",
+  "id": "ga-all",
 
-  "css-allowed-unrecognized-properties": [
-    "user-select"
-  ],
-
-  "css-inputs": [
-    "../css/ga.css"
-  ],
-
-  "css-output-file": "../build/ga.css",
-  
   "externs": [
     "//json.js",
     "../build/src/external/externs/types.js",
@@ -22,8 +12,15 @@
     "../externs/proj4js.js",
     "../externs/tilejson.js",
     "../externs/closure-compiler.js",
-    "../externs/ga.js"
+     "../externs/ga.js"
   ],
 
-  "inherits": "ol.json"
+  "inherits": "base.json",
+
+  "inputs": [
+    "../build/src/internal/src/requireall.js",
+    "../build/src/internal/src/types.js",
+    "../build/src/external/src/exports.js"
+  ]
+
 }
