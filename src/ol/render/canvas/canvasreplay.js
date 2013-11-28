@@ -632,7 +632,7 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
   this.state_.lineCap = goog.isDef(strokeStyle.lineCap) ?
       strokeStyle.lineCap : ol.render.canvas.defaultLineCap;
   this.state_.lineDash = !goog.isNull(strokeStyle.lineDash) ?
-        strokeStyle.lineDash : ol.render.canvas.defaultLineDash;
+      strokeStyle.lineDash : ol.render.canvas.defaultLineDash;
   this.state_.lineJoin = goog.isDef(strokeStyle.lineJoin) ?
       strokeStyle.lineJoin : ol.render.canvas.defaultLineJoin;
   this.state_.lineWidth = goog.isDef(strokeStyle.width) ?
