@@ -49,6 +49,7 @@ var styles = {
   'Polygon': [new ol.style.Style({
     stroke: new ol.style.Stroke({
       color: 'blue',
+      lineDash: [4],
       width: 3
     }),
     fill: new ol.style.Fill({

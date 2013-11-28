@@ -21,6 +21,11 @@ ol.style.Stroke = function(options) {
   this.lineCap = options.lineCap;
 
   /**
+   * @type {Array.<number>}
+   */
+  this.lineDash = goog.isDef(options.lineDash) ? options.lineDash : null;
+
+  /**
    * @type {string|undefined}
    */
   this.lineJoin = options.lineJoin;

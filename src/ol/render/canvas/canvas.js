@@ -16,6 +16,12 @@ ol.render.canvas.defaultLineCap = 'butt';
 
 
 /**
+ * @const {Array.<number>}
+ */
+ol.render.canvas.defaultLineDash = [];
+
+
+/**
  * @const {string}
  */
 ol.render.canvas.defaultLineJoin = 'miter';
