@@ -130,6 +130,7 @@ var tmpPointFeature = new ol.Feature(
 var tmpStyle = new ol.style.Style({
   stroke: new ol.style.Stroke({
     color: 'magenta',
+    lineCap: 'round',
     width: 5
   }),
   image: ol.shape.renderCircle(5,

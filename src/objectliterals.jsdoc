@@ -646,6 +646,7 @@
 /**
  * @typedef {Object} ol.style.StrokeOptions
  * @property {ol.Color|string|undefined} color Color.
+ * @property {string|undefined} lineCap Line cap style: `butt`, `round`, or `square`. Default is `butt`.
  * @property {number|undefined} width Width.
  * @todo stability experimental
  */

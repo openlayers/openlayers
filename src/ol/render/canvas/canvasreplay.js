@@ -189,8 +189,10 @@ ol.render.canvas.Replay.prototype.replay =
     } else if (type == ol.render.canvas.Instruction.SET_STROKE_STYLE) {
       goog.asserts.assert(goog.isString(instruction[1]));
       goog.asserts.assert(goog.isNumber(instruction[2]));
+      goog.asserts.assert(goog.isString(instruction[3]));
       context.strokeStyle = /** @type {string} */ (instruction[1]);
       context.lineWidth = /** @type {number} */ (instruction[2]);
+      context.lineCap = /** @type {string} */ (instruction[3]);
       ++i;
     } else if (type == ol.render.canvas.Instruction.STROKE) {
       context.stroke();
@@ -456,16 +458,20 @@ ol.render.canvas.LineStringReplay = function() {
   /**
    * @private
    * @type {{currentStrokeStyle: (string|undefined),
+   *         currentLineCap: (string|undefined),
    *         currentLineWidth: (number|undefined),
    *         lastStroke: number,
    *         strokeStyle: (string|undefined),
+   *         lineCap: (string|undefined),
    *         lineWidth: (number|undefined)}|null}
    */
   this.state_ = {
     currentStrokeStyle: undefined,
+    currentLineCap: undefined,
     currentLineWidth: undefined,
     lastStroke: 0,
     strokeStyle: undefined,
+    lineCap: undefined,
     lineWidth: undefined
   };
 
@@ -496,10 +502,13 @@ ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ =
 ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
   var state = this.state_;
   var strokeStyle = state.strokeStyle;
+  var lineCap = state.lineCap;
   var lineWidth = state.lineWidth;
   goog.asserts.assert(goog.isDef(strokeStyle));
+  goog.asserts.assert(goog.isDef(lineCap));
   goog.asserts.assert(goog.isDef(lineWidth));
   if (state.currentStrokeStyle != strokeStyle ||
+      state.currentLineCap != lineCap ||
       state.currentLineWidth != lineWidth) {
     if (state.lastStroke != this.coordinates.length) {
       this.instructions.push([ol.render.canvas.Instruction.STROKE]);
@@ -507,9 +516,10 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
     }
     this.instructions.push(
         [ol.render.canvas.Instruction.SET_STROKE_STYLE,
-         strokeStyle, lineWidth],
+         strokeStyle, lineWidth, lineCap],
         [ol.render.canvas.Instruction.BEGIN_PATH]);
     state.currentStrokeStyle = strokeStyle;
+    state.currentLineCap = lineCap;
     state.currentLineWidth = lineWidth;
   }
 };
@@ -589,6 +599,8 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
   goog.asserts.assert(!goog.isNull(strokeStyle));
   this.state_.strokeStyle = ol.color.asString(!goog.isNull(strokeStyle.color) ?
       strokeStyle.color : ol.render.canvas.defaultStrokeStyle);
+  this.state_.lineCap = goog.isDef(strokeStyle.lineCap) ?
+      strokeStyle.lineCap : ol.render.canvas.defaultLineCap;
   this.state_.lineWidth = goog.isDef(strokeStyle.width) ?
       strokeStyle.width : ol.render.canvas.defaultLineWidth;
 };
@@ -608,17 +620,21 @@ ol.render.canvas.PolygonReplay = function() {
    * @private
    * @type {{currentFillStyle: (string|undefined),
    *         currentStrokeStyle: (string|undefined),
+   *         currentLineCap: (string|undefined),
    *         currentLineWidth: (number|undefined),
    *         fillStyle: (string|undefined),
    *         strokeStyle: (string|undefined),
+   *         lineCap: (string|undefined),
    *         lineWidth: (number|undefined)}|null}
    */
   this.state_ = {
     currentFillStyle: undefined,
     currentStrokeStyle: undefined,
+    currentLineCap: undefined,
     currentLineWidth: undefined,
     fillStyle: undefined,
     strokeStyle: undefined,
+    lineCap: undefined,
     lineWidth: undefined
   };
 
@@ -744,10 +760,13 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
   if (!goog.isNull(strokeStyle)) {
     state.strokeStyle = ol.color.asString(!goog.isNull(strokeStyle.color) ?
         strokeStyle.color : ol.render.canvas.defaultStrokeStyle);
+    state.lineCap = goog.isDef(strokeStyle.lineCap) ?
+        strokeStyle.lineCap : ol.render.canvas.defaultLineCap;
     state.lineWidth = goog.isDef(strokeStyle.width) ?
         strokeStyle.width : ol.render.canvas.defaultLineWidth;
   } else {
     state.strokeStyle = undefined;
+    state.lineCap = undefined;
     state.lineWidth = undefined;
   }
 };
@@ -760,6 +779,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
   var state = this.state_;
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
+  var lineCap = state.lineCap;
   var lineWidth = state.lineWidth;
   if (goog.isDef(fillStyle) && state.currentFillStyle != fillStyle) {
     this.instructions.push(
@@ -767,13 +787,16 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
     state.currentFillStyle = state.fillStyle;
   }
   if (goog.isDef(strokeStyle)) {
+    goog.asserts.assert(goog.isDef(lineCap));
     goog.asserts.assert(goog.isDef(lineWidth));
     if (state.currentStrokeStyle != strokeStyle ||
+        state.currentLineCap != lineCap ||
         state.currentLineWidth != lineWidth) {
       this.instructions.push(
           [ol.render.canvas.Instruction.SET_STROKE_STYLE,
-           strokeStyle, lineWidth]);
+           strokeStyle, lineWidth, lineCap]);
       state.currentStrokeStyle = strokeStyle;
+      state.currentLineCap = lineCap;
       state.currentLineWidth = lineWidth;
     }
   }

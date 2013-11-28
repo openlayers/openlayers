@@ -16,6 +16,11 @@ ol.style.Stroke = function(options) {
   this.color = goog.isDef(options.color) ? options.color : null;
 
   /**
+   * @type {string|undefined}
+   */
+  this.lineCap = options.lineCap;
+
+  /**
    * @type {number|undefined}
    */
   this.width = options.width;

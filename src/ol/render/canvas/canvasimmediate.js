@@ -44,6 +44,7 @@ ol.render.canvas.Immediate = function(context, extent, transform) {
    * @private
    * @type {{currentFillStyle: (string|undefined),
    *         currentStrokeStyle: (string|undefined),
+   *         currentLineCap: (string|undefined),
    *         currentLineWidth: (number|undefined),
    *         fillStyle: (string|undefined),
    *         strokeStyle: (string|undefined),
@@ -53,12 +54,14 @@ ol.render.canvas.Immediate = function(context, extent, transform) {
    *         image: (HTMLCanvasElement|HTMLVideoElement|Image),
    *         height: (number|undefined),
    *         width: (number|undefined),
+   *         lineCap: (string|undefined),
    *         snapToPixel: (boolean|undefined),
    *         textStyle: ol.style.Text}}
    */
   this.state_ = {
     currentFillStyle: undefined,
     currentStrokeStyle: undefined,
+    currentLineCap: undefined,
     currentLineWidth: undefined,
     fillStyle: undefined,
     strokeStyle: undefined,
@@ -68,6 +71,7 @@ ol.render.canvas.Immediate = function(context, extent, transform) {
     image: null,
     height: undefined,
     width: undefined,
+    lineCap: undefined,
     snapToPixel: undefined,
     textStyle: null
   };
@@ -345,10 +349,13 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
   if (!goog.isNull(strokeStyle)) {
     state.strokeStyle = ol.color.asString(!goog.isNull(strokeStyle.color) ?
         strokeStyle.color : ol.render.canvas.defaultStrokeStyle);
+    state.lineCap = goog.isDef(strokeStyle.lineCap) ?
+        strokeStyle.lineCap : ol.render.canvas.defaultLineCap;
     state.lineWidth = goog.isDef(strokeStyle.width) ?
         strokeStyle.width : ol.render.canvas.defaultLineWidth;
   } else {
     state.strokeStyle = undefined;
+    state.lineCap = undefined;
     state.lineWidth = undefined;
   }
 };
@@ -362,6 +369,7 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyles_ = function() {
   var context = this.context_;
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
+  var lineCap = state.lineCap;
   var lineWidth = state.lineWidth;
   if (goog.isDef(fillStyle) && state.currentFillStyle != fillStyle) {
     context.fillStyle = fillStyle;
@@ -369,9 +377,12 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyles_ = function() {
   }
   if (goog.isDef(strokeStyle)) {
     goog.asserts.assert(goog.isDef(lineWidth));
+    goog.asserts.assert(goog.isDef(lineCap));
     if (state.currentStrokeStyle != strokeStyle ||
+        state.currentLineCap != lineCap ||
         state.currentLineWidth != lineWidth) {
       context.strokeStyle = strokeStyle;
+      context.lineCap = lineCap;
       context.lineWidth = lineWidth;
     }
   }

@@ -10,6 +10,12 @@ ol.render.canvas.defaultFillStyle = ol.color.fromString('black');
 
 
 /**
+ * @const {string}
+ */
+ol.render.canvas.defaultLineCap = 'butt';
+
+
+/**
  * @const {ol.Color}
  */
 ol.render.canvas.defaultStrokeStyle = ol.color.fromString('black');
