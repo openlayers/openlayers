@@ -413,7 +413,9 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyles_ = function() {
         state.currentLineWidth != lineWidth) {
       context.strokeStyle = strokeStyle;
       context.lineCap = lineCap;
-      context.setLineDash(lineDash);
+      if (goog.isDef(context.setLineDash)) {
+        context.setLineDash(lineDash);
+      }
       context.lineJoin = lineJoin;
       context.miterLimit = miterLimit;
       context.lineWidth = lineWidth;

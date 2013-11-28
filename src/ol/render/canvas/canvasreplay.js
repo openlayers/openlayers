@@ -198,7 +198,9 @@ ol.render.canvas.Replay.prototype.replay =
       context.lineCap = /** @type {string} */ (instruction[3]);
       context.lineJoin = /** @type {string} */ (instruction[4]);
       context.miterLimit = /** @type {number} */ (instruction[5]);
-      context.setLineDash(/** @type {Array.<number>} */ (instruction[6]));
+      if (goog.isDef(context.setLineDash)) {
+        context.setLineDash(/** @type {Array.<number>} */ (instruction[6]));
+      }
       ++i;
     } else if (type == ol.render.canvas.Instruction.STROKE) {
       context.stroke();
