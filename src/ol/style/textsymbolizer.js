@@ -216,6 +216,15 @@ ol.style.Text.prototype.getZIndex = function() {
 
 
 /**
+ * Get the stroke.
+ * @return {ol.style.Stroke} Stroke.
+ */
+ol.style.Text.prototype.getStroke = function() {
+  return this.stroke_;
+};
+
+
+/**
  * Set the font color.
  * @param {ol.expr.Expression} color Font color.
  */

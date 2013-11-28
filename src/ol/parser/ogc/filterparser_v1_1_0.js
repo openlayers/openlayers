@@ -224,8 +224,8 @@ ol.parser.ogc.Filter_v1_1_0.prototype.writeSpatial_ = function(filter, name) {
   } else {
     var child;
     if (geom !== null) {
-      child = this.writeNode('_geometry', geom,
-          this.gml_.featureNS).firstChild;
+      child = this.writeNode('_geometry', {value: geom},
+          this.gmlParser_.featureNS).firstChild;
     } else if (bbox.length === 4) {
       child = this.writeNode('Envelope', bbox,
           'http://www.opengis.net/gml');

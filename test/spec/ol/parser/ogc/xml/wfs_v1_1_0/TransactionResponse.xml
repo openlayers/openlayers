@@ -1,0 +1,16 @@
+<wfs:TransactionResponse version="1.1.0" xmlns:ogc="http://www.opengis.net/ogc" xmlns:tiger="http://www.census.gov" xmlns:wfs="http://www.opengis.net/wfs" xmlns:topp="http://www.openplans.org/topp" xmlns:sf="http://www.openplans.org/spearfish" xmlns:ows="http://www.opengis.net/ows" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <wfs:TransactionSummary>
+        <wfs:totalInserted>0</wfs:totalInserted>
+        <wfs:totalUpdated>1</wfs:totalUpdated>
+        <wfs:totalDeleted>0</wfs:totalDeleted>
+    </wfs:TransactionSummary>
+    <wfs:TransactionResults/>
+    <wfs:InsertResults>
+        <wfs:Feature>
+            <ogc:FeatureId fid="parcelle.40"/>
+        </wfs:Feature>
+        <wfs:Feature>
+            <ogc:FeatureId fid="parcelle.41"/>
+        </wfs:Feature>
+    </wfs:InsertResults>
+</wfs:TransactionResponse>

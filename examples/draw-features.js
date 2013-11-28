@@ -18,7 +18,7 @@ var raster = new ol.layer.Tile({
 });
 
 var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({parser: null}),
+  source: new ol.source.Vector(),
   style: new ol.style.Style({
     rules: [
       new ol.style.Rule({

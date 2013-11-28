@@ -538,9 +538,6 @@
  *     will be automatically configured from the GML.
  * @property {Array.<string>|string|undefined} featureType The local
  *     (without prefix) feature typeName(s).
- * @property {string|undefined} geometryName Name of geometry element.
- *     Defaults to `geometry`. If null, it will be set on <read> when the
- *     first geometry is parsed.
  * @property {boolean|undefined} multiCurve Write gml:MultiCurve instead of
  *     gml:MultiLineString. Since the latter is deprecated in GML 3, the
  *     default is `true`. This only applies to GML version 3.
@@ -584,6 +581,18 @@
  * @property {Object|undefined} metadata Metadata key/value pair with keys:
  *     name, desc and author.
  * @todo stability experimental
+ */
+
+ /**
+ * @typedef {Object} ol.parser.SLDReadOptions
+ * @property {ol.proj.Units} units The units to use in scale to resolution
+ *     calculations.
+ */
+
+ /**
+ * @typedef {Object} ol.parser.SLDWriteOptions
+ * @property {ol.proj.Units} units The units to use in resolution to scale
+ *     calculations.
  */
 
 /**
@@ -709,16 +718,19 @@
 /**
  * @typedef {Object} ol.source.VectorOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
- * @property {Object|string|undefined} data Data to parse.
+ * @property {Array.<ol.Feature>|undefined} features Any features to be added
+ *     to the source.  Providing features is an alternative to providing
+ *     `url` and `parser` options.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
- * @property {ol.parser.Parser} parser Parser instance to parse data
- *     provided as `data` or fetched from `url`.
+ * @property {ol.parser.Parser|undefined} parser Parser instance to parse data
+ *     fetched from `url`.
  * @property {ol.proj.ProjectionLike|undefined} projection Projection. Usually the
  *     projection is provided by the parser, so this only needs to be set if
  *     the parser does not know the SRS (e.g. in some GML flavors), or if the
  *     projection determined by the parser needs to be overridden.
- * @property {string|undefined} url Server url providing the vector data.
+ * @property {string|undefined} url Server url providing the vector data.  If
+ *     provided, the `parser` option must also be supplied.
  * @todo stability experimental
  */
 
@@ -806,6 +818,8 @@
  *     a value is provided, the rule will apply at resolutions greater than or
  *     equal to this value.
  * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers.
+ * @property {string|undefined} name Name.
+ * @property {string|undefined} title Title.
  * @todo stability experimental
  */
 
@@ -835,6 +849,8 @@
  * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers
  *     (that apply if no rules are provided or where none of the provided rules
  *     apply).
+ * @property {string|undefined} name Name.
+ * @property {string|undefined} title Title.
  * @todo stability experimental
  */
 
