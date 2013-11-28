@@ -14,7 +14,7 @@ goog.require('ol.FeatureEventType');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.Source');
-goog.require('ol.structs.RTree');
+goog.require('ol.structs.RBush');
 
 
 /**
@@ -251,10 +251,10 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(evt) {
     extents.push(evt.oldExtent);
   }
   var geometry = feature.getGeometry();
+  var extent = geometry.getBounds();
   if (!goog.isNull(geometry)) {
-    this.featureCache_.remove(feature, evt.oldExtent);
-    this.featureCache_.add(feature);
-    extents.push(geometry.getBounds());
+    this.featureCache_.updateExtent(feature, extent);
+    extents.push(extent);
   }
   this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.CHANGE,
       [feature], extents));
@@ -353,10 +353,10 @@ ol.source.FeatureCache = function() {
   this.idLookup_;
 
   /**
-   * @type {ol.structs.RTree}
+   * @type {ol.structs.RBush}
    * @private
    */
-  this.rTree_;
+  this.rBush_;
 
   this.clear();
 
@@ -368,7 +368,7 @@ ol.source.FeatureCache = function() {
  */
 ol.source.FeatureCache.prototype.clear = function() {
   this.idLookup_ = {};
-  this.rTree_ = new ol.structs.RTree();
+  this.rBush_ = new ol.structs.RBush();
 };
 
 
@@ -384,7 +384,7 @@ ol.source.FeatureCache.prototype.add = function(feature) {
 
   // index by bounding box
   if (!goog.isNull(geometry)) {
-    this.rTree_.insert(geometry.getBounds(), feature);
+    this.rBush_.insert(geometry.getBounds(), feature);
   }
 };
 
@@ -409,7 +409,7 @@ ol.source.FeatureCache.prototype.getFeaturesObject = function() {
  */
 ol.source.FeatureCache.prototype.forEach =
     function(extent, callback, opt_thisArg) {
-  this.rTree_.forEach(
+  this.rBush_.forEachInExtent(
       extent, /** @type {function(Object)} */ (callback), opt_thisArg);
 };
 
@@ -417,17 +417,24 @@ ol.source.FeatureCache.prototype.forEach =
 /**
  * Remove a feature from the cache.
  * @param {ol.Feature} feature Feature.
- * @param {ol.Extent=} opt_extent Optional extent (used when the current feature
- *     extent is different than the one in the index).
  */
-ol.source.FeatureCache.prototype.remove = function(feature, opt_extent) {
+ol.source.FeatureCache.prototype.remove = function(feature) {
   var id = goog.getUid(feature).toString(),
       geometry = feature.getGeometry();
 
   delete this.idLookup_[id];
   // index by bounding box
   if (!goog.isNull(geometry)) {
-    var extent = goog.isDef(opt_extent) ? opt_extent : geometry.getBounds();
-    this.rTree_.remove(extent, feature);
+    this.rBush_.remove(feature);
   }
+};
+
+
+/**
+ * Updates a feature's extent in the spatial index.
+ * @param {ol.Feature} feature Feature.
+ * @param {ol.Extent} extent Extent.
+ */
+ol.source.FeatureCache.prototype.updateExtent = function(feature, extent) {
+  this.rBush_.update(extent, feature);
 };
