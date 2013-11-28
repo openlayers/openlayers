@@ -8,6 +8,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Feature');
+goog.require('ol.FeatureRenderIntent');
 goog.require('ol.geom.AbstractCollection');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
@@ -17,7 +18,6 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.style.IconLiteral');
 goog.require('ol.style.LineLiteral');
 goog.require('ol.style.Literal');
@@ -158,7 +158,7 @@ ol.renderer.canvas.Vector.prototype.renderLineStringFeatures_ =
   context.beginPath();
   for (i = 0, ii = features.length; i < ii; ++i) {
     feature = features[i];
-    if (feature.getRenderIntent() == ol.layer.VectorLayerRenderIntent.HIDDEN) {
+    if (feature.getRenderIntent() == ol.FeatureRenderIntent.HIDDEN) {
       continue;
     }
     id = goog.getUid(feature);
@@ -247,7 +247,7 @@ ol.renderer.canvas.Vector.prototype.renderPointFeatures_ =
   context.globalAlpha = alpha;
   for (i = 0, ii = features.length; i < ii; ++i) {
     feature = features[i];
-    if (feature.getRenderIntent() == ol.layer.VectorLayerRenderIntent.HIDDEN) {
+    if (feature.getRenderIntent() == ol.FeatureRenderIntent.HIDDEN) {
       continue;
     }
     id = goog.getUid(feature);
@@ -323,7 +323,7 @@ ol.renderer.canvas.Vector.prototype.renderText_ =
 
   for (var i = 0, ii = features.length; i < ii; ++i) {
     feature = features[i];
-    if (feature.getRenderIntent() == ol.layer.VectorLayerRenderIntent.HIDDEN) {
+    if (feature.getRenderIntent() == ol.FeatureRenderIntent.HIDDEN) {
       continue;
     }
     vecs = ol.renderer.canvas.Vector.getLabelVectors(
@@ -391,7 +391,7 @@ ol.renderer.canvas.Vector.prototype.renderPolygonFeatures_ =
   context.beginPath();
   for (i = 0, ii = features.length; i < ii; ++i) {
     feature = features[i];
-    if (feature.getRenderIntent() == ol.layer.VectorLayerRenderIntent.HIDDEN) {
+    if (feature.getRenderIntent() == ol.FeatureRenderIntent.HIDDEN) {
       continue;
     }
     geometry = feature.getGeometry();

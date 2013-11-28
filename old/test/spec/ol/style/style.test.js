@@ -122,6 +122,102 @@ describe('ol.style.Style', function() {
 
   });
 
+  describe('#groupFeaturesBySymbolizerLiteral()', function() {
+
+    var style = new ol.style.Style({
+      symbolizers: [
+        new ol.style.Stroke({
+          width: 2,
+          color: ol.expr.parse('colorProperty'),
+          opacity: 1
+        })
+      ]
+    });
+    var features;
+
+    it('groups equal symbolizers', function() {
+      features = [
+        new ol.Feature({
+          g: new ol.geom.LineString([[-10, -10], [10, 10]]),
+          colorProperty: '#BADA55'
+        }),
+        new ol.Feature({
+          g: new ol.geom.LineString([[-10, 10], [10, -10]]),
+          colorProperty: '#013'
+        }),
+        new ol.Feature({
+          g: new ol.geom.LineString([[10, -10], [-10, -10]]),
+          colorProperty: '#013'
+        })
+      ];
+
+      var groups = style.groupFeaturesBySymbolizerLiteral(features, 1);
+      expect(groups.length).to.be(2);
+      expect(groups[0][0].length).to.be(1);
+      expect(groups[0][1].color).to.be('#BADA55');
+      expect(groups[1][0].length).to.be(2);
+      expect(groups[1][1].color).to.be('#013');
+    });
+
+    it('groups equal symbolizers also when defined on features', function() {
+      var symbolizer = new ol.style.Stroke({
+        width: 3,
+        color: ol.expr.parse('colorProperty'),
+        opacity: 1
+      });
+      var anotherSymbolizer = new ol.style.Stroke({
+        width: 3,
+        color: '#BADA55',
+        opacity: 1
+      });
+      var featureWithSymbolizers = new ol.Feature({
+        g: new ol.geom.LineString([[-10, -10], [-10, 10]]),
+        colorProperty: '#BADA55'
+      });
+      featureWithSymbolizers.setSymbolizers([symbolizer]);
+      var anotherFeatureWithSymbolizers = new ol.Feature({
+        g: new ol.geom.LineString([[-10, 10], [-10, -10]])
+      });
+      anotherFeatureWithSymbolizers.setSymbolizers([anotherSymbolizer]);
+      features.push(featureWithSymbolizers, anotherFeatureWithSymbolizers);
+
+      var groups = style.groupFeaturesBySymbolizerLiteral(features, 1);
+      expect(groups).to.have.length(3);
+      expect(groups[2][0].length).to.be(2);
+      expect(groups[2][1].width).to.be(3);
+
+    });
+
+    it('sorts groups by zIndex', function() {
+      var symbolizer = new ol.style.Stroke({
+        width: 3,
+        color: '#BADA55',
+        opacity: 1,
+        zIndex: 1
+      });
+      var anotherSymbolizer = new ol.style.Stroke({
+        width: 3,
+        color: '#BADA55',
+        opacity: 1
+      });
+      var featureWithSymbolizers = new ol.Feature({
+        g: new ol.geom.LineString([[-10, -10], [-10, 10]])
+      });
+      featureWithSymbolizers.setSymbolizers([symbolizer]);
+      var anotherFeatureWithSymbolizers = new ol.Feature({
+        g: new ol.geom.LineString([[-10, 10], [-10, -10]])
+      });
+      anotherFeatureWithSymbolizers.setSymbolizers([anotherSymbolizer]);
+      features = [featureWithSymbolizers, anotherFeatureWithSymbolizers];
+
+      var groups = style.groupFeaturesBySymbolizerLiteral(features, 1);
+      expect(groups).to.have.length(2);
+      expect(groups[0][1].zIndex).to.be(0);
+      expect(groups[1][1].zIndex).to.be(1);
+    });
+
+  });
+
   describe('ol.style.getDefault()', function() {
     var style = ol.style.getDefault();
 
