@@ -47,6 +47,7 @@ ol.render.canvas.Immediate = function(context, extent, transform) {
    *         currentLineCap: (string|undefined),
    *         currentLineJoin: (string|undefined),
    *         currentLineWidth: (number|undefined),
+   *         currentMiterLimit: (number|undefined),
    *         fillStyle: (string|undefined),
    *         strokeStyle: (string|undefined),
    *         lineWidth: (number|undefined),
@@ -57,6 +58,7 @@ ol.render.canvas.Immediate = function(context, extent, transform) {
    *         width: (number|undefined),
    *         lineCap: (string|undefined),
    *         lineJoin: (string|undefined),
+   *         miterLimit: (number|undefined),
    *         snapToPixel: (boolean|undefined),
    *         textStyle: ol.style.Text}}
    */
@@ -66,6 +68,7 @@ ol.render.canvas.Immediate = function(context, extent, transform) {
     currentLineCap: undefined,
     currentLineJoin: undefined,
     currentLineWidth: undefined,
+    currentMiterLimit: undefined,
     fillStyle: undefined,
     strokeStyle: undefined,
     lineWidth: undefined,
@@ -76,6 +79,7 @@ ol.render.canvas.Immediate = function(context, extent, transform) {
     width: undefined,
     lineCap: undefined,
     lineJoin: undefined,
+    miterLimit: undefined,
     snapToPixel: undefined,
     textStyle: null
   };
@@ -359,11 +363,14 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
         strokeStyle.lineJoin : ol.render.canvas.defaultLineJoin;
     state.lineWidth = goog.isDef(strokeStyle.width) ?
         strokeStyle.width : ol.render.canvas.defaultLineWidth;
+    state.miterLimit = goog.isDef(strokeStyle.miterLimit) ?
+        strokeStyle.miterLimit : ol.render.canvas.defaultMiterLimit;
   } else {
     state.strokeStyle = undefined;
     state.lineCap = undefined;
     state.lineJoin = undefined;
     state.lineWidth = undefined;
+    state.miterLimit = undefined;
   }
 };
 
@@ -379,6 +386,7 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyles_ = function() {
   var lineCap = state.lineCap;
   var lineJoin = state.lineJoin;
   var lineWidth = state.lineWidth;
+  var miterLimit = state.miterLimit;
   if (goog.isDef(fillStyle) && state.currentFillStyle != fillStyle) {
     context.fillStyle = fillStyle;
     state.currentFillStyle = fillStyle;
@@ -387,13 +395,16 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyles_ = function() {
     goog.asserts.assert(goog.isDef(lineWidth));
     goog.asserts.assert(goog.isDef(lineCap));
     goog.asserts.assert(goog.isDef(lineJoin));
+    goog.asserts.assert(goog.isDef(miterLimit));
     if (state.currentStrokeStyle != strokeStyle ||
         state.currentLineCap != lineCap ||
         state.currentLineJoin != lineJoin ||
+        state.currentMiterLimit != miterLimit ||
         state.currentLineWidth != lineWidth) {
       context.strokeStyle = strokeStyle;
       context.lineCap = lineCap;
       context.lineJoin = lineJoin;
+      context.miterLimit = miterLimit;
       context.lineWidth = lineWidth;
     }
   }

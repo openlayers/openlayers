@@ -28,5 +28,10 @@ ol.style.Stroke = function(options) {
   /**
    * @type {number|undefined}
    */
+  this.miterLimit = options.miterLimit;
+
+  /**
+   * @type {number|undefined}
+   */
   this.width = options.width;
 };

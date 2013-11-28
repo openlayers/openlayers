@@ -191,10 +191,12 @@ ol.render.canvas.Replay.prototype.replay =
       goog.asserts.assert(goog.isNumber(instruction[2]));
       goog.asserts.assert(goog.isString(instruction[3]));
       goog.asserts.assert(goog.isString(instruction[4]));
+      goog.asserts.assert(goog.isNumber(instruction[5]));
       context.strokeStyle = /** @type {string} */ (instruction[1]);
       context.lineWidth = /** @type {number} */ (instruction[2]);
       context.lineCap = /** @type {string} */ (instruction[3]);
       context.lineJoin = /** @type {string} */ (instruction[4]);
+      context.miterLimit = /** @type {number} */ (instruction[5]);
       ++i;
     } else if (type == ol.render.canvas.Instruction.STROKE) {
       context.stroke();
@@ -463,22 +465,26 @@ ol.render.canvas.LineStringReplay = function() {
    *         currentLineCap: (string|undefined),
    *         currentLineJoin: (string|undefined),
    *         currentLineWidth: (number|undefined),
+   *         currentMiterLimit: (number|undefined),
    *         lastStroke: number,
    *         strokeStyle: (string|undefined),
    *         lineCap: (string|undefined),
    *         lineJoin: (string|undefined),
-   *         lineWidth: (number|undefined)}|null}
+   *         lineWidth: (number|undefined),
+   *         miterLimit: (number|undefined)}|null}
    */
   this.state_ = {
     currentStrokeStyle: undefined,
     currentLineCap: undefined,
     currentLineJoin: undefined,
     currentLineWidth: undefined,
+    currentMiterLimit: undefined,
     lastStroke: 0,
     strokeStyle: undefined,
     lineCap: undefined,
     lineJoin: undefined,
-    lineWidth: undefined
+    lineWidth: undefined,
+    miterLimit: undefined
   };
 
 };
@@ -511,26 +517,30 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
   var lineCap = state.lineCap;
   var lineJoin = state.lineJoin;
   var lineWidth = state.lineWidth;
+  var miterLimit = state.miterLimit;
   goog.asserts.assert(goog.isDef(strokeStyle));
   goog.asserts.assert(goog.isDef(lineCap));
   goog.asserts.assert(goog.isDef(lineJoin));
   goog.asserts.assert(goog.isDef(lineWidth));
+  goog.asserts.assert(goog.isDef(miterLimit));
   if (state.currentStrokeStyle != strokeStyle ||
       state.currentLineCap != lineCap ||
       state.currentLineJoin != lineJoin ||
-      state.currentLineWidth != lineWidth) {
+      state.currentLineWidth != lineWidth ||
+      state.currentMiterLimit != miterLimit) {
     if (state.lastStroke != this.coordinates.length) {
       this.instructions.push([ol.render.canvas.Instruction.STROKE]);
       state.lastStroke = this.coordinates.length;
     }
     this.instructions.push(
         [ol.render.canvas.Instruction.SET_STROKE_STYLE,
-         strokeStyle, lineWidth, lineCap, lineJoin],
+         strokeStyle, lineWidth, lineCap, lineJoin, miterLimit],
         [ol.render.canvas.Instruction.BEGIN_PATH]);
     state.currentStrokeStyle = strokeStyle;
     state.currentLineCap = lineCap;
     state.currentLineJoin = lineJoin;
     state.currentLineWidth = lineWidth;
+    state.currentMiterLimit = miterLimit;
   }
 };
 
@@ -615,6 +625,8 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
       strokeStyle.lineJoin : ol.render.canvas.defaultLineJoin;
   this.state_.lineWidth = goog.isDef(strokeStyle.width) ?
       strokeStyle.width : ol.render.canvas.defaultLineWidth;
+  this.state_.miterLimit = goog.isDef(strokeStyle.miterLimit) ?
+      strokeStyle.miterLimit : ol.render.canvas.defaultMiterLimit;
 };
 
 
@@ -635,11 +647,13 @@ ol.render.canvas.PolygonReplay = function() {
    *         currentLineCap: (string|undefined),
    *         currentLineJoin: (string|undefined),
    *         currentLineWidth: (number|undefined),
+   *         currentMiterLimit: (number|undefined),
    *         fillStyle: (string|undefined),
    *         strokeStyle: (string|undefined),
    *         lineCap: (string|undefined),
    *         lineJoin: (string|undefined),
-   *         lineWidth: (number|undefined)}|null}
+   *         lineWidth: (number|undefined),
+   *         miterLimit: (number|undefined)}|null}
    */
   this.state_ = {
     currentFillStyle: undefined,
@@ -647,11 +661,13 @@ ol.render.canvas.PolygonReplay = function() {
     currentLineCap: undefined,
     currentLineJoin: undefined,
     currentLineWidth: undefined,
+    currentMiterLimit: undefined,
     fillStyle: undefined,
     strokeStyle: undefined,
     lineCap: undefined,
     lineJoin: undefined,
-    lineWidth: undefined
+    lineWidth: undefined,
+    miterLimit: undefined
   };
 
 };
@@ -782,11 +798,14 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
         strokeStyle.lineJoin : ol.render.canvas.defaultLineJoin;
     state.lineWidth = goog.isDef(strokeStyle.width) ?
         strokeStyle.width : ol.render.canvas.defaultLineWidth;
+    state.miterLimit = goog.isDef(strokeStyle.miterLimit) ?
+        strokeStyle.miterLimit : ol.render.canvas.defaultMiterLimit;
   } else {
     state.strokeStyle = undefined;
     state.lineCap = undefined;
     state.lineJoin = undefined;
     state.lineWidth = undefined;
+    state.miterLimit = undefined;
   }
 };
 
@@ -801,6 +820,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
   var lineCap = state.lineCap;
   var lineJoin = state.lineJoin;
   var lineWidth = state.lineWidth;
+  var miterLimit = state.miterLimit;
   if (goog.isDef(fillStyle) && state.currentFillStyle != fillStyle) {
     this.instructions.push(
         [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle]);
@@ -810,17 +830,20 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
     goog.asserts.assert(goog.isDef(lineCap));
     goog.asserts.assert(goog.isDef(lineJoin));
     goog.asserts.assert(goog.isDef(lineWidth));
+    goog.asserts.assert(goog.isDef(miterLimit));
     if (state.currentStrokeStyle != strokeStyle ||
         state.currentLineCap != lineCap ||
         state.currentLineJoin != lineJoin ||
-        state.currentLineWidth != lineWidth) {
+        state.currentLineWidth != lineWidth ||
+        state.currentMiterLimit != miterLimit) {
       this.instructions.push(
           [ol.render.canvas.Instruction.SET_STROKE_STYLE,
-           strokeStyle, lineWidth, lineCap, lineJoin]);
+           strokeStyle, lineWidth, lineCap, lineJoin, miterLimit]);
       state.currentStrokeStyle = strokeStyle;
       state.currentLineCap = lineCap;
       state.currentLineJoin = lineJoin;
       state.currentLineWidth = lineWidth;
+      state.currentMiterLimit = miterLimit;
     }
   }
 };
