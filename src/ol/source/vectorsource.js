@@ -3,6 +3,8 @@
 // FIXME make change-detection more refined (notably, geometry hint)
 
 goog.provide('ol.source.Vector');
+goog.provide('ol.source.VectorEvent');
+goog.provide('ol.source.VectorEventType');
 
 goog.require('goog.asserts');
 goog.require('goog.events');
@@ -10,6 +12,15 @@ goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('ol.source.Source');
 goog.require('ol.structs.RBush');
+
+
+/**
+ * @enum {string}
+ */
+ol.source.VectorEventType = {
+  ADDFEATURE: 'addfeature',
+  REMOVEFEATURE: 'removefeature'
+};
 
 
 
@@ -64,6 +75,8 @@ ol.source.Vector.prototype.addFeature = function(feature) {
       goog.events.EventType.CHANGE, this.handleFeatureChange_, false, this);
   var extent = feature.getGeometry().getExtent();
   this.rBush_.insert(extent, feature);
+  this.dispatchEvent(
+      new ol.source.VectorEvent(ol.source.VectorEventType.ADDFEATURE, feature));
   this.dispatchChangeEvent();
 };
 
@@ -162,5 +175,36 @@ ol.source.Vector.prototype.removeFeature = function(feature) {
   goog.asserts.assert(featureKey in this.featureChangeKeys_);
   goog.events.unlistenByKey(this.featureChangeKeys_[featureKey]);
   delete this.featureChangeKeys_[featureKey];
+  this.dispatchEvent(new ol.source.VectorEvent(
+      ol.source.VectorEventType.REMOVEFEATURE, feature));
   this.dispatchChangeEvent();
+};
+
+
+
+/**
+ * @constructor
+ * @extends {goog.events.Event}
+ * @param {string} type Type.
+ * @param {ol.Feature=} opt_feature Feature.
+ */
+ol.source.VectorEvent = function(type, opt_feature) {
+
+  goog.base(this, type);
+
+  /**
+   * @private
+   * @type {ol.Feature|undefined}
+   */
+  this.feature_ = opt_feature;
+
+};
+goog.inherits(ol.source.VectorEvent, goog.events.Event);
+
+
+/**
+ * @return {ol.Feature|undefined} Feature.
+ */
+ol.source.VectorEvent.prototype.getFeature = function() {
+  return this.feature_;
 };
