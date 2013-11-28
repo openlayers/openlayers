@@ -59,10 +59,6 @@ ga.Tooltip = function() {
    */
   this.overlay_ = null;
 
-  /**
-   * @type {ol.Vector}
-   * @private
-   */
   this.vector_ = null;
   
   this.createOverlay_();
