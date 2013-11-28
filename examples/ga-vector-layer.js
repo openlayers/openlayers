@@ -49,7 +49,7 @@ var vector = new ol.layer.Vector({
 var map = new ga.Map({
   // Add GeoAdmin layers
   layers: [
-    ga.layer.create('ch.swisstopo.pixelkarte-farbe'),
+    ga.layer.create('ch.swisstopo.swisstlm3d-karte-farbe'),
     vector
   ],
   // Define the div where the map is placed

@@ -24,20 +24,27 @@ ga.layer.create = function(layer) {
     var layerConfig = ga.layer.layerConfig[layer];
 
     layerConfig.type = layerConfig.type || 'wmts';
-    if (layerConfig.type == 'group') {
+    if (layerConfig.type == 'aggregate') {
       var layers = [];
-      for (var i = 0; i < layerConfig.layers.length; i++) {
-        // FIXME
+      for (var i = 0; i < layerConfig.subLayersIds.length; i++) {
+        // FIXME support aggregate
       }
       new ol.layer.Group({
         layers: layers
       });
     } else if (layerConfig.type == 'wms') {
+      // FIXME: support singleTile
       return new ol.layer.Tile({
+        minResolution: layerConfig.minResolution,
+        maxResolution: layerConfig.maxResolution,
+        opacity: layerConfig.opacity,
         source: ga.source.wms(layer, layerConfig)
       });
     } else if (layerConfig.type == 'wmts') {
       return new ol.layer.Tile({
+        minResolution: layerConfig.minResolution,
+        maxResolution: layerConfig.maxResolution,
+        opacity: layerConfig.opacity,
         source: ga.source.wmts(layer, layerConfig)
       });
     }
@@ -110,8 +117,9 @@ ga.source.wms = function(layer, options) {
     crossOrigin: 'anonymous',
     opaque: goog.isDef(options.opaque) ? options.opaque : false,
     params: {
-      'LAYERS': options.layers || layer
+      'LAYERS': options.wmsLayers || layer
     },
+    // FXME support wmsurl
     url: 'http://wms.geo.admin.ch/'
   });
 };
