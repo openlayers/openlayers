@@ -21,6 +21,11 @@ ol.style.Stroke = function(options) {
   this.lineCap = options.lineCap;
 
   /**
+   * @type {string|undefined}
+   */
+  this.lineJoin = options.lineJoin;
+
+  /**
    * @type {number|undefined}
    */
   this.width = options.width;
