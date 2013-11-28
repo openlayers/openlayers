@@ -17,7 +17,7 @@ ol.TilePriorityFunction;
 
 /**
  * @constructor
- * @extends {ol.structs.PriorityQueue}
+ * @extends {ol.structs.PriorityQueue.<Array>}
  * @param {ol.TilePriorityFunction} tilePriorityFunction
  *     Tile priority function.
  * @param {function(): ?} tileChangeCallback

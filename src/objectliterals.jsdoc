@@ -357,7 +357,7 @@
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is no modifiers.
  * @property {number|undefined} pixelDelta Pixel The amount to pan on each key
- *     press
+ *     press. Default is `128` pixels.
  * @todo stability experimental
  */
 
@@ -367,7 +367,7 @@
  * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is no modifiers.
- * @property {number|undefined} delta The amount to zoom on each key press.
+ * @property {number|undefined} delta The amount to zoom on each key press. Default is `1`.
  * @todo stability experimental
  */
 
@@ -409,7 +409,8 @@
 
 /**
  * @typedef {Object} ol.interaction.TouchRotateOptions
- * @property {number|undefined} threshold Minimal angle to start a rotation.
+ * @property {number|undefined} threshold Minimal angle in radians to start a rotation.
+ *     Default is `0.3`.
  * @todo stability experimental
  */
 
@@ -421,12 +422,12 @@
 
 /**
  * @typedef {Object} ol.layer.BaseOptions
- * @property {number|undefined} brightness Brightness.
- * @property {number|undefined} contrast Contrast.
- * @property {number|undefined} hue Hue.
- * @property {number|undefined} opacity Opacity.
- * @property {number|undefined} saturation Saturation.
- * @property {boolean|undefined} visible Visibility.
+ * @property {number|undefined} brightness Brightness. Default is `0`.
+ * @property {number|undefined} contrast Contrast. Default is `1`.
+ * @property {number|undefined} hue Hue. Default is `0`.
+ * @property {number|undefined} opacity Opacity (0, 1). Default is `1`.
+ * @property {number|undefined} saturation Saturation. Default is `1`.
+ * @property {boolean|undefined} visible Visibility. Default is `true`.
  * @property {number|undefined} minResolution The minimum resolution
  *      (inclusive) at which this layer will be visible.
  * @property {number|undefined} maxResolution The maximum resolution
@@ -436,11 +437,11 @@
 
 /**
  * @typedef {Object} ol.layer.LayerOptions
- * @property {number|undefined} brightness Brightness.
- * @property {number|undefined} contrast Contrast.
- * @property {number|undefined} hue Hue.
- * @property {number|undefined} opacity Opacity. 0-1. Default is `1`.
- * @property {number|undefined} saturation Saturation.
+ * @property {number|undefined} brightness Brightness. Default is `0`.
+ * @property {number|undefined} contrast Contrast. Default is `1`.
+ * @property {number|undefined} hue Hue. Default is `0`.
+ * @property {number|undefined} opacity Opacity (0, 1). Default is `1`.
+ * @property {number|undefined} saturation Saturation. Default is `1`.
  * @property {ol.source.Source} source Source for this layer.
  * @property {boolean|undefined} visible Visibility. Default is `true` (visible).
  * @property {number|undefined} minResolution The minimum resolution
@@ -452,12 +453,12 @@
 
 /**
  * @typedef {Object} ol.layer.GroupOptions
- * @property {number|undefined} brightness Brightness.
- * @property {number|undefined} contrast Contrast.
- * @property {number|undefined} hue Hue.
- * @property {number|undefined} opacity Opacity.
- * @property {number|undefined} saturation Saturation.
- * @property {boolean|undefined} visible Visibility.
+ * @property {number|undefined} brightness Brightness. Default is `0`.
+ * @property {number|undefined} contrast Contrast. Default is `1`.
+ * @property {number|undefined} hue Hue. Default is `0`.
+ * @property {number|undefined} opacity Opacity (0, 1). Default is `1`.
+ * @property {number|undefined} saturation Saturation. Default is `1`.
+ * @property {boolean|undefined} visible Visibility. Default is `true`.
  * @property {number|undefined} minResolution The minimum resolution
  *      (inclusive) at which this layer will be visible.
  * @property {number|undefined} maxResolution The maximum resolution
@@ -468,12 +469,12 @@
 
 /**
  * @typedef {Object} ol.layer.TileOptions
- * @property {number|undefined} brightness Brightness.
- * @property {number|undefined} contrast Contrast.
- * @property {number|undefined} hue Hue.
- * @property {number|undefined} opacity Opacity. 0-1. Default is `1`.
+ * @property {number|undefined} brightness Brightness. Default is `0`.
+ * @property {number|undefined} contrast Contrast. Default is `1`.
+ * @property {number|undefined} hue Hue. Default is `0`.
+ * @property {number|undefined} opacity Opacity (0, 1). Default is `1`.
  * @property {number|undefined} preload Preload.
- * @property {number|undefined} saturation Saturation.
+ * @property {number|undefined} saturation Saturation. Default is `1`.
  * @property {ol.source.Source} source Source for this layer.
  * @property {boolean|undefined} visible Visibility. Default is `true` (visible).
  * @property {number|undefined} minResolution The minimum resolution
@@ -489,7 +490,7 @@
  *     Function to render an array of
  *     features into feature info markup. If not provided, a comma separated
  *     list of the unique ids of the resulting features will be returned.
- * @property {number|undefined} opacity Opacity. 0-1. Default is `1`.
+ * @property {number|undefined} opacity Opacity (0, 1). Default is `1`.
  * @property {ol.source.Source} source Source for this layer.
  * @property {ol.style.Style|undefined} style Style.
  * @property {boolean|undefined} visible Visibility. Default is `true` (visible).
@@ -537,9 +538,6 @@
  *     will be automatically configured from the GML.
  * @property {Array.<string>|string|undefined} featureType The local
  *     (without prefix) feature typeName(s).
- * @property {string|undefined} geometryName Name of geometry element.
- *     Defaults to `geometry`. If null, it will be set on <read> when the
- *     first geometry is parsed.
  * @property {boolean|undefined} multiCurve Write gml:MultiCurve instead of
  *     gml:MultiLineString. Since the latter is deprecated in GML 3, the
  *     default is `true`. This only applies to GML version 3.
@@ -585,9 +583,21 @@
  * @todo stability experimental
  */
 
+ /**
+ * @typedef {Object} ol.parser.SLDReadOptions
+ * @property {ol.proj.Units} units The units to use in scale to resolution
+ *     calculations.
+ */
+
+ /**
+ * @typedef {Object} ol.parser.SLDWriteOptions
+ * @property {ol.proj.Units} units The units to use in resolution to scale
+ *     calculations.
+ */
+
 /**
  * @typedef {Object} ol.source.BingMapsOptions
- * @property {string|undefined} culture Culture.
+ * @property {string|undefined} culture Culture code. Default is `en-us`.
  * @property {string} key Bing Maps API key. Get yours at
  *     http://bingmapsportal.com/.
  * @property {string} imagerySet Type of imagery.
@@ -617,7 +627,9 @@
  * @property {number|undefined} maxZoom Max zoom.
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
- * @property {string|undefined} url URL.
+ * @property {string|undefined} url URL template. Must include `{x}`, `{y}`,
+ *     and `{z}` placeholders. Default is
+ *     `http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png`.
  * @todo stability experimental
  */
 
@@ -627,8 +639,8 @@
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image
  *     requests.
  * @property {ol.Extent|undefined} extent Extent.
- * @property {ol.source.WMSGetFeatureInfoOptions|undefined}
- *     getFeatureInfoOptions Options for GetFeatureInfo.
+ * @property {ol.source.WMSGetFeatureInfoOptions|undefined} getFeatureInfoOptions
+ *     Options for GetFeatureInfo.
  * @property {Object.<string,*>} params WMS request parameters. At least a
  *     `LAYERS` param is required. `STYLES` is `` by default. `VERSION` is
  *     `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX` and `CRS` (`SRS` for WMS
@@ -651,7 +663,8 @@
  * @property {boolean|undefined} opaque Whether the layer is opaque.
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
- * @property {string|undefined} url URL.
+ * @property {string|undefined} url URL template. Must include `{x}`, `{y}`,
+ *     and `{z}` placeholders.
  * @todo stability experimental
  */
 
@@ -674,7 +687,7 @@
  *     requests.
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
- * @property {string} url URL.
+ * @property {string} url URL to the TileJSON file.
  * @todo stability experimental
  */
 
@@ -688,8 +701,8 @@
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image
  *     requests.
  * @property {ol.Extent|undefined} extent Extent.
- * @property {ol.source.WMSGetFeatureInfoOptions|undefined}
- *     getFeatureInfoOptions Options for GetFeatureInfo.
+ * @property {ol.source.WMSGetFeatureInfoOptions|undefined} getFeatureInfoOptions
+ *     Options for GetFeatureInfo.
  * @property {string|undefined} logo Logo.
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  * @property {number|undefined} maxZoom Maximum zoom.
@@ -705,29 +718,21 @@
 /**
  * @typedef {Object} ol.source.VectorOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
- * @property {Object|string|undefined} data Data to parse.
+ * @property {Array.<ol.Feature>|undefined} features Any features to be added
+ *     to the source.  Providing features is an alternative to providing
+ *     `url` and `parser` options.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
- * @property {ol.parser.Parser} parser Parser instance to parse data
- *     provided as `data` or fetched from `url`.
+ * @property {ol.parser.Parser|undefined} parser Parser instance to parse data
+ *     fetched from `url`.
  * @property {ol.proj.ProjectionLike|undefined} projection Projection. Usually the
  *     projection is provided by the parser, so this only needs to be set if
  *     the parser does not know the SRS (e.g. in some GML flavors), or if the
  *     projection determined by the parser needs to be overridden.
- * @property {string|undefined} url Server url providing the vector data.
+ * @property {string|undefined} url Server url providing the vector data.  If
+ *     provided, the `parser` option must also be supplied.
  * @todo stability experimental
  */
-
-
-/**
- * @typedef {Object} ol.source.WMSGetFeatureInfoOptions
- * @property {ol.source.WMSGetFeatureInfoMethod} method Method for requesting
- *     GetFeatureInfo. Default is `ol.source.WMSGetFeatureInfoMethod.IFRAME`.
- * @property {Object} params Params for the GetFeatureInfo request. Default is
- *     `{'INFO_FORMAT': 'text/html'}`.
- * @todo stability experimental
- */
-
 
 /**
  * @typedef {Object} ol.source.WMTSOptions
@@ -761,7 +766,7 @@
  *     requests.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
- * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} projection Projection. Default is `EPSG:3857`.
  * @property {number|undefined} maxZoom Optional max zoom level. Default is `18`.
  * @property {number|undefined} minZoom Unsupported (TODO: remove this).
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
@@ -783,7 +788,7 @@
  * @property {number|ol.expr.Expression|undefined} height Height of the
  *     icon in pixels. Default is the height of the icon image.
  * @property {number|ol.expr.Expression|undefined} opacity Icon opacity
- *     (0-1).
+ *     (0, 1). Default is `1`.
  * @property {number|ol.expr.Expression|undefined} rotation Rotation in
  *     radians (positive rotation clockwise).
  * @property {number|ol.expr.Expression|undefined} xOffset Pixel offset from the
@@ -798,7 +803,7 @@
  * @typedef {Object} ol.style.FillOptions
  * @property {string|ol.expr.Expression|undefined} color Fill color as hex color
  *     code.
- * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
+ * @property {number|ol.expr.Expression|undefined} opacity Opacity (0, 1). Default is `1`.
  * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
  * @todo stability experimental
  */
@@ -813,6 +818,8 @@
  *     a value is provided, the rule will apply at resolutions greater than or
  *     equal to this value.
  * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers.
+ * @property {string|undefined} name Name.
+ * @property {string|undefined} title Title.
  * @todo stability experimental
  */
 
@@ -830,7 +837,7 @@
  * @typedef {Object} ol.style.StrokeOptions
  * @property {string|ol.expr.Expression|undefined} color Stroke color as hex
  *     color code.
- * @property {number|ol.expr.Expression|undefined} opacity Stroke opacity (0-1).
+ * @property {number|ol.expr.Expression|undefined} opacity Stroke opacity (0, 1). Default is `1`.
  * @property {number|ol.expr.Expression|undefined} width Stroke width in pixels.
  * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
  * @todo stability experimental
@@ -842,6 +849,8 @@
  * @property {Array.<ol.style.Symbolizer>|undefined} symbolizers Symbolizers
  *     (that apply if no rules are provided or where none of the provided rules
  *     apply).
+ * @property {string|undefined} name Name.
+ * @property {string|undefined} title Title.
  * @todo stability experimental
  */
 
@@ -852,7 +861,7 @@
  * @property {number|ol.expr.Expression|undefined} fontSize Font size in pixels.
  * @property {string|ol.expr.Expression|undefined} fontWeight Font weight.
  * @property {string|ol.expr.Expression} text Text for the label.
- * @property {number|ol.expr.Expression|undefined} opacity Opacity (0-1).
+ * @property {number|ol.expr.Expression|undefined} opacity Opacity (0, 1). Default is `1`.
  * @property {ol.style.Stroke|undefined} stroke Stroke symbolizer for text.
  * @property {number|ol.expr.Expression|undefined} zIndex Stack order.
  * @todo stability experimental

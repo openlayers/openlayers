@@ -75,7 +75,7 @@ ol.Collection = function(opt_array) {
 
   /**
    * @private
-   * @type {Array}
+   * @type {Array.<*>}
    */
   this.array_ = opt_array || [];
 
@@ -112,7 +112,7 @@ ol.Collection.prototype.extend = function(arr) {
 
 /**
  * Iterate over each element, calling the provided callback.
- * @param {function(this: S, T, number, Array.<T>): ?} f The function to call
+ * @param {function(this: S, T, number, Array.<T>): *} f The function to call
  *     for every element. This function takes 3 arguments (the element, the
  *     index and the array). The return value is ignored.
  * @param {S=} opt_obj The object to be used as the value of 'this' within f.

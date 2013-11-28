@@ -48,17 +48,21 @@ goog.inherits(ol.renderer.Layer, goog.Disposable);
  *     successful queries. The passed arguments are the resulting feature
  *     information and the layer.
  * @param {function()=} opt_error Callback for unsuccessful queries.
+ * @return {boolean} Whether getFeatureInfoForPixel was called on the source.
  */
 ol.renderer.Layer.prototype.getFeatureInfoForPixel =
     function(pixel, success, opt_error) {
   var layer = this.getLayer();
   var source = layer.getSource();
+  var haveGetFeatureInfo = false;
   if (goog.isFunction(source.getFeatureInfoForPixel)) {
     var callback = function(layerFeatureInfo) {
       success(layerFeatureInfo, layer);
     };
     source.getFeatureInfoForPixel(pixel, this.getMap(), callback, opt_error);
+    haveGetFeatureInfo = true;
   }
+  return haveGetFeatureInfo;
 };
 
 
@@ -129,10 +133,16 @@ ol.renderer.Layer.prototype.scheduleExpireCache =
     function(frameState, tileSource) {
   if (tileSource.canExpireCache()) {
     frameState.postRenderFunctions.push(
-        goog.partial(function(tileSource, map, frameState) {
-          var tileSourceKey = goog.getUid(tileSource).toString();
-          tileSource.expireCache(frameState.usedTiles[tileSourceKey]);
-        }, tileSource));
+        goog.partial(
+            /**
+             * @param {ol.source.Tile} tileSource Tile source.
+             * @param {ol.Map} map Map.
+             * @param {ol.FrameState} frameState Frame state.
+             */
+            function(tileSource, map, frameState) {
+              var tileSourceKey = goog.getUid(tileSource).toString();
+              tileSource.expireCache(frameState.usedTiles[tileSourceKey]);
+            }, tileSource));
   }
 };
 

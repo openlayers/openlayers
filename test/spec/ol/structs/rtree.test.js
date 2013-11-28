@@ -109,11 +109,38 @@ describe('ol.structs.RTree', function() {
       expect(result.length).to.be(3);
     });
 
-    it('can return objects instead of arrays', function() {
-      var obj = {foo: 'bar'};
-      rTree.insert([5, 5, 5, 5], obj);
-      var result = rTree.searchReturningObject([4, 4, 6, 6]);
-      expect(result[goog.getUid(obj)]).to.equal(obj);
+  });
+
+  describe('#forEach()', function() {
+    var tree;
+    beforeEach(function() {
+      tree = new ol.structs.RTree();
+    });
+
+    it('calls a callback for each result in the search extent', function() {
+      var one = {};
+      tree.insert([4.5, 4.5, 5, 5], one);
+
+      var two = {};
+      tree.insert([5, 5, 5.5, 5.5], two);
+
+      var callback = sinon.spy();
+      tree.forEach([4, 4, 6, 6], callback);
+      expect(callback.callCount).to.be(2);
+      expect(callback.calledWith(one)).to.be(true);
+      expect(callback.calledWith(two)).to.be(true);
+    });
+
+    it('accepts a this argument', function() {
+      var obj = {};
+      tree.insert([5, 5, 5, 5], obj);
+
+      var callback = sinon.spy();
+      var thisArg = {};
+      tree.forEach([4, 4, 6, 6], callback, thisArg);
+      expect(callback.callCount).to.be(1);
+      expect(callback.calledWith(obj)).to.be(true);
+      expect(callback.calledOn(thisArg)).to.be(true);
     });
 
   });

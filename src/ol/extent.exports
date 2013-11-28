@@ -1,4 +1,5 @@
 @exportSymbol ol.extent.boundingExtent
+@exportSymbol ol.extent.buffer
 @exportSymbol ol.extent.containsCoordinate
 @exportSymbol ol.extent.containsExtent
 @exportSymbol ol.extent.createEmpty

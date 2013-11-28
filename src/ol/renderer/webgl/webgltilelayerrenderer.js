@@ -279,6 +279,9 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   this.manageTilePyramid(
       frameState, tileSource, tileGrid, projection, extent, z,
       tileLayer.getPreload(),
+      /**
+       * @param {ol.Tile} tile Tile.
+       */
       function(tile) {
         if (tile.getState() == ol.TileState.LOADED &&
             !mapRenderer.isTileTextureLoaded(tile) &&

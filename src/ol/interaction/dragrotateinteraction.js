@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.DragRotate');
 
 goog.require('goog.asserts');
+goog.require('ol.ViewHint');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Drag');
@@ -74,6 +75,7 @@ ol.interaction.DragRotate.prototype.handleDragEnd = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   // FIXME works for View2D only
   var view = map.getView().getView2D();
+  view.setHint(ol.ViewHint.INTERACTING, -1);
   var view2DState = view.getView2DState();
   ol.interaction.Interaction.rotate(map, view, view2DState.rotation, undefined,
       ol.interaction.DRAGROTATE_ANIMATION_DURATION);
@@ -88,6 +90,7 @@ ol.interaction.DragRotate.prototype.handleDragStart =
   var browserEvent = mapBrowserEvent.browserEvent;
   if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
+    map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     map.requestRenderFrame();
     this.lastAngle_ = undefined;
     return true;

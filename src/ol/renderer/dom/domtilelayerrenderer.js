@@ -383,6 +383,7 @@ ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent =
     function(extent, opt_tileRange) {
   var tileRange = this.tileGrid_.getTileRangeForExtentAndZ(
       extent, this.tileCoordOrigin_.z, opt_tileRange);
+  /** @type {Array.<ol.Tile>} */
   var tilesToRemove = [];
   var tile, tileCoordKey;
   for (tileCoordKey in this.tiles_) {

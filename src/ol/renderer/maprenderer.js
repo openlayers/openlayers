@@ -122,13 +122,11 @@ ol.renderer.Map.prototype.getFeatureInfoForPixel =
     }
   };
 
-  var layer, layerRenderer;
+  var layerRenderer;
   for (var i = 0; i < numLayers; ++i) {
-    layer = layers[i];
-    layerRenderer = this.getLayerRenderer(layer);
-    if (goog.isFunction(layerRenderer.getFeatureInfoForPixel)) {
+    layerRenderer = this.getLayerRenderer(layers[i]);
+    if (layerRenderer.getFeatureInfoForPixel(pixel, callback, opt_error)) {
       ++callbackCount;
-      layerRenderer.getFeatureInfoForPixel(pixel, callback, opt_error);
     }
   }
 };

@@ -14,7 +14,6 @@ goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol.FrameState');
-goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.css');
 goog.require('ol.layer.Image');
@@ -24,7 +23,6 @@ goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.TileLayer');
 goog.require('ol.renderer.webgl.map.shader.Color');
 goog.require('ol.renderer.webgl.map.shader.Default');
-goog.require('ol.size');
 goog.require('ol.source.State');
 goog.require('ol.structs.Buffer');
 goog.require('ol.structs.IntegerSet');
@@ -72,8 +70,8 @@ ol.renderer.webgl.Map = function(container, map) {
    */
   this.canvas_ = /** @type {HTMLCanvasElement} */
       (goog.dom.createElement(goog.dom.TagName.CANVAS));
-  this.canvas_.height = container.clientHeight;
-  this.canvas_.width = container.clientWidth;
+  this.canvas_.style.width = '100%';
+  this.canvas_.style.height = '100%';
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
   goog.dom.insertChildAt(container, this.canvas_, 0);
 
@@ -82,12 +80,6 @@ ol.renderer.webgl.Map = function(container, map) {
    * @type {boolean}
    */
   this.renderedVisible_ = true;
-
-  /**
-   * @private
-   * @type {ol.Size}
-   */
-  this.canvasSize_ = [container.clientHeight, container.clientWidth];
 
   /**
    * @private
@@ -564,10 +556,9 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   }
 
   var size = frameState.size;
-  if (!ol.size.equals(this.canvasSize_, size)) {
+  if (this.canvas_.width != size[0] || this.canvas_.height != size[1]) {
     this.canvas_.width = size[0];
     this.canvas_.height = size[1];
-    this.canvasSize_ = size;
   }
 
   gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
@@ -575,7 +566,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   gl.clearColor(0, 0, 0, 0);
   gl.clear(goog.webgl.COLOR_BUFFER_BIT);
   gl.enable(goog.webgl.BLEND);
-  gl.viewport(0, 0, size[0], size[1]);
+  gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
 
   this.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
 

@@ -20,7 +20,7 @@ describe('ol.parser.gml_v3', function() {
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -37,7 +37,7 @@ describe('ol.parser.gml_v3', function() {
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -64,7 +64,7 @@ describe('ol.parser.gml_v3', function() {
         var geom = p.createGeometry({geometry: obj.geometry});
         p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete p.srsName;
         delete p.axisOrientation;
         expect(goog.dom.xml.loadXml(p.serialize(node))).to.xmleql(xml);
@@ -92,7 +92,7 @@ describe('ol.parser.gml_v3', function() {
         var geom = p.createGeometry({geometry: obj.geometry});
         p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete p.srsName;
         delete p.axisOrientation;
         expect(goog.dom.xml.loadXml(p.serialize(node))).to.xmleql(xml);
@@ -109,7 +109,7 @@ describe('ol.parser.gml_v3', function() {
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -128,7 +128,7 @@ describe('ol.parser.gml_v3', function() {
         var geom = p.createGeometry({geometry: obj.geometry});
         p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete p.srsName;
         delete p.axisOrientation;
         expect(goog.dom.xml.loadXml(p.serialize(node))).to.xmleql(xml);
@@ -157,7 +157,7 @@ describe('ol.parser.gml_v3', function() {
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -186,7 +186,7 @@ describe('ol.parser.gml_v3', function() {
         var geom = p.createGeometry({geometry: obj.geometry});
         p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete p.srsName;
         delete p.axisOrientation;
         expect(goog.dom.xml.loadXml(p.serialize(node))).to.xmleql(xml);
@@ -213,7 +213,7 @@ describe('ol.parser.gml_v3', function() {
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -231,7 +231,7 @@ describe('ol.parser.gml_v3', function() {
         var geom = p.createGeometry({geometry: obj.geometry});
         p.applyWriteOptions(obj);
         var node = p.featureNSWiters_['_geometry'].apply(p,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete p.srsName;
         delete p.axisOrientation;
         expect(goog.dom.xml.loadXml(p.serialize(node))).to.xmleql(xml);
@@ -248,7 +248,7 @@ describe('ol.parser.gml_v3', function() {
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -264,7 +264,7 @@ describe('ol.parser.gml_v3', function() {
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
         var node = parser.featureNSWiters_['_geometry'].apply(parser,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
@@ -280,7 +280,7 @@ describe('ol.parser.gml_v3', function() {
         var geom = p.createGeometry({geometry: obj.geometry});
         p.applyWriteOptions(obj, {srsName: 'foo'});
         var node = p.featureNSWiters_['_geometry'].apply(p,
-            [geom]).firstChild;
+            [{value: geom}]).firstChild;
         delete p.srsName;
         delete p.axisOrientation;
         expect(goog.dom.xml.loadXml(p.serialize(node))).to.xmleql(xml);
@@ -300,7 +300,6 @@ describe('ol.parser.gml_v3', function() {
         var obj = p.read(xml);
         var output = p.write(obj);
         expect(goog.dom.xml.loadXml(output)).to.xmleql(xml);
-        expect(p.geometryName).to.eql('the_geom');
         expect(obj.features.length).to.eql(10);
         var feature = obj.features[0];
         expect(feature.getGeometry() instanceof
@@ -373,10 +372,21 @@ describe('ol.parser.gml_v3', function() {
         done();
       });
     });
+    it('More than one geometry', function(done) {
+      var url = 'spec/ol/parser/ogc/xml/gml_v3/more-geoms.xml';
+      afterLoadXml(url, function(xml) {
+        var obj = parser.read(xml);
+        var feature = obj.features[0];
+        expect(feature.get('center')).to.be.a(ol.geom.Point);
+        expect(feature.get('the_geom')).to.be.a(ol.geom.MultiPolygon);
+        done();
+      });
+    });
   });
 });
 
 goog.require('goog.dom.xml');
+goog.require('ol.geom.Point');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.parser.ogc.GML_v3');
 goog.require('ol.proj');

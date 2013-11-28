@@ -148,6 +148,9 @@ ol.parser.ogc.GML = function(opt_options) {
       'polygonMember': function(node, obj) {
         this.readChildNodes(node, obj);
       },
+      'boundedBy': function(node, obj) {
+        this.readChildNodes(node, obj);
+      },
       'Point': function(node, container) {
         var coordinates = [];
         this.readers[this.defaultNamespaceURI]['_inherit'].apply(this,
@@ -317,10 +320,10 @@ ol.parser.ogc.GML = function(opt_options) {
       obj.features.push(feature);
     },
     '_geometry': function(node, obj) {
-      if (!this.geometryName) {
-        this.geometryName = node.nodeName.split(':').pop();
-      }
+      var local = node.localName || node.nodeName.split(':').pop();
       this.readChildNodes(node, obj);
+      obj.properties[local] = this.createGeometry({geometry: obj.geometry});
+      delete obj.geometry;
     },
     '_attribute': function(node, obj) {
       var local = node.localName || node.nodeName.split(':').pop();
@@ -387,7 +390,8 @@ ol.parser.ogc.GML = function(opt_options) {
       },
       'geometryMember': function(geometry) {
         var node = this.createElementNS('gml:geometryMember');
-        var child = this.writeNode('_geometry', geometry, this.featureNS);
+        var child = this.writeNode('_geometry', {value: geometry},
+            this.featureNS);
         node.appendChild(child.firstChild);
         return node;
       }
@@ -418,24 +422,25 @@ ol.parser.ogc.GML = function(opt_options) {
       if (goog.isDef(fid)) {
         this.setAttributeNS(node, this.defaultNamespaceURI, 'fid', fid);
       }
-      if (feature.getGeometry() !== null) {
-        this.writeNode('_geometry', feature.getGeometry(), this.featureNS,
-            node);
-      }
       var attributes = feature.getAttributes();
       for (var name in attributes) {
         var value = attributes[name];
-        if (goog.isDefAndNotNull(value) && !(value instanceof
-            ol.geom.Geometry)) {
-          this.writeNode('_attribute', {name: name, value: value},
-              this.featureNS, node);
+        if (goog.isDefAndNotNull(value)) {
+          if (value instanceof ol.geom.Geometry) {
+            this.writeNode('_geometry', {name: name, value: value},
+                this.featureNS, node);
+          } else {
+            this.writeNode('_attribute', {name: name, value: value},
+                this.featureNS, node);
+          }
         }
       }
       return node;
     },
-    '_geometry': function(geometry) {
-      var node = this.createElementNS('feature:' + this.geometryName,
+    '_geometry': function(obj) {
+      var node = this.createElementNS('feature:' + obj.name,
           this.featureNS);
+      var geometry = obj.value;
       var type = geometry.getType(), child;
       if (type === ol.geom.GeometryType.POINT) {
         child = this.writeNode('Point', geometry, null, node);

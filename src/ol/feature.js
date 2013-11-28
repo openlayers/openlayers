@@ -1,6 +1,7 @@
 goog.provide('ol.Feature');
 goog.provide('ol.FeatureEvent');
 goog.provide('ol.FeatureEventType');
+goog.provide('ol.FeatureRenderIntent');
 
 goog.require('goog.events');
 goog.require('goog.events.Event');
@@ -8,7 +9,6 @@ goog.require('goog.events.EventType');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryEvent');
-goog.require('ol.layer.VectorLayerRenderIntent');
 
 
 
@@ -51,10 +51,10 @@ ol.Feature = function(opt_values) {
 
   /**
    * The render intent for this feature.
-   * @type {ol.layer.VectorLayerRenderIntent|string}
+   * @type {ol.FeatureRenderIntent|string}
    * @private
    */
-  this.renderIntent_ = ol.layer.VectorLayerRenderIntent.DEFAULT;
+  this.renderIntent_ = ol.FeatureRenderIntent.DEFAULT;
 
   /**
    * @type {Array.<ol.style.Symbolizer>}
@@ -68,17 +68,23 @@ goog.inherits(ol.Feature, ol.Object);
 
 /**
  * Gets a copy of the attributes of this feature.
+ * @param {boolean=} opt_nonGeometry Don't include any geometry attributes
+ *     (by default geometry attributes are returned).
  * @return {Object.<string, *>} Attributes object.
  * @todo stability experimental
  */
-ol.Feature.prototype.getAttributes = function() {
+ol.Feature.prototype.getAttributes = function(opt_nonGeometry) {
   var keys = this.getKeys(),
+      includeGeometry = !opt_nonGeometry,
       len = keys.length,
       attributes = {},
-      i, key;
+      i, value, key;
   for (i = 0; i < len; ++ i) {
     key = keys[i];
-    attributes[key] = this.get(key);
+    value = this.get(key);
+    if (includeGeometry || !(value instanceof ol.geom.Geometry)) {
+      attributes[key] = value;
+    }
   }
   return attributes;
 };
@@ -239,6 +245,18 @@ ol.Feature.prototype.setSymbolizers = function(symbolizers) {
  * @type {string}
  */
 ol.Feature.DEFAULT_GEOMETRY = 'geometry';
+
+
+/**
+ * @enum {string}
+ */
+ol.FeatureRenderIntent = {
+  DEFAULT: 'default',
+  FUTURE: 'future',
+  HIDDEN: 'hidden',
+  SELECTED: 'selected',
+  TEMPORARY: 'temporary'
+};
 
 
 /**

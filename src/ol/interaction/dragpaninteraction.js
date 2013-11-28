@@ -6,6 +6,7 @@ goog.require('goog.asserts');
 goog.require('ol.Kinetic');
 goog.require('ol.PreRenderFunction');
 goog.require('ol.View2D');
+goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
@@ -84,6 +85,7 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
 
   var map = mapBrowserEvent.map;
   var view = map.getView().getView2D();
+  view.setHint(ol.ViewHint.INTERACTING, -1);
 
   if (this.kinetic_ && this.kinetic_.end()) {
     var view2DState = view.getView2DState();
@@ -115,6 +117,7 @@ ol.interaction.DragPan.prototype.handleDragStart = function(mapBrowserEvent) {
       this.kinetic_.update(browserEvent.clientX, browserEvent.clientY);
     }
     var map = mapBrowserEvent.map;
+    map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     map.requestRenderFrame();
     return true;
   } else {
