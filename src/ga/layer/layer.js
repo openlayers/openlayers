@@ -100,7 +100,7 @@ ga.source.wmts = function(layer, options) {
         options['attribution'] + '</a>')
     ],
     url: 'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/' +
-        '{TileMatrix}/{TileRow}/{TileCol}.' + extension,
+        '{TileMatrix}/{TileRow}/{TileCol}.'.replace('http:',location.protocol) + extension,
     tileGrid: tileGrid,
     layer: options['serverLayerName'] ? options['serverLayerName'] : layer,
     requestEncoding: 'REST',
