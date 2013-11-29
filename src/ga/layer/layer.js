@@ -11,8 +11,6 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.TileWMS');
 goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
-//goog.require('ga.layer.layerConfig');
-
 
 /**
  * Create a Geoadmin layer.
@@ -24,9 +22,10 @@ ga.layer.create = function(layer) {
     var layerConfig = ga.layer.layerConfig[layer];
 
     layerConfig.type = layerConfig.type || 'wmts';
+
     if (layerConfig.type == 'aggregate') {
       var layers = [];
-      for (var i = 0; i < layerConfig.subLayersIds.length; i++) {
+      for (var i = 0; i < layerConfig['subLayersIds'].length; i++) {
         // FIXME support aggregate
       }
       new ol.layer.Group({
@@ -58,15 +57,27 @@ ga.layer.create = function(layer) {
  */
 ga.layer.layerConfig = getConfig() || {};
 
+ga.layer.attributions = {};
+
+ga.layer.getAttribution = function(text) {
+  var key = text;
+  if (key in ga.layer.attributions) {
+    return ga.layer.attributions[key];
+  } else {
+    var a = new ol.Attribution({html: text});
+    ga.layer.attributions[key] = a;
+    return a;
+  }
+};
+
 
 /**
  * @const {Array.<number>}
  */
 ga.layer.RESOLUTIONS = [
   4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250, 2000, 1750, 1500, 1250,
-  1000, 750, 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5, 0.25
+  1000, 750, 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5
 ];
-
 
 /**
  * @param {string} layer layer id.
@@ -74,8 +85,7 @@ ga.layer.RESOLUTIONS = [
  * @return {ol.source.WMTS}
  */
 ga.source.wmts = function(layer, options) {
-  var resolutions = ga.layer.RESOLUTIONS.splice(
-      options.minZoom || 0, (options.maxZoom || 26) + 1);
+  var resolutions = options.resolutions ? options.resolutions : ga.layer.RESOLUTIONS;
   var tileGrid = new ol.tilegrid.WMTS({
     origin: [420000, 350000],
     resolutions: resolutions,
@@ -83,17 +93,16 @@ ga.source.wmts = function(layer, options) {
   });
   var extension = options.format || 'png';
   return new ol.source.WMTS( /** @type {ol.source.WMTSOptions} */({
-    opaque: goog.isDef(options.opaque) ? options.opaque : false,
     attributions: [
-      new ol.Attribution({
-        html: options.attribution || 'swisstopo'
-      })
+      ga.layer.getAttribution('<a href="' +
+        options['attributionUrl'] +
+        '" target="new">' +
+        options['attribution'] + '</a>')
     ],
     url: 'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/' +
         '{TileMatrix}/{TileRow}/{TileCol}.' + extension,
     tileGrid: tileGrid,
-    layer: layer,
-    crossOrigin: 'anonymous',
+    layer: options['serverLayerName'] ? options['serverLayerName'] : layer,
     requestEncoding: 'REST',
     dimensions: {
       'Time': options.timestamps && options.timestamps[0]
@@ -114,10 +123,9 @@ ga.source.wms = function(layer, options) {
         html: options.attribution || 'swisstopo'
       })
     ],
-    crossOrigin: 'anonymous',
     opaque: goog.isDef(options.opaque) ? options.opaque : false,
     params: {
-      'LAYERS': options.wmsLayers || layer
+      'LAYERS': options['wmsLayers'] || layer
     },
     // FXME support wmsurl
     url: 'http://wms.geo.admin.ch/'
