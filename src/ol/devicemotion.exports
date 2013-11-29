@@ -1,0 +1,2 @@
+@exportClass ol.DeviceMotion ol.DeviceMotionOptions
+@exportSymbol ol.DeviceMotion.SUPPORTED
