@@ -21,13 +21,14 @@ var map = new ga.Map({
 
 //var lyr = ga.layer.create('ch.blw.alpprodukte');
 //var lyr = ga.layer.create('ch.bfs.gebaeude_wohnungs_register_wmts');
-var lyr1 = ga.layer.create('ch.swisstopo.swissimage');
+//var lyr1 = ga.layer.create('ch.swisstopo.swissimage');
 //var lyr = ga.layer.create('ch.bfs.gebaeude_wohnungs_register_wms');
 //var lyr = ga.layer.create('ch.kantone.cadastralwebmap-farbe');
 //var lyr = ga.layer.create('ch.swisstopo-vd.geometa-gemeinde');
 //var lyr = ga.layer.create('ch.swisstopo.fixpunkte-hfp1');
-var lyr = ga.layer.create('ch.swisstopo.fixpunkte-agnes');
+//var lyr = ga.layer.create('ch.swisstopo.fixpunkte-agnes');
+var lyr = ga.layer.create('ch.swisstopo.pixelkarte-farbe');
 
-map.addLayer(lyr1);
+//map.addLayer(lyr1);
 map.addLayer(lyr);
 
