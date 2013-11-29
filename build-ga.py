@@ -11,6 +11,17 @@ def prepend(name, template):
      ob = json.loads(temp) 
      open(name, "w").write( template % json.dumps(ob['layers'],sort_keys=True,indent=2))
 
+def _build_require_list(dependencies, output_file_name):
+    requires = set()
+    for dependency in dependencies:
+        for line in open(dependency):
+            match = re.match(r'goog\.provide\(\'(.*)\'\);', line)
+            if match:
+                requires.add(match.group(1))
+    with open(output_file_name, 'w') as f:
+        for require in sorted(requires):
+            f.write('goog.require(\'%s\');\n' % (require,))
+
 # Monkey patching build.py to allow redefining targets by 
 def add(self, target, force=True):
         """add adds a concrete target to self, overriding it if the target
@@ -26,8 +37,8 @@ from types import MethodType
 targets.add = MethodType(add, targets, TargetCollection)
 
 # We redefine 'build'
-virtual('build', 'build/ga.css', 'build/ga.js',
-        'build/ga-simple.js', 'build/ga-whitespace.js','build/layersconfig')
+virtual('build', 'build/ga.css', 'build/src/internal/src/requireallga.js', 'build/ga.js',
+        'build/ga-whitespace.js','build/layersconfig')
 
         
 # Adding ga custom source directoy
@@ -40,6 +51,10 @@ SRC.extend([path for path in ifind('src/ga')
 AVAILABLE_LANGS = ['de','fr','en','it','rm']
 
 # Custom target for ga
+@target('build/src/internal/src/requireallga.js', SRC, SHADER_SRC,
+        LIBTESS_JS_SRC)
+def build_src_internal_src_requireall_js(t):
+    _build_require_list(t.dependencies, t.name)
 
 @target('build/ga.css', 'build/ga.js')
 def build_ga_css(t):
@@ -49,14 +64,6 @@ def build_ga_css(t):
         LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ga.json')
 def build_ga_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ga.json')
-    report_sizes(t)
-
-
-@target('build/ga-simple.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ga.json',
-        'buildcfg/ga-simple.json')
-def build_ga_simple_js(t):
-    t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ga-simple.json')
     report_sizes(t)
 
 @target('build/ga-whitespace.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
@@ -81,8 +88,6 @@ def get_layersconfig(t):
 def serve(t):
     t.run('%(JAVA)s', '-jar', PLOVR_JAR, 'serve', 'buildcfg/ol.json',
           'buildcfg/ga-all.json', EXAMPLES_JSON, 'buildcfg/test.json')
-  
-
 
 if __name__ == '__main__':
     main()
