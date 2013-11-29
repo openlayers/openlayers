@@ -71,7 +71,8 @@ var displayFeatureInfo = function(pixel) {
     success: function(featuresByLayer) {
       var features = featuresByLayer[0];
       document.getElementById('info').innerHTML = features.length > 0 ?
-          features[0].get('NAME') + ' - inhabitants: ' + features[0].get('EINWOHNERZ') :
+          features[0].get('NAME') + ' - inhabitants: ' +
+          features[0].get('EINWOHNERZ') :
           '&nbsp;';
     }
   });
