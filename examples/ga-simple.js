@@ -12,7 +12,7 @@ var map = new ga.Map({
     // 10 means that one pixel is 10m width and height
     // List of resolution of the WMTS layers:
     // 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1, 0.5, 0.25, 0.1
-    resolution: 500,
+    resolution: 5,
     // Define a coordinate CH1903 for the center of the view
     center: [561666.5, 185569.5]
   })
@@ -21,8 +21,10 @@ var map = new ga.Map({
 
 //var lyr = ga.layer.create('ch.blw.alpprodukte');
 //var lyr = ga.layer.create('ch.bfs.gebaeude_wohnungs_register_wmts');
-//var lyr = ga.layer.create('ch.swisstopo.swissimage');
-var lyr = ga.layer.create('ch.swisstopo.swissimage');
+//var lyr1 = ga.layer.create('ch.swisstopo.swissimage');
+//var lyr = ga.layer.create('ch.bfs.gebaeude_wohnungs_register_wms');
+var lyr = ga.layer.create('ch.kantone.cadastralwebmap-farbe');
 
+//map.addLayer(lyr1);
 map.addLayer(lyr);
 
