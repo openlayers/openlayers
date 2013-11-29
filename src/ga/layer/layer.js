@@ -15,7 +15,6 @@ goog.require('ol.tilegrid.WMTS');
 /**
  * Create a Geoadmin layer.
  * @param {string} layer Geoadmin layer id.
- * @return {ol.layer.Tile|ol.layer.Group|ol.layer.Image} Layer instance.
  */
 ga.layer.create = function(layer) {
   if (layer in ga.layer.layerConfig) {
@@ -23,12 +22,14 @@ ga.layer.create = function(layer) {
 
     layerConfig.type = layerConfig.type || 'wmts';
 
+    var olLayer;
+
     if (layerConfig.type == 'aggregate') {
       var subLayers = [];
       for (var i = 0; i < layerConfig['subLayersIds'].length; i++) {
         subLayers[i] = ga.layer.create(layerConfig['subLayersIds'][i]);
       }
-      return new ol.layer.Group({
+      olLayer = new ol.layer.Group({
         minResolution: layerConfig.minResolution,
         maxResolution: layerConfig.maxResolution,
         opacity: layerConfig.opacity,
@@ -36,7 +37,7 @@ ga.layer.create = function(layer) {
       });
     } else if (layerConfig.type == 'wms') {
       if (layerConfig['singleTile']) {
-        return new ol.layer.Image({
+        olLayer = new ol.layer.Image({
           minResolution: layerConfig.minResolution,
           maxResolution: layerConfig.maxResolution,
           opacity: layerConfig.opacity,
@@ -44,16 +45,15 @@ ga.layer.create = function(layer) {
         });
 
       } else {
-        return new ol.layer.Tile({
+        olLayer = new ol.layer.Tile({
           minResolution: layerConfig.minResolution,
           maxResolution: layerConfig.maxResolution,
           opacity: layerConfig.opacity,
           source: ga.source.wms(layer, layerConfig)
         });
-      }
-      
+      }     
     } else if (layerConfig.type == 'wmts') {
-      return new ol.layer.Tile({
+      olLayer = new ol.layer.Tile({
         minResolution: layerConfig.minResolution,
         maxResolution: layerConfig.maxResolution,
         opacity: layerConfig.opacity,
@@ -61,7 +61,39 @@ ga.layer.create = function(layer) {
       });
     }
   }
-  return null;
+  Object.defineProperties(Object(olLayer), {
+    'id': {
+      get: function() {
+        return layer;
+      }
+    },
+    'hasLegend': {
+      get: function() {
+        return layerConfig['hasLegend'];
+      }
+    },
+    'highlighable': {
+      get: function() {
+        return layerConfig['highlighable'];
+      }
+    },
+    'label': {
+      get: function() {
+        return layerConfig['label'];
+      }
+    },
+    'queryable': {
+      get: function() {
+        return layerConfig['queryable'];
+      }
+    },
+    'searchable': {
+      get: function() {
+        return layerConfig['searchable'];
+      }
+    }
+  });
+  return olLayer;
 };
 
 
@@ -105,6 +137,7 @@ ga.source.wmts = function(layer, options) {
     matrixIds: goog.array.range(resolutions.length)
   });
   var extension = options.format || 'png';
+  var timestamp = options['timestamps'][0];
   return new ol.source.WMTS( /** @type {ol.source.WMTSOptions} */({
     attributions: [
       ga.layer.getAttribution('<a href="' +
@@ -112,14 +145,12 @@ ga.source.wmts = function(layer, options) {
         '" target="new">' +
         options['attribution'] + '</a>')
     ],
-    url: 'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/' +
+    url: 'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/'+
+        timestamp + '/21781/' +
         '{TileMatrix}/{TileRow}/{TileCol}.'.replace('http:',location.protocol) + extension,
     tileGrid: tileGrid,
     layer: options['serverLayerName'] ? options['serverLayerName'] : layer,
-    requestEncoding: 'REST',
-    dimensions: {
-      'Time': options.timestamps && options.timestamps[0]
-    }
+    requestEncoding: 'REST'
   }));
 };
 

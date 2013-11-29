@@ -66,10 +66,6 @@ ga.Tooltip = function() {
 };
 goog.inherits(ga.Tooltip, goog.Disposable);
 
-
-/**
- * FIXME empty description for jsdoc
- */
 ga.Tooltip.prototype.createOverlay_ = function() {
   var className = 'ga-tooltip';
   this.tooltipContentElement_ = goog.dom.createDom(goog.dom.TagName.DIV, {
@@ -112,15 +108,16 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
   var jsonp = new goog.net.Jsonp(
     new goog.Uri('//api3.geo.admin.ch/rest/services/api/MapServer/identify'),
       'callback');
+  var layerList = '';
+  
   var payload = {
-    geometryType: 'esriGeometryPoint',
-    geometry: coordinate[0] + ',' + coordinate[1],
-    geometryFormat: 'geojson',
-    imageDisplay: size[0] + ',' + size[1] + ',96',
-    mapExtent: extent.join(','),
-    tolerance: 10,
-    // TODO get the layer list
-    layers: 'all:ch.swisstopo.fixpunkte-agnes'
+    'geometryType': 'esriGeometryPoint',
+    'geometry': coordinate[0] + ',' + coordinate[1],
+    'geometryFormat': 'geojson',
+    'imageDisplay': size[0] + ',' + size[1] + ',96',
+    'mapExtent': extent.join(','),
+    'tolerance': 10,
+    'layers': 'all:ch.swisstopo.fixpunkte-agnes'
   };
   jsonp.send(payload,
     goog.bind(this.handleIdentifyResponse_, this),
