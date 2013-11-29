@@ -1,5 +1,3 @@
-// FIXME: apply layer opacity from config.
-// FIXME: single tile wms
 goog.provide('ga.layer');
 goog.provide('ga.source.wms');
 goog.provide('ga.source.wmts');
@@ -26,19 +24,22 @@ ga.layer.create = function(layer) {
     layerConfig.type = layerConfig.type || 'wmts';
 
     if (layerConfig.type == 'aggregate') {
-      var layers = [];
+      var subLayers = [];
       for (var i = 0; i < layerConfig['subLayersIds'].length; i++) {
-        // FIXME support aggregate
+        subLayers[i] = ga.layer.create(layerConfig['subLayersIds'][i]);
       }
-      new ol.layer.Group({
-        layers: layers
+      return new ol.layer.Group({
+        minResolution: layerConfig.minResolution,
+        maxResolution: layerConfig.maxResolution,
+        opacity: layerConfig.opacity,
+        layers: subLayers
       });
     } else if (layerConfig.type == 'wms') {
       if (layerConfig['singleTile']) {
         return new ol.layer.Image({
-          minResolution: layer.minResolution,
-          maxResolution: layer.maxResolution,
-          opacity: layer.opacity,
+          minResolution: layerConfig.minResolution,
+          maxResolution: layerConfig.maxResolution,
+          opacity: layerConfig.opacity,
           source: ga.source.imageWms(layer, layerConfig)
         });
 
