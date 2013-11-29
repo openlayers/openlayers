@@ -1,3 +1,4 @@
+// FIXME: highlight support
 goog.provide('ga.Tooltip');
 
 goog.require('goog.dom');
