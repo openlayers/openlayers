@@ -15,6 +15,7 @@ goog.require('ol.tilegrid.WMTS');
 /**
  * Create a Geoadmin layer.
  * @param {string} layer Geoadmin layer id.
+* @return {ol.layer.Group|ol.layer.Image|ol.layer.Tile|undefined}
  */
 ga.layer.create = function(layer) {
   if (layer in ga.layer.layerConfig) {
