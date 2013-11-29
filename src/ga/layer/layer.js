@@ -8,14 +8,16 @@ goog.require('goog.array');
 goog.require('ol.Attribution');
 goog.require('ol.layer.Group');
 goog.require('ol.layer.Tile');
+goog.require('ol.layer.Image');
 goog.require('ol.source.TileWMS');
+goog.require('ol.source.ImageWMS');
 goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
 
 /**
  * Create a Geoadmin layer.
  * @param {string} layer Geoadmin layer id.
- * @return {ol.layer.Tile|ol.layer.Group} Layer instance.
+ * @return {ol.layer.Tile|ol.layer.Group|ol.layer.Image} Layer instance.
  */
 ga.layer.create = function(layer) {
   if (layer in ga.layer.layerConfig) {
@@ -32,13 +34,23 @@ ga.layer.create = function(layer) {
         layers: layers
       });
     } else if (layerConfig.type == 'wms') {
-      // FIXME: support singleTile
-      return new ol.layer.Tile({
-        minResolution: layerConfig.minResolution,
-        maxResolution: layerConfig.maxResolution,
-        opacity: layerConfig.opacity,
-        source: ga.source.wms(layer, layerConfig)
-      });
+      if (layerConfig['singleTile']) {
+        return new ol.layer.Image({
+          minResolution: layer.minResolution,
+          maxResolution: layer.maxResolution,
+          opacity: layer.opacity,
+          source: ga.source.imageWms(layer, layerConfig)
+        });
+
+      } else {
+        return new ol.layer.Tile({
+          minResolution: layerConfig.minResolution,
+          maxResolution: layerConfig.maxResolution,
+          opacity: layerConfig.opacity,
+          source: ga.source.wms(layer, layerConfig)
+        });
+      }
+      
     } else if (layerConfig.type == 'wmts') {
       return new ol.layer.Tile({
         minResolution: layerConfig.minResolution,
@@ -119,15 +131,35 @@ ga.source.wmts = function(layer, options) {
 ga.source.wms = function(layer, options) {
   return new ol.source.TileWMS({
     attributions: [
-      new ol.Attribution({
-        html: options.attribution || 'swisstopo'
-      })
+      ga.layer.getAttribution('<a href="' +
+        options['attributionUrl'] +
+        '" target="new">' +
+        options['attribution'] + '</a>')
     ],
-    opaque: goog.isDef(options.opaque) ? options.opaque : false,
     params: {
       'LAYERS': options['wmsLayers'] || layer
     },
-    // FXME support wmsurl
-    url: 'http://wms.geo.admin.ch/'
+    url: options['wmsUrl'].split('?')[0].replace('http:',location.protocol)
+  });
+};
+
+/**
+ * @param {string} layer layer id.
+ * @param {Object} options source options.
+ * @return {ol.source.ImageWMS}
+ */
+ga.source.imageWms = function(layer, options) {
+  return new ol.source.ImageWMS({
+    attributions: [
+      ga.layer.getAttribution('<a href="' +
+        options['attributionUrl'] +
+        '" target="new">' +
+        options['attribution'] + '</a>')
+    ],
+    params: {
+      'LAYERS': options['wmsLayers'] || layer
+    },
+    ratio: 1,
+    url: options['wmsUrl'].split('?')[0].replace('http:',location.protocol)
   });
 };
