@@ -108,7 +108,14 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
   var jsonp = new goog.net.Jsonp(
     new goog.Uri('//api3.geo.admin.ch/rest/services/api/MapServer/identify'),
       'callback');
-  var layerList = '';
+  var layerList = new Array();
+  var layer;
+  for (var i in this.map_.getLayers().getArray()) {
+    layer = this.map_.getLayers().getArray()[i];
+    if (layer['queryable'] && layer.getVisible()) {
+      layerList.push(layer.id);
+    }
+  }
   
   var payload = {
     'geometryType': 'esriGeometryPoint',
@@ -117,7 +124,7 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
     'imageDisplay': size[0] + ',' + size[1] + ',96',
     'mapExtent': extent.join(','),
     'tolerance': 10,
-    'layers': 'all:ch.swisstopo.fixpunkte-agnes'
+    'layers': 'all:' + layerList.join(',')
   };
   jsonp.send(payload,
     goog.bind(this.handleIdentifyResponse_, this),
