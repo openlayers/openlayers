@@ -25,6 +25,9 @@
 .ol-zoom a {
     background: rgba(58,60,60,0.5);
 }
+.ol-zoom a:hover {
+    background: rgba(30,30,30,0.5);
+}
 .ga-tooltip {
     display: none;
     position: absolute;
