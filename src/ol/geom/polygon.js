@@ -1,6 +1,7 @@
 goog.provide('ol.geom.Polygon');
 
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.flat');
 
 
@@ -50,6 +51,20 @@ ol.geom.Polygon.prototype.getCoordinates = function() {
  */
 ol.geom.Polygon.prototype.getEnds = function() {
   return this.ends_;
+};
+
+
+/**
+ * @return {Array.<ol.geom.LinearRing>} Linear rings.
+ */
+ol.geom.Polygon.prototype.getLinearRings = function() {
+  var linearRings = [];
+  var coordinates = this.getCoordinates();
+  var i, ii;
+  for (i = 0, ii = coordinates.length; i < ii; ++i) {
+    linearRings.push(new ol.geom.LinearRing(coordinates[i]));
+  }
+  return linearRings;
 };
 
 
