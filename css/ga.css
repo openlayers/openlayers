@@ -2,19 +2,117 @@
 
 .ol-scale-line {
     background-color: rgba(255, 255, 255, 0.7);
-    left: 0;
+    left: 8px;
     bottom: 0;
 }
-
 .ol-scale-line-inner {
     border: 2px solid #000;
     border-top: none;
-    color: #000;
+    color: #333;
     font-weight: bold;
+    font-size:  11px;
+    font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
 }
-
 .ol-attribution {
     background-color: rgba(255, 255, 255, 0.7);
-    color: #000;
-    font-weight: bold;
+    padding: 7px;
+}
+.ol-attribution a {
+    color: #333;
+    font-size:  11px;
+    font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
+}
+.ol-zoom a {
+    background: rgba(58,60,60,0.5);
+}
+.ol-zoom a:hover {
+    background: rgba(30,30,30,0.5);
+}
+.ga-tooltip {
+    display: none;
+    position: absolute;
+    background-color: white;
+    -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    padding-top: 20px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    bottom: 12px;
+    left: -50px;
+    width: 450px;
+    max-width: 450px;
+}
+.ga-tooltip-content {
+    overflow: auto;
+    max-height: 200px;
+}
+.ga-tooltip-content a {
+    color: #333;
+    text-decoration: underline;
+}
+.ga-tooltip-content a:hover {
+    color: #333;
+    text-decoration: underline;
+}
+.ga-tooltip:after, .ga-tooltip:before {
+    top: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+.ga-tooltip:after {
+    border-top-color: white;
+    border-width: 10px;
+    left: 48px;
+    margin-left: -10px;
+}
+.ga-tooltip:before {
+    border-top-color: #cccccc;
+    border-width: 11px;
+    left: 48px;
+    margin-left: -11px;
+}
+.ga-tooltip-closer {
+    text-decoration: none;
+    position: absolute;
+    top: 2px;
+    right: 8px;
+}
+.ga-tooltip-closer:after {
+    content: "✖";
+    color: #333;
+}
+
+.htmlpopup-container {
+  width: 100%;
+  font-size: 14px;
+  font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
+}
+.htmlpopup-container span {
+  font-weight: bold;
+}
+.htmlpopup-container .htmlpopup-header {
+  background-color: #E9E9E9;
+  padding: 7px;
+}
+.htmlpopup-container .htmlpopup-content {
+  padding: 7px;
+}
+.htmlpopup-container .htmlpopup-content table {
+  width: 100%;
+  border: 0;
+}
+.htmlpopup-container .htmlpopup-content table td {
+  vertical-align: top;
+}
+.htmlpopup-container .htmlpopup-content table .cell-left {
+  width: 150px;
+}
+.htmlpopup-container .htmlpopup-content table .cell-left-large {
+  width: 320px;
 }

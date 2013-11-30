@@ -49,7 +49,7 @@ var vector = new ol.layer.Vector({
 var map = new ga.Map({
   // Add GeoAdmin layers
   layers: [
-    ga.layer.create('ch.swisstopo.pixelkarte-farbe'),
+    ga.layer.create('ch.swisstopo.swisstlm3d-karte-farbe'),
     vector
   ],
   // Define the div where the map is placed
@@ -71,7 +71,8 @@ var displayFeatureInfo = function(pixel) {
     success: function(featuresByLayer) {
       var features = featuresByLayer[0];
       document.getElementById('info').innerHTML = features.length > 0 ?
-          features[0].get('NAME') + ' - inhabitants: ' + features[0].get('EINWOHNERZ') :
+          features[0].get('NAME') + ' - inhabitants: ' +
+          features[0].get('EINWOHNERZ') :
           '&nbsp;';
     }
   });

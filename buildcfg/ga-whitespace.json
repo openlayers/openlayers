@@ -28,7 +28,7 @@
   "inherits": "ol.json",
 
   "inputs": [
-    "../build/src/internal/src/requireall.js",
+    "../build/src/internal/src/requireallga.js",
     "../build/src/internal/src/types.js"
   ],
 
@@ -37,9 +37,6 @@
   "output-wrapper": [
     "var CLOSURE_NO_DEPS = true;\n",
     "%output%"
-  ],
-  "paths": [
-     "../src", "../src/ol", "../src/ga"
   ],
 
   "pretty-print": true

@@ -1,5 +1,3 @@
-// FIXME: apply layer opacity from config.
-// FIXME: single tile wms
 goog.provide('ga.layer');
 goog.provide('ga.source.wms');
 goog.provide('ga.source.wmts');
@@ -8,41 +6,95 @@ goog.require('goog.array');
 goog.require('ol.Attribution');
 goog.require('ol.layer.Group');
 goog.require('ol.layer.Tile');
+goog.require('ol.layer.Image');
 goog.require('ol.source.TileWMS');
+goog.require('ol.source.ImageWMS');
 goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
-//goog.require('ga.layer.layerConfig');
-
 
 /**
  * Create a Geoadmin layer.
  * @param {string} layer Geoadmin layer id.
- * @return {ol.layer.Tile|ol.layer.Group} Layer instance.
+* @return {ol.layer.Group|ol.layer.Image|ol.layer.Tile|undefined}
  */
 ga.layer.create = function(layer) {
   if (layer in ga.layer.layerConfig) {
     var layerConfig = ga.layer.layerConfig[layer];
 
     layerConfig.type = layerConfig.type || 'wmts';
-    if (layerConfig.type == 'group') {
-      var layers = [];
-      for (var i = 0; i < layerConfig.layers.length; i++) {
-        // FIXME
+
+    var olLayer;
+
+    if (layerConfig.type == 'aggregate') {
+      var subLayers = [];
+      for (var i = 0; i < layerConfig['subLayersIds'].length; i++) {
+        subLayers[i] = ga.layer.create(layerConfig['subLayersIds'][i]);
       }
-      new ol.layer.Group({
-        layers: layers
+      olLayer = new ol.layer.Group({
+        minResolution: layerConfig.minResolution,
+        maxResolution: layerConfig.maxResolution,
+        opacity: layerConfig.opacity,
+        layers: subLayers
       });
     } else if (layerConfig.type == 'wms') {
-      return new ol.layer.Tile({
-        source: ga.source.wms(layer, layerConfig)
-      });
+      if (layerConfig['singleTile']) {
+        olLayer = new ol.layer.Image({
+          minResolution: layerConfig.minResolution,
+          maxResolution: layerConfig.maxResolution,
+          opacity: layerConfig.opacity,
+          source: ga.source.imageWms(layer, layerConfig)
+        });
+
+      } else {
+        olLayer = new ol.layer.Tile({
+          minResolution: layerConfig.minResolution,
+          maxResolution: layerConfig.maxResolution,
+          opacity: layerConfig.opacity,
+          source: ga.source.wms(layer, layerConfig)
+        });
+      }     
     } else if (layerConfig.type == 'wmts') {
-      return new ol.layer.Tile({
+      olLayer = new ol.layer.Tile({
+        minResolution: layerConfig.minResolution,
+        maxResolution: layerConfig.maxResolution,
+        opacity: layerConfig.opacity,
         source: ga.source.wmts(layer, layerConfig)
       });
     }
   }
-  return null;
+  Object.defineProperties(Object(olLayer), {
+    'id': {
+      get: function() {
+        return layer;
+      }
+    },
+    'hasLegend': {
+      get: function() {
+        return layerConfig['hasLegend'];
+      }
+    },
+    'highlighable': {
+      get: function() {
+        return layerConfig['highlighable'];
+      }
+    },
+    'label': {
+      get: function() {
+        return layerConfig['label'];
+      }
+    },
+    'queryable': {
+      get: function() {
+        return layerConfig['queryable'];
+      }
+    },
+    'searchable': {
+      get: function() {
+        return layerConfig['searchable'];
+      }
+    }
+  });
+  return olLayer;
 };
 
 
@@ -51,15 +103,27 @@ ga.layer.create = function(layer) {
  */
 ga.layer.layerConfig = getConfig() || {};
 
+ga.layer.attributions = {};
+
+ga.layer.getAttribution = function(text) {
+  var key = text;
+  if (key in ga.layer.attributions) {
+    return ga.layer.attributions[key];
+  } else {
+    var a = new ol.Attribution({html: text});
+    ga.layer.attributions[key] = a;
+    return a;
+  }
+};
+
 
 /**
  * @const {Array.<number>}
  */
 ga.layer.RESOLUTIONS = [
   4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250, 2000, 1750, 1500, 1250,
-  1000, 750, 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5, 0.25
+  1000, 750, 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5
 ];
-
 
 /**
  * @param {string} layer layer id.
@@ -67,30 +131,27 @@ ga.layer.RESOLUTIONS = [
  * @return {ol.source.WMTS}
  */
 ga.source.wmts = function(layer, options) {
-  var resolutions = ga.layer.RESOLUTIONS.splice(
-      options.minZoom || 0, (options.maxZoom || 26) + 1);
+  var resolutions = options.resolutions ? options.resolutions : ga.layer.RESOLUTIONS;
   var tileGrid = new ol.tilegrid.WMTS({
     origin: [420000, 350000],
     resolutions: resolutions,
     matrixIds: goog.array.range(resolutions.length)
   });
   var extension = options.format || 'png';
+  var timestamp = options['timestamps'][0];
   return new ol.source.WMTS( /** @type {ol.source.WMTSOptions} */({
-    opaque: goog.isDef(options.opaque) ? options.opaque : false,
     attributions: [
-      new ol.Attribution({
-        html: options.attribution || 'swisstopo'
-      })
+      ga.layer.getAttribution('<a href="' +
+        options['attributionUrl'] +
+        '" target="new">' +
+        options['attribution'] + '</a>')
     ],
-    url: 'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/' +
-        '{TileMatrix}/{TileRow}/{TileCol}.' + extension,
+    url: 'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/'+
+        timestamp + '/21781/' +
+        '{TileMatrix}/{TileRow}/{TileCol}.'.replace('http:',location.protocol) + extension,
     tileGrid: tileGrid,
-    layer: layer,
-    crossOrigin: 'anonymous',
-    requestEncoding: 'REST',
-    dimensions: {
-      'Time': options.timestamps && options.timestamps[0]
-    }
+    layer: options['serverLayerName'] ? options['serverLayerName'] : layer,
+    requestEncoding: 'REST'
   }));
 };
 
@@ -103,15 +164,35 @@ ga.source.wmts = function(layer, options) {
 ga.source.wms = function(layer, options) {
   return new ol.source.TileWMS({
     attributions: [
-      new ol.Attribution({
-        html: options.attribution || 'swisstopo'
-      })
+      ga.layer.getAttribution('<a href="' +
+        options['attributionUrl'] +
+        '" target="new">' +
+        options['attribution'] + '</a>')
     ],
-    crossOrigin: 'anonymous',
-    opaque: goog.isDef(options.opaque) ? options.opaque : false,
     params: {
-      'LAYERS': options.layers || layer
+      'LAYERS': options['wmsLayers'] || layer
     },
-    url: 'http://wms.geo.admin.ch/'
+    url: options['wmsUrl'].split('?')[0].replace('http:',location.protocol)
+  });
+};
+
+/**
+ * @param {string} layer layer id.
+ * @param {Object} options source options.
+ * @return {ol.source.ImageWMS}
+ */
+ga.source.imageWms = function(layer, options) {
+  return new ol.source.ImageWMS({
+    attributions: [
+      ga.layer.getAttribution('<a href="' +
+        options['attributionUrl'] +
+        '" target="new">' +
+        options['attribution'] + '</a>')
+    ],
+    params: {
+      'LAYERS': options['wmsLayers'] || layer
+    },
+    ratio: 1,
+    url: options['wmsUrl'].split('?')[0].replace('http:',location.protocol)
   });
 };
