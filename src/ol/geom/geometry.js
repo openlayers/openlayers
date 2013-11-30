@@ -16,6 +16,7 @@ goog.require('ol.geom.flat');
 ol.geom.Type = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
+  LINEAR_RING: 'LinearRing',
   POLYGON: 'Polygon',
   MULTI_POINT: 'MultiPoint',
   MULTI_LINE_STRING: 'MultiLineString',
