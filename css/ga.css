@@ -2,27 +2,29 @@
 
 .ol-scale-line {
     background-color: rgba(255, 255, 255, 0.7);
-    left: 0;
+    left: 8px;
     bottom: 0;
 }
-
 .ol-scale-line-inner {
     border: 2px solid #000;
     border-top: none;
-    color: #000;
+    color: #333;
     font-weight: bold;
+    font-size:  11px;
+    font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
 }
-
 .ol-attribution {
     background-color: rgba(255, 255, 255, 0.7);
-    color: #000;
-    font-weight: bold;
+    padding: 7px;
 }
-
 .ol-attribution a {
-    color: #555;
+    color: #333;
+    font-size:  11px;
+    font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
 }
-
+.ol-zoom a {
+    background: rgba(58,60,60,0.5);
+}
 .ga-tooltip {
     display: none;
     position: absolute;
@@ -42,6 +44,14 @@
 .ga-tooltip-content {
     overflow: auto;
     max-height: 200px;
+}
+.ga-tooltip-content a {
+    color: #333;
+    text-decoration: underline;
+}
+.ga-tooltip-content a:hover {
+    color: #333;
+    text-decoration: underline;
 }
 .ga-tooltip:after, .ga-tooltip:before {
     top: 100%;
@@ -72,11 +82,13 @@
 }
 .ga-tooltip-closer:after {
     content: "✖";
+    color: #333;
 }
 
 .htmlpopup-container {
   width: 100%;
   font-size: 14px;
+  font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
 }
 .htmlpopup-container span {
   font-weight: bold;
