@@ -55,6 +55,17 @@ ol.geom.Polygon.prototype.getEnds = function() {
 
 
 /**
+ * @return {ol.Coordinate} Interior point.
+ */
+ol.geom.Polygon.prototype.getInteriorPoint = function() {
+  var extent = this.getExtent();
+  var y = (extent[1] + extent[3]) / 2;
+  return ol.geom.flat.linearRingsGetInteriorPoint(
+      this.flatCoordinates, 0, this.ends_, this.stride, y);
+};
+
+
+/**
  * @return {Array.<ol.geom.LinearRing>} Linear rings.
  */
 ol.geom.Polygon.prototype.getLinearRings = function() {
