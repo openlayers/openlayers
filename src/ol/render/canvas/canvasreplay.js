@@ -122,7 +122,7 @@ ol.render.canvas.Replay.prototype.replay =
     function(context, transform, renderGeometryFunction) {
   /** @type {Array.<number>} */
   var pixelCoordinates;
-  if (ol.vec.Mat4.equal2D(transform, this.renderedTransform_)) {
+  if (ol.vec.Mat4.equals2D(transform, this.renderedTransform_)) {
     pixelCoordinates = this.pixelCoordinates_;
   } else {
     pixelCoordinates = ol.geom.flat.transform2D(
