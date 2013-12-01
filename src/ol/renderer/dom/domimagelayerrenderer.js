@@ -11,6 +11,7 @@ goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.layer.Image');
 goog.require('ol.renderer.dom.Layer');
+goog.require('ol.vec.Mat4');
 
 
 
@@ -88,20 +89,12 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
     var imageExtent = image.getExtent();
     var imageResolution = image.getResolution();
     var transform = goog.vec.Mat4.createNumber();
-    goog.vec.Mat4.makeIdentity(transform);
-    goog.vec.Mat4.translate(transform,
-        frameState.size[0] / 2, frameState.size[1] / 2, 0);
-    goog.vec.Mat4.rotateZ(transform, viewRotation);
-    goog.vec.Mat4.scale(
-        transform,
-        imageResolution / viewResolution,
-        imageResolution / viewResolution,
-        1);
-    goog.vec.Mat4.translate(
-        transform,
+    ol.vec.Mat4.makeTransform2D(transform,
+        frameState.size[0] / 2, frameState.size[1] / 2,
+        imageResolution / viewResolution, imageResolution / viewResolution,
+        viewRotation,
         (imageExtent[0] - viewCenter[0]) / imageResolution,
-        (viewCenter[1] - imageExtent[3]) / imageResolution,
-        0);
+        (viewCenter[1] - imageExtent[3]) / imageResolution);
     if (image != this.image_) {
       var imageElement = image.getImageElement(this);
       // Bootstrap sets the style max-width: 100% for all images, which breaks
@@ -114,7 +107,6 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
       this.image_ = image;
     }
     this.setTransform_(transform);
-
     this.updateAttributions(frameState.attributions, image.getAttributions());
     this.updateLogos(frameState, imageSource);
   }
