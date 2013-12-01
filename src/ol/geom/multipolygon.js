@@ -22,6 +22,18 @@ ol.geom.MultiPolygon = function(coordinates, opt_layout) {
    */
   this.endss_ = [];
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.interiorPointsRevision_ = -1;
+
+  /**
+   * @private
+   * @type {Array.<ol.Coordinate>}
+   */
+  this.interiorPoints_ = null;
+
   this.setCoordinates(coordinates, opt_layout);
 
 };
@@ -58,10 +70,14 @@ ol.geom.MultiPolygon.prototype.getEndss = function() {
  * @return {Array.<ol.Coordinate>} Interior points.
  */
 ol.geom.MultiPolygon.prototype.getInteriorPoints = function() {
-  var ys = ol.geom.flat.linearRingssMidYs(
-      this.flatCoordinates, 0, this.endss_, this.stride);
-  return ol.geom.flat.linearRingssGetInteriorPoints(
-      this.flatCoordinates, 0, this.endss_, this.stride, ys);
+  if (this.interiorPointsRevision_ != this.revision) {
+    var ys = ol.geom.flat.linearRingssMidYs(
+        this.flatCoordinates, 0, this.endss_, this.stride);
+    this.interiorPoints_ = ol.geom.flat.linearRingssGetInteriorPoints(
+        this.flatCoordinates, 0, this.endss_, this.stride, ys);
+    this.interiorPointsRevision_ = this.revision;
+  }
+  return this.interiorPoints_;
 };
 
 
