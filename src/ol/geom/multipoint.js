@@ -1,6 +1,7 @@
 goog.provide('ol.geom.MultiPoint');
 
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.Point');
 goog.require('ol.geom.flat');
 
 
@@ -24,6 +25,21 @@ goog.inherits(ol.geom.MultiPoint, ol.geom.Geometry);
 ol.geom.MultiPoint.prototype.getCoordinates = function() {
   return ol.geom.flat.inflateCoordinates(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+};
+
+
+/**
+ * @return {Array.<ol.geom.Point>} Points.
+ */
+ol.geom.MultiPoint.prototype.getPoints = function() {
+  // FIXME we should construct the points from the flat coordinates
+  var coordinates = this.getCoordinates();
+  var points = [];
+  var i, ii;
+  for (i = 0, ii = coordinates.length; i < ii; ++i) {
+    points.push(new ol.geom.Point(coordinates[i]));
+  }
+  return points;
 };
 
 
