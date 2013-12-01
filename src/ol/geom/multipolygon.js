@@ -1,6 +1,7 @@
 goog.provide('ol.geom.MultiPolygon');
 
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.Polygon');
 goog.require('ol.geom.flat');
 
 
@@ -50,6 +51,21 @@ ol.geom.MultiPolygon.prototype.getCoordinates = function() {
  */
 ol.geom.MultiPolygon.prototype.getEndss = function() {
   return this.endss_;
+};
+
+
+/**
+ * @return {Array.<ol.geom.Polygon>} Polygons.
+ */
+ol.geom.MultiPolygon.prototype.getPolygons = function() {
+  // FIXME we should construct the polygons directly from the flat coordinates
+  var coordinates = this.getCoordinates();
+  var polygons = [];
+  var i, ii;
+  for (i = 0, ii = coordinates.length; i < ii; ++i) {
+    polygons.push(new ol.geom.Polygon(coordinates[i]));
+  }
+  return polygons;
 };
 
 
