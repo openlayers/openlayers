@@ -1,6 +1,7 @@
 goog.provide('ol.geom.MultiLineString');
 
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.LineString');
 goog.require('ol.geom.flat');
 
 
@@ -41,6 +42,21 @@ ol.geom.MultiLineString.prototype.getCoordinates = function() {
  */
 ol.geom.MultiLineString.prototype.getEnds = function() {
   return this.ends_;
+};
+
+
+/**
+ * @return {Array.<ol.geom.LineString>} LineStrings.
+ */
+ol.geom.MultiLineString.prototype.getLineStrings = function() {
+  // FIXME we should construct the line strings from the flat coordinates
+  var coordinates = this.getCoordinates();
+  var lineStrings = [];
+  var i, ii;
+  for (i = 0, ii = coordinates.length; i < ii; ++i) {
+    lineStrings.push(new ol.geom.LineString(coordinates[i]));
+  }
+  return lineStrings;
 };
 
 
