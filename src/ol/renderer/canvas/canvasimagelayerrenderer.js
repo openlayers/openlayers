@@ -9,6 +9,7 @@ goog.require('ol.ViewHint');
 goog.require('ol.layer.Image');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
+goog.require('ol.vec.Mat4');
 
 
 
@@ -98,26 +99,16 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
 
   if (!goog.isNull(this.image_)) {
     image = this.image_;
-
     var imageExtent = image.getExtent();
     var imageResolution = image.getResolution();
-    var imageTransform = this.imageTransform_;
-    goog.vec.Mat4.makeIdentity(imageTransform);
-    goog.vec.Mat4.translate(imageTransform,
-        frameState.size[0] / 2, frameState.size[1] / 2, 0);
-    goog.vec.Mat4.rotateZ(imageTransform, viewRotation);
-    goog.vec.Mat4.scale(
-        imageTransform,
-        imageResolution / viewResolution,
-        imageResolution / viewResolution,
-        1);
-    goog.vec.Mat4.translate(
-        imageTransform,
+    ol.vec.Mat4.makeTransform2D(this.imageTransform_,
+        frameState.size[0] / 2, frameState.size[1] / 2,
+        imageResolution / viewResolution, imageResolution / viewResolution,
+        viewRotation,
         (imageExtent[0] - viewCenter[0]) / imageResolution,
-        (viewCenter[1] - imageExtent[3]) / imageResolution,
-        0);
-
+        (viewCenter[1] - imageExtent[3]) / imageResolution);
     this.updateAttributions(frameState.attributions, image.getAttributions());
     this.updateLogos(frameState, imageSource);
   }
+
 };
