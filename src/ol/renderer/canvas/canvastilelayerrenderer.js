@@ -18,6 +18,7 @@ goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
+goog.require('ol.vec.Mat4');
 
 
 
@@ -382,20 +383,12 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   this.scheduleExpireCache(frameState, tileSource);
   this.updateLogos(frameState, tileSource);
 
-  var imageTransform = this.imageTransform_;
-  goog.vec.Mat4.makeIdentity(imageTransform);
-  goog.vec.Mat4.translate(imageTransform,
-      frameState.size[0] / 2, frameState.size[1] / 2, 0);
-  goog.vec.Mat4.rotateZ(imageTransform, view2DState.rotation);
-  goog.vec.Mat4.scale(
-      imageTransform,
+  ol.vec.Mat4.makeTransform2D(this.imageTransform_,
+      frameState.size[0] / 2, frameState.size[1] / 2,
       tileResolution / view2DState.resolution,
       tileResolution / view2DState.resolution,
-      1);
-  goog.vec.Mat4.translate(
-      imageTransform,
+      view2DState.rotation,
       (origin[0] - center[0]) / tileResolution,
-      (center[1] - origin[1]) / tileResolution,
-      0);
+      (center[1] - origin[1]) / tileResolution);
 
 };
