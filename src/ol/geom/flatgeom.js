@@ -327,6 +327,68 @@ ol.geom.flat.linearRingsContainsXY =
 
 
 /**
+ * Calculates a point that is guaranteed to lie in the interior of the linear
+ * rings.
+ * Inspired by JTS's com.vividsolutions.jts.geom.Geometry#getInteriorPoint.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {Array.<number>} ends Ends.
+ * @param {number} stride Stride.
+ * @param {number} y Y.
+ * @param {Array.<number>=} opt_point Point.
+ * @return {Array.<number>} A point which is in the interior of the linear
+ *     rings.
+ */
+ol.geom.flat.linearRingsGetInteriorPoint =
+    function(flatCoordinates, offset, ends, stride, y, opt_point) {
+  var i, ii, x, x1, x2, y1, y2;
+  var intersections = [];
+  // Calculate intersections with the horizontal line
+  var end = ends[0];
+  x1 = flatCoordinates[end - stride];
+  y1 = flatCoordinates[end - stride + 1];
+  for (i = offset; i < end; i += stride) {
+    x2 = flatCoordinates[i];
+    y2 = flatCoordinates[i + 1];
+    if ((y <= y1 && y2 <= y) || (y1 <= y && y <= y2)) {
+      x = (y - y1) / (y2 - y1) * (x2 - x1) + x1;
+      intersections.push(x);
+    }
+    x1 = x2;
+    y1 = y2;
+  }
+  // Find the longest segment of the horizontal line that has its center point
+  // inside the polygon
+  var point;
+  if (goog.isDef(opt_point)) {
+    point = opt_point;
+    point[0] = NaN;
+    point[1] = y;
+  } else {
+    point = [NaN, y];
+  }
+  var maxSegmentLength = -Infinity;
+  intersections.sort();
+  x1 = intersections[0];
+  for (i = 1, ii = intersections.length; i < ii; ++i) {
+    x2 = intersections[i];
+    var segmentLength = Math.abs(x2 - x1);
+    if (segmentLength > maxSegmentLength) {
+      x = (x1 + x2) / 2;
+      if (ol.geom.flat.linearRingsContainsXY(
+          flatCoordinates, offset, ends, stride, x, y)) {
+        point[0] = x;
+        maxSegmentLength = segmentLength;
+      }
+    }
+    x1 = x2;
+  }
+  goog.asserts.assert(!isNaN(point[0]));
+  return point;
+};
+
+
+/**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {Array.<Array.<number>>} endss Endss.
