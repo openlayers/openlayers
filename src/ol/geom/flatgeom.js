@@ -283,6 +283,25 @@ ol.geom.flat.linearRingIsClockwise =
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
+ * @return {number} Mid Y.
+ */
+ol.geom.flat.linearRingMidY = function(flatCoordinates, offset, end, stride) {
+  var minY = Infinity;
+  var maxY = -Infinity;
+  for (; offset < end; offset += stride) {
+    var y = flatCoordinates[offset + 1];
+    minY = Math.min(minY, y);
+    maxY = Math.max(maxY, y);
+  }
+  return (minY + maxY) / 2;
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
  * @return {number} Perimeter.
  */
 ol.geom.flat.linearRingPerimeter =
@@ -413,6 +432,50 @@ ol.geom.flat.linearRingssContainsXY =
     offset = ends[ends.length - 1];
   }
   return false;
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {Array.<Array.<number>>} endss Endss.
+ * @param {number} stride Stride.
+ * @param {Array.<number>} ys Ys.
+ * @return {Array.<ol.Coordinate>} Mid Ys.
+ */
+ol.geom.flat.linearRingssGetInteriorPoints =
+    function(flatCoordinates, offset, endss, stride, ys) {
+  goog.asserts.assert(endss.length == ys.length);
+  var points = [];
+  var i, ii;
+  for (i = 0, ii = endss.length; i < ii; ++i) {
+    var ends = endss[i];
+    points.push(ol.geom.flat.linearRingsGetInteriorPoint(
+        flatCoordinates, offset, ends, stride, ys[i]));
+    offset = ends[ends.length - 1];
+  }
+  return points;
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {Array.<Array.<number>>} endss Endss.
+ * @param {number} stride Stride.
+ * @return {Array.<number>} Mid Ys.
+ */
+ol.geom.flat.linearRingssMidYs =
+    function(flatCoordinates, offset, endss, stride) {
+  var midYs = [];
+  var i, ii;
+  for (i = 0, ii = endss.length; i < ii; ++i) {
+    var ends = endss[i];
+    midYs.push(
+        ol.geom.flat.linearRingMidY(flatCoordinates, offset, ends[0], stride));
+    offset = ends[ends.length - 1];
+  }
+  return midYs;
 };
 
 
