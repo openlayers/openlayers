@@ -6,6 +6,7 @@ goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.canvas.Immediate');
 goog.require('ol.renderer.Layer');
+goog.require('ol.vec.Mat4');
 
 
 
@@ -138,15 +139,9 @@ ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
  */
 ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
   var view2DState = frameState.view2DState;
-  var center = view2DState.center;
-  var resolution = view2DState.resolution;
-  var rotation = view2DState.rotation;
-  var size = frameState.size;
-  var transform = this.transform_;
-  goog.vec.Mat4.makeIdentity(transform);
-  goog.vec.Mat4.translate(transform, size[0] / 2, size[1] / 2, 0);
-  goog.vec.Mat4.scale(transform, 1 / resolution, -1 / resolution, 1);
-  goog.vec.Mat4.rotateZ(transform, -rotation);
-  goog.vec.Mat4.translate(transform, -center[0], -center[1], 0);
-  return transform;
+  return ol.vec.Mat4.makeTransform2D(this.transform_,
+      frameState.size[0] / 2, frameState.size[1] / 2,
+      1 / view2DState.resolution, -1 / view2DState.resolution,
+      -view2DState.rotation,
+      -view2DState.center[0], -view2DState.center[1]);
 };
