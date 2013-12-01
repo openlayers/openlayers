@@ -4,6 +4,36 @@ goog.require('goog.vec.Mat4');
 
 
 /**
+ * @param {!goog.vec.Mat4.Number} mat Matrix.
+ * @param {number} translateX1 Translate X1.
+ * @param {number} translateY1 Translate Y1.
+ * @param {number} scaleX Scale X.
+ * @param {number} scaleY Scale Y.
+ * @param {number} rotation Rotation.
+ * @param {number} translateX2 Translate X2.
+ * @param {number} translateY2 Translate Y2.
+ * @return {!goog.vec.Mat4.Number} Matrix.
+ */
+ol.vec.Mat4.makeTransform2D = function(mat, translateX1, translateY1,
+    scaleX, scaleY, rotation, translateX2, translateY2) {
+  goog.vec.Mat4.makeIdentity(mat);
+  if (translateX1 !== 0 || translateY1 !== 0) {
+    goog.vec.Mat4.translate(mat, translateX1, translateY1, 0);
+  }
+  if (scaleX != 1 || scaleY != 1) {
+    goog.vec.Mat4.scale(mat, scaleX, scaleY, 1);
+  }
+  if (rotation !== 0) {
+    goog.vec.Mat4.rotateZ(mat, rotation);
+  }
+  if (translateX2 !== 0 || translateY2 !== 0) {
+    goog.vec.Mat4.translate(mat, translateX2, translateY2, 0);
+  }
+  return mat;
+};
+
+
+/**
  * Returns true if mat1 and mat2 represent the same 2D transformation.
  * @param {goog.vec.Mat4.AnyType} mat1 Matrix 1.
  * @param {goog.vec.Mat4.AnyType} mat2 Matrix 2.
