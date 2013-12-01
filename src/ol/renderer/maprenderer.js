@@ -8,6 +8,7 @@ goog.require('goog.vec.Mat4');
 goog.require('ol.FrameState');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
+goog.require('ol.vec.Mat4');
 
 
 
@@ -42,30 +43,17 @@ goog.inherits(ol.renderer.Map, goog.Disposable);
  * @protected
  */
 ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
-
   var view2DState = frameState.view2DState;
   var coordinateToPixelMatrix = frameState.coordinateToPixelMatrix;
-
-  goog.vec.Mat4.makeIdentity(coordinateToPixelMatrix);
-  goog.vec.Mat4.translate(coordinateToPixelMatrix,
-      frameState.size[0] / 2,
-      frameState.size[1] / 2,
-      0);
-  goog.vec.Mat4.scale(coordinateToPixelMatrix,
-      1 / view2DState.resolution,
-      -1 / view2DState.resolution,
-      1);
-  goog.vec.Mat4.rotateZ(coordinateToPixelMatrix,
-      -view2DState.rotation);
-  goog.vec.Mat4.translate(coordinateToPixelMatrix,
-      -view2DState.center[0],
-      -view2DState.center[1],
-      0);
-
+  goog.asserts.assert(!goog.isNull(coordinateToPixelMatrix));
+  ol.vec.Mat4.makeTransform2D(coordinateToPixelMatrix,
+      frameState.size[0] / 2, frameState.size[1] / 2,
+      1 / view2DState.resolution, -1 / view2DState.resolution,
+      -view2DState.rotation,
+      -view2DState.center[0], -view2DState.center[1]);
   var inverted = goog.vec.Mat4.invert(
       coordinateToPixelMatrix, frameState.pixelToCoordinateMatrix);
   goog.asserts.assert(inverted);
-
 };
 
 
