@@ -55,6 +55,17 @@ ol.geom.MultiPolygon.prototype.getEndss = function() {
 
 
 /**
+ * @return {Array.<ol.Coordinate>} Interior points.
+ */
+ol.geom.MultiPolygon.prototype.getInteriorPoints = function() {
+  var ys = ol.geom.flat.linearRingssMidYs(
+      this.flatCoordinates, 0, this.endss_, this.stride);
+  return ol.geom.flat.linearRingssGetInteriorPoints(
+      this.flatCoordinates, 0, this.endss_, this.stride, ys);
+};
+
+
+/**
  * @return {Array.<ol.geom.Polygon>} Polygons.
  */
 ol.geom.MultiPolygon.prototype.getPolygons = function() {
