@@ -53,10 +53,25 @@ var popup = new ol.Overlay({
 var map = new ol.Map({
   layers: [vector],
   renderer: ol.RendererHint.CANVAS,
-  target: 'map',
+  target: document.getElementById('map'),
   view: new ol.View2D({
     center: [0, 0],
     zoom: 2
   }),
   overlays: [popup]
+});
+
+$(map.getViewport()).on('mousemove', function(e) {
+  var pixel = map.getEventPixel(e.originalEvent);
+
+  var hit = false;
+  map.forEachFeatureAtPixel(pixel, function(feature) {
+    hit = true;
+  });
+
+  if (hit) {
+    map.getTarget().style.cursor = 'pointer';
+  } else {
+    map.getTarget().style.cursor = '';
+  }
 });
