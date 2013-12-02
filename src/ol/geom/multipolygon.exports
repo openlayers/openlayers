@@ -1,4 +1,5 @@
 @exportSymbol ol.geom.MultiPolygon
+@exportProperty ol.geom.MultiPolygon.prototype.getArea
 @exportProperty ol.geom.MultiPolygon.prototype.getCoordinates
 @exportProperty ol.geom.MultiPolygon.prototype.getPolygons
 @exportProperty ol.geom.MultiPolygon.prototype.getType
