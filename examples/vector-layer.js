@@ -8,8 +8,19 @@ goog.require('ol.source.MapQuestOpenAerial');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
+goog.require('ol.style.Text');
 
 
+var textStyle = new ol.style.Text({
+  textAlign: 'center',
+  fill: new ol.style.Fill({
+    color: '#000'
+  }),
+  stroke: new ol.style.Stroke({
+    color: '#fff',
+    width: 2
+  })
+});
 var styleArray = [new ol.style.Style({
   fill: new ol.style.Fill({
     color: 'rgba(255, 255, 255, 0.6)'
@@ -17,7 +28,8 @@ var styleArray = [new ol.style.Style({
   stroke: new ol.style.Stroke({
     color: '#319FD3',
     width: 1
-  })
+  }),
+  text: textStyle
 })];
 
 var vectorLayer = new ol.layer.Vector({
@@ -25,6 +37,7 @@ var vectorLayer = new ol.layer.Vector({
     url: 'data/countries.geojson'
   }),
   styleFunction: function(feature, resolution) {
+    textStyle.text = resolution < 5000 ? feature.get('name') : undefined;
     return styleArray;
   }
 });
