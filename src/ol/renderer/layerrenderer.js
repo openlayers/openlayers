@@ -44,7 +44,10 @@ goog.inherits(ol.renderer.Layer, goog.Disposable);
 
 /**
  * @param {ol.Pixel} pixel Pixel.
- * @param {function(ol.Feature)} callback Feature callback.
+ * @param {function(this: S, ol.Feature): T} callback Feature callback.
+ * @param {S=} opt_obj Scope.
+ * @return {T|undefined} Callback result.
+ * @template S,T
  */
 ol.renderer.Layer.prototype.forEachFeatureAtPixel = goog.nullFunction;
 

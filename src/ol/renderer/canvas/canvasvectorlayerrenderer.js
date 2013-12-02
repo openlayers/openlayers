@@ -85,14 +85,16 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
  * @inheritDoc
  */
 ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
-    function(pixel, callback) {
-  if (!goog.isNull(this.replayGroup_)) {
+    function(pixel, callback, opt_obj) {
+  if (goog.isNull(this.replayGroup_)) {
+    return undefined;
+  } else {
     goog.asserts.assert(!ol.extent.isEmpty(this.renderedExtent_));
     goog.asserts.assert(!isNaN(this.renderedResolution_));
     var coordinate = this.getMap().getCoordinateFromPixel(pixel);
     var renderGeometryFunction = this.getRenderGeometryFunction_();
     goog.asserts.assert(goog.isFunction(renderGeometryFunction));
-    this.replayGroup_.forEachGeometryAtCoordinate(this.renderedExtent_,
+    return this.replayGroup_.forEachGeometryAtCoordinate(this.renderedExtent_,
         this.renderedResolution_, coordinate, renderGeometryFunction,
         /**
          * @param {ol.geom.Geometry} geometry Geometry.
@@ -101,7 +103,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
         function(geometry, data) {
           var feature = /** @type {ol.Feature} */ (data);
           goog.asserts.assert(goog.isDef(feature));
-          callback(feature);
+          return callback.call(opt_obj, feature);
         });
   }
 };
