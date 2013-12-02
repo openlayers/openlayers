@@ -32,6 +32,16 @@ ol.style.Text = function(options) {
    * @type {string|undefined}
    */
   this.textBaseline = options.textBaseline;
+
+  /**
+   * @type {ol.style.Fill}
+   */
+  this.fill = goog.isDef(options.fill) ? options.fill : null;
+
+  /**
+   * @type {ol.style.Stroke}
+   */
+  this.stroke = goog.isDef(options.stroke) ? options.stroke : null;
 };
 
 

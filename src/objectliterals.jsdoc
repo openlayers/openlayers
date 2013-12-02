@@ -661,6 +661,8 @@
  * @property {string|undefined} text Text.
  * @property {string|undefined} textAlign Text alignment.
  * @property {string|undefined} textBaseline Text base line.
+ * @property {ol.style.Fill|undefined} fill Fill style.
+ * @property {ol.style.Stroke|undefined} stroke Stroke style.
  * @todo stability experimental
  */
 
