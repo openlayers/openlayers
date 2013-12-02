@@ -215,7 +215,7 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
   var renderGeometry =
       ol.render.canvas.Immediate.GEOMETRY_RENDERES_[geometry.getType()];
   goog.asserts.assert(goog.isDef(renderGeometry));
-  renderGeometry.call(this, geometry);
+  renderGeometry.call(this, geometry, null);
 };
 
 
@@ -223,7 +223,7 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
  * @inheritDoc
  */
 ol.render.canvas.Immediate.prototype.drawPointGeometry =
-    function(pointGeometry) {
+    function(pointGeometry, data) {
   this.drawImages_(pointGeometry);
   this.drawText_(pointGeometry);
 };
@@ -233,7 +233,7 @@ ol.render.canvas.Immediate.prototype.drawPointGeometry =
  * @inheritDoc
  */
 ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
-    function(multiPointGeometry) {
+    function(multiPointGeometry, data) {
   this.drawImages_(multiPointGeometry);
   this.drawText_(multiPointGeometry);
 };
@@ -243,7 +243,7 @@ ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
  * @inheritDoc
  */
 ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
-    function(lineStringGeometry) {
+    function(lineStringGeometry, data) {
   if (!ol.extent.intersects(this.extent_, lineStringGeometry.getExtent()) ||
       !goog.isDef(this.state_.strokeStyle)) {
     return;
@@ -262,7 +262,7 @@ ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
  * @inheritDoc
  */
 ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
-    function(multiLineStringGeometry) {
+    function(multiLineStringGeometry, data) {
   var geometryExtent = multiLineStringGeometry.getExtent();
   if (!ol.extent.intersects(this.extent_, geometryExtent) ||
       !goog.isDef(this.state_.strokeStyle)) {
@@ -287,7 +287,7 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
  * @inheritDoc
  */
 ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
-    function(polygonGeometry) {
+    function(polygonGeometry, data) {
   if (!ol.extent.intersects(this.extent_, polygonGeometry.getExtent())) {
     return;
   }
@@ -316,7 +316,7 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
  * @inheritDoc
  */
 ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
-    function(multiPolygonGeometry) {
+    function(multiPolygonGeometry, data) {
   if (!ol.extent.intersects(this.extent_, multiPolygonGeometry.getExtent())) {
     return;
   }
@@ -467,7 +467,8 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
  * @const
  * @private
  * @type {Object.<ol.geom.Type,
- *                function(this: ol.render.canvas.Immediate, ol.geom.Geometry)>}
+ *                function(this: ol.render.canvas.Immediate, ol.geom.Geometry,
+ *                         Object)>}
  */
 ol.render.canvas.Immediate.GEOMETRY_RENDERES_ = {
   'Point': ol.render.canvas.Immediate.prototype.drawPointGeometry,

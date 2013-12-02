@@ -15,13 +15,14 @@ goog.require('ol.style.Style');
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
+ * @param {Object} data Opaque data object.
  */
-ol.renderer.vector.renderFeature = function(replayGroup, feature, style) {
+ol.renderer.vector.renderFeature = function(replayGroup, feature, style, data) {
   var geometry = feature.getGeometry();
   var geometryRenderer =
       ol.renderer.vector.GEOMETRY_RENDERERS_[geometry.getType()];
   goog.asserts.assert(goog.isDef(geometryRenderer));
-  geometryRenderer(replayGroup, geometry, style);
+  geometryRenderer(replayGroup, geometry, style, data);
 };
 
 
@@ -29,10 +30,11 @@ ol.renderer.vector.renderFeature = function(replayGroup, feature, style) {
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
+ * @param {Object} data Opaque data object.
  * @private
  */
 ol.renderer.vector.renderLineStringGeometry_ =
-    function(replayGroup, geometry, style) {
+    function(replayGroup, geometry, style, data) {
   if (goog.isNull(style.stroke)) {
     return;
   }
@@ -41,7 +43,7 @@ ol.renderer.vector.renderLineStringGeometry_ =
   var replay = replayGroup.getReplay(
       style.zIndex, ol.render.ReplayType.LINE_STRING);
   replay.setFillStrokeStyle(null, style.stroke);
-  replay.drawLineStringGeometry(lineStringGeometry);
+  replay.drawLineStringGeometry(lineStringGeometry, data);
 };
 
 
@@ -49,10 +51,11 @@ ol.renderer.vector.renderLineStringGeometry_ =
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
+ * @param {Object} data Opaque data object.
  * @private
  */
 ol.renderer.vector.renderMultiLineStringGeometry_ =
-    function(replayGroup, geometry, style) {
+    function(replayGroup, geometry, style, data) {
   if (goog.isNull(style.stroke)) {
     return;
   }
@@ -62,7 +65,7 @@ ol.renderer.vector.renderMultiLineStringGeometry_ =
   var replay = replayGroup.getReplay(
       style.zIndex, ol.render.ReplayType.LINE_STRING);
   replay.setFillStrokeStyle(null, style.stroke);
-  replay.drawMultiLineStringGeometry(multiLineStringGeometry);
+  replay.drawMultiLineStringGeometry(multiLineStringGeometry, data);
 };
 
 
@@ -70,10 +73,11 @@ ol.renderer.vector.renderMultiLineStringGeometry_ =
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
+ * @param {Object} data Opaque data object.
  * @private
  */
 ol.renderer.vector.renderMultiPolygonGeometry_ =
-    function(replayGroup, geometry, style) {
+    function(replayGroup, geometry, style, data) {
   if (goog.isNull(style.stroke) && goog.isNull(style.fill)) {
     return;
   }
@@ -83,7 +87,7 @@ ol.renderer.vector.renderMultiPolygonGeometry_ =
   var replay = replayGroup.getReplay(
       style.zIndex, ol.render.ReplayType.POLYGON);
   replay.setFillStrokeStyle(style.fill, style.stroke);
-  replay.drawMultiPolygonGeometry(multiPolygonGeometry);
+  replay.drawMultiPolygonGeometry(multiPolygonGeometry, data);
 };
 
 
@@ -91,10 +95,11 @@ ol.renderer.vector.renderMultiPolygonGeometry_ =
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
+ * @param {Object} data Opaque data object.
  * @private
  */
 ol.renderer.vector.renderPointGeometry_ =
-    function(replayGroup, geometry, style) {
+    function(replayGroup, geometry, style, data) {
   if (goog.isNull(style.image)) {
     return;
   }
@@ -102,7 +107,7 @@ ol.renderer.vector.renderPointGeometry_ =
   var pointGeometry = /** @type {ol.geom.Point} */ (geometry);
   var replay = replayGroup.getReplay(style.zIndex, ol.render.ReplayType.IMAGE);
   replay.setImageStyle(style.image);
-  replay.drawPointGeometry(pointGeometry);
+  replay.drawPointGeometry(pointGeometry, data);
 };
 
 
@@ -110,10 +115,11 @@ ol.renderer.vector.renderPointGeometry_ =
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
+ * @param {Object} data Opaque data object.
  * @private
  */
 ol.renderer.vector.renderMultiPointGeometry_ =
-    function(replayGroup, geometry, style) {
+    function(replayGroup, geometry, style, data) {
   if (goog.isNull(style.image)) {
     return;
   }
@@ -121,7 +127,7 @@ ol.renderer.vector.renderMultiPointGeometry_ =
   var multiPointGeometry = /** @type {ol.geom.MultiPoint} */ (geometry);
   var replay = replayGroup.getReplay(style.zIndex, ol.render.ReplayType.IMAGE);
   replay.setImageStyle(style.image);
-  replay.drawMultiPointGeometry(multiPointGeometry);
+  replay.drawMultiPointGeometry(multiPointGeometry, data);
 };
 
 
@@ -129,10 +135,11 @@ ol.renderer.vector.renderMultiPointGeometry_ =
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
+ * @param {Object} data Opaque data object.
  * @private
  */
 ol.renderer.vector.renderPolygonGeometry_ =
-    function(replayGroup, geometry, style) {
+    function(replayGroup, geometry, style, data) {
   if (goog.isNull(style.fill) && goog.isNull(style.stroke)) {
     return;
   }
@@ -141,7 +148,7 @@ ol.renderer.vector.renderPolygonGeometry_ =
   var replay = replayGroup.getReplay(
       style.zIndex, ol.render.ReplayType.POLYGON);
   replay.setFillStrokeStyle(style.fill, style.stroke);
-  replay.drawPolygonGeometry(polygonGeometry);
+  replay.drawPolygonGeometry(polygonGeometry, data);
 };
 
 
@@ -150,7 +157,7 @@ ol.renderer.vector.renderPolygonGeometry_ =
  * @private
  * @type {Object.<ol.geom.Type,
  *                function(ol.render.IReplayGroup, ol.geom.Geometry,
- *                         ol.style.Style)>}
+ *                         ol.style.Style, Object)>}
  */
 ol.renderer.vector.GEOMETRY_RENDERERS_ = {
   'Point': ol.renderer.vector.renderPointGeometry_,

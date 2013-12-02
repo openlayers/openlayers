@@ -45,7 +45,7 @@ map.on('postcompose', function(event) {
     coordinates.push([x, y]);
   }
   render.setImageStyle(imageStyle);
-  render.drawMultiPointGeometry(new ol.geom.MultiPoint(coordinates));
+  render.drawMultiPointGeometry(new ol.geom.MultiPoint(coordinates), null);
   map.requestRenderFrame();
 });
 map.requestRenderFrame();

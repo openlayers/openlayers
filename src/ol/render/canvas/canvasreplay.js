@@ -372,7 +372,7 @@ ol.render.canvas.ImageReplay.prototype.drawCoordinates_ =
  * @inheritDoc
  */
 ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
-    function(pointGeometry) {
+    function(pointGeometry, data) {
   if (goog.isNull(this.image_)) {
     return;
   }
@@ -399,7 +399,7 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
  * @inheritDoc
  */
 ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
-    function(multiPointGeometry) {
+    function(multiPointGeometry, data) {
   if (goog.isNull(this.image_)) {
     return;
   }
@@ -561,7 +561,7 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
  * @inheritDoc
  */
 ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
-    function(lineStringGeometry) {
+    function(lineStringGeometry, data) {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   var strokeStyle = state.strokeStyle;
@@ -584,7 +584,7 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
  * @inheritDoc
  */
 ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
-    function(multiLineStringGeometry) {
+    function(multiLineStringGeometry, data) {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   var strokeStyle = state.strokeStyle;
@@ -731,7 +731,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
  * @inheritDoc
  */
 ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
-    function(polygonGeometry) {
+    function(polygonGeometry, data) {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   var fillStyle = state.fillStyle;
@@ -757,7 +757,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
  * @inheritDoc
  */
 ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
-    function(multiPolygonGeometry) {
+    function(multiPolygonGeometry, data) {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   var fillStyle = state.fillStyle;

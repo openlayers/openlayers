@@ -19,49 +19,55 @@ ol.render.IRender.prototype.drawFeature = function(feature, style) {
 
 /**
  * @param {ol.geom.Point} pointGeometry Point geometry.
+ * @param {Object} data Opaque data object.
  */
-ol.render.IRender.prototype.drawPointGeometry = function(pointGeometry) {
+ol.render.IRender.prototype.drawPointGeometry = function(pointGeometry, data) {
 };
 
 
 /**
  * @param {ol.geom.LineString} lineStringGeometry Line string geometry.
+ * @param {Object} data Opaque data object.
  */
 ol.render.IRender.prototype.drawLineStringGeometry =
-    function(lineStringGeometry) {
+    function(lineStringGeometry, data) {
 };
 
 
 /**
  * @param {ol.geom.MultiLineString} multiLineStringGeometry
  *     MultiLineString geometry.
+ * @param {Object} data Opaque data object.
  */
 ol.render.IRender.prototype.drawMultiLineStringGeometry =
-    function(multiLineStringGeometry) {
+    function(multiLineStringGeometry, data) {
 };
 
 
 /**
  * @param {ol.geom.MultiPoint} multiPointGeometry MultiPoint geometry.
+ * @param {Object} data Opaque data object.
  */
 ol.render.IRender.prototype.drawMultiPointGeometry =
-    function(multiPointGeometry) {
+    function(multiPointGeometry, data) {
 };
 
 
 /**
  * @param {ol.geom.MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
+ * @param {Object} data Opaque data object.
  */
 ol.render.IRender.prototype.drawMultiPolygonGeometry =
-    function(multiPolygonGeometry) {
+    function(multiPolygonGeometry, data) {
 };
 
 
 /**
  * @param {ol.geom.Polygon} polygonGeometry Polygon geometry.
+ * @param {Object} data Opaque data object.
  */
 ol.render.IRender.prototype.drawPolygonGeometry =
-    function(polygonGeometry) {
+    function(polygonGeometry, data) {
 };
 
 
