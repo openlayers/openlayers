@@ -59,7 +59,7 @@ var highlight;
 var displayFeatureInfo = function(pixel) {
   var oldHighlight = highlight;
 
-  var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
+  var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
     return feature;
   });
 

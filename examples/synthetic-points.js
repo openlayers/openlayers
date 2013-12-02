@@ -64,7 +64,7 @@ var map = new ol.Map({
 $(map.getViewport()).on('mousemove', function(e) {
   var pixel = map.getEventPixel(e.originalEvent);
 
-  var hit = map.forEachFeatureAtPixel(pixel, function(feature) {
+  var hit = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
     return true;
   });
 
