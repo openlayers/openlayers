@@ -459,12 +459,19 @@ ol.Map.prototype.disposeInternal = function() {
  * @param {ol.Pixel} pixel Pixel.
  * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
  *     callback.
- * @param {S=} opt_obj Scope.
+ * @param {S=} opt_obj Scope for feature callback.
+ * @param {function(this: U, ol.layer.Layer): boolean=} opt_layerFunction Layer
+ *     function, only layers which are visible and for which this function
+ *     returns `true` will be tested for features.  By default, all visible
+ *     layers will be tested.
+ * @param {U=} opt_obj2 Scope for layer function.
  * @return {T|undefined} Callback result.
- * @template S,T
+ * @template S,T,U
  */
-ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_obj) {
-  return this.renderer_.forEachFeatureAtPixel(pixel, callback, opt_obj);
+ol.Map.prototype.forEachFeatureAtPixel =
+    function(pixel, callback, opt_obj, opt_layerFunction, opt_obj2) {
+  return this.renderer_.forEachFeatureAtPixel(
+      pixel, callback, opt_obj, opt_layerFunction, opt_obj2);
 };
 
 

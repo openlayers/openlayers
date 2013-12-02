@@ -82,19 +82,24 @@ ol.renderer.Map.prototype.disposeInternal = function() {
  * @param {ol.Pixel} pixel Pixel.
  * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
  *     callback.
- * @param {S=} opt_obj Scope.
+ * @param {S=} opt_obj Scope for feature callback.
+ * @param {function(this: U, ol.layer.Layer): boolean=} opt_layerFunction Layer
+ *     function.
+ * @param {U=} opt_obj2 Scope for layer function.
  * @return {T|undefined} Callback result.
- * @template S,T
+ * @template S,T,U
  */
 ol.renderer.Map.prototype.forEachFeatureAtPixel =
-    function(pixel, callback, opt_obj) {
+    function(pixel, callback, opt_obj, opt_layerFunction, opt_obj2) {
+  var layerFunction = goog.isDef(opt_layerFunction) ?
+      opt_layerFunction : goog.functions.TRUE;
   var layers = this.map_.getLayers();
   if (goog.isDef(layers)) {
     var layersArray = layers.getArray();
     var i;
     for (i = layersArray.length - 1; i >= 0; --i) {
       var layer = layersArray[i];
-      if (layer.getVisible()) {
+      if (layer.getVisible() && layerFunction.call(opt_obj2, layer)) {
         var layerRenderer = this.getLayerRenderer(layer);
         var result =
             layerRenderer.forEachFeatureAtPixel(pixel, callback, opt_obj);
