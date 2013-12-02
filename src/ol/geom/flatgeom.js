@@ -493,6 +493,26 @@ ol.geom.flat.linearRingsGetInteriorPoint =
  * @param {number} offset Offset.
  * @param {Array.<Array.<number>>} endss Endss.
  * @param {number} stride Stride.
+ * @return {number} Area.
+ */
+ol.geom.flat.linearRingssArea =
+    function(flatCoordinates, offset, endss, stride) {
+  var area = 0;
+  var i, ii;
+  for (i = 0, ii = endss.length; i < ii; ++i) {
+    var ends = endss[i];
+    area += ol.geom.flat.linearRingsArea(flatCoordinates, offset, ends, stride);
+    offset = ends[ends.length - 1];
+  }
+  return area;
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {Array.<Array.<number>>} endss Endss.
+ * @param {number} stride Stride.
  * @param {number} x X.
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
