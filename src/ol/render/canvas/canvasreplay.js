@@ -34,7 +34,8 @@ ol.render.canvas.Instruction = {
   SET_FILL_STYLE: 7,
   SET_STROKE_STYLE: 8,
   STROKE: 9,
-  SET_TEXT_STYLE: 10
+  SET_TEXT_STYLE: 10,
+  DRAW_TEXT: 11
 };
 
 
@@ -282,6 +283,28 @@ ol.render.canvas.Replay.prototype.replay_ =
       context.font = /** @type {string} */ (instruction[1]);
       context.textAlign = /** @type {string} */ (instruction[2]);
       context.textBaseline = /** @type {string} */ (instruction[3]);
+      ++i;
+    } else if (type == ol.render.canvas.Instruction.DRAW_TEXT) {
+      goog.asserts.assert(goog.isNumber(instruction[1]));
+      d = /** @type {number} */ (instruction[1]);
+      goog.asserts.assert(goog.isNumber(instruction[2]));
+      dd = /** @type {number} */ (instruction[2]);
+      goog.asserts.assert(goog.isString(instruction[3]));
+      var text = /** @type {string} */ (instruction[3]);
+      goog.asserts.assert(goog.isBoolean(instruction[4]));
+      var stroke = /** @type {boolean} */ (instruction[4]);
+      goog.asserts.assert(goog.isBoolean(instruction[5]));
+      var fill = /** @type {boolean} */ (instruction[5]);
+      for (; d < dd; d += 2) {
+        var x = pixelCoordinates[d];
+        var y = pixelCoordinates[d + 1];
+        if (stroke) {
+          context.strokeText(text, x, y);
+        }
+        if (fill) {
+          context.fillText(text, x, y);
+        }
+      }
       ++i;
     } else {
       goog.asserts.fail();
