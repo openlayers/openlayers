@@ -50,7 +50,7 @@ var vector = new ol.layer.Vector({
 var map = new ol.Map({
   layers: [raster, vector],
   renderer: ol.RendererHint.CANVAS,
-  target: 'map',
+  target: document.getElementById('map'),
   view: new ol.View2D({
     center: [0, 0],
     zoom: 3
@@ -84,5 +84,19 @@ map.on('singleclick', function(evt) {
     $(element).popover('show');
   } else {
     $(element).popover('destroy');
+  }
+});
+
+// change mouse cursor when over marker
+$(map.getViewport()).on('mousemove', function(e) {
+  var pixel = map.getEventPixel(e.originalEvent);
+  var hit = false;
+  map.forEachFeatureAtPixel(pixel, function(feature) {
+    hit = true;
+  });
+  if (hit) {
+    map.getTarget().style.cursor = 'pointer';
+  } else {
+    map.getTarget().style.cursor = '';
   }
 });
