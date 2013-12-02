@@ -127,6 +127,20 @@ describe('ol.geom.flat', function() {
 
   });
 
+  describe('ol.geom.flat.linearRingArea', function() {
+
+    it('calcaultes the area of a triangle', function() {
+      var area = ol.geom.flat.linearRingArea([0, 0, 0.5, 1, 1, 0], 0, 6, 2);
+      expect(area).to.be(0.5);
+    });
+
+    it('calculates the area of a unit square', function() {
+      var area = ol.geom.flat.linearRingArea([0, 0, 0, 1, 1, 1, 1, 0], 0, 8, 2);
+      expect(area).to.be(1);
+    });
+
+  });
+
   describe('ol.geom.flat.linearRingIsClockwise', function() {
 
     it('identifies clockwise rings', function() {

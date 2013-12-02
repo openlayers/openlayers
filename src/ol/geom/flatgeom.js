@@ -262,6 +262,28 @@ ol.geom.flat.lineStringLength = function(flatCoordinates, offset, end, stride) {
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
+ * @return {number} Area.
+ */
+ol.geom.flat.linearRingArea = function(flatCoordinates, offset, end, stride) {
+  var twiceArea = 0;
+  var x1 = flatCoordinates[end - stride];
+  var y1 = flatCoordinates[end - stride + 1];
+  for (; offset < end; offset += stride) {
+    var x2 = flatCoordinates[offset];
+    var y2 = flatCoordinates[offset + 1];
+    twiceArea += x1 * y2 - y1 * x2;
+    x1 = x2;
+    y1 = y2;
+  }
+  return Math.abs(twiceArea / 2);
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
  * @param {number} x X.
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
