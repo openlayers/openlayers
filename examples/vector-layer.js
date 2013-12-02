@@ -56,38 +56,38 @@ $.getJSON('data/countries.geojson', function(data) {
 });
 
 var highlight;
-var displayFeatureInfo = function(coordinate) {
+var displayFeatureInfo = function(pixel) {
   var oldHighlight = highlight;
-  var features = vectorSource.getAllFeaturesAtCoordinate(coordinate);
+
+  var feature;
+  map.forEachFeatureAtPixel(pixel, function(f) {
+    if (!feature) {
+      feature = f;
+    }
+  });
+
   var info = document.getElementById('info');
-  if (features.length > 0) {
-    var feature = features[0];
-    info.innerHTML = feature.getId() + ': ' + features[0].get('name');
-    highlight = feature;
+  if (feature) {
+    info.innerHTML = feature.getId() + ': ' + feature.get('name');
   } else {
     info.innerHTML = '&nbsp;';
-    highlight = undefined;
   }
+
+  highlight = feature;
+
   if (highlight !== oldHighlight) {
     map.requestRenderFrame();
-    if (highlight) {
-      vectorLayer.setRenderGeometryFunction(function(geometry) {
-        return geometry !== highlight.getGeometry();
-      });
-    } else {
-      vectorLayer.setRenderGeometryFunction(undefined);
-    }
   }
 };
 
 $(map.getViewport()).on('mousemove', function(evt) {
-  var coordinate = map.getEventCoordinate(evt.originalEvent);
-  displayFeatureInfo(coordinate);
+  var pixel = map.getEventPixel(evt.originalEvent);
+  displayFeatureInfo(pixel);
 });
 
 map.on('singleclick', function(evt) {
-  var coordinate = evt.getCoordinate();
-  displayFeatureInfo(coordinate);
+  var pixel = evt.getPixel();
+  displayFeatureInfo(pixel);
 });
 
 var highlightStyle = new ol.style.Style({
