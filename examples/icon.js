@@ -68,9 +68,8 @@ map.addOverlay(popup);
 
 // display popup on click
 map.on('singleclick', function(evt) {
-  var feature;
-  map.forEachFeatureAtPixel(evt.getPixel(), function(f) {
-    feature = f;
+  var feature = map.forEachFeatureAtPixel(evt.getPixel(), function(feature) {
+    return feature;
   });
   if (feature) {
     var geometry = feature.getGeometry();
@@ -90,9 +89,8 @@ map.on('singleclick', function(evt) {
 // change mouse cursor when over marker
 $(map.getViewport()).on('mousemove', function(e) {
   var pixel = map.getEventPixel(e.originalEvent);
-  var hit = false;
-  map.forEachFeatureAtPixel(pixel, function(feature) {
-    hit = true;
+  var hit = map.forEachFeatureAtPixel(pixel, function(feature) {
+    return true;
   });
   if (hit) {
     map.getTarget().style.cursor = 'pointer';
