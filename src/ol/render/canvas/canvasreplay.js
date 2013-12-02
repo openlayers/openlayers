@@ -1017,7 +1017,16 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
   var stride = polygonGeometry.getStride();
   this.drawFlatCoordinatess_(flatCoordinates, 0, ends, stride);
   this.endGeometry(polygonGeometry, data);
-  this.setTextStyle_();
+  if (this.setTextStyle_()) {
+    var textPosition = polygonGeometry.getInteriorPoint();
+    var textStyle = this.textStyle_;
+    this.instructions.push([
+      ol.render.canvas.Instruction.DRAW_TEXT,
+      this.coordinates.length,
+      this.appendFlatCoordinates(textPosition, 0, 2, stride, false),
+      textStyle.text, !!textStyle.stroke, !!textStyle.fill
+    ]);
+  }
 };
 
 
@@ -1059,7 +1068,18 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
         flatCoordinates, offset, endss[i], stride);
   }
   this.endGeometry(multiPolygonGeometry, data);
-  this.setTextStyle_();
+  if (this.setTextStyle_()) {
+    var textStyle = this.textStyle_;
+    var textPositions = multiPolygonGeometry.getInteriorPoints();
+    for (i = 0, ii = textPositions.length; i < ii; ++i) {
+      this.instructions.push([
+        ol.render.canvas.Instruction.DRAW_TEXT,
+        this.coordinates.length,
+        this.appendFlatCoordinates(textPositions[i], 0, 2, stride, false),
+        textStyle.text, !!textStyle.stroke, !!textStyle.fill
+      ]);
+    }
+  }
 };
 
 
