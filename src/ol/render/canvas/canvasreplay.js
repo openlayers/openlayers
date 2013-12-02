@@ -25,11 +25,12 @@ ol.render.canvas.Instruction = {
   BEGIN_PATH: 1,
   CLOSE_PATH: 2,
   DRAW_IMAGE: 3,
-  FILL: 4,
-  MOVE_TO_LINE_TO: 5,
-  SET_FILL_STYLE: 6,
-  SET_STROKE_STYLE: 7,
-  STROKE: 8
+  END_GEOMETRY: 4,
+  FILL: 5,
+  MOVE_TO_LINE_TO: 6,
+  SET_FILL_STYLE: 7,
+  SET_STROKE_STYLE: 8,
+  STROKE: 9
 };
 
 
@@ -117,9 +118,12 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry) {
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
+ * @param {function(ol.geom.Geometry, Object)=} opt_callback Geometry callback.
  */
 ol.render.canvas.Replay.prototype.replay =
-    function(context, transform, renderGeometryFunction) {
+    function(context, transform, renderGeometryFunction, opt_callback) {
+  var perGeometryMode = goog.isDef(opt_callback);
+  var batchMode = !perGeometryMode;
   /** @type {Array.<number>} */
   var pixelCoordinates;
   if (ol.vec.Mat4.equals2D(transform, this.renderedTransform_)) {
@@ -138,8 +142,10 @@ ol.render.canvas.Replay.prototype.replay =
   while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
+    var geometry;
+    var executeInPerGeometryMode, executeInBatchMode;
     if (type == ol.render.canvas.Instruction.BEGIN_GEOMETRY) {
-      var geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
+      geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
       if (renderGeometryFunction(geometry)) {
         ++i;
       } else {
@@ -147,7 +153,12 @@ ol.render.canvas.Replay.prototype.replay =
         i = /** @type {number} */ (instruction[3]);
       }
     } else if (type == ol.render.canvas.Instruction.BEGIN_PATH) {
-      context.beginPath();
+      executeInPerGeometryMode = /** @type {boolean} */ (instruction[1]);
+      executeInBatchMode = /** @type {boolean} */ (instruction[2]);
+      if ((perGeometryMode && executeInPerGeometryMode) ||
+          (batchMode && executeInBatchMode)) {
+        context.beginPath();
+      }
       ++i;
     } else if (type == ol.render.canvas.Instruction.CLOSE_PATH) {
       context.closePath();
@@ -169,6 +180,14 @@ ol.render.canvas.Replay.prototype.replay =
           y = (y + 0.5) | 0;
         }
         context.drawImage(image, x, y, width, height);
+      }
+      ++i;
+    } else if (type == ol.render.canvas.Instruction.END_GEOMETRY) {
+      if (perGeometryMode) {
+        goog.asserts.assert(goog.isDef(opt_callback));
+        geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
+        var data = /** @type {Object} */ (instruction[2]);
+        opt_callback(geometry, data);
       }
       ++i;
     } else if (type == ol.render.canvas.Instruction.FILL) {
@@ -203,7 +222,12 @@ ol.render.canvas.Replay.prototype.replay =
       }
       ++i;
     } else if (type == ol.render.canvas.Instruction.STROKE) {
-      context.stroke();
+      executeInPerGeometryMode = /** @type {boolean} */ (instruction[1]);
+      executeInBatchMode = /** @type {boolean} */ (instruction[2]);
+      if ((perGeometryMode && executeInPerGeometryMode) ||
+          (batchMode && executeInBatchMode)) {
+        context.stroke();
+      }
       ++i;
     } else {
       goog.asserts.fail();
@@ -262,12 +286,17 @@ ol.render.canvas.Replay.prototype.drawMultiPolygonGeometry =
 
 
 /**
+ * @param {ol.geom.Geometry} geometry Geometry.
  * @param {Array} beginGeometryInstruction Begin geometry instruction.
+ * @param {Object} data Opaque data object.
  */
 ol.render.canvas.Replay.prototype.endGeometry =
-    function(beginGeometryInstruction) {
+    function(geometry, beginGeometryInstruction, data) {
   beginGeometryInstruction[2] = this.coordinates.length;
   beginGeometryInstruction[3] = this.instructions.length;
+  var endGeometryInstruction =
+      [ol.render.canvas.Instruction.END_GEOMETRY, geometry, data];
+  this.instructions.push(endGeometryInstruction);
 };
 
 
@@ -391,7 +420,7 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
     this.anchorX_, this.anchorY_, this.width_, this.height_,
     this.image_, this.snapToPixel_
   ]);
-  this.endGeometry(beginGeometryInstruction);
+  this.endGeometry(pointGeometry, beginGeometryInstruction, data);
 };
 
 
@@ -418,7 +447,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
     this.anchorX_, this.anchorY_, this.width_, this.height_,
     this.image_, this.snapToPixel_
   ]);
-  this.endGeometry(beginGeometryInstruction);
+  this.endGeometry(multiPointGeometry, beginGeometryInstruction, data);
 };
 
 
@@ -540,13 +569,14 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
       state.currentLineWidth != lineWidth ||
       state.currentMiterLimit != miterLimit) {
     if (state.lastStroke != this.coordinates.length) {
-      this.instructions.push([ol.render.canvas.Instruction.STROKE]);
+      this.instructions.push(
+          [ol.render.canvas.Instruction.STROKE, false, true]);
       state.lastStroke = this.coordinates.length;
     }
     this.instructions.push(
         [ol.render.canvas.Instruction.SET_STROKE_STYLE,
          strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash],
-        [ol.render.canvas.Instruction.BEGIN_PATH]);
+        [ol.render.canvas.Instruction.BEGIN_PATH, false, true]);
     state.currentStrokeStyle = strokeStyle;
     state.currentLineCap = lineCap;
     state.currentLineDash = lineDash;
@@ -572,11 +602,14 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
   ol.extent.extend(this.extent_, lineStringGeometry.getExtent());
   this.setStrokeStyle_();
   var beginGeometryInstruction = this.beginGeometry(lineStringGeometry);
+  this.instructions.push(
+      [ol.render.canvas.Instruction.BEGIN_PATH, true, false]);
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
   this.drawFlatCoordinates_(
       flatCoordinates, 0, flatCoordinates.length, stride);
-  this.endGeometry(beginGeometryInstruction);
+  this.instructions.push([ol.render.canvas.Instruction.STROKE, true, false]);
+  this.endGeometry(lineStringGeometry, beginGeometryInstruction, data);
 };
 
 
@@ -594,6 +627,8 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
   }
   ol.extent.extend(this.extent_, multiLineStringGeometry.getExtent());
   this.setStrokeStyle_();
+  this.instructions.push([
+    ol.render.canvas.Instruction.BEGIN_PATH, true, false]);
   var beginGeometryInstruction = this.beginGeometry(multiLineStringGeometry);
   var ends = multiLineStringGeometry.getEnds();
   var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
@@ -604,7 +639,9 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
     offset = this.drawFlatCoordinates_(
         flatCoordinates, offset, ends[i], stride);
   }
-  this.endGeometry(beginGeometryInstruction);
+  this.instructions.push(
+      [ol.render.canvas.Instruction.STROKE, true, false]);
+  this.endGeometry(multiLineStringGeometry, beginGeometryInstruction, data);
 };
 
 
@@ -615,7 +652,7 @@ ol.render.canvas.LineStringReplay.prototype.finish = function() {
   var state = this.state_;
   goog.asserts.assert(!goog.isNull(state));
   if (state.lastStroke != this.coordinates.length) {
-    this.instructions.push([ol.render.canvas.Instruction.STROKE]);
+    this.instructions.push([ol.render.canvas.Instruction.STROKE, false, true]);
   }
   this.state_ = null;
 };
@@ -703,7 +740,8 @@ goog.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
 ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
     function(flatCoordinates, offset, ends, stride) {
   var state = this.state_;
-  this.instructions.push([ol.render.canvas.Instruction.BEGIN_PATH]);
+  this.instructions.push(
+      [ol.render.canvas.Instruction.BEGIN_PATH, true, true]);
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
@@ -721,7 +759,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
   }
   if (goog.isDef(state.strokeStyle)) {
     goog.asserts.assert(goog.isDef(state.lineWidth));
-    this.instructions.push([ol.render.canvas.Instruction.STROKE]);
+    this.instructions.push([ol.render.canvas.Instruction.STROKE, true, true]);
   }
   return offset;
 };
@@ -749,7 +787,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
   var flatCoordinates = polygonGeometry.getFlatCoordinates();
   var stride = polygonGeometry.getStride();
   this.drawFlatCoordinatess_(flatCoordinates, 0, ends, stride);
-  this.endGeometry(beginGeometryInstruction);
+  this.endGeometry(polygonGeometry, beginGeometryInstruction, data);
 };
 
 
@@ -780,7 +818,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
     offset = this.drawFlatCoordinatess_(
         flatCoordinates, offset, endss[i], stride);
   }
-  this.endGeometry(beginGeometryInstruction);
+  this.endGeometry(multiPolygonGeometry, beginGeometryInstruction, data);
 };
 
 
