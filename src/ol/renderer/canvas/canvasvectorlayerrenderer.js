@@ -69,11 +69,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
 
   var replayGroup = this.replayGroup_;
   if (!goog.isNull(replayGroup)) {
-    var vectorLayer = this.getVectorLayer();
-    var renderGeometryFunction = vectorLayer.getRenderGeometryFunction();
-    if (!goog.isDef(renderGeometryFunction)) {
-      renderGeometryFunction = goog.functions.TRUE;
-    }
+    var renderGeometryFunction = this.getRenderGeometryFunction_();
     goog.asserts.assert(goog.isFunction(renderGeometryFunction));
     context.globalAlpha = layerState.opacity;
     replayGroup.replay(
@@ -82,6 +78,22 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
 
   this.dispatchPostComposeEvent(context, frameState, transform);
 
+};
+
+
+/**
+ * @private
+ * @return {function(ol.geom.Geometry): boolean|undefined} Render geometry
+ *     function.
+ */
+ol.renderer.canvas.VectorLayer.prototype.getRenderGeometryFunction_ =
+    function() {
+  var vectorLayer = this.getVectorLayer();
+  var renderGeometryFunction = vectorLayer.getRenderGeometryFunction();
+  if (!goog.isDef(renderGeometryFunction)) {
+    renderGeometryFunction = goog.functions.TRUE;
+  }
+  return renderGeometryFunction;
 };
 
 
