@@ -14,6 +14,11 @@ ol.style.Text = function(options) {
   this.font = options.font;
 
   /**
+   * @type {number|undefined}
+   */
+  this.rotation = options.rotation;
+
+  /**
    * @type {string|undefined}
    */
   this.text = options.text;
