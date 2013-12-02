@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" creator="gpx4j" version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+        <trk>
+                <name>290311</name>
+                <desc>(null)</desc>
+                <trkseg>
+                        <trkpt lat="39.114318" lon="-0.425692">
+                                <ele>126.951324</ele>
+                                <time>2011-03-29T14:45:52Z</time>
+                        </trkpt>
+                        <trkpt lat="39.114226" lon="-0.425648">
+                                <ele>122.974365</ele>
+                                <time>2011-03-29T14:46:03Z</time>
+                        </trkpt>
+                        <trkpt lat="39.114226" lon="-0.425648">
+                                <ele>122.974365</ele>
+                                <time>2011-03-29T14:46:07Z</time>
+                        </trkpt>
+                        <trkpt lat="39.114134" lon="-0.425608">
+                                <ele>120.310211</ele>
+                                <time>2011-03-29T14:46:09Z</time>
+                        </trkpt>
+                        <trkpt lat="39.114239" lon="-0.425657">
+                                <ele>117.177261</ele>
+                                <time>2011-03-29T14:46:18Z</time>
+                        </trkpt>
+                        <trkpt lat="39.114317" lon="-0.425718">
+                                <ele>116.083771</ele>
+                                <time>2011-03-29T14:46:21Z</time>
+                        </trkpt>
+                        <trkpt lat="39.114412" lon="-0.425789">
+                                <ele>115.956726</ele>
+                                <time>2011-03-29T14:46:25Z</time>
+                        </trkpt>
+                </trkseg>
+        </trk>
+</gpx>
