@@ -457,7 +457,8 @@ ol.Map.prototype.disposeInternal = function() {
 
 /**
  * @param {ol.Pixel} pixel Pixel.
- * @param {function(this: S, ol.Feature): T} callback Feature callback.
+ * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
+ *     callback.
  * @param {S=} opt_obj Scope.
  * @return {T|undefined} Callback result.
  * @template S,T

@@ -92,6 +92,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
     goog.asserts.assert(!ol.extent.isEmpty(this.renderedExtent_));
     goog.asserts.assert(!isNaN(this.renderedResolution_));
     var coordinate = this.getMap().getCoordinateFromPixel(pixel);
+    var layer = this.getLayer();
     var renderGeometryFunction = this.getRenderGeometryFunction_();
     goog.asserts.assert(goog.isFunction(renderGeometryFunction));
     return this.replayGroup_.forEachGeometryAtCoordinate(this.renderedExtent_,
@@ -103,7 +104,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
         function(geometry, data) {
           var feature = /** @type {ol.Feature} */ (data);
           goog.asserts.assert(goog.isDef(feature));
-          return callback.call(opt_obj, feature);
+          return callback.call(opt_obj, feature, layer);
         });
   }
 };
