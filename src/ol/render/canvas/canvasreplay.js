@@ -6,6 +6,8 @@ goog.provide('ol.render.canvas.ReplayGroup');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.color');
@@ -926,6 +928,27 @@ ol.render.canvas.ReplayGroup = function() {
    */
   this.replayesByZIndex_ = {};
 
+  /**
+   * @type {HTMLCanvasElement}
+   */
+  var hitDetectionCanvas = /** @type {HTMLCanvasElement} */
+      (goog.dom.createElement(goog.dom.TagName.CANVAS));
+  hitDetectionCanvas.width = 1;
+  hitDetectionCanvas.height = 1;
+
+  /**
+   * @private
+   * @type {CanvasRenderingContext2D}
+   */
+  this.hitDetectionContext_ = /** @type {CanvasRenderingContext2D} */
+      (hitDetectionCanvas.getContext('2d'));
+
+  /**
+   * @private
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.hitDetectionTransform_ = goog.vec.Mat4.createNumber();
+
 };
 
 
@@ -935,12 +958,31 @@ ol.render.canvas.ReplayGroup = function() {
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
+ * @param {function(ol.geom.Geometry, Object)=} opt_callback Geometry callback.
  */
 ol.render.canvas.ReplayGroup.prototype.replay =
-    function(context, extent, transform, renderGeometryFunction) {
+    function(context, extent, transform, renderGeometryFunction, opt_callback) {
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.replayesByZIndex_), Number);
   goog.array.sort(zs);
+  this.replay_(zs, context, extent, transform, renderGeometryFunction,
+      opt_callback);
+};
+
+
+/**
+ * @private
+ * @param {Array.<number>} zs Z-indices array.
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {ol.Extent} extent Extent.
+ * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
+ *     geometry function.
+ * @param {function(ol.geom.Geometry, Object)=} opt_callback Geometry callback.
+ */
+ol.render.canvas.ReplayGroup.prototype.replay_ =
+    function(zs, context, extent, transform, renderGeometryFunction,
+             opt_callback) {
   var i, ii;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     var replayes = this.replayesByZIndex_[zs[i].toString()];
@@ -948,10 +990,46 @@ ol.render.canvas.ReplayGroup.prototype.replay =
     for (replayType in replayes) {
       var replay = replayes[replayType];
       if (ol.extent.intersects(extent, replay.getExtent())) {
-        replay.replay(context, transform, renderGeometryFunction);
+        replay.replay(context, transform, renderGeometryFunction, opt_callback);
       }
     }
   }
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {number} resolution Resolution.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
+ *     geometry function.
+ * @param {function(ol.geom.Geometry, Object)} callback Geometry callback.
+ */
+ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtCoordinate =
+    function(extent, resolution, coordinate, renderGeometryFunction, callback) {
+
+  var transform = this.hitDetectionTransform_;
+  ol.vec.Mat4.makeTransform2D(transform, 0.5, 0.5,
+      1 / resolution, -1 / resolution, 0, -coordinate[0], -coordinate[1]);
+
+  /** @type {Array.<number>} */
+  var zs = goog.array.map(goog.object.getKeys(this.replayesByZIndex_), Number);
+  goog.array.sort(zs, function(a, b) { return b - a; });
+
+  var context = this.hitDetectionContext_;
+
+  this.replay_(zs, context, extent, transform, renderGeometryFunction,
+      /**
+       * @param {ol.geom.Geometry} geometry Geometry.
+       * @param {Object} data Opaque data object.
+       */
+      function(geometry, data) {
+        var imageData = context.getImageData(0, 0, 1, 1).data;
+        if (imageData[3] > 0) {
+          callback(geometry, data);
+          context.clearRect(0, 0, 1, 1);
+        }
+      });
 };
 
 
