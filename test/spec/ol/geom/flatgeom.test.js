@@ -35,15 +35,6 @@ describe('ol.geom.flat', function() {
 
   });
 
-  describe('ol.geom.flat.inflateCoordinates', function() {
-
-    it('inflates coordinates', function() {
-      var coordinates = ol.geom.flat.inflateCoordinates([1, 2, 3, 4], 0, 4, 2);
-      expect(coordinates).to.eql([[1, 2], [3, 4]]);
-    });
-
-  });
-
   describe('ol.geom.flat.flipXY', function() {
 
     it('can flip XY coordinates', function() {
@@ -72,6 +63,15 @@ describe('ol.geom.flat', function() {
               to.be(flatCoordinates);
           expect(flatCoordinates).to.eql([2, 1, 3, 5, 4, 6, 8, 7, 9]);
         });
+
+  });
+
+  describe('ol.geom.flat.inflateCoordinates', function() {
+
+    it('inflates coordinates', function() {
+      var coordinates = ol.geom.flat.inflateCoordinates([1, 2, 3, 4], 0, 4, 2);
+      expect(coordinates).to.eql([[1, 2], [3, 4]]);
+    });
 
   });
 
