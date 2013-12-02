@@ -43,6 +43,13 @@ goog.inherits(ol.renderer.Layer, goog.Disposable);
 
 
 /**
+ * @param {ol.Pixel} pixel Pixel.
+ * @param {function(ol.Feature)} callback Feature callback.
+ */
+ol.renderer.Layer.prototype.forEachFeatureAtPixel = goog.nullFunction;
+
+
+/**
  * @protected
  * @return {ol.layer.Layer} Layer.
  */
