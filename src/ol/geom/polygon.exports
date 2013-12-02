@@ -1,4 +1,5 @@
 @exportSymbol ol.geom.Polygon
+@exportProperty ol.geom.Polygon.prototype.getArea
 @exportProperty ol.geom.Polygon.prototype.getCoordinates
 @exportProperty ol.geom.Polygon.prototype.getLinearRings
 @exportProperty ol.geom.Polygon.prototype.getType

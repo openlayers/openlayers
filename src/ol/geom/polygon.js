@@ -50,6 +50,15 @@ ol.geom.Polygon.prototype.containsXY = function(x, y) {
 
 
 /**
+ * @return {number} Area.
+ */
+ol.geom.Polygon.prototype.getArea = function() {
+  return ol.geom.flat.linearRingsArea(
+      this.flatCoordinates, 0, this.ends_, this.stride);
+};
+
+
+/**
  * @return {ol.geom.RawPolygon} Coordinates.
  */
 ol.geom.Polygon.prototype.getCoordinates = function() {
