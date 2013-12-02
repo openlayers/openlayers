@@ -456,6 +456,15 @@ ol.Map.prototype.disposeInternal = function() {
 
 
 /**
+ * @param {ol.Pixel} pixel Pixel.
+ * @param {function(ol.Feature)} callback Feature callback.
+ */
+ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback) {
+  this.renderer_.forEachFeatureAtPixel(pixel, callback);
+};
+
+
+/**
  * Freeze rendering.
  */
 ol.Map.prototype.freezeRendering = function() {
