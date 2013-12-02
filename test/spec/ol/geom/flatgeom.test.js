@@ -159,6 +159,16 @@ describe('ol.geom.flat', function() {
 
   });
 
+  describe('ol.geom.flat.linearRingsArea', function() {
+
+    it('calculates the area with holes', function() {
+      var area = ol.geom.flat.linearRingsArea(
+          [0, 0, 0, 3, 3, 3, 3, 0, 1, 1, 1, 2, 2, 2, 2, 1], 0, [8, 16], 2);
+      expect(area).to.be(8);
+    });
+
+  });
+
   describe('ol.geom.flat.reverseCoordinates', function() {
 
     describe('with a stride of 2', function() {

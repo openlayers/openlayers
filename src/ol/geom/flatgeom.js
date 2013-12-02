@@ -376,6 +376,31 @@ ol.geom.flat.linearRingPerimeter =
  * @param {number} offset Offset.
  * @param {Array.<number>} ends Ends.
  * @param {number} stride Stride.
+ * @return {number} Area.
+ */
+ol.geom.flat.linearRingsArea = function(flatCoordinates, offset, ends, stride) {
+  var area = 0;
+  var i, ii;
+  for (i = 0, ii = ends.length; i < ii; ++i) {
+    var end = ends[i];
+    var linearRingArea =
+        ol.geom.flat.linearRingArea(flatCoordinates, offset, end, stride);
+    if (i === 0) {
+      area += linearRingArea;
+    } else {
+      area -= linearRingArea;
+    }
+    offset = end;
+  }
+  return area;
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {Array.<number>} ends Ends.
+ * @param {number} stride Stride.
  * @param {number} x X.
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
