@@ -82,6 +82,32 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
 
 
 /**
+ * @inheritDoc
+ */
+ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
+    function(pixel, callback) {
+  if (!goog.isNull(this.replayGroup_)) {
+    goog.asserts.assert(!ol.extent.isEmpty(this.renderedExtent_));
+    goog.asserts.assert(!isNaN(this.renderedResolution_));
+    var coordinate = this.getMap().getCoordinateFromPixel(pixel);
+    var renderGeometryFunction = this.getRenderGeometryFunction_();
+    goog.asserts.assert(goog.isFunction(renderGeometryFunction));
+    this.replayGroup_.forEachGeometryAtCoordinate(this.renderedExtent_,
+        this.renderedResolution_, coordinate, renderGeometryFunction,
+        /**
+         * @param {ol.geom.Geometry} geometry Geometry.
+         * @param {Object} data Data.
+         */
+        function(geometry, data) {
+          var feature = /** @type {ol.Feature} */ (data);
+          goog.asserts.assert(goog.isDef(feature));
+          callback(feature);
+        });
+  }
+};
+
+
+/**
  * @private
  * @return {function(ol.geom.Geometry): boolean|undefined} Render geometry
  *     function.
@@ -199,12 +225,12 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature =
             this.handleImageStyleChange_, false, this);
         imageStyle.load();
       } else if (imageStyle.imageState == ol.style.ImageState.LOADED) {
-        ol.renderer.vector.renderFeature(replayGroup, feature, style);
+        ol.renderer.vector.renderFeature(replayGroup, feature, style, feature);
       }
       goog.asserts.assert(imageStyle.imageState != ol.style.ImageState.IDLE);
       loading = imageStyle.imageState == ol.style.ImageState.LOADING;
     } else {
-      ol.renderer.vector.renderFeature(replayGroup, feature, style);
+      ol.renderer.vector.renderFeature(replayGroup, feature, style, feature);
     }
   }
   return loading;
