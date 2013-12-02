@@ -271,11 +271,11 @@ ol.geom.flat.linearRingArea = function(flatCoordinates, offset, end, stride) {
   for (; offset < end; offset += stride) {
     var x2 = flatCoordinates[offset];
     var y2 = flatCoordinates[offset + 1];
-    twiceArea += x1 * y2 - y1 * x2;
+    twiceArea += y1 * x2 - x1 * y2;
     x1 = x2;
     y1 = y2;
   }
-  return Math.abs(twiceArea / 2);
+  return twiceArea / 2;
 };
 
 
@@ -383,13 +383,7 @@ ol.geom.flat.linearRingsArea = function(flatCoordinates, offset, ends, stride) {
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
-    var linearRingArea =
-        ol.geom.flat.linearRingArea(flatCoordinates, offset, end, stride);
-    if (i === 0) {
-      area += linearRingArea;
-    } else {
-      area -= linearRingArea;
-    }
+    area += ol.geom.flat.linearRingArea(flatCoordinates, offset, end, stride);
     offset = end;
   }
   return area;
