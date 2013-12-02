@@ -19,6 +19,15 @@ goog.inherits(ol.geom.LinearRing, ol.geom.Geometry);
 
 
 /**
+ * @return {number} Area.
+ */
+ol.geom.LinearRing.prototype.getArea = function() {
+  return ol.geom.flat.linearRingArea(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+};
+
+
+/**
  * @return {ol.geom.RawLinearRing} Coordinates.
  */
 ol.geom.LinearRing.prototype.getCoordinates = function() {
