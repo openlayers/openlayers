@@ -79,6 +79,18 @@ ol.renderer.Map.prototype.disposeInternal = function() {
 
 
 /**
+ * @param {ol.Pixel} pixel Pixel.
+ * @param {function(ol.Feature)} callback Feature callback.
+ */
+ol.renderer.Map.prototype.forEachFeatureAtPixel =
+    function(pixel, callback) {
+  goog.object.forEach(this.layerRenderers_, function(layerRenderer) {
+    layerRenderer.forEachFeatureAtPixel(pixel, callback);
+  });
+};
+
+
+/**
  * @param {ol.layer.Layer} layer Layer.
  * @protected
  * @return {ol.renderer.Layer} Layer renderer.
