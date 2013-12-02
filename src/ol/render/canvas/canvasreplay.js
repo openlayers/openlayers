@@ -33,7 +33,8 @@ ol.render.canvas.Instruction = {
   MOVE_TO_LINE_TO: 6,
   SET_FILL_STYLE: 7,
   SET_STROKE_STYLE: 8,
-  STROKE: 9
+  STROKE: 9,
+  SET_TEXT_STYLE: 10
 };
 
 
@@ -93,6 +94,30 @@ ol.render.canvas.Replay = function() {
    * @type {ol.Extent}
    */
   this.extent_ = ol.extent.createEmpty();
+
+  /**
+   * @private
+   * @type {{text: (string|undefined),
+   *         currentFont: (string|undefined),
+   *         currentTextAlign: (string|undefined),
+   *         currentTextBaseline: (string|undefined),
+   *         font: (string|undefined),
+   *         textAlign: (string|undefined),
+   *         textBaseline: (string|undefined),
+   *         fill: ol.style.Fill,
+   *         stroke: ol.style.Stroke}|null}
+   */
+  this.textStyle_ = {
+    text: undefined,
+    currentFont: undefined,
+    currentTextAlign: undefined,
+    currentTextBaseline: undefined,
+    font: undefined,
+    textAlign: undefined,
+    textBaseline: undefined,
+    fill: null,
+    stroke: null
+  };
 
 };
 
@@ -249,6 +274,14 @@ ol.render.canvas.Replay.prototype.replay_ =
       ++i;
     } else if (type == ol.render.canvas.Instruction.STROKE) {
       context.stroke();
+      ++i;
+    } else if (type == ol.render.canvas.Instruction.SET_TEXT_STYLE) {
+      goog.asserts.assert(goog.isString(instruction[1]));
+      goog.asserts.assert(goog.isString(instruction[2]));
+      goog.asserts.assert(goog.isString(instruction[3]));
+      context.font = /** @type {string} */ (instruction[1]);
+      context.textAlign = /** @type {string} */ (instruction[2]);
+      context.textBaseline = /** @type {string} */ (instruction[3]);
       ++i;
     } else {
       goog.asserts.fail();
@@ -423,7 +456,51 @@ ol.render.canvas.Replay.prototype.setImageStyle = goog.abstractMethod;
 /**
  * @inheritDoc
  */
-ol.render.canvas.Replay.prototype.setTextStyle = goog.abstractMethod;
+ol.render.canvas.Replay.prototype.setTextStyle = function(textStyle) {
+  if (!goog.isNull(textStyle)) {
+    this.textStyle_.text = textStyle.text;
+    this.textStyle_.fill = textStyle.fill;
+    this.textStyle_.stroke = textStyle.stroke;
+    this.textStyle_.font = goog.isDef(textStyle.font) ?
+        textStyle.font : ol.render.canvas.defaultFont;
+    this.textStyle_.textAlign = goog.isDef(textStyle.textAlign) ?
+        textStyle.textAlign : ol.render.canvas.defaultTextAlign;
+    this.textStyle_.textBaseline = goog.isDef(textStyle.textBaseline) ?
+        textStyle.textBaseline : ol.render.canvas.defaultTextBaseline;
+  }
+};
+
+
+/**
+ * @private
+ * @return {boolean}
+ */
+ol.render.canvas.Replay.prototype.setTextStyle_ = function() {
+  var state = this.textStyle_;
+  var text = state.text;
+  var fill = state.fill;
+  var stroke = state.stroke;
+  if (goog.isDef(text) && (!goog.isNull(fill) || !goog.isNull(stroke))) {
+    var font = state.font;
+    var textAlign = state.textAlign;
+    var textBaseline = state.textBaseline;
+    if (state.currentFont != font ||
+        state.currentTextAlign != textAlign ||
+        state.currentTextBaseline != textBaseline) {
+      this.instructions.push([
+        ol.render.canvas.Instruction.SET_TEXT_STYLE,
+        font, textAlign, textBaseline
+      ]);
+      state.currentFont = font;
+      state.currentTextAlign = textAlign;
+      state.currentTextBaseline = textBaseline;
+    }
+    this.setFillStrokeStyle(fill, stroke);
+    this.setFillStrokeStyles_();
+    return true;
+  }
+  return false;
+};
 
 
 
@@ -519,6 +596,7 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
   this.instructions.push(drawImageInstruction);
   this.hitDetectionInstructions.push(drawImageInstruction);
   this.endGeometry(pointGeometry, data);
+  this.setTextStyle_();
 };
 
 
@@ -549,6 +627,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
   this.instructions.push(drawImageInstruction);
   this.hitDetectionInstructions.push(drawImageInstruction);
   this.endGeometry(multiPointGeometry, data);
+  this.setTextStyle_();
 };
 
 
@@ -716,6 +795,7 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
       flatCoordinates, 0, flatCoordinates.length, stride);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
   this.endGeometry(lineStringGeometry, data);
+  this.setTextStyle_();
 };
 
 
@@ -746,6 +826,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
   }
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
   this.endGeometry(multiLineStringGeometry, data);
+  this.setTextStyle_();
 };
 
 
@@ -913,6 +994,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
   var stride = polygonGeometry.getStride();
   this.drawFlatCoordinatess_(flatCoordinates, 0, ends, stride);
   this.endGeometry(polygonGeometry, data);
+  this.setTextStyle_();
 };
 
 
@@ -954,6 +1036,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
         flatCoordinates, offset, endss[i], stride);
   }
   this.endGeometry(multiPolygonGeometry, data);
+  this.setTextStyle_();
 };
 
 
