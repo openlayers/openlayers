@@ -10,8 +10,7 @@ goog.require('ol.render.IRender');
 ol.render.ReplayType = {
   IMAGE: 'Image',
   LINE_STRING: 'LineString',
-  POLYGON: 'Polygon',
-  TEXT: 'Text'
+  POLYGON: 'Polygon'
 };
 
 
@@ -35,8 +34,7 @@ ol.render.IReplayGroup.prototype.finish = function() {
  * @param {ol.render.ReplayType} replayType Replay type.
  * @return {ol.render.IRender} Replay.
  */
-ol.render.IReplayGroup.prototype.getReplay =
-    function(zIndex, replayType) {
+ol.render.IReplayGroup.prototype.getReplay = function(zIndex, replayType) {
 };
 
 
