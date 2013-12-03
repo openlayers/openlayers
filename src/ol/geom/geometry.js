@@ -85,6 +85,24 @@ goog.inherits(ol.geom.Geometry, goog.events.EventTarget);
 
 
 /**
+ * @param {number} stride Stride.
+ * @private
+ * @return {ol.geom.Layout} layout Layout.
+ */
+ol.geom.Geometry.getLayoutForStride_ = function(stride) {
+  if (stride == 2) {
+    return ol.geom.Layout.XY;
+  } else if (stride == 3) {
+    return ol.geom.Layout.XYZ;
+  } else if (stride == 4) {
+    return ol.geom.Layout.XYZM;
+  } else {
+    throw new Error('unsupported stride: ' + stride);
+  }
+};
+
+
+/**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {boolean} Contains coordinate.
  */
@@ -197,15 +215,7 @@ ol.geom.Geometry.prototype.setLayout =
       }
     }
     stride = (/** @type {Array} */ (coordinates)).length;
-    if (stride == 2) {
-      layout = ol.geom.Layout.XY;
-    } else if (stride == 3) {
-      layout = ol.geom.Layout.XYZ;
-    } else if (stride == 4) {
-      layout = ol.geom.Layout.XYZM;
-    } else {
-      throw new Error('unsupported stride: ' + stride);
-    }
+    layout = ol.geom.Geometry.getLayoutForStride_(stride);
   }
   this.layout = layout;
   this.stride = stride;
