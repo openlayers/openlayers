@@ -88,6 +88,7 @@ ol.geom.flat.deflateCoordinatesss =
     endss[i++] = ends;
     offset = ends[ends.length - 1];
   }
+  endss.length = i;
   return endss;
 };
 
