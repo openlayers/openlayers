@@ -103,6 +103,26 @@ ol.geom.Geometry.getLayoutForStride_ = function(stride) {
 
 
 /**
+ * @param {ol.geom.Layout} layout Layout.
+ * @private
+ * @return {number} Stride.
+ */
+ol.geom.Geometry.getStrideForLayout_ = function(layout) {
+  if (layout == ol.geom.Layout.XY) {
+    return 2;
+  } else if (layout == ol.geom.Layout.XYZ) {
+    return 3;
+  } else if (layout == ol.geom.Layout.XYM) {
+    return 3;
+  } else if (layout == ol.geom.Layout.XYZM) {
+    return 4;
+  } else {
+    throw new Error('unsupported layout: ' + layout);
+  }
+};
+
+
+/**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {boolean} Contains coordinate.
  */
@@ -192,17 +212,7 @@ ol.geom.Geometry.prototype.setLayout =
   /** @type {number} */
   var stride;
   if (goog.isDef(layout)) {
-    if (layout == ol.geom.Layout.XY) {
-      stride = 2;
-    } else if (layout == ol.geom.Layout.XYZ) {
-      stride = 3;
-    } else if (layout == ol.geom.Layout.XYM) {
-      stride = 3;
-    } else if (layout == ol.geom.Layout.XYZM) {
-      stride = 4;
-    } else {
-      throw new Error('unsupported layout: ' + layout);
-    }
+    stride = ol.geom.Geometry.getStrideForLayout_(layout);
   } else {
     var i;
     for (i = 0; i < nesting; ++i) {
