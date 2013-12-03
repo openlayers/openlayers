@@ -8,6 +8,24 @@ goog.require('goog.vec.Mat4');
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} stride Stride.
+ * @return {number} offset Offset.
+ */
+ol.geom.flat.deflateCoordinate =
+    function(flatCoordinates, offset, coordinate, stride) {
+  goog.asserts.assert(coordinate.length == stride);
+  var i, ii;
+  for (i = 0, ii = coordinate.length; i < ii; ++i) {
+    flatCoordinates[offset++] = coordinate[i];
+  }
+  return offset;
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
  * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {number} stride Stride.
  * @return {number} offset Offset.
