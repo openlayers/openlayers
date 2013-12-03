@@ -3,6 +3,13 @@ goog.provide('ol.test.geom.Point');
 
 describe('ol.geom.Point', function() {
 
+  it('can be constructed with a null geometry', function() {
+    expect(function() {
+      var point = new ol.geom.Point(null);
+      point = point; // suppress gjslint warning
+    }).not.to.throwException();
+  });
+
   describe('construct with 2D coordinates', function() {
 
     var point;

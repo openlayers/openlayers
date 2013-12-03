@@ -3,6 +3,7 @@ goog.provide('ol.geom.Point');
 goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.flat');
 
 
 
@@ -54,7 +55,25 @@ ol.geom.Point.prototype.getType = function() {
  * @param {ol.geom.Layout=} opt_layout Layout.
  */
 ol.geom.Point.prototype.setCoordinates = function(coordinates, opt_layout) {
-  this.setLayout(opt_layout, coordinates, 0);
-  this.flatCoordinates = coordinates;
+  if (goog.isNull(coordinates)) {
+    this.setFlatCoordinates(ol.geom.Layout.XY, null);
+  } else {
+    this.setLayout(opt_layout, coordinates, 0);
+    if (goog.isNull(this.flatCoordinates)) {
+      this.flatCoordinates = [];
+    }
+    this.flatCoordinates.length = ol.geom.flat.deflateCoordinate(
+        this.flatCoordinates, 0, coordinates, this.stride);
+    this.dispatchChangeEvent();
+  }
+};
+
+
+/**
+ * @param {ol.geom.Layout} layout Layout.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ */
+ol.geom.Point.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
+  this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.dispatchChangeEvent();
 };

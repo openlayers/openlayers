@@ -3,6 +3,13 @@ goog.provide('ol.test.geom.MultiPoint');
 
 describe('ol.geom.MultiPoint', function() {
 
+  it('can be constructed with a null geometry', function() {
+    expect(function() {
+      var multiPoint = new ol.geom.MultiPoint(null);
+      multiPoint = multiPoint; // suppress gjslint warning
+    }).not.to.throwException();
+  });
+
   describe('construct empty', function() {
 
     var multiPoint;

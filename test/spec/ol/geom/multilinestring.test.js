@@ -3,6 +3,13 @@ goog.provide('ol.test.geom.MultiLineString');
 
 describe('ol.geom.MultiLineString', function() {
 
+  it('can be constructed with a null geometry', function() {
+    expect(function() {
+      var multiLineString = new ol.geom.MultiLineString(null);
+      multiLineString = multiLineString; // suppress gjslint warning
+    }).not.to.throwException();
+  });
+
   describe('construct empty', function() {
 
     var multiLineString;

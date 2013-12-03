@@ -57,8 +57,26 @@ ol.geom.MultiPoint.prototype.getType = function() {
  */
 ol.geom.MultiPoint.prototype.setCoordinates =
     function(coordinates, opt_layout) {
-  this.setLayout(opt_layout, coordinates, 1);
-  ol.geom.flat.deflateCoordinates(
-      this.flatCoordinates, 0, coordinates, this.stride);
+  if (goog.isNull(coordinates)) {
+    this.setFlatCoordinates(ol.geom.Layout.XY, null);
+  } else {
+    this.setLayout(opt_layout, coordinates, 1);
+    if (goog.isNull(this.flatCoordinates)) {
+      this.flatCoordinates = [];
+    }
+    this.flatCoordinates.length = ol.geom.flat.deflateCoordinates(
+        this.flatCoordinates, 0, coordinates, this.stride);
+    this.dispatchChangeEvent();
+  }
+};
+
+
+/**
+ * @param {ol.geom.Layout} layout Layout.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ */
+ol.geom.MultiPoint.prototype.setFlatCoordinates =
+    function(layout, flatCoordinates) {
+  this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.dispatchChangeEvent();
 };

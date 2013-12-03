@@ -119,10 +119,33 @@ ol.geom.MultiPolygon.prototype.getType = function() {
  */
 ol.geom.MultiPolygon.prototype.setCoordinates =
     function(coordinates, opt_layout) {
-  this.setLayout(opt_layout, coordinates, 3);
-  ol.geom.flat.deflateCoordinatesss(
-      this.flatCoordinates, 0, coordinates, this.stride, this.endss_);
-  ol.geom.flat.orientLinearRingss(
-      this.flatCoordinates, 0, this.endss_, this.stride);
+  if (goog.isNull(coordinates)) {
+    this.setFlatCoordinates(ol.geom.Layout.XY, null, this.endss_);
+  } else {
+    this.setLayout(opt_layout, coordinates, 3);
+    if (goog.isNull(this.flatCoordinates)) {
+      this.flatCoordinates = [];
+    }
+    var endss = ol.geom.flat.deflateCoordinatesss(
+        this.flatCoordinates, 0, coordinates, this.stride, this.endss_);
+    var lastEnds = endss[endss.length - 1];
+    this.flatCoordinates.length = lastEnds.length === 0 ?
+        0 : lastEnds[lastEnds.length - 1];
+    ol.geom.flat.orientLinearRingss(
+        this.flatCoordinates, 0, this.endss_, this.stride);
+    this.dispatchChangeEvent();
+  }
+};
+
+
+/**
+ * @param {ol.geom.Layout} layout Layout.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array.<Array.<number>>} endss Endss.
+ */
+ol.geom.MultiPolygon.prototype.setFlatCoordinates =
+    function(layout, flatCoordinates, endss) {
+  this.setFlatCoordinatesInternal(layout, flatCoordinates);
+  this.endss_ = endss;
   this.dispatchChangeEvent();
 };

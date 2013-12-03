@@ -60,7 +60,7 @@ ol.geom.Geometry = function() {
    * @protected
    * @type {Array.<number>}
    */
-  this.flatCoordinates = [];
+  this.flatCoordinates = null;
 
   /**
    * @protected
@@ -202,6 +202,19 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 
 
 /**
+ * @param {ol.geom.Layout} layout Layout.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @protected
+ */
+ol.geom.Geometry.prototype.setFlatCoordinatesInternal =
+    function(layout, flatCoordinates) {
+  this.stride = ol.geom.Geometry.getStrideForLayout_(layout);
+  this.layout = layout;
+  this.flatCoordinates = flatCoordinates;
+};
+
+
+/**
  * @param {ol.geom.Layout|undefined} layout Layout.
  * @param {Array} coordinates Coordinates.
  * @param {number} nesting Nesting.
@@ -236,7 +249,9 @@ ol.geom.Geometry.prototype.setLayout =
  * @param {ol.TransformFunction} transformFn Transform.
  */
 ol.geom.Geometry.prototype.transform = function(transformFn) {
-  transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
+  if (!goog.isNull(this.flatCoordinates)) {
+    transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
+  }
 };
 
 
@@ -291,7 +306,11 @@ ol.geom.RawMultiPolygon;
  */
 ol.geom.transformGeometry2D = function(geometry, transform, opt_dest) {
   var flatCoordinates = geometry.getFlatCoordinates();
-  var stride = geometry.getStride();
-  return ol.geom.flat.transform2D(
-      flatCoordinates, stride, transform, opt_dest);
+  if (goog.isNull(flatCoordinates)) {
+    return null;
+  } else {
+    var stride = geometry.getStride();
+    return ol.geom.flat.transform2D(
+        flatCoordinates, stride, transform, opt_dest);
+  }
 };

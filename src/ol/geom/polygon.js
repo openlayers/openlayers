@@ -117,10 +117,31 @@ ol.geom.Polygon.prototype.getType = function() {
  * @param {ol.geom.Layout=} opt_layout Layout.
  */
 ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
-  this.setLayout(opt_layout, coordinates, 2);
-  ol.geom.flat.deflateCoordinatess(
-      this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
-  ol.geom.flat.orientLinearRings(
-      this.flatCoordinates, 0, this.ends_, this.stride);
+  if (goog.isNull(coordinates)) {
+    this.setFlatCoordinates(ol.geom.Layout.XY, null, this.ends_);
+  } else {
+    this.setLayout(opt_layout, coordinates, 2);
+    if (goog.isNull(this.flatCoordinates)) {
+      this.flatCoordinates = [];
+    }
+    var ends = ol.geom.flat.deflateCoordinatess(
+        this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
+    this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
+    ol.geom.flat.orientLinearRings(
+        this.flatCoordinates, 0, this.ends_, this.stride);
+    this.dispatchChangeEvent();
+  }
+};
+
+
+/**
+ * @param {ol.geom.Layout} layout Layout.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array.<number>} ends Ends.
+ */
+ol.geom.Polygon.prototype.setFlatCoordinates =
+    function(layout, flatCoordinates, ends) {
+  this.setFlatCoordinatesInternal(layout, flatCoordinates);
+  this.ends_ = ends;
   this.dispatchChangeEvent();
 };

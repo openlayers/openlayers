@@ -5,6 +5,13 @@ goog.provide('ol.test.geom.Polygon');
 
 describe('ol.geom.Polygon', function() {
 
+  it('can be constructed with a null geometry', function() {
+    expect(function() {
+      var polygon = new ol.geom.Polygon(null);
+      polygon = polygon; // suppress gjslint warning
+    }).not.to.throwException();
+  });
+
   describe('construct empty', function() {
 
     var polygon;
