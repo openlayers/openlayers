@@ -1314,6 +1314,9 @@ ol.Map.createOptionsInternal = function(options) {
     controls = ol.control.defaults();
   }
 
+  /**
+   * @type {ol.Collection.<ol.interaction.Interaction>}
+   */
   var interactions;
   if (goog.isDef(options.interactions)) {
     if (goog.isArray(options.interactions)) {

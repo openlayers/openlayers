@@ -24,7 +24,8 @@ goog.require('ol.interaction.TouchZoom');
  * {@link ol.Collection} in the order you want before creating your ol.Map
  * instance.
  * @param {ol.interaction.DefaultsOptions=} opt_options Defaults options.
- * @return {ol.Collection} A collection of interactions to be used with
+ * @return {ol.Collection.<ol.interaction.Interaction>} A collection of
+ *     interactions to be used with
  * the ol.Map constructor's interactions option.
  * @todo stability experimental
  */
