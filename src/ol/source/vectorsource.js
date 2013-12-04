@@ -82,6 +82,16 @@ ol.source.Vector.prototype.addFeature = function(feature) {
 
 
 /**
+ * FIXME empty description for jsdoc
+ */
+ol.source.Vector.prototype.clear = function() {
+  this.rBush_.forEach(this.removeFeatureInternal_, this);
+  this.rBush_.clear();
+  this.dispatchChangeEvent();
+};
+
+
+/**
  * @param {function(this: T, ol.Feature): S} f Callback.
  * @param {T=} opt_obj The object to be used as the value of 'this' within f.
  * @return {S|undefined}

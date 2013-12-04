@@ -82,6 +82,24 @@ describe('ol.source.Vector', function() {
       });
     });
 
+    describe('#clear', function() {
+
+      it('removes all features', function() {
+        var changeSpy = sinon.spy();
+        goog.events.listen(vectorSource, 'change', changeSpy);
+        var removeFeatureSpy = sinon.spy();
+        goog.events.listen(vectorSource, 'removefeature', removeFeatureSpy);
+        vectorSource.clear();
+        expect(vectorSource.getAllFeatures()).to.eql([]);
+        expect(vectorSource.isEmpty()).to.be(true);
+        expect(changeSpy).to.be.called();
+        expect(changeSpy.callCount).to.be(1);
+        expect(removeFeatureSpy).to.be.called();
+        expect(removeFeatureSpy.callCount).to.be(10);
+      });
+
+    });
+
     describe('#forEachFeatureInExtent', function() {
 
       it('is called the expected number of times', function() {
