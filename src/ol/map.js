@@ -278,7 +278,7 @@ ol.Map = function(options) {
   this.controls_ = optionsInternal.controls;
 
   /**
-   * @type {ol.Collection}
+   * @type {ol.Collection.<ol.interaction.Interaction>}
    * @private
    */
   this.interactions_ = optionsInternal.interactions;
@@ -595,7 +595,7 @@ ol.Map.prototype.getFeatures = function(options) {
  * changes the interactions associated with the map.
  *
  * Interactions are used for e.g. pan, zoom and rotate.
- * @return {ol.Collection} Interactions.
+ * @return {ol.Collection.<ol.interaction.Interaction>} Interactions.
  * @todo stability experimental
  */
 ol.Map.prototype.getInteractions = function() {
@@ -1230,9 +1230,9 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
 
 
 /**
- *            interactions: ol.Collection,
  *            overlays: ol.Collection,
  * @typedef {{controls: ol.Collection.<ol.control.Control>,
+ *            interactions: ol.Collection.<ol.interaction.Interaction>,
  *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
  *            values: Object.<string, *>}}
