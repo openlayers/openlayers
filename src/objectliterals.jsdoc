@@ -247,7 +247,7 @@
 
 /**
  * @typedef {Object} ol.format.GeoJSONOptions
- * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} defaultProjection Default projection.
  */
 
 /**
