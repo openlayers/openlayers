@@ -1299,6 +1299,9 @@ ol.Map.createOptionsInternal = function(options) {
     }
   }
 
+  /**
+   * @type {ol.Collection.<ol.control.Control>}
+   */
   var controls;
   if (goog.isDef(options.controls)) {
     if (goog.isArray(options.controls)) {
