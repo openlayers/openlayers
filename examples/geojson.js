@@ -62,9 +62,14 @@ var styleFunction = function(feature, resolution) {
   return styles[feature.getGeometry().getType()];
 };
 
-var vectorSource = new ol.source.Vector();
-new ol.format.GeoJSON().readObject({
+var features = new ol.format.GeoJSON().readFeatures({
   'type': 'FeatureCollection',
+  'crs': {
+    'type': 'name',
+    'properties': {
+      'name': 'EPSG:3857'
+    }
+  },
   'features': [
     {
       'type': 'Feature',
@@ -118,10 +123,12 @@ new ol.format.GeoJSON().readObject({
       }
     }
   ]
-}, vectorSource.addFeature, vectorSource);
+});
 
 var vectorLayer = new ol.layer.Vector({
-  source: vectorSource,
+  source: new ol.source.Vector({
+    features: features
+  }),
   styleFunction: styleFunction
 });
 var tmpLineFeature = new ol.Feature(
