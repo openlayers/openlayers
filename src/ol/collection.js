@@ -65,7 +65,8 @@ ol.CollectionProperty = {
  * A mutable MVC Array.
  * @constructor
  * @extends {ol.Object}
- * @param {Array=} opt_array Array.
+ * @param {Array.<T>=} opt_array Array.
+ * @template T
  * @todo stability experimental
  * @todo observable length {number} readonly the length of the array
  */
@@ -129,7 +130,8 @@ ol.Collection.prototype.forEach = function(f, opt_obj) {
  * is mutated, no events will be dispatched by the collection, and the
  * collection's "length" property won't be in sync with the actual length
  * of the array.
- * @return {Array} Array.
+ * @return {Array.<T>} Array.
+ * @template T
  * @todo stability experimental
  */
 ol.Collection.prototype.getArray = function() {
@@ -140,7 +142,8 @@ ol.Collection.prototype.getArray = function() {
 /**
  * Get the element at the provided index.
  * @param {number} index Index.
- * @return {*} Element.
+ * @return {T} Element.
+ * @template T
  * @todo stability experimental
  */
 ol.Collection.prototype.getAt = function(index) {
@@ -161,7 +164,8 @@ ol.Collection.prototype.getLength = function() {
 /**
  * Insert an element at the provided index.
  * @param {number} index Index.
- * @param {*} elem Element.
+ * @param {T} elem Element.
+ * @template T
  * @todo stability experimental
  */
 ol.Collection.prototype.insertAt = function(index, elem) {
@@ -174,7 +178,8 @@ ol.Collection.prototype.insertAt = function(index, elem) {
 
 /**
  * Remove the last element of the collection.
- * @return {*} Element.
+ * @return {T} Element.
+ * @template T
  * @todo stability experimental
  */
 ol.Collection.prototype.pop = function() {
@@ -184,8 +189,9 @@ ol.Collection.prototype.pop = function() {
 
 /**
  * Insert the provided element at the end of the collection.
- * @param {*} elem Element.
+ * @param {T} elem Element.
  * @return {number} Length.
+ * @template T
  * @todo stability experimental
  */
 ol.Collection.prototype.push = function(elem) {
@@ -197,8 +203,9 @@ ol.Collection.prototype.push = function(elem) {
 
 /**
  * Removes the first occurence of elem from the collection.
- * @param {*} elem Element.
- * @return {*} The removed element or undefined if elem was not found.
+ * @param {T} elem Element.
+ * @return {T|undefined} The removed element or undefined if elem was not found.
+ * @template T
  * @todo stability experimental
  */
 ol.Collection.prototype.remove = function(elem) {
@@ -216,7 +223,8 @@ ol.Collection.prototype.remove = function(elem) {
 /**
  * Remove the element at the provided index.
  * @param {number} index Index.
- * @return {*} Value.
+ * @return {T} Value.
+ * @template T
  * @todo stability experimental
  */
 ol.Collection.prototype.removeAt = function(index) {
@@ -232,7 +240,8 @@ ol.Collection.prototype.removeAt = function(index) {
 /**
  * Set the element at the provided index.
  * @param {number} index Index.
- * @param {*} elem Element.
+ * @param {T} elem Element.
+ * @template T
  * @todo stability experimental
  */
 ol.Collection.prototype.setAt = function(index, elem) {
