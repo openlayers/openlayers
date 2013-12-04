@@ -1328,6 +1328,9 @@ ol.Map.createOptionsInternal = function(options) {
     interactions = ol.interaction.defaults();
   }
 
+  /**
+   * @type {ol.Collection.<ol.Overlay>}
+   */
   var overlays;
   if (goog.isDef(options.overlays)) {
     if (goog.isArray(options.overlays)) {
