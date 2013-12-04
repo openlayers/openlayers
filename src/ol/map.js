@@ -284,7 +284,7 @@ ol.Map = function(options) {
   this.interactions_ = optionsInternal.interactions;
 
   /**
-   * @type {ol.Collection}
+   * @type {ol.Collection.<ol.Overlay>}
    * @private
    */
   this.overlays_ = optionsInternal.overlays;
@@ -552,7 +552,7 @@ ol.Map.prototype.getControls = function() {
 
 
 /**
- * @return {ol.Collection} Overlays.
+ * @return {ol.Collection.<ol.Overlay>} Overlays.
  * @todo stability experimental
  */
 ol.Map.prototype.getOverlays = function() {
@@ -1230,9 +1230,9 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
 
 
 /**
- *            overlays: ol.Collection,
  * @typedef {{controls: ol.Collection.<ol.control.Control>,
  *            interactions: ol.Collection.<ol.interaction.Interaction>,
+ *            overlays: ol.Collection.<ol.Overlay>,
  *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
  *            values: Object.<string, *>}}
