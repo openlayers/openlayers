@@ -179,13 +179,22 @@ ol.source.Vector.prototype.isEmpty = function() {
  */
 ol.source.Vector.prototype.removeFeature = function(feature) {
   this.rBush_.remove(feature);
+  this.removeFeatureInternal_(feature);
+  this.dispatchChangeEvent();
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature.
+ * @private
+ */
+ol.source.Vector.prototype.removeFeatureInternal_ = function(feature) {
   var featureKey = goog.getUid(feature) + '';
   goog.asserts.assert(featureKey in this.featureChangeKeys_);
   goog.events.unlistenByKey(this.featureChangeKeys_[featureKey]);
   delete this.featureChangeKeys_[featureKey];
   this.dispatchEvent(new ol.source.VectorEvent(
       ol.source.VectorEventType.REMOVEFEATURE, feature));
-  this.dispatchChangeEvent();
 };
 
 
