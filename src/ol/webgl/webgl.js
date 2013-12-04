@@ -59,7 +59,9 @@ ol.webgl.SUPPORTED = (function() {
   try {
     var canvas = /** @type {HTMLCanvasElement} */
         (goog.dom.createElement(goog.dom.TagName.CANVAS));
-    return !goog.isNull(ol.webgl.getContext(canvas));
+    return !goog.isNull(ol.webgl.getContext(canvas, {
+      failIfMajorPerformanceCaveat: true
+    }));
   } catch (e) {
     return false;
   }
