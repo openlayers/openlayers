@@ -37,6 +37,14 @@ describe('ol.source.Vector', function() {
 
     });
 
+    describe('#isEmpty', function() {
+
+      it('returns true', function() {
+        expect(vectorSource.isEmpty()).to.be(true);
+      });
+
+    });
+
     describe('#addFeature', function() {
 
       it('can add a single point feature', function() {
@@ -99,6 +107,14 @@ describe('ol.source.Vector', function() {
       it('returns the expected number of features', function() {
         expect(vectorSource.getAllFeaturesInExtent(infiniteExtent)).
             to.have.length(10);
+      });
+
+    });
+
+    describe('#isEmpty', function() {
+
+      it('returns false', function() {
+        expect(vectorSource.isEmpty()).to.be(false);
       });
 
     });

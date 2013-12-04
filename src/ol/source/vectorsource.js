@@ -167,6 +167,14 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
 
 
 /**
+ * @return {boolean} Is empty.
+ */
+ol.source.Vector.prototype.isEmpty = function() {
+  return this.rBush_.isEmpty();
+};
+
+
+/**
  * @param {ol.Feature} feature Feature.
  */
 ol.source.Vector.prototype.removeFeature = function(feature) {
