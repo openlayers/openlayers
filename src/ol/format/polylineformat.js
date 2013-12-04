@@ -1,4 +1,21 @@
-goog.provide('ol.parser.polyline');
+goog.provide('ol.format.Polyline');
+
+goog.require('goog.asserts');
+goog.require('ol.Feature');
+goog.require('ol.format.Text');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.flat');
+
+
+
+/**
+ * @constructor
+ * @extends {ol.format.Text}
+ */
+ol.format.Polyline = function() {
+  goog.base(this);
+};
+goog.inherits(ol.format.Polyline, ol.format.Text);
 
 
 /**
@@ -10,10 +27,10 @@ goog.provide('ol.parser.polyline');
  * @param {number=} opt_dimension The dimension of the coordinates in the array.
  * @return {string} The encoded string.
  */
-ol.parser.polyline.encodeFlatCoordinates =
+ol.format.Polyline.encodeFlatCoordinates =
     function(flatPoints, opt_dimension) {
   var dimension = opt_dimension || 2;
-  return ol.parser.polyline.encodeDeltas(flatPoints, dimension);
+  return ol.format.Polyline.encodeDeltas(flatPoints, dimension);
 };
 
 
@@ -25,9 +42,9 @@ ol.parser.polyline.encodeFlatCoordinates =
  * encoded string.
  * @return {Array.<number>} A flat array of coordinates.
  */
-ol.parser.polyline.decodeFlatCoordinates = function(encoded, opt_dimension) {
+ol.format.Polyline.decodeFlatCoordinates = function(encoded, opt_dimension) {
   var dimension = opt_dimension || 2;
-  return ol.parser.polyline.decodeDeltas(encoded, dimension);
+  return ol.format.Polyline.decodeDeltas(encoded, dimension);
 };
 
 
@@ -42,7 +59,7 @@ ol.parser.polyline.decodeFlatCoordinates = function(encoded, opt_dimension) {
  * multiplied. The remaining decimal places will get rounded away.
  * @return {string} The encoded string.
  */
-ol.parser.polyline.encodeDeltas = function(numbers, dimension, opt_factor) {
+ol.format.Polyline.encodeDeltas = function(numbers, dimension, opt_factor) {
   var factor = opt_factor || 1e5;
   var d;
 
@@ -62,7 +79,7 @@ ol.parser.polyline.encodeDeltas = function(numbers, dimension, opt_factor) {
     }
   }
 
-  return ol.parser.polyline.encodeFloats(numbers, factor);
+  return ol.format.Polyline.encodeFloats(numbers, factor);
 };
 
 
@@ -75,7 +92,7 @@ ol.parser.polyline.encodeDeltas = function(numbers, dimension, opt_factor) {
  * be divided.
  * @return {Array.<number>} A list of n-dimensional points.
  */
-ol.parser.polyline.decodeDeltas = function(encoded, dimension, opt_factor) {
+ol.format.Polyline.decodeDeltas = function(encoded, dimension, opt_factor) {
   var factor = opt_factor || 1e5;
   var d;
 
@@ -84,7 +101,7 @@ ol.parser.polyline.decodeDeltas = function(encoded, dimension, opt_factor) {
     lastNumbers[d] = 0;
   }
 
-  var numbers = ol.parser.polyline.decodeFloats(encoded, factor);
+  var numbers = ol.format.Polyline.decodeFloats(encoded, factor);
 
   var numbersLength = numbers.length;
   for (var i = 0; i < numbersLength;) {
@@ -109,7 +126,7 @@ ol.parser.polyline.decodeDeltas = function(encoded, dimension, opt_factor) {
  * multiplied. The remaining decimal places will get rounded away.
  * @return {string} The encoded string.
  */
-ol.parser.polyline.encodeFloats = function(numbers, opt_factor) {
+ol.format.Polyline.encodeFloats = function(numbers, opt_factor) {
   var factor = opt_factor || 1e5;
 
   var numbersLength = numbers.length;
@@ -117,7 +134,7 @@ ol.parser.polyline.encodeFloats = function(numbers, opt_factor) {
     numbers[i] = Math.round(numbers[i] * factor);
   }
 
-  return ol.parser.polyline.encodeSignedIntegers(numbers);
+  return ol.format.Polyline.encodeSignedIntegers(numbers);
 };
 
 
@@ -128,10 +145,10 @@ ol.parser.polyline.encodeFloats = function(numbers, opt_factor) {
  * @param {number=} opt_factor The factor by which the result will be divided.
  * @return {Array.<number>} A list of floating point numbers.
  */
-ol.parser.polyline.decodeFloats = function(encoded, opt_factor) {
+ol.format.Polyline.decodeFloats = function(encoded, opt_factor) {
   var factor = opt_factor || 1e5;
 
-  var numbers = ol.parser.polyline.decodeSignedIntegers(encoded);
+  var numbers = ol.format.Polyline.decodeSignedIntegers(encoded);
 
   var numbersLength = numbers.length;
   for (var i = 0; i < numbersLength; ++i) {
@@ -150,7 +167,7 @@ ol.parser.polyline.decodeFloats = function(encoded, opt_factor) {
  * @param {Array.<number>} numbers A list of signed integers.
  * @return {string} The encoded string.
  */
-ol.parser.polyline.encodeSignedIntegers = function(numbers) {
+ol.format.Polyline.encodeSignedIntegers = function(numbers) {
   var numbersLength = numbers.length;
   for (var i = 0; i < numbersLength; ++i) {
     var num = numbers[i];
@@ -163,7 +180,7 @@ ol.parser.polyline.encodeSignedIntegers = function(numbers) {
     numbers[i] = signedNum;
   }
 
-  return ol.parser.polyline.encodeUnsignedIntegers(numbers);
+  return ol.format.Polyline.encodeUnsignedIntegers(numbers);
 };
 
 
@@ -173,8 +190,8 @@ ol.parser.polyline.encodeSignedIntegers = function(numbers) {
  * @param {string} encoded An encoded string.
  * @return {Array.<number>} A list of signed integers.
  */
-ol.parser.polyline.decodeSignedIntegers = function(encoded) {
-  var numbers = ol.parser.polyline.decodeUnsignedIntegers(encoded);
+ol.format.Polyline.decodeSignedIntegers = function(encoded) {
+  var numbers = ol.format.Polyline.decodeUnsignedIntegers(encoded);
 
   var numbersLength = numbers.length;
   for (var i = 0; i < numbersLength; ++i) {
@@ -192,12 +209,12 @@ ol.parser.polyline.decodeSignedIntegers = function(encoded) {
  * @param {Array.<number>} numbers A list of unsigned integers.
  * @return {string} The encoded string.
  */
-ol.parser.polyline.encodeUnsignedIntegers = function(numbers) {
+ol.format.Polyline.encodeUnsignedIntegers = function(numbers) {
   var encoded = '';
 
   var numbersLength = numbers.length;
   for (var i = 0; i < numbersLength; ++i) {
-    encoded += ol.parser.polyline.encodeUnsignedInteger(numbers[i]);
+    encoded += ol.format.Polyline.encodeUnsignedInteger(numbers[i]);
   }
 
   return encoded;
@@ -210,7 +227,7 @@ ol.parser.polyline.encodeUnsignedIntegers = function(numbers) {
  * @param {string} encoded An encoded string.
  * @return {Array.<number>} A list of unsigned integers.
  */
-ol.parser.polyline.decodeUnsignedIntegers = function(encoded) {
+ol.format.Polyline.decodeUnsignedIntegers = function(encoded) {
   var numbers = [];
 
   var current = 0;
@@ -243,9 +260,9 @@ ol.parser.polyline.decodeUnsignedIntegers = function(encoded) {
  * The remaining decimal places will get rounded away.
  * @return {string} The encoded string.
  */
-ol.parser.polyline.encodeFloat = function(num, opt_factor) {
+ol.format.Polyline.encodeFloat = function(num, opt_factor) {
   num = Math.round(num * (opt_factor || 1e5));
-  return ol.parser.polyline.encodeSignedInteger(num);
+  return ol.format.Polyline.encodeSignedInteger(num);
 };
 
 
@@ -256,8 +273,8 @@ ol.parser.polyline.encodeFloat = function(num, opt_factor) {
  * @param {number=} opt_factor The factor by which the result will be divided.
  * @return {number} The decoded floating point number.
  */
-ol.parser.polyline.decodeFloat = function(encoded, opt_factor) {
-  var result = ol.parser.polyline.decodeSignedInteger(encoded);
+ol.format.Polyline.decodeFloat = function(encoded, opt_factor) {
+  var result = ol.format.Polyline.decodeSignedInteger(encoded);
   return result / (opt_factor || 1e5);
 };
 
@@ -268,13 +285,13 @@ ol.parser.polyline.decodeFloat = function(encoded, opt_factor) {
  * @param {number} num Signed integer that should be encoded.
  * @return {string} The encoded string.
  */
-ol.parser.polyline.encodeSignedInteger = function(num) {
+ol.format.Polyline.encodeSignedInteger = function(num) {
   var signedNum = num << 1;
   if (num < 0) {
     signedNum = ~(signedNum);
   }
 
-  return ol.parser.polyline.encodeUnsignedInteger(signedNum);
+  return ol.format.Polyline.encodeUnsignedInteger(signedNum);
 };
 
 
@@ -284,8 +301,8 @@ ol.parser.polyline.encodeSignedInteger = function(num) {
  * @param {string} encoded An encoded string.
  * @return {number} The decoded signed integer.
  */
-ol.parser.polyline.decodeSignedInteger = function(encoded) {
-  var result = ol.parser.polyline.decodeUnsignedInteger(encoded);
+ol.format.Polyline.decodeSignedInteger = function(encoded) {
+  var result = ol.format.Polyline.decodeUnsignedInteger(encoded);
   return ((result & 1) ? ~(result >> 1) : (result >> 1));
 };
 
@@ -296,7 +313,7 @@ ol.parser.polyline.decodeSignedInteger = function(encoded) {
  * @param {number} num Unsigned integer that should be encoded.
  * @return {string} The encoded string.
  */
-ol.parser.polyline.encodeUnsignedInteger = function(num) {
+ol.format.Polyline.encodeUnsignedInteger = function(num) {
   var value, encoded = '';
   while (num >= 0x20) {
     value = (0x20 | (num & 0x1f)) + 63;
@@ -315,7 +332,7 @@ ol.parser.polyline.encodeUnsignedInteger = function(num) {
  * @param {string} encoded An encoded string.
  * @return {number} The decoded unsigned integer.
  */
-ol.parser.polyline.decodeUnsignedInteger = function(encoded) {
+ol.format.Polyline.decodeUnsignedInteger = function(encoded) {
   var result = 0;
   var shift = 0;
 
@@ -332,4 +349,67 @@ ol.parser.polyline.decodeUnsignedInteger = function(encoded) {
   }
 
   return result;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.Polyline.prototype.readFeatureFromText = function(text) {
+  var geometry = this.readGeometryFromText(text);
+  return new ol.Feature(geometry);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.Polyline.prototype.readFeaturesFromText = function(text) {
+  var feature = this.readFeatureFromText(text);
+  return [feature];
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.Polyline.prototype.readGeometryFromText = function(text) {
+  var flatCoordinates = ol.format.Polyline.decodeFlatCoordinates(text, 2);
+  var coordinates = ol.geom.flat.inflateCoordinates(
+      flatCoordinates, 0, flatCoordinates.length, 2);
+  return new ol.geom.LineString(coordinates);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.Polyline.prototype.writeFeatureText = function(feature) {
+  var geometry = feature.getGeometry();
+  if (goog.isDefAndNotNull(geometry)) {
+    return this.writeGeometryText(geometry);
+  } else {
+    goog.asserts.fail();
+    return '';
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.Polyline.prototype.writeFeaturesText = function(features) {
+  goog.asserts.assert(features.length == 1);
+  return this.writeFeatureText(features[0]);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.Polyline.prototype.writeGeometryText = function(geometry) {
+  goog.asserts.assert(geometry.getType() == ol.geom.GeometryType.LINE_STRING);
+  var flatCoordinates = geometry.getFlatCoordinates();
+  var stride = geometry.getStride();
+  return ol.format.Polyline.encodeFlatCoordinates(flatCoordinates, stride);
 };
