@@ -575,6 +575,14 @@ ol.structs.RBush.prototype.insert_ = function(extent, value, level) {
 
 
 /**
+ * @return {boolean} Is empty.
+ */
+ol.structs.RBush.prototype.isEmpty = function() {
+  return this.root_.children.length === 0;
+};
+
+
+/**
  * @param {T} value Value.
  */
 ol.structs.RBush.prototype.remove = function(value) {
