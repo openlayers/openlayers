@@ -1005,7 +1005,7 @@ ol.Map.prototype.removeInteraction = function(interaction) {
 ol.Map.prototype.removeLayer = function(layer) {
   var layers = this.getLayerGroup().getLayers();
   goog.asserts.assert(goog.isDef(layers));
-  return /** @type {ol.layer.Base|undefined} */ (layers.remove(layer));
+  return layers.remove(layer);
 };
 
 
