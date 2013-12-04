@@ -288,6 +288,23 @@ ol.Object.prototype.getKeys = function() {
 
 
 /**
+ * Get an object of all property names and values.
+ * @return {Object.<string, *>} Object.
+ */
+ol.Object.prototype.getProperties = function() {
+  var properties = {};
+  var key;
+  for (key in this.values_) {
+    properties[key] = this.values_[key];
+  }
+  for (key in ol.Object.getAccessors(this)) {
+    properties[key] = this.get(key);
+  }
+  return properties;
+};
+
+
+/**
  * Notify all observers of a change on this property. This notifies both
  * objects that are bound to the object's property as well as the object
  * that it is bound to.
