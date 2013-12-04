@@ -18,7 +18,7 @@ describe('ol.geom.MultiPoint', function() {
     });
 
     it('defaults to layout XY', function() {
-      expect(multiPoint.getLayout()).to.be(ol.geom.Layout.XY);
+      expect(multiPoint.getLayout()).to.be(ol.geom.GeometryLayout.XY);
     });
 
     it('has empty coordinates', function() {
@@ -47,7 +47,7 @@ describe('ol.geom.MultiPoint', function() {
     });
 
     it('has the expected layout', function() {
-      expect(multiPoint.getLayout()).to.be(ol.geom.Layout.XY);
+      expect(multiPoint.getLayout()).to.be(ol.geom.GeometryLayout.XY);
     });
 
     it('has the expected coordinates', function() {
@@ -76,7 +76,7 @@ describe('ol.geom.MultiPoint', function() {
     });
 
     it('has the expected layout', function() {
-      expect(multiPoint.getLayout()).to.be(ol.geom.Layout.XYZ);
+      expect(multiPoint.getLayout()).to.be(ol.geom.GeometryLayout.XYZ);
     });
 
     it('has the expected coordinates', function() {
@@ -102,11 +102,11 @@ describe('ol.geom.MultiPoint', function() {
     var multiPoint;
     beforeEach(function() {
       multiPoint = new ol.geom.MultiPoint(
-          [[1, 2, 3], [4, 5, 6]], ol.geom.Layout.XYM);
+          [[1, 2, 3], [4, 5, 6]], ol.geom.GeometryLayout.XYM);
     });
 
     it('has the expected layout', function() {
-      expect(multiPoint.getLayout()).to.be(ol.geom.Layout.XYM);
+      expect(multiPoint.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
     });
 
     it('has the expected coordinates', function() {
@@ -135,7 +135,7 @@ describe('ol.geom.MultiPoint', function() {
     });
 
     it('has the expected layout', function() {
-      expect(multiPoint.getLayout()).to.be(ol.geom.Layout.XYZM);
+      expect(multiPoint.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
     });
 
     it('has the expected coordinates', function() {

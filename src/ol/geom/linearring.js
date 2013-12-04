@@ -9,7 +9,7 @@ goog.require('ol.geom.flat');
  * @constructor
  * @extends {ol.geom.Geometry}
  * @param {ol.geom.RawLinearRing} coordinates Coordinates.
- * @param {ol.geom.Layout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
 ol.geom.LinearRing = function(coordinates, opt_layout) {
   goog.base(this);
@@ -46,7 +46,7 @@ ol.geom.LinearRing.prototype.getType = function() {
 
 /**
  * @param {ol.geom.RawLinearRing} coordinates Coordinates.
- * @param {ol.geom.Layout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
 ol.geom.LinearRing.prototype.setCoordinates =
     function(coordinates, opt_layout) {

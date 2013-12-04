@@ -11,7 +11,7 @@ goog.require('ol.geom.flat');
  * @constructor
  * @extends {ol.geom.Geometry}
  * @param {ol.geom.RawPoint} coordinates Coordinates.
- * @param {ol.geom.Layout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
 ol.geom.Point = function(coordinates, opt_layout) {
   goog.base(this);
@@ -52,11 +52,11 @@ ol.geom.Point.prototype.getType = function() {
 
 /**
  * @param {ol.geom.RawPoint} coordinates Coordinates.
- * @param {ol.geom.Layout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
 ol.geom.Point.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (goog.isNull(coordinates)) {
-    this.setFlatCoordinates(ol.geom.Layout.XY, null);
+    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
   } else {
     this.setLayout(opt_layout, coordinates, 0);
     if (goog.isNull(this.flatCoordinates)) {
@@ -70,7 +70,7 @@ ol.geom.Point.prototype.setCoordinates = function(coordinates, opt_layout) {
 
 
 /**
- * @param {ol.geom.Layout} layout Layout.
+ * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
 ol.geom.Point.prototype.setFlatCoordinates = function(layout, flatCoordinates) {

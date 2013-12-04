@@ -9,7 +9,7 @@ goog.require('ol.geom.flat');
  * @constructor
  * @extends {ol.geom.Geometry}
  * @param {ol.geom.RawLineString} coordinates Coordinates.
- * @param {ol.geom.Layout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
 ol.geom.LineString = function(coordinates, opt_layout) {
   goog.base(this);
@@ -46,12 +46,12 @@ ol.geom.LineString.prototype.getType = function() {
 
 /**
  * @param {ol.geom.RawLineString} coordinates Coordinates.
- * @param {ol.geom.Layout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
 ol.geom.LineString.prototype.setCoordinates =
     function(coordinates, opt_layout) {
   if (goog.isNull(coordinates)) {
-    this.setFlatCoordinates(ol.geom.Layout.XY, null);
+    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
   } else {
     this.setLayout(opt_layout, coordinates, 1);
     if (goog.isNull(this.flatCoordinates)) {
@@ -65,7 +65,7 @@ ol.geom.LineString.prototype.setCoordinates =
 
 
 /**
- * @param {ol.geom.Layout} layout Layout.
+ * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
 ol.geom.LineString.prototype.setFlatCoordinates =

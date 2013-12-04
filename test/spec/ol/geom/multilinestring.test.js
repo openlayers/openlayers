@@ -18,7 +18,7 @@ describe('ol.geom.MultiLineString', function() {
     });
 
     it('defaults to layout XY', function() {
-      expect(multiLineString.getLayout()).to.be(ol.geom.Layout.XY);
+      expect(multiLineString.getLayout()).to.be(ol.geom.GeometryLayout.XY);
     });
 
     it('has empty coordinates', function() {
@@ -48,7 +48,7 @@ describe('ol.geom.MultiLineString', function() {
     });
 
     it('has the expected layout', function() {
-      expect(multiLineString.getLayout()).to.be(ol.geom.Layout.XY);
+      expect(multiLineString.getLayout()).to.be(ol.geom.GeometryLayout.XY);
     });
 
     it('has the expected coordinates', function() {
@@ -80,7 +80,7 @@ describe('ol.geom.MultiLineString', function() {
     });
 
     it('has the expected layout', function() {
-      expect(multiLineString.getLayout()).to.be(ol.geom.Layout.XYZ);
+      expect(multiLineString.getLayout()).to.be(ol.geom.GeometryLayout.XYZ);
     });
 
     it('has the expected coordinates', function() {
@@ -109,11 +109,11 @@ describe('ol.geom.MultiLineString', function() {
     beforeEach(function() {
       multiLineString = new ol.geom.MultiLineString(
           [[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]],
-          ol.geom.Layout.XYM);
+          ol.geom.GeometryLayout.XYM);
     });
 
     it('has the expected layout', function() {
-      expect(multiLineString.getLayout()).to.be(ol.geom.Layout.XYM);
+      expect(multiLineString.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
     });
 
     it('has the expected coordinates', function() {
@@ -145,7 +145,7 @@ describe('ol.geom.MultiLineString', function() {
     });
 
     it('has the expected layout', function() {
-      expect(multiLineString.getLayout()).to.be(ol.geom.Layout.XYZM);
+      expect(multiLineString.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
     });
 
     it('has the expected coordinates', function() {

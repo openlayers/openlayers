@@ -10,7 +10,7 @@ goog.require('ol.geom.flat');
  * @constructor
  * @extends {ol.geom.Geometry}
  * @param {ol.geom.RawMultiLineString} coordinates Coordinates.
- * @param {ol.geom.Layout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
 ol.geom.MultiLineString = function(coordinates, opt_layout) {
 
@@ -70,12 +70,12 @@ ol.geom.MultiLineString.prototype.getType = function() {
 
 /**
  * @param {ol.geom.RawMultiLineString} coordinates Coordinates.
- * @param {ol.geom.Layout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
 ol.geom.MultiLineString.prototype.setCoordinates =
     function(coordinates, opt_layout) {
   if (goog.isNull(coordinates)) {
-    this.setFlatCoordinates(ol.geom.Layout.XY, null, this.ends_);
+    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null, this.ends_);
   } else {
     this.setLayout(opt_layout, coordinates, 2);
     if (goog.isNull(this.flatCoordinates)) {
@@ -90,7 +90,7 @@ ol.geom.MultiLineString.prototype.setCoordinates =
 
 
 /**
- * @param {ol.geom.Layout} layout Layout.
+ * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Array.<number>} ends Ends.
  */

@@ -20,7 +20,7 @@ describe('ol.geom.Polygon', function() {
     });
 
     it('defaults to layout XY', function() {
-      expect(polygon.getLayout()).to.be(ol.geom.Layout.XY);
+      expect(polygon.getLayout()).to.be(ol.geom.GeometryLayout.XY);
     });
 
     it('has empty coordinates', function() {
@@ -56,7 +56,7 @@ describe('ol.geom.Polygon', function() {
     });
 
     it('has the expected layout', function() {
-      expect(polygon.getLayout()).to.be(ol.geom.Layout.XY);
+      expect(polygon.getLayout()).to.be(ol.geom.GeometryLayout.XY);
     });
 
     it('has the expected coordinates', function() {
@@ -119,7 +119,7 @@ describe('ol.geom.Polygon', function() {
     });
 
     it('has the expected layout', function() {
-      expect(polygon.getLayout()).to.be(ol.geom.Layout.XYZ);
+      expect(polygon.getLayout()).to.be(ol.geom.GeometryLayout.XYZ);
     });
 
     it('has the expected coordinates', function() {
@@ -174,7 +174,8 @@ describe('ol.geom.Polygon', function() {
     beforeEach(function() {
       outerRing = [[0, 0, 1], [4, 4, 2], [4, 0, 3]];
       innerRing = [[2, 1, 4], [3, 1, 5], [3, 2, 6]];
-      polygon = new ol.geom.Polygon([outerRing, innerRing], ol.geom.Layout.XYM);
+      polygon = new ol.geom.Polygon(
+          [outerRing, innerRing], ol.geom.GeometryLayout.XYM);
       flatCoordinates = [0, 0, 1, 4, 4, 2, 4, 0, 3, 2, 1, 4, 3, 1, 5, 3, 2, 6];
       outsideOuter = [1, 3];
       inside = [3.5, 0.5];
@@ -182,7 +183,7 @@ describe('ol.geom.Polygon', function() {
     });
 
     it('has the expected layout', function() {
-      expect(polygon.getLayout()).to.be(ol.geom.Layout.XYM);
+      expect(polygon.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
     });
 
     it('has the expected coordinates', function() {
@@ -252,7 +253,7 @@ describe('ol.geom.Polygon', function() {
     });
 
     it('has the expected layout', function() {
-      expect(polygon.getLayout()).to.be(ol.geom.Layout.XYZM);
+      expect(polygon.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
     });
 
     it('has the expected coordinates', function() {

@@ -10,7 +10,7 @@ goog.require('ol.geom.flat');
  * @constructor
  * @extends {ol.geom.Geometry}
  * @param {ol.geom.RawMultiPolygon} coordinates Coordinates.
- * @param {ol.geom.Layout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
 ol.geom.MultiPolygon = function(coordinates, opt_layout) {
 
@@ -115,12 +115,12 @@ ol.geom.MultiPolygon.prototype.getType = function() {
 
 /**
  * @param {ol.geom.RawMultiPolygon} coordinates Coordinates.
- * @param {ol.geom.Layout=} opt_layout Layout.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
 ol.geom.MultiPolygon.prototype.setCoordinates =
     function(coordinates, opt_layout) {
   if (goog.isNull(coordinates)) {
-    this.setFlatCoordinates(ol.geom.Layout.XY, null, this.endss_);
+    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null, this.endss_);
   } else {
     this.setLayout(opt_layout, coordinates, 3);
     if (goog.isNull(this.flatCoordinates)) {
@@ -139,7 +139,7 @@ ol.geom.MultiPolygon.prototype.setCoordinates =
 
 
 /**
- * @param {ol.geom.Layout} layout Layout.
+ * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Array.<Array.<number>>} endss Endss.
  */

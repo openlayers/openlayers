@@ -27,7 +27,7 @@ ol.geom.Type = {
 /**
  * @enum {string}
  */
-ol.geom.Layout = {
+ol.geom.GeometryLayout = {
   XY: 'XY',
   XYZ: 'XYZ',
   XYM: 'XYM',
@@ -46,9 +46,9 @@ ol.geom.Geometry = function() {
 
   /**
    * @protected
-   * @type {ol.geom.Layout}
+   * @type {ol.geom.GeometryLayout}
    */
-  this.layout = ol.geom.Layout.XY;
+  this.layout = ol.geom.GeometryLayout.XY;
 
   /**
    * @protected
@@ -87,15 +87,15 @@ goog.inherits(ol.geom.Geometry, goog.events.EventTarget);
 /**
  * @param {number} stride Stride.
  * @private
- * @return {ol.geom.Layout} layout Layout.
+ * @return {ol.geom.GeometryLayout} layout Layout.
  */
 ol.geom.Geometry.getLayoutForStride_ = function(stride) {
   if (stride == 2) {
-    return ol.geom.Layout.XY;
+    return ol.geom.GeometryLayout.XY;
   } else if (stride == 3) {
-    return ol.geom.Layout.XYZ;
+    return ol.geom.GeometryLayout.XYZ;
   } else if (stride == 4) {
-    return ol.geom.Layout.XYZM;
+    return ol.geom.GeometryLayout.XYZM;
   } else {
     throw new Error('unsupported stride: ' + stride);
   }
@@ -103,18 +103,18 @@ ol.geom.Geometry.getLayoutForStride_ = function(stride) {
 
 
 /**
- * @param {ol.geom.Layout} layout Layout.
+ * @param {ol.geom.GeometryLayout} layout Layout.
  * @private
  * @return {number} Stride.
  */
 ol.geom.Geometry.getStrideForLayout_ = function(layout) {
-  if (layout == ol.geom.Layout.XY) {
+  if (layout == ol.geom.GeometryLayout.XY) {
     return 2;
-  } else if (layout == ol.geom.Layout.XYZ) {
+  } else if (layout == ol.geom.GeometryLayout.XYZ) {
     return 3;
-  } else if (layout == ol.geom.Layout.XYM) {
+  } else if (layout == ol.geom.GeometryLayout.XYM) {
     return 3;
-  } else if (layout == ol.geom.Layout.XYZM) {
+  } else if (layout == ol.geom.GeometryLayout.XYZM) {
     return 4;
   } else {
     throw new Error('unsupported layout: ' + layout);
@@ -172,7 +172,7 @@ ol.geom.Geometry.prototype.getFlatCoordinates = function() {
 
 
 /**
- * @return {ol.geom.Layout} Layout.
+ * @return {ol.geom.GeometryLayout} Layout.
  */
 ol.geom.Geometry.prototype.getLayout = function() {
   return this.layout;
@@ -202,7 +202,7 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 
 
 /**
- * @param {ol.geom.Layout} layout Layout.
+ * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @protected
  */
@@ -215,7 +215,7 @@ ol.geom.Geometry.prototype.setFlatCoordinatesInternal =
 
 
 /**
- * @param {ol.geom.Layout|undefined} layout Layout.
+ * @param {ol.geom.GeometryLayout|undefined} layout Layout.
  * @param {Array} coordinates Coordinates.
  * @param {number} nesting Nesting.
  * @protected
@@ -230,7 +230,7 @@ ol.geom.Geometry.prototype.setLayout =
     var i;
     for (i = 0; i < nesting; ++i) {
       if (coordinates.length === 0) {
-        this.layout = ol.geom.Layout.XY;
+        this.layout = ol.geom.GeometryLayout.XY;
         this.stride = 2;
         return;
       } else {
