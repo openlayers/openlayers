@@ -272,7 +272,7 @@ ol.Map = function(options) {
   this.registerDisposable(mouseWheelHandler);
 
   /**
-   * @type {ol.Collection}
+   * @type {ol.Collection.<ol.control.Control>}
    * @private
    */
   this.controls_ = optionsInternal.controls;
@@ -543,7 +543,7 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
 
 
 /**
- * @return {ol.Collection} Controls.
+ * @return {ol.Collection.<ol.control.Control>} Controls.
  * @todo stability experimental
  */
 ol.Map.prototype.getControls = function() {
@@ -1230,9 +1230,9 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
 
 
 /**
- * @typedef {{controls: ol.Collection,
  *            interactions: ol.Collection,
  *            overlays: ol.Collection,
+ * @typedef {{controls: ol.Collection.<ol.control.Control>,
  *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
  *            values: Object.<string, *>}}
