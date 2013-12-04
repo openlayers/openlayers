@@ -40,7 +40,7 @@ ol.geom.LinearRing.prototype.getCoordinates = function() {
  * @inheritDoc
  */
 ol.geom.LinearRing.prototype.getType = function() {
-  return ol.geom.Type.LINEAR_RING;
+  return ol.geom.GeometryType.LINEAR_RING;
 };
 
 

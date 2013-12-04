@@ -40,7 +40,7 @@ ol.geom.LineString.prototype.getLength = function() {
  * @inheritDoc
  */
 ol.geom.LineString.prototype.getType = function() {
-  return ol.geom.Type.LINE_STRING;
+  return ol.geom.GeometryType.LINE_STRING;
 };
 
 

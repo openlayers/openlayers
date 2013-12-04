@@ -13,7 +13,7 @@ goog.require('ol.geom.flat');
 /**
  * @enum {string}
  */
-ol.geom.Type = {
+ol.geom.GeometryType = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
   LINEAR_RING: 'LinearRing',
@@ -196,7 +196,7 @@ ol.geom.Geometry.prototype.getStride = function() {
 
 
 /**
- * @return {ol.geom.Type} Geometry type.
+ * @return {ol.geom.GeometryType} Geometry type.
  */
 ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 

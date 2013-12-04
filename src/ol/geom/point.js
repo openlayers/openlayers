@@ -46,7 +46,7 @@ ol.geom.Point.prototype.getExtent = function(opt_extent) {
  * @inheritDoc
  */
 ol.geom.Point.prototype.getType = function() {
-  return ol.geom.Type.POINT;
+  return ol.geom.GeometryType.POINT;
 };
 
 

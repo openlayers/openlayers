@@ -64,7 +64,7 @@ ol.geom.MultiLineString.prototype.getLineStrings = function() {
  * @inheritDoc
  */
 ol.geom.MultiLineString.prototype.getType = function() {
-  return ol.geom.Type.MULTI_LINE_STRING;
+  return ol.geom.GeometryType.MULTI_LINE_STRING;
 };
 
 

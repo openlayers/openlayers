@@ -109,7 +109,7 @@ ol.geom.MultiPolygon.prototype.getPolygons = function() {
  * @inheritDoc
  */
 ol.geom.MultiPolygon.prototype.getType = function() {
-  return ol.geom.Type.MULTI_POLYGON;
+  return ol.geom.GeometryType.MULTI_POLYGON;
 };
 
 

@@ -108,7 +108,7 @@ ol.geom.Polygon.prototype.getLinearRings = function() {
  * @inheritDoc
  */
 ol.geom.Polygon.prototype.getType = function() {
-  return ol.geom.Type.POLYGON;
+  return ol.geom.GeometryType.POLYGON;
 };
 
 

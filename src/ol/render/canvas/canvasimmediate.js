@@ -467,7 +467,7 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
 /**
  * @const
  * @private
- * @type {Object.<ol.geom.Type,
+ * @type {Object.<ol.geom.GeometryType,
  *                function(this: ol.render.canvas.Immediate, ol.geom.Geometry,
  *                         Object)>}
  */

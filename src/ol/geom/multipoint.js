@@ -47,7 +47,7 @@ ol.geom.MultiPoint.prototype.getPoints = function() {
  * @inheritDoc
  */
 ol.geom.MultiPoint.prototype.getType = function() {
-  return ol.geom.Type.MULTI_POINT;
+  return ol.geom.GeometryType.MULTI_POINT;
 };
 
 
