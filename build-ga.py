@@ -64,6 +64,9 @@ def build_ga_css(t):
         LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ga.json')
 def build_ga_js(t):
     t.output('%(JAVA)s', '-jar', PLOVR_JAR, 'build', 'buildcfg/ga.json')
+    t.cp('resources/EPSG21781.js','build')
+    t.cp('resources/EPSG2056.js','build')
+    t.cp('resources/proj4js-compressed.js','build')
     report_sizes(t)
 
 @target('build/ga-whitespace.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
