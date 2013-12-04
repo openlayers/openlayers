@@ -8,6 +8,7 @@ goog.require('ol.webgl.shader');
 /**
  * @constructor
  * @extends {ol.webgl.shader.Fragment}
+ * @struct
  */
 {{className}}Fragment = function() {
   goog.base(this, {{className}}Fragment.SOURCE);
@@ -43,6 +44,7 @@ goog.addSingletonGetter({{className}}Fragment);
 /**
  * @constructor
  * @extends {ol.webgl.shader.Vertex}
+ * @struct
  */
 {{className}}Vertex = function() {
   goog.base(this, {{className}}Vertex.SOURCE);
@@ -79,6 +81,7 @@ goog.addSingletonGetter({{className}}Vertex);
  * @constructor
  * @param {WebGLRenderingContext} gl GL.
  * @param {WebGLProgram} program Program.
+ * @struct
  */
 {{namespace}}.Locations = function(gl, program) {
 {{#getUniforms}}

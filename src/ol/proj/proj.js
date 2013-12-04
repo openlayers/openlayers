@@ -59,6 +59,7 @@ ol.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
 /**
  * @constructor
  * @param {ol.ProjectionOptions} options Projection options.
+ * @struct
  * @todo stability experimental
  */
 ol.proj.Projection = function(options) {
@@ -200,6 +201,7 @@ ol.proj.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
  * @param {Proj4js.Proj} proj4jsProj Proj4js projection.
  * @param {ol.Proj4jsProjectionOptions} options Proj4js projection options.
  * @private
+ * @struct
  */
 ol.Proj4jsProjection_ = function(proj4jsProj, options) {
 

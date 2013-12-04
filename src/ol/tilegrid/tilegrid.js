@@ -28,6 +28,7 @@ ol.DEFAULT_MAX_ZOOM = 42;
 /**
  * @constructor
  * @param {ol.tilegrid.TileGridOptions} options Tile grid options.
+ * @struct
  * @todo stability experimental
  */
 ol.tilegrid.TileGrid = function(options) {

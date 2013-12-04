@@ -41,6 +41,7 @@ ol.render.canvas.Instruction = {
  * @constructor
  * @implements {ol.render.IRender}
  * @protected
+ * @struct
  */
 ol.render.canvas.Replay = function() {
 
@@ -346,6 +347,7 @@ ol.render.canvas.Replay.prototype.setTextStyle = goog.abstractMethod;
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @protected
+ * @struct
  */
 ol.render.canvas.ImageReplay = function() {
 
@@ -496,6 +498,7 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @protected
+ * @struct
  */
 ol.render.canvas.LineStringReplay = function() {
 
@@ -695,6 +698,7 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @protected
+ * @struct
  */
 ol.render.canvas.PolygonReplay = function() {
 
@@ -925,6 +929,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
 /**
  * @constructor
  * @implements {ol.render.IReplayGroup}
+ * @struct
  */
 ol.render.canvas.ReplayGroup = function() {
 

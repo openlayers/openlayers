@@ -36,6 +36,7 @@ goog.require('ol.extent');
  * @param {number} height Height.
  * @param {Array.<ol.structs.RBushNode.<T>>} children Children.
  * @param {?T} value Value.
+ * @struct
  * @template T
  */
 ol.structs.RBushNode = function(extent, height, children, value) {
@@ -160,6 +161,7 @@ ol.structs.RBushNode.prototype.isLeaf = function() {
  * @constructor
  * @param {number=} opt_maxEntries Max entries.
  * @see https://github.com/mourner/rbush
+ * @struct
  * @template T
  */
 ol.structs.RBush = function(opt_maxEntries) {

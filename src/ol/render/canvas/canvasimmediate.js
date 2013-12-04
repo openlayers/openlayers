@@ -19,6 +19,7 @@ goog.require('ol.style.Text');
  * @param {CanvasRenderingContext2D} context Context.
  * @param {ol.Extent} extent Extent.
  * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @struct
  */
 ol.render.canvas.Immediate = function(context, extent, transform) {
 
