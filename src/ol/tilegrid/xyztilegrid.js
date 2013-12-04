@@ -13,6 +13,7 @@ goog.require('ol.tilegrid.TileGrid');
  * @constructor
  * @extends {ol.tilegrid.TileGrid}
  * @param {olx.tilegrid.XYZOptions} options XYZ options.
+ * @struct
  * @todo stability experimental
  */
 ol.tilegrid.XYZ = function(options) {
