@@ -18,9 +18,7 @@ var raster = new ol.layer.Tile({
   })
 });
 
-var vectorSource = new ol.source.Vector();
-
-new ol.format.GeoJSON().readObject({
+var features = new ol.format.GeoJSON().readFeatures({
   'type': 'FeatureCollection',
   'features': [{
     'type': 'Feature',
@@ -34,7 +32,11 @@ new ol.format.GeoJSON().readObject({
       'coordinates': [0, 0]
     }
   }]
-}, vectorSource.addFeature, vectorSource);
+});
+
+var vectorSource = new ol.source.Vector({
+  features: features
+});
 
 var styleArray = [new ol.style.Style({
   image: ol.icon.renderIcon('data/icon.png')
