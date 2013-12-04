@@ -137,7 +137,7 @@ describe('ol.source.Vector', function() {
 
     });
 
-    describe.skip('#removeFeature', function() {
+    describe('#removeFeature', function() {
 
       it('works as expected', function() {
         var i;
@@ -159,46 +159,29 @@ describe('ol.source.Vector', function() {
 
     describe('modifying a feature\'s geometry', function() {
 
-      it('fires a change event', function() {
-        var listener = sinon.spy();
-        goog.events.listen(vectorSource, 'change', listener);
+      it('keeps the R-Tree index up to date', function() {
+        expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
+            to.have.length(10);
         features[0].getGeometry().setCoordinates([100, 100]);
-        expect(listener).to.be.called();
+        expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
+            to.have.length(9);
+        features[0].getGeometry().setCoordinates([0.5, 0.5]);
+        expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
+            to.have.length(10);
       });
-
-      if (false) {
-        it('keeps the R-Tree index up to date', function() {
-          expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
-              to.have.length(10);
-          features[0].getGeometry().setCoordinates([100, 100]);
-          expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
-              to.have.length(9);
-          features[0].getGeometry().setCoordinates([0.5, 0.5]);
-          expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
-              to.have.length(10);
-        });
-      }
 
     });
 
     describe('setting a features geometry', function() {
 
-      it('fires a change event', function() {
-        var listener = sinon.spy();
-        goog.events.listen(vectorSource, 'change', listener);
+      it('keeps the R-Tree index up to date', function() {
+        expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
+            to.have.length(10);
         features[0].setGeometry(new ol.geom.Point([100, 100]));
-        expect(listener).to.be.called();
+        expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
+            to.have.length(9);
       });
 
-      if (false) {
-        it('keeps the R-Tree index up to date', function() {
-          expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
-              to.have.length(10);
-          features[0].setGeometry(new ol.geom.Point([100, 100]));
-          expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
-              to.have.length(9);
-        });
-      }
     });
 
   });
