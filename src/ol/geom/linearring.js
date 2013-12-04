@@ -50,8 +50,26 @@ ol.geom.LinearRing.prototype.getType = function() {
  */
 ol.geom.LinearRing.prototype.setCoordinates =
     function(coordinates, opt_layout) {
-  this.setLayout(opt_layout, coordinates, 1);
-  ol.geom.flat.deflateCoordinates(
-      this.flatCoordinates, 0, coordinates, this.stride);
+  if (goog.isNull(coordinates)) {
+    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
+  } else {
+    this.setLayout(opt_layout, coordinates, 1);
+    if (goog.isNull(this.flatCoordinates)) {
+      this.flatCoordinates = [];
+    }
+    this.flatCoordinates.length = ol.geom.flat.deflateCoordinates(
+        this.flatCoordinates, 0, coordinates, this.stride);
+    this.dispatchChangeEvent();
+  }
+};
+
+
+/**
+ * @param {ol.geom.GeometryLayout} layout Layout.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ */
+ol.geom.LinearRing.prototype.setFlatCoordinates =
+    function(layout, flatCoordinates) {
+  this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.dispatchChangeEvent();
 };
