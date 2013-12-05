@@ -1,3 +1,4 @@
+// FIXME Highlight -> wait for the usage of vector-api branch
 goog.provide('ga.Tooltip');
 
 goog.require('goog.dom');
