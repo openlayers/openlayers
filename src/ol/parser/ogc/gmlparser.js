@@ -414,7 +414,7 @@ ol.parser.ogc.GML = function(opt_options) {
       }
     }
   };
-  this.featureNSWiters_ = {
+  this.featureNSWriters_ = {
     '_typeName': function(feature) {
       var node = this.createElementNS('feature:' + this.featureType,
           this.featureNS);
@@ -472,7 +472,7 @@ ol.parser.ogc.GML = function(opt_options) {
     }
   };
   if (goog.isDef(this.featureNS)) {
-    this.writers[this.featureNS] = this.featureNSWiters_;
+    this.writers[this.featureNS] = this.featureNSWriters_;
   }
   goog.base(this);
 };
@@ -541,7 +541,7 @@ ol.parser.ogc.GML.prototype.readNode = function(node, obj, opt_first) {
       (/^(.*:)?featureMembers?$/).test(node.parentNode.nodeName))) {
     this.featureType = node.nodeName.split(':').pop();
     this.readers[node.namespaceURI] = this.featureNSReaders_;
-    this.writers[node.namespaceURI] = this.featureNSWiters_;
+    this.writers[node.namespaceURI] = this.featureNSWriters_;
     this.featureNS = node.namespaceURI;
     this.autoConfig = true;
   }
