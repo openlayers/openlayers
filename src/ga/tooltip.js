@@ -1,4 +1,3 @@
-// FIXME: highlight support
 goog.provide('ga.Tooltip');
 
 goog.require('goog.dom');
@@ -23,6 +22,8 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Shape');
 goog.require('ol.source.Vector');
 goog.require('ol.parser.GeoJSON');
+goog.require('ol.Feature');
+goog.require('ol.geom.Point');
 
 
 /**
@@ -61,6 +62,8 @@ ga.Tooltip = function() {
   this.overlay_ = null;
 
   this.vector_ = null;
+
+  this.source_ = null;
   
   this.createOverlay_();
 
@@ -135,8 +138,13 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
 ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
   // Highlight feature
   if (this.vector_) {
+    this.source_.removeFeatures(this.source_.getFeatures());
     this.map_.removeLayer(this.vector_);
   }
+  this.source_ = new ol.source.Vector({
+    projection: this.map_.getView().getProjection(),
+    parser: new ol.parser.GeoJSON()
+  });
   this.vector_ = new ol.layer.Vector({
     style: new ol.style.Style({
       symbolizers: [
@@ -159,16 +167,15 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
         })
       ]
     }),
-    source: new ol.source.Vector({
-      projection: this.map_.getView().getProjection(),
-      parser: new ol.parser.GeoJSON(),
-      data: {
-        type: 'FeatureCollection',
-        features: response['results']
-      }
-    })
+    source: this.source_
   });
   this.map_.addLayer(this.vector_);
+  console.log(response);
+  var feature = new ol.Feature({
+    geometry: new ol.geom.Point(
+      response.results[0].geometry.coordinates)
+  });
+  this.source_.addFeatures(feature);
   // Show popup
   for (var i in response['results']) {
     var jsonp = new goog.net.Jsonp(
