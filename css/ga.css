@@ -109,6 +109,7 @@
 }
 .htmlpopup-container .htmlpopup-content table td {
   vertical-align: top;
+  font-size: 12px;
 }
 .htmlpopup-container .htmlpopup-content table .cell-left {
   width: 150px;
