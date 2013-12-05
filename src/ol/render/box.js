@@ -28,7 +28,7 @@ ol.render.Box = function(opt_style) {
    * @private
    * @type {goog.events.Key}
    */
-  this.postComposeListenKey_ = null;
+  this.postComposeListenerKey_ = null;
 
   /**
    * @private
@@ -117,15 +117,15 @@ ol.render.Box.prototype.requestMapRenderFrame_ = function() {
  * @param {ol.Map} map Map.
  */
 ol.render.Box.prototype.setMap = function(map) {
-  if (!goog.isNull(this.postComposeListenKey_)) {
-    goog.events.unlistenByKey(this.postComposeListenKey_);
-    this.postComposeListenKey_ = null;
+  if (!goog.isNull(this.postComposeListenerKey_)) {
+    goog.events.unlistenByKey(this.postComposeListenerKey_);
+    this.postComposeListenerKey_ = null;
     this.map_.requestRenderFrame();
     this.map_ = null;
   }
   this.map_ = map;
   if (!goog.isNull(this.map_)) {
-    this.postComposeListenKey_ = goog.events.listen(
+    this.postComposeListenerKey_ = goog.events.listen(
         map, ol.render.EventType.POSTCOMPOSE, this.handleMapPostCompose_, false,
         this);
     this.requestMapRenderFrame_();
