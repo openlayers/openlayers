@@ -7,17 +7,15 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('ol.geom.Polygon');
 goog.require('ol.render.EventType');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Style');
 
 
 
 /**
  * @constructor
  * @extends {goog.Disposable}
- * @param {ol.style.Style=} opt_style Style.
+ * @param {ol.style.Style} style Style.
  */
-ol.render.Box = function(opt_style) {
+ol.render.Box = function(style) {
 
   /**
    * @private
@@ -53,15 +51,7 @@ ol.render.Box = function(opt_style) {
    * @private
    * @type {ol.style.Style}
    */
-  this.style_ = goog.isDef(opt_style) ? opt_style : new ol.style.Style({
-    fill: new ol.style.Fill({
-      color: 'rgba(0,0,0,0.5)'
-    }),
-    image: null,
-    stroke: null,
-    text: null,
-    zIndex: 0
-  });
+  this.style_ = style;
 
 };
 goog.inherits(ol.render.Box, goog.Disposable);
@@ -113,6 +103,7 @@ ol.render.Box.prototype.handleMapPostCompose_ = function(event) {
   var extent = event.getFrameState().extent;
   this.geometry_ = this.createGeometry_(extent);
   var style = this.style_;
+  goog.asserts.assert(!goog.isNull(style));
   var render = event.getRender();
   render.setFillStrokeStyle(style.getFill(), style.getStroke());
   render.drawPolygonGeometry(this.geometry_, null);
