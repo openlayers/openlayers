@@ -44,11 +44,18 @@ ol.interaction.DragBox = function(opt_options) {
   this.behavior_ = goog.isDef(options.behavior) ?
       options.behavior : goog.nullFunction;
 
+
+  /**
+   * @private
+   * @type {ol.style.Style}
+   */
+  var style = goog.isDef(options.style) ? options.style : null;
+
   /**
    * @type {ol.render.Box}
    * @private
    */
-  this.box_ = new ol.render.Box();
+  this.box_ = new ol.render.Box(style);
 
   /**
    * @private
