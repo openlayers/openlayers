@@ -44,7 +44,7 @@ var style = new ol.style.Style({rules: [
     ]
   }),
   new ol.style.Rule({
-    filter: 'geometryType("point")',
+    filter: 'geometryType("Point")',
     symbolizers: [
       new ol.style.Shape({
         size: 40,

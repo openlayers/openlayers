@@ -81,12 +81,12 @@ goog.inherits(ol.geom.GeometryEvent, goog.events.Event);
  * @todo stability experimental
  */
 ol.geom.GeometryType = {
-  POINT: 'point',
-  LINE_STRING: 'linestring',
-  LINEAR_RING: 'linearring',
-  POLYGON: 'polygon',
-  MULTI_POINT: 'multipoint',
-  MULTI_LINE_STRING: 'multilinestring',
-  MULTI_POLYGON: 'multipolygon',
-  GEOMETRY_COLLECTION: 'geometrycollection'
+  POINT: 'Point',
+  LINE_STRING: 'LineString',
+  LINEAR_RING: 'LinearRing',
+  POLYGON: 'Polygon',
+  MULTI_POINT: 'MultiPoint',
+  MULTI_LINE_STRING: 'MultiLineString',
+  MULTI_POLYGON: 'MultiPolygon',
+  GEOMETRY_COLLECTION: 'GeometryCollection'
 };
