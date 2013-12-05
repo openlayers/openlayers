@@ -13,7 +13,7 @@ goog.require('ol.TransformFunction');
  * Geometry types.
  *
  * @enum {string}
- * @todo stability experimental
+ * @todo stability stable
  */
 ol.geom.GeometryType = {
   POINT: 'Point',
