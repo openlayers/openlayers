@@ -171,7 +171,6 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
     source: this.source_
   });
   this.map_.addLayer(this.vector_);
-  console.log(response);
   var feature = new ol.Feature({
     geometry: new ol.geom.Point(
       response.results[0].geometry.coordinates)
