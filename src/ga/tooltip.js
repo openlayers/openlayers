@@ -1,4 +1,3 @@
-// FIXME Highlight -> wait for the usage of vector-api branch
 goog.provide('ga.Tooltip');
 
 goog.require('goog.dom');
@@ -25,6 +24,13 @@ goog.require('ol.source.Vector');
 goog.require('ol.parser.GeoJSON');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Polygon');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.GeometryCollection');
+
 
 
 /**
@@ -157,7 +163,7 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
           width: 3
         }),
         new ol.style.Shape({
-          size: 20,
+          size: 15,
           fill: new ol.style.Fill({
             color: '#ffff00'
           }),
@@ -171,11 +177,7 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
     source: this.source_
   });
   this.map_.addLayer(this.vector_);
-  var feature = new ol.Feature({
-    geometry: new ol.geom.Point(
-      response.results[0].geometry.coordinates)
-  });
-  this.source_.addFeatures(feature);
+  this.source_.addFeatures(this.createFeatures_(response));
   // Show popup
   for (var i in response['results']) {
     var jsonp = new goog.net.Jsonp(
@@ -204,6 +206,68 @@ ga.Tooltip.prototype.handleIdentifyError_ = function(payload) {
 ga.Tooltip.prototype.handleHtmlpopupError_ = function(payload) {
   alert("Unfortunately an error occured in tooltip html popup. " +
     "Sorry for inconvenience.");
+};
+
+ga.Tooltip.prototype.createFeatures_ = function(response) {
+  if (response['results'].length > 0) {
+    var features = new Array();
+    for (var i in response['results']) {
+      var feature;
+      if (response['results'][i].geometry.type === 'Point') {
+        feature = new ol.Feature({
+          geometry: new ol.geom.Point(
+            response['results'][i].geometry.coordinates
+          )
+        });
+      }
+      if (response['results'][i].geometry.type === 'LineString') {
+        feature = new ol.Feature({
+          geometry: new ol.geom.LineString(
+            response['results'][i].geometry.coordinates
+          )
+        });
+      }
+      if (response['results'][i].geometry.type === 'Polygon') {
+        feature = new ol.Feature({
+          geometry: new ol.geom.Polygon(
+            response['results'][i].geometry.coordinates
+          )
+        });
+      }
+      if (response['results'][i].geometry.type === 'MultiPoint') {
+        feature = new ol.Feature({
+          geometry: new ol.geom.MultiPoint(
+            response['results'][i].geometry.coordinates
+          )
+        });
+      }
+      if (response['results'][i].geometry.type === 'MultiLineString') {
+        feature = new ol.Feature({
+          geometry: new ol.geom.MultiLineString(
+            response['results'][i].geometry.coordinates
+          )
+        });
+      }
+      if (response['results'][i].geometry.type === 'MultiPolygon') {
+        feature = new ol.Feature({
+          geometry: new ol.geom.MultiPolygon(
+            response['results'][i].geometry.coordinates
+          )
+        });
+      }
+      if (response['results'][i].geometry.type === 'GeometryCollection') {
+        feature = new ol.Feature({
+          geometry: new ol.geom.GeometryCollection(
+            response['results'][i].geometry.coordinates
+          )
+        });
+      }
+      features.push(feature);
+    }
+    return features;
+  } else {
+    return null;
+  }
 };
 
 
