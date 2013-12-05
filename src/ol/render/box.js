@@ -3,6 +3,7 @@
 goog.provide('ol.render.Box');
 
 goog.require('goog.Disposable');
+goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('ol.geom.Polygon');
 goog.require('ol.render.EventType');
@@ -44,6 +45,12 @@ ol.render.Box = function(opt_style) {
 
   /**
    * @private
+   * @type {ol.geom.Polygon}
+   */
+  this.geometry_ = null;
+
+  /**
+   * @private
    * @type {ol.style.Style}
    */
   this.style_ = goog.isDef(opt_style) ? opt_style : new ol.style.Style({
@@ -61,23 +68,15 @@ goog.inherits(ol.render.Box, goog.Disposable);
 
 
 /**
- * @inheritDoc
- */
-ol.render.Box.prototype.disposeInternal = function() {
-  this.setMap(null);
-};
-
-
-/**
- * @param {ol.render.Event} event Event.
  * @private
+ * @param {ol.Extent} extent Extent.
+ * @return {ol.geom.Polygon} Geometry.
  */
-ol.render.Box.prototype.handleMapPostCompose_ = function(event) {
-  var render = event.getRender();
+ol.render.Box.prototype.createGeometry_ = function(extent) {
+  goog.asserts.assert(!goog.isNull(this.startCoordinate_));
+  goog.asserts.assert(!goog.isNull(this.endCoordinate_));
   var startCoordinate = this.startCoordinate_;
   var endCoordinate = this.endCoordinate_;
-
-  var extent = event.getFrameState().extent;
   var coordinates = [
     // outer ring
     [
@@ -94,10 +93,37 @@ ol.render.Box.prototype.handleMapPostCompose_ = function(event) {
       [endCoordinate[0], startCoordinate[1]]
     ]
   ];
-  var geometry = new ol.geom.Polygon(coordinates);
+  return new ol.geom.Polygon(coordinates);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.render.Box.prototype.disposeInternal = function() {
+  this.setMap(null);
+};
+
+
+/**
+ * @param {ol.render.Event} event Event.
+ * @private
+ */
+ol.render.Box.prototype.handleMapPostCompose_ = function(event) {
+  var extent = event.getFrameState().extent;
+  this.geometry_ = this.createGeometry_(extent);
   var style = this.style_;
+  var render = event.getRender();
   render.setFillStrokeStyle(style.getFill(), style.getStroke());
-  render.drawPolygonGeometry(geometry, null);
+  render.drawPolygonGeometry(this.geometry_, null);
+};
+
+
+/**
+ * @return {ol.geom.Polygon} Geometry.
+ */
+ol.render.Box.prototype.getGeometry = function() {
+  return this.geometry_;
 };
 
 
