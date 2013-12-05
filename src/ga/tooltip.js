@@ -177,7 +177,10 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
     source: this.source_
   });
   this.map_.addLayer(this.vector_);
-  this.source_.addFeatures(this.createFeatures_(response));
+  if (response['results'].length > 0) {
+    this.source_.addFeatures(this.createFeatures_(response));
+  }
+
   // Show popup
   for (var i in response['results']) {
     var jsonp = new goog.net.Jsonp(
