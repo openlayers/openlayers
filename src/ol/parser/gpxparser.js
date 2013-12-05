@@ -65,7 +65,7 @@ ol.parser.GPX = function(opt_options) {
       },
       'rte': function(node, obj) {
         if (this.extractRoutes || obj.force) {
-          var type = ol.geom.GeometryType.LINESTRING;
+          var type = ol.geom.GeometryType.LINE_STRING;
           var container = {
             properties: {},
             geometry: {

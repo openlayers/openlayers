@@ -53,5 +53,5 @@ ol.geom.GeometryCollection.prototype.clone = function() {
  * @inheritDoc
  */
 ol.geom.GeometryCollection.prototype.getType = function() {
-  return ol.geom.GeometryType.GEOMETRYCOLLECTION;
+  return ol.geom.GeometryType.GEOMETRY_COLLECTION;
 };

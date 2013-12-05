@@ -68,7 +68,7 @@ ol.style.Fill.prototype.createLiteral = function(featureOrType) {
   var literal = null;
 
   if (type === ol.geom.GeometryType.POLYGON ||
-      type === ol.geom.GeometryType.MULTIPOLYGON) {
+      type === ol.geom.GeometryType.MULTI_POLYGON) {
 
     var color = ol.expr.evaluateFeature(this.color_, feature);
     goog.asserts.assertString(

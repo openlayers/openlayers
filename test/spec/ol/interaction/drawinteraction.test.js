@@ -104,7 +104,7 @@ describe('ol.interaction.Draw', function() {
     beforeEach(function() {
       map.addInteraction(new ol.interaction.Draw({
         layer: layer,
-        type: ol.geom.GeometryType.MULTIPOINT
+        type: ol.geom.GeometryType.MULTI_POINT
       }));
     });
 
@@ -127,7 +127,7 @@ describe('ol.interaction.Draw', function() {
     beforeEach(function() {
       map.addInteraction(new ol.interaction.Draw({
         layer: layer,
-        type: ol.geom.GeometryType.LINESTRING
+        type: ol.geom.GeometryType.LINE_STRING
       }));
     });
 
@@ -196,7 +196,7 @@ describe('ol.interaction.Draw', function() {
     beforeEach(function() {
       map.addInteraction(new ol.interaction.Draw({
         layer: layer,
-        type: ol.geom.GeometryType.MULTILINESTRING
+        type: ol.geom.GeometryType.MULTI_LINE_STRING
       }));
     });
 
@@ -279,7 +279,7 @@ describe('ol.interaction.Draw', function() {
     beforeEach(function() {
       map.addInteraction(new ol.interaction.Draw({
         layer: layer,
-        type: ol.geom.GeometryType.MULTIPOLYGON
+        type: ol.geom.GeometryType.MULTI_POLYGON
       }));
     });
 

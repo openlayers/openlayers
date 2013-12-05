@@ -66,7 +66,7 @@ ol.geom.LinearRing.isClockwise = function(coordinates) {
  * @inheritDoc
  */
 ol.geom.LinearRing.prototype.getType = function() {
-  return ol.geom.GeometryType.LINEARRING;
+  return ol.geom.GeometryType.LINEAR_RING;
 };
 
 

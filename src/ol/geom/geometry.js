@@ -82,11 +82,11 @@ goog.inherits(ol.geom.GeometryEvent, goog.events.Event);
  */
 ol.geom.GeometryType = {
   POINT: 'point',
-  LINESTRING: 'linestring',
-  LINEARRING: 'linearring',
+  LINE_STRING: 'linestring',
+  LINEAR_RING: 'linearring',
   POLYGON: 'polygon',
-  MULTIPOINT: 'multipoint',
-  MULTILINESTRING: 'multilinestring',
-  MULTIPOLYGON: 'multipolygon',
-  GEOMETRYCOLLECTION: 'geometrycollection'
+  MULTI_POINT: 'multipoint',
+  MULTI_LINE_STRING: 'multilinestring',
+  MULTI_POLYGON: 'multipolygon',
+  GEOMETRY_COLLECTION: 'geometrycollection'
 };
