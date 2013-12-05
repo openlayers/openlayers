@@ -1,6 +1,6 @@
 // FIXME add rotation
 
-goog.provide('ol.render.DragBox');
+goog.provide('ol.render.Box');
 
 goog.require('goog.Disposable');
 goog.require('goog.events');
@@ -16,7 +16,7 @@ goog.require('ol.style.Style');
  * @extends {goog.Disposable}
  * @param {ol.style.Style=} opt_style Style.
  */
-ol.render.DragBox = function(opt_style) {
+ol.render.Box = function(opt_style) {
 
   /**
    * @private
@@ -57,13 +57,13 @@ ol.render.DragBox = function(opt_style) {
   });
 
 };
-goog.inherits(ol.render.DragBox, goog.Disposable);
+goog.inherits(ol.render.Box, goog.Disposable);
 
 
 /**
  * @inheritDoc
  */
-ol.render.DragBox.prototype.disposeInternal = function() {
+ol.render.Box.prototype.disposeInternal = function() {
   this.setMap(null);
 };
 
@@ -72,7 +72,7 @@ ol.render.DragBox.prototype.disposeInternal = function() {
  * @param {ol.render.Event} event Event.
  * @private
  */
-ol.render.DragBox.prototype.handleMapPostCompose_ = function(event) {
+ol.render.Box.prototype.handleMapPostCompose_ = function(event) {
   var render = event.getRender();
   var startCoordinate = this.startCoordinate_;
   var endCoordinate = this.endCoordinate_;
@@ -104,7 +104,7 @@ ol.render.DragBox.prototype.handleMapPostCompose_ = function(event) {
 /**
  * @private
  */
-ol.render.DragBox.prototype.requestMapRenderFrame_ = function() {
+ol.render.Box.prototype.requestMapRenderFrame_ = function() {
   if (!goog.isNull(this.map_) &&
       !goog.isNull(this.startCoordinate_) &&
       !goog.isNull(this.endCoordinate_)) {
@@ -116,7 +116,7 @@ ol.render.DragBox.prototype.requestMapRenderFrame_ = function() {
 /**
  * @param {ol.Map} map Map.
  */
-ol.render.DragBox.prototype.setMap = function(map) {
+ol.render.Box.prototype.setMap = function(map) {
   if (goog.isDef(this.postComposeListenKey_)) {
     goog.events.unlistenByKey(this.postComposeListenKey_);
     this.postComposeListenKey_ = undefined;
@@ -137,7 +137,7 @@ ol.render.DragBox.prototype.setMap = function(map) {
  * @param {ol.Coordinate} startCoordinate Start coordinate.
  * @param {ol.Coordinate} endCoordinate End coordinate.
  */
-ol.render.DragBox.prototype.setCoordinates =
+ol.render.Box.prototype.setCoordinates =
     function(startCoordinate, endCoordinate) {
   this.startCoordinate_ = startCoordinate;
   this.endCoordinate_ = endCoordinate;
