@@ -10,9 +10,9 @@ goog.provide('ol.ObjectEventType');
 
 goog.require('goog.array');
 goog.require('goog.events');
-goog.require('goog.events.EventTarget');
 goog.require('goog.functions');
 goog.require('goog.object');
+goog.require('ol.Observable');
 
 
 /**
@@ -81,7 +81,7 @@ ol.ObjectProperty = {
 /**
  * Base class implementing KVO (Key Value Observing).
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.Observable}
  * @param {Object.<string, *>=} opt_values Values.
  * @todo stability experimental
  */
@@ -98,7 +98,7 @@ ol.Object = function(opt_values) {
     this.setValues(opt_values);
   }
 };
-goog.inherits(ol.Object, goog.events.EventTarget);
+goog.inherits(ol.Object, ol.Observable);
 
 
 /**
@@ -336,34 +336,6 @@ ol.Object.prototype.notifyInternal_ = function(key) {
 
 
 /**
- * Listen for a certain type of event.
- * @param {string|Array.<string>} type The event type or array of event types.
- * @param {function(?): ?} listener The listener function.
- * @param {Object=} opt_scope Object is whose scope to call
- *     the listener.
- * @return {goog.events.Key} Unique key for the listener.
- * @todo stability experimental
- */
-ol.Object.prototype.on = function(type, listener, opt_scope) {
-  return goog.events.listen(this, type, listener, false, opt_scope);
-};
-
-
-/**
- * Listen once for a certain type of event.
- * @param {string|Array.<string>} type The event type or array of event types.
- * @param {function(?): ?} listener The listener function.
- * @param {Object=} opt_scope Object is whose scope to call
- *     the listener.
- * @return {goog.events.Key} Unique key for the listener.
- * @todo stability experimental
- */
-ol.Object.prototype.once = function(type, listener, opt_scope) {
-  return goog.events.listenOnce(this, type, listener, false, opt_scope);
-};
-
-
-/**
  * Sets a value.
  * @param {string} key Key name.
  * @param {*} value Value.
@@ -425,30 +397,6 @@ ol.Object.prototype.unbind = function(key) {
     delete accessors[key];
     this.values_[key] = value;
   }
-};
-
-
-/**
- * Unlisten for a certain type of event.
- * @param {string|Array.<string>} type The event type or array of event types.
- * @param {function(?): ?} listener The listener function.
- * @param {Object=} opt_scope Object is whose scope to call
- *     the listener.
- * @todo stability experimental
- */
-ol.Object.prototype.un = function(type, listener, opt_scope) {
-  goog.events.unlisten(this, type, listener, false, opt_scope);
-};
-
-
-/**
- * Removes an event listener which was added with `listen()` by the key returned
- * by `on()` or `once()`.
- * @param {goog.events.Key} key Key.
- * @todo stability experimental
- */
-ol.Object.prototype.unByKey = function(key) {
-  goog.events.unlistenByKey(key);
 };
 
 
