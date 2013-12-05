@@ -9,6 +9,24 @@ goog.require('ol.Extent');
 goog.require('ol.TransformFunction');
 
 
+/**
+ * Geometry types.
+ *
+ * @enum {string}
+ * @todo stability experimental
+ */
+ol.geom.GeometryType = {
+  POINT: 'Point',
+  LINE_STRING: 'LineString',
+  LINEAR_RING: 'LinearRing',
+  POLYGON: 'Polygon',
+  MULTI_POINT: 'MultiPoint',
+  MULTI_LINE_STRING: 'MultiLineString',
+  MULTI_POLYGON: 'MultiPolygon',
+  GEOMETRY_COLLECTION: 'GeometryCollection'
+};
+
+
 
 /**
  * @constructor
@@ -72,21 +90,3 @@ ol.geom.GeometryEvent = function(type, target, oldExtent) {
   this.oldExtent = oldExtent;
 };
 goog.inherits(ol.geom.GeometryEvent, goog.events.Event);
-
-
-/**
- * Geometry types.
- *
- * @enum {string}
- * @todo stability experimental
- */
-ol.geom.GeometryType = {
-  POINT: 'Point',
-  LINE_STRING: 'LineString',
-  LINEAR_RING: 'LinearRing',
-  POLYGON: 'Polygon',
-  MULTI_POINT: 'MultiPoint',
-  MULTI_LINE_STRING: 'MultiLineString',
-  MULTI_POLYGON: 'MultiPolygon',
-  GEOMETRY_COLLECTION: 'GeometryCollection'
-};
