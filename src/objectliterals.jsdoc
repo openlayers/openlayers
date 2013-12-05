@@ -327,6 +327,7 @@
  * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is shift key.
+ * @property {ol.style.Style} style Style for the box.
  * @todo stability experimental
  */
 

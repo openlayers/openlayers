@@ -5,6 +5,8 @@ goog.require('ol.Size');
 goog.require('ol.View2D');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.DragBox');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Style');
 
 
 
@@ -53,9 +55,26 @@ ol.interaction.DragZoom = function(opt_options) {
         });
       });
 
+  /**
+   * @private
+   * @type {ol.style.Style}
+   */
+  var style = goog.isDef(options.style) ?
+      options.style : new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: 'rgba(0,0,0,0.5)'
+        }),
+        image: null,
+        stroke: null,
+        text: null,
+        zIndex: 0
+      });
+
   goog.base(this, {
     behavior: behavior,
-    condition: condition
+    condition: condition,
+    style: style
   });
+
 };
 goog.inherits(ol.interaction.DragZoom, ol.interaction.DragBox);
