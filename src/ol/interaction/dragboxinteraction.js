@@ -1,0 +1,101 @@
+// FIXME draw drag box
+// FIXME works for View2D only
+
+goog.provide('ol.interaction.DragBox');
+
+goog.require('goog.asserts');
+goog.require('ol.events.ConditionType');
+goog.require('ol.events.condition');
+goog.require('ol.interaction.Drag');
+goog.require('ol.render.Box');
+
+
+/**
+ * @define {number} Hysterisis pixels.
+ */
+ol.DRAG_BOX_HYSTERESIS_PIXELS = 8;
+
+
+/**
+ * @const {number}
+ */
+ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED =
+    ol.DRAG_BOX_HYSTERESIS_PIXELS *
+    ol.DRAG_BOX_HYSTERESIS_PIXELS;
+
+
+
+/**
+ * @constructor
+ * @extends {ol.interaction.Drag}
+ * @param {olx.interaction.DragBoxOptions=} opt_options Options.
+ * @todo stability experimental
+ */
+ol.interaction.DragBox = function(opt_options) {
+
+  goog.base(this);
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
+
+  /**
+   * @private
+   * @type {function(ol.Map, ol.geom.Polygon)}
+   */
+  this.behavior_ = goog.isDef(options.behavior) ?
+      options.behavior : goog.nullFunction;
+
+  /**
+   * @type {ol.render.Box}
+   * @private
+   */
+  this.box_ = new ol.render.Box();
+
+  /**
+   * @private
+   * @type {ol.events.ConditionType}
+   */
+  this.condition_ = goog.isDef(options.condition) ?
+      options.condition : ol.events.condition.always;
+
+};
+goog.inherits(ol.interaction.DragBox, ol.interaction.Drag);
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.DragBox.prototype.handleDrag = function(mapBrowserEvent) {
+  this.box_.setCoordinates(
+      this.startCoordinate, mapBrowserEvent.getCoordinate());
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.DragBox.prototype.handleDragEnd =
+    function(mapBrowserEvent) {
+  this.box_.setMap(null);
+  if (this.deltaX * this.deltaX + this.deltaY * this.deltaY >=
+      ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED) {
+    var map = mapBrowserEvent.map;
+    var geometry = this.box_.getGeometry();
+    this.behavior_(map, geometry);
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.DragBox.prototype.handleDragStart =
+    function(mapBrowserEvent) {
+  var browserEvent = mapBrowserEvent.browserEvent;
+  if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
+    this.box_.setCoordinates(this.startCoordinate, this.startCoordinate);
+    this.box_.setMap(mapBrowserEvent.map);
+    return true;
+  } else {
+    return false;
+  }
+};
