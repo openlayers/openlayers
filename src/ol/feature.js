@@ -1,5 +1,6 @@
 goog.provide('ol.Feature');
 
+goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.Object');
@@ -18,9 +19,10 @@ ol.FeatureProperty = {
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {ol.geom.Geometry|Object.<string, *>} geometryOrValues Values.
+ * @param {ol.geom.Geometry|Object.<string, *>=} opt_geometryOrValues
+ *     Values or geometry.
  */
-ol.Feature = function(geometryOrValues) {
+ol.Feature = function(opt_geometryOrValues) {
 
   goog.base(this);
 
@@ -46,14 +48,16 @@ ol.Feature = function(geometryOrValues) {
       this, ol.Object.getChangeEventType(ol.FeatureProperty.GEOMETRY),
       this.handleGeometryChanged_, false, this);
 
-  if (geometryOrValues instanceof ol.geom.Geometry) {
-    var geometry = /** @type {ol.geom.Geometry} */ (geometryOrValues);
-    this.setGeometry(geometry);
-  } else {
-    var values = /** @type {Object.<string, *>} */ (geometryOrValues);
-    this.setValues(values);
+  if (goog.isDef(opt_geometryOrValues)) {
+    if (opt_geometryOrValues instanceof ol.geom.Geometry) {
+      var geometry = /** @type {ol.geom.Geometry} */ (opt_geometryOrValues);
+      this.setGeometry(geometry);
+    } else {
+      goog.asserts.assert(goog.isObject(opt_geometryOrValues));
+      var values = /** @type {Object.<string, *>} */ (opt_geometryOrValues);
+      this.setValues(values);
+    }
   }
-
 };
 goog.inherits(ol.Feature, ol.Object);
 
@@ -113,7 +117,7 @@ ol.Feature.prototype.handleGeometryChanged_ = function() {
     this.geometryChangeKey_ = null;
   }
   var geometry = this.getGeometry();
-  if (goog.isDef(geometry)) {
+  if (goog.isDefAndNotNull(geometry)) {
     this.geometryChangeKey_ = goog.events.listen(geometry,
         goog.events.EventType.CHANGE, this.handleGeometryChange_, false, this);
   }
