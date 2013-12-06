@@ -15,10 +15,12 @@ goog.require('ol.style.Style');
  * @param {ol.render.IReplayGroup} replayGroup Replay group.
  * @param {ol.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
+ * @param {number} squaredTolerance Squared tolerance.
  * @param {Object} data Opaque data object.
  */
-ol.renderer.vector.renderFeature = function(replayGroup, feature, style, data) {
-  var geometry = feature.getGeometry();
+ol.renderer.vector.renderFeature = function(
+    replayGroup, feature, style, squaredTolerance, data) {
+  var geometry = feature.getGeometry().getSimplifiedGeometry(squaredTolerance);
   var geometryRenderer =
       ol.renderer.vector.GEOMETRY_RENDERERS_[geometry.getType()];
   goog.asserts.assert(goog.isDef(geometryRenderer));

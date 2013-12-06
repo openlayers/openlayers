@@ -218,6 +218,8 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature =
     function(feature, resolution, styleFunction, replayGroup) {
   var loading = false;
   var styles = styleFunction(feature, resolution);
+  // simplify to a tolerance of half a CSS pixel
+  var squaredTolerance = resolution * resolution / 4;
   var i, ii, style, imageStyle, imageState;
   for (i = 0, ii = styles.length; i < ii; ++i) {
     style = styles[i];
@@ -228,12 +230,14 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature =
             this.handleImageStyleChange_, false, this);
         imageStyle.load();
       } else if (imageStyle.imageState == ol.style.ImageState.LOADED) {
-        ol.renderer.vector.renderFeature(replayGroup, feature, style, feature);
+        ol.renderer.vector.renderFeature(
+            replayGroup, feature, style, squaredTolerance, feature);
       }
       goog.asserts.assert(imageStyle.imageState != ol.style.ImageState.IDLE);
       loading = imageStyle.imageState == ol.style.ImageState.LOADING;
     } else {
-      ol.renderer.vector.renderFeature(replayGroup, feature, style, feature);
+      ol.renderer.vector.renderFeature(
+          replayGroup, feature, style, squaredTolerance, feature);
     }
   }
   return loading;
