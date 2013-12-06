@@ -3,6 +3,7 @@ goog.provide('ol.geom.MultiLineString');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.flat');
+goog.require('ol.geom.simplify');
 
 
 
@@ -57,6 +58,23 @@ ol.geom.MultiLineString.prototype.getLineStrings = function() {
     lineStrings.push(new ol.geom.LineString(coordinates[i]));
   }
   return lineStrings;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.MultiLineString.prototype.getSimplifiedGeometryInternal =
+    function(squaredTolerance) {
+  var simplifiedFlatCoordinates = [];
+  var simplifiedEnds = [];
+  simplifiedFlatCoordinates.length = ol.geom.simplify.douglasPeuckers(
+      this.flatCoordinates, 0, this.ends_, this.stride, squaredTolerance,
+      simplifiedFlatCoordinates, 0, simplifiedEnds);
+  var simplifiedMultiLineString = new ol.geom.MultiLineString(null);
+  simplifiedMultiLineString.setFlatCoordinates(
+      ol.geom.GeometryLayout.XY, simplifiedFlatCoordinates, simplifiedEnds);
+  return simplifiedMultiLineString;
 };
 
 
