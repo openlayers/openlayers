@@ -152,9 +152,6 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
         this.setAttributeNS(node, this.defaultNamespaceURI, 'handle',
             options.handle);
       }
-      if (goog.isDef(options.featureNS)) {
-        node.setAttribute('xmlns:' + options.featurePrefix, options.featureNS);
-      }
 
       // add in fields
       var original = feature.getOriginal();
@@ -200,7 +197,7 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
       return node;
     },
     /**
-     * @param {string|ol.geom.Geometry} obj Object.
+     * @param {string|number|ol.geom.Geometry} obj Object.
      * @return {Element} Node.
      * @this {ol.parser.XML}
      */
@@ -211,9 +208,8 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
         node.appendChild(
             this.getFilterParser().getGmlParser().writeGeometry(obj));
       } else {
-        goog.asserts.assertString(obj);
         node = this.createElementNS('wfs:Value');
-        node.appendChild(this.createTextNode(obj));
+        node.appendChild(this.createTextNode(/** @type {string} */ (obj)));
       }
       return node;
     },
@@ -221,7 +217,7 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
      * @param {{feature: ol.Feature,
      *          options: ol.parser.WFSWriteTransactionOptions}} obj Object.
      * @return {Element} Node.
-     * @this {ol.parser.ogc.GML}
+     * @this {ol.parser.XML}
      */
     'Delete': function(obj) {
       var feature = obj.feature;
@@ -231,11 +227,8 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
           (goog.isDef(options.featureNS) ? options.featurePrefix + ':' : '') +
           options.featureType);
       if (goog.isDef(options.handle)) {
-        this.setAttributeNS(node, options.defaultNamespaceURI, 'handle',
+        this.setAttributeNS(node, this.defaultNamespaceURI, 'handle',
             options.handle);
-      }
-      if (goog.isDef(options.featureNS)) {
-        node.setAttribute('xmlns:' + options.featurePrefix, options.featureNS);
       }
       var fid = feature.getId();
       goog.asserts.assert(goog.isDef(fid));
