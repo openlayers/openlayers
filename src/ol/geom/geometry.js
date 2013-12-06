@@ -91,6 +91,12 @@ ol.geom.Geometry = function() {
    * @private
    * @type {number}
    */
+  this.simplifiedGeometryMaxMinSquaredTolerance_ = 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
   this.simplifiedGeometryRevision_ = 0;
 
 };
@@ -207,9 +213,14 @@ ol.geom.Geometry.prototype.getRevision = function() {
 ol.geom.Geometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {
   if (this.simplifiedGeometryRevision_ != this.revision) {
     goog.object.clear(this.simplifiedGeometryCache_);
+    this.simplifiedGeometryMaxMinSquaredTolerance_ = 0;
     this.simplifiedGeometryRevision_ = this.revision;
   }
-  if (squaredTolerance < 0) {
+  // If squaredTolerance is negative or if we know that simplification will not
+  // have any effect then just return this.
+  if (squaredTolerance < 0 ||
+      (this.simplifiedGeometryMaxMinSquaredTolerance_ !== 0 &&
+       squaredTolerance <= this.simplifiedGeometryMaxMinSquaredTolerance_)) {
     return this;
   }
   var key = squaredTolerance.toString();
@@ -218,8 +229,20 @@ ol.geom.Geometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {
   } else {
     var simplifiedGeometry =
         this.getSimplifiedGeometryInternal(squaredTolerance);
-    this.simplifiedGeometryCache_[key] = simplifiedGeometry;
-    return simplifiedGeometry;
+    var simplifiedFlatCoordinates = simplifiedGeometry.getFlatCoordinates();
+    if (simplifiedFlatCoordinates.length < this.flatCoordinates.length) {
+      this.simplifiedGeometryCache_[key] = simplifiedGeometry;
+      return simplifiedGeometry;
+    } else {
+      // Simplification did not actually remove any coordinates.  We now know
+      // that any calls to getSimplifiedGeometry with a squaredTolerance less
+      // than or equal to the current squaredTolerance will also not have any
+      // effect.  This allows us to short circuit simplification (saving CPU
+      // cycles) and prevents the cache of simplified geometries from filling
+      // up with useless identical copies of this geometry (saving memory).
+      this.simplifiedGeometryMaxMinSquaredTolerance_ = squaredTolerance;
+      return this;
+    }
   }
 };
 

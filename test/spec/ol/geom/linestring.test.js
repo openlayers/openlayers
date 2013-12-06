@@ -161,7 +161,7 @@ describe('ol.geom.LineString', function() {
     var lineString;
     beforeEach(function() {
       lineString = new ol.geom.LineString(
-          [[0, 0], [1, 1], [3, 3], [5, 1], [6, 3], [7, 5]]);
+          [[0, 0], [1.5, 1], [3, 3], [5, 1], [6, 3.5], [7, 5]]);
     });
 
     describe('#getSimplifiedGeometry', function() {
@@ -186,7 +186,18 @@ describe('ol.geom.LineString', function() {
         expect(simplifiedGeometry1).not.to.be(simplifiedGeometry2);
       });
 
+      it('remembers the minimum squared tolerance', function() {
+        sinon.spy(lineString, 'getSimplifiedGeometryInternal');
+        var simplifiedGeometry1 = lineString.getSimplifiedGeometry(0.05);
+        expect(lineString.getSimplifiedGeometryInternal.callCount).to.be(1);
+        expect(simplifiedGeometry1).to.be(lineString);
+        var simplifiedGeometry2 = lineString.getSimplifiedGeometry(0.01);
+        expect(lineString.getSimplifiedGeometryInternal.callCount).to.be(1);
+        expect(simplifiedGeometry2).to.be(lineString);
+      });
+
     });
+
   });
 
 });
