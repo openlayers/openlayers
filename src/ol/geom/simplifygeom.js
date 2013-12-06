@@ -130,6 +130,34 @@ ol.geom.simplify.douglasPeucker = function(flatCoordinates, offset, end,
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
+ * @param {Array.<number>} ends Ends.
+ * @param {number} stride Stride.
+ * @param {number} squaredTolerance Squared tolerance.
+ * @param {Array.<number>} simplifiedFlatCoordinates Simplified flat
+ *     coordinates.
+ * @param {number} simplifiedOffset Simplified offset.
+ * @param {Array.<number>} simplifiedEnds Simplified ends.
+ * @return {number} Simplified offset.
+ */
+ol.geom.simplify.douglasPeuckers = function(flatCoordinates, offset,
+    ends, stride, squaredTolerance, simplifiedFlatCoordinates,
+    simplifiedOffset, simplifiedEnds) {
+  var i, ii;
+  for (i = 0, ii = ends.length; i < ii; ++i) {
+    var end = ends[i];
+    simplifiedOffset = ol.geom.simplify.douglasPeucker(
+        flatCoordinates, offset, end, stride, squaredTolerance,
+        simplifiedFlatCoordinates, simplifiedOffset);
+    simplifiedEnds.push(simplifiedOffset);
+    offset = end;
+  }
+  return simplifiedOffset;
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {number} squaredTolerance Squared tolerance.
