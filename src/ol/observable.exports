@@ -1,0 +1,4 @@
+@exportProperty ol.Observable.prototype.on
+@exportProperty ol.Observable.prototype.once
+@exportProperty ol.Observable.prototype.un
+@exportProperty ol.Observable.prototype.unByKey

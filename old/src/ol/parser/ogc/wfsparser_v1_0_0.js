@@ -72,7 +72,6 @@ ol.parser.ogc.WFS_v1_0_0 = function() {
     }
   });
   var filter = new ol.parser.ogc.Filter_v1_0_0();
-  delete filter.getGmlParser().featureNS;
   this.setFilterParser(filter);
 };
 goog.inherits(ol.parser.ogc.WFS_v1_0_0,
