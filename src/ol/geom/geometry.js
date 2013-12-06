@@ -5,6 +5,7 @@ goog.provide('ol.geom.Geometry');
 goog.require('goog.asserts');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
+goog.require('goog.object');
 goog.require('ol.Observable');
 goog.require('ol.extent');
 goog.require('ol.geom.flat');
@@ -79,6 +80,18 @@ ol.geom.Geometry = function() {
    * @type {number}
    */
   this.extentRevision = -1;
+
+  /**
+   * @private
+   * @type {Object.<string, ol.geom.Geometry>}
+   */
+  this.simplifiedGeometryCache_ = {};
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.simplifiedGeometryRevision_ = 0;
 
 };
 goog.inherits(ol.geom.Geometry, ol.Observable);
@@ -184,6 +197,41 @@ ol.geom.Geometry.prototype.getLayout = function() {
  */
 ol.geom.Geometry.prototype.getRevision = function() {
   return this.revision;
+};
+
+
+/**
+ * @param {number} squaredTolerance Squared tolerance.
+ * @return {ol.geom.Geometry} Simplified geometry.
+ */
+ol.geom.Geometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {
+  if (this.simplifiedGeometryRevision_ != this.revision) {
+    goog.object.clear(this.simplifiedGeometryCache_);
+    this.simplifiedGeometryRevision_ = this.revision;
+  }
+  if (squaredTolerance < 0) {
+    return this;
+  }
+  var key = squaredTolerance.toString();
+  if (this.simplifiedGeometryCache_.hasOwnProperty(key)) {
+    return this.simplifiedGeometryCache_[key];
+  } else {
+    var simplifiedGeometry =
+        this.getSimplifiedGeometryInternal(squaredTolerance);
+    this.simplifiedGeometryCache_[key] = simplifiedGeometry;
+    return simplifiedGeometry;
+  }
+};
+
+
+/**
+ * @param {number} squaredTolerance Squared tolerance.
+ * @return {ol.geom.Geometry} Simplified geometry.
+ * @protected
+ */
+ol.geom.Geometry.prototype.getSimplifiedGeometryInternal =
+    function(squaredTolerance) {
+  return this;
 };
 
 
