@@ -6,11 +6,11 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
-goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('ol.Coordinate');
 goog.require('ol.FrameState');
 goog.require('ol.MapEvent');
+goog.require('ol.Observable');
 goog.require('ol.Pixel');
 
 
@@ -103,7 +103,7 @@ ol.MapBrowserEvent.prototype.stopPropagation = function() {
 /**
  * @param {ol.Map} map The map with the viewport to listen to events on.
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.Observable}
  */
 ol.MapBrowserEventHandler = function(map) {
 
@@ -182,7 +182,7 @@ ol.MapBrowserEventHandler = function(map) {
       this.handleTouchStart_, false, this);
 
 };
-goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
+goog.inherits(ol.MapBrowserEventHandler, ol.Observable);
 
 
 /**
