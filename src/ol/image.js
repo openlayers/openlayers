@@ -4,11 +4,11 @@ goog.provide('ol.ImageState');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
-goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
+goog.require('ol.Observable');
 
 
 /**
@@ -25,7 +25,7 @@ ol.ImageState = {
 
 /**
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.Observable}
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {string} src Image source URI.
@@ -87,7 +87,7 @@ ol.Image = function(extent, resolution, src, crossOrigin, attributions) {
    */
   this.state = ol.ImageState.IDLE;
 };
-goog.inherits(ol.Image, goog.events.EventTarget);
+goog.inherits(ol.Image, ol.Observable);
 
 
 /**
