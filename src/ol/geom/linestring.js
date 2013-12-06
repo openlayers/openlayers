@@ -2,6 +2,7 @@ goog.provide('ol.geom.LineString');
 
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.flat');
+goog.require('ol.geom.simplify');
 
 
 
@@ -33,6 +34,22 @@ ol.geom.LineString.prototype.getCoordinates = function() {
 ol.geom.LineString.prototype.getLength = function() {
   return ol.geom.flat.lineStringLength(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.LineString.prototype.getSimplifiedGeometryInternal =
+    function(squaredTolerance) {
+  var simplifiedFlatCoordinates = [];
+  simplifiedFlatCoordinates.length = ol.geom.simplify.douglasPeucker(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+      squaredTolerance, simplifiedFlatCoordinates, 0);
+  var simplifiedLineString = new ol.geom.LineString(null);
+  simplifiedLineString.setFlatCoordinates(
+      ol.geom.GeometryLayout.XY, simplifiedFlatCoordinates);
+  return simplifiedLineString;
 };
 
 

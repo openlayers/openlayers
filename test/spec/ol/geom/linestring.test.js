@@ -156,6 +156,39 @@ describe('ol.geom.LineString', function() {
 
   });
 
+  describe('with a simple line string', function() {
+
+    var lineString;
+    beforeEach(function() {
+      lineString = new ol.geom.LineString(
+          [[0, 0], [1, 1], [3, 3], [5, 1], [6, 3], [7, 5]]);
+    });
+
+    describe('#getSimplifiedGeometry', function() {
+
+      it('returns the expectedResult', function() {
+        var simplifiedGeometry = lineString.getSimplifiedGeometry(1);
+        expect(simplifiedGeometry).to.be.an(ol.geom.LineString);
+        expect(simplifiedGeometry.getCoordinates()).to.eql(
+            [[0, 0], [3, 3], [5, 1], [7, 5]]);
+      });
+
+      it('caches by resolution', function() {
+        var simplifiedGeometry1 = lineString.getSimplifiedGeometry(1);
+        var simplifiedGeometry2 = lineString.getSimplifiedGeometry(1);
+        expect(simplifiedGeometry1).to.be(simplifiedGeometry2);
+      });
+
+      it('invalidates the cache when the geometry changes', function() {
+        var simplifiedGeometry1 = lineString.getSimplifiedGeometry(1);
+        lineString.setCoordinates(lineString.getCoordinates());
+        var simplifiedGeometry2 = lineString.getSimplifiedGeometry(1);
+        expect(simplifiedGeometry1).not.to.be(simplifiedGeometry2);
+      });
+
+    });
+  });
+
 });
 
 
