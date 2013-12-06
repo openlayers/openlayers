@@ -10,6 +10,7 @@ goog.provide('ol.ObjectEventType');
 
 goog.require('goog.array');
 goog.require('goog.events');
+goog.require('goog.events.Event');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('ol.Observable');
@@ -19,8 +20,31 @@ goog.require('ol.Observable');
  * @enum {string}
  */
 ol.ObjectEventType = {
+  BEFORECHANGE: 'beforechange',
   CHANGE: 'change'
 };
+
+
+
+/**
+ * Object representing a property change event.
+ *
+ * @param {string} type The event type.
+ * @param {string} key The property name.
+ * @extends {goog.events.Event}
+ * @constructor
+ */
+ol.ObjectEvent = function(type, key) {
+  goog.base(this, type);
+
+  /**
+   * The name of the property whose value is changing.
+   * @type {string}
+   */
+  this.key = key;
+
+};
+goog.inherits(ol.ObjectEvent, goog.events.Event);
 
 
 
@@ -331,7 +355,7 @@ ol.Object.prototype.notify = function(key) {
 ol.Object.prototype.notifyInternal_ = function(key) {
   var eventType = ol.Object.getChangeEventType(key);
   this.dispatchEvent(eventType);
-  this.dispatchEvent(ol.ObjectEventType.CHANGE);
+  this.dispatchEvent(new ol.ObjectEvent(ol.ObjectEventType.CHANGE, key));
 };
 
 
@@ -342,6 +366,7 @@ ol.Object.prototype.notifyInternal_ = function(key) {
  * @todo stability experimental
  */
 ol.Object.prototype.set = function(key, value) {
+  this.dispatchEvent(new ol.ObjectEvent(ol.ObjectEventType.BEFORECHANGE, key));
   var accessors = ol.Object.getAccessors(this);
   if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];

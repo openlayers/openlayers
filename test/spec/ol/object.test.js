@@ -121,7 +121,11 @@ describe('ol.Object', function() {
 
     it('dispatches generic change events to bound objects', function() {
       o.notify('k');
-      expect(listener2).to.be.called();
+      expect(listener2.calledOnce).to.be(true);
+      var args = listener2.firstCall.args;
+      expect(args).to.have.length(1);
+      var event = args[0];
+      expect(event.key).to.be('k');
     });
 
     it('dispatches events to bound objects', function() {
@@ -157,7 +161,25 @@ describe('ol.Object', function() {
 
     it('dispatches generic change events to object', function() {
       o.set('k', 1);
-      expect(listener2).to.be.called();
+      expect(listener2.calledOnce).to.be(true);
+      var args = listener2.firstCall.args;
+      expect(args).to.have.length(1);
+      var event = args[0];
+      expect(event.key).to.be('k');
+    });
+
+    it('dispatches beforechange events to object', function() {
+      o.set('k', 1);
+
+      var oldValue;
+      var beforeListener = sinon.spy(function(event) {
+        oldValue = o2.get(event.key);
+      });
+      o.on('beforechange', beforeListener);
+
+      o.set('k', 2);
+      expect(beforeListener.calledOnce).to.be(true);
+      expect(oldValue).to.be(1);
     });
 
     it('dispatches events to bound object', function() {
@@ -175,8 +197,32 @@ describe('ol.Object', function() {
 
     it('dispatches generic change events to object bound to', function() {
       o2.set('k', 2);
-      expect(listener2).to.be.called();
+      expect(listener2.calledOnce).to.be(true);
+      var args = listener2.firstCall.args;
+      expect(args).to.have.length(1);
+      var event = args[0];
+      expect(event.key).to.be('k');
     });
+
+    it('dispatches beforechange before changing bound objects', function() {
+      o2.set('k', 1);
+
+      var oldValue;
+      var beforeListener = sinon.spy(function(event) {
+        oldValue = o2.get(event.key);
+      });
+      o.on('beforechange', beforeListener);
+
+      o2.set('k', 2);
+      expect(beforeListener.calledOnce).to.be(true);
+      var args = listener2.firstCall.args;
+      expect(args).to.have.length(1);
+      var event = args[0];
+      expect(event.key).to.be('k');
+
+      expect(oldValue).to.be(1);
+    });
+
   });
 
   describe('bind', function() {
