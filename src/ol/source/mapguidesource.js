@@ -14,30 +14,15 @@ goog.require('ol.source.Image');
  * @param {ol.source.MapGuideOptions} options Options.
  */
 ol.source.MapGuide = function(options) {
-  var imageUrlFunction = goog.isDef(options.url) ?
-      ol.ImageUrlFunction.createFromParamsFunction(
-      options.url,
-      options.params,
-      goog.bind(this.getUrl, this)) :
-      ol.ImageUrlFunction.nullImageUrlFunction;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.metersPerUnit_ = options.metersPerUnit;
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.useOverlay_ = options.useOverlay;
-
-  /**
-   * @private
-   * @type {ol.Image}
-   */
-  this.image_ = null;
+  var imageUrlFunction;
+  if (goog.isDef(options.url)) {
+    var params = goog.isDef(options.params) ? options.params : {};
+    imageUrlFunction = ol.ImageUrlFunction.createFromParamsFunction(
+        options.url, params, goog.bind(this.getUrl, this));
+  } else {
+    imageUrlFunction = ol.ImageUrlFunction.nullImageUrlFunction;
+  }
 
   goog.base(this, {
     extent: options.extent,
@@ -45,6 +30,33 @@ ol.source.MapGuide = function(options) {
     resolutions: options.resolutions,
     imageUrlFunction: imageUrlFunction
   });
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.metersPerUnit_ = goog.isDef(options.metersPerUnit) ?
+      options.metersPerUnit : 1;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.ratio_ = goog.isDef(options.ratio) ? options.ratio : 1;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.useOverlay_ = goog.isDef(options.useOverlay) ?
+      options.useOverlay : false;
+
+  /**
+   * @private
+   * @type {ol.Image}
+   */
+  this.image_ = null;
+
 };
 goog.inherits(ol.source.MapGuide, ol.source.Image);
 
@@ -63,8 +75,10 @@ ol.source.MapGuide.prototype.getImage =
     return image;
   }
 
-  extent = extent.slice();
-  ol.extent.scaleFromCenter(extent, 1.0); //this.ratio_);
+  if (this.ratio_ != 1) {
+    extent = extent.slice();
+    ol.extent.scaleFromCenter(extent, this.ratio_);
+  }
   var width = (extent[2] - extent[0]) / resolution;
   var height = (extent[3] - extent[1]) / resolution;
   var size = [width, height];
@@ -75,9 +89,9 @@ ol.source.MapGuide.prototype.getImage =
 
 
 /**
- * @param {ol.Extent} extent The map extents
- * @param {ol.Size} size the viewport size
- * @return {number} The computed map scale
+ * @param {ol.Extent} extent The map extents.
+ * @param {ol.Size} size the viewport size.
+ * @return {number} The computed map scale.
  */
 ol.source.MapGuide.prototype.getScale = function(extent, size) {
   var mcsW = extent[2] - extent[0];
@@ -87,12 +101,11 @@ ol.source.MapGuide.prototype.getScale = function(extent, size) {
   var dpi = 96;
   var mpu = this.metersPerUnit_;
   var mpp = 0.0254 / dpi;
-  var scale = 0.0;
-  if (devH * mcsW > devW * mcsH)
-    scale = mcsW * mpu / (devW * mpp); //width-limited
-  else
-    scale = mcsH * mpu / (devH * mpp); //height-limited
-  return scale;
+  if (devH * mcsW > devW * mcsH) {
+    return mcsW * mpu / (devW * mpp); // width limited
+  } else {
+    return mcsH * mpu / (devH * mpp); // height limited
+  }
 };
 
 
