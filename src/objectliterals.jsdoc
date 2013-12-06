@@ -596,6 +596,32 @@
  */
 
 /**
+ * @typedef {Object} ol.parser.WFSWriteGetFeatureOptions
+ * @property {string} featureNS The namespace URI used for features.
+ * @property {string} featurePrefix The prefix for the feature namespace.
+ * @property {Array.<string>} featureTypes The feature type names.
+ * @property {string|undefined} srsName SRS name. No srsName attribute will be
+ *     set on geometries when this is not provided.
+ * @property {string|undefined} handle Handle.
+ * @property {string|undefined} outputFormat Output format.
+ * @property {Array.<Object>} nativeElements Native elements. Currently not
+ *     supported.
+ * @property {number} maxFeatures Maximum number of features to fetch.
+ */
+
+/**
+ * @typedef {Object} ol.parser.WFSWriteTransactionOptions
+ * @property {string} featureNS The namespace URI used for features.
+ * @property {string} featurePrefix The prefix for the feature namespace.
+ * @property {string} featureType The feature type name.
+ * @property {string|undefined} srsName SRS name. No srsName attribute will be
+ *     set on geometries when this is not provided.
+ * @property {string|undefined} handle Handle.
+ * @property {Array.<Object>} nativeElements Native elements. Currently not
+ *     supported.
+ */
+
+/**
  * @typedef {Object} ol.source.BingMapsOptions
  * @property {string|undefined} culture Culture code. Default is `en-us`.
  * @property {string} key Bing Maps API key. Get yours at
