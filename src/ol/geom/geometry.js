@@ -3,9 +3,9 @@
 goog.provide('ol.geom.Geometry');
 
 goog.require('goog.asserts');
-goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
+goog.require('ol.Observable');
 goog.require('ol.extent');
 goog.require('ol.geom.flat');
 
@@ -38,7 +38,7 @@ ol.geom.GeometryLayout = {
 
 /**
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.Observable}
  */
 ol.geom.Geometry = function() {
 
@@ -81,7 +81,7 @@ ol.geom.Geometry = function() {
   this.extentRevision = -1;
 
 };
-goog.inherits(ol.geom.Geometry, goog.events.EventTarget);
+goog.inherits(ol.geom.Geometry, ol.Observable);
 
 
 /**
