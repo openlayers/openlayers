@@ -310,6 +310,35 @@ describe('ol.geom.Polygon', function() {
 
   });
 
+  describe('with a simple polygon', function() {
+
+    var polygon;
+    beforeEach(function() {
+      polygon = new ol.geom.Polygon(
+          [[[3, 0], [1, 3], [0, 6], [2, 6], [3, 7], [4, 6], [6, 6], [4, 3]]]);
+    });
+
+    describe('#getSimplifiedGeometry', function() {
+
+      it('returns the expected result', function() {
+        var simplifiedGeometry = polygon.getSimplifiedGeometry(1);
+        expect(simplifiedGeometry).to.be.an(ol.geom.Polygon);
+        expect(simplifiedGeometry.getCoordinates()).to.eql(
+            [[[3, 0], [0, 6], [6, 6], [4, 3]]]);
+      });
+
+      it('caches multiple simplified geometries', function() {
+        var simplifiedGeometry1 = polygon.getSimplifiedGeometry(1);
+        var simplifiedGeometry2 = polygon.getSimplifiedGeometry(2);
+        var simplifiedGeometry3 = polygon.getSimplifiedGeometry(1);
+        var simplifiedGeometry4 = polygon.getSimplifiedGeometry(2);
+        expect(simplifiedGeometry1).to.be(simplifiedGeometry3);
+        expect(simplifiedGeometry2).to.be(simplifiedGeometry4);
+      });
+
+    });
+  });
+
 });
 
 
