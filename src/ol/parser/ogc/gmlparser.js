@@ -480,6 +480,16 @@ goog.inherits(ol.parser.ogc.GML, ol.parser.XML);
 
 
 /**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @return {Element} XML node representing the geometry.
+ */
+ol.parser.ogc.GML.prototype.writeGeometry = function(geometry) {
+  return this.featureNSWriters_['_geometry'].call(this, {value: geometry})
+      .firstChild;
+};
+
+
+/**
  * @param {string|Document|Element|Object} data Data to read.
  * @param {ol.parser.GMLReadOptions=} opt_options Read options.
  * @return {ol.parser.ReadFeaturesResult} An object representing the document.
@@ -644,4 +654,14 @@ ol.parser.ogc.GML.prototype.applyWriteOptions = function(obj, opt_options) {
   } else {
     this.axisOrientation = ol.proj.get(this.srsName).getAxisOrientation();
   }
+};
+
+
+/**
+ * @param {string} featureNS Feature namespace.
+ */
+ol.parser.ogc.GML.prototype.setFeatureNS = function(featureNS) {
+  this.featureNS = featureNS;
+  this.readers[featureNS] = this.featureNSReaders_;
+  this.writers[featureNS] = this.featureNSWriters_;
 };

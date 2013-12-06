@@ -122,8 +122,12 @@ ol.parser.ogc.WFS_v1.prototype.getFilterParser = function() {
  */
 ol.parser.ogc.WFS_v1.prototype.setFilterParser = function(filter) {
   this.filter_ = filter;
-  for (var uri in this.filter_.readers) {
-    for (var key in this.filter_.readers[uri]) {
+  if (goog.isDefAndNotNull(this.featureNS)) {
+    filter.setFeatureNS(this.featureNS);
+  }
+  var uri, key;
+  for (uri in this.filter_.readers) {
+    for (key in this.filter_.readers[uri]) {
       if (!goog.isDef(this.readers[uri])) {
         this.readers[uri] = {};
       }
@@ -145,6 +149,39 @@ ol.parser.ogc.WFS_v1.prototype.setFilterParser = function(filter) {
             this.filter_);
       }
     }
+  }
+};
+
+
+/**
+ * @param {string} featureType Feature type.
+ */
+ol.parser.ogc.WFS_v1.prototype.setFeatureType = function(featureType) {
+  this.featureType = featureType;
+  if (goog.isDefAndNotNull(this.filter_)) {
+    this.filter_.setFeatureType(featureType);
+  }
+};
+
+
+/**
+ * @param {string} featureNS Feature namespace.
+ */
+ol.parser.ogc.WFS_v1.prototype.setFeatureNS = function(featureNS) {
+  this.featureNS = featureNS;
+  if (goog.isDefAndNotNull(this.filter_)) {
+    this.setFilterParser(this.filter_);
+  }
+};
+
+
+/**
+ * @param {string} srsName SRS name.
+ */
+ol.parser.ogc.WFS_v1.prototype.setSrsName = function(srsName) {
+  this.srsName = srsName;
+  if (goog.isDefAndNotNull(this.filter_)) {
+    this.filter_.setSrsName(this.srsName);
   }
 };
 
