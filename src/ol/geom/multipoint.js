@@ -20,6 +20,27 @@ goog.inherits(ol.geom.MultiPoint, ol.geom.Geometry);
 
 
 /**
+ * @inheritDoc
+ */
+ol.geom.MultiPoint.prototype.closestPointXY =
+    function(x, y, closestPoint, minSquaredDistance) {
+  var flatCoordinates = this.flatCoordinates;
+  var stride = this.stride;
+  var i, ii;
+  for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
+    var squaredDistance = ol.geom.flat.squaredDistance(
+        x, y, flatCoordinates[i], flatCoordinates[i + 1]);
+    if (squaredDistance < minSquaredDistance) {
+      minSquaredDistance = squaredDistance;
+      closestPoint[0] = flatCoordinates[i];
+      closestPoint[1] = flatCoordinates[i + 1];
+    }
+  }
+  return minSquaredDistance;
+};
+
+
+/**
  * @return {ol.geom.RawMultiPoint} Coordinates.
  */
 ol.geom.MultiPoint.prototype.getCoordinates = function() {
