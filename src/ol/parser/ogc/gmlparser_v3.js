@@ -22,7 +22,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       'http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
       '1.0.0/gmlsf.xsd';
   goog.base(this, opt_options);
-  this.featureNSWiters_['_geometry'] = function(obj) {
+  this.featureNSWriters_['_geometry'] = function(obj) {
     var node = this.createElementNS('feature:' + obj.name,
         this.featureNS);
     var geometry = obj.value;

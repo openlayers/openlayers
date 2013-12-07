@@ -596,6 +596,30 @@
  */
 
 /**
+ * @typedef {Object} ol.parser.WFSWriteGetFeatureOptions
+ * @property {string} featureNS The namespace URI used for features.
+ * @property {string} featurePrefix The prefix for the feature namespace.
+ * @property {Array.<string>} featureTypes The feature type names.
+ * @property {string|undefined} srsName SRS name. No srsName attribute will be
+ *     set on geometries when this is not provided.
+ * @property {string|undefined} handle Handle.
+ * @property {string|undefined} outputFormat Output format.
+ * @property {number} maxFeatures Maximum number of features to fetch.
+ */
+
+/**
+ * @typedef {Object} ol.parser.WFSWriteTransactionOptions
+ * @property {string} featureNS The namespace URI used for features.
+ * @property {string} featurePrefix The prefix for the feature namespace.
+ * @property {string} featureType The feature type name.
+ * @property {string|undefined} srsName SRS name. No srsName attribute will be
+ *     set on geometries when this is not provided.
+ * @property {string|undefined} handle Handle.
+ * @property {Array.<Object>} nativeElements Native elements. Currently not
+ *     supported.
+ */
+
+/**
  * @typedef {Object} ol.source.BingMapsOptions
  * @property {string|undefined} culture Culture code. Default is `en-us`.
  * @property {string} key Bing Maps API key. Get yours at
@@ -604,6 +628,22 @@
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
  * @todo stability experimental
+ */
+
+/**
+ * @typedef {Object} ol.source.MapGuideOptions
+ * @property {string|undefined} url The mapagent url.
+ * @property {number|undefined} metersPerUnit The meters-per-unit value.
+ * @property {ol.Extent|undefined} extent Extent..
+ * @property {boolean|undefined} useOverlay If true, will use
+ *     GETDYNAMICMAPOVERLAYIMAGE.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {number|undefined} ratio Ratio. 1 means image requests are the size
+ *     of the map viewport, 2 means twice the size of the map viewport, and so
+ *     on.
+ * @property {Array.<number>|undefined} resolutions Resolutions. If specified,
+ *     requests will be made for these resolutions only.
+ * @property {Object|undefined} params Additional parameters.
  */
 
 /**

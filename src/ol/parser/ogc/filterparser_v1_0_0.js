@@ -114,7 +114,7 @@ ol.parser.ogc.Filter_v1_0_0 = function() {
       return node;
     }
   });
-  this.setGmlParser(new ol.parser.ogc.GML_v2({featureNS: 'http://foo'}));
+  this.setGmlParser(new ol.parser.ogc.GML_v2());
 };
 goog.inherits(ol.parser.ogc.Filter_v1_0_0,
     ol.parser.ogc.Filter_v1);
@@ -168,8 +168,7 @@ ol.parser.ogc.Filter_v1_0_0.prototype.writeSpatial_ = function(filter, name) {
   } else {
     var child;
     if (geom !== null) {
-      child = this.writeNode('_geometry', {value: geom},
-          this.gmlParser_.featureNS).firstChild;
+      child = this.gmlParser_.writeGeometry(geom);
     } else if (bbox.length === 4) {
       child = this.writeNode('Box', bbox,
           'http://www.opengis.net/gml');

@@ -52,15 +52,21 @@ ol.webgl.getContext = function(canvas, opt_attributes) {
  * @const
  * @type {boolean}
  */
-ol.webgl.SUPPORTED = (function() {
-  if (!('WebGLRenderingContext' in goog.global)) {
-    return false;
-  }
-  try {
-    var canvas = /** @type {HTMLCanvasElement} */
-        (goog.dom.createElement(goog.dom.TagName.CANVAS));
-    return !goog.isNull(ol.webgl.getContext(canvas));
-  } catch (e) {
-    return false;
-  }
-})();
+ol.webgl.SUPPORTED = (
+    /**
+     * @return {boolean} WebGL supported.
+     */
+    function() {
+      if (!('WebGLRenderingContext' in goog.global)) {
+        return false;
+      }
+      try {
+        var canvas = /** @type {HTMLCanvasElement} */
+            (goog.dom.createElement(goog.dom.TagName.CANVAS));
+        return !goog.isNull(ol.webgl.getContext(canvas, {
+          failIfMajorPerformanceCaveat: true
+        }));
+      } catch (e) {
+        return false;
+      }
+    })();

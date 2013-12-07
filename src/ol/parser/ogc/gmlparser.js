@@ -414,7 +414,7 @@ ol.parser.ogc.GML = function(opt_options) {
       }
     }
   };
-  this.featureNSWiters_ = {
+  this.featureNSWriters_ = {
     '_typeName': function(feature) {
       var node = this.createElementNS('feature:' + this.featureType,
           this.featureNS);
@@ -472,11 +472,21 @@ ol.parser.ogc.GML = function(opt_options) {
     }
   };
   if (goog.isDef(this.featureNS)) {
-    this.writers[this.featureNS] = this.featureNSWiters_;
+    this.writers[this.featureNS] = this.featureNSWriters_;
   }
   goog.base(this);
 };
 goog.inherits(ol.parser.ogc.GML, ol.parser.XML);
+
+
+/**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @return {Element} XML node representing the geometry.
+ */
+ol.parser.ogc.GML.prototype.writeGeometry = function(geometry) {
+  return this.featureNSWriters_['_geometry'].call(this, {value: geometry})
+      .firstChild;
+};
 
 
 /**
@@ -541,7 +551,7 @@ ol.parser.ogc.GML.prototype.readNode = function(node, obj, opt_first) {
       (/^(.*:)?featureMembers?$/).test(node.parentNode.nodeName))) {
     this.featureType = node.nodeName.split(':').pop();
     this.readers[node.namespaceURI] = this.featureNSReaders_;
-    this.writers[node.namespaceURI] = this.featureNSWiters_;
+    this.writers[node.namespaceURI] = this.featureNSWriters_;
     this.featureNS = node.namespaceURI;
     this.autoConfig = true;
   }
@@ -644,4 +654,14 @@ ol.parser.ogc.GML.prototype.applyWriteOptions = function(obj, opt_options) {
   } else {
     this.axisOrientation = ol.proj.get(this.srsName).getAxisOrientation();
   }
+};
+
+
+/**
+ * @param {string} featureNS Feature namespace.
+ */
+ol.parser.ogc.GML.prototype.setFeatureNS = function(featureNS) {
+  this.featureNS = featureNS;
+  this.readers[featureNS] = this.featureNSReaders_;
+  this.writers[featureNS] = this.featureNSWriters_;
 };
