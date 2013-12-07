@@ -21,6 +21,24 @@ goog.inherits(ol.geom.Point, ol.geom.Geometry);
 
 
 /**
+ * @inheritDoc
+ */
+ol.geom.Point.prototype.closestPointXY =
+    function(x, y, closestPoint, minSquaredDistance) {
+  var flatCoordinates = this.flatCoordinates;
+  var squaredDistance = ol.geom.flat.squaredDistance(
+      x, y, flatCoordinates[0], flatCoordinates[1]);
+  if (squaredDistance < minSquaredDistance) {
+    closestPoint[0] = flatCoordinates[0];
+    closestPoint[1] = flatCoordinates[1];
+    return squaredDistance;
+  } else {
+    return minSquaredDistance;
+  }
+};
+
+
+/**
  * @return {ol.geom.RawPoint} Coordinates.
  */
 ol.geom.Point.prototype.getCoordinates = function() {
