@@ -6,6 +6,39 @@ goog.require('goog.vec.Mat4');
 
 
 /**
+ * Returns the point on the line segment (x1, y1) to (x2, y2) that is closest to
+ * the point (x, y).
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @param {number} x1 X1.
+ * @param {number} y1 Y1.
+ * @param {number} x2 X2.
+ * @param {number} y2 Y2.
+ * @param {Array.<number>} closestPoint Closest point.
+ */
+ol.geom.flat.closestPoint = function(x, y, x1, y1, x2, y2, closestPoint) {
+  var dx = x2 - x1;
+  var dy = y2 - y1;
+  if (dx === 0 && dy === 0) {
+    closestPoint[0] = x1;
+    closestPoint[1] = y1;
+  } else {
+    var t = ((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy);
+    if (t > 1) {
+      closestPoint[0] = x2;
+      closestPoint[1] = y2;
+    } else if (t > 0) {
+      closestPoint[0] = x1 + dx * t;
+      closestPoint[1] = y1 + dy * t;
+    } else {
+      closestPoint[0] = x1;
+      closestPoint[1] = y1;
+    }
+  }
+};
+
+
+/**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {ol.Coordinate} coordinate Coordinate.
