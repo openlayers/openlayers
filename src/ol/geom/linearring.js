@@ -2,6 +2,7 @@ goog.provide('ol.geom.LinearRing');
 
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.flat');
+goog.require('ol.geom.simplify');
 
 
 
@@ -33,6 +34,22 @@ ol.geom.LinearRing.prototype.getArea = function() {
 ol.geom.LinearRing.prototype.getCoordinates = function() {
   return ol.geom.flat.inflateCoordinates(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.LinearRing.prototype.getSimplifiedGeometryInternal =
+    function(squaredTolerance) {
+  var simplifiedFlatCoordinates = [];
+  simplifiedFlatCoordinates.length = ol.geom.simplify.douglasPeucker(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+      squaredTolerance, simplifiedFlatCoordinates, 0);
+  var simplifiedLinearRing = new ol.geom.LinearRing(null);
+  simplifiedLinearRing.setFlatCoordinates(
+      ol.geom.GeometryLayout.XY, simplifiedFlatCoordinates);
+  return simplifiedLinearRing;
 };
 
 
