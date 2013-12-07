@@ -166,6 +166,67 @@ ol.source.Vector.prototype.getAllFeaturesInExtent = function(extent) {
 
 
 /**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {ol.Feature} Closest feature.
+ */
+ol.source.Vector.prototype.getClosestFeatureToCoordinate =
+    function(coordinate) {
+  // Find the closest feature using branch and bound.  We start searching an
+  // infinite extent, and find the distance from the first feature found.  This
+  // becomes the closest feature.  We then compute a smaller extent which any
+  // closer feature must overlap.  We search again with this smaller extent,
+  // trying to find a closer feature.  The loop continues until no closer
+  // feature can be found.
+  var x = coordinate[0];
+  var y = coordinate[1];
+  var closestFeature = null;
+  var closestPoint = [NaN, NaN];
+  var minSquaredDistance = Infinity;
+  var extent = [-Infinity, -Infinity, Infinity, Infinity];
+  /** @type {Object.<string, boolean>} */
+  var visitedFeatures = {};
+  var callback =
+      /**
+       * @param {ol.Feature} feature Feature.
+       * @return {ol.Feature|undefined} Closer feature.
+       */
+      function(feature) {
+    // Make sure that we only test against each feature once.  This both avoids
+    // unnecessary calculation and prevents an infinite loop which would occur
+    // if the coordinate is exactly half way between two features.
+    var featureKey = goog.getUid(feature).toString();
+    if (visitedFeatures.hasOwnProperty(featureKey)) {
+      return undefined;
+    } else {
+      visitedFeatures[featureKey] = true;
+    }
+    var geometry = feature.getGeometry();
+    if (goog.isNull(geometry)) {
+      return undefined;
+    }
+    var previousMinSquaredDistance = minSquaredDistance;
+    minSquaredDistance = geometry.closestPointXY(
+        x, y, closestPoint, minSquaredDistance);
+    goog.asserts.assert(minSquaredDistance <= previousMinSquaredDistance);
+    if (minSquaredDistance < previousMinSquaredDistance) {
+      closestFeature = feature;
+      var minDistance = Math.sqrt(minSquaredDistance);
+      extent[0] = closestPoint[0] - minDistance;
+      extent[1] = closestPoint[1] - minDistance;
+      extent[2] = closestPoint[0] + minDistance;
+      extent[3] = closestPoint[1] + minDistance;
+      return closestFeature;
+    } else {
+      return undefined;
+    }
+  };
+  while (goog.isDef(this.rBush_.forEachInExtent(extent, callback))) {
+  }
+  return closestFeature;
+};
+
+
+/**
  * @param {goog.events.Event} event Event.
  * @private
  */
