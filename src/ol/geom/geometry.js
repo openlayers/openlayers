@@ -104,6 +104,30 @@ goog.inherits(ol.geom.Geometry, ol.Observable);
 
 
 /**
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @param {ol.Coordinate} closestPoint Closest point.
+ * @param {number} minSquaredDistance Minimum squared distance.
+ * @return {number} Minimum squared distance.
+ */
+ol.geom.Geometry.prototype.closestPointXY = goog.abstractMethod;
+
+
+/**
+ * @param {ol.Coordinate} point Point.
+ * @param {ol.Coordinate=} opt_closestPoint Closest point.
+ * @return {ol.Coordinate} Closest point.
+ */
+ol.geom.Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
+  // FIXME check extent
+  var closestPoint = goog.isDef(opt_closestPoint) ?
+      opt_closestPoint : [NaN, NaN];
+  this.closestPointXY(point[0], point[1], closestPoint, Infinity);
+  return closestPoint;
+};
+
+
+/**
  * @param {number} stride Stride.
  * @private
  * @return {ol.geom.GeometryLayout} layout Layout.
