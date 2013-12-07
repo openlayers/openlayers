@@ -1,6 +1,7 @@
 goog.provide('ol.geom.LinearRing');
 
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.closest');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.simplify');
 
@@ -13,10 +14,41 @@ goog.require('ol.geom.simplify');
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
 ol.geom.LinearRing = function(coordinates, opt_layout) {
+
   goog.base(this);
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.maxDelta_ = -1;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.maxDeltaRevision_ = -1;
+
   this.setCoordinates(coordinates, opt_layout);
+
 };
 goog.inherits(ol.geom.LinearRing, ol.geom.Geometry);
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.LinearRing.prototype.closestPointXY =
+    function(x, y, closestPoint, minSquaredDistance) {
+  if (this.maxDeltaRevision_ != this.revision) {
+    this.maxDelta_ = Math.sqrt(ol.geom.closest.getMaxSquaredDelta(
+        this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));
+    this.maxDeltaRevision_ = this.revision;
+  }
+  return ol.geom.closest.getClosestPoint(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+      this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
+};
 
 
 /**
