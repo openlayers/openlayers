@@ -6,9 +6,12 @@ goog.require('ol.control');
 goog.require('ol.control.ScaleLine');
 goog.require('ol.control.ScaleLineUnits');
 goog.require('ol.format.GeoJSON');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.proj');
+goog.require('ol.shape');
 goog.require('ol.source.TileWMS');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Stroke');
@@ -63,18 +66,73 @@ var styleArray = [new ol.style.Style({
     color: 'rgba(128,0,128,0.8)',
     lineCap: 'round',
     lineJoin: 'round',
-    width: 5
+    width: 3
   })
 })];
 
+var vectorSource = new ol.source.Vector();
 $.getJSON('data/mtbland.geojson', function(data) {
   var format = new ol.format.GeoJSON();
-  var vectorSource = new ol.source.Vector();
   format.readObject(data, vectorSource.addFeature, vectorSource);
-  map.getLayers().push(new ol.layer.Vector({
+  var vectorLayer = new ol.layer.Vector({
     source: vectorSource,
     styleFunction: function(feature) {
       return styleArray;
     }
-  }));
+  });
+  map.getLayers().push(vectorLayer);
+});
+
+var point = null;
+var line = null;
+var displaySnap = function(coordinate) {
+  var closestFeature = vectorSource.getClosestFeatureToCoordinate(coordinate);
+  if (closestFeature === null) {
+    point = null;
+    line = null;
+  } else {
+    var geometry = closestFeature.getGeometry();
+    var closestPoint = geometry.getClosestPoint(coordinate);
+    if (point === null) {
+      point = new ol.geom.Point(closestPoint);
+    } else {
+      point.setCoordinates(closestPoint);
+    }
+    if (line === null) {
+      line = new ol.geom.LineString([coordinate, closestPoint]);
+    } else {
+      line.setCoordinates([coordinate, closestPoint]);
+    }
+  }
+  map.requestRenderFrame();
+};
+
+$(map.getViewport()).on('mousemove', function(evt) {
+  var coordinate = map.getEventCoordinate(evt.originalEvent);
+  displaySnap(coordinate);
+});
+
+map.on('singleclick', function(evt) {
+  var coordinate = evt.getCoordinate();
+  displaySnap(coordinate);
+});
+
+var imageStyle = ol.shape.renderCircle(5, null, new ol.style.Stroke({
+  color: 'rgba(255,0,0,0.9)',
+  width: 1
+}));
+var strokeStyle = new ol.style.Stroke({
+  color: 'rgba(255,0,0,0.9)',
+  width: 1
+});
+map.on('postcompose', function(evt) {
+  var render = evt.getRender();
+  if (point !== null) {
+    render.setImageStyle(imageStyle);
+    render.drawPointGeometry(point);
+  }
+  if (line !== null) {
+    render.setFillStrokeStyle(null, strokeStyle);
+    render.drawLineStringGeometry(line);
+  }
 });
