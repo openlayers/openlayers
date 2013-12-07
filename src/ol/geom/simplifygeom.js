@@ -26,6 +26,8 @@
 
 goog.provide('ol.geom.simplify');
 
+goog.require('ol.geom.flat');
+
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -98,8 +100,8 @@ ol.geom.simplify.douglasPeucker = function(flatCoordinates, offset, end,
     for (i = first + stride; i < last; i += stride) {
       var x = flatCoordinates[i];
       var y = flatCoordinates[i + 1];
-      var squaredDistance =
-          ol.geom.simplify.squaredSegmentDistance(x, y, x1, y1, x2, y2);
+      var squaredDistance = ol.geom.flat.squaredSegmentDistance(
+          x, y, x1, y1, x2, y2);
       if (squaredDistance > maxSquaredDistance) {
         index = i;
         maxSquaredDistance = squaredDistance;
@@ -216,7 +218,7 @@ ol.geom.simplify.radialDistance = function(flatCoordinates, offset, end,
   for (offset += stride; offset < end; offset += stride) {
     x2 = flatCoordinates[offset];
     y2 = flatCoordinates[offset + 1];
-    if (ol.geom.simplify.squaredDistance(x1, y1, x2, y2) > squaredTolerance) {
+    if (ol.geom.flat.squaredDistance(x1, y1, x2, y2) > squaredTolerance) {
       // copy point at offset
       simplifiedFlatCoordinates[simplifiedOffset++] = x2;
       simplifiedFlatCoordinates[simplifiedOffset++] = y2;
@@ -230,47 +232,4 @@ ol.geom.simplify.radialDistance = function(flatCoordinates, offset, end,
     simplifiedFlatCoordinates[simplifiedOffset++] = y2;
   }
   return simplifiedOffset;
-};
-
-
-/**
- * Returns the square of the distance between the points (x1, y1) and (x2, y2).
- * @param {number} x1 X1.
- * @param {number} y1 Y1.
- * @param {number} x2 X2.
- * @param {number} y2 Y2.
- * @return {number} Squared distance.
- */
-ol.geom.simplify.squaredDistance = function(x1, y1, x2, y2) {
-  var dx = x2 - x1;
-  var dy = y2 - y1;
-  return dx * dx + dy * dy;
-};
-
-
-/**
- * Returns the square of the closest distance between the point (x, y) and the
- * line segment (x1, y1) to (x2, y2).
- * @param {number} x X.
- * @param {number} y Y.
- * @param {number} x1 X1.
- * @param {number} y1 Y1.
- * @param {number} x2 X2.
- * @param {number} y2 Y2.
- * @return {number} Squared distance.
- */
-ol.geom.simplify.squaredSegmentDistance = function(x, y, x1, y1, x2, y2) {
-  var dx = x2 - x1;
-  var dy = y2 - y1;
-  if (dx !== 0 || dy !== 0) {
-    var t = ((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy);
-    if (t > 1) {
-      x1 = x2;
-      y1 = y2;
-    } else if (t > 0) {
-      x1 += dx * t;
-      y1 += dy * t;
-    }
-  }
-  return ol.geom.simplify.squaredDistance(x, y, x1, y1);
 };
