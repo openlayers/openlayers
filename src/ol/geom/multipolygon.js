@@ -2,6 +2,7 @@ goog.provide('ol.geom.MultiPolygon');
 
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.Polygon');
+goog.require('ol.geom.closest');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.simplify');
 
@@ -35,10 +36,38 @@ ol.geom.MultiPolygon = function(coordinates, opt_layout) {
    */
   this.interiorPoints_ = null;
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.maxDelta_ = -1;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.maxDeltaRevision_ = -1;
+
   this.setCoordinates(coordinates, opt_layout);
 
 };
 goog.inherits(ol.geom.MultiPolygon, ol.geom.Geometry);
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.MultiPolygon.prototype.closestPointXY =
+    function(x, y, closestPoint, minSquaredDistance) {
+  if (this.maxDeltaRevision_ != this.revision) {
+    this.maxDelta_ = Math.sqrt(ol.geom.closest.getssMaxSquaredDelta(
+        this.flatCoordinates, 0, this.endss_, this.stride, 0));
+    this.maxDeltaRevision_ = this.revision;
+  }
+  return ol.geom.closest.getssClosestPoint(
+      this.flatCoordinates, 0, this.endss_, this.stride,
+      this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
+};
 
 
 /**
