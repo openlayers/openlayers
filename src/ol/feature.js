@@ -48,7 +48,7 @@ ol.Feature = function(opt_geometryOrValues) {
       this, ol.Object.getChangeEventType(ol.FeatureProperty.GEOMETRY),
       this.handleGeometryChanged_, false, this);
 
-  if (goog.isDef(opt_geometryOrValues)) {
+  if (goog.isDefAndNotNull(opt_geometryOrValues)) {
     if (opt_geometryOrValues instanceof ol.geom.Geometry) {
       var geometry = /** @type {ol.geom.Geometry} */ (opt_geometryOrValues);
       this.setGeometry(geometry);
@@ -57,6 +57,8 @@ ol.Feature = function(opt_geometryOrValues) {
       var values = /** @type {Object.<string, *>} */ (opt_geometryOrValues);
       this.setValues(values);
     }
+  } else {
+    this.setGeometry(null);
   }
 };
 goog.inherits(ol.Feature, ol.Object);

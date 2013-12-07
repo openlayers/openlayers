@@ -251,8 +251,8 @@ ol.geom.Geometry.prototype.setLayout =
 ol.geom.Geometry.prototype.transform = function(transformFn) {
   if (!goog.isNull(this.flatCoordinates)) {
     transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
+    this.dispatchChangeEvent();
   }
-  this.dispatchChangeEvent();
 };
 
 
