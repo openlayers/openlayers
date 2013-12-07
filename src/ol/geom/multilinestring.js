@@ -2,6 +2,7 @@ goog.provide('ol.geom.MultiLineString');
 
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.closest');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.simplify');
 
@@ -23,10 +24,38 @@ ol.geom.MultiLineString = function(coordinates, opt_layout) {
    */
   this.ends_ = [];
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.maxDelta_ = -1;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.maxDeltaRevision_ = -1;
+
   this.setCoordinates(coordinates, opt_layout);
 
 };
 goog.inherits(ol.geom.MultiLineString, ol.geom.Geometry);
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.MultiLineString.prototype.closestPointXY =
+    function(x, y, closestPoint, minSquaredDistance) {
+  if (this.maxDeltaRevision_ != this.revision) {
+    this.maxDelta_ = Math.sqrt(ol.geom.closest.getsMaxSquaredDelta(
+        this.flatCoordinates, 0, this.ends_, this.stride, 0));
+    this.maxDeltaRevision_ = this.revision;
+  }
+  return ol.geom.closest.getsClosestPoint(
+      this.flatCoordinates, 0, this.ends_, this.stride,
+      this.maxDelta_, false, x, y, closestPoint, minSquaredDistance);
+};
 
 
 /**
