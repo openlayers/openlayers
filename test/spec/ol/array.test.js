@@ -73,6 +73,29 @@ describe('ol.array', function() {
       expect(ol.array.linearFindNearest(arr, 50, -1)).to.eql(2);
     });
   });
+
+  describe.only('reverseSubArray', function() {
+    it('returns expected value', function() {
+      var arr;
+      var expected = [1, 2, 3, 4, 5, 6];
+
+      arr = [1, 5, 4, 3, 2, 6];
+      ol.array.reverseSubArray(arr, 1, 4);
+      expect(arr).to.eql(expected);
+
+      arr = [3, 2, 1, 4, 5, 6];
+      ol.array.reverseSubArray(arr, 0, 2);
+      expect(arr).to.eql(expected);
+
+      arr = [1, 2, 3, 6, 5, 4];
+      ol.array.reverseSubArray(arr, 3, 5);
+      expect(arr).to.eql(expected);
+
+      arr = [6, 5, 4, 3, 2, 1];
+      ol.array.reverseSubArray(arr, 0, 5);
+      expect(arr).to.eql(expected);
+    });
+  });
 });
 
 goog.require('ol.array');
