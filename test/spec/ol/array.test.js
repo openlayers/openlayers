@@ -74,7 +74,7 @@ describe('ol.array', function() {
     });
   });
 
-  describe.only('reverseSubArray', function() {
+  describe('reverseSubArray', function() {
     it('returns expected value', function() {
       var arr;
       var expected = [1, 2, 3, 4, 5, 6];
