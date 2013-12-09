@@ -85,10 +85,11 @@ ol.geom.closest.getssMaxSquaredDelta =
  * @param {number} y Y.
  * @param {Array.<number>} closestPoint Closest point.
  * @param {number} minSquaredDistance Minimum squared distance.
+ * @param {Array.<number>=} opt_tmpPoint Temporary point object.
  * @return {number} Minimum squared distance.
  */
 ol.geom.closest.getClosestPoint = function(flatCoordinates, offset, end, stride,
-    maxDelta, isRing, x, y, closestPoint, minSquaredDistance) {
+    maxDelta, isRing, x, y, closestPoint, minSquaredDistance, opt_tmpPoint) {
   if (offset == end) {
     return minSquaredDistance;
   }
@@ -106,17 +107,18 @@ ol.geom.closest.getClosestPoint = function(flatCoordinates, offset, end, stride,
     }
   }
   goog.asserts.assert(maxDelta > 0);
-  var point = [NaN, NaN];
+  var tmpPoint = goog.isDef(opt_tmpPoint) ? opt_tmpPoint : [NaN, NaN];
   var index = offset + stride;
   while (index < end) {
     ol.geom.flat.closestPoint(x, y,
         flatCoordinates[index - stride], flatCoordinates[index - stride + 1],
-        flatCoordinates[index], flatCoordinates[index + 1], point);
-    squaredDistance = ol.geom.flat.squaredDistance(x, y, point[0], point[1]);
+        flatCoordinates[index], flatCoordinates[index + 1], tmpPoint);
+    squaredDistance = ol.geom.flat.squaredDistance(
+        x, y, tmpPoint[0], tmpPoint[1]);
     if (squaredDistance < minSquaredDistance) {
       minSquaredDistance = squaredDistance;
-      closestPoint[0] = point[0];
-      closestPoint[1] = point[1];
+      closestPoint[0] = tmpPoint[0];
+      closestPoint[1] = tmpPoint[1];
       index += stride;
     } else {
       index += stride * Math.max(
@@ -128,12 +130,13 @@ ol.geom.closest.getClosestPoint = function(flatCoordinates, offset, end, stride,
     // check the closing segment
     ol.geom.flat.closestPoint(x, y,
         flatCoordinates[end - stride], flatCoordinates[end - stride + 1],
-        flatCoordinates[offset], flatCoordinates[offset + 1], point);
-    squaredDistance = ol.geom.flat.squaredDistance(x, y, point[0], point[1]);
+        flatCoordinates[offset], flatCoordinates[offset + 1], tmpPoint);
+    squaredDistance = ol.geom.flat.squaredDistance(
+        x, y, tmpPoint[0], tmpPoint[1]);
     if (squaredDistance < minSquaredDistance) {
       minSquaredDistance = squaredDistance;
-      closestPoint[0] = point[0];
-      closestPoint[1] = point[1];
+      closestPoint[0] = tmpPoint[0];
+      closestPoint[1] = tmpPoint[1];
     }
   }
   return minSquaredDistance;
@@ -151,16 +154,19 @@ ol.geom.closest.getClosestPoint = function(flatCoordinates, offset, end, stride,
  * @param {number} y Y.
  * @param {Array.<number>} closestPoint Closest point.
  * @param {number} minSquaredDistance Minimum squared distance.
+ * @param {Array.<number>=} opt_tmpPoint Temporary point object.
  * @return {number} Minimum squared distance.
  */
 ol.geom.closest.getsClosestPoint = function(flatCoordinates, offset, ends,
-    stride, maxDelta, isRing, x, y, closestPoint, minSquaredDistance) {
+    stride, maxDelta, isRing, x, y, closestPoint, minSquaredDistance,
+    opt_tmpPoint) {
+  var tmpPoint = goog.isDef(opt_tmpPoint) ? opt_tmpPoint : [NaN, NaN];
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
     minSquaredDistance = ol.geom.closest.getClosestPoint(
         flatCoordinates, offset, end, stride,
-        maxDelta, isRing, x, y, closestPoint, minSquaredDistance);
+        maxDelta, isRing, x, y, closestPoint, minSquaredDistance, tmpPoint);
     offset = end;
   }
   return minSquaredDistance;
@@ -178,16 +184,19 @@ ol.geom.closest.getsClosestPoint = function(flatCoordinates, offset, ends,
  * @param {number} y Y.
  * @param {Array.<number>} closestPoint Closest point.
  * @param {number} minSquaredDistance Minimum squared distance.
+ * @param {Array.<number>=} opt_tmpPoint Temporary point object.
  * @return {number} Minimum squared distance.
  */
 ol.geom.closest.getssClosestPoint = function(flatCoordinates, offset, endss,
-    stride, maxDelta, isRing, x, y, closestPoint, minSquaredDistance) {
+    stride, maxDelta, isRing, x, y, closestPoint, minSquaredDistance,
+    opt_tmpPoint) {
+  var tmpPoint = goog.isDef(opt_tmpPoint) ? opt_tmpPoint : [NaN, NaN];
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];
     minSquaredDistance = ol.geom.closest.getsClosestPoint(
         flatCoordinates, offset, ends, stride,
-        maxDelta, isRing, x, y, closestPoint, minSquaredDistance);
+        maxDelta, isRing, x, y, closestPoint, minSquaredDistance, tmpPoint);
     offset = ends[ends.length - 1];
   }
   return minSquaredDistance;
