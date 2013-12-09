@@ -648,6 +648,7 @@ ol.parser.ogc.Filter_v1.prototype.setFeatureType = function(featureType) {
 ol.parser.ogc.Filter_v1.prototype.setSrsName = function(srsName) {
   this.srsName = srsName;
   if (goog.isDefAndNotNull(this.gmlParser_)) {
-    this.gmlParser_.applyWriteOptions({}, {srsName: srsName});
+    this.gmlParser_.applyWriteOptions({},
+        /** @type {ol.parser.GMLWriteOptions} */ ({srsName: srsName}));
   }
 };
