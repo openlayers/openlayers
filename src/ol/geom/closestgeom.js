@@ -7,6 +7,8 @@ goog.require('ol.geom.flat');
 
 
 /**
+ * Return the squared of the largest distance between any pair of consecutive
+ * coordinates.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
@@ -121,13 +123,23 @@ ol.geom.closest.getClosestPoint = function(flatCoordinates, offset, end, stride,
       closestPoint[1] = tmpPoint[1];
       index += stride;
     } else {
+      // Skip ahead multiple points, because we know that all the skipped
+      // points cannot be any closer than the closest point we have found so
+      // far.  We know this because we know how close the current point is, how
+      // close the closest point we have found so far is, and the maximum
+      // distance between consecutive points.  For example, if we're currently
+      // at distance 10, the best we've found so far is 3, and that the maximum
+      // distance between consecutive points is 2, then we'll need to skip at
+      // least (10 - 3) / 2 == 3 (rounded down) points to have any chance of
+      // finding a closer point.  We use Math.max(..., 1) to ensure that we
+      // always advance at least one point, to avoid an infinite loop.
       index += stride * Math.max(
           ((Math.sqrt(squaredDistance) -
             Math.sqrt(minSquaredDistance)) / maxDelta) | 0, 1);
     }
   }
   if (isRing) {
-    // check the closing segment
+    // Check the closing segment.
     ol.geom.flat.closestPoint(x, y,
         flatCoordinates[end - stride], flatCoordinates[end - stride + 1],
         flatCoordinates[offset], flatCoordinates[offset + 1], tmpPoint);
