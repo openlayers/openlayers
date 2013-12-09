@@ -157,17 +157,12 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
       }
 
       // add in fields
-      var original = feature.getOriginal();
-      var originalAttributes = goog.isNull(original) ?
-          undefined : original.getAttributes();
       var attributes = feature.getAttributes();
       var attribute;
       for (var key in attributes) {
         attribute = attributes[key];
         // TODO Only add geometries whose values have changed
-        if (goog.isDef(attribute) && (attribute instanceof ol.geom.Geometry ||
-            (!goog.isDef(originalAttributes) ||
-            attribute != originalAttributes[key]))) {
+        if (goog.isDef(attribute)) {
           this.writeNode('Property', {name: key, value: attribute}, null, node);
         }
       }
