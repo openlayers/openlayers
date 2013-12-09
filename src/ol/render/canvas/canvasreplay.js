@@ -137,19 +137,20 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry) {
 
 
 /**
+ * @private
  * @param {CanvasRenderingContext2D} context Context.
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
- * @param {function(ol.geom.Geometry, Object): T=} opt_callback
+ * @param {Array.<*>} instructions Instructions array.
+ * @param {function(ol.geom.Geometry, Object): T|undefined} geometryCallback
  *     Geometry callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.Replay.prototype.replay =
-    function(context, transform, renderGeometryFunction, opt_callback) {
-  var perGeometryMode = goog.isDef(opt_callback);
-  var batchMode = !perGeometryMode;
+ol.render.canvas.Replay.prototype.replay_ =
+    function(context, transform, renderGeometryFunction, instructions,
+        geometryCallback) {
   /** @type {Array.<number>} */
   var pixelCoordinates;
   if (ol.vec.Mat4.equals2D(transform, this.renderedTransform_)) {
@@ -160,44 +161,39 @@ ol.render.canvas.Replay.prototype.replay =
     goog.vec.Mat4.setFromArray(this.renderedTransform_, transform);
     goog.asserts.assert(pixelCoordinates === this.pixelCoordinates_);
   }
-  var instructions = this.instructions;
   var i = 0; // instruction index
   var ii = instructions.length; // end of instructions
-  var d = 0; // data index
+  var d; // data index
   var dd; // end of per-instruction data
   while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
     var geometry;
-    var executeInPerGeometryMode, executeInBatchMode;
     if (type == ol.render.canvas.Instruction.BEGIN_GEOMETRY) {
       geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
       if (renderGeometryFunction(geometry)) {
         ++i;
       } else {
-        d = /** @type {number} */ (instruction[2]);
-        i = /** @type {number} */ (instruction[3]);
+        i = /** @type {number} */ (instruction[2]);
       }
     } else if (type == ol.render.canvas.Instruction.BEGIN_PATH) {
-      executeInPerGeometryMode = /** @type {boolean} */ (instruction[1]);
-      executeInBatchMode = /** @type {boolean} */ (instruction[2]);
-      if ((perGeometryMode && executeInPerGeometryMode) ||
-          (batchMode && executeInBatchMode)) {
-        context.beginPath();
-      }
+      context.beginPath();
       ++i;
     } else if (type == ol.render.canvas.Instruction.CLOSE_PATH) {
       context.closePath();
       ++i;
     } else if (type == ol.render.canvas.Instruction.DRAW_IMAGE) {
-      dd = /** @type {number} */ (instruction[1]);
-      var anchorX = /** @type {number} */ (instruction[2]);
-      var anchorY = /** @type {number} */ (instruction[3]);
-      var width = /** @type {number} */ (instruction[4]);
-      var height = /** @type {number} */ (instruction[5]);
+      goog.asserts.assert(goog.isNumber(instruction[1]));
+      d = /** @type {number} */ (instruction[1]);
+      goog.asserts.assert(goog.isNumber(instruction[2]));
+      dd = /** @type {number} */ (instruction[2]);
+      var anchorX = /** @type {number} */ (instruction[3]);
+      var anchorY = /** @type {number} */ (instruction[4]);
+      var width = /** @type {number} */ (instruction[5]);
+      var height = /** @type {number} */ (instruction[6]);
       var image =  /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */
-          (instruction[6]);
-      var snapToPixel = /** @type {boolean|undefined} */ (instruction[7]);
+          (instruction[7]);
+      var snapToPixel = /** @type {boolean|undefined} */ (instruction[8]);
       for (; d < dd; d += 2) {
         var x = pixelCoordinates[d] - anchorX;
         var y = pixelCoordinates[d + 1] - anchorY;
@@ -209,11 +205,10 @@ ol.render.canvas.Replay.prototype.replay =
       }
       ++i;
     } else if (type == ol.render.canvas.Instruction.END_GEOMETRY) {
-      if (perGeometryMode) {
-        goog.asserts.assert(goog.isDef(opt_callback));
+      if (goog.isDef(geometryCallback)) {
         geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
         var data = /** @type {Object} */ (instruction[2]);
-        var result = opt_callback(geometry, data);
+        var result = geometryCallback(geometry, data);
         if (result) {
           return result;
         }
@@ -223,9 +218,11 @@ ol.render.canvas.Replay.prototype.replay =
       context.fill();
       ++i;
     } else if (type == ol.render.canvas.Instruction.MOVE_TO_LINE_TO) {
-      context.moveTo(pixelCoordinates[d], pixelCoordinates[d + 1]);
       goog.asserts.assert(goog.isNumber(instruction[1]));
-      dd = /** @type {number} */ (instruction[1]);
+      d = /** @type {number} */ (instruction[1]);
+      goog.asserts.assert(goog.isNumber(instruction[2]));
+      dd = /** @type {number} */ (instruction[2]);
+      context.moveTo(pixelCoordinates[d], pixelCoordinates[d + 1]);
       for (d += 2; d < dd; d += 2) {
         context.lineTo(pixelCoordinates[d], pixelCoordinates[d + 1]);
       }
@@ -251,23 +248,50 @@ ol.render.canvas.Replay.prototype.replay =
       }
       ++i;
     } else if (type == ol.render.canvas.Instruction.STROKE) {
-      executeInPerGeometryMode = /** @type {boolean} */ (instruction[1]);
-      executeInBatchMode = /** @type {boolean} */ (instruction[2]);
-      if ((perGeometryMode && executeInPerGeometryMode) ||
-          (batchMode && executeInBatchMode)) {
-        context.stroke();
-      }
+      context.stroke();
       ++i;
     } else {
       goog.asserts.fail();
       ++i; // consume the instruction anyway, to avoid an infinite loop
     }
   }
-  // assert that all data were consumed
-  goog.asserts.assert(d == pixelCoordinates.length);
   // assert that all instructions were consumed
   goog.asserts.assert(i == instructions.length);
   return undefined;
+};
+
+
+/**
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
+ *     geometry function.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.render.canvas.Replay.prototype.replayForward =
+    function(context, transform, renderGeometryFunction) {
+  var instructions = this.instructions;
+  return this.replay_(context, transform, renderGeometryFunction,
+      instructions, undefined);
+};
+
+
+/**
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
+ *     geometry function.
+ * @param {function(ol.geom.Geometry, Object): T=} opt_geometryCallback
+ *     Geometry callback.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.render.canvas.Replay.prototype.replayBackward =
+    function(context, transform, renderGeometryFunction, opt_geometryCallback) {
+  var instructions = this.reversedInstructions;
+  return this.replay_(context, transform, renderGeometryFunction,
+      instructions, opt_geometryCallback);
 };
 
 
@@ -1061,18 +1085,16 @@ ol.render.canvas.ReplayGroup = function() {
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
- * @param {function(ol.geom.Geometry, Object): T=} opt_callback Geometry
- *     callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.ReplayGroup.prototype.replay =
-    function(context, extent, transform, renderGeometryFunction, opt_callback) {
+ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
+    transform, renderGeometryFunction) {
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.replayesByZIndex_), Number);
   goog.array.sort(zs);
-  return this.replay_(
-      zs, context, extent, transform, renderGeometryFunction, opt_callback);
+  return this.replayForward_(
+      zs, context, extent, transform, renderGeometryFunction);
 };
 
 
@@ -1084,22 +1106,52 @@ ol.render.canvas.ReplayGroup.prototype.replay =
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
- * @param {function(ol.geom.Geometry, Object): T=} opt_callback Geometry
+ * @param {function(ol.geom.Geometry, Object): T} geometryCallback Geometry
  *     callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.ReplayGroup.prototype.replay_ = function(zs, context, extent,
-    transform, renderGeometryFunction, opt_callback) {
-  var i, ii;
+ol.render.canvas.ReplayGroup.prototype.replayBackward_ = function(zs, context,
+    extent, transform, renderGeometryFunction, geometryCallback) {
+  var i, ii, replayes, replayType, replay, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
-    var replayes = this.replayesByZIndex_[zs[i].toString()];
-    var replayType;
+    replayes = this.replayesByZIndex_[zs[i].toString()];
     for (replayType in replayes) {
-      var replay = replayes[replayType];
+      replay = replayes[replayType];
       if (ol.extent.intersects(extent, replay.getExtent())) {
-        var result = replay.replay(
-            context, transform, renderGeometryFunction, opt_callback);
+        result = replay.replayBackward(
+            context, transform, renderGeometryFunction, geometryCallback);
+        if (result) {
+          return result;
+        }
+      }
+    }
+  }
+  return undefined;
+};
+
+
+/**
+ * @private
+ * @param {Array.<number>} zs Z-indices array.
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {ol.Extent} extent Extent.
+ * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
+ *     geometry function.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.render.canvas.ReplayGroup.prototype.replayForward_ =
+    function(zs, context, extent, transform, renderGeometryFunction) {
+  var i, ii, replayes, replayType, replay, result;
+  for (i = 0, ii = zs.length; i < ii; ++i) {
+    replayes = this.replayesByZIndex_[zs[i].toString()];
+    for (replayType in replayes) {
+      replay = replayes[replayType];
+      if (ol.extent.intersects(extent, replay.getExtent())) {
+        result = replay.replayForward(
+            context, transform, renderGeometryFunction);
         if (result) {
           return result;
         }
@@ -1134,7 +1186,8 @@ ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtCoordinate = function(
   var context = this.hitDetectionContext_;
   context.clearRect(0, 0, 1, 1);
 
-  return this.replay_(zs, context, extent, transform, renderGeometryFunction,
+  return this.replayBackward_(zs, context, extent, transform,
+      renderGeometryFunction,
       /**
        * @param {ol.geom.Geometry} geometry Geometry.
        * @param {Object} data Opaque data object.
