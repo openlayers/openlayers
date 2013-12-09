@@ -118,6 +118,13 @@ ol.Object = function(opt_values) {
    */
   this.values_ = {};
 
+  /**
+   * Lookup of beforechange listener keys.
+   * @type {Object.<string, goog.events.Key>}
+   * @private
+   */
+  this.beforeChangeListeners_ = {};
+
   if (goog.isDef(opt_values)) {
     this.setValues(opt_values);
   }
@@ -240,16 +247,49 @@ ol.Object.getSetterName = function(key) {
 ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
   var targetKey = opt_targetKey || key;
   this.unbind(key);
+
+  // listen for change:targetkey events
   var eventType = ol.Object.getChangeEventType(targetKey);
   var listeners = ol.Object.getListeners(this);
   listeners[key] = goog.events.listen(target, eventType, function() {
     this.notifyInternal_(key);
   }, undefined, this);
+
+  // listen for beforechange events and relay if key matches
+  this.beforeChangeListeners_[key] = goog.events.listen(target,
+      ol.ObjectEventType.BEFORECHANGE,
+      this.createBeforeChangeListener_(key, targetKey),
+      undefined, this);
+
   var accessor = new ol.ObjectAccessor(target, targetKey);
   var accessors = ol.Object.getAccessors(this);
   accessors[key] = accessor;
   this.notifyInternal_(key);
   return accessor;
+};
+
+
+/**
+ * Create a listener for beforechange events on a target object.  This listener
+ * will relay events on this object if the event key matches the provided target
+ * key.
+ * @param {string} key The key on this object whose value will be changing.
+ * @param {string} targetKey The key on the target object.
+ * @return {function(this: ol.Object, ol.ObjectEvent)} Listener.
+ * @private
+ */
+ol.Object.prototype.createBeforeChangeListener_ = function(key, targetKey) {
+  /**
+   * Conditionally relay beforechange events if event key matches target key.
+   * @param {ol.ObjectEvent} event The beforechange event from the target.
+   * @this {ol.Object}
+   */
+  return function(event) {
+    if (event.key === targetKey) {
+      this.dispatchEvent(
+          new ol.ObjectEvent(ol.ObjectEventType.BEFORECHANGE, key));
+    }
+  };
 };
 
 
@@ -421,6 +461,13 @@ ol.Object.prototype.unbind = function(key) {
     var accessors = ol.Object.getAccessors(this);
     delete accessors[key];
     this.values_[key] = value;
+  }
+
+  // unregister any beforechange listener
+  var listenerKey = this.beforeChangeListeners_[key];
+  if (listenerKey) {
+    goog.events.unlistenByKey(listenerKey);
+    delete this.beforeChangeListeners_[key];
   }
 };
 
