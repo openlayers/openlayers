@@ -37,6 +37,12 @@ ol.source.TileWMS = function(options) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.gutter_ = goog.isDef(options.gutter) ? options.gutter : 0;
+
+  /**
+   * @private
    * @type {Object}
    */
   this.params_ = options.params;
@@ -115,6 +121,14 @@ ol.source.TileWMS = function(options) {
 
 };
 goog.inherits(ol.source.TileWMS, ol.source.TileImage);
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.TileWMS.prototype.getGutter = function() {
+  return this.gutter_;
+};
 
 
 /**

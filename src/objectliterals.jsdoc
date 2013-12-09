@@ -703,6 +703,15 @@
  * @property {ol.Extent|undefined} extent Extent.
  * @property {ol.source.WMSGetFeatureInfoOptions|undefined} getFeatureInfoOptions
  *     Options for GetFeatureInfo.
+ * @property {number|undefined} gutter The size in pixels of the
+ *     gutter around image tiles to ignore.  By setting this property to a
+ *     non-zero value, images will be requested that are wider and taller than
+ *     the tile size by a value of `2 x gutter`.  Defaults to zero.  Using a
+ *     non-zero value allows artifacts of rendering at tile edges to be ignored.  If
+ *     you control the WMS service it is recommended to address "artifacts at tile
+ *     edges" issues by properly configuring the WMS service. For example, MapServer
+ *     has a `tile_map_edge_buffer` configuration parameter for this. See
+ *     http://mapserver.org/output/tile_mode.html.
  * @property {string|undefined} logo Logo.
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  * @property {number|undefined} maxZoom Maximum zoom.
