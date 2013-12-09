@@ -47,6 +47,9 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
         if (goog.isDef(options.maxFeatures)) {
           node.setAttribute('maxFeatures', options.maxFeatures);
         }
+        if (goog.isDef(options.srsName)) {
+          this.setSrsName(options.srsName);
+        }
       }
       for (var i = 0, ii = options.featureTypes.length; i < ii; i++) {
         options.featureType = options.featureTypes[i];

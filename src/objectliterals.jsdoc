@@ -600,8 +600,9 @@
  * @property {string} featureNS The namespace URI used for features.
  * @property {string} featurePrefix The prefix for the feature namespace.
  * @property {Array.<string>} featureTypes The feature type names.
- * @property {string|undefined} srsName SRS name. No srsName attribute will be
- *     set on geometries when this is not provided.
+ * @property {string|undefined} srsName SRS name. For WFS 1.1.0, this is
+ *     required. In WFS 1.0.0, no srsName attribute will be set on geometries
+ *     when this is not provided.
  * @property {string|undefined} handle Handle.
  * @property {string|undefined} outputFormat Output format.
  * @property {number} maxFeatures Maximum number of features to fetch.
