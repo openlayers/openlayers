@@ -174,54 +174,39 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate =
   // Find the closest feature using branch and bound.  We start searching an
   // infinite extent, and find the distance from the first feature found.  This
   // becomes the closest feature.  We then compute a smaller extent which any
-  // closer feature must overlap.  We search again with this smaller extent,
-  // trying to find a closer feature.  The loop continues until no closer
-  // feature can be found.
+  // closer feature must intersect.  We continue searching with this smaller
+  // extent, trying to find a closer feature.  Every time we find a closer
+  // feature, we update the extent being searched so that any even closer
+  // feature must intersect it.  We continue until we run out of features.
   var x = coordinate[0];
   var y = coordinate[1];
   var closestFeature = null;
   var closestPoint = [NaN, NaN];
   var minSquaredDistance = Infinity;
   var extent = [-Infinity, -Infinity, Infinity, Infinity];
-  /** @type {Object.<string, boolean>} */
-  var visitedFeatures = {};
-  var callback =
+  this.rBush_.forEachInExtent(extent,
       /**
        * @param {ol.Feature} feature Feature.
-       * @return {ol.Feature|undefined} Closer feature.
        */
       function(feature) {
-    // Make sure that we only test against each feature once.  This both avoids
-    // unnecessary calculation and prevents an infinite loop which would occur
-    // if the coordinate is exactly half way between two features.
-    var featureKey = goog.getUid(feature).toString();
-    if (visitedFeatures.hasOwnProperty(featureKey)) {
-      return undefined;
-    } else {
-      visitedFeatures[featureKey] = true;
-    }
-    var geometry = feature.getGeometry();
-    if (goog.isNull(geometry)) {
-      return undefined;
-    }
-    var previousMinSquaredDistance = minSquaredDistance;
-    minSquaredDistance = geometry.closestPointXY(
-        x, y, closestPoint, minSquaredDistance);
-    goog.asserts.assert(minSquaredDistance <= previousMinSquaredDistance);
-    if (minSquaredDistance < previousMinSquaredDistance) {
-      closestFeature = feature;
-      var minDistance = Math.sqrt(minSquaredDistance);
-      extent[0] = closestPoint[0] - minDistance;
-      extent[1] = closestPoint[1] - minDistance;
-      extent[2] = closestPoint[0] + minDistance;
-      extent[3] = closestPoint[1] + minDistance;
-      return closestFeature;
-    } else {
-      return undefined;
-    }
-  };
-  while (goog.isDef(this.rBush_.forEachInExtent(extent, callback))) {
-  }
+        var geometry = feature.getGeometry();
+        goog.asserts.assert(!goog.isNull(geometry));
+        var previousMinSquaredDistance = minSquaredDistance;
+        minSquaredDistance = geometry.closestPointXY(
+            x, y, closestPoint, minSquaredDistance);
+        if (minSquaredDistance < previousMinSquaredDistance) {
+          closestFeature = feature;
+          // This is sneaky.  Reduce the extent that it is currently being
+          // searched while the R-Tree traversal using this same extent object
+          // is still in progress.  This is safe because the new extent is
+          // strictly contained by the old extent.
+          var minDistance = Math.sqrt(minSquaredDistance);
+          extent[0] = x - minDistance;
+          extent[1] = y - minDistance;
+          extent[2] = x + minDistance;
+          extent[3] = y + minDistance;
+        }
+      });
   return closestFeature;
 };
 
