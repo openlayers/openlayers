@@ -260,6 +260,33 @@ describe('ol.Feature', function() {
 
   });
 
+  describe('#setOriginal()', function() {
+
+    it('allows an original feature to be stored', function() {
+      var parent = new ol.Feature({});
+      var child = new ol.Feature({});
+      child.setOriginal(parent);
+      expect(child.getOriginal()).to.be(parent);
+    });
+
+  });
+
+  describe('#restoreOriginal()', function() {
+
+    it('allows original attributes to be stored', function() {
+      var gen1 = new ol.Feature({foo: 'bar'});
+      var gen2 = new ol.Feature({foo: 'baz'});
+      var gen3 = new ol.Feature({foo: 'bam'});
+      gen2.setOriginal(gen1);
+      gen3.setOriginal(gen2);
+      expect(gen3.get('foo')).to.be('bam');
+
+      gen3.restoreOriginal();
+      expect(gen3.get('foo')).to.be('bar');
+    });
+
+  });
+
 });
 
 

@@ -150,7 +150,7 @@ ol.source.Vector.prototype.handleReadResult_ = function(result, projection) {
       geometry.transform(transform);
       ol.extent.extend(extent, geometry.getBounds());
     }
-    this.loadFeature_(feature);
+    this.loadFeatureSilent_(feature);
   }
   this.loadState_ = ol.source.VectorLoadState.LOADED;
   // called in the next tick to normalize load event for sync/async parsing
@@ -162,11 +162,11 @@ ol.source.Vector.prototype.handleReadResult_ = function(result, projection) {
 
 
 /**
- * Load a feature.
+ * Load a feature without notification.
  * @param {ol.Feature} feature Feature to load.
  * @private
  */
-ol.source.Vector.prototype.loadFeature_ = function(feature) {
+ol.source.Vector.prototype.loadFeatureSilent_ = function(feature) {
   goog.events.listen(feature, ol.FeatureEventType.CHANGE,
       this.handleFeatureChange_, false, this);
   goog.events.listen(feature, ol.FeatureEventType.INTENTCHANGE,
@@ -176,20 +176,44 @@ ol.source.Vector.prototype.loadFeature_ = function(feature) {
 
 
 /**
- * Add newly created features to the source.
+ * Load a feature without notification.
  * @param {Array.<ol.Feature>} features Array of features.
+ * @return {ol.Extent} Extent of loaded features.
+ * @private
  */
-ol.source.Vector.prototype.addFeatures = function(features) {
+ol.source.Vector.prototype.loadFeaturesSilent_ = function(features) {
   var extent = ol.extent.createEmpty(),
       feature, geometry;
   for (var i = 0, ii = features.length; i < ii; ++i) {
     feature = features[i];
-    this.loadFeature_(feature);
+    this.loadFeatureSilent_(feature);
     geometry = feature.getGeometry();
     if (!goog.isNull(geometry)) {
       ol.extent.extend(extent, geometry.getBounds());
     }
   }
+  return extent;
+};
+
+
+/**
+ * Load features.
+ * @param {Array.<ol.Feature>} features Features to load.
+ */
+ol.source.Vector.prototype.loadFeatures = function(features) {
+  var extent = this.loadFeaturesSilent_(features);
+  this.loadState_ = ol.source.VectorLoadState.LOADED;
+  this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.LOAD,
+      features, [extent]));
+};
+
+
+/**
+ * Add newly created features to the source.
+ * @param {Array.<ol.Feature>} features Array of features.
+ */
+ol.source.Vector.prototype.addFeatures = function(features) {
+  var extent = this.loadFeaturesSilent_(features);
   this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.ADD,
       features, [extent]));
 };
@@ -279,15 +303,16 @@ ol.source.Vector.prototype.handleIntentChange_ = function(evt) {
 
 
 /**
- * Remove features from the layer.
- * @param {Array.<ol.Feature>} features Features to remove.
+ * Unload features from the layer without dispatching notification.
+ * @param {Array.<ol.Feature>} features Features to unload.
+ * @return {ol.Extent} Extent of removed features.
+ * @private
  */
-ol.source.Vector.prototype.removeFeatures = function(features) {
+ol.source.Vector.prototype.unloadFeaturesSilent_ = function(features) {
   var extent = ol.extent.createEmpty(),
       feature, geometry;
   for (var i = 0, ii = features.length; i < ii; ++i) {
     feature = features[i];
-    this.featureCache_.remove(feature);
     geometry = feature.getGeometry();
     if (!goog.isNull(geometry)) {
       ol.extent.extend(extent, geometry.getBounds());
@@ -296,8 +321,34 @@ ol.source.Vector.prototype.removeFeatures = function(features) {
         this.handleFeatureChange_, false, this);
     goog.events.unlisten(feature, ol.FeatureEventType.INTENTCHANGE,
         this.handleIntentChange_, false, this);
+    this.featureCache_.remove(feature);
   }
+  return extent;
+};
+
+
+/**
+ * Remove features from the source.  This is equivalent to deleting features,
+ * and any editing components may issue a request to the server to delete the
+ * same features.
+ * @param {Array.<ol.Feature>} features Features to remove.
+ */
+ol.source.Vector.prototype.removeFeatures = function(features) {
+  var extent = this.unloadFeaturesSilent_(features);
   this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.REMOVE,
+      features, [extent]));
+};
+
+
+/**
+ * Unload features from the source.  This unloads features from the local
+ * cache, but will not result in a request to the server to delete the same
+ * features.
+ * @param {Array.<ol.Feature>} features Features to unload.
+ */
+ol.source.Vector.prototype.unloadFeatures = function(features) {
+  var extent = this.unloadFeaturesSilent_(features);
+  this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.UNLOAD,
       features, [extent]));
 };
 
@@ -333,6 +384,7 @@ goog.inherits(ol.source.VectorEvent, goog.events.Event);
  */
 ol.source.VectorEventType = {
   LOAD: 'featureload',
+  UNLOAD: 'featureunload',
   ADD: 'featureadd',
   CHANGE: 'featurechange',
   INTENTCHANGE: 'featureintentchange',
