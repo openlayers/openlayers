@@ -58,7 +58,7 @@ ol.source.TileWMS = function(options) {
     var tileUrlFunctions = goog.array.map(
         urls, function(url) {
           return ol.TileUrlFunction.createFromParamsFunction(
-              url, this.params_, ol.source.wms.getUrl);
+              url, this.params_, this.gutter_, ol.source.wms.getUrl);
         }, this);
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         tileUrlFunctions);
