@@ -119,7 +119,6 @@ ol.geom.Geometry.prototype.closestPointXY = goog.abstractMethod;
  * @return {ol.Coordinate} Closest point.
  */
 ol.geom.Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
-  // FIXME check extent
   var closestPoint = goog.isDef(opt_closestPoint) ?
       opt_closestPoint : [NaN, NaN];
   this.closestPointXY(point[0], point[1], closestPoint, Infinity);

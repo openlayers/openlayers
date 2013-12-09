@@ -1,5 +1,6 @@
 goog.provide('ol.geom.LineString');
 
+goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.closest');
 goog.require('ol.geom.flat');
@@ -40,6 +41,10 @@ goog.inherits(ol.geom.LineString, ol.geom.Geometry);
  */
 ol.geom.LineString.prototype.closestPointXY =
     function(x, y, closestPoint, minSquaredDistance) {
+  if (minSquaredDistance <
+      ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
+    return minSquaredDistance;
+  }
   if (this.maxDeltaRevision_ != this.revision) {
     this.maxDelta_ = Math.sqrt(ol.geom.closest.getMaxSquaredDelta(
         this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));

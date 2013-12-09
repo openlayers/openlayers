@@ -1,5 +1,6 @@
 goog.provide('ol.geom.MultiPoint');
 
+goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.flat');
@@ -24,6 +25,10 @@ goog.inherits(ol.geom.MultiPoint, ol.geom.Geometry);
  */
 ol.geom.MultiPoint.prototype.closestPointXY =
     function(x, y, closestPoint, minSquaredDistance) {
+  if (minSquaredDistance <
+      ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
+    return minSquaredDistance;
+  }
   var flatCoordinates = this.flatCoordinates;
   var stride = this.stride;
   var i, ii;
