@@ -252,9 +252,9 @@ ol.interaction.Modify.prototype.removeIndex_ = function(features) {
         nodesToRemove.push(node);
       }
     });
-  }
-  for (i = nodesToRemove.length - 1; i >= 0; --i) {
-    rBush.remove(nodesToRemove[i]);
+    for (i = nodesToRemove.length - 1; i >= 0; --i) {
+      rBush.remove(nodesToRemove[i]);
+    }
   }
 };
 
