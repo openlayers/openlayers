@@ -252,9 +252,9 @@ ol.interaction.Modify.prototype.removeIndex_ = function(features) {
         nodesToRemove.push(node);
       }
     });
-  }
-  for (i = nodesToRemove.length - 1; i >= 0; --i) {
-    rBush.remove(nodesToRemove[i]);
+    for (i = nodesToRemove.length - 1; i >= 0; --i) {
+      rBush.remove(nodesToRemove[i]);
+    }
   }
 };
 
@@ -368,12 +368,6 @@ ol.interaction.Modify.prototype.handleDragStart = function(evt) {
       if (!(goog.getUid(node.feature) in distinctFeatures)) {
         var feature = node.feature;
         distinctFeatures[goog.getUid(feature)] = true;
-        var original = new ol.Feature(feature.getAttributes());
-        original.setGeometry(feature.getGeometry().clone());
-        original.setId(feature.getId());
-        original.setOriginal(feature.getOriginal());
-        original.setSymbolizers(feature.getSymbolizers());
-        feature.setOriginal(original);
       }
       if (renderIntent == ol.FeatureRenderIntent.TEMPORARY) {
         if (ol.coordinate.equals(segment[0], vertex)) {

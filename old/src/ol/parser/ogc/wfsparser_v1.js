@@ -1,31 +1,22 @@
 goog.provide('ol.parser.ogc.WFS_v1');
+goog.require('goog.asserts');
 goog.require('goog.dom.xml');
+goog.require('ol.expr.Call');
+goog.require('ol.expr.Identifier');
+goog.require('ol.expr.Literal');
+goog.require('ol.geom.Geometry');
 goog.require('ol.parser.XML');
-
-
-/**
- * @typedef {{featureNS: string,
-              featurePrefix: string,
-              featureTypes: Array.<string>,
-              handle: string,
-              outputFormat: string,
-              nativeElements: Array.<{
-                vendorId: string,
-                safeToIgnore: boolean,
-                value: string
-              }>,
-              maxFeatures: number}}
- */
-ol.parser.WFSWriteOptions;
 
 
 
 /**
  * @constructor
  * @extends {ol.parser.XML}
+ * @param {Object=} opt_options Options which will be set on this object.
  */
-ol.parser.ogc.WFS_v1 = function() {
+ol.parser.ogc.WFS_v1 = function(opt_options) {
   this.defaultNamespaceURI = 'http://www.opengis.net/wfs';
+
   // TODO set errorProperty
   this.readers = {};
   this.readers[this.defaultNamespaceURI] = {
@@ -36,8 +27,13 @@ ol.parser.ogc.WFS_v1 = function() {
   };
   this.writers = {};
   this.writers[this.defaultNamespaceURI] = {
+    /**
+     * @param {ol.parser.WFSWriteGetFeatureOptions} options Options.
+     * @return {{node: Node,
+     *           options: ol.parser.WFSWriteGetFeatureOptions}} Object.
+     * @this {ol.parser.XML}
+     */
     'GetFeature': function(options) {
-      options = /** @type {ol.parser.WFSWriteOptions} */(options);
       var node = this.createElementNS('wfs:GetFeature');
       node.setAttribute('service', 'WFS');
       node.setAttribute('version', this.version);
@@ -51,6 +47,9 @@ ol.parser.ogc.WFS_v1 = function() {
         if (goog.isDef(options.maxFeatures)) {
           node.setAttribute('maxFeatures', options.maxFeatures);
         }
+        if (goog.isDef(options.srsName)) {
+          this.setSrsName(options.srsName);
+        }
       }
       for (var i = 0, ii = options.featureTypes.length; i < ii; i++) {
         options.featureType = options.featureTypes[i];
@@ -61,29 +60,41 @@ ol.parser.ogc.WFS_v1 = function() {
           'xsi:schemaLocation', this.schemaLocation);
       return {node: node, options: options};
     },
+    /**
+     * @param {{inserts: Array.<ol.Feature>,
+     *          updates: Array.<ol.Feature>,
+     *          deletes: Array.<ol.Feature>,
+     *          options: ol.parser.WFSWriteTransactionOptions}} obj Object.
+     * @return {Element} Node.
+     * @this {ol.parser.XML}
+     */
     'Transaction': function(obj) {
-      obj = obj || {};
-      var options = /** {ol.parser.WFSWriteOptions} */(obj.options || {});
+      var options = obj.options;
+      this.setFeatureType(options.featureType);
+      this.setFeatureNS(options.featureNS);
+      if (goog.isDef(options.srsName)) {
+        this.setSrsName(options.srsName);
+      }
       var node = this.createElementNS('wfs:Transaction');
       node.setAttribute('service', 'WFS');
       node.setAttribute('version', this.version);
       if (goog.isDef(options.handle)) {
         node.setAttribute('handle', options.handle);
       }
-      var i, ii;
-      var features = obj.features;
-      if (goog.isDefAndNotNull(features)) {
-        // TODO implement multi option for geometry types
-        var name, feature;
-        for (i = 0, ii = features.length; i < ii; ++i) {
-          feature = features[i];
-          // TODO Update (use feature.getOriginal())
-          // TODO Insert and Delete
-          if (goog.isDef(name)) {
-            this.writeNode(name, {
-              feature: feature,
-              options: options
-            }, null, node);
+      var i, ii, features, feature;
+      var operations = {
+        'Insert': obj.inserts,
+        'Update': obj.updates,
+        'Delete': obj.deletes
+      };
+      for (var name in operations) {
+        features = operations[name];
+        if (!goog.isNull(features)) {
+          // TODO implement multi option for geometry types
+          for (i = 0, ii = features.length; i < ii; ++i) {
+            feature = features[i];
+            this.writeNode(name, {feature: feature, options: options}, null,
+                node);
           }
         }
       }
@@ -94,11 +105,134 @@ ol.parser.ogc.WFS_v1 = function() {
       }
       return node;
     },
+    /**
+     * @param {{vendorId: string, safeToIgnore: boolean, value: string}}
+     * nativeElement Native element.
+     * @return {Node} Node.
+     * @this {ol.parser.XML}
+     */
     'Native': function(nativeElement) {
       var node = this.createElementNS('wfs:Native');
       node.setAttribute('vendorId', nativeElement.vendorId);
       node.setAttribute('safeToIgnore', nativeElement.safeToIgnore);
       node.appendChild(this.createTextNode(nativeElement.value));
+      return node;
+    },
+    /**
+     * @param {{feature: ol.Feature,
+     *          options: ol.parser.WFSWriteTransactionOptions}} obj Object.
+     * @return {Element} Node.
+     * @this {ol.parser.XML}
+     */
+    'Insert': function(obj) {
+      var feature = obj.feature;
+      var options = obj.options;
+      var node = this.createElementNS('wfs:Insert');
+      if (goog.isDef(options) && goog.isDef(options.handle)) {
+        this.setAttributeNS(node, this.defaultNamespaceURI, 'handle',
+            options.handle);
+      }
+      if (goog.isDef(options.srsName)) {
+        this.setSrsName(options.srsName);
+      }
+      this.writeNode('_typeName', feature, options.featureNS, node);
+      return node;
+    },
+    /**
+     * @param {{feature: ol.Feature,
+     *          options: ol.parser.WFSWriteTransactionOptions}} obj Object.
+     * @return {Element} Node.
+     * @this {ol.parser.XML}
+     */
+    'Update': function(obj) {
+      var feature = obj.feature;
+      var options = obj.options;
+      var node = this.createElementNS('wfs:Update');
+      this.setAttributeNS(node, this.defaultNamespaceURI, 'typeName',
+          (goog.isDef(options.featureNS) ? options.featurePrefix + ':' : '') +
+          options.featureType);
+      if (goog.isDef(options.handle)) {
+        this.setAttributeNS(node, this.defaultNamespaceURI, 'handle',
+            options.handle);
+      }
+
+      // add in fields
+      var attributes = feature.getAttributes();
+      var attribute;
+      for (var key in attributes) {
+        attribute = attributes[key];
+        // TODO Only add geometries whose values have changed
+        if (goog.isDef(attribute)) {
+          this.writeNode('Property', {name: key, value: attribute}, null, node);
+        }
+      }
+
+      // add feature id filter
+      var fid = feature.getId();
+      goog.asserts.assert(goog.isDef(fid));
+      this.writeNode('Filter', new ol.expr.Call(new ol.expr.Identifier(
+          ol.expr.functions.FID), [new ol.expr.Literal(fid)]),
+          'http://www.opengis.net/ogc', node);
+
+      return node;
+    },
+    'Property': function(obj) {
+      var node = this.createElementNS('wfs:Property');
+      this.writeNode('Name', obj.name, null, node);
+      if (!goog.isNull(obj.value)) {
+        this.writeNode('Value', obj.value, null, node);
+      }
+      return node;
+    },
+    /**
+     * @param {string} name Name.
+     * @return {Element} Node.
+     * @this {ol.parser.XML}
+     */
+    'Name': function(name) {
+      var node = this.createElementNS('wfs:Name');
+      node.appendChild(this.createTextNode(name));
+      return node;
+    },
+    /**
+     * @param {string|number|ol.geom.Geometry} obj Object.
+     * @return {Element} Node.
+     * @this {ol.parser.XML}
+     */
+    'Value': function(obj) {
+      var node;
+      if (obj instanceof ol.geom.Geometry) {
+        node = this.createElementNS('wfs:Value');
+        node.appendChild(
+            this.getFilterParser().getGmlParser().writeGeometry(obj));
+      } else {
+        node = this.createElementNS('wfs:Value');
+        node.appendChild(this.createTextNode(/** @type {string} */ (obj)));
+      }
+      return node;
+    },
+    /**
+     * @param {{feature: ol.Feature,
+     *          options: ol.parser.WFSWriteTransactionOptions}} obj Object.
+     * @return {Element} Node.
+     * @this {ol.parser.XML}
+     */
+    'Delete': function(obj) {
+      var feature = obj.feature;
+      var options = obj.options;
+      var node = this.createElementNS('wfs:Delete');
+      this.setAttributeNS(node, this.defaultNamespaceURI, 'typeName',
+          (goog.isDef(options.featureNS) ? options.featurePrefix + ':' : '') +
+          options.featureType);
+      if (goog.isDef(options.handle)) {
+        this.setAttributeNS(node, this.defaultNamespaceURI, 'handle',
+            options.handle);
+      }
+      var fid = feature.getId();
+      goog.asserts.assert(goog.isDef(fid));
+      this.writeNode('Filter', new ol.expr.Call(new ol.expr.Identifier(
+          ol.expr.functions.FID), [new ol.expr.Literal(fid)]),
+          'http://www.opengis.net/ogc', node);
       return node;
     }
   };
@@ -204,13 +338,27 @@ ol.parser.ogc.WFS_v1.prototype.read = function(data) {
 
 
 /**
- * @param {Array.<ol.Feature>} features The features to write out.
- * @param {ol.parser.WFSWriteOptions} options Write options.
+ * @param {ol.parser.WFSWriteGetFeatureOptions} options Options.
+ * @return {string} A serialized WFS GetFeature query.
+ */
+ol.parser.ogc.WFS_v1.prototype.writeGetFeature = function(options) {
+  var root = this.writers[this.defaultNamespaceURI]['GetFeature']
+      .call(this, options);
+  return this.serialize(root);
+};
+
+
+/**
+ * @param {Array.<ol.Feature>} inserts The features to insert.
+ * @param {Array.<ol.Feature>} updates The features to update.
+ * @param {Array.<ol.Feature>} deletes The features to delete.
+ * @param {ol.parser.WFSWriteTransactionOptions} options Write options.
  * @return {string} A serialized WFS transaction.
  */
-ol.parser.ogc.WFS_v1.prototype.write = function(features, options) {
-  var root = this.writeNode('Transaction', {features: features,
-    options: options});
+ol.parser.ogc.WFS_v1.prototype.writeTransaction =
+    function(inserts, updates, deletes, options) {
+  var root = this.writeNode('Transaction', {inserts: inserts,
+    updates: updates, deletes: deletes, options: options});
   this.setAttributeNS(
       root, 'http://www.w3.org/2001/XMLSchema-instance',
       'xsi:schemaLocation', this.schemaLocation);
