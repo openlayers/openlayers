@@ -5,15 +5,14 @@ goog.require('ol.View2D');
 goog.require('ol.control');
 goog.require('ol.control.ScaleLine');
 goog.require('ol.control.ScaleLineUnits');
-goog.require('ol.format.GeoJSON');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.proj');
 goog.require('ol.shape');
+goog.require('ol.source.GeoJSON');
 goog.require('ol.source.TileWMS');
-goog.require('ol.source.Vector');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
@@ -22,6 +21,20 @@ var projection = ol.proj.configureProj4jsProjection({
   code: 'EPSG:21781',
   extent: [485869.5728, 76443.1884, 837076.5648, 299941.7864]
 });
+
+var vectorSource = new ol.source.GeoJSON({
+  defaultProjection: projection,
+  url: 'data/mtbland.geojson'
+});
+
+var styleArray = [new ol.style.Style({
+  stroke: new ol.style.Stroke({
+    color: 'rgba(128,0,128,0.8)',
+    lineCap: 'round',
+    lineJoin: 'round',
+    width: 3
+  })
+})];
 
 var extent = [420000, 30000, 900000, 350000];
 var layers = [
@@ -41,6 +54,12 @@ var layers = [
       },
       extent: extent
     })
+  }),
+  new ol.layer.Vector({
+    source: vectorSource,
+    styleFunction: function(feature, resolution) {
+      return styleArray;
+    }
   })
 ];
 
@@ -59,28 +78,6 @@ var map = new ol.Map({
     extent: extent,
     zoom: 2
   })
-});
-
-var styleArray = [new ol.style.Style({
-  stroke: new ol.style.Stroke({
-    color: 'rgba(128,0,128,0.8)',
-    lineCap: 'round',
-    lineJoin: 'round',
-    width: 3
-  })
-})];
-
-var vectorSource = new ol.source.Vector();
-$.getJSON('data/mtbland.geojson', function(data) {
-  var format = new ol.format.GeoJSON();
-  format.readObject(data, vectorSource.addFeature, vectorSource);
-  var vectorLayer = new ol.layer.Vector({
-    source: vectorSource,
-    styleFunction: function(feature) {
-      return styleArray;
-    }
-  });
-  map.getLayers().push(vectorLayer);
 });
 
 var point = null;
