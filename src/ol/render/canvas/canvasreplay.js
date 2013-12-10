@@ -68,6 +68,12 @@ ol.render.canvas.Replay = function() {
 
   /**
    * @protected
+   * @type {Array.<*>}
+   */
+  this.textInstructions = [];
+
+  /**
+   * @protected
    * @type {Array.<number>}
    */
   this.coordinates = [];
@@ -659,6 +665,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
  */
 ol.render.canvas.ImageReplay.prototype.finish = function() {
   this.reverseHitDetectionInstructions_();
+  goog.array.extend(this.instructions, this.textInstructions);
   // FIXME this doesn't really protect us against further calls to draw*Geometry
   this.anchorX_ = undefined;
   this.anchorY_ = undefined;
@@ -863,6 +870,7 @@ ol.render.canvas.LineStringReplay.prototype.finish = function() {
     this.instructions.push([ol.render.canvas.Instruction.STROKE]);
   }
   this.reverseHitDetectionInstructions_();
+  goog.array.extend(this.instructions, this.textInstructions);
   this.state_ = null;
 };
 
@@ -1020,7 +1028,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
   if (this.setTextStyle_()) {
     var textPosition = polygonGeometry.getInteriorPoint();
     var textStyle = this.textStyle_;
-    this.instructions.push([
+    this.textInstructions.push([
       ol.render.canvas.Instruction.DRAW_TEXT,
       this.coordinates.length,
       this.appendFlatCoordinates(textPosition, 0, 2, stride, false),
@@ -1072,7 +1080,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
     var textStyle = this.textStyle_;
     var textPositions = multiPolygonGeometry.getInteriorPoints();
     for (i = 0, ii = textPositions.length; i < ii; ++i) {
-      this.instructions.push([
+      this.textInstructions.push([
         ol.render.canvas.Instruction.DRAW_TEXT,
         this.coordinates.length,
         this.appendFlatCoordinates(textPositions[i], 0, 2, stride, false),
@@ -1089,6 +1097,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
 ol.render.canvas.PolygonReplay.prototype.finish = function() {
   goog.asserts.assert(!goog.isNull(this.state_));
   this.reverseHitDetectionInstructions_();
+  goog.array.extend(this.instructions, this.textInstructions);
   this.state_ = null;
 };
 
