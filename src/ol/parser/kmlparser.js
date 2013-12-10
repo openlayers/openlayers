@@ -185,19 +185,19 @@ ol.parser.KML = function(opt_options) {
           switch (type) {
             case ol.geom.GeometryType.POINT:
               obj.geometry = {
-                type: ol.geom.GeometryType.MULTIPOINT,
+                type: ol.geom.GeometryType.MULTI_POINT,
                 parts: parts
               };
               break;
-            case ol.geom.GeometryType.LINESTRING:
+            case ol.geom.GeometryType.LINE_STRING:
               obj.geometry = {
-                type: ol.geom.GeometryType.MULTILINESTRING,
+                type: ol.geom.GeometryType.MULTI_LINE_STRING,
                 parts: parts
               };
               break;
             case ol.geom.GeometryType.POLYGON:
               obj.geometry = {
-                type: ol.geom.GeometryType.MULTIPOLYGON,
+                type: ol.geom.GeometryType.MULTI_POLYGON,
                 parts: parts
               };
               break;
@@ -207,7 +207,7 @@ ol.parser.KML = function(opt_options) {
         } else {
           // mixed collection
           obj.geometry = {
-            type: ol.geom.GeometryType.GEOMETRYCOLLECTION,
+            type: ol.geom.GeometryType.GEOMETRY_COLLECTION,
             parts: parts
           };
         }
@@ -250,7 +250,7 @@ ol.parser.KML = function(opt_options) {
         var coordinates = [];
         this.readChildNodes(node, coordinates);
         var linestring = {
-          type: ol.geom.GeometryType.LINESTRING,
+          type: ol.geom.GeometryType.LINE_STRING,
           coordinates: coordinates[0]
         };
         // in the case of a multi geometry this is parts
@@ -730,7 +730,7 @@ ol.parser.KML = function(opt_options) {
           this.setAttributeNS(node, null, 'id', obj.id);
         }
         var literal = obj.symbolizer.createLiteral(
-            ol.geom.GeometryType.LINESTRING);
+            ol.geom.GeometryType.LINE_STRING);
         this.writeNode('color', {
           color: literal.color.substring(1),
           opacity: literal.opacity
@@ -1111,34 +1111,34 @@ ol.parser.KML.prototype.createGeometry_ = function(container) {
     case ol.geom.GeometryType.POINT:
       geometry = new ol.geom.Point(container.geometry.coordinates);
       break;
-    case ol.geom.GeometryType.LINESTRING:
+    case ol.geom.GeometryType.LINE_STRING:
       geometry = new ol.geom.LineString(container.geometry.coordinates);
       break;
     case ol.geom.GeometryType.POLYGON:
       geometry = new ol.geom.Polygon(container.geometry.coordinates);
       break;
-    case ol.geom.GeometryType.MULTIPOINT:
+    case ol.geom.GeometryType.MULTI_POINT:
       coordinates = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         coordinates.push(container.geometry.parts[i].coordinates);
       }
       geometry = new ol.geom.MultiPoint(coordinates);
       break;
-    case ol.geom.GeometryType.MULTILINESTRING:
+    case ol.geom.GeometryType.MULTI_LINE_STRING:
       coordinates = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         coordinates.push(container.geometry.parts[i].coordinates);
       }
       geometry = new ol.geom.MultiLineString(coordinates);
       break;
-    case ol.geom.GeometryType.MULTIPOLYGON:
+    case ol.geom.GeometryType.MULTI_POLYGON:
       coordinates = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         coordinates.push(container.geometry.parts[i].coordinates);
       }
       geometry = new ol.geom.MultiPolygon(coordinates);
       break;
-    case ol.geom.GeometryType.GEOMETRYCOLLECTION:
+    case ol.geom.GeometryType.GEOMETRY_COLLECTION:
       var geometries = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         geometries.push(this.createGeometry_({

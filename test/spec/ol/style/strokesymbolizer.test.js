@@ -55,7 +55,7 @@ describe('ol.style.Stroke', function() {
     it('applies the default values', function() {
       var symbolizer = new ol.style.Stroke({});
 
-      var literal = symbolizer.createLiteral(ol.geom.GeometryType.LINESTRING);
+      var literal = symbolizer.createLiteral(ol.geom.GeometryType.LINE_STRING);
       expect(literal).to.be.a(ol.style.LineLiteral);
       expect(literal.color).to.be('#696969');
       expect(literal.opacity).to.be(0.75);

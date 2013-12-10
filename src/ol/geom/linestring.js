@@ -90,7 +90,7 @@ ol.geom.LineString.prototype.getBounds = function() {
  * @inheritDoc
  */
 ol.geom.LineString.prototype.getType = function() {
-  return ol.geom.GeometryType.LINESTRING;
+  return ol.geom.GeometryType.LINE_STRING;
 };
 
 

@@ -42,7 +42,7 @@ goog.inherits(ol.geom.MultiLineString, ol.geom.AbstractCollection);
  * @inheritDoc
  */
 ol.geom.MultiLineString.prototype.getType = function() {
-  return ol.geom.GeometryType.MULTILINESTRING;
+  return ol.geom.GeometryType.MULTI_LINE_STRING;
 };
 
 

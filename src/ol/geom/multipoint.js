@@ -42,7 +42,7 @@ goog.inherits(ol.geom.MultiPoint, ol.geom.AbstractCollection);
  * @inheritDoc
  */
 ol.geom.MultiPoint.prototype.getType = function() {
-  return ol.geom.GeometryType.MULTIPOINT;
+  return ol.geom.GeometryType.MULTI_POINT;
 };
 
 

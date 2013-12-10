@@ -84,7 +84,7 @@ ol.style.Shape.prototype.createLiteral = function(featureOrType) {
 
   var literal = null;
   if (type === ol.geom.GeometryType.POINT ||
-      type === ol.geom.GeometryType.MULTIPOINT) {
+      type === ol.geom.GeometryType.MULTI_POINT) {
     var size = Number(ol.expr.evaluateFeature(this.size_, feature));
     goog.asserts.assert(!isNaN(size), 'size must be a number');
 
