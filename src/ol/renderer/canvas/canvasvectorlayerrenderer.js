@@ -43,6 +43,12 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, vectorLayer) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.renderedRotation_ = NaN;
+
+  /**
+   * @private
    * @type {ol.Extent}
    */
   this.renderedExtent_ = ol.extent.createEmpty();
@@ -91,12 +97,14 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
   } else {
     goog.asserts.assert(!ol.extent.isEmpty(this.renderedExtent_));
     goog.asserts.assert(!isNaN(this.renderedResolution_));
+    goog.asserts.assert(!isNaN(this.renderedRotation_));
     var coordinate = this.getMap().getCoordinateFromPixel(pixel);
     var layer = this.getLayer();
     var renderGeometryFunction = this.getRenderGeometryFunction_();
     goog.asserts.assert(goog.isFunction(renderGeometryFunction));
     return this.replayGroup_.forEachGeometryAtCoordinate(this.renderedExtent_,
-        this.renderedResolution_, coordinate, renderGeometryFunction,
+        this.renderedResolution_, this.renderedRotation_, coordinate,
+        renderGeometryFunction,
         /**
          * @param {ol.geom.Geometry} geometry Geometry.
          * @param {Object} data Data.
@@ -200,6 +208,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
 
   this.renderedResolution_ = frameStateResolution;
   this.renderedRevision_ = vectorSource.getRevision();
+  this.renderedRotation_ = frameState.view2DState.rotation;
   if (!replayGroup.isEmpty()) {
     this.replayGroup_ = replayGroup;
   }
