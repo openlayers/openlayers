@@ -858,10 +858,10 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
   }
   // FIXME is it quicker to fill and stroke each polygon individually,
   // FIXME or all polygons together?
+  var fillInstruction = [ol.render.canvas.Instruction.FILL];
+  this.hitDetectionInstructions.push(fillInstruction);
   if (goog.isDef(state.fillStyle)) {
-    var fillInstruction = [ol.render.canvas.Instruction.FILL];
     this.instructions.push(fillInstruction);
-    this.hitDetectionInstructions.push(fillInstruction);
   }
   if (goog.isDef(state.strokeStyle)) {
     goog.asserts.assert(goog.isDef(state.lineWidth));
@@ -891,10 +891,10 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
   ol.extent.extend(this.extent_, polygonGeometry.getExtent());
   this.setFillStrokeStyles_();
   this.beginGeometry(polygonGeometry);
-  if (goog.isDef(state.fillStyle)) {
-    this.hitDetectionInstructions.push(
-        [ol.render.canvas.Instruction.SET_FILL_STYLE, state.fillStyle]);
-  }
+  // always fill the polygon for hit detection
+  this.hitDetectionInstructions.push(
+      [ol.render.canvas.Instruction.SET_FILL_STYLE,
+       ol.color.asString(ol.render.canvas.defaultFillStyle)]);
   if (goog.isDef(state.strokeStyle)) {
     this.hitDetectionInstructions.push(
         [ol.render.canvas.Instruction.SET_STROKE_STYLE,
@@ -927,10 +927,10 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
   ol.extent.extend(this.extent_, multiPolygonGeometry.getExtent());
   this.setFillStrokeStyles_();
   this.beginGeometry(multiPolygonGeometry);
-  if (goog.isDef(state.fillStyle)) {
-    this.hitDetectionInstructions.push(
-        [ol.render.canvas.Instruction.SET_FILL_STYLE, state.fillStyle]);
-  }
+  // always fill the multi-polygon for hit detection
+  this.hitDetectionInstructions.push(
+      [ol.render.canvas.Instruction.SET_FILL_STYLE,
+       ol.color.asString(ol.render.canvas.defaultFillStyle)]);
   if (goog.isDef(state.strokeStyle)) {
     this.hitDetectionInstructions.push(
         [ol.render.canvas.Instruction.SET_STROKE_STYLE,
