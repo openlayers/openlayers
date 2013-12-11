@@ -80,7 +80,7 @@ ol.render.canvas.Replay = function() {
    * @protected
    * @type {Array.<*>}
    */
-  this.reversedInstructions = [];
+  this.hitDetectionInstructions = [];
 
   /**
    * @private
@@ -132,7 +132,7 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry) {
   this.instructions.push(this.beginGeometryInstruction1_);
   this.beginGeometryInstruction2_ =
       [ol.render.canvas.Instruction.BEGIN_GEOMETRY, geometry, 0];
-  this.reversedInstructions.push(this.beginGeometryInstruction2_);
+  this.hitDetectionInstructions.push(this.beginGeometryInstruction2_);
 };
 
 
@@ -269,7 +269,7 @@ ol.render.canvas.Replay.prototype.replay_ =
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.Replay.prototype.replayForward =
+ol.render.canvas.Replay.prototype.replay =
     function(context, transform, renderGeometryFunction) {
   var instructions = this.instructions;
   return this.replay_(context, transform, renderGeometryFunction,
@@ -287,9 +287,9 @@ ol.render.canvas.Replay.prototype.replayForward =
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.Replay.prototype.replayBackward =
+ol.render.canvas.Replay.prototype.replayHitDetection =
     function(context, transform, renderGeometryFunction, opt_geometryCallback) {
-  var instructions = this.reversedInstructions;
+  var instructions = this.hitDetectionInstructions;
   return this.replay_(context, transform, renderGeometryFunction,
       instructions, opt_geometryCallback);
 };
@@ -298,25 +298,26 @@ ol.render.canvas.Replay.prototype.replayBackward =
 /**
  * @private
  */
-ol.render.canvas.Replay.prototype.reverseInstructions_ = function() {
-  var reversedInstructions = this.reversedInstructions;
+ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions_ =
+    function() {
+  var hitDetectionInstructions = this.hitDetectionInstructions;
   // step 1 - reverse array
-  reversedInstructions.reverse();
+  hitDetectionInstructions.reverse();
   // step 2 - reverse instructions within geometry blocks
   var i;
-  var n = reversedInstructions.length;
+  var n = hitDetectionInstructions.length;
   var instruction;
   var type;
   var begin = -1;
   for (i = 0; i < n; ++i) {
-    instruction = reversedInstructions[i];
+    instruction = hitDetectionInstructions[i];
     type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
     if (type == ol.render.canvas.Instruction.END_GEOMETRY) {
       goog.asserts.assert(begin == -1);
       begin = i;
     } else if (type == ol.render.canvas.Instruction.BEGIN_GEOMETRY) {
       goog.asserts.assert(begin >= 0);
-      ol.array.reverseSubArray(this.reversedInstructions, begin, i);
+      ol.array.reverseSubArray(this.hitDetectionInstructions, begin, i);
       begin = -1;
     }
   }
@@ -377,12 +378,12 @@ ol.render.canvas.Replay.prototype.endGeometry =
   this.beginGeometryInstruction1_[2] = this.instructions.length;
   this.beginGeometryInstruction1_ = null;
   goog.asserts.assert(!goog.isNull(this.beginGeometryInstruction2_));
-  this.beginGeometryInstruction2_[2] = this.reversedInstructions.length;
+  this.beginGeometryInstruction2_[2] = this.hitDetectionInstructions.length;
   this.beginGeometryInstruction2_ = null;
   var endGeometryInstruction =
       [ol.render.canvas.Instruction.END_GEOMETRY, geometry, data];
   this.instructions.push(endGeometryInstruction);
-  this.reversedInstructions.push(endGeometryInstruction);
+  this.hitDetectionInstructions.push(endGeometryInstruction);
 };
 
 
@@ -509,7 +510,7 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
     this.image_, this.snapToPixel_
   ];
   this.instructions.push(drawImageInstruction);
-  this.reversedInstructions.push(drawImageInstruction);
+  this.hitDetectionInstructions.push(drawImageInstruction);
   this.endGeometry(pointGeometry, data);
 };
 
@@ -539,7 +540,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
     this.image_, this.snapToPixel_
   ];
   this.instructions.push(drawImageInstruction);
-  this.reversedInstructions.push(drawImageInstruction);
+  this.hitDetectionInstructions.push(drawImageInstruction);
   this.endGeometry(multiPointGeometry, data);
 };
 
@@ -548,7 +549,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
  * @inheritDoc
  */
 ol.render.canvas.ImageReplay.prototype.finish = function() {
-  this.reverseInstructions_();
+  this.reverseHitDetectionInstructions_();
   // FIXME this doesn't really protect us against further calls to draw*Geometry
   this.anchorX_ = undefined;
   this.anchorY_ = undefined;
@@ -639,7 +640,7 @@ ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ =
   var moveToLineToInstruction =
       [ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
   this.instructions.push(moveToLineToInstruction);
-  this.reversedInstructions.push(moveToLineToInstruction);
+  this.hitDetectionInstructions.push(moveToLineToInstruction);
   return end;
 };
 
@@ -701,12 +702,12 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
   ol.extent.extend(this.extent_, lineStringGeometry.getExtent());
   this.setStrokeStyle_();
   this.beginGeometry(lineStringGeometry);
-  this.reversedInstructions.push([ol.render.canvas.Instruction.BEGIN_PATH]);
+  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.BEGIN_PATH]);
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
   this.drawFlatCoordinates_(
       flatCoordinates, 0, flatCoordinates.length, stride);
-  this.reversedInstructions.push([ol.render.canvas.Instruction.STROKE]);
+  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
   this.endGeometry(lineStringGeometry, data);
 };
 
@@ -725,7 +726,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
   }
   ol.extent.extend(this.extent_, multiLineStringGeometry.getExtent());
   this.setStrokeStyle_();
-  this.reversedInstructions.push([ol.render.canvas.Instruction.BEGIN_PATH]);
+  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.BEGIN_PATH]);
   this.beginGeometry(multiLineStringGeometry);
   var ends = multiLineStringGeometry.getEnds();
   var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
@@ -736,7 +737,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
     offset = this.drawFlatCoordinates_(
         flatCoordinates, offset, ends[i], stride);
   }
-  this.reversedInstructions.push([ol.render.canvas.Instruction.STROKE]);
+  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
   this.endGeometry(multiLineStringGeometry, data);
 };
 
@@ -750,7 +751,7 @@ ol.render.canvas.LineStringReplay.prototype.finish = function() {
   if (state.lastStroke != this.coordinates.length) {
     this.instructions.push([ol.render.canvas.Instruction.STROKE]);
   }
-  this.reverseInstructions_();
+  this.reverseHitDetectionInstructions_();
   this.state_ = null;
 };
 
@@ -840,7 +841,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
   var state = this.state_;
   var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
   this.instructions.push(beginPathInstruction);
-  this.reversedInstructions.push(beginPathInstruction);
+  this.hitDetectionInstructions.push(beginPathInstruction);
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
@@ -851,22 +852,22 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
         [ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
     var closePathInstruction = [ol.render.canvas.Instruction.CLOSE_PATH];
     this.instructions.push(moveToLineToInstruction, closePathInstruction);
-    this.reversedInstructions.push(moveToLineToInstruction,
+    this.hitDetectionInstructions.push(moveToLineToInstruction,
         closePathInstruction);
     offset = end;
   }
   // FIXME is it quicker to fill and stroke each polygon individually,
   // FIXME or all polygons together?
+  var fillInstruction = [ol.render.canvas.Instruction.FILL];
+  this.hitDetectionInstructions.push(fillInstruction);
   if (goog.isDef(state.fillStyle)) {
-    var fillInstruction = [ol.render.canvas.Instruction.FILL];
     this.instructions.push(fillInstruction);
-    this.reversedInstructions.push(fillInstruction);
   }
   if (goog.isDef(state.strokeStyle)) {
     goog.asserts.assert(goog.isDef(state.lineWidth));
     var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
     this.instructions.push(strokeInstruction);
-    this.reversedInstructions.push(strokeInstruction);
+    this.hitDetectionInstructions.push(strokeInstruction);
   }
   return offset;
 };
@@ -890,12 +891,12 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
   ol.extent.extend(this.extent_, polygonGeometry.getExtent());
   this.setFillStrokeStyles_();
   this.beginGeometry(polygonGeometry);
-  if (goog.isDef(state.fillStyle)) {
-    this.reversedInstructions.push(
-        [ol.render.canvas.Instruction.SET_FILL_STYLE, state.fillStyle]);
-  }
+  // always fill the polygon for hit detection
+  this.hitDetectionInstructions.push(
+      [ol.render.canvas.Instruction.SET_FILL_STYLE,
+       ol.color.asString(ol.render.canvas.defaultFillStyle)]);
   if (goog.isDef(state.strokeStyle)) {
-    this.reversedInstructions.push(
+    this.hitDetectionInstructions.push(
         [ol.render.canvas.Instruction.SET_STROKE_STYLE,
          state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
          state.miterLimit, state.lineDash]);
@@ -926,12 +927,12 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
   ol.extent.extend(this.extent_, multiPolygonGeometry.getExtent());
   this.setFillStrokeStyles_();
   this.beginGeometry(multiPolygonGeometry);
-  if (goog.isDef(state.fillStyle)) {
-    this.reversedInstructions.push(
-        [ol.render.canvas.Instruction.SET_FILL_STYLE, state.fillStyle]);
-  }
+  // always fill the multi-polygon for hit detection
+  this.hitDetectionInstructions.push(
+      [ol.render.canvas.Instruction.SET_FILL_STYLE,
+       ol.color.asString(ol.render.canvas.defaultFillStyle)]);
   if (goog.isDef(state.strokeStyle)) {
-    this.reversedInstructions.push(
+    this.hitDetectionInstructions.push(
         [ol.render.canvas.Instruction.SET_STROKE_STYLE,
          state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
          state.miterLimit, state.lineDash]);
@@ -954,7 +955,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
  */
 ol.render.canvas.PolygonReplay.prototype.finish = function() {
   goog.asserts.assert(!goog.isNull(this.state_));
-  this.reverseInstructions_();
+  this.reverseHitDetectionInstructions_();
   this.state_ = null;
 };
 
@@ -1093,7 +1094,7 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.replayesByZIndex_), Number);
   goog.array.sort(zs);
-  return this.replayForward_(
+  return this.replay_(
       zs, context, extent, transform, renderGeometryFunction);
 };
 
@@ -1111,15 +1112,16 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.ReplayGroup.prototype.replayBackward_ = function(zs, context,
-    extent, transform, renderGeometryFunction, geometryCallback) {
+ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ =
+    function(zs, context, extent, transform, renderGeometryFunction,
+        geometryCallback) {
   var i, ii, replayes, replayType, replay, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     replayes = this.replayesByZIndex_[zs[i].toString()];
     for (replayType in replayes) {
       replay = replayes[replayType];
       if (ol.extent.intersects(extent, replay.getExtent())) {
-        result = replay.replayBackward(
+        result = replay.replayHitDetection(
             context, transform, renderGeometryFunction, geometryCallback);
         if (result) {
           return result;
@@ -1142,7 +1144,7 @@ ol.render.canvas.ReplayGroup.prototype.replayBackward_ = function(zs, context,
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.ReplayGroup.prototype.replayForward_ =
+ol.render.canvas.ReplayGroup.prototype.replay_ =
     function(zs, context, extent, transform, renderGeometryFunction) {
   var i, ii, replayes, replayType, replay, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
@@ -1150,7 +1152,7 @@ ol.render.canvas.ReplayGroup.prototype.replayForward_ =
     for (replayType in replayes) {
       replay = replayes[replayType];
       if (ol.extent.intersects(extent, replay.getExtent())) {
-        result = replay.replayForward(
+        result = replay.replay(
             context, transform, renderGeometryFunction);
         if (result) {
           return result;
@@ -1189,7 +1191,7 @@ ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtCoordinate = function(
   var context = this.hitDetectionContext_;
   context.clearRect(0, 0, 1, 1);
 
-  return this.replayBackward_(zs, context, extent, transform,
+  return this.replayHitDetection_(zs, context, extent, transform,
       renderGeometryFunction,
       /**
        * @param {ol.geom.Geometry} geometry Geometry.
