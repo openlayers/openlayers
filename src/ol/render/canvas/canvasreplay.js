@@ -298,7 +298,8 @@ ol.render.canvas.Replay.prototype.replayBackward =
 /**
  * @private
  */
-ol.render.canvas.Replay.prototype.reverseInstructions_ = function() {
+ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions_ =
+    function() {
   var hitDetectionInstructions = this.hitDetectionInstructions;
   // step 1 - reverse array
   hitDetectionInstructions.reverse();
@@ -548,7 +549,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
  * @inheritDoc
  */
 ol.render.canvas.ImageReplay.prototype.finish = function() {
-  this.reverseInstructions_();
+  this.reverseHitDetectionInstructions_();
   // FIXME this doesn't really protect us against further calls to draw*Geometry
   this.anchorX_ = undefined;
   this.anchorY_ = undefined;
@@ -750,7 +751,7 @@ ol.render.canvas.LineStringReplay.prototype.finish = function() {
   if (state.lastStroke != this.coordinates.length) {
     this.instructions.push([ol.render.canvas.Instruction.STROKE]);
   }
-  this.reverseInstructions_();
+  this.reverseHitDetectionInstructions_();
   this.state_ = null;
 };
 
@@ -954,7 +955,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
  */
 ol.render.canvas.PolygonReplay.prototype.finish = function() {
   goog.asserts.assert(!goog.isNull(this.state_));
-  this.reverseInstructions_();
+  this.reverseHitDetectionInstructions_();
   this.state_ = null;
 };
 
