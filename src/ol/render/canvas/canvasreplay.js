@@ -269,7 +269,7 @@ ol.render.canvas.Replay.prototype.replay_ =
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.Replay.prototype.replayForward =
+ol.render.canvas.Replay.prototype.replay =
     function(context, transform, renderGeometryFunction) {
   var instructions = this.instructions;
   return this.replay_(context, transform, renderGeometryFunction,
@@ -1094,7 +1094,7 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.replayesByZIndex_), Number);
   goog.array.sort(zs);
-  return this.replayForward_(
+  return this.replay_(
       zs, context, extent, transform, renderGeometryFunction);
 };
 
@@ -1144,7 +1144,7 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ =
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.ReplayGroup.prototype.replayForward_ =
+ol.render.canvas.ReplayGroup.prototype.replay_ =
     function(zs, context, extent, transform, renderGeometryFunction) {
   var i, ii, replayes, replayType, replay, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
@@ -1152,7 +1152,7 @@ ol.render.canvas.ReplayGroup.prototype.replayForward_ =
     for (replayType in replayes) {
       replay = replayes[replayType];
       if (ol.extent.intersects(extent, replay.getExtent())) {
-        result = replay.replayForward(
+        result = replay.replay(
             context, transform, renderGeometryFunction);
         if (result) {
           return result;
