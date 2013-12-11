@@ -29,7 +29,7 @@ geolocation.bindTo('projection', map.getView());
 var track = new ol.dom.Input(document.getElementById('track'));
 track.bindTo('checked', geolocation, 'tracking');
 
-geolocation.on('change', function() {
+geolocation.on('propertychange', function() {
   $('#accuracy').text(geolocation.getAccuracy() + ' [m]');
   $('#altitude').text(geolocation.getAltitude() + ' [m]');
   $('#altitudeAccuracy').text(geolocation.getAltitudeAccuracy() + ' [m]');

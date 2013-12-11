@@ -6,6 +6,7 @@
  */
 
 goog.provide('ol.Object');
+goog.provide('ol.ObjectEvent');
 goog.provide('ol.ObjectEventType');
 
 goog.require('goog.array');
@@ -21,7 +22,7 @@ goog.require('ol.Observable');
  */
 ol.ObjectEventType = {
   BEFORECHANGE: 'beforechange',
-  CHANGE: 'change'
+  CHANGE: 'propertychange'
 };
 
 
