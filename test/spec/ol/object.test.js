@@ -175,7 +175,7 @@ describe('ol.Object', function() {
       var beforeListener = sinon.spy(function(event) {
         oldValue = o2.get(event.key);
       });
-      o.on(ol.ObjectEventType.BEFORECHANGE, beforeListener);
+      o.on(ol.ObjectEventType.BEFOREPROPERTYCHANGE, beforeListener);
 
       o.set('k', 2);
       expect(beforeListener.calledOnce).to.be(true);
@@ -211,7 +211,7 @@ describe('ol.Object', function() {
       var beforeListener = sinon.spy(function(event) {
         oldValue = o2.get(event.key);
       });
-      o.on(ol.ObjectEventType.BEFORECHANGE, beforeListener);
+      o.on(ol.ObjectEventType.BEFOREPROPERTYCHANGE, beforeListener);
 
       o2.set('k', 2);
       expect(beforeListener.calledOnce).to.be(true);
@@ -234,7 +234,7 @@ describe('ol.Object', function() {
       var beforeListener = sinon.spy(function(event) {
         oldValue = object.get(event.key);
       });
-      object.on(ol.ObjectEventType.BEFORECHANGE, beforeListener);
+      object.on(ol.ObjectEventType.BEFOREPROPERTYCHANGE, beforeListener);
 
       target.set('foo', 'new value');
       expect(beforeListener.calledOnce).to.be(true);
@@ -258,7 +258,7 @@ describe('ol.Object', function() {
       var beforeListener = sinon.spy(function(event) {
         oldValue = object.get(event.key);
       });
-      object.on(ol.ObjectEventType.BEFORECHANGE, beforeListener);
+      object.on(ol.ObjectEventType.BEFOREPROPERTYCHANGE, beforeListener);
 
       target.set('foo', 'new value');
       expect(beforeListener.calledOnce).to.be(true);
@@ -359,7 +359,7 @@ describe('ol.Object', function() {
       object.bindTo('foo', target);
 
       var listener = sinon.spy();
-      object.on(ol.ObjectEventType.BEFORECHANGE, listener);
+      object.on(ol.ObjectEventType.BEFOREPROPERTYCHANGE, listener);
 
       target.set('foo', 'new value');
       expect(listener.calledOnce).to.be(true);
@@ -384,7 +384,7 @@ describe('ol.Object', function() {
       object.bindTo('bar', target);
 
       var listener = sinon.spy();
-      object.on(ol.ObjectEventType.BEFORECHANGE, listener);
+      object.on(ol.ObjectEventType.BEFOREPROPERTYCHANGE, listener);
 
       target.set('foo', 'new foo');
       expect(listener.calledOnce).to.be(true);

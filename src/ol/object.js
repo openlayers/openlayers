@@ -21,7 +21,7 @@ goog.require('ol.Observable');
  * @enum {string}
  */
 ol.ObjectEventType = {
-  BEFORECHANGE: 'beforechange',
+  BEFOREPROPERTYCHANGE: 'beforepropertychange',
   PROPERTYCHANGE: 'propertychange'
 };
 
@@ -258,7 +258,7 @@ ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
 
   // listen for beforechange events and relay if key matches
   this.beforeChangeListeners_[key] = goog.events.listen(target,
-      ol.ObjectEventType.BEFORECHANGE,
+      ol.ObjectEventType.BEFOREPROPERTYCHANGE,
       this.createBeforeChangeListener_(key, targetKey),
       undefined, this);
 
@@ -288,7 +288,7 @@ ol.Object.prototype.createBeforeChangeListener_ = function(key, targetKey) {
   return function(event) {
     if (event.key === targetKey) {
       this.dispatchEvent(
-          new ol.ObjectEvent(ol.ObjectEventType.BEFORECHANGE, key));
+          new ol.ObjectEvent(ol.ObjectEventType.BEFOREPROPERTYCHANGE, key));
     }
   };
 };
@@ -408,7 +408,8 @@ ol.Object.prototype.notifyInternal_ = function(key) {
  * @todo stability experimental
  */
 ol.Object.prototype.set = function(key, value) {
-  this.dispatchEvent(new ol.ObjectEvent(ol.ObjectEventType.BEFORECHANGE, key));
+  this.dispatchEvent(
+      new ol.ObjectEvent(ol.ObjectEventType.BEFOREPROPERTYCHANGE, key));
   var accessors = ol.Object.getAccessors(this);
   if (accessors.hasOwnProperty(key)) {
     var accessor = accessors[key];
