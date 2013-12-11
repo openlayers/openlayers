@@ -52,6 +52,18 @@ var styles = {
     fill: new ol.style.Fill({
       color: 'rgba(0, 0, 255, 0.1)'
     })
+  })],
+  'GeometryCollection': [new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'magenta',
+      width: 2
+    }),
+    fill: new ol.style.Fill({
+      color: 'magenta'
+    }),
+    image: ol.shape.renderCircle(10, null, new ol.style.Stroke({
+      color: 'magenta'
+    }))
   })]
 };
 
@@ -118,6 +130,26 @@ var vectorSource = new ol.source.GeoJSON(
                 [[[-5e6, 6e6], [-5e6, 8e6], [-3e6, 8e6], [-3e6, 6e6]]],
                 [[[-2e6, 6e6], [-2e6, 8e6], [0e6, 8e6], [0e6, 6e6]]],
                 [[[1e6, 6e6], [1e6, 8e6], [3e6, 8e6], [3e6, 6e6]]]
+              ]
+            }
+          },
+          {
+            'type': 'Feature',
+            'geometry': {
+              'type': 'GeometryCollection',
+              'geometries': [
+                {
+                  'type': 'LineString',
+                  'coordinates': [[-5e6, -5e6], [0e6, -5e6]]
+                },
+                {
+                  'type': 'Point',
+                  'coordinates': [4e6, -5e6]
+                },
+                {
+                  'type': 'Polygon',
+                  'coordinates': [[[1e6, -6e6], [2e6, -4e6], [3e6, -6e6]]]
+                }
               ]
             }
           }
