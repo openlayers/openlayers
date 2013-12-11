@@ -287,7 +287,7 @@ ol.render.canvas.Replay.prototype.replayForward =
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.Replay.prototype.replayBackward =
+ol.render.canvas.Replay.prototype.replayHitDetection =
     function(context, transform, renderGeometryFunction, opt_geometryCallback) {
   var instructions = this.hitDetectionInstructions;
   return this.replay_(context, transform, renderGeometryFunction,
@@ -1112,15 +1112,16 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.ReplayGroup.prototype.replayBackward_ = function(zs, context,
-    extent, transform, renderGeometryFunction, geometryCallback) {
+ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ =
+    function(zs, context, extent, transform, renderGeometryFunction,
+        geometryCallback) {
   var i, ii, replayes, replayType, replay, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     replayes = this.replayesByZIndex_[zs[i].toString()];
     for (replayType in replayes) {
       replay = replayes[replayType];
       if (ol.extent.intersects(extent, replay.getExtent())) {
-        result = replay.replayBackward(
+        result = replay.replayHitDetection(
             context, transform, renderGeometryFunction, geometryCallback);
         if (result) {
           return result;
@@ -1190,7 +1191,7 @@ ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtCoordinate = function(
   var context = this.hitDetectionContext_;
   context.clearRect(0, 0, 1, 1);
 
-  return this.replayBackward_(zs, context, extent, transform,
+  return this.replayHitDetection_(zs, context, extent, transform,
       renderGeometryFunction,
       /**
        * @param {ol.geom.Geometry} geometry Geometry.
