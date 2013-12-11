@@ -243,16 +243,6 @@ goog.exportProperty(
 /**
  * @protected
  */
-ol.layer.Base.prototype.handleLayerChange = function() {
-  if (this.getVisible() && this.getSourceState() == ol.source.State.READY) {
-    this.dispatchChangeEvent();
-  }
-};
-
-
-/**
- * @protected
- */
 ol.layer.Base.prototype.handleLayerVisibleChange = function() {
   if (this.getSourceState() == ol.source.State.READY) {
     this.dispatchChangeEvent();
