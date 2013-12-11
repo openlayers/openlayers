@@ -88,6 +88,13 @@ ol.format.Format.prototype.writeFeature = goog.abstractMethod;
 
 
 /**
+ * @param {ol.Feature} feature Feature.
+ * @return {string} Result.
+ */
+ol.format.Format.prototype.writeFeatureAsString = goog.abstractMethod;
+
+
+/**
  * @param {Array.<ol.Feature>} features Features.
  * @return {Node|Object|string} Result.
  */
@@ -95,7 +102,21 @@ ol.format.Format.prototype.writeFeatures = goog.abstractMethod;
 
 
 /**
+ * @param {Array.<ol.Feature>} features Features.
+ * @return {string} Result.
+ */
+ol.format.Format.prototype.writeFeaturesAsString = goog.abstractMethod;
+
+
+/**
  * @param {ol.geom.Geometry} geometry Geometry.
  * @return {Node|Object|string} Node.
  */
 ol.format.Format.prototype.writeGeometry = goog.abstractMethod;
+
+
+/**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @return {string} Result.
+ */
+ol.format.Format.prototype.writeGeometryAsString = goog.abstractMethod;
