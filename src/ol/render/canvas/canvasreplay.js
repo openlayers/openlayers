@@ -80,7 +80,7 @@ ol.render.canvas.Replay = function() {
    * @protected
    * @type {Array.<*>}
    */
-  this.reversedInstructions = [];
+  this.hitDetectionInstructions = [];
 
   /**
    * @private
@@ -132,7 +132,7 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry) {
   this.instructions.push(this.beginGeometryInstruction1_);
   this.beginGeometryInstruction2_ =
       [ol.render.canvas.Instruction.BEGIN_GEOMETRY, geometry, 0];
-  this.reversedInstructions.push(this.beginGeometryInstruction2_);
+  this.hitDetectionInstructions.push(this.beginGeometryInstruction2_);
 };
 
 
@@ -289,7 +289,7 @@ ol.render.canvas.Replay.prototype.replayForward =
  */
 ol.render.canvas.Replay.prototype.replayBackward =
     function(context, transform, renderGeometryFunction, opt_geometryCallback) {
-  var instructions = this.reversedInstructions;
+  var instructions = this.hitDetectionInstructions;
   return this.replay_(context, transform, renderGeometryFunction,
       instructions, opt_geometryCallback);
 };
@@ -299,24 +299,24 @@ ol.render.canvas.Replay.prototype.replayBackward =
  * @private
  */
 ol.render.canvas.Replay.prototype.reverseInstructions_ = function() {
-  var reversedInstructions = this.reversedInstructions;
+  var hitDetectionInstructions = this.hitDetectionInstructions;
   // step 1 - reverse array
-  reversedInstructions.reverse();
+  hitDetectionInstructions.reverse();
   // step 2 - reverse instructions within geometry blocks
   var i;
-  var n = reversedInstructions.length;
+  var n = hitDetectionInstructions.length;
   var instruction;
   var type;
   var begin = -1;
   for (i = 0; i < n; ++i) {
-    instruction = reversedInstructions[i];
+    instruction = hitDetectionInstructions[i];
     type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
     if (type == ol.render.canvas.Instruction.END_GEOMETRY) {
       goog.asserts.assert(begin == -1);
       begin = i;
     } else if (type == ol.render.canvas.Instruction.BEGIN_GEOMETRY) {
       goog.asserts.assert(begin >= 0);
-      ol.array.reverseSubArray(this.reversedInstructions, begin, i);
+      ol.array.reverseSubArray(this.hitDetectionInstructions, begin, i);
       begin = -1;
     }
   }
@@ -377,12 +377,12 @@ ol.render.canvas.Replay.prototype.endGeometry =
   this.beginGeometryInstruction1_[2] = this.instructions.length;
   this.beginGeometryInstruction1_ = null;
   goog.asserts.assert(!goog.isNull(this.beginGeometryInstruction2_));
-  this.beginGeometryInstruction2_[2] = this.reversedInstructions.length;
+  this.beginGeometryInstruction2_[2] = this.hitDetectionInstructions.length;
   this.beginGeometryInstruction2_ = null;
   var endGeometryInstruction =
       [ol.render.canvas.Instruction.END_GEOMETRY, geometry, data];
   this.instructions.push(endGeometryInstruction);
-  this.reversedInstructions.push(endGeometryInstruction);
+  this.hitDetectionInstructions.push(endGeometryInstruction);
 };
 
 
@@ -509,7 +509,7 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
     this.image_, this.snapToPixel_
   ];
   this.instructions.push(drawImageInstruction);
-  this.reversedInstructions.push(drawImageInstruction);
+  this.hitDetectionInstructions.push(drawImageInstruction);
   this.endGeometry(pointGeometry, data);
 };
 
@@ -539,7 +539,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
     this.image_, this.snapToPixel_
   ];
   this.instructions.push(drawImageInstruction);
-  this.reversedInstructions.push(drawImageInstruction);
+  this.hitDetectionInstructions.push(drawImageInstruction);
   this.endGeometry(multiPointGeometry, data);
 };
 
@@ -639,7 +639,7 @@ ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ =
   var moveToLineToInstruction =
       [ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
   this.instructions.push(moveToLineToInstruction);
-  this.reversedInstructions.push(moveToLineToInstruction);
+  this.hitDetectionInstructions.push(moveToLineToInstruction);
   return end;
 };
 
@@ -701,12 +701,12 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
   ol.extent.extend(this.extent_, lineStringGeometry.getExtent());
   this.setStrokeStyle_();
   this.beginGeometry(lineStringGeometry);
-  this.reversedInstructions.push([ol.render.canvas.Instruction.BEGIN_PATH]);
+  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.BEGIN_PATH]);
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
   this.drawFlatCoordinates_(
       flatCoordinates, 0, flatCoordinates.length, stride);
-  this.reversedInstructions.push([ol.render.canvas.Instruction.STROKE]);
+  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
   this.endGeometry(lineStringGeometry, data);
 };
 
@@ -725,7 +725,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
   }
   ol.extent.extend(this.extent_, multiLineStringGeometry.getExtent());
   this.setStrokeStyle_();
-  this.reversedInstructions.push([ol.render.canvas.Instruction.BEGIN_PATH]);
+  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.BEGIN_PATH]);
   this.beginGeometry(multiLineStringGeometry);
   var ends = multiLineStringGeometry.getEnds();
   var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
@@ -736,7 +736,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
     offset = this.drawFlatCoordinates_(
         flatCoordinates, offset, ends[i], stride);
   }
-  this.reversedInstructions.push([ol.render.canvas.Instruction.STROKE]);
+  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
   this.endGeometry(multiLineStringGeometry, data);
 };
 
@@ -840,7 +840,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
   var state = this.state_;
   var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
   this.instructions.push(beginPathInstruction);
-  this.reversedInstructions.push(beginPathInstruction);
+  this.hitDetectionInstructions.push(beginPathInstruction);
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
@@ -851,7 +851,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
         [ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
     var closePathInstruction = [ol.render.canvas.Instruction.CLOSE_PATH];
     this.instructions.push(moveToLineToInstruction, closePathInstruction);
-    this.reversedInstructions.push(moveToLineToInstruction,
+    this.hitDetectionInstructions.push(moveToLineToInstruction,
         closePathInstruction);
     offset = end;
   }
@@ -860,13 +860,13 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
   if (goog.isDef(state.fillStyle)) {
     var fillInstruction = [ol.render.canvas.Instruction.FILL];
     this.instructions.push(fillInstruction);
-    this.reversedInstructions.push(fillInstruction);
+    this.hitDetectionInstructions.push(fillInstruction);
   }
   if (goog.isDef(state.strokeStyle)) {
     goog.asserts.assert(goog.isDef(state.lineWidth));
     var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
     this.instructions.push(strokeInstruction);
-    this.reversedInstructions.push(strokeInstruction);
+    this.hitDetectionInstructions.push(strokeInstruction);
   }
   return offset;
 };
@@ -891,11 +891,11 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
   this.setFillStrokeStyles_();
   this.beginGeometry(polygonGeometry);
   if (goog.isDef(state.fillStyle)) {
-    this.reversedInstructions.push(
+    this.hitDetectionInstructions.push(
         [ol.render.canvas.Instruction.SET_FILL_STYLE, state.fillStyle]);
   }
   if (goog.isDef(state.strokeStyle)) {
-    this.reversedInstructions.push(
+    this.hitDetectionInstructions.push(
         [ol.render.canvas.Instruction.SET_STROKE_STYLE,
          state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
          state.miterLimit, state.lineDash]);
@@ -927,11 +927,11 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
   this.setFillStrokeStyles_();
   this.beginGeometry(multiPolygonGeometry);
   if (goog.isDef(state.fillStyle)) {
-    this.reversedInstructions.push(
+    this.hitDetectionInstructions.push(
         [ol.render.canvas.Instruction.SET_FILL_STYLE, state.fillStyle]);
   }
   if (goog.isDef(state.strokeStyle)) {
-    this.reversedInstructions.push(
+    this.hitDetectionInstructions.push(
         [ol.render.canvas.Instruction.SET_STROKE_STYLE,
          state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
          state.miterLimit, state.lineDash]);
