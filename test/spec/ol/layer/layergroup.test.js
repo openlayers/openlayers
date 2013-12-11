@@ -63,7 +63,7 @@ describe('ol.layer.Group', function() {
 
   });
 
-  describe('change event', function() {
+  describe('generic change event', function() {
 
     var layer, group, listener;
     beforeEach(function() {
@@ -84,19 +84,58 @@ describe('ol.layer.Group', function() {
     });
 
     it('is dispatched by the group when layer opacity changes', function() {
-      group.on(ol.ObjectEventType.CHANGE, listener);
+      group.on(goog.events.EventType.CHANGE, listener);
 
       layer.setOpacity(0.5);
       expect(listener.calledOnce).to.be(true);
     });
 
     it('is dispatched by the group when layer visibility changes', function() {
-      group.on(ol.ObjectEventType.CHANGE, listener);
+      group.on(goog.events.EventType.CHANGE, listener);
 
       layer.setVisible(false);
       expect(listener.callCount).to.be(1);
 
       layer.setVisible(true);
+      expect(listener.callCount).to.be(2);
+    });
+
+  });
+
+  describe('property change event', function() {
+
+    var layer, group, listener;
+    beforeEach(function() {
+      layer = new ol.layer.Layer({
+        source: new ol.source.Source({
+          projection: 'EPSG:4326'
+        })
+      });
+      group = new ol.layer.Group({
+        layers: [layer]
+      });
+      listener = sinon.spy();
+    });
+
+    afterEach(function() {
+      goog.dispose(group);
+      goog.dispose(layer);
+    });
+
+    it('is dispatched by the group when group opacity changes', function() {
+      group.on(ol.ObjectEventType.CHANGE, listener);
+
+      group.setOpacity(0.5);
+      expect(listener.calledOnce).to.be(true);
+    });
+
+    it('is dispatched by the group when group visibility changes', function() {
+      group.on(ol.ObjectEventType.CHANGE, listener);
+
+      group.setVisible(false);
+      expect(listener.callCount).to.be(1);
+
+      group.setVisible(true);
       expect(listener.callCount).to.be(2);
     });
 
@@ -352,6 +391,7 @@ describe('ol.layer.Group', function() {
 });
 
 goog.require('goog.dispose');
+goog.require('goog.events.EventType');
 goog.require('ol.ObjectEventType');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Group');

@@ -3,13 +3,13 @@ goog.provide('ol.layer.Group');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
-goog.require('goog.events.EventType');
 goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Object');
+goog.require('ol.ObjectEventType');
 goog.require('ol.layer.Base');
 goog.require('ol.source.State');
 
@@ -104,7 +104,7 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
     for (i = 0, ii = layersArray.length; i < ii; i++) {
       layer = layersArray[i];
       this.listenerKeys_[goog.getUid(layer).toString()] =
-          goog.events.listen(layer, goog.events.EventType.CHANGE,
+          goog.events.listen(layer, ol.ObjectEventType.CHANGE,
               this.handleLayerChange_, false, this);
     }
   }
@@ -120,7 +120,7 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
 ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
   var layer = /** @type {ol.layer.Base} */ (collectionEvent.getElement());
   this.listenerKeys_[goog.getUid(layer).toString()] = goog.events.listen(
-      layer, goog.events.EventType.CHANGE, this.handleLayerChange_, false,
+      layer, ol.ObjectEventType.CHANGE, this.handleLayerChange_, false,
       this);
   this.dispatchChangeEvent();
 };
