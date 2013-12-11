@@ -113,7 +113,7 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(geometry) {
   goog.asserts.assert(goog.isDef(state.anchorY));
   goog.asserts.assert(goog.isDef(state.height));
   goog.asserts.assert(goog.isDef(state.width));
-  var pixelCoordinates = ol.geom.transformGeometry2D(
+  var pixelCoordinates = ol.geom.transformSimpleGeometry2D(
       geometry, this.transform_, this.pixelCoordinates_);
   var i, ii;
   for (i = 0, ii = pixelCoordinates.length; i < ii; i += 2) {
@@ -144,7 +144,7 @@ ol.render.canvas.Immediate.prototype.drawText_ = function(geometry) {
     return;
   }
   this.setFillStrokeStyles_();
-  var pixelCoordinates = ol.geom.transformGeometry2D(
+  var pixelCoordinates = ol.geom.transformSimpleGeometry2D(
       geometry, this.transform_, this.pixelCoordinates_);
   var i, ii;
   for (i = 0, ii = pixelCoordinates.length; i < ii; i += 2) {
@@ -223,6 +223,23 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
 /**
  * @inheritDoc
  */
+ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry =
+    function(geometryCollectionGeometry, data) {
+  var geometries = geometryCollectionGeometry.getGeometriesArray();
+  var i, ii;
+  for (i = 0, ii = geometries.length; i < ii; ++i) {
+    var geometry = geometries[i];
+    var geometryRenderer =
+        ol.render.canvas.Immediate.GEOMETRY_RENDERES_[geometry.getType()];
+    goog.asserts.assert(goog.isDef(geometryRenderer));
+    geometryRenderer.call(this, geometry, data);
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.render.canvas.Immediate.prototype.drawPointGeometry =
     function(pointGeometry, data) {
   this.drawImages_(pointGeometry);
@@ -251,7 +268,7 @@ ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
   }
   this.setFillStrokeStyles_();
   var context = this.context_;
-  var pixelCoordinates = ol.geom.transformGeometry2D(
+  var pixelCoordinates = ol.geom.transformSimpleGeometry2D(
       lineStringGeometry, this.transform_, this.pixelCoordinates_);
   context.beginPath();
   this.moveToLineTo_(pixelCoordinates, 0, pixelCoordinates.length, false);
@@ -271,7 +288,7 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
   }
   this.setFillStrokeStyles_();
   var context = this.context_;
-  var pixelCoordinates = ol.geom.transformGeometry2D(
+  var pixelCoordinates = ol.geom.transformSimpleGeometry2D(
       multiLineStringGeometry, this.transform_, this.pixelCoordinates_);
   context.beginPath();
   var ends = multiLineStringGeometry.getEnds();
@@ -298,7 +315,7 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
   }
   this.setFillStrokeStyles_();
   var context = this.context_;
-  var pixelCoordinates = ol.geom.transformGeometry2D(
+  var pixelCoordinates = ol.geom.transformSimpleGeometry2D(
       polygonGeometry, this.transform_, this.pixelCoordinates_);
   var ends = polygonGeometry.getEnds();
   context.beginPath();
@@ -327,7 +344,7 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
   }
   this.setFillStrokeStyles_();
   var context = this.context_;
-  var pixelCoordinates = ol.geom.transformGeometry2D(
+  var pixelCoordinates = ol.geom.transformSimpleGeometry2D(
       multiPolygonGeometry, this.transform_, this.pixelCoordinates_);
   var endss = multiPolygonGeometry.getEndss();
   var offset = 0;
@@ -478,5 +495,7 @@ ol.render.canvas.Immediate.GEOMETRY_RENDERES_ = {
   'MultiPoint': ol.render.canvas.Immediate.prototype.drawMultiPointGeometry,
   'MultiLineString':
       ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry,
-  'MultiPolygon': ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry
+  'MultiPolygon': ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry,
+  'GeometryCollection':
+      ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry
 };

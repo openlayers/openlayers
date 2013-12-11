@@ -1,8 +1,8 @@
 goog.provide('ol.geom.MultiLineString');
 
 goog.require('ol.extent');
-goog.require('ol.geom.Geometry');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.closest');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.simplify');
@@ -11,7 +11,7 @@ goog.require('ol.geom.simplify');
 
 /**
  * @constructor
- * @extends {ol.geom.Geometry}
+ * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiLineString} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
@@ -40,7 +40,18 @@ ol.geom.MultiLineString = function(coordinates, opt_layout) {
   this.setCoordinates(coordinates, opt_layout);
 
 };
-goog.inherits(ol.geom.MultiLineString, ol.geom.Geometry);
+goog.inherits(ol.geom.MultiLineString, ol.geom.SimpleGeometry);
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.MultiLineString.prototype.clone = function() {
+  var multiLineString = new ol.geom.MultiLineString(null);
+  multiLineString.setFlatCoordinates(
+      this.layout, this.flatCoordinates.slice(), this.ends_.slice());
+  return multiLineString;
+};
 
 
 /**

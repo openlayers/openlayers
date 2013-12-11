@@ -1,8 +1,8 @@
 goog.provide('ol.geom.MultiPolygon');
 
 goog.require('ol.extent');
-goog.require('ol.geom.Geometry');
 goog.require('ol.geom.Polygon');
+goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.closest');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.simplify');
@@ -11,7 +11,7 @@ goog.require('ol.geom.simplify');
 
 /**
  * @constructor
- * @extends {ol.geom.Geometry}
+ * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiPolygon} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
@@ -52,7 +52,18 @@ ol.geom.MultiPolygon = function(coordinates, opt_layout) {
   this.setCoordinates(coordinates, opt_layout);
 
 };
-goog.inherits(ol.geom.MultiPolygon, ol.geom.Geometry);
+goog.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.MultiPolygon.prototype.clone = function() {
+  var multiPolygon = new ol.geom.MultiPolygon(null);
+  multiPolygon.setFlatCoordinates(
+      this.layout, this.flatCoordinates.slice(), this.endss_.slice());
+  return multiPolygon;
+};
 
 
 /**

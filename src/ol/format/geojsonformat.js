@@ -1,13 +1,14 @@
 // FIXME coordinate order
 // FIXME reprojection
-// FIXME GeometryCollection
 
 goog.provide('ol.format.GeoJSON');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.format.JSON');
+goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
@@ -41,7 +42,7 @@ goog.inherits(ol.format.GeoJSON, ol.format.JSON);
 
 
 /**
- * @param {GeoJSONGeometry} object Object.
+ * @param {GeoJSONObject} object Object.
  * @private
  * @return {ol.geom.Geometry} Geometry.
  */
@@ -49,6 +50,19 @@ ol.format.GeoJSON.readGeometry_ = function(object) {
   var geometryReader = ol.format.GeoJSON.GEOMETRY_READERS_[object.type];
   goog.asserts.assert(goog.isDef(geometryReader));
   return geometryReader(object);
+};
+
+
+/**
+ * @param {GeoJSONGeometryCollection} object Object.
+ * @private
+ * @return {ol.geom.GeometryCollection} Geometry collection.
+ */
+ol.format.GeoJSON.readGeometryCollectionGeometry_ = function(object) {
+  goog.asserts.assert(object.type == 'GeometryCollection');
+  var geometries = goog.array.map(
+      object.geometries, ol.format.GeoJSON.readGeometry_);
+  return new ol.geom.GeometryCollection(geometries);
 };
 
 
@@ -121,12 +135,28 @@ ol.format.GeoJSON.readPolygonGeometry_ = function(object) {
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
  * @private
- * @return {GeoJSONGeometry} GeoJSON geometry.
+ * @return {GeoJSONObject} GeoJSON geometry.
  */
 ol.format.GeoJSON.writeGeometry_ = function(geometry) {
   var geometryWriter = ol.format.GeoJSON.GEOMETRY_WRITERS_[geometry.getType()];
   goog.asserts.assert(goog.isDef(geometryWriter));
   return geometryWriter(geometry);
+};
+
+
+/**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @private
+ * @return {GeoJSONGeometryCollection} GeoJSON geometry collection.
+ */
+ol.format.GeoJSON.writeGeometryCollectionGeometry_ = function(geometry) {
+  goog.asserts.assertInstanceof(geometry, ol.geom.GeometryCollection);
+  var geometries = goog.array.map(
+      geometry.getGeometriesArray(), ol.format.GeoJSON.writeGeometry_);
+  return /** @type {GeoJSONGeometryCollection} */ ({
+    'type': 'GeometryCollection',
+    'geometries': geometries
+  });
 };
 
 
@@ -219,7 +249,7 @@ ol.format.GeoJSON.writePolygonGeometry_ = function(geometry) {
 /**
  * @const
  * @private
- * @type {Object.<string, function(GeoJSONGeometry): ol.geom.Geometry>}
+ * @type {Object.<string, function(GeoJSONObject): ol.geom.Geometry>}
  */
 ol.format.GeoJSON.GEOMETRY_READERS_ = {
   'Point': ol.format.GeoJSON.readPointGeometry_,
@@ -227,14 +257,15 @@ ol.format.GeoJSON.GEOMETRY_READERS_ = {
   'Polygon': ol.format.GeoJSON.readPolygonGeometry_,
   'MultiPoint': ol.format.GeoJSON.readMultiPointGeometry_,
   'MultiLineString': ol.format.GeoJSON.readMultiLineStringGeometry_,
-  'MultiPolygon': ol.format.GeoJSON.readMultiPolygonGeometry_
+  'MultiPolygon': ol.format.GeoJSON.readMultiPolygonGeometry_,
+  'GeometryCollection': ol.format.GeoJSON.readGeometryCollectionGeometry_
 };
 
 
 /**
  * @const
  * @private
- * @type {Object.<string, function(ol.geom.Geometry): GeoJSONGeometry>}
+ * @type {Object.<string, function(ol.geom.Geometry): GeoJSONObject>}
  */
 ol.format.GeoJSON.GEOMETRY_WRITERS_ = {
   'Point': ol.format.GeoJSON.writePointGeometry_,
@@ -242,7 +273,8 @@ ol.format.GeoJSON.GEOMETRY_WRITERS_ = {
   'Polygon': ol.format.GeoJSON.writePolygonGeometry_,
   'MultiPoint': ol.format.GeoJSON.writeMultiPointGeometry_,
   'MultiLineString': ol.format.GeoJSON.writeMultiLineStringGeometry_,
-  'MultiPolygon': ol.format.GeoJSON.writeMultiPolygonGeometry_
+  'MultiPolygon': ol.format.GeoJSON.writeMultiPolygonGeometry_,
+  'GeometryCollection': ol.format.GeoJSON.writeGeometryCollectionGeometry_
 };
 
 

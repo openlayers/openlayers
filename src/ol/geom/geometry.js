@@ -1,14 +1,9 @@
-// FIXME add GeometryCollection
-
 goog.provide('ol.geom.Geometry');
 
 goog.require('goog.asserts');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
-goog.require('goog.object');
 goog.require('ol.Observable');
-goog.require('ol.extent');
-goog.require('ol.geom.flat');
 
 
 /**
@@ -21,7 +16,8 @@ ol.geom.GeometryType = {
   POLYGON: 'Polygon',
   MULTI_POINT: 'MultiPoint',
   MULTI_LINE_STRING: 'MultiLineString',
-  MULTI_POLYGON: 'MultiPolygon'
+  MULTI_POLYGON: 'MultiPolygon',
+  GEOMETRY_COLLECTION: 'GeometryCollection'
 };
 
 
@@ -47,24 +43,6 @@ ol.geom.Geometry = function() {
 
   /**
    * @protected
-   * @type {ol.geom.GeometryLayout}
-   */
-  this.layout = ol.geom.GeometryLayout.XY;
-
-  /**
-   * @protected
-   * @type {number}
-   */
-  this.stride = 2;
-
-  /**
-   * @protected
-   * @type {Array.<number>}
-   */
-  this.flatCoordinates = null;
-
-  /**
-   * @protected
    * @type {number}
    */
   this.revision = 0;
@@ -82,25 +60,31 @@ ol.geom.Geometry = function() {
   this.extentRevision = -1;
 
   /**
-   * @private
+   * @protected
    * @type {Object.<string, ol.geom.Geometry>}
    */
-  this.simplifiedGeometryCache_ = {};
+  this.simplifiedGeometryCache = {};
 
   /**
-   * @private
+   * @protected
    * @type {number}
    */
-  this.simplifiedGeometryMaxMinSquaredTolerance_ = 0;
+  this.simplifiedGeometryMaxMinSquaredTolerance = 0;
 
   /**
-   * @private
+   * @protected
    * @type {number}
    */
-  this.simplifiedGeometryRevision_ = 0;
+  this.simplifiedGeometryRevision = 0;
 
 };
 goog.inherits(ol.geom.Geometry, ol.Observable);
+
+
+/**
+ * @return {ol.geom.Geometry} Clone.
+ */
+ol.geom.Geometry.prototype.clone = goog.abstractMethod;
 
 
 /**
@@ -123,44 +107,6 @@ ol.geom.Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
       opt_closestPoint : [NaN, NaN];
   this.closestPointXY(point[0], point[1], closestPoint, Infinity);
   return closestPoint;
-};
-
-
-/**
- * @param {number} stride Stride.
- * @private
- * @return {ol.geom.GeometryLayout} layout Layout.
- */
-ol.geom.Geometry.getLayoutForStride_ = function(stride) {
-  if (stride == 2) {
-    return ol.geom.GeometryLayout.XY;
-  } else if (stride == 3) {
-    return ol.geom.GeometryLayout.XYZ;
-  } else if (stride == 4) {
-    return ol.geom.GeometryLayout.XYZM;
-  } else {
-    throw new Error('unsupported stride: ' + stride);
-  }
-};
-
-
-/**
- * @param {ol.geom.GeometryLayout} layout Layout.
- * @private
- * @return {number} Stride.
- */
-ol.geom.Geometry.getStrideForLayout_ = function(layout) {
-  if (layout == ol.geom.GeometryLayout.XY) {
-    return 2;
-  } else if (layout == ol.geom.GeometryLayout.XYZ) {
-    return 3;
-  } else if (layout == ol.geom.GeometryLayout.XYM) {
-    return 3;
-  } else if (layout == ol.geom.GeometryLayout.XYZM) {
-    return 4;
-  } else {
-    throw new Error('unsupported layout: ' + layout);
-  }
 };
 
 
@@ -194,31 +140,7 @@ ol.geom.Geometry.prototype.dispatchChangeEvent = function() {
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} extent Extent.
  */
-ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
-  if (this.extentRevision != this.revision) {
-    this.extent = ol.extent.createOrUpdateFromFlatCoordinates(
-        this.flatCoordinates, this.stride, this.extent);
-    this.extentRevision = this.revision;
-  }
-  goog.asserts.assert(goog.isDef(this.extent));
-  return ol.extent.returnOrUpdate(this.extent, opt_extent);
-};
-
-
-/**
- * @return {Array.<number>} Flat coordinates.
- */
-ol.geom.Geometry.prototype.getFlatCoordinates = function() {
-  return this.flatCoordinates;
-};
-
-
-/**
- * @return {ol.geom.GeometryLayout} Layout.
- */
-ol.geom.Geometry.prototype.getLayout = function() {
-  return this.layout;
-};
+ol.geom.Geometry.prototype.getExtent = goog.abstractMethod;
 
 
 /**
@@ -233,60 +155,7 @@ ol.geom.Geometry.prototype.getRevision = function() {
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.Geometry} Simplified geometry.
  */
-ol.geom.Geometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {
-  if (this.simplifiedGeometryRevision_ != this.revision) {
-    goog.object.clear(this.simplifiedGeometryCache_);
-    this.simplifiedGeometryMaxMinSquaredTolerance_ = 0;
-    this.simplifiedGeometryRevision_ = this.revision;
-  }
-  // If squaredTolerance is negative or if we know that simplification will not
-  // have any effect then just return this.
-  if (squaredTolerance < 0 ||
-      (this.simplifiedGeometryMaxMinSquaredTolerance_ !== 0 &&
-       squaredTolerance <= this.simplifiedGeometryMaxMinSquaredTolerance_)) {
-    return this;
-  }
-  var key = squaredTolerance.toString();
-  if (this.simplifiedGeometryCache_.hasOwnProperty(key)) {
-    return this.simplifiedGeometryCache_[key];
-  } else {
-    var simplifiedGeometry =
-        this.getSimplifiedGeometryInternal(squaredTolerance);
-    var simplifiedFlatCoordinates = simplifiedGeometry.getFlatCoordinates();
-    if (simplifiedFlatCoordinates.length < this.flatCoordinates.length) {
-      this.simplifiedGeometryCache_[key] = simplifiedGeometry;
-      return simplifiedGeometry;
-    } else {
-      // Simplification did not actually remove any coordinates.  We now know
-      // that any calls to getSimplifiedGeometry with a squaredTolerance less
-      // than or equal to the current squaredTolerance will also not have any
-      // effect.  This allows us to short circuit simplification (saving CPU
-      // cycles) and prevents the cache of simplified geometries from filling
-      // up with useless identical copies of this geometry (saving memory).
-      this.simplifiedGeometryMaxMinSquaredTolerance_ = squaredTolerance;
-      return this;
-    }
-  }
-};
-
-
-/**
- * @param {number} squaredTolerance Squared tolerance.
- * @return {ol.geom.Geometry} Simplified geometry.
- * @protected
- */
-ol.geom.Geometry.prototype.getSimplifiedGeometryInternal =
-    function(squaredTolerance) {
-  return this;
-};
-
-
-/**
- * @return {number} Stride.
- */
-ol.geom.Geometry.prototype.getStride = function() {
-  return this.stride;
-};
+ol.geom.Geometry.prototype.getSimplifiedGeometry = goog.abstractMethod;
 
 
 /**
@@ -296,58 +165,9 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 
 
 /**
- * @param {ol.geom.GeometryLayout} layout Layout.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- * @protected
- */
-ol.geom.Geometry.prototype.setFlatCoordinatesInternal =
-    function(layout, flatCoordinates) {
-  this.stride = ol.geom.Geometry.getStrideForLayout_(layout);
-  this.layout = layout;
-  this.flatCoordinates = flatCoordinates;
-};
-
-
-/**
- * @param {ol.geom.GeometryLayout|undefined} layout Layout.
- * @param {Array} coordinates Coordinates.
- * @param {number} nesting Nesting.
- * @protected
- */
-ol.geom.Geometry.prototype.setLayout =
-    function(layout, coordinates, nesting) {
-  /** @type {number} */
-  var stride;
-  if (goog.isDef(layout)) {
-    stride = ol.geom.Geometry.getStrideForLayout_(layout);
-  } else {
-    var i;
-    for (i = 0; i < nesting; ++i) {
-      if (coordinates.length === 0) {
-        this.layout = ol.geom.GeometryLayout.XY;
-        this.stride = 2;
-        return;
-      } else {
-        coordinates = /** @type {Array} */ (coordinates[0]);
-      }
-    }
-    stride = (/** @type {Array} */ (coordinates)).length;
-    layout = ol.geom.Geometry.getLayoutForStride_(stride);
-  }
-  this.layout = layout;
-  this.stride = stride;
-};
-
-
-/**
  * @param {ol.TransformFunction} transformFn Transform.
  */
-ol.geom.Geometry.prototype.transform = function(transformFn) {
-  if (!goog.isNull(this.flatCoordinates)) {
-    transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
-    this.dispatchChangeEvent();
-  }
-};
+ol.geom.Geometry.prototype.transform = goog.abstractMethod;
 
 
 /**
@@ -391,21 +211,3 @@ ol.geom.RawMultiLineString;
  * @typedef {Array.<ol.geom.RawPolygon>}
  */
 ol.geom.RawMultiPolygon;
-
-
-/**
- * @param {ol.geom.Geometry} geometry Geometry.
- * @param {goog.vec.Mat4.AnyType} transform Transform.
- * @param {Array.<number>=} opt_dest Destination.
- * @return {Array.<number>} Transformed flat coordinates.
- */
-ol.geom.transformGeometry2D = function(geometry, transform, opt_dest) {
-  var flatCoordinates = geometry.getFlatCoordinates();
-  if (goog.isNull(flatCoordinates)) {
-    return null;
-  } else {
-    var stride = geometry.getStride();
-    return ol.geom.flat.transform2D(
-        flatCoordinates, stride, transform, opt_dest);
-  }
-};

@@ -333,6 +333,13 @@ ol.render.canvas.Replay.prototype.drawFeature = goog.abstractMethod;
 /**
  * @inheritDoc
  */
+ol.render.canvas.Replay.prototype.drawGeometryCollectionGeometry =
+    goog.abstractMethod;
+
+
+/**
+ * @inheritDoc
+ */
 ol.render.canvas.Replay.prototype.drawLineStringGeometry = goog.abstractMethod;
 
 
