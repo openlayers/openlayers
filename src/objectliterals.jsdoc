@@ -247,7 +247,7 @@
 
 /**
  * @typedef {Object} ol.format.GeoJSONOptions
- * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} defaultProjection Default projection.
  */
 
 /**
@@ -479,11 +479,14 @@
 /**
  * @typedef {Object} ol.source.GeoJSONOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {ol.proj.ProjectionLike} defaultProjection Default projection.
+ * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
- * @property {GeoJSONObject|undefined} geoJSON Object.
+ * @property {GeoJSONObject|undefined} object Object.
  * @property {ol.proj.ProjectionLike} projection Projection.
- * @property {string|undefined} string String.
- * @proprtty {string|undefined} url URL.
+ * @property {ol.proj.ProjectionLike} reprojectTo Re-project to.
+ * @property {string|undefined} text Text.
+ * @property {string|undefined} url URL.
  */
 
 /**
@@ -615,6 +618,20 @@
  * @property {string|undefined} logo Logo.
  * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {ol.source.State|undefined} state State.
+ */
+
+/**
+ * @typedef {Object} ol.source.VectorFileOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {Document|undefined} doc Document.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {ol.format.Format} format Format.
+ * @property {string|undefined} logo Logo.
+ * @property {Node|undefined} node Node.
+ * @property {Object|undefined} object Object.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {string|undefined} text Text.
+ * @property {string|undefined} url URL.
  */
 
 /**

@@ -1,3 +1,0 @@
-@exportClass ol.format.GeoJSON ol.format.GeoJSONOptions
-@exportProperty ol.format.GeoJSON.prototype.readObject
-@exportProperty ol.format.GeoJSON.prototype.readString

@@ -1,31 +1,15 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
-goog.require('ol.format.GeoJSON');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.proj');
+goog.require('ol.source.GeoJSON');
 goog.require('ol.source.MapQuestOpenAerial');
-goog.require('ol.source.Vector');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-var map = new ol.Map({
-  layers: [
-    new ol.layer.Tile({
-      source: new ol.source.MapQuestOpenAerial()
-    })
-  ],
-  renderer: ol.RendererHint.CANVAS,
-  target: 'map',
-  view: new ol.View2D({
-    center: [0, 0],
-    zoom: 2
-  })
-});
 
-var vectorSource = new ol.source.Vector();
 var styleArray = [new ol.style.Style({
   fill: new ol.style.Fill({
     color: 'rgba(255, 255, 255, 0.6)'
@@ -36,23 +20,28 @@ var styleArray = [new ol.style.Style({
   })
 })];
 
-var vectorLayer;
-$.getJSON('data/countries.geojson', function(data) {
-  var format = new ol.format.GeoJSON();
-  var transformFn = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
-  format.readObject(data, function(feature) {
-    var geometry = feature.getGeometry();
-    geometry.transform(transformFn);
-    feature.setGeometry(geometry);
-    vectorSource.addFeature(feature);
-  });
-  vectorLayer = new ol.layer.Vector({
-    source: vectorSource,
-    styleFunction: function(feature, resolution) {
-      return styleArray;
-    }
-  });
-  map.getLayers().push(vectorLayer);
+var vectorLayer = new ol.layer.Vector({
+  source: new ol.source.GeoJSON({
+    url: 'data/countries.geojson'
+  }),
+  styleFunction: function(feature, resolution) {
+    return styleArray;
+  }
+});
+
+var map = new ol.Map({
+  layers: [
+    new ol.layer.Tile({
+      source: new ol.source.MapQuestOpenAerial()
+    }),
+    vectorLayer
+  ],
+  renderer: ol.RendererHint.CANVAS,
+  target: 'map',
+  view: new ol.View2D({
+    center: [0, 0],
+    zoom: 2
+  })
 });
 
 var highlight;
