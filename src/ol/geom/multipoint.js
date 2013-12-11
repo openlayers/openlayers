@@ -1,15 +1,15 @@
 goog.provide('ol.geom.MultiPoint');
 
 goog.require('ol.extent');
-goog.require('ol.geom.Geometry');
 goog.require('ol.geom.Point');
+goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
 
 
 
 /**
  * @constructor
- * @extends {ol.geom.Geometry}
+ * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiPoint} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
@@ -17,7 +17,7 @@ ol.geom.MultiPoint = function(coordinates, opt_layout) {
   goog.base(this);
   this.setCoordinates(coordinates, opt_layout);
 };
-goog.inherits(ol.geom.MultiPoint, ol.geom.Geometry);
+goog.inherits(ol.geom.MultiPoint, ol.geom.SimpleGeometry);
 
 
 /**

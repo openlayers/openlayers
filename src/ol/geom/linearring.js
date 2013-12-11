@@ -1,7 +1,7 @@
 goog.provide('ol.geom.LinearRing');
 
 goog.require('ol.extent');
-goog.require('ol.geom.Geometry');
+goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.closest');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.simplify');
@@ -10,7 +10,7 @@ goog.require('ol.geom.simplify');
 
 /**
  * @constructor
- * @extends {ol.geom.Geometry}
+ * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawLinearRing} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
@@ -33,7 +33,7 @@ ol.geom.LinearRing = function(coordinates, opt_layout) {
   this.setCoordinates(coordinates, opt_layout);
 
 };
-goog.inherits(ol.geom.LinearRing, ol.geom.Geometry);
+goog.inherits(ol.geom.LinearRing, ol.geom.SimpleGeometry);
 
 
 /**

@@ -2,14 +2,14 @@ goog.provide('ol.geom.Point');
 
 goog.require('goog.asserts');
 goog.require('ol.extent');
-goog.require('ol.geom.Geometry');
+goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat');
 
 
 
 /**
  * @constructor
- * @extends {ol.geom.Geometry}
+ * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawPoint} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
@@ -17,7 +17,7 @@ ol.geom.Point = function(coordinates, opt_layout) {
   goog.base(this);
   this.setCoordinates(coordinates, opt_layout);
 };
-goog.inherits(ol.geom.Point, ol.geom.Geometry);
+goog.inherits(ol.geom.Point, ol.geom.SimpleGeometry);
 
 
 /**
