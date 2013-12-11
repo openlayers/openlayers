@@ -106,7 +106,7 @@ describe('ol.Object', function() {
       goog.events.listen(o, 'change:k', listener1);
 
       listener2 = sinon.spy();
-      goog.events.listen(o, ol.ObjectEventType.CHANGE, listener2);
+      goog.events.listen(o, ol.ObjectEventType.PROPERTYCHANGE, listener2);
 
       var o2 = new ol.Object();
       o2.bindTo('k', o);
@@ -143,7 +143,7 @@ describe('ol.Object', function() {
       goog.events.listen(o, 'change:k', listener1);
 
       listener2 = sinon.spy();
-      goog.events.listen(o, ol.ObjectEventType.CHANGE, listener2);
+      goog.events.listen(o, ol.ObjectEventType.PROPERTYCHANGE, listener2);
 
       o2 = new ol.Object();
       o2.bindTo('k', o);

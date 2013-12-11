@@ -106,7 +106,7 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
       layer = layersArray[i];
       this.listenerKeys_[goog.getUid(layer).toString()] =
           goog.events.listen(layer,
-              [ol.ObjectEventType.CHANGE, goog.events.EventType.CHANGE],
+              [ol.ObjectEventType.PROPERTYCHANGE, goog.events.EventType.CHANGE],
               this.handleLayerChange_, false, this);
     }
   }
@@ -122,7 +122,7 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
 ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
   var layer = /** @type {ol.layer.Base} */ (collectionEvent.getElement());
   this.listenerKeys_[goog.getUid(layer).toString()] = goog.events.listen(
-      layer, [ol.ObjectEventType.CHANGE, goog.events.EventType.CHANGE],
+      layer, [ol.ObjectEventType.PROPERTYCHANGE, goog.events.EventType.CHANGE],
       this.handleLayerChange_, false, this);
   this.dispatchChangeEvent();
 };

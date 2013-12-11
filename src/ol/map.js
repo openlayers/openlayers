@@ -889,7 +889,7 @@ ol.Map.prototype.handleViewChanged_ = function() {
   var view = this.getView();
   if (goog.isDefAndNotNull(view)) {
     this.viewPropertyListenerKey_ = goog.events.listen(
-        view, ol.ObjectEventType.CHANGE,
+        view, ol.ObjectEventType.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, false, this);
   }
   this.render();
@@ -931,7 +931,7 @@ ol.Map.prototype.handleLayerGroupChanged_ = function() {
   if (goog.isDefAndNotNull(layerGroup)) {
     this.layerGroupPropertyListenerKeys_ = [
       goog.events.listen(
-          layerGroup, ol.ObjectEventType.CHANGE,
+          layerGroup, ol.ObjectEventType.PROPERTYCHANGE,
           this.handleLayerGroupPropertyChanged_, false, this),
       goog.events.listen(
           layerGroup, goog.events.EventType.CHANGE,

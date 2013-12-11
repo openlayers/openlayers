@@ -22,7 +22,7 @@ goog.require('ol.Observable');
  */
 ol.ObjectEventType = {
   BEFORECHANGE: 'beforechange',
-  CHANGE: 'propertychange'
+  PROPERTYCHANGE: 'propertychange'
 };
 
 
@@ -396,7 +396,8 @@ ol.Object.prototype.notify = function(key) {
 ol.Object.prototype.notifyInternal_ = function(key) {
   var eventType = ol.Object.getChangeEventType(key);
   this.dispatchEvent(eventType);
-  this.dispatchEvent(new ol.ObjectEvent(ol.ObjectEventType.CHANGE, key));
+  this.dispatchEvent(
+      new ol.ObjectEvent(ol.ObjectEventType.PROPERTYCHANGE, key));
 };
 
 

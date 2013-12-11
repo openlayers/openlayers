@@ -123,14 +123,14 @@ describe('ol.layer.Group', function() {
     });
 
     it('is dispatched by the group when group opacity changes', function() {
-      group.on(ol.ObjectEventType.CHANGE, listener);
+      group.on(ol.ObjectEventType.PROPERTYCHANGE, listener);
 
       group.setOpacity(0.5);
       expect(listener.calledOnce).to.be(true);
     });
 
     it('is dispatched by the group when group visibility changes', function() {
-      group.on(ol.ObjectEventType.CHANGE, listener);
+      group.on(ol.ObjectEventType.PROPERTYCHANGE, listener);
 
       group.setVisible(false);
       expect(listener.callCount).to.be(1);
