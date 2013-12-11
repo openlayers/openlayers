@@ -83,6 +83,12 @@ goog.inherits(ol.geom.Geometry, ol.Observable);
 
 
 /**
+ * @return {ol.geom.Geometry} Clone.
+ */
+ol.geom.Geometry.prototype.clone = goog.abstractMethod;
+
+
+/**
  * @param {number} x X.
  * @param {number} y Y.
  * @param {ol.Coordinate} closestPoint Closest point.
