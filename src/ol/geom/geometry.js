@@ -1,5 +1,3 @@
-// FIXME add GeometryCollection
-
 goog.provide('ol.geom.Geometry');
 
 goog.require('goog.asserts');
@@ -18,7 +16,8 @@ ol.geom.GeometryType = {
   POLYGON: 'Polygon',
   MULTI_POINT: 'MultiPoint',
   MULTI_LINE_STRING: 'MultiLineString',
-  MULTI_POLYGON: 'MultiPolygon'
+  MULTI_POLYGON: 'MultiPolygon',
+  GEOMETRY_COLLECTION: 'GeometryCollection'
 };
 
 
