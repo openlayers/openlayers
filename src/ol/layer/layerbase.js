@@ -72,17 +72,6 @@ ol.layer.Base = function(options) {
 
   this.setValues(values);
 
-  goog.events.listen(this, [
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.BRIGHTNESS),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.CONTRAST),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.HUE),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.OPACITY),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.SATURATION),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.MAX_RESOLUTION),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.MIN_RESOLUTION)
-  ],
-  this.handleLayerChange, false, this);
-
   goog.events.listen(this,
       ol.Object.getChangeEventType(ol.layer.LayerProperty.VISIBLE),
       this.handleLayerVisibleChange, false, this);
