@@ -106,7 +106,7 @@ describe('ol.Object', function() {
       goog.events.listen(o, 'change:k', listener1);
 
       listener2 = sinon.spy();
-      goog.events.listen(o, 'change', listener2);
+      goog.events.listen(o, ol.ObjectEventType.CHANGE, listener2);
 
       var o2 = new ol.Object();
       o2.bindTo('k', o);
@@ -143,7 +143,7 @@ describe('ol.Object', function() {
       goog.events.listen(o, 'change:k', listener1);
 
       listener2 = sinon.spy();
-      goog.events.listen(o, 'change', listener2);
+      goog.events.listen(o, ol.ObjectEventType.CHANGE, listener2);
 
       o2 = new ol.Object();
       o2.bindTo('k', o);
@@ -175,7 +175,7 @@ describe('ol.Object', function() {
       var beforeListener = sinon.spy(function(event) {
         oldValue = o2.get(event.key);
       });
-      o.on('beforechange', beforeListener);
+      o.on(ol.ObjectEventType.BEFORECHANGE, beforeListener);
 
       o.set('k', 2);
       expect(beforeListener.calledOnce).to.be(true);
@@ -211,7 +211,7 @@ describe('ol.Object', function() {
       var beforeListener = sinon.spy(function(event) {
         oldValue = o2.get(event.key);
       });
-      o.on('beforechange', beforeListener);
+      o.on(ol.ObjectEventType.BEFORECHANGE, beforeListener);
 
       o2.set('k', 2);
       expect(beforeListener.calledOnce).to.be(true);
@@ -234,7 +234,7 @@ describe('ol.Object', function() {
       var beforeListener = sinon.spy(function(event) {
         oldValue = object.get(event.key);
       });
-      object.on('beforechange', beforeListener);
+      object.on(ol.ObjectEventType.BEFORECHANGE, beforeListener);
 
       target.set('foo', 'new value');
       expect(beforeListener.calledOnce).to.be(true);
@@ -258,7 +258,7 @@ describe('ol.Object', function() {
       var beforeListener = sinon.spy(function(event) {
         oldValue = object.get(event.key);
       });
-      object.on('beforechange', beforeListener);
+      object.on(ol.ObjectEventType.BEFORECHANGE, beforeListener);
 
       target.set('foo', 'new value');
       expect(beforeListener.calledOnce).to.be(true);
@@ -359,7 +359,7 @@ describe('ol.Object', function() {
       object.bindTo('foo', target);
 
       var listener = sinon.spy();
-      object.on('beforechange', listener);
+      object.on(ol.ObjectEventType.BEFORECHANGE, listener);
 
       target.set('foo', 'new value');
       expect(listener.calledOnce).to.be(true);
@@ -384,7 +384,7 @@ describe('ol.Object', function() {
       object.bindTo('bar', target);
 
       var listener = sinon.spy();
-      object.on('beforechange', listener);
+      object.on(ol.ObjectEventType.BEFORECHANGE, listener);
 
       target.set('foo', 'new foo');
       expect(listener.calledOnce).to.be(true);
@@ -714,3 +714,4 @@ describe('ol.Object', function() {
 
 goog.require('goog.events');
 goog.require('ol.Object');
+goog.require('ol.ObjectEventType');
