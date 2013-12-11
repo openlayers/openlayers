@@ -236,16 +236,6 @@ goog.exportProperty(
 
 
 /**
- * @protected
- */
-ol.layer.Base.prototype.handleLayerVisibleChange = function() {
-  if (this.getSourceState() == ol.source.State.READY) {
-    this.dispatchChangeEvent();
-  }
-};
-
-
-/**
  * Adjust the layer brightness.  A value of -1 will render the layer completely
  * black.  A value of 0 will leave the brightness unchanged.  A value of 1 will
  * render the layer completely white.  Other values are linear multipliers on

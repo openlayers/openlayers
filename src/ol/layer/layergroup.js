@@ -80,14 +80,6 @@ ol.layer.Group.prototype.handleLayerChange_ = function() {
 
 
 /**
- * @inheritDoc
- */
-ol.layer.Group.prototype.handleLayerVisibleChange = function() {
-  this.dispatchChangeEvent();
-};
-
-
-/**
  * @param {goog.events.Event} event Event.
  * @private
  */
