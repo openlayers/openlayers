@@ -457,6 +457,15 @@ describe('ol.format.GeoJSON', function() {
 
   });
 
+  describe('#writeGeometryAsString', function() {
+
+    it('can write a point', function() {
+      expect(format.writeGeometryAsString(new ol.geom.Point([1, 2]))).
+          to.be('{"type":"Point","coordinates":[1,2]}');
+    });
+
+  });
+
 });
 
 
