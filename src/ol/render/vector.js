@@ -1,6 +1,7 @@
 goog.provide('ol.renderer.vector');
 
 goog.require('goog.asserts');
+goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
@@ -25,6 +26,29 @@ ol.renderer.vector.renderFeature = function(
       ol.renderer.vector.GEOMETRY_RENDERERS_[geometry.getType()];
   goog.asserts.assert(goog.isDef(geometryRenderer));
   geometryRenderer(replayGroup, geometry, style, data);
+};
+
+
+/**
+ * @param {ol.render.IReplayGroup} replayGroup Replay group.
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {ol.style.Style} style Style.
+ * @param {Object} data Opaque data object.
+ * @private
+ */
+ol.renderer.vector.renderGeometryCollectionGeometry_ =
+    function(replayGroup, geometry, style, data) {
+  goog.asserts.assertInstanceof(geometry, ol.geom.GeometryCollection);
+  var geometryCollectionGeometry = /** @type {ol.geom.GeometryCollection} */ (
+      geometry);
+  var geometries = geometryCollectionGeometry.getGeometriesArray();
+  var i, ii;
+  for (i = 0, ii = geometries.length; i < ii; ++i) {
+    var geometryRenderer =
+        ol.renderer.vector.GEOMETRY_RENDERERS_[geometries[i].getType()];
+    goog.asserts.assert(goog.isDef(geometryRenderer));
+    geometryRenderer(replayGroup, geometries[i], style, data);
+  }
 };
 
 
@@ -167,5 +191,6 @@ ol.renderer.vector.GEOMETRY_RENDERERS_ = {
   'Polygon': ol.renderer.vector.renderPolygonGeometry_,
   'MultiPoint': ol.renderer.vector.renderMultiPointGeometry_,
   'MultiLineString': ol.renderer.vector.renderMultiLineStringGeometry_,
-  'MultiPolygon': ol.renderer.vector.renderMultiPolygonGeometry_
+  'MultiPolygon': ol.renderer.vector.renderMultiPolygonGeometry_,
+  'GeometryCollection': ol.renderer.vector.renderGeometryCollectionGeometry_
 };

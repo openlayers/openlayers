@@ -223,6 +223,23 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
 /**
  * @inheritDoc
  */
+ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry =
+    function(geometryCollectionGeometry, data) {
+  var geometries = geometryCollectionGeometry.getGeometriesArray();
+  var i, ii;
+  for (i = 0, ii = geometries.length; i < ii; ++i) {
+    var geometry = geometries[i];
+    var geometryRenderer =
+        ol.render.canvas.Immediate.GEOMETRY_RENDERES_[geometry.getType()];
+    goog.asserts.assert(goog.isDef(geometryRenderer));
+    geometryRenderer.call(this, geometry, data);
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.render.canvas.Immediate.prototype.drawPointGeometry =
     function(pointGeometry, data) {
   this.drawImages_(pointGeometry);
@@ -478,5 +495,7 @@ ol.render.canvas.Immediate.GEOMETRY_RENDERES_ = {
   'MultiPoint': ol.render.canvas.Immediate.prototype.drawMultiPointGeometry,
   'MultiLineString':
       ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry,
-  'MultiPolygon': ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry
+  'MultiPolygon': ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry,
+  'GeometryCollection':
+      ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry
 };

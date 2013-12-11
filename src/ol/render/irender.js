@@ -1,3 +1,5 @@
+// FIXME remove trailing "Geometry" in method names
+
 goog.provide('ol.render.IRender');
 
 
@@ -14,6 +16,16 @@ ol.render.IRender = function() {
  * @param {ol.style.Style} style Style.
  */
 ol.render.IRender.prototype.drawFeature = function(feature, style) {
+};
+
+
+/**
+ * @param {ol.geom.GeometryCollection} geometryCollectionGeometry Geometry
+ *     collection.
+ * @param {Object} data Opaque data object.
+ */
+ol.render.IRender.prototype.drawGeometryCollectionGeometry =
+    function(geometryCollectionGeometry, data) {
 };
 
 
