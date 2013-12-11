@@ -71,11 +71,6 @@ ol.layer.Base = function(options) {
       values.minResolution : 0;
 
   this.setValues(values);
-
-  goog.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.LayerProperty.VISIBLE),
-      this.handleLayerVisibleChange, false, this);
-
 };
 goog.inherits(ol.layer.Base, ol.Object);
 

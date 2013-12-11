@@ -370,20 +370,36 @@ describe('ol.layer.Layer', function() {
 
   describe('#setVisible', function() {
 
-    it('sets visible property', function() {
-      var layer = new ol.layer.Layer({
+    var layer;
+    beforeEach(function() {
+      layer = new ol.layer.Layer({
         source: new ol.source.Source({
           projection: ol.proj.get('EPSG:4326')
         })
       });
+    });
 
+    afterEach(function() {
+      goog.dispose(layer);
+    });
+
+    it('sets visible property', function() {
       layer.setVisible(false);
       expect(layer.getVisible()).to.be(false);
 
       layer.setVisible(true);
       expect(layer.getVisible()).to.be(true);
+    });
 
-      goog.dispose(layer);
+    it('fires a change event', function() {
+      var listener = sinon.spy();
+      layer.on(ol.ObjectEventType.CHANGE, listener);
+
+      layer.setVisible(false);
+      expect(listener.callCount).to.be(1);
+
+      layer.setVisible(true);
+      expect(listener.callCount).to.be(2);
     });
 
   });
