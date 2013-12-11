@@ -53,6 +53,20 @@ describe('ol.geom.GeometryCollection', function() {
       expect(geometries[2].getCoordinates()).to.eql([outer, inner1, inner2]);
     });
 
+    it('does a deep clone', function() {
+      var point = new ol.geom.Point([30, 40]);
+      var originalGeometries = [point];
+      var multi = new ol.geom.GeometryCollection(originalGeometries);
+      var clone = multi.clone();
+      var clonedGeometries = multi.getGeometries();
+      expect(clonedGeometries).not.to.be(originalGeometries);
+      expect(clonedGeometries).to.have.length(originalGeometries.length);
+      expect(clonedGeometries).to.have.length(1);
+      expect(clonedGeometries[0]).not.to.be(originalGeometries[0]);
+      expect(clonedGeometries[0].getCoordinates()).
+          to.eql(originalGeometries[0].getCoordinates());
+    });
+
   });
 
   describe('#getExtent()', function() {
