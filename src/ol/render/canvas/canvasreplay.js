@@ -1165,6 +1165,7 @@ ol.render.canvas.ReplayGroup.prototype.replayForward_ =
 /**
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
@@ -1173,11 +1174,13 @@ ol.render.canvas.ReplayGroup.prototype.replayForward_ =
  * @template T
  */
 ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtCoordinate = function(
-    extent, resolution, coordinate, renderGeometryFunction, callback) {
+    extent, resolution, rotation, coordinate,
+    renderGeometryFunction, callback) {
 
   var transform = this.hitDetectionTransform_;
   ol.vec.Mat4.makeTransform2D(transform, 0.5, 0.5,
-      1 / resolution, -1 / resolution, 0, -coordinate[0], -coordinate[1]);
+      1 / resolution, -1 / resolution, -rotation,
+      -coordinate[0], -coordinate[1]);
 
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.replayesByZIndex_), Number);
