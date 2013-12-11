@@ -115,6 +115,13 @@ ol.format.Text.prototype.writeFeature = function(feature) {
 
 
 /**
+ * @inheritDoc
+ */
+ol.format.Text.prototype.writeFeatureAsString =
+    ol.format.Text.prototype.writeFeatureText;
+
+
+/**
  * @param {ol.Feature} feature Features.
  * @protected
  * @return {string} Text.
@@ -131,6 +138,13 @@ ol.format.Text.prototype.writeFeatures = function(features) {
 
 
 /**
+ * @inheritDoc
+ */
+ol.format.Text.prototype.writeFeaturesAsString =
+    ol.format.Text.prototype.writeFeaturesText;
+
+
+/**
  * @param {Array.<ol.Feature>} features Features.
  * @protected
  * @return {string} Text.
@@ -144,6 +158,13 @@ ol.format.Text.prototype.writeFeaturesText = goog.abstractMethod;
 ol.format.Text.prototype.writeGeometry = function(geometry) {
   return this.writeGeometryText(geometry);
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.Text.prototype.writeGeometryAsString =
+    ol.format.Text.prototype.writeGeometryText;
 
 
 /**
