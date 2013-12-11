@@ -58,6 +58,17 @@ goog.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
 /**
  * @inheritDoc
  */
+ol.geom.Polygon.prototype.clone = function() {
+  var polygon = new ol.geom.Polygon(null);
+  polygon.setFlatCoordinates(
+      this.layout, this.flatCoordinates.slice(), this.ends_.slice());
+  return polygon;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.geom.Polygon.prototype.closestPointXY =
     function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance <

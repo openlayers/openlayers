@@ -23,6 +23,16 @@ goog.inherits(ol.geom.Point, ol.geom.SimpleGeometry);
 /**
  * @inheritDoc
  */
+ol.geom.Point.prototype.clone = function() {
+  var point = new ol.geom.Point(null);
+  point.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
+  return point;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.geom.Point.prototype.closestPointXY =
     function(x, y, closestPoint, minSquaredDistance) {
   var flatCoordinates = this.flatCoordinates;

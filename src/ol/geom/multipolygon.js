@@ -58,6 +58,17 @@ goog.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
 /**
  * @inheritDoc
  */
+ol.geom.MultiPolygon.prototype.clone = function() {
+  var multiPolygon = new ol.geom.MultiPolygon(null);
+  multiPolygon.setFlatCoordinates(
+      this.layout, this.flatCoordinates.slice(), this.endss_.slice());
+  return multiPolygon;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.geom.MultiPolygon.prototype.closestPointXY =
     function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance <

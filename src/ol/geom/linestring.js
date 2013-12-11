@@ -39,6 +39,16 @@ goog.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
 /**
  * @inheritDoc
  */
+ol.geom.LineString.prototype.clone = function() {
+  var lineString = new ol.geom.LineString(null);
+  lineString.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
+  return lineString;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.geom.LineString.prototype.closestPointXY =
     function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance <

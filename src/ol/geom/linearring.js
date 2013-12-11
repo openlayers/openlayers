@@ -39,6 +39,16 @@ goog.inherits(ol.geom.LinearRing, ol.geom.SimpleGeometry);
 /**
  * @inheritDoc
  */
+ol.geom.LinearRing.prototype.clone = function() {
+  var linearRing = new ol.geom.LinearRing(null);
+  linearRing.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
+  return linearRing;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.geom.LinearRing.prototype.closestPointXY =
     function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance <

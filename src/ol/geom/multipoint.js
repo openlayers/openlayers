@@ -23,6 +23,16 @@ goog.inherits(ol.geom.MultiPoint, ol.geom.SimpleGeometry);
 /**
  * @inheritDoc
  */
+ol.geom.MultiPoint.prototype.clone = function() {
+  var multiPoint = new ol.geom.MultiPoint(null);
+  multiPoint.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
+  return multiPoint;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.geom.MultiPoint.prototype.closestPointXY =
     function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance <
