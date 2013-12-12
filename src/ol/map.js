@@ -158,6 +158,13 @@ ol.Map = function(options) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.devicePixelRatio_ = goog.isDef(options.devicePixelRatio) ?
+      options.devicePixelRatio : ol.BrowserFeature.DEVICE_PIXEL_RATIO;
+
+  /**
+   * @private
    * @type {goog.async.AnimationDelay}
    */
   this.animationDelay_ =
