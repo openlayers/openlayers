@@ -31,7 +31,7 @@ ol.style.ShapeLiteralOptions;
 /**
  * @constructor
  * @extends {ol.style.PointLiteral}
- * @param {olx.style.ShapeLiteralOptions} options Shape literal options.
+ * @param {ol.style.ShapeLiteralOptions} options Shape literal options.
  */
 ol.style.ShapeLiteral = function(options) {
 

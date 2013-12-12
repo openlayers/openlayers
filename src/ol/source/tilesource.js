@@ -27,7 +27,7 @@ ol.source.TileOptions;
 /**
  * @constructor
  * @extends {ol.source.Source}
- * @param {olx.source.TileOptions} options Tile source options.
+ * @param {ol.source.TileOptions} options Tile source options.
  * @todo stability experimental
  */
 ol.source.Tile = function(options) {

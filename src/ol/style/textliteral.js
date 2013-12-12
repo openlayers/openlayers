@@ -23,7 +23,7 @@ ol.style.TextLiteralOptions;
 /**
  * @constructor
  * @extends {ol.style.Literal}
- * @param {olx.style.TextLiteralOptions} options Text literal options.
+ * @param {ol.style.TextLiteralOptions} options Text literal options.
  */
 ol.style.TextLiteral = function(options) {
 

@@ -34,7 +34,7 @@ ol.source.TileImageOptions;
 /**
  * @constructor
  * @extends {ol.source.Tile}
- * @param {olx.source.TileImageOptions} options Image tile options.
+ * @param {ol.source.TileImageOptions} options Image tile options.
  * @todo stability experimental
  */
 ol.source.TileImage = function(options) {

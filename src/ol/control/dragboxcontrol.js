@@ -26,7 +26,7 @@ ol.control.DragBoxOptions;
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {olx.control.DragBoxOptions} options Drag box options.
+ * @param {ol.control.DragBoxOptions} options Drag box options.
  * @todo stability experimental
  */
 ol.control.DragBox = function(options) {
