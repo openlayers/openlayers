@@ -58,7 +58,7 @@ describe('ol.geom.GeometryCollection', function() {
       var originalGeometries = [point];
       var multi = new ol.geom.GeometryCollection(originalGeometries);
       var clone = multi.clone();
-      var clonedGeometries = multi.getGeometries();
+      var clonedGeometries = clone.getGeometries();
       expect(clonedGeometries).not.to.be(originalGeometries);
       expect(clonedGeometries).to.have.length(originalGeometries.length);
       expect(clonedGeometries).to.have.length(1);
