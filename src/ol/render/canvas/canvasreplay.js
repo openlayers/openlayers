@@ -625,7 +625,14 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
   this.instructions.push(drawImageInstruction);
   this.hitDetectionInstructions.push(drawImageInstruction);
   this.endGeometry(pointGeometry, data);
-  this.setTextStyle_();
+  if (this.setTextStyle_()) {
+    var textStyle = this.textStyle_;
+    this.textInstructions.push([
+      ol.render.canvas.Instruction.DRAW_TEXT,
+      myBegin, myEnd,
+      textStyle.text, !!textStyle.stroke, !!textStyle.fill
+    ]);
+  }
 };
 
 
@@ -656,7 +663,14 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
   this.instructions.push(drawImageInstruction);
   this.hitDetectionInstructions.push(drawImageInstruction);
   this.endGeometry(multiPointGeometry, data);
-  this.setTextStyle_();
+  if (this.setTextStyle_()) {
+    var textStyle = this.textStyle_;
+    this.textInstructions.push([
+      ol.render.canvas.Instruction.DRAW_TEXT,
+      myBegin, myEnd,
+      textStyle.text, !!textStyle.stroke, !!textStyle.fill
+    ]);
+  }
 };
 
 
