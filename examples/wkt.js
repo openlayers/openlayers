@@ -14,7 +14,7 @@ var raster = new ol.layer.Tile({
 });
 
 var parser = new ol.parser.WKT();
-var transform = ol.proj.getTransform('EPSG:4326', 'EPSG:900913');
+var transform = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
 var geom = parser.read(
     'POLYGON((10.689697265625 -25.0927734375, 34.595947265625 ' +
         '-20.1708984375, 38.814697265625 -35.6396484375, 13.502197265625 ' +
