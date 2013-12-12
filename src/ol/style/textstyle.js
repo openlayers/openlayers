@@ -4,9 +4,11 @@ goog.provide('ol.style.Text');
 
 /**
  * @constructor
- * @param {olx.style.TextOptions} options Options.
+ * @param {olx.style.TextOptions=} opt_options Options.
  */
-ol.style.Text = function(options) {
+ol.style.Text = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @type {string|undefined}
