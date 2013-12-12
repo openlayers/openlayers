@@ -6,6 +6,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.style');
+goog.require('goog.vec.Mat4');
 goog.require('ol.css');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
@@ -19,6 +20,7 @@ goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.canvas.VectorLayer');
 goog.require('ol.source.State');
+goog.require('ol.vec.Mat4');
 
 
 
@@ -56,6 +58,12 @@ ol.renderer.canvas.Map = function(container, map) {
   this.context_ = /** @type {CanvasRenderingContext2D} */
       (this.canvas_.getContext('2d'));
 
+  /**
+   * @private
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.transform_ = goog.vec.Mat4.createNumber();
+
 };
 goog.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
 
@@ -87,8 +95,17 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
   var map = this.getMap();
   var context = this.context_;
   if (map.hasListener(type)) {
+    var view2DState = frameState.view2DState;
+    var devicePixelRatio = frameState.devicePixelRatio;
+    ol.vec.Mat4.makeTransform2D(this.transform_,
+        this.canvas_.width / 2,
+        this.canvas_.height / 2,
+        devicePixelRatio / view2DState.resolution,
+        -devicePixelRatio / view2DState.resolution,
+        -view2DState.rotation,
+        -view2DState.center[0], -view2DState.center[1]);
     var render = new ol.render.canvas.Immediate(
-        context, frameState.extent, frameState.coordinateToPixelMatrix);
+        context, frameState.extent, this.transform_);
     var composeEvent = new ol.render.Event(type, map, render, frameState,
         context, null);
     map.dispatchEvent(composeEvent);
@@ -121,11 +138,12 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   }
 
   var context = this.context_;
-
-  var size = frameState.size;
-  if (this.canvas_.width != size[0] || this.canvas_.height != size[1]) {
-    this.canvas_.width = size[0];
-    this.canvas_.height = size[1];
+  var ratio = frameState.devicePixelRatio;
+  var width = frameState.size[0] * ratio;
+  var height = frameState.size[1] * ratio;
+  if (this.canvas_.width != width || this.canvas_.height != height) {
+    this.canvas_.width = width;
+    this.canvas_.height = height;
   } else {
     context.clearRect(0, 0, this.canvas_.width, this.canvas_.height);
   }

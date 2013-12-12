@@ -139,9 +139,12 @@ ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
  */
 ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
   var view2DState = frameState.view2DState;
+  var devicePixelRatio = frameState.devicePixelRatio;
   return ol.vec.Mat4.makeTransform2D(this.transform_,
-      frameState.size[0] / 2, frameState.size[1] / 2,
-      1 / view2DState.resolution, -1 / view2DState.resolution,
+      devicePixelRatio * frameState.size[0] / 2,
+      devicePixelRatio * frameState.size[1] / 2,
+      devicePixelRatio / view2DState.resolution,
+      -devicePixelRatio / view2DState.resolution,
       -view2DState.rotation,
       -view2DState.center[0], -view2DState.center[1]);
 };
