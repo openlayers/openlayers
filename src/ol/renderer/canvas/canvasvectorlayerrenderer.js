@@ -6,6 +6,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
+goog.require('ol.layer.Vector');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.vector');
@@ -194,6 +195,9 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   this.dirty_ = false;
 
   var styleFunction = vectorLayer.getStyleFunction();
+  if (!goog.isDef(styleFunction)) {
+    styleFunction = ol.layer.Vector.defaultStyleFunction;
+  }
   var replayGroup = new ol.render.canvas.ReplayGroup();
   vectorSource.forEachFeatureInExtent(extent,
       /**
