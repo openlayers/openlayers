@@ -101,9 +101,12 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
     image = this.image_;
     var imageExtent = image.getExtent();
     var imageResolution = image.getResolution();
+    var devicePixelRatio = frameState.devicePixelRatio;
     ol.vec.Mat4.makeTransform2D(this.imageTransform_,
-        frameState.size[0] / 2, frameState.size[1] / 2,
-        imageResolution / viewResolution, imageResolution / viewResolution,
+        devicePixelRatio * frameState.size[0] / 2,
+        devicePixelRatio * frameState.size[1] / 2,
+        devicePixelRatio * imageResolution / viewResolution,
+        devicePixelRatio * imageResolution / viewResolution,
         viewRotation,
         (imageExtent[0] - viewCenter[0]) / imageResolution,
         (viewCenter[1] - imageExtent[3]) / imageResolution);
