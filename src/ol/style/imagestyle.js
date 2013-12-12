@@ -24,10 +24,12 @@ ol.style.ImageState = {
 
 /**
  * @constructor
- * @param {olx.style.ImageOptions} options Options.
+ * @param {olx.style.ImageOptions=} opt_options Options.
  * @extends {goog.events.EventTarget}
  */
-ol.style.Image = function(options) {
+ol.style.Image = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   goog.base(this);
 
