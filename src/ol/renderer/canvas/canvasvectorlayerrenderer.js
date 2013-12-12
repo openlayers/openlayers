@@ -231,6 +231,10 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature =
     function(feature, resolution, styleFunction, replayGroup) {
   var loading = false;
   var styles = styleFunction(feature, resolution);
+  // FIXME if styles is null, should we use the default style?
+  if (!goog.isDefAndNotNull(styles)) {
+    return false;
+  }
   // simplify to a tolerance of half a CSS pixel
   var squaredTolerance = resolution * resolution / 4;
   var i, ii, style, imageStyle, imageState;
