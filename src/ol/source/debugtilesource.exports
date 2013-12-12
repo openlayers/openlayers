@@ -1,1 +1,1 @@
-@exportClass ol.source.TileDebug ol.source.TileDebugOptions
+@exportSymbol ol.source.TileDebug

@@ -1,1 +1,1 @@
-@exportClass ol.interaction.Draw ol.interaction.DrawOptions
+@exportSymbol ol.interaction.Draw

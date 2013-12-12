@@ -1,1 +1,1 @@
-@exportClass ol.interaction.TouchPan ol.interaction.TouchPanOptions
+@exportSymbol ol.interaction.TouchPan

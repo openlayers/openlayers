@@ -1,1 +1,1 @@
-@exportClass ol.source.ImageStatic ol.source.ImageStaticOptions
+@exportSymbol ol.source.ImageStatic

@@ -1,2 +1,2 @@
-@exportClass ol.control.Logo ol.control.LogoOptions
+@exportSymbol ol.control.Logo
 @exportProperty ol.control.Logo.prototype.setMap

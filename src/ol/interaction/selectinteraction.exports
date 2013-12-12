@@ -1,1 +1,1 @@
-@exportClass ol.interaction.Select ol.interaction.SelectOptions
+@exportSymbol ol.interaction.Select
