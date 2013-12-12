@@ -6,9 +6,11 @@ goog.require('ol.color');
 
 /**
  * @constructor
- * @param {olx.style.StrokeOptions} options Options.
+ * @param {olx.style.StrokeOptions=} opt_options Options.
  */
-ol.style.Stroke = function(options) {
+ol.style.Stroke = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @type {ol.Color|string}
