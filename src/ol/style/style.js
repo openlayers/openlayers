@@ -8,10 +8,12 @@ goog.require('ol.style.Image');
 
 /**
  * @constructor
- * @param {olx.style.StyleOptions} options Style options.
+ * @param {olx.style.StyleOptions=} opt_options Style options.
  * @todo stability experimental
  */
-ol.style.Style = function(options) {
+ol.style.Style = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @type {ol.style.Fill}
