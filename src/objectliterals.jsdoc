@@ -25,6 +25,9 @@
  * @typedef {Object} olx.MapOptions
  * @property {ol.Collection|Array.<ol.control.Control>|undefined} controls
  *     Controls initially added to the map.
+ * @property {number|undefined} devicePixelRatio The ratio between physical
+ *     pixels and device-independent pixels (dips) on the device. If `undefined`
+ *     then it gets set by using `window.devicePixelRatio`.
  * @property {ol.Collection|Array.<ol.interaction.Interaction>|undefined} interactions
  *     Interactions that are initially added to the map.
  * @property {Array.<ol.layer.Base>|ol.Collection|undefined} layers Layers.
