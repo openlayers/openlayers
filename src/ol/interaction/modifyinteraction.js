@@ -38,7 +38,7 @@ ol.interaction.SegmentDataType;
 /**
  * @constructor
  * @extends {ol.interaction.Drag}
- * @param {ol.interaction.ModifyOptions=} opt_options Options.
+ * @param {olx.interaction.ModifyOptions=} opt_options Options.
  */
 ol.interaction.Modify = function(opt_options) {
   goog.base(this);

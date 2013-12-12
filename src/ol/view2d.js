@@ -84,7 +84,7 @@ ol.View2DProperty = {
  * @implements {ol.IView2D}
  * @implements {ol.IView3D}
  * @extends {ol.View}
- * @param {ol.View2DOptions=} opt_options View2D options.
+ * @param {olx.View2DOptions=} opt_options View2D options.
  * @todo stability experimental
  * @todo observable center {ol.Coordinate} the center of the view
  * @todo observable projection {ol.proj.Projection} the projection of the view
@@ -501,7 +501,7 @@ ol.View2D.prototype.setZoom = function(zoom) {
 
 
 /**
- * @param {ol.View2DOptions} options View2D options.
+ * @param {olx.View2DOptions} options View2D options.
  * @private
  * @return {ol.CenterConstraintType}
  */
@@ -516,7 +516,7 @@ ol.View2D.createCenterConstraint_ = function(options) {
 
 /**
  * @private
- * @param {ol.View2DOptions} options View2D options.
+ * @param {olx.View2DOptions} options View2D options.
  * @return {{constraint: ol.ResolutionConstraintType, maxResolution: number,
  *     minResolution: number}}
  */
@@ -563,7 +563,7 @@ ol.View2D.createResolutionConstraint_ = function(options) {
 
 /**
  * @private
- * @param {ol.View2DOptions} options View2D options.
+ * @param {olx.View2DOptions} options View2D options.
  * @return {ol.RotationConstraintType} Rotation constraint.
  */
 ol.View2D.createRotationConstraint_ = function(options) {

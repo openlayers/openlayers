@@ -141,7 +141,7 @@ ol.MapProperty = {
  *
  * @constructor
  * @extends {ol.Object}
- * @param {ol.MapOptions} options Map options.
+ * @param {olx.MapOptions} options Map options.
  * @todo stability experimental
  * @todo observable layergroup {ol.layer.LayerGroup} a layer group containing
  *       the layers in this map.
@@ -563,7 +563,7 @@ ol.Map.prototype.getOverlays = function() {
 /**
  * Get feature information for a pixel on the map.
  *
- * @param {ol.GetFeatureInfoOptions} options Options.
+ * @param {olx.GetFeatureInfoOptions} options Options.
  * @todo stability experimental
  */
 ol.Map.prototype.getFeatureInfo = function(options) {
@@ -577,7 +577,7 @@ ol.Map.prototype.getFeatureInfo = function(options) {
 /**
  * Get features for a pixel on the map.
  *
- * @param {ol.GetFeaturesOptions} options Options.
+ * @param {olx.GetFeaturesOptions} options Options.
  * @todo stability experimental
  */
 ol.Map.prototype.getFeatures = function(options) {
@@ -1241,7 +1241,7 @@ ol.MapOptionsInternal;
 
 
 /**
- * @param {ol.MapOptions} options Map options.
+ * @param {olx.MapOptions} options Map options.
  * @return {ol.MapOptionsInternal} Internal map options.
  */
 ol.Map.createOptionsInternal = function(options) {

@@ -21,7 +21,7 @@ ol.style.IconLiteralOptions;
 /**
  * @constructor
  * @extends {ol.style.PointLiteral}
- * @param {ol.style.IconLiteralOptions} options Icon literal options.
+ * @param {olx.style.IconLiteralOptions} options Icon literal options.
  */
 ol.style.IconLiteral = function(options) {
 

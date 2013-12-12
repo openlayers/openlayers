@@ -58,7 +58,7 @@ ol.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
 
 /**
  * @constructor
- * @param {ol.ProjectionOptions} options Projection options.
+ * @param {olx.ProjectionOptions} options Projection options.
  * @todo stability experimental
  */
 ol.proj.Projection = function(options) {
@@ -198,14 +198,14 @@ ol.proj.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
  * @constructor
  * @extends {ol.proj.Projection}
  * @param {Proj4js.Proj} proj4jsProj Proj4js projection.
- * @param {ol.Proj4jsProjectionOptions} options Proj4js projection options.
+ * @param {olx.Proj4jsProjectionOptions} options Proj4js projection options.
  * @private
  */
 ol.Proj4jsProjection_ = function(proj4jsProj, options) {
 
   var units = /** @type {ol.proj.Units} */ (proj4jsProj.units);
 
-  var config = /** @type {ol.ProjectionOptions} */ ({
+  var config = /** @type {olx.ProjectionOptions} */ ({
     units: units,
     axisOrientation: proj4jsProj.axis
   });
@@ -491,7 +491,7 @@ ol.proj.get = function(projectionLike) {
 
 
 /**
- * @param {ol.Proj4jsProjectionOptions} options Proj4js projection options.
+ * @param {olx.Proj4jsProjectionOptions} options Proj4js projection options.
  * @private
  * @return {ol.Proj4jsProjection_} Proj4js projection.
  */
@@ -504,7 +504,7 @@ ol.proj.getProj4jsProjectionFromCode_ = function(options) {
     var srsCode = proj4jsProj.srsCode;
     proj4jsProjection = proj4jsProjections[srsCode];
     if (!goog.isDef(proj4jsProjection)) {
-      var config = /** @type {ol.Proj4jsProjectionOptions} */
+      var config = /** @type {olx.Proj4jsProjectionOptions} */
           (goog.object.clone(options));
       config.code = srsCode;
       proj4jsProjection = new ol.Proj4jsProjection_(proj4jsProj, config);
@@ -709,7 +709,7 @@ ol.proj.transformWithProjections =
 
 
 /**
- * @param {ol.Proj4jsProjectionOptions} options Proj4js projection options.
+ * @param {olx.Proj4jsProjectionOptions} options Proj4js projection options.
  * @return {ol.proj.Projection} Proj4js projection.
  * @todo stability experimental
  */

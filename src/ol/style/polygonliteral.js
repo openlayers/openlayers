@@ -19,7 +19,7 @@ ol.style.PolygonLiteralOptions;
 /**
  * @constructor
  * @extends {ol.style.Literal}
- * @param {ol.style.PolygonLiteralOptions} options Polygon literal options.
+ * @param {olx.style.PolygonLiteralOptions} options Polygon literal options.
  */
 ol.style.PolygonLiteral = function(options) {
   goog.base(this);

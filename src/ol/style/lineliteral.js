@@ -17,7 +17,7 @@ ol.style.LineLiteralOptions;
 /**
  * @constructor
  * @extends {ol.style.Literal}
- * @param {ol.style.LineLiteralOptions} options Line literal options.
+ * @param {olx.style.LineLiteralOptions} options Line literal options.
  */
 ol.style.LineLiteral = function(options) {
   goog.base(this);

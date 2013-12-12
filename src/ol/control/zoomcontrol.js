@@ -19,7 +19,7 @@ goog.require('ol.easing');
  * use css selectors `.ol-zoom-in` and `.ol-zoom-out`.
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.ZoomOptions=} opt_options Zoom options.
+ * @param {olx.control.ZoomOptions=} opt_options Zoom options.
  * @todo stability experimental
  */
 ol.control.Zoom = function(opt_options) {

@@ -33,7 +33,7 @@ ol.source.SourceOptions;
 /**
  * @constructor
  * @extends {goog.events.EventTarget}
- * @param {ol.source.SourceOptions} options Source options.
+ * @param {olx.source.SourceOptions} options Source options.
  * @todo stability experimental
  */
 ol.source.Source = function(options) {
