@@ -41,11 +41,21 @@ ol.ObjectEvent = function(type, key) {
   /**
    * The name of the property whose value is changing.
    * @type {string}
+   * @private
    */
-  this.key = key;
+  this.key_ = key;
 
 };
 goog.inherits(ol.ObjectEvent, goog.events.Event);
+
+
+/**
+ * Get the name of the property associated with this event.
+ * @return {string} Object property name.
+ */
+ol.ObjectEvent.prototype.getKey = function() {
+  return this.key_;
+};
 
 
 
@@ -286,7 +296,7 @@ ol.Object.prototype.createBeforeChangeListener_ = function(key, targetKey) {
    * @this {ol.Object}
    */
   return function(event) {
-    if (event.key === targetKey) {
+    if (event.getKey() === targetKey) {
       this.dispatchEvent(
           new ol.ObjectEvent(ol.ObjectEventType.BEFOREPROPERTYCHANGE, key));
     }
