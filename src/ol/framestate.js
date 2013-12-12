@@ -20,6 +20,7 @@ goog.require('ol.layer.LayerState');
  * @typedef {{animate: boolean,
  *            attributions: Object.<string, ol.Attribution>,
  *            coordinateToPixelMatrix: goog.vec.Mat4.Number,
+ *            devicePixelRatio: number,
  *            extent: (null|ol.Extent),
  *            focus: ol.Coordinate,
  *            index: number,

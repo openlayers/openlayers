@@ -1076,6 +1076,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       animate: false,
       attributions: {},
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
+      devicePixelRatio: this.devicePixelRatio_,
       extent: null,
       focus: goog.isNull(this.focus_) ? view2DState.center : this.focus_,
       index: this.frameIndex_++,
