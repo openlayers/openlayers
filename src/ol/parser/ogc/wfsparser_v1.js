@@ -30,7 +30,7 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
     /**
      * @param {olx.parser.WFSWriteGetFeatureOptions} options Options.
      * @return {{node: Node,
-     *           options: ol.parser.WFSWriteGetFeatureOptions}} Object.
+     *           options: olx.parser.WFSWriteGetFeatureOptions}} Object.
      * @this {ol.parser.XML}
      */
     'GetFeature': function(options) {
@@ -64,7 +64,7 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
      * @param {{inserts: Array.<ol.Feature>,
      *          updates: Array.<ol.Feature>,
      *          deletes: Array.<ol.Feature>,
-     *          options: ol.parser.WFSWriteTransactionOptions}} obj Object.
+     *          options: olx.parser.WFSWriteTransactionOptions}} obj Object.
      * @return {Element} Node.
      * @this {ol.parser.XML}
      */
@@ -120,7 +120,7 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
     },
     /**
      * @param {{feature: ol.Feature,
-     *          options: ol.parser.WFSWriteTransactionOptions}} obj Object.
+     *          options: olx.parser.WFSWriteTransactionOptions}} obj Object.
      * @return {Element} Node.
      * @this {ol.parser.XML}
      */
@@ -140,7 +140,7 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
     },
     /**
      * @param {{feature: ol.Feature,
-     *          options: ol.parser.WFSWriteTransactionOptions}} obj Object.
+     *          options: olx.parser.WFSWriteTransactionOptions}} obj Object.
      * @return {Element} Node.
      * @this {ol.parser.XML}
      */
@@ -213,7 +213,7 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
     },
     /**
      * @param {{feature: ol.Feature,
-     *          options: ol.parser.WFSWriteTransactionOptions}} obj Object.
+     *          options: olx.parser.WFSWriteTransactionOptions}} obj Object.
      * @return {Element} Node.
      * @this {ol.parser.XML}
      */
