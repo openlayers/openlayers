@@ -1,3 +1,4 @@
+goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
@@ -12,13 +13,21 @@ var raster = new ol.layer.Tile({
   source: new ol.source.OSM()
 });
 
+var parser = new ol.parser.WKT();
+var transform = ol.proj.getTransform(ol.proj.get('EPSG:4326'),
+    ol.proj.get('EPSG:900913'));
+var geom = parser.read(
+    'POLYGON((10.689697265625 -25.0927734375, 34.595947265625 ' +
+        '-20.1708984375, 38.814697265625 -35.6396484375, 13.502197265625 ' +
+        '-39.1552734375, 10.689697265625 -25.0927734375))');
+geom.transform(transform);
+var feature = new ol.Feature();
+feature.setGeometry(geom);
+
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    parser: new ol.parser.WKT(),
     projection: ol.proj.get('EPSG:4326'),
-    data: 'POLYGON((10.689697265625 -25.0927734375, 34.595947265625 ' +
-        '-20.1708984375, 38.814697265625 -35.6396484375, 13.502197265625 ' +
-        '-39.1552734375, 10.689697265625 -25.0927734375))'
+    features: [feature]
   })
 });
 
