@@ -69,7 +69,7 @@ ol.source.ImageWMS.prototype.getParams = function() {
  * @inheritDoc
  */
 ol.source.ImageWMS.prototype.getImage =
-    function(extent, resolution, projection) {
+    function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
 
   var image = this.image_;

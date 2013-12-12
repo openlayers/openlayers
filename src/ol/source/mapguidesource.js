@@ -65,7 +65,7 @@ goog.inherits(ol.source.MapGuide, ol.source.Image);
  * @inheritDoc
  */
 ol.source.MapGuide.prototype.getImage =
-    function(extent, resolution, projection) {
+    function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
 
   var image = this.image_;
