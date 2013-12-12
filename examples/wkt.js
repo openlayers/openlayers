@@ -14,8 +14,7 @@ var raster = new ol.layer.Tile({
 });
 
 var parser = new ol.parser.WKT();
-var transform = ol.proj.getTransform(ol.proj.get('EPSG:4326'),
-    ol.proj.get('EPSG:900913'));
+var transform = ol.proj.getTransform('EPSG:4326', 'EPSG:900913');
 var geom = parser.read(
     'POLYGON((10.689697265625 -25.0927734375, 34.595947265625 ' +
         '-20.1708984375, 38.814697265625 -35.6396484375, 13.502197265625 ' +
@@ -26,7 +25,6 @@ feature.setGeometry(geom);
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    projection: ol.proj.get('EPSG:4326'),
     features: [feature]
   })
 });
