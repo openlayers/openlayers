@@ -8,13 +8,6 @@ goog.require('goog.uri.utils');
 
 
 /**
- * @typedef {{method: (ol.source.WMSGetFeatureInfoMethod|undefined),
- *            params: (Object.<string,string>|undefined)}}
- */
-ol.source.WMSGetFeatureInfoOptions;
-
-
-/**
  * Method to use to get WMS feature info.
  * @enum {string}
  * @todo stability experimental
@@ -74,8 +67,8 @@ ol.source.wms.getUrl =
 /**
  * @param {string} url URL as provided by the url function.
  * @param {ol.Pixel} pixel Pixel.
- * @param {olx.source.WMSGetFeatureInfoOptions} options Options as defined in the
- *     source.
+ * @param {olx.source.WMSGetFeatureInfoOptions} options Options as defined in
+ *     the source.
  * @param {function(string)} success Callback function for successful queries.
  * @param {function()=} opt_error Optional callback function for unsuccessful
  *     queries.

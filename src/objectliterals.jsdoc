@@ -776,6 +776,12 @@
  */
 
 /**
+ * @typedef {Object} olx.source.WMSGetFeatureInfoOptions
+ * @property {ol.source.WMSGetFeatureInfoMethod|undefined} method Method.
+ * @property {Object.<string,string>|undefined} params Params.
+ */
+
+/**
  * @typedef {Object} olx.source.WMTSOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {string|null|undefined} crossOrigin crossOrigin setting for image
