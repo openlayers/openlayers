@@ -19,7 +19,7 @@ describe('ol.parser.gpx', function() {
         feature = obj.features[1];
         geom = feature.getGeometry();
         var attributes = feature.getAttributes();
-        expect(geom.getType()).to.eql(ol.geom.GeometryType.LINESTRING);
+        expect(geom.getType()).to.eql(ol.geom.GeometryType.LINE_STRING);
         expect(geom.getCoordinates()).to.eql([[-0.1829991904, 51.3761803674],
               [-0.1758887005, 51.3697894659], [-0.1833202965, 51.3639790884],
               [-0.1751119509, 51.3567607069]]);
@@ -29,7 +29,7 @@ describe('ol.parser.gpx', function() {
         feature = obj.features[2];
         geom = feature.getGeometry();
         attributes = feature.getAttributes();
-        expect(geom.getType()).to.eql(ol.geom.GeometryType.LINESTRING);
+        expect(geom.getType()).to.eql(ol.geom.GeometryType.LINE_STRING);
         expect(geom.getCoordinates()).to.eql([[-0.1721292044, 51.3768216433],
               [-0.1649230916, 51.370833767], [-0.1736741378, 51.3644368725],
               [-0.166259525, 51.3576354272]]);

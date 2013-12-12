@@ -792,10 +792,10 @@ describe('ol.expr.lib', function() {
       ]])
     });
 
-    var isPoint = parse('geometryType("point")');
-    var isLine = parse('geometryType("linestring")');
-    var isPoly = parse('geometryType("polygon")');
-    var pointOrPoly = parse('geometryType("point") || geometryType("polygon")');
+    var isPoint = parse('geometryType("Point")');
+    var isLine = parse('geometryType("LineString")');
+    var isPoly = parse('geometryType("Polygon")');
+    var pointOrPoly = parse('geometryType("Point") || geometryType("Polygon")');
 
     it('distinguishes point features', function() {
       expect(evaluate(isPoint, point)).to.be(true);

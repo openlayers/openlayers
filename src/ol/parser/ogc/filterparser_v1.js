@@ -596,6 +596,9 @@ ol.parser.ogc.Filter_v1.prototype.getGmlParser = function() {
  */
 ol.parser.ogc.Filter_v1.prototype.setGmlParser = function(gml) {
   this.gmlParser_ = gml;
+  if (this.featureNS) {
+    gml.setFeatureNS(this.featureNS);
+  }
   for (var uri in this.gmlParser_.readers) {
     for (var key in this.gmlParser_.readers[uri]) {
       if (!goog.isDef(this.readers[uri])) {
@@ -613,5 +616,39 @@ ol.parser.ogc.Filter_v1.prototype.setGmlParser = function(gml) {
       this.writers[uri][key] = goog.bind(this.gmlParser_.writers[uri][key],
           this.gmlParser_);
     }
+  }
+};
+
+
+/**
+ * @param {string} featureNS Feature namespace.
+ */
+ol.parser.ogc.Filter_v1.prototype.setFeatureNS = function(featureNS) {
+  this.featureNS = featureNS;
+  if (goog.isDefAndNotNull(this.gmlParser_)) {
+    this.setGmlParser(this.gmlParser_);
+  }
+};
+
+
+/**
+ * @param {string} featureType Feature type.
+ */
+ol.parser.ogc.Filter_v1.prototype.setFeatureType = function(featureType) {
+  this.featureType = featureType;
+  if (goog.isDefAndNotNull(this.gmlParser_)) {
+    this.gmlParser_.featureType = featureType;
+  }
+};
+
+
+/**
+ * @param {string} srsName SRS name.
+ */
+ol.parser.ogc.Filter_v1.prototype.setSrsName = function(srsName) {
+  this.srsName = srsName;
+  if (goog.isDefAndNotNull(this.gmlParser_)) {
+    this.gmlParser_.applyWriteOptions({},
+        /** @type {ol.parser.GMLWriteOptions} */ ({srsName: srsName}));
   }
 };

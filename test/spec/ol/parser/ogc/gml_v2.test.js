@@ -9,7 +9,7 @@ describe('ol.parser.gml_v2', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/point-coord.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        expect(obj.geometry.type).to.eql('point');
+        expect(obj.geometry.type).to.eql('Point');
         expect(obj.geometry.coordinates).to.eql([1, 2]);
         done();
       });
@@ -20,12 +20,12 @@ describe('ol.parser.gml_v2', function() {
         var obj = parser.read(xml);
         parser.applyWriteOptions(obj);
         var geom = parser.createGeometry({geometry: obj.geometry});
-        var node = parser.featureNSWiters_['_geometry'].apply(parser,
+        var node = parser.featureNSWriters_['_geometry'].apply(parser,
             [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
-        expect(obj.geometry.type).to.eql('point');
+        expect(obj.geometry.type).to.eql('Point');
         expect(obj.geometry.coordinates).to.eql([1, 2]);
         done();
       });
@@ -34,9 +34,9 @@ describe('ol.parser.gml_v2', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/multipoint-coord.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        expect(obj.geometry.type).to.eql('multipoint');
+        expect(obj.geometry.type).to.eql('MultiPoint');
         expect(obj.geometry.parts.length).to.eql(3);
-        expect(obj.geometry.parts[0].type).to.eql('point');
+        expect(obj.geometry.parts[0].type).to.eql('Point');
         expect(obj.geometry.parts[0].coordinates).to.eql([1, 2]);
         expect(obj.geometry.parts[1].coordinates).to.eql([2, 3]);
         expect(obj.geometry.parts[2].coordinates).to.eql([3, 4]);
@@ -49,14 +49,14 @@ describe('ol.parser.gml_v2', function() {
         var obj = parser.read(xml);
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
-        var node = parser.featureNSWiters_['_geometry'].apply(parser,
+        var node = parser.featureNSWriters_['_geometry'].apply(parser,
             [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
-        expect(obj.geometry.type).to.eql('multipoint');
+        expect(obj.geometry.type).to.eql('MultiPoint');
         expect(obj.geometry.parts.length).to.eql(3);
-        expect(obj.geometry.parts[0].type).to.eql('point');
+        expect(obj.geometry.parts[0].type).to.eql('Point');
         expect(obj.geometry.parts[0].coordinates).to.eql([1, 2]);
         expect(obj.geometry.parts[1].coordinates).to.eql([2, 3]);
         expect(obj.geometry.parts[2].coordinates).to.eql([3, 4]);
@@ -67,7 +67,7 @@ describe('ol.parser.gml_v2', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/linestring-coord.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        expect(obj.geometry.type).to.eql('linestring');
+        expect(obj.geometry.type).to.eql('LineString');
         expect(obj.geometry.coordinates.length).to.eql(2);
         expect(obj.geometry.coordinates).to.eql([[1, 2], [3, 4]]);
         done();
@@ -79,12 +79,12 @@ describe('ol.parser.gml_v2', function() {
         var obj = parser.read(xml);
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
-        var node = parser.featureNSWiters_['_geometry'].apply(parser,
+        var node = parser.featureNSWriters_['_geometry'].apply(parser,
             [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
-        expect(obj.geometry.type).to.eql('linestring');
+        expect(obj.geometry.type).to.eql('LineString');
         expect(obj.geometry.coordinates.length).to.eql(2);
         expect(obj.geometry.coordinates).to.eql([[1, 2], [3, 4]]);
         done();
@@ -94,9 +94,9 @@ describe('ol.parser.gml_v2', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/multilinestring-coord.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        expect(obj.geometry.type).to.eql('multilinestring');
+        expect(obj.geometry.type).to.eql('MultiLineString');
         expect(obj.geometry.parts.length).to.eql(2);
-        expect(obj.geometry.parts[0].type).to.eql('linestring');
+        expect(obj.geometry.parts[0].type).to.eql('LineString');
         expect(obj.geometry.parts[0].coordinates).to.eql([[1, 2], [2, 3]]);
         expect(obj.geometry.parts[1].coordinates).to.eql([[3, 4], [4, 5]]);
         done();
@@ -108,14 +108,14 @@ describe('ol.parser.gml_v2', function() {
         var obj = parser.read(xml);
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
-        var node = parser.featureNSWiters_['_geometry'].apply(parser,
+        var node = parser.featureNSWriters_['_geometry'].apply(parser,
             [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
-        expect(obj.geometry.type).to.eql('multilinestring');
+        expect(obj.geometry.type).to.eql('MultiLineString');
         expect(obj.geometry.parts.length).to.eql(2);
-        expect(obj.geometry.parts[0].type).to.eql('linestring');
+        expect(obj.geometry.parts[0].type).to.eql('LineString');
         expect(obj.geometry.parts[0].coordinates).to.eql([[1, 2], [2, 3]]);
         expect(obj.geometry.parts[1].coordinates).to.eql([[3, 4], [4, 5]]);
         done();
@@ -125,7 +125,7 @@ describe('ol.parser.gml_v2', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/polygon-coord.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        expect(obj.geometry.type).to.eql('polygon');
+        expect(obj.geometry.type).to.eql('Polygon');
         expect(obj.geometry.coordinates.length).to.eql(3);
         expect(obj.geometry.coordinates[0].length).to.eql(4);
         expect(obj.geometry.coordinates[0]).to.eql([[1, 2], [3, 4],
@@ -143,12 +143,12 @@ describe('ol.parser.gml_v2', function() {
         var obj = parser.read(xml);
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
-        var node = parser.featureNSWiters_['_geometry'].apply(parser,
+        var node = parser.featureNSWriters_['_geometry'].apply(parser,
             [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
-        expect(obj.geometry.type).to.eql('polygon');
+        expect(obj.geometry.type).to.eql('Polygon');
         done();
       });
     });
@@ -156,9 +156,9 @@ describe('ol.parser.gml_v2', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/multipolygon-coord.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        expect(obj.geometry.type).to.eql('multipolygon');
+        expect(obj.geometry.type).to.eql('MultiPolygon');
         expect(obj.geometry.parts.length).to.eql(2);
-        expect(obj.geometry.parts[0].type).to.eql('polygon');
+        expect(obj.geometry.parts[0].type).to.eql('Polygon');
         done();
       });
     });
@@ -168,14 +168,14 @@ describe('ol.parser.gml_v2', function() {
         var obj = parser.read(xml);
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
-        var node = parser.featureNSWiters_['_geometry'].apply(parser,
+        var node = parser.featureNSWriters_['_geometry'].apply(parser,
             [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
-        expect(obj.geometry.type).to.eql('multipolygon');
+        expect(obj.geometry.type).to.eql('MultiPolygon');
         expect(obj.geometry.parts.length).to.eql(2);
-        expect(obj.geometry.parts[0].type).to.eql('polygon');
+        expect(obj.geometry.parts[0].type).to.eql('Polygon');
         done();
       });
     });
@@ -187,16 +187,16 @@ describe('ol.parser.gml_v2', function() {
         var obj = p.read(xml);
         var geom = p.createGeometry({geometry: obj.geometry});
         p.applyWriteOptions(obj);
-        var node = p.featureNSWiters_['_geometry'].apply(p,
+        var node = p.featureNSWriters_['_geometry'].apply(p,
             [{value: geom}]).firstChild;
         delete p.srsName;
         delete p.axisOrientation;
         expect(goog.dom.xml.loadXml(p.serialize(node))).to.xmleql(xml);
-        expect(obj.geometry.type).to.eql('geometrycollection');
+        expect(obj.geometry.type).to.eql('GeometryCollection');
         expect(obj.geometry.parts.length).to.eql(3);
-        expect(obj.geometry.parts[0].type).to.eql('point');
-        expect(obj.geometry.parts[1].type).to.eql('linestring');
-        expect(obj.geometry.parts[2].type).to.eql('polygon');
+        expect(obj.geometry.parts[0].type).to.eql('Point');
+        expect(obj.geometry.parts[1].type).to.eql('LineString');
+        expect(obj.geometry.parts[2].type).to.eql('Polygon');
         done();
       });
     });
@@ -220,7 +220,7 @@ describe('ol.parser.gml_v2', function() {
       var url = 'spec/ol/parser/ogc/xml/gml_v2/linearring-coord.xml';
       afterLoadXml(url, function(xml) {
         var obj = parser.read(xml);
-        expect(obj.geometry.type).to.eql('linearring');
+        expect(obj.geometry.type).to.eql('LinearRing');
         expect(obj.geometry.coordinates).to.eql([[1, 2], [3, 4], [5, 6],
               [1, 2]]);
         done();
@@ -232,12 +232,12 @@ describe('ol.parser.gml_v2', function() {
         var obj = parser.read(xml);
         var geom = parser.createGeometry({geometry: obj.geometry});
         parser.applyWriteOptions(obj);
-        var node = parser.featureNSWiters_['_geometry'].apply(parser,
+        var node = parser.featureNSWriters_['_geometry'].apply(parser,
             [{value: geom}]).firstChild;
         delete parser.srsName;
         delete parser.axisOrientation;
         expect(goog.dom.xml.loadXml(parser.serialize(node))).to.xmleql(xml);
-        expect(obj.geometry.type).to.eql('linearring');
+        expect(obj.geometry.type).to.eql('LinearRing');
         expect(obj.geometry.coordinates).to.eql([[1, 2], [3, 4], [5, 6],
               [1, 2]]);
         done();

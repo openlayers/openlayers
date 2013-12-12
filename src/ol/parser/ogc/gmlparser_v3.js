@@ -22,25 +22,25 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       'http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
       '1.0.0/gmlsf.xsd';
   goog.base(this, opt_options);
-  this.featureNSWiters_['_geometry'] = function(obj) {
+  this.featureNSWriters_['_geometry'] = function(obj) {
     var node = this.createElementNS('feature:' + obj.name,
         this.featureNS);
     var geometry = obj.value;
     var type = geometry.getType(), child;
     if (type === ol.geom.GeometryType.POINT) {
       child = this.writeNode('Point', geometry, null, node);
-    } else if (type === ol.geom.GeometryType.MULTIPOINT) {
+    } else if (type === ol.geom.GeometryType.MULTI_POINT) {
       child = this.writeNode('MultiPoint', geometry, null, node);
-    } else if (type === ol.geom.GeometryType.LINESTRING) {
+    } else if (type === ol.geom.GeometryType.LINE_STRING) {
       if (this.curve === true) {
         child = this.writeNode('Curve', geometry, null, node);
       } else {
         child = this.writeNode('LineString', geometry, null, node);
       }
-    } else if (type === ol.geom.GeometryType.LINEARRING) {
+    } else if (type === ol.geom.GeometryType.LINEAR_RING) {
       child = this.writeNode('LinearRing', geometry.getCoordinates(), null,
           node);
-    } else if (type === ol.geom.GeometryType.MULTILINESTRING) {
+    } else if (type === ol.geom.GeometryType.MULTI_LINE_STRING) {
       if (this.multiCurve === false) {
         child = this.writeNode('MultiLineString', geometry, null, node);
       } else {
@@ -52,13 +52,13 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
       } else {
         child = this.writeNode('Polygon', geometry, null, node);
       }
-    } else if (type === ol.geom.GeometryType.MULTIPOLYGON) {
+    } else if (type === ol.geom.GeometryType.MULTI_POLYGON) {
       if (this.multiSurface === false) {
         child = this.writeNode('MultiPolygon', geometry, null, node);
       } else {
         child = this.writeNode('MultiSurface', geometry, null, node);
       }
-    } else if (type === ol.geom.GeometryType.GEOMETRYCOLLECTION) {
+    } else if (type === ol.geom.GeometryType.GEOMETRY_COLLECTION) {
       child = this.writeNode('MultiGeometry', geometry, null, node);
     }
     if (goog.isDefAndNotNull(this.srsName)) {
@@ -86,7 +86,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
           [node, coordinates, container]);
       this.readChildNodes(node, coordinates);
       var linestring = {
-        type: ol.geom.GeometryType.LINESTRING,
+        type: ol.geom.GeometryType.LINE_STRING,
         coordinates: coordinates[0]
       };
       // in the case of a multi geometry this is parts
@@ -176,7 +176,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
           [node, parts, container]);
       this.readChildNodes(node, parts);
       container.geometry = {
-        type: ol.geom.GeometryType.MULTILINESTRING,
+        type: ol.geom.GeometryType.MULTI_LINE_STRING,
         parts: parts
       };
     },
@@ -189,7 +189,7 @@ ol.parser.ogc.GML_v3 = function(opt_options) {
           [node, parts, container]);
       this.readChildNodes(node, parts);
       container.geometry = {
-        type: ol.geom.GeometryType.MULTIPOLYGON,
+        type: ol.geom.GeometryType.MULTI_POLYGON,
         parts: parts
       };
     },
