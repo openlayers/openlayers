@@ -6,9 +6,11 @@ goog.require('ol.color');
 
 /**
  * @constructor
- * @param {olx.style.FillOptions} options Options.
+ * @param {olx.style.FillOptions=} opt_options Options.
  */
-ol.style.Fill = function(options) {
+ol.style.Fill = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @type {ol.Color|string}
