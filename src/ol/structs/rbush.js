@@ -537,7 +537,7 @@ ol.structs.RBush.prototype.getKey_ = function(value) {
  */
 ol.structs.RBush.prototype.insert = function(extent, value) {
   if (goog.DEBUG && this.readers_) {
-    throw Error('cannot insert value while reading');
+    throw new Error('cannot insert value while reading');
   }
   var key = this.getKey_(value);
   goog.asserts.assert(!this.valueExtent_.hasOwnProperty(key));
@@ -587,7 +587,7 @@ ol.structs.RBush.prototype.isEmpty = function() {
  */
 ol.structs.RBush.prototype.remove = function(value) {
   if (goog.DEBUG && this.readers_) {
-    throw Error('cannot remove value while reading');
+    throw new Error('cannot remove value while reading');
   }
   var key = this.getKey_(value);
   goog.asserts.assert(this.valueExtent_.hasOwnProperty(key));
@@ -685,7 +685,7 @@ ol.structs.RBush.prototype.splitRoot_ = function(node1, node2) {
  */
 ol.structs.RBush.prototype.update = function(extent, value) {
   if (goog.DEBUG && this.readers_) {
-    throw Error('cannot update value while reading');
+    throw new Error('cannot update value while reading');
   }
   var key = this.getKey_(value);
   var currentExtent = this.valueExtent_[key];
