@@ -113,6 +113,7 @@ ol.source.Image.prototype.findNearestResolution =
 /**
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
  * @return {ol.Image} Single image.
  */

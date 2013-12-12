@@ -78,8 +78,8 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
   var hints = frameState.viewHints;
 
   if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING]) {
-    image = imageSource.getImage(
-        frameState.extent, viewResolution, view2DState.projection);
+    image = imageSource.getImage(frameState.extent, viewResolution,
+        frameState.devicePixelRatio, view2DState.projection);
     if (!goog.isNull(image)) {
       var imageState = image.getState();
       if (imageState == ol.ImageState.IDLE) {
