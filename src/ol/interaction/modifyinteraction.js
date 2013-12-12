@@ -243,18 +243,18 @@ ol.interaction.Modify.prototype.addIndex_ = function(features, layer) {
  */
 ol.interaction.Modify.prototype.removeIndex_ = function(features) {
   var rBush = this.rBush_;
-  var i, feature, nodesToRemove;
+  var nodesToRemove = [];
+  var i, feature;
   for (i = features.length - 1; i >= 0; --i) {
     feature = features[i];
-    nodesToRemove = [];
     rBush.forEachInExtent(feature.getGeometry().getBounds(), function(node) {
       if (feature === node.feature) {
         nodesToRemove.push(node);
       }
     });
-    for (i = nodesToRemove.length - 1; i >= 0; --i) {
-      rBush.remove(nodesToRemove[i]);
-    }
+  }
+  for (i = nodesToRemove.length - 1; i >= 0; --i) {
+    rBush.remove(nodesToRemove[i]);
   }
 };
 
