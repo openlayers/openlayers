@@ -40,7 +40,8 @@ ol.proj.ProjectionLike;
 ol.proj.Units = {
   DEGREES: 'degrees',
   FEET: 'ft',
-  METERS: 'm'
+  METERS: 'm',
+  PIXELS: 'pixels'
 };
 
 
