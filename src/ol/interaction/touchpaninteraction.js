@@ -64,15 +64,15 @@ ol.interaction.TouchPan.prototype.handleTouchMove = function(mapBrowserEvent) {
     var deltaX = this.lastCentroid[0] - centroid[0];
     var deltaY = centroid[1] - this.lastCentroid[1];
     var map = mapBrowserEvent.map;
-    var view = map.getView().getView2D();
-    var view2DState = view.getView2DState();
+    var view2D = map.getView().getView2D();
+    var view2DState = view2D.getView2DState();
     var center = [deltaX, deltaY];
     ol.coordinate.scale(center, view2DState.resolution);
     ol.coordinate.rotate(center, view2DState.rotation);
     ol.coordinate.add(center, view2DState.center);
-    center = view.constrainCenter(center);
+    center = view2D.constrainCenter(center);
     map.requestRenderFrame();
-    view.setCenter(center);
+    view2D.setCenter(center);
   }
   this.lastCentroid = centroid;
 };
@@ -84,12 +84,13 @@ ol.interaction.TouchPan.prototype.handleTouchMove = function(mapBrowserEvent) {
 ol.interaction.TouchPan.prototype.handleTouchEnd =
     function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
-  var view = map.getView();
+  var view2D = map.getView().getView2D();
   if (this.targetTouches.length === 0) {
     if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
       var distance = this.kinetic_.getDistance();
       var angle = this.kinetic_.getAngle();
-      var center = view.getCenter();
+      var center = view2D.getCenter();
+      goog.asserts.assert(goog.isDef(center));
       this.kineticPreRenderFn_ = this.kinetic_.pan(center);
       map.beforeRender(this.kineticPreRenderFn_);
       var centerpx = map.getPixelFromCoordinate(center);
@@ -97,8 +98,8 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
         centerpx[0] - distance * Math.cos(angle),
         centerpx[1] - distance * Math.sin(angle)
       ]);
-      dest = view.constrainCenter(dest);
-      view.setCenter(dest);
+      dest = view2D.constrainCenter(dest);
+      view2D.setCenter(dest);
     }
     map.requestRenderFrame();
     return false;
@@ -116,12 +117,12 @@ ol.interaction.TouchPan.prototype.handleTouchStart =
     function(mapBrowserEvent) {
   if (this.targetTouches.length > 0) {
     var map = mapBrowserEvent.map;
-    var view = map.getView();
+    var view2D = map.getView().getView2D();
     this.lastCentroid = null;
     map.requestRenderFrame();
     if (!goog.isNull(this.kineticPreRenderFn_) &&
         map.removePreRenderFunction(this.kineticPreRenderFn_)) {
-      view.setCenter(mapBrowserEvent.frameState.view2DState.center);
+      view2D.setCenter(mapBrowserEvent.frameState.view2DState.center);
       this.kineticPreRenderFn_ = null;
     }
     if (this.kinetic_) {
