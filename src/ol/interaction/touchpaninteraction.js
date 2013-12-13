@@ -5,6 +5,7 @@ goog.require('goog.asserts');
 goog.require('ol.Kinetic');
 goog.require('ol.Pixel');
 goog.require('ol.PreRenderFunction');
+goog.require('ol.View2D');
 goog.require('ol.coordinate');
 goog.require('ol.interaction.Touch');
 
@@ -65,6 +66,7 @@ ol.interaction.TouchPan.prototype.handleTouchMove = function(mapBrowserEvent) {
     var deltaY = centroid[1] - this.lastCentroid[1];
     var map = mapBrowserEvent.map;
     var view2D = map.getView().getView2D();
+    goog.asserts.assertInstanceof(view2D, ol.View2D);
     var view2DState = view2D.getView2DState();
     var center = [deltaX, deltaY];
     ol.coordinate.scale(center, view2DState.resolution);
@@ -85,6 +87,7 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
     function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var view2D = map.getView().getView2D();
+  goog.asserts.assertInstanceof(view2D, ol.View2D);
   if (this.targetTouches.length === 0) {
     if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
       var distance = this.kinetic_.getDistance();
@@ -118,6 +121,7 @@ ol.interaction.TouchPan.prototype.handleTouchStart =
   if (this.targetTouches.length > 0) {
     var map = mapBrowserEvent.map;
     var view2D = map.getView().getView2D();
+    goog.asserts.assertInstanceof(view2D, ol.View2D);
     this.lastCentroid = null;
     map.requestRenderFrame();
     if (!goog.isNull(this.kineticPreRenderFn_) &&
