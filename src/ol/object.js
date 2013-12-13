@@ -103,14 +103,6 @@ ol.ObjectAccessor.prototype.transform = function(from, to) {
 };
 
 
-/**
- * @enum {string}
- */
-ol.ObjectProperty = {
-  BINDINGS: 'ol_bindings_'
-};
-
-
 
 /**
  * Base class implementing KVO (Key Value Observing).
@@ -140,6 +132,12 @@ ol.Object = function(opt_values) {
    * @private
    */
   this.beforeChangeListeners_ = {};
+
+  /**
+   * @private
+   * @type {Object.<string, goog.events.Key>}
+   */
+  this.listeners_ = {};
 
   if (goog.isDef(opt_values)) {
     this.setValues(opt_values);
@@ -201,16 +199,6 @@ ol.Object.getGetterName = function(key) {
 
 
 /**
- * @param {ol.Object} obj Object.
- * @return {Object.<string, goog.events.Key>} Listeners.
- */
-ol.Object.getListeners = function(obj) {
-  return obj[ol.ObjectProperty.BINDINGS] ||
-      (obj[ol.ObjectProperty.BINDINGS] = {});
-};
-
-
-/**
  * @param {string} key String.
  * @return {string} Setter name.
  */
@@ -256,8 +244,7 @@ ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
 
   // listen for change:targetkey events
   var eventType = ol.Object.getChangeEventType(targetKey);
-  var listeners = ol.Object.getListeners(this);
-  listeners[key] = goog.events.listen(target, eventType, function() {
+  this.listeners_[key] = goog.events.listen(target, eventType, function() {
     this.notifyInternal_(key);
   }, undefined, this);
 
@@ -459,7 +446,7 @@ ol.Object.prototype.setValues = function(values) {
  * @todo stability experimental
  */
 ol.Object.prototype.unbind = function(key) {
-  var listeners = ol.Object.getListeners(this);
+  var listeners = this.listeners_;
   var listener = listeners[key];
   if (listener) {
     delete listeners[key];
@@ -483,7 +470,7 @@ ol.Object.prototype.unbind = function(key) {
  * @todo stability experimental
  */
 ol.Object.prototype.unbindAll = function() {
-  for (var key in ol.Object.getListeners(this)) {
+  for (var key in this.listeners_) {
     this.unbind(key);
   }
 };
