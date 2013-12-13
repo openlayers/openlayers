@@ -89,6 +89,7 @@
 }
 
 .htmlpopup-container {
+  max-height: 100%;
   width: 100%;
   font-size: 14px;
   font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
