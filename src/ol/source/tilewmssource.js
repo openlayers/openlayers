@@ -157,11 +157,13 @@ ol.source.TileWMS.prototype.getFeatureInfoForPixel =
     function(pixel, map, success, opt_error) {
   var coord = map.getCoordinateFromPixel(pixel),
       view2D = map.getView().getView2D(),
-      projection = view2D.getProjection(),
-      tileGrid = goog.isNull(this.tileGrid) ?
-          ol.tilegrid.getForProjection(projection) : this.tileGrid,
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(coord,
-          view2D.getResolution()),
+      projection = view2D.getProjection();
+  goog.asserts.assert(goog.isDef(projection));
+  var tileGrid = goog.isNull(this.tileGrid) ?
+          ol.tilegrid.getForProjection(projection) : this.tileGrid;
+  var resolution = view2D.getResolution();
+  goog.asserts.assert(goog.isDef(resolution));
+  var tileCoord = tileGrid.getTileCoordForCoordAndResolution(coord, resolution),
       tileExtent = tileGrid.getTileCoordExtent(tileCoord),
       offset = map.getPixelFromCoordinate(ol.extent.getTopLeft(tileExtent)),
       url = this.tileUrlFunction(tileCoord, projection);
