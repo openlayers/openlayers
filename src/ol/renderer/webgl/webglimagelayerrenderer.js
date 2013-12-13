@@ -12,6 +12,7 @@ goog.require('ol.ImageState');
 goog.require('ol.ViewHint');
 goog.require('ol.layer.Image');
 goog.require('ol.renderer.webgl.Layer');
+goog.require('ol.source.Image');
 
 
 
@@ -88,7 +89,8 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
   var texture = this.texture;
   var imageLayer = this.getLayer();
   goog.asserts.assertInstanceof(imageLayer, ol.layer.Image);
-  var imageSource = imageLayer.getImageSource();
+  var imageSource = imageLayer.getSource();
+  goog.asserts.assertInstanceof(imageSource, ol.source.Image);
 
   var hints = frameState.viewHints;
 

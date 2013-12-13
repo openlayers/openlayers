@@ -12,6 +12,7 @@ goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.layer.Image');
 goog.require('ol.renderer.dom.Layer');
+goog.require('ol.source.Image');
 
 
 
@@ -58,7 +59,8 @@ ol.renderer.dom.ImageLayer.prototype.renderFrame =
   var image = this.image_;
   var imageLayer = this.getLayer();
   goog.asserts.assertInstanceof(imageLayer, ol.layer.Image);
-  var imageSource = imageLayer.getImageSource();
+  var imageSource = imageLayer.getSource();
+  goog.asserts.assertInstanceof(imageSource, ol.source.Image);
 
   var hints = frameState.viewHints;
 
