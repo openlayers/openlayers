@@ -212,7 +212,7 @@ describe('ol.layer.Layer', function() {
 
     it('triggers a change event', function() {
       var listener = sinon.spy();
-      layer.on(ol.ObjectEventType.CHANGE, listener);
+      layer.on(ol.ObjectEventType.PROPERTYCHANGE, listener);
       layer.setBrightness(0.5);
       expect(listener.calledOnce).to.be(true);
     });
@@ -247,7 +247,7 @@ describe('ol.layer.Layer', function() {
 
     it('triggers a change event', function() {
       var listener = sinon.spy();
-      layer.on(ol.ObjectEventType.CHANGE, listener);
+      layer.on(ol.ObjectEventType.PROPERTYCHANGE, listener);
       layer.setContrast(43);
       expect(listener.calledOnce).to.be(true);
     });
@@ -293,7 +293,7 @@ describe('ol.layer.Layer', function() {
 
     it('triggers a change event', function() {
       var listener = sinon.spy();
-      layer.on(ol.ObjectEventType.CHANGE, listener);
+      layer.on(ol.ObjectEventType.PROPERTYCHANGE, listener);
       layer.setHue(0.5);
       expect(listener.calledOnce).to.be(true);
     });
@@ -324,7 +324,7 @@ describe('ol.layer.Layer', function() {
 
     it('triggers a change event', function() {
       var listener = sinon.spy();
-      layer.on(ol.ObjectEventType.CHANGE, listener);
+      layer.on(ol.ObjectEventType.PROPERTYCHANGE, listener);
       layer.setOpacity(0.4);
       expect(listener.calledOnce).to.be(true);
     });
@@ -360,7 +360,7 @@ describe('ol.layer.Layer', function() {
 
     it('triggers a change event', function() {
       var listener = sinon.spy();
-      layer.on(ol.ObjectEventType.CHANGE, listener);
+      layer.on(ol.ObjectEventType.PROPERTYCHANGE, listener);
       layer.setSaturation(42);
       expect(listener.calledOnce).to.be(true);
     });
@@ -393,7 +393,7 @@ describe('ol.layer.Layer', function() {
 
     it('fires a change event', function() {
       var listener = sinon.spy();
-      layer.on(ol.ObjectEventType.CHANGE, listener);
+      layer.on(ol.ObjectEventType.PROPERTYCHANGE, listener);
 
       layer.setVisible(false);
       expect(listener.callCount).to.be(1);
