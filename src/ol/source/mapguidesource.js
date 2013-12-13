@@ -11,7 +11,7 @@ goog.require('ol.source.Image');
 /**
  * @constructor
  * @extends {ol.source.Image}
- * @param {ol.source.MapGuideOptions} options Options.
+ * @param {olx.source.MapGuideOptions} options Options.
  */
 ol.source.MapGuide = function(options) {
 

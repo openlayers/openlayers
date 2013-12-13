@@ -15,7 +15,7 @@ goog.require('ol.interaction.Touch');
  * on a touch screen.
  * @constructor
  * @extends {ol.interaction.Touch}
- * @param {ol.interaction.TouchZoomOptions=} opt_options Options.
+ * @param {olx.interaction.TouchZoomOptions=} opt_options Options.
  * @todo stability experimental
  */
 ol.interaction.TouchZoom = function(opt_options) {

@@ -1,1 +1,1 @@
-@exportClass ol.control.FullScreen ol.control.FullScreenOptions
+@exportSymbol ol.control.FullScreen

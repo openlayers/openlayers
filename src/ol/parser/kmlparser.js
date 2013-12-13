@@ -40,12 +40,12 @@ goog.require('ol.style.Stroke');
  * @implements {ol.parser.StringFeatureParser}
  * @implements {ol.parser.AsyncObjectFeatureParser}
  * @implements {ol.parser.AsyncStringFeatureParser}
- * @param {ol.parser.KMLOptions=} opt_options Optional configuration object.
+ * @param {olx.parser.KMLOptions=} opt_options Optional configuration object.
  * @extends {ol.parser.XML}
  * @todo stability experimental
  */
 ol.parser.KML = function(opt_options) {
-  var options = /** @type {ol.parser.KMLOptions} */
+  var options = /** @type {olx.parser.KMLOptions} */
       (goog.isDef(opt_options) ? opt_options : {});
   this.extractAttributes = goog.isDef(options.extractAttributes) ?
       options.extractAttributes : true;

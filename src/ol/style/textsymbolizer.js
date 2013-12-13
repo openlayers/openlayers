@@ -13,7 +13,7 @@ goog.require('ol.style.TextLiteral');
 /**
  * @constructor
  * @extends {ol.style.Symbolizer}
- * @param {ol.style.TextOptions} options Text options.
+ * @param {olx.style.TextOptions} options Text options.
  */
 ol.style.Text = function(options) {
 

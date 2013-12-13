@@ -45,7 +45,7 @@ ol.GeolocationProperty = {
  *
  * @constructor
  * @extends {ol.Object}
- * @param {ol.GeolocationOptions=} opt_options Options.
+ * @param {olx.GeolocationOptions=} opt_options Options.
  * @todo stability experimental
  * @todo observable accuracy {number} readonly the accuracy of the position
  *       measurement

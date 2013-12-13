@@ -23,7 +23,7 @@ goog.require('ol.source.Vector');
 
 /**
  * Interaction that allows drawing geometries.
- * @param {ol.interaction.DrawOptions} options Options.
+ * @param {olx.interaction.DrawOptions} options Options.
  * @constructor
  * @extends {ol.interaction.Interaction}
  */

@@ -32,7 +32,7 @@ ol.source.VectorLoadState = {
 /**
  * @constructor
  * @extends {ol.source.Source}
- * @param {ol.source.VectorOptions=} opt_options Vector source options.
+ * @param {olx.source.VectorOptions=} opt_options Vector source options.
  * @todo stability experimental
  */
 ol.source.Vector = function(opt_options) {

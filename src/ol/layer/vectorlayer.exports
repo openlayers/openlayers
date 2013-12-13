@@ -1,1 +1,1 @@
-@exportClass ol.layer.Vector ol.layer.VectorLayerOptions
+@exportSymbol ol.layer.Vector

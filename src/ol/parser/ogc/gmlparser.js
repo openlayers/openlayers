@@ -22,12 +22,12 @@ goog.require('ol.proj');
 /**
  * @constructor
  * @implements {ol.parser.StringFeatureParser}
- * @param {ol.parser.GMLOptions=} opt_options
+ * @param {olx.parser.GMLOptions=} opt_options
  *     Optional configuration object.
  * @extends {ol.parser.XML}
  */
 ol.parser.ogc.GML = function(opt_options) {
-  var options = /** @type {ol.parser.GMLOptions} */
+  var options = /** @type {olx.parser.GMLOptions} */
       (goog.isDef(opt_options) ? opt_options : {});
   this.extractAttributes = goog.isDef(options.extractAttributes) ?
       options.extractAttributes : true;
@@ -491,7 +491,7 @@ ol.parser.ogc.GML.prototype.writeGeometry = function(geometry) {
 
 /**
  * @param {string|Document|Element|Object} data Data to read.
- * @param {ol.parser.GMLReadOptions=} opt_options Read options.
+ * @param {olx.parser.GMLReadOptions=} opt_options Read options.
  * @return {ol.parser.ReadFeaturesResult} An object representing the document.
  */
 ol.parser.ogc.GML.prototype.read = function(data, opt_options) {
@@ -630,7 +630,7 @@ ol.parser.ogc.GML.prototype.readFeaturesFromString = function(str) {
  * Applies the writeOptions passed into the write function.
  * @param {ol.parser.ReadFeaturesResult} obj Object structure to write out as
  * GML.
- * @param {ol.parser.GMLWriteOptions=} opt_options Write options.
+ * @param {olx.parser.GMLWriteOptions=} opt_options Write options.
  */
 ol.parser.ogc.GML.prototype.applyWriteOptions = function(obj, opt_options) {
   // srsName handling: opt_options -> this.writeOptions -> obj.metadata

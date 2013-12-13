@@ -10,7 +10,7 @@ goog.require('ol.source.XYZ');
 /**
  * @constructor
  * @extends {ol.source.XYZ}
- * @param {ol.source.MapQuestOptions=} opt_options MapQuest options.
+ * @param {olx.source.MapQuestOptions=} opt_options MapQuest options.
  * @todo stability experimental
  */
 ol.source.MapQuestOSM = function(opt_options) {
@@ -43,7 +43,7 @@ goog.inherits(ol.source.MapQuestOSM, ol.source.XYZ);
 /**
  * @constructor
  * @extends {ol.source.XYZ}
- * @param {ol.source.MapQuestOptions=} opt_options MapQuest options.
+ * @param {olx.source.MapQuestOptions=} opt_options MapQuest options.
  * @todo stability experimental
  */
 ol.source.MapQuestOpenAerial = function(opt_options) {
