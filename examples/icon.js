@@ -22,7 +22,7 @@ var styleArray = [new ol.style.Style({
 })];
 
 var vector = new ol.layer.Vector({
-  source: new ol.source.GeoJSON(/** @type {ol.source.GeoJSONOptions} */ ({
+  source: new ol.source.GeoJSON(/** @type {olx.source.GeoJSONOptions} */ ({
     object: {
       'type': 'FeatureCollection',
       'features': [{

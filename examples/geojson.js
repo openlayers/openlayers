@@ -72,7 +72,7 @@ var styleFunction = function(feature, resolution) {
 };
 
 var vectorSource = new ol.source.GeoJSON(
-    /** @type {ol.source.GeoJSONOptions} */ ({
+    /** @type {olx.source.GeoJSONOptions} */ ({
       object: {
         'type': 'FeatureCollection',
         'crs': {
