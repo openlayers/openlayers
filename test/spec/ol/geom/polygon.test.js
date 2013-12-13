@@ -321,17 +321,17 @@ describe('ol.geom.Polygon', function() {
     describe('#getSimplifiedGeometry', function() {
 
       it('returns the expected result', function() {
-        var simplifiedGeometry = polygon.getSimplifiedGeometry(1);
+        var simplifiedGeometry = polygon.getSimplifiedGeometry(9);
         expect(simplifiedGeometry).to.be.an(ol.geom.Polygon);
         expect(simplifiedGeometry.getCoordinates()).to.eql(
-            [[[3, 0], [0, 6], [6, 6], [4, 3]]]);
+            [[[3, 0], [0, 3], [0, 6], [6, 6], [3, 3]]]);
       });
 
       it('caches multiple simplified geometries', function() {
-        var simplifiedGeometry1 = polygon.getSimplifiedGeometry(1);
-        var simplifiedGeometry2 = polygon.getSimplifiedGeometry(2);
-        var simplifiedGeometry3 = polygon.getSimplifiedGeometry(1);
-        var simplifiedGeometry4 = polygon.getSimplifiedGeometry(2);
+        var simplifiedGeometry1 = polygon.getSimplifiedGeometry(4);
+        var simplifiedGeometry2 = polygon.getSimplifiedGeometry(9);
+        var simplifiedGeometry3 = polygon.getSimplifiedGeometry(4);
+        var simplifiedGeometry4 = polygon.getSimplifiedGeometry(9);
         expect(simplifiedGeometry1).to.be(simplifiedGeometry3);
         expect(simplifiedGeometry2).to.be(simplifiedGeometry4);
       });

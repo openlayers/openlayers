@@ -143,10 +143,10 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
     function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   var simplifiedEndss = [];
-  simplifiedFlatCoordinates.length =
-      ol.geom.simplify.douglasPeuckerss(this.flatCoordinates, 0,
-          this.endss_, this.stride, squaredTolerance, simplifiedFlatCoordinates,
-          0, simplifiedEndss);
+  simplifiedFlatCoordinates.length = ol.geom.simplify.quantizess(
+      this.flatCoordinates, 0, this.endss_, this.stride,
+      Math.sqrt(squaredTolerance),
+      simplifiedFlatCoordinates, 0, simplifiedEndss);
   var simplifiedMultiPolygon = new ol.geom.MultiPolygon(null);
   simplifiedMultiPolygon.setFlatCoordinates(
       ol.geom.GeometryLayout.XY, simplifiedFlatCoordinates, simplifiedEndss);
