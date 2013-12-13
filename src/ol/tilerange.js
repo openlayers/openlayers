@@ -15,6 +15,7 @@ goog.require('ol.TileCoord');
  * @param {number} maxX Maximum X.
  * @param {number} minY Minimum Y.
  * @param {number} maxY Maximum Y.
+ * @struct
  */
 ol.TileRange = function(minX, maxX, minY, maxY) {
 

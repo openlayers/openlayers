@@ -36,8 +36,10 @@ xhr.onload = function() {
         zoom: 1
       })
     });
-    var units = map.getView().getProjection().getUnits();
-    var sld = new ol.parser.ogc.SLD().read(xhr.responseText, units);
+    var units = map.getView().getView2D().getProjection().getUnits();
+    var sld = new ol.parser.ogc.SLD().read(xhr.responseText, {
+      units: units
+    });
     var style = sld.namedLayers['countries'].userStyles[0];
     var vector = new ol.layer.Vector({
       source: new ol.source.Vector({

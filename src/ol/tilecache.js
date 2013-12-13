@@ -18,6 +18,7 @@ ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK = 2048;
  * @constructor
  * @extends {ol.structs.LRUCache.<ol.Tile>}
  * @param {number=} opt_highWaterMark High water mark.
+ * @struct
  */
 ol.TileCache = function(opt_highWaterMark) {
 

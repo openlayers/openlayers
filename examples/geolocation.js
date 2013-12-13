@@ -24,7 +24,7 @@ var map = new ol.Map({
 });
 
 var geolocation = new ol.Geolocation();
-geolocation.bindTo('projection', map.getView());
+geolocation.bindTo('projection', /** @type {ol.View2D} */ (map.getView()));
 
 var track = new ol.dom.Input(document.getElementById('track'));
 track.bindTo('checked', geolocation, 'tracking');

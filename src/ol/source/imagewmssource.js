@@ -109,7 +109,9 @@ ol.source.ImageWMS.prototype.getFeatureInfoForPixel =
   var size = map.getSize();
   goog.asserts.assert(goog.isDefAndNotNull(size));
   var extent = view.calculateExtent(size);
-  var url = this.imageUrlFunction(extent, size, view.getProjection());
+  var projection = view.getProjection();
+  goog.asserts.assert(goog.isDef(projection));
+  var url = this.imageUrlFunction(extent, size, projection);
   goog.asserts.assert(goog.isDef(url),
       'ol.source.ImageWMS#imageUrlFunction does not return a URL');
   ol.source.wms.getFeatureInfo(url, pixel, this.getFeatureInfoOptions_, success,

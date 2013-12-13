@@ -10,6 +10,7 @@ goog.require('goog.object');
  * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring
  * items from the cache is the responsibility of the user.
  * @constructor
+ * @struct
  * @template T
  */
 ol.structs.LRUCache = function() {

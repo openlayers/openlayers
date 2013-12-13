@@ -13,6 +13,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.ImageLayer');
+goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.canvas.VectorLayer');
 goog.require('ol.source.State');
@@ -114,8 +115,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
 
     layer = layersArray[i];
-    layerRenderer =
-        /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
+    layerRenderer = this.getLayerRenderer(layer);
+    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.canvas.Layer);
     layerState = layerStates[goog.getUid(layer)];
     if (!layerState.visible ||
         layerState.sourceState != ol.source.State.READY ||

@@ -6,6 +6,10 @@ goog.require('ol.dom.Input');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
+var view = new ol.View2D({
+  center: [0, 0],
+  zoom: 2
+});
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
@@ -14,12 +18,8 @@ var map = new ol.Map({
   ],
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
-  view: new ol.View2D({
-    center: [0, 0],
-    zoom: 2
-  })
+  view: view
 });
-var view = map.getView();
 
 var deviceOrientation = new ol.DeviceOrientation();
 var track = new ol.dom.Input(document.getElementById('track'));

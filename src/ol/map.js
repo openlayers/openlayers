@@ -621,11 +621,16 @@ goog.exportProperty(
 
 /**
  * Get the collection of layers associated with this map.
- * @return {ol.Collection} Layers.
+ * @return {ol.Collection|undefined} Layers.
  * @todo stability experimental
  */
 ol.Map.prototype.getLayers = function() {
-  return this.getLayerGroup().getLayers();
+  var layerGroup = this.getLayerGroup();
+  if (goog.isDef(layerGroup)) {
+    return layerGroup.getLayers();
+  } else {
+    return undefined;
+  }
 };
 
 
@@ -661,7 +666,7 @@ goog.exportProperty(
 /**
  * Get the view associated with this map. This can be a 2D or 3D view. A 2D
  * view manages properties such as center and resolution.
- * @return {ol.View} View.
+ * @return {ol.View|undefined} View.
  * @todo stability experimental
  */
 ol.Map.prototype.getView = function() {
