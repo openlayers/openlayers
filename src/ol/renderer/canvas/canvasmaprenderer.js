@@ -137,10 +137,11 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   var layerStates = frameState.layerStates;
   var layersArray = frameState.layersArray;
   var viewResolution = frameState.view2DState.resolution;
-  var canvasLayerRenderer, i, ii, layer, layerState;
+  var i, ii, layer, layerRenderer, layerState;
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
     layer = layersArray[i];
-    canvasLayerRenderer = this.getCanvasLayerRenderer(layer);
+    layerRenderer = this.getLayerRenderer(layer);
+    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.canvas.Layer);
     layerState = layerStates[goog.getUid(layer)];
     if (!layerState.visible ||
         layerState.sourceState != ol.source.State.READY ||
@@ -148,8 +149,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
         viewResolution < layerState.minResolution) {
       continue;
     }
-    canvasLayerRenderer.prepareFrame(frameState, layerState);
-    canvasLayerRenderer.composeFrame(frameState, layerState, context);
+    layerRenderer.prepareFrame(frameState, layerState);
+    layerRenderer.composeFrame(frameState, layerState, context);
   }
 
   this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, frameState);

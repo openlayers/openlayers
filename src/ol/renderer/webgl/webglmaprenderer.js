@@ -364,17 +364,6 @@ ol.renderer.webgl.Map.prototype.getTileTextureQueue = function() {
 
 
 /**
- * @param {ol.layer.Layer} layer Layer.
- * @return {ol.renderer.webgl.Layer} WebGL layer renderer.
- */
-ol.renderer.webgl.Map.prototype.getWebGLLayerRenderer = function(layer) {
-  var layerRenderer = this.getLayerRenderer(layer);
-  goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer);
-  return /** @type {ol.renderer.webgl.Layer} */ (layerRenderer);
-};
-
-
-/**
  * @param {goog.events.Event} event Event.
  * @protected
  */
@@ -482,7 +471,8 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   for (i = 0, ii = layersToDraw.length; i < ii; ++i) {
     layer = layersToDraw[i];
-    layerRenderer = this.getWebGLLayerRenderer(layer);
+    layerRenderer = this.getLayerRenderer(layer);
+    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer);
     layerState = frameState.layerStates[goog.getUid(layer)];
     layerRenderer.prepareFrame(frameState, layerState);
   }
@@ -505,7 +495,8 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   for (i = 0, ii = layersToDraw.length; i < ii; ++i) {
     layer = layersToDraw[i];
     layerState = frameState.layerStates[goog.getUid(layer)];
-    layerRenderer = this.getWebGLLayerRenderer(layer);
+    layerRenderer = this.getLayerRenderer(layer);
+    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer);
     layerRenderer.composeFrame(frameState, layerState, context);
   }
 

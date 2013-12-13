@@ -18,6 +18,7 @@ goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
+goog.require('ol.source.Tile');
 goog.require('ol.vec.Mat4');
 
 
@@ -83,15 +84,6 @@ goog.inherits(ol.renderer.canvas.TileLayer, ol.renderer.canvas.Layer);
  */
 ol.renderer.canvas.TileLayer.prototype.getImage = function() {
   return this.canvas_;
-};
-
-
-/**
- * @protected
- * @return {ol.layer.Tile} Tile layer.
- */
-ol.renderer.canvas.TileLayer.prototype.getTileLayer = function() {
-  return /** @type {ol.layer.Tile} */ (this.getLayer());
 };
 
 
@@ -175,8 +167,10 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   var view2DState = frameState.view2DState;
   var projection = view2DState.projection;
 
-  var tileLayer = this.getTileLayer();
-  var tileSource = tileLayer.getTileSource();
+  var tileLayer = this.getLayer();
+  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
+  var tileSource = tileLayer.getSource();
+  goog.asserts.assertInstanceof(tileSource, ol.source.Tile);
   var tileGrid = tileSource.getTileGrid();
   if (goog.isNull(tileGrid)) {
     tileGrid = ol.tilegrid.getForProjection(projection);

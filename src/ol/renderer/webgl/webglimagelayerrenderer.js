@@ -12,6 +12,7 @@ goog.require('ol.ImageState');
 goog.require('ol.ViewHint');
 goog.require('ol.layer.Image');
 goog.require('ol.renderer.webgl.Layer');
+goog.require('ol.source.Image');
 
 
 
@@ -72,15 +73,6 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
 
 
 /**
- * @protected
- * @return {ol.layer.Image} Tile layer.
- */
-ol.renderer.webgl.ImageLayer.prototype.getImageLayer = function() {
-  return /** @type {ol.layer.Image} */ (this.getLayer());
-};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
@@ -95,8 +87,10 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
 
   var image = this.image_;
   var texture = this.texture;
-  var imageLayer = this.getImageLayer();
-  var imageSource = imageLayer.getImageSource();
+  var imageLayer = this.getLayer();
+  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image);
+  var imageSource = imageLayer.getSource();
+  goog.asserts.assertInstanceof(imageSource, ol.source.Image);
 
   var hints = frameState.viewHints;
 

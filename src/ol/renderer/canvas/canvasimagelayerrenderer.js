@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.canvas.ImageLayer');
 
+goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
@@ -9,6 +10,7 @@ goog.require('ol.ViewHint');
 goog.require('ol.layer.Image');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
+goog.require('ol.source.Image');
 goog.require('ol.vec.Mat4');
 
 
@@ -49,15 +51,6 @@ ol.renderer.canvas.ImageLayer.prototype.getImage = function() {
 
 
 /**
- * @protected
- * @return {ol.layer.Image} Single image layer.
- */
-ol.renderer.canvas.ImageLayer.prototype.getImageLayer = function() {
-  return /** @type {ol.layer.Image} */ (this.getLayer());
-};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.canvas.ImageLayer.prototype.getImageTransform = function() {
@@ -77,8 +70,10 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
   var viewRotation = view2DState.rotation;
 
   var image;
-  var imageLayer = this.getImageLayer();
-  var imageSource = imageLayer.getImageSource();
+  var imageLayer = this.getLayer();
+  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image);
+  var imageSource = imageLayer.getSource();
+  goog.asserts.assertInstanceof(imageSource, ol.source.Image);
 
   var hints = frameState.viewHints;
 

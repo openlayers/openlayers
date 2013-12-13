@@ -25,3 +25,10 @@ ol.IView.prototype.getView2D = function() {
  */
 ol.IView.prototype.getView3D = function() {
 };
+
+
+/**
+ * @return {boolean} Is defined.
+ */
+ol.IView.prototype.isDef = function() {
+};

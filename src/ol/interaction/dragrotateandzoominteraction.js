@@ -105,13 +105,14 @@ ol.interaction.DragRotateAndZoom.prototype.handleDragEnd =
     function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   // FIXME works for View2D only
-  var view = map.getView().getView2D();
+  var view = map.getView();
   view.setHint(ol.ViewHint.INTERACTING, -1);
-  var view2DState = view.getView2DState();
+  var view2D = view.getView2D();
+  var view2DState = view2D.getView2DState();
   var direction = this.lastScaleDelta_ - 1;
   map.withFrozenRendering(function() {
-    ol.interaction.Interaction.rotate(map, view, view2DState.rotation);
-    ol.interaction.Interaction.zoom(map, view, view2DState.resolution,
+    ol.interaction.Interaction.rotate(map, view2D, view2DState.rotation);
+    ol.interaction.Interaction.zoom(map, view2D, view2DState.resolution,
         undefined, ol.interaction.DRAGROTATEANDZOOM_ANIMATION_DURATION,
         direction);
   });

@@ -61,7 +61,7 @@ ol.vec.Mat4.equals2D = function(mat1, mat2) {
  * transformed vector into resultVec. The input vector is multiplied against the
  * upper 2x4 matrix omitting the projective component.
  *
- * @param {goog.vec.Mat4.AnyType} mat The matrix supplying the transformation.
+ * @param {goog.vec.Mat4.Number} mat The matrix supplying the transformation.
  * @param {Array.<number>} vec The 3 element vector to transform.
  * @param {Array.<number>} resultVec The 3 element vector to receive the results
  *     (may be vec).

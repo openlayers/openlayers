@@ -9,6 +9,7 @@ goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.dom.ImageLayer');
+goog.require('ol.renderer.dom.Layer');
 goog.require('ol.renderer.dom.TileLayer');
 goog.require('ol.source.State');
 
@@ -93,8 +94,8 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
   var layerKey;
   for (layerKey in this.getLayerRenderers()) {
     if (!(layerKey in layerStates)) {
-      layerRenderer = /** @type {ol.renderer.dom.Layer} */
-          (this.getLayerRendererByKey(layerKey));
+      layerRenderer = this.getLayerRendererByKey(layerKey);
+      goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer);
       goog.dom.removeNode(layerRenderer.getTarget());
     }
   }

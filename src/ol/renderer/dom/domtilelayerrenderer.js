@@ -20,6 +20,7 @@ goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.renderer.dom.Layer');
+goog.require('ol.source.Tile');
 goog.require('ol.tilegrid.TileGrid');
 goog.require('ol.vec.Mat4');
 
@@ -67,15 +68,6 @@ goog.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
 
 
 /**
- * @protected
- * @return {ol.layer.Tile} Tile layer.
- */
-ol.renderer.dom.TileLayer.prototype.getTileLayer = function() {
-  return /** @type {ol.layer.Tile} */ (this.getLayer());
-};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.dom.TileLayer.prototype.prepareFrame =
@@ -92,8 +84,10 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
   var view2DState = frameState.view2DState;
   var projection = view2DState.projection;
 
-  var tileLayer = this.getTileLayer();
-  var tileSource = tileLayer.getTileSource();
+  var tileLayer = this.getLayer();
+  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
+  var tileSource = tileLayer.getSource();
+  goog.asserts.assertInstanceof(tileSource, ol.source.Tile);
   var tileGrid = tileSource.getTileGrid();
   if (goog.isNull(tileGrid)) {
     tileGrid = ol.tilegrid.getForProjection(projection);
@@ -309,7 +303,7 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.AnyType}
+   * @type {goog.vec.Mat4.Number}
    */
   this.transform_ = goog.vec.Mat4.createNumberIdentity();
 
@@ -418,7 +412,7 @@ ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent =
 
 
 /**
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  */
 ol.renderer.dom.TileLayerZ_.prototype.setTransform = function(transform) {
   if (!ol.vec.Mat4.equals2D(transform, this.transform_)) {

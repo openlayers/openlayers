@@ -17,6 +17,8 @@ goog.require('ol.vec.Mat4');
  * @extends {goog.Disposable}
  * @param {Element} container Container.
  * @param {ol.Map} map Map.
+ * @suppress {checkStructDictInheritance}
+ * @struct
  */
 ol.renderer.Map = function(container, map) {
 
