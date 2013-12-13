@@ -143,7 +143,7 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
     function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   var simplifiedEndss = [];
-  simplifiedFlatCoordinates.length = ol.geom.simplify.schaubss(
+  simplifiedFlatCoordinates.length = ol.geom.simplify.quantizess(
       this.flatCoordinates, 0, this.endss_, this.stride,
       Math.sqrt(squaredTolerance),
       simplifiedFlatCoordinates, 0, simplifiedEndss);

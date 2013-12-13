@@ -287,32 +287,32 @@ describe('ol.geom.simplify', function() {
 
   });
 
-  describe('ol.geom.simplify.schaub', function() {
+  describe('ol.geom.simplify.quantize', function() {
 
     it('handles empty coordinates', function() {
       var simplifiedFlatCoordinates = [];
-      expect(ol.geom.simplify.schaub(
+      expect(ol.geom.simplify.quantize(
           [], 0, 0, 2, 2, simplifiedFlatCoordinates, 0)).to.be(0);
       expect(simplifiedFlatCoordinates).to.be.empty();
     });
 
     it('expands points to a zero-length line', function() {
       var simplifiedFlatCoordinates = [];
-      expect(ol.geom.simplify.schaub(
+      expect(ol.geom.simplify.quantize(
           [0, 0, 0, 0], 0, 4, 2, 2, simplifiedFlatCoordinates, 0)).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 0, 0]);
     });
 
     it('snaps near-by points to the same value', function() {
       var simplifiedFlatCoordinates = [];
-      expect(ol.geom.simplify.schaub(
+      expect(ol.geom.simplify.quantize(
           [0.1, 0, 0, 0.1], 0, 4, 2, 2, simplifiedFlatCoordinates, 0)).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 0, 0]);
     });
 
     it('eliminates duplicate snapped points', function() {
       var simplifiedFlatCoordinates = [];
-      expect(ol.geom.simplify.schaub(
+      expect(ol.geom.simplify.quantize(
           [0.1, 0, 2, 0, 2.1, 0, 2, 0.1, 1.9, 0, 2, -0.1], 0, 12, 2, 2,
           simplifiedFlatCoordinates, 0)).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 2, 0]);
@@ -320,7 +320,7 @@ describe('ol.geom.simplify', function() {
 
     it('eliminates horizontal colinear points', function() {
       var simplifiedFlatCoordinates = [];
-      expect(ol.geom.simplify.schaub(
+      expect(ol.geom.simplify.quantize(
           [0, 0, 2, 0, 4, 0, 6, 0], 0, 8, 2, 2,
           simplifiedFlatCoordinates, 0)).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 6, 0]);
@@ -328,7 +328,7 @@ describe('ol.geom.simplify', function() {
 
     it('eliminates vertical colinear points', function() {
       var simplifiedFlatCoordinates = [];
-      expect(ol.geom.simplify.schaub(
+      expect(ol.geom.simplify.quantize(
           [0, 0, 0, -2, 0, -4, 0, -6], 0, 8, 2, 2,
           simplifiedFlatCoordinates, 0)).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 0, -6]);
@@ -336,7 +336,7 @@ describe('ol.geom.simplify', function() {
 
     it('eliminates diagonal colinear points', function() {
       var simplifiedFlatCoordinates = [];
-      expect(ol.geom.simplify.schaub(
+      expect(ol.geom.simplify.quantize(
           [0, 0, 2, -2, 4, -4, 6, -6], 0, 8, 2, 2,
           simplifiedFlatCoordinates, 0)).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 6, -6]);
@@ -344,7 +344,7 @@ describe('ol.geom.simplify', function() {
 
     it('handles switchbacks', function() {
       var simplifiedFlatCoordinates = [];
-      expect(ol.geom.simplify.schaub(
+      expect(ol.geom.simplify.quantize(
           [0, 0, 2, 0, 0, 0, 4, 0], 0, 8, 2, 2,
           simplifiedFlatCoordinates, 0)).to.be(8);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 2, 0, 0, 0, 4, 0]);

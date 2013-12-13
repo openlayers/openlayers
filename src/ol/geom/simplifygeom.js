@@ -264,7 +264,7 @@ ol.geom.simplify.snap = function(value, tolerance) {
  * @param {number} simplifiedOffset Simplified offset.
  * @return {number} Simplified offset.
  */
-ol.geom.simplify.schaub = function(flatCoordinates, offset, end, stride,
+ol.geom.simplify.quantize = function(flatCoordinates, offset, end, stride,
     tolerance, simplifiedFlatCoordinates, simplifiedOffset) {
   // do nothing if the line is empty
   if (offset == end) {
@@ -350,14 +350,14 @@ ol.geom.simplify.schaub = function(flatCoordinates, offset, end, stride,
  * @param {Array.<number>} simplifiedEnds Simplified ends.
  * @return {number} Simplified offset.
  */
-ol.geom.simplify.schaubs = function(
+ol.geom.simplify.quantizes = function(
     flatCoordinates, offset, ends, stride,
     tolerance,
     simplifiedFlatCoordinates, simplifiedOffset, simplifiedEnds) {
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
-    simplifiedOffset = ol.geom.simplify.schaub(
+    simplifiedOffset = ol.geom.simplify.quantize(
         flatCoordinates, offset, end, stride,
         tolerance,
         simplifiedFlatCoordinates, simplifiedOffset);
@@ -380,7 +380,7 @@ ol.geom.simplify.schaubs = function(
  * @param {Array.<Array.<number>>} simplifiedEndss Simplified endss.
  * @return {number} Simplified offset.
  */
-ol.geom.simplify.schaubss = function(
+ol.geom.simplify.quantizess = function(
     flatCoordinates, offset, endss, stride,
     tolerance,
     simplifiedFlatCoordinates, simplifiedOffset, simplifiedEndss) {
@@ -388,7 +388,7 @@ ol.geom.simplify.schaubss = function(
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];
     var simplifiedEnds = [];
-    simplifiedOffset = ol.geom.simplify.schaubs(
+    simplifiedOffset = ol.geom.simplify.quantizes(
         flatCoordinates, offset, ends, stride,
         tolerance,
         simplifiedFlatCoordinates, simplifiedOffset, simplifiedEnds);
