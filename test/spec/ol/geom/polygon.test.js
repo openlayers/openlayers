@@ -143,10 +143,8 @@ describe('ol.geom.Polygon', function() {
     it('is fired when outer ring is modified', function(done) {
       var poly = new ol.geom.Polygon([outer, inner]);
       var rings = poly.getRings();
-      var bounds = poly.getBounds();
       goog.events.listen(poly, 'change', function(evt) {
         expect(evt.target).to.be(poly);
-        expect(evt.oldExtent).to.eql(bounds);
         expect(evt.target.getBounds()).to.eql([0, 0, 11, 10]);
         done();
       });
@@ -159,10 +157,8 @@ describe('ol.geom.Polygon', function() {
     it('is fired when inner ring is modified', function(done) {
       var poly = new ol.geom.Polygon([outer, inner]);
       var rings = poly.getRings();
-      var bounds = poly.getBounds();
       goog.events.listen(poly, 'change', function(evt) {
         expect(evt.target).to.be(poly);
-        expect(evt.oldExtent).to.eql(bounds);
         expect(evt.target.getBounds()).to.eql([0, 0, 10, 10]);
         done();
       });
