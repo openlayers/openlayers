@@ -89,6 +89,7 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
 
   if (this.kinetic_ && this.kinetic_.end()) {
     var view2D = view.getView2D();
+    goog.asserts.assertInstanceof(view2D, ol.View2D);
     var view2DState = view2D.getView2DState();
     var distance = this.kinetic_.getDistance();
     var angle = this.kinetic_.getAngle();
