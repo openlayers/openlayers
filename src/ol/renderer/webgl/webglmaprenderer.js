@@ -20,6 +20,7 @@ goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.webgl.ImageLayer');
+goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.TileLayer');
 goog.require('ol.renderer.webgl.map.shader.Color');
 goog.require('ol.renderer.webgl.map.shader.Default');
@@ -520,6 +521,7 @@ ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
   this.textureCache_.clear();
   this.textureCacheFrameMarkerCount_ = 0;
   goog.object.forEach(this.getLayerRenderers(), function(layerRenderer) {
+    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer);
     layerRenderer.handleWebGLContextLost();
   });
 };
@@ -596,6 +598,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
     layer = layersArray[i];
     layerRenderer = this.getLayerRenderer(layer);
+    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer);
     layerState = frameState.layerStates[goog.getUid(layer)];
     if (layerState.visible &&
         layerState.sourceState == ol.source.State.READY &&
@@ -682,6 +685,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     }
 
     layerRenderer = this.getLayerRenderer(layer);
+    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer);
     gl.uniformMatrix4fv(
         locations.u_texCoordMatrix, false, layerRenderer.getTexCoordMatrix());
     gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
