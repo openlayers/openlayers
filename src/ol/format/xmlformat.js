@@ -4,7 +4,6 @@ goog.require('goog.asserts');
 goog.require('goog.dom.xml');
 goog.require('ol.format.Format');
 goog.require('ol.format.FormatType');
-goog.require('ol.proj');
 
 
 
@@ -156,9 +155,7 @@ ol.format.XML.prototype.readProjection = function(source) {
  * @protected
  * @return {ol.proj.Projection} Projection.
  */
-ol.format.XML.prototype.readProjectionFromNode = function(node) {
-  return ol.proj.get('EPSG:4326');
-};
+ol.format.XML.prototype.readProjectionFromNode = goog.abstractMethod;
 
 
 /**
