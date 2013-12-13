@@ -85,7 +85,6 @@ ga.Tooltip.prototype.createOverlay_ = function() {
     } else {
       element.style.position = 'absolute';
     }
-    console.log(document.body.clientWidth);
   };
   this.tooltipContentElement_ = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': className + '-content'
