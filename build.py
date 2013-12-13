@@ -91,8 +91,7 @@ EXPORTS = [path
 
 EXTERNAL_SRC = [
     'build/src/external/externs/types.js',
-    'build/src/external/src/exports.js',
-    'build/src/external/src/types.js']
+    'build/src/external/src/exports.js']
 
 EXAMPLES = [path
             for path in ifind('examples')
@@ -235,13 +234,6 @@ def build_src_external_externs_types_js(t):
 def build_src_external_src_exports_js(t):
     t.output('%(PYTHON)s', 'bin/generate-exports.py',
              '--exports', 'src/objectliterals.jsdoc', EXPORTS)
-
-
-@target('build/src/external/src/types.js', 'bin/generate-exports.py',
-        'src/objectliterals.jsdoc')
-def build_src_external_src_types_js(t):
-    t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--typedef', 'src/objectliterals.jsdoc')
 
 
 for glsl_src in GLSL_SRC:

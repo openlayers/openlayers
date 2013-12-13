@@ -18,7 +18,7 @@ goog.require('ol.interaction.Drag');
  * Allows the user to pan the map by clickng and dragging.
  * @constructor
  * @extends {ol.interaction.Drag}
- * @param {ol.interaction.DragPanOptions=} opt_options Options.
+ * @param {olx.interaction.DragPanOptions=} opt_options Options.
  * @todo stability experimental
  */
 ol.interaction.DragPan = function(opt_options) {

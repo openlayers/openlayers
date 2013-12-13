@@ -34,7 +34,7 @@ ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED =
  * it to when the shift key is held down.
  * @constructor
  * @extends {ol.interaction.Drag}
- * @param {ol.interaction.DragZoomOptions=} opt_options Options.
+ * @param {olx.interaction.DragZoomOptions=} opt_options Options.
  * @todo stability experimental
  */
 ol.interaction.DragZoom = function(opt_options) {

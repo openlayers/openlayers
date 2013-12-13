@@ -43,7 +43,7 @@ ol.layer.LayerState;
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {ol.layer.BaseOptions} options Layer options.
+ * @param {olx.layer.BaseOptions} options Layer options.
  */
 ol.layer.Base = function(options) {
 
@@ -71,22 +71,6 @@ ol.layer.Base = function(options) {
       values.minResolution : 0;
 
   this.setValues(values);
-
-  goog.events.listen(this, [
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.BRIGHTNESS),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.CONTRAST),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.HUE),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.OPACITY),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.SATURATION),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.MAX_RESOLUTION),
-    ol.Object.getChangeEventType(ol.layer.LayerProperty.MIN_RESOLUTION)
-  ],
-  this.handleLayerChange, false, this);
-
-  goog.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.LayerProperty.VISIBLE),
-      this.handleLayerVisibleChange, false, this);
-
 };
 goog.inherits(ol.layer.Base, ol.Object);
 
@@ -249,26 +233,6 @@ goog.exportProperty(
     ol.layer.Base.prototype,
     'getVisible',
     ol.layer.Base.prototype.getVisible);
-
-
-/**
- * @protected
- */
-ol.layer.Base.prototype.handleLayerChange = function() {
-  if (this.getVisible() && this.getSourceState() == ol.source.State.READY) {
-    this.dispatchChangeEvent();
-  }
-};
-
-
-/**
- * @protected
- */
-ol.layer.Base.prototype.handleLayerVisibleChange = function() {
-  if (this.getSourceState() == ol.source.State.READY) {
-    this.dispatchChangeEvent();
-  }
-};
 
 
 /**

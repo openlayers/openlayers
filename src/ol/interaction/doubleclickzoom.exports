@@ -1,1 +1,1 @@
-@exportClass ol.interaction.DoubleClickZoom ol.interaction.DoubleClickZoomOptions
+@exportSymbol ol.interaction.DoubleClickZoom

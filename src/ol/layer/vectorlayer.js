@@ -17,14 +17,14 @@ ol.layer.VectorProperty = {
 /**
  * @constructor
  * @extends {ol.layer.Layer}
- * @param {ol.layer.VectorOptions=} opt_options Options.
+ * @param {olx.layer.VectorOptions=} opt_options Options.
  */
 ol.layer.Vector = function(opt_options) {
 
   var options = goog.isDef(opt_options) ?
-      opt_options : /** @type {ol.layer.VectorOptions} */ ({});
+      opt_options : /** @type {olx.layer.VectorOptions} */ ({});
 
-  goog.base(this, /** @type {ol.layer.LayerOptions} */ (options));
+  goog.base(this, /** @type {olx.layer.LayerOptions} */ (options));
 
   // FIXME veryify this
   if (goog.isDef(options.styleFunction)) {

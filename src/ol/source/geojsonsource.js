@@ -8,7 +8,7 @@ goog.require('ol.source.VectorFile');
 /**
  * @constructor
  * @extends {ol.source.VectorFile}
- * @param {ol.source.GeoJSONOptions=} opt_options Options.
+ * @param {olx.source.GeoJSONOptions=} opt_options Options.
  */
 ol.source.GeoJSON = function(opt_options) {
 

@@ -21,7 +21,7 @@ ol.interaction.DRAGROTATE_ANIMATION_DURATION = 250;
  * it to when the alt and shift keys are held down.
  * @constructor
  * @extends {ol.interaction.Drag}
- * @param {ol.interaction.DragRotateOptions=} opt_options Options.
+ * @param {olx.interaction.DragRotateOptions=} opt_options Options.
  */
 ol.interaction.DragRotate = function(opt_options) {
 

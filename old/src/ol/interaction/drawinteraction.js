@@ -23,7 +23,7 @@ goog.require('ol.source.Vector');
 
 /**
  * Interaction that allows drawing geometries.
- * @param {ol.interaction.DrawOptions} options Options.
+ * @param {olx.interaction.DrawOptions} options Options.
  * @constructor
  * @extends {ol.interaction.Interaction}
  */
@@ -337,11 +337,11 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
     sketchFeature.setGeometry(new ol.geom.Polygon(coordinates));
   }
   // cast multi-part geometries
-  if (this.type_ === ol.geom.GeometryType.MULTIPOINT) {
+  if (this.type_ === ol.geom.GeometryType.MULTI_POINT) {
     sketchFeature.setGeometry(new ol.geom.MultiPoint([coordinates]));
-  } else if (this.type_ === ol.geom.GeometryType.MULTILINESTRING) {
+  } else if (this.type_ === ol.geom.GeometryType.MULTI_LINE_STRING) {
     sketchFeature.setGeometry(new ol.geom.MultiLineString([coordinates]));
-  } else if (this.type_ === ol.geom.GeometryType.MULTIPOLYGON) {
+  } else if (this.type_ === ol.geom.GeometryType.MULTI_POLYGON) {
     sketchFeature.setGeometry(new ol.geom.MultiPolygon([coordinates]));
   }
   this.layer_.getVectorSource().addFeatures([sketchFeature]);
@@ -379,13 +379,13 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
 ol.interaction.Draw.getMode_ = function(type) {
   var mode;
   if (type === ol.geom.GeometryType.POINT ||
-      type === ol.geom.GeometryType.MULTIPOINT) {
+      type === ol.geom.GeometryType.MULTI_POINT) {
     mode = ol.interaction.DrawMode.POINT;
-  } else if (type === ol.geom.GeometryType.LINESTRING ||
-      type === ol.geom.GeometryType.MULTILINESTRING) {
+  } else if (type === ol.geom.GeometryType.LINE_STRING ||
+      type === ol.geom.GeometryType.MULTI_LINE_STRING) {
     mode = ol.interaction.DrawMode.LINESTRING;
   } else if (type === ol.geom.GeometryType.POLYGON ||
-      type === ol.geom.GeometryType.MULTIPOLYGON) {
+      type === ol.geom.GeometryType.MULTI_POLYGON) {
     mode = ol.interaction.DrawMode.POLYGON;
   }
   goog.asserts.assert(goog.isDef(mode));

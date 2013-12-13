@@ -26,7 +26,7 @@ ol.interaction.DRAGROTATEANDZOOM_ANIMATION_DURATION = 400;
  * This interaction is not included in the default interactions.
  * @constructor
  * @extends {ol.interaction.Drag}
- * @param {ol.interaction.DragRotateAndZoomOptions=} opt_options Options.
+ * @param {olx.interaction.DragRotateAndZoomOptions=} opt_options Options.
  * @todo stability experimental
  */
 ol.interaction.DragRotateAndZoom = function(opt_options) {

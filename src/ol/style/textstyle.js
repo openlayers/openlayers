@@ -4,7 +4,7 @@ goog.provide('ol.style.Text');
 
 /**
  * @constructor
- * @param {ol.style.TextOptions} options Options.
+ * @param {olx.style.TextOptions} options Options.
  */
 ol.style.Text = function(options) {
 

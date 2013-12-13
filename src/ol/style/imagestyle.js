@@ -24,7 +24,7 @@ ol.style.ImageState = {
 
 /**
  * @constructor
- * @param {ol.style.ImageOptions} options Options.
+ * @param {olx.style.ImageOptions} options Options.
  * @extends {goog.events.EventTarget}
  */
 ol.style.Image = function(options) {

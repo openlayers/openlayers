@@ -1,1 +1,1 @@
-@exportClass ol.style.Image ol.style.ImageOptions
+@exportSymbol ol.style.Image

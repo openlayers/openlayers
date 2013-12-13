@@ -1,1 +1,1 @@
-@exportClass ol.layer.Image ol.layer.LayerOptions
+@exportSymbol ol.layer.Image

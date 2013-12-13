@@ -27,8 +27,7 @@
   "inherits": "ol.json",
 
   "inputs": [
-    "../build/src/internal/src/requireall.js",
-    "../build/src/internal/src/types.js"
+    "../build/src/internal/src/requireall.js"
   ],
 
   "mode": "WHITESPACE",

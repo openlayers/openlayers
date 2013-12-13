@@ -14,7 +14,7 @@ goog.require('ol.source.Vector');
 /**
  * @constructor
  * @extends {ol.source.Vector}
- * @param {ol.source.VectorFileOptions=} opt_options Options.
+ * @param {olx.source.VectorFileOptions=} opt_options Options.
  */
 ol.source.VectorFile = function(opt_options) {
 

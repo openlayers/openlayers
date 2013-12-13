@@ -198,7 +198,7 @@ describe('ol.parser.KML', function() {
       var stroke = symbolizers[0];
       expect(stroke).to.be.a(ol.style.Stroke);
 
-      var literal = stroke.createLiteral(ol.geom.GeometryType.LINESTRING);
+      var literal = stroke.createLiteral(ol.geom.GeometryType.LINE_STRING);
       expect(literal).to.be.a(ol.style.LineLiteral);
       expect(literal.color).to.eql('#ff0000');
       expect(literal.opacity).to.eql(0.5294117647058824);

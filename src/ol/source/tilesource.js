@@ -107,6 +107,14 @@ ol.source.Tile.prototype.findLoadedTiles = function(loadedTilesByZ,
 
 
 /**
+ * @return {number} Gutter.
+ */
+ol.source.Tile.prototype.getGutter = function() {
+  return 0;
+};
+
+
+/**
  * @param {number} z Z.
  * @param {number} x X.
  * @param {number} y Y.

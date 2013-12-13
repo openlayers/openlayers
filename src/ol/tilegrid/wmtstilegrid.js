@@ -10,7 +10,7 @@ goog.require('ol.tilegrid.TileGrid');
 /**
  * @constructor
  * @extends {ol.tilegrid.TileGrid}
- * @param {ol.tilegrid.WMTSOptions} options WMTS options.
+ * @param {olx.tilegrid.WMTSOptions} options WMTS options.
  * @struct
  * @todo stability experimental
  */

@@ -13,7 +13,7 @@ goog.require('ol.source.wms');
 /**
  * @constructor
  * @extends {ol.source.Image}
- * @param {ol.source.ImageWMSOptions} options Options.
+ * @param {olx.source.ImageWMSOptions} options Options.
  * @todo stability experimental
  */
 ol.source.ImageWMS = function(options) {

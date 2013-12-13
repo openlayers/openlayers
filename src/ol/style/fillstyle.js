@@ -6,7 +6,7 @@ goog.require('ol.color');
 
 /**
  * @constructor
- * @param {ol.style.FillOptions} options Options.
+ * @param {olx.style.FillOptions} options Options.
  */
 ol.style.Fill = function(options) {
 

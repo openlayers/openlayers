@@ -141,7 +141,7 @@ ol.MapProperty = {
  *
  * @constructor
  * @extends {ol.Object}
- * @param {ol.MapOptions} options Map options.
+ * @param {olx.MapOptions} options Map options.
  * @todo stability experimental
  * @todo observable layergroup {ol.layer.LayerGroup} a layer group containing
  *       the layers in this map.
@@ -1224,7 +1224,7 @@ ol.MapOptionsInternal;
 
 
 /**
- * @param {ol.MapOptions} options Map options.
+ * @param {olx.MapOptions} options Map options.
  * @return {ol.MapOptionsInternal} Internal map options.
  */
 ol.Map.createOptionsInternal = function(options) {

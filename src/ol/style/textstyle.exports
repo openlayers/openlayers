@@ -1,1 +1,1 @@
-@exportClass ol.style.Text ol.style.TextOptions
+@exportSymbol ol.style.Text

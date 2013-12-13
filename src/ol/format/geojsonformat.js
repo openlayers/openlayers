@@ -22,7 +22,7 @@ goog.require('ol.proj');
 /**
  * @constructor
  * @extends {ol.format.JSON}
- * @param {ol.format.GeoJSONOptions=} opt_options Options.
+ * @param {olx.format.GeoJSONOptions=} opt_options Options.
  */
 ol.format.GeoJSON = function(opt_options) {
 

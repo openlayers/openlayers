@@ -8,7 +8,8 @@ goog.require('ol.style.Image');
 
 /**
  * @constructor
- * @param {ol.style.StyleOptions} options Options.
+ * @param {olx.style.StyleOptions} options Style options.
+ * @todo stability experimental
  */
 ol.style.Style = function(options) {
 

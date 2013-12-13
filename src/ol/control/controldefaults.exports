@@ -1,1 +1,1 @@
-@exportFunction ol.control.defaults ol.control.DefaultsOptions ol.Collection
+@exportSymbol ol.control.defaults ol.control.defaults

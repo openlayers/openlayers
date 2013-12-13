@@ -210,6 +210,13 @@ describe('ol.layer.Layer', function() {
       expect(layer.getBrightness()).to.be(-0.7);
     });
 
+    it('triggers a change event', function() {
+      var listener = sinon.spy();
+      layer.on(ol.ObjectEventType.CHANGE, listener);
+      layer.setBrightness(0.5);
+      expect(listener.calledOnce).to.be(true);
+    });
+
   });
 
   describe('#setContrast', function() {
@@ -236,6 +243,13 @@ describe('ol.layer.Layer', function() {
     it('accepts a big positive number', function() {
       layer.setContrast(42);
       expect(layer.getContrast()).to.be(42);
+    });
+
+    it('triggers a change event', function() {
+      var listener = sinon.spy();
+      layer.on(ol.ObjectEventType.CHANGE, listener);
+      layer.setContrast(43);
+      expect(listener.calledOnce).to.be(true);
     });
 
   });
@@ -277,6 +291,13 @@ describe('ol.layer.Layer', function() {
       expect(layer.getHue()).to.be(-100);
     });
 
+    it('triggers a change event', function() {
+      var listener = sinon.spy();
+      layer.on(ol.ObjectEventType.CHANGE, listener);
+      layer.setHue(0.5);
+      expect(listener.calledOnce).to.be(true);
+    });
+
   });
 
 
@@ -299,6 +320,13 @@ describe('ol.layer.Layer', function() {
     it('accepts a positive number', function() {
       layer.setOpacity(0.3);
       expect(layer.getOpacity()).to.be(0.3);
+    });
+
+    it('triggers a change event', function() {
+      var listener = sinon.spy();
+      layer.on(ol.ObjectEventType.CHANGE, listener);
+      layer.setOpacity(0.4);
+      expect(listener.calledOnce).to.be(true);
     });
 
   });
@@ -330,25 +358,48 @@ describe('ol.layer.Layer', function() {
       expect(layer.getSaturation()).to.be(42);
     });
 
+    it('triggers a change event', function() {
+      var listener = sinon.spy();
+      layer.on(ol.ObjectEventType.CHANGE, listener);
+      layer.setSaturation(42);
+      expect(listener.calledOnce).to.be(true);
+    });
+
   });
 
 
   describe('#setVisible', function() {
 
-    it('sets visible property', function() {
-      var layer = new ol.layer.Layer({
+    var layer;
+    beforeEach(function() {
+      layer = new ol.layer.Layer({
         source: new ol.source.Source({
           projection: ol.proj.get('EPSG:4326')
         })
       });
+    });
 
+    afterEach(function() {
+      goog.dispose(layer);
+    });
+
+    it('sets visible property', function() {
       layer.setVisible(false);
       expect(layer.getVisible()).to.be(false);
 
       layer.setVisible(true);
       expect(layer.getVisible()).to.be(true);
+    });
 
-      goog.dispose(layer);
+    it('fires a change event', function() {
+      var listener = sinon.spy();
+      layer.on(ol.ObjectEventType.CHANGE, listener);
+
+      layer.setVisible(false);
+      expect(listener.callCount).to.be(1);
+
+      layer.setVisible(true);
+      expect(listener.callCount).to.be(2);
     });
 
   });
@@ -356,6 +407,7 @@ describe('ol.layer.Layer', function() {
 });
 
 goog.require('goog.dispose');
+goog.require('ol.ObjectEventType');
 goog.require('ol.layer.Layer');
 goog.require('ol.proj');
 goog.require('ol.source.Source');

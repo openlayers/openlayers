@@ -12,7 +12,7 @@ goog.require('ol.tilegrid.TileGrid');
 /**
  * @constructor
  * @extends {ol.tilegrid.TileGrid}
- * @param {ol.tilegrid.XYZOptions} options XYZ options.
+ * @param {olx.tilegrid.XYZOptions} options XYZ options.
  * @struct
  * @todo stability experimental
  */

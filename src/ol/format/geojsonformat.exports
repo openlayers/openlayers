@@ -1,1 +1,1 @@
-@exportClass ol.format.GeoJSON ol.format.GeoJSONOptions
+@exportSymbol ol.format.GeoJSON

@@ -1,1 +1,1 @@
-@exportClass ol.source.VectorFile ol.source.VectorFileOptions
+@exportSymbol ol.source.VectorFile

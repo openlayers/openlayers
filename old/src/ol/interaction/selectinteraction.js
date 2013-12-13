@@ -15,7 +15,7 @@ goog.require('ol.layer.Vector');
  * Allows the user to select features on the map.
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @param {ol.interaction.SelectOptions=} opt_options Options.
+ * @param {olx.interaction.SelectOptions=} opt_options Options.
  * @todo stability experimental
  */
 ol.interaction.Select = function(opt_options) {

@@ -220,7 +220,7 @@ class ObjectLiteral(Exportable):
         return ''.join(lines)
 
     def extern_name(self):
-        return re.sub(r'ol\.(\S+)', r'olx.\1Extern', self.name)
+        return re.sub(r'(olx\.\S+)', r'\1Extern', self.name)
 
     def extern_namespace(self):
         return '.'.join(self.extern_name().split('.')[:-1]) or None
@@ -398,6 +398,7 @@ def main(argv):
             else:
                 sys.stdout.write('var %s;\n' % (namespace,))
         for object_literal in object_literals:
+            sys.stdout.write(object_literal.typedef())
             sys.stdout.write(object_literal.extern())
 
     if options.typedef:

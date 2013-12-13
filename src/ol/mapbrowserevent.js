@@ -50,6 +50,14 @@ goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
 
 
 /**
+ * @return {Event} The underlying browser event object.
+ */
+ol.MapBrowserEvent.prototype.getBrowserEvent = function() {
+  return this.browserEvent.getBrowserEvent();
+};
+
+
+/**
  * @return {ol.Coordinate} Coordinate.
  * @todo stability experimental
  */
