@@ -10,6 +10,8 @@ goog.require('goog.events.EventTarget');
  * and unregistration.
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @suppress {checkStructDictInheritance}
+ * @struct
  * @todo stability experimental
  */
 ol.Observable = function() {
