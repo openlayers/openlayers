@@ -157,8 +157,9 @@ ol.geom.Polygon.prototype.getSimplifiedGeometryInternal =
     function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   var simplifiedEnds = [];
-  simplifiedFlatCoordinates.length = ol.geom.simplify.douglasPeuckers(
-      this.flatCoordinates, 0, this.ends_, this.stride, squaredTolerance,
+  simplifiedFlatCoordinates.length = ol.geom.simplify.schaubs(
+      this.flatCoordinates, 0, this.ends_, this.stride,
+      Math.sqrt(squaredTolerance),
       simplifiedFlatCoordinates, 0, simplifiedEnds);
   var simplifiedPolygon = new ol.geom.Polygon(null);
   simplifiedPolygon.setFlatCoordinates(
