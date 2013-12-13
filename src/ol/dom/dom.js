@@ -31,7 +31,7 @@ ol.dom.setTransform = function(element, value) {
 
 /**
  * @param {Element} element Element.
- * @param {goog.vec.Mat4.AnyType} transform Matrix.
+ * @param {goog.vec.Mat4.Number} transform Matrix.
  * @param {number=} opt_precision Precision.
  */
 ol.dom.transformElement2D = function(element, transform, opt_precision) {

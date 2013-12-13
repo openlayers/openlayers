@@ -312,7 +312,7 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.AnyType}
+   * @type {goog.vec.Mat4.Number}
    */
   this.transform_ = goog.vec.Mat4.createNumberIdentity();
 
@@ -421,7 +421,7 @@ ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent =
 
 
 /**
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  */
 ol.renderer.dom.TileLayerZ_.prototype.setTransform = function(transform) {
   if (!goog.vec.Mat4.equals(transform, this.transform_)) {

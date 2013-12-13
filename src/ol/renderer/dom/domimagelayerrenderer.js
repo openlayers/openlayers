@@ -35,7 +35,7 @@ ol.renderer.dom.ImageLayer = function(mapRenderer, imageLayer) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.AnyType}
+   * @type {goog.vec.Mat4.Number}
    */
   this.transform_ = goog.vec.Mat4.createNumberIdentity();
 
@@ -123,7 +123,7 @@ ol.renderer.dom.ImageLayer.prototype.renderFrame =
 
 
 /**
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  * @private
  */
 ol.renderer.dom.ImageLayer.prototype.setTransform_ = function(transform) {
