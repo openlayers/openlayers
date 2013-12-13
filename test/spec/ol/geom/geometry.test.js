@@ -6,7 +6,7 @@ describe('ol.geom.Geometry', function() {
     it('creates a new geometry', function() {
       var geom = new ol.geom.Geometry();
       expect(geom).to.be.a(ol.geom.Geometry);
-      expect(geom).to.be.a(goog.events.EventTarget);
+      expect(geom).to.be.a(ol.Observable);
     });
   });
 
@@ -45,7 +45,7 @@ describe('ol.geom.GeometryEvent', function() {
 });
 
 goog.require('goog.events.Event');
-goog.require('goog.events.EventTarget');
+goog.require('ol.Observable');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryEvent');
 goog.require('ol.geom.Point');

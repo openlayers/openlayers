@@ -3,9 +3,9 @@ goog.provide('ol.geom.GeometryEvent');
 goog.provide('ol.geom.GeometryType');
 
 goog.require('goog.events.Event');
-goog.require('goog.events.EventTarget');
 goog.require('goog.object');
 goog.require('ol.Extent');
+goog.require('ol.Observable');
 goog.require('ol.TransformFunction');
 
 
@@ -30,13 +30,13 @@ ol.geom.GeometryType = {
 
 /**
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.Observable}
  * @todo stability experimental
  */
 ol.geom.Geometry = function() {
   goog.base(this);
 };
-goog.inherits(ol.geom.Geometry, goog.events.EventTarget);
+goog.inherits(ol.geom.Geometry, ol.Observable);
 
 
 /**
