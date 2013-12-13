@@ -3,7 +3,6 @@ goog.provide('ol.format.Text');
 goog.require('goog.asserts');
 goog.require('ol.format.Format');
 goog.require('ol.format.FormatType');
-goog.require('ol.proj');
 
 
 
@@ -101,9 +100,7 @@ ol.format.Text.prototype.readProjection = function(source) {
  * @protected
  * @return {ol.proj.Projection} Projection.
  */
-ol.format.Text.prototype.readProjectionFromText = function(text) {
-  return ol.proj.get('EPSG:4326');
-};
+ol.format.Text.prototype.readProjectionFromText = goog.abstractMethod;
 
 
 /**
