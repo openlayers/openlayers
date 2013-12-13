@@ -82,7 +82,7 @@ def get_layersconfig(t):
     for lang in AVAILABLE_LANGS:
         name = "%s.%s.js" % (t.name, lang)
         t.info('downloading %r', t.name)
-        t.download('http://api3.geo.admin.ch/rest/services/api/MapServer/layersconfig?lang=%s' % lang)
+        t.download('http://mf-chsdi3.dev.bgdi.ch/ltmoc/rest/services/api/MapServer/layersconfig?lang=%s' % lang)
         os.rename(t.name, name)
         t.info('downloaded %r', name)
         prepend(name, """function getConfig(){ return %s } """)
