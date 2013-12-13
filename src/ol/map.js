@@ -621,11 +621,16 @@ goog.exportProperty(
 
 /**
  * Get the collection of layers associated with this map.
- * @return {ol.Collection} Layers.
+ * @return {ol.Collection|undefined} Layers.
  * @todo stability experimental
  */
 ol.Map.prototype.getLayers = function() {
-  return this.getLayerGroup().getLayers();
+  var layerGroup = this.getLayerGroup();
+  if (goog.isDef(layerGroup)) {
+    return layerGroup.getLayers();
+  } else {
+    return undefined;
+  }
 };
 
 
