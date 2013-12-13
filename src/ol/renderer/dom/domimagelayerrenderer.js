@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.dom.ImageLayer');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
@@ -44,15 +45,6 @@ goog.inherits(ol.renderer.dom.ImageLayer, ol.renderer.dom.Layer);
 
 
 /**
- * @protected
- * @return {ol.layer.Image} Image layer.
- */
-ol.renderer.dom.ImageLayer.prototype.getImageLayer = function() {
-  return /** @type {ol.layer.Image} */ (this.getLayer());
-};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.dom.ImageLayer.prototype.renderFrame =
@@ -64,7 +56,8 @@ ol.renderer.dom.ImageLayer.prototype.renderFrame =
   var viewRotation = view2DState.rotation;
 
   var image = this.image_;
-  var imageLayer = this.getImageLayer();
+  var imageLayer = this.getLayer();
+  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image);
   var imageSource = imageLayer.getImageSource();
 
   var hints = frameState.viewHints;

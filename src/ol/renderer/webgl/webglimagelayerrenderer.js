@@ -72,15 +72,6 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
 
 
 /**
- * @protected
- * @return {ol.layer.Image} Tile layer.
- */
-ol.renderer.webgl.ImageLayer.prototype.getImageLayer = function() {
-  return /** @type {ol.layer.Image} */ (this.getLayer());
-};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.webgl.ImageLayer.prototype.renderFrame =
@@ -95,7 +86,8 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
 
   var image = this.image_;
   var texture = this.texture;
-  var imageLayer = this.getImageLayer();
+  var imageLayer = this.getLayer();
+  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image);
   var imageSource = imageLayer.getImageSource();
 
   var hints = frameState.viewHints;

@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.canvas.ImageLayer');
 
+goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
@@ -48,15 +49,6 @@ ol.renderer.canvas.ImageLayer.prototype.getImage = function() {
 
 
 /**
- * @protected
- * @return {ol.layer.Image} Single image layer.
- */
-ol.renderer.canvas.ImageLayer.prototype.getImageLayer = function() {
-  return /** @type {ol.layer.Image} */ (this.getLayer());
-};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.canvas.ImageLayer.prototype.getTransform = function() {
@@ -76,7 +68,8 @@ ol.renderer.canvas.ImageLayer.prototype.renderFrame =
   var viewRotation = view2DState.rotation;
 
   var image;
-  var imageLayer = this.getImageLayer();
+  var imageLayer = this.getLayer();
+  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image);
   var imageSource = imageLayer.getImageSource();
 
   var hints = frameState.viewHints;
