@@ -57,6 +57,16 @@ ol.View.prototype.getView3D = goog.abstractMethod;
 
 
 /**
+ * @inheritDoc
+ */
+ol.View.prototype.isDef = function() {
+  // FIXME for some reason, we can't use goog.abstractMethod here
+  goog.asserts.fail();
+  return false;
+};
+
+
+/**
  * @param {ol.ViewHint} hint Hint.
  * @param {number} delta Delta.
  * @return {number} New value.
