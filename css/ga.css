@@ -117,3 +117,12 @@
 .htmlpopup-container .htmlpopup-content table .cell-left-large {
   width: 320px;
 }
+@media (max-width: 480px) {
+  div.ga-tooltip {
+    top: 50%;
+    bottom: 2%;
+    left: 2%;
+    right: 2%;
+    width: auto;
+  }
+}
