@@ -2,7 +2,6 @@ goog.provide('ol.layer.Vector');
 
 goog.require('ol.feature');
 goog.require('ol.layer.Layer');
-goog.require('ol.source.Vector');
 
 
 /**
@@ -61,14 +60,6 @@ goog.exportProperty(
     ol.layer.Vector.prototype,
     'getStyleFunction',
     ol.layer.Vector.prototype.getStyleFunction);
-
-
-/**
- * @return {ol.source.Source} Vector source.
- */
-ol.layer.Vector.prototype.getVectorSource = function() {
-  return /** @type {ol.source.Vector} */ (this.getSource());
-};
 
 
 /**
