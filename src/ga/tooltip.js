@@ -31,6 +31,9 @@ goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.GeometryCollection');
 
+goog.require('ga');
+goog.require('ga.lang');
+
 
 
 /**
