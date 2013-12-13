@@ -33,7 +33,7 @@ goog.require('ga.Tooltip');
  *
  * @constructor
  * @extends {ol.Map}
- * @param {ol.MapOptions} options Map options.
+ * @param {olx.MapOptions} options Map options.
  */
 ga.Map = function(options) {
 
