@@ -318,7 +318,7 @@ ol.color.toString = function(color) {
 
 /**
  * @param {ol.Color} color Color.
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {ol.Color=} opt_color Color.
  * @return {ol.Color} Transformed color.
  */

@@ -160,7 +160,7 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry) {
 /**
  * @private
  * @param {CanvasRenderingContext2D} context Context.
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
  * @param {Array.<*>} instructions Instructions array.
@@ -305,7 +305,7 @@ ol.render.canvas.Replay.prototype.replay_ =
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
  * @return {T|undefined} Callback result.
@@ -321,7 +321,7 @@ ol.render.canvas.Replay.prototype.replay =
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
  * @param {function(ol.geom.Geometry, Object): T=} opt_geometryCallback
@@ -1231,7 +1231,7 @@ ol.render.canvas.ReplayGroup = function(pixelRatio, tolerance) {
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {ol.Extent} extent Extent.
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
  * @return {T|undefined} Callback result.
@@ -1252,7 +1252,7 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
  * @param {Array.<number>} zs Z-indices array.
  * @param {CanvasRenderingContext2D} context Context.
  * @param {ol.Extent} extent Extent.
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
  * @param {function(ol.geom.Geometry, Object): T} geometryCallback Geometry
@@ -1286,7 +1286,7 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ =
  * @param {Array.<number>} zs Z-indices array.
  * @param {CanvasRenderingContext2D} context Context.
  * @param {ol.Extent} extent Extent.
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
  * @return {T|undefined} Callback result.

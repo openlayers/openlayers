@@ -230,7 +230,7 @@ ol.geom.SimpleGeometry.prototype.transform = function(transformFn) {
 
 /**
  * @param {ol.geom.SimpleGeometry} simpleGeometry Simple geometry.
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed flat coordinates.
  */

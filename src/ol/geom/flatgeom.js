@@ -736,7 +736,7 @@ ol.geom.flat.squaredDistance = function(x1, y1, x2, y2) {
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} stride Stride.
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed coordinates.
  */
