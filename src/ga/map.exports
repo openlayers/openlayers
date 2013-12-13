@@ -1,1 +1,1 @@
-@exportClass ga.Map ol.MapOptions
+@exportSymbol ga.Map

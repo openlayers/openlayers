@@ -139,7 +139,7 @@ ga.source.wmts = function(layer, options) {
   });
   var extension = options.format || 'png';
   var timestamp = options['timestamps'][0];
-  return new ol.source.WMTS( /** @type {ol.source.WMTSOptions} */({
+  return new ol.source.WMTS( /** @type {olx.source.WMTSOptions} */({
     attributions: [
       ga.layer.getAttribution('<a href="' +
         options['attributionUrl'] +
