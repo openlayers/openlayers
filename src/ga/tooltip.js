@@ -135,7 +135,8 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
     'imageDisplay': size[0] + ',' + size[1] + ',96',
     'mapExtent': extent.join(','),
     'tolerance': 10,
-    'layers': 'all:' + layerList.join(',')
+    'layers': 'all:' + layerList.join(','),
+    'lang': ga.lang ? ga.lang : "de"
   };
   jsonp.send(payload,
     goog.bind(this.handleIdentifyResponse_, this),
@@ -183,11 +184,12 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
 
   // Show popup
   for (var i in response['results']) {
+    var lang = ga.lang ? ga.lang : "de";
     var jsonp = new goog.net.Jsonp(
       new goog.Uri('//api3.geo.admin.ch/rest/services/api/MapServer/' +
         response['results'][i]['layerBodId'] + '/' +
         response['results'][i]['featureId'] + '/' +
-        '/htmlpopup'),
+        '/htmlpopup?lang=' + lang),
       'callback');
     jsonp.send({},
       goog.bind(this.handleHtmlpopupResponse_, this),
