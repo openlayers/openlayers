@@ -2,7 +2,6 @@ goog.provide('ol.format.Format');
 goog.provide('ol.format.FormatType');
 
 goog.require('goog.functions');
-goog.require('ol.proj');
 
 
 /**
@@ -65,9 +64,7 @@ ol.format.Format.prototype.readGeometry = goog.abstractMethod;
  * @param {Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  */
-ol.format.Format.prototype.readProjection = function(source) {
-  return ol.proj.get('EPSG:4326');
-};
+ol.format.Format.prototype.readProjection = goog.abstractMethod;
 
 
 /**
