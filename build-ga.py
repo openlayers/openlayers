@@ -9,7 +9,7 @@ def prepend(name, template):
      temp = f.read()
      f.close()
      ob = json.loads(temp) 
-     open(name, "w").write( template % json.dumps(ob['layers'],sort_keys=True,indent=2))
+     open(name, "w").write( template % json.dumps(ob,sort_keys=True,indent=2))
 
 def _build_require_list(dependencies, output_file_name):
     requires = set()
