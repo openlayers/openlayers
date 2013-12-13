@@ -66,15 +66,6 @@ goog.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
 
 
 /**
- * @protected
- * @return {ol.layer.Tile} Tile layer.
- */
-ol.renderer.dom.TileLayer.prototype.getTileLayer = function() {
-  return /** @type {ol.layer.Tile} */ (this.getLayer());
-};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.dom.TileLayer.prototype.renderFrame =
@@ -91,7 +82,8 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   var view2DState = frameState.view2DState;
   var projection = view2DState.projection;
 
-  var tileLayer = this.getTileLayer();
+  var tileLayer = this.getLayer();
+  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
   var tileSource = tileLayer.getTileSource();
   var tileGrid = tileSource.getTileGrid();
   if (goog.isNull(tileGrid)) {

@@ -4,6 +4,7 @@
 goog.provide('ol.renderer.webgl.TileLayer');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
@@ -93,15 +94,6 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
 
 
 /**
- * @protected
- * @return {ol.layer.Tile} Tile layer.
- */
-ol.renderer.webgl.TileLayer.prototype.getTileLayer = function() {
-  return /** @type {ol.layer.Tile} */ (this.getLayer());
-};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
@@ -122,7 +114,8 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   var view2DState = frameState.view2DState;
   var projection = view2DState.projection;
 
-  var tileLayer = this.getTileLayer();
+  var tileLayer = this.getLayer();
+  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
   var tileSource = tileLayer.getTileSource();
   var tileGrid = tileSource.getTileGrid();
   if (goog.isNull(tileGrid)) {

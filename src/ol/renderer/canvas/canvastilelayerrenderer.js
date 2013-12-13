@@ -86,15 +86,6 @@ ol.renderer.canvas.TileLayer.prototype.getImage = function() {
 
 
 /**
- * @protected
- * @return {ol.layer.Tile} Tile layer.
- */
-ol.renderer.canvas.TileLayer.prototype.getTileLayer = function() {
-  return /** @type {ol.layer.Tile} */ (this.getLayer());
-};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.canvas.TileLayer.prototype.getTransform = function() {
@@ -174,7 +165,8 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   var view2DState = frameState.view2DState;
   var projection = view2DState.projection;
 
-  var tileLayer = this.getTileLayer();
+  var tileLayer = this.getLayer();
+  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
   var tileSource = tileLayer.getTileSource();
   var tileGrid = tileSource.getTileGrid();
   if (goog.isNull(tileGrid)) {
