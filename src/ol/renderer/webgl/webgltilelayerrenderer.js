@@ -17,6 +17,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.math');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.tilelayer.shader');
+goog.require('ol.source.Tile');
 goog.require('ol.structs.Buffer');
 
 
@@ -116,7 +117,8 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
 
   var tileLayer = this.getLayer();
   goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
-  var tileSource = tileLayer.getTileSource();
+  var tileSource = tileLayer.getSource();
+  goog.asserts.assertInstanceof(tileSource, ol.source.Tile);
   var tileGrid = tileSource.getTileGrid();
   if (goog.isNull(tileGrid)) {
     tileGrid = ol.tilegrid.getForProjection(projection);
