@@ -84,7 +84,7 @@ describe('ol.TileUrlFunction', function() {
     var fakeTileSource = {getTileGrid: function() {return null;}};
     var params = {foo: 'bar'};
     var tileUrlFunction = ol.TileUrlFunction.createFromParamsFunction(
-        'url', params, paramsFunction);
+        'url', params, 0, paramsFunction);
     it('calls the passed function with the correct arguments', function() {
       var args = tileUrlFunction.call(fakeTileSource,
           new ol.TileCoord(0, 0, 0), projection);

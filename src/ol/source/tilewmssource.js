@@ -37,6 +37,12 @@ ol.source.TileWMS = function(options) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.gutter_ = goog.isDef(options.gutter) ? options.gutter : 0;
+
+  /**
+   * @private
    * @type {Object}
    */
   this.params_ = options.params;
@@ -52,7 +58,7 @@ ol.source.TileWMS = function(options) {
     var tileUrlFunctions = goog.array.map(
         urls, function(url) {
           return ol.TileUrlFunction.createFromParamsFunction(
-              url, this.params_, ol.source.wms.getUrl);
+              url, this.params_, this.gutter_, ol.source.wms.getUrl);
         }, this);
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         tileUrlFunctions);
@@ -115,6 +121,14 @@ ol.source.TileWMS = function(options) {
 
 };
 goog.inherits(ol.source.TileWMS, ol.source.TileImage);
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.TileWMS.prototype.getGutter = function() {
+  return this.gutter_;
+};
 
 
 /**

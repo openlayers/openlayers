@@ -180,6 +180,7 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   if (goog.isNull(tileGrid)) {
     tileGrid = ol.tilegrid.getForProjection(projection);
   }
+  var tileGutter = tileSource.getGutter();
   var z = tileGrid.getZForResolution(view2DState.resolution);
   var tileSize = tileGrid.getTileSize(z);
   var tileResolution = tileGrid.getResolution(z);
@@ -338,7 +339,9 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
             context.clearRect(x, y, tileSize[0], tileSize[1]);
           }
           if (tileState == ol.TileState.LOADED) {
-            context.drawImage(tile.getImage(), x, y);
+            context.drawImage(tile.getImage(),
+                tileGutter, tileGutter, tileSize[0], tileSize[1],
+                x, y, tileSize[0], tileSize[1]);
           }
           this.renderedTiles_[index] = tile;
         }
@@ -357,7 +360,9 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
           context.clearRect(x, y, width, height);
         }
         if (tileState == ol.TileState.LOADED) {
-          context.drawImage(tile.getImage(), x, y, width, height);
+          context.drawImage(tile.getImage(),
+              tileGutter, tileGutter, tileSize[0], tileSize[1],
+              x, y, width, height);
         }
         interimTileRange =
             tileGrid.getTileRangeForExtentAndZ(tileExtent, z, tmpTileRange);
