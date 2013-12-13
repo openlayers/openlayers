@@ -488,6 +488,7 @@ ol.geom.flat.linearRingsContainsXY =
 ol.geom.flat.linearRingsGetInteriorPoint =
     function(flatCoordinates, offset, ends, stride, y, opt_point) {
   var i, ii, x, x1, x2, y1, y2;
+  /** @type {Array.<number>} */
   var intersections = [];
   // Calculate intersections with the horizontal line
   var end = ends[0];
