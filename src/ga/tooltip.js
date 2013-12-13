@@ -31,11 +31,6 @@ goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.GeometryCollection');
 
-goog.require('ga');
-goog.require('ga.lang');
-
-
-
 /**
  * @constructor
  * @extends {goog.Disposable}
@@ -151,7 +146,7 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
     'mapExtent': extent.join(','),
     'tolerance': 10,
     'layers': 'all:' + layerList.join(','),
-    'lang': ga.lang ? ga.lang : "de"
+    'lang': window.GeoAdmin.lang ? window.GeoAdmin.lang : "de"
   };
   jsonp.send(payload,
     goog.bind(this.handleIdentifyResponse_, this),
@@ -199,7 +194,7 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
 
   // Show popup
   for (var i in response['results']) {
-    var lang = ga.lang ? ga.lang : "de";
+    var lang = window.GeoAdmin.lang ? window.GeoAdmin.lang : "de";
     var jsonp = new goog.net.Jsonp(
       new goog.Uri('//api3.geo.admin.ch/rest/services/api/MapServer/' +
         response['results'][i]['layerBodId'] + '/' +
