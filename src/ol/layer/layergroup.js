@@ -26,7 +26,7 @@ ol.layer.GroupProperty = {
 /**
  * @constructor
  * @extends {ol.layer.Base}
- * @param {ol.layer.GroupOptions=} opt_options Layer options.
+ * @param {olx.layer.GroupOptions=} opt_options Layer options.
  * @todo stability experimental
  * @todo observable layers {ol.Collection} collection of layers that are part
  *       of this group
@@ -34,7 +34,7 @@ ol.layer.GroupProperty = {
 ol.layer.Group = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
-  var baseOptions = /** @type {ol.layer.GroupOptions} */
+  var baseOptions = /** @type {olx.layer.GroupOptions} */
       (goog.object.clone(options));
   delete baseOptions.layers;
 

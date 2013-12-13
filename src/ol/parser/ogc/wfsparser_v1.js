@@ -28,9 +28,9 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
   this.writers = {};
   this.writers[this.defaultNamespaceURI] = {
     /**
-     * @param {ol.parser.WFSWriteGetFeatureOptions} options Options.
+     * @param {olx.parser.WFSWriteGetFeatureOptions} options Options.
      * @return {{node: Node,
-     *           options: ol.parser.WFSWriteGetFeatureOptions}} Object.
+     *           options: olx.parser.WFSWriteGetFeatureOptions}} Object.
      * @this {ol.parser.XML}
      */
     'GetFeature': function(options) {
@@ -64,7 +64,7 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
      * @param {{inserts: Array.<ol.Feature>,
      *          updates: Array.<ol.Feature>,
      *          deletes: Array.<ol.Feature>,
-     *          options: ol.parser.WFSWriteTransactionOptions}} obj Object.
+     *          options: olx.parser.WFSWriteTransactionOptions}} obj Object.
      * @return {Element} Node.
      * @this {ol.parser.XML}
      */
@@ -120,7 +120,7 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
     },
     /**
      * @param {{feature: ol.Feature,
-     *          options: ol.parser.WFSWriteTransactionOptions}} obj Object.
+     *          options: olx.parser.WFSWriteTransactionOptions}} obj Object.
      * @return {Element} Node.
      * @this {ol.parser.XML}
      */
@@ -140,7 +140,7 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
     },
     /**
      * @param {{feature: ol.Feature,
-     *          options: ol.parser.WFSWriteTransactionOptions}} obj Object.
+     *          options: olx.parser.WFSWriteTransactionOptions}} obj Object.
      * @return {Element} Node.
      * @this {ol.parser.XML}
      */
@@ -213,7 +213,7 @@ ol.parser.ogc.WFS_v1 = function(opt_options) {
     },
     /**
      * @param {{feature: ol.Feature,
-     *          options: ol.parser.WFSWriteTransactionOptions}} obj Object.
+     *          options: olx.parser.WFSWriteTransactionOptions}} obj Object.
      * @return {Element} Node.
      * @this {ol.parser.XML}
      */
@@ -338,7 +338,7 @@ ol.parser.ogc.WFS_v1.prototype.read = function(data) {
 
 
 /**
- * @param {ol.parser.WFSWriteGetFeatureOptions} options Options.
+ * @param {olx.parser.WFSWriteGetFeatureOptions} options Options.
  * @return {string} A serialized WFS GetFeature query.
  */
 ol.parser.ogc.WFS_v1.prototype.writeGetFeature = function(options) {
@@ -352,7 +352,7 @@ ol.parser.ogc.WFS_v1.prototype.writeGetFeature = function(options) {
  * @param {Array.<ol.Feature>} inserts The features to insert.
  * @param {Array.<ol.Feature>} updates The features to update.
  * @param {Array.<ol.Feature>} deletes The features to delete.
- * @param {ol.parser.WFSWriteTransactionOptions} options Write options.
+ * @param {olx.parser.WFSWriteTransactionOptions} options Write options.
  * @return {string} A serialized WFS transaction.
  */
 ol.parser.ogc.WFS_v1.prototype.writeTransaction =

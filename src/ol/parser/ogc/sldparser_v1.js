@@ -89,7 +89,7 @@ ol.parser.ogc.SLD_v1 = function() {
       delete config.fill;
       config.zIndex = this.featureTypeCounter;
       rule.symbolizers.push(
-          new ol.style.Text(/** @type {ol.style.TextOptions} */(config))
+          new ol.style.Text(/** @type {olx.style.TextOptions} */(config))
       );
     },
     'Label': function(node, symbolizer) {
@@ -197,7 +197,7 @@ ol.parser.ogc.SLD_v1 = function() {
       if (goog.isDef(config.externalGraphic)) {
         config.width = config.height = config.size;
         symbolizer = new ol.style.Icon(
-            /** @type {ol.style.IconOptions} */(config));
+            /** @type {olx.style.IconOptions} */(config));
       } else {
         symbolizer = new ol.style.Shape(config);
       }
@@ -689,7 +689,7 @@ ol.parser.ogc.SLD_v1.prototype.getScaleDenominatorFromResolution_ =
 
 /**
  * @param {string|Document|Element} data Data to read.
- * @param {ol.parser.SLDReadOptions=} opt_options Read options.
+ * @param {olx.parser.SLDReadOptions=} opt_options Read options.
  * @return {Object} An object representing the document.
  */
 ol.parser.ogc.SLD_v1.prototype.read = function(data, opt_options) {
@@ -713,7 +713,7 @@ ol.parser.ogc.SLD_v1.prototype.read = function(data, opt_options) {
 
 /**
  * @param {Object} style The style to write out.
- * @param {ol.parser.SLDWriteOptions=} opt_options Write options.
+ * @param {olx.parser.SLDWriteOptions=} opt_options Write options.
  * @return {string} The serialized SLD.
  */
 ol.parser.ogc.SLD_v1.prototype.write = function(style, opt_options) {

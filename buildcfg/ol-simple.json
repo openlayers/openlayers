@@ -14,6 +14,7 @@
 
   "externs": [
     "//json.js",
+    "../build/src/external/externs/types.js",
     "../externs/bingmaps.js",
     "../externs/geojson.js",
     "../externs/topojson.js",
@@ -27,7 +28,7 @@
 
   "inputs": [
     "../build/src/internal/src/requireall.js",
-    "../build/src/internal/src/types.js"
+    "../build/src/external/src/exports.js"
   ],
 
   "mode": "SIMPLE",

@@ -19,7 +19,7 @@ goog.require('ol.source.wms');
  * @constructor
  * @extends {ol.source.TileImage}
  * @implements {ol.source.FeatureInfoSource}
- * @param {ol.source.TileWMSOptions} options Tile WMS options.
+ * @param {olx.source.TileWMSOptions} options Tile WMS options.
  * @todo stability experimental
  */
 ol.source.TileWMS = function(options) {
@@ -107,11 +107,11 @@ ol.source.TileWMS = function(options) {
 
   /**
    * @private
-   * @type {ol.source.WMSGetFeatureInfoOptions}
+   * @type {olx.source.WMSGetFeatureInfoOptions}
    */
   this.getFeatureInfoOptions_ = goog.isDef(options.getFeatureInfoOptions) ?
       options.getFeatureInfoOptions :
-      /** @type {ol.source.WMSGetFeatureInfoOptions} */ ({});
+      /** @type {olx.source.WMSGetFeatureInfoOptions} */ ({});
 
 };
 goog.inherits(ol.source.TileWMS, ol.source.TileImage);
