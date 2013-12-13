@@ -299,8 +299,10 @@ ol.Object.prototype.get = function(key) {
     var target = accessor.target;
     var targetKey = accessor.key;
     var getterName = ol.Object.getGetterName(targetKey);
-    if (target[getterName]) {
-      value = target[getterName]();
+    var getter = /** @type {function(): *|undefined} */
+        (goog.object.get(target, getterName));
+    if (goog.isDef(getter)) {
+      value = getter.call(target);
     } else {
       value = target.get(targetKey);
     }
@@ -406,10 +408,12 @@ ol.Object.prototype.set = function(key, value) {
     var accessor = accessors[key];
     var target = accessor.target;
     var targetKey = accessor.key;
-    var setterName = ol.Object.getSetterName(targetKey);
     value = accessor.from(value);
-    if (target[setterName]) {
-      target[setterName](value);
+    var setterName = ol.Object.getSetterName(targetKey);
+    var setter = /** @type {function(*)|undefined} */
+        (goog.object.get(target, setterName));
+    if (goog.isDef(setter)) {
+      setter.call(target, value);
     } else {
       target.set(targetKey, value);
     }
@@ -426,12 +430,14 @@ ol.Object.prototype.set = function(key, value) {
  * @todo stability experimental
  */
 ol.Object.prototype.setValues = function(values) {
-  var key, value, setterName;
+  var key;
   for (key in values) {
-    value = values[key];
-    setterName = ol.Object.getSetterName(key);
-    if (this[setterName]) {
-      this[setterName](value);
+    var value = values[key];
+    var setterName = ol.Object.getSetterName(key);
+    var setter = /** @type {function(*)|undefined} */
+        (goog.object.get(this, setterName));
+    if (goog.isDef(setter)) {
+      setter.call(this, value);
     } else {
       this.set(key, value);
     }
