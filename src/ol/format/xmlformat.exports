@@ -4,5 +4,8 @@
 @exportProperty ol.format.XML.prototype.readGeometry
 @exportProperty ol.format.XML.prototype.readProjection
 @exportProperty ol.format.XML.prototype.writeFeature
+@exportProperty ol.format.XML.prototype.writeFeatureAsString
 @exportProperty ol.format.XML.prototype.writeFeatures
+@exportProperty ol.format.XML.prototype.writeFeaturesAsString
 @exportProperty ol.format.XML.prototype.writeGeometry
+@exportProperty ol.format.XML.prototype.writeGeometryAsString

@@ -13,7 +13,15 @@ goog.require('ol.proj');
  * @extends {ol.format.Format}
  */
 ol.format.XML = function() {
+
   goog.base(this);
+
+  /**
+   * @type {XMLSerializer}
+   * @private
+   */
+  this.serializer_ = null;
+
 };
 goog.inherits(ol.format.XML, ol.format.Format);
 
@@ -66,6 +74,18 @@ ol.format.XML.prototype.getNode_ = function(source) {
     goog.asserts.fail();
     return null;
   }
+};
+
+
+/**
+ * @return {XMLSerializer} Serializer.
+ * @private
+ */
+ol.format.XML.prototype.getSerializer_ = function() {
+  if (goog.isNull(this.serializer_)) {
+    this.serializer_ = new XMLSerializer();
+  }
+  return this.serializer_;
 };
 
 
@@ -170,6 +190,15 @@ ol.format.XML.prototype.writeFeature = function(feature) {
 
 
 /**
+ * @inheritDoc
+ */
+ol.format.XML.prototype.writeFeatureAsString = function(feature) {
+  var node = this.writeFeatureNode(feature);
+  return this.getSerializer_().serializeToString(node);
+};
+
+
+/**
  * @param {ol.Feature} feature Feature.
  * @protected
  * @return {Node} Node.
@@ -186,6 +215,15 @@ ol.format.XML.prototype.writeFeatures = function(features) {
 
 
 /**
+ * @inheritDoc
+ */
+ol.format.XML.prototype.writeFeaturesAsString = function(features) {
+  var node = this.writeFeaturesNode(features);
+  return this.getSerializer_().serializeToString(node);
+};
+
+
+/**
  * @param {Array.<ol.Feature>} features Features.
  * @protected
  * @return {Node} Node.
@@ -198,6 +236,15 @@ ol.format.XML.prototype.writeFeaturesNode = goog.abstractMethod;
  */
 ol.format.XML.prototype.writeGeometry = function(geometry) {
   return this.writeGeometryNode(geometry);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.XML.prototype.writeGeometryAsString = function(geometry) {
+  var node = this.writeGeometryNode(geometry);
+  return this.getSerializer_().serializeToString(node);
 };
 
 

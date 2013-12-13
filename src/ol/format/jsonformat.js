@@ -2,6 +2,7 @@ goog.provide('ol.format.JSON');
 
 goog.require('goog.asserts');
 goog.require('goog.json');
+goog.require('goog.json.Serializer');
 goog.require('ol.format.Format');
 goog.require('ol.format.FormatType');
 
@@ -12,9 +13,29 @@ goog.require('ol.format.FormatType');
  * @extends {ol.format.Format}
  */
 ol.format.JSON = function() {
+
   goog.base(this);
+
+  /**
+   * @type {goog.json.Serializer}
+   * @private
+   */
+  this.serializer_ = null;
+
 };
 goog.inherits(ol.format.JSON, ol.format.Format);
+
+
+/**
+ * @private
+ * @return {goog.json.Serializer} Serializer.
+ */
+ol.format.JSON.prototype.getSerializer_ = function() {
+  if (goog.isNull(this.serializer_)) {
+    this.serializer_ = new goog.json.Serializer();
+  }
+  return this.serializer_;
+};
 
 
 /**
@@ -116,6 +137,15 @@ ol.format.JSON.prototype.writeFeature = function(feature) {
 
 
 /**
+ * @inheritDoc
+ */
+ol.format.JSON.prototype.writeFeatureAsString = function(feature) {
+  var object = this.writeFeatureObject(feature);
+  return this.getSerializer_().serialize(object);
+};
+
+
+/**
  * @param {ol.Feature} feature Feature.
  * @protected
  * @return {Object} Object.
@@ -132,6 +162,15 @@ ol.format.JSON.prototype.writeFeatures = function(features) {
 
 
 /**
+ * @inheritDoc
+ */
+ol.format.JSON.prototype.writeFeaturesAsString = function(features) {
+  var object = this.writeFeaturesObject(features);
+  return this.getSerializer_().serialize(object);
+};
+
+
+/**
  * @param {Array.<ol.Feature>} features Features.
  * @protected
  * @return {Object} Object.
@@ -144,6 +183,15 @@ ol.format.JSON.prototype.writeFeaturesObject = goog.abstractMethod;
  */
 ol.format.JSON.prototype.writeGeometry = function(geometry) {
   return this.writeGeometryObject(geometry);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.JSON.prototype.writeGeometryAsString = function(geometry) {
+  var object = this.writeGeometryObject(geometry);
+  return this.getSerializer_().serialize(object);
 };
 
 
