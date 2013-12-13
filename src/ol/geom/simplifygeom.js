@@ -86,6 +86,7 @@ ol.geom.simplify.douglasPeucker = function(flatCoordinates, offset, end,
   var markers = new MarkerArray(n);
   markers[0] = 1;
   markers[n - 1] = 1;
+  /** @type {Array.<number>} */
   var stack = [offset, end - stride];
   var index = 0;
   var i;
