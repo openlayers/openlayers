@@ -133,20 +133,13 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
  */
 ol.renderer.canvas.VectorLayer.prototype.getRenderGeometryFunction_ =
     function() {
-  var vectorLayer = this.getVectorLayer();
+  var vectorLayer = this.getLayer();
+  goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector);
   var renderGeometryFunction = vectorLayer.getRenderGeometryFunction();
   if (!goog.isDef(renderGeometryFunction)) {
     renderGeometryFunction = goog.functions.TRUE;
   }
   return renderGeometryFunction;
-};
-
-
-/**
- * @return {ol.layer.Vector} Vector layer.
- */
-ol.renderer.canvas.VectorLayer.prototype.getVectorLayer = function() {
-  return /** @type {ol.layer.Vector} */ (this.getLayer());
 };
 
 
@@ -175,7 +168,8 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
     return;
   }
 
-  var vectorLayer = this.getVectorLayer();
+  var vectorLayer = this.getLayer();
+  goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector);
   var vectorSource = vectorLayer.getVectorSource();
   var frameStateExtent = frameState.extent;
   var frameStateResolution = frameState.view2DState.resolution;
