@@ -89,6 +89,7 @@
 }
 
 .htmlpopup-container {
+  max-height: 100%;
   width: 100%;
   font-size: 14px;
   font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
@@ -116,4 +117,13 @@
 }
 .htmlpopup-container .htmlpopup-content table .cell-left-large {
   width: 320px;
+}
+@media (max-width: 480px) {
+  div.ga-tooltip {
+    top: 50%;
+    bottom: 2%;
+    left: 2%;
+    right: 2%;
+    width: auto;
+  }
 }

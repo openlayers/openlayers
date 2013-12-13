@@ -77,6 +77,13 @@ goog.inherits(ga.Tooltip, goog.Disposable);
 
 ga.Tooltip.prototype.createOverlay_ = function() {
   var className = 'ga-tooltip';
+  var setPositionStyle = function(element) {
+    if (document.body.clientWidth <=  480) {
+      element.style.position = 'static';
+    } else {
+      element.style.position = 'absolute';
+    }
+  };
   this.tooltipContentElement_ = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': className + '-content'
   });
@@ -94,6 +101,11 @@ ga.Tooltip.prototype.createOverlay_ = function() {
   this.overlay_ = new ol.Overlay({
     element: this.tooltipElement_
   });
+  var parentEl = this.overlay_.getElement().parentNode;
+  setPositionStyle(parentEl);
+  window.onresize = function() {
+    setPositionStyle(parentEl);
+  }
 };
 
 
