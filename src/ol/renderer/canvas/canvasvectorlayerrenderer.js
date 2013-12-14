@@ -206,8 +206,8 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
        */
       function(feature) {
         this.dirty_ = this.dirty_ ||
-            this.renderFeature(feature, frameStateResolution, styleFunction,
-                replayGroup);
+            this.renderFeature(feature, frameStateResolution, pixelRatio,
+                styleFunction, replayGroup);
       }, this);
   replayGroup.finish();
 
@@ -224,12 +224,13 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
 /**
  * @param {ol.Feature} feature Feature.
  * @param {number} resolution Resolution.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {ol.style.StyleFunction} styleFunction Style function.
  * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
 ol.renderer.canvas.VectorLayer.prototype.renderFeature =
-    function(feature, resolution, styleFunction, replayGroup) {
+    function(feature, resolution, pixelRatio, styleFunction, replayGroup) {
   var loading = false;
   var styles = styleFunction(feature, resolution);
   // FIXME if styles is null, should we use the default style?
