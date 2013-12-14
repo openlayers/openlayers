@@ -41,10 +41,17 @@ ol.render.canvas.Instruction = {
 /**
  * @constructor
  * @implements {ol.render.IRender}
+ * @param {number} pixelRatio Pixel ratio.
  * @protected
  * @struct
  */
-ol.render.canvas.Replay = function() {
+ol.render.canvas.Replay = function(pixelRatio) {
+
+  /**
+   * @protected
+   * @type {number}
+   */
+  this.pixelRatio = pixelRatio;
 
   /**
    * @private
@@ -430,12 +437,13 @@ ol.render.canvas.Replay.prototype.setTextStyle = goog.abstractMethod;
 /**
  * @constructor
  * @extends {ol.render.canvas.Replay}
+ * @param {number} pixelRatio Pixel ratio.
  * @protected
  * @struct
  */
-ol.render.canvas.ImageReplay = function() {
+ol.render.canvas.ImageReplay = function(pixelRatio) {
 
-  goog.base(this);
+  goog.base(this, pixelRatio);
 
   /**
    * @private
@@ -588,12 +596,13 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
 /**
  * @constructor
  * @extends {ol.render.canvas.Replay}
+ * @param {number} pixelRatio Pixel ratio.
  * @protected
  * @struct
  */
-ol.render.canvas.LineStringReplay = function() {
+ol.render.canvas.LineStringReplay = function(pixelRatio) {
 
-  goog.base(this);
+  goog.base(this, pixelRatio);
 
   /**
    * @private
@@ -790,12 +799,13 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
 /**
  * @constructor
  * @extends {ol.render.canvas.Replay}
+ * @param {number} pixelRatio Pixel ratio.
  * @protected
  * @struct
  */
-ol.render.canvas.PolygonReplay = function() {
+ol.render.canvas.PolygonReplay = function(pixelRatio) {
 
-  goog.base(this);
+  goog.base(this, pixelRatio);
 
   /**
    * @private
@@ -1255,7 +1265,7 @@ ol.render.canvas.ReplayGroup.prototype.getReplay =
   if (!goog.isDef(replay)) {
     var constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
     goog.asserts.assert(goog.isDef(constructor));
-    replay = new constructor();
+    replay = new constructor(this.pixelRatio_);
     replayes[replayType] = replay;
   }
   return replay;
@@ -1273,7 +1283,8 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
 /**
  * @const
  * @private
- * @type {Object.<ol.render.ReplayType, function(new: ol.render.canvas.Replay)>}
+ * @type {Object.<ol.render.ReplayType,
+ *                function(new: ol.render.canvas.Replay, number)>}
  */
 ol.render.canvas.BATCH_CONSTRUCTORS_ = {
   'Image': ol.render.canvas.ImageReplay,
