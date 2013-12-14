@@ -172,6 +172,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   var vectorSource = vectorLayer.getVectorSource();
   var frameStateExtent = frameState.extent;
   var frameStateResolution = frameState.view2DState.resolution;
+  var pixelRatio = frameState.devicePixelRatio;
 
   if (!this.dirty_ &&
       this.renderedResolution_ == frameStateResolution &&
@@ -198,7 +199,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   if (!goog.isDef(styleFunction)) {
     styleFunction = ol.layer.Vector.defaultStyleFunction;
   }
-  var replayGroup = new ol.render.canvas.ReplayGroup();
+  var replayGroup = new ol.render.canvas.ReplayGroup(pixelRatio);
   vectorSource.forEachFeatureInExtent(extent,
       /**
        * @param {ol.Feature} feature Feature.

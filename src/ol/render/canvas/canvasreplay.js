@@ -1052,9 +1052,16 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
 /**
  * @constructor
  * @implements {ol.render.IReplayGroup}
+ * @param {number} pixelRatio Pixel ratio.
  * @struct
  */
-ol.render.canvas.ReplayGroup = function() {
+ol.render.canvas.ReplayGroup = function(pixelRatio) {
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.pixelRatio_ = pixelRatio;
 
   /**
    * @private
