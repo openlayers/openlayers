@@ -237,8 +237,9 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature =
   if (!goog.isDefAndNotNull(styles)) {
     return false;
   }
-  // simplify to a tolerance of half a CSS pixel
-  var squaredTolerance = resolution * resolution / 4;
+  // simplify to a tolerance of half a device pixel
+  var squaredTolerance =
+      resolution * resolution / (4 * pixelRatio * pixelRatio);
   var i, ii, style, imageStyle, imageState;
   for (i = 0, ii = styles.length; i < ii; ++i) {
     style = styles[i];
