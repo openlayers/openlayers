@@ -392,8 +392,8 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
         strokeStyle.lineDash : ol.render.canvas.defaultLineDash;
     state.lineJoin = goog.isDef(strokeStyle.lineJoin) ?
         strokeStyle.lineJoin : ol.render.canvas.defaultLineJoin;
-    state.lineWidth = goog.isDef(strokeStyle.width) ?
-        strokeStyle.width : ol.render.canvas.defaultLineWidth;
+    state.lineWidth = this.pixelRatio_ * (goog.isDef(strokeStyle.width) ?
+        strokeStyle.width : ol.render.canvas.defaultLineWidth);
     state.miterLimit = goog.isDef(strokeStyle.miterLimit) ?
         strokeStyle.miterLimit : ol.render.canvas.defaultMiterLimit;
   } else {
