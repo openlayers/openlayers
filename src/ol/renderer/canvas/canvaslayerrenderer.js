@@ -85,8 +85,8 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ =
   if (layer.hasListener(type)) {
     var transform = goog.isDef(opt_transform) ?
         opt_transform : this.getTransform(frameState);
-    var render = new ol.render.canvas.Immediate(context, frameState.extent,
-        transform);
+    var render = new ol.render.canvas.Immediate(
+        context, frameState.devicePixelRatio, frameState.extent, transform);
     var composeEvent = new ol.render.Event(type, layer, render, frameState,
         context, null);
     layer.dispatchEvent(composeEvent);
