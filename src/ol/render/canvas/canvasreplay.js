@@ -788,8 +788,8 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
       strokeStyle.lineDash : ol.render.canvas.defaultLineDash;
   this.state_.lineJoin = goog.isDef(strokeStyle.lineJoin) ?
       strokeStyle.lineJoin : ol.render.canvas.defaultLineJoin;
-  this.state_.lineWidth = goog.isDef(strokeStyle.width) ?
-      strokeStyle.width : ol.render.canvas.defaultLineWidth;
+  this.state_.lineWidth = this.pixelRatio * (goog.isDef(strokeStyle.width) ?
+      strokeStyle.width : ol.render.canvas.defaultLineWidth);
   this.state_.miterLimit = goog.isDef(strokeStyle.miterLimit) ?
       strokeStyle.miterLimit : ol.render.canvas.defaultMiterLimit;
 };
@@ -1000,8 +1000,8 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
         strokeStyle.lineDash : ol.render.canvas.defaultLineDash;
     state.lineJoin = goog.isDef(strokeStyle.lineJoin) ?
         strokeStyle.lineJoin : ol.render.canvas.defaultLineJoin;
-    state.lineWidth = goog.isDef(strokeStyle.width) ?
-        strokeStyle.width : ol.render.canvas.defaultLineWidth;
+    state.lineWidth = this.pixelRatio * (goog.isDef(strokeStyle.width) ?
+        strokeStyle.width : ol.render.canvas.defaultLineWidth);
     state.miterLimit = goog.isDef(strokeStyle.miterLimit) ?
         strokeStyle.miterLimit : ol.render.canvas.defaultMiterLimit;
   } else {
