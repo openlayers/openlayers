@@ -95,19 +95,16 @@ ol.renderer.Map.prototype.forEachFeatureAtPixel =
     function(pixel, callback, opt_obj, opt_layerFunction, opt_obj2) {
   var layerFunction = goog.isDef(opt_layerFunction) ?
       opt_layerFunction : goog.functions.TRUE;
-  var layers = this.map_.getLayers();
-  if (goog.isDef(layers)) {
-    var layersArray = layers.getArray();
-    var i;
-    for (i = layersArray.length - 1; i >= 0; --i) {
-      var layer = layersArray[i];
-      if (layer.getVisible() && layerFunction.call(opt_obj2, layer)) {
-        var layerRenderer = this.getLayerRenderer(layer);
-        var result =
-            layerRenderer.forEachFeatureAtPixel(pixel, callback, opt_obj);
-        if (result) {
-          return result;
-        }
+  var layersArray = this.map_.getLayerGroup().getLayersArray();
+  var i;
+  for (i = layersArray.length - 1; i >= 0; --i) {
+    var layer = layersArray[i];
+    if (layer.getVisible() && layerFunction.call(opt_obj2, layer)) {
+      var layerRenderer = this.getLayerRenderer(layer);
+      var result =
+          layerRenderer.forEachFeatureAtPixel(pixel, callback, opt_obj);
+      if (result) {
+        return result;
       }
     }
   }
