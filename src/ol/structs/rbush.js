@@ -523,6 +523,15 @@ ol.structs.RBush.prototype.getAllInExtent = function(extent) {
 
 
 /**
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {ol.Extent} Extent.
+ */
+ol.structs.RBush.prototype.getExtent = function(opt_extent) {
+  return ol.extent.returnOrUpdate(this.root_.extent, opt_extent);
+};
+
+
+/**
  * @param {T} value Value.
  * @private
  * @return {string} Key.
