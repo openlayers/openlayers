@@ -261,6 +261,12 @@
  */
 
 /**
+ * @typedef {Object} olx.format.KMLOptions
+ * @property {boolean|undefined} extractAttributes Extract attributes.
+ * @property {boolean|undefined} extractStyles Extract styles.
+ */
+
+/**
  * @typedef {Object} olx.interaction.DoubleClickZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {number|undefined} delta The zoom delta applied on each double
