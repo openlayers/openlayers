@@ -213,6 +213,14 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate =
 
 
 /**
+ * @return {ol.Extent} Extent.
+ */
+ol.source.Vector.prototype.getExtent = function() {
+  return this.rBush_.getExtent();
+};
+
+
+/**
  * @param {goog.events.Event} event Event.
  * @private
  */
