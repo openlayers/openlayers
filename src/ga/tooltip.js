@@ -125,7 +125,7 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
   var coordinate = mapBrowserEvent.getCoordinate();
   this.overlay_.setPosition(coordinate);
   var size = this.map_.getSize();
-  var extent = this.map_.getView().calculateExtent(size);
+  var extent = this.map_.getView().getView2D().calculateExtent(size);
   var jsonp = new goog.net.Jsonp(
     new goog.Uri('//api3.geo.admin.ch/rest/services/api/MapServer/identify'),
       'callback');
@@ -160,7 +160,7 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
     this.map_.removeLayer(this.vector_);
   }
   this.source_ = new ol.source.Vector({
-    projection: this.map_.getView().getProjection(),
+    projection: this.map_.getView().getView2D().getProjection(),
     parser: new ol.parser.GeoJSON()
   });
   this.vector_ = new ol.layer.Vector({
