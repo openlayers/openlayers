@@ -501,6 +501,14 @@
  */
 
 /**
+ * @typedef {Object} olx.source.IGCOptions
+ * @property {ol.format.IGCZ|undefined} altitudeMode Altitude mode.
+ *     Possible values are `barometric`, `gps`, and `none`. Default is `none`.
+ * @property {string|undefined} text Text.
+ * @property {string|undefined} url URL.
+ */
+
+/**
  * @typedef {Object} olx.source.MapGuideOptions
  * @property {string|undefined} url The mapagent url.
  * @property {number|undefined} displayDpi The display resolution. Default is `96`.
