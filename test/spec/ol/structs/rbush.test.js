@@ -32,13 +32,18 @@ describe('ol.structs.RBush', function() {
 
     var objs;
     beforeEach(function() {
-      objs = [{}, {}, {}, {}, {}, {}];
+      objs = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
       rBush.insert([0, 0, 1, 1], objs[0]);
       rBush.insert([1, 1, 4, 4], objs[1]);
       rBush.insert([2, 2, 3, 3], objs[2]);
       rBush.insert([-5, -5, -4, -4], objs[3]);
       rBush.insert([-4, -4, -1, -1], objs[4]);
       rBush.insert([-3, -3, -2, -2], objs[5]);
+      rBush.insert([-3, -3, -2, -2], objs[6]);
+      rBush.insert([-3, -3, -2, -2], objs[7]);
+      rBush.insert([-3, -3, -2, -2], objs[8]);
+      rBush.insert([-3, -3, -2, -2], objs[9]);
+      rBush.insert([-3, -3, -2, -2], objs[10]);
     });
 
     describe('#getAllInExtent', function() {
@@ -290,6 +295,20 @@ describe('ol.structs.RBush', function() {
 
       it('returns false', function() {
         expect(rBush.isEmpty()).to.be(false);
+      });
+
+    });
+
+    describe('#remove', function() {
+
+      it('can remove all 2000 objects', function() {
+        var objs = rBush.getAll();
+        var i, value;
+        for (i = objs.length - 1; i >= 0; --i) {
+          value = objs[i];
+          rBush.remove(value);
+        }
+        expect(rBush.isEmpty()).to.be(true);
       });
 
     });

@@ -620,8 +620,9 @@ ol.structs.RBush.prototype.remove_ = function(extent, value) {
   var path = [node];
   /** @type {Array.<number>} */
   var indexes = [0];
-  var child, children, i, ii;
+  var childrenDone, child, children, i, ii;
   while (path.length > 0) {
+    childrenDone = false;
     goog.asserts.assert(node.height > 0);
     if (node.height == 1) {
       children = node.children;
@@ -633,8 +634,7 @@ ol.structs.RBush.prototype.remove_ = function(extent, value) {
           return;
         }
       }
-      node = path.pop();
-      index = indexes.pop();
+      childrenDone = true;
     } else if (index < node.children.length) {
       child = node.children[index];
       if (ol.extent.containsExtent(child.extent, extent)) {
@@ -646,8 +646,16 @@ ol.structs.RBush.prototype.remove_ = function(extent, value) {
         ++index;
       }
     } else {
-      node = path.pop();
-      index = indexes.pop();
+      childrenDone = true;
+    }
+    if (childrenDone) {
+      var lastPathIndex = path.length - 1;
+      node = path[lastPathIndex];
+      index = ++indexes[lastPathIndex];
+      if (index > node.children.length) {
+        path.pop();
+        indexes.pop();
+      }
     }
   }
 };
