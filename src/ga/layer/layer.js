@@ -17,7 +17,7 @@ goog.require('ol.tilegrid.WMTS');
  * may find on [Which layers are available](http://api3.geo.admin.ch/api/faq/index.html#which-layers-are-available)
  * @example
  * 
- *  var lyr ga.layer.create('ch.swisstopo.pixelkarte-farbe')
+ *  var lyr = ga.layer.create('ch.swisstopo.pixelkarte-farbe')
  *  
  * @method
  * @param {string} layer Geoadmin layer id.
@@ -111,6 +111,12 @@ ga.layer.layerConfig = getConfig() || {};
 
 ga.layer.attributions = {};
 
+/**
+ * Get the layer attribution (Datenherr)
+  * @method
+ * @param {string} id of the Datenherr, i.e. 'ch.swisstopo'
+ * @return {ol.Attribution}
+ */
 ga.layer.getAttribution = function(text) {
   var key = text;
   if (key in ga.layer.attributions) {
@@ -132,6 +138,7 @@ ga.layer.RESOLUTIONS = [
 ];
 
 /**
+ * @method
  * @param {string} layer layer id.
  * @param {Object} options source options.
  * @return {ol.source.WMTS}
@@ -163,6 +170,7 @@ ga.source.wmts = function(layer, options) {
 
 
 /**
+ * @method
  * @param {string} layer layer id.
  * @param {Object} options source options.
  * @return {ol.source.TileWMS}
@@ -183,6 +191,7 @@ ga.source.wms = function(layer, options) {
 };
 
 /**
+ * @method
  * @param {string} layer layer id.
  * @param {Object} options source options.
  * @return {ol.source.ImageWMS}
