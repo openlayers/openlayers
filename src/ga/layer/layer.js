@@ -13,9 +13,15 @@ goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
 
 /**
- * Create a Geoadmin layer.
+ * Create an GeoAdmin layer using the geoadmin bod-id you
+ * may find on [Which layers are available](http://api3.geo.admin.ch/api/faq/index.html#which-layers-are-available)
+ * @example
+ * 
+ *  var lyr ga.layer.create('ch.swisstopo.pixelkarte-farbe')
+ *  
+ * @method
  * @param {string} layer Geoadmin layer id.
-* @return {ol.layer.Group|ol.layer.Image|ol.layer.Tile|undefined}
+ * @return {ol.layer.Group|ol.layer.Image|ol.layer.Tile|undefined}
  */
 ga.layer.create = function(layer) {
   if (layer in ga.layer.layerConfig) {
