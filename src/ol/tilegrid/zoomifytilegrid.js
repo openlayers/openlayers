@@ -10,10 +10,11 @@ goog.require('ol.tilegrid.TileGrid');
 /**
  * @constructor
  * @extends {ol.tilegrid.TileGrid}
- * @param {olx.tilegrid.ZoomifyOptions} options Zoomify options.
+ * @param {olx.tilegrid.ZoomifyOptions=} opt_options Options.
  * @todo stability experimental
  */
-ol.tilegrid.Zoomify = function(options) {
+ol.tilegrid.Zoomify = function(opt_options) {
+  var options = goog.isDef(opt_options) ? opt_options : options;
   goog.base(this, {
     origin: [0, 0],
     resolutions: options.resolutions
