@@ -68,16 +68,6 @@ ol.format.Format.prototype.readProjection = goog.abstractMethod;
 
 
 /**
- * @param {Document|Node|Object|string} source Source.
- * @return {function(ol.Feature, number): Array.<ol.style.Style>} Style
- *     function.
- */
-ol.format.Format.prototype.readStyleFunction = function(source) {
-  return goog.functions.NULL;
-};
-
-
-/**
  * @param {ol.Feature} feature Feature.
  * @return {Node|Object|string} Result.
  */

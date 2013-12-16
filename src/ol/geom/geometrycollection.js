@@ -174,6 +174,14 @@ ol.geom.GeometryCollection.prototype.getType = function() {
 
 
 /**
+ * @return {boolean} Is empty.
+ */
+ol.geom.GeometryCollection.prototype.isEmpty = function() {
+  return goog.array.isEmpty(this.geometries_);
+};
+
+
+/**
  * @param {Array.<ol.geom.Geometry>} geometries Geometries.
  */
 ol.geom.GeometryCollection.prototype.setGeometries = function(geometries) {

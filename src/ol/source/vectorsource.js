@@ -6,10 +6,12 @@ goog.provide('ol.source.Vector');
 goog.provide('ol.source.VectorEvent');
 goog.provide('ol.source.VectorEventType');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
+goog.require('goog.object');
 goog.require('ol.source.Source');
 goog.require('ol.structs.RBush');
 
@@ -50,6 +52,12 @@ ol.source.Vector = function(opt_options) {
 
   /**
    * @private
+   * @type {Object.<string, ol.Feature>}
+   */
+  this.nullGeometryFeatures_ = {};
+
+  /**
+   * @private
    * @type {Object.<string, goog.events.Key>}
    */
   this.featureChangeKeys_ = {};
@@ -74,8 +82,13 @@ ol.source.Vector.prototype.addFeature = function(feature) {
   goog.asserts.assert(!(featureKey in this.featureChangeKeys_));
   this.featureChangeKeys_[featureKey] = goog.events.listen(feature,
       goog.events.EventType.CHANGE, this.handleFeatureChange_, false, this);
-  var extent = feature.getGeometry().getExtent();
-  this.rBush_.insert(extent, feature);
+  var geometry = feature.getGeometry();
+  if (goog.isNull(geometry)) {
+    this.nullGeometryFeatures_[goog.getUid(feature).toString()] = feature;
+  } else {
+    var extent = geometry.getExtent();
+    this.rBush_.insert(extent, feature);
+  }
   this.dispatchEvent(
       new ol.source.VectorEvent(ol.source.VectorEventType.ADDFEATURE, feature));
   this.dispatchChangeEvent();
@@ -140,7 +153,12 @@ ol.source.Vector.prototype.forEachFeatureInExtent =
  * @return {Array.<ol.Feature>} Features.
  */
 ol.source.Vector.prototype.getAllFeatures = function() {
-  return this.rBush_.getAll();
+  var features = this.rBush_.getAll();
+  if (!goog.object.isEmpty(this.nullGeometryFeatures_)) {
+    goog.array.extend(
+        features, goog.object.getValues(this.nullGeometryFeatures_));
+  }
+  return features;
 };
 
 
@@ -213,6 +231,14 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate =
 
 
 /**
+ * @return {ol.Extent} Extent.
+ */
+ol.source.Vector.prototype.getExtent = function() {
+  return this.rBush_.getExtent();
+};
+
+
+/**
  * @param {goog.events.Event} event Event.
  * @private
  */
@@ -227,7 +253,8 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
  * @return {boolean} Is empty.
  */
 ol.source.Vector.prototype.isEmpty = function() {
-  return this.rBush_.isEmpty();
+  return this.rBush_.isEmpty() &&
+      goog.object.isEmpty(this.nullGeometryFeatures_);
 };
 
 
@@ -235,7 +262,12 @@ ol.source.Vector.prototype.isEmpty = function() {
  * @param {ol.Feature} feature Feature.
  */
 ol.source.Vector.prototype.removeFeature = function(feature) {
-  this.rBush_.remove(feature);
+  var featureKey = goog.getUid(feature).toString();
+  if (featureKey in this.nullGeometryFeatures_) {
+    delete this.nullGeometryFeatures_[featureKey];
+  } else {
+    this.rBush_.remove(feature);
+  }
   this.removeFeatureInternal_(feature);
   this.dispatchChangeEvent();
 };

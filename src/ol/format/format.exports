@@ -1,2 +1,1 @@
 @exportProperty ol.format.Format.prototype.readProjection
-@exportProperty ol.format.Format.prototype.readStyleFunction
