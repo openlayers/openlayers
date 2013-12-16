@@ -98,20 +98,20 @@ ol.source.MapGuide.prototype.getImage =
 /**
  * @param {ol.Extent} extent The map extents.
  * @param {ol.Size} size the viewport size.
+ * @param {number} metersPerUnit The meters-per-unit value.
+ * @param {number} dpi The display resolution.
  * @return {number} The computed map scale.
  */
-ol.source.MapGuide.prototype.getScale = function(extent, size) {
+ol.source.MapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
   var mcsW = ol.extent.getWidth(extent);
   var mcsH = ol.extent.getHeight(extent);
   var devW = size[0];
   var devH = size[1];
-  var dpi = this.displayDpi_;
-  var mpu = this.metersPerUnit_;
   var mpp = 0.0254 / dpi;
   if (devH * mcsW > devW * mcsH) {
-    return mcsW * mpu / (devW * mpp); // width limited
+    return mcsW * metersPerUnit / (devW * mpp); // width limited
   } else {
-    return mcsH * mpu / (devH * mpp); // height limited
+    return mcsH * metersPerUnit / (devH * mpp); // height limited
   }
 };
 
@@ -126,7 +126,8 @@ ol.source.MapGuide.prototype.getScale = function(extent, size) {
  */
 ol.source.MapGuide.prototype.getUrl =
     function(baseUrl, params, extent, size, projection) {
-  var scale = this.getScale(extent, size);
+  var scale = ol.source.MapGuide.getScale(extent, size,
+      this.metersPerUnit_, this.displayDpi_);
   var center = ol.extent.getCenter(extent);
   var baseParams = {
     'OPERATION': this.useOverlay_ ? 'GETDYNAMICMAPOVERLAYIMAGE' : 'GETMAPIMAGE',
