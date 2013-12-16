@@ -22,6 +22,7 @@ goog.require('ol.tilegrid.WMTS');
  * @method
  * @param {string} layer Geoadmin layer id.
  * @return {ol.layer.Group|ol.layer.Image|ol.layer.Tile|undefined}
+ * @todo stability experimental
  */
 ga.layer.create = function(layer) {
   if (layer in ga.layer.layerConfig) {
@@ -109,11 +110,14 @@ ga.layer.create = function(layer) {
  */
 ga.layer.layerConfig = getConfig() || {};
 
+/**
+ * @type {Object.<string, Object>}
+ */
 ga.layer.attributions = {};
 
 /**
- * Get the layer attribution (Datenherr)
-  * @method
+ * Get the attribution 
+ * @method
  * @param {string} id of the Datenherr, i.e. 'ch.swisstopo'
  * @return {ol.Attribution}
  */
@@ -138,6 +142,8 @@ ga.layer.RESOLUTIONS = [
 ];
 
 /**
+ * Create a WMTS source given a bod layer id
+ * 
  * @method
  * @param {string} layer layer id.
  * @param {Object} options source options.
@@ -170,6 +176,8 @@ ga.source.wmts = function(layer, options) {
 
 
 /**
+ * Create a tiled WMS source given a bod layer id
+ * 
  * @method
  * @param {string} layer layer id.
  * @param {Object} options source options.
@@ -191,6 +199,8 @@ ga.source.wms = function(layer, options) {
 };
 
 /**
+ * Create a single tile WMS source given a bod layer id
+ * 
  * @method
  * @param {string} layer layer id.
  * @param {Object} options source options.
