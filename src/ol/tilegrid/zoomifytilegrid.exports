@@ -1,1 +1,1 @@
-@exportClass ol.tilegrid.Zoomify ol.tilegrid.ZoomifyOptions
+@exportSymbol ol.tilegrid.Zoomify

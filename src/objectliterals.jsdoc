@@ -967,7 +967,7 @@
  */
 
 /**
- * @typedef {Object} ol.tilegrid.ZoomifyOptions
+ * @typedef {Object} olx.tilegrid.ZoomifyOptions
  * @property {!Array.<number>} resolutions Resolutions.
  * @todo stability experimental
  */
