@@ -35,6 +35,13 @@ ol.source.MapGuide = function(options) {
    * @private
    * @type {number}
    */
+  this.displayDpi_ = goog.isDef(options.displayDpi) ?
+      options.displayDpi : 96;
+
+  /**
+   * @private
+   * @type {number}
+   */
   this.metersPerUnit_ = goog.isDef(options.metersPerUnit) ?
       options.metersPerUnit : 1;
 
@@ -98,7 +105,7 @@ ol.source.MapGuide.prototype.getScale = function(extent, size) {
   var mcsH = ol.extent.getHeight(extent);
   var devW = size[0];
   var devH = size[1];
-  var dpi = 96;
+  var dpi = this.displayDpi_;
   var mpu = this.metersPerUnit_;
   var mpp = 0.0254 / dpi;
   if (devH * mcsW > devW * mcsH) {
@@ -127,7 +134,7 @@ ol.source.MapGuide.prototype.getUrl =
     'LOCALE': 'en',
     'CLIENTAGENT': 'ol.source.MapGuide source',
     'CLIP': '1',
-    'SETDISPLAYDPI': 96,
+    'SETDISPLAYDPI': this.displayDpi_,
     'SETDISPLAYWIDTH': Math.round(size[0]),
     'SETDISPLAYHEIGHT': Math.round(size[1]),
     'SETVIEWSCALE': scale,
