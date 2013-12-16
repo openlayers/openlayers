@@ -13,9 +13,16 @@ goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
 
 /**
- * Create a Geoadmin layer.
+ * Create an GeoAdmin layer using the geoadmin bod-id you
+ * may find on [Which layers are available](http://api3.geo.admin.ch/api/faq/index.html#which-layers-are-available)
+ * @example
+ * 
+ *  var lyr = ga.layer.create('ch.swisstopo.pixelkarte-farbe')
+ *  
+ * @method
  * @param {string} layer Geoadmin layer id.
-* @return {ol.layer.Group|ol.layer.Image|ol.layer.Tile|undefined}
+ * @return {ol.layer.Group|ol.layer.Image|ol.layer.Tile|undefined}
+ * @todo stability experimental
  */
 ga.layer.create = function(layer) {
   if (layer in ga.layer.layerConfig) {
@@ -103,8 +110,17 @@ ga.layer.create = function(layer) {
  */
 ga.layer.layerConfig = getConfig() || {};
 
+/**
+ * @type {Object.<string, Object>}
+ */
 ga.layer.attributions = {};
 
+/**
+ * Get the attribution 
+ * @method
+ * @param {string} id of the Datenherr, i.e. 'ch.swisstopo'
+ * @return {ol.Attribution}
+ */
 ga.layer.getAttribution = function(text) {
   var key = text;
   if (key in ga.layer.attributions) {
@@ -126,6 +142,9 @@ ga.layer.RESOLUTIONS = [
 ];
 
 /**
+ * Create a WMTS source given a bod layer id
+ * 
+ * @method
  * @param {string} layer layer id.
  * @param {Object} options source options.
  * @return {ol.source.WMTS}
@@ -157,6 +176,9 @@ ga.source.wmts = function(layer, options) {
 
 
 /**
+ * Create a tiled WMS source given a bod layer id
+ * 
+ * @method
  * @param {string} layer layer id.
  * @param {Object} options source options.
  * @return {ol.source.TileWMS}
@@ -177,6 +199,9 @@ ga.source.wms = function(layer, options) {
 };
 
 /**
+ * Create a single tile WMS source given a bod layer id
+ * 
+ * @method
  * @param {string} layer layer id.
  * @param {Object} options source options.
  * @return {ol.source.ImageWMS}
