@@ -497,6 +497,7 @@
 /**
  * @typedef {Object} olx.source.MapGuideOptions
  * @property {string|undefined} url The mapagent url.
+ * @property {number|undefined} displayDpi The display resolution. Default is `96`.
  * @property {number|undefined} metersPerUnit The meters-per-unit value. Default is `1`.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {boolean|undefined} useOverlay If `true`, will use
@@ -528,6 +529,8 @@
 /**
  * @typedef {Object} olx.source.OSMOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {null|string|undefined} crossOrigin crossOrigin setting for image
+ *     requests. Default is `anonymous`.
  * @property {number|undefined} maxZoom Max zoom.
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.

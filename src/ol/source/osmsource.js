@@ -22,12 +22,15 @@ ol.source.OSM = function(opt_options) {
     attributions = ol.source.OSM.ATTRIBUTIONS;
   }
 
+  var crossOrigin = goog.isDef(options.crossOrigin) ?
+      options.crossOrigin : 'anonymous';
+
   var url = goog.isDef(options.url) ?
       options.url : 'http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
   goog.base(this, {
     attributions: attributions,
-    crossOrigin: 'anonymous',
+    crossOrigin: crossOrigin,
     opaque: true,
     maxZoom: options.maxZoom,
     tileLoadFunction: options.tileLoadFunction,
