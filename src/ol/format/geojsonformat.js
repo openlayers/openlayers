@@ -42,6 +42,13 @@ goog.inherits(ol.format.GeoJSON, ol.format.JSON);
 
 
 /**
+ * @const {Array.<string>}
+ * @private
+ */
+ol.format.GeoJSON.EXTENSIONS_ = ['.geojson'];
+
+
+/**
  * @param {GeoJSONObject} object Object.
  * @private
  * @return {ol.geom.Geometry} Geometry.
@@ -275,6 +282,14 @@ ol.format.GeoJSON.GEOMETRY_WRITERS_ = {
   'MultiLineString': ol.format.GeoJSON.writeMultiLineStringGeometry_,
   'MultiPolygon': ol.format.GeoJSON.writeMultiPolygonGeometry_,
   'GeometryCollection': ol.format.GeoJSON.writeGeometryCollectionGeometry_
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.GeoJSON.prototype.getExtensions = function() {
+  return ol.format.GeoJSON.EXTENSIONS_;
 };
 
 

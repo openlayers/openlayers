@@ -103,6 +103,13 @@ goog.inherits(ol.format.KML, ol.format.XML);
  * @const {Array.<string>}
  * @private
  */
+ol.format.KML.EXTENSIONS_ = ['.kml'];
+
+
+/**
+ * @const {Array.<string>}
+ * @private
+ */
 ol.format.KML.NAMESPACE_URIS_ = [
   null,
   'http://earth.google.com/kml/2.0',
@@ -149,7 +156,8 @@ ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_ = [32, 32];
 ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_ =
     // FIXME why do we get a CORS error when we use a data: URL?
     //'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB8AAAAfCAYAAAAfrhY5AAAABmJLR0QA/wD/AP+gvaeTAAADU0lEQVRIicXXX2jVdRjH8de2o+yfytzaGeTywowZCdaMQanEDNGilhdaiCWLBCXbhUJeCAu68KK6MRQLFOyP0wsFsYbNBsbcGsJxZyUhGCOCSQlbThmz7XQ8XZzfqW2es3M2bX3ge/M7z/O8n9/3eX7f73OYuUKbqEfoPmLMTLU88jvfPk31bLPzvuadGNGv2IW82YQvHOBsgsgAZ7FwJkHyJz8oZPE8KtL9ltJBVi8ItnsB1Yd4dirGPCoKWZwVHuLOT3waYf8+VqJ4kknJBl4OEQ/s4+tpSGNXvI+VEfZf4fCfjKRhTdQwg7/y4zM0LOf5N+m9yPldfDfM4BaWlrNshLGUTzmPb+GxFq6UUn6Q51azbhErQuR3cQZ/TLE7/2oHT45yOUEkQSRGdID2xuSnVZFpNVI/QHuMaMp3lMvbWZETOFDJLxxNBRijp5UmFGbxK2ylaYyelG8fR91bkqn1Oa/FiE4DfE8CMaKf8eq0wFBCeID2AFyUzibBKxnci1ppGqC9lMppw1HwVrLGacEBPDKFf1HgXzBdcPHbPCVL1lngUBnEyVrzvPksPMXWfk7e5hLC9wkP3+ZSPydPsXV+8iSccBTPrWfJBfYO0RYPOnWE7gcBH6E7QSROzxBtF9hbzxLMzdtE/ce8W07VHP5Ked0hVpxsqBsB6AW8nwV2F815fDMOfqaIOSmDGKFBfmviQygIU9nCtuucGKP3v3jzMXqvc6KFbeFkL01oxDyUfcSGqxy4RdeDgN+i6yoHPmA9yuRw/c56t0/W//ade4iqm3R00pwpgQQvZQJ30nyTjsospUur47wRD87nIIGSHF1LOmmOEY0RPc7rmQwzTSulq1ibz90Q8To2drInhwRKOtlTx8YQ8RDxVaxFac7wHSyt4onxz2pY00id5DZWpVnhRupqWDPer4rl23k0S9L/qOAi78XpGU3ex0eOsTm4nQp2UjvMD6Pj1jC9O6lFQSmVx9jcx5HR4GTrSJYte+NVEu7jy3PsXkeNNDPcNT5JDQsJItc4nMau+EWWnWP3z3yRU+PlOL02pEalGNFDmbueKabXmarsBqcTRG5wWvLkmrYyvl0WDXVzPkboe9owNMM4M9MSqvs5u4iHZxUc6L7/pf4N5o0a3f/JEEMAAAAASUVORK5CYII=';
-    'https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
+    //'https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
+    'ylw-pushpin.png';
 
 
 /**
@@ -1024,6 +1032,14 @@ ol.format.KML.STYLE_PARSERS_ = ol.xml.makeParserNS(
       'LineStyle': ol.format.KML.LineStyleParser_,
       'PolyStyle': ol.format.KML.PolyStyleParser_
     });
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.KML.prototype.getExtensions = function() {
+  return ol.format.KML.EXTENSIONS_;
+};
 
 
 /**
