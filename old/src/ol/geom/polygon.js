@@ -6,7 +6,6 @@ goog.require('goog.events.EventType');
 goog.require('ol.CoordinateArray');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
-goog.require('ol.geom.GeometryEvent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LinearRing');
 
@@ -108,19 +107,11 @@ ol.geom.Polygon.prototype.getRings = function() {
 
 /**
  * Listener for ring change events.
- * @param {ol.geom.GeometryEvent} evt Geometry event.
+ * @param {goog.events.Event} evt Change event.
  * @private
  */
 ol.geom.Polygon.prototype.handleRingChange_ = function(evt) {
-  var ring = evt.target;
-  var oldExtent = null;
-  if (ring === this.rings_[0]) {
-    oldExtent = evt.oldExtent;
-  } else {
-    oldExtent = this.getBounds();
-  }
-  this.dispatchEvent(new ol.geom.GeometryEvent(goog.events.EventType.CHANGE,
-      this, oldExtent));
+  this.dispatchChangeEvent();
 };
 
 

@@ -339,8 +339,9 @@ ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ =
     this.vertexFeature_ = vertexFeature;
     this.sketchLayer_.getVectorSource().addFeatures([vertexFeature]);
   } else {
-    var geometry = vertexFeature.getGeometry();
-    geometry.setCoordinates(coordinates);
+    var point = vertexFeature.getGeometry();
+    goog.asserts.assertInstanceof(point, ol.geom.Point);
+    point.setCoordinates(coordinates);
   }
   if (this.sketchLayer_.getStyle() !== style) {
     this.sketchLayer_.setStyle(style);
@@ -505,6 +506,7 @@ ol.interaction.Modify.prototype.insertVertex_ =
   var segment = segmentData.segment;
   var feature = segmentData.feature;
   var geometry = segmentData.geometry;
+  goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
   var index = segmentData.index;
   var coordinates = geometry.getCoordinates();
   coordinates.splice(index + 1, 0, vertex);
