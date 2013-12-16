@@ -40,7 +40,25 @@ targets.add = MethodType(add, targets, TargetCollection)
 virtual('build', 'build/ga.css', 'build/src/internal/src/requireallga.js', 'build/ga.js',
         'build/ga-whitespace.js','build/layersconfig')
 
-        
+# We redifine 'apidoc'
+JSDOC = 'node_modules/.bin/jsdoc'
+
+virtual('apidoc', 'node_modules/.bin/jsdoc' ,'build/jsdoc-%(BRANCH)s-timestamp' % vars(variables))
+
+@target('node_modules/.bin/jsdoc')
+def jsdoc_npm(t):
+    t.run('npm', 'install', 'jsdoc@<=3.2.2')
+    t.touch()
+
+@target('build/jsdoc-%(BRANCH)s-timestamp' % vars(variables), JSDOC,'host-resources',
+                'build/src/external/src/exports.js', 'build/src/external/src/types.js',
+                        SRC, SHADER_SRC, ifind('apidoc/template'))
+def jsdoc_BRANCH_timestamp(t):
+    t.run(JSDOC, '-c', 'apidoc/conf.json', 'src', 'apidoc/index.md',
+       '-d', 'build/hosted/%(BRANCH)s/apidoc')
+    t.touch()
+
+
 # Adding ga custom source directoy
 
 from build import SRC
