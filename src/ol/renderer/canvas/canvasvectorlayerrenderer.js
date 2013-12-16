@@ -172,6 +172,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   var vectorSource = vectorLayer.getVectorSource();
   var frameStateExtent = frameState.extent;
   var frameStateResolution = frameState.view2DState.resolution;
+  var pixelRatio = frameState.devicePixelRatio;
 
   if (!this.dirty_ &&
       this.renderedResolution_ == frameStateResolution &&
@@ -198,15 +199,15 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   if (!goog.isDef(styleFunction)) {
     styleFunction = ol.layer.Vector.defaultStyleFunction;
   }
-  var replayGroup = new ol.render.canvas.ReplayGroup();
+  var replayGroup = new ol.render.canvas.ReplayGroup(pixelRatio);
   vectorSource.forEachFeatureInExtent(extent,
       /**
        * @param {ol.Feature} feature Feature.
        */
       function(feature) {
         this.dirty_ = this.dirty_ ||
-            this.renderFeature(feature, frameStateResolution, styleFunction,
-                replayGroup);
+            this.renderFeature(feature, frameStateResolution, pixelRatio,
+                styleFunction, replayGroup);
       }, this);
   replayGroup.finish();
 
@@ -223,20 +224,22 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
 /**
  * @param {ol.Feature} feature Feature.
  * @param {number} resolution Resolution.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {ol.style.StyleFunction} styleFunction Style function.
  * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
 ol.renderer.canvas.VectorLayer.prototype.renderFeature =
-    function(feature, resolution, styleFunction, replayGroup) {
+    function(feature, resolution, pixelRatio, styleFunction, replayGroup) {
   var loading = false;
   var styles = styleFunction(feature, resolution);
   // FIXME if styles is null, should we use the default style?
   if (!goog.isDefAndNotNull(styles)) {
     return false;
   }
-  // simplify to a tolerance of half a CSS pixel
-  var squaredTolerance = resolution * resolution / 4;
+  // simplify to a tolerance of half a device pixel
+  var squaredTolerance =
+      resolution * resolution / (4 * pixelRatio * pixelRatio);
   var i, ii, style, imageStyle, imageState;
   for (i = 0, ii = styles.length; i < ii; ++i) {
     style = styles[i];

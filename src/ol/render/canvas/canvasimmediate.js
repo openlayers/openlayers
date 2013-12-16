@@ -17,17 +17,24 @@ goog.require('ol.style.Text');
  * @constructor
  * @implements {ol.render.IRender}
  * @param {CanvasRenderingContext2D} context Context.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Extent} extent Extent.
  * @param {goog.vec.Mat4.AnyType} transform Transform.
  * @struct
  */
-ol.render.canvas.Immediate = function(context, extent, transform) {
+ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform) {
 
   /**
    * @private
    * @type {CanvasRenderingContext2D}
    */
   this.context_ = context;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.pixelRatio_ = pixelRatio;
 
   /**
    * @private
@@ -385,8 +392,8 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
         strokeStyle.lineDash : ol.render.canvas.defaultLineDash;
     state.lineJoin = goog.isDef(strokeStyle.lineJoin) ?
         strokeStyle.lineJoin : ol.render.canvas.defaultLineJoin;
-    state.lineWidth = goog.isDef(strokeStyle.width) ?
-        strokeStyle.width : ol.render.canvas.defaultLineWidth;
+    state.lineWidth = this.pixelRatio_ * (goog.isDef(strokeStyle.width) ?
+        strokeStyle.width : ol.render.canvas.defaultLineWidth);
     state.miterLimit = goog.isDef(strokeStyle.miterLimit) ?
         strokeStyle.miterLimit : ol.render.canvas.defaultMiterLimit;
   } else {

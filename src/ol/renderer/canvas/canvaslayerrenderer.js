@@ -85,8 +85,8 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ =
   if (layer.hasListener(type)) {
     var transform = goog.isDef(opt_transform) ?
         opt_transform : this.getTransform(frameState);
-    var render = new ol.render.canvas.Immediate(context, frameState.extent,
-        transform);
+    var render = new ol.render.canvas.Immediate(
+        context, frameState.devicePixelRatio, frameState.extent, transform);
     var composeEvent = new ol.render.Event(type, layer, render, frameState,
         context, null);
     layer.dispatchEvent(composeEvent);
@@ -139,9 +139,12 @@ ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
  */
 ol.renderer.canvas.Layer.prototype.getTransform = function(frameState) {
   var view2DState = frameState.view2DState;
+  var devicePixelRatio = frameState.devicePixelRatio;
   return ol.vec.Mat4.makeTransform2D(this.transform_,
-      frameState.size[0] / 2, frameState.size[1] / 2,
-      1 / view2DState.resolution, -1 / view2DState.resolution,
+      devicePixelRatio * frameState.size[0] / 2,
+      devicePixelRatio * frameState.size[1] / 2,
+      devicePixelRatio / view2DState.resolution,
+      -devicePixelRatio / view2DState.resolution,
       -view2DState.rotation,
       -view2DState.center[0], -view2DState.center[1]);
 };
