@@ -95,7 +95,7 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
   if (!goog.isNull(this.image_)) {
     image = this.image_;
     var imageExtent = image.getExtent();
-    var imageResolution = image.getResolution();
+    var imageResolution = image.getResolution() / image.getPixelRatio();
     var devicePixelRatio = frameState.devicePixelRatio;
     ol.vec.Mat4.makeTransform2D(this.imageTransform_,
         devicePixelRatio * frameState.size[0] / 2,

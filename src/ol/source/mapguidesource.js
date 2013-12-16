@@ -89,7 +89,7 @@ ol.source.MapGuide.prototype.getImage =
   }
   var width = (extent[2] - extent[0]) / resolution;
   var height = (extent[3] - extent[1]) / resolution;
-  var size = [width, height];
+  var size = [width * pixelRatio, height * pixelRatio];
 
   this.image_ = this.createImage(
       extent, resolution, pixelRatio, size, projection);
