@@ -2,13 +2,19 @@ goog.require('ol.Map');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
-goog.require('ol.proj');
 goog.require('ol.source.BingMaps');
 
 
-var styles = ['Road', 'Aerial', 'AerialWithLabels'];
+var styles = [
+  'Road',
+  'Aerial',
+  'AerialWithLabels',
+  'collinsBart',
+  'ordnanceSurvey'
+];
 var layers = [];
-for (var i = 0; i < styles.length; ++i) {
+var i, ii;
+for (i = 0, ii = styles.length; i < ii; ++i) {
   layers.push(new ol.layer.Tile({
     visible: false,
     preload: Infinity,
@@ -23,14 +29,15 @@ var map = new ol.Map({
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: new ol.View2D({
-    center: ol.proj.transform([-123.1, 49.25], 'EPSG:4326', 'EPSG:3857'),
-    zoom: 8
+    center: [-6655.5402445057125, 6709968.258934638],
+    zoom: 13
   })
 });
 
 $('#layer-select').change(function() {
   var style = $(this).find(':selected').val();
-  for (var i = 0; i < layers.length; ++i) {
+  var i, ii;
+  for (i = 0, ii = layers.length; i < ii; ++i) {
     layers[i].setVisible(styles[i] == style);
   }
 });
