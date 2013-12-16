@@ -20,6 +20,8 @@ goog.require('ol.source.Tile');
  * @extends {goog.Disposable}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
  * @param {ol.layer.Layer} layer Layer.
+ * @suppress {checkStructDictInheritance}
+ * @struct
  */
 ol.renderer.Layer = function(mapRenderer, layer) {
 

@@ -18,6 +18,8 @@ goog.require('ol.renderer.Layer');
  * @extends {goog.Disposable}
  * @param {Element} container Container.
  * @param {ol.Map} map Map.
+ * @suppress {checkStructDictInheritance}
+ * @struct
  */
 ol.renderer.Map = function(container, map) {
 

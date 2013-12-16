@@ -39,6 +39,7 @@ goog.require('ol.MapBrowserEventHandler');
 goog.require('ol.MapEvent');
 goog.require('ol.MapEventType');
 goog.require('ol.Object');
+goog.require('ol.ObjectEvent');
 goog.require('ol.ObjectEventType');
 goog.require('ol.Pixel');
 goog.require('ol.PostRenderFunction');
@@ -208,9 +209,9 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {goog.events.Key}
+   * @type {Array.<goog.events.Key>}
    */
-  this.layerGroupPropertyListenerKey_ = null;
+  this.layerGroupPropertyListenerKeys_ = null;
 
   /**
    * @private
@@ -620,11 +621,16 @@ goog.exportProperty(
 
 /**
  * Get the collection of layers associated with this map.
- * @return {ol.Collection} Layers.
+ * @return {ol.Collection|undefined} Layers.
  * @todo stability experimental
  */
 ol.Map.prototype.getLayers = function() {
-  return this.getLayerGroup().getLayers();
+  var layerGroup = this.getLayerGroup();
+  if (goog.isDef(layerGroup)) {
+    return layerGroup.getLayers();
+  } else {
+    return undefined;
+  }
 };
 
 
@@ -660,7 +666,7 @@ goog.exportProperty(
 /**
  * Get the view associated with this map. This can be a 2D or 3D view. A 2D
  * view manages properties such as center and resolution.
- * @return {ol.View} View.
+ * @return {ol.View|undefined} View.
  * @todo stability experimental
  */
 ol.Map.prototype.getView = function() {
@@ -888,7 +894,7 @@ ol.Map.prototype.handleViewChanged_ = function() {
   var view = this.getView();
   if (goog.isDefAndNotNull(view)) {
     this.viewPropertyListenerKey_ = goog.events.listen(
-        view, ol.ObjectEventType.CHANGE,
+        view, ol.ObjectEventType.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, false, this);
   }
   this.render();
@@ -899,7 +905,18 @@ ol.Map.prototype.handleViewChanged_ = function() {
  * @param {goog.events.Event} event Event.
  * @private
  */
+ol.Map.prototype.handleLayerGroupMemberChanged_ = function(event) {
+  goog.asserts.assertInstanceof(event, goog.events.Event);
+  this.render();
+};
+
+
+/**
+ * @param {ol.ObjectEvent} event Event.
+ * @private
+ */
 ol.Map.prototype.handleLayerGroupPropertyChanged_ = function(event) {
+  goog.asserts.assertInstanceof(event, ol.ObjectEvent);
   this.render();
 };
 
@@ -908,15 +925,23 @@ ol.Map.prototype.handleLayerGroupPropertyChanged_ = function(event) {
  * @private
  */
 ol.Map.prototype.handleLayerGroupChanged_ = function() {
-  if (!goog.isNull(this.layerGroupPropertyListenerKey_)) {
-    goog.events.unlistenByKey(this.layerGroupPropertyListenerKey_);
-    this.layerGroupPropertyListenerKey_ = null;
+  if (!goog.isNull(this.layerGroupPropertyListenerKeys_)) {
+    var length = this.layerGroupPropertyListenerKeys_.length;
+    for (var i = 0; i < length; ++i) {
+      goog.events.unlistenByKey(this.layerGroupPropertyListenerKeys_[i]);
+    }
+    this.layerGroupPropertyListenerKeys_ = null;
   }
   var layerGroup = this.getLayerGroup();
   if (goog.isDefAndNotNull(layerGroup)) {
-    this.layerGroupPropertyListenerKey_ = goog.events.listen(
-        layerGroup, ol.ObjectEventType.CHANGE,
-        this.handleLayerGroupPropertyChanged_, false, this);
+    this.layerGroupPropertyListenerKeys_ = [
+      goog.events.listen(
+          layerGroup, ol.ObjectEventType.PROPERTYCHANGE,
+          this.handleLayerGroupPropertyChanged_, false, this),
+      goog.events.listen(
+          layerGroup, goog.events.EventType.CHANGE,
+          this.handleLayerGroupMemberChanged_, false, this)
+    ];
   }
   this.render();
 };
