@@ -85,7 +85,8 @@ ol.source.ImageWMS.prototype.getImage =
   var height = (extent[3] - extent[1]) / resolution;
   var size = [width, height];
 
-  this.image_ = this.createImage(extent, resolution, size, projection);
+  this.image_ = this.createImage(
+      extent, resolution, pixelRatio, size, projection);
   return this.image_;
 };
 

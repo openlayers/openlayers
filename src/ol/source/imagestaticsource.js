@@ -38,7 +38,7 @@ ol.source.ImageStatic = function(options) {
    * @type {ol.Image}
    */
   this.image_ = this.createImage(
-      imageExtent, imageResolution, imageSize, projection);
+      imageExtent, imageResolution, 1, imageSize, projection);
 
 };
 goog.inherits(ol.source.ImageStatic, ol.source.Image);

@@ -78,12 +78,13 @@ goog.inherits(ol.source.Image, ol.source.Source);
  * @protected
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Size} size Size.
  * @param {ol.proj.Projection} projection Projection.
  * @return {ol.Image} Single image.
  */
 ol.source.Image.prototype.createImage =
-    function(extent, resolution, size, projection) {
+    function(extent, resolution, pixelRatio, size, projection) {
   var image = null;
   var imageUrl = this.imageUrlFunction(extent, size, projection);
   if (goog.isDef(imageUrl)) {
