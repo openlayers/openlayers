@@ -637,7 +637,7 @@ ol.structs.RBush.prototype.remove_ = function(extent, value) {
     } else {
       childrenDone = true;
     }
-    if (childrenDone === true) {
+    if (childrenDone) {
       var lastPathIndex = path.length - 1;
       node = path[lastPathIndex];
       index = ++indexes[lastPathIndex];
