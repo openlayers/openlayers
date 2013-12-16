@@ -28,11 +28,13 @@ ol.ImageState = {
  * @extends {goog.events.EventTarget}
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
  * @param {Array.<ol.Attribution>} attributions Attributions.
  */
-ol.Image = function(extent, resolution, src, crossOrigin, attributions) {
+ol.Image =
+    function(extent, resolution, pixelRatio, src, crossOrigin, attributions) {
 
   goog.base(this);
 
@@ -53,6 +55,12 @@ ol.Image = function(extent, resolution, src, crossOrigin, attributions) {
    * @type {string}
    */
   this.src_ = src;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.pixelRatio_ = pixelRatio;
 
   /**
    * @private
@@ -134,6 +142,14 @@ ol.Image.prototype.getImageElement = function(opt_context) {
   } else {
     return this.image_;
   }
+};
+
+
+/**
+ * @return {number} PixelRatio.
+ */
+ol.Image.prototype.getPixelRatio = function() {
+  return this.pixelRatio_;
 };
 
 

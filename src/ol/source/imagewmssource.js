@@ -75,6 +75,7 @@ ol.source.ImageWMS.prototype.getImage =
   var image = this.image_;
   if (!goog.isNull(image) &&
       image.getResolution() == resolution &&
+      image.getPixelRatio() == pixelRatio &&
       ol.extent.containsExtent(image.getExtent(), extent)) {
     return image;
   }
