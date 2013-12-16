@@ -8,7 +8,6 @@ goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
-goog.require('ol.geom.GeometryEvent');
 
 
 
@@ -27,6 +26,12 @@ goog.require('ol.geom.GeometryEvent');
  * @todo stability experimental
  */
 ol.Feature = function(opt_values) {
+
+  /**
+   * @type {ol.Extent}
+   * @private
+   */
+  this.geometryExtent_ = null;
 
   goog.base(this, opt_values);
 
@@ -118,12 +123,14 @@ ol.Feature.prototype.getSymbolizers = function() {
 
 /**
  * Listener for geometry change events.
- * @param {ol.geom.GeometryEvent} evt Geometry event.
+ * @param {goog.events.Event} evt Change event.
  * @private
  */
 ol.Feature.prototype.handleGeometryChange_ = function(evt) {
+  var oldExtent = this.geometryExtent_;
+  this.geometryExtent_ = this.getGeometry().getBounds();
   this.dispatchEvent(new ol.FeatureEvent(
-      ol.FeatureEventType.CHANGE, this, evt.oldExtent));
+      ol.FeatureEventType.CHANGE, this, oldExtent));
 };
 
 
@@ -135,10 +142,10 @@ ol.Feature.prototype.handleGeometryChange_ = function(evt) {
  */
 ol.Feature.prototype.set = function(key, value) {
   var geometry = this.getGeometry();
-  var oldExtent = null;
+  var oldExtent = this.geometryExtent_;
   if (goog.isDefAndNotNull(geometry)) {
-    oldExtent = geometry.getBounds();
     if (key === this.geometryName_) {
+      this.geometryExtent_ = null;
       goog.events.unlisten(geometry, goog.events.EventType.CHANGE,
           this.handleGeometryChange_, false, this);
     }
@@ -148,6 +155,7 @@ ol.Feature.prototype.set = function(key, value) {
       this.geometryName_ = key;
     }
     if (key === this.geometryName_) {
+      this.geometryExtent_ = value.getBounds();
       goog.events.listen(value, goog.events.EventType.CHANGE,
           this.handleGeometryChange_, false, this);
     }
