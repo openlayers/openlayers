@@ -36,6 +36,21 @@ goog.inherits(ol.layer.Vector, ol.layer.Layer);
 
 
 /**
+ * @param {ol.Feature} feature Feature.
+ * @param {number} resolution Resolution.
+ * @return {Array.<ol.style.Style>} Styles.
+ */
+ol.layer.Vector.defaultStyleFunction = function(feature, resolution) {
+  var featureStyleFunction = feature.getStyleFunction();
+  if (goog.isDef(featureStyleFunction)) {
+    return featureStyleFunction.call(feature, resolution);
+  } else {
+    return null;
+  }
+};
+
+
+/**
  * @return {function(ol.geom.Geometry): boolean|undefined} Render geometry
  *     function.
  */
