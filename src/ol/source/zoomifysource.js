@@ -13,7 +13,7 @@ goog.require('ol.tilegrid.Zoomify');
 /**
  * @constructor
  * @extends {ol.source.TileImage}
- * @param {ol.source.ZoomifyOptions} options Zoomify options.
+ * @param {olx.source.ZoomifyOptions} options Zoomify options.
  * @todo stability experimental
  */
 ol.source.Zoomify = function(options) {

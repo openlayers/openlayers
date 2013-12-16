@@ -1,1 +1,1 @@
-@exportClass ol.source.Zoomify ol.source.ZoomifyOptions
+@exportSymbol ol.source.Zoomify
