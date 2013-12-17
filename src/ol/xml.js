@@ -142,7 +142,7 @@ ol.xml.makeObjectPropertySetter = function(valueReader, opt_property, opt_obj) {
  * @param {Object.<string, ol.xml.Parser>} parsers Parsers.
  * @return {Object.<string, Object.<string, ol.xml.Parser>>} Parsers NS.
  */
-ol.xml.makeParserNS = function(namespaceURIs, parsers) {
+ol.xml.makeParsersNS = function(namespaceURIs, parsers) {
   /** @type {Object.<string, Object.<string, ol.xml.Parser>>} */
   var parsersNS = {};
   var i, ii;
