@@ -1063,15 +1063,22 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
  * @constructor
  * @implements {ol.render.IReplayGroup}
  * @param {number} pixelRatio Pixel ratio.
+ * @param {number} tolerance Tolerance.
  * @struct
  */
-ol.render.canvas.ReplayGroup = function(pixelRatio) {
+ol.render.canvas.ReplayGroup = function(pixelRatio, tolerance) {
 
   /**
    * @private
    * @type {number}
    */
   this.pixelRatio_ = pixelRatio;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.tolerance_ = tolerance;
 
   /**
    * @private
