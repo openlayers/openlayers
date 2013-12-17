@@ -148,14 +148,11 @@ ol.format.Polyline.encodeFloats = function(numbers, opt_factor) {
  */
 ol.format.Polyline.decodeFloats = function(encoded, opt_factor) {
   var factor = goog.isDef(opt_factor) ? opt_factor : 1e5;
-
   var numbers = ol.format.Polyline.decodeSignedIntegers(encoded);
-
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii; ++i) {
     numbers[i] /= factor;
   }
-
   return numbers;
 };
 
@@ -186,13 +183,11 @@ ol.format.Polyline.encodeSignedIntegers = function(numbers) {
  */
 ol.format.Polyline.decodeSignedIntegers = function(encoded) {
   var numbers = ol.format.Polyline.decodeUnsignedIntegers(encoded);
-
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii; ++i) {
     var num = numbers[i];
     numbers[i] = (num & 1) ? ~(num >> 1) : (num >> 1);
   }
-
   return numbers;
 };
 
@@ -205,12 +200,10 @@ ol.format.Polyline.decodeSignedIntegers = function(encoded) {
  */
 ol.format.Polyline.encodeUnsignedIntegers = function(numbers) {
   var encoded = '';
-
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii; ++i) {
     encoded += ol.format.Polyline.encodeUnsignedInteger(numbers[i]);
   }
-
   return encoded;
 };
 
@@ -223,16 +216,12 @@ ol.format.Polyline.encodeUnsignedIntegers = function(numbers) {
  */
 ol.format.Polyline.decodeUnsignedIntegers = function(encoded) {
   var numbers = [];
-
   var current = 0;
   var shift = 0;
-
   var i, ii;
   for (i = 0, ii = encoded.length; i < ii; ++i) {
     var b = encoded.charCodeAt(i) - 63;
-
     current |= (b & 0x1f) << shift;
-
     if (b < 0x20) {
       numbers.push(current);
       current = 0;
@@ -241,7 +230,6 @@ ol.format.Polyline.decodeUnsignedIntegers = function(encoded) {
       shift += 5;
     }
   }
-
   return numbers;
 };
 
@@ -286,7 +274,6 @@ ol.format.Polyline.encodeSignedInteger = function(num) {
   if (num < 0) {
     signedNum = ~(signedNum);
   }
-
   return ol.format.Polyline.encodeUnsignedInteger(signedNum);
 };
 
@@ -331,20 +318,15 @@ ol.format.Polyline.encodeUnsignedInteger = function(num) {
 ol.format.Polyline.decodeUnsignedInteger = function(encoded) {
   var result = 0;
   var shift = 0;
-
   var i, ii;
   for (i = 0, ii = encoded.length; i < ii; ++i) {
     var b = encoded.charCodeAt(i) - 63;
-
     result |= (b & 0x1f) << shift;
-
     if (b < 0x20) {
       break;
     }
-
     shift += 5;
   }
-
   return result;
 };
 
