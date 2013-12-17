@@ -9,6 +9,11 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
 
+var view = new ol.View2D({
+  center: [0, 0],
+  zoom: 2
+});
+
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
@@ -17,14 +22,11 @@ var map = new ol.Map({
   ],
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
-  view: new ol.View2D({
-    center: [0, 0],
-    zoom: 2
-  })
+  view: view
 });
 
 var geolocation = new ol.Geolocation();
-geolocation.bindTo('projection', /** @type {ol.View2D} */ (map.getView()));
+geolocation.bindTo('projection', view);
 
 var track = new ol.dom.Input(document.getElementById('track'));
 track.bindTo('checked', geolocation, 'tracking');
