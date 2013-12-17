@@ -1048,41 +1048,19 @@ ol.format.KML.prototype.getExtensions = function() {
  * @private
  * @return {Array.<ol.Feature>} Features.
  */
-ol.format.KML.prototype.readDocument_ = function(node, objectStack) {
+ol.format.KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  goog.asserts.assert(node.localName == 'Document');
+  goog.asserts.assert(node.localName == 'Document' ||
+                      node.localName == 'Folder');
   /** @type {Array.<ol.Feature>} */
   var features = [];
   objectStack.push(features);
   // FIXME use scope somehow
   var parsersNS = ol.xml.makeParserNS(
       ol.format.KML.NAMESPACE_URIS_, {
-        'Folder': ol.xml.makeArrayExtender(this.readFolder_, this),
+        'Folder': ol.xml.makeArrayExtender(this.readDocumentOrFolder_, this),
         'Placemark': ol.xml.makeArrayPusher(this.readPlacemark_, this),
         'Style': goog.bind(this.readSharedStyle_, this)
-      });
-  ol.xml.parse(parsersNS, node, objectStack, this);
-  objectStack.pop();
-  return features;
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- * @return {Array.<ol.Feature>} Features.
- */
-ol.format.KML.prototype.readFolder_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  goog.asserts.assert(node.localName == 'Folder');
-  /** @type {Array.<ol.Feature>} */
-  var features = [];
-  objectStack.push(features);
-  var parsersNS = ol.xml.makeParserNS(
-      ol.format.KML.NAMESPACE_URIS_, {
-        'Folder': ol.xml.makeArrayExtender(this.readFolder_, this),
-        'Placemark': ol.xml.makeArrayPusher(this.readPlacemark_, this)
       });
   ol.xml.parse(parsersNS, node, objectStack, this);
   objectStack.pop();
@@ -1166,10 +1144,8 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
       -1) {
     return [];
   }
-  if (node.localName == 'Document') {
-    return this.readDocument_(node, []);
-  } else if (node.localName == 'Folder') {
-    return this.readFolder_(node, []);
+  if (node.localName == 'Document' || node.localName == 'Folder') {
+    return this.readDocumentOrFolder_(node, []);
   } else if (node.localName == 'Placemark') {
     var feature = this.readPlacemark_(node, []);
     if (goog.isNull(feature)) {
