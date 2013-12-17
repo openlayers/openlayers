@@ -516,6 +516,9 @@
  * @property {ol.Extent|undefined} extent Extent.
  * @property {boolean|undefined} hidpi Use the `ol.Map#devicePixelRatio` value when
  *     requesting the image from the remote server. Default is `true`.
+ * @property {ol.source.wms.ServerType|undefined} serverType The type of the remote WMS
+ *     server: `mapserver`, `geoserver` or `qgis`. Only needed if `hidpi` is `true`.
+ *     Default is `undefined`.
  * @property {boolean|undefined} useOverlay If `true`, will use
  *     `GETDYNAMICMAPOVERLAYIMAGE`.
  * @property {ol.proj.ProjectionLike} projection Projection.

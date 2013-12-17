@@ -40,6 +40,12 @@ ol.source.ImageWMS = function(options) {
 
   /**
    * @private
+   * @type {ol.source.wms.ServerType|undefined}
+   */
+  this.serverType_ = options.serverType;
+
+  /**
+   * @private
    * @type {boolean}
    */
   this.hidpi_ = goog.isDef(options.hidpi) ? options.hidpi : true;
@@ -91,6 +97,11 @@ ol.source.ImageWMS.prototype.getImage =
   var width = (extent[2] - extent[0]) / resolution;
   var height = (extent[3] - extent[1]) / resolution;
   var size = [width * pixelRatio, height * pixelRatio];
+
+  if (goog.isDef(this.serverType_) && pixelRatio > 1) {
+    var param = ol.source.wms.getDpiParam(this.serverType_, pixelRatio);
+    goog.object.extend(this.params_, param);
+  }
 
   this.image_ = this.createImage(
       extent, resolution, pixelRatio, size, projection);

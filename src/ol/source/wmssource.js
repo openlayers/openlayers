@@ -1,7 +1,18 @@
 goog.provide('ol.source.wms');
 
+goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
+
+
+/**
+ * @enum {string}
+ */
+ol.source.wms.ServerType = {
+  MAPSERVER: 'mapserver',
+  GEOSERVER: 'geoserver',
+  QGIS: 'qgis'
+};
 
 
 /**
@@ -12,8 +23,7 @@ goog.require('goog.uri.utils');
  * @param {ol.proj.Projection} projection Projection.
  * @return {string} WMS GetMap request URL.
  */
-ol.source.wms.getUrl =
-    function(baseUrl, params, extent, size, projection) {
+ol.source.wms.getUrl = function(baseUrl, params, extent, size, projection) {
   var baseParams = {
     'SERVICE': 'WMS',
     'VERSION': '1.3.0',
@@ -39,4 +49,24 @@ ol.source.wms.getUrl =
   baseParams['BBOX'] = bboxValues.join(',');
 
   return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);
+};
+
+
+/**
+ * @param {ol.source.wms.ServerType} serverType Server name.
+ * @param {number} pixelRatio Pixel ratio.
+ * @return {Object.<string, string>}
+ */
+ol.source.wms.getDpiParam = function(serverType, pixelRatio) {
+  var param = {};
+  if (serverType == ol.source.wms.ServerType.MAPSERVER) {
+    param['MAP_RESOLUTION'] = 90 * pixelRatio;
+  } else if (serverType == ol.source.wms.ServerType.GEOSERVER) {
+    param['FORMAT_OPTION'] = 'dpi:' + 90 * pixelRatio;
+  } else if (serverType == ol.source.wms.ServerType.QGIS) {
+    param['DPI'] = 90 * pixelRatio;
+  } else {
+    goog.asserts.fail();
+  }
+  return param;
 };
