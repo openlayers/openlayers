@@ -705,7 +705,9 @@ def host_examples(t):
 
 @target('check-examples', 'host-examples', phony=True)
 def check_examples(t):
-    examples = ['build/hosted/%(BRANCH)s/' + e for e in EXAMPLES]
+    examples = ['build/hosted/%(BRANCH)s/' + e
+                for e in EXAMPLES
+                if not open(e.replace('.html', '.js')).readline().startswith('// NOCOMPILE')]
     all_examples = \
         [e + '?mode=advanced' for e in examples]
     for example in all_examples:

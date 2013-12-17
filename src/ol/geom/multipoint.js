@@ -1,41 +1,82 @@
 goog.provide('ol.geom.MultiPoint');
 
-goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('ol.CoordinateArray');
-goog.require('ol.geom.AbstractCollection');
-goog.require('ol.geom.GeometryType');
+goog.require('ol.extent');
 goog.require('ol.geom.Point');
+goog.require('ol.geom.SimpleGeometry');
+goog.require('ol.geom.flat');
 
 
 
 /**
  * @constructor
- * @extends {ol.geom.AbstractCollection}
- * @param {ol.CoordinateArray} coordinates Coordinates array.
- * @todo stability experimental
+ * @extends {ol.geom.SimpleGeometry}
+ * @param {ol.geom.RawMultiPoint} coordinates Coordinates.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
-ol.geom.MultiPoint = function(coordinates) {
+ol.geom.MultiPoint = function(coordinates, opt_layout) {
   goog.base(this);
-  goog.asserts.assert(goog.isArray(coordinates[0]));
-
-  var numParts = coordinates.length;
-
-  /**
-   * @type {Array.<ol.geom.Point>}
-   * @protected
-   */
-  this.components = new Array(numParts);
-  for (var i = 0; i < numParts; ++i) {
-    var component = new ol.geom.Point(coordinates[i]);
-    this.components[i] = component;
-    goog.events.listen(component, goog.events.EventType.CHANGE,
-        this.handleComponentChange, false, this);
-  }
-
+  this.setCoordinates(coordinates, opt_layout);
 };
-goog.inherits(ol.geom.MultiPoint, ol.geom.AbstractCollection);
+goog.inherits(ol.geom.MultiPoint, ol.geom.SimpleGeometry);
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.MultiPoint.prototype.clone = function() {
+  var multiPoint = new ol.geom.MultiPoint(null);
+  multiPoint.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
+  return multiPoint;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.MultiPoint.prototype.closestPointXY =
+    function(x, y, closestPoint, minSquaredDistance) {
+  if (minSquaredDistance <
+      ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
+    return minSquaredDistance;
+  }
+  var flatCoordinates = this.flatCoordinates;
+  var stride = this.stride;
+  var i, ii;
+  for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
+    var squaredDistance = ol.geom.flat.squaredDistance(
+        x, y, flatCoordinates[i], flatCoordinates[i + 1]);
+    if (squaredDistance < minSquaredDistance) {
+      minSquaredDistance = squaredDistance;
+      closestPoint[0] = flatCoordinates[i];
+      closestPoint[1] = flatCoordinates[i + 1];
+    }
+  }
+  return minSquaredDistance;
+};
+
+
+/**
+ * @return {ol.geom.RawMultiPoint} Coordinates.
+ */
+ol.geom.MultiPoint.prototype.getCoordinates = function() {
+  return ol.geom.flat.inflateCoordinates(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+};
+
+
+/**
+ * @return {Array.<ol.geom.Point>} Points.
+ */
+ol.geom.MultiPoint.prototype.getPoints = function() {
+  // FIXME we should construct the points from the flat coordinates
+  var coordinates = this.getCoordinates();
+  var points = [];
+  var i, ii;
+  for (i = 0, ii = coordinates.length; i < ii; ++i) {
+    points.push(new ol.geom.Point(coordinates[i]));
+  }
+  return points;
+};
 
 
 /**
@@ -47,16 +88,31 @@ ol.geom.MultiPoint.prototype.getType = function() {
 
 
 /**
- * Create a multi-point geometry from an array of point geometries.
- *
- * @param {Array.<ol.geom.Point>} geometries Array of geometries.
- * @return {ol.geom.MultiPoint} A new geometry.
+ * @param {ol.geom.RawMultiPoint} coordinates Coordinates.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
-ol.geom.MultiPoint.fromParts = function(geometries) {
-  var count = geometries.length;
-  var coordinates = new Array(count);
-  for (var i = 0; i < count; ++i) {
-    coordinates[i] = geometries[i].getCoordinates();
+ol.geom.MultiPoint.prototype.setCoordinates =
+    function(coordinates, opt_layout) {
+  if (goog.isNull(coordinates)) {
+    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
+  } else {
+    this.setLayout(opt_layout, coordinates, 1);
+    if (goog.isNull(this.flatCoordinates)) {
+      this.flatCoordinates = [];
+    }
+    this.flatCoordinates.length = ol.geom.flat.deflateCoordinates(
+        this.flatCoordinates, 0, coordinates, this.stride);
+    this.dispatchChangeEvent();
   }
-  return new ol.geom.MultiPoint(coordinates);
+};
+
+
+/**
+ * @param {ol.geom.GeometryLayout} layout Layout.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ */
+ol.geom.MultiPoint.prototype.setFlatCoordinates =
+    function(layout, flatCoordinates) {
+  this.setFlatCoordinatesInternal(layout, flatCoordinates);
+  this.dispatchChangeEvent();
 };

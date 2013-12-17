@@ -1,61 +1,41 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
-goog.require('ol.expr');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.parser.GeoJSON');
+goog.require('ol.source.GeoJSON');
 goog.require('ol.source.MapQuestOpenAerial');
-goog.require('ol.source.Vector');
 goog.require('ol.style.Fill');
-goog.require('ol.style.Rule');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
-goog.require('ol.style.Text');
 
 
-var raster = new ol.layer.Tile({
-  source: new ol.source.MapQuestOpenAerial()
-});
+var styleArray = [new ol.style.Style({
+  fill: new ol.style.Fill({
+    color: 'rgba(255, 255, 255, 0.6)'
+  }),
+  stroke: new ol.style.Stroke({
+    color: '#319FD3',
+    width: 1
+  })
+})];
 
-var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    parser: new ol.parser.GeoJSON(),
+var vectorLayer = new ol.layer.Vector({
+  source: new ol.source.GeoJSON({
     url: 'data/countries.geojson'
   }),
-  style: new ol.style.Style({rules: [
-    new ol.style.Rule({
-      symbolizers: [
-        new ol.style.Fill({
-          color: 'white',
-          opacity: 0.6
-        }),
-        new ol.style.Stroke({
-          color: '#319FD3',
-          opacity: 1
-        })
-      ]
-    }),
-    new ol.style.Rule({
-      maxResolution: 5000,
-      symbolizers: [
-        new ol.style.Text({
-          color: 'black',
-          text: ol.expr.parse('name'),
-          fontFamily: 'Calibri,sans-serif',
-          fontSize: 12,
-          stroke: new ol.style.Stroke({
-            color: 'white',
-            width: 3
-          })
-        })
-      ]
-    })
-  ]})
+  styleFunction: function(feature, resolution) {
+    return styleArray;
+  }
 });
 
 var map = new ol.Map({
-  layers: [raster, vector],
+  layers: [
+    new ol.layer.Tile({
+      source: new ol.source.MapQuestOpenAerial()
+    }),
+    vectorLayer
+  ],
   renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
@@ -64,17 +44,26 @@ var map = new ol.Map({
   })
 });
 
+var highlight;
 var displayFeatureInfo = function(pixel) {
-  map.getFeatures({
-    pixel: pixel,
-    layers: [vector],
-    success: function(featuresByLayer) {
-      var features = featuresByLayer[0];
-      document.getElementById('info').innerHTML = features.length > 0 ?
-          features[0].getId() + ': ' + features[0].get('name') :
-          '&nbsp;';
-    }
+  var oldHighlight = highlight;
+
+  var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+    return feature;
   });
+
+  var info = document.getElementById('info');
+  if (feature) {
+    info.innerHTML = feature.getId() + ': ' + feature.get('name');
+  } else {
+    info.innerHTML = '&nbsp;';
+  }
+
+  highlight = feature;
+
+  if (highlight !== oldHighlight) {
+    map.requestRenderFrame();
+  }
 };
 
 $(map.getViewport()).on('mousemove', function(evt) {
@@ -85,4 +74,21 @@ $(map.getViewport()).on('mousemove', function(evt) {
 map.on('singleclick', function(evt) {
   var pixel = evt.getPixel();
   displayFeatureInfo(pixel);
+});
+
+var highlightStyle = new ol.style.Style({
+  stroke: new ol.style.Stroke({
+    color: '#f00',
+    width: 1
+  }),
+  fill: new ol.style.Fill({
+    color: 'rgba(255,0,0,0.1)'
+  })
+});
+
+map.on('postcompose', function(evt) {
+  if (highlight) {
+    var render = evt.getRender();
+    render.drawFeature(highlight, highlightStyle);
+  }
 });

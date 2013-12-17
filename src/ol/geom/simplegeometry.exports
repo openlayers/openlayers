@@ -1,0 +1,5 @@
+@exportSymbol ol.geom.SimpleGeometry
+@exportProperty ol.geom.SimpleGeometry.prototype.getExtent
+@exportProperty ol.geom.SimpleGeometry.prototype.getLayout
+@exportProperty ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry
+@exportProperty ol.geom.SimpleGeometry.prototype.transform

@@ -159,6 +159,13 @@ ol.Map = function(options) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.devicePixelRatio_ = goog.isDef(options.devicePixelRatio) ?
+      options.devicePixelRatio : ol.BrowserFeature.DEVICE_PIXEL_RATIO;
+
+  /**
+   * @private
    * @type {goog.async.AnimationDelay}
    */
   this.animationDelay_ =
@@ -457,6 +464,27 @@ ol.Map.prototype.disposeInternal = function() {
 
 
 /**
+ * @param {ol.Pixel} pixel Pixel.
+ * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
+ *     callback.
+ * @param {S=} opt_obj Scope for feature callback.
+ * @param {function(this: U, ol.layer.Layer): boolean=} opt_layerFunction Layer
+ *     function, only layers which are visible and for which this function
+ *     returns `true` will be tested for features.  By default, all visible
+ *     layers will be tested.
+ * @param {U=} opt_obj2 Scope for layer function.
+ * @return {T|undefined} Callback result.
+ * @template S,T,U
+ */
+ol.Map.prototype.forEachFeatureAtPixel =
+    function(pixel, callback, opt_obj, opt_layerFunction, opt_obj2) {
+  // FIXME this function should probably take an options object
+  return this.renderer_.forEachFeatureAtPixel(
+      pixel, callback, opt_obj, opt_layerFunction, opt_obj2);
+};
+
+
+/**
  * Freeze rendering.
  */
 ol.Map.prototype.freezeRendering = function() {
@@ -498,16 +526,6 @@ ol.Map.prototype.getEventPixel = function(event) {
     var eventPosition = goog.style.getRelativePosition(event, this.viewport_);
     return [eventPosition.x, eventPosition.y];
   }
-};
-
-
-/**
- * Get the map's renderer.
- * @return {ol.renderer.Map} Renderer.
- * @todo stability experimental
- */
-ol.Map.prototype.getRenderer = function() {
-  return this.renderer_;
 };
 
 
@@ -558,34 +576,6 @@ ol.Map.prototype.getControls = function() {
  */
 ol.Map.prototype.getOverlays = function() {
   return this.overlays_;
-};
-
-
-/**
- * Get feature information for a pixel on the map.
- *
- * @param {olx.GetFeatureInfoOptions} options Options.
- * @todo stability experimental
- */
-ol.Map.prototype.getFeatureInfo = function(options) {
-  var layers = goog.isDefAndNotNull(options.layers) ?
-      options.layers : this.getLayerGroup().getLayersArray();
-  this.getRenderer().getFeatureInfoForPixel(
-      options.pixel, layers, options.success, options.error);
-};
-
-
-/**
- * Get features for a pixel on the map.
- *
- * @param {olx.GetFeaturesOptions} options Options.
- * @todo stability experimental
- */
-ol.Map.prototype.getFeatures = function(options) {
-  var layers = goog.isDefAndNotNull(options.layers) ?
-      options.layers : this.getLayerGroup().getLayersArray();
-  this.getRenderer().getFeaturesForPixel(
-      options.pixel, layers, options.success, options.error);
 };
 
 
@@ -1086,6 +1076,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       animate: false,
       attributions: {},
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
+      devicePixelRatio: this.devicePixelRatio_,
       extent: null,
       focus: goog.isNull(this.focus_) ? view2DState.center : this.focus_,
       index: this.frameIndex_++,

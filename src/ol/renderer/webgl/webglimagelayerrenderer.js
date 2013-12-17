@@ -75,7 +75,7 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.renderFrame =
+ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
   var gl = this.getWebGLMapRenderer().getGL();
@@ -126,7 +126,7 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
   if (!goog.isNull(image)) {
     goog.asserts.assert(!goog.isNull(texture));
 
-    var canvas = this.getWebGLMapRenderer().getCanvas();
+    var canvas = this.getWebGLMapRenderer().getContext().getCanvas();
 
     this.updateProjectionMatrix_(canvas.width, canvas.height,
         viewCenter, viewResolution, viewRotation, image.getExtent());

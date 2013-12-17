@@ -1,328 +1,49 @@
-goog.provide('ol.style');
 goog.provide('ol.style.Style');
+goog.provide('ol.style.StyleFunction');
 
-goog.require('goog.object');
-goog.require('ol.Feature');
-goog.require('ol.expr.Call');
-goog.require('ol.expr.Identifier');
-goog.require('ol.expr.Literal');
-goog.require('ol.expr.functions');
-goog.require('ol.geom.GeometryType');
 goog.require('ol.style.Fill');
-goog.require('ol.style.Literal');
-goog.require('ol.style.PolygonLiteral');
-goog.require('ol.style.Rule');
-goog.require('ol.style.Shape');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Symbolizer');
-goog.require('ol.style.TextLiteral');
+goog.require('ol.style.Image');
 
 
 
 /**
  * @constructor
- * @param {olx.style.StyleOptions} options Style options.
+ * @param {olx.style.StyleOptions=} opt_options Style options.
  * @todo stability experimental
  */
-ol.style.Style = function(options) {
+ol.style.Style = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
-   * @type {Array.<ol.style.Rule>}
-   * @private
+   * @type {ol.style.Fill}
    */
-  this.rules_ = goog.isDef(options.rules) ? options.rules : [];
+  this.fill = goog.isDef(options.fill) ? options.fill : null;
 
   /**
-   * Symbolizers that apply if no rules are given or where none of the given
-   * rules apply (these are the "else" symbolizers).
-   * @type {Array.<ol.style.Symbolizer>}
-   * @private
+   * @type {ol.style.Image}
    */
-  this.symbolizers_ = goog.isDef(options.symbolizers) ?
-      options.symbolizers : [];
+  this.image = goog.isDef(options.image) ? options.image : null;
 
   /**
-   * @type {string|undefined}
-   * @private
+   * @type {ol.style.Stroke}
    */
-  this.name_ = goog.isDef(options.name) ?
-      options.name : undefined;
+  this.stroke = goog.isDef(options.stroke) ? options.stroke : null;
 
   /**
-   * @type {string|undefined}
-   * @private
+   * @type {ol.style.Text}
    */
-  this.title_ = goog.isDef(options.title) ?
-      options.title : undefined;
+  this.text = goog.isDef(options.text) ? options.text : null;
+
+  /**
+   * @type {number|undefined}
+   */
+  this.zIndex = options.zIndex;
+
 };
 
 
 /**
- * Create an array of symbolizer literals for a feature.
- * @param {ol.Feature} feature Feature.
- * @param {number} resolution Map resolution.
- * @return {Array.<ol.style.Literal>} Symbolizer literals for the
- *     feature.
+ * @typedef {function(ol.Feature, number): Array.<ol.style.Style>}
  */
-ol.style.Style.prototype.createLiterals = function(feature, resolution) {
-  var rules = this.rules_,
-      symbolizers = [],
-      applies = false,
-      rule;
-  for (var i = 0, ii = rules.length; i < ii; ++i) {
-    rule = rules[i];
-    if (rule.applies(feature, resolution)) {
-      applies = true;
-      symbolizers.push.apply(symbolizers, rule.getSymbolizers());
-    }
-  } if (!applies) {
-    // these are the "else" symbolizers
-    symbolizers = this.symbolizers_;
-  }
-  return ol.style.Style.createLiterals(symbolizers, feature);
-};
-
-
-/**
- * @param {Object.<string, ol.Feature>} features Features.
- * @param {number} resolution Map resolution.
- * @return {Array.<Array>} symbolizers for features. Each array in this array
- *     contains 3 items: an array of features, the symbolizer literal, and
- *     an array with optional additional data for each feature.
- */
-ol.style.Style.prototype.groupFeaturesBySymbolizerLiteral =
-    function(features, resolution) {
-  var uniqueLiterals = {},
-      featuresBySymbolizer = [],
-      i, j, l, feature, symbolizers, literals, numLiterals, literal,
-      uniqueLiteral, key, item;
-  for (i in features) {
-    feature = features[i];
-    // feature level symbolizers take precedence
-    symbolizers = feature.getSymbolizers();
-    if (!goog.isNull(symbolizers)) {
-      literals = ol.style.Style.createLiterals(symbolizers, feature);
-    } else {
-      literals = this.createLiterals(feature, resolution);
-    }
-    numLiterals = literals.length;
-    for (j = 0; j < numLiterals; ++j) {
-      literal = literals[j];
-      for (l in uniqueLiterals) {
-        uniqueLiteral = featuresBySymbolizer[uniqueLiterals[l]][1];
-        if (literal.equals(uniqueLiteral)) {
-          literal = uniqueLiteral;
-          break;
-        }
-      }
-      key = goog.getUid(literal);
-      if (!goog.object.containsKey(uniqueLiterals, key)) {
-        uniqueLiterals[key] = featuresBySymbolizer.length;
-        featuresBySymbolizer.push([
-          /** @type {Array.<ol.Feature>} */ ([]),
-          /** @type {ol.style.Literal} */ (literal),
-          /** @type {Array} */ ([])
-        ]);
-      }
-      item = featuresBySymbolizer[uniqueLiterals[key]];
-      item[0].push(feature);
-      if (literal instanceof ol.style.TextLiteral) {
-        item[2].push(literals[j].text);
-      }
-    }
-  }
-  featuresBySymbolizer.sort(this.sortByZIndex_);
-  return featuresBySymbolizer;
-};
-
-
-/**
- * Sort function for `groupFeaturesBySymbolizerLiteral`.
- * @private
- * @param {Array} a 1st item for the sort comparison.
- * @param {Array} b 2nd item for the sort comparison.
- * @return {number} Comparison result.
- */
-ol.style.Style.prototype.sortByZIndex_ = function(a, b) {
-  return a[1].zIndex - b[1].zIndex;
-};
-
-
-/**
- * The default style.
- * @type {ol.style.Style}
- * @private
- */
-ol.style.default_ = null;
-
-
-/**
- * Get the default style.
- * @return {ol.style.Style} The default style.
- */
-ol.style.getDefault = function() {
-  if (goog.isNull(ol.style.default_)) {
-    ol.style.default_ = new ol.style.Style({
-      rules: [
-        new ol.style.Rule({
-          filter: new ol.expr.Call(
-              new ol.expr.Identifier(ol.expr.functions.RENDER_INTENT),
-              [new ol.expr.Literal('select')]),
-          symbolizers: [
-            new ol.style.Shape({
-              fill: new ol.style.Fill({
-                color: '#ffffff',
-                opacity: 0.7
-              }),
-              stroke: new ol.style.Stroke({
-                color: '#696969',
-                opacity: 0.9,
-                width: 2.0
-              })
-            }),
-            new ol.style.Fill({
-              color: '#ffffff',
-              opacity: 0.7
-            }),
-            new ol.style.Stroke({
-              color: '#696969',
-              opacity: 0.9,
-              width: 2.0
-            })
-          ]
-        })
-      ],
-      symbolizers: [
-        new ol.style.Shape({
-          fill: new ol.style.Fill(),
-          stroke: new ol.style.Stroke()
-        }),
-        new ol.style.Fill(),
-        new ol.style.Stroke()
-      ]
-    });
-  }
-  return ol.style.default_;
-};
-
-
-/**
- * Set the default style.
- * @param {ol.style.Style} style The new default style.
- * @return {ol.style.Style} The default style.
- */
-ol.style.setDefault = function(style) {
-  ol.style.default_ = style;
-  return style;
-};
-
-
-/**
- * Given an array of symbolizers, generate an array of literals.
- * @param {Array.<ol.style.Symbolizer>} symbolizers List of symbolizers.
- * @param {ol.Feature|ol.geom.GeometryType} featureOrType Feature or geometry
- *     type.
- * @return {Array.<ol.style.Literal>} Array of literals.
- */
-ol.style.Style.createLiterals = function(symbolizers, featureOrType) {
-  var length = symbolizers.length;
-  var literals = new Array(length);
-  for (var i = 0; i < length; ++i) {
-    literals[i] = symbolizers[i].createLiteral(featureOrType);
-  }
-  return ol.style.Style.reduceLiterals_(literals);
-};
-
-
-/**
- * Collapse partial polygon symbolizers and remove null symbolizers.
- * @param {Array.<ol.style.Literal>} literals Input literals.
- * @return {Array.<ol.style.Literal>} Reduced literals.
- * @private
- */
-ol.style.Style.reduceLiterals_ = function(literals) {
-  var reduced = [];
-  var literal, stroke, fill, key, value;
-  for (var i = 0, ii = literals.length; i < ii; ++i) {
-    literal = literals[i];
-    if (literal instanceof ol.style.PolygonLiteral) {
-      if (goog.isDef(literal.strokeColor) &&
-          !goog.isDef(literal.fillColor)) {
-        // stroke only, check for previous fill only
-        if (fill) {
-          for (key in literal) {
-            value = literal[key];
-            if (goog.isDef(value)) {
-              fill[key] = value;
-            }
-          }
-          fill = null;
-        } else {
-          stroke = literal;
-          reduced.push(stroke);
-        }
-      } else if (goog.isDef(literal.fillColor) &&
-          !goog.isDef(literal.strokeColor)) {
-        // fill only, check for previous stroke only
-        if (stroke) {
-          for (key in literal) {
-            value = literal[key];
-            if (goog.isDef(value)) {
-              stroke[key] = value;
-            }
-          }
-          stroke = null;
-        } else {
-          fill = literal;
-          reduced.push(fill);
-        }
-      } else {
-        // both stroke and fill, proceed
-        reduced.push(literal);
-      }
-    } else if (literal) {
-      reduced.push(literal);
-    }
-  }
-  return reduced;
-};
-
-
-/**
- * @return {Array.<ol.style.Rule>}
- */
-ol.style.Style.prototype.getRules = function() {
-  return this.rules_;
-};
-
-
-/**
- * @param {Array.<ol.style.Rule>} rules The rules to set.
- */
-ol.style.Style.prototype.setRules = function(rules) {
-  this.rules_ = rules;
-};
-
-
-/**
- * @return {Array.<ol.style.Symbolizer>}
- */
-ol.style.Style.prototype.getSymbolizers = function() {
-  return this.symbolizers_;
-};
-
-
-/**
- * @return {string|undefined}
- */
-ol.style.Style.prototype.getName = function() {
-  return this.name_;
-};
-
-
-/**
- * @return {string|undefined}
- */
-ol.style.Style.prototype.getTitle = function() {
-  return this.title_;
-};
+ol.style.StyleFunction;

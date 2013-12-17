@@ -1,64 +1,102 @@
 goog.provide('ol.geom.LinearRing');
 
-goog.require('ol.CoordinateArray');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.LineString');
+goog.require('ol.extent');
+goog.require('ol.geom.SimpleGeometry');
+goog.require('ol.geom.closest');
+goog.require('ol.geom.flat');
+goog.require('ol.geom.simplify');
 
 
 
 /**
  * @constructor
- * @extends {ol.geom.LineString}
- * @param {ol.CoordinateArray} coordinates Vertex array (e.g.
- *    `[[x0, y0], [x1, y1]]`).
- * @todo stability experimental
+ * @extends {ol.geom.SimpleGeometry}
+ * @param {ol.geom.RawLinearRing} coordinates Coordinates.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
-ol.geom.LinearRing = function(coordinates) {
-  goog.base(this, coordinates);
+ol.geom.LinearRing = function(coordinates, opt_layout) {
+
+  goog.base(this);
 
   /**
-   * We're intentionally not enforcing that rings be closed right now.  This
-   * will allow proper rendering of data from tiled vector sources that leave
-   * open rings.
+   * @private
+   * @type {number}
    */
+  this.maxDelta_ = -1;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.maxDeltaRevision_ = -1;
+
+  this.setCoordinates(coordinates, opt_layout);
 
 };
-goog.inherits(ol.geom.LinearRing, ol.geom.LineString);
+goog.inherits(ol.geom.LinearRing, ol.geom.SimpleGeometry);
 
 
 /**
- * Determine if a vertex array representing a linear ring is in clockwise
- * order.
- *
- * This method comes from Green's Theorem and was mentioned in an answer to a
- * a Stack Overflow question (http://tinyurl.com/clockwise-method).
- *
- * Note that calculating the cross product for each pair of edges could be
- * avoided by first finding the lowest, rightmost vertex.  See OGR's
- * implementation for an example of this.
- * https://github.com/OSGeo/gdal/blob/trunk/gdal/ogr/ogrlinearring.cpp
- *
- * @param {ol.CoordinateArray} coordinates Linear ring coordinates.
- * @return {boolean} The coordinates are in clockwise order.
+ * @inheritDoc
  */
-ol.geom.LinearRing.isClockwise = function(coordinates) {
-  var length = coordinates.length;
-  var edge = 0;
+ol.geom.LinearRing.prototype.clone = function() {
+  var linearRing = new ol.geom.LinearRing(null);
+  linearRing.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
+  return linearRing;
+};
 
-  var last = coordinates[length - 1];
-  var x1 = last[0];
-  var y1 = last[1];
 
-  var x2, y2, coord;
-  for (var i = 0; i < length; ++i) {
-    coord = coordinates[i];
-    x2 = coord[0];
-    y2 = coord[1];
-    edge += (x2 - x1) * (y2 + y1);
-    x1 = x2;
-    y1 = y2;
+/**
+ * @inheritDoc
+ */
+ol.geom.LinearRing.prototype.closestPointXY =
+    function(x, y, closestPoint, minSquaredDistance) {
+  if (minSquaredDistance <
+      ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
+    return minSquaredDistance;
   }
-  return edge > 0;
+  if (this.maxDeltaRevision_ != this.revision) {
+    this.maxDelta_ = Math.sqrt(ol.geom.closest.getMaxSquaredDelta(
+        this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));
+    this.maxDeltaRevision_ = this.revision;
+  }
+  return ol.geom.closest.getClosestPoint(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+      this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
+};
+
+
+/**
+ * @return {number} Area.
+ */
+ol.geom.LinearRing.prototype.getArea = function() {
+  return ol.geom.flat.linearRingArea(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+};
+
+
+/**
+ * @return {ol.geom.RawLinearRing} Coordinates.
+ */
+ol.geom.LinearRing.prototype.getCoordinates = function() {
+  return ol.geom.flat.inflateCoordinates(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.LinearRing.prototype.getSimplifiedGeometryInternal =
+    function(squaredTolerance) {
+  var simplifiedFlatCoordinates = [];
+  simplifiedFlatCoordinates.length = ol.geom.simplify.douglasPeucker(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+      squaredTolerance, simplifiedFlatCoordinates, 0);
+  var simplifiedLinearRing = new ol.geom.LinearRing(null);
+  simplifiedLinearRing.setFlatCoordinates(
+      ol.geom.GeometryLayout.XY, simplifiedFlatCoordinates);
+  return simplifiedLinearRing;
 };
 
 
@@ -71,30 +109,31 @@ ol.geom.LinearRing.prototype.getType = function() {
 
 
 /**
- * Check whether a given coordinate is inside this ring. Note that this is a
- * fast and simple check - points on an edge or vertex of the ring are either
- * classified inside or outside.
- *
- * @param {ol.Coordinate} coordinate Coordinate.
- * @return {boolean} Whether the coordinate is inside the ring.
+ * @param {ol.geom.RawLinearRing} coordinates Coordinates.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
-ol.geom.LinearRing.prototype.containsCoordinate = function(coordinate) {
-  // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-  var x = coordinate[0], y = coordinate[1];
-  var vertices = this.getCoordinates();
-  var inside = false;
-  var xi, yi, xj, yj, intersect;
-  var numVertices = vertices.length;
-  for (var i = 0, j = numVertices - 1; i < numVertices; j = i++) {
-    xi = vertices[i][0];
-    yi = vertices[i][1];
-    xj = vertices[j][0];
-    yj = vertices[j][1];
-    intersect = ((yi > y) != (yj > y)) &&
-        (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-    if (intersect) {
-      inside = !inside;
+ol.geom.LinearRing.prototype.setCoordinates =
+    function(coordinates, opt_layout) {
+  if (goog.isNull(coordinates)) {
+    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
+  } else {
+    this.setLayout(opt_layout, coordinates, 1);
+    if (goog.isNull(this.flatCoordinates)) {
+      this.flatCoordinates = [];
     }
+    this.flatCoordinates.length = ol.geom.flat.deflateCoordinates(
+        this.flatCoordinates, 0, coordinates, this.stride);
+    this.dispatchChangeEvent();
   }
-  return inside;
+};
+
+
+/**
+ * @param {ol.geom.GeometryLayout} layout Layout.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ */
+ol.geom.LinearRing.prototype.setFlatCoordinates =
+    function(layout, flatCoordinates) {
+  this.setFlatCoordinatesInternal(layout, flatCoordinates);
+  this.dispatchChangeEvent();
 };

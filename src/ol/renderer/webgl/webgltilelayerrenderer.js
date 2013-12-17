@@ -6,7 +6,6 @@ goog.provide('ol.renderer.webgl.TileLayer');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
-goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
 goog.require('goog.webgl');
 goog.require('ol.Tile');
@@ -19,6 +18,7 @@ goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.tilelayer.shader');
 goog.require('ol.source.Tile');
 goog.require('ol.structs.Buffer');
+goog.require('ol.vec.Mat4');
 
 
 
@@ -55,7 +55,7 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
    * @private
    * @type {ol.structs.Buffer}
    */
-  this.arrayBuffer_ = new ol.structs.Buffer([
+  this.renderArrayBuffer_ = new ol.structs.Buffer([
     0, 0, 0, 1,
     1, 0, 1, 1,
     0, 1, 0, 0,
@@ -89,7 +89,8 @@ goog.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
  */
 ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
   var mapRenderer = this.getWebGLMapRenderer();
-  mapRenderer.deleteBuffer(this.arrayBuffer_);
+  var context = mapRenderer.getContext();
+  context.deleteBuffer(this.renderArrayBuffer_);
   goog.base(this, 'disposeInternal');
 };
 
@@ -106,10 +107,11 @@ ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.TileLayer.prototype.renderFrame =
+ol.renderer.webgl.TileLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
   var mapRenderer = this.getWebGLMapRenderer();
+  var context = mapRenderer.getContext();
   var gl = mapRenderer.getGL();
 
   var view2DState = frameState.view2DState;
@@ -170,15 +172,14 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
     gl.clear(goog.webgl.COLOR_BUFFER_BIT);
     gl.disable(goog.webgl.BLEND);
 
-    var program = mapRenderer.getProgram(
-        this.fragmentShader_, this.vertexShader_);
-    gl.useProgram(program);
+    var program = context.getProgram(this.fragmentShader_, this.vertexShader_);
+    context.useProgram(program);
     if (goog.isNull(this.locations_)) {
       this.locations_ =
           new ol.renderer.webgl.tilelayer.shader.Locations(gl, program);
     }
 
-    mapRenderer.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
+    context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.renderArrayBuffer_);
     gl.enableVertexAttribArray(this.locations_.a_position);
     gl.vertexAttribPointer(
         this.locations_.a_position, 2, goog.webgl.FLOAT, false, 16, 0);
@@ -297,24 +298,16 @@ ol.renderer.webgl.TileLayer.prototype.renderFrame =
   this.scheduleExpireCache(frameState, tileSource);
   this.updateLogos(frameState, tileSource);
 
-  var texCoordMatrix = this.texCoordMatrix;
-  goog.vec.Mat4.makeIdentity(texCoordMatrix);
-  goog.vec.Mat4.translate(texCoordMatrix,
+  ol.vec.Mat4.makeTransform2D(this.texCoordMatrix,
       (center[0] - framebufferExtent[0]) /
           (framebufferExtent[2] - framebufferExtent[0]),
       (center[1] - framebufferExtent[1]) /
           (framebufferExtent[3] - framebufferExtent[1]),
-      0);
-  goog.vec.Mat4.rotateZ(texCoordMatrix, view2DState.rotation);
-  goog.vec.Mat4.scale(texCoordMatrix,
       frameState.size[0] * view2DState.resolution /
           (framebufferExtent[2] - framebufferExtent[0]),
       frameState.size[1] * view2DState.resolution /
           (framebufferExtent[3] - framebufferExtent[1]),
-      1);
-  goog.vec.Mat4.translate(texCoordMatrix,
-      -0.5,
-      -0.5,
-      0);
+      view2DState.rotation,
+      -0.5, -0.5);
 
 };

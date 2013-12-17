@@ -22,6 +22,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.source.Tile');
 goog.require('ol.tilegrid.TileGrid');
+goog.require('ol.vec.Mat4');
 
 
 
@@ -69,7 +70,7 @@ goog.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
 /**
  * @inheritDoc
  */
-ol.renderer.dom.TileLayer.prototype.renderFrame =
+ol.renderer.dom.TileLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
   if (!layerState.visible) {
@@ -202,17 +203,13 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
     }
     resolution = tileLayerZ.getResolution();
     origin = tileLayerZ.getOrigin();
-    goog.vec.Mat4.makeIdentity(transform);
-    goog.vec.Mat4.translate(
-        transform, frameState.size[0] / 2, frameState.size[1] / 2, 0);
-    goog.vec.Mat4.rotateZ(transform, view2DState.rotation);
-    goog.vec.Mat4.scale(transform, resolution / view2DState.resolution,
-        resolution / view2DState.resolution, 1);
-    goog.vec.Mat4.translate(
-        transform,
+    ol.vec.Mat4.makeTransform2D(transform,
+        frameState.size[0] / 2, frameState.size[1] / 2,
+        resolution / view2DState.resolution,
+        resolution / view2DState.resolution,
+        view2DState.rotation,
         (origin[0] - center[0]) / resolution,
-        (center[1] - origin[1]) / resolution,
-        0);
+        (center[1] - origin[1]) / resolution);
     tileLayerZ.setTransform(transform);
     if (tileLayerZKey in newTileLayerZKeys) {
       for (j = tileLayerZKey - 1; j >= 0; --j) {
@@ -418,7 +415,7 @@ ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent =
  * @param {goog.vec.Mat4.Number} transform Transform.
  */
 ol.renderer.dom.TileLayerZ_.prototype.setTransform = function(transform) {
-  if (!goog.vec.Mat4.equals(transform, this.transform_)) {
+  if (!ol.vec.Mat4.equals2D(transform, this.transform_)) {
     ol.dom.transformElement2D(this.target, transform, 6);
     goog.vec.Mat4.setFromArray(this.transform_, transform);
   }

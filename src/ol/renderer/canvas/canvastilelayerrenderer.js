@@ -19,6 +19,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.source.Tile');
+goog.require('ol.vec.Mat4');
 
 
 
@@ -54,7 +55,7 @@ ol.renderer.canvas.TileLayer = function(mapRenderer, tileLayer) {
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.transform_ = goog.vec.Mat4.createNumber();
+  this.imageTransform_ = goog.vec.Mat4.createNumber();
 
   /**
    * @private
@@ -89,15 +90,15 @@ ol.renderer.canvas.TileLayer.prototype.getImage = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.TileLayer.prototype.getTransform = function() {
-  return this.transform_;
+ol.renderer.canvas.TileLayer.prototype.getImageTransform = function() {
+  return this.imageTransform_;
 };
 
 
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.TileLayer.prototype.renderFrame =
+ol.renderer.canvas.TileLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
   //
@@ -129,12 +130,12 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   //   or (3) the canvas tile range doesn't contain the required tile
   //   range. This canvas tile range invalidation thing is related to
   //   an optimization where we attempt to redraw as few pixels as
-  //   possible on each renderFrame call.
+  //   possible on each prepareFrame call.
   //
   // - If the canvas tile range has been invalidated we reset
   //   renderedCanvasTileRange_ and reset the renderedTiles_ array.
   //   The renderedTiles_ array is the structure used to determine
-  //   the canvas pixels that need not be redrawn from one renderFrame
+  //   the canvas pixels that need not be redrawn from one prepareFrame
   //   call to another. It records while tile has been rendered at
   //   which position in the canvas.
   //
@@ -158,9 +159,9 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   //   etc.). manageTilePyramid is what enqueue tiles in the tile
   //   queue for loading.
   //
-  // - The last step involves updating the transform matrix, which
-  //   will be used by the map renderer for the final composition
-  //   and positioning.
+  // - The last step involves updating the image transform matrix,
+  //   which will be used by the map renderer for the final
+  //   composition and positioning.
   //
 
   var view2DState = frameState.view2DState;
@@ -381,20 +382,14 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   this.scheduleExpireCache(frameState, tileSource);
   this.updateLogos(frameState, tileSource);
 
-  var transform = this.transform_;
-  goog.vec.Mat4.makeIdentity(transform);
-  goog.vec.Mat4.translate(transform,
-      frameState.size[0] / 2, frameState.size[1] / 2, 0);
-  goog.vec.Mat4.rotateZ(transform, view2DState.rotation);
-  goog.vec.Mat4.scale(
-      transform,
-      tileResolution / view2DState.resolution,
-      tileResolution / view2DState.resolution,
-      1);
-  goog.vec.Mat4.translate(
-      transform,
+  var devicePixelRatio = frameState.devicePixelRatio;
+  ol.vec.Mat4.makeTransform2D(this.imageTransform_,
+      devicePixelRatio * frameState.size[0] / 2,
+      devicePixelRatio * frameState.size[1] / 2,
+      devicePixelRatio * tileResolution / view2DState.resolution,
+      devicePixelRatio * tileResolution / view2DState.resolution,
+      view2DState.rotation,
       (origin[0] - center[0]) / tileResolution,
-      (center[1] - origin[1]) / tileResolution,
-      0);
+      (center[1] - origin[1]) / tileResolution);
 
 };

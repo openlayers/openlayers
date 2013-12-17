@@ -1,65 +1,175 @@
 goog.provide('ol.test.geom.MultiLineString');
 
+
 describe('ol.geom.MultiLineString', function() {
 
-  describe('constructor', function() {
+  it('can be constructed with a null geometry', function() {
+    expect(function() {
+      var multiLineString = new ol.geom.MultiLineString(null);
+      multiLineString = multiLineString; // suppress gjslint warning
+    }).not.to.throwException();
+  });
 
-    it('creates a multi-linestring from an array', function() {
-      var multi = new ol.geom.MultiLineString([
-        [[10, 20], [30, 40]],
-        [[20, 30], [40, 50]]]);
-      expect(multi).to.be.a(ol.geom.MultiLineString);
-      expect(multi).to.be.a(ol.geom.Geometry);
+  describe('construct empty', function() {
+
+    var multiLineString;
+    beforeEach(function() {
+      multiLineString = new ol.geom.MultiLineString([]);
+    });
+
+    it('defaults to layout XY', function() {
+      expect(multiLineString.getLayout()).to.be(ol.geom.GeometryLayout.XY);
+    });
+
+    it('has empty coordinates', function() {
+      expect(multiLineString.getCoordinates()).to.be.empty();
+    });
+
+    it('has an empty extent', function() {
+      expect(ol.extent.isEmpty(multiLineString.getExtent())).to.be(true);
+    });
+
+    it('has empty flat coordinates', function() {
+      expect(multiLineString.getFlatCoordinates()).to.be.empty();
+    });
+
+    it('has stride the expected stride', function() {
+      expect(multiLineString.getStride()).to.be(2);
     });
 
   });
 
-  describe('#components', function() {
+  describe('construct with 2D coordinates', function() {
 
-    it('is an array of linestrings', function() {
-      var multi = new ol.geom.MultiLineString([
-        [[10, 20], [30, 40]],
-        [[20, 30], [40, 50]]]);
+    var multiLineString;
+    beforeEach(function() {
+      multiLineString = new ol.geom.MultiLineString(
+          [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]);
+    });
 
-      var components = multi.getComponents();
-      expect(components.length).to.be(2);
-      expect(components[0]).to.be.a(ol.geom.LineString);
-      expect(components[1]).to.be.a(ol.geom.LineString);
+    it('has the expected layout', function() {
+      expect(multiLineString.getLayout()).to.be(ol.geom.GeometryLayout.XY);
+    });
 
+    it('has the expected coordinates', function() {
+      expect(multiLineString.getCoordinates()).to.eql(
+          [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]);
+    });
+
+    it('has the expected extent', function() {
+      expect(multiLineString.getExtent()).to.eql([1, 2, 7, 8]);
+    });
+
+    it('has the expected flat coordinates', function() {
+      expect(multiLineString.getFlatCoordinates()).to.eql(
+          [1, 2, 3, 4, 5, 6, 7, 8]);
+    });
+
+    it('has stride the expected stride', function() {
+      expect(multiLineString.getStride()).to.be(2);
     });
 
   });
 
-  describe('#getBounds()', function() {
+  describe('construct with 3D coordinates', function() {
 
-    it('returns the bounding extent', function() {
-      var multi = new ol.geom.MultiLineString([
-        [[10, 20], [30, 40]],
-        [[20, 30], [40, 50]]]);
-      var bounds = multi.getBounds();
-      expect(bounds[0]).to.be(10);
-      expect(bounds[2]).to.be(40);
-      expect(bounds[1]).to.be(20);
-      expect(bounds[3]).to.be(50);
+    var multiLineString;
+    beforeEach(function() {
+      multiLineString = new ol.geom.MultiLineString(
+          [[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]]);
+    });
+
+    it('has the expected layout', function() {
+      expect(multiLineString.getLayout()).to.be(ol.geom.GeometryLayout.XYZ);
+    });
+
+    it('has the expected coordinates', function() {
+      expect(multiLineString.getCoordinates()).to.eql(
+          [[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]]);
+    });
+
+    it('has the expected extent', function() {
+      expect(multiLineString.getExtent()).to.eql([1, 2, 10, 11]);
+    });
+
+    it('has the expected flat coordinates', function() {
+      expect(multiLineString.getFlatCoordinates()).to.eql(
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+    });
+
+    it('has stride the expected stride', function() {
+      expect(multiLineString.getStride()).to.be(3);
     });
 
   });
 
-  describe('#getCoordinates', function() {
+  describe('construct with 3D coordinates and layout XYM', function() {
 
-    it('returns an array', function() {
-      var coordinates = [
-        [[10, 20], [30, 40]],
-        [[20, 30], [40, 50]]
-      ];
-      var multi = new ol.geom.MultiLineString(coordinates);
-      expect(multi.getCoordinates()).to.eql(coordinates);
+    var multiLineString;
+    beforeEach(function() {
+      multiLineString = new ol.geom.MultiLineString(
+          [[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]],
+          ol.geom.GeometryLayout.XYM);
+    });
+
+    it('has the expected layout', function() {
+      expect(multiLineString.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+    });
+
+    it('has the expected coordinates', function() {
+      expect(multiLineString.getCoordinates()).to.eql(
+          [[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]]);
+    });
+
+    it('has the expected extent', function() {
+      expect(multiLineString.getExtent()).to.eql([1, 2, 10, 11]);
+    });
+
+    it('has the expected flat coordinates', function() {
+      expect(multiLineString.getFlatCoordinates()).to.eql(
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+    });
+
+    it('has stride the expected stride', function() {
+      expect(multiLineString.getStride()).to.be(3);
+    });
+
+  });
+
+  describe('construct with 4D coordinates', function() {
+
+    var multiLineString;
+    beforeEach(function() {
+      multiLineString = new ol.geom.MultiLineString(
+          [[[1, 2, 3, 4], [5, 6, 7, 8]], [[9, 10, 11, 12], [13, 14, 15, 16]]]);
+    });
+
+    it('has the expected layout', function() {
+      expect(multiLineString.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+    });
+
+    it('has the expected coordinates', function() {
+      expect(multiLineString.getCoordinates()).to.eql(
+          [[[1, 2, 3, 4], [5, 6, 7, 8]], [[9, 10, 11, 12], [13, 14, 15, 16]]]);
+    });
+
+    it('has the expected extent', function() {
+      expect(multiLineString.getExtent()).to.eql([1, 2, 13, 14]);
+    });
+
+    it('has the expected flat coordinates', function() {
+      expect(multiLineString.getFlatCoordinates()).to.eql(
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+    });
+
+    it('has stride the expected stride', function() {
+      expect(multiLineString.getStride()).to.be(4);
     });
 
   });
 
 });
 
-goog.require('ol.geom.Geometry');
-goog.require('ol.geom.LineString');
+
+goog.require('ol.extent');
 goog.require('ol.geom.MultiLineString');

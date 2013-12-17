@@ -1,15 +1,14 @@
 goog.provide('ol.renderer.Map');
 
 goog.require('goog.Disposable');
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dispose');
-goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.FrameState');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
+goog.require('ol.vec.Mat4');
 
 
 
@@ -46,30 +45,17 @@ goog.inherits(ol.renderer.Map, goog.Disposable);
  * @protected
  */
 ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
-
   var view2DState = frameState.view2DState;
   var coordinateToPixelMatrix = frameState.coordinateToPixelMatrix;
-
-  goog.vec.Mat4.makeIdentity(coordinateToPixelMatrix);
-  goog.vec.Mat4.translate(coordinateToPixelMatrix,
-      frameState.size[0] / 2,
-      frameState.size[1] / 2,
-      0);
-  goog.vec.Mat4.scale(coordinateToPixelMatrix,
-      1 / view2DState.resolution,
-      -1 / view2DState.resolution,
-      1);
-  goog.vec.Mat4.rotateZ(coordinateToPixelMatrix,
-      -view2DState.rotation);
-  goog.vec.Mat4.translate(coordinateToPixelMatrix,
-      -view2DState.center[0],
-      -view2DState.center[1],
-      0);
-
+  goog.asserts.assert(!goog.isNull(coordinateToPixelMatrix));
+  ol.vec.Mat4.makeTransform2D(coordinateToPixelMatrix,
+      frameState.size[0] / 2, frameState.size[1] / 2,
+      1 / view2DState.resolution, -1 / view2DState.resolution,
+      -view2DState.rotation,
+      -view2DState.center[0], -view2DState.center[1]);
   var inverted = goog.vec.Mat4.invert(
       coordinateToPixelMatrix, frameState.pixelToCoordinateMatrix);
   goog.asserts.assert(inverted);
-
 };
 
 
@@ -95,78 +81,34 @@ ol.renderer.Map.prototype.disposeInternal = function() {
 
 
 /**
- * @return {HTMLCanvasElement} Canvas.
+ * @param {ol.Pixel} pixel Pixel.
+ * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
+ *     callback.
+ * @param {S=} opt_obj Scope for feature callback.
+ * @param {function(this: U, ol.layer.Layer): boolean=} opt_layerFunction Layer
+ *     function.
+ * @param {U=} opt_obj2 Scope for layer function.
+ * @return {T|undefined} Callback result.
+ * @template S,T,U
  */
-ol.renderer.Map.prototype.getCanvas = goog.functions.NULL;
-
-
-/**
- * @param {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
- * @param {Array.<ol.layer.Layer>} layers Layers to query.
- * @param {function(Array.<Array.<string|undefined>>)} success Callback for
- *     successful queries. The passed argument is the resulting feature
- *     information.  Layers that are able to provide attribute data will put
- *     ol.Feature instances, other layers will put a string which can either
- *     be plain text or markup.
- * @param {function()=} opt_error Callback for unsuccessful
- *     queries.
- */
-ol.renderer.Map.prototype.getFeatureInfoForPixel =
-    function(pixel, layers, success, opt_error) {
-  var numLayers = layers.length;
-  var featureInfo = new Array(numLayers);
-  var callbackCount = 0;
-  var callback = function(layerFeatureInfo, layer) {
-    featureInfo[goog.array.indexOf(layers, layer)] = layerFeatureInfo;
-    --callbackCount;
-    if (callbackCount <= 0) {
-      success(featureInfo);
-    }
-  };
-
-  var layerRenderer;
-  for (var i = 0; i < numLayers; ++i) {
-    layerRenderer = this.getLayerRenderer(layers[i]);
-    if (layerRenderer.getFeatureInfoForPixel(pixel, callback, opt_error)) {
-      ++callbackCount;
+ol.renderer.Map.prototype.forEachFeatureAtPixel =
+    function(pixel, callback, opt_obj, opt_layerFunction, opt_obj2) {
+  var layerFunction = goog.isDef(opt_layerFunction) ?
+      opt_layerFunction : goog.functions.TRUE;
+  var layersArray = this.map_.getLayerGroup().getLayersArray();
+  var i;
+  for (i = layersArray.length - 1; i >= 0; --i) {
+    var layer = layersArray[i];
+    if (layer.getVisible() && layerFunction.call(opt_obj2, layer)) {
+      var layerRenderer = this.getLayerRenderer(layer);
+      var result =
+          layerRenderer.forEachFeatureAtPixel(pixel, callback, opt_obj);
+      if (result) {
+        return result;
+      }
     }
   }
-};
-
-
-/**
- * @param {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
- * @param {Array.<ol.layer.Layer>} layers Layers to query.
- * @param {function(Array.<Array.<ol.Feature|undefined>>)} success Callback for
- *     successful queries. The passed argument is the resulting feature
- *     information.  Layers that are able to provide attribute data will put
- *     ol.Feature instances, other layers will put a string which can either
- *     be plain text or markup.
- * @param {function()=} opt_error Callback for unsuccessful
- *     queries.
- */
-ol.renderer.Map.prototype.getFeaturesForPixel =
-    function(pixel, layers, success, opt_error) {
-  var numLayers = layers.length;
-  var features = new Array(numLayers);
-  var callbackCount = 0;
-  var callback = function(layerFeatures, layer) {
-    features[goog.array.indexOf(layers, layer)] = layerFeatures;
-    --callbackCount;
-    if (callbackCount <= 0) {
-      success(features);
-    }
-  };
-
-  var layer, layerRenderer;
-  for (var i = 0; i < numLayers; ++i) {
-    layer = layers[i];
-    layerRenderer = this.getLayerRenderer(layer);
-    if (goog.isFunction(layerRenderer.getFeaturesForPixel)) {
-      ++callbackCount;
-      layerRenderer.getFeaturesForPixel(pixel, callback, opt_error);
-    }
-  }
+  return undefined;
 };
 
 

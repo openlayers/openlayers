@@ -31,16 +31,14 @@ goog.require('ol.style.TextLiteral');
 
 /**
  * @constructor
- * @param {HTMLCanvasElement} canvas Target canvas.
+ * @param {CanvasRenderingContext2D} context Context.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {function()=} opt_iconLoadedCallback Callback for deferred rendering
  *     when images need to be loaded before rendering.
  */
 ol.renderer.canvas.Vector =
-    function(canvas, transform, opt_iconLoadedCallback) {
+    function(context, transform, opt_iconLoadedCallback) {
 
-  var context = /** @type {CanvasRenderingContext2D} */
-      (canvas.getContext('2d'));
   /**
    * @type {goog.vec.Mat4.Number}
    * @private

@@ -31,10 +31,6 @@
   padding-top: 2px;
   white-space: nowrap;
 }
-.ol-dragbox {
-  position: absolute;
-  border: 2px solid red;
-}
 .ol-full-screen {
   background: rgba(255,255,255,0.4);
   border-radius: 4px;

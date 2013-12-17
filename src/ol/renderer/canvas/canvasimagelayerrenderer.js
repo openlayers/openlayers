@@ -11,6 +11,7 @@ goog.require('ol.layer.Image');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.source.Image');
+goog.require('ol.vec.Mat4');
 
 
 
@@ -34,7 +35,7 @@ ol.renderer.canvas.ImageLayer = function(mapRenderer, imageLayer) {
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.transform_ = goog.vec.Mat4.createNumber();
+  this.imageTransform_ = goog.vec.Mat4.createNumber();
 
 };
 goog.inherits(ol.renderer.canvas.ImageLayer, ol.renderer.canvas.Layer);
@@ -52,15 +53,15 @@ ol.renderer.canvas.ImageLayer.prototype.getImage = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.ImageLayer.prototype.getTransform = function() {
-  return this.transform_;
+ol.renderer.canvas.ImageLayer.prototype.getImageTransform = function() {
+  return this.imageTransform_;
 };
 
 
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.ImageLayer.prototype.renderFrame =
+ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
   var view2DState = frameState.view2DState;
@@ -93,26 +94,19 @@ ol.renderer.canvas.ImageLayer.prototype.renderFrame =
 
   if (!goog.isNull(this.image_)) {
     image = this.image_;
-
     var imageExtent = image.getExtent();
     var imageResolution = image.getResolution();
-    var transform = this.transform_;
-    goog.vec.Mat4.makeIdentity(transform);
-    goog.vec.Mat4.translate(transform,
-        frameState.size[0] / 2, frameState.size[1] / 2, 0);
-    goog.vec.Mat4.rotateZ(transform, viewRotation);
-    goog.vec.Mat4.scale(
-        transform,
-        imageResolution / viewResolution,
-        imageResolution / viewResolution,
-        1);
-    goog.vec.Mat4.translate(
-        transform,
+    var devicePixelRatio = frameState.devicePixelRatio;
+    ol.vec.Mat4.makeTransform2D(this.imageTransform_,
+        devicePixelRatio * frameState.size[0] / 2,
+        devicePixelRatio * frameState.size[1] / 2,
+        devicePixelRatio * imageResolution / viewResolution,
+        devicePixelRatio * imageResolution / viewResolution,
+        viewRotation,
         (imageExtent[0] - viewCenter[0]) / imageResolution,
-        (viewCenter[1] - imageExtent[3]) / imageResolution,
-        0);
-
+        (viewCenter[1] - imageExtent[3]) / imageResolution);
     this.updateAttributions(frameState.attributions, image.getAttributions());
     this.updateLogos(frameState, imageSource);
   }
+
 };

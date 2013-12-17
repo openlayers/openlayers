@@ -1,0 +1,5 @@
+@exportSymbol ol.geom.LineString
+@exportProperty ol.geom.LineString.prototype.clone
+@exportProperty ol.geom.LineString.prototype.getCoordinates
+@exportProperty ol.geom.LineString.prototype.getType
+@exportProperty ol.geom.LineString.prototype.setCoordinates

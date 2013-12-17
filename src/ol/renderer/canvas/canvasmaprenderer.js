@@ -11,12 +11,16 @@ goog.require('ol.css');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
+goog.require('ol.render.Event');
+goog.require('ol.render.EventType');
+goog.require('ol.render.canvas.Immediate');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.canvas.VectorLayer');
 goog.require('ol.source.State');
+goog.require('ol.vec.Mat4');
 
 
 
@@ -54,6 +58,12 @@ ol.renderer.canvas.Map = function(container, map) {
   this.context_ = /** @type {CanvasRenderingContext2D} */
       (this.canvas_.getContext('2d'));
 
+  /**
+   * @private
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.transform_ = goog.vec.Mat4.createNumber();
+
 };
 goog.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
 
@@ -76,10 +86,41 @@ ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
 
 
 /**
- * @inheritDoc
+ * @param {ol.render.EventType} type Event type.
+ * @param {ol.FrameState} frameState Frame state.
+ * @private
  */
-ol.renderer.canvas.Map.prototype.getCanvas = function() {
-  return this.canvas_;
+ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
+    function(type, frameState) {
+  var map = this.getMap();
+  var context = this.context_;
+  if (map.hasListener(type)) {
+    var view2DState = frameState.view2DState;
+    var devicePixelRatio = frameState.devicePixelRatio;
+    ol.vec.Mat4.makeTransform2D(this.transform_,
+        this.canvas_.width / 2,
+        this.canvas_.height / 2,
+        devicePixelRatio / view2DState.resolution,
+        -devicePixelRatio / view2DState.resolution,
+        -view2DState.rotation,
+        -view2DState.center[0], -view2DState.center[1]);
+    var render = new ol.render.canvas.Immediate(
+        context, devicePixelRatio, frameState.extent, this.transform_);
+    var composeEvent = new ol.render.Event(type, map, render, frameState,
+        context, null);
+    map.dispatchEvent(composeEvent);
+  }
+};
+
+
+/**
+ * @param {ol.layer.Layer} layer Layer.
+ * @return {ol.renderer.canvas.Layer} Canvas layer renderer.
+ */
+ol.renderer.canvas.Map.prototype.getCanvasLayerRenderer = function(layer) {
+  var layerRenderer = this.getLayerRenderer(layer);
+  goog.asserts.assertInstanceof(layerRenderer, ol.renderer.canvas.Layer);
+  return /** @type {ol.renderer.canvas.Layer} */ (layerRenderer);
 };
 
 
@@ -97,23 +138,25 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   }
 
   var context = this.context_;
-
-  var size = frameState.size;
-  if (this.canvas_.width != size[0] || this.canvas_.height != size[1]) {
-    this.canvas_.width = size[0];
-    this.canvas_.height = size[1];
+  var ratio = frameState.devicePixelRatio;
+  var width = frameState.size[0] * ratio;
+  var height = frameState.size[1] * ratio;
+  if (this.canvas_.width != width || this.canvas_.height != height) {
+    this.canvas_.width = width;
+    this.canvas_.height = height;
   } else {
     context.clearRect(0, 0, this.canvas_.width, this.canvas_.height);
   }
 
   this.calculateMatrices2D(frameState);
 
+  this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
+
   var layerStates = frameState.layerStates;
   var layersArray = frameState.layersArray;
   var viewResolution = frameState.view2DState.resolution;
-  var i, ii, image, layer, layerRenderer, layerState, transform;
+  var i, ii, layer, layerRenderer, layerState;
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
-
     layer = layersArray[i];
     layerRenderer = this.getLayerRenderer(layer);
     goog.asserts.assertInstanceof(layerRenderer, ol.renderer.canvas.Layer);
@@ -124,39 +167,11 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
         viewResolution < layerState.minResolution) {
       continue;
     }
-    layerRenderer.renderFrame(frameState, layerState);
-
-    image = layerRenderer.getImage();
-    if (!goog.isNull(image)) {
-      transform = layerRenderer.getTransform();
-      context.globalAlpha = layerState.opacity;
-
-      // for performance reasons, context.setTransform is only used
-      // when the view is rotated. see http://jsperf.com/canvas-transform
-      if (frameState.view2DState.rotation === 0) {
-        var dx = goog.vec.Mat4.getElement(transform, 0, 3);
-        var dy = goog.vec.Mat4.getElement(transform, 1, 3);
-        var dw = image.width * goog.vec.Mat4.getElement(transform, 0, 0);
-        var dh = image.height * goog.vec.Mat4.getElement(transform, 1, 1);
-        goog.asserts.assert(goog.isNumber(image.width));
-        goog.asserts.assert(goog.isNumber(image.height));
-        context.drawImage(image, 0, 0, image.width, image.height,
-            Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
-      } else {
-        context.setTransform(
-            goog.vec.Mat4.getElement(transform, 0, 0),
-            goog.vec.Mat4.getElement(transform, 1, 0),
-            goog.vec.Mat4.getElement(transform, 0, 1),
-            goog.vec.Mat4.getElement(transform, 1, 1),
-            goog.vec.Mat4.getElement(transform, 0, 3),
-            goog.vec.Mat4.getElement(transform, 1, 3));
-
-        context.drawImage(image, 0, 0);
-        context.setTransform(1, 0, 0, 1, 0, 0);
-      }
-    }
-
+    layerRenderer.prepareFrame(frameState, layerState);
+    layerRenderer.composeFrame(frameState, layerState, context);
   }
+
+  this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, frameState);
 
   if (!this.renderedVisible_) {
     goog.style.setElementShown(this.canvas_, true);
