@@ -665,6 +665,184 @@ describe('ol.format.KML', function() {
 
     });
 
+    describe('style maps', function() {
+
+      it('can read a normal style', function() {
+        var text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Document>' +
+            '    <Placemark id="a">' +
+            '      <StyleMap>' +
+            '        <Pair>' +
+            '          <key>normal</key>' +
+            '          <Style>' +
+            '            <PolyStyle>' +
+            '              <color>00000000</color>' +
+            '            </PolyStyle>' +
+            '          </Style>' +
+            '        <Pair>' +
+            '      </StyleMap>' +
+            '    </Placemark>' +
+            '  </Document>' +
+            '</kml>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var styleFunction = f.getStyleFunction();
+        expect(styleFunction).not.to.be(undefined);
+        var styleArray = styleFunction.call(f, 0);
+        expect(styleArray).to.be.an(Array);
+        expect(styleArray).to.have.length(1);
+        var s = styleArray[0];
+        expect(s).to.be.an(ol.style.Style);
+        expect(s.fill).not.to.be(null);
+        expect(s.fill.color).to.eql([0, 0, 0, 0]);
+      });
+
+      it('ignores highlight styles', function() {
+        var text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Document>' +
+            '    <Placemark>' +
+            '      <StyleMap>' +
+            '        <Pair>' +
+            '          <key>highlighted</key>' +
+            '          <Style>' +
+            '            <PolyStyle>' +
+            '              <color>00000000</color>' +
+            '            </PolyStyle>' +
+            '          </Style>' +
+            '        <Pair>' +
+            '      </StyleMap>' +
+            '    </Placemark>' +
+            '  </Document>' +
+            '</kml>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var styleFunction = f.getStyleFunction();
+        expect(styleFunction).not.to.be(undefined);
+        var styleArray = styleFunction.call(f, 0);
+        expect(styleArray).to.be.an(Array);
+        expect(styleArray).to.have.length(1);
+        var s = styleArray[0];
+        expect(s).to.be.an(ol.style.Style);
+        expect(s).to.be(ol.format.KML.DEFAULT_STYLE_);
+
+      });
+
+      it('uses normal styles instead of highlight styles', function() {
+        var text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Document>' +
+            '    <Placemark id="a">' +
+            '      <StyleMap>' +
+            '        <Pair>' +
+            '          <key>normal</key>' +
+            '          <Style>' +
+            '            <PolyStyle>' +
+            '              <color>00000000</color>' +
+            '            </PolyStyle>' +
+            '          </Style>' +
+            '        </Pair>' +
+            '        <Pair>' +
+            '          <key>highlighted</key>' +
+            '          <Style>' +
+            '            <PolyStyle>' +
+            '              <color>ffffffff</color>' +
+            '            </PolyStyle>' +
+            '          </Style>' +
+            '        <Pair>' +
+            '      </StyleMap>' +
+            '    </Placemark>' +
+            '  </Document>' +
+            '</kml>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var styleFunction = f.getStyleFunction();
+        expect(styleFunction).not.to.be(undefined);
+        var styleArray = styleFunction.call(f, 0);
+        expect(styleArray).to.be.an(Array);
+        expect(styleArray).to.have.length(1);
+        var s = styleArray[0];
+        expect(s).to.be.an(ol.style.Style);
+        expect(s.fill).not.to.be(null);
+        expect(s.fill.color).to.eql([0, 0, 0, 0]);
+      });
+
+      it('can read a normal styleUrls', function() {
+        var text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Document>' +
+            '    <Style id="foo">' +
+            '      <PolyStyle>' +
+            '        <color>00000000</color>' +
+            '      </PolyStyle>' +
+            '    </Style>' +
+            '    <Placemark>' +
+            '      <StyleMap>' +
+            '        <Pair>' +
+            '          <key>normal</key>' +
+            '          <styleUrl>#foo</styleUrl>' +
+            '        <Pair>' +
+            '      </StyleMap>' +
+            '    </Placemark>' +
+            '  </Document>' +
+            '</kml>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var styleFunction = f.getStyleFunction();
+        expect(styleFunction).not.to.be(undefined);
+        var styleArray = styleFunction.call(f, 0);
+        expect(styleArray).to.be.an(Array);
+        expect(styleArray).to.have.length(1);
+        var s = styleArray[0];
+        expect(s).to.be.an(ol.style.Style);
+        expect(s.fill).not.to.be(null);
+        expect(s.fill.color).to.eql([0, 0, 0, 0]);
+      });
+
+      it('ignores highlighted styleUrls', function() {
+        var text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Document>' +
+            '    <Style id="foo">' +
+            '      <PolyStyle>' +
+            '        <color>00000000</color>' +
+            '      </PolyStyle>' +
+            '    </Style>' +
+            '    <Placemark>' +
+            '      <StyleMap>' +
+            '        <Pair>' +
+            '          <key>highlighted</key>' +
+            '          <styleUrl>#foo</styleUrl>' +
+            '        <Pair>' +
+            '      </StyleMap>' +
+            '    </Placemark>' +
+            '  </Document>' +
+            '</kml>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var styleFunction = f.getStyleFunction();
+        expect(styleFunction).not.to.be(undefined);
+        var styleArray = styleFunction.call(f, 0);
+        expect(styleArray).to.be.an(Array);
+        expect(styleArray).to.have.length(1);
+        var s = styleArray[0];
+        expect(s).to.be.an(ol.style.Style);
+        expect(s).to.be(ol.format.KML.DEFAULT_STYLE_);
+      });
+
+    });
+
     // FIXME these tests pass in the browser, but fail on PhantomJS.  This is
     // FIXME likely to be something to do with the parsed document's baseURI.
     describe.skip('shared styles', function() {

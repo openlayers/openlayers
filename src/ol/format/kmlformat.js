@@ -793,6 +793,37 @@ ol.format.KML.ExtendedDataParser_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
+ol.format.KML.PairDataParser_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'Pair');
+  var pairObject = {};
+  objectStack.push(pairObject);
+  ol.xml.parse(ol.format.KML.PAIR_PARSERS_, node, objectStack);
+  objectStack.pop();
+  var key = /** @type {string|undefined} */
+      (goog.object.get(pairObject, 'key'));
+  if (goog.isDef(key) && key == 'normal') {
+    var featureObject = /** @type {Object} */
+        (objectStack[objectStack.length - 1]);
+    var Style = /** @type {ol.style.Style} */
+        (goog.object.get(pairObject, 'Style', null));
+    if (!goog.isNull(Style)) {
+      goog.object.set(featureObject, 'Style', Style);
+    }
+    var styleUrl = /** @type {string|undefined} */
+        (goog.object.get(pairObject, 'styleUrl'));
+    if (goog.isDef(styleUrl)) {
+      goog.object.set(featureObject, 'styleUrl', styleUrl);
+    }
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ */
 ol.format.KML.SchemaDataParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'SchemaData');
@@ -815,6 +846,18 @@ ol.format.KML.SimpleDataParser_ = function(node, objectStack) {
         /** @type {Object} */ (objectStack[objectStack.length - 1]);
     goog.object.set(featureObject, name, data);
   }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ */
+ol.format.KML.StyleMapParser_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'StyleMap');
+  ol.xml.parse(ol.format.KML.STYLE_MAP_PARSERS_, node, objectStack);
 };
 
 
@@ -978,6 +1021,18 @@ ol.format.KML.OUTER_BOUNDARY_IS_PARSERS_ = ol.xml.makeParserNS(
  * @const {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
+ol.format.KML.PAIR_PARSERS_ = ol.xml.makeParserNS(
+    ol.format.KML.NAMESPACE_URIS_, {
+      'Style': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_),
+      'key': ol.xml.makeObjectPropertySetter(ol.format.KML.readString_),
+      'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readString_)
+    });
+
+
+/**
+ * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
 ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeParserNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'ExtendedData': ol.format.KML.ExtendedDataParser_,
@@ -990,6 +1045,7 @@ ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeParserNS(
       'Polygon': ol.xml.makeObjectPropertySetter(
           ol.format.KML.readPolygon_, 'geometry'),
       'Style': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_),
+      'StyleMap': ol.format.KML.StyleMapParser_,
       'address': ol.xml.makeObjectPropertySetter(ol.format.KML.readString_),
       'description': ol.xml.makeObjectPropertySetter(ol.format.KML.readString_),
       'name': ol.xml.makeObjectPropertySetter(ol.format.KML.readString_),
@@ -1031,6 +1087,16 @@ ol.format.KML.STYLE_PARSERS_ = ol.xml.makeParserNS(
       'IconStyle': ol.format.KML.IconStyleParser_,
       'LineStyle': ol.format.KML.LineStyleParser_,
       'PolyStyle': ol.format.KML.PolyStyleParser_
+    });
+
+
+/**
+ * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.KML.STYLE_MAP_PARSERS_ = ol.xml.makeParserNS(
+    ol.format.KML.NAMESPACE_URIS_, {
+      'Pair': ol.format.KML.PairDataParser_
     });
 
 
