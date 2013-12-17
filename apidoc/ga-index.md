@@ -19,7 +19,7 @@ Layers are responsible for retrieving data and displaying it.
 Projections
 -----------
 A [GeoAdmin API](http://api3.geo.admin.ch) map uses the swiss grid (EPSG:21781).
-A {@link ol.proj.Projection} defines which point on earth is represented by a pair of coordinates.
+An {@link ol.proj.Projection} defines which point on earth is represented by a pair of coordinates.
 Coordinates within OpenLayers can be used in various projections where some common projections are always supported,
 others can be used via [Proj4js](http://trac.osgeo.org/proj4js/).
 
