@@ -1,3 +1,5 @@
+// FIXME add Styles with ids to sharedStyles_
+// FIXME handle highlighted keys in StyleMaps - use styleFunctions
 // FIXME extractAttributes
 // FIXME extractStyles
 // FIXME gx:Track
