@@ -42,16 +42,23 @@ ol.render.canvas.Instruction = {
  * @constructor
  * @implements {ol.render.IRender}
  * @param {number} pixelRatio Pixel ratio.
+ * @param {number} tolerance Tolerance.
  * @protected
  * @struct
  */
-ol.render.canvas.Replay = function(pixelRatio) {
+ol.render.canvas.Replay = function(pixelRatio, tolerance) {
 
   /**
    * @protected
    * @type {number}
    */
   this.pixelRatio = pixelRatio;
+
+  /**
+   * @protected
+   * @type {number}
+   */
+  this.tolerance = tolerance;
 
   /**
    * @private
@@ -438,12 +445,13 @@ ol.render.canvas.Replay.prototype.setTextStyle = goog.abstractMethod;
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @param {number} pixelRatio Pixel ratio.
+ * @param {number} tolerance Tolerance.
  * @protected
  * @struct
  */
-ol.render.canvas.ImageReplay = function(pixelRatio) {
+ol.render.canvas.ImageReplay = function(pixelRatio, tolerance) {
 
-  goog.base(this, pixelRatio);
+  goog.base(this, pixelRatio, tolerance);
 
   /**
    * @private
@@ -597,12 +605,13 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @param {number} pixelRatio Pixel ratio.
+ * @param {number} tolerance Tolerance.
  * @protected
  * @struct
  */
-ol.render.canvas.LineStringReplay = function(pixelRatio) {
+ol.render.canvas.LineStringReplay = function(pixelRatio, tolerance) {
 
-  goog.base(this, pixelRatio);
+  goog.base(this, pixelRatio, tolerance);
 
   /**
    * @private
@@ -800,12 +809,13 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @param {number} pixelRatio Pixel ratio.
+ * @param {number} tolerance Tolerance.
  * @protected
  * @struct
  */
-ol.render.canvas.PolygonReplay = function(pixelRatio) {
+ol.render.canvas.PolygonReplay = function(pixelRatio, tolerance) {
 
-  goog.base(this, pixelRatio);
+  goog.base(this, pixelRatio, tolerance);
 
   /**
    * @private
@@ -1272,7 +1282,7 @@ ol.render.canvas.ReplayGroup.prototype.getReplay =
   if (!goog.isDef(replay)) {
     var constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
     goog.asserts.assert(goog.isDef(constructor));
-    replay = new constructor(this.pixelRatio_);
+    replay = new constructor(this.pixelRatio_, this.tolerance_);
     replayes[replayType] = replay;
   }
   return replay;
@@ -1291,7 +1301,7 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
  * @const
  * @private
  * @type {Object.<ol.render.ReplayType,
- *                function(new: ol.render.canvas.Replay, number)>}
+ *                function(new: ol.render.canvas.Replay, number, number)>}
  */
 ol.render.canvas.BATCH_CONSTRUCTORS_ = {
   'Image': ol.render.canvas.ImageReplay,
