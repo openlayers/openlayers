@@ -2,7 +2,7 @@ Finding your way around
 -----------------------
 
 The [GeoAdmin API](http://api3.geo.admin.ch) is an extension of [OpenLayers 3](http://ol3js.org)
-which add only a few classes and configuration files to OpenLayers 3, to make it easier to
+which adds only a few classes and configuration files to OpenLayers 3, to make it easier to
 use with the [swiss grid](http://www.swisstopo.admin.ch/internet/swisstopo/en/home/topics/survey/sys/refsys/projections.html) and the layers provided by the swiss confederation and cantons.
 
 See the class list to the right and especially take a look at {@link ga.Map} and the method {@link ga.layer.create}
