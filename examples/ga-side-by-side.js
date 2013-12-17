@@ -28,7 +28,7 @@ var domMap = new ga.Map({
 });
 
 if (ol.webgl.SUPPORTED) {
-  var webglMap = new ol.Map({
+  var webglMap = new ga.Map({
     renderer: ol.RendererHint.WEBGL,
     target: 'webglMap'
   });
@@ -42,7 +42,7 @@ if (ol.webgl.SUPPORTED) {
   info.style.display = '';
 }
 
-var canvasMap = new ol.Map({
+var canvasMap = new ga.Map({
   renderer: ol.RendererHint.CANVAS,
   target: 'canvasMap'
 });
