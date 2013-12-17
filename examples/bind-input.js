@@ -22,14 +22,17 @@ if (!ol.webgl.SUPPORTED) {
 var layer = new ol.layer.Tile({
   source: new ol.source.OSM()
 });
+
+var view = new ol.View2D({
+  center: [0, 0],
+  zoom: 2
+});
+
 var map = new ol.Map({
   layers: [layer],
   renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
-  view: new ol.View2D({
-    center: [0, 0],
-    zoom: 2
-  })
+  view: view
 });
 
 var visible = new ol.dom.Input(document.getElementById('visible'));
@@ -57,10 +60,7 @@ brightness.bindTo('value', layer, 'brightness')
 
 
 var rotation = new ol.dom.Input(document.getElementById('rotation'));
-rotation.bindTo('value', /** @type {ol.View2D} */ (map.getView()), 'rotation')
-    .transform(parseFloat, String);
+rotation.bindTo('value', view, 'rotation').transform(parseFloat, String);
 
 var resolution = new ol.dom.Input(document.getElementById('resolution'));
-resolution.bindTo('value',
-    /** @type {ol.View2D} */ (map.getView()), 'resolution')
-    .transform(parseFloat, String);
+resolution.bindTo('value', view, 'resolution').transform(parseFloat, String);
