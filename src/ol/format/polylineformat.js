@@ -171,15 +171,8 @@ ol.format.Polyline.encodeSignedIntegers = function(numbers) {
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii; ++i) {
     var num = numbers[i];
-
-    var signedNum = num << 1;
-    if (num < 0) {
-      signedNum = ~(signedNum);
-    }
-
-    numbers[i] = signedNum;
+    numbers[i] = (num < 0) ? ~(num << 1) : (num << 1);
   }
-
   return ol.format.Polyline.encodeUnsignedIntegers(numbers);
 };
 
