@@ -5,6 +5,7 @@ goog.require('ol.Feature');
 goog.require('ol.format.Text');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.flat');
+goog.require('ol.proj');
 
 
 
@@ -374,6 +375,14 @@ ol.format.Polyline.prototype.readGeometryFromText = function(text) {
   var coordinates = ol.geom.flat.inflateCoordinates(
       flatCoordinates, 0, flatCoordinates.length, 2);
   return new ol.geom.LineString(coordinates);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.Polyline.prototype.readProjectionFromText = function(text) {
+  return ol.proj.get('EPSG:4326');
 };
 
 
