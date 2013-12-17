@@ -395,7 +395,7 @@ ol.format.Polyline.prototype.writeFeaturesText = function(features) {
  * @inheritDoc
  */
 ol.format.Polyline.prototype.writeGeometryText = function(geometry) {
-  goog.asserts.assert(geometry.getType() == ol.geom.GeometryType.LINE_STRING);
+  goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
   var flatCoordinates = geometry.getFlatCoordinates();
   var stride = geometry.getStride();
   return ol.format.Polyline.encodeFlatCoordinates(flatCoordinates, stride);
