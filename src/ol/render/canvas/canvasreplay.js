@@ -14,6 +14,7 @@ goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.geom.flat');
+goog.require('ol.geom.simplify');
 goog.require('ol.render.IRender');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.canvas');
@@ -984,6 +985,18 @@ ol.render.canvas.PolygonReplay.prototype.finish = function() {
   goog.asserts.assert(!goog.isNull(this.state_));
   this.reverseHitDetectionInstructions_();
   this.state_ = null;
+  // We want to preserve topology when drawing polygons.  Polygons are
+  // simplified using quantization and point elimination. However, we might
+  // have received a mix of quantized and non-quantized geometries, so ensure
+  // that all are quantized by quantizing all coordinates in the batch.
+  var tolerance = this.tolerance;
+  if (tolerance !== 0) {
+    var coordinates = this.coordinates;
+    var i, ii;
+    for (i = 0, ii = coordinates.length; i < ii; ++i) {
+      coordinates[i] = ol.geom.simplify.snap(coordinates[i], tolerance);
+    }
+  }
 };
 
 
