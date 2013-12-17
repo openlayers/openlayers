@@ -1,7 +1,7 @@
-geo.admin.ch API
-================
+GeoAdmin API
+============
 
-This is a fork of [OpenLayers 3](http://ol3js.org/) which add features specific
+This is an extension of [OpenLayers 3](http://ol3js.org/) which add features specific
 to [geo.admin.ch](http://www.geo.admin.ch/).
 
 
