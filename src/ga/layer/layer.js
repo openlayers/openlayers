@@ -118,8 +118,8 @@ ga.layer.attributions = {};
 /**
  * Get the attribution 
  * @method
- * @param {string} id of the Datenherr, i.e. 'ch.swisstopo'
- * @return {ol.Attribution}
+ * @param {string} text id of the Datenherr, i.e. 'ch.swisstopo'
+ * @return {Object|null}
  */
 ga.layer.getAttribution = function(text) {
   var key = text;
