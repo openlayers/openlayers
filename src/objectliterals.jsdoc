@@ -255,6 +255,12 @@
  */
 
 /**
+ * @typedef {Object} olx.format.IGCOptions
+ * @property {ol.format.IGCZ|undefined} altitudeMode Altitude mode.
+ *     Possible values are `barometric`, `gps`, and `none`. Default is `none`.
+ */
+
+/**
  * @typedef {Object} olx.interaction.DoubleClickZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {number|undefined} delta The zoom delta applied on each double
@@ -490,6 +496,14 @@
  * @property {GeoJSONObject|undefined} object Object.
  * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {ol.proj.ProjectionLike} reprojectTo Re-project to.
+ * @property {string|undefined} text Text.
+ * @property {string|undefined} url URL.
+ */
+
+/**
+ * @typedef {Object} olx.source.IGCOptions
+ * @property {ol.format.IGCZ|undefined} altitudeMode Altitude mode.
+ *     Possible values are `barometric`, `gps`, and `none`. Default is `none`.
  * @property {string|undefined} text Text.
  * @property {string|undefined} url URL.
  */
