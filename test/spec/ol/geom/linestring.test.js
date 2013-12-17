@@ -53,7 +53,6 @@ describe('ol.geom.LineString', function() {
       expect(line.getBounds()).to.eql([10, 20, 30, 40]);
       goog.events.listen(line, 'change', function(evt) {
         expect(evt.target).to.equal(line);
-        expect(evt.oldExtent).to.eql([10, 20, 30, 40]);
         expect(evt.target.getBounds()).to.eql([30, 40, 50, 60]);
         expect(evt.target.getCoordinates()).to.eql([[30, 40], [50, 60]]);
         done();

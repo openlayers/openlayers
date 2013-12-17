@@ -1,11 +1,10 @@
 goog.provide('ol.geom.Geometry');
-goog.provide('ol.geom.GeometryEvent');
 goog.provide('ol.geom.GeometryType');
 
-goog.require('goog.events.Event');
-goog.require('goog.events.EventTarget');
+goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.Extent');
+goog.require('ol.Observable');
 goog.require('ol.TransformFunction');
 
 
@@ -30,13 +29,13 @@ ol.geom.GeometryType = {
 
 /**
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.Observable}
  * @todo stability experimental
  */
 ol.geom.Geometry = function() {
   goog.base(this);
 };
-goog.inherits(ol.geom.Geometry, goog.events.EventTarget);
+goog.inherits(ol.geom.Geometry, ol.Observable);
 
 
 /**
@@ -75,18 +74,9 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 ol.geom.Geometry.prototype.transform = goog.abstractMethod;
 
 
-
 /**
- * Constructor for geometry events.
- * @constructor
- * @extends {goog.events.Event}
- * @param {string} type Event type.
- * @param {ol.geom.Geometry} target The target geometry.
- * @param {ol.Extent} oldExtent The previous geometry extent.
+ * Dispatch a generic event with type "change."
  */
-ol.geom.GeometryEvent = function(type, target, oldExtent) {
-  goog.base(this, type, target);
-
-  this.oldExtent = oldExtent;
+ol.geom.Geometry.prototype.dispatchChangeEvent = function() {
+  this.dispatchEvent(goog.events.EventType.CHANGE);
 };
-goog.inherits(ol.geom.GeometryEvent, goog.events.Event);
