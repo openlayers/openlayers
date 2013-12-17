@@ -33,6 +33,12 @@ ol.source.MapGuide = function(options) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.hidpi_ = goog.isDef(options.hidpi) ? options.hidpi : true;
+
+  /**
+   * @private
    * @type {number}
    */
   this.displayDpi_ = goog.isDef(options.displayDpi) ?
@@ -74,6 +80,7 @@ goog.inherits(ol.source.MapGuide, ol.source.Image);
 ol.source.MapGuide.prototype.getImage =
     function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
+  pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
   var image = this.image_;
   if (!goog.isNull(image) &&

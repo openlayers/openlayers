@@ -40,6 +40,12 @@ ol.source.ImageWMS = function(options) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.hidpi_ = goog.isDef(options.hidpi) ? options.hidpi : true;
+
+  /**
+   * @private
    * @type {ol.Image}
    */
   this.image_ = null;
@@ -48,8 +54,7 @@ ol.source.ImageWMS = function(options) {
    * @private
    * @type {number}
    */
-  this.ratio_ = goog.isDef(options.ratio) ?
-      options.ratio : 1.5;
+  this.ratio_ = goog.isDef(options.ratio) ? options.ratio : 1.5;
 
 };
 goog.inherits(ol.source.ImageWMS, ol.source.Image);
@@ -71,6 +76,7 @@ ol.source.ImageWMS.prototype.getParams = function() {
 ol.source.ImageWMS.prototype.getImage =
     function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
+  pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
   var image = this.image_;
   if (!goog.isNull(image) &&
