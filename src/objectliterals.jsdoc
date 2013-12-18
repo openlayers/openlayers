@@ -732,9 +732,17 @@
  */
 
 /**
+ * @typedef {Object} olx.style.IconOptions
+ * @property {ol.Pixel|undefined} anchor Anchor.
+ * @property {null|string|undefined} crossOrigin crossOrigin setting for image.
+ * @property {number|undefined} rotation Rotation.
+ * @property {ol.Size|undefined} size Icon size in pixel.
+ * @property {string} src Image source URI.
+ */
+
+/**
  * @typedef {Object} olx.style.ImageOptions
  * @property {ol.Pixel} anchor Anchor.
- * @property {null|string|undefined} crossOrigin crossOrigin setting for image.
  * @property {HTMLCanvasElement|HTMLVideoElement|Image|undefined} image Image.
  * @property {ol.style.ImageState|undefined} imageState Image state.
  * @property {number|undefined} rotation Rotation.
