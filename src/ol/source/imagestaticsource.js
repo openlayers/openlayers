@@ -38,7 +38,7 @@ ol.source.ImageStatic = function(options) {
    * @type {ol.Image}
    */
   this.image_ = this.createImage(
-      imageExtent, imageResolution, imageSize, projection);
+      imageExtent, imageResolution, 1, imageSize, projection);
 
 };
 goog.inherits(ol.source.ImageStatic, ol.source.Image);
@@ -48,7 +48,7 @@ goog.inherits(ol.source.ImageStatic, ol.source.Image);
  * @inheritDoc
  */
 ol.source.ImageStatic.prototype.getImage =
-    function(extent, resolution, projection) {
+    function(extent, resolution, pixelRatio, projection) {
   if (ol.extent.intersects(extent, this.image_.getExtent())) {
     return this.image_;
   }

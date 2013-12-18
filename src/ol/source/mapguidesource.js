@@ -33,6 +33,12 @@ ol.source.MapGuide = function(options) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.hidpi_ = goog.isDef(options.hidpi) ? options.hidpi : true;
+
+  /**
+   * @private
    * @type {number}
    */
   this.displayDpi_ = goog.isDef(options.displayDpi) ?
@@ -72,12 +78,14 @@ goog.inherits(ol.source.MapGuide, ol.source.Image);
  * @inheritDoc
  */
 ol.source.MapGuide.prototype.getImage =
-    function(extent, resolution, projection) {
+    function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
+  pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
   var image = this.image_;
   if (!goog.isNull(image) &&
       image.getResolution() == resolution &&
+      image.getPixelRatio() == pixelRatio &&
       ol.extent.containsExtent(image.getExtent(), extent)) {
     return image;
   }
@@ -88,9 +96,10 @@ ol.source.MapGuide.prototype.getImage =
   }
   var width = (extent[2] - extent[0]) / resolution;
   var height = (extent[3] - extent[1]) / resolution;
-  var size = [width, height];
+  var size = [width * pixelRatio, height * pixelRatio];
 
-  this.image_ = this.createImage(extent, resolution, size, projection);
+  this.image_ = this.createImage(
+      extent, resolution, pixelRatio, size, projection);
   return this.image_;
 };
 

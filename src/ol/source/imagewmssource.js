@@ -40,6 +40,18 @@ ol.source.ImageWMS = function(options) {
 
   /**
    * @private
+   * @type {ol.source.wms.ServerType|undefined}
+   */
+  this.serverType_ = options.serverType;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.hidpi_ = goog.isDef(options.hidpi) ? options.hidpi : true;
+
+  /**
+   * @private
    * @type {ol.Image}
    */
   this.image_ = null;
@@ -48,8 +60,7 @@ ol.source.ImageWMS = function(options) {
    * @private
    * @type {number}
    */
-  this.ratio_ = goog.isDef(options.ratio) ?
-      options.ratio : 1.5;
+  this.ratio_ = goog.isDef(options.ratio) ? options.ratio : 1.5;
 
 };
 goog.inherits(ol.source.ImageWMS, ol.source.Image);
@@ -69,12 +80,14 @@ ol.source.ImageWMS.prototype.getParams = function() {
  * @inheritDoc
  */
 ol.source.ImageWMS.prototype.getImage =
-    function(extent, resolution, projection) {
+    function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
+  pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
   var image = this.image_;
   if (!goog.isNull(image) &&
       image.getResolution() == resolution &&
+      image.getPixelRatio() == pixelRatio &&
       ol.extent.containsExtent(image.getExtent(), extent)) {
     return image;
   }
@@ -83,9 +96,15 @@ ol.source.ImageWMS.prototype.getImage =
   ol.extent.scaleFromCenter(extent, this.ratio_);
   var width = (extent[2] - extent[0]) / resolution;
   var height = (extent[3] - extent[1]) / resolution;
-  var size = [width, height];
+  var size = [width * pixelRatio, height * pixelRatio];
 
-  this.image_ = this.createImage(extent, resolution, size, projection);
+  if (goog.isDef(this.serverType_) && pixelRatio > 1) {
+    var param = ol.source.wms.getDpiParam(this.serverType_, pixelRatio);
+    goog.object.extend(this.params_, param);
+  }
+
+  this.image_ = this.createImage(
+      extent, resolution, pixelRatio, size, projection);
   return this.image_;
 };
 
