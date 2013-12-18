@@ -32,6 +32,15 @@ ol.BrowserFeature.HAS_DEVICE_ORIENTATION =
 
 
 /**
+ * Is HTML5 geolocation supported in the current browser?
+ * @const
+ * @type {boolean}
+ * @todo stability experimental
+ */
+ol.BrowserFeature.HAS_GEOLOCATION = 'geolocation' in goog.global.navigator;
+
+
+/**
 * True if browser supports touch events.
 * @const
 * @type {boolean}
