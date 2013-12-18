@@ -185,6 +185,24 @@ describe('ol.Feature', function() {
       expect(feature.getGeometry()).to.be(point);
       feature.setGeometryName('altGeometry');
       expect(feature.getGeometry()).to.be(point2);
+
+      feature.on('change', function() {
+        expect.fail();
+      });
+      point.setCoordinates([0, 2]);
+    });
+
+    it('changes property listener', function(done) {
+      var feature = new ol.Feature();
+      feature.setGeometry(point);
+      var point2 = new ol.geom.Point([1, 2]);
+      feature.set('altGeometry', point2);
+      feature.setGeometryName('altGeometry');
+
+      feature.on('change', function() {
+        done();
+      });
+      point2.setCoordinates([0, 2]);
     });
 
   });

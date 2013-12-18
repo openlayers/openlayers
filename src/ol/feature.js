@@ -209,6 +209,12 @@ ol.Feature.prototype.setId = function(id) {
  * @param {string} name Geometry property name.
  */
 ol.Feature.prototype.setGeometryName = function(name) {
+  goog.events.unlisten(
+      this, ol.Object.getChangeEventType(this.geometryName_),
+      this.handleGeometryChanged_, false, this);
   this.geometryName_ = name;
+  goog.events.listen(
+      this, ol.Object.getChangeEventType(this.geometryName_),
+      this.handleGeometryChanged_, false, this);
   this.handleGeometryChanged_();
 };
