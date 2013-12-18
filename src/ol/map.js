@@ -1299,7 +1299,7 @@ ol.Map.createOptionsInternal = function(options) {
         break;
       }
     } else if (rendererHint == ol.RendererHint.WEBGL) {
-      if (ol.ENABLE_WEBGL && ol.BrowserFeature.HAS_WEBGL) {
+      if (ol.BrowserFeature.HAS_WEBGL) {
         rendererConstructor = ol.renderer.webgl.Map;
         break;
       }

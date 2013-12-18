@@ -109,7 +109,7 @@ ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH ||
  * @type {boolean}
  * @todo stability experimental
  */
-ol.BrowserFeature.HAS_WEBGL = (
+ol.BrowserFeature.HAS_WEBGL = ol.ENABLE_WEBGL && (
     /**
      * @return {boolean} WebGL supported.
      */
