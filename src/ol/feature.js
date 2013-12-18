@@ -12,7 +12,6 @@ goog.require('ol.style.Style');
  * @enum {string}
  */
 ol.FeatureProperty = {
-  GEOMETRY: 'geometry',
   STYLE_FUNCTION: 'styleFunction'
 };
 
@@ -44,7 +43,7 @@ ol.Feature = function(opt_geometryOrValues) {
    * @type {string}
    * @private
    */
-  this.geometryName_ = ol.FeatureProperty.GEOMETRY;
+  this.geometryName_ = 'geometry';
 
   /**
    * @private
@@ -59,7 +58,7 @@ ol.Feature = function(opt_geometryOrValues) {
   this.geometryChangeKey_ = null;
 
   goog.events.listen(
-      this, ol.Object.getChangeEventType(ol.FeatureProperty.GEOMETRY),
+      this, ol.Object.getChangeEventType(this.geometryName_),
       this.handleGeometryChanged_, false, this);
   goog.events.listen(
       this, ol.Object.getChangeEventType(ol.FeatureProperty.STYLE_FUNCTION),

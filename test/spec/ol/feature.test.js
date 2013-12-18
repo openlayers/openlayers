@@ -155,7 +155,7 @@ describe('ol.Feature', function() {
     it('sets the default geometry', function() {
       var feature = new ol.Feature();
       feature.setGeometry(point);
-      expect(feature.get(ol.FeatureProperty.GEOMETRY)).to.be(point);
+      expect(feature.get('geometry')).to.be(point);
     });
 
     it('replaces previous default geometry', function() {
