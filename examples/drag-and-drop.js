@@ -1,7 +1,6 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
-goog.require('ol.format.GeoJSON');
 goog.require('ol.format.KML');
 goog.require('ol.interaction');
 goog.require('ol.interaction.DragAndDrop');
@@ -13,7 +12,6 @@ var map = new ol.Map({
   interactions: ol.interaction.defaults().extend([
     new ol.interaction.DragAndDrop({
       formatConstructors: [
-        ol.format.GeoJSON,
         ol.format.KML
       ]
     })
