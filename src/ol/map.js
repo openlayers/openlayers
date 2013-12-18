@@ -60,7 +60,6 @@ goog.require('ol.proj.common');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Map');
 goog.require('ol.renderer.dom.Map');
-goog.require('ol.renderer.webgl');
 goog.require('ol.renderer.webgl.Map');
 goog.require('ol.structs.PriorityQueue');
 goog.require('ol.vec.Mat4');
