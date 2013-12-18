@@ -104,13 +104,13 @@
     </Style>
     <Folder>
       <name>Paths</name>
-      <visibility>0</visibility>
+      <visibility>1</visibility>
       <description>Examples of paths. Note that the tessellate tag is by default
         set to 0. If you want to create tessellated lines, they must be authored
         (or edited) directly in KML.</description>
       <Placemark>
         <name>Tessellated</name>
-        <visibility>0</visibility>
+        <visibility>1</visibility>
         <description><![CDATA[If the <tessellate> tag has a value of 1, the line will contour to the underlying terrain]]></description>
         <LookAt>
           <longitude>-112.0822680013139</longitude>
@@ -128,7 +128,7 @@
       </Placemark>
       <Placemark>
         <name>Untessellated</name>
-        <visibility>0</visibility>
+        <visibility>1</visibility>
         <description><![CDATA[If the <tessellate> tag has a value of 0, the line follow a simple straight-line path from point to point]]></description>
         <LookAt>
           <longitude>-112.0822680013139</longitude>
@@ -146,7 +146,7 @@
       </Placemark>
       <Placemark>
         <name>Absolute</name>
-        <visibility>0</visibility>
+        <visibility>1</visibility>
         <description>Transparent purple line</description>
         <LookAt>
           <longitude>-112.2719329043177</longitude>
@@ -175,7 +175,7 @@
       </Placemark>
       <Placemark>
         <name>Absolute Extruded</name>
-        <visibility>0</visibility>
+        <visibility>1</visibility>
         <description>Transparent green wall with yellow outlines</description>
         <LookAt>
           <longitude>-112.2643334742529</longitude>
@@ -205,7 +205,7 @@
       </Placemark>
       <Placemark>
         <name>Relative</name>
-        <visibility>0</visibility>
+        <visibility>1</visibility>
         <description>Black line (10 pixels wide), height tracks terrain</description>
         <LookAt>
           <longitude>-112.2580438551384</longitude>
@@ -234,7 +234,7 @@
       </Placemark>
       <Placemark>
         <name>Relative Extruded</name>
-        <visibility>0</visibility>
+        <visibility>1</visibility>
         <description>Opaque blue walls with red outline, height tracks terrain</description>
         <LookAt>
           <longitude>-112.2683594333433</longitude>
