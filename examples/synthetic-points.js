@@ -6,8 +6,8 @@ goog.require('ol.View2D');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Vector');
-goog.require('ol.shape');
 goog.require('ol.source.Vector');
+goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
@@ -27,14 +27,18 @@ for (var i = 0; i < count; ++i) {
 
 var styles = {
   '10': [new ol.style.Style({
-    image: ol.shape.renderCircle(5,
-        new ol.style.Fill({color: '#666666'}),
-        new ol.style.Stroke({color: '#bada55', width: 1}))
+    image: new ol.style.Circle({
+      radius: 5,
+      fill: new ol.style.Fill({color: '#666666'}),
+      stroke: new ol.style.Stroke({color: '#bada55', width: 1})
+    })
   })],
   '20': [new ol.style.Style({
-    image: ol.shape.renderCircle(10,
-        new ol.style.Fill({color: '#666666'}),
-        new ol.style.Stroke({color: '#bada55', width: 1}))
+    image: new ol.style.Circle({
+      radius: 10,
+      fill: new ol.style.Fill({color: '#666666'}),
+      stroke: new ol.style.Stroke({color: '#bada55', width: 1})
+    })
   })]
 };
 
@@ -97,10 +101,14 @@ map.on('singleclick', function(evt) {
   displaySnap(coordinate);
 });
 
-var imageStyle = ol.shape.renderCircle(10, null, new ol.style.Stroke({
-  color: 'rgba(255,255,0,0.9)',
-  width: 3
-}));
+var imageStyle = new ol.style.Circle({
+  radius: 10,
+  fill: null,
+  stroke: new ol.style.Stroke({
+    color: 'rgba(255,255,0,0.9)',
+    width: 3
+  })
+});
 var strokeStyle = new ol.style.Stroke({
   color: 'rgba(255,255,0,0.9)',
   width: 3
