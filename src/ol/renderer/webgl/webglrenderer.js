@@ -1,6 +1,6 @@
 goog.provide('ol.renderer.webgl');
 
-goog.require('ol.webgl');
+goog.require('ol.BrowserFeature');
 
 
 /**
@@ -8,4 +8,4 @@ goog.require('ol.webgl');
  * @const
  * @type {boolean}
  */
-ol.renderer.webgl.SUPPORTED = ol.webgl.SUPPORTED;
+ol.renderer.webgl.SUPPORTED = ol.BrowserFeature.HAS_WEBGL;
