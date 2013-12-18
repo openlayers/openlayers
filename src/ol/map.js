@@ -1289,7 +1289,7 @@ ol.Map.createOptionsInternal = function(options) {
   for (i = 0; i < n; ++i) {
     rendererHint = rendererHints[i];
     if (rendererHint == ol.RendererHint.CANVAS) {
-      if (ol.ENABLE_CANVAS && ol.BrowserFeature.HAS_CANVAS) {
+      if (ol.BrowserFeature.HAS_CANVAS) {
         rendererConstructor = ol.renderer.canvas.Map;
         break;
       }

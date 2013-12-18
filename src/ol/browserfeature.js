@@ -45,7 +45,7 @@ ol.BrowserFeature.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
  * @type {boolean}
  * @todo stability experimental
  */
-ol.BrowserFeature.HAS_CANVAS = (
+ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
     /**
      * @return {boolean} Canvas supported.
      */
