@@ -265,7 +265,7 @@
       <Placemark>
         <name>Blue Icon</name>
         <description>Just another blue icon.</description>
-        <styleUrl>data/kml/styles.kml#blueIcons</styleUrl>
+        <styleUrl>styles.kml#blueIcons</styleUrl>
         <Point>
           <coordinates>-112.292238941097,36.09520916122063,630</coordinates>
         </Point>
@@ -273,7 +273,7 @@
       <Placemark>
         <name>Sun Icon</name>
         <description>Just another sun icon.</description>
-        <styleUrl>data/kml/styles.kml#sunIconMap</styleUrl>
+        <styleUrl>styles.kml#sunIconMap</styleUrl>
         <Point>
           <coordinates>-112.292238941097,36.15520916122063,630</coordinates>
         </Point>
