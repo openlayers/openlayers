@@ -49,8 +49,8 @@ ol.xml.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
 
 
 /**
- * @param {function(this: T, Node, Array.<*>): Array.<*>} valueReader Value
- *     reader.
+ * @param {function(this: T, Node, Array.<*>): (Array.<*>|undefined)}
+ *     valueReader Value reader.
  * @param {T=} opt_obj Scope.
  * @return {ol.xml.Parser} Parser.
  * @template T
@@ -63,11 +63,13 @@ ol.xml.makeArrayExtender = function(valueReader, opt_obj) {
        */
       function(node, objectStack) {
         var value = valueReader.call(opt_obj, node, objectStack);
-        goog.asserts.assert(goog.isArray(value));
-        var array = /** @type {Array.<*>} */
-            (objectStack[objectStack.length - 1]);
-        goog.asserts.assert(goog.isArray(array));
-        goog.array.extend(array, value);
+        if (goog.isDef(value)) {
+          goog.asserts.assert(goog.isArray(value));
+          var array = /** @type {Array.<*>} */
+              (objectStack[objectStack.length - 1]);
+          goog.asserts.assert(goog.isArray(array));
+          goog.array.extend(array, value);
+        }
       });
 };
 
@@ -86,9 +88,11 @@ ol.xml.makeArrayPusher = function(valueReader, opt_obj) {
        */
       function(node, objectStack) {
         var value = valueReader.call(opt_obj, node, objectStack);
-        var array = objectStack[objectStack.length - 1];
-        goog.asserts.assert(goog.isArray(array));
-        array.push(value);
+        if (goog.isDef(value)) {
+          var array = objectStack[objectStack.length - 1];
+          goog.asserts.assert(goog.isArray(array));
+          array.push(value);
+        }
       });
 };
 
@@ -107,7 +111,9 @@ ol.xml.makeReplacer = function(valueReader, opt_obj) {
        */
       function(node, objectStack) {
         var value = valueReader.call(opt_obj, node, objectStack);
-        objectStack[objectStack.length - 1] = value;
+        if (goog.isDef(value)) {
+          objectStack[objectStack.length - 1] = value;
+        }
       });
 };
 
@@ -127,12 +133,15 @@ ol.xml.makeObjectPropertySetter = function(valueReader, opt_property, opt_obj) {
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var property = goog.isDef(opt_property) ? opt_property : node.localName;
         var value = valueReader.call(opt_obj, node, objectStack);
-        var object = /** @type {Object} */
-            (objectStack[objectStack.length - 1]);
-        goog.asserts.assert(goog.isObject(object));
-        goog.object.set(object, property, value);
+        if (goog.isDef(value)) {
+          var object = /** @type {Object} */
+              (objectStack[objectStack.length - 1]);
+          var property = goog.isDef(opt_property) ?
+              opt_property : node.localName;
+          goog.asserts.assert(goog.isObject(object));
+          goog.object.set(object, property, value);
+        }
       });
 };
 
@@ -166,11 +175,28 @@ ol.xml.parse = function(parsersNS, node, objectStack, opt_obj) {
     if (n.nodeType == goog.dom.NodeType.ELEMENT) {
       var parsers = parsersNS[n.namespaceURI];
       if (goog.isDef(parsers)) {
-        if (parsers.hasOwnProperty(n.localName)) {
-          var parser = parsers[n.localName];
+        var parser = parsers[n.localName];
+        if (goog.isDef(parser)) {
           parser.call(opt_obj, n, objectStack);
         }
       }
     }
   }
+};
+
+
+/**
+ * @param {T} object Object.
+ * @param {Object.<string, Object.<string, ol.xml.Parser>>} parsersNS
+ *     Parsers by namespace.
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @param {*=} opt_obj Scope.
+ * @return {T|undefined} Object.
+ * @template T
+ */
+ol.xml.pushAndParse = function(object, parsersNS, node, objectStack, opt_obj) {
+  objectStack.push(object);
+  ol.xml.parse(parsersNS, node, objectStack, opt_obj);
+  return objectStack.pop();
 };

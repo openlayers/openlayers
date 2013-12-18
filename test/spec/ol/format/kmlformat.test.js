@@ -845,7 +845,7 @@ describe('ol.format.KML', function() {
 
     // FIXME these tests pass in the browser, but fail on PhantomJS.  This is
     // FIXME likely to be something to do with the parsed document's baseURI.
-    describe.skip('shared styles', function() {
+    describe('shared styles', function() {
 
       it('can apply a shared style to a feature', function() {
         var text =
@@ -1105,8 +1105,153 @@ describe('ol.format.KML', function() {
 
     });
 
-  });
+    describe('error handling', function() {
 
+      it('should ignore invalid coordinates', function() {
+        var doc = goog.dom.xml.loadXml('<coordinates>INVALID</coordinates>');
+        var node = doc.firstChild;
+        expect(ol.format.KML.readFlatCoordinates_(node)).to.be(undefined);
+      });
+
+      it('should ignore Points with invalid coordinates', function() {
+        var kml =
+            '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+            '  <Placemark>' +
+            '    <Point>' +
+            '      <coordinates>INVALID COORDINATES</coordinates>' +
+            '    </Point>' +
+            '  </Placemark>' +
+            '<kml>';
+        var fs = format.readFeatures(kml);
+        expect(fs).to.be.an(Array);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        expect(f.getGeometry()).to.be(null);
+      });
+
+      it('should ignore LineStrings with invalid coordinates', function() {
+        var kml =
+            '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+            '  <Placemark>' +
+            '    <Point>' +
+            '      <coordinates>INVALID COORDINATES</coordinates>' +
+            '    </Point>' +
+            '  </Placemark>' +
+            '<kml>';
+        var fs = format.readFeatures(kml);
+        expect(fs).to.be.an(Array);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        expect(f.getGeometry()).to.be(null);
+      });
+
+      it('should ignore Polygons with no rings', function() {
+        var kml =
+            '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+            '  <Placemark>' +
+            '    <Polygon/>' +
+            '      <coordinates>INVALID COORDINATES</coordinates>' +
+            '    </Polygon>' +
+            '  </Placemark>' +
+            '<kml>';
+        var fs = format.readFeatures(kml);
+        expect(fs).to.be.an(Array);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        expect(f.getGeometry()).to.be(null);
+      });
+
+      it('should ignore Polygons with no outer ring', function() {
+        var kml =
+            '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+            '  <Placemark>' +
+            '    <Polygon/>' +
+            '      <innerRingIs>' +
+            '        <LinearRing>' +
+            '          <coordinates>1,2,3 4,5,6 7,8,9</coordinates>' +
+            '        </LinearRing>' +
+            '      </innerRingIs>' +
+            '    </Polygon>' +
+            '  </Placemark>' +
+            '<kml>';
+        var fs = format.readFeatures(kml);
+        expect(fs).to.be.an(Array);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        expect(f.getGeometry()).to.be(null);
+      });
+
+      it('should ignore geometries with invalid coordinates', function() {
+        var kml =
+            '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+            '  <Placemark>' +
+            '    <MultiGeometry>' +
+            '      <Point>' +
+            '        <coordinates>INVALID COORDINATES</coordinates>' +
+            '      </Point>' +
+            '    </MultiGeometry>' +
+            '  </Placemark>' +
+            '<kml>';
+        var fs = format.readFeatures(kml);
+        expect(fs).to.be.an(Array);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var g = f.getGeometry();
+        expect(g).to.be.an(ol.geom.GeometryCollection);
+        expect(g.getGeometries()).to.be.empty();
+      });
+
+      it('should ignore invalid booleans', function() {
+        var kml =
+            '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+            '  <Placemark>' +
+            '    <visibility>foo</visibility>' +
+            '  </Placemark>' +
+            '<kml>';
+        var fs = format.readFeatures(kml);
+        expect(fs).to.be.an(Array);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        expect(f.get('visibility')).to.be(undefined);
+      });
+
+      it('parse all valid features in a Folder, without error', function() {
+        var kml =
+            '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+            '  <Placemark id="a"/>' +
+            '  <Folder>' +
+            '    <Placemark id="b"/>' +
+            '    <Placemark id="c">' +
+            '      <visibility>foo</visibility>' +
+            '    </Placemark>' +
+            '    <Placemark id="d"/>' +
+            '  </Folder>' +
+            '  <Placemark id="e"/>' +
+            '<kml>';
+        var fs = format.readFeatures(kml);
+        expect(fs).to.be.an(Array);
+        expect(fs).to.have.length(5);
+        expect(fs[0]).to.be.an(ol.Feature);
+        expect(fs[0].getId()).to.be('a');
+        expect(fs[1]).to.be.an(ol.Feature);
+        expect(fs[1].getId()).to.be('b');
+        expect(fs[2]).to.be.an(ol.Feature);
+        expect(fs[2].getId()).to.be('c');
+        expect(fs[3]).to.be.an(ol.Feature);
+        expect(fs[3].getId()).to.be('d');
+        expect(fs[4]).to.be.an(ol.Feature);
+        expect(fs[4].getId()).to.be('e');
+      });
+
+    });
+
+  });
 
   describe('when parsing states.kml', function() {
 
@@ -1153,6 +1298,7 @@ describe('ol.format.KML', function() {
 
 
 goog.require('goog.array');
+goog.require('goog.dom.xml');
 goog.require('ol.Feature');
 goog.require('ol.format.KML');
 goog.require('ol.geom.GeometryCollection');
