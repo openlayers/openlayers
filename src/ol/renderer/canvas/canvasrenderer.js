@@ -1,6 +1,6 @@
 goog.provide('ol.renderer.canvas');
 
-goog.require('ol.canvas');
+goog.require('ol.BrowserFeature');
 
 
 /**
@@ -8,4 +8,4 @@ goog.require('ol.canvas');
  * @const
  * @type {boolean}
  */
-ol.renderer.canvas.SUPPORTED = ol.canvas.SUPPORTED;
+ol.renderer.canvas.SUPPORTED = ol.BrowserFeature.HAS_CANVAS;

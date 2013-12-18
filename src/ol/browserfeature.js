@@ -22,6 +22,30 @@ ol.BrowserFeature.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
 
 
 /**
+ * True if browser supports Canvas.
+ * @const
+ * @type {boolean}
+ * @todo stability experimental
+ */
+ol.BrowserFeature.HAS_CANVAS = (
+    /**
+     * @return {boolean} Canvas supported.
+     */
+    function() {
+      if (!('HTMLCanvasElement' in goog.global)) {
+        return false;
+      }
+      try {
+        var canvas = /** @type {HTMLCanvasElement} */
+            (goog.dom.createElement(goog.dom.TagName.CANVAS));
+        return !goog.isNull(canvas.getContext('2d'));
+      } catch (e) {
+        return false;
+      }
+    })();
+
+
+/**
  * Indicates if DeviceOrientation is supported in the user's browser.
  * @const
  * @type {boolean}
