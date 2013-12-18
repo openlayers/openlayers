@@ -59,7 +59,6 @@ goog.require('ol.proj');
 goog.require('ol.proj.common');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Map');
-goog.require('ol.renderer.dom');
 goog.require('ol.renderer.dom.Map');
 goog.require('ol.renderer.webgl');
 goog.require('ol.renderer.webgl.Map');
