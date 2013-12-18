@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <Style id="transGreenPoly">
+      <LineStyle>
+        <width>1.5</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>7d00ff00</color>
+      </PolyStyle>
+    </Style>
+    <Style id="transYellowPoly">
+      <LineStyle>
+        <width>1.5</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>7d00ffff</color>
+      </PolyStyle>
+    </Style>
+    <Style id="transRedPoly">
+      <LineStyle>
+        <width>1.5</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>7d0000ff</color>
+      </PolyStyle>
+    </Style>
+    <Style id="transBluePoly">
+      <LineStyle>
+        <width>1.5</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>7dff0000</color>
+      </PolyStyle>
+    </Style>
+    <Folder>
+      <name>Placemarks</name>
+      <open>0</open>
+      <Placemark>
+        <name>Simple placemark</name>
+        <description>Attached to the ground. Intelligently places itself at the height of the
+          underlying terrain.</description>
+        <Point>
+          <coordinates>-122.0822035425683,37.42228990140251,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Descriptive HTML</name>
+        <description><![CDATA[Click on the blue link!<br/><br/>
+Placemark descriptions can be enriched by using many standard HTML tags.<br/>
+For example:
+<hr/>
+Styles:<br/>
+<i>Italics</i>, 
+<b>Bold</b>, 
+<u>Underlined</u>, 
+<s>Strike Out</s>, 
+subscript<sub>subscript</sub>, 
+superscript<sup>superscript</sup>, 
+<big>Big</big>, 
+<small>Small</small>, 
+<tt>Typewriter</tt>, 
+<em>Emphasized</em>, 
+<strong>Strong</strong>, 
+<code>Code</code>
+<hr/>
+Fonts:<br/> 
+<font color="red">red by name</font>, 
+<font color="#408010">leaf green by hexadecimal RGB</font>
+<br/>
+<font size=1>size 1</font>, 
+<font size=2>size 2</font>, 
+<font size=3>size 3</font>, 
+<font size=4>size 4</font>, 
+<font size=5>size 5</font>, 
+<font size=6>size 6</font>, 
+<font size=7>size 7</font>
+<br/>
+<font face=times>Times</font>, 
+<font face=verdana>Verdana</font>, 
+<font face=arial>Arial</font><br/>
+<hr/>
+Links: 
+<br/>
+<a href="http://earth.google.com/">Google Earth!</a>
+<br/>
+ or:  Check out our website at www.google.com
+<hr/>
+Alignment:<br/>
+<p align=left>left</p>
+<p align=center>center</p>
+<p align=right>right</p>
+<hr/>
+Ordered Lists:<br/>
+<ol><li>First</li><li>Second</li><li>Third</li></ol>
+<ol type="a"><li>First</li><li>Second</li><li>Third</li></ol>
+<ol type="A"><li>First</li><li>Second</li><li>Third</li></ol>
+<hr/>
+Unordered Lists:<br/>
+<ul><li>A</li><li>B</li><li>C</li></ul>
+<ul type="circle"><li>A</li><li>B</li><li>C</li></ul>
+<ul type="square"><li>A</li><li>B</li><li>C</li></ul>
+<hr/>
+Definitions:<br/>
+<dl>
+<dt>Google:</dt><dd>The best thing since sliced bread</dd>
+</dl>
+<hr/>
+Centered:<br/><center>
+Time present and time past<br/>
+Are both perhaps present in time future,<br/>
+And time future contained in time past.<br/>
+If all time is eternally present<br/>
+All time is unredeemable.<br/>
+</center>
+<hr/>
+Block Quote:
+<br/>
+<blockquote>
+We shall not cease from exploration<br/>
+And the end of all our exploring<br/>
+Will be to arrive where we started<br/>
+And know the place for the first time.<br/>
+<i>-- T.S. Eliot</i>
+</blockquote>
+<br/>
+<hr/>
+Headings:<br/>
+<h1>Header 1</h1>
+<h2>Header 2</h2>
+<h3>Header 3</h3>
+<h3>Header 4</h4>
+<h3>Header 5</h5>
+<hr/>
+Images:<br/>
+<i>Remote image</i><br/>
+<img src="http://code.google.com/apis/kml/documentation/googleSample.png"><br/>
+<i>Scaled image</i><br/>
+<img src="http://code.google.com/apis/kml/documentation/googleSample.png" width=100><br/>
+<hr/>
+Simple Tables:<br/>
+<table border="1" padding="1">
+<tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+<tr><td>a</td><td>b</td><td>c</td><td>d</td><td>e</td></tr>
+</table>
+<br/>]]></description>
+        <Point>
+          <coordinates>-122,37,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+    <Folder>
+      <name>Google Campus - Polygons</name>
+      <open>0</open>
+      <description>A collection showing how easy it is to create 3-dimensional buildings</description>
+      <Placemark>
+        <name>Building 40</name>
+        <styleUrl>#transRedPoly</styleUrl>
+        <Polygon>
+          <extrude>1</extrude>
+          <altitudeMode>relativeToGround</altitudeMode>
+          <outerBoundaryIs>
+            <LinearRing>
+              <coordinates> -122.0848938459612,37.42257124044786,17
+                -122.0849580979198,37.42211922626856,17 -122.0847469573047,37.42207183952619,17
+                -122.0845725380962,37.42209006729676,17 -122.0845954886723,37.42215932700895,17
+                -122.0838521118269,37.42227278564371,17 -122.083792243335,37.42203539112084,17
+                -122.0835076656616,37.42209006957106,17 -122.0834709464152,37.42200987395161,17
+                -122.0831221085748,37.4221046494946,17 -122.0829247374572,37.42226503990386,17
+                -122.0829339169385,37.42231242843094,17 -122.0833837359737,37.42225046087618,17
+                -122.0833607854248,37.42234159228745,17 -122.0834204551642,37.42237075460644,17
+                -122.083659133885,37.42251292011001,17 -122.0839758438952,37.42265873093781,17
+                -122.0842374743331,37.42265143972521,17 -122.0845036949503,37.4226514386435,17
+                -122.0848020460801,37.42261133916315,17 -122.0847882750515,37.42256395055121,17
+                -122.0848938459612,37.42257124044786,17 </coordinates>
+            </LinearRing>
+          </outerBoundaryIs>
+        </Polygon>
+      </Placemark>
+      <Placemark>
+        <name>Building 41</name>
+        <styleUrl>#transBluePoly</styleUrl>
+        <Polygon>
+          <extrude>1</extrude>
+          <altitudeMode>relativeToGround</altitudeMode>
+          <outerBoundaryIs>
+            <LinearRing>
+              <coordinates> -122.0857412771483,37.42227033155257,17
+                -122.0858169768481,37.42231408832346,17 -122.085852582875,37.42230337469744,17
+                -122.0858799945639,37.42225686138789,17 -122.0858860101409,37.4222311076138,17
+                -122.0858069157288,37.42220250173855,17 -122.0858379542653,37.42214027058678,17
+                -122.0856732640519,37.42208690214408,17 -122.0856022926407,37.42214885429042,17
+                -122.0855902778436,37.422128290487,17 -122.0855841672237,37.42208171967246,17
+                -122.0854852065741,37.42210455874995,17 -122.0855067264352,37.42214267949824,17
+                -122.0854430712915,37.42212783846172,17 -122.0850990714904,37.42251282407603,17
+                -122.0856769818632,37.42281815323651,17 -122.0860162273783,37.42244918858723,17
+                -122.0857260327004,37.42229239604253,17 -122.0857412771483,37.42227033155257,17
+              </coordinates>
+            </LinearRing>
+          </outerBoundaryIs>
+        </Polygon>
+      </Placemark>
+      <Placemark>
+        <name>Building 42</name>
+        <styleUrl>#transGreenPoly</styleUrl>
+        <Polygon>
+          <extrude>1</extrude>
+          <altitudeMode>relativeToGround</altitudeMode>
+          <outerBoundaryIs>
+            <LinearRing>
+              <coordinates> -122.0857862287242,37.42136208886969,25
+                -122.0857312990603,37.42136935989481,25 -122.0857312992918,37.42140934910903,25
+                -122.0856077073679,37.42138390166565,25 -122.0855802426516,37.42137299550869,25
+                -122.0852186221971,37.42137299504316,25 -122.0852277765639,37.42161656508265,25
+                -122.0852598189347,37.42160565894403,25 -122.0852598185499,37.42168200156,25
+                -122.0852369311478,37.42170017860346,25 -122.0852643957828,37.42176197982575,25
+                -122.0853239032746,37.42176198013907,25 -122.0853559454324,37.421852864452,25
+                -122.0854108752463,37.42188921823734,25 -122.0854795379357,37.42189285337048,25
+                -122.0855436229819,37.42188921797546,25 -122.0856260178042,37.42186013499926,25
+                -122.085937287963,37.42186013453605,25 -122.0859428718666,37.42160898590042,25
+                -122.0859655469861,37.42157992759144,25 -122.0858640462341,37.42147115002957,25
+                -122.0858548911215,37.42140571326184,25 -122.0858091162768,37.4214057134039,25
+                -122.0857862287242,37.42136208886969,25 </coordinates>
+            </LinearRing>
+          </outerBoundaryIs>
+        </Polygon>
+      </Placemark>
+      <Placemark>
+        <name>Building 43</name>
+        <styleUrl>#transYellowPoly</styleUrl>
+        <Polygon>
+          <extrude>1</extrude>
+          <altitudeMode>relativeToGround</altitudeMode>
+          <outerBoundaryIs>
+            <LinearRing>
+              <coordinates> -122.0844371128284,37.42177253003091,19
+                -122.0845118855746,37.42191111542896,19 -122.0850470999805,37.42178755121535,19
+                -122.0850719913391,37.42143663023161,19 -122.084916406232,37.42137237822116,19
+                -122.0842193868167,37.42137237801626,19 -122.08421938659,37.42147617161496,19
+                -122.0838086419991,37.4214613409357,19 -122.0837899728564,37.42131306410796,19
+                -122.0832796534698,37.42129328840593,19 -122.0832609819207,37.42139213944298,19
+                -122.0829373621737,37.42137236399876,19 -122.0829062425667,37.42151569778871,19
+                -122.0828502269665,37.42176282576465,19 -122.0829435788635,37.42176776969635,19
+                -122.083217411188,37.42179248552686,19 -122.0835970430103,37.4217480074456,19
+                -122.0839455556771,37.42169364237603,19 -122.0840077894637,37.42176283815853,19
+                -122.084113587521,37.42174801104392,19 -122.0840762473784,37.42171341292375,19
+                -122.0841447047739,37.42167881534569,19 -122.084144704223,37.42181720660197,19
+                -122.0842503333074,37.4218170700446,19 -122.0844371128284,37.42177253003091,19
+              </coordinates>
+            </LinearRing>
+          </outerBoundaryIs>
+        </Polygon>
+      </Placemark>
+    </Folder>
+    <Folder>
+      <name>LineString</name>
+      <open>0</open>
+      <Placemark>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates> -112.0814237830345,36.10677870477137,0 -112.0870267752693,36.0905099328766,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+    </Folder>
+    <Folder>
+      <name>GroundOverlay</name>
+      <open>0</open>
+      <GroundOverlay>
+        <name>Large-scale overlay on terrain</name>
+        <description>Overlay shows Mount Etna erupting on July 13th, 2001.</description>
+        <Icon>
+          <href>http://code.google.com/apis/kml/documentation/etna.jpg</href>
+        </Icon>
+        <LatLonBox>
+          <north>37.91904192681665</north>
+          <south>37.46543388598137</south>
+          <east>15.35832653742206</east>
+          <west>14.60128369746704</west>
+        </LatLonBox>
+      </GroundOverlay>
+    </Folder>
+    <Folder>
+      <name>ScreenOverlays</name>
+      <open>0</open>
+      <ScreenOverlay>
+        <name>screenoverlay_dynamic_top</name>
+        <visibility>0</visibility>
+        <Icon>
+          <href>http://code.google.com/apis/kml/documentation/dynamic_screenoverlay.jpg</href>
+        </Icon>
+        <overlayXY x="0" y="1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="0" y="1" xunits="fraction" yunits="fraction"/>
+        <rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="1" y="0.2" xunits="fraction" yunits="fraction"/>
+      </ScreenOverlay>
+      <ScreenOverlay>
+        <name>screenoverlay_dynamic_right</name>
+        <visibility>0</visibility>
+        <Icon>
+          <href>http://code.google.com/apis/kml/documentation/dynamic_right.jpg</href>
+        </Icon>
+        <overlayXY x="1" y="1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="1" xunits="fraction" yunits="fraction"/>
+        <rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="1" xunits="fraction" yunits="fraction"/>
+      </ScreenOverlay>
+      <ScreenOverlay>
+        <name>Simple crosshairs</name>
+        <visibility>0</visibility>
+        <description>This screen overlay uses fractional positioning to put the image in the exact
+          center of the screen</description>
+        <Icon>
+          <href>http://code.google.com/apis/kml/documentation/crosshairs.png</href>
+        </Icon>
+        <overlayXY x="0.5" y="0.5" xunits="fraction" yunits="fraction"/>
+        <screenXY x="0.5" y="0.5" xunits="fraction" yunits="fraction"/>
+        <rotationXY x="0.5" y="0.5" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="pixels" yunits="pixels"/>
+      </ScreenOverlay>
+      <ScreenOverlay>
+        <name>screenoverlay_absolute_topright</name>
+        <visibility>0</visibility>
+        <Icon>
+          <href>http://code.google.com/apis/kml/documentation/top_right.jpg</href>
+        </Icon>
+        <overlayXY x="1" y="1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="1" xunits="fraction" yunits="fraction"/>
+        <rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+      </ScreenOverlay>
+      <ScreenOverlay>
+        <name>screenoverlay_absolute_topleft</name>
+        <visibility>0</visibility>
+        <Icon>
+          <href>http://code.google.com/apis/kml/documentation/top_left.jpg</href>
+        </Icon>
+        <overlayXY x="0" y="1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="0" y="1" xunits="fraction" yunits="fraction"/>
+        <rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+      </ScreenOverlay>
+      <ScreenOverlay>
+        <name>screenoverlay_absolute_bottomright</name>
+        <visibility>0</visibility>
+        <Icon>
+          <href>http://code.google.com/apis/kml/documentation/bottom_right.jpg</href>
+        </Icon>
+        <overlayXY x="1" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="0" xunits="fraction" yunits="fraction"/>
+        <rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+      </ScreenOverlay>
+      <ScreenOverlay>
+        <name>screenoverlay_absolute_bottomleft</name>
+        <visibility>0</visibility>
+        <Icon>
+          <href>http://code.google.com/apis/kml/documentation/bottom_left.jpg</href>
+        </Icon>
+        <overlayXY x="0" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="0" y="0" xunits="fraction" yunits="fraction"/>
+        <rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+      </ScreenOverlay>
+    </Folder>
+  </Document>
+</kml>

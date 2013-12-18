@@ -39,8 +39,9 @@ var map = new ol.Map({
   renderer: ol.RendererHint.CANVAS,
   target: 'map',
   view: new ol.View2D({
-    center: [0, 0],
-    zoom: 1
+    center: [2830724.868035966, 3914382.0471575847],
+    rotation: -Math.PI / 4,
+    zoom: 3
   })
 });
 

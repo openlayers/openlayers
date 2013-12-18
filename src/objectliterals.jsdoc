@@ -261,11 +261,30 @@
  */
 
 /**
+ * @typedef {Object} olx.format.KMLOptions
+ * @property {boolean|undefined} extractAttributes Extract attributes.
+ * @property {boolean|undefined} extractStyles Extract styles.
+ */
+
+/**
  * @typedef {Object} olx.interaction.DoubleClickZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {number|undefined} delta The zoom delta applied on each double
  *     click, default is `1`.
  * @todo stability experimental
+ */
+
+/**
+ * @typedef {Object} olx.interaction.DragAndDropOptions
+ * @property {boolean|undefined} fitView Fit view.  Default is `true`.
+ * @property {Array.<function(new: ol.format.Format)>|undefined}
+ *     formatConstructors Format constructors.
+ * @property {ol.source.Vector|undefined} source Source.  If this is defined
+ *     then features will be added to this source.
+ * @property {ol.layer.Vector|undefined} layer Layer.  If this is defined then
+ *     features will be added to this layer's source.  If neither `source` nor
+ *     `layer` are defined then the dropped features will be added as a new
+ *     layer.
  */
 
 /**
@@ -531,6 +550,19 @@
  */
 
 /**
+ * @typedef {Object} olx.source.KMLOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {Document|undefined} doc Document.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {Node|undefined| node Node.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} reprojectTo Re-project to.
+ * @property {string|undefined} text Text.
+ * @property {string|undefined} url URL.
+ */
+
+/**
  * @typedef {Object} olx.source.MapQuestOptions
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
@@ -731,6 +763,7 @@
  * @property {HTMLCanvasElement|HTMLVideoElement|Image|undefined} image Image.
  * @property {ol.style.ImageState|undefined} imageState Image state.
  * @property {number|undefined} rotation Rotation.
+ * @property {number|undefined} scale Scale.
  * @property {ol.Size} size Image size in pixel.
  * @property {boolean|undefined} snapToPixel Whether the image should be
  *     snapped to the closed pixel at rendering time.

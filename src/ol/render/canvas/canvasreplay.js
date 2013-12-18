@@ -109,6 +109,12 @@ ol.render.canvas.Replay = function(pixelRatio, tolerance) {
    */
   this.extent_ = ol.extent.createEmpty();
 
+  /**
+   * @private
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.tmpLocalTransform_ = goog.vec.Mat4.createNumber();
+
 };
 
 
@@ -180,6 +186,7 @@ ol.render.canvas.Replay.prototype.replay_ =
   var ii = instructions.length; // end of instructions
   var d; // data index
   var dd; // end of per-instruction data
+  var localTransform = this.tmpLocalTransform_;
   while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
@@ -209,6 +216,8 @@ ol.render.canvas.Replay.prototype.replay_ =
       var image =  /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */
           (instruction[7]);
       var snapToPixel = /** @type {boolean|undefined} */ (instruction[8]);
+      var scale = /** @type {number} */ (instruction[9]);
+      var rotation = /** @type {number} */ (instruction[10]);
       for (; d < dd; d += 2) {
         var x = pixelCoordinates[d] - anchorX;
         var y = pixelCoordinates[d + 1] - anchorY;
@@ -216,7 +225,21 @@ ol.render.canvas.Replay.prototype.replay_ =
           x = (x + 0.5) | 0;
           y = (y + 0.5) | 0;
         }
+        if (scale != 1 || rotation !== 0) {
+          ol.vec.Mat4.makeTransform2D(
+              localTransform, x, y, scale, scale, rotation, -x, -y);
+          context.setTransform(
+              goog.vec.Mat4.getElement(localTransform, 0, 0),
+              goog.vec.Mat4.getElement(localTransform, 1, 0),
+              goog.vec.Mat4.getElement(localTransform, 0, 1),
+              goog.vec.Mat4.getElement(localTransform, 1, 1),
+              goog.vec.Mat4.getElement(localTransform, 0, 3),
+              goog.vec.Mat4.getElement(localTransform, 1, 3));
+        }
         context.drawImage(image, x, y, width, height);
+        if (scale != 1 || rotation !== 0) {
+          context.setTransform(1, 0, 0, 1, 0, 0);
+        }
       }
       ++i;
     } else if (type == ol.render.canvas.Instruction.END_GEOMETRY) {
@@ -476,6 +499,18 @@ ol.render.canvas.ImageReplay = function(pixelRatio, tolerance) {
    * @private
    * @type {number|undefined}
    */
+  this.scale_ = undefined;
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.rotation_ = undefined;
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
   this.height_ = undefined;
 
   /**
@@ -519,6 +554,8 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
   }
   goog.asserts.assert(goog.isDef(this.anchorX_));
   goog.asserts.assert(goog.isDef(this.anchorY_));
+  goog.asserts.assert(goog.isDef(this.scale_));
+  goog.asserts.assert(goog.isDef(this.rotation_));
   goog.asserts.assert(goog.isDef(this.height_));
   goog.asserts.assert(goog.isDef(this.width_));
   ol.extent.extend(this.extent_, pointGeometry.getExtent());
@@ -531,7 +568,7 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
   var drawImageInstruction = [
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd,
     this.anchorX_, this.anchorY_, this.width_, this.height_,
-    this.image_, this.snapToPixel_
+    this.image_, this.snapToPixel_, this.scale_, this.rotation_
   ];
   this.instructions.push(drawImageInstruction);
   this.hitDetectionInstructions.push(drawImageInstruction);
@@ -549,6 +586,8 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
   }
   goog.asserts.assert(goog.isDef(this.anchorX_));
   goog.asserts.assert(goog.isDef(this.anchorY_));
+  goog.asserts.assert(goog.isDef(this.scale_));
+  goog.asserts.assert(goog.isDef(this.rotation_));
   goog.asserts.assert(goog.isDef(this.height_));
   goog.asserts.assert(goog.isDef(this.width_));
   ol.extent.extend(this.extent_, multiPointGeometry.getExtent());
@@ -561,7 +600,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
   var drawImageInstruction = [
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd,
     this.anchorX_, this.anchorY_, this.width_, this.height_,
-    this.image_, this.snapToPixel_
+    this.image_, this.snapToPixel_, this.scale_, this.rotation_
   ];
   this.instructions.push(drawImageInstruction);
   this.hitDetectionInstructions.push(drawImageInstruction);
@@ -578,6 +617,8 @@ ol.render.canvas.ImageReplay.prototype.finish = function() {
   this.anchorX_ = undefined;
   this.anchorY_ = undefined;
   this.image_ = null;
+  this.scale_ = undefined;
+  this.rotation_ = undefined;
   this.height_ = undefined;
   this.width_ = undefined;
   this.snapToPixel_ = undefined;
@@ -594,6 +635,8 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   goog.asserts.assert(!goog.isNull(imageStyle.image));
   this.anchorX_ = imageStyle.anchor[0];
   this.anchorY_ = imageStyle.anchor[1];
+  this.scale_ = goog.isDef(imageStyle.scale) ? imageStyle.scale : 1;
+  this.rotation_ = goog.isDef(imageStyle.rotation) ? imageStyle.rotation : 0;
   this.image_ = imageStyle.image;
   this.width_ = imageStyle.size[0];
   this.height_ = imageStyle.size[1];
