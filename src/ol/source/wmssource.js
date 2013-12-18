@@ -1,4 +1,5 @@
 goog.provide('ol.source.wms');
+goog.provide('ol.source.wms.ServerType');
 
 goog.require('goog.asserts');
 goog.require('goog.object');

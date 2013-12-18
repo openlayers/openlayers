@@ -1,4 +1,5 @@
 goog.provide('ol.format.IGC');
+goog.provide('ol.format.IGCZ');
 
 goog.require('goog.asserts');
 goog.require('goog.string');
