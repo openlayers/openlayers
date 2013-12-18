@@ -1307,17 +1307,17 @@ ol.Map.createOptionsInternal = function(options) {
   for (i = 0; i < n; ++i) {
     rendererHint = rendererHints[i];
     if (rendererHint == ol.RendererHint.CANVAS) {
-      if (ol.ENABLE_CANVAS && ol.renderer.canvas.SUPPORTED) {
+      if (ol.ENABLE_CANVAS && ol.BrowserFeature.HAS_CANVAS) {
         rendererConstructor = ol.renderer.canvas.Map;
         break;
       }
     } else if (rendererHint == ol.RendererHint.DOM) {
-      if (ol.ENABLE_DOM && ol.renderer.dom.SUPPORTED) {
+      if (ol.ENABLE_DOM && ol.BrowserFeature.HAS_DOM) {
         rendererConstructor = ol.renderer.dom.Map;
         break;
       }
     } else if (rendererHint == ol.RendererHint.WEBGL) {
-      if (ol.ENABLE_WEBGL && ol.renderer.webgl.SUPPORTED) {
+      if (ol.ENABLE_WEBGL && ol.BrowserFeature.HAS_WEBGL) {
         rendererConstructor = ol.renderer.webgl.Map;
         break;
       }
