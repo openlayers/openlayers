@@ -1,9 +1,9 @@
+goog.require('ol.BrowserFeature');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.MapQuestOpenAerial');
-goog.require('ol.webgl');
 
 
 var domMap = new ol.Map({
@@ -20,7 +20,7 @@ var domMap = new ol.Map({
   })
 });
 
-if (ol.webgl.SUPPORTED) {
+if (!ol.BrowserFeature.HAS_WEBGL) {
   var webglMap = new ol.Map({
     renderer: ol.RendererHint.WEBGL,
     target: 'webglMap'

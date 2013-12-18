@@ -6,6 +6,7 @@ goog.provide('ol.GeolocationProperty');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.math');
+goog.require('ol.BrowserFeature');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
 goog.require('ol.proj');
@@ -140,7 +141,7 @@ ol.Geolocation.prototype.handleProjectionChanged_ = function() {
  * @private
  */
 ol.Geolocation.prototype.handleTrackingChanged_ = function() {
-  if (ol.Geolocation.SUPPORTED) {
+  if (ol.BrowserFeature.HAS_GEOLOCATION) {
     var tracking = this.getTracking();
     if (tracking && !goog.isDef(this.watchId_)) {
       this.watchId_ = goog.global.navigator.geolocation.watchPosition(
@@ -153,15 +154,6 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
     }
   }
 };
-
-
-/**
- * Is HTML5 geolocation supported in the current browser?
- * @const
- * @type {boolean}
- * @todo stability experimental
- */
-ol.Geolocation.SUPPORTED = 'geolocation' in goog.global.navigator;
 
 
 /**

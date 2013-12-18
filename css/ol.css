@@ -161,6 +161,8 @@ a.ol-full-screen-true:after {
   line-height: 26px;
 }
 .ol-zoom a:hover {
+  color: #fff;
+  text-decoration: none;
   background: rgba(0,60,136,0.7);
 }
 

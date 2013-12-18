@@ -58,32 +58,11 @@ goog.require('ol.layer.Group');
 goog.require('ol.proj');
 goog.require('ol.proj.common');
 goog.require('ol.renderer.Map');
-goog.require('ol.renderer.canvas');
 goog.require('ol.renderer.canvas.Map');
-goog.require('ol.renderer.dom');
 goog.require('ol.renderer.dom.Map');
-goog.require('ol.renderer.webgl');
 goog.require('ol.renderer.webgl.Map');
 goog.require('ol.structs.PriorityQueue');
 goog.require('ol.vec.Mat4');
-
-
-/**
- * @define {boolean} Whether to enable canvas.
- */
-ol.ENABLE_CANVAS = true;
-
-
-/**
- * @define {boolean} Whether to enable DOM.
- */
-ol.ENABLE_DOM = true;
-
-
-/**
- * @define {boolean} Whether to enable WebGL.
- */
-ol.ENABLE_WEBGL = true;
 
 
 /**
@@ -1298,17 +1277,17 @@ ol.Map.createOptionsInternal = function(options) {
   for (i = 0; i < n; ++i) {
     rendererHint = rendererHints[i];
     if (rendererHint == ol.RendererHint.CANVAS) {
-      if (ol.ENABLE_CANVAS && ol.renderer.canvas.SUPPORTED) {
+      if (ol.BrowserFeature.HAS_CANVAS) {
         rendererConstructor = ol.renderer.canvas.Map;
         break;
       }
     } else if (rendererHint == ol.RendererHint.DOM) {
-      if (ol.ENABLE_DOM && ol.renderer.dom.SUPPORTED) {
+      if (ol.BrowserFeature.HAS_DOM) {
         rendererConstructor = ol.renderer.dom.Map;
         break;
       }
     } else if (rendererHint == ol.RendererHint.WEBGL) {
-      if (ol.ENABLE_WEBGL && ol.renderer.webgl.SUPPORTED) {
+      if (ol.BrowserFeature.HAS_WEBGL) {
         rendererConstructor = ol.renderer.webgl.Map;
         break;
       }
