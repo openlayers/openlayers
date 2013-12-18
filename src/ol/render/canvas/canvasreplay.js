@@ -591,10 +591,12 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   goog.asserts.assert(!goog.isNull(imageStyle));
   goog.asserts.assert(!goog.isNull(imageStyle.anchor));
   goog.asserts.assert(goog.isDef(imageStyle.size));
-  goog.asserts.assert(!goog.isNull(imageStyle.image));
+  // FIXME pixel ratio
+  var image = imageStyle.getImage(1);
+  goog.asserts.assert(!goog.isNull(image));
   this.anchorX_ = imageStyle.anchor[0];
   this.anchorY_ = imageStyle.anchor[1];
-  this.image_ = imageStyle.image;
+  this.image_ = image;
   this.width_ = imageStyle.size[0];
   this.height_ = imageStyle.size[1];
   this.snapToPixel_ = imageStyle.snapToPixel;
