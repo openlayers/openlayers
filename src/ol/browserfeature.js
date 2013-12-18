@@ -12,6 +12,24 @@ ol.ASSUME_TOUCH = false;
 
 
 /**
+ * @define {boolean} Whether to enable canvas.
+ */
+ol.ENABLE_CANVAS = true;
+
+
+/**
+ * @define {boolean} Whether to enable DOM.
+ */
+ol.ENABLE_DOM = true;
+
+
+/**
+ * @define {boolean} Whether to enable WebGL.
+ */
+ol.ENABLE_WEBGL = true;
+
+
+/**
 * The ratio between physical pixels and device-independent pixels
 * (dips) on the device (`window.devicePixelRatio`).
 * @const

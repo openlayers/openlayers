@@ -69,24 +69,6 @@ goog.require('ol.vec.Mat4');
 
 
 /**
- * @define {boolean} Whether to enable canvas.
- */
-ol.ENABLE_CANVAS = true;
-
-
-/**
- * @define {boolean} Whether to enable DOM.
- */
-ol.ENABLE_DOM = true;
-
-
-/**
- * @define {boolean} Whether to enable WebGL.
- */
-ol.ENABLE_WEBGL = true;
-
-
-/**
  * @enum {string}
  * @todo stability experimental
  */
