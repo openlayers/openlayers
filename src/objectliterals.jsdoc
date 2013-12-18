@@ -719,6 +719,13 @@
  */
 
 /**
+ * @typedef {Object} olx.style.CircleOptions
+ * @property {ol.style.Fill|undefined} fill Fill style.
+ * @property {number} radius Circle radius.
+ * @property {ol.style.Stroke|undefined} stroke Stroke style.
+ */
+
+/**
  * @typedef {Object} olx.style.FillOptions
  * @property {ol.Color|string|undefined} color Color.
  * @todo stability experimental
