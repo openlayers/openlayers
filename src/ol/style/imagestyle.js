@@ -59,6 +59,11 @@ ol.style.Image = function(opt_options) {
   this.rotation = options.rotation;
 
   /**
+   * @type {number|undefined}
+   */
+  this.scale = options.scale;
+
+  /**
    * @type {ol.Size}
    */
   this.size = options.size;

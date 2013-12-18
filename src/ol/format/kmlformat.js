@@ -1,9 +1,9 @@
 // FIXME add Styles with ids to sharedStyles_
+// FIXME refactor StyleMap handling
 // FIXME handle highlighted keys in StyleMaps - use styleFunctions
 // FIXME extractAttributes
 // FIXME extractStyles
 // FIXME gx:Track
-// FIXME how to handle node.namespaceURI === null?
 // FIXME http://earth.google.com/kml/1.0 namespace?
 // FIXME why does node.getAttribute return an unknown type?
 // FIXME attribute namespaces
@@ -156,10 +156,7 @@ ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_ = [32, 32];
  * @private
  */
 ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_ =
-    // FIXME why do we get a CORS error when we use a data: URL?
-    //'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB8AAAAfCAYAAAAfrhY5AAAABmJLR0QA/wD/AP+gvaeTAAADU0lEQVRIicXXX2jVdRjH8de2o+yfytzaGeTywowZCdaMQanEDNGilhdaiCWLBCXbhUJeCAu68KK6MRQLFOyP0wsFsYbNBsbcGsJxZyUhGCOCSQlbThmz7XQ8XZzfqW2es3M2bX3ge/M7z/O8n9/3eX7f73OYuUKbqEfoPmLMTLU88jvfPk31bLPzvuadGNGv2IW82YQvHOBsgsgAZ7FwJkHyJz8oZPE8KtL9ltJBVi8ItnsB1Yd4dirGPCoKWZwVHuLOT3waYf8+VqJ4kknJBl4OEQ/s4+tpSGNXvI+VEfZf4fCfjKRhTdQwg7/y4zM0LOf5N+m9yPldfDfM4BaWlrNshLGUTzmPb+GxFq6UUn6Q51azbhErQuR3cQZ/TLE7/2oHT45yOUEkQSRGdID2xuSnVZFpNVI/QHuMaMp3lMvbWZETOFDJLxxNBRijp5UmFGbxK2ylaYyelG8fR91bkqn1Oa/FiE4DfE8CMaKf8eq0wFBCeID2AFyUzibBKxnci1ppGqC9lMppw1HwVrLGacEBPDKFf1HgXzBdcPHbPCVL1lngUBnEyVrzvPksPMXWfk7e5hLC9wkP3+ZSPydPsXV+8iSccBTPrWfJBfYO0RYPOnWE7gcBH6E7QSROzxBtF9hbzxLMzdtE/ce8W07VHP5Ked0hVpxsqBsB6AW8nwV2F815fDMOfqaIOSmDGKFBfmviQygIU9nCtuucGKP3v3jzMXqvc6KFbeFkL01oxDyUfcSGqxy4RdeDgN+i6yoHPmA9yuRw/c56t0/W//ade4iqm3R00pwpgQQvZQJ30nyTjsospUur47wRD87nIIGSHF1LOmmOEY0RPc7rmQwzTSulq1ibz90Q8To2drInhwRKOtlTx8YQ8RDxVaxFac7wHSyt4onxz2pY00id5DZWpVnhRupqWDPer4rl23k0S9L/qOAi78XpGU3ex0eOsTm4nQp2UjvMD6Pj1jC9O6lFQSmVx9jcx5HR4GTrSJYte+NVEu7jy3PsXkeNNDPcNT5JDQsJItc4nMau+EWWnWP3z3yRU+PlOL02pEalGNFDmbueKabXmarsBqcTRG5wWvLkmrYyvl0WDXVzPkboe9owNMM4M9MSqvs5u4iHZxUc6L7/pf4N5o0a3f/JEEMAAAAASUVORK5CYII=';
-    //'https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
-    'ylw-pushpin.png';
+    'https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
 
 
 /**
@@ -168,6 +165,7 @@ ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_ =
  */
 ol.format.KML.DEFAULT_IMAGE_STYLE_ = new ol.style.Image({
   anchor: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_,
+  crossOrigin: 'anonymous',
   size: ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_,
   src: ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_,
   rotation: 0,
@@ -273,7 +271,9 @@ ol.format.KML.readBoolean_ = function(node) {
  */
 ol.format.KML.readColor_ = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*([0-9A-Fa-f]{8})\s*$/.exec(s);
+  // The KML specification states that colors should not include a leading `#`
+  // but we tolerate them.
+  var m = /^\s*#?\s*([0-9A-Fa-f]{8})\s*$/.exec(s);
   if (m) {
     var hexColor = m[1];
     return [
@@ -297,8 +297,10 @@ ol.format.KML.readColor_ = function(node) {
 ol.format.KML.readFlatCoordinates_ = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
   var flatCoordinates = [];
+  // The KML specification states that coordinate tuples should not include
+  // spaces, but we tolerate them.
   var re =
-      /^\s*([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?),([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)(?:,([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?))?\s*/i;
+      /^\s*([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)\s*,\s*([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)(?:\s*,\s*([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?))?\s*/i;
   var m;
   while ((m = re.exec(s))) {
     var x = parseFloat(m[1]);
@@ -348,7 +350,11 @@ ol.format.KML.readString_ = function(node) {
  */
 ol.format.KML.readURI_ = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
-  return goog.Uri.resolve(node.baseURI, goog.string.trim(s)).toString();
+  if (goog.isNull(node.baseURI)) {
+    return goog.string.trim(s);
+  } else {
+    return goog.Uri.resolve(node.baseURI, goog.string.trim(s)).toString();
+  }
 };
 
 
@@ -381,6 +387,7 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
   // FIXME gx:h
   // FIXME refreshMode
   // FIXME refreshInterval
+  // FIXME scale
   // FIXME viewRefreshTime
   // FIXME viewBoundScale
   // FIXME viewFormat
@@ -421,6 +428,8 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
   } else {
     rotation = 0;
   }
+  var scale = /** @type {number|undefined} */
+      (goog.object.get(object, 'scale'));
   var size;
   if (src == ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_) {
     size = ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_;
@@ -429,7 +438,9 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
   }
   var imageStyle = new ol.style.Image({
     anchor: anchor,
+    crossOrigin: 'anonymous', // FIXME should this be configurable?
     rotation: rotation,
+    scale: scale,
     size: size,
     snapToPixel: undefined,
     src: src,
@@ -983,7 +994,8 @@ ol.format.KML.ICON_STYLE_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'Icon': ol.xml.makeObjectPropertySetter(ol.format.KML.readIcon_),
       'heading': ol.xml.makeObjectPropertySetter(ol.format.KML.readNumber_),
-      'hotSpot': ol.xml.makeObjectPropertySetter(ol.format.KML.readVec2_)
+      'hotSpot': ol.xml.makeObjectPropertySetter(ol.format.KML.readVec2_),
+      'scale': ol.xml.makeObjectPropertySetter(ol.format.KML.readNumber_)
     });
 
 
@@ -1137,7 +1149,8 @@ ol.format.KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
       ol.format.KML.NAMESPACE_URIS_, {
         'Folder': ol.xml.makeArrayExtender(this.readDocumentOrFolder_, this),
         'Placemark': ol.xml.makeArrayPusher(this.readPlacemark_, this),
-        'Style': goog.bind(this.readSharedStyle_, this)
+        'Style': goog.bind(this.readSharedStyle_, this),
+        'StyleMap': goog.bind(this.readSharedStyleMap_, this)
       });
   var features = ol.xml.pushAndParse(/** @type {Array.<ol.Feature>} */ ([]),
       parsersNS, node, objectStack, this);
@@ -1199,7 +1212,45 @@ ol.format.KML.prototype.readSharedStyle_ = function(node, objectStack) {
   if (!goog.isNull(id)) {
     var style = ol.format.KML.readStyle_(node, objectStack);
     if (goog.isDef(style)) {
-      this.sharedStyles_[node.baseURI + '#' + id] = [style];
+      var baseURI = goog.isNull(node.baseURI) ? '' : node.baseURI;
+      this.sharedStyles_[baseURI + '#' + id] = [style];
+    }
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ */
+ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'StyleMap');
+  var id = node.getAttribute('id');
+  if (!goog.isNull(id)) {
+    var styleObject = ol.xml.pushAndParse(/** @type {Object} */ ({}),
+        ol.format.KML.STYLE_MAP_PARSERS_, node, objectStack);
+    if (!goog.isDef(styleObject)) {
+      return;
+    }
+    var baseURI = goog.isNull(node.baseURI) ? '' : node.baseURI;
+    var style = /** @type {ol.style.Style} */
+        (goog.object.get(styleObject, 'style', null));
+    if (!goog.isNull(style)) {
+      this.sharedStyles_[baseURI + '#' + id] = [style];
+    }
+    var styleUrl = /** @type {string|undefined} */
+        (goog.object.get(styleObject, 'styleUrl'));
+    if (goog.isDef(styleUrl)) {
+      var styleUri;
+      if (goog.isNull(node.baseURI)) {
+        styleUri = '#' + goog.string.trim(styleUrl);
+      } else {
+        styleUri = goog.Uri.resolve(baseURI, styleUrl).toString();
+      }
+      goog.asserts.assert(styleUri in this.sharedStyles_);
+      this.sharedStyles_[baseURI + '#' + id] = this.sharedStyles_[styleUri];
     }
   }
 };
