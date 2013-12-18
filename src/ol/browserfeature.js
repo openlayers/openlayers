@@ -56,6 +56,15 @@ ol.BrowserFeature.HAS_DEVICE_ORIENTATION =
 
 
 /**
+ * True if browser supports DOM.
+ * @const
+ * @type {boolean}
+ * @todo stability experimental
+ */
+ol.BrowserFeature.HAS_DOM = true;
+
+
+/**
  * Is HTML5 geolocation supported in the current browser?
  * @const
  * @type {boolean}
