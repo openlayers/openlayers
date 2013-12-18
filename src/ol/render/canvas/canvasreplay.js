@@ -14,6 +14,7 @@ goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.geom.flat');
+goog.require('ol.geom.simplify');
 goog.require('ol.render.IRender');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.canvas');
@@ -42,16 +43,23 @@ ol.render.canvas.Instruction = {
  * @constructor
  * @implements {ol.render.IRender}
  * @param {number} pixelRatio Pixel ratio.
+ * @param {number} tolerance Tolerance.
  * @protected
  * @struct
  */
-ol.render.canvas.Replay = function(pixelRatio) {
+ol.render.canvas.Replay = function(pixelRatio, tolerance) {
 
   /**
    * @protected
    * @type {number}
    */
   this.pixelRatio = pixelRatio;
+
+  /**
+   * @protected
+   * @type {number}
+   */
+  this.tolerance = tolerance;
 
   /**
    * @private
@@ -438,12 +446,13 @@ ol.render.canvas.Replay.prototype.setTextStyle = goog.abstractMethod;
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @param {number} pixelRatio Pixel ratio.
+ * @param {number} tolerance Tolerance.
  * @protected
  * @struct
  */
-ol.render.canvas.ImageReplay = function(pixelRatio) {
+ol.render.canvas.ImageReplay = function(pixelRatio, tolerance) {
 
-  goog.base(this, pixelRatio);
+  goog.base(this, pixelRatio, tolerance);
 
   /**
    * @private
@@ -597,12 +606,13 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @param {number} pixelRatio Pixel ratio.
+ * @param {number} tolerance Tolerance.
  * @protected
  * @struct
  */
-ol.render.canvas.LineStringReplay = function(pixelRatio) {
+ol.render.canvas.LineStringReplay = function(pixelRatio, tolerance) {
 
-  goog.base(this, pixelRatio);
+  goog.base(this, pixelRatio, tolerance);
 
   /**
    * @private
@@ -800,12 +810,13 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @param {number} pixelRatio Pixel ratio.
+ * @param {number} tolerance Tolerance.
  * @protected
  * @struct
  */
-ol.render.canvas.PolygonReplay = function(pixelRatio) {
+ol.render.canvas.PolygonReplay = function(pixelRatio, tolerance) {
 
-  goog.base(this, pixelRatio);
+  goog.base(this, pixelRatio, tolerance);
 
   /**
    * @private
@@ -974,6 +985,18 @@ ol.render.canvas.PolygonReplay.prototype.finish = function() {
   goog.asserts.assert(!goog.isNull(this.state_));
   this.reverseHitDetectionInstructions_();
   this.state_ = null;
+  // We want to preserve topology when drawing polygons.  Polygons are
+  // simplified using quantization and point elimination. However, we might
+  // have received a mix of quantized and non-quantized geometries, so ensure
+  // that all are quantized by quantizing all coordinates in the batch.
+  var tolerance = this.tolerance;
+  if (tolerance !== 0) {
+    var coordinates = this.coordinates;
+    var i, ii;
+    for (i = 0, ii = coordinates.length; i < ii; ++i) {
+      coordinates[i] = ol.geom.simplify.snap(coordinates[i], tolerance);
+    }
+  }
 };
 
 
@@ -1063,15 +1086,22 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
  * @constructor
  * @implements {ol.render.IReplayGroup}
  * @param {number} pixelRatio Pixel ratio.
+ * @param {number} tolerance Tolerance.
  * @struct
  */
-ol.render.canvas.ReplayGroup = function(pixelRatio) {
+ol.render.canvas.ReplayGroup = function(pixelRatio, tolerance) {
 
   /**
    * @private
    * @type {number}
    */
   this.pixelRatio_ = pixelRatio;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.tolerance_ = tolerance;
 
   /**
    * @private
@@ -1265,7 +1295,7 @@ ol.render.canvas.ReplayGroup.prototype.getReplay =
   if (!goog.isDef(replay)) {
     var constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
     goog.asserts.assert(goog.isDef(constructor));
-    replay = new constructor(this.pixelRatio_);
+    replay = new constructor(this.pixelRatio_, this.tolerance_);
     replayes[replayType] = replay;
   }
   return replay;
@@ -1284,7 +1314,7 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
  * @const
  * @private
  * @type {Object.<ol.render.ReplayType,
- *                function(new: ol.render.canvas.Replay, number)>}
+ *                function(new: ol.render.canvas.Replay, number, number)>}
  */
 ol.render.canvas.BATCH_CONSTRUCTORS_ = {
   'Image': ol.render.canvas.ImageReplay,

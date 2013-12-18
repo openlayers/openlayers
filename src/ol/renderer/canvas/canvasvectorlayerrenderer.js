@@ -199,7 +199,8 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   if (!goog.isDef(styleFunction)) {
     styleFunction = ol.layer.Vector.defaultStyleFunction;
   }
-  var replayGroup = new ol.render.canvas.ReplayGroup(pixelRatio);
+  var tolerance = frameStateResolution / (2 * pixelRatio);
+  var replayGroup = new ol.render.canvas.ReplayGroup(pixelRatio, tolerance);
   vectorSource.forEachFeatureInExtent(extent,
       /**
        * @param {ol.Feature} feature Feature.
