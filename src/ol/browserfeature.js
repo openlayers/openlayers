@@ -22,6 +22,16 @@ ol.BrowserFeature.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
 
 
 /**
+ * Indicates if DeviceOrientation is supported in the user's browser.
+ * @const
+ * @type {boolean}
+ * @todo stability experimental
+ */
+ol.BrowserFeature.HAS_DEVICE_ORIENTATION =
+    'DeviceOrientationEvent' in goog.global;
+
+
+/**
 * True if browser supports touch events.
 * @const
 * @type {boolean}
