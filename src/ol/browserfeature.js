@@ -79,7 +79,7 @@ ol.BrowserFeature.HAS_DEVICE_ORIENTATION =
  * @type {boolean}
  * @todo stability experimental
  */
-ol.BrowserFeature.HAS_DOM = true;
+ol.BrowserFeature.HAS_DOM = ol.ENABLE_DOM;
 
 
 /**

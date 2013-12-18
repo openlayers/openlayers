@@ -1294,7 +1294,7 @@ ol.Map.createOptionsInternal = function(options) {
         break;
       }
     } else if (rendererHint == ol.RendererHint.DOM) {
-      if (ol.ENABLE_DOM && ol.BrowserFeature.HAS_DOM) {
+      if (ol.BrowserFeature.HAS_DOM) {
         rendererConstructor = ol.renderer.dom.Map;
         break;
       }
