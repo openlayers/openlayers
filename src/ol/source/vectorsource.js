@@ -107,6 +107,20 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
 
 
 /**
+ * Add features without firing a `change` event.
+ * @param {Array.<ol.Feature>} features Features.
+ * @protected
+ */
+ol.source.Vector.prototype.addFeaturesInternal = function(features) {
+  // FIXME use R-Bush bulk load when available
+  var i, ii;
+  for (i = 0, ii = features.length; i < ii; ++i) {
+    this.addFeatureInternal(features[i]);
+  }
+};
+
+
+/**
  * FIXME empty description for jsdoc
  */
 ol.source.Vector.prototype.clear = function() {
