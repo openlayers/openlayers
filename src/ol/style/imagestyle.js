@@ -89,6 +89,13 @@ ol.style.Image.prototype.getImage = goog.abstractMethod;
 
 
 /**
+ * @param {number} pixelRatio Pixel ratio.
+ * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
+ */
+ol.style.Image.prototype.getHitDetectionImage = goog.abstractMethod;
+
+
+/**
  * Load not yet loaded URI.
  */
 ol.style.Image.prototype.load = goog.abstractMethod;
