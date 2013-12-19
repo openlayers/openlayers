@@ -62,10 +62,10 @@ goog.inherits(ol.style.Circle, ol.style.Image);
 
 
 /**
- * @inheritDoc
+ * @return {ol.style.Fill} Fill style.
  */
-ol.style.Circle.prototype.getImage = function(pixelRatio) {
-  return this.canvas_;
+ol.style.Circle.prototype.getFill = function() {
+  return this.fill_;
 };
 
 
@@ -74,6 +74,30 @@ ol.style.Circle.prototype.getImage = function(pixelRatio) {
  */
 ol.style.Circle.prototype.getHitDetectionImage = function(pixelRatio) {
   return this.canvas_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.style.Circle.prototype.getImage = function(pixelRatio) {
+  return this.canvas_;
+};
+
+
+/**
+ * @return {number} Radius.
+ */
+ol.style.Circle.prototype.getRadius = function() {
+  return this.radius_;
+};
+
+
+/**
+ * @return {ol.style.Stroke} Stroke style.
+ */
+ol.style.Circle.prototype.getStroke = function() {
+  return this.stroke_;
 };
 
 
