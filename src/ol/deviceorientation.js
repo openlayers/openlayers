@@ -67,7 +67,7 @@ ol.DeviceOrientationProperty = {
  *
  * @constructor
  * @extends {ol.Object}
- * @param {ol.DeviceOrientationOptions=} opt_options Options.
+ * @param {olx.DeviceOrientationOptions=} opt_options Options.
  * @todo stability experimental
  * @todo observable alpha {number} readonly the euler angle in radians of the
  *       device from the standard X axis

@@ -14,7 +14,7 @@ goog.require('ol.interaction.Interaction');
  *
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @param {ol.interaction.DoubleClickZoomOptions=} opt_options Options.
+ * @param {olx.interaction.DoubleClickZoomOptions=} opt_options Options.
  * @todo stability experimental
  */
 ol.interaction.DoubleClickZoom = function(opt_options) {

@@ -14,7 +14,7 @@ goog.require('ol.style.Point');
 /**
  * @constructor
  * @extends {ol.style.Point}
- * @param {ol.style.IconOptions} options Icon options.
+ * @param {olx.style.IconOptions} options Icon options.
  * @todo stability experimental
  */
 ol.style.Icon = function(options) {
@@ -112,7 +112,7 @@ ol.style.Icon.prototype.createLiteral = function(featureOrType) {
 
   var literal = null;
   if (type === ol.geom.GeometryType.POINT ||
-      type === ol.geom.GeometryType.MULTIPOINT) {
+      type === ol.geom.GeometryType.MULTI_POINT) {
 
     var url = ol.expr.evaluateFeature(this.url_, feature);
     goog.asserts.assertString(url, 'url must be a string');

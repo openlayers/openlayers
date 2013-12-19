@@ -1,1 +1,1 @@
-@exportClass ol.control.ZoomToExtent ol.control.ZoomToExtentOptions
+@exportSymbol ol.control.ZoomToExtent

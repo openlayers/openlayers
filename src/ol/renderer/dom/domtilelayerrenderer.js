@@ -20,6 +20,7 @@ goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.renderer.dom.Layer');
+goog.require('ol.source.Tile');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -66,15 +67,6 @@ goog.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
 
 
 /**
- * @protected
- * @return {ol.layer.Tile} Tile layer.
- */
-ol.renderer.dom.TileLayer.prototype.getTileLayer = function() {
-  return /** @type {ol.layer.Tile} */ (this.getLayer());
-};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.dom.TileLayer.prototype.renderFrame =
@@ -91,12 +83,15 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
   var view2DState = frameState.view2DState;
   var projection = view2DState.projection;
 
-  var tileLayer = this.getTileLayer();
-  var tileSource = tileLayer.getTileSource();
+  var tileLayer = this.getLayer();
+  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
+  var tileSource = tileLayer.getSource();
+  goog.asserts.assertInstanceof(tileSource, ol.source.Tile);
   var tileGrid = tileSource.getTileGrid();
   if (goog.isNull(tileGrid)) {
     tileGrid = ol.tilegrid.getForProjection(projection);
   }
+  var tileGutter = tileSource.getGutter();
   var z = tileGrid.getZForResolution(view2DState.resolution);
   var tileResolution = tileGrid.getResolution(z);
   var center = view2DState.center;
@@ -185,7 +180,7 @@ ol.renderer.dom.TileLayer.prototype.renderFrame =
     }
     tilesToDraw = tilesToDrawByZ[tileLayerZKey];
     for (tileCoordKey in tilesToDraw) {
-      tileLayerZ.addTile(tilesToDraw[tileCoordKey]);
+      tileLayerZ.addTile(tilesToDraw[tileCoordKey], tileGutter);
     }
     tileLayerZ.finalizeAddTiles();
   }
@@ -311,7 +306,7 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.AnyType}
+   * @type {goog.vec.Mat4.Number}
    */
   this.transform_ = goog.vec.Mat4.createNumberIdentity();
 
@@ -320,8 +315,9 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
 
 /**
  * @param {ol.Tile} tile Tile.
+ * @param {number} tileGutter Tile gutter.
  */
-ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile) {
+ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
   var tileCoord = tile.tileCoord;
   goog.asserts.assert(tileCoord.z == this.tileCoordOrigin_.z);
   var tileCoordKey = tileCoord.toString();
@@ -330,20 +326,36 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile) {
   }
   var tileSize = this.tileGrid_.getTileSize(tileCoord.z);
   var image = tile.getImage(this);
-  var style = image.style;
-  // Bootstrap sets the style max-width: 100% for all images, which breaks
-  // prevents the tile from being displayed in FireFox.  Workaround by
-  // overriding the max-width style.
-  style.maxWidth = 'none';
-  style.position = 'absolute';
-  style.left =
+  var imageStyle = image.style;
+  // Bootstrap sets the style max-width: 100% for all images, which
+  // prevents the tile from being displayed in FireFox.  Workaround
+  // by overriding the max-width style.
+  imageStyle.maxWidth = 'none';
+  var tileElement;
+  var tileElementStyle;
+  if (tileGutter > 0) {
+    tileElement = goog.dom.createElement(goog.dom.TagName.DIV);
+    tileElementStyle = tileElement.style;
+    tileElementStyle.overflow = 'hidden';
+    tileElementStyle.width = tileSize[0] + 'px';
+    tileElementStyle.height = tileSize[1] + 'px';
+    imageStyle.position = 'absolute';
+    imageStyle.left = -tileGutter + 'px';
+    imageStyle.top = -tileGutter + 'px';
+    goog.dom.appendChild(tileElement, image);
+  } else {
+    tileElement = image;
+    tileElementStyle = imageStyle;
+  }
+  tileElementStyle.position = 'absolute';
+  tileElementStyle.left =
       ((tileCoord.x - this.tileCoordOrigin_.x) * tileSize[0]) + 'px';
-  style.top =
+  tileElementStyle.top =
       ((this.tileCoordOrigin_.y - tileCoord.y) * tileSize[1]) + 'px';
   if (goog.isNull(this.documentFragment_)) {
     this.documentFragment_ = document.createDocumentFragment();
   }
-  goog.dom.appendChild(this.documentFragment_, image);
+  goog.dom.appendChild(this.documentFragment_, tileElement);
   this.tiles_[tileCoordKey] = tile;
 };
 
@@ -403,7 +415,7 @@ ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent =
 
 
 /**
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  */
 ol.renderer.dom.TileLayerZ_.prototype.setTransform = function(transform) {
   if (!goog.vec.Mat4.equals(transform, this.transform_)) {

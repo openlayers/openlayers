@@ -277,7 +277,7 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
       geom = candidate.getGeometry();
       type = geom.getType();
       if (type === ol.geom.GeometryType.POINT ||
-          type === ol.geom.GeometryType.MULTIPOINT) {
+          type === ol.geom.GeometryType.MULTI_POINT) {
         // For points, check if the pixel coordinate is inside the candidate's
         // symbol
         uid = goog.getUid(candidate);

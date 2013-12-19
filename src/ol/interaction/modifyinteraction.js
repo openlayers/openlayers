@@ -38,7 +38,7 @@ ol.interaction.SegmentDataType;
 /**
  * @constructor
  * @extends {ol.interaction.Drag}
- * @param {ol.interaction.ModifyOptions=} opt_options Options.
+ * @param {olx.interaction.ModifyOptions=} opt_options Options.
  */
 ol.interaction.Modify = function(opt_options) {
   goog.base(this);
@@ -243,10 +243,10 @@ ol.interaction.Modify.prototype.addIndex_ = function(features, layer) {
  */
 ol.interaction.Modify.prototype.removeIndex_ = function(features) {
   var rBush = this.rBush_;
-  var i, feature, nodesToRemove;
+  var nodesToRemove = [];
+  var i, feature;
   for (i = features.length - 1; i >= 0; --i) {
     feature = features[i];
-    nodesToRemove = [];
     rBush.forEachInExtent(feature.getGeometry().getBounds(), function(node) {
       if (feature === node.feature) {
         nodesToRemove.push(node);
@@ -339,8 +339,9 @@ ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ =
     this.vertexFeature_ = vertexFeature;
     this.sketchLayer_.getVectorSource().addFeatures([vertexFeature]);
   } else {
-    var geometry = vertexFeature.getGeometry();
-    geometry.setCoordinates(coordinates);
+    var point = vertexFeature.getGeometry();
+    goog.asserts.assertInstanceof(point, ol.geom.Point);
+    point.setCoordinates(coordinates);
   }
   if (this.sketchLayer_.getStyle() !== style) {
     this.sketchLayer_.setStyle(style);
@@ -368,12 +369,6 @@ ol.interaction.Modify.prototype.handleDragStart = function(evt) {
       if (!(goog.getUid(node.feature) in distinctFeatures)) {
         var feature = node.feature;
         distinctFeatures[goog.getUid(feature)] = true;
-        var original = new ol.Feature(feature.getAttributes());
-        original.setGeometry(feature.getGeometry().clone());
-        original.setId(feature.getId());
-        original.setOriginal(feature.getOriginal());
-        original.setSymbolizers(feature.getSymbolizers());
-        feature.setOriginal(original);
       }
       if (renderIntent == ol.FeatureRenderIntent.TEMPORARY) {
         if (ol.coordinate.equals(segment[0], vertex)) {
@@ -511,6 +506,7 @@ ol.interaction.Modify.prototype.insertVertex_ =
   var segment = segmentData.segment;
   var feature = segmentData.feature;
   var geometry = segmentData.geometry;
+  goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
   var index = segmentData.index;
   var coordinates = geometry.getCoordinates();
   coordinates.splice(index + 1, 0, vertex);

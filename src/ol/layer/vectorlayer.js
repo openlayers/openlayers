@@ -15,12 +15,12 @@ goog.require('ol.style.Style');
 /**
  * @constructor
  * @extends {ol.layer.Layer}
- * @param {ol.layer.VectorLayerOptions} options Vector layer options.
+ * @param {olx.layer.VectorLayerOptions} options Vector layer options.
  * @todo stability experimental
  */
 ol.layer.Vector = function(options) {
 
-  var baseOptions = /** @type {ol.layer.VectorLayerOptions} */
+  var baseOptions = /** @type {olx.layer.VectorLayerOptions} */
       (goog.object.clone(options));
 
   /**
@@ -45,7 +45,7 @@ ol.layer.Vector = function(options) {
    */
   this.temporary_ = false;
 
-  goog.base(this, /** @type {ol.layer.LayerOptions} */ (baseOptions));
+  goog.base(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
 };
 goog.inherits(ol.layer.Vector, ol.layer.Layer);
 

@@ -81,10 +81,8 @@ describe('ol.geom.MultiPolygon', function() {
     it('is fired when outer ring is modified', function(done) {
       var multi = new ol.geom.MultiPolygon([[outer, inner], [outer, inner]]);
       var components = multi.getComponents();
-      var bounds = multi.getBounds();
       goog.events.listen(multi, 'change', function(evt) {
         expect(evt.target).to.be(multi);
-        expect(evt.oldExtent).to.eql(bounds);
         expect(evt.target.getBounds()).to.eql([0, 0, 11, 10]);
         done();
       });
@@ -98,10 +96,8 @@ describe('ol.geom.MultiPolygon', function() {
     it('is fired when inner ring is modified', function(done) {
       var multi = new ol.geom.MultiPolygon([[outer, inner], [outer, inner]]);
       var components = multi.getComponents();
-      var bounds = multi.getBounds();
       goog.events.listen(multi, 'change', function(evt) {
         expect(evt.target).to.be(multi);
-        expect(evt.oldExtent).to.eql(bounds);
         expect(evt.target.getBounds()).to.eql([0, 0, 10, 10]);
         done();
       });

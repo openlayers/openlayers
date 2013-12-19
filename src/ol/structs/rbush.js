@@ -36,6 +36,7 @@ goog.require('ol.extent');
  * @param {number} height Height.
  * @param {Array.<ol.structs.RBushNode.<T>>} children Children.
  * @param {?T} value Value.
+ * @struct
  * @template T
  */
 ol.structs.RBushNode = function(extent, height, children, value) {
@@ -160,6 +161,7 @@ ol.structs.RBushNode.prototype.isLeaf = function() {
  * @constructor
  * @param {number=} opt_maxEntries Max entries.
  * @see https://github.com/mourner/rbush
+ * @struct
  * @template T
  */
 ol.structs.RBush = function(opt_maxEntries) {
@@ -521,6 +523,15 @@ ol.structs.RBush.prototype.getAllInExtent = function(extent) {
 
 
 /**
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {ol.Extent} Extent.
+ */
+ol.structs.RBush.prototype.getExtent = function(opt_extent) {
+  return ol.extent.returnOrUpdate(this.root_.extent, opt_extent);
+};
+
+
+/**
  * @param {T} value Value.
  * @private
  * @return {string} Key.
@@ -537,7 +548,7 @@ ol.structs.RBush.prototype.getKey_ = function(value) {
  */
 ol.structs.RBush.prototype.insert = function(extent, value) {
   if (goog.DEBUG && this.readers_) {
-    throw Error('cannot insert value while reading');
+    throw new Error('cannot insert value while reading');
   }
   var key = this.getKey_(value);
   goog.asserts.assert(!this.valueExtent_.hasOwnProperty(key));
@@ -587,7 +598,7 @@ ol.structs.RBush.prototype.isEmpty = function() {
  */
 ol.structs.RBush.prototype.remove = function(value) {
   if (goog.DEBUG && this.readers_) {
-    throw Error('cannot remove value while reading');
+    throw new Error('cannot remove value while reading');
   }
   var key = this.getKey_(value);
   goog.asserts.assert(this.valueExtent_.hasOwnProperty(key));
@@ -609,8 +620,9 @@ ol.structs.RBush.prototype.remove_ = function(extent, value) {
   var path = [node];
   /** @type {Array.<number>} */
   var indexes = [0];
-  var child, children, i, ii;
+  var childrenDone, child, children, i, ii;
   while (path.length > 0) {
+    childrenDone = false;
     goog.asserts.assert(node.height > 0);
     if (node.height == 1) {
       children = node.children;
@@ -622,8 +634,7 @@ ol.structs.RBush.prototype.remove_ = function(extent, value) {
           return;
         }
       }
-      node = path.pop();
-      index = indexes.pop();
+      childrenDone = true;
     } else if (index < node.children.length) {
       child = node.children[index];
       if (ol.extent.containsExtent(child.extent, extent)) {
@@ -635,8 +646,16 @@ ol.structs.RBush.prototype.remove_ = function(extent, value) {
         ++index;
       }
     } else {
-      node = path.pop();
-      index = indexes.pop();
+      childrenDone = true;
+    }
+    if (childrenDone) {
+      var lastPathIndex = path.length - 1;
+      node = path[lastPathIndex];
+      index = ++indexes[lastPathIndex];
+      if (index > node.children.length) {
+        path.pop();
+        indexes.pop();
+      }
     }
   }
 };
@@ -685,7 +704,7 @@ ol.structs.RBush.prototype.splitRoot_ = function(node1, node2) {
  */
 ol.structs.RBush.prototype.update = function(extent, value) {
   if (goog.DEBUG && this.readers_) {
-    throw Error('cannot update value while reading');
+    throw new Error('cannot update value while reading');
   }
   var key = this.getKey_(value);
   var currentExtent = this.valueExtent_[key];

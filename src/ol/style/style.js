@@ -21,7 +21,7 @@ goog.require('ol.style.TextLiteral');
 
 /**
  * @constructor
- * @param {ol.style.StyleOptions} options Style options.
+ * @param {olx.style.StyleOptions} options Style options.
  * @todo stability experimental
  */
 ol.style.Style = function(options) {

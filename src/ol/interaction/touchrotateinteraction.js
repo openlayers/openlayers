@@ -21,7 +21,7 @@ ol.interaction.TOUCHROTATE_ANIMATION_DURATION = 250;
  * on a touch screen.
  * @constructor
  * @extends {ol.interaction.Touch}
- * @param {ol.interaction.TouchRotateOptions=} opt_options Options.
+ * @param {olx.interaction.TouchRotateOptions=} opt_options Options.
  * @todo stability experimental
  */
 ol.interaction.TouchRotate = function(opt_options) {

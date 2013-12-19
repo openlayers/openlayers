@@ -17,7 +17,7 @@ goog.require('ol.css');
  * be styled by using a css selector for `.ol-logo`.
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.LogoOptions=} opt_options Logo options.
+ * @param {olx.control.LogoOptions=} opt_options Logo options.
  * @todo stability experimental
  */
 ol.control.Logo = function(opt_options) {

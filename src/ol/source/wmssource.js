@@ -8,13 +8,6 @@ goog.require('goog.uri.utils');
 
 
 /**
- * @typedef {{method: (ol.source.WMSGetFeatureInfoMethod|undefined),
- *            params: (Object.<string,string>|undefined)}}
- */
-ol.source.WMSGetFeatureInfoOptions;
-
-
-/**
  * Method to use to get WMS feature info.
  * @enum {string}
  * @todo stability experimental
@@ -74,8 +67,8 @@ ol.source.wms.getUrl =
 /**
  * @param {string} url URL as provided by the url function.
  * @param {ol.Pixel} pixel Pixel.
- * @param {ol.source.WMSGetFeatureInfoOptions} options Options as defined in the
- *     source.
+ * @param {olx.source.WMSGetFeatureInfoOptions} options Options as defined in
+ *     the source.
  * @param {function(string)} success Callback function for successful queries.
  * @param {function()=} opt_error Optional callback function for unsuccessful
  *     queries.
@@ -86,9 +79,9 @@ ol.source.wms.getFeatureInfo =
   // closure
   url = url.replace('REQUEST=GetMap', 'REQUEST=GetFeatureInfo')
       .replace(ol.source.wms.regExes.layers, 'LAYERS=$1&QUERY_LAYERS=$1');
-  options = /** @type {ol.source.WMSGetFeatureInfoOptions} */
+  options = /** @type {olx.source.WMSGetFeatureInfoOptions} */
       (goog.isDef(options) ? goog.object.clone(options) : {});
-  var localOptions = /** @type {ol.source.WMSGetFeatureInfoOptions} */ ({
+  var localOptions = /** @type {olx.source.WMSGetFeatureInfoOptions} */ ({
     method: ol.source.WMSGetFeatureInfoMethod.IFRAME,
     params: {}
   });

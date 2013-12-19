@@ -11,7 +11,7 @@ goog.require('ol.style.Symbolizer');
 
 /**
  * @constructor
- * @param {ol.style.RuleOptions} options Rule options.
+ * @param {olx.style.RuleOptions} options Rule options.
  * @todo stability experimental
  */
 ol.style.Rule = function(options) {

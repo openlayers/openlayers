@@ -53,7 +53,6 @@ describe('ol.geom.Point', function() {
       expect(point.getBounds()).to.eql([10, 20, 10, 20]);
       goog.events.listen(point, 'change', function(evt) {
         expect(evt.target).to.equal(point);
-        expect(evt.oldExtent).to.eql([10, 20, 10, 20]);
         expect(evt.target.getBounds()).to.eql([30, 40, 30, 40]);
         expect(evt.target.getCoordinates()).to.eql([30, 40]);
         done();

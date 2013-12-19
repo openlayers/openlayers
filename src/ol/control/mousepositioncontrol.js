@@ -36,7 +36,8 @@ ol.control.MousePositionProperty = {
  *
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.MousePositionOptions=} opt_options Mouse position options.
+ * @param {olx.control.MousePositionOptions=} opt_options Mouse position
+ *     options.
  * @todo stability experimental
  * @todo observable projection {ol.proj.Projection} the projection to report
  *       mouse position in

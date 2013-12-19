@@ -1,2 +1,2 @@
-@exportClass ol.DeviceOrientation ol.DeviceOrientationOptions
+@exportSymbol ol.DeviceOrientation
 @exportSymbol ol.DeviceOrientation.SUPPORTED ol.DeviceOrientation.SUPPORTED

@@ -13,7 +13,7 @@ goog.require('ol.interaction.Interaction');
 /**
  * Allows the user to zoom the map using keyboard + and -.
  * @constructor
- * @param {ol.interaction.KeyboardZoomOptions=} opt_options Options.
+ * @param {olx.interaction.KeyboardZoomOptions=} opt_options Options.
  * @extends {ol.interaction.Interaction}
  * @todo stability experimental
  */

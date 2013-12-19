@@ -17,6 +17,7 @@ goog.require('goog.object');
  * @constructor
  * @param {function(T): number} priorityFunction Priority function.
  * @param {function(T): string} keyFunction Key function.
+ * @struct
  * @template T
  */
 ol.structs.PriorityQueue = function(priorityFunction, keyFunction) {

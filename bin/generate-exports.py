@@ -29,167 +29,6 @@ class Exportable(object):
         return ''
 
 
-class Class(Exportable):
-
-    def __init__(self, name, object_literal, objects):
-        Exportable.__init__(self, name)
-        self.object_literal = object_literal
-        self.objects = objects
-        self.props = set()
-
-    __repr__ = simplerepr
-
-    def nested_options(self):
-        def get_class_by_object_literal_name(name):
-            for k, o in self.objects.iteritems():
-                if isinstance(o, Class) and o.object_literal.name == name:
-                    return o
-            return None
-
-        for option in sorted(self.object_literal.prop_types.keys()):
-            types = self.object_literal.prop_types[option].split('|')
-            base, object_literal = None, None
-            for t in types:
-                if t in self.objects:
-                    o = self.objects[t]
-                    if isinstance(o, (Class, Symbol)):
-                        if base:
-                            raise RuntimeError('Multiple "class" types found for '
-                                'option %s.%s: %s, %s.' %
-                                (self.object_literal.name, option,
-                                 base.name, o.name))
-                        base = o
-                    elif isinstance(o, ObjectLiteral):
-                        if object_literal:
-                            raise RuntimeError('Multiple "literal" types found for '
-                                'option %s.%s: %s, %s.' %
-                                (self.object_literal.name, option,
-                                 object_literal.name, o.name))
-                        object_literal = o
-            if object_literal:
-                if not base:
-                    raise RuntimeError('%s "literal" type found for option %s.%s, '
-                        'but no "class" type.' %
-                        (object_literal.name, self.object_literal.name, option))
-                klass = get_class_by_object_literal_name(object_literal.name)
-                if not klass:
-                    raise RuntimeError('No constructor taking a %s found.' %
-                        object_literal.name)
-                yield option, object_literal, klass, base
-
-    def export(self):
-        lines = []
-        if self.object_literal is None:
-            lines.append('\n\ngoog.exportSymbol(\n    \'%s\',\n    %s);\n' % (self.name, self.name))
-        else:
-            lines.append('\n\n\n')
-            lines.append('/**\n')
-            lines.append(' * @constructor\n')
-            lines.append(' * @extends {%s}\n' % (self.name,))
-            lines.append(' * @param {%s} options Options.\n' % (self.object_literal.extern_name(),))
-            lines.append(' */\n')
-            lines.append('%s = function(options) {\n' % (self.export_name(),))
-            lines.append('  /** @type {%s} */\n' % (self.object_literal.name,))
-            lines.append('  var arg = /** @type {%s} */ (options);\n' % (self.object_literal.name,));
-            lines.append('  if (goog.isDefAndNotNull(options)) {\n')
-            # FIXME: we modify the user's options object
-            lines.append(''.join(
-                         '    if (!(options.%(o)s instanceof %(base)s)) {\n'
-                         '      options.%(o)s = new %(ctor)s(\n'
-                         '          /** @type {%(extern)s} */ (options.%(o)s));\n'
-                         '    }\n' %
-                             {'o': o, 'base': b.name, 'ctor': k.export_name(),
-                              'extern': ol.extern_name()} \
-                                     for o, ol, k, b in self.nested_options()))
-            lines.extend('\n'.join('    arg.%s = options.%s;' % (key, key) for key in sorted(self.object_literal.prop_types.keys())))
-            lines.append('\n  }\n')
-            lines.append('  goog.base(this, arg);\n')
-            lines.append('};\n')
-            lines.append('goog.inherits(\n')
-            lines.append('    %sExport,\n' % (self.name,));
-            lines.append('    %s);\n' % (self.name,));
-            lines.append('goog.exportSymbol(\n')
-            lines.append('    \'%s\',\n' % (self.name,))
-            lines.append('    %s);\n' % (self.export_name(),))
-        lines.extend('goog.exportProperty(\n    %s,\n    \'%s\',\n    %s.%s);\n' % (self.name, prop, self.name, prop) for prop in sorted(self.props))
-        return ''.join(lines)
-
-    def export_name(self):
-        return '%sExport' % self.name
-
-
-class Function(Exportable):
-
-    def __init__(self, name, object_literal, return_type, objects):
-        Exportable.__init__(self, name)
-        self.object_literal = object_literal
-        self.return_type = return_type
-        self.objects = objects
-
-    __repr__ = simplerepr
-
-    def property_object_literal(self, object_literal, prop):
-        prop_object_literal = None
-        types = object_literal.prop_types[prop].split('|')
-        for t in types:
-            if t in self.objects:
-                o = self.objects[t]
-                if isinstance(o, ObjectLiteral):
-                    if prop_object_literal:
-                        raise RuntimeError('Multiple "literal" types found for '
-                            'option %s.%s: %s, %s.' %
-                            (object_literal.name, prop,
-                             prop_object_literal.name, o.name))
-                    prop_object_literal = o
-        return prop_object_literal
-
-    def recursive_export(self, lines, prop, object_literal, local_var=None, depth=1):
-        indent = '  ' * depth
-        if not local_var:
-            local_var = prop.split('.')[-1]
-        lines.append('%s/** @type {%s} */\n' % (indent, object_literal.name))
-        lines.append('%svar %s =\n' % (indent, local_var))
-        lines.append('%s    /** @type {%s} */\n' % (indent, object_literal.name))
-        lines.append('%s    (%s);\n' % (indent, prop))
-        lines.append('%sif (goog.isDefAndNotNull(%s)) {\n' % (indent, prop))
-        for key in sorted(object_literal.prop_types.keys()):
-            prop_object_literal = self.property_object_literal(object_literal, key)
-            if prop_object_literal:
-                lv = self.recursive_export(lines, '%s.%s' % (prop, key),
-                    prop_object_literal, depth=depth + 1)
-                lines.append('%s  %s.%s =\n%s      %s;\n' %
-                    (indent, local_var, key, indent, lv))
-            else:
-                lines.append('%s  %s.%s =\n%s      %s.%s;\n' %
-                    (indent, local_var, key, indent, prop, key))
-        lines.append('%s}\n' % (indent,))
-        return local_var
-
-    def export(self):
-        lines = []
-        local_var = 'arg'
-        lines.append('\n\n')
-        lines.append('/**\n')
-        lines.append(' * @param {%s} options Options.\n' % (self.object_literal.extern_name(),))
-        if self.return_type:
-            lines.append(' * @return {%s} Return value.\n' % (self.return_type,))
-        lines.append(' */\n')
-        lines.append('%s = function(options) {\n' % (self.export_name(),))
-        self.recursive_export(lines, 'options', self.object_literal,
-            local_var=local_var)
-        if self.return_type:
-            lines.append('  return %s(%s);\n' % (self.name, local_var))
-        else:
-            lines.append('  %s(arg);\n' % (self.name,))
-        lines.append('};\n')
-        lines.append('goog.exportSymbol(\n')
-        lines.append('    \'%s\',\n' % (self.name,))
-        lines.append('    %s);\n' % (self.export_name(),))
-        return ''.join(lines)
-
-    def export_name(self):
-        return '%sExport' % self.name
-
 class ObjectLiteral(Exportable):
 
     def __init__(self, name, objects):
@@ -220,7 +59,7 @@ class ObjectLiteral(Exportable):
         return ''.join(lines)
 
     def extern_name(self):
-        return re.sub(r'ol\.(\S+)', r'olx.\1Extern', self.name)
+        return re.sub(r'(olx\.\S+)', r'\1Extern', self.name)
 
     def extern_namespace(self):
         return '.'.join(self.extern_name().split('.')[:-1]) or None
@@ -310,18 +149,6 @@ def main(argv):
                     object_literal.prop_types[prop] = type
                     continue
                 continue
-            m = re.match(r'@exportClass\s+(?P<name>\S+)(?:\s+(?P<object_literal_name>\S+))?\Z', line)
-            if m:
-                name = m.group('name')
-                if name in objects:
-                    raise RuntimeError(line)  # Name already defined
-                object_literal_name = m.group('object_literal_name')
-                object_literal = objects[object_literal_name]
-                if not isinstance(object_literal, ObjectLiteral):
-                    raise RuntimeError(line)  # Undefined object literal
-                klass = Class(name, object_literal, objects)
-                objects[name] = klass
-                continue
             m = re.match(r'@exportProperty\s+(?P<prop>\S+)\Z', line)
             if m:
                 components = m.group('prop').split('.')
@@ -337,23 +164,6 @@ def main(argv):
                     symbol = Symbol(name, False)
                     objects[name] = symbol
                 symbol.props.add(prop)
-                continue
-            m = re.match(r'@exportFunction\s+(?P<name>\S+)(?:\s+(?P<object_literal_name>\S+))?(?:\s+(?P<return_type>\S+))?\Z', line)
-            if m:
-                name = m.group('name')
-                if name in objects:
-                    raise RuntimeError(line)  # Name already defined
-                object_literal_name = m.group('object_literal_name')
-                if object_literal_name not in objects:
-                    raise RuntimeError(line)
-                object_literal = objects[object_literal_name]
-                if not isinstance(object_literal, ObjectLiteral):
-                    raise RuntimeError(line)
-                return_type = m.group('return_type')
-                function  = Function(name, object_literal, return_type, objects)
-                objects[name] = function
-                # The require should only be for the namespace, not the function
-                requires.add('.'.join(name.split('.')[0:-1]))
                 continue
             m = re.match(r'@exportSymbol\s+(?P<name>\S+)(?:\s+(?P<export_as>\S+))?\Z', line)
             if m:
@@ -375,7 +185,6 @@ def main(argv):
     objects = sorted(objects.values(), key=attrgetter('name'))
 
     if options.exports:
-        requires.update(obj.name for obj in objects if isinstance(obj, Class))
         if requires:
             for require in sorted(requires):
                 sys.stdout.write('goog.require(\'%s\');\n' % (require,))
@@ -398,6 +207,7 @@ def main(argv):
             else:
                 sys.stdout.write('var %s;\n' % (namespace,))
         for object_literal in object_literals:
+            sys.stdout.write(object_literal.typedef())
             sys.stdout.write(object_literal.extern())
 
     if options.typedef:

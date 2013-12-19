@@ -8,6 +8,7 @@ goog.require('ol.webgl.shader');
 /**
  * @constructor
  * @extends {ol.webgl.shader.Fragment}
+ * @struct
  */
 ol.renderer.webgl.map.shader.ColorFragment = function() {
   goog.base(this, ol.renderer.webgl.map.shader.ColorFragment.SOURCE);
@@ -43,6 +44,7 @@ ol.renderer.webgl.map.shader.ColorFragment.SOURCE = goog.DEBUG ?
 /**
  * @constructor
  * @extends {ol.webgl.shader.Vertex}
+ * @struct
  */
 ol.renderer.webgl.map.shader.ColorVertex = function() {
   goog.base(this, ol.renderer.webgl.map.shader.ColorVertex.SOURCE);
@@ -79,6 +81,7 @@ ol.renderer.webgl.map.shader.ColorVertex.SOURCE = goog.DEBUG ?
  * @constructor
  * @param {WebGLRenderingContext} gl GL.
  * @param {WebGLProgram} program Program.
+ * @struct
  */
 ol.renderer.webgl.map.shader.Color.Locations = function(gl, program) {
 

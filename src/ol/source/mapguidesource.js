@@ -11,7 +11,7 @@ goog.require('ol.source.Image');
 /**
  * @constructor
  * @extends {ol.source.Image}
- * @param {ol.source.MapGuideOptions} options Options.
+ * @param {olx.source.MapGuideOptions} options Options.
  */
 ol.source.MapGuide = function(options) {
 
@@ -30,6 +30,13 @@ ol.source.MapGuide = function(options) {
     resolutions: options.resolutions,
     imageUrlFunction: imageUrlFunction
   });
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.displayDpi_ = goog.isDef(options.displayDpi) ?
+      options.displayDpi : 96;
 
   /**
    * @private
@@ -91,20 +98,20 @@ ol.source.MapGuide.prototype.getImage =
 /**
  * @param {ol.Extent} extent The map extents.
  * @param {ol.Size} size the viewport size.
+ * @param {number} metersPerUnit The meters-per-unit value.
+ * @param {number} dpi The display resolution.
  * @return {number} The computed map scale.
  */
-ol.source.MapGuide.prototype.getScale = function(extent, size) {
-  var mcsW = extent[2] - extent[0];
-  var mcsH = extent[3] - extent[1];
+ol.source.MapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
+  var mcsW = ol.extent.getWidth(extent);
+  var mcsH = ol.extent.getHeight(extent);
   var devW = size[0];
   var devH = size[1];
-  var dpi = 96;
-  var mpu = this.metersPerUnit_;
   var mpp = 0.0254 / dpi;
   if (devH * mcsW > devW * mcsH) {
-    return mcsW * mpu / (devW * mpp); // width limited
+    return mcsW * metersPerUnit / (devW * mpp); // width limited
   } else {
-    return mcsH * mpu / (devH * mpp); // height limited
+    return mcsH * metersPerUnit / (devH * mpp); // height limited
   }
 };
 
@@ -119,19 +126,21 @@ ol.source.MapGuide.prototype.getScale = function(extent, size) {
  */
 ol.source.MapGuide.prototype.getUrl =
     function(baseUrl, params, extent, size, projection) {
-  var scale = this.getScale(extent, size);
+  var scale = ol.source.MapGuide.getScale(extent, size,
+      this.metersPerUnit_, this.displayDpi_);
+  var center = ol.extent.getCenter(extent);
   var baseParams = {
     'OPERATION': this.useOverlay_ ? 'GETDYNAMICMAPOVERLAYIMAGE' : 'GETMAPIMAGE',
     'VERSION': '2.0.0',
     'LOCALE': 'en',
     'CLIENTAGENT': 'ol.source.MapGuide source',
     'CLIP': '1',
-    'SETDISPLAYDPI': 96,
+    'SETDISPLAYDPI': this.displayDpi_,
     'SETDISPLAYWIDTH': Math.round(size[0]),
     'SETDISPLAYHEIGHT': Math.round(size[1]),
     'SETVIEWSCALE': scale,
-    'SETVIEWCENTERX': (extent[0] + extent[2]) / 2,
-    'SETVIEWCENTERY': (extent[1] + extent[3]) / 2
+    'SETVIEWCENTERX': center[0],
+    'SETVIEWCENTERY': center[1]
   };
   goog.object.extend(baseParams, params);
   return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);
