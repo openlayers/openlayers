@@ -244,7 +244,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature =
   var i, ii, style, imageStyle, imageState;
   for (i = 0, ii = styles.length; i < ii; ++i) {
     style = styles[i];
-    imageStyle = style.image;
+    imageStyle = style.getImage();
     if (!goog.isNull(imageStyle)) {
       if (imageStyle.imageState == ol.style.ImageState.IDLE) {
         goog.events.listenOnce(imageStyle, goog.events.EventType.CHANGE,

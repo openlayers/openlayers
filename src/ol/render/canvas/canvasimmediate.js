@@ -218,8 +218,8 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
   if (!ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
-  this.setFillStrokeStyle(style.fill, style.stroke);
-  this.setImageStyle(style.image);
+  this.setFillStrokeStyle(style.getFill(), style.getStroke());
+  this.setImageStyle(style.getImage());
   var renderGeometry =
       ol.render.canvas.Immediate.GEOMETRY_RENDERES_[geometry.getType()];
   goog.asserts.assert(goog.isDef(renderGeometry));
