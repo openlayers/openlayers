@@ -527,6 +527,11 @@
  */
 
 /**
+ * @typedef {Object} olx.source.GoogleMapsOptions
+ * @property {google.maps.MapTypeId|undefined} mapTypeId Map type ID.
+ */
+
+/**
  * @typedef {Object} olx.source.IGCOptions
  * @property {ol.format.IGCZ|undefined} altitudeMode Altitude mode.
  *     Possible values are `barometric`, `gps`, and `none`. Default is `none`.
