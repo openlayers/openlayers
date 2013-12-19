@@ -487,12 +487,15 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
   var state = this.state_;
   if (!ol.style.Text.equals(state.textStyle, textStyle)) {
     if (goog.isDefAndNotNull(textStyle)) {
-      context.font = goog.isDef(textStyle.font) ?
-          textStyle.font : ol.render.canvas.defaultFont;
-      context.textAlign = goog.isDef(textStyle.textAlign) ?
-          textStyle.textAlign : ol.render.canvas.defaultTextAlign;
-      context.textBaseline = goog.isDef(textStyle.textBaseline) ?
-          textStyle.textBaseline : ol.render.canvas.defaultTextBaseline;
+      var textStyleFont = textStyle.getFont();
+      context.font = goog.isDef(textStyleFont) ?
+          textStyleFont : ol.render.canvas.defaultFont;
+      var textStyleTextAlign = textStyle.getTextAlign();
+      context.textAlign = goog.isDef(textStyleTextAlign) ?
+          textStyleTextAlign : ol.render.canvas.defaultTextAlign;
+      var textStyleTextBaseline = textStyle.getTextBaseline();
+      context.textBaseline = goog.isDef(textStyleTextBaseline) ?
+          textStyleTextBaseline : ol.render.canvas.defaultTextBaseline;
     }
     state.textStyle = textStyle;
   }
