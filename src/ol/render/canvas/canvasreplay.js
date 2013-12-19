@@ -109,6 +109,12 @@ ol.render.canvas.Replay = function(pixelRatio, tolerance) {
    */
   this.extent_ = ol.extent.createEmpty();
 
+  /**
+   * @private
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.tmpLocalTransform_ = goog.vec.Mat4.createNumber();
+
 };
 
 
@@ -180,6 +186,7 @@ ol.render.canvas.Replay.prototype.replay_ =
   var ii = instructions.length; // end of instructions
   var d; // data index
   var dd; // end of per-instruction data
+  var localTransform = this.tmpLocalTransform_;
   while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
@@ -219,7 +226,21 @@ ol.render.canvas.Replay.prototype.replay_ =
           x = (x + 0.5) | 0;
           y = (y + 0.5) | 0;
         }
+        if (scale != 1 || rotation !== 0) {
+          ol.vec.Mat4.makeTransform2D(
+              localTransform, x, y, scale, scale, rotation, -x, -y);
+          context.setTransform(
+              goog.vec.Mat4.getElement(localTransform, 0, 0),
+              goog.vec.Mat4.getElement(localTransform, 1, 0),
+              goog.vec.Mat4.getElement(localTransform, 0, 1),
+              goog.vec.Mat4.getElement(localTransform, 1, 1),
+              goog.vec.Mat4.getElement(localTransform, 0, 3),
+              goog.vec.Mat4.getElement(localTransform, 1, 3));
+        }
         context.drawImage(image, x, y, width, height);
+        if (scale != 1 || rotation !== 0) {
+          context.setTransform(1, 0, 0, 1, 0, 0);
+        }
       }
       ++i;
     } else if (type == ol.render.canvas.Instruction.END_GEOMETRY) {
