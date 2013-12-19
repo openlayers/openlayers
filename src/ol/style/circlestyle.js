@@ -127,7 +127,7 @@ ol.style.Circle.prototype.render_ = function() {
   context.arc(size / 2, size / 2, this.radius_, 0, 2 * Math.PI, true);
 
   if (!goog.isNull(this.fill_)) {
-    context.fillStyle = ol.color.asString(this.fill_.color);
+    context.fillStyle = ol.color.asString(this.fill_.getColor());
     context.fill();
   }
   if (!goog.isNull(this.stroke_)) {

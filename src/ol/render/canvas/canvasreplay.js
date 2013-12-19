@@ -1027,8 +1027,9 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
   goog.asserts.assert(!goog.isNull(fillStyle) || !goog.isNull(strokeStyle));
   var state = this.state_;
   if (!goog.isNull(fillStyle)) {
-    state.fillStyle = ol.color.asString(!goog.isNull(fillStyle.color) ?
-        fillStyle.color : ol.render.canvas.defaultFillStyle);
+    var fillStyleColor = fillStyle.getColor();
+    state.fillStyle = ol.color.asString(!goog.isNull(fillStyleColor) ?
+        fillStyleColor : ol.render.canvas.defaultFillStyle);
   } else {
     state.fillStyle = undefined;
   }

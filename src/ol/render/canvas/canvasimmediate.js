@@ -378,8 +378,9 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
   var state = this.state_;
   if (!goog.isNull(fillStyle)) {
-    state.fillStyle = ol.color.asString(!goog.isNull(fillStyle.color) ?
-        fillStyle.color : ol.render.canvas.defaultFillStyle);
+    var fillStyleColor = fillStyle.getColor();
+    state.fillStyle = ol.color.asString(!goog.isNull(fillStyleColor) ?
+        fillStyleColor : ol.render.canvas.defaultFillStyle);
   } else {
     state.fillStyle = undefined;
   }
