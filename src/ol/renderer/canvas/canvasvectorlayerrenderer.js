@@ -151,7 +151,7 @@ ol.renderer.canvas.VectorLayer.prototype.getVectorLayer = function() {
 ol.renderer.canvas.VectorLayer.prototype.handleImageStyleChange_ =
     function(event) {
   var imageStyle = /** @type {ol.style.Image} */ (event.target);
-  if (imageStyle.imageState == ol.style.ImageState.LOADED) {
+  if (imageStyle.getImageState() == ol.style.ImageState.LOADED) {
     this.renderIfReadyAndVisible();
   }
 };
@@ -246,16 +246,17 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature =
     style = styles[i];
     imageStyle = style.getImage();
     if (!goog.isNull(imageStyle)) {
-      if (imageStyle.imageState == ol.style.ImageState.IDLE) {
+      if (imageStyle.getImageState() == ol.style.ImageState.IDLE) {
         goog.events.listenOnce(imageStyle, goog.events.EventType.CHANGE,
             this.handleImageStyleChange_, false, this);
         imageStyle.load();
-      } else if (imageStyle.imageState == ol.style.ImageState.LOADED) {
+      } else if (imageStyle.getImageState() == ol.style.ImageState.LOADED) {
         ol.renderer.vector.renderFeature(
             replayGroup, feature, style, squaredTolerance, feature);
       }
-      goog.asserts.assert(imageStyle.imageState != ol.style.ImageState.IDLE);
-      loading = imageStyle.imageState == ol.style.ImageState.LOADING;
+      goog.asserts.assert(
+          imageStyle.getImageState() != ol.style.ImageState.IDLE);
+      loading = imageStyle.getImageState() == ol.style.ImageState.LOADING;
     } else {
       ol.renderer.vector.renderFeature(
           replayGroup, feature, style, squaredTolerance, feature);

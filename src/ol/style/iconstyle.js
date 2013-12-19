@@ -175,6 +175,14 @@ ol.style.Icon.prototype.getHitDetectionImage = function(pixelRatio) {
 
 
 /**
+ * @return {string|undefined} Image src.
+ */
+ol.style.Icon.prototype.getSrc = function() {
+  return this.src_;
+};
+
+
+/**
  * Load not yet loaded URI.
  */
 ol.style.Icon.prototype.load = function() {
