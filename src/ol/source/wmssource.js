@@ -10,8 +10,8 @@ goog.require('goog.uri.utils');
  * @enum {string}
  */
 ol.source.wms.ServerType = {
-  MAPSERVER: 'mapserver',
   GEOSERVER: 'geoserver',
+  MAPSERVER: 'mapserver',
   QGIS: 'qgis'
 };
 
