@@ -82,14 +82,6 @@ ol.interaction.DragBox = function(opt_options) {
 
   /**
    * @private
-   * @type {function(ol.Map, ol.geom.Polygon)}
-   */
-  this.behavior_ = goog.isDef(options.behavior) ?
-      options.behavior : goog.nullFunction;
-
-
-  /**
-   * @private
    * @type {ol.style.Style}
    */
   var style = goog.isDef(options.style) ? options.style : null;
@@ -121,6 +113,22 @@ ol.interaction.DragBox.prototype.handleDrag = function(mapBrowserEvent) {
 
 
 /**
+ * Returns geometry of last drawn box.
+ * @return {ol.geom.Geometry} Geometry.
+ */
+ol.interaction.DragBox.prototype.getGeometry = function() {
+  return this.box_.getGeometry();
+};
+
+
+/**
+ * To be overriden by child classes.
+ * @protected
+ */
+ol.interaction.DragBox.prototype.onBoxEnd = goog.nullFunction;
+
+
+/**
  * @inheritDoc
  */
 ol.interaction.DragBox.prototype.handleDragEnd =
@@ -128,9 +136,9 @@ ol.interaction.DragBox.prototype.handleDragEnd =
   this.box_.setMap(null);
   if (this.deltaX * this.deltaX + this.deltaY * this.deltaY >=
       ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED) {
-    var map = mapBrowserEvent.map;
-    var geometry = this.box_.getGeometry();
-    this.behavior_(map, geometry);
+    this.onBoxEnd(mapBrowserEvent);
+    this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXEND,
+        mapBrowserEvent.getCoordinate()));
   }
 };
 
@@ -144,6 +152,8 @@ ol.interaction.DragBox.prototype.handleDragStart =
   if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
     this.box_.setCoordinates(this.startCoordinate, this.startCoordinate);
     this.box_.setMap(mapBrowserEvent.map);
+    this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXSTART,
+        mapBrowserEvent.getCoordinate()));
     return true;
   } else {
     return false;

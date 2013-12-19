@@ -59,23 +59,14 @@ goog.inherits(ol.render.Box, goog.Disposable);
 
 /**
  * @private
- * @param {ol.Extent} extent Extent.
  * @return {ol.geom.Polygon} Geometry.
  */
-ol.render.Box.prototype.createGeometry_ = function(extent) {
+ol.render.Box.prototype.createGeometry_ = function() {
   goog.asserts.assert(!goog.isNull(this.startCoordinate_));
   goog.asserts.assert(!goog.isNull(this.endCoordinate_));
   var startCoordinate = this.startCoordinate_;
   var endCoordinate = this.endCoordinate_;
   var coordinates = [
-    // outer ring
-    [
-      [extent[0], extent[1]],
-      [extent[0], extent[3]],
-      [extent[2], extent[3]],
-      [extent[2], extent[1]]
-    ],
-    // inner ring
     [
       startCoordinate,
       [startCoordinate[0], endCoordinate[1]],
@@ -100,8 +91,7 @@ ol.render.Box.prototype.disposeInternal = function() {
  * @private
  */
 ol.render.Box.prototype.handleMapPostCompose_ = function(event) {
-  var extent = event.getFrameState().extent;
-  this.geometry_ = this.createGeometry_(extent);
+  this.geometry_ = this.createGeometry_();
   var style = this.style_;
   goog.asserts.assert(!goog.isNull(style));
   var render = event.getRender();

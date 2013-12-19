@@ -1,11 +1,9 @@
 goog.provide('ol.interaction.DragZoom');
 
 goog.require('goog.asserts');
-goog.require('ol.Size');
-goog.require('ol.View2D');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.DragBox');
-goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 
@@ -26,55 +24,35 @@ ol.interaction.DragZoom = function(opt_options) {
       options.condition : ol.events.condition.shiftKeyOnly;
 
   /**
-   * @type {function(ol.Map, ol.geom.Polygon)}
-   */
-  var behavior = (
-      /**
-       * @param {ol.Map} map Map.
-       * @param {ol.geom.Polygon} polygon Polugon.
-       */
-      function(map, polygon) {
-        map.withFrozenRendering(function() {
-          // FIXME works for View2D only
-          var view = map.getView();
-          goog.asserts.assertInstanceof(view, ol.View2D);
-
-          var linearRings = polygon.getLinearRings();
-          goog.asserts.assert(linearRings.length == 2);
-
-          var innerLinearRing = linearRings[1];
-          var innerLinearRingExtent = innerLinearRing.getExtent();
-
-          var mapSize = /** @type {ol.Size} */ (map.getSize());
-
-          map.withFrozenRendering(function() {
-            view.fitExtent(innerLinearRingExtent, mapSize);
-            // FIXME we should preserve rotation
-            view.setRotation(0);
-          });
-        });
-      });
-
-  /**
    * @private
    * @type {ol.style.Style}
    */
   var style = goog.isDef(options.style) ?
       options.style : new ol.style.Style({
-        fill: new ol.style.Fill({
-          color: 'rgba(0,0,0,0.5)'
-        }),
-        image: null,
-        stroke: null,
-        text: null,
-        zIndex: 0
+        stroke: new ol.style.Stroke({
+          color: 'blue'
+        })
       });
 
   goog.base(this, {
-    behavior: behavior,
     condition: condition,
     style: style
   });
 
 };
 goog.inherits(ol.interaction.DragZoom, ol.interaction.DragBox);
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.DragZoom.prototype.onBoxEnd = function() {
+  this.getMap().withFrozenRendering(goog.bind(function() {
+    // FIXME works for View2D only
+    var view = this.getMap().getView().getView2D();
+
+    view.fitExtent(this.getGeometry().getExtent(), this.getMap().getSize());
+    // FIXME we should preserve rotation
+    view.setRotation(0);
+  }, this));
+};

@@ -314,7 +314,6 @@
 
 /**
  * @typedef {Object} olx.interaction.DragBoxOptions
- * @property {function(ol.Map, ol.geom.Polygon)} behavior Behavior function.
  * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is always.
