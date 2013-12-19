@@ -78,6 +78,17 @@ goog.inherits(ol.source.Vector, ol.source.Source);
  * @param {ol.Feature} feature Feature.
  */
 ol.source.Vector.prototype.addFeature = function(feature) {
+  this.addFeatureInternal(feature);
+  this.dispatchChangeEvent();
+};
+
+
+/**
+ * Add a feature without firing a `change` event.
+ * @param {ol.Feature} feature Feature.
+ * @protected
+ */
+ol.source.Vector.prototype.addFeatureInternal = function(feature) {
   var featureKey = goog.getUid(feature) + '';
   goog.asserts.assert(!(featureKey in this.featureChangeKeys_));
   this.featureChangeKeys_[featureKey] = goog.events.listen(feature,
