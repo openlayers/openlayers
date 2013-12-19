@@ -130,6 +130,10 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
 ol.source.Vector.prototype.clear = function() {
   this.rBush_.forEach(this.removeFeatureInternal, this);
   this.rBush_.clear();
+  goog.object.forEach(
+      this.nullGeometryFeatures_, this.removeFeatureInternal, this);
+  goog.object.clear(this.nullGeometryFeatures_);
+  goog.asserts.assert(goog.object.isEmpty(this.featureChangeKeys_));
   this.dispatchChangeEvent();
 };
 

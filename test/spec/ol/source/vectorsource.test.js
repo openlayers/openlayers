@@ -66,7 +66,7 @@ describe('ol.source.Vector', function() {
 
   });
 
-  describe('when populated with 10 random points', function() {
+  describe('when populated with 10 random points and a null', function() {
 
     var features;
     var vectorSource;
@@ -77,6 +77,7 @@ describe('ol.source.Vector', function() {
         features[i] =
             new ol.Feature(new ol.geom.Point([Math.random(), Math.random()]));
       }
+      features.push(new ol.Feature(null));
       vectorSource = new ol.source.Vector({
         features: features
       });
@@ -95,7 +96,7 @@ describe('ol.source.Vector', function() {
         expect(changeSpy).to.be.called();
         expect(changeSpy.callCount).to.be(1);
         expect(removeFeatureSpy).to.be.called();
-        expect(removeFeatureSpy.callCount).to.be(10);
+        expect(removeFeatureSpy.callCount).to.be(features.length);
       });
 
     });
