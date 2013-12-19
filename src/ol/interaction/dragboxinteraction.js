@@ -1,9 +1,11 @@
 // FIXME draw drag box
 // FIXME works for View2D only
 
+goog.provide('ol.DragBoxEvent');
 goog.provide('ol.interaction.DragBox');
 
 goog.require('goog.asserts');
+goog.require('goog.events.Event');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Drag');
@@ -22,6 +24,47 @@ ol.DRAG_BOX_HYSTERESIS_PIXELS = 8;
 ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED =
     ol.DRAG_BOX_HYSTERESIS_PIXELS *
     ol.DRAG_BOX_HYSTERESIS_PIXELS;
+
+
+/**
+ * @enum {string}
+ */
+ol.DragBoxEventType = {
+  BOXSTART: 'boxstart',
+  BOXEND: 'boxend'
+};
+
+
+
+/**
+ * Object representing a dragbox event.
+ *
+ * @param {string} type The event type.
+ * @param {ol.Coordinate} coordinate The event coordinate.
+ * @extends {goog.events.Event}
+ * @constructor
+ */
+ol.DragBoxEvent = function(type, coordinate) {
+  goog.base(this, type);
+
+  /**
+   * The coordinate of the drag event.
+   * @type {ol.Coordinate}
+   * @private
+   */
+  this.coordinate_ = coordinate;
+
+};
+goog.inherits(ol.DragBoxEvent, goog.events.Event);
+
+
+/**
+ * Get the name of the property associated with this event.
+ * @return {ol.Coordinate} Event coordinate.
+ */
+ol.DragBoxEvent.prototype.getCoordinate = function() {
+  return this.coordinate_;
+};
 
 
 
