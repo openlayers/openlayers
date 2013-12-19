@@ -72,6 +72,14 @@ ol.style.Circle.prototype.getImage = function(pixelRatio) {
 /**
  * @inheritDoc
  */
+ol.style.Circle.prototype.getHitDetectionImage = function(pixelRatio) {
+  return this.canvas_;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.style.Circle.prototype.load = goog.nullFunction;
 
 
