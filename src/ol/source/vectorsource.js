@@ -128,7 +128,7 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
  * FIXME empty description for jsdoc
  */
 ol.source.Vector.prototype.clear = function() {
-  this.rBush_.forEach(this.removeFeatureInternal_, this);
+  this.rBush_.forEach(this.removeFeatureInternal, this);
   this.rBush_.clear();
   this.dispatchChangeEvent();
 };
@@ -297,16 +297,17 @@ ol.source.Vector.prototype.removeFeature = function(feature) {
   } else {
     this.rBush_.remove(feature);
   }
-  this.removeFeatureInternal_(feature);
+  this.removeFeatureInternal(feature);
   this.dispatchChangeEvent();
 };
 
 
 /**
+ * Remove feature without firing a `change` event.
  * @param {ol.Feature} feature Feature.
- * @private
+ * @protected
  */
-ol.source.Vector.prototype.removeFeatureInternal_ = function(feature) {
+ol.source.Vector.prototype.removeFeatureInternal = function(feature) {
   var featureKey = goog.getUid(feature) + '';
   goog.asserts.assert(featureKey in this.featureChangeKeys_);
   goog.events.unlistenByKey(this.featureChangeKeys_[featureKey]);
