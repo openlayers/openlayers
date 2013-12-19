@@ -60,11 +60,13 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform) {
    *         fillStyle: (string|undefined),
    *         strokeStyle: (string|undefined),
    *         lineWidth: (number|undefined),
+   *         image: (HTMLCanvasElement|HTMLVideoElement|Image),
    *         anchorX: (number|undefined),
    *         anchorY: (number|undefined),
-   *         image: (HTMLCanvasElement|HTMLVideoElement|Image),
    *         height: (number|undefined),
    *         width: (number|undefined),
+   *         scale: number,
+   *         rotation: number,
    *         lineCap: (string|undefined),
    *         lineDash: Array.<number>,
    *         lineJoin: (string|undefined),
@@ -83,10 +85,12 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform) {
     fillStyle: undefined,
     strokeStyle: undefined,
     lineWidth: undefined,
+    image: null,
     anchorX: undefined,
     anchorY: undefined,
-    image: null,
     height: undefined,
+    rotation: 0,
+    scale: 1,
     width: undefined,
     lineCap: undefined,
     lineDash: null,
@@ -469,12 +473,14 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     var image = imageStyle.getImage(1);
     goog.asserts.assert(!goog.isNull(image));
     var state = this.state_;
+    state.image = image;
     state.anchorX = anchor[0];
     state.anchorY = anchor[1];
-    state.image = image;
-    state.width = size[0];
     state.height = size[1];
+    state.rotation = imageStyle.getRotation();
+    state.scale = imageStyle.getScale();
     state.snapToPixel = imageStyle.getSnapToPixel();
+    state.width = size[0];
   }
 };
 
