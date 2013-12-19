@@ -743,8 +743,8 @@
 /**
  * @typedef {Object} olx.style.StrokeOptions
  * @property {ol.Color|string|undefined} color Color.
- * @property {string|undefined} lineCap Line cap style: `butt`, `round`, or `square`. Default is `butt`.
- * @property {string|undefined} lineJoin Line join style: `bevel`, `round`, or `miter`. Default is `miter`.
+ * @property {string|undefined} lineCap Line cap style: `butt`, `round`, or `square`. Default is `round`.
+ * @property {string|undefined} lineJoin Line join style: `bevel`, `round`, or `miter`. Default is `round`.
  * @property {Array.<number>|undefined} lineDash Line dash pattern. Default is `undefined` (no dash).
  * @property {number|undefined} miterLimit Miter limit. Default is `10`.
  * @property {number|undefined} width Width.
