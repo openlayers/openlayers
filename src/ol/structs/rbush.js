@@ -26,6 +26,7 @@ goog.provide('ol.structs.RBush');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.object');
 goog.require('ol.extent');
 
 
@@ -331,6 +332,7 @@ ol.structs.RBush.prototype.clear = function() {
   node.height = 1;
   node.children.length = 0;
   node.value = null;
+  goog.object.clear(this.valueExtent_);
 };
 
 
