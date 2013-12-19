@@ -63,7 +63,7 @@ ol.source.wms.getDpiParam = function(serverType, pixelRatio) {
   if (serverType == ol.source.wms.ServerType.MAPSERVER) {
     param['MAP_RESOLUTION'] = 90 * pixelRatio;
   } else if (serverType == ol.source.wms.ServerType.GEOSERVER) {
-    param['FORMAT_OPTION'] = 'dpi:' + 90 * pixelRatio;
+    param['FORMAT_OPTIONS'] = 'dpi:' + 90 * pixelRatio;
   } else if (serverType == ol.source.wms.ServerType.QGIS) {
     param['DPI'] = 90 * pixelRatio;
   } else {
