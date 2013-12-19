@@ -8,8 +8,8 @@ goog.require('ol.extent');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.layer.Vector');
-goog.require('ol.shape');
 goog.require('ol.source.Vector');
+goog.require('ol.style.Circle');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
@@ -30,8 +30,11 @@ var vectorSource = new ol.source.Vector({
 });
 
 var styleArray = [new ol.style.Style({
-  image: ol.shape.renderCircle(3, null,
-      new ol.style.Stroke({color: 'red', width: 1}))
+  image: new ol.style.Circle({
+    radius: 3,
+    fill: null,
+    stroke: new ol.style.Stroke({color: 'red', width: 1})
+  })
 })];
 
 var colors = ['red', 'orange', 'yellow', 'blue', 'green', 'indigo', 'violet'];

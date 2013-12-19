@@ -3,11 +3,11 @@ goog.require('ol.Overlay');
 goog.require('ol.OverlayPositioning');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
-goog.require('ol.icon');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.GeoJSON');
 goog.require('ol.source.TileJSON');
+goog.require('ol.style.Icon');
 goog.require('ol.style.Style');
 
 
@@ -18,7 +18,9 @@ var raster = new ol.layer.Tile({
 });
 
 var styleArray = [new ol.style.Style({
-  image: ol.icon.renderIcon('data/icon.png')
+  image: new ol.style.Icon({
+    src: 'data/icon.png'
+  })
 })];
 
 var vector = new ol.layer.Vector({

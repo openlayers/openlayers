@@ -719,24 +719,25 @@
  */
 
 /**
+ * @typedef {Object} olx.style.CircleOptions
+ * @property {ol.style.Fill|undefined} fill Fill style.
+ * @property {number} radius Circle radius.
+ * @property {ol.style.Stroke|undefined} stroke Stroke style.
+ */
+
+/**
  * @typedef {Object} olx.style.FillOptions
  * @property {ol.Color|string|undefined} color Color.
  * @todo stability experimental
  */
 
 /**
- * @typedef {Object} olx.style.ImageOptions
- * @property {ol.Pixel} anchor Anchor.
+ * @typedef {Object} olx.style.IconOptions
+ * @property {ol.Pixel|undefined} anchor Anchor.
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image.
- * @property {HTMLCanvasElement|HTMLVideoElement|Image|undefined} image Image.
- * @property {ol.style.ImageState|undefined} imageState Image state.
  * @property {number|undefined} rotation Rotation.
- * @property {ol.Size} size Image size in pixel.
- * @property {boolean|undefined} snapToPixel Whether the image should be
- *     snapped to the closed pixel at rendering time.
- * @property {boolean|undefined} subtractViewRotation Whether the image should be
- *     rotated with the view or not.
- * @property {string|undefined} src Image source URI.
+ * @property {ol.Size|undefined} size Icon size in pixel.
+ * @property {string} src Image source URI.
  */
 
 /**

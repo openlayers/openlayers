@@ -218,8 +218,8 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
   if (!ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
-  this.setFillStrokeStyle(style.fill, style.stroke);
-  this.setImageStyle(style.image);
+  this.setFillStrokeStyle(style.getFill(), style.getStroke());
+  this.setImageStyle(style.getImage());
   var renderGeometry =
       ol.render.canvas.Immediate.GEOMETRY_RENDERES_[geometry.getType()];
   goog.asserts.assert(goog.isDef(renderGeometry));
@@ -378,24 +378,31 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
   var state = this.state_;
   if (!goog.isNull(fillStyle)) {
-    state.fillStyle = ol.color.asString(!goog.isNull(fillStyle.color) ?
-        fillStyle.color : ol.render.canvas.defaultFillStyle);
+    var fillStyleColor = fillStyle.getColor();
+    state.fillStyle = ol.color.asString(!goog.isNull(fillStyleColor) ?
+        fillStyleColor : ol.render.canvas.defaultFillStyle);
   } else {
     state.fillStyle = undefined;
   }
   if (!goog.isNull(strokeStyle)) {
-    state.strokeStyle = ol.color.asString(!goog.isNull(strokeStyle.color) ?
-        strokeStyle.color : ol.render.canvas.defaultStrokeStyle);
-    state.lineCap = goog.isDef(strokeStyle.lineCap) ?
-        strokeStyle.lineCap : ol.render.canvas.defaultLineCap;
-    state.lineDash = !goog.isNull(strokeStyle.lineDash) ?
-        strokeStyle.lineDash : ol.render.canvas.defaultLineDash;
-    state.lineJoin = goog.isDef(strokeStyle.lineJoin) ?
-        strokeStyle.lineJoin : ol.render.canvas.defaultLineJoin;
-    state.lineWidth = this.pixelRatio_ * (goog.isDef(strokeStyle.width) ?
-        strokeStyle.width : ol.render.canvas.defaultLineWidth);
-    state.miterLimit = goog.isDef(strokeStyle.miterLimit) ?
-        strokeStyle.miterLimit : ol.render.canvas.defaultMiterLimit;
+    var strokeStyleColor = strokeStyle.getColor();
+    state.strokeStyle = ol.color.asString(!goog.isNull(strokeStyleColor) ?
+        strokeStyleColor : ol.render.canvas.defaultStrokeStyle);
+    var strokeStyleLineCap = strokeStyle.getLineCap();
+    state.lineCap = goog.isDef(strokeStyleLineCap) ?
+        strokeStyleLineCap : ol.render.canvas.defaultLineCap;
+    var strokeStyleLineDash = strokeStyle.getLineDash();
+    state.lineDash = !goog.isNull(strokeStyleLineDash) ?
+        strokeStyleLineDash : ol.render.canvas.defaultLineDash;
+    var strokeStyleLineJoin = strokeStyle.getLineJoin();
+    state.lineJoin = goog.isDef(strokeStyleLineJoin) ?
+        strokeStyleLineJoin : ol.render.canvas.defaultLineJoin;
+    var strokeStyleWidth = strokeStyle.getWidth();
+    state.lineWidth = this.pixelRatio_ * (goog.isDef(strokeStyleWidth) ?
+        strokeStyleWidth : ol.render.canvas.defaultLineWidth);
+    var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
+    state.miterLimit = goog.isDef(strokeStyleMiterLimit) ?
+        strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit;
   } else {
     state.strokeStyle = undefined;
     state.lineCap = undefined;
@@ -454,16 +461,20 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyles_ = function() {
  */
 ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
   if (!goog.isNull(imageStyle)) {
-    goog.asserts.assert(!goog.isNull(imageStyle.anchor));
-    goog.asserts.assert(goog.isDef(imageStyle.size));
-    goog.asserts.assert(!goog.isNull(imageStyle.image));
+    var anchor = imageStyle.getAnchor();
+    goog.asserts.assert(!goog.isNull(anchor));
+    var size = imageStyle.getSize();
+    goog.asserts.assert(!goog.isNull(size));
+    // FIXME pixel ratio
+    var image = imageStyle.getImage(1);
+    goog.asserts.assert(!goog.isNull(image));
     var state = this.state_;
-    state.anchorX = imageStyle.anchor[0];
-    state.anchorY = imageStyle.anchor[1];
-    state.image = imageStyle.image;
-    state.width = imageStyle.size[0];
-    state.height = imageStyle.size[1];
-    state.snapToPixel = imageStyle.snapToPixel;
+    state.anchorX = anchor[0];
+    state.anchorY = anchor[1];
+    state.image = image;
+    state.width = size[0];
+    state.height = size[1];
+    state.snapToPixel = imageStyle.getSnapToPixel();
   }
 };
 
@@ -476,12 +487,15 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
   var state = this.state_;
   if (!ol.style.Text.equals(state.textStyle, textStyle)) {
     if (goog.isDefAndNotNull(textStyle)) {
-      context.font = goog.isDef(textStyle.font) ?
-          textStyle.font : ol.render.canvas.defaultFont;
-      context.textAlign = goog.isDef(textStyle.textAlign) ?
-          textStyle.textAlign : ol.render.canvas.defaultTextAlign;
-      context.textBaseline = goog.isDef(textStyle.textBaseline) ?
-          textStyle.textBaseline : ol.render.canvas.defaultTextBaseline;
+      var textStyleFont = textStyle.getFont();
+      context.font = goog.isDef(textStyleFont) ?
+          textStyleFont : ol.render.canvas.defaultFont;
+      var textStyleTextAlign = textStyle.getTextAlign();
+      context.textAlign = goog.isDef(textStyleTextAlign) ?
+          textStyleTextAlign : ol.render.canvas.defaultTextAlign;
+      var textStyleTextBaseline = textStyle.getTextBaseline();
+      context.textBaseline = goog.isDef(textStyleTextBaseline) ?
+          textStyleTextBaseline : ol.render.canvas.defaultTextBaseline;
     }
     state.textStyle = textStyle;
   }

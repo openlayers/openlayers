@@ -8,9 +8,9 @@ goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.proj');
-goog.require('ol.shape');
 goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
+goog.require('ol.style.Circle');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
@@ -128,10 +128,14 @@ map.on('singleclick', function(evt) {
   displaySnap(coordinate);
 });
 
-var imageStyle = ol.shape.renderCircle(5, null, new ol.style.Stroke({
-  color: 'rgba(255,0,0,0.9)',
-  width: 1
-}));
+var imageStyle = new ol.style.Circle({
+  radius: 5,
+  fill: null,
+  stroke: new ol.style.Stroke({
+    color: 'rgba(255,0,0,0.9)',
+    width: 1
+  })
+});
 var strokeStyle = new ol.style.Stroke({
   color: 'rgba(255,0,0,0.9)',
   width: 1

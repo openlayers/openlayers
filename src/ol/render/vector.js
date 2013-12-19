@@ -61,14 +61,15 @@ ol.renderer.vector.renderGeometryCollectionGeometry_ =
  */
 ol.renderer.vector.renderLineStringGeometry_ =
     function(replayGroup, geometry, style, data) {
-  if (goog.isNull(style.stroke)) {
+  var strokeStyle = style.getStroke();
+  if (goog.isNull(strokeStyle)) {
     return;
   }
   goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
   var lineStringGeometry = /** @type {ol.geom.LineString} */ (geometry);
   var replay = replayGroup.getReplay(
-      style.zIndex, ol.render.ReplayType.LINE_STRING);
-  replay.setFillStrokeStyle(null, style.stroke);
+      style.getZIndex(), ol.render.ReplayType.LINE_STRING);
+  replay.setFillStrokeStyle(null, strokeStyle);
   replay.drawLineStringGeometry(lineStringGeometry, data);
 };
 
@@ -82,15 +83,16 @@ ol.renderer.vector.renderLineStringGeometry_ =
  */
 ol.renderer.vector.renderMultiLineStringGeometry_ =
     function(replayGroup, geometry, style, data) {
-  if (goog.isNull(style.stroke)) {
+  var strokeStyle = style.getStroke();
+  if (goog.isNull(strokeStyle)) {
     return;
   }
   goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString);
   var multiLineStringGeometry = /** @type {ol.geom.MultiLineString} */
       (geometry);
   var replay = replayGroup.getReplay(
-      style.zIndex, ol.render.ReplayType.LINE_STRING);
-  replay.setFillStrokeStyle(null, style.stroke);
+      style.getZIndex(), ol.render.ReplayType.LINE_STRING);
+  replay.setFillStrokeStyle(null, strokeStyle);
   replay.drawMultiLineStringGeometry(multiLineStringGeometry, data);
 };
 
@@ -104,15 +106,17 @@ ol.renderer.vector.renderMultiLineStringGeometry_ =
  */
 ol.renderer.vector.renderMultiPolygonGeometry_ =
     function(replayGroup, geometry, style, data) {
-  if (goog.isNull(style.stroke) && goog.isNull(style.fill)) {
+  var fillStyle = style.getFill();
+  var strokeStyle = style.getStroke();
+  if (goog.isNull(strokeStyle) && goog.isNull(fillStyle)) {
     return;
   }
   goog.asserts.assertInstanceof(geometry, ol.geom.MultiPolygon);
   var multiPolygonGeometry = /** @type {ol.geom.MultiPolygon} */
       (geometry);
   var replay = replayGroup.getReplay(
-      style.zIndex, ol.render.ReplayType.POLYGON);
-  replay.setFillStrokeStyle(style.fill, style.stroke);
+      style.getZIndex(), ol.render.ReplayType.POLYGON);
+  replay.setFillStrokeStyle(fillStyle, strokeStyle);
   replay.drawMultiPolygonGeometry(multiPolygonGeometry, data);
 };
 
@@ -126,13 +130,15 @@ ol.renderer.vector.renderMultiPolygonGeometry_ =
  */
 ol.renderer.vector.renderPointGeometry_ =
     function(replayGroup, geometry, style, data) {
-  if (goog.isNull(style.image)) {
+  var imageStyle = style.getImage();
+  if (goog.isNull(imageStyle)) {
     return;
   }
   goog.asserts.assertInstanceof(geometry, ol.geom.Point);
   var pointGeometry = /** @type {ol.geom.Point} */ (geometry);
-  var replay = replayGroup.getReplay(style.zIndex, ol.render.ReplayType.IMAGE);
-  replay.setImageStyle(style.image);
+  var replay = replayGroup.getReplay(
+      style.getZIndex(), ol.render.ReplayType.IMAGE);
+  replay.setImageStyle(imageStyle);
   replay.drawPointGeometry(pointGeometry, data);
 };
 
@@ -146,13 +152,15 @@ ol.renderer.vector.renderPointGeometry_ =
  */
 ol.renderer.vector.renderMultiPointGeometry_ =
     function(replayGroup, geometry, style, data) {
-  if (goog.isNull(style.image)) {
+  var imageStyle = style.getImage();
+  if (goog.isNull(imageStyle)) {
     return;
   }
   goog.asserts.assertInstanceof(geometry, ol.geom.MultiPoint);
   var multiPointGeometry = /** @type {ol.geom.MultiPoint} */ (geometry);
-  var replay = replayGroup.getReplay(style.zIndex, ol.render.ReplayType.IMAGE);
-  replay.setImageStyle(style.image);
+  var replay = replayGroup.getReplay(
+      style.getZIndex(), ol.render.ReplayType.IMAGE);
+  replay.setImageStyle(imageStyle);
   replay.drawMultiPointGeometry(multiPointGeometry, data);
 };
 
@@ -166,14 +174,16 @@ ol.renderer.vector.renderMultiPointGeometry_ =
  */
 ol.renderer.vector.renderPolygonGeometry_ =
     function(replayGroup, geometry, style, data) {
-  if (goog.isNull(style.fill) && goog.isNull(style.stroke)) {
+  var fillStyle = style.getFill();
+  var strokeStyle = style.getStroke();
+  if (goog.isNull(fillStyle) && goog.isNull(strokeStyle)) {
     return;
   }
   goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
   var polygonGeometry = /** @type {ol.geom.Polygon} */ (geometry);
   var replay = replayGroup.getReplay(
-      style.zIndex, ol.render.ReplayType.POLYGON);
-  replay.setFillStrokeStyle(style.fill, style.stroke);
+      style.getZIndex(), ol.render.ReplayType.POLYGON);
+  replay.setFillStrokeStyle(fillStyle, strokeStyle);
   replay.drawPolygonGeometry(polygonGeometry, data);
 };
 

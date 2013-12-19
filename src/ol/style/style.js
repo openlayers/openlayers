@@ -16,30 +16,75 @@ ol.style.Style = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
+   * @private
    * @type {ol.style.Fill}
    */
-  this.fill = goog.isDef(options.fill) ? options.fill : null;
+  this.fill_ = goog.isDef(options.fill) ? options.fill : null;
 
   /**
+   * @private
    * @type {ol.style.Image}
    */
-  this.image = goog.isDef(options.image) ? options.image : null;
+  this.image_ = goog.isDef(options.image) ? options.image : null;
 
   /**
+   * @private
    * @type {ol.style.Stroke}
    */
-  this.stroke = goog.isDef(options.stroke) ? options.stroke : null;
+  this.stroke_ = goog.isDef(options.stroke) ? options.stroke : null;
 
   /**
+   * @private
    * @type {ol.style.Text}
    */
-  this.text = goog.isDef(options.text) ? options.text : null;
+  this.text_ = goog.isDef(options.text) ? options.text : null;
 
   /**
+   * @private
    * @type {number|undefined}
    */
-  this.zIndex = options.zIndex;
+  this.zIndex_ = options.zIndex;
 
+};
+
+
+/**
+ * @return {ol.style.Fill} Fill style.
+ */
+ol.style.Style.prototype.getFill = function() {
+  return this.fill_;
+};
+
+
+/**
+ * @return {ol.style.Image} Image style.
+ */
+ol.style.Style.prototype.getImage = function() {
+  return this.image_;
+};
+
+
+/**
+ * @return {ol.style.Stroke} Stroke style.
+ */
+ol.style.Style.prototype.getStroke = function() {
+  return this.stroke_;
+};
+
+
+/**
+ * @return {ol.style.Text} Text style.
+ */
+ol.style.Style.prototype.getText = function() {
+  return this.text_;
+};
+
+
+/**
+ * @return {number|undefined} ZIndex.
+ */
+ol.style.Style.prototype.getZIndex = function() {
+  return this.zIndex_;
 };
 
 

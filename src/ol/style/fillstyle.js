@@ -13,7 +13,16 @@ ol.style.Fill = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
+   * @private
    * @type {ol.Color|string}
    */
-  this.color = goog.isDef(options.color) ? options.color : null;
+  this.color_ = goog.isDef(options.color) ? options.color : null;
+};
+
+
+/**
+ * @return {ol.Color|string} Color.
+ */
+ol.style.Fill.prototype.getColor = function() {
+  return this.color_;
 };

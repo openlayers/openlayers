@@ -1,1 +1,4 @@
 @exportSymbol ol.style.Image
+@exportProperty ol.style.Image.prototype.getAnchor
+@exportProperty ol.style.Image.prototype.getRotation
+@exportProperty ol.style.Image.prototype.getSize

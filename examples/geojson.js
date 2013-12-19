@@ -4,16 +4,19 @@ goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.shape');
 goog.require('ol.source.GeoJSON');
 goog.require('ol.source.OSM');
+goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 
-var image = ol.shape.renderCircle(5, null,
-    new ol.style.Stroke({color: 'red', width: 1}));
+var image = new ol.style.Circle({
+  radius: 5,
+  fill: null,
+  stroke: new ol.style.Stroke({color: 'red', width: 1})
+});
 
 var styles = {
   'Point': [new ol.style.Style({
@@ -61,9 +64,13 @@ var styles = {
     fill: new ol.style.Fill({
       color: 'magenta'
     }),
-    image: ol.shape.renderCircle(10, null, new ol.style.Stroke({
-      color: 'magenta'
-    }))
+    image: new ol.style.Circle({
+      radius: 10,
+      fill: null,
+      stroke: new ol.style.Stroke({
+        color: 'magenta'
+      })
+    })
   })]
 };
 

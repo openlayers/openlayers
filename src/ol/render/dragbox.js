@@ -96,7 +96,7 @@ ol.render.DragBox.prototype.handleMapPostCompose_ = function(event) {
   ];
   var geometry = new ol.geom.Polygon(coordinates);
   var style = this.style_;
-  render.setFillStrokeStyle(style.fill, style.stroke);
+  render.setFillStrokeStyle(style.getFill(), style.getStroke());
   render.drawPolygonGeometry(geometry, null);
 };
 

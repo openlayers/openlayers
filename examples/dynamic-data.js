@@ -3,8 +3,8 @@ goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.layer.Tile');
-goog.require('ol.shape');
 goog.require('ol.source.MapQuestOpenAerial');
+goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 
@@ -23,9 +23,11 @@ var map = new ol.Map({
   })
 });
 
-var imageStyle = ol.shape.renderCircle(5,
-    new ol.style.Fill({color: 'yellow'}),
-    new ol.style.Stroke({color: 'red', width: 1}));
+var imageStyle = new ol.style.Circle({
+  radius: 5,
+  fill: new ol.style.Fill({color: 'yellow'}),
+  stroke: new ol.style.Stroke({color: 'red', width: 1})
+});
 
 var n = 200;
 var omegaTheta = 30000; // Rotation period in ms
