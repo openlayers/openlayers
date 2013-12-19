@@ -12,7 +12,6 @@ goog.require('ol.style.Style');
  * @enum {string}
  */
 ol.FeatureProperty = {
-  GEOMETRY: 'geometry',
   STYLE_FUNCTION: 'styleFunction'
 };
 
@@ -41,6 +40,12 @@ ol.Feature = function(opt_geometryOrValues) {
   this.id_ = undefined;
 
   /**
+   * @type {string}
+   * @private
+   */
+  this.geometryName_ = 'geometry';
+
+  /**
    * @private
    * @type {number}
    */
@@ -53,7 +58,7 @@ ol.Feature = function(opt_geometryOrValues) {
   this.geometryChangeKey_ = null;
 
   goog.events.listen(
-      this, ol.Object.getChangeEventType(ol.FeatureProperty.GEOMETRY),
+      this, ol.Object.getChangeEventType(this.geometryName_),
       this.handleGeometryChanged_, false, this);
   goog.events.listen(
       this, ol.Object.getChangeEventType(ol.FeatureProperty.STYLE_FUNCTION),
@@ -89,7 +94,7 @@ ol.Feature.prototype.dispatchChangeEvent = function() {
  */
 ol.Feature.prototype.getGeometry = function() {
   return /** @type {ol.geom.Geometry|undefined} */ (
-      this.get(ol.FeatureProperty.GEOMETRY));
+      this.get(this.geometryName_));
 };
 goog.exportProperty(
     ol.Feature.prototype,
@@ -102,6 +107,14 @@ goog.exportProperty(
  */
 ol.Feature.prototype.getId = function() {
   return this.id_;
+};
+
+
+/**
+ * @return {string} Geometry property name.
+ */
+ol.Feature.prototype.getGeometryName = function() {
+  return this.geometryName_;
 };
 
 
@@ -163,7 +176,7 @@ ol.Feature.prototype.handleStyleFunctionChange_ = function() {
  * @param {ol.geom.Geometry|undefined} geometry Geometry.
  */
 ol.Feature.prototype.setGeometry = function(geometry) {
-  this.set(ol.FeatureProperty.GEOMETRY, geometry);
+  this.set(this.geometryName_, geometry);
 };
 goog.exportProperty(
     ol.Feature.prototype,
@@ -188,4 +201,19 @@ goog.exportProperty(
  */
 ol.Feature.prototype.setId = function(id) {
   this.id_ = id;
+};
+
+
+/**
+ * @param {string} name Geometry property name.
+ */
+ol.Feature.prototype.setGeometryName = function(name) {
+  goog.events.unlisten(
+      this, ol.Object.getChangeEventType(this.geometryName_),
+      this.handleGeometryChanged_, false, this);
+  this.geometryName_ = name;
+  goog.events.listen(
+      this, ol.Object.getChangeEventType(this.geometryName_),
+      this.handleGeometryChanged_, false, this);
+  this.handleGeometryChanged_();
 };
