@@ -810,18 +810,24 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
   goog.asserts.assert(!goog.isNull(this.state_));
   goog.asserts.assert(goog.isNull(fillStyle));
   goog.asserts.assert(!goog.isNull(strokeStyle));
-  this.state_.strokeStyle = ol.color.asString(!goog.isNull(strokeStyle.color) ?
-      strokeStyle.color : ol.render.canvas.defaultStrokeStyle);
-  this.state_.lineCap = goog.isDef(strokeStyle.lineCap) ?
-      strokeStyle.lineCap : ol.render.canvas.defaultLineCap;
-  this.state_.lineDash = !goog.isNull(strokeStyle.lineDash) ?
-      strokeStyle.lineDash : ol.render.canvas.defaultLineDash;
-  this.state_.lineJoin = goog.isDef(strokeStyle.lineJoin) ?
-      strokeStyle.lineJoin : ol.render.canvas.defaultLineJoin;
-  this.state_.lineWidth = this.pixelRatio * (goog.isDef(strokeStyle.width) ?
-      strokeStyle.width : ol.render.canvas.defaultLineWidth);
-  this.state_.miterLimit = goog.isDef(strokeStyle.miterLimit) ?
-      strokeStyle.miterLimit : ol.render.canvas.defaultMiterLimit;
+  var strokeStyleColor = strokeStyle.getColor();
+  this.state_.strokeStyle = ol.color.asString(!goog.isNull(strokeStyleColor) ?
+      strokeStyleColor : ol.render.canvas.defaultStrokeStyle);
+  var strokeStyleLineCap = strokeStyle.getLineCap();
+  this.state_.lineCap = goog.isDef(strokeStyleLineCap) ?
+      strokeStyleLineCap : ol.render.canvas.defaultLineCap;
+  var strokeStyleLineDash = strokeStyle.getLineDash();
+  this.state_.lineDash = !goog.isNull(strokeStyleLineDash) ?
+      strokeStyleLineDash : ol.render.canvas.defaultLineDash;
+  var strokeStyleLineJoin = strokeStyle.getLineJoin();
+  this.state_.lineJoin = goog.isDef(strokeStyleLineJoin) ?
+      strokeStyleLineJoin : ol.render.canvas.defaultLineJoin;
+  var strokeStyleWidth = strokeStyle.getWidth();
+  this.state_.lineWidth = this.pixelRatio * (goog.isDef(strokeStyleWidth) ?
+      strokeStyleWidth : ol.render.canvas.defaultLineWidth);
+  var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
+  this.state_.miterLimit = goog.isDef(strokeStyleMiterLimit) ?
+      strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit;
 };
 
 
@@ -1036,18 +1042,24 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
     state.fillStyle = undefined;
   }
   if (!goog.isNull(strokeStyle)) {
-    state.strokeStyle = ol.color.asString(!goog.isNull(strokeStyle.color) ?
-        strokeStyle.color : ol.render.canvas.defaultStrokeStyle);
-    state.lineCap = goog.isDef(strokeStyle.lineCap) ?
-        strokeStyle.lineCap : ol.render.canvas.defaultLineCap;
-    state.lineDash = !goog.isNull(strokeStyle.lineDash) ?
-        strokeStyle.lineDash : ol.render.canvas.defaultLineDash;
-    state.lineJoin = goog.isDef(strokeStyle.lineJoin) ?
-        strokeStyle.lineJoin : ol.render.canvas.defaultLineJoin;
-    state.lineWidth = this.pixelRatio * (goog.isDef(strokeStyle.width) ?
-        strokeStyle.width : ol.render.canvas.defaultLineWidth);
-    state.miterLimit = goog.isDef(strokeStyle.miterLimit) ?
-        strokeStyle.miterLimit : ol.render.canvas.defaultMiterLimit;
+    var strokeStyleColor = strokeStyle.getColor();
+    state.strokeStyle = ol.color.asString(!goog.isNull(strokeStyleColor) ?
+        strokeStyleColor : ol.render.canvas.defaultStrokeStyle);
+    var strokeStyleLineCap = strokeStyle.getLineCap();
+    state.lineCap = goog.isDef(strokeStyleLineCap) ?
+        strokeStyleLineCap : ol.render.canvas.defaultLineCap;
+    var strokeStyleLineDash = strokeStyle.getLineDash();
+    state.lineDash = !goog.isNull(strokeStyleLineDash) ?
+        strokeStyleLineDash : ol.render.canvas.defaultLineDash;
+    var strokeStyleLineJoin = strokeStyle.getLineJoin();
+    state.lineJoin = goog.isDef(strokeStyleLineJoin) ?
+        strokeStyleLineJoin : ol.render.canvas.defaultLineJoin;
+    var strokeStyleWidth = strokeStyle.getWidth();
+    state.lineWidth = this.pixelRatio * (goog.isDef(strokeStyleWidth) ?
+        strokeStyleWidth : ol.render.canvas.defaultLineWidth);
+    var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
+    state.miterLimit = goog.isDef(strokeStyleMiterLimit) ?
+        strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit;
   } else {
     state.strokeStyle = undefined;
     state.lineCap = undefined;

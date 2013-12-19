@@ -131,8 +131,10 @@ ol.style.Circle.prototype.render_ = function() {
     context.fill();
   }
   if (!goog.isNull(this.stroke_)) {
-    context.strokeStyle = ol.color.asString(this.stroke_.color);
-    context.lineWidth = goog.isDef(this.stroke_.width) ? this.stroke_.width : 1;
+    var strokeColor = this.stroke_.getColor();
+    context.strokeStyle = ol.color.asString(strokeColor);
+    var strokeWidth = this.stroke_.getWidth();
+    context.lineWidth = goog.isDef(strokeWidth) ? strokeWidth : 1;
     context.stroke();
   }
 
