@@ -132,9 +132,9 @@ ol.format.IGC.prototype.readFeatureFromText = function(text) {
         properties[m[1]] = goog.string.trim(m[2]);
         m = ol.format.IGC.HFDTE_RECORD_RE_.exec(line);
         if (m) {
-          year = 2000 + parseInt(m[1], 10);
+          day = parseInt(m[1], 10);
           month = parseInt(m[2], 10);
-          day = parseInt(m[3], 10);
+          year = 2000 + parseInt(m[3], 10);
         }
       }
     }
