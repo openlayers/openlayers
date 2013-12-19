@@ -270,10 +270,7 @@ ol.format.Polyline.decodeFloat = function(encoded, opt_factor) {
  * @return {string} The encoded string.
  */
 ol.format.Polyline.encodeSignedInteger = function(num) {
-  var signedNum = num << 1;
-  if (num < 0) {
-    signedNum = ~(signedNum);
-  }
+  var signedNum = (num < 0) ? ~(num << 1) : (num << 1);
   return ol.format.Polyline.encodeUnsignedInteger(signedNum);
 };
 
