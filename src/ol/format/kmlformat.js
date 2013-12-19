@@ -14,6 +14,7 @@ goog.require('goog.Uri');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
+goog.require('goog.dom.xml');
 goog.require('goog.math');
 goog.require('goog.object');
 goog.require('goog.string');
@@ -1340,6 +1341,55 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
   } else {
     return [];
   }
+};
+
+
+/**
+ * @param {Document|Node|string} source Souce.
+ * @return {string|undefined} Name.
+ */
+ol.format.KML.prototype.readName = function(source) {
+  if (source instanceof Node) {
+    return this.readNameFromNode(source);
+  } else if (goog.isString(source)) {
+    var doc = goog.dom.xml.loadXml(source);
+    return this.readNameFromNode(doc);
+  } else {
+    goog.asserts.fail();
+    return undefined;
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @return {string|undefined} Name.
+ */
+ol.format.KML.prototype.readNameFromNode = function(node) {
+  var n;
+  for (n = node.firstChild; !goog.isNull(n); n = n.nextSibling) {
+    if (n.nodeType == goog.dom.NodeType.ELEMENT &&
+        goog.array.indexOf(
+            ol.format.KML.NAMESPACE_URIS_, n.namespaceURI) != -1 &&
+        n.localName == 'name') {
+      return ol.format.KML.readString_(n);
+    }
+  }
+  for (n = node.firstChild; !goog.isNull(n); n = n.nextSibling) {
+    if (n.nodeType == goog.dom.NodeType.ELEMENT &&
+        goog.array.indexOf(
+            ol.format.KML.NAMESPACE_URIS_, n.namespaceURI) != -1 &&
+        (n.localName == 'Document' ||
+         n.localName == 'Folder' ||
+         n.localName == 'Placemark' ||
+         n.localName == 'kml')) {
+      var name = this.readNameFromNode(n);
+      if (goog.isDef(name)) {
+        return name;
+      }
+    }
+  }
+  return undefined;
 };
 
 

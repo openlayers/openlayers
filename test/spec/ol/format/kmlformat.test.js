@@ -1292,6 +1292,65 @@ describe('ol.format.KML', function() {
 
   });
 
+  describe('#readName', function() {
+
+    it('returns undefined if there is no name', function() {
+      var kml =
+          '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+          '  <Document>' +
+          '    <Folder>' +
+          '     <Placemark/>' +
+          '    </Folder>' +
+          '  <Document>' +
+          '</kml>';
+      expect(format.readName(kml)).to.be(undefined);
+    });
+
+    it('returns the name of the first Document', function() {
+      var kml =
+          '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+          '  <Document>' +
+          '    <name>Document name</name>' +
+          '  </Document>' +
+          '</kml>';
+      expect(format.readName(kml)).to.be('Document name');
+    });
+
+    it('returns the name of the first Folder', function() {
+      var kml =
+          '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+          '  <Folder>' +
+          '    <name>Folder name</name>' +
+          '  </Folder>' +
+          '</kml>';
+      expect(format.readName(kml)).to.be('Folder name');
+    });
+
+    it('returns the name of the first Placemark', function() {
+      var kml =
+          '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+          '  <Placemark>' +
+          '    <name>Placemark name</name>' +
+          '  </Placemark>' +
+          '</kml>';
+      expect(format.readName(kml)).to.be('Placemark name');
+    });
+
+    it('searches breadth-first', function() {
+      var kml =
+          '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+          '  <Document>' +
+          '    <Placemark>' +
+          '      <name>Placemark name</name>' +
+          '    </Placemark>' +
+          '    <name>Document name</name>' +
+          '  </Document>' +
+          '</kml>';
+      expect(format.readName(kml)).to.be('Document name');
+    });
+
+  });
+
 });
 
 
