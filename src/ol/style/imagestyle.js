@@ -53,7 +53,7 @@ ol.style.Image = function(options) {
 
   /**
    * @private
-   * @type {number|undefined}
+   * @type {number}
    */
   this.rotation_ = options.rotation;
 
@@ -104,7 +104,7 @@ ol.style.Image.prototype.getImageState = function() {
 
 
 /**
- * @return {number|undefined} Rotation.
+ * @return {number} Rotation.
  */
 ol.style.Image.prototype.getRotation = function() {
   return this.rotation_;
