@@ -102,6 +102,14 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
   }
   this.dispatchEvent(
       new ol.source.VectorEvent(ol.source.VectorEventType.ADDFEATURE, feature));
+};
+
+
+/**
+ * @param {Array.<ol.Feature>} features Features.
+ */
+ol.source.Vector.prototype.addFeatures = function(features) {
+  this.addFeaturesInternal(features);
   this.dispatchChangeEvent();
 };
 
