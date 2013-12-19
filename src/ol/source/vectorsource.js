@@ -63,11 +63,7 @@ ol.source.Vector = function(opt_options) {
   this.featureChangeKeys_ = {};
 
   if (goog.isDef(options.features)) {
-    var features = options.features;
-    var i, ii;
-    for (i = 0, ii = features.length; i < ii; ++i) {
-      this.addFeature(features[i]);
-    }
+    this.addFeaturesInternal(options.features);
   }
 
 };
