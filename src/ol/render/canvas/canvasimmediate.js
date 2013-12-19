@@ -455,18 +455,20 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyles_ = function() {
  */
 ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
   if (!goog.isNull(imageStyle)) {
-    goog.asserts.assert(!goog.isNull(imageStyle.anchor));
-    goog.asserts.assert(goog.isDef(imageStyle.size));
+    var anchor = imageStyle.getAnchor();
+    goog.asserts.assert(!goog.isNull(anchor));
+    var size = imageStyle.getSize();
+    goog.asserts.assert(!goog.isNull(size));
     // FIXME pixel ratio
     var image = imageStyle.getImage(1);
     goog.asserts.assert(!goog.isNull(image));
     var state = this.state_;
-    state.anchorX = imageStyle.anchor[0];
-    state.anchorY = imageStyle.anchor[1];
+    state.anchorX = anchor[0];
+    state.anchorY = anchor[1];
     state.image = image;
-    state.width = imageStyle.size[0];
-    state.height = imageStyle.size[1];
-    state.snapToPixel = imageStyle.snapToPixel;
+    state.width = size[0];
+    state.height = size[1];
+    state.snapToPixel = imageStyle.getSnapToPixel();
   }
 };
 

@@ -602,20 +602,22 @@ ol.render.canvas.ImageReplay.prototype.finish = function() {
  */
 ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   goog.asserts.assert(!goog.isNull(imageStyle));
-  goog.asserts.assert(!goog.isNull(imageStyle.anchor));
-  goog.asserts.assert(goog.isDef(imageStyle.size));
+  var anchor = imageStyle.getAnchor();
+  goog.asserts.assert(!goog.isNull(anchor));
+  var size = imageStyle.getSize();
+  goog.asserts.assert(!goog.isNull(size));
   // FIXME pixel ratio
   var hitDetectionImage = imageStyle.getHitDetectionImage(1);
   goog.asserts.assert(!goog.isNull(hitDetectionImage));
   var image = imageStyle.getImage(1);
   goog.asserts.assert(!goog.isNull(image));
-  this.anchorX_ = imageStyle.anchor[0];
-  this.anchorY_ = imageStyle.anchor[1];
+  this.anchorX_ = anchor[0];
+  this.anchorY_ = anchor[1];
   this.hitDetectionImage_ = hitDetectionImage;
   this.image_ = image;
-  this.width_ = imageStyle.size[0];
-  this.height_ = imageStyle.size[1];
-  this.snapToPixel_ = imageStyle.snapToPixel;
+  this.width_ = size[0];
+  this.height_ = size[1];
+  this.snapToPixel_ = imageStyle.getSnapToPixel();
 };
 
 

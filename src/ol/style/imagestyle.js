@@ -40,34 +40,40 @@ ol.style.Image = function(options) {
   goog.base(this);
 
   /**
+   * @protected
    * @type {ol.Pixel}
    */
   this.anchor = options.anchor;
 
   /**
+   * @protected
    * @type {ol.style.ImageState}
    */
   this.imageState = options.imageState;
 
   /**
+   * @private
    * @type {number|undefined}
    */
-  this.rotation = options.rotation;
+  this.rotation_ = options.rotation;
 
   /**
+   * @protected
    * @type {ol.Size}
    */
   this.size = options.size;
 
   /**
+   * @private
    * @type {boolean|undefined}
    */
-  this.snapToPixel = options.snapToPixel;
+  this.snapToPixel_ = options.snapToPixel;
 
   /**
+   * @private
    * @type {boolean|undefined}
    */
-  this.subtractViewRotation = options.subtractViewRotation;
+  this.subtractViewRotation_ = options.subtractViewRotation;
 
 };
 goog.inherits(ol.style.Image, goog.events.EventTarget);
@@ -78,6 +84,54 @@ goog.inherits(ol.style.Image, goog.events.EventTarget);
  */
 ol.style.Image.prototype.dispatchChangeEvent = function() {
   this.dispatchEvent(goog.events.EventType.CHANGE);
+};
+
+
+/**
+ * @return {ol.Pixel} Anchor.
+ */
+ol.style.Image.prototype.getAnchor = function() {
+  return this.anchor;
+};
+
+
+/**
+ * @return {ol.style.ImageState} Image state.
+ */
+ol.style.Image.prototype.getImageState = function() {
+  return this.imageState;
+};
+
+
+/**
+ * @return {number|undefined} Rotation.
+ */
+ol.style.Image.prototype.getRotation = function() {
+  return this.rotation_;
+};
+
+
+/**
+ * @return {ol.Size} Size.
+ */
+ol.style.Image.prototype.getSize = function() {
+  return this.size;
+};
+
+
+/**
+ * @return {boolean|undefined} Snap to pixel?
+ */
+ol.style.Image.prototype.getSnapToPixel = function() {
+  return this.snapToPixel_;
+};
+
+
+/**
+ * @return {boolean|undefined} Subtract view rotation?
+ */
+ol.style.Image.prototype.getSubtractViewRotation = function() {
+  return this.subtractViewRotation_;
 };
 
 
