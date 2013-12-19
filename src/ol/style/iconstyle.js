@@ -4,6 +4,8 @@ goog.provide('ol.style.Icon');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.style.Image');
@@ -19,6 +21,12 @@ goog.require('ol.style.ImageState');
 ol.style.Icon = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
+
+  /**
+   * @private
+   * @type {Image|HTMLCanvasElement}
+   */
+  this.hitDetectionImage_ = null;
 
   /**
    * @private
@@ -46,6 +54,12 @@ ol.style.Icon = function(opt_options) {
    * @type {string|undefined}
    */
   this.src_ = options.src;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.tainting_ = false;
 
   /**
    * @type {ol.Size}
@@ -85,6 +99,25 @@ goog.inherits(ol.style.Icon, ol.style.Image);
 /**
  * @private
  */
+ol.style.Icon.prototype.determineTainting_ = function() {
+  var canvas = /** @type {HTMLCanvasElement} */
+      (goog.dom.createElement(goog.dom.TagName.CANVAS));
+  canvas.width = 1;
+  canvas.height = 1;
+  var context = /** @type {CanvasRenderingContext2D} */
+      (canvas.getContext('2d'));
+  context.drawImage(this.image_, 0, 0);
+  try {
+    context.getImageData(0, 0, 1, 1);
+  } catch (e) {
+    this.tainting_ = true;
+  }
+};
+
+
+/**
+ * @private
+ */
 ol.style.Icon.prototype.handleImageError_ = function() {
   this.imageState = ol.style.ImageState.ERROR;
   this.unlistenImage_();
@@ -104,6 +137,7 @@ ol.style.Icon.prototype.handleImageLoad_ = function() {
     this.anchor = [this.size[0] / 2, this.size[1] / 2];
   }
   this.unlistenImage_();
+  this.determineTainting_();
   this.dispatchChangeEvent();
 };
 
@@ -113,6 +147,30 @@ ol.style.Icon.prototype.handleImageLoad_ = function() {
  */
 ol.style.Icon.prototype.getImage = function(pixelRatio) {
   return this.image_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.style.Icon.prototype.getHitDetectionImage = function(pixelRatio) {
+  if (goog.isNull(this.hitDetectionImage_)) {
+    if (this.tainting_) {
+      var canvas = /** @type {HTMLCanvasElement} */
+          (goog.dom.createElement(goog.dom.TagName.CANVAS));
+      var width = this.size[0];
+      var height = this.size[1];
+      canvas.width = width;
+      canvas.height = height;
+      var context = /** @type {CanvasRenderingContext2D} */
+          (canvas.getContext('2d'));
+      context.fillRect(0, 0, width, height);
+      this.hitDetectionImage_ = canvas;
+    } else {
+      this.hitDetectionImage_ = this.image_;
+    }
+  }
+  return this.hitDetectionImage_;
 };
 
 
