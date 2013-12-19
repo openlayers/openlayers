@@ -1,4 +1,4 @@
-This license completes the OpenLayers License for the GeoAdmin specific parts 
+This license completes the OpenLayers License for the api.geo.admin.ch specific parts 
 of the code.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -11,7 +11,7 @@ list of conditions and the following disclaimer.
 this list of conditions and the following disclaimer in the documentation and/or
 other materials provided with the distribution.
 
-THIS SOFTWARE IS PROVIDED BY GEOADMIN CONTRIBUTORS ``AS IS'' AND ANY EXPRESS
+THIS SOFTWARE IS PROVIDED BY GEO.ADMIN.CH CONTRIBUTORS ``AS IS'' AND ANY EXPRESS
 OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
 MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
 SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
