@@ -24,6 +24,12 @@ ol.format.Format = function() {
 
 
 /**
+ * @return {Array.<string>} Extensions.
+ */
+ol.format.Format.prototype.getExtensions = goog.abstractMethod;
+
+
+/**
  * @return {ol.format.FormatType} Format.
  */
 ol.format.Format.prototype.getType = goog.abstractMethod;
