@@ -1,7 +1,9 @@
 goog.provide('ol.format.Format');
 goog.provide('ol.format.FormatType');
 
+goog.require('goog.asserts');
 goog.require('goog.functions');
+goog.require('goog.net.XhrIo');
 
 
 /**
@@ -51,6 +53,51 @@ ol.format.Format.prototype.readFeatures = goog.abstractMethod;
  * @template S,T
  */
 ol.format.Format.prototype.readFeaturesAsync = goog.abstractMethod;
+
+
+/**
+ * @param {goog.Uri|string} url URL.
+ * @param {function(this: S, Array.<ol.Feature>, ol.proj.Projection): T}
+ *     callback Callback.
+ * @param {S=} opt_obj Scope.
+ * @template S,T
+ */
+ol.format.Format.prototype.readFeaturesFromURL =
+    function(url, callback, opt_obj) {
+  goog.net.XhrIo.send(url, goog.bind(
+      /**
+       * @param {Event} event Event.
+       */
+      function(event) {
+        var xhrIo = /** @type {goog.net.XhrIo} */ (event.target);
+        if (xhrIo.isSuccess()) {
+          var type = this.getType();
+          /** @type {Document|Node|Object|string|undefined} */
+          var source;
+          if (type == ol.format.FormatType.BINARY) {
+            // FIXME
+          } else if (type == ol.format.FormatType.JSON) {
+            source = xhrIo.getResponseJson();
+          } else if (type == ol.format.FormatType.TEXT) {
+            source = xhrIo.getResponseText();
+          } else if (type == ol.format.FormatType.XML) {
+            source = xhrIo.getResponseXml();
+          } else {
+            goog.asserts.fail();
+          }
+          if (goog.isDef(source)) {
+            var features = this.readFeatures(source);
+            var featureProjection = this.readProjection(source);
+            callback.call(opt_obj, features, featureProjection);
+          } else {
+            goog.asserts.fail();
+          }
+        } else {
+          // FIXME error handling
+          goog.asserts.fail();
+        }
+      }, this));
+};
 
 
 /**

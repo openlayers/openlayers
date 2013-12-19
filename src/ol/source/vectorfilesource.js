@@ -3,8 +3,6 @@
 goog.provide('ol.source.VectorFile');
 
 goog.require('goog.asserts');
-goog.require('goog.net.XhrIo');
-goog.require('ol.format.FormatType');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.Vector');
@@ -29,9 +27,9 @@ ol.source.VectorFile = function(opt_options) {
 
   /**
    * @type {ol.format.Format}
-   * @protected
+   * @private
    */
-  this.format = options.format;
+  this.format_ = options.format;
 
   /**
    * @type {ol.proj.Projection}
@@ -58,7 +56,7 @@ ol.source.VectorFile = function(opt_options) {
 
   if (goog.isDef(options.url)) {
     this.setState(ol.source.State.LOADING);
-    goog.net.XhrIo.send(options.url, goog.bind(this.handleXhrIo_, this));
+    this.format_.readFeaturesFromURL(options.url, this.addFeatures_, this);
   }
 
 };
@@ -66,46 +64,12 @@ goog.inherits(ol.source.VectorFile, ol.source.Vector);
 
 
 /**
- * @param {Event} event Event.
+ * @param {Array.<ol.Feature>} features Features.
+ * @param {ol.proj.Projection} featureProjection Feature projection.
  * @private
  */
-ol.source.VectorFile.prototype.handleXhrIo_ = function(event) {
-  var xhrIo = /** @type {goog.net.XhrIo} */ (event.target);
-  if (xhrIo.isSuccess()) {
-    var type = this.format.getType();
-    /** @type {Document|Node|Object|string|undefined} */
-    var source;
-    if (type == ol.format.FormatType.BINARY) {
-      // FIXME
-    } else if (type == ol.format.FormatType.JSON) {
-      source = xhrIo.getResponseJson();
-    } else if (type == ol.format.FormatType.TEXT) {
-      source = xhrIo.getResponseText();
-    } else if (type == ol.format.FormatType.XML) {
-      source = xhrIo.getResponseXml();
-    } else {
-      goog.asserts.fail();
-    }
-    if (goog.isDef(source)) {
-      this.readFeatures_(source);
-    } else {
-      goog.asserts.fail();
-      this.setState(ol.source.State.ERROR);
-    }
-  } else {
-    this.setState(ol.source.State.ERROR);
-  }
-};
-
-
-/**
- * @param {Document|Node|Object|string} source Source.
- * @private
- */
-ol.source.VectorFile.prototype.readFeatures_ = function(source) {
-  var format = this.format;
-  var features = format.readFeatures(source);
-  var featureProjection = format.readProjection(source);
+ol.source.VectorFile.prototype.addFeatures_ =
+    function(features, featureProjection) {
   var transform;
   if (!ol.proj.equivalent(featureProjection, this.reprojectTo_)) {
     transform = ol.proj.getTransform(featureProjection, this.reprojectTo_);
@@ -122,4 +86,15 @@ ol.source.VectorFile.prototype.readFeatures_ = function(source) {
     this.addFeature(feature);
   }
   this.setState(ol.source.State.READY);
+};
+
+
+/**
+ * @param {Document|Node|Object|string} source Source.
+ * @private
+ */
+ol.source.VectorFile.prototype.readFeatures_ = function(source) {
+  var features = this.format_.readFeatures(source);
+  var featureProjection = this.format_.readProjection(source);
+  this.addFeatures_(features, featureProjection);
 };
