@@ -22,6 +22,7 @@ ol.style.ImageState = {
  * @typedef {{anchor: ol.Pixel,
  *            imageState: ol.style.ImageState,
  *            rotation: number,
+ *            scale: number,
  *            size: ol.Size,
  *            snapToPixel: (boolean|undefined),
  *            subtractViewRotation: boolean}}
@@ -53,9 +54,15 @@ ol.style.Image = function(options) {
 
   /**
    * @private
-   * @type {number|undefined}
+   * @type {number}
    */
   this.rotation_ = options.rotation;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.scale_ = options.scale;
 
   /**
    * @protected
@@ -104,10 +111,18 @@ ol.style.Image.prototype.getImageState = function() {
 
 
 /**
- * @return {number|undefined} Rotation.
+ * @return {number} Rotation.
  */
 ol.style.Image.prototype.getRotation = function() {
   return this.rotation_;
+};
+
+
+/**
+ * @return {number} Scale.
+ */
+ol.style.Image.prototype.getScale = function() {
+  return this.scale_;
 };
 
 

@@ -52,6 +52,7 @@ ol.style.Circle = function(opt_options) {
     anchor: [size / 2, size / 2],
     imageState: ol.style.ImageState.LOADED,
     rotation: 0,
+    scale: 1,
     size: [size, size],
     snapToPixel: undefined,
     subtractViewRotation: false

@@ -5,11 +5,13 @@
 goog.provide('ol.render.canvas.Immediate');
 
 goog.require('goog.asserts');
+goog.require('goog.vec.Mat4');
 goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.render.IRender');
 goog.require('ol.render.canvas');
 goog.require('ol.style.Text');
+goog.require('ol.vec.Mat4');
 
 
 
@@ -60,11 +62,13 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform) {
    *         fillStyle: (string|undefined),
    *         strokeStyle: (string|undefined),
    *         lineWidth: (number|undefined),
+   *         image: (HTMLCanvasElement|HTMLVideoElement|Image),
    *         anchorX: (number|undefined),
    *         anchorY: (number|undefined),
-   *         image: (HTMLCanvasElement|HTMLVideoElement|Image),
    *         height: (number|undefined),
    *         width: (number|undefined),
+   *         scale: number,
+   *         rotation: number,
    *         lineCap: (string|undefined),
    *         lineDash: Array.<number>,
    *         lineJoin: (string|undefined),
@@ -83,10 +87,12 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform) {
     fillStyle: undefined,
     strokeStyle: undefined,
     lineWidth: undefined,
+    image: null,
     anchorX: undefined,
     anchorY: undefined,
-    image: null,
     height: undefined,
+    rotation: 0,
+    scale: 1,
     width: undefined,
     lineCap: undefined,
     lineDash: null,
@@ -101,6 +107,12 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform) {
    * @type {Array.<number>}
    */
   this.pixelCoordinates_ = [];
+
+  /**
+   * @private
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.tmpLocalTransform_ = goog.vec.Mat4.createNumber();
 
 };
 
@@ -122,6 +134,7 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(geometry) {
   goog.asserts.assert(goog.isDef(state.width));
   var pixelCoordinates = ol.geom.transformSimpleGeometry2D(
       geometry, this.transform_, this.pixelCoordinates_);
+  var localTransform = this.tmpLocalTransform_;
   var i, ii;
   for (i = 0, ii = pixelCoordinates.length; i < ii; i += 2) {
     var x = pixelCoordinates[i] - state.anchorX;
@@ -130,7 +143,21 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(geometry) {
       x = (x + 0.5) | 0;
       y = (y + 0.5) | 0;
     }
+    if (state.scale != 1 || state.rotation !== 0) {
+      ol.vec.Mat4.makeTransform2D(localTransform,
+          x, y, state.scale, state.scale, state.rotation, -x, -y);
+      context.setTransform(
+          goog.vec.Mat4.getElement(localTransform, 0, 0),
+          goog.vec.Mat4.getElement(localTransform, 1, 0),
+          goog.vec.Mat4.getElement(localTransform, 0, 1),
+          goog.vec.Mat4.getElement(localTransform, 1, 1),
+          goog.vec.Mat4.getElement(localTransform, 0, 3),
+          goog.vec.Mat4.getElement(localTransform, 1, 3));
+    }
     context.drawImage(state.image, x, y, state.width, state.height);
+  }
+  if (state.scale != 1 || state.rotation !== 0) {
+    context.setTransform(1, 0, 0, 1, 0, 0);
   }
 };
 
@@ -469,12 +496,14 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     var image = imageStyle.getImage(1);
     goog.asserts.assert(!goog.isNull(image));
     var state = this.state_;
+    state.image = image;
     state.anchorX = anchor[0];
     state.anchorY = anchor[1];
-    state.image = image;
-    state.width = size[0];
     state.height = size[1];
+    state.rotation = imageStyle.getRotation();
+    state.scale = imageStyle.getScale();
     state.snapToPixel = imageStyle.getSnapToPixel();
+    state.width = size[0];
   }
 };
 
