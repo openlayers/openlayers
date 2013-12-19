@@ -735,6 +735,7 @@
  * @typedef {Object} olx.style.IconOptions
  * @property {ol.Pixel|undefined} anchor Anchor.
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image.
+ * @property {number|undefined} scale Scale.
  * @property {number|undefined} rotation Rotation.
  * @property {ol.Size|undefined} size Icon size in pixel.
  * @property {string} src Image source URI.

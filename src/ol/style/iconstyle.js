@@ -83,10 +83,16 @@ ol.style.Icon = function(opt_options) {
    */
   var rotation = goog.isDef(options.rotation) ? options.rotation : 0;
 
+  /**
+   * @type {number}
+   */
+  var scale = goog.isDef(options.scale) ? options.scale : 1;
+
   goog.base(this, {
     anchor: anchor,
     imageState: ol.style.ImageState.IDLE,
     rotation: rotation,
+    scale: scale,
     size: size,
     snapToPixel: undefined,
     subtractViewRotation: false
