@@ -63,11 +63,7 @@ ol.source.Vector = function(opt_options) {
   this.featureChangeKeys_ = {};
 
   if (goog.isDef(options.features)) {
-    var features = options.features;
-    var i, ii;
-    for (i = 0, ii = features.length; i < ii; ++i) {
-      this.addFeature(features[i]);
-    }
+    this.addFeaturesInternal(options.features);
   }
 
 };
@@ -78,6 +74,17 @@ goog.inherits(ol.source.Vector, ol.source.Source);
  * @param {ol.Feature} feature Feature.
  */
 ol.source.Vector.prototype.addFeature = function(feature) {
+  this.addFeatureInternal(feature);
+  this.dispatchChangeEvent();
+};
+
+
+/**
+ * Add a feature without firing a `change` event.
+ * @param {ol.Feature} feature Feature.
+ * @protected
+ */
+ol.source.Vector.prototype.addFeatureInternal = function(feature) {
   var featureKey = goog.getUid(feature) + '';
   goog.asserts.assert(!(featureKey in this.featureChangeKeys_));
   this.featureChangeKeys_[featureKey] = goog.events.listen(feature,
@@ -91,7 +98,29 @@ ol.source.Vector.prototype.addFeature = function(feature) {
   }
   this.dispatchEvent(
       new ol.source.VectorEvent(ol.source.VectorEventType.ADDFEATURE, feature));
+};
+
+
+/**
+ * @param {Array.<ol.Feature>} features Features.
+ */
+ol.source.Vector.prototype.addFeatures = function(features) {
+  this.addFeaturesInternal(features);
   this.dispatchChangeEvent();
+};
+
+
+/**
+ * Add features without firing a `change` event.
+ * @param {Array.<ol.Feature>} features Features.
+ * @protected
+ */
+ol.source.Vector.prototype.addFeaturesInternal = function(features) {
+  // FIXME use R-Bush bulk load when available
+  var i, ii;
+  for (i = 0, ii = features.length; i < ii; ++i) {
+    this.addFeatureInternal(features[i]);
+  }
 };
 
 
@@ -99,8 +128,12 @@ ol.source.Vector.prototype.addFeature = function(feature) {
  * FIXME empty description for jsdoc
  */
 ol.source.Vector.prototype.clear = function() {
-  this.rBush_.forEach(this.removeFeatureInternal_, this);
+  this.rBush_.forEach(this.removeFeatureInternal, this);
   this.rBush_.clear();
+  goog.object.forEach(
+      this.nullGeometryFeatures_, this.removeFeatureInternal, this);
+  goog.object.clear(this.nullGeometryFeatures_);
+  goog.asserts.assert(goog.object.isEmpty(this.featureChangeKeys_));
   this.dispatchChangeEvent();
 };
 
@@ -268,16 +301,17 @@ ol.source.Vector.prototype.removeFeature = function(feature) {
   } else {
     this.rBush_.remove(feature);
   }
-  this.removeFeatureInternal_(feature);
+  this.removeFeatureInternal(feature);
   this.dispatchChangeEvent();
 };
 
 
 /**
+ * Remove feature without firing a `change` event.
  * @param {ol.Feature} feature Feature.
- * @private
+ * @protected
  */
-ol.source.Vector.prototype.removeFeatureInternal_ = function(feature) {
+ol.source.Vector.prototype.removeFeatureInternal = function(feature) {
   var featureKey = goog.getUid(feature) + '';
   goog.asserts.assert(featureKey in this.featureChangeKeys_);
   goog.events.unlistenByKey(this.featureChangeKeys_[featureKey]);

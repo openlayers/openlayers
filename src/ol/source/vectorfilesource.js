@@ -106,20 +106,17 @@ ol.source.VectorFile.prototype.readFeatures_ = function(source) {
   var format = this.format;
   var features = format.readFeatures(source);
   var featureProjection = format.readProjection(source);
-  var transform;
   if (!ol.proj.equivalent(featureProjection, this.reprojectTo_)) {
-    transform = ol.proj.getTransform(featureProjection, this.reprojectTo_);
-  } else {
-    transform = null;
-  }
-  var i, ii;
-  for (i = 0, ii = features.length; i < ii; ++i) {
-    var feature = features[i];
-    var geometry = feature.getGeometry();
-    if (!goog.isNull(geometry) && !goog.isNull(transform)) {
-      geometry.transform(transform);
+    var transform = ol.proj.getTransform(featureProjection, this.reprojectTo_);
+    var i, ii;
+    for (i = 0, ii = features.length; i < ii; ++i) {
+      var feature = features[i];
+      var geometry = feature.getGeometry();
+      if (!goog.isNull(geometry)) {
+        geometry.transform(transform);
+      }
     }
-    this.addFeature(feature);
   }
+  this.addFeaturesInternal(features);
   this.setState(ol.source.State.READY);
 };
