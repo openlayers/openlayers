@@ -18,7 +18,7 @@ ol.render.canvas.defaultFillStyle = ol.color.fromString('black');
 /**
  * @const {string}
  */
-ol.render.canvas.defaultLineCap = 'butt';
+ol.render.canvas.defaultLineCap = 'round';
 
 
 /**
@@ -30,7 +30,7 @@ ol.render.canvas.defaultLineDash = [];
 /**
  * @const {string}
  */
-ol.render.canvas.defaultLineJoin = 'miter';
+ol.render.canvas.defaultLineJoin = 'round';
 
 
 /**

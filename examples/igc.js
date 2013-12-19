@@ -39,8 +39,6 @@ var styleFunction = function(feature, resolution) {
     styleArray = [new ol.style.Style({
       stroke: new ol.style.Stroke({
         color: color,
-        lineCap: 'round',
-        lineJoin: 'round',
         width: 3
       })
     })];
