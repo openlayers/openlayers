@@ -470,6 +470,12 @@ ol.render.canvas.ImageReplay = function(pixelRatio, tolerance) {
    * @private
    * @type {HTMLCanvasElement|HTMLVideoElement|Image}
    */
+  this.hitDetectionImage_ = null;
+
+  /**
+   * @private
+   * @type {HTMLCanvasElement|HTMLVideoElement|Image}
+   */
   this.image_ = null;
 
   /**
@@ -528,13 +534,16 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
   var myBegin = this.coordinates.length;
   var myEnd = this.drawCoordinates_(
       flatCoordinates, 0, flatCoordinates.length, stride);
-  var drawImageInstruction = [
+  this.instructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd,
     this.anchorX_, this.anchorY_, this.width_, this.height_,
     this.image_, this.snapToPixel_
-  ];
-  this.instructions.push(drawImageInstruction);
-  this.hitDetectionInstructions.push(drawImageInstruction);
+  ]);
+  this.hitDetectionInstructions.push([
+    ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd,
+    this.anchorX_, this.anchorY_, this.width_, this.height_,
+    this.hitDetectionImage_, this.snapToPixel_
+  ]);
   this.endGeometry(pointGeometry, data);
 };
 
@@ -558,13 +567,16 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
   var myBegin = this.coordinates.length;
   var myEnd = this.drawCoordinates_(
       flatCoordinates, 0, flatCoordinates.length, stride);
-  var drawImageInstruction = [
+  this.instructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd,
     this.anchorX_, this.anchorY_, this.width_, this.height_,
     this.image_, this.snapToPixel_
-  ];
-  this.instructions.push(drawImageInstruction);
-  this.hitDetectionInstructions.push(drawImageInstruction);
+  ]);
+  this.hitDetectionInstructions.push([
+    ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd,
+    this.anchorX_, this.anchorY_, this.width_, this.height_,
+    this.hitDetectionImage_, this.snapToPixel_
+  ]);
   this.endGeometry(multiPointGeometry, data);
 };
 
@@ -577,6 +589,7 @@ ol.render.canvas.ImageReplay.prototype.finish = function() {
   // FIXME this doesn't really protect us against further calls to draw*Geometry
   this.anchorX_ = undefined;
   this.anchorY_ = undefined;
+  this.hitDetectionImage_ = null;
   this.image_ = null;
   this.height_ = undefined;
   this.width_ = undefined;
@@ -592,10 +605,13 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   goog.asserts.assert(!goog.isNull(imageStyle.anchor));
   goog.asserts.assert(goog.isDef(imageStyle.size));
   // FIXME pixel ratio
+  var hitDetectionImage = imageStyle.getHitDetectionImage(1);
+  goog.asserts.assert(!goog.isNull(hitDetectionImage));
   var image = imageStyle.getImage(1);
   goog.asserts.assert(!goog.isNull(image));
   this.anchorX_ = imageStyle.anchor[0];
   this.anchorY_ = imageStyle.anchor[1];
+  this.hitDetectionImage_ = hitDetectionImage;
   this.image_ = image;
   this.width_ = imageStyle.size[0];
   this.height_ = imageStyle.size[1];
