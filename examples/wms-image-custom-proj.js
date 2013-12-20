@@ -28,7 +28,7 @@ var layers = [
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
         'FORMAT': 'image/jpeg'
       },
-      serverType: 'mapserver',
+      serverType: /** @type {ol.source.wms.ServerType} */ ('mapserver'),
       extent: extent
     })
   }),
@@ -43,7 +43,7 @@ var layers = [
             'National parks / geo.admin.ch</a>'
       })],
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
-      serverType: 'mapserver',
+      serverType: /** @type {ol.source.wms.ServerType} */ ('mapserver'),
       extent: extent
     })
   })
