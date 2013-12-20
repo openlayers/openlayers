@@ -27,7 +27,7 @@ var domMap = new ga.Map({
   })
 });
 
-if (ol.webgl.SUPPORTED) {
+if (ol.BrowserFeature.HAS_WEBGL) {
   var webglMap = new ga.Map({
     renderer: ol.RendererHint.WEBGL,
     target: 'webglMap'
