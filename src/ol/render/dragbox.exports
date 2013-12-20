@@ -1,3 +1,0 @@
-@exportSymbol ol.render.DragBox
-@exportProperty ol.render.DragBox.prototype.setCoordinates
-@exportProperty ol.render.DragBox.prototype.setMap

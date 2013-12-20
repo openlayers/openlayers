@@ -1,22 +1,21 @@
 // FIXME add rotation
 
-goog.provide('ol.render.DragBox');
+goog.provide('ol.render.Box');
 
 goog.require('goog.Disposable');
+goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('ol.geom.Polygon');
 goog.require('ol.render.EventType');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Style');
 
 
 
 /**
  * @constructor
  * @extends {goog.Disposable}
- * @param {ol.style.Style=} opt_style Style.
+ * @param {ol.style.Style} style Style.
  */
-ol.render.DragBox = function(opt_style) {
+ol.render.Box = function(style) {
 
   /**
    * @private
@@ -26,9 +25,9 @@ ol.render.DragBox = function(opt_style) {
 
   /**
    * @private
-   * @type {goog.events.Key|undefined}
+   * @type {goog.events.Key}
    */
-  this.postComposeListenKey_ = undefined;
+  this.postComposeListenerKey_ = null;
 
   /**
    * @private
@@ -44,26 +43,45 @@ ol.render.DragBox = function(opt_style) {
 
   /**
    * @private
+   * @type {ol.geom.Polygon}
+   */
+  this.geometry_ = null;
+
+  /**
+   * @private
    * @type {ol.style.Style}
    */
-  this.style_ = goog.isDef(opt_style) ? opt_style : new ol.style.Style({
-    fill: new ol.style.Fill({
-      color: 'rgba(0,0,0,0.5)'
-    }),
-    image: null,
-    stroke: null,
-    text: null,
-    zIndex: 0
-  });
+  this.style_ = style;
 
 };
-goog.inherits(ol.render.DragBox, goog.Disposable);
+goog.inherits(ol.render.Box, goog.Disposable);
+
+
+/**
+ * @private
+ * @return {ol.geom.Polygon} Geometry.
+ */
+ol.render.Box.prototype.createGeometry_ = function() {
+  goog.asserts.assert(!goog.isNull(this.startCoordinate_));
+  goog.asserts.assert(!goog.isNull(this.endCoordinate_));
+  var startCoordinate = this.startCoordinate_;
+  var endCoordinate = this.endCoordinate_;
+  var coordinates = [
+    [
+      startCoordinate,
+      [startCoordinate[0], endCoordinate[1]],
+      endCoordinate,
+      [endCoordinate[0], startCoordinate[1]]
+    ]
+  ];
+  return new ol.geom.Polygon(coordinates);
+};
 
 
 /**
  * @inheritDoc
  */
-ol.render.DragBox.prototype.disposeInternal = function() {
+ol.render.Box.prototype.disposeInternal = function() {
   this.setMap(null);
 };
 
@@ -72,39 +90,28 @@ ol.render.DragBox.prototype.disposeInternal = function() {
  * @param {ol.render.Event} event Event.
  * @private
  */
-ol.render.DragBox.prototype.handleMapPostCompose_ = function(event) {
-  var render = event.getRender();
-  var startCoordinate = this.startCoordinate_;
-  var endCoordinate = this.endCoordinate_;
-
-  var extent = event.getFrameState().extent;
-  var coordinates = [
-    // outer ring
-    [
-      [extent[0], extent[1]],
-      [extent[0], extent[3]],
-      [extent[2], extent[3]],
-      [extent[2], extent[1]]
-    ],
-    // inner ring
-    [
-      startCoordinate,
-      [startCoordinate[0], endCoordinate[1]],
-      endCoordinate,
-      [endCoordinate[0], startCoordinate[1]]
-    ]
-  ];
-  var geometry = new ol.geom.Polygon(coordinates);
+ol.render.Box.prototype.handleMapPostCompose_ = function(event) {
+  this.geometry_ = this.createGeometry_();
   var style = this.style_;
+  goog.asserts.assert(!goog.isNull(style));
+  var render = event.getRender();
   render.setFillStrokeStyle(style.getFill(), style.getStroke());
-  render.drawPolygonGeometry(geometry, null);
+  render.drawPolygonGeometry(this.geometry_, null);
+};
+
+
+/**
+ * @return {ol.geom.Polygon} Geometry.
+ */
+ol.render.Box.prototype.getGeometry = function() {
+  return this.geometry_;
 };
 
 
 /**
  * @private
  */
-ol.render.DragBox.prototype.requestMapRenderFrame_ = function() {
+ol.render.Box.prototype.requestMapRenderFrame_ = function() {
   if (!goog.isNull(this.map_) &&
       !goog.isNull(this.startCoordinate_) &&
       !goog.isNull(this.endCoordinate_)) {
@@ -116,16 +123,16 @@ ol.render.DragBox.prototype.requestMapRenderFrame_ = function() {
 /**
  * @param {ol.Map} map Map.
  */
-ol.render.DragBox.prototype.setMap = function(map) {
-  if (goog.isDef(this.postComposeListenKey_)) {
-    goog.events.unlistenByKey(this.postComposeListenKey_);
-    this.postComposeListenKey_ = undefined;
+ol.render.Box.prototype.setMap = function(map) {
+  if (!goog.isNull(this.postComposeListenerKey_)) {
+    goog.events.unlistenByKey(this.postComposeListenerKey_);
+    this.postComposeListenerKey_ = null;
     this.map_.requestRenderFrame();
     this.map_ = null;
   }
   this.map_ = map;
   if (!goog.isNull(this.map_)) {
-    this.postComposeListenKey_ = goog.events.listen(
+    this.postComposeListenerKey_ = goog.events.listen(
         map, ol.render.EventType.POSTCOMPOSE, this.handleMapPostCompose_, false,
         this);
     this.requestMapRenderFrame_();
@@ -137,7 +144,7 @@ ol.render.DragBox.prototype.setMap = function(map) {
  * @param {ol.Coordinate} startCoordinate Start coordinate.
  * @param {ol.Coordinate} endCoordinate End coordinate.
  */
-ol.render.DragBox.prototype.setCoordinates =
+ol.render.Box.prototype.setCoordinates =
     function(startCoordinate, endCoordinate) {
   this.startCoordinate_ = startCoordinate;
   this.endCoordinate_ = endCoordinate;

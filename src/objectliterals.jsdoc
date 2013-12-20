@@ -313,10 +313,20 @@
  */
 
 /**
+ * @typedef {Object} olx.interaction.DragBoxOptions
+ * @property {ol.events.ConditionType|undefined} condition A conditional
+ *     modifier (i.e. Shift key) that determines if the interaction is active
+ *     or not, default is always.
+ * @property {ol.style.Style} style Style for the box.
+ * @todo stability experimental
+ */
+
+/**
  * @typedef {Object} olx.interaction.DragZoomOptions
  * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
  *     or not, default is shift key.
+ * @property {ol.style.Style} style Style for the box.
  * @todo stability experimental
  */
 
@@ -331,8 +341,6 @@
  * @property {boolean|undefined} keyboard Whether keyboard interaction is
  *     desired. Default is `true`.
  * @property {boolean|undefined} mouseWheelZoom Whether mousewheel zoom is
- *     desired. Default is `true`.
- * @property {boolean|undefined} shiftDragZoom Whether Shift-drag zoom is
  *     desired. Default is `true`.
  * @property {boolean|undefined} touchPan Whether touch pan is
  *     desired. Default is `true`.
