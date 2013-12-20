@@ -149,11 +149,13 @@ ol.xml.makeObjectPropertySetter = function(valueReader, opt_property, opt_obj) {
 /**
  * @param {Array.<string>} namespaceURIs Namespace URIs.
  * @param {Object.<string, ol.xml.Parser>} parsers Parsers.
+ * @param {Object.<string, Object.<string, ol.xml.Parser>>=} opt_parsersNS
+ *     ParsersNS.
  * @return {Object.<string, Object.<string, ol.xml.Parser>>} Parsers NS.
  */
-ol.xml.makeParsersNS = function(namespaceURIs, parsers) {
+ol.xml.makeParsersNS = function(namespaceURIs, parsers, opt_parsersNS) {
   /** @type {Object.<string, Object.<string, ol.xml.Parser>>} */
-  var parsersNS = {};
+  var parsersNS = goog.isDef(opt_parsersNS) ? opt_parsersNS : {};
   var i, ii;
   for (i = 0, ii = namespaceURIs.length; i < ii; ++i) {
     parsersNS[namespaceURIs[i]] = parsers;

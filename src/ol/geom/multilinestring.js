@@ -1,5 +1,7 @@
 goog.provide('ol.geom.MultiLineString');
 
+goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.SimpleGeometry');
@@ -162,4 +164,27 @@ ol.geom.MultiLineString.prototype.setFlatCoordinates =
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.ends_ = ends;
   this.dispatchChangeEvent();
+};
+
+
+/**
+ * @param {Array.<ol.geom.LineString>} lineStrings LineStrings.
+ */
+ol.geom.MultiLineString.prototype.setLineStrings = function(lineStrings) {
+  var layout = ol.geom.GeometryLayout.XY;
+  var flatCoordinates = [];
+  var ends = [];
+  var i, ii;
+  for (i = 0, ii = lineStrings.length; i < ii; ++i) {
+    var lineString = lineStrings[i];
+    if (i === 0) {
+      layout = lineString.getLayout();
+    } else {
+      // FIXME better handle the case of non-matching layouts
+      goog.asserts.assert(lineString.getLayout() == layout);
+    }
+    goog.array.extend(flatCoordinates, lineString.getFlatCoordinates());
+    ends.push(flatCoordinates.length);
+  }
+  this.setFlatCoordinates(layout, flatCoordinates, ends);
 };
