@@ -1,9 +1,9 @@
+goog.require('ol.BrowserFeature');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.MapQuestOpenAerial');
-goog.require('ol.webgl');
 
 
 function setResetBrightnessButtonHTML() {
@@ -15,7 +15,7 @@ function setResetContrastButtonHTML() {
   resetContrast.innerHTML = 'Contrast (' + layer.getContrast().toFixed(3) + ')';
 }
 
-if (!ol.webgl.SUPPORTED) {
+if (!ol.BrowserFeature.HAS_WEBGL) {
   var info = document.getElementById('no-webgl');
   /**
    * display error message
