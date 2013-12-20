@@ -5,6 +5,7 @@ goog.provide('ol.style.Circle');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('ol.color');
+goog.require('ol.render.canvas');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Image');
 goog.require('ol.style.ImageState');
@@ -114,11 +115,18 @@ ol.style.Circle.prototype.load = goog.nullFunction;
  */
 ol.style.Circle.prototype.render_ = function() {
   var canvas = this.canvas_;
-  var size = 2 * this.radius_ + 1;
 
-  if (!goog.isNull(this.stroke_) && goog.isDef(this.stroke_.width)) {
-    size += this.stroke_.width;
+  var strokeWidth;
+  if (goog.isNull(this.stroke_)) {
+    strokeWidth = 0;
+  } else {
+    strokeWidth = this.stroke_.getWidth();
+    if (!goog.isDef(strokeWidth)) {
+      strokeWidth = ol.render.canvas.defaultLineWidth;
+    }
   }
+
+  var size = 2 * (this.radius_ + strokeWidth) + 1;
 
   canvas.height = size;
   canvas.width = size;
@@ -134,8 +142,7 @@ ol.style.Circle.prototype.render_ = function() {
   if (!goog.isNull(this.stroke_)) {
     var strokeColor = this.stroke_.getColor();
     context.strokeStyle = ol.color.asString(strokeColor);
-    var strokeWidth = this.stroke_.getWidth();
-    context.lineWidth = goog.isDef(strokeWidth) ? strokeWidth : 1;
+    context.lineWidth = strokeWidth;
     context.stroke();
   }
 
