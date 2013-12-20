@@ -277,8 +277,8 @@
 /**
  * @typedef {Object} olx.interaction.DragAndDropOptions
  * @property {boolean|undefined} fitView Fit view.  Default is `true`.
- * @property {Array.<function(new: ol.format.Format)>|undefined}
- *     formatConstructors Format constructors.
+ * @property {Array.<function(new: ol.format.Format)>|undefined} formatConstructors
+ *     Format constructors.
  * @property {ol.source.Vector|undefined} source Source.  If this is defined
  *     then features will be added to this source.
  * @property {ol.layer.Vector|undefined} layer Layer.  If this is defined then
