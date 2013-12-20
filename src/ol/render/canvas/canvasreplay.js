@@ -227,8 +227,11 @@ ol.render.canvas.Replay.prototype.replay_ =
           y = (y + 0.5) | 0;
         }
         if (scale != 1 || rotation !== 0) {
+          var centerX = x + anchorX;
+          var centerY = y + anchorY;
           ol.vec.Mat4.makeTransform2D(
-              localTransform, x, y, scale, scale, rotation, -x, -y);
+              localTransform, centerX, centerY, scale, scale,
+              rotation, -centerX, -centerY);
           context.setTransform(
               goog.vec.Mat4.getElement(localTransform, 0, 0),
               goog.vec.Mat4.getElement(localTransform, 1, 0),
