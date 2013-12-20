@@ -242,7 +242,8 @@ ol.render.canvas.Immediate.prototype.drawRings_ =
  */
 ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
   var geometry = feature.getGeometry();
-  if (!ol.extent.intersects(this.extent_, geometry.getExtent())) {
+  if (goog.isNull(geometry) ||
+      !ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   this.setFillStrokeStyle(style.getFill(), style.getStroke());
