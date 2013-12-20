@@ -160,7 +160,9 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinate =
     function(coordinate, f, opt_obj) {
   var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
   return this.forEachFeatureInExtent(extent, function(feature) {
-    if (feature.getGeometry().containsCoordinate(coordinate)) {
+    var geometry = feature.getGeometry();
+    goog.asserts.assert(!goog.isNull(geometry));
+    if (geometry.containsCoordinate(coordinate)) {
       return f.call(opt_obj, feature);
     } else {
       return undefined;
@@ -277,7 +279,22 @@ ol.source.Vector.prototype.getExtent = function() {
  */
 ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
   var feature = /** @type {ol.Feature} */ (event.target);
-  this.rBush_.update(feature.getGeometry().getExtent(), feature);
+  var featureKey = goog.getUid(feature).toString();
+  var geometry = feature.getGeometry();
+  if (goog.isNull(geometry)) {
+    if (!(featureKey in this.nullGeometryFeatures_)) {
+      this.rBush_.remove(feature);
+      this.nullGeometryFeatures_[featureKey] = feature;
+    }
+  } else {
+    var extent = geometry.getExtent();
+    if (featureKey in this.nullGeometryFeatures_) {
+      delete this.nullGeometryFeatures_[featureKey];
+      this.rBush_.insert(extent, feature);
+    } else {
+      this.rBush_.update(extent, feature);
+    }
+  }
   this.dispatchChangeEvent();
 };
 

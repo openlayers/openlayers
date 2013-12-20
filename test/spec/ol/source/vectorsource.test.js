@@ -187,6 +187,54 @@ describe('ol.source.Vector', function() {
 
   });
 
+  describe('tracking changes to features', function() {
+
+    var vectorSource;
+    beforeEach(function() {
+      vectorSource = new ol.source.Vector();
+    });
+
+    it('keeps its index up-to-date', function() {
+      var feature = new ol.Feature(new ol.geom.Point([1, 1]));
+      vectorSource.addFeature(feature);
+      expect(vectorSource.getAllFeaturesInExtent([0, 0, 2, 2])).
+          to.eql([feature]);
+      feature.getGeometry().setCoordinates([3, 3]);
+      expect(vectorSource.getAllFeaturesInExtent([0, 0, 2, 2])).
+          to.be.empty();
+      expect(vectorSource.getAllFeaturesInExtent([2, 2, 4, 4])).
+          to.eql([feature]);
+    });
+
+    it('handles features with null geometries', function() {
+      var feature = new ol.Feature(null);
+      vectorSource.addFeature(feature);
+      expect(vectorSource.getAllFeatures()).to.eql([feature]);
+    });
+
+    it('handles features with geometries changing from null', function() {
+      var feature = new ol.Feature(null);
+      vectorSource.addFeature(feature);
+      expect(vectorSource.getAllFeatures()).to.eql([feature]);
+      feature.setGeometry(new ol.geom.Point([1, 1]));
+      expect(vectorSource.getAllFeaturesInExtent([0, 0, 2, 2])).
+          to.eql([feature]);
+      expect(vectorSource.getAllFeatures()).to.eql([feature]);
+    });
+
+    it('handles features with geometries changing to null', function() {
+      var feature = new ol.Feature(new ol.geom.Point([1, 1]));
+      vectorSource.addFeature(feature);
+      expect(vectorSource.getAllFeatures()).to.eql([feature]);
+      expect(vectorSource.getAllFeaturesInExtent([0, 0, 2, 2])).
+          to.eql([feature]);
+      feature.setGeometry(null);
+      expect(vectorSource.getAllFeaturesInExtent([0, 0, 2, 2])).to.be.empty();
+      expect(vectorSource.getAllFeatures()).to.eql([feature]);
+    });
+
+  });
+
 });
 
 

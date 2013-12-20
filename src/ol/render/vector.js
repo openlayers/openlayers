@@ -21,11 +21,15 @@ goog.require('ol.style.Style');
  */
 ol.renderer.vector.renderFeature = function(
     replayGroup, feature, style, squaredTolerance, data) {
-  var geometry = feature.getGeometry().getSimplifiedGeometry(squaredTolerance);
+  var geometry = feature.getGeometry();
+  if (goog.isNull(geometry)) {
+    return;
+  }
+  var simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
   var geometryRenderer =
-      ol.renderer.vector.GEOMETRY_RENDERERS_[geometry.getType()];
+      ol.renderer.vector.GEOMETRY_RENDERERS_[simplifiedGeometry.getType()];
   goog.asserts.assert(goog.isDef(geometryRenderer));
-  geometryRenderer(replayGroup, geometry, style, data);
+  geometryRenderer(replayGroup, simplifiedGeometry, style, data);
 };
 
 
