@@ -160,7 +160,9 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinate =
     function(coordinate, f, opt_obj) {
   var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
   return this.forEachFeatureInExtent(extent, function(feature) {
-    if (feature.getGeometry().containsCoordinate(coordinate)) {
+    var geometry = feature.getGeometry();
+    goog.asserts.assert(!goog.isNull(geometry));
+    if (geometry.containsCoordinate(coordinate)) {
       return f.call(opt_obj, feature);
     } else {
       return undefined;
