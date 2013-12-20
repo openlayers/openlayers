@@ -3,6 +3,7 @@
 goog.provide('ol.source.VectorFile');
 
 goog.require('goog.asserts');
+goog.require('goog.dom.xml');
 goog.require('goog.net.XhrIo');
 goog.require('ol.format.FormatType');
 goog.require('ol.proj');
@@ -83,6 +84,9 @@ ol.source.VectorFile.prototype.handleXhrIo_ = function(event) {
       source = xhrIo.getResponseText();
     } else if (type == ol.format.FormatType.XML) {
       source = xhrIo.getResponseXml();
+      if (goog.isNull(source)) {
+        source = goog.dom.xml.loadXml(xhrIo.getResponseText());
+      }
     } else {
       goog.asserts.fail();
     }
