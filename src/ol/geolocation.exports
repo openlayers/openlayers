@@ -1,2 +1,1 @@
 @exportSymbol ol.Geolocation
-@exportSymbol ol.Geolocation.SUPPORTED ol.Geolocation.SUPPORTED
