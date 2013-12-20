@@ -23,7 +23,7 @@ var vector = new ol.layer.Vector({
 var map = new ol.Map({
   layers: [raster, vector],
   renderer: ol.RendererHint.CANVAS,
-  target: 'map',
+  target: document.getElementById('map'),
   view: new ol.View2D({
     center: [876970.8463461736, 5859807.853963373],
     zoom: 10
@@ -41,9 +41,11 @@ var displayFeatureInfo = function(pixel) {
     for (i = 0, ii = features.length; i < ii; ++i) {
       info.push(features[i].get('name'));
     }
-    document.getElementById('info').innerHTML = info.join(', ') || '&nbsp';
+    document.getElementById('info').innerHTML = info.join(', ') || '(unkown)';
+    map.getTarget().style.cursor = 'pointer';
   } else {
     document.getElementById('info').innerHTML = '&nbsp;';
+    map.getTarget().style.cursor = '';
   }
 };
 
