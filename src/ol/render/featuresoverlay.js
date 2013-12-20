@@ -15,8 +15,11 @@ goog.require('ol.style.StyleFunction');
 
 /**
  * @constructor
+ * @param {olx.render.FeaturesOverlayOptions=} opt_options Options.
  */
-ol.render.FeaturesOverlay = function() {
+ol.render.FeaturesOverlay = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : options;
 
   /**
    * @private
@@ -53,6 +56,23 @@ ol.render.FeaturesOverlay = function() {
    * @type {ol.style.StyleFunction|undefined}
    */
   this.styleFunction_ = undefined;
+
+  if (goog.isDef(options.features)) {
+    if (goog.isArray(options.features)) {
+      this.setFeatures(new ol.Collection(goog.array.clone(options.features)));
+    } else {
+      goog.asserts.assertInstanceof(options.features, ol.Collection);
+      this.setFeatures(options.features);
+    }
+  }
+
+  if (goog.isDef(options.styleFunction)) {
+    this.setStyleFunction(options.styleFunction);
+  }
+
+  if (goog.isDef(options.map)) {
+    this.setMap(options.map);
+  }
 
 };
 
