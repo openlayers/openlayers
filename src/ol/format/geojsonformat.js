@@ -331,7 +331,7 @@ ol.format.GeoJSON.prototype.readFeaturesFromObject = function(object) {
     return features;
   } else {
     goog.asserts.fail();
-    return null;
+    return [];
   }
 };
 

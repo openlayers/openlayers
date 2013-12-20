@@ -79,7 +79,7 @@ ol.format.XML.prototype.readFeatures = function(source) {
     return this.readFeaturesFromDocument(doc);
   } else {
     goog.asserts.fail();
-    return null;
+    return [];
   }
 };
 
