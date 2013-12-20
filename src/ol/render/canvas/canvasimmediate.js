@@ -144,8 +144,11 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(geometry) {
       y = (y + 0.5) | 0;
     }
     if (state.scale != 1 || state.rotation !== 0) {
+      var centerX = x + state.anchorX;
+      var centerY = y + state.anchorY;
       ol.vec.Mat4.makeTransform2D(localTransform,
-          x, y, state.scale, state.scale, state.rotation, -x, -y);
+          centerX, centerY, state.scale, state.scale,
+          state.rotation, -centerX, -centerY);
       context.setTransform(
           goog.vec.Mat4.getElement(localTransform, 0, 0),
           goog.vec.Mat4.getElement(localTransform, 1, 0),
