@@ -279,7 +279,22 @@ ol.source.Vector.prototype.getExtent = function() {
  */
 ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
   var feature = /** @type {ol.Feature} */ (event.target);
-  this.rBush_.update(feature.getGeometry().getExtent(), feature);
+  var featureKey = goog.getUid(feature).toString();
+  var geometry = feature.getGeometry();
+  if (goog.isNull(geometry)) {
+    if (!(featureKey in this.nullGeometryFeatures_)) {
+      this.rBush_.remove(feature);
+      this.nullGeometryFeatures_[featureKey] = feature;
+    }
+  } else {
+    var extent = geometry.getExtent();
+    if (featureKey in this.nullGeometryFeatures_) {
+      delete this.nullGeometryFeatures_[featureKey];
+      this.rBush_.insert(extent, feature);
+    } else {
+      this.rBush_.update(extent, feature);
+    }
+  }
   this.dispatchChangeEvent();
 };
 
