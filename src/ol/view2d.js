@@ -416,10 +416,12 @@ ol.View2D.prototype.getZoom = function() {
  * @todo stability experimental
  */
 ol.View2D.prototype.fitExtent = function(extent, size) {
-  this.setCenter(ol.extent.getCenter(extent));
-  var resolution = this.getResolutionForExtent(extent, size);
-  resolution = this.constrainResolution(resolution, 0, 0);
-  this.setResolution(resolution);
+  if (!ol.extent.isEmpty(extent)) {
+    this.setCenter(ol.extent.getCenter(extent));
+    var resolution = this.getResolutionForExtent(extent, size);
+    resolution = this.constrainResolution(resolution, 0, 0);
+    this.setResolution(resolution);
+  }
 };
 
 
