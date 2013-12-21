@@ -129,7 +129,7 @@ ga.Map.prototype.recenter_ = function() {
 };
 
 ga.Map.prototype.createGeocoderDialog_ = function() {
-  this.geocoderDialog_ = new goog.ui.Dialog();
+  this.geocoderDialog_ = new goog.ui.Dialog('geocoder-dialog');
   this.geocoderDialog_.setTitle(
     ga.Translate[window['GeoAdmin'] && window['GeoAdmin']['lang'] ?
       window['GeoAdmin']['lang'] : "de"]['geocoding_results']);
