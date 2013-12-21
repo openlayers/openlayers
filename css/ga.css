@@ -118,6 +118,7 @@
 .htmlpopup-container .htmlpopup-content table .cell-left-large {
   width: 320px;
 }
+
 @media (max-width: 480px) {
   div.ga-tooltip {
     top: 50%;
@@ -126,4 +127,77 @@
     right: 2%;
     width: auto;
   }
+}
+
+.crosshair {
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  margin-top: -8px;
+  background-image: url('ch_cross.png');
+}
+
+.modal-dialog {
+  color: #000;
+  position: absolute;
+  width: 430px;
+}
+
+@media (max-width: 480px) {
+  .modal-dialog {
+    top: 50%;
+    bottom: 2%;
+    left: 2%;
+    right: 2%;
+    width: auto;
+  }
+}
+
+.modal-dialog-bg {
+  background: #666;
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+
+.modal-dialog-title {
+  background: #f7f7f7;
+  color: #000;
+  cursor: pointer;
+  font-size: 120%;
+  font-weight: bold;
+  /* Add padding on the right to ensure the close button has room. */
+  padding: 8px 31px 8px 8px;
+  position: relative;
+  _zoom: 1; /* Ensures proper width in IE6 RTL. */
+}
+
+.modal-dialog-title-close {
+  background: #f7f7f7 url(editortoolbar.png) no-repeat -528px 0;
+  cursor: pointer;
+  height: 15px;
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  width: 15px;
+  vertical-align: middle;
+}
+
+.modal-dialog-buttons,
+.modal-dialog-content {
+  background-color: #fff;
+  padding: 8px;
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
+.goog-buttonset-default {
+  font-weight: bold;
+}
+
+/* State: hover. */
+.goog-menuitem-highlight,
+.goog-menuitem-hover {
+  background-color: #f7f7f7;
+  cursor: pointer;
 }
