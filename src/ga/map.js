@@ -19,6 +19,7 @@ goog.require('ol.extent');
 goog.require('ol.Overlay');
 
 goog.require('ga.Tooltip');
+goog.require('ga.Translate');
 
 
 /**
@@ -129,7 +130,9 @@ ga.Map.prototype.recenter_ = function() {
 
 ga.Map.prototype.createGeocoderDialog_ = function() {
   this.geocoderDialog_ = new goog.ui.Dialog();
-  this.geocoderDialog_.setTitle('Geocoding result');
+  this.geocoderDialog_.setTitle(
+    ga.Translate[window.GeoAdmin && window.GeoAdmin.lang ?
+      window.GeoAdmin.lang : "de"]['geocoding_results']);
   this.geocoderDialog_.setModal(true);
   this.geocoderDialog_.setButtonSet(null);
 };
