@@ -15,7 +15,6 @@ goog.require('ol.control.ScaleLine');
 goog.require('ol.proj.EPSG21781');
 goog.require('ol.source.State');
 goog.require('ol.extent');
-goog.require('ol.coordinate');
 
 goog.require('ga.Tooltip');
 
@@ -157,7 +156,7 @@ ga.Map.prototype.handleResultSelection_ = function(e) {
 
 ga.Map.prototype.recenterToResult = function(resultItem) {
   var extent = resultItem['geom_st_box2d'];
-  extent = this.parseExtent(extent);
+  extent = this.parseExtent_(extent);
   var origin = resultItem['origin'];
   var originZoom = {
     address: 10,
@@ -179,7 +178,7 @@ ga.Map.prototype.hideGeocoderDialog_ = function() {
   this.geocoderDialog_.setVisible(false);
 };
 
-ga.Map.prototype.parseExtent = function(stringBox2D) {
+ga.Map.prototype.parseExtent_ = function(stringBox2D) {
   var extent = stringBox2D.replace('BOX(', '')
     .replace(')', '').replace(',', ' ')
     .split(' ');
