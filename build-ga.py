@@ -76,6 +76,8 @@ def build_src_internal_src_requireall_js(t):
 
 @target('build/ga.css', 'build/ga.js')
 def build_ga_css(t):
+    t.cp('css/ch_cross.png','build')
+    t.cp('css/editortoolbar.png','build')
     t.touch()
 
 @target('build/ga.js', PLOVR_JAR, SRC, EXTERNAL_SRC, SHADER_SRC,
