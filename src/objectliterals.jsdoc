@@ -515,6 +515,13 @@
  */
 
 /**
+ * @typedef {Object} olx.source.ElementOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {string|undefined} logo Logo.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ */
+
+/**
  * @typedef {Object} olx.source.GeoJSONOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {ol.proj.ProjectionLike} defaultProjection Default projection.
@@ -525,6 +532,11 @@
  * @property {ol.proj.ProjectionLike} reprojectTo Re-project to.
  * @property {string|undefined} text Text.
  * @property {string|undefined} url URL.
+ */
+
+/**
+ * @typedef {Object} olx.source.GoogleMapsOptions
+ * @property {google.maps.MapTypeId|undefined} mapTypeId Map type ID.
  */
 
 /**

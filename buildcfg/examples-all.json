@@ -5,6 +5,7 @@
         "../externs/bingmaps.js", 
         "../externs/bootstrap.js", 
         "../externs/geojson.js", 
+        "../externs/google_maps_api_v3.js",
         "../externs/topojson.js", 
         "../externs/oli.js", 
         "../externs/proj4js.js", 
