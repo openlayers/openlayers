@@ -130,7 +130,6 @@ ga.Map.prototype.recenter_ = function() {
 ga.Map.prototype.createGeocoderDialog_ = function() {
   this.geocoderDialog_ = new goog.ui.Dialog();
   this.geocoderDialog_.setTitle('Geocoding result');
-  this.geocoderList_ = new goog.ui.Menu();
   this.geocoderDialog_.setModal(true);
   this.geocoderDialog_.setButtonSet(null);
 };
@@ -138,8 +137,8 @@ ga.Map.prototype.createGeocoderDialog_ = function() {
 ga.Map.prototype.showGeocoderDialog_ = function(results) {
   this.geocoderDialog_.setContent('<div id="geocoderList"></div>');
   this.geocoderDialog_.setVisible(true); 
+  this.geocoderList_ = new goog.ui.Menu();
   var geocoderListContainer = goog.dom.getElement('geocoderList');
-  this.geocoderList_.removeChildren();
   for (var item in results) {
      this.geocoderList_.addChild(
        new goog.ui.MenuItem(results[item]['attrs']['label'].
@@ -149,7 +148,8 @@ ga.Map.prototype.showGeocoderDialog_ = function(results) {
   goog.events.listen(this.geocoderList_,
     'action',
     goog.bind(this.handleResultSelection_,this));
-  this.geocoderList_.render(geocoderListContainer);
+
+  this.geocoderList_.render(geocoderListContainer); 
 };
 
 ga.Map.prototype.handleResultSelection_ = function(e) {

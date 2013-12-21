@@ -22,6 +22,8 @@ var lyr1 = ga.layer.create('ch.swisstopo.pixelkarte-farbe');
 
 map.addLayer(lyr1);
 
-map.geocode('Payerne');
+//map.geocode('Payerne');
 //map.geocode('Payerne berges 37');
+map.geocode('Payerne berges');
+//map.geocode('payerne 412')
 

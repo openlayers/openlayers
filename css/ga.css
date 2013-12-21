@@ -118,6 +118,7 @@
 .htmlpopup-container .htmlpopup-content table .cell-left-large {
   width: 320px;
 }
+
 @media (max-width: 480px) {
   div.ga-tooltip {
     top: 50%;
@@ -137,19 +138,19 @@
 }
 
 .modal-dialog {
-  background: #c1d9ff;
-  border: 1px solid #3a5774;
   color: #000;
-  padding: 4px;
   position: absolute;
   width: 430px;
 }
 
-.modal-dialog a,
-.modal-dialog a:link,
-.modal-dialog a:visited  {
-  color: #06c;
-  cursor: pointer;
+@media (max-width: 480px) {
+  .modal-dialog {
+    top: 50%;
+    bottom: 2%;
+    left: 2%;
+    right: 2%;
+    width: auto;
+  }
 }
 
 .modal-dialog-bg {
@@ -160,22 +161,20 @@
 }
 
 .modal-dialog-title {
-  background: #e0edfe;
+  background: #f7f7f7;
   color: #000;
   cursor: pointer;
   font-size: 120%;
   font-weight: bold;
-
   /* Add padding on the right to ensure the close button has room. */
   padding: 8px 31px 8px 8px;
-
   position: relative;
   _zoom: 1; /* Ensures proper width in IE6 RTL. */
 }
 
 .modal-dialog-title-close {
-  background: #e0edfe url(editortoolbar.png) no-repeat -528px 0;
-  cursor: default;
+  background: #f7f7f7 url(editortoolbar.png) no-repeat -528px 0;
+  cursor: pointer;
   height: 15px;
   position: absolute;
   right: 10px;
@@ -194,4 +193,11 @@
 
 .goog-buttonset-default {
   font-weight: bold;
+}
+
+/* State: hover. */
+.goog-menuitem-highlight,
+.goog-menuitem-hover {
+  background-color: #f7f7f7;
+  cursor: pointer;
 }
