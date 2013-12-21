@@ -146,7 +146,8 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
     'mapExtent': extent.join(','),
     'tolerance': 10,
     'layers': 'all:' + layerList.join(','),
-    'lang': window.GeoAdmin && window.GeoAdmin.lang ? window.GeoAdmin.lang : "de"
+    'lang': window['GeoAdmin'] && window['GeoAdmin']['lang'] ?
+      window['GeoAdmin']['lang'] : "de"
   };
   jsonp.send(payload,
     goog.bind(this.handleIdentifyResponse_, this),
