@@ -137,14 +137,14 @@
   background-image: url('ch_cross.png');
 }
 
-.modal-dialog {
+.geocoder-dialog {
   color: #000;
   position: absolute;
   width: 430px;
 }
 
 @media (max-width: 480px) {
-  .modal-dialog {
+  .geocoder-dialog {
     top: 50%;
     bottom: 2%;
     left: 2%;
@@ -153,14 +153,14 @@
   }
 }
 
-.modal-dialog-bg {
+.geocoder-dialog-bg {
   background: #666;
   left: 0;
   position: absolute;
   top: 0;
 }
 
-.modal-dialog-title {
+.geocoder-dialog-title {
   background: #f7f7f7;
   color: #000;
   cursor: pointer;
@@ -172,7 +172,7 @@
   _zoom: 1; /* Ensures proper width in IE6 RTL. */
 }
 
-.modal-dialog-title-close {
+.geocoder-dialog-title-close {
   background: #f7f7f7 url(editortoolbar.png) no-repeat -528px 0;
   cursor: pointer;
   height: 15px;
@@ -183,8 +183,8 @@
   vertical-align: middle;
 }
 
-.modal-dialog-buttons,
-.modal-dialog-content {
+.geocoder-dialog-buttons,
+.geocoder-dialog-content {
   background-color: #fff;
   padding: 8px;
   max-height: 200px;
