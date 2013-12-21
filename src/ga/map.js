@@ -171,7 +171,7 @@ ga.Map.prototype.recenterToResult_ = function(resultItem) {
     'sn25': '8'
   };
   if (originZoom.hasOwnProperty(origin)) {
-    var zoom = parseInt(originZoom[origin]);
+    var zoom = parseInt(originZoom[origin],10);
     var center = [(extent[0] + extent[2]) / 2,
       (extent[1] + extent[3]) / 2];
     this.getView().getView2D().setZoom(zoom);
