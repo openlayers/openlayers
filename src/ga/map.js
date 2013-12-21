@@ -7,6 +7,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.ui.Dialog');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuItem');
+goog.require('goog.dom');
 
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
@@ -15,6 +16,7 @@ goog.require('ol.control.ScaleLine');
 goog.require('ol.proj.EPSG21781');
 goog.require('ol.source.State');
 goog.require('ol.extent');
+goog.require('ol.Overlay');
 
 goog.require('ga.Tooltip');
 
@@ -78,9 +80,11 @@ ga.Map = function(options) {
 
   this.addControl(new ol.control.ScaleLine());
 
-  // Create the geocoderDialog
+  // Geocoder
   this.geocoderDialog_ = null;
   this.geocoderList_ = null;
+  this.geocoderCrossElement_ = null;
+  this.geocoderOverlay_ = null;
   this.createGeocoderDialog_();
 
   var tooltip = new ga.Tooltip();
@@ -109,7 +113,7 @@ ga.Map.prototype.handleGeocode_ = function(response) {
     alert("Geocoding failed. No result has been found.");
   }
   if (response['results'].length == 1) {
-    this.recenterToResult(response['results'][0]['attrs']);
+    this.recenterToResult_(response['results'][0]['attrs']);
   }
   if (response['results'].length > 1) {
     this.showGeocoderDialog_(response['results']);  
@@ -150,11 +154,11 @@ ga.Map.prototype.showGeocoderDialog_ = function(results) {
 
 ga.Map.prototype.handleResultSelection_ = function(e) {
   var resultItem = e.target.model_;
-  this.recenterToResult(resultItem);
+  this.recenterToResult_(resultItem);
   this.hideGeocoderDialog_();
 };
 
-ga.Map.prototype.recenterToResult = function(resultItem) {
+ga.Map.prototype.recenterToResult_ = function(resultItem) {
   var extent = resultItem['geom_st_box2d'];
   extent = this.parseExtent_(extent);
   var origin = resultItem['origin'];
@@ -169,6 +173,7 @@ ga.Map.prototype.recenterToResult = function(resultItem) {
       (extent[1] + extent[3]) / 2];
     this.getView().getView2D().setZoom(zoom);
     this.getView().getView2D().setCenter(center);
+    this.addCross_(center);
   } else {
     this.getView().getView2D().fitExtent(extent,this.getSize());
   }
@@ -187,3 +192,20 @@ ga.Map.prototype.parseExtent_ = function(stringBox2D) {
   return(extent);
 };
 
+ga.Map.prototype.addCross_ = function(center) {
+  this.geocoderCrossElement_ = goog.dom.createDom(goog.dom.TagName.DIV);
+  goog.dom.classes.add(this.geocoderCrossElement_, 'crosshair');
+  goog.dom.classes.add(this.geocoderCrossElement_, 'cross');
+  this.removeCross_();
+  this.geocoderOverlay_ = new ol.Overlay({
+    element: this.geocoderCrossElement_,
+    position: center
+  });
+  this.addOverlay(this.geocoderOverlay_);
+};
+
+ga.Map.prototype.removeCross_ = function() {
+  if (this.geocoderOverlay_) {
+    this.removeOverlay(this.geocoderOverlay_);
+  }
+};
