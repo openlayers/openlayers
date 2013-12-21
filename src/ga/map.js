@@ -131,8 +131,8 @@ ga.Map.prototype.recenter_ = function() {
 ga.Map.prototype.createGeocoderDialog_ = function() {
   this.geocoderDialog_ = new goog.ui.Dialog();
   this.geocoderDialog_.setTitle(
-    ga.Translate[window.GeoAdmin && window.GeoAdmin.lang ?
-      window.GeoAdmin.lang : "de"]['geocoding_results']);
+    ga.Translate[window['GeoAdmin'] && window['GeoAdmin']['lang'] ?
+      window['GeoAdmin']['lang'] : "de"]['geocoding_results']);
   this.geocoderDialog_.setModal(true);
   this.geocoderDialog_.setButtonSet(null);
 };
@@ -166,12 +166,12 @@ ga.Map.prototype.recenterToResult_ = function(resultItem) {
   extent = this.parseExtent_(extent);
   var origin = resultItem['origin'];
   var originZoom = {
-    address: 10,
-    parcel: 10,
-    sn25: 8
+    'address': '10',
+    'parcel': '10',
+    'sn25': '8'
   };
   if (originZoom.hasOwnProperty(origin)) {
-    var zoom = originZoom[origin];
+    var zoom = parseInt(originZoom[origin]);
     var center = [(extent[0] + extent[2]) / 2,
       (extent[1] + extent[3]) / 2];
     this.getView().getView2D().setZoom(zoom);
