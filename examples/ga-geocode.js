@@ -27,6 +27,6 @@ map.addLayer(lyr1);
 
 //map.geocode('Payerne');
 //map.geocode('Payerne berges 37');
-map.geocode('Payerne berges');
-//map.geocode('payerne 412')
+//map.geocode('Payerne berges');
+map.geocode('payerne 412')
 
