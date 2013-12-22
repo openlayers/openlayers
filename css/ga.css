@@ -140,15 +140,16 @@
 .geocoder-dialog {
   color: #000;
   position: absolute;
+  height: 200px;
   width: 430px;
 }
 
 @media (max-width: 480px) {
   .geocoder-dialog {
-    top: 50%;
-    bottom: 2%;
+    top: 50% !important;
     left: 2%;
     right: 2%;
+    height: 150px;
     width: auto;
   }
 }
@@ -187,7 +188,7 @@
 .geocoder-dialog-content {
   background-color: #fff;
   padding: 8px;
-  max-height: 200px;
+  max-height: 100%;
   overflow-y: scroll;
 }
 
