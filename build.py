@@ -159,7 +159,7 @@ def report_sizes(t):
     gzipfile.close()
     rawsize = os.stat(t.name).st_size
     gzipsize = len(stringio.getvalue())
-    savings = '{:.2%}'.format((rawsize - gzipsize)/float(rawsize))
+    savings = '{0:.2%}'.format((rawsize - gzipsize)/float(rawsize))
     t.info('uncompressed: %8d bytes', rawsize)
     t.info('  compressed: %8d bytes, (saved %s)', gzipsize, savings)
 
