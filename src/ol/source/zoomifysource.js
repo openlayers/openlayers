@@ -25,40 +25,32 @@ ol.source.Zoomify = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   var size = options.size;
+  var imageWidth = size[0];
+  var imageHeight = size[1];
 
-  var imageSize = size.slice();
-  var tiles = [
-    Math.ceil(imageSize[0] / ol.DEFAULT_TILE_SIZE),
-    Math.ceil(imageSize[1] / ol.DEFAULT_TILE_SIZE)
-  ];
-  var tierSizeInTiles = [tiles];
-
-  while (imageSize[0] > ol.DEFAULT_TILE_SIZE ||
-      imageSize[1] > ol.DEFAULT_TILE_SIZE) {
-
-    imageSize = [
-      Math.floor(imageSize[0] / 2),
-      Math.floor(imageSize[1] / 2)
-    ];
-    tiles = [
-      Math.ceil(imageSize[0] / ol.DEFAULT_TILE_SIZE),
-      Math.ceil(imageSize[1] / ol.DEFAULT_TILE_SIZE)
-    ];
-    tierSizeInTiles.push(tiles);
+  var tierSizeInTiles = [];
+  var tileSize = ol.DEFAULT_TILE_SIZE;
+  while (imageWidth > tileSize || imageHeight > tileSize) {
+    tierSizeInTiles.push([
+      Math.ceil(imageWidth / tileSize),
+      Math.ceil(imageHeight / tileSize)
+    ]);
+    tileSize += tileSize;
   }
-
+  tierSizeInTiles.push([1, 1]);
   tierSizeInTiles.reverse();
-  var numberOfTiers = tierSizeInTiles.length;
+
   var resolutions = [1];
   var tileCountUpToTier = [0];
-  var i;
-  for (i = 1; i < numberOfTiers; i++) {
-    resolutions.unshift(Math.pow(2, i));
+  var i, ii;
+  for (i = 1, ii = tierSizeInTiles.length; i < ii; i++) {
+    resolutions.push(1 << i);
     tileCountUpToTier.push(
         tierSizeInTiles[i - 1][0] * tierSizeInTiles[i - 1][1] +
         tileCountUpToTier[i - 1]
     );
   }
+  resolutions.reverse();
 
   var createFromUrl = function(url) {
     var template = url + '{tileIndex}/{z}-{x}-{y}.jpg';
