@@ -57,10 +57,10 @@ ol.source.TileImage = function(options) {
       ol.TileUrlFunction.nullTileUrlFunction;
 
   /**
-   * @private
+   * @protected
    * @type {?string}
    */
-  this.crossOrigin_ =
+  this.crossOrigin =
       goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
 
   /**
@@ -120,7 +120,7 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, projection) {
         tileCoord,
         goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,
         goog.isDef(tileUrl) ? tileUrl : '',
-        this.crossOrigin_,
+        this.crossOrigin,
         this.tileLoadFunction_);
     this.tileCache.set(tileCoordKey, tile);
     return tile;
