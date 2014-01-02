@@ -52,38 +52,31 @@ ol.source.Zoomify = function(opt_options) {
   }
   resolutions.reverse();
 
-  var createFromUrl = function(url) {
-    var template = url + '{tileIndex}/{z}-{x}-{y}.jpg';
-    return (
-        /**
-         * @this {ol.source.TileImage}
-         * @param {ol.TileCoord} tileCoord Tile Coordinate.
-         * @param {ol.proj.Projection} projection Projection.
-         * @return {string|undefined} Tile URL.
-         */
-        function(tileCoord, projection) {
-          if (goog.isNull(tileCoord)) {
-            return undefined;
-          } else {
-            var tileIndex = tileCoord.x +
-                (tileCoord.y * tierSizeInTiles[tileCoord.z][0]) +
-                tileCountUpToTier[tileCoord.z];
-            return template.replace('{tileIndex}', 'TileGroup' +
-                Math.floor((tileIndex) / ol.DEFAULT_TILE_SIZE))
-                           .replace('{z}', '' + tileCoord.z)
-                           .replace('{x}', '' + tileCoord.x)
-                           .replace('{y}', '' + tileCoord.y);
-          }
-        }
-    );
-  };
-
   var tileGrid = new ol.tilegrid.Zoomify({
     resolutions: resolutions
   });
+
+  var url = options.url;
   var tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       tileGrid.createTileCoordTransform({extent: [0, 0, size[0], size[1]]}),
-      createFromUrl(options.url));
+      /**
+       * @this {ol.source.TileImage}
+       * @param {ol.TileCoord} tileCoord Tile Coordinate.
+       * @param {ol.proj.Projection} projection Projection.
+       * @return {string|undefined} Tile URL.
+       */
+      function(tileCoord, projection) {
+        if (goog.isNull(tileCoord)) {
+          return undefined;
+        } else {
+          var tileIndex = tileCoord.x +
+              tileCoord.y * tierSizeInTiles[tileCoord.z][0] +
+              tileCountUpToTier[tileCoord.z];
+          var tileGroup = (tileIndex / ol.DEFAULT_TILE_SIZE) | 0;
+          return url + 'TileGroup' + tileGroup + '/' +
+              tileCoord.z + '-' + tileCoord.x + '-' + tileCoord.y + '.jpg';
+        }
+      });
 
   goog.base(this, {
     attributions: options.attributions,
