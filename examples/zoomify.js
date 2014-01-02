@@ -1,5 +1,5 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
+goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
@@ -38,7 +38,7 @@ var map = new ol.Map({
       source: source
     })
   ],
-  renderer: ol.RendererHint.CANVAS,
+  renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: new ol.View2D({
     projection: proj,
