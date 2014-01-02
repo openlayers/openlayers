@@ -1,8 +1,12 @@
 goog.provide('ol.source.Zoomify');
 
 goog.require('goog.array');
-goog.require('ol.Image');
+goog.require('goog.asserts');
+goog.require('goog.dom');
+goog.require('goog.dom.TagName');
+goog.require('ol.ImageTile');
 goog.require('ol.TileCoord');
+goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.proj');
 goog.require('ol.source.TileImage');
@@ -85,38 +89,6 @@ ol.source.Zoomify = function(opt_options) {
     );
   };
 
-  /**
-   * Resize small tiles. Warning : needs a good crossOrigin handling.
-   *
-   * @param  {ol.ImageTile} imageTile Current tile
-   * @param  {String} src Src url
-   */
-  var tileLoadFunction = function(imageTile, src) {
-    var image = imageTile.getImage();
-
-    // Bad image size (only if correct crossOrigin handling)
-    if (image.crossOrigin) {
-      image.onload = function() {
-        if (this.width < ol.DEFAULT_TILE_SIZE ||
-            this.height < ol.DEFAULT_TILE_SIZE) {
-          // Copy image data into the canvas
-          var canvas = document.createElement('canvas');
-          if (canvas.getContext) {
-            canvas.width = ol.DEFAULT_TILE_SIZE;
-            canvas.height = ol.DEFAULT_TILE_SIZE;
-            var ctx = canvas.getContext('2d');
-            ctx.drawImage(this, 0, 0);
-
-            // Change original image
-            image = new Image();
-            image.src = canvas.toDataURL();
-          }
-        }
-      };
-    }
-    image.src = src;
-  };
-
   var tileGrid = new ol.tilegrid.Zoomify({
     resolutions: resolutions
   });
@@ -129,9 +101,91 @@ ol.source.Zoomify = function(opt_options) {
     crossOrigin: options.crossOrigin,
     logo: options.logo,
     tileGrid: tileGrid,
-    tileUrlFunction: tileUrlFunction,
-    tileLoadFunction: tileLoadFunction
+    tileUrlFunction: tileUrlFunction
   });
 
 };
 goog.inherits(ol.source.Zoomify, ol.source.TileImage);
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.Zoomify.prototype.getTile = function(z, x, y, projection) {
+  var tileCoordKey = this.getKeyZXY(z, x, y);
+  if (this.tileCache.containsKey(tileCoordKey)) {
+    return /** @type {!ol.source.ZoomifyTile_} */ (
+        this.tileCache.get(tileCoordKey));
+  } else {
+    goog.asserts.assert(goog.isDef(projection));
+    var tileCoord = new ol.TileCoord(z, x, y);
+    var tileUrl = this.tileUrlFunction(tileCoord, projection);
+    var tile = new ol.source.ZoomifyTile_(
+        tileCoord,
+        goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,
+        goog.isDef(tileUrl) ? tileUrl : '',
+        this.crossOrigin,
+        this.tileLoadFunction);
+    this.tileCache.set(tileCoordKey, tile);
+    return tile;
+  }
+};
+
+
+
+/**
+ * @constructor
+ * @extends {ol.ImageTile}
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.TileState} state State.
+ * @param {string} src Image source URI.
+ * @param {?string} crossOrigin Cross origin.
+ * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
+ * @private
+ */
+ol.source.ZoomifyTile_ = function(
+    tileCoord, state, src, crossOrigin, tileLoadFunction) {
+
+  goog.base(this, tileCoord, state, src, crossOrigin, tileLoadFunction);
+
+  /**
+   * @private
+   * @type {Object.<string,
+   *                HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>}
+   */
+  this.zoomifyImageByContext_ = {};
+
+};
+goog.inherits(ol.source.ZoomifyTile_, ol.ImageTile);
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.ZoomifyTile_.prototype.getImage = function(opt_context) {
+  var key = goog.isDef(opt_context) ? goog.getUid(opt_context).toString() : '';
+  if (key in this.zoomifyImageByContext_) {
+    return this.zoomifyImageByContext_[key];
+  } else {
+    var image = goog.base(this, 'getImage', opt_context);
+    if (this.state == ol.TileState.LOADED) {
+      if (image.width == ol.DEFAULT_TILE_SIZE &&
+          image.height == ol.DEFAULT_TILE_SIZE) {
+        this.zoomifyImageByContext_[key] = image;
+        return image;
+      } else {
+        var canvas = /** @type {HTMLCanvasElement} */
+            (goog.dom.createElement(goog.dom.TagName.CANVAS));
+        canvas.width = ol.DEFAULT_TILE_SIZE;
+        canvas.height = ol.DEFAULT_TILE_SIZE;
+        var context = /** @type {CanvasRenderingContext2D} */
+            (canvas.getContext('2d'));
+        context.drawImage(image, 0, 0);
+        this.zoomifyImageByContext_[key] = canvas;
+        return canvas;
+      }
+    } else {
+      return image;
+    }
+  }
+};
