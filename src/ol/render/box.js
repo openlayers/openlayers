@@ -91,7 +91,6 @@ ol.render.Box.prototype.disposeInternal = function() {
  * @private
  */
 ol.render.Box.prototype.handleMapPostCompose_ = function(event) {
-  this.geometry_ = this.createGeometry_();
   var style = this.style_;
   goog.asserts.assert(!goog.isNull(style));
   var render = event.getRender();
@@ -148,5 +147,6 @@ ol.render.Box.prototype.setCoordinates =
     function(startCoordinate, endCoordinate) {
   this.startCoordinate_ = startCoordinate;
   this.endCoordinate_ = endCoordinate;
+  this.geometry_ = this.createGeometry_();
   this.requestMapRenderFrame_();
 };
