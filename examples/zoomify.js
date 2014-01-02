@@ -1,4 +1,3 @@
-// NOCHECK we can't check this example as it causes CORS violations in PhantomJS
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
