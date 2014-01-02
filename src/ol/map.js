@@ -1212,7 +1212,7 @@ ol.Map.prototype.updateSize = function() {
   if (goog.isNull(targetElement)) {
     this.setSize(undefined);
   } else {
-    var size = goog.style.getSize(targetElement);
+    var size = goog.style.getContentBoxSize(targetElement);
     this.setSize([size.width, size.height]);
   }
 };
