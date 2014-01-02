@@ -1,7 +1,6 @@
 goog.provide('ol.source.Zoomify');
 
 goog.require('goog.array');
-goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('ol.ImageTile');
@@ -82,36 +81,13 @@ ol.source.Zoomify = function(opt_options) {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
     logo: options.logo,
+    tileClass: ol.source.ZoomifyTile_,
     tileGrid: tileGrid,
     tileUrlFunction: tileUrlFunction
   });
 
 };
 goog.inherits(ol.source.Zoomify, ol.source.TileImage);
-
-
-/**
- * @inheritDoc
- */
-ol.source.Zoomify.prototype.getTile = function(z, x, y, projection) {
-  var tileCoordKey = this.getKeyZXY(z, x, y);
-  if (this.tileCache.containsKey(tileCoordKey)) {
-    return /** @type {!ol.source.ZoomifyTile_} */ (
-        this.tileCache.get(tileCoordKey));
-  } else {
-    goog.asserts.assert(goog.isDef(projection));
-    var tileCoord = new ol.TileCoord(z, x, y);
-    var tileUrl = this.tileUrlFunction(tileCoord, projection);
-    var tile = new ol.source.ZoomifyTile_(
-        tileCoord,
-        goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,
-        goog.isDef(tileUrl) ? tileUrl : '',
-        this.crossOrigin,
-        this.tileLoadFunction);
-    this.tileCache.set(tileCoordKey, tile);
-    return tile;
-  }
-};
 
 
 
