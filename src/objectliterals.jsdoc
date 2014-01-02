@@ -710,6 +710,7 @@
  * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {string|undefined} text Text.
  * @property {string|undefined} url URL.
+ * @property {Array.<string>|undefined} urls URLs.
  */
 
 /**
