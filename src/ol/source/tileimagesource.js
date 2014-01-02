@@ -70,10 +70,10 @@ ol.source.TileImage = function(options) {
   this.tileCache = new ol.TileCache();
 
   /**
-   * @private
+   * @protected
    * @type {ol.TileLoadFunctionType}
    */
-  this.tileLoadFunction_ = goog.isDef(options.tileLoadFunction) ?
+  this.tileLoadFunction = goog.isDef(options.tileLoadFunction) ?
       options.tileLoadFunction : ol.source.TileImage.defaultTileLoadFunction;
 
 };
@@ -121,7 +121,7 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, projection) {
         goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,
         goog.isDef(tileUrl) ? tileUrl : '',
         this.crossOrigin,
-        this.tileLoadFunction_);
+        this.tileLoadFunction);
     this.tileCache.set(tileCoordKey, tile);
     return tile;
   }
