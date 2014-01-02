@@ -534,6 +534,7 @@
  *     Possible values are `barometric`, `gps`, and `none`. Default is `none`.
  * @property {string|undefined} text Text.
  * @property {string|undefined} url URL.
+ * @property {Array.<string>|undefined} urls URLs.
  */
 
 /**
