@@ -759,6 +759,17 @@
  */
 
 /**
+ * @typedef {Object} olx.source.ZoomifyOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {null|string|undefined} crossOrigin Cross origin setting for image
+ *     requests.
+ * @property {string|undefined} logo Logo.
+ * @property {!string} url Prefix of URL template.
+ * @property {ol.Size} size Size of the image.
+ * @todo stability experimental
+ */
+
+/**
  * @typedef {Object} olx.style.CircleOptions
  * @property {ol.style.Fill|undefined} fill Fill style.
  * @property {number} radius Circle radius.
@@ -839,5 +850,11 @@
 /**
  * @typedef {Object} olx.tilegrid.XYZOptions
  * @property {number} maxZoom Maximum zoom.
+ * @todo stability experimental
+ */
+
+/**
+ * @typedef {Object} olx.tilegrid.ZoomifyOptions
+ * @property {!Array.<number>} resolutions Resolutions.
  * @todo stability experimental
  */
