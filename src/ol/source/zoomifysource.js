@@ -32,7 +32,6 @@ ol.source.Zoomify = function(opt_options) {
     Math.ceil(imageSize[1] / ol.DEFAULT_TILE_SIZE)
   ];
   var tierSizeInTiles = [tiles];
-  var tierImageSize = [imageSize];
 
   while (imageSize[0] > ol.DEFAULT_TILE_SIZE ||
       imageSize[1] > ol.DEFAULT_TILE_SIZE) {
@@ -46,11 +45,9 @@ ol.source.Zoomify = function(opt_options) {
       Math.ceil(imageSize[1] / ol.DEFAULT_TILE_SIZE)
     ];
     tierSizeInTiles.push(tiles);
-    tierImageSize.push(imageSize);
   }
 
   tierSizeInTiles.reverse();
-  tierImageSize.reverse();
   var numberOfTiers = tierSizeInTiles.length;
   var resolutions = [1];
   var tileCountUpToTier = [0];
