@@ -20,6 +20,10 @@ var url = 'http://vips.vtech.fr/cgi-bin/iipsrv.fcgi?zoomify=' +
 var crossOrigin = 'anonymous';
 
 var imgCenter = [imgWidth / 2, - imgHeight / 2];
+
+// Maps always need a projection, but Zoomify layers are not geo-referenced, and
+// are only measured in pixels.  So, we create a fake projection that the map
+// can use to properly display the layer.
 var proj = new ol.proj.Projection({
   code: 'ZOOMIFY',
   units: ol.proj.Units.PIXELS,
