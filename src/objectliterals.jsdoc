@@ -342,6 +342,8 @@
  *     desired. Default is `true`.
  * @property {boolean|undefined} mouseWheelZoom Whether mousewheel zoom is
  *     desired. Default is `true`.
+ * @property {boolean|undefined} shiftDragZoom Whether Shift-drag zoom is
+ *     desired. Default is `true`.
  * @property {boolean|undefined} touchPan Whether touch pan is
  *     desired. Default is `true`.
  * @property {boolean|undefined} touchRotate Whether touch rotate is desired. Default is `true`.

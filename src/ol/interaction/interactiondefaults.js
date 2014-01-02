@@ -5,6 +5,7 @@ goog.require('ol.Kinetic');
 goog.require('ol.interaction.DoubleClickZoom');
 goog.require('ol.interaction.DragPan');
 goog.require('ol.interaction.DragRotate');
+goog.require('ol.interaction.DragZoom');
 goog.require('ol.interaction.KeyboardPan');
 goog.require('ol.interaction.KeyboardZoom');
 goog.require('ol.interaction.MouseWheelZoom');
@@ -96,6 +97,12 @@ ol.interaction.defaults = function(opt_options) {
     interactions.push(new ol.interaction.MouseWheelZoom({
       duration: options.zoomDuration
     }));
+  }
+
+  var shiftDragZoom = goog.isDef(options.shiftDragZoom) ?
+      options.shiftDragZoom : true;
+  if (shiftDragZoom) {
+    interactions.push(new ol.interaction.DragZoom());
   }
 
   return interactions;
