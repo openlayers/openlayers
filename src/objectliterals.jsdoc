@@ -525,6 +525,7 @@
  * @property {ol.proj.ProjectionLike} reprojectTo Re-project to.
  * @property {string|undefined} text Text.
  * @property {string|undefined} url URL.
+ * @property {Array.<string>|undefined} urls URLs.
  */
 
 /**
