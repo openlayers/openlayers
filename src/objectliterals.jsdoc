@@ -475,7 +475,7 @@
  * @property {number|undefined} opacity Opacity. 0-1. Default is `1`.
  * @property {number|undefined} saturation Saturation.
  * @property {ol.source.Vector} source Source.
- * @property {ol.style.StyleFunction|undefined} styleFunction Style function.
+ * @property {ol.feature.StyleFunction|undefined} styleFunction Style function.
  * @property {boolean|undefined} visible Visibility. Default is `true` (visible).
  * @todo stability experimental
  */

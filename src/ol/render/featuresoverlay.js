@@ -8,8 +8,8 @@ goog.require('goog.object');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
+goog.require('ol.feature');
 goog.require('ol.render.EventType');
-goog.require('ol.style.StyleFunction');
 
 
 
@@ -50,7 +50,7 @@ ol.render.FeaturesOverlay = function() {
 
   /**
    * @private
-   * @type {ol.style.StyleFunction|undefined}
+   * @type {ol.feature.StyleFunction|undefined}
    */
   this.styleFunction_ = undefined;
 
@@ -191,7 +191,7 @@ ol.render.FeaturesOverlay.prototype.setMap = function(map) {
 
 
 /**
- * @param {ol.style.StyleFunction} styleFunction Style function.
+ * @param {ol.feature.StyleFunction} styleFunction Style function.
  */
 ol.render.FeaturesOverlay.prototype.setStyleFunction = function(styleFunction) {
   this.styleFunction_ = styleFunction;

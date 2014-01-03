@@ -1,5 +1,4 @@
 goog.provide('ol.style.Style');
-goog.provide('ol.style.StyleFunction');
 
 goog.require('ol.style.Fill');
 goog.require('ol.style.Image');
@@ -86,9 +85,3 @@ ol.style.Style.prototype.getText = function() {
 ol.style.Style.prototype.getZIndex = function() {
   return this.zIndex_;
 };
-
-
-/**
- * @typedef {function(ol.Feature, number): Array.<ol.style.Style>}
- */
-ol.style.StyleFunction;

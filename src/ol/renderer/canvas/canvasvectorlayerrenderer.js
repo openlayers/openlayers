@@ -6,6 +6,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
+goog.require('ol.feature');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.canvas.Layer');
@@ -205,7 +206,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
 
   var styleFunction = vectorLayer.getStyleFunction();
   if (!goog.isDef(styleFunction)) {
-    styleFunction = ol.layer.Vector.defaultStyleFunction;
+    styleFunction = ol.feature.defaultStyleFunction;
   }
   var tolerance = frameStateResolution / (2 * pixelRatio);
   var replayGroup = new ol.render.canvas.ReplayGroup(pixelRatio, tolerance);
@@ -234,7 +235,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
  * @param {ol.Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.style.StyleFunction} styleFunction Style function.
+ * @param {ol.feature.StyleFunction} styleFunction Style function.
  * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
