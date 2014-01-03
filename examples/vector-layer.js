@@ -5,15 +5,12 @@ goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.GeoJSON');
 goog.require('ol.source.MapQuestOpenAerial');
-goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 
 var styleArray = [new ol.style.Style({
-  fill: new ol.style.Fill({
-    color: 'rgba(255, 255, 255, 0.6)'
-  }),
+  fill: 'rgba(255, 255, 255, 0.6)',
   stroke: new ol.style.Stroke({
     color: '#319FD3',
     width: 1
@@ -81,9 +78,7 @@ var highlightStyle = new ol.style.Style({
     color: '#f00',
     width: 1
   }),
-  fill: new ol.style.Fill({
-    color: 'rgba(255,0,0,0.1)'
-  })
+  fill: 'rgba(255,0,0,0.1)'
 });
 
 map.on('postcompose', function(evt) {
