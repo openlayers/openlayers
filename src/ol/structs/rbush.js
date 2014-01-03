@@ -540,7 +540,7 @@ ol.structs.RBush.prototype.getExtent = function(opt_extent) {
  */
 ol.structs.RBush.prototype.getKey_ = function(value) {
   goog.asserts.assert(goog.isObject(value));
-  return goog.getUid(value) + '';
+  return goog.getUid(value).toString();
 };
 
 
