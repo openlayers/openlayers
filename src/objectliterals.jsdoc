@@ -821,7 +821,7 @@
  * @typedef {Object} olx.style.StyleOptions
  * @property {ol.style.FillLike|undefined} fill Fill style.
  * @property {ol.style.Image|undefined} image Image style.
- * @property {ol.style.Stroke|undefined} stroke Stroke style.
+ * @property {ol.style.StrokeLike|undefined} stroke Stroke style.
  * @property {ol.style.Text|undefined} text Text style.
  * @property {number|undefined} zIndex Z index.
  * @todo stability experimental

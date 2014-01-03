@@ -2,6 +2,7 @@ goog.provide('ol.style.Style');
 
 goog.require('ol.style.Fill');
 goog.require('ol.style.Image');
+goog.require('ol.style.Stroke');
 
 
 
@@ -30,7 +31,7 @@ ol.style.Style = function(opt_options) {
    * @private
    * @type {ol.style.Stroke}
    */
-  this.stroke_ = goog.isDef(options.stroke) ? options.stroke : null;
+  this.stroke_ = ol.style.Stroke.get(options.stroke);
 
   /**
    * @private
