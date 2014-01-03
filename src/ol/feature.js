@@ -1,8 +1,10 @@
 goog.provide('ol.Feature');
+goog.provide('ol.feature');
 
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('goog.functions');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
 goog.require('ol.style.Style');
@@ -14,12 +16,6 @@ goog.require('ol.style.Style');
 ol.FeatureProperty = {
   STYLE_FUNCTION: 'styleFunction'
 };
-
-
-/**
- * @typedef {function(this: ol.Feature, number): Array.<ol.style.Style>}
- */
-ol.FeatureStyleFunction;
 
 
 
@@ -127,10 +123,10 @@ ol.Feature.prototype.getRevision = function() {
 
 
 /**
- * @return {ol.FeatureStyleFunction|undefined} Style function.
+ * @return {ol.feature.FeatureStyleFunction|undefined} Style function.
  */
 ol.Feature.prototype.getStyleFunction = function() {
-  return /** @type {ol.FeatureStyleFunction|undefined} */ (
+  return /** @type {ol.feature.FeatureStyleFunction|undefined} */ (
       this.get(ol.FeatureProperty.STYLE_FUNCTION));
 };
 goog.exportProperty(
@@ -185,7 +181,8 @@ goog.exportProperty(
 
 
 /**
- * @param {ol.FeatureStyleFunction|undefined} styleFunction Style function.
+ * @param {ol.feature.FeatureStyleFunction|undefined} styleFunction Style
+ *     function.
  */
 ol.Feature.prototype.setStyleFunction = function(styleFunction) {
   this.set(ol.FeatureProperty.STYLE_FUNCTION, styleFunction);
@@ -216,4 +213,38 @@ ol.Feature.prototype.setGeometryName = function(name) {
       this, ol.Object.getChangeEventType(this.geometryName_),
       this.handleGeometryChanged_, false, this);
   this.handleGeometryChanged_();
+};
+
+
+/**
+ * @typedef {function(this: ol.Feature, number): Array.<ol.style.Style>}
+ */
+ol.feature.FeatureStyleFunction;
+
+
+/**
+ * @param {number} resolution Resolution.
+ * @return {Array.<ol.style.Style>} Style.
+ * @this {ol.Feature}
+ */
+ol.feature.defaultFeatureStyleFunction = goog.functions.constant([]);
+
+
+/**
+ * @typedef {function(ol.Feature, number): Array.<ol.style.Style>}
+ */
+ol.feature.StyleFunction;
+
+
+/**
+ * @param {ol.Feature} feature Feature.
+ * @param {number} resolution Resolution.
+ * @return {Array.<ol.style.Style>} Style.
+ */
+ol.feature.defaultStyleFunction = function(feature, resolution) {
+  var featureStyleFunction = feature.getStyleFunction();
+  if (!goog.isDef(featureStyleFunction)) {
+    featureStyleFunction = ol.feature.defaultFeatureStyleFunction;
+  }
+  return featureStyleFunction.call(feature, resolution);
 };

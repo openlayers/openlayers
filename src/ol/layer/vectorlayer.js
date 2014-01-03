@@ -1,5 +1,6 @@
 goog.provide('ol.layer.Vector');
 
+goog.require('ol.feature');
 goog.require('ol.layer.Layer');
 goog.require('ol.source.Vector');
 
@@ -36,21 +37,6 @@ goog.inherits(ol.layer.Vector, ol.layer.Layer);
 
 
 /**
- * @param {ol.Feature} feature Feature.
- * @param {number} resolution Resolution.
- * @return {Array.<ol.style.Style>} Styles.
- */
-ol.layer.Vector.defaultStyleFunction = function(feature, resolution) {
-  var featureStyleFunction = feature.getStyleFunction();
-  if (goog.isDef(featureStyleFunction)) {
-    return featureStyleFunction.call(feature, resolution);
-  } else {
-    return null;
-  }
-};
-
-
-/**
  * @return {function(ol.geom.Geometry): boolean|undefined} Render geometry
  *     function.
  */
@@ -65,10 +51,10 @@ goog.exportProperty(
 
 
 /**
- * @return {ol.style.StyleFunction|undefined} Style function.
+ * @return {ol.feature.StyleFunction|undefined} Style function.
  */
 ol.layer.Vector.prototype.getStyleFunction = function() {
-  return /** @type {ol.style.StyleFunction|undefined} */ (
+  return /** @type {ol.feature.StyleFunction|undefined} */ (
       this.get(ol.layer.VectorProperty.STYLE_FUNCTION));
 };
 goog.exportProperty(
@@ -101,7 +87,7 @@ goog.exportProperty(
 
 
 /**
- * @param {ol.style.StyleFunction|undefined} styleFunction Style function.
+ * @param {ol.feature.StyleFunction|undefined} styleFunction Style function.
  */
 ol.layer.Vector.prototype.setStyleFunction = function(styleFunction) {
   this.set(ol.layer.VectorProperty.STYLE_FUNCTION, styleFunction);

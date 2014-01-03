@@ -18,6 +18,7 @@ goog.require('goog.math');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('ol.Feature');
+goog.require('ol.feature');
 goog.require('ol.format.XML');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
@@ -78,7 +79,7 @@ ol.format.KML = function(opt_options) {
 
   /**
    * @private
-   * @type {function(this: ol.Feature, number): Array.<ol.style.Style>}
+   * @type {ol.feature.FeatureStyleFunction}
    */
   this.sharedStyleFeatureStyleFunction_ =
       /**
@@ -238,8 +239,7 @@ ol.format.KML.defaultFeatureStyleFunction_ = function(resolution) {
 /**
  * @param {ol.style.Style} style Style.
  * @private
- * @return {function(this: ol.Feature, number): Array.<ol.style.Style>} Feature
- *     style function.
+ * @return {ol.feature.FeatureStyleFunction} Feature style function.
  */
 ol.format.KML.makeFeatureStyleFunction_ = function(style) {
   // FIXME handle styleMap?
