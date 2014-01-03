@@ -3,6 +3,7 @@
 goog.provide('ol.render.Box');
 
 goog.require('goog.Disposable');
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('ol.geom.Polygon');
@@ -31,15 +32,15 @@ ol.render.Box = function(style) {
 
   /**
    * @private
-   * @type {ol.Coordinate}
+   * @type {ol.Pixel}
    */
-  this.startCoordinate_ = null;
+  this.startPixel_ = null;
 
   /**
    * @private
-   * @type {ol.Coordinate}
+   * @type {ol.Pixel}
    */
-  this.endCoordinate_ = null;
+  this.endPixel_ = null;
 
   /**
    * @private
@@ -62,19 +63,22 @@ goog.inherits(ol.render.Box, goog.Disposable);
  * @return {ol.geom.Polygon} Geometry.
  */
 ol.render.Box.prototype.createGeometry_ = function() {
-  goog.asserts.assert(!goog.isNull(this.startCoordinate_));
-  goog.asserts.assert(!goog.isNull(this.endCoordinate_));
-  var startCoordinate = this.startCoordinate_;
-  var endCoordinate = this.endCoordinate_;
-  var coordinates = [
+  goog.asserts.assert(!goog.isNull(this.startPixel_));
+  goog.asserts.assert(!goog.isNull(this.endPixel_));
+  goog.asserts.assert(!goog.isNull(this.map_));
+  var startPixel = this.startPixel_;
+  var endPixel = this.endPixel_;
+  var pixels = [
     [
-      startCoordinate,
-      [startCoordinate[0], endCoordinate[1]],
-      endCoordinate,
-      [endCoordinate[0], startCoordinate[1]]
+      startPixel,
+      [startPixel[0], endPixel[1]],
+      endPixel,
+      [endPixel[0], startPixel[1]]
     ]
   ];
-  return new ol.geom.Polygon(coordinates);
+  var coordinates = goog.array.map(pixels[0],
+      this.map_.getCoordinateFromPixel, this.map_);
+  return new ol.geom.Polygon([coordinates]);
 };
 
 
@@ -112,8 +116,8 @@ ol.render.Box.prototype.getGeometry = function() {
  */
 ol.render.Box.prototype.requestMapRenderFrame_ = function() {
   if (!goog.isNull(this.map_) &&
-      !goog.isNull(this.startCoordinate_) &&
-      !goog.isNull(this.endCoordinate_)) {
+      !goog.isNull(this.startPixel_) &&
+      !goog.isNull(this.endPixel_)) {
     this.map_.requestRenderFrame();
   }
 };
@@ -140,13 +144,12 @@ ol.render.Box.prototype.setMap = function(map) {
 
 
 /**
- * @param {ol.Coordinate} startCoordinate Start coordinate.
- * @param {ol.Coordinate} endCoordinate End coordinate.
+ * @param {ol.Pixel} startPixel Start pixel.
+ * @param {ol.Pixel} endPixel End pixel.
  */
-ol.render.Box.prototype.setCoordinates =
-    function(startCoordinate, endCoordinate) {
-  this.startCoordinate_ = startCoordinate;
-  this.endCoordinate_ = endCoordinate;
+ol.render.Box.prototype.setPixels = function(startPixel, endPixel) {
+  this.startPixel_ = startPixel;
+  this.endPixel_ = endPixel;
   this.geometry_ = this.createGeometry_();
   this.requestMapRenderFrame_();
 };

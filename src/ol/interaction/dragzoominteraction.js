@@ -52,7 +52,5 @@ ol.interaction.DragZoom.prototype.onBoxEnd = function() {
     var view = this.getMap().getView().getView2D();
 
     view.fitExtent(this.getGeometry().getExtent(), this.getMap().getSize());
-    // FIXME we should preserve rotation
-    view.setRotation(0);
   }, this));
 };
