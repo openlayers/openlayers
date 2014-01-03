@@ -20,6 +20,7 @@ goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
+goog.require('ol.render.webgl.Immediate');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.Layer');
@@ -282,10 +283,12 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
 ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
     function(type, frameState) {
   var map = this.getMap();
-  var context = this.getContext();
   if (map.hasListener(type)) {
+    var context = this.getContext();
+    var render = new ol.render.webgl.Immediate(context,
+        frameState.devicePixelRatio);
     var composeEvent = new ol.render.Event(
-        type, map, null, frameState, null, context);
+        type, map, render, frameState, null, context);
     map.dispatchEvent(composeEvent);
   }
 };

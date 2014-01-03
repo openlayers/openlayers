@@ -93,6 +93,12 @@ ol.interaction.DragBox = function(opt_options) {
   this.box_ = new ol.render.Box(style);
 
   /**
+   * @type {ol.Pixel}
+   * @private
+   */
+  this.startPixel_ = null;
+
+  /**
    * @private
    * @type {ol.events.ConditionType}
    */
@@ -107,8 +113,7 @@ goog.inherits(ol.interaction.DragBox, ol.interaction.Drag);
  * @inheritDoc
  */
 ol.interaction.DragBox.prototype.handleDrag = function(mapBrowserEvent) {
-  this.box_.setCoordinates(
-      this.startCoordinate, mapBrowserEvent.getCoordinate());
+  this.box_.setPixels(this.startPixel_, mapBrowserEvent.getPixel());
 };
 
 
@@ -150,8 +155,9 @@ ol.interaction.DragBox.prototype.handleDragStart =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
-    this.box_.setCoordinates(this.startCoordinate, this.startCoordinate);
+    this.startPixel_ = mapBrowserEvent.getPixel();
     this.box_.setMap(mapBrowserEvent.map);
+    this.box_.setPixels(this.startPixel_, this.startPixel_);
     this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXSTART,
         mapBrowserEvent.getCoordinate()));
     return true;

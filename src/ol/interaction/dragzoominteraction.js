@@ -2,9 +2,17 @@ goog.provide('ol.interaction.DragZoom');
 
 goog.require('goog.asserts');
 goog.require('ol.events.condition');
+goog.require('ol.extent');
 goog.require('ol.interaction.DragBox');
+goog.require('ol.interaction.Interaction');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
+
+
+/**
+ * @define {number} Timeout duration.
+ */
+ol.interaction.DRAGZOOM_ANIMATION_DURATION = 200;
 
 
 
@@ -47,12 +55,12 @@ goog.inherits(ol.interaction.DragZoom, ol.interaction.DragBox);
  * @inheritDoc
  */
 ol.interaction.DragZoom.prototype.onBoxEnd = function() {
-  this.getMap().withFrozenRendering(goog.bind(function() {
-    // FIXME works for View2D only
-    var view = this.getMap().getView().getView2D();
-
-    view.fitExtent(this.getGeometry().getExtent(), this.getMap().getSize());
-    // FIXME we should preserve rotation
-    view.setRotation(0);
-  }, this));
+  // FIXME works for View2D only
+  var map = this.getMap();
+  var view = map.getView().getView2D();
+  var extent = this.getGeometry().getExtent();
+  var center = ol.extent.getCenter(extent);
+  ol.interaction.Interaction.zoom(map, view,
+      view.getResolutionForExtent(extent, map.getSize()),
+      center, ol.interaction.DRAGZOOM_ANIMATION_DURATION);
 };
