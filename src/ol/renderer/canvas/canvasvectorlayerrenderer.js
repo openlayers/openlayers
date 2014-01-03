@@ -32,6 +32,12 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, vectorLayer) {
 
   /**
    * @private
+   * @type {ol.Extent}
+   */
+  this.frameStateExtent_ = ol.extent.createEmpty();
+
+  /**
+   * @private
    * @type {number}
    */
   this.renderedRevision_ = -1;
@@ -96,14 +102,14 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
   if (goog.isNull(this.replayGroup_)) {
     return undefined;
   } else {
-    goog.asserts.assert(!ol.extent.isEmpty(this.renderedExtent_));
+    goog.asserts.assert(!ol.extent.isEmpty(this.frameStateExtent_));
     goog.asserts.assert(!isNaN(this.renderedResolution_));
     goog.asserts.assert(!isNaN(this.renderedRotation_));
     var coordinate = this.getMap().getCoordinateFromPixel(pixel);
     var layer = this.getLayer();
     var renderGeometryFunction = this.getRenderGeometryFunction_();
     goog.asserts.assert(goog.isFunction(renderGeometryFunction));
-    return this.replayGroup_.forEachGeometryAtCoordinate(this.renderedExtent_,
+    return this.replayGroup_.forEachGeometryAtCoordinate(this.frameStateExtent_,
         this.renderedResolution_, this.renderedRotation_, coordinate,
         renderGeometryFunction,
         /**
@@ -173,6 +179,8 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   var frameStateExtent = frameState.extent;
   var frameStateResolution = frameState.view2DState.resolution;
   var pixelRatio = frameState.devicePixelRatio;
+
+  this.frameStateExtent_ = frameStateExtent;
 
   if (!this.dirty_ &&
       this.renderedResolution_ == frameStateResolution &&
