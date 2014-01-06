@@ -85,7 +85,7 @@ ol.source.Vector.prototype.addFeature = function(feature) {
  * @protected
  */
 ol.source.Vector.prototype.addFeatureInternal = function(feature) {
-  var featureKey = goog.getUid(feature) + '';
+  var featureKey = goog.getUid(feature).toString();
   goog.asserts.assert(!(featureKey in this.featureChangeKeys_));
   this.featureChangeKeys_[featureKey] = goog.events.listen(feature,
       goog.events.EventType.CHANGE, this.handleFeatureChange_, false, this);
@@ -329,7 +329,7 @@ ol.source.Vector.prototype.removeFeature = function(feature) {
  * @protected
  */
 ol.source.Vector.prototype.removeFeatureInternal = function(feature) {
-  var featureKey = goog.getUid(feature) + '';
+  var featureKey = goog.getUid(feature).toString();
   goog.asserts.assert(featureKey in this.featureChangeKeys_);
   goog.events.unlistenByKey(this.featureChangeKeys_[featureKey]);
   delete this.featureChangeKeys_[featureKey];
