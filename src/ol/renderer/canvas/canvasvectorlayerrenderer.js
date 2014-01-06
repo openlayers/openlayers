@@ -164,15 +164,20 @@ ol.renderer.canvas.VectorLayer.prototype.handleImageStyleChange_ =
 ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
+  var vectorLayer = this.getLayer();
+  goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector);
+  var vectorSource = vectorLayer.getSource();
+  goog.asserts.assertInstanceof(vectorSource, ol.source.Vector);
+
+  this.updateAttributions(
+      frameState.attributions, vectorSource.getAttributions());
+  this.updateLogos(frameState, vectorSource);
+
   if (!this.dirty_ && (frameState.viewHints[ol.ViewHint.ANIMATING] ||
       frameState.viewHints[ol.ViewHint.INTERACTING])) {
     return;
   }
 
-  var vectorLayer = this.getLayer();
-  goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector);
-  var vectorSource = vectorLayer.getSource();
-  goog.asserts.assertInstanceof(vectorSource, ol.source.Vector);
   var frameStateExtent = frameState.extent;
   var frameStateResolution = frameState.view2DState.resolution;
   var pixelRatio = frameState.devicePixelRatio;
