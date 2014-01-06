@@ -710,6 +710,28 @@ ol.format.KML.readLineString_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
+ * @return {ol.geom.Polygon|undefined} Polygon.
+ */
+ol.format.KML.readLinearRing_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'LinearRing');
+  var flatCoordinates =
+      ol.format.KML.readFlatCoordinatesFromNode_(node, objectStack);
+  if (goog.isDef(flatCoordinates)) {
+    var polygon = new ol.geom.Polygon(null);
+    polygon.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates,
+        [flatCoordinates.length]);
+    return polygon;
+  } else {
+    return undefined;
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
  * @return {ol.geom.Geometry} Geometry.
  */
 ol.format.KML.readMultiGeometry_ = function(node, objectStack) {
@@ -1206,6 +1228,7 @@ ol.format.KML.LINE_STYLE_PARSERS_ = ol.xml.makeParsersNS(
 ol.format.KML.MULTI_GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'LineString': ol.xml.makeArrayPusher(ol.format.KML.readLineString_),
+      'LinearRing': ol.xml.makeArrayPusher(ol.format.KML.readLinearRing_),
       'MultiGeometry': ol.xml.makeArrayPusher(ol.format.KML.readMultiGeometry_),
       'Point': ol.xml.makeArrayPusher(ol.format.KML.readPoint_),
       'Polygon': ol.xml.makeArrayPusher(ol.format.KML.readPolygon_)
@@ -1255,6 +1278,8 @@ ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeParsersNS(
           ol.format.KML.readMultiGeometry_, 'geometry'),
       'LineString': ol.xml.makeObjectPropertySetter(
           ol.format.KML.readLineString_, 'geometry'),
+      'LinearRing': ol.xml.makeObjectPropertySetter(
+          ol.format.KML.readLinearRing_, 'geometry'),
       'Point': ol.xml.makeObjectPropertySetter(
           ol.format.KML.readPoint_, 'geometry'),
       'Polygon': ol.xml.makeObjectPropertySetter(

@@ -89,6 +89,24 @@ describe('ol.format.KML', function() {
         expect(g.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
       });
 
+      it('can read LinearRing geometries', function() {
+        var text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Placemark>' +
+            '    <LinearRing>' +
+            '      <coordinates>1,2,3 4,5,6 7,8,9</coordinates>' +
+            '    </LinearRing>' +
+            '  </Placemark>' +
+            '</kml>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var g = f.getGeometry();
+        expect(g).to.be.an(ol.geom.Polygon);
+        expect(g.getCoordinates()).to.eql([[[1, 2, 3], [4, 5, 6], [7, 8, 9]]]);
+      });
+
       it('can read Polygon geometries', function() {
         var text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
@@ -255,6 +273,9 @@ describe('ol.format.KML', function() {
             '      <LineString>' +
             '        <coordinates>1,2,3 4,5,6</coordinates>' +
             '      </LineString>' +
+            '      <LinearRing>' +
+            '        <coordinates>1,2,3 4,5,6 7,8,9</coordinates>' +
+            '      </LinearRing>' +
             '      <Polygon>' +
             '        <outerBoundaryIs>' +
             '          <LinearRing>' +
@@ -272,10 +293,11 @@ describe('ol.format.KML', function() {
         var g = f.getGeometry();
         expect(g).to.be.an(ol.geom.GeometryCollection);
         var gs = g.getGeometries();
-        expect(gs).to.have.length(3);
+        expect(gs).to.have.length(4);
         expect(gs[0]).to.be.an(ol.geom.Point);
         expect(gs[1]).to.be.an(ol.geom.LineString);
         expect(gs[2]).to.be.an(ol.geom.Polygon);
+        expect(gs[3]).to.be.an(ol.geom.Polygon);
       });
 
       it('can read nested GeometryCollection geometries', function() {
