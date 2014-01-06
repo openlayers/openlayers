@@ -369,6 +369,12 @@ ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions_ =
 /**
  * @inheritDoc
  */
+ol.render.canvas.Replay.prototype.drawAsync = goog.abstractMethod;
+
+
+/**
+ * @inheritDoc
+ */
 ol.render.canvas.Replay.prototype.drawFeature = goog.abstractMethod;
 
 
