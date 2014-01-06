@@ -20,9 +20,8 @@ var map = new ol.Map({
 
 osm.on('precompose', function(event) {
   var ctx = event.getContext();
-  var size = event.getFrameState().size;
   ctx.save();
-  ctx.translate(size[0] / 2, size[1] / 2);
+  ctx.translate(ctx.canvas.width / 2, ctx.canvas.height / 2);
   ctx.scale(3, 3);
   ctx.translate(-75, -80);
   ctx.beginPath();
