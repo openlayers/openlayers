@@ -1521,12 +1521,11 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
   } else if (node.localName == 'kml') {
     features = [];
     var n;
-    for (n = node.firstChild; !goog.isNull(n); n = n.nextSibling) {
-      if (n.nodeType == goog.dom.NodeType.ELEMENT) {
-        var fs = this.readFeaturesFromNode(n);
-        if (goog.isDef(fs)) {
-          goog.array.extend(features, fs);
-        }
+    for (n = node.firstElementChild; !goog.isNull(n);
+         n = n.nextElementSibling) {
+      var fs = this.readFeaturesFromNode(n);
+      if (goog.isDef(fs)) {
+        goog.array.extend(features, fs);
       }
     }
     return features;
@@ -1541,15 +1540,35 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
  * @return {string|undefined} Name.
  */
 ol.format.KML.prototype.readName = function(source) {
-  if (source instanceof Node) {
+  if (source instanceof Document) {
+    return this.readNameFromDocument(source);
+  } else if (source instanceof Node) {
     return this.readNameFromNode(source);
   } else if (goog.isString(source)) {
     var doc = goog.dom.xml.loadXml(source);
-    return this.readNameFromNode(doc);
+    return this.readNameFromDocument(doc);
   } else {
     goog.asserts.fail();
     return undefined;
   }
+};
+
+
+/**
+ * @param {Document} doc Document.
+ * @return {string|undefined} Name.
+ */
+ol.format.KML.prototype.readNameFromDocument = function(doc) {
+  var n;
+  for (n = doc.firstChild; !goog.isNull(n); n = n.nextSibling) {
+    if (n.nodeType == goog.dom.NodeType.ELEMENT) {
+      var name = this.readNameFromNode(n);
+      if (goog.isDef(name)) {
+        return name;
+      }
+    }
+  }
+  return undefined;
 };
 
 
@@ -1559,18 +1578,16 @@ ol.format.KML.prototype.readName = function(source) {
  */
 ol.format.KML.prototype.readNameFromNode = function(node) {
   var n;
-  for (n = node.firstChild; !goog.isNull(n); n = n.nextSibling) {
-    if (n.nodeType == goog.dom.NodeType.ELEMENT &&
-        goog.array.indexOf(
-            ol.format.KML.NAMESPACE_URIS_, n.namespaceURI) != -1 &&
+  for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
+    if (goog.array.indexOf(ol.format.KML.NAMESPACE_URIS_,
+                           n.namespaceURI) != -1 &&
         n.localName == 'name') {
       return ol.format.KML.readString_(n);
     }
   }
-  for (n = node.firstChild; !goog.isNull(n); n = n.nextSibling) {
-    if (n.nodeType == goog.dom.NodeType.ELEMENT &&
-        goog.array.indexOf(
-            ol.format.KML.NAMESPACE_URIS_, n.namespaceURI) != -1 &&
+  for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
+    if (goog.array.indexOf(ol.format.KML.NAMESPACE_URIS_,
+                           n.namespaceURI) != -1 &&
         (n.localName == 'Document' ||
          n.localName == 'Folder' ||
          n.localName == 'Placemark' ||
