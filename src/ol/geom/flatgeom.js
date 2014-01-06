@@ -488,6 +488,7 @@ ol.geom.flat.linearRingsContainsXY =
 ol.geom.flat.linearRingsGetInteriorPoint =
     function(flatCoordinates, offset, ends, stride, y, opt_point) {
   var i, ii, x, x1, x2, y1, y2;
+  /** @type {Array.<number>} */
   var intersections = [];
   // Calculate intersections with the horizontal line
   var end = ends[0];
@@ -735,7 +736,7 @@ ol.geom.flat.squaredDistance = function(x1, y1, x2, y2) {
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} stride Stride.
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed coordinates.
  */

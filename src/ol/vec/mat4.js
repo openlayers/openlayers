@@ -35,8 +35,8 @@ ol.vec.Mat4.makeTransform2D = function(mat, translateX1, translateY1,
 
 /**
  * Returns true if mat1 and mat2 represent the same 2D transformation.
- * @param {goog.vec.Mat4.AnyType} mat1 Matrix 1.
- * @param {goog.vec.Mat4.AnyType} mat2 Matrix 2.
+ * @param {goog.vec.Mat4.Number} mat1 Matrix 1.
+ * @param {goog.vec.Mat4.Number} mat2 Matrix 2.
  * @return {boolean} Equal 2D.
  */
 ol.vec.Mat4.equals2D = function(mat1, mat2) {

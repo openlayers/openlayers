@@ -21,7 +21,7 @@ goog.require('ol.vec.Mat4');
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Extent} extent Extent.
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  * @struct
  */
 ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform) {
@@ -46,7 +46,7 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.AnyType}
+   * @type {goog.vec.Mat4.Number}
    */
   this.transform_ = transform;
 
