@@ -272,12 +272,18 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
       !ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
-  this.setFillStrokeStyle(style.getFill(), style.getStroke());
-  this.setImageStyle(style.getImage());
-  var renderGeometry =
-      ol.render.canvas.Immediate.GEOMETRY_RENDERES_[geometry.getType()];
-  goog.asserts.assert(goog.isDef(renderGeometry));
-  renderGeometry.call(this, geometry, null);
+  var zIndex = style.getZIndex();
+  if (!goog.isDef(zIndex)) {
+    zIndex = 0;
+  }
+  this.drawAsync(zIndex, function(render) {
+    render.setFillStrokeStyle(style.getFill(), style.getStroke());
+    render.setImageStyle(style.getImage());
+    var renderGeometry =
+        ol.render.canvas.Immediate.GEOMETRY_RENDERES_[geometry.getType()];
+    goog.asserts.assert(goog.isDef(renderGeometry));
+    renderGeometry.call(render, geometry, null);
+  });
 };
 
 
