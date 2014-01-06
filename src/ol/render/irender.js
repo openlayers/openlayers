@@ -12,6 +12,14 @@ ol.render.IRender = function() {
 
 
 /**
+ * @param {number} zIndex Z index.
+ * @param {function(ol.render.canvas.Immediate)} callback Callback.
+ */
+ol.render.IRender.prototype.drawAsync = function(zIndex, callback) {
+};
+
+
+/**
  * @param {ol.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  */

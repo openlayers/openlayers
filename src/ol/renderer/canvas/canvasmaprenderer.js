@@ -109,6 +109,7 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
     var composeEvent = new ol.render.Event(type, map, render, frameState,
         context, null);
     map.dispatchEvent(composeEvent);
+    render.flush();
   }
 };
 

@@ -1,3 +1,4 @@
+@exportProperty ol.render.canvas.Immediate.prototype.drawAsync
 @exportProperty ol.render.canvas.Immediate.prototype.drawFeature
 @exportProperty ol.render.canvas.Immediate.prototype.drawPointGeometry
 @exportProperty ol.render.canvas.Immediate.prototype.drawLineStringGeometry

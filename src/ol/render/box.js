@@ -95,11 +95,15 @@ ol.render.Box.prototype.disposeInternal = function() {
  * @private
  */
 ol.render.Box.prototype.handleMapPostCompose_ = function(event) {
+  var geometry = this.geometry_;
+  goog.asserts.assert(!goog.isNull(geometry));
   var style = this.style_;
   goog.asserts.assert(!goog.isNull(style));
-  var render = event.getRender();
-  render.setFillStrokeStyle(style.getFill(), style.getStroke());
-  render.drawPolygonGeometry(this.geometry_, null);
+  // use drawAsync(Infinity) to draw above everything
+  event.getRender().drawAsync(Infinity, function(render) {
+    render.setFillStrokeStyle(style.getFill(), style.getStroke());
+    render.drawPolygonGeometry(geometry, null);
+  });
 };
 
 
