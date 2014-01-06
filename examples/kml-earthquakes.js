@@ -68,8 +68,7 @@ info.tooltip({
   trigger: 'manual'
 });
 
-var displayFeatureInfo = function(evt) {
-  var pixel = map.getEventPixel(evt.originalEvent);
+var displayFeatureInfo = function(pixel) {
   info.css({
     left: pixel[0] + 'px',
     top: (pixel[1] - 15) + 'px'
@@ -88,9 +87,9 @@ var displayFeatureInfo = function(evt) {
 };
 
 $(map.getViewport()).on('mousemove', function(evt) {
-  displayFeatureInfo(evt);
+  displayFeatureInfo(map.getEventPixel(evt.originalEvent));
 });
 
 map.on('singleclick', function(evt) {
-  displayFeatureInfo(evt);
+  displayFeatureInfo(evt.getPixel());
 });
