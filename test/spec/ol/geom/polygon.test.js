@@ -1,5 +1,3 @@
-// FIXME why do the skip tests below fail? I don't understand!
-
 goog.provide('ol.test.geom.Polygon');
 
 
@@ -291,7 +289,7 @@ describe('ol.geom.Polygon', function() {
       expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
     });
 
-    it.skip('does not contain outside coordinates', function() {
+    it('does not contain outside coordinates', function() {
       expect(polygon.containsCoordinate(outsideOuter)).to.be(false);
     });
 
@@ -302,10 +300,6 @@ describe('ol.geom.Polygon', function() {
     it('does not contain inside inner coordinates', function() {
       expect(polygon.containsCoordinate(insideInner1)).to.be(false);
       expect(polygon.containsCoordinate(insideInner2)).to.be(false);
-    });
-
-    it.skip('fails in strange ways', function() {
-      expect(polygon.containsCoordinate([0, 0])).to.be(false);
     });
 
   });
