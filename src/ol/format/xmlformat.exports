@@ -1,7 +1,0 @@
-@exportProperty ol.format.XML.prototype.readFeature
-@exportProperty ol.format.XML.prototype.readFeatures
-@exportProperty ol.format.XML.prototype.readGeometry
-@exportProperty ol.format.XML.prototype.readProjection
-@exportProperty ol.format.XML.prototype.writeFeature
-@exportProperty ol.format.XML.prototype.writeFeatures
-@exportProperty ol.format.XML.prototype.writeGeometry
