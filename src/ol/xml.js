@@ -173,14 +173,12 @@ ol.xml.makeParsersNS = function(namespaceURIs, parsers, opt_parsersNS) {
  */
 ol.xml.parse = function(parsersNS, node, objectStack, opt_obj) {
   var n;
-  for (n = node.firstChild; !goog.isNull(n); n = n.nextSibling) {
-    if (n.nodeType == goog.dom.NodeType.ELEMENT) {
-      var parsers = parsersNS[n.namespaceURI];
-      if (goog.isDef(parsers)) {
-        var parser = parsers[n.localName];
-        if (goog.isDef(parser)) {
-          parser.call(opt_obj, n, objectStack);
-        }
+  for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
+    var parsers = parsersNS[n.namespaceURI];
+    if (goog.isDef(parsers)) {
+      var parser = parsers[n.localName];
+      if (goog.isDef(parser)) {
+        parser.call(opt_obj, n, objectStack);
       }
     }
   }
