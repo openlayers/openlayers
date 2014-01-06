@@ -14,6 +14,13 @@ ol.render.webgl.Immediate = function(context, pixelRatio) {
 
 
 /**
+ * @inheritDoc
+ */
+ol.render.webgl.Immediate.prototype.drawAsync = function(zIndex, callback) {
+};
+
+
+/**
  * @param {ol.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  */
