@@ -90,6 +90,7 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ =
     var composeEvent = new ol.render.Event(type, layer, render, frameState,
         context, null);
     layer.dispatchEvent(composeEvent);
+    render.flush();
   }
 };
 

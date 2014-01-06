@@ -4,7 +4,9 @@
 
 goog.provide('ol.render.canvas.Immediate');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.color');
 goog.require('ol.extent');
@@ -25,6 +27,13 @@ goog.require('ol.vec.Mat4');
  * @struct
  */
 ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform) {
+
+  /**
+   * @private
+   * @type {Object.<string,
+   *        Array.<function(ol.render.canvas.Immediate)>>}
+   */
+  this.callbacksByZIndex_ = {};
 
   /**
    * @private
@@ -243,6 +252,20 @@ ol.render.canvas.Immediate.prototype.drawRings_ =
 /**
  * @inheritDoc
  */
+ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
+  var zIndexKey = zIndex.toString();
+  var callbacks = this.callbacksByZIndex_[zIndexKey];
+  if (goog.isDef(callbacks)) {
+    callbacks.push(callback);
+  } else {
+    this.callbacksByZIndex_[zIndexKey] = [callback];
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
   var geometry = feature.getGeometry();
   if (goog.isNull(geometry) ||
@@ -397,6 +420,23 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
     if (goog.isDef(state.strokeStyle)) {
       goog.asserts.assert(goog.isDef(state.lineWidth));
       context.stroke();
+    }
+  }
+};
+
+
+/**
+ * FIXME: empty description for jsdoc
+ */
+ol.render.canvas.Immediate.prototype.flush = function() {
+  /** @type {Array.<number>} */
+  var zs = goog.array.map(goog.object.getKeys(this.callbacksByZIndex_), Number);
+  goog.array.sort(zs);
+  var i, ii, callbacks, j, jj;
+  for (i = 0, ii = zs.length; i < ii; ++i) {
+    callbacks = this.callbacksByZIndex_[zs[i].toString()];
+    for (j = 0, jj = callbacks.length; j < jj; ++j) {
+      callbacks[j](this);
     }
   }
 };
