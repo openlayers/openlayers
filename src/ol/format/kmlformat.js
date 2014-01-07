@@ -496,6 +496,10 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
     anchor = ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_;
     anchorXUnits = ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_;
     anchorYUnits = ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_;
+  } else if (/^http:\/\/maps\.(?:google|gstatic)\.com\//.test(src)) {
+    anchor = [0.5, 1];
+    anchorXUnits = ol.style.IconAnchorUnits.FRACTION;
+    anchorYUnits = ol.style.IconAnchorUnits.FRACTION;
   } else {
     anchor = null;
   }
