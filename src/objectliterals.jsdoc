@@ -506,6 +506,13 @@
  */
 
 /**
+ * @typedef {Object} olx.render.FeaturesOverlayOptions
+ * @property {Array.<ol.Feature>|ol.Collection|undefined} features Features.
+ * @property {ol.Map|undefined} map Map.
+ * @property {ol.style.StyleFunction|undefined} styleFunction Style function.
+ */
+
+/**
  * @typedef {Object} olx.source.BingMapsOptions
  * @property {string|undefined} culture Culture code. Default is `en-us`.
  * @property {string} key Bing Maps API key. Get yours at
