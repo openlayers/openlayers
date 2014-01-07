@@ -78,6 +78,14 @@ ol.render.FeaturesOverlay = function(opt_options) {
 
 
 /**
+ * @param {ol.Feature} feature Feature.
+ */
+ol.render.FeaturesOverlay.prototype.addFeature = function(feature) {
+  this.features_.push(feature);
+};
+
+
+/**
  * @return {ol.Collection} Features collection.
  */
 ol.render.FeaturesOverlay.prototype.getFeatures = function() {
