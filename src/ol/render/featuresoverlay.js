@@ -153,6 +153,14 @@ ol.render.FeaturesOverlay.prototype.handleMapPostCompose_ = function(event) {
 
 
 /**
+ * @param {ol.Feature} feature Feature.
+ */
+ol.render.FeaturesOverlay.prototype.removeFeature = function(feature) {
+  this.features_.remove(feature);
+};
+
+
+/**
  * @private
  */
 ol.render.FeaturesOverlay.prototype.requestRenderFrame_ = function() {

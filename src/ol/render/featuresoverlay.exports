@@ -4,3 +4,4 @@
 @exportProperty ol.render.FeaturesOverlay.prototype.setFeatures
 @exportProperty ol.render.FeaturesOverlay.prototype.setMap
 @exportProperty ol.render.FeaturesOverlay.prototype.setStyleFunction
+@exportProperty ol.render.FeaturesOverlay.prototype.removeFeature
