@@ -18,12 +18,12 @@ var raster = new ol.layer.Tile({
 });
 
 var styleArray = [new ol.style.Style({
-  image: new ol.style.Icon({
+  image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
     anchor: [0.5, 46],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
     src: 'data/icon.png'
-  })
+  }))
 })];
 
 var vector = new ol.layer.Vector({
