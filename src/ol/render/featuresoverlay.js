@@ -64,6 +64,8 @@ ol.render.FeaturesOverlay = function(opt_options) {
       goog.asserts.assertInstanceof(options.features, ol.Collection);
       this.setFeatures(options.features);
     }
+  } else {
+    this.setFeatures(new ol.Collection());
   }
 
   if (goog.isDef(options.styleFunction)) {
