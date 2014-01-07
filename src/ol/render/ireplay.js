@@ -14,6 +14,16 @@ ol.render.ReplayType = {
 };
 
 
+/**
+ * @const {Array.<ol.render.ReplayType>}
+ */
+ol.render.REPLAY_ORDER = [
+  ol.render.ReplayType.POLYGON,
+  ol.render.ReplayType.LINE_STRING,
+  ol.render.ReplayType.IMAGE
+];
+
+
 
 /**
  * @interface
