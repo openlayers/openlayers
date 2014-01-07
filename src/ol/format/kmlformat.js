@@ -65,9 +65,32 @@ ol.format.KMLGxTrackObject_;
  */
 ol.format.KML = function(opt_options) {
 
-  //var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   goog.base(this);
+
+  var defaultStyle = goog.isDef(options.defaultStyle) ?
+      options.defaultStyle : ol.format.KML.DEFAULT_STYLE_ARRAY_;
+
+  /**
+   * @private
+   * @type {ol.feature.FeatureStyleFunction}
+   */
+  this.defaultFeatureStyleFunction_ =
+      /**
+       * @param {number} resolution Resolution.
+       * @this {ol.Feature}
+       * @return {Array.<ol.style.Style>} Style.
+       */
+      function(resolution) {
+    if (ol.KML_RESPECT_VISIBILITY) {
+      var visibility = this.get('visibility');
+      if (goog.isDef(visibility) && !visibility) {
+        return null;
+      }
+    }
+    return defaultStyle;
+  };
 
   /** @type {Object.<string, Array.<ol.style.Style>>} */
   var sharedStyles = {};
@@ -245,23 +268,6 @@ ol.format.KML.DEFAULT_STYLE_ARRAY_ = [ol.format.KML.DEFAULT_STYLE_];
 ol.format.KML.ICON_ANCHOR_UNITS_MAP_ = {
   'fraction': ol.style.IconAnchorUnits.FRACTION,
   'pixels': ol.style.IconAnchorUnits.PIXELS
-};
-
-
-/**
- * @param {number} resolution Resolution.
- * @private
- * @return {Array.<ol.style.Style>}
- * @this {ol.Feature}
- */
-ol.format.KML.defaultFeatureStyleFunction_ = function(resolution) {
-  if (ol.KML_RESPECT_VISIBILITY) {
-    var visibility = this.get('visibility');
-    if (goog.isDef(visibility) && !visibility) {
-      return null;
-    }
-  }
-  return ol.format.KML.DEFAULT_STYLE_ARRAY_;
 };
 
 
@@ -1449,7 +1455,7 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
   if (goog.isDef(styleUrl)) {
     featureStyleFunction = this.sharedStyleFeatureStyleFunction_;
   } else if (goog.isNull(style)) {
-    featureStyleFunction = ol.format.KML.defaultFeatureStyleFunction_;
+    featureStyleFunction = this.defaultFeatureStyleFunction_;
   } else {
     featureStyleFunction = ol.format.KML.makeFeatureStyleFunction_(style);
   }
