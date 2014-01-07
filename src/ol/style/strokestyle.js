@@ -1,6 +1,12 @@
 goog.provide('ol.style.Stroke');
 
-goog.require('ol.color');
+goog.require('goog.asserts');
+
+
+/**
+ * @typedef {ol.Color|ol.style.Stroke|olx.style.StrokeOptions|string|undefined}
+ */
+ol.style.StrokeLike;
 
 
 
@@ -95,4 +101,26 @@ ol.style.Stroke.prototype.getMiterLimit = function() {
  */
 ol.style.Stroke.prototype.getWidth = function() {
   return this.width_;
+};
+
+
+/**
+ * @param {ol.style.StrokeLike} strokeLike Stroke like.
+ * @return {ol.style.Stroke} Stroke style.
+ */
+ol.style.Stroke.get = function(strokeLike) {
+  if (!goog.isDefAndNotNull(strokeLike)) {
+    return null;
+  } else if (strokeLike instanceof ol.style.Stroke) {
+    return strokeLike;
+  } else if (goog.isArray(strokeLike) || goog.isString(strokeLike)) {
+    return new ol.style.Stroke({
+      color: strokeLike
+    });
+  } else if (goog.isObject(strokeLike)) {
+    return new ol.style.Stroke(strokeLike);
+  } else {
+    goog.asserts.fail();
+    return new ol.style.Stroke();
+  }
 };
