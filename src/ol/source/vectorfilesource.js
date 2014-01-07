@@ -35,6 +35,12 @@ ol.source.VectorFile = function(opt_options) {
   this.format = options.format;
 
   /**
+   * @type {number}
+   * @private
+   */
+  this.pendingXhrIoRequests_ = 0;
+
+  /**
    * @type {ol.proj.Projection}
    * @private
    */
@@ -61,11 +67,13 @@ ol.source.VectorFile = function(opt_options) {
     this.setState(ol.source.State.LOADING);
     var handleXhrIo = goog.bind(this.handleXhrIo_, this);
     if (goog.isDef(options.url)) {
+      this.pendingXhrIoRequests_ += 1;
       goog.net.XhrIo.send(options.url, handleXhrIo);
     }
     if (goog.isDef(options.urls)) {
       var urls = options.urls;
       var i, ii;
+      this.pendingXhrIoRequests_ += urls.length;
       for (i = 0, ii = urls.length; i < ii; ++i) {
         goog.net.XhrIo.send(urls[i], handleXhrIo);
       }
@@ -101,6 +109,7 @@ ol.source.VectorFile.prototype.handleXhrIo_ = function(event) {
       goog.asserts.fail();
     }
     if (goog.isDef(source)) {
+      --this.pendingXhrIoRequests_;
       this.readFeatures_(source);
     } else {
       goog.asserts.fail();
@@ -132,5 +141,7 @@ ol.source.VectorFile.prototype.readFeatures_ = function(source) {
     }
   }
   this.addFeaturesInternal(features);
-  this.setState(ol.source.State.READY);
+  if (this.pendingXhrIoRequests_ == 0) {
+    this.setState(ol.source.State.READY);
+  }
 };
