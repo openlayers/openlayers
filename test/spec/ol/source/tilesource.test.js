@@ -23,7 +23,7 @@ describe('ol.source.Tile', function() {
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 3);
 
       function getTileIfLoaded(z, x, y) {
-        var tile = source.getTile(z, x, y, null, null);
+        var tile = source.getTile(z, x, y);
         return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
             tile : null;
       }
@@ -45,7 +45,7 @@ describe('ol.source.Tile', function() {
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 0);
 
       function getTileIfLoaded(z, x, y) {
-        var tile = source.getTile(z, x, y, null, null);
+        var tile = source.getTile(z, x, y);
         return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
             tile : null;
       }
@@ -69,7 +69,7 @@ describe('ol.source.Tile', function() {
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 1);
 
       function getTileIfLoaded(z, x, y) {
-        var tile = source.getTile(z, x, y, null, null);
+        var tile = source.getTile(z, x, y);
         return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
             tile : null;
       }
@@ -94,7 +94,7 @@ describe('ol.source.Tile', function() {
       var grid = source.getTileGrid();
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 1);
       function getTileIfLoaded(z, x, y) {
-        var tile = source.getTile(z, x, y, null, null);
+        var tile = source.getTile(z, x, y);
         return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
             tile : null;
       }
@@ -120,7 +120,7 @@ describe('ol.source.Tile', function() {
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 1);
 
       function getTileIfLoaded(z, x, y) {
-        var tile = source.getTile(z, x, y, null, null);
+        var tile = source.getTile(z, x, y);
         return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
             tile : null;
       }
@@ -143,7 +143,7 @@ describe('ol.source.Tile', function() {
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 1);
 
       function getTileIfLoaded(z, x, y) {
-        var tile = source.getTile(z, x, y, null, null);
+        var tile = source.getTile(z, x, y);
         return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
             tile : null;
       }
@@ -168,7 +168,7 @@ describe('ol.source.Tile', function() {
       var range = grid.getTileRangeForExtentAndZ(source.getExtent(), 1);
 
       function getTileIfLoaded(z, x, y) {
-        var tile = source.getTile(z, x, y, null, null);
+        var tile = source.getTile(z, x, y);
         return (!goog.isNull(tile) && tile.getState() === ol.TileState.LOADED) ?
             tile : null;
       }
