@@ -461,6 +461,8 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
     anchor = [hotSpot.x, hotSpot.y];
   } else if (src === ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_) {
     anchor = ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_;
+  } else if (/^http:\/\/maps\.(?:google|gstatic)\.com\//.test(src)) {
+    anchor = [16, 32];
   } else {
     anchor = null;
   }
