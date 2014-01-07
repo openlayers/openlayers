@@ -57,9 +57,19 @@ ol.source.VectorFile = function(opt_options) {
     this.readFeatures_(options.text);
   }
 
-  if (goog.isDef(options.url)) {
+  if (goog.isDef(options.url) || goog.isDef(options.urls)) {
     this.setState(ol.source.State.LOADING);
-    goog.net.XhrIo.send(options.url, goog.bind(this.handleXhrIo_, this));
+    var handleXhrIo = goog.bind(this.handleXhrIo_, this);
+    if (goog.isDef(options.url)) {
+      goog.net.XhrIo.send(options.url, handleXhrIo);
+    }
+    if (goog.isDef(options.urls)) {
+      var urls = options.urls;
+      var i, ii;
+      for (i = 0, ii = urls.length; i < ii; ++i) {
+        goog.net.XhrIo.send(urls[i], handleXhrIo);
+      }
+    }
   }
 
 };

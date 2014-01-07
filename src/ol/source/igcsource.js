@@ -19,7 +19,8 @@ ol.source.IGC = function(opt_options) {
       altitudeMode: options.altitudeMode
     }),
     text: options.text,
-    url: options.url
+    url: options.url,
+    urls: options.urls
   });
 
 };
