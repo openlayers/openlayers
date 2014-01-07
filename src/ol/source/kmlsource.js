@@ -18,7 +18,9 @@ ol.source.KML = function(opt_options) {
     attributions: options.attributions,
     doc: options.doc,
     extent: options.extent,
-    format: new ol.format.KML(),
+    format: new ol.format.KML({
+      defaultStyle: options.defaultStyle
+    }),
     logo: options.logo,
     node: options.node,
     projection: options.projection,
