@@ -19,6 +19,9 @@ var raster = new ol.layer.Tile({
 
 var styleArray = [new ol.style.Style({
   image: new ol.style.Icon({
+    anchor: [0.5, 46],
+    anchorXUnits: 'fraction',
+    anchorYUnits: 'pixels',
     src: 'data/icon.png'
   })
 })];
