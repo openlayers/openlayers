@@ -30,6 +30,7 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.proj');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
+goog.require('ol.style.IconAnchorUnits');
 goog.require('ol.style.Image');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
@@ -43,8 +44,8 @@ ol.KML_RESPECT_VISIBILITY = false;
 
 
 /**
- * @typedef {{x: number, xunits: (string|null),
- *            y: number, yunits: (string|null)}}
+ * @typedef {{x: number, xunits: (ol.style.IconAnchorUnits|undefined),
+ *            y: number, yunits: (ol.style.IconAnchorUnits|undefined)}}
  */
 ol.format.KMLVec2_;
 
@@ -161,6 +162,22 @@ ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_ = [2, 20]; // FIXME maybe [8, 32] ?
 
 
 /**
+ * @const {ol.style.IconAnchorUnits}
+ * @private
+ */
+ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_ =
+    ol.style.IconAnchorUnits.PIXELS;
+
+
+/**
+ * @const {ol.style.IconAnchorUnits}
+ * @private
+ */
+ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_ =
+    ol.style.IconAnchorUnits.PIXELS;
+
+
+/**
  * @const {ol.Size}
  * @private
  */
@@ -181,6 +198,8 @@ ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_ =
  */
 ol.format.KML.DEFAULT_IMAGE_STYLE_ = new ol.style.Icon({
   anchor: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_,
+  anchorXUnits: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_,
+  anchorYUnits: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_,
   crossOrigin: 'anonymous',
   rotation: 0,
   scale: 1,
@@ -217,6 +236,16 @@ ol.format.KML.DEFAULT_STYLE_ = new ol.style.Style({
  * @private
  */
 ol.format.KML.DEFAULT_STYLE_ARRAY_ = [ol.format.KML.DEFAULT_STYLE_];
+
+
+/**
+ * @const {Object.<string, ol.style.IconAnchorUnits>}
+ * @private
+ */
+ol.format.KML.ICON_ANCHOR_UNITS_MAP_ = {
+  'fraction': ol.style.IconAnchorUnits.FRACTION,
+  'pixels': ol.style.IconAnchorUnits.PIXELS
+};
 
 
 /**
@@ -394,11 +423,15 @@ ol.format.KML.readURI_ = function(node) {
  * @return {ol.format.KMLVec2_} Vec2.
  */
 ol.format.KML.readVec2_ = function(node) {
+  var xunits = node.getAttribute('xunits');
+  var yunits = node.getAttribute('yunits');
   return {
     x: parseFloat(node.getAttribute('x')),
-    xunits: node.getAttribute('xunits'),
+    xunits: goog.isNull(xunits) ?
+        undefined : ol.format.KML.ICON_ANCHOR_UNITS_MAP_[xunits],
     y: parseFloat(node.getAttribute('y')),
-    yunits: node.getAttribute('yunits')
+    yunits: goog.isNull(yunits) ?
+        undefined : ol.format.KML.ICON_ANCHOR_UNITS_MAP_[yunits]
   };
 };
 
@@ -452,15 +485,17 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
   } else {
     src = ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_;
   }
-  var anchor;
+  var anchor, anchorXUnits, anchorYUnits;
   var hotSpot = /** @type {ol.format.KMLVec2_|undefined} */
       (goog.object.get(object, 'hotSpot'));
   if (goog.isDef(hotSpot)) {
-    goog.asserts.assert(hotSpot.xunits == 'pixels');
-    goog.asserts.assert(hotSpot.yunits == 'pixels');
     anchor = [hotSpot.x, hotSpot.y];
+    anchorXUnits = hotSpot.xunits;
+    anchorYUnits = hotSpot.yunits;
   } else if (src === ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_) {
     anchor = ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_;
+    anchorXUnits = ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_;
+    anchorYUnits = ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_;
   } else {
     anchor = null;
   }
@@ -482,6 +517,8 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
   }
   var imageStyle = new ol.style.Icon({
     anchor: anchor,
+    anchorXUnits: anchorXUnits,
+    anchorYUnits: anchorYUnits,
     crossOrigin: 'anonymous', // FIXME should this be configurable?
     rotation: rotation,
     scale: scale,
