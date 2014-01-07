@@ -1,5 +1,7 @@
 @exportSymbol ol.render.FeaturesOverlay
+@exportProperty ol.render.FeaturesOverlay.prototype.addFeature
 @exportProperty ol.render.FeaturesOverlay.prototype.getFeatures
 @exportProperty ol.render.FeaturesOverlay.prototype.setFeatures
 @exportProperty ol.render.FeaturesOverlay.prototype.setMap
 @exportProperty ol.render.FeaturesOverlay.prototype.setStyleFunction
+@exportProperty ol.render.FeaturesOverlay.prototype.removeFeature

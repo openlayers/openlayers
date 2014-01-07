@@ -64,6 +64,8 @@ ol.render.FeaturesOverlay = function(opt_options) {
       goog.asserts.assertInstanceof(options.features, ol.Collection);
       this.setFeatures(options.features);
     }
+  } else {
+    this.setFeatures(new ol.Collection());
   }
 
   if (goog.isDef(options.styleFunction)) {
@@ -74,6 +76,14 @@ ol.render.FeaturesOverlay = function(opt_options) {
     this.setMap(options.map);
   }
 
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature.
+ */
+ol.render.FeaturesOverlay.prototype.addFeature = function(feature) {
+  this.features_.push(feature);
 };
 
 
@@ -141,6 +151,14 @@ ol.render.FeaturesOverlay.prototype.handleMapPostCompose_ = function(event) {
       render.drawFeature(feature, styles[i]);
     }
   }, this);
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature.
+ */
+ol.render.FeaturesOverlay.prototype.removeFeature = function(feature) {
+  this.features_.remove(feature);
 };
 
 
