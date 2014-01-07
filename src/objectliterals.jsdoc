@@ -509,7 +509,7 @@
  * @typedef {Object} olx.render.FeaturesOverlayOptions
  * @property {Array.<ol.Feature>|ol.Collection|undefined} features Features.
  * @property {ol.Map|undefined} map Map.
- * @property {ol.style.StyleFunction|undefined} styleFunction Style function.
+ * @property {ol.feature.StyleFunction|undefined} styleFunction Style function.
  */
 
 /**
