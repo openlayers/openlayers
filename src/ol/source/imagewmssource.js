@@ -1,5 +1,3 @@
-// FIXME factor out v13 calculation
-
 goog.provide('ol.source.ImageWMS');
 
 goog.require('goog.asserts');
@@ -43,6 +41,13 @@ ol.source.ImageWMS = function(opt_options) {
    * @type {Object}
    */
   this.params_ = options.params;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.v13_ = true;
+  this.updateV13_();
 
   /**
    * @private
@@ -115,10 +120,7 @@ ol.source.ImageWMS.prototype.getImage =
   };
   goog.object.extend(params, this.params_);
 
-  var v13 = goog.string.compareVersions(
-      goog.object.get(params, 'VERSION'), '1.3') >= 0;
-
-  params[v13 ? 'CRS' : 'SRS'] = projection.getCode();
+  params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
   if (!('STYLES' in this.params_)) {
     goog.object.set(params, 'STYLES', new String(''));
@@ -170,7 +172,7 @@ ol.source.ImageWMS.prototype.getImage =
 
   var axisOrientation = projection.getAxisOrientation();
   var bbox;
-  if (v13 && axisOrientation.substr(0, 2) == 'ne') {
+  if (this.v13_ && axisOrientation.substr(0, 2) == 'ne') {
     bbox = [extent[1], extent[0], extent[3], extent[2]];
   } else {
     bbox = extent;
@@ -204,6 +206,17 @@ ol.source.ImageWMS.prototype.setUrl = function(url) {
  */
 ol.source.ImageWMS.prototype.updateParams = function(params) {
   goog.object.extend(this.params_, params);
+  this.updateV13_();
   this.image_ = null;
   this.dispatchChangeEvent();
+};
+
+
+/**
+ * @private
+ */
+ol.source.ImageWMS.prototype.updateV13_ = function() {
+  var version =
+      goog.object.get(this.params_, 'VERSION', ol.source.wms.DEFAULT_VERSION);
+  this.v13_ = goog.string.compareVersions(version, '1.3') >= 0;
 };
