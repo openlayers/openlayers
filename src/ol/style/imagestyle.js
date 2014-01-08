@@ -19,7 +19,7 @@ ol.style.ImageState = {
 
 
 /**
- * @typedef {{anchor: ol.Pixel,
+ * @typedef {{anchor: Array.<number>,
  *            imageState: ol.style.ImageState,
  *            rotation: number,
  *            scale: number,
@@ -42,7 +42,7 @@ ol.style.Image = function(options) {
 
   /**
    * @protected
-   * @type {ol.Pixel}
+   * @type {Array.<number>}
    */
   this.anchor = options.anchor;
 
@@ -95,7 +95,7 @@ ol.style.Image.prototype.dispatchChangeEvent = function() {
 
 
 /**
- * @return {ol.Pixel} Anchor.
+ * @return {Array.<number>} Anchor.
  */
 ol.style.Image.prototype.getAnchor = function() {
   return this.anchor;

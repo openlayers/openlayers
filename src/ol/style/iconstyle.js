@@ -91,7 +91,7 @@ ol.style.Icon = function(opt_options) {
       options.anchorYUnits : ol.style.IconAnchorUnits.FRACTION;
 
   /**
-   * @type {ol.Pixel}
+   * @type {Array.<number>}
    */
   var anchor = goog.isDef(options.anchor) ? options.anchor : [0.5, 0.5];
 
