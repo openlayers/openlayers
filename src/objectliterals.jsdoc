@@ -354,6 +354,17 @@
  */
 
 /**
+ * @typedef {Object} olx.interaction.DrawOptions
+ * @property {ol.layer.Vector|undefined} layer Destination layer for the features.
+ * @property {number|undefined} snapTolerance Pixel distance for snapping to the
+ *     drawing finish (default is 12).
+ * @property {ol.geom.GeometryType} type Drawing type ('Point', 'LineString',
+ *     'Polygon', 'MultiPoint', 'MultiLineString', or 'MultiPolygon').
+ * @property {ol.feature.StyleFunction|undefined} styleFunction Style function.
+ * @todo stability experimental
+ */
+
+/**
  * @typedef {Object} olx.interaction.KeyboardPanOptions
  * @property {ol.events.ConditionType|undefined} condition A conditional
  *     modifier (i.e. Shift key) that determines if the interaction is active
