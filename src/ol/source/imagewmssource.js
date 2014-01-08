@@ -186,6 +186,18 @@ ol.source.ImageWMS.prototype.getImage =
 
 
 /**
+ * @param {string|undefined} url URL.
+ */
+ol.source.ImageWMS.prototype.setUrl = function(url) {
+  if (url != this.url_) {
+    this.url_ = url;
+    this.image_ = null;
+    this.dispatchChangeEvent();
+  }
+};
+
+
+/**
  * Update the user-provided params.
  * @param {Object} params Params.
  */

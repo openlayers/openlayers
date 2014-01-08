@@ -1,3 +1,4 @@
 @exportSymbol ol.source.ImageWMS
 @exportProperty ol.source.ImageWMS.prototype.getParams
+@exportProperty ol.source.ImageWMS.prototype.setUrl
 @exportProperty ol.source.ImageWMS.prototype.updateParams
