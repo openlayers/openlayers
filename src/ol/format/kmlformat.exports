@@ -1,1 +1,2 @@
 @exportSymbol ol.format.KML
+@exportProperty ol.format.KML.prototype.readName
