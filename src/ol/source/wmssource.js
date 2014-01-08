@@ -51,23 +51,3 @@ ol.source.wms.getUrl = function(baseUrl, params, extent, size, projection) {
 
   return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);
 };
-
-
-/**
- * @param {ol.source.wms.ServerType} serverType Server name.
- * @param {number} pixelRatio Pixel ratio.
- * @return {Object.<string, string>}
- */
-ol.source.wms.getDpiParam = function(serverType, pixelRatio) {
-  var param = {};
-  if (serverType == ol.source.wms.ServerType.MAPSERVER) {
-    param['MAP_RESOLUTION'] = 90 * pixelRatio;
-  } else if (serverType == ol.source.wms.ServerType.GEOSERVER) {
-    param['FORMAT_OPTIONS'] = 'dpi:' + 90 * pixelRatio;
-  } else if (serverType == ol.source.wms.ServerType.QGIS) {
-    param['DPI'] = 90 * pixelRatio;
-  } else {
-    goog.asserts.fail();
-  }
-  return param;
-};
