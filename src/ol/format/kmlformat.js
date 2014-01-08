@@ -427,11 +427,9 @@ ol.format.KML.readVec2_ = function(node) {
   var yunits = node.getAttribute('yunits');
   return {
     x: parseFloat(node.getAttribute('x')),
-    xunits: goog.isNull(xunits) ?
-        undefined : ol.format.KML.ICON_ANCHOR_UNITS_MAP_[xunits],
+    xunits: ol.format.KML.ICON_ANCHOR_UNITS_MAP_[xunits],
     y: parseFloat(node.getAttribute('y')),
-    yunits: goog.isNull(yunits) ?
-        undefined : ol.format.KML.ICON_ANCHOR_UNITS_MAP_[yunits]
+    yunits: ol.format.KML.ICON_ANCHOR_UNITS_MAP_[yunits]
   };
 };
 
