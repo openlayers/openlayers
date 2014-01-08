@@ -51,15 +51,27 @@ ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
 
 
 /**
- * Increase an extent by the provided value.
- * @param {ol.Extent} extent The extent to buffer.
+ * Return extent increased by the provided value.
+ * @param {ol.Extent} extent Extent.
  * @param {number} value The amount by wich the extent should be buffered.
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {ol.Extent} Extent.
  */
-ol.extent.buffer = function(extent, value) {
-  extent[0] -= value;
-  extent[1] -= value;
-  extent[2] += value;
-  extent[3] += value;
+ol.extent.buffer = function(extent, value, opt_extent) {
+  if (goog.isDef(opt_extent)) {
+    opt_extent[0] = extent[0] - value;
+    opt_extent[1] = extent[1] - value;
+    opt_extent[2] = extent[2] + value;
+    opt_extent[3] = extent[3] + value;
+    return opt_extent;
+  } else {
+    return [
+      extent[0] - value,
+      extent[1] - value,
+      extent[2] + value,
+      extent[3] + value
+    ];
+  }
 };
 
 

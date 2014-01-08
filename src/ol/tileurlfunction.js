@@ -114,7 +114,7 @@ ol.TileUrlFunction.createFromParamsFunction =
           tmpSize[0] = tileSize[0] + (2 * gutter);
           tmpSize[1] = tileSize[1] + (2 * gutter);
           var extent = tileGrid.getTileCoordExtent(tileCoord, tmpExtent);
-          ol.extent.buffer(extent, tileResolution * gutter);
+          ol.extent.buffer(extent, tileResolution * gutter, extent);
           return paramsFunction.call(this, baseUrl, params,
               extent, tmpSize, projection);
         }
