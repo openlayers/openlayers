@@ -3,9 +3,8 @@ goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.parser.TopoJSON');
 goog.require('ol.source.TileJSON');
-goog.require('ol.source.Vector');
+goog.require('ol.source.TopoJSON');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
@@ -17,24 +16,23 @@ var raster = new ol.layer.Tile({
   })
 });
 
-var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    url: 'data/topojson/world-110m.json',
-    parser: new ol.parser.TopoJSON()
+var styleArray = [new ol.style.Style({
+  fill: new ol.style.Fill({
+    color: 'rgba(255, 255, 255, 0.6)'
   }),
-  style: new ol.style.Style({
-    symbolizers: [
-      new ol.style.Fill({
-        color: '#BADA55',
-        opacity: 0.5
-      }),
-      new ol.style.Stroke({
-        color: '#FFF',
-        opacity: 1,
-        width: 1.5
-      })
-    ]
+  stroke: new ol.style.Stroke({
+    color: '#319FD3',
+    width: 1
   })
+})];
+
+var vector = new ol.layer.Vector({
+  source: new ol.source.TopoJSON({
+    url: 'data/topojson/world-110m.json'
+  }),
+  styleFunction: function(feature, resolution) {
+    return styleArray;
+  }
 });
 
 var map = new ol.Map({
