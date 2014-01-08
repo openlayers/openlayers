@@ -21,6 +21,7 @@ ol.QuadKeyCharCode = {
  * @param {number} z Zoom level.
  * @param {number} x X.
  * @param {number} y Y.
+ * @struct
  */
 ol.TileCoord = function(z, x, y) {
 
