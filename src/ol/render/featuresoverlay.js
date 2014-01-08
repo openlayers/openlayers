@@ -19,7 +19,7 @@ goog.require('ol.render.EventType');
  */
 ol.render.FeaturesOverlay = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : options;
+  var options = goog.isDef(opt_options) ? opt_options : {};
 
   /**
    * @private
