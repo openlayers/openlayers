@@ -797,7 +797,16 @@
 
 /**
  * @typedef {Object} olx.style.IconOptions
- * @property {ol.Pixel|undefined} anchor Anchor.
+ * @property {Array.<number>|undefined} anchor Anchor. Default value is [0.5, 0.5]
+ *     (icon center).
+ * @property {ol.style.IconAnchorUnits|undefined} anchorXUnits Units in which the anchor x value is specified.
+ *     A value of `'fraction'` indicates the x value is a fraction of the icon.
+ *     A value of `'pixels'` indicates the x value in pixels. Default is
+ *     `'fraction'`.
+ * @property {ol.style.IconAnchorUnits|undefined} anchorYUnits Units in which the anchor y value is specified.
+ *     A value of `'fraction'` indicates the y value is a fraction of the icon.
+ *     A value of `'pixels'` indicates the y value in pixels. Default is
+ *     `'fraction'`.
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image.
  * @property {number|undefined} scale Scale.
  * @property {number|undefined} rotation Rotation.

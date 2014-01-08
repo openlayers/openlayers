@@ -1,6 +1,7 @@
 // FIXME decide default value for snapToPixel
 
 goog.provide('ol.style.Icon');
+goog.provide('ol.style.IconAnchorUnits');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -10,6 +11,15 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.style.Image');
 goog.require('ol.style.ImageState');
+
+
+/**
+ * @enum {string}
+ */
+ol.style.IconAnchorUnits = {
+  FRACTION: 'fraction',
+  PIXELS: 'pixels'
+};
 
 
 
@@ -67,16 +77,23 @@ ol.style.Icon = function(opt_options) {
   var size = goog.isDef(options.size) ? options.size : null;
 
   /**
-   * @type {ol.Pixel}
+   * @private
+   * @type {ol.style.IconAnchorUnits}
    */
-  var anchor;
-  if (goog.isDef(options.anchor)) {
-    anchor = options.anchor;
-  } else if (!goog.isNull(size)) {
-    anchor = [size[0] / 2, size[1] / 2];
-  } else {
-    anchor = null;
-  }
+  this.anchorXUnits_ = goog.isDef(options.anchorXUnits) ?
+      options.anchorXUnits : ol.style.IconAnchorUnits.FRACTION;
+
+  /**
+   * @private
+   * @type {ol.style.IconAnchorUnits}
+   */
+  this.anchorYUnits_ = goog.isDef(options.anchorYUnits) ?
+      options.anchorYUnits : ol.style.IconAnchorUnits.FRACTION;
+
+  /**
+   * @type {Array.<number>}
+   */
+  var anchor = goog.isDef(options.anchor) ? options.anchor : [0.5, 0.5];
 
   /**
    * @type {number}
@@ -139,8 +156,11 @@ ol.style.Icon.prototype.handleImageLoad_ = function() {
   if (goog.isNull(this.size)) {
     this.size = [this.image_.width, this.image_.height];
   }
-  if (goog.isNull(this.anchor)) {
-    this.anchor = [this.size[0] / 2, this.size[1] / 2];
+  if (this.anchorXUnits_ == ol.style.IconAnchorUnits.FRACTION) {
+    this.anchor[0] = this.size[0] * this.anchor[0];
+  }
+  if (this.anchorYUnits_ == ol.style.IconAnchorUnits.FRACTION) {
+    this.anchor[1] = this.size[1] * this.anchor[1];
   }
   this.unlistenImage_();
   this.determineTainting_();
