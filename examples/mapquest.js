@@ -4,30 +4,28 @@ goog.require('ol.View2D');
 goog.require('ol.layer.Group');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
-goog.require('ol.source.MapQuestHybrid');
-goog.require('ol.source.MapQuestOSM');
-goog.require('ol.source.MapQuestOpenAerial');
+goog.require('ol.source.MapQuest');
 
 
 var layers = [
   new ol.layer.Tile({
     style: 'Road',
-    source: new ol.source.MapQuestOSM()
+    source: new ol.source.MapQuest({layer: 'osm'})
   }),
   new ol.layer.Tile({
     style: 'Aerial',
     visible: false,
-    source: new ol.source.MapQuestOpenAerial()
+    source: new ol.source.MapQuest({layer: 'sat'})
   }),
   new ol.layer.Group({
     style: 'AerialWithLabels',
     visible: false,
     layers: [
       new ol.layer.Tile({
-        source: new ol.source.MapQuestOpenAerial()
+        source: new ol.source.MapQuest({layer: 'sat'})
       }),
       new ol.layer.Tile({
-        source: new ol.source.MapQuestHybrid()
+        source: new ol.source.MapQuest({layer: 'hyb'})
       })
     ]
   })

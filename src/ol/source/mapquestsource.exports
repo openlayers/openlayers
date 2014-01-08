@@ -1,3 +1,1 @@
-@exportSymbol ol.source.MapQuestOSM
-@exportSymbol ol.source.MapQuestOpenAerial
-@exportSymbol ol.source.MapQuestHybrid
+@exportSymbol ol.source.MapQuest
