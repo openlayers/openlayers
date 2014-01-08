@@ -9,6 +9,7 @@ goog.require('goog.uri.utils');
 goog.require('ol.Image');
 goog.require('ol.extent');
 goog.require('ol.source.Image');
+goog.require('ol.source.wms');
 goog.require('ol.source.wms.ServerType');
 
 
@@ -107,7 +108,7 @@ ol.source.ImageWMS.prototype.getImage =
 
   var params = {
     'SERVICE': 'WMS',
-    'VERSION': '1.3.0',
+    'VERSION': ol.source.wms.DEFAULT_VERSION,
     'REQUEST': 'GetMap',
     'FORMAT': 'image/png',
     'TRANSPARENT': true

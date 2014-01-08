@@ -7,6 +7,12 @@ goog.require('goog.uri.utils');
 
 
 /**
+ * @define {string} WMS default version.
+ */
+ol.source.wms.DEFAULT_VERSION = '1.3.0';
+
+
+/**
  * @enum {string}
  */
 ol.source.wms.ServerType = {
@@ -27,7 +33,7 @@ ol.source.wms.ServerType = {
 ol.source.wms.getUrl = function(baseUrl, params, extent, size, projection) {
   var baseParams = {
     'SERVICE': 'WMS',
-    'VERSION': '1.3.0',
+    'VERSION': ol.source.wms.DEFAULT_VERSION,
     'REQUEST': 'GetMap',
     'FORMAT': 'image/png',
     'TRANSPARENT': true,
