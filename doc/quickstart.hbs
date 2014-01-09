@@ -31,7 +31,7 @@ Below you'll find a complete working example.  Create a new file, copy in the co
         target: 'map',
         layers: [
           new ol.layer.Tile({
-            source: new ol.source.MapQuestOpenAerial()
+            source: new ol.source.MapQuest({layer: 'sat'})
           })
         ],
         view: new ol.View2D({
@@ -84,7 +84,7 @@ The map in the application is contained in a [`<div>` HTML element](http://en.wi
     target: 'map',
     layers: [
       new ol.layer.Tile({
-        source: new ol.source.MapQuestOpenAerial()
+        source: new ol.source.MapQuest({layer: 'sat'})
       })
     ],
     view: new ol.View2D({
@@ -113,7 +113,7 @@ The `layers: [ ... ]` array is used to define the list of layers available in th
 ```js
     layers: [
       new ol.layer.Tile({
-        source: new ol.source.MapQuestOpenAerial()
+        source: ol.source.MapQuest({layer: 'sat'})
       })
     ]
 ```
