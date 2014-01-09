@@ -113,7 +113,8 @@ goog.inherits(ol.source.Stamen, ol.source.XYZ);
 
 
 /**
- * @const {Array.<ol.Attribution>}
+ * @const
+ * @type {Array.<ol.Attribution>}
  */
 ol.source.Stamen.ATTRIBUTIONS = [
   new ol.Attribution({

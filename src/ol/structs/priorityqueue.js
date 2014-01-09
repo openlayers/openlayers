@@ -56,7 +56,8 @@ ol.structs.PriorityQueue = function(priorityFunction, keyFunction) {
 
 
 /**
- * @const {number}
+ * @const
+ * @type {number}
  */
 ol.structs.PriorityQueue.DROP = Infinity;
 
