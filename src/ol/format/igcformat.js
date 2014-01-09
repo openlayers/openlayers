@@ -44,14 +44,16 @@ goog.inherits(ol.format.IGC, ol.format.Text);
 
 
 /**
- * @const {Array.<string>}
+ * @const
+ * @type {Array.<string>}
  * @private
  */
 ol.format.IGC.EXTENSIONS_ = ['.igc'];
 
 
 /**
- * @const {RegExp}
+ * @const
+ * @type {RegExp}
  * @private
  */
 ol.format.IGC.B_RECORD_RE_ =
@@ -59,14 +61,16 @@ ol.format.IGC.B_RECORD_RE_ =
 
 
 /**
- * @const {RegExp}
+ * @const
+ * @type {RegExp}
  * @private
  */
 ol.format.IGC.H_RECORD_RE_ = /^H.([A-Z]{3}).*?:(.*)/;
 
 
 /**
- * @const {RegExp}
+ * @const
+ * @type {RegExp}
  * @private
  */
 ol.format.IGC.HFDTE_RECORD_RE_ = /^HFDTE(\d{2})(\d{2})(\d{2})/;

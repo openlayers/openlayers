@@ -43,7 +43,8 @@ goog.inherits(ol.format.GeoJSON, ol.format.JSON);
 
 
 /**
- * @const {Array.<string>}
+ * @const
+ * @type {Array.<string>}
  * @private
  */
 ol.format.GeoJSON.EXTENSIONS_ = ['.geojson'];

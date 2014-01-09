@@ -4,60 +4,70 @@ goog.require('ol.color');
 
 
 /**
- * @const {string}
+ * @const
+ * @type {string}
  */
 ol.render.canvas.defaultFont = '10px sans-serif';
 
 
 /**
- * @const {ol.Color}
+ * @const
+ * @type {ol.Color}
  */
 ol.render.canvas.defaultFillStyle = ol.color.fromString('black');
 
 
 /**
- * @const {string}
+ * @const
+ * @type {string}
  */
 ol.render.canvas.defaultLineCap = 'round';
 
 
 /**
- * @const {Array.<number>}
+ * @const
+ * @type {Array.<number>}
  */
 ol.render.canvas.defaultLineDash = [];
 
 
 /**
- * @const {string}
+ * @const
+ * @type {string}
  */
 ol.render.canvas.defaultLineJoin = 'round';
 
 
 /**
- * @const {number}
+ * @const
+ * @type {number}
  */
 ol.render.canvas.defaultMiterLimit = 10;
 
 
 /**
- * @const {ol.Color}
+ * @const
+ * @type {ol.Color}
  */
 ol.render.canvas.defaultStrokeStyle = ol.color.fromString('black');
 
 
 /**
- * @const {string}
+ * @const
+ * @type {string}
  */
 ol.render.canvas.defaultTextAlign = 'start';
 
 
 /**
- * @const {string}
+ * @const
+ * @type {string}
  */
 ol.render.canvas.defaultTextBaseline = 'alphabetic';
 
 
 /**
- * @const {number}
+ * @const
+ * @type {number}
  */
 ol.render.canvas.defaultLineWidth = 1;
