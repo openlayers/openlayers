@@ -1,0 +1,2 @@
+@exportSymbol ol.color.asArray
+@exportSymbol ol.color.asString
