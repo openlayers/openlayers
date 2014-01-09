@@ -9,6 +9,9 @@ var aruba = {
   objects: {
     aruba: {
       type: 'Polygon',
+      properties: {
+        prop0: 'value0'
+      },
       arcs: [[0]],
       id: 533
     }
@@ -45,6 +48,11 @@ describe('ol.format.TopoJSON', function() {
 
       var geometry = feature.getGeometry();
       expect(geometry).to.be.a(ol.geom.Polygon);
+
+      // Parses identifier
+      expect(feature.getId()).to.be(533);
+      // Parses properties
+      expect(feature.get('prop0')).to.be('value0');
 
       expect(geometry.getExtent()).to.eql([
         -70.08100810081008, 12.417091709170947,
