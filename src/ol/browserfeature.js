@@ -30,11 +30,11 @@ ol.ENABLE_WEBGL = true;
 
 
 /**
-* The ratio between physical pixels and device-independent pixels
-* (dips) on the device (`window.devicePixelRatio`).
-* @const {number}
-* @todo stability experimental
-*/
+ * The ratio between physical pixels and device-independent pixels
+ * (dips) on the device (`window.devicePixelRatio`).
+ * @const {number}
+ * @todo stability experimental
+ */
 ol.BrowserFeature.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
 
 
@@ -87,10 +87,10 @@ ol.BrowserFeature.HAS_GEOLOCATION = 'geolocation' in goog.global.navigator;
 
 
 /**
-* True if browser supports touch events.
-* @const {boolean}
+ * True if browser supports touch events.
+ * @const {boolean}
  * @todo stability experimental
-*/
+ */
 ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH ||
     (goog.global.document &&
     'ontouchstart' in goog.global.document.documentElement) ||

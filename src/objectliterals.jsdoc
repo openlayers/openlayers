@@ -592,6 +592,7 @@
 
 /**
  * @typedef {Object} olx.source.MapQuestOptions
+ * @property {string} layer Layer.
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
  * @todo stability experimental

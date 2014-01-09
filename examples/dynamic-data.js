@@ -3,7 +3,7 @@ goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.layer.Tile');
-goog.require('ol.source.MapQuestOpenAerial');
+goog.require('ol.source.MapQuest');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
@@ -12,7 +12,7 @@ goog.require('ol.style.Stroke');
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
-      source: new ol.source.MapQuestOpenAerial()
+      source: new ol.source.MapQuest({layer: 'sat'})
     })
   ],
   renderer: ol.RendererHint.CANVAS,

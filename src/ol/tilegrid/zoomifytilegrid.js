@@ -74,13 +74,6 @@ ol.tilegrid.Zoomify.prototype.createTileCoordTransform = function(opt_options) {
             return null;
           }
         }
-        if (goog.isDef(opt_tileCoord)) {
-          opt_tileCoord.z = z;
-          opt_tileCoord.x = x;
-          opt_tileCoord.y = -y - 1;
-          return opt_tileCoord;
-        } else {
-          return new ol.TileCoord(z, x, -y - 1);
-        }
+        return ol.TileCoord.createOrUpdate(z, x, -y - 1, opt_tileCoord);
       });
 };

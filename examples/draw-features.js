@@ -5,7 +5,7 @@ goog.require('ol.interaction');
 goog.require('ol.interaction.Draw');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.source.MapQuestOpenAerial');
+goog.require('ol.source.MapQuest');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
@@ -13,7 +13,7 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 var raster = new ol.layer.Tile({
-  source: new ol.source.MapQuestOpenAerial()
+  source: new ol.source.MapQuest({layer: 'sat'})
 });
 
 var styleArray = [new ol.style.Style({
