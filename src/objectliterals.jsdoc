@@ -262,6 +262,8 @@
 
 /**
  * @typedef {Object} olx.format.KMLOptions
+ * @property {Array.<ol.style.Style>|undefined} defaultStyle Default style. The default
+ *     default style is the same as Google Earth.
  * @property {boolean|undefined} extractAttributes Extract attributes.
  * @property {boolean|undefined} extractStyles Extract styles.
  */
@@ -579,6 +581,7 @@
 /**
  * @typedef {Object} olx.source.KMLOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {Array.<ol.style.Style>|undefined} defaultStyle Default style.
  * @property {Document|undefined} doc Document.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
