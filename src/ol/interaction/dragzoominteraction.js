@@ -10,7 +10,7 @@ goog.require('ol.style.Style');
 
 
 /**
- * @define {number} Timeout duration.
+ * @define {number} Animation duration.
  */
 ol.interaction.DRAGZOOM_ANIMATION_DURATION = 200;
 
