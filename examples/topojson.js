@@ -16,21 +16,22 @@ var raster = new ol.layer.Tile({
   })
 });
 
-var styleArray = [new ol.style.Style({
-  fill: new ol.style.Fill({
-    color: 'rgba(255, 255, 255, 0.6)'
-  }),
-  stroke: new ol.style.Stroke({
-    color: '#319FD3',
-    width: 1
-  })
-})];
 
 var vector = new ol.layer.Vector({
   source: new ol.source.TopoJSON({
     url: 'data/topojson/world-110m.json'
   }),
   styleFunction: function(feature, resolution) {
+    var styleArray = [new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: 'rgba(255, 255, 255, 0.6)'
+      }),
+      stroke: new ol.style.Stroke({
+        color: '#319FD3',
+        width: 1
+      }),
+      zIndex: (feature.getGeometry().getType() !== 'MultiPolygon') ? 2 : 1
+    })];
     return styleArray;
   }
 });
