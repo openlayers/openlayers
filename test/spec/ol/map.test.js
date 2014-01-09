@@ -97,6 +97,76 @@ describe('ol.Map', function() {
     });
   });
 
+  describe('#requestRenderFrame()', function() {
+
+    var target, map;
+
+    beforeEach(function() {
+      target = document.createElement('div');
+      var style = target.style;
+      style.position = 'absolute';
+      style.left = '-1000px';
+      style.top = '-1000px';
+      style.width = '360px';
+      style.height = '180px';
+      document.body.appendChild(target);
+      map = new ol.Map({
+        target: target,
+        view: new ol.View2D({
+          projection: 'EPSG:4326',
+          center: [0, 0],
+          resolution: 1
+        })
+      });
+    });
+
+    afterEach(function() {
+      goog.dispose(map);
+      document.body.removeChild(target);
+    });
+
+    it('results in an postrender event', function(done) {
+
+      map.requestRenderFrame();
+      map.on('postrender', function(event) {
+        expect(event).to.be.a(ol.MapEvent);
+        var frameState = event.frameState;
+        expect(frameState).not.to.be(null);
+        done();
+      });
+
+    });
+
+    it('results in an postrender event (for zero height map)', function(done) {
+      target.style.height = '0px';
+      map.updateSize();
+
+      map.requestRenderFrame();
+      map.on('postrender', function(event) {
+        expect(event).to.be.a(ol.MapEvent);
+        var frameState = event.frameState;
+        expect(frameState).to.be(null);
+        done();
+      });
+
+    });
+
+    it('results in an postrender event (for zero width map)', function(done) {
+      target.style.width = '0px';
+      map.updateSize();
+
+      map.requestRenderFrame();
+      map.on('postrender', function(event) {
+        expect(event).to.be.a(ol.MapEvent);
+        var frameState = event.frameState;
+        expect(frameState).to.be(null);
+        done();
+      });
+
+    });
+
+  });
+
   describe('dispose', function() {
     var map;
 
@@ -171,8 +241,10 @@ describe('ol.Map', function() {
 goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('ol.Map');
+goog.require('ol.MapEvent');
 goog.require('ol.RendererHint');
 goog.require('ol.RendererHints');
+goog.require('ol.View2D');
 goog.require('ol.interaction');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.DoubleClickZoom');
