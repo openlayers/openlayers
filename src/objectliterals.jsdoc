@@ -639,6 +639,20 @@
  */
 
 /**
+ * @typedef {Object} olx.source.ImageVectorOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {number|undefined} ratio Ratio. 1 means canvases are the size
+ *     of the map viewport, 2 means twice the size of the map viewport, and so
+ *     on.
+ * @property {Array.<number>|undefined} resolutions Resolutions. If specified,
+ *     new canvases will be created for these resolutions only.
+ * @property {ol.source.Vector} source Vector source.
+ */
+
+/**
  * @typedef {Object} olx.source.ImageWMSOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image
