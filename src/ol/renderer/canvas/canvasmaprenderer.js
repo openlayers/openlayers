@@ -88,7 +88,8 @@ ol.renderer.canvas.Map.prototype.getCanvas = function() {
  */
 ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
-  if (goog.isNull(frameState)) {
+  if (goog.isNull(frameState) ||
+      frameState.size[0] === 0 || frameState.size[1] === 0) {
     if (this.renderedVisible_) {
       goog.style.setElementShown(this.canvas_, false);
       this.renderedVisible_ = false;
