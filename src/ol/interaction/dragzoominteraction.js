@@ -38,7 +38,7 @@ ol.interaction.DragZoom = function(opt_options) {
   var style = goog.isDef(options.style) ?
       options.style : new ol.style.Style({
         stroke: new ol.style.Stroke({
-          color: 'blue'
+          color: [0, 0, 255, 1]
         })
       });
 
