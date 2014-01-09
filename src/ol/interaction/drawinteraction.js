@@ -127,7 +127,7 @@ ol.interaction.Draw.defaultStyleFunction = (function() {
   styles[ol.geom.GeometryType.POLYGON] = [
     new ol.style.Style({
       fill: new ol.style.Fill({
-        color: 'rgba(255, 255, 255, 0.5)'
+        color: [255, 255, 255, 0.5]
       })
     })
   ];
@@ -137,13 +137,13 @@ ol.interaction.Draw.defaultStyleFunction = (function() {
   styles[ol.geom.GeometryType.LINE_STRING] = [
     new ol.style.Style({
       stroke: new ol.style.Stroke({
-        color: 'white',
+        color: [255, 255, 255, 1],
         width: 5
       })
     }),
     new ol.style.Style({
       stroke: new ol.style.Stroke({
-        color: '#0099ff',
+        color: [0, 153, 255, 1],
         width: 3
       })
     })
@@ -156,10 +156,10 @@ ol.interaction.Draw.defaultStyleFunction = (function() {
       image: new ol.style.Circle({
         radius: 7,
         fill: new ol.style.Fill({
-          color: '#0099ff'
+          color: [0, 153, 255, 1]
         }),
         stroke: new ol.style.Stroke({
-          color: 'rgba(255, 255, 255, 0.75)',
+          color: [255, 255, 255, 0.75],
           width: 1.5
         })
       }),
