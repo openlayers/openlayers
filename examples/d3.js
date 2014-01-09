@@ -38,11 +38,13 @@ d3.json('data/us.json', function(error, us) {
    * This function uses d3 to render the topojson features to a canvas.
    * @param {ol.Extent} extent Extent.
    * @param {number} resolution Resolution.
+   * @param {number} pixelRatio Pixel ratio.
    * @param {ol.Size} size Size.
    * @param {ol.proj.Projection} projection Projection.
    * @return {HTMLCanvasElement}
    */
-  var canvasFunction = function(extent, resolution, size, projection) {
+  var canvasFunction = function(extent, resolution, pixelRatio,
+      size, projection) {
     var canvasWidth = size[0];
     var canvasHeight = size[1];
 

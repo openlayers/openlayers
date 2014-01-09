@@ -65,12 +65,13 @@ ol.source.ImageCanvas.prototype.getImage =
   var height = (extent[3] - extent[1]) / resolution;
   var size = [width * pixelRatio, height * pixelRatio];
 
-  var canvasElement = this.canvasFunction_(extent, resolution, size,
-      projection);
-  canvas = new ol.ImageCanvas(extent, resolution, pixelRatio,
-      this.getAttributions(), canvasElement);
+  var canvasElement = this.canvasFunction_(
+      extent, resolution, pixelRatio, size, projection);
+  if (!goog.isNull(canvasElement)) {
+    canvas = new ol.ImageCanvas(extent, resolution, pixelRatio,
+        this.getAttributions(), canvasElement);
+  }
   this.canvas_ = canvas;
 
   return canvas;
-
 };
