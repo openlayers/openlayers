@@ -635,6 +635,7 @@
  *     on.
  * @property {Array.<number>|undefined} resolutions Resolutions. If specified,
  *     new canvases will be created for these resolutions only.
+ * @property {ol.source.State|undefined} state Source state.
  */
 
 /**

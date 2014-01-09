@@ -13,12 +13,14 @@ goog.require('ol.source.Image');
  * @param {olx.source.ImageCanvasOptions} options
  */
 ol.source.ImageCanvas = function(options) {
+
   goog.base(this, {
     attributions: options.attributions,
     extent: options.extent,
     logo: options.logo,
     projection: options.projection,
-    resolutions: options.resolutions
+    resolutions: options.resolutions,
+    state: options.state
   });
 
   /**

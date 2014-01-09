@@ -14,7 +14,8 @@ goog.require('ol.source.Source');
  *            extent: (null|ol.Extent|undefined),
  *            logo: (string|undefined),
  *            projection: ol.proj.ProjectionLike,
- *            resolutions: (Array.<number>|undefined)}}
+ *            resolutions: (Array.<number>|undefined),
+ *            state: (ol.source.State|undefined)}}
  */
 ol.source.ImageOptions;
 
@@ -32,7 +33,8 @@ ol.source.Image = function(options) {
     attributions: options.attributions,
     extent: options.extent,
     logo: options.logo,
-    projection: options.projection
+    projection: options.projection,
+    state: options.state
   });
 
   /**
