@@ -52,10 +52,10 @@ ol.source.Image = function(options) {
           ol.ImageUrlFunction.nullImageUrlFunction;
 
   /**
-   * @private
+   * @protected
    * @type {?string}
    */
-  this.crossOrigin_ =
+  this.crossOrigin =
       goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
 
   /**
@@ -89,7 +89,7 @@ ol.source.Image.prototype.createImage =
   var imageUrl = this.imageUrlFunction(extent, size, projection);
   if (goog.isDef(imageUrl)) {
     image = new ol.Image(
-        extent, resolution, pixelRatio, imageUrl, this.crossOrigin_,
+        extent, resolution, pixelRatio, imageUrl, this.crossOrigin,
         this.getAttributions());
   }
   return image;

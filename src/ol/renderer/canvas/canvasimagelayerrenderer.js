@@ -64,6 +64,7 @@ ol.renderer.canvas.ImageLayer.prototype.getImageTransform = function() {
 ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
+  var devicePixelRatio = frameState.devicePixelRatio;
   var view2DState = frameState.view2DState;
   var viewCenter = view2DState.center;
   var viewResolution = view2DState.resolution;
@@ -79,7 +80,7 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
 
   if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING]) {
     image = imageSource.getImage(frameState.extent, viewResolution,
-        frameState.devicePixelRatio, view2DState.projection);
+        devicePixelRatio, view2DState.projection);
     if (!goog.isNull(image)) {
       var imageState = image.getState();
       if (imageState == ol.ImageState.IDLE) {
@@ -95,16 +96,17 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
   if (!goog.isNull(this.image_)) {
     image = this.image_;
     var imageExtent = image.getExtent();
-    var imageResolution = image.getResolution() / image.getPixelRatio();
-    var devicePixelRatio = frameState.devicePixelRatio;
+    var imageResolution = image.getResolution();
+    var imagePixelRatio = image.getPixelRatio();
+    var scale = devicePixelRatio * imageResolution /
+        (viewResolution * imagePixelRatio);
     ol.vec.Mat4.makeTransform2D(this.imageTransform_,
         devicePixelRatio * frameState.size[0] / 2,
         devicePixelRatio * frameState.size[1] / 2,
-        devicePixelRatio * imageResolution / viewResolution,
-        devicePixelRatio * imageResolution / viewResolution,
+        scale, scale,
         viewRotation,
-        (imageExtent[0] - viewCenter[0]) / imageResolution,
-        (viewCenter[1] - imageExtent[3]) / imageResolution);
+        imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution,
+        imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution);
     this.updateAttributions(frameState.attributions, image.getAttributions());
     this.updateLogos(frameState, imageSource);
   }
