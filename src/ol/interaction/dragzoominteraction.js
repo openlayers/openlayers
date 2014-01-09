@@ -20,7 +20,8 @@ ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS = 8;
 
 
 /**
- * @const {number}
+ * @const
+ * @type {number}
  */
 ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS_SQUARED =
     ol.SHIFT_DRAG_ZOOM_HYSTERESIS_PIXELS *
