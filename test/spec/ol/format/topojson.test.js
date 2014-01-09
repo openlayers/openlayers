@@ -1,4 +1,4 @@
-goog.provide('ol.test.parser.TopoJSON');
+goog.provide('ol.test.format.TopoJSON');
 
 var aruba = {
   type: 'Topology',
