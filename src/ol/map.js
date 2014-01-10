@@ -66,6 +66,43 @@ goog.require('ol.vec.Mat4');
 
 
 /**
+ * @const
+ * @type {string}
+ */
+ol.OL3_URL = 'http://ol3js.org/';
+
+
+/**
+ * @const
+ * @type {string}
+ */
+ol.OL3_LOGO_URL = 'data:image/png;base64,' +
+    'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlw' +
+    'SFlzAAABxgAAAcYBF8H6RgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoA' +
+    'AAQySURBVFiF7ZddUJRVGMf/z3l332XZZYFVgfwAAcsPKGoyq5GLZBxnmElADWd1prEGwkht' +
+    'ugjtopHWi7hxmpoJC5A+HBxkpeyDtBkjR2Z0EsVyJEQokAp0k1A+lv143/ecLrRakGV3gYYu' +
+    'eu7e8/H//+bMc57zvCSEwGwGm1X3/wKAbjqbt5z5fr4gyTo0GNl5PHuJdyoaFG4O2AF288KV' +
+    'YoJ4nUAJACBAGoCvhF4ueTcjpeNfA3j53E8WISlHCVg38Qrh0iA9V75yaX2omiHnwPaW1lQu' +
+    '+ZoDmwMAmSTwup3n2/eGqhvSCRQ3t2XpGDkImBOqMBdwuFzGbR8+tdgzLYCXmtte1En0DgTk' +
+    'UM3/CgG0+AjrKx5dfj1sADvA+i+0v00Qu8I1HgfRxwXPK38s7XzIAMGT7Z/gAlAEh8oFtLta' +
+    'RAQCwIggM4JE5OaggvKVy2qDAuw5czXKbeBnAaRPZurWNIxqGhQePIfuggiFi8K6zIwPxsyN' +
+    'X+yS+cFA5gLAkKLC6fFiUFFDMr8DLODROGlCHNjYdHF5QAACiBGyJxLxco6bHh9GVA3TeL4M' +
+    'EpNy/AfGlOI3ABoAIvwNuAAGFRVuTZu6rV9EMrL4f485gVKAJ0bo/3bShEC/1zdj5gzAxrio' +
+    'e8b8Q5cba5QtEoMmBP7wKlBnsF/ImWfGg3pETAag9t5wKtvizTAzMWPmEgG2eAvWxprgOP2d' +
+    'FBBgzRq77s2aY3q9pmHXglg8bjFO29wkMexcEIvMaCMaL7aiouFbd0CAU6dK1Y5e5+VXDhzC' +
+    'iGsUzyZYkDfXDJqieYKsQ0miFfdHyjjZchn7aj6FEBhTEe+pA5z4jks/9/gK9lei6/rvWGs1' +
+    'oWh+DAwsPIwVJgNeTbRijo6hoqERez86Cp+ift2TvvAz/3UTluLF+UXZRDgSaZAt+57Px+q0' +
+    'B9DnVfF+320MKMFvRFZsJDbMi4LH54P90Cc4fekKABw3eLmt/fPq4aAAAJD0TFEaY+JLRpS8' +
+    'I28dtmatxrDGUdV3G11uZcI9EhFscVF4MtoI561BlFQeRudvN0AQb3WnLSoRpaV8/J5Jn+Ol' +
+    'W7fP9araMQJlPv3EI9htywFjDN/cGsXJARc8fqV4iVHGpjgzFhn0aO3+FXuqajEwPKIIoPia' +
+    'o6o6kEfQfiB982bZJaIrQdj2cGoSygptiDGboAgBp0+DS+OIlyXE6O7crhPNP6Cs9gv4VLWf' +
+    'kdjUVXewaTL9kHvC5PzC3SAqu88aw17bkotVy1LHzI+4PahoaER90zkA1Ma5tr6nvrormG5Y' +
+    'TWly/gu5IBwGYHooJRErkhbCYjLiF2c/zv7YgaFRNwBxQid7bJ01NUOhaIbdlqfYCjIElz4G' +
+    'RMa4KS8B+7sxWCocjpAfj7ABAIDsdpbU1ruBgFUCwsogrgqmr++ufe9a2Fr//5zONsCf36PQ' +
+    '/7qoH28AAAAASUVORK5CYII=';
+
+
+/**
  * @enum {string}
  * @todo stability experimental
  */
@@ -135,6 +172,12 @@ ol.Map = function(options) {
   goog.base(this);
 
   var optionsInternal = ol.Map.createOptionsInternal(options);
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.ol3Logo_ = optionsInternal.ol3Logo;
 
   /**
    * @private
@@ -1096,6 +1139,9 @@ ol.Map.prototype.renderFrame_ = function(time) {
       viewHints: viewHints,
       wantedTiles: {}
     };
+    if (this.ol3Logo_) {
+      frameState.logos[ol.OL3_LOGO_URL] = ol.OL3_URL;
+    }
   }
 
   var preRenderFunctions = this.preRenderFunctions_;
@@ -1251,6 +1297,7 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
 /**
  * @typedef {{controls: ol.Collection,
  *            interactions: ol.Collection,
+ *            ol3Logo: boolean,
  *            overlays: ol.Collection,
  *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
@@ -1269,6 +1316,8 @@ ol.Map.createOptionsInternal = function(options) {
    * @type {Object.<string, *>}
    */
   var values = {};
+
+  var ol3Logo = goog.isDef(options.ol3Logo) ? options.ol3Logo : true;
 
   var layerGroup = (options.layers instanceof ol.layer.Group) ?
       options.layers : new ol.layer.Group({layers: options.layers});
@@ -1357,6 +1406,7 @@ ol.Map.createOptionsInternal = function(options) {
   return {
     controls: controls,
     interactions: interactions,
+    ol3Logo: ol3Logo,
     overlays: overlays,
     rendererConstructor: rendererConstructor,
     values: values
