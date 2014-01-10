@@ -9,6 +9,9 @@ goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Interaction');
@@ -396,7 +399,10 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
   goog.asserts.assert(!goog.isNull(sketchFeature));
   var coordinates;
   var geometry = sketchFeature.getGeometry();
-  if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
+  if (this.mode_ === ol.interaction.DrawMode.POINT) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.Point);
+    coordinates = geometry.getCoordinates();
+  } else if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
     goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
     coordinates = geometry.getCoordinates();
     // remove the redundant last point
@@ -408,6 +414,16 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
     // force clockwise order for exterior ring
     sketchFeature.setGeometry(new ol.geom.Polygon(coordinates));
   }
+
+  // cast multi-part geometries
+  if (this.type_ === ol.geom.GeometryType.MULTI_POINT) {
+    sketchFeature.setGeometry(new ol.geom.MultiPoint([coordinates]));
+  } else if (this.type_ === ol.geom.GeometryType.MULTI_LINE_STRING) {
+    sketchFeature.setGeometry(new ol.geom.MultiLineString([coordinates]));
+  } else if (this.type_ === ol.geom.GeometryType.MULTI_POLYGON) {
+    sketchFeature.setGeometry(new ol.geom.MultiPolygon([coordinates]));
+  }
+
   if (this.layer_) {
     this.layer_.getSource().addFeature(sketchFeature);
   }
