@@ -624,6 +624,35 @@
  */
 
 /**
+ * @typedef {Object} olx.source.ImageCanvasOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {ol.CanvasFunctionType} canvasFunction Canvas function.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {number|undefined} ratio Ratio. 1 means canvases are the size
+ *     of the map viewport, 2 means twice the size of the map viewport, and so
+ *     on.
+ * @property {Array.<number>|undefined} resolutions Resolutions. If specified,
+ *     new canvases will be created for these resolutions only.
+ * @property {ol.source.State|undefined} state Source state.
+ */
+
+/**
+ * @typedef {Object} olx.source.ImageVectorOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {number|undefined} ratio Ratio. 1 means canvases are the size
+ *     of the map viewport, 2 means twice the size of the map viewport, and so
+ *     on.
+ * @property {Array.<number>|undefined} resolutions Resolutions. If specified,
+ *     new canvases will be created for these resolutions only.
+ * @property {ol.source.Vector} source Vector source.
+ */
+
+/**
  * @typedef {Object} olx.source.ImageWMSOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image
@@ -634,6 +663,7 @@
  * @property {ol.source.wms.ServerType|undefined} serverType The type of the remote WMS
  *     server: `mapserver`, `geoserver` or `qgis`. Only needed if `hidpi` is `true`.
  *     Default is `undefined`.
+ * @property {string|undefined} logo Logo.
  * @property {Object.<string,*>} params WMS request parameters. At least a
  *     `LAYERS` param is required. `STYLES` is `` by default. `VERSION` is
  *     `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX` and `CRS` (`SRS` for WMS
@@ -669,9 +699,9 @@
  * @property {ol.Extent|undefined} extent Extent.
  * @property {ol.Extent|undefined} imageExtent Extent of the image.
  * @property {ol.Size|undefined} imageSize Size of the image.
+ * @property {string|undefined} logo Logo.
  * @property {ol.proj.ProjectionLike} projection Projection.
- * @property {string|undefined} url URL.
- * @todo stability experimental
+ * @property {string} url Url.
  */
 
 /**

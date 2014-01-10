@@ -6,7 +6,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
-goog.require('ol.Image');
+goog.require('ol.ImageBase');
 goog.require('ol.ImageState');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
@@ -32,7 +32,7 @@ ol.renderer.dom.ImageLayer = function(mapRenderer, imageLayer) {
   /**
    * The last rendered image.
    * @private
-   * @type {?ol.Image}
+   * @type {?ol.ImageBase}
    */
   this.image_ = null;
 

@@ -4,7 +4,7 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
-goog.require('ol.Image');
+goog.require('ol.ImageBase');
 goog.require('ol.ImageState');
 goog.require('ol.ViewHint');
 goog.require('ol.layer.Image');
@@ -27,7 +27,7 @@ ol.renderer.canvas.ImageLayer = function(mapRenderer, imageLayer) {
 
   /**
    * @private
-   * @type {?ol.Image}
+   * @type {?ol.ImageBase}
    */
   this.image_ = null;
 

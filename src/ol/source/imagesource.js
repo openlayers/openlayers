@@ -5,23 +5,17 @@ goog.require('goog.asserts');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.Image');
-goog.require('ol.ImageUrlFunction');
-goog.require('ol.ImageUrlFunctionType');
-goog.require('ol.Size');
 goog.require('ol.array');
 goog.require('ol.source.Source');
 
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *            crossOrigin: (null|string|undefined),
  *            extent: (null|ol.Extent|undefined),
  *            logo: (string|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            resolutions: (Array.<number>|undefined),
- *            imageUrlFunction: (ol.ImageUrlFunctionType|
- *                undefined)}}
- * @todo stability experimental
+ *            state: (ol.source.State|undefined)}}
  */
 ol.source.ImageOptions;
 
@@ -39,24 +33,9 @@ ol.source.Image = function(options) {
     attributions: options.attributions,
     extent: options.extent,
     logo: options.logo,
-    projection: options.projection
+    projection: options.projection,
+    state: options.state
   });
-
-  /**
-   * @protected
-   * @type {ol.ImageUrlFunctionType}
-   */
-  this.imageUrlFunction =
-      goog.isDef(options.imageUrlFunction) ?
-          options.imageUrlFunction :
-          ol.ImageUrlFunction.nullImageUrlFunction;
-
-  /**
-   * @protected
-   * @type {?string}
-   */
-  this.crossOrigin =
-      goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
 
   /**
    * @private
@@ -75,24 +54,10 @@ goog.inherits(ol.source.Image, ol.source.Source);
 
 
 /**
- * @protected
- * @param {ol.Extent} extent Extent.
- * @param {number} resolution Resolution.
- * @param {number} pixelRatio Pixel ratio.
- * @param {ol.Size} size Size.
- * @param {ol.proj.Projection} projection Projection.
- * @return {ol.Image} Single image.
+ * @return {Array.<number>} Resolutions.
  */
-ol.source.Image.prototype.createImage =
-    function(extent, resolution, pixelRatio, size, projection) {
-  var image = null;
-  var imageUrl = this.imageUrlFunction(extent, size, projection);
-  if (goog.isDef(imageUrl)) {
-    image = new ol.Image(
-        extent, resolution, pixelRatio, imageUrl, this.crossOrigin,
-        this.getAttributions());
-  }
-  return image;
+ol.source.Image.prototype.getResolutions = function() {
+  return this.resolutions_;
 };
 
 
@@ -116,6 +81,6 @@ ol.source.Image.prototype.findNearestResolution =
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
- * @return {ol.Image} Single image.
+ * @return {ol.ImageBase} Single image.
  */
 ol.source.Image.prototype.getImage = goog.abstractMethod;
