@@ -9,6 +9,7 @@ goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.format.JSON');
 goog.require('ol.geom.GeometryCollection');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');

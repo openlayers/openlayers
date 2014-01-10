@@ -5,6 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryType');
 
 
 

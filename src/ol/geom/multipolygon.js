@@ -1,6 +1,7 @@
 goog.provide('ol.geom.MultiPolygon');
 
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.closest');
