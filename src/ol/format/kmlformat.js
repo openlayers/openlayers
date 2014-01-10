@@ -21,6 +21,7 @@ goog.require('ol.Feature');
 goog.require('ol.feature');
 goog.require('ol.format.XML');
 goog.require('ol.geom.GeometryCollection');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');

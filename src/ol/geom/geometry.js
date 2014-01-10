@@ -1,4 +1,5 @@
 goog.provide('ol.geom.Geometry');
+goog.provide('ol.geom.GeometryType');
 
 goog.require('goog.asserts');
 goog.require('goog.events.EventType');
