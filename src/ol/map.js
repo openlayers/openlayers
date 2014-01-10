@@ -412,7 +412,7 @@ ol.Map.prototype.addOverlay = function(overlay) {
  */
 ol.Map.prototype.beforeRender = function(var_args) {
   this.requestRenderFrame();
-  Array.prototype.push.apply(this.preRenderFunctions_, arguments);
+  goog.array.extend(this.preRenderFunctions_, arguments);
 };
 
 
@@ -1107,7 +1107,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
     if (frameState.animate) {
       this.requestRenderFrame();
     }
-    Array.prototype.push.apply(
+    goog.array.extend(
         this.postRenderFunctions_, frameState.postRenderFunctions);
 
     var idle = this.preRenderFunctions_.length == 0 &&
