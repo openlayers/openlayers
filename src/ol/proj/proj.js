@@ -19,7 +19,8 @@ ol.ENABLE_PROJ4JS = true;
 
 /**
  * Have Proj4js.
- * @const {boolean}
+ * @const
+ * @type {boolean}
  */
 ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof Proj4js == 'object';
 
@@ -40,13 +41,15 @@ ol.proj.ProjectionLike;
 ol.proj.Units = {
   DEGREES: 'degrees',
   FEET: 'ft',
-  METERS: 'm'
+  METERS: 'm',
+  PIXELS: 'pixels'
 };
 
 
 /**
  * Meters per unit lookup table.
- * @const {Object.<ol.proj.Units, number>}
+ * @const
+ * @type {Object.<ol.proj.Units, number>}
  */
 ol.METERS_PER_UNIT = {};
 ol.METERS_PER_UNIT[ol.proj.Units.DEGREES] =

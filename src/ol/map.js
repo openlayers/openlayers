@@ -1044,12 +1044,27 @@ ol.Map.prototype.renderFrame_ = function(time) {
     return;
   }
 
+  /**
+   * Check whether a size has non-zero width and height.  Note that this
+   * function is here because the compiler doesn't recognize that size is
+   * defined in the frameState assignment below when the same code is inline in
+   * the condition below.  The compiler inlines this function itself, so the
+   * resulting code is the same.
+   *
+   * @param {ol.Size} size The size to test.
+   * @return {boolean} Has non-zero width and height.
+   */
+  function hasArea(size) {
+    return size[0] > 0 && size[1] > 0;
+  }
+
   var size = this.getSize();
   var view = this.getView();
   var view2D = goog.isDef(view) ? this.getView().getView2D() : undefined;
   /** @type {?ol.FrameState} */
   var frameState = null;
-  if (goog.isDef(size) && goog.isDef(view2D) && view2D.isDef()) {
+  if (goog.isDef(size) && hasArea(size) &&
+      goog.isDef(view2D) && view2D.isDef()) {
     var viewHints = view.getHints();
     var obj = this.getLayerGroup().getLayerStatesArray();
     var layersArray = obj.layers;
@@ -1212,7 +1227,7 @@ ol.Map.prototype.updateSize = function() {
   if (goog.isNull(targetElement)) {
     this.setSize(undefined);
   } else {
-    var size = goog.style.getSize(targetElement);
+    var size = goog.style.getContentBoxSize(targetElement);
     this.setSize([size.width, size.height]);
   }
 };

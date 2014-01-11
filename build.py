@@ -159,7 +159,7 @@ def report_sizes(t):
     gzipfile.close()
     rawsize = os.stat(t.name).st_size
     gzipsize = len(stringio.getvalue())
-    savings = '{:.2%}'.format((rawsize - gzipsize)/float(rawsize))
+    savings = '{0:.2%}'.format((rawsize - gzipsize)/float(rawsize))
     t.info('uncompressed: %8d bytes', rawsize)
     t.info('  compressed: %8d bytes, (saved %s)', gzipsize, savings)
 
@@ -215,8 +215,9 @@ def build_ol_whitespace_js(t):
 virtual('build-all', 'build/ol-all.js')
 
 
-@target('build/ol-all.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol-all.json')
+@target('build/ol-all.js', PLOVR_JAR, SRC, EXTERNAL_SRC, INTERNAL_SRC,
+        SHADER_SRC, LIBTESS_JS_SRC, 'buildcfg/base.json',
+        'buildcfg/ol-all.json')
 def build_ol_all_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
             PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
@@ -705,7 +706,9 @@ def host_examples(t):
 
 @target('check-examples', 'host-examples', phony=True)
 def check_examples(t):
-    examples = ['build/hosted/%(BRANCH)s/' + e for e in EXAMPLES]
+    examples = ['build/hosted/%(BRANCH)s/' + e
+                for e in EXAMPLES
+                if not open(e).readline().startswith('// NOCHECK')]
     all_examples = \
         [e + '?mode=advanced' for e in examples]
     for example in all_examples:

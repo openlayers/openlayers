@@ -49,12 +49,12 @@
   "externs": [
     "//json.js",
     "../externs/bingmaps.js",
+    "../externs/closure-compiler.js",
     "../externs/geojson.js",
-    "../externs/topojson.js",
     "../externs/oli.js",
     "../externs/proj4js.js",
     "../externs/tilejson.js",
-    "../externs/closure-compiler.js"
+    "../externs/topojson.js"
   ],
 
   "level": "VERBOSE",

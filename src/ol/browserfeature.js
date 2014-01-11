@@ -30,17 +30,19 @@ ol.ENABLE_WEBGL = true;
 
 
 /**
-* The ratio between physical pixels and device-independent pixels
-* (dips) on the device (`window.devicePixelRatio`).
-* @const {number}
-* @todo stability experimental
-*/
+ * The ratio between physical pixels and device-independent pixels
+ * (dips) on the device (`window.devicePixelRatio`).
+ * @const
+ * @type {number}
+ * @todo stability experimental
+ */
 ol.BrowserFeature.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
 
 
 /**
  * True if browser supports Canvas.
- * @const {boolean}
+ * @const
+ * @type {boolean}
  * @todo stability experimental
  */
 ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
@@ -63,7 +65,8 @@ ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
 
 /**
  * Indicates if DeviceOrientation is supported in the user's browser.
- * @const {boolean}
+ * @const
+ * @type {boolean}
  * @todo stability experimental
  */
 ol.BrowserFeature.HAS_DEVICE_ORIENTATION =
@@ -72,7 +75,8 @@ ol.BrowserFeature.HAS_DEVICE_ORIENTATION =
 
 /**
  * True if browser supports DOM.
- * @const {boolean}
+ * @const
+ * @type {boolean}
  * @todo stability experimental
  */
 ol.BrowserFeature.HAS_DOM = ol.ENABLE_DOM;
@@ -80,17 +84,19 @@ ol.BrowserFeature.HAS_DOM = ol.ENABLE_DOM;
 
 /**
  * Is HTML5 geolocation supported in the current browser?
- * @const {boolean}
+ * @const
+ * @type {boolean}
  * @todo stability experimental
  */
 ol.BrowserFeature.HAS_GEOLOCATION = 'geolocation' in goog.global.navigator;
 
 
 /**
-* True if browser supports touch events.
-* @const {boolean}
+ * True if browser supports touch events.
+ * @const
+ * @type {boolean}
  * @todo stability experimental
-*/
+ */
 ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH ||
     (goog.global.document &&
     'ontouchstart' in goog.global.document.documentElement) ||
@@ -99,7 +105,8 @@ ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH ||
 
 /**
  * True if browser supports WebGL.
- * @const {boolean}
+ * @const
+ * @type {boolean}
  * @todo stability experimental
  */
 ol.BrowserFeature.HAS_WEBGL = ol.ENABLE_WEBGL && (

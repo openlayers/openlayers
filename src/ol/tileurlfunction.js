@@ -37,9 +37,9 @@ ol.TileUrlFunction.createFromTemplate = function(template) {
         if (goog.isNull(tileCoord)) {
           return undefined;
         } else {
-          return template.replace('{z}', '' + tileCoord.z)
-                         .replace('{x}', '' + tileCoord.x)
-                         .replace('{y}', '' + tileCoord.y);
+          return template.replace('{z}', tileCoord.z.toString())
+                         .replace('{x}', tileCoord.x.toString())
+                         .replace('{y}', tileCoord.y.toString());
         }
       });
 };
