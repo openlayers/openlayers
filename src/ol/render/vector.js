@@ -1,6 +1,7 @@
 goog.provide('ol.renderer.vector');
 
 goog.require('goog.asserts');
+goog.require('ol.geom.Circle');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
@@ -10,6 +11,29 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.style.Style');
+
+
+/**
+ * @param {ol.render.IReplayGroup} replayGroup Replay group.
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {ol.style.Style} style Style.
+ * @param {Object} data Opaque data object.
+ * @private
+ */
+ol.renderer.vector.renderCircleGeometry_ =
+    function(replayGroup, geometry, style, data) {
+  var fillStyle = style.getFill();
+  var strokeStyle = style.getStroke();
+  if (goog.isNull(fillStyle) && goog.isNull(strokeStyle)) {
+    return;
+  }
+  goog.asserts.assertInstanceof(geometry, ol.geom.Circle);
+  var circleGeometry = /** @type {ol.geom.Circle} */ (geometry);
+  var replay = replayGroup.getReplay(
+      style.getZIndex(), ol.render.ReplayType.POLYGON);
+  replay.setFillStrokeStyle(fillStyle, strokeStyle);
+  replay.drawCircleGeometry(circleGeometry, data);
+};
 
 
 /**
@@ -196,5 +220,6 @@ ol.renderer.vector.GEOMETRY_RENDERERS_ = {
   'MultiPoint': ol.renderer.vector.renderMultiPointGeometry_,
   'MultiLineString': ol.renderer.vector.renderMultiLineStringGeometry_,
   'MultiPolygon': ol.renderer.vector.renderMultiPolygonGeometry_,
-  'GeometryCollection': ol.renderer.vector.renderGeometryCollectionGeometry_
+  'GeometryCollection': ol.renderer.vector.renderGeometryCollectionGeometry_,
+  'Circle': ol.renderer.vector.renderCircleGeometry_
 };
