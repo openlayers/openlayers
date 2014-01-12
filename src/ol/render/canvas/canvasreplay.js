@@ -382,6 +382,12 @@ ol.render.canvas.Replay.prototype.drawAsync = goog.abstractMethod;
 /**
  * @inheritDoc
  */
+ol.render.canvas.Replay.prototype.drawCircleGeometry = goog.abstractMethod;
+
+
+/**
+ * @inheritDoc
+ */
 ol.render.canvas.Replay.prototype.drawFeature = goog.abstractMethod;
 
 
