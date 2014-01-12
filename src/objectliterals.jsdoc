@@ -649,7 +649,8 @@
  *     on.
  * @property {Array.<number>|undefined} resolutions Resolutions. If specified,
  *     new canvases will be created for these resolutions only.
- * @property {ol.source.Vector} source Vector source.
+ * @property {ol.source.Vector} source The vector source from which the vector
+ *     features drawn in canvas elements are read.
  */
 
 /**

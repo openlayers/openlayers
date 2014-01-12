@@ -17,6 +17,16 @@ goog.require('ol.vec.Mat4');
 
 
 /**
+ * An image source whose images are canvas elements into which vector features
+ * read from a vector source (`ol.source.Vector`) are drawn. An
+ * `ol.source.ImageVector` object is to be used as the `source` of an image
+ * layer (`ol.layer.Image`). Image layers are rotated, scaled, and translated,
+ * as opposed to being re-rendered, during animations and interactions. So, like
+ * any other image layer, an image layer configured with an
+ * `ol.source.ImageVector` will exhibit this behaviour. This is in contrast to a
+ * vector layer, where vector features are re-drawn during animations and
+ * interactions.
+ *
  * @constructor
  * @extends {ol.source.ImageCanvas}
  * @param {olx.source.ImageVectorOptions} options Options.
