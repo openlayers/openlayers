@@ -27,14 +27,15 @@ goog.require('ol.vec.Mat4');
 ol.render.canvas.Instruction = {
   BEGIN_GEOMETRY: 0,
   BEGIN_PATH: 1,
-  CLOSE_PATH: 2,
-  DRAW_IMAGE: 3,
-  END_GEOMETRY: 4,
-  FILL: 5,
-  MOVE_TO_LINE_TO: 6,
-  SET_FILL_STYLE: 7,
-  SET_STROKE_STYLE: 8,
-  STROKE: 9
+  CIRCLE: 2,
+  CLOSE_PATH: 3,
+  DRAW_IMAGE: 4,
+  END_GEOMETRY: 5,
+  FILL: 6,
+  MOVE_TO_LINE_TO: 7,
+  SET_FILL_STYLE: 8,
+  SET_STROKE_STYLE: 9,
+  STROKE: 10
 };
 
 
@@ -178,7 +179,7 @@ ol.render.canvas.Replay.prototype.replay_ =
   }
   var i = 0; // instruction index
   var ii = instructions.length; // end of instructions
-  var d; // data index
+  var d = 0; // data index
   var dd; // end of per-instruction data
   var localTransform = this.tmpLocalTransform_;
   while (i < ii) {
@@ -196,6 +197,18 @@ ol.render.canvas.Replay.prototype.replay_ =
         break;
       case ol.render.canvas.Instruction.BEGIN_PATH:
         context.beginPath();
+        ++i;
+        break;
+      case ol.render.canvas.Instruction.CIRCLE:
+        var x1 = pixelCoordinates[d];
+        var y1 = pixelCoordinates[d + 1];
+        var x2 = pixelCoordinates[d + 2];
+        var y2 = pixelCoordinates[d + 3];
+        var dx = x2 - x1;
+        var dy = y2 - y1;
+        var r = Math.sqrt(dx * dx + dy * dy);
+        context.arc(x1, y1, r, 0, 2 * Math.PI, true);
+        d += 4;
         ++i;
         break;
       case ol.render.canvas.Instruction.CLOSE_PATH:
