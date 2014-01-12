@@ -2,6 +2,7 @@ goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
+goog.require('ol.geom.Circle');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.GeoJSON');
@@ -70,6 +71,15 @@ var styles = {
       stroke: new ol.style.Stroke({
         color: 'magenta'
       })
+    })
+  })],
+  'Circle': [new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'red',
+      width: 2
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(255,0,0,0.2)'
     })
   })]
 };
@@ -163,6 +173,8 @@ var vectorSource = new ol.source.GeoJSON(
         ]
       }
     }));
+
+vectorSource.addFeature(new ol.Feature(new ol.geom.Circle([5e6, 7e6], 1e6)));
 
 var vectorLayer = new ol.layer.Vector({
   source: vectorSource,
