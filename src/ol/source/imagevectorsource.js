@@ -7,6 +7,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.extent');
+goog.require('ol.feature');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.vector');
 goog.require('ol.source.ImageCanvas');
@@ -41,9 +42,10 @@ ol.source.ImageVector = function(options) {
 
   /**
    * @private
-   * @type {ol.feature.StyleFunction}
+   * @type {!ol.feature.StyleFunction}
    */
-  this.styleFunction_ = options.styleFunction;
+  this.styleFunction_ = goog.isDef(options.styleFunction) ?
+      options.styleFunction : ol.feature.defaultStyleFunction;
 
   /**
    * @private

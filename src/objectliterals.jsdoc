@@ -651,6 +651,8 @@
  *     new canvases will be created for these resolutions only.
  * @property {ol.source.Vector} source The vector source from which the vector
  *     features drawn in canvas elements are read.
+ * @property {ol.feature.StyleFunction|undefined} styleFunction Style function
+ *     providing the styles to use when rendering features to the canvas.
  */
 
 /**
