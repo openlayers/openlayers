@@ -1019,6 +1019,57 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
 /**
  * @inheritDoc
  */
+ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
+    function(circleGeometry, data) {
+  var state = this.state_;
+  goog.asserts.assert(!goog.isNull(state));
+  var fillStyle = state.fillStyle;
+  var strokeStyle = state.strokeStyle;
+  if (!goog.isDef(fillStyle) && !goog.isDef(strokeStyle)) {
+    return;
+  }
+  if (goog.isDef(strokeStyle)) {
+    goog.asserts.assert(goog.isDef(state.lineWidth));
+  }
+  ol.extent.extend(this.extent_, circleGeometry.getExtent());
+  this.setFillStrokeStyles_();
+  this.beginGeometry(circleGeometry);
+  // always fill the circle for hit detection
+  this.hitDetectionInstructions.push(
+      [ol.render.canvas.Instruction.SET_FILL_STYLE,
+       ol.color.asString(ol.render.canvas.defaultFillStyle)]);
+  if (goog.isDef(state.strokeStyle)) {
+    this.hitDetectionInstructions.push(
+        [ol.render.canvas.Instruction.SET_STROKE_STYLE,
+         state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
+         state.miterLimit, state.lineDash]);
+  }
+  var flatCoordinates = circleGeometry.getFlatCoordinates();
+  var stride = circleGeometry.getStride();
+  this.appendFlatCoordinates(
+      flatCoordinates, 0, flatCoordinates.length, stride, false);
+  var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
+  var circleInstruction = [ol.render.canvas.Instruction.CIRCLE];
+  this.instructions.push(beginPathInstruction, circleInstruction);
+  this.hitDetectionInstructions.push(beginPathInstruction, circleInstruction);
+  this.endGeometry(circleGeometry, data);
+  var fillInstruction = [ol.render.canvas.Instruction.FILL];
+  this.hitDetectionInstructions.push(fillInstruction);
+  if (goog.isDef(state.fillStyle)) {
+    this.instructions.push(fillInstruction);
+  }
+  if (goog.isDef(state.strokeStyle)) {
+    goog.asserts.assert(goog.isDef(state.lineWidth));
+    var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
+    this.instructions.push(strokeInstruction);
+    this.hitDetectionInstructions.push(strokeInstruction);
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
     function(polygonGeometry, data) {
   var state = this.state_;
