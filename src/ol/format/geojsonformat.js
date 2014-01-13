@@ -156,6 +156,19 @@ ol.format.GeoJSON.writeGeometry_ = function(geometry) {
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
  * @private
+ * @return {GeoJSONGeometryCollection} Empty GeoJSON geometry collection.
+ */
+ol.format.GeoJSON.writeEmptyGeometryCollectionGeometry_ = function(geometry) {
+  return /** @type {GeoJSONGeometryCollection} */ ({
+    'type': 'GeometryCollection',
+    'geometries': []
+  });
+};
+
+
+/**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @private
  * @return {GeoJSONGeometryCollection} GeoJSON geometry collection.
  */
 ol.format.GeoJSON.writeGeometryCollectionGeometry_ = function(geometry) {
@@ -283,7 +296,8 @@ ol.format.GeoJSON.GEOMETRY_WRITERS_ = {
   'MultiPoint': ol.format.GeoJSON.writeMultiPointGeometry_,
   'MultiLineString': ol.format.GeoJSON.writeMultiLineStringGeometry_,
   'MultiPolygon': ol.format.GeoJSON.writeMultiPolygonGeometry_,
-  'GeometryCollection': ol.format.GeoJSON.writeGeometryCollectionGeometry_
+  'GeometryCollection': ol.format.GeoJSON.writeGeometryCollectionGeometry_,
+  'Circle': ol.format.GeoJSON.writeEmptyGeometryCollectionGeometry_
 };
 
 
