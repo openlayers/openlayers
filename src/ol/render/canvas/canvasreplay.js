@@ -185,110 +185,122 @@ ol.render.canvas.Replay.prototype.replay_ =
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
     var geometry;
-    if (type == ol.render.canvas.Instruction.BEGIN_GEOMETRY) {
-      geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
-      if (renderGeometryFunction(geometry)) {
-        ++i;
-      } else {
-        i = /** @type {number} */ (instruction[2]);
-      }
-    } else if (type == ol.render.canvas.Instruction.BEGIN_PATH) {
-      context.beginPath();
-      ++i;
-    } else if (type == ol.render.canvas.Instruction.CLOSE_PATH) {
-      context.closePath();
-      ++i;
-    } else if (type == ol.render.canvas.Instruction.DRAW_IMAGE) {
-      goog.asserts.assert(goog.isNumber(instruction[1]));
-      d = /** @type {number} */ (instruction[1]);
-      goog.asserts.assert(goog.isNumber(instruction[2]));
-      dd = /** @type {number} */ (instruction[2]);
-      var image =  /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */
-          (instruction[3]);
-      // Remaining arguments in DRAW_IMAGE are in alphabetical order
-      var anchorX = /** @type {number} */ (instruction[4]) * pixelRatio;
-      var anchorY = /** @type {number} */ (instruction[5]) * pixelRatio;
-      var height = /** @type {number} */ (instruction[6]) * pixelRatio;
-      var rotation = /** @type {number} */ (instruction[7]);
-      var scale = /** @type {number} */ (instruction[8]);
-      var snapToPixel = /** @type {boolean|undefined} */ (instruction[9]);
-      var width = /** @type {number} */ (instruction[10]) * pixelRatio;
-      for (; d < dd; d += 2) {
-        var x = pixelCoordinates[d] - anchorX;
-        var y = pixelCoordinates[d + 1] - anchorY;
-        if (snapToPixel) {
-          x = (x + 0.5) | 0;
-          y = (y + 0.5) | 0;
-        }
-        if (scale != 1 || rotation !== 0) {
-          var centerX = x + anchorX;
-          var centerY = y + anchorY;
-          ol.vec.Mat4.makeTransform2D(
-              localTransform, centerX, centerY, scale, scale,
-              rotation, -centerX, -centerY);
-          context.setTransform(
-              goog.vec.Mat4.getElement(localTransform, 0, 0),
-              goog.vec.Mat4.getElement(localTransform, 1, 0),
-              goog.vec.Mat4.getElement(localTransform, 0, 1),
-              goog.vec.Mat4.getElement(localTransform, 1, 1),
-              goog.vec.Mat4.getElement(localTransform, 0, 3),
-              goog.vec.Mat4.getElement(localTransform, 1, 3));
-        }
-        context.drawImage(image, x, y, width, height);
-        if (scale != 1 || rotation !== 0) {
-          context.setTransform(1, 0, 0, 1, 0, 0);
-        }
-      }
-      ++i;
-    } else if (type == ol.render.canvas.Instruction.END_GEOMETRY) {
-      if (goog.isDef(geometryCallback)) {
+    switch (type) {
+      case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
         geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
-        var data = /** @type {Object} */ (instruction[2]);
-        var result = geometryCallback(geometry, data);
-        if (result) {
-          return result;
+        if (renderGeometryFunction(geometry)) {
+          ++i;
+        } else {
+          i = /** @type {number} */ (instruction[2]);
         }
-      }
-      ++i;
-    } else if (type == ol.render.canvas.Instruction.FILL) {
-      context.fill();
-      ++i;
-    } else if (type == ol.render.canvas.Instruction.MOVE_TO_LINE_TO) {
-      goog.asserts.assert(goog.isNumber(instruction[1]));
-      d = /** @type {number} */ (instruction[1]);
-      goog.asserts.assert(goog.isNumber(instruction[2]));
-      dd = /** @type {number} */ (instruction[2]);
-      context.moveTo(pixelCoordinates[d], pixelCoordinates[d + 1]);
-      for (d += 2; d < dd; d += 2) {
-        context.lineTo(pixelCoordinates[d], pixelCoordinates[d + 1]);
-      }
-      ++i;
-    } else if (type == ol.render.canvas.Instruction.SET_FILL_STYLE) {
-      goog.asserts.assert(goog.isString(instruction[1]));
-      context.fillStyle = /** @type {string} */ (instruction[1]);
-      ++i;
-    } else if (type == ol.render.canvas.Instruction.SET_STROKE_STYLE) {
-      goog.asserts.assert(goog.isString(instruction[1]));
-      goog.asserts.assert(goog.isNumber(instruction[2]));
-      goog.asserts.assert(goog.isString(instruction[3]));
-      goog.asserts.assert(goog.isString(instruction[4]));
-      goog.asserts.assert(goog.isNumber(instruction[5]));
-      goog.asserts.assert(!goog.isNull(instruction[6]));
-      context.strokeStyle = /** @type {string} */ (instruction[1]);
-      context.lineWidth = /** @type {number} */ (instruction[2]) * pixelRatio;
-      context.lineCap = /** @type {string} */ (instruction[3]);
-      context.lineJoin = /** @type {string} */ (instruction[4]);
-      context.miterLimit = /** @type {number} */ (instruction[5]);
-      if (goog.isDef(context.setLineDash)) {
-        context.setLineDash(/** @type {Array.<number>} */ (instruction[6]));
-      }
-      ++i;
-    } else if (type == ol.render.canvas.Instruction.STROKE) {
-      context.stroke();
-      ++i;
-    } else {
-      goog.asserts.fail();
-      ++i; // consume the instruction anyway, to avoid an infinite loop
+        break;
+      case ol.render.canvas.Instruction.BEGIN_PATH:
+        context.beginPath();
+        ++i;
+        break;
+      case ol.render.canvas.Instruction.CLOSE_PATH:
+        context.closePath();
+        ++i;
+        break;
+      case ol.render.canvas.Instruction.DRAW_IMAGE:
+        goog.asserts.assert(goog.isNumber(instruction[1]));
+        d = /** @type {number} */ (instruction[1]);
+        goog.asserts.assert(goog.isNumber(instruction[2]));
+        dd = /** @type {number} */ (instruction[2]);
+        var image =  /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */
+            (instruction[3]);
+        // Remaining arguments in DRAW_IMAGE are in alphabetical order
+        var anchorX = /** @type {number} */ (instruction[4]) * pixelRatio;
+        var anchorY = /** @type {number} */ (instruction[5]) * pixelRatio;
+        var height = /** @type {number} */ (instruction[6]) * pixelRatio;
+        var rotation = /** @type {number} */ (instruction[7]);
+        var scale = /** @type {number} */ (instruction[8]);
+        var snapToPixel = /** @type {boolean|undefined} */ (instruction[9]);
+        var width = /** @type {number} */ (instruction[10]) * pixelRatio;
+        for (; d < dd; d += 2) {
+          var x = pixelCoordinates[d] - anchorX;
+          var y = pixelCoordinates[d + 1] - anchorY;
+          if (snapToPixel) {
+            x = (x + 0.5) | 0;
+            y = (y + 0.5) | 0;
+          }
+          if (scale != 1 || rotation !== 0) {
+            var centerX = x + anchorX;
+            var centerY = y + anchorY;
+            ol.vec.Mat4.makeTransform2D(
+                localTransform, centerX, centerY, scale, scale,
+                rotation, -centerX, -centerY);
+            context.setTransform(
+                goog.vec.Mat4.getElement(localTransform, 0, 0),
+                goog.vec.Mat4.getElement(localTransform, 1, 0),
+                goog.vec.Mat4.getElement(localTransform, 0, 1),
+                goog.vec.Mat4.getElement(localTransform, 1, 1),
+                goog.vec.Mat4.getElement(localTransform, 0, 3),
+                goog.vec.Mat4.getElement(localTransform, 1, 3));
+          }
+          context.drawImage(image, x, y, width, height);
+          if (scale != 1 || rotation !== 0) {
+            context.setTransform(1, 0, 0, 1, 0, 0);
+          }
+        }
+        ++i;
+        break;
+      case ol.render.canvas.Instruction.END_GEOMETRY:
+        if (goog.isDef(geometryCallback)) {
+          geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
+          var data = /** @type {Object} */ (instruction[2]);
+          var result = geometryCallback(geometry, data);
+          if (result) {
+            return result;
+          }
+        }
+        ++i;
+        break;
+      case ol.render.canvas.Instruction.FILL:
+        context.fill();
+        ++i;
+        break;
+      case ol.render.canvas.Instruction.MOVE_TO_LINE_TO:
+        goog.asserts.assert(goog.isNumber(instruction[1]));
+        d = /** @type {number} */ (instruction[1]);
+        goog.asserts.assert(goog.isNumber(instruction[2]));
+        dd = /** @type {number} */ (instruction[2]);
+        context.moveTo(pixelCoordinates[d], pixelCoordinates[d + 1]);
+        for (d += 2; d < dd; d += 2) {
+          context.lineTo(pixelCoordinates[d], pixelCoordinates[d + 1]);
+        }
+        ++i;
+        break;
+      case ol.render.canvas.Instruction.SET_FILL_STYLE:
+        goog.asserts.assert(goog.isString(instruction[1]));
+        context.fillStyle = /** @type {string} */ (instruction[1]);
+        ++i;
+        break;
+      case ol.render.canvas.Instruction.SET_STROKE_STYLE:
+        goog.asserts.assert(goog.isString(instruction[1]));
+        goog.asserts.assert(goog.isNumber(instruction[2]));
+        goog.asserts.assert(goog.isString(instruction[3]));
+        goog.asserts.assert(goog.isString(instruction[4]));
+        goog.asserts.assert(goog.isNumber(instruction[5]));
+        goog.asserts.assert(!goog.isNull(instruction[6]));
+        context.strokeStyle = /** @type {string} */ (instruction[1]);
+        context.lineWidth = /** @type {number} */ (instruction[2]) * pixelRatio;
+        context.lineCap = /** @type {string} */ (instruction[3]);
+        context.lineJoin = /** @type {string} */ (instruction[4]);
+        context.miterLimit = /** @type {number} */ (instruction[5]);
+        if (goog.isDef(context.setLineDash)) {
+          context.setLineDash(/** @type {Array.<number>} */ (instruction[6]));
+        }
+        ++i;
+        break;
+      case ol.render.canvas.Instruction.STROKE:
+        context.stroke();
+        ++i;
+        break;
+      default:
+        goog.asserts.fail();
+        ++i; // consume the instruction anyway, to avoid an infinite loop
+        break;
     }
   }
   // assert that all instructions were consumed
