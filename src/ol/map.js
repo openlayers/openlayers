@@ -66,6 +66,41 @@ goog.require('ol.vec.Mat4');
 
 
 /**
+ * @const
+ * @type {string}
+ */
+ol.OL3_URL = 'http://ol3js.org/';
+
+
+/**
+ * @const
+ * @type {string}
+ */
+ol.OL3_LOGO_URL = 'data:image/png;base64,' +
+    'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBI' +
+    'WXMAAAHGAAABxgEXwfpGAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAA' +
+    'AhNQTFRF////AP//AICAgP//AFVVQECA////K1VVSbbbYL/fJ05idsTYJFtbbcjbJllmZszW' +
+    'WMTOIFhoHlNiZszTa9DdUcHNHlNlV8XRIVdiasrUHlZjIVZjaMnVH1RlIFRkH1RkH1ZlasvY' +
+    'asvXVsPQH1VkacnVa8vWIVZjIFRjVMPQa8rXIVVkXsXRsNveIFVkIFZlIVVj3eDeh6GmbMvX' +
+    'H1ZkIFRka8rWbMvXIFVkIFVjIFVkbMvWH1VjbMvWIFVlbcvWIFVla8vVIFVkbMvWbMvVH1Vk' +
+    'bMvWIFVlbcvWIFVkbcvVbMvWjNPbIFVkU8LPwMzNIFVkbczWIFVkbsvWbMvXIFVkRnB8bcvW' +
+    '2+TkW8XRIFVkIlZlJVloJlpoKlxrLl9tMmJwOWd0Omh1RXF8TneCT3iDUHiDU8LPVMLPVcLP' +
+    'VcPQVsPPVsPQV8PQWMTQWsTQW8TQXMXSXsXRX4SNX8bSYMfTYcfTYsfTY8jUZcfSZsnUaIqT' +
+    'acrVasrVa8jTa8rWbI2VbMvWbcvWdJObdcvUdszUd8vVeJaee87Yfc3WgJyjhqGnitDYjaar' +
+    'ldPZnrK2oNbborW5o9bbo9fbpLa6q9ndrL3ArtndscDDutzfu8fJwN7gwt7gxc/QyuHhy+Hi' +
+    'zeHi0NfX0+Pj19zb1+Tj2uXk29/e3uLg3+Lh3+bl4uXj4ufl4+fl5Ofl5ufl5ujm5+jmySDn' +
+    'BAAAAFp0Uk5TAAECAgMEBAYHCA0NDg4UGRogIiMmKSssLzU7PkJJT1JTVFliY2hrdHZ3foSF' +
+    'hYeJjY2QkpugqbG1tre5w8zQ09XY3uXn6+zx8vT09vf4+Pj5+fr6/P39/f3+gz7SsAAAAVVJ' +
+    'REFUOMtjYKA7EBDnwCPLrObS1BRiLoJLnte6CQy8FLHLCzs2QUG4FjZ5GbcmBDDjxJBXDWxC' +
+    'Brb8aM4zbkIDzpLYnAcE9VXlJSWlZRU13koIeW57mGx5XjoMZEUqwxWYQaQbSzLSkYGfKFSe' +
+    '0QMsX5WbjgY0YS4MBplemI4BdGBW+DQ11eZiymfqQuXZIjqwyadPNoSZ4L+0FVM6e+oGI6g8' +
+    'a9iKNT3o8kVzNkzRg5lgl7p4wyRUL9Yt2jAxVh6mQCogae6GmflI8p0r13VFWTHBQ0rWPW7a' +
+    'hgWVcPm+9cuLoyy4kCJDzCm6d8PSFoh0zvQNC5OjDJhQopPPJqph1doJBUD5tnkbZiUEqaCn' +
+    'B3bTqLTFG1bPn71kw4b+GFdpLElKIzRxxgYgWNYc5SCENVHKeUaltHdXx0dZ8uBI1hJ2UUDg' +
+    'q82CM2MwKeibqAvSO7MCABq0wXEPiqWEAAAAAElFTkSuQmCC';
+
+
+/**
  * @enum {string}
  * @todo stability experimental
  */
@@ -135,6 +170,12 @@ ol.Map = function(options) {
   goog.base(this);
 
   var optionsInternal = ol.Map.createOptionsInternal(options);
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.ol3Logo_ = optionsInternal.ol3Logo;
 
   /**
    * @private
@@ -1096,6 +1137,9 @@ ol.Map.prototype.renderFrame_ = function(time) {
       viewHints: viewHints,
       wantedTiles: {}
     };
+    if (this.ol3Logo_) {
+      frameState.logos[ol.OL3_LOGO_URL] = ol.OL3_URL;
+    }
   }
 
   var preRenderFunctions = this.preRenderFunctions_;
@@ -1251,6 +1295,7 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
 /**
  * @typedef {{controls: ol.Collection,
  *            interactions: ol.Collection,
+ *            ol3Logo: boolean,
  *            overlays: ol.Collection,
  *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
@@ -1269,6 +1314,8 @@ ol.Map.createOptionsInternal = function(options) {
    * @type {Object.<string, *>}
    */
   var values = {};
+
+  var ol3Logo = goog.isDef(options.ol3Logo) ? options.ol3Logo : true;
 
   var layerGroup = (options.layers instanceof ol.layer.Group) ?
       options.layers : new ol.layer.Group({layers: options.layers});
@@ -1357,6 +1404,7 @@ ol.Map.createOptionsInternal = function(options) {
   return {
     controls: controls,
     interactions: interactions,
+    ol3Logo: ol3Logo,
     overlays: overlays,
     rendererConstructor: rendererConstructor,
     values: values
