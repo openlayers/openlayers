@@ -309,20 +309,30 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
   if (!goog.isNull(this.sketchFeature_)) {
     var geometry = this.sketchFeature_.getGeometry();
     var potentiallyDone = false;
+    var potentiallyFinishCoordinates = [this.finishCoordinate_];
     if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
       goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
       potentiallyDone = geometry.getCoordinates().length > 2;
     } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
       goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
-      potentiallyDone = geometry.getCoordinates()[0].length > 3;
+      potentiallyDone = geometry.getCoordinates()[0].length > 2;
+      potentiallyFinishCoordinates = [this.sketchRawPolygon_[0][0],
+        this.sketchRawPolygon_[0][this.sketchRawPolygon_[0].length - 2]];
     }
     if (potentiallyDone) {
       var map = event.map;
-      var finishPixel = map.getPixelFromCoordinate(this.finishCoordinate_);
-      var pixel = event.getPixel();
-      var dx = pixel[0] - finishPixel[0];
-      var dy = pixel[1] - finishPixel[1];
-      at = Math.sqrt(dx * dx + dy * dy) <= this.snapTolerance_;
+      for (var i = 0, ii = potentiallyFinishCoordinates.length; i < ii; i++) {
+        var finishCoordinate = potentiallyFinishCoordinates[i];
+        var finishPixel = map.getPixelFromCoordinate(finishCoordinate);
+        var pixel = event.getPixel();
+        var dx = pixel[0] - finishPixel[0];
+        var dy = pixel[1] - finishPixel[1];
+        at = Math.sqrt(dx * dx + dy * dy) <= this.snapTolerance_;
+        if (at) {
+          this.finishCoordinate_ = finishCoordinate;
+          break;
+        }
+      }
     }
   }
   return at;
@@ -453,9 +463,13 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
     geometry.setCoordinates(coordinates);
   } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
     goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
+    // When we finish drawing a polygon on the last point,
+    // the last coordinate is duplicated as for LineString
+    // we force the replacement by the first point
+    this.sketchRawPolygon_[0].pop();
+    this.sketchRawPolygon_[0].push(this.sketchRawPolygon_[0][0]);
+    geometry.setCoordinates(this.sketchRawPolygon_);
     coordinates = geometry.getCoordinates();
-    // force clockwise order for exterior ring
-    sketchFeature.setGeometry(new ol.geom.Polygon(coordinates));
   }
 
   // cast multi-part geometries
