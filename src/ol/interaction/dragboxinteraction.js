@@ -19,7 +19,8 @@ ol.DRAG_BOX_HYSTERESIS_PIXELS = 8;
 
 
 /**
- * @const {number}
+ * @const
+ * @type {number}
  */
 ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED =
     ol.DRAG_BOX_HYSTERESIS_PIXELS *

@@ -15,7 +15,8 @@ ol.render.ReplayType = {
 
 
 /**
- * @const {Array.<ol.render.ReplayType>}
+ * @const
+ * @type {Array.<ol.render.ReplayType>}
  */
 ol.render.REPLAY_ORDER = [
   ol.render.ReplayType.POLYGON,

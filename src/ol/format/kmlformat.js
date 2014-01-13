@@ -134,14 +134,16 @@ goog.inherits(ol.format.KML, ol.format.XML);
 
 
 /**
- * @const {Array.<string>}
+ * @const
+ * @type {Array.<string>}
  * @private
  */
 ol.format.KML.EXTENSIONS_ = ['.kml'];
 
 
 /**
- * @const {Array.<string>}
+ * @const
+ * @type {Array.<string>}
  * @private
  */
 ol.format.KML.GX_NAMESPACE_URIS_ = [
@@ -150,7 +152,8 @@ ol.format.KML.GX_NAMESPACE_URIS_ = [
 
 
 /**
- * @const {Array.<string>}
+ * @const
+ * @type {Array.<string>}
  * @private
  */
 ol.format.KML.NAMESPACE_URIS_ = [
@@ -163,14 +166,16 @@ ol.format.KML.NAMESPACE_URIS_ = [
 
 
 /**
- * @const {ol.Color}
+ * @const
+ * @type {ol.Color}
  * @private
  */
 ol.format.KML.DEFAULT_COLOR_ = [255, 255, 255, 1];
 
 
 /**
- * @const {ol.style.Fill}
+ * @const
+ * @type {ol.style.Fill}
  * @private
  */
 ol.format.KML.DEFAULT_FILL_STYLE_ = new ol.style.Fill({
@@ -179,14 +184,16 @@ ol.format.KML.DEFAULT_FILL_STYLE_ = new ol.style.Fill({
 
 
 /**
- * @const {ol.Size}
+ * @const
+ * @type {ol.Size}
  * @private
  */
 ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_ = [2, 20]; // FIXME maybe [8, 32] ?
 
 
 /**
- * @const {ol.style.IconAnchorUnits}
+ * @const
+ * @type {ol.style.IconAnchorUnits}
  * @private
  */
 ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_ =
@@ -194,7 +201,8 @@ ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_ =
 
 
 /**
- * @const {ol.style.IconAnchorUnits}
+ * @const
+ * @type {ol.style.IconAnchorUnits}
  * @private
  */
 ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_ =
@@ -202,14 +210,16 @@ ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_ =
 
 
 /**
- * @const {ol.Size}
+ * @const
+ * @type {ol.Size}
  * @private
  */
 ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_ = [32, 32];
 
 
 /**
- * @const {string}
+ * @const
+ * @type {string}
  * @private
  */
 ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_ =
@@ -217,7 +227,8 @@ ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_ =
 
 
 /**
- * @const {ol.style.Image}
+ * @const
+ * @type {ol.style.Image}
  * @private
  */
 ol.format.KML.DEFAULT_IMAGE_STYLE_ = new ol.style.Icon({
@@ -233,7 +244,8 @@ ol.format.KML.DEFAULT_IMAGE_STYLE_ = new ol.style.Icon({
 
 
 /**
- * @const {ol.style.Stroke}
+ * @const
+ * @type {ol.style.Stroke}
  * @private
  */
 ol.format.KML.DEFAULT_STROKE_STYLE_ = new ol.style.Stroke({
@@ -243,7 +255,8 @@ ol.format.KML.DEFAULT_STROKE_STYLE_ = new ol.style.Stroke({
 
 
 /**
- * @const {ol.style.Style}
+ * @const
+ * @type {ol.style.Style}
  * @private
  */
 ol.format.KML.DEFAULT_STYLE_ = new ol.style.Style({
@@ -256,14 +269,16 @@ ol.format.KML.DEFAULT_STYLE_ = new ol.style.Style({
 
 
 /**
- * @const {Array.<ol.style.Style>}
+ * @const
+ * @type {Array.<ol.style.Style>}
  * @private
  */
 ol.format.KML.DEFAULT_STYLE_ARRAY_ = [ol.format.KML.DEFAULT_STYLE_];
 
 
 /**
- * @const {Object.<string, ol.style.IconAnchorUnits>}
+ * @const
+ * @type {Object.<string, ol.style.IconAnchorUnits>}
  * @private
  */
 ol.format.KML.ICON_ANCHOR_UNITS_MAP_ = {
@@ -1159,7 +1174,8 @@ ol.format.KML.whenParser_ = function(node, objectStack) {
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.DATA_PARSERS_ = ol.xml.makeParsersNS(
@@ -1169,7 +1185,8 @@ ol.format.KML.DATA_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.EXTENDED_DATA_PARSERS_ = ol.xml.makeParsersNS(
@@ -1180,7 +1197,8 @@ ol.format.KML.EXTENDED_DATA_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.FLAT_LINEAR_RING_PARSERS_ = ol.xml.makeParsersNS(
@@ -1190,7 +1208,8 @@ ol.format.KML.FLAT_LINEAR_RING_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.FLAT_LINEAR_RINGS_PARSERS_ = ol.xml.makeParsersNS(
@@ -1201,7 +1220,8 @@ ol.format.KML.FLAT_LINEAR_RINGS_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.GX_TRACK_PARSERS_ = ol.xml.makeParsersNS(
@@ -1214,7 +1234,8 @@ ol.format.KML.GX_TRACK_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = ol.xml.makeParsersNS(
@@ -1224,7 +1245,8 @@ ol.format.KML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.ICON_PARSERS_ = ol.xml.makeParsersNS(
@@ -1234,7 +1256,8 @@ ol.format.KML.ICON_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.ICON_STYLE_PARSERS_ = ol.xml.makeParsersNS(
@@ -1247,7 +1270,8 @@ ol.format.KML.ICON_STYLE_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.INNER_BOUNDARY_IS_PARSERS_ = ol.xml.makeParsersNS(
@@ -1257,7 +1281,8 @@ ol.format.KML.INNER_BOUNDARY_IS_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.LINE_STYLE_PARSERS_ = ol.xml.makeParsersNS(
@@ -1268,7 +1293,8 @@ ol.format.KML.LINE_STYLE_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.MULTI_GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
@@ -1282,7 +1308,8 @@ ol.format.KML.MULTI_GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.GX_MULTITRACK_GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
@@ -1292,7 +1319,8 @@ ol.format.KML.GX_MULTITRACK_GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.OUTER_BOUNDARY_IS_PARSERS_ = ol.xml.makeParsersNS(
@@ -1302,7 +1330,8 @@ ol.format.KML.OUTER_BOUNDARY_IS_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.PAIR_PARSERS_ = ol.xml.makeParsersNS(
@@ -1314,7 +1343,8 @@ ol.format.KML.PAIR_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeParsersNS(
@@ -1348,7 +1378,8 @@ ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.POLY_STYLE_PARSERS_ = ol.xml.makeParsersNS(
@@ -1360,7 +1391,8 @@ ol.format.KML.POLY_STYLE_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.SCHEMA_DATA_PARSERS_ = ol.xml.makeParsersNS(
@@ -1370,7 +1402,8 @@ ol.format.KML.SCHEMA_DATA_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.STYLE_PARSERS_ = ol.xml.makeParsersNS(
@@ -1382,7 +1415,8 @@ ol.format.KML.STYLE_PARSERS_ = ol.xml.makeParsersNS(
 
 
 /**
- * @const {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
 ol.format.KML.STYLE_MAP_PARSERS_ = ol.xml.makeParsersNS(

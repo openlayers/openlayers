@@ -32,7 +32,8 @@ ol.Color;
 
 /**
  * This RegExp matches # followed by 3 or 6 hex digits.
- * @const {RegExp}
+ * @const
+ * @type {RegExp}
  * @private
  */
 ol.color.hexColorRe_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
@@ -40,7 +41,8 @@ ol.color.hexColorRe_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
 
 /**
  * @see goog.color.rgbColorRe_
- * @const {RegExp}
+ * @const
+ * @type {RegExp}
  * @private
  */
 ol.color.rgbColorRe_ =
@@ -49,7 +51,8 @@ ol.color.rgbColorRe_ =
 
 /**
  * @see goog.color.alpha.rgbaColorRe_
- * @const {RegExp}
+ * @const
+ * @type {RegExp}
  * @private
  */
 ol.color.rgbaColorRe_ =
