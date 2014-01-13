@@ -42,13 +42,18 @@ ol.geom.Circle.prototype.closestPointXY =
   var radius = flatCoordinates[this.stride] - flatCoordinates[0];
   var dx = x - flatCoordinates[0];
   var dy = y - flatCoordinates[1];
-  var distance = Math.max(Math.sqrt(dx * dx + dy * dy) - radius, 0);
+  var d = Math.sqrt(dx * dx + dy * dy);
+  var distance = Math.max(d, 0);
   var squaredDistance = distance * distance;
   if (squaredDistance < minSquaredDistance) {
-    // FIXME it must be possible to do this without trigonometric functions
-    var theta = Math.atan2(dy, dx);
-    closestPoint[0] = flatCoordinates[0] + radius * Math.cos(theta);
-    closestPoint[1] = flatCoordinates[1] + radius * Math.sin(theta);
+    if (d === 0) {
+      closestPoint[0] = flatCoordinates[0];
+      closestPoint[1] = flatCoordinates[1];
+    } else {
+      var delta = radius / d;
+      closestPoint[0] = flatCoordinates[0] + delta * dx;
+      closestPoint[1] = flatCoordinates[1] + delta * dy;
+    }
     return squaredDistance;
   } else {
     return minSquaredDistance;
