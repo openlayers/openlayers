@@ -88,7 +88,8 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     goog.asserts.assert(goog.isFunction(renderGeometryFunction));
     context.globalAlpha = layerState.opacity;
     replayGroup.replay(
-        context, frameState.extent, transform, renderGeometryFunction);
+        context, frameState.extent, frameState.devicePixelRatio, transform,
+        renderGeometryFunction);
   }
 
   this.dispatchPostComposeEvent(context, frameState, transform);
@@ -210,7 +211,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
     styleFunction = ol.feature.defaultStyleFunction;
   }
   var tolerance = frameStateResolution / (2 * pixelRatio);
-  var replayGroup = new ol.render.canvas.ReplayGroup(pixelRatio, tolerance);
+  var replayGroup = new ol.render.canvas.ReplayGroup(tolerance);
   vectorSource.forEachFeatureInExtent(extent,
       /**
        * @param {ol.Feature} feature Feature.
