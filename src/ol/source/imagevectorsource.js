@@ -104,8 +104,7 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
     function(extent, resolution, pixelRatio, size, projection) {
 
   var tolerance = resolution / (2 * pixelRatio);
-  var replayGroup = new ol.render.canvas.ReplayGroup(
-      pixelRatio, tolerance);
+  var replayGroup = new ol.render.canvas.ReplayGroup(tolerance);
 
   var loading = false;
   this.source_.forEachFeatureInExtent(extent,
@@ -133,7 +132,7 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
 
   var transform = this.getTransform_(ol.extent.getCenter(extent),
       resolution, pixelRatio, size);
-  replayGroup.replay(this.canvasContext_, extent, transform,
+  replayGroup.replay(this.canvasContext_, extent, pixelRatio, transform,
       goog.functions.TRUE);
 
   return this.canvasElement_;
