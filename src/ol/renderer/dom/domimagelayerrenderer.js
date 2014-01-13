@@ -60,6 +60,7 @@ ol.renderer.dom.ImageLayer.prototype.forEachFeatureAtPixel =
   return source.forEachFeatureAtPixel(extent, resolution, rotation, coordinate,
       /**
        * @param {ol.Feature} feature Feature.
+       * @return {?} Callback result.
        */
       function(feature) {
         return callback.call(opt_obj, feature, this);

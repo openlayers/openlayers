@@ -160,6 +160,7 @@ ol.source.ImageVector.prototype.forEachFeatureAtPixel =
         /**
          * @param {ol.geom.Geometry} geometry Geometry.
          * @param {Object} data Data.
+         * @return {?} Callback result.
          */
         function(geometry, data) {
           var feature = /** @type {ol.Feature} */ (data);
