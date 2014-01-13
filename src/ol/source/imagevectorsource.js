@@ -7,6 +7,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.extent');
+goog.require('ol.feature');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.vector');
 goog.require('ol.source.ImageCanvas');
@@ -17,6 +18,16 @@ goog.require('ol.vec.Mat4');
 
 
 /**
+ * An image source whose images are canvas elements into which vector features
+ * read from a vector source (`ol.source.Vector`) are drawn. An
+ * `ol.source.ImageVector` object is to be used as the `source` of an image
+ * layer (`ol.layer.Image`). Image layers are rotated, scaled, and translated,
+ * as opposed to being re-rendered, during animations and interactions. So, like
+ * any other image layer, an image layer configured with an
+ * `ol.source.ImageVector` will exhibit this behaviour. This is in contrast to a
+ * vector layer, where vector features are re-drawn during animations and
+ * interactions.
+ *
  * @constructor
  * @extends {ol.source.ImageCanvas}
  * @param {olx.source.ImageVectorOptions} options Options.
@@ -31,9 +42,10 @@ ol.source.ImageVector = function(options) {
 
   /**
    * @private
-   * @type {ol.feature.StyleFunction}
+   * @type {!ol.feature.StyleFunction}
    */
-  this.styleFunction_ = options.styleFunction;
+  this.styleFunction_ = goog.isDef(options.styleFunction) ?
+      options.styleFunction : ol.feature.defaultStyleFunction;
 
   /**
    * @private
