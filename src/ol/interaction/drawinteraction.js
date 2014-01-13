@@ -16,6 +16,7 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.render.FeaturesOverlay');
+goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
@@ -425,7 +426,9 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
   }
 
   if (!goog.isNull(this.layer_)) {
-    this.layer_.getSource().addFeature(sketchFeature);
+    var vectorSource = this.layer_.getSource();
+    goog.asserts.assertInstanceof(vectorSource, ol.source.Vector);
+    vectorSource.addFeature(sketchFeature);
   }
 };
 
