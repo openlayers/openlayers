@@ -87,7 +87,9 @@ ol.interaction.DragAndDrop.prototype.handleDrop_ = function(event) {
   var files = event.getBrowserEvent().dataTransfer.files;
   var i, ii;
   for (i = 0, ii = files.length; i < ii; ++i) {
-    var reader = goog.fs.FileReader.readAsText(files[i]);
+    // The empty string param is a workaround for
+    // https://code.google.com/p/closure-library/issues/detail?id=524
+    var reader = goog.fs.FileReader.readAsText(files[i], '');
     reader.addCallback(this.handleResult_, this);
   }
 };
