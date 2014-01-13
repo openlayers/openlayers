@@ -265,7 +265,7 @@ ol.interaction.Draw.prototype.handleMove_ = function(event) {
  */
 ol.interaction.Draw.prototype.atFinish_ = function(event) {
   var at = false;
-  if (this.sketchFeature_) {
+  if (!goog.isNull(this.sketchFeature_)) {
     var geometry = this.sketchFeature_.getGeometry();
     var potentiallyDone = false;
     if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
@@ -424,7 +424,7 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
     sketchFeature.setGeometry(new ol.geom.MultiPolygon([coordinates]));
   }
 
-  if (this.layer_) {
+  if (!goog.isNull(this.layer_)) {
     this.layer_.getSource().addFeature(sketchFeature);
   }
 };
@@ -454,10 +454,10 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
  */
 ol.interaction.Draw.prototype.updateSketchFeatures_ = function() {
   var sketchFeatures = [this.sketchFeature_];
-  if (this.sketchLine_) {
+  if (!goog.isNull(this.sketchLine_)) {
     sketchFeatures.push(this.sketchLine_);
   }
-  if (this.sketchPoint_) {
+  if (!goog.isNull(this.sketchPoint_)) {
     sketchFeatures.push(this.sketchPoint_);
   }
   this.overlay_.setFeatures(new ol.Collection(sketchFeatures));
