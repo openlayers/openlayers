@@ -45,7 +45,8 @@ goog.inherits(ol.renderer.Layer, goog.Disposable);
 
 
 /**
- * @param {ol.Pixel} pixel Pixel.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {ol.FrameState} frameState Frame state.
  * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
  *     callback.
  * @param {S=} opt_obj Scope.
