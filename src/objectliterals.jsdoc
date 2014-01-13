@@ -31,6 +31,7 @@
  * @property {ol.Collection|Array.<ol.interaction.Interaction>|undefined} interactions
  *     Interactions that are initially added to the map.
  * @property {Array.<ol.layer.Base>|ol.Collection|undefined} layers Layers.
+ * @property {boolean|undefined} ol3Logo Show ol3 logo. Default is `true`.
  * @property {ol.Collection|Array.<ol.Overlay>|undefined} overlays
  *     Overlays initially added to the map.
  * @property {ol.RendererHint|undefined} renderer Renderer.

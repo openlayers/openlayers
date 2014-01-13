@@ -162,7 +162,7 @@ ol.renderer.Layer.prototype.updateAttributions =
 ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
   var logo = source.getLogo();
   if (goog.isDef(logo)) {
-    frameState.logos[logo] = true;
+    frameState.logos[logo] = '';
   }
 };
 
