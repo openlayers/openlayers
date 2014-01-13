@@ -1,10 +1,10 @@
 goog.provide('ol.source.Source');
 goog.provide('ol.source.State');
 
-goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
+goog.require('ol.Observable');
 goog.require('ol.proj');
 
 
@@ -32,7 +32,7 @@ ol.source.SourceOptions;
 
 /**
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.Observable}
  * @param {ol.source.SourceOptions} options Source options.
  * @todo stability experimental
  */
@@ -81,7 +81,7 @@ ol.source.Source = function(options) {
   this.revision_ = 0;
 
 };
-goog.inherits(ol.source.Source, goog.events.EventTarget);
+goog.inherits(ol.source.Source, ol.Observable);
 
 
 /**
