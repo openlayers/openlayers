@@ -96,16 +96,16 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
   var context = this.context_;
   if (map.hasListener(type)) {
     var view2DState = frameState.view2DState;
-    var devicePixelRatio = frameState.devicePixelRatio;
+    var pixelRatio = frameState.pixelRatio;
     ol.vec.Mat4.makeTransform2D(this.transform_,
         this.canvas_.width / 2,
         this.canvas_.height / 2,
-        devicePixelRatio / view2DState.resolution,
-        -devicePixelRatio / view2DState.resolution,
+        pixelRatio / view2DState.resolution,
+        -pixelRatio / view2DState.resolution,
         -view2DState.rotation,
         -view2DState.center[0], -view2DState.center[1]);
     var render = new ol.render.canvas.Immediate(
-        context, devicePixelRatio, frameState.extent, this.transform_);
+        context, pixelRatio, frameState.extent, this.transform_);
     var composeEvent = new ol.render.Event(type, map, render, frameState,
         context, null);
     map.dispatchEvent(composeEvent);
@@ -139,9 +139,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   }
 
   var context = this.context_;
-  var ratio = frameState.devicePixelRatio;
-  var width = frameState.size[0] * ratio;
-  var height = frameState.size[1] * ratio;
+  var width = frameState.size[0] * frameState.pixelRatio;
+  var height = frameState.size[1] * frameState.pixelRatio;
   if (this.canvas_.width != width || this.canvas_.height != height) {
     this.canvas_.width = width;
     this.canvas_.height = height;

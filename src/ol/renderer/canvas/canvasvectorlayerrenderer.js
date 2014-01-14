@@ -76,7 +76,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     goog.asserts.assert(goog.isFunction(renderGeometryFunction));
     context.globalAlpha = layerState.opacity;
     replayGroup.replay(
-        context, frameState.extent, frameState.devicePixelRatio, transform,
+        context, frameState.extent, frameState.pixelRatio, transform,
         renderGeometryFunction);
   }
 
@@ -168,7 +168,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
 
   var frameStateExtent = frameState.extent;
   var frameStateResolution = frameState.view2DState.resolution;
-  var pixelRatio = frameState.devicePixelRatio;
+  var pixelRatio = frameState.pixelRatio;
 
   if (!this.dirty_ &&
       this.renderedResolution_ == frameStateResolution &&
