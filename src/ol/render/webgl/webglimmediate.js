@@ -23,6 +23,14 @@ ol.render.webgl.Immediate.prototype.drawAsync = function(zIndex, callback) {
 /**
  * @inheritDoc
  */
+ol.render.webgl.Immediate.prototype.drawCircleGeometry =
+    function(circleGeometry, data) {
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
 };
 

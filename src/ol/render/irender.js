@@ -20,6 +20,15 @@ ol.render.IRender.prototype.drawAsync = function(zIndex, callback) {
 
 
 /**
+ * @param {ol.geom.Circle} circleGeometry Circle geometry.
+ * @param {Object} data Opaque data object,
+ */
+ol.render.IRender.prototype.drawCircleGeometry =
+    function(circleGeometry, data) {
+};
+
+
+/**
  * @param {ol.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  */

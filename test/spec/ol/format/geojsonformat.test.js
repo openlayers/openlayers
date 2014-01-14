@@ -458,6 +458,16 @@ describe('ol.format.GeoJSON', function() {
         expect(geometries[i].getCoordinates()).
             to.eql(gotGeometries[i].getCoordinates());
       }
+
+    });
+
+    it('encodes a circle as an empty geometry collection', function() {
+      var circle = new ol.geom.Circle([0, 0], 1);
+      var geojson = format.writeGeometry(circle);
+      expect(geojson).to.eql({
+        'type': 'GeometryCollection',
+        'geometries': []
+      });
     });
 
   });
@@ -468,6 +478,7 @@ describe('ol.format.GeoJSON', function() {
 goog.require('ol.Feature');
 goog.require('ol.extent');
 goog.require('ol.format.GeoJSON');
+goog.require('ol.geom.Circle');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.LinearRing');

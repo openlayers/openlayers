@@ -266,6 +266,39 @@ ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
 /**
  * @inheritDoc
  */
+ol.render.canvas.Immediate.prototype.drawCircleGeometry =
+    function(circleGeometry, data) {
+  /*
+  if (!ol.extent.intersects(this.extent_, circleGeometry.getExtent())) {
+    return;
+  }
+  var state = this.state_;
+  if (!goog.isDef(state.fillStyle) && !goog.isDef(state.strokeStyle)) {
+    return;
+  }
+  this.setFillStrokeStyles_();
+  var context = this.context_;
+  var pixelCoordinates = ol.geom.transformSimpleGeometry2D(
+      circleGeometry, this.transform_, this.pixelCoordinates_);
+  var dx = pixelCoordinates[2] - pixelCoordinates[0];
+  var dy = pixelCoordinates[3] - pixelCoordinates[1];
+  var radius = Math.sqrt(dx * dx + dy * dy);
+  context.beginPath();
+  context.arc(pixelCoordinates[0], pixelCoordinates[1], radius, 0, 2 * Math.PI);
+  if (goog.isDef(state.fillStyle)) {
+    context.fill();
+  }
+  if (goog.isDef(state.strokeStyle)) {
+    goog.asserts.assert(goog.isDef(state.lineWidth));
+    context.stroke();
+  }
+  */
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
   var geometry = feature.getGeometry();
   if (goog.isNull(geometry) ||
@@ -597,5 +630,6 @@ ol.render.canvas.Immediate.GEOMETRY_RENDERES_ = {
       ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry,
   'MultiPolygon': ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry,
   'GeometryCollection':
-      ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry
+      ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry,
+  'Circle': ol.render.canvas.Immediate.prototype.drawCircleGeometry
 };
