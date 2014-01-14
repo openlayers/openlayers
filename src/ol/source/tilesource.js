@@ -169,6 +169,20 @@ ol.source.Tile.prototype.getTileGridForProjection = function(projection) {
   } else {
     return this.tileGrid;
   }
+};
+
+
+/**
+ * @param {number} z Z.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {number} Tile size.
+ */
+ol.source.Tile.prototype.getTilePixelSize =
+    function(z, pixelRatio, projection) {
+  var tileGrid = this.getTileGridForProjection(projection);
+  return tileGrid.getTileSize(z);
+};
 
 
 /**
