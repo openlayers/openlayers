@@ -4,11 +4,13 @@ goog.require('goog.asserts');
 
 goog.require('ol.Coordinate');
 goog.require('ol.Feature');
+goog.require('ol.FeatureRenderIntent');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
@@ -16,14 +18,13 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.layer.Vector');
-goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.source.Vector');
 
 
 
 /**
  * Interaction that allows drawing geometries.
- * @param {ol.interaction.DrawOptions} options Options.
+ * @param {olx.interaction.DrawOptions} options Options.
  * @constructor
  * @extends {ol.interaction.Interaction}
  */
@@ -113,7 +114,7 @@ ol.interaction.Draw.prototype.setMap = function(map) {
   if (!goog.isNull(map)) {
     if (goog.isNull(this.sketchLayer_)) {
       var layer = new ol.layer.Vector({
-        source: new ol.source.Vector({parser: null}),
+        source: new ol.source.Vector(),
         style: this.layer_.getStyle()
       });
       layer.setTemporary(true);
@@ -209,6 +210,7 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
     if (this.mode_ === ol.interaction.DrawMode.LINESTRING) {
       potentiallyDone = geometry.getCoordinates().length > 2;
     } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
+      goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
       potentiallyDone = geometry.getRings()[0].getCoordinates().length > 3;
     }
     if (potentiallyDone) {
@@ -233,7 +235,7 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
   var start = event.getCoordinate();
   this.finishCoordinate_ = start;
   var sketchFeature = new ol.Feature();
-  sketchFeature.setRenderIntent(ol.layer.VectorLayerRenderIntent.SELECTED);
+  sketchFeature.setRenderIntent(ol.FeatureRenderIntent.SELECTED);
   var features = [sketchFeature];
   var geometry;
   if (this.mode_ === ol.interaction.DrawMode.POINT) {
@@ -242,7 +244,7 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
     var sketchPoint = new ol.Feature({
       geom: new ol.geom.Point(start.slice())
     });
-    sketchPoint.setRenderIntent(ol.layer.VectorLayerRenderIntent.TEMPORARY);
+    sketchPoint.setRenderIntent(ol.FeatureRenderIntent.TEMPORARY);
     this.sketchPoint_ = sketchPoint;
     features.push(sketchPoint);
 
@@ -256,7 +258,7 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
   sketchFeature.setGeometry(geometry);
   this.sketchFeature_ = sketchFeature;
 
-  this.sketchLayer_.addFeatures(features);
+  this.sketchLayer_.getVectorSource().addFeatures(features);
 };
 
 
@@ -270,22 +272,29 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
   var geometry = this.sketchFeature_.getGeometry();
   var coordinates, last;
   if (this.mode_ === ol.interaction.DrawMode.POINT) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.Point);
     last = geometry.getCoordinates();
     last[0] = coordinate[0];
     last[1] = coordinate[1];
     geometry.setCoordinates(last);
   } else {
     if (this.mode_ === ol.interaction.DrawMode.LINESTRING) {
+      goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
       coordinates = geometry.getCoordinates();
-    } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
+    } else {
+      goog.asserts.assert(this.mode_ === ol.interaction.DrawMode.POLYGON);
+      goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
       geometry = geometry.getRings()[0];
+      goog.asserts.assertInstanceof(geometry, ol.geom.LinearRing);
       coordinates = geometry.getCoordinates();
     }
     if (this.atFinish_(event)) {
       // snap to finish
       coordinate = this.finishCoordinate_.slice();
     }
-    this.sketchPoint_.getGeometry().setCoordinates(coordinate);
+    var point = this.sketchPoint_.getGeometry();
+    goog.asserts.assertInstanceof(point, ol.geom.Point);
+    point.setCoordinates(coordinate);
     last = coordinates[coordinates.length - 1];
     last[0] = coordinate[0];
     last[1] = coordinate[1];
@@ -304,11 +313,13 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
   var geometry = this.sketchFeature_.getGeometry();
   var coordinates, last;
   if (this.mode_ === ol.interaction.DrawMode.LINESTRING) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
     this.finishCoordinate_ = coordinate.slice();
     coordinates = geometry.getCoordinates();
     coordinates.push(coordinate.slice());
     geometry.setCoordinates(coordinates);
   } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
     var ring = geometry.getRings()[0];
     coordinates = ring.getCoordinates();
     coordinates.push(coordinate.slice());
@@ -325,26 +336,28 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
 ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
   var sketchFeature = this.abortDrawing_();
   goog.asserts.assert(!goog.isNull(sketchFeature));
-  sketchFeature.setRenderIntent(ol.layer.VectorLayerRenderIntent.DEFAULT);
+  sketchFeature.setRenderIntent(ol.FeatureRenderIntent.DEFAULT);
   var geometry = sketchFeature.getGeometry();
   var coordinates = geometry.getCoordinates();
   if (this.mode_ === ol.interaction.DrawMode.LINESTRING) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
     // remove the redundant last point
     coordinates.pop();
     geometry.setCoordinates(coordinates);
   } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
     // force clockwise order for exterior ring
     sketchFeature.setGeometry(new ol.geom.Polygon(coordinates));
   }
   // cast multi-part geometries
-  if (this.type_ === ol.geom.GeometryType.MULTIPOINT) {
+  if (this.type_ === ol.geom.GeometryType.MULTI_POINT) {
     sketchFeature.setGeometry(new ol.geom.MultiPoint([coordinates]));
-  } else if (this.type_ === ol.geom.GeometryType.MULTILINESTRING) {
+  } else if (this.type_ === ol.geom.GeometryType.MULTI_LINE_STRING) {
     sketchFeature.setGeometry(new ol.geom.MultiLineString([coordinates]));
-  } else if (this.type_ === ol.geom.GeometryType.MULTIPOLYGON) {
+  } else if (this.type_ === ol.geom.GeometryType.MULTI_POLYGON) {
     sketchFeature.setGeometry(new ol.geom.MultiPolygon([coordinates]));
   }
-  this.layer_.addFeatures([sketchFeature]);
+  this.layer_.getVectorSource().addFeatures([sketchFeature]);
 };
 
 
@@ -363,7 +376,7 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
       features.push(this.sketchPoint_);
       this.sketchPoint_ = null;
     }
-    this.sketchLayer_.removeFeatures(features);
+    this.sketchLayer_.getVectorSource().removeFeatures(features);
   }
   return sketchFeature;
 };
@@ -379,13 +392,13 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
 ol.interaction.Draw.getMode_ = function(type) {
   var mode;
   if (type === ol.geom.GeometryType.POINT ||
-      type === ol.geom.GeometryType.MULTIPOINT) {
+      type === ol.geom.GeometryType.MULTI_POINT) {
     mode = ol.interaction.DrawMode.POINT;
-  } else if (type === ol.geom.GeometryType.LINESTRING ||
-      type === ol.geom.GeometryType.MULTILINESTRING) {
+  } else if (type === ol.geom.GeometryType.LINE_STRING ||
+      type === ol.geom.GeometryType.MULTI_LINE_STRING) {
     mode = ol.interaction.DrawMode.LINESTRING;
   } else if (type === ol.geom.GeometryType.POLYGON ||
-      type === ol.geom.GeometryType.MULTIPOLYGON) {
+      type === ol.geom.GeometryType.MULTI_POLYGON) {
     mode = ol.interaction.DrawMode.POLYGON;
   }
   goog.asserts.assert(goog.isDef(mode));

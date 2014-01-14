@@ -1,4 +1,4 @@
-@exportClass ol.Map ol.MapOptions
+@exportSymbol ol.Map
 @exportProperty ol.Map.prototype.addControl
 @exportProperty ol.Map.prototype.addInteraction
 @exportProperty ol.Map.prototype.addLayer

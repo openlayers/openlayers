@@ -91,8 +91,7 @@ EXPORTS = [path
 
 EXTERNAL_SRC = [
     'build/src/external/externs/types.js',
-    'build/src/external/src/exports.js',
-    'build/src/external/src/types.js']
+    'build/src/external/src/exports.js']
 
 EXAMPLES = [path
             for path in ifind('examples')
@@ -153,13 +152,16 @@ PROJ4JS_ZIP_MD5 = '17caad64cf6ebc6e6fe62f292b134897'
 
 
 def report_sizes(t):
-    t.info('uncompressed: %d bytes', os.stat(t.name).st_size)
     stringio = StringIO()
     gzipfile = gzip.GzipFile(t.name, 'w', 9, stringio)
     with open(t.name) as f:
         shutil.copyfileobj(f, gzipfile)
     gzipfile.close()
-    t.info('  compressed: %d bytes', len(stringio.getvalue()))
+    rawsize = os.stat(t.name).st_size
+    gzipsize = len(stringio.getvalue())
+    savings = '{0:.2%}'.format((rawsize - gzipsize)/float(rawsize))
+    t.info('uncompressed: %8d bytes', rawsize)
+    t.info('  compressed: %8d bytes, (saved %s)', gzipsize, savings)
 
 
 virtual('default', 'build')
@@ -173,7 +175,7 @@ virtual('build', 'build/ol.css', 'build/ol.js',
         'build/ol-simple.js', 'build/ol-whitespace.js')
 
 
-virtual('check', 'lint', 'build/ol.css', 'build/ol-all.js', 'test')
+virtual('check', 'lint', 'build/ol-all.js', 'test')
 
 
 virtual('todo', 'fixme')
@@ -213,8 +215,9 @@ def build_ol_whitespace_js(t):
 virtual('build-all', 'build/ol-all.js')
 
 
-@target('build/ol-all.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol-all.json')
+@target('build/ol-all.js', PLOVR_JAR, SRC, EXTERNAL_SRC, INTERNAL_SRC,
+        SHADER_SRC, LIBTESS_JS_SRC, 'buildcfg/base.json',
+        'buildcfg/ol-all.json')
 def build_ol_all_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
             PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
@@ -232,13 +235,6 @@ def build_src_external_externs_types_js(t):
 def build_src_external_src_exports_js(t):
     t.output('%(PYTHON)s', 'bin/generate-exports.py',
              '--exports', 'src/objectliterals.jsdoc', EXPORTS)
-
-
-@target('build/src/external/src/types.js', 'bin/generate-exports.py',
-        'src/objectliterals.jsdoc')
-def build_src_external_src_types_js(t):
-    t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--typedef', 'src/objectliterals.jsdoc')
 
 
 for glsl_src in GLSL_SRC:
@@ -710,7 +706,9 @@ def host_examples(t):
 
 @target('check-examples', 'host-examples', phony=True)
 def check_examples(t):
-    examples = ['build/hosted/%(BRANCH)s/' + e for e in EXAMPLES]
+    examples = ['build/hosted/%(BRANCH)s/' + e
+                for e in EXAMPLES
+                if not open(e).readline().startswith('// NOCHECK')]
     all_examples = \
         [e + '?mode=advanced' for e in examples]
     for example in all_examples:

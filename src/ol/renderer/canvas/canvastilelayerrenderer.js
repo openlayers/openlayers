@@ -18,6 +18,7 @@ goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
+goog.require('ol.source.Tile');
 
 
 
@@ -82,15 +83,6 @@ goog.inherits(ol.renderer.canvas.TileLayer, ol.renderer.canvas.Layer);
  */
 ol.renderer.canvas.TileLayer.prototype.getImage = function() {
   return this.canvas_;
-};
-
-
-/**
- * @protected
- * @return {ol.layer.Tile} Tile layer.
- */
-ol.renderer.canvas.TileLayer.prototype.getTileLayer = function() {
-  return /** @type {ol.layer.Tile} */ (this.getLayer());
 };
 
 
@@ -174,12 +166,15 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
   var view2DState = frameState.view2DState;
   var projection = view2DState.projection;
 
-  var tileLayer = this.getTileLayer();
-  var tileSource = tileLayer.getTileSource();
+  var tileLayer = this.getLayer();
+  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile);
+  var tileSource = tileLayer.getSource();
+  goog.asserts.assertInstanceof(tileSource, ol.source.Tile);
   var tileGrid = tileSource.getTileGrid();
   if (goog.isNull(tileGrid)) {
     tileGrid = ol.tilegrid.getForProjection(projection);
   }
+  var tileGutter = tileSource.getGutter();
   var z = tileGrid.getZForResolution(view2DState.resolution);
   var tileSize = tileGrid.getTileSize(z);
   var tileResolution = tileGrid.getResolution(z);
@@ -338,7 +333,9 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
             context.clearRect(x, y, tileSize[0], tileSize[1]);
           }
           if (tileState == ol.TileState.LOADED) {
-            context.drawImage(tile.getImage(), x, y);
+            context.drawImage(tile.getImage(),
+                tileGutter, tileGutter, tileSize[0], tileSize[1],
+                x, y, tileSize[0], tileSize[1]);
           }
           this.renderedTiles_[index] = tile;
         }
@@ -357,7 +354,9 @@ ol.renderer.canvas.TileLayer.prototype.renderFrame =
           context.clearRect(x, y, width, height);
         }
         if (tileState == ol.TileState.LOADED) {
-          context.drawImage(tile.getImage(), x, y, width, height);
+          context.drawImage(tile.getImage(),
+              tileGutter, tileGutter, tileSize[0], tileSize[1],
+              x, y, width, height);
         }
         interimTileRange =
             tileGrid.getTileRangeForExtentAndZ(tileExtent, z, tmpTileRange);

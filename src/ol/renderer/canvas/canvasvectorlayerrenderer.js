@@ -1,11 +1,13 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
 goog.require('goog.asserts');
+goog.require('goog.async.nextTick');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
+goog.require('ol.FeatureRenderIntent');
 goog.require('ol.Pixel');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
@@ -14,10 +16,10 @@ goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.layer.Vector');
-goog.require('ol.layer.VectorEventType');
-goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.Vector');
+goog.require('ol.source.VectorEventType');
+goog.require('ol.style');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -88,13 +90,16 @@ ol.renderer.canvas.VectorLayer = function(mapRenderer, layer) {
    */
   this.tileCache_ = new ol.TileCache(
       ol.renderer.canvas.VectorLayer.TILECACHE_SIZE);
-  goog.events.listen(layer, [
-    ol.layer.VectorEventType.ADD,
-    ol.layer.VectorEventType.CHANGE,
-    ol.layer.VectorEventType.REMOVE,
-    ol.layer.VectorEventType.INTENTCHANGE
+
+  var source = layer.getSource();
+  goog.events.listen(source, [
+    ol.source.VectorEventType.LOAD,
+    ol.source.VectorEventType.ADD,
+    ol.source.VectorEventType.CHANGE,
+    ol.source.VectorEventType.REMOVE,
+    ol.source.VectorEventType.INTENTCHANGE
   ],
-  this.handleLayerChange_, false, this);
+  this.handleSourceChange_, false, this);
 
   /**
    * @private
@@ -220,10 +225,7 @@ ol.renderer.canvas.VectorLayer.prototype.getTransform = function() {
 
 
 /**
- * @param {ol.Pixel} pixel Pixel coordinate relative to the map viewport.
- * @param {function(string, ol.layer.Layer)} success Callback for
- *     successful queries. The passed arguments are the resulting feature
- *     information and the layer.
+ * @inheritDoc
  */
 ol.renderer.canvas.VectorLayer.prototype.getFeatureInfoForPixel =
     function(pixel, success) {
@@ -231,6 +233,7 @@ ol.renderer.canvas.VectorLayer.prototype.getFeatureInfoForPixel =
     success(layer.getTransformFeatureInfo()(features), layer);
   };
   this.getFeaturesForPixel(pixel, callback);
+  return true;
 };
 
 
@@ -245,12 +248,13 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
     function(pixel, success, opt_error) {
   // TODO What do we want to pass to the error callback?
   var map = this.getMap();
-  var result = [];
+  var features = [];
 
-  var layer = this.getLayer();
+  var source = this.getVectorLayer().getSource();
   var location = map.getCoordinateFromPixel(pixel);
   var tileCoord = this.tileGrid_.getTileCoordForCoordAndZ(location, 0);
   var key = tileCoord.toString();
+
   if (this.tileCache_.containsKey(key)) {
     var cachedTile = this.tileCache_.get(key);
     var symbolSizes = cachedTile[1];
@@ -260,29 +264,20 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
     var halfMaxHeight = maxSymbolSize[1] / 2;
     var locationMin = [location[0] - halfMaxWidth, location[1] - halfMaxHeight];
     var locationMax = [location[0] + halfMaxWidth, location[1] + halfMaxHeight];
-    var locationBbox = ol.extent.boundingExtent([locationMin, locationMax]);
-    var candidates = layer.getFeaturesObjectForExtent(locationBbox,
-        map.getView().getView2D().getProjection());
-    if (goog.isNull(candidates)) {
-      // data is not loaded
-      if (goog.isDef(opt_error)) {
-        goog.global.setTimeout(function() { opt_error(); }, 0);
-      }
-      return;
-    }
+    var extent = ol.extent.boundingExtent([locationMin, locationMax]);
+    var projection = map.getView().getView2D().getProjection();
 
-    var candidate, geom, type, symbolBounds, symbolSize, symbolOffset,
-        halfWidth, halfHeight, uid, coordinates, j;
-    for (var id in candidates) {
-      candidate = candidates[id];
-      if (candidate.getRenderIntent() ==
-          ol.layer.VectorLayerRenderIntent.HIDDEN) {
-        continue;
+    source.forEachFeatureInExtent(extent, projection, function(candidate) {
+      var geom, type, symbolBounds, symbolSize, symbolOffset,
+          halfWidth, halfHeight, uid, coordinates, j;
+
+      if (candidate.getRenderIntent() == ol.FeatureRenderIntent.HIDDEN) {
+        return;
       }
       geom = candidate.getGeometry();
       type = geom.getType();
       if (type === ol.geom.GeometryType.POINT ||
-          type === ol.geom.GeometryType.MULTIPOINT) {
+          type === ol.geom.GeometryType.MULTI_POINT) {
         // For points, check if the pixel coordinate is inside the candidate's
         // symbol
         uid = goog.getUid(candidate);
@@ -302,34 +297,38 @@ ol.renderer.canvas.VectorLayer.prototype.getFeaturesForPixel =
         }
         for (j = coordinates.length - 1; j >= 0; --j) {
           if (ol.extent.containsCoordinate(symbolBounds, coordinates[j])) {
-            result.push(candidate);
+            features.push(candidate);
             break;
           }
         }
       } else if (goog.isFunction(geom.containsCoordinate)) {
         // For polygons, check if the pixel location is inside the polygon
         if (geom.containsCoordinate(location)) {
-          result.push(candidate);
+          features.push(candidate);
         }
       } else if (goog.isFunction(geom.distanceFromCoordinate)) {
         // For lines, check if the distance to the pixel location is
         // within the rendered line width
         if (2 * geom.distanceFromCoordinate(location) <=
             symbolSizes[goog.getUid(candidate)][0]) {
-          result.push(candidate);
+          features.push(candidate);
         }
       }
-    }
+
+    });
   }
-  goog.global.setTimeout(function() { success(result, layer); }, 0);
+  var layer = this.getLayer();
+  goog.async.nextTick(function() {
+    success(features, layer);
+  });
 };
 
 
 /**
- * @param {ol.layer.VectorEvent} event Vector layer event.
+ * @param {ol.source.VectorEvent} event Vector layer event.
  * @private
  */
-ol.renderer.canvas.VectorLayer.prototype.handleLayerChange_ = function(event) {
+ol.renderer.canvas.VectorLayer.prototype.handleSourceChange_ = function(event) {
   if (goog.isDef(this.renderedResolution_)) {
     this.expireTiles_(event.extents);
   }
@@ -350,7 +349,6 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
       resolution = view2DState.resolution,
       projection = view2DState.projection,
       extent = frameState.extent,
-      layer = this.getVectorLayer(),
       tileGrid = this.tileGrid_,
       tileSize = [512, 512],
       idle = !frameState.viewHints[ol.ViewHint.ANIMATING] &&
@@ -427,6 +425,15 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   }
 
   /**
+   * Let the source to know what data extent we want loaded.  As there may
+   * already be features loaded, we continue with rendering after this request.
+   * If this results in loading new features, a new rendering will be triggered.
+   */
+  var layer = this.getVectorLayer();
+  var source = layer.getVectorSource();
+  source.load(tileRangeExtent, projection);
+
+  /**
    * Prepare the sketch canvas.  This covers the currently visible tile range
    * and will have rendered all newly visible features.
    */
@@ -471,10 +478,9 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   // TODO make gutter configurable?
   var tileGutter = 15 * tileResolution;
   var tile, tileCoord, key, x, y, i, type;
-  var deferred = false;
   var dirty = false;
-  var tileExtent, groups, group, j, numGroups, featuresObject, tileHasFeatures;
-  fetchTileData:
+  var tileExtent, featuresObject, tileHasFeatures;
+
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tileCoord = new ol.TileCoord(0, x, y);
@@ -488,15 +494,11 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
         tileExtent[1] -= tileGutter;
         tileExtent[3] += tileGutter;
         tileHasFeatures = false;
-        featuresObject = layer.getFeaturesObjectForExtent(tileExtent,
-            projection, this.requestMapRenderFrame_);
-        if (goog.isNull(featuresObject)) {
-          deferred = true;
-          break fetchTileData;
-        }
-        tileHasFeatures = tileHasFeatures ||
-            !goog.object.isEmpty(featuresObject);
-        goog.object.extend(featuresToRender, featuresObject);
+        source.forEachFeatureInExtent(
+            tileExtent, projection, function(feature) {
+              featuresToRender[goog.getUid(feature)] = feature;
+              tileHasFeatures = true;
+            });
         if (tileHasFeatures) {
           tilesOnSketchCanvas[key] = tileCoord;
         }
@@ -507,10 +509,16 @@ ol.renderer.canvas.VectorLayer.prototype.renderFrame =
   }
   this.dirty_ = dirty;
 
-  groups = layer.groupFeaturesBySymbolizerLiteral(featuresToRender,
-      tileResolution);
-  numGroups = groups.length;
-  for (j = 0; j < numGroups; ++j) {
+  var style = layer.getStyle();
+  if (goog.isNull(style)) {
+    style = ol.style.getDefault();
+  }
+  var groups = style.groupFeaturesBySymbolizerLiteral(
+      featuresToRender, tileResolution);
+  var numGroups = groups.length;
+  var deferred = false;
+  var group;
+  for (var j = 0; j < numGroups; ++j) {
     group = groups[j];
     deferred = sketchCanvasRenderer.renderFeatures(group[0], group[1],
         group[2]);

@@ -29,6 +29,7 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
   goog.base(this, type, map, opt_frameState);
 
   /**
+   * @const
    * @type {goog.events.BrowserEvent}
    */
   this.browserEvent = browserEvent;
@@ -47,6 +48,14 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
 
 };
 goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
+
+
+/**
+ * @return {Event} The underlying browser event object.
+ */
+ol.MapBrowserEvent.prototype.getBrowserEvent = function() {
+  return this.browserEvent.getBrowserEvent();
+};
 
 
 /**
@@ -390,12 +399,15 @@ ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
 
   this.down_ = browserEvent;
   this.dragged_ = false;
-  this.dragListenerKeys_ = [
-    goog.events.listen(goog.global.document, goog.events.EventType.TOUCHMOVE,
-        this.handleTouchMove_, false, this),
-    goog.events.listen(goog.global.document, goog.events.EventType.TOUCHEND,
-        this.handleTouchEnd_, false, this)
-  ];
+
+  if (goog.isNull(this.dragListenerKeys_)) {
+    this.dragListenerKeys_ = [
+      goog.events.listen(goog.global.document, goog.events.EventType.TOUCHMOVE,
+          this.handleTouchMove_, false, this),
+      goog.events.listen(goog.global.document, goog.events.EventType.TOUCHEND,
+          this.handleTouchEnd_, false, this)
+    ];
+  }
 
   // FIXME check if/when this is necessary
   browserEvent.preventDefault();
@@ -411,6 +423,12 @@ ol.MapBrowserEventHandler.prototype.handleTouchMove_ = function(browserEvent) {
   var newEvent = new ol.MapBrowserEvent(
       ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
+
+  // Some native android browser triggers mousemove events during small period
+  // of time. See: https://code.google.com/p/android/issues/detail?id=5491 or
+  // https://code.google.com/p/android/issues/detail?id=19827
+  // ex: Galaxy Tab P3110 + Android 4.1.1
+  browserEvent.preventDefault();
 };
 
 
@@ -422,7 +440,10 @@ ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
   var newEvent = new ol.MapBrowserEvent(
       ol.MapBrowserEvent.EventType.TOUCHEND, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
-  goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
+  if (browserEvent.getBrowserEvent().targetTouches.length === 0) {
+    goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
+    this.dragListenerKeys_ = null;
+  }
   if (!this.dragged_) {
     goog.asserts.assert(!goog.isNull(this.down_));
     this.emulateClick_(this.down_);

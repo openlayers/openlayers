@@ -21,7 +21,7 @@ ol.interaction.DRAGROTATE_ANIMATION_DURATION = 250;
  * it to when the alt and shift keys are held down.
  * @constructor
  * @extends {ol.interaction.Drag}
- * @param {ol.interaction.DragRotateOptions=} opt_options Options.
+ * @param {olx.interaction.DragRotateOptions=} opt_options Options.
  */
 ol.interaction.DragRotate = function(opt_options) {
 
@@ -74,11 +74,12 @@ ol.interaction.DragRotate.prototype.handleDrag = function(mapBrowserEvent) {
 ol.interaction.DragRotate.prototype.handleDragEnd = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   // FIXME works for View2D only
-  var view = map.getView().getView2D();
+  var view = map.getView();
   view.setHint(ol.ViewHint.INTERACTING, -1);
-  var view2DState = view.getView2DState();
-  ol.interaction.Interaction.rotate(map, view, view2DState.rotation, undefined,
-      ol.interaction.DRAGROTATE_ANIMATION_DURATION);
+  var view2D = view.getView2D();
+  var view2DState = view2D.getView2DState();
+  ol.interaction.Interaction.rotate(map, view2D, view2DState.rotation,
+      undefined, ol.interaction.DRAGROTATE_ANIMATION_DURATION);
 };
 
 

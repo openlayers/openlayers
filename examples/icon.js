@@ -1,11 +1,12 @@
+goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
 goog.require('ol.OverlayPositioning');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
+goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.parser.GeoJSON');
 goog.require('ol.source.TileJSON');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Icon');
@@ -18,22 +19,6 @@ var raster = new ol.layer.Tile({
   })
 });
 
-var data = {
-  type: 'FeatureCollection',
-  features: [{
-    type: 'Feature',
-    properties: {
-      name: 'Null Island',
-      population: 4000,
-      rainfall: 500
-    },
-    geometry: {
-      type: 'Point',
-      coordinates: [0, 0]
-    }
-  }]
-};
-
 var style = new ol.style.Style({
   symbolizers: [
     new ol.style.Icon({
@@ -45,8 +30,14 @@ var style = new ol.style.Style({
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    parser: new ol.parser.GeoJSON(),
-    data: data
+    features: [
+      new ol.Feature({
+        name: 'Null Island',
+        population: 4000,
+        rainfall: 500,
+        geometry: new ol.geom.Point([0, 0])
+      })
+    ]
   }),
   style: style
 });

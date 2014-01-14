@@ -43,7 +43,7 @@ goog.inherits(ol.geom.MultiPolygon, ol.geom.AbstractCollection);
  * @inheritDoc
  */
 ol.geom.MultiPolygon.prototype.getType = function() {
-  return ol.geom.GeometryType.MULTIPOLYGON;
+  return ol.geom.GeometryType.MULTI_POLYGON;
 };
 
 

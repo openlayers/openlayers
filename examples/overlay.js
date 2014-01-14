@@ -6,11 +6,11 @@ goog.require('ol.View2D');
 goog.require('ol.coordinate');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
-goog.require('ol.source.MapQuestOpenAerial');
+goog.require('ol.source.MapQuest');
 
 
 var layer = new ol.layer.Tile({
-  source: new ol.source.MapQuestOpenAerial()
+  source: new ol.source.MapQuest({layer: 'sat'})
 });
 
 var map = new ol.Map({

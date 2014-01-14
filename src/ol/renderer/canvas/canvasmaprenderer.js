@@ -13,6 +13,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.ImageLayer');
+goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.canvas.VectorLayer');
 goog.require('ol.source.State');
@@ -35,6 +36,8 @@ ol.renderer.canvas.Map = function(container, map) {
    */
   this.canvas_ = /** @type {HTMLCanvasElement} */
       (goog.dom.createElement(goog.dom.TagName.CANVAS));
+  this.canvas_.style.width = '100%';
+  this.canvas_.style.height = '100%';
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
   goog.dom.insertChildAt(container, this.canvas_, 0);
 
@@ -93,14 +96,15 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     return;
   }
 
+  var context = this.context_;
+
   var size = frameState.size;
   if (this.canvas_.width != size[0] || this.canvas_.height != size[1]) {
     this.canvas_.width = size[0];
     this.canvas_.height = size[1];
+  } else {
+    context.clearRect(0, 0, this.canvas_.width, this.canvas_.height);
   }
-
-  var context = this.context_;
-  context.clearRect(0, 0, size[0], size[1]);
 
   this.calculateMatrices2D(frameState);
 
@@ -111,8 +115,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
 
     layer = layersArray[i];
-    layerRenderer =
-        /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
+    layerRenderer = this.getLayerRenderer(layer);
+    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.canvas.Layer);
     layerState = layerStates[goog.getUid(layer)];
     if (!layerState.visible ||
         layerState.sourceState != ol.source.State.READY ||

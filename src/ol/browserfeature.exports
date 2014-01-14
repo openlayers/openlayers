@@ -1,0 +1,7 @@
+@exportSymbol ol.BrowserFeature
+@exportProperty ol.BrowserFeature.DEVICE_PIXEL_RATIO
+@exportProperty ol.BrowserFeature.HAS_CANVAS
+@exportProperty ol.BrowserFeature.HAS_DEVICE_ORIENTATION
+@exportProperty ol.BrowserFeature.HAS_GEOLOCATION
+@exportProperty ol.BrowserFeature.HAS_TOUCH
+@exportProperty ol.BrowserFeature.HAS_WEBGL

@@ -1,11 +1,12 @@
+goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.control');
 goog.require('ol.expr');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Point');
 goog.require('ol.layer.Vector');
-goog.require('ol.parser.GeoJSON');
-goog.require('ol.proj');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Rule');
@@ -43,7 +44,7 @@ var style = new ol.style.Style({rules: [
     ]
   }),
   new ol.style.Rule({
-    filter: 'geometryType("point")',
+    filter: 'geometryType("Point")',
     symbolizers: [
       new ol.style.Shape({
         size: 40,
@@ -62,108 +63,60 @@ var style = new ol.style.Style({rules: [
 var vector = new ol.layer.Vector({
   style: style,
   source: new ol.source.Vector({
-    data: {
-      'type': 'FeatureCollection',
-      'features': [{
-        'type': 'Feature',
-        'properties': {
-          'color': '#BADA55',
-          'where': 'inner'
-        },
-        'geometry': {
-          'type': 'LineString',
-          'coordinates': [[-10000000, -10000000], [10000000, 10000000]]
-        }
-      }, {
-        'type': 'Feature',
-        'properties': {
-          'color': '#BADA55',
-          'where': 'inner'
-        },
-        'geometry': {
-          'type': 'LineString',
-          'coordinates': [[-10000000, 10000000], [10000000, -10000000]]
-        }
-      }, {
-        'type': 'Feature',
-        'properties': {
-          'color': '#013',
-          'where': 'outer'
-        },
-        'geometry': {
-          'type': 'LineString',
-          'coordinates': [[-10000000, -10000000], [-10000000, 10000000]]
-        }
-      }, {
-        'type': 'Feature',
-        'properties': {
-          'color': '#013',
-          'where': 'outer'
-        },
-        'geometry': {
-          'type': 'LineString',
-          'coordinates': [[-10000000, 10000000], [10000000, 10000000]]
-        }
-      }, {
-        'type': 'Feature',
-        'properties': {
-          'color': '#013',
-          'where': 'outer'
-        },
-        'geometry': {
-          'type': 'LineString',
-          'coordinates': [[10000000, 10000000], [10000000, -10000000]]
-        }
-      }, {
-        'type': 'Feature',
-        'properties': {
-          'color': '#013',
-          'where': 'outer'
-        },
-        'geometry': {
-          'type': 'LineString',
-          'coordinates': [[10000000, -10000000], [-10000000, -10000000]]
-        }
-      }, {
-        'type': 'Feature',
-        'properties': {
-          'label': 'South'
-        },
-        'geometry': {
-          'type': 'Point',
-          'coordinates': [0, -6000000]
-        }
-      }, {
-        'type': 'Feature',
-        'properties': {
-          'label': 'West'
-        },
-        'geometry': {
-          'type': 'Point',
-          'coordinates': [-6000000, 0]
-        }
-      }, {
-        'type': 'Feature',
-        'properties': {
-          'label': 'North'
-        },
-        'geometry': {
-          'type': 'Point',
-          'coordinates': [0, 6000000]
-        }
-      }, {
-        'type': 'Feature',
-        'properties': {
-          'label': 'East'
-        },
-        'geometry': {
-          'type': 'Point',
-          'coordinates': [6000000, 0]
-        }
-      }]
-    },
-    parser: new ol.parser.GeoJSON(),
-    projection: ol.proj.get('EPSG:3857')
+    features: [
+      new ol.Feature({
+        color: '#BADA55',
+        where: 'inner',
+        geometry: new ol.geom.LineString(
+            [[-10000000, -10000000], [10000000, 10000000]])
+      }),
+      new ol.Feature({
+        color: '#BADA55',
+        where: 'inner',
+        geometry: new ol.geom.LineString(
+            [[-10000000, 10000000], [10000000, -10000000]])
+      }),
+      new ol.Feature({
+        color: '#013',
+        where: 'outer',
+        geometry: new ol.geom.LineString(
+            [[-10000000, -10000000], [-10000000, 10000000]])
+      }),
+      new ol.Feature({
+        color: '#013',
+        where: 'outer',
+        geometry: new ol.geom.LineString(
+            [[-10000000, 10000000], [10000000, 10000000]])
+      }),
+      new ol.Feature({
+        color: '#013',
+        where: 'outer',
+        geometry: new ol.geom.LineString(
+            [[10000000, 10000000], [10000000, -10000000]])
+      }),
+      new ol.Feature({
+        color: '#013',
+        where: 'outer',
+        geometry: new ol.geom.LineString(
+            [[10000000, -10000000], [-10000000, -10000000]])
+      }),
+      new ol.Feature({
+        label: 'South',
+        geometry: new ol.geom.Point([0, -6000000])
+      }),
+      new ol.Feature({
+        label: 'West',
+        geometry: new ol.geom.Point([-6000000, 0])
+      }),
+      new ol.Feature({
+        label: 'North',
+        geometry: new ol.geom.Point([0, 6000000])
+      }),
+      new ol.Feature({
+        label: 'East',
+        geometry: new ol.geom.Point([6000000, 0])
+      })
+    ]
   })
 });
 

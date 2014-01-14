@@ -16,19 +16,18 @@
     "//json.js",
     "../build/src/external/externs/types.js",
     "../externs/bingmaps.js",
+    "../externs/closure-compiler.js",
     "../externs/geojson.js",
-    "../externs/topojson.js",
     "../externs/oli.js",
     "../externs/proj4js.js",
     "../externs/tilejson.js",
-    "../externs/closure-compiler.js"
+    "../externs/topojson.js"
   ],
 
   "inherits": "base.json",
 
   "inputs": [
-    "../build/src/external/src/exports.js",
-    "../build/src/external/src/types.js"
+    "../build/src/external/src/exports.js"
   ],
 
   "output-wrapper": "// OpenLayers 3. see http://ol3js.org/\n(function(){%output%})();",

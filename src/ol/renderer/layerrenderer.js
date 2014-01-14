@@ -20,6 +20,8 @@ goog.require('ol.source.Tile');
  * @extends {goog.Disposable}
  * @param {ol.renderer.Map} mapRenderer Map renderer.
  * @param {ol.layer.Layer} layer Layer.
+ * @suppress {checkStructDictInheritance}
+ * @struct
  */
 ol.renderer.Layer = function(mapRenderer, layer) {
 
@@ -173,7 +175,7 @@ ol.renderer.Layer.prototype.updateAttributions =
 ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
   var logo = source.getLogo();
   if (goog.isDef(logo)) {
-    frameState.logos[logo] = true;
+    frameState.logos[logo] = '';
   }
 };
 

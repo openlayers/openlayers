@@ -28,7 +28,7 @@ ol.source.WMTSRequestEncoding = {
 /**
  * @constructor
  * @extends {ol.source.TileImage}
- * @param {ol.source.WMTSOptions} options WMTS options.
+ * @param {olx.source.WMTSOptions} options WMTS options.
  * @todo stability experimental
  */
 ol.source.WMTS = function(options) {
@@ -237,7 +237,7 @@ ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
 /**
  * @param {Object} wmtsCap An object representing the capabilities document.
  * @param {string} layer The layer identifier.
- * @return {ol.source.WMTSOptions} WMTS source options object.
+ * @return {olx.source.WMTSOptions} WMTS source options object.
  * @todo stability experimental
  */
 ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, layer) {

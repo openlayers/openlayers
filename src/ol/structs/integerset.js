@@ -9,6 +9,7 @@ goog.require('goog.asserts');
  * This implementation is designed for the case when the number of distinct
  * integer ranges is small.
  * @constructor
+ * @struct
  * @param {Array.<number>=} opt_arr Array.
  */
 ol.structs.IntegerSet = function(opt_arr) {

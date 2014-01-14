@@ -1,9 +1,6 @@
 goog.provide('ol.webgl');
 goog.provide('ol.webgl.WebGLContextEventType');
 
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
-
 
 /**
  * @const
@@ -45,22 +42,3 @@ ol.webgl.getContext = function(canvas, opt_attributes) {
   }
   return null;
 };
-
-
-/**
- * Is supported.
- * @const
- * @type {boolean}
- */
-ol.webgl.SUPPORTED = (function() {
-  if (!('WebGLRenderingContext' in goog.global)) {
-    return false;
-  }
-  try {
-    var canvas = /** @type {HTMLCanvasElement} */
-        (goog.dom.createElement(goog.dom.TagName.CANVAS));
-    return !goog.isNull(ol.webgl.getContext(canvas));
-  } catch (e) {
-    return false;
-  }
-})();

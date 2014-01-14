@@ -1,7 +1,7 @@
 goog.provide('ol.test.interaction.Draw');
 
 describe('ol.interaction.Draw', function() {
-  var target, map, vector;
+  var target, map, source, layer;
 
   var width = 360;
   var height = 180;
@@ -15,11 +15,12 @@ describe('ol.interaction.Draw', function() {
     style.width = width + 'px';
     style.height = height + 'px';
     document.body.appendChild(target);
-    vector = new ol.layer.Vector({source: new ol.source.Vector({})});
+    source = new ol.source.Vector();
+    layer = new ol.layer.Vector({source: source});
     map = new ol.Map({
       target: target,
       renderer: ol.RendererHint.CANVAS,
-      layers: [vector],
+      layers: [layer],
       view: new ol.View2D({
         projection: 'EPSG:4326',
         center: [0, 0],
@@ -56,7 +57,7 @@ describe('ol.interaction.Draw', function() {
 
     it('creates a new interaction', function() {
       var draw = new ol.interaction.Draw({
-        layer: vector,
+        layer: layer,
         type: ol.geom.GeometryType.POINT
       });
       expect(draw).to.be.a(ol.interaction.Draw);
@@ -69,7 +70,7 @@ describe('ol.interaction.Draw', function() {
 
     beforeEach(function() {
       map.addInteraction(new ol.interaction.Draw({
-        layer: vector,
+        layer: layer,
         type: ol.geom.GeometryType.POINT
       }));
     });
@@ -79,7 +80,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mousedown', 10, 20);
       simulateEvent('mouseup', 10, 20);
       simulateEvent('click', 10, 20);
-      var features = vector.getFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.Point);
@@ -92,7 +93,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mousemove', 15, 20);
       simulateEvent('mouseup', 15, 20);
       simulateEvent('click', 15, 20);
-      var features = vector.getFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(0);
     });
 
@@ -102,8 +103,8 @@ describe('ol.interaction.Draw', function() {
 
     beforeEach(function() {
       map.addInteraction(new ol.interaction.Draw({
-        layer: vector,
-        type: ol.geom.GeometryType.MULTIPOINT
+        layer: layer,
+        type: ol.geom.GeometryType.MULTI_POINT
       }));
     });
 
@@ -112,7 +113,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mousedown', 30, 15);
       simulateEvent('mouseup', 30, 15);
       simulateEvent('click', 30, 15);
-      var features = vector.getFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.MultiPoint);
@@ -125,8 +126,8 @@ describe('ol.interaction.Draw', function() {
 
     beforeEach(function() {
       map.addInteraction(new ol.interaction.Draw({
-        layer: vector,
-        type: ol.geom.GeometryType.LINESTRING
+        layer: layer,
+        type: ol.geom.GeometryType.LINE_STRING
       }));
     });
 
@@ -148,7 +149,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mouseup', 30, 20);
       simulateEvent('click', 30, 20);
 
-      var features = vector.getFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.LineString);
@@ -181,7 +182,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mouseup', 30, 20);
       simulateEvent('click', 30, 20);
 
-      var features = vector.getFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.LineString);
@@ -194,8 +195,8 @@ describe('ol.interaction.Draw', function() {
 
     beforeEach(function() {
       map.addInteraction(new ol.interaction.Draw({
-        layer: vector,
-        type: ol.geom.GeometryType.MULTILINESTRING
+        layer: layer,
+        type: ol.geom.GeometryType.MULTI_LINE_STRING
       }));
     });
 
@@ -217,7 +218,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mouseup', 30, 20);
       simulateEvent('click', 30, 20);
 
-      var features = vector.getFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.MultiLineString);
@@ -230,7 +231,7 @@ describe('ol.interaction.Draw', function() {
 
     beforeEach(function() {
       map.addInteraction(new ol.interaction.Draw({
-        layer: vector,
+        layer: layer,
         type: ol.geom.GeometryType.POLYGON
       }));
     });
@@ -260,7 +261,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mouseup', 10, 20);
       simulateEvent('click', 10, 20);
 
-      var features = vector.getFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.Polygon);
@@ -277,8 +278,8 @@ describe('ol.interaction.Draw', function() {
 
     beforeEach(function() {
       map.addInteraction(new ol.interaction.Draw({
-        layer: vector,
-        type: ol.geom.GeometryType.MULTIPOLYGON
+        layer: layer,
+        type: ol.geom.GeometryType.MULTI_POLYGON
       }));
     });
 
@@ -307,7 +308,7 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('mouseup', 10, 20);
       simulateEvent('click', 10, 20);
 
-      var features = vector.getFeatures();
+      var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.MultiPolygon);

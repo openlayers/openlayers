@@ -18,7 +18,7 @@ goog.require('ol.interaction.Drag');
  * Allows the user to pan the map by clickng and dragging.
  * @constructor
  * @extends {ol.interaction.Drag}
- * @param {ol.interaction.DragPanOptions=} opt_options Options.
+ * @param {olx.interaction.DragPanOptions=} opt_options Options.
  * @todo stability experimental
  */
 ol.interaction.DragPan = function(opt_options) {
@@ -84,11 +84,13 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
   // FIXME works for View2D only
 
   var map = mapBrowserEvent.map;
-  var view = map.getView().getView2D();
+  var view = map.getView();
   view.setHint(ol.ViewHint.INTERACTING, -1);
 
   if (this.kinetic_ && this.kinetic_.end()) {
-    var view2DState = view.getView2DState();
+    var view2D = view.getView2D();
+    goog.asserts.assertInstanceof(view2D, ol.View2D);
+    var view2DState = view2D.getView2DState();
     var distance = this.kinetic_.getDistance();
     var angle = this.kinetic_.getAngle();
     this.kineticPreRenderFn_ = this.kinetic_.pan(view2DState.center);
@@ -99,8 +101,8 @@ ol.interaction.DragPan.prototype.handleDragEnd = function(mapBrowserEvent) {
       centerpx[0] - distance * Math.cos(angle),
       centerpx[1] - distance * Math.sin(angle)
     ]);
-    dest = view.constrainCenter(dest);
-    view.setCenter(dest);
+    dest = view2D.constrainCenter(dest);
+    view2D.setCenter(dest);
   }
   map.requestRenderFrame();
 };

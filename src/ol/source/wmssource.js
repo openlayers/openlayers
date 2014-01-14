@@ -1,6 +1,7 @@
 goog.provide('ol.source.WMSGetFeatureInfoMethod');
 goog.provide('ol.source.wms');
 
+goog.require('goog.Uri');
 goog.require('goog.net.XhrIo');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
@@ -66,8 +67,8 @@ ol.source.wms.getUrl =
 /**
  * @param {string} url URL as provided by the url function.
  * @param {ol.Pixel} pixel Pixel.
- * @param {ol.source.WMSGetFeatureInfoOptions} options Options as defined in the
- *     source.
+ * @param {olx.source.WMSGetFeatureInfoOptions} options Options as defined in
+ *     the source.
  * @param {function(string)} success Callback function for successful queries.
  * @param {function()=} opt_error Optional callback function for unsuccessful
  *     queries.
@@ -78,9 +79,9 @@ ol.source.wms.getFeatureInfo =
   // closure
   url = url.replace('REQUEST=GetMap', 'REQUEST=GetFeatureInfo')
       .replace(ol.source.wms.regExes.layers, 'LAYERS=$1&QUERY_LAYERS=$1');
-  options = /** @type {ol.source.WMSGetFeatureInfoOptions} */
+  options = /** @type {olx.source.WMSGetFeatureInfoOptions} */
       (goog.isDef(options) ? goog.object.clone(options) : {});
-  var localOptions = /** @type {ol.source.WMSGetFeatureInfoOptions} */ ({
+  var localOptions = /** @type {olx.source.WMSGetFeatureInfoOptions} */ ({
     method: ol.source.WMSGetFeatureInfoMethod.IFRAME,
     params: {}
   });
@@ -95,7 +96,11 @@ ol.source.wms.getFeatureInfo =
     goog.object.extend(params, {'X': x, 'Y': y});
   }
   goog.object.extend(params, localOptions.params);
-  url = goog.uri.utils.appendParamsFromMap(url, params);
+  var uri = new goog.Uri(url, true);
+  for (var key in params) {
+    uri.setParameterValue(key, params[key]);
+  }
+  url = uri.toString();
   if (localOptions.method == ol.source.WMSGetFeatureInfoMethod.IFRAME) {
     goog.global.setTimeout(function() {
       success('<iframe seamless src="' + url + '"></iframe>');

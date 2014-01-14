@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.dom.ImageLayer');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
@@ -11,6 +12,7 @@ goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.layer.Image');
 goog.require('ol.renderer.dom.Layer');
+goog.require('ol.source.Image');
 
 
 
@@ -35,21 +37,12 @@ ol.renderer.dom.ImageLayer = function(mapRenderer, imageLayer) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.AnyType}
+   * @type {goog.vec.Mat4.Number}
    */
   this.transform_ = goog.vec.Mat4.createNumberIdentity();
 
 };
 goog.inherits(ol.renderer.dom.ImageLayer, ol.renderer.dom.Layer);
-
-
-/**
- * @protected
- * @return {ol.layer.Image} Image layer.
- */
-ol.renderer.dom.ImageLayer.prototype.getImageLayer = function() {
-  return /** @type {ol.layer.Image} */ (this.getLayer());
-};
 
 
 /**
@@ -64,8 +57,10 @@ ol.renderer.dom.ImageLayer.prototype.renderFrame =
   var viewRotation = view2DState.rotation;
 
   var image = this.image_;
-  var imageLayer = this.getImageLayer();
-  var imageSource = imageLayer.getImageSource();
+  var imageLayer = this.getLayer();
+  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image);
+  var imageSource = imageLayer.getSource();
+  goog.asserts.assertInstanceof(imageSource, ol.source.Image);
 
   var hints = frameState.viewHints;
 
@@ -123,7 +118,7 @@ ol.renderer.dom.ImageLayer.prototype.renderFrame =
 
 
 /**
- * @param {goog.vec.Mat4.AnyType} transform Transform.
+ * @param {goog.vec.Mat4.Number} transform Transform.
  * @private
  */
 ol.renderer.dom.ImageLayer.prototype.setTransform_ = function(transform) {

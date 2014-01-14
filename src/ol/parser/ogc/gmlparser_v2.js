@@ -11,7 +11,7 @@ goog.require('ol.parser.ogc.GML');
  * version 2.1.2
  *
  * @constructor
- * @param {ol.parser.GMLOptions=} opt_options Optional configuration object.
+ * @param {olx.parser.GMLOptions=} opt_options Optional configuration object.
  * @extends {ol.parser.ogc.GML}
  * @todo stability experimental
  */
@@ -54,7 +54,8 @@ ol.parser.ogc.GML_v2 = function(opt_options) {
       for (var i = 0; i < numCoordinates; ++i) {
         var coord = coordinates[i];
         var part = goog.array.concat(coord);
-        if (this.axisOrientation.substr(0, 2) !== 'en') {
+        if (goog.isDef(this.axisOrientation) &&
+            this.axisOrientation.substr(0, 2) !== 'en') {
           part[0] = coord[1];
           part[1] = coord[0];
         }
@@ -126,7 +127,7 @@ goog.inherits(ol.parser.ogc.GML_v2, ol.parser.ogc.GML);
 /**
  * @param {ol.parser.ReadFeaturesResult} obj Object structure to write out as
  * GML.
- * @param {ol.parser.GMLWriteOptions=} opt_options Write options.
+ * @param {olx.parser.GMLWriteOptions=} opt_options Write options.
  * @return {string} A string representing the GML document.
  * @todo stability experimental
  */

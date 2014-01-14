@@ -163,6 +163,19 @@ describe('ol.parser.KML', function() {
       expect(obj.features[0].get('description')).to.eql('Full of text.');
       expect(obj.features[0].get('name')).to.eql('Pezinok');
     });
+    it('Test CDATA attributes with newlines', function() {
+      var cdata = '<kml xmlns="http://earth.google.com/kml/2.0"><Document>' +
+          '<Placemark><name><![CDATA[Pezinok]]> </name><description>' +
+          '\n' +
+          '<![CDATA[Full of text.]]>' +
+          '\n' +
+          '</description><styleUrl>#rel1.0' +
+          '</styleUrl><Point> <coordinates>17.266666, 48.283333</coordinates>' +
+          '</Point></Placemark></Document></kml>';
+      var obj = parser.read(cdata);
+      expect(obj.features[0].get('description')).to.eql('Full of text.');
+      expect(obj.features[0].get('name')).to.eql('Pezinok');
+    });
 
     it('handles line style (read / write)', function() {
       var kml = '<kml xmlns="http://www.opengis.net/kml/2.2" ' +
@@ -185,7 +198,7 @@ describe('ol.parser.KML', function() {
       var stroke = symbolizers[0];
       expect(stroke).to.be.a(ol.style.Stroke);
 
-      var literal = stroke.createLiteral(ol.geom.GeometryType.LINESTRING);
+      var literal = stroke.createLiteral(ol.geom.GeometryType.LINE_STRING);
       expect(literal).to.be.a(ol.style.LineLiteral);
       expect(literal.color).to.eql('#ff0000');
       expect(literal.opacity).to.eql(0.5294117647058824);

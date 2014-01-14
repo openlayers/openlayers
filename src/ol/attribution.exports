@@ -1,1 +1,1 @@
-@exportClass ol.Attribution ol.AttributionOptions
+@exportSymbol ol.Attribution

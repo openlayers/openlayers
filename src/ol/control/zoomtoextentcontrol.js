@@ -17,7 +17,7 @@ goog.require('ol.css');
  * css selector `.ol-zoom-extent`.
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.ZoomToExtentOptions=} opt_options Options.
+ * @param {olx.control.ZoomToExtentOptions=} opt_options Options.
  * @todo stability experimental
  */
 ol.control.ZoomToExtent = function(opt_options) {

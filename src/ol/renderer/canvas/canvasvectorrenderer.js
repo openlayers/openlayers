@@ -8,6 +8,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Feature');
+goog.require('ol.FeatureRenderIntent');
 goog.require('ol.geom.AbstractCollection');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
@@ -17,7 +18,6 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.layer.VectorLayerRenderIntent');
 goog.require('ol.style.IconLiteral');
 goog.require('ol.style.LineLiteral');
 goog.require('ol.style.Literal');
@@ -160,7 +160,7 @@ ol.renderer.canvas.Vector.prototype.renderLineStringFeatures_ =
   context.beginPath();
   for (i = 0, ii = features.length; i < ii; ++i) {
     feature = features[i];
-    if (feature.getRenderIntent() == ol.layer.VectorLayerRenderIntent.HIDDEN) {
+    if (feature.getRenderIntent() == ol.FeatureRenderIntent.HIDDEN) {
       continue;
     }
     id = goog.getUid(feature);
@@ -249,7 +249,7 @@ ol.renderer.canvas.Vector.prototype.renderPointFeatures_ =
   context.globalAlpha = alpha;
   for (i = 0, ii = features.length; i < ii; ++i) {
     feature = features[i];
-    if (feature.getRenderIntent() == ol.layer.VectorLayerRenderIntent.HIDDEN) {
+    if (feature.getRenderIntent() == ol.FeatureRenderIntent.HIDDEN) {
       continue;
     }
     id = goog.getUid(feature);
@@ -274,6 +274,7 @@ ol.renderer.canvas.Vector.prototype.renderPointFeatures_ =
     }
     for (j = 0, jj = components.length; j < jj; ++j) {
       point = components[j];
+      goog.asserts.assertInstanceof(point, ol.geom.Point);
       vec = [point.get(0), point.get(1), 0];
       goog.vec.Mat4.multVec3(this.transform_, vec, vec);
       context.drawImage(content, Math.round(vec[0] + xOffset),
@@ -325,7 +326,7 @@ ol.renderer.canvas.Vector.prototype.renderText_ =
 
   for (var i = 0, ii = features.length; i < ii; ++i) {
     feature = features[i];
-    if (feature.getRenderIntent() == ol.layer.VectorLayerRenderIntent.HIDDEN) {
+    if (feature.getRenderIntent() == ol.FeatureRenderIntent.HIDDEN) {
       continue;
     }
     vecs = ol.renderer.canvas.Vector.getLabelVectors(
@@ -393,7 +394,7 @@ ol.renderer.canvas.Vector.prototype.renderPolygonFeatures_ =
   context.beginPath();
   for (i = 0, ii = features.length; i < ii; ++i) {
     feature = features[i];
-    if (feature.getRenderIntent() == ol.layer.VectorLayerRenderIntent.HIDDEN) {
+    if (feature.getRenderIntent() == ol.FeatureRenderIntent.HIDDEN) {
       continue;
     }
     geometry = feature.getGeometry();
@@ -406,6 +407,7 @@ ol.renderer.canvas.Vector.prototype.renderPolygonFeatures_ =
     }
     for (j = 0, jj = components.length; j < jj; ++j) {
       poly = components[j];
+      goog.asserts.assertInstanceof(poly, ol.geom.Polygon);
       rings = poly.getRings();
       numRings = rings.length;
       if (numRings > 0) {
@@ -537,9 +539,11 @@ ol.renderer.canvas.Vector.getLabelVectors = function(geometry) {
   }
   var type = geometry.getType();
   if (type == ol.geom.GeometryType.POINT) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.Point);
     return [[geometry.get(0), geometry.get(1), 0]];
   }
   if (type == ol.geom.GeometryType.POLYGON) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
     var coordinates = geometry.getInteriorPoint();
     return [[coordinates[0], coordinates[1], 0]];
   }

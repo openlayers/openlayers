@@ -1,24 +1,41 @@
 goog.provide('ol.geom.Geometry');
-goog.provide('ol.geom.GeometryEvent');
 goog.provide('ol.geom.GeometryType');
 
-goog.require('goog.events.Event');
-goog.require('goog.events.EventTarget');
+goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.Extent');
+goog.require('ol.Observable');
 goog.require('ol.TransformFunction');
+
+
+/**
+ * Geometry types.
+ *
+ * @enum {string}
+ * @todo stability stable
+ */
+ol.geom.GeometryType = {
+  POINT: 'Point',
+  LINE_STRING: 'LineString',
+  LINEAR_RING: 'LinearRing',
+  POLYGON: 'Polygon',
+  MULTI_POINT: 'MultiPoint',
+  MULTI_LINE_STRING: 'MultiLineString',
+  MULTI_POLYGON: 'MultiPolygon',
+  GEOMETRY_COLLECTION: 'GeometryCollection'
+};
 
 
 
 /**
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.Observable}
  * @todo stability experimental
  */
 ol.geom.Geometry = function() {
   goog.base(this);
 };
-goog.inherits(ol.geom.Geometry, goog.events.EventTarget);
+goog.inherits(ol.geom.Geometry, ol.Observable);
 
 
 /**
@@ -57,36 +74,9 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 ol.geom.Geometry.prototype.transform = goog.abstractMethod;
 
 
-
 /**
- * Constructor for geometry events.
- * @constructor
- * @extends {goog.events.Event}
- * @param {string} type Event type.
- * @param {ol.geom.Geometry} target The target geometry.
- * @param {ol.Extent} oldExtent The previous geometry extent.
+ * Dispatch a generic event with type "change."
  */
-ol.geom.GeometryEvent = function(type, target, oldExtent) {
-  goog.base(this, type, target);
-
-  this.oldExtent = oldExtent;
-};
-goog.inherits(ol.geom.GeometryEvent, goog.events.Event);
-
-
-/**
- * Geometry types.
- *
- * @enum {string}
- * @todo stability experimental
- */
-ol.geom.GeometryType = {
-  POINT: 'point',
-  LINESTRING: 'linestring',
-  LINEARRING: 'linearring',
-  POLYGON: 'polygon',
-  MULTIPOINT: 'multipoint',
-  MULTILINESTRING: 'multilinestring',
-  MULTIPOLYGON: 'multipolygon',
-  GEOMETRYCOLLECTION: 'geometrycollection'
+ol.geom.Geometry.prototype.dispatchChangeEvent = function() {
+  this.dispatchEvent(goog.events.EventType.CHANGE);
 };

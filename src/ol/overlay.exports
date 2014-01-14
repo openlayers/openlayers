@@ -1,4 +1,4 @@
-@exportClass ol.Overlay ol.OverlayOptions
+@exportSymbol ol.Overlay
 
 @exportSymbol ol.OverlayPositioning
 @exportProperty ol.OverlayPositioning.BOTTOM_LEFT

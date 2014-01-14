@@ -1,6 +1,6 @@
-goog.provide('ol.source.MapQuestOSM');
-goog.provide('ol.source.MapQuestOpenAerial');
+goog.provide('ol.source.MapQuest');
 
+goog.require('goog.asserts');
 goog.require('ol.Attribution');
 goog.require('ol.source.OSM');
 goog.require('ol.source.XYZ');
@@ -10,66 +10,69 @@ goog.require('ol.source.XYZ');
 /**
  * @constructor
  * @extends {ol.source.XYZ}
- * @param {ol.source.MapQuestOptions=} opt_options MapQuest options.
+ * @param {olx.source.MapQuestOptions=} opt_options MapQuest options.
  * @todo stability experimental
  */
-ol.source.MapQuestOSM = function(opt_options) {
+ol.source.MapQuest = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
+  goog.asserts.assert(options.layer in ol.source.MapQuestConfig);
 
-  var attributions = [
-    new ol.Attribution({
-      html: 'Tiles Courtesy of ' +
-          '<a href="http://www.mapquest.com/" target="_blank">MapQuest</a>'
-    }),
-    ol.source.OSM.DATA_ATTRIBUTION
-  ];
+  var layerConfig = ol.source.MapQuestConfig[options.layer];
+
+  var url = 'http://otile{1-4}.mqcdn.com/tiles/1.0.0/' +
+      options.layer + '/{z}/{x}/{y}.jpg';
 
   goog.base(this, {
-    attributions: attributions,
+    attributions: layerConfig.attributions,
     crossOrigin: 'anonymous',
     logo: 'http://developer.mapquest.com/content/osm/mq_logo.png',
+    maxZoom: layerConfig.maxZoom,
     opaque: true,
-    maxZoom: 28,
     tileLoadFunction: options.tileLoadFunction,
-    url: 'http://otile{1-4}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.jpg'
+    url: url
   });
 
 };
-goog.inherits(ol.source.MapQuestOSM, ol.source.XYZ);
-
+goog.inherits(ol.source.MapQuest, ol.source.XYZ);
 
 
 /**
- * @constructor
- * @extends {ol.source.XYZ}
- * @param {ol.source.MapQuestOptions=} opt_options MapQuest options.
- * @todo stability experimental
+ * @const
+ * @type {ol.Attribution}
  */
-ol.source.MapQuestOpenAerial = function(opt_options) {
+ol.source.MapQuest.TILE_ATTRIBUTION = new ol.Attribution({
+  html: 'Tiles Courtesy of ' +
+      '<a href="http://www.mapquest.com/" target="_blank">MapQuest</a>'
+});
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
 
-  var attributions = [
-    new ol.Attribution({
-      html: 'Tiles Courtesy of ' +
-          '<a href="http://www.mapquest.com/" target="_blank">MapQuest</a>'
-    }),
-    new ol.Attribution({
-      html: 'Portions Courtesy NASA/JPL-Caltech and ' +
-          'U.S. Depart. of Agriculture, Farm Service Agency'
-    })
-  ];
-
-  goog.base(this, {
-    attributions: attributions,
-    crossOrigin: 'anonymous',
-    logo: 'http://developer.mapquest.com/content/osm/mq_logo.png',
+/**
+ * @type {Object.<string, {maxZoom: number, attributions: (Array.<ol.Attribution>)}>}
+ */
+ol.source.MapQuestConfig = {
+  'osm': {
+    maxZoom: 28,
+    attributions: [
+      ol.source.MapQuest.TILE_ATTRIBUTION,
+      ol.source.OSM.DATA_ATTRIBUTION
+    ]
+  },
+  'sat': {
     maxZoom: 18,
-    opaque: true,
-    tileLoadFunction: options.tileLoadFunction,
-    url: 'http://oatile{1-4}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg'
-  });
-
+    attributions: [
+      ol.source.MapQuest.TILE_ATTRIBUTION,
+      new ol.Attribution({
+        html: 'Portions Courtesy NASA/JPL-Caltech and ' +
+            'U.S. Depart. of Agriculture, Farm Service Agency'
+      })
+    ]
+  },
+  'hyb': {
+    maxZoom: 18,
+    attributions: [
+      ol.source.MapQuest.TILE_ATTRIBUTION,
+      ol.source.OSM.DATA_ATTRIBUTION
+    ]
+  }
 };
-goog.inherits(ol.source.MapQuestOpenAerial, ol.source.XYZ);

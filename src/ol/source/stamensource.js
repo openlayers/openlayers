@@ -80,7 +80,7 @@ ol.source.StamenProviderConfig = {
 /**
  * @constructor
  * @extends {ol.source.XYZ}
- * @param {ol.source.StamenOptions} options Stamen options.
+ * @param {olx.source.StamenOptions} options Stamen options.
  * @todo stability experimental
  */
 ol.source.Stamen = function(options) {
@@ -113,7 +113,8 @@ goog.inherits(ol.source.Stamen, ol.source.XYZ);
 
 
 /**
- * @const {Array.<ol.Attribution>}
+ * @const
+ * @type {Array.<ol.Attribution>}
  */
 ol.source.Stamen.ATTRIBUTIONS = [
   new ol.Attribution({

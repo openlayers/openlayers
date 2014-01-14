@@ -37,9 +37,9 @@ ol.TileUrlFunction.createFromTemplate = function(template) {
         if (goog.isNull(tileCoord)) {
           return undefined;
         } else {
-          return template.replace('{z}', '' + tileCoord.z)
-                         .replace('{x}', '' + tileCoord.x)
-                         .replace('{y}', '' + tileCoord.y);
+          return template.replace('{z}', tileCoord.z.toString())
+                         .replace('{x}', tileCoord.x.toString())
+                         .replace('{y}', tileCoord.y.toString());
         }
       });
 };
@@ -84,14 +84,16 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
 
 /**
  * @param {string} baseUrl Base URL (may have query data).
- * @param {Object.<string,*>} params to encode in the URL.
+ * @param {Object.<string,*>} params Params to encode in the URL.
+ * @param {number} gutter Gutter value.
  * @param {function(this: ol.source.TileImage, string, Object.<string,*>,
  *     ol.Extent, ol.Size, ol.proj.Projection)} paramsFunction params function.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
 ol.TileUrlFunction.createFromParamsFunction =
-    function(baseUrl, params, paramsFunction) {
+    function(baseUrl, params, gutter, paramsFunction) {
   var tmpExtent = ol.extent.createEmpty();
+  var tmpSize = [0, 0];
   return (
       /**
        * @this {ol.source.TileImage}
@@ -107,10 +109,14 @@ ol.TileUrlFunction.createFromParamsFunction =
           if (goog.isNull(tileGrid)) {
             tileGrid = ol.tilegrid.getForProjection(projection);
           }
-          var size = tileGrid.getTileSize(tileCoord.z);
+          var tileResolution = tileGrid.getResolution(tileCoord.z);
+          var tileSize = tileGrid.getTileSize(tileCoord.z);
+          tmpSize[0] = tileSize[0] + (2 * gutter);
+          tmpSize[1] = tileSize[1] + (2 * gutter);
           var extent = tileGrid.getTileCoordExtent(tileCoord, tmpExtent);
+          ol.extent.buffer(extent, tileResolution * gutter);
           return paramsFunction.call(this, baseUrl, params,
-              extent, size, projection);
+              extent, tmpSize, projection);
         }
       });
 };

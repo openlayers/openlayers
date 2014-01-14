@@ -1,9 +1,9 @@
+goog.require('ol.BrowserFeature');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
-goog.require('ol.source.MapQuestOpenAerial');
-goog.require('ol.webgl');
+goog.require('ol.source.MapQuest');
 
 
 function setResetBrightnessButtonHTML() {
@@ -15,7 +15,7 @@ function setResetContrastButtonHTML() {
   resetContrast.innerHTML = 'Contrast (' + layer.getContrast().toFixed(3) + ')';
 }
 
-if (!ol.webgl.SUPPORTED) {
+if (!ol.BrowserFeature.HAS_WEBGL) {
   var info = document.getElementById('no-webgl');
   /**
    * display error message
@@ -23,7 +23,7 @@ if (!ol.webgl.SUPPORTED) {
   info.style.display = '';
 } else {
   var layer = new ol.layer.Tile({
-    source: new ol.source.MapQuestOpenAerial()
+    source: new ol.source.MapQuest({layer: 'sat'})
   });
 
   var map = new ol.Map({

@@ -22,12 +22,12 @@ goog.require('ol.proj');
 /**
  * @constructor
  * @implements {ol.parser.StringFeatureParser}
- * @param {ol.parser.GMLOptions=} opt_options
+ * @param {olx.parser.GMLOptions=} opt_options
  *     Optional configuration object.
  * @extends {ol.parser.XML}
  */
 ol.parser.ogc.GML = function(opt_options) {
-  var options = /** @type {ol.parser.GMLOptions} */
+  var options = /** @type {olx.parser.GMLOptions} */
       (goog.isDef(opt_options) ? opt_options : {});
   this.extractAttributes = goog.isDef(options.extractAttributes) ?
       options.extractAttributes : true;
@@ -102,7 +102,7 @@ ol.parser.ogc.GML = function(opt_options) {
             [node, parts, container]);
         this.readChildNodes(node, parts);
         container.geometry = {
-          type: ol.geom.GeometryType.GEOMETRYCOLLECTION,
+          type: ol.geom.GeometryType.GEOMETRY_COLLECTION,
           parts: parts
         };
       },
@@ -115,7 +115,7 @@ ol.parser.ogc.GML = function(opt_options) {
             [node, parts, container]);
         this.readChildNodes(node, parts);
         container.geometry = {
-          type: ol.geom.GeometryType.MULTIPOINT,
+          type: ol.geom.GeometryType.MULTI_POINT,
           parts: parts
         };
       },
@@ -128,7 +128,7 @@ ol.parser.ogc.GML = function(opt_options) {
             [node, parts, container]);
         this.readChildNodes(node, parts);
         container.geometry = {
-          type: ol.geom.GeometryType.MULTILINESTRING,
+          type: ol.geom.GeometryType.MULTI_LINE_STRING,
           parts: parts
         };
       },
@@ -141,11 +141,14 @@ ol.parser.ogc.GML = function(opt_options) {
             [node, parts, container]);
         this.readChildNodes(node, parts);
         container.geometry = {
-          type: ol.geom.GeometryType.MULTIPOLYGON,
+          type: ol.geom.GeometryType.MULTI_POLYGON,
           parts: parts
         };
       },
       'polygonMember': function(node, obj) {
+        this.readChildNodes(node, obj);
+      },
+      'boundedBy': function(node, obj) {
         this.readChildNodes(node, obj);
       },
       'Point': function(node, container) {
@@ -170,7 +173,7 @@ ol.parser.ogc.GML = function(opt_options) {
             [node, coordinates, container]);
         this.readChildNodes(node, coordinates);
         var linestring = {
-          type: ol.geom.GeometryType.LINESTRING,
+          type: ol.geom.GeometryType.LINE_STRING,
           coordinates: coordinates[0]
         };
         // in the case of a multi geometry this is parts
@@ -206,7 +209,7 @@ ol.parser.ogc.GML = function(opt_options) {
           container.push(coordinates);
         } else {
           container.geometry = {
-            type: ol.geom.GeometryType.LINEARRING,
+            type: ol.geom.GeometryType.LINEAR_RING,
             coordinates: coordinates[0]
           };
         }
@@ -317,10 +320,10 @@ ol.parser.ogc.GML = function(opt_options) {
       obj.features.push(feature);
     },
     '_geometry': function(node, obj) {
-      if (!this.geometryName) {
-        this.geometryName = node.nodeName.split(':').pop();
-      }
+      var local = node.localName || node.nodeName.split(':').pop();
       this.readChildNodes(node, obj);
+      obj.properties[local] = this.createGeometry({geometry: obj.geometry});
+      delete obj.geometry;
     },
     '_attribute': function(node, obj) {
       var local = node.localName || node.nodeName.split(':').pop();
@@ -387,7 +390,8 @@ ol.parser.ogc.GML = function(opt_options) {
       },
       'geometryMember': function(geometry) {
         var node = this.createElementNS('gml:geometryMember');
-        var child = this.writeNode('_geometry', geometry, this.featureNS);
+        var child = this.writeNode('_geometry', {value: geometry},
+            this.featureNS);
         node.appendChild(child.firstChild);
         return node;
       }
@@ -410,7 +414,7 @@ ol.parser.ogc.GML = function(opt_options) {
       }
     }
   };
-  this.featureNSWiters_ = {
+  this.featureNSWriters_ = {
     '_typeName': function(feature) {
       var node = this.createElementNS('feature:' + this.featureType,
           this.featureNS);
@@ -418,40 +422,42 @@ ol.parser.ogc.GML = function(opt_options) {
       if (goog.isDef(fid)) {
         this.setAttributeNS(node, this.defaultNamespaceURI, 'fid', fid);
       }
-      if (feature.getGeometry() !== null) {
-        this.writeNode('_geometry', feature.getGeometry(), this.featureNS,
-            node);
-      }
-      var attributes = feature.getAttributes(true);
+      var attributes = feature.getAttributes();
       for (var name in attributes) {
         var value = attributes[name];
         if (goog.isDefAndNotNull(value)) {
-          this.writeNode('_attribute', {name: name, value: value},
-              this.featureNS, node);
+          if (value instanceof ol.geom.Geometry) {
+            this.writeNode('_geometry', {name: name, value: value},
+                this.featureNS, node);
+          } else {
+            this.writeNode('_attribute', {name: name, value: value},
+                this.featureNS, node);
+          }
         }
       }
       return node;
     },
-    '_geometry': function(geometry) {
-      var node = this.createElementNS('feature:' + this.geometryName,
+    '_geometry': function(obj) {
+      var node = this.createElementNS('feature:' + obj.name,
           this.featureNS);
+      var geometry = obj.value;
       var type = geometry.getType(), child;
       if (type === ol.geom.GeometryType.POINT) {
         child = this.writeNode('Point', geometry, null, node);
-      } else if (type === ol.geom.GeometryType.MULTIPOINT) {
+      } else if (type === ol.geom.GeometryType.MULTI_POINT) {
         child = this.writeNode('MultiPoint', geometry, null, node);
-      } else if (type === ol.geom.GeometryType.LINEARRING) {
+      } else if (type === ol.geom.GeometryType.LINEAR_RING) {
         child = this.writeNode('LinearRing', geometry.getCoordinates(), null,
             node);
-      } else if (type === ol.geom.GeometryType.LINESTRING) {
+      } else if (type === ol.geom.GeometryType.LINE_STRING) {
         child = this.writeNode('LineString', geometry, null, node);
-      } else if (type === ol.geom.GeometryType.MULTILINESTRING) {
+      } else if (type === ol.geom.GeometryType.MULTI_LINE_STRING) {
         child = this.writeNode('MultiLineString', geometry, null, node);
       } else if (type === ol.geom.GeometryType.POLYGON) {
         child = this.writeNode('Polygon', geometry, null, node);
-      } else if (type === ol.geom.GeometryType.MULTIPOLYGON) {
+      } else if (type === ol.geom.GeometryType.MULTI_POLYGON) {
         child = this.writeNode('MultiPolygon', geometry, null, node);
-      } else if (type === ol.geom.GeometryType.GEOMETRYCOLLECTION) {
+      } else if (type === ol.geom.GeometryType.GEOMETRY_COLLECTION) {
         child = this.writeNode('GeometryCollection', geometry, null, node);
       }
       if (goog.isDefAndNotNull(this.srsName)) {
@@ -466,7 +472,7 @@ ol.parser.ogc.GML = function(opt_options) {
     }
   };
   if (goog.isDef(this.featureNS)) {
-    this.writers[this.featureNS] = this.featureNSWiters_;
+    this.writers[this.featureNS] = this.featureNSWriters_;
   }
   goog.base(this);
 };
@@ -474,8 +480,18 @@ goog.inherits(ol.parser.ogc.GML, ol.parser.XML);
 
 
 /**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @return {Element} XML node representing the geometry.
+ */
+ol.parser.ogc.GML.prototype.writeGeometry = function(geometry) {
+  return this.featureNSWriters_['_geometry'].call(this, {value: geometry})
+      .firstChild;
+};
+
+
+/**
  * @param {string|Document|Element|Object} data Data to read.
- * @param {ol.parser.GMLReadOptions=} opt_options Read options.
+ * @param {olx.parser.GMLReadOptions=} opt_options Read options.
  * @return {ol.parser.ReadFeaturesResult} An object representing the document.
  */
 ol.parser.ogc.GML.prototype.read = function(data, opt_options) {
@@ -535,7 +551,7 @@ ol.parser.ogc.GML.prototype.readNode = function(node, obj, opt_first) {
       (/^(.*:)?featureMembers?$/).test(node.parentNode.nodeName))) {
     this.featureType = node.nodeName.split(':').pop();
     this.readers[node.namespaceURI] = this.featureNSReaders_;
-    this.writers[node.namespaceURI] = this.featureNSWiters_;
+    this.writers[node.namespaceURI] = this.featureNSWriters_;
     this.featureNS = node.namespaceURI;
     this.autoConfig = true;
   }
@@ -554,37 +570,37 @@ ol.parser.ogc.GML.prototype.createGeometry = function(container) {
     case ol.geom.GeometryType.POINT:
       geometry = new ol.geom.Point(container.geometry.coordinates);
       break;
-    case ol.geom.GeometryType.LINEARRING:
+    case ol.geom.GeometryType.LINEAR_RING:
       geometry = new ol.geom.LinearRing(container.geometry.coordinates);
       break;
-    case ol.geom.GeometryType.LINESTRING:
+    case ol.geom.GeometryType.LINE_STRING:
       geometry = new ol.geom.LineString(container.geometry.coordinates);
       break;
     case ol.geom.GeometryType.POLYGON:
       geometry = new ol.geom.Polygon(container.geometry.coordinates);
       break;
-    case ol.geom.GeometryType.MULTIPOINT:
+    case ol.geom.GeometryType.MULTI_POINT:
       coordinates = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         coordinates.push(container.geometry.parts[i].coordinates);
       }
       geometry = new ol.geom.MultiPoint(coordinates);
       break;
-    case ol.geom.GeometryType.MULTILINESTRING:
+    case ol.geom.GeometryType.MULTI_LINE_STRING:
       coordinates = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         coordinates.push(container.geometry.parts[i].coordinates);
       }
       geometry = new ol.geom.MultiLineString(coordinates);
       break;
-    case ol.geom.GeometryType.MULTIPOLYGON:
+    case ol.geom.GeometryType.MULTI_POLYGON:
       coordinates = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         coordinates.push(container.geometry.parts[i].coordinates);
       }
       geometry = new ol.geom.MultiPolygon(coordinates);
       break;
-    case ol.geom.GeometryType.GEOMETRYCOLLECTION:
+    case ol.geom.GeometryType.GEOMETRY_COLLECTION:
       var geometries = [];
       for (i = 0, ii = container.geometry.parts.length; i < ii; i++) {
         geometries.push(this.createGeometry({
@@ -614,7 +630,7 @@ ol.parser.ogc.GML.prototype.readFeaturesFromString = function(str) {
  * Applies the writeOptions passed into the write function.
  * @param {ol.parser.ReadFeaturesResult} obj Object structure to write out as
  * GML.
- * @param {ol.parser.GMLWriteOptions=} opt_options Write options.
+ * @param {olx.parser.GMLWriteOptions=} opt_options Write options.
  */
 ol.parser.ogc.GML.prototype.applyWriteOptions = function(obj, opt_options) {
   // srsName handling: opt_options -> this.writeOptions -> obj.metadata
@@ -638,4 +654,14 @@ ol.parser.ogc.GML.prototype.applyWriteOptions = function(obj, opt_options) {
   } else {
     this.axisOrientation = ol.proj.get(this.srsName).getAxisOrientation();
   }
+};
+
+
+/**
+ * @param {string} featureNS Feature namespace.
+ */
+ol.parser.ogc.GML.prototype.setFeatureNS = function(featureNS) {
+  this.featureNS = featureNS;
+  this.readers[featureNS] = this.featureNSReaders_;
+  this.writers[featureNS] = this.featureNSWriters_;
 };

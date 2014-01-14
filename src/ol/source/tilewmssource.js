@@ -19,7 +19,7 @@ goog.require('ol.source.wms');
  * @constructor
  * @extends {ol.source.TileImage}
  * @implements {ol.source.FeatureInfoSource}
- * @param {ol.source.TileWMSOptions} options Tile WMS options.
+ * @param {olx.source.TileWMSOptions} options Tile WMS options.
  * @todo stability experimental
  */
 ol.source.TileWMS = function(options) {
@@ -34,6 +34,12 @@ ol.source.TileWMS = function(options) {
   if (!goog.isDef(urls) && goog.isDef(options.url)) {
     urls = ol.TileUrlFunction.expandUrl(options.url);
   }
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.gutter_ = goog.isDef(options.gutter) ? options.gutter : 0;
 
   /**
    * @private
@@ -52,7 +58,7 @@ ol.source.TileWMS = function(options) {
     var tileUrlFunctions = goog.array.map(
         urls, function(url) {
           return ol.TileUrlFunction.createFromParamsFunction(
-              url, this.params_, ol.source.wms.getUrl);
+              url, this.params_, this.gutter_, ol.source.wms.getUrl);
         }, this);
     tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
         tileUrlFunctions);
@@ -107,13 +113,22 @@ ol.source.TileWMS = function(options) {
 
   /**
    * @private
-   * @type {ol.source.WMSGetFeatureInfoOptions}
+   * @type {olx.source.WMSGetFeatureInfoOptions}
    */
   this.getFeatureInfoOptions_ = goog.isDef(options.getFeatureInfoOptions) ?
-      options.getFeatureInfoOptions : {};
+      options.getFeatureInfoOptions :
+      /** @type {olx.source.WMSGetFeatureInfoOptions} */ ({});
 
 };
 goog.inherits(ol.source.TileWMS, ol.source.TileImage);
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.TileWMS.prototype.getGutter = function() {
+  return this.gutter_;
+};
 
 
 /**
@@ -142,11 +157,13 @@ ol.source.TileWMS.prototype.getFeatureInfoForPixel =
     function(pixel, map, success, opt_error) {
   var coord = map.getCoordinateFromPixel(pixel),
       view2D = map.getView().getView2D(),
-      projection = view2D.getProjection(),
-      tileGrid = goog.isNull(this.tileGrid) ?
-          ol.tilegrid.getForProjection(projection) : this.tileGrid,
-      tileCoord = tileGrid.getTileCoordForCoordAndResolution(coord,
-          view2D.getResolution()),
+      projection = view2D.getProjection();
+  goog.asserts.assert(goog.isDef(projection));
+  var tileGrid = goog.isNull(this.tileGrid) ?
+          ol.tilegrid.getForProjection(projection) : this.tileGrid;
+  var resolution = view2D.getResolution();
+  goog.asserts.assert(goog.isDef(resolution));
+  var tileCoord = tileGrid.getTileCoordForCoordAndResolution(coord, resolution),
       tileExtent = tileGrid.getTileCoordExtent(tileCoord),
       offset = map.getPixelFromCoordinate(ol.extent.getTopLeft(tileExtent)),
       url = this.tileUrlFunction(tileCoord, projection);

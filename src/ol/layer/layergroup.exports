@@ -1,1 +1,1 @@
-@exportClass ol.layer.Group ol.layer.GroupOptions
+@exportSymbol ol.layer.Group

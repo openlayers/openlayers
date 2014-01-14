@@ -3,6 +3,7 @@ goog.provide('ol.DeviceOrientationProperty');
 
 goog.require('goog.events');
 goog.require('goog.math');
+goog.require('ol.BrowserFeature');
 goog.require('ol.Object');
 
 
@@ -67,7 +68,7 @@ ol.DeviceOrientationProperty = {
  *
  * @constructor
  * @extends {ol.Object}
- * @param {ol.DeviceOrientationOptions=} opt_options Options.
+ * @param {olx.DeviceOrientationOptions=} opt_options Options.
  * @todo stability experimental
  * @todo observable alpha {number} readonly the euler angle in radians of the
  *       device from the standard X axis
@@ -109,15 +110,6 @@ ol.DeviceOrientation.prototype.disposeInternal = function() {
   this.setTracking(false);
   goog.base(this, 'disposeInternal');
 };
-
-
-/**
- * Indicates if DeviceOrientation is supported in the user's browser.
- * @const
- * @type {boolean}
- * @todo stability experimental
- */
-ol.DeviceOrientation.SUPPORTED = 'DeviceOrientationEvent' in goog.global;
 
 
 /**
@@ -230,7 +222,7 @@ goog.exportProperty(
  * @private
  */
 ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
-  if (ol.DeviceOrientation.SUPPORTED) {
+  if (ol.BrowserFeature.HAS_DEVICE_ORIENTATION) {
     var tracking = this.getTracking();
     if (tracking && goog.isNull(this.listenerKey_)) {
       this.listenerKey_ = goog.events.listen(goog.global, 'deviceorientation',

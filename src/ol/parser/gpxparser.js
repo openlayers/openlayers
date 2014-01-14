@@ -21,12 +21,12 @@ goog.require('ol.parser.XML');
  * @implements {ol.parser.DomFeatureParser}
  * @implements {ol.parser.StringFeatureParser}
  * @implements {ol.parser.ObjectFeatureParser}
- * @param {ol.parser.GPXOptions=} opt_options Optional configuration object.
+ * @param {olx.parser.GPXOptions=} opt_options Optional configuration object.
  * @extends {ol.parser.XML}
  * @todo stability experimental
  */
 ol.parser.GPX = function(opt_options) {
-  var options = /** @type {ol.parser.GPXOptions} */
+  var options = /** @type {olx.parser.GPXOptions} */
       (goog.isDef(opt_options) ? opt_options : {});
   this.extractAttributes = goog.isDef(options.extractAttributes) ?
       options.extractAttributes : true;
@@ -65,7 +65,7 @@ ol.parser.GPX = function(opt_options) {
       },
       'rte': function(node, obj) {
         if (this.extractRoutes || obj.force) {
-          var type = ol.geom.GeometryType.LINESTRING;
+          var type = ol.geom.GeometryType.LINE_STRING;
           var container = {
             properties: {},
             geometry: {
@@ -269,7 +269,7 @@ ol.parser.GPX.prototype.readFeaturesFromObject = function(obj) {
 
 
 /**
- * @param {ol.parser.GPXWriteOptions} obj Object structure to write out
+ * @param {olx.parser.GPXWriteOptions} obj Object structure to write out
  *     as GPX.
  * @return {string} An string representing the GPX document.
  */

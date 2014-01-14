@@ -1,10 +1,8 @@
 goog.provide('ol.geom.Point');
 
 goog.require('goog.asserts');
-goog.require('goog.events.EventType');
 goog.require('ol.Coordinate');
 goog.require('ol.geom.Geometry');
-goog.require('ol.geom.GeometryEvent');
 goog.require('ol.geom.GeometryType');
 
 
@@ -79,11 +77,9 @@ ol.geom.Point.prototype.getType = function() {
  * @param {ol.Coordinate} coordinates Coordinates array.
  */
 ol.geom.Point.prototype.setCoordinates = function(coordinates) {
-  var oldBounds = this.bounds_;
   this.bounds_ = null;
   this.coordinates_ = coordinates;
-  this.dispatchEvent(new ol.geom.GeometryEvent(goog.events.EventType.CHANGE,
-      this, oldBounds));
+  this.dispatchChangeEvent();
 };
 
 
@@ -93,5 +89,5 @@ ol.geom.Point.prototype.setCoordinates = function(coordinates) {
 ol.geom.Point.prototype.transform = function(transform) {
   var coordinates = this.getCoordinates();
   transform(coordinates, coordinates, coordinates.length);
-  this.setCoordinates(coordinates); // for change event
+  this.setCoordinates(coordinates); // for invalidating bounds
 };
