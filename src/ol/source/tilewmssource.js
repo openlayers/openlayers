@@ -147,7 +147,7 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
 
   var tileGrid = this.getTileGrid();
   if (goog.isNull(tileGrid)) {
-    tileGrid = ol.tilegrid.getForProjection(projection);
+    tileGrid = this.getTileGridForProjection(projection);
   }
 
   if (tileGrid.getResolutions().length <= tileCoord.z) {
