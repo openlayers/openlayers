@@ -126,7 +126,7 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, projection) {
   } else {
     goog.asserts.assert(projection);
     var tileCoord = new ol.TileCoord(z, x, y);
-    var tileUrl = this.tileUrlFunction(tileCoord, projection);
+    var tileUrl = this.tileUrlFunction(tileCoord, 1, projection);
     var tile = new this.tileClass(
         tileCoord,
         goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,

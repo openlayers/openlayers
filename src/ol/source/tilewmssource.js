@@ -132,11 +132,13 @@ ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
  * @private
  * @return {string|undefined} Tile URL.
  */
-ol.source.TileWMS.prototype.tileUrlFunction_ = function(tileCoord, projection) {
+ol.source.TileWMS.prototype.tileUrlFunction_ =
+    function(tileCoord, pixelRatio, projection) {
 
   var urls = this.urls_;
   if (!goog.isDef(urls) || goog.array.isEmpty(urls)) {
