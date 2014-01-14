@@ -119,14 +119,15 @@ ol.source.TileImage.prototype.expireCache = function(usedTiles) {
 /**
  * @inheritDoc
  */
-ol.source.TileImage.prototype.getTile = function(z, x, y, projection) {
+ol.source.TileImage.prototype.getTile =
+    function(z, x, y, pixelRatio, projection) {
   var tileCoordKey = this.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
   } else {
     goog.asserts.assert(projection);
     var tileCoord = new ol.TileCoord(z, x, y);
-    var tileUrl = this.tileUrlFunction(tileCoord, 1, projection);
+    var tileUrl = this.tileUrlFunction(tileCoord, pixelRatio, projection);
     var tile = new this.tileClass(
         tileCoord,
         goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,

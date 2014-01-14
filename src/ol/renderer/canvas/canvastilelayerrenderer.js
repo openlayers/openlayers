@@ -164,6 +164,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   //   composition and positioning.
   //
 
+  var pixelRatio = frameState.pixelRatio;
   var view2DState = frameState.view2DState;
   var projection = view2DState.projection;
 
@@ -261,7 +262,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
 
   var getTileIfLoaded = this.createGetTileIfLoadedFunction(function(tile) {
     return !goog.isNull(tile) && tile.getState() == ol.TileState.LOADED;
-  }, tileSource, projection);
+  }, tileSource, pixelRatio, projection);
   var findLoadedTiles = goog.bind(tileSource.findLoadedTiles, tileSource,
       tilesToDrawByZ, getTileIfLoaded);
 
@@ -271,7 +272,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
-      tile = tileSource.getTile(z, x, y, projection);
+      tile = tileSource.getTile(z, x, y, pixelRatio, projection);
       tileState = tile.getState();
       if (tileState == ol.TileState.LOADED ||
           tileState == ol.TileState.EMPTY ||
@@ -377,12 +378,11 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
-  this.manageTilePyramid(frameState, tileSource, tileGrid, projection, extent,
-      z, tileLayer.getPreload());
+  this.manageTilePyramid(frameState, tileSource, tileGrid, pixelRatio,
+      projection, extent, z, tileLayer.getPreload());
   this.scheduleExpireCache(frameState, tileSource);
   this.updateLogos(frameState, tileSource);
 
-  var pixelRatio = frameState.pixelRatio;
   ol.vec.Mat4.makeTransform2D(this.imageTransform_,
       pixelRatio * frameState.size[0] / 2,
       pixelRatio * frameState.size[1] / 2,

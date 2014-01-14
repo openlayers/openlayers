@@ -144,6 +144,7 @@ ol.source.Tile.prototype.getResolutions = function() {
  * @param {number} z Tile coordinate z.
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection=} opt_projection Projection.
  * @return {!ol.Tile} Tile.
  */

@@ -114,6 +114,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
   var context = mapRenderer.getContext();
   var gl = mapRenderer.getGL();
 
+  var pixelRatio = frameState.pixelRatio;
   var view2DState = frameState.view2DState;
   var projection = view2DState.projection;
 
@@ -196,7 +197,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
     var getTileIfLoaded = this.createGetTileIfLoadedFunction(function(tile) {
       return !goog.isNull(tile) && tile.getState() == ol.TileState.LOADED &&
           mapRenderer.isTileTextureLoaded(tile);
-    }, tileSource, projection);
+    }, tileSource, pixelRatio, projection);
     var findLoadedTiles = goog.bind(tileSource.findLoadedTiles, tileSource,
         tilesToDrawByZ, getTileIfLoaded);
 
@@ -207,7 +208,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
-        tile = tileSource.getTile(z, x, y, projection);
+        tile = tileSource.getTile(z, x, y, pixelRatio, projection);
         tileState = tile.getState();
         if (tileState == ol.TileState.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {
@@ -276,7 +277,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
   var tileTextureQueue = mapRenderer.getTileTextureQueue();
   this.manageTilePyramid(
-      frameState, tileSource, tileGrid, projection, extent, z,
+      frameState, tileSource, tileGrid, pixelRatio, projection, extent, z,
       tileLayer.getPreload(),
       /**
        * @param {ol.Tile} tile Tile.
