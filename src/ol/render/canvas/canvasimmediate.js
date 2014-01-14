@@ -268,7 +268,6 @@ ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
  */
 ol.render.canvas.Immediate.prototype.drawCircleGeometry =
     function(circleGeometry, data) {
-  /*
   if (!ol.extent.intersects(this.extent_, circleGeometry.getExtent())) {
     return;
   }
@@ -292,7 +291,6 @@ ol.render.canvas.Immediate.prototype.drawCircleGeometry =
     goog.asserts.assert(goog.isDef(state.lineWidth));
     context.stroke();
   }
-  */
 };
 
 
