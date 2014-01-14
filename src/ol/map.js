@@ -498,9 +498,13 @@ ol.Map.prototype.disposeInternal = function() {
  */
 ol.Map.prototype.forEachFeatureAtPixel =
     function(pixel, callback, opt_obj, opt_layerFunction, opt_obj2) {
-  // FIXME this function should probably take an options object
+  if (goog.isNull(this.frameState_)) {
+    return;
+  }
+  var coordinate = this.getCoordinateFromPixel(pixel);
   return this.renderer_.forEachFeatureAtPixel(
-      pixel, callback, opt_obj, opt_layerFunction, opt_obj2);
+      coordinate, this.frameState_, callback, opt_obj,
+      opt_layerFunction, opt_obj2);
 };
 
 

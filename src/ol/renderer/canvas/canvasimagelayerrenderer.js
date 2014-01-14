@@ -44,6 +44,28 @@ goog.inherits(ol.renderer.canvas.ImageLayer, ol.renderer.canvas.Layer);
 /**
  * @inheritDoc
  */
+ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtPixel =
+    function(coordinate, frameState, callback, opt_obj) {
+  var layer = this.getLayer();
+  var source = layer.getSource();
+  goog.asserts.assertInstanceof(source, ol.source.Image);
+  var extent = frameState.extent;
+  var resolution = frameState.view2DState.resolution;
+  var rotation = frameState.view2DState.rotation;
+  return source.forEachFeatureAtPixel(extent, resolution, rotation, coordinate,
+      /**
+       * @param {ol.Feature} feature Feature.
+       * @return {?} Callback result.
+       */
+      function(feature) {
+        return callback.call(opt_obj, feature, this);
+      });
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.renderer.canvas.ImageLayer.prototype.getImage = function() {
   return goog.isNull(this.image_) ?
       null : this.image_.getImageElement();

@@ -94,6 +94,19 @@ ol.source.Source.prototype.dispatchChangeEvent = function() {
 
 
 /**
+ * @param {ol.Extent} extent Extent.
+ * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {function(ol.Feature): T} callback Feature callback.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.source.Source.prototype.forEachFeatureAtPixel =
+    goog.nullFunction;
+
+
+/**
  * @return {Array.<ol.Attribution>} Attributions.
  */
 ol.source.Source.prototype.getAttributions = function() {

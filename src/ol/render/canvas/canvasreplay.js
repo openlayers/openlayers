@@ -1329,7 +1329,7 @@ ol.render.canvas.ReplayGroup.prototype.replay_ =
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtCoordinate = function(
+ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtPixel = function(
     extent, resolution, rotation, coordinate,
     renderGeometryFunction, callback) {
 

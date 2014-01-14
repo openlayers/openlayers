@@ -73,6 +73,12 @@ ol.source.ImageVector = function(options) {
    */
   this.canvasSize_ = [0, 0];
 
+  /**
+   * @private
+   * @type {ol.render.canvas.ReplayGroup}
+   */
+  this.replayGroup_ = null;
+
   goog.base(this, {
     attributions: options.attributions,
     canvasFunction: goog.bind(this.canvasFunctionInternal_, this),
@@ -135,7 +141,32 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
   replayGroup.replay(this.canvasContext_, extent, pixelRatio, transform,
       goog.functions.TRUE);
 
+  this.replayGroup_ = replayGroup;
+
   return this.canvasElement_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.ImageVector.prototype.forEachFeatureAtPixel =
+    function(extent, resolution, rotation, coordinate, callback) {
+  if (goog.isNull(this.replayGroup_)) {
+    return undefined;
+  } else {
+    return this.replayGroup_.forEachGeometryAtPixel(
+        extent, resolution, 0, coordinate, goog.functions.TRUE,
+        /**
+         * @param {ol.geom.Geometry} geometry Geometry.
+         * @param {Object} data Data.
+         * @return {?} Callback result.
+         */
+        function(geometry, data) {
+          var feature = /** @type {ol.Feature} */ (data);
+          return callback(feature);
+        });
+  }
 };
 
 
