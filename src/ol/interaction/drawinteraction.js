@@ -1,6 +1,8 @@
+goog.provide('ol.DrawEvent');
 goog.provide('ol.interaction.Draw');
 
 goog.require('goog.asserts');
+goog.require('goog.events.Event');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Feature');
@@ -21,6 +23,44 @@ goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
+
+
+/**
+ * @enum {string}
+ */
+ol.DrawEventType = {
+  DRAWSTART: 'drawstart',
+  DRAWEND: 'drawend'
+};
+
+
+
+/**
+ * @constructor
+ * @extends {goog.events.Event}
+ * @param {ol.DrawEventType} type Type.
+ * @param {ol.Feature} feature The feature drawn.
+ */
+ol.DrawEvent = function(type, feature) {
+
+  goog.base(this, type);
+
+  /**
+   * @private
+   * @type {ol.Feature}
+   */
+  this.feature_ = feature;
+
+};
+goog.inherits(ol.DrawEvent, goog.events.Event);
+
+
+/**
+ * @return {ol.Feature} The feature drawn to which this event pertains.
+ */
+ol.DrawEvent.prototype.getFeature = function() {
+  return this.feature_;
+};
 
 
 
@@ -315,6 +355,8 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
   goog.asserts.assert(goog.isDef(geometry));
   this.sketchFeature_ = new ol.Feature(geometry);
   this.updateSketchFeatures_();
+  this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWSTART,
+      this.sketchFeature_));
 };
 
 
@@ -430,6 +472,8 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
     goog.asserts.assertInstanceof(vectorSource, ol.source.Vector);
     vectorSource.addFeature(sketchFeature);
   }
+  this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWEND,
+      this.sketchFeature_));
 };
 
 
