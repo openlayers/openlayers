@@ -49,7 +49,7 @@ goog.inherits(ol.renderer.Layer, goog.Disposable);
  * @param {ol.FrameState} frameState Frame state.
  * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
  *     callback.
- * @param {S=} opt_obj Scope.
+ * @param {S=} opt_this Object to use as `this` in `callback`.
  * @return {T|undefined} Callback result.
  * @template S,T
  */
@@ -249,13 +249,13 @@ ol.renderer.Layer.prototype.snapCenterToPixel =
  * @param {number} currentZ Current Z.
  * @param {number} preload Load low resolution tiles up to 'preload' levels.
  * @param {function(this: T, ol.Tile)=} opt_tileCallback Tile callback.
- * @param {T=} opt_obj Object.
+ * @param {T=} opt_this Object to use as `this` in `opt_tileCallback`.
  * @protected
  * @template T
  */
 ol.renderer.Layer.prototype.manageTilePyramid = function(
     frameState, tileSource, tileGrid, projection, extent, currentZ, preload,
-    opt_tileCallback, opt_obj) {
+    opt_tileCallback, opt_this) {
   var tileSourceKey = goog.getUid(tileSource).toString();
   if (!(tileSourceKey in frameState.wantedTiles)) {
     frameState.wantedTiles[tileSourceKey] = {};
@@ -279,7 +279,7 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
             }
           }
           if (goog.isDef(opt_tileCallback)) {
-            opt_tileCallback.call(opt_obj, tile);
+            opt_tileCallback.call(opt_this, tile);
           }
         } else {
           tileSource.useTile(z, x, y);

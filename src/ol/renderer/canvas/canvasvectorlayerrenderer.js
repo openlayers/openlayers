@@ -89,7 +89,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
  * @inheritDoc
  */
 ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
-    function(coordinate, frameState, callback, opt_obj) {
+    function(coordinate, frameState, callback, opt_this) {
   if (goog.isNull(this.replayGroup_)) {
     return undefined;
   } else {
@@ -109,7 +109,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
         function(geometry, data) {
           var feature = /** @type {ol.Feature} */ (data);
           goog.asserts.assert(goog.isDef(feature));
-          return callback.call(opt_obj, feature, layer);
+          return callback.call(opt_this, feature, layer);
         });
   }
 };
