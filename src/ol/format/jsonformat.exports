@@ -1,6 +1,5 @@
 @exportProperty ol.format.JSON.prototype.readFeature
 @exportProperty ol.format.JSON.prototype.readFeatures
-@exportProperty ol.format.JSON.prototype.readFeaturesAsync
 @exportProperty ol.format.JSON.prototype.readGeometry
 @exportProperty ol.format.JSON.prototype.readProjection
 @exportProperty ol.format.JSON.prototype.writeFeature
