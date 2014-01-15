@@ -140,30 +140,30 @@ ol.source.Vector.prototype.clear = function() {
 
 /**
  * @param {function(this: T, ol.Feature): S} f Callback.
- * @param {T=} opt_obj The object to be used as the value of 'this' within f.
+ * @param {T=} opt_this The object to use as `this` in `f`.
  * @return {S|undefined}
  * @template T,S
  */
-ol.source.Vector.prototype.forEachFeature = function(f, opt_obj) {
-  return this.rBush_.forEach(f, opt_obj);
+ol.source.Vector.prototype.forEachFeature = function(f, opt_this) {
+  return this.rBush_.forEach(f, opt_this);
 };
 
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {function(this: T, ol.Feature): S} f Callback.
- * @param {T=} opt_obj The object to be used as the value of 'this' within f.
+ * @param {T=} opt_this The object to use as `this` in `f`.
  * @return {S|undefined}
  * @template T,S
  */
 ol.source.Vector.prototype.forEachFeatureAtCoordinate =
-    function(coordinate, f, opt_obj) {
+    function(coordinate, f, opt_this) {
   var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
   return this.forEachFeatureInExtent(extent, function(feature) {
     var geometry = feature.getGeometry();
     goog.asserts.assert(!goog.isNull(geometry));
     if (geometry.containsCoordinate(coordinate)) {
-      return f.call(opt_obj, feature);
+      return f.call(opt_this, feature);
     } else {
       return undefined;
     }
@@ -174,13 +174,13 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinate =
 /**
  * @param {ol.Extent} extent Extent.
  * @param {function(this: T, ol.Feature): S} f Callback.
- * @param {T=} opt_obj The object to be used as the value of 'this' within f.
+ * @param {T=} opt_this The object to use as `this` in `f`.
  * @return {S|undefined}
  * @template T,S
  */
 ol.source.Vector.prototype.forEachFeatureInExtent =
-    function(extent, f, opt_obj) {
-  return this.rBush_.forEachInExtent(extent, f, opt_obj);
+    function(extent, f, opt_this) {
+  return this.rBush_.forEachInExtent(extent, f, opt_this);
 };
 
 
