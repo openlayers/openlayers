@@ -473,10 +473,11 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     layerRenderer.prepareFrame(frameState, layerState);
   }
 
-  var size = frameState.size;
-  if (this.canvas_.width != size[0] || this.canvas_.height != size[1]) {
-    this.canvas_.width = size[0];
-    this.canvas_.height = size[1];
+  var width = frameState.size[0] * frameState.pixelRatio;
+  var height = frameState.size[1] * frameState.pixelRatio;
+  if (this.canvas_.width != width || this.canvas_.height != height) {
+    this.canvas_.width = width;
+    this.canvas_.height = height;
   }
 
   gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
