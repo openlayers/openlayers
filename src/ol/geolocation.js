@@ -11,6 +11,7 @@ goog.require('ol.BrowserFeature');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
 goog.require('ol.geom.Circle');
+goog.require('ol.geom.Point');
 goog.require('ol.proj');
 
 
@@ -24,6 +25,7 @@ ol.GeolocationProperty = {
   ALTITUDE_ACCURACY: 'altitudeAccuracy',
   HEADING: 'heading',
   POSITION: 'position',
+  POSITION_GEOMETRY: 'positionGeometry',
   PROJECTION: 'projection',
   SPEED: 'speed',
   TRACKING: 'tracking',
@@ -63,6 +65,8 @@ ol.GeolocationProperty = {
  *       radians from norht
  * @todo observable position {ol.Coordinate} readonly the current position of
  *       the device reported in the current projection
+ * @todo observable positionGeometry {ol.geom.Point} readonly a `ol.geom.Point`
+ *       geometry of the position.
  * @todo observable projection {ol.proj.Projection} readonly the projection to
  *       report the position in
  * @todo observable speed {number} readonly the instantaneous speed of the
@@ -137,6 +141,7 @@ ol.Geolocation.prototype.handleProjectionChanged_ = function() {
     if (!goog.isNull(this.position_)) {
       this.set(
           ol.GeolocationProperty.POSITION, this.transform_(this.position_));
+      // FIXME: set geom
     }
   }
 };
@@ -194,6 +199,15 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
     accuracyGeometry.setCenterAndRadius(projectedPosition, coords.accuracy);
   }
   this.set(ol.GeolocationProperty.ACCURACY_GEOMETRY, accuracyGeometry);
+
+  var positionGeometry = this.getPositionGeometry();
+  if (goog.isNull(positionGeometry)) {
+    positionGeometry = new ol.geom.Point(projectedPosition);
+  } else {
+    goog.asserts.assertInstanceof(positionGeometry, ol.geom.Point);
+    positionGeometry.setCoordinates(projectedPosition);
+  }
+  this.set(ol.GeolocationProperty.POSITION_GEOMETRY, positionGeometry);
 };
 
 
@@ -295,6 +309,21 @@ goog.exportProperty(
     ol.Geolocation.prototype,
     'getPosition',
     ol.Geolocation.prototype.getPosition);
+
+
+/**
+ * Get a `ol.geom.Point` geometry of the position.
+ * @return {?ol.geom.Point} Position geometry.
+ * @todo stability experimental
+ */
+ol.Geolocation.prototype.getPositionGeometry = function() {
+  return /** @type {?ol.geom.Point} */ (
+      this.get(ol.GeolocationProperty.POSITION_GEOMETRY) || null);
+};
+goog.exportProperty(
+    ol.Geolocation.prototype,
+    'getPositionGeometry',
+    ol.Geolocation.prototype.getPositionGeometry);
 
 
 /**
