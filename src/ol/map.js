@@ -1274,13 +1274,13 @@ ol.Map.prototype.updateSize = function() {
 
 /**
  * @param {function(this: T)} f Function.
- * @param {T=} opt_obj Object.
+ * @param {T=} opt_this The object to use as `this` in `f`.
  * @template T
  */
-ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
+ol.Map.prototype.withFrozenRendering = function(f, opt_this) {
   this.freezeRendering();
   try {
-    f.call(opt_obj);
+    f.call(opt_this);
   } finally {
     this.unfreezeRendering();
   }
