@@ -175,8 +175,8 @@ ol.Map = function(options) {
    * @private
    * @type {number}
    */
-  this.devicePixelRatio_ = goog.isDef(options.devicePixelRatio) ?
-      options.devicePixelRatio : ol.BrowserFeature.DEVICE_PIXEL_RATIO;
+  this.pixelRatio_ = goog.isDef(options.pixelRatio) ?
+      options.pixelRatio : ol.BrowserFeature.DEVICE_PIXEL_RATIO;
 
   /**
    * @private
@@ -1115,13 +1115,13 @@ ol.Map.prototype.renderFrame_ = function(time) {
       animate: false,
       attributions: {},
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
-      devicePixelRatio: this.devicePixelRatio_,
       extent: null,
       focus: goog.isNull(this.focus_) ? view2DState.center : this.focus_,
       index: this.frameIndex_++,
       layersArray: layersArray,
       layerStates: layerStates,
       logos: {},
+      pixelRatio: this.pixelRatio_,
       pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,
       postRenderFunctions: [],
       size: size,

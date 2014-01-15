@@ -25,7 +25,7 @@
  * @typedef {Object} olx.MapOptions
  * @property {ol.Collection|Array.<ol.control.Control>|undefined} controls
  *     Controls initially added to the map.
- * @property {number|undefined} devicePixelRatio The ratio between physical
+ * @property {number|undefined} pixelRatio The ratio between physical
  *     pixels and device-independent pixels (dips) on the device. If `undefined`
  *     then it gets set by using `window.devicePixelRatio`.
  * @property {ol.Collection|Array.<ol.interaction.Interaction>|undefined} interactions
@@ -566,7 +566,7 @@
  * @property {number|undefined} displayDpi The display resolution. Default is `96`.
  * @property {number|undefined} metersPerUnit The meters-per-unit value. Default is `1`.
  * @property {ol.Extent|undefined} extent Extent.
- * @property {boolean|undefined} hidpi Use the `ol.Map#devicePixelRatio` value when
+ * @property {boolean|undefined} hidpi Use the `ol.Map#pixelRatio` value when
  *     requesting the image from the remote server. Default is `true`.
  * @property {boolean|undefined} useOverlay If `true`, will use
  *     `GETDYNAMICMAPOVERLAYIMAGE`.
@@ -662,7 +662,7 @@
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image
  *     requests.
  * @property {ol.Extent|undefined} extent Extent.
- * @property {boolean|undefined} hidpi Use the `ol.Map#devicePixelRatio` value when
+ * @property {boolean|undefined} hidpi Use the `ol.Map#pixelRatio` value when
  *     requesting the image from the remote server. Default is `true`.
  * @property {ol.source.wms.ServerType|undefined} serverType The type of the remote WMS
  *     server: `mapserver`, `geoserver` or `qgis`. Only needed if `hidpi` is `true`.

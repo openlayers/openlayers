@@ -285,8 +285,7 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
   var map = this.getMap();
   if (map.hasListener(type)) {
     var context = this.getContext();
-    var render = new ol.render.webgl.Immediate(context,
-        frameState.devicePixelRatio);
+    var render = new ol.render.webgl.Immediate(context, frameState.pixelRatio);
     var composeEvent = new ol.render.Event(
         type, map, render, frameState, null, context);
     map.dispatchEvent(composeEvent);

@@ -382,12 +382,12 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   this.scheduleExpireCache(frameState, tileSource);
   this.updateLogos(frameState, tileSource);
 
-  var devicePixelRatio = frameState.devicePixelRatio;
+  var pixelRatio = frameState.pixelRatio;
   ol.vec.Mat4.makeTransform2D(this.imageTransform_,
-      devicePixelRatio * frameState.size[0] / 2,
-      devicePixelRatio * frameState.size[1] / 2,
-      devicePixelRatio * tileResolution / view2DState.resolution,
-      devicePixelRatio * tileResolution / view2DState.resolution,
+      pixelRatio * frameState.size[0] / 2,
+      pixelRatio * frameState.size[1] / 2,
+      pixelRatio * tileResolution / view2DState.resolution,
+      pixelRatio * tileResolution / view2DState.resolution,
       view2DState.rotation,
       (origin[0] - center[0]) / tileResolution,
       (center[1] - origin[1]) / tileResolution);
