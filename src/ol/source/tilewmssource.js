@@ -4,6 +4,7 @@
 goog.provide('ol.source.TileWMS');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.object');
 goog.require('goog.string');
@@ -13,6 +14,7 @@ goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
 goog.require('ol.source.TileImage');
 goog.require('ol.source.wms');
+goog.require('ol.source.wms.ServerType');
 
 
 
@@ -73,6 +75,18 @@ ol.source.TileWMS = function(opt_options) {
 
   /**
    * @private
+   * @type {ol.source.wms.ServerType|undefined}
+   */
+  this.serverType_ = options.serverType;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.hidpi_ = goog.isDef(options.hidpi) ? options.hidpi : true;
+
+  /**
+   * @private
    * @type {string}
    */
   this.coordKeyPrefix_ = '';
@@ -114,6 +128,23 @@ ol.source.TileWMS.prototype.getKeyZXY = function(z, x, y) {
  */
 ol.source.TileWMS.prototype.getParams = function() {
   return this.params_;
+};
+
+
+/**
+ * @param {number} z Z.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {number} Size.
+ */
+ol.source.TileWMS.prototype.getTilePixelSize =
+    function(z, pixelRatio, projection) {
+  var tileSize = goog.base(this, 'getTilePixelSize', z, pixelRatio, projection);
+  if (pixelRatio == 1 || !this.hidpi_ || !goog.isDef(this.serverType_)) {
+    return tileSize;
+  } else {
+    return (tileSize * pixelRatio + 0.5) | 0;
+  }
 };
 
 
@@ -166,22 +197,44 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
   goog.object.extend(params, this.params_);
 
   var tileResolution = tileGrid.getResolution(tileCoord.z);
+  if (pixelRatio != 1 && (!this.hidpi_ || !goog.isDef(this.serverType_))) {
+    pixelRatio = 1;
+  }
   var tileSize = tileGrid.getTileSize(tileCoord.z);
   var gutter = this.gutter_;
-  if (gutter === 0) {
-    goog.object.set(params, 'WIDTH', tileSize);
-    goog.object.set(params, 'HEIGHT', tileSize);
-  } else {
-    goog.object.set(params, 'WIDTH', tileSize + 2 * gutter);
-    goog.object.set(params, 'HEIGHT', tileSize + 2 * gutter);
+  if (gutter !== 0) {
+    tileSize += 2 * gutter;
     tileExtent =
         ol.extent.buffer(tileExtent, tileResolution * gutter, this.tmpExtent_);
   }
+  if (pixelRatio != 1) {
+    tileSize = (tileSize * pixelRatio + 0.5) | 0;
+  }
+  goog.object.set(params, 'WIDTH', tileSize);
+  goog.object.set(params, 'HEIGHT', tileSize);
 
   params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
   if (!('STYLES' in this.params_)) {
     goog.object.set(params, 'STYLES', new String(''));
+  }
+
+  if (pixelRatio != 1) {
+    switch (this.serverType_) {
+      case ol.source.wms.ServerType.GEOSERVER:
+        var dpi = (90 * pixelRatio + 0.5) | 0;
+        goog.object.set(params, 'FORMAT_OPTIONS', 'dpi:' + dpi);
+        break;
+      case ol.source.wms.ServerType.MAPSERVER:
+        goog.object.set(params, 'MAP_RESOLUTION', 90 * pixelRatio);
+        break;
+      case ol.source.wms.ServerType.QGIS:
+        goog.object.set(params, 'DPI', 90 * pixelRatio);
+        break;
+      default:
+        goog.asserts.fail();
+        break;
+    }
   }
 
   var axisOrientation = projection.getAxisOrientation();

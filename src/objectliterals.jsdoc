@@ -737,10 +737,15 @@
  *     edges" issues by properly configuring the WMS service. For example, MapServer
  *     has a `tile_map_edge_buffer` configuration parameter for this. See
  *     http://mapserver.org/output/tile_mode.html.
+ * @property {boolean|undefined} hidpi Use the `ol.Map#pixelRatio` value when
+ *     requesting the image from the remote server. Default is `true`.
  * @property {string|undefined} logo Logo.
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  * @property {number|undefined} maxZoom Maximum zoom.
  * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {ol.source.wms.ServerType|undefined} serverType The type of the remote WMS
+ *     server: `mapserver`, `geoserver` or `qgis`. Only needed if `hidpi` is `true`.
+ *     Default is `undefined`.
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
  * @property {string|undefined} url WMS service URL.
