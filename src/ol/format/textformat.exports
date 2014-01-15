@@ -1,6 +1,5 @@
 @exportProperty ol.format.Text.prototype.readFeature
 @exportProperty ol.format.Text.prototype.readFeatures
-@exportProperty ol.format.Text.prototype.readFeaturesAsync
 @exportProperty ol.format.Text.prototype.readGeometry
 @exportProperty ol.format.Text.prototype.readProjection
 @exportProperty ol.format.Text.prototype.writeFeature

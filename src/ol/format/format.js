@@ -51,16 +51,6 @@ ol.format.Format.prototype.readFeatures = goog.abstractMethod;
 
 /**
  * @param {Document|Node|Object|string} source Source.
- * @param {function(this: S, ol.Feature, (Document|Node|Object|undefined)): T}
- *     callback Callback.
- * @param {S=} opt_obj Scope.
- * @template S,T
- */
-ol.format.Format.prototype.readFeaturesAsync = goog.abstractMethod;
-
-
-/**
- * @param {Document|Node|Object|string} source Source.
  * @return {ol.geom.Geometry} Geometry.
  */
 ol.format.Format.prototype.readGeometry = goog.abstractMethod;
