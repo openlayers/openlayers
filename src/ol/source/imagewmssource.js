@@ -6,6 +6,7 @@ goog.require('goog.string');
 goog.require('goog.uri.utils');
 goog.require('ol.Image');
 goog.require('ol.extent');
+goog.require('ol.proj');
 goog.require('ol.source.Image');
 goog.require('ol.source.wms');
 goog.require('ol.source.wms.ServerType');
@@ -76,6 +77,24 @@ ol.source.ImageWMS = function(opt_options) {
 
   /**
    * @private
+   * @type {ol.Size}
+   */
+  this.imageSize_ = [0, 0];
+
+  /**
+   * @private
+   * @type {ol.proj.Projection}
+   */
+  this.renderedProjection_ = null;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.renderedResolution_ = NaN;
+
+  /**
+   * @private
    * @type {number}
    */
   this.renderedRevision_ = 0;
@@ -88,6 +107,63 @@ ol.source.ImageWMS = function(opt_options) {
 
 };
 goog.inherits(ol.source.ImageWMS, ol.source.Image);
+
+
+/**
+ * Return the GetFeatureInfo URL for the passed coordinate, resolution, and
+ * projection. Return `undefined` if the GetFeatureInfo URL cannot be
+ * constructed.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} resolution Resolution.
+ * @param {ol.proj.Projection} projection Projection.
+ * @param {!Object} params GetFeatureInfo params. `INFO_FORMAT` at least should
+ *     be provided. If `QUERY_LAYERS` is not provided then the layers specified
+ *     in the `LAYERS` parameter will be used. `VERSION` should not be
+ *     specified here.
+ * @return {string|undefined} GetFeatureInfo URL.
+ */
+ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
+    function(coordinate, resolution, projection, params) {
+
+  goog.asserts.assert(!('VERSION' in params));
+
+  if (!goog.isDef(this.url_) || goog.isNull(this.image_)) {
+    return undefined;
+  }
+
+  goog.asserts.assert(this.imageSize_[0] !== 0 &&
+      this.imageSize_[1] !== 0);
+  goog.asserts.assert(!isNaN(this.renderedResolution_));
+  goog.asserts.assert(!goog.isNull(this.renderedProjection_));
+
+  if (resolution != this.renderedResolution_ ||
+      !ol.proj.equivalent(projection, this.renderedProjection_)) {
+    return undefined;
+  }
+
+  var extent = this.image_.getExtent();
+  var pixelRatio = this.image_.getPixelRatio();
+
+  var baseParams = {
+    'SERVICE': 'WMS',
+    'VERSION': ol.source.wms.DEFAULT_VERSION,
+    'REQUEST': 'GetFeatureInfo',
+    'FORMAT': 'image/png',
+    'TRANSPARENT': true,
+    'QUERY_LAYERS': goog.object.get(this.params_, 'LAYERS')
+  };
+  goog.object.extend(baseParams, this.params_, params);
+
+  var imageResolution = resolution / pixelRatio;
+
+  var x = Math.floor((coordinate[0] - extent[0]) / imageResolution);
+  var y = Math.floor((extent[3] - coordinate[1]) / imageResolution);
+  goog.object.set(baseParams, this.v13_ ? 'I' : 'X', x);
+  goog.object.set(baseParams, this.v13_ ? 'J' : 'Y', y);
+
+  return this.getRequestUrl_(extent, this.imageSize_, pixelRatio, projection,
+      baseParams);
+};
 
 
 /**
@@ -134,6 +210,62 @@ ol.source.ImageWMS.prototype.getImage =
   };
   goog.object.extend(params, this.params_);
 
+  extent = extent.slice();
+  var centerX = (extent[0] + extent[2]) / 2;
+  var centerY = (extent[1] + extent[3]) / 2;
+  if (this.ratio_ != 1) {
+    var halfWidth = this.ratio_ * (extent[2] - extent[0]) / 2;
+    var halfHeight = this.ratio_ * (extent[3] - extent[1]) / 2;
+    extent[0] = centerX - halfWidth;
+    extent[1] = centerY - halfHeight;
+    extent[2] = centerX + halfWidth;
+    extent[3] = centerY + halfHeight;
+  }
+
+  var imageResolution = resolution / pixelRatio;
+
+  // Compute an integer width and height.
+  var width = Math.ceil((extent[2] - extent[0]) / imageResolution);
+  var height = Math.ceil((extent[3] - extent[1]) / imageResolution);
+
+  // Modify the extent to match the integer width and height.
+  extent[0] = centerX - imageResolution * width / 2;
+  extent[2] = centerX + imageResolution * width / 2;
+  extent[1] = centerY - imageResolution * height / 2;
+  extent[3] = centerY + imageResolution * height / 2;
+
+  this.imageSize_[0] = width;
+  this.imageSize_[1] = height;
+
+  var url = this.getRequestUrl_(extent, this.imageSize_, pixelRatio,
+      projection, params);
+
+  this.image_ = new ol.Image(extent, resolution, pixelRatio,
+      this.getAttributions(), url, this.crossOrigin_);
+
+  this.renderedProjection_ = projection;
+  this.renderedResolution_ = resolution;
+  this.renderedRevision_ = this.getRevision();
+
+  return this.image_;
+
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {ol.Size} size Size.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {ol.proj.Projection} projection Projection.
+ * @param {Object} params Params.
+ * @return {string} Request URL.
+ * @private
+ */
+ol.source.ImageWMS.prototype.getRequestUrl_ =
+    function(extent, size, pixelRatio, projection, params) {
+
+  goog.asserts.assert(goog.isDef(this.url_));
+
   params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
   if (!('STYLES' in this.params_)) {
@@ -158,31 +290,8 @@ ol.source.ImageWMS.prototype.getImage =
     }
   }
 
-  extent = extent.slice();
-  var centerX = (extent[0] + extent[2]) / 2;
-  var centerY = (extent[1] + extent[3]) / 2;
-  if (this.ratio_ != 1) {
-    var halfWidth = this.ratio_ * (extent[2] - extent[0]) / 2;
-    var halfHeight = this.ratio_ * (extent[3] - extent[1]) / 2;
-    extent[0] = centerX - halfWidth;
-    extent[1] = centerY - halfHeight;
-    extent[2] = centerX + halfWidth;
-    extent[3] = centerY + halfHeight;
-  }
-
-  var imageResolution = resolution / pixelRatio;
-
-  // Compute an integer width and height.
-  var width = Math.ceil((extent[2] - extent[0]) / imageResolution);
-  goog.object.set(params, 'WIDTH', width);
-  var height = Math.ceil((extent[3] - extent[1]) / imageResolution);
-  goog.object.set(params, 'HEIGHT', height);
-
-  // Modify the extent to match the integer width and height.
-  extent[0] = centerX - imageResolution * width / 2;
-  extent[2] = centerX + imageResolution * width / 2;
-  extent[1] = centerY - imageResolution * height / 2;
-  extent[3] = centerY + imageResolution * height / 2;
+  goog.object.set(params, 'WIDTH', size[0]);
+  goog.object.set(params, 'HEIGHT', size[1]);
 
   var axisOrientation = projection.getAxisOrientation();
   var bbox;
@@ -193,13 +302,7 @@ ol.source.ImageWMS.prototype.getImage =
   }
   goog.object.set(params, 'BBOX', bbox.join(','));
 
-  var url = goog.uri.utils.appendParamsFromMap(this.url_, params);
-
-  this.image_ = new ol.Image(extent, resolution, pixelRatio,
-      this.getAttributions(), url, this.crossOrigin_);
-  this.renderedRevision_ = this.getRevision();
-  return this.image_;
-
+  return goog.uri.utils.appendParamsFromMap(this.url_, params);
 };
 
 
