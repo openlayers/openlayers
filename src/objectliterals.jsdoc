@@ -902,8 +902,8 @@
  * @property {ol.Coordinate|undefined} origin Origin.
  * @property {Array.<ol.Coordinate>|undefined} origins Origins.
  * @property {!Array.<number>} resolutions Resolutions.
- * @property {ol.Size|undefined} tileSize Tile size.
- * @property {Array.<ol.Size>|undefined} tileSizes Tile sizes.
+ * @property {number|undefined} tileSize Tile size.
+ * @property {Array.<number>|undefined} tileSizes Tile sizes.
  * @todo stability experimental
  */
 
@@ -913,8 +913,8 @@
  * @property {Array.<ol.Coordinate>|undefined} origins Origins.
  * @property {!Array.<number>} resolutions Resolutions.
  * @property {!Array.<string>} matrixIds matrix IDs.
- * @property {ol.Size|undefined} tileSize Tile size.
- * @property {Array.<ol.Size>|undefined} tileSizes Tile sizes.
+ * @property {number|undefined} tileSize Tile size.
+ * @property {Array.<number>|undefined} tileSizes Tile sizes.
  * @todo stability experimental
  */
 

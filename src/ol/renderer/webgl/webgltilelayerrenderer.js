@@ -152,14 +152,13 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
 
     var tileRangeSize = tileRange.getSize();
 
-    var maxDimension = Math.max(
-        tileRangeSize[0] * tileSize[0],
-        tileRangeSize[1] * tileSize[1]);
+    var maxDimension =
+        Math.max(tileRangeSize[0] * tileSize, tileRangeSize[1] * tileSize);
     var framebufferDimension = ol.math.roundUpToPowerOfTwo(maxDimension);
     var framebufferExtentDimension = tileResolution * framebufferDimension;
     var origin = tileGrid.getOrigin(z);
-    var minX = origin[0] + tileRange.minX * tileSize[0] * tileResolution;
-    var minY = origin[1] + tileRange.minY * tileSize[1] * tileResolution;
+    var minX = origin[0] + tileRange.minX * tileSize * tileResolution;
+    var minY = origin[1] + tileRange.minY * tileSize * tileResolution;
     framebufferExtent = [
       minX, minY,
       minX + framebufferExtentDimension, minY + framebufferExtentDimension
@@ -255,8 +254,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
             framebufferExtentDimension - 1;
         goog.vec.Vec4.setFromValues(u_tileOffset, sx, sy, tx, ty);
         gl.uniform4fv(this.locations_.u_tileOffset, u_tileOffset);
-        mapRenderer.bindTileTexture(tile,
-            tileSize[0], tileSize[1], tileGutter,
+        mapRenderer.bindTileTexture(tile, tileSize, tileGutter,
             goog.webgl.LINEAR, goog.webgl.LINEAR);
         gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
       }
@@ -291,7 +289,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
             tile,
             tileGrid.getTileCoordCenter(tile.tileCoord),
             tileGrid.getResolution(tile.tileCoord.z),
-            tileSize[0], tileSize[1], tileGutter
+            tileSize, tileGutter
           ]);
         }
       }, this);

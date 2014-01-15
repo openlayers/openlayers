@@ -79,10 +79,11 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
   //var copyright = response.copyright;  // FIXME do we need to display this?
   var resource = response.resourceSets[0].resources[0];
 
+  goog.asserts.assert(resource.imageWidth == resource.imageHeight);
   var tileGrid = new ol.tilegrid.XYZ({
     minZoom: resource.zoomMin,
     maxZoom: resource.zoomMax,
-    tileSize: [resource.imageWidth, resource.imageHeight]
+    tileSize: resource.imageWidth
   });
   this.tileGrid = tileGrid;
 
