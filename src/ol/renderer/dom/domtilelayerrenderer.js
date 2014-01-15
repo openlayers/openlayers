@@ -334,8 +334,8 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
     tileElement = goog.dom.createElement(goog.dom.TagName.DIV);
     tileElementStyle = tileElement.style;
     tileElementStyle.overflow = 'hidden';
-    tileElementStyle.width = tileSize[0] + 'px';
-    tileElementStyle.height = tileSize[1] + 'px';
+    tileElementStyle.width = tileSize + 'px';
+    tileElementStyle.height = tileSize + 'px';
     imageStyle.position = 'absolute';
     imageStyle.left = -tileGutter + 'px';
     imageStyle.top = -tileGutter + 'px';
@@ -346,9 +346,9 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
   }
   tileElementStyle.position = 'absolute';
   tileElementStyle.left =
-      ((tileCoord.x - this.tileCoordOrigin_.x) * tileSize[0]) + 'px';
+      ((tileCoord.x - this.tileCoordOrigin_.x) * tileSize) + 'px';
   tileElementStyle.top =
-      ((this.tileCoordOrigin_.y - tileCoord.y) * tileSize[1]) + 'px';
+      ((this.tileCoordOrigin_.y - tileCoord.y) * tileSize) + 'px';
   if (goog.isNull(this.documentFragment_)) {
     this.documentFragment_ = document.createDocumentFragment();
   }

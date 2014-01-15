@@ -167,11 +167,11 @@ ol.source.TileWMS.prototype.tileUrlFunction_ = function(tileCoord, projection) {
   var tileSize = tileGrid.getTileSize(tileCoord.z);
   var gutter = this.gutter_;
   if (gutter === 0) {
-    goog.object.set(params, 'WIDTH', tileSize[0]);
-    goog.object.set(params, 'HEIGHT', tileSize[1]);
+    goog.object.set(params, 'WIDTH', tileSize);
+    goog.object.set(params, 'HEIGHT', tileSize);
   } else {
-    goog.object.set(params, 'WIDTH', tileSize[0] + 2 * gutter);
-    goog.object.set(params, 'HEIGHT', tileSize[1] + 2 * gutter);
+    goog.object.set(params, 'WIDTH', tileSize + 2 * gutter);
+    goog.object.set(params, 'HEIGHT', tileSize + 2 * gutter);
     tileExtent =
         ol.extent.buffer(tileExtent, tileResolution * gutter, this.tmpExtent_);
   }
