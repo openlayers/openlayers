@@ -114,7 +114,6 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
   var context = mapRenderer.getContext();
   var gl = mapRenderer.getGL();
 
-  var pixelRatio = frameState.pixelRatio;
   var view2DState = frameState.view2DState;
   var projection = view2DState.projection;
 
@@ -126,7 +125,10 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
   var z = tileGrid.getZForResolution(view2DState.resolution);
   var tileResolution = tileGrid.getResolution(z);
 
-  var tileSize = tileGrid.getTileSize(z);
+  var tilePixelSize =
+      tileSource.getTilePixelSize(z, frameState.pixelRatio, projection);
+  var pixelRatio = tilePixelSize / tileGrid.getTileSize(z);
+  var tilePixelResolution = tileResolution / pixelRatio;
   var tileGutter = tileSource.getGutter();
 
   var center = view2DState.center;
@@ -150,13 +152,13 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
 
     var tileRangeSize = tileRange.getSize();
 
-    var maxDimension =
-        Math.max(tileRangeSize[0] * tileSize, tileRangeSize[1] * tileSize);
+    var maxDimension = Math.max(
+        tileRangeSize[0] * tilePixelSize, tileRangeSize[1] * tilePixelSize);
     var framebufferDimension = ol.math.roundUpToPowerOfTwo(maxDimension);
-    var framebufferExtentDimension = tileResolution * framebufferDimension;
+    var framebufferExtentDimension = tilePixelResolution * framebufferDimension;
     var origin = tileGrid.getOrigin(z);
-    var minX = origin[0] + tileRange.minX * tileSize * tileResolution;
-    var minY = origin[1] + tileRange.minY * tileSize * tileResolution;
+    var minX = origin[0] + tileRange.minX * tilePixelSize * tilePixelResolution;
+    var minY = origin[1] + tileRange.minY * tilePixelSize * tilePixelResolution;
     framebufferExtent = [
       minX, minY,
       minX + framebufferExtentDimension, minY + framebufferExtentDimension
@@ -252,8 +254,8 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
             framebufferExtentDimension - 1;
         goog.vec.Vec4.setFromValues(u_tileOffset, sx, sy, tx, ty);
         gl.uniform4fv(this.locations_.u_tileOffset, u_tileOffset);
-        mapRenderer.bindTileTexture(tile, tileSize, tileGutter,
-            goog.webgl.LINEAR, goog.webgl.LINEAR);
+        mapRenderer.bindTileTexture(tile, tilePixelSize,
+            tileGutter * pixelRatio, goog.webgl.LINEAR, goog.webgl.LINEAR);
         gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
       }
     }
@@ -287,7 +289,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
             tile,
             tileGrid.getTileCoordCenter(tile.tileCoord),
             tileGrid.getResolution(tile.tileCoord.z),
-            tileSize, tileGutter
+            tilePixelSize, tileGutter * pixelRatio
           ]);
         }
       }, this);
