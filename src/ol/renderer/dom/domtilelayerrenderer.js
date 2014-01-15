@@ -337,8 +337,12 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
     imageStyle.position = 'absolute';
     imageStyle.left = -tileGutter + 'px';
     imageStyle.top = -tileGutter + 'px';
+    imageStyle.width = (tileSize + 2 * tileGutter) + 'px';
+    imageStyle.height = (tileSize + 2 * tileGutter) + 'px';
     goog.dom.appendChild(tileElement, image);
   } else {
+    imageStyle.width = tileSize + 'px';
+    imageStyle.height = tileSize + 'px';
     tileElement = image;
     tileElementStyle = imageStyle;
   }
