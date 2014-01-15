@@ -51,18 +51,18 @@ ol.xml.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
 /**
  * @param {function(this: T, Node, Array.<*>): (Array.<*>|undefined)}
  *     valueReader Value reader.
- * @param {T=} opt_obj Scope.
+ * @param {T=} opt_this The object to use as `this` in `valueReader`.
  * @return {ol.xml.Parser} Parser.
  * @template T
  */
-ol.xml.makeArrayExtender = function(valueReader, opt_obj) {
+ol.xml.makeArrayExtender = function(valueReader, opt_this) {
   return (
       /**
        * @param {Node} node Node.
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var value = valueReader.call(opt_obj, node, objectStack);
+        var value = valueReader.call(opt_this, node, objectStack);
         if (goog.isDef(value)) {
           goog.asserts.assert(goog.isArray(value));
           var array = /** @type {Array.<*>} */
@@ -76,18 +76,18 @@ ol.xml.makeArrayExtender = function(valueReader, opt_obj) {
 
 /**
  * @param {function(this: T, Node, Array.<*>): *} valueReader Value reader.
- * @param {T=} opt_obj Scope.
+ * @param {T=} opt_this The object to use as `this` in `valueReader`.
  * @return {ol.xml.Parser} Parser.
  * @template T
  */
-ol.xml.makeArrayPusher = function(valueReader, opt_obj) {
+ol.xml.makeArrayPusher = function(valueReader, opt_this) {
   return (
       /**
        * @param {Node} node Node.
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var value = valueReader.call(opt_obj, node, objectStack);
+        var value = valueReader.call(opt_this, node, objectStack);
         if (goog.isDef(value)) {
           var array = objectStack[objectStack.length - 1];
           goog.asserts.assert(goog.isArray(array));
@@ -99,18 +99,18 @@ ol.xml.makeArrayPusher = function(valueReader, opt_obj) {
 
 /**
  * @param {function(this: T, Node, Array.<*>): *} valueReader Value reader.
- * @param {T=} opt_obj Scope.
+ * @param {T=} opt_this The object to use as `this` in `valueReader`.
  * @return {ol.xml.Parser} Parser.
  * @template T
  */
-ol.xml.makeReplacer = function(valueReader, opt_obj) {
+ol.xml.makeReplacer = function(valueReader, opt_this) {
   return (
       /**
        * @param {Node} node Node.
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var value = valueReader.call(opt_obj, node, objectStack);
+        var value = valueReader.call(opt_this, node, objectStack);
         if (goog.isDef(value)) {
           objectStack[objectStack.length - 1] = value;
         }
@@ -121,11 +121,12 @@ ol.xml.makeReplacer = function(valueReader, opt_obj) {
 /**
  * @param {function(this: T, Node, Array.<*>): *} valueReader Value reader.
  * @param {string=} opt_property Property.
- * @param {T=} opt_obj Scope.
+ * @param {T=} opt_this The object to use as `this` in `valueReader`.
  * @return {ol.xml.Parser} Parser.
  * @template T
  */
-ol.xml.makeObjectPropertySetter = function(valueReader, opt_property, opt_obj) {
+ol.xml.makeObjectPropertySetter =
+    function(valueReader, opt_property, opt_this) {
   goog.asserts.assert(goog.isDef(valueReader));
   return (
       /**
@@ -133,7 +134,7 @@ ol.xml.makeObjectPropertySetter = function(valueReader, opt_property, opt_obj) {
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var value = valueReader.call(opt_obj, node, objectStack);
+        var value = valueReader.call(opt_this, node, objectStack);
         if (goog.isDef(value)) {
           var object = /** @type {Object} */
               (objectStack[objectStack.length - 1]);
@@ -169,16 +170,16 @@ ol.xml.makeParsersNS = function(namespaceURIs, parsers, opt_parsersNS) {
  *     Parsers by namespace.
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @param {*=} opt_obj Scope.
+ * @param {*=} opt_this The object to use as `this`.
  */
-ol.xml.parse = function(parsersNS, node, objectStack, opt_obj) {
+ol.xml.parse = function(parsersNS, node, objectStack, opt_this) {
   var n;
   for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
     var parsers = parsersNS[n.namespaceURI];
     if (goog.isDef(parsers)) {
       var parser = parsers[n.localName];
       if (goog.isDef(parser)) {
-        parser.call(opt_obj, n, objectStack);
+        parser.call(opt_this, n, objectStack);
       }
     }
   }
@@ -191,12 +192,12 @@ ol.xml.parse = function(parsersNS, node, objectStack, opt_obj) {
  *     Parsers by namespace.
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @param {*=} opt_obj Scope.
+ * @param {*=} opt_this The object to use as `this`.
  * @return {T|undefined} Object.
  * @template T
  */
-ol.xml.pushAndParse = function(object, parsersNS, node, objectStack, opt_obj) {
+ol.xml.pushAndParse = function(object, parsersNS, node, objectStack, opt_this) {
   objectStack.push(object);
-  ol.xml.parse(parsersNS, node, objectStack, opt_obj);
+  ol.xml.parse(parsersNS, node, objectStack, opt_this);
   return objectStack.pop();
 };

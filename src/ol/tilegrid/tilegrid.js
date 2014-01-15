@@ -115,18 +115,18 @@ ol.tilegrid.TileGrid.prototype.createTileCoordTransform = goog.abstractMethod;
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {function(this: T, number, ol.TileRange): boolean} callback Callback.
- * @param {T=} opt_obj Object.
+ * @param {T=} opt_this The object to use as `this` in `callback`.
  * @param {ol.TileRange=} opt_tileRange Temporary ol.TileRange object.
  * @param {ol.Extent=} opt_extent Temporary ol.Extent object.
  * @return {boolean} Callback succeeded.
  * @template T
  */
 ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange =
-    function(tileCoord, callback, opt_obj, opt_tileRange, opt_extent) {
+    function(tileCoord, callback, opt_this, opt_tileRange, opt_extent) {
   var tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
   var z = tileCoord.z - 1;
   while (z >= this.minZoom) {
-    if (callback.call(opt_obj, z,
+    if (callback.call(opt_this, z,
         this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange))) {
       return true;
     }

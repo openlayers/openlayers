@@ -50,7 +50,7 @@ goog.inherits(ol.renderer.dom.ImageLayer, ol.renderer.dom.Layer);
  * @inheritDoc
  */
 ol.renderer.dom.ImageLayer.prototype.forEachFeatureAtPixel =
-    function(coordinate, frameState, callback, opt_obj) {
+    function(coordinate, frameState, callback, opt_this) {
   var layer = this.getLayer();
   var source = layer.getSource();
   goog.asserts.assertInstanceof(source, ol.source.Image);
@@ -63,7 +63,7 @@ ol.renderer.dom.ImageLayer.prototype.forEachFeatureAtPixel =
        * @return {?} Callback result.
        */
       function(feature) {
-        return callback.call(opt_obj, feature, this);
+        return callback.call(opt_this, feature, this);
       });
 };
 
