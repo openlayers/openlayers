@@ -197,13 +197,14 @@ ol.renderer.Layer.prototype.updateUsedTiles =
  * @param {function(ol.Tile): boolean} isLoadedFunction Function to
  *     determine if the tile is loaded.
  * @param {ol.source.Tile} tileSource Tile source.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
  * @protected
  * @return {function(number, number, number): ol.Tile} Returns a tile if it is
  *     loaded.
  */
 ol.renderer.Layer.prototype.createGetTileIfLoadedFunction =
-    function(isLoadedFunction, tileSource, projection) {
+    function(isLoadedFunction, tileSource, pixelRatio, projection) {
   return (
       /**
        * @param {number} z Z.
@@ -212,7 +213,7 @@ ol.renderer.Layer.prototype.createGetTileIfLoadedFunction =
        * @return {ol.Tile} Tile.
        */
       function(z, x, y) {
-        var tile = tileSource.getTile(z, x, y, projection);
+        var tile = tileSource.getTile(z, x, y, pixelRatio, projection);
         return isLoadedFunction(tile) ? tile : null;
       });
 };
@@ -244,6 +245,7 @@ ol.renderer.Layer.prototype.snapCenterToPixel =
  * @param {ol.FrameState} frameState Frame state.
  * @param {ol.source.Tile} tileSource Tile source.
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
  * @param {ol.Extent} extent Extent.
  * @param {number} currentZ Current Z.
@@ -254,8 +256,8 @@ ol.renderer.Layer.prototype.snapCenterToPixel =
  * @template T
  */
 ol.renderer.Layer.prototype.manageTilePyramid = function(
-    frameState, tileSource, tileGrid, projection, extent, currentZ, preload,
-    opt_tileCallback, opt_this) {
+    frameState, tileSource, tileGrid, pixelRatio, projection, extent,
+    currentZ, preload, opt_tileCallback, opt_this) {
   var tileSourceKey = goog.getUid(tileSource).toString();
   if (!(tileSourceKey in frameState.wantedTiles)) {
     frameState.wantedTiles[tileSourceKey] = {};
@@ -270,7 +272,7 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
         if (currentZ - z <= preload) {
-          tile = tileSource.getTile(z, x, y, projection);
+          tile = tileSource.getTile(z, x, y, pixelRatio, projection);
           if (tile.getState() == ol.TileState.IDLE) {
             wantedTiles[tile.tileCoord.toString()] = true;
             if (!tileQueue.isKeyQueued(tile.getKey())) {

@@ -17,7 +17,7 @@ describe('ol.source.TileWMS', function() {
 
     it('returns a tile with the expected URL', function() {
       var source = new ol.source.TileWMS(options);
-      var tile = source.getTile(3, 2, 1, ol.proj.get('EPSG:3857'));
+      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:3857'));
       expect(tile).to.be.an(ol.ImageTile);
       var uri = new goog.Uri(tile.src_);
       expect(uri.getScheme()).to.be('http');
@@ -44,7 +44,7 @@ describe('ol.source.TileWMS', function() {
     it('returns a larger tile when a gutter is specified', function() {
       options.gutter = 16;
       var source = new ol.source.TileWMS(options);
-      var tile = source.getTile(3, 2, 1, ol.proj.get('EPSG:3857'));
+      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:3857'));
       expect(tile).to.be.an(ol.ImageTile);
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
@@ -58,7 +58,7 @@ describe('ol.source.TileWMS', function() {
     it('sets the SRS query value instead of CRS if version < 1.3', function() {
       options.params.VERSION = '1.2';
       var source = new ol.source.TileWMS(options);
-      var tile = source.getTile(3, 2, 1, ol.proj.get('EPSG:4326'));
+      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:4326'));
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('CRS')).to.be(undefined);
@@ -69,7 +69,7 @@ describe('ol.source.TileWMS', function() {
       options.params.FORMAT = 'image/jpeg';
       options.params.TRANSPARENT = false;
       var source = new ol.source.TileWMS(options);
-      var tile = source.getTile(3, 2, 1, ol.proj.get('EPSG:4326'));
+      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:4326'));
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('FORMAT')).to.be('image/jpeg');
@@ -79,7 +79,7 @@ describe('ol.source.TileWMS', function() {
     it('does not add a STYLES= option if one is specified', function() {
       options.params.STYLES = 'foo';
       var source = new ol.source.TileWMS(options);
-      var tile = source.getTile(3, 2, 1, ol.proj.get('EPSG:4326'));
+      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:4326'));
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('STYLES')).to.be('foo');
@@ -87,7 +87,7 @@ describe('ol.source.TileWMS', function() {
 
     it('changes the BBOX order for EN axis orientations', function() {
       var source = new ol.source.TileWMS(options);
-      var tile = source.getTile(3, 2, 1, ol.proj.get('EPSG:4326'));
+      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:4326'));
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('BBOX')).to.be('-45,-90,0,-45');
@@ -96,7 +96,7 @@ describe('ol.source.TileWMS', function() {
     it('uses EN BBOX order if version < 1.3', function() {
       options.params.VERSION = '1.1.0';
       var source = new ol.source.TileWMS(options);
-      var tile = source.getTile(3, 2, 1, ol.proj.get('CRS:84'));
+      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('CRS:84'));
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('BBOX')).to.be('-90,-45,-45,0');
