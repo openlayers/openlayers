@@ -363,7 +363,7 @@ ol.format.KML.readFlatCoordinates_ = function(node) {
   // The KML specification states that coordinate tuples should not include
   // spaces, but we tolerate them.
   var re =
-      /^\s*([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)\s*,\s*([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)(?:\s*,\s*([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?))?\s*/i;
+      /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*,\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)(?:\s*,\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?))?\s*/i;
   var m;
   while ((m = re.exec(s))) {
     var x = parseFloat(m[1]);
