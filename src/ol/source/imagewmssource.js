@@ -78,6 +78,12 @@ ol.source.ImageWMS = function(opt_options) {
    * @private
    * @type {number}
    */
+  this.renderedRevision_ = 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
   this.ratio_ = goog.isDef(options.ratio) ? options.ratio : 1.5;
 
 };
@@ -112,6 +118,7 @@ ol.source.ImageWMS.prototype.getImage =
 
   var image = this.image_;
   if (!goog.isNull(image) &&
+      this.renderedRevision_ == this.getRevision() &&
       image.getResolution() == resolution &&
       image.getPixelRatio() == pixelRatio &&
       ol.extent.containsExtent(image.getExtent(), extent)) {
@@ -190,6 +197,7 @@ ol.source.ImageWMS.prototype.getImage =
 
   this.image_ = new ol.Image(extent, resolution, pixelRatio,
       this.getAttributions(), url, this.crossOrigin_);
+  this.renderedRevision_ = this.getRevision();
   return this.image_;
 
 };

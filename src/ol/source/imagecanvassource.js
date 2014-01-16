@@ -39,6 +39,12 @@ ol.source.ImageCanvas = function(options) {
    * @private
    * @type {number}
    */
+  this.renderedRevision_ = 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
   this.ratio_ = goog.isDef(options.ratio) ?
       options.ratio : 1.5;
 
@@ -55,6 +61,7 @@ ol.source.ImageCanvas.prototype.getImage =
 
   var canvas = this.canvas_;
   if (!goog.isNull(canvas) &&
+      this.renderedRevision_ == this.getRevision() &&
       canvas.getResolution() == resolution &&
       canvas.getPixelRatio() == pixelRatio &&
       ol.extent.containsExtent(canvas.getExtent(), extent)) {
@@ -74,6 +81,7 @@ ol.source.ImageCanvas.prototype.getImage =
         this.getAttributions(), canvasElement);
   }
   this.canvas_ = canvas;
+  this.renderedRevision_ = this.getRevision();
 
   return canvas;
 };
