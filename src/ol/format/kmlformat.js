@@ -1,8 +1,6 @@
 // FIXME add Styles with ids to sharedStyles_
 // FIXME refactor StyleMap handling
 // FIXME handle highlighted keys in StyleMaps - use styleFunctions
-// FIXME extractAttributes
-// FIXME extractStyles
 // FIXME http://earth.google.com/kml/1.0 namespace?
 // FIXME why does node.getAttribute return an unknown type?
 // FIXME text
