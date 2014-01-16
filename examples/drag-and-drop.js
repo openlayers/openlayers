@@ -5,6 +5,7 @@ goog.require('ol.format.GPX');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.format.IGC');
 goog.require('ol.format.KML');
+goog.require('ol.format.TopoJSON');
 goog.require('ol.interaction');
 goog.require('ol.interaction.DragAndDrop');
 goog.require('ol.layer.Tile');
@@ -88,7 +89,8 @@ var map = new ol.Map({
         ol.format.GPX,
         ol.format.GeoJSON,
         ol.format.IGC,
-        ol.format.KML
+        ol.format.KML,
+        ol.format.TopoJSON
       ],
       styleFunction: styleFunction
     })
