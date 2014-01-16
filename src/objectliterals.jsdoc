@@ -293,6 +293,8 @@
  *     features will be added to this layer's source.  If neither `source` nor
  *     `layer` are defined then the dropped features will be added as a new
  *     layer.
+ * @property {ol.feature.StyleFunction|undefined} styleFunction Style function.
+ *     This is used to configure any new layers created.
  */
 
 /**
