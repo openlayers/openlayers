@@ -1,2 +1,6 @@
 @exportSymbol ol.format.KML
 @exportProperty ol.format.KML.prototype.readName
+@exportProperty ol.format.KML.prototype.readFeature
+@exportProperty ol.format.KML.prototype.readFeatures
+@exportProperty ol.format.KML.prototype.readGeometry
+@exportProperty ol.format.KML.prototype.readProjection

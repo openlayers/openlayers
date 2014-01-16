@@ -1,4 +1,4 @@
-goog.provide('ol.test.parser.TopoJSON');
+goog.provide('ol.test.format.TopoJSON');
 
 var aruba = {
   type: 'Topology',
@@ -9,6 +9,9 @@ var aruba = {
   objects: {
     aruba: {
       type: 'Polygon',
+      properties: {
+        prop0: 'value0'
+      },
       arcs: [[0]],
       id: 533
     }
@@ -20,24 +23,24 @@ var aruba = {
 };
 
 
-describe('ol.parser.TopoJSON', function() {
+describe('ol.format.TopoJSON', function() {
 
-  var parser;
+  var format;
   before(function() {
-    parser = new ol.parser.TopoJSON();
+    format = new ol.format.TopoJSON();
   });
 
   describe('constructor', function() {
-    it('creates a new parser', function() {
-      expect(parser).to.be.a(ol.parser.Parser);
-      expect(parser).to.be.a(ol.parser.TopoJSON);
+    it('creates a new format', function() {
+      expect(format).to.be.a(ol.format.Format);
+      expect(format).to.be.a(ol.format.TopoJSON);
     });
   });
 
   describe('#readFeaturesFromTopology_()', function() {
 
     it('creates an array of features from a topology', function() {
-      var features = parser.readFeaturesFromTopology_(aruba);
+      var features = format.readFeaturesFromObject(aruba);
       expect(features).to.have.length(1);
 
       var feature = features[0];
@@ -46,7 +49,12 @@ describe('ol.parser.TopoJSON', function() {
       var geometry = feature.getGeometry();
       expect(geometry).to.be.a(ol.geom.Polygon);
 
-      expect(geometry.getBounds()).to.eql([
+      // Parses identifier
+      expect(feature.getId()).to.be(533);
+      // Parses properties
+      expect(feature.get('prop0')).to.be('value0');
+
+      expect(geometry.getExtent()).to.eql([
         -70.08100810081008, 12.417091709170947,
         -69.9009900990099, 12.608069195591469
       ]);
@@ -54,26 +62,26 @@ describe('ol.parser.TopoJSON', function() {
 
   });
 
-  describe('#readFeaturesFromString()', function() {
+  describe('#readFeatures()', function() {
 
-    it('parses world-110m.geojson', function(done) {
-      afterLoadText('spec/ol/parser/topojson/world-110m.json', function(text) {
+    it('parses world-110m.json', function(done) {
+      afterLoadText('spec/ol/format/topojson/world-110m.json', function(text) {
 
-        var result = parser.readFeaturesFromString(text);
-        expect(result.features.length).to.be(178);
+        var features = format.readFeatures(text);
+        expect(features.length).to.be(178);
 
-        var first = result.features[0];
+        var first = features[0];
         expect(first).to.be.a(ol.Feature);
         var firstGeom = first.getGeometry();
         expect(firstGeom).to.be.a(ol.geom.MultiPolygon);
-        expect(firstGeom.getBounds()).to.eql(
+        expect(firstGeom.getExtent()).to.eql(
             [-180, -85.60903777459777, 180, 83.64513000000002]);
 
-        var last = result.features[177];
+        var last = features[177];
         expect(last).to.be.a(ol.Feature);
         var lastGeom = last.getGeometry();
         expect(lastGeom).to.be.a(ol.geom.Polygon);
-        expect(lastGeom.getBounds()).to.eql([
+        expect(lastGeom.getExtent()).to.eql([
           25.26325263252633, -22.271802279310577,
           32.848528485284874, -15.50833810039586
         ]);
@@ -89,5 +97,5 @@ describe('ol.parser.TopoJSON', function() {
 goog.require('ol.Feature');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Polygon');
-goog.require('ol.parser.Parser');
-goog.require('ol.parser.TopoJSON');
+goog.require('ol.format.Format');
+goog.require('ol.format.TopoJSON');
