@@ -16,12 +16,13 @@ goog.require('ol.Overlay');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.Overlay');
 goog.require('ol.layer.Vector');
+goog.require('ol.style.Circle');
 goog.require('ol.style.Style');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
-goog.require('ol.style.Shape');
+goog.require('ol.style.Circle');
 goog.require('ol.source.Vector');
-goog.require('ol.parser.GeoJSON');
+goog.require('ol.source.GeoJSON');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.LineString');
@@ -157,35 +158,32 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
 ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
   // Highlight feature
   if (this.vector_) {
-    this.source_.removeFeatures(this.source_.getFeatures());
+    this.source_.clear();
     this.map_.removeLayer(this.vector_);
   }
-  this.source_ = new ol.source.Vector({
-    projection: this.map_.getView().getView2D().getProjection(),
-    parser: new ol.parser.GeoJSON()
-  });
+  this.source_ = new ol.source.GeoJSON();
   this.vector_ = new ol.layer.Vector({
-    style: new ol.style.Style({
-      symbolizers: [
-        new ol.style.Fill({
+    styleFunction: function(feature, resolution) {
+      return [new ol.style.Style({
+        fill: new ol.style.Fill({
           color: '#ffff00'
         }),
-        new ol.style.Stroke({
+        stroke: new ol.style.Stroke({
           color: '#ff8000',
           width: 3
         }),
-        new ol.style.Shape({
-          size: 15,
+        image: new ol.style.Circle({
+          radius: 9,
           fill: new ol.style.Fill({
-            color: '#ffff00'
+            color: [255, 255, 0, 0.5]
           }),
           stroke: new ol.style.Stroke({
             color: '#ff8000',
             width: 3
           })
         })
-      ]
-    }),
+      })]
+    },
     source: this.source_
   });
   this.map_.addLayer(this.vector_);

@@ -1,48 +1,50 @@
 goog.require('ga.Map');
 goog.require('ga.layer');
 goog.require('ol.View2D');
-goog.require('ol.parser.GeoJSON');
-goog.require('ol.source.Vector');
+goog.require('ol.source.GeoJSON');
+goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
-goog.require('ol.style.Rule');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 
 var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    parser: new ol.parser.GeoJSON(),
+  source: new ol.source.GeoJSON({
+    repojectTo: 'EPSG:21781',
     url: 'data/cities.geojson'
   }),
-  style: new ol.style.Style({rules: [
-    new ol.style.Rule({
-      symbolizers: [
-        new ol.style.Fill({
-          color: 'white',
-          opacity: 0.6
+  styleFunction: function(feature, resolution) {
+    var style = new ol.style.Style({
+      image: new ol.style.Circle({
+        fill: new ol.style.Fill({
+          color: [255, 255, 255, 0.6]
         }),
-        new ol.style.Stroke({
-          color: '#319FD3',
-          opacity: 1
+        stroke: new ol.style.Stroke({
+          color: '#319FD3'
         })
-      ]
-    }),
-    new ol.style.Rule({
-      maxResolution: 50,
-      symbolizers: [
-        new ol.style.Text({
-          color: 'black',
-          text: ol.expr.parse('NAME'),
-          fontFamily: 'Calibri,sans-serif',
-          fontSize: 12,
-          stroke: new ol.style.Stroke({
-            color: 'white',
-            width: 3
-          })
+      }),
+      fill: new ol.style.Fill({
+        color: [255, 255, 255, 0.6]
+      }),
+      stroke: new ol.style.Stroke({
+        color: '#319FD3'
+      })
+    });
+
+    if (resolution < 50) {
+      style.text = new ol.style.Text({
+        color: 'black',
+        text: ol.expr.parse('NAME'),
+        fontFamily: 'Calibri,sans-serif',
+        fontSize: 12,
+        stroke: new ol.style.Stroke({
+          color: 'white',
+          width: 3
         })
-      ]
-    })
-  ]})
+      });
+    }
+    return [style];
+  }
 });
 
 // Create a GeoAdmin Map
@@ -64,26 +66,26 @@ var map = new ga.Map({
   })
 });
 
-var displayFeatureInfo = function(pixel) {
-  map.getFeatures({
-    pixel: pixel,
-    layers: [vector],
-    success: function(featuresByLayer) {
-      var features = featuresByLayer[0];
-      document.getElementById('info').innerHTML = features.length > 0 ?
-          features[0].get('NAME') + ' - inhabitants: ' +
-          features[0].get('EINWOHNERZ') :
-          '&nbsp;';
+var displayFeatureInfo = function(evt) {
+  var pixel = (evt.originalEvent) ?
+      map.getEventPixel(evt.originalEvent) :
+      evt.getPixel();
+  var features = [];
+  map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+    if (layer === olLayer) {
+      features.push(feature);
     }
-  });
+  });  
+  document.getElementById('info').innerHTML = features.length > 0 ?
+      features[0].get('NAME') + ' - inhabitants: ' +
+      features[0].get('EINWOHNERZ') :
+      '&nbsp;';
 };
 
 $(map.getViewport()).on('mousemove', function(evt) {
-  var pixel = map.getEventPixel(evt.originalEvent);
-  displayFeatureInfo(pixel);
+  displayFeatureInfo(evt);
 });
 
 map.on('singleclick', function(evt) {
-  var pixel = evt.getPixel();
-  displayFeatureInfo(pixel);
+  displayFeatureInfo(evt);
 });
