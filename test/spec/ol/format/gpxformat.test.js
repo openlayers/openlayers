@@ -285,6 +285,7 @@ describe('ol.format.GPX', function() {
         var text =
             '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
             '  <wpt lat="1" lon="2">' +
+            '    <magvar>11</magvar>' +
             '    <geoidheight>4</geoidheight>' +
             '    <name>Name</name>' +
             '    <cmt>Comment</cmt>' +
@@ -309,6 +310,8 @@ describe('ol.format.GPX', function() {
         expect(fs).to.have.length(1);
         var f = fs[0];
         expect(f).to.be.an(ol.Feature);
+        expect(f.get('magvar')).to.be(11);
+        expect(f.get('geoidheight')).to.be(4);
         expect(f.get('name')).to.be('Name');
         expect(f.get('cmt')).to.be('Comment');
         expect(f.get('desc')).to.be('Description');

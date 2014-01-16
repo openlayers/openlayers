@@ -339,6 +339,7 @@ ol.format.GPX.WPT_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
       'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime),
+      'magvar': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
       'geoidheight': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
       'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
