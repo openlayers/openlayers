@@ -1155,16 +1155,15 @@ ol.format.KML.whenParser_ = function(node, objectStack) {
     var hour = parseInt(m[4], 10);
     var minute = parseInt(m[5], 10);
     var second = parseInt(m[6], 10);
-    var date = new Date(year, month, day, hour, minute, second, 0);
-    var t = date.getTime() / 1000;
+    var when = Date.UTC(year, month, day, hour, minute, second, 0);
     if (m[7] != 'Z') {
       var sign = m[8] == '-' ? -1 : 1;
-      t += sign * 60 * parseInt(m[9], 10);
+      when += sign * 60 * parseInt(m[9], 10);
       if (goog.isDef(m[10])) {
-        t += sign * 60 * 60 * parseInt(m[10], 10);
+        when += sign * 60 * 60 * parseInt(m[10], 10);
       }
     }
-    whens.push(t);
+    whens.push(when);
   } else {
     whens.push(0);
   }
