@@ -386,7 +386,7 @@ ol.format.KML.readFlatCoordinates_ = function(node) {
  */
 ol.format.KML.readNumber_ = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*(\d+(?:\.\d*)?)\s*$/.exec(s);
+  var m = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*$/i.exec(s);
   if (m) {
     return parseFloat(m[1]);
   } else {
