@@ -63,7 +63,7 @@ ol.renderer.dom.ImageLayer.prototype.forEachFeatureAtPixel =
        * @return {?} Callback result.
        */
       function(feature) {
-        return callback.call(thisArg, feature, this);
+        return callback.call(thisArg, feature, layer);
       });
 };
 

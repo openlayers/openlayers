@@ -58,7 +58,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtPixel =
        * @return {?} Callback result.
        */
       function(feature) {
-        return callback.call(thisArg, feature, this);
+        return callback.call(thisArg, feature, layer);
       });
 };
 
