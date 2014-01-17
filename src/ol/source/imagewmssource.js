@@ -1,3 +1,5 @@
+// FIXME cannot be shared between maps with different projections
+
 goog.provide('ol.source.ImageWMS');
 
 goog.require('goog.asserts');
