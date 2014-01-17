@@ -10,9 +10,20 @@ goog.require('ol.format.FormatType');
 /**
  * @constructor
  * @extends {ol.format.Format}
+ * @param {olx.format.JSONOptions=} opt_options Options.
  */
-ol.format.JSON = function() {
+ol.format.JSON = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
+
   goog.base(this);
+
+  if (goog.isDef(options.readFeatures)) {
+    this.readFeaturesFromObject = options.readFeatures;
+  }
+  if (goog.isDef(options.readProjection)) {
+    this.readProjectionFromObject = options.readProjection;
+  }
 };
 goog.inherits(ol.format.JSON, ol.format.Format);
 

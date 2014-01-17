@@ -256,6 +256,12 @@
  */
 
 /**
+ * @typedef {Object} olx.format.JSONOptions
+ * @property {function(Object): Array.<ol.Feature>} readFeatures Feature reader function.
+ * @property {function(Object): ol.proj.Projection} readProjection Projection reader function.
+ */
+
+/**
  * @typedef {Object} olx.format.TopoJSONOptions
  * @property {ol.proj.ProjectionLike} defaultProjection Default projection.
  */
