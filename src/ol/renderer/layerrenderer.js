@@ -49,7 +49,7 @@ goog.inherits(ol.renderer.Layer, goog.Disposable);
  * @param {ol.FrameState} frameState Frame state.
  * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
  *     callback.
- * @param {S=} opt_this Object to use as `this` in `callback`.
+ * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @return {T|undefined} Callback result.
  * @template S,T
  */
