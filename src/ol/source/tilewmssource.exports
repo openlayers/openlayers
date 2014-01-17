@@ -1,3 +1,4 @@
 @exportSymbol ol.source.TileWMS
+@exportProperty ol.source.TileWMS.prototype.getGetFeatureInfoUrl
 @exportProperty ol.source.TileWMS.prototype.getParams
 @exportProperty ol.source.TileWMS.prototype.updateParams
