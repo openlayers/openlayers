@@ -1,0 +1,2 @@
+@exportSymbol ol.style.Fill
+@exportProperty ol.style.Fill.prototype.getColor

@@ -1,268 +1,250 @@
 goog.provide('ol.Feature');
-goog.provide('ol.FeatureEvent');
-goog.provide('ol.FeatureEventType');
-goog.provide('ol.FeatureRenderIntent');
+goog.provide('ol.feature');
 
+goog.require('goog.asserts');
 goog.require('goog.events');
-goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
+goog.require('goog.functions');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
+goog.require('ol.style.Style');
+
+
+/**
+ * @enum {string}
+ */
+ol.FeatureProperty = {
+  STYLE_FUNCTION: 'styleFunction'
+};
 
 
 
 /**
- * Create a new feature. A feature is the base entity for vectors and has
- * attributes, including normally a geometry attribute.
- *
- * Example:
- *
- *     var feature = new ol.Feature({'foo': 'bar'});
- *     feature.setGeometry(new ol.geom.Point([100, 500]));
- *
  * @constructor
  * @extends {ol.Object}
- * @param {Object.<string, *>=} opt_values Attributes.
- * @todo stability experimental
+ * @param {ol.geom.Geometry|Object.<string, *>=} opt_geometryOrValues
+ *     Values or geometry.
  */
-ol.Feature = function(opt_values) {
+ol.Feature = function(opt_geometryOrValues) {
+
+  goog.base(this);
 
   /**
-   * @type {ol.Extent}
    * @private
+   * @type {number|string|undefined}
    */
-  this.geometryExtent_ = null;
-
-  goog.base(this, opt_values);
+  this.id_ = undefined;
 
   /**
-   * @type {string|undefined}
+   * @type {string}
    * @private
    */
-  this.featureId_;
+  this.geometryName_ = 'geometry';
 
   /**
-   * @type {string|undefined}
    * @private
+   * @type {number}
    */
-  this.geometryName_;
+  this.revision_ = 0;
 
   /**
-   * The render intent for this feature.
-   * @type {ol.FeatureRenderIntent|string}
    * @private
+   * @type {goog.events.Key}
    */
-  this.renderIntent_ = ol.FeatureRenderIntent.DEFAULT;
+  this.geometryChangeKey_ = null;
 
-  /**
-   * @type {Array.<ol.style.Symbolizer>}
-   * @private
-   */
-  this.symbolizers_ = null;
+  goog.events.listen(
+      this, ol.Object.getChangeEventType(this.geometryName_),
+      this.handleGeometryChanged_, false, this);
+  goog.events.listen(
+      this, ol.Object.getChangeEventType(ol.FeatureProperty.STYLE_FUNCTION),
+      this.handleStyleFunctionChange_, false, this);
 
+  if (goog.isDefAndNotNull(opt_geometryOrValues)) {
+    if (opt_geometryOrValues instanceof ol.geom.Geometry) {
+      var geometry = /** @type {ol.geom.Geometry} */ (opt_geometryOrValues);
+      this.setGeometry(geometry);
+    } else {
+      goog.asserts.assert(goog.isObject(opt_geometryOrValues));
+      var values = /** @type {Object.<string, *>} */ (opt_geometryOrValues);
+      this.setValues(values);
+    }
+  } else {
+    this.setGeometry(null);
+  }
 };
 goog.inherits(ol.Feature, ol.Object);
 
 
 /**
- * Gets a copy of the attributes of this feature.
- * @param {boolean=} opt_nonGeometry Don't include any geometry attributes
- *     (by default geometry attributes are returned).
- * @return {Object.<string, *>} Attributes object.
- * @todo stability experimental
+ * FIXME empty description for jsdoc
  */
-ol.Feature.prototype.getAttributes = function(opt_nonGeometry) {
-  var keys = this.getKeys(),
-      includeGeometry = !opt_nonGeometry,
-      len = keys.length,
-      attributes = {},
-      i, value, key;
-  for (i = 0; i < len; ++ i) {
-    key = keys[i];
-    value = this.get(key);
-    if (includeGeometry || !(value instanceof ol.geom.Geometry)) {
-      attributes[key] = value;
-    }
-  }
-  return attributes;
+ol.Feature.prototype.dispatchChangeEvent = function() {
+  ++this.revision_;
+  this.dispatchEvent(goog.events.EventType.CHANGE);
 };
 
 
 /**
- * Returns the feature's commonly used identifier. This identifier is usually
- * the unique id in the source store.
- *
- * @return {string|undefined} The feature's identifier.
- * @todo stability experimental
- */
-ol.Feature.prototype.getId = function() {
-  return this.featureId_;
-};
-
-
-/**
- * Get the geometry associated with this feature.
- * @return {ol.geom.Geometry} The geometry (or null if none).
- * @todo stability experimental
+ * @return {ol.geom.Geometry|undefined} Geometry.
  */
 ol.Feature.prototype.getGeometry = function() {
-  return goog.isDef(this.geometryName_) ?
-      /** @type {ol.geom.Geometry} */ (this.get(this.geometryName_)) :
-      null;
+  return /** @type {ol.geom.Geometry|undefined} */ (
+      this.get(this.geometryName_));
 };
+goog.exportProperty(
+    ol.Feature.prototype,
+    'getGeometry',
+    ol.Feature.prototype.getGeometry);
 
 
 /**
- * Get any symbolizers set directly on the feature.
- * @return {Array.<ol.style.Symbolizer>} Symbolizers (or null if none).
+ * @return {number|string|undefined} Id.
  */
-ol.Feature.prototype.getSymbolizers = function() {
-  return this.symbolizers_;
+ol.Feature.prototype.getId = function() {
+  return this.id_;
 };
 
 
 /**
- * Listener for geometry change events.
- * @param {goog.events.Event} evt Change event.
+ * @return {string} Geometry property name.
+ */
+ol.Feature.prototype.getGeometryName = function() {
+  return this.geometryName_;
+};
+
+
+/**
+ * @return {number} Revision.
+ */
+ol.Feature.prototype.getRevision = function() {
+  return this.revision_;
+};
+
+
+/**
+ * @return {ol.feature.FeatureStyleFunction|undefined} Style function.
+ */
+ol.Feature.prototype.getStyleFunction = function() {
+  return /** @type {ol.feature.FeatureStyleFunction|undefined} */ (
+      this.get(ol.FeatureProperty.STYLE_FUNCTION));
+};
+goog.exportProperty(
+    ol.Feature.prototype,
+    'getStyleFunction',
+    ol.Feature.prototype.getStyleFunction);
+
+
+/**
  * @private
  */
-ol.Feature.prototype.handleGeometryChange_ = function(evt) {
-  var oldExtent = this.geometryExtent_;
-  this.geometryExtent_ = this.getGeometry().getBounds();
-  this.dispatchEvent(new ol.FeatureEvent(
-      ol.FeatureEventType.CHANGE, this, oldExtent));
+ol.Feature.prototype.handleGeometryChange_ = function() {
+  this.dispatchChangeEvent();
 };
 
 
 /**
- * @inheritDoc
- * @param {string} key Key.
- * @param {*} value Value.
- * @todo stability experimental
+ * @private
  */
-ol.Feature.prototype.set = function(key, value) {
+ol.Feature.prototype.handleGeometryChanged_ = function() {
+  if (!goog.isNull(this.geometryChangeKey_)) {
+    goog.events.unlistenByKey(this.geometryChangeKey_);
+    this.geometryChangeKey_ = null;
+  }
   var geometry = this.getGeometry();
-  var oldExtent = this.geometryExtent_;
   if (goog.isDefAndNotNull(geometry)) {
-    if (key === this.geometryName_) {
-      this.geometryExtent_ = null;
-      goog.events.unlisten(geometry, goog.events.EventType.CHANGE,
-          this.handleGeometryChange_, false, this);
-    }
+    this.geometryChangeKey_ = goog.events.listen(geometry,
+        goog.events.EventType.CHANGE, this.handleGeometryChange_, false, this);
   }
-  if (value instanceof ol.geom.Geometry) {
-    if (!goog.isDef(this.geometryName_)) {
-      this.geometryName_ = key;
-    }
-    if (key === this.geometryName_) {
-      this.geometryExtent_ = value.getBounds();
-      goog.events.listen(value, goog.events.EventType.CHANGE,
-          this.handleGeometryChange_, false, this);
-    }
-  }
-  goog.base(this, 'set', key, value);
-  this.dispatchEvent(new ol.FeatureEvent(
-      ol.FeatureEventType.CHANGE, this, oldExtent));
+  this.dispatchChangeEvent();
 };
 
 
 /**
- * Set the feature's commonly used identifier. This identifier is usually the
- * unique id in the source store.
- *
- * @param {string|undefined} featureId The feature's identifier.
+ * @private
  */
-ol.Feature.prototype.setId = function(featureId) {
-  this.featureId_ = featureId;
+ol.Feature.prototype.handleStyleFunctionChange_ = function() {
+  this.dispatchChangeEvent();
 };
 
 
 /**
- * Set the geometry to be associated with this feature after its creation.
- * @param {ol.geom.Geometry} geometry The geometry.
- * @todo stability experimental
+ * @param {ol.geom.Geometry|undefined} geometry Geometry.
  */
 ol.Feature.prototype.setGeometry = function(geometry) {
-  if (!goog.isDef(this.geometryName_)) {
-    this.geometryName_ = ol.Feature.DEFAULT_GEOMETRY;
-  }
   this.set(this.geometryName_, geometry);
 };
+goog.exportProperty(
+    ol.Feature.prototype,
+    'setGeometry',
+    ol.Feature.prototype.setGeometry);
 
 
 /**
- * Gets the renderIntent for this feature.
- * @return {string} Render intent.
+ * @param {ol.feature.FeatureStyleFunction|undefined} styleFunction Style
+ *     function.
  */
-ol.Feature.prototype.getRenderIntent = function() {
-  return this.renderIntent_;
+ol.Feature.prototype.setStyleFunction = function(styleFunction) {
+  this.set(ol.FeatureProperty.STYLE_FUNCTION, styleFunction);
+};
+goog.exportProperty(
+    ol.Feature.prototype,
+    'setStyleFunction',
+    ol.Feature.prototype.setStyleFunction);
+
+
+/**
+ * @param {number|string|undefined} id Id.
+ */
+ol.Feature.prototype.setId = function(id) {
+  this.id_ = id;
 };
 
 
 /**
- * Changes the renderIntent for this feature.
- * @param {string} renderIntent Render intent.
+ * @param {string} name Geometry property name.
  */
-ol.Feature.prototype.setRenderIntent = function(renderIntent) {
-  this.renderIntent_ = renderIntent;
-  var geometry = this.getGeometry();
-  if (!goog.isNull(geometry)) {
-    this.dispatchEvent(new ol.FeatureEvent(
-        ol.FeatureEventType.INTENTCHANGE, this, geometry.getBounds()));
+ol.Feature.prototype.setGeometryName = function(name) {
+  goog.events.unlisten(
+      this, ol.Object.getChangeEventType(this.geometryName_),
+      this.handleGeometryChanged_, false, this);
+  this.geometryName_ = name;
+  goog.events.listen(
+      this, ol.Object.getChangeEventType(this.geometryName_),
+      this.handleGeometryChanged_, false, this);
+  this.handleGeometryChanged_();
+};
+
+
+/**
+ * @typedef {function(this: ol.Feature, number): Array.<ol.style.Style>}
+ */
+ol.feature.FeatureStyleFunction;
+
+
+/**
+ * @param {number} resolution Resolution.
+ * @return {Array.<ol.style.Style>} Style.
+ * @this {ol.Feature}
+ */
+ol.feature.defaultFeatureStyleFunction = goog.functions.constant([]);
+
+
+/**
+ * @typedef {function(ol.Feature, number): Array.<ol.style.Style>}
+ */
+ol.feature.StyleFunction;
+
+
+/**
+ * @param {ol.Feature} feature Feature.
+ * @param {number} resolution Resolution.
+ * @return {Array.<ol.style.Style>} Style.
+ */
+ol.feature.defaultStyleFunction = function(feature, resolution) {
+  var featureStyleFunction = feature.getStyleFunction();
+  if (!goog.isDef(featureStyleFunction)) {
+    featureStyleFunction = ol.feature.defaultFeatureStyleFunction;
   }
+  return featureStyleFunction.call(feature, resolution);
 };
-
-
-/**
- * Set the symbolizers to be used for this feature.
- * @param {Array.<ol.style.Symbolizer>} symbolizers Symbolizers for this
- *     feature. If set, these take precedence over layer style.
- */
-ol.Feature.prototype.setSymbolizers = function(symbolizers) {
-  this.symbolizers_ = symbolizers;
-};
-
-
-/**
- * @const
- * @type {string}
- */
-ol.Feature.DEFAULT_GEOMETRY = 'geometry';
-
-
-/**
- * @enum {string}
- */
-ol.FeatureRenderIntent = {
-  DEFAULT: 'default',
-  FUTURE: 'future',
-  HIDDEN: 'hidden',
-  SELECTED: 'selected',
-  TEMPORARY: 'temporary'
-};
-
-
-/**
- * @enum {string}
- */
-ol.FeatureEventType = {
-  CHANGE: 'featurechange',
-  INTENTCHANGE: 'featureintentchange'
-};
-
-
-
-/**
- * Constructor for feature events.
- * @constructor
- * @extends {goog.events.Event}
- * @param {string} type Event type.
- * @param {ol.Feature} target The target feature.
- * @param {ol.Extent} oldExtent The previous geometry extent.
- */
-ol.FeatureEvent = function(type, target, oldExtent) {
-  goog.base(this, type, target);
-
-  this.oldExtent = oldExtent;
-};
-goog.inherits(ol.FeatureEvent, goog.events.Event);

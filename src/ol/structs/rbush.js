@@ -361,20 +361,20 @@ ol.structs.RBush.prototype.condense_ = function(path) {
  * Calls a callback function with each node in the tree. Inside the callback,
  * no tree modifications (insert, update, remove) can be made.
  * @param {function(this: S, T): *} callback Callback.
- * @param {S=} opt_obj Scope.
+ * @param {S=} opt_this The object to use as `this` in `callback`.
  * @return {*} Callback return value.
  * @template S
  */
-ol.structs.RBush.prototype.forEach = function(callback, opt_obj) {
+ol.structs.RBush.prototype.forEach = function(callback, opt_this) {
   if (goog.DEBUG) {
     ++this.readers_;
     try {
-      return this.forEach_(this.root_, callback, opt_obj);
+      return this.forEach_(this.root_, callback, opt_this);
     } finally {
       --this.readers_;
     }
   } else {
-    return this.forEach_(this.root_, callback, opt_obj);
+    return this.forEach_(this.root_, callback, opt_this);
   }
 };
 
@@ -382,12 +382,12 @@ ol.structs.RBush.prototype.forEach = function(callback, opt_obj) {
 /**
  * @param {ol.structs.RBushNode.<T>} node Node.
  * @param {function(this: S, T): *} callback Callback.
- * @param {S=} opt_obj Scope.
+ * @param {S=} opt_this The object to use as `this` in `callback`.
  * @private
  * @return {*} Callback return value.
  * @template S
  */
-ol.structs.RBush.prototype.forEach_ = function(node, callback, opt_obj) {
+ol.structs.RBush.prototype.forEach_ = function(node, callback, opt_this) {
   goog.asserts.assert(!node.isLeaf());
   /** @type {Array.<ol.structs.RBushNode.<T>>} */
   var toVisit = [node];
@@ -397,7 +397,7 @@ ol.structs.RBush.prototype.forEach_ = function(node, callback, opt_obj) {
     children = node.children;
     if (node.height == 1) {
       for (i = 0, ii = children.length; i < ii; ++i) {
-        result = callback.call(opt_obj, children[i].value);
+        result = callback.call(opt_this, children[i].value);
         if (result) {
           return result;
         }
@@ -414,21 +414,21 @@ ol.structs.RBush.prototype.forEach_ = function(node, callback, opt_obj) {
  * callback, no tree modifications (insert, update, remove) can be made.
  * @param {ol.Extent} extent Extent.
  * @param {function(this: S, T): *} callback Callback.
- * @param {S=} opt_obj Scope.
+ * @param {S=} opt_this The object to use as `this` in `callback`.
  * @return {*} Callback return value.
  * @template S
  */
 ol.structs.RBush.prototype.forEachInExtent =
-    function(extent, callback, opt_obj) {
+    function(extent, callback, opt_this) {
   if (goog.DEBUG) {
     ++this.readers_;
     try {
-      return this.forEachInExtent_(extent, callback, opt_obj);
+      return this.forEachInExtent_(extent, callback, opt_this);
     } finally {
       --this.readers_;
     }
   } else {
-    return this.forEachInExtent_(extent, callback, opt_obj);
+    return this.forEachInExtent_(extent, callback, opt_this);
   }
 };
 
@@ -436,13 +436,13 @@ ol.structs.RBush.prototype.forEachInExtent =
 /**
  * @param {ol.Extent} extent Extent.
  * @param {function(this: S, T): *} callback Callback.
- * @param {S=} opt_obj Scope.
+ * @param {S=} opt_this The object to use as `this` in `callback`.
  * @private
  * @return {*} Callback return value.
  * @template S
  */
 ol.structs.RBush.prototype.forEachInExtent_ =
-    function(extent, callback, opt_obj) {
+    function(extent, callback, opt_this) {
   /** @type {Array.<ol.structs.RBushNode.<T>>} */
   var toVisit = [this.root_];
   var result;
@@ -450,12 +450,12 @@ ol.structs.RBush.prototype.forEachInExtent_ =
     var node = toVisit.pop();
     if (ol.extent.intersects(extent, node.extent)) {
       if (node.isLeaf()) {
-        result = callback.call(opt_obj, node.value);
+        result = callback.call(opt_this, node.value);
         if (result) {
           return result;
         }
       } else if (ol.extent.containsExtent(extent, node.extent)) {
-        result = this.forEach_(node, callback, opt_obj);
+        result = this.forEach_(node, callback, opt_this);
         if (result) {
           return result;
         }
@@ -470,16 +470,16 @@ ol.structs.RBush.prototype.forEachInExtent_ =
 
 /**
  * @param {function(this: S, ol.structs.RBushNode.<T>): *} callback Callback.
- * @param {S=} opt_obj Scope.
+ * @param {S=} opt_this The object to use as `this` in `callback`.
  * @return {*} Callback return value.
  * @template S
  */
-ol.structs.RBush.prototype.forEachNode = function(callback, opt_obj) {
+ol.structs.RBush.prototype.forEachNode = function(callback, opt_this) {
   /** @type {Array.<ol.structs.RBushNode.<T>>} */
   var toVisit = [this.root_];
   while (toVisit.length > 0) {
     var node = toVisit.pop();
-    var result = callback.call(opt_obj, node);
+    var result = callback.call(opt_this, node);
     if (result) {
       return result;
     }

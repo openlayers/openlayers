@@ -1,0 +1,6 @@
+@exportSymbol ol.geom.LinearRing
+@exportProperty ol.geom.LinearRing.prototype.clone
+@exportProperty ol.geom.LinearRing.prototype.getArea
+@exportProperty ol.geom.LinearRing.prototype.getCoordinates
+@exportProperty ol.geom.LinearRing.prototype.getType
+@exportProperty ol.geom.LinearRing.prototype.setCoordinates

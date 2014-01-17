@@ -1,86 +1,163 @@
 goog.provide('ol.test.geom.MultiPoint');
 
+
 describe('ol.geom.MultiPoint', function() {
 
-  describe('constructor', function() {
+  it('can be constructed with a null geometry', function() {
+    expect(function() {
+      var multiPoint = new ol.geom.MultiPoint(null);
+      multiPoint = multiPoint; // suppress gjslint warning
+    }).not.to.throwException();
+  });
 
-    it('creates a multi-point from an array', function() {
-      var multi = new ol.geom.MultiPoint([[10, 20], [30, 40]]);
-      expect(multi).to.be.a(ol.geom.MultiPoint);
-      expect(multi).to.be.a(ol.geom.Geometry);
+  describe('construct empty', function() {
+
+    var multiPoint;
+    beforeEach(function() {
+      multiPoint = new ol.geom.MultiPoint([]);
+    });
+
+    it('defaults to layout XY', function() {
+      expect(multiPoint.getLayout()).to.be(ol.geom.GeometryLayout.XY);
+    });
+
+    it('has empty coordinates', function() {
+      expect(multiPoint.getCoordinates()).to.be.empty();
+    });
+
+    it('has an empty extent', function() {
+      expect(ol.extent.isEmpty(multiPoint.getExtent())).to.be(true);
+    });
+
+    it('has empty flat coordinates', function() {
+      expect(multiPoint.getFlatCoordinates()).to.be.empty();
+    });
+
+    it('has stride the expected stride', function() {
+      expect(multiPoint.getStride()).to.be(2);
     });
 
   });
 
-  describe('#components', function() {
+  describe('construct with 2D coordinates', function() {
 
-    it('is an array of points', function() {
-      var multi = new ol.geom.MultiPoint([[10, 20], [30, 40]]);
+    var multiPoint;
+    beforeEach(function() {
+      multiPoint = new ol.geom.MultiPoint([[1, 2], [3, 4]]);
+    });
 
-      var components = multi.getComponents();
-      expect(components.length).to.be(2);
-      expect(components[0]).to.be.a(ol.geom.Point);
-      expect(components[1]).to.be.a(ol.geom.Point);
+    it('has the expected layout', function() {
+      expect(multiPoint.getLayout()).to.be(ol.geom.GeometryLayout.XY);
+    });
 
+    it('has the expected coordinates', function() {
+      expect(multiPoint.getCoordinates()).to.eql([[1, 2], [3, 4]]);
+    });
+
+    it('has the expected extent', function() {
+      expect(multiPoint.getExtent()).to.eql([1, 2, 3, 4]);
+    });
+
+    it('has the expected flat coordinates', function() {
+      expect(multiPoint.getFlatCoordinates()).to.eql([1, 2, 3, 4]);
+    });
+
+    it('has stride the expected stride', function() {
+      expect(multiPoint.getStride()).to.be(2);
     });
 
   });
 
-  describe('#getBounds()', function() {
+  describe('construct with 3D coordinates', function() {
 
-    it('returns the bounding extent', function() {
-      var multi = new ol.geom.MultiPoint([[10, 20], [30, 40]]);
-      var bounds = multi.getBounds();
-      expect(bounds[0]).to.be(10);
-      expect(bounds[2]).to.be(30);
-      expect(bounds[1]).to.be(20);
-      expect(bounds[3]).to.be(40);
+    var multiPoint;
+    beforeEach(function() {
+      multiPoint = new ol.geom.MultiPoint([[1, 2, 3], [4, 5, 6]]);
+    });
+
+    it('has the expected layout', function() {
+      expect(multiPoint.getLayout()).to.be(ol.geom.GeometryLayout.XYZ);
+    });
+
+    it('has the expected coordinates', function() {
+      expect(multiPoint.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
+    });
+
+    it('has the expected extent', function() {
+      expect(multiPoint.getExtent()).to.eql([1, 2, 4, 5]);
+    });
+
+    it('has the expected flat coordinates', function() {
+      expect(multiPoint.getFlatCoordinates()).to.eql([1, 2, 3, 4, 5, 6]);
+    });
+
+    it('has the expected stride', function() {
+      expect(multiPoint.getStride()).to.be(3);
     });
 
   });
 
-  describe('#getCoordinates', function() {
+  describe('construct with 3D coordinates and layout XYM', function() {
 
-    it('returns an array', function() {
-      var multi = new ol.geom.MultiPoint([[10, 20], [30, 40]]);
-      expect(multi.getCoordinates()).to.eql([[10, 20], [30, 40]]);
+    var multiPoint;
+    beforeEach(function() {
+      multiPoint = new ol.geom.MultiPoint(
+          [[1, 2, 3], [4, 5, 6]], ol.geom.GeometryLayout.XYM);
+    });
+
+    it('has the expected layout', function() {
+      expect(multiPoint.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+    });
+
+    it('has the expected coordinates', function() {
+      expect(multiPoint.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
+    });
+
+    it('has the expected extent', function() {
+      expect(multiPoint.getExtent()).to.eql([1, 2, 4, 5]);
+    });
+
+    it('has the expected flat coordinates', function() {
+      expect(multiPoint.getFlatCoordinates()).to.eql([1, 2, 3, 4, 5, 6]);
+    });
+
+    it('has the expected stride', function() {
+      expect(multiPoint.getStride()).to.be(3);
     });
 
   });
 
-  describe('#transform', function() {
+  describe('construct with 4D coordinates', function() {
 
-    var forward = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
-    var inverse = ol.proj.getTransform('EPSG:3857', 'EPSG:4326');
-
-    it('forward transforms a multi-point', function() {
-      var multi = new ol.geom.MultiPoint([[10, 20], [30, 40]]);
-      multi.transform(forward);
-
-      var components = multi.getComponents();
-      expect(components[0].get(0)).to.roughlyEqual(1113195, 1);
-      expect(components[0].get(1)).to.roughlyEqual(2273031, 1);
-      expect(components[1].get(0)).to.roughlyEqual(3339584, 1);
-      expect(components[1].get(1)).to.roughlyEqual(4865942, 1);
+    var multiPoint;
+    beforeEach(function() {
+      multiPoint = new ol.geom.MultiPoint([[1, 2, 3, 4], [5, 6, 7, 8]]);
     });
 
-    it('inverse transforms a multi-point', function() {
-      var multi = new ol.geom.MultiPoint(
-          [[1113195, 2273031], [3339584, 4865942]]);
-      multi.transform(inverse);
+    it('has the expected layout', function() {
+      expect(multiPoint.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+    });
 
-      var components = multi.getComponents();
-      expect(components[0].get(0)).to.roughlyEqual(10, 0.001);
-      expect(components[0].get(1)).to.roughlyEqual(20, 0.001);
-      expect(components[1].get(0)).to.roughlyEqual(30, 0.001);
-      expect(components[1].get(1)).to.roughlyEqual(40, 0.001);
+    it('has the expected coordinates', function() {
+      expect(multiPoint.getCoordinates()).to.eql([[1, 2, 3, 4], [5, 6, 7, 8]]);
+    });
+
+    it('has the expected extent', function() {
+      expect(multiPoint.getExtent()).to.eql([1, 2, 5, 6]);
+    });
+
+    it('has the expected flat coordinates', function() {
+      expect(multiPoint.getFlatCoordinates()).to.eql([1, 2, 3, 4, 5, 6, 7, 8]);
+    });
+
+    it('has the expected stride', function() {
+      expect(multiPoint.getStride()).to.be(4);
     });
 
   });
 
 });
 
-goog.require('ol.geom.Geometry');
+
+goog.require('ol.extent');
 goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.Point');
-goog.require('ol.proj');

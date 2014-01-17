@@ -173,6 +173,13 @@ ol.Map = function(options) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.pixelRatio_ = goog.isDef(options.pixelRatio) ?
+      options.pixelRatio : ol.BrowserFeature.DEVICE_PIXEL_RATIO;
+
+  /**
+   * @private
    * @type {boolean}
    */
   this.ol3Logo_ = optionsInternal.ol3Logo;
@@ -477,6 +484,35 @@ ol.Map.prototype.disposeInternal = function() {
 
 
 /**
+ * @param {ol.Pixel} pixel Pixel.
+ * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
+ *     callback.
+ * @param {S=} opt_this Value to use as `this` when executing `callback`.
+ * @param {function(this: U, ol.layer.Layer): boolean=} opt_layerFilter Layer
+ *     filter function, only layers which are visible and for which this
+ *     function returns `true` will be tested for features.  By default, all
+ *     visible layers will be tested.
+ * @param {U=} opt_this2 Value to use as `this` when executing `layerFilter`.
+ * @return {T|undefined} Callback result.
+ * @template S,T,U
+ */
+ol.Map.prototype.forEachFeatureAtPixel =
+    function(pixel, callback, opt_this, opt_layerFilter, opt_this2) {
+  if (goog.isNull(this.frameState_)) {
+    return;
+  }
+  var coordinate = this.getCoordinateFromPixel(pixel);
+  var thisArg = goog.isDef(opt_this) ? opt_this : null;
+  var layerFilter = goog.isDef(opt_layerFilter) ?
+      opt_layerFilter : goog.functions.TRUE;
+  var thisArg2 = goog.isDef(opt_this2) ? opt_this2 : null;
+  return this.renderer_.forEachFeatureAtPixel(
+      coordinate, this.frameState_, callback, thisArg,
+      layerFilter, thisArg2);
+};
+
+
+/**
  * Freeze rendering.
  */
 ol.Map.prototype.freezeRendering = function() {
@@ -518,16 +554,6 @@ ol.Map.prototype.getEventPixel = function(event) {
     var eventPosition = goog.style.getRelativePosition(event, this.viewport_);
     return [eventPosition.x, eventPosition.y];
   }
-};
-
-
-/**
- * Get the map's renderer.
- * @return {ol.renderer.Map} Renderer.
- * @todo stability experimental
- */
-ol.Map.prototype.getRenderer = function() {
-  return this.renderer_;
 };
 
 
@@ -578,34 +604,6 @@ ol.Map.prototype.getControls = function() {
  */
 ol.Map.prototype.getOverlays = function() {
   return this.overlays_;
-};
-
-
-/**
- * Get feature information for a pixel on the map.
- *
- * @param {olx.GetFeatureInfoOptions} options Options.
- * @todo stability experimental
- */
-ol.Map.prototype.getFeatureInfo = function(options) {
-  var layers = goog.isDefAndNotNull(options.layers) ?
-      options.layers : this.getLayerGroup().getLayersArray();
-  this.getRenderer().getFeatureInfoForPixel(
-      options.pixel, layers, options.success, options.error);
-};
-
-
-/**
- * Get features for a pixel on the map.
- *
- * @param {olx.GetFeaturesOptions} options Options.
- * @todo stability experimental
- */
-ol.Map.prototype.getFeatures = function(options) {
-  var layers = goog.isDefAndNotNull(options.layers) ?
-      options.layers : this.getLayerGroup().getLayersArray();
-  this.getRenderer().getFeaturesForPixel(
-      options.pixel, layers, options.success, options.error);
 };
 
 
@@ -1127,6 +1125,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       layersArray: layersArray,
       layerStates: layerStates,
       logos: {},
+      pixelRatio: this.pixelRatio_,
       pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,
       postRenderFunctions: [],
       size: size,
@@ -1279,13 +1278,13 @@ ol.Map.prototype.updateSize = function() {
 
 /**
  * @param {function(this: T)} f Function.
- * @param {T=} opt_obj Object.
+ * @param {T=} opt_this The object to use as `this` in `f`.
  * @template T
  */
-ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
+ol.Map.prototype.withFrozenRendering = function(f, opt_this) {
   this.freezeRendering();
   try {
-    f.call(opt_obj);
+    f.call(opt_this);
   } finally {
     this.unfreezeRendering();
   }

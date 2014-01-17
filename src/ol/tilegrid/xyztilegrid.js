@@ -29,7 +29,7 @@ ol.tilegrid.XYZ = function(options) {
     minZoom: options.minZoom,
     origin: [-ol.proj.EPSG3857.HALF_SIZE, ol.proj.EPSG3857.HALF_SIZE],
     resolutions: resolutions,
-    tileSize: [ol.DEFAULT_TILE_SIZE, ol.DEFAULT_TILE_SIZE]
+    tileSize: ol.DEFAULT_TILE_SIZE
   });
 
 };
@@ -114,14 +114,14 @@ ol.tilegrid.XYZ.prototype.getTileCoordChildTileRange =
  * @inheritDoc
  */
 ol.tilegrid.XYZ.prototype.forEachTileCoordParentTileRange =
-    function(tileCoord, callback, opt_obj, opt_tileRange) {
+    function(tileCoord, callback, opt_this, opt_tileRange) {
   var tileRange = ol.TileRange.createOrUpdate(
       0, tileCoord.x, 0, tileCoord.y, opt_tileRange);
   var z;
   for (z = tileCoord.z - 1; z >= this.minZoom; --z) {
     tileRange.minX = tileRange.maxX >>= 1;
     tileRange.minY = tileRange.maxY >>= 1;
-    if (callback.call(opt_obj, z, tileRange)) {
+    if (callback.call(opt_this, z, tileRange)) {
       return true;
     }
   }

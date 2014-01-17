@@ -25,13 +25,12 @@ goog.inherits(ol.Observable, goog.events.EventTarget);
  * Listen for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
  * @param {function(?): ?} listener The listener function.
- * @param {Object=} opt_scope Object is whose scope to call
- *     the listener.
+ * @param {Object=} opt_this The object to use as `this` in `listener`.
  * @return {goog.events.Key} Unique key for the listener.
  * @todo stability experimental
  */
-ol.Observable.prototype.on = function(type, listener, opt_scope) {
-  return goog.events.listen(this, type, listener, false, opt_scope);
+ol.Observable.prototype.on = function(type, listener, opt_this) {
+  return goog.events.listen(this, type, listener, false, opt_this);
 };
 
 
@@ -39,13 +38,12 @@ ol.Observable.prototype.on = function(type, listener, opt_scope) {
  * Listen once for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
  * @param {function(?): ?} listener The listener function.
- * @param {Object=} opt_scope Object is whose scope to call
- *     the listener.
+ * @param {Object=} opt_this The object to use as `this` in `listener`.
  * @return {goog.events.Key} Unique key for the listener.
  * @todo stability experimental
  */
-ol.Observable.prototype.once = function(type, listener, opt_scope) {
-  return goog.events.listenOnce(this, type, listener, false, opt_scope);
+ol.Observable.prototype.once = function(type, listener, opt_this) {
+  return goog.events.listenOnce(this, type, listener, false, opt_this);
 };
 
 
@@ -53,12 +51,11 @@ ol.Observable.prototype.once = function(type, listener, opt_scope) {
  * Unlisten for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
  * @param {function(?): ?} listener The listener function.
- * @param {Object=} opt_scope Object is whose scope to call
- *     the listener.
+ * @param {Object=} opt_this The object to use as `this` in `listener`.
  * @todo stability experimental
  */
-ol.Observable.prototype.un = function(type, listener, opt_scope) {
-  goog.events.unlisten(this, type, listener, false, opt_scope);
+ol.Observable.prototype.un = function(type, listener, opt_this) {
+  goog.events.unlisten(this, type, listener, false, opt_this);
 };
 
 

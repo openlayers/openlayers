@@ -96,10 +96,11 @@ ol.source.WMTS = function(options) {
         /**
          * @this {ol.source.WMTS}
          * @param {ol.TileCoord} tileCoord Tile coordinate.
+         * @param {number} pixelRatio Pixel ratio.
          * @param {ol.proj.Projection} projection Projection.
          * @return {string|undefined} Tile URL.
          */
-        function(tileCoord, projection) {
+        function(tileCoord, pixelRatio, projection) {
           if (goog.isNull(tileCoord)) {
             return undefined;
           } else {
