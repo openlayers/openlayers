@@ -291,6 +291,8 @@
  *     features will be added to this layer's source.  If neither `source` nor
  *     `layer` are defined then the dropped features will be added as a new
  *     layer.
+ * @property {ol.feature.StyleFunction|undefined} styleFunction Style function.
+ *     This is used to configure any new layers created.
  */
 
 /**
@@ -547,6 +549,20 @@
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
  * @property {GeoJSONObject|undefined} object Object.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} reprojectTo Re-project to.
+ * @property {string|undefined} text Text.
+ * @property {string|undefined} url URL.
+ * @property {Array.<string>|undefined} urls URLs.
+ */
+
+/**
+ * @typedef {Object} olx.source.GPXOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {Document|undefined} doc Document.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {Node|undefined| node Node.
  * @property {ol.proj.ProjectionLike} projection Projection.
  * @property {ol.proj.ProjectionLike} reprojectTo Re-project to.
  * @property {string|undefined} text Text.
