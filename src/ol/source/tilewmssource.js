@@ -1,5 +1,6 @@
 // FIXME add minZoom support
 // FIXME add date line wrap (tile coord transform)
+// FIXME cannot be shared between maps with different projections
 
 goog.provide('ol.source.TileWMS');
 
