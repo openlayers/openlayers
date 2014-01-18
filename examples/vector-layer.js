@@ -1,6 +1,7 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
+goog.require('ol.color');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.FeaturesOverlay');
@@ -11,22 +12,32 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 
-var styleArray = [new ol.style.Style({
-  fill: new ol.style.Fill({
-    color: 'rgba(255, 255, 255, 0.6)'
-  }),
-  stroke: new ol.style.Stroke({
-    color: '#319FD3',
-    width: 1
-  })
-})];
-
+var styleCache = {};
 var vectorLayer = new ol.layer.Vector({
   source: new ol.source.GeoJSON({
     url: 'data/countries.geojson'
   }),
   styleFunction: function(feature, resolution) {
-    return styleArray;
+    var name = feature.get('name');
+    var key =
+        26 * 26 * 26 * (name.charCodeAt(0) - 65) +
+        26 * 26 * (name.charCodeAt(1) - 65) +
+        26 * (name.charCodeAt(2) - 65) +
+        (name.charCodeAt(3) - 65);
+    if (!(key in styleCache)) {
+      var index = key >> 2;
+      var saturation = 0.25 + (key & 3) / 4;
+      styleCache[key] = [new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: ol.color.nth(index, saturation, 0.5, 0.8)
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#319FD3',
+          width: 1
+        })
+      })];
+    }
+    return styleCache[key];
   }
 });
 
