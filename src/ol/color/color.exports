@@ -1,2 +1,3 @@
 @exportSymbol ol.color.asArray
 @exportSymbol ol.color.asString
+@exportSymbol ol.color.nth
