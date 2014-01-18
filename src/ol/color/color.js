@@ -280,6 +280,26 @@ ol.color.normalize = function(color, opt_color) {
 
 
 /**
+ * @param {number} i Index.
+ * @param {number=} opt_saturation Saturation.
+ * @param {number=} opt_luminosity Luminosity.
+ * @param {number=} opt_alpha Alpha.
+ * @return {ol.Color} Nth color.
+ */
+ol.color.nth = function(i, opt_saturation, opt_luminosity, opt_alpha) {
+  var base = 3;
+  var s = i.toString(base).split('').reverse().join('');
+  var n = Math.pow(base, s.length);
+  var hue = 360 * parseInt(s, base) / n;
+  var saturation = goog.isDef(opt_saturation) ? opt_saturation : 1;
+  var luminosity = goog.isDef(opt_luminosity) ? opt_luminosity : 0.5;
+  var rgbArray = goog.color.hslToRgb(hue, saturation, luminosity);
+  rgbArray.push(goog.isDef(opt_alpha) ? opt_alpha : 1);
+  return rgbArray;
+};
+
+
+/**
  * @param {ol.Color} color Color.
  * @param {ol.Color=} opt_color Color.
  * @return {ol.Color} Color.
