@@ -1,7 +1,7 @@
 goog.provide('ol.test.interaction.Draw');
 
 describe('ol.interaction.Draw', function() {
-  var target, map, source, layer;
+  var target, map, source;
 
   var width = 360;
   var height = 180;
@@ -16,7 +16,7 @@ describe('ol.interaction.Draw', function() {
     style.height = height + 'px';
     document.body.appendChild(target);
     source = new ol.source.Vector();
-    layer = new ol.layer.Vector({source: source});
+    var layer = new ol.layer.Vector({source: source});
     map = new ol.Map({
       target: target,
       renderer: ol.RendererHint.CANVAS,
@@ -57,7 +57,7 @@ describe('ol.interaction.Draw', function() {
 
     it('creates a new interaction', function() {
       var draw = new ol.interaction.Draw({
-        layer: layer,
+        source: source,
         type: ol.geom.GeometryType.POINT
       });
       expect(draw).to.be.a(ol.interaction.Draw);
@@ -71,7 +71,7 @@ describe('ol.interaction.Draw', function() {
 
     beforeEach(function() {
       draw = new ol.interaction.Draw({
-        layer: layer,
+        source: source,
         type: ol.geom.GeometryType.POINT
       });
       map.addInteraction(draw);
@@ -119,7 +119,7 @@ describe('ol.interaction.Draw', function() {
 
     beforeEach(function() {
       map.addInteraction(new ol.interaction.Draw({
-        layer: layer,
+        source: source,
         type: ol.geom.GeometryType.MULTI_POINT
       }));
     });
@@ -143,7 +143,7 @@ describe('ol.interaction.Draw', function() {
 
     beforeEach(function() {
       draw = new ol.interaction.Draw({
-        layer: layer,
+        source: source,
         type: ol.geom.GeometryType.LINE_STRING
       });
       map.addInteraction(draw);
@@ -241,7 +241,7 @@ describe('ol.interaction.Draw', function() {
 
     beforeEach(function() {
       map.addInteraction(new ol.interaction.Draw({
-        layer: layer,
+        source: source,
         type: ol.geom.GeometryType.MULTI_LINE_STRING
       }));
     });
@@ -278,7 +278,7 @@ describe('ol.interaction.Draw', function() {
 
     beforeEach(function() {
       draw = new ol.interaction.Draw({
-        layer: layer,
+        source: source,
         type: ol.geom.GeometryType.POLYGON
       });
       map.addInteraction(draw);
@@ -360,7 +360,7 @@ describe('ol.interaction.Draw', function() {
 
     beforeEach(function() {
       map.addInteraction(new ol.interaction.Draw({
-        layer: layer,
+        source: source,
         type: ol.geom.GeometryType.MULTI_POLYGON
       }));
     });
