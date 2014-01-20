@@ -1,0 +1,31 @@
+goog.provide('ol.source.OSMXML');
+
+goog.require('ol.format.OSMXML');
+goog.require('ol.source.VectorFile');
+
+
+
+/**
+ * @constructor
+ * @extends {ol.source.VectorFile}
+ * @param {olx.source.OSMXMLOptions=} opt_options Options.
+ */
+ol.source.OSMXML = function(opt_options) {
+
+  var options = goog.isDef(opt_options) ? opt_options : {};
+
+  goog.base(this, {
+    attributions: options.attributions,
+    doc: options.doc,
+    extent: options.extent,
+    format: new ol.format.OSMXML(),
+    logo: options.logo,
+    node: options.node,
+    projection: options.projection,
+    reprojectTo: options.reprojectTo,
+    text: options.text,
+    url: options.url
+  });
+
+};
+goog.inherits(ol.source.OSMXML, ol.source.VectorFile);
