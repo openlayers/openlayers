@@ -95,6 +95,15 @@ describe('ol.geom.Point', function() {
       expect(point.getStride()).to.be(4);
     });
 
+    describe('#getClosestPoint', function() {
+
+      it('preseves extra dimensions', function() {
+        var closestPoint = point.getClosestPoint([0, 0]);
+        expect(closestPoint).to.eql([1, 2, 3, 4]);
+      });
+
+    });
+
   });
 
 });

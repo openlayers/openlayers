@@ -40,8 +40,12 @@ ol.geom.Point.prototype.closestPointXY =
   var squaredDistance = ol.geom.flat.squaredDistance(
       x, y, flatCoordinates[0], flatCoordinates[1]);
   if (squaredDistance < minSquaredDistance) {
-    closestPoint[0] = flatCoordinates[0];
-    closestPoint[1] = flatCoordinates[1];
+    var stride = this.stride;
+    var i;
+    for (i = 0; i < stride; ++i) {
+      closestPoint[i] = flatCoordinates[i];
+    }
+    closestPoint.length = stride;
     return squaredDistance;
   } else {
     return minSquaredDistance;
