@@ -61,10 +61,11 @@ ol.source.Zoomify = function(opt_options) {
       /**
        * @this {ol.source.TileImage}
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
+       * @param {number} pixelRatio Pixel ratio.
        * @param {ol.proj.Projection} projection Projection.
        * @return {string|undefined} Tile URL.
        */
-      function(tileCoord, projection) {
+      function(tileCoord, pixelRatio, projection) {
         if (goog.isNull(tileCoord)) {
           return undefined;
         } else {

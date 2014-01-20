@@ -1,86 +1,103 @@
 goog.provide('ol.geom.LineString');
 
-goog.require('goog.asserts');
-goog.require('ol.CoordinateArray');
-goog.require('ol.coordinate');
 goog.require('ol.extent');
-goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.SimpleGeometry');
+goog.require('ol.geom.closest');
+goog.require('ol.geom.flat');
+goog.require('ol.geom.simplify');
 
 
 
 /**
  * @constructor
- * @extends {ol.geom.Geometry}
- * @param {ol.CoordinateArray} coordinates Array of coordinates (e.g.
- *    `[[x0, y0], [x1, y1]]`).
- * @todo stability experimental
+ * @extends {ol.geom.SimpleGeometry}
+ * @param {ol.geom.RawLineString} coordinates Coordinates.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
-ol.geom.LineString = function(coordinates) {
+ol.geom.LineString = function(coordinates, opt_layout) {
+
   goog.base(this);
-  goog.asserts.assert(goog.isArray(coordinates[0]));
 
   /**
-   * Array of coordinates.
-   * @type {ol.CoordinateArray}
    * @private
+   * @type {number}
    */
-  this.coordinates_ = coordinates;
+  this.maxDelta_ = -1;
 
   /**
-   * @type {ol.Extent}
    * @private
+   * @type {number}
    */
-  this.bounds_ = null;
+  this.maxDeltaRevision_ = -1;
+
+  this.setCoordinates(coordinates, opt_layout);
 
 };
-goog.inherits(ol.geom.LineString, ol.geom.Geometry);
+goog.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
 
 
 /**
- * Get a vertex coordinate value for the given dimension.
- * @param {number} index Vertex index.
- * @param {number} dim Coordinate dimension.
- * @return {number} The vertex coordinate value.
+ * @inheritDoc
  */
-ol.geom.LineString.prototype.get = function(index, dim) {
-  var coordinates = this.getCoordinates();
-  goog.asserts.assert(coordinates.length > index);
-  return coordinates[index][dim];
+ol.geom.LineString.prototype.clone = function() {
+  var lineString = new ol.geom.LineString(null);
+  lineString.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
+  return lineString;
 };
 
 
 /**
  * @inheritDoc
- * @return {ol.CoordinateArray} Coordinates array.
+ */
+ol.geom.LineString.prototype.closestPointXY =
+    function(x, y, closestPoint, minSquaredDistance) {
+  if (minSquaredDistance <
+      ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
+    return minSquaredDistance;
+  }
+  if (this.maxDeltaRevision_ != this.revision) {
+    this.maxDelta_ = Math.sqrt(ol.geom.closest.getMaxSquaredDelta(
+        this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));
+    this.maxDeltaRevision_ = this.revision;
+  }
+  return ol.geom.closest.getClosestPoint(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+      this.maxDelta_, false, x, y, closestPoint, minSquaredDistance);
+};
+
+
+/**
+ * @return {ol.geom.RawLineString} Coordinates.
  */
 ol.geom.LineString.prototype.getCoordinates = function() {
-  return this.coordinates_;
+  return ol.geom.flat.inflateCoordinates(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
 
 /**
- * Get the count of vertices in this linestring.
- * @return {number} The vertex count.
+ * @return {number} Length.
  */
-ol.geom.LineString.prototype.getCount = function() {
-  return this.getCoordinates().length;
+ol.geom.LineString.prototype.getLength = function() {
+  return ol.geom.flat.lineStringLength(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
 
 /**
  * @inheritDoc
  */
-ol.geom.LineString.prototype.getBounds = function() {
-  if (goog.isNull(this.bounds_)) {
-    var coordinates = this.getCoordinates();
-    var extent = ol.extent.createEmpty();
-    for (var i = 0, ii = coordinates.length; i < ii; ++i) {
-      ol.extent.extendCoordinate(extent, coordinates[i]);
-    }
-    this.bounds_ = extent;
-  }
-  return this.bounds_;
+ol.geom.LineString.prototype.getSimplifiedGeometryInternal =
+    function(squaredTolerance) {
+  var simplifiedFlatCoordinates = [];
+  simplifiedFlatCoordinates.length = ol.geom.simplify.douglasPeucker(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+      squaredTolerance, simplifiedFlatCoordinates, 0);
+  var simplifiedLineString = new ol.geom.LineString(null);
+  simplifiedLineString.setFlatCoordinates(
+      ol.geom.GeometryLayout.XY, simplifiedFlatCoordinates);
+  return simplifiedLineString;
 };
 
 
@@ -93,42 +110,31 @@ ol.geom.LineString.prototype.getType = function() {
 
 
 /**
- * Calculate the distance from a coordinate to this linestring.
- *
- * @param {ol.Coordinate} coordinate Coordinate.
- * @return {number} Distance from the coordinate to this linestring.
+ * @param {ol.geom.RawLineString} coordinates Coordinates.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
-ol.geom.LineString.prototype.distanceFromCoordinate = function(coordinate) {
-  var coordinates = this.getCoordinates();
-  var dist2 = Infinity;
-  for (var i = 0, j = 1, len = coordinates.length; j < len; i = j++) {
-    dist2 = Math.min(dist2, ol.coordinate.squaredDistanceToSegment(coordinate,
-        [coordinates[i], coordinates[j]]));
+ol.geom.LineString.prototype.setCoordinates =
+    function(coordinates, opt_layout) {
+  if (goog.isNull(coordinates)) {
+    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
+  } else {
+    this.setLayout(opt_layout, coordinates, 1);
+    if (goog.isNull(this.flatCoordinates)) {
+      this.flatCoordinates = [];
+    }
+    this.flatCoordinates.length = ol.geom.flat.deflateCoordinates(
+        this.flatCoordinates, 0, coordinates, this.stride);
+    this.dispatchChangeEvent();
   }
-  return Math.sqrt(dist2);
 };
 
 
 /**
- * Update the linestring coordinates.
- * @param {ol.CoordinateArray} coordinates Coordinates array.
+ * @param {ol.geom.GeometryLayout} layout Layout.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
-ol.geom.LineString.prototype.setCoordinates = function(coordinates) {
-  this.bounds_ = null;
-  this.coordinates_ = coordinates;
+ol.geom.LineString.prototype.setFlatCoordinates =
+    function(layout, flatCoordinates) {
+  this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.dispatchChangeEvent();
-};
-
-
-/**
- * @inheritDoc
- */
-ol.geom.LineString.prototype.transform = function(transform) {
-  var coordinates = this.getCoordinates();
-  var coord;
-  for (var i = 0, ii = coordinates.length; i < ii; ++i) {
-    coord = coordinates[i];
-    transform(coord, coord, coord.length);
-  }
-  this.setCoordinates(coordinates); // for invalidating bounds
 };

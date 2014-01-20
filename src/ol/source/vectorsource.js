@@ -1,30 +1,27 @@
-goog.provide('ol.source.FeatureCache');
-goog.provide('ol.source.Vector');
-goog.provide('ol.source.VectorEventType');
-goog.provide('ol.source.VectorLoadState');
+// FIXME bulk feature upload - suppress events
+// FIXME put features in an ol.Collection
+// FIXME make change-detection more refined (notably, geometry hint)
 
+goog.provide('ol.source.Vector');
+goog.provide('ol.source.VectorEvent');
+goog.provide('ol.source.VectorEventType');
+
+goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.async.nextTick');
 goog.require('goog.events');
 goog.require('goog.events.Event');
-goog.require('goog.net.XhrIo');
+goog.require('goog.events.EventType');
 goog.require('goog.object');
-goog.require('ol.Feature');
-goog.require('ol.FeatureEventType');
-goog.require('ol.extent');
-goog.require('ol.proj');
 goog.require('ol.source.Source');
 goog.require('ol.structs.RBush');
 
 
 /**
- * @enum {number}
+ * @enum {string}
  */
-ol.source.VectorLoadState = {
-  IDLE: 0,
-  LOADING: 1,
-  LOADED: 2,
-  ERROR: 3
+ol.source.VectorEventType = {
+  ADDFEATURE: 'addfeature',
+  REMOVEFEATURE: 'removefeature'
 };
 
 
@@ -36,43 +33,37 @@ ol.source.VectorLoadState = {
  * @todo stability experimental
  */
 ol.source.Vector = function(opt_options) {
+
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   goog.base(this, {
     attributions: options.attributions,
     extent: options.extent,
     logo: options.logo,
-    projection: options.projection
+    projection: options.projection,
+    state: options.state
   });
 
   /**
    * @private
-   * @type {ol.parser.Parser}
+   * @type {ol.structs.RBush.<ol.Feature>}
    */
-  this.parser_ = goog.isDef(options.parser) ? options.parser : null;
+  this.rBush_ = new ol.structs.RBush();
 
   /**
    * @private
-   * @type {string|undefined}
+   * @type {Object.<string, ol.Feature>}
    */
-  this.url_ = options.url;
+  this.nullGeometryFeatures_ = {};
 
   /**
    * @private
-   * @type {ol.source.VectorLoadState}
+   * @type {Object.<string, goog.events.Key>}
    */
-  this.loadState_ = goog.isDef(this.url_) ?
-      ol.source.VectorLoadState.IDLE : ol.source.VectorLoadState.LOADED;
+  this.featureChangeKeys_ = {};
 
-  /**
-   * @type {ol.source.FeatureCache}
-   * @private
-   */
-  this.featureCache_ = new ol.source.FeatureCache();
-
-  // add any user provided features
   if (goog.isDef(options.features)) {
-    this.addFeatures(options.features);
+    this.addFeaturesInternal(options.features);
   }
 
 };
@@ -80,225 +71,270 @@ goog.inherits(ol.source.Vector, ol.source.Source);
 
 
 /**
- * Request for new features to be loaded.
- * @param {ol.Extent} extent Desired extent.
- * @param {ol.proj.Projection} projection Desired projection.
- * @return {boolean} New features will be loaded.
+ * @param {ol.Feature} feature Feature.
  */
-ol.source.Vector.prototype.load = function(extent, projection) {
-  var requested = false;
-  if (this.loadState_ === ol.source.VectorLoadState.IDLE) {
-    goog.asserts.assertString(this.url_);
-    this.loadState_ = ol.source.VectorLoadState.LOADING;
-    goog.net.XhrIo.send(this.url_, goog.bind(function(event) {
-      var xhr = event.target;
-      if (xhr.isSuccess()) {
-        // parsing may be asynchronous, so we don't set load state here
-        this.parseFeaturesString_(xhr.getResponseText(), projection);
-      } else {
-        this.loadState_ = ol.source.VectorLoadState.ERROR;
-      }
-    }, this));
-    requested = true;
-  }
-  return requested;
+ol.source.Vector.prototype.addFeature = function(feature) {
+  this.addFeatureInternal(feature);
+  this.dispatchChangeEvent();
 };
 
 
 /**
- * Parse features from a string.
- * @param {string} data Feature data.
- * @param {ol.proj.Projection} projection The target projection.
- * @private
+ * Add a feature without firing a `change` event.
+ * @param {ol.Feature} feature Feature.
+ * @protected
  */
-ol.source.Vector.prototype.parseFeaturesString_ = function(data, projection) {
-  if (goog.isFunction(this.parser_.readFeaturesFromStringAsync)) {
-    this.parser_.readFeaturesFromStringAsync(data, goog.bind(function(result) {
-      this.handleReadResult_(result, projection);
-    }, this));
+ol.source.Vector.prototype.addFeatureInternal = function(feature) {
+  var featureKey = goog.getUid(feature).toString();
+  goog.asserts.assert(!(featureKey in this.featureChangeKeys_));
+  this.featureChangeKeys_[featureKey] = goog.events.listen(feature,
+      goog.events.EventType.CHANGE, this.handleFeatureChange_, false, this);
+  var geometry = feature.getGeometry();
+  if (goog.isNull(geometry)) {
+    this.nullGeometryFeatures_[goog.getUid(feature).toString()] = feature;
   } else {
-    goog.asserts.assert(
-        goog.isFunction(this.parser_.readFeaturesFromString),
-        'Expected parser with a readFeaturesFromString method.');
-    this.handleReadResult_(
-        this.parser_.readFeaturesFromString(data), projection);
+    var extent = geometry.getExtent();
+    this.rBush_.insert(extent, feature);
   }
+  this.dispatchEvent(
+      new ol.source.VectorEvent(ol.source.VectorEventType.ADDFEATURE, feature));
 };
 
 
 /**
- * Handle the read result from a parser.
- * TODO: make parsers accept a target projection (see #1287)
- * @param {ol.parser.ReadFeaturesResult} result Read features result.
- * @param {ol.proj.Projection} projection The desired projection.
- * @private
- */
-ol.source.Vector.prototype.handleReadResult_ = function(result, projection) {
-  var features = result.features;
-  var sourceProjection = this.getProjection();
-  if (goog.isNull(sourceProjection)) {
-    sourceProjection = result.metadata.projection;
-  }
-  var transform = ol.proj.getTransform(sourceProjection, projection);
-  var extent = ol.extent.createEmpty();
-  var geometry = null;
-  var feature;
-  for (var i = 0, ii = features.length; i < ii; ++i) {
-    feature = features[i];
-    geometry = feature.getGeometry();
-    if (!goog.isNull(geometry)) {
-      geometry.transform(transform);
-      ol.extent.extend(extent, geometry.getBounds());
-    }
-    this.loadFeature_(feature);
-  }
-  this.loadState_ = ol.source.VectorLoadState.LOADED;
-  // called in the next tick to normalize load event for sync/async parsing
-  goog.async.nextTick(function() {
-    this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.LOAD,
-        features, [extent]));
-  }, this);
-};
-
-
-/**
- * Load a feature.
- * @param {ol.Feature} feature Feature to load.
- * @private
- */
-ol.source.Vector.prototype.loadFeature_ = function(feature) {
-  goog.events.listen(feature, ol.FeatureEventType.CHANGE,
-      this.handleFeatureChange_, false, this);
-  goog.events.listen(feature, ol.FeatureEventType.INTENTCHANGE,
-      this.handleIntentChange_, false, this);
-  this.featureCache_.add(feature);
-};
-
-
-/**
- * Add newly created features to the source.
- * @param {Array.<ol.Feature>} features Array of features.
+ * @param {Array.<ol.Feature>} features Features.
  */
 ol.source.Vector.prototype.addFeatures = function(features) {
-  var extent = ol.extent.createEmpty(),
-      feature, geometry;
-  for (var i = 0, ii = features.length; i < ii; ++i) {
-    feature = features[i];
-    this.loadFeature_(feature);
-    geometry = feature.getGeometry();
-    if (!goog.isNull(geometry)) {
-      ol.extent.extend(extent, geometry.getBounds());
-    }
-  }
-  this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.ADD,
-      features, [extent]));
+  this.addFeaturesInternal(features);
+  this.dispatchChangeEvent();
 };
 
 
 /**
- * Returns an array of features that match a filter. This will not fetch data,
- * it only considers features that are loaded already.
- * @param {(function(ol.Feature):boolean)=} opt_filter Filter function.
- * @return {Array.<ol.Feature>} Features that match the filter, or all features
- *     if no filter was provided.
+ * Add features without firing a `change` event.
+ * @param {Array.<ol.Feature>} features Features.
+ * @protected
  */
-ol.source.Vector.prototype.getFeatures = function(opt_filter) {
-  var result;
-  var features = this.featureCache_.getFeaturesObject();
-  if (goog.isDef(opt_filter)) {
-    result = [];
-    for (var f in features) {
-      if (opt_filter(features[f]) === true) {
-        result.push(features[f]);
-      }
+ol.source.Vector.prototype.addFeaturesInternal = function(features) {
+  // FIXME use R-Bush bulk load when available
+  var i, ii;
+  for (i = 0, ii = features.length; i < ii; ++i) {
+    this.addFeatureInternal(features[i]);
+  }
+};
+
+
+/**
+ * FIXME empty description for jsdoc
+ */
+ol.source.Vector.prototype.clear = function() {
+  this.rBush_.forEach(this.removeFeatureInternal, this);
+  this.rBush_.clear();
+  goog.object.forEach(
+      this.nullGeometryFeatures_, this.removeFeatureInternal, this);
+  goog.object.clear(this.nullGeometryFeatures_);
+  goog.asserts.assert(goog.object.isEmpty(this.featureChangeKeys_));
+  this.dispatchChangeEvent();
+};
+
+
+/**
+ * @param {function(this: T, ol.Feature): S} f Callback.
+ * @param {T=} opt_this The object to use as `this` in `f`.
+ * @return {S|undefined}
+ * @template T,S
+ */
+ol.source.Vector.prototype.forEachFeature = function(f, opt_this) {
+  return this.rBush_.forEach(f, opt_this);
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {function(this: T, ol.Feature): S} f Callback.
+ * @param {T=} opt_this The object to use as `this` in `f`.
+ * @return {S|undefined}
+ * @template T,S
+ */
+ol.source.Vector.prototype.forEachFeatureAtCoordinate =
+    function(coordinate, f, opt_this) {
+  var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
+  return this.forEachFeatureInExtent(extent, function(feature) {
+    var geometry = feature.getGeometry();
+    goog.asserts.assert(!goog.isNull(geometry));
+    if (geometry.containsCoordinate(coordinate)) {
+      return f.call(opt_this, feature);
+    } else {
+      return undefined;
+    }
+  });
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {function(this: T, ol.Feature): S} f Callback.
+ * @param {T=} opt_this The object to use as `this` in `f`.
+ * @return {S|undefined}
+ * @template T,S
+ */
+ol.source.Vector.prototype.forEachFeatureInExtent =
+    function(extent, f, opt_this) {
+  return this.rBush_.forEachInExtent(extent, f, opt_this);
+};
+
+
+/**
+ * @return {Array.<ol.Feature>} Features.
+ */
+ol.source.Vector.prototype.getAllFeatures = function() {
+  var features = this.rBush_.getAll();
+  if (!goog.object.isEmpty(this.nullGeometryFeatures_)) {
+    goog.array.extend(
+        features, goog.object.getValues(this.nullGeometryFeatures_));
+  }
+  return features;
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {Array.<ol.Feature>} Features.
+ */
+ol.source.Vector.prototype.getAllFeaturesAtCoordinate = function(coordinate) {
+  var features = [];
+  this.forEachFeatureAtCoordinate(coordinate, function(feature) {
+    features.push(feature);
+  });
+  return features;
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @return {Array.<ol.Feature>} Features.
+ */
+ol.source.Vector.prototype.getAllFeaturesInExtent = function(extent) {
+  return this.rBush_.getAllInExtent(extent);
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {ol.Feature} Closest feature.
+ */
+ol.source.Vector.prototype.getClosestFeatureToCoordinate =
+    function(coordinate) {
+  // Find the closest feature using branch and bound.  We start searching an
+  // infinite extent, and find the distance from the first feature found.  This
+  // becomes the closest feature.  We then compute a smaller extent which any
+  // closer feature must intersect.  We continue searching with this smaller
+  // extent, trying to find a closer feature.  Every time we find a closer
+  // feature, we update the extent being searched so that any even closer
+  // feature must intersect it.  We continue until we run out of features.
+  var x = coordinate[0];
+  var y = coordinate[1];
+  var closestFeature = null;
+  var closestPoint = [NaN, NaN];
+  var minSquaredDistance = Infinity;
+  var extent = [-Infinity, -Infinity, Infinity, Infinity];
+  this.rBush_.forEachInExtent(extent,
+      /**
+       * @param {ol.Feature} feature Feature.
+       */
+      function(feature) {
+        var geometry = feature.getGeometry();
+        goog.asserts.assert(!goog.isNull(geometry));
+        var previousMinSquaredDistance = minSquaredDistance;
+        minSquaredDistance = geometry.closestPointXY(
+            x, y, closestPoint, minSquaredDistance);
+        if (minSquaredDistance < previousMinSquaredDistance) {
+          closestFeature = feature;
+          // This is sneaky.  Reduce the extent that it is currently being
+          // searched while the R-Tree traversal using this same extent object
+          // is still in progress.  This is safe because the new extent is
+          // strictly contained by the old extent.
+          var minDistance = Math.sqrt(minSquaredDistance);
+          extent[0] = x - minDistance;
+          extent[1] = y - minDistance;
+          extent[2] = x + minDistance;
+          extent[3] = y + minDistance;
+        }
+      });
+  return closestFeature;
+};
+
+
+/**
+ * @return {ol.Extent} Extent.
+ */
+ol.source.Vector.prototype.getExtent = function() {
+  return this.rBush_.getExtent();
+};
+
+
+/**
+ * @param {goog.events.Event} event Event.
+ * @private
+ */
+ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
+  var feature = /** @type {ol.Feature} */ (event.target);
+  var featureKey = goog.getUid(feature).toString();
+  var geometry = feature.getGeometry();
+  if (goog.isNull(geometry)) {
+    if (!(featureKey in this.nullGeometryFeatures_)) {
+      this.rBush_.remove(feature);
+      this.nullGeometryFeatures_[featureKey] = feature;
     }
   } else {
-    result = goog.object.getValues(features);
-  }
-  return result;
-};
-
-
-/**
- * Get all features whose bounding box intersects the provided extent. This
- * method is intended for being called by the renderer.
- *
- * @param {ol.Extent} extent Bounding extent.
- * @param {ol.proj.Projection} projection Target projection.
- * @param {function(this: T, ol.Feature)} callback Callback called with each
- *     feature.
- * @param {T=} opt_thisArg The object to be used as the value of 'this' for
- *     the callback.
- * @template T
- */
-ol.source.Vector.prototype.forEachFeatureInExtent = function(extent,
-    projection, callback, opt_thisArg) {
-  // TODO: transform if requested project is different than loaded projection
-  this.featureCache_.forEach(extent, callback, opt_thisArg);
-};
-
-
-/**
- * Listener for feature change events.
- * @param {ol.FeatureEvent} evt The feature change event.
- * @private
- */
-ol.source.Vector.prototype.handleFeatureChange_ = function(evt) {
-  goog.asserts.assertInstanceof(evt.target, ol.Feature);
-  var feature = /** @type {ol.Feature} */ (evt.target);
-  var extents = [];
-  if (!goog.isNull(evt.oldExtent)) {
-    extents.push(evt.oldExtent);
-  }
-  var geometry = feature.getGeometry();
-  var extent = geometry.getBounds();
-  if (!goog.isNull(geometry)) {
-    this.featureCache_.updateExtent(feature, extent);
-    extents.push(extent);
-  }
-  this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.CHANGE,
-      [feature], extents));
-};
-
-
-/**
- * Listener for render intent change events of features.
- * @param {ol.FeatureEvent} evt The feature intent change event.
- * @private
- */
-ol.source.Vector.prototype.handleIntentChange_ = function(evt) {
-  goog.asserts.assertInstanceof(evt.target, ol.Feature);
-  var feature = /** @type {ol.Feature} */ (evt.target);
-  var geometry = feature.getGeometry();
-  if (!goog.isNull(geometry)) {
-    this.dispatchEvent(new ol.source.VectorEvent(
-        ol.source.VectorEventType.INTENTCHANGE, [feature],
-        [geometry.getBounds()]));
-  }
-};
-
-
-/**
- * Remove features from the layer.
- * @param {Array.<ol.Feature>} features Features to remove.
- */
-ol.source.Vector.prototype.removeFeatures = function(features) {
-  var extent = ol.extent.createEmpty(),
-      feature, geometry;
-  for (var i = 0, ii = features.length; i < ii; ++i) {
-    feature = features[i];
-    this.featureCache_.remove(feature);
-    geometry = feature.getGeometry();
-    if (!goog.isNull(geometry)) {
-      ol.extent.extend(extent, geometry.getBounds());
+    var extent = geometry.getExtent();
+    if (featureKey in this.nullGeometryFeatures_) {
+      delete this.nullGeometryFeatures_[featureKey];
+      this.rBush_.insert(extent, feature);
+    } else {
+      this.rBush_.update(extent, feature);
     }
-    goog.events.unlisten(feature, ol.FeatureEventType.CHANGE,
-        this.handleFeatureChange_, false, this);
-    goog.events.unlisten(feature, ol.FeatureEventType.INTENTCHANGE,
-        this.handleIntentChange_, false, this);
   }
-  this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.REMOVE,
-      features, [extent]));
+  this.dispatchChangeEvent();
+};
+
+
+/**
+ * @return {boolean} Is empty.
+ */
+ol.source.Vector.prototype.isEmpty = function() {
+  return this.rBush_.isEmpty() &&
+      goog.object.isEmpty(this.nullGeometryFeatures_);
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature.
+ */
+ol.source.Vector.prototype.removeFeature = function(feature) {
+  var featureKey = goog.getUid(feature).toString();
+  if (featureKey in this.nullGeometryFeatures_) {
+    delete this.nullGeometryFeatures_[featureKey];
+  } else {
+    this.rBush_.remove(feature);
+  }
+  this.removeFeatureInternal(feature);
+  this.dispatchChangeEvent();
+};
+
+
+/**
+ * Remove feature without firing a `change` event.
+ * @param {ol.Feature} feature Feature.
+ * @protected
+ */
+ol.source.Vector.prototype.removeFeatureInternal = function(feature) {
+  var featureKey = goog.getUid(feature).toString();
+  goog.asserts.assert(featureKey in this.featureChangeKeys_);
+  goog.events.unlistenByKey(this.featureChangeKeys_[featureKey]);
+  delete this.featureChangeKeys_[featureKey];
+  this.dispatchEvent(new ol.source.VectorEvent(
+      ol.source.VectorEventType.REMOVEFEATURE, feature));
 };
 
 
@@ -306,135 +342,26 @@ ol.source.Vector.prototype.removeFeatures = function(features) {
 /**
  * @constructor
  * @extends {goog.events.Event}
- * @param {string} type Event type.
- * @param {Array.<ol.Feature>} features Features associated with the event.
- * @param {Array.<ol.Extent>} extents Any extents associated with the event.
+ * @param {string} type Type.
+ * @param {ol.Feature=} opt_feature Feature.
  */
-ol.source.VectorEvent = function(type, features, extents) {
+ol.source.VectorEvent = function(type, opt_feature) {
 
   goog.base(this, type);
 
   /**
-   * @type {Array.<ol.Feature>}
+   * @private
+   * @type {ol.Feature|undefined}
    */
-  this.features = features;
-
-  /**
-   * @type {Array.<ol.Extent>}
-   */
-  this.extents = extents;
+  this.feature_ = opt_feature;
 
 };
 goog.inherits(ol.source.VectorEvent, goog.events.Event);
 
 
 /**
- * @enum {string}
+ * @return {ol.Feature|undefined} Feature.
  */
-ol.source.VectorEventType = {
-  LOAD: 'featureload',
-  ADD: 'featureadd',
-  CHANGE: 'featurechange',
-  INTENTCHANGE: 'featureintentchange',
-  REMOVE: 'featureremove'
-};
-
-
-
-/**
- * @constructor
- */
-ol.source.FeatureCache = function() {
-
-  /**
-   * @type {Object.<string, ol.Feature>}
-   * @private
-   */
-  this.idLookup_;
-
-  /**
-   * @type {ol.structs.RBush}
-   * @private
-   */
-  this.rBush_;
-
-  this.clear();
-
-};
-
-
-/**
- * Clear the cache.
- */
-ol.source.FeatureCache.prototype.clear = function() {
-  this.idLookup_ = {};
-  this.rBush_ = new ol.structs.RBush();
-};
-
-
-/**
- * Add a feature to the cache.
- * @param {ol.Feature} feature Feature to be cached.
- */
-ol.source.FeatureCache.prototype.add = function(feature) {
-  var id = goog.getUid(feature).toString(),
-      geometry = feature.getGeometry();
-
-  this.idLookup_[id] = feature;
-
-  // index by bounding box
-  if (!goog.isNull(geometry)) {
-    this.rBush_.insert(geometry.getBounds(), feature);
-  }
-};
-
-
-/**
- * @return {Object.<string, ol.Feature>} Object of features, keyed by id.
- */
-ol.source.FeatureCache.prototype.getFeaturesObject = function() {
-  return this.idLookup_;
-};
-
-
-/**
- * Operate on each feature whose bounding box intersects the provided extent.
- *
- * @param {ol.Extent} extent Bounding extent.
- * @param {function(this: T, ol.Feature)} callback Callback called with each
- *     feature.
- * @param {T=} opt_thisArg The object to be used as the value of 'this' for
- *     the callback.
- * @template T
- */
-ol.source.FeatureCache.prototype.forEach =
-    function(extent, callback, opt_thisArg) {
-  this.rBush_.forEachInExtent(
-      extent, /** @type {function(Object)} */ (callback), opt_thisArg);
-};
-
-
-/**
- * Remove a feature from the cache.
- * @param {ol.Feature} feature Feature.
- */
-ol.source.FeatureCache.prototype.remove = function(feature) {
-  var id = goog.getUid(feature).toString(),
-      geometry = feature.getGeometry();
-
-  delete this.idLookup_[id];
-  // index by bounding box
-  if (!goog.isNull(geometry)) {
-    this.rBush_.remove(feature);
-  }
-};
-
-
-/**
- * Updates a feature's extent in the spatial index.
- * @param {ol.Feature} feature Feature.
- * @param {ol.Extent} extent Extent.
- */
-ol.source.FeatureCache.prototype.updateExtent = function(feature, extent) {
-  this.rBush_.update(extent, feature);
+ol.source.VectorEvent.prototype.getFeature = function() {
+  return this.feature_;
 };

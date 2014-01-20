@@ -1,0 +1,5 @@
+@exportSymbol ol.style.Circle
+@exportProperty ol.style.Circle.prototype.getFill
+@exportProperty ol.style.Circle.prototype.getImage
+@exportProperty ol.style.Circle.prototype.getRadius
+@exportProperty ol.style.Circle.prototype.getStroke

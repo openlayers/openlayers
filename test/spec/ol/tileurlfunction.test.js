@@ -78,26 +78,7 @@ describe('ol.TileUrlFunction', function() {
     });
   });
 
-  describe('createFromParamsFunction', function() {
-    var paramsFunction = function(url, params) { return arguments; };
-    var projection = ol.proj.get('EPSG:3857');
-    var fakeTileSource = {getTileGrid: function() {return null;}};
-    var params = {foo: 'bar'};
-    var tileUrlFunction = ol.TileUrlFunction.createFromParamsFunction(
-        'url', params, 0, paramsFunction);
-    it('calls the passed function with the correct arguments', function() {
-      var args = tileUrlFunction.call(fakeTileSource,
-          new ol.TileCoord(0, 0, 0), projection);
-      expect(args[0]).to.eql('url');
-      expect(args[1]).to.be(params);
-      expect(args[2]).to.eql(projection.getExtent());
-      expect(args[3]).to.eql([256, 256]);
-      expect(args[4]).to.eql(projection);
-    });
-  });
-
 });
 
 goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
-goog.require('ol.proj');

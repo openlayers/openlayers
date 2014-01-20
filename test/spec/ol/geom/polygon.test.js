@@ -1,179 +1,340 @@
 goog.provide('ol.test.geom.Polygon');
 
+
 describe('ol.geom.Polygon', function() {
 
-  var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]],
-      inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]],
-      inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
-
-  describe('constructor', function() {
-
-    it('creates a polygon from an array', function() {
-      var poly = new ol.geom.Polygon([outer, inner1, inner2]);
-      expect(poly).to.be.a(ol.geom.Polygon);
-      expect(poly).to.be.a(ol.geom.Geometry);
-    });
-
+  it('can be constructed with a null geometry', function() {
+    expect(function() {
+      var polygon = new ol.geom.Polygon(null);
+      polygon = polygon; // suppress gjslint warning
+    }).not.to.throwException();
   });
 
-  describe('#getRings()', function() {
+  describe('construct empty', function() {
 
-    it('returns an array of LinearRing', function() {
-      var poly = new ol.geom.Polygon([outer, inner1, inner2]);
-      var rings = poly.getRings();
-      expect(rings.length).to.be(3);
-      expect(rings[0]).to.be.a(ol.geom.LinearRing);
-      expect(rings[1]).to.be.a(ol.geom.LinearRing);
-      expect(rings[2]).to.be.a(ol.geom.LinearRing);
-    });
-
-    var isClockwise = ol.geom.LinearRing.isClockwise;
-
-    it('forces exterior ring to be clockwise', function() {
-      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
-      expect(isClockwise(outer)).to.be(false);
-
-      var poly = new ol.geom.Polygon([outer]);
-      var ring = poly.getRings()[0];
-      expect(isClockwise(ring.getCoordinates())).to.be(true);
-    });
-
-    it('forces interior ring to be counter-clockwise', function() {
-      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
-      var inner = [[2, 2], [2, 8], [8, 8], [8, 2], [2, 2]];
-      expect(isClockwise(inner)).to.be(true);
-
-      var poly = new ol.geom.Polygon([outer, inner]);
-      var ring = poly.getRings()[1];
-      expect(isClockwise(ring.getCoordinates())).to.be(false);
-    });
-
-
-  });
-
-  describe('#getBounds()', function() {
-
-    it('returns the bounding extent', function() {
-      var poly = new ol.geom.Polygon([outer, inner1, inner2]);
-      var bounds = poly.getBounds();
-      expect(bounds[0]).to.be(0);
-      expect(bounds[2]).to.be(10);
-      expect(bounds[1]).to.be(0);
-      expect(bounds[3]).to.be(10);
-    });
-
-  });
-
-  describe('#getCoordinates()', function() {
-
-    it('returns an array', function() {
-      var poly = new ol.geom.Polygon([outer, inner1, inner2]);
-      expect(poly.getCoordinates()).to.eql([outer, inner1, inner2]);
-    });
-
-  });
-
-  describe('#transform()', function() {
-
-    var forward = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
-    var inverse = ol.proj.getTransform('EPSG:3857', 'EPSG:4326');
-
-    var gg, sm;
+    var polygon;
     beforeEach(function() {
-      gg = [
-        [[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]],
-        [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]],
-        [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]]
+      polygon = new ol.geom.Polygon([]);
+    });
+
+    it('defaults to layout XY', function() {
+      expect(polygon.getLayout()).to.be(ol.geom.GeometryLayout.XY);
+    });
+
+    it('has empty coordinates', function() {
+      expect(polygon.getCoordinates()).to.be.empty();
+    });
+
+    it('has an empty extent', function() {
+      expect(ol.extent.isEmpty(polygon.getExtent())).to.be(true);
+    });
+
+    it('has empty flat coordinates', function() {
+      expect(polygon.getFlatCoordinates()).to.be.empty();
+    });
+
+    it('has stride the expected stride', function() {
+      expect(polygon.getStride()).to.be(2);
+    });
+
+  });
+
+  describe('construct with 2D coordinates', function() {
+
+    var outerRing, innerRing, polygon, flatCoordinates;
+    var outsideOuter, inside, insideInner;
+    beforeEach(function() {
+      outerRing = [[0, 1], [1, 4], [4, 3], [3, 0]];
+      innerRing = [[2, 2], [3, 2], [3, 3], [2, 3]];
+      polygon = new ol.geom.Polygon([outerRing, innerRing]);
+      flatCoordinates = [0, 1, 1, 4, 4, 3, 3, 0, 2, 2, 3, 2, 3, 3, 2, 3];
+      outsideOuter = [0, 4];
+      inside = [1.5, 1.5];
+      insideInner = [2.5, 3.5];
+    });
+
+    it('has the expected layout', function() {
+      expect(polygon.getLayout()).to.be(ol.geom.GeometryLayout.XY);
+    });
+
+    it('has the expected coordinates', function() {
+      expect(polygon.getCoordinates()).to.eql([outerRing, innerRing]);
+    });
+
+    it('has the expected extent', function() {
+      expect(polygon.getExtent()).to.eql([0, 0, 4, 4]);
+    });
+
+    it('has the expected flat coordinates', function() {
+      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    });
+
+    it('has stride the expected stride', function() {
+      expect(polygon.getStride()).to.be(2);
+    });
+
+    it('reverses the outer ring if necessary', function() {
+      polygon = new ol.geom.Polygon([outerRing.reverse(), innerRing]);
+      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    });
+
+    it('reverses inner rings if necessary', function() {
+      polygon = new ol.geom.Polygon([outerRing, innerRing.reverse()]);
+      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    });
+
+    it('reverses all rings if necessary', function() {
+      polygon = new ol.geom.Polygon([outerRing.reverse(), innerRing.reverse()]);
+      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    });
+
+    it('does not contain outside coordinates', function() {
+      expect(polygon.containsCoordinate(outsideOuter)).to.be(false);
+    });
+
+    it('does contain inside coordinates', function() {
+      expect(polygon.containsCoordinate(inside)).to.be(true);
+    });
+
+    it('does not contain inside inner coordinates', function() {
+      expect(polygon.containsCoordinate(insideInner)).to.be(false);
+    });
+
+  });
+
+  describe('construct with 3D coordinates', function() {
+
+    var outerRing, innerRing, polygon, flatCoordinates;
+    var outsideOuter, inside, insideInner;
+    beforeEach(function() {
+      outerRing = [[0, 0, 1], [4, 4, 2], [4, 0, 3]];
+      innerRing = [[2, 1, 4], [3, 1, 5], [3, 2, 6]];
+      polygon = new ol.geom.Polygon([outerRing, innerRing]);
+      flatCoordinates = [0, 0, 1, 4, 4, 2, 4, 0, 3, 2, 1, 4, 3, 1, 5, 3, 2, 6];
+      outsideOuter = [1, 3];
+      inside = [3.5, 0.5];
+      insideInner = [2.9, 1.1];
+    });
+
+    it('has the expected layout', function() {
+      expect(polygon.getLayout()).to.be(ol.geom.GeometryLayout.XYZ);
+    });
+
+    it('has the expected coordinates', function() {
+      expect(polygon.getCoordinates()).to.eql([outerRing, innerRing]);
+    });
+
+    it('has the expected extent', function() {
+      expect(polygon.getExtent()).to.eql([0, 0, 4, 4]);
+    });
+
+    it('has the expected flat coordinates', function() {
+      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    });
+
+    it('has stride the expected stride', function() {
+      expect(polygon.getStride()).to.be(3);
+    });
+
+    it('reverses the outer ring if necessary', function() {
+      polygon = new ol.geom.Polygon([outerRing.reverse(), innerRing]);
+      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    });
+
+    it('reverses inner rings if necessary', function() {
+      polygon = new ol.geom.Polygon([outerRing, innerRing.reverse()]);
+      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    });
+
+    it('reverses all rings if necessary', function() {
+      polygon = new ol.geom.Polygon([outerRing.reverse(), innerRing.reverse()]);
+      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    });
+
+    it('does not contain outside coordinates', function() {
+      expect(polygon.containsCoordinate(outsideOuter)).to.be(false);
+    });
+
+    it('does contain inside coordinates', function() {
+      expect(polygon.containsCoordinate(inside)).to.be(true);
+    });
+
+    it('does not contain inside inner coordinates', function() {
+      expect(polygon.containsCoordinate(insideInner)).to.be(false);
+    });
+
+  });
+
+  describe('construct with 3D coordinates and layout XYM', function() {
+
+    var outerRing, innerRing, polygon, flatCoordinates;
+    var outsideOuter, inside, insideInner;
+    beforeEach(function() {
+      outerRing = [[0, 0, 1], [4, 4, 2], [4, 0, 3]];
+      innerRing = [[2, 1, 4], [3, 1, 5], [3, 2, 6]];
+      polygon = new ol.geom.Polygon(
+          [outerRing, innerRing], ol.geom.GeometryLayout.XYM);
+      flatCoordinates = [0, 0, 1, 4, 4, 2, 4, 0, 3, 2, 1, 4, 3, 1, 5, 3, 2, 6];
+      outsideOuter = [1, 3];
+      inside = [3.5, 0.5];
+      insideInner = [2.9, 1.1];
+    });
+
+    it('has the expected layout', function() {
+      expect(polygon.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+    });
+
+    it('has the expected coordinates', function() {
+      expect(polygon.getCoordinates()).to.eql([outerRing, innerRing]);
+    });
+
+    it('has the expected extent', function() {
+      expect(polygon.getExtent()).to.eql([0, 0, 4, 4]);
+    });
+
+    it('has the expected flat coordinates', function() {
+      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    });
+
+    it('has stride the expected stride', function() {
+      expect(polygon.getStride()).to.be(3);
+    });
+
+    it('reverses the outer ring if necessary', function() {
+      polygon = new ol.geom.Polygon([outerRing.reverse(), innerRing]);
+      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    });
+
+    it('reverses inner rings if necessary', function() {
+      polygon = new ol.geom.Polygon([outerRing, innerRing.reverse()]);
+      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    });
+
+    it('reverses all rings if necessary', function() {
+      polygon = new ol.geom.Polygon([outerRing.reverse(), innerRing.reverse()]);
+      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    });
+
+    it('does not contain outside coordinates', function() {
+      expect(polygon.containsCoordinate(outsideOuter)).to.be(false);
+    });
+
+    it('does contain inside coordinates', function() {
+      expect(polygon.containsCoordinate(inside)).to.be(true);
+    });
+
+    it('does not contain inside inner coordinates', function() {
+      expect(polygon.containsCoordinate(insideInner)).to.be(false);
+    });
+
+  });
+
+  describe('construct with 4D coordinates', function() {
+
+    var outerRing, innerRing1, innerRing2, polygon, flatCoordinates;
+    var outsideOuter, inside, insideInner1, insideInner2;
+    beforeEach(function() {
+      outerRing = [[0, 6, 1, 2], [6, 6, 3, 4], [3, 0, 5, 6]];
+      innerRing1 =
+          [[2, 4, 7, 8], [4, 4, 9, 10], [4, 5, 11, 12], [2, 5, 13, 14]];
+      innerRing2 = [[3, 2, 15, 16], [4, 3, 17, 18], [2, 3, 19, 20]];
+      polygon = new ol.geom.Polygon([outerRing, innerRing1, innerRing2]);
+      flatCoordinates = [
+        0, 6, 1, 2, 6, 6, 3, 4, 3, 0, 5, 6,
+        2, 4, 7, 8, 4, 4, 9, 10, 4, 5, 11, 12, 2, 5, 13, 14,
+        3, 2, 15, 16, 4, 3, 17, 18, 2, 3, 19, 20
       ];
-
-      sm = [[
-        [0, 0], [0, 1118890], [1113195, 1118890], [1113195, 0], [0, 0]
-      ], [
-        [111319, 111325], [222639, 111325], [222639, 222684],
-        [111319, 222684], [111319, 111325]
-      ], [
-        [890556, 893464], [1001875, 893464], [1001875, 1006021],
-        [890556, 1006021], [890556, 893464]
-      ]];
-
+      outsideOuter = [1, 1];
+      inside = [3, 1];
+      insideInner1 = [2.5, 4.5];
+      insideInner2 = [3, 2.5];
     });
 
-    it('forward transforms a polygon in place', function() {
-
-      var poly = new ol.geom.Polygon(gg);
-      poly.transform(forward);
-      var coordinates = poly.getCoordinates();
-      var ring;
-      for (var i = 0, ii = coordinates.length; i < ii; ++i) {
-        var ring = coordinates[i];
-        for (var j = 0, jj = ring.length; j < jj; ++j) {
-          expect(ring[j][0]).to.roughlyEqual(sm[i][j][0], 1);
-          expect(ring[j][1]).to.roughlyEqual(sm[i][j][1], 1);
-        }
-      }
-
+    it('has the expected layout', function() {
+      expect(polygon.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
     });
 
-    it('inverse transforms a polygon in place', function() {
+    it('has the expected coordinates', function() {
+      expect(polygon.getCoordinates()).to.eql(
+          [outerRing, innerRing1, innerRing2]);
+    });
 
-      var poly = new ol.geom.Polygon(sm);
-      poly.transform(inverse);
-      var coordinates = poly.getCoordinates();
-      var ring;
-      for (var i = 0, ii = coordinates.length; i < ii; ++i) {
-        var ring = coordinates[i];
-        for (var j = 0, jj = ring.length; j < jj; ++j) {
-          expect(ring[j][0]).to.roughlyEqual(gg[i][j][0], 0.001);
-          expect(ring[j][1]).to.roughlyEqual(gg[i][j][1], 0.001);
-        }
-      }
+    it('has the expected extent', function() {
+      expect(polygon.getExtent()).to.eql([0, 0, 6, 6]);
+    });
 
+    it('has the expected flat coordinates', function() {
+      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    });
+
+    it('has stride the expected stride', function() {
+      expect(polygon.getStride()).to.be(4);
+    });
+
+    it('reverses the outer ring if necessary', function() {
+      polygon = new ol.geom.Polygon(
+          [outerRing.reverse(), innerRing1, innerRing2]);
+      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    });
+
+    it('reverses inner rings if necessary', function() {
+      polygon = new ol.geom.Polygon(
+          [outerRing, innerRing1.reverse(), innerRing2.reverse()]);
+      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    });
+
+    it('reverses all rings if necessary', function() {
+      polygon = new ol.geom.Polygon(
+          [outerRing.reverse(), innerRing1.reverse(), innerRing2.reverse()]);
+      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    });
+
+    it('does not contain outside coordinates', function() {
+      expect(polygon.containsCoordinate(outsideOuter)).to.be(false);
+    });
+
+    it('does contain inside coordinates', function() {
+      expect(polygon.containsCoordinate(inside)).to.be(true);
+    });
+
+    it('does not contain inside inner coordinates', function() {
+      expect(polygon.containsCoordinate(insideInner1)).to.be(false);
+      expect(polygon.containsCoordinate(insideInner2)).to.be(false);
     });
 
   });
 
-  describe('change event', function() {
+  describe('with a simple polygon', function() {
 
-    var outer, inner;
+    var polygon;
     beforeEach(function() {
-      outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
-      inner = [[2, 2], [2, 8], [8, 8], [8, 2], [2, 2]];
+      polygon = new ol.geom.Polygon(
+          [[[3, 0], [1, 3], [0, 6], [2, 6], [3, 7], [4, 6], [6, 6], [4, 3]]]);
     });
 
-    it('is fired when outer ring is modified', function(done) {
-      var poly = new ol.geom.Polygon([outer, inner]);
-      var rings = poly.getRings();
-      goog.events.listen(poly, 'change', function(evt) {
-        expect(evt.target).to.be(poly);
-        expect(evt.target.getBounds()).to.eql([0, 0, 11, 10]);
-        done();
+    describe('#getSimplifiedGeometry', function() {
+
+      it('returns the expected result', function() {
+        var simplifiedGeometry = polygon.getSimplifiedGeometry(9);
+        expect(simplifiedGeometry).to.be.an(ol.geom.Polygon);
+        expect(simplifiedGeometry.getCoordinates()).to.eql(
+            [[[3, 0], [0, 3], [0, 6], [6, 6], [3, 3]]]);
       });
 
-      var outerCoords = rings[0].getCoordinates();
-      outerCoords[1][0] = 11;
-      rings[0].setCoordinates(outerCoords);
-    });
-
-    it('is fired when inner ring is modified', function(done) {
-      var poly = new ol.geom.Polygon([outer, inner]);
-      var rings = poly.getRings();
-      goog.events.listen(poly, 'change', function(evt) {
-        expect(evt.target).to.be(poly);
-        expect(evt.target.getBounds()).to.eql([0, 0, 10, 10]);
-        done();
+      it('caches multiple simplified geometries', function() {
+        var simplifiedGeometry1 = polygon.getSimplifiedGeometry(4);
+        var simplifiedGeometry2 = polygon.getSimplifiedGeometry(9);
+        var simplifiedGeometry3 = polygon.getSimplifiedGeometry(4);
+        var simplifiedGeometry4 = polygon.getSimplifiedGeometry(9);
+        expect(simplifiedGeometry1).to.be(simplifiedGeometry3);
+        expect(simplifiedGeometry2).to.be(simplifiedGeometry4);
       });
 
-      var innerCoords = rings[1].getCoordinates();
-      innerCoords[1][0] = 3;
-      rings[1].setCoordinates(innerCoords);
     });
-
   });
 
 });
 
-goog.require('goog.events');
-goog.require('ol.geom.Geometry');
-goog.require('ol.geom.LinearRing');
+
+goog.require('ol.extent');
 goog.require('ol.geom.Polygon');
-goog.require('ol.proj');

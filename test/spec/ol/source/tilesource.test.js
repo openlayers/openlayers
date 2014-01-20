@@ -197,7 +197,7 @@ ol.test.source.TileMock = function(loaded) {
     resolutions: [360 / 256, 180 / 256, 90 / 256, 45 / 256],
     extent: extent,
     origin: [-180, -180],
-    tileSize: [256, 256]
+    tileSize: 256
   });
 
   goog.base(this, {

@@ -12,7 +12,7 @@ describe('ol.tilegrid.TileGrid', function() {
     extent = [0, 0, 100000, 100000];
     origin = [0, 0];
     origins = [];
-    tileSize = [100, 100];
+    tileSize = 100;
   });
 
   describe('create valid', function() {
@@ -211,7 +211,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
       var resolutions = grid.getResolutions();
       expect(resolutions.length).to.be(ol.DEFAULT_MAX_ZOOM + 1);
-      expect(grid.getTileSize()).to.eql([256, 256]);
+      expect(grid.getTileSize()).to.eql(256);
     });
 
     it('stores the default tile grid on a projection', function() {
@@ -295,7 +295,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
   describe('getTileCoordForCoordAndResolution', function() {
     it('returns the expected TileCoord', function() {
-      var tileSize = [256, 256];
+      var tileSize = 256;
       var tileGrid = new ol.tilegrid.TileGrid({
         resolutions: [10],
         extent: extent,
@@ -451,7 +451,7 @@ describe('ol.tilegrid.TileGrid', function() {
     });
   });
 
-  describe('getTileCoordExent', function() {
+  describe('getTileCoordExtent', function() {
     it('returns the expected extend', function() {
       var tileGrid = new ol.tilegrid.TileGrid({
         resolutions: resolutions,
@@ -463,20 +463,20 @@ describe('ol.tilegrid.TileGrid', function() {
 
       tileCoordExtent = tileGrid.getTileCoordExtent(new ol.TileCoord(0, 0, 0));
       expect(tileCoordExtent[0]).to.eql(0);
-      expect(tileCoordExtent[2]).to.eql(100000);
       expect(tileCoordExtent[1]).to.eql(0);
+      expect(tileCoordExtent[2]).to.eql(100000);
       expect(tileCoordExtent[3]).to.eql(100000);
 
       tileCoordExtent = tileGrid.getTileCoordExtent(new ol.TileCoord(3, 9, 0));
       expect(tileCoordExtent[0]).to.eql(90000);
-      expect(tileCoordExtent[2]).to.eql(100000);
       expect(tileCoordExtent[1]).to.eql(0);
+      expect(tileCoordExtent[2]).to.eql(100000);
       expect(tileCoordExtent[3]).to.eql(10000);
 
       tileCoordExtent = tileGrid.getTileCoordExtent(new ol.TileCoord(3, 0, 9));
       expect(tileCoordExtent[0]).to.eql(0);
-      expect(tileCoordExtent[2]).to.eql(10000);
       expect(tileCoordExtent[1]).to.eql(90000);
+      expect(tileCoordExtent[2]).to.eql(10000);
       expect(tileCoordExtent[3]).to.eql(100000);
     });
   });

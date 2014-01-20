@@ -1,118 +1,145 @@
 goog.provide('ol.test.source.ImageWMS');
 
+
 describe('ol.source.ImageWMS', function() {
 
-  describe('constructor', function() {
+  describe('#getImage', function() {
 
-    it('creates a source', function() {
-      var source = new ol.source.ImageWMS({
-        url: 'http://demo.opengeo.org/geoserver/wms',
-        params: {'LAYERS': 'topp:states'},
-        extent: [-13884991, 2870341, -7455066, 6338219]
-      });
-
-      expect(source).to.be.a(ol.source.ImageWMS);
-      expect(source).to.be.a(ol.source.Source);
-    });
-
-  });
-
-  describe('#getFeatureInfoForPixel()', function() {
-
-    var viewport, map, view, source;
+    var extent, pixelRatio, options, projection, resolution;
     beforeEach(function() {
-      viewport = document.createElement('div');
-      var style = viewport.style;
-      style.position = 'absolute';
-      style.left = '-1000px';
-      style.width = '360px';
-      style.height = '180px';
-      document.body.appendChild(viewport);
-
-      source = new ol.source.ImageWMS({
-        url: 'http://example.com/',
-        projection: 'EPSG:4326',
-        params: {'LAYERS': 'test-layer'}
-      });
-
-      view = new ol.View2D({
-        projection: 'EPSG:4326',
-        center: [0, 0]
-      });
-
-      map = new ol.Map({
-        target: viewport,
-        layers: [
-          new ol.layer.Image({
-            source: source
-          })
-        ],
-        view: view
-      });
-
-      sinon.spy(ol.source.wms, 'getFeatureInfo');
+      extent = [10, 20, 30, 40];
+      pixelRatio = 1;
+      projection = ol.proj.get('EPSG:4326');
+      resolution = 0.1;
+      options = {
+        params: {
+          'LAYERS': 'layer'
+        },
+        ratio: 1,
+        url: 'http://example.com/wms'
+      };
     });
 
-    afterEach(function() {
-      ol.source.wms.getFeatureInfo.restore();
-      document.body.removeChild(viewport);
+    it('returns the expected image URL', function() {
+      var source = new ol.source.ImageWMS(options);
+      var image = source.getImage(extent, resolution, pixelRatio, projection);
+      var uri = new goog.Uri(image.src_);
+      expect(uri.getScheme()).to.be('http');
+      expect(uri.getDomain()).to.be('example.com');
+      expect(uri.getPath()).to.be('/wms');
+      var queryData = uri.getQueryData();
+      expect(queryData.get('BBOX')).to.be('20,10,40,30');
+      expect(queryData.get('CRS')).to.be('EPSG:4326');
+      expect(queryData.get('FORMAT')).to.be('image/png');
+      expect(queryData.get('HEIGHT')).to.be('200');
+      expect(queryData.get('LAYERS')).to.be('layer');
+      expect(queryData.get('REQUEST')).to.be('GetMap');
+      expect(queryData.get('SERVICE')).to.be('WMS');
+      expect(queryData.get('SRS')).to.be(undefined);
+      expect(queryData.get('STYLES')).to.be('');
+      expect(queryData.get('TRANSPARENT')).to.be('true');
+      expect(queryData.get('VERSION')).to.be('1.3.0');
+      expect(queryData.get('WIDTH')).to.be('200');
+      expect(uri.getFragment()).to.be.empty();
     });
 
-    it('calls ol.source.wms.getFeatureInfo (resolution 1)', function(done) {
-      // confirm things look good at resolution: 2
-      map.once('postrender', function() {
-        source.getFeatureInfoForPixel([0, 0], map, function() {
-          expect(ol.source.wms.getFeatureInfo.calledOnce).to.be(true);
-          var args = ol.source.wms.getFeatureInfo.getCall(0).args;
-
-          // check url arg
-          var url = new goog.Uri(args[0]);
-          var query = url.getQueryData();
-          expect(query.containsKey('BBOX')).to.be(true);
-          expect(query.get('BBOX').split(',')).to.eql([-90, -180, 90, 180]);
-
-          // check pixel arg
-          var pixel = args[1];
-          expect(pixel).to.eql([0, 0]);
-
-          done();
-        });
-      });
-      view.setResolution(1);
+    it('sets the SRS query value instead of CRS if version < 1.3', function() {
+      options.params.VERSION = '1.2';
+      var source = new ol.source.ImageWMS(options);
+      var image = source.getImage(extent, resolution, pixelRatio, projection);
+      var uri = new goog.Uri(image.src_);
+      var queryData = uri.getQueryData();
+      expect(queryData.get('CRS')).to.be(undefined);
+      expect(queryData.get('SRS')).to.be('EPSG:4326');
     });
 
-    it('calls ol.source.wms.getFeatureInfo (resolution 2)', function(done) {
-      // confirm things look good at resolution: 2
-      map.once('postrender', function() {
-        source.getFeatureInfoForPixel([10, 20], map, function() {
-          expect(ol.source.wms.getFeatureInfo.calledOnce).to.be(true);
-          var args = ol.source.wms.getFeatureInfo.getCall(0).args;
-
-          // check url arg
-          var url = new goog.Uri(args[0]);
-          var query = url.getQueryData();
-          expect(query.containsKey('BBOX')).to.be(true);
-          expect(query.get('BBOX').split(',')).to.eql([-180, -360, 180, 360]);
-
-          // check pixel arg
-          var pixel = args[1];
-          expect(pixel).to.eql([10, 20]);
-
-          done();
-        });
-
-      });
-      view.setResolution(2);
+    it('allows various parameters to be overridden', function() {
+      options.params.FORMAT = 'image/jpeg';
+      options.params.TRANSPARENT = false;
+      var source = new ol.source.ImageWMS(options);
+      var image = source.getImage(extent, resolution, pixelRatio, projection);
+      var uri = new goog.Uri(image.src_);
+      var queryData = uri.getQueryData();
+      expect(queryData.get('FORMAT')).to.be('image/jpeg');
+      expect(queryData.get('TRANSPARENT')).to.be('false');
     });
+
+    it('does not add a STYLES= option if one is specified', function() {
+      options.params.STYLES = 'foo';
+      var source = new ol.source.ImageWMS(options);
+      var image = source.getImage(extent, resolution, pixelRatio, projection);
+      var uri = new goog.Uri(image.src_);
+      var queryData = uri.getQueryData();
+      expect(queryData.get('STYLES')).to.be('foo');
+    });
+
+    it('changes the BBOX order for EN axis orientations', function() {
+      var source = new ol.source.ImageWMS(options);
+      projection = ol.proj.get('CRS:84');
+      var image = source.getImage(extent, resolution, pixelRatio, projection);
+      var uri = new goog.Uri(image.src_);
+      var queryData = uri.getQueryData();
+      expect(queryData.get('BBOX')).to.be('10,20,30,40');
+    });
+
+    it('uses EN BBOX order if version < 1.3', function() {
+      options.params.VERSION = '1.1.0';
+      var source = new ol.source.ImageWMS(options);
+      var image =
+          source.getImage(extent, resolution, pixelRatio, projection);
+      var uri = new goog.Uri(image.src_);
+      var queryData = uri.getQueryData();
+      expect(queryData.get('BBOX')).to.be('10,20,30,40');
+    });
+
+    it('sets MAP_RESOLUTION when the server is MapServer', function() {
+      options.serverType = ol.source.wms.ServerType.MAPSERVER;
+      var source = new ol.source.ImageWMS(options);
+      pixelRatio = 2;
+      var image = source.getImage(extent, resolution, pixelRatio, projection);
+      var uri = new goog.Uri(image.src_);
+      var queryData = uri.getQueryData();
+      expect(queryData.get('MAP_RESOLUTION')).to.be('180');
+    });
+
+    it('sets FORMAT_OPTIONS when the server is GeoServer', function() {
+      options.serverType = ol.source.wms.ServerType.GEOSERVER;
+      var source = new ol.source.ImageWMS(options);
+      pixelRatio = 2;
+      var image = source.getImage(extent, resolution, pixelRatio, projection);
+      var uri = new goog.Uri(image.src_);
+      var queryData = uri.getQueryData();
+      expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:180');
+    });
+
+    it('rounds FORMAT_OPTIONS to an integer when the server is GeoServer',
+       function() {
+         options.serverType = ol.source.wms.ServerType.GEOSERVER;
+         var source = new ol.source.ImageWMS(options);
+         pixelRatio = 1.325;
+         var image =
+             source.getImage(extent, resolution, pixelRatio, projection);
+         var uri = new goog.Uri(image.src_);
+         var queryData = uri.getQueryData();
+         expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:119');
+       });
+
+    it('sets DPI when the server is QGIS', function() {
+      options.serverType = ol.source.wms.ServerType.QGIS;
+      var source = new ol.source.ImageWMS(options);
+      pixelRatio = 2;
+      var image = source.getImage(extent, resolution, pixelRatio, projection);
+      var uri = new goog.Uri(image.src_);
+      var queryData = uri.getQueryData();
+      expect(queryData.get('DPI')).to.be('180');
+    });
+
   });
 
 });
 
-goog.require('goog.Uri');
 
-goog.require('ol.Map');
-goog.require('ol.View2D');
-goog.require('ol.layer.Image');
+goog.require('goog.Uri');
 goog.require('ol.source.ImageWMS');
-goog.require('ol.source.Source');
-goog.require('ol.source.wms');
+goog.require('ol.proj');
+goog.require('ol.source.wms.ServerType');
