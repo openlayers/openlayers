@@ -1369,7 +1369,9 @@ ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeParsersNS(
     }, ol.xml.makeParsersNS(
         ol.format.KML.GX_NAMESPACE_URIS_, {
           'MultiTrack': ol.xml.makeObjectPropertySetter(
-              ol.format.KML.readGxMultiTrack_, 'geometry')
+              ol.format.KML.readGxMultiTrack_, 'geometry'),
+          'Track': ol.xml.makeObjectPropertySetter(
+              ol.format.KML.readGxTrack_, 'geometry')
         }
     ));
 
