@@ -92,7 +92,7 @@ ol.format.GPX.parseLink_ = function(node, objectStack) {
 ol.format.GPX.parseRtePt_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'rtept');
-  var values = ol.xml.pushAndParse(
+  var values = ol.xml.pushParseAndPop(
       {}, ol.format.GPX.RTEPT_PARSERS_, node, objectStack);
   if (goog.isDef(values)) {
     var rteValues = /** @type {Object} */ (objectStack[objectStack.length - 1]);
@@ -111,7 +111,7 @@ ol.format.GPX.parseRtePt_ = function(node, objectStack) {
 ol.format.GPX.parseTrkPt_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'trkpt');
-  var values = ol.xml.pushAndParse(
+  var values = ol.xml.pushParseAndPop(
       {}, ol.format.GPX.TRKPT_PARSERS_, node, objectStack);
   if (goog.isDef(values)) {
     var trkValues = /** @type {Object} */ (objectStack[objectStack.length - 1]);
@@ -148,7 +148,7 @@ ol.format.GPX.parseTrkSeg_ = function(node, objectStack) {
 ol.format.GPX.readRte_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'rte');
-  var values = ol.xml.pushAndParse({
+  var values = ol.xml.pushParseAndPop({
     'flatCoordinates': []
   }, ol.format.GPX.RTE_PARSERS_, node, objectStack);
   if (!goog.isDef(values)) {
@@ -174,7 +174,7 @@ ol.format.GPX.readRte_ = function(node, objectStack) {
 ol.format.GPX.readTrk_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'trk');
-  var values = ol.xml.pushAndParse({
+  var values = ol.xml.pushParseAndPop({
     'flatCoordinates': [],
     'ends': []
   }, ol.format.GPX.TRK_PARSERS_, node, objectStack);
@@ -204,7 +204,7 @@ ol.format.GPX.readTrk_ = function(node, objectStack) {
 ol.format.GPX.readWpt_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'wpt');
-  var values = ol.xml.pushAndParse(
+  var values = ol.xml.pushParseAndPop(
       {}, ol.format.GPX.WPT_PARSERS_, node, objectStack);
   if (!goog.isDef(values)) {
     return undefined;
@@ -392,8 +392,9 @@ ol.format.GPX.prototype.readFeaturesFromNode = function(node) {
     return [];
   }
   if (node.localName == 'gpx') {
-    var features = ol.xml.pushAndParse(/** @type {Array.<ol.Feature>} */ ([]),
-        ol.format.GPX.GPX_PARSERS_, node, []);
+    var features = ol.xml.pushParseAndPop(
+        /** @type {Array.<ol.Feature>} */ ([]), ol.format.GPX.GPX_PARSERS_,
+        node, []);
     if (goog.isDef(features)) {
       return features;
     } else {
