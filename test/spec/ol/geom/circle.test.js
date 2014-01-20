@@ -89,6 +89,37 @@ describe('ol.geom.Circle', function() {
         expect(closestPoint[1]).to.roughlyEqual(-Math.sqrt(0.5), 1e-15);
       });
 
+      it('maintains Z coordinates', function() {
+        var circle = new ol.geom.Circle([0, 0, 1], 1);
+        expect(circle.getLayout()).to.be(ol.geom.GeometryLayout.XYZ);
+        var closestPoint = circle.getClosestPoint([2, 0]);
+        expect(closestPoint).to.have.length(3);
+        expect(closestPoint[0]).to.roughlyEqual(1, 1e-15);
+        expect(closestPoint[1]).to.roughlyEqual(0, 1e-15);
+        expect(closestPoint[2]).to.be(1);
+      });
+
+      it('maintains M coordinates', function() {
+        var circle = new ol.geom.Circle([0, 0, 2], 1,
+            ol.geom.GeometryLayout.XYM);
+        var closestPoint = circle.getClosestPoint([2, 0]);
+        expect(closestPoint).to.have.length(3);
+        expect(closestPoint[0]).to.roughlyEqual(1, 1e-15);
+        expect(closestPoint[1]).to.roughlyEqual(0, 1e-15);
+        expect(closestPoint[2]).to.be(2);
+      });
+
+      it('maintains Z and M coordinates', function() {
+        var circle = new ol.geom.Circle([0, 0, 1, 2], 1);
+        expect(circle.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+        var closestPoint = circle.getClosestPoint([2, 0]);
+        expect(closestPoint).to.have.length(4);
+        expect(closestPoint[0]).to.roughlyEqual(1, 1e-15);
+        expect(closestPoint[1]).to.roughlyEqual(0, 1e-15);
+        expect(closestPoint[2]).to.be(1);
+        expect(closestPoint[3]).to.be(2);
+      });
+
     });
 
     describe('#getExtent', function() {

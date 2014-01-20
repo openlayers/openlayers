@@ -42,14 +42,16 @@ ol.geom.MultiPoint.prototype.closestPointXY =
   }
   var flatCoordinates = this.flatCoordinates;
   var stride = this.stride;
-  var i, ii;
+  var i, ii, j;
   for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
     var squaredDistance = ol.geom.flat.squaredDistance(
         x, y, flatCoordinates[i], flatCoordinates[i + 1]);
     if (squaredDistance < minSquaredDistance) {
       minSquaredDistance = squaredDistance;
-      closestPoint[0] = flatCoordinates[i];
-      closestPoint[1] = flatCoordinates[i + 1];
+      for (j = 0; j < stride; ++j) {
+        closestPoint[j] = flatCoordinates[i + j];
+      }
+      closestPoint.length = stride;
     }
   }
   return minSquaredDistance;
