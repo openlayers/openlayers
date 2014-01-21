@@ -2,6 +2,7 @@ goog.provide('ol.Observable');
 
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
+goog.require('goog.events.EventType');
 
 
 
@@ -26,6 +27,15 @@ ol.Observable = function() {
 
 };
 goog.inherits(ol.Observable, goog.events.EventTarget);
+
+
+/**
+ * FIXME empty description for jsdoc
+ */
+ol.Observable.prototype.dispatchChangeEvent = function() {
+  ++this.revision_;
+  this.dispatchEvent(goog.events.EventType.CHANGE);
+};
 
 
 /**
