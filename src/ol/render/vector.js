@@ -28,11 +28,10 @@ ol.renderer.vector.renderCircleGeometry_ =
     return;
   }
   goog.asserts.assertInstanceof(geometry, ol.geom.Circle);
-  var circleGeometry = /** @type {ol.geom.Circle} */ (geometry);
   var replay = replayGroup.getReplay(
       style.getZIndex(), ol.render.ReplayType.POLYGON);
   replay.setFillStrokeStyle(fillStyle, strokeStyle);
-  replay.drawCircleGeometry(circleGeometry, data);
+  replay.drawCircleGeometry(geometry, data);
 };
 
 
