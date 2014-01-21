@@ -56,10 +56,10 @@ ol.geom.LineString.prototype.closestPointXY =
       ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
-  if (this.maxDeltaRevision_ != this.revision) {
+  if (this.maxDeltaRevision_ != this.getRevision()) {
     this.maxDelta_ = Math.sqrt(ol.geom.closest.getMaxSquaredDelta(
         this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));
-    this.maxDeltaRevision_ = this.revision;
+    this.maxDeltaRevision_ = this.getRevision();
   }
   return ol.geom.closest.getClosestPoint(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
