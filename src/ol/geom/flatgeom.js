@@ -252,6 +252,7 @@ ol.geom.flat.inflateCoordinatesss =
  */
 ol.geom.flat.lineStringInterpolate =
     function(flatCoordinates, offset, end, stride, fraction, opt_point) {
+  // FIXME interpolate extra dimensions
   goog.asserts.assert(0 <= fraction && fraction <= 1);
   var point = goog.isDef(opt_point) ? opt_point : [NaN, NaN];
   var n = (end - offset) / stride;
