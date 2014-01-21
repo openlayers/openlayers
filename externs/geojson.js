@@ -34,9 +34,24 @@ var GeoJSONCRS = function() {};
 
 
 /**
- * @type {!GeoJSONCRSName|!GeoJSONLink}
+ * @type {!GeoJSONCRSCode|!GeoJSONCRSName|!GeoJSONLink}
  */
 GeoJSONCRS.prototype.properties;
+
+
+
+/**
+ * `GeoJSONCRSCode` is not part of the GeoJSON specification, but is generated
+ * by GeoServer.
+ * @constructor
+ */
+var GeoJSONCRSCode = function() {};
+
+
+/**
+ * @type {string}
+ */
+GeoJSONCRSName.prototype.code;
 
 
 
