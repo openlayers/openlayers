@@ -73,6 +73,16 @@ describe('ol.geom.Polygon', function() {
       expect(polygon.getStride()).to.be(2);
     });
 
+    it('has the expected rings', function() {
+      var linearRings = polygon.getLinearRings();
+      expect(linearRings).to.be.an(Array);
+      expect(linearRings).to.have.length(2);
+      expect(linearRings[0]).to.be.an(ol.geom.LinearRing);
+      expect(linearRings[0].getCoordinates()).to.eql(outerRing);
+      expect(linearRings[1]).to.be.an(ol.geom.LinearRing);
+      expect(linearRings[1].getCoordinates()).to.eql(innerRing);
+    });
+
     it('does not reverse any rings', function() {
       outerRing.reverse();
       innerRing.reverse();
@@ -377,4 +387,5 @@ describe('ol.geom.Polygon', function() {
 
 
 goog.require('ol.extent');
+goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.Polygon');
