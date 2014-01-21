@@ -94,6 +94,29 @@ describe('ol.geom.Polygon', function() {
       expect(polygon.containsCoordinate(insideInner)).to.be(false);
     });
 
+    describe('#getOrientedFlatCoordinates', function() {
+
+      it('reverses the outer ring if necessary', function() {
+        outerRing.reverse();
+        polygon = new ol.geom.Polygon([outerRing, innerRing]);
+        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+      });
+
+      it('reverses inner rings if necessary', function() {
+        innerRing.reverse();
+        polygon = new ol.geom.Polygon([outerRing, innerRing]);
+        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+      });
+
+      it('reverses all rings if necessary', function() {
+        outerRing.reverse();
+        innerRing.reverse();
+        polygon = new ol.geom.Polygon([outerRing, innerRing]);
+        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+      });
+
+    });
+
   });
 
   describe('construct with 3D coordinates', function() {
@@ -140,6 +163,29 @@ describe('ol.geom.Polygon', function() {
 
     it('does not contain inside inner coordinates', function() {
       expect(polygon.containsCoordinate(insideInner)).to.be(false);
+    });
+
+    describe('#getOrientedFlatCoordinates', function() {
+
+      it('reverses the outer ring if necessary', function() {
+        outerRing.reverse();
+        polygon = new ol.geom.Polygon([outerRing, innerRing]);
+        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+      });
+
+      it('reverses inner rings if necessary', function() {
+        innerRing.reverse();
+        polygon = new ol.geom.Polygon([outerRing, innerRing]);
+        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+      });
+
+      it('reverses all rings if necessary', function() {
+        outerRing.reverse();
+        innerRing.reverse();
+        polygon = new ol.geom.Polygon([outerRing, innerRing]);
+        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+      });
+
     });
 
   });
@@ -189,6 +235,29 @@ describe('ol.geom.Polygon', function() {
 
     it('does not contain inside inner coordinates', function() {
       expect(polygon.containsCoordinate(insideInner)).to.be(false);
+    });
+
+    describe('#getOrientedFlatCoordinates', function() {
+
+      it('reverses the outer ring if necessary', function() {
+        outerRing.reverse();
+        polygon = new ol.geom.Polygon([outerRing, innerRing]);
+        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+      });
+
+      it('reverses inner rings if necessary', function() {
+        innerRing.reverse();
+        polygon = new ol.geom.Polygon([outerRing, innerRing]);
+        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+      });
+
+      it('reverses all rings if necessary', function() {
+        outerRing.reverse();
+        innerRing.reverse();
+        polygon = new ol.geom.Polygon([outerRing, innerRing]);
+        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+      });
+
     });
 
   });
@@ -246,6 +315,31 @@ describe('ol.geom.Polygon', function() {
     it('does not contain inside inner coordinates', function() {
       expect(polygon.containsCoordinate(insideInner1)).to.be(false);
       expect(polygon.containsCoordinate(insideInner2)).to.be(false);
+    });
+
+    describe('#getOrientedFlatCoordinates', function() {
+
+      it('reverses the outer ring if necessary', function() {
+        outerRing.reverse();
+        polygon = new ol.geom.Polygon([outerRing, innerRing1, innerRing2]);
+        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+      });
+
+      it('reverses inner rings if necessary', function() {
+        innerRing1.reverse();
+        innerRing2.reverse();
+        polygon = new ol.geom.Polygon([outerRing, innerRing1, innerRing2]);
+        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+      });
+
+      it('reverses all rings if necessary', function() {
+        outerRing.reverse();
+        innerRing1.reverse();
+        innerRing2.reverse();
+        polygon = new ol.geom.Polygon([outerRing, innerRing1, innerRing2]);
+        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+      });
+
     });
 
   });
