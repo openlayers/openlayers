@@ -191,12 +191,20 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
  * @return {Array.<ol.geom.Polygon>} Polygons.
  */
 ol.geom.MultiPolygon.prototype.getPolygons = function() {
-  // FIXME we should construct the polygons directly from the flat coordinates
-  var coordinates = this.getCoordinates();
+  var layout = this.layout;
+  var flatCoordinates = this.flatCoordinates;
+  var endss = this.endss_;
   var polygons = [];
+  var offset = 0;
   var i, ii;
-  for (i = 0, ii = coordinates.length; i < ii; ++i) {
-    polygons.push(new ol.geom.Polygon(coordinates[i]));
+  for (i = 0, ii = endss.length; i < ii; ++i) {
+    var ends = endss[i];
+    var end = ends[ends.length - 1];
+    var polygon = new ol.geom.Polygon(null);
+    polygon.setFlatCoordinates(
+        layout, flatCoordinates.slice(offset, end), ends.slice());
+    polygons.push(polygon);
+    offset = end;
   }
   return polygons;
 };
