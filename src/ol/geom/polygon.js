@@ -153,11 +153,18 @@ ol.geom.Polygon.prototype.getInteriorPoint = function() {
  * @return {Array.<ol.geom.LinearRing>} Linear rings.
  */
 ol.geom.Polygon.prototype.getLinearRings = function() {
+  var layout = this.layout;
+  var flatCoordinates = this.flatCoordinates;
+  var ends = this.ends_;
   var linearRings = [];
-  var coordinates = this.getCoordinates();
+  var offset = 0;
   var i, ii;
-  for (i = 0, ii = coordinates.length; i < ii; ++i) {
-    linearRings.push(new ol.geom.LinearRing(coordinates[i]));
+  for (i = 0, ii = ends.length; i < ii; ++i) {
+    var end = ends[i];
+    var linearRing = new ol.geom.LinearRing(null);
+    linearRing.setFlatCoordinates(layout, flatCoordinates.slice(offset, end));
+    linearRings.push(linearRing);
+    offset = end;
   }
   return linearRings;
 };
