@@ -32,8 +32,10 @@ var styleArray = [new ol.style.Style({
   })
 })];
 
+var source = new ol.source.Vector();
+
 var vector = new ol.layer.Vector({
-  source: new ol.source.Vector(),
+  source: source,
   styleFunction: function(feature, resolution) {
     return styleArray;
   }
@@ -54,7 +56,7 @@ var typeSelect = document.getElementById('type');
 var draw; // global so we can remove it later
 function addInteraction() {
   draw = new ol.interaction.Draw({
-    layer: vector,
+    source: source,
     type: /** @type {ol.geom.GeometryType} */
         (typeSelect.options[typeSelect.selectedIndex].value)
   });
