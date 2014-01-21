@@ -104,7 +104,7 @@ ol.geom.Polygon.prototype.closestPointXY =
  */
 ol.geom.Polygon.prototype.containsXY = function(x, y) {
   return ol.geom.flat.linearRingsContainsXY(
-      this.flatCoordinates, 0, this.ends_, this.stride, x, y);
+      this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, x, y);
 };
 
 
@@ -113,7 +113,7 @@ ol.geom.Polygon.prototype.containsXY = function(x, y) {
  */
 ol.geom.Polygon.prototype.getArea = function() {
   return ol.geom.flat.linearRingsArea(
-      this.flatCoordinates, 0, this.ends_, this.stride);
+      this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride);
 };
 
 
@@ -142,7 +142,7 @@ ol.geom.Polygon.prototype.getInteriorPoint = function() {
     var extent = this.getExtent();
     var y = (extent[1] + extent[3]) / 2;
     this.interiorPoint_ = ol.geom.flat.linearRingsGetInteriorPoint(
-        this.flatCoordinates, 0, this.ends_, this.stride, y);
+        this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, y);
     this.interiorPointRevision_ = this.getRevision();
   }
   return this.interiorPoint_;
