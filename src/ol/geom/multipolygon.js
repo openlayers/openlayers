@@ -50,6 +50,18 @@ ol.geom.MultiPolygon = function(coordinates, opt_layout) {
    */
   this.maxDeltaRevision_ = -1;
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.orientedRevision_ = -1;
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.orientedFlatCoordinates_ = null;
+
   this.setCoordinates(coordinates, opt_layout);
 
 };
@@ -134,6 +146,26 @@ ol.geom.MultiPolygon.prototype.getInteriorPoints = function() {
     this.interiorPointsRevision_ = this.getRevision();
   }
   return this.interiorPoints_;
+};
+
+
+/**
+ * @return {Array.<number>} Oriented flat coordinates.
+ */
+ol.geom.MultiPolygon.prototype.getOrientedFlatCoordinates = function() {
+  if (this.orientedRevision_ != this.getRevision()) {
+    var flatCoordinates = this.flatCoordinates;
+    if (ol.geom.flat.linearRingssAreOriented(
+        flatCoordinates, 0, this.endss_, this.stride)) {
+      this.orientedFlatCoordinates_ = flatCoordinates;
+    } else {
+      this.orientedFlatCoordinates_ = flatCoordinates.slice();
+      this.orientedFlatCoordinates_.length = ol.geom.flat.orientLinearRingss(
+          this.orientedFlatCoordinates_, 0, this.endss_, this.stride);
+    }
+    this.orientedRevision_ = this.getRevision();
+  }
+  return this.orientedFlatCoordinates_;
 };
 
 
