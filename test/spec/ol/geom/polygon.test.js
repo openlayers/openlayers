@@ -73,19 +73,13 @@ describe('ol.geom.Polygon', function() {
       expect(polygon.getStride()).to.be(2);
     });
 
-    it('reverses the outer ring if necessary', function() {
-      polygon = new ol.geom.Polygon([outerRing.reverse(), innerRing]);
-      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
-    });
-
-    it('reverses inner rings if necessary', function() {
-      polygon = new ol.geom.Polygon([outerRing, innerRing.reverse()]);
-      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
-    });
-
-    it('reverses all rings if necessary', function() {
-      polygon = new ol.geom.Polygon([outerRing.reverse(), innerRing.reverse()]);
-      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+    it('does not reverse any rings', function() {
+      outerRing.reverse();
+      innerRing.reverse();
+      polygon = new ol.geom.Polygon([outerRing, innerRing]);
+      var coordinates = polygon.getCoordinates();
+      expect(coordinates[0]).to.eql(outerRing);
+      expect(coordinates[1]).to.eql(innerRing);
     });
 
     it('does not contain outside coordinates', function() {
@@ -136,21 +130,6 @@ describe('ol.geom.Polygon', function() {
       expect(polygon.getStride()).to.be(3);
     });
 
-    it('reverses the outer ring if necessary', function() {
-      polygon = new ol.geom.Polygon([outerRing.reverse(), innerRing]);
-      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
-    });
-
-    it('reverses inner rings if necessary', function() {
-      polygon = new ol.geom.Polygon([outerRing, innerRing.reverse()]);
-      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
-    });
-
-    it('reverses all rings if necessary', function() {
-      polygon = new ol.geom.Polygon([outerRing.reverse(), innerRing.reverse()]);
-      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
-    });
-
     it('does not contain outside coordinates', function() {
       expect(polygon.containsCoordinate(outsideOuter)).to.be(false);
     });
@@ -198,21 +177,6 @@ describe('ol.geom.Polygon', function() {
 
     it('has stride the expected stride', function() {
       expect(polygon.getStride()).to.be(3);
-    });
-
-    it('reverses the outer ring if necessary', function() {
-      polygon = new ol.geom.Polygon([outerRing.reverse(), innerRing]);
-      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
-    });
-
-    it('reverses inner rings if necessary', function() {
-      polygon = new ol.geom.Polygon([outerRing, innerRing.reverse()]);
-      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
-    });
-
-    it('reverses all rings if necessary', function() {
-      polygon = new ol.geom.Polygon([outerRing.reverse(), innerRing.reverse()]);
-      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
     });
 
     it('does not contain outside coordinates', function() {
@@ -269,24 +233,6 @@ describe('ol.geom.Polygon', function() {
 
     it('has stride the expected stride', function() {
       expect(polygon.getStride()).to.be(4);
-    });
-
-    it('reverses the outer ring if necessary', function() {
-      polygon = new ol.geom.Polygon(
-          [outerRing.reverse(), innerRing1, innerRing2]);
-      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
-    });
-
-    it('reverses inner rings if necessary', function() {
-      polygon = new ol.geom.Polygon(
-          [outerRing, innerRing1.reverse(), innerRing2.reverse()]);
-      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
-    });
-
-    it('reverses all rings if necessary', function() {
-      polygon = new ol.geom.Polygon(
-          [outerRing.reverse(), innerRing1.reverse(), innerRing2.reverse()]);
-      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
     });
 
     it('does not contain outside coordinates', function() {

@@ -192,8 +192,6 @@ ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
     var ends = ol.geom.flat.deflateCoordinatess(
         this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
     this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
-    ol.geom.flat.orientLinearRings(
-        this.flatCoordinates, 0, this.ends_, this.stride);
     this.dispatchChangeEvent();
   }
 };
