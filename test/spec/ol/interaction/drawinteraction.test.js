@@ -314,9 +314,8 @@ describe('ol.interaction.Draw', function() {
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.Polygon);
 
-      // note that order is forced clockwise (despite drawing counter-clockwise)
       expect(geometry.getCoordinates()).to.eql([
-        [[10, -20], [30, -10], [30, -20], [10, -20]]
+        [[10, -20], [30, -20], [30, -10], [10, -20]]
       ]);
     });
 
@@ -397,9 +396,8 @@ describe('ol.interaction.Draw', function() {
       var coordinates = geometry.getCoordinates();
       expect(coordinates).to.have.length(1);
 
-      // note that order is forced clockwise (despite drawing counter-clockwise)
       expect(coordinates[0]).to.eql([
-        [[10, -20], [30, -10], [30, -20], [10, -20]]
+        [[10, -20], [30, -20], [30, -10], [10, -20]]
       ]);
     });
 

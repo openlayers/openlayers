@@ -50,6 +50,18 @@ ol.geom.Polygon = function(coordinates, opt_layout) {
    */
   this.maxDeltaRevision_ = -1;
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.orientedRevision_ = -1;
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.orientedFlatCoordinates_ = null;
+
   this.setCoordinates(coordinates, opt_layout);
 
 };
@@ -92,7 +104,7 @@ ol.geom.Polygon.prototype.closestPointXY =
  */
 ol.geom.Polygon.prototype.containsXY = function(x, y) {
   return ol.geom.flat.linearRingsContainsXY(
-      this.flatCoordinates, 0, this.ends_, this.stride, x, y);
+      this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, x, y);
 };
 
 
@@ -101,7 +113,7 @@ ol.geom.Polygon.prototype.containsXY = function(x, y) {
  */
 ol.geom.Polygon.prototype.getArea = function() {
   return ol.geom.flat.linearRingsArea(
-      this.flatCoordinates, 0, this.ends_, this.stride);
+      this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride);
 };
 
 
@@ -130,7 +142,7 @@ ol.geom.Polygon.prototype.getInteriorPoint = function() {
     var extent = this.getExtent();
     var y = (extent[1] + extent[3]) / 2;
     this.interiorPoint_ = ol.geom.flat.linearRingsGetInteriorPoint(
-        this.flatCoordinates, 0, this.ends_, this.stride, y);
+        this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, y);
     this.interiorPointRevision_ = this.getRevision();
   }
   return this.interiorPoint_;
@@ -141,13 +153,40 @@ ol.geom.Polygon.prototype.getInteriorPoint = function() {
  * @return {Array.<ol.geom.LinearRing>} Linear rings.
  */
 ol.geom.Polygon.prototype.getLinearRings = function() {
+  var layout = this.layout;
+  var flatCoordinates = this.flatCoordinates;
+  var ends = this.ends_;
   var linearRings = [];
-  var coordinates = this.getCoordinates();
+  var offset = 0;
   var i, ii;
-  for (i = 0, ii = coordinates.length; i < ii; ++i) {
-    linearRings.push(new ol.geom.LinearRing(coordinates[i]));
+  for (i = 0, ii = ends.length; i < ii; ++i) {
+    var end = ends[i];
+    var linearRing = new ol.geom.LinearRing(null);
+    linearRing.setFlatCoordinates(layout, flatCoordinates.slice(offset, end));
+    linearRings.push(linearRing);
+    offset = end;
   }
   return linearRings;
+};
+
+
+/**
+ * @return {Array.<number>} Oriented flat coordinates.
+ */
+ol.geom.Polygon.prototype.getOrientedFlatCoordinates = function() {
+  if (this.orientedRevision_ != this.getRevision()) {
+    var flatCoordinates = this.flatCoordinates;
+    if (ol.geom.flat.linearRingsAreOriented(
+        flatCoordinates, 0, this.ends_, this.stride)) {
+      this.orientedFlatCoordinates_ = flatCoordinates;
+    } else {
+      this.orientedFlatCoordinates_ = flatCoordinates.slice();
+      this.orientedFlatCoordinates_.length = ol.geom.flat.orientLinearRings(
+          this.orientedFlatCoordinates_, 0, this.ends_, this.stride);
+    }
+    this.orientedRevision_ = this.getRevision();
+  }
+  return this.orientedFlatCoordinates_;
 };
 
 
@@ -192,8 +231,6 @@ ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
     var ends = ol.geom.flat.deflateCoordinatess(
         this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
     this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
-    ol.geom.flat.orientLinearRings(
-        this.flatCoordinates, 0, this.ends_, this.stride);
     this.dispatchChangeEvent();
   }
 };

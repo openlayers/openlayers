@@ -1096,7 +1096,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
          state.miterLimit, state.lineDash]);
   }
   var ends = polygonGeometry.getEnds();
-  var flatCoordinates = polygonGeometry.getFlatCoordinates();
+  var flatCoordinates = polygonGeometry.getOrientedFlatCoordinates();
   var stride = polygonGeometry.getStride();
   this.drawFlatCoordinatess_(flatCoordinates, 0, ends, stride);
   this.endGeometry(polygonGeometry, data);
@@ -1132,7 +1132,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
          state.miterLimit, state.lineDash]);
   }
   var endss = multiPolygonGeometry.getEndss();
-  var flatCoordinates = multiPolygonGeometry.getFlatCoordinates();
+  var flatCoordinates = multiPolygonGeometry.getOrientedFlatCoordinates();
   var stride = multiPolygonGeometry.getStride();
   var offset = 0;
   var i, ii;
