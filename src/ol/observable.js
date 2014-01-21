@@ -15,10 +15,25 @@ goog.require('goog.events.EventTarget');
  * @todo stability experimental
  */
 ol.Observable = function() {
+
   goog.base(this);
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.revision_ = 0;
 
 };
 goog.inherits(ol.Observable, goog.events.EventTarget);
+
+
+/**
+ * @return {number} Revision.
+ */
+ol.Observable.prototype.getRevision = function() {
+  return this.revision_;
+};
 
 
 /**
