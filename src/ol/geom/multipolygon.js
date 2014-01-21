@@ -94,7 +94,7 @@ ol.geom.MultiPolygon.prototype.closestPointXY =
     this.maxDeltaRevision_ = this.getRevision();
   }
   return ol.geom.closest.getssClosestPoint(
-      this.flatCoordinates, 0, this.endss_, this.stride,
+      this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
       this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };
 
@@ -104,7 +104,7 @@ ol.geom.MultiPolygon.prototype.closestPointXY =
  */
 ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
   return ol.geom.flat.linearRingssContainsXY(
-      this.flatCoordinates, 0, this.endss_, this.stride, x, y);
+      this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, x, y);
 };
 
 
@@ -113,7 +113,7 @@ ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
  */
 ol.geom.MultiPolygon.prototype.getArea = function() {
   return ol.geom.flat.linearRingssArea(
-      this.flatCoordinates, 0, this.endss_, this.stride);
+      this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride);
 };
 
 
@@ -142,7 +142,7 @@ ol.geom.MultiPolygon.prototype.getInteriorPoints = function() {
     var ys = ol.geom.flat.linearRingssMidYs(
         this.flatCoordinates, 0, this.endss_, this.stride);
     this.interiorPoints_ = ol.geom.flat.linearRingssGetInteriorPoints(
-        this.flatCoordinates, 0, this.endss_, this.stride, ys);
+        this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, ys);
     this.interiorPointsRevision_ = this.getRevision();
   }
   return this.interiorPoints_;

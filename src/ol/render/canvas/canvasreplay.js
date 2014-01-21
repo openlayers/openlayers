@@ -1132,7 +1132,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
          state.miterLimit, state.lineDash]);
   }
   var endss = multiPolygonGeometry.getEndss();
-  var flatCoordinates = multiPolygonGeometry.getFlatCoordinates();
+  var flatCoordinates = multiPolygonGeometry.getOrientedFlatCoordinates();
   var stride = multiPolygonGeometry.getStride();
   var offset = 0;
   var i, ii;
