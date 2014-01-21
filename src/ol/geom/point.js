@@ -65,10 +65,10 @@ ol.geom.Point.prototype.getCoordinates = function() {
  * @inheritDoc
  */
 ol.geom.Point.prototype.getExtent = function(opt_extent) {
-  if (this.extentRevision != this.revision) {
+  if (this.extentRevision != this.getRevision()) {
     this.extent = ol.extent.createOrUpdateFromCoordinate(
         this.flatCoordinates, this.extent);
-    this.extentRevision = this.revision;
+    this.extentRevision = this.getRevision();
   }
   goog.asserts.assert(goog.isDef(this.extent));
   return ol.extent.returnOrUpdate(this.extent, opt_extent);

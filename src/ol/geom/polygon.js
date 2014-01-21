@@ -76,10 +76,10 @@ ol.geom.Polygon.prototype.closestPointXY =
       ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
-  if (this.maxDeltaRevision_ != this.revision) {
+  if (this.maxDeltaRevision_ != this.getRevision()) {
     this.maxDelta_ = Math.sqrt(ol.geom.closest.getsMaxSquaredDelta(
         this.flatCoordinates, 0, this.ends_, this.stride, 0));
-    this.maxDeltaRevision_ = this.revision;
+    this.maxDeltaRevision_ = this.getRevision();
   }
   return ol.geom.closest.getsClosestPoint(
       this.flatCoordinates, 0, this.ends_, this.stride,
@@ -126,12 +126,12 @@ ol.geom.Polygon.prototype.getEnds = function() {
  * @return {ol.Coordinate} Interior point.
  */
 ol.geom.Polygon.prototype.getInteriorPoint = function() {
-  if (this.interiorPointRevision_ != this.revision) {
+  if (this.interiorPointRevision_ != this.getRevision()) {
     var extent = this.getExtent();
     var y = (extent[1] + extent[3]) / 2;
     this.interiorPoint_ = ol.geom.flat.linearRingsGetInteriorPoint(
         this.flatCoordinates, 0, this.ends_, this.stride, y);
-    this.interiorPointRevision_ = this.revision;
+    this.interiorPointRevision_ = this.getRevision();
   }
   return this.interiorPoint_;
 };

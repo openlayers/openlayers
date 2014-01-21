@@ -91,7 +91,7 @@ ol.geom.GeometryCollection.prototype.containsXY = function(x, y) {
  * @inheritDoc
  */
 ol.geom.GeometryCollection.prototype.getExtent = function(opt_extent) {
-  if (this.extentRevision != this.revision) {
+  if (this.extentRevision != this.getRevision()) {
     var extent = ol.extent.createOrUpdateEmpty(this.extent);
     var geometries = this.geometries_;
     var i, ii;
@@ -99,7 +99,7 @@ ol.geom.GeometryCollection.prototype.getExtent = function(opt_extent) {
       ol.extent.extend(extent, geometries[i].getExtent());
     }
     this.extent = extent;
-    this.extentRevision = this.revision;
+    this.extentRevision = this.getRevision();
   }
   goog.asserts.assert(goog.isDef(this.extent));
   return ol.extent.returnOrUpdate(this.extent, opt_extent);
@@ -127,10 +127,10 @@ ol.geom.GeometryCollection.prototype.getGeometriesArray = function() {
  */
 ol.geom.GeometryCollection.prototype.getSimplifiedGeometry =
     function(squaredTolerance) {
-  if (this.simplifiedGeometryRevision != this.revision) {
+  if (this.simplifiedGeometryRevision != this.getRevision()) {
     goog.object.clear(this.simplifiedGeometryCache);
     this.simplifiedGeometryMaxMinSquaredTolerance = 0;
-    this.simplifiedGeometryRevision = this.revision;
+    this.simplifiedGeometryRevision = this.getRevision();
   }
   if (squaredTolerance < 0 ||
       (this.simplifiedGeometryMaxMinSquaredTolerance !== 0 &&

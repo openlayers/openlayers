@@ -76,10 +76,10 @@ ol.geom.MultiPolygon.prototype.closestPointXY =
       ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
-  if (this.maxDeltaRevision_ != this.revision) {
+  if (this.maxDeltaRevision_ != this.getRevision()) {
     this.maxDelta_ = Math.sqrt(ol.geom.closest.getssMaxSquaredDelta(
         this.flatCoordinates, 0, this.endss_, this.stride, 0));
-    this.maxDeltaRevision_ = this.revision;
+    this.maxDeltaRevision_ = this.getRevision();
   }
   return ol.geom.closest.getssClosestPoint(
       this.flatCoordinates, 0, this.endss_, this.stride,
@@ -126,12 +126,12 @@ ol.geom.MultiPolygon.prototype.getEndss = function() {
  * @return {Array.<ol.Coordinate>} Interior points.
  */
 ol.geom.MultiPolygon.prototype.getInteriorPoints = function() {
-  if (this.interiorPointsRevision_ != this.revision) {
+  if (this.interiorPointsRevision_ != this.getRevision()) {
     var ys = ol.geom.flat.linearRingssMidYs(
         this.flatCoordinates, 0, this.endss_, this.stride);
     this.interiorPoints_ = ol.geom.flat.linearRingssGetInteriorPoints(
         this.flatCoordinates, 0, this.endss_, this.stride, ys);
-    this.interiorPointsRevision_ = this.revision;
+    this.interiorPointsRevision_ = this.getRevision();
   }
   return this.interiorPoints_;
 };

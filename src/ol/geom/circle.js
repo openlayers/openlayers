@@ -88,14 +88,14 @@ ol.geom.Circle.prototype.getCenter = function() {
  * @inheritDoc
  */
 ol.geom.Circle.prototype.getExtent = function(opt_extent) {
-  if (this.extentRevision != this.revision) {
+  if (this.extentRevision != this.getRevision()) {
     var flatCoordinates = this.flatCoordinates;
     var radius = flatCoordinates[this.stride] - flatCoordinates[0];
     this.extent = ol.extent.createOrUpdate(
         flatCoordinates[0] - radius, flatCoordinates[1] - radius,
         flatCoordinates[0] + radius, flatCoordinates[1] + radius,
         this.extent);
-    this.extentRevision = this.revision;
+    this.extentRevision = this.getRevision();
   }
   goog.asserts.assert(goog.isDef(this.extent));
   return ol.extent.returnOrUpdate(this.extent, opt_extent);
