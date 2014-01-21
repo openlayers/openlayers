@@ -196,8 +196,6 @@ ol.geom.MultiPolygon.prototype.setCoordinates =
     var lastEnds = endss[endss.length - 1];
     this.flatCoordinates.length = lastEnds.length === 0 ?
         0 : lastEnds[lastEnds.length - 1];
-    ol.geom.flat.orientLinearRingss(
-        this.flatCoordinates, 0, this.endss_, this.stride);
     this.dispatchChangeEvent();
   }
 };
