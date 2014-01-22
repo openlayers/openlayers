@@ -262,13 +262,25 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature =
     style = styles[i];
     imageStyle = style.getImage();
     if (!goog.isNull(imageStyle)) {
-      if (imageStyle.getImageState() == ol.style.ImageState.IDLE) {
-        goog.events.listenOnce(imageStyle, goog.events.EventType.CHANGE,
-            this.handleImageStyleChange_, false, this);
-        imageStyle.load();
-      } else if (imageStyle.getImageState() == ol.style.ImageState.LOADED) {
+      if (imageStyle.getImageState() == ol.style.ImageState.LOADED) {
         ol.renderer.vector.renderFeature(
             replayGroup, feature, style, squaredTolerance, feature);
+      } else {
+        imageState = imageStyle.getImageState();
+        if (imageState == ol.style.ImageState.IDLE) {
+          goog.events.listenOnce(imageStyle, goog.events.EventType.CHANGE,
+              this.handleImageStyleChange_, false, this);
+          imageStyle.load();
+        } else if (imageState == ol.style.ImageState.LOADING) {
+          // handle the case where the icon style was loaded
+          var listener = goog.events.getListener(
+              imageStyle, goog.events.EventType.CHANGE,
+              this.handleImageStyleChange_, false, this);
+          if (goog.isNull(listener)) {
+            goog.events.listenOnce(imageStyle, goog.events.EventType.CHANGE,
+                this.handleImageStyleChange_, false, this);
+          }
+        }
       }
       goog.asserts.assert(
           imageStyle.getImageState() != ol.style.ImageState.IDLE);
