@@ -57,8 +57,7 @@ var draw; // global so we can remove it later
 function addInteraction() {
   draw = new ol.interaction.Draw({
     source: source,
-    type: /** @type {ol.geom.GeometryType} */
-        (typeSelect.options[typeSelect.selectedIndex].value)
+    type: /** @type {ol.geom.GeometryType} */ (typeSelect.value)
   });
   map.addInteraction(draw);
 }
