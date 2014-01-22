@@ -1,10 +1,10 @@
 goog.provide('ol.source.Source');
 goog.provide('ol.source.State');
 
-goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
+goog.require('ol.Observable');
 goog.require('ol.proj');
 
 
@@ -32,7 +32,7 @@ ol.source.SourceOptions;
 
 /**
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.Observable}
  * @param {ol.source.SourceOptions} options Source options.
  * @todo stability experimental
  */
@@ -74,23 +74,21 @@ ol.source.Source = function(options) {
   this.state_ = goog.isDef(options.state) ?
       options.state : ol.source.State.READY;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.revision_ = 0;
-
 };
-goog.inherits(ol.source.Source, goog.events.EventTarget);
+goog.inherits(ol.source.Source, ol.Observable);
 
 
 /**
- * @protected
+ * @param {ol.Extent} extent Extent.
+ * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {function(ol.Feature): T} callback Feature callback.
+ * @return {T|undefined} Callback result.
+ * @template T
  */
-ol.source.Source.prototype.dispatchChangeEvent = function() {
-  ++this.revision_;
-  this.dispatchEvent(goog.events.EventType.CHANGE);
-};
+ol.source.Source.prototype.forEachFeatureAtPixel =
+    goog.nullFunction;
 
 
 /**
@@ -129,14 +127,6 @@ ol.source.Source.prototype.getProjection = function() {
  * @return {Array.<number>|undefined} Resolutions.
  */
 ol.source.Source.prototype.getResolutions = goog.abstractMethod;
-
-
-/**
- * @return {number} Revision.
- */
-ol.source.Source.prototype.getRevision = function() {
-  return this.revision_;
-};
 
 
 /**

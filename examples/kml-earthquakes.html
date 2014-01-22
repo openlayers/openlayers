@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <link rel="stylesheet" href="../css/ol.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
@@ -36,7 +35,7 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>          
+          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>         
         </div>
       </div>
     </div>
@@ -56,7 +55,7 @@
           <p id="shortdesc">Demonstrates the use of a Shape symbolizer to render earthquake locations.</p>
           <div id="docs">
             <p>
-              This example parses a KML file and renders the features as a vector layer.  The layer is given a <code>ol.style.Style</code> that renders earthquake locations with a size relative to their magnitude.  The style uses a <code>ol.style.Shape</code> symbolizer where the <code>size</code> comes from the <code>magnitude</code> attribute on the features.
+              This example parses a KML file and renders the features as a vector layer.  The layer is given a <code>styleFunction</code> that renders earthquake locations with a size relative to their magnitude.
             </p>
             <p>See the <a href="kml-earthquakes.js" target="_blank">kml-earthquakes.js source</a> to see how this is done.</p>
           </div>

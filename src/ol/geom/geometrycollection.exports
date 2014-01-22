@@ -1,0 +1,7 @@
+@exportSymbol ol.geom.GeometryCollection
+@exportProperty ol.geom.GeometryCollection.prototype.clone
+@exportProperty ol.geom.GeometryCollection.prototype.getExtent
+@exportProperty ol.geom.GeometryCollection.prototype.getGeometries
+@exportProperty ol.geom.GeometryCollection.prototype.getSimplifiedGeometry
+@exportProperty ol.geom.GeometryCollection.prototype.getType
+@exportProperty ol.geom.GeometryCollection.prototype.setGeometries

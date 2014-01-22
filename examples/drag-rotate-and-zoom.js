@@ -4,7 +4,7 @@ goog.require('ol.View2D');
 goog.require('ol.interaction');
 goog.require('ol.interaction.DragRotateAndZoom');
 goog.require('ol.layer.Tile');
-goog.require('ol.source.MapQuestOpenAerial');
+goog.require('ol.source.MapQuest');
 
 
 var map = new ol.Map({
@@ -13,7 +13,7 @@ var map = new ol.Map({
   ]),
   layers: [
     new ol.layer.Tile({
-      source: new ol.source.MapQuestOpenAerial()
+      source: new ol.source.MapQuest({layer: 'sat'})
     })
   ],
   renderers: ol.RendererHints.createFromQueryData(),

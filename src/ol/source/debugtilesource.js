@@ -2,7 +2,6 @@ goog.provide('ol.source.TileDebug');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('ol.Size');
 goog.require('ol.Tile');
 goog.require('ol.TileCache');
 goog.require('ol.TileCoord');
@@ -31,7 +30,7 @@ ol.DebugTile_ = function(tileCoord, tileGrid) {
 
   /**
    * @private
-   * @type {ol.Size}
+   * @type {number}
    */
   this.tileSize_ = tileGrid.getTileSize(tileCoord.z);
 
@@ -58,21 +57,21 @@ ol.DebugTile_.prototype.getImage = function(opt_context) {
 
     var canvas = /** @type {HTMLCanvasElement} */
         (goog.dom.createElement(goog.dom.TagName.CANVAS));
-    canvas.width = tileSize[0];
-    canvas.height = tileSize[1];
+    canvas.width = tileSize;
+    canvas.height = tileSize;
 
     var context = /** @type {CanvasRenderingContext2D} */
         (canvas.getContext('2d'));
 
     context.strokeStyle = 'black';
-    context.strokeRect(0.5, 0.5, tileSize[0] + 0.5, tileSize[1] + 0.5);
+    context.strokeRect(0.5, 0.5, tileSize + 0.5, tileSize + 0.5);
 
     context.fillStyle = 'black';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.font = '24px sans-serif';
     context.fillText(
-        this.tileCoord_.toString(), tileSize[0] / 2, tileSize[1] / 2);
+        this.tileCoord_.toString(), tileSize / 2, tileSize / 2);
 
     this.canvasByContext_[key] = canvas;
     return canvas;

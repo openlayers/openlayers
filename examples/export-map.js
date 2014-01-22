@@ -19,16 +19,15 @@ var map = new ol.Map({
   })
 });
 
-var exportJPEGElement = document.getElementById('export-jpeg');
 var exportPNGElement = document.getElementById('export-png');
 
-if ('download' in exportJPEGElement && 'download' in exportPNGElement) {
-  exportJPEGElement.addEventListener('click', function(e) {
-    e.target.href = map.getRenderer().getCanvas().toDataURL('image/jpeg');
-  }, false);
-
+if ('download' in exportPNGElement) {
   exportPNGElement.addEventListener('click', function(e) {
-    e.target.href = map.getRenderer().getCanvas().toDataURL('image/png');
+    map.once('postcompose', function(event) {
+      var canvas = event.getContext().canvas;
+      exportPNGElement.href = canvas.toDataURL('image/png');
+    });
+    map.render();
   }, false);
 } else {
   var info = document.getElementById('no-download');

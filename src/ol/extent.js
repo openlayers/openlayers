@@ -51,15 +51,27 @@ ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
 
 
 /**
- * Increase an extent by the provided value.
- * @param {ol.Extent} extent The extent to buffer.
+ * Return extent increased by the provided value.
+ * @param {ol.Extent} extent Extent.
  * @param {number} value The amount by wich the extent should be buffered.
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {ol.Extent} Extent.
  */
-ol.extent.buffer = function(extent, value) {
-  extent[0] -= value;
-  extent[1] -= value;
-  extent[2] += value;
-  extent[3] += value;
+ol.extent.buffer = function(extent, value, opt_extent) {
+  if (goog.isDef(opt_extent)) {
+    opt_extent[0] = extent[0] - value;
+    opt_extent[1] = extent[1] - value;
+    opt_extent[2] = extent[2] + value;
+    opt_extent[3] = extent[3] + value;
+    return opt_extent;
+  } else {
+    return [
+      extent[0] - value,
+      extent[1] - value,
+      extent[2] + value,
+      extent[3] + value
+    ];
+  }
 };
 
 
@@ -81,6 +93,32 @@ ol.extent.clone = function(extent, opt_extent) {
   } else {
     return extent.slice();
   }
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @return {number} Closest squared distance.
+ */
+ol.extent.closestSquaredDistanceXY = function(extent, x, y) {
+  var dx, dy;
+  if (x < extent[0]) {
+    dx = extent[0] - x;
+  } else if (extent[2] < x) {
+    dx = x - extent[2];
+  } else {
+    dx = 0;
+  }
+  if (y < extent[1]) {
+    dy = extent[1] - y;
+  } else if (extent[3] < y) {
+    dy = y - extent[3];
+  } else {
+    dy = 0;
+  }
+  return dx * dx + dy * dy;
 };
 
 

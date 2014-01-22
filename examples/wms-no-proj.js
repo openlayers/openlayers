@@ -37,6 +37,7 @@ var layers = [
       })],
       crossOrigin: 'anonymous',
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
+      serverType: /** @type {ol.source.wms.ServerType} */ ('mapserver'),
       url: 'http://wms.geo.admin.ch/'
     })
   })

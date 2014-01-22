@@ -1,0 +1,3 @@
+@exportSymbol ol.style.Icon
+@exportProperty ol.style.Icon.prototype.getImage
+@exportProperty ol.style.Icon.prototype.getSrc

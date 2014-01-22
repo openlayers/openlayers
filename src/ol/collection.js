@@ -115,12 +115,12 @@ ol.Collection.prototype.extend = function(arr) {
  * @param {function(this: S, T, number, Array.<T>): *} f The function to call
  *     for every element. This function takes 3 arguments (the element, the
  *     index and the array). The return value is ignored.
- * @param {S=} opt_obj The object to be used as the value of 'this' within f.
+ * @param {S=} opt_this The object to use as `this` in `f`.
  * @template T,S
  * @todo stability experimental
  */
-ol.Collection.prototype.forEach = function(f, opt_obj) {
-  goog.array.forEach(this.array_, f, opt_obj);
+ol.Collection.prototype.forEach = function(f, opt_this) {
+  goog.array.forEach(this.array_, f, opt_this);
 };
 
 

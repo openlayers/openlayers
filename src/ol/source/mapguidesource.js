@@ -2,6 +2,7 @@ goog.provide('ol.source.MapGuide');
 
 goog.require('goog.object');
 goog.require('goog.uri.utils');
+goog.require('ol.Image');
 goog.require('ol.ImageUrlFunction');
 goog.require('ol.extent');
 goog.require('ol.source.Image');
@@ -15,6 +16,26 @@ goog.require('ol.source.Image');
  */
 ol.source.MapGuide = function(options) {
 
+  goog.base(this, {
+    extent: options.extent,
+    projection: options.projection,
+    resolutions: options.resolutions
+  });
+
+  /**
+   * @private
+   * @type {?string}
+   */
+  this.crossOrigin_ =
+      goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.displayDpi_ = goog.isDef(options.displayDpi) ?
+      options.displayDpi : 96;
+
   var imageUrlFunction;
   if (goog.isDef(options.url)) {
     var params = goog.isDef(options.params) ? options.params : {};
@@ -24,19 +45,17 @@ ol.source.MapGuide = function(options) {
     imageUrlFunction = ol.ImageUrlFunction.nullImageUrlFunction;
   }
 
-  goog.base(this, {
-    extent: options.extent,
-    projection: options.projection,
-    resolutions: options.resolutions,
-    imageUrlFunction: imageUrlFunction
-  });
+  /**
+   * @private
+   * @type {ol.ImageUrlFunctionType}
+   */
+  this.imageUrlFunction_ = imageUrlFunction;
 
   /**
    * @private
-   * @type {number}
+   * @type {boolean}
    */
-  this.displayDpi_ = goog.isDef(options.displayDpi) ?
-      options.displayDpi : 96;
+  this.hidpi_ = goog.isDef(options.hidpi) ? options.hidpi : true;
 
   /**
    * @private
@@ -72,12 +91,14 @@ goog.inherits(ol.source.MapGuide, ol.source.Image);
  * @inheritDoc
  */
 ol.source.MapGuide.prototype.getImage =
-    function(extent, resolution, projection) {
+    function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
+  pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
   var image = this.image_;
   if (!goog.isNull(image) &&
       image.getResolution() == resolution &&
+      image.getPixelRatio() == pixelRatio &&
       ol.extent.containsExtent(image.getExtent(), extent)) {
     return image;
   }
@@ -88,10 +109,18 @@ ol.source.MapGuide.prototype.getImage =
   }
   var width = (extent[2] - extent[0]) / resolution;
   var height = (extent[3] - extent[1]) / resolution;
-  var size = [width, height];
+  var size = [width * pixelRatio, height * pixelRatio];
 
-  this.image_ = this.createImage(extent, resolution, size, projection);
-  return this.image_;
+  var imageUrl = this.imageUrlFunction_(extent, size, projection);
+  if (goog.isDef(imageUrl)) {
+    image = new ol.Image(extent, resolution, pixelRatio,
+        this.getAttributions(), imageUrl, this.crossOrigin_);
+  } else {
+    image = null;
+  }
+  this.image_ = image;
+
+  return image;
 };
 
 

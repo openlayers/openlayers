@@ -12,6 +12,7 @@ var map = new ol.Map({
     })
   ],
   renderers: ol.RendererHints.createFromQueryData(),
+  ol3Logo: false,
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],

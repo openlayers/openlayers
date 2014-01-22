@@ -84,3 +84,21 @@ ol.array.linearFindNearest = function(arr, target, direction) {
     return n - 1;
   }
 };
+
+
+/**
+ * @param {Array.<*>} arr Array.
+ * @param {number} begin Begin index.
+ * @param {number} end End index.
+ */
+ol.array.reverseSubArray = function(arr, begin, end) {
+  goog.asserts.assert(begin >= 0);
+  goog.asserts.assert(end < arr.length);
+  while (begin < end) {
+    var tmp = arr[begin];
+    arr[begin] = arr[end];
+    arr[end] = tmp;
+    ++begin;
+    --end;
+  }
+};

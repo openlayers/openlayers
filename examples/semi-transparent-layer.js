@@ -3,14 +3,14 @@ goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
-goog.require('ol.source.MapQuestOpenAerial');
+goog.require('ol.source.MapQuest');
 goog.require('ol.source.TileJSON');
 
 
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
-      source: new ol.source.MapQuestOpenAerial()
+      source: new ol.source.MapQuest({layer: 'sat'})
     }),
     new ol.layer.Tile({
       source: new ol.source.TileJSON({

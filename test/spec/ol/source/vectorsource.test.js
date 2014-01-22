@@ -3,334 +3,242 @@ goog.provide('ol.test.source.Vector');
 
 describe('ol.source.Vector', function() {
 
-  var url = 'spec/ol/source/vectorsource/single-feature.json';
+  var pointFeature;
+  var infiniteExtent;
+  beforeEach(function() {
+    pointFeature = new ol.Feature(new ol.geom.Point([0, 0]));
+    infiniteExtent = [-Infinity, -Infinity, Infinity, Infinity];
+  });
 
-  describe('constructor', function() {
-    it('creates an instance', function() {
-      var source = new ol.source.Vector();
-      expect(source).to.be.a(ol.source.Vector);
-      expect(source).to.be.a(ol.source.Source);
+  describe('when empty', function() {
+
+    var vectorSource;
+    beforeEach(function() {
+      vectorSource = new ol.source.Vector();
     });
 
-    it('accepts features', function() {
-      var features = [new ol.Feature()];
-      var source = new ol.source.Vector({
+    describe('#forEachFeatureInExtent', function() {
+
+      it('does not call the callback', function() {
+        var f = sinon.spy();
+        vectorSource.forEachFeatureInExtent(infiniteExtent, f);
+        expect(f).not.to.be.called();
+      });
+
+    });
+
+    describe('#getAllFeaturesInExtent', function() {
+
+      it('returns an empty array', function() {
+        var features = vectorSource.getAllFeaturesInExtent(infiniteExtent);
+        expect(features).to.be.an(Array);
+        expect(features).to.be.empty();
+      });
+
+    });
+
+    describe('#isEmpty', function() {
+
+      it('returns true', function() {
+        expect(vectorSource.isEmpty()).to.be(true);
+      });
+
+    });
+
+    describe('#addFeature', function() {
+
+      it('can add a single point feature', function() {
+        vectorSource.addFeature(pointFeature);
+        var features = vectorSource.getAllFeaturesInExtent(infiniteExtent);
+        expect(features).to.be.an(Array);
+        expect(features).to.have.length(1);
+        expect(features[0]).to.be(pointFeature);
+      });
+
+      it('fires a change event', function() {
+        var listener = sinon.spy();
+        goog.events.listen(vectorSource, 'change', listener);
+        vectorSource.addFeature(pointFeature);
+        expect(listener).to.be.called();
+      });
+
+    });
+
+  });
+
+  describe('when populated with 10 random points and a null', function() {
+
+    var features;
+    var vectorSource;
+    beforeEach(function() {
+      features = [];
+      var i;
+      for (i = 0; i < 10; ++i) {
+        features[i] =
+            new ol.Feature(new ol.geom.Point([Math.random(), Math.random()]));
+      }
+      features.push(new ol.Feature(null));
+      vectorSource = new ol.source.Vector({
         features: features
       });
-      expect(source).to.be.a(ol.source.Vector);
-      expect(source.getFeatures()).to.eql(features);
     });
 
-    it('accepts url and parser', function() {
-      var source = new ol.source.Vector({
-        url: url,
-        parser: new ol.parser.GeoJSON()
-      });
-      expect(source).to.be.a(ol.source.Vector);
-    });
-  });
+    describe('#clear', function() {
 
-  describe('#load()', function() {
-    it('triggers loading of features', function() {
-      var source = new ol.source.Vector({
-        url: url,
-        parser: new ol.parser.GeoJSON()
-      });
-      expect(source.loadState_).to.be(ol.source.VectorLoadState.IDLE);
-      var triggered = source.load([-1, -1, 1, 1], ol.proj.get('EPSG:4326'));
-      expect(triggered).to.be(true);
-      expect(source.loadState_).to.be(ol.source.VectorLoadState.LOADING);
-    });
-
-    it('returns false when already loading', function() {
-      var source = new ol.source.Vector({
-        url: url,
-        parser: new ol.parser.GeoJSON()
-      });
-      source.load([-1, -1, 1, 1], ol.proj.get('EPSG:4326'));
-      // second call with same extent
-      var triggered = source.load([-1, -1, 1, 1], ol.proj.get('EPSG:4326'));
-      expect(triggered).to.be(false);
-      expect(source.loadState_).to.be(ol.source.VectorLoadState.LOADING);
-    });
-  });
-
-  describe('#addFeatures()', function() {
-
-    it('allows adding features', function() {
-      var source = new ol.source.Vector();
-      var features = [new ol.Feature()];
-      source.addFeatures(features);
-      expect(source.getFeatures()).to.eql(features);
-    });
-
-  });
-
-  describe('#getFeatures()', function() {
-
-    it('gets features cached on the source', function() {
-      var source = new ol.source.Vector({
-        features: [new ol.Feature()]
-      });
-      source.addFeatures([new ol.Feature()]);
-
-      var features = source.getFeatures();
-      expect(features).to.be.an('array');
-      expect(features).to.have.length(2);
-    });
-
-    it('accepts a filter function', function() {
-      var features = [
-        new ol.Feature({name: 'a'}),
-        new ol.Feature({name: 'b'}),
-        new ol.Feature({name: 'c'}),
-        new ol.Feature({name: 'd'})
-      ];
-      var source = new ol.source.Vector({features: features});
-
-      var results = source.getFeatures(function(feature) {
-        return feature.get('name') > 'b';
+      it('removes all features', function() {
+        var changeSpy = sinon.spy();
+        goog.events.listen(vectorSource, 'change', changeSpy);
+        var removeFeatureSpy = sinon.spy();
+        goog.events.listen(vectorSource, 'removefeature', removeFeatureSpy);
+        vectorSource.clear();
+        expect(vectorSource.getAllFeatures()).to.eql([]);
+        expect(vectorSource.isEmpty()).to.be(true);
+        expect(changeSpy).to.be.called();
+        expect(changeSpy.callCount).to.be(1);
+        expect(removeFeatureSpy).to.be.called();
+        expect(removeFeatureSpy.callCount).to.be(features.length);
       });
 
-      expect(results).to.be.an('array');
-      expect(results).to.have.length(2);
-      expect(results).to.contain(features[2]);
-      expect(results).to.contain(features[3]);
     });
 
-  });
+    describe('#forEachFeatureInExtent', function() {
 
-  describe('#removeFeatures()', function() {
-
-    it('removes cached features', function() {
-      var features = [new ol.Feature(), new ol.Feature()];
-      var source = new ol.source.Vector({features: features});
-
-      expect(source.getFeatures()).to.have.length(2);
-      source.removeFeatures(features);
-      expect(source.getFeatures()).to.have.length(0);
-    });
-
-    it('removes cached features', function() {
-      var features = [new ol.Feature(), new ol.Feature()];
-      var source = new ol.source.Vector({features: features});
-
-      expect(source.getFeatures()).to.have.length(2);
-      source.removeFeatures([features[0]]);
-      expect(source.getFeatures()).to.eql([features[1]]);
-    });
-
-  });
-
-  describe('#forEachFeatureInExtent()', function() {
-
-    var features = [
-      new ol.Feature({geom: new ol.geom.Point([-100, 50])}),
-      new ol.Feature({geom: new ol.geom.Point([100, 50])}),
-      new ol.Feature({geom: new ol.geom.Point([100, -50])}),
-      new ol.Feature({geom: new ol.geom.Point([-100, -50])})
-    ];
-    var source = new ol.source.Vector({features: features});
-    var gg = ol.proj.get('EPSG:4326');
-
-    it('calls callback with each feature in the extent', function() {
-      var callback = sinon.spy();
-      source.forEachFeatureInExtent([-180, -90, 180, 90], gg, callback);
-      expect(callback.callCount).to.be(4);
-      expect(callback.calledWith(sinon.match.same(features[0]))).to.be(true);
-      expect(callback.calledWith(sinon.match.same(features[1]))).to.be(true);
-      expect(callback.calledWith(sinon.match.same(features[2]))).to.be(true);
-      expect(callback.calledWith(sinon.match.same(features[3]))).to.be(true);
-    });
-
-    it('accepts a this argument', function() {
-      var callback = sinon.spy();
-      var thisArg = {};
-      source.forEachFeatureInExtent(
-          [-180, -90, 180, 90], gg, callback, thisArg);
-      expect(callback.calledOn(thisArg)).to.be(true);
-    });
-
-    it('works with a subset of features', function() {
-      var callback = sinon.spy();
-      source.forEachFeatureInExtent([-100, -50, -100, 50], gg, callback);
-      expect(callback.callCount).to.be(2);
-      expect(callback.calledWith(sinon.match.same(features[0]))).to.be(true);
-      expect(callback.calledWith(sinon.match.same(features[3]))).to.be(true);
-    });
-
-    it('works with no features', function() {
-      var callback = sinon.spy();
-      source.forEachFeatureInExtent([-110, -50, -110, -50], gg, callback);
-      expect(callback.called).to.be(false);
-    });
-
-  });
-
-  describe('featureload event', function() {
-
-    var gg = ol.proj.get('EPSG:4326');
-    var world = [-180, -90, 180, 90];
-
-    it('is dispatched after features load', function(done) {
-      var source = new ol.source.Vector({
-        url: url,
-        parser: new ol.parser.GeoJSON()
+      it('is called the expected number of times', function() {
+        var f = sinon.spy();
+        vectorSource.forEachFeatureInExtent(infiniteExtent, f);
+        expect(f.callCount).to.be(10);
       });
-      expect(source.loadState_).to.be(ol.source.VectorLoadState.IDLE);
-      var triggered = source.load(world, gg);
-      expect(triggered).to.be(true);
-      expect(source.loadState_).to.be(ol.source.VectorLoadState.LOADING);
-      goog.events.listen(source, ol.source.VectorEventType.LOAD,
-          function(evt) {
-            var features = evt.features;
-            expect(features).to.be.an('array');
-            expect(features).to.have.length(1);
-            expect(features[0]).to.be.an(ol.Feature);
 
-            var extents = evt.extents;
-            expect(extents).to.be.an('array');
-            expect(extents).to.have.length(1);
-            expect(extents[0]).to.be.eql([1, 2, 1, 2]);
+      it('allows breaking out', function() {
+        var count = 0;
+        var result = vectorSource.forEachFeatureInExtent(infiniteExtent,
+            function(f) {
+              return ++count == 5;
+            });
+        expect(result).to.be(true);
+        expect(count).to.be(5);
+      });
 
-            expect(source.loadState_).to.be(ol.source.VectorLoadState.LOADED);
-            done();
-          });
+    });
+
+    describe('#getAllFeaturesInExtent', function() {
+
+      it('returns the expected number of features', function() {
+        expect(vectorSource.getAllFeaturesInExtent(infiniteExtent)).
+            to.have.length(10);
+      });
+
+    });
+
+    describe('#isEmpty', function() {
+
+      it('returns false', function() {
+        expect(vectorSource.isEmpty()).to.be(false);
+      });
+
+    });
+
+    describe('#removeFeature', function() {
+
+      it('works as expected', function() {
+        var i;
+        for (i = features.length - 1; i >= 0; --i) {
+          vectorSource.removeFeature(features[i]);
+          expect(vectorSource.getAllFeaturesInExtent(infiniteExtent)).
+              have.length(i);
+        }
+      });
+
+      it('fires a change event', function() {
+        var listener = sinon.spy();
+        goog.events.listen(vectorSource, 'change', listener);
+        vectorSource.removeFeature(features[0]);
+        expect(listener).to.be.called();
+      });
+
+    });
+
+    describe('modifying a feature\'s geometry', function() {
+
+      it('keeps the R-Tree index up to date', function() {
+        expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
+            to.have.length(10);
+        features[0].getGeometry().setCoordinates([100, 100]);
+        expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
+            to.have.length(9);
+        features[0].getGeometry().setCoordinates([0.5, 0.5]);
+        expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
+            to.have.length(10);
+      });
+
+    });
+
+    describe('setting a features geometry', function() {
+
+      it('keeps the R-Tree index up to date', function() {
+        expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
+            to.have.length(10);
+        features[0].setGeometry(new ol.geom.Point([100, 100]));
+        expect(vectorSource.getAllFeaturesInExtent([0, 0, 1, 1])).
+            to.have.length(9);
+      });
+
     });
 
   });
 
-  describe('featureadd event', function() {
+  describe('tracking changes to features', function() {
 
-    it('is dispatched after features are added', function(done) {
-      var source = new ol.source.Vector();
-      var features = [
-        new ol.Feature({g: new ol.geom.Point([10, 5])}),
-        new ol.Feature({g: new ol.geom.Point([-10, -5])})
-      ];
-
-      goog.events.listen(source, ol.source.VectorEventType.ADD,
-          function(evt) {
-            var features = evt.features;
-            expect(features).to.be.an('array');
-            expect(features).to.have.length(2);
-            expect(features).to.contain(features[0]);
-            expect(features).to.contain(features[1]);
-
-            var extents = evt.extents;
-            expect(extents).to.be.an('array');
-            expect(extents).to.have.length(1);
-            expect(extents[0]).to.be.eql([-10, -5, 10, 5]);
-
-            done();
-          });
-
-      source.addFeatures(features);
-    });
-
-  });
-
-  describe('featureremove event', function() {
-
-    it('is dispatched after features are removed', function(done) {
-      var features = [
-        new ol.Feature({g: new ol.geom.Point([10, 5])}),
-        new ol.Feature({g: new ol.geom.Point([-10, -5])})
-      ];
-      var source = new ol.source.Vector({features: features});
-
-      goog.events.listen(source, ol.source.VectorEventType.REMOVE,
-          function(evt) {
-            var features = evt.features;
-            expect(features).to.be.an('array');
-            expect(features).to.have.length(2);
-            expect(features).to.contain(features[0]);
-            expect(features).to.contain(features[1]);
-
-            var extents = evt.extents;
-            expect(extents).to.be.an('array');
-            expect(extents).to.have.length(1);
-            expect(extents[0]).to.be.eql([-10, -5, 10, 5]);
-
-            done();
-          });
-
-      source.removeFeatures(features);
-    });
-
-  });
-
-  describe('featurechange event', function() {
-
-    var source, features;
-
+    var vectorSource;
     beforeEach(function() {
-      features = [
-        new ol.Feature({
-          g: new ol.geom.Point([16.0, 48.0])
-        }),
-        new ol.Feature({
-          g: new ol.geom.LineString([[17.0, 49.0], [17.1, 49.1]])
-        })
-      ];
-      source = new ol.source.Vector();
-      source.addFeatures(features);
+      vectorSource = new ol.source.Vector();
     });
 
-    it('is dispatched on attribute changes', function(done) {
-      goog.events.listen(source, ol.source.VectorEventType.CHANGE,
-          function(evt) {
-            var expected = features[0];
-            expect(evt.features[0]).to.be(expected);
-            expect(evt.extents[0]).to.eql(expected.getGeometry().getBounds());
-            done();
+    it('keeps its index up-to-date', function() {
+      var feature = new ol.Feature(new ol.geom.Point([1, 1]));
+      vectorSource.addFeature(feature);
+      expect(vectorSource.getAllFeaturesInExtent([0, 0, 2, 2])).
+          to.eql([feature]);
+      feature.getGeometry().setCoordinates([3, 3]);
+      expect(vectorSource.getAllFeaturesInExtent([0, 0, 2, 2])).
+          to.be.empty();
+      expect(vectorSource.getAllFeaturesInExtent([2, 2, 4, 4])).
+          to.eql([feature]);
+    });
 
-          });
+    it('handles features with null geometries', function() {
+      var feature = new ol.Feature(null);
+      vectorSource.addFeature(feature);
+      expect(vectorSource.getAllFeatures()).to.eql([feature]);
+    });
 
-      features[0].set('foo', 'bar');
+    it('handles features with geometries changing from null', function() {
+      var feature = new ol.Feature(null);
+      vectorSource.addFeature(feature);
+      expect(vectorSource.getAllFeatures()).to.eql([feature]);
+      feature.setGeometry(new ol.geom.Point([1, 1]));
+      expect(vectorSource.getAllFeaturesInExtent([0, 0, 2, 2])).
+          to.eql([feature]);
+      expect(vectorSource.getAllFeatures()).to.eql([feature]);
+    });
+
+    it('handles features with geometries changing to null', function() {
+      var feature = new ol.Feature(new ol.geom.Point([1, 1]));
+      vectorSource.addFeature(feature);
+      expect(vectorSource.getAllFeatures()).to.eql([feature]);
+      expect(vectorSource.getAllFeaturesInExtent([0, 0, 2, 2])).
+          to.eql([feature]);
+      feature.setGeometry(null);
+      expect(vectorSource.getAllFeaturesInExtent([0, 0, 2, 2])).to.be.empty();
+      expect(vectorSource.getAllFeatures()).to.eql([feature]);
     });
 
   });
 
 });
 
-describe('ol.source.FeatureCache', function() {
 
-  describe('#getFeaturesObject()', function() {
-    var source, features;
-
-    beforeEach(function() {
-      features = [
-        new ol.Feature({
-          g: new ol.geom.Point([16.0, 48.0])
-        }),
-        new ol.Feature({
-          g: new ol.geom.LineString([[17.0, 49.0], [17.1, 49.1]])
-        })
-      ];
-      source = new ol.source.Vector();
-      source.addFeatures(features);
-    });
-
-    it('returns the features in an object', function() {
-      var featuresObject = source.featureCache_.getFeaturesObject();
-      expect(goog.object.getCount(featuresObject)).to.eql(features.length);
-    });
-
-  });
-
-});
-
-goog.require('goog.dispose');
 goog.require('goog.events');
-goog.require('goog.object');
 goog.require('ol.Feature');
-goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
-goog.require('ol.parser.GeoJSON');
-goog.require('ol.proj');
-goog.require('ol.source.FeatureCache');
-goog.require('ol.source.Source');
 goog.require('ol.source.Vector');
-goog.require('ol.source.VectorEventType');
-goog.require('ol.source.VectorLoadState');

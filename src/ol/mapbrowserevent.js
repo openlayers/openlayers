@@ -29,6 +29,7 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
   goog.base(this, type, map, opt_frameState);
 
   /**
+   * @const
    * @type {goog.events.BrowserEvent}
    */
   this.browserEvent = browserEvent;
