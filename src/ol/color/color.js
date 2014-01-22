@@ -188,6 +188,7 @@ ol.color.fromString = (
                 for (key in cache) {
                   if (i++ & 3 === 0) {
                     delete cache[key];
+                    --cacheSize;
                   }
                 }
               }
