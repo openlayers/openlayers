@@ -95,14 +95,16 @@ ol.geom.closest.getClosestPoint = function(flatCoordinates, offset, end, stride,
   if (offset == end) {
     return minSquaredDistance;
   }
-  var squaredDistance;
+  var i, squaredDistance;
   if (maxDelta === 0) {
     // All points are identical, so just test the first point.
     squaredDistance = ol.geom.flat.squaredDistance(
         x, y, flatCoordinates[offset], flatCoordinates[offset + 1]);
     if (squaredDistance < minSquaredDistance) {
-      closestPoint[0] = flatCoordinates[offset];
-      closestPoint[1] = flatCoordinates[offset + 1];
+      for (i = 0; i < stride; ++i) {
+        closestPoint[i] = flatCoordinates[offset + i];
+      }
+      closestPoint.length = stride;
       return squaredDistance;
     } else {
       return minSquaredDistance;
@@ -112,15 +114,16 @@ ol.geom.closest.getClosestPoint = function(flatCoordinates, offset, end, stride,
   var tmpPoint = goog.isDef(opt_tmpPoint) ? opt_tmpPoint : [NaN, NaN];
   var index = offset + stride;
   while (index < end) {
-    ol.geom.flat.closestPoint(x, y,
-        flatCoordinates[index - stride], flatCoordinates[index - stride + 1],
-        flatCoordinates[index], flatCoordinates[index + 1], tmpPoint);
+    ol.geom.flat.closestPoint(
+        flatCoordinates, index - stride, index, stride, x, y, tmpPoint);
     squaredDistance = ol.geom.flat.squaredDistance(
         x, y, tmpPoint[0], tmpPoint[1]);
     if (squaredDistance < minSquaredDistance) {
       minSquaredDistance = squaredDistance;
-      closestPoint[0] = tmpPoint[0];
-      closestPoint[1] = tmpPoint[1];
+      for (i = 0; i < stride; ++i) {
+        closestPoint[i] = tmpPoint[i];
+      }
+      closestPoint.length = stride;
       index += stride;
     } else {
       // Skip ahead multiple points, because we know that all the skipped
@@ -140,15 +143,16 @@ ol.geom.closest.getClosestPoint = function(flatCoordinates, offset, end, stride,
   }
   if (isRing) {
     // Check the closing segment.
-    ol.geom.flat.closestPoint(x, y,
-        flatCoordinates[end - stride], flatCoordinates[end - stride + 1],
-        flatCoordinates[offset], flatCoordinates[offset + 1], tmpPoint);
+    ol.geom.flat.closestPoint(
+        flatCoordinates, end - stride, offset, stride, x, y, tmpPoint);
     squaredDistance = ol.geom.flat.squaredDistance(
         x, y, tmpPoint[0], tmpPoint[1]);
     if (squaredDistance < minSquaredDistance) {
       minSquaredDistance = squaredDistance;
-      closestPoint[0] = tmpPoint[0];
-      closestPoint[1] = tmpPoint[1];
+      for (i = 0; i < stride; ++i) {
+        closestPoint[i] = tmpPoint[i];
+      }
+      closestPoint.length = stride;
     }
   }
   return minSquaredDistance;

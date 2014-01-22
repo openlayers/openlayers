@@ -487,24 +487,28 @@ ol.Map.prototype.disposeInternal = function() {
  * @param {ol.Pixel} pixel Pixel.
  * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
  *     callback.
- * @param {S=} opt_obj Scope for feature callback.
- * @param {function(this: U, ol.layer.Layer): boolean=} opt_layerFunction Layer
- *     function, only layers which are visible and for which this function
- *     returns `true` will be tested for features.  By default, all visible
- *     layers will be tested.
- * @param {U=} opt_obj2 Scope for layer function.
+ * @param {S=} opt_this Value to use as `this` when executing `callback`.
+ * @param {function(this: U, ol.layer.Layer): boolean=} opt_layerFilter Layer
+ *     filter function, only layers which are visible and for which this
+ *     function returns `true` will be tested for features.  By default, all
+ *     visible layers will be tested.
+ * @param {U=} opt_this2 Value to use as `this` when executing `layerFilter`.
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
 ol.Map.prototype.forEachFeatureAtPixel =
-    function(pixel, callback, opt_obj, opt_layerFunction, opt_obj2) {
+    function(pixel, callback, opt_this, opt_layerFilter, opt_this2) {
   if (goog.isNull(this.frameState_)) {
     return;
   }
   var coordinate = this.getCoordinateFromPixel(pixel);
+  var thisArg = goog.isDef(opt_this) ? opt_this : null;
+  var layerFilter = goog.isDef(opt_layerFilter) ?
+      opt_layerFilter : goog.functions.TRUE;
+  var thisArg2 = goog.isDef(opt_this2) ? opt_this2 : null;
   return this.renderer_.forEachFeatureAtPixel(
-      coordinate, this.frameState_, callback, opt_obj,
-      opt_layerFunction, opt_obj2);
+      coordinate, this.frameState_, callback, thisArg,
+      layerFilter, thisArg2);
 };
 
 

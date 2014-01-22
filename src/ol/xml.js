@@ -196,7 +196,8 @@ ol.xml.parse = function(parsersNS, node, objectStack, opt_this) {
  * @return {T|undefined} Object.
  * @template T
  */
-ol.xml.pushAndParse = function(object, parsersNS, node, objectStack, opt_this) {
+ol.xml.pushParseAndPop = function(
+    object, parsersNS, node, objectStack, opt_this) {
   objectStack.push(object);
   ol.xml.parse(parsersNS, node, objectStack, opt_this);
   return objectStack.pop();

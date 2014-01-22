@@ -50,6 +50,18 @@ ol.geom.MultiPolygon = function(coordinates, opt_layout) {
    */
   this.maxDeltaRevision_ = -1;
 
+  /**
+   * @private
+   * @type {number}
+   */
+  this.orientedRevision_ = -1;
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.orientedFlatCoordinates_ = null;
+
   this.setCoordinates(coordinates, opt_layout);
 
 };
@@ -76,13 +88,13 @@ ol.geom.MultiPolygon.prototype.closestPointXY =
       ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
-  if (this.maxDeltaRevision_ != this.revision) {
+  if (this.maxDeltaRevision_ != this.getRevision()) {
     this.maxDelta_ = Math.sqrt(ol.geom.closest.getssMaxSquaredDelta(
         this.flatCoordinates, 0, this.endss_, this.stride, 0));
-    this.maxDeltaRevision_ = this.revision;
+    this.maxDeltaRevision_ = this.getRevision();
   }
   return ol.geom.closest.getssClosestPoint(
-      this.flatCoordinates, 0, this.endss_, this.stride,
+      this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
       this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };
 
@@ -92,7 +104,7 @@ ol.geom.MultiPolygon.prototype.closestPointXY =
  */
 ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
   return ol.geom.flat.linearRingssContainsXY(
-      this.flatCoordinates, 0, this.endss_, this.stride, x, y);
+      this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, x, y);
 };
 
 
@@ -101,7 +113,7 @@ ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
  */
 ol.geom.MultiPolygon.prototype.getArea = function() {
   return ol.geom.flat.linearRingssArea(
-      this.flatCoordinates, 0, this.endss_, this.stride);
+      this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride);
 };
 
 
@@ -126,14 +138,34 @@ ol.geom.MultiPolygon.prototype.getEndss = function() {
  * @return {Array.<ol.Coordinate>} Interior points.
  */
 ol.geom.MultiPolygon.prototype.getInteriorPoints = function() {
-  if (this.interiorPointsRevision_ != this.revision) {
+  if (this.interiorPointsRevision_ != this.getRevision()) {
     var ys = ol.geom.flat.linearRingssMidYs(
         this.flatCoordinates, 0, this.endss_, this.stride);
     this.interiorPoints_ = ol.geom.flat.linearRingssGetInteriorPoints(
-        this.flatCoordinates, 0, this.endss_, this.stride, ys);
-    this.interiorPointsRevision_ = this.revision;
+        this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, ys);
+    this.interiorPointsRevision_ = this.getRevision();
   }
   return this.interiorPoints_;
+};
+
+
+/**
+ * @return {Array.<number>} Oriented flat coordinates.
+ */
+ol.geom.MultiPolygon.prototype.getOrientedFlatCoordinates = function() {
+  if (this.orientedRevision_ != this.getRevision()) {
+    var flatCoordinates = this.flatCoordinates;
+    if (ol.geom.flat.linearRingssAreOriented(
+        flatCoordinates, 0, this.endss_, this.stride)) {
+      this.orientedFlatCoordinates_ = flatCoordinates;
+    } else {
+      this.orientedFlatCoordinates_ = flatCoordinates.slice();
+      this.orientedFlatCoordinates_.length = ol.geom.flat.orientLinearRingss(
+          this.orientedFlatCoordinates_, 0, this.endss_, this.stride);
+    }
+    this.orientedRevision_ = this.getRevision();
+  }
+  return this.orientedFlatCoordinates_;
 };
 
 
@@ -159,12 +191,20 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
  * @return {Array.<ol.geom.Polygon>} Polygons.
  */
 ol.geom.MultiPolygon.prototype.getPolygons = function() {
-  // FIXME we should construct the polygons directly from the flat coordinates
-  var coordinates = this.getCoordinates();
+  var layout = this.layout;
+  var flatCoordinates = this.flatCoordinates;
+  var endss = this.endss_;
   var polygons = [];
+  var offset = 0;
   var i, ii;
-  for (i = 0, ii = coordinates.length; i < ii; ++i) {
-    polygons.push(new ol.geom.Polygon(coordinates[i]));
+  for (i = 0, ii = endss.length; i < ii; ++i) {
+    var ends = endss[i];
+    var end = ends[ends.length - 1];
+    var polygon = new ol.geom.Polygon(null);
+    polygon.setFlatCoordinates(
+        layout, flatCoordinates.slice(offset, end), ends.slice());
+    polygons.push(polygon);
+    offset = end;
   }
   return polygons;
 };
@@ -196,8 +236,6 @@ ol.geom.MultiPolygon.prototype.setCoordinates =
     var lastEnds = endss[endss.length - 1];
     this.flatCoordinates.length = lastEnds.length === 0 ?
         0 : lastEnds[lastEnds.length - 1];
-    ol.geom.flat.orientLinearRingss(
-        this.flatCoordinates, 0, this.endss_, this.stride);
     this.dispatchChangeEvent();
   }
 };

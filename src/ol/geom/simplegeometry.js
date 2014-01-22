@@ -87,10 +87,10 @@ ol.geom.SimpleGeometry.prototype.containsXY = goog.functions.FALSE;
  * @inheritDoc
  */
 ol.geom.SimpleGeometry.prototype.getExtent = function(opt_extent) {
-  if (this.extentRevision != this.revision) {
+  if (this.extentRevision != this.getRevision()) {
     this.extent = ol.extent.createOrUpdateFromFlatCoordinates(
         this.flatCoordinates, this.stride, this.extent);
-    this.extentRevision = this.revision;
+    this.extentRevision = this.getRevision();
   }
   goog.asserts.assert(goog.isDef(this.extent));
   return ol.extent.returnOrUpdate(this.extent, opt_extent);
@@ -118,10 +118,10 @@ ol.geom.SimpleGeometry.prototype.getLayout = function() {
  */
 ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry =
     function(squaredTolerance) {
-  if (this.simplifiedGeometryRevision != this.revision) {
+  if (this.simplifiedGeometryRevision != this.getRevision()) {
     goog.object.clear(this.simplifiedGeometryCache);
     this.simplifiedGeometryMaxMinSquaredTolerance = 0;
-    this.simplifiedGeometryRevision = this.revision;
+    this.simplifiedGeometryRevision = this.getRevision();
   }
   // If squaredTolerance is negative or if we know that simplification will not
   // have any effect then just return this.

@@ -8,7 +8,7 @@ goog.require('ol.layer.Layer');
  * @enum {string}
  */
 ol.layer.VectorProperty = {
-  RENDER_GEOMETRY_FUNCTION: 'renderGeometryFunction',
+  RENDER_GEOMETRY_FUNCTIONS: 'renderGeometryFunctions',
   STYLE_FUNCTION: 'styleFunction'
 };
 
@@ -36,17 +36,16 @@ goog.inherits(ol.layer.Vector, ol.layer.Layer);
 
 
 /**
- * @return {function(ol.geom.Geometry): boolean|undefined} Render geometry
- *     function.
+ * @return {ol.Collection|undefined} Render geometry functions.
  */
-ol.layer.Vector.prototype.getRenderGeometryFunction = function() {
-  return /** @type {function(ol.geom.Geometry): boolean|undefined} */ (
-      this.get(ol.layer.VectorProperty.RENDER_GEOMETRY_FUNCTION));
+ol.layer.Vector.prototype.getRenderGeometryFunctions = function() {
+  return /** @type {ol.Collection|undefined} */ (
+      this.get(ol.layer.VectorProperty.RENDER_GEOMETRY_FUNCTIONS));
 };
 goog.exportProperty(
     ol.layer.Vector.prototype,
-    'getRenderGeometryFunction',
-    ol.layer.Vector.prototype.getRenderGeometryFunction);
+    'getRenderGeometryFunctions',
+    ol.layer.Vector.prototype.getRenderGeometryFunctions);
 
 
 /**
@@ -63,18 +62,18 @@ goog.exportProperty(
 
 
 /**
- * @param {function(ol.geom.Geometry): boolean|undefined} renderGeometryFunction
- *     Render geometry function.
+ * @param {ol.Collection|undefined} renderGeometryFunctions Render geometry
+ *     functions.
  */
-ol.layer.Vector.prototype.setRenderGeometryFunction =
-    function(renderGeometryFunction) {
-  this.set(
-      ol.layer.VectorProperty.RENDER_GEOMETRY_FUNCTION, renderGeometryFunction);
+ol.layer.Vector.prototype.setRenderGeometryFunctions =
+    function(renderGeometryFunctions) {
+  this.set(ol.layer.VectorProperty.RENDER_GEOMETRY_FUNCTIONS,
+      renderGeometryFunctions);
 };
 goog.exportProperty(
     ol.layer.Vector.prototype,
-    'setRenderGeometryFunction',
-    ol.layer.Vector.prototype.setRenderGeometryFunction);
+    'setRenderGeometryFunctions',
+    ol.layer.Vector.prototype.setRenderGeometryFunctions);
 
 
 /**

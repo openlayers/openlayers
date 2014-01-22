@@ -43,12 +43,6 @@ ol.Feature = function(opt_geometryOrValues) {
 
   /**
    * @private
-   * @type {number}
-   */
-  this.revision_ = 0;
-
-  /**
-   * @private
    * @type {goog.events.Key}
    */
   this.geometryChangeKey_ = null;
@@ -77,15 +71,6 @@ goog.inherits(ol.Feature, ol.Object);
 
 
 /**
- * FIXME empty description for jsdoc
- */
-ol.Feature.prototype.dispatchChangeEvent = function() {
-  ++this.revision_;
-  this.dispatchEvent(goog.events.EventType.CHANGE);
-};
-
-
-/**
  * @return {ol.geom.Geometry|undefined} Geometry.
  */
 ol.Feature.prototype.getGeometry = function() {
@@ -111,14 +96,6 @@ ol.Feature.prototype.getId = function() {
  */
 ol.Feature.prototype.getGeometryName = function() {
   return this.geometryName_;
-};
-
-
-/**
- * @return {number} Revision.
- */
-ol.Feature.prototype.getRevision = function() {
-  return this.revision_;
 };
 
 

@@ -2,8 +2,12 @@
 @exportProperty ol.source.Vector.prototype.addFeature
 @exportProperty ol.source.Vector.prototype.addFeatures
 @exportProperty ol.source.Vector.prototype.getClosestFeatureToCoordinate
+@exportProperty ol.source.Vector.prototype.getExtent
 @exportProperty ol.source.Vector.prototype.forEachFeature
 @exportProperty ol.source.Vector.prototype.forEachFeatureInExtent
 @exportProperty ol.source.Vector.prototype.getAllFeatures
 @exportProperty ol.source.Vector.prototype.getAllFeaturesAtCoordinate
 @exportProperty ol.source.Vector.prototype.removeFeature
+
+@exportSymbol ol.source.VectorEvent
+@exportProperty ol.source.VectorEvent.prototype.getFeature

@@ -39,21 +39,24 @@ ol.geom.Circle.prototype.clone = function() {
 ol.geom.Circle.prototype.closestPointXY =
     function(x, y, closestPoint, minSquaredDistance) {
   var flatCoordinates = this.flatCoordinates;
-  var radius = flatCoordinates[this.stride] - flatCoordinates[0];
   var dx = x - flatCoordinates[0];
   var dy = y - flatCoordinates[1];
-  var d = Math.sqrt(dx * dx + dy * dy);
-  var distance = Math.max(d, 0);
-  var squaredDistance = distance * distance;
+  var squaredDistance = dx * dx + dy * dy;
   if (squaredDistance < minSquaredDistance) {
-    if (d === 0) {
-      closestPoint[0] = flatCoordinates[0];
-      closestPoint[1] = flatCoordinates[1];
+    var i;
+    if (squaredDistance === 0) {
+      for (i = 0; i < this.stride; ++i) {
+        closestPoint[i] = flatCoordinates[i];
+      }
     } else {
-      var delta = radius / d;
+      var delta = this.getRadius() / Math.sqrt(squaredDistance);
       closestPoint[0] = flatCoordinates[0] + delta * dx;
       closestPoint[1] = flatCoordinates[1] + delta * dy;
+      for (i = 2; i < this.stride; ++i) {
+        closestPoint[i] = flatCoordinates[i];
+      }
     }
+    closestPoint.length = this.stride;
     return squaredDistance;
   } else {
     return minSquaredDistance;
@@ -85,14 +88,14 @@ ol.geom.Circle.prototype.getCenter = function() {
  * @inheritDoc
  */
 ol.geom.Circle.prototype.getExtent = function(opt_extent) {
-  if (this.extentRevision != this.revision) {
+  if (this.extentRevision != this.getRevision()) {
     var flatCoordinates = this.flatCoordinates;
     var radius = flatCoordinates[this.stride] - flatCoordinates[0];
     this.extent = ol.extent.createOrUpdate(
         flatCoordinates[0] - radius, flatCoordinates[1] - radius,
         flatCoordinates[0] + radius, flatCoordinates[1] + radius,
         this.extent);
-    this.extentRevision = this.revision;
+    this.extentRevision = this.getRevision();
   }
   goog.asserts.assert(goog.isDef(this.extent));
   return ol.extent.returnOrUpdate(this.extent, opt_extent);

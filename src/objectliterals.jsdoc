@@ -256,6 +256,11 @@
  */
 
 /**
+ * @typedef {Object} olx.format.TopoJSONOptions
+ * @property {ol.proj.ProjectionLike} defaultProjection Default projection.
+ */
+
+/**
  * @typedef {Object} olx.format.IGCOptions
  * @property {ol.format.IGCZ|undefined} altitudeMode Altitude mode.
  *     Possible values are `barometric`, `gps`, and `none`. Default is `none`.
@@ -265,8 +270,6 @@
  * @typedef {Object} olx.format.KMLOptions
  * @property {Array.<ol.style.Style>|undefined} defaultStyle Default style. The default
  *     default style is the same as Google Earth.
- * @property {boolean|undefined} extractAttributes Extract attributes.
- * @property {boolean|undefined} extractStyles Extract styles.
  */
 
 /**
@@ -288,6 +291,8 @@
  *     features will be added to this layer's source.  If neither `source` nor
  *     `layer` are defined then the dropped features will be added as a new
  *     layer.
+ * @property {ol.feature.StyleFunction|undefined} styleFunction Style function.
+ *     This is used to configure any new layers created.
  */
 
 /**
@@ -358,7 +363,7 @@
 
 /**
  * @typedef {Object} olx.interaction.DrawOptions
- * @property {ol.layer.Vector|undefined} layer Destination layer for the features.
+ * @property {ol.source.Vector|undefined} source Destination source for the features.
  * @property {number|undefined} snapTolerance Pixel distance for snapping to the
  *     drawing finish (default is 12).
  * @property {ol.geom.GeometryType} type Drawing type ('Point', 'LineString',
@@ -552,6 +557,33 @@
  */
 
 /**
+ * @typedef {Object} olx.source.GPXOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {Document|undefined} doc Document.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {Node|undefined| node Node.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} reprojectTo Re-project to.
+ * @property {string|undefined} text Text.
+ * @property {string|undefined} url URL.
+ * @property {Array.<string>|undefined} urls URLs.
+ */
+
+/**
+ * @typedef {Object} olx.source.TopoJSONOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {ol.proj.ProjectionLike} defaultProjection Default projection.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {GeoJSONObject|undefined} object Object.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {ol.proj.ProjectionLike} reprojectTo Re-project to.
+ * @property {string|undefined} text Text.
+ * @property {string|undefined} url URL.
+ */
+
+/**
  * @typedef {Object} olx.source.IGCOptions
  * @property {ol.format.IGCZ|undefined} altitudeMode Altitude mode.
  *     Possible values are `barometric`, `gps`, and `none`. Default is `none`.
@@ -737,10 +769,15 @@
  *     edges" issues by properly configuring the WMS service. For example, MapServer
  *     has a `tile_map_edge_buffer` configuration parameter for this. See
  *     http://mapserver.org/output/tile_mode.html.
+ * @property {boolean|undefined} hidpi Use the `ol.Map#pixelRatio` value when
+ *     requesting the image from the remote server. Default is `true`.
  * @property {string|undefined} logo Logo.
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  * @property {number|undefined} maxZoom Maximum zoom.
  * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {ol.source.wms.ServerType|undefined} serverType The type of the remote WMS
+ *     server: `mapserver`, `geoserver` or `qgis`. Only needed if `hidpi` is `true`.
+ *     Default is `undefined`.
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
  *     function to load a tile given a URL.
  * @property {string|undefined} url WMS service URL.

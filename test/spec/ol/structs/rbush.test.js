@@ -28,6 +28,24 @@ describe('ol.structs.RBush', function() {
 
   });
 
+  describe('with a single object', function() {
+
+    var obj;
+    beforeEach(function() {
+      obj = {};
+      rBush.insert([0, 0, 1, 1], obj);
+    });
+
+    it('can update the object', function() {
+      expect(rBush.getAllInExtent([0, 0, 1, 1])).to.eql([obj]);
+      rBush.update([2, 2, 3, 3], obj);
+      expect(rBush.getAllInExtent([0, 0, 1, 1])).to.be.empty();
+      expect(rBush.getAll()).to.eql([obj]);
+      expect(rBush.getAllInExtent([2, 2, 3, 3])).to.eql([obj]);
+    });
+
+  });
+
   describe('with a few objects', function() {
 
     var objs;

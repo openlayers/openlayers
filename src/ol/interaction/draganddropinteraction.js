@@ -54,6 +54,12 @@ ol.interaction.DragAndDrop = function(opt_options) {
 
   /**
    * @private
+   * @type {ol.feature.StyleFunction|undefined}
+   */
+  this.styleFunction_ = options.styleFunction;
+
+  /**
+   * @private
    * @type {goog.events.FileDropHandler}
    */
   this.fileDropHandler_ = null;
@@ -149,6 +155,7 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(result) {
     }
     if (goog.isNull(this.layer_)) {
       map.getLayers().push(new ol.layer.Vector({
+        styleFunction: this.styleFunction_,
         source: source
       }));
     }

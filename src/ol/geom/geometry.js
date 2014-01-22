@@ -2,7 +2,6 @@ goog.provide('ol.geom.Geometry');
 goog.provide('ol.geom.GeometryType');
 
 goog.require('goog.asserts');
-goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('ol.Observable');
 
@@ -42,12 +41,6 @@ ol.geom.GeometryLayout = {
 ol.geom.Geometry = function() {
 
   goog.base(this);
-
-  /**
-   * @protected
-   * @type {number}
-   */
-  this.revision = 0;
 
   /**
    * @protected
@@ -130,27 +123,10 @@ ol.geom.Geometry.prototype.containsXY = goog.functions.FALSE;
 
 
 /**
- * FIXME empty description for jsdoc
- */
-ol.geom.Geometry.prototype.dispatchChangeEvent = function() {
-  ++this.revision;
-  this.dispatchEvent(goog.events.EventType.CHANGE);
-};
-
-
-/**
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} extent Extent.
  */
 ol.geom.Geometry.prototype.getExtent = goog.abstractMethod;
-
-
-/**
- * @return {number} Revision.
- */
-ol.geom.Geometry.prototype.getRevision = function() {
-  return this.revision;
-};
 
 
 /**

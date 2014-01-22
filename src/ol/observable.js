@@ -2,6 +2,7 @@ goog.provide('ol.Observable');
 
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
+goog.require('goog.events.EventType');
 
 
 
@@ -15,10 +16,34 @@ goog.require('goog.events.EventTarget');
  * @todo stability experimental
  */
 ol.Observable = function() {
+
   goog.base(this);
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.revision_ = 0;
 
 };
 goog.inherits(ol.Observable, goog.events.EventTarget);
+
+
+/**
+ * FIXME empty description for jsdoc
+ */
+ol.Observable.prototype.dispatchChangeEvent = function() {
+  ++this.revision_;
+  this.dispatchEvent(goog.events.EventType.CHANGE);
+};
+
+
+/**
+ * @return {number} Revision.
+ */
+ol.Observable.prototype.getRevision = function() {
+  return this.revision_;
+};
 
 
 /**

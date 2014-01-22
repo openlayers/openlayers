@@ -1,0 +1,3 @@
+@exportSymbol ol.format.TopoJSON
+@exportProperty ol.format.TopoJSON.prototype.readFeatures
+@exportProperty ol.format.TopoJSON.prototype.readProjection

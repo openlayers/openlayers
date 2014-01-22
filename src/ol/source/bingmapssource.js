@@ -101,10 +101,11 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
                     /**
                      * @this {ol.source.BingMaps}
                      * @param {ol.TileCoord} tileCoord Tile coordinate.
+                     * @param {number} pixelRatio Pixel ratio.
                      * @param {ol.proj.Projection} projection Projection.
                      * @return {string|undefined} Tile URL.
                      */
-                    function(tileCoord, projection) {
+                    function(tileCoord, pixelRatio, projection) {
                       goog.asserts.assert(ol.proj.equivalent(
                           projection, this.getProjection()));
                       if (goog.isNull(tileCoord)) {

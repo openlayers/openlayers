@@ -89,7 +89,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
  * @inheritDoc
  */
 ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
-    function(coordinate, frameState, callback, opt_this) {
+    function(coordinate, frameState, callback, thisArg) {
   if (goog.isNull(this.replayGroup_)) {
     return undefined;
   } else {
@@ -109,7 +109,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
         function(geometry, data) {
           var feature = /** @type {ol.Feature} */ (data);
           goog.asserts.assert(goog.isDef(feature));
-          return callback.call(opt_this, feature, layer);
+          return callback.call(thisArg, feature, layer);
         });
   }
 };
@@ -117,18 +117,38 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtPixel =
 
 /**
  * @private
- * @return {function(ol.geom.Geometry): boolean|undefined} Render geometry
- *     function.
+ * @return {function(ol.geom.Geometry): boolean} Render geometry function.
  */
 ol.renderer.canvas.VectorLayer.prototype.getRenderGeometryFunction_ =
     function() {
   var vectorLayer = this.getLayer();
   goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector);
-  var renderGeometryFunction = vectorLayer.getRenderGeometryFunction();
-  if (!goog.isDef(renderGeometryFunction)) {
-    renderGeometryFunction = goog.functions.TRUE;
+  var renderGeometryFunctions = vectorLayer.getRenderGeometryFunctions();
+  if (!goog.isDef(renderGeometryFunctions)) {
+    return goog.functions.TRUE;
   }
-  return renderGeometryFunction;
+  var renderGeometryFunctionsArray = renderGeometryFunctions.getArray();
+  switch (renderGeometryFunctionsArray.length) {
+    case 0:
+      return goog.functions.TRUE;
+    case 1:
+      return renderGeometryFunctionsArray[0];
+    default:
+      return (
+          /**
+           * @param {ol.geom.Geometry} geometry Geometry.
+           * @return {boolean} Render geometry.
+           */
+          function(geometry) {
+            var i, ii;
+            for (i = 0, ii = renderGeometryFunctionsArray.length; i < ii; ++i) {
+              if (!renderGeometryFunctionsArray[i](geometry)) {
+                return false;
+              }
+            }
+            return true;
+          });
+  }
 };
 
 
@@ -202,9 +222,10 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
        * @param {ol.Feature} feature Feature.
        */
       function(feature) {
-        this.dirty_ = this.dirty_ ||
+        var dirty =
             this.renderFeature(feature, frameStateResolution, pixelRatio,
                 styleFunction, replayGroup);
+        this.dirty_ = this.dirty_ || dirty;
       }, this);
   replayGroup.finish();
 
