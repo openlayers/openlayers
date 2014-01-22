@@ -9,7 +9,9 @@ goog.require('ol.format.TopoJSON');
 goog.require('ol.interaction');
 goog.require('ol.interaction.DragAndDrop');
 goog.require('ol.layer.Tile');
+goog.require('ol.layer.Vector');
 goog.require('ol.source.BingMaps');
+goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
@@ -82,19 +84,18 @@ var styleFunction = function(feature, resolution) {
   }
 };
 
+var dragAndDropInteraction = new ol.interaction.DragAndDrop({
+  formatConstructors: [
+    ol.format.GPX,
+    ol.format.GeoJSON,
+    ol.format.IGC,
+    ol.format.KML,
+    ol.format.TopoJSON
+  ]
+});
+
 var map = new ol.Map({
-  interactions: ol.interaction.defaults().extend([
-    new ol.interaction.DragAndDrop({
-      formatConstructors: [
-        ol.format.GPX,
-        ol.format.GeoJSON,
-        ol.format.IGC,
-        ol.format.KML,
-        ol.format.TopoJSON
-      ],
-      styleFunction: styleFunction
-    })
-  ]),
+  interactions: ol.interaction.defaults().extend([dragAndDropInteraction]),
   layers: [
     new ol.layer.Tile({
       source: new ol.source.BingMaps({
@@ -109,6 +110,19 @@ var map = new ol.Map({
     center: [0, 0],
     zoom: 2
   })
+});
+
+dragAndDropInteraction.on('addfeatures', function(event) {
+  var vectorSource = new ol.source.Vector({
+    features: event.getFeatures(),
+    projection: event.getProjection()
+  });
+  map.getLayers().push(new ol.layer.Vector({
+    source: vectorSource,
+    styleFunction: styleFunction
+  }));
+  var view2D = map.getView().getView2D();
+  view2D.fitExtent(vectorSource.getExtent(), map.getSize());
 });
 
 var displayFeatureInfo = function(pixel) {
