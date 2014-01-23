@@ -649,20 +649,20 @@ ol.geom.flat.linearRingssContainsXY =
  * @param {Array.<Array.<number>>} endss Endss.
  * @param {number} stride Stride.
  * @param {Array.<number>} ys Ys.
- * @return {Array.<ol.Coordinate>} Mid Ys.
+ * @return {Array.<number>} Interior points.
  */
 ol.geom.flat.linearRingssGetInteriorPoints =
     function(flatCoordinates, offset, endss, stride, ys) {
   goog.asserts.assert(endss.length == ys.length);
-  var points = [];
+  var interiorPoints = [];
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];
-    points.push(ol.geom.flat.linearRingsGetInteriorPoint(
-        flatCoordinates, offset, ends, stride, ys[i]));
+    interiorPoints = ol.geom.flat.linearRingsGetInteriorPoint(
+        flatCoordinates, offset, ends, stride, ys[i], interiorPoints);
     offset = ends[ends.length - 1];
   }
-  return points;
+  return interiorPoints;
 };
 
 
