@@ -49,7 +49,7 @@ ol.render.canvas.defaultMiterLimit = 10;
  * @const
  * @type {ol.Color}
  */
-ol.render.canvas.defaultStrokeStyle = ol.color.fromString('black');
+ol.render.canvas.defaultStrokeStyle = [0, 0, 0, 1];
 
 
 /**
