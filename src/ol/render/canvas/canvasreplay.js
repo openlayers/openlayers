@@ -36,7 +36,8 @@ ol.render.canvas.Instruction = {
   MOVE_TO_LINE_TO: 8,
   SET_FILL_STYLE: 9,
   SET_STROKE_STYLE: 10,
-  STROKE: 11
+  SET_TEXT_STYLE: 11,
+  STROKE: 12
 };
 
 
@@ -346,6 +347,15 @@ ol.render.canvas.Replay.prototype.replay_ =
         if (goog.isDef(context.setLineDash)) {
           context.setLineDash(/** @type {Array.<number>} */ (instruction[6]));
         }
+        ++i;
+        break;
+      case ol.render.canvas.Instruction.SET_TEXT_STYLE:
+        goog.asserts.assert(goog.isString(instruction[1]));
+        goog.asserts.assert(goog.isString(instruction[2]));
+        goog.asserts.assert(goog.isString(instruction[3]));
+        context.font = /** @type {string} */ (instruction[1]);
+        context.textAlign = /** @type {string} */ (instruction[2]);
+        context.textBaseline = /** @type {string} */ (instruction[3]);
         ++i;
         break;
       case ol.render.canvas.Instruction.STROKE:
