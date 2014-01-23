@@ -28,7 +28,7 @@ var map = new ol.Map({
 var swipe = document.getElementById('swipe');
 
 bing.on('precompose', function(event) {
-  var ctx = event.getContext();
+  var ctx = event.context;
   var width = ctx.canvas.width * (swipe.value / 100);
 
   ctx.save();
@@ -38,7 +38,7 @@ bing.on('precompose', function(event) {
 });
 
 bing.on('postcompose', function(event) {
-  var ctx = event.getContext();
+  var ctx = event.context;
   ctx.restore();
 });
 

@@ -128,7 +128,7 @@ var strokeStyle = new ol.style.Stroke({
   width: 1
 });
 map.on('postcompose', function(evt) {
-  var render = evt.getRender();
+  var render = evt.render;
   if (point !== null) {
     render.setImageStyle(imageStyle);
     render.drawPointGeometry(point);

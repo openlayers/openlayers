@@ -51,3 +51,24 @@ oli.interaction.DragAndDropEvent.prototype.features;
 
 /** @type {ol.proj.Projection} */
 oli.interaction.DragAndDropEvent.prototype.projection;
+
+
+
+/** @interface */
+oli.render.Event = function() {};
+
+
+/** @type {CanvasRenderingContext2D|null|undefined} */
+oli.render.Event.prototype.context;
+
+
+/** @type {ol.FrameState|undefined} */
+oli.render.Event.prototype.frameState;
+
+
+/** @type {ol.webgl.Context|null|undefined} */
+oli.render.Event.prototype.glContext;
+
+
+/** @type {ol.render.IRender|undefined} */
+oli.render.Event.prototype.render;
