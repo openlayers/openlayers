@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" 
+    xmlns:georss="http://www.georss.org/georss" 
+    xmlns:gml="http://www.opengis.net/gml">
+    <channel>
+        <link>http://maps.google.com</link>
+        <title>Cambridge Neighborhoods</title>
+        <description>One guy's view of Cambridge, MA</description>
+        <item>
+            <guid isPermaLink="false">00000111c36421c1321d3</guid>
+            <pubDate>Thu, 05 Apr 2007 20:16:31 +0000</pubDate>
+            <title>Central Square</title>
+            <description>The heart and soul of the "old" Cambridge. Depending on where you 
+                stand, you can feel like you're in the 1970s or 2020.</description>
+            <author>rajrsingh</author>
+            <georss:where>
+                <gml:Polygon>
+                    <gml:exterior>
+                        <gml:LinearRing>
+                            <gml:posList>
+                                -71.106216 42.366661
+                                -71.105576 42.367104
+                                -71.104378 42.367134
+                                -71.103729 42.366249
+                                -71.098793 42.363331
+                                -71.101028 42.362541
+                                -71.106865 42.366123
+                                -71.106216 42.366661
+                            </gml:posList>
+                        </gml:LinearRing>
+                    </gml:exterior>
+                </gml:Polygon>
+            </georss:where>
+        </item>
+    </channel>
+</rss>
