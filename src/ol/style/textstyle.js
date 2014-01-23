@@ -24,6 +24,12 @@ ol.style.Text = function(opt_options) {
 
   /**
    * @private
+   * @type {number|undefined}
+   */
+  this.scale_ = options.scale;
+
+  /**
+   * @private
    * @type {string|undefined}
    */
   this.text_ = options.text;
@@ -75,6 +81,14 @@ ol.style.Text.prototype.getFill = function() {
  */
 ol.style.Text.prototype.getRotation = function() {
   return this.rotation_;
+};
+
+
+/**
+ * @return {number|undefined} Scale.
+ */
+ol.style.Text.prototype.getScale = function() {
+  return this.scale_;
 };
 
 

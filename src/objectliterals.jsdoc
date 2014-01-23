@@ -943,6 +943,7 @@
 /**
  * @typedef {Object} olx.style.TextOptions
  * @property {string|undefined} font Font.
+ * @property {number|undefined} scale Scale.
  * @property {number|undefined} rotation Rotation.
  * @property {string|undefined} text Text.
  * @property {string|undefined} textAlign Text alignment.
