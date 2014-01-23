@@ -42,7 +42,7 @@ ol.format.XSD.readDateTime = function(node) {
     var hour = parseInt(m[4], 10);
     var minute = parseInt(m[5], 10);
     var second = parseInt(m[6], 10);
-    var dateTime = Date.UTC(year, month, day, hour, minute, second, 0) / 1000;
+    var dateTime = Date.UTC(year, month, day, hour, minute, second) / 1000;
     if (m[7] != 'Z') {
       var sign = m[8] == '-' ? -1 : 1;
       dateTime += sign * 60 * parseInt(m[9], 10);

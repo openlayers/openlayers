@@ -1129,7 +1129,7 @@ ol.format.KML.whenParser_ = function(node, objectStack) {
     var hour = parseInt(m[4], 10);
     var minute = parseInt(m[5], 10);
     var second = parseInt(m[6], 10);
-    var when = Date.UTC(year, month, day, hour, minute, second, 0);
+    var when = Date.UTC(year, month, day, hour, minute, second);
     if (m[7] != 'Z') {
       var sign = m[8] == '-' ? -1 : 1;
       when += sign * 60 * parseInt(m[9], 10);
