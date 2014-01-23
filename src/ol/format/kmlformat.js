@@ -433,7 +433,7 @@ ol.format.KML.readVec2_ = function(node) {
  * @private
  * @return {number|undefined} Scale.
  */
-ol.format.KML.readscale_ = function(node) {
+ol.format.KML.readScale_ = function(node) {
   var number = ol.format.KML.readNumber_(node);
   if (goog.isDef(number)) {
     return Math.sqrt(number);
@@ -1236,7 +1236,7 @@ ol.format.KML.ICON_STYLE_PARSERS_ = ol.xml.makeParsersNS(
       'Icon': ol.xml.makeObjectPropertySetter(ol.format.KML.readIcon_),
       'heading': ol.xml.makeObjectPropertySetter(ol.format.KML.readNumber_),
       'hotSpot': ol.xml.makeObjectPropertySetter(ol.format.KML.readVec2_),
-      'scale': ol.xml.makeObjectPropertySetter(ol.format.KML.readscale_)
+      'scale': ol.xml.makeObjectPropertySetter(ol.format.KML.readScale_)
     });
 
 
