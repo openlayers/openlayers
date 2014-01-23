@@ -30,7 +30,7 @@ var map = new ol.Map({
     new ol.layer.Image({
       source: new ol.source.ImageVector({
         source: new ol.source.GeoJSON({
-          url: 'data/countries.geojson'
+          url: 'data/geojson/countries.geojson'
         }),
         styleFunction: function(feature, resolution) {
           return styleArray;

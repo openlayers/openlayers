@@ -23,7 +23,7 @@ var styleArray = [new ol.style.Style({
 
 var vectorLayer = new ol.layer.Vector({
   source: new ol.source.GeoJSON({
-    url: 'data/countries.geojson'
+    url: 'data/geojson/countries.geojson'
   }),
   styleFunction: function(feature, resolution) {
     return styleArray;
