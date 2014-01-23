@@ -11,5 +11,3 @@
 @exportProperty ol.Collection.prototype.remove
 @exportProperty ol.Collection.prototype.removeAt
 @exportProperty ol.Collection.prototype.setAt
-
-@exportProperty ol.CollectionEvent.prototype.getElement
