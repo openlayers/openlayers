@@ -367,22 +367,6 @@ ol.format.KML.readFlatCoordinates_ = function(node) {
 /**
  * @param {Node} node Node.
  * @private
- * @return {number|undefined}
- */
-ol.format.KML.readNumber_ = function(node) {
-  var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*$/i.exec(s);
-  if (m) {
-    return parseFloat(m[1]);
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @private
  * @return {string|undefined} Style URL.
  */
 ol.format.KML.readStyleUrl_ = function(node) {
@@ -433,8 +417,8 @@ ol.format.KML.readVec2_ = function(node) {
  * @private
  * @return {number|undefined} Scale.
  */
-ol.format.KML.readscale_ = function(node) {
-  var number = ol.format.KML.readNumber_(node);
+ol.format.KML.readScale_ = function(node) {
+  var number = ol.format.XSD.readDecimal(node);
   if (goog.isDef(number)) {
     return Math.sqrt(number);
   } else {
@@ -1129,7 +1113,7 @@ ol.format.KML.whenParser_ = function(node, objectStack) {
     var hour = parseInt(m[4], 10);
     var minute = parseInt(m[5], 10);
     var second = parseInt(m[6], 10);
-    var when = Date.UTC(year, month, day, hour, minute, second, 0);
+    var when = Date.UTC(year, month, day, hour, minute, second);
     if (m[7] != 'Z') {
       var sign = m[8] == '-' ? -1 : 1;
       when += sign * 60 * parseInt(m[9], 10);
@@ -1234,9 +1218,9 @@ ol.format.KML.ICON_PARSERS_ = ol.xml.makeParsersNS(
 ol.format.KML.ICON_STYLE_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'Icon': ol.xml.makeObjectPropertySetter(ol.format.KML.readIcon_),
-      'heading': ol.xml.makeObjectPropertySetter(ol.format.KML.readNumber_),
+      'heading': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
       'hotSpot': ol.xml.makeObjectPropertySetter(ol.format.KML.readVec2_),
-      'scale': ol.xml.makeObjectPropertySetter(ol.format.KML.readscale_)
+      'scale': ol.xml.makeObjectPropertySetter(ol.format.KML.readScale_)
     });
 
 
@@ -1259,7 +1243,7 @@ ol.format.KML.INNER_BOUNDARY_IS_PARSERS_ = ol.xml.makeParsersNS(
 ol.format.KML.LINE_STYLE_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
-      'width': ol.xml.makeObjectPropertySetter(ol.format.KML.readNumber_)
+      'width': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
     });
 
 

@@ -28,7 +28,7 @@ ol.format.XSD.readBoolean = function(node) {
 
 /**
  * @param {Node} node Node.
- * @return {number|undefined} DateTime.
+ * @return {number|undefined} DateTime in seconds.
  */
 ol.format.XSD.readDateTime = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
@@ -42,7 +42,7 @@ ol.format.XSD.readDateTime = function(node) {
     var hour = parseInt(m[4], 10);
     var minute = parseInt(m[5], 10);
     var second = parseInt(m[6], 10);
-    var dateTime = Date.UTC(year, month, day, hour, minute, second, 0) / 1000;
+    var dateTime = Date.UTC(year, month, day, hour, minute, second) / 1000;
     if (m[7] != 'Z') {
       var sign = m[8] == '-' ? -1 : 1;
       dateTime += sign * 60 * parseInt(m[9], 10);
@@ -64,7 +64,7 @@ ol.format.XSD.readDateTime = function(node) {
 ol.format.XSD.readDecimal = function(node) {
   // FIXME check spec
   var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*([+\-]?\d+(?:\.\d*)?)\s*$/.exec(s);
+  var m = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*$/i.exec(s);
   if (m) {
     return parseFloat(m[1]);
   } else {
@@ -75,7 +75,7 @@ ol.format.XSD.readDecimal = function(node) {
 
 /**
  * @param {Node} node Node.
- * @return {number|undefined} Decimal.
+ * @return {number|undefined} Non negative integer.
  */
 ol.format.XSD.readNonNegativeInteger = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
