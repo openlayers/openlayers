@@ -21,6 +21,14 @@ ol.render.canvas.StrokeState;
 
 
 /**
+ * @typedef {{font: string,
+ *            textAlign: string,
+ *            textBaseline: string}}
+ */
+ol.render.canvas.TextState;
+
+
+/**
  * @const
  * @type {string}
  */
