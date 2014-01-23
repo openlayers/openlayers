@@ -38,6 +38,7 @@ ol.DrawEventType = {
 /**
  * @constructor
  * @extends {goog.events.Event}
+ * @implements {oli.DrawEvent}
  * @param {ol.DrawEventType} type Type.
  * @param {ol.Feature} feature The feature drawn.
  */
@@ -46,21 +47,12 @@ ol.DrawEvent = function(type, feature) {
   goog.base(this, type);
 
   /**
-   * @private
    * @type {ol.Feature}
    */
-  this.feature_ = feature;
+  this.feature = feature;
 
 };
 goog.inherits(ol.DrawEvent, goog.events.Event);
-
-
-/**
- * @return {ol.Feature} The feature drawn to which this event pertains.
- */
-ol.DrawEvent.prototype.getFeature = function() {
-  return this.feature_;
-};
 
 
 
