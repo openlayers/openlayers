@@ -247,24 +247,25 @@ ol.geom.flat.inflateCoordinatesss =
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {number} fraction Fraction.
- * @param {ol.Coordinate=} opt_point Point.
- * @return {ol.Coordinate} Point at fraction along the line string.
+ * @param {Array.<number>=} opt_dest Destination.
+ * @return {Array.<number>} Destination.
  */
 ol.geom.flat.lineStringInterpolate =
-    function(flatCoordinates, offset, end, stride, fraction, opt_point) {
+    function(flatCoordinates, offset, end, stride, fraction, opt_dest) {
   // FIXME interpolate extra dimensions
   goog.asserts.assert(0 <= fraction && fraction <= 1);
-  var point = goog.isDef(opt_point) ? opt_point : [NaN, NaN];
+  var pointX = NaN;
+  var pointY = NaN;
   var n = (end - offset) / stride;
   if (n === 0) {
     goog.asserts.fail();
   } else if (n == 1) {
-    point[0] = flatCoordinates[offset];
-    point[1] = flatCoordinates[offset + 1];
+    pointX = flatCoordinates[offset];
+    pointY = flatCoordinates[offset + 1];
   } else if (n == 2) {
-    point[0] = (1 - fraction) * flatCoordinates[offset] +
+    pointX = (1 - fraction) * flatCoordinates[offset] +
         fraction * flatCoordinates[offset + stride];
-    point[1] = (1 - fraction) * flatCoordinates[offset + 1] +
+    pointY = (1 - fraction) * flatCoordinates[offset + 1] +
         fraction * flatCoordinates[offset + stride + 1];
   } else {
     var x1 = flatCoordinates[offset];
@@ -286,15 +287,20 @@ ol.geom.flat.lineStringInterpolate =
       var t = (target - cumulativeLengths[-index - 2]) /
           (cumulativeLengths[-index - 1] - cumulativeLengths[-index - 2]);
       var o = offset + (-index - 2) * stride;
-      point[0] = (1 - t) * flatCoordinates[o] + t * flatCoordinates[o + stride];
-      point[1] = (1 - t) * flatCoordinates[o + 1] +
+      pointX = (1 - t) * flatCoordinates[o] + t * flatCoordinates[o + stride];
+      pointY = (1 - t) * flatCoordinates[o + 1] +
           t * flatCoordinates[o + stride + 1];
     } else {
-      point[0] = flatCoordinates[offset + index * stride];
-      point[1] = flatCoordinates[offset + index * stride + 1];
+      pointX = flatCoordinates[offset + index * stride];
+      pointY = flatCoordinates[offset + index * stride + 1];
     }
   }
-  return point;
+  if (goog.isDefAndNotNull(opt_dest)) {
+    opt_dest.push(pointX, pointY);
+    return opt_dest;
+  } else {
+    return [pointX, pointY];
+  }
 };
 
 
