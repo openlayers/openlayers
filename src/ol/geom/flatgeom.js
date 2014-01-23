@@ -4,6 +4,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.vec.Mat4');
+goog.require('ol.extent');
 
 
 /**
@@ -409,25 +410,6 @@ ol.geom.flat.linearRingIsClockwise =
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @return {number} Mid Y.
- */
-ol.geom.flat.linearRingMidY = function(flatCoordinates, offset, end, stride) {
-  var minY = Infinity;
-  var maxY = -Infinity;
-  for (; offset < end; offset += stride) {
-    var y = flatCoordinates[offset + 1];
-    minY = Math.min(minY, y);
-    maxY = Math.max(maxY, y);
-  }
-  return (minY + maxY) / 2;
-};
-
-
-/**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- * @param {number} offset Offset.
- * @param {number} end End.
- * @param {number} stride Stride.
  * @return {number} Perimeter.
  */
 ol.geom.flat.linearRingPerimeter =
@@ -491,20 +473,21 @@ ol.geom.flat.linearRingsContainsXY =
 
 
 /**
- * Calculates a point that is guaranteed to lie in the interior of the linear
- * rings.
+ * Calculates a point that is likely to lie in the interior of the linear rings.
  * Inspired by JTS's com.vividsolutions.jts.geom.Geometry#getInteriorPoint.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {Array.<number>} ends Ends.
  * @param {number} stride Stride.
- * @param {number} y Y.
+ * @param {Array.<number>} flatCenters Flat centers.
+ * @param {number} flatCentersOffset Flat center offset.
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Destination.
  */
-ol.geom.flat.linearRingsGetInteriorPoint =
-    function(flatCoordinates, offset, ends, stride, y, opt_dest) {
+ol.geom.flat.linearRingsGetInteriorPoint = function(flatCoordinates, offset,
+    ends, stride, flatCenters, flatCentersOffset, opt_dest) {
   var i, ii, x, x1, x2, y1, y2;
+  var y = flatCenters[flatCentersOffset + 1];
   /** @type {Array.<number>} */
   var intersections = [];
   // Calculate intersections with the horizontal line
@@ -522,7 +505,7 @@ ol.geom.flat.linearRingsGetInteriorPoint =
     y1 = y2;
   }
   // Find the longest segment of the horizontal line that has its center point
-  // inside the polygon
+  // inside the linear ring.
   var pointX = NaN;
   var maxSegmentLength = -Infinity;
   intersections.sort();
@@ -540,7 +523,11 @@ ol.geom.flat.linearRingsGetInteriorPoint =
     }
     x1 = x2;
   }
-  goog.asserts.assert(!isNaN(pointX));
+  if (isNaN(pointX)) {
+    // There is no horizontal line that has its center point inside the linear
+    // ring.  Use the center of the the linear ring's extent.
+    pointX = flatCenters[flatCentersOffset];
+  }
   if (goog.isDef(opt_dest)) {
     opt_dest.push(pointX, y);
     return opt_dest;
@@ -648,18 +635,18 @@ ol.geom.flat.linearRingssContainsXY =
  * @param {number} offset Offset.
  * @param {Array.<Array.<number>>} endss Endss.
  * @param {number} stride Stride.
- * @param {Array.<number>} ys Ys.
+ * @param {Array.<number>} flatCenters Flat centers.
  * @return {Array.<number>} Interior points.
  */
 ol.geom.flat.linearRingssGetInteriorPoints =
-    function(flatCoordinates, offset, endss, stride, ys) {
-  goog.asserts.assert(endss.length == ys.length);
+    function(flatCoordinates, offset, endss, stride, flatCenters) {
+  goog.asserts.assert(2 * endss.length == flatCenters.length);
   var interiorPoints = [];
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];
-    interiorPoints = ol.geom.flat.linearRingsGetInteriorPoint(
-        flatCoordinates, offset, ends, stride, ys[i], interiorPoints);
+    interiorPoints = ol.geom.flat.linearRingsGetInteriorPoint(flatCoordinates,
+        offset, ends, stride, flatCenters, 2 * i, interiorPoints);
     offset = ends[ends.length - 1];
   }
   return interiorPoints;
@@ -671,19 +658,21 @@ ol.geom.flat.linearRingssGetInteriorPoints =
  * @param {number} offset Offset.
  * @param {Array.<Array.<number>>} endss Endss.
  * @param {number} stride Stride.
- * @return {Array.<number>} Mid Ys.
+ * @return {Array.<number>} Flat centers.
  */
-ol.geom.flat.linearRingssMidYs =
+ol.geom.flat.linearRingssGetFlatCenters =
     function(flatCoordinates, offset, endss, stride) {
-  var midYs = [];
+  var flatCenters = [];
   var i, ii;
+  var extent = ol.extent.createEmpty();
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];
-    midYs.push(
-        ol.geom.flat.linearRingMidY(flatCoordinates, offset, ends[0], stride));
+    extent = ol.extent.createOrUpdateFromFlatCoordinates(
+        flatCoordinates, offset, ends[0], stride);
+    flatCenters.push((extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2);
     offset = ends[ends.length - 1];
   }
-  return midYs;
+  return flatCenters;
 };
 
 

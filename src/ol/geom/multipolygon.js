@@ -142,10 +142,11 @@ ol.geom.MultiPolygon.prototype.getEndss = function() {
  */
 ol.geom.MultiPolygon.prototype.getFlatInteriorPoints = function() {
   if (this.flatInteriorPointsRevision_ != this.getRevision()) {
-    var ys = ol.geom.flat.linearRingssMidYs(
+    var flatCenters = ol.geom.flat.linearRingssGetFlatCenters(
         this.flatCoordinates, 0, this.endss_, this.stride);
     this.flatInteriorPoints_ = ol.geom.flat.linearRingssGetInteriorPoints(
-        this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, ys);
+        this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
+        flatCenters);
     this.flatInteriorPointsRevision_ = this.getRevision();
   }
   return this.flatInteriorPoints_;

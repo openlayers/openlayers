@@ -142,10 +142,10 @@ ol.geom.Polygon.prototype.getEnds = function() {
  */
 ol.geom.Polygon.prototype.getFlatInteriorPoint = function() {
   if (this.flatInteriorPointRevision_ != this.getRevision()) {
-    var extent = this.getExtent();
-    var y = (extent[1] + extent[3]) / 2;
+    var flatCenter = ol.extent.getCenter(this.getExtent());
     this.flatInteriorPoint_ = ol.geom.flat.linearRingsGetInteriorPoint(
-        this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, y);
+        this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride,
+        flatCenter, 0);
     this.flatInteriorPointRevision_ = this.getRevision();
   }
   return this.flatInteriorPoint_;
