@@ -110,7 +110,7 @@ ol.render.FeaturesOverlay.prototype.handleFeatureChange_ = function() {
 ol.render.FeaturesOverlay.prototype.handleFeaturesAdd_ =
     function(collectionEvent) {
   goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_));
-  var feature = /** @type {ol.Feature} */ (collectionEvent.getElement());
+  var feature = /** @type {ol.Feature} */ (collectionEvent.element);
   this.featureChangeListenerKeys_[goog.getUid(feature).toString()] =
       goog.events.listen(feature, goog.events.EventType.CHANGE,
       this.handleFeatureChange_, false, this);
@@ -125,7 +125,7 @@ ol.render.FeaturesOverlay.prototype.handleFeaturesAdd_ =
 ol.render.FeaturesOverlay.prototype.handleFeaturesRemove_ =
     function(collectionEvent) {
   goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_));
-  var feature = /** @type {ol.Feature} */ (collectionEvent.getElement());
+  var feature = /** @type {ol.Feature} */ (collectionEvent.element);
   var key = goog.getUid(feature).toString();
   goog.events.unlistenByKey(this.featureChangeListenerKeys_[key]);
   delete this.featureChangeListenerKeys_[key];

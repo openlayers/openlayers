@@ -9,6 +9,15 @@
 var oli;
 
 
+
+/** @interface */
+oli.CollectionEvent = function() {};
+
+
+/** @type {*} */
+oli.CollectionEvent.prototype.element;
+
+
 /**
  * @interface
  */
