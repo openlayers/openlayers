@@ -31,13 +31,13 @@ ol.geom.Polygon = function(coordinates, opt_layout) {
    * @private
    * @type {number}
    */
-  this.interiorPointRevision_ = -1;
+  this.flatInteriorPointRevision_ = -1;
 
   /**
    * @private
    * @type {ol.Coordinate}
    */
-  this.interiorPoint_ = null;
+  this.flatInteriorPoint_ = null;
 
   /**
    * @private
@@ -138,17 +138,17 @@ ol.geom.Polygon.prototype.getEnds = function() {
 
 
 /**
- * @return {ol.Coordinate} Interior point.
+ * @return {Array.<number>} Interior point.
  */
-ol.geom.Polygon.prototype.getInteriorPoint = function() {
-  if (this.interiorPointRevision_ != this.getRevision()) {
+ol.geom.Polygon.prototype.getFlatInteriorPoint = function() {
+  if (this.flatInteriorPointRevision_ != this.getRevision()) {
     var extent = this.getExtent();
     var y = (extent[1] + extent[3]) / 2;
-    this.interiorPoint_ = ol.geom.flat.linearRingsGetInteriorPoint(
+    this.flatInteriorPoint_ = ol.geom.flat.linearRingsGetInteriorPoint(
         this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, y);
-    this.interiorPointRevision_ = this.getRevision();
+    this.flatInteriorPointRevision_ = this.getRevision();
   }
-  return this.interiorPoint_;
+  return this.flatInteriorPoint_;
 };
 
 
