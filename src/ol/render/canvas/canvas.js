@@ -88,7 +88,7 @@ ol.render.canvas.defaultTextAlign = 'center';
  * @const
  * @type {string}
  */
-ol.render.canvas.defaultTextBaseline = 'alphabetic';
+ol.render.canvas.defaultTextBaseline = 'middle';
 
 
 /**
