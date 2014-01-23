@@ -499,12 +499,11 @@ ol.geom.flat.linearRingsContainsXY =
  * @param {Array.<number>} ends Ends.
  * @param {number} stride Stride.
  * @param {number} y Y.
- * @param {Array.<number>=} opt_point Point.
- * @return {Array.<number>} A point which is in the interior of the linear
- *     rings.
+ * @param {Array.<number>=} opt_dest Destination.
+ * @return {Array.<number>} Destination.
  */
 ol.geom.flat.linearRingsGetInteriorPoint =
-    function(flatCoordinates, offset, ends, stride, y, opt_point) {
+    function(flatCoordinates, offset, ends, stride, y, opt_dest) {
   var i, ii, x, x1, x2, y1, y2;
   /** @type {Array.<number>} */
   var intersections = [];
@@ -524,14 +523,7 @@ ol.geom.flat.linearRingsGetInteriorPoint =
   }
   // Find the longest segment of the horizontal line that has its center point
   // inside the polygon
-  var point;
-  if (goog.isDef(opt_point)) {
-    point = opt_point;
-    point[0] = NaN;
-    point[1] = y;
-  } else {
-    point = [NaN, y];
-  }
+  var pointX = NaN;
   var maxSegmentLength = -Infinity;
   intersections.sort();
   x1 = intersections[0];
@@ -542,14 +534,19 @@ ol.geom.flat.linearRingsGetInteriorPoint =
       x = (x1 + x2) / 2;
       if (ol.geom.flat.linearRingsContainsXY(
           flatCoordinates, offset, ends, stride, x, y)) {
-        point[0] = x;
+        pointX = x;
         maxSegmentLength = segmentLength;
       }
     }
     x1 = x2;
   }
-  goog.asserts.assert(!isNaN(point[0]));
-  return point;
+  goog.asserts.assert(!isNaN(pointX));
+  if (goog.isDef(opt_dest)) {
+    opt_dest.push(pointX, y);
+    return opt_dest;
+  } else {
+    return [pointX, y];
+  }
 };
 
 
