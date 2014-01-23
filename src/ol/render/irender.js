@@ -101,6 +101,19 @@ ol.render.IRender.prototype.drawPolygonGeometry =
 
 
 /**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {Object} data Opaque data object.
+ */
+ol.render.IRender.prototype.drawText =
+    function(flatCoordinates, offset, end, stride, geometry, data) {
+};
+
+
+/**
  * @param {ol.style.Fill} fillStyle Fill style.
  * @param {ol.style.Stroke} strokeStyle Stroke style.
  */

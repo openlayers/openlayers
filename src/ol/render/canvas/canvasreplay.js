@@ -450,6 +450,12 @@ ol.render.canvas.Replay.prototype.drawMultiPolygonGeometry =
 
 
 /**
+ * @inheritDoc
+ */
+ol.render.canvas.Replay.prototype.drawText = goog.abstractMethod;
+
+
+/**
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {Object} data Opaque data object.
  */

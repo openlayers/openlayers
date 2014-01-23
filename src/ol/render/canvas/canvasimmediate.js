@@ -463,6 +463,12 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
 
 
 /**
+ * @inheritDoc
+ */
+ol.render.canvas.Immediate.prototype.drawText = goog.abstractMethod;
+
+
+/**
  * FIXME: empty description for jsdoc
  */
 ol.render.canvas.Immediate.prototype.flush = function() {
