@@ -56,7 +56,7 @@ ol.render.canvas.defaultStrokeStyle = [0, 0, 0, 1];
  * @const
  * @type {string}
  */
-ol.render.canvas.defaultTextAlign = 'start';
+ol.render.canvas.defaultTextAlign = 'center';
 
 
 /**
