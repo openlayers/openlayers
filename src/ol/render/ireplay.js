@@ -10,7 +10,8 @@ goog.require('ol.render.IRender');
 ol.render.ReplayType = {
   IMAGE: 'Image',
   LINE_STRING: 'LineString',
-  POLYGON: 'Polygon'
+  POLYGON: 'Polygon',
+  TEXT: 'Text'
 };
 
 
@@ -21,7 +22,8 @@ ol.render.ReplayType = {
 ol.render.REPLAY_ORDER = [
   ol.render.ReplayType.POLYGON,
   ol.render.ReplayType.LINE_STRING,
-  ol.render.ReplayType.IMAGE
+  ol.render.ReplayType.IMAGE,
+  ol.render.ReplayType.TEXT
 ];
 
 
