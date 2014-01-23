@@ -114,8 +114,8 @@ var map = new ol.Map({
 
 dragAndDropInteraction.on('addfeatures', function(event) {
   var vectorSource = new ol.source.Vector({
-    features: event.getFeatures(),
-    projection: event.getProjection()
+    features: event.features,
+    projection: event.projection
   });
   map.getLayers().push(new ol.layer.Vector({
     source: vectorSource,

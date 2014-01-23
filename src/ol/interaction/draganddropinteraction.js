@@ -183,6 +183,7 @@ ol.interaction.DragAndDropEventType = {
 /**
  * @constructor
  * @extends {goog.events.Event}
+ * @implements {oli.interaction.DragAndDropEvent}
  * @param {ol.interaction.DragAndDropEventType} type Type.
  * @param {Object=} opt_target Target.
  * @param {Array.<ol.Feature>=} opt_features Features.
@@ -194,32 +195,14 @@ ol.interaction.DragAndDropEvent =
   goog.base(this, type, opt_target);
 
   /**
-   * @private
    * @type {Array.<ol.Feature>|undefined}
    */
-  this.features_ = opt_features;
+  this.features = opt_features;
 
   /**
-   * @private
    * @type {ol.proj.Projection|undefined}
    */
-  this.projection_ = opt_projection;
+  this.projection = opt_projection;
 
 };
 goog.inherits(ol.interaction.DragAndDropEvent, goog.events.Event);
-
-
-/**
- * @return {Array.<ol.Feature>|undefined} Features.
- */
-ol.interaction.DragAndDropEvent.prototype.getFeatures = function() {
-  return this.features_;
-};
-
-
-/**
- * @return {ol.proj.Projection|undefined} Projection.
- */
-ol.interaction.DragAndDropEvent.prototype.getProjection = function() {
-  return this.projection_;
-};

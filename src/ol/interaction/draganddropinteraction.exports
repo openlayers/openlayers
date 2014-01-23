@@ -1,4 +1,1 @@
 @exportSymbol ol.interaction.DragAndDrop
-
-@exportProperty ol.interaction.DragAndDropEvent.prototype.getFeatures
-@exportProperty ol.interaction.DragAndDropEvent.prototype.getProjection

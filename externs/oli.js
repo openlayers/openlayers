@@ -29,3 +29,16 @@ oli.control.Control = function() {};
  * @return {undefined} Undefined.
  */
 oli.control.Control.prototype.setMap = function(map) {};
+
+
+
+/** @interface */
+oli.interaction.DragAndDropEvent = function() {};
+
+
+/** @type {Array.<ol.Feature>} */
+oli.interaction.DragAndDropEvent.prototype.features;
+
+
+/** @type {ol.proj.Projection} */
+oli.interaction.DragAndDropEvent.prototype.projection;
