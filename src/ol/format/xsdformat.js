@@ -13,6 +13,21 @@ ol.format.XSD.NAMESPACE_URI = 'http://www.w3.org/2001/XMLSchema';
 
 /**
  * @param {Node} node Node.
+ * @return {boolean|undefined} Boolean.
+ */
+ol.format.XSD.readBoolean = function(node) {
+  var s = ol.xml.getAllTextContent(node, false);
+  var m = /^\s*(true|1)|(false|0)\s*$/.exec(s);
+  if (m) {
+    return goog.isDef(m[1]) || false;
+  } else {
+    return undefined;
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
  * @return {number|undefined} DateTime.
  */
 ol.format.XSD.readDateTime = function(node) {
