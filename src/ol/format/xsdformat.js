@@ -28,7 +28,7 @@ ol.format.XSD.readBoolean = function(node) {
 
 /**
  * @param {Node} node Node.
- * @return {number|undefined} DateTime.
+ * @return {number|undefined} DateTime in seconds.
  */
 ol.format.XSD.readDateTime = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
@@ -75,7 +75,7 @@ ol.format.XSD.readDecimal = function(node) {
 
 /**
  * @param {Node} node Node.
- * @return {number|undefined} Decimal.
+ * @return {number|undefined} Non negative integer.
  */
 ol.format.XSD.readNonNegativeInteger = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
