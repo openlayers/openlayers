@@ -1,1 +1,1 @@
-@exportClass ol.interaction.Modify ol.interaction.ModifyOptions
+@exportSymbol ol.interaction.Modify

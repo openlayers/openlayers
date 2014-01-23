@@ -1,18 +1,19 @@
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction');
 goog.require('ol.interaction.Modify');
-//goog.require('ol.interaction.Select');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.source.MapQuest');
-goog.require('ol.source.Vector');
+goog.require('ol.render.FeaturesOverlay');
 goog.require('ol.source.GeoJSON');
+goog.require('ol.source.MapQuest');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
+
 
 var raster = new ol.layer.Tile({
   style: 'Aerial',
@@ -102,7 +103,8 @@ var vectorSource = new ol.source.GeoJSON(
             'type': 'Feature',
             'geometry': {
               'type': 'Polygon',
-              'coordinates': [[[-5e6, -1e6], [-4e6, 1e6], [-3e6, -1e6], [-5e6, -1e6]]]
+              'coordinates': [[[-5e6, -1e6], [-4e6, 1e6],
+                  [-3e6, -1e6], [-5e6, -1e6]]]
             }
           }/*,
           {
@@ -158,9 +160,64 @@ var vectorLayer = new ol.layer.Vector({
   styleFunction: styleFunction
 });
 
-//var select = new ol.interaction.Select();
+var overlayStyle = (function() {
+  /** @type {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} */
+  var styles = {};
+  styles[ol.geom.GeometryType.POLYGON] = [
+    new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: [255, 255, 255, 0.5]
+      })
+    })
+  ];
+  styles[ol.geom.GeometryType.MULTI_POLYGON] =
+      styles[ol.geom.GeometryType.POLYGON];
 
-var modify = new ol.interaction.Modify();
+  styles[ol.geom.GeometryType.LINE_STRING] = [
+    new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: [255, 255, 255, 1],
+        width: 5
+      })
+    }),
+    new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: [0, 153, 255, 1],
+        width: 3
+      })
+    })
+  ];
+  styles[ol.geom.GeometryType.MULTI_LINE_STRING] =
+      styles[ol.geom.GeometryType.LINE_STRING];
+
+  styles[ol.geom.GeometryType.POINT] = [
+    new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: 7,
+        fill: new ol.style.Fill({
+          color: [0, 153, 255, 1]
+        }),
+        stroke: new ol.style.Stroke({
+          color: [255, 255, 255, 0.75],
+          width: 1.5
+        })
+      }),
+      zIndex: 100000
+    })
+  ];
+  styles[ol.geom.GeometryType.MULTI_POINT] =
+      styles[ol.geom.GeometryType.POINT];
+
+  return function(feature, resolution) {
+    return styles[feature.getGeometry().getType()];
+  };
+})();
+
+var overlay = new ol.render.FeaturesOverlay({
+  styleFunction: overlayStyle
+});
+
+var modify = new ol.interaction.Modify(overlay);
 
 var map = new ol.Map({
   interactions: ol.interaction.defaults().extend([modify]),
@@ -171,4 +228,27 @@ var map = new ol.Map({
     center: [0, 0],
     zoom: 2
   })
+});
+
+var highlight;
+var displayFeatureInfo = function(pixel) {
+
+  var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+    return feature;
+  });
+
+  if (feature !== highlight) {
+    if (highlight) {
+      overlay.removeFeature(highlight);
+    }
+    if (feature) {
+      overlay.addFeature(feature);
+    }
+    highlight = feature;
+  }
+
+};
+
+map.on('singleclick', function(evt) {
+  displayFeatureInfo(evt.pixel);
 });

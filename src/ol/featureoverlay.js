@@ -242,3 +242,11 @@ ol.FeatureOverlay.prototype.setStyleFunction = function(styleFunction) {
   this.styleFunction_ = styleFunction;
   this.requestRenderFrame_();
 };
+
+
+/**
+ * @return {ol.feature.StyleFunction|undefined} Style function.
+ */
+ol.render.FeaturesOverlay.prototype.getStyleFunction = function() {
+  return this.styleFunction_;
+};
