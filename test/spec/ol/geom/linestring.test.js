@@ -164,6 +164,18 @@ describe('ol.geom.LineString', function() {
           [[0, 0], [1.5, 1], [3, 3], [5, 1], [6, 3.5], [7, 5]]);
     });
 
+    describe('#getFlatMidpoint', function() {
+
+      it('returns the expected result', function() {
+        var midpoint = lineString.getFlatMidpoint();
+        expect(midpoint).to.be.an(Array);
+        expect(midpoint).to.have.length(2);
+        expect(midpoint[0]).to.roughlyEqual(4, 1e-1);
+        expect(midpoint[1]).to.roughlyEqual(2, 1e-1);
+      });
+
+    });
+
     describe('#getSimplifiedGeometry', function() {
 
       it('returns the expectedResult', function() {

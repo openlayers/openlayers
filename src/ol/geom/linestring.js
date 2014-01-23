@@ -22,6 +22,18 @@ ol.geom.LineString = function(coordinates, opt_layout) {
 
   /**
    * @private
+   * @type {ol.Coordinate}
+   */
+  this.flatMidpoint_ = null;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.flatMidpointRevision_ = -1;
+
+  /**
+   * @private
    * @type {number}
    */
   this.maxDelta_ = -1;
@@ -85,6 +97,20 @@ ol.geom.LineString.prototype.getCoordinates = function() {
 ol.geom.LineString.prototype.getLength = function() {
   return ol.geom.flat.lineStringLength(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+};
+
+
+/**
+ * @return {Array.<number>} Flat midpoint.
+ */
+ol.geom.LineString.prototype.getFlatMidpoint = function() {
+  if (this.flatMidpointRevision_ != this.getRevision()) {
+    this.flatMidpoint_ = ol.geom.flat.lineStringInterpolate(
+        this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+        0.5, this.flatMidpoint_);
+    this.flatMidpointRevision_ = this.getRevision();
+  }
+  return this.flatMidpoint_;
 };
 
 
