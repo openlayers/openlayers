@@ -30,12 +30,13 @@ ol.render.canvas.Instruction = {
   CIRCLE: 2,
   CLOSE_PATH: 3,
   DRAW_IMAGE: 4,
-  END_GEOMETRY: 5,
-  FILL: 6,
-  MOVE_TO_LINE_TO: 7,
-  SET_FILL_STYLE: 8,
-  SET_STROKE_STYLE: 9,
-  STROKE: 10
+  DRAW_TEXT: 5,
+  END_GEOMETRY: 6,
+  FILL: 7,
+  MOVE_TO_LINE_TO: 8,
+  SET_FILL_STYLE: 9,
+  SET_STROKE_STYLE: 10,
+  STROKE: 11
 };
 
 
@@ -185,7 +186,7 @@ ol.render.canvas.Replay.prototype.replay_ =
   while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
-    var geometry;
+    var fill, geometry, stroke, text, x, y;
     switch (type) {
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
         geometry = /** @type {ol.geom.Geometry} */ (instruction[1]);
@@ -231,8 +232,8 @@ ol.render.canvas.Replay.prototype.replay_ =
         var snapToPixel = /** @type {boolean|undefined} */ (instruction[9]);
         var width = /** @type {number} */ (instruction[10]) * pixelRatio;
         for (; d < dd; d += 2) {
-          var x = pixelCoordinates[d] - anchorX;
-          var y = pixelCoordinates[d + 1] - anchorY;
+          x = pixelCoordinates[d] - anchorX;
+          y = pixelCoordinates[d + 1] - anchorY;
           if (snapToPixel) {
             x = (x + 0.5) | 0;
             y = (y + 0.5) | 0;
@@ -252,6 +253,47 @@ ol.render.canvas.Replay.prototype.replay_ =
                 goog.vec.Mat4.getElement(localTransform, 1, 3));
           }
           context.drawImage(image, x, y, width, height);
+          if (scale != 1 || rotation !== 0) {
+            context.setTransform(1, 0, 0, 1, 0, 0);
+          }
+        }
+        ++i;
+        break;
+      case ol.render.canvas.Instruction.DRAW_TEXT:
+        goog.asserts.assert(goog.isNumber(instruction[1]));
+        d = /** @type {number} */ (instruction[1]);
+        goog.asserts.assert(goog.isNumber(instruction[2]));
+        dd = /** @type {number} */ (instruction[2]);
+        goog.asserts.assert(goog.isString(instruction[3]));
+        text = /** @type {string} */ (instruction[3]);
+        goog.asserts.assert(goog.isNumber(instruction[4]));
+        rotation = /** @type {number} */ (instruction[4]);
+        goog.asserts.assert(goog.isNumber(instruction[5]));
+        scale = /** @type {number} */ (instruction[5]) * pixelRatio;
+        goog.asserts.assert(goog.isBoolean(instruction[6]));
+        fill = /** @type {boolean} */ (instruction[6]);
+        goog.asserts.assert(goog.isBoolean(instruction[7]));
+        stroke = /** @type {boolean} */ (instruction[7]);
+        for (; d < dd; d += 2) {
+          x = pixelCoordinates[d];
+          y = pixelCoordinates[d + 1];
+          if (scale != 1 || rotation !== 0) {
+            ol.vec.Mat4.makeTransform2D(
+                localTransform, x, y, scale, scale, rotation, -x, -y);
+            context.setTransform(
+                goog.vec.Mat4.getElement(localTransform, 0, 0),
+                goog.vec.Mat4.getElement(localTransform, 1, 0),
+                goog.vec.Mat4.getElement(localTransform, 0, 1),
+                goog.vec.Mat4.getElement(localTransform, 1, 1),
+                goog.vec.Mat4.getElement(localTransform, 0, 3),
+                goog.vec.Mat4.getElement(localTransform, 1, 3));
+          }
+          if (stroke) {
+            context.strokeText(text, x, y);
+          }
+          if (fill) {
+            context.fillText(text, x, y);
+          }
           if (scale != 1 || rotation !== 0) {
             context.setTransform(1, 0, 0, 1, 0, 0);
           }
