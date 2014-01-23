@@ -10,6 +10,17 @@ ol.render.canvas.FillState;
 
 
 /**
+ * @typedef {{lineCap: string,
+ *            lineDash: Array.<number>,
+ *            lineJoin: string,
+ *            lineWidth: number,
+ *            miterLimit: number,
+ *            strokeStyle: string}}
+ */
+ol.render.canvas.StrokeState;
+
+
+/**
  * @const
  * @type {string}
  */
