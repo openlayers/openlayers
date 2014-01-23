@@ -64,7 +64,7 @@ ol.format.XSD.readDateTime = function(node) {
 ol.format.XSD.readDecimal = function(node) {
   // FIXME check spec
   var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*([+\-]?\d+(?:\.\d*)?)\s*$/.exec(s);
+  var m = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*$/i.exec(s);
   if (m) {
     return parseFloat(m[1]);
   } else {
