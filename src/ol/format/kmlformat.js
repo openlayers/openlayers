@@ -315,22 +315,6 @@ ol.format.KML.makeFeatureStyleFunction_ = function(style) {
 /**
  * @param {Node} node Node.
  * @private
- * @return {boolean|undefined} Boolean.
- */
-ol.format.KML.readBoolean_ = function(node) {
-  var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*(0|1)\s*$/.exec(s);
-  if (m) {
-    return m[1] == '1';
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @private
  * @return {ol.Color|undefined} Color.
  */
 ol.format.KML.readColor_ = function(node) {
@@ -1352,10 +1336,10 @@ ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeParsersNS(
       'address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'description': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'open': ol.xml.makeObjectPropertySetter(ol.format.KML.readBoolean_),
+      'open': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
       'phoneNumber': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_),
-      'visibility': ol.xml.makeObjectPropertySetter(ol.format.KML.readBoolean_)
+      'visibility': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
     }, ol.xml.makeParsersNS(
         ol.format.KML.GX_NAMESPACE_URIS_, {
           'MultiTrack': ol.xml.makeObjectPropertySetter(
@@ -1374,8 +1358,8 @@ ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeParsersNS(
 ol.format.KML.POLY_STYLE_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
-      'fill': ol.xml.makeObjectPropertySetter(ol.format.KML.readBoolean_),
-      'outline': ol.xml.makeObjectPropertySetter(ol.format.KML.readBoolean_)
+      'fill': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
+      'outline': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
     });
 
 
