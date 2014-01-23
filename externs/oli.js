@@ -72,3 +72,12 @@ oli.render.Event.prototype.glContext;
 
 /** @type {ol.render.IRender|undefined} */
 oli.render.Event.prototype.render;
+
+
+
+/** @interface */
+oli.source.VectorEvent;
+
+
+/** @type {ol.Feature} */
+oli.source.VectorEvent.prototype.feature;
