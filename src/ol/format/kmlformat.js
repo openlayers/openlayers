@@ -18,6 +18,7 @@ goog.require('goog.string');
 goog.require('ol.Feature');
 goog.require('ol.feature');
 goog.require('ol.format.XML');
+goog.require('ol.format.XSD');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
@@ -314,22 +315,6 @@ ol.format.KML.makeFeatureStyleFunction_ = function(style) {
 /**
  * @param {Node} node Node.
  * @private
- * @return {boolean|undefined} Boolean.
- */
-ol.format.KML.readBoolean_ = function(node) {
-  var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*(0|1)\s*$/.exec(s);
-  if (m) {
-    return m[1] == '1';
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @private
  * @return {ol.Color|undefined} Color.
  */
 ol.format.KML.readColor_ = function(node) {
@@ -392,17 +377,6 @@ ol.format.KML.readNumber_ = function(node) {
   } else {
     return undefined;
   }
-};
-
-
-/**
- * @param {Node} node Node.
- * @private
- * @return {string} String.
- */
-ol.format.KML.readString_ = function(node) {
-  var s = ol.xml.getAllTextContent(node, false);
-  return goog.string.trim(s);
 };
 
 
@@ -1070,7 +1044,7 @@ ol.format.KML.SimpleDataParser_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'SimpleData');
   var name = node.getAttribute('name');
   if (!goog.isNull(name)) {
-    var data = ol.format.KML.readString_(node);
+    var data = ol.format.XSD.readString(node);
     var featureObject =
         /** @type {Object} */ (objectStack[objectStack.length - 1]);
     goog.object.set(featureObject, name, data);
@@ -1177,7 +1151,7 @@ ol.format.KML.whenParser_ = function(node, objectStack) {
  */
 ol.format.KML.DATA_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.KML.NAMESPACE_URIS_, {
-      'value': ol.xml.makeReplacer(ol.format.KML.readString_)
+      'value': ol.xml.makeReplacer(ol.format.XSD.readString)
     });
 
 
@@ -1248,7 +1222,7 @@ ol.format.KML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = ol.xml.makeParsersNS(
  */
 ol.format.KML.ICON_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.KML.NAMESPACE_URIS_, {
-      'href': ol.xml.makeObjectPropertySetter(ol.format.KML.readString_)
+      'href': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
     });
 
 
@@ -1334,7 +1308,7 @@ ol.format.KML.OUTER_BOUNDARY_IS_PARSERS_ = ol.xml.makeParsersNS(
 ol.format.KML.PAIR_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'Style': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_),
-      'key': ol.xml.makeObjectPropertySetter(ol.format.KML.readString_),
+      'key': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyleUrl_)
     });
 
@@ -1359,13 +1333,13 @@ ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeParsersNS(
           ol.format.KML.readPolygon_, 'geometry'),
       'Style': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_),
       'StyleMap': ol.format.KML.StyleMapParser_,
-      'address': ol.xml.makeObjectPropertySetter(ol.format.KML.readString_),
-      'description': ol.xml.makeObjectPropertySetter(ol.format.KML.readString_),
-      'name': ol.xml.makeObjectPropertySetter(ol.format.KML.readString_),
-      'open': ol.xml.makeObjectPropertySetter(ol.format.KML.readBoolean_),
-      'phoneNumber': ol.xml.makeObjectPropertySetter(ol.format.KML.readString_),
+      'address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+      'description': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+      'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+      'open': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
+      'phoneNumber': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_),
-      'visibility': ol.xml.makeObjectPropertySetter(ol.format.KML.readBoolean_)
+      'visibility': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
     }, ol.xml.makeParsersNS(
         ol.format.KML.GX_NAMESPACE_URIS_, {
           'MultiTrack': ol.xml.makeObjectPropertySetter(
@@ -1384,8 +1358,8 @@ ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeParsersNS(
 ol.format.KML.POLY_STYLE_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
-      'fill': ol.xml.makeObjectPropertySetter(ol.format.KML.readBoolean_),
-      'outline': ol.xml.makeObjectPropertySetter(ol.format.KML.readBoolean_)
+      'fill': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
+      'outline': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
     });
 
 
@@ -1661,7 +1635,7 @@ ol.format.KML.prototype.readNameFromNode = function(node) {
     if (goog.array.indexOf(ol.format.KML.NAMESPACE_URIS_,
                            n.namespaceURI) != -1 &&
         n.localName == 'name') {
-      return ol.format.KML.readString_(n);
+      return ol.format.XSD.readString(n);
     }
   }
   for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
