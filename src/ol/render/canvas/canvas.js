@@ -4,6 +4,12 @@ goog.require('ol.color');
 
 
 /**
+ * @typedef {{fillStyle: string}}
+ */
+ol.render.canvas.FillState;
+
+
+/**
  * @const
  * @type {string}
  */
