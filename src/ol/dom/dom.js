@@ -6,6 +6,7 @@ goog.provide('ol.dom.BrowserFeature');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.userAgent');
 goog.require('goog.vec.Mat4');
 
 
@@ -78,7 +79,9 @@ ol.dom.BrowserFeature = {
 
         return (goog.isDefAndNotNull(has3d) && has3d.length > 0 &&
             has3d !== 'none');
-      })()
+      })(),
+  USE_MS_MATRIX_TRANSFORM:
+      (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9.0'))
 };
 
 
@@ -93,20 +96,53 @@ ol.dom.setTransform = function(element, value) {
   style.OTransform = value;
   style.msTransform = value;
   style.transform = value;
+
+  // IE 9+ seems to assume transform-origin: 100% 100%; for some unknown reason
+  if (goog.userAgent.IE && goog.userAgent.isVersionOrHigher('9.0') ||
+      goog.userAgent.VERSION === '') {
+    element.style.transformOrigin = '0 0';
+  }
 };
 
 
 /**
- * @param {Element} element Element.
+ * Sets the IE matrix transform without replacing other filters
+ * @private
+ * @param {!Element} element Element
+ * @param {string} value The new progid string
+ */
+ol.dom.setIEMatrix_ = function(element, value) {
+  var filter = element.currentStyle.filter;
+  var newFilter =
+      filter.replace(/progid:DXImageTransform.Microsoft.Matrix\(.*?\)/i, value);
+
+  if (newFilter === filter) {
+    newFilter = ' ' + value;
+  }
+
+  element.style.filter = newFilter;
+
+  // Fix to apply filter to absolutely-positioned children element
+  if (element.currentStyle.zIndex === 'auto') {
+    element.style.zIndex = -1;
+  }
+};
+
+
+/**
+ * @param {!Element} element Element.
  * @param {goog.vec.Mat4.Number} transform Matrix.
  * @param {number=} opt_precision Precision.
+ * @param {Element=} opt_translationElement Required for IE7-8
  */
-ol.dom.transformElement2D = function(element, transform, opt_precision) {
+ol.dom.transformElement2D =
+    function(element, transform, opt_precision, opt_translationElement) {
   // using matrix() causes gaps in Chrome and Firefox on Mac OS X, so prefer
   // matrix3d()
   var i;
   if (ol.dom.BrowserFeature.CAN_USE_CSS_TRANSFORM3D) {
     var value3D;
+
     if (goog.isDef(opt_precision)) {
       /** @type {Array.<string>} */
       var strings3D = new Array(16);
@@ -140,10 +176,44 @@ ol.dom.transformElement2D = function(element, transform, opt_precision) {
       value2D = transform2D.join(',');
     }
     ol.dom.setTransform(element, 'matrix(' + value2D + ')');
+  } else if (ol.dom.BrowserFeature.USE_MS_MATRIX_TRANSFORM) {
+    var m11 = goog.vec.Mat4.getElement(transform, 0, 0),
+        m12 = goog.vec.Mat4.getElement(transform, 0, 1),
+        m21 = goog.vec.Mat4.getElement(transform, 1, 0),
+        m22 = goog.vec.Mat4.getElement(transform, 1, 1),
+        dx = goog.vec.Mat4.getElement(transform, 0, 3),
+        dy = goog.vec.Mat4.getElement(transform, 1, 3);
+
+    // See: http://msdn.microsoft.com/en-us/library/ms533014(v=vs.85).aspx
+    // and: http://extremelysatisfactorytotalitarianism.com/blog/?p=1002
+    // @TODO: fix terrible IE bbox rotation issue.
+    var s = 'progid:DXImageTransform.Microsoft.Matrix(';
+    s += 'sizingMethod="auto expand"';
+    s += ',M11=' + m11.toFixed(opt_precision || 20);
+    s += ',M12=' + m12.toFixed(opt_precision || 20);
+    s += ',M21=' + m21.toFixed(opt_precision || 20);
+    s += ',M22=' + m22.toFixed(opt_precision || 20);
+    s += ')';
+    ol.dom.setIEMatrix_(element, s);
+
+    // scale = m11 = m22 = target resolution [m/px] / current res [m/px]
+    // dx = (viewport width [px] / 2) * scale
+    //      + (layer.x [m] - view.x [m]) / target resolution [m / px]
+    // except that we're positioning the child element relative to the
+    // viewport, not the map.
+    // dividing by the scale factor isn't the exact correction, but it's
+    // close enough that you can barely tell unless you're looking for it
+    dx /= m11;
+    dy /= m22;
+
+    opt_translationElement.style.left = dx + 'px';
+    opt_translationElement.style.top = dy + 'px';
   } else {
-    // FIXME check this code!
-    var style = element.style;
-    style.left = Math.round(goog.vec.Mat4.getElement(transform, 0, 3)) + 'px';
-    style.top = Math.round(goog.vec.Mat4.getElement(transform, 1, 3)) + 'px';
+    element.style.left = goog.vec.Mat4.getElement(transform, 0, 3) + 'px';
+    element.style.top = goog.vec.Mat4.getElement(transform, 1, 3) + 'px';
+
+    // TODO: Add scaling here. This isn't quite as simple as multiplying
+    // width/height, because that only changes the container size, not the
+    // content size.
   }
 };
