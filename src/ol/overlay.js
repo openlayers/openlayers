@@ -335,6 +335,10 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
   }
 
   var pixel = map.getPixelFromCoordinate(position);
+  if (!goog.isDefAndNotNull(pixel)) {
+    return;
+  }
+
   var mapSize = map.getSize();
   goog.asserts.assert(goog.isDef(mapSize));
   var style = this.element_.style;
