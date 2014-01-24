@@ -882,6 +882,42 @@ describe('ol.format.KML', function() {
         expect(s.getFill().getColor()).to.eql([0, 0, 0, 0]);
       });
 
+      it('can read a style defines after', function() {
+        var text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Document>' +
+            '    <StyleMap id="fooMap">' +
+            '      <Pair>' +
+            '        <key>normal</key>' +
+            '        <styleUrl>#foo</styleUrl>' +
+            '      </Pair>' +
+            '    </StyleMap>' +
+            '    <Style id="foo">' +
+            '      <PolyStyle>' +
+            '        <color>12345678</color>' +
+            '      </PolyStyle>' +
+            '    </Style>' +
+            '    <Placemark>' +
+            '      <styleUrl>#fooMap</styleUrl>' +
+            '    </Placemark>' +
+            '  </Document>' +
+            '</kml>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var styleFunction = f.getStyleFunction();
+        expect(styleFunction).not.to.be(undefined);
+        var styleArray = styleFunction.call(f, 0);
+        expect(styleArray).to.be.an(Array);
+        expect(styleArray).to.have.length(1);
+        var style = styleArray[0];
+        expect(style).to.be.an(ol.style.Style);
+        var fillStyle = style.getFill();
+        expect(fillStyle).to.be.an(ol.style.Fill);
+        expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
+      });
+
       it('ignores highlighted styleUrls', function() {
         var text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
