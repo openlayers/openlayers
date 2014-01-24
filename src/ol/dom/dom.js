@@ -6,6 +6,7 @@ goog.provide('ol.dom.BrowserFeature');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.style');
 goog.require('goog.userAgent');
 goog.require('goog.vec.Mat4');
 
@@ -81,7 +82,10 @@ ol.dom.BrowserFeature = {
             has3d !== 'none');
       })(),
   USE_MS_MATRIX_TRANSFORM:
-      (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9.0'))
+      (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9.0')),
+  USE_MS_ALPHA_FILTER:
+      (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9.0') &&
+      goog.userAgent.VERSION !== '')
 };
 
 
@@ -101,6 +105,49 @@ ol.dom.setTransform = function(element, value) {
   if (goog.userAgent.IE && goog.userAgent.isVersionOrHigher('9.0') ||
       goog.userAgent.VERSION === '') {
     element.style.transformOrigin = '0 0';
+  }
+};
+
+
+/**
+ * Sets the opacity of an element, in an IE-compatible way
+ * @param {!Element} element Element
+ * @param {number} value Opacity, [0..1]
+ */
+ol.dom.setOpacity = function(element, value) {
+  if (ol.dom.BrowserFeature.USE_MS_ALPHA_FILTER) {
+    /** @type {string} */
+    var filter = element.currentStyle.filter;
+
+    /** @type {RegExp} */
+    var regex;
+
+    /** @type {string} */
+    var alpha;
+
+    if (goog.userAgent.VERSION == '8.0') {
+      regex = /progid:DXImageTransform\.Microsoft\.Alpha\(.*?\)/i,
+      alpha = 'progid:DXImageTransform.Microsoft.Alpha(Opacity=' +
+          (value * 100) + ')';
+    } else {
+      regex = /alpha\(.*?\)/i;
+      alpha = 'alpha(opacity=' + (value * 100) + ')';
+    }
+
+    var newFilter = filter.replace(regex, alpha);
+    if (newFilter === filter) {
+      // no replace was made? just append the new alpha filter instead
+      newFilter += ' ' + alpha;
+    }
+
+    element.style.filter = newFilter;
+
+    // Fix to apply filter to absolutely-positioned children element
+    if (element.currentStyle.zIndex === 'auto') {
+      element.style.zIndex = -1;
+    }
+  } else {
+    goog.style.setOpacity(element, value);
   }
 };
 

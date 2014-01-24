@@ -236,7 +236,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
   }
 
   if (layerState.opacity != this.renderedOpacity_) {
-    goog.style.setOpacity(this.target, layerState.opacity);
+    ol.dom.setOpacity(this.target, layerState.opacity);
     this.renderedOpacity_ = layerState.opacity;
   }
 
