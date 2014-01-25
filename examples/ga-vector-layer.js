@@ -10,7 +10,7 @@ goog.require('ol.style.Text');
 
 var vector = new ol.layer.Vector({
   source: new ol.source.GeoJSON({
-    repojectTo: 'EPSG:21781',
+    reprojectTo: 'EPSG:21781',
     url: 'data/cities.geojson'
   }),
   styleFunction: function(feature, resolution) {
@@ -66,26 +66,24 @@ var map = new ga.Map({
   })
 });
 
-var displayFeatureInfo = function(evt) {
-  var pixel = (evt.originalEvent) ?
-      map.getEventPixel(evt.originalEvent) :
-      evt.getPixel();
-  var features = [];
-  map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-    if (layer === olLayer) {
-      features.push(feature);
-    }
-  });  
-  document.getElementById('info').innerHTML = features.length > 0 ?
-      features[0].get('NAME') + ' - inhabitants: ' +
-      features[0].get('EINWOHNERZ') :
-      '&nbsp;';
+var displayFeatureInfo = function(pixel) {
+  var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+    return feature;
+  });
+  if (feature) {
+    document.getElementById('info').innerHTML =
+      feature.get('NAME') + ' - inhabitants: ' +
+      feature.get('EINWOHNERZ') +
+      '&nbsp;';  
+  }
 };
 
 $(map.getViewport()).on('mousemove', function(evt) {
-  displayFeatureInfo(evt);
+  var pixel = map.getEventPixel(evt.originalEvent);
+  displayFeatureInfo(pixel);
 });
 
 map.on('singleclick', function(evt) {
-  displayFeatureInfo(evt);
+  var pixel = evt.getPixel();
+  displayFeatureInfo(pixel);
 });
