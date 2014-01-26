@@ -38,10 +38,12 @@ var styles = [new ol.style.Style({
 
 var tr4326to3857 = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
 
+var i;
 var features = [];
-for (var i in cityFeatures) {
+var feature;
+for (i in cityFeatures) {
   var cityFeature = cityFeatures[i];
-  var feature = new ol.Feature({
+  feature = new ol.Feature({
     geometry: new ol.geom.Point(tr4326to3857(cityFeature.coordinates)),
     name: cityFeature.name
   });
@@ -54,12 +56,12 @@ var v = ol.ellipsoid.WGS84.vincenty(
 var distance = v.distance;
 var initialBearing = v.initialBearing;
 var divisionCount = 20;
-for (var i = 1; i < divisionCount; i++) {
+for (i = 1; i < divisionCount; i++) {
   var pd = ol.ellipsoid.WGS84.vincentyDirect(
       cityFeatures[0].coordinates,
       distance / divisionCount * i,
       initialBearing);
-  var feature = new ol.Feature({
+  feature = new ol.Feature({
     geometry: new ol.geom.Point(tr4326to3857(pd)),
     name: i + ''
   });
