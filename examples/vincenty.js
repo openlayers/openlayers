@@ -1,3 +1,6 @@
+goog.require('goog.array');
+goog.require('ol.Feature');
+goog.require('ol.geom.Point');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
