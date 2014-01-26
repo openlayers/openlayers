@@ -1,10 +1,10 @@
 goog.require('goog.array');
 goog.require('ol.Feature');
-goog.require('ol.geom.Point');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.ellipsoid.WGS84');
+goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.proj');
