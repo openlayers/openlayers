@@ -1,4 +1,3 @@
-goog.require('goog.array');
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
@@ -40,13 +39,14 @@ var styles = [new ol.style.Style({
 var tr4326to3857 = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
 
 var features = [];
-goog.array.forEach(cityFeatures, function(cityFeature, index) {
+for (var i in cityFeatures) {
+  var cityFeature = cityFeatures[i];
   var feature = new ol.Feature({
     geometry: new ol.geom.Point(tr4326to3857(cityFeature.coordinates)),
     name: cityFeature.name
   });
   features.push(feature);
-},this);
+}
 
 var v = ol.ellipsoid.WGS84.vincenty(
     cityFeatures[0].coordinates,
