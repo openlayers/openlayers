@@ -69,8 +69,7 @@ for (i = 1; i < divisionCount; i++) {
 }
 
 var vectorSource = new ol.source.Vector({
-  features: features,
-  projection: ol.proj.get('EPSG:3857')
+  features: features
 });
 
 var cityLayer = new ol.layer.Vector({
