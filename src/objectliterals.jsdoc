@@ -91,6 +91,8 @@
  *     The coordinate system for the center is specified with the `projection`
  *     option. Default is `undefined`, and layer sources will not be fetched if
  *     this is not set.
+ * @property {boolean|undefined} enableRotation Enable rotation. Default is
+ *     `true`.
  * @property {ol.Extent|undefined} extent The extent that constrains the center,
  *     in other words, center cannot be set outside this extent.
  *     Default is `undefined`.
