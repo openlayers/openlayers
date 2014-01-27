@@ -476,25 +476,22 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
     anchor = [0.5, 1];
     anchorXUnits = ol.style.IconAnchorUnits.FRACTION;
     anchorYUnits = ol.style.IconAnchorUnits.FRACTION;
-  } else {
-    anchor = null;
   }
+
   var rotation;
   var heading = /** @type {number|undefined} */
       (goog.object.get(object, 'heading'));
   if (goog.isDef(heading)) {
     rotation = goog.math.toRadians(heading);
-  } else {
-    rotation = 0;
   }
+
   var scale = /** @type {number|undefined} */
       (goog.object.get(object, 'scale'));
   var size;
   if (src == ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_) {
     size = ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_;
-  } else {
-    size = null;
   }
+
   var imageStyle = new ol.style.Icon({
     anchor: anchor,
     anchorXUnits: anchorXUnits,
