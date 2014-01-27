@@ -30,9 +30,10 @@ ol.control.Control = function(options) {
 
   /**
    * @private
-   * @type {Element|undefined}
+   * @type {Element}
    */
-  this.target_ = options.target;
+  this.target_ = goog.isDef(options.target) ?
+      goog.dom.getElement(options.target) : null;
 
   /**
    * @private
@@ -95,7 +96,7 @@ ol.control.Control.prototype.setMap = function(map) {
   }
   this.map_ = map;
   if (!goog.isNull(this.map_)) {
-    var target = goog.isDef(this.target_) ?
+    var target = !goog.isNull(this.target_) ?
         this.target_ : map.getOverlayContainerStopEvent();
     goog.dom.appendChild(target, this.element);
     if (this.handleMapPostrender !== goog.nullFunction) {
