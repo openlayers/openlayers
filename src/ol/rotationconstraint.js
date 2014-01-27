@@ -15,6 +15,20 @@ ol.RotationConstraintType;
  * @param {number} delta Delta.
  * @return {number|undefined} Rotation.
  */
+ol.RotationConstraint.disable = function(rotation, delta) {
+  if (goog.isDef(rotation)) {
+    return 0;
+  } else {
+    return undefined;
+  }
+};
+
+
+/**
+ * @param {number|undefined} rotation Rotation.
+ * @param {number} delta Delta.
+ * @return {number|undefined} Rotation.
+ */
 ol.RotationConstraint.none = function(rotation, delta) {
   if (goog.isDef(rotation)) {
     return rotation + delta;
