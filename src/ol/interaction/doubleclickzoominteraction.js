@@ -48,7 +48,7 @@ ol.interaction.DoubleClickZoom.prototype.handleMapBrowserEvent =
   var browserEvent = mapBrowserEvent.browserEvent;
   if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DBLCLICK) {
     var map = mapBrowserEvent.map;
-    var anchor = mapBrowserEvent.getCoordinate();
+    var anchor = mapBrowserEvent.coordinate;
     var delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
     // FIXME works for View2D only
     var view = map.getView().getView2D();

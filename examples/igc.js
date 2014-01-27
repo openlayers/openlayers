@@ -111,8 +111,7 @@ $(map.getViewport()).on('mousemove', function(evt) {
 });
 
 map.on('singleclick', function(evt) {
-  var coordinate = evt.getCoordinate();
-  displaySnap(coordinate);
+  displaySnap(evt.coordinate);
 });
 
 var imageStyle = new ol.style.Circle({

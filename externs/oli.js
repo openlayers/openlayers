@@ -36,6 +36,23 @@ oli.ObjectEvent.prototype.key;
 
 
 
+/** @interface */
+oli.MapBrowserEvent;
+
+
+/** @type {ol.Coordinate} */
+oli.MapBrowserEvent.prototype.coordinate;
+
+
+/** @type {Event} */
+oli.MapBrowserEvent.prototype.originalEvent;
+
+
+/** @type {ol.Pixel} */
+oli.MapBrowserEvent.prototype.pixel;
+
+
+
 /**
  * @interface
  */

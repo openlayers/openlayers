@@ -70,7 +70,7 @@ map.addOverlay(popup);
 
 // display popup on click
 map.on('singleclick', function(evt) {
-  var feature = map.forEachFeatureAtPixel(evt.getPixel(),
+  var feature = map.forEachFeatureAtPixel(evt.pixel,
       function(feature, layer) {
         return feature;
       });
