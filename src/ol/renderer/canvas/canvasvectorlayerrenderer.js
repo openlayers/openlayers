@@ -189,10 +189,11 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   var frameStateExtent = frameState.extent;
   var frameStateResolution = frameState.view2DState.resolution;
   var pixelRatio = frameState.pixelRatio;
+  var vectorLayerRevision = vectorLayer.getRevision();
 
   if (!this.dirty_ &&
       this.renderedResolution_ == frameStateResolution &&
-      this.renderedRevision_ == vectorSource.getRevision() &&
+      this.renderedRevision_ == vectorLayerRevision &&
       ol.extent.containsExtent(this.renderedExtent_, frameStateExtent)) {
     return;
   }
@@ -230,7 +231,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
   replayGroup.finish();
 
   this.renderedResolution_ = frameStateResolution;
-  this.renderedRevision_ = vectorSource.getRevision();
+  this.renderedRevision_ = vectorLayerRevision;
   if (!replayGroup.isEmpty()) {
     this.replayGroup_ = replayGroup;
   }
