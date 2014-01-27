@@ -71,7 +71,6 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
     goog.asserts.fail();
     return null;
   }
-  goog.dom.appendChild(this.layersPane_, layerRenderer.getTarget());
   return layerRenderer;
 };
 
@@ -94,7 +93,9 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
   var i, ii, layer, layerRenderer, layerState;
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
     layer = layersArray[i];
-    layerRenderer = this.getLayerRenderer(layer);
+    layerRenderer = /** @type {ol.renderer.dom.Layer} */ (
+        this.getLayerRenderer(layer));
+    goog.dom.insertChildAt(this.layersPane_, layerRenderer.getTarget(), i);
     layerState = frameState.layerStates[goog.getUid(layer)];
     if (layerState.sourceState == ol.source.State.READY) {
       layerRenderer.prepareFrame(frameState, layerState);
