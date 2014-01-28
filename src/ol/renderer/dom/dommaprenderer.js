@@ -95,6 +95,7 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
     layer = layersArray[i];
     layerRenderer = /** @type {ol.renderer.dom.Layer} */ (
         this.getLayerRenderer(layer));
+    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer);
     goog.dom.insertChildAt(this.layersPane_, layerRenderer.getTarget(), i);
     layerState = frameState.layerStates[goog.getUid(layer)];
     if (layerState.sourceState == ol.source.State.READY) {
