@@ -262,6 +262,15 @@ button.ol-full-screen-true:after {
   height: 20px;
   width: 24px;
 }
+.ol-touch .ol-zoomslider {
+  top: 82px;
+  width: 36px;
+}
+.ol-touch .ol-zoomslider-thumb {
+  height: 18px;
+  width: 30px;
+}
+
 .ol-zoom-extent button,
 .ol-attribution,
 .ol-full-screen button,
