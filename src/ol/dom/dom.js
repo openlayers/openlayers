@@ -253,11 +253,11 @@ ol.dom.transformElement2D =
     dx /= m11;
     dy /= m22;
 
-    opt_translationElement.style.left = dx + 'px';
-    opt_translationElement.style.top = dy + 'px';
+    opt_translationElement.style.left = Math.round(dx) + 'px';
+    opt_translationElement.style.top = Math.round(dy) + 'px';
   } else {
-    element.style.left = goog.vec.Mat4.getElement(transform, 0, 3) + 'px';
-    element.style.top = goog.vec.Mat4.getElement(transform, 1, 3) + 'px';
+    element.style.left = Math.round(goog.vec.Mat4.getElement(transform, 0, 3)) + 'px';
+    element.style.top = Math.round(goog.vec.Mat4.getElement(transform, 1, 3)) + 'px';
 
     // TODO: Add scaling here. This isn't quite as simple as multiplying
     // width/height, because that only changes the container size, not the
