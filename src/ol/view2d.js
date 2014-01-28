@@ -419,8 +419,12 @@ ol.View2D.prototype.fitExtent = function(extent, size) {
   if (!ol.extent.isEmpty(extent)) {
     this.setCenter(ol.extent.getCenter(extent));
     var resolution = this.getResolutionForExtent(extent, size);
-    resolution = this.constrainResolution(resolution, 0, 0);
-    this.setResolution(resolution);
+    var constrainedResolution = this.constrainResolution(resolution, 0, 0);
+    if (constrainedResolution < resolution) {
+      constrainedResolution =
+          this.constrainResolution(constrainedResolution, -1, 0);
+    }
+    this.setResolution(constrainedResolution);
   }
 };
 
