@@ -103,6 +103,12 @@ ol.format.KML = function(opt_options) {
 
   /**
    * @private
+   * @type {Object.<string, string>}
+   */
+  this.sharedUnknownStyles_ = {};
+
+  /**
+   * @private
    * @type {ol.feature.FeatureStyleFunction}
    */
   this.sharedStyleFeatureStyleFunction_ =
@@ -1466,7 +1472,12 @@ ol.format.KML.prototype.readSharedStyle_ = function(node, objectStack) {
     var style = ol.format.KML.readStyle_(node, objectStack);
     if (goog.isDef(style)) {
       var baseURI = goog.isNull(node.baseURI) ? '' : node.baseURI;
-      this.sharedStyles_[baseURI + '#' + id] = [style];
+      var styleUri = baseURI + '#' + id;
+      this.sharedStyles_[styleUri] = [style];
+
+      if (styleUri in this.sharedUnknownStyles_) {
+        this.sharedStyles_[this.sharedUnknownStyles_[styleUri]] = [style];
+      }
     }
   }
 };
@@ -1496,14 +1507,11 @@ ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
     var styleUrl = /** @type {string|undefined} */
         (goog.object.get(styleObject, 'styleUrl'));
     if (goog.isDef(styleUrl)) {
-      var styleUri;
-      if (goog.isNull(node.baseURI)) {
-        styleUri = '#' + goog.string.trim(styleUrl);
+      if (styleUrl in this.sharedStyles_) {
+        this.sharedStyles_[baseURI + '#' + id] = this.sharedStyles_[styleUrl];
       } else {
-        styleUri = goog.Uri.resolve(baseURI, styleUrl).toString();
+        this.sharedUnknownStyles_[styleUrl] = baseURI + '#' + id;
       }
-      goog.asserts.assert(styleUri in this.sharedStyles_);
-      this.sharedStyles_[baseURI + '#' + id] = this.sharedStyles_[styleUri];
     }
   }
 };
