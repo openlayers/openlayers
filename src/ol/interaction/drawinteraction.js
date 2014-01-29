@@ -38,6 +38,7 @@ ol.DrawEventType = {
 /**
  * @constructor
  * @extends {goog.events.Event}
+ * @implements {oli.DrawEvent}
  * @param {ol.DrawEventType} type Type.
  * @param {ol.Feature} feature The feature drawn.
  */
@@ -46,21 +47,12 @@ ol.DrawEvent = function(type, feature) {
   goog.base(this, type);
 
   /**
-   * @private
    * @type {ol.Feature}
    */
-  this.feature_ = feature;
+  this.feature = feature;
 
 };
 goog.inherits(ol.DrawEvent, goog.events.Event);
-
-
-/**
- * @return {ol.Feature} The feature drawn to which this event pertains.
- */
-ol.DrawEvent.prototype.getFeature = function() {
-  return this.feature_;
-};
 
 
 
@@ -261,7 +253,7 @@ ol.interaction.Draw.prototype.handleMapBrowserEvent = function(event) {
  */
 ol.interaction.Draw.prototype.handleClick_ = function(event) {
   var downPx = event.map.getEventPixel(event.target.getDown());
-  var clickPx = event.getPixel();
+  var clickPx = event.pixel;
   var dx = downPx[0] - clickPx[0];
   var dy = downPx[1] - clickPx[1];
   var squaredDistance = dx * dx + dy * dy;
@@ -324,7 +316,7 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
       for (var i = 0, ii = potentiallyFinishCoordinates.length; i < ii; i++) {
         var finishCoordinate = potentiallyFinishCoordinates[i];
         var finishPixel = map.getPixelFromCoordinate(finishCoordinate);
-        var pixel = event.getPixel();
+        var pixel = event.pixel;
         var dx = pixel[0] - finishPixel[0];
         var dy = pixel[1] - finishPixel[1];
         at = Math.sqrt(dx * dx + dy * dy) <= this.snapTolerance_;
@@ -345,7 +337,7 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
  * @private
  */
 ol.interaction.Draw.prototype.startDrawing_ = function(event) {
-  var start = event.getCoordinate();
+  var start = event.coordinate;
   this.finishCoordinate_ = start;
   var geometry;
   if (this.mode_ === ol.interaction.DrawMode.POINT) {
@@ -376,7 +368,7 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
  * @private
  */
 ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
-  var coordinate = event.getCoordinate();
+  var coordinate = event.coordinate;
   var geometry = this.sketchFeature_.getGeometry();
   var coordinates, last;
   if (this.mode_ === ol.interaction.DrawMode.POINT) {
@@ -424,7 +416,7 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
  * @private
  */
 ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
-  var coordinate = event.getCoordinate();
+  var coordinate = event.coordinate;
   var geometry = this.sketchFeature_.getGeometry();
   var coordinates, last;
   if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {

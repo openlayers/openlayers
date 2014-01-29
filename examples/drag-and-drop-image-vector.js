@@ -115,8 +115,8 @@ var map = new ol.Map({
 
 dragAndDropInteraction.on('addfeatures', function(event) {
   var vectorSource = new ol.source.Vector({
-    features: event.getFeatures(),
-    projection: event.getProjection()
+    features: event.features,
+    projection: event.projection
   });
   map.getLayers().push(new ol.layer.Image({
     source: new ol.source.ImageVector({
@@ -151,6 +151,5 @@ $(map.getViewport()).on('mousemove', function(evt) {
 });
 
 map.on('singleclick', function(evt) {
-  var pixel = evt.getPixel();
-  displayFeatureInfo(pixel);
+  displayFeatureInfo(evt.pixel);
 });

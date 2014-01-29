@@ -117,7 +117,7 @@ describe('ol.collection', function() {
       goog.events.listen(collection, ol.CollectionEventType.REMOVE, cb);
       expect(collection.remove(1)).to.eql(1);
       expect(cb).to.be.called();
-      expect(cb.lastCall.args[0].getElement()).to.eql(1);
+      expect(cb.lastCall.args[0].element).to.eql(1);
     });
     it('does not remove more than one matching element', function() {
       var collection = new ol.Collection([0, 1, 1, 2]);
@@ -138,11 +138,11 @@ describe('ol.collection', function() {
       var collection = new ol.Collection(['a', 'b']);
       var added, removed;
       goog.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
-        added = e.getElement();
+        added = e.element;
       });
       goog.events.listen(
           collection, ol.CollectionEventType.REMOVE, function(e) {
-            removed = e.getElement();
+            removed = e.element;
           });
       collection.setAt(1, 1);
       expect(added).to.eql(1);
@@ -156,7 +156,7 @@ describe('ol.collection', function() {
       var removed;
       goog.events.listen(
           collection, ol.CollectionEventType.REMOVE, function(e) {
-            removed = e.getElement();
+            removed = e.element;
           });
       collection.pop();
       expect(removed).to.eql('a');
@@ -169,7 +169,7 @@ describe('ol.collection', function() {
       var added;
       goog.events.listen(
           collection, ol.CollectionEventType.ADD, function(e) {
-            added = e.getElement();
+            added = e.element;
           });
       collection.insertAt(1, 1);
       expect(added).to.eql(1);
@@ -181,7 +181,7 @@ describe('ol.collection', function() {
       var added = [];
       goog.events.listen(
           collection, ol.CollectionEventType.ADD, function(e) {
-            added.push(e.getElement());
+            added.push(e.element);
           });
       collection.setAt(2, 0);
       expect(collection.getLength()).to.eql(3);
@@ -230,7 +230,7 @@ describe('ol.collection', function() {
       var collection = new ol.Collection();
       var elem;
       goog.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
-        elem = e.getElement();
+        elem = e.element;
       });
       collection.push(1);
       expect(elem).to.eql(1);
@@ -249,15 +249,15 @@ describe('ol.collection', function() {
         goog.events.listen(collection, ol.CollectionEventType.ADD, cb1);
         goog.events.listen(collection, ol.CollectionEventType.REMOVE, cb2);
         collection.setAt(0, 2);
-        expect(cb2.lastCall.args[0].getElement()).to.eql(1);
-        expect(cb1.lastCall.args[0].getElement()).to.eql(2);
+        expect(cb2.lastCall.args[0].element).to.eql(1);
+        expect(cb1.lastCall.args[0].element).to.eql(2);
       });
     });
     describe('pop', function() {
       it('triggers remove', function() {
         goog.events.listen(collection, ol.CollectionEventType.REMOVE, cb1);
         collection.pop();
-        expect(cb1.lastCall.args[0].getElement()).to.eql(1);
+        expect(cb1.lastCall.args[0].element).to.eql(1);
       });
     });
   });
@@ -274,7 +274,7 @@ describe('ol.collection', function() {
       var collection = new ol.Collection();
       var elems = [];
       goog.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
-        elems.push(e.getElement());
+        elems.push(e.element);
       });
       collection.extend([1, 2]);
       expect(elems).to.eql([1, 2]);

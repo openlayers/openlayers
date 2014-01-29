@@ -114,7 +114,7 @@ goog.inherits(ol.interaction.DragBox, ol.interaction.Drag);
  * @inheritDoc
  */
 ol.interaction.DragBox.prototype.handleDrag = function(mapBrowserEvent) {
-  this.box_.setPixels(this.startPixel_, mapBrowserEvent.getPixel());
+  this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 };
 
 
@@ -144,7 +144,7 @@ ol.interaction.DragBox.prototype.handleDragEnd =
       ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED) {
     this.onBoxEnd(mapBrowserEvent);
     this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXEND,
-        mapBrowserEvent.getCoordinate()));
+        mapBrowserEvent.coordinate));
   }
 };
 
@@ -156,11 +156,11 @@ ol.interaction.DragBox.prototype.handleDragStart =
     function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
   if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
-    this.startPixel_ = mapBrowserEvent.getPixel();
+    this.startPixel_ = mapBrowserEvent.pixel;
     this.box_.setMap(mapBrowserEvent.map);
     this.box_.setPixels(this.startPixel_, this.startPixel_);
     this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXSTART,
-        mapBrowserEvent.getCoordinate()));
+        mapBrowserEvent.coordinate));
     return true;
   } else {
     return false;

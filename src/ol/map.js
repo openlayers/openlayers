@@ -777,7 +777,7 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
     // coordinates so interactions cannot be used.
     return;
   }
-  this.focus_ = mapBrowserEvent.getCoordinate();
+  this.focus_ = mapBrowserEvent.coordinate;
   mapBrowserEvent.frameState = this.frameState_;
   var interactions = this.getInteractions();
   var interactionsArray = /** @type {Array.<ol.interaction.Interaction>} */

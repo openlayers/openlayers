@@ -52,7 +52,7 @@ goog.inherits(ol.interaction.DragRotate, ol.interaction.Drag);
 ol.interaction.DragRotate.prototype.handleDrag = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var size = map.getSize();
-  var offset = mapBrowserEvent.getPixel();
+  var offset = mapBrowserEvent.pixel;
   var theta =
       Math.atan2(size[1] / 2 - offset[1], offset[0] - size[0] / 2);
   if (goog.isDef(this.lastAngle_)) {

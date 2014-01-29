@@ -1,3 +1,1 @@
 @exportSymbol ol.interaction.Draw
-
-@exportProperty ol.DrawEvent.prototype.getFeature

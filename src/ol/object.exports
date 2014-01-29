@@ -7,5 +7,3 @@
 @exportProperty ol.Object.prototype.setValues
 @exportProperty ol.Object.prototype.unbind
 @exportProperty ol.Object.prototype.unbindAll
-
-@exportProperty ol.ObjectEvent.prototype.getKey

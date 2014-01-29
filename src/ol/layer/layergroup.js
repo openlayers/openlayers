@@ -120,7 +120,7 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
  * @private
  */
 ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
-  var layer = /** @type {ol.layer.Base} */ (collectionEvent.getElement());
+  var layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
   this.listenerKeys_[goog.getUid(layer).toString()] = goog.events.listen(
       layer, [ol.ObjectEventType.PROPERTYCHANGE, goog.events.EventType.CHANGE],
       this.handleLayerChange_, false, this);
@@ -133,7 +133,7 @@ ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
  * @private
  */
 ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
-  var layer = /** @type {ol.layer.Base} */ (collectionEvent.getElement());
+  var layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
   var key = goog.getUid(layer).toString();
   goog.events.unlistenByKey(this.listenerKeys_[key]);
   delete this.listenerKeys_[key];

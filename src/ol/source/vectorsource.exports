@@ -8,5 +8,3 @@
 @exportProperty ol.source.Vector.prototype.getAllFeatures
 @exportProperty ol.source.Vector.prototype.getAllFeaturesAtCoordinate
 @exportProperty ol.source.Vector.prototype.removeFeature
-
-@exportProperty ol.source.VectorEvent.prototype.getFeature
