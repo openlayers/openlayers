@@ -1349,17 +1349,17 @@ ol.Map.createOptionsInternal = function(options) {
   for (i = 0, ii = rendererHints.length; i < ii; ++i) {
     /** @type {ol.RendererHint} */
     var rendererHint = rendererHints[i];
-    if (rendererHint == ol.RendererHint.CANVAS) {
+    if (ol.ENABLE_CANVAS && rendererHint == ol.RendererHint.CANVAS) {
       if (ol.BrowserFeature.HAS_CANVAS) {
         rendererConstructor = ol.renderer.canvas.Map;
         break;
       }
-    } else if (rendererHint == ol.RendererHint.DOM) {
+    } else if (ol.ENABLE_DOM && rendererHint == ol.RendererHint.DOM) {
       if (ol.BrowserFeature.HAS_DOM) {
         rendererConstructor = ol.renderer.dom.Map;
         break;
       }
-    } else if (rendererHint == ol.RendererHint.WEBGL) {
+    } else if (ol.ENABLE_WEBGL && rendererHint == ol.RendererHint.WEBGL) {
       if (ol.BrowserFeature.HAS_WEBGL) {
         rendererConstructor = ol.renderer.webgl.Map;
         break;
