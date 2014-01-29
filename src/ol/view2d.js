@@ -573,6 +573,21 @@ ol.View2D.createResolutionConstraint_ = function(options) {
  * @return {ol.RotationConstraintType} Rotation constraint.
  */
 ol.View2D.createRotationConstraint_ = function(options) {
-  // FIXME rotation constraint is not configurable at the moment
-  return ol.RotationConstraint.createSnapToZero();
+  var enableRotation = goog.isDef(options.enableRotation) ?
+      options.enableRotation : true;
+  if (enableRotation) {
+    var constrainRotation = options.constrainRotation;
+    if (!goog.isDef(constrainRotation) || constrainRotation === true) {
+      return ol.RotationConstraint.createSnapToZero();
+    } else if (constrainRotation === false) {
+      return ol.RotationConstraint.none;
+    } else if (goog.isNumber(constrainRotation)) {
+      return ol.RotationConstraint.createSnapToN(constrainRotation);
+    } else {
+      goog.asserts.fail();
+      return ol.RotationConstraint.none;
+    }
+  } else {
+    return ol.RotationConstraint.disable;
+  }
 };
