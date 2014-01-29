@@ -61,11 +61,11 @@ for (i = 1; i < divisionCount; i++) {
       cityFeatures[0].coordinates,
       distance / divisionCount * i,
       initialBearing);
-  feature = new ol.Feature({
+  var newFeature = new ol.Feature({
     geometry: new ol.geom.Point(tr4326to3857(pd)),
     name: i + ''
   });
-  features.push(feature);
+  features.push(newFeature);
 }
 
 var vectorSource = new ol.source.Vector({
