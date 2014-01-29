@@ -2,6 +2,7 @@
 
 goog.provide('ol.control.ZoomToExtent');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
@@ -61,8 +62,10 @@ ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function(browserEvent) {
   // prevent #zoomExtent anchor from getting appended to the url
   browserEvent.preventDefault();
   var map = this.getMap();
-  var view = map.getView().getView2D();
+  var view = map.getView();
+  goog.asserts.assert(goog.isDef(view));
+  var view2D = view.getView2D();
   var extent = goog.isNull(this.extent_) ?
-      view.getProjection().getExtent() : this.extent_;
-  view.fitExtent(extent, map.getSize());
+      view2D.getProjection().getExtent() : this.extent_;
+  view2D.fitExtent(extent, map.getSize());
 };
