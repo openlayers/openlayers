@@ -402,6 +402,25 @@
  */
 
 /**
+ * @typedef {Object} olx.interaction.SelectOptions
+ * @property {ol.events.ConditionType|undefined} addCondition A conditional
+ *     modifier (e.g. shift key) that determines if the selection is added to
+ *     the current selection. By default, a shift-click adds to the current
+ *     selection.
+ * @property {ol.events.ConditionType|undefined} condition A conditional
+ *     modifier (e.g. shift key) that determines if the interaction is active
+ *     (i.e. selection occurs) or not. By default, a click with no modifier keys
+ *     toggles the selection.
+ * @property {function(ol.layer.Layer): boolean|undefined} layerFilter Filter
+ *     function to restrict selection to a subset of layers.
+ * @property {ol.layer.Layer|undefined} layer Layer. The single layer from which
+ *     features should be selected.
+ * @property {Array.<ol.layer.Layer>|undefined} layers Layers.  Zero or more
+ *     layers from which features should be selected.
+ * @property {ol.render.FeaturesOverlay} featuresOverlay Features overlay.
+ */
+
+/**
  * @typedef {Object} olx.interaction.TouchPanOptions
  * @property {ol.Kinetic|undefined} kinetic Kinetic inertia to apply to the
  *     pan.
