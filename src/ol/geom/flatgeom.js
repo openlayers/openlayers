@@ -310,6 +310,65 @@ ol.geom.flat.lineStringInterpolate =
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
+ * @param {ol.geom.GeometryLayout} layout Layout.
+ * @param {number} m M.
+ * @param {boolean} extrapolate Extrapolate.
+ * @return {ol.Coordinate} Coordinate.
+ */
+ol.geom.flat.lineStringCoordinateAtM =
+    function(flatCoordinates, offset, end, stride, layout, m, extrapolate) {
+  if ((layout != ol.geom.GeometryLayout.XYM &&
+       layout != ol.geom.GeometryLayout.XYZM) ||
+      end == offset) {
+    return null;
+  }
+  var coordinate;
+  if (m < flatCoordinates[offset + stride - 1]) {
+    if (extrapolate) {
+      coordinate = flatCoordinates.slice(offset, offset + stride);
+      coordinate[stride - 1] = m;
+      return coordinate;
+    } else {
+      return null;
+    }
+  } else if (flatCoordinates[end - 1] < m) {
+    if (extrapolate) {
+      coordinate = flatCoordinates.slice(end - stride, end);
+      coordinate[stride - 1] = m;
+      return coordinate;
+    } else {
+      return null;
+    }
+  }
+  // FIXME use O(1) search
+  for (offset += stride; offset < end; offset += stride) {
+    var m1 = flatCoordinates[offset + stride - 1];
+    if (m < m1) {
+      var m0 = flatCoordinates[offset - 1];
+      var t = (m - m0) / (m1 - m0);
+      coordinate = [];
+      var i;
+      for (i = 0; i < stride - 1; ++i) {
+        coordinate.push((1 - t) * flatCoordinates[offset - stride + i] +
+            t * flatCoordinates[offset + i]);
+      }
+      coordinate.push(m);
+      goog.asserts.assert(coordinate.length == stride);
+      return coordinate;
+    } else if (m == m1) {
+      return flatCoordinates.slice(offset, offset + stride);
+    }
+  }
+  goog.asserts.fail();
+  return null;
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
  * @return {number} Length.
  */
 ol.geom.flat.lineStringLength = function(flatCoordinates, offset, end, stride) {
