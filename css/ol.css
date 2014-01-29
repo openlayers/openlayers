@@ -253,14 +253,14 @@ button.ol-full-screen-true:after {
   position: absolute;
   display: block;
   padding: 0;
-  margin: 2px;
   background: #7b98bc;
   background: rgba(0,60,136,0.5);
+  margin: 3px;
   border-radius: 2px;
   outline: none;
   overflow: hidden;
   height: 20px;
-  width: 24px;
+  width: 22px;
 }
 .ol-touch .ol-zoomslider {
   top: 82px;
