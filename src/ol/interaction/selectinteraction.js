@@ -91,7 +91,7 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
        */
       function() {
         if (add) {
-          map.forEachFeatureAtPixel(mapBrowserEvent.getPixel(),
+          map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
               /**
                * @param {ol.Feature} feature Feature.
                * @param {ol.layer.Layer} layer Layer.
@@ -102,7 +102,7 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
                 }
               }, undefined, this.layerFilter_);
         } else {
-          var feature = map.forEachFeatureAtPixel(mapBrowserEvent.getPixel(),
+          var feature = map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
               /**
                * @param {ol.Feature} feature Feature.
                * @param {ol.layer.Layer} layer Layer.
