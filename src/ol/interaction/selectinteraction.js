@@ -38,12 +38,22 @@ ol.interaction.Select = function(opt_options) {
     layerFilter = options.layerFilter;
   } else if (goog.isDef(options.layer)) {
     var layer = options.layer;
-    layerFilter = function(l) {
+    layerFilter =
+        /**
+         * @param {ol.layer.Layer} l Layer.
+         * @return {boolean} Include.
+         */
+        function(l) {
       return l === layer;
     };
   } else if (goog.isDef(options.layers)) {
     var layers = options.layers;
-    layerFilter = function(layer) {
+    layerFilter =
+        /**
+         * @param {ol.layer.Layer} layer Layer.
+         * @return {boolean} Include.
+         */
+        function(layer) {
       return goog.array.indexOf(layers, layer) != -1;
     };
   } else {
@@ -102,6 +112,7 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
                 }
               }, undefined, this.layerFilter_);
         } else {
+          /** @type {ol.Feature|undefined} */
           var feature = map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
               /**
                * @param {ol.Feature} feature Feature.
