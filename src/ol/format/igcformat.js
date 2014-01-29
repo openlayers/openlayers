@@ -94,7 +94,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text) {
   var properties = {};
   var flatCoordinates = [];
   var year = 2000;
-  var month = 1;
+  var month = 0;
   var day = 1;
   var i, ii;
   for (i = 0, ii = lines.length; i < ii; ++i) {
@@ -134,7 +134,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text) {
       m = ol.format.IGC.HFDTE_RECORD_RE_.exec(line);
       if (m) {
         day = parseInt(m[1], 10);
-        month = parseInt(m[2], 10);
+        month = parseInt(m[2], 10) - 1;
         year = 2000 + parseInt(m[3], 10);
       } else {
         m = ol.format.IGC.H_RECORD_RE_.exec(line);

@@ -2,39 +2,50 @@ goog.provide('ol.geom.flat');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.math');
 goog.require('goog.vec.Mat4');
 
 
 /**
- * Returns the point on the line segment (x1, y1) to (x2, y2) that is closest to
- * the point (x, y).
+ * Returns the point on the 2D line segment flatCoordinates[offset1] to
+ * flatCoordinates[offset2] that is closest to the point (x, y).  Extra
+ * dimensions are linearly interpolated.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset1 Offset 1.
+ * @param {number} offset2 Offset 2.
+ * @param {number} stride Stride.
  * @param {number} x X.
  * @param {number} y Y.
- * @param {number} x1 X1.
- * @param {number} y1 Y1.
- * @param {number} x2 X2.
- * @param {number} y2 Y2.
  * @param {Array.<number>} closestPoint Closest point.
  */
-ol.geom.flat.closestPoint = function(x, y, x1, y1, x2, y2, closestPoint) {
-  var dx = x2 - x1;
-  var dy = y2 - y1;
+ol.geom.flat.closestPoint =
+    function(flatCoordinates, offset1, offset2, stride, x, y, closestPoint) {
+  var x1 = flatCoordinates[offset1];
+  var y1 = flatCoordinates[offset1 + 1];
+  var dx = flatCoordinates[offset2] - x1;
+  var dy = flatCoordinates[offset2 + 1] - y1;
+  var i, offset;
   if (dx === 0 && dy === 0) {
-    closestPoint[0] = x1;
-    closestPoint[1] = y1;
+    offset = offset1;
   } else {
     var t = ((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy);
     if (t > 1) {
-      closestPoint[0] = x2;
-      closestPoint[1] = y2;
+      offset = offset2;
     } else if (t > 0) {
-      closestPoint[0] = x1 + dx * t;
-      closestPoint[1] = y1 + dy * t;
+      for (i = 0; i < stride; ++i) {
+        closestPoint[i] = goog.math.lerp(flatCoordinates[offset1 + i],
+            flatCoordinates[offset2 + i], t);
+      }
+      closestPoint.length = stride;
+      return;
     } else {
-      closestPoint[0] = x1;
-      closestPoint[1] = y1;
+      offset = offset1;
     }
   }
+  for (i = 0; i < stride; ++i) {
+    closestPoint[i] = flatCoordinates[offset + i];
+  }
+  closestPoint.length = stride;
 };
 
 

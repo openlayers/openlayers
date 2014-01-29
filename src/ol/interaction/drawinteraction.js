@@ -75,11 +75,11 @@ ol.interaction.Draw = function(opt_options) {
   goog.base(this);
 
   /**
-   * Target layer for drawn features.
-   * @type {ol.layer.Vector}
+   * Target source for drawn features.
+   * @type {ol.source.Vector}
    * @private
    */
-  this.layer_ = goog.isDef(opt_options.layer) ? opt_options.layer : null;
+  this.source_ = goog.isDef(opt_options.source) ? opt_options.source : null;
 
   /**
    * Pixel distance for snapping.
@@ -467,10 +467,8 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
     sketchFeature.setGeometry(new ol.geom.MultiPolygon([coordinates]));
   }
 
-  if (!goog.isNull(this.layer_)) {
-    var vectorSource = this.layer_.getSource();
-    goog.asserts.assertInstanceof(vectorSource, ol.source.Vector);
-    vectorSource.addFeature(sketchFeature);
+  if (!goog.isNull(this.source_)) {
+    this.source_.addFeature(sketchFeature);
   }
   this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWEND,
       this.sketchFeature_));

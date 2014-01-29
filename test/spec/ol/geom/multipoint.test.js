@@ -154,6 +154,15 @@ describe('ol.geom.MultiPoint', function() {
       expect(multiPoint.getStride()).to.be(4);
     });
 
+    describe('#getClosestPoint', function() {
+
+      it('preserves extra dimensions', function() {
+        var closestPoint = multiPoint.getClosestPoint([6, 6]);
+        expect(closestPoint).to.eql([5, 6, 7, 8]);
+      });
+
+    });
+
   });
 
 });

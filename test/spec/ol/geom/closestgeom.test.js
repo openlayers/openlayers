@@ -113,6 +113,33 @@ describe('ol.geom.closest', function() {
 
   });
 
+  describe('with multi-dimensional data', function() {
+
+    var flatCoordinates = [0, 0, 10, -10, 2, 2, 30, -20];
+    var stride = 4;
+
+    describe('ol.geom.closest.getClosestPoint', function() {
+
+      it('interpolates M coordinates', function() {
+        var maxDelta = Math.sqrt(ol.geom.closest.getMaxSquaredDelta(
+            flatCoordinates, 0, flatCoordinates.length, stride, 0));
+        expect(maxDelta).to.roughlyEqual(Math.sqrt(8), 1e-9);
+        var closestPoint = [NaN, NaN];
+        expect(ol.geom.closest.getClosestPoint(
+            flatCoordinates, 0, flatCoordinates.length, stride,
+            maxDelta, false, 1, 1, closestPoint, Infinity)).
+            to.roughlyEqual(0, 1e-9);
+        expect(closestPoint).to.have.length(stride);
+        expect(closestPoint[0]).to.be(1);
+        expect(closestPoint[1]).to.be(1);
+        expect(closestPoint[2]).to.be(20);
+        expect(closestPoint[3]).to.be(-15);
+      });
+
+    });
+
+  });
+
 });
 
 

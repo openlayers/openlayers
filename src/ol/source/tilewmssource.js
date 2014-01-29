@@ -1,5 +1,6 @@
 // FIXME add minZoom support
 // FIXME add date line wrap (tile coord transform)
+// FIXME cannot be shared between maps with different projections
 
 goog.provide('ol.source.TileWMS');
 
@@ -69,6 +70,12 @@ ol.source.TileWMS = function(opt_options) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.pixelRatio_ = NaN;
+
+  /**
+   * @private
    * @type {boolean}
    */
   this.v13_ = true;
@@ -105,6 +112,79 @@ goog.inherits(ol.source.TileWMS, ol.source.TileImage);
 
 
 /**
+ * Return the GetFeatureInfo URL for the passed coordinate, resolution, and
+ * projection. Return `undefined` if the GetFeatureInfo URL cannot be
+ * constructed.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} resolution Resolution.
+ * @param {ol.proj.Projection} projection Projection.
+ * @param {!Object} params GetFeatureInfo params. `INFO_FORMAT` at least should
+ *     be provided. If `QUERY_LAYERS` is not provided then the layers specified
+ *     in the `LAYERS` parameter will be used. `VERSION` should not be
+ *     specified here.
+ * @return {string|undefined} GetFeatureInfo URL.
+ */
+ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
+    function(coordinate, resolution, projection, params) {
+
+  goog.asserts.assert(!('VERSION' in params));
+
+  var pixelRatio = this.pixelRatio_;
+  if (isNaN(this.pixelRatio_)) {
+    return undefined;
+  }
+
+  var tileGrid = this.getTileGrid();
+  if (goog.isNull(tileGrid)) {
+    tileGrid = this.getTileGridForProjection(projection);
+  }
+
+  var tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+      coordinate, resolution);
+
+  if (tileGrid.getResolutions().length <= tileCoord.z) {
+    return undefined;
+  }
+
+  var tileResolution = tileGrid.getResolution(tileCoord.z);
+  var tileExtent = tileGrid.getTileCoordExtent(
+      tileCoord, this.tmpExtent_);
+  var tileSize = tileGrid.getTileSize(tileCoord.z);
+
+  var gutter = this.gutter_;
+  if (gutter !== 0) {
+    tileSize += 2 * gutter;
+    tileExtent = ol.extent.buffer(tileExtent,
+        tileResolution * gutter, tileExtent);
+  }
+  if (pixelRatio != 1) {
+    tileSize = (tileSize * pixelRatio + 0.5) | 0;
+  }
+
+  var baseParams = {
+    'SERVICE': 'WMS',
+    'VERSION': ol.source.wms.DEFAULT_VERSION,
+    'REQUEST': 'GetFeatureInfo',
+    'FORMAT': 'image/png',
+    'TRANSPARENT': true,
+    'QUERY_LAYERS': goog.object.get(this.params_, 'LAYERS')
+  };
+  goog.object.extend(baseParams, this.params_, params);
+
+  var x = Math.floor((coordinate[0] - tileExtent[0]) /
+      (tileResolution / pixelRatio));
+  var y = Math.floor((tileExtent[3] - coordinate[1]) /
+      (tileResolution / pixelRatio));
+
+  goog.object.set(baseParams, this.v13_ ? 'I' : 'X', x);
+  goog.object.set(baseParams, this.v13_ ? 'J' : 'Y', y);
+
+  return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
+      pixelRatio, projection, baseParams);
+};
+
+
+/**
  * @inheritDoc
  */
 ol.source.TileWMS.prototype.getGutter = function() {
@@ -128,6 +208,76 @@ ol.source.TileWMS.prototype.getKeyZXY = function(z, x, y) {
  */
 ol.source.TileWMS.prototype.getParams = function() {
   return this.params_;
+};
+
+
+/**
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {number} tileSize Tile size.
+ * @param {ol.Extent} tileExtent Tile extent.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {ol.proj.Projection} projection Projection.
+ * @param {Object} params Params.
+ * @return {string|undefined} Request URL.
+ * @private
+ */
+ol.source.TileWMS.prototype.getRequestUrl_ =
+    function(tileCoord, tileSize, tileExtent,
+        pixelRatio, projection, params) {
+
+  var urls = this.urls_;
+  if (!goog.isDef(urls) || goog.array.isEmpty(urls)) {
+    return undefined;
+  }
+
+  goog.object.set(params, 'WIDTH', tileSize);
+  goog.object.set(params, 'HEIGHT', tileSize);
+
+  params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
+
+  if (!('STYLES' in this.params_)) {
+    goog.object.set(params, 'STYLES', new String(''));
+  }
+
+  if (pixelRatio != 1) {
+    switch (this.serverType_) {
+      case ol.source.wms.ServerType.GEOSERVER:
+        var dpi = (90 * pixelRatio + 0.5) | 0;
+        goog.object.set(params, 'FORMAT_OPTIONS', 'dpi:' + dpi);
+        break;
+      case ol.source.wms.ServerType.MAPSERVER:
+        goog.object.set(params, 'MAP_RESOLUTION', 90 * pixelRatio);
+        break;
+      case ol.source.wms.ServerType.QGIS:
+        goog.object.set(params, 'DPI', 90 * pixelRatio);
+        break;
+      default:
+        goog.asserts.fail();
+        break;
+    }
+  }
+
+  var axisOrientation = projection.getAxisOrientation();
+  var bbox = tileExtent;
+  if (this.v13_ && axisOrientation.substr(0, 2) == 'ne') {
+    var tmp;
+    tmp = tileExtent[0];
+    bbox[0] = tileExtent[1];
+    bbox[1] = tmp;
+    tmp = tileExtent[2];
+    bbox[2] = tileExtent[3];
+    bbox[3] = tmp;
+  }
+  goog.object.set(params, 'BBOX', bbox.join(','));
+
+  var url;
+  if (urls.length == 1) {
+    url = urls[0];
+  } else {
+    var index = goog.math.modulo(tileCoord.hash(), this.urls_.length);
+    url = urls[index];
+  }
+  return goog.uri.utils.appendParamsFromMap(url, params);
 };
 
 
@@ -165,16 +315,11 @@ ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
- * @private
  * @return {string|undefined} Tile URL.
+ * @private
  */
 ol.source.TileWMS.prototype.tileUrlFunction_ =
     function(tileCoord, pixelRatio, projection) {
-
-  var urls = this.urls_;
-  if (!goog.isDef(urls) || goog.array.isEmpty(urls)) {
-    return undefined;
-  }
 
   var tileGrid = this.getTileGrid();
   if (goog.isNull(tileGrid)) {
@@ -185,80 +330,37 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
     return undefined;
   }
 
-  var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
+  var tileResolution = tileGrid.getResolution(tileCoord.z);
+  var tileExtent = tileGrid.getTileCoordExtent(
+      tileCoord, this.tmpExtent_);
+  var tileSize = tileGrid.getTileSize(tileCoord.z);
 
-  var params = {
+  var gutter = this.gutter_;
+  if (gutter !== 0) {
+    tileSize += 2 * gutter;
+    tileExtent = ol.extent.buffer(tileExtent,
+        tileResolution * gutter, tileExtent);
+  }
+  if (pixelRatio != 1) {
+    tileSize = (tileSize * pixelRatio + 0.5) | 0;
+  }
+
+  var baseParams = {
     'SERVICE': 'WMS',
     'VERSION': ol.source.wms.DEFAULT_VERSION,
     'REQUEST': 'GetMap',
     'FORMAT': 'image/png',
     'TRANSPARENT': true
   };
-  goog.object.extend(params, this.params_);
+  goog.object.extend(baseParams, this.params_);
 
-  var tileResolution = tileGrid.getResolution(tileCoord.z);
   if (pixelRatio != 1 && (!this.hidpi_ || !goog.isDef(this.serverType_))) {
     pixelRatio = 1;
   }
-  var tileSize = tileGrid.getTileSize(tileCoord.z);
-  var gutter = this.gutter_;
-  if (gutter !== 0) {
-    tileSize += 2 * gutter;
-    tileExtent =
-        ol.extent.buffer(tileExtent, tileResolution * gutter, this.tmpExtent_);
-  }
-  if (pixelRatio != 1) {
-    tileSize = (tileSize * pixelRatio + 0.5) | 0;
-  }
-  goog.object.set(params, 'WIDTH', tileSize);
-  goog.object.set(params, 'HEIGHT', tileSize);
+  this.pixelRatio_ = pixelRatio;
 
-  params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
-
-  if (!('STYLES' in this.params_)) {
-    goog.object.set(params, 'STYLES', new String(''));
-  }
-
-  if (pixelRatio != 1) {
-    switch (this.serverType_) {
-      case ol.source.wms.ServerType.GEOSERVER:
-        var dpi = (90 * pixelRatio + 0.5) | 0;
-        goog.object.set(params, 'FORMAT_OPTIONS', 'dpi:' + dpi);
-        break;
-      case ol.source.wms.ServerType.MAPSERVER:
-        goog.object.set(params, 'MAP_RESOLUTION', 90 * pixelRatio);
-        break;
-      case ol.source.wms.ServerType.QGIS:
-        goog.object.set(params, 'DPI', 90 * pixelRatio);
-        break;
-      default:
-        goog.asserts.fail();
-        break;
-    }
-  }
-
-  var axisOrientation = projection.getAxisOrientation();
-  var bbox;
-  if (this.v13_ && axisOrientation.substr(0, 2) == 'ne') {
-    bbox = this.tmpExtent_;
-    bbox[0] = tileExtent[1];
-    bbox[1] = tileExtent[0];
-    bbox[2] = tileExtent[3];
-    bbox[3] = tileExtent[2];
-  } else {
-    bbox = tileExtent;
-  }
-  goog.object.set(params, 'BBOX', bbox.join(','));
-
-  var url;
-  if (urls.length == 1) {
-    url = urls[0];
-  } else {
-    var index = goog.math.modulo(tileCoord.hash(), this.urls_.length);
-    url = urls[index];
-  }
-  return goog.uri.utils.appendParamsFromMap(url, params);
-
+  return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
+      pixelRatio, projection, baseParams);
 };
 
 
