@@ -235,9 +235,13 @@ ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
 
   // listen for change:targetkey events
   var eventType = ol.Object.getChangeEventType(targetKey);
-  this.listeners_[key] = goog.events.listen(target, eventType, function() {
-    this.notifyInternal_(key);
-  }, undefined, this);
+  this.listeners_[key] = goog.events.listen(target, eventType,
+      /**
+       * @this {ol.Object}
+       */
+      function() {
+        this.notifyInternal_(key);
+      }, undefined, this);
 
   // listen for beforechange events and relay if key matches
   this.beforeChangeListeners_[key] = goog.events.listen(target,
