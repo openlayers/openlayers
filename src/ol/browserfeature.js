@@ -36,6 +36,12 @@ ol.ENABLE_TILE = true;
 
 
 /**
+ * @define {boolean} Whether to enable rendering of vector layers.
+ */
+ol.ENABLE_VECTOR = true;
+
+
+/**
  * @define {boolean} Whether to enable WebGL.
  */
 ol.ENABLE_WEBGL = true;
