@@ -419,8 +419,12 @@ ol.View2D.prototype.fitExtent = function(extent, size) {
   if (!ol.extent.isEmpty(extent)) {
     this.setCenter(ol.extent.getCenter(extent));
     var resolution = this.getResolutionForExtent(extent, size);
-    resolution = this.constrainResolution(resolution, 0, 0);
-    this.setResolution(resolution);
+    var constrainedResolution = this.constrainResolution(resolution, 0, 0);
+    if (constrainedResolution < resolution) {
+      constrainedResolution =
+          this.constrainResolution(constrainedResolution, -1, 0);
+    }
+    this.setResolution(constrainedResolution);
   }
 };
 
@@ -569,6 +573,21 @@ ol.View2D.createResolutionConstraint_ = function(options) {
  * @return {ol.RotationConstraintType} Rotation constraint.
  */
 ol.View2D.createRotationConstraint_ = function(options) {
-  // FIXME rotation constraint is not configurable at the moment
-  return ol.RotationConstraint.createSnapToZero();
+  var enableRotation = goog.isDef(options.enableRotation) ?
+      options.enableRotation : true;
+  if (enableRotation) {
+    var constrainRotation = options.constrainRotation;
+    if (!goog.isDef(constrainRotation) || constrainRotation === true) {
+      return ol.RotationConstraint.createSnapToZero();
+    } else if (constrainRotation === false) {
+      return ol.RotationConstraint.none;
+    } else if (goog.isNumber(constrainRotation)) {
+      return ol.RotationConstraint.createSnapToN(constrainRotation);
+    } else {
+      goog.asserts.fail();
+      return ol.RotationConstraint.none;
+    }
+  } else {
+    return ol.RotationConstraint.disable;
+  }
 };

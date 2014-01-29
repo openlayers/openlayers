@@ -31,7 +31,7 @@ var map = new ol.Map({
 /**
  * Load the topojson data and create an ol.layer.Image for that data.
  */
-d3.json('data/us.json', function(error, us) {
+d3.json('data/topojson/us.json', function(error, us) {
   var features = topojson.feature(us, us.objects.counties);
 
   /**

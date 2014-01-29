@@ -342,6 +342,7 @@ ol.source.Vector.prototype.removeFeatureInternal = function(feature) {
 /**
  * @constructor
  * @extends {goog.events.Event}
+ * @implements {oli.source.VectorEvent}
  * @param {string} type Type.
  * @param {ol.Feature=} opt_feature Feature.
  */
@@ -350,18 +351,9 @@ ol.source.VectorEvent = function(type, opt_feature) {
   goog.base(this, type);
 
   /**
-   * @private
    * @type {ol.Feature|undefined}
    */
-  this.feature_ = opt_feature;
+  this.feature = opt_feature;
 
 };
 goog.inherits(ol.source.VectorEvent, goog.events.Event);
-
-
-/**
- * @return {ol.Feature|undefined} Feature.
- */
-ol.source.VectorEvent.prototype.getFeature = function() {
-  return this.feature_;
-};

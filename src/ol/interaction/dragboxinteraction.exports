@@ -1,5 +1,4 @@
 @exportSymbol ol.interaction.DragBox
 @exportProperty ol.interaction.DragBox.prototype.getGeometry
 
-@exportSymbol ol.DragBoxEvent
 @exportProperty ol.DragBoxEvent.prototype.getCoordinate

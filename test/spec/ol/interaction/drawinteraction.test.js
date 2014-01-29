@@ -298,10 +298,10 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('click', 30, 20);
 
       // third point
-      simulateEvent('mousemove', 30, 10);
-      simulateEvent('mousedown', 30, 10);
-      simulateEvent('mouseup', 30, 10);
-      simulateEvent('click', 30, 10);
+      simulateEvent('mousemove', 40, 10);
+      simulateEvent('mousedown', 40, 10);
+      simulateEvent('mouseup', 40, 10);
+      simulateEvent('click', 40, 10);
 
       // finish on first point
       simulateEvent('mousemove', 10, 20);
@@ -314,9 +314,42 @@ describe('ol.interaction.Draw', function() {
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.Polygon);
 
-      // note that order is forced clockwise (despite drawing counter-clockwise)
       expect(geometry.getCoordinates()).to.eql([
-        [[10, -20], [30, -10], [30, -20], [10, -20]]
+        [[10, -20], [30, -20], [40, -10], [10, -20]]
+      ]);
+    });
+
+    it('draws polygon with clicks, finishing on last point', function() {
+      // first point
+      simulateEvent('mousemove', 10, 20);
+      simulateEvent('mousedown', 10, 20);
+      simulateEvent('mouseup', 10, 20);
+      simulateEvent('click', 10, 20);
+
+      // second point
+      simulateEvent('mousemove', 30, 20);
+      simulateEvent('mousedown', 30, 20);
+      simulateEvent('mouseup', 30, 20);
+      simulateEvent('click', 30, 20);
+
+      // third point
+      simulateEvent('mousemove', 40, 10);
+      simulateEvent('mousedown', 40, 10);
+      simulateEvent('mouseup', 40, 10);
+      simulateEvent('click', 40, 10);
+
+      // finish on last point
+      simulateEvent('mousedown', 40, 10);
+      simulateEvent('mouseup', 40, 10);
+      simulateEvent('click', 40, 11);
+
+      var features = source.getAllFeatures();
+      expect(features).to.have.length(1);
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.Polygon);
+
+      expect(geometry.getCoordinates()).to.eql([
+        [[10, -20], [30, -20], [40, -10], [10, -20]]
       ]);
     });
 
@@ -379,10 +412,10 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('click', 30, 20);
 
       // third point
-      simulateEvent('mousemove', 30, 10);
-      simulateEvent('mousedown', 30, 10);
-      simulateEvent('mouseup', 30, 10);
-      simulateEvent('click', 30, 10);
+      simulateEvent('mousemove', 40, 10);
+      simulateEvent('mousedown', 40, 10);
+      simulateEvent('mouseup', 40, 10);
+      simulateEvent('click', 40, 10);
 
       // finish on first point
       simulateEvent('mousemove', 10, 20);
@@ -397,9 +430,44 @@ describe('ol.interaction.Draw', function() {
       var coordinates = geometry.getCoordinates();
       expect(coordinates).to.have.length(1);
 
-      // note that order is forced clockwise (despite drawing counter-clockwise)
       expect(coordinates[0]).to.eql([
-        [[10, -20], [30, -10], [30, -20], [10, -20]]
+        [[10, -20], [30, -20], [40, -10], [10, -20]]
+      ]);
+    });
+
+    it('draws multi with clicks, finishing on last point', function() {
+      // first point
+      simulateEvent('mousemove', 10, 20);
+      simulateEvent('mousedown', 10, 20);
+      simulateEvent('mouseup', 10, 20);
+      simulateEvent('click', 10, 20);
+
+      // second point
+      simulateEvent('mousemove', 30, 20);
+      simulateEvent('mousedown', 30, 20);
+      simulateEvent('mouseup', 30, 20);
+      simulateEvent('click', 30, 20);
+
+      // third point
+      simulateEvent('mousemove', 40, 10);
+      simulateEvent('mousedown', 40, 10);
+      simulateEvent('mouseup', 40, 10);
+      simulateEvent('click', 40, 10);
+
+      // finish on last point
+      simulateEvent('mousedown', 40, 10);
+      simulateEvent('mouseup', 40, 10);
+      simulateEvent('click', 40, 10);
+
+      var features = source.getAllFeatures();
+      expect(features).to.have.length(1);
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.MultiPolygon);
+      var coordinates = geometry.getCoordinates();
+      expect(coordinates).to.have.length(1);
+
+      expect(coordinates[0]).to.eql([
+        [[10, -20], [30, -20], [40, -10], [10, -20]]
       ]);
     });
 

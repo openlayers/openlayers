@@ -26,30 +26,22 @@ ol.CollectionEventType = {
 /**
  * @constructor
  * @extends {goog.events.Event}
+ * @implements {oli.CollectionEvent}
  * @param {ol.CollectionEventType} type Type.
- * @param {*=} opt_elem Element.
+ * @param {*=} opt_element Element.
  * @param {Object=} opt_target Target.
  */
-ol.CollectionEvent = function(type, opt_elem, opt_target) {
+ol.CollectionEvent = function(type, opt_element, opt_target) {
 
   goog.base(this, type, opt_target);
 
   /**
-   * @private
    * @type {*}
    */
-  this.elem_ = opt_elem;
+  this.element = opt_element;
 
 };
 goog.inherits(ol.CollectionEvent, goog.events.Event);
-
-
-/**
- * @return {*} The element to which this event pertains.
- */
-ol.CollectionEvent.prototype.getElement = function() {
-  return this.elem_;
-};
 
 
 /**

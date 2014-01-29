@@ -6,16 +6,21 @@ describe('ol.MapBrowserEventHandler', function() {
     var handler;
     var singleclickSpy;
     var dblclickSpy;
+    var target;
 
     beforeEach(function() {
       clock = sinon.useFakeTimers();
-      handler = new ol.MapBrowserEventHandler(new ol.Map({}));
+      target = goog.dom.createElement(goog.dom.TagName.DIV);
+      handler = new ol.MapBrowserEventHandler(new ol.Map({
+        target: target
+      }));
 
       singleclickSpy = sinon.spy();
       goog.events.listen(handler, 'singleclick', singleclickSpy);
 
       dblclickSpy = sinon.spy();
       goog.events.listen(handler, 'dblclick', dblclickSpy);
+
     });
 
     afterEach(function() {
@@ -23,7 +28,12 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('emulates click', function() {
-      handler.emulateClick_();
+      handler.emulateClick_(new goog.events.BrowserEvent({
+        type: 'mousedown',
+        target: target,
+        clientX: 0,
+        clientY: 0
+      }));
       expect(singleclickSpy.called).to.not.be.ok();
       expect(dblclickSpy.called).to.not.be.ok();
 
@@ -31,17 +41,32 @@ describe('ol.MapBrowserEventHandler', function() {
       expect(singleclickSpy.calledOnce).to.be.ok();
       expect(dblclickSpy.called).to.not.be.ok();
 
-      handler.emulateClick_();
+      handler.emulateClick_(new goog.events.BrowserEvent({
+        type: 'mousedown',
+        target: target,
+        clientX: 0,
+        clientY: 0
+      }));
       expect(singleclickSpy.calledOnce).to.be.ok();
       expect(dblclickSpy.called).to.not.be.ok();
     });
 
     it('emulates dblclick', function() {
-      handler.emulateClick_();
+      handler.emulateClick_({
+        type: 'mousedown',
+        target: target,
+        clientX: 0,
+        clientY: 0
+      });
       expect(singleclickSpy.called).to.not.be.ok();
       expect(dblclickSpy.called).to.not.be.ok();
 
-      handler.emulateClick_();
+      handler.emulateClick_(new goog.events.BrowserEvent({
+        type: 'mousedown',
+        target: target,
+        clientX: 0,
+        clientY: 0
+      }));
       expect(singleclickSpy.called).to.not.be.ok();
       expect(dblclickSpy.calledOnce).to.be.ok();
 
@@ -84,6 +109,8 @@ describe('ol.MapBrowserEventHandler', function() {
   });
 });
 
+goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('ol.Map');

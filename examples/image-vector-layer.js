@@ -30,7 +30,7 @@ var map = new ol.Map({
     new ol.layer.Image({
       source: new ol.source.ImageVector({
         source: new ol.source.GeoJSON({
-          url: 'data/countries.geojson'
+          url: 'data/geojson/countries.geojson'
         }),
         styleFunction: function(feature, resolution) {
           return styleArray;
@@ -95,6 +95,5 @@ $(map.getViewport()).on('mousemove', function(evt) {
 });
 
 map.on('singleclick', function(evt) {
-  var pixel = evt.getPixel();
-  displayFeatureInfo(pixel);
+  displayFeatureInfo(evt.pixel);
 });

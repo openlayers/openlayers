@@ -1,5 +1,5 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
+goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.format.GPX');
 goog.require('ol.format.GeoJSON');
@@ -8,9 +8,10 @@ goog.require('ol.format.KML');
 goog.require('ol.format.TopoJSON');
 goog.require('ol.interaction');
 goog.require('ol.interaction.DragAndDrop');
+goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
 goog.require('ol.source.BingMaps');
+goog.require('ol.source.ImageVector');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
@@ -104,7 +105,7 @@ var map = new ol.Map({
       })
     })
   ],
-  renderer: ol.RendererHint.CANVAS,
+  renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],
@@ -117,9 +118,11 @@ dragAndDropInteraction.on('addfeatures', function(event) {
     features: event.features,
     projection: event.projection
   });
-  map.getLayers().push(new ol.layer.Vector({
-    source: vectorSource,
-    styleFunction: styleFunction
+  map.getLayers().push(new ol.layer.Image({
+    source: new ol.source.ImageVector({
+      source: vectorSource,
+      styleFunction: styleFunction
+    })
   }));
   var view2D = map.getView().getView2D();
   view2D.fitExtent(vectorSource.getExtent(), map.getSize());

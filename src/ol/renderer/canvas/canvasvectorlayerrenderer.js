@@ -222,9 +222,10 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
        * @param {ol.Feature} feature Feature.
        */
       function(feature) {
-        this.dirty_ = this.dirty_ ||
+        var dirty =
             this.renderFeature(feature, frameStateResolution, pixelRatio,
                 styleFunction, replayGroup);
+        this.dirty_ = this.dirty_ || dirty;
       }, this);
   replayGroup.finish();
 

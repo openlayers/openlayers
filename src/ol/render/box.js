@@ -100,7 +100,7 @@ ol.render.Box.prototype.handleMapPostCompose_ = function(event) {
   var style = this.style_;
   goog.asserts.assert(!goog.isNull(style));
   // use drawAsync(Infinity) to draw above everything
-  event.getRender().drawAsync(Infinity, function(render) {
+  event.render.drawAsync(Infinity, function(render) {
     render.setFillStrokeStyle(style.getFill(), style.getStroke());
     render.drawPolygonGeometry(geometry, null);
   });

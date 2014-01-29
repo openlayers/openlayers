@@ -74,23 +74,8 @@ ol.source.Source = function(options) {
   this.state_ = goog.isDef(options.state) ?
       options.state : ol.source.State.READY;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.revision_ = 0;
-
 };
 goog.inherits(ol.source.Source, ol.Observable);
-
-
-/**
- * @protected
- */
-ol.source.Source.prototype.dispatchChangeEvent = function() {
-  ++this.revision_;
-  this.dispatchEvent(goog.events.EventType.CHANGE);
-};
 
 
 /**
@@ -142,14 +127,6 @@ ol.source.Source.prototype.getProjection = function() {
  * @return {Array.<number>|undefined} Resolutions.
  */
 ol.source.Source.prototype.getResolutions = goog.abstractMethod;
-
-
-/**
- * @return {number} Revision.
- */
-ol.source.Source.prototype.getRevision = function() {
-  return this.revision_;
-};
 
 
 /**

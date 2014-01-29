@@ -26,11 +26,10 @@ var track = new ol.dom.Input(document.getElementById('track'));
 track.bindTo('checked', deviceOrientation, 'tracking');
 
 deviceOrientation.on('propertychange', function(event) {
-  // event.getKey() is the changed property name
-  var key = event.getKey();
-  var element = document.getElementById(key);
+  // event.key is the changed property name
+  var element = document.getElementById(event.key);
   if (element) {
-    element.innerHTML = deviceOrientation.get(key);
+    element.innerHTML = deviceOrientation.get(event.key);
   }
 });
 

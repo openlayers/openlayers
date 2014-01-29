@@ -1,18 +1,18 @@
 // FIXME should handle all geo-referenced data, not just vector data
 
 goog.provide('ol.interaction.DragAndDrop');
+goog.provide('ol.interaction.DragAndDropEvent');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
+goog.require('goog.events.Event');
 goog.require('goog.events.FileDropHandler');
 goog.require('goog.events.FileDropHandler.EventType');
 goog.require('goog.fs.FileReader');
 goog.require('goog.functions');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.layer.Vector');
 goog.require('ol.proj');
-goog.require('ol.source.Vector');
 
 
 
@@ -29,12 +29,6 @@ ol.interaction.DragAndDrop = function(opt_options) {
 
   /**
    * @private
-   * @type {boolean}
-   */
-  this.fitView_ = goog.isDef(options.fitView) ? options.fitView : true;
-
-  /**
-   * @private
    * @type {Array.<function(new: ol.format.Format)>}
    */
   this.formatConstructors_ = goog.isDef(options.formatConstructors) ?
@@ -42,21 +36,10 @@ ol.interaction.DragAndDrop = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.source.Vector}
+   * @type {ol.proj.Projection}
    */
-  this.source_ = goog.isDef(options.source) ? options.source : null;
-
-  /**
-   * @private
-   * @type {ol.layer.Vector}
-   */
-  this.layer_ = goog.isDef(options.layer) ? options.layer : null;
-
-  /**
-   * @private
-   * @type {ol.feature.StyleFunction|undefined}
-   */
-  this.styleFunction_ = options.styleFunction;
+  this.reprojectTo_ = goog.isDef(options.reprojectTo) ?
+      ol.proj.get(options.reprojectTo) : null;
 
   /**
    * @private
@@ -108,16 +91,12 @@ ol.interaction.DragAndDrop.prototype.handleDrop_ = function(event) {
 ol.interaction.DragAndDrop.prototype.handleResult_ = function(result) {
   var map = this.getMap();
   goog.asserts.assert(!goog.isNull(map));
-  var view = map.getView();
-  goog.asserts.assert(goog.isDef(view));
-  var view2D = view.getView2D();
-  var targetProjection;
-  if (!goog.isNull(this.source_)) {
-    targetProjection = this.source_.getProjection();
-  } else if (!goog.isNull(this.layer_)) {
-    targetProjection = this.layer_.getSource().getProjection();
-  } else {
-    targetProjection = view2D.getProjection();
+  var projection = this.reprojectTo_;
+  if (goog.isNull(projection)) {
+    var view = map.getView();
+    goog.asserts.assert(goog.isDef(view));
+    projection = view.getView2D().getProjection();
+    goog.asserts.assert(goog.isDef(projection));
   }
   var formatConstructors = this.formatConstructors_;
   var features = [];
@@ -128,7 +107,7 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(result) {
     var readFeatures = this.tryReadFeatures_(format, result);
     if (!goog.isNull(readFeatures)) {
       var featureProjection = format.readProjection(result);
-      var transform = ol.proj.getTransform(featureProjection, targetProjection);
+      var transform = ol.proj.getTransform(featureProjection, projection);
       var j, jj;
       for (j = 0, jj = readFeatures.length; j < jj; ++j) {
         var feature = readFeatures[j];
@@ -140,29 +119,10 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(result) {
       }
     }
   }
-  if (features.length > 0) {
-    var source;
-    if (!goog.isNull(this.source_)) {
-      source = this.source_;
-    } else if (!goog.isNull(this.layer_)) {
-      source = this.layer_.getSource();
-      goog.asserts.assertInstanceof(source, ol.source.Vector);
-    } else {
-      source = new ol.source.Vector();
-    }
-    for (i = 0, ii = features.length; i < ii; ++i) {
-      source.addFeature(features[i]);
-    }
-    if (goog.isNull(this.layer_)) {
-      map.getLayers().push(new ol.layer.Vector({
-        styleFunction: this.styleFunction_,
-        source: source
-      }));
-    }
-    if (this.fitView_) {
-      view2D.fitExtent(source.getExtent(), map.getSize());
-    }
-  }
+  this.dispatchEvent(
+      new ol.interaction.DragAndDropEvent(
+          ol.interaction.DragAndDropEventType.ADD_FEATURES, this, features,
+          projection));
 };
 
 
@@ -209,3 +169,40 @@ ol.interaction.DragAndDrop.prototype.tryReadFeatures_ = function(format, text) {
     return null;
   }
 };
+
+
+/**
+ * @enum {string}
+ */
+ol.interaction.DragAndDropEventType = {
+  ADD_FEATURES: 'addfeatures'
+};
+
+
+
+/**
+ * @constructor
+ * @extends {goog.events.Event}
+ * @implements {oli.interaction.DragAndDropEvent}
+ * @param {ol.interaction.DragAndDropEventType} type Type.
+ * @param {Object=} opt_target Target.
+ * @param {Array.<ol.Feature>=} opt_features Features.
+ * @param {ol.proj.Projection=} opt_projection Projection.
+ */
+ol.interaction.DragAndDropEvent =
+    function(type, opt_target, opt_features, opt_projection) {
+
+  goog.base(this, type, opt_target);
+
+  /**
+   * @type {Array.<ol.Feature>|undefined}
+   */
+  this.features = opt_features;
+
+  /**
+   * @type {ol.proj.Projection|undefined}
+   */
+  this.projection = opt_projection;
+
+};
+goog.inherits(ol.interaction.DragAndDropEvent, goog.events.Event);

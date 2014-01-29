@@ -549,6 +549,51 @@ ol.geom.flat.linearRingsGetInteriorPoint =
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
+ * @param {Array.<number>} ends Ends.
+ * @param {number} stride Stride.
+ * @return {boolean} `true` if all rings are correctly oriented, `false`
+ *     otherwise.
+ */
+ol.geom.flat.linearRingsAreOriented =
+    function(flatCoordinates, offset, ends, stride) {
+  var i, ii;
+  for (i = 0, ii = ends.length; i < ii; ++i) {
+    var end = ends[i];
+    var isClockwise = ol.geom.flat.linearRingIsClockwise(
+        flatCoordinates, offset, end, stride);
+    if (i === 0 ? !isClockwise : isClockwise) {
+      return false;
+    }
+    offset = end;
+  }
+  return true;
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {Array.<Array.<number>>} endss Endss.
+ * @param {number} stride Stride.
+ * @return {boolean} `true` if all rings are correctly oriented, `false`
+ *     otherwise.
+ */
+ol.geom.flat.linearRingssAreOriented =
+    function(flatCoordinates, offset, endss, stride) {
+  var i, ii;
+  for (i = 0, ii = endss.length; i < ii; ++i) {
+    if (!ol.geom.flat.linearRingsAreOriented(
+        flatCoordinates, offset, endss[i], stride)) {
+      return false;
+    }
+  }
+  return true;
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
  * @param {Array.<Array.<number>>} endss Endss.
  * @param {number} stride Stride.
  * @return {number} Area.
