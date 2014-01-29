@@ -159,6 +159,7 @@ ol.geom.Circle.prototype.setCenterAndRadius =
     if (goog.isNull(this.flatCoordinates)) {
       this.flatCoordinates = [];
     }
+    /** @type {Array.<number>} */
     var flatCoordinates = this.flatCoordinates;
     var offset = ol.geom.flat.deflateCoordinate(
         flatCoordinates, 0, center, this.stride);
