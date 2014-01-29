@@ -30,6 +30,12 @@ ol.ENABLE_IMAGE = true;
 
 
 /**
+ * @define {boolean} Whether to enable rendering of tile layers.
+ */
+ol.ENABLE_TILE = true;
+
+
+/**
  * @define {boolean} Whether to enable WebGL.
  */
 ol.ENABLE_WEBGL = true;

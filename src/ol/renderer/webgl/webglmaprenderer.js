@@ -260,7 +260,7 @@ ol.renderer.webgl.Map.prototype.bindTileTexture =
 ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
   if (ol.ENABLE_IMAGE && layer instanceof ol.layer.Image) {
     return new ol.renderer.webgl.ImageLayer(this, layer);
-  } else if (layer instanceof ol.layer.Tile) {
+  } else if (ol.ENABLE_TILE && layer instanceof ol.layer.Tile) {
     return new ol.renderer.webgl.TileLayer(this, layer);
   } else {
     goog.asserts.fail();
