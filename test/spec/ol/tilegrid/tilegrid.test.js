@@ -196,7 +196,7 @@ describe('ol.tilegrid.TileGrid', function() {
       var grid = ol.tilegrid.createForProjection(projection);
       var resolutions = grid.getResolutions();
       expect(resolutions[5]).to.be(
-          360 * ol.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
+          360 * ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
           ol.DEFAULT_TILE_SIZE / Math.pow(2, 5));
     });
 
@@ -645,6 +645,7 @@ describe('ol.tilegrid.TileGrid', function() {
 goog.require('ol.Coordinate');
 goog.require('ol.TileCoord');
 goog.require('ol.proj');
+goog.require('ol.proj.METERS_PER_UNIT');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
 goog.require('ol.tilegrid.TileGrid');
