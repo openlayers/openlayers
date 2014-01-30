@@ -81,7 +81,7 @@ ol.interaction.Touch.isTouchEvent_ = function(mapBrowserEvent) {
 ol.interaction.Touch.prototype.updateTrackedTouches_ =
     function(mapBrowserEvent) {
   if (ol.interaction.Touch.isTouchEvent_(mapBrowserEvent)) {
-    var event = mapBrowserEvent.browserEvent;
+    var event = mapBrowserEvent.originalEvent;
     if (goog.isDef(event.targetTouches)) {
       // W3C touch events
       this.targetTouches = event.targetTouches;
