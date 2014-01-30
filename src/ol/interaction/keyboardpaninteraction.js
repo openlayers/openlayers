@@ -45,7 +45,7 @@ ol.interaction.KeyboardPan = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.delta_ = goog.isDef(options.delta) ? options.delta : 128;
+  this.pixelDelta_ = goog.isDef(options.pixelDelta) ? options.pixelDelta : 128;
 
 };
 goog.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);
@@ -71,7 +71,7 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent =
       var view = map.getView();
       goog.asserts.assertInstanceof(view, ol.View2D);
       var view2DState = view.getView2DState();
-      var mapUnitsDelta = view2DState.resolution * this.delta_;
+      var mapUnitsDelta = view2DState.resolution * this.pixelDelta_;
       var deltaX = 0, deltaY = 0;
       if (keyCode == goog.events.KeyCodes.DOWN) {
         deltaY = -mapUnitsDelta;

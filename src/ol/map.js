@@ -376,6 +376,7 @@ ol.Map = function(options) {
   this.controls_.forEach(
       /**
        * @param {ol.control.Control} control Control.
+       * @this {ol.Map}
        */
       function(control) {
         control.setMap(this);
@@ -384,6 +385,7 @@ ol.Map = function(options) {
   this.interactions_.forEach(
       /**
        * @param {ol.interaction.Interaction} interaction Interaction.
+       * @this {ol.Map}
        */
       function(interaction) {
         interaction.setMap(this);
@@ -392,6 +394,7 @@ ol.Map = function(options) {
   this.overlays_.forEach(
       /**
        * @param {ol.Overlay} overlay Overlay.
+       * @this {ol.Map}
        */
       function(overlay) {
         overlay.setMap(this);
@@ -1342,21 +1345,21 @@ ol.Map.createOptionsInternal = function(options) {
     rendererHints = ol.DEFAULT_RENDERER_HINTS;
   }
 
-  var n = rendererHints.length;
-  var i, rendererHint;
-  for (i = 0; i < n; ++i) {
-    rendererHint = rendererHints[i];
-    if (rendererHint == ol.RendererHint.CANVAS) {
+  var i, ii;
+  for (i = 0, ii = rendererHints.length; i < ii; ++i) {
+    /** @type {ol.RendererHint} */
+    var rendererHint = rendererHints[i];
+    if (ol.ENABLE_CANVAS && rendererHint == ol.RendererHint.CANVAS) {
       if (ol.BrowserFeature.HAS_CANVAS) {
         rendererConstructor = ol.renderer.canvas.Map;
         break;
       }
-    } else if (rendererHint == ol.RendererHint.DOM) {
+    } else if (ol.ENABLE_DOM && rendererHint == ol.RendererHint.DOM) {
       if (ol.BrowserFeature.HAS_DOM) {
         rendererConstructor = ol.renderer.dom.Map;
         break;
       }
-    } else if (rendererHint == ol.RendererHint.WEBGL) {
+    } else if (ol.ENABLE_WEBGL && rendererHint == ol.RendererHint.WEBGL) {
       if (ol.BrowserFeature.HAS_WEBGL) {
         rendererConstructor = ol.renderer.webgl.Map;
         break;

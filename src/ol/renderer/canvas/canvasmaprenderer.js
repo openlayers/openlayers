@@ -72,11 +72,11 @@ goog.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
  * @inheritDoc
  */
 ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
-  if (layer instanceof ol.layer.Image) {
+  if (ol.ENABLE_IMAGE && layer instanceof ol.layer.Image) {
     return new ol.renderer.canvas.ImageLayer(this, layer);
-  } else if (layer instanceof ol.layer.Tile) {
+  } else if (ol.ENABLE_TILE && layer instanceof ol.layer.Tile) {
     return new ol.renderer.canvas.TileLayer(this, layer);
-  } else if (layer instanceof ol.layer.Vector) {
+  } else if (ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
     return new ol.renderer.canvas.VectorLayer(this, layer);
   } else {
     goog.asserts.fail();

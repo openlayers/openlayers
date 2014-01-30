@@ -116,10 +116,11 @@ goog.exportProperty(
  * @private
  */
 ol.dom.Input.prototype.handleInputChanged_ = function() {
-  if (this.target_.type === 'checkbox' || this.target_.type === 'radio') {
-    this.setChecked(this.target_.checked);
+  var target = this.target_;
+  if (target.type === 'checkbox' || target.type === 'radio') {
+    this.setChecked(target.checked);
   } else {
-    this.setValue(this.target_.value);
+    this.setValue(target.value);
   }
 };
 
