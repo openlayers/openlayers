@@ -71,8 +71,7 @@ ol.geom.Circle.prototype.containsXY = function(x, y) {
   var flatCoordinates = this.flatCoordinates;
   var dx = x - flatCoordinates[0];
   var dy = y - flatCoordinates[1];
-  var r = flatCoordinates[this.stride] - flatCoordinates[0];
-  return Math.sqrt(dx * dx + dy * dy) <= r;
+  return dx * dx + dy * dy <= this.getRadiusSquared_();
 };
 
 
