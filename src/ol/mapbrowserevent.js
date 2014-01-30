@@ -133,6 +133,12 @@ ol.MapBrowserEventHandler = function(map) {
   this.touchstartListenerKey_ = null;
 
   /**
+   * @type {goog.events.Key}
+   * @private
+   */
+  this.ieDblclickListenerKey_ = null;
+
+  /**
    * @type {goog.events.BrowserEvent}
    * @private
    */
@@ -161,6 +167,11 @@ ol.MapBrowserEventHandler = function(map) {
       goog.events.EventType.TOUCHSTART,
       this.handleTouchStart_, false, this);
 
+  if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9.0')) {
+    this.ieDblclickListenerKey_ = goog.events.listen(element,
+      goog.events.EventType.DBLCLICK,
+      this.emulateClick_, false, this);
+  }
 };
 goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
 
@@ -190,10 +201,17 @@ ol.MapBrowserEventHandler.prototype.emulateClick_ = function(browserEvent) {
     this.dispatchEvent(newEvent);
   } else {
     // click
+
+    // In IE 7-8, referring to the original event object after the current
+    // call stack causes "member not found" exceptions, such as in the timeout
+    // we use here.
+    var ev = /** @type {Event} */ (
+        goog.object.clone(browserEvent.getBrowserEvent()));
     this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
       this.clickTimeoutId_ = 0;
       var newEvent = new ol.MapBrowserEvent(
-          ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_, browserEvent);
+          ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_,
+          new goog.events.BrowserEvent(ev, browserEvent.currentTarget));
       this.dispatchEvent(newEvent);
     }, this), 250);
   }
