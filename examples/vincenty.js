@@ -43,9 +43,10 @@ var features = [];
 var feature;
 for (i in cityFeatures) {
   var cityFeature = cityFeatures[i];
+  var coordinates4326 = cityFeature.coordinates;
+  var coordinates3857 = tr4326to3857(coordinates4326);
   feature = new ol.Feature({
-    geometry: new ol.geom.Point(tr4326to3857(cityFeature.coordinates)),
-    name: cityFeature.name
+    geometry: new ol.geom.Point(coordinates3857)
   });
   features.push(feature);
 }
@@ -57,15 +58,15 @@ var distance = v.distance;
 var initialBearing = v.initialBearing;
 var divisionCount = 20;
 for (i = 1; i < divisionCount; i++) {
-  var pd = ol.ellipsoid.WGS84.vincentyDirect(
+  var coordinates4326 = ol.ellipsoid.WGS84.vincentyDirect(
       cityFeatures[0].coordinates,
       distance / divisionCount * i,
       initialBearing);
-  var newFeature = new ol.Feature({
-    geometry: new ol.geom.Point(tr4326to3857(pd)),
-    name: i + ''
+  var coordinates3857 = tr4326to3857(coordinates4326);
+  feature = new ol.Feature({
+    geometry: new ol.geom.Point(coordinates3857)
   });
-  features.push(newFeature);
+  features.push(feature);
 }
 
 var vectorSource = new ol.source.Vector({

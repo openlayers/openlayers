@@ -988,3 +988,10 @@
  * @property {!Array.<number>} resolutions Resolutions.
  * @todo stability experimental
  */
+
+/**
+ * @typedef {Object} olx.ellipsoid.VincentyResults
+ * @property {!number} distance
+ * @property {!number} initialBearing
+ * @property {!number} finalBearing
+ */

@@ -50,7 +50,7 @@ ol.Ellipsoid = function(a, flattening) {
  * @param {ol.Coordinate} c2 Coordinate 1.
  * @param {number=} opt_minDeltaLambda Minimum delta lambda for convergence.
  * @param {number=} opt_maxIterations Maximum iterations.
- * @return {{distance: number, initialBearing: number, finalBearing: number}}
+ * @return {!olx.ellipsoid.VincentyResults}
  *     Vincenty.
  */
 ol.Ellipsoid.prototype.vincenty =
