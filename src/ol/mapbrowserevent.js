@@ -8,6 +8,7 @@ goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
+goog.require('goog.object');
 goog.require('ol.Coordinate');
 goog.require('ol.FrameState');
 goog.require('ol.MapEvent');
@@ -463,6 +464,10 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
   if (!goog.isNull(this.dragListenerKeys_)) {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
+  }
+  if (!goog.isNull(this.ieDblclickListenerKey_)) {
+    goog.events.unlistenByKey(this.ieDblclickListenerKey_);
+    this.ieDblclickListenerKey_ = null;
   }
   goog.base(this, 'disposeInternal');
 };
