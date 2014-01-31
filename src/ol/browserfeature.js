@@ -60,7 +60,7 @@ ol.LEGACY_IE_SUPPORT = false;
  * @type {boolean}
  */
 ol.IS_LEGACY_IE = goog.userAgent.IE &&
-    goog.userAgent.isVersionOrHigher('9.0') && goog.userAgent.VERSION !== '';
+    !goog.userAgent.isVersionOrHigher('9.0') && goog.userAgent.VERSION !== '';
 
 
 /**

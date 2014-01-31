@@ -41,9 +41,7 @@ ol.renderer.dom.Map = function(container, map) {
   // in IE < 9, we need to return false from ondragstart to cancel the default
   // behavior of dragging images, which is interfering with the custom handler
   // in the Drag interaction subclasses
-  if (ol.LEGACY_IE_SUPPORT && goog.userAgent.IE &&
-      !goog.userAgent.isVersionOrHigher('9.0') &&
-      goog.userAgent.VERSION !== '') {
+  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
     this.layersPane_.ondragstart = goog.functions.FALSE;
     this.layersPane_.onselectstart = goog.functions.FALSE;
   }
