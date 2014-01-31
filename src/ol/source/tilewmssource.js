@@ -330,6 +330,10 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
     return undefined;
   }
 
+  if (pixelRatio != 1 && (!this.hidpi_ || !goog.isDef(this.serverType_))) {
+    pixelRatio = 1;
+  }
+
   var tileResolution = tileGrid.getResolution(tileCoord.z);
   var tileExtent = tileGrid.getTileCoordExtent(
       tileCoord, this.tmpExtent_);
@@ -354,9 +358,6 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
   };
   goog.object.extend(baseParams, this.params_);
 
-  if (pixelRatio != 1 && (!this.hidpi_ || !goog.isDef(this.serverType_))) {
-    pixelRatio = 1;
-  }
   this.pixelRatio_ = pixelRatio;
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,

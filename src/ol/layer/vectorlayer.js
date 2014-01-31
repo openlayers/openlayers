@@ -77,6 +77,9 @@ goog.exportProperty(
 
 
 /**
+ * If the styles are changed by setting a new style function or by changing the
+ * value returned by the style function then `dispatchChangeEvent` should be
+ * called on the layer for the layer to be refreshed on the screen.
  * @param {ol.feature.StyleFunction|undefined} styleFunction Style function.
  */
 ol.layer.Vector.prototype.setStyleFunction = function(styleFunction) {
