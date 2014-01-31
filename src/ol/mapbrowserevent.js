@@ -133,11 +133,13 @@ ol.MapBrowserEventHandler = function(map) {
    */
   this.touchstartListenerKey_ = null;
 
-  /**
-   * @type {goog.events.Key}
-   * @private
-   */
-  this.ieDblclickListenerKey_ = null;
+  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+    /**
+     * @type {goog.events.Key}
+     * @private
+     */
+    this.ieDblclickListenerKey_ = null;
+  }
 
   /**
    * @type {goog.events.BrowserEvent}
@@ -168,10 +170,9 @@ ol.MapBrowserEventHandler = function(map) {
       goog.events.EventType.TOUCHSTART,
       this.handleTouchStart_, false, this);
 
-  if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9.0')) {
+  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
     this.ieDblclickListenerKey_ = goog.events.listen(element,
-      goog.events.EventType.DBLCLICK,
-      this.emulateClick_, false, this);
+        goog.events.EventType.DBLCLICK, this.emulateClick_, false, this);
   }
 };
 goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
@@ -203,18 +204,27 @@ ol.MapBrowserEventHandler.prototype.emulateClick_ = function(browserEvent) {
   } else {
     // click
 
-    // In IE 7-8, referring to the original event object after the current
-    // call stack causes "member not found" exceptions, such as in the timeout
-    // we use here.
-    var ev = /** @type {Event} */ (
-        goog.object.clone(browserEvent.getBrowserEvent()));
-    this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
-      this.clickTimeoutId_ = 0;
-      var newEvent = new ol.MapBrowserEvent(
-          ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_,
-          new goog.events.BrowserEvent(ev, browserEvent.currentTarget));
-      this.dispatchEvent(newEvent);
-    }, this), 250);
+    if (ol.LEGACY_IE_SUPPORT) {
+      // In IE 7-8, referring to the original event object after the current
+      // call stack causes "member not found" exceptions, such as in the timeout
+      // we use here.
+      var ev = /** @type {Event} */ (
+          goog.object.clone(browserEvent.getBrowserEvent()));
+      this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
+        this.clickTimeoutId_ = 0;
+        var newEvent = new ol.MapBrowserEvent(
+            ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_,
+            new goog.events.BrowserEvent(ev, browserEvent.currentTarget));
+        this.dispatchEvent(newEvent);
+      }, this), 250);
+    } else {
+      this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
+        this.clickTimeoutId_ = 0;
+        var newEvent = new ol.MapBrowserEvent(
+            ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_, browserEvent);
+        this.dispatchEvent(newEvent);
+      }, this), 250);
+    }
   }
 };
 
@@ -465,7 +475,8 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
   }
-  if (!goog.isNull(this.ieDblclickListenerKey_)) {
+  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE &&
+      !goog.isNull(this.ieDblclickListenerKey_)) {
     goog.events.unlistenByKey(this.ieDblclickListenerKey_);
     this.ieDblclickListenerKey_ = null;
   }

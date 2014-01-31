@@ -271,18 +271,20 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
   this.target.style.width = '100%';
   this.target.style.height = '100%';
 
-  /**
-   * Needed due to issues with IE7-8 clipping of transformed elements
-   * Solution is to translate separately from the scaled/rotated elements
-   * @private
-   * @type {!Element}
-   */
-  this.translateTarget_ = goog.dom.createElement(goog.dom.TagName.DIV);
-  this.translateTarget_.style.position = 'absolute';
-  this.translateTarget_.style.width = '100%';
-  this.translateTarget_.style.height = '100%';
+  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+    /**
+     * Needed due to issues with IE7-8 clipping of transformed elements
+     * Solution is to translate separately from the scaled/rotated elements
+     * @private
+     * @type {!Element}
+     */
+    this.translateTarget_ = goog.dom.createElement(goog.dom.TagName.DIV);
+    this.translateTarget_.style.position = 'absolute';
+    this.translateTarget_.style.width = '100%';
+    this.translateTarget_.style.height = '100%';
 
-  goog.dom.appendChild(this.target, this.translateTarget_);
+    goog.dom.appendChild(this.target, this.translateTarget_);
+  }
 
   /**
    * @private
@@ -386,7 +388,11 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
  */
 ol.renderer.dom.TileLayerZ_.prototype.finalizeAddTiles = function() {
   if (!goog.isNull(this.documentFragment_)) {
-    goog.dom.appendChild(this.translateTarget_, this.documentFragment_);
+    if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+      goog.dom.appendChild(this.translateTarget_, this.documentFragment_);
+    } else {
+      goog.dom.appendChild(this.target, this.documentFragment_);
+    }
     this.documentFragment_ = null;
   }
 };
@@ -440,7 +446,12 @@ ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent =
  */
 ol.renderer.dom.TileLayerZ_.prototype.setTransform = function(transform) {
   if (!ol.vec.Mat4.equals2D(transform, this.transform_)) {
-    ol.dom.transformElement2D(this.target, transform, 6, this.translateTarget_);
+    if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+      ol.dom.transformElement2D(this.target, transform, 6,
+          this.translateTarget_);
+    } else {
+      ol.dom.transformElement2D(this.target, transform, 6);
+    }
     goog.vec.Mat4.setFromArray(this.transform_, transform);
   }
 };

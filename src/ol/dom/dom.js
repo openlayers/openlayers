@@ -81,11 +81,8 @@ ol.dom.BrowserFeature = {
         return (goog.isDefAndNotNull(has3d) && has3d.length > 0 &&
             has3d !== 'none');
       })(),
-  USE_MS_MATRIX_TRANSFORM:
-      (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9.0')),
-  USE_MS_ALPHA_FILTER:
-      (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9.0') &&
-      goog.userAgent.VERSION !== '')
+  USE_MS_MATRIX_TRANSFORM: ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE,
+  USE_MS_ALPHA_FILTER: ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE
 };
 
 
@@ -102,8 +99,7 @@ ol.dom.setTransform = function(element, value) {
   style.transform = value;
 
   // IE 9+ seems to assume transform-origin: 100% 100%; for some unknown reason
-  if (goog.userAgent.IE && goog.userAgent.isVersionOrHigher('9.0') ||
-      goog.userAgent.VERSION === '') {
+  if (goog.userAgent.IE && !ol.IS_LEGACY_IE) {
     element.style.transformOrigin = '0 0';
   }
 };

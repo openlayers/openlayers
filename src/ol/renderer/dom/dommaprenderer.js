@@ -41,7 +41,9 @@ ol.renderer.dom.Map = function(container, map) {
   // in IE < 9, we need to return false from ondragstart to cancel the default
   // behavior of dragging images, which is interfering with the custom handler
   // in the Drag interaction subclasses
-  if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9.0')) {
+  if (ol.LEGACY_IE_SUPPORT && goog.userAgent.IE &&
+      !goog.userAgent.isVersionOrHigher('9.0') &&
+      goog.userAgent.VERSION !== '') {
     this.layersPane_.ondragstart = goog.functions.FALSE;
     this.layersPane_.onselectstart = goog.functions.FALSE;
   }
@@ -88,6 +90,36 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
     return;
   }
 
+  /**
+   * @this {ol.renderer.dom.Map}
+   * @param {Element} elem
+   * @param {number} i
+   */
+  var addChild;
+
+  // appendChild is actually more performant than insertBefore
+  // in IE 7 and 8. http://jsperf.com/reattaching-dom-nodes
+  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+    addChild =
+        /**
+         * @this {ol.renderer.dom.Map}
+         * @param {Element} elem
+         */ (
+        function(elem) {
+          goog.dom.appendChild(this.layersPane_, elem);
+        });
+  } else {
+    addChild =
+        /**
+         * @this {ol.renderer.dom.Map}
+         * @param {Element} elem
+         * @param {number} i
+         */ (
+        function(elem, i) {
+          goog.dom.insertChildAt(this.layersPane_, elem, i);
+        });
+  }
+
   var layerStates = frameState.layerStates;
   var layersArray = frameState.layersArray;
   var i, ii, layer, layerRenderer, layerState;
@@ -96,7 +128,7 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
     layerRenderer = /** @type {ol.renderer.dom.Layer} */ (
         this.getLayerRenderer(layer));
     goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer);
-    goog.dom.insertChildAt(this.layersPane_, layerRenderer.getTarget(), i);
+    addChild.call(this, layerRenderer.getTarget(), i);
     layerState = frameState.layerStates[goog.getUid(layer)];
     if (layerState.sourceState == ol.source.State.READY) {
       layerRenderer.prepareFrame(frameState, layerState);
