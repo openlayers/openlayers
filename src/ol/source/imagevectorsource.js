@@ -12,7 +12,6 @@ goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.vector');
 goog.require('ol.source.ImageCanvas');
 goog.require('ol.source.Vector');
-goog.require('ol.style.ImageState');
 goog.require('ol.vec.Mat4');
 
 
@@ -220,7 +219,6 @@ ol.source.ImageVector.prototype.handleSourceChange_ = function() {
  */
 ol.source.ImageVector.prototype.renderFeature_ =
     function(feature, resolution, pixelRatio, replayGroup) {
-  var loading = false;
   var styles = this.styleFunction_(feature, resolution);
   if (!goog.isDefAndNotNull(styles)) {
     return false;
@@ -228,32 +226,11 @@ ol.source.ImageVector.prototype.renderFeature_ =
   // simplify to a tolerance of half a device pixel
   var squaredTolerance =
       resolution * resolution / (4 * pixelRatio * pixelRatio);
-  var i, ii, style, imageStyle, imageState;
+  var i, ii, loading = false;
   for (i = 0, ii = styles.length; i < ii; ++i) {
-    style = styles[i];
-    imageStyle = style.getImage();
-    if (goog.isNull(imageStyle)) {
-      ol.renderer.vector.renderFeature(
-          replayGroup, feature, style, squaredTolerance, feature);
-    } else {
-      imageState = imageStyle.getImageState();
-      if (imageState == ol.style.ImageState.LOADED ||
-          imageState == ol.style.ImageState.ERROR) {
-        imageStyle.unlistenImageChange(this.handleImageChange_, this);
-        if (imageState == ol.style.ImageState.LOADED) {
-          ol.renderer.vector.renderFeature(
-              replayGroup, feature, style, squaredTolerance, feature);
-        }
-      } else {
-        if (imageState == ol.style.ImageState.IDLE) {
-          imageStyle.load();
-        }
-        imageState = imageStyle.getImageState();
-        goog.asserts.assert(imageState == ol.style.ImageState.LOADING);
-        imageStyle.listenImageChange(this.handleImageChange_, this);
-        loading = true;
-      }
-    }
+    loading = ol.renderer.vector.renderFeature(
+        replayGroup, feature, styles[i], squaredTolerance, feature,
+        this.handleImageChange_, this) || loading;
   }
   return loading;
 };
