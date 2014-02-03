@@ -19,6 +19,7 @@ goog.require('ol.proj');
  * @constructor
  * @extends {ol.format.JSON}
  * @param {olx.format.TopoJSONOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.format.TopoJSON = function(opt_options) {
 
