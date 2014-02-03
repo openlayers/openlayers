@@ -216,14 +216,17 @@ ol.extent.createOrUpdateFromCoordinates = function(coordinates, opt_extent) {
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
  * @param {number} stride Stride.
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} Extent.
  */
 ol.extent.createOrUpdateFromFlatCoordinates =
-    function(flatCoordinates, stride, opt_extent) {
+    function(flatCoordinates, offset, end, stride, opt_extent) {
   var extent = ol.extent.createOrUpdateEmpty(opt_extent);
-  return ol.extent.extendFlatCoordinates(extent, flatCoordinates, stride);
+  return ol.extent.extendFlatCoordinates(
+      extent, flatCoordinates, offset, end, stride);
 };
 
 
@@ -324,13 +327,16 @@ ol.extent.extendCoordinates = function(extent, coordinates) {
 /**
  * @param {ol.Extent} extent Extent.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
  * @param {number} stride Stride.
  * @return {ol.Extent} Extent.
  */
-ol.extent.extendFlatCoordinates = function(extent, flatCoordinates, stride) {
-  var i, ii;
-  for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
-    ol.extent.extendXY(extent, flatCoordinates[i], flatCoordinates[i + 1]);
+ol.extent.extendFlatCoordinates =
+    function(extent, flatCoordinates, offset, end, stride) {
+  for (; offset < end; offset += stride) {
+    ol.extent.extendXY(
+        extent, flatCoordinates[offset], flatCoordinates[offset + 1]);
   }
   return extent;
 };

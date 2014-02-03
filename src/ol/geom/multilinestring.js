@@ -113,6 +113,27 @@ ol.geom.MultiLineString.prototype.getLineStrings = function() {
 
 
 /**
+ * @return {Array.<number>} Flat midpoints.
+ */
+ol.geom.MultiLineString.prototype.getFlatMidpoints = function() {
+  var midpoints = [];
+  var flatCoordinates = this.flatCoordinates;
+  var offset = 0;
+  var ends = this.ends_;
+  var stride = this.stride;
+  var i, ii;
+  for (i = 0, ii = ends.length; i < ii; ++i) {
+    var end = ends[i];
+    var midpoint = ol.geom.flat.lineStringInterpolate(
+        flatCoordinates, offset, end, stride, 0.5);
+    goog.array.extend(midpoints, midpoint);
+    offset = end;
+  }
+  return midpoints;
+};
+
+
+/**
  * @inheritDoc
  */
 ol.geom.MultiLineString.prototype.getSimplifiedGeometryInternal =

@@ -24,6 +24,12 @@ ol.style.Text = function(opt_options) {
 
   /**
    * @private
+   * @type {number|undefined}
+   */
+  this.scale_ = options.scale;
+
+  /**
+   * @private
    * @type {string|undefined}
    */
   this.text_ = options.text;
@@ -55,32 +61,6 @@ ol.style.Text = function(opt_options) {
 
 
 /**
- * @param {ol.style.Text} textStyle1 Text style 1.
- * @param {ol.style.Text} textStyle2 Text style 2.
- * @return {boolean} Equals.
- */
-ol.style.Text.equals = function(textStyle1, textStyle2) {
-  if (!goog.isNull(textStyle1)) {
-    if (!goog.isNull(textStyle2)) {
-      return textStyle1 === textStyle2 || (
-          textStyle1.getFont() == textStyle2.getFont() &&
-          textStyle1.getText() == textStyle2.getText() &&
-          textStyle1.getTextAlign() == textStyle2.getTextAlign() &&
-          textStyle1.getTextBaseline() == textStyle2.getTextBaseline());
-    } else {
-      return false;
-    }
-  } else {
-    if (!goog.isNull(textStyle2)) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-};
-
-
-/**
  * @return {string|undefined} Font.
  */
 ol.style.Text.prototype.getFont = function() {
@@ -101,6 +81,14 @@ ol.style.Text.prototype.getFill = function() {
  */
 ol.style.Text.prototype.getRotation = function() {
   return this.rotation_;
+};
+
+
+/**
+ * @return {number|undefined} Scale.
+ */
+ol.style.Text.prototype.getScale = function() {
+  return this.scale_;
 };
 
 

@@ -90,7 +90,8 @@ ol.geom.SimpleGeometry.prototype.containsXY = goog.functions.FALSE;
 ol.geom.SimpleGeometry.prototype.getExtent = function(opt_extent) {
   if (this.extentRevision != this.getRevision()) {
     this.extent = ol.extent.createOrUpdateFromFlatCoordinates(
-        this.flatCoordinates, this.stride, this.extent);
+        this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+        this.extent);
     this.extentRevision = this.getRevision();
   }
   goog.asserts.assert(goog.isDef(this.extent));

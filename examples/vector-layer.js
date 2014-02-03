@@ -9,24 +9,39 @@ goog.require('ol.source.MapQuest');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
+goog.require('ol.style.Text');
 
 
-var styleArray = [new ol.style.Style({
-  fill: new ol.style.Fill({
-    color: 'rgba(255, 255, 255, 0.6)'
-  }),
-  stroke: new ol.style.Stroke({
-    color: '#319FD3',
-    width: 1
-  })
-})];
-
+var styleCache = {};
 var vectorLayer = new ol.layer.Vector({
   source: new ol.source.GeoJSON({
     url: 'data/geojson/countries.geojson'
   }),
   styleFunction: function(feature, resolution) {
-    return styleArray;
+    var text = resolution < 5000 ? feature.get('name') : '';
+    if (!styleCache[text]) {
+      styleCache[text] = [new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: 'rgba(255, 255, 255, 0.6)'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#319FD3',
+          width: 1
+        }),
+        text: new ol.style.Text({
+          font: '12px Calibri,sans-serif',
+          text: text,
+          fill: new ol.style.Fill({
+            color: '#000'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#fff',
+            width: 3
+          })
+        })
+      })];
+    }
+    return styleCache[text];
   }
 });
 
@@ -45,20 +60,35 @@ var map = new ol.Map({
   })
 });
 
-var highlightStyleArray = [new ol.style.Style({
-  stroke: new ol.style.Stroke({
-    color: '#f00',
-    width: 1
-  }),
-  fill: new ol.style.Fill({
-    color: 'rgba(255,0,0,0.1)'
-  })
-})];
+var highlightStyleCache = {};
 
 var featuresOverlay = new ol.render.FeaturesOverlay({
   map: map,
   styleFunction: function(feature, resolution) {
-    return highlightStyleArray;
+    var text = resolution < 5000 ? feature.get('name') : '';
+    if (!highlightStyleCache[text]) {
+      highlightStyleCache[text] = [new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: '#f00',
+          width: 1
+        }),
+        fill: new ol.style.Fill({
+          color: 'rgba(255,0,0,0.1)'
+        }),
+        text: new ol.style.Text({
+          font: '12px Calibri,sans-serif',
+          text: text,
+          fill: new ol.style.Fill({
+            color: '#000'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#f00',
+            width: 3
+          })
+        })
+      })];
+    }
+    return highlightStyleCache[text];
   }
 });
 
