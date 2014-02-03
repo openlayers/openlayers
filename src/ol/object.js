@@ -343,6 +343,7 @@ ol.Object.prototype.getKeys = function() {
 /**
  * Get an object of all property names and values.
  * @return {Object.<string, *>} Object.
+ * @todo stability experimental
  */
 ol.Object.prototype.getProperties = function() {
   var properties = {};
