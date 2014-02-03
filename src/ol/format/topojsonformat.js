@@ -302,7 +302,6 @@ ol.format.TopoJSON.prototype.readFeaturesFromObject = function(object) {
     }
     return features;
   } else {
-    goog.asserts.fail();
     return [];
   }
 };
