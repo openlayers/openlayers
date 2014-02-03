@@ -186,6 +186,7 @@ ol.interaction.Modify.prototype.addFeature_ = function(evt) {
   var geometry = feature.getGeometry();
   var rBush = this.rBush_;
   var segment, segmentData, coordinates;
+  var i, ii;
   if (geometry instanceof ol.geom.Point) {
     coordinates = geometry.getCoordinates();
     segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
@@ -197,7 +198,7 @@ ol.interaction.Modify.prototype.addFeature_ = function(evt) {
     rBush.insert(geometry.getExtent(), segmentData);
   } else if (geometry instanceof ol.geom.MultiPoint) {
     var points = geometry.getCoordinates();
-    for (var i = 0, ii = points.length - 1; i < ii; ++i) {
+    for (i = 0, ii = points.length - 1; i < ii; ++i) {
       coordinates = points[i];
       segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
         feature: feature,
@@ -211,7 +212,7 @@ ol.interaction.Modify.prototype.addFeature_ = function(evt) {
   } else if (geometry instanceof ol.geom.LineString ||
       geometry instanceof ol.geom.LinearRing) {
     coordinates = geometry.getCoordinates();
-    for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       segment = coordinates.slice(i, i + 2);
       segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
         feature: feature,
@@ -226,7 +227,7 @@ ol.interaction.Modify.prototype.addFeature_ = function(evt) {
     var lines = geometry.getCoordinates();
     for (var j = 0, jj = lines.length; j < jj; ++j) {
       coordinates = lines[j];
-      for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
         segment = coordinates.slice(i, i + 2);
         segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
           feature: feature,
@@ -242,7 +243,7 @@ ol.interaction.Modify.prototype.addFeature_ = function(evt) {
   } else if (geometry instanceof ol.geom.Polygon) {
     var rings = geometry.getCoordinates();
     coordinates = rings[0];
-    for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       segment = coordinates.slice(i, i + 2);
       segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
         feature: feature,
