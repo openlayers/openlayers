@@ -149,6 +149,9 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   var i, ii, feature, styles;
   this.features_.forEach(function(feature) {
     styles = this.styleFunction_(feature, resolution);
+    if (!goog.isDefAndNotNull(styles)) {
+      return;
+    }
     ii = styles.length;
     for (i = 0; i < ii; ++i) {
       vectorContext.drawFeature(feature, styles[i]);
