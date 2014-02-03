@@ -16,6 +16,7 @@ goog.require('ol.render.EventType');
 /**
  * @constructor
  * @param {olx.render.FeaturesOverlayOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.render.FeaturesOverlay = function(opt_options) {
 
@@ -81,6 +82,7 @@ ol.render.FeaturesOverlay = function(opt_options) {
 
 /**
  * @param {ol.Feature} feature Feature.
+ * @todo stability experimental
  */
 ol.render.FeaturesOverlay.prototype.addFeature = function(feature) {
   this.features_.push(feature);
@@ -89,6 +91,7 @@ ol.render.FeaturesOverlay.prototype.addFeature = function(feature) {
 
 /**
  * @return {ol.Collection} Features collection.
+ * @todo stability experimental
  */
 ol.render.FeaturesOverlay.prototype.getFeatures = function() {
   return this.features_;
@@ -156,6 +159,7 @@ ol.render.FeaturesOverlay.prototype.handleMapPostCompose_ = function(event) {
 
 /**
  * @param {ol.Feature} feature Feature.
+ * @todo stability experimental
  */
 ol.render.FeaturesOverlay.prototype.removeFeature = function(feature) {
   this.features_.remove(feature);
@@ -174,6 +178,7 @@ ol.render.FeaturesOverlay.prototype.requestRenderFrame_ = function() {
 
 /**
  * @param {ol.Collection} features Features collection.
+ * @todo stability experimental
  */
 ol.render.FeaturesOverlay.prototype.setFeatures = function(features) {
   if (!goog.isNull(this.featuresListenerKeys_)) {
@@ -211,6 +216,7 @@ ol.render.FeaturesOverlay.prototype.setFeatures = function(features) {
 
 /**
  * @param {ol.Map} map Map.
+ * @todo stability experimental
  */
 ol.render.FeaturesOverlay.prototype.setMap = function(map) {
   if (!goog.isNull(this.postComposeListenerKey_)) {
@@ -230,6 +236,7 @@ ol.render.FeaturesOverlay.prototype.setMap = function(map) {
 
 /**
  * @param {ol.feature.StyleFunction} styleFunction Style function.
+ * @todo stability experimental
  */
 ol.render.FeaturesOverlay.prototype.setStyleFunction = function(styleFunction) {
   this.styleFunction_ = styleFunction;
