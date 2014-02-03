@@ -660,6 +660,7 @@ ol.structs.RBush.prototype.remove_ = function(extent, value) {
       }
     }
   }
+  goog.asserts.fail();
 };
 
 
