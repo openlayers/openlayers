@@ -8,6 +8,7 @@ goog.require('goog.vec.Mat4');
 goog.require('ol.FrameState');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
+goog.require('ol.style.IconImageCache');
 goog.require('ol.vec.Mat4');
 
 
@@ -192,6 +193,22 @@ ol.renderer.Map.prototype.removeUnusedLayerRenderers_ =
       goog.dispose(this.removeLayerRendererByKey_(layerKey));
     }
   }
+};
+
+
+/**
+ * @param {ol.FrameState} frameState Frame state.
+ * @protected
+ */
+ol.renderer.Map.prototype.scheduleExpireIconCache = function(frameState) {
+  frameState.postRenderFunctions.push(
+      /**
+       * @param {ol.Map} map Map.
+       * @param {ol.FrameState} frameState Frame state.
+       */
+      function(map, frameState) {
+        ol.style.IconImageCache.getInstance().expire();
+      });
 };
 
 
