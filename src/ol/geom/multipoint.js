@@ -13,6 +13,7 @@ goog.require('ol.geom.flat');
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiPoint} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.MultiPoint = function(coordinates, opt_layout) {
   goog.base(this);
@@ -60,6 +61,7 @@ ol.geom.MultiPoint.prototype.closestPointXY =
 
 /**
  * @return {ol.geom.RawMultiPoint} Coordinates.
+ * @todo stability experimental
  */
 ol.geom.MultiPoint.prototype.getCoordinates = function() {
   return ol.geom.flat.inflateCoordinates(
@@ -69,6 +71,7 @@ ol.geom.MultiPoint.prototype.getCoordinates = function() {
 
 /**
  * @return {Array.<ol.geom.Point>} Points.
+ * @todo stability experimental
  */
 ol.geom.MultiPoint.prototype.getPoints = function() {
   // FIXME we should construct the points from the flat coordinates
@@ -93,6 +96,7 @@ ol.geom.MultiPoint.prototype.getType = function() {
 /**
  * @param {ol.geom.RawMultiPoint} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.MultiPoint.prototype.setCoordinates =
     function(coordinates, opt_layout) {
