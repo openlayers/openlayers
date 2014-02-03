@@ -10,9 +10,9 @@ goog.require('goog.structs.Map');
 
 goog.require('ol.pointer.MouseSource');
 goog.require('ol.pointer.MsSource');
-// goog.require('ol.pointer.NativeSource');
+goog.require('ol.pointer.NativeSource');
 goog.require('ol.pointer.PointerEvent');
-// goog.require('ol.pointer.TouchSource');
+goog.require('ol.pointer.TouchSource');
 goog.require('ol.structs.WeakMap');
 
 
@@ -70,7 +70,7 @@ goog.inherits(ol.pointer.PointerEventHandler, goog.events.EventTarget);
  */
 ol.pointer.PointerEventHandler.prototype.registerSources = function() {
   if (this.isPointerEnabled_()) {
-    // this.registerSource('native', new ol.pointer.NativeSource(this));
+    this.registerSource('native', new ol.pointer.NativeSource(this));
   } else if (this.isMsPointerEnabled_()) {
     this.registerSource('ms', new ol.pointer.MsSource(this));
   } else {
@@ -78,8 +78,8 @@ ol.pointer.PointerEventHandler.prototype.registerSources = function() {
     this.registerSource('mouse', mouseSource);
 
     if (this.isTouchDefined_()) {
-      //this.registerSource('touch',
-      //    new ol.pointer.TouchSource(this, mouseSource));
+      this.registerSource('touch',
+          new ol.pointer.TouchSource(this, mouseSource));
     }
   }
 
@@ -229,7 +229,7 @@ ol.pointer.PointerEventHandler.prototype.removeEvents_ = function(events) {
 /**
  * Returns a snapshot of inEvent, with writable properties.
  *
- * @param {goog.events.BrowserEvent} inEvent An event that contains
+ * @param {goog.events.BrowserEvent|Touch} inEvent An event that contains
  *    properties to copy.
  * @return {Object} An object containing shallow copies of
  *    `inEvent`'s properties.
@@ -407,12 +407,11 @@ ol.pointer.PointerEventHandler.prototype.fireEvent = function(inType, inEvent) {
 
 /**
  * Re-fires a native pointer event.
- * @param {Event} nativeEvent A platform event with a target.
+ * @param {goog.events.BrowserEvent} nativeEvent A platform event with a target.
  */
 ol.pointer.PointerEventHandler.prototype.fireNativeEvent =
     function(nativeEvent) {
-  var browserEvent = new goog.events.BrowserEvent(nativeEvent);
-  this.dispatchEvent(browserEvent);
+  this.dispatchEvent(nativeEvent);
 };
 
 
