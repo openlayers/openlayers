@@ -11,6 +11,7 @@ goog.require('ol.source.Image');
  * @constructor
  * @extends {ol.source.Image}
  * @param {olx.source.ImageCanvasOptions} options
+ * @todo stability experimental
  */
 ol.source.ImageCanvas = function(options) {
 
