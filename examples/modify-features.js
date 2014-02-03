@@ -106,7 +106,7 @@ var vectorSource = new ol.source.GeoJSON(
               'coordinates': [[[-5e6, -1e6], [-4e6, 1e6],
                   [-3e6, -1e6], [-5e6, -1e6]]]
             }
-          }/*,
+          },
           {
             'type': 'Feature',
             'geometry': {
@@ -124,9 +124,12 @@ var vectorSource = new ol.source.GeoJSON(
             'geometry': {
               'type': 'MultiPolygon',
               'coordinates': [
-                [[[-5e6, 6e6], [-5e6, 8e6], [-3e6, 8e6], [-3e6, 6e6]]],
-                [[[-2e6, 6e6], [-2e6, 8e6], [0e6, 8e6], [0e6, 6e6]]],
-                [[[1e6, 6e6], [1e6, 8e6], [3e6, 8e6], [3e6, 6e6]]]
+                [[[-5e6, 6e6], [-5e6, 8e6], [-3e6, 8e6],
+                    [-3e6, 6e6], [-5e6, 6e6]]],
+                [[[-2e6, 6e6], [-2e6, 8e6], [0e6, 8e6],
+                    [0e6, 6e6], [-2e6, 6e6]]],
+                [[[1e6, 6e6], [1e6, 8e6], [3e6, 8e6],
+                    [3e6, 6e6], [1e6, 6e6]]]
               ]
             }
           },
@@ -149,7 +152,7 @@ var vectorSource = new ol.source.GeoJSON(
                 }
               ]
             }
-          }*/
+          }
         ]
       }
     }));
