@@ -245,7 +245,6 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
 ol.renderer.canvas.VectorLayer.prototype.renderFeature =
     function(feature, resolution, pixelRatio, styleFunction, replayGroup) {
   var styles = styleFunction(feature, resolution);
-  // FIXME if styles is null, should we use the default style?
   if (!goog.isDefAndNotNull(styles)) {
     return false;
   }
