@@ -9,7 +9,7 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.structs.Map');
 
 goog.require('ol.pointer.MouseSource');
-// goog.require('ol.pointer.MsSource');
+goog.require('ol.pointer.MsSource');
 // goog.require('ol.pointer.NativeSource');
 goog.require('ol.pointer.PointerEvent');
 // goog.require('ol.pointer.TouchSource');
@@ -72,7 +72,7 @@ ol.pointer.PointerEventHandler.prototype.registerSources = function() {
   if (this.isPointerEnabled_()) {
     // this.registerSource('native', new ol.pointer.NativeSource(this));
   } else if (this.isMsPointerEnabled_()) {
-    // this.registerSource('ms', new ol.pointer.MsSource(this));
+    this.registerSource('ms', new ol.pointer.MsSource(this));
   } else {
     var mouseSource = new ol.pointer.MouseSource(this);
     this.registerSource('mouse', mouseSource);
@@ -145,12 +145,13 @@ ol.pointer.PointerEventHandler.prototype.registerSource =
   }
 };
 
+
 /**
  * @suppress {undefinedVars}
  */
 ol.pointer.PointerEventHandler.prototype.log = function(obj) {
   console.log(obj);
-}
+};
 
 
 /**

@@ -9,10 +9,10 @@ goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 
-goog.require('ol.pointer.PointerEventHandler');
 goog.require('ol.Coordinate');
 goog.require('ol.MapEvent');
 goog.require('ol.Pixel');
+goog.require('ol.pointer.PointerEventHandler');
 
 
 
@@ -121,28 +121,14 @@ ol.MapBrowserEventHandler = function(map) {
    */
   this.pointerdownListenerKey_ = null;
 
-  /**
-   * @type {goog.events.BrowserEvent}
-   * @private
-   */
   this.down_ = null;
 
-  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
-    /**
-     * @type {goog.events.Key}
-     * @private
-     */
-    this.ieDblclickListenerKey_ = null;
-  }
+  var element = this.map_.getViewport();
 
   /**
    * @type {ol.pointer.PointerEventHandler}
    * @private
    */
-  this.PointerEventHandler_ = null;
-
-  var element = this.map_.getViewport();
-
   this.pointerEventHandler_ = new ol.pointer.PointerEventHandler(element);
   this.pointerdownListenerKey_ = goog.events.listen(this.pointerEventHandler_,
       ol.pointer.EventType.POINTERDOWN,
@@ -231,16 +217,19 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(browserEvent) {
+ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
+    function(browserEvent) {
   var newEvent = new ol.MapBrowserEvent(
       ol.MapBrowserEvent.EventType.DOWN, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
   this.down_ = browserEvent;
   this.dragged_ = false;
   this.dragListenerKeys_ = [
-    goog.events.listen(this.pointerEventHandler_, ol.MapBrowserEvent.EventType.POINTERMOVE,
+    goog.events.listen(this.pointerEventHandler_,
+        ol.MapBrowserEvent.EventType.POINTERMOVE,
         this.handlePointerMove_, false, this),
-    goog.events.listen(this.pointerEventHandler_, ol.MapBrowserEvent.EventType.POINTERUP,
+    goog.events.listen(this.pointerEventHandler_,
+        ol.MapBrowserEvent.EventType.POINTERUP,
         this.handlePointerUp_, false, this)
   ];
   // prevent browser image dragging with the dom renderer
@@ -252,7 +241,8 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(browserEvent) 
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.handlePointerMove_ = function(browserEvent) {
+ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
+    function(browserEvent) {
   var newEvent;
   if (!this.dragged_) {
     this.dragged_ = true;
@@ -328,7 +318,7 @@ ol.MapBrowserEvent.EventType = {
   TOUCHSTART: goog.events.EventType.TOUCHSTART,
   TOUCHMOVE: goog.events.EventType.TOUCHMOVE,
   TOUCHEND: goog.events.EventType.TOUCHEND,
-  
+
   POINTERMOVE: 'pointermove',
   POINTERDOWN: 'pointerdown',
   POINTERUP: 'pointerup',

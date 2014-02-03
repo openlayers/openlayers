@@ -29,6 +29,7 @@ if (ol.structs.isWeakMapUndefined()) {
 
 
   /**
+   * @this {ol.structs.WeakMap}
    * @param {*} key
    * @param {*} value
    */
@@ -43,6 +44,7 @@ if (ol.structs.isWeakMapUndefined()) {
 
 
   /**
+   * @this {ol.structs.WeakMap}
    * @param {*} key
    * @return {*}
    */
