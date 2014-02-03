@@ -24,6 +24,7 @@ goog.require('ol.proj');
  * @constructor
  * @extends {ol.format.JSON}
  * @param {olx.format.GeoJSONOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.format.GeoJSON = function(opt_options) {
 
