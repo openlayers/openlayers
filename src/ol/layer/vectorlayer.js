@@ -8,6 +8,7 @@ goog.require('ol.layer.Layer');
  * @enum {string}
  */
 ol.layer.VectorProperty = {
+  ALWAYS_RERENDER_ON_CHANGE: 'alwaysRerenderOnChange',
   RENDER_GEOMETRY_FUNCTIONS: 'renderGeometryFunctions',
   STYLE_FUNCTION: 'styleFunction'
 };
@@ -37,6 +38,20 @@ goog.inherits(ol.layer.Vector, ol.layer.Layer);
 
 
 /**
+ * @return {boolean|undefined} Always re-render on change.
+ * @todo stability experimental
+ */
+ol.layer.Vector.prototype.getAlwaysRerenderOnChange = function() {
+  return /** @type {boolean|undefined} */ (
+      this.get(ol.layer.VectorProperty.ALWAYS_RERENDER_ON_CHANGE));
+};
+goog.exportProperty(
+    ol.layer.Vector.prototype,
+    'getAlwaysRerenderOnChange',
+    ol.layer.Vector.prototype.getAlwaysRerenderOnChange);
+
+
+/**
  * @return {ol.Collection|undefined} Render geometry functions.
  * @todo stability experimental
  */
@@ -62,6 +77,21 @@ goog.exportProperty(
     ol.layer.Vector.prototype,
     'getStyleFunction',
     ol.layer.Vector.prototype.getStyleFunction);
+
+
+/**
+ * @param {boolean|undefined} alwaysRerenderOnChange Always re-render on change.
+ * @todo stability experimental
+ */
+ol.layer.Vector.prototype.setAlwaysRerenderOnChange =
+    function(alwaysRerenderOnChange) {
+  this.set(ol.layer.VectorProperty.ALWAYS_RERENDER_ON_CHANGE,
+      alwaysRerenderOnChange);
+};
+goog.exportProperty(
+    ol.layer.Vector.prototype,
+    'setAlwaysRerenderOnChange',
+    ol.layer.Vector.prototype.setAlwaysRerenderOnChange);
 
 
 /**
