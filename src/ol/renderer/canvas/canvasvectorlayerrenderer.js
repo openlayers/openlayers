@@ -181,19 +181,21 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
       frameState.attributions, vectorSource.getAttributions());
   this.updateLogos(frameState, vectorSource);
 
+  var vectorLayerRevision = vectorLayer.getRevision();
+
   if (!this.dirty_ && (frameState.viewHints[ol.ViewHint.ANIMATING] ||
-      frameState.viewHints[ol.ViewHint.INTERACTING])) {
+      frameState.viewHints[ol.ViewHint.INTERACTING]) &&
+      (this.renderedRevision_ == vectorLayerRevision ||
+       !vectorLayer.getAlwaysRerenderOnChange())) {
     return;
   }
 
   var frameStateExtent = frameState.extent;
   var frameStateResolution = frameState.view2DState.resolution;
   var pixelRatio = frameState.pixelRatio;
-  var vectorLayerRevision = vectorLayer.getRevision();
 
   if (!this.dirty_ &&
       this.renderedResolution_ == frameStateResolution &&
-      this.renderedRevision_ == vectorLayerRevision &&
       ol.extent.containsExtent(this.renderedExtent_, frameStateExtent)) {
     return;
   }
