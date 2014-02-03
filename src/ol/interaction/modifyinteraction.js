@@ -292,6 +292,13 @@ ol.interaction.Modify.prototype.removeFeature_ = function(evt) {
   for (i = nodesToRemove.length - 1; i >= 0; --i) {
     rBush.remove(nodesToRemove[i]);
   }
+  // There remains only vertexFeature…
+  if (!goog.isNull(this.vertexFeature_) &&
+      this.overlay_.getFeatures().getLength() === 1 &&
+      this.overlay_.getFeatures().getAt(0) == this.vertexFeature_) {
+    this.overlay_.removeFeature(this.vertexFeature_);
+    this.vertexFeature_ = null;
+  }
 };
 
 
