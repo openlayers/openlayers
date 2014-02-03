@@ -15,6 +15,7 @@ goog.require('ol.geom.simplify');
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawPolygon} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.Polygon = function(coordinates, opt_layout) {
 
@@ -110,6 +111,7 @@ ol.geom.Polygon.prototype.containsXY = function(x, y) {
 
 /**
  * @return {number} Area.
+ * @todo stability experimental
  */
 ol.geom.Polygon.prototype.getArea = function() {
   return ol.geom.flat.linearRingsArea(
@@ -119,6 +121,7 @@ ol.geom.Polygon.prototype.getArea = function() {
 
 /**
  * @return {ol.geom.RawPolygon} Coordinates.
+ * @todo stability experimental
  */
 ol.geom.Polygon.prototype.getCoordinates = function() {
   return ol.geom.flat.inflateCoordinatess(
@@ -151,6 +154,7 @@ ol.geom.Polygon.prototype.getInteriorPoint = function() {
 
 /**
  * @return {Array.<ol.geom.LinearRing>} Linear rings.
+ * @todo stability experimental
  */
 ol.geom.Polygon.prototype.getLinearRings = function() {
   var layout = this.layout;
@@ -219,6 +223,7 @@ ol.geom.Polygon.prototype.getType = function() {
 /**
  * @param {ol.geom.RawPolygon} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (goog.isNull(coordinates)) {
