@@ -64,7 +64,7 @@ ol.style.Icon = function(opt_options) {
    * @private
    * @type {ol.style.IconImage_}
    */
-  this.iconImage_ = new ol.style.IconImage_(options.src, crossOrigin);
+  this.iconImage_ = ol.style.IconImage_.get(options.src, crossOrigin);
 
   /**
    * @private
