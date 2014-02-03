@@ -71,8 +71,7 @@ ol.geom.Circle.prototype.containsXY = function(x, y) {
   var flatCoordinates = this.flatCoordinates;
   var dx = x - flatCoordinates[0];
   var dy = y - flatCoordinates[1];
-  var r = flatCoordinates[this.stride] - flatCoordinates[0];
-  return Math.sqrt(dx * dx + dy * dy) <= r;
+  return dx * dx + dy * dy <= this.getRadiusSquared_();
 };
 
 
@@ -106,9 +105,18 @@ ol.geom.Circle.prototype.getExtent = function(opt_extent) {
  * @return {number} Radius.
  */
 ol.geom.Circle.prototype.getRadius = function() {
+  return Math.sqrt(this.getRadiusSquared_());
+};
+
+
+/**
+ * @private
+ * @return {number} Radius squared.
+ */
+ol.geom.Circle.prototype.getRadiusSquared_ = function() {
   var dx = this.flatCoordinates[this.stride] - this.flatCoordinates[0];
   var dy = this.flatCoordinates[this.stride + 1] - this.flatCoordinates[1];
-  return Math.sqrt(dx * dx + dy * dy);
+  return dx * dx + dy * dy;
 };
 
 
