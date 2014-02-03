@@ -60,20 +60,35 @@ var map = new ol.Map({
   })
 });
 
-var highlightStyleArray = [new ol.style.Style({
-  stroke: new ol.style.Stroke({
-    color: '#f00',
-    width: 1
-  }),
-  fill: new ol.style.Fill({
-    color: 'rgba(255,0,0,0.1)'
-  })
-})];
+var highlightStyleCache = {};
 
 var featuresOverlay = new ol.render.FeaturesOverlay({
   map: map,
   styleFunction: function(feature, resolution) {
-    return highlightStyleArray;
+    var text = resolution < 5000 ? feature.get('name') : '';
+    if (!highlightStyleCache[text]) {
+      highlightStyleCache[text] = [new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: '#f00',
+          width: 1
+        }),
+        fill: new ol.style.Fill({
+          color: 'rgba(255,0,0,0.1)'
+        }),
+        text: new ol.style.Text({
+          font: '12px Calibri,sans-serif',
+          text: text,
+          fill: new ol.style.Fill({
+            color: '#000'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#f00',
+            width: 3
+          })
+        })
+      })];
+    }
+    return highlightStyleCache[text];
   }
 });
 
