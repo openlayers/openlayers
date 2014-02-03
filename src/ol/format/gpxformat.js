@@ -18,6 +18,7 @@ goog.require('ol.xml');
 /**
  * @constructor
  * @extends {ol.format.XML}
+ * @todo stability experimental
  */
 ol.format.GPX = function() {
   goog.base(this);
