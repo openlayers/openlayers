@@ -2,7 +2,6 @@ goog.provide('ol.renderer.canvas.VectorLayer');
 
 goog.require('goog.asserts');
 goog.require('goog.events');
-goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
@@ -157,12 +156,9 @@ ol.renderer.canvas.VectorLayer.prototype.getRenderGeometryFunction_ =
  * @param {goog.events.Event} event Image style change event.
  * @private
  */
-ol.renderer.canvas.VectorLayer.prototype.handleImageStyleChange_ =
+ol.renderer.canvas.VectorLayer.prototype.handleImageChange_ =
     function(event) {
-  var imageStyle = /** @type {ol.style.Image} */ (event.target);
-  if (imageStyle.getImageState() == ol.style.ImageState.LOADED) {
-    this.renderIfReadyAndVisible();
-  }
+  this.renderIfReadyAndVisible();
 };
 
 
@@ -262,21 +258,27 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature =
   for (i = 0, ii = styles.length; i < ii; ++i) {
     style = styles[i];
     imageStyle = style.getImage();
-    if (!goog.isNull(imageStyle)) {
-      if (imageStyle.getImageState() == ol.style.ImageState.IDLE) {
-        goog.events.listenOnce(imageStyle, goog.events.EventType.CHANGE,
-            this.handleImageStyleChange_, false, this);
-        imageStyle.load();
-      } else if (imageStyle.getImageState() == ol.style.ImageState.LOADED) {
-        ol.renderer.vector.renderFeature(
-            replayGroup, feature, style, squaredTolerance, feature);
-      }
-      goog.asserts.assert(
-          imageStyle.getImageState() != ol.style.ImageState.IDLE);
-      loading = imageStyle.getImageState() == ol.style.ImageState.LOADING;
-    } else {
+    if (goog.isNull(imageStyle)) {
       ol.renderer.vector.renderFeature(
           replayGroup, feature, style, squaredTolerance, feature);
+    } else {
+      imageState = imageStyle.getImageState();
+      if (imageState == ol.style.ImageState.LOADED ||
+          imageState == ol.style.ImageState.ERROR) {
+        imageStyle.unlistenImageChange(this.handleImageChange_, this);
+        if (imageState == ol.style.ImageState.LOADED) {
+          ol.renderer.vector.renderFeature(
+              replayGroup, feature, style, squaredTolerance, feature);
+        }
+      } else {
+        if (imageState == ol.style.ImageState.IDLE) {
+          imageStyle.load();
+        }
+        imageState = imageStyle.getImageState();
+        goog.asserts.assert(imageState == ol.style.ImageState.LOADING);
+        imageStyle.listenImageChange(this.handleImageChange_, this);
+        loading = true;
+      }
     }
   }
   return loading;
