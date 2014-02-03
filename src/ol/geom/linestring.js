@@ -14,6 +14,7 @@ goog.require('ol.geom.simplify');
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawLineString} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.LineString = function(coordinates, opt_layout) {
 
@@ -69,6 +70,7 @@ ol.geom.LineString.prototype.closestPointXY =
 
 /**
  * @return {ol.geom.RawLineString} Coordinates.
+ * @todo stability experimental
  */
 ol.geom.LineString.prototype.getCoordinates = function() {
   return ol.geom.flat.inflateCoordinates(
@@ -78,6 +80,7 @@ ol.geom.LineString.prototype.getCoordinates = function() {
 
 /**
  * @return {number} Length.
+ * @todo stability experimental
  */
 ol.geom.LineString.prototype.getLength = function() {
   return ol.geom.flat.lineStringLength(
@@ -112,6 +115,7 @@ ol.geom.LineString.prototype.getType = function() {
 /**
  * @param {ol.geom.RawLineString} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.LineString.prototype.setCoordinates =
     function(coordinates, opt_layout) {

@@ -61,6 +61,7 @@ goog.inherits(ol.DrawEvent, goog.events.Event);
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.DrawOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.Draw = function(opt_options) {
 

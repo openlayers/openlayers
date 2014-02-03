@@ -12,6 +12,7 @@ goog.require('ol.render.FeaturesOverlay');
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.SelectOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.Select = function(opt_options) {
 
@@ -78,6 +79,7 @@ goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 
 /**
  * @return {ol.render.FeaturesOverlay} Features overlay.
+ * @todo stability experimental
  */
 ol.interaction.Select.prototype.getFeaturesOverlay = function() {
   return this.featuresOverlay_;

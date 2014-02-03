@@ -17,6 +17,7 @@ goog.require('ol.geom.simplify');
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiLineString} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.MultiLineString = function(coordinates, opt_layout) {
 
@@ -79,6 +80,7 @@ ol.geom.MultiLineString.prototype.closestPointXY =
 
 /**
  * @return {ol.geom.RawMultiLineString} Coordinates.
+ * @todo stability experimental
  */
 ol.geom.MultiLineString.prototype.getCoordinates = function() {
   return ol.geom.flat.inflateCoordinatess(
@@ -96,6 +98,7 @@ ol.geom.MultiLineString.prototype.getEnds = function() {
 
 /**
  * @return {Array.<ol.geom.LineString>} LineStrings.
+ * @todo stability experimental
  */
 ol.geom.MultiLineString.prototype.getLineStrings = function() {
   // FIXME we should construct the line strings from the flat coordinates
@@ -137,6 +140,7 @@ ol.geom.MultiLineString.prototype.getType = function() {
 /**
  * @param {ol.geom.RawMultiLineString} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.MultiLineString.prototype.setCoordinates =
     function(coordinates, opt_layout) {
@@ -170,6 +174,7 @@ ol.geom.MultiLineString.prototype.setFlatCoordinates =
 
 /**
  * @param {Array.<ol.geom.LineString>} lineStrings LineStrings.
+ * @todo stability experimental
  */
 ol.geom.MultiLineString.prototype.setLineStrings = function(lineStrings) {
   var layout = ol.geom.GeometryLayout.XY;

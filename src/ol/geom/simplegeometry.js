@@ -12,6 +12,7 @@ goog.require('ol.geom.flat');
 /**
  * @constructor
  * @extends {ol.geom.Geometry}
+ * @todo stability experimental
  */
 ol.geom.SimpleGeometry = function() {
 
@@ -107,6 +108,7 @@ ol.geom.SimpleGeometry.prototype.getFlatCoordinates = function() {
 
 /**
  * @return {ol.geom.GeometryLayout} Layout.
+ * @todo stability experimental
  */
 ol.geom.SimpleGeometry.prototype.getLayout = function() {
   return this.layout;

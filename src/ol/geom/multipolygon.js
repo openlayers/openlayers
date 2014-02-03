@@ -15,6 +15,7 @@ goog.require('ol.geom.simplify');
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiPolygon} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.MultiPolygon = function(coordinates, opt_layout) {
 
@@ -110,6 +111,7 @@ ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
 
 /**
  * @return {number} Area.
+ * @todo stability experimental
  */
 ol.geom.MultiPolygon.prototype.getArea = function() {
   return ol.geom.flat.linearRingssArea(
@@ -119,6 +121,7 @@ ol.geom.MultiPolygon.prototype.getArea = function() {
 
 /**
  * @return {ol.geom.RawMultiPolygon} Coordinates.
+ * @todo stability experimental
  */
 ol.geom.MultiPolygon.prototype.getCoordinates = function() {
   return ol.geom.flat.inflateCoordinatesss(
@@ -189,6 +192,7 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
 
 /**
  * @return {Array.<ol.geom.Polygon>} Polygons.
+ * @todo stability experimental
  */
 ol.geom.MultiPolygon.prototype.getPolygons = function() {
   var layout = this.layout;
@@ -221,6 +225,7 @@ ol.geom.MultiPolygon.prototype.getType = function() {
 /**
  * @param {ol.geom.RawMultiPolygon} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.MultiPolygon.prototype.setCoordinates =
     function(coordinates, opt_layout) {

@@ -9,6 +9,7 @@ goog.require('ol.source.VectorFile');
  * @constructor
  * @extends {ol.source.VectorFile}
  * @param {olx.source.KMLOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.source.KML = function(opt_options) {
 

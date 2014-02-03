@@ -18,6 +18,7 @@ ol.layer.VectorProperty = {
  * @constructor
  * @extends {ol.layer.Layer}
  * @param {olx.layer.VectorOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.layer.Vector = function(opt_options) {
 
@@ -37,6 +38,7 @@ goog.inherits(ol.layer.Vector, ol.layer.Layer);
 
 /**
  * @return {ol.Collection|undefined} Render geometry functions.
+ * @todo stability experimental
  */
 ol.layer.Vector.prototype.getRenderGeometryFunctions = function() {
   return /** @type {ol.Collection|undefined} */ (
@@ -50,6 +52,7 @@ goog.exportProperty(
 
 /**
  * @return {ol.feature.StyleFunction|undefined} Style function.
+ * @todo stability experimental
  */
 ol.layer.Vector.prototype.getStyleFunction = function() {
   return /** @type {ol.feature.StyleFunction|undefined} */ (
@@ -64,6 +67,7 @@ goog.exportProperty(
 /**
  * @param {ol.Collection|undefined} renderGeometryFunctions Render geometry
  *     functions.
+ * @todo stability experimental
  */
 ol.layer.Vector.prototype.setRenderGeometryFunctions =
     function(renderGeometryFunctions) {
@@ -81,6 +85,7 @@ goog.exportProperty(
  * value returned by the style function then `dispatchChangeEvent` should be
  * called on the layer for the layer to be refreshed on the screen.
  * @param {ol.feature.StyleFunction|undefined} styleFunction Style function.
+ * @todo stability experimental
  */
 ol.layer.Vector.prototype.setStyleFunction = function(styleFunction) {
   this.set(ol.layer.VectorProperty.STYLE_FUNCTION, styleFunction);

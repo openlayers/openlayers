@@ -62,6 +62,7 @@ ol.format.KMLGxTrackObject_;
  * @constructor
  * @extends {ol.format.XML}
  * @param {olx.format.KMLOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.format.KML = function(opt_options) {
 
@@ -1572,6 +1573,7 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
 /**
  * @param {Document|Node|string} source Souce.
  * @return {string|undefined} Name.
+ * @todo stability experimental
  */
 ol.format.KML.prototype.readName = function(source) {
   if (source instanceof Document) {

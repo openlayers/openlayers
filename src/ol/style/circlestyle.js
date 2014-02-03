@@ -17,6 +17,7 @@ goog.require('ol.style.Stroke');
  * @constructor
  * @param {olx.style.CircleOptions=} opt_options Options.
  * @extends {ol.style.Image}
+ * @todo stability experimental
  */
 ol.style.Circle = function(opt_options) {
 

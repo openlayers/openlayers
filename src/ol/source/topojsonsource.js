@@ -9,6 +9,7 @@ goog.require('ol.source.VectorFile');
  * @constructor
  * @extends {ol.source.VectorFile}
  * @param {olx.source.TopoJSONOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.source.TopoJSON = function(opt_options) {
 
