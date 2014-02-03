@@ -25,6 +25,7 @@ ol.format.IGCZ = {
  * @constructor
  * @extends {ol.format.Text}
  * @param {olx.format.IGCOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.format.IGC = function(opt_options) {
 
