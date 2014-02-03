@@ -30,7 +30,7 @@ goog.inherits(ol.Observable, goog.events.EventTarget);
 
 
 /**
- * FIXME empty description for jsdoc
+ * @todo stability experimental
  */
 ol.Observable.prototype.dispatchChangeEvent = function() {
   ++this.revision_;
@@ -40,6 +40,7 @@ ol.Observable.prototype.dispatchChangeEvent = function() {
 
 /**
  * @return {number} Revision.
+ * @todo stability experimental
  */
 ol.Observable.prototype.getRevision = function() {
   return this.revision_;
