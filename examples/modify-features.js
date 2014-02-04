@@ -4,6 +4,7 @@ goog.require('ol.View2D');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction');
 goog.require('ol.interaction.Modify');
+goog.require('ol.interaction.Select');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.FeaturesOverlay');
@@ -235,9 +236,12 @@ var overlay = new ol.render.FeaturesOverlay({
 });
 
 var modify = new ol.interaction.Modify(overlay);
+var select = new ol.interaction.Select({
+  featuresOverlay: overlay
+});
 
 var map = new ol.Map({
-  interactions: ol.interaction.defaults().extend([modify]),
+  interactions: ol.interaction.defaults().extend([select, modify]),
   layers: [raster, vectorLayer],
   renderer: ol.RendererHint.CANVAS,
   target: 'map',
@@ -245,27 +249,4 @@ var map = new ol.Map({
     center: [0, 0],
     zoom: 2
   })
-});
-
-var highlight;
-var displayFeatureInfo = function(pixel) {
-
-  var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-    return feature;
-  });
-
-  if (feature !== highlight) {
-    if (highlight) {
-      overlay.removeFeature(highlight);
-    }
-    if (feature) {
-      overlay.addFeature(feature);
-    }
-    highlight = feature;
-  }
-
-};
-
-map.on('singleclick', function(evt) {
-  displayFeatureInfo(evt.pixel);
 });
