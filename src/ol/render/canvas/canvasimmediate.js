@@ -432,7 +432,7 @@ ol.render.canvas.Immediate.prototype.drawPointGeometry =
     this.drawImages_(flatCoordinates, 0, flatCoordinates.length, stride);
   }
   if (this.text_ !== '') {
-    this.drawImages_(flatCoordinates, 0, flatCoordinates.length, stride);
+    this.drawText_(flatCoordinates, 0, flatCoordinates.length, stride);
   }
 };
 
