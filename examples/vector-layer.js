@@ -62,7 +62,7 @@ var map = new ol.Map({
 
 var highlightStyleCache = {};
 
-var featuresOverlay = new ol.FeatureOverlay({
+var featureOverlay = new ol.FeatureOverlay({
   map: map,
   styleFunction: function(feature, resolution) {
     var text = resolution < 5000 ? feature.get('name') : '';
@@ -108,10 +108,10 @@ var displayFeatureInfo = function(pixel) {
 
   if (feature !== highlight) {
     if (highlight) {
-      featuresOverlay.removeFeature(highlight);
+      featureOverlay.removeFeature(highlight);
     }
     if (feature) {
-      featuresOverlay.addFeature(feature);
+      featureOverlay.addFeature(feature);
     }
     highlight = feature;
   }
