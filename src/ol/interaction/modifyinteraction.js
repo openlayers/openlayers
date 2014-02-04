@@ -11,14 +11,12 @@ goog.require('ol.coordinate');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
-goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Drag');
-goog.require('ol.layer.Vector');
 goog.require('ol.render.FeaturesOverlay');
 goog.require('ol.structs.RBush');
 goog.require('ol.style.Circle');
@@ -95,6 +93,21 @@ ol.interaction.Modify = function(featuresOverlay, opt_options) {
       this.addFeature_, false, this);
   this.overlay_.getFeatures().listen(ol.CollectionEventType.REMOVE,
       this.removeFeature_, false, this);
+
+  /**
+  * @const
+  * @private
+  * @type {Object.<string, function(ol.Feature, ol.geom.Geometry)> }
+  */
+  this.SEGMENT_WRITERS_ = {
+    'Point': this.writePointGeometry_,
+    'LineString': this.writeLineStringGeometry_,
+    'LinearRing': this.writeLineStringGeometry_,
+    'Polygon': this.writePolygonGeometry_,
+    'MultiPoint': this.writeMultiPointGeometry_,
+    'MultiLineString': this.writeMultiLineStringGeometry_,
+    'MultiPolygon': this.writeMultiPolygonGeometry_
+  };
 
 };
 goog.inherits(ol.interaction.Modify, ol.interaction.Drag);
@@ -183,94 +196,149 @@ ol.interaction.Modify.prototype.setMap = function(map) {
  */
 ol.interaction.Modify.prototype.addFeature_ = function(evt) {
   var feature = evt.element;
+  goog.asserts.assertInstanceof(feature, ol.Feature);
   var geometry = feature.getGeometry();
-  var rBush = this.rBush_;
-  var segment, segmentData, coordinates;
-  var i, ii;
-  if (geometry instanceof ol.geom.Point) {
-    coordinates = geometry.getCoordinates();
+  this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry);
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature
+ * @param {ol.geom.Point} geometry Geometry.
+ * @private
+ */
+ol.interaction.Modify.prototype.writePointGeometry_ =
+    function(feature, geometry) {
+  var coordinates = geometry.getCoordinates();
+  var segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+    feature: feature,
+    geometry: geometry,
+    segment: [coordinates, coordinates],
+    style: this.overlay_.getStyleFunction()
+  });
+  this.rBush_.insert(geometry.getExtent(), segmentData);
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature
+ * @param {ol.geom.MultiPoint} geometry Geometry.
+ * @private
+ */
+ol.interaction.Modify.prototype.writeMultiPointGeometry_ =
+    function(feature, geometry) {
+  var points = geometry.getCoordinates();
+  var coordinates, i, ii, segmentData;
+  for (i = 0, ii = points.length - 1; i < ii; ++i) {
+    coordinates = points[i];
     segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
       feature: feature,
       geometry: geometry,
+      depth: [i],
       segment: [coordinates, coordinates],
       style: this.overlay_.getStyleFunction()
     });
-    rBush.insert(geometry.getExtent(), segmentData);
-  } else if (geometry instanceof ol.geom.MultiPoint) {
-    var points = geometry.getCoordinates();
-    for (i = 0, ii = points.length - 1; i < ii; ++i) {
-      coordinates = points[i];
-      segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
-        feature: feature,
-        geometry: geometry,
-        depth: [i],
-        segment: [coordinates, coordinates],
-        style: this.overlay_.getStyleFunction()
-      });
-      rBush.insert(geometry.getExtent(), segmentData);
-    }
-  } else if (geometry instanceof ol.geom.LineString ||
-      geometry instanceof ol.geom.LinearRing) {
-    coordinates = geometry.getCoordinates();
-    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      segment = coordinates.slice(i, i + 2);
-      segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
-        feature: feature,
-        geometry: geometry,
-        index: i,
-        style: this.overlay_.getStyleFunction(),
-        segment: segment
-      });
-      rBush.insert(ol.extent.boundingExtent(segment), segmentData);
-    }
-  } else if (geometry instanceof ol.geom.MultiLineString) {
-    var lines = geometry.getCoordinates();
-    for (var j = 0, jj = lines.length; j < jj; ++j) {
-      coordinates = lines[j];
-      for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-        segment = coordinates.slice(i, i + 2);
-        segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
-          feature: feature,
-          geometry: geometry,
-          depth: [j],
-          index: i,
-          style: this.overlay_.getStyleFunction(),
-          segment: segment
-        });
-        rBush.insert(ol.extent.boundingExtent(segment), segmentData);
-      }
-    }
-  } else if (geometry instanceof ol.geom.Polygon) {
-    var rings = geometry.getCoordinates();
-    coordinates = rings[0];
-    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      segment = coordinates.slice(i, i + 2);
-      segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
-        feature: feature,
-        geometry: geometry,
-        index: i,
-        style: this.overlay_.getStyleFunction(),
-        segment: segment
-      });
-      rBush.insert(ol.extent.boundingExtent(segment), segmentData);
-    }
+    this.rBush_.insert(geometry.getExtent(), segmentData);
+  }
+};
 
-  } else if (geometry instanceof ol.geom.MultiPolygon) {
-    var polygons = geometry.getCoordinates();
-    for (var j = 0, jj = polygons.length; j < jj; ++j) {
-      coordinates = polygons[j][0];
-      for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-        segment = coordinates.slice(i, i + 2);
-        segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
-          feature: feature,
-          geometry: geometry,
-          depth: [j],
-          index: i,
-          style: this.overlay_.getStyleFunction(),
-          segment: segment
-        });
-        rBush.insert(ol.extent.boundingExtent(segment), segmentData);
-      }
+
+/**
+ * @param {ol.Feature} feature Feature
+ * @param {ol.geom.LineString} geometry Geometry.
+ * @private
+ */
+ol.interaction.Modify.prototype.writeLineStringGeometry_ =
+    function(feature, geometry) {
+  var coordinates = geometry.getCoordinates();
+  var i, ii, segment, segmentData;
+  for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+    segment = coordinates.slice(i, i + 2);
+    segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+      feature: feature,
+      geometry: geometry,
+      index: i,
+      style: this.overlay_.getStyleFunction(),
+      segment: segment
+    });
+    this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
+  }
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature
+ * @param {ol.geom.MultiLineString} geometry Geometry.
+ * @private
+ */
+ol.interaction.Modify.prototype.writeMultiLineStringGeometry_ =
+    function(feature, geometry) {
+  var lines = geometry.getCoordinates();
+  var coordinates, i, ii, j, jj, segment, segmentData;
+  for (j = 0, jj = lines.length; j < jj; ++j) {
+    coordinates = lines[j];
+    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      segment = coordinates.slice(i, i + 2);
+      segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+        feature: feature,
+        geometry: geometry,
+        depth: [j],
+        index: i,
+        style: this.overlay_.getStyleFunction(),
+        segment: segment
+      });
+      this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
+    }
+  }
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature
+ * @param {ol.geom.Polygon} geometry Geometry.
+ * @private
+ */
+ol.interaction.Modify.prototype.writePolygonGeometry_ =
+    function(feature, geometry) {
+  var rings = geometry.getCoordinates();
+  var coordinates = rings[0];
+  var i, ii, segment, segmentData;
+  for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+    segment = coordinates.slice(i, i + 2);
+    segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+      feature: feature,
+      geometry: geometry,
+      index: i,
+      style: this.overlay_.getStyleFunction(),
+      segment: segment
+    });
+    this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
+  }
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature
+ * @param {ol.geom.MultiPolygon} geometry Geometry.
+ * @private
+ */
+ol.interaction.Modify.prototype.writeMultiPolygonGeometry_ =
+    function(feature, geometry) {
+  var polygons = geometry.getCoordinates();
+  var coordinates, i, ii, j, jj, segment, segmentData;
+  for (j = 0, jj = polygons.length; j < jj; ++j) {
+    coordinates = polygons[j][0];
+    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      segment = coordinates.slice(i, i + 2);
+      segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+        feature: feature,
+        geometry: geometry,
+        depth: [j],
+        index: i,
+        style: this.overlay_.getStyleFunction(),
+        segment: segment
+      });
+      this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
     }
   }
 };
@@ -459,7 +527,6 @@ ol.interaction.Modify.prototype.handleMouseMove_ = function(evt) {
   this.modifiable_ = false;
   var rBush = this.rBush_;
   var nodes = rBush.getAllInExtent(box);
-  //var renderIntent = ol.layer.VectorLayerRenderIntent.HIDDEN;
   if (nodes.length > 0) {
     nodes.sort(sortByDistance);
     var node = nodes[0];
@@ -473,10 +540,8 @@ ol.interaction.Modify.prototype.handleMouseMove_ = function(evt) {
       var squaredDist1 = ol.coordinate.squaredDistance(vertexPixel, pixel1);
       var squaredDist2 = ol.coordinate.squaredDistance(vertexPixel, pixel2);
       var dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
-      //renderIntent = ol.layer.VectorLayerRenderIntent.FUTURE;
       if (dist <= 10) {
         vertex = squaredDist1 > squaredDist2 ? segment[1] : segment[0];
-        //renderIntent = ol.layer.VectorLayerRenderIntent.TEMPORARY;
       }
       this.createOrUpdateVertexFeature_(node.style, vertex);
       this.modifiable_ = true;
