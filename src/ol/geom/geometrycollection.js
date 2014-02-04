@@ -2,6 +2,8 @@ goog.provide('ol.geom.GeometryCollection');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
@@ -25,6 +27,7 @@ ol.geom.GeometryCollection = function(opt_geometries) {
    */
   this.geometries_ = goog.isDef(opt_geometries) ? opt_geometries : null;
 
+  this.listenGeometriesChange_();
 };
 goog.inherits(ol.geom.GeometryCollection, ol.geom.Geometry);
 
@@ -41,6 +44,38 @@ ol.geom.GeometryCollection.cloneGeometries_ = function(geometries) {
     clonedGeometries.push(geometries[i].clone());
   }
   return clonedGeometries;
+};
+
+
+/**
+ * @private
+ */
+ol.geom.GeometryCollection.prototype.unlistenGeometriesChange_ = function() {
+  var i, ii;
+  if (goog.isNull(this.geometries_)) {
+    return;
+  }
+  for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
+    goog.events.unlisten(
+        this.geometries_[i], goog.events.EventType.CHANGE,
+        this.dispatchChangeEvent, false, this);
+  }
+};
+
+
+/**
+ * @private
+ */
+ol.geom.GeometryCollection.prototype.listenGeometriesChange_ = function() {
+  var i, ii;
+  if (goog.isNull(this.geometries_)) {
+    return;
+  }
+  for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
+    goog.events.listen(
+        this.geometries_[i], goog.events.EventType.CHANGE,
+        this.dispatchChangeEvent, false, this);
+  }
 };
 
 
@@ -199,7 +234,9 @@ ol.geom.GeometryCollection.prototype.setGeometries = function(geometries) {
  * @param {Array.<ol.geom.Geometry>} geometries Geometries.
  */
 ol.geom.GeometryCollection.prototype.setGeometriesArray = function(geometries) {
+  this.unlistenGeometriesChange_();
   this.geometries_ = geometries;
+  this.listenGeometriesChange_();
   this.dispatchChangeEvent();
 };
 
@@ -214,4 +251,13 @@ ol.geom.GeometryCollection.prototype.transform = function(transformFn) {
     geometries[i].transform(transformFn);
   }
   this.dispatchChangeEvent();
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.GeometryCollection.prototype.disposeInternal = function() {
+  this.unlistenGeometriesChange_();
+  goog.base(this, 'disposeInternal');
 };
