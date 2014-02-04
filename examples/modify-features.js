@@ -171,9 +171,23 @@ var overlayStyle = (function() {
       fill: new ol.style.Fill({
         color: [255, 255, 255, 0.5]
       })
+    }),
+    new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: [255, 255, 255, 1],
+        width: 5
+      })
+    }),
+    new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: [0, 153, 255, 1],
+        width: 3
+      })
     })
   ];
   styles[ol.geom.GeometryType.MULTI_POLYGON] =
+      styles[ol.geom.GeometryType.POLYGON];
+  styles[ol.geom.GeometryType.GEOMETRY_COLLECTION] =
       styles[ol.geom.GeometryType.POLYGON];
 
   styles[ol.geom.GeometryType.LINE_STRING] = [
