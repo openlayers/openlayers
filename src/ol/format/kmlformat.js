@@ -1102,21 +1102,21 @@ ol.format.KML.whenParser_ = function(node, objectStack) {
   var whens = gxTrackObject.whens;
   var s = ol.xml.getAllTextContent(node, false);
   var re =
-      /^\s*(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(Z|(?:([+\-])(\d{2})(?::(\d{2}))?))\s*$/;
+      /^\s*(\d{4})($|-(\d{2})($|-(\d{2})($|T(\d{2}):(\d{2}):(\d{2})(Z|(?:([+\-])(\d{2})(?::(\d{2}))?)))))\s*$/;
   var m = re.exec(s);
   if (m) {
     var year = parseInt(m[1], 10);
-    var month = parseInt(m[2], 10) - 1;
-    var day = parseInt(m[3], 10);
-    var hour = parseInt(m[4], 10);
-    var minute = parseInt(m[5], 10);
-    var second = parseInt(m[6], 10);
+    var month = goog.isDef(m[3]) ? parseInt(m[3], 10) - 1 : 0;
+    var day = goog.isDef(m[5]) ? parseInt(m[5], 10) : 1;
+    var hour = goog.isDef(m[7]) ? parseInt(m[7], 10) : 0;
+    var minute = goog.isDef(m[8]) ? parseInt(m[8], 10) : 0;
+    var second = goog.isDef(m[9]) ? parseInt(m[9], 10) : 0;
     var when = Date.UTC(year, month, day, hour, minute, second);
-    if (m[7] != 'Z') {
-      var sign = m[8] == '-' ? -1 : 1;
-      when += sign * 60 * parseInt(m[9], 10);
-      if (goog.isDef(m[10])) {
-        when += sign * 60 * 60 * parseInt(m[10], 10);
+    if (goog.isDef(m[10]) && m[10] != 'Z') {
+      var sign = m[11] == '-' ? -1 : 1;
+      when += sign * 60 * parseInt(m[12], 10);
+      if (goog.isDef(m[13])) {
+        when += sign * 60 * 60 * parseInt(m[13], 10);
       }
     }
     whens.push(when);
