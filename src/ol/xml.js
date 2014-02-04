@@ -78,6 +78,33 @@ ol.xml.isDocument = goog.userAgent.IE ?
 
 
 /**
+ * @param {?} value Value.
+ * @private
+ * @return {boolean} Is node.
+ */
+ol.xml.isNode_ = function(value) {
+  return value instanceof Node;
+};
+
+
+/**
+ * @param {?} value Value.
+ * @private
+ * @return {boolean} Is node.
+ */
+ol.xml.isNodeIE_ = function(value) {
+  return goog.isObject(value) && goog.isDef(value.nodeType);
+};
+
+
+/**
+ * @param {?} value Value.
+ * @return {boolean} Is node.
+ */
+ol.xml.isNode = goog.userAgent.IE ? ol.xml.isNodeIE_ : ol.xml.isNode_;
+
+
+/**
  * @param {string} xml XML.
  * @return {Document} Document.
  */
