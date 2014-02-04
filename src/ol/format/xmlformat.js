@@ -33,8 +33,8 @@ ol.format.XML.prototype.getType = function() {
 ol.format.XML.prototype.readFeature = function(source) {
   if (ol.xml.isDocument(source)) {
     return this.readFeatureFromDocument(/** @type {Document} */ (source));
-  } else if (source instanceof Node) {
-    return this.readFeatureFromNode(source);
+  } else if (ol.xml.isNode(source)) {
+    return this.readFeatureFromNode(/** @type {Node} */ (source));
   } else if (goog.isString(source)) {
     var doc = ol.xml.load(source);
     return this.readFeatureFromDocument(doc);
@@ -72,8 +72,8 @@ ol.format.XML.prototype.readFeatureFromNode = goog.abstractMethod;
 ol.format.XML.prototype.readFeatures = function(source) {
   if (ol.xml.isDocument(source)) {
     return this.readFeaturesFromDocument(/** @type {Document} */ (source));
-  } else if (source instanceof Node) {
-    return this.readFeaturesFromNode(source);
+  } else if (ol.xml.isNode(source)) {
+    return this.readFeaturesFromNode(/** @type {Node} */ (source));
   } else if (goog.isString(source)) {
     var doc = ol.xml.load(source);
     return this.readFeaturesFromDocument(doc);
@@ -116,8 +116,8 @@ ol.format.XML.prototype.readFeaturesFromNode = goog.abstractMethod;
 ol.format.XML.prototype.readGeometry = function(source) {
   if (ol.xml.isDocument(source)) {
     return this.readGeometryFromDocument(/** @type {Document} */ (source));
-  } else if (source instanceof Node) {
-    return this.readGeometryFromNode(source);
+  } else if (ol.xml.isNode(source)) {
+    return this.readGeometryFromNode(/** @type {Node} */ (source));
   } else if (goog.isString(source)) {
     var doc = ol.xml.load(source);
     return this.readGeometryFromDocument(doc);
@@ -150,8 +150,8 @@ ol.format.XML.prototype.readGeometryFromNode = goog.abstractMethod;
 ol.format.XML.prototype.readProjection = function(source) {
   if (ol.xml.isDocument(source)) {
     return this.readProjectionFromDocument(/** @type {Document} */ (source));
-  } else if (source instanceof Node) {
-    return this.readProjectionFromNode(source);
+  } else if (ol.xml.isNode(source)) {
+    return this.readProjectionFromNode(/** @type {Node} */ (source));
   } else if (goog.isString(source)) {
     var doc = ol.xml.load(source);
     return this.readProjectionFromDocument(doc);
