@@ -106,7 +106,8 @@ ol.interaction.Modify = function(featuresOverlay, opt_options) {
     'Polygon': this.writePolygonGeometry_,
     'MultiPoint': this.writeMultiPointGeometry_,
     'MultiLineString': this.writeMultiLineStringGeometry_,
-    'MultiPolygon': this.writeMultiPolygonGeometry_
+    'MultiPolygon': this.writeMultiPolygonGeometry_,
+    'GeometryCollection': this.writeGeometryCollectionGeometry_
   };
 
 };
@@ -340,6 +341,21 @@ ol.interaction.Modify.prototype.writeMultiPolygonGeometry_ =
       });
       this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
     }
+  }
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature
+ * @param {ol.geom.GeometryCollection} geometry Geometry.
+ * @private
+ */
+ol.interaction.Modify.prototype.writeGeometryCollectionGeometry_ =
+    function(feature, geometry) {
+  var i, geometries = geometry.getGeometriesArray();
+  for (i = 0; i < geometries.length; ++i) {
+    this.SEGMENT_WRITERS_[geometries[i].getType()].call(
+        this, feature, geometries[i]);
   }
 };
 
