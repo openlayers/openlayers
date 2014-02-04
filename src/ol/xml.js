@@ -50,6 +50,40 @@ ol.xml.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
 
 
 /**
+ * @param {Node} node Node.
+ * @private
+ * @return {string} Local name.
+ */
+ol.xml.getLocalName_ = function(node) {
+  return node.localName;
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @private
+ * @return {string} Local name.
+ */
+ol.xml.getLocalNameIE_ = function(node) {
+  var localName = node.localName;
+  if (goog.isDef(localName)) {
+    return localName;
+  }
+  var baseName = node.baseName;
+  goog.asserts.assert(goog.isDefAndNotNull(baseName));
+  return baseName;
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @return {string} Local name.
+ */
+ol.xml.getLocalName = goog.userAgent.IE ?
+    ol.xml.getLocalNameIE_ : ol.xml.getLocalName_;
+
+
+/**
  * @param {?} value Value.
  * @private
  * @return {boolean} Is document.
