@@ -1575,8 +1575,8 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
  * @todo stability experimental
  */
 ol.format.KML.prototype.readName = function(source) {
-  if (source instanceof Document) {
-    return this.readNameFromDocument(source);
+  if (ol.xml.isDocument(source)) {
+    return this.readNameFromDocument(/** @type {Document} */ (source));
   } else if (source instanceof Node) {
     return this.readNameFromNode(source);
   } else if (goog.isString(source)) {
