@@ -31,8 +31,8 @@ ol.format.XML.prototype.getType = function() {
  * @inheritDoc
  */
 ol.format.XML.prototype.readFeature = function(source) {
-  if (source instanceof Document) {
-    return this.readFeatureFromDocument(source);
+  if (ol.xml.isDocument(source)) {
+    return this.readFeatureFromDocument(/** @type {Document} */ (source));
   } else if (source instanceof Node) {
     return this.readFeatureFromNode(source);
   } else if (goog.isString(source)) {
@@ -70,8 +70,8 @@ ol.format.XML.prototype.readFeatureFromNode = goog.abstractMethod;
  * @inheritDoc
  */
 ol.format.XML.prototype.readFeatures = function(source) {
-  if (source instanceof Document) {
-    return this.readFeaturesFromDocument(source);
+  if (ol.xml.isDocument(source)) {
+    return this.readFeaturesFromDocument(/** @type {Document} */ (source));
   } else if (source instanceof Node) {
     return this.readFeaturesFromNode(source);
   } else if (goog.isString(source)) {
@@ -114,8 +114,8 @@ ol.format.XML.prototype.readFeaturesFromNode = goog.abstractMethod;
  * @inheritDoc
  */
 ol.format.XML.prototype.readGeometry = function(source) {
-  if (source instanceof Document) {
-    return this.readGeometryFromDocument(source);
+  if (ol.xml.isDocument(source)) {
+    return this.readGeometryFromDocument(/** @type {Document} */ (source));
   } else if (source instanceof Node) {
     return this.readGeometryFromNode(source);
   } else if (goog.isString(source)) {
@@ -148,8 +148,8 @@ ol.format.XML.prototype.readGeometryFromNode = goog.abstractMethod;
  * @inheritDoc
  */
 ol.format.XML.prototype.readProjection = function(source) {
-  if (source instanceof Document) {
-    return this.readProjectionFromDocument(source);
+  if (ol.xml.isDocument(source)) {
+    return this.readProjectionFromDocument(/** @type {Document} */ (source));
   } else if (source instanceof Node) {
     return this.readProjectionFromNode(source);
   } else if (goog.isString(source)) {
