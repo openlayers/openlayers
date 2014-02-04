@@ -11,7 +11,6 @@ goog.require('goog.Uri');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.dom.xml');
 goog.require('goog.math');
 goog.require('goog.object');
 goog.require('goog.string');
@@ -1581,7 +1580,7 @@ ol.format.KML.prototype.readName = function(source) {
   } else if (source instanceof Node) {
     return this.readNameFromNode(source);
   } else if (goog.isString(source)) {
-    var doc = goog.dom.xml.loadXml(source);
+    var doc = ol.xml.load(source);
     return this.readNameFromDocument(doc);
   } else {
     goog.asserts.fail();
