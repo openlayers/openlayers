@@ -588,7 +588,7 @@ describe('ol.format.KML', function() {
         var imageStyle = style.getImage();
         expect(imageStyle).to.be.an(ol.style.Icon);
         expect(imageStyle.getSrc()).to.eql('http://foo.png');
-        expect(imageStyle.getAnchor()).to.eql([0.5, 0.5]);
+        expect(imageStyle.getAnchor()).to.be(null);
         expect(imageStyle.getRotation()).to.eql(0);
         expect(imageStyle.getSize()).to.be(null);
         expect(style.getText()).to.be(null);
