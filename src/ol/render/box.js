@@ -78,6 +78,8 @@ ol.render.Box.prototype.createGeometry_ = function() {
   ];
   var coordinates = goog.array.map(pixels[0],
       this.map_.getCoordinateFromPixel, this.map_);
+  // close the polygon
+  coordinates[4] = coordinates[0].slice();
   return new ol.geom.Polygon([coordinates]);
 };
 
