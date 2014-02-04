@@ -15,7 +15,7 @@ goog.require('ol.render.EventType');
 
 /**
  * @constructor
- * @param {olx.render.FeaturesOverlayOptions=} opt_options Options.
+ * @param {olx.FeatureOverlayOptions=} opt_options Options.
  * @todo stability experimental
  */
 ol.FeatureOverlay = function(opt_options) {
