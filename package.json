@@ -3,6 +3,7 @@
   "version": "3.0.0-beta",
   "description": "Mapping library",
   "scripts": {
+    "postinstall": "node tasks/parse-examples.js",
     "start": "node tasks/serve.js"
   },
   "repository": {
@@ -14,6 +15,8 @@
     "url": "https://github.com/openlayers/ol3/issues"
   },
   "devDependencies": {
-    "closure-util": "~0.8.2"
+    "closure-util": "~0.8.2",
+    "async": "~0.2.10",
+    "htmlparser2": "~3.4.0"
   }
 }
