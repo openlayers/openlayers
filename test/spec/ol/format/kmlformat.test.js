@@ -884,7 +884,7 @@ describe('ol.format.KML', function() {
         expect(s.getFill().getColor()).to.eql([0, 0, 0, 0]);
       });
 
-      it('can read a normal styleUrls', function() {
+      it('can read normal styleUrls', function() {
         var text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
             '  <Document>' +
