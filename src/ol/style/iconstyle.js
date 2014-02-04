@@ -440,6 +440,15 @@ ol.style.IconImageCache.getKey = function(src, crossOrigin) {
 /**
  * FIXME empty description for jsdoc
  */
+ol.style.IconImageCache.prototype.clear = function() {
+  this.cache_ = {};
+  this.cacheSize_ = 0;
+};
+
+
+/**
+ * FIXME empty description for jsdoc
+ */
 ol.style.IconImageCache.prototype.expire = function() {
   if (this.cacheSize_ > this.maxCacheSize_) {
     var i = 0;
