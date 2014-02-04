@@ -68,6 +68,7 @@ ol.pointer.PointerEventHandler = function(element) {
    */
   this.pointerMap = new goog.structs.Map();
 
+
   /**
    * @const
    * @type {ol.structs.WeakMap}
@@ -87,7 +88,7 @@ ol.pointer.PointerEventHandler = function(element) {
   this.eventSources = {};
   this.eventSourceList = [];
 
-  this.boundHandler_ = this.eventHandler_.bind(this);
+  this.boundHandler_ = goog.bind(this.eventHandler_, this);
 
   this.registerSources();
 };
@@ -167,7 +168,7 @@ ol.pointer.PointerEventHandler.prototype.registerSource =
       var handler = s.getHandlerForEvent(e);
 
       if (handler) {
-        this.eventMap[e] = handler.bind(s);
+        this.eventMap[e] = goog.bind(handler, s);
       }
     }, this);
     this.eventSources[name] = s;

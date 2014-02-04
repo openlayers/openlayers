@@ -128,7 +128,7 @@ ol.pointer.TouchSource.prototype.resetClickCount_ = function() {
     this.clickCount = 0;
     this.resetId = null;
   };
-  this.resetId = setTimeout(fn.bind(this), this.CLICK_COUNT_TIMEOUT);
+  this.resetId = setTimeout(goog.bind(fn, this), this.CLICK_COUNT_TIMEOUT);
 };
 
 
@@ -397,12 +397,12 @@ ol.pointer.TouchSource.prototype.dedupSynthMouse_ = function(inEvent) {
     // remember x/y of last touch
     var lt = {x: t.clientX, y: t.clientY};
     lts.push(lt);
-    var fn = (function(lts, lt) {
+    var fn = goog.bind(function(lts, lt) {
       var i = lts.indexOf(lt);
       if (i > -1) {
         lts.splice(i, 1);
       }
-    }).bind(null, lts, lt);
+    }, null, lts, lt);
     setTimeout(fn, this.DEDUP_TIMEOUT);
   }
 };
