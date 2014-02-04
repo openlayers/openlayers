@@ -1395,8 +1395,8 @@ ol.format.KML.prototype.getExtensions = function() {
  */
 ol.format.KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  goog.asserts.assert(node.localName == 'Document' ||
-                      node.localName == 'Folder');
+  var localName = ol.xml.getLocalName(node);
+  goog.asserts.assert(localName == 'Document' || localName == 'Folder');
   // FIXME use scope somehow
   var parsersNS = ol.xml.makeParsersNS(
       ol.format.KML.NAMESPACE_URIS_, {
@@ -1548,21 +1548,22 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
     return [];
   }
   var features;
-  if (node.localName == 'Document' || node.localName == 'Folder') {
+  var localName = ol.xml.getLocalName(node);
+  if (localName == 'Document' || localName == 'Folder') {
     features = this.readDocumentOrFolder_(node, []);
     if (goog.isDef(features)) {
       return features;
     } else {
       return [];
     }
-  } else if (node.localName == 'Placemark') {
+  } else if (localName == 'Placemark') {
     var feature = this.readPlacemark_(node, []);
     if (goog.isDef(feature)) {
       return [feature];
     } else {
       return [];
     }
-  } else if (node.localName == 'kml') {
+  } else if (localName == 'kml') {
     features = [];
     var n;
     for (n = node.firstElementChild; !goog.isNull(n);
@@ -1631,12 +1632,13 @@ ol.format.KML.prototype.readNameFromNode = function(node) {
     }
   }
   for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
+    var localName = ol.xml.getLocalName(n);
     if (goog.array.indexOf(ol.format.KML.NAMESPACE_URIS_,
                            n.namespaceURI) != -1 &&
-        (n.localName == 'Document' ||
-         n.localName == 'Folder' ||
-         n.localName == 'Placemark' ||
-         n.localName == 'kml')) {
+        (localName == 'Document' ||
+         localName == 'Folder' ||
+         localName == 'Placemark' ||
+         localName == 'kml')) {
       var name = this.readNameFromNode(n);
       if (goog.isDef(name)) {
         return name;
