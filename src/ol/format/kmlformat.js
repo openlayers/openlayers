@@ -371,10 +371,10 @@ ol.format.KML.readFlatCoordinates_ = function(node) {
  */
 ol.format.KML.readStyleUrl_ = function(node) {
   var s = goog.string.trim(ol.xml.getAllTextContent(node, false));
-  if (goog.isNull(node.baseURI)) {
-    return s;
-  } else {
+  if (goog.isDefAndNotNull(node.baseURI)) {
     return goog.Uri.resolve(node.baseURI, s).toString();
+  } else {
+    return s;
   }
 
 };
@@ -387,10 +387,10 @@ ol.format.KML.readStyleUrl_ = function(node) {
  */
 ol.format.KML.readURI_ = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
-  if (goog.isNull(node.baseURI)) {
-    return goog.string.trim(s);
-  } else {
+  if (goog.isDefAndNotNull(node.baseURI)) {
     return goog.Uri.resolve(node.baseURI, goog.string.trim(s)).toString();
+  } else {
+    return goog.string.trim(s);
   }
 };
 
@@ -1465,8 +1465,13 @@ ol.format.KML.prototype.readSharedStyle_ = function(node, objectStack) {
   if (!goog.isNull(id)) {
     var style = ol.format.KML.readStyle_(node, objectStack);
     if (goog.isDef(style)) {
-      var baseURI = goog.isNull(node.baseURI) ? '' : node.baseURI;
-      this.sharedStyles_[baseURI + '#' + id] = [style];
+      var styleUri;
+      if (goog.isDefAndNotNull(node.baseURI)) {
+        styleUri = goog.Uri.resolve(node.baseURI, '#' + id).toString();
+      } else {
+        styleUri = '#' + id;
+      }
+      this.sharedStyles_[styleUri] = [style];
     }
   }
 };
@@ -1487,23 +1492,28 @@ ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
     if (!goog.isDef(styleObject)) {
       return;
     }
-    var baseURI = goog.isNull(node.baseURI) ? '' : node.baseURI;
     var style = /** @type {ol.style.Style} */
         (goog.object.get(styleObject, 'style', null));
+    var styleUri;
+    if (goog.isDefAndNotNull(node.baseURI)) {
+      styleUri = goog.Uri.resolve(node.baseURI, '#' + id).toString();
+    } else {
+      styleUri = '#' + id;
+    }
     if (!goog.isNull(style)) {
-      this.sharedStyles_[baseURI + '#' + id] = [style];
+      this.sharedStyles_[styleUri] = [style];
     }
     var styleUrl = /** @type {string|undefined} */
         (goog.object.get(styleObject, 'styleUrl'));
     if (goog.isDef(styleUrl)) {
-      var styleUri;
-      if (goog.isNull(node.baseURI)) {
-        styleUri = '#' + goog.string.trim(styleUrl);
+      var styleUrlUri;
+      if (goog.isDefAndNotNull(node.baseURI)) {
+        styleUrlUri = goog.Uri.resolve(node.baseURI, styleUrl).toString();
       } else {
-        styleUri = goog.Uri.resolve(baseURI, styleUrl).toString();
+        styleUrlUri = '#' + goog.string.trim(styleUrl).replace(/^#/, '');
       }
-      goog.asserts.assert(styleUri in this.sharedStyles_);
-      this.sharedStyles_[baseURI + '#' + id] = this.sharedStyles_[styleUri];
+      goog.asserts.assert(styleUrlUri in this.sharedStyles_);
+      this.sharedStyles_[styleUri] = this.sharedStyles_[styleUrlUri];
     }
   }
 };
