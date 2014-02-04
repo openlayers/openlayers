@@ -49,6 +49,15 @@ ol.xml.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
 
 
 /**
+ * @param {string} xml XML.
+ * @return {Document} Document.
+ */
+ol.xml.load = function(xml) {
+  return new DOMParser().parseFromString(xml, 'application/xml');
+};
+
+
+/**
  * @param {function(this: T, Node, Array.<*>): (Array.<*>|undefined)}
  *     valueReader Value reader.
  * @param {T=} opt_this The object to use as `this` in `valueReader`.
