@@ -4,7 +4,7 @@ goog.require('goog.array');
 goog.require('goog.functions');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.render.FeaturesOverlay');
+goog.require('ol.FeatureOverlay');
 
 
 
@@ -69,7 +69,7 @@ ol.interaction.Select = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.render.FeaturesOverlay}
+   * @type {ol.FeatureOverlay}
    */
   this.featuresOverlay_ = options.featuresOverlay;
 
@@ -78,7 +78,7 @@ goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 
 
 /**
- * @return {ol.render.FeaturesOverlay} Features overlay.
+ * @return {ol.FeatureOverlay} Features overlay.
  * @todo stability experimental
  */
 ol.interaction.Select.prototype.getFeaturesOverlay = function() {

@@ -3,7 +3,7 @@ goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
-goog.require('ol.render.FeaturesOverlay');
+goog.require('ol.FeatureOverlay');
 goog.require('ol.source.GeoJSON');
 goog.require('ol.source.ImageVector');
 goog.require('ol.source.MapQuest');
@@ -56,7 +56,7 @@ var highlightStyleArray = [new ol.style.Style({
   })
 })];
 
-var featuresOverlay = new ol.render.FeaturesOverlay({
+var featuresOverlay = new ol.FeatureOverlay({
   map: map,
   styleFunction: function(feature, resolution) {
     return highlightStyleArray;
