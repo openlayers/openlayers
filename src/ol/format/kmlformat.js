@@ -1577,8 +1577,8 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
 ol.format.KML.prototype.readName = function(source) {
   if (ol.xml.isDocument(source)) {
     return this.readNameFromDocument(/** @type {Document} */ (source));
-  } else if (source instanceof Node) {
-    return this.readNameFromNode(source);
+  } else if (ol.xml.isNode(source)) {
+    return this.readNameFromNode(/** @type {Node} */ (source));
   } else if (goog.isString(source)) {
     var doc = ol.xml.load(source);
     return this.readNameFromDocument(doc);
