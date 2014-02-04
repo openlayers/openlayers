@@ -25,7 +25,6 @@ ol.source.KML = function(opt_options) {
     logo: options.logo,
     node: options.node,
     projection: options.projection,
-    reprojectTo: options.reprojectTo,
     text: options.text,
     url: options.url,
     urls: options.urls
