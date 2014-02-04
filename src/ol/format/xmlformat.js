@@ -3,9 +3,9 @@ goog.provide('ol.format.XML');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.dom.xml');
 goog.require('ol.format.Format');
 goog.require('ol.format.FormatType');
+goog.require('ol.xml');
 
 
 
@@ -36,7 +36,7 @@ ol.format.XML.prototype.readFeature = function(source) {
   } else if (source instanceof Node) {
     return this.readFeatureFromNode(source);
   } else if (goog.isString(source)) {
-    var doc = goog.dom.xml.loadXml(source);
+    var doc = ol.xml.load(source);
     return this.readFeatureFromDocument(doc);
   } else {
     goog.asserts.fail();
@@ -75,7 +75,7 @@ ol.format.XML.prototype.readFeatures = function(source) {
   } else if (source instanceof Node) {
     return this.readFeaturesFromNode(source);
   } else if (goog.isString(source)) {
-    var doc = goog.dom.xml.loadXml(source);
+    var doc = ol.xml.load(source);
     return this.readFeaturesFromDocument(doc);
   } else {
     goog.asserts.fail();
@@ -119,7 +119,7 @@ ol.format.XML.prototype.readGeometry = function(source) {
   } else if (source instanceof Node) {
     return this.readGeometryFromNode(source);
   } else if (goog.isString(source)) {
-    var doc = goog.dom.xml.loadXml(source);
+    var doc = ol.xml.load(source);
     return this.readGeometryFromDocument(doc);
   } else {
     goog.asserts.fail();
@@ -153,7 +153,7 @@ ol.format.XML.prototype.readProjection = function(source) {
   } else if (source instanceof Node) {
     return this.readProjectionFromNode(source);
   } else if (goog.isString(source)) {
-    var doc = goog.dom.xml.loadXml(source);
+    var doc = ol.xml.load(source);
     return this.readProjectionFromDocument(doc);
   } else {
     goog.asserts.fail();
