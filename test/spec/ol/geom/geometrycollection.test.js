@@ -9,13 +9,43 @@ describe('ol.geom.GeometryCollection', function() {
 
   describe('constructor', function() {
 
+    var line, multi, point, poly;
+    beforeEach(function() {
+      point = new ol.geom.Point([10, 20]);
+      line = new ol.geom.LineString([[10, 20], [30, 40]]);
+      poly = new ol.geom.Polygon([outer, inner1, inner2]);
+      multi = new ol.geom.GeometryCollection([point, line, poly]);
+    });
+
     it('creates a geometry collection from an array of geometries', function() {
-      var point = new ol.geom.Point([10, 20]);
-      var line = new ol.geom.LineString([[10, 20], [30, 40]]);
-      var poly = new ol.geom.Polygon([outer, inner1, inner2]);
-      var multi = new ol.geom.GeometryCollection([point, line, poly]);
       expect(multi).to.be.a(ol.geom.GeometryCollection);
       expect(multi).to.be.a(ol.geom.Geometry);
+    });
+
+    it('fires a change event when one of its component changes',
+        function(done) {
+          multi.on('change', function() {
+            done();
+          });
+          point.setCoordinates([10, 10]);
+        }
+    );
+
+    it('deregister old components', function() {
+      multi.setGeometries([poly]);
+      multi.on('change', function() {
+        expect().fail();
+      });
+      point.setCoordinates([10, 10]);
+    });
+
+    it('register new components', function(done) {
+      var point2 = new ol.geom.Point([10, 20]);
+      multi.setGeometriesArray([point2]);
+      multi.on('change', function() {
+        done();
+      });
+      point2.setCoordinates([10, 10]);
     });
 
   });
@@ -97,8 +127,6 @@ describe('ol.geom.GeometryCollection', function() {
     it('fires a change event', function() {
       var listener = sinon.spy();
       multi.on('change', listener);
-      point.setCoordinates([15, 25]);
-      expect(listener.calledOnce).to.be(false);
       multi.setGeometries([point, line, poly]);
       expect(listener.calledOnce).to.be(true);
     });
@@ -106,8 +134,6 @@ describe('ol.geom.GeometryCollection', function() {
     it('updates the extent', function() {
       expect(multi.getExtent()).to.eql([0, 0, 30, 40]);
       line.setCoordinates([[10, 20], [300, 400]]);
-      expect(multi.getExtent()).to.eql([0, 0, 30, 40]);
-      multi.setGeometries([point, line, poly]);
       expect(multi.getExtent()).to.eql([0, 0, 300, 400]);
     });
 
