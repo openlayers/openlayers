@@ -4,6 +4,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
+goog.require('goog.userAgent');
 
 
 /**
@@ -46,6 +47,34 @@ ol.xml.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
   }
   return accumulator;
 };
+
+
+/**
+ * @param {?} value Value.
+ * @private
+ * @return {boolean} Is document.
+ */
+ol.xml.isDocument_ = function(value) {
+  return value instanceof Document;
+};
+
+
+/**
+ * @param {?} value Value.
+ * @private
+ * @return {boolean} Is document.
+ */
+ol.xml.isDocumentIE_ = function(value) {
+  return goog.isObject(value) && value.nodeType == goog.dom.NodeType.DOCUMENT;
+};
+
+
+/**
+ * @param {?} value Value.
+ * @return {boolean} Is document.
+ */
+ol.xml.isDocument = goog.userAgent.IE ?
+    ol.xml.isDocumentIE_ : ol.xml.isDocument_;
 
 
 /**
