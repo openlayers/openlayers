@@ -417,7 +417,7 @@
  *     features should be selected.
  * @property {Array.<ol.layer.Layer>|undefined} layers Layers.  Zero or more
  *     layers from which features should be selected.
- * @property {ol.FeatureOverlay} featuresOverlay Features overlay.
+ * @property {ol.FeatureOverlay} featureOverlay Feature overlay.
  */
 
 /**

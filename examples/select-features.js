@@ -41,7 +41,7 @@ var vector = new ol.layer.Vector({
 });
 
 var select = new ol.interaction.Select({
-  featuresOverlay: new ol.FeatureOverlay({
+  featureOverlay: new ol.FeatureOverlay({
     styleFunction: function(feature, layer) {
       return selectedStyle;
     }

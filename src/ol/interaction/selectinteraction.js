@@ -71,18 +71,18 @@ ol.interaction.Select = function(opt_options) {
    * @private
    * @type {ol.FeatureOverlay}
    */
-  this.featuresOverlay_ = options.featuresOverlay;
+  this.featureOverlay_ = options.featureOverlay;
 
 };
 goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 
 
 /**
- * @return {ol.FeatureOverlay} Features overlay.
+ * @return {ol.FeatureOverlay} Feature overlay.
  * @todo stability experimental
  */
-ol.interaction.Select.prototype.getFeaturesOverlay = function() {
-  return this.featuresOverlay_;
+ol.interaction.Select.prototype.getFeatureOverlay = function() {
+  return this.featureOverlay_;
 };
 
 
@@ -96,7 +96,7 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
   }
   var add = this.addCondition_(mapBrowserEvent);
   var map = mapBrowserEvent.map;
-  var features = this.featuresOverlay_.getFeatures();
+  var features = this.featureOverlay_.getFeatures();
   map.withFrozenRendering(
       /**
        * @this {ol.interaction.Select}
@@ -150,5 +150,5 @@ ol.interaction.Select.prototype.handleMapBrowserEvent =
  */
 ol.interaction.Select.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
-  this.featuresOverlay_.setMap(map);
+  this.featureOverlay_.setMap(map);
 };
