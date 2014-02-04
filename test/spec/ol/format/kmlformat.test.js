@@ -1365,7 +1365,7 @@ describe('ol.format.KML', function() {
 
     var features;
     before(function(done) {
-      afterLoadXml('spec/ol/format/kml/states.kml', function(xml) {
+      afterLoadText('spec/ol/format/kml/states.kml', function(xml) {
         try {
           features = format.readFeatures(xml);
         } catch (e) {
