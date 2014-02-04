@@ -373,6 +373,39 @@ describe('ol.format.KML', function() {
         expect(gs).to.have.length(2);
         expect(gs[0]).to.be.an(ol.geom.LineString);
       });
+
+      it('can read dateTime', function() {
+        var text =
+            '<kml xmlns="http://earth.google.com/kml/2.2"' +
+            '     xmlns:gx="http://www.google.com/kml/ext/2.2">' +
+            '  <Placemark>' +
+            '    <gx:Track>' +
+            '      <when>2014</when>' +
+            '      <when>2014-02</when>' +
+            '      <when>2014-02-06</when>' +
+            '      <when>2014-02-06T19:39:03Z</when>' +
+            '      <when>2014-02-06T19:39:10+03:00</when>' +
+            '      <gx:coord>8.1 46.1 1909.9</gx:coord>' +
+            '      <gx:coord>8.2 46.2 1925.2</gx:coord>' +
+            '      <gx:coord>8.3 46.3 1926.2</gx:coord>' +
+            '      <gx:coord>8.4 46.4 1927.2</gx:coord>' +
+            '      <gx:coord>8.5 46.5 1928.2</gx:coord>' +
+            '    </gx:Track>' +
+            '  </Placemark>' +
+            '</kml>';
+        var fs = format.readFeatures(text);
+        var f = fs[0];
+        var g = f.getGeometry();
+        var flatCoordinates = g.flatCoordinates;
+        expect(flatCoordinates[3]).to.be.eql(Date.UTC(2014, 0, 1, 0, 0, 0));
+        expect(flatCoordinates[7]).to.be.eql(Date.UTC(2014, 1, 1, 0, 0, 0));
+        expect(flatCoordinates[11]).to.be.eql(Date.UTC(2014, 1, 6, 0, 0, 0));
+        expect(flatCoordinates[15]).to.be.eql(Date.UTC(2014, 1, 6, 19, 39, 3));
+        expect(flatCoordinates[19]).to.be.eql(
+            Date.UTC(2014, 1, 6, 19, 39, 10) + 3 * 60
+        );
+      });
+
     });
 
     describe('attributes', function() {
