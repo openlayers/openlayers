@@ -4,6 +4,7 @@ goog.provide('ol.source.VectorFile');
 
 goog.require('goog.asserts');
 goog.require('goog.net.XhrIo');
+goog.require('goog.userAgent');
 goog.require('ol.format.FormatType');
 goog.require('ol.proj');
 goog.require('ol.source.State');
@@ -94,8 +95,10 @@ ol.source.VectorFile.prototype.handleXhrIo_ = function(event) {
     } else if (type == ol.format.FormatType.TEXT) {
       source = xhrIo.getResponseText();
     } else if (type == ol.format.FormatType.XML) {
-      source = xhrIo.getResponseXml();
-      if (goog.isNull(source)) {
+      if (!goog.userAgent.IE) {
+        source = xhrIo.getResponseXml();
+      }
+      if (!goog.isDefAndNotNull(source)) {
         source = ol.xml.load(xhrIo.getResponseText());
       }
     } else {
