@@ -286,6 +286,12 @@ ol.Map = function(options) {
 
   /**
    * @private
+   * @type {Element|Document}
+   */
+  this.keyboardEventTarget_ = optionsInternal.keyboardEventTarget;
+
+  /**
+   * @private
    * @type {goog.events.KeyHandler}
    */
   this.keyHandler_ = new goog.events.KeyHandler();
@@ -876,10 +882,9 @@ ol.Map.prototype.handleTargetChanged_ = function() {
   } else {
     goog.dom.appendChild(targetElement, this.viewport_);
 
-    // The key handler is attached to the user-provided target. So the key
-    // handler will only trigger events when the target element is focused
-    // (requiring that the target element has a tabindex attribute).
-    this.keyHandler_.attach(targetElement);
+    var keyboardEventTarget = goog.isNull(this.keyboardEventTarget_) ?
+        targetElement : this.keyboardEventTarget_;
+    this.keyHandler_.attach(keyboardEventTarget);
   }
 
   this.updateSize();
@@ -1312,6 +1317,7 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_this) {
 /**
  * @typedef {{controls: ol.Collection,
  *            interactions: ol.Collection,
+ *            keyboardEventTarget: (Element|Document),
  *            ol3Logo: boolean,
  *            overlays: ol.Collection,
  *            rendererConstructor:
@@ -1326,6 +1332,18 @@ ol.MapOptionsInternal;
  * @return {ol.MapOptionsInternal} Internal map options.
  */
 ol.Map.createOptionsInternal = function(options) {
+
+  /**
+   * @type {Element|Document}
+   */
+  var keyboardEventTarget = null;
+  if (goog.isDef(options.keyboardEventTarget)) {
+    // cannot use goog.dom.getElement because its argument cannot be
+    // of type Document
+    keyboardEventTarget = goog.isString(options.keyboardEventTarget) ?
+        document.getElementById(options.keyboardEventTarget) :
+        options.keyboardEventTarget;
+  }
 
   /**
    * @type {Object.<string, *>}
@@ -1421,6 +1439,7 @@ ol.Map.createOptionsInternal = function(options) {
   return {
     controls: controls,
     interactions: interactions,
+    keyboardEventTarget: keyboardEventTarget,
     ol3Logo: ol3Logo,
     overlays: overlays,
     rendererConstructor: rendererConstructor,

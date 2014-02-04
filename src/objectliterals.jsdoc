@@ -30,6 +30,14 @@
  *     then it gets set by using `window.devicePixelRatio`.
  * @property {ol.Collection|Array.<ol.interaction.Interaction>|undefined} interactions
  *     Interactions that are initially added to the map.
+ * @property {Element|Document|string|undefined} keyboardEventTarget
+ *     The element to listen to keyboard events on.
+ *     This determines when the `KeyboardPan` and `KeyboardZoom` interactions trigger. For example, if
+ *     this option is set to `document` the keyboard interactions will always trigger. If this option
+ *     is not specified, the element the library listens to keyboard events on is the map target (i.e.
+ *     the user-provided div for the map). If this is not `document` the target element needs to be
+ *     focused for key events to be emitted, requiring that the target element has a `tabindex`
+ *     attribute.
  * @property {Array.<ol.layer.Base>|ol.Collection|undefined} layers Layers.
  * @property {boolean|undefined} ol3Logo Show ol3 logo. Default is `true`.
  * @property {ol.Collection|Array.<ol.Overlay>|undefined} overlays
