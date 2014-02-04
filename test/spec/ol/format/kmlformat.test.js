@@ -1411,7 +1411,7 @@ describe('ol.format.KML', function() {
           '    <Folder>' +
           '     <Placemark/>' +
           '    </Folder>' +
-          '  <Document>' +
+          '  </Document>' +
           '</kml>';
       expect(format.readName(kml)).to.be(undefined);
     });
