@@ -1,9 +1,9 @@
+goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.FeatureOverlay');
 goog.require('ol.source.GeoJSON');
 goog.require('ol.source.MapQuest');
 goog.require('ol.style.Fill');

@@ -2,9 +2,9 @@ goog.provide('ol.interaction.Select');
 
 goog.require('goog.array');
 goog.require('goog.functions');
+goog.require('ol.FeatureOverlay');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.FeatureOverlay');
 
 
 
