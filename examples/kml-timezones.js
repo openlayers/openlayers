@@ -97,5 +97,5 @@ $(map.getViewport()).on('mousemove', function(evt) {
 });
 
 map.on('singleclick', function(evt) {
-  displayFeatureInfo(evt.getPixel());
+  displayFeatureInfo(evt.pixel);
 });

@@ -258,10 +258,10 @@ ol.renderer.webgl.Map.prototype.bindTileTexture =
  * @inheritDoc
  */
 ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
-  if (layer instanceof ol.layer.Tile) {
-    return new ol.renderer.webgl.TileLayer(this, layer);
-  } else if (layer instanceof ol.layer.Image) {
+  if (ol.ENABLE_IMAGE && layer instanceof ol.layer.Image) {
     return new ol.renderer.webgl.ImageLayer(this, layer);
+  } else if (ol.ENABLE_TILE && layer instanceof ol.layer.Tile) {
+    return new ol.renderer.webgl.TileLayer(this, layer);
   } else {
     goog.asserts.fail();
     return null;

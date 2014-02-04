@@ -17,6 +17,7 @@ goog.require('ol.style.Stroke');
  * @constructor
  * @param {olx.style.CircleOptions=} opt_options Options.
  * @extends {ol.style.Image}
+ * @todo stability experimental
  */
 ol.style.Circle = function(opt_options) {
 
@@ -28,6 +29,12 @@ ol.style.Circle = function(opt_options) {
    */
   this.canvas_ = /** @type {HTMLCanvasElement} */
       (goog.dom.createElement(goog.dom.TagName.CANVAS));
+
+  /**
+   * @private
+   * @type {HTMLCanvasElement}
+   */
+  this.hitDetectionCanvas_ = null;
 
   /**
    * @private
@@ -75,7 +82,7 @@ ol.style.Circle.prototype.getFill = function() {
  * @inheritDoc
  */
 ol.style.Circle.prototype.getHitDetectionImage = function(pixelRatio) {
-  return this.canvas_;
+  return this.hitDetectionCanvas_;
 };
 
 
@@ -115,11 +122,12 @@ ol.style.Circle.prototype.load = goog.nullFunction;
  */
 ol.style.Circle.prototype.render_ = function() {
   var canvas = this.canvas_;
+  var strokeStyle, strokeWidth;
 
-  var strokeWidth;
   if (goog.isNull(this.stroke_)) {
     strokeWidth = 0;
   } else {
+    strokeStyle = ol.color.asString(this.stroke_.getColor());
     strokeWidth = this.stroke_.getWidth();
     if (!goog.isDef(strokeWidth)) {
       strokeWidth = ol.render.canvas.defaultLineWidth;
@@ -127,6 +135,8 @@ ol.style.Circle.prototype.render_ = function() {
   }
 
   var size = 2 * (this.radius_ + strokeWidth) + 1;
+
+  // draw the circle on the canvas
 
   canvas.height = size;
   canvas.width = size;
@@ -140,10 +150,34 @@ ol.style.Circle.prototype.render_ = function() {
     context.fill();
   }
   if (!goog.isNull(this.stroke_)) {
-    var strokeColor = this.stroke_.getColor();
-    context.strokeStyle = ol.color.asString(strokeColor);
+    context.strokeStyle = strokeStyle;
     context.lineWidth = strokeWidth;
     context.stroke();
+  }
+
+  // deal with the hit detection canvas
+
+  if (!goog.isNull(this.fill_)) {
+    this.hitDetectionCanvas_ = canvas;
+  } else {
+    this.hitDetectionCanvas_ = /** @type {HTMLCanvasElement} */
+        (goog.dom.createElement(goog.dom.TagName.CANVAS));
+    canvas = this.hitDetectionCanvas_;
+
+    canvas.height = size;
+    canvas.width = size;
+
+    context = /** @type {CanvasRenderingContext2D} */
+        (canvas.getContext('2d'));
+    context.arc(size / 2, size / 2, this.radius_, 0, 2 * Math.PI, true);
+
+    context.fillStyle = ol.render.canvas.defaultFillStyle;
+    context.fill();
+    if (!goog.isNull(this.stroke_)) {
+      context.strokeStyle = strokeStyle;
+      context.lineWidth = strokeWidth;
+      context.stroke();
+    }
   }
 
   return size;

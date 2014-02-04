@@ -97,6 +97,7 @@ ol.format.Polyline.decodeDeltas = function(encoded, dimension, opt_factor) {
   var factor = goog.isDef(opt_factor) ? opt_factor : 1e5;
   var d;
 
+  /** @type {Array.<number>} */
   var lastNumbers = new Array(dimension);
   for (d = 0; d < dimension; ++d) {
     lastNumbers[d] = 0;

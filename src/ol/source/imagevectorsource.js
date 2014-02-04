@@ -31,6 +31,7 @@ goog.require('ol.vec.Mat4');
  * @constructor
  * @extends {ol.source.ImageCanvas}
  * @param {olx.source.ImageVectorOptions} options Options.
+ * @todo stability experimental
  */
 ol.source.ImageVector = function(options) {
 

@@ -16,6 +16,7 @@ goog.require('ol.render.EventType');
 /**
  * @constructor
  * @param {olx.render.FeaturesOverlayOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.render.FeaturesOverlay = function(opt_options) {
 
@@ -81,6 +82,7 @@ ol.render.FeaturesOverlay = function(opt_options) {
 
 /**
  * @param {ol.Feature} feature Feature.
+ * @todo stability experimental
  */
 ol.render.FeaturesOverlay.prototype.addFeature = function(feature) {
   this.features_.push(feature);
@@ -89,6 +91,7 @@ ol.render.FeaturesOverlay.prototype.addFeature = function(feature) {
 
 /**
  * @return {ol.Collection} Features collection.
+ * @todo stability experimental
  */
 ol.render.FeaturesOverlay.prototype.getFeatures = function() {
   return this.features_;
@@ -110,7 +113,7 @@ ol.render.FeaturesOverlay.prototype.handleFeatureChange_ = function() {
 ol.render.FeaturesOverlay.prototype.handleFeaturesAdd_ =
     function(collectionEvent) {
   goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_));
-  var feature = /** @type {ol.Feature} */ (collectionEvent.getElement());
+  var feature = /** @type {ol.Feature} */ (collectionEvent.element);
   this.featureChangeListenerKeys_[goog.getUid(feature).toString()] =
       goog.events.listen(feature, goog.events.EventType.CHANGE,
       this.handleFeatureChange_, false, this);
@@ -125,7 +128,7 @@ ol.render.FeaturesOverlay.prototype.handleFeaturesAdd_ =
 ol.render.FeaturesOverlay.prototype.handleFeaturesRemove_ =
     function(collectionEvent) {
   goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_));
-  var feature = /** @type {ol.Feature} */ (collectionEvent.getElement());
+  var feature = /** @type {ol.Feature} */ (collectionEvent.element);
   var key = goog.getUid(feature).toString();
   goog.events.unlistenByKey(this.featureChangeListenerKeys_[key]);
   delete this.featureChangeListenerKeys_[key];
@@ -141,8 +144,8 @@ ol.render.FeaturesOverlay.prototype.handleMapPostCompose_ = function(event) {
   if (goog.isNull(this.features_) || !goog.isDef(this.styleFunction_)) {
     return;
   }
-  var resolution = event.getFrameState().view2DState.resolution;
-  var render = event.getRender();
+  var resolution = event.frameState.view2DState.resolution;
+  var render = event.render;
   var i, ii, feature, styles;
   this.features_.forEach(function(feature) {
     styles = this.styleFunction_(feature, resolution);
@@ -156,6 +159,7 @@ ol.render.FeaturesOverlay.prototype.handleMapPostCompose_ = function(event) {
 
 /**
  * @param {ol.Feature} feature Feature.
+ * @todo stability experimental
  */
 ol.render.FeaturesOverlay.prototype.removeFeature = function(feature) {
   this.features_.remove(feature);
@@ -174,6 +178,7 @@ ol.render.FeaturesOverlay.prototype.requestRenderFrame_ = function() {
 
 /**
  * @param {ol.Collection} features Features collection.
+ * @todo stability experimental
  */
 ol.render.FeaturesOverlay.prototype.setFeatures = function(features) {
   if (!goog.isNull(this.featuresListenerKeys_)) {
@@ -211,6 +216,7 @@ ol.render.FeaturesOverlay.prototype.setFeatures = function(features) {
 
 /**
  * @param {ol.Map} map Map.
+ * @todo stability experimental
  */
 ol.render.FeaturesOverlay.prototype.setMap = function(map) {
   if (!goog.isNull(this.postComposeListenerKey_)) {
@@ -230,6 +236,7 @@ ol.render.FeaturesOverlay.prototype.setMap = function(map) {
 
 /**
  * @param {ol.feature.StyleFunction} styleFunction Style function.
+ * @todo stability experimental
  */
 ol.render.FeaturesOverlay.prototype.setStyleFunction = function(styleFunction) {
   this.styleFunction_ = styleFunction;

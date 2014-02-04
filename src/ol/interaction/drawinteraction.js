@@ -38,6 +38,7 @@ ol.DrawEventType = {
 /**
  * @constructor
  * @extends {goog.events.Event}
+ * @implements {oli.DrawEvent}
  * @param {ol.DrawEventType} type Type.
  * @param {ol.Feature} feature The feature drawn.
  */
@@ -46,21 +47,12 @@ ol.DrawEvent = function(type, feature) {
   goog.base(this, type);
 
   /**
-   * @private
    * @type {ol.Feature}
    */
-  this.feature_ = feature;
+  this.feature = feature;
 
 };
 goog.inherits(ol.DrawEvent, goog.events.Event);
-
-
-/**
- * @return {ol.Feature} The feature drawn to which this event pertains.
- */
-ol.DrawEvent.prototype.getFeature = function() {
-  return this.feature_;
-};
 
 
 
@@ -69,6 +61,7 @@ ol.DrawEvent.prototype.getFeature = function() {
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.DrawOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.interaction.Draw = function(opt_options) {
 
@@ -261,7 +254,7 @@ ol.interaction.Draw.prototype.handleMapBrowserEvent = function(event) {
  */
 ol.interaction.Draw.prototype.handleClick_ = function(event) {
   var downPx = event.map.getEventPixel(event.target.getDown());
-  var clickPx = event.getPixel();
+  var clickPx = event.pixel;
   var dx = downPx[0] - clickPx[0];
   var dy = downPx[1] - clickPx[1];
   var squaredDistance = dx * dx + dy * dy;
@@ -309,20 +302,30 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
   if (!goog.isNull(this.sketchFeature_)) {
     var geometry = this.sketchFeature_.getGeometry();
     var potentiallyDone = false;
+    var potentiallyFinishCoordinates = [this.finishCoordinate_];
     if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
       goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
       potentiallyDone = geometry.getCoordinates().length > 2;
     } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
       goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
-      potentiallyDone = geometry.getCoordinates()[0].length > 3;
+      potentiallyDone = geometry.getCoordinates()[0].length > 2;
+      potentiallyFinishCoordinates = [this.sketchRawPolygon_[0][0],
+        this.sketchRawPolygon_[0][this.sketchRawPolygon_[0].length - 2]];
     }
     if (potentiallyDone) {
       var map = event.map;
-      var finishPixel = map.getPixelFromCoordinate(this.finishCoordinate_);
-      var pixel = event.getPixel();
-      var dx = pixel[0] - finishPixel[0];
-      var dy = pixel[1] - finishPixel[1];
-      at = Math.sqrt(dx * dx + dy * dy) <= this.snapTolerance_;
+      for (var i = 0, ii = potentiallyFinishCoordinates.length; i < ii; i++) {
+        var finishCoordinate = potentiallyFinishCoordinates[i];
+        var finishPixel = map.getPixelFromCoordinate(finishCoordinate);
+        var pixel = event.pixel;
+        var dx = pixel[0] - finishPixel[0];
+        var dy = pixel[1] - finishPixel[1];
+        at = Math.sqrt(dx * dx + dy * dy) <= this.snapTolerance_;
+        if (at) {
+          this.finishCoordinate_ = finishCoordinate;
+          break;
+        }
+      }
     }
   }
   return at;
@@ -335,7 +338,7 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
  * @private
  */
 ol.interaction.Draw.prototype.startDrawing_ = function(event) {
-  var start = event.getCoordinate();
+  var start = event.coordinate;
   this.finishCoordinate_ = start;
   var geometry;
   if (this.mode_ === ol.interaction.DrawMode.POINT) {
@@ -366,7 +369,7 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
  * @private
  */
 ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
-  var coordinate = event.getCoordinate();
+  var coordinate = event.coordinate;
   var geometry = this.sketchFeature_.getGeometry();
   var coordinates, last;
   if (this.mode_ === ol.interaction.DrawMode.POINT) {
@@ -414,7 +417,7 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
  * @private
  */
 ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
-  var coordinate = event.getCoordinate();
+  var coordinate = event.coordinate;
   var geometry = this.sketchFeature_.getGeometry();
   var coordinates, last;
   if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
@@ -453,9 +456,13 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
     geometry.setCoordinates(coordinates);
   } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
     goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
+    // When we finish drawing a polygon on the last point,
+    // the last coordinate is duplicated as for LineString
+    // we force the replacement by the first point
+    this.sketchRawPolygon_[0].pop();
+    this.sketchRawPolygon_[0].push(this.sketchRawPolygon_[0][0]);
+    geometry.setCoordinates(this.sketchRawPolygon_);
     coordinates = geometry.getCoordinates();
-    // force clockwise order for exterior ring
-    sketchFeature.setGeometry(new ol.geom.Polygon(coordinates));
   }
 
   // cast multi-part geometries

@@ -14,6 +14,7 @@ goog.require('ol.geom.flat');
  * @param {ol.geom.RawPoint} center Center.
  * @param {number=} opt_radius Radius.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.Circle = function(center, opt_radius, opt_layout) {
   goog.base(this);
@@ -71,13 +72,13 @@ ol.geom.Circle.prototype.containsXY = function(x, y) {
   var flatCoordinates = this.flatCoordinates;
   var dx = x - flatCoordinates[0];
   var dy = y - flatCoordinates[1];
-  var r = flatCoordinates[this.stride] - flatCoordinates[0];
-  return dx * dx + dy * dy <= r;
+  return dx * dx + dy * dy <= this.getRadiusSquared_();
 };
 
 
 /**
  * @return {ol.geom.RawPoint} Center.
+ * @todo stability experimental
  */
 ol.geom.Circle.prototype.getCenter = function() {
   return this.flatCoordinates.slice(0, this.stride);
@@ -104,11 +105,21 @@ ol.geom.Circle.prototype.getExtent = function(opt_extent) {
 
 /**
  * @return {number} Radius.
+ * @todo stability experimental
  */
 ol.geom.Circle.prototype.getRadius = function() {
+  return Math.sqrt(this.getRadiusSquared_());
+};
+
+
+/**
+ * @private
+ * @return {number} Radius squared.
+ */
+ol.geom.Circle.prototype.getRadiusSquared_ = function() {
   var dx = this.flatCoordinates[this.stride] - this.flatCoordinates[0];
   var dy = this.flatCoordinates[this.stride + 1] - this.flatCoordinates[1];
-  return Math.sqrt(dx * dx + dy * dy);
+  return dx * dx + dy * dy;
 };
 
 
@@ -130,6 +141,7 @@ ol.geom.Circle.prototype.getType = function() {
 
 /**
  * @param {ol.geom.RawPoint} center Center.
+ * @todo stability experimental
  */
 ol.geom.Circle.prototype.setCenter = function(center) {
   var stride = this.stride;
@@ -149,6 +161,7 @@ ol.geom.Circle.prototype.setCenter = function(center) {
  * @param {ol.geom.RawPoint} center Center.
  * @param {number} radius Radius.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.Circle.prototype.setCenterAndRadius =
     function(center, radius, opt_layout) {
@@ -159,6 +172,7 @@ ol.geom.Circle.prototype.setCenterAndRadius =
     if (goog.isNull(this.flatCoordinates)) {
       this.flatCoordinates = [];
     }
+    /** @type {Array.<number>} */
     var flatCoordinates = this.flatCoordinates;
     var offset = ol.geom.flat.deflateCoordinate(
         flatCoordinates, 0, center, this.stride);
@@ -186,6 +200,7 @@ ol.geom.Circle.prototype.setFlatCoordinates =
 
 /**
  * @param {number} radius Radius.
+ * @todo stability experimental
  */
 ol.geom.Circle.prototype.setRadius = function(radius) {
   goog.asserts.assert(!goog.isNull(this.flatCoordinates));

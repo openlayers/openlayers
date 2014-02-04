@@ -15,6 +15,7 @@ goog.require('ol.geom.simplify');
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawPolygon} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.Polygon = function(coordinates, opt_layout) {
 
@@ -30,13 +31,13 @@ ol.geom.Polygon = function(coordinates, opt_layout) {
    * @private
    * @type {number}
    */
-  this.interiorPointRevision_ = -1;
+  this.flatInteriorPointRevision_ = -1;
 
   /**
    * @private
    * @type {ol.Coordinate}
    */
-  this.interiorPoint_ = null;
+  this.flatInteriorPoint_ = null;
 
   /**
    * @private
@@ -110,6 +111,7 @@ ol.geom.Polygon.prototype.containsXY = function(x, y) {
 
 /**
  * @return {number} Area.
+ * @todo stability experimental
  */
 ol.geom.Polygon.prototype.getArea = function() {
   return ol.geom.flat.linearRingsArea(
@@ -119,6 +121,7 @@ ol.geom.Polygon.prototype.getArea = function() {
 
 /**
  * @return {ol.geom.RawPolygon} Coordinates.
+ * @todo stability experimental
  */
 ol.geom.Polygon.prototype.getCoordinates = function() {
   return ol.geom.flat.inflateCoordinatess(
@@ -135,22 +138,23 @@ ol.geom.Polygon.prototype.getEnds = function() {
 
 
 /**
- * @return {ol.Coordinate} Interior point.
+ * @return {Array.<number>} Interior point.
  */
-ol.geom.Polygon.prototype.getInteriorPoint = function() {
-  if (this.interiorPointRevision_ != this.getRevision()) {
-    var extent = this.getExtent();
-    var y = (extent[1] + extent[3]) / 2;
-    this.interiorPoint_ = ol.geom.flat.linearRingsGetInteriorPoint(
-        this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, y);
-    this.interiorPointRevision_ = this.getRevision();
+ol.geom.Polygon.prototype.getFlatInteriorPoint = function() {
+  if (this.flatInteriorPointRevision_ != this.getRevision()) {
+    var flatCenter = ol.extent.getCenter(this.getExtent());
+    this.flatInteriorPoint_ = ol.geom.flat.linearRingsGetInteriorPoint(
+        this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride,
+        flatCenter, 0);
+    this.flatInteriorPointRevision_ = this.getRevision();
   }
-  return this.interiorPoint_;
+  return this.flatInteriorPoint_;
 };
 
 
 /**
  * @return {Array.<ol.geom.LinearRing>} Linear rings.
+ * @todo stability experimental
  */
 ol.geom.Polygon.prototype.getLinearRings = function() {
   var layout = this.layout;
@@ -219,6 +223,7 @@ ol.geom.Polygon.prototype.getType = function() {
 /**
  * @param {ol.geom.RawPolygon} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (goog.isNull(coordinates)) {

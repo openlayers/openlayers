@@ -1,4 +1,5 @@
 goog.provide('ol.proj');
+goog.provide('ol.proj.METERS_PER_UNIT');
 goog.provide('ol.proj.Projection');
 goog.provide('ol.proj.ProjectionLike');
 goog.provide('ol.proj.Units');
@@ -51,11 +52,10 @@ ol.proj.Units = {
  * @const
  * @type {Object.<ol.proj.Units, number>}
  */
-ol.METERS_PER_UNIT = {};
-ol.METERS_PER_UNIT[ol.proj.Units.DEGREES] =
+ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] =
     2 * Math.PI * ol.sphere.NORMAL.radius / 360;
-ol.METERS_PER_UNIT[ol.proj.Units.FEET] = 0.3048;
-ol.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
+ol.proj.METERS_PER_UNIT[ol.proj.Units.FEET] = 0.3048;
+ol.proj.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
 
 
 
@@ -153,7 +153,7 @@ ol.proj.Projection.prototype.getUnits = function() {
  * @return {number|undefined} Meters.
  */
 ol.proj.Projection.prototype.getMetersPerUnit = function() {
-  return ol.METERS_PER_UNIT[this.units_];
+  return ol.proj.METERS_PER_UNIT[this.units_];
 };
 
 
@@ -240,7 +240,7 @@ goog.inherits(ol.Proj4jsProjection_, ol.proj.Projection);
 ol.Proj4jsProjection_.prototype.getMetersPerUnit = function() {
   var metersPerUnit = this.proj4jsProj_.to_meter;
   if (!goog.isDef(metersPerUnit)) {
-    metersPerUnit = ol.METERS_PER_UNIT[this.units_];
+    metersPerUnit = ol.proj.METERS_PER_UNIT[this.units_];
   }
   return metersPerUnit;
 };

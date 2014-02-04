@@ -14,10 +14,23 @@ goog.require('ol.geom.simplify');
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawLineString} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.LineString = function(coordinates, opt_layout) {
 
   goog.base(this);
+
+  /**
+   * @private
+   * @type {ol.Coordinate}
+   */
+  this.flatMidpoint_ = null;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.flatMidpointRevision_ = -1;
 
   /**
    * @private
@@ -69,6 +82,7 @@ ol.geom.LineString.prototype.closestPointXY =
 
 /**
  * @return {ol.geom.RawLineString} Coordinates.
+ * @todo stability experimental
  */
 ol.geom.LineString.prototype.getCoordinates = function() {
   return ol.geom.flat.inflateCoordinates(
@@ -78,10 +92,25 @@ ol.geom.LineString.prototype.getCoordinates = function() {
 
 /**
  * @return {number} Length.
+ * @todo stability experimental
  */
 ol.geom.LineString.prototype.getLength = function() {
   return ol.geom.flat.lineStringLength(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+};
+
+
+/**
+ * @return {Array.<number>} Flat midpoint.
+ */
+ol.geom.LineString.prototype.getFlatMidpoint = function() {
+  if (this.flatMidpointRevision_ != this.getRevision()) {
+    this.flatMidpoint_ = ol.geom.flat.lineStringInterpolate(
+        this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+        0.5, this.flatMidpoint_);
+    this.flatMidpointRevision_ = this.getRevision();
+  }
+  return this.flatMidpoint_;
 };
 
 
@@ -112,6 +141,7 @@ ol.geom.LineString.prototype.getType = function() {
 /**
  * @param {ol.geom.RawLineString} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.LineString.prototype.setCoordinates =
     function(coordinates, opt_layout) {

@@ -94,6 +94,14 @@ ol.render.webgl.Immediate.prototype.drawPolygonGeometry =
 /**
  * @inheritDoc
  */
+ol.render.webgl.Immediate.prototype.drawText =
+    function(flatCoordinates, offset, end, stride, geometry, data) {
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.render.webgl.Immediate.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
 };

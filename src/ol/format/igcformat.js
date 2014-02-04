@@ -25,6 +25,7 @@ ol.format.IGCZ = {
  * @constructor
  * @extends {ol.format.Text}
  * @param {olx.format.IGCOptions=} opt_options Options.
+ * @todo stability experimental
  */
 ol.format.IGC = function(opt_options) {
 
@@ -127,7 +128,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text) {
           }
           flatCoordinates.push(z);
         }
-        var dateTime = Date.UTC(year, month, day, hour, minute, second, 0);
+        var dateTime = Date.UTC(year, month, day, hour, minute, second);
         flatCoordinates.push(dateTime / 1000);
       }
     } else if (line.charAt(0) == 'H') {

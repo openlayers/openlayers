@@ -82,8 +82,8 @@ ol.geom.simplify.douglasPeucker = function(flatCoordinates, offset, end,
     }
     return simplifiedOffset;
   }
-  var MarkerArray = goog.global['Uint8Array'] ? Uint8Array : Array;
-  var markers = new MarkerArray(n);
+  /** @type {Array.<number>} */
+  var markers = new Array(n);
   markers[0] = 1;
   markers[n - 1] = 1;
   /** @type {Array.<number>} */

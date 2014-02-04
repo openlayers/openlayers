@@ -69,6 +69,14 @@ describe('ol.geom.MultiLineString', function() {
       expect(multiLineString.getStride()).to.be(2);
     });
 
+    describe('#getFlatMidpoints', function() {
+
+      it('returns the expected result', function() {
+        expect(multiLineString.getFlatMidpoints()).to.eql([2, 3, 6, 7]);
+      });
+
+    });
+
   });
 
   describe('construct with 3D coordinates', function() {

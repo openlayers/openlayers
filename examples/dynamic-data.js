@@ -35,8 +35,8 @@ var R = 7e6;
 var r = 2e6;
 var p = 2e6;
 map.on('postcompose', function(event) {
-  var render = event.getRender();
-  var frameState = event.getFrameState();
+  var render = event.render;
+  var frameState = event.frameState;
   var theta = 2 * Math.PI * frameState.time / omegaTheta;
   var coordinates = [];
   var i;

@@ -24,6 +24,7 @@ ol.FeatureProperty = {
  * @extends {ol.Object}
  * @param {ol.geom.Geometry|Object.<string, *>=} opt_geometryOrValues
  *     Values or geometry.
+ * @todo stability experimental
  */
 ol.Feature = function(opt_geometryOrValues) {
 
@@ -72,6 +73,7 @@ goog.inherits(ol.Feature, ol.Object);
 
 /**
  * @return {ol.geom.Geometry|undefined} Geometry.
+ * @todo stability experimental
  */
 ol.Feature.prototype.getGeometry = function() {
   return /** @type {ol.geom.Geometry|undefined} */ (
@@ -85,6 +87,7 @@ goog.exportProperty(
 
 /**
  * @return {number|string|undefined} Id.
+ * @todo stability experimental
  */
 ol.Feature.prototype.getId = function() {
   return this.id_;
@@ -93,6 +96,7 @@ ol.Feature.prototype.getId = function() {
 
 /**
  * @return {string} Geometry property name.
+ * @todo stability experimental
  */
 ol.Feature.prototype.getGeometryName = function() {
   return this.geometryName_;
@@ -101,6 +105,7 @@ ol.Feature.prototype.getGeometryName = function() {
 
 /**
  * @return {ol.feature.FeatureStyleFunction|undefined} Style function.
+ * @todo stability experimental
  */
 ol.Feature.prototype.getStyleFunction = function() {
   return /** @type {ol.feature.FeatureStyleFunction|undefined} */ (
@@ -147,6 +152,7 @@ ol.Feature.prototype.handleStyleFunctionChange_ = function() {
 
 /**
  * @param {ol.geom.Geometry|undefined} geometry Geometry.
+ * @todo stability experimental
  */
 ol.Feature.prototype.setGeometry = function(geometry) {
   this.set(this.geometryName_, geometry);
@@ -159,7 +165,8 @@ goog.exportProperty(
 
 /**
  * @param {ol.feature.FeatureStyleFunction|undefined} styleFunction Style
- *     function.
+ *     function
+ * @todo stability experimental
  */
 ol.Feature.prototype.setStyleFunction = function(styleFunction) {
   this.set(ol.FeatureProperty.STYLE_FUNCTION, styleFunction);
@@ -172,6 +179,7 @@ goog.exportProperty(
 
 /**
  * @param {number|string|undefined} id Id.
+ * @todo stability experimental
  */
 ol.Feature.prototype.setId = function(id) {
   this.id_ = id;
@@ -180,6 +188,7 @@ ol.Feature.prototype.setId = function(id) {
 
 /**
  * @param {string} name Geometry property name.
+ * @todo stability experimental
  */
 ol.Feature.prototype.setGeometryName = function(name) {
   goog.events.unlisten(
@@ -195,6 +204,7 @@ ol.Feature.prototype.setGeometryName = function(name) {
 
 /**
  * @typedef {function(this: ol.Feature, number): Array.<ol.style.Style>}
+ * @todo stability experimental
  */
 ol.feature.FeatureStyleFunction;
 
@@ -203,12 +213,14 @@ ol.feature.FeatureStyleFunction;
  * @param {number} resolution Resolution.
  * @return {Array.<ol.style.Style>} Style.
  * @this {ol.Feature}
+ * @todo stability experimental
  */
 ol.feature.defaultFeatureStyleFunction = goog.functions.constant([]);
 
 
 /**
  * @typedef {function(ol.Feature, number): Array.<ol.style.Style>}
+ * @todo stability experimental
  */
 ol.feature.StyleFunction;
 
@@ -217,6 +229,7 @@ ol.feature.StyleFunction;
  * @param {ol.Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @return {Array.<ol.style.Style>} Style.
+ * @todo stability experimental
  */
 ol.feature.defaultStyleFunction = function(feature, resolution) {
   var featureStyleFunction = feature.getStyleFunction();

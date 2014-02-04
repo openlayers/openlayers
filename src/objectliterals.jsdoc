@@ -91,6 +91,13 @@
  *     The coordinate system for the center is specified with the `projection`
  *     option. Default is `undefined`, and layer sources will not be fetched if
  *     this is not set.
+ * @property {boolean|number|undefined} constrainRotation Rotation constraint.
+ *     `false` means no constraint. `true` means no constraint, but snap to
+ *     zero near zero. A number constraints the rotation to that number of
+ *     values. For example, `4` will constrain the rotation to 0, 90, 180, and
+ *     270 degrees.  The default is `true`.
+ * @property {boolean|undefined} enableRotation Enable rotation. Default is
+ *     `true`.
  * @property {ol.Extent|undefined} extent The extent that constrains the center,
  *     in other words, center cannot be set outside this extent.
  *     Default is `undefined`.
@@ -170,8 +177,11 @@
 
 /**
  * @typedef {Object} olx.control.ControlOptions
- * @property {Element|undefined} element Element.
- * @property {Element|undefined} target Target.
+ * @property {Element|undefined} element The element is the control's container
+ *     element. This only needs to be specified if you're developing a custom
+ *     control.
+ * @property {Element|string|undefined} target Specify a target if you want the
+ *     control to be rendered outside of the map's viewport.
  * @todo stability experimental
  */
 
@@ -282,17 +292,10 @@
 
 /**
  * @typedef {Object} olx.interaction.DragAndDropOptions
- * @property {boolean|undefined} fitView Fit view.  Default is `true`.
  * @property {Array.<function(new: ol.format.Format)>|undefined} formatConstructors
  *     Format constructors.
- * @property {ol.source.Vector|undefined} source Source.  If this is defined
- *     then features will be added to this source.
- * @property {ol.layer.Vector|undefined} layer Layer.  If this is defined then
- *     features will be added to this layer's source.  If neither `source` nor
- *     `layer` are defined then the dropped features will be added as a new
- *     layer.
- * @property {ol.feature.StyleFunction|undefined} styleFunction Style function.
- *     This is used to configure any new layers created.
+ * @property {ol.proj.ProjectionLike} reprojectTo Target projection. By
+ *     default, the map's view's projection is used.
  */
 
 /**
@@ -396,6 +399,25 @@
  * @typedef {Object} olx.interaction.MouseWheelZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @todo stability experimental
+ */
+
+/**
+ * @typedef {Object} olx.interaction.SelectOptions
+ * @property {ol.events.ConditionType|undefined} addCondition A conditional
+ *     modifier (e.g. shift key) that determines if the selection is added to
+ *     the current selection. By default, a shift-click adds to the current
+ *     selection.
+ * @property {ol.events.ConditionType|undefined} condition A conditional
+ *     modifier (e.g. shift key) that determines if the interaction is active
+ *     (i.e. selection occurs) or not. By default, a click with no modifier keys
+ *     toggles the selection.
+ * @property {function(ol.layer.Layer): boolean|undefined} layerFilter Filter
+ *     function to restrict selection to a subset of layers.
+ * @property {ol.layer.Layer|undefined} layer Layer. The single layer from which
+ *     features should be selected.
+ * @property {Array.<ol.layer.Layer>|undefined} layers Layers.  Zero or more
+ *     layers from which features should be selected.
+ * @property {ol.render.FeaturesOverlay} featuresOverlay Features overlay.
  */
 
 /**
@@ -659,7 +681,14 @@
 /**
  * @typedef {Object} olx.source.ImageCanvasOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
- * @property {ol.CanvasFunctionType} canvasFunction Canvas function.
+ * @property {ol.CanvasFunctionType} canvasFunction Canvas function. The function
+ *     returning the canvas element used by the source as an image. The arguments
+ *     passed to the function are: `{ol.Extent}` the image extent, `{number}` the
+ *     image resolution, `{number}` the device pixel ratio, `{ol.Size}` the image
+ *     size, and `{ol.proj.Projection}` the image projection. The canvas returned
+ *     by this function is cached by the source. If the value returned by the
+ *     function is later changed then `dispatchChangeEvent` should be called on
+ *     the source for the source to invalidate the current cached image.
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
  * @property {ol.proj.ProjectionLike} projection Projection.
@@ -914,6 +943,7 @@
 /**
  * @typedef {Object} olx.style.TextOptions
  * @property {string|undefined} font Font.
+ * @property {number|undefined} scale Scale.
  * @property {number|undefined} rotation Rotation.
  * @property {string|undefined} text Text.
  * @property {string|undefined} textAlign Text alignment.

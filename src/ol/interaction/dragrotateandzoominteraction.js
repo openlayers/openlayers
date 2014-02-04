@@ -71,7 +71,7 @@ ol.interaction.DragRotateAndZoom.prototype.handleDrag =
     function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var size = map.getSize();
-  var offset = mapBrowserEvent.getPixel();
+  var offset = mapBrowserEvent.pixel;
   var delta = new goog.math.Vec2(
       offset[0] - size[0] / 2,
       size[1] / 2 - offset[1]);

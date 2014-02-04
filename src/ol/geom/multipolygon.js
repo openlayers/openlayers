@@ -15,6 +15,7 @@ goog.require('ol.geom.simplify');
  * @extends {ol.geom.SimpleGeometry}
  * @param {ol.geom.RawMultiPolygon} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.MultiPolygon = function(coordinates, opt_layout) {
 
@@ -30,13 +31,13 @@ ol.geom.MultiPolygon = function(coordinates, opt_layout) {
    * @private
    * @type {number}
    */
-  this.interiorPointsRevision_ = -1;
+  this.flatInteriorPointsRevision_ = -1;
 
   /**
    * @private
-   * @type {Array.<ol.Coordinate>}
+   * @type {Array.<number>}
    */
-  this.interiorPoints_ = null;
+  this.flatInteriorPoints_ = null;
 
   /**
    * @private
@@ -110,6 +111,7 @@ ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
 
 /**
  * @return {number} Area.
+ * @todo stability experimental
  */
 ol.geom.MultiPolygon.prototype.getArea = function() {
   return ol.geom.flat.linearRingssArea(
@@ -119,6 +121,7 @@ ol.geom.MultiPolygon.prototype.getArea = function() {
 
 /**
  * @return {ol.geom.RawMultiPolygon} Coordinates.
+ * @todo stability experimental
  */
 ol.geom.MultiPolygon.prototype.getCoordinates = function() {
   return ol.geom.flat.inflateCoordinatesss(
@@ -135,17 +138,18 @@ ol.geom.MultiPolygon.prototype.getEndss = function() {
 
 
 /**
- * @return {Array.<ol.Coordinate>} Interior points.
+ * @return {Array.<number>} Flat interior points.
  */
-ol.geom.MultiPolygon.prototype.getInteriorPoints = function() {
-  if (this.interiorPointsRevision_ != this.getRevision()) {
-    var ys = ol.geom.flat.linearRingssMidYs(
+ol.geom.MultiPolygon.prototype.getFlatInteriorPoints = function() {
+  if (this.flatInteriorPointsRevision_ != this.getRevision()) {
+    var flatCenters = ol.geom.flat.linearRingssGetFlatCenters(
         this.flatCoordinates, 0, this.endss_, this.stride);
-    this.interiorPoints_ = ol.geom.flat.linearRingssGetInteriorPoints(
-        this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, ys);
-    this.interiorPointsRevision_ = this.getRevision();
+    this.flatInteriorPoints_ = ol.geom.flat.linearRingssGetInteriorPoints(
+        this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
+        flatCenters);
+    this.flatInteriorPointsRevision_ = this.getRevision();
   }
-  return this.interiorPoints_;
+  return this.flatInteriorPoints_;
 };
 
 
@@ -189,6 +193,7 @@ ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
 
 /**
  * @return {Array.<ol.geom.Polygon>} Polygons.
+ * @todo stability experimental
  */
 ol.geom.MultiPolygon.prototype.getPolygons = function() {
   var layout = this.layout;
@@ -221,6 +226,7 @@ ol.geom.MultiPolygon.prototype.getType = function() {
 /**
  * @param {ol.geom.RawMultiPolygon} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @todo stability experimental
  */
 ol.geom.MultiPolygon.prototype.setCoordinates =
     function(coordinates, opt_layout) {

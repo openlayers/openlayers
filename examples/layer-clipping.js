@@ -19,7 +19,7 @@ var map = new ol.Map({
 });
 
 osm.on('precompose', function(event) {
-  var ctx = event.getContext();
+  var ctx = event.context;
   ctx.save();
   ctx.translate(ctx.canvas.width / 2, ctx.canvas.height / 2);
   ctx.scale(3, 3);
@@ -37,6 +37,6 @@ osm.on('precompose', function(event) {
 });
 
 osm.on('postcompose', function(event) {
-  var ctx = event.getContext();
+  var ctx = event.context;
   ctx.restore();
 });
