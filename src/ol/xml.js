@@ -4,6 +4,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
+goog.require('goog.userAgent');
 
 
 /**
@@ -45,6 +46,104 @@ ol.xml.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
     }
   }
   return accumulator;
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @private
+ * @return {string} Local name.
+ */
+ol.xml.getLocalName_ = function(node) {
+  return node.localName;
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @private
+ * @return {string} Local name.
+ */
+ol.xml.getLocalNameIE_ = function(node) {
+  var localName = node.localName;
+  if (goog.isDef(localName)) {
+    return localName;
+  }
+  var baseName = node.baseName;
+  goog.asserts.assert(goog.isDefAndNotNull(baseName));
+  return baseName;
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @return {string} Local name.
+ */
+ol.xml.getLocalName = goog.userAgent.IE ?
+    ol.xml.getLocalNameIE_ : ol.xml.getLocalName_;
+
+
+/**
+ * @param {?} value Value.
+ * @private
+ * @return {boolean} Is document.
+ */
+ol.xml.isDocument_ = function(value) {
+  return value instanceof Document;
+};
+
+
+/**
+ * @param {?} value Value.
+ * @private
+ * @return {boolean} Is document.
+ */
+ol.xml.isDocumentIE_ = function(value) {
+  return goog.isObject(value) && value.nodeType == goog.dom.NodeType.DOCUMENT;
+};
+
+
+/**
+ * @param {?} value Value.
+ * @return {boolean} Is document.
+ */
+ol.xml.isDocument = goog.userAgent.IE ?
+    ol.xml.isDocumentIE_ : ol.xml.isDocument_;
+
+
+/**
+ * @param {?} value Value.
+ * @private
+ * @return {boolean} Is node.
+ */
+ol.xml.isNode_ = function(value) {
+  return value instanceof Node;
+};
+
+
+/**
+ * @param {?} value Value.
+ * @private
+ * @return {boolean} Is node.
+ */
+ol.xml.isNodeIE_ = function(value) {
+  return goog.isObject(value) && goog.isDef(value.nodeType);
+};
+
+
+/**
+ * @param {?} value Value.
+ * @return {boolean} Is node.
+ */
+ol.xml.isNode = goog.userAgent.IE ? ol.xml.isNodeIE_ : ol.xml.isNode_;
+
+
+/**
+ * @param {string} xml XML.
+ * @return {Document} Document.
+ */
+ol.xml.load = function(xml) {
+  return new DOMParser().parseFromString(xml, 'application/xml');
 };
 
 
