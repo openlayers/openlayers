@@ -1,3 +1,5 @@
+// FIXME remove afterLoadXml as it uses the wrong XML parser on IE9
+
 // helper functions for async testing
 (function(global) {
 

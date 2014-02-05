@@ -11,7 +11,6 @@ goog.require('goog.Uri');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.dom.xml');
 goog.require('goog.math');
 goog.require('goog.object');
 goog.require('goog.string');
@@ -372,10 +371,10 @@ ol.format.KML.readFlatCoordinates_ = function(node) {
  */
 ol.format.KML.readStyleUrl_ = function(node) {
   var s = goog.string.trim(ol.xml.getAllTextContent(node, false));
-  if (goog.isNull(node.baseURI)) {
-    return s;
-  } else {
+  if (goog.isDefAndNotNull(node.baseURI)) {
     return goog.Uri.resolve(node.baseURI, s).toString();
+  } else {
+    return s;
   }
 
 };
@@ -388,10 +387,10 @@ ol.format.KML.readStyleUrl_ = function(node) {
  */
 ol.format.KML.readURI_ = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
-  if (goog.isNull(node.baseURI)) {
-    return goog.string.trim(s);
-  } else {
+  if (goog.isDefAndNotNull(node.baseURI)) {
     return goog.Uri.resolve(node.baseURI, goog.string.trim(s)).toString();
+  } else {
+    return goog.string.trim(s);
   }
 };
 
@@ -1396,8 +1395,8 @@ ol.format.KML.prototype.getExtensions = function() {
  */
 ol.format.KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  goog.asserts.assert(node.localName == 'Document' ||
-                      node.localName == 'Folder');
+  var localName = ol.xml.getLocalName(node);
+  goog.asserts.assert(localName == 'Document' || localName == 'Folder');
   // FIXME use scope somehow
   var parsersNS = ol.xml.makeParsersNS(
       ol.format.KML.NAMESPACE_URIS_, {
@@ -1466,8 +1465,13 @@ ol.format.KML.prototype.readSharedStyle_ = function(node, objectStack) {
   if (!goog.isNull(id)) {
     var style = ol.format.KML.readStyle_(node, objectStack);
     if (goog.isDef(style)) {
-      var baseURI = goog.isNull(node.baseURI) ? '' : node.baseURI;
-      this.sharedStyles_[baseURI + '#' + id] = [style];
+      var styleUri;
+      if (goog.isDefAndNotNull(node.baseURI)) {
+        styleUri = goog.Uri.resolve(node.baseURI, '#' + id).toString();
+      } else {
+        styleUri = '#' + id;
+      }
+      this.sharedStyles_[styleUri] = [style];
     }
   }
 };
@@ -1488,23 +1492,28 @@ ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
     if (!goog.isDef(styleObject)) {
       return;
     }
-    var baseURI = goog.isNull(node.baseURI) ? '' : node.baseURI;
     var style = /** @type {ol.style.Style} */
         (goog.object.get(styleObject, 'style', null));
+    var styleUri;
+    if (goog.isDefAndNotNull(node.baseURI)) {
+      styleUri = goog.Uri.resolve(node.baseURI, '#' + id).toString();
+    } else {
+      styleUri = '#' + id;
+    }
     if (!goog.isNull(style)) {
-      this.sharedStyles_[baseURI + '#' + id] = [style];
+      this.sharedStyles_[styleUri] = [style];
     }
     var styleUrl = /** @type {string|undefined} */
         (goog.object.get(styleObject, 'styleUrl'));
     if (goog.isDef(styleUrl)) {
-      var styleUri;
-      if (goog.isNull(node.baseURI)) {
-        styleUri = '#' + goog.string.trim(styleUrl);
+      var styleUrlUri;
+      if (goog.isDefAndNotNull(node.baseURI)) {
+        styleUrlUri = goog.Uri.resolve(node.baseURI, styleUrl).toString();
       } else {
-        styleUri = goog.Uri.resolve(baseURI, styleUrl).toString();
+        styleUrlUri = '#' + goog.string.trim(styleUrl).replace(/^#/, '');
       }
-      goog.asserts.assert(styleUri in this.sharedStyles_);
-      this.sharedStyles_[baseURI + '#' + id] = this.sharedStyles_[styleUri];
+      goog.asserts.assert(styleUrlUri in this.sharedStyles_);
+      this.sharedStyles_[styleUri] = this.sharedStyles_[styleUrlUri];
     }
   }
 };
@@ -1539,21 +1548,22 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
     return [];
   }
   var features;
-  if (node.localName == 'Document' || node.localName == 'Folder') {
+  var localName = ol.xml.getLocalName(node);
+  if (localName == 'Document' || localName == 'Folder') {
     features = this.readDocumentOrFolder_(node, []);
     if (goog.isDef(features)) {
       return features;
     } else {
       return [];
     }
-  } else if (node.localName == 'Placemark') {
+  } else if (localName == 'Placemark') {
     var feature = this.readPlacemark_(node, []);
     if (goog.isDef(feature)) {
       return [feature];
     } else {
       return [];
     }
-  } else if (node.localName == 'kml') {
+  } else if (localName == 'kml') {
     features = [];
     var n;
     for (n = node.firstElementChild; !goog.isNull(n);
@@ -1576,12 +1586,12 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node) {
  * @todo stability experimental
  */
 ol.format.KML.prototype.readName = function(source) {
-  if (source instanceof Document) {
-    return this.readNameFromDocument(source);
-  } else if (source instanceof Node) {
-    return this.readNameFromNode(source);
+  if (ol.xml.isDocument(source)) {
+    return this.readNameFromDocument(/** @type {Document} */ (source));
+  } else if (ol.xml.isNode(source)) {
+    return this.readNameFromNode(/** @type {Node} */ (source));
   } else if (goog.isString(source)) {
-    var doc = goog.dom.xml.loadXml(source);
+    var doc = ol.xml.load(source);
     return this.readNameFromDocument(doc);
   } else {
     goog.asserts.fail();
@@ -1622,12 +1632,13 @@ ol.format.KML.prototype.readNameFromNode = function(node) {
     }
   }
   for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
+    var localName = ol.xml.getLocalName(n);
     if (goog.array.indexOf(ol.format.KML.NAMESPACE_URIS_,
                            n.namespaceURI) != -1 &&
-        (n.localName == 'Document' ||
-         n.localName == 'Folder' ||
-         n.localName == 'Placemark' ||
-         n.localName == 'kml')) {
+        (localName == 'Document' ||
+         localName == 'Folder' ||
+         localName == 'Placemark' ||
+         localName == 'kml')) {
       var name = this.readNameFromNode(n);
       if (goog.isDef(name)) {
         return name;
