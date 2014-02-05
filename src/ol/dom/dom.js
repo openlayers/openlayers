@@ -140,7 +140,7 @@ ol.dom.setOpacity = function(element, value) {
 
     // Fix to apply filter to absolutely-positioned children element
     if (element.currentStyle.zIndex === 'auto') {
-      element.style.zIndex = -1;
+      element.style.zIndex = 0;
     }
   } else {
     goog.style.setOpacity(element, value);
@@ -167,7 +167,7 @@ ol.dom.setIEMatrix_ = function(element, value) {
 
   // Fix to apply filter to absolutely-positioned children element
   if (element.currentStyle.zIndex === 'auto') {
-    element.style.zIndex = -1;
+    element.style.zIndex = 0;
   }
 };
 
