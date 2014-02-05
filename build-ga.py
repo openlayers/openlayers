@@ -38,7 +38,7 @@ targets.add = MethodType(add, targets, TargetCollection)
 
 # We redefine 'build'
 virtual('build', 'build/ga.css', 'build/src/internal/src/requireallga.js', 'build/ga.js',
-        'build/ga-whitespace.js','build/layersconfig')
+        'build/ga-whitespace.js','build/layersConfig')
 
 # We redifine 'apidoc'
 JSDOC = 'node_modules/.bin/jsdoc'
