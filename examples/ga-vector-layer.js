@@ -10,10 +10,11 @@ goog.require('ol.style.Text');
 
 var vector = new ol.layer.Vector({
   source: new ol.source.GeoJSON({
-    reprojectTo: 'EPSG:21781',
+    projection: 'EPSG:21781',
     url: 'data/cities.geojson'
   }),
   styleFunction: function(feature, resolution) {
+    var text = resolution < 50 ? feature.get('NAME') : '';
     var style = new ol.style.Style({
       image: new ol.style.Circle({
         fill: new ol.style.Fill({
@@ -28,21 +29,19 @@ var vector = new ol.layer.Vector({
       }),
       stroke: new ol.style.Stroke({
         color: '#319FD3'
-      })
-    });
-
-    if (resolution < 50) {
-      style.text = new ol.style.Text({
-        color: 'black',
-        text: ol.expr.parse('NAME'),
-        fontFamily: 'Calibri,sans-serif',
-        fontSize: 12,
+      }),
+      text: new ol.style.Text({
+        text: text,
+        font: '12px Calibri,sans-serif',
+        fill: new ol.style.Fill({
+          color: '#000'
+        }),
         stroke: new ol.style.Stroke({
           color: 'white',
           width: 3
         })
-      });
-    }
+      })
+    });
     return [style];
   }
 });
@@ -84,6 +83,6 @@ $(map.getViewport()).on('mousemove', function(evt) {
 });
 
 map.on('singleclick', function(evt) {
-  var pixel = evt.getPixel();
+  var pixel = evt.pixel;
   displayFeatureInfo(pixel);
 });
