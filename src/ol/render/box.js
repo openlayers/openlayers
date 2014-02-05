@@ -69,15 +69,15 @@ ol.render.Box.prototype.createGeometry_ = function() {
   var startPixel = this.startPixel_;
   var endPixel = this.endPixel_;
   var pixels = [
-    [
-      startPixel,
-      [startPixel[0], endPixel[1]],
-      endPixel,
-      [endPixel[0], startPixel[1]]
-    ]
+    startPixel,
+    [startPixel[0], endPixel[1]],
+    endPixel,
+    [endPixel[0], startPixel[1]]
   ];
-  var coordinates = goog.array.map(pixels[0],
+  var coordinates = goog.array.map(pixels,
       this.map_.getCoordinateFromPixel, this.map_);
+  // close the polygon
+  coordinates[4] = coordinates[0].slice();
   return new ol.geom.Polygon([coordinates]);
 };
 
