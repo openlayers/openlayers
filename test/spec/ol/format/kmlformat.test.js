@@ -917,7 +917,7 @@ describe('ol.format.KML', function() {
         expect(s.getFill().getColor()).to.eql([0, 0, 0, 0]);
       });
 
-      it('can read a normal styleUrls', function() {
+      it('can read normal styleUrls', function() {
         var text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
             '  <Document>' +
@@ -1398,7 +1398,7 @@ describe('ol.format.KML', function() {
 
     var features;
     before(function(done) {
-      afterLoadXml('spec/ol/format/kml/states.kml', function(xml) {
+      afterLoadText('spec/ol/format/kml/states.kml', function(xml) {
         try {
           features = format.readFeatures(xml);
         } catch (e) {
@@ -1444,7 +1444,7 @@ describe('ol.format.KML', function() {
           '    <Folder>' +
           '     <Placemark/>' +
           '    </Folder>' +
-          '  <Document>' +
+          '  </Document>' +
           '</kml>';
       expect(format.readName(kml)).to.be(undefined);
     });
