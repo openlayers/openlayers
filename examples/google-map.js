@@ -1,12 +1,16 @@
+// NOCOMPILE
+// This example uses the GMapx v3 API, which we do not have an exports file for.
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.interaction');
 goog.require('ol.interaction.DragPan');
 goog.require('ol.layer.Vector');
-goog.require('ol.parser.GeoJSON');
 goog.require('ol.proj');
-goog.require('ol.source.Vector');
+goog.require('ol.source.GeoJSON');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
 
 
 var gmap = new google.maps.Map(document.getElementById('map'), {
@@ -27,10 +31,21 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olmap);
 
 google.maps.event.addListenerOnce(gmap, 'tilesloaded', function() {
   var vector = new ol.layer.Vector({
-    source: new ol.source.Vector({
-      parser: new ol.parser.GeoJSON(),
-      url: 'data/countries.geojson'
-    })
+    source: new ol.source.GeoJSON({
+      url: 'data/geojson/countries.geojson',
+      projection: 'EPSG:3857'
+    }),
+    styleFunction: function(feature, resolution) {
+      return [new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: 'rgba(255, 255, 255, 0.6)'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#319FD3',
+          width: 1
+        })
+      })];
+    }
   });
 
   var center = gmap.getCenter();
