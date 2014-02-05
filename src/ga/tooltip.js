@@ -123,7 +123,7 @@ ga.Tooltip.prototype.disposeInternal = function() {
  */
 ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
   this.hidePopup();
-  var coordinate = mapBrowserEvent.getCoordinate();
+  var coordinate = mapBrowserEvent.coordinate;
   this.overlay_.setPosition(coordinate);
   var size = this.map_.getSize();
   var extent = this.map_.getView().getView2D().calculateExtent(size);
