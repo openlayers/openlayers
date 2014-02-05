@@ -153,9 +153,15 @@ ol.MapBrowserEventHandler = function(map) {
       goog.events.EventType.MOUSEDOWN,
       this.handleMouseDown_, false, this);
 
-  this.pointerdownListenerKey_ = goog.events.listen(element,
-      goog.events.EventType.MSPOINTERDOWN,
-      this.handlePointerDown_, false, this);
+  if (goog.global.window.MSPointerEvent) {
+    this.pointerdownListenerKey_ = goog.events.listen(element,
+        goog.events.EventType.MSPOINTERDOWN,
+        this.handlePointerDown_, false, this);
+  } else {
+    this.pointerdownListenerKey_ = goog.events.listen(element,
+        'pointerdown',
+        this.handlePointerDown_, false, this);
+  }
 
   this.touchstartListenerKey_ = goog.events.listen(element,
       goog.events.EventType.TOUCHSTART,
@@ -224,7 +230,8 @@ ol.MapBrowserEventHandler.prototype.handleMouseUp_ = function(browserEvent) {
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handleMouseDown_ = function(browserEvent) {
-  if (!goog.isNull(this.pointerdownListenerKey_)) {
+  if (browserEvent.type === goog.events.EventType.MOUSEDOWN &&
+      !goog.isNull(this.pointerdownListenerKey_)) {
     // mouse device detected - unregister the pointerdown and touchstart
     // listeners
     goog.events.unlistenByKey(this.pointerdownListenerKey_);
@@ -240,12 +247,16 @@ ol.MapBrowserEventHandler.prototype.handleMouseDown_ = function(browserEvent) {
   this.dispatchEvent(newEvent);
   this.down_ = browserEvent;
   this.dragged_ = false;
-  this.dragListenerKeys_ = [
-    goog.events.listen(goog.global.document, goog.events.EventType.MOUSEMOVE,
-        this.handleMouseMove_, false, this),
-    goog.events.listen(goog.global.document, goog.events.EventType.MOUSEUP,
-        this.handleMouseUp_, false, this)
-  ];
+
+  if (browserEvent.type === goog.events.EventType.MOUSEDOWN) {
+    this.dragListenerKeys_ = [
+      goog.events.listen(goog.global.document, goog.events.EventType.MOUSEMOVE,
+          this.handleMouseMove_, false, this),
+      goog.events.listen(goog.global.document, goog.events.EventType.MOUSEUP,
+          this.handleMouseUp_, false, this)
+    ];
+  }
+
   // prevent browser image dragging with the dom renderer
   browserEvent.preventDefault();
 };
@@ -286,23 +297,30 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
     this.touchstartListenerKey_ = null;
   }
 
-  var newEvent = new ol.MapBrowserEvent(
-      ol.MapBrowserEvent.EventType.TOUCHSTART, this.map_, browserEvent);
-  this.dispatchEvent(newEvent);
+  if (browserEvent.getBrowserEvent().pointerType === 4 ||
+      browserEvent.getBrowserEvent().pointerType === 'mouse') {
+    this.handleMouseDown_(browserEvent);
+  } else {
+    this.handleTouchStart_(browserEvent);
+  }
 
-  this.down_ = browserEvent;
-  this.dragged_ = false;
-  this.dragListenerKeys_ = [
-    goog.events.listen(goog.global.document,
-        goog.events.EventType.MSPOINTERMOVE,
-        this.handlePointerMove_, false, this),
-    goog.events.listen(goog.global.document, goog.events.EventType.MSPOINTERUP,
-        this.handlePointerUp_, false, this)
-  ];
-
-  // FIXME check if/when this is necessary
-  // prevent context menu
-  browserEvent.preventDefault();
+  if (goog.global.window.MSPointerEvent) {
+    this.dragListenerKeys_ = [
+      goog.events.listen(goog.global.document,
+          goog.events.EventType.MSPOINTERMOVE,
+          this.handlePointerMove_, false, this),
+      goog.events.listen(goog.global.document, goog.events.EventType.MSPOINTERUP,
+          this.handlePointerUp_, false, this)
+    ];
+  } else {
+    this.dragListenerKeys_ = [
+      goog.events.listen(goog.global.document,
+          'pointermove',
+          this.handlePointerMove_, false, this),
+      goog.events.listen(goog.global.document, 'pointerup',
+          this.handlePointerUp_, false, this)
+    ];
+  }
 };
 
 
@@ -312,17 +330,11 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
  */
 ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
     function(browserEvent) {
-  // Fix IE10 on windows Surface : When you tap the tablet, it triggers
-  // multiple pointermove events between pointerdown and pointerup with
-  // the exact same coordinates of the pointerdown event. To avoid a
-  // 'false' touchmove event to be dispatched , we test if the pointer
-  // effectively moved.
-  if (browserEvent.clientX != this.down_.clientX ||
-      browserEvent.clientY != this.down_.clientY) {
-    this.dragged_ = true;
-    var newEvent = new ol.MapBrowserEvent(
-        ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
-    this.dispatchEvent(newEvent);
+  if (browserEvent.getBrowserEvent().pointerType === 4 ||
+      browserEvent.getBrowserEvent().pointerType === 'mouse') {
+    this.handleMouseMove_(browserEvent);
+  } else {
+    this.handleTouchMove_(browserEvent);
   }
 };
 
@@ -332,18 +344,11 @@ ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
-  var newEvent = new ol.MapBrowserEvent(
-      ol.MapBrowserEvent.EventType.TOUCHEND, this.map_, browserEvent);
-  this.dispatchEvent(newEvent);
-  goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
-
-  // We emulate click event on left mouse button click, touch contact, and pen
-  // contact. isMouseActionButton returns true in these cases (evt.button is set
-  // to 0).
-  // See http://www.w3.org/TR/pointerevents/#button-states .
-  if (!this.dragged_ && browserEvent.isMouseActionButton()) {
-    goog.asserts.assert(!goog.isNull(this.down_));
-    this.emulateClick_(this.down_);
+  if (browserEvent.getBrowserEvent().pointerType === 4 ||
+      browserEvent.getBrowserEvent().pointerType === 'mouse') {
+    this.handleMouseUp_(browserEvent);
+  } else {
+    this.handleTouchEnd_(browserEvent);
   }
 };
 
@@ -353,7 +358,8 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
-  if (!goog.isNull(this.mousedownListenerKey_)) {
+  if (browserEvent.type === goog.events.EventType.TOUCHSTART &&
+      !goog.isNull(this.mousedownListenerKey_)) {
     // touch device detected - unregister the mousedown and pointerdown
     // listeners
     goog.events.unlistenByKey(this.mousedownListenerKey_);
@@ -371,7 +377,8 @@ ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
   this.down_ = browserEvent;
   this.dragged_ = false;
 
-  if (goog.isNull(this.dragListenerKeys_)) {
+  if (browserEvent.type === goog.events.EventType.TOUCHSTART &&
+     goog.isNull(this.dragListenerKeys_)) {
     this.dragListenerKeys_ = [
       goog.events.listen(goog.global.document, goog.events.EventType.TOUCHMOVE,
           this.handleTouchMove_, false, this),

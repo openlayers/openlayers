@@ -1,0 +1,2 @@
+@exportSymbol ga.Map
+@exportProperty ga.Map.prototype.geocode
