@@ -204,7 +204,7 @@ ol.MapBrowserEventHandler.prototype.emulateClick_ = function(browserEvent) {
   } else {
     // click
 
-    if (ol.LEGACY_IE_SUPPORT) {
+    if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
       // In IE 7-8, referring to the original event object after the current
       // call stack causes "member not found" exceptions, such as in the timeout
       // we use here.
