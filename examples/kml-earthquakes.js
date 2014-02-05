@@ -40,7 +40,7 @@ var styleFunction = function(feature, resolution) {
 
 var vector = new ol.layer.Vector({
   source: new ol.source.KML({
-    reprojectTo: 'EPSG:3857',
+    projection: 'EPSG:3857',
     url: 'data/kml/2012_Earthquakes_Mag5.kml'
   }),
   styleFunction: styleFunction

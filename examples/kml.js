@@ -15,7 +15,7 @@ var raster = new ol.layer.Tile({
 
 var vector = new ol.layer.Vector({
   source: new ol.source.KML({
-    reprojectTo: 'EPSG:3857',
+    projection: 'EPSG:3857',
     url: 'data/kml/2012-02-10.kml'
   })
 });

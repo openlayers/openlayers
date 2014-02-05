@@ -1,4 +1,5 @@
-// FIXME remove reprojectTo
+// FIXME consider delaying feature reading so projection can be provided by
+// consumer (e.g. the view)
 
 goog.provide('ol.source.VectorFile');
 
@@ -34,13 +35,6 @@ ol.source.VectorFile = function(opt_options) {
    * @protected
    */
   this.format = options.format;
-
-  /**
-   * @type {ol.proj.Projection}
-   * @private
-   */
-  this.reprojectTo_ = goog.isDef(options.reprojectTo) ?
-      ol.proj.get(options.reprojectTo) : ol.proj.get('EPSG:3857');
 
   if (goog.isDef(options.doc)) {
     this.readFeatures_(options.doc);
@@ -121,14 +115,17 @@ ol.source.VectorFile.prototype.readFeatures_ = function(source) {
   var format = this.format;
   var features = format.readFeatures(source);
   var featureProjection = format.readProjection(source);
-  if (!ol.proj.equivalent(featureProjection, this.reprojectTo_)) {
-    var transform = ol.proj.getTransform(featureProjection, this.reprojectTo_);
-    var i, ii;
-    for (i = 0, ii = features.length; i < ii; ++i) {
-      var feature = features[i];
-      var geometry = feature.getGeometry();
-      if (!goog.isNull(geometry)) {
-        geometry.transform(transform);
+  var projection = this.getProjection();
+  if (!goog.isNull(projection)) {
+    if (!ol.proj.equivalent(featureProjection, projection)) {
+      var transform = ol.proj.getTransform(featureProjection, projection);
+      var i, ii;
+      for (i = 0, ii = features.length; i < ii; ++i) {
+        var feature = features[i];
+        var geometry = feature.getGeometry();
+        if (!goog.isNull(geometry)) {
+          geometry.transform(transform);
+        }
       }
     }
   }

@@ -579,8 +579,9 @@
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
  * @property {GeoJSONObject|undefined} object Object.
- * @property {ol.proj.ProjectionLike} projection Projection.
- * @property {ol.proj.ProjectionLike} reprojectTo Re-project to.
+ * @property {ol.proj.ProjectionLike} projection Destination projection.  If
+ *     provided, features will be transformed to this projection.  If not
+ *     provided, features will not be transformed.
  * @property {string|undefined} text Text.
  * @property {string|undefined} url URL.
  * @property {Array.<string>|undefined} urls URLs.
@@ -593,8 +594,9 @@
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
  * @property {Node|undefined| node Node.
- * @property {ol.proj.ProjectionLike} projection Projection.
- * @property {ol.proj.ProjectionLike} reprojectTo Re-project to.
+ * @property {ol.proj.ProjectionLike} projection Destination projection.  If
+ *     provided, features will be transformed to this projection.  If not
+ *     provided, features will not be transformed.
  * @property {string|undefined} text Text.
  * @property {string|undefined} url URL.
  * @property {Array.<string>|undefined} urls URLs.
@@ -607,8 +609,9 @@
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
  * @property {GeoJSONObject|undefined} object Object.
- * @property {ol.proj.ProjectionLike} projection Projection.
- * @property {ol.proj.ProjectionLike} reprojectTo Re-project to.
+ * @property {ol.proj.ProjectionLike} projection Destination projection.  If
+ *     provided, features will be transformed to this projection.  If not
+ *     provided, features will not be transformed.
  * @property {string|undefined} text Text.
  * @property {string|undefined} url URL.
  */
@@ -649,8 +652,9 @@
  * @property {ol.Extent|undefined} extent Extent.
  * @property {string|undefined} logo Logo.
  * @property {Node|undefined| node Node.
- * @property {ol.proj.ProjectionLike} projection Projection.
- * @property {ol.proj.ProjectionLike} reprojectTo Re-project to.
+ * @property {ol.proj.ProjectionLike} projection Destination projection.  If
+ *     provided, features will be transformed to this projection.  If not
+ *     provided, features will not be transformed.
  * @property {string|undefined} text Text.
  * @property {string|undefined} url URL.
  * @property {Array.<string>|undefined} urls URLs.

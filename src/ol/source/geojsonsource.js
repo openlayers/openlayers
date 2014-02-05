@@ -24,7 +24,6 @@ ol.source.GeoJSON = function(opt_options) {
     logo: options.logo,
     object: options.object,
     projection: options.projection,
-    reprojectTo: options.reprojectTo,
     text: options.text,
     url: options.url,
     urls: options.urls
