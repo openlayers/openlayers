@@ -1,4 +1,0 @@
-@exportSymbol ol.source.wms.ServerType
-@exportProperty ol.source.wms.ServerType.GEOSERVER
-@exportProperty ol.source.wms.ServerType.MAPSERVER
-@exportProperty ol.source.wms.ServerType.QGIS
