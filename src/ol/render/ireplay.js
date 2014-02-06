@@ -1,7 +1,7 @@
 goog.provide('ol.render.IReplayGroup');
 
 goog.require('goog.functions');
-goog.require('ol.render.IRender');
+goog.require('ol.render.IVectorContext');
 
 
 /**
@@ -45,7 +45,7 @@ ol.render.IReplayGroup.prototype.finish = function() {
 /**
  * @param {number|undefined} zIndex Z index.
  * @param {ol.render.ReplayType} replayType Replay type.
- * @return {ol.render.IRender} Replay.
+ * @return {ol.render.IVectorContext} Replay.
  */
 ol.render.IReplayGroup.prototype.getReplay = function(zIndex, replayType) {
 };

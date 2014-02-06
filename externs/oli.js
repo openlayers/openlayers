@@ -96,8 +96,8 @@ oli.render.Event.prototype.frameState;
 oli.render.Event.prototype.glContext;
 
 
-/** @type {ol.render.IRender|undefined} */
-oli.render.Event.prototype.render;
+/** @type {ol.render.IVectorContext|undefined} */
+oli.render.Event.prototype.vectorContext;
 
 
 

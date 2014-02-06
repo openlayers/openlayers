@@ -113,14 +113,14 @@ var strokeStyle = new ol.style.Stroke({
   width: 3
 });
 map.on('postcompose', function(evt) {
-  var render = evt.render;
+  var vectorContext = evt.vectorContext;
   if (point !== null) {
-    render.setImageStyle(imageStyle);
-    render.drawPointGeometry(point);
+    vectorContext.setImageStyle(imageStyle);
+    vectorContext.drawPointGeometry(point);
   }
   if (line !== null) {
-    render.setFillStrokeStyle(null, strokeStyle);
-    render.drawLineStringGeometry(line);
+    vectorContext.setFillStrokeStyle(null, strokeStyle);
+    vectorContext.drawLineStringGeometry(line);
   }
 });
 
