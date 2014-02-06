@@ -26,7 +26,7 @@ var raster = new ol.layer.Tile({
 var image = new ol.style.Circle({
   radius: 5,
   fill: null,
-  stroke: new ol.style.Stroke({color: 'red', width: 1})
+  stroke: new ol.style.Stroke({color: 'orange', width: 2})
 });
 
 var styleFunction = function(feature) {
@@ -49,7 +49,7 @@ var styleFunction = function(feature) {
       return [new ol.style.Style({
         stroke: new ol.style.Stroke({
           color: 'green',
-          width: 1
+          width: 3
         })
       })];
     case 'MultiPolygon':
@@ -66,11 +66,12 @@ var styleFunction = function(feature) {
       return [new ol.style.Style({
         stroke: new ol.style.Stroke({
           color: 'red',
-          width: 2
+          width: 3
         }),
         fill: new ol.style.Fill({
           color: 'rgba(255, 0, 0, 0.1)'
-        })
+        }),
+        image: image
       })];
   }
 };
@@ -188,8 +189,6 @@ var overlayStyle = (function() {
   ];
   styles[ol.geom.GeometryType.MULTI_POLYGON] =
       styles[ol.geom.GeometryType.POLYGON];
-  styles[ol.geom.GeometryType.GEOMETRY_COLLECTION] =
-      styles[ol.geom.GeometryType.POLYGON];
 
   styles[ol.geom.GeometryType.LINE_STRING] = [
     new ol.style.Style({
@@ -225,6 +224,10 @@ var overlayStyle = (function() {
   ];
   styles[ol.geom.GeometryType.MULTI_POINT] =
       styles[ol.geom.GeometryType.POINT];
+
+  styles[ol.geom.GeometryType.GEOMETRY_COLLECTION] =
+      styles[ol.geom.GeometryType.POLYGON].concat(
+          styles[ol.geom.GeometryType.POINT]);
 
   return function(feature, resolution) {
     return styles[feature.getGeometry().getType()];
