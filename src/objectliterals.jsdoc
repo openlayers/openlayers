@@ -246,6 +246,8 @@
  * @typedef {Object} olx.control.ZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {string|undefined} className CSS class name. Default is `ol-zoom`.
+ * @property {string|undefined} zoomInLabel Text label to use for the zoom-in button. Default is `+`
+ * @property {string|undefined} zoomOutLabel Text label to use for the zoom-out button. Default is `-`
  * @property {number|undefined} delta The zoom delta applied on each click.
  * @property {Element|undefined} target Target.
  * @todo stability experimental
