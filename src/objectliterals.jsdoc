@@ -620,6 +620,9 @@
  * @typedef {Object} olx.source.IGCOptions
  * @property {ol.format.IGCZ|undefined} altitudeMode Altitude mode.
  *     Possible values are `barometric`, `gps`, and `none`. Default is `none`.
+ * @property {ol.proj.ProjectionLike} projection Destination projection.  If
+ *     provided, features will be transformed to this projection.  If not
+ *     provided, features will not be transformed.
  * @property {string|undefined} text Text.
  * @property {string|undefined} url URL.
  * @property {Array.<string>|undefined} urls URLs.
