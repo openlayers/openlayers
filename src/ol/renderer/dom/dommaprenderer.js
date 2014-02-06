@@ -107,5 +107,6 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
 
   this.calculateMatrices2D(frameState);
   this.scheduleRemoveUnusedLayerRenderers(frameState);
+  this.scheduleExpireIconCache(frameState);
 
 };

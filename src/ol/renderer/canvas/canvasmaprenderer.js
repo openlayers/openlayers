@@ -179,5 +179,5 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   }
 
   this.scheduleRemoveUnusedLayerRenderers(frameState);
-
+  this.scheduleExpireIconCache(frameState);
 };

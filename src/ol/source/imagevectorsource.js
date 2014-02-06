@@ -12,7 +12,6 @@ goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.vector');
 goog.require('ol.source.ImageCanvas');
 goog.require('ol.source.Vector');
-goog.require('ol.style.ImageState');
 goog.require('ol.vec.Mat4');
 
 
@@ -194,12 +193,9 @@ ol.source.ImageVector.prototype.getTransform_ =
  * @param {goog.events.Event} event Image style change event.
  * @private
  */
-ol.source.ImageVector.prototype.handleImageStyleChange_ =
+ol.source.ImageVector.prototype.handleImageChange_ =
     function(event) {
-  var imageStyle = /** @type {ol.style.Image} */ (event.target);
-  if (imageStyle.getImageState() == ol.style.ImageState.LOADED) {
-    this.dispatchChangeEvent();
-  }
+  this.dispatchChangeEvent();
 };
 
 
@@ -223,7 +219,6 @@ ol.source.ImageVector.prototype.handleSourceChange_ = function() {
  */
 ol.source.ImageVector.prototype.renderFeature_ =
     function(feature, resolution, pixelRatio, replayGroup) {
-  var loading = false;
   var styles = this.styleFunction_(feature, resolution);
   if (!goog.isDefAndNotNull(styles)) {
     return false;
@@ -231,26 +226,11 @@ ol.source.ImageVector.prototype.renderFeature_ =
   // simplify to a tolerance of half a device pixel
   var squaredTolerance =
       resolution * resolution / (4 * pixelRatio * pixelRatio);
-  var i, ii, style, imageStyle, imageState;
+  var i, ii, loading = false;
   for (i = 0, ii = styles.length; i < ii; ++i) {
-    style = styles[i];
-    imageStyle = style.getImage();
-    if (!goog.isNull(imageStyle)) {
-      if (imageStyle.getImageState() == ol.style.ImageState.IDLE) {
-        goog.events.listenOnce(imageStyle, goog.events.EventType.CHANGE,
-            this.handleImageStyleChange_, false, this);
-        imageStyle.load();
-      } else if (imageStyle.getImageState() == ol.style.ImageState.LOADED) {
-        ol.renderer.vector.renderFeature(
-            replayGroup, feature, style, squaredTolerance, feature);
-      }
-      goog.asserts.assert(
-          imageStyle.getImageState() != ol.style.ImageState.IDLE);
-      loading = imageStyle.getImageState() == ol.style.ImageState.LOADING;
-    } else {
-      ol.renderer.vector.renderFeature(
-          replayGroup, feature, style, squaredTolerance, feature);
-    }
+    loading = ol.renderer.vector.renderFeature(
+        replayGroup, feature, styles[i], squaredTolerance, feature,
+        this.handleImageChange_, this) || loading;
   }
   return loading;
 };

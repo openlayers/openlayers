@@ -56,18 +56,35 @@ ol.style.Circle = function(opt_options) {
 
   var size = this.render_();
 
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.anchor_ = [size / 2, size / 2];
+
+  /**
+   * @private
+   * @type {ol.Size}
+   */
+  this.size_ = [size, size];
+
   goog.base(this, {
-    anchor: [size / 2, size / 2],
-    imageState: ol.style.ImageState.LOADED,
     rotation: 0,
     scale: 1,
-    size: [size, size],
     snapToPixel: undefined,
     subtractViewRotation: false
   });
 
 };
 goog.inherits(ol.style.Circle, ol.style.Image);
+
+
+/**
+ * @inheritDoc
+ */
+ol.style.Circle.prototype.getAnchor = function() {
+  return this.anchor_;
+};
 
 
 /**
@@ -95,10 +112,26 @@ ol.style.Circle.prototype.getImage = function(pixelRatio) {
 
 
 /**
+ * @inheritDoc
+ */
+ol.style.Circle.prototype.getImageState = function() {
+  return ol.style.ImageState.LOADED;
+};
+
+
+/**
  * @return {number} Radius.
  */
 ol.style.Circle.prototype.getRadius = function() {
   return this.radius_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.style.Circle.prototype.getSize = function() {
+  return this.size_;
 };
 
 
@@ -113,7 +146,19 @@ ol.style.Circle.prototype.getStroke = function() {
 /**
  * @inheritDoc
  */
+ol.style.Circle.prototype.listenImageChange = goog.nullFunction;
+
+
+/**
+ * @inheritDoc
+ */
 ol.style.Circle.prototype.load = goog.nullFunction;
+
+
+/**
+ * @inheritDoc
+ */
+ol.style.Circle.prototype.unlistenImageChange = goog.nullFunction;
 
 
 /**
