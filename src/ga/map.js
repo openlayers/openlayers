@@ -17,6 +17,14 @@ goog.require('ol.proj.EPSG21781');
 goog.require('ol.source.State');
 goog.require('ol.extent');
 goog.require('ol.Overlay');
+goog.require('ol.format.GeoJSON');
+goog.require('ol.source.Vector');
+goog.require('ol.layer.Vector');
+goog.require('ol.style.Style');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Circle');
+
 
 goog.require('ga.Tooltip');
 
@@ -97,7 +105,6 @@ goog.inherits(ga.Map, ol.Map);
 /**
  * Geocode using api.geo.admin.ch
  * @param {String} text text to geocode.
- * @todo stability experimental
  */
 ga.Map.prototype.geocode = function(text) {
   var jsonp = new goog.net.Jsonp(
@@ -125,7 +132,86 @@ ga.Map.prototype.handleGeocodeError_ = function(response) {
   alert("Geocoding failed. Sorry for inconvenience.");
 };
 
-ga.Map.prototype.recenter_ = function() {
+/**
+ * Recenter feature using api.geo.admin.ch
+ * @param {String} layerId GeoAdmin id of the layer.
+ * @param {String} featureId id of the feature.
+ */
+ga.Map.prototype.recenterFeature = function(layerId, featureId) {
+  var jsonp = new goog.net.Jsonp(
+    '//api3.geo.admin.ch/rest/services/api/MapServer/' +
+    layerId + '/' + featureId);
+  var payload = { 'geometryFormat': 'geojson' };
+  jsonp.send(payload, 
+             goog.bind(this.handleRecenter_, this), 
+             goog.bind(this.handleRecenterError_, this));
+};
+
+ga.Map.prototype.handleRecenter_ = function(response) {
+  var feature = response['feature'];
+  this.recenterToFeature_(feature);
+};
+
+ga.Map.prototype.handleRecenterError_ = function(response) {
+  alert("Recentering failed. No feature found. Sorry for inconvenience.");
+};
+
+ga.Map.prototype.recenterToFeature_ = function(feature) {
+  var extent = feature['bbox'];
+  this.getView().getView2D().fitExtent(extent, this.getSize());
+  if (this.getView().getView2D().getZoom() > 7) {
+    this.getView().getView2D().setZoom(7);
+  }
+};
+
+/**
+ * Highlight feature using api.geo.admin.ch
+ * @param {String} layerId GeoAdmin id of the layer.
+ * @param {String} featureId id of the feature.
+ */
+ga.Map.prototype.highlightFeature = function(layerId, featureId) {
+  var jsonp = new goog.net.Jsonp(
+    '//api3.geo.admin.ch/rest/services/api/MapServer/' +
+    layerId + '/' + featureId);
+  var payload = { 'geometryFormat': 'geojson' };
+  jsonp.send(payload, 
+             goog.bind(this.handleHighlight_, this), 
+             goog.bind(this.handleHighlightError_, this));
+};
+
+ga.Map.prototype.handleHighlight_ = function(response) {
+  var features = [response['feature']];
+  var parser = new ol.format.GeoJSON();
+  var vectorSource = new ol.source.Vector({
+    projection: 'EPSG:21781',
+    features: parser.readFeatures({
+      type: 'FeatureCollection',
+      features: features
+    })
+  });
+  var vector = new ol.layer.Vector({
+    opacity: 0.75,
+    source: vectorSource,
+    styleFunction: function(feature, resolution) {
+      return [new ol.style.Style({
+        fill: new ol.style.Fill({color: '#ffff00'}),
+        stroke: new ol.style.Stroke({color: '#ff8000', width: 3}),
+        image: new ol.style.Circle({
+          radius: 10,
+          fill: new ol.style.Fill({color: '#ffff00'}),
+          stroke: new ol.style.Stroke({color: '#ff8000', width: 3})
+        })
+      })];
+    }
+  });
+  map.addLayer(vector);
+};
+
+ga.Map.prototype.handleHighlightError_ = function(response) {
+  alert("Highlighting failed. No feature found. Sorry for inconvenience.");
+};
+
+ga.Map.prototype.getFeature_ = function(layerId, featureId) {
 };
 
 ga.Map.prototype.createGeocoderDialog_ = function() {
