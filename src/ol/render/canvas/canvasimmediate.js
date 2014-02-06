@@ -11,7 +11,7 @@ goog.require('goog.vec.Mat4');
 goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.geom.flat');
-goog.require('ol.render.IRender');
+goog.require('ol.render.IVectorContext');
 goog.require('ol.render.canvas');
 goog.require('ol.vec.Mat4');
 
@@ -19,7 +19,7 @@ goog.require('ol.vec.Mat4');
 
 /**
  * @constructor
- * @implements {ol.render.IRender}
+ * @implements {ol.render.IVectorContext}
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Extent} extent Extent.

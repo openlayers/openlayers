@@ -145,13 +145,13 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
     return;
   }
   var resolution = event.frameState.view2DState.resolution;
-  var render = event.render;
+  var vectorContext = event.vectorContext;
   var i, ii, feature, styles;
   this.features_.forEach(function(feature) {
     styles = this.styleFunction_(feature, resolution);
     ii = styles.length;
     for (i = 0; i < ii; ++i) {
-      render.drawFeature(feature, styles[i]);
+      vectorContext.drawFeature(feature, styles[i]);
     }
   }, this);
 };
