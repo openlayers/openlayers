@@ -134,7 +134,8 @@ ol.Overlay = function(options) {
     this.setPosition(options.position);
   }
   if (goog.isDef(options.positioning)) {
-    this.setPositioning(options.positioning);
+    this.setPositioning(
+        /** @type {ol.OverlayPositioning} */ (options.positioning));
   }
 
 };
