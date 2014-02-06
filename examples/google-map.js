@@ -35,8 +35,8 @@ google.maps.event.addListenerOnce(gmap, 'tilesloaded', function() {
       url: 'data/geojson/countries.geojson',
       projection: 'EPSG:3857'
     }),
-    styleFunction: function(feature, resolution) {
-      return [new ol.style.Style({
+    styleFunction: (function() {
+      var styleArray = [new ol.style.Style({
         fill: new ol.style.Fill({
           color: 'rgba(255, 255, 255, 0.6)'
         }),
@@ -45,7 +45,10 @@ google.maps.event.addListenerOnce(gmap, 'tilesloaded', function() {
           width: 1
         })
       })];
-    }
+      return function(feature, resolution) {
+        return styleArray;
+      };
+    }())
   });
 
   var center = gmap.getCenter();
