@@ -76,7 +76,7 @@ ga.Map = function(options) {
     delete options.view;
   }
   options.view = view;
-
+  options.ol3Logo = false;
   goog.base(this, options);
 
   this.addControl(new ol.control.ScaleLine());
