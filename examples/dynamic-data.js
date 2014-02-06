@@ -35,7 +35,7 @@ var R = 7e6;
 var r = 2e6;
 var p = 2e6;
 map.on('postcompose', function(event) {
-  var render = event.render;
+  var vectorContext = event.vectorContext;
   var frameState = event.frameState;
   var theta = 2 * Math.PI * frameState.time / omegaTheta;
   var coordinates = [];
@@ -46,8 +46,9 @@ map.on('postcompose', function(event) {
     var y = (R + r) * Math.sin(t) + p * Math.sin((R + r) * t / r);
     coordinates.push([x, y]);
   }
-  render.setImageStyle(imageStyle);
-  render.drawMultiPointGeometry(new ol.geom.MultiPoint(coordinates), null);
+  vectorContext.setImageStyle(imageStyle);
+  vectorContext.drawMultiPointGeometry(
+      new ol.geom.MultiPoint(coordinates), null);
   map.requestRenderFrame();
 });
 map.requestRenderFrame();
