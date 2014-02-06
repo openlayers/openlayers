@@ -19,7 +19,7 @@ var map = new ol.Map({
       })
     })
   ],
-  renderers: ['canvas'],
+  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: ol.proj.transform([-97, 38], 'EPSG:4326', 'EPSG:3857'),
