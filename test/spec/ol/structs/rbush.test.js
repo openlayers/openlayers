@@ -319,7 +319,7 @@ describe('ol.structs.RBush', function() {
 
     describe('#remove', function() {
 
-      it('can remove all 2000 objects', function() {
+      it('can remove all 1000 objects', function() {
         var objs = rBush.getAll();
         var i, value;
         for (i = objs.length - 1; i >= 0; --i) {
