@@ -47,6 +47,7 @@ var styleFunction = function(feature, resolution) {
 
 var vector = new ol.layer.Vector({
   source: new ol.source.KML({
+    projection: 'EPSG:3857',
     url: 'data/kml/timezones.kml'
   }),
   styleFunction: styleFunction
