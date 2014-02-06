@@ -425,7 +425,7 @@
  *     features should be selected.
  * @property {Array.<ol.layer.Layer>|undefined} layers Layers.  Zero or more
  *     layers from which features should be selected.
- * @property {ol.render.FeaturesOverlay} featuresOverlay Features overlay.
+ * @property {ol.FeatureOverlay} featureOverlay Feature overlay.
  */
 
 /**
@@ -555,7 +555,7 @@
  */
 
 /**
- * @typedef {Object} olx.render.FeaturesOverlayOptions
+ * @typedef {Object} olx.FeatureOverlayOptions
  * @property {Array.<ol.Feature>|ol.Collection|undefined} features Features.
  * @property {ol.Map|undefined} map Map.
  * @property {ol.feature.StyleFunction|undefined} styleFunction Style function.

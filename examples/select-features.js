@@ -1,3 +1,4 @@
+goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
@@ -5,7 +6,6 @@ goog.require('ol.interaction');
 goog.require('ol.interaction.Select');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.render.FeaturesOverlay');
 goog.require('ol.source.GeoJSON');
 goog.require('ol.source.MapQuest');
 goog.require('ol.style.Fill');
@@ -42,7 +42,7 @@ var vector = new ol.layer.Vector({
 });
 
 var select = new ol.interaction.Select({
-  featuresOverlay: new ol.render.FeaturesOverlay({
+  featureOverlay: new ol.FeatureOverlay({
     styleFunction: function(feature, layer) {
       return selectedStyle;
     }
