@@ -19,6 +19,7 @@ ol.source.IGC = function(opt_options) {
     format: new ol.format.IGC({
       altitudeMode: options.altitudeMode
     }),
+    projection: options.projection,
     text: options.text,
     url: options.url,
     urls: options.urls
