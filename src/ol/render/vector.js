@@ -195,7 +195,7 @@ ol.renderer.vector.renderMultiPolygonGeometry_ =
   goog.asserts.assertInstanceof(geometry, ol.geom.MultiPolygon);
   var fillStyle = style.getFill();
   var strokeStyle = style.getStroke();
-  if (!goog.isNull(strokeStyle) && !goog.isNull(fillStyle)) {
+  if (!goog.isNull(strokeStyle) || !goog.isNull(fillStyle)) {
     var polygonReplay = replayGroup.getReplay(
         style.getZIndex(), ol.render.ReplayType.POLYGON);
     polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
