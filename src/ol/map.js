@@ -1370,10 +1370,14 @@ ol.Map.createOptionsInternal = function(options) {
    * @type {Array.<ol.RendererHint>}
    */
   var rendererHints;
-  if (goog.isDef(options.renderers)) {
-    rendererHints = options.renderers;
-  } else if (goog.isDef(options.renderer)) {
-    rendererHints = [options.renderer];
+  if (goog.isDef(options.renderer)) {
+    if (goog.isArray(options.renderer)) {
+      rendererHints = options.renderer;
+    } else if (goog.isString(options.renderer)) {
+      rendererHints = [options.renderer];
+    } else {
+      goog.asserts.fail('Incorrect format for renderer option');
+    }
   } else {
     rendererHints = ol.DEFAULT_RENDERER_HINTS;
   }
