@@ -38,6 +38,7 @@ var styleFunction = function(feature, resolution) {
 };
 
 var vectorSource = new ol.source.IGC({
+  projection: 'EPSG:3857',
   urls: [
     'data/igc/Clement-Latour.igc',
     'data/igc/Damien-de-Baenst.igc',
