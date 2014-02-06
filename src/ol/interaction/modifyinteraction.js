@@ -63,6 +63,12 @@ ol.interaction.Modify = function(featuresOverlay, opt_options) {
   this.modifiable_ = false;
 
   /**
+   * @type {ol.Pixel}
+   * @private
+   */
+  this.lastPixel_ = null;
+
+  /**
    * Segment RTree for each layer
    * @type {Object.<*, ol.structs.RBush>}
    * @private
@@ -200,6 +206,7 @@ ol.interaction.Modify.prototype.addFeature_ = function(evt) {
   goog.asserts.assertInstanceof(feature, ol.Feature);
   var geometry = feature.getGeometry();
   this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry);
+  this.handleMouseAtPixel_(this.lastPixel_, this.getMap());
 };
 
 
@@ -526,8 +533,17 @@ ol.interaction.Modify.prototype.handleMapBrowserEvent =
  * @private
  */
 ol.interaction.Modify.prototype.handleMouseMove_ = function(evt) {
-  var map = evt.map;
-  var pixel = evt.pixel;
+  this.lastPixel_ = evt.pixel;
+  this.handleMouseAtPixel_(evt.pixel, evt.map);
+};
+
+
+/**
+ * @param {ol.Pixel} pixel Pixel
+ * @param {ol.Map} map Map.
+ * @private
+ */
+ol.interaction.Modify.prototype.handleMouseAtPixel_ = function(pixel, map) {
   var pixelCoordinate = map.getCoordinateFromPixel(pixel);
   var sortByDistance = function(a, b) {
     return ol.coordinate.squaredDistanceToSegment(pixelCoordinate, a.segment) -
