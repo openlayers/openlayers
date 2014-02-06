@@ -39,14 +39,11 @@ ol.interaction.SegmentDataType;
 /**
  * @constructor
  * @extends {ol.interaction.Drag}
- * @param {ol.render.FeaturesOverlay} featuresOverlay FeaturesOverlay
- * @param {olx.interaction.ModifyOptions=} opt_options Options.
+ * @param {olx.interaction.ModifyOptions} options Options.
  */
-ol.interaction.Modify = function(featuresOverlay, opt_options) {
+ol.interaction.Modify = function(options) {
 
   goog.base(this);
-
-  var options = goog.isDef(opt_options) ? opt_options : {};
 
 
   /**
@@ -93,7 +90,7 @@ ol.interaction.Modify = function(featuresOverlay, opt_options) {
    * @type {ol.render.FeaturesOverlay}
    * @private
    */
-  this.overlay_ = featuresOverlay;
+  this.overlay_ = options.featuresOverlay;
 
   this.overlay_.getFeatures().listen(ol.CollectionEventType.ADD,
       this.addFeature_, false, this);

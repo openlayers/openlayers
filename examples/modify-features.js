@@ -235,10 +235,8 @@ var overlay = new ol.render.FeaturesOverlay({
   styleFunction: overlayStyle
 });
 
-var modify = new ol.interaction.Modify(overlay);
-var select = new ol.interaction.Select({
-  featuresOverlay: overlay
-});
+var modify = new ol.interaction.Modify({ featuresOverlay: overlay });
+var select = new ol.interaction.Select({ featuresOverlay: overlay });
 
 var map = new ol.Map({
   interactions: ol.interaction.defaults().extend([select, modify]),
