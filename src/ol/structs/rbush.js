@@ -616,51 +616,48 @@ ol.structs.RBush.prototype.remove = function(value) {
  * @private
  */
 ol.structs.RBush.prototype.remove_ = function(extent, value) {
-  var node = this.root_;
-  var index = 0;
-  /** @type {Array.<ol.structs.RBushNode.<T>>} */
-  var path = [node];
-  /** @type {Array.<number>} */
-  var indexes = [0];
-  var childrenDone, child, children, i, ii;
-  while (path.length > 0) {
-    childrenDone = false;
-    goog.asserts.assert(node.height > 0);
-    if (node.height == 1) {
-      children = node.children;
-      for (i = 0, ii = children.length; i < ii; ++i) {
-        child = children[i];
-        if (child.value === value) {
-          goog.array.removeAt(children, i);
-          this.condense_(path);
-          return;
-        }
+  var path = [this.root_];
+  var removed = this.removeRecursive_(this.root_, extent, value, path);
+  goog.asserts.assert(removed);
+  this.condense_(path);
+};
+
+
+/**
+ * @param {ol.structs.RBushNode.<T>} node Node.
+ * @param {ol.Extent} extent Extent.
+ * @param {T} value Value.
+ * @param {Array.<ol.structs.RBushNode.<T>>} path Path.
+ * @private
+ * @return {boolean} Removed.
+ */
+ol.structs.RBush.prototype.removeRecursive_ =
+    function(node, extent, value, path) {
+  var children = node.children;
+  var ii = children.length;
+  var child, i;
+  if (node.height == 1) {
+    for (i = 0; i < ii; ++i) {
+      child = children[i];
+      if (child.value === value) {
+        goog.array.removeAt(children, i);
+        return true;
       }
-      childrenDone = true;
-    } else if (index < node.children.length) {
-      child = node.children[index];
+    }
+  } else {
+    goog.asserts.assert(node.height > 1);
+    for (i = 0; i < ii; ++i) {
+      child = children[i];
       if (ol.extent.containsExtent(child.extent, extent)) {
         path.push(child);
-        indexes.push(index + 1);
-        node = child;
-        index = 0;
-      } else {
-        ++index;
-      }
-    } else {
-      childrenDone = true;
-    }
-    if (childrenDone) {
-      var lastPathIndex = path.length - 1;
-      node = path[lastPathIndex];
-      index = ++indexes[lastPathIndex];
-      if (index > node.children.length) {
+        if (this.removeRecursive_(child, extent, value, path)) {
+          return true;
+        }
         path.pop();
-        indexes.pop();
       }
     }
   }
-  goog.asserts.fail();
+  return false;
 };
 
 
