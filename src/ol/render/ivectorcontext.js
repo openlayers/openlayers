@@ -6,6 +6,7 @@ goog.provide('ol.render.IVectorContext');
 
 /**
  * @interface
+ * @todo stability experimental
  */
 ol.render.IVectorContext = function() {
 };
@@ -14,6 +15,7 @@ ol.render.IVectorContext = function() {
 /**
  * @param {number} zIndex Z index.
  * @param {function(ol.render.canvas.Immediate)} callback Callback.
+ * @todo stability experimental
  */
 ol.render.IVectorContext.prototype.drawAsync = function(zIndex, callback) {
 };
@@ -22,6 +24,7 @@ ol.render.IVectorContext.prototype.drawAsync = function(zIndex, callback) {
 /**
  * @param {ol.geom.Circle} circleGeometry Circle geometry.
  * @param {Object} data Opaque data object,
+ * @todo stability experimental
  */
 ol.render.IVectorContext.prototype.drawCircleGeometry =
     function(circleGeometry, data) {
@@ -31,6 +34,7 @@ ol.render.IVectorContext.prototype.drawCircleGeometry =
 /**
  * @param {ol.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
+ * @todo stability experimental
  */
 ol.render.IVectorContext.prototype.drawFeature = function(feature, style) {
 };
@@ -40,6 +44,7 @@ ol.render.IVectorContext.prototype.drawFeature = function(feature, style) {
  * @param {ol.geom.GeometryCollection} geometryCollectionGeometry Geometry
  *     collection.
  * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
 ol.render.IVectorContext.prototype.drawGeometryCollectionGeometry =
     function(geometryCollectionGeometry, data) {
@@ -49,6 +54,7 @@ ol.render.IVectorContext.prototype.drawGeometryCollectionGeometry =
 /**
  * @param {ol.geom.Point} pointGeometry Point geometry.
  * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
 ol.render.IVectorContext.prototype.drawPointGeometry =
     function(pointGeometry, data) {
@@ -58,6 +64,7 @@ ol.render.IVectorContext.prototype.drawPointGeometry =
 /**
  * @param {ol.geom.LineString} lineStringGeometry Line string geometry.
  * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
 ol.render.IVectorContext.prototype.drawLineStringGeometry =
     function(lineStringGeometry, data) {
@@ -68,6 +75,7 @@ ol.render.IVectorContext.prototype.drawLineStringGeometry =
  * @param {ol.geom.MultiLineString} multiLineStringGeometry
  *     MultiLineString geometry.
  * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
 ol.render.IVectorContext.prototype.drawMultiLineStringGeometry =
     function(multiLineStringGeometry, data) {
@@ -77,6 +85,7 @@ ol.render.IVectorContext.prototype.drawMultiLineStringGeometry =
 /**
  * @param {ol.geom.MultiPoint} multiPointGeometry MultiPoint geometry.
  * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
 ol.render.IVectorContext.prototype.drawMultiPointGeometry =
     function(multiPointGeometry, data) {
@@ -86,6 +95,7 @@ ol.render.IVectorContext.prototype.drawMultiPointGeometry =
 /**
  * @param {ol.geom.MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
  * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
 ol.render.IVectorContext.prototype.drawMultiPolygonGeometry =
     function(multiPolygonGeometry, data) {
@@ -95,6 +105,7 @@ ol.render.IVectorContext.prototype.drawMultiPolygonGeometry =
 /**
  * @param {ol.geom.Polygon} polygonGeometry Polygon geometry.
  * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
 ol.render.IVectorContext.prototype.drawPolygonGeometry =
     function(polygonGeometry, data) {
@@ -108,6 +119,7 @@ ol.render.IVectorContext.prototype.drawPolygonGeometry =
  * @param {number} stride Stride.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
 ol.render.IVectorContext.prototype.drawText =
     function(flatCoordinates, offset, end, stride, geometry, data) {
@@ -117,6 +129,7 @@ ol.render.IVectorContext.prototype.drawText =
 /**
  * @param {ol.style.Fill} fillStyle Fill style.
  * @param {ol.style.Stroke} strokeStyle Stroke style.
+ * @todo stability experimental
  */
 ol.render.IVectorContext.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
@@ -125,6 +138,7 @@ ol.render.IVectorContext.prototype.setFillStrokeStyle =
 
 /**
  * @param {ol.style.Image} imageStyle Image style.
+ * @todo stability experimental
  */
 ol.render.IVectorContext.prototype.setImageStyle = function(imageStyle) {
 };
@@ -132,6 +146,7 @@ ol.render.IVectorContext.prototype.setImageStyle = function(imageStyle) {
 
 /**
  * @param {ol.style.Text} textStyle Text style.
+ * @todo stability experimental
  */
 ol.render.IVectorContext.prototype.setTextStyle = function(textStyle) {
 };
