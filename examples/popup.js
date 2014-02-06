@@ -48,7 +48,7 @@ var map = new ol.Map({
       })
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: ol.RendererHints.createFromQueryData(),
   overlays: [overlay],
   target: 'map',
   view: new ol.View2D({

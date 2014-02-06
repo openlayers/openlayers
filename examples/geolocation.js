@@ -24,7 +24,7 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: view
 });

@@ -42,7 +42,7 @@ var map = new ol.Map({
       source: source
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: new ol.View2D({
     projection: proj,
