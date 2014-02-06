@@ -711,7 +711,7 @@
  *     on.
  * @property {Array.<number>|undefined} resolutions Resolutions. If specified,
  *     new canvases will be created for these resolutions only.
- * @property {ol.source.State|undefined} state Source state.
+ * @property {ol.source.State|string|undefined} state Source state.
  */
 
 /**
@@ -836,7 +836,7 @@
  * @property {Array.<ol.Feature>|undefined} features Features.
  * @property {string|undefined} logo Logo.
  * @property {ol.proj.ProjectionLike} projection Projection.
- * @property {ol.source.State|undefined} state State.
+ * @property {ol.source.State|string|undefined} state State.
  */
 
 /**

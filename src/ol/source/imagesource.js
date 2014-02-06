@@ -15,7 +15,7 @@ goog.require('ol.source.Source');
  *            logo: (string|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            resolutions: (Array.<number>|undefined),
- *            state: (ol.source.State|undefined)}}
+ *            state: (ol.source.State|string|undefined)}}
  */
 ol.source.ImageOptions;
 
