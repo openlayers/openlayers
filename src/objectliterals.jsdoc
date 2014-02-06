@@ -739,7 +739,7 @@
  * @property {ol.Extent|undefined} extent Extent.
  * @property {boolean|undefined} hidpi Use the `ol.Map#pixelRatio` value when
  *     requesting the image from the remote server. Default is `true`.
- * @property {ol.source.wms.ServerType|undefined} serverType The type of the remote WMS
+ * @property {ol.source.wms.ServerType|string|undefined} serverType The type of the remote WMS
  *     server: `mapserver`, `geoserver` or `qgis`. Only needed if `hidpi` is `true`.
  *     Default is `undefined`.
  * @property {string|undefined} logo Logo.
@@ -818,7 +818,7 @@
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  * @property {number|undefined} maxZoom Maximum zoom.
  * @property {ol.proj.ProjectionLike} projection Projection.
- * @property {ol.source.wms.ServerType|undefined} serverType The type of the remote WMS
+ * @property {ol.source.wms.ServerType|string|undefined} serverType The type of the remote WMS
  *     server: `mapserver`, `geoserver` or `qgis`. Only needed if `hidpi` is `true`.
  *     Default is `undefined`.
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
