@@ -4,7 +4,6 @@ goog.require('ol.View2D');
 goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.proj.Projection');
-goog.require('ol.proj.Units');
 goog.require('ol.source.ImageStatic');
 
 
@@ -13,7 +12,7 @@ goog.require('ol.source.ImageStatic');
 // map can use to properly display the layer.
 var pixelProjection = new ol.proj.Projection({
   code: 'pixel',
-  units: ol.proj.Units.PIXELS,
+  units: 'pixels',
   extent: [0, 0, 1024, 968]
 });
 
