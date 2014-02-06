@@ -236,8 +236,8 @@
  * @property {string|undefined} className CSS Class name. Default is `ol-scale-line`.
  * @property {number|undefined} minWidth Minimum width in pixels. Default is `64`.
  * @property {Element|undefined} target Target.
- * @property {ol.control.ScaleLineUnits|undefined} units Units.
- *     Default is `ol.control.ScaleLineUnits.METRIC`.
+ * @property {ol.control.ScaleLineUnits|string|undefined} units Units.
+ *     Default is `metric`.
  * @todo stability experimental
  */
 

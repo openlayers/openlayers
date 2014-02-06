@@ -122,7 +122,8 @@ ol.control.ScaleLine = function(opt_options) {
       this, ol.Object.getChangeEventType(ol.control.ScaleLineProperty.UNITS),
       this.handleUnitsChanged_, false, this);
 
-  this.setUnits(options.units || ol.control.ScaleLineUnits.METRIC);
+  this.setUnits(/** @type {ol.control.ScaleLineUnits} */ (options.units) ||
+      ol.control.ScaleLineUnits.METRIC);
 
 };
 goog.inherits(ol.control.ScaleLine, ol.control.Control);
