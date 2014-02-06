@@ -19,6 +19,7 @@ var raster = new ol.layer.Tile({
 
 var vector = new ol.layer.Vector({
   source: new ol.source.TopoJSON({
+    projection: 'EPSG:3857',
     url: 'data/topojson/world-110m.json'
   }),
   styleFunction: function(feature, resolution) {

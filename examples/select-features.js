@@ -33,6 +33,7 @@ var selectedStyle = [new ol.style.Style({
 
 var vector = new ol.layer.Vector({
   source: new ol.source.GeoJSON({
+    projection: 'EPSG:3857',
     url: 'data/geojson/countries.geojson'
   }),
   styleFunction: function(feature, layer) {
