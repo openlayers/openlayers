@@ -1,4 +1,4 @@
-goog.provide('ol.interaction.Touch');
+goog.provide('ol.interaction.PointerInteraction');
 
 goog.require('goog.asserts');
 goog.require('goog.functions');
@@ -16,7 +16,7 @@ goog.require('ol.interaction.Interaction');
  * @constructor
  * @extends {ol.interaction.Interaction}
  */
-ol.interaction.Touch = function() {
+ol.interaction.PointerInteraction = function() {
 
   goog.base(this);
 
@@ -39,14 +39,14 @@ ol.interaction.Touch = function() {
   this.targetTouches = [];
 
 };
-goog.inherits(ol.interaction.Touch, ol.interaction.Interaction);
+goog.inherits(ol.interaction.PointerInteraction, ol.interaction.Interaction);
 
 
 /**
  * @param {Array.<Object>} touches TouchEvents.
  * @return {ol.Pixel} Centroid pixel.
  */
-ol.interaction.Touch.centroid = function(touches) {
+ol.interaction.PointerInteraction.centroid = function(touches) {
   var length = touches.length;
   var clientX = 0;
   var clientY = 0;
@@ -64,12 +64,12 @@ ol.interaction.Touch.centroid = function(touches) {
  *     or touchend event.
  * @private
  */
-ol.interaction.Touch.isTouchEvent_ = function(mapBrowserEvent) {
+ol.interaction.PointerInteraction.isTouchEvent_ = function(mapBrowserEvent) {
   var type = mapBrowserEvent.type;
   return (
-      type === ol.MapBrowserEvent.EventType.TOUCHSTART ||
-      type === ol.MapBrowserEvent.EventType.TOUCHMOVE ||
-      type === ol.MapBrowserEvent.EventType.TOUCHEND);
+      type === ol.MapBrowserEvent.EventType.POINTERDOWN ||
+      type === ol.MapBrowserEvent.EventType.POINTERMOVE ||
+      type === ol.MapBrowserEvent.EventType.POINTERUP);
 };
 
 
@@ -77,24 +77,17 @@ ol.interaction.Touch.isTouchEvent_ = function(mapBrowserEvent) {
  * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
  * @private
  */
-ol.interaction.Touch.prototype.updateTrackedTouches_ =
+ol.interaction.PointerInteraction.prototype.updateTrackedTouches_ =
     function(mapBrowserEvent) {
-  if (ol.interaction.Touch.isTouchEvent_(mapBrowserEvent)) {
+  if (ol.interaction.PointerInteraction.isTouchEvent_(mapBrowserEvent)) {
     var event = mapBrowserEvent.originalEvent;
-    if (goog.isDef(event.targetTouches)) {
-      // W3C touch events
-      this.targetTouches = event.targetTouches;
-    } else if (goog.isDef(event.pointerId)) {
-      // IE pointer event
-      if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.TOUCHEND) {
-        delete this.trackedTouches_[event.pointerId];
-      } else {
-        this.trackedTouches_[event.pointerId] = event;
-      }
-      this.targetTouches = goog.object.getValues(this.trackedTouches_);
+
+    if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERUP) {
+      delete this.trackedTouches_[event.pointerId];
     } else {
-      goog.asserts.fail('unknown touch event model');
+      this.trackedTouches_[event.pointerId] = event;
     }
+    this.targetTouches = goog.object.getValues(this.trackedTouches_);
   }
 };
 
@@ -103,7 +96,7 @@ ol.interaction.Touch.prototype.updateTrackedTouches_ =
  * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
  * @protected
  */
-ol.interaction.Touch.prototype.handleTouchMove = goog.nullFunction;
+ol.interaction.PointerInteraction.prototype.handlePointerMove = goog.nullFunction;
 
 
 /**
@@ -111,7 +104,8 @@ ol.interaction.Touch.prototype.handleTouchMove = goog.nullFunction;
  * @protected
  * @return {boolean} Capture dragging.
  */
-ol.interaction.Touch.prototype.handleTouchEnd = goog.functions.FALSE;
+ol.interaction.PointerInteraction.prototype.handlePointerUp =
+    goog.functions.FALSE;
 
 
 /**
@@ -119,28 +113,29 @@ ol.interaction.Touch.prototype.handleTouchEnd = goog.functions.FALSE;
  * @protected
  * @return {boolean} Capture dragging.
  */
-ol.interaction.Touch.prototype.handleTouchStart = goog.functions.FALSE;
+ol.interaction.PointerInteraction.prototype.handlePointerDown =
+    goog.functions.FALSE;
 
 
 /**
  * @inheritDoc
  */
-ol.interaction.Touch.prototype.handleMapBrowserEvent =
+ol.interaction.PointerInteraction.prototype.handleMapBrowserEvent =
     function(mapBrowserEvent) {
   var view = mapBrowserEvent.map.getView();
   this.updateTrackedTouches_(mapBrowserEvent);
   if (this.handled_) {
-    if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.TOUCHMOVE) {
-      this.handleTouchMove(mapBrowserEvent);
-    } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.TOUCHEND) {
-      this.handled_ = this.handleTouchEnd(mapBrowserEvent);
+    if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE) {
+      this.handlePointerMove(mapBrowserEvent);
+    } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERUP) {
+      this.handled_ = this.handlePointerUp(mapBrowserEvent);
       if (!this.handled_) {
         view.setHint(ol.ViewHint.INTERACTING, -1);
       }
     }
   }
-  if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.TOUCHSTART) {
-    var handled = this.handleTouchStart(mapBrowserEvent);
+  if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERDOWN) {
+    var handled = this.handlePointerDown(mapBrowserEvent);
     if (!this.handled_ && handled) {
       view.setHint(ol.ViewHint.INTERACTING, 1);
     }

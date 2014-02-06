@@ -1,5 +1,5 @@
 // FIXME works for View2D only
-goog.provide('ol.interaction.TouchPan');
+goog.provide('ol.interaction.Pan');
 
 goog.require('goog.asserts');
 goog.require('ol.Kinetic');
@@ -7,7 +7,7 @@ goog.require('ol.Pixel');
 goog.require('ol.PreRenderFunction');
 goog.require('ol.View2D');
 goog.require('ol.coordinate');
-goog.require('ol.interaction.Touch');
+goog.require('ol.interaction.PointerInteraction');
 
 
 
@@ -15,11 +15,11 @@ goog.require('ol.interaction.Touch');
  * Allows the user to pan the map by touching and dragging
  * on a touch screen.
  * @constructor
- * @extends {ol.interaction.Touch}
- * @param {olx.interaction.TouchPanOptions=} opt_options Options.
+ * @extends {ol.interaction.PointerInteraction}
+ * @param {olx.interaction.PanOptions=} opt_options Options.
  * @todo stability experimental
  */
-ol.interaction.TouchPan = function(opt_options) {
+ol.interaction.Pan = function(opt_options) {
 
   goog.base(this);
 
@@ -49,15 +49,15 @@ ol.interaction.TouchPan = function(opt_options) {
   this.noKinetic_ = false;
 
 };
-goog.inherits(ol.interaction.TouchPan, ol.interaction.Touch);
+goog.inherits(ol.interaction.Pan, ol.interaction.PointerInteraction);
 
 
 /**
  * @inheritDoc
  */
-ol.interaction.TouchPan.prototype.handleTouchMove = function(mapBrowserEvent) {
+ol.interaction.Pan.prototype.handlePointerMove = function(mapBrowserEvent) {
   goog.asserts.assert(this.targetTouches.length >= 1);
-  var centroid = ol.interaction.Touch.centroid(this.targetTouches);
+  var centroid = ol.interaction.PointerInteraction.centroid(this.targetTouches);
   if (!goog.isNull(this.lastCentroid)) {
     if (this.kinetic_) {
       this.kinetic_.update(centroid[0], centroid[1]);
@@ -83,7 +83,7 @@ ol.interaction.TouchPan.prototype.handleTouchMove = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.interaction.TouchPan.prototype.handleTouchEnd =
+ol.interaction.Pan.prototype.handlePointerUp =
     function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var view2D = map.getView().getView2D();
@@ -116,7 +116,7 @@ ol.interaction.TouchPan.prototype.handleTouchEnd =
 /**
  * @inheritDoc
  */
-ol.interaction.TouchPan.prototype.handleTouchStart =
+ol.interaction.Pan.prototype.handlePointerDown =
     function(mapBrowserEvent) {
   if (this.targetTouches.length > 0) {
     var map = mapBrowserEvent.map;

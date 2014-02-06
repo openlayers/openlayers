@@ -193,13 +193,15 @@ ol.MapBrowserEventHandler.prototype.emulateClick_ = function(browserEvent) {
   }
 };
 
+
 /**
  * Keeps track on how many pointers are currently active.
  *
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.updateActivePointers_ = function(browserEvent) {
+ol.MapBrowserEventHandler.prototype.updateActivePointers_ =
+    function(browserEvent) {
   var event = browserEvent.getBrowserEvent();
 
   if (event.type == ol.MapBrowserEvent.EventType.POINTERUP ||
@@ -210,6 +212,7 @@ ol.MapBrowserEventHandler.prototype.updateActivePointers_ = function(browserEven
   }
 };
 
+
 /**
  * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
@@ -217,7 +220,7 @@ ol.MapBrowserEventHandler.prototype.updateActivePointers_ = function(browserEven
 ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
   this.updateActivePointers_(browserEvent);
   var newEvent = new ol.MapBrowserEvent(
-      ol.MapBrowserEvent.EventType.TOUCHEND, this.map_, browserEvent);
+      ol.MapBrowserEvent.EventType.POINTERUP, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
 
   if (this.activePointers_ <= 0) {
@@ -244,7 +247,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
     function(browserEvent) {
   this.updateActivePointers_(browserEvent);
   var newEvent = new ol.MapBrowserEvent(
-      ol.MapBrowserEvent.EventType.TOUCHSTART, this.map_, browserEvent);
+      ol.MapBrowserEvent.EventType.POINTERDOWN, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
 
   this.down_ = browserEvent;
@@ -283,7 +286,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
       browserEvent.clientY != this.down_.clientY) {
     this.dragged_ = true;
     var newEvent = new ol.MapBrowserEvent(
-        ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
+        ol.MapBrowserEvent.EventType.POINTERMOVE, this.map_, browserEvent);
     this.dispatchEvent(newEvent);
   }
 

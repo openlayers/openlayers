@@ -1,12 +1,12 @@
 // FIXME works for View2D only
 
-goog.provide('ol.interaction.TouchZoom');
+goog.provide('ol.interaction.Zoom');
 
 goog.require('goog.asserts');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.Touch');
+goog.require('ol.interaction.PointerInteraction');
 
 
 
@@ -14,11 +14,11 @@ goog.require('ol.interaction.Touch');
  * Allows the user to zoom the map by pinching with two fingers
  * on a touch screen.
  * @constructor
- * @extends {ol.interaction.Touch}
- * @param {olx.interaction.TouchZoomOptions=} opt_options Options.
+ * @extends {ol.interaction.PointerInteraction}
+ * @param {olx.interaction.ZoomOptions=} opt_options Options.
  * @todo stability experimental
  */
-ol.interaction.TouchZoom = function(opt_options) {
+ol.interaction.Zoom = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
@@ -49,13 +49,13 @@ ol.interaction.TouchZoom = function(opt_options) {
   this.lastScaleDelta_ = 1;
 
 };
-goog.inherits(ol.interaction.TouchZoom, ol.interaction.Touch);
+goog.inherits(ol.interaction.Zoom, ol.interaction.PointerInteraction);
 
 
 /**
  * @inheritDoc
  */
-ol.interaction.TouchZoom.prototype.handleTouchMove =
+ol.interaction.Zoom.prototype.handlePointerMove =
     function(mapBrowserEvent) {
   goog.asserts.assert(this.targetTouches.length >= 2);
   var scaleDelta = 1.0;
@@ -83,7 +83,7 @@ ol.interaction.TouchZoom.prototype.handleTouchMove =
 
   // scale anchor point.
   var viewportPosition = goog.style.getClientPosition(map.getViewport());
-  var centroid = ol.interaction.Touch.centroid(this.targetTouches);
+  var centroid = ol.interaction.PointerInteraction.centroid(this.targetTouches);
   centroid[0] -= viewportPosition.x;
   centroid[1] -= viewportPosition.y;
   this.anchor_ = map.getCoordinateFromPixel(centroid);
@@ -99,7 +99,7 @@ ol.interaction.TouchZoom.prototype.handleTouchMove =
 /**
  * @inheritDoc
  */
-ol.interaction.TouchZoom.prototype.handleTouchEnd =
+ol.interaction.Zoom.prototype.handlePointerUp =
     function(mapBrowserEvent) {
   if (this.targetTouches.length < 2) {
     var map = mapBrowserEvent.map;
@@ -122,7 +122,7 @@ ol.interaction.TouchZoom.prototype.handleTouchEnd =
 /**
  * @inheritDoc
  */
-ol.interaction.TouchZoom.prototype.handleTouchStart =
+ol.interaction.Zoom.prototype.handlePointerDown =
     function(mapBrowserEvent) {
   if (this.targetTouches.length >= 2) {
     var map = mapBrowserEvent.map;

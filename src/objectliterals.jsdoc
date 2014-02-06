@@ -442,10 +442,10 @@
  *     desired. Default is `true`.
  * @property {boolean|undefined} shiftDragZoom Whether Shift-drag zoom is
  *     desired. Default is `true`.
- * @property {boolean|undefined} touchPan Whether touch pan is
+ * @property {boolean|undefined} pan Whether pan is
  *     desired. Default is `true`.
- * @property {boolean|undefined} touchRotate Whether touch rotate is desired. Default is `true`.
- * @property {boolean|undefined} touchZoom Whether touch zoom is desired. Default is `true`.
+ * @property {boolean|undefined} rotate Whether rotate is desired. Default is `true`.
+ * @property {boolean|undefined} zoom Whether zoom is desired. Default is `true`.
  * @property {number|undefined} zoomDelta Zoom delta.
  * @property {number|undefined} zoomDuration Zoom duration.
  * @todo stability experimental
@@ -512,7 +512,7 @@
  */
 
 /**
- * @typedef {Object} olx.interaction.TouchPanOptions
+ * @typedef {Object} olx.interaction.PanOptions
  * @property {ol.Kinetic|undefined} kinetic Kinetic inertia to apply to the
  *     pan.
  * @todo stability experimental
@@ -527,14 +527,14 @@
  */
 
 /**
- * @typedef {Object} olx.interaction.TouchRotateOptions
+ * @typedef {Object} olx.interaction.RotateOptions
  * @property {number|undefined} threshold Minimal angle in radians to start a rotation.
  *     Default is `0.3`.
  * @todo stability experimental
  */
 
 /**
- * @typedef {Object} olx.interaction.TouchZoomOptions
+ * @typedef {Object} olx.interaction.ZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `400`.
  * @todo stability experimental
  */

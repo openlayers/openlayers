@@ -1,18 +1,18 @@
 // FIXME works for View2D only
 
-goog.provide('ol.interaction.TouchRotate');
+goog.provide('ol.interaction.Rotate');
 
 goog.require('goog.asserts');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.Touch');
+goog.require('ol.interaction.PointerInteraction');
 
 
 /**
  * @define {number} Animation duration.
  */
-ol.interaction.TOUCHROTATE_ANIMATION_DURATION = 250;
+ol.interaction.ROTATE_ANIMATION_DURATION = 250;
 
 
 
@@ -20,11 +20,11 @@ ol.interaction.TOUCHROTATE_ANIMATION_DURATION = 250;
  * Allows the user to rotate the map by twisting with two fingers
  * on a touch screen.
  * @constructor
- * @extends {ol.interaction.Touch}
- * @param {olx.interaction.TouchRotateOptions=} opt_options Options.
+ * @extends {ol.interaction.PointerInteraction}
+ * @param {olx.interaction.RotateOptions=} opt_options Options.
  * @todo stability experimental
  */
-ol.interaction.TouchRotate = function(opt_options) {
+ol.interaction.Rotate = function(opt_options) {
 
   goog.base(this);
 
@@ -61,13 +61,13 @@ ol.interaction.TouchRotate = function(opt_options) {
   this.threshold_ = goog.isDef(options.threshold) ? options.threshold : 0.3;
 
 };
-goog.inherits(ol.interaction.TouchRotate, ol.interaction.Touch);
+goog.inherits(ol.interaction.Rotate, ol.interaction.PointerInteraction);
 
 
 /**
  * @inheritDoc
  */
-ol.interaction.TouchRotate.prototype.handleTouchMove =
+ol.interaction.Rotate.prototype.handlePointerMove =
     function(mapBrowserEvent) {
   goog.asserts.assert(this.targetTouches.length >= 2);
   var rotationDelta = 0.0;
@@ -97,7 +97,7 @@ ol.interaction.TouchRotate.prototype.handleTouchMove =
   // FIXME: should be the intersection point between the lines:
   //     touch0,touch1 and previousTouch0,previousTouch1
   var viewportPosition = goog.style.getClientPosition(map.getViewport());
-  var centroid = ol.interaction.Touch.centroid(this.targetTouches);
+  var centroid = ol.interaction.PointerInteraction.centroid(this.targetTouches);
   centroid[0] -= viewportPosition.x;
   centroid[1] -= viewportPosition.y;
   this.anchor_ = map.getCoordinateFromPixel(centroid);
@@ -117,7 +117,7 @@ ol.interaction.TouchRotate.prototype.handleTouchMove =
 /**
  * @inheritDoc
  */
-ol.interaction.TouchRotate.prototype.handleTouchEnd =
+ol.interaction.Rotate.prototype.handlePointerUp =
     function(mapBrowserEvent) {
   if (this.targetTouches.length < 2) {
     var map = mapBrowserEvent.map;
@@ -127,7 +127,7 @@ ol.interaction.TouchRotate.prototype.handleTouchEnd =
     if (this.rotating_) {
       ol.interaction.Interaction.rotate(
           map, view, view2DState.rotation, this.anchor_,
-          ol.interaction.TOUCHROTATE_ANIMATION_DURATION);
+          ol.interaction.ROTATE_ANIMATION_DURATION);
     }
     return false;
   } else {
@@ -139,7 +139,7 @@ ol.interaction.TouchRotate.prototype.handleTouchEnd =
 /**
  * @inheritDoc
  */
-ol.interaction.TouchRotate.prototype.handleTouchStart =
+ol.interaction.Rotate.prototype.handlePointerDown =
     function(mapBrowserEvent) {
   if (this.targetTouches.length >= 2) {
     var map = mapBrowserEvent.map;
