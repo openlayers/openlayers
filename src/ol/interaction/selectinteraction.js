@@ -11,12 +11,10 @@ goog.require('ol.render.FeaturesOverlay');
 /**
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @param {olx.interaction.SelectOptions=} opt_options Options.
+ * @param {olx.interaction.SelectOptions} options Options.
  * @todo stability experimental
  */
-ol.interaction.Select = function(opt_options) {
-
-  var options = goog.isDef(opt_options) ? opt_options : {};
+ol.interaction.Select = function(options) {
 
   goog.base(this);
 
