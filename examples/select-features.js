@@ -1,6 +1,5 @@
 goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.interaction');
 goog.require('ol.interaction.Select');
@@ -52,7 +51,7 @@ var select = new ol.interaction.Select({
 var map = new ol.Map({
   interactions: ol.interaction.defaults().extend([select]),
   layers: [raster, vector],
-  renderer: ol.RendererHint.CANVAS,
+  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],

@@ -1,5 +1,4 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.format.GPX');
 goog.require('ol.format.GeoJSON');
@@ -104,7 +103,7 @@ var map = new ol.Map({
       })
     })
   ],
-  renderer: ol.RendererHint.CANVAS,
+  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],

@@ -1,7 +1,6 @@
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
@@ -58,7 +57,7 @@ var popup = new ol.Overlay({
 
 var map = new ol.Map({
   layers: [vector],
-  renderer: ol.RendererHint.CANVAS,
+  renderer: 'canvas',
   target: document.getElementById('map'),
   view: new ol.View2D({
     center: [0, 0],

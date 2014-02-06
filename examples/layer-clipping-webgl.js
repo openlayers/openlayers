@@ -1,6 +1,5 @@
 goog.require('ol.BrowserFeature');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
@@ -19,7 +18,7 @@ if (!ol.BrowserFeature.HAS_WEBGL) {
 
   var map = new ol.Map({
     layers: [osm],
-    renderer: ol.RendererHint.WEBGL,
+    renderer: 'webgl',
     target: 'map',
     view: new ol.View2D({
       center: [0, 0],

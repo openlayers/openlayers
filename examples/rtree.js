@@ -2,7 +2,6 @@
 // FIXME this example dives into private members and will never compile :)
 goog.require('ol.Feature');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.extent');
 goog.require('ol.geom.Point');
@@ -100,7 +99,7 @@ var rtree = new ol.layer.Vector({
 
 var map = new ol.Map({
   layers: [vector, rtree],
-  renderer: ol.RendererHint.CANVAS,
+  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],

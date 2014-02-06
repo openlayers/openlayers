@@ -1,7 +1,6 @@
 goog.require('ol.Map');
 goog.require('ol.Overlay');
 goog.require('ol.OverlayPositioning');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -51,7 +50,7 @@ var vector = new ol.layer.Vector({
 
 var map = new ol.Map({
   layers: [raster, vector],
-  renderer: ol.RendererHint.CANVAS,
+  renderer: 'canvas',
   target: document.getElementById('map'),
   view: new ol.View2D({
     center: [0, 0],
