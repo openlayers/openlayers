@@ -597,6 +597,7 @@ ol.structs.RBush.prototype.isEmpty = function() {
 
 /**
  * @param {T} value Value.
+ * @return {boolean} Removed.
  */
 ol.structs.RBush.prototype.remove = function(value) {
   if (goog.DEBUG && this.readers_) {
@@ -606,7 +607,7 @@ ol.structs.RBush.prototype.remove = function(value) {
   goog.asserts.assert(this.valueExtent_.hasOwnProperty(key));
   var extent = this.valueExtent_[key];
   delete this.valueExtent_[key];
-  this.remove_(extent, value);
+  return this.remove_(extent, value);
 };
 
 
@@ -614,12 +615,18 @@ ol.structs.RBush.prototype.remove = function(value) {
  * @param {ol.Extent} extent Extent.
  * @param {T} value Value.
  * @private
+ * @return {boolean} Removed.
  */
 ol.structs.RBush.prototype.remove_ = function(extent, value) {
   var path = [this.root_];
   var removed = this.removeRecursive_(this.root_, extent, value, path);
-  goog.asserts.assert(removed);
-  this.condense_(path);
+  if (removed) {
+    this.condense_(path);
+  } else {
+    goog.asserts.assert(path.length == 1);
+    goog.asserts.assert(path[0] === this.root_);
+  }
+  return removed;
 };
 
 
@@ -710,7 +717,8 @@ ol.structs.RBush.prototype.update = function(extent, value) {
   var currentExtent = this.valueExtent_[key];
   goog.asserts.assert(goog.isDef(currentExtent));
   if (!ol.extent.equals(currentExtent, extent)) {
-    this.remove_(currentExtent, value);
+    var removed = this.remove_(currentExtent, value);
+    goog.asserts.assert(removed);
     this.insert_(extent, value, this.root_.height - 1);
     this.valueExtent_[key] = ol.extent.clone(extent, currentExtent);
   }
