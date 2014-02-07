@@ -90,6 +90,30 @@ ol.pointer.MsSource.prototype.getMapping = function() {
 };
 
 
+/** @inheritDoc */
+ol.pointer.MsSource.prototype.listenOnDocument = function(type) {
+  if (type === 'pointermove') {
+    this.dispatcher.removeEvent('MSPointerMove');
+    this.dispatcher.addEvent('MSPointerMove', goog.global.document);
+  } else if (type === 'pointerup') {
+    this.dispatcher.removeEvent('MSPointerUp');
+    this.dispatcher.addEvent('MSPointerUp', goog.global.document);
+  }
+};
+
+
+/** @inheritDoc */
+ol.pointer.MsSource.prototype.unlistenOnDocument = function(type) {
+  if (type === 'pointermove') {
+    this.dispatcher.removeEvent('MSPointerMove', goog.global.document);
+    this.dispatcher.addEvent('MSPointerMove');
+  } else if (type === 'pointerup') {
+    this.dispatcher.removeEvent('MSPointerUp', goog.global.document);
+    this.dispatcher.addEvent('MSPointerUp');
+  }
+};
+
+
 /**
  * @suppress {missingProperties}
  * @return {boolean}

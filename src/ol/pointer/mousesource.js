@@ -82,6 +82,30 @@ ol.pointer.MouseSource.prototype.getMapping = function() {
 };
 
 
+/** @inheritDoc */
+ol.pointer.MouseSource.prototype.listenOnDocument = function(type) {
+  if (type === 'pointermove') {
+    this.dispatcher.removeEvent('mousemove');
+    this.dispatcher.addEvent('mousemove', goog.global.document);
+  } else if (type === 'pointerup') {
+    this.dispatcher.removeEvent('mouseup');
+    this.dispatcher.addEvent('mouseup', goog.global.document);
+  }
+};
+
+
+/** @inheritDoc */
+ol.pointer.MouseSource.prototype.unlistenOnDocument = function(type) {
+  if (type === 'pointermove') {
+    this.dispatcher.removeEvent('mousemove', goog.global.document);
+    this.dispatcher.addEvent('mousemove');
+  } else if (type === 'pointerup') {
+    this.dispatcher.removeEvent('mouseup', goog.global.document);
+    this.dispatcher.addEvent('mouseup');
+  }
+};
+
+
 /**
  * Collide with the global mouse listener
  *

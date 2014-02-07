@@ -38,3 +38,21 @@ ol.pointer.EventSource.prototype.getMapping = goog.abstractMethod;
 ol.pointer.EventSource.prototype.getHandlerForEvent = function(eventType) {
   return this.getMapping()[eventType];
 };
+
+
+/**
+ * Setup source listeners for the given pointer event type on the `document`
+ * element. See also `PointerEventHandler.listenOnDocument()`.
+ * @param {string} type Pointer event type.
+ */
+ol.pointer.EventSource.prototype.listenOnDocument = function(type) {
+};
+
+
+/**
+ * Remove source listeners for the given pointer event type from the `document`
+ * element. See also `PointerEventHandler.unlistenOnDocument()`.
+ * @param {string} type Pointer event type.
+ */
+ol.pointer.EventSource.prototype.unlistenOnDocument = function(type) {
+};

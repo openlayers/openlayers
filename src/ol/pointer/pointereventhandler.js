@@ -232,6 +232,65 @@ ol.pointer.PointerEventHandler.prototype.eventHandler_ = function(inEvent) {
 
 
 /**
+ * Set up an event listener for the given pointer event type
+ * by adding source event listeners to the `document` element. The
+ * original listener on the map viewport is removed.
+ * This is required for mouse and pointer devices when dragging,
+ * because no `*move` events are fired, when the mouse/pointer is
+ * outside the map viewport.
+ * To remove these listeners again, use `unlistenOnDocument()`.
+ *
+ * @param {string} type Pointer event type.
+ * @param {!Function} listener Callback method, or an object
+ *     with a handleEvent function.
+ * @param {boolean=} opt_useCapture Whether to fire in capture phase
+ *     (defaults to false).
+ * @param {Object=} opt_listenerScope Object in whose scope to call the
+ *     listener.
+ * @return {goog.events.ListenableKey} Unique key for the listener.
+ */
+ol.pointer.PointerEventHandler.prototype.listenOnDocument = function(
+    type, listener, opt_useCapture, opt_listenerScope) {
+  var l = this.eventSourceList.length;
+  var eventSource;
+  for (var i = 0; i < l; i++) {
+    eventSource = this.eventSourceList[i];
+    eventSource.listenOnDocument(type);
+  }
+
+  return this.listen(
+      type, listener, opt_useCapture, opt_listenerScope);
+};
+
+
+/**
+ * Removes the source event listeners on the `document` element,
+ * and listenes to the orginal map viewport element again.
+ *
+ * @param {string} type Pointer event type.
+ * @param {!Function} listener Callback method, or an object
+ *     with a handleEvent function.
+ * @param {boolean=} opt_useCapture Whether to fire in capture phase
+ *     (defaults to false).
+ * @param {Object=} opt_listenerScope Object in whose scope to call the
+ *     listener.
+ * @return {boolean} Whether any listener was removed.
+ */
+ol.pointer.PointerEventHandler.prototype.unlistenOnDocument = function(
+    type, listener, opt_useCapture, opt_listenerScope) {
+  var l = this.eventSourceList.length;
+  var eventSource;
+  for (var i = 0; i < l; i++) {
+    eventSource = this.eventSourceList[i];
+    eventSource.listenOnDocument(type);
+  }
+
+  return this.unlisten(
+      type, listener, opt_useCapture, opt_listenerScope);
+};
+
+
+/**
  * Setup listeners for the given events.
  * @private
  * @param {Array.<string>} events List of events.
@@ -245,6 +304,19 @@ ol.pointer.PointerEventHandler.prototype.addEvents_ = function(events) {
 
 
 /**
+ * Setup listener for the given event.
+ * @param {string} eventName Event type.
+ * @param {HTMLDocument|Element=} opt_element Optional element.
+ */
+ol.pointer.PointerEventHandler.prototype.addEvent = function(
+    eventName, opt_element) {
+  var element = goog.isDef(opt_element) ? opt_element : this.element_;
+  goog.events.listen(element, eventName,
+      this.boundHandler_);
+};
+
+
+/**
  * Unregister listeners for the given events.
  * @private
  * @param {Array.<string>} events List of events.
@@ -254,6 +326,19 @@ ol.pointer.PointerEventHandler.prototype.removeEvents_ = function(events) {
     goog.events.unlisten(this.element_, e,
         this.boundHandler_);
   }, this);
+};
+
+
+/**
+ * Unregister listener for the given event.
+ * @param {string} eventName Event type.
+ * @param {HTMLDocument|Element=} opt_element Optional element.
+ */
+ol.pointer.PointerEventHandler.prototype.removeEvent = function(
+    eventName, opt_element) {
+  var element = goog.isDef(opt_element) ? opt_element : this.element_;
+  goog.events.unlisten(element, eventName,
+      this.boundHandler_);
 };
 
 
