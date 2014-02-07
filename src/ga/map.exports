@@ -1,2 +1,4 @@
 @exportSymbol ga.Map
 @exportProperty ga.Map.prototype.geocode
+@exportProperty ga.Map.prototype.recenterFeature
+@exportProperty ga.Map.prototype.highlightFeature
