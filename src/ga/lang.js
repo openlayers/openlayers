@@ -1,52 +1,96 @@
 
 goog.provide('ga.Lang');
+goog.provide('ga.i18n');
 goog.require('goog.object');
+goog.require('ol.Object');
+
+
+// Mostly from https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Lang.js
 
 ga.Lang = function() {
+    /** @type {?string} */
+    this.code_ = null;
 
-    this.code = null;
-
-    this.defaultCode = 'en';
+    /** @type {string} */
+    this.defaultCode_ = 'en';
 
     goog.base(this);
 
 };
-goog.inherits(ga.Lang, goog.object);
+goog.inherits(ga.Lang, ol.Object);
 
 
 
-ga.Lang.prototype.getCode = function() {
-    if (!this.code) {
+ga.Lang.getCode = function() {
+    if (!this.code_) {
       this.setCode();
     }
-    return this.code;
+    return this.code_;
 };
-goog.exportProperty(
-  ga.Lang.prototype,
-  'getCode',
-  ol.Map.prototype.getCode);
 
-ga.Lang.prototype.setCode = function(code) {
-    this.code = code;
+ga.Lang.setCode = function(code) {
+    this.code_ = code;
 };
-goog.exportProperty(
-  ga.Lang.prototype,
-  'setCode',
-  ol.Map.prototype.setCode);
 
-ga.Lang.prototype.translate = function(key, context) {
+ga.Lang.translate = function(key, context) {
 
-  var dictionary = ga.Lang[OpenLayers.Lang.getCode()];
+  var dictionary = ga.Lang[this.getCode()];
   var message = dictionary && dictionary[key];
   if (!message) {
     // Message not found, fall back to message key
     message = key;
   }
   if (context) {
-    message = message.format(context);
+    message = this.format(message, context);
   }
   return message;
 };
 
+
+ga.Lang.format = function(template, context, args) {
+        if (!context) {
+            context = window;
+        }
+
+        // Example matching:
+        // str   = ${foo.bar}
+        // match = foo.bar
+        var replacer = function(str, match) {
+            var replacement;
+
+            // Loop through all subs. Example: ${a.b.c}
+            // 0 -> replacement = context[a];
+            // 1 -> replacement = context[a][b];
+            // 2 -> replacement = context[a][b][c];
+            var subs = match.split(/\.+/);
+            for (var i = 0; i < subs.length; i++) {
+                if (i == 0) {
+                    replacement = context;
+                }
+                if (replacement === undefined) {
+                    break;
+                }
+                replacement = replacement[subs[i]];
+            }
+
+            if (typeof replacement == 'function') {
+                replacement = args ?
+                    replacement.apply(null, args) :
+                    replacement();
+            }
+
+            // If replacement is undefined, return the string 'undefined'.
+            // This is a workaround for a bugs in browsers not properly
+            // dealing with non-participating groups in regular expressions:
+            // http://blog.stevenlevithan.com/archives/npcg-javascript
+            if (typeof replacement == 'undefined') {
+                return 'undefined';
+            } else {
+                return replacement;
+            }
+        };
+
+        return template.replace(/\$\{([\w.]+?)\}/g, replacer);
+};
 
 
