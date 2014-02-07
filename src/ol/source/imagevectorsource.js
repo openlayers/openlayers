@@ -12,7 +12,6 @@ goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.vector');
 goog.require('ol.source.ImageCanvas');
 goog.require('ol.source.Vector');
-goog.require('ol.style.Style');
 goog.require('ol.vec.Mat4');
 
 
@@ -41,38 +40,13 @@ ol.source.ImageVector = function(options) {
    */
   this.source_ = options.source;
 
-
-  /**
-   * @type {ol.feature.StyleFunction}
-   */
-  var styleFunction;
-
-  if (goog.isDef(options.style)) {
-    if (goog.isFunction(options.style)) {
-      styleFunction = /** @type {ol.feature.StyleFunction} */ (options.style);
-    } else {
-      /**
-       * @type {Array.<ol.style.Style>}
-       */
-      var styles;
-      if (goog.isArray(options.style)) {
-        styles = options.style;
-      } else {
-        goog.asserts.assertInstanceof(options.style, ol.style.Style);
-        styles = [options.style];
-      }
-      styleFunction = function(feature, resolution) {
-        return styles;
-      };
-    }
-  }
-
   /**
    * @private
    * @type {!ol.feature.StyleFunction}
    */
-  this.styleFunction_ = goog.isDef(styleFunction) ?
-      styleFunction : ol.feature.defaultStyleFunction;
+  this.styleFunction_ = goog.isDef(options.style) ?
+      ol.feature.createStyleFunction(options.style) :
+      ol.feature.defaultStyleFunction;
 
   /**
    * @private

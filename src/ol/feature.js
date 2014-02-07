@@ -238,3 +238,38 @@ ol.feature.defaultStyleFunction = function(feature, resolution) {
   }
   return featureStyleFunction.call(feature, resolution);
 };
+
+
+/**
+ * Convert the provided object into a style function.  Functions passed through
+ * unchanged.  Arrays of ol.style.Style or single style objects wrapped in a
+ * new style function.
+ * @param {ol.feature.StyleFunction|Array.<ol.style.Style>|ol.style.Style} obj
+ *     A style function, a single style, or an array of styles.
+ * @return {ol.feature.StyleFunction} A style function.
+ */
+ol.feature.createStyleFunction = function(obj) {
+  /**
+   * @type {ol.feature.StyleFunction}
+   */
+  var styleFunction;
+
+  if (goog.isFunction(obj)) {
+    styleFunction = /** @type {ol.feature.StyleFunction} */ (obj);
+  } else {
+    /**
+     * @type {Array.<ol.style.Style>}
+     */
+    var styles;
+    if (goog.isArray(obj)) {
+      styles = obj;
+    } else {
+      goog.asserts.assertInstanceof(obj, ol.style.Style);
+      styles = [obj];
+    }
+    styleFunction = function(feature, resolution) {
+      return styles;
+    };
+  }
+  return styleFunction;
+};

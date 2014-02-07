@@ -10,7 +10,6 @@ goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.feature');
 goog.require('ol.render.EventType');
-goog.require('ol.style.Style');
 
 
 
@@ -54,34 +53,11 @@ ol.FeatureOverlay = function(opt_options) {
   this.postComposeListenerKey_ = null;
 
   /**
-   * @type {ol.feature.StyleFunction}
-   */
-  var styleFunction;
-  if (goog.isDef(options.style)) {
-    if (goog.isFunction(options.style)) {
-      styleFunction = /** @type {ol.feature.StyleFunction} */ (options.style);
-    } else {
-      /**
-       * @type {Array.<ol.style.Style>}
-       */
-      var styles;
-      if (goog.isArray(options.style)) {
-        styles = options.style;
-      } else {
-        goog.asserts.assertInstanceof(options.style, ol.style.Style);
-        styles = [options.style];
-      }
-      styleFunction = function(feature, resolution) {
-        return styles;
-      };
-    }
-  }
-
-  /**
    * @private
    * @type {ol.feature.StyleFunction|undefined}
    */
-  this.styleFunction_ = styleFunction;
+  this.styleFunction_ = goog.isDef(options.style) ?
+      ol.feature.createStyleFunction(options.style) : undefined;
 
   if (goog.isDef(options.features)) {
     if (goog.isArray(options.features)) {
