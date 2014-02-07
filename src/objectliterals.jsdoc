@@ -380,7 +380,8 @@
  *     drawing finish (default is 12).
  * @property {ol.geom.GeometryType} type Drawing type ('Point', 'LineString',
  *     'Polygon', 'MultiPoint', 'MultiLineString', or 'MultiPolygon').
- * @property {ol.feature.StyleFunction|undefined} styleFunction Style function.
+ * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style
+ *     Style for sketch features.
  * @todo stability experimental
  */
 

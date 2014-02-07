@@ -146,9 +146,11 @@ ol.interaction.Draw = function(options) {
    * @type {ol.FeatureOverlay}
    * @private
    */
-  this.overlay_ = new ol.FeatureOverlay();
-  this.overlay_.setStyleFunction(goog.isDef(options.styleFunction) ?
-      options.styleFunction : ol.interaction.Draw.getDefaultStyleFunction());
+  this.overlay_ = new ol.FeatureOverlay({
+    style: goog.isDef(options.style) ?
+        options.style : ol.interaction.Draw.getDefaultStyleFunction()
+  });
+
 };
 goog.inherits(ol.interaction.Draw, ol.interaction.Interaction);
 
