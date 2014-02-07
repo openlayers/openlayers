@@ -1,5 +1,6 @@
 goog.provide('ol.layer.Vector');
 
+goog.require('goog.object');
 goog.require('ol.feature');
 goog.require('ol.layer.Layer');
 
@@ -25,7 +26,11 @@ ol.layer.Vector = function(opt_options) {
   var options = goog.isDef(opt_options) ?
       opt_options : /** @type {olx.layer.VectorOptions} */ ({});
 
-  goog.base(this, /** @type {olx.layer.LayerOptions} */ (options));
+  var baseOptions = /** @type {olx.layer.LayerOptions} */
+      (goog.object.clone(options));
+
+  delete baseOptions.style;
+  goog.base(this, baseOptions);
 
   if (goog.isDef(options.style)) {
     this.setStyleFunction(ol.feature.createStyleFunction(options.style));
