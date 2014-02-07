@@ -250,6 +250,6 @@ ol.FeatureOverlay.prototype.setStyleFunction = function(styleFunction) {
 /**
  * @return {ol.feature.StyleFunction|undefined} Style function.
  */
-ol.render.FeaturesOverlay.prototype.getStyleFunction = function() {
+ol.FeatureOverlay.prototype.getStyleFunction = function() {
   return this.styleFunction_;
 };

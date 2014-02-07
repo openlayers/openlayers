@@ -1,3 +1,4 @@
+goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.RendererHint');
 goog.require('ol.View2D');
@@ -7,7 +8,6 @@ goog.require('ol.interaction.Modify');
 goog.require('ol.interaction.Select');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.render.FeaturesOverlay');
 goog.require('ol.source.GeoJSON');
 goog.require('ol.source.MapQuest');
 goog.require('ol.style.Circle');
@@ -234,12 +234,12 @@ var overlayStyle = (function() {
   };
 })();
 
-var overlay = new ol.render.FeaturesOverlay({
+var overlay = new ol.FeatureOverlay({
   styleFunction: overlayStyle
 });
 
-var modify = new ol.interaction.Modify({ featuresOverlay: overlay });
-var select = new ol.interaction.Select({ featuresOverlay: overlay });
+var modify = new ol.interaction.Modify({ featureOverlay: overlay });
+var select = new ol.interaction.Select({ featureOverlay: overlay });
 
 var map = new ol.Map({
   interactions: ol.interaction.defaults().extend([select, modify]),

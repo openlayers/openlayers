@@ -438,7 +438,7 @@
  * @typedef {Object} olx.interaction.ModifyOptions
  * @property {number|undefined} pixelTolerance Pixel tolerance for considering
  *     the pointer close enough to a vertex for editing. Default is 20 pixels.
- * @property {ol.render.FeaturesOverlay} featuresOverlay Features overlay.
+ * @property {ol.FeatureOverlay} featureOverlay Features overlay.
  */
 
 /**

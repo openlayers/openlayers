@@ -5,6 +5,7 @@ goog.require('goog.asserts');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
+goog.require('ol.FeatureOverlay');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
@@ -16,7 +17,6 @@ goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Drag');
-goog.require('ol.render.FeaturesOverlay');
 goog.require('ol.structs.RBush');
 goog.require('ol.style.Style');
 
@@ -83,10 +83,10 @@ ol.interaction.Modify = function(options) {
 
   /**
    * Draw overlay where are sketch features are drawn.
-   * @type {ol.render.FeaturesOverlay}
+   * @type {ol.FeatureOverlay}
    * @private
    */
-  this.overlay_ = options.featuresOverlay;
+  this.overlay_ = options.featureOverlay;
 
   this.overlay_.getFeatures().listen(ol.CollectionEventType.ADD,
       this.addFeature_, false, this);
