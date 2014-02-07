@@ -36,20 +36,16 @@ for (i = 0; i < count; ++i) {
   startPoint = endPoint;
 }
 
-var styleArray = [new ol.style.Style({
-  stroke: new ol.style.Stroke({
-    color: '#666666',
-    width: 1
-  })
-})];
-
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
     features: features
   }),
-  styleFunction: function(feature, resolution) {
-    return styleArray;
-  }
+  style: new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: '#666666',
+      width: 1
+    })
+  })
 });
 
 var view = new ol.View2D({

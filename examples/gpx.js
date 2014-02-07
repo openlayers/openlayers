@@ -48,7 +48,7 @@ var vector = new ol.layer.Vector({
     projection: 'EPSG:3857',
     url: 'data/gpx/fells_loop.gpx'
   }),
-  styleFunction: function(feature, resolution) {
+  style: function(feature, resolution) {
     return style[feature.getGeometry().getType()];
   }
 });

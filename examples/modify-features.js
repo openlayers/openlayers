@@ -161,7 +161,7 @@ var vectorSource = new ol.source.GeoJSON(
 
 var vectorLayer = new ol.layer.Vector({
   source: vectorSource,
-  styleFunction: styleFunction
+  style: styleFunction
 });
 
 var overlayStyle = (function() {
