@@ -42,7 +42,7 @@
  * @property {boolean|undefined} ol3Logo Show ol3 logo. Default is `true`.
  * @property {ol.Collection|Array.<ol.Overlay>|undefined} overlays
  *     Overlays initially added to the map.
- * @property {ol.RendererHint|Array.<ol.RendererHint>|undefined} renderer Renderer.
+ * @property {ol.RendererHint|Array.<ol.RendererHint|string>|string|undefined} renderer Renderer.
  * @property {Element|string|undefined} target The container for the map.
  * @property {ol.IView|undefined} view The map's view. Currently
  *     {@link ol.View2D} is available as view.
@@ -55,7 +55,7 @@
  * @property {Element|undefined} element The overlay element.
  * @property {ol.Coordinate|undefined} position The overlay position in map
  *     projection.
- * @property {ol.OverlayPositioning|undefined} positioning Positioning.
+ * @property {ol.OverlayPositioning|string|undefined} positioning Positioning.
  * @property {boolean|undefined} stopEvent Whether event propagation to the map
  *     viewport should be stopped. Default is `true`. If `true` the overlay is
  *     placed in the same container as that of the controls
@@ -82,7 +82,7 @@
  * Object literal with config options for the projection.
  * @typedef {Object} olx.ProjectionOptions
  * @property {string} code The SRS identifier code, e.g. `EPSG:4326`.
- * @property {ol.proj.Units} units Units.
+ * @property {ol.proj.Units|string} units Units.
  * @property {ol.Extent|undefined} extent The validity extent for the SRS.
  * @property {string|undefined} axisOrientation The axis orientation as
  *     specified in Proj4. The default is `enu`.
@@ -236,8 +236,8 @@
  * @property {string|undefined} className CSS Class name. Default is `ol-scale-line`.
  * @property {number|undefined} minWidth Minimum width in pixels. Default is `64`.
  * @property {Element|undefined} target Target.
- * @property {ol.control.ScaleLineUnits|undefined} units Units.
- *     Default is `ol.control.ScaleLineUnits.METRIC`.
+ * @property {ol.control.ScaleLineUnits|string|undefined} units Units.
+ *     Default is `metric`.
  * @todo stability experimental
  */
 
@@ -711,7 +711,7 @@
  *     on.
  * @property {Array.<number>|undefined} resolutions Resolutions. If specified,
  *     new canvases will be created for these resolutions only.
- * @property {ol.source.State|undefined} state Source state.
+ * @property {ol.source.State|string|undefined} state Source state.
  */
 
 /**
@@ -739,7 +739,7 @@
  * @property {ol.Extent|undefined} extent Extent.
  * @property {boolean|undefined} hidpi Use the `ol.Map#pixelRatio` value when
  *     requesting the image from the remote server. Default is `true`.
- * @property {ol.source.wms.ServerType|undefined} serverType The type of the remote WMS
+ * @property {ol.source.wms.ServerType|string|undefined} serverType The type of the remote WMS
  *     server: `mapserver`, `geoserver` or `qgis`. Only needed if `hidpi` is `true`.
  *     Default is `undefined`.
  * @property {string|undefined} logo Logo.
@@ -818,7 +818,7 @@
  * @property {ol.tilegrid.TileGrid|undefined} tileGrid Tile grid.
  * @property {number|undefined} maxZoom Maximum zoom.
  * @property {ol.proj.ProjectionLike} projection Projection.
- * @property {ol.source.wms.ServerType|undefined} serverType The type of the remote WMS
+ * @property {ol.source.wms.ServerType|string|undefined} serverType The type of the remote WMS
  *     server: `mapserver`, `geoserver` or `qgis`. Only needed if `hidpi` is `true`.
  *     Default is `undefined`.
  * @property {ol.TileLoadFunctionType|undefined} tileLoadFunction Optional
@@ -836,7 +836,7 @@
  * @property {Array.<ol.Feature>|undefined} features Features.
  * @property {string|undefined} logo Logo.
  * @property {ol.proj.ProjectionLike} projection Projection.
- * @property {ol.source.State|undefined} state State.
+ * @property {ol.source.State|string|undefined} state State.
  */
 
 /**

@@ -1,6 +1,5 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
@@ -67,7 +66,7 @@ var map = new ol.Map({
       styleFunction: styleFunction
     })
   ],
-  renderer: ol.RendererHint.CANVAS,
+  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [703365.7089403362, 5714629.865071137],

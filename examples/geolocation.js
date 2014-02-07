@@ -5,7 +5,6 @@
 goog.require('ol.Geolocation');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
-goog.require('ol.OverlayPositioning');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.dom.Input');
@@ -45,7 +44,7 @@ geolocation.on('propertychange', function() {
 
 var marker = new ol.Overlay({
   element: /** @type {Element} */ ($('<i/>').addClass('icon-flag').get(0)),
-  positioning: ol.OverlayPositioning.BOTTOM_LEFT,
+  positioning: 'bottom-left',
   stopEvent: false
 });
 map.addOverlay(marker);

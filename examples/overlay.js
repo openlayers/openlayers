@@ -1,6 +1,5 @@
 goog.require('ol.Map');
 goog.require('ol.Overlay');
-goog.require('ol.OverlayPositioning');
 goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.coordinate');
@@ -28,7 +27,7 @@ var pos = ol.proj.transform([16.3725, 48.208889], 'EPSG:4326', 'EPSG:3857');
 // Vienna marker
 var marker = new ol.Overlay({
   position: pos,
-  positioning: ol.OverlayPositioning.CENTER_CENTER,
+  positioning: 'center-center',
   element: document.getElementById('marker'),
   stopEvent: false
 });

@@ -3,12 +3,6 @@
 @exportProperty ol.proj.Projection.prototype.getExtent
 @exportProperty ol.proj.Projection.prototype.getUnits
 
-@exportSymbol ol.proj.Units
-@exportProperty ol.proj.Units.DEGREES
-@exportProperty ol.proj.Units.FEET
-@exportProperty ol.proj.Units.METERS
-@exportProperty ol.proj.Units.PIXELS
-
 @exportSymbol ol.proj.addProjection
 @exportSymbol ol.proj.get
 @exportSymbol ol.proj.getTransform

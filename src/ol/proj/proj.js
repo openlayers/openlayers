@@ -77,7 +77,7 @@ ol.proj.Projection = function(options) {
    * @private
    * @type {ol.proj.Units}
    */
-  this.units_ = options.units;
+  this.units_ = /** @type {ol.proj.Units} */ (options.units);
 
   /**
    * @private
