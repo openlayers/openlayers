@@ -1,7 +1,9 @@
 goog.provide('ol.layer.Vector');
 
+goog.require('goog.asserts');
 goog.require('ol.feature');
 goog.require('ol.layer.Layer');
+goog.require('ol.style.Style');
 
 
 /**
@@ -27,9 +29,32 @@ ol.layer.Vector = function(opt_options) {
 
   goog.base(this, /** @type {olx.layer.LayerOptions} */ (options));
 
-  // FIXME veryify this
-  if (goog.isDef(options.styleFunction)) {
-    this.setStyleFunction(options.styleFunction);
+  if (goog.isDef(options.style)) {
+
+    /**
+     * @type {ol.feature.StyleFunction}
+     */
+    var styleFunction;
+
+    if (goog.isFunction(options.style)) {
+      styleFunction = /** @type {ol.feature.StyleFunction} */ (options.style);
+    } else {
+      /**
+       * @type {Array.<ol.style.Style>}
+       */
+      var styles;
+      if (goog.isArray(options.style)) {
+        styles = options.style;
+      } else {
+        goog.asserts.assertInstanceof(options.style, ol.style.Style);
+        styles = [options.style];
+      }
+      styleFunction = function(feature, resolution) {
+        return styles;
+      };
+    }
+
+    this.setStyleFunction(styleFunction);
   }
 
 };
