@@ -10,14 +10,6 @@ goog.require('ol.geom.Geometry');
 goog.require('ol.style.Style');
 
 
-/**
- * @enum {string}
- */
-ol.FeatureProperty = {
-  STYLE_FUNCTION: 'styleFunction'
-};
-
-
 
 /**
  * @constructor
@@ -44,6 +36,12 @@ ol.Feature = function(opt_geometryOrValues) {
 
   /**
    * @private
+   * @type {ol.feature.FeatureStyleFunction|undefined}
+   */
+  this.styleFunction_;
+
+  /**
+   * @private
    * @type {goog.events.Key}
    */
   this.geometryChangeKey_ = null;
@@ -51,9 +49,6 @@ ol.Feature = function(opt_geometryOrValues) {
   goog.events.listen(
       this, ol.Object.getChangeEventType(this.geometryName_),
       this.handleGeometryChanged_, false, this);
-  goog.events.listen(
-      this, ol.Object.getChangeEventType(ol.FeatureProperty.STYLE_FUNCTION),
-      this.handleStyleFunctionChange_, false, this);
 
   if (goog.isDefAndNotNull(opt_geometryOrValues)) {
     if (opt_geometryOrValues instanceof ol.geom.Geometry) {
@@ -108,13 +103,8 @@ ol.Feature.prototype.getGeometryName = function() {
  * @todo stability experimental
  */
 ol.Feature.prototype.getStyleFunction = function() {
-  return /** @type {ol.feature.FeatureStyleFunction|undefined} */ (
-      this.get(ol.FeatureProperty.STYLE_FUNCTION));
+  return this.styleFunction_;
 };
-goog.exportProperty(
-    ol.Feature.prototype,
-    'getStyleFunction',
-    ol.Feature.prototype.getStyleFunction);
 
 
 /**
@@ -143,14 +133,6 @@ ol.Feature.prototype.handleGeometryChanged_ = function() {
 
 
 /**
- * @private
- */
-ol.Feature.prototype.handleStyleFunctionChange_ = function() {
-  this.dispatchChangeEvent();
-};
-
-
-/**
  * @param {ol.geom.Geometry|undefined} geometry Geometry.
  * @todo stability experimental
  */
@@ -165,16 +147,13 @@ goog.exportProperty(
 
 /**
  * @param {ol.feature.FeatureStyleFunction|undefined} styleFunction Style
- *     function
+ *     function.
  * @todo stability experimental
  */
 ol.Feature.prototype.setStyleFunction = function(styleFunction) {
-  this.set(ol.FeatureProperty.STYLE_FUNCTION, styleFunction);
+  this.styleFunction_ = styleFunction;
+  this.dispatchChangeEvent();
 };
-goog.exportProperty(
-    ol.Feature.prototype,
-    'setStyleFunction',
-    ol.Feature.prototype.setStyleFunction);
 
 
 /**
