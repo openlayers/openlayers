@@ -477,8 +477,7 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
   if (!goog.isNull(this.source_)) {
     this.source_.addFeature(sketchFeature);
   }
-  this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWEND,
-      this.sketchFeature_));
+  this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWEND, sketchFeature));
 };
 
 
