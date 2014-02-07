@@ -228,7 +228,7 @@ var overlayStyle = (function() {
 })();
 
 var overlay = new ol.FeatureOverlay({
-  styleFunction: overlayStyle
+  style: overlayStyle
 });
 
 var modify = new ol.interaction.Modify({ featureOverlay: overlay });

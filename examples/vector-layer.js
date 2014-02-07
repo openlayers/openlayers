@@ -64,7 +64,7 @@ var highlightStyleCache = {};
 
 var featureOverlay = new ol.FeatureOverlay({
   map: map,
-  styleFunction: function(feature, resolution) {
+  style: function(feature, resolution) {
     var text = resolution < 5000 ? feature.get('name') : '';
     if (!highlightStyleCache[text]) {
       highlightStyleCache[text] = [new ol.style.Style({

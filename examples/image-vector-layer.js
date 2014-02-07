@@ -42,21 +42,17 @@ var map = new ol.Map({
   })
 });
 
-var highlightStyleArray = [new ol.style.Style({
-  stroke: new ol.style.Stroke({
-    color: '#f00',
-    width: 1
-  }),
-  fill: new ol.style.Fill({
-    color: 'rgba(255,0,0,0.1)'
-  })
-})];
-
 var featureOverlay = new ol.FeatureOverlay({
   map: map,
-  styleFunction: function(feature, resolution) {
-    return highlightStyleArray;
-  }
+  style: new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: '#f00',
+      width: 1
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(255,0,0,0.1)'
+    })
+  })
 });
 
 var highlight;
