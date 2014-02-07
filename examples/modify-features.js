@@ -1,8 +1,6 @@
 goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
-goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction');
 goog.require('ol.interaction.Modify');
 goog.require('ol.interaction.Select');
@@ -166,9 +164,8 @@ var vectorLayer = new ol.layer.Vector({
 });
 
 var overlayStyle = (function() {
-  /** @type {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} */
   var styles = {};
-  styles[ol.geom.GeometryType.POLYGON] = [
+  styles['polygon'] = [
     new ol.style.Style({
       fill: new ol.style.Fill({
         color: [255, 255, 255, 0.5]
@@ -187,10 +184,9 @@ var overlayStyle = (function() {
       })
     })
   ];
-  styles[ol.geom.GeometryType.MULTI_POLYGON] =
-      styles[ol.geom.GeometryType.POLYGON];
+  styles['multipolygon'] = styles['polygon'];
 
-  styles[ol.geom.GeometryType.LINE_STRING] = [
+  styles['linestring'] = [
     new ol.style.Style({
       stroke: new ol.style.Stroke({
         color: [255, 255, 255, 1],
@@ -204,10 +200,9 @@ var overlayStyle = (function() {
       })
     })
   ];
-  styles[ol.geom.GeometryType.MULTI_LINE_STRING] =
-      styles[ol.geom.GeometryType.LINE_STRING];
+  styles['multilinestring'] = styles['linestring'];
 
-  styles[ol.geom.GeometryType.POINT] = [
+  styles['point'] = [
     new ol.style.Style({
       image: new ol.style.Circle({
         radius: 7,
@@ -222,12 +217,9 @@ var overlayStyle = (function() {
       zIndex: 100000
     })
   ];
-  styles[ol.geom.GeometryType.MULTI_POINT] =
-      styles[ol.geom.GeometryType.POINT];
+  styles['multipoint'] = styles['point'];
 
-  styles[ol.geom.GeometryType.GEOMETRY_COLLECTION] =
-      styles[ol.geom.GeometryType.POLYGON].concat(
-          styles[ol.geom.GeometryType.POINT]);
+  styles['geometrycollection'] = styles['polygon'].concat(styles['point']);
 
   return function(feature, resolution) {
     return styles[feature.getGeometry().getType()];
@@ -244,7 +236,7 @@ var select = new ol.interaction.Select({ featureOverlay: overlay });
 var map = new ol.Map({
   interactions: ol.interaction.defaults().extend([select, modify]),
   layers: [raster, vectorLayer],
-  renderer: ol.RendererHint.CANVAS,
+  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],
