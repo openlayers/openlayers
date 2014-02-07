@@ -36,7 +36,7 @@ var styleArray = [new ol.style.Style({
   })
 })];
 
-var colors = ['red', 'orange', 'yellow', 'blue', 'green', 'indigo', 'violet'];
+var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
 var depthStyle = [];
 for (i = 0, ii = colors.length; i < ii; ++i) {
   depthStyle[i] = new ol.style.Style({
