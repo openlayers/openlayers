@@ -113,7 +113,7 @@ ol.pointer.MouseSource.prototype.isEventSimulatedFromTouch_ =
  * @return {Object}
  */
 ol.pointer.MouseSource.prototype.prepareEvent_ = function(inEvent) {
-  var e = this.dispatcher.cloneEvent(inEvent);
+  var e = this.dispatcher.cloneEvent(inEvent.getBrowserEvent());
 
   // forward mouse preventDefault
   var pd = e.preventDefault;

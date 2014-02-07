@@ -260,7 +260,7 @@ ol.pointer.PointerEventHandler.prototype.removeEvents_ = function(events) {
 /**
  * Returns a snapshot of inEvent, with writable properties.
  *
- * @param {goog.events.BrowserEvent|Touch} inEvent An event that contains
+ * @param {Event|Touch} inEvent An event that contains
  *    properties to copy.
  * @return {Object} An object containing shallow copies of
  *    `inEvent`'s properties.

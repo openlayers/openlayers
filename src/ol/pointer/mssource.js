@@ -111,7 +111,7 @@ ol.pointer.MsSource.prototype.hasBitmapType = function() {
 ol.pointer.MsSource.prototype.prepareEvent_ = function(inEvent) {
   var e = inEvent;
   if (this.HAS_BITMAP_TYPE) {
-    e = this.dispatcher.cloneEvent(inEvent);
+    e = this.dispatcher.cloneEvent(inEvent.getBrowserEvent());
     e.pointerType = this.POINTER_TYPES[inEvent.pointerType];
   }
 
