@@ -1,0 +1,5 @@
+@exportSymbol ga.Lang
+@exportProperty ga.Lang.getCode
+@exportProperty ga.Lang.setCode
+@exportProperty ga.Lang.translate
+@exportProperty ga.i18n
