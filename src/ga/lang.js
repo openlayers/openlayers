@@ -20,7 +20,9 @@ ga.Lang = function() {
 goog.inherits(ga.Lang, ol.Object);
 
 
-
+/**
+ * Get language code
+ */
 ga.Lang.getCode = function() {
     if (!this.code_) {
       this.setCode();
@@ -28,17 +30,27 @@ ga.Lang.getCode = function() {
     return this.code_;
 };
 
+/**
+ * Set language code
+ * @param {string} code, e.g. 'de'
+ */
 ga.Lang.setCode = function(code) {
     this.code_ = code;
 };
 
-ga.Lang.translate = function(key, context) {
+/**
+ *  Translate a message given a msgid and a context.
+ *  @param {string} msgid to translate.
+ *  @param {string=} context (optional),
+ *  @return {string} translated message
+ */
+ga.Lang.translate = function(msgid, context) {
 
   var dictionary = ga.Lang[this.getCode()];
-  var message = dictionary && dictionary[key];
+  var message = dictionary && dictionary[msgid];
   if (!message) {
     // Message not found, fall back to message key
-    message = key;
+    message = msgid;
   }
   if (context) {
     message = this.format(message, context);
