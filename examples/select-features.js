@@ -35,14 +35,14 @@ var vector = new ol.layer.Vector({
     projection: 'EPSG:3857',
     url: 'data/geojson/countries.geojson'
   }),
-  styleFunction: function(feature, layer) {
+  styleFunction: function(feature, resolution) {
     return unselectedStyle;
   }
 });
 
 var select = new ol.interaction.Select({
   featureOverlay: new ol.FeatureOverlay({
-    styleFunction: function(feature, layer) {
+    styleFunction: function(feature, resolution) {
       return selectedStyle;
     }
   })
