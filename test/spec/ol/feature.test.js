@@ -207,6 +207,59 @@ describe('ol.Feature', function() {
 
   });
 
+  describe('#getStyleFunction()', function() {
+
+    var styleFunction = function(feature, resolution) {
+      return null;
+    };
+
+    it('returns undefined after construction', function() {
+      var feature = new ol.Feature();
+      expect(feature.getStyleFunction()).to.be(undefined);
+    });
+
+    it('returns the function passed to setStyleFunction', function() {
+      var feature = new ol.Feature();
+      feature.setStyleFunction(styleFunction);
+      expect(feature.getStyleFunction()).to.be(styleFunction);
+    });
+
+    it('does not get confused with user "styleFunction" property', function() {
+      var feature = new ol.Feature();
+      feature.set('styleFunction', 'foo');
+      expect(feature.getStyleFunction()).to.be(undefined);
+    });
+
+    // TODO: also assert that 'styleFunction' passed to the constructor is
+    // not confused with the internal 'styleFunction_'.
+    // See https://github.com/openlayers/ol3/issues/1672
+
+  });
+
+  describe('#setStyleFunction()', function() {
+
+    var styleFunction = function(feature, resolution) {
+      return null;
+    };
+
+    it('sets the style function', function() {
+      var feature = new ol.Feature();
+      feature.setStyleFunction(styleFunction);
+      expect(feature.getStyleFunction()).to.be(styleFunction);
+    });
+
+    it('dispatches a change event', function(done) {
+      var feature = new ol.Feature();
+      feature.on('change', function() {
+        done();
+      });
+      feature.setStyleFunction(styleFunction);
+    });
+
+  });
+
+
+
 });
 
 describe('ol.feature.createStyleFunction()', function() {
