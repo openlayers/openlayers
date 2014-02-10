@@ -17,7 +17,16 @@ ol.format.XSD.NAMESPACE_URI = 'http://www.w3.org/2001/XMLSchema';
  */
 ol.format.XSD.readBoolean = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*(true|1)|(false|0)\s*$/.exec(s);
+  return ol.format.XSD.readBooleanString(s);
+};
+
+
+/**
+ * @param {string} string String.
+ * @return {boolean|undefined} Boolean.
+ */
+ol.format.XSD.readBooleanString = function(string) {
+  var m = /^\s*(true|1)|(false|0)\s*$/.exec(string);
   if (m) {
     return goog.isDef(m[1]) || false;
   } else {
