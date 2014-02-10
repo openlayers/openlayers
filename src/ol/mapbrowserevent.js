@@ -130,6 +130,7 @@ ol.MapBrowserEventHandler = function(map) {
    * @private
    */
   this.activePointers_ = 0;
+  this.trackedTouches_ = {};
 
   /**
    * @type {ol.pointer.PointerEventHandler}
@@ -206,10 +207,11 @@ ol.MapBrowserEventHandler.prototype.updateActivePointers_ =
 
   if (event.type == ol.MapBrowserEvent.EventType.POINTERUP ||
       event.type == ol.MapBrowserEvent.EventType.POINTERCANCEL) {
-    this.activePointers_--;
+    delete this.trackedTouches_[event.pointerId];
   } else if (event.type == ol.MapBrowserEvent.EventType.POINTERDOWN) {
-    this.activePointers_++;
+    this.trackedTouches_[event.pointerId] = true;
   }
+  this.activePointers_ = goog.object.getCount(this.trackedTouches_);
 };
 
 

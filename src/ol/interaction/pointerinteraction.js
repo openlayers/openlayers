@@ -84,7 +84,11 @@ ol.interaction.PointerInteraction.prototype.updateTrackedTouches_ =
 
     if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERUP) {
       delete this.trackedTouches_[event.pointerId];
-    } else {
+    } else if (mapBrowserEvent.type ==
+        ol.MapBrowserEvent.EventType.POINTERDOWN) {
+      this.trackedTouches_[event.pointerId] = event;
+    } else if (event.pointerId in this.trackedTouches_) {
+      // update only when there was a pointerdown event for this pointer
       this.trackedTouches_[event.pointerId] = event;
     }
     this.targetTouches = goog.object.getValues(this.trackedTouches_);
@@ -96,7 +100,8 @@ ol.interaction.PointerInteraction.prototype.updateTrackedTouches_ =
  * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
  * @protected
  */
-ol.interaction.PointerInteraction.prototype.handlePointerMove = goog.nullFunction;
+ol.interaction.PointerInteraction.prototype.handlePointerMove =
+    goog.nullFunction;
 
 
 /**
