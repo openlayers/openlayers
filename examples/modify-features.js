@@ -21,58 +21,52 @@ var raster = new ol.layer.Tile({
   })
 });
 
-var image = new ol.style.Circle({
-  radius: 5,
-  fill: null,
-  stroke: new ol.style.Stroke({color: 'orange', width: 2})
-});
-
-var styleFunction = function(feature) {
-  switch (feature.getGeometry().getType()) {
-    case 'Point':
-      return [new ol.style.Style({
-        image: image
-      })];
-    case 'Polygon':
-      return [new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: 'blue',
-          width: 3
-        }),
-        fill: new ol.style.Fill({
-          color: 'rgba(0, 0, 255, 0.1)'
-        })
-      })];
-    case 'MultiLineString':
-      return [new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: 'green',
-          width: 3
-        })
-      })];
-    case 'MultiPolygon':
-      return [new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: 'yellow',
-          width: 1
-        }),
-        fill: new ol.style.Fill({
-          color: 'rgba(255, 255, 0, 0.1)'
-        })
-      })];
-    default:
-      return [new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: 'red',
-          width: 3
-        }),
-        fill: new ol.style.Fill({
-          color: 'rgba(255, 0, 0, 0.1)'
-        }),
-        image: image
-      })];
-  }
-};
+var styleFunction = (function() {
+  var styles = {};
+  var image = new ol.style.Circle({
+    radius: 5,
+    fill: null,
+    stroke: new ol.style.Stroke({color: 'orange', width: 2})
+  });
+  styles['Point'] = [new ol.style.Style({image: image})];
+  styles['Polygon'] = [new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'blue',
+      width: 3
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(0, 0, 255, 0.1)'
+    })
+  })];
+  styles['MultiLinestring'] = [new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'green',
+      width: 3
+    })
+  })];
+  styles['MultiPolygon'] = [new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'yellow',
+      width: 1
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(255, 255, 0, 0.1)'
+    })
+  })];
+  styles['default'] = [new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'red',
+      width: 3
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(255, 0, 0, 0.1)'
+    }),
+    image: image
+  })];
+  return function(feature, resolution) {
+    return styles[feature.getGeometry().getType()] || styles['default'];
+  };
+})();
 
 var vectorSource = new ol.source.GeoJSON(
     /** @type {olx.source.GeoJSONOptions} */ ({
@@ -165,7 +159,7 @@ var vectorLayer = new ol.layer.Vector({
 
 var overlayStyle = (function() {
   var styles = {};
-  styles['polygon'] = [
+  styles['Polygon'] = [
     new ol.style.Style({
       fill: new ol.style.Fill({
         color: [255, 255, 255, 0.5]
@@ -184,9 +178,9 @@ var overlayStyle = (function() {
       })
     })
   ];
-  styles['multipolygon'] = styles['polygon'];
+  styles['MultiPolygon'] = styles['Polygon'];
 
-  styles['linestring'] = [
+  styles['LineString'] = [
     new ol.style.Style({
       stroke: new ol.style.Stroke({
         color: [255, 255, 255, 1],
@@ -200,9 +194,9 @@ var overlayStyle = (function() {
       })
     })
   ];
-  styles['multilinestring'] = styles['linestring'];
+  styles['MultiLineString'] = styles['LineString'];
 
-  styles['point'] = [
+  styles['Point'] = [
     new ol.style.Style({
       image: new ol.style.Circle({
         radius: 7,
@@ -217,9 +211,9 @@ var overlayStyle = (function() {
       zIndex: 100000
     })
   ];
-  styles['multipoint'] = styles['point'];
+  styles['MultiPoint'] = styles['Point'];
 
-  styles['geometrycollection'] = styles['polygon'].concat(styles['point']);
+  styles['GeometryCollection'] = styles['Polygon'].concat(styles['Point']);
 
   return function(feature, resolution) {
     return styles[feature.getGeometry().getType()];
