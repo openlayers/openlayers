@@ -97,7 +97,16 @@ ol.format.XSD.readDecimalString = function(string) {
  */
 ol.format.XSD.readNonNegativeInteger = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*(\d+)\s*$/.exec(s);
+  return ol.format.XSD.readNonNegativeIntegerString(s);
+};
+
+
+/**
+ * @param {string} string String.
+ * @return {number|undefined} Non negative integer.
+ */
+ol.format.XSD.readNonNegativeIntegerString = function(string) {
+  var m = /^\s*(\d+)\s*$/.exec(string);
   if (m) {
     return parseInt(m[1], 10);
   } else {
