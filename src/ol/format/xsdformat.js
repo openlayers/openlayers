@@ -71,9 +71,18 @@ ol.format.XSD.readDateTime = function(node) {
  * @return {number|undefined} Decimal.
  */
 ol.format.XSD.readDecimal = function(node) {
-  // FIXME check spec
   var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*$/i.exec(s);
+  return ol.format.XSD.readDecimalString(s);
+};
+
+
+/**
+ * @param {string} string String.
+ * @return {number|undefined} Decimal.
+ */
+ol.format.XSD.readDecimalString = function(string) {
+  // FIXME check spec
+  var m = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*$/i.exec(string);
   if (m) {
     return parseFloat(m[1]);
   } else {
