@@ -1,5 +1,4 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -47,6 +46,7 @@ var styleFunction = function(feature, resolution) {
 
 var vector = new ol.layer.Vector({
   source: new ol.source.KML({
+    projection: 'EPSG:3857',
     url: 'data/kml/timezones.kml'
   }),
   styleFunction: styleFunction
@@ -60,7 +60,7 @@ var raster = new ol.layer.Tile({
 
 var map = new ol.Map({
   layers: [raster, vector],
-  renderer: ol.RendererHint.CANVAS,
+  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],

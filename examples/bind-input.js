@@ -30,7 +30,7 @@ var view = new ol.View2D({
 
 var map = new ol.Map({
   layers: [layer],
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: view
 });

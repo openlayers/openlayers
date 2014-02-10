@@ -10,6 +10,7 @@ goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.render.IReplayGroup');
+goog.require('ol.style.ImageState');
 goog.require('ol.style.Style');
 
 
@@ -47,8 +48,51 @@ ol.renderer.vector.renderCircleGeometry_ =
  * @param {ol.style.Style} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {Object} data Opaque data object.
+ * @param {function(this: T, goog.events.Event)} listener Listener function.
+ * @param {T} thisArg Value to use as `this` when executing `listener`.
+ * @return {boolean} `true` if style is loading.
+ * @template T
  */
 ol.renderer.vector.renderFeature = function(
+    replayGroup, feature, style, squaredTolerance, data, listener, thisArg) {
+  var loading = false;
+  var imageStyle, imageState;
+  imageStyle = style.getImage();
+  if (goog.isNull(imageStyle)) {
+    ol.renderer.vector.renderFeature_(
+        replayGroup, feature, style, squaredTolerance, data);
+  } else {
+    imageState = imageStyle.getImageState();
+    if (imageState == ol.style.ImageState.LOADED ||
+        imageState == ol.style.ImageState.ERROR) {
+      imageStyle.unlistenImageChange(listener, thisArg);
+      if (imageState == ol.style.ImageState.LOADED) {
+        ol.renderer.vector.renderFeature_(
+            replayGroup, feature, style, squaredTolerance, data);
+      }
+    } else {
+      if (imageState == ol.style.ImageState.IDLE) {
+        imageStyle.load();
+      }
+      imageState = imageStyle.getImageState();
+      goog.asserts.assert(imageState == ol.style.ImageState.LOADING);
+      imageStyle.listenImageChange(listener, thisArg);
+      loading = true;
+    }
+  }
+  return loading;
+};
+
+
+/**
+ * @param {ol.render.IReplayGroup} replayGroup Replay group.
+ * @param {ol.Feature} feature Feature.
+ * @param {ol.style.Style} style Style.
+ * @param {number} squaredTolerance Squared tolerance.
+ * @param {Object} data Opaque data object.
+ * @private
+ */
+ol.renderer.vector.renderFeature_ = function(
     replayGroup, feature, style, squaredTolerance, data) {
   var geometry = feature.getGeometry();
   if (goog.isNull(geometry)) {
@@ -151,7 +195,7 @@ ol.renderer.vector.renderMultiPolygonGeometry_ =
   goog.asserts.assertInstanceof(geometry, ol.geom.MultiPolygon);
   var fillStyle = style.getFill();
   var strokeStyle = style.getStroke();
-  if (!goog.isNull(strokeStyle) && !goog.isNull(fillStyle)) {
+  if (!goog.isNull(strokeStyle) || !goog.isNull(fillStyle)) {
     var polygonReplay = replayGroup.getReplay(
         style.getZIndex(), ol.render.ReplayType.POLYGON);
     polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);

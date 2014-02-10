@@ -1,4 +1,4 @@
-goog.provide('ol.render.FeaturesOverlay');
+goog.provide('ol.FeatureOverlay');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -15,10 +15,10 @@ goog.require('ol.render.EventType');
 
 /**
  * @constructor
- * @param {olx.render.FeaturesOverlayOptions=} opt_options Options.
+ * @param {olx.FeatureOverlayOptions=} opt_options Options.
  * @todo stability experimental
  */
-ol.render.FeaturesOverlay = function(opt_options) {
+ol.FeatureOverlay = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
@@ -84,7 +84,7 @@ ol.render.FeaturesOverlay = function(opt_options) {
  * @param {ol.Feature} feature Feature.
  * @todo stability experimental
  */
-ol.render.FeaturesOverlay.prototype.addFeature = function(feature) {
+ol.FeatureOverlay.prototype.addFeature = function(feature) {
   this.features_.push(feature);
 };
 
@@ -93,7 +93,7 @@ ol.render.FeaturesOverlay.prototype.addFeature = function(feature) {
  * @return {ol.Collection} Features collection.
  * @todo stability experimental
  */
-ol.render.FeaturesOverlay.prototype.getFeatures = function() {
+ol.FeatureOverlay.prototype.getFeatures = function() {
   return this.features_;
 };
 
@@ -101,7 +101,7 @@ ol.render.FeaturesOverlay.prototype.getFeatures = function() {
 /**
  * @private
  */
-ol.render.FeaturesOverlay.prototype.handleFeatureChange_ = function() {
+ol.FeatureOverlay.prototype.handleFeatureChange_ = function() {
   this.requestRenderFrame_();
 };
 
@@ -110,7 +110,7 @@ ol.render.FeaturesOverlay.prototype.handleFeatureChange_ = function() {
  * @private
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  */
-ol.render.FeaturesOverlay.prototype.handleFeaturesAdd_ =
+ol.FeatureOverlay.prototype.handleFeaturesAdd_ =
     function(collectionEvent) {
   goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_));
   var feature = /** @type {ol.Feature} */ (collectionEvent.element);
@@ -125,7 +125,7 @@ ol.render.FeaturesOverlay.prototype.handleFeaturesAdd_ =
  * @private
  * @param {ol.CollectionEvent} collectionEvent Collection event.
  */
-ol.render.FeaturesOverlay.prototype.handleFeaturesRemove_ =
+ol.FeatureOverlay.prototype.handleFeaturesRemove_ =
     function(collectionEvent) {
   goog.asserts.assert(!goog.isNull(this.featureChangeListenerKeys_));
   var feature = /** @type {ol.Feature} */ (collectionEvent.element);
@@ -140,18 +140,18 @@ ol.render.FeaturesOverlay.prototype.handleFeaturesRemove_ =
  * @param {ol.render.Event} event Event.
  * @private
  */
-ol.render.FeaturesOverlay.prototype.handleMapPostCompose_ = function(event) {
+ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   if (goog.isNull(this.features_) || !goog.isDef(this.styleFunction_)) {
     return;
   }
   var resolution = event.frameState.view2DState.resolution;
-  var render = event.render;
+  var vectorContext = event.vectorContext;
   var i, ii, feature, styles;
   this.features_.forEach(function(feature) {
     styles = this.styleFunction_(feature, resolution);
     ii = styles.length;
     for (i = 0; i < ii; ++i) {
-      render.drawFeature(feature, styles[i]);
+      vectorContext.drawFeature(feature, styles[i]);
     }
   }, this);
 };
@@ -161,7 +161,7 @@ ol.render.FeaturesOverlay.prototype.handleMapPostCompose_ = function(event) {
  * @param {ol.Feature} feature Feature.
  * @todo stability experimental
  */
-ol.render.FeaturesOverlay.prototype.removeFeature = function(feature) {
+ol.FeatureOverlay.prototype.removeFeature = function(feature) {
   this.features_.remove(feature);
 };
 
@@ -169,7 +169,7 @@ ol.render.FeaturesOverlay.prototype.removeFeature = function(feature) {
 /**
  * @private
  */
-ol.render.FeaturesOverlay.prototype.requestRenderFrame_ = function() {
+ol.FeatureOverlay.prototype.requestRenderFrame_ = function() {
   if (!goog.isNull(this.map_)) {
     this.map_.requestRenderFrame();
   }
@@ -180,7 +180,7 @@ ol.render.FeaturesOverlay.prototype.requestRenderFrame_ = function() {
  * @param {ol.Collection} features Features collection.
  * @todo stability experimental
  */
-ol.render.FeaturesOverlay.prototype.setFeatures = function(features) {
+ol.FeatureOverlay.prototype.setFeatures = function(features) {
   if (!goog.isNull(this.featuresListenerKeys_)) {
     goog.array.forEach(this.featuresListenerKeys_, goog.events.unlistenByKey);
     this.featuresListenerKeys_ = null;
@@ -218,7 +218,7 @@ ol.render.FeaturesOverlay.prototype.setFeatures = function(features) {
  * @param {ol.Map} map Map.
  * @todo stability experimental
  */
-ol.render.FeaturesOverlay.prototype.setMap = function(map) {
+ol.FeatureOverlay.prototype.setMap = function(map) {
   if (!goog.isNull(this.postComposeListenerKey_)) {
     goog.events.unlistenByKey(this.postComposeListenerKey_);
     this.postComposeListenerKey_ = null;
@@ -238,7 +238,7 @@ ol.render.FeaturesOverlay.prototype.setMap = function(map) {
  * @param {ol.feature.StyleFunction} styleFunction Style function.
  * @todo stability experimental
  */
-ol.render.FeaturesOverlay.prototype.setStyleFunction = function(styleFunction) {
+ol.FeatureOverlay.prototype.setStyleFunction = function(styleFunction) {
   this.styleFunction_ = styleFunction;
   this.requestRenderFrame_();
 };

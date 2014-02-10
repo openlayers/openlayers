@@ -1,29 +1,32 @@
 // FIXME remove trailing "Geometry" in method names
 
-goog.provide('ol.render.IRender');
+goog.provide('ol.render.IVectorContext');
 
 
 
 /**
  * @interface
+ * @todo stability experimental
  */
-ol.render.IRender = function() {
+ol.render.IVectorContext = function() {
 };
 
 
 /**
  * @param {number} zIndex Z index.
  * @param {function(ol.render.canvas.Immediate)} callback Callback.
+ * @todo stability experimental
  */
-ol.render.IRender.prototype.drawAsync = function(zIndex, callback) {
+ol.render.IVectorContext.prototype.drawAsync = function(zIndex, callback) {
 };
 
 
 /**
  * @param {ol.geom.Circle} circleGeometry Circle geometry.
  * @param {Object} data Opaque data object,
+ * @todo stability experimental
  */
-ol.render.IRender.prototype.drawCircleGeometry =
+ol.render.IVectorContext.prototype.drawCircleGeometry =
     function(circleGeometry, data) {
 };
 
@@ -31,8 +34,9 @@ ol.render.IRender.prototype.drawCircleGeometry =
 /**
  * @param {ol.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
+ * @todo stability experimental
  */
-ol.render.IRender.prototype.drawFeature = function(feature, style) {
+ol.render.IVectorContext.prototype.drawFeature = function(feature, style) {
 };
 
 
@@ -40,8 +44,9 @@ ol.render.IRender.prototype.drawFeature = function(feature, style) {
  * @param {ol.geom.GeometryCollection} geometryCollectionGeometry Geometry
  *     collection.
  * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
-ol.render.IRender.prototype.drawGeometryCollectionGeometry =
+ol.render.IVectorContext.prototype.drawGeometryCollectionGeometry =
     function(geometryCollectionGeometry, data) {
 };
 
@@ -49,16 +54,19 @@ ol.render.IRender.prototype.drawGeometryCollectionGeometry =
 /**
  * @param {ol.geom.Point} pointGeometry Point geometry.
  * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
-ol.render.IRender.prototype.drawPointGeometry = function(pointGeometry, data) {
+ol.render.IVectorContext.prototype.drawPointGeometry =
+    function(pointGeometry, data) {
 };
 
 
 /**
  * @param {ol.geom.LineString} lineStringGeometry Line string geometry.
  * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
-ol.render.IRender.prototype.drawLineStringGeometry =
+ol.render.IVectorContext.prototype.drawLineStringGeometry =
     function(lineStringGeometry, data) {
 };
 
@@ -67,8 +75,9 @@ ol.render.IRender.prototype.drawLineStringGeometry =
  * @param {ol.geom.MultiLineString} multiLineStringGeometry
  *     MultiLineString geometry.
  * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
-ol.render.IRender.prototype.drawMultiLineStringGeometry =
+ol.render.IVectorContext.prototype.drawMultiLineStringGeometry =
     function(multiLineStringGeometry, data) {
 };
 
@@ -76,8 +85,9 @@ ol.render.IRender.prototype.drawMultiLineStringGeometry =
 /**
  * @param {ol.geom.MultiPoint} multiPointGeometry MultiPoint geometry.
  * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
-ol.render.IRender.prototype.drawMultiPointGeometry =
+ol.render.IVectorContext.prototype.drawMultiPointGeometry =
     function(multiPointGeometry, data) {
 };
 
@@ -85,8 +95,9 @@ ol.render.IRender.prototype.drawMultiPointGeometry =
 /**
  * @param {ol.geom.MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
  * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
-ol.render.IRender.prototype.drawMultiPolygonGeometry =
+ol.render.IVectorContext.prototype.drawMultiPolygonGeometry =
     function(multiPolygonGeometry, data) {
 };
 
@@ -94,8 +105,9 @@ ol.render.IRender.prototype.drawMultiPolygonGeometry =
 /**
  * @param {ol.geom.Polygon} polygonGeometry Polygon geometry.
  * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
-ol.render.IRender.prototype.drawPolygonGeometry =
+ol.render.IVectorContext.prototype.drawPolygonGeometry =
     function(polygonGeometry, data) {
 };
 
@@ -107,8 +119,9 @@ ol.render.IRender.prototype.drawPolygonGeometry =
  * @param {number} stride Stride.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {Object} data Opaque data object.
+ * @todo stability experimental
  */
-ol.render.IRender.prototype.drawText =
+ol.render.IVectorContext.prototype.drawText =
     function(flatCoordinates, offset, end, stride, geometry, data) {
 };
 
@@ -116,21 +129,24 @@ ol.render.IRender.prototype.drawText =
 /**
  * @param {ol.style.Fill} fillStyle Fill style.
  * @param {ol.style.Stroke} strokeStyle Stroke style.
+ * @todo stability experimental
  */
-ol.render.IRender.prototype.setFillStrokeStyle =
+ol.render.IVectorContext.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
 };
 
 
 /**
  * @param {ol.style.Image} imageStyle Image style.
+ * @todo stability experimental
  */
-ol.render.IRender.prototype.setImageStyle = function(imageStyle) {
+ol.render.IVectorContext.prototype.setImageStyle = function(imageStyle) {
 };
 
 
 /**
  * @param {ol.style.Text} textStyle Text style.
+ * @todo stability experimental
  */
-ol.render.IRender.prototype.setTextStyle = function(textStyle) {
+ol.render.IVectorContext.prototype.setTextStyle = function(textStyle) {
 };

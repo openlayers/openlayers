@@ -5,7 +5,6 @@ goog.require('ol.View2D');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj.Projection');
-goog.require('ol.proj.Units');
 goog.require('ol.source.ImageWMS');
 goog.require('ol.source.TileWMS');
 
@@ -37,7 +36,7 @@ var layers = [
       })],
       crossOrigin: 'anonymous',
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
-      serverType: /** @type {ol.source.wms.ServerType} */ ('mapserver'),
+      serverType: 'mapserver',
       url: 'http://wms.geo.admin.ch/'
     })
   })
@@ -48,12 +47,12 @@ var layers = [
 // projection object.
 var projection = new ol.proj.Projection({
   code: 'EPSG:21781',
-  units: ol.proj.Units.METERS
+  units: 'm'
 });
 
 var map = new ol.Map({
   layers: layers,
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: new ol.View2D({
     center: [660000, 190000],

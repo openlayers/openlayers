@@ -1,9 +1,8 @@
+goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
-goog.require('ol.render.FeaturesOverlay');
 goog.require('ol.source.GeoJSON');
 goog.require('ol.source.ImageVector');
 goog.require('ol.source.MapQuest');
@@ -30,6 +29,7 @@ var map = new ol.Map({
     new ol.layer.Image({
       source: new ol.source.ImageVector({
         source: new ol.source.GeoJSON({
+          projection: 'EPSG:3857',
           url: 'data/geojson/countries.geojson'
         }),
         styleFunction: function(feature, resolution) {
@@ -38,7 +38,7 @@ var map = new ol.Map({
       })
     })
   ],
-  renderer: ol.RendererHint.CANVAS,
+  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],
@@ -56,7 +56,7 @@ var highlightStyleArray = [new ol.style.Style({
   })
 })];
 
-var featuresOverlay = new ol.render.FeaturesOverlay({
+var featureOverlay = new ol.FeatureOverlay({
   map: map,
   styleFunction: function(feature, resolution) {
     return highlightStyleArray;
@@ -79,10 +79,10 @@ var displayFeatureInfo = function(pixel) {
 
   if (feature !== highlight) {
     if (highlight) {
-      featuresOverlay.removeFeature(highlight);
+      featureOverlay.removeFeature(highlight);
     }
     if (feature) {
-      featuresOverlay.addFeature(feature);
+      featureOverlay.addFeature(feature);
     }
     highlight = feature;
   }

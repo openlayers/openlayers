@@ -6,6 +6,7 @@ goog.require('goog.events.Event');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Feature');
+goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
@@ -17,7 +18,6 @@ goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.render.FeaturesOverlay');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
@@ -60,10 +60,10 @@ goog.inherits(ol.DrawEvent, goog.events.Event);
  * Interaction that allows drawing geometries
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @param {olx.interaction.DrawOptions=} opt_options Options.
+ * @param {olx.interaction.DrawOptions} options Options.
  * @todo stability experimental
  */
-ol.interaction.Draw = function(opt_options) {
+ol.interaction.Draw = function(options) {
 
   goog.base(this);
 
@@ -72,22 +72,22 @@ ol.interaction.Draw = function(opt_options) {
    * @type {ol.source.Vector}
    * @private
    */
-  this.source_ = goog.isDef(opt_options.source) ? opt_options.source : null;
+  this.source_ = goog.isDef(options.source) ? options.source : null;
 
   /**
    * Pixel distance for snapping.
    * @type {number}
    * @private
    */
-  this.snapTolerance_ = goog.isDef(opt_options.snapTolerance) ?
-      opt_options.snapTolerance : 12;
+  this.snapTolerance_ = goog.isDef(options.snapTolerance) ?
+      options.snapTolerance : 12;
 
   /**
    * Geometry type.
    * @type {ol.geom.GeometryType}
    * @private
    */
-  this.type_ = opt_options.type;
+  this.type_ = options.type;
 
   /**
    * Drawing mode (derived from geometry type.
@@ -143,12 +143,12 @@ ol.interaction.Draw = function(opt_options) {
 
   /**
    * Draw overlay where are sketch features are drawn.
-   * @type {ol.render.FeaturesOverlay}
+   * @type {ol.FeatureOverlay}
    * @private
    */
-  this.overlay_ = new ol.render.FeaturesOverlay();
-  this.overlay_.setStyleFunction(goog.isDef(opt_options.styleFunction) ?
-      opt_options.styleFunction : ol.interaction.Draw.defaultStyleFunction
+  this.overlay_ = new ol.FeatureOverlay();
+  this.overlay_.setStyleFunction(goog.isDef(options.styleFunction) ?
+      options.styleFunction : ol.interaction.Draw.defaultStyleFunction
   );
 };
 goog.inherits(ol.interaction.Draw, ol.interaction.Interaction);
@@ -477,8 +477,7 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
   if (!goog.isNull(this.source_)) {
     this.source_.addFeature(sketchFeature);
   }
-  this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWEND,
-      this.sketchFeature_));
+  this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWEND, sketchFeature));
 };
 
 

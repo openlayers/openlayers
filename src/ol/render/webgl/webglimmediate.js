@@ -4,7 +4,7 @@ goog.provide('ol.render.webgl.Immediate');
 
 /**
  * @constructor
- * @implements {ol.render.IRender}
+ * @implements {ol.render.IVectorContext}
  * @param {ol.webgl.Context} context Context.
  * @param {number} pixelRatio Pixel ratio.
  * @struct

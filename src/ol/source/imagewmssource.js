@@ -63,7 +63,8 @@ ol.source.ImageWMS = function(opt_options) {
    * @private
    * @type {ol.source.wms.ServerType|undefined}
    */
-  this.serverType_ = options.serverType;
+  this.serverType_ =
+      /** @type {ol.source.wms.ServerType|undefined} */ (options.serverType);
 
   /**
    * @private

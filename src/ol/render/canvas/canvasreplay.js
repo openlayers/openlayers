@@ -15,8 +15,8 @@ goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.simplify');
-goog.require('ol.render.IRender');
 goog.require('ol.render.IReplayGroup');
+goog.require('ol.render.IVectorContext');
 goog.require('ol.render.canvas');
 goog.require('ol.vec.Mat4');
 
@@ -44,7 +44,7 @@ ol.render.canvas.Instruction = {
 
 /**
  * @constructor
- * @implements {ol.render.IRender}
+ * @implements {ol.render.IVectorContext}
  * @param {number} tolerance Tolerance.
  * @protected
  * @struct

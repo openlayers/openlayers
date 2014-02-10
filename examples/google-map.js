@@ -1,7 +1,6 @@
 // NOCOMPILE
 // This example uses the GMapx v3 API, which we do not have an exports file for.
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.interaction');
 goog.require('ol.interaction.DragPan');
@@ -56,7 +55,7 @@ google.maps.event.addListenerOnce(gmap, 'tilesloaded', function() {
     layers: [vector],
     interactions: ol.interaction.defaults({dragPan: false})
         .extend([new ol.interaction.DragPan({kinetic: false})]),
-    renderer: ol.RendererHint.CANVAS,
+    renderer: 'canvas',
     target: olmap,
     view: new ol.View2D({
       center: ol.proj.transform([center.lng(), center.lat()],

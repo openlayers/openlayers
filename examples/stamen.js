@@ -19,7 +19,7 @@ var map = new ol.Map({
       })
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: ol.RendererHints.createFromQueryData(),
   target: 'map',
   view: new ol.View2D({
     center: ol.proj.transform(

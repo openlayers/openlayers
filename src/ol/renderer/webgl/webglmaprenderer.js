@@ -517,5 +517,6 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, frameState);
 
   this.scheduleRemoveUnusedLayerRenderers(frameState);
+  this.scheduleExpireIconCache(frameState);
 
 };
