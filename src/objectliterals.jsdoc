@@ -436,6 +436,13 @@
  * @todo stability experimental
  */
 
+ /**
+ * @typedef {Object} olx.interaction.ModifyOptions
+ * @property {number|undefined} pixelTolerance Pixel tolerance for considering
+ *     the pointer close enough to a vertex for editing. Default is 20 pixels.
+ * @property {ol.FeatureOverlay} featureOverlay Features overlay.
+ */
+
 /**
  * @typedef {Object} olx.interaction.TouchRotateOptions
  * @property {number|undefined} threshold Minimal angle in radians to start a rotation.
