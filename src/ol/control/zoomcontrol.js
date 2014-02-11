@@ -32,10 +32,14 @@ ol.control.Zoom = function(opt_options) {
 
   var delta = goog.isDef(options.delta) ? options.delta : 1;
 
+  var zoomInLabel = goog.isDef(options.zoomInLabel) ? options.zoomInLabel : '+',
+      zoomOutLabel =
+          goog.isDef(options.zoomOutLabel) ? options.zoomOutLabel : '-';
+
   var inElement = goog.dom.createDom(goog.dom.TagName.A, {
     'href': '#zoomIn',
     'class': className + '-in'
-  });
+  }, zoomInLabel);
   goog.events.listen(inElement, [
     goog.events.EventType.TOUCHEND,
     goog.events.EventType.CLICK
@@ -44,7 +48,7 @@ ol.control.Zoom = function(opt_options) {
   var outElement = goog.dom.createDom(goog.dom.TagName.A, {
     'href': '#zoomOut',
     'class': className + '-out'
-  });
+  }, zoomOutLabel);
   goog.events.listen(outElement, [
     goog.events.EventType.TOUCHEND,
     goog.events.EventType.CLICK

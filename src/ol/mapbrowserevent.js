@@ -8,6 +8,7 @@ goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
+goog.require('goog.object');
 goog.require('ol.Coordinate');
 goog.require('ol.FrameState');
 goog.require('ol.MapEvent');
@@ -132,6 +133,14 @@ ol.MapBrowserEventHandler = function(map) {
    */
   this.touchstartListenerKey_ = null;
 
+  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+    /**
+     * @type {goog.events.Key}
+     * @private
+     */
+    this.ieDblclickListenerKey_ = null;
+  }
+
   /**
    * @type {goog.events.BrowserEvent}
    * @private
@@ -161,6 +170,10 @@ ol.MapBrowserEventHandler = function(map) {
       goog.events.EventType.TOUCHSTART,
       this.handleTouchStart_, false, this);
 
+  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+    this.ieDblclickListenerKey_ = goog.events.listen(element,
+        goog.events.EventType.DBLCLICK, this.emulateClick_, false, this);
+  }
 };
 goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
 
@@ -190,12 +203,28 @@ ol.MapBrowserEventHandler.prototype.emulateClick_ = function(browserEvent) {
     this.dispatchEvent(newEvent);
   } else {
     // click
-    this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
-      this.clickTimeoutId_ = 0;
-      var newEvent = new ol.MapBrowserEvent(
-          ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_, browserEvent);
-      this.dispatchEvent(newEvent);
-    }, this), 250);
+
+    if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+      // In IE 7-8, referring to the original event object after the current
+      // call stack causes "member not found" exceptions, such as in the timeout
+      // we use here.
+      var ev = /** @type {Event} */ (
+          goog.object.clone(browserEvent.getBrowserEvent()));
+      this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
+        this.clickTimeoutId_ = 0;
+        var newEvent = new ol.MapBrowserEvent(
+            ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_,
+            new goog.events.BrowserEvent(ev, browserEvent.currentTarget));
+        this.dispatchEvent(newEvent);
+      }, this), 250);
+    } else {
+      this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
+        this.clickTimeoutId_ = 0;
+        var newEvent = new ol.MapBrowserEvent(
+            ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_, browserEvent);
+        this.dispatchEvent(newEvent);
+      }, this), 250);
+    }
   }
 };
 
@@ -445,6 +474,11 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
   if (!goog.isNull(this.dragListenerKeys_)) {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
+  }
+  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE &&
+      !goog.isNull(this.ieDblclickListenerKey_)) {
+    goog.events.unlistenByKey(this.ieDblclickListenerKey_);
+    this.ieDblclickListenerKey_ = null;
   }
   goog.base(this, 'disposeInternal');
 };

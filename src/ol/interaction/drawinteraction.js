@@ -148,18 +148,15 @@ ol.interaction.Draw = function(options) {
    */
   this.overlay_ = new ol.FeatureOverlay();
   this.overlay_.setStyleFunction(goog.isDef(options.styleFunction) ?
-      options.styleFunction : ol.interaction.Draw.defaultStyleFunction
-  );
+      options.styleFunction : ol.interaction.Draw.getDefaultStyleFunction());
 };
 goog.inherits(ol.interaction.Draw, ol.interaction.Interaction);
 
 
 /**
- * @param {ol.Feature} feature Feature.
- * @param {number} resolution Resolution.
- * @return {Array.<ol.style.Style>} Styles.
+ * @return {ol.feature.StyleFunction} Styles.
  */
-ol.interaction.Draw.defaultStyleFunction = (function() {
+ol.interaction.Draw.getDefaultStyleFunction = function() {
   /** @type {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} */
   var styles = {};
   styles[ol.geom.GeometryType.POLYGON] = [
@@ -210,7 +207,7 @@ ol.interaction.Draw.defaultStyleFunction = (function() {
   return function(feature, resolution) {
     return styles[feature.getGeometry().getType()];
   };
-})();
+};
 
 
 /**
