@@ -204,7 +204,7 @@ ga.Map.prototype.handleHighlight_ = function(response) {
       })];
     }
   });
-  map.addLayer(vector);
+  this.addLayer(vector);
 };
 
 ga.Map.prototype.handleHighlightError_ = function(response) {
