@@ -1300,6 +1300,12 @@ ol.Map.prototype.updateSize = function() {
 
 
 /**
+ * Call `f` with rendering disabled.  Calls to {@link ol.Map#render} and {@link
+ * ol.Map#requestRenderFrame} within `f` will be ignored, and instead trigger a
+ * single render after `f` exits.  This is useful if you plan to make many
+ * updates that would trigger a re-render, and wish for those updates to be
+ * rendered as soon as possible, without waiting for the next
+ * `requestAnimationFrame`.
  * @param {function(this: T)} f Function.
  * @param {T=} opt_this The object to use as `this` in `f`.
  * @template T
