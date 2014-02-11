@@ -1,6 +1,5 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.control');
 goog.require('ol.control.ScaleLine');
@@ -58,7 +57,7 @@ var map = new ol.Map({
     })
   ]),
   layers: layers,
-  renderer: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View2D({
     projection: projection,

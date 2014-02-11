@@ -62,3 +62,21 @@
 
   container.appendChild(form);
 })();
+
+var exampleNS = {};
+
+exampleNS.getRendererFromQueryString = function() {
+  var obj = {}, queryString = location.search.slice(1),
+      re = /([^&=]+)=([^&]*)/g, m;
+
+  while (m = re.exec(queryString)) {
+    obj[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+  }
+  if ('renderers' in obj) {
+    return obj['renderers'].split(',');
+  } else if ('renderer' in obj) {
+    return [obj['renderer']];
+  } else {
+    return ol.DEFAULT_RENDERER_HINTS;
+  }
+};
