@@ -41,15 +41,29 @@ exports.handlers = {
   },
   
   newDoclet: function(e) {
+    var i, ii, j, jj;
+    if (e.doclet.meta.filename == "objectliterals.jsdoc" && e.doclet.properties) {
+      for (i = 0, ii = e.doclet.properties.length; i < ii; ++i) {
+        if (e.doclet.properties[i].type && e.doclet.properties[i].type.names) {
+          for (j = 0, jj = e.doclet.properties[i].type.names.length; j < jj; ++j) {
+            if (e.doclet.properties[i].type.names[j].indexOf('ol') == 0) {
+              if (api.indexOf(e.doclet.properties[i].type.names[j]) === -1) {
+                api.push(e.doclet.properties[i].type.names[j]);
+              }
+            }
+          }
+        }
+      }
+    }
     if (api.indexOf(e.doclet.longname) > -1) {
       // Add params of API symbols to the API
       var names, name;
       var params = e.doclet.params;
       if (params) {
-        for (var i = 0, ii = params.length; i < ii; ++i) {
+        for (i = 0, ii = params.length; i < ii; ++i) {
           names = params[i].type.names;
           if (names) {
-            for (var j = 0, jj=names.length; j < jj; ++j) {
+            for (j = 0, jj=names.length; j < jj; ++j) {
               name = names[j];
               if (api.indexOf(name) === -1) {
                 api.push(name);
