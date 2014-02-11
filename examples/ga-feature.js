@@ -2,9 +2,6 @@ goog.require('ga.Map');
 goog.require('ga.layer');
 goog.require('ol.View2D');
 
-window.GeoAdmin = {};
-window.GeoAdmin.lang = "en";
-
 // Create a GeoAdmin Map
 var map = new ga.Map({
   // Define the div where the map is placed
@@ -25,14 +22,11 @@ var lyr = ga.layer.create('ch.swisstopo.pixelkarte-farbe');
 
 map.addLayer(lyr);
 
-map.recenterFeature('ch.swisstopo.fixpunkte-agnes','PAYE');
-map.highlightFeature('ch.swisstopo.fixpunkte-agnes','PAYE');
+map.recenterFeature('ch.swisstopo.fixpunkte-agnes', 'PAYE');
+map.highlightFeature('ch.swisstopo.fixpunkte-agnes', 'PAYE');
 
-//map.recenterFeature('ch.swisstopo.pixelkarte-pk200.metadata','200-3');
-//map.highlightFeature('ch.swisstopo.pixelkarte-pk200.metadata','200-3');
+//map.recenterFeature('ch.swisstopo.pixelkarte-pk200.metadata', '200-3');
+//map.highlightFeature('ch.swisstopo.pixelkarte-pk200.metadata', '200-3');
 
-//map.recenterFeature('ch.bav.laerm-emissionplan_eisenbahn_2015','3005751.0');
-//map.highlightFeature('ch.bav.laerm-emissionplan_eisenbahn_2015','3005751.0');
-
-
-
+//map.recenterFeature('ch.bav.laerm-emissionplan_eisenbahn_2015', '3005751.0');
+//map.highlightFeature('ch.bav.laerm-emissionplan_eisenbahn_2015', '3005751.0');

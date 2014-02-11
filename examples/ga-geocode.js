@@ -2,8 +2,6 @@ goog.require('ga.Map');
 goog.require('ga.layer');
 goog.require('ol.View2D');
 
-window.GeoAdmin = {};
-window.GeoAdmin.lang = "fr";
 
 // Create a GeoAdmin Map
 var map = new ga.Map({
@@ -28,5 +26,4 @@ map.addLayer(lyr1);
 //map.geocode('Payerne');
 //map.geocode('Payerne berges 37');
 //map.geocode('Payerne berges');
-map.geocode('payerne 412')
-
+map.geocode('payerne 412');

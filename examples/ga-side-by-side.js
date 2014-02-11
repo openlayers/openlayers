@@ -1,16 +1,12 @@
-goog.require('ol.Map');
-goog.require('ol.RendererHint');
-goog.require('ol.View2D');
-goog.require('ol.layer.Tile');
-goog.require('ol.webgl');
-
 goog.require('ga.Map');
 goog.require('ga.layer');
+goog.require('ol.BrowserFeature');
+goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 
 
 var domMap = new ga.Map({
-  target: "domMap",
+  target: 'domMap',
   layers: [
     ga.layer.create('ch.swisstopo.pixelkarte-farbe')
   ],

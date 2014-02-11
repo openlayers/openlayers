@@ -26,4 +26,3 @@ var lyr = ga.layer.create('ch.swisstopo.fixpunkte-agnes');
 
 map.addLayer(lyr1);
 map.addLayer(lyr);
-

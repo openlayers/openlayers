@@ -2,9 +2,6 @@ goog.require('ga.Map');
 goog.require('ga.layer');
 goog.require('ol.View2D');
 
-window.GeoAdmin = {};
-window.GeoAdmin.lang = "en";
-
 // Create a GeoAdmin Map
 var map = new ga.Map({
   // Define the div where the map is placed
@@ -34,4 +31,3 @@ var lyr1 = ga.layer.create('ch.swisstopo.pixelkarte-farbe');
 
 map.addLayer(lyr1);
 map.addLayer(lyr);
-

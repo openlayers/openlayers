@@ -1,6 +1,7 @@
 goog.require('ga.Map');
 goog.require('ga.layer');
 goog.require('ol.View2D');
+goog.require('ol.layer.Vector');
 goog.require('ol.source.GeoJSON');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
@@ -71,9 +72,9 @@ var displayFeatureInfo = function(pixel) {
   });
   if (feature) {
     document.getElementById('info').innerHTML =
-      feature.get('NAME') + ' - inhabitants: ' +
-      feature.get('EINWOHNERZ') +
-      '&nbsp;';  
+        feature.get('NAME') + ' - inhabitants: ' +
+        feature.get('EINWOHNERZ') +
+        '&nbsp;';
   }
 };
 

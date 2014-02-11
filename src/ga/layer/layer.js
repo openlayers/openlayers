@@ -104,7 +104,6 @@ ga.layer.create = function(layer) {
   return olLayer;
 };
 
-
 /**
  * @type {Object.<string, Object>}
  */
