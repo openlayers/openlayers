@@ -1448,7 +1448,7 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
   } else {
     featureStyleFunction = ol.format.KML.makeFeatureStyleFunction_(style);
   }
-  feature.setStyleFunction(featureStyleFunction);
+  feature.setStyle(featureStyleFunction);
   return feature;
 };
 

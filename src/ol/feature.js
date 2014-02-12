@@ -35,6 +35,14 @@ ol.Feature = function(opt_geometryOrValues) {
   this.geometryName_ = 'geometry';
 
   /**
+   * User provided style.
+   * @private
+   * @type {ol.style.Style|Array.<ol.style.Style>|
+   *     ol.feature.FeatureStyleFunction}
+   */
+  this.style_ = null;
+
+  /**
    * @private
    * @type {ol.feature.FeatureStyleFunction|undefined}
    */
@@ -99,6 +107,16 @@ ol.Feature.prototype.getGeometryName = function() {
 
 
 /**
+ * @return {ol.style.Style|Array.<ol.style.Style>|
+ *     ol.feature.FeatureStyleFunction} User provided style.
+ * @todo stability experimental
+ */
+ol.Feature.prototype.getStyle = function() {
+  return this.style_;
+};
+
+
+/**
  * @return {ol.feature.FeatureStyleFunction|undefined} Style function.
  * @todo stability experimental
  */
@@ -146,12 +164,13 @@ goog.exportProperty(
 
 
 /**
- * @param {ol.feature.FeatureStyleFunction|undefined} styleFunction Style
- *     function.
+ * @param {ol.style.Style|Array.<ol.style.Style>|
+ *     ol.feature.FeatureStyleFunction} style Feature style.
  * @todo stability experimental
  */
-ol.Feature.prototype.setStyleFunction = function(styleFunction) {
-  this.styleFunction_ = styleFunction;
+ol.Feature.prototype.setStyle = function(style) {
+  this.style_ = style;
+  this.styleFunction_ = ol.feature.createFeatureStyleFunction(style);
   this.dispatchChangeEvent();
 };
 
@@ -216,6 +235,42 @@ ol.feature.defaultStyleFunction = function(feature, resolution) {
     featureStyleFunction = ol.feature.defaultFeatureStyleFunction;
   }
   return featureStyleFunction.call(feature, resolution);
+};
+
+
+/**
+ * Convert the provided object into a feature style function.  Functions passed
+ * through unchanged.  Arrays of ol.style.Style or single style objects wrapped
+ * in a new feature style function.
+ * @param {ol.feature.FeatureStyleFunction|Array.<ol.style.Style>|
+ *     ol.style.Style} obj A feature style function, a single style, or an array
+ *     of styles.
+ * @return {ol.feature.FeatureStyleFunction} A style function.
+ */
+ol.feature.createFeatureStyleFunction = function(obj) {
+  /**
+   * @type {ol.feature.FeatureStyleFunction}
+   */
+  var styleFunction;
+
+  if (goog.isFunction(obj)) {
+    styleFunction = /** @type {ol.feature.FeatureStyleFunction} */ (obj);
+  } else {
+    /**
+     * @type {Array.<ol.style.Style>}
+     */
+    var styles;
+    if (goog.isArray(obj)) {
+      styles = obj;
+    } else {
+      goog.asserts.assertInstanceof(obj, ol.style.Style);
+      styles = [obj];
+    }
+    styleFunction = function(resolution) {
+      return styles;
+    };
+  }
+  return styleFunction;
 };
 
 
