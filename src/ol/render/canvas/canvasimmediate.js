@@ -8,6 +8,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
+goog.require('ol.BrowserFeature');
 goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.geom.flat');
@@ -638,7 +639,9 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ =
   var contextStrokeState = this.contextStrokeState_;
   if (goog.isNull(contextStrokeState)) {
     context.lineCap = strokeState.lineCap;
-    context.lineDash = strokeState.lineDash;
+    if (ol.BrowserFeature.HAS_CANVAS_LINE_DASH) {
+      context.setLineDash(strokeState.lineDash);
+    }
     context.lineJoin = strokeState.lineJoin;
     context.lineWidth = strokeState.lineWidth;
     context.miterLimit = strokeState.miterLimit;
@@ -655,8 +658,11 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ =
     if (contextStrokeState.lineCap != strokeState.lineCap) {
       contextStrokeState.lineCap = context.lineCap = strokeState.lineCap;
     }
-    if (contextStrokeState.lineDash != strokeState.lineDash) {
-      contextStrokeState.lineDash = context.lineDash = strokeState.lineDash;
+    if (ol.BrowserFeature.HAS_CANVAS_LINE_DASH) {
+      if (!goog.array.equals(
+          contextStrokeState.lineDash, strokeState.lineDash)) {
+        context.setLineDash(contextStrokeState.lineDash = strokeState.lineDash);
+      }
     }
     if (contextStrokeState.lineJoin != strokeState.lineJoin) {
       contextStrokeState.lineJoin = context.lineJoin = strokeState.lineJoin;
@@ -734,7 +740,7 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     this.strokeState_ = {
       lineCap: goog.isDef(strokeStyleLineCap) ?
           strokeStyleLineCap : ol.render.canvas.defaultLineCap,
-      lineDash: goog.isDef(strokeStyleLineDash) ?
+      lineDash: goog.isDefAndNotNull(strokeStyleLineDash) ?
           strokeStyleLineDash : ol.render.canvas.defaultLineDash,
       lineJoin: goog.isDef(strokeStyleLineJoin) ?
           strokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
