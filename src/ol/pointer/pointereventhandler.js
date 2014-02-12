@@ -43,7 +43,6 @@ goog.require('ol.pointer.MsSource');
 goog.require('ol.pointer.NativeSource');
 goog.require('ol.pointer.PointerEvent');
 goog.require('ol.pointer.TouchSource');
-goog.require('ol.structs.WeakMap');
 
 
 
@@ -68,18 +67,6 @@ ol.pointer.PointerEventHandler = function(element) {
    */
   this.pointerMap = new goog.structs.Map();
 
-
-  /**
-   * @const
-   * @type {ol.structs.WeakMap}
-   */
-  this.targets = new ol.structs.WeakMap();
-
-  /**
-   * @const
-   * @type {ol.structs.WeakMap}
-   */
-  this.handledEvents = new ol.structs.WeakMap();
 
   this.eventMap = {};
 
@@ -215,19 +202,11 @@ ol.pointer.PointerEventHandler.prototype.unregister_ = function() {
  * @param {goog.events.BrowserEvent} inEvent Browser event.
  */
 ol.pointer.PointerEventHandler.prototype.eventHandler_ = function(inEvent) {
-  // This is used to prevent multiple dispatch of pointerevents from
-  // platform events. This can happen when two elements in different scopes
-  // are set up to create pointer events, which is relevant to Shadow DOM.
-  if (this.handledEvents['get'](inEvent)) {
-    return;
-  }
-
   var type = inEvent.type;
   var handler = this.eventMap[type];
   if (handler) {
     handler(inEvent);
   }
-  this.handledEvents['set'](inEvent, true);
 };
 
 
@@ -503,7 +482,6 @@ ol.pointer.PointerEventHandler.prototype.makeEvent = function(inType, inEvent) {
   if (inEvent.preventDefault) {
     e.preventDefault = inEvent.preventDefault;
   }
-  this.targets['set'](e, this.targets['get'](inEvent) || inEvent.target);
 
   return e;
 };
