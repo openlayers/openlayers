@@ -10,6 +10,7 @@ goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
@@ -173,12 +174,13 @@ ol.interaction.Modify.prototype.writeMultiPointGeometry_ =
     function(feature, geometry) {
   var points = geometry.getCoordinates();
   var coordinates, i, ii, segmentData;
-  for (i = 0, ii = points.length - 1; i < ii; ++i) {
+  for (i = 0, ii = points.length; i < ii; ++i) {
     coordinates = points[i];
     segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
       feature: feature,
       geometry: geometry,
       depth: [i],
+      index: i,
       segment: [coordinates, coordinates],
       style: this.overlay_.getStyleFunction()
     });
@@ -406,25 +408,31 @@ ol.interaction.Modify.prototype.handleDrag = function(evt) {
     var segment = segmentData.segment;
     var index = dragSegment[1];
 
-
-    if (geometry instanceof ol.geom.Point) {
-      coordinates = vertex;
-      segment[0] = segment[1] = vertex;
-    } else if (geometry instanceof ol.geom.MultiPoint) {
-      coordinates[depth[0]][segmentData.index + index] = vertex;
-      segment[0] = segment[1] = vertex;
-    } else if (geometry instanceof ol.geom.LineString) {
-      coordinates[segmentData.index + index] = vertex;
-      segment[index] = vertex;
-    } else if (geometry instanceof ol.geom.MultiLineString) {
-      coordinates[depth[0]][segmentData.index + index] = vertex;
-      segment[index] = vertex;
-    } else if (geometry instanceof ol.geom.Polygon) {
-      coordinates[0][segmentData.index + index] = vertex;
-      segment[index] = vertex;
-    } else if (geometry instanceof ol.geom.MultiPolygon) {
-      coordinates[depth[0]][0][segmentData.index + index] = vertex;
-      segment[index] = vertex;
+    switch (geometry.getType()) {
+      case ol.geom.GeometryType.POINT:
+        coordinates = vertex;
+        segment[0] = segment[1] = vertex;
+        break;
+      case ol.geom.GeometryType.MULTI_POINT:
+        coordinates[segmentData.index] = vertex;
+        segment[0] = segment[1] = vertex;
+        break;
+      case ol.geom.GeometryType.LINE_STRING:
+        coordinates[segmentData.index + index] = vertex;
+        segment[index] = vertex;
+        break;
+      case ol.geom.GeometryType.MULTI_LINE_STRING:
+        coordinates[depth[0]][segmentData.index + index] = vertex;
+        segment[index] = vertex;
+        break;
+      case ol.geom.GeometryType.POLYGON:
+        coordinates[0][segmentData.index + index] = vertex;
+        segment[index] = vertex;
+        break;
+      case ol.geom.GeometryType.MULTI_POLYGON:
+        coordinates[depth[0]][0][segmentData.index + index] = vertex;
+        segment[index] = vertex;
+        break;
     }
 
     geometry.setCoordinates(coordinates);
@@ -528,29 +536,39 @@ ol.interaction.Modify.prototype.handleMouseAtPixel_ = function(pixel, map) {
  * @param {ol.Coordinate} vertex Vertex.
  * @private
  */
-ol.interaction.Modify.prototype.insertVertex_ =
-    function(segmentData, vertex) {
+ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
   var segment = segmentData.segment;
   var feature = segmentData.feature;
   var geometry = segmentData.geometry;
   var depth = segmentData.depth;
   var index = segmentData.index;
-  geometry = /** @type {ol.geom.Point|ol.geom.LineString|ol.geom.Polygon|
-      ol.geom.MultiPoint|ol.geom.MultiLineString|ol.geom.MultiPolygon} */
-      (geometry);
-  var coordinates = geometry.getCoordinates();
+  var coordinates;
 
-  if (geometry instanceof ol.geom.MultiPoint) {
-    coordinates[depth[0]] = coordinates;
-  } else if (geometry instanceof ol.geom.MultiLineString) {
-    coordinates[depth[0]].splice(index + 1, 0, vertex);
-  } else if (geometry instanceof ol.geom.Polygon) {
-    coordinates[0].splice(index + 1, 0, vertex);
-  } else if (geometry instanceof ol.geom.MultiPolygon) {
-    coordinates[depth[0]][0].splice(index + 1, 0, vertex);
-  } else {
-    coordinates.splice(index + 1, 0, vertex);
+  switch (geometry.getType()) {
+    case ol.geom.GeometryType.MULTI_LINE_STRING:
+      goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString);
+      coordinates = geometry.getCoordinates();
+      coordinates[depth[0]].splice(index + 1, 0, vertex);
+      break;
+    case ol.geom.GeometryType.POLYGON:
+      goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
+      coordinates = geometry.getCoordinates();
+      coordinates[0].splice(index + 1, 0, vertex);
+      break;
+    case ol.geom.GeometryType.MULTI_POLYGON:
+      goog.asserts.assertInstanceof(geometry, ol.geom.MultiPolygon);
+      coordinates = geometry.getCoordinates();
+      coordinates[depth[0]][0].splice(index + 1, 0, vertex);
+      break;
+    case ol.geom.GeometryType.LINE_STRING:
+      goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
+      coordinates = geometry.getCoordinates();
+      coordinates.splice(index + 1, 0, vertex);
+      break;
+    default:
+      return;
   }
+
   geometry.setCoordinates(coordinates);
   var rTree = this.rBush_;
   goog.asserts.assert(goog.isDef(segment));
