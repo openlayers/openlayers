@@ -41,6 +41,6 @@ bing.on('postcompose', function(event) {
   ctx.restore();
 });
 
-swipe.addEventListener('change', function() {
+swipe.addEventListener('input', function() {
   map.requestRenderFrame();
 }, false);

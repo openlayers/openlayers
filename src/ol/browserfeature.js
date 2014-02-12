@@ -2,6 +2,7 @@ goog.provide('ol.BrowserFeature');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.userAgent');
 goog.require('ol.webgl');
 
 
@@ -45,6 +46,21 @@ ol.ENABLE_VECTOR = true;
  * @define {boolean} Whether to enable WebGL.
  */
 ol.ENABLE_WEBGL = true;
+
+
+/**
+ * @define {boolean} Whether to support legacy IE (7-8).
+ */
+ol.LEGACY_IE_SUPPORT = false;
+
+
+/**
+ * Whether the current browser is legacy IE
+ * @const
+ * @type {boolean}
+ */
+ol.IS_LEGACY_IE = goog.userAgent.IE &&
+    !goog.userAgent.isVersionOrHigher('9.0') && goog.userAgent.VERSION !== '';
 
 
 /**

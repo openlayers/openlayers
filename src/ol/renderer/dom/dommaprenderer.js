@@ -3,6 +3,7 @@ goog.provide('ol.renderer.dom.Map');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('ol.css');
 goog.require('ol.layer.Image');
@@ -36,6 +37,14 @@ ol.renderer.dom.Map = function(container, map) {
   style.width = '100%';
   style.height = '100%';
 
+  // in IE < 9, we need to return false from ondragstart to cancel the default
+  // behavior of dragging images, which is interfering with the custom handler
+  // in the Drag interaction subclasses
+  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+    this.layersPane_.ondragstart = goog.functions.FALSE;
+    this.layersPane_.onselectstart = goog.functions.FALSE;
+  }
+
   goog.dom.insertChildAt(container, this.layersPane_, 0);
 
   /**
@@ -61,7 +70,6 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
     goog.asserts.fail();
     return null;
   }
-  goog.dom.appendChild(this.layersPane_, layerRenderer.getTarget());
   return layerRenderer;
 };
 
@@ -79,12 +87,45 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
     return;
   }
 
+  /**
+   * @this {ol.renderer.dom.Map}
+   * @param {Element} elem
+   * @param {number} i
+   */
+  var addChild;
+
+  // appendChild is actually more performant than insertBefore
+  // in IE 7 and 8. http://jsperf.com/reattaching-dom-nodes
+  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+    addChild =
+        /**
+         * @this {ol.renderer.dom.Map}
+         * @param {Element} elem
+         */ (
+        function(elem) {
+          goog.dom.appendChild(this.layersPane_, elem);
+        });
+  } else {
+    addChild =
+        /**
+         * @this {ol.renderer.dom.Map}
+         * @param {Element} elem
+         * @param {number} i
+         */ (
+        function(elem, i) {
+          goog.dom.insertChildAt(this.layersPane_, elem, i);
+        });
+  }
+
   var layerStates = frameState.layerStates;
   var layersArray = frameState.layersArray;
   var i, ii, layer, layerRenderer, layerState;
   for (i = 0, ii = layersArray.length; i < ii; ++i) {
     layer = layersArray[i];
-    layerRenderer = this.getLayerRenderer(layer);
+    layerRenderer = /** @type {ol.renderer.dom.Layer} */ (
+        this.getLayerRenderer(layer));
+    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer);
+    addChild.call(this, layerRenderer.getTarget(), i);
     layerState = frameState.layerStates[goog.getUid(layer)];
     if (layerState.sourceState == ol.source.State.READY) {
       layerRenderer.prepareFrame(frameState, layerState);

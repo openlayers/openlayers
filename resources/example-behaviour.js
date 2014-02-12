@@ -2,7 +2,7 @@
   if (window.location.host === 'localhost:3000') {
     return;
   }
-  var container = document.querySelector('.navbar .navbar-inner .container'),
+  var container = $('.navbar .navbar-inner .container')[0],
       form = document.createElement('form'),
       select = document.createElement('select'),
       possibleModes = {
@@ -54,7 +54,7 @@
     }
   }
 
-  select.addEventListener('change', modeChangedMethod);
+  $(select).change(modeChangedMethod);
   select.className = 'input-medium';
   
   form.className = 'navbar-form pull-right';
