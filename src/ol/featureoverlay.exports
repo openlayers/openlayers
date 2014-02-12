@@ -3,5 +3,5 @@
 @exportProperty ol.FeatureOverlay.prototype.getFeatures
 @exportProperty ol.FeatureOverlay.prototype.setFeatures
 @exportProperty ol.FeatureOverlay.prototype.setMap
-@exportProperty ol.FeatureOverlay.prototype.setStyleFunction
+@exportProperty ol.FeatureOverlay.prototype.setStyle
 @exportProperty ol.FeatureOverlay.prototype.removeFeature

@@ -54,6 +54,12 @@ ol.FeatureOverlay = function(opt_options) {
 
   /**
    * @private
+   * @type {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
+   */
+  this.style_ = null;
+
+  /**
+   * @private
    * @type {ol.feature.StyleFunction|undefined}
    */
   this.styleFunction_ = goog.isDef(options.style) ?
@@ -235,12 +241,23 @@ ol.FeatureOverlay.prototype.setMap = function(map) {
 
 
 /**
- * @param {ol.feature.StyleFunction} styleFunction Style function.
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction} style
+ *     Overlay style.
  * @todo stability experimental
  */
-ol.FeatureOverlay.prototype.setStyleFunction = function(styleFunction) {
-  this.styleFunction_ = styleFunction;
+ol.FeatureOverlay.prototype.setStyle = function(style) {
+  this.style_ = style;
+  this.styleFunction_ = ol.feature.createStyleFunction(style);
   this.requestRenderFrame_();
+};
+
+
+/**
+ * @return {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
+ *     Overlay style.
+ */
+ol.FeatureOverlay.prototype.getStyle = function() {
+  return this.style_;
 };
 
 
