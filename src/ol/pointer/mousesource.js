@@ -107,7 +107,24 @@ ol.pointer.MouseSource.prototype.unlistenOnDocument = function(type) {
 
 
 /**
- * Collide with the global mouse listener
+ * Detect if a mouse event was simulated from a touch by
+ * checking if previously there was a touch event at the
+ * same position.
+ *
+ * FIXME - Known problem with the native Android browser on
+ * Samsung GT-I9100 (Android 4.1.2):
+ * In case the page is scrolled, this function does not work
+ * correctly when a canvas is used (WebGL or canvas renderer).
+ * Mouse listeners on canvas elements (for this browser), create
+ * two mouse events: One 'good' and one 'bad' one (on other browsers or
+ * when a div is used, there is only one event). For the 'bad' one,
+ * clientX/clientY and also pageX/pageY are wrong when the page
+ * is scrolled. Because of that, this function can not detect if
+ * the events were simulated from a touch event. As result, a
+ * pointer event at a wrong position is dispatched, which confuses
+ * the map interactions.
+ * It is unclear, how one can get the correct position for the event
+ * or detect that the positions are invalid.
  *
  * @private
  * @param {goog.events.BrowserEvent} inEvent
