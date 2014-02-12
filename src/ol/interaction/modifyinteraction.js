@@ -174,12 +174,13 @@ ol.interaction.Modify.prototype.writeMultiPointGeometry_ =
     function(feature, geometry) {
   var points = geometry.getCoordinates();
   var coordinates, i, ii, segmentData;
-  for (i = 0, ii = points.length - 1; i < ii; ++i) {
+  for (i = 0, ii = points.length; i < ii; ++i) {
     coordinates = points[i];
     segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
       feature: feature,
       geometry: geometry,
       depth: [i],
+      index: i,
       segment: [coordinates, coordinates],
       style: this.overlay_.getStyleFunction()
     });
