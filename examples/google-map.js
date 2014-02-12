@@ -53,8 +53,11 @@ google.maps.event.addListenerOnce(gmap, 'tilesloaded', function() {
   var center = gmap.getCenter();
   var map = new ol.Map({
     layers: [vector],
-    interactions: ol.interaction.defaults({dragPan: false})
-        .extend([new ol.interaction.DragPan({kinetic: false})]),
+    interactions: ol.interaction.defaults({
+      altShiftDragRotate: false,
+      dragPan: false,
+      touchRotate: false
+    }).extend([new ol.interaction.DragPan({kinetic: false})]),
     renderer: 'canvas',
     target: olmap,
     view: new ol.View2D({
