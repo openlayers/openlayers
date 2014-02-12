@@ -9,8 +9,7 @@ goog.require('ol.layer.Layer');
  * @enum {string}
  */
 ol.layer.VectorProperty = {
-  RENDER_GEOMETRY_FUNCTIONS: 'renderGeometryFunctions',
-  STYLE_FUNCTION: 'styleFunction'
+  RENDER_GEOMETRY_FUNCTIONS: 'renderGeometryFunctions'
 };
 
 
@@ -32,8 +31,22 @@ ol.layer.Vector = function(opt_options) {
   delete baseOptions.style;
   goog.base(this, baseOptions);
 
+  /**
+   * User provided style.
+   * @type {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
+   * @private
+   */
+  this.style_ = null;
+
+  /**
+   * Style function for use within the library.
+   * @type {ol.feature.StyleFunction}
+   * @private
+   */
+  this.styleFunction_;
+
   if (goog.isDef(options.style)) {
-    this.setStyleFunction(ol.feature.createStyleFunction(options.style));
+    this.setStyle(options.style);
   }
 
 };
@@ -55,17 +68,22 @@ goog.exportProperty(
 
 
 /**
- * @return {ol.feature.StyleFunction|undefined} Style function.
+ * @return {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
+ *     Layer style.
+ * @todo stability experimental
+ */
+ol.layer.Vector.prototype.getStyle = function() {
+  return this.style_;
+};
+
+
+/**
+ * @return {ol.feature.StyleFunction} Layer style function.
  * @todo stability experimental
  */
 ol.layer.Vector.prototype.getStyleFunction = function() {
-  return /** @type {ol.feature.StyleFunction|undefined} */ (
-      this.get(ol.layer.VectorProperty.STYLE_FUNCTION));
+  return this.styleFunction_;
 };
-goog.exportProperty(
-    ol.layer.Vector.prototype,
-    'getStyleFunction',
-    ol.layer.Vector.prototype.getStyleFunction);
 
 
 /**
@@ -88,13 +106,12 @@ goog.exportProperty(
  * If the styles are changed by setting a new style function or by changing the
  * value returned by the style function then `dispatchChangeEvent` should be
  * called on the layer for the layer to be refreshed on the screen.
- * @param {ol.feature.StyleFunction|undefined} styleFunction Style function.
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction} style
+ *     Layer style.
  * @todo stability experimental
  */
-ol.layer.Vector.prototype.setStyleFunction = function(styleFunction) {
-  this.set(ol.layer.VectorProperty.STYLE_FUNCTION, styleFunction);
+ol.layer.Vector.prototype.setStyle = function(style) {
+  this.style_ = style;
+  this.styleFunction_ = ol.feature.createStyleFunction(style);
+  this.dispatchChangeEvent();
 };
-goog.exportProperty(
-    ol.layer.Vector.prototype,
-    'setStyleFunction',
-    ol.layer.Vector.prototype.setStyleFunction);

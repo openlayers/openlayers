@@ -46,6 +46,69 @@ describe('ol.layer.Vector', function() {
 
   });
 
+  describe('#setStyle()', function() {
+
+    var source = new ol.source.Vector();
+    var style = new ol.style.Style();
+
+    it('allows the style to be set after construction', function() {
+      var layer = new ol.layer.Vector({
+        source: source
+      });
+
+      layer.setStyle(style);
+      expect(layer.getStyle()).to.be(style);
+    });
+
+    it('dispatches the change event', function(done) {
+      var layer = new ol.layer.Vector({
+        source: source
+      });
+      layer.on('change', function() {
+        done();
+      });
+      layer.setStyle(style);
+    });
+
+    it('updates the internal style function', function() {
+      var layer = new ol.layer.Vector({
+        source: source
+      });
+      expect(layer.getStyleFunction()).to.be(undefined);
+      layer.setStyle(style);
+      expect(layer.getStyleFunction()).to.be.a('function');
+    });
+
+  });
+
+  describe('#getStyle()', function() {
+
+    var source = new ol.source.Vector();
+    var style = new ol.style.Style();
+
+    it('returns what is provided to setStyle', function() {
+      var layer = new ol.layer.Vector({
+        source: source
+      });
+
+      expect(layer.getStyle()).to.be(null);
+
+      layer.setStyle(style);
+      expect(layer.getStyle()).to.be(style);
+
+      layer.setStyle([style]);
+      expect(layer.getStyle()).to.eql([style]);
+
+      var styleFunction = function(feature, resolution) {
+        return [style];
+      };
+      layer.setStyle(styleFunction);
+      expect(layer.getStyle()).to.be(styleFunction);
+
+    });
+
+  });
+
 });
 
 goog.require('ol.layer.Layer');
