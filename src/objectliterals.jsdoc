@@ -697,7 +697,7 @@
  *     function to load a tile given a URL.
  * @property {string|undefined} url URL template. Must include `{x}`, `{y}`,
  *     and `{z}` placeholders. Default is
- *     `http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png`.
+ *     `//{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png`.
  * @todo stability experimental
  */
 
