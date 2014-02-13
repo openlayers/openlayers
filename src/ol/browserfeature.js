@@ -74,6 +74,14 @@ ol.BrowserFeature.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
 
 
 /**
+ * True if the browser's Canvas implementation implements {get,set}LineDash.
+ * @type {boolean}
+ * @todo stability experimental
+ */
+ol.BrowserFeature.HAS_CANVAS_LINE_DASH = false;
+
+
+/**
  * True if browser supports Canvas.
  * @const
  * @type {boolean}
@@ -90,7 +98,16 @@ ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
       try {
         var canvas = /** @type {HTMLCanvasElement} */
             (goog.dom.createElement(goog.dom.TagName.CANVAS));
-        return !goog.isNull(canvas.getContext('2d'));
+        var context = /** @type {CanvasRenderingContext2D} */
+            (canvas.getContext('2d'));
+        if (goog.isNull(context)) {
+          return false;
+        } else {
+          if (goog.isDef(context.setLineDash)) {
+            ol.BrowserFeature.HAS_CANVAS_LINE_DASH = true;
+          }
+          return true;
+        }
       } catch (e) {
         return false;
       }

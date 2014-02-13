@@ -10,6 +10,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
+goog.require('ol.BrowserFeature');
 goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.extent');
@@ -344,7 +345,7 @@ ol.render.canvas.Replay.prototype.replay_ =
         context.lineCap = /** @type {string} */ (instruction[3]);
         context.lineJoin = /** @type {string} */ (instruction[4]);
         context.miterLimit = /** @type {number} */ (instruction[5]);
-        if (goog.isDef(context.setLineDash)) {
+        if (ol.BrowserFeature.HAS_CANVAS_LINE_DASH) {
           context.setLineDash(/** @type {Array.<number>} */ (instruction[6]));
         }
         ++i;
@@ -850,7 +851,7 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
   goog.asserts.assert(goog.isDef(miterLimit));
   if (state.currentStrokeStyle != strokeStyle ||
       state.currentLineCap != lineCap ||
-      state.currentLineDash != lineDash ||
+      !goog.array.equals(state.currentLineDash, lineDash) ||
       state.currentLineJoin != lineJoin ||
       state.currentLineWidth != lineWidth ||
       state.currentMiterLimit != miterLimit) {
@@ -1248,7 +1249,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
         strokeStyleLineCap : ol.render.canvas.defaultLineCap;
     var strokeStyleLineDash = strokeStyle.getLineDash();
     state.lineDash = !goog.isNull(strokeStyleLineDash) ?
-        strokeStyleLineDash : ol.render.canvas.defaultLineDash;
+        strokeStyleLineDash.slice() : ol.render.canvas.defaultLineDash;
     var strokeStyleLineJoin = strokeStyle.getLineJoin();
     state.lineJoin = goog.isDef(strokeStyleLineJoin) ?
         strokeStyleLineJoin : ol.render.canvas.defaultLineJoin;
@@ -1552,7 +1553,7 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
       var lineCap = goog.isDef(textStrokeStyleLineCap) ?
           textStrokeStyleLineCap : ol.render.canvas.defaultLineCap;
       var lineDash = goog.isDefAndNotNull(textStrokeStyleLineDash) ?
-          textStrokeStyleLineDash : ol.render.canvas.defaultLineDash;
+          textStrokeStyleLineDash.slice() : ol.render.canvas.defaultLineDash;
       var lineJoin = goog.isDef(textStrokeStyleLineJoin) ?
           textStrokeStyleLineJoin : ol.render.canvas.defaultLineJoin;
       var lineWidth = goog.isDef(textStrokeStyleWidth) ?
