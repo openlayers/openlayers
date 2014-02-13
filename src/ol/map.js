@@ -312,6 +312,12 @@ ol.Map = function(options) {
   this.controls_ = optionsInternal.controls;
 
   /**
+   * @type {olx.DeviceOptions}
+   * @private
+   */
+  this.deviceOptions_ = optionsInternal.deviceOptions;
+
+  /**
    * @type {ol.Collection}
    * @private
    */
@@ -816,28 +822,30 @@ ol.Map.prototype.handlePostRender = function() {
   // efficiently:
   // * When the view is static we allow a large number of parallel tile loads
   //   to complete the frame as quickly as possible.
-  // * Image loads can cause janks. So when animating, we reduce the maximum
-  //   number of loads per frame and limit the number of parallel tile loads to
-  //   remain reactive to view changes and to reduce the chance of loading
-  //   tiles that will quickly disappear from view. When interacting, we do not
-  //   load any tiles at all.
+  // * When animating or interacting, image loads can cause janks, so we reduce
+  //   the maximum number of loads per frame and limit the number of parallel
+  //   tile loads to remain reactive to view changes and to reduce the chance of
+  //   loading tiles that will quickly disappear from view.
   var tileQueue = this.tileQueue_;
   if (!tileQueue.isEmpty()) {
     var maxTotalLoading = 16;
     var maxNewLoads = maxTotalLoading;
-    var wantedTileSourcesCount = 0;
+    var tileSourceCount = 0;
     if (!goog.isNull(frameState)) {
       var hints = frameState.viewHints;
+      var deviceOptions = this.deviceOptions_;
       if (hints[ol.ViewHint.ANIMATING]) {
-        maxTotalLoading = 8;
+        maxTotalLoading = deviceOptions.loadTilesWhileAnimating ? 8 : 0;
         maxNewLoads = 2;
       }
-      if (!hints[ol.ViewHint.INTERACTING]) {
-        wantedTileSourcesCount = goog.object.getCount(frameState.wantedTiles);
+      if (hints[ol.ViewHint.INTERACTING]) {
+        maxTotalLoading = deviceOptions.loadTilesWhileInteracting ? 8 : 0;
+        maxNewLoads = 2;
       }
+      tileSourceCount = goog.object.getCount(frameState.wantedTiles);
     }
-    maxTotalLoading *= wantedTileSourcesCount;
-    maxNewLoads *= wantedTileSourcesCount;
+    maxTotalLoading *= tileSourceCount;
+    maxNewLoads *= tileSourceCount;
     if (tileQueue.getTilesLoading() < maxTotalLoading) {
       tileQueue.reprioritize(); // FIXME only call if view has changed
       tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
@@ -1319,6 +1327,7 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_this) {
 
 /**
  * @typedef {{controls: ol.Collection,
+ *            deviceOptions: olx.DeviceOptions,
  *            interactions: ol.Collection,
  *            keyboardEventTarget: (Element|Document),
  *            ol3Logo: boolean,
@@ -1419,6 +1428,13 @@ ol.Map.createOptionsInternal = function(options) {
     controls = ol.control.defaults();
   }
 
+  var deviceOptions = goog.isDef(options.deviceOptions) ?
+      options.deviceOptions :
+      /** @type {olx.DeviceOptions} */ ({
+        loadTilesWhileAnimating: true,
+        loadTilesWhileInteracting: true
+      });
+
   var interactions;
   if (goog.isDef(options.interactions)) {
     if (goog.isArray(options.interactions)) {
@@ -1445,6 +1461,7 @@ ol.Map.createOptionsInternal = function(options) {
 
   return {
     controls: controls,
+    deviceOptions: deviceOptions,
     interactions: interactions,
     keyboardEventTarget: keyboardEventTarget,
     ol3Logo: ol3Logo,
