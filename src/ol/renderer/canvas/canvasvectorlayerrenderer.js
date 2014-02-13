@@ -69,7 +69,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
   this.dispatchPreComposeEvent(context, frameState, transform);
 
   var replayGroup = this.replayGroup_;
-  if (!goog.isNull(replayGroup)) {
+  if (!goog.isNull(replayGroup) && !replayGroup.isEmpty()) {
     var renderGeometryFunction = this.getRenderGeometryFunction_();
     goog.asserts.assert(goog.isFunction(renderGeometryFunction));
     context.globalAlpha = layerState.opacity;
@@ -227,9 +227,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
 
   this.renderedResolution_ = frameStateResolution;
   this.renderedRevision_ = vectorLayerRevision;
-  if (!replayGroup.isEmpty()) {
-    this.replayGroup_ = replayGroup;
-  }
+  this.replayGroup_ = replayGroup;
 
 };
 
