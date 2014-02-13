@@ -16,7 +16,8 @@ ol.style.ImageState = {
 
 
 /**
- * @typedef {{rotation: number,
+ * @typedef {{opacity: number,
+ *            rotation: number,
  *            scale: number,
  *            snapToPixel: (boolean|undefined),
  *            subtractViewRotation: boolean}}
@@ -30,6 +31,12 @@ ol.style.ImageOptions;
  * @param {ol.style.ImageOptions} options Options.
  */
 ol.style.Image = function(options) {
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.opacity_ = options.opacity;
 
   /**
    * @private
@@ -55,6 +62,14 @@ ol.style.Image = function(options) {
    */
   this.subtractViewRotation_ = options.subtractViewRotation;
 
+};
+
+
+/**
+ * @return {number} Opacity.
+ */
+ol.style.Image.prototype.getOpacity = function() {
+  return this.opacity_;
 };
 
 
