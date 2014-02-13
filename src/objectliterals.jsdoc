@@ -7,6 +7,13 @@
  */
 
 /**
+ * @typedef {Object} olx.DeviceOptions
+ * @property {boolean|undefined} loadTilesWhileAnimating When set to false, no tiles will be loaded while animating, which improves responsiveness on devices with slow memory. Default is `true`.
+ * @property {boolean|undefined} loadTilesWhileInteracting When set to false, no tiles will be loaded while interacting, which improves responsiveness on devices with slow memory. Default is `true`.
+ * @todo stability experimental
+ */
+
+/**
  * @typedef {Object} olx.DeviceOrientationOptions
  * @property {boolean|undefined} tracking Start tracking. Default is `false`.
  * @todo stability experimental
@@ -25,6 +32,8 @@
  * @typedef {Object} olx.MapOptions
  * @property {ol.Collection|Array.<ol.control.Control>|undefined} controls
  *     Controls initially added to the map.
+ * @property {olx.DeviceOptions|undefined} deviceOptions
+ *     Device options for the map.
  * @property {number|undefined} pixelRatio The ratio between physical
  *     pixels and device-independent pixels (dips) on the device. If `undefined`
  *     then it gets set by using `window.devicePixelRatio`.
