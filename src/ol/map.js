@@ -1430,10 +1430,10 @@ ol.Map.createOptionsInternal = function(options) {
 
   var deviceOptions = goog.isDef(options.deviceOptions) ?
       options.deviceOptions :
-      /** @type {olx.DeviceOptions} */ ({
+      {
         loadTilesWhileAnimating: true,
         loadTilesWhileInteracting: true
-      });
+      };
 
   var interactions;
   if (goog.isDef(options.interactions)) {
