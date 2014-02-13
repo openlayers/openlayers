@@ -1,108 +1,136 @@
 
 goog.provide('ga.Lang');
-goog.provide('ga.i18n');
-goog.require('goog.object');
-goog.require('ol.Object');
+goog.provide('ga.Lang.msg');
+goog.require('ga.Lang.msg.fr');
+goog.require('ga.Lang.msg.de');
+goog.require('ga.Lang.msg.fr');
+goog.require('ga.Lang.msg.it');
+goog.require('ga.Lang.msg.rm');
 
 
 // Mostly from https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Lang.js
 
-ga.Lang = function() {
-    /** @type {?string} */
-    this.code_ = null;
 
-    /** @type {string} */
-    this.defaultCode_ = 'en';
+/**
+ * @type {string}
+ */
+ga.Lang.code_ = 'de';
 
-    goog.base(this);
+/**
+ * Message catalog in the current language.
+ * @type {Object.<string,string>}
+ */
 
-};
-goog.inherits(ga.Lang, ol.Object);
+ga.Lang.msg.current;
 
 
 /**
  * Get language code
+ * @return {string} language code
  */
 ga.Lang.getCode = function() {
-    if (!this.code_) {
-      this.setCode();
-    }
-    return this.code_;
+  if (!ga.Lang.code_) {
+    ga.Lang.setCode('de');
+  }
+  return ga.Lang.code_;
 };
+
 
 /**
  * Set language code
  * @param {string} code, e.g. 'de'
  */
 ga.Lang.setCode = function(code) {
-    this.code_ = code;
+  ga.Lang.code_ = code;
 };
+
 
 /**
  *  Translate a message given a msgid and a context.
  *  @param {string} msgid to translate.
- *  @param {string=} context (optional),
+ *  @param {Object=} context (optional),
  *  @return {string} translated message
  */
 ga.Lang.translate = function(msgid, context) {
 
-  var dictionary = ga.Lang[this.getCode()];
+  var dictionary = ga.Lang.msg[ga.Lang.getCode()];
   var message = dictionary && dictionary[msgid];
   if (!message) {
     // Message not found, fall back to message key
     message = msgid;
   }
   if (context) {
-    message = this.format(message, context);
+    message = ga.Lang.format(message, context);
   }
   return message;
 };
 
+/**
+ * Implementation of goog.getMsg for use with localized messages.
+ * @param {string} str Translatable string, places holders in the form {$foo}.
+ * @param {Object=} opt_values Map of place holder name to value.
+ * @return {string} message with placeholders filled.
+ */
+
+
+/**
+ * Given a string with tokens in the form ${token}, return a string
+ * with tokens replaced with properties from the given context
+ * object.  Represent a literal "${" by doubling it, e.g. "${${".
+ *
+ * @param {string} template A string with tokens to be replaced.
+ * @param {Object=} context  An optional object with properties
+ * @param {Array=} args Optional arguments to pass to any functions
+ *
+ * @return {string} A string with tokens replaced from the context object
+ *
+ * https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/BaseTypes.js#L90
+ */
 
 ga.Lang.format = function(template, context, args) {
-        if (!context) {
-            context = window;
-        }
+  if (!context) {
+    context = window;
+  }
 
-        // Example matching:
-        // str   = ${foo.bar}
-        // match = foo.bar
-        var replacer = function(str, match) {
-            var replacement;
+  // Example matching:
+  // str   = ${foo.bar}
+  // match = foo.bar
+  var replacer = function(str, match) {
+    var replacement;
 
-            // Loop through all subs. Example: ${a.b.c}
-            // 0 -> replacement = context[a];
-            // 1 -> replacement = context[a][b];
-            // 2 -> replacement = context[a][b][c];
-            var subs = match.split(/\.+/);
-            for (var i = 0; i < subs.length; i++) {
-                if (i == 0) {
-                    replacement = context;
-                }
-                if (replacement === undefined) {
-                    break;
-                }
-                replacement = replacement[subs[i]];
-            }
+    // Loop through all subs. Example: ${a.b.c}
+    // 0 -> replacement = context[a];
+    // 1 -> replacement = context[a][b];
+    // 2 -> replacement = context[a][b][c];
+    var subs = match.split(/\.+/);
+    for (var i = 0; i < subs.length; i++) {
+      if (i == 0) {
+        replacement = context;
+      }
+      if (replacement === undefined) {
+        break;
+      }
+      replacement = replacement[subs[i]];
+    }
 
-            if (typeof replacement == 'function') {
-                replacement = args ?
+    if (typeof replacement == 'function') {
+      replacement = args ?
                     replacement.apply(null, args) :
                     replacement();
-            }
+    }
 
-            // If replacement is undefined, return the string 'undefined'.
-            // This is a workaround for a bugs in browsers not properly
-            // dealing with non-participating groups in regular expressions:
-            // http://blog.stevenlevithan.com/archives/npcg-javascript
-            if (typeof replacement == 'undefined') {
-                return 'undefined';
-            } else {
-                return replacement;
-            }
-        };
+    // If replacement is undefined, return the string 'undefined'.
+    // This is a workaround for a bugs in browsers not properly
+    // dealing with non-participating groups in regular expressions:
+    // http://blog.stevenlevithan.com/archives/npcg-javascript
+    if (typeof replacement == 'undefined') {
+      return 'undefined';
+    } else {
+      return replacement;
+    }
+  };
 
-        return template.replace(/\$\{([\w.]+?)\}/g, replacer);
+  return template.replace(/\$\{([\w.]+?)\}/g, replacer);
 };
 
 

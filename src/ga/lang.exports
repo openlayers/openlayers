@@ -2,4 +2,5 @@
 @exportProperty ga.Lang.getCode
 @exportProperty ga.Lang.setCode
 @exportProperty ga.Lang.translate
-@exportProperty ga.i18n
+@exportProperty ga.Lang.msg.de
+@exportProperty ga.Lang.msg.fr
