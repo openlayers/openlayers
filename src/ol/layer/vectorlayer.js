@@ -68,9 +68,10 @@ goog.exportProperty(
 
 
 /**
+ * Get the style for features.  This returns whatever was passed to the `style`
+ * option at construction or to the `setStyle` method.
  * @return {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
  *     Layer style.
- * @todo stability experimental
  */
 ol.layer.Vector.prototype.getStyle = function() {
   return this.style_;
@@ -78,6 +79,7 @@ ol.layer.Vector.prototype.getStyle = function() {
 
 
 /**
+ * Get the style function.
  * @return {ol.feature.StyleFunction} Layer style function.
  * @todo stability experimental
  */
@@ -103,9 +105,9 @@ goog.exportProperty(
 
 
 /**
- * If the styles are changed by setting a new style function or by changing the
- * value returned by the style function then `dispatchChangeEvent` should be
- * called on the layer for the layer to be refreshed on the screen.
+ * Set the style for features.  This can be a single style object, an array
+ * of styles, or a function that takes a feature and resolution and returns
+ * an array of styles.
  * @param {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction} style
  *     Layer style.
  * @todo stability experimental

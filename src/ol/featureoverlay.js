@@ -241,6 +241,9 @@ ol.FeatureOverlay.prototype.setMap = function(map) {
 
 
 /**
+ * Set the style for features.  This can be a single style object, an array
+ * of styles, or a function that takes a feature and resolution and returns
+ * an array of styles.
  * @param {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction} style
  *     Overlay style.
  * @todo stability experimental
@@ -253,6 +256,8 @@ ol.FeatureOverlay.prototype.setStyle = function(style) {
 
 
 /**
+ * Get the style for features.  This returns whatever was passed to the `style`
+ * option at construction or to the `setStyle` method.
  * @return {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
  *     Overlay style.
  */
@@ -262,6 +267,7 @@ ol.FeatureOverlay.prototype.getStyle = function() {
 
 
 /**
+ * Get the style function.
  * @return {ol.feature.StyleFunction|undefined} Style function.
  */
 ol.FeatureOverlay.prototype.getStyleFunction = function() {
