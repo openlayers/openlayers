@@ -835,11 +835,13 @@ ol.Map.prototype.handlePostRender = function() {
       var hints = frameState.viewHints;
       var deviceOptions = this.deviceOptions_;
       if (hints[ol.ViewHint.ANIMATING]) {
-        maxTotalLoading = deviceOptions.loadTilesWhileAnimating ? 8 : 0;
+        maxTotalLoading = deviceOptions.loadTilesWhileAnimating === false ?
+            0 : 8;
         maxNewLoads = 2;
       }
       if (hints[ol.ViewHint.INTERACTING]) {
-        maxTotalLoading = deviceOptions.loadTilesWhileInteracting ? 8 : 0;
+        maxTotalLoading = deviceOptions.loadTilesWhileInteracting === false ?
+            0 : 8;
         maxNewLoads = 2;
       }
       tileSourceCount = goog.object.getCount(frameState.wantedTiles);
@@ -1429,11 +1431,7 @@ ol.Map.createOptionsInternal = function(options) {
   }
 
   var deviceOptions = goog.isDef(options.deviceOptions) ?
-      options.deviceOptions :
-      {
-        loadTilesWhileAnimating: true,
-        loadTilesWhileInteracting: true
-      };
+      options.deviceOptions : /** @type {olx.DeviceOptions} */ ({});
 
   var interactions;
   if (goog.isDef(options.interactions)) {
