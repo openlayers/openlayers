@@ -816,25 +816,28 @@ ol.Map.prototype.handlePostRender = function() {
   // efficiently:
   // * When the view is static we allow a large number of parallel tile loads
   //   to complete the frame as quickly as possible.
-  // * When animating or interacting, image loads can cause janks, so we reduce
-  //   the maximum number of loads per frame and limit the number of parallel
-  //   tile loads to remain reactive to view changes and to reduce the chance of
-  //   loading tiles that will quickly disappear from view.
+  // * Image loads can cause janks. So when animating, we reduce the maximum
+  //   number of loads per frame and limit the number of parallel tile loads to
+  //   remain reactive to view changes and to reduce the chance of loading
+  //   tiles that will quickly disappear from view. When interacting, we do not
+  //   load any tiles at all.
   var tileQueue = this.tileQueue_;
   if (!tileQueue.isEmpty()) {
     var maxTotalLoading = 16;
     var maxNewLoads = maxTotalLoading;
-    var tileSourceCount = 0;
+    var wantedTileSourcesCount = 0;
     if (!goog.isNull(frameState)) {
       var hints = frameState.viewHints;
-      if (hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING]) {
+      if (hints[ol.ViewHint.ANIMATING]) {
         maxTotalLoading = 8;
         maxNewLoads = 2;
       }
-      tileSourceCount = goog.object.getCount(frameState.wantedTiles);
+      if (!hints[ol.ViewHint.INTERACTING]) {
+        wantedTileSourcesCount = goog.object.getCount(frameState.wantedTiles);
+      }
     }
-    maxTotalLoading *= tileSourceCount;
-    maxNewLoads *= tileSourceCount;
+    maxTotalLoading *= wantedTileSourcesCount;
+    maxNewLoads *= wantedTileSourcesCount;
     if (tileQueue.getTilesLoading() < maxTotalLoading) {
       tileQueue.reprioritize(); // FIXME only call if view has changed
       tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
