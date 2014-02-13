@@ -17,6 +17,10 @@
       modeTxt,
       modeChangedMethod;
 
+  if (!container) {
+    return;
+  }
+
   modeChangedMethod = function() {
     var newMode = this.value,
         search = window.location.search.substring(1),
@@ -77,6 +81,6 @@ exampleNS.getRendererFromQueryString = function() {
   } else if ('renderer' in obj) {
     return [obj['renderer']];
   } else {
-    return ol.DEFAULT_RENDERER_HINTS;
+    return ['webgl', 'canvas', 'dom'];
   }
 };
