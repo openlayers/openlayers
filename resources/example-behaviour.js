@@ -56,7 +56,7 @@
 
   $(select).change(modeChangedMethod);
   select.className = 'input-medium';
-  
+
   form.className = 'navbar-form pull-right';
   form.appendChild(select);
 

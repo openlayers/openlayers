@@ -325,6 +325,7 @@ def examples_star_json(name, match):
                 '//jquery-1.7.js',
                 '../externs/bingmaps.js',
                 '../externs/bootstrap.js',
+                '../externs/example.js',
                 '../externs/geojson.js',
                 '../externs/topojson.js',
                 '../externs/oli.js',
