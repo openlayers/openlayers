@@ -266,9 +266,7 @@ ol.feature.createFeatureStyleFunction = function(obj) {
       goog.asserts.assertInstanceof(obj, ol.style.Style);
       styles = [obj];
     }
-    styleFunction = function(resolution) {
-      return styles;
-    };
+    styleFunction = goog.functions.constant(styles);
   }
   return styleFunction;
 };
@@ -301,9 +299,7 @@ ol.feature.createStyleFunction = function(obj) {
       goog.asserts.assertInstanceof(obj, ol.style.Style);
       styles = [obj];
     }
-    styleFunction = function(feature, resolution) {
-      return styles;
-    };
+    styleFunction = goog.functions.constant(styles);
   }
   return styleFunction;
 };
