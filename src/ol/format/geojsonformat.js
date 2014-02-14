@@ -57,6 +57,9 @@ ol.format.GeoJSON.EXTENSIONS_ = ['.geojson'];
  * @return {ol.geom.Geometry} Geometry.
  */
 ol.format.GeoJSON.readGeometry_ = function(object) {
+  if (goog.isNull(object)) {
+    return null;
+  }
   var geometryReader = ol.format.GeoJSON.GEOMETRY_READERS_[object.type];
   goog.asserts.assert(goog.isDef(geometryReader));
   return geometryReader(object);
