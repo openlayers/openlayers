@@ -121,7 +121,7 @@ dragAndDropInteraction.on('addfeatures', function(event) {
   map.getLayers().push(new ol.layer.Image({
     source: new ol.source.ImageVector({
       source: vectorSource,
-      styleFunction: styleFunction
+      style: styleFunction
     })
   }));
   var view2D = map.getView().getView2D();

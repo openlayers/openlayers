@@ -54,9 +54,16 @@ ol.FeatureOverlay = function(opt_options) {
 
   /**
    * @private
+   * @type {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
+   */
+  this.style_ = null;
+
+  /**
+   * @private
    * @type {ol.feature.StyleFunction|undefined}
    */
-  this.styleFunction_ = undefined;
+  this.styleFunction_ = goog.isDef(options.style) ?
+      ol.feature.createStyleFunction(options.style) : undefined;
 
   if (goog.isDef(options.features)) {
     if (goog.isArray(options.features)) {
@@ -67,10 +74,6 @@ ol.FeatureOverlay = function(opt_options) {
     }
   } else {
     this.setFeatures(new ol.Collection());
-  }
-
-  if (goog.isDef(options.styleFunction)) {
-    this.setStyleFunction(options.styleFunction);
   }
 
   if (goog.isDef(options.map)) {
@@ -238,16 +241,33 @@ ol.FeatureOverlay.prototype.setMap = function(map) {
 
 
 /**
- * @param {ol.feature.StyleFunction} styleFunction Style function.
+ * Set the style for features.  This can be a single style object, an array
+ * of styles, or a function that takes a feature and resolution and returns
+ * an array of styles.
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction} style
+ *     Overlay style.
  * @todo stability experimental
  */
-ol.FeatureOverlay.prototype.setStyleFunction = function(styleFunction) {
-  this.styleFunction_ = styleFunction;
+ol.FeatureOverlay.prototype.setStyle = function(style) {
+  this.style_ = style;
+  this.styleFunction_ = ol.feature.createStyleFunction(style);
   this.requestRenderFrame_();
 };
 
 
 /**
+ * Get the style for features.  This returns whatever was passed to the `style`
+ * option at construction or to the `setStyle` method.
+ * @return {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
+ *     Overlay style.
+ */
+ol.FeatureOverlay.prototype.getStyle = function() {
+  return this.style_;
+};
+
+
+/**
+ * Get the style function.
  * @return {ol.feature.StyleFunction|undefined} Style function.
  */
 ol.FeatureOverlay.prototype.getStyleFunction = function() {

@@ -34,20 +34,15 @@ google.maps.event.addListenerOnce(gmap, 'tilesloaded', function() {
       url: 'data/geojson/countries.geojson',
       projection: 'EPSG:3857'
     }),
-    styleFunction: (function() {
-      var styleArray = [new ol.style.Style({
-        fill: new ol.style.Fill({
-          color: 'rgba(255, 255, 255, 0.6)'
-        }),
-        stroke: new ol.style.Stroke({
-          color: '#319FD3',
-          width: 1
-        })
-      })];
-      return function(feature, resolution) {
-        return styleArray;
-      };
-    }())
+    style: new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: 'rgba(255, 255, 255, 0.6)'
+      }),
+      stroke: new ol.style.Stroke({
+        color: '#319FD3',
+        width: 1
+      })
+    })
   });
 
   var center = gmap.getCenter();

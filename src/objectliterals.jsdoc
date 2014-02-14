@@ -389,7 +389,8 @@
  *     drawing finish (default is 12).
  * @property {ol.geom.GeometryType} type Drawing type ('Point', 'LineString',
  *     'Polygon', 'MultiPoint', 'MultiLineString', or 'MultiPolygon').
- * @property {ol.feature.StyleFunction|undefined} styleFunction Style function.
+ * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style
+ *     Style for sketch features.
  * @todo stability experimental
  */
 
@@ -541,7 +542,7 @@
  * @property {number|undefined} opacity Opacity. 0-1. Default is `1`.
  * @property {number|undefined} saturation Saturation.
  * @property {ol.source.Vector} source Source.
- * @property {ol.feature.StyleFunction|undefined} styleFunction Style function.
+ * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style Layer style.
  * @property {boolean|undefined} visible Visibility. Default is `true` (visible).
  * @todo stability experimental
  */
@@ -575,7 +576,7 @@
  * @typedef {Object} olx.FeatureOverlayOptions
  * @property {Array.<ol.Feature>|ol.Collection|undefined} features Features.
  * @property {ol.Map|undefined} map Map.
- * @property {ol.feature.StyleFunction|undefined} styleFunction Style function.
+ * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style Feature style.
  */
 
 /**
@@ -745,8 +746,8 @@
  *     new canvases will be created for these resolutions only.
  * @property {ol.source.Vector} source The vector source from which the vector
  *     features drawn in canvas elements are read.
- * @property {ol.feature.StyleFunction|undefined} styleFunction Style function
- *     providing the styles to use when rendering features to the canvas.
+ * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style
+ *     Style to use when rendering features to the canvas.
  */
 
 /**

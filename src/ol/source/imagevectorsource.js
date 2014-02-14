@@ -44,8 +44,9 @@ ol.source.ImageVector = function(options) {
    * @private
    * @type {!ol.feature.StyleFunction}
    */
-  this.styleFunction_ = goog.isDef(options.styleFunction) ?
-      options.styleFunction : ol.feature.defaultStyleFunction;
+  this.styleFunction_ = goog.isDef(options.style) ?
+      ol.feature.createStyleFunction(options.style) :
+      ol.feature.defaultStyleFunction;
 
   /**
    * @private

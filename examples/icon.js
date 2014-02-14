@@ -18,18 +18,16 @@ var iconFeature = new ol.Feature({
   rainfall: 500
 });
 
-var styleArray = [new ol.style.Style({
+var iconStyle = new ol.style.Style({
   image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
     anchor: [0.5, 46],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
     src: 'data/icon.png'
   }))
-})];
-
-iconFeature.setStyleFunction(function(resolution) {
-  return styleArray;
 });
+
+iconFeature.setStyle(iconStyle);
 
 var vectorSource = new ol.source.Vector({
   features: [iconFeature]

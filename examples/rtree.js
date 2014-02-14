@@ -83,16 +83,14 @@ for (i = 0, ii = extentsByDepth.length; i < ii; ++i) {
 
 var vector = new ol.layer.Vector({
   source: vectorSource,
-  styleFunction: function(feature, resolution) {
-    return styleArray;
-  }
+  style: styleArray
 });
 
 var rtree = new ol.layer.Vector({
   source: new ol.source.Vector({
     features: rtreeExtentFeatures
   }),
-  styleFunction: function(feature, resolution) {
+  style: function(feature, resolution) {
     return feature.get('styleArray');
   }
 });

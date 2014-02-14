@@ -42,7 +42,7 @@ var vector = new ol.layer.Vector({
     projection: 'EPSG:3857',
     url: 'data/kml/2012_Earthquakes_Mag5.kml'
   }),
-  styleFunction: styleFunction
+  style: styleFunction
 });
 
 var raster = new ol.layer.Tile({
