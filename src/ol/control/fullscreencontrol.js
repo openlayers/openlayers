@@ -104,9 +104,13 @@ ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
   var opened = this.cssClassName_ + '-true';
   var closed = this.cssClassName_ + '-false';
   var anchor = goog.dom.getFirstElementChild(this.element);
+  var map = this.getMap();
   if (goog.dom.fullscreen.isFullScreen()) {
     goog.dom.classes.swap(anchor, closed, opened);
   } else {
     goog.dom.classes.swap(anchor, opened, closed);
+  }
+  if (!goog.isNull(map)) {
+    map.updateSize();
   }
 };
