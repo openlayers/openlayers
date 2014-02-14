@@ -7,8 +7,15 @@ goog.require('ol.TileCoord');
 
 
 /**
+ * A function that takes an {@link ol.TileCoord} for the tile coordinate,
+ * a `{number}` representing the pixel ratio and an {@link ol.proj.Projection}
+ * for the projection  as arguments and returns a `{string}` or
+ * undefined representing the tile URL. The this keyword inside the function
+ * references the {@link ol.source.TileImage}.
+ *
  * @typedef {function(this: ol.source.TileImage, ol.TileCoord,
  *     number, ol.proj.Projection): (string|undefined)}
+ * @todo stability experimental
  */
 ol.TileUrlFunctionType;
 

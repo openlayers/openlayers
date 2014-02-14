@@ -203,6 +203,11 @@ ol.Feature.prototype.setGeometryName = function(name) {
 
 
 /**
+ * A function that takes a `{number}` representing the view's resolution. It
+ * returns an Array of {@link ol.style.Style}. This way individual features
+ * can be styled. The this keyword inside the function references the
+ * {@link ol.Feature} to be styled.
+ *
  * @typedef {function(this: ol.Feature, number): Array.<ol.style.Style>}
  * @todo stability experimental
  */
@@ -219,6 +224,10 @@ ol.feature.defaultFeatureStyleFunction = goog.functions.constant([]);
 
 
 /**
+ * A function that takes an {@link ol.Feature} and a `{number}` representing
+ * the view's resolution. The function should return an array of
+ * {@link ol.style.Style}. This way e.g. a vector layer can be styled.
+ *
  * @typedef {function(ol.Feature, number): Array.<ol.style.Style>}
  * @todo stability experimental
  */
