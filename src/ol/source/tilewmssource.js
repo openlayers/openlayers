@@ -346,6 +346,13 @@ ol.source.TileWMS.prototype.tileUrlFunction_ =
     tileExtent = ol.extent.buffer(tileExtent,
         tileResolution * gutter, tileExtent);
   }
+
+  var extent = this.getExtent();
+  if (!goog.isNull(extent) && (!ol.extent.intersects(tileExtent, extent) ||
+      ol.extent.touches(tileExtent, extent))) {
+    return undefined;
+  }
+
   if (pixelRatio != 1) {
     tileSize = (tileSize * pixelRatio + 0.5) | 0;
   }
