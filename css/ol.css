@@ -138,22 +138,30 @@ a.ol-full-screen-true:after {
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
-.ol-zoom {
+.ol-zoom,
+.ol-zoom-extent {
   position: absolute;
-  top: 8px;
   left: 8px;
   background-color: #eee;
   background-color: rgba(255,255,255,0.4);
   border-radius: 4px;
   padding: 2px;
 }
+.ol-zoom {
+  top: 8px;
+}
+.ol-zoom-extent {
+  top: 65px;
+}
 @media print {
-  .ol-zoom {
+  .ol-zoom,
+  .ol-zoom-extent {
     display: none;
   }
 }
 
-.ol-zoom a {
+.ol-zoom a,
+.ol-zoom-extent a {
   display: block;
   margin: 1px;
   padding: 0;
@@ -168,13 +176,20 @@ a.ol-full-screen-true:after {
   background-color: #7b98bc;
   background-color: rgba(0,60,136,0.5);
 }
-.ol-touch .ol-zoom a {
+.ol-zoom-extent a {
+  font-size: 16px;
+  line-height: 22px;
+  border-radius: 2px;
+}
+.ol-touch .ol-zoom a,
+.ol-touch .ol-zoom-extent a {
   font-size: 20px;
   height: 30px;
   width: 30px;
   line-height: 26px;
 }
-.ol-zoom a:hover {
+.ol-zoom a:hover,
+.ol-zoom-extent a:hover {
   color: #fff;
   text-decoration: none;
   background-color: #4c6079;
@@ -184,7 +199,6 @@ a.ol-full-screen-true:after {
 .ol-zoom-in {
   border-radius: 2px 2px 0 0;
 }
-
 .ol-zoom-out {
   border-radius: 0 0 2px 2px;
 }
@@ -216,49 +230,13 @@ a.ol-full-screen-true:after {
   height: 20px;
   width: 24px;
 }
-.ol-zoom-extent {
-  position: absolute;
-  background: #eee;
-  background: rgba(255,255,255,0.4);
-  border-radius: 4px;
-  left: 8px;
-  padding: 2px;
-  top: 65px;
-}
-@media print {
-  .ol-zoom-extent {
-    display: none;
-  }
-}
-.ol-zoom-extent a {
-  display: block;
-  margin: 1px;
-  padding: 0;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  text-decoration: none;
-  text-align: center;
-  height: 22px;
-  width: 22px;
-  background-color: #7b98bc;
-  background-color: rgba(0, 60, 136, 0.5);
-  border-radius: 2px;
-}
-.ol-touch .ol-zoom-extent a {
-  font-size: 20px;
-  height: 30px;
-  width: 30px;
-  line-height: 26px;
-}
-.ol-zoom-extent a:hover {
-  background-color: #4c6079;
-  background-color: rgba(0, 60, 136, 0.7);
-}
 .ol-zoom-extent a:after {
     content: "E";
 }
-.ol-zoom-extent a, .ol-attribution, .ol-full-screen a,
-.ol-scale-line-inner, .ol-zoom a {
+.ol-zoom-extent a,
+.ol-attribution,
+.ol-full-screen a,
+.ol-scale-line-inner,
+.ol-zoom a {
   font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
 }
