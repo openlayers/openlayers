@@ -4,18 +4,12 @@
   bottom: 0;
   right: 0;
   padding: 6px;
-}
-.ol-attribution a {
-  text-decoration: none;
-}
-
-.ol-attribution {
   color: #000000;
   color: rgba(238,238,238,1);
   background: rgba(0,60,136,0.3);
 }
-
 .ol-attribution a {
+  text-decoration: none;
   color: #7b98bc;
   color: rgba(255,255,255,1);
 }
@@ -39,48 +33,7 @@
   padding-top: 2px;
   white-space: nowrap;
 }
-.ol-full-screen {
-  background: #eee;
-  background: rgba(255,255,255,0.4);
-  border-radius: 4px;
-  padding: 2px;
-  position: absolute;
-  right: 8px;
-  top: 8px;
-}
-@media print {
-  .ol-full-screen {
-    display: none;
-  }
-}
-.ol-full-screen a {
-  background: #7b98bc;
-  background: rgba(0,60,136,0.5);
-  color: white;
-  display: block;
-  font-size: 18px;
-  font-weight: bold;
-  height: 22px;
-  line-height: 19px;
-  margin: 1px;
-  padding: 0;
-  text-align: center;
-  text-decoration: none;
-  width: 22px;
-}
-a.ol-full-screen-false:after {
-  content: "\2194";
-}
-a.ol-full-screen-true:after {
-  content: "\00d7";
-}
 
-.ol-full-screen div {
-  border-radius: 2px;
-}
-.ol-full-screen div a {
-  border-radius: 2px;
-}
 .ol-full-screen a:hover {
   /* IE <= 8 doesn't support rgba, fall back to a light blue */
   background: #4c6079;
@@ -139,9 +92,9 @@ a.ol-full-screen-true:after {
 }
 
 .ol-zoom,
-.ol-zoom-extent {
+.ol-zoom-extent,
+.ol-full-screen {
   position: absolute;
-  left: 8px;
   background-color: #eee;
   background-color: rgba(255,255,255,0.4);
   border-radius: 4px;
@@ -149,19 +102,27 @@ a.ol-full-screen-true:after {
 }
 .ol-zoom {
   top: 8px;
+  left: 8px;
 }
 .ol-zoom-extent {
   top: 65px;
+  left: 8px;
+}
+.ol-full-screen {
+  right: 8px;
+  top: 8px;
 }
 @media print {
   .ol-zoom,
-  .ol-zoom-extent {
+  .ol-zoom-extent,
+  .ol-full-screen {
     display: none;
   }
 }
 
 .ol-zoom a,
-.ol-zoom-extent a {
+.ol-zoom-extent a,
+.ol-full-screen a {
   display: block;
   margin: 1px;
   padding: 0;
@@ -195,12 +156,23 @@ a.ol-full-screen-true:after {
   background-color: #4c6079;
   background-color: rgba(0,60,136,0.7);
 }
-
+.ol-zoom-extent a:after {
+    content: "E";
+}
 .ol-zoom-in {
   border-radius: 2px 2px 0 0;
 }
 .ol-zoom-out {
   border-radius: 0 0 2px 2px;
+}
+a.ol-full-screen-false:after {
+  content: "\2194";
+}
+a.ol-full-screen-true:after {
+  content: "\00d7";
+}
+.ol-full-screen a {
+  border-radius: 2px;
 }
 
 .ol-zoomslider {
@@ -229,9 +201,6 @@ a.ol-full-screen-true:after {
   overflow: hidden;
   height: 20px;
   width: 24px;
-}
-.ol-zoom-extent a:after {
-    content: "E";
 }
 .ol-zoom-extent a,
 .ol-attribution,
