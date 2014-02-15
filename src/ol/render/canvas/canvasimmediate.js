@@ -255,6 +255,7 @@ ol.render.canvas.Immediate.prototype.drawText_ =
   if (!goog.isNull(this.textStrokeState_)) {
     this.setContextStrokeState_(this.textStrokeState_);
   }
+  this.setContextTextState_(this.textState_);
   goog.asserts.assert(offset === 0);
   goog.asserts.assert(end == flatCoordinates.length);
   var pixelCoordinates = ol.geom.flat.transform2D(
