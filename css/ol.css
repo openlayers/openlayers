@@ -178,7 +178,7 @@ a.ol-full-screen-true:after {
 }
 
 /* invisible but not hidden */
-.olHasToolTip span, .olHasTooltip_b_r span {
+.olHasToolTip span, .olHasToolTip_b_r span {
   position: absolute;
   clip: rect(1px 1px 1px 1px); /* < IE8 */
   clip: rect(1px, 1px, 1px, 1px);
@@ -193,7 +193,7 @@ a.ol-full-screen-true:after {
 
 /* show a tooltip offset to below and right */
 .olHasToolTip:hover span, .olHasToolTip:focus span ,
-.olHasTooltip_b_r:hover span , .olHasTooltip_b_r:focus span  {
+.olHasToolTip_b_r:hover span , .olHasToolTip_b_r:focus span  {
   clip: auto;
   padding: 3px;
   height: auto;
