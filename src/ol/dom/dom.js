@@ -26,40 +26,41 @@ ol.dom.BrowserFeature = {
  * http://caniuse.com/#feat=transforms2d
  * @return {boolean}
  */
-ol.dom.canUseCssTransform = function() {
-  goog.asserts.assert(!goog.isNull(document.body));
+ol.dom.canUseCssTransform = (function() {
   var canUseCssTransform;
-  if (!goog.isDef(canUseCssTransform)) {
-    canUseCssTransform = (function() {
+  return function() {
+    if (!goog.isDef(canUseCssTransform)) {
+      goog.asserts.assert(!goog.isNull(document.body));
       if (!goog.global.getComputedStyle) {
         // this browser is ancient
-        return false;
-      }
-      var el = goog.dom.createElement(goog.dom.TagName.P),
-          has2d,
-          transforms = {
-            'webkitTransform': '-webkit-transform',
-            'OTransform': '-o-transform',
-            'msTransform': '-ms-transform',
-            'MozTransform': '-moz-transform',
-            'transform': 'transform'
-          };
-      goog.dom.appendChild(document.body, el);
-      for (var t in transforms) {
-        if (t in el.style) {
-          el.style[t] = 'translate(1px,1px)';
-          has2d = goog.global.getComputedStyle(el).getPropertyValue(
-              transforms[t]);
+        canUseCssTransform = false;
+      } else {
+        var el = goog.dom.createElement(goog.dom.TagName.P),
+            has2d,
+            transforms = {
+              'webkitTransform': '-webkit-transform',
+              'OTransform': '-o-transform',
+              'msTransform': '-ms-transform',
+              'MozTransform': '-moz-transform',
+              'transform': 'transform'
+            };
+        goog.dom.appendChild(document.body, el);
+        for (var t in transforms) {
+          if (t in el.style) {
+            el.style[t] = 'translate(1px,1px)';
+            has2d = goog.global.getComputedStyle(el).getPropertyValue(
+                transforms[t]);
+          }
         }
-      }
-      goog.dom.removeNode(el);
+        goog.dom.removeNode(el);
 
-      return (goog.isDefAndNotNull(has2d) && has2d.length > 0 &&
-          has2d !== 'none');
-    }());
-  }
-  return canUseCssTransform;
-};
+        canUseCssTransform = (goog.isDefAndNotNull(has2d) && has2d.length > 0 &&
+            has2d !== 'none');
+      }
+    }
+    return canUseCssTransform;
+  };
+}());
 
 
 /**
@@ -68,40 +69,41 @@ ol.dom.canUseCssTransform = function() {
  * http://caniuse.com/#feat=transforms3d
  * @return {boolean}
  */
-ol.dom.canUseCssTransform3D = function() {
-  goog.asserts.assert(!goog.isNull(document.body));
+ol.dom.canUseCssTransform3D = (function() {
   var canUseCssTransform3D;
-  if (!goog.isDef(canUseCssTransform3D)) {
-    canUseCssTransform3D = (function() {
+  return function() {
+    if (!goog.isDef(canUseCssTransform3D)) {
+      goog.asserts.assert(!goog.isNull(document.body));
       if (!goog.global.getComputedStyle) {
         // this browser is ancient
-        return false;
-      }
-      var el = goog.dom.createElement(goog.dom.TagName.P),
-          has3d,
-          transforms = {
-            'webkitTransform': '-webkit-transform',
-            'OTransform': '-o-transform',
-            'msTransform': '-ms-transform',
-            'MozTransform': '-moz-transform',
-            'transform': 'transform'
-          };
-      goog.dom.appendChild(document.body, el);
-      for (var t in transforms) {
-        if (t in el.style) {
-          el.style[t] = 'translate3d(1px,1px,1px)';
-          has3d = goog.global.getComputedStyle(el).getPropertyValue(
-              transforms[t]);
+        canUseCssTransform3D = false;
+      } else {
+        var el = goog.dom.createElement(goog.dom.TagName.P),
+            has3d,
+            transforms = {
+              'webkitTransform': '-webkit-transform',
+              'OTransform': '-o-transform',
+              'msTransform': '-ms-transform',
+              'MozTransform': '-moz-transform',
+              'transform': 'transform'
+            };
+        goog.dom.appendChild(document.body, el);
+        for (var t in transforms) {
+          if (t in el.style) {
+            el.style[t] = 'translate3d(1px,1px,1px)';
+            has3d = goog.global.getComputedStyle(el).getPropertyValue(
+                transforms[t]);
+          }
         }
-      }
-      goog.dom.removeNode(el);
+        goog.dom.removeNode(el);
 
-      return (goog.isDefAndNotNull(has3d) && has3d.length > 0 &&
-          has3d !== 'none');
-    }());
-  }
-  return canUseCssTransform3D;
-};
+        canUseCssTransform3D = (goog.isDefAndNotNull(has3d) &&
+            has3d.length > 0 && has3d !== 'none');
+      }
+    }
+    return canUseCssTransform3D;
+  };
+}());
 
 
 /**
