@@ -816,7 +816,7 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
       this.textStrokeState_ = {
         lineCap: goog.isDef(textStrokeStyleLineCap) ?
             textStrokeStyleLineCap : ol.render.canvas.defaultLineCap,
-        lineDash: goog.isDef(textStrokeStyleLineDash) ?
+        lineDash: goog.isDefAndNotNull(textStrokeStyleLineDash) ?
             textStrokeStyleLineDash : ol.render.canvas.defaultLineDash,
         lineJoin: goog.isDef(textStrokeStyleLineJoin) ?
             textStrokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
