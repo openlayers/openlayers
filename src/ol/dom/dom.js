@@ -54,8 +54,7 @@ ol.dom.canUseCssTransform = (function() {
         }
         goog.dom.removeNode(el);
 
-        canUseCssTransform = (goog.isDefAndNotNull(has2d) && has2d.length > 0 &&
-            has2d !== 'none');
+        canUseCssTransform = (has2d && has2d !== 'none');
       }
     }
     return canUseCssTransform;
@@ -97,8 +96,7 @@ ol.dom.canUseCssTransform3D = (function() {
         }
         goog.dom.removeNode(el);
 
-        canUseCssTransform3D = (goog.isDefAndNotNull(has3d) &&
-            has3d.length > 0 && has3d !== 'none');
+        canUseCssTransform3D = (has3d && has3d !== 'none');
       }
     }
     return canUseCssTransform3D;
