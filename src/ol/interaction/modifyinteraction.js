@@ -19,14 +19,12 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Drag');
 goog.require('ol.structs.RBush');
-goog.require('ol.style.Style');
 
 
 /**
  * @typedef {{feature: ol.Feature,
  *            geometry: ol.geom.Geometry,
  *            index: (number|undefined),
- *            style: ol.style.Style,
  *            segment: Array.<ol.Extent>}}
  */
 ol.interaction.SegmentDataType;
@@ -158,8 +156,7 @@ ol.interaction.Modify.prototype.writePointGeometry_ =
   var segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
     feature: feature,
     geometry: geometry,
-    segment: [coordinates, coordinates],
-    style: this.overlay_.getStyleFunction()
+    segment: [coordinates, coordinates]
   });
   this.rBush_.insert(geometry.getExtent(), segmentData);
 };
@@ -181,8 +178,7 @@ ol.interaction.Modify.prototype.writeMultiPointGeometry_ =
       geometry: geometry,
       depth: [i],
       index: i,
-      segment: [coordinates, coordinates],
-      style: this.overlay_.getStyleFunction()
+      segment: [coordinates, coordinates]
     });
     this.rBush_.insert(geometry.getExtent(), segmentData);
   }
@@ -204,7 +200,6 @@ ol.interaction.Modify.prototype.writeLineStringGeometry_ =
       feature: feature,
       geometry: geometry,
       index: i,
-      style: this.overlay_.getStyleFunction(),
       segment: segment
     });
     this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
@@ -230,7 +225,6 @@ ol.interaction.Modify.prototype.writeMultiLineStringGeometry_ =
         geometry: geometry,
         depth: [j],
         index: i,
-        style: this.overlay_.getStyleFunction(),
         segment: segment
       });
       this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
@@ -255,7 +249,6 @@ ol.interaction.Modify.prototype.writePolygonGeometry_ =
       feature: feature,
       geometry: geometry,
       index: i,
-      style: this.overlay_.getStyleFunction(),
       segment: segment
     });
     this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
@@ -281,7 +274,6 @@ ol.interaction.Modify.prototype.writeMultiPolygonGeometry_ =
         geometry: geometry,
         depth: [j],
         index: i,
-        style: this.overlay_.getStyleFunction(),
         segment: segment
       });
       this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
@@ -332,14 +324,12 @@ ol.interaction.Modify.prototype.removeFeature_ = function(evt) {
 
 
 /**
- * @param {ol.style.Style} style Style of the layer that the feature being
- *     modified belongs to.
  * @param {ol.Coordinate} coordinates Coordinates.
  * @return {ol.Feature} Vertex feature.
  * @private
  */
 ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ =
-    function(style, coordinates) {
+    function(coordinates) {
   var vertexFeature = this.vertexFeature_;
   if (goog.isNull(vertexFeature)) {
     vertexFeature = new ol.Feature(new ol.geom.Point(coordinates));
@@ -437,7 +427,7 @@ ol.interaction.Modify.prototype.handleDrag = function(evt) {
 
     geometry.setCoordinates(coordinates);
     var newBounds = ol.extent.boundingExtent(segment);
-    this.createOrUpdateVertexFeature_(segmentData.style, vertex);
+    this.createOrUpdateVertexFeature_(vertex);
     this.rBush_.remove(segmentData);
     this.rBush_.insert(newBounds, segmentData);
   }
@@ -519,7 +509,7 @@ ol.interaction.Modify.prototype.handleMouseAtPixel_ = function(pixel, map) {
       if (dist <= 10) {
         vertex = squaredDist1 > squaredDist2 ? segment[1] : segment[0];
       }
-      this.createOrUpdateVertexFeature_(node.style, vertex);
+      this.createOrUpdateVertexFeature_(vertex);
       this.modifiable_ = true;
       return;
     }
@@ -589,7 +579,6 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
     }
   }
   var newSegmentData = /** @type {ol.interaction.SegmentDataType} */ ({
-    style: segmentData.style,
     segment: [segment[0], vertex],
     feature: feature,
     geometry: geometry,
@@ -601,7 +590,6 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
   this.dragSegments_.push([newSegmentData, 1]);
 
   var newSegmentData2 = /** @type {ol.interaction.SegmentDataType} */ ({
-    style: segmentData.style,
     segment: [vertex, segment[1]],
     feature: feature,
     geometry: geometry,
