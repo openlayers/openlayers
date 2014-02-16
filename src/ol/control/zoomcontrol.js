@@ -34,7 +34,7 @@ ol.control.Zoom = function(opt_options) {
 
   var zoomInLabel = goog.isDef(options.zoomInLabel) ? options.zoomInLabel : '+',
       zoomOutLabel =
-          goog.isDef(options.zoomOutLabel) ? options.zoomOutLabel : '-';
+          goog.isDef(options.zoomOutLabel) ? options.zoomOutLabel : '\u2212';
 
   var inElement = goog.dom.createDom(goog.dom.TagName.A, {
     'href': '#zoomIn',
