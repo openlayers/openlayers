@@ -36,28 +36,28 @@ ol.format.Format.prototype.getType = goog.abstractMethod;
 
 
 /**
- * @param {Document|Node|Object|string} source Source.
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.Feature} Feature.
  */
 ol.format.Format.prototype.readFeature = goog.abstractMethod;
 
 
 /**
- * @param {Document|Node|Object|string} source Source.
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
  */
 ol.format.Format.prototype.readFeatures = goog.abstractMethod;
 
 
 /**
- * @param {Document|Node|Object|string} source Source.
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.geom.Geometry} Geometry.
  */
 ol.format.Format.prototype.readGeometry = goog.abstractMethod;
 
 
 /**
- * @param {Document|Node|Object|string} source Source.
+ * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  */
 ol.format.Format.prototype.readProjection = goog.abstractMethod;
@@ -65,20 +65,20 @@ ol.format.Format.prototype.readProjection = goog.abstractMethod;
 
 /**
  * @param {ol.Feature} feature Feature.
- * @return {Node|Object|string} Result.
+ * @return {ArrayBuffer|Node|Object|string} Result.
  */
 ol.format.Format.prototype.writeFeature = goog.abstractMethod;
 
 
 /**
  * @param {Array.<ol.Feature>} features Features.
- * @return {Node|Object|string} Result.
+ * @return {ArrayBuffer|Node|Object|string} Result.
  */
 ol.format.Format.prototype.writeFeatures = goog.abstractMethod;
 
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
- * @return {Node|Object|string} Node.
+ * @return {ArrayBuffer|Node|Object|string} Node.
  */
 ol.format.Format.prototype.writeGeometry = goog.abstractMethod;
