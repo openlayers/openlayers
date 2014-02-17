@@ -100,6 +100,11 @@
   border-radius: 4px;
   padding: 2px;
 }
+.ol-zoom:hover,
+.ol-zoom-extent:hover,
+.ol-full-screen:hover {
+  background-color: rgba(255,255,255,0.5);
+}
 .ol-zoom {
   top: 8px;
   left: 8px;
@@ -137,6 +142,10 @@
   background-color: #7b98bc;
   background-color: rgba(0,60,136,0.5);
   border: none;
+}
+.ol-zoom button::-moz-focus-inner {
+  border: none;
+  padding: 0;
 }
 .ol-zoom-extent a {
   font-size: 16px;
@@ -178,7 +187,7 @@ a.ol-full-screen-true:after {
 }
 
 /* invisible but not hidden */
-.olHasToolTip span, .olHasToolTip_b_r span {
+.olHasToolTip [role=tooltip] {
   position: absolute;
   clip: rect(1px 1px 1px 1px); /* < IE8 */
   clip: rect(1px, 1px, 1px, 1px);
@@ -188,27 +197,28 @@ a.ol-full-screen-true:after {
   width: 1px;
   overflow: hidden;
   font-weight: normal;
-  font-size: 16px;
+  font-size: 14px;
+  text-shadow: 0 0 2px #fff;
 }
 
 /* show a tooltip offset to below and right */
-.olHasToolTip:hover span, .olHasToolTip:focus span ,
-.olHasToolTip_b_r:hover span , .olHasToolTip_b_r:focus span  {
+.olHasToolTip:hover [role=tooltip], .olHasToolTip:focus [role=tooltip] {
   clip: auto;
-  padding: 3px;
+  padding: .2em .4em;
   height: auto;
   width: auto;
   z-index: 1100;
   max-height: 100px;
   white-space: nowrap;
   display: inline-block;
-  background-color: #eee;
+  background: #FFF;
+  background: rgba(255,255,255,0.5);
   color: #000;
-  border: 1px solid #333;
-  border-radius: 5px;
-  box-shadow: 2px 2px 2px #333;
-  bottom: -2em;
-  left: 1em;
+  border: 3px solid rgba(255, 255, 255, 0.0);
+  border-left-width: 0;
+  border-radius: 0 4px 4px 0;
+  bottom: .8em;
+  left: 2em;
 }
 
 .ol-zoomslider {
