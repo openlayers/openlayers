@@ -394,6 +394,11 @@
  */
 
 /**
+ * @typedef {Object} olx.format.TWKBOptions
+ * @property {ol.proj.ProjectionLike} defaultProjection Default projection.
+ */
+
+/**
  * @typedef {Object} olx.interaction.DoubleClickZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {number|undefined} delta The zoom delta applied on each double
