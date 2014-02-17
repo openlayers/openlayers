@@ -21,6 +21,3 @@
 @exportProperty ol.Map.prototype.render
 @exportProperty ol.Map.prototype.requestRenderFrame
 @exportProperty ol.Map.prototype.updateSize
-
-@exportSymbol ol.RendererHints
-@exportProperty ol.RendererHints.createFromQueryData

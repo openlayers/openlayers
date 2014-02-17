@@ -5,6 +5,7 @@
         "../externs/bingmaps.js", 
         "../externs/bootstrap.js", 
         "../externs/closure-compiler.js",
+        "../externs/example.js",
         "../externs/geojson.js", 
         "../externs/oli.js", 
         "../externs/proj4js.js", 
