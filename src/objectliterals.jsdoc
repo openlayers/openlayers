@@ -774,6 +774,18 @@
  */
 
 /**
+ * @typedef {Object} olx.source.TWKBOptions
+ * @property {ArrayBuffer|undefined} arrayBuffer Array buffer.
+ * @property {ol.proj.ProjectionLike} defaultProjection Default projection.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {string|undefined} logo Logo.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ * @property {string|undefined} text Text.
+ * @property {string|undefined} url URL.
+ * @property {Array.<string>|undefined} urls URLs.
+ */
+
+/**
  * @typedef {Object} olx.source.OSMOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {null|string|undefined} crossOrigin crossOrigin setting for image
