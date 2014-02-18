@@ -132,16 +132,19 @@
   margin: 1px;
   padding: 0;
   color: white;
-  font-size: 18px;
+  font-size: 1.14em;
   font-weight: bold;
   text-decoration: none;
   text-align: center;
-  height: 22px;
-  width: 22px;
-  line-height: 19px;
+  height: 1.375em;
+  width: 1.375em;
+  line-height: 1.375em;
   background-color: #7b98bc;
   background-color: rgba(0,60,136,0.5);
   border: none;
+}
+.ol-zoom button {
+    line-height: .4em;
 }
 .ol-zoom button::-moz-focus-inner {
   border: none;
@@ -153,11 +156,9 @@
   border-radius: 2px;
 }
 .ol-touch .ol-zoom button,
+.ol-touch .ol-full-screen a,
 .ol-touch .ol-zoom-extent a {
-  font-size: 20px;
-  height: 30px;
-  width: 30px;
-  line-height: 26px;
+  font-size: 1.5em;
 }
 .ol-zoom button:hover,
 .ol-zoom button:focus,
@@ -217,7 +218,7 @@ a.ol-full-screen-true:after {
   border: 3px solid rgba(255, 255, 255, 0.0);
   border-left-width: 0;
   border-radius: 0 4px 4px 0;
-  bottom: .8em;
+  bottom: 1.1em;
   left: 2em;
 }
 
