@@ -47,7 +47,7 @@ ol.control.Zoom = function(opt_options) {
     'role' : 'tooltip'
   }, zoomInTipLabel);
   var inElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': className + '-in olHasToolTip',
+    'class': className + '-in ol-has-tooltip',
     'name' : 'ZoomIn',
     'type' : 'button'
   }, tTipZoomIn, zoomInLabel);
@@ -63,7 +63,7 @@ ol.control.Zoom = function(opt_options) {
     'type' : 'button'
   }, zoomOutTipLabel);
   var outElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'class': className + '-out  olHasToolTip',
+    'class': className + '-out  ol-has-tooltip',
     'name' : 'ZoomOut'
   }, tTipsZoomOut, zoomOutLabel);
   goog.events.listen(outElement, [
