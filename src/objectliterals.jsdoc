@@ -256,6 +256,8 @@
  * @property {string|undefined} className CSS class name. Default is `ol-zoom`.
  * @property {string|undefined} zoomInLabel Text label to use for the zoom-in button. Default is `+`
  * @property {string|undefined} zoomOutLabel Text label to use for the zoom-out button. Default is `-`
+ * @property {string|undefined} zoomInTipLabel Text label to use for the zoom-in tip. Default is `Zoom in`
+ * @property {string|undefined} zoomOutTipLabel Text label to use for the zoom-out tip. Default is `Zoom out`
  * @property {number|undefined} delta The zoom delta applied on each click.
  * @property {Element|undefined} target Target.
  * @todo stability experimental

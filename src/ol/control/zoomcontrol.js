@@ -37,10 +37,15 @@ ol.control.Zoom = function(opt_options) {
   var zoomOutLabel = goog.isDef(options.zoomOutLabel) ?
       options.zoomOutLabel : '\u2212';
 
+  var zoomInTipLabel = goog.isDef(options.zoomTipLabel) ?
+      options.zoomInTipLabel : 'Zoom in';
+  var zoomOutTipLabel = goog.isDef(options.zoomOutTipLabel) ?
+      options.zoomOutTipLabel : 'Zoom out';
+
   var tTipZoomIn = goog.dom.createDom(goog.dom.TagName.SPAN, {
     'class': '',
     'role' : 'tooltip'
-  }, 'Zoom in');
+  }, zoomInTipLabel);
   var inElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'class': className + '-in olHasToolTip',
     'name' : 'ZoomIn',
@@ -56,7 +61,7 @@ ol.control.Zoom = function(opt_options) {
     'class': '',
     'role' : 'tooltip',
     'type' : 'button'
-  }, 'Zoom out');
+  }, zoomOutTipLabel);
   var outElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'class': className + '-out  olHasToolTip',
     'name' : 'ZoomOut'
