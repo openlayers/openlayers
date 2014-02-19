@@ -256,7 +256,8 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
       ol.MapBrowserEvent.EventType.POINTERUP, this.map_, pointerEvent);
   this.dispatchEvent(newEvent);
 
-  if (this.activePointers_ <= 0) {
+  goog.asserts.assert(this.activePointers_ >= 0);
+  if (this.activePointers_ === 0) {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
     this.documentPointerEventHandler_.dispose();
