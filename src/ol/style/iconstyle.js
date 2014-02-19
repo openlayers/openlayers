@@ -75,6 +75,11 @@ ol.style.Icon = function(opt_options) {
   /**
    * @type {number}
    */
+  var opacity = goog.isDef(options.opacity) ? options.opacity : 1;
+
+  /**
+   * @type {number}
+   */
   var rotation = goog.isDef(options.rotation) ? options.rotation : 0;
 
   /**
@@ -83,6 +88,7 @@ ol.style.Icon = function(opt_options) {
   var scale = goog.isDef(options.scale) ? options.scale : 1;
 
   goog.base(this, {
+    opacity: opacity,
     rotation: rotation,
     scale: scale,
     snapToPixel: undefined,

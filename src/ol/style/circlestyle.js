@@ -69,6 +69,7 @@ ol.style.Circle = function(opt_options) {
   this.size_ = [size, size];
 
   goog.base(this, {
+    opacity: 1,
     rotation: 0,
     scale: 1,
     snapToPixel: undefined,
