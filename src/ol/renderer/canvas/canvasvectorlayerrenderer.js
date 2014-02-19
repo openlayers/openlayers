@@ -101,7 +101,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     replayContext.globalAlpha = layerState.opacity;
     replayGroup.replay(
         replayContext, frameState.extent, frameState.pixelRatio, transform,
-        renderGeometryFunction);
+        frameState.view2DState.rotation, renderGeometryFunction);
 
     if (replayContext != context) {
       this.dispatchRenderEvent(replayContext, frameState, transform);
