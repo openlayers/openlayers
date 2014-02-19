@@ -42,14 +42,36 @@ goog.require('ol.pointer.EventSource');
 ol.pointer.MouseSource = function(dispatcher) {
   goog.base(this, dispatcher);
 
+  /**
+   * @const
+   * @type {goog.structs.Map}
+   */
   this.pointerMap = dispatcher.pointerMap;
 
-  // radius around touchend that swallows mouse events
+  /**
+   * Radius around touchend that swallows mouse events.
+   *
+   * @const
+   * @type {number}
+   */
   this.DEDUP_DIST = 25;
 
+  /**
+   * @const
+   * @type {number}
+   */
   this.POINTER_ID = 1;
+
+  /**
+   * @const
+   * @type {string}
+   */
   this.POINTER_TYPE = 'mouse';
 
+  /**
+   * @const
+   * @type {Array.<string>}
+   */
   this.events = [
     'mousedown',
     'mousemove',
@@ -57,6 +79,11 @@ ol.pointer.MouseSource = function(dispatcher) {
     'mouseover',
     'mouseout'
   ];
+
+  /**
+   * @const
+   * @type {Object.<string, function(goog.events.BrowserEvent)>}
+   */
   this.mapping = {
     'mousedown': this.mousedown,
     'mousemove': this.mousemove,
@@ -65,6 +92,10 @@ ol.pointer.MouseSource = function(dispatcher) {
     'mouseout': this.mouseout
   };
 
+  /**
+   * @const
+   * @type {Array.<goog.math.Coordinate>}
+   */
   this.lastTouches = [];
 };
 goog.inherits(ol.pointer.MouseSource, ol.pointer.EventSource);

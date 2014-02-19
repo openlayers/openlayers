@@ -31,7 +31,7 @@
 goog.provide('ol.pointer.PointerEventHandler');
 
 
-goog.require('goog.debug.Console');
+goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.Event');
@@ -67,15 +67,17 @@ ol.pointer.PointerEventHandler = function(element) {
    */
   this.pointerMap = new goog.structs.Map();
 
+  /**
+   * @type {Object.<string, function(goog.events.BrowserEvent)>}
+   * @private
+   */
+  this.eventMap_ = {};
 
-  this.eventMap = {};
-
-  // Scope objects for native events.
-  // This exists for ease of testing.
-  this.eventSources = {};
-  this.eventSourceList = [];
-
-  this.boundHandler_ = goog.bind(this.eventHandler_, this);
+  /**
+   * @type {Array.<ol.pointer.EventSource>}
+   * @private
+   */
+  this.eventSourceList_ = [];
 
   this.registerSources();
 };
@@ -151,15 +153,14 @@ ol.pointer.PointerEventHandler.prototype.registerSource =
   var newEvents = s.getEvents();
 
   if (newEvents) {
-    newEvents.forEach(function(e) {
+    goog.array.forEach(newEvents, function(e) {
       var handler = s.getHandlerForEvent(e);
 
       if (handler) {
-        this.eventMap[e] = goog.bind(handler, s);
+        this.eventMap_[e] = goog.bind(handler, s);
       }
     }, this);
-    this.eventSources[name] = s;
-    this.eventSourceList.push(s);
+    this.eventSourceList_.push(s);
   }
 };
 
@@ -169,8 +170,8 @@ ol.pointer.PointerEventHandler.prototype.registerSource =
  * @private
  */
 ol.pointer.PointerEventHandler.prototype.register_ = function() {
-  var l = this.eventSourceList.length;
-  for (var i = 0, es; (i < l) && (es = this.eventSourceList[i]); i++) {
+  var l = this.eventSourceList_.length;
+  for (var i = 0, es; (i < l) && (es = this.eventSourceList_[i]); i++) {
     this.addEvents_(es.getEvents());
   }
 };
@@ -181,8 +182,8 @@ ol.pointer.PointerEventHandler.prototype.register_ = function() {
  * @private
  */
 ol.pointer.PointerEventHandler.prototype.unregister_ = function() {
-  var l = this.eventSourceList.length;
-  for (var i = 0, es; (i < l) && (es = this.eventSourceList[i]); i++) {
+  var l = this.eventSourceList_.length;
+  for (var i = 0, es; (i < l) && (es = this.eventSourceList_[i]); i++) {
     this.removeEvents_(es.getEvents());
   }
 };
@@ -195,7 +196,7 @@ ol.pointer.PointerEventHandler.prototype.unregister_ = function() {
  */
 ol.pointer.PointerEventHandler.prototype.eventHandler_ = function(inEvent) {
   var type = inEvent.type;
-  var handler = this.eventMap[type];
+  var handler = this.eventMap_[type];
   if (handler) {
     handler(inEvent);
   }
@@ -222,10 +223,10 @@ ol.pointer.PointerEventHandler.prototype.eventHandler_ = function(inEvent) {
  */
 ol.pointer.PointerEventHandler.prototype.listenOnDocument = function(
     type, listener, opt_useCapture, opt_listenerScope) {
-  var l = this.eventSourceList.length;
+  var l = this.eventSourceList_.length;
   var eventSource;
   for (var i = 0; i < l; i++) {
-    eventSource = this.eventSourceList[i];
+    eventSource = this.eventSourceList_[i];
     eventSource.listenOnDocument(type);
   }
 
@@ -249,10 +250,10 @@ ol.pointer.PointerEventHandler.prototype.listenOnDocument = function(
  */
 ol.pointer.PointerEventHandler.prototype.unlistenOnDocument = function(
     type, listener, opt_useCapture, opt_listenerScope) {
-  var l = this.eventSourceList.length;
+  var l = this.eventSourceList_.length;
   var eventSource;
   for (var i = 0; i < l; i++) {
-    eventSource = this.eventSourceList[i];
+    eventSource = this.eventSourceList_[i];
     eventSource.listenOnDocument(type);
   }
 
@@ -267,9 +268,9 @@ ol.pointer.PointerEventHandler.prototype.unlistenOnDocument = function(
  * @param {Array.<string>} events List of events.
  */
 ol.pointer.PointerEventHandler.prototype.addEvents_ = function(events) {
-  events.forEach(function(eventName) {
+  goog.array.forEach(events, function(eventName) {
     goog.events.listen(this.element_, eventName,
-        this.boundHandler_);
+        this.eventHandler_, false, this);
   }, this);
 };
 
@@ -283,7 +284,7 @@ ol.pointer.PointerEventHandler.prototype.addEvent = function(
     eventName, opt_element) {
   var element = goog.isDef(opt_element) ? opt_element : this.element_;
   goog.events.listen(element, eventName,
-      this.boundHandler_);
+      this.eventHandler_, false, this);
 };
 
 
@@ -293,9 +294,9 @@ ol.pointer.PointerEventHandler.prototype.addEvent = function(
  * @param {Array.<string>} events List of events.
  */
 ol.pointer.PointerEventHandler.prototype.removeEvents_ = function(events) {
-  events.forEach(function(e) {
+  goog.array.forEach(events, function(e) {
     goog.events.unlisten(this.element_, e,
-        this.boundHandler_);
+        this.eventHandler_, false, this);
   }, this);
 };
 
@@ -309,7 +310,7 @@ ol.pointer.PointerEventHandler.prototype.removeEvent = function(
     eventName, opt_element) {
   var element = goog.isDef(opt_element) ? opt_element : this.element_;
   goog.events.unlisten(element, eventName,
-      this.boundHandler_);
+      this.eventHandler_, false, this);
 };
 
 
@@ -524,7 +525,8 @@ ol.pointer.PointerEventHandler.prototype.fireEvent =
 
 
 /**
- * Re-fires a native pointer event.
+ * Creates a pointer event from a native pointer event
+ * and dispatches this event.
  * @param {goog.events.BrowserEvent} nativeEvent A platform event with a target.
  */
 ol.pointer.PointerEventHandler.prototype.fireNativeEvent =

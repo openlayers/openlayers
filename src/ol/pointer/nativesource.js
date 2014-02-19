@@ -42,8 +42,16 @@ goog.require('ol.pointer.EventSource');
 ol.pointer.NativeSource = function(dispatcher) {
   goog.base(this, dispatcher);
 
+  /**
+   * @const
+   * @type {goog.structs.Map}
+   */
   this.pointerMap = dispatcher.pointerMap;
 
+  /**
+   * @const
+   * @type {Array.<string>}
+   */
   this.events = [
     'pointerdown',
     'pointermove',
@@ -54,6 +62,11 @@ ol.pointer.NativeSource = function(dispatcher) {
     'gotpointercapture',
     'lostpointercapture'
   ];
+
+  /**
+   * @const
+   * @type {Object.<string, function(goog.events.BrowserEvent)>}
+   */
   this.mapping = {
     'pointerdown': this.pointerDown,
     'pointermove': this.pointerMove,

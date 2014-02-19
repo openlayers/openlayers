@@ -31,6 +31,7 @@
 goog.provide('ol.pointer.TouchSource');
 
 goog.require('goog.array');
+goog.require('goog.math.Coordinate');
 goog.require('ol.pointer.EventSource');
 
 
@@ -56,20 +57,59 @@ ol.pointer.TouchSource = function(dispatcher, mouseSource) {
    */
   this.mouseSource = mouseSource;
 
-  // This should be long enough to ignore compat mouse events made by touch
+  /**
+   * Mouse event timeout: This should be long enough to
+   * ignore compat mouse events made by touch.
+   * @const
+   * @type {number}
+   */
   this.DEDUP_TIMEOUT = 2500;
-  this.CLICK_COUNT_TIMEOUT = 200;
-  this.POINTER_TYPE = 'touch';
-  this.firstTouch = null;
-  this.clickCount = 0;
-  this.resetId = null;
 
+  /**
+   * @const
+   * @type {number}
+   */
+  this.CLICK_COUNT_TIMEOUT = 200;
+
+  /**
+   * @const
+   * @type {string}
+   */
+  this.POINTER_TYPE = 'touch';
+
+  /**
+   * @private
+   * @type {?number}
+   */
+  this.firstTouchId_ = null;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.clickCount_ = 0;
+
+  /**
+   * @private
+   * @type {?number}
+   */
+  this.resetId_ = null;
+
+  /**
+   * @const
+   * @type {Array.<string>}
+   */
   this.events = [
     'touchstart',
     'touchmove',
     'touchend',
     'touchcancel'
   ];
+
+  /**
+   * @const
+   * @type {Object.<string, function(goog.events.BrowserEvent)>}
+   */
   this.mapping = {
     'touchstart': this.touchstart,
     'touchmove': this.touchmove,
@@ -98,7 +138,7 @@ ol.pointer.TouchSource.prototype.getMapping = function() {
  * @return {boolean} True, if this is the primary touch.
  */
 ol.pointer.TouchSource.prototype.isPrimaryTouch_ = function(inTouch) {
-  return this.firstTouch === inTouch.identifier;
+  return this.firstTouchId_ === inTouch.identifier;
 };
 
 
@@ -110,7 +150,7 @@ ol.pointer.TouchSource.prototype.isPrimaryTouch_ = function(inTouch) {
 ol.pointer.TouchSource.prototype.setPrimaryTouch_ = function(inTouch) {
   if (this.pointerMap.getCount() === 0 ||
       (this.pointerMap.getCount() === 1 && this.pointerMap.containsKey(1))) {
-    this.firstTouch = inTouch.identifier;
+    this.firstTouchId_ = inTouch.identifier;
     this.firstXY = {X: inTouch.clientX, Y: inTouch.clientY};
     this.cancelResetClickCount_();
   }
@@ -123,7 +163,7 @@ ol.pointer.TouchSource.prototype.setPrimaryTouch_ = function(inTouch) {
  */
 ol.pointer.TouchSource.prototype.removePrimaryPointer_ = function(inPointer) {
   if (inPointer.isPrimary) {
-    this.firstTouch = null;
+    this.firstTouchId_ = null;
     this.firstXY = null;
     this.resetClickCount_();
   }
@@ -135,10 +175,11 @@ ol.pointer.TouchSource.prototype.removePrimaryPointer_ = function(inPointer) {
  */
 ol.pointer.TouchSource.prototype.resetClickCount_ = function() {
   var fn = function() {
-    this.clickCount = 0;
-    this.resetId = null;
+    this.clickCount_ = 0;
+    this.resetId_ = null;
   };
-  this.resetId = setTimeout(goog.bind(fn, this), this.CLICK_COUNT_TIMEOUT);
+  this.resetId_ = goog.global.setTimeout(goog.bind(fn, this),
+      this.CLICK_COUNT_TIMEOUT);
 };
 
 
@@ -146,8 +187,8 @@ ol.pointer.TouchSource.prototype.resetClickCount_ = function() {
  * @private
  */
 ol.pointer.TouchSource.prototype.cancelResetClickCount_ = function() {
-  if (this.resetId) {
-    clearTimeout(this.resetId);
+  if (this.resetId_) {
+    goog.global.clearTimeout(this.resetId_);
   }
 };
 
@@ -169,7 +210,7 @@ ol.pointer.TouchSource.prototype.touchToPointer_ =
   //e.target = findTarget(e);
   e.bubbles = true;
   e.cancelable = true;
-  e.detail = this.clickCount;
+  e.detail = this.clickCount_;
   e.button = 0;
   e.buttons = 1;
   e.width = inTouch['webkitRadiusX'] || inTouch['radiusX'] || 0;
@@ -193,13 +234,13 @@ ol.pointer.TouchSource.prototype.processTouches_ =
   var pointers = goog.array.map(tl,
       goog.partial(this.touchToPointer_, inEvent), this);
   // forward touch preventDefaults
-  pointers.forEach(function(p) {
+  goog.array.forEach(pointers, function(p) {
     p.preventDefault = function() {
       this.firstXY = null;
       inEvent.preventDefault();
     };
   }, this);
-  pointers.forEach(goog.partial(inFunction, inEvent), this);
+  goog.array.forEach(pointers, goog.partial(inFunction, inEvent), this);
 };
 
 
@@ -245,7 +286,7 @@ ol.pointer.TouchSource.prototype.vacuumTouches_ = function(inEvent) {
         d.push(this.touchToPointer_(p));
       }
     }, this);
-    d.forEach(goog.partial(this.cancelOut_, inEvent), this);
+    goog.array.forEach(d, goog.partial(this.cancelOut_, inEvent), this);
   }
 };
 
@@ -257,7 +298,7 @@ ol.pointer.TouchSource.prototype.vacuumTouches_ = function(inEvent) {
  * @param {Object} thisArg
  */
 ol.pointer.TouchSource.prototype.forEach_ = function(map, callback, thisArg) {
-  map.getValues().forEach(function(value) {
+  goog.array.forEach(map.getValues(), function(value) {
     callback.call(thisArg, value, map.get(value));
   });
 };
@@ -273,7 +314,7 @@ ol.pointer.TouchSource.prototype.touchstart = function(inEvent) {
   this.vacuumTouches_(inEvent);
   this.setPrimaryTouch_(inEvent.getBrowserEvent().changedTouches[0]);
   this.dedupSynthMouse_(inEvent);
-  this.clickCount++;
+  this.clickCount_++;
   this.processTouches_(inEvent, this.overDown_);
 };
 
@@ -414,7 +455,7 @@ ol.pointer.TouchSource.prototype.dedupSynthMouse_ = function(inEvent) {
   // only the primary finger will synth mouse events
   if (this.isPrimaryTouch_(t)) {
     // remember x/y of last touch
-    var lt = {x: t.clientX, y: t.clientY};
+    var lt = new goog.math.Coordinate(t.clientX, t.clientY);
     lts.push(lt);
     var fn = goog.bind(function(lts, lt) {
       var i = lts.indexOf(lt);
@@ -422,6 +463,6 @@ ol.pointer.TouchSource.prototype.dedupSynthMouse_ = function(inEvent) {
         lts.splice(i, 1);
       }
     }, null, lts, lt);
-    setTimeout(fn, this.DEDUP_TIMEOUT);
+    goog.global.setTimeout(fn, this.DEDUP_TIMEOUT);
   }
 };

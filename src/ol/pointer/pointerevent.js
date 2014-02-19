@@ -65,53 +65,130 @@ ol.pointer.PointerEvent = function(type, browserEvent, opt_eventDict) {
   this.originalEvent = browserEvent.getBrowserEvent();
 
   var eventDict = goog.isDef(opt_eventDict) ? opt_eventDict : {};
+
+  /**
+   * @type {number}
+   */
   this.buttons = this.getButtons_(eventDict);
+
+  /**
+   * @type {number}
+   */
   this.pressure = this.getPressure_(eventDict, this.buttons);
 
   // MouseEvent related properties
+
+  /**
+   * @type {boolean}
+   */
   this.bubbles = this.getValue_('bubbles', eventDict);
 
+  /**
+   * @type {boolean}
+   */
   this.cancelable = this.getValue_('cancelable', eventDict);
 
+  /**
+   * @type {Object}
+   */
   this.view = this.getValue_('view', eventDict);
 
+  /**
+   * @type {number}
+   */
   this.detail = this.getValue_('detail', eventDict);
 
+  /**
+   * @type {number}
+   */
   this.screenX = this.getValue_('screenX', eventDict);
 
+  /**
+   * @type {number}
+   */
   this.screenY = this.getValue_('screenY', eventDict);
 
+  /**
+   * @type {number}
+   */
   this.clientX = this.getValue_('clientX', eventDict);
 
+  /**
+   * @type {number}
+   */
   this.clientY = this.getValue_('clientY', eventDict);
 
+  /**
+   * @type {boolean}
+   */
   this.ctrlKey = this.getValue_('ctrlKey', eventDict);
 
+  /**
+   * @type {boolean}
+   */
   this.altKey = this.getValue_('altKey', eventDict);
 
+  /**
+   * @type {boolean}
+   */
   this.shiftKey = this.getValue_('shiftKey', eventDict);
 
+  /**
+   * @type {boolean}
+   */
   this.metaKey = this.getValue_('metaKey', eventDict);
 
+  /**
+   * @type {number}
+   */
   this.button = this.getValue_('button', eventDict);
 
+  /**
+   * @type {Node}
+   */
   this.relatedTarget = this.getValue_('relatedTarget', eventDict);
 
   // PointerEvent related properties
+
+  /**
+   * @const
+   * @type {number}
+   */
   this.pointerId = this.getValueOr_('pointerId', 0, eventDict);
 
+  /**
+   * @type {number}
+   */
   this.width = this.getValueOr_('width', 0, eventDict);
 
+  /**
+   * @type {number}
+   */
   this.height = this.getValueOr_('height', 0, eventDict);
 
+  /**
+   * @type {number}
+   */
   this.tiltX = this.getValueOr_('tiltX', 0, eventDict);
 
+  /**
+   * @type {number}
+   */
   this.tiltY = this.getValueOr_('tiltY', 0, eventDict);
 
+  /**
+   * @type {string}
+   */
   this.pointerType = this.getValueOr_('pointerType', '', eventDict);
 
+  /**
+   * @type {number}
+   */
   this.hwTimestamp = this.getValueOr_('hwTimestamp', 0, eventDict);
 
+  /**
+   * @type {boolean}
+   */
   this.isPrimary = this.getValueOr_('isPrimary', false, eventDict);
 
 };
@@ -122,7 +199,7 @@ goog.inherits(ol.pointer.PointerEvent, goog.events.Event);
  * @private
  * @param {string} key
  * @param {Object.<string, ?>} eventDict
- * @return {*}
+ * @return {string|number|?}
  */
 ol.pointer.PointerEvent.prototype.getValue_ = function(key, eventDict) {
   return goog.isDefAndNotNull(eventDict[key]) ?
@@ -136,7 +213,7 @@ ol.pointer.PointerEvent.prototype.getValue_ = function(key, eventDict) {
  * @param {string} key
  * @param {*} defaultValue
  * @param {Object.<string, ?>} eventDict
- * @return {*}
+ * @return {string|number|?}
  */
 ol.pointer.PointerEvent.prototype.getValueOr_ =
     function(key, defaultValue, eventDict) {

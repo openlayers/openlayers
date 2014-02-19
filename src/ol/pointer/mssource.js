@@ -42,10 +42,22 @@ goog.require('ol.pointer.EventSource');
 ol.pointer.MsSource = function(dispatcher) {
   goog.base(this, dispatcher);
 
+  /**
+   * @const
+   * @type {goog.structs.Map}
+   */
   this.pointerMap = dispatcher.pointerMap;
 
+  /**
+   * @const
+   * @type {boolean}
+   */
   this.HAS_BITMAP_TYPE = this.hasBitmapType();
 
+  /**
+   * @const
+   * @type {Array.<string>}
+   */
   this.events = [
     'MSPointerDown',
     'MSPointerMove',
@@ -56,6 +68,11 @@ ol.pointer.MsSource = function(dispatcher) {
     'MSGotPointerCapture',
     'MSLostPointerCapture'
   ];
+
+  /**
+   * @const
+   * @type {Object.<string, function(goog.events.BrowserEvent)>}
+   */
   this.mapping = {
     'MSPointerDown': this.msPointerDown,
     'MSPointerMove': this.msPointerMove,
@@ -67,6 +84,10 @@ ol.pointer.MsSource = function(dispatcher) {
     'MSLostPointerCapture': this.msLostPointerCapture
   };
 
+  /**
+   * @const
+   * @type {Array.<string>}
+   */
   this.POINTER_TYPES = [
     '',
     'unavailable',
