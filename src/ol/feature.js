@@ -46,7 +46,7 @@ ol.Feature = function(opt_geometryOrValues) {
    * @private
    * @type {ol.feature.FeatureStyleFunction|undefined}
    */
-  this.styleFunction_;
+  this.styleFunction_ = undefined;
 
   /**
    * @private

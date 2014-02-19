@@ -40,10 +40,10 @@ ol.layer.Vector = function(opt_options) {
 
   /**
    * Style function for use within the library.
-   * @type {ol.feature.StyleFunction}
+   * @type {ol.feature.StyleFunction|undefined}
    * @private
    */
-  this.styleFunction_;
+  this.styleFunction_ = undefined;
 
   if (goog.isDef(options.style)) {
     this.setStyle(options.style);
@@ -80,7 +80,7 @@ ol.layer.Vector.prototype.getStyle = function() {
 
 /**
  * Get the style function.
- * @return {ol.feature.StyleFunction} Layer style function.
+ * @return {ol.feature.StyleFunction|undefined} Layer style function.
  * @todo stability experimental
  */
 ol.layer.Vector.prototype.getStyleFunction = function() {
