@@ -67,7 +67,7 @@ goog.inherits(ol.interaction.Rotate, ol.interaction.PointerInteraction);
 /**
  * @inheritDoc
  */
-ol.interaction.Rotate.prototype.handlePointerMove =
+ol.interaction.Rotate.prototype.handlePointerDrag =
     function(mapBrowserEvent) {
   goog.asserts.assert(this.targetTouches.length >= 2);
   var rotationDelta = 0.0;

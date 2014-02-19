@@ -55,7 +55,7 @@ goog.inherits(ol.interaction.Zoom, ol.interaction.PointerInteraction);
 /**
  * @inheritDoc
  */
-ol.interaction.Zoom.prototype.handlePointerMove =
+ol.interaction.Zoom.prototype.handlePointerDrag =
     function(mapBrowserEvent) {
   goog.asserts.assert(this.targetTouches.length >= 2);
   var scaleDelta = 1.0;

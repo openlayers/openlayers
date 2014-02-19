@@ -330,7 +330,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
       pointerEvent.clientY != this.down_.clientY) {
     this.dragged_ = true;
     var newEvent = new ol.MapBrowserPointerEvent(
-        ol.MapBrowserEvent.EventType.POINTERMOVE, this.map_, pointerEvent);
+        ol.MapBrowserEvent.EventType.POINTERDRAG, this.map_, pointerEvent);
     this.dispatchEvent(newEvent);
   }
 
@@ -371,18 +371,9 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
  * @enum {string}
  */
 ol.MapBrowserEvent.EventType = {
-  CLICK: goog.events.EventType.CLICK,
-  DBLCLICK: goog.events.EventType.DBLCLICK,
-  DRAGSTART: 'dragstart',
-  DRAG: 'drag',
-  DRAGEND: 'dragend',
-  DOWN: 'down',
-
-  MOUSEMOVE: goog.events.EventType.MOUSEMOVE,
   SINGLECLICK: 'singleclick',
-  TOUCHSTART: goog.events.EventType.TOUCHSTART,
-  TOUCHMOVE: goog.events.EventType.TOUCHMOVE,
-  TOUCHEND: goog.events.EventType.TOUCHEND,
+  DBLCLICK: goog.events.EventType.DBLCLICK,
+  POINTERDRAG: 'pointermove',
 
   POINTERMOVE: 'pointermove',
   POINTERDOWN: 'pointerdown',
@@ -391,5 +382,18 @@ ol.MapBrowserEvent.EventType = {
   POINTEROUT: 'pointerout',
   POINTERENTER: 'pointerenter',
   POINTERLEAVE: 'pointerleave',
-  POINTERCANCEL: 'pointercancel'
+  POINTERCANCEL: 'pointercancel',
+
+  // TODO old types that should be removed once
+  // the interactions are adapted
+  CLICK: goog.events.EventType.CLICK,
+  DRAGSTART: 'dragstart',
+  DRAG: 'drag',
+  DRAGEND: 'dragend',
+  DOWN: 'down',
+  MOUSEMOVE: goog.events.EventType.MOUSEMOVE,
+
+  TOUCHSTART: goog.events.EventType.TOUCHSTART,
+  TOUCHMOVE: goog.events.EventType.TOUCHMOVE,
+  TOUCHEND: goog.events.EventType.TOUCHEND
 };

@@ -55,7 +55,7 @@ goog.inherits(ol.interaction.Pan, ol.interaction.PointerInteraction);
 /**
  * @inheritDoc
  */
-ol.interaction.Pan.prototype.handlePointerMove = function(mapBrowserEvent) {
+ol.interaction.Pan.prototype.handlePointerDrag = function(mapBrowserEvent) {
   goog.asserts.assert(this.targetTouches.length >= 1);
   var centroid = ol.interaction.PointerInteraction.centroid(this.targetTouches);
   if (!goog.isNull(this.lastCentroid)) {

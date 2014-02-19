@@ -60,15 +60,15 @@ ol.interaction.PointerInteraction.centroid = function(touches) {
 
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
- * @return {boolean} Whether the event is a touchstart, touchmove
- *     or touchend event.
+ * @return {boolean} Whether the event is a pointerdown, pointerdrag
+ *     or pointerup event.
  * @private
  */
 ol.interaction.PointerInteraction.isTouchEvent_ = function(mapBrowserEvent) {
   var type = mapBrowserEvent.type;
   return (
       type === ol.MapBrowserEvent.EventType.POINTERDOWN ||
-      type === ol.MapBrowserEvent.EventType.POINTERMOVE ||
+      type === ol.MapBrowserEvent.EventType.POINTERDRAG ||
       type === ol.MapBrowserEvent.EventType.POINTERUP);
 };
 
@@ -100,7 +100,7 @@ ol.interaction.PointerInteraction.prototype.updateTrackedTouches_ =
  * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
  * @protected
  */
-ol.interaction.PointerInteraction.prototype.handlePointerMove =
+ol.interaction.PointerInteraction.prototype.handlePointerDrag =
     goog.nullFunction;
 
 
@@ -130,8 +130,8 @@ ol.interaction.PointerInteraction.prototype.handleMapBrowserEvent =
   var view = mapBrowserEvent.map.getView();
   this.updateTrackedTouches_(mapBrowserEvent);
   if (this.handled_) {
-    if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE) {
-      this.handlePointerMove(mapBrowserEvent);
+    if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERDRAG) {
+      this.handlePointerDrag(mapBrowserEvent);
     } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERUP) {
       this.handled_ = this.handlePointerUp(mapBrowserEvent);
       if (!this.handled_) {
