@@ -83,6 +83,7 @@ ol.control.FullScreen.prototype.handleClick_ = function(browserEvent) {
   if (!goog.dom.fullscreen.isSupported()) {
     return;
   }
+  browserEvent.preventDefault();
   var map = this.getMap();
   if (goog.isNull(map)) {
     return;

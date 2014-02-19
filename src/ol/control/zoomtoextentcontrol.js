@@ -65,6 +65,7 @@ goog.inherits(ol.control.ZoomToExtent, ol.control.Control);
  * @private
  */
 ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function(browserEvent) {
+  browserEvent.preventDefault();
   // prevent #zoomExtent anchor from getting appended to the url
   var map = this.getMap();
   var view = map.getView();

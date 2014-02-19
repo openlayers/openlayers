@@ -94,6 +94,7 @@ goog.inherits(ol.control.Zoom, ol.control.Control);
  * @private
  */
 ol.control.Zoom.prototype.zoomByDelta_ = function(delta, browserEvent) {
+  browserEvent.preventDefault();
   // prevent the anchor from getting appended to the url
   var map = this.getMap();
   // FIXME works for View2D only
