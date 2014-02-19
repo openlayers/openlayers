@@ -37,9 +37,9 @@ ol.dom.Input = function(target) {
 
   /**
    * @private
-   * @type {Element}
+   * @type {HTMLInputElement}
    */
-  this.target_ = target;
+  this.target_ = /** @type {HTMLInputElement} */ (target);
 
   goog.events.listen(this.target_, goog.events.EventType.CHANGE,
       this.handleInputChanged_, false, this);
@@ -127,7 +127,7 @@ ol.dom.Input.prototype.handleInputChanged_ = function() {
  * @private
  */
 ol.dom.Input.prototype.handleCheckedChanged_ = function() {
-  this.target_.checked = this.getChecked();
+  this.target_.checked = /** @type {boolean} */ (this.getChecked());
 };
 
 
@@ -135,5 +135,5 @@ ol.dom.Input.prototype.handleCheckedChanged_ = function() {
  * @private
  */
 ol.dom.Input.prototype.handleValueChanged_ = function() {
-  this.target_.value = this.getValue();
+  this.target_.value =  /** @type {string} */ (this.getValue());
 };
