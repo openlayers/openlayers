@@ -1,6 +1,7 @@
 goog.provide('ol.dom.Input');
 goog.provide('ol.dom.InputProperty');
 
+goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.Object');
@@ -111,9 +112,11 @@ goog.exportProperty(
 
 
 /**
+ * @param {goog.events.BrowserEvent} browserEvent Browser event.
  * @private
  */
-ol.dom.Input.prototype.handleInputChanged_ = function() {
+ol.dom.Input.prototype.handleInputChanged_ = function(browserEvent) {
+  goog.asserts.assert(browserEvent.currentTarget == this.target_);
   var target = this.target_;
   if (target.type === 'checkbox' || target.type === 'radio') {
     this.setChecked(target.checked);
@@ -124,16 +127,18 @@ ol.dom.Input.prototype.handleInputChanged_ = function() {
 
 
 /**
+ * @param {goog.events.Event} event Change event.
  * @private
  */
-ol.dom.Input.prototype.handleCheckedChanged_ = function() {
+ol.dom.Input.prototype.handleCheckedChanged_ = function(event) {
   this.target_.checked = /** @type {boolean} */ (this.getChecked());
 };
 
 
 /**
+ * @param {goog.events.Event} event Change event.
  * @private
  */
-ol.dom.Input.prototype.handleValueChanged_ = function() {
+ol.dom.Input.prototype.handleValueChanged_ = function(event) {
   this.target_.value =  /** @type {string} */ (this.getValue());
 };
