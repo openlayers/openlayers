@@ -219,6 +219,13 @@ ol.pointer.TouchSource.prototype.touchToPointer_ =
   e.isPrimary = this.isPrimaryTouch_(inTouch);
   e.pointerType = this.POINTER_TYPE;
 
+  // make sure that the properties that are different for
+  // each `Touch` object are not copied from the BrowserEvent object
+  e.clientX = inTouch.clientX;
+  e.clientY = inTouch.clientY;
+  e.screenX = inTouch.screenX;
+  e.screenY = inTouch.screenY;
+
   return e;
 };
 
