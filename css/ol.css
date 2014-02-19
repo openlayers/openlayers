@@ -152,6 +152,9 @@
 .ol-touch .ol-zoom-extent button {
   font-size: 1.5em;
 }
+.ol-touch .ol-zoom-extent {
+  top: 5.5em;
+}
 .ol-zoom button:hover,
 .ol-zoom button:focus,
 .ol-zoom-extent button:hover,
@@ -213,6 +216,10 @@ button.ol-full-screen-true:after {
   border-radius: 0 4px 4px 0;
   bottom: .3em;
   left: 2.2em;
+}
+.ol-touch .ol-has-tooltip:hover [role=tooltip],
+.ol-touch .ol-has-tooltip:focus [role=tooltip] {
+  display: none;
 }
 .ol-zoom .ol-has-tooltip:hover [role=tooltip],
 .ol-zoom .ol-has-tooltip:focus [role=tooltip] {
