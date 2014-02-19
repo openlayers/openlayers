@@ -126,7 +126,7 @@
 }
 
 .ol-zoom button,
-.ol-zoom-extent a,
+.ol-zoom-extent button,
 .ol-full-screen a {
   display: block;
   margin: 1px;
@@ -138,37 +138,36 @@
   text-align: center;
   height: 1.375em;
   width: 1.375em;
-  line-height: 1.375em;
+  line-height: .4em;
   background-color: #7b98bc;
   background-color: rgba(0,60,136,0.5);
   border: none;
 }
-.ol-zoom button {
-    line-height: .4em;
-}
-.ol-zoom button::-moz-focus-inner {
+.ol-zoom button::-moz-focus-inner,
+.ol-zoom-extent button::-moz-focus-inner {
   border: none;
   padding: 0;
 }
-.ol-zoom-extent a {
+.ol-zoom-extent button {
   font-size: 16px;
   line-height: 22px;
   border-radius: 2px;
 }
 .ol-touch .ol-zoom button,
 .ol-touch .ol-full-screen a,
-.ol-touch .ol-zoom-extent a {
+.ol-touch .ol-zoom-extent button {
   font-size: 1.5em;
 }
 .ol-zoom button:hover,
 .ol-zoom button:focus,
-.ol-zoom-extent a:hover {
+.ol-zoom-extent button:hover,
+.ol-zoom-extent button:focus {
   color: #fff;
   text-decoration: none;
   background-color: #4c6079;
   background-color: rgba(0,60,136,0.7);
 }
-.ol-zoom-extent a:after {
+.ol-zoom-extent button:after {
     content: "E";
 }
 .ol-zoom-in {
@@ -205,9 +204,11 @@ a.ol-full-screen-true:after {
 /* show a tooltip offset to below and right */
 .ol-has-tooltip:hover [role=tooltip], .ol-has-tooltip:focus [role=tooltip] {
   clip: auto;
-  padding: .2em .4em;
-  height: auto;
+  padding: 0 .4em;
+  font-size: .8em;
+  height: 1.2em;
   width: auto;
+  line-height: 1.2em;
   z-index: 1100;
   max-height: 100px;
   white-space: nowrap;
@@ -218,8 +219,12 @@ a.ol-full-screen-true:after {
   border: 3px solid rgba(255, 255, 255, 0.0);
   border-left-width: 0;
   border-radius: 0 4px 4px 0;
+  bottom: .3em;
+  left: 2.2em;
+}
+.ol-zoom .ol-has-tooltip:hover [role=tooltip],
+.ol-zoom .ol-has-tooltip:focus [role=tooltip] {
   bottom: 1.1em;
-  left: 2em;
 }
 
 .ol-zoomslider {
@@ -249,10 +254,11 @@ a.ol-full-screen-true:after {
   height: 20px;
   width: 24px;
 }
-.ol-zoom-extent a,
+.ol-zoom-extent button,
 .ol-attribution,
 .ol-full-screen a,
 .ol-scale-line-inner,
-.ol-zoom a {
+.ol-zoom button,
+.ol-has-tooltip [role=tooltip] {
   font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
 }

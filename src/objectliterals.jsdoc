@@ -275,6 +275,7 @@
  * @typedef {Object} olx.control.ZoomToExtentOptions
  * @property {string|undefined} className Class name. Default is `ol-zoom-extent`.
  * @property {Element|undefined} target Target.
+ * @property {string|undefined} tipLabel Text label to use for the zoom-extent tip. Default is `Zoom to extent`
  * @property {ol.Extent|undefined} extent The extent to zoom to. If
  *     undefined the validity extent of the view projection is used.
  * @todo stability experimental
