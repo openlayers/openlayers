@@ -103,7 +103,6 @@ EXAMPLES_SRC = [path
                 if path.endswith('.js')
                 if not path.endswith('.combined.js')
                 if not path.startswith('examples/bootstrap')
-                if not path.startswith('examples/font-awesome')
                 if path != 'examples/Jugl.js'
                 if path != 'examples/jquery.min.js'
                 if path != 'examples/loader.js'
