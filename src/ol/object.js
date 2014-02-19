@@ -428,15 +428,7 @@ ol.Object.prototype.set = function(key, value) {
 ol.Object.prototype.setValues = function(values) {
   var key;
   for (key in values) {
-    var value = values[key];
-    var setterName = ol.Object.getSetterName(key);
-    var setter = /** @type {function(*)|undefined} */
-        (goog.object.get(this, setterName));
-    if (goog.isDef(setter)) {
-      setter.call(this, value);
-    } else {
-      this.set(key, value);
-    }
+    this.set(key, values[key]);
   }
 };
 

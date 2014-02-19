@@ -301,13 +301,6 @@ describe('ol.Feature', function() {
 
     });
 
-    /**
-     * We should be able to make the assertion below, but the constructor
-     * calls setValues which calls setFoo when provided with 'foo'.  This
-     * is different behavior than calling set('foo', 'bar').
-     * See https://github.com/openlayers/ol3/issues/1672
-
-
     it('does not get confused with "style" option to constructor', function() {
       var feature = new ol.Feature({
         style: 'foo'
@@ -315,8 +308,6 @@ describe('ol.Feature', function() {
 
       expect(feature.getStyle()).to.be(null);
     });
-
-     */
 
     it('does not get confused with user set "style" property', function() {
       var feature = new ol.Feature();
