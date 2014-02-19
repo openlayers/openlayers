@@ -159,7 +159,30 @@ ol.BrowserFeature.HAS_GEOLOCATION = 'geolocation' in goog.global.navigator;
  */
 ol.BrowserFeature.HAS_TOUCH = ol.ASSUME_TOUCH ||
     (goog.global.document &&
-    'ontouchstart' in goog.global.document.documentElement) ||
+    'ontouchstart' in goog.global.document.documentElement);
+
+
+/**
+ * True if browser supports pointer events.
+ *
+ * `navigation.pointerEnabled` is actually not part of the
+ * spec: https://www.w3.org/Bugs/Public/show_bug.cgi?id=22890#c3
+ *
+ * @const
+ * @type {boolean}
+ * @todo stability experimental
+ */
+ol.BrowserFeature.HAS_POINTER =
+    !!(goog.global.navigator['pointerEnabled']);
+
+
+/**
+ * True if browser supports ms pointer events (IE 10).
+ * @const
+ * @type {boolean}
+ * @todo stability experimental
+ */
+ol.BrowserFeature.HAS_MSPOINTER =
     !!(goog.global.navigator.msPointerEnabled);
 
 

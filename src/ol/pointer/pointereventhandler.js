@@ -38,6 +38,7 @@ goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
 goog.require('goog.structs.Map');
 
+goog.require('ol.BrowserFeature');
 goog.require('ol.pointer.MouseSource');
 goog.require('ol.pointer.MsSource');
 goog.require('ol.pointer.NativeSource');
@@ -89,15 +90,15 @@ goog.inherits(ol.pointer.PointerEventHandler, goog.events.EventTarget);
  * that generate pointer events.
  */
 ol.pointer.PointerEventHandler.prototype.registerSources = function() {
-  if (this.isPointerEnabled_()) {
+  if (ol.BrowserFeature.HAS_POINTER) {
     this.registerSource('native', new ol.pointer.NativeSource(this));
-  } else if (this.isMsPointerEnabled_()) {
+  } else if (ol.BrowserFeature.HAS_MSPOINTER) {
     this.registerSource('ms', new ol.pointer.MsSource(this));
   } else {
     var mouseSource = new ol.pointer.MouseSource(this);
     this.registerSource('mouse', mouseSource);
 
-    if (this.isTouchDefined_()) {
+    if (ol.BrowserFeature.HAS_TOUCH) {
       this.registerSource('touch',
           new ol.pointer.TouchSource(this, mouseSource));
     }
@@ -105,39 +106,6 @@ ol.pointer.PointerEventHandler.prototype.registerSources = function() {
 
   // register events on the viewport element
   this.register_();
-};
-
-
-/**
- * @private
- * @return {boolean} Returns true if the browser supports
- *    native pointer events.
- */
-ol.pointer.PointerEventHandler.prototype.isPointerEnabled_ = function() {
-  /* TODO navigation.pointerEnabled is actually not part of the
-   * spec: https://www.w3.org/Bugs/Public/show_bug.cgi?id=22890#c3
-   */
-  return window.navigator['pointerEnabled'] !== undefined;
-};
-
-
-/**
- * @private
- * @return {boolean} Returns true if the browser supports
- *    ms pointer events (IE10).
- */
-ol.pointer.PointerEventHandler.prototype.isMsPointerEnabled_ = function() {
-  return window.navigator['msPointerEnabled'] !== undefined;
-};
-
-
-/**
- * @private
- * @return {boolean} Returns true if the browser supports
- *    touch events.
- */
-ol.pointer.PointerEventHandler.prototype.isTouchDefined_ = function() {
-  return window['ontouchstart'] !== undefined;
 };
 
 
