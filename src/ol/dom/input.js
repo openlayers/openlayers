@@ -42,7 +42,8 @@ ol.dom.Input = function(target) {
    */
   this.target_ = /** @type {HTMLInputElement} */ (target);
 
-  goog.events.listen(this.target_, goog.events.EventType.CHANGE,
+  goog.events.listen(this.target_,
+      [goog.events.EventType.CHANGE, goog.events.EventType.INPUT],
       this.handleInputChanged_, false, this);
 
   goog.events.listen(this,
