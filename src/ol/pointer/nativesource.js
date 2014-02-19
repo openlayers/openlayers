@@ -93,30 +93,6 @@ ol.pointer.NativeSource.prototype.getMapping = function() {
 };
 
 
-/** @inheritDoc */
-ol.pointer.NativeSource.prototype.listenOnDocument = function(type) {
-  if (type === 'pointermove') {
-    this.dispatcher.removeEvent('pointermove');
-    this.dispatcher.addEvent('pointermove', goog.global.document);
-  } else if (type === 'pointerup') {
-    this.dispatcher.removeEvent('pointerup');
-    this.dispatcher.addEvent('pointerup', goog.global.document);
-  }
-};
-
-
-/** @inheritDoc */
-ol.pointer.NativeSource.prototype.unlistenOnDocument = function(type) {
-  if (type === 'pointermove') {
-    this.dispatcher.removeEvent('pointermove', goog.global.document);
-    this.dispatcher.addEvent('pointermove');
-  } else if (type === 'pointerup') {
-    this.dispatcher.removeEvent('pointerup', goog.global.document);
-    this.dispatcher.addEvent('pointerup');
-  }
-};
-
-
 /**
  * Handler for `pointerdown`.
  *

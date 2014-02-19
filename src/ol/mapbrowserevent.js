@@ -168,10 +168,22 @@ ol.MapBrowserEventHandler = function(map) {
   this.trackedTouches_ = {};
 
   /**
+   * Event handler which generates pointer events for
+   * the viewport element.
+   *
    * @type {ol.pointer.PointerEventHandler}
    * @private
    */
   this.pointerEventHandler_ = new ol.pointer.PointerEventHandler(element);
+
+  /**
+   * Event handler which generates pointer events for
+   * the document (used when dragging).
+   *
+   * @type {ol.pointer.PointerEventHandler}
+   * @private
+   */
+  this.documentPointerEventHandler_ = null;
 
   this.pointerdownListenerKey_ = goog.events.listen(this.pointerEventHandler_,
       ol.pointer.EventType.POINTERDOWN,
@@ -181,8 +193,7 @@ goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
 
 
 /**
- * Get the last "down" type event.  This will be set on mousedown,
- * touchstart, and pointerdown.
+ * Get the last "down" type event. This will be set on pointerdown.
  * @return {ol.pointer.PointerEvent} The most recent "down" type event (or null
  * if none have occurred).
  */
@@ -246,14 +257,10 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
   this.dispatchEvent(newEvent);
 
   if (this.activePointers_ <= 0) {
-    this.pointerEventHandler_.unlistenOnDocument(
-        ol.MapBrowserEvent.EventType.POINTERMOVE,
-        this.handlePointerMove_, false, this);
-    this.pointerEventHandler_.unlistenOnDocument(
-        ol.MapBrowserEvent.EventType.POINTERUP,
-        this.handlePointerUp_, false, this);
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
+    this.documentPointerEventHandler_.dispose();
+    this.documentPointerEventHandler_ = null;
   }
 
   // We emulate click event on left mouse button click, touch contact, and pen
@@ -282,16 +289,22 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
   this.dragged_ = false;
 
   if (goog.isNull(this.dragListenerKeys_)) {
-    this.pointerEventHandler_.listenOnDocument(
-        ol.MapBrowserEvent.EventType.POINTERMOVE,
-        this.handlePointerMove_, false, this);
-    this.pointerEventHandler_.listenOnDocument(
-        ol.MapBrowserEvent.EventType.POINTERUP,
-        this.handlePointerUp_, false, this);
+    /* Set up a pointer event handler on the `document`,
+     * which is required when the pointer is moved outside
+     * the viewport when dragging.
+     */
+    this.documentPointerEventHandler_ =
+        new ol.pointer.PointerEventHandler(document);
 
     this.dragListenerKeys_ = [
+      goog.events.listen(this.documentPointerEventHandler_,
+          ol.MapBrowserEvent.EventType.POINTERMOVE,
+          this.handlePointerMove_, false, this),
+      goog.events.listen(this.documentPointerEventHandler_,
+          ol.MapBrowserEvent.EventType.POINTERUP,
+          this.handlePointerUp_, false, this),
       goog.events.listen(this.pointerEventHandler_,
-          [ol.MapBrowserEvent.EventType.POINTERCANCEL],
+          ol.MapBrowserEvent.EventType.POINTERCANCEL,
           this.handlePointerUp_, false, this)
     ];
   }
@@ -330,7 +343,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
 
 
 /**
- * FIXME empty description for jsdoc
+ * @inheritDoc
  */
 ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
   if (!goog.isNull(this.pointerdownListenerKey_)) {
@@ -341,10 +354,13 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
   }
-  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE &&
-      !goog.isNull(this.ieDblclickListenerKey_)) {
-    goog.events.unlistenByKey(this.ieDblclickListenerKey_);
-    this.ieDblclickListenerKey_ = null;
+  if (!goog.isNull(this.documentPointerEventHandler_)) {
+    this.documentPointerEventHandler_.dispose();
+    this.documentPointerEventHandler_ = null;
+  }
+  if (!goog.isNull(this.pointerEventHandler_)) {
+    this.pointerEventHandler_.dispose();
+    this.pointerEventHandler_ = null;
   }
   goog.base(this, 'disposeInternal');
 };
