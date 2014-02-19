@@ -101,16 +101,16 @@
   background-color: rgba(255,255,255,0.6);
 }
 .ol-zoom {
-  top: 8px;
-  left: 8px;
+  top: .5em;
+  left: .5em;
 }
 .ol-zoom-extent {
-  top: 65px;
-  left: 8px;
+  top: 4.643em;
+  left: .5em;
 }
 .ol-full-screen {
-  right: 8px;
-  top: 8px;
+  right: .5em;
+  top: .5em;
 }
 @media print {
   .ol-zoom,
