@@ -139,14 +139,13 @@
   border: none;
 }
 .ol-zoom button::-moz-focus-inner,
-.ol-zoom-extent button::-moz-focus-inner {
+.ol-zoom-extent button::-moz-focus-inner,
+.ol-full-screen button::-moz-focus-inner {
   border: none;
   padding: 0;
 }
 .ol-zoom-extent button {
-  font-size: 16px;
-  line-height: 22px;
-  border-radius: 2px;
+  line-height: 1.4em;
 }
 .ol-touch .ol-zoom button,
 .ol-touch .ol-full-screen button,

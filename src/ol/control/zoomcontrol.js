@@ -43,7 +43,6 @@ ol.control.Zoom = function(opt_options) {
       options.zoomOutTipLabel : 'Zoom out';
 
   var tTipZoomIn = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'class': '',
     'role' : 'tooltip'
   }, zoomInTipLabel);
   var inElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
@@ -58,7 +57,6 @@ ol.control.Zoom = function(opt_options) {
   ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
 
   var tTipsZoomOut = goog.dom.createDom(goog.dom.TagName.SPAN, {
-    'class': '',
     'role' : 'tooltip',
     'type' : 'button'
   }, zoomOutTipLabel);
