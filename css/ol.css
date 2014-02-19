@@ -34,11 +34,6 @@
   white-space: nowrap;
 }
 
-.ol-full-screen a:hover {
-  /* IE <= 8 doesn't support rgba, fall back to a light blue */
-  background: #4c6079;
-  background: rgba(0,60,136,0.7);
-}
 .ol-logo {
   bottom: 0;
   left: 0;
@@ -103,7 +98,7 @@
 .ol-zoom:hover,
 .ol-zoom-extent:hover,
 .ol-full-screen:hover {
-  background-color: rgba(255,255,255,0.5);
+  background-color: rgba(255,255,255,0.6);
 }
 .ol-zoom {
   top: 8px;
@@ -127,7 +122,7 @@
 
 .ol-zoom button,
 .ol-zoom-extent button,
-.ol-full-screen a {
+.ol-full-screen button {
   display: block;
   margin: 1px;
   padding: 0;
@@ -154,15 +149,16 @@
   border-radius: 2px;
 }
 .ol-touch .ol-zoom button,
-.ol-touch .ol-full-screen a,
+.ol-touch .ol-full-screen button,
 .ol-touch .ol-zoom-extent button {
   font-size: 1.5em;
 }
 .ol-zoom button:hover,
 .ol-zoom button:focus,
 .ol-zoom-extent button:hover,
-.ol-zoom-extent button:focus {
-  color: #fff;
+.ol-zoom-extent button:focus,
+.ol-full-screen button:hover,
+.ol-full-screen button:focus {
   text-decoration: none;
   background-color: #4c6079;
   background-color: rgba(0,60,136,0.7);
@@ -176,14 +172,11 @@
 .ol-zoom-out {
   border-radius: 0 0 2px 2px;
 }
-a.ol-full-screen-false:after {
+button.ol-full-screen-false:after {
   content: "\2194";
 }
-a.ol-full-screen-true:after {
+button.ol-full-screen-true:after {
   content: "\00d7";
-}
-.ol-full-screen a {
-  border-radius: 2px;
 }
 
 /* invisible but not hidden */
@@ -214,9 +207,9 @@ a.ol-full-screen-true:after {
   white-space: nowrap;
   display: inline-block;
   background: #FFF;
-  background: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.6);
   color: #000;
-  border: 3px solid rgba(255, 255, 255, 0.0);
+  border: 3px solid rgba(255,255,255,0);
   border-left-width: 0;
   border-radius: 0 4px 4px 0;
   bottom: .3em;
@@ -225,6 +218,12 @@ a.ol-full-screen-true:after {
 .ol-zoom .ol-has-tooltip:hover [role=tooltip],
 .ol-zoom .ol-has-tooltip:focus [role=tooltip] {
   bottom: 1.1em;
+}
+.ol-full-screen .ol-has-tooltip:hover [role=tooltip],
+.ol-full-screen .ol-has-tooltip:focus [role=tooltip] {
+  right: 2.2em;
+  left: auto;
+  border-radius: 4px 0 0 4px;
 }
 
 .ol-zoomslider {
@@ -256,7 +255,7 @@ a.ol-full-screen-true:after {
 }
 .ol-zoom-extent button,
 .ol-attribution,
-.ol-full-screen a,
+.ol-full-screen button,
 .ol-scale-line-inner,
 .ol-zoom button,
 .ol-has-tooltip [role=tooltip] {

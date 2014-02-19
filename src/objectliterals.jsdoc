@@ -216,6 +216,7 @@
 /**
  * @typedef {Object} olx.control.FullScreenOptions
  * @property {string|undefined} className CSS class name. Default is `ol-full-screen`.
+ * @property {string|undefined} tipLabel Text label to use for the full-screen tip. Default is `Fullscreen`
  * @property {boolean|undefined} keys Full keyboard access.
  * @property {Element|undefined} target Target.
  * @todo stability experimental
