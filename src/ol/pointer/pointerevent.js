@@ -31,28 +31,126 @@
 goog.provide('ol.pointer.PointerEvent');
 
 
-//goog.require('goog.events.Event');
 goog.require('goog.events');
+goog.require('goog.events.Event');
 
 
 
 /**
- * This is the constructor for new PointerEvents.
+ * A class for pointer events.
  *
- * New Pointer Events must be given a type, and an optional dictionary of
- * initialization properties.
- *
- * Due to certain platform requirements, events returned from the constructor
- * identify as MouseEvents.
+ * This class is used as an abstraction for mouse events,
+ * touch events and even native pointer events.
  *
  * @constructor
- * @extends {Event}
- * @param {string} inType The type of the event to create.
- * @param {Object.<string, ?>=} opt_inDict An optional dictionary of
+ * @extends {goog.events.Event}
+ * @param {string} type The type of the event to create.
+ * @param {goog.events.BrowserEvent} browserEvent
+ * @param {Object.<string, ?>=} opt_eventDict An optional dictionary of
  *    initial event properties.
  */
-ol.pointer.PointerEvent = function(inType, opt_inDict) {
-  opt_inDict = opt_inDict || {};
+ol.pointer.PointerEvent = function(type, browserEvent, opt_eventDict) {
+  goog.base(this, type);
+
+  /**
+   * @const
+   * @type {goog.events.BrowserEvent}
+   */
+  this.browserEvent = browserEvent;
+
+  /**
+   * @const
+   * @type {Event}
+   */
+  this.originalEvent = browserEvent.getBrowserEvent();
+
+  var eventDict = goog.isDef(opt_eventDict) ? opt_eventDict : {};
+  this.buttons = this.getButtons_(eventDict);
+  this.pressure = this.getPressure_(eventDict, this.buttons);
+
+  // MouseEvent related properties
+  this.bubbles = this.getValue_('bubbles', eventDict);
+
+  this.cancelable = this.getValue_('cancelable', eventDict);
+
+  this.view = this.getValue_('view', eventDict);
+
+  this.detail = this.getValue_('detail', eventDict);
+
+  this.screenX = this.getValue_('screenX', eventDict);
+
+  this.screenY = this.getValue_('screenY', eventDict);
+
+  this.clientX = this.getValue_('clientX', eventDict);
+
+  this.clientY = this.getValue_('clientY', eventDict);
+
+  this.ctrlKey = this.getValue_('ctrlKey', eventDict);
+
+  this.altKey = this.getValue_('altKey', eventDict);
+
+  this.shiftKey = this.getValue_('shiftKey', eventDict);
+
+  this.metaKey = this.getValue_('metaKey', eventDict);
+
+  this.button = this.getValue_('button', eventDict);
+
+  this.relatedTarget = this.getValue_('relatedTarget', eventDict);
+
+  // PointerEvent related properties
+  this.pointerId = this.getValueOr_('pointerId', 0, eventDict);
+
+  this.width = this.getValueOr_('width', 0, eventDict);
+
+  this.height = this.getValueOr_('height', 0, eventDict);
+
+  this.tiltX = this.getValueOr_('tiltX', 0, eventDict);
+
+  this.tiltY = this.getValueOr_('tiltY', 0, eventDict);
+
+  this.pointerType = this.getValueOr_('pointerType', '', eventDict);
+
+  this.hwTimestamp = this.getValueOr_('hwTimestamp', 0, eventDict);
+
+  this.isPrimary = this.getValueOr_('isPrimary', false, eventDict);
+
+};
+goog.inherits(ol.pointer.PointerEvent, goog.events.Event);
+
+
+/**
+ * @private
+ * @param {string} key
+ * @param {Object.<string, ?>} eventDict
+ * @return {*}
+ */
+ol.pointer.PointerEvent.prototype.getValue_ = function(key, eventDict) {
+  return goog.isDefAndNotNull(eventDict[key]) ?
+      eventDict[key] :
+      ol.pointer.PointerEvent.MOUSE_DEFAULTS['relatedTarget'];
+};
+
+
+/**
+ * @private
+ * @param {string} key
+ * @param {*} defaultValue
+ * @param {Object.<string, ?>} eventDict
+ * @return {*}
+ */
+ol.pointer.PointerEvent.prototype.getValueOr_ =
+    function(key, defaultValue, eventDict) {
+  return goog.isDefAndNotNull(eventDict[key]) ?
+      eventDict[key] : defaultValue;
+};
+
+
+/**
+ * @private
+ * @param {Object.<string, ?>} eventDict
+ * @return {number}
+ */
+ol.pointer.PointerEvent.prototype.getButtons_ = function(eventDict) {
   // According to the w3c spec,
   // http://www.w3.org/TR/DOM-Level-3-Events/#events-MouseEvent-button
   // MouseEvent.button == 0 can mean either no mouse button depressed, or the
@@ -75,84 +173,37 @@ ol.pointer.PointerEvent = function(inType, opt_inDict) {
   //
   // This is fixed with DOM Level 4's use of buttons
   var buttons;
-  if (opt_inDict.buttons || ol.pointer.PointerEvent.HAS_BUTTONS) {
-    buttons = opt_inDict.buttons;
+  if (eventDict.buttons || ol.pointer.PointerEvent.HAS_BUTTONS) {
+    buttons = eventDict.buttons;
   } else {
-    switch (opt_inDict.which) {
+    switch (eventDict.which) {
       case 1: buttons = 1; break;
       case 2: buttons = 4; break;
       case 3: buttons = 2; break;
       default: buttons = 0;
     }
   }
+  return buttons;
+};
 
-  var e;
-  if (ol.pointer.PointerEvent.NEW_MOUSE_EVENT) {
-    e = ol.pointer.PointerEvent.createMouseEvent(inType, opt_inDict);
-  } else {
-    e = document.createEvent('MouseEvent');
 
-    // import values from the given dictionary
-    /**
-     * @type {Object.<string, ?>}
-     */
-    var props = {};
-    var p;
-    for (var i = 0; i < ol.pointer.PointerEvent.MOUSE_PROPS.length; i++) {
-      p = ol.pointer.PointerEvent.MOUSE_PROPS[i];
-      props[p] = opt_inDict[p] || ol.pointer.PointerEvent.MOUSE_DEFAULTS[i];
-    }
-
-    // define the properties inherited from MouseEvent
-    e.initMouseEvent(
-        inType, props.bubbles, props.cancelable, props.view, props.detail,
-        props.screenX, props.screenY, props.clientX, props.clientY,
-        props.ctrlKey, props.altKey, props.shiftKey, props.metaKey,
-        props.button, props.relatedTarget
-    );
-  }
-
-  // make the event pass instanceof checks
-  e.__proto__ = ol.pointer.PointerEvent.prototype;
-
-  // define the buttons property according to DOM Level 3 spec
-  if (!ol.pointer.PointerEvent.HAS_BUTTONS) {
-    // IE 10 has buttons on MouseEvent.prototype as a getter w/o any setting
-    // mechanism
-    Object.defineProperty(e, 'buttons',
-        {get: function() { return buttons; }, enumerable: true});
-  }
-
+/**
+ * @private
+ * @param {Object.<string, ?>} eventDict
+ * @param {number} buttons
+ * @return {number}
+ */
+ol.pointer.PointerEvent.prototype.getPressure_ = function(eventDict, buttons) {
   // Spec requires that pointers without pressure specified use 0.5 for down
   // state and 0 for up state.
   var pressure = 0;
-  if (opt_inDict.pressure) {
-    pressure = opt_inDict.pressure;
+  if (eventDict.pressure) {
+    pressure = eventDict.pressure;
   } else {
     pressure = buttons ? 0.5 : 0;
   }
-
-  // define the properties of the PointerEvent interface
-  Object.defineProperties(e, {
-    pointerId: { value: opt_inDict.pointerId || 0, enumerable: true },
-    width: { value: opt_inDict.width || 0, enumerable: true },
-    height: { value: opt_inDict.height || 0, enumerable: true },
-    pressure: { value: pressure, enumerable: true },
-    tiltX: { value: opt_inDict.tiltX || 0, enumerable: true },
-    tiltY: { value: opt_inDict.tiltY || 0, enumerable: true },
-    pointerType: { value: opt_inDict.pointerType || '', enumerable: true },
-    hwTimestamp: { value: opt_inDict.hwTimestamp || 0, enumerable: true },
-    isPrimary: { value: opt_inDict.isPrimary || false, enumerable: true }
-  });
-
-  return e;
+  return pressure;
 };
-
-// PointerEvent extends MouseEvent
-ol.pointer.PointerEvent.prototype = Object.create(MouseEvent.prototype);
-
-
-// test for DOM Level 4 Events
 
 
 /**
@@ -184,8 +235,8 @@ ol.pointer.PointerEvent.checkNewMouseEvent();
 
 
 /**
- * Warning is suppressed because Closure thinks MouseEvent
- * has no arguments.
+ * Warning is suppressed because Closure thinks the MouseEvent
+ * constructor takes no arguments.
  * @param {string} inType The type of the event to create.
  * @param {Object} inDict An dictionary of initial event properties.
  * @return {MouseEvent}
@@ -197,43 +248,21 @@ ol.pointer.PointerEvent.createMouseEvent = function(inType, inDict) {
 
 
 /**
- * List of properties to copy when creating an event.
- * @type {Array.<string>}
- */
-ol.pointer.PointerEvent.MOUSE_PROPS = [
-  'bubbles',
-  'cancelable',
-  'view',
-  'detail',
-  'screenX',
-  'screenY',
-  'clientX',
-  'clientY',
-  'ctrlKey',
-  'altKey',
-  'shiftKey',
-  'metaKey',
-  'button',
-  'relatedTarget'
-];
-
-
-/**
  * List of default values when creating an event.
  */
-ol.pointer.PointerEvent.MOUSE_DEFAULTS = [
-  false,
-  false,
-  null,
-  null,
-  0,
-  0,
-  0,
-  0,
-  false,
-  false,
-  false,
-  false,
-  0,
-  null
-];
+ol.pointer.PointerEvent.MOUSE_DEFAULTS = {
+  'bubbles': false,
+  'cancelable': false,
+  'view': null,
+  'detail': null,
+  'screenX': 0,
+  'screenY': 0,
+  'clientX': 0,
+  'clientY': 0,
+  'ctrlKey': false,
+  'altKey': false,
+  'shiftKey': false,
+  'metaKey': false,
+  'button': 0,
+  'relatedTarget': null
+};

@@ -135,7 +135,7 @@ ol.pointer.MsSource.prototype.hasBitmapType = function() {
 ol.pointer.MsSource.prototype.prepareEvent_ = function(inEvent) {
   var e = inEvent;
   if (this.HAS_BITMAP_TYPE) {
-    e = this.dispatcher.cloneEvent(inEvent.getBrowserEvent());
+    e = this.dispatcher.cloneEvent(inEvent, inEvent.getBrowserEvent());
     e.pointerType = this.POINTER_TYPES[inEvent.pointerType];
   }
 
@@ -160,7 +160,7 @@ ol.pointer.MsSource.prototype.cleanup = function(pointerId) {
 ol.pointer.MsSource.prototype.msPointerDown = function(inEvent) {
   this.pointerMap.set(inEvent.pointerId, inEvent);
   var e = this.prepareEvent_(inEvent);
-  this.dispatcher.down(e);
+  this.dispatcher.down(e, inEvent);
 };
 
 
@@ -171,7 +171,7 @@ ol.pointer.MsSource.prototype.msPointerDown = function(inEvent) {
  */
 ol.pointer.MsSource.prototype.msPointerMove = function(inEvent) {
   var e = this.prepareEvent_(inEvent);
-  this.dispatcher.move(e);
+  this.dispatcher.move(e, inEvent);
 };
 
 
@@ -182,7 +182,7 @@ ol.pointer.MsSource.prototype.msPointerMove = function(inEvent) {
  */
 ol.pointer.MsSource.prototype.msPointerUp = function(inEvent) {
   var e = this.prepareEvent_(inEvent);
-  this.dispatcher.up(e);
+  this.dispatcher.up(e, inEvent);
   this.cleanup(inEvent.pointerId);
 };
 
@@ -194,7 +194,7 @@ ol.pointer.MsSource.prototype.msPointerUp = function(inEvent) {
  */
 ol.pointer.MsSource.prototype.msPointerOut = function(inEvent) {
   var e = this.prepareEvent_(inEvent);
-  this.dispatcher.leaveOut(e);
+  this.dispatcher.leaveOut(e, inEvent);
 };
 
 
@@ -205,7 +205,7 @@ ol.pointer.MsSource.prototype.msPointerOut = function(inEvent) {
  */
 ol.pointer.MsSource.prototype.msPointerOver = function(inEvent) {
   var e = this.prepareEvent_(inEvent);
-  this.dispatcher.enterOver(e);
+  this.dispatcher.enterOver(e, inEvent);
 };
 
 
@@ -216,7 +216,7 @@ ol.pointer.MsSource.prototype.msPointerOver = function(inEvent) {
  */
 ol.pointer.MsSource.prototype.msPointerCancel = function(inEvent) {
   var e = this.prepareEvent_(inEvent);
-  this.dispatcher.cancel(e);
+  this.dispatcher.cancel(e, inEvent);
   this.cleanup(inEvent.pointerId);
 };
 
@@ -227,7 +227,8 @@ ol.pointer.MsSource.prototype.msPointerCancel = function(inEvent) {
  * @param {goog.events.BrowserEvent} inEvent
  */
 ol.pointer.MsSource.prototype.msLostPointerCapture = function(inEvent) {
-  var e = this.dispatcher.makeEvent('lostpointercapture', inEvent);
+  var e = this.dispatcher.makeEvent('lostpointercapture',
+      inEvent.getBrowserEvent(), inEvent);
   this.dispatcher.dispatchEvent(e);
 };
 
@@ -238,6 +239,7 @@ ol.pointer.MsSource.prototype.msLostPointerCapture = function(inEvent) {
  * @param {goog.events.BrowserEvent} inEvent
  */
 ol.pointer.MsSource.prototype.msGotPointerCapture = function(inEvent) {
-  var e = this.dispatcher.makeEvent('gotpointercapture', inEvent);
+  var e = this.dispatcher.makeEvent('gotpointercapture',
+      inEvent.getBrowserEvent(), inEvent);
   this.dispatcher.dispatchEvent(e);
 };

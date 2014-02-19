@@ -30,20 +30,30 @@
 
 goog.provide('ol.pointer.TouchSource');
 
+goog.require('goog.array');
 goog.require('ol.pointer.EventSource');
 
 
 
 /**
+ * @constructor
  * @param {ol.pointer.PointerEventHandler} dispatcher
  * @param {ol.pointer.MouseSource} mouseSource
- * @constructor
  * @extends {ol.pointer.EventSource}
  */
 ol.pointer.TouchSource = function(dispatcher, mouseSource) {
   goog.base(this, dispatcher);
 
+  /**
+   * @const
+   * @type {goog.structs.Map}
+   */
   this.pointerMap = dispatcher.pointerMap;
+
+  /**
+   * @const
+   * @type {ol.pointer.MouseSource}
+   */
   this.mouseSource = mouseSource;
 
   // This should be long enough to ignore compat mouse events made by touch
@@ -144,11 +154,13 @@ ol.pointer.TouchSource.prototype.cancelResetClickCount_ = function() {
 
 /**
  * @private
+ * @param {goog.events.BrowserEvent} browserEvent Browser event
  * @param {Touch} inTouch Touch event
  * @return {Object}
  */
-ol.pointer.TouchSource.prototype.touchToPointer_ = function(inTouch) {
-  var e = this.dispatcher.cloneEvent(inTouch);
+ol.pointer.TouchSource.prototype.touchToPointer_ =
+    function(browserEvent, inTouch) {
+  var e = this.dispatcher.cloneEvent(browserEvent, inTouch);
   // Spec specifies that pointerId 1 is reserved for Mouse.
   // Touch identifiers can start at 0.
   // Add 2 to the touch identifier for compatibility.
@@ -173,12 +185,13 @@ ol.pointer.TouchSource.prototype.touchToPointer_ = function(inTouch) {
 /**
  * @private
  * @param {goog.events.BrowserEvent} inEvent Touch event
- * @param {function(Object)} inFunction
+ * @param {function(goog.events.BrowserEvent, Object)} inFunction
  */
 ol.pointer.TouchSource.prototype.processTouches_ =
     function(inEvent, inFunction) {
   var tl = inEvent.getBrowserEvent().changedTouches;
-  var pointers = goog.array.map(tl, this.touchToPointer_, this);
+  var pointers = goog.array.map(tl,
+      goog.partial(this.touchToPointer_, inEvent), this);
   // forward touch preventDefaults
   pointers.forEach(function(p) {
     p.preventDefault = function() {
@@ -186,7 +199,7 @@ ol.pointer.TouchSource.prototype.processTouches_ =
       inEvent.preventDefault();
     };
   }, this);
-  pointers.forEach(inFunction, this);
+  pointers.forEach(goog.partial(inFunction, inEvent), this);
 };
 
 
@@ -232,7 +245,7 @@ ol.pointer.TouchSource.prototype.vacuumTouches_ = function(inEvent) {
         d.push(this.touchToPointer_(p));
       }
     }, this);
-    d.forEach(this.cancelOut_, this);
+    d.forEach(goog.partial(this.cancelOut_, inEvent), this);
   }
 };
 
@@ -267,17 +280,18 @@ ol.pointer.TouchSource.prototype.touchstart = function(inEvent) {
 
 /**
  * @private
+ * @param {goog.events.BrowserEvent} browserEvent
  * @param {Object} inPointer
  */
-ol.pointer.TouchSource.prototype.overDown_ = function(inPointer) {
+ol.pointer.TouchSource.prototype.overDown_ = function(browserEvent, inPointer) {
   this.pointerMap.set(inPointer.pointerId, {
     target: inPointer.target,
     out: inPointer,
     outTarget: inPointer.target
   });
-  this.dispatcher.over(inPointer);
-  this.dispatcher.enter(inPointer);
-  this.dispatcher.down(inPointer);
+  this.dispatcher.over(inPointer, browserEvent);
+  this.dispatcher.enter(inPointer, browserEvent);
+  this.dispatcher.down(inPointer, browserEvent);
 };
 
 
@@ -294,9 +308,11 @@ ol.pointer.TouchSource.prototype.touchmove = function(inEvent) {
 
 /**
  * @private
+ * @param {goog.events.BrowserEvent} browserEvent
  * @param {Object} inPointer
  */
-ol.pointer.TouchSource.prototype.moveOverOut_ = function(inPointer) {
+ol.pointer.TouchSource.prototype.moveOverOut_ =
+    function(browserEvent, inPointer) {
   var event = inPointer;
   var pointer = this.pointerMap.get(event.pointerId);
   // a finger drifted off the screen, ignore it
@@ -305,20 +321,20 @@ ol.pointer.TouchSource.prototype.moveOverOut_ = function(inPointer) {
   }
   var outEvent = pointer.out;
   var outTarget = pointer.outTarget;
-  this.dispatcher.move(event);
+  this.dispatcher.move(event, browserEvent);
   if (outEvent && outTarget !== event.target) {
     outEvent.relatedTarget = event.target;
     event.relatedTarget = outTarget;
     // recover from retargeting by shadow
     outEvent.target = outTarget;
     if (event.target) {
-      this.dispatcher.leaveOut(outEvent);
-      this.dispatcher.enterOver(event);
+      this.dispatcher.leaveOut(outEvent, browserEvent);
+      this.dispatcher.enterOver(event, browserEvent);
     } else {
       // clean up case when finger leaves the screen
       event.target = outTarget;
       event.relatedTarget = null;
-      this.cancelOut_(event);
+      this.cancelOut_(browserEvent, event);
     }
   }
   pointer.out = event;
@@ -340,12 +356,13 @@ ol.pointer.TouchSource.prototype.touchend = function(inEvent) {
 
 /**
  * @private
+ * @param {goog.events.BrowserEvent} browserEvent
  * @param {Object} inPointer
  */
-ol.pointer.TouchSource.prototype.upOut_ = function(inPointer) {
-  this.dispatcher.up(inPointer);
-  this.dispatcher.out(inPointer);
-  this.dispatcher.leave(inPointer);
+ol.pointer.TouchSource.prototype.upOut_ = function(browserEvent, inPointer) {
+  this.dispatcher.up(inPointer, browserEvent);
+  this.dispatcher.out(inPointer, browserEvent);
+  this.dispatcher.leave(inPointer, browserEvent);
   this.cleanUpPointer_(inPointer);
 };
 
@@ -363,12 +380,14 @@ ol.pointer.TouchSource.prototype.touchcancel = function(inEvent) {
 
 /**
  * @private
+ * @param {goog.events.BrowserEvent} browserEvent
  * @param {Object} inPointer
  */
-ol.pointer.TouchSource.prototype.cancelOut_ = function(inPointer) {
-  this.dispatcher.cancel(inPointer);
-  this.dispatcher.out(inPointer);
-  this.dispatcher.leave(inPointer);
+ol.pointer.TouchSource.prototype.cancelOut_ =
+    function(browserEvent, inPointer) {
+  this.dispatcher.cancel(inPointer, browserEvent);
+  this.dispatcher.out(inPointer, browserEvent);
+  this.dispatcher.leave(inPointer, browserEvent);
   this.cleanUpPointer_(inPointer);
 };
 
@@ -384,7 +403,7 @@ ol.pointer.TouchSource.prototype.cleanUpPointer_ = function(inPointer) {
 
 
 /**
- * Orevent synth mouse events from creating pointer events.
+ * Prevent synth mouse events from creating pointer events.
  *
  * @private
  * @param {goog.events.BrowserEvent} inEvent

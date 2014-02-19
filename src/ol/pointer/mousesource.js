@@ -154,7 +154,7 @@ ol.pointer.MouseSource.prototype.isEventSimulatedFromTouch_ =
  * @return {Object}
  */
 ol.pointer.MouseSource.prototype.prepareEvent_ = function(inEvent) {
-  var e = this.dispatcher.cloneEvent(inEvent.getBrowserEvent());
+  var e = this.dispatcher.cloneEvent(inEvent, inEvent.getBrowserEvent());
 
   // forward mouse preventDefault
   var pd = e.preventDefault;
@@ -186,7 +186,7 @@ ol.pointer.MouseSource.prototype.mousedown = function(inEvent) {
     }
     var e = this.prepareEvent_(inEvent);
     this.pointerMap.set(this.POINTER_ID, inEvent);
-    this.dispatcher.down(e);
+    this.dispatcher.down(e, inEvent);
   }
 };
 
@@ -199,7 +199,7 @@ ol.pointer.MouseSource.prototype.mousedown = function(inEvent) {
 ol.pointer.MouseSource.prototype.mousemove = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
     var e = this.prepareEvent_(inEvent);
-    this.dispatcher.move(e);
+    this.dispatcher.move(e, inEvent);
   }
 };
 
@@ -215,7 +215,7 @@ ol.pointer.MouseSource.prototype.mouseup = function(inEvent) {
 
     if (p && p.button === inEvent.button) {
       var e = this.prepareEvent_(inEvent);
-      this.dispatcher.up(e);
+      this.dispatcher.up(e, inEvent);
       this.cleanupMouse();
     }
   }
@@ -230,7 +230,7 @@ ol.pointer.MouseSource.prototype.mouseup = function(inEvent) {
 ol.pointer.MouseSource.prototype.mouseover = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
     var e = this.prepareEvent_(inEvent);
-    this.dispatcher.enterOver(e);
+    this.dispatcher.enterOver(e, inEvent);
   }
 };
 
@@ -243,7 +243,7 @@ ol.pointer.MouseSource.prototype.mouseover = function(inEvent) {
 ol.pointer.MouseSource.prototype.mouseout = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
     var e = this.prepareEvent_(inEvent);
-    this.dispatcher.leaveOut(e);
+    this.dispatcher.leaveOut(e, inEvent);
   }
 };
 
@@ -255,7 +255,7 @@ ol.pointer.MouseSource.prototype.mouseout = function(inEvent) {
  */
 ol.pointer.MouseSource.prototype.cancel = function(inEvent) {
   var e = this.prepareEvent_(inEvent);
-  this.dispatcher.cancel(e);
+  this.dispatcher.cancel(e, inEvent);
   this.cleanupMouse();
 };
 

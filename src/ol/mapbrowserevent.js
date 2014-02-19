@@ -8,10 +8,12 @@ goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
+goog.require('goog.object');
 
 goog.require('ol.Coordinate');
 goog.require('ol.MapEvent');
 goog.require('ol.Pixel');
+goog.require('ol.pointer.PointerEvent');
 goog.require('ol.pointer.PointerEventHandler');
 
 
@@ -82,6 +84,30 @@ ol.MapBrowserEvent.prototype.stopPropagation = function() {
 
 
 /**
+ * @constructor
+ * @extends {ol.MapBrowserEvent}
+ * @param {string} type Event type.
+ * @param {ol.Map} map Map.
+ * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @param {?ol.FrameState=} opt_frameState Frame state.
+ * @todo stability experimental
+ */
+ol.MapBrowserPointerEvent = function(type, map, pointerEvent, opt_frameState) {
+
+  goog.base(this, type, map, pointerEvent.browserEvent, opt_frameState);
+
+  /**
+   * @const
+   * @type {ol.pointer.PointerEvent}
+   */
+  this.pointerEvent = pointerEvent;
+
+};
+goog.inherits(ol.MapBrowserPointerEvent, ol.MapBrowserEvent);
+
+
+
+/**
  * @param {ol.Map} map The map with the viewport to listen to events on.
  * @constructor
  * @extends {goog.events.EventTarget}
@@ -121,6 +147,10 @@ ol.MapBrowserEventHandler = function(map) {
    */
   this.pointerdownListenerKey_ = null;
 
+  /**
+   * @type {ol.pointer.PointerEvent}
+   * @private
+   */
   this.down_ = null;
 
   var element = this.map_.getViewport();
@@ -147,7 +177,7 @@ goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
 /**
  * Get the last "down" type event.  This will be set on mousedown,
  * touchstart, and pointerdown.
- * @return {goog.events.BrowserEvent} The most recent "down" type event (or null
+ * @return {ol.pointer.PointerEvent} The most recent "down" type event (or null
  * if none have occurred).
  */
 ol.MapBrowserEventHandler.prototype.getDown = function() {
@@ -156,41 +186,25 @@ ol.MapBrowserEventHandler.prototype.getDown = function() {
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.emulateClick_ = function(browserEvent) {
+ol.MapBrowserEventHandler.prototype.emulateClick_ = function(pointerEvent) {
   if (this.clickTimeoutId_ !== 0) {
     // double-click
     goog.global.clearTimeout(this.clickTimeoutId_);
     this.clickTimeoutId_ = 0;
-    var newEvent = new ol.MapBrowserEvent(
-        ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, browserEvent);
+    var newEvent = new ol.MapBrowserPointerEvent(
+        ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, pointerEvent);
     this.dispatchEvent(newEvent);
   } else {
     // click
-
-    if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
-      // In IE 7-8, referring to the original event object after the current
-      // call stack causes "member not found" exceptions, such as in the timeout
-      // we use here.
-      var ev = /** @type {Event} */ (
-          goog.object.clone(browserEvent.getBrowserEvent()));
-      this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
-        this.clickTimeoutId_ = 0;
-        var newEvent = new ol.MapBrowserEvent(
-            ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_,
-            new goog.events.BrowserEvent(ev, browserEvent.currentTarget));
-        this.dispatchEvent(newEvent);
-      }, this), 250);
-    } else {
-      this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
-        this.clickTimeoutId_ = 0;
-        var newEvent = new ol.MapBrowserEvent(
-            ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_, browserEvent);
-        this.dispatchEvent(newEvent);
-      }, this), 250);
-    }
+    this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
+      this.clickTimeoutId_ = 0;
+      var newEvent = new ol.MapBrowserPointerEvent(
+          ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_, pointerEvent);
+      this.dispatchEvent(newEvent);
+    }, this), 250);
   }
 };
 
@@ -198,12 +212,12 @@ ol.MapBrowserEventHandler.prototype.emulateClick_ = function(browserEvent) {
 /**
  * Keeps track on how many pointers are currently active.
  *
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
 ol.MapBrowserEventHandler.prototype.updateActivePointers_ =
-    function(browserEvent) {
-  var event = browserEvent.getBrowserEvent();
+    function(pointerEvent) {
+  var event = pointerEvent;
 
   if (event.type == ol.MapBrowserEvent.EventType.POINTERUP ||
       event.type == ol.MapBrowserEvent.EventType.POINTERCANCEL) {
@@ -216,13 +230,13 @@ ol.MapBrowserEventHandler.prototype.updateActivePointers_ =
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
-  this.updateActivePointers_(browserEvent);
-  var newEvent = new ol.MapBrowserEvent(
-      ol.MapBrowserEvent.EventType.POINTERUP, this.map_, browserEvent);
+ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
+  this.updateActivePointers_(pointerEvent);
+  var newEvent = new ol.MapBrowserPointerEvent(
+      ol.MapBrowserEvent.EventType.POINTERUP, this.map_, pointerEvent);
   this.dispatchEvent(newEvent);
 
   if (this.activePointers_ <= 0) {
@@ -240,7 +254,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
   // contact. isMouseActionButton returns true in these cases (evt.button is set
   // to 0).
   // See http://www.w3.org/TR/pointerevents/#button-states .
-  if (!this.dragged_ && browserEvent.isMouseActionButton()) {
+  if (!this.dragged_ && pointerEvent.button == 0) {
     goog.asserts.assert(!goog.isNull(this.down_));
     this.emulateClick_(this.down_);
   }
@@ -248,17 +262,17 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
-    function(browserEvent) {
-  this.updateActivePointers_(browserEvent);
-  var newEvent = new ol.MapBrowserEvent(
-      ol.MapBrowserEvent.EventType.POINTERDOWN, this.map_, browserEvent);
+    function(pointerEvent) {
+  this.updateActivePointers_(pointerEvent);
+  var newEvent = new ol.MapBrowserPointerEvent(
+      ol.MapBrowserEvent.EventType.POINTERDOWN, this.map_, pointerEvent);
   this.dispatchEvent(newEvent);
 
-  this.down_ = browserEvent;
+  this.down_ = pointerEvent;
   this.dragged_ = false;
 
   if (goog.isNull(this.dragListenerKeys_)) {
@@ -278,26 +292,26 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
 
   // FIXME check if/when this is necessary
   // prevent context menu
-  browserEvent.preventDefault();
+  pointerEvent.preventDefault();
 };
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
-    function(browserEvent) {
+    function(pointerEvent) {
   // Fix IE10 on windows Surface : When you tap the tablet, it triggers
   // multiple pointermove events between pointerdown and pointerup with
   // the exact same coordinates of the pointerdown event. To avoid a
   // 'false' touchmove event to be dispatched , we test if the pointer
   // effectively moved.
-  if (browserEvent.clientX != this.down_.clientX ||
-      browserEvent.clientY != this.down_.clientY) {
+  if (pointerEvent.clientX != this.down_.clientX ||
+      pointerEvent.clientY != this.down_.clientY) {
     this.dragged_ = true;
-    var newEvent = new ol.MapBrowserEvent(
-        ol.MapBrowserEvent.EventType.POINTERMOVE, this.map_, browserEvent);
+    var newEvent = new ol.MapBrowserPointerEvent(
+        ol.MapBrowserEvent.EventType.POINTERMOVE, this.map_, pointerEvent);
     this.dispatchEvent(newEvent);
   }
 
@@ -305,7 +319,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
   // of time. See: https://code.google.com/p/android/issues/detail?id=5491 or
   // https://code.google.com/p/android/issues/detail?id=19827
   // ex: Galaxy Tab P3110 + Android 4.1.1
-  browserEvent.preventDefault();
+  pointerEvent.preventDefault();
 };
 
 
