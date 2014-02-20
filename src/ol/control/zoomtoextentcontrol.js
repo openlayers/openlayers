@@ -33,12 +33,18 @@ ol.control.ZoomToExtent = function(opt_options) {
   var className = goog.isDef(options.className) ? options.className :
       'ol-zoom-extent';
 
+  var tipLabel = goog.isDef(options.tipLabel) ?
+      options.tipLabel : 'Fit to extent';
+  var tip = goog.dom.createDom(goog.dom.TagName.SPAN, {
+    'role' : 'tooltip'
+  }, tipLabel);
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': className + ' ' + ol.css.CLASS_UNSELECTABLE
   });
-  var button = goog.dom.createDom(goog.dom.TagName.A, {
-    'href': '#zoomExtent'
+  var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+    'class': 'ol-has-tooltip'
   });
+  goog.dom.appendChild(button, tip);
   goog.dom.appendChild(element, button);
 
   goog.events.listen(element, [
@@ -59,8 +65,8 @@ goog.inherits(ol.control.ZoomToExtent, ol.control.Control);
  * @private
  */
 ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function(browserEvent) {
-  // prevent #zoomExtent anchor from getting appended to the url
   browserEvent.preventDefault();
+  // prevent #zoomExtent anchor from getting appended to the url
   var map = this.getMap();
   var view = map.getView();
   goog.asserts.assert(goog.isDef(view));
