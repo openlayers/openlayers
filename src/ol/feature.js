@@ -7,6 +7,9 @@ goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 
@@ -213,12 +216,35 @@ ol.feature.FeatureStyleFunction;
 
 
 /**
+ * Default style function for features.
  * @param {number} resolution Resolution.
  * @return {Array.<ol.style.Style>} Style.
  * @this {ol.Feature}
  * @todo stability experimental
  */
-ol.feature.defaultFeatureStyleFunction = goog.functions.constant([]);
+ol.feature.defaultFeatureStyleFunction = (function() {
+  var fill = new ol.style.Fill({
+    color: 'rgba(255,255,255,0.4)'
+  });
+  var stroke = new ol.style.Stroke({
+    color: '#3399CC',
+    width: 1.25
+  });
+  var styles = [
+    new ol.style.Style({
+      image: new ol.style.Circle({
+        fill: fill,
+        stroke: stroke,
+        radius: 5
+      }),
+      fill: fill,
+      stroke: stroke
+    })
+  ];
+  return function(resolution) {
+    return styles;
+  };
+})();
 
 
 /**
