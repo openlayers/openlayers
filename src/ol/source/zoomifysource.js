@@ -1,6 +1,7 @@
 goog.provide('ol.source.Zoomify');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('ol.ImageTile');
@@ -42,26 +43,31 @@ ol.source.Zoomify = function(opt_options) {
   var tierSizeInTiles = [];
   var tileSize = ol.DEFAULT_TILE_SIZE;
 
-  if (tierSizeCalculation === 'truncated') {
-    var width = imageWidth;
-    var height = imageHeight;
-
-    while (width > tileSize || height > tileSize) {
-      tierSizeInTiles.push([
-        Math.ceil(width / tileSize),
-        Math.ceil(height / tileSize)
-      ]);
-      width >>= 1;
-      height >>= 1;
-    }
-  } else {
-    while (imageWidth > tileSize || imageHeight > tileSize) {
-      tierSizeInTiles.push([
-        Math.ceil(imageWidth / tileSize),
-        Math.ceil(imageHeight / tileSize)
-      ]);
-      tileSize += tileSize;
-    }
+  switch (tierSizeCalculation) {
+    case ol.source.ZoomifyTierSizeCalculation.DEFAULT:
+      while (imageWidth > tileSize || imageHeight > tileSize) {
+        tierSizeInTiles.push([
+          Math.ceil(imageWidth / tileSize),
+          Math.ceil(imageHeight / tileSize)
+        ]);
+        tileSize += tileSize;
+      }
+      break;
+    case ol.source.ZoomifyTierSizeCalculation.TRUNCATED:
+      var width = imageWidth;
+      var height = imageHeight;
+      while (width > tileSize || height > tileSize) {
+        tierSizeInTiles.push([
+          Math.ceil(width / tileSize),
+          Math.ceil(height / tileSize)
+        ]);
+        width >>= 1;
+        height >>= 1;
+      }
+      break;
+    default:
+      goog.asserts.fail();
+      break;
   }
 
   tierSizeInTiles.push([1, 1]);
