@@ -103,6 +103,6 @@ ol.control.Control.prototype.setMap = function(map) {
       this.listenerKeys.push(goog.events.listen(map,
           ol.MapEventType.POSTRENDER, this.handleMapPostrender, false, this));
     }
-    map.renderSync();
+    map.render();
   }
 };

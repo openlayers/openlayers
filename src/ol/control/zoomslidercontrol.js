@@ -116,7 +116,7 @@ ol.control.ZoomSlider.direction = {
 ol.control.ZoomSlider.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
   if (!goog.isNull(map)) {
-    map.renderSync();
+    map.render();
   }
 };
 

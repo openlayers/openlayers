@@ -866,7 +866,7 @@ ol.Map.prototype.handlePostRender = function() {
  * @private
  */
 ol.Map.prototype.handleSizeChanged_ = function() {
-  this.renderSync();
+  this.render();
 };
 
 
@@ -917,7 +917,7 @@ ol.Map.prototype.handleTileChange_ = function() {
  * @private
  */
 ol.Map.prototype.handleViewPropertyChanged_ = function() {
-  this.renderSync();
+  this.render();
 };
 
 
@@ -935,7 +935,7 @@ ol.Map.prototype.handleViewChanged_ = function() {
         view, ol.ObjectEventType.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, false, this);
   }
-  this.renderSync();
+  this.render();
 };
 
 
@@ -945,7 +945,7 @@ ol.Map.prototype.handleViewChanged_ = function() {
  */
 ol.Map.prototype.handleLayerGroupMemberChanged_ = function(event) {
   goog.asserts.assertInstanceof(event, goog.events.Event);
-  this.renderSync();
+  this.render();
 };
 
 
@@ -955,7 +955,7 @@ ol.Map.prototype.handleLayerGroupMemberChanged_ = function(event) {
  */
 ol.Map.prototype.handleLayerGroupPropertyChanged_ = function(event) {
   goog.asserts.assertInstanceof(event, ol.ObjectEvent);
-  this.renderSync();
+  this.render();
 };
 
 
@@ -981,7 +981,7 @@ ol.Map.prototype.handleLayerGroupChanged_ = function() {
           this.handleLayerGroupMemberChanged_, false, this)
     ];
   }
-  this.renderSync();
+  this.render();
 };
 
 
