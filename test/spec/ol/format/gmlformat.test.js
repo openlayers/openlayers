@@ -104,6 +104,25 @@ describe('ol.format.GML', function() {
 
     });
 
+    describe('curve', function() {
+
+      it('can read a curve geometry', function() {
+        var text =
+            '<gml:Curve xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="foo">' +
+            '  <gml:segments>' +
+            '    <gml:LineStringSegment>' +
+            '      <gml:posList>1 2 3 4</gml:posList>' +
+            '    </gml:LineStringSegment>' +
+            '  </gml:segments>' +
+            '</gml:Curve>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.LineString);
+        expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
+      });
+
+    });
+
   });
 
 });

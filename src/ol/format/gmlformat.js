@@ -136,6 +136,26 @@ ol.format.GML.patchesParser_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
+ * @return {Array.<number>} flat coordinates.
+ */
+ol.format.GML.segmentsParser_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'segments');
+  var result = ol.xml.pushParseAndPop(
+      /** @type {Array.<number>} */ ([null]),
+      ol.format.GML.SEGMENTS_PARSERS_, node, objectStack);
+  if (!goog.isDef(result)) {
+    return null;
+  } else {
+    return result;
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
  * @return {Array.<(Array.<number>)>} flat coordinates.
  */
 ol.format.GML.polygonPatchParser_ = function(node, objectStack) {
@@ -144,6 +164,26 @@ ol.format.GML.polygonPatchParser_ = function(node, objectStack) {
   var result = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
       ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack);
+  if (!goog.isDef(result)) {
+    return null;
+  } else {
+    return result;
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ * @return {Array.<number>} flat coordinates.
+ */
+ol.format.GML.lineStringSegmentParser_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'LineStringSegment');
+  var result = ol.xml.pushParseAndPop(
+      /** @type {Array.<number>} */ ([null]),
+      ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack);
   if (!goog.isDef(result)) {
     return null;
   } else {
@@ -296,6 +336,28 @@ ol.format.GML.readSurface_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
+ * @return {ol.geom.LineString|undefined} LineString.
+ */
+ol.format.GML.readCurve_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'Curve');
+  var flatCoordinates = ol.xml.pushParseAndPop(
+      /** @type {Array.<number>} */ ([null]),
+      ol.format.GML.CURVE_PARSERS_, node, objectStack);
+  if (goog.isDefAndNotNull(flatCoordinates)) {
+    var lineString = new ol.geom.LineString(null);
+    lineString.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
+    return lineString;
+  } else {
+    return undefined;
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
  * @return {Array.<number>} Flat coordinates.
  */
 ol.format.GML.readFlatCoordinatesFromNode_ = function(node, objectStack) {
@@ -360,7 +422,8 @@ ol.format.GML.GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
       'LineString': ol.xml.makeArrayPusher(ol.format.GML.readLineString_),
       'LinearRing' : ol.xml.makeArrayPusher(ol.format.GML.readLinearRing_),
       'Polygon': ol.xml.makeArrayPusher(ol.format.GML.readPolygon_),
-      'Surface': ol.xml.makeArrayPusher(ol.format.GML.readSurface_)
+      'Surface': ol.xml.makeArrayPusher(ol.format.GML.readSurface_),
+      'Curve': ol.xml.makeArrayPusher(ol.format.GML.readCurve_)
     });
 
 
@@ -404,9 +467,32 @@ ol.format.GML.SURFACE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
+ol.format.GML.CURVE_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.GML.NAMESPACE_URIS_, {
+      'segments': ol.xml.makeReplacer(ol.format.GML.segmentsParser_)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
 ol.format.GML.PATCHES_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.GML.NAMESPACE_URIS_, {
       'PolygonPatch': ol.xml.makeReplacer(ol.format.GML.polygonPatchParser_)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.GML.SEGMENTS_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.GML.NAMESPACE_URIS_, {
+      'LineStringSegment': ol.xml.makeReplacer(
+          ol.format.GML.lineStringSegmentParser_)
     });
 
 
