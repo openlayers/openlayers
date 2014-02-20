@@ -116,6 +116,46 @@ ol.format.GML.readLineString_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
+ * @return {Array.<(Array.<number>)>} flat coordinates.
+ */
+ol.format.GML.patchesParser_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'patches');
+  var result = ol.xml.pushParseAndPop(
+      /** @type {Array.<Array.<number>>} */ ([null]),
+      ol.format.GML.PATCHES_PARSERS_, node, objectStack);
+  if (!goog.isDef(result)) {
+    return null;
+  } else {
+    return result;
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ * @return {Array.<(Array.<number>)>} flat coordinates.
+ */
+ol.format.GML.polygonPatchParser_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'PolygonPatch');
+  var result = ol.xml.pushParseAndPop(
+      /** @type {Array.<Array.<number>>} */ ([null]),
+      ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack);
+  if (!goog.isDef(result)) {
+    return null;
+  } else {
+    return result;
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
  */
 ol.format.GML.interiorParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
@@ -225,6 +265,37 @@ ol.format.GML.readPolygon_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
+ * @return {ol.geom.Polygon|undefined} Polygon.
+ */
+ol.format.GML.readSurface_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'Surface');
+  var flatLinearRings = ol.xml.pushParseAndPop(
+      /** @type {Array.<Array.<number>>} */ ([null]),
+      ol.format.GML.SURFACE_PARSERS_, node, objectStack);
+  if (goog.isDefAndNotNull(flatLinearRings) &&
+      !goog.isNull(flatLinearRings[0])) {
+    var polygon = new ol.geom.Polygon(null);
+    var flatCoordinates = flatLinearRings[0];
+    var ends = [flatCoordinates.length];
+    var i, ii;
+    for (i = 1, ii = flatLinearRings.length; i < ii; ++i) {
+      goog.array.extend(flatCoordinates, flatLinearRings[i]);
+      ends.push(flatCoordinates.length);
+    }
+    polygon.setFlatCoordinates(
+        ol.geom.GeometryLayout.XYZ, flatCoordinates, ends);
+    return polygon;
+  } else {
+    return undefined;
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
  * @return {Array.<number>} Flat coordinates.
  */
 ol.format.GML.readFlatCoordinatesFromNode_ = function(node, objectStack) {
@@ -288,7 +359,8 @@ ol.format.GML.GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
       'Point': ol.xml.makeArrayPusher(ol.format.GML.readPoint_),
       'LineString': ol.xml.makeArrayPusher(ol.format.GML.readLineString_),
       'LinearRing' : ol.xml.makeArrayPusher(ol.format.GML.readLinearRing_),
-      'Polygon': ol.xml.makeArrayPusher(ol.format.GML.readPolygon_)
+      'Polygon': ol.xml.makeArrayPusher(ol.format.GML.readPolygon_),
+      'Surface': ol.xml.makeArrayPusher(ol.format.GML.readSurface_)
     });
 
 
@@ -313,6 +385,28 @@ ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.GML.NAMESPACE_URIS_, {
       'interior': ol.format.GML.interiorParser_,
       'exterior': ol.format.GML.exteriorParser_
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.GML.SURFACE_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.GML.NAMESPACE_URIS_, {
+      'patches': ol.xml.makeReplacer(ol.format.GML.patchesParser_)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.GML.PATCHES_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.GML.NAMESPACE_URIS_, {
+      'PolygonPatch': ol.xml.makeReplacer(ol.format.GML.polygonPatchParser_)
     });
 
 

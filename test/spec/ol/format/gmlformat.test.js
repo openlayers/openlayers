@@ -69,6 +69,41 @@ describe('ol.format.GML', function() {
 
     });
 
+    describe('surface', function() {
+
+      it('can read a surface geometry', function() {
+        var text =
+            '<gml:Surface xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="foo">' +
+            '  <gml:patches>' +
+            '    <gml:PolygonPatch interpolation="planar">' +
+            '      <gml:exterior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:exterior>' +
+            '      <gml:interior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:interior>' +
+            '      <gml:interior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:interior>' +
+            '    </gml:PolygonPatch>' +
+            '  </gml:patches>' +
+            '</gml:Surface>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.Polygon);
+        expect(g.getCoordinates()).to.eql([[[1, 2, 0], [3, 2, 0], [3, 4, 0],
+                [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
+              [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]]);
+      });
+
+    });
+
   });
 
 });
