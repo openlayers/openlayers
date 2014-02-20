@@ -473,7 +473,7 @@ ol.Map.prototype.addOverlay = function(overlay) {
  * @todo stability experimental
  */
 ol.Map.prototype.beforeRender = function(var_args) {
-  this.requestRenderFrame();
+  this.render();
   Array.prototype.push.apply(this.preRenderFunctions_, arguments);
 };
 
@@ -909,7 +909,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
  * @private
  */
 ol.Map.prototype.handleTileChange_ = function() {
-  this.requestRenderFrame();
+  this.render();
 };
 
 
@@ -1027,7 +1027,7 @@ ol.Map.prototype.renderSync = function() {
 /**
  * Request that renderFrame_ be called some time in the future.
  */
-ol.Map.prototype.requestRenderFrame = function() {
+ol.Map.prototype.render = function() {
   if (this.freezeRenderingCount_ === 0) {
     if (!this.animationDelay_.isActive()) {
       this.animationDelay_.start();
@@ -1198,7 +1198,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
   if (!goog.isNull(frameState)) {
     if (frameState.animate) {
-      this.requestRenderFrame();
+      this.render();
     }
     Array.prototype.push.apply(
         this.postRenderFunctions_, frameState.postRenderFunctions);

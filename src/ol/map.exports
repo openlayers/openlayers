@@ -18,6 +18,6 @@
 @exportProperty ol.Map.prototype.removeInteraction
 @exportProperty ol.Map.prototype.removeLayer
 @exportProperty ol.Map.prototype.removeOverlay
+@exportProperty ol.Map.prototype.render
 @exportProperty ol.Map.prototype.renderSync
-@exportProperty ol.Map.prototype.requestRenderFrame
 @exportProperty ol.Map.prototype.updateSize

@@ -87,7 +87,7 @@ var displaySnap = function(coordinate) {
       line.setCoordinates([coordinate, closestPoint]);
     }
   }
-  map.requestRenderFrame();
+  map.render();
 };
 
 $(map.getViewport()).on('mousemove', function(evt) {

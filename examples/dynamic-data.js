@@ -48,6 +48,6 @@ map.on('postcompose', function(event) {
   vectorContext.setImageStyle(imageStyle);
   vectorContext.drawMultiPointGeometry(
       new ol.geom.MultiPoint(coordinates), null);
-  map.requestRenderFrame();
+  map.render();
 });
-map.requestRenderFrame();
+map.render();

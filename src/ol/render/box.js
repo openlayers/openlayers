@@ -122,7 +122,7 @@ ol.render.Box.prototype.requestMapRenderFrame_ = function() {
   if (!goog.isNull(this.map_) &&
       !goog.isNull(this.startPixel_) &&
       !goog.isNull(this.endPixel_)) {
-    this.map_.requestRenderFrame();
+    this.map_.render();
   }
 };
 
@@ -134,7 +134,7 @@ ol.render.Box.prototype.setMap = function(map) {
   if (!goog.isNull(this.postComposeListenerKey_)) {
     goog.events.unlistenByKey(this.postComposeListenerKey_);
     this.postComposeListenerKey_ = null;
-    this.map_.requestRenderFrame();
+    this.map_.render();
     this.map_ = null;
   }
   this.map_ = map;
