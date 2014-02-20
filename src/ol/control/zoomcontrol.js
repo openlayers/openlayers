@@ -37,19 +37,30 @@ ol.control.Zoom = function(opt_options) {
   var zoomOutLabel = goog.isDef(options.zoomOutLabel) ?
       options.zoomOutLabel : '\u2212';
 
-  var inElement = goog.dom.createDom(goog.dom.TagName.A, {
-    'href': '#zoomIn',
-    'class': className + '-in'
-  }, zoomInLabel);
+  var tTipZoomIn = goog.dom.createDom(goog.dom.TagName.SPAN, {
+    'class': '',
+    'role' : 'tooltip'
+  }, 'Zoom in');
+  var inElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+    'class': className + '-in olHasToolTip',
+    'name' : 'ZoomIn',
+    'type' : 'button'
+  }, tTipZoomIn, zoomInLabel);
+
   goog.events.listen(inElement, [
     goog.events.EventType.TOUCHEND,
     goog.events.EventType.CLICK
   ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
 
-  var outElement = goog.dom.createDom(goog.dom.TagName.A, {
-    'href': '#zoomOut',
-    'class': className + '-out'
-  }, zoomOutLabel);
+  var tTipsZoomOut = goog.dom.createDom(goog.dom.TagName.SPAN, {
+    'class': '',
+    'role' : 'tooltip',
+    'type' : 'button'
+  }, 'Zoom out');
+  var outElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+    'class': className + '-out  olHasToolTip',
+    'name' : 'ZoomOut'
+  }, tTipsZoomOut, zoomOutLabel);
   goog.events.listen(outElement, [
     goog.events.EventType.TOUCHEND,
     goog.events.EventType.CLICK
