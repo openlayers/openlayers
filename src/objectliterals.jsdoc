@@ -930,6 +930,7 @@
  *     requests.
  * @property {string|undefined} logo Logo.
  * @property {!string} url Prefix of URL template.
+ * @property {string|undefined}  tierSizeCalculation Tier size calculation method: `default` or `truncated`.
  * @property {ol.Size} size Size of the image.
  * @todo stability experimental
  */
