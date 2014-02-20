@@ -24,18 +24,39 @@ ol.source.Zoomify = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   var size = options.size;
+  var tierSizeCalculation = 'default';
+
+  if (goog.isDef(options.tierSizeCalculation)) {
+    tierSizeCalculation = options.tierSizeCalculation;
+  }
+
   var imageWidth = size[0];
   var imageHeight = size[1];
-
   var tierSizeInTiles = [];
   var tileSize = ol.DEFAULT_TILE_SIZE;
-  while (imageWidth > tileSize || imageHeight > tileSize) {
-    tierSizeInTiles.push([
-      Math.ceil(imageWidth / tileSize),
-      Math.ceil(imageHeight / tileSize)
-    ]);
-    tileSize += tileSize;
+
+  if (tierSizeCalculation === 'truncated') {
+    var width = imageWidth;
+    var height = imageHeight;
+
+    while (width > tileSize || height > tileSize) {
+      tierSizeInTiles.push([
+        Math.ceil(width / tileSize),
+        Math.ceil(height / tileSize)
+      ]);
+      width = parseInt(width / 2, 10);
+      height = parseInt(height / 2, 10);
+    }
+  } else {
+    while (imageWidth > tileSize || imageHeight > tileSize) {
+      tierSizeInTiles.push([
+        Math.ceil(imageWidth / tileSize),
+        Math.ceil(imageHeight / tileSize)
+      ]);
+      tileSize += tileSize;
+    }
   }
+
   tierSizeInTiles.push([1, 1]);
   tierSizeInTiles.reverse();
 
