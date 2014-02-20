@@ -12,6 +12,15 @@ goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.Zoomify');
 
 
+/**
+ * @enum {string}
+ */
+ol.source.ZoomifyTierSizeCalculation = {
+  DEFAULT: 'default',
+  TRUNCATED: 'truncated'
+};
+
+
 
 /**
  * @constructor
@@ -24,11 +33,9 @@ ol.source.Zoomify = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   var size = options.size;
-  var tierSizeCalculation = 'default';
-
-  if (goog.isDef(options.tierSizeCalculation)) {
-    tierSizeCalculation = options.tierSizeCalculation;
-  }
+  var tierSizeCalculation = goog.isDef(options.tierSizeCalculation) ?
+      options.tierSizeCalculation :
+      ol.source.ZoomifyTierSizeCalculation.DEFAULT;
 
   var imageWidth = size[0];
   var imageHeight = size[1];
