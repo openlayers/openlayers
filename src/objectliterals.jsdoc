@@ -952,7 +952,7 @@
  */
 
 /**
- * @typedef {Object} olx.source.VectorFileOptions
+ * @typedef {Object} olx.source.StaticVectorOptions
  * @property {ArrayBuffer|undefined} arrayBuffer Array buffer.
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {Document|undefined} doc Document.

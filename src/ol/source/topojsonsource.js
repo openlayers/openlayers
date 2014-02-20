@@ -1,13 +1,13 @@
 goog.provide('ol.source.TopoJSON');
 
 goog.require('ol.format.TopoJSON');
-goog.require('ol.source.VectorFile');
+goog.require('ol.source.StaticVector');
 
 
 
 /**
  * @constructor
- * @extends {ol.source.VectorFile}
+ * @extends {ol.source.StaticVector}
  * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
  * @param {olx.source.TopoJSONOptions=} opt_options Options.
  * @todo stability experimental
@@ -30,4 +30,4 @@ ol.source.TopoJSON = function(opt_options) {
   });
 
 };
-goog.inherits(ol.source.TopoJSON, ol.source.VectorFile);
+goog.inherits(ol.source.TopoJSON, ol.source.StaticVector);

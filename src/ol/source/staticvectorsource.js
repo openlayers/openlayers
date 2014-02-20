@@ -1,7 +1,7 @@
 // FIXME consider delaying feature reading so projection can be provided by
 // consumer (e.g. the view)
 
-goog.provide('ol.source.VectorFile');
+goog.provide('ol.source.StaticVector');
 
 goog.require('goog.asserts');
 goog.require('goog.dispose');
@@ -23,10 +23,10 @@ goog.require('ol.xml');
  * @constructor
  * @extends {ol.source.Vector}
  * @fires {@link ol.source.VectorEvent} ol.source.VectorEvent
- * @param {olx.source.VectorFileOptions=} opt_options Options.
+ * @param {olx.source.StaticVectorOptions=} opt_options Options.
  * @todo stability experimental
  */
-ol.source.VectorFile = function(opt_options) {
+ol.source.StaticVector = function(opt_options) {
 
   var options = goog.isDef(opt_options) ? opt_options : {};
 
@@ -96,14 +96,14 @@ ol.source.VectorFile = function(opt_options) {
   }
 
 };
-goog.inherits(ol.source.VectorFile, ol.source.Vector);
+goog.inherits(ol.source.StaticVector, ol.source.Vector);
 
 
 /**
  * @param {Event} event Event.
  * @private
  */
-ol.source.VectorFile.prototype.handleXhrIo_ = function(event) {
+ol.source.StaticVector.prototype.handleXhrIo_ = function(event) {
   var xhrIo = event.target;
   goog.asserts.assertInstanceof(xhrIo, goog.net.XhrIo);
   if (xhrIo.isSuccess()) {
@@ -145,7 +145,7 @@ ol.source.VectorFile.prototype.handleXhrIo_ = function(event) {
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
  * @private
  */
-ol.source.VectorFile.prototype.readFeatures_ = function(source) {
+ol.source.StaticVector.prototype.readFeatures_ = function(source) {
   var format = this.format;
   var features = format.readFeatures(source);
   var featureProjection = format.readProjection(source);
