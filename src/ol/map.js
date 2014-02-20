@@ -1011,6 +1011,14 @@ ol.Map.prototype.isDef = function() {
 
 
 /**
+ * @return {boolean} Is rendered.
+ */
+ol.Map.prototype.isRendered = function() {
+  return !goog.isNull(this.frameState_);
+};
+
+
+/**
  * Render.
  */
 ol.Map.prototype.renderSync = function() {
