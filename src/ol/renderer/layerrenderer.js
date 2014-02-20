@@ -109,7 +109,7 @@ ol.renderer.Layer.prototype.prepareFrame = goog.abstractMethod;
 ol.renderer.Layer.prototype.renderIfReadyAndVisible = function() {
   var layer = this.getLayer();
   if (layer.getVisible() && layer.getSourceState() == ol.source.State.READY) {
-    this.getMap().render();
+    this.getMap().renderSync();
   }
 };
 

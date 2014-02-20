@@ -866,7 +866,7 @@ ol.Map.prototype.handlePostRender = function() {
  * @private
  */
 ol.Map.prototype.handleSizeChanged_ = function() {
-  this.render();
+  this.renderSync();
 };
 
 
@@ -917,7 +917,7 @@ ol.Map.prototype.handleTileChange_ = function() {
  * @private
  */
 ol.Map.prototype.handleViewPropertyChanged_ = function() {
-  this.render();
+  this.renderSync();
 };
 
 
@@ -935,7 +935,7 @@ ol.Map.prototype.handleViewChanged_ = function() {
         view, ol.ObjectEventType.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, false, this);
   }
-  this.render();
+  this.renderSync();
 };
 
 
@@ -945,7 +945,7 @@ ol.Map.prototype.handleViewChanged_ = function() {
  */
 ol.Map.prototype.handleLayerGroupMemberChanged_ = function(event) {
   goog.asserts.assertInstanceof(event, goog.events.Event);
-  this.render();
+  this.renderSync();
 };
 
 
@@ -955,7 +955,7 @@ ol.Map.prototype.handleLayerGroupMemberChanged_ = function(event) {
  */
 ol.Map.prototype.handleLayerGroupPropertyChanged_ = function(event) {
   goog.asserts.assertInstanceof(event, ol.ObjectEvent);
-  this.render();
+  this.renderSync();
 };
 
 
@@ -981,7 +981,7 @@ ol.Map.prototype.handleLayerGroupChanged_ = function() {
           this.handleLayerGroupMemberChanged_, false, this)
     ];
   }
-  this.render();
+  this.renderSync();
 };
 
 
@@ -1013,7 +1013,7 @@ ol.Map.prototype.isDef = function() {
 /**
  * Render.
  */
-ol.Map.prototype.render = function() {
+ol.Map.prototype.renderSync = function() {
   if (this.animationDelay_.isActive()) {
     // pass
   } else if (this.freezeRenderingCount_ === 0) {
