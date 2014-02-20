@@ -216,7 +216,7 @@
 /**
  * @typedef {Object} olx.control.FullScreenOptions
  * @property {string|undefined} className CSS class name. Default is `ol-full-screen`.
- * @property {string|undefined} tipLabel Text label to use for the full-screen tip. Default is `Fullscreen`
+ * @property {string|undefined} tipLabel Text label to use for the button tip. Default is `Toggle full-screen`
  * @property {boolean|undefined} keys Full keyboard access.
  * @property {Element|undefined} target Target.
  * @todo stability experimental
@@ -257,8 +257,8 @@
  * @property {string|undefined} className CSS class name. Default is `ol-zoom`.
  * @property {string|undefined} zoomInLabel Text label to use for the zoom-in button. Default is `+`
  * @property {string|undefined} zoomOutLabel Text label to use for the zoom-out button. Default is `-`
- * @property {string|undefined} zoomInTipLabel Text label to use for the zoom-in tip. Default is `Zoom in`
- * @property {string|undefined} zoomOutTipLabel Text label to use for the zoom-out tip. Default is `Zoom out`
+ * @property {string|undefined} zoomInTipLabel Text label to use for the button tip. Default is `Zoom in`
+ * @property {string|undefined} zoomOutTipLabel Text label to use for the button tip. Default is `Zoom out`
  * @property {number|undefined} delta The zoom delta applied on each click.
  * @property {Element|undefined} target Target.
  * @todo stability experimental
@@ -276,7 +276,7 @@
  * @typedef {Object} olx.control.ZoomToExtentOptions
  * @property {string|undefined} className Class name. Default is `ol-zoom-extent`.
  * @property {Element|undefined} target Target.
- * @property {string|undefined} tipLabel Text label to use for the zoom-extent tip. Default is `Zoom to extent`
+ * @property {string|undefined} tipLabel Text label to use for the button tip. Default is `Zoom to extent`
  * @property {ol.Extent|undefined} extent The extent to zoom to. If
  *     undefined the validity extent of the view projection is used.
  * @todo stability experimental
