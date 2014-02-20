@@ -381,7 +381,8 @@ ol.format.GML.readEnvelope_ = function(node, objectStack) {
  */
 ol.format.GML.readFlatCoordinatesFromNode_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  return /** @type {Array.<number>} */ (ol.xml.pushParseAndPop(null,
+  return /** @type {Array.<number>} */ (ol.xml.pushParseAndPop(
+      node.getAttribute('srsDimension'),
       ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack));
 };
 
@@ -408,15 +409,19 @@ ol.format.GML.readFlatPos_ = function(node) {
 
 /**
  * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
  * @private
  * @return {Array.<number>|undefined} Flat coordinates.
  */
-ol.format.GML.readFlatPosList_ = function(node) {
+ol.format.GML.readFlatPosList_ = function(node, objectStack) {
+  var containerDimension = objectStack[objectStack.length - 1];
   var s = ol.xml.getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
   var coords = s.split(/\s+/);
   // The "dimension" attribute is from the GML 3.0.1 spec.
   var dim = parseInt(node.getAttribute('srsDimension') ||
-      node.getAttribute('dimension'), 10) || 2;
+      node.getAttribute('dimension'), 10) ||
+      (goog.isString(containerDimension)) ?
+      parseInt(containerDimension, 10) : 2;
   var x, y, z;
   var flatCoordinates = [];
   for (var i = 0, ii = coords.length; i < ii; i += dim) {

@@ -38,6 +38,21 @@ describe('ol.format.GML', function() {
 
     });
 
+    describe('linestring 3D', function() {
+
+      it('can read a linestring 3D geometry', function() {
+        var text =
+            '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="foo" srsDimension="3">' +
+            '  <gml:posList>1 2 3 4 5 6</gml:posList>' +
+            '</gml:LineString>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.LineString);
+        expect(g.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
+      });
+
+    });
+
     describe('polygon', function() {
 
       it('can read a polygon geometry', function() {
