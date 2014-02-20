@@ -44,8 +44,8 @@ ol.source.Zoomify = function(opt_options) {
         Math.ceil(width / tileSize),
         Math.ceil(height / tileSize)
       ]);
-      width = parseInt(width / 2, 10);
-      height = parseInt(height / 2, 10);
+      width >>= 1;
+      height >>= 1;
     }
   } else {
     while (imageWidth > tileSize || imageHeight > tileSize) {
