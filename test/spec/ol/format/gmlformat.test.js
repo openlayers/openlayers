@@ -153,6 +153,35 @@ describe('ol.format.GML', function() {
 
     });
 
+    describe('multipoint', function() {
+
+      it('can read a singular multipoint geometry', function() {
+        var text =
+            '<gml:MultiPoint xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="foo">' +
+            '  <gml:pointMember>' +
+            '    <gml:Point>' +
+            '      <gml:pos>1 2</gml:pos>' +
+            '    </gml:Point>' +
+            '  </gml:pointMember>' +
+            '  <gml:pointMember>' +
+            '    <gml:Point>' +
+            '      <gml:pos>2 3</gml:pos>' +
+            '    </gml:Point>' +
+            '  </gml:pointMember>' +
+            '  <gml:pointMember>' +
+            '    <gml:Point>' +
+            '      <gml:pos>3 4</gml:pos>' +
+            '    </gml:Point>' +
+            '  </gml:pointMember>' +
+            '</gml:MultiPoint>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.MultiPoint);
+        expect(g.getCoordinates()).to.eql([[1, 2, 0], [2, 3, 0], [3, 4, 0]]);
+      });
+
+    });
+
   });
 
 });
@@ -160,5 +189,6 @@ describe('ol.format.GML', function() {
 
 goog.require('ol.format.GML');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');

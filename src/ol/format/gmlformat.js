@@ -9,6 +9,7 @@ goog.require('ol.extent');
 goog.require('ol.format.XML');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.xml');
@@ -89,6 +90,38 @@ ol.format.GML.readPoint_ = function(node, objectStack) {
   } else {
     return undefined;
   }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ * @return {ol.geom.MultiPoint|undefined} Point.
+ */
+ol.format.GML.readMultiPoint_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'MultiPoint');
+  var coordinates = ol.xml.pushParseAndPop(
+      /** @type {Array.<Array.<number>>} */ ([]),
+      ol.format.GML.MULTIPOINT_PARSERS_, node, objectStack);
+  if (goog.isDefAndNotNull(coordinates)) {
+    return new ol.geom.MultiPoint(coordinates);
+  } else {
+    return undefined;
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ */
+ol.format.GML.pointMemberParser_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'pointMember');
+  ol.xml.parse(ol.format.GML.POINTMEMBER_PARSERS_, node, objectStack);
 };
 
 
@@ -443,6 +476,7 @@ ol.format.GML.readFlatPosList_ = function(node, objectStack) {
 ol.format.GML.GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.GML.NAMESPACE_URIS_, {
       'Point': ol.xml.makeArrayPusher(ol.format.GML.readPoint_),
+      'MultiPoint': ol.xml.makeArrayPusher(ol.format.GML.readMultiPoint_),
       'LineString': ol.xml.makeArrayPusher(ol.format.GML.readLineString_),
       'LinearRing' : ol.xml.makeArrayPusher(ol.format.GML.readLinearRing_),
       'Polygon': ol.xml.makeArrayPusher(ol.format.GML.readPolygon_),
@@ -473,6 +507,29 @@ ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.GML.NAMESPACE_URIS_, {
       'interior': ol.format.GML.interiorParser_,
       'exterior': ol.format.GML.exteriorParser_
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.GML.MULTIPOINT_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.GML.NAMESPACE_URIS_, {
+      'pointMember': ol.xml.makeArrayPusher(ol.format.GML.pointMemberParser_)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.GML.POINTMEMBER_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.GML.NAMESPACE_URIS_, {
+      'Point': ol.xml.makeArrayPusher(
+          ol.format.GML.readFlatCoordinatesFromNode_)
     });
 
 
