@@ -5,6 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
+goog.require('ol.extent');
 goog.require('ol.format.XML');
 goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
@@ -358,6 +359,24 @@ ol.format.GML.readCurve_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
+ * @return {ol.Extent|undefined} Envelope.
+ */
+ol.format.GML.readEnvelope_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'Envelope');
+  var flatCoordinates = ol.xml.pushParseAndPop(
+      /** @type {Array.<number>} */ ([null]),
+      ol.format.GML.ENVELOPE_PARSERS_, node, objectStack);
+  return ol.extent.createOrUpdate(flatCoordinates[1][0],
+      flatCoordinates[1][1], flatCoordinates[2][0],
+      flatCoordinates[2][1]);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
  * @return {Array.<number>} Flat coordinates.
  */
 ol.format.GML.readFlatCoordinatesFromNode_ = function(node, objectStack) {
@@ -423,7 +442,8 @@ ol.format.GML.GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
       'LinearRing' : ol.xml.makeArrayPusher(ol.format.GML.readLinearRing_),
       'Polygon': ol.xml.makeArrayPusher(ol.format.GML.readPolygon_),
       'Surface': ol.xml.makeArrayPusher(ol.format.GML.readSurface_),
-      'Curve': ol.xml.makeArrayPusher(ol.format.GML.readCurve_)
+      'Curve': ol.xml.makeArrayPusher(ol.format.GML.readCurve_),
+      'Envelope': ol.xml.makeArrayPusher(ol.format.GML.readEnvelope_)
     });
 
 
@@ -470,6 +490,18 @@ ol.format.GML.SURFACE_PARSERS_ = ol.xml.makeParsersNS(
 ol.format.GML.CURVE_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.GML.NAMESPACE_URIS_, {
       'segments': ol.xml.makeReplacer(ol.format.GML.segmentsParser_)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.GML.ENVELOPE_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.GML.NAMESPACE_URIS_, {
+      'lowerCorner': ol.xml.makeArrayPusher(ol.format.GML.readFlatPosList_),
+      'upperCorner': ol.xml.makeArrayPusher(ol.format.GML.readFlatPosList_)
     });
 
 

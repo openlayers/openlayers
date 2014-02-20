@@ -123,6 +123,21 @@ describe('ol.format.GML', function() {
 
     });
 
+    describe('envelope', function() {
+
+      it('can read an envelope geometry', function() {
+        var text =
+            '<gml:Envelope xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="foo">' +
+            '  <gml:lowerCorner>1 2</gml:lowerCorner>' +
+            '  <gml:upperCorner>3 4</gml:upperCorner>' +
+            '</gml:Envelope>';
+        var g = format.readGeometry(text);
+        expect(g).to.eql([1, 2, 3, 4]);
+      });
+
+    });
+
   });
 
 });
