@@ -186,7 +186,7 @@ ol.color.fromString = (
                 var i = 0;
                 var key;
                 for (key in cache) {
-                  if (i++ & 3 === 0) {
+                  if ((i++ & 3) === 0) {
                     delete cache[key];
                     --cacheSize;
                   }
