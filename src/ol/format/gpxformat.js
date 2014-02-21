@@ -449,7 +449,6 @@ ol.format.GPX.writeLink_ = function(node, value, objectStack) {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @template T
  */
 ol.format.GPX.writeWptType_ = function(node, coordinate, objectStack) {
   var context = objectStack[objectStack.length - 1];
@@ -491,7 +490,6 @@ ol.format.GPX.writeWptType_ = function(node, coordinate, objectStack) {
  * @param {ol.Feature} feature Feature.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @template T
  */
 ol.format.GPX.writeRte_ = function(node, feature, objectStack) {
   var properties = feature.getProperties();
@@ -658,15 +656,15 @@ ol.format.GPX.GEOMETRY_TYPE_TO_NODENAME_ = {
 
 /**
  * @const
- * @param {*} feature Feature.
+ * @param {*} value Value.
  * @param {Array.<*>} objectStack Object stack.
  * @param {string=} opt_nodeName Node name.
  * @return {Node} Node.
  * @private
  */
-ol.format.GPX.GPX_NODE_FACTORY_ = function(feature, objectStack, opt_nodeName) {
-  goog.asserts.assertInstanceof(feature, ol.Feature);
-  var geometry = feature.getGeometry();
+ol.format.GPX.GPX_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
+  goog.asserts.assertInstanceof(value, ol.Feature);
+  var geometry = value.getGeometry();
   if (goog.isDef(geometry)) {
     var parentNode = objectStack[objectStack.length - 1].node;
     goog.asserts.assert(ol.xml.isNode(parentNode));
