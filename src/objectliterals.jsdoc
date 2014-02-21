@@ -968,6 +968,13 @@
  * @todo stability experimental
  */
 
+ /**
+ * @typedef {Object} olx.style.TriangleOptions
+ * @property {ol.style.Fill|undefined} fill Fill style.
+ * @property {ol.Size} size Triangle size in pixels.
+ * @property {ol.style.Stroke|undefined} stroke Stroke style.
+ */
+
 /**
  * @typedef {Object} olx.style.StyleOptions
  * @property {ol.style.Fill|undefined} fill Fill style.
