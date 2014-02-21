@@ -53,6 +53,22 @@ describe('ol.format.GML', function() {
 
     });
 
+    describe('linearring', function() {
+
+      it('can read a linearring geometry', function() {
+        var text =
+            '<gml:LinearRing xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="foo">' +
+            '  <gml:posList>1 2 3 4 5 6 1 2</gml:posList>' +
+            '</gml:LinearRing>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.Polygon);
+        expect(g.getCoordinates()).to.eql(
+            [[[1, 2, 0], [3, 4, 0], [5, 6, 0], [1, 2, 0]]]);
+      });
+
+    });
+
     describe('polygon', function() {
 
       it('can read a polygon geometry', function() {
