@@ -2,6 +2,7 @@ goog.provide('ol.interaction.Modify');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.events');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
@@ -85,11 +86,19 @@ ol.interaction.Modify = function(options) {
    * @type {ol.FeatureOverlay}
    * @private
    */
-  this.overlay_ = options.featureOverlay;
+  this.overlay_ = new ol.FeatureOverlay({
+    style: options.style
+  });
 
-  this.overlay_.getFeatures().listen(ol.CollectionEventType.ADD,
+  /**
+   * @type {ol.Collection}
+   * @private
+   */
+  this.features_ = options.features;
+
+  goog.events.listen(this.features_, ol.CollectionEventType.ADD,
       this.addFeature_, false, this);
-  this.overlay_.getFeatures().listen(ol.CollectionEventType.REMOVE,
+  goog.events.listen(this.features_, ol.CollectionEventType.REMOVE,
       this.removeFeature_, false, this);
 
   /**
@@ -315,8 +324,7 @@ ol.interaction.Modify.prototype.removeFeature_ = function(evt) {
   }
   // There remains only vertexFeature…
   if (!goog.isNull(this.vertexFeature_) &&
-      this.overlay_.getFeatures().getLength() === 1 &&
-      this.overlay_.getFeatures().getAt(0) == this.vertexFeature_) {
+      this.features_.getLength() === 0) {
     this.overlay_.removeFeature(this.vertexFeature_);
     this.vertexFeature_ = null;
   }

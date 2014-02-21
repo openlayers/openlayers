@@ -1,4 +1,3 @@
-goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.View2D');
 goog.require('ol.interaction');
@@ -230,12 +229,11 @@ var overlayStyle = (function() {
 var select = new ol.interaction.Select({
   style: overlayStyle
 });
-var overlay = new ol.FeatureOverlay({
+
+var modify = new ol.interaction.Modify({
   features: select.getFeatures(),
   style: overlayStyle
 });
-
-var modify = new ol.interaction.Modify({ featureOverlay: overlay });
 
 var map = new ol.Map({
   interactions: ol.interaction.defaults().extend([select, modify]),
