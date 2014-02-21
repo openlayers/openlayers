@@ -180,6 +180,71 @@ describe('ol.format.GML', function() {
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [2, 3, 0], [3, 4, 0]]);
       });
 
+      it('can read a plural multipoint geometry', function() {
+        var text =
+            '<gml:MultiPoint xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="foo">' +
+            '  <gml:pointMembers>' +
+            '    <gml:Point>' +
+            '      <gml:pos>1 2</gml:pos>' +
+            '    </gml:Point>' +
+            '    <gml:Point>' +
+            '      <gml:pos>2 3</gml:pos>' +
+            '    </gml:Point>' +
+            '    <gml:Point>' +
+            '      <gml:pos>3 4</gml:pos>' +
+            '    </gml:Point>' +
+            '  </gml:pointMembers>' +
+            '</gml:MultiPoint>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.MultiPoint);
+        expect(g.getCoordinates()).to.eql([[1, 2, 0], [2, 3, 0], [3, 4, 0]]);
+      });
+
+    });
+
+    describe('multilinestring', function() {
+
+      it('can read a singular multilinestring geometry', function() {
+        var text =
+            '<gml:MultiLineString xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="foo">' +
+            '  <gml:lineStringMember>' +
+            '    <gml:LineString>' +
+            '      <gml:posList>1 2 2 3</gml:posList>' +
+            '    </gml:LineString>' +
+            '  </gml:lineStringMember>' +
+            '  <gml:lineStringMember>' +
+            '    <gml:LineString>' +
+            '      <gml:posList>3 4 4 5</gml:posList>' +
+            '    </gml:LineString>' +
+            '  </gml:lineStringMember>' +
+            '</gml:MultiLineString>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.MultiLineString);
+        expect(g.getCoordinates()).to.eql(
+            [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
+      });
+
+      it('can read a plural multilinestring geometry', function() {
+        var text =
+            '<gml:MultiLineString xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="foo">' +
+            '  <gml:lineStringMembers>' +
+            '    <gml:LineString>' +
+            '      <gml:posList>1 2 2 3</gml:posList>' +
+            '    </gml:LineString>' +
+            '    <gml:LineString>' +
+            '      <gml:posList>3 4 4 5</gml:posList>' +
+            '    </gml:LineString>' +
+            '  </gml:lineStringMembers>' +
+            '</gml:MultiLineString>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.MultiLineString);
+        expect(g.getCoordinates()).to.eql(
+            [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
+      });
+
     });
 
   });
@@ -190,5 +255,6 @@ describe('ol.format.GML', function() {
 goog.require('ol.format.GML');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
