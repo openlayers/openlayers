@@ -214,7 +214,11 @@ describe('ol.format.GPX', function() {
 
     describe('wpt', function() {
 
-      it('can read a wpt', function() {
+      beforeEach(function() {
+        format = new ol.format.GPX.V1_1();
+      });
+
+      it('can read and write a wpt', function() {
         var text =
             '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
             '  <wpt lat="1" lon="2"/>' +
@@ -227,9 +231,11 @@ describe('ol.format.GPX', function() {
         expect(g).to.be.an(ol.geom.Point);
         expect(g.getCoordinates()).to.eql([2, 1, 0, 0]);
         expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+        var serialized = format.writeFeatures(fs);
+        expect(serialized).to.xmleql(ol.xml.load(text));
       });
 
-      it('can read a wpt with ele', function() {
+      it('can read and write a wpt with ele', function() {
         var text =
             '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
             '  <wpt lat="1" lon="2">' +
@@ -244,9 +250,11 @@ describe('ol.format.GPX', function() {
         expect(g).to.be.an(ol.geom.Point);
         expect(g.getCoordinates()).to.eql([2, 1, 3, 0]);
         expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+        var serialized = format.writeFeatures(fs);
+        expect(serialized).to.xmleql(ol.xml.load(text));
       });
 
-      it('can read a wpt with time', function() {
+      it('can read and write a wpt with time', function() {
         var text =
             '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
             '  <wpt lat="1" lon="2">' +
@@ -261,9 +269,11 @@ describe('ol.format.GPX', function() {
         expect(g).to.be.an(ol.geom.Point);
         expect(g.getCoordinates()).to.eql([2, 1, 0, 1263115752]);
         expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+        var serialized = format.writeFeatures(fs);
+        expect(serialized).to.xmleql(ol.xml.load(text));
       });
 
-      it('can read a wpt with ele and time', function() {
+      it('can read and write a wpt with ele and time', function() {
         var text =
             '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
             '  <wpt lat="1" lon="2">' +
@@ -279,9 +289,11 @@ describe('ol.format.GPX', function() {
         expect(g).to.be.an(ol.geom.Point);
         expect(g.getCoordinates()).to.eql([2, 1, 3, 1263115752]);
         expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+        var serialized = format.writeFeatures(fs);
+        expect(serialized).to.xmleql(ol.xml.load(text));
       });
 
-      it('can read various wpt attributes', function() {
+      it('can read and write various wpt attributes', function() {
         var text =
             '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
             '  <wpt lat="1" lon="2">' +
@@ -327,6 +339,8 @@ describe('ol.format.GPX', function() {
         expect(f.get('pdop')).to.be(8);
         expect(f.get('ageofdgpsdata')).to.be(9);
         expect(f.get('dgpsid')).to.be(10);
+        var serialized = format.writeFeatures(fs);
+        expect(serialized).to.xmleql(ol.xml.load(text));
       });
 
     });
@@ -378,3 +392,4 @@ goog.require('ol.format.GPX');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.Point');
+goog.require('ol.xml');
