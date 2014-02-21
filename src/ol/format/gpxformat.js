@@ -514,7 +514,44 @@ ol.format.GPX.writeRte_ = function(node, feature, objectStack) {
  * @param {ol.Feature} feature Feature.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @template T
+ */
+ol.format.GPX.writeTrk_ = function(node, feature, objectStack) {
+  var properties = feature.getProperties();
+  var context = {node: node, 'properties': properties};
+  var geometry = feature.getGeometry();
+  if (goog.isDef(geometry)) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString);
+    goog.object.set(properties, 'trkseg', geometry.getLineStrings());
+  }
+  var parentNode = objectStack[objectStack.length - 1].node;
+  var orderedKeys = ol.format.GPX.TRK_SEQUENCE_[parentNode.namespaceURI];
+  var values = ol.xml.makeSequence(properties, orderedKeys);
+  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */ (context),
+      ol.format.GPX.TRK_SERIALIZERS_, ol.xml.OBJECT_PROPERTY_NODE_FACTORY,
+      values, objectStack, orderedKeys);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.LineString} lineString LineString.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ */
+ol.format.GPX.writeTrkSeg_ = function(node, lineString, objectStack) {
+  var context = {node: node, 'geometryLayout': lineString.getLayout(),
+    'properties': {}};
+  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */ (context),
+      ol.format.GPX.TRKSEG_SERIALIZERS_, ol.format.GPX.TRKSEG_NODE_FACTORY_,
+      lineString.getCoordinates(), objectStack);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.Feature} feature Feature.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
  */
 ol.format.GPX.writeWpt_ = function(node, feature, objectStack) {
   var context = objectStack[objectStack.length - 1];
@@ -582,6 +619,63 @@ ol.format.GPX.RTE_SERIALIZERS_ = ol.xml.makeStructureNS(
       'type': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
           ol.format.XSD.writeStringTextNode)),
       'rtept': ol.xml.makeChildrenAppender(ol.format.GPX.writeWptType_)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<string>>}
+ * @private
+ */
+ol.format.GPX.TRK_SEQUENCE_ = ol.xml.makeStructureNS(
+    ol.format.GPX.NAMESPACE_URIS_, [
+      'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'trkseg'
+    ]);
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @private
+ */
+ol.format.GPX.TRK_SERIALIZERS_ = ol.xml.makeStructureNS(
+    ol.format.GPX.NAMESPACE_URIS_, {
+      'name': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
+          ol.format.XSD.writeStringTextNode)),
+      'cmt': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
+          ol.format.XSD.writeStringTextNode)),
+      'desc': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
+          ol.format.XSD.writeStringTextNode)),
+      'src': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
+          ol.format.XSD.writeStringTextNode)),
+      'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
+      'number': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
+          ol.format.XSD.writeNonNegativeIntegerTextNode)),
+      'type': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
+          ol.format.XSD.writeStringTextNode)),
+      'trkseg': ol.xml.makeChildrenAppender(ol.format.GPX.writeTrkSeg_)
+    });
+
+
+/**
+ * @const
+ * @param {*} value Value.
+ * @param {Array.<*>} objectStack Object stack.
+ * @param {string=} opt_nodeName Node name.
+ * @return {Node} Node.
+ * @private
+ */
+ol.format.GPX.TRKSEG_NODE_FACTORY_ = ol.xml.makeSimpleNodeFactory('trkpt');
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @private
+ */
+ol.format.GPX.TRKSEG_SERIALIZERS_ = ol.xml.makeStructureNS(
+    ol.format.GPX.NAMESPACE_URIS_, {
+      'trkpt': ol.xml.makeChildAppender(ol.format.GPX.writeWptType_)
     });
 
 
@@ -682,7 +776,7 @@ ol.format.GPX.GPX_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
 ol.format.GPX.GPX_SERIALIZERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'rte': ol.xml.makeChildAppender(ol.format.GPX.writeRte_),
-      //'MultiLineString': ol.xml.makeChildAppender(ol.format.GPX.writeTrk_),
+      'trk': ol.xml.makeChildAppender(ol.format.GPX.writeTrk_),
       'wpt': ol.xml.makeChildAppender(ol.format.GPX.writeWpt_)
     });
 
