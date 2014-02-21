@@ -247,6 +247,92 @@ describe('ol.format.GML', function() {
 
     });
 
+    describe('multipolygon', function() {
+
+      it('can read a singular multipolygon geometry', function() {
+        var text =
+            '<gml:MultiPolygon xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="foo">' +
+            '  <gml:polygonMember>' +
+            '    <gml:Polygon>' +
+            '      <gml:exterior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:exterior>' +
+            '      <gml:interior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:interior>' +
+            '      <gml:interior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:interior>' +
+            '    </gml:Polygon>' +
+            '  </gml:polygonMember>' +
+            '  <gml:polygonMember>' +
+            '    <gml:Polygon>' +
+            '      <gml:exterior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:exterior>' +
+            '    </gml:Polygon>' +
+            '  </gml:polygonMember>' +
+            '</gml:MultiPolygon>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.MultiPolygon);
+        expect(g.getCoordinates()).to.eql([
+          [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
+            [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
+            [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
+          [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
+      });
+
+      it('can read a plural multipolygon geometry', function() {
+        var text =
+            '<gml:MultiPolygon xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="foo">' +
+            '  <gml:polygonMembers>' +
+            '    <gml:Polygon>' +
+            '      <gml:exterior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:exterior>' +
+            '      <gml:interior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:interior>' +
+            '      <gml:interior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:interior>' +
+            '    </gml:Polygon>' +
+            '    <gml:Polygon>' +
+            '      <gml:exterior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:exterior>' +
+            '    </gml:Polygon>' +
+            '  </gml:polygonMembers>' +
+            '</gml:MultiPolygon>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.MultiPolygon);
+        expect(g.getCoordinates()).to.eql([
+          [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
+            [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
+            [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
+          [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
+      });
+
+    });
+
   });
 
 });
@@ -256,5 +342,6 @@ goog.require('ol.format.GML');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');

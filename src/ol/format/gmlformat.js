@@ -11,6 +11,7 @@ goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.xml');
@@ -140,6 +141,28 @@ ol.format.GML.readMultiLineString_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
+ * @return {ol.geom.MultiPolygon|undefined} MultiPolygon.
+ */
+ol.format.GML.readMultiPolygon_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'MultiPolygon');
+  var polygons = ol.xml.pushParseAndPop(
+      /** @type {Array.<ol.geom.Polygon>} */ ([]),
+      ol.format.GML.MULTIPOLYGON_PARSERS_, node, objectStack);
+  if (goog.isDefAndNotNull(polygons)) {
+    var multiPolygon = new ol.geom.MultiPolygon(null);
+    multiPolygon.setPolygons(polygons);
+    return multiPolygon;
+  } else {
+    return undefined;
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
  */
 ol.format.GML.pointMemberParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
@@ -159,6 +182,19 @@ ol.format.GML.lineStringMemberParser_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'lineStringMember' ||
       node.localName == 'lineStringMembers');
   ol.xml.parse(ol.format.GML.LINESTRINGMEMBER_PARSERS_, node, objectStack);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ */
+ol.format.GML.polygonMemberParser_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'polygonMember' ||
+      node.localName == 'polygonMembers');
+  ol.xml.parse(ol.format.GML.POLYGONMEMBER_PARSERS_, node, objectStack);
 };
 
 
@@ -519,6 +555,7 @@ ol.format.GML.GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
           ol.format.GML.readMultiLineString_),
       'LinearRing' : ol.xml.makeArrayPusher(ol.format.GML.readLinearRing_),
       'Polygon': ol.xml.makeArrayPusher(ol.format.GML.readPolygon_),
+      'MultiPolygon': ol.xml.makeArrayPusher(ol.format.GML.readMultiPolygon_),
       'Surface': ol.xml.makeArrayPusher(ol.format.GML.readSurface_),
       'Curve': ol.xml.makeArrayPusher(ol.format.GML.readCurve_),
       'Envelope': ol.xml.makeArrayPusher(ol.format.GML.readEnvelope_)
@@ -580,6 +617,20 @@ ol.format.GML.MULTILINESTRING_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
+ol.format.GML.MULTIPOLYGON_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.GML.NAMESPACE_URIS_, {
+      'polygonMember': ol.xml.makeArrayPusher(
+          ol.format.GML.polygonMemberParser_),
+      'polygonMembers': ol.xml.makeArrayPusher(
+          ol.format.GML.polygonMemberParser_)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
 ol.format.GML.POINTMEMBER_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.GML.NAMESPACE_URIS_, {
       'Point': ol.xml.makeArrayPusher(
@@ -596,6 +647,18 @@ ol.format.GML.LINESTRINGMEMBER_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.GML.NAMESPACE_URIS_, {
       'LineString': ol.xml.makeArrayPusher(
           ol.format.GML.readLineString_)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.GML.POLYGONMEMBER_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.GML.NAMESPACE_URIS_, {
+      'Polygon': ol.xml.makeArrayPusher(
+          ol.format.GML.readPolygon_)
     });
 
 
