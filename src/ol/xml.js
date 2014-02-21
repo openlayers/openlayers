@@ -1,16 +1,73 @@
+// FIXME Remove ol.xml.makeParsersNS, and use ol.xml.makeStructureNS instead.
+
 goog.provide('ol.xml');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
+goog.require('goog.dom.xml');
 goog.require('goog.object');
 goog.require('goog.userAgent');
+
+
+/**
+ * @typedef {{node:Node, context}}
+ */
+ol.xml.NodeStackItem;
 
 
 /**
  * @typedef {function(Node, Array.<*>)}
  */
 ol.xml.Parser;
+
+
+/**
+ * @typedef {function(Node, *, Array.<*>)}
+ */
+ol.xml.Serializer;
+
+
+/**
+ * @const
+ * @type {Document}
+ */
+ol.xml.DOCUMENT = goog.dom.xml.createDocument();
+
+
+/**
+ * @param {string} namespaceURI Namespace URI.
+ * @param {string} qualifiedName Qualified name.
+ * @return {Node} Node.
+ * @private
+ */
+ol.xml.createElementNS_ = function(namespaceURI, qualifiedName) {
+  return ol.xml.DOCUMENT.createElementNS(namespaceURI, qualifiedName);
+};
+
+
+/**
+ * @param {string} namespaceURI Namespace URI.
+ * @param {string} qualifiedName Qualified name.
+ * @return {Node} Node.
+ * @private
+ */
+ol.xml.createElementNSActiveX_ = function(namespaceURI, qualifiedName) {
+  if (!goog.isDef(namespaceURI)) {
+    namespaceURI = '';
+  }
+  return ol.xml.DOCUMENT.createNode(1, qualifiedName, namespaceURI);
+};
+
+
+/**
+ * @param {string} namespaceURI Namespace URI.
+ * @param {string} qualifiedName Qualified name.
+ * @return {Node} Node.
+ */
+ol.xml.createElementNS =
+    (document.implementation && document.implementation.createDocument) ?
+        ol.xml.createElementNS_ : ol.xml.createElementNSActiveX_;
 
 
 /**
@@ -139,6 +196,47 @@ ol.xml.isNode = goog.userAgent.IE ? ol.xml.isNodeIE_ : ol.xml.isNode_;
 
 
 /**
+ * @param {Node} node Node.
+ * @param {?string} namespaceURI Namespace URI.
+ * @param {string} name Attribute name.
+ * @param {string|number} value Value.
+ * @private
+ */
+ol.xml.setAttributeNS_ = function(node, namespaceURI, name, value) {
+  node.setAttributeNS(namespaceURI, name, value);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {?string} namespaceURI Namespace URI.
+ * @param {string} name Attribute name.
+ * @param {string|number} value Value.
+ * @private
+ */
+ol.xml.setAttributeNSActiveX_ = function(node, namespaceURI, name, value) {
+  if (!goog.isNull(namespaceURI)) {
+    var attribute = node.ownerDocument.createNode(2, name, namespaceURI);
+    attribute.nodeValue = value;
+    node.setAttributeNode(attribute);
+  } else {
+    node.setAttribute(name, value);
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {?string} namespaceURI Namespace URI.
+ * @param {string} name Attribute name.
+ * @param {string|number} value Value.
+ */
+ol.xml.setAttributeNS =
+    (document.implementation && document.implementation.createDocument) ?
+        ol.xml.setAttributeNS_ : ol.xml.setAttributeNSActiveX_;
+
+
+/**
  * @param {string} xml XML.
  * @return {Document} Document.
  */
@@ -254,13 +352,93 @@ ol.xml.makeObjectPropertySetter =
  * @return {Object.<string, Object.<string, ol.xml.Parser>>} Parsers NS.
  */
 ol.xml.makeParsersNS = function(namespaceURIs, parsers, opt_parsersNS) {
-  /** @type {Object.<string, Object.<string, ol.xml.Parser>>} */
-  var parsersNS = goog.isDef(opt_parsersNS) ? opt_parsersNS : {};
+  return /** @type {Object.<string, Object.<string, ol.xml.Parser>>} */ (
+      ol.xml.makeStructureNS(namespaceURIs, parsers, opt_parsersNS));
+};
+
+
+/**
+ * @param {function(this: T, Node, V, Array.<*>)}
+ *     nodeWriter Node writer.
+ * @param {T=} opt_this The object to use as `this` in `nodeWriter`.
+ * @return {ol.xml.Serializer} Serializer.
+ * @template T, V
+ */
+ol.xml.makeChildAppender = function(nodeWriter, opt_this) {
+  return function(node, value, objectStack) {
+    nodeWriter.call(opt_this, node, value, objectStack);
+    var parent = objectStack[objectStack.length - 1];
+    goog.asserts.assert(goog.isObject(parent));
+    var parentNode = parent.node;
+    goog.asserts.assert(ol.xml.isNode(parentNode) ||
+        ol.xml.isDocument(parentNode));
+    parentNode.appendChild(node);
+  };
+};
+
+
+/**
+ * @param {string=} opt_namespaceURI Namespace URI which will be used
+ *     for all created nodes. If not provided, the namespace of the parent node
+ *     will be used.
+ * @return {function(*, Array.<*>, (string|undefined)): Node} Node factory.
+ */
+ol.xml.makeChildNodeFactory = function(opt_namespaceURI) {
+  var namespaceURI = /** @type {string} */
+      (goog.isDef(opt_namespaceURI) ? opt_namespaceURI : null);
+  return function(value, objectStack, nodeName) {
+    return ol.xml.createElementNS(namespaceURI, nodeName);
+  };
+};
+
+
+/**
+ * @param {Object.<string, V>} object Key-value pairs for the sequence.
+ * @param {Array.<string>} orderedKeys Keys in the order of the sequence.
+ * @return {Array.<V>} Values in the order of the sequence.
+ * @template V
+ */
+ol.xml.makeSequence = function(object, orderedKeys) {
+  var length = orderedKeys.length;
+  var sequence = new Array(length);
+  for (var i = 0; i < length; ++i) {
+    sequence[i] = object[orderedKeys[i]];
+  }
+  return sequence;
+};
+
+
+/**
+ * @param {function(this: T, Node, V)} nodeValueSetter Function that sets
+ *     the node value, like the `write*TextNode` functions from `ol.format.XSD`.
+ * @param {T=} opt_this `this` object for the node writer.
+ * @return {ol.xml.Serializer} Serializer.
+ * @template T, V
+ */
+ol.xml.makeSimpleTypeWriter = function(nodeValueSetter, opt_this) {
+  return function(node, value) {
+    nodeValueSetter.call(opt_this, node, value);
+  };
+};
+
+
+/**
+ * @param {Array.<string>} namespaceURIs Namespace URIs.
+ * @param {T} structure Structure.
+ * @param {Object.<string, T>=} opt_structureNS Namespaced structure to add to.
+ * @return {Object.<string, T>} Namespaced structure.
+ * @template T
+ */
+ol.xml.makeStructureNS = function(namespaceURIs, structure, opt_structureNS) {
+  /**
+   * @type {Object.<string, *>}
+   */
+  var structureNS = goog.isDef(opt_structureNS) ? opt_structureNS : {};
   var i, ii;
   for (i = 0, ii = namespaceURIs.length; i < ii; ++i) {
-    parsersNS[namespaceURIs[i]] = parsers;
+    structureNS[namespaceURIs[i]] = structure;
   }
-  return parsersNS;
+  return structureNS;
 };
 
 
@@ -299,5 +477,60 @@ ol.xml.pushParseAndPop = function(
     object, parsersNS, node, objectStack, opt_this) {
   objectStack.push(object);
   ol.xml.parse(parsersNS, node, objectStack, opt_this);
+  return objectStack.pop();
+};
+
+
+/**
+ * @param {Object.<string, Object.<string, ol.xml.Serializer>>} serializersNS
+ *     Namespaced serializers.
+ * @param {function(this: T, *, Array.<*>, (string|undefined)): Node|undefined} nodeFactory
+ *     Node factory.
+ * @param {Array.<*>} values Values.
+ * @param {Array.<*>} objectStack Node stack.
+ * @param {Array.<string>=} opt_keys Keys of the `values`, will be passed to the
+ *     `nodeFactory`.
+ * @param {T=} opt_this The object to use as `this` for the node factory and
+ *     serializers.
+ * @template T
+ */
+ol.xml.serialize = function(
+    serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this) {
+  var length = (goog.isDef(opt_keys) ? opt_keys : values).length;
+  var value, node;
+  for (var i = 0; i < length; ++i) {
+    value = values[i];
+    if (goog.isDef(value)) {
+      node = nodeFactory.call(opt_this, value, objectStack,
+          goog.isDef(opt_keys) ? opt_keys[i] : undefined);
+      if (goog.isDef(node)) {
+        serializersNS[node.namespaceURI][node.localName]
+            .call(opt_this, node, value, objectStack);
+      }
+    }
+  }
+};
+
+
+/**
+ * @param {O} object Object.
+ * @param {Object.<string, Object.<string, ol.xml.Serializer>>} serializersNS
+ *     Namespaced serializers.
+ * @param {function(this: T, *, Array.<*>, (string|undefined)): Node|undefined} nodeFactory
+ *     Node factory.
+ * @param {Array.<*>} values Values.
+ * @param {Array.<*>} objectStack Node stack.
+ * @param {Array.<string>=} opt_keys Keys of the `values`, will be passed to the
+ *     `nodeFactory`.
+ * @param {T=} opt_this The object to use as `this` for the node factory and
+ *     serializers.
+ * @return {O|undefined} Object.
+ * @template O, T
+ */
+ol.xml.pushSerializeAndPop = function(object,
+    serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this) {
+  objectStack.push(object);
+  ol.xml.serialize(
+      serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this);
   return objectStack.pop();
 };
