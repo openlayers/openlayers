@@ -29,6 +29,7 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.proj');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
+goog.require('ol.style.IconAnchorOrigin');
 goog.require('ol.style.IconAnchorUnits');
 goog.require('ol.style.Image');
 goog.require('ol.style.Stroke');
@@ -473,7 +474,7 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
     anchorXUnits = ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_;
     anchorYUnits = ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_;
   } else if (/^http:\/\/maps\.(?:google|gstatic)\.com\//.test(src)) {
-    anchor = [0.5, 1];
+    anchor = [0.5, 0];
     anchorXUnits = ol.style.IconAnchorUnits.FRACTION;
     anchorYUnits = ol.style.IconAnchorUnits.FRACTION;
   }
@@ -494,6 +495,7 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
 
   var imageStyle = new ol.style.Icon({
     anchor: anchor,
+    anchorOrigin: ol.style.IconAnchorOrigin.BOTTOM_LEFT,
     anchorXUnits: anchorXUnits,
     anchorYUnits: anchorYUnits,
     crossOrigin: 'anonymous', // FIXME should this be configurable?

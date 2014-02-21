@@ -927,6 +927,7 @@
  * @typedef {Object} olx.style.IconOptions
  * @property {Array.<number>|undefined} anchor Anchor. Default value is `[0.5, 0.5]`
  *     (icon center).
+ * @property {ol.style.IconAnchorOrigin|undefined} anchorOrigin Origin of the anchor: `bottom-left`, `bottom-right`, `top-left` or `top-right`. Default is `top-left`.
  * @property {ol.style.IconAnchorUnits|undefined} anchorXUnits Units in which the anchor x value is specified.
  *     A value of `'fraction'` indicates the x value is a fraction of the icon.
  *     A value of `'pixels'` indicates the x value in pixels. Default is

@@ -1,6 +1,7 @@
 // FIXME decide default value for snapToPixel
 
 goog.provide('ol.style.Icon');
+goog.provide('ol.style.IconAnchorOrigin');
 goog.provide('ol.style.IconAnchorUnits');
 goog.provide('ol.style.IconImageCache');
 
@@ -13,6 +14,17 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('ol.style.Image');
 goog.require('ol.style.ImageState');
+
+
+/**
+ * @enum {string}
+ */
+ol.style.IconAnchorOrigin = {
+  BOTTOM_LEFT: 'bottom-left',
+  BOTTOM_RIGHT: 'bottom-right',
+  TOP_LEFT: 'top-left',
+  TOP_RIGHT: 'top-right'
+};
 
 
 /**
@@ -39,6 +51,13 @@ ol.style.Icon = function(opt_options) {
    * @type {Array.<number>}
    */
   this.anchor_ = goog.isDef(options.anchor) ? options.anchor : [0.5, 0.5];
+
+  /**
+   * @private
+   * @type {ol.style.IconAnchorOrigin}
+   */
+  this.anchorOrigin_ = goog.isDef(options.anchorOrigin) ?
+      options.anchorOrigin : ol.style.IconAnchorOrigin.TOP_LEFT;
 
   /**
    * @private
@@ -104,18 +123,35 @@ goog.inherits(ol.style.Icon, ol.style.Image);
  */
 ol.style.Icon.prototype.getAnchor = function() {
   var anchor = this.anchor_;
+  var size = this.getSize();
   if (this.anchorXUnits_ == ol.style.IconAnchorUnits.FRACTION ||
       this.anchorYUnits_ == ol.style.IconAnchorUnits.FRACTION) {
-    var size = this.getSize();
     if (goog.isNull(size)) {
       return null;
     }
-    anchor = [this.anchor_[0], this.anchor_[1]];
+    anchor = this.anchor_.slice();
     if (this.anchorXUnits_ == ol.style.IconAnchorUnits.FRACTION) {
       anchor[0] *= size[0];
     }
     if (this.anchorYUnits_ == ol.style.IconAnchorUnits.FRACTION) {
       anchor[1] *= size[1];
+    }
+  }
+
+  if (this.anchorOrigin_ != ol.style.IconAnchorOrigin.TOP_LEFT) {
+    if (goog.isNull(size)) {
+      return null;
+    }
+    if (anchor === this.anchor_) {
+      anchor = this.anchor_.slice();
+    }
+    if (this.anchorOrigin_ == ol.style.IconAnchorOrigin.TOP_RIGHT ||
+        this.anchorOrigin_ == ol.style.IconAnchorOrigin.BOTTOM_RIGHT) {
+      anchor[0] = -anchor[0] + size[0];
+    }
+    if (this.anchorOrigin_ == ol.style.IconAnchorOrigin.BOTTOM_LEFT ||
+        this.anchorOrigin_ == ol.style.IconAnchorOrigin.BOTTOM_RIGHT) {
+      anchor[1] += size[1];
     }
   }
   return anchor;
