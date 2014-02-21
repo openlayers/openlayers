@@ -11,7 +11,7 @@ goog.require('goog.userAgent');
 
 
 /**
- * @typedef {{node:Node, context}}
+ * @typedef {{node:Node}}
  */
 ol.xml.NodeStackItem;
 
@@ -358,6 +358,9 @@ ol.xml.makeParsersNS = function(namespaceURIs, parsers, opt_parsersNS) {
 
 
 /**
+ * Creates a serializer that appends its `nodeWriter`'s to its designated
+ * parent. The parent node is the `node` of the {@link ol.xml.NodeStackItem} at
+ * the top of the `objectStack`.
  * @param {function(this: T, Node, V, Array.<*>)}
  *     nodeWriter Node writer.
  * @param {T=} opt_this The object to use as `this` in `nodeWriter`.
@@ -378,18 +381,73 @@ ol.xml.makeChildAppender = function(nodeWriter, opt_this) {
 
 
 /**
- * @param {string=} opt_namespaceURI Namespace URI which will be used
- *     for all created nodes. If not provided, the namespace of the parent node
- *     will be used.
- * @return {function(*, Array.<*>, (string|undefined)): Node} Node factory.
+ * Creates a serializer that creates multiple nodes of the same name and appends
+ * them to the designated parent. The parent node is the `node` of the
+ * {@link ol.xml.NodeStackItem} at the top of the `objectStack`.
+ * @param {function(this: T, Node, V, Array.<*>)}
+ *     nodeWriter Node writer.
+ * @param {T=} opt_this The object to use as `this` in `nodeWriter`.
+ * @return {ol.xml.Serializer} Serializer.
+ * @template T, V
  */
-ol.xml.makeChildNodeFactory = function(opt_namespaceURI) {
-  var namespaceURI = /** @type {string} */
-      (goog.isDef(opt_namespaceURI) ? opt_namespaceURI : null);
-  return function(value, objectStack, nodeName) {
+ol.xml.makeChildrenAppender = function(nodeWriter, opt_this) {
+  var writer = ol.xml.makeChildAppender(nodeWriter);
+  var serializersNS, nodeFactory;
+  return function(node, value, objectStack) {
+    if (!goog.isDef(serializersNS)) {
+      serializersNS = {};
+      var serializers = {};
+      goog.object.set(serializers, node.localName, writer);
+      goog.object.set(serializersNS, node.namespaceURI, serializers);
+      nodeFactory = ol.xml.makeSimpleNodeFactory(node.localName);
+    }
+    ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
+        (objectStack[objectStack.length - 1]), serializersNS, nodeFactory,
+        value, objectStack);
+  };
+};
+
+
+/**
+ * @param {string=} opt_nodeName Fixed node name which will be used for all
+ *     created nodes. If not provided, the nodeName will be the 3rd argument to
+ *     the resulting node factory.
+ * @param {string=} opt_namespaceURI Fixed namespace URI which will be used for
+ *     all created nodes. If not provided, the namespace of the parent node will
+ *     be used.
+ * @return {function(*, Array.<*>, string=): Node} Node factory.
+ */
+ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
+  var fixedNodeName = opt_nodeName;
+  /**
+   * @param {*} value Value.
+   * @param {Array.<*>} objectStack Object stack.
+   * @param {string=} opt_nodeName Node name.
+   * @return {Node} Node.
+   */
+  return function(value, objectStack, opt_nodeName) {
+    var context = objectStack[objectStack.length - 1];
+    var node = context.node;
+    goog.asserts.assert(ol.xml.isNode(node) || ol.xml.isDocument(node));
+    var nodeName = fixedNodeName;
+    if (!goog.isDef(nodeName)) {
+      nodeName = opt_nodeName;
+    }
+    var namespaceURI = opt_namespaceURI;
+    if (!goog.isDef(opt_namespaceURI)) {
+      namespaceURI = node.namespaceURI;
+    }
+    goog.asserts.assert(goog.isDef(nodeName));
     return ol.xml.createElementNS(namespaceURI, nodeName);
   };
 };
+
+
+/**
+ * @const
+ * @type {function(*, Array.<*>, string=): Node}
+ */
+ol.xml.OBJECT_PROPERTY_NODE_FACTORY = ol.xml.makeSimpleNodeFactory();
 
 
 /**
