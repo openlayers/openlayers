@@ -104,8 +104,8 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
         -pixelRatio / view2DState.resolution,
         -view2DState.rotation,
         -view2DState.center[0], -view2DState.center[1]);
-    var render = new ol.render.canvas.Immediate(
-        context, pixelRatio, frameState.extent, this.transform_);
+    var render = new ol.render.canvas.Immediate(context, pixelRatio,
+        frameState.extent, this.transform_, view2DState.rotation);
     var composeEvent = new ol.render.Event(type, map, render, frameState,
         context, null);
     map.dispatchEvent(composeEvent);
