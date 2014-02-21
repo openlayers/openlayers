@@ -99,8 +99,8 @@ ol.style.Icon = function(opt_options) {
   /**
    * @type {boolean}
    */
-  var rotateWithMap = goog.isDef(options.rotateWithMap) ?
-      options.rotateWithMap : false;
+  var rotateWithView = goog.isDef(options.rotateWithView) ?
+      options.rotateWithView : false;
 
   /**
    * @type {number}
@@ -117,7 +117,7 @@ ol.style.Icon = function(opt_options) {
     rotation: rotation,
     scale: scale,
     snapToPixel: undefined,
-    rotateWithMap: rotateWithMap
+    rotateWithView: rotateWithView
   });
 
 };

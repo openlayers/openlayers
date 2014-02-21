@@ -132,7 +132,7 @@ ol.render.canvas.Immediate =
    * @private
    * @type {boolean}
    */
-  this.imageRotateWithMap_ = false;
+  this.imageRotateWithView_ = false;
 
   /**
    * @private
@@ -232,7 +232,7 @@ ol.render.canvas.Immediate.prototype.drawImages_ =
     context.globalAlpha = alpha * this.imageOpacity_;
   }
   var rotation = this.imageRotation_;
-  if (this.imageRotateWithMap_) {
+  if (this.imageRotateWithView_) {
     rotation += this.viewRotation_;
   }
   var i, ii;
@@ -798,7 +798,7 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     // FIXME pixel ratio
     var imageImage = imageStyle.getImage(1);
     var imageOpacity = imageStyle.getOpacity();
-    var imageRotateWithMap = imageStyle.getRotateWithMap();
+    var imageRotateWithView = imageStyle.getRotateWithView();
     var imageRotation = imageStyle.getRotation();
     var imageScale = imageStyle.getScale();
     var imageSize = imageStyle.getSize();
@@ -811,8 +811,8 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     this.imageHeight_ = imageSize[1];
     this.image_ = imageImage;
     this.imageOpacity_ = goog.isDef(imageOpacity) ? imageOpacity : 1;
-    this.imageRotateWithMap_ = goog.isDef(imageRotateWithMap) ?
-        imageRotateWithMap : false;
+    this.imageRotateWithView_ = goog.isDef(imageRotateWithView) ?
+        imageRotateWithView : false;
     this.imageRotation_ = goog.isDef(imageRotation) ? imageRotation : 0;
     this.imageScale_ = goog.isDef(imageScale) ? imageScale : 1;
     this.imageSnapToPixel_ = goog.isDef(imageSnapToPixel) ?

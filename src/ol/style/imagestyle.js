@@ -17,7 +17,7 @@ ol.style.ImageState = {
 
 /**
  * @typedef {{opacity: number,
- *            rotateWithMap: boolean,
+ *            rotateWithView: boolean,
  *            rotation: number,
  *            scale: number,
  *            snapToPixel: (boolean|undefined)}}
@@ -42,7 +42,7 @@ ol.style.Image = function(options) {
    * @private
    * @type {boolean}
    */
-  this.rotateWithMap_ = options.rotateWithMap;
+  this.rotateWithView_ = options.rotateWithView;
 
   /**
    * @private
@@ -76,8 +76,8 @@ ol.style.Image.prototype.getOpacity = function() {
 /**
  * @return {boolean} Rotate with map.
  */
-ol.style.Image.prototype.getRotateWithMap = function() {
-  return this.rotateWithMap_;
+ol.style.Image.prototype.getRotateWithView = function() {
+  return this.rotateWithView_;
 };
 
 
