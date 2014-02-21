@@ -669,6 +669,15 @@
  */
 
 /**
+ * @typedef {Object} olx.source.FormatVectorOptions
+ * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
+ * @property {ol.Extent|undefined} extent Extent.
+ * @property {ol.format.Feature} format Format.
+ * @property {string|undefined} logo Logo.
+ * @property {ol.proj.ProjectionLike} projection Projection.
+ */
+
+/**
  * @typedef {Object} olx.source.GeoJSONOptions
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {ol.proj.ProjectionLike} defaultProjection Default projection.
