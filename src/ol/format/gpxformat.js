@@ -424,6 +424,114 @@ ol.format.GPX.prototype.readProjectionFromNode = function(node) {
 
 
 /**
+ * @param {Node} node Node.
+ * @param {string} value Value for the link's `href` attribute.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GPX.writeLink_ = function(node, value, objectStack) {
+  node.setAttribute('href', value);
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var properties = goog.object.get(context, 'properties');
+  var link = [
+    goog.object.get(properties, 'linkText'),
+    goog.object.get(properties, 'linkType')
+  ];
+  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */ ({node: node}),
+      ol.format.GPX.LINK_SERIALIZERS_, ol.xml.OBJECT_PROPERTY_NODE_FACTORY,
+      link, objectStack, ol.format.GPX.LINK_SEQUENCE_);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ * @template T
+ */
+ol.format.GPX.writeWptType_ = function(node, coordinate, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var parentNode = context.node;
+  goog.asserts.assert(ol.xml.isNode(parentNode));
+  var namespaceURI = parentNode.namespaceURI;
+  var properties = goog.object.get(context, 'properties');
+  //FIXME Projection handling
+  ol.xml.setAttributeNS(node, null, 'lat', coordinate[1]);
+  ol.xml.setAttributeNS(node, null, 'lon', coordinate[0]);
+  var geometryLayout = goog.object.get(context, 'geometryLayout');
+  switch (geometryLayout) {
+    case ol.geom.GeometryLayout.XYZM:
+      if (coordinate[3] !== 0) {
+        goog.object.set(properties, 'time', coordinate[3]);
+      }
+    case ol.geom.GeometryLayout.XYZ:
+      if (coordinate[2] !== 0) {
+        goog.object.set(properties, 'ele', coordinate[2]);
+      }
+      break;
+    case ol.geom.GeometryLayout.XYM:
+      if (coordinate[2] !== 0) {
+        goog.object.set(properties, 'time', coordinate[2]);
+      }
+  }
+  var orderedKeys = ol.format.GPX.WPT_TYPE_SEQUENCE_[namespaceURI];
+  var values = ol.xml.makeSequence(properties, orderedKeys);
+  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
+      ({node: node, 'properties': properties}),
+      ol.format.GPX.WPT_TYPE_SERIALIZERS_, ol.xml.OBJECT_PROPERTY_NODE_FACTORY,
+      values, objectStack, orderedKeys);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.Feature} feature Feature.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ * @template T
+ */
+ol.format.GPX.writeRte_ = function(node, feature, objectStack) {
+  var properties = feature.getProperties();
+  var context = {node: node, 'properties': properties};
+  var geometry = feature.getGeometry();
+  if (goog.isDef(geometry)) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
+    goog.object.set(context, 'geometryLayout', geometry.getLayout());
+    goog.object.set(properties, 'rtept', geometry.getCoordinates());
+  }
+  var parentNode = objectStack[objectStack.length - 1].node;
+  var orderedKeys = ol.format.GPX.RTE_SEQUENCE_[parentNode.namespaceURI];
+  var values = ol.xml.makeSequence(properties, orderedKeys);
+  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */ (context),
+      ol.format.GPX.RTE_SERIALIZERS_, ol.xml.OBJECT_PROPERTY_NODE_FACTORY,
+      values, objectStack, orderedKeys);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.Feature} feature Feature.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ * @template T
+ */
+ol.format.GPX.writeWpt_ = function(node, feature, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  goog.object.set(context, 'properties', feature.getProperties());
+  var geometry = feature.getGeometry();
+  if (goog.isDef(geometry)) {
+    goog.asserts.assertInstanceof(geometry, ol.geom.Point);
+    goog.object.set(context, 'geometryLayout', geometry.getLayout());
+    ol.format.GPX.writeWptType_(node, geometry.getCoordinates(), objectStack);
+  }
+};
+
+
+/**
  * @const
  * @type {Array.<string>}
  * @private
@@ -445,23 +553,38 @@ ol.format.GPX.LINK_SERIALIZERS_ = ol.xml.makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
- * @param {string} value Value for the link's `href` attribute.
- * @param {Array.<*>} objectStack Node stack.
+ * @const
+ * @type {Object.<string, Array.<string>>}
  * @private
  */
-ol.format.GPX.writeLink_ = function(node, value, objectStack) {
-  node.setAttribute('href', value);
-  var properties = objectStack[objectStack.length - 1].context;
-  var link = [
-    goog.object.get(properties, 'linkText'),
-    goog.object.get(properties, 'linkType')
-  ];
-  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */ ({node: node}),
-      ol.format.GPX.LINK_SERIALIZERS_,
-      ol.xml.makeChildNodeFactory(node.namespaceURI), link, objectStack,
-      ol.format.GPX.LINK_SEQUENCE_);
-};
+ol.format.GPX.RTE_SEQUENCE_ = ol.xml.makeStructureNS(
+    ol.format.GPX.NAMESPACE_URIS_, [
+      'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'rtept'
+    ]);
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @private
+ */
+ol.format.GPX.RTE_SERIALIZERS_ = ol.xml.makeStructureNS(
+    ol.format.GPX.NAMESPACE_URIS_, {
+      'name': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
+          ol.format.XSD.writeStringTextNode)),
+      'cmt': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
+          ol.format.XSD.writeStringTextNode)),
+      'desc': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
+          ol.format.XSD.writeStringTextNode)),
+      'src': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
+          ol.format.XSD.writeStringTextNode)),
+      'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
+      'number': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
+          ol.format.XSD.writeNonNegativeIntegerTextNode)),
+      'type': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
+          ol.format.XSD.writeStringTextNode)),
+      'rtept': ol.xml.makeChildrenAppender(ol.format.GPX.writeWptType_)
+    });
 
 
 /**
@@ -469,7 +592,7 @@ ol.format.GPX.writeLink_ = function(node, value, objectStack) {
  * @type {Object.<string, Array.<string>>}
  * @private
  */
-ol.format.GPX.WPT_SEQUENCE_ = ol.xml.makeStructureNS(
+ol.format.GPX.WPT_TYPE_SEQUENCE_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, [
       'ele', 'time', 'magvar', 'geoidheight', 'name', 'cmt', 'desc', 'src',
       'link', 'sym', 'type', 'fix', 'sat', 'hdop', 'vdop', 'pdop',
@@ -481,7 +604,7 @@ ol.format.GPX.WPT_SEQUENCE_ = ol.xml.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
  * @private
  */
-ol.format.GPX.WPT_SERIALIZERS_ = ol.xml.makeStructureNS(
+ol.format.GPX.WPT_TYPE_SERIALIZERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'ele': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
           ol.format.XSD.writeDecimalTextNode)),
@@ -554,58 +677,13 @@ ol.format.GPX.GPX_NODE_FACTORY_ = function(feature, objectStack, opt_nodeName) {
 
 
 /**
- * @param {Node} node Node.
- * @param {ol.Feature} feature Feature.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- * @template T
- */
-ol.format.GPX.writeWpt_ = function(node, feature, objectStack) {
-  var parentNode = objectStack[objectStack.length - 1].node;
-  goog.asserts.assert(ol.xml.isNode(parentNode));
-  var namespaceURI = parentNode.namespaceURI;
-  var properties = feature.getProperties();
-  var geometry = feature.getGeometry();
-  if (goog.isDef(geometry)) {
-    goog.asserts.assert(geometry instanceof ol.geom.Point);
-    var coordinates = geometry.getCoordinates();
-    //FIXME Projection handling
-    ol.xml.setAttributeNS(node, null, 'lat', coordinates[1]);
-    ol.xml.setAttributeNS(node, null, 'lon', coordinates[0]);
-    var geometryLayout = geometry.getLayout();
-    switch (geometryLayout) {
-      case ol.geom.GeometryLayout.XYZM:
-        if (coordinates[3] !== 0) {
-          goog.object.set(properties, 'time', coordinates[3]);
-        }
-      case ol.geom.GeometryLayout.XYZ:
-        if (coordinates[2] !== 0) {
-          goog.object.set(properties, 'ele', coordinates[2]);
-        }
-        break;
-      case ol.geom.GeometryLayout.XYM:
-        if (coordinates[2] !== 0) {
-          goog.object.set(properties, 'time', coordinates[2]);
-        }
-    }
-  }
-  var orderedKeys = ol.format.GPX.WPT_SEQUENCE_[namespaceURI];
-  var values = ol.xml.makeSequence(properties, orderedKeys);
-  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
-      ({node: node, context: properties}), ol.format.GPX.WPT_SERIALIZERS_,
-      ol.xml.makeChildNodeFactory(namespaceURI), values, objectStack,
-      orderedKeys);
-};
-
-
-/**
  * @const
  * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
  * @private
  */
 ol.format.GPX.GPX_SERIALIZERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
-      //'LineString': ol.xml.makeChildAppender(ol.format.GPX.writeRte_),
+      'rte': ol.xml.makeChildAppender(ol.format.GPX.writeRte_),
       //'MultiLineString': ol.xml.makeChildAppender(ol.format.GPX.writeTrk_),
       'wpt': ol.xml.makeChildAppender(ol.format.GPX.writeWpt_)
     });

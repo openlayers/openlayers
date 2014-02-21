@@ -12,6 +12,10 @@ describe('ol.format.GPX', function() {
 
     describe('rte', function() {
 
+      beforeEach(function() {
+        format = new ol.format.GPX.V1_1();
+      });
+
       it('can read an empty rte', function() {
         var text =
             '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
@@ -27,7 +31,7 @@ describe('ol.format.GPX', function() {
         expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
       });
 
-      it('can read various rte attributes', function() {
+      it('can read and write various rte attributes', function() {
         var text =
             '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
             '  <rte>' +
@@ -56,9 +60,11 @@ describe('ol.format.GPX', function() {
         expect(f.get('linkType')).to.be('Link type');
         expect(f.get('number')).to.be(1);
         expect(f.get('type')).to.be('Type');
+        var serialized = format.writeFeatures(fs);
+        expect(serialized).to.xmleql(ol.xml.load(text));
       });
 
-      it('can read a rte with multiple rtepts', function() {
+      it('can read and write a rte with multiple rtepts', function() {
         var text =
             '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
             '  <rte>' +
@@ -74,6 +80,8 @@ describe('ol.format.GPX', function() {
         expect(g).to.be.an(ol.geom.LineString);
         expect(g.getCoordinates()).to.eql([[2, 1, 0, 0], [4, 3, 0, 0]]);
         expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+        var serialized = format.writeFeatures(fs);
+        expect(serialized).to.xmleql(ol.xml.load(text));
       });
 
     });
