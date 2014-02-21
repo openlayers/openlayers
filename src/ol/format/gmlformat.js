@@ -141,6 +141,28 @@ ol.format.GML.readMultiLineString_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
+ * @return {ol.geom.MultiLineString|undefined} MultiLineString.
+ */
+ol.format.GML.readMultiCurve_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'MultiCurve');
+  var lineStrings = ol.xml.pushParseAndPop(
+      /** @type {Array.<ol.geom.LineString>} */ ([]),
+      ol.format.GML.MULTICURVE_PARSERS_, node, objectStack);
+  if (goog.isDefAndNotNull(lineStrings)) {
+    var multiLineString = new ol.geom.MultiLineString(null);
+    multiLineString.setLineStrings(lineStrings);
+    return multiLineString;
+  } else {
+    return undefined;
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
  * @return {ol.geom.MultiPolygon|undefined} MultiPolygon.
  */
 ol.format.GML.readMultiPolygon_ = function(node, objectStack) {
@@ -182,6 +204,19 @@ ol.format.GML.lineStringMemberParser_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'lineStringMember' ||
       node.localName == 'lineStringMembers');
   ol.xml.parse(ol.format.GML.LINESTRINGMEMBER_PARSERS_, node, objectStack);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ */
+ol.format.GML.curveMemberParser_ = function(node, objectStack) {
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.localName == 'curveMember' ||
+      node.localName == 'curveMembers');
+  ol.xml.parse(ol.format.GML.CURVEMEMBER_PARSERS_, node, objectStack);
 };
 
 
@@ -558,6 +593,7 @@ ol.format.GML.GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
       'MultiPolygon': ol.xml.makeArrayPusher(ol.format.GML.readMultiPolygon_),
       'Surface': ol.xml.makeArrayPusher(ol.format.GML.readSurface_),
       'Curve': ol.xml.makeArrayPusher(ol.format.GML.readCurve_),
+      'MultiCurve': ol.xml.makeArrayPusher(ol.format.GML.readMultiCurve_),
       'Envelope': ol.xml.makeArrayPusher(ol.format.GML.readEnvelope_)
     });
 
@@ -617,6 +653,20 @@ ol.format.GML.MULTILINESTRING_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
+ol.format.GML.MULTICURVE_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.GML.NAMESPACE_URIS_, {
+      'curveMember': ol.xml.makeArrayPusher(
+          ol.format.GML.curveMemberParser_),
+      'curveMembers': ol.xml.makeArrayPusher(
+          ol.format.GML.curveMemberParser_)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
 ol.format.GML.MULTIPOLYGON_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.GML.NAMESPACE_URIS_, {
       'polygonMember': ol.xml.makeArrayPusher(
@@ -647,6 +697,18 @@ ol.format.GML.LINESTRINGMEMBER_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.GML.NAMESPACE_URIS_, {
       'LineString': ol.xml.makeArrayPusher(
           ol.format.GML.readLineString_)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.GML.CURVEMEMBER_PARSERS_ = ol.xml.makeParsersNS(
+    ol.format.GML.NAMESPACE_URIS_, {
+      'LineString': ol.xml.makeArrayPusher(ol.format.GML.readLineString_),
+      'Curve': ol.xml.makeArrayPusher(ol.format.GML.readCurve_)
     });
 
 

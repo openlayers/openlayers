@@ -333,6 +333,60 @@ describe('ol.format.GML', function() {
 
     });
 
+    describe('multicurve', function() {
+
+      it('can read a singular multicurve-linestring geometry', function() {
+        var text =
+            '<gml:MultiCurve xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="foo">' +
+            '  <gml:curveMember>' +
+            '    <gml:LineString>' +
+            '      <gml:posList>1 2 2 3</gml:posList>' +
+            '    </gml:LineString>' +
+            '  </gml:curveMember>' +
+            '  <gml:curveMember>' +
+            '    <gml:LineString>' +
+            '      <gml:posList>3 4 4 5</gml:posList>' +
+            '    </gml:LineString>' +
+            '  </gml:curveMember>' +
+            '</gml:MultiCurve>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.MultiLineString);
+        expect(g.getCoordinates()).to.eql(
+            [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
+      });
+
+      it('can read a singular multicurve-curve geometry', function() {
+        var text =
+            '<gml:MultiCurve xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="foo">' +
+            '  <gml:curveMember>' +
+            '    <gml:Curve>' +
+            '      <gml:segments>' +
+            '        <gml:LineStringSegment>' +
+            '          <gml:posList>1 2 2 3</gml:posList>' +
+            '        </gml:LineStringSegment>' +
+            '      </gml:segments>' +
+            '    </gml:Curve>' +
+            '  </gml:curveMember>' +
+            '  <gml:curveMember>' +
+            '    <gml:Curve>' +
+            '      <gml:segments>' +
+            '        <gml:LineStringSegment>' +
+            '          <gml:posList>3 4 4 5</gml:posList>' +
+            '        </gml:LineStringSegment>' +
+            '      </gml:segments>' +
+            '    </gml:Curve>' +
+            '  </gml:curveMember>' +
+            '</gml:MultiCurve>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.MultiLineString);
+        expect(g.getCoordinates()).to.eql(
+            [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
+      });
+
+    });
+
   });
 
 });
