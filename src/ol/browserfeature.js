@@ -74,6 +74,14 @@ ol.BrowserFeature.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
 
 
 /**
+ * True if the browser supports ArrayBuffers.
+ * @type {boolean}
+ * @todo stability experimental
+ */
+ol.BrowserFeature.HAS_ARRAY_BUFFER = 'ArrayBuffer' in goog.global;
+
+
+/**
  * True if the browser's Canvas implementation implements {get,set}LineDash.
  * @type {boolean}
  * @todo stability experimental

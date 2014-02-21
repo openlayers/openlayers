@@ -839,6 +839,7 @@
 
 /**
  * @typedef {Object} olx.source.VectorFileOptions
+ * @property {ArrayBuffer|undefined} arrayBuffer Array buffer.
  * @property {Array.<ol.Attribution>|undefined} attributions Attributions.
  * @property {Document|undefined} doc Document.
  * @property {ol.Extent|undefined} extent Extent.
