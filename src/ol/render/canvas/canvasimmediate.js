@@ -130,6 +130,12 @@ ol.render.canvas.Immediate =
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.imageRotateWithMap_ = false;
+
+  /**
+   * @private
    * @type {number}
    */
   this.imageRotation_ = 0;
@@ -225,6 +231,10 @@ ol.render.canvas.Immediate.prototype.drawImages_ =
   if (this.imageOpacity_ != 1) {
     context.globalAlpha = alpha * this.imageOpacity_;
   }
+  var rotation = this.imageRotation_;
+  if (this.imageRotateWithMap_) {
+    rotation += this.viewRotation_;
+  }
   var i, ii;
   for (i = 0, ii = pixelCoordinates.length; i < ii; i += 2) {
     var x = pixelCoordinates[i] - this.imageAnchorX_;
@@ -233,12 +243,12 @@ ol.render.canvas.Immediate.prototype.drawImages_ =
       x = (x + 0.5) | 0;
       y = (y + 0.5) | 0;
     }
-    if (this.imageRotation_ !== 0 || this.imageScale_ != 1) {
+    if (rotation !== 0 || this.imageScale_ != 1) {
       var centerX = x + this.imageAnchorX_;
       var centerY = y + this.imageAnchorY_;
       ol.vec.Mat4.makeTransform2D(localTransform,
           centerX, centerY, this.imageScale_, this.imageScale_,
-          this.imageRotation_, -centerX, -centerY);
+          rotation, -centerX, -centerY);
       context.setTransform(
           goog.vec.Mat4.getElement(localTransform, 0, 0),
           goog.vec.Mat4.getElement(localTransform, 1, 0),
@@ -249,7 +259,7 @@ ol.render.canvas.Immediate.prototype.drawImages_ =
     }
     context.drawImage(this.image_, x, y, this.imageWidth_, this.imageHeight_);
   }
-  if (this.imageRotation_ !== 0 || this.imageScale_ != 1) {
+  if (rotation !== 0 || this.imageScale_ != 1) {
     context.setTransform(1, 0, 0, 1, 0, 0);
   }
   if (this.imageOpacity_ != 1) {
@@ -788,6 +798,7 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     // FIXME pixel ratio
     var imageImage = imageStyle.getImage(1);
     var imageOpacity = imageStyle.getOpacity();
+    var imageRotateWithMap = imageStyle.getRotateWithMap();
     var imageRotation = imageStyle.getRotation();
     var imageScale = imageStyle.getScale();
     var imageSize = imageStyle.getSize();
@@ -800,6 +811,8 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     this.imageHeight_ = imageSize[1];
     this.image_ = imageImage;
     this.imageOpacity_ = goog.isDef(imageOpacity) ? imageOpacity : 1;
+    this.imageRotateWithMap_ = goog.isDef(imageRotateWithMap) ?
+        imageRotateWithMap : false;
     this.imageRotation_ = goog.isDef(imageRotation) ? imageRotation : 0;
     this.imageScale_ = goog.isDef(imageScale) ? imageScale : 1;
     this.imageSnapToPixel_ = goog.isDef(imageSnapToPixel) ?
