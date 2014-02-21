@@ -1,7 +1,7 @@
 
 goog.provide('ga.Lang');
 goog.provide('ga.Lang.msg');
-goog.require('ga.Lang.msg.fr');
+goog.require('ga.Lang.msg.en');
 goog.require('ga.Lang.msg.de');
 goog.require('ga.Lang.msg.fr');
 goog.require('ga.Lang.msg.it');
@@ -15,13 +15,6 @@ goog.require('ga.Lang.msg.rm');
  * @type {string}
  */
 ga.Lang.code_ = 'de';
-
-/**
- * Message catalog in the current language.
- * @type {Object.<string,string>}
- */
-
-ga.Lang.msg.current;
 
 
 /**
@@ -64,13 +57,6 @@ ga.Lang.translate = function(msgid, context) {
   }
   return message;
 };
-
-/**
- * Implementation of goog.getMsg for use with localized messages.
- * @param {string} str Translatable string, places holders in the form {$foo}.
- * @param {Object=} opt_values Map of place holder name to value.
- * @return {string} message with placeholders filled.
- */
 
 
 /**
