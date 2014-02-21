@@ -387,6 +387,144 @@ describe('ol.format.GML', function() {
 
     });
 
+    describe('multisurface', function() {
+
+      it('can read a singular multisurface geometry', function() {
+        var text =
+            '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="foo">' +
+            '  <gml:surfaceMember>' +
+            '    <gml:Polygon>' +
+            '      <gml:exterior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:exterior>' +
+            '      <gml:interior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:interior>' +
+            '      <gml:interior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:interior>' +
+            '    </gml:Polygon>' +
+            '  </gml:surfaceMember>' +
+            '  <gml:surfaceMember>' +
+            '    <gml:Polygon>' +
+            '      <gml:exterior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:exterior>' +
+            '    </gml:Polygon>' +
+            '  </gml:surfaceMember>' +
+            '</gml:MultiSurface>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.MultiPolygon);
+        expect(g.getCoordinates()).to.eql([
+          [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
+            [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
+            [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
+          [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
+      });
+
+      it('can read a plural multisurface geometry', function() {
+        var text =
+            '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="foo">' +
+            '  <gml:surfaceMembers>' +
+            '    <gml:Polygon>' +
+            '      <gml:exterior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:exterior>' +
+            '      <gml:interior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:interior>' +
+            '      <gml:interior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:interior>' +
+            '    </gml:Polygon>' +
+            '  </gml:surfaceMembers>' +
+            '  <gml:surfaceMembers>' +
+            '    <gml:Polygon>' +
+            '      <gml:exterior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:exterior>' +
+            '    </gml:Polygon>' +
+            '  </gml:surfaceMembers>' +
+            '</gml:MultiSurface>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.MultiPolygon);
+        expect(g.getCoordinates()).to.eql([
+          [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
+            [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
+            [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
+          [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
+      });
+
+      it('can read a multisurface-surface geometry', function() {
+        var text =
+            '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="foo">' +
+            '  <gml:surfaceMember>' +
+            '    <gml:Surface>' +
+            '      <gml:patches>' +
+            '        <gml:PolygonPatch interpolation="planar">' +
+            '          <gml:exterior>' +
+            '            <gml:LinearRing>' +
+            '              <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '            </gml:LinearRing>' +
+            '          </gml:exterior>' +
+            '          <gml:interior>' +
+            '            <gml:LinearRing>' +
+            '              <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
+            '            </gml:LinearRing>' +
+            '          </gml:interior>' +
+            '          <gml:interior>' +
+            '            <gml:LinearRing>' +
+            '              <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
+            '            </gml:LinearRing>' +
+            '          </gml:interior>' +
+            '        </gml:PolygonPatch>' +
+            '      </gml:patches>' +
+            '    </gml:Surface>' +
+            '  </gml:surfaceMember>' +
+            '  <gml:surfaceMember>' +
+            '    <gml:Surface>' +
+            '      <gml:patches>' +
+            '        <gml:PolygonPatch interpolation="planar">' +
+            '          <gml:exterior>' +
+            '            <gml:LinearRing>' +
+            '              <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '            </gml:LinearRing>' +
+            '          </gml:exterior>' +
+            '        </gml:PolygonPatch>' +
+            '      </gml:patches>' +
+            '    </gml:Surface>' +
+            '  </gml:surfaceMember>' +
+            '</gml:MultiSurface>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.MultiPolygon);
+        expect(g.getCoordinates()).to.eql([
+          [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
+            [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
+            [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
+          [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
+      });
+
+    });
+
   });
 
 });
