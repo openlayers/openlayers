@@ -580,10 +580,8 @@ ol.format.GPX.LINK_SEQUENCE_ = ['text', 'type'];
  */
 ol.format.GPX.LINK_SERIALIZERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
-      'text': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
-      'type': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode))
+      'text': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+      'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
     });
 
 
@@ -605,20 +603,16 @@ ol.format.GPX.RTE_SEQUENCE_ = ol.xml.makeStructureNS(
  */
 ol.format.GPX.RTE_SERIALIZERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
-      'name': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
-      'cmt': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
-      'desc': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
-      'src': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
+      'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+      'cmt': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+      'desc': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+      'src': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
       'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
-      'number': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeNonNegativeIntegerTextNode)),
-      'type': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
-      'rtept': ol.xml.makeChildrenAppender(ol.format.GPX.writeWptType_)
+      'number': ol.xml.makeChildAppender(
+          ol.format.XSD.writeNonNegativeIntegerTextNode),
+      'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+      'rtept': ol.xml.makeArraySerializer(ol.xml.makeChildAppender(
+          ol.format.GPX.writeWptType_))
     });
 
 
@@ -640,20 +634,16 @@ ol.format.GPX.TRK_SEQUENCE_ = ol.xml.makeStructureNS(
  */
 ol.format.GPX.TRK_SERIALIZERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
-      'name': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
-      'cmt': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
-      'desc': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
-      'src': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
+      'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+      'cmt': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+      'desc': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+      'src': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
       'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
-      'number': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeNonNegativeIntegerTextNode)),
-      'type': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
-      'trkseg': ol.xml.makeChildrenAppender(ol.format.GPX.writeTrkSeg_)
+      'number': ol.xml.makeChildAppender(
+          ol.format.XSD.writeNonNegativeIntegerTextNode),
+      'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+      'trkseg': ol.xml.makeArraySerializer(ol.xml.makeChildAppender(
+          ol.format.GPX.writeTrkSeg_))
     });
 
 
@@ -698,41 +688,28 @@ ol.format.GPX.WPT_TYPE_SEQUENCE_ = ol.xml.makeStructureNS(
  */
 ol.format.GPX.WPT_TYPE_SERIALIZERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
-      'ele': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeDecimalTextNode)),
-      'time': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeDateTimeTextNode)),
-      'magvar': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeDecimalTextNode)),
-      'geoidheight': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeDecimalTextNode)),
-      'name': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
-      'cmt': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
-      'desc': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
-      'src': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
+      'ele': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+      'time': ol.xml.makeChildAppender(ol.format.XSD.writeDateTimeTextNode),
+      'magvar': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+      'geoidheight': ol.xml.makeChildAppender(
+          ol.format.XSD.writeDecimalTextNode),
+      'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+      'cmt': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+      'desc': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+      'src': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
       'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
-      'sym': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
-      'type': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
-      'fix': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeStringTextNode)),
-      'sat': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeNonNegativeIntegerTextNode)),
-      'hdop': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeDecimalTextNode)),
-      'vdop': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeDecimalTextNode)),
-      'pdop': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeDecimalTextNode)),
-      'ageofdgpsdata': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeDecimalTextNode)),
-      'dgpsid': ol.xml.makeChildAppender(ol.xml.makeSimpleTypeWriter(
-          ol.format.XSD.writeNonNegativeIntegerTextNode))
+      'sym': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+      'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+      'fix': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+      'sat': ol.xml.makeChildAppender(
+          ol.format.XSD.writeNonNegativeIntegerTextNode),
+      'hdop': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+      'vdop': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+      'pdop': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+      'ageofdgpsdata': ol.xml.makeChildAppender(
+          ol.format.XSD.writeDecimalTextNode),
+      'dgpsid': ol.xml.makeChildAppender(
+          ol.format.XSD.writeNonNegativeIntegerTextNode)
     });
 
 

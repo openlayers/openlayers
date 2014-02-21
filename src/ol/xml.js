@@ -11,6 +11,9 @@ goog.require('goog.userAgent');
 
 
 /**
+ * When using {@link ol.xml.makeChildAppender} or
+ * {@link ol.xml.makeSimpleNodeFactory}, the top `objectStack` item needs to
+ * have this structure.
  * @typedef {{node:Node}}
  */
 ol.xml.NodeStackItem;
@@ -29,6 +32,9 @@ ol.xml.Serializer;
 
 
 /**
+ * This document should be used when creating nodes for XML serializations. This
+ * document is also used by {@link ol.xml.createElementNS} and
+ * {@link ol.xml.setAttributeNS}
  * @const
  * @type {Document}
  */
@@ -358,9 +364,9 @@ ol.xml.makeParsersNS = function(namespaceURIs, parsers, opt_parsersNS) {
 
 
 /**
- * Creates a serializer that appends its `nodeWriter`'s to its designated
- * parent. The parent node is the `node` of the {@link ol.xml.NodeStackItem} at
- * the top of the `objectStack`.
+ * Creates a serializer that appends nodes written by its `nodeWriter` to its
+ * designated parent. The parent is the `node` of the
+ * {@link ol.xml.NodeStackItem} at the top of the `objectStack`.
  * @param {function(this: T, Node, V, Array.<*>)}
  *     nodeWriter Node writer.
  * @param {T=} opt_this The object to use as `this` in `nodeWriter`.
@@ -381,37 +387,41 @@ ol.xml.makeChildAppender = function(nodeWriter, opt_this) {
 
 
 /**
- * Creates a serializer that creates multiple nodes of the same name and appends
- * them to the designated parent. The parent node is the `node` of the
- * {@link ol.xml.NodeStackItem} at the top of the `objectStack`.
+ * Creates a serializer that calls the provided `nodeWriter` from
+ * {@link ol.xml.serialize}. This can be used by the parent writer to have the
+ * 'nodeWriter' called with an array of values when the `nodeWriter` was
+ * designed to serialize a single item. An example would be a LineString
+ * geometry writer, which could be reused for writing MultiLineString
+ * geometries.
  * @param {function(this: T, Node, V, Array.<*>)}
  *     nodeWriter Node writer.
  * @param {T=} opt_this The object to use as `this` in `nodeWriter`.
  * @return {ol.xml.Serializer} Serializer.
  * @template T, V
  */
-ol.xml.makeChildrenAppender = function(nodeWriter, opt_this) {
-  var writer = ol.xml.makeChildAppender(nodeWriter);
+ol.xml.makeArraySerializer = function(nodeWriter, opt_this) {
   var serializersNS, nodeFactory;
   return function(node, value, objectStack) {
     if (!goog.isDef(serializersNS)) {
       serializersNS = {};
       var serializers = {};
-      goog.object.set(serializers, node.localName, writer);
+      goog.object.set(serializers, node.localName, nodeWriter);
       goog.object.set(serializersNS, node.namespaceURI, serializers);
       nodeFactory = ol.xml.makeSimpleNodeFactory(node.localName);
     }
-    ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
-        (objectStack[objectStack.length - 1]), serializersNS, nodeFactory,
-        value, objectStack);
+    ol.xml.serialize(serializersNS, nodeFactory, value, objectStack);
   };
 };
 
 
 /**
+ * Creates a node factory which can use the `opt_keys` passed to
+ * {@link ol.xml.serialize} or {@link ol.xml.pushSerializeAndPop} as node names,
+ * or a fixed node name. The namespace of the created nodes can either be fixed,
+ * or the parent namespace will be used.
  * @param {string=} opt_nodeName Fixed node name which will be used for all
- *     created nodes. If not provided, the nodeName will be the 3rd argument to
- *     the resulting node factory.
+ *     created nodes. If not provided, the 3rd argument to the resulting node
+ *     factory needs to be provided and will be the nodeName.
  * @param {string=} opt_namespaceURI Fixed namespace URI which will be used for
  *     all created nodes. If not provided, the namespace of the parent node will
  *     be used.
@@ -444,6 +454,9 @@ ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
 
 
 /**
+ * A node factory that creates a node using the parent's `namespaceURI` and the
+ * `nodeName` passed by {@link ol.xml.serialize} or
+ * {@link ol.xml.pushSerializeAndPop} to the node factory.
  * @const
  * @type {function(*, Array.<*>, string=): Node}
  */
@@ -451,9 +464,15 @@ ol.xml.OBJECT_PROPERTY_NODE_FACTORY = ol.xml.makeSimpleNodeFactory();
 
 
 /**
- * @param {Object.<string, V>} object Key-value pairs for the sequence.
+ * Creates an array of `values` to be used with {@link ol.xml.serialize} or
+ * {@link ol.xml.pushSerializeAndPop}, where `orderedKeys` has to be provided as
+ * `opt_key` argument.
+ * @param {Object.<string, V>} object Key-value pairs for the sequence. Keys can
+ *     be a subset of the `orderedKeys`.
  * @param {Array.<string>} orderedKeys Keys in the order of the sequence.
- * @return {Array.<V>} Values in the order of the sequence.
+ * @return {Array.<V>} Values in the order of the sequence. The resulting array
+ *     has the same length as the `orderedKeys` array. Values that are not
+ *     present in `object` will be `undefined` in the resulting array.
  * @template V
  */
 ol.xml.makeSequence = function(object, orderedKeys) {
@@ -467,20 +486,9 @@ ol.xml.makeSequence = function(object, orderedKeys) {
 
 
 /**
- * @param {function(this: T, Node, V)} nodeValueSetter Function that sets
- *     the node value, like the `write*TextNode` functions from `ol.format.XSD`.
- * @param {T=} opt_this `this` object for the node writer.
- * @return {ol.xml.Serializer} Serializer.
- * @template T, V
- */
-ol.xml.makeSimpleTypeWriter = function(nodeValueSetter, opt_this) {
-  return function(node, value) {
-    nodeValueSetter.call(opt_this, node, value);
-  };
-};
-
-
-/**
+ * Creates a namespaced structure, using the same values for each namespace.
+ * This can be used as a starting point for versioned parsers, when only a few
+ * values are version specific.
  * @param {Array.<string>} namespaceURIs Namespace URIs.
  * @param {T} structure Structure.
  * @param {Object.<string, T>=} opt_structureNS Namespaced structure to add to.
@@ -540,14 +548,23 @@ ol.xml.pushParseAndPop = function(
 
 
 /**
+ * Walks through an array of `values` and calls a serializer for each value.
  * @param {Object.<string, Object.<string, ol.xml.Serializer>>} serializersNS
  *     Namespaced serializers.
  * @param {function(this: T, *, Array.<*>, (string|undefined)): Node|undefined} nodeFactory
- *     Node factory.
- * @param {Array.<*>} values Values.
+ *     Node factory. The `nodeFactory` creates the node whose namespace and name
+ *     will be used to choose a node writer from `serializersNS`. This
+ *     separation allows us to decide what kind of node to create, depending on
+ *     the value we want to serialize. An example for this would be different
+ *     geometry writers based on the geometry type.
+ * @param {Array.<*>} values Values to serialize. An example would be an array
+ *     of {@link ol.Feature} instances.
  * @param {Array.<*>} objectStack Node stack.
- * @param {Array.<string>=} opt_keys Keys of the `values`, will be passed to the
- *     `nodeFactory`.
+ * @param {Array.<string>=} opt_keys Keys of the `values`. Will be passed to the
+ *     `nodeFactory`. This is used for serializing object literals where the
+ *     node name relates to the property key. The array length of `opt_keys` has
+ *     to match the length of `values`. For serializing a sequence, `opt_keys`
+ *     determines the order of the sequence.
  * @param {T=} opt_this The object to use as `this` for the node factory and
  *     serializers.
  * @template T
@@ -575,11 +592,19 @@ ol.xml.serialize = function(
  * @param {Object.<string, Object.<string, ol.xml.Serializer>>} serializersNS
  *     Namespaced serializers.
  * @param {function(this: T, *, Array.<*>, (string|undefined)): Node|undefined} nodeFactory
- *     Node factory.
- * @param {Array.<*>} values Values.
+ *     Node factory. The `nodeFactory` creates the node whose namespace and name
+ *     will be used to choose a node writer from `serializersNS`. This
+ *     separation allows us to decide what kind of node to create, depending on
+ *     the value we want to serialize. An example for this would be different
+ *     geometry writers based on the geometry type.
+ * @param {Array.<*>} values Values to serialize. An example would be an array
+ *     of {@link ol.Feature} instances.
  * @param {Array.<*>} objectStack Node stack.
- * @param {Array.<string>=} opt_keys Keys of the `values`, will be passed to the
- *     `nodeFactory`.
+ * @param {Array.<string>=} opt_keys Keys of the `values`. Will be passed to the
+ *     `nodeFactory`. This is used for serializing object literals where the
+ *     node name relates to the property key. The array length of `opt_keys` has
+ *     to match the length of `values`. For serializing a sequence, `opt_keys`
+ *     determines the order of the sequence.
  * @param {T=} opt_this The object to use as `this` for the node factory and
  *     serializers.
  * @return {O|undefined} Object.
