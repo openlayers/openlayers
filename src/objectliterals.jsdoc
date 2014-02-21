@@ -388,7 +388,8 @@
 
 /**
  * @typedef {Object} olx.interaction.DrawOptions
- * @property {ol.source.Vector|undefined} source Destination source for the features.
+ * @property {ol.Collection|undefined} features Destination collection for the drawn features.
+ * @property {ol.source.Vector|undefined} source Destination source for the drawn features.
  * @property {number|undefined} snapTolerance Pixel distance for snapping to the
  *     drawing finish (default is 12).
  * @property {ol.geom.GeometryType} type Drawing type ('Point', 'LineString',
