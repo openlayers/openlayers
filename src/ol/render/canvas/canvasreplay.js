@@ -159,6 +159,7 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry) {
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {number} viewRotation View rotation.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
  * @param {Array.<*>} instructions Instructions array.
@@ -167,9 +168,9 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry) {
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.Replay.prototype.replay_ =
-    function(context, pixelRatio, transform, renderGeometryFunction,
-        instructions, geometryCallback) {
+ol.render.canvas.Replay.prototype.replay_ = function(
+    context, pixelRatio, transform, viewRotation, renderGeometryFunction,
+    instructions, geometryCallback) {
   /** @type {Array.<number>} */
   var pixelCoordinates;
   if (ol.vec.Mat4.equals2D(transform, this.renderedTransform_)) {
@@ -389,22 +390,24 @@ ol.render.canvas.Replay.prototype.replay_ =
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {number} viewRotation View rotation.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.Replay.prototype.replay =
-    function(context, pixelRatio, transform, renderGeometryFunction) {
+ol.render.canvas.Replay.prototype.replay = function(
+    context, pixelRatio, transform, viewRotation, renderGeometryFunction) {
   var instructions = this.instructions;
-  return this.replay_(context, pixelRatio, transform, renderGeometryFunction,
-      instructions, undefined);
+  return this.replay_(context, pixelRatio, transform, viewRotation,
+      renderGeometryFunction, instructions, undefined);
 };
 
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {number} viewRotation View rotation.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
  * @param {function(ol.geom.Geometry, Object): T=} opt_geometryCallback
@@ -412,11 +415,12 @@ ol.render.canvas.Replay.prototype.replay =
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.Replay.prototype.replayHitDetection =
-    function(context, transform, renderGeometryFunction, opt_geometryCallback) {
+ol.render.canvas.Replay.prototype.replayHitDetection = function(
+    context, transform, viewRotation, renderGeometryFunction,
+    opt_geometryCallback) {
   var instructions = this.hitDetectionInstructions;
-  return this.replay_(context, 1, transform, renderGeometryFunction,
-      instructions, opt_geometryCallback);
+  return this.replay_(context, 1, transform, viewRotation,
+      renderGeometryFunction, instructions, opt_geometryCallback);
 };
 
 
@@ -1683,18 +1687,19 @@ ol.render.canvas.ReplayGroup = function(tolerance) {
  * @param {ol.Extent} extent Extent.
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {number} viewRotation View rotation.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
  * @return {T|undefined} Callback result.
  * @template T
  */
 ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
-    pixelRatio, transform, renderGeometryFunction) {
+    pixelRatio, transform, viewRotation, renderGeometryFunction) {
   /** @type {Array.<number>} */
   var zs = goog.array.map(goog.object.getKeys(this.replaysByZIndex_), Number);
   goog.array.sort(zs);
-  return this.replay_(
-      zs, context, extent, pixelRatio, transform, renderGeometryFunction);
+  return this.replay_(zs, context, extent, pixelRatio, transform,
+      viewRotation, renderGeometryFunction);
 };
 
 
@@ -1704,6 +1709,7 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
  * @param {CanvasRenderingContext2D} context Context.
  * @param {ol.Extent} extent Extent.
  * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {number} viewRotation View rotation.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
  * @param {function(ol.geom.Geometry, Object): T} geometryCallback Geometry
@@ -1711,17 +1717,17 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, extent,
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ =
-    function(zs, context, extent, transform, renderGeometryFunction,
-        geometryCallback) {
+ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
+    zs, context, extent, transform, viewRotation, renderGeometryFunction,
+    geometryCallback) {
   var i, ii, replays, replayType, replay, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     replays = this.replaysByZIndex_[zs[i].toString()];
     for (replayType in replays) {
       replay = replays[replayType];
       if (ol.extent.intersects(extent, replay.getExtent())) {
-        result = replay.replayHitDetection(
-            context, transform, renderGeometryFunction, geometryCallback);
+        result = replay.replayHitDetection(context, transform, viewRotation,
+            renderGeometryFunction, geometryCallback);
         if (result) {
           return result;
         }
@@ -1739,14 +1745,15 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ =
  * @param {ol.Extent} extent Extent.
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {number} viewRotation View rotation.
  * @param {function(ol.geom.Geometry): boolean} renderGeometryFunction Render
  *     geometry function.
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.canvas.ReplayGroup.prototype.replay_ =
-    function(zs, context, extent, pixelRatio, transform,
-        renderGeometryFunction) {
+ol.render.canvas.ReplayGroup.prototype.replay_ = function(
+    zs, context, extent, pixelRatio, transform, viewRotation,
+    renderGeometryFunction) {
   var i, ii, j, jj, replays, replayType, replay, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     replays = this.replaysByZIndex_[zs[i].toString()];
@@ -1754,8 +1761,8 @@ ol.render.canvas.ReplayGroup.prototype.replay_ =
       replay = replays[ol.render.REPLAY_ORDER[j]];
       if (goog.isDef(replay) &&
           ol.extent.intersects(extent, replay.getExtent())) {
-        result = replay.replay(
-            context, pixelRatio, transform, renderGeometryFunction);
+        result = replay.replay(context, pixelRatio, transform, viewRotation,
+            renderGeometryFunction);
         if (result) {
           return result;
         }
@@ -1794,7 +1801,7 @@ ol.render.canvas.ReplayGroup.prototype.forEachGeometryAtPixel = function(
   context.clearRect(0, 0, 1, 1);
 
   return this.replayHitDetection_(zs, context, extent, transform,
-      renderGeometryFunction,
+      rotation, renderGeometryFunction,
       /**
        * @param {ol.geom.Geometry} geometry Geometry.
        * @param {Object} data Opaque data object.

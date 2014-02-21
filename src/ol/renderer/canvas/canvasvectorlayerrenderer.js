@@ -75,7 +75,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
     context.globalAlpha = layerState.opacity;
     replayGroup.replay(
         context, frameState.extent, frameState.pixelRatio, transform,
-        renderGeometryFunction);
+        frameState.view2DState.rotation, renderGeometryFunction);
   }
 
   this.dispatchPostComposeEvent(context, frameState, transform);
