@@ -47,16 +47,23 @@ ol.render.canvas.Instruction = {
  * @constructor
  * @implements {ol.render.IVectorContext}
  * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Maximum extent.
  * @protected
  * @struct
  */
-ol.render.canvas.Replay = function(tolerance) {
+ol.render.canvas.Replay = function(tolerance, maxExtent) {
 
   /**
    * @protected
    * @type {number}
    */
   this.tolerance = tolerance;
+
+  /**
+   * @protected
+   * @type {ol.Extent}
+   */
+  this.maxExtent = maxExtent;
 
   /**
    * @private
@@ -582,12 +589,13 @@ ol.render.canvas.Replay.prototype.setTextStyle = goog.abstractMethod;
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Maximum extent.
  * @protected
  * @struct
  */
-ol.render.canvas.ImageReplay = function(tolerance) {
+ol.render.canvas.ImageReplay = function(tolerance, maxExtent) {
 
-  goog.base(this, tolerance);
+  goog.base(this, tolerance, maxExtent);
 
   /**
    * @private
@@ -810,12 +818,13 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Maximum extent.
  * @protected
  * @struct
  */
-ol.render.canvas.LineStringReplay = function(tolerance) {
+ol.render.canvas.LineStringReplay = function(tolerance, maxExtent) {
 
-  goog.base(this, tolerance);
+  goog.base(this, tolerance, maxExtent);
 
   /**
    * @private
@@ -1027,12 +1036,13 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Maximum extent.
  * @protected
  * @struct
  */
-ol.render.canvas.PolygonReplay = function(tolerance) {
+ol.render.canvas.PolygonReplay = function(tolerance, maxExtent) {
 
-  goog.base(this, tolerance);
+  goog.base(this, tolerance, maxExtent);
 
   /**
    * @private
@@ -1360,12 +1370,13 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Maximum extent.
  * @protected
  * @struct
  */
-ol.render.canvas.TextReplay = function(tolerance) {
+ol.render.canvas.TextReplay = function(tolerance, maxExtent) {
 
-  goog.base(this, tolerance);
+  goog.base(this, tolerance, maxExtent);
 
   /**
    * @private
@@ -1659,15 +1670,22 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
  * @constructor
  * @implements {ol.render.IReplayGroup}
  * @param {number} tolerance Tolerance.
+ * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-ol.render.canvas.ReplayGroup = function(tolerance) {
+ol.render.canvas.ReplayGroup = function(tolerance, maxExtent) {
 
   /**
    * @private
    * @type {number}
    */
   this.tolerance_ = tolerance;
+
+  /**
+   * @private
+   * @type {ol.Extent}
+   */
+  this.maxExtent_ = maxExtent;
 
   /**
    * @private
@@ -1866,9 +1884,9 @@ ol.render.canvas.ReplayGroup.prototype.getReplay =
   }
   var replay = replays[replayType];
   if (!goog.isDef(replay)) {
-    var constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
-    goog.asserts.assert(goog.isDef(constructor));
-    replay = new constructor(this.tolerance_);
+    var Constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
+    goog.asserts.assert(goog.isDef(Constructor));
+    replay = new Constructor(this.tolerance_, this.maxExtent_);
     replays[replayType] = replay;
   }
   return replay;
@@ -1887,7 +1905,7 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
  * @const
  * @private
  * @type {Object.<ol.render.ReplayType,
- *                function(new: ol.render.canvas.Replay, number)>}
+ *                function(new: ol.render.canvas.Replay, number, ol.Extent)>}
  */
 ol.render.canvas.BATCH_CONSTRUCTORS_ = {
   'Image': ol.render.canvas.ImageReplay,
