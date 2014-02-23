@@ -1,6 +1,5 @@
 goog.provide('ol.test.extent');
 
-
 describe('ol.extent', function() {
 
   describe('buffer', function() {
@@ -63,6 +62,86 @@ describe('ol.extent', function() {
         expect(ol.extent.containsCoordinate(extent, [4, 5])).to.not.be();
       });
     });
+  });
+
+  describe('coordinateRelationship()', function() {
+
+    var extent = [-180, -90, 180, 90];
+    var INTERSECTING = ol.extent.Relationship.INTERSECTING;
+    var ABOVE = ol.extent.Relationship.ABOVE;
+    var RIGHT = ol.extent.Relationship.RIGHT;
+    var BELOW = ol.extent.Relationship.BELOW;
+    var LEFT = ol.extent.Relationship.LEFT;
+
+    it('returns intersecting for within', function() {
+      var rel = ol.extent.coordinateRelationship(extent, [0, 0]);
+      expect(rel).to.be(INTERSECTING);
+    });
+
+    it('returns intersecting for touching top', function() {
+      var rel = ol.extent.coordinateRelationship(extent, [0, 90]);
+      expect(rel).to.be(INTERSECTING);
+    });
+
+    it('returns intersecting for touching right', function() {
+      var rel = ol.extent.coordinateRelationship(extent, [180, 0]);
+      expect(rel).to.be(INTERSECTING);
+    });
+
+    it('returns intersecting for touching bottom', function() {
+      var rel = ol.extent.coordinateRelationship(extent, [0, -90]);
+      expect(rel).to.be(INTERSECTING);
+    });
+
+    it('returns intersecting for touching left', function() {
+      var rel = ol.extent.coordinateRelationship(extent, [-180, 0]);
+      expect(rel).to.be(INTERSECTING);
+    });
+
+    it('above for north', function() {
+      var rel = ol.extent.coordinateRelationship(extent, [0, 100]);
+      expect(rel).to.be(ABOVE);
+    });
+
+    it('above and right for northeast', function() {
+      var rel = ol.extent.coordinateRelationship(extent, [190, 100]);
+      expect(rel & ABOVE).to.be(ABOVE);
+      expect(rel & RIGHT).to.be(RIGHT);
+    });
+
+    it('right for east', function() {
+      var rel = ol.extent.coordinateRelationship(extent, [190, 0]);
+      expect(rel).to.be(RIGHT);
+    });
+
+    it('below and right for southeast', function() {
+      var rel = ol.extent.coordinateRelationship(extent, [190, -100]);
+      expect(rel & BELOW).to.be(BELOW);
+      expect(rel & RIGHT).to.be(RIGHT);
+    });
+
+    it('below for south', function() {
+      var rel = ol.extent.coordinateRelationship(extent, [0, -100]);
+      expect(rel).to.be(BELOW);
+    });
+
+    it('below and left for southwest', function() {
+      var rel = ol.extent.coordinateRelationship(extent, [-190, -100]);
+      expect(rel & BELOW).to.be(BELOW);
+      expect(rel & LEFT).to.be(LEFT);
+    });
+
+    it('left for west', function() {
+      var rel = ol.extent.coordinateRelationship(extent, [-190, 0]);
+      expect(rel).to.be(LEFT);
+    });
+
+    it('above and left for northwest', function() {
+      var rel = ol.extent.coordinateRelationship(extent, [-190, 100]);
+      expect(rel & ABOVE).to.be(ABOVE);
+      expect(rel & LEFT).to.be(LEFT);
+    });
+
   });
 
   describe('getCenter', function() {
@@ -267,4 +346,5 @@ describe('ol.extent', function() {
 
 
 goog.require('ol.extent');
+goog.require('ol.extent.Relationship');
 goog.require('ol.proj');

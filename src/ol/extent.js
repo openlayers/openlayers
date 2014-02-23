@@ -1,5 +1,6 @@
 goog.provide('ol.Extent');
 goog.provide('ol.extent');
+goog.provide('ol.extent.Relationship');
 
 goog.require('goog.asserts');
 goog.require('ol.Coordinate');
@@ -13,6 +14,20 @@ goog.require('ol.TransformFunction');
  * @todo stability experimental
  */
 ol.Extent;
+
+
+/**
+ * Relationship to an extent.
+ * @enum {number}
+ */
+ol.extent.Relationship = {
+  UNKNOWN: 0,
+  INTERSECTING: 1,
+  ABOVE: 2,
+  RIGHT: 4,
+  BELOW: 8,
+  LEFT: 16
+};
 
 
 /**
@@ -147,6 +162,38 @@ ol.extent.containsCoordinate = function(extent, coordinate) {
 ol.extent.containsExtent = function(extent1, extent2) {
   return extent1[0] <= extent2[0] && extent2[2] <= extent1[2] &&
       extent1[1] <= extent2[1] && extent2[3] <= extent1[3];
+};
+
+
+/**
+ * Get the relationship between a coordinate and extent.
+ * @param {ol.Extent} extent The extent.
+ * @param {ol.Coordinate} coordinate The coordinate.
+ * @return {number} The relationship (bitwise compare with
+ *     ol.extent.Relationship).
+ */
+ol.extent.coordinateRelationship = function(extent, coordinate) {
+  var minX = extent[0];
+  var minY = extent[1];
+  var maxX = extent[2];
+  var maxY = extent[3];
+  var x = coordinate[0];
+  var y = coordinate[1];
+  var relationship = ol.extent.Relationship.UNKNOWN;
+  if (x < minX) {
+    relationship = relationship | ol.extent.Relationship.LEFT;
+  } else if (x > maxX) {
+    relationship = relationship | ol.extent.Relationship.RIGHT;
+  }
+  if (y < minY) {
+    relationship = relationship | ol.extent.Relationship.BELOW;
+  } else if (y > maxY) {
+    relationship = relationship | ol.extent.Relationship.ABOVE;
+  }
+  if (relationship === ol.extent.Relationship.UNKNOWN) {
+    relationship = ol.extent.Relationship.INTERSECTING;
+  }
+  return relationship;
 };
 
 
