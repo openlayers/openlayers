@@ -14,13 +14,13 @@ def main(argv):
         requires.update(line for line in lines if line.startswith('goog.require'))
         examples[filename] = [line for line in lines if not line.startswith('goog.require')]
     for require in sorted(requires):
-        print require,
+        sys.stdout.write(require)
     for filename in sorted(examples.keys()):
-        print '// ', filename
-        print '(function(){'
+        sys.stdout.write('// ' + filename + '\n')
+        sys.stdout.write('(function(){\n')
         for line in examples[filename]:
-            print line,
-        print '})();'
+            sys.stdout.write(line)
+        sys.stdout.write('})();\n')
 
 
 if __name__ == '__main__':
