@@ -425,7 +425,7 @@ ol.xml.makeArraySerializer = function(nodeWriter, opt_this) {
  * @param {string=} opt_namespaceURI Fixed namespace URI which will be used for
  *     all created nodes. If not provided, the namespace of the parent node will
  *     be used.
- * @return {function(*, Array.<*>, string=): Node} Node factory.
+ * @return {function(*, Array.<*>, string=): (Node|undefined)} Node factory.
  */
 ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
   var fixedNodeName = opt_nodeName;
@@ -458,7 +458,7 @@ ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
  * `nodeName` passed by {@link ol.xml.serialize} or
  * {@link ol.xml.pushSerializeAndPop} to the node factory.
  * @const
- * @type {function(*, Array.<*>, string=): Node}
+ * @type {function(*, Array.<*>, string=): (Node|undefined)}
  */
 ol.xml.OBJECT_PROPERTY_NODE_FACTORY = ol.xml.makeSimpleNodeFactory();
 
@@ -551,7 +551,7 @@ ol.xml.pushParseAndPop = function(
  * Walks through an array of `values` and calls a serializer for each value.
  * @param {Object.<string, Object.<string, ol.xml.Serializer>>} serializersNS
  *     Namespaced serializers.
- * @param {function(this: T, *, Array.<*>, (string|undefined)): Node|undefined} nodeFactory
+ * @param {function(this: T, *, Array.<*>, (string|undefined)): (Node|undefined)} nodeFactory
  *     Node factory. The `nodeFactory` creates the node whose namespace and name
  *     will be used to choose a node writer from `serializersNS`. This
  *     separation allows us to decide what kind of node to create, depending on
@@ -591,7 +591,7 @@ ol.xml.serialize = function(
  * @param {O} object Object.
  * @param {Object.<string, Object.<string, ol.xml.Serializer>>} serializersNS
  *     Namespaced serializers.
- * @param {function(this: T, *, Array.<*>, (string|undefined)): Node|undefined} nodeFactory
+ * @param {function(this: T, *, Array.<*>, (string|undefined)): (Node|undefined)} nodeFactory
  *     Node factory. The `nodeFactory` creates the node whose namespace and name
  *     will be used to choose a node writer from `serializersNS`. This
  *     separation allows us to decide what kind of node to create, depending on

@@ -1,5 +1,5 @@
 goog.provide('ol.format.GPX');
-goog.provide('ol.format.GPX.v1_1');
+goog.provide('ol.format.GPX.V1_1');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -652,7 +652,7 @@ ol.format.GPX.TRK_SERIALIZERS_ = ol.xml.makeStructureNS(
  * @param {*} value Value.
  * @param {Array.<*>} objectStack Object stack.
  * @param {string=} opt_nodeName Node name.
- * @return {Node} Node.
+ * @return {Node|undefined} Node.
  * @private
  */
 ol.format.GPX.TRKSEG_NODE_FACTORY_ = ol.xml.makeSimpleNodeFactory('trkpt');
@@ -730,7 +730,7 @@ ol.format.GPX.GEOMETRY_TYPE_TO_NODENAME_ = {
  * @param {*} value Value.
  * @param {Array.<*>} objectStack Object stack.
  * @param {string=} opt_nodeName Node name.
- * @return {Node} Node.
+ * @return {Node|undefined} Node.
  * @private
  */
 ol.format.GPX.GPX_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
