@@ -251,7 +251,7 @@ for glsl_src in GLSL_SRC:
 def _build_require_list(dependencies, output_file_name):
     requires = set()
     for dependency in dependencies:
-        for line in open(dependency):
+        for line in open(dependency, 'rU'):
             match = re.match(r'goog\.provide\(\'(.*)\'\);', line)
             if match:
                 requires.add(match.group(1))
@@ -449,7 +449,7 @@ def build_check_requires_timestamp(t):
             # the generated regular expression to exceed Python's limits
             if zi.filename.startswith('closure/goog/i18n/'):
                 continue
-            for line in zf.open(zi):
+            for line in zf.open(zi, 'rU'):
                 m = re.match(r'goog.provide\(\'(.*)\'\);', line)
                 if m:
                     all_provides.add(m.group(1))
@@ -458,7 +458,7 @@ def build_check_requires_timestamp(t):
             continue
         require_linenos = {}
         uses = set()
-        lines = open(filename).readlines()
+        lines = open(filename, 'rU').readlines()
         for lineno, line in _strip_comments(lines):
             m = re.match(r'goog.provide\(\'(.*)\'\);', line)
             if m:
@@ -541,7 +541,7 @@ def build_check_requires_timestamp(t):
         requires = set()
         uses = set()
         uses_linenos = {}
-        for lineno, line in _strip_comments(open(filename)):
+        for lineno, line in _strip_comments(open(filename, 'rU')):
             m = re.match(r'goog.provide\(\'(.*)\'\);', line)
             if m:
                 provides.add(m.group(1))
@@ -590,7 +590,7 @@ def build_check_whitespace_timestamp(t):
     errors = 0
     for filename in sorted(t.newer(t.dependencies)):
         whitespace = False
-        for lineno, line in enumerate(open(filename)):
+        for lineno, line in enumerate(open(filename, 'rU')):
             if CR_RE.search(line):
                 t.info('%s:%d: carriage return character in line', filename, lineno + 1)
                 errors += 1
@@ -633,7 +633,7 @@ def jsdoc_BRANCH_timestamp(t):
 
 
 def split_example_file(example, dst_dir):
-    lines = open(example).readlines()
+    lines = open(example, 'rU').readlines()
 
     target_lines = []
     target_require_lines = []
@@ -709,7 +709,7 @@ def host_examples(t):
 def check_examples(t):
     examples = ['build/hosted/%(BRANCH)s/' + e
                 for e in EXAMPLES
-                if not open(e.replace('.html', '.js')).readline().startswith('// NOCOMPILE')]
+                if not open(e.replace('.html', '.js'), 'rU').readline().startswith('// NOCOMPILE')]
     all_examples = \
         [e + '?mode=advanced' for e in examples]
     for example in all_examples:

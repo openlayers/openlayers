@@ -8,7 +8,7 @@ def main(argv):
     examples = {}
     requires = set()
     for filename in argv[1:]:
-        lines = open(filename).readlines()
+        lines = open(filename, 'rU').readlines()
         if len(lines) > 0 and lines[0].startswith('// NOCOMPILE'):
             continue
         requires.update(line for line in lines if line.startswith('goog.require'))

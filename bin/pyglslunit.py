@@ -52,7 +52,7 @@ def main(argv):
     common, vertex, fragment = [], [], []
     attributes, uniforms, varyings = {}, {}, {}
     block = None
-    for line in open(options.input):
+    for line in open(options.input, 'rU'):
         if line.startswith('//!'):
             m = re.match(r'//!\s+NAMESPACE=(\S+)\s*\Z', line)
             if m:
