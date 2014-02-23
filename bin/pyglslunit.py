@@ -114,7 +114,7 @@ def main(argv):
         output = open(options.output, 'w')
     else:
         output = sys.stdout
-    output.write(pystache.render(open(options.template).read(), context))
+    output.write(pystache.render(open(options.template, 'rb').read(), context))
 
 
 if __name__ == '__main__':

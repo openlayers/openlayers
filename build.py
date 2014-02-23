@@ -153,7 +153,7 @@ PROJ4JS_ZIP_MD5 = '17caad64cf6ebc6e6fe62f292b134897'
 def report_sizes(t):
     stringio = StringIO()
     gzipfile = gzip.GzipFile(t.name, 'w', 9, stringio)
-    with open(t.name) as f:
+    with open(t.name, 'rb') as f:
         shutil.copyfileobj(f, gzipfile)
     gzipfile.close()
     rawsize = os.stat(t.name).st_size
