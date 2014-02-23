@@ -255,7 +255,7 @@ def _build_require_list(dependencies, output_file_name):
             match = re.match(r'goog\.provide\(\'(.*)\'\);', line)
             if match:
                 requires.add(match.group(1))
-    with open(output_file_name, 'w') as f:
+    with open(output_file_name, 'wb') as f:
         for require in sorted(requires):
             f.write('goog.require(\'%s\');\n' % (require,))
 
@@ -334,7 +334,7 @@ def examples_star_json(name, match):
                 '../externs/vbarray.js',
             ],
         })
-        with open(t.name, 'w') as f:
+        with open(t.name, 'wb') as f:
             f.write(content)
     dependencies = [__file__, 'buildcfg/base.json']
     return Target(name, action=action, dependencies=dependencies)
@@ -651,11 +651,11 @@ def split_example_file(example, dst_dir):
                 target_lines.append(line)
 
     target = open(
-        os.path.join(dst_dir, os.path.basename(example)), 'w')
+        os.path.join(dst_dir, os.path.basename(example)), 'wb')
     target_require = open(
         os.path.join(dst_dir, os.path.basename(example)
           .replace('.js', '-require.js')),
-        'w')
+        'wb')
 
     target.writelines(target_lines)
     target.close()

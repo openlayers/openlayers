@@ -111,7 +111,7 @@ def main(argv):
     context['getUniforms'] = [uniforms[u] for u in sorted(uniforms.keys())]
 
     if options.output and options.output != '-':
-        output = open(options.output, 'w')
+        output = open(options.output, 'wb')
     else:
         output = sys.stdout
     output.write(pystache.render(open(options.template, 'rb').read(), context))
