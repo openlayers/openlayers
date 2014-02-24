@@ -1,62 +1,58 @@
+goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
-goog.require('ol.expr');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.parser.GeoJSON');
+goog.require('ol.source.GeoJSON');
 goog.require('ol.source.MapQuest');
-goog.require('ol.source.Vector');
 goog.require('ol.style.Fill');
-goog.require('ol.style.Rule');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 
 
-var raster = new ol.layer.Tile({
-  source: new ol.source.MapQuest({layer: 'sat'})
-});
-
-var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    parser: new ol.parser.GeoJSON(),
-    url: 'data/countries.geojson'
+var styleCache = {};
+var vectorLayer = new ol.layer.Vector({
+  source: new ol.source.GeoJSON({
+    projection: 'EPSG:3857',
+    url: 'data/geojson/countries.geojson'
   }),
-  style: new ol.style.Style({rules: [
-    new ol.style.Rule({
-      symbolizers: [
-        new ol.style.Fill({
-          color: 'white',
-          opacity: 0.6
+  style: function(feature, resolution) {
+    var text = resolution < 5000 ? feature.get('name') : '';
+    if (!styleCache[text]) {
+      styleCache[text] = [new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: 'rgba(255, 255, 255, 0.6)'
         }),
-        new ol.style.Stroke({
+        stroke: new ol.style.Stroke({
           color: '#319FD3',
-          opacity: 1
-        })
-      ]
-    }),
-    new ol.style.Rule({
-      maxResolution: 5000,
-      symbolizers: [
-        new ol.style.Text({
-          color: 'black',
-          text: ol.expr.parse('name'),
-          fontFamily: 'Calibri,sans-serif',
-          fontSize: 12,
+          width: 1
+        }),
+        text: new ol.style.Text({
+          font: '12px Calibri,sans-serif',
+          text: text,
+          fill: new ol.style.Fill({
+            color: '#000'
+          }),
           stroke: new ol.style.Stroke({
-            color: 'white',
+            color: '#fff',
             width: 3
           })
         })
-      ]
-    })
-  ]})
+      })];
+    }
+    return styleCache[text];
+  }
 });
 
 var map = new ol.Map({
-  layers: [raster, vector],
-  renderer: ol.RendererHint.CANVAS,
+  layers: [
+    new ol.layer.Tile({
+      source: new ol.source.MapQuest({layer: 'sat'})
+    }),
+    vectorLayer
+  ],
+  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],
@@ -64,17 +60,62 @@ var map = new ol.Map({
   })
 });
 
-var displayFeatureInfo = function(pixel) {
-  map.getFeatures({
-    pixel: pixel,
-    layers: [vector],
-    success: function(featuresByLayer) {
-      var features = featuresByLayer[0];
-      document.getElementById('info').innerHTML = features.length > 0 ?
-          features[0].getId() + ': ' + features[0].get('name') :
-          '&nbsp;';
+var highlightStyleCache = {};
+
+var featureOverlay = new ol.FeatureOverlay({
+  map: map,
+  style: function(feature, resolution) {
+    var text = resolution < 5000 ? feature.get('name') : '';
+    if (!highlightStyleCache[text]) {
+      highlightStyleCache[text] = [new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: '#f00',
+          width: 1
+        }),
+        fill: new ol.style.Fill({
+          color: 'rgba(255,0,0,0.1)'
+        }),
+        text: new ol.style.Text({
+          font: '12px Calibri,sans-serif',
+          text: text,
+          fill: new ol.style.Fill({
+            color: '#000'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#f00',
+            width: 3
+          })
+        })
+      })];
     }
+    return highlightStyleCache[text];
+  }
+});
+
+var highlight;
+var displayFeatureInfo = function(pixel) {
+
+  var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+    return feature;
   });
+
+  var info = document.getElementById('info');
+  if (feature) {
+    info.innerHTML = feature.getId() + ': ' + feature.get('name');
+  } else {
+    info.innerHTML = '&nbsp;';
+  }
+
+  if (feature !== highlight) {
+    if (highlight) {
+      featureOverlay.removeFeature(highlight);
+    }
+    if (feature) {
+      featureOverlay.addFeature(feature);
+    }
+    highlight = feature;
+  }
+
 };
 
 $(map.getViewport()).on('mousemove', function(evt) {
@@ -83,6 +124,5 @@ $(map.getViewport()).on('mousemove', function(evt) {
 });
 
 map.on('singleclick', function(evt) {
-  var pixel = evt.getPixel();
-  displayFeatureInfo(pixel);
+  displayFeatureInfo(evt.pixel);
 });

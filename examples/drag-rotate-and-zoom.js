@@ -1,5 +1,4 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.interaction');
 goog.require('ol.interaction.DragRotateAndZoom');
@@ -16,7 +15,7 @@ var map = new ol.Map({
       source: new ol.source.MapQuest({layer: 'sat'})
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],

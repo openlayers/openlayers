@@ -136,6 +136,41 @@ ol.structs.RBushNode.prototype.getChildrenExtent =
 
 
 /**
+ * @param {ol.Extent} extent Extent.
+ * @param {T} value Value.
+ * @param {Array.<ol.structs.RBushNode.<T>>} path Path.
+ * @return {boolean} Removed.
+ */
+ol.structs.RBushNode.prototype.remove = function(extent, value, path) {
+  var children = this.children;
+  var ii = children.length;
+  var child, i;
+  if (this.height == 1) {
+    for (i = 0; i < ii; ++i) {
+      child = children[i];
+      if (child.value === value) {
+        goog.array.removeAt(children, i);
+        return true;
+      }
+    }
+  } else {
+    goog.asserts.assert(this.height > 1);
+    for (i = 0; i < ii; ++i) {
+      child = children[i];
+      if (ol.extent.containsExtent(child.extent, extent)) {
+        path.push(child);
+        if (child.remove(extent, value, path)) {
+          return true;
+        }
+        path.pop();
+      }
+    }
+  }
+  return false;
+};
+
+
+/**
  * FIXME empty description for jsdoc
  */
 ol.structs.RBushNode.prototype.updateExtent = function() {
@@ -361,20 +396,20 @@ ol.structs.RBush.prototype.condense_ = function(path) {
  * Calls a callback function with each node in the tree. Inside the callback,
  * no tree modifications (insert, update, remove) can be made.
  * @param {function(this: S, T): *} callback Callback.
- * @param {S=} opt_obj Scope.
+ * @param {S=} opt_this The object to use as `this` in `callback`.
  * @return {*} Callback return value.
  * @template S
  */
-ol.structs.RBush.prototype.forEach = function(callback, opt_obj) {
+ol.structs.RBush.prototype.forEach = function(callback, opt_this) {
   if (goog.DEBUG) {
     ++this.readers_;
     try {
-      return this.forEach_(this.root_, callback, opt_obj);
+      return this.forEach_(this.root_, callback, opt_this);
     } finally {
       --this.readers_;
     }
   } else {
-    return this.forEach_(this.root_, callback, opt_obj);
+    return this.forEach_(this.root_, callback, opt_this);
   }
 };
 
@@ -382,12 +417,12 @@ ol.structs.RBush.prototype.forEach = function(callback, opt_obj) {
 /**
  * @param {ol.structs.RBushNode.<T>} node Node.
  * @param {function(this: S, T): *} callback Callback.
- * @param {S=} opt_obj Scope.
+ * @param {S=} opt_this The object to use as `this` in `callback`.
  * @private
  * @return {*} Callback return value.
  * @template S
  */
-ol.structs.RBush.prototype.forEach_ = function(node, callback, opt_obj) {
+ol.structs.RBush.prototype.forEach_ = function(node, callback, opt_this) {
   goog.asserts.assert(!node.isLeaf());
   /** @type {Array.<ol.structs.RBushNode.<T>>} */
   var toVisit = [node];
@@ -397,7 +432,7 @@ ol.structs.RBush.prototype.forEach_ = function(node, callback, opt_obj) {
     children = node.children;
     if (node.height == 1) {
       for (i = 0, ii = children.length; i < ii; ++i) {
-        result = callback.call(opt_obj, children[i].value);
+        result = callback.call(opt_this, children[i].value);
         if (result) {
           return result;
         }
@@ -414,21 +449,21 @@ ol.structs.RBush.prototype.forEach_ = function(node, callback, opt_obj) {
  * callback, no tree modifications (insert, update, remove) can be made.
  * @param {ol.Extent} extent Extent.
  * @param {function(this: S, T): *} callback Callback.
- * @param {S=} opt_obj Scope.
+ * @param {S=} opt_this The object to use as `this` in `callback`.
  * @return {*} Callback return value.
  * @template S
  */
 ol.structs.RBush.prototype.forEachInExtent =
-    function(extent, callback, opt_obj) {
+    function(extent, callback, opt_this) {
   if (goog.DEBUG) {
     ++this.readers_;
     try {
-      return this.forEachInExtent_(extent, callback, opt_obj);
+      return this.forEachInExtent_(extent, callback, opt_this);
     } finally {
       --this.readers_;
     }
   } else {
-    return this.forEachInExtent_(extent, callback, opt_obj);
+    return this.forEachInExtent_(extent, callback, opt_this);
   }
 };
 
@@ -436,13 +471,13 @@ ol.structs.RBush.prototype.forEachInExtent =
 /**
  * @param {ol.Extent} extent Extent.
  * @param {function(this: S, T): *} callback Callback.
- * @param {S=} opt_obj Scope.
+ * @param {S=} opt_this The object to use as `this` in `callback`.
  * @private
  * @return {*} Callback return value.
  * @template S
  */
 ol.structs.RBush.prototype.forEachInExtent_ =
-    function(extent, callback, opt_obj) {
+    function(extent, callback, opt_this) {
   /** @type {Array.<ol.structs.RBushNode.<T>>} */
   var toVisit = [this.root_];
   var result;
@@ -450,12 +485,12 @@ ol.structs.RBush.prototype.forEachInExtent_ =
     var node = toVisit.pop();
     if (ol.extent.intersects(extent, node.extent)) {
       if (node.isLeaf()) {
-        result = callback.call(opt_obj, node.value);
+        result = callback.call(opt_this, node.value);
         if (result) {
           return result;
         }
       } else if (ol.extent.containsExtent(extent, node.extent)) {
-        result = this.forEach_(node, callback, opt_obj);
+        result = this.forEach_(node, callback, opt_this);
         if (result) {
           return result;
         }
@@ -470,16 +505,16 @@ ol.structs.RBush.prototype.forEachInExtent_ =
 
 /**
  * @param {function(this: S, ol.structs.RBushNode.<T>): *} callback Callback.
- * @param {S=} opt_obj Scope.
+ * @param {S=} opt_this The object to use as `this` in `callback`.
  * @return {*} Callback return value.
  * @template S
  */
-ol.structs.RBush.prototype.forEachNode = function(callback, opt_obj) {
+ol.structs.RBush.prototype.forEachNode = function(callback, opt_this) {
   /** @type {Array.<ol.structs.RBushNode.<T>>} */
   var toVisit = [this.root_];
   while (toVisit.length > 0) {
     var node = toVisit.pop();
-    var result = callback.call(opt_obj, node);
+    var result = callback.call(opt_this, node);
     if (result) {
       return result;
     }
@@ -555,6 +590,7 @@ ol.structs.RBush.prototype.insert = function(extent, value) {
   var key = this.getKey_(value);
   goog.asserts.assert(!this.valueExtent_.hasOwnProperty(key));
   this.insert_(extent, value, this.root_.height - 1);
+  this.valueExtent_[key] = ol.extent.clone(extent);
 };
 
 
@@ -582,8 +618,6 @@ ol.structs.RBush.prototype.insert_ = function(extent, value, level) {
   for (; i >= 0; --i) {
     ol.extent.extend(path[i].extent, extent);
   }
-  var key = this.getKey_(value);
-  this.valueExtent_[key] = ol.extent.clone(extent);
   return node;
 };
 
@@ -598,6 +632,7 @@ ol.structs.RBush.prototype.isEmpty = function() {
 
 /**
  * @param {T} value Value.
+ * @return {boolean} Removed.
  */
 ol.structs.RBush.prototype.remove = function(value) {
   if (goog.DEBUG && this.readers_) {
@@ -607,7 +642,7 @@ ol.structs.RBush.prototype.remove = function(value) {
   goog.asserts.assert(this.valueExtent_.hasOwnProperty(key));
   var extent = this.valueExtent_[key];
   delete this.valueExtent_[key];
-  this.remove_(extent, value);
+  return this.remove_(extent, value);
 };
 
 
@@ -615,52 +650,19 @@ ol.structs.RBush.prototype.remove = function(value) {
  * @param {ol.Extent} extent Extent.
  * @param {T} value Value.
  * @private
+ * @return {boolean} Removed.
  */
 ol.structs.RBush.prototype.remove_ = function(extent, value) {
-  var node = this.root_;
-  var index = 0;
-  /** @type {Array.<ol.structs.RBushNode.<T>>} */
-  var path = [node];
-  /** @type {Array.<number>} */
-  var indexes = [0];
-  var childrenDone, child, children, i, ii;
-  while (path.length > 0) {
-    childrenDone = false;
-    goog.asserts.assert(node.height > 0);
-    if (node.height == 1) {
-      children = node.children;
-      for (i = 0, ii = children.length; i < ii; ++i) {
-        child = children[i];
-        if (child.value === value) {
-          goog.array.removeAt(children, i);
-          this.condense_(path);
-          return;
-        }
-      }
-      childrenDone = true;
-    } else if (index < node.children.length) {
-      child = node.children[index];
-      if (ol.extent.containsExtent(child.extent, extent)) {
-        path.push(child);
-        indexes.push(index + 1);
-        node = child;
-        index = 0;
-      } else {
-        ++index;
-      }
-    } else {
-      childrenDone = true;
-    }
-    if (childrenDone) {
-      var lastPathIndex = path.length - 1;
-      node = path[lastPathIndex];
-      index = ++indexes[lastPathIndex];
-      if (index > node.children.length) {
-        path.pop();
-        indexes.pop();
-      }
-    }
+  var root = this.root_;
+  var path = [root];
+  var removed = root.remove(extent, value, path);
+  if (removed) {
+    this.condense_(path);
+  } else {
+    goog.asserts.assert(path.length == 1);
+    goog.asserts.assert(path[0] === root);
   }
+  return removed;
 };
 
 
@@ -713,8 +715,9 @@ ol.structs.RBush.prototype.update = function(extent, value) {
   var currentExtent = this.valueExtent_[key];
   goog.asserts.assert(goog.isDef(currentExtent));
   if (!ol.extent.equals(currentExtent, extent)) {
-    this.remove_(currentExtent, value);
+    var removed = this.remove_(currentExtent, value);
+    goog.asserts.assert(removed);
     this.insert_(extent, value, this.root_.height - 1);
-    ol.extent.clone(extent, currentExtent);
+    this.valueExtent_[key] = ol.extent.clone(extent, currentExtent);
   }
 };

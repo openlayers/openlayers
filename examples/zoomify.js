@@ -1,10 +1,8 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
-goog.require('ol.proj.Units');
 goog.require('ol.source.Zoomify');
 
 // This server does not support CORS, and so is incompatible with WebGL.
@@ -26,7 +24,7 @@ var imgCenter = [imgWidth / 2, - imgHeight / 2];
 // can use to properly display the layer.
 var proj = new ol.proj.Projection({
   code: 'ZOOMIFY',
-  units: ol.proj.Units.PIXELS,
+  units: 'pixels',
   extent: [0, 0, imgWidth, imgHeight]
 });
 
@@ -42,7 +40,7 @@ var map = new ol.Map({
       source: source
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View2D({
     projection: proj,

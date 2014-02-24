@@ -1,13 +1,18 @@
 goog.provide('ol.events.ConditionType');
 goog.provide('ol.events.condition');
 
+goog.require('goog.asserts');
 goog.require('goog.dom.TagName');
 goog.require('goog.functions');
 goog.require('ol.MapBrowserEvent.EventType');
 
 
 /**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a
+ * `{boolean}`. If the condition is met, true should be returned.
+ *
  * @typedef {function(ol.MapBrowserEvent): boolean}
+ * @todo stability experimental
  */
 ol.events.ConditionType;
 
@@ -107,8 +112,9 @@ ol.events.condition.shiftKeyOnly = function(mapBrowserEvent) {
  * @todo stability experimental
  */
 ol.events.condition.targetNotEditable = function(mapBrowserEvent) {
-  var browserEvent = mapBrowserEvent.browserEvent;
-  var tagName = browserEvent.target.tagName;
+  var target = mapBrowserEvent.browserEvent.target;
+  goog.asserts.assertInstanceof(target, Element);
+  var tagName = target.tagName;
   return (
       tagName !== goog.dom.TagName.INPUT &&
       tagName !== goog.dom.TagName.SELECT &&

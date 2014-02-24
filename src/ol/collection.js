@@ -26,30 +26,22 @@ ol.CollectionEventType = {
 /**
  * @constructor
  * @extends {goog.events.Event}
+ * @implements {oli.CollectionEvent}
  * @param {ol.CollectionEventType} type Type.
- * @param {*=} opt_elem Element.
+ * @param {*=} opt_element Element.
  * @param {Object=} opt_target Target.
  */
-ol.CollectionEvent = function(type, opt_elem, opt_target) {
+ol.CollectionEvent = function(type, opt_element, opt_target) {
 
   goog.base(this, type, opt_target);
 
   /**
-   * @private
    * @type {*}
    */
-  this.elem_ = opt_elem;
+  this.element = opt_element;
 
 };
 goog.inherits(ol.CollectionEvent, goog.events.Event);
-
-
-/**
- * @return {*} The element to which this event pertains.
- */
-ol.CollectionEvent.prototype.getElement = function() {
-  return this.elem_;
-};
 
 
 /**
@@ -115,12 +107,12 @@ ol.Collection.prototype.extend = function(arr) {
  * @param {function(this: S, T, number, Array.<T>): *} f The function to call
  *     for every element. This function takes 3 arguments (the element, the
  *     index and the array). The return value is ignored.
- * @param {S=} opt_obj The object to be used as the value of 'this' within f.
+ * @param {S=} opt_this The object to use as `this` in `f`.
  * @template T,S
  * @todo stability experimental
  */
-ol.Collection.prototype.forEach = function(f, opt_obj) {
-  goog.array.forEach(this.array_, f, opt_obj);
+ol.Collection.prototype.forEach = function(f, opt_this) {
+  goog.array.forEach(this.array_, f, opt_this);
 };
 
 

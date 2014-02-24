@@ -103,7 +103,6 @@ EXAMPLES_SRC = [path
                 if path.endswith('.js')
                 if not path.endswith('.combined.js')
                 if not path.startswith('examples/bootstrap')
-                if not path.startswith('examples/font-awesome')
                 if path != 'examples/Jugl.js'
                 if path != 'examples/jquery.min.js'
                 if path != 'examples/loader.js'
@@ -325,12 +324,14 @@ def examples_star_json(name, match):
                 '//jquery-1.7.js',
                 '../externs/bingmaps.js',
                 '../externs/bootstrap.js',
+                '../externs/closure-compiler.js',
+                '../externs/example.js',
                 '../externs/geojson.js',
-                '../externs/topojson.js',
                 '../externs/oli.js',
                 '../externs/proj4js.js',
                 '../externs/tilejson.js',
-                '../externs/closure-compiler.js',
+                '../externs/topojson.js',
+                '../externs/vbarray.js',
             ],
         })
         with open(t.name, 'w') as f:
@@ -674,17 +675,21 @@ def host_resources(t):
 def host_examples(t):
     examples_dir = 'build/hosted/%(BRANCH)s/examples'
     build_dir = 'build/hosted/%(BRANCH)s/build'
+    css_dir = 'build/hosted/%(BRANCH)s/css'
     t.rm_rf(examples_dir)
     t.makedirs(examples_dir)
     t.rm_rf(build_dir)
     t.makedirs(build_dir)
+    t.rm_rf(css_dir)
+    t.makedirs(css_dir)
     t.cp(EXAMPLES, examples_dir)
     for example in [path.replace('.html', '.js') for path in EXAMPLES]:
         split_example_file(example, examples_dir % vars(variables))
     t.cp_r('examples/data', examples_dir + '/data')
     t.cp('bin/loader_hosted_examples.js', examples_dir + '/loader.js')
     t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js',
-         'build/ol.css', build_dir)
+         build_dir)
+    t.cp('build/ol.css', css_dir)
     t.cp('examples/index.html', 'examples/example-list.js',
          'examples/example-list.xml', 'examples/Jugl.js',
          'examples/jquery.min.js', examples_dir)
@@ -708,7 +713,7 @@ def host_examples(t):
 def check_examples(t):
     examples = ['build/hosted/%(BRANCH)s/' + e
                 for e in EXAMPLES
-                if not open(e).readline().startswith('// NOCHECK')]
+                if not open(e.replace('.html', '.js')).readline().startswith('// NOCOMPILE')]
     all_examples = \
         [e + '?mode=advanced' for e in examples]
     for example in all_examples:

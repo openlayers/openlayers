@@ -126,12 +126,12 @@ ol.structs.Buffer.prototype.addDirtySet = function(dirtySet) {
 
 /**
  * @param {function(this: T, number, number)} f Callback.
- * @param {T=} opt_obj The object to be used as the value of 'this' within f.
+ * @param {T=} opt_this The object to use as `this` in `f`.
  * @template T
  */
-ol.structs.Buffer.prototype.forEachRange = function(f, opt_obj) {
+ol.structs.Buffer.prototype.forEachRange = function(f, opt_this) {
   if (this.arr_.length !== 0) {
-    this.freeSet_.forEachRangeInverted(0, this.arr_.length, f, opt_obj);
+    this.freeSet_.forEachRangeInverted(0, this.arr_.length, f, opt_this);
   }
 };
 

@@ -5,7 +5,7 @@
  * This loader is used for the hosted examples. It is used in place of the
  * development loader (examples/loader.js).
  *
- * ol.css, ol.js, ol-simple.js, ol-whitespace.js, and ol-deps.js are built
+ * ol.js, ol-simple.js, ol-whitespace.js, and ol-deps.js are built
  * by OL3's build.py script. They are located in the ../build/ directory,
  * relatively to this script.
  *
@@ -66,7 +66,6 @@
   }
 
   var scriptId = encodeURIComponent(scriptParams.id);
-  document.write('<link rel="stylesheet" href="../build/ol.css" type="text/css">');
   if (mode != 'raw') {
     document.write('<scr' + 'ipt type="text/javascript" src="../build/' + oljs + '"></scr' + 'ipt>');
   } else {

@@ -3,7 +3,6 @@ goog.provide('ol.layer.LayerProperty');
 goog.provide('ol.layer.LayerState');
 
 goog.require('goog.events');
-goog.require('goog.events.EventType');
 goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol.Object');
@@ -73,14 +72,6 @@ ol.layer.Base = function(options) {
   this.setValues(values);
 };
 goog.inherits(ol.layer.Base, ol.Object);
-
-
-/**
- * @protected
- */
-ol.layer.Base.prototype.dispatchChangeEvent = function() {
-  this.dispatchEvent(goog.events.EventType.CHANGE);
-};
 
 
 /**

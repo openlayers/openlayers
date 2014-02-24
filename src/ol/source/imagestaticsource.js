@@ -1,7 +1,6 @@
 goog.provide('ol.source.ImageStatic');
 
 goog.require('ol.Image');
-goog.require('ol.ImageUrlFunctionType');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.Image');
@@ -16,20 +15,21 @@ goog.require('ol.source.Image');
  */
 ol.source.ImageStatic = function(options) {
 
-  var imageFunction = ol.source.ImageStatic.createImageFunction(
-      options.url);
-
+  var attributions = goog.isDef(options.attributions) ?
+      options.attributions : null;
+  var crossOrigin = goog.isDef(options.crossOrigin) ?
+      options.crossOrigin : null;
   var imageExtent = options.imageExtent;
   var imageSize = options.imageSize;
   var imageResolution = (imageExtent[3] - imageExtent[1]) / imageSize[1];
+  var imageUrl = options.url;
   var projection = ol.proj.get(options.projection);
 
   goog.base(this, {
-    attributions: options.attributions,
-    crossOrigin: options.crossOrigin,
+    attributions: attributions,
     extent: options.extent,
-    projection: options.projection,
-    imageUrlFunction: imageFunction,
+    logo: options.logo,
+    projection: projection,
     resolutions: [imageResolution]
   });
 
@@ -37,8 +37,8 @@ ol.source.ImageStatic = function(options) {
    * @private
    * @type {ol.Image}
    */
-  this.image_ = this.createImage(
-      imageExtent, imageResolution, imageSize, projection);
+  this.image_ = new ol.Image(imageExtent, imageResolution, 1, attributions,
+      imageUrl, crossOrigin);
 
 };
 goog.inherits(ol.source.ImageStatic, ol.source.Image);
@@ -48,27 +48,9 @@ goog.inherits(ol.source.ImageStatic, ol.source.Image);
  * @inheritDoc
  */
 ol.source.ImageStatic.prototype.getImage =
-    function(extent, resolution, projection) {
+    function(extent, resolution, pixelRatio, projection) {
   if (ol.extent.intersects(extent, this.image_.getExtent())) {
     return this.image_;
   }
   return null;
-};
-
-
-/**
- * @param {string|undefined} url URL.
- * @return {ol.ImageUrlFunctionType} Function.
- */
-ol.source.ImageStatic.createImageFunction = function(url) {
-  return (
-      /**
-       * @param {ol.Extent} extent Extent.
-       * @param {ol.Size} size Size.
-       * @param {ol.proj.Projection} projection Projection.
-       * @return {string|undefined} URL.
-       */
-      function(extent, size, projection) {
-        return url;
-      });
 };

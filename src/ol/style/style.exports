@@ -1,0 +1,6 @@
+@exportSymbol ol.style.Style
+@exportProperty ol.style.Style.prototype.getFill
+@exportProperty ol.style.Style.prototype.getImage
+@exportProperty ol.style.Style.prototype.getStroke
+@exportProperty ol.style.Style.prototype.getText
+@exportProperty ol.style.Style.prototype.getZIndex

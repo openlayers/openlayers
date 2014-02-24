@@ -15,7 +15,7 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>          
+          <a class="brand" href="./"><img src="../resources/logo.png"> OpenLayers 3 Examples</a>         
         </div>
       </div>
     </div>
@@ -32,13 +32,13 @@
 
         <div class="span12">
           <h4 id="title">Draw features example</h4>
-          <p id="shortdesc">Example of using the Draw interaction.</p>
+          <p id="shortdesc">Example of using the <code>ol.interaction.Draw</code> interaction.</p>
           <form class="form-inline">
             <label>Geometry type &nbsp;</label>
               <select id="type">
-                <option value="Polygon">Polygon</option>
-                <option value="LineString">Linestring</option>
                 <option value="Point">Point</option>
+                <option value="LineString">LineString</option>
+                <option value="Polygon">Polygon</option>
               </select>
           </form>
 
@@ -52,8 +52,9 @@
 
     </div>
 
-    <script src="loader.js?id=draw-features" type="text/javascript"></script>
+    <script src="jquery.min.js" type="text/javascript"></script>
     <script src="../resources/example-behaviour.js" type="text/javascript"></script>
+    <script src="loader.js?id=draw-features" type="text/javascript"></script>
 
   </body>
 </html>

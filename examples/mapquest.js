@@ -1,5 +1,4 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.Group');
 goog.require('ol.layer.Tile');
@@ -33,7 +32,7 @@ var layers = [
 
 var map = new ol.Map({
   layers: layers,
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View2D({
     center: ol.proj.transform(

@@ -144,6 +144,7 @@ ol.source.Tile.prototype.getResolutions = function() {
  * @param {number} z Tile coordinate z.
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection=} opt_projection Projection.
  * @return {!ol.Tile} Tile.
  */
@@ -155,6 +156,32 @@ ol.source.Tile.prototype.getTile = goog.abstractMethod;
  */
 ol.source.Tile.prototype.getTileGrid = function() {
   return this.tileGrid;
+};
+
+
+/**
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {ol.tilegrid.TileGrid} Tile grid.
+ */
+ol.source.Tile.prototype.getTileGridForProjection = function(projection) {
+  if (goog.isNull(this.tileGrid)) {
+    return ol.tilegrid.getForProjection(projection);
+  } else {
+    return this.tileGrid;
+  }
+};
+
+
+/**
+ * @param {number} z Z.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {number} Tile size.
+ */
+ol.source.Tile.prototype.getTilePixelSize =
+    function(z, pixelRatio, projection) {
+  var tileGrid = this.getTileGridForProjection(projection);
+  return tileGrid.getTileSize(z);
 };
 
 

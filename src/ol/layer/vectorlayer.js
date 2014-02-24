@@ -1,73 +1,77 @@
 goog.provide('ol.layer.Vector');
 
-goog.require('goog.array');
 goog.require('goog.object');
-goog.require('ol.Feature');
-goog.require('ol.FeatureRenderIntent');
+goog.require('ol.feature');
 goog.require('ol.layer.Layer');
-goog.require('ol.source.Vector');
-goog.require('ol.source.VectorEventType');
-goog.require('ol.style');
-goog.require('ol.style.Style');
+
+
+/**
+ * @enum {string}
+ */
+ol.layer.VectorProperty = {
+  RENDER_GEOMETRY_FUNCTIONS: 'renderGeometryFunctions'
+};
 
 
 
 /**
  * @constructor
  * @extends {ol.layer.Layer}
- * @param {olx.layer.VectorLayerOptions} options Vector layer options.
+ * @param {olx.layer.VectorOptions=} opt_options Options.
  * @todo stability experimental
  */
-ol.layer.Vector = function(options) {
+ol.layer.Vector = function(opt_options) {
 
-  var baseOptions = /** @type {olx.layer.VectorLayerOptions} */
+  var options = goog.isDef(opt_options) ?
+      opt_options : /** @type {olx.layer.VectorOptions} */ ({});
+
+  var baseOptions = /** @type {olx.layer.LayerOptions} */
       (goog.object.clone(options));
 
-  /**
-   * @private
-   * @type {ol.style.Style}
-   */
-  this.style_ = goog.isDef(options.style) ? options.style : null;
   delete baseOptions.style;
+  goog.base(this, baseOptions);
 
   /**
-   * @type {function(Array.<ol.Feature>):string}
+   * User provided style.
+   * @type {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
    * @private
    */
-  this.transformFeatureInfo_ = goog.isDef(options.transformFeatureInfo) ?
-      options.transformFeatureInfo : ol.layer.Vector.uidTransformFeatureInfo;
-  delete baseOptions.transformFeatureInfo;
+  this.style_ = null;
 
   /**
-   * True if this is a temporary layer.
-   * @type {boolean}
+   * Style function for use within the library.
+   * @type {ol.feature.StyleFunction|undefined}
    * @private
    */
-  this.temporary_ = false;
+  this.styleFunction_ = undefined;
 
-  goog.base(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
+  if (goog.isDef(options.style)) {
+    this.setStyle(options.style);
+  }
+
 };
 goog.inherits(ol.layer.Vector, ol.layer.Layer);
 
 
 /**
- * @return {boolean} Whether this layer is temporary.
+ * @return {ol.Collection|undefined} Render geometry functions.
+ * @todo stability experimental
  */
-ol.layer.Vector.prototype.getTemporary = function() {
-  return this.temporary_;
+ol.layer.Vector.prototype.getRenderGeometryFunctions = function() {
+  return /** @type {ol.Collection|undefined} */ (
+      this.get(ol.layer.VectorProperty.RENDER_GEOMETRY_FUNCTIONS));
 };
+goog.exportProperty(
+    ol.layer.Vector.prototype,
+    'getRenderGeometryFunctions',
+    ol.layer.Vector.prototype.getRenderGeometryFunctions);
 
 
 /**
- * @return {ol.source.Vector} Source.
- */
-ol.layer.Vector.prototype.getVectorSource = function() {
-  return /** @type {ol.source.Vector} */ (this.getSource());
-};
-
-
-/**
- * @return {ol.style.Style} This layer's style.
+ * Get the style for features.  This returns whatever was passed to the `style`
+ * option at construction or to the `setStyle` method.
+ * @return {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction}
+ *     Layer style.
  */
 ol.layer.Vector.prototype.getStyle = function() {
   return this.style_;
@@ -75,50 +79,41 @@ ol.layer.Vector.prototype.getStyle = function() {
 
 
 /**
- * Set a style for this layer.
- * @param {ol.style.Style} style Style.
+ * Get the style function.
+ * @return {ol.feature.StyleFunction|undefined} Layer style function.
+ * @todo stability experimental
+ */
+ol.layer.Vector.prototype.getStyleFunction = function() {
+  return this.styleFunction_;
+};
+
+
+/**
+ * @param {ol.Collection|undefined} renderGeometryFunctions Render geometry
+ *     functions.
+ * @todo stability experimental
+ */
+ol.layer.Vector.prototype.setRenderGeometryFunctions =
+    function(renderGeometryFunctions) {
+  this.set(ol.layer.VectorProperty.RENDER_GEOMETRY_FUNCTIONS,
+      renderGeometryFunctions);
+};
+goog.exportProperty(
+    ol.layer.Vector.prototype,
+    'setRenderGeometryFunctions',
+    ol.layer.Vector.prototype.setRenderGeometryFunctions);
+
+
+/**
+ * Set the style for features.  This can be a single style object, an array
+ * of styles, or a function that takes a feature and resolution and returns
+ * an array of styles.
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction} style
+ *     Layer style.
+ * @todo stability experimental
  */
 ol.layer.Vector.prototype.setStyle = function(style) {
   this.style_ = style;
-  var source = this.getVectorSource();
-  if (source) {
-    source.dispatchEvent(
-        new ol.source.VectorEvent(ol.source.VectorEventType.CHANGE, [], []));
-  }
-};
-
-
-/**
- * @return {function(Array.<ol.Feature>):string} Feature info function.
- */
-ol.layer.Vector.prototype.getTransformFeatureInfo = function() {
-  return this.transformFeatureInfo_;
-};
-
-
-/**
- * @param {boolean} temporary Whether this layer is temporary.
- */
-ol.layer.Vector.prototype.setTemporary = function(temporary) {
-  this.temporary_ = temporary;
-};
-
-
-/**
- * @param {Array.<ol.Feature>} features Features.
- * @return {string} Feature info.
- */
-ol.layer.Vector.uidTransformFeatureInfo = function(features) {
-  var uids = goog.array.map(features,
-      function(feature) { return goog.getUid(feature); });
-  return uids.join(', ');
-};
-
-
-/**
- * @param {ol.Feature} feature Feature.
- * @return {boolean} Whether the feature is selected.
- */
-ol.layer.Vector.selectedFeaturesFilter = function(feature) {
-  return feature.getRenderIntent() == ol.FeatureRenderIntent.SELECTED;
+  this.styleFunction_ = ol.feature.createStyleFunction(style);
+  this.dispatchChangeEvent();
 };

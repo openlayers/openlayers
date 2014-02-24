@@ -33,6 +33,7 @@ ol.ObjectEventType = {
  * @param {string} type The event type.
  * @param {string} key The property name.
  * @extends {goog.events.Event}
+ * @implements {oli.ObjectEvent}
  * @constructor
  */
 ol.ObjectEvent = function(type, key) {
@@ -41,21 +42,11 @@ ol.ObjectEvent = function(type, key) {
   /**
    * The name of the property whose value is changing.
    * @type {string}
-   * @private
    */
-  this.key_ = key;
+  this.key = key;
 
 };
 goog.inherits(ol.ObjectEvent, goog.events.Event);
-
-
-/**
- * Get the name of the property associated with this event.
- * @return {string} Object property name.
- */
-ol.ObjectEvent.prototype.getKey = function() {
-  return this.key_;
-};
 
 
 
@@ -244,9 +235,13 @@ ol.Object.prototype.bindTo = function(key, target, opt_targetKey) {
 
   // listen for change:targetkey events
   var eventType = ol.Object.getChangeEventType(targetKey);
-  this.listeners_[key] = goog.events.listen(target, eventType, function() {
-    this.notifyInternal_(key);
-  }, undefined, this);
+  this.listeners_[key] = goog.events.listen(target, eventType,
+      /**
+       * @this {ol.Object}
+       */
+      function() {
+        this.notifyInternal_(key);
+      }, undefined, this);
 
   // listen for beforechange events and relay if key matches
   this.beforeChangeListeners_[key] = goog.events.listen(target,
@@ -277,7 +272,7 @@ ol.Object.prototype.createBeforeChangeListener_ = function(key, targetKey) {
    * @this {ol.Object}
    */
   return function(event) {
-    if (event.getKey() === targetKey) {
+    if (event.key === targetKey) {
       this.dispatchEvent(
           new ol.ObjectEvent(ol.ObjectEventType.BEFOREPROPERTYCHANGE, key));
     }
@@ -348,6 +343,7 @@ ol.Object.prototype.getKeys = function() {
 /**
  * Get an object of all property names and values.
  * @return {Object.<string, *>} Object.
+ * @todo stability experimental
  */
 ol.Object.prototype.getProperties = function() {
   var properties = {};
@@ -432,15 +428,7 @@ ol.Object.prototype.set = function(key, value) {
 ol.Object.prototype.setValues = function(values) {
   var key;
   for (key in values) {
-    var value = values[key];
-    var setterName = ol.Object.getSetterName(key);
-    var setter = /** @type {function(*)|undefined} */
-        (goog.object.get(this, setterName));
-    if (goog.isDef(setter)) {
-      setter.call(this, value);
-    } else {
-      this.set(key, value);
-    }
+    this.set(key, values[key]);
   }
 };
 

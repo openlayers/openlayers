@@ -195,11 +195,10 @@
         <div id="template">
           <div class="span4 example" jugl:repeat="example examples">
             <a jugl:attributes="href example.link" class="mainlink">
-              <strong><span jugl:replace="example.title">title</span></strong>
+              <strong><span jugl:replace="example.title">title</span></strong><br>
               <small jugl:content="'(' + example.example + ')'"></small>
             </a>
             <p><div jugl:content="example.shortdesc"></div></p>
-            <p><div jugl:content="example.classes"></div></p>
             <p><small jugl:content="'tags: ' + example.tags"></small></p>
           </div>
         </div>

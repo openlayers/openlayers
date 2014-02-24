@@ -4,12 +4,18 @@ goog.provide('ol.TileUrlFunctionType');
 goog.require('goog.array');
 goog.require('goog.math');
 goog.require('ol.TileCoord');
-goog.require('ol.extent');
 
 
 /**
+ * A function that takes an {@link ol.TileCoord} for the tile coordinate,
+ * a `{number}` representing the pixel ratio and an {@link ol.proj.Projection}
+ * for the projection  as arguments and returns a `{string}` or
+ * undefined representing the tile URL. The this keyword inside the function
+ * references the {@link ol.source.TileImage}.
+ *
  * @typedef {function(this: ol.source.TileImage, ol.TileCoord,
- *     ol.proj.Projection): (string|undefined)}
+ *     number, ol.proj.Projection): (string|undefined)}
+ * @todo stability experimental
  */
 ol.TileUrlFunctionType;
 
@@ -30,10 +36,11 @@ ol.TileUrlFunction.createFromTemplate = function(template) {
       /**
        * @this {ol.source.TileImage}
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
+       * @param {number} pixelRatio Pixel ratio.
        * @param {ol.proj.Projection} projection Projection.
        * @return {string|undefined} Tile URL.
        */
-      function(tileCoord, projection) {
+      function(tileCoord, pixelRatio, projection) {
         if (goog.isNull(tileCoord)) {
           return undefined;
         } else {
@@ -67,56 +74,18 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
       /**
        * @this {ol.source.TileImage}
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
+       * @param {number} pixelRatio Pixel ratio.
        * @param {ol.proj.Projection} projection Projection.
        * @return {string|undefined} Tile URL.
        */
-      function(tileCoord, projection) {
+      function(tileCoord, pixelRatio, projection) {
         if (goog.isNull(tileCoord)) {
           return undefined;
         } else {
           var index =
               goog.math.modulo(tileCoord.hash(), tileUrlFunctions.length);
-          return tileUrlFunctions[index].call(this, tileCoord, projection);
-        }
-      });
-};
-
-
-/**
- * @param {string} baseUrl Base URL (may have query data).
- * @param {Object.<string,*>} params Params to encode in the URL.
- * @param {number} gutter Gutter value.
- * @param {function(this: ol.source.TileImage, string, Object.<string,*>,
- *     ol.Extent, ol.Size, ol.proj.Projection)} paramsFunction params function.
- * @return {ol.TileUrlFunctionType} Tile URL function.
- */
-ol.TileUrlFunction.createFromParamsFunction =
-    function(baseUrl, params, gutter, paramsFunction) {
-  var tmpExtent = ol.extent.createEmpty();
-  var tmpSize = [0, 0];
-  return (
-      /**
-       * @this {ol.source.TileImage}
-       * @param {ol.TileCoord} tileCoord Tile Coordinate.
-       * @param {ol.proj.Projection} projection Projection.
-       * @return {string|undefined} Tile URL.
-       */
-      function(tileCoord, projection) {
-        if (goog.isNull(tileCoord)) {
-          return undefined;
-        } else {
-          var tileGrid = this.getTileGrid();
-          if (goog.isNull(tileGrid)) {
-            tileGrid = ol.tilegrid.getForProjection(projection);
-          }
-          var tileResolution = tileGrid.getResolution(tileCoord.z);
-          var tileSize = tileGrid.getTileSize(tileCoord.z);
-          tmpSize[0] = tileSize[0] + (2 * gutter);
-          tmpSize[1] = tileSize[1] + (2 * gutter);
-          var extent = tileGrid.getTileCoordExtent(tileCoord, tmpExtent);
-          ol.extent.buffer(extent, tileResolution * gutter);
-          return paramsFunction.call(this, baseUrl, params,
-              extent, tmpSize, projection);
+          return tileUrlFunctions[index].call(
+              this, tileCoord, pixelRatio, projection);
         }
       });
 };
@@ -125,10 +94,12 @@ ol.TileUrlFunction.createFromParamsFunction =
 /**
  * @this {ol.source.TileImage}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
  * @return {string|undefined} Tile URL.
  */
-ol.TileUrlFunction.nullTileUrlFunction = function(tileCoord, projection) {
+ol.TileUrlFunction.nullTileUrlFunction =
+    function(tileCoord, pixelRatio, projection) {
   return undefined;
 };
 
@@ -145,16 +116,18 @@ ol.TileUrlFunction.withTileCoordTransform =
       /**
        * @this {ol.source.TileImage}
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
+       * @param {number} pixelRatio Pixel ratio.
        * @param {ol.proj.Projection} projection Projection.
        * @return {string|undefined} Tile URL.
        */
-      function(tileCoord, projection) {
+      function(tileCoord, pixelRatio, projection) {
         if (goog.isNull(tileCoord)) {
           return undefined;
         } else {
           return tileUrlFunction.call(
               this,
               transformFn.call(this, tileCoord, projection, tmpTileCoord),
+              pixelRatio,
               projection);
         }
       });

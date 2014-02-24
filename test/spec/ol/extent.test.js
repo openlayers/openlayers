@@ -7,8 +7,7 @@ describe('ol.extent', function() {
 
     it('buffers an extent by some value', function() {
       var extent = [-10, -20, 10, 20];
-      ol.extent.buffer(extent, 15);
-      expect(extent).to.eql([-25, -35, 25, 35]);
+      expect(ol.extent.buffer(extent, 15)).to.eql([-25, -35, 25, 35]);
     });
 
   });

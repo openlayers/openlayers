@@ -33,6 +33,7 @@ OpenLayers contributors:
 * Gregers Rygg
 * Tim Schaub
 * Christopher Schmidt
+* Tobias Schwinger
 * Cameron Shorter
 * Pedro Simonetti
 * Paul Spencer

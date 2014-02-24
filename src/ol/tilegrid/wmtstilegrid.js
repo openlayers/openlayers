@@ -65,9 +65,13 @@ ol.tilegrid.WMTS.prototype.getMatrixIds = function() {
 ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
     function(matrixSet) {
 
+  /** @type {!Array.<number>} */
   var resolutions = [];
+  /** @type {!Array.<string>} */
   var matrixIds = [];
+  /** @type {!Array.<ol.Coordinate>} */
   var origins = [];
+  /** @type {!Array.<number>} */
   var tileSizes = [];
 
   var supportedCRSPropName = 'supportedCRS';
@@ -91,7 +95,10 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
         origins.push(elt[topLeftCornerPropName]);
         resolutions.push(elt[scaleDenominatorPropName] * 0.28E-3 /
             metersPerUnit);
-        tileSizes.push([elt[tileWidthPropName], elt[tileHeightPropName]]);
+        var tileWidth = elt[tileWidthPropName];
+        var tileHeight = elt[tileHeightPropName];
+        goog.asserts.assert(tileWidth == tileHeight);
+        tileSizes.push(tileWidth);
       });
 
   return new ol.tilegrid.WMTS({

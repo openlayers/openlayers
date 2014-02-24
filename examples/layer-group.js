@@ -1,5 +1,4 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.dom.Input');
 goog.require('ol.layer.Group');
@@ -31,7 +30,7 @@ var map = new ol.Map({
       ]
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View2D({
     center: ol.proj.transform([37.40570, 8.81566], 'EPSG:4326', 'EPSG:3857'),

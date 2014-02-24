@@ -1,56 +1,41 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.parser.GeoJSON');
 goog.require('ol.source.TileWMS');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
 
 
-var wms = new ol.layer.Tile({
-  source: new ol.source.TileWMS({
-    url: 'http://demo.opengeo.org/geoserver/wms',
-    params: {'LAYERS': 'ne:ne'}
-  })
+var wmsSource = new ol.source.TileWMS({
+  url: 'http://demo.opengeo.org/geoserver/wms',
+  params: {'LAYERS': 'ne:ne'}
 });
 
-var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    parser: new ol.parser.GeoJSON(),
-    url: 'data/countries.geojson'
-  }),
-  style: new ol.style.Style({
-    symbolizers: [
-      new ol.style.Stroke({
-        color: '#33cc66',
-        width: 2
-      })
-    ]
-  }),
-  transformFeatureInfo: function(features) {
-    return features.length > 0 ?
-        features[0].getId() + ': ' + features[0].get('name') : '&nbsp;';
-  }
+var wmsLayer = new ol.layer.Tile({
+  source: wmsSource
 });
+
+var view = new ol.View2D({
+  center: [0, 0],
+  zoom: 1
+});
+
+var viewProjection = /** @type {ol.proj.Projection} */
+    (view.getProjection());
 
 var map = new ol.Map({
-  layers: [wms, vector],
-  renderer: ol.RendererHint.CANVAS,
+  layers: [wmsLayer],
+  renderer: 'canvas',
   target: 'map',
-  view: new ol.View2D({
-    center: [0, 0],
-    zoom: 1
-  })
+  view: view
 });
 
 map.on('singleclick', function(evt) {
-  map.getFeatureInfo({
-    pixel: evt.getPixel(),
-    success: function(featureInfoByLayer) {
-      document.getElementById('info').innerHTML = featureInfoByLayer.join('');
-    }
-  });
+  document.getElementById('info').innerHTML = '';
+  var viewResolution = /** @type {number} */ (view.getResolution());
+  var url = wmsSource.getGetFeatureInfoUrl(
+      evt.coordinate, viewResolution, viewProjection,
+      {'INFO_FORMAT': 'text/html'});
+  if (url) {
+    document.getElementById('info').innerHTML =
+        '<iframe seamless src="' + url + '"></iframe>';
+  }
 });

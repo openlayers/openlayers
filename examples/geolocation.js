@@ -1,8 +1,10 @@
+// FIXME use an ol.geom.Circle to display a circle with accuracy
+// FIXME this circle will need to compensate for the pointResolution of the
+// FIXME EPSG:3857 projection
+
 goog.require('ol.Geolocation');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
-goog.require('ol.OverlayPositioning');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.dom.Input');
 goog.require('ol.layer.Tile');
@@ -20,7 +22,7 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: view
 });
@@ -41,7 +43,7 @@ geolocation.on('propertychange', function() {
 
 var marker = new ol.Overlay({
   element: /** @type {Element} */ ($('<i/>').addClass('icon-flag').get(0)),
-  positioning: ol.OverlayPositioning.BOTTOM_LEFT,
+  positioning: 'bottom-left',
   stopEvent: false
 });
 map.addOverlay(marker);

@@ -1,5 +1,4 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.BingMaps');
@@ -26,7 +25,7 @@ for (i = 0, ii = styles.length; i < ii; ++i) {
 }
 var map = new ol.Map({
   layers: layers,
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View2D({
     center: [-6655.5402445057125, 6709968.258934638],

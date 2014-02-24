@@ -2,6 +2,7 @@ goog.provide('ol.BrowserFeature');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.userAgent');
 goog.require('ol.webgl');
 
 
@@ -24,9 +25,42 @@ ol.ENABLE_DOM = true;
 
 
 /**
+ * @define {boolean} Whether to enable rendering of image layers.
+ */
+ol.ENABLE_IMAGE = true;
+
+
+/**
+ * @define {boolean} Whether to enable rendering of tile layers.
+ */
+ol.ENABLE_TILE = true;
+
+
+/**
+ * @define {boolean} Whether to enable rendering of vector layers.
+ */
+ol.ENABLE_VECTOR = true;
+
+
+/**
  * @define {boolean} Whether to enable WebGL.
  */
 ol.ENABLE_WEBGL = true;
+
+
+/**
+ * @define {boolean} Whether to support legacy IE (7-8).
+ */
+ol.LEGACY_IE_SUPPORT = false;
+
+
+/**
+ * Whether the current browser is legacy IE
+ * @const
+ * @type {boolean}
+ */
+ol.IS_LEGACY_IE = goog.userAgent.IE &&
+    !goog.userAgent.isVersionOrHigher('9.0') && goog.userAgent.VERSION !== '';
 
 
 /**
@@ -37,6 +71,22 @@ ol.ENABLE_WEBGL = true;
  * @todo stability experimental
  */
 ol.BrowserFeature.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
+
+
+/**
+ * True if the browser supports ArrayBuffers.
+ * @type {boolean}
+ * @todo stability experimental
+ */
+ol.BrowserFeature.HAS_ARRAY_BUFFER = 'ArrayBuffer' in goog.global;
+
+
+/**
+ * True if the browser's Canvas implementation implements {get,set}LineDash.
+ * @type {boolean}
+ * @todo stability experimental
+ */
+ol.BrowserFeature.HAS_CANVAS_LINE_DASH = false;
 
 
 /**
@@ -56,7 +106,16 @@ ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && (
       try {
         var canvas = /** @type {HTMLCanvasElement} */
             (goog.dom.createElement(goog.dom.TagName.CANVAS));
-        return !goog.isNull(canvas.getContext('2d'));
+        var context = /** @type {CanvasRenderingContext2D} */
+            (canvas.getContext('2d'));
+        if (goog.isNull(context)) {
+          return false;
+        } else {
+          if (goog.isDef(context.setLineDash)) {
+            ol.BrowserFeature.HAS_CANVAS_LINE_DASH = true;
+          }
+          return true;
+        }
       } catch (e) {
         return false;
       }
