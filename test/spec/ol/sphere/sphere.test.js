@@ -379,7 +379,7 @@ describe('ol.Sphere', function() {
       for (i = 0; i < expected.length; ++i) {
         e = expected[i];
         expect(sphere.cosineDistance(e.c1, e.c2)).to.roughlyEqual(
-            e.cosineDistance, 1e-9);
+            e.cosineDistance, 1e-3);
       }
     });
 
