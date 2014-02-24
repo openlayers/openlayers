@@ -775,7 +775,7 @@ goog.inherits(ol.format.GPX.V1_1, ol.format.GPX);
  */
 ol.format.GPX.V1_1.prototype.writeFeaturesNode = function(features) {
   //FIXME Serialize metadata
-  var gpx = ol.xml.createElementNS(ol.format.GPX.NAMESPACE_URIS_[2], 'gpx');
+  var gpx = ol.xml.createElementNS('http://www.topografix.com/GPX/1/1', 'gpx');
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
       ({node: gpx}), ol.format.GPX.GPX_SERIALIZERS_,
       ol.format.GPX.GPX_NODE_FACTORY_, features, []);
