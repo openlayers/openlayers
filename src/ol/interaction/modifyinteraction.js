@@ -11,6 +11,7 @@ goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
 goog.require('ol.extent');
+goog.require('ol.feature');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
@@ -101,7 +102,8 @@ ol.interaction.Modify = function(options) {
    * @private
    */
   this.overlay_ = new ol.FeatureOverlay({
-    style: options.style
+    style: (goog.isDef(options.style)) ? options.style :
+        ol.interaction.Modify.getDefaultStyleFunction()
   });
 
   /**
@@ -742,4 +744,15 @@ ol.interaction.Modify.prototype.updateSegmentIndices_ = function(
       segmentDataMatch.index += delta;
     }
   });
+};
+
+
+/**
+ * @return {ol.feature.StyleFunction} Styles.
+ */
+ol.interaction.Modify.getDefaultStyleFunction = function() {
+  var style = ol.feature.createDefaultEditingStyles();
+  return function(feature, resolution) {
+    return style[ol.geom.GeometryType.POINT];
+  };
 };
