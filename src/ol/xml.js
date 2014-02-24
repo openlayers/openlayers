@@ -429,27 +429,29 @@ ol.xml.makeArraySerializer = function(nodeWriter, opt_this) {
  */
 ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
   var fixedNodeName = opt_nodeName;
-  /**
-   * @param {*} value Value.
-   * @param {Array.<*>} objectStack Object stack.
-   * @param {string=} opt_nodeName Node name.
-   * @return {Node} Node.
-   */
-  return function(value, objectStack, opt_nodeName) {
-    var context = objectStack[objectStack.length - 1];
-    var node = context.node;
-    goog.asserts.assert(ol.xml.isNode(node) || ol.xml.isDocument(node));
-    var nodeName = fixedNodeName;
-    if (!goog.isDef(nodeName)) {
-      nodeName = opt_nodeName;
-    }
-    var namespaceURI = opt_namespaceURI;
-    if (!goog.isDef(opt_namespaceURI)) {
-      namespaceURI = node.namespaceURI;
-    }
-    goog.asserts.assert(goog.isDef(nodeName));
-    return ol.xml.createElementNS(namespaceURI, nodeName);
-  };
+  return (
+      /**
+       * @param {*} value Value.
+       * @param {Array.<*>} objectStack Object stack.
+       * @param {string=} opt_nodeName Node name.
+       * @return {Node} Node.
+       */
+      function(value, objectStack, opt_nodeName) {
+        var context = objectStack[objectStack.length - 1];
+        var node = context.node;
+        goog.asserts.assert(ol.xml.isNode(node) || ol.xml.isDocument(node));
+        var nodeName = fixedNodeName;
+        if (!goog.isDef(nodeName)) {
+          nodeName = opt_nodeName;
+        }
+        var namespaceURI = opt_namespaceURI;
+        if (!goog.isDef(opt_namespaceURI)) {
+          namespaceURI = node.namespaceURI;
+        }
+        goog.asserts.assert(goog.isDef(nodeName));
+        return ol.xml.createElementNS(namespaceURI, nodeName);
+      }
+  );
 };
 
 
