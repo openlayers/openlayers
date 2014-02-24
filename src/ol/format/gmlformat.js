@@ -32,6 +32,7 @@ ol.format.GML = function(opt_options) {
       (goog.isDef(opt_options) ? opt_options : {});
   this.featureType_ = options.featureType;
   this.featureNS_ = options.featureNS;
+  this.NAMESPACE_URIS_ = goog.array.clone(ol.format.GML.NAMESPACE_URIS_);
   goog.base(this);
 };
 goog.inherits(ol.format.GML, ol.format.XML);
@@ -52,12 +53,12 @@ ol.format.GML.NAMESPACE_URIS_ = [
  * @inheritDoc
  */
 ol.format.GML.prototype.readFeaturesFromNode = function(node) {
-  if (goog.array.indexOf(ol.format.GML.NAMESPACE_URIS_,
+  if (goog.array.indexOf(this.NAMESPACE_URIS_,
       this.featureNS_) === -1) {
-    ol.format.GML.NAMESPACE_URIS_.push(this.featureNS_);
+    this.NAMESPACE_URIS_.push(this.featureNS_);
   }
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  if (goog.array.indexOf(ol.format.GML.NAMESPACE_URIS_, node.namespaceURI) ==
+  if (goog.array.indexOf(this.NAMESPACE_URIS_, node.namespaceURI) ==
       -1) {
     return [];
   }
