@@ -30,9 +30,24 @@ goog.require('ol.xml');
 ol.format.GML = function(opt_options) {
   var options = /** @type {olx.format.GMLOptions} */
       (goog.isDef(opt_options) ? opt_options : {});
+
+  /**
+   * @private
+   * @type {string}
+   */
   this.featureType_ = options.featureType;
+
+  /**
+   * @private
+   * @type {string}
+   */
   this.featureNS_ = options.featureNS;
-  this.NAMESPACE_URIS_ = goog.array.clone(ol.format.GML.NAMESPACE_URIS_);
+
+  /**
+   * @private
+   * @type {Array.<string>}
+   */
+  this.namespaceURIs_ = goog.array.clone(ol.format.GML.NAMESPACE_URIS_);
   goog.base(this);
 };
 goog.inherits(ol.format.GML, ol.format.XML);
@@ -53,12 +68,12 @@ ol.format.GML.NAMESPACE_URIS_ = [
  * @inheritDoc
  */
 ol.format.GML.prototype.readFeaturesFromNode = function(node) {
-  if (goog.array.indexOf(this.NAMESPACE_URIS_,
+  if (goog.array.indexOf(this.namespaceURIs_,
       this.featureNS_) === -1) {
-    this.NAMESPACE_URIS_.push(this.featureNS_);
+    this.namespaceURIs_.push(this.featureNS_);
   }
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  if (goog.array.indexOf(this.NAMESPACE_URIS_, node.namespaceURI) ==
+  if (goog.array.indexOf(this.namespaceURIs_, node.namespaceURI) ==
       -1) {
     return [];
   }
