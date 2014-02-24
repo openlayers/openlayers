@@ -16,6 +16,7 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
+goog.require('ol.proj');
 goog.require('ol.xml');
 
 
@@ -649,7 +650,7 @@ ol.format.GML.readEnvelope_ = function(node, objectStack) {
 ol.format.GML.readFlatCoordinatesFromNode_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   return /** @type {Array.<number>} */ (ol.xml.pushParseAndPop(
-      node.getAttribute('srsDimension'),
+      null,
       ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack));
 };
 
@@ -662,7 +663,15 @@ ol.format.GML.readFlatCoordinatesFromNode_ = function(node, objectStack) {
 ol.format.GML.readFlatPos_ = function(node) {
   var s = ol.xml.getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
   var flatCoordinates = goog.array.map(s.split(/\s+/), parseFloat);
-  // TODO handle axis order
+  var containerSrs = node.parentNode.getAttribute('srsName');
+  var axisOrientation = 'enu';
+  if (containerSrs !== null) {
+    var proj = ol.proj.get(containerSrs);
+    axisOrientation = proj.getAxisOrientation();
+  }
+  if (axisOrientation === 'neu') {
+    flatCoordinates = flatCoordinates.reverse();
+  }
   var len = flatCoordinates.length;
   if (len == 2) {
     flatCoordinates.push(0);
@@ -681,13 +690,19 @@ ol.format.GML.readFlatPos_ = function(node) {
  * @return {Array.<number>|undefined} Flat coordinates.
  */
 ol.format.GML.readFlatPosList_ = function(node, objectStack) {
-  var containerDimension = objectStack[objectStack.length - 1];
   var s = ol.xml.getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
+  var containerDimension = node.parentNode.getAttribute('srsDimension');
+  var containerSrs = node.parentNode.getAttribute('srsName');
+  var axisOrientation = 'enu';
+  if (containerSrs !== null) {
+    var proj = ol.proj.get(containerSrs);
+    axisOrientation = proj.getAxisOrientation();
+  }
   var coords = s.split(/\s+/);
   // The "dimension" attribute is from the GML 3.0.1 spec.
   var dim = parseInt(node.getAttribute('srsDimension') ||
       node.getAttribute('dimension'), 10) ||
-      (goog.isString(containerDimension)) ?
+      (containerDimension !== null) ?
       parseInt(containerDimension, 10) : 2;
   var x, y, z;
   var flatCoordinates = [];
@@ -695,8 +710,11 @@ ol.format.GML.readFlatPosList_ = function(node, objectStack) {
     x = parseFloat(coords[i]);
     y = parseFloat(coords[i + 1]);
     z = (dim === 3) ? parseFloat(coords[i + 2]) : 0;
-    // TODO axis orientation
-    flatCoordinates.push(x, y, z);
+    if (axisOrientation === 'enu') {
+      flatCoordinates.push(x, y, z);
+    } else {
+      flatCoordinates.push(y, x, z);
+    }
   }
   return flatCoordinates;
 };

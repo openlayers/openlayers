@@ -13,7 +13,8 @@ describe('ol.format.GML', function() {
 
       it('can read a point geometry', function() {
         var text =
-            '<gml:Point xmlns:gml="http://www.opengis.net/gml" srsName="foo">' +
+            '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="CRS:84">' +
             '  <gml:pos>1 2</gml:pos>' +
             '</gml:Point>';
         var g = format.readGeometry(text);
@@ -28,7 +29,7 @@ describe('ol.format.GML', function() {
       it('can read a linestring geometry', function() {
         var text =
             '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:posList>1 2 3 4</gml:posList>' +
             '</gml:LineString>';
         var g = format.readGeometry(text);
@@ -38,12 +39,38 @@ describe('ol.format.GML', function() {
 
     });
 
+    describe('axis order', function() {
+
+      it('can read a linestring geometry with correct axis order', function() {
+        var text =
+            '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+            '  <gml:posList>-90 -180 90 180</gml:posList>' +
+            '</gml:LineString>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.LineString);
+        expect(g.getCoordinates()).to.eql([[-180, -90, 0], [180, 90, 0]]);
+      });
+
+      it('can read a point geometry with correct axis order', function() {
+        var text =
+            '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+            '  <gml:pos>-90 -180</gml:pos>' +
+            '</gml:Point>';
+        var g = format.readGeometry(text);
+        expect(g).to.be.an(ol.geom.Point);
+        expect(g.getCoordinates()).to.eql([-180, -90, 0]);
+      });
+
+    });
+
     describe('linestring 3D', function() {
 
       it('can read a linestring 3D geometry', function() {
         var text =
             '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo" srsDimension="3">' +
+            '    srsName="CRS:84" srsDimension="3">' +
             '  <gml:posList>1 2 3 4 5 6</gml:posList>' +
             '</gml:LineString>';
         var g = format.readGeometry(text);
@@ -58,7 +85,7 @@ describe('ol.format.GML', function() {
       it('can read a linearring geometry', function() {
         var text =
             '<gml:LinearRing xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:posList>1 2 3 4 5 6 1 2</gml:posList>' +
             '</gml:LinearRing>';
         var g = format.readGeometry(text);
@@ -74,7 +101,7 @@ describe('ol.format.GML', function() {
       it('can read a polygon geometry', function() {
         var text =
             '<gml:Polygon xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:exterior>' +
             '    <gml:LinearRing>' +
             '      <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
@@ -105,7 +132,7 @@ describe('ol.format.GML', function() {
       it('can read a surface geometry', function() {
         var text =
             '<gml:Surface xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:patches>' +
             '    <gml:PolygonPatch interpolation="planar">' +
             '      <gml:exterior>' +
@@ -140,7 +167,7 @@ describe('ol.format.GML', function() {
       it('can read a curve geometry', function() {
         var text =
             '<gml:Curve xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:segments>' +
             '    <gml:LineStringSegment>' +
             '      <gml:posList>1 2 3 4</gml:posList>' +
@@ -159,7 +186,7 @@ describe('ol.format.GML', function() {
       it('can read an envelope geometry', function() {
         var text =
             '<gml:Envelope xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:lowerCorner>1 2</gml:lowerCorner>' +
             '  <gml:upperCorner>3 4</gml:upperCorner>' +
             '</gml:Envelope>';
@@ -174,7 +201,7 @@ describe('ol.format.GML', function() {
       it('can read a singular multipoint geometry', function() {
         var text =
             '<gml:MultiPoint xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:pointMember>' +
             '    <gml:Point>' +
             '      <gml:pos>1 2</gml:pos>' +
@@ -199,7 +226,7 @@ describe('ol.format.GML', function() {
       it('can read a plural multipoint geometry', function() {
         var text =
             '<gml:MultiPoint xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:pointMembers>' +
             '    <gml:Point>' +
             '      <gml:pos>1 2</gml:pos>' +
@@ -224,7 +251,7 @@ describe('ol.format.GML', function() {
       it('can read a singular multilinestring geometry', function() {
         var text =
             '<gml:MultiLineString xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:lineStringMember>' +
             '    <gml:LineString>' +
             '      <gml:posList>1 2 2 3</gml:posList>' +
@@ -245,7 +272,7 @@ describe('ol.format.GML', function() {
       it('can read a plural multilinestring geometry', function() {
         var text =
             '<gml:MultiLineString xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:lineStringMembers>' +
             '    <gml:LineString>' +
             '      <gml:posList>1 2 2 3</gml:posList>' +
@@ -268,7 +295,7 @@ describe('ol.format.GML', function() {
       it('can read a singular multipolygon geometry', function() {
         var text =
             '<gml:MultiPolygon xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:polygonMember>' +
             '    <gml:Polygon>' +
             '      <gml:exterior>' +
@@ -310,7 +337,7 @@ describe('ol.format.GML', function() {
       it('can read a plural multipolygon geometry', function() {
         var text =
             '<gml:MultiPolygon xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:polygonMembers>' +
             '    <gml:Polygon>' +
             '      <gml:exterior>' +
@@ -354,7 +381,7 @@ describe('ol.format.GML', function() {
       it('can read a singular multicurve-linestring geometry', function() {
         var text =
             '<gml:MultiCurve xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:curveMember>' +
             '    <gml:LineString>' +
             '      <gml:posList>1 2 2 3</gml:posList>' +
@@ -375,7 +402,7 @@ describe('ol.format.GML', function() {
       it('can read a singular multicurve-curve geometry', function() {
         var text =
             '<gml:MultiCurve xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:curveMember>' +
             '    <gml:Curve>' +
             '      <gml:segments>' +
@@ -408,7 +435,7 @@ describe('ol.format.GML', function() {
       it('can read a singular multisurface geometry', function() {
         var text =
             '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:surfaceMember>' +
             '    <gml:Polygon>' +
             '      <gml:exterior>' +
@@ -450,7 +477,7 @@ describe('ol.format.GML', function() {
       it('can read a plural multisurface geometry', function() {
         var text =
             '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:surfaceMembers>' +
             '    <gml:Polygon>' +
             '      <gml:exterior>' +
@@ -492,7 +519,7 @@ describe('ol.format.GML', function() {
       it('can read a multisurface-surface geometry', function() {
         var text =
             '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
-            '    srsName="foo">' +
+            '    srsName="CRS:84">' +
             '  <gml:surfaceMember>' +
             '    <gml:Surface>' +
             '      <gml:patches>' +
