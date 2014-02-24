@@ -592,7 +592,7 @@ describe('ol.format.GML', function() {
     it('creates a polygon for Illinois', function() {
       feature = features[0];
       expect(feature.get('STATE_NAME')).to.equal('Illinois');
-      expect(feature.get('the_geom')).to.be.an(ol.geom.MultiPolygon);
+      expect(feature.getGeometry()).to.be.an(ol.geom.MultiPolygon);
     });
 
   });

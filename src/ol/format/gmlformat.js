@@ -137,7 +137,7 @@ ol.format.GML.prototype.readGeometryFromNode = function(node) {
  */
 ol.format.GML.prototype.readFeature_ = function(node, objectStack) {
   var n;
-  var values = {};
+  var values = {}, geometryName;
   for (n = node.firstElementChild; !goog.isNull(n);
       n = n.nextElementSibling) {
     // Assume attribute elements have one child node and that the child
@@ -147,10 +147,15 @@ ol.format.GML.prototype.readFeature_ = function(node, objectStack) {
         n.firstChild.nodeType === 3)) {
       values[ol.xml.getLocalName(n)] = ol.xml.getAllTextContent(n, false);
     } else {
-      values[ol.xml.getLocalName(n)] = this.readGeometryFromNode(n);
+      geometryName = ol.xml.getLocalName(n);
+      values[geometryName] = this.readGeometryFromNode(n);
     }
   }
-  return new ol.Feature(values);
+  var feature = new ol.Feature(values);
+  if (goog.isDef(geometryName)) {
+    feature.setGeometryName(geometryName);
+  }
+  return feature;
 };
 
 
