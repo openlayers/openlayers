@@ -388,7 +388,8 @@
 
 /**
  * @typedef {Object} olx.interaction.DrawOptions
- * @property {ol.source.Vector|undefined} source Destination source for the features.
+ * @property {ol.Collection|undefined} features Destination collection for the drawn features.
+ * @property {ol.source.Vector|undefined} source Destination source for the drawn features.
  * @property {number|undefined} snapTolerance Pixel distance for snapping to the
  *     drawing finish (default is 12).
  * @property {ol.geom.GeometryType} type Drawing type ('Point', 'LineString',
@@ -440,7 +441,7 @@
  *     features should be selected.
  * @property {Array.<ol.layer.Layer>|undefined} layers Layers.  Zero or more
  *     layers from which features should be selected.
- * @property {ol.FeatureOverlay} featureOverlay Feature overlay.
+ * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style FeatureOverlay style.
  */
 
 /**
@@ -454,7 +455,8 @@
  * @typedef {Object} olx.interaction.ModifyOptions
  * @property {number|undefined} pixelTolerance Pixel tolerance for considering
  *     the pointer close enough to a vertex for editing. Default is 20 pixels.
- * @property {ol.FeatureOverlay} featureOverlay Features overlay.
+ * @property {ol.style.Style|Array.<ol.style.Style>|ol.feature.StyleFunction|undefined} style FeatureOverlay style.
+ * @property {ol.Collection} features The features the interaction works on.
  */
 
 /**

@@ -69,18 +69,20 @@ ol.interaction.Select = function(options) {
    * @private
    * @type {ol.FeatureOverlay}
    */
-  this.featureOverlay_ = options.featureOverlay;
+  this.featureOverlay_ = new ol.FeatureOverlay({
+    style: options.style
+  });
 
 };
 goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 
 
 /**
- * @return {ol.FeatureOverlay} Feature overlay.
+ * @return {ol.Collection} Features collection.
  * @todo stability experimental
  */
-ol.interaction.Select.prototype.getFeatureOverlay = function() {
-  return this.featureOverlay_;
+ol.interaction.Select.prototype.getFeatures = function() {
+  return this.featureOverlay_.getFeatures();
 };
 
 

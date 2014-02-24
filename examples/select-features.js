@@ -31,11 +31,9 @@ var vector = new ol.layer.Vector({
 });
 
 var select = new ol.interaction.Select({
-  featureOverlay: new ol.FeatureOverlay({
-    style: new ol.style.Style({
-      fill: new ol.style.Fill({
-        color: 'rgba(255,255,255,0.5)'
-      })
+  style: new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: 'rgba(255,255,255,0.5)'
     })
   })
 });

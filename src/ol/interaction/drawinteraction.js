@@ -75,6 +75,13 @@ ol.interaction.Draw = function(options) {
   this.source_ = goog.isDef(options.source) ? options.source : null;
 
   /**
+   * Target collection for drawn features.
+   * @type {ol.Collection}
+   * @private
+   */
+  this.features_ = goog.isDef(options.features) ? options.features : null;
+
+  /**
    * Pixel distance for snapping.
    * @type {number}
    * @private
@@ -473,6 +480,9 @@ ol.interaction.Draw.prototype.finishDrawing_ = function(event) {
     sketchFeature.setGeometry(new ol.geom.MultiPolygon([coordinates]));
   }
 
+  if (!goog.isNull(this.features_)) {
+    this.features_.push(sketchFeature);
+  }
   if (!goog.isNull(this.source_)) {
     this.source_.addFeature(sketchFeature);
   }
