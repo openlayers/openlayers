@@ -1,64 +1,36 @@
 goog.provide('ol.Image');
-goog.provide('ol.ImageState');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
-goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
-goog.require('ol.Attribution');
-goog.require('ol.Extent');
-
-
-/**
- * @enum {number}
- */
-ol.ImageState = {
-  IDLE: 0,
-  LOADING: 1,
-  LOADED: 2,
-  ERROR: 3
-};
+goog.require('ol.ImageBase');
+goog.require('ol.ImageState');
 
 
 
 /**
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.ImageBase}
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {Array.<ol.Attribution>} attributions Attributions.
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
- * @param {Array.<ol.Attribution>} attributions Attributions.
  */
-ol.Image = function(extent, resolution, src, crossOrigin, attributions) {
+ol.Image =
+    function(extent, resolution, pixelRatio, attributions, src, crossOrigin) {
 
-  goog.base(this);
-
-  /**
-   * @private
-   * @type {Array.<ol.Attribution>}
-   */
-  this.attributions_ = attributions;
-
-  /**
-   * @private
-   * @type {ol.Extent}
-   */
-  this.extent_ = extent;
+  goog.base(this, extent, resolution, pixelRatio, ol.ImageState.IDLE,
+      attributions);
 
   /**
    * @private
    * @type {string}
    */
   this.src_ = src;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.resolution_ = resolution;
 
   /**
    * @private
@@ -87,31 +59,7 @@ ol.Image = function(extent, resolution, src, crossOrigin, attributions) {
    */
   this.state = ol.ImageState.IDLE;
 };
-goog.inherits(ol.Image, goog.events.EventTarget);
-
-
-/**
- * @protected
- */
-ol.Image.prototype.dispatchChangeEvent = function() {
-  this.dispatchEvent(goog.events.EventType.CHANGE);
-};
-
-
-/**
- * @return {Array.<ol.Attribution>} Attributions.
- */
-ol.Image.prototype.getAttributions = function() {
-  return this.attributions_;
-};
-
-
-/**
- * @return {ol.Extent} Extent.
- */
-ol.Image.prototype.getExtent = function() {
-  return this.extent_;
-};
+goog.inherits(ol.Image, ol.ImageBase);
 
 
 /**
@@ -134,22 +82,6 @@ ol.Image.prototype.getImageElement = function(opt_context) {
   } else {
     return this.image_;
   }
-};
-
-
-/**
- * @return {number} Resolution.
- */
-ol.Image.prototype.getResolution = function() {
-  return this.resolution_;
-};
-
-
-/**
- * @return {ol.ImageState} State.
- */
-ol.Image.prototype.getState = function() {
-  return this.state;
 };
 
 

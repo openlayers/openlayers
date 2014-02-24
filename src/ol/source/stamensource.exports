@@ -1,1 +1,1 @@
-@exportClass ol.source.Stamen ol.source.StamenOptions
+@exportSymbol ol.source.Stamen

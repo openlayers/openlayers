@@ -8,6 +8,7 @@ goog.require('ol.webgl.shader');
 /**
  * @constructor
  * @extends {ol.webgl.shader.Fragment}
+ * @struct
  */
 ol.renderer.webgl.tilelayer.shader.Fragment = function() {
   goog.base(this, ol.renderer.webgl.tilelayer.shader.Fragment.SOURCE);
@@ -43,6 +44,7 @@ ol.renderer.webgl.tilelayer.shader.Fragment.SOURCE = goog.DEBUG ?
 /**
  * @constructor
  * @extends {ol.webgl.shader.Vertex}
+ * @struct
  */
 ol.renderer.webgl.tilelayer.shader.Vertex = function() {
   goog.base(this, ol.renderer.webgl.tilelayer.shader.Vertex.SOURCE);
@@ -79,6 +81,7 @@ ol.renderer.webgl.tilelayer.shader.Vertex.SOURCE = goog.DEBUG ?
  * @constructor
  * @param {WebGLRenderingContext} gl GL.
  * @param {WebGLProgram} program Program.
+ * @struct
  */
 ol.renderer.webgl.tilelayer.shader.Locations = function(gl, program) {
 

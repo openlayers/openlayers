@@ -1,3 +1,5 @@
-@exportClass ol.source.ImageWMS ol.source.ImageWMSOptions
+@exportSymbol ol.source.ImageWMS
+@exportProperty ol.source.ImageWMS.prototype.getGetFeatureInfoUrl
 @exportProperty ol.source.ImageWMS.prototype.getParams
+@exportProperty ol.source.ImageWMS.prototype.setUrl
 @exportProperty ol.source.ImageWMS.prototype.updateParams

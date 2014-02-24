@@ -8,6 +8,7 @@ goog.require('ol.webgl.shader');
 /**
  * @constructor
  * @extends {ol.webgl.shader.Fragment}
+ * @struct
  */
 ol.renderer.webgl.map.shader.DefaultFragment = function() {
   goog.base(this, ol.renderer.webgl.map.shader.DefaultFragment.SOURCE);
@@ -43,6 +44,7 @@ ol.renderer.webgl.map.shader.DefaultFragment.SOURCE = goog.DEBUG ?
 /**
  * @constructor
  * @extends {ol.webgl.shader.Vertex}
+ * @struct
  */
 ol.renderer.webgl.map.shader.DefaultVertex = function() {
   goog.base(this, ol.renderer.webgl.map.shader.DefaultVertex.SOURCE);
@@ -79,6 +81,7 @@ ol.renderer.webgl.map.shader.DefaultVertex.SOURCE = goog.DEBUG ?
  * @constructor
  * @param {WebGLRenderingContext} gl GL.
  * @param {WebGLProgram} program Program.
+ * @struct
  */
 ol.renderer.webgl.map.shader.Default.Locations = function(gl, program) {
 

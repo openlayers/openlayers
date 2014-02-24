@@ -27,7 +27,7 @@ ol.interaction.MOUSEWHEELZOOM_TIMEOUT_DURATION = 80;
  * Allows the user to zoom the map by scrolling the mouse wheel.
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @param {ol.interaction.MouseWheelZoomOptions=} opt_options Options.
+ * @param {olx.interaction.MouseWheelZoomOptions=} opt_options Options.
  * @todo stability experimental
  */
 ol.interaction.MouseWheelZoom = function(opt_options) {
@@ -79,11 +79,10 @@ ol.interaction.MouseWheelZoom.prototype.handleMapBrowserEvent =
   if (mapBrowserEvent.type ==
       goog.events.MouseWheelHandler.EventType.MOUSEWHEEL) {
     var map = mapBrowserEvent.map;
-    var mouseWheelEvent = /** @type {goog.events.MouseWheelEvent} */
-        (mapBrowserEvent.browserEvent);
+    var mouseWheelEvent = mapBrowserEvent.browserEvent;
     goog.asserts.assertInstanceof(mouseWheelEvent, goog.events.MouseWheelEvent);
 
-    this.lastAnchor_ = mapBrowserEvent.getCoordinate();
+    this.lastAnchor_ = mapBrowserEvent.coordinate;
     this.delta_ += mouseWheelEvent.deltaY / 3;
 
     if (!goog.isDef(this.startTime_)) {

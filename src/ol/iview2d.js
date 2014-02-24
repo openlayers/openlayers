@@ -59,3 +59,10 @@ ol.IView2D.prototype.getRotation = function() {
  */
 ol.IView2D.prototype.getView2DState = function() {
 };
+
+
+/**
+ * @return {boolean} Is defined.
+ */
+ol.IView2D.prototype.isDef = function() {
+};

@@ -1,1 +1,1 @@
-@exportClass ol.interaction.DragRotate ol.interaction.DragRotateOptions
+@exportSymbol ol.interaction.DragRotate

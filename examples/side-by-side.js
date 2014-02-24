@@ -1,18 +1,17 @@
+goog.require('ol.BrowserFeature');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
-goog.require('ol.source.MapQuestOpenAerial');
-goog.require('ol.webgl');
+goog.require('ol.source.MapQuest');
 
 
 var domMap = new ol.Map({
   layers: [
     new ol.layer.Tile({
-      source: new ol.source.MapQuestOpenAerial()
+      source: new ol.source.MapQuest({layer: 'sat'})
     })
   ],
-  renderer: ol.RendererHint.DOM,
+  renderer: 'dom',
   target: 'domMap',
   view: new ol.View2D({
     center: [0, 0],
@@ -20,9 +19,9 @@ var domMap = new ol.Map({
   })
 });
 
-if (ol.webgl.SUPPORTED) {
+if (ol.BrowserFeature.HAS_WEBGL) {
   var webglMap = new ol.Map({
-    renderer: ol.RendererHint.WEBGL,
+    renderer: 'webgl',
     target: 'webglMap'
   });
   webglMap.bindTo('layergroup', domMap);
@@ -36,7 +35,7 @@ if (ol.webgl.SUPPORTED) {
 }
 
 var canvasMap = new ol.Map({
-  renderer: ol.RendererHint.CANVAS,
+  renderer: 'canvas',
   target: 'canvasMap'
 });
 canvasMap.bindTo('layergroup', domMap);

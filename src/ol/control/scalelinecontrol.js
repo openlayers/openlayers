@@ -49,7 +49,7 @@ ol.control.ScaleLineUnits = {
  *
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.ScaleLineOptions=} opt_options Scale line options.
+ * @param {olx.control.ScaleLineOptions=} opt_options Scale line options.
  * @todo stability experimental
  * @todo observable units {ol.control.ScaleLineUnits} the units to use in the
  *       scale line
@@ -122,7 +122,8 @@ ol.control.ScaleLine = function(opt_options) {
       this, ol.Object.getChangeEventType(ol.control.ScaleLineProperty.UNITS),
       this.handleUnitsChanged_, false, this);
 
-  this.setUnits(options.units || ol.control.ScaleLineUnits.METRIC);
+  this.setUnits(/** @type {ol.control.ScaleLineUnits} */ (options.units) ||
+      ol.control.ScaleLineUnits.METRIC);
 
 };
 goog.inherits(ol.control.ScaleLine, ol.control.Control);

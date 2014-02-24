@@ -1,1 +1,1 @@
-@exportClass ol.interaction.DragPan ol.interaction.DragPanOptions
+@exportSymbol ol.interaction.DragPan

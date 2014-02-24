@@ -21,7 +21,7 @@ goog.require('ol.css');
  * be changed by using a css selector for `.ol-attribution`.
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.AttributionOptions=} opt_options Attribution options.
+ * @param {olx.control.AttributionOptions=} opt_options Attribution options.
  * @todo stability experimental
  */
 ol.control.Attribution = function(opt_options) {

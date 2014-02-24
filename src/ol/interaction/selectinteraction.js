@@ -1,25 +1,22 @@
 goog.provide('ol.interaction.Select');
 
 goog.require('goog.array');
-goog.require('goog.asserts');
-goog.require('ol.Feature');
-goog.require('ol.events.ConditionType');
+goog.require('goog.functions');
+goog.require('ol.FeatureOverlay');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.layer.Vector');
-goog.require('ol.layer.VectorLayerRenderIntent');
 
 
 
 /**
- * Allows the user to select features on the map.
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @param {ol.interaction.SelectOptions=} opt_options Options.
+ * @param {olx.interaction.SelectOptions} options Options.
  * @todo stability experimental
  */
-ol.interaction.Select = function(opt_options) {
-  var options = goog.isDef(opt_options) ? opt_options : {};
+ol.interaction.Select = function(options) {
+
+  goog.base(this);
 
   /**
    * @private
@@ -35,84 +32,123 @@ ol.interaction.Select = function(opt_options) {
   this.addCondition_ = goog.isDef(options.addCondition) ?
       options.addCondition : ol.events.condition.shiftKeyOnly;
 
-  var layerFilter = options.layers;
-  if (!goog.isDef(layerFilter)) {
+  var layerFilter;
+  if (goog.isDef(options.layerFilter)) {
+    layerFilter = options.layerFilter;
+  } else if (goog.isDef(options.layer)) {
+    var layer = options.layer;
+    layerFilter =
+        /**
+         * @param {ol.layer.Layer} l Layer.
+         * @return {boolean} Include.
+         */
+        function(l) {
+      return l === layer;
+    };
+  } else if (goog.isDef(options.layers)) {
+    var layers = options.layers;
+    layerFilter =
+        /**
+         * @param {ol.layer.Layer} layer Layer.
+         * @return {boolean} Include.
+         */
+        function(layer) {
+      return goog.array.indexOf(layers, layer) != -1;
+    };
+  } else {
     layerFilter = goog.functions.TRUE;
-  } else if (goog.isArray(layerFilter)) {
-    layerFilter = function(layer) {return options.layers.indexOf(layer) > -1;};
   }
-  goog.asserts.assertFunction(layerFilter);
 
   /**
-   * @type {function(ol.layer.Layer):boolean}
    * @private
+   * @type {function(ol.layer.Layer): boolean}
    */
   this.layerFilter_ = layerFilter;
 
-  goog.base(this);
+  /**
+   * @private
+   * @type {ol.FeatureOverlay}
+   */
+  this.featureOverlay_ = new ol.FeatureOverlay({
+    style: options.style
+  });
+
 };
 goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
 
 
 /**
- * @inheritDoc.
+ * @return {ol.Collection} Features collection.
+ * @todo stability experimental
  */
-ol.interaction.Select.prototype.handleMapBrowserEvent =
-    function(mapBrowserEvent) {
-  if (this.condition_(mapBrowserEvent)) {
-    var map = mapBrowserEvent.map;
-    var layers = goog.array.filter(
-        map.getLayerGroup().getLayersArray(), this.layerFilter_);
-    var clear = !this.addCondition_(mapBrowserEvent);
-
-    var that = this;
-    var select = function(featuresByLayer) {
-      that.select(map, featuresByLayer, layers, clear);
-    };
-
-    map.getFeatures({
-      layers: layers,
-      pixel: mapBrowserEvent.getPixel(),
-      success: select
-    });
-  }
-  // TODO: Implement box selection
-  return true;
+ol.interaction.Select.prototype.getFeatures = function() {
+  return this.featureOverlay_.getFeatures();
 };
 
 
 /**
- * @param {ol.Map} map The map where the selction event originated.
- * @param {Array.<Array.<ol.Feature>>} featuresByLayer Features by layer.
- * @param {Array.<ol.layer.Layer>} layers The queried layers.
- * @param {boolean} clear Whether the current layer content should be cleared.
+ * @inheritDoc
  */
-ol.interaction.Select.prototype.select =
-    function(map, featuresByLayer, layers, clear) {
-  for (var i = 0, ii = featuresByLayer.length; i < ii; ++i) {
-    var layer = layers[i];
-    if (!(layer instanceof ol.layer.Vector)) {
-      // TODO Support non-vector layers and remove this
-      continue;
-    }
-
-    var featuresToSelect = featuresByLayer[i];
-    var selectedFeatures = layer.getFeatures(
-        ol.layer.Vector.selectedFeaturesFilter);
-    if (clear) {
-      for (var j = selectedFeatures.length - 1; j >= 0; --j) {
-        selectedFeatures[j].setRenderIntent(
-            ol.layer.VectorLayerRenderIntent.DEFAULT);
-      }
-    }
-    for (var j = featuresToSelect.length - 1; j >= 0; --j) {
-      var feature = featuresToSelect[j];
-      // TODO: Make toggle configurable
-      feature.setRenderIntent(feature.getRenderIntent() ==
-          ol.layer.VectorLayerRenderIntent.SELECTED ?
-              ol.layer.VectorLayerRenderIntent.DEFAULT :
-              ol.layer.VectorLayerRenderIntent.SELECTED);
-    }
-    // TODO: Dispatch an event with selectedFeatures and unselectedFeatures
+ol.interaction.Select.prototype.handleMapBrowserEvent =
+    function(mapBrowserEvent) {
+  if (!this.condition_(mapBrowserEvent)) {
+    return true;
   }
+  var add = this.addCondition_(mapBrowserEvent);
+  var map = mapBrowserEvent.map;
+  var features = this.featureOverlay_.getFeatures();
+  map.withFrozenRendering(
+      /**
+       * @this {ol.interaction.Select}
+       */
+      function() {
+        if (add) {
+          map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
+              /**
+               * @param {ol.Feature} feature Feature.
+               * @param {ol.layer.Layer} layer Layer.
+               */
+              function(feature, layer) {
+                if (goog.array.indexOf(features.getArray(), feature) == -1) {
+                  features.push(feature);
+                }
+              }, undefined, this.layerFilter_);
+        } else {
+          /** @type {ol.Feature|undefined} */
+          var feature = map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
+              /**
+               * @param {ol.Feature} feature Feature.
+               * @param {ol.layer.Layer} layer Layer.
+               */
+              function(feature, layer) {
+                return feature;
+              }, undefined, this.layerFilter_);
+          if (goog.isDef(feature)) {
+            if (features.getLength() == 1) {
+              if (features.getAt(0) !== feature) {
+                features.setAt(0, feature);
+              }
+            } else {
+              if (features.getLength() != 1) {
+                features.clear();
+              }
+              features.push(feature);
+            }
+          } else {
+            if (features.getLength() !== 0) {
+              features.clear();
+            }
+          }
+        }
+      }, this);
+  return false;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.Select.prototype.setMap = function(map) {
+  goog.base(this, 'setMap', map);
+  this.featureOverlay_.setMap(map);
 };

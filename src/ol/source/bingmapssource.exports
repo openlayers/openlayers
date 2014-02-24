@@ -1,2 +1,2 @@
-@exportClass ol.source.BingMaps ol.source.BingMapsOptions
+@exportSymbol ol.source.BingMaps
 @exportProperty ol.source.BingMaps.TOS_ATTRIBUTION

@@ -1,2 +1,2 @@
-@exportClass ol.source.XYZ ol.source.XYZOptions
+@exportSymbol ol.source.XYZ
 @exportProperty ol.source.XYZ.prototype.setUrl

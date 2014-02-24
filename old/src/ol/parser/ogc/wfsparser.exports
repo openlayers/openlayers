@@ -1,0 +1,3 @@
+@exportSymbol ol.parser.ogc.WFS
+@exportProperty ol.parser.ogc.WFS_v1.prototype.writeGetFeature
+@exportProperty ol.parser.ogc.WFS_v1.prototype.writeTransaction

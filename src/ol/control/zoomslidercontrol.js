@@ -1,6 +1,5 @@
 // FIXME works for View2D only
 // FIXME should possibly show tooltip when dragging?
-// FIXME should possibly be adjustable by clicking on container
 
 goog.provide('ol.control.ZoomSlider');
 
@@ -9,6 +8,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
+goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.fx.Dragger');
 goog.require('goog.fx.Dragger.EventType');
@@ -37,7 +37,7 @@ ol.control.ZOOMSLIDER_ANIMATION_DURATION = 200;
  *
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.ZoomSliderOptions=} opt_options Zoom slider options.
+ * @param {olx.control.ZoomSliderOptions=} opt_options Zoom slider options.
  * @todo stability experimental
  */
 ol.control.ZoomSlider = function(opt_options) {
@@ -68,29 +68,32 @@ ol.control.ZoomSlider = function(opt_options) {
    */
   this.sliderInitialized_ = false;
 
-  /**
-   * @private
-   * @type {Array.<?number>}
-   */
-  this.draggerListenerKeys_ = null;
-
   var className = goog.isDef(options.className) ?
       options.className : 'ol-zoomslider';
-  var sliderCssCls = className + ' ' + ol.css.CLASS_UNSELECTABLE;
-  var thumbCssCls = className + '-thumb' + ' ' + ol.css.CLASS_UNSELECTABLE;
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, sliderCssCls,
-      goog.dom.createDom(goog.dom.TagName.DIV, thumbCssCls));
+  var thumbElement = goog.dom.createDom(goog.dom.TagName.DIV,
+      [className + '-thumb', ol.css.CLASS_UNSELECTABLE]);
+  var sliderElement = goog.dom.createDom(goog.dom.TagName.DIV,
+      [className, ol.css.CLASS_UNSELECTABLE], thumbElement);
 
-  this.dragger_ = this.createDraggable_(element);
+  /**
+   * @type {goog.fx.Dragger}
+   * @private
+   */
+  this.dragger_ = new goog.fx.Dragger(thumbElement);
+  this.registerDisposable(this.dragger_);
 
-  // FIXME currently only a do nothing function is bound.
-  goog.events.listen(element, [
-    goog.events.EventType.TOUCHEND,
-    goog.events.EventType.CLICK
-  ], this.handleContainerClick_, false, this);
+  goog.events.listen(this.dragger_, [
+    goog.fx.Dragger.EventType.DRAG,
+    goog.fx.Dragger.EventType.END
+  ], this.handleSliderChange_, undefined, this);
+
+  goog.events.listen(sliderElement, goog.events.EventType.CLICK,
+      this.handleContainerClick_, false, this);
+  goog.events.listen(thumbElement, goog.events.EventType.CLICK,
+      goog.events.Event.stopPropagation);
 
   goog.base(this, {
-    element: element
+    element: sliderElement
   });
 };
 goog.inherits(ol.control.ZoomSlider, ol.control.Control);
@@ -178,7 +181,20 @@ ol.control.ZoomSlider.prototype.handleMapPostrender = function(mapEvent) {
  * @private
  */
 ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
-  // TODO implement proper resolution calculation according to browserEvent
+  var map = this.getMap();
+  var view = map.getView().getView2D();
+  var resolution;
+  var amountDragged = this.amountDragged_(browserEvent.offsetX,
+      browserEvent.offsetY);
+  resolution = this.resolutionForAmount_(amountDragged);
+  goog.asserts.assert(goog.isDef(resolution));
+  map.beforeRender(ol.animation.zoom({
+    resolution: resolution,
+    duration: ol.control.ZOOMSLIDER_ANIMATION_DURATION,
+    easing: ol.easing.easeOut
+  }));
+  resolution = view.constrainResolution(resolution);
+  view.setResolution(resolution);
 };
 
 
@@ -207,17 +223,18 @@ ol.control.ZoomSlider.prototype.positionThumbForResolution_ = function(res) {
  * Calculates the amount the thumb has been dragged to allow for calculation
  * of the corresponding resolution.
  *
- * @param {goog.fx.DragDropEvent} e The dragdropevent.
+ * @param {number} x Pixel position relative to the left of the slider.
+ * @param {number} y Pixel position relative to the top of the slider.
  * @return {number} The amount the thumb has been dragged.
  * @private
  */
-ol.control.ZoomSlider.prototype.amountDragged_ = function(e) {
+ol.control.ZoomSlider.prototype.amountDragged_ = function(x, y) {
   var draggerLimits = this.dragger_.limits,
       amount = 0;
   if (this.direction_ === ol.control.ZoomSlider.direction.HORIZONTAL) {
-    amount = (e.left - draggerLimits.left) / draggerLimits.width;
+    amount = (x - draggerLimits.left) / draggerLimits.width;
   } else {
-    amount = (e.top - draggerLimits.top) / draggerLimits.height;
+    amount = (y - draggerLimits.top) / draggerLimits.height;
   }
   return amount;
 };
@@ -268,7 +285,7 @@ ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
   var view = map.getView().getView2D();
   var resolution;
   if (e.type === goog.fx.Dragger.EventType.DRAG) {
-    var amountDragged = this.amountDragged_(e);
+    var amountDragged = this.amountDragged_(e.left, e.top);
     resolution = this.resolutionForAmount_(amountDragged);
     if (resolution !== this.currentResolution_) {
       this.currentResolution_ = resolution;
@@ -284,28 +301,4 @@ ol.control.ZoomSlider.prototype.handleSliderChange_ = function(e) {
     resolution = view.constrainResolution(this.currentResolution_);
     view.setResolution(resolution);
   }
-};
-
-
-/**
- * Actually enable draggable behaviour for the thumb of the zoomslider and bind
- * relvant event listeners.
- *
- * @param {Element} elem The element for the slider.
- * @return {goog.fx.Dragger} The actual goog.fx.Dragger instance.
- * @private
- */
-ol.control.ZoomSlider.prototype.createDraggable_ = function(elem) {
-  if (!goog.isNull(this.draggerListenerKeys_)) {
-    goog.array.forEach(this.draggerListenerKeys_, goog.events.unlistenByKey);
-    this.draggerListenerKeys_ = null;
-  }
-  var dragger = new goog.fx.Dragger(elem.childNodes[0]);
-  this.draggerListenerKeys_ = [
-    goog.events.listen(dragger, [
-      goog.fx.Dragger.EventType.DRAG,
-      goog.fx.Dragger.EventType.END
-    ], this.handleSliderChange_, undefined, this)
-  ];
-  return dragger;
 };

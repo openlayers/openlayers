@@ -1,4 +1,4 @@
-@exportClass ol.View2D ol.View2DOptions
+@exportSymbol ol.View2D
 @exportProperty ol.View2D.prototype.calculateExtent
 @exportProperty ol.View2D.prototype.constrainResolution
 @exportProperty ol.View2D.prototype.constrainRotation

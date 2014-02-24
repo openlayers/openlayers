@@ -2,10 +2,12 @@
 
 goog.provide('ol.control.Zoom');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('ol.View2D');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
@@ -19,7 +21,7 @@ goog.require('ol.easing');
  * use css selectors `.ol-zoom-in` and `.ol-zoom-out`.
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.ZoomOptions=} opt_options Zoom options.
+ * @param {olx.control.ZoomOptions=} opt_options Zoom options.
  * @todo stability experimental
  */
 ol.control.Zoom = function(opt_options) {
@@ -30,19 +32,38 @@ ol.control.Zoom = function(opt_options) {
 
   var delta = goog.isDef(options.delta) ? options.delta : 1;
 
-  var inElement = goog.dom.createDom(goog.dom.TagName.A, {
-    'href': '#zoomIn',
-    'class': className + '-in'
-  });
+  var zoomInLabel = goog.isDef(options.zoomInLabel) ?
+      options.zoomInLabel : '+';
+  var zoomOutLabel = goog.isDef(options.zoomOutLabel) ?
+      options.zoomOutLabel : '\u2212';
+
+  var zoomInTipLabel = goog.isDef(options.zoomTipLabel) ?
+      options.zoomInTipLabel : 'Zoom in';
+  var zoomOutTipLabel = goog.isDef(options.zoomOutTipLabel) ?
+      options.zoomOutTipLabel : 'Zoom out';
+
+  var tTipZoomIn = goog.dom.createDom(goog.dom.TagName.SPAN, {
+    'role' : 'tooltip'
+  }, zoomInTipLabel);
+  var inElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+    'class': className + '-in ol-has-tooltip',
+    'name' : 'ZoomIn',
+    'type' : 'button'
+  }, tTipZoomIn, zoomInLabel);
+
   goog.events.listen(inElement, [
     goog.events.EventType.TOUCHEND,
     goog.events.EventType.CLICK
   ], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
 
-  var outElement = goog.dom.createDom(goog.dom.TagName.A, {
-    'href': '#zoomOut',
-    'class': className + '-out'
-  });
+  var tTipsZoomOut = goog.dom.createDom(goog.dom.TagName.SPAN, {
+    'role' : 'tooltip',
+    'type' : 'button'
+  }, zoomOutTipLabel);
+  var outElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+    'class': className + '-out  ol-has-tooltip',
+    'name' : 'ZoomOut'
+  }, tTipsZoomOut, zoomOutLabel);
   goog.events.listen(outElement, [
     goog.events.EventType.TOUCHEND,
     goog.events.EventType.CLICK
@@ -73,12 +94,15 @@ goog.inherits(ol.control.Zoom, ol.control.Control);
  * @private
  */
 ol.control.Zoom.prototype.zoomByDelta_ = function(delta, browserEvent) {
-  // prevent the anchor from getting appended to the url
   browserEvent.preventDefault();
+  // prevent the anchor from getting appended to the url
   var map = this.getMap();
   // FIXME works for View2D only
-  var view = map.getView().getView2D();
-  var currentResolution = view.getResolution();
+  var view = map.getView();
+  goog.asserts.assert(goog.isDef(view));
+  var view2D = view.getView2D();
+  goog.asserts.assertInstanceof(view2D, ol.View2D);
+  var currentResolution = view2D.getResolution();
   if (goog.isDef(currentResolution)) {
     if (this.duration_ > 0) {
       map.beforeRender(ol.animation.zoom({
@@ -87,7 +111,7 @@ ol.control.Zoom.prototype.zoomByDelta_ = function(delta, browserEvent) {
         easing: ol.easing.easeOut
       }));
     }
-    var newResolution = view.constrainResolution(currentResolution, delta);
-    view.setResolution(newResolution);
+    var newResolution = view2D.constrainResolution(currentResolution, delta);
+    view2D.setResolution(newResolution);
   }
 };

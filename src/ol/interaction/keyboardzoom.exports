@@ -1,1 +1,1 @@
-@exportClass ol.interaction.KeyboardZoom ol.interaction.KeyboardZoomOptions
+@exportSymbol ol.interaction.KeyboardZoom

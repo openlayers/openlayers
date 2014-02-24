@@ -1,2 +1,2 @@
-@exportClass ol.control.MousePosition ol.control.MousePositionOptions
+@exportSymbol ol.control.MousePosition
 @exportProperty ol.control.MousePosition.prototype.setMap

@@ -22,7 +22,7 @@ goog.require('ol.css');
  *
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.FullScreenOptions=} opt_options Options.
+ * @param {olx.control.FullScreenOptions=} opt_options Options.
  * @todo stability experimental
  */
 ol.control.FullScreen = function(opt_options) {
@@ -36,11 +36,18 @@ ol.control.FullScreen = function(opt_options) {
   this.cssClassName_ = goog.isDef(options.className) ?
       options.className : 'ol-full-screen';
 
-  var aElement = goog.dom.createDom(goog.dom.TagName.A, {
-    'href': '#fullScreen',
-    'class': this.cssClassName_ + '-' + goog.dom.fullscreen.isFullScreen()
+  var tipLabel = goog.isDef(options.tipLabel) ?
+      options.tipLabel : 'Toggle full-screen';
+  var tip = goog.dom.createDom(goog.dom.TagName.SPAN, {
+    'role' : 'tooltip'
+  }, tipLabel);
+
+  var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+    'class': this.cssClassName_ + '-' + goog.dom.fullscreen.isFullScreen() +
+        ' ol-has-tooltip'
   });
-  goog.events.listen(aElement, [
+  goog.dom.appendChild(button, tip);
+  goog.events.listen(button, [
     goog.events.EventType.CLICK,
     goog.events.EventType.TOUCHEND
   ], this.handleClick_, false, this);
@@ -51,7 +58,7 @@ ol.control.FullScreen = function(opt_options) {
   var element = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
         (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '')
-  }, aElement);
+  }, button);
 
   goog.base(this, {
     element: element,
@@ -104,9 +111,13 @@ ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
   var opened = this.cssClassName_ + '-true';
   var closed = this.cssClassName_ + '-false';
   var anchor = goog.dom.getFirstElementChild(this.element);
+  var map = this.getMap();
   if (goog.dom.fullscreen.isFullScreen()) {
     goog.dom.classes.swap(anchor, closed, opened);
   } else {
     goog.dom.classes.swap(anchor, opened, closed);
+  }
+  if (!goog.isNull(map)) {
+    map.updateSize();
   }
 };

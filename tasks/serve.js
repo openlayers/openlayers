@@ -43,4 +43,8 @@ manager.on('ready', function() {
   server.listen(3000, function() {
     log.info('ol', 'Listening on http://localhost:3000/ (Ctrl+C to stop)');
   });
+  server.on('error', function(err) {
+    log.error('ol', 'Server failed to start: ' + err.message);
+    process.exit(1);
+  });
 });

@@ -22,7 +22,7 @@ describe('ol.renderer.webgl.ImageLayer', function() {
           extent: [0, 0, 1, 1]
         })
       });
-      renderer = new ol.renderer.webgl.ImageLayer(map.getRenderer(), layer);
+      renderer = new ol.renderer.webgl.ImageLayer(map.renderer_, layer);
 
       // input params
       canvasWidth = 512;

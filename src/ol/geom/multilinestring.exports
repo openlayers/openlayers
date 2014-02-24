@@ -1,0 +1,6 @@
+@exportSymbol ol.geom.MultiLineString
+@exportProperty ol.geom.MultiLineString.prototype.clone
+@exportProperty ol.geom.MultiLineString.prototype.getCoordinates
+@exportProperty ol.geom.MultiLineString.prototype.getLineStrings
+@exportProperty ol.geom.MultiLineString.prototype.getType
+@exportProperty ol.geom.MultiLineString.prototype.setCoordinates

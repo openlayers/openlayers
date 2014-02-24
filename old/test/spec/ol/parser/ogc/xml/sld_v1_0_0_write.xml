@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sld:StyledLayerDescriptor xmlns:sld="http://www.opengis.net/sld" version="1.0.0"
+    xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <sld:NamedLayer>
+        <sld:Name>AAA161</sld:Name>
+        <sld:UserStyle>
+            <sld:FeatureTypeStyle>
+                <sld:Rule>
+                    <sld:Name>stortsteen</sld:Name>
+                    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+                        <ogc:PropertyIsEqualTo>
+                            <ogc:PropertyName>CTE</ogc:PropertyName>
+                            <ogc:Literal>V0305</ogc:Literal>
+                        </ogc:PropertyIsEqualTo>
+                    </ogc:Filter>
+                    <sld:MaxScaleDenominator>49999.99999999999</sld:MaxScaleDenominator>
+                    <sld:PolygonSymbolizer>
+                        <sld:Fill>
+                            <sld:CssParameter name="fill">#ffffff</sld:CssParameter>
+                            <sld:CssParameter name="fill-opacity">1</sld:CssParameter>
+                        </sld:Fill>
+                    </sld:PolygonSymbolizer>
+                    <sld:LineSymbolizer>
+                        <sld:Stroke>
+                            <sld:CssParameter name="stroke">#000000</sld:CssParameter>
+                            <sld:CssParameter name="stroke-opacity">1</sld:CssParameter>
+                            <sld:CssParameter name="stroke-width">1</sld:CssParameter>
+                        </sld:Stroke>
+                    </sld:LineSymbolizer>
+                    <sld:TextSymbolizer>
+                        <sld:Label><ogc:Literal xmlns:ogc="http://www.opengis.net/ogc"
+                                >A</ogc:Literal><ogc:PropertyName
+                                xmlns:ogc="http://www.opengis.net/ogc"
+                                >FOO</ogc:PropertyName><ogc:Literal
+                                xmlns:ogc="http://www.opengis.net/ogc"
+                            >label</ogc:Literal></sld:Label>
+                        <sld:Font>
+                            <sld:CssParameter name="font-family">Arial</sld:CssParameter>
+                            <sld:CssParameter name="font-size">14</sld:CssParameter>
+                        </sld:Font>
+                        <sld:Halo>
+                            <sld:Radius>3</sld:Radius>
+                            <sld:Fill>
+                                <sld:CssParameter name="fill">#ffffff</sld:CssParameter>
+                                <sld:CssParameter name="fill-opacity">1</sld:CssParameter>
+                            </sld:Fill>
+                        </sld:Halo>
+                        <sld:Fill>
+                            <sld:CssParameter name="fill">#000000</sld:CssParameter>
+                            <sld:CssParameter name="fill-opacity">1</sld:CssParameter>
+                        </sld:Fill>
+                    </sld:TextSymbolizer>
+                </sld:Rule>
+                <sld:Rule>
+                    <sld:Name>betonbekleding</sld:Name>
+                    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+                        <ogc:PropertyIsLessThan>
+                            <ogc:PropertyName>CTE</ogc:PropertyName>
+                            <ogc:Literal>1000</ogc:Literal>
+                        </ogc:PropertyIsLessThan>
+                    </ogc:Filter>
+                    <sld:MaxScaleDenominator>49999.99999999999</sld:MaxScaleDenominator>
+                    <sld:PolygonSymbolizer>
+                        <sld:Fill>
+                            <sld:CssParameter name="fill">#ffff00</sld:CssParameter>
+                            <sld:CssParameter name="fill-opacity">1</sld:CssParameter>
+                        </sld:Fill>
+                    </sld:PolygonSymbolizer>
+                    <sld:LineSymbolizer>
+                        <sld:Stroke>
+                            <sld:CssParameter name="stroke">#0000ff</sld:CssParameter>
+                            <sld:CssParameter name="stroke-opacity">1</sld:CssParameter>
+                            <sld:CssParameter name="stroke-width">1</sld:CssParameter>
+                        </sld:Stroke>
+                    </sld:LineSymbolizer>
+                </sld:Rule>
+            </sld:FeatureTypeStyle>
+        </sld:UserStyle>
+    </sld:NamedLayer>
+    <sld:NamedLayer>
+        <sld:Name>Second Layer</sld:Name>
+        <sld:UserStyle>
+            <sld:FeatureTypeStyle>
+                <sld:Rule>
+                    <sld:Name>first rule second layer</sld:Name>
+                    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+                        <ogc:Or>
+                            <ogc:Not>
+                                <ogc:PropertyIsLessThanOrEqualTo>
+                                    <ogc:PropertyName>FOO</ogc:PropertyName>
+                                    <ogc:Literal>5000</ogc:Literal>
+                                </ogc:PropertyIsLessThanOrEqualTo>
+                            </ogc:Not>
+                            <ogc:PropertyIsLike wildCard="*" singleChar="." escape="!">
+                                <ogc:PropertyName>cat</ogc:PropertyName>
+                                <ogc:Literal>*dog.food!*good</ogc:Literal>
+                            </ogc:PropertyIsLike>
+                            <ogc:PropertyIsBetween>
+                                <ogc:PropertyName>number</ogc:PropertyName>
+                                <ogc:LowerBoundary>
+                                    <ogc:Literal>1064866676</ogc:Literal>
+                                </ogc:LowerBoundary>
+                                <ogc:UpperBoundary>
+                                    <ogc:Literal>1065512599</ogc:Literal>
+                                </ogc:UpperBoundary>
+                            </ogc:PropertyIsBetween>
+                        </ogc:Or>
+                    </ogc:Filter>
+                    <sld:MaxScaleDenominator>10000</sld:MaxScaleDenominator>
+                    <sld:PointSymbolizer>
+                        <sld:Graphic>
+                            <sld:Mark>
+                                <sld:WellKnownName>star</sld:WellKnownName>
+                                <sld:Fill>
+                                    <sld:CssParameter name="fill">lime</sld:CssParameter>
+                                    <sld:CssParameter name="fill-opacity">1</sld:CssParameter>
+                                </sld:Fill>
+                                <sld:Stroke>
+                                    <sld:CssParameter name="stroke">olive</sld:CssParameter>
+                                    <sld:CssParameter name="stroke-opacity">1</sld:CssParameter>
+                                    <sld:CssParameter name="stroke-width">2</sld:CssParameter>
+                                </sld:Stroke>
+                            </sld:Mark>
+                            <sld:Size><ogc:PropertyName xmlns:ogc="http://www.opengis.net/ogc"
+                                    >SIZE</ogc:PropertyName></sld:Size>
+                        </sld:Graphic>
+                    </sld:PointSymbolizer>
+                </sld:Rule>
+            </sld:FeatureTypeStyle>
+        </sld:UserStyle>
+    </sld:NamedLayer>
+</sld:StyledLayerDescriptor>

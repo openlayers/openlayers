@@ -12,7 +12,7 @@ goog.require('ol.source.Source');
 /**
  * @constructor
  * @extends {ol.layer.Base}
- * @param {ol.layer.LayerOptions} options Layer options.
+ * @param {olx.layer.LayerOptions} options Layer options.
  * @todo stability experimental
  * @todo observable brightness {number} the brightness of the layer
  * @todo observable contrast {number} the contrast of the layer
@@ -25,7 +25,7 @@ goog.require('ol.source.Source');
  */
 ol.layer.Layer = function(options) {
 
-  var baseOptions = /** @type {ol.layer.LayerOptions} */
+  var baseOptions = /** @type {olx.layer.LayerOptions} */
       (goog.object.clone(options));
   delete baseOptions.source;
 

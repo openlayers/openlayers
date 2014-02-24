@@ -1,5 +1,4 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
@@ -11,7 +10,7 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  renderer: ol.RendererHint.CANVAS,
+  renderer: 'canvas',
   target: 'map',
   view: new ol.View2D({
     center: [0, 0],
@@ -19,16 +18,15 @@ var map = new ol.Map({
   })
 });
 
-var exportJPEGElement = document.getElementById('export-jpeg');
 var exportPNGElement = document.getElementById('export-png');
 
-if ('download' in exportJPEGElement && 'download' in exportPNGElement) {
-  exportJPEGElement.addEventListener('click', function(e) {
-    e.target.href = map.getRenderer().getCanvas().toDataURL('image/jpeg');
-  }, false);
-
+if ('download' in exportPNGElement) {
   exportPNGElement.addEventListener('click', function(e) {
-    e.target.href = map.getRenderer().getCanvas().toDataURL('image/png');
+    map.once('postcompose', function(event) {
+      var canvas = event.context.canvas;
+      exportPNGElement.href = canvas.toDataURL('image/png');
+    });
+    map.render();
   }, false);
 } else {
   var info = document.getElementById('no-download');

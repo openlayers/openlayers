@@ -80,7 +80,7 @@ ol.source.StamenProviderConfig = {
 /**
  * @constructor
  * @extends {ol.source.XYZ}
- * @param {ol.source.StamenOptions} options Stamen options.
+ * @param {olx.source.StamenOptions} options Stamen options.
  * @todo stability experimental
  */
 ol.source.Stamen = function(options) {
@@ -94,7 +94,7 @@ ol.source.Stamen = function(options) {
   var layerConfig = ol.source.StamenLayerConfig[options.layer];
 
   var url = goog.isDef(options.url) ? options.url :
-      'http://{a-d}.tile.stamen.com/' + options.layer + '/{z}/{x}/{y}.' +
+      '//{a-d}.tile.stamen.com/' + options.layer + '/{z}/{x}/{y}.' +
       layerConfig.extension;
 
   goog.base(this, {
@@ -113,7 +113,8 @@ goog.inherits(ol.source.Stamen, ol.source.XYZ);
 
 
 /**
- * @const {Array.<ol.Attribution>}
+ * @const
+ * @type {Array.<ol.Attribution>}
  */
 ol.source.Stamen.ATTRIBUTIONS = [
   new ol.Attribution({

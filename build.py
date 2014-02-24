@@ -91,8 +91,7 @@ EXPORTS = [path
 
 EXTERNAL_SRC = [
     'build/src/external/externs/types.js',
-    'build/src/external/src/exports.js',
-    'build/src/external/src/types.js']
+    'build/src/external/src/exports.js']
 
 EXAMPLES = [path
             for path in ifind('examples')
@@ -104,7 +103,6 @@ EXAMPLES_SRC = [path
                 if path.endswith('.js')
                 if not path.endswith('.combined.js')
                 if not path.startswith('examples/bootstrap')
-                if not path.startswith('examples/font-awesome')
                 if path != 'examples/Jugl.js'
                 if path != 'examples/jquery.min.js'
                 if path != 'examples/loader.js'
@@ -153,13 +151,16 @@ PROJ4JS_ZIP_MD5 = '17caad64cf6ebc6e6fe62f292b134897'
 
 
 def report_sizes(t):
-    t.info('uncompressed: %d bytes', os.stat(t.name).st_size)
     stringio = StringIO()
     gzipfile = gzip.GzipFile(t.name, 'w', 9, stringio)
     with open(t.name) as f:
         shutil.copyfileobj(f, gzipfile)
     gzipfile.close()
-    t.info('  compressed: %d bytes', len(stringio.getvalue()))
+    rawsize = os.stat(t.name).st_size
+    gzipsize = len(stringio.getvalue())
+    savings = '{0:.2%}'.format((rawsize - gzipsize)/float(rawsize))
+    t.info('uncompressed: %8d bytes', rawsize)
+    t.info('  compressed: %8d bytes, (saved %s)', gzipsize, savings)
 
 
 virtual('default', 'build')
@@ -173,7 +174,7 @@ virtual('build', 'build/ol.css', 'build/ol.js',
         'build/ol-simple.js', 'build/ol-whitespace.js')
 
 
-virtual('check', 'lint', 'build/ol.css', 'build/ol-all.js', 'test')
+virtual('check', 'lint', 'build/ol-all.js', 'test')
 
 
 virtual('todo', 'fixme')
@@ -213,8 +214,9 @@ def build_ol_whitespace_js(t):
 virtual('build-all', 'build/ol-all.js')
 
 
-@target('build/ol-all.js', PLOVR_JAR, SRC, INTERNAL_SRC, SHADER_SRC,
-        LIBTESS_JS_SRC, 'buildcfg/base.json', 'buildcfg/ol-all.json')
+@target('build/ol-all.js', PLOVR_JAR, SRC, EXTERNAL_SRC, INTERNAL_SRC,
+        SHADER_SRC, LIBTESS_JS_SRC, 'buildcfg/base.json',
+        'buildcfg/ol-all.json')
 def build_ol_all_js(t):
     t.output('%(JAVA)s', '-server', '-XX:+TieredCompilation', '-jar',
             PLOVR_JAR, 'build', 'buildcfg/ol-all.json')
@@ -232,13 +234,6 @@ def build_src_external_externs_types_js(t):
 def build_src_external_src_exports_js(t):
     t.output('%(PYTHON)s', 'bin/generate-exports.py',
              '--exports', 'src/objectliterals.jsdoc', EXPORTS)
-
-
-@target('build/src/external/src/types.js', 'bin/generate-exports.py',
-        'src/objectliterals.jsdoc')
-def build_src_external_src_types_js(t):
-    t.output('%(PYTHON)s', 'bin/generate-exports.py',
-             '--typedef', 'src/objectliterals.jsdoc')
 
 
 for glsl_src in GLSL_SRC:
@@ -329,12 +324,14 @@ def examples_star_json(name, match):
                 '//jquery-1.7.js',
                 '../externs/bingmaps.js',
                 '../externs/bootstrap.js',
+                '../externs/closure-compiler.js',
+                '../externs/example.js',
                 '../externs/geojson.js',
-                '../externs/topojson.js',
                 '../externs/oli.js',
                 '../externs/proj4js.js',
                 '../externs/tilejson.js',
-                '../externs/closure-compiler.js',
+                '../externs/topojson.js',
+                '../externs/vbarray.js',
             ],
         })
         with open(t.name, 'w') as f:
@@ -678,17 +675,21 @@ def host_resources(t):
 def host_examples(t):
     examples_dir = 'build/hosted/%(BRANCH)s/examples'
     build_dir = 'build/hosted/%(BRANCH)s/build'
+    css_dir = 'build/hosted/%(BRANCH)s/css'
     t.rm_rf(examples_dir)
     t.makedirs(examples_dir)
     t.rm_rf(build_dir)
     t.makedirs(build_dir)
+    t.rm_rf(css_dir)
+    t.makedirs(css_dir)
     t.cp(EXAMPLES, examples_dir)
     for example in [path.replace('.html', '.js') for path in EXAMPLES]:
         split_example_file(example, examples_dir % vars(variables))
     t.cp_r('examples/data', examples_dir + '/data')
     t.cp('bin/loader_hosted_examples.js', examples_dir + '/loader.js')
     t.cp('build/ol.js', 'build/ol-simple.js', 'build/ol-whitespace.js',
-         'build/ol.css', build_dir)
+         build_dir)
+    t.cp('build/ol.css', css_dir)
     t.cp('examples/index.html', 'examples/example-list.js',
          'examples/example-list.xml', 'examples/Jugl.js',
          'examples/jquery.min.js', examples_dir)
@@ -710,7 +711,9 @@ def host_examples(t):
 
 @target('check-examples', 'host-examples', phony=True)
 def check_examples(t):
-    examples = ['build/hosted/%(BRANCH)s/' + e for e in EXAMPLES]
+    examples = ['build/hosted/%(BRANCH)s/' + e
+                for e in EXAMPLES
+                if not open(e.replace('.html', '.js')).readline().startswith('// NOCOMPILE')]
     all_examples = \
         [e + '?mode=advanced' for e in examples]
     for example in all_examples:

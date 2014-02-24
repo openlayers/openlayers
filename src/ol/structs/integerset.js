@@ -9,6 +9,7 @@ goog.require('goog.asserts');
  * This implementation is designed for the case when the number of distinct
  * integer ranges is small.
  * @constructor
+ * @struct
  * @param {Array.<number>=} opt_arr Array.
  */
 ol.structs.IntegerSet = function(opt_arr) {
@@ -125,15 +126,15 @@ ol.structs.IntegerSet.prototype.findRange = function(minSize) {
 /**
  * Calls f with each integer range.
  * @param {function(this: T, number, number)} f Callback.
- * @param {T=} opt_obj The object to be used as the value of 'this' within f.
+ * @param {T=} opt_this The object to use as `this` in `f`.
  * @template T
  */
-ol.structs.IntegerSet.prototype.forEachRange = function(f, opt_obj) {
+ol.structs.IntegerSet.prototype.forEachRange = function(f, opt_this) {
   var arr = this.arr_;
   var n = arr.length;
   var i;
   for (i = 0; i < n; i += 2) {
-    f.call(opt_obj, arr[i], arr[i + 1]);
+    f.call(opt_this, arr[i], arr[i + 1]);
   }
 };
 
@@ -143,26 +144,26 @@ ol.structs.IntegerSet.prototype.forEachRange = function(f, opt_obj) {
  * @param {number} start Start.
  * @param {number} stop Stop.
  * @param {function(this: T, number, number)} f Callback.
- * @param {T=} opt_obj The object to be used as the value of 'this' within f.
+ * @param {T=} opt_this The object to use as `this` in `f`.
  * @template T
  */
 ol.structs.IntegerSet.prototype.forEachRangeInverted =
-    function(start, stop, f, opt_obj) {
+    function(start, stop, f, opt_this) {
   goog.asserts.assert(start < stop);
   var arr = this.arr_;
   var n = arr.length;
   if (n === 0) {
-    f.call(opt_obj, start, stop);
+    f.call(opt_this, start, stop);
   } else {
     if (start < arr[0]) {
-      f.call(opt_obj, start, arr[0]);
+      f.call(opt_this, start, arr[0]);
     }
     var i;
     for (i = 1; i < n - 1; i += 2) {
-      f.call(opt_obj, arr[i], arr[i + 1]);
+      f.call(opt_this, arr[i], arr[i + 1]);
     }
     if (arr[n - 1] < stop) {
-      f.call(opt_obj, arr[n - 1], stop);
+      f.call(opt_this, arr[n - 1], stop);
     }
   }
 };

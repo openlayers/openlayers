@@ -10,6 +10,7 @@ goog.require('goog.object');
  * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring
  * items from the cache is the responsibility of the user.
  * @constructor
+ * @struct
  * @template T
  */
 ol.structs.LRUCache = function() {
@@ -101,13 +102,13 @@ ol.structs.LRUCache.prototype.containsKey = function(key) {
  *     to call for every entry from the oldest to the newer. This function takes
  *     3 arguments (the entry value, the entry key and the LRUCache object).
  *     The return value is ignored.
- * @param {S=} opt_obj The object to be used as the value of 'this' within f.
+ * @param {S=} opt_this The object to use as `this` in `f`.
  * @template S
  */
-ol.structs.LRUCache.prototype.forEach = function(f, opt_obj) {
+ol.structs.LRUCache.prototype.forEach = function(f, opt_this) {
   var entry = this.oldest_;
   while (!goog.isNull(entry)) {
-    f.call(opt_obj, entry.value_, entry.key_, this);
+    f.call(opt_this, entry.value_, entry.key_, this);
     entry = entry.newer;
   }
 };

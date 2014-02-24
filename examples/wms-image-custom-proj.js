@@ -1,6 +1,5 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.layer.Image');
 goog.require('ol.proj');
@@ -28,6 +27,7 @@ var layers = [
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
         'FORMAT': 'image/jpeg'
       },
+      serverType: /** @type {ol.source.wms.ServerType} */ ('mapserver'),
       extent: extent
     })
   }),
@@ -42,6 +42,7 @@ var layers = [
             'National parks / geo.admin.ch</a>'
       })],
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
+      serverType: /** @type {ol.source.wms.ServerType} */ ('mapserver'),
       extent: extent
     })
   })
@@ -49,7 +50,7 @@ var layers = [
 
 var map = new ol.Map({
   layers: layers,
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View2D({
     projection: projection,

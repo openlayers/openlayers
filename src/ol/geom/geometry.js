@@ -1,92 +1,198 @@
 goog.provide('ol.geom.Geometry');
-goog.provide('ol.geom.GeometryEvent');
 goog.provide('ol.geom.GeometryType');
 
-goog.require('goog.events.Event');
-goog.require('goog.events.EventTarget');
-goog.require('goog.object');
-goog.require('ol.Extent');
-goog.require('ol.TransformFunction');
+goog.require('goog.asserts');
+goog.require('goog.functions');
+goog.require('ol.Observable');
+
+
+/**
+ * @enum {string}
+ */
+ol.geom.GeometryType = {
+  POINT: 'Point',
+  LINE_STRING: 'LineString',
+  LINEAR_RING: 'LinearRing',
+  POLYGON: 'Polygon',
+  MULTI_POINT: 'MultiPoint',
+  MULTI_LINE_STRING: 'MultiLineString',
+  MULTI_POLYGON: 'MultiPolygon',
+  GEOMETRY_COLLECTION: 'GeometryCollection',
+  CIRCLE: 'Circle'
+};
+
+
+/**
+ * @enum {string}
+ */
+ol.geom.GeometryLayout = {
+  XY: 'XY',
+  XYZ: 'XYZ',
+  XYM: 'XYM',
+  XYZM: 'XYZM'
+};
 
 
 
 /**
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.Observable}
  * @todo stability experimental
  */
 ol.geom.Geometry = function() {
+
   goog.base(this);
+
+  /**
+   * @protected
+   * @type {ol.Extent|undefined}
+   */
+  this.extent = undefined;
+
+  /**
+   * @protected
+   * @type {number}
+   */
+  this.extentRevision = -1;
+
+  /**
+   * @protected
+   * @type {Object.<string, ol.geom.Geometry>}
+   */
+  this.simplifiedGeometryCache = {};
+
+  /**
+   * @protected
+   * @type {number}
+   */
+  this.simplifiedGeometryMaxMinSquaredTolerance = 0;
+
+  /**
+   * @protected
+   * @type {number}
+   */
+  this.simplifiedGeometryRevision = 0;
+
 };
-goog.inherits(ol.geom.Geometry, goog.events.EventTarget);
+goog.inherits(ol.geom.Geometry, ol.Observable);
 
 
 /**
- * Create a clone of this geometry.
- * @return {ol.geom.Geometry} The cloned geometry.
+ * @return {ol.geom.Geometry} Clone.
+ * @todo stability experimental
  */
-ol.geom.Geometry.prototype.clone = function() {
-  return new this.constructor(goog.object.unsafeClone(this.getCoordinates()));
+ol.geom.Geometry.prototype.clone = goog.abstractMethod;
+
+
+/**
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @param {ol.Coordinate} closestPoint Closest point.
+ * @param {number} minSquaredDistance Minimum squared distance.
+ * @return {number} Minimum squared distance.
+ */
+ol.geom.Geometry.prototype.closestPointXY = goog.abstractMethod;
+
+
+/**
+ * @param {ol.Coordinate} point Point.
+ * @param {ol.Coordinate=} opt_closestPoint Closest point.
+ * @return {ol.Coordinate} Closest point.
+ * @todo stability experimental
+ */
+ol.geom.Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
+  var closestPoint = goog.isDef(opt_closestPoint) ?
+      opt_closestPoint : [NaN, NaN];
+  this.closestPointXY(point[0], point[1], closestPoint, Infinity);
+  return closestPoint;
 };
 
 
 /**
- * Get the rectangular 2D envelope for this geoemtry.
- * @return {ol.Extent} The bounding rectangular envelope.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {boolean} Contains coordinate.
+ * @todo stability experimental
  */
-ol.geom.Geometry.prototype.getBounds = goog.abstractMethod;
+ol.geom.Geometry.prototype.containsCoordinate = function(coordinate) {
+  return this.containsXY(coordinate[0], coordinate[1]);
+};
 
 
 /**
- * @return {Array} The GeoJSON style coordinates array for the geometry.
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @return {boolean} Contains (x, y).
  */
-ol.geom.Geometry.prototype.getCoordinates = goog.abstractMethod;
+ol.geom.Geometry.prototype.containsXY = goog.functions.FALSE;
 
 
 /**
- * Get the geometry type.
- * @return {ol.geom.GeometryType} The geometry type.
+ * @param {ol.Extent=} opt_extent Extent.
+ * @return {ol.Extent} extent Extent.
+ * @todo stability experimental
+ */
+ol.geom.Geometry.prototype.getExtent = goog.abstractMethod;
+
+
+/**
+ * @param {number} squaredTolerance Squared tolerance.
+ * @return {ol.geom.Geometry} Simplified geometry.
+ */
+ol.geom.Geometry.prototype.getSimplifiedGeometry = goog.abstractMethod;
+
+
+/**
+ * @return {ol.geom.GeometryType} Geometry type.
+ * @todo stability experimental
  */
 ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 
 
 /**
- * Transform a geometry in place.
- * @param {ol.TransformFunction} transform Transform function.
+ * @param {ol.TransformFunction} transformFn Transform.
+ * @todo stability experimental
  */
 ol.geom.Geometry.prototype.transform = goog.abstractMethod;
 
 
-
 /**
- * Constructor for geometry events.
- * @constructor
- * @extends {goog.events.Event}
- * @param {string} type Event type.
- * @param {ol.geom.Geometry} target The target geometry.
- * @param {ol.Extent} oldExtent The previous geometry extent.
+ * @typedef {ol.Coordinate}
  */
-ol.geom.GeometryEvent = function(type, target, oldExtent) {
-  goog.base(this, type, target);
-
-  this.oldExtent = oldExtent;
-};
-goog.inherits(ol.geom.GeometryEvent, goog.events.Event);
+ol.geom.RawPoint;
 
 
 /**
- * Geometry types.
+ * @typedef {Array.<ol.Coordinate>}
+ */
+ol.geom.RawLineString;
+
+
+/**
+ * @typedef {Array.<ol.Coordinate>}
  *
- * @enum {string}
- * @todo stability experimental
  */
-ol.geom.GeometryType = {
-  POINT: 'point',
-  LINESTRING: 'linestring',
-  LINEARRING: 'linearring',
-  POLYGON: 'polygon',
-  MULTIPOINT: 'multipoint',
-  MULTILINESTRING: 'multilinestring',
-  MULTIPOLYGON: 'multipolygon',
-  GEOMETRYCOLLECTION: 'geometrycollection'
-};
+ol.geom.RawLinearRing;
+
+
+/**
+ * @typedef {Array.<ol.geom.RawLinearRing>}
+ */
+ol.geom.RawPolygon;
+
+
+/**
+ * @typedef {Array.<ol.geom.RawPoint>}
+ */
+ol.geom.RawMultiPoint;
+
+
+/**
+ * @typedef {Array.<ol.geom.RawLineString>}
+ */
+ol.geom.RawMultiLineString;
+
+
+/**
+ * @typedef {Array.<ol.geom.RawPolygon>}
+ */
+ol.geom.RawMultiPolygon;

@@ -7,11 +7,12 @@ goog.require('goog.vec.Mat4');
 goog.require('goog.webgl');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
-goog.require('ol.Image');
+goog.require('ol.ImageBase');
 goog.require('ol.ImageState');
 goog.require('ol.ViewHint');
 goog.require('ol.layer.Image');
 goog.require('ol.renderer.webgl.Layer');
+goog.require('ol.source.Image');
 
 
 
@@ -28,7 +29,7 @@ ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
   /**
    * The last rendered image.
    * @private
-   * @type {?ol.Image}
+   * @type {?ol.ImageBase}
    */
   this.image_ = null;
 
@@ -37,7 +38,7 @@ goog.inherits(ol.renderer.webgl.ImageLayer, ol.renderer.webgl.Layer);
 
 
 /**
- * @param {ol.Image} image Image.
+ * @param {ol.ImageBase} image Image.
  * @private
  * @return {WebGLTexture} Texture.
  */
@@ -72,18 +73,31 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
 
 
 /**
- * @protected
- * @return {ol.layer.Image} Tile layer.
+ * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.getImageLayer = function() {
-  return /** @type {ol.layer.Image} */ (this.getLayer());
+ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtPixel =
+    function(coordinate, frameState, callback, thisArg) {
+  var layer = this.getLayer();
+  var source = layer.getSource();
+  goog.asserts.assertInstanceof(source, ol.source.Image);
+  var extent = frameState.extent;
+  var resolution = frameState.view2DState.resolution;
+  var rotation = frameState.view2DState.rotation;
+  return source.forEachFeatureAtPixel(extent, resolution, rotation, coordinate,
+      /**
+       * @param {ol.Feature} feature Feature.
+       * @return {?} Callback result.
+       */
+      function(feature) {
+        return callback.call(thisArg, feature, layer);
+      });
 };
 
 
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.renderFrame =
+ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
     function(frameState, layerState) {
 
   var gl = this.getWebGLMapRenderer().getGL();
@@ -95,14 +109,16 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
 
   var image = this.image_;
   var texture = this.texture;
-  var imageLayer = this.getImageLayer();
-  var imageSource = imageLayer.getImageSource();
+  var imageLayer = this.getLayer();
+  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image);
+  var imageSource = imageLayer.getSource();
+  goog.asserts.assertInstanceof(imageSource, ol.source.Image);
 
   var hints = frameState.viewHints;
 
   if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING]) {
-    var image_ = imageSource.getImage(
-        frameState.extent, viewResolution, view2DState.projection);
+    var image_ = imageSource.getImage(frameState.extent, viewResolution,
+        frameState.pixelRatio, view2DState.projection);
     if (!goog.isNull(image_)) {
       var imageState = image_.getState();
       if (imageState == ol.ImageState.IDLE) {
@@ -132,7 +148,7 @@ ol.renderer.webgl.ImageLayer.prototype.renderFrame =
   if (!goog.isNull(image)) {
     goog.asserts.assert(!goog.isNull(texture));
 
-    var canvas = this.getWebGLMapRenderer().getCanvas();
+    var canvas = this.getWebGLMapRenderer().getContext().getCanvas();
 
     this.updateProjectionMatrix_(canvas.width, canvas.height,
         viewCenter, viewResolution, viewRotation, image.getExtent());

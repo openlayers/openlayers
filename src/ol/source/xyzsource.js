@@ -12,7 +12,7 @@ goog.require('ol.tilegrid.XYZ');
 /**
  * @constructor
  * @extends {ol.source.TileImage}
- * @param {ol.source.XYZOptions} options XYZ options.
+ * @param {olx.source.XYZOptions} options XYZ options.
  * @todo stability experimental
  */
 ol.source.XYZ = function(options) {

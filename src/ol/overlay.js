@@ -55,7 +55,7 @@ ol.OverlayPositioning = {
  *
  * @constructor
  * @extends {ol.Object}
- * @param {ol.OverlayOptions} options Overlay options.
+ * @param {olx.OverlayOptions} options Overlay options.
  * @todo stability experimental
  * @todo observable element {Element} the Element containing the overlay
  * @todo observable map {ol.Map} the map that the overlay is part of
@@ -134,7 +134,8 @@ ol.Overlay = function(options) {
     this.setPosition(options.position);
   }
   if (goog.isDef(options.positioning)) {
-    this.setPositioning(options.positioning);
+    this.setPositioning(
+        /** @type {ol.OverlayPositioning} */ (options.positioning));
   }
 
 };
@@ -335,6 +336,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
   }
 
   var pixel = map.getPixelFromCoordinate(position);
+  goog.asserts.assert(!goog.isNull(pixel));
   var mapSize = map.getSize();
   goog.asserts.assert(goog.isDef(mapSize));
   var style = this.element_.style;

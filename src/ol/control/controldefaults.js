@@ -7,7 +7,7 @@ goog.require('ol.control.Zoom');
 
 
 /**
- * @param {ol.control.DefaultsOptions=} opt_options Defaults options.
+ * @param {olx.control.DefaultsOptions=} opt_options Defaults options.
  * @return {ol.Collection} Controls.
  * @todo stability experimental
  */
@@ -16,6 +16,14 @@ ol.control.defaults = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
 
   var controls = new ol.Collection();
+
+  var zoomControl = goog.isDef(options.zoom) ?
+      options.zoom : true;
+  if (zoomControl) {
+    var zoomControlOptions = goog.isDef(options.zoomOptions) ?
+        options.zoomOptions : undefined;
+    controls.push(new ol.control.Zoom(zoomControlOptions));
+  }
 
   var attributionControl = goog.isDef(options.attribution) ?
       options.attribution : true;
@@ -31,14 +39,6 @@ ol.control.defaults = function(opt_options) {
     var logoControlOptions = goog.isDef(options.logoOptions) ?
         options.logoOptions : undefined;
     controls.push(new ol.control.Logo(logoControlOptions));
-  }
-
-  var zoomControl = goog.isDef(options.zoom) ?
-      options.zoom : true;
-  if (zoomControl) {
-    var zoomControlOptions = goog.isDef(options.zoomOptions) ?
-        options.zoomOptions : undefined;
-    controls.push(new ol.control.Zoom(zoomControlOptions));
   }
 
   return controls;

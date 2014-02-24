@@ -15,6 +15,7 @@ goog.require('ol.TileCoord');
  * @param {number} maxX Maximum X.
  * @param {number} minY Minimum Y.
  * @param {number} maxY Maximum Y.
+ * @struct
  */
 ol.TileRange = function(minX, maxX, minY, maxY) {
 
@@ -46,12 +47,12 @@ ol.TileRange = function(minX, maxX, minY, maxY) {
  * @return {!ol.TileRange} Bounding tile box.
  */
 ol.TileRange.boundingTileRange = function(var_args) {
-  var tileCoord0 = arguments[0];
+  var tileCoord0 = /** @type {ol.TileCoord} */ (arguments[0]);
   var tileRange = new ol.TileRange(tileCoord0.x, tileCoord0.x,
                                    tileCoord0.y, tileCoord0.y);
   var i, ii, tileCoord;
   for (i = 1, ii = arguments.length; i < ii; ++i) {
-    tileCoord = arguments[i];
+    tileCoord = /** @type {ol.TileCoord} */ (arguments[i]);
     goog.asserts.assert(tileCoord.z == tileCoord0.z);
     tileRange.minX = Math.min(tileRange.minX, tileCoord.x);
     tileRange.maxX = Math.max(tileRange.maxX, tileCoord.x);

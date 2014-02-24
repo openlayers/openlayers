@@ -1,10 +1,8 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.control');
 goog.require('ol.control.ScaleLine');
-goog.require('ol.control.ScaleLineUnits');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.TileWMS');
@@ -31,7 +29,8 @@ var layers = [
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
         'FORMAT': 'image/jpeg'
       },
-      extent: extent
+      extent: extent,
+      serverType: 'mapserver'
     })
   }),
   new ol.layer.Tile({
@@ -45,7 +44,8 @@ var layers = [
             'National parks / geo.admin.ch</a>'
       })],
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
-      extent: extent
+      extent: extent,
+      serverType: 'mapserver'
     })
   })
 ];
@@ -53,11 +53,11 @@ var layers = [
 var map = new ol.Map({
   controls: ol.control.defaults().extend([
     new ol.control.ScaleLine({
-      units: ol.control.ScaleLineUnits.METRIC
+      units: 'metric'
     })
   ]),
   layers: layers,
-  renderers: ol.RendererHints.createFromQueryData(),
+  renderer: exampleNS.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View2D({
     projection: projection,

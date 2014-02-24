@@ -1,1 +1,1 @@
-@exportFunction  ol.interaction.defaults ol.interaction.DefaultsOptions ol.Collection
+@exportSymbol ol.interaction.defaults

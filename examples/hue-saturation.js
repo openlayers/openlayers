@@ -1,10 +1,9 @@
+goog.require('ol.BrowserFeature');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
 goog.require('ol.View2D');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.BingMaps');
-goog.require('ol.webgl');
 
 
 function setResetHueButtonHTML() {
@@ -16,7 +15,7 @@ function setResetSaturationButtonHTML() {
       layer.getSaturation().toFixed(2) + ')';
 }
 
-if (!ol.webgl.SUPPORTED) {
+if (!ol.BrowserFeature.HAS_WEBGL) {
   var info = document.getElementById('no-webgl');
   /**
    * display error message
@@ -32,7 +31,7 @@ if (!ol.webgl.SUPPORTED) {
 
   var map = new ol.Map({
     layers: [layer],
-    renderer: ol.RendererHint.WEBGL,
+    renderer: 'webgl',
     target: 'map',
     view: new ol.View2D({
       center: ol.proj.transform([-9.375, 51.483333], 'EPSG:4326', 'EPSG:3857'),

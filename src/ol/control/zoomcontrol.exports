@@ -1,2 +1,2 @@
-@exportClass ol.control.Zoom ol.control.ZoomOptions
+@exportSymbol ol.control.Zoom
 @exportProperty ol.control.Zoom.prototype.setMap

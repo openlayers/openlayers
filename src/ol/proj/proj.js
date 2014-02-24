@@ -1,4 +1,5 @@
 goog.provide('ol.proj');
+goog.provide('ol.proj.METERS_PER_UNIT');
 goog.provide('ol.proj.Projection');
 goog.provide('ol.proj.ProjectionLike');
 goog.provide('ol.proj.Units');
@@ -19,7 +20,8 @@ ol.ENABLE_PROJ4JS = true;
 
 /**
  * Have Proj4js.
- * @const {boolean}
+ * @const
+ * @type {boolean}
  */
 ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof Proj4js == 'object';
 
@@ -40,25 +42,27 @@ ol.proj.ProjectionLike;
 ol.proj.Units = {
   DEGREES: 'degrees',
   FEET: 'ft',
-  METERS: 'm'
+  METERS: 'm',
+  PIXELS: 'pixels'
 };
 
 
 /**
  * Meters per unit lookup table.
- * @const {Object.<ol.proj.Units, number>}
+ * @const
+ * @type {Object.<ol.proj.Units, number>}
  */
-ol.METERS_PER_UNIT = {};
-ol.METERS_PER_UNIT[ol.proj.Units.DEGREES] =
+ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] =
     2 * Math.PI * ol.sphere.NORMAL.radius / 360;
-ol.METERS_PER_UNIT[ol.proj.Units.FEET] = 0.3048;
-ol.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
+ol.proj.METERS_PER_UNIT[ol.proj.Units.FEET] = 0.3048;
+ol.proj.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
 
 
 
 /**
  * @constructor
- * @param {ol.ProjectionOptions} options Projection options.
+ * @param {olx.ProjectionOptions} options Projection options.
+ * @struct
  * @todo stability experimental
  */
 ol.proj.Projection = function(options) {
@@ -73,7 +77,7 @@ ol.proj.Projection = function(options) {
    * @private
    * @type {ol.proj.Units}
    */
-  this.units_ = options.units;
+  this.units_ = /** @type {ol.proj.Units} */ (options.units);
 
   /**
    * @private
@@ -149,7 +153,7 @@ ol.proj.Projection.prototype.getUnits = function() {
  * @return {number|undefined} Meters.
  */
 ol.proj.Projection.prototype.getMetersPerUnit = function() {
-  return ol.METERS_PER_UNIT[this.units_];
+  return ol.proj.METERS_PER_UNIT[this.units_];
 };
 
 
@@ -198,14 +202,15 @@ ol.proj.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
  * @constructor
  * @extends {ol.proj.Projection}
  * @param {Proj4js.Proj} proj4jsProj Proj4js projection.
- * @param {ol.Proj4jsProjectionOptions} options Proj4js projection options.
+ * @param {olx.Proj4jsProjectionOptions} options Proj4js projection options.
  * @private
+ * @struct
  */
 ol.Proj4jsProjection_ = function(proj4jsProj, options) {
 
   var units = /** @type {ol.proj.Units} */ (proj4jsProj.units);
 
-  var config = /** @type {ol.ProjectionOptions} */ ({
+  var config = /** @type {olx.ProjectionOptions} */ ({
     units: units,
     axisOrientation: proj4jsProj.axis
   });
@@ -235,7 +240,7 @@ goog.inherits(ol.Proj4jsProjection_, ol.proj.Projection);
 ol.Proj4jsProjection_.prototype.getMetersPerUnit = function() {
   var metersPerUnit = this.proj4jsProj_.to_meter;
   if (!goog.isDef(metersPerUnit)) {
-    metersPerUnit = ol.METERS_PER_UNIT[this.units_];
+    metersPerUnit = ol.proj.METERS_PER_UNIT[this.units_];
   }
   return metersPerUnit;
 };
@@ -491,7 +496,7 @@ ol.proj.get = function(projectionLike) {
 
 
 /**
- * @param {ol.Proj4jsProjectionOptions} options Proj4js projection options.
+ * @param {olx.Proj4jsProjectionOptions} options Proj4js projection options.
  * @private
  * @return {ol.Proj4jsProjection_} Proj4js projection.
  */
@@ -504,7 +509,7 @@ ol.proj.getProj4jsProjectionFromCode_ = function(options) {
     var srsCode = proj4jsProj.srsCode;
     proj4jsProjection = proj4jsProjections[srsCode];
     if (!goog.isDef(proj4jsProjection)) {
-      var config = /** @type {ol.Proj4jsProjectionOptions} */
+      var config = /** @type {olx.Proj4jsProjectionOptions} */
           (goog.object.clone(options));
       config.code = srsCode;
       proj4jsProjection = new ol.Proj4jsProjection_(proj4jsProj, config);
@@ -709,7 +714,7 @@ ol.proj.transformWithProjections =
 
 
 /**
- * @param {ol.Proj4jsProjectionOptions} options Proj4js projection options.
+ * @param {olx.Proj4jsProjectionOptions} options Proj4js projection options.
  * @return {ol.proj.Projection} Proj4js projection.
  * @todo stability experimental
  */

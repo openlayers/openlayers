@@ -1,0 +1,11 @@
+<wfs:WFS_TransactionResponse version="1.0.0" xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc">
+    <wfs:InsertResult>
+        <ogc:FeatureId fid="parcelle.40"/>
+        <ogc:FeatureId fid="parcelle.41"/>
+    </wfs:InsertResult>
+    <wfs:TransactionResult>
+        <wfs:Status>
+            <wfs:SUCCESS/>
+        </wfs:Status>
+    </wfs:TransactionResult>
+</wfs:WFS_TransactionResponse>
