@@ -242,7 +242,7 @@
  */
 
 /**
- * @typedef {Object} ol.control.OverviewMapOptions
+ * @typedef {Object} olx.control.OverviewMapOptions
  * @property {ol.Map|undefined} map Map.
  * @property {Element|undefined} target Target.
  * @property {Array.<ol.layer.Layer>|ol.Collection|undefined} layers Layers
