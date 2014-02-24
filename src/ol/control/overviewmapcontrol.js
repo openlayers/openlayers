@@ -41,7 +41,7 @@ ol.control.OVERVIEWMAP_MIN_RATIO = 0.1;
  * defined map.
  * @constructor
  * @extends {ol.control.Control}
- * @param {ol.control.OverviewMapOptions=} opt_options OverviewMap options.
+ * @param {olx.control.OverviewMapOptions=} opt_options OverviewMap options.
  */
 ol.control.OverviewMap = function(opt_options) {
 
