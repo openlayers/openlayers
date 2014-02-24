@@ -59,7 +59,7 @@ ol.xml.createElementNS_ = function(namespaceURI, qualifiedName) {
  * @private
  */
 ol.xml.createElementNSActiveX_ = function(namespaceURI, qualifiedName) {
-  if (!goog.isDef(namespaceURI)) {
+  if (goog.isNull(namespaceURI)) {
     namespaceURI = '';
   }
   return ol.xml.DOCUMENT.createNode(1, qualifiedName, namespaceURI);
