@@ -543,6 +543,35 @@ describe('ol.format.GML', function() {
 
   });
 
+  describe('when parsing empty attribute', function() {
+    it('generates undefined value', function() {
+      var text =
+          '<gml:featureMembers xmlns:gml="http://www.opengis.net/gml">' +
+          '  <topp:gnis_pop gml:id="gnis_pop.148604" xmlns:topp="' +
+          'http://www.openplans.org/topp">' +
+          '    <gml:name>Aflu</gml:name>' +
+          '    <topp:the_geom>' +
+          '      <gml:Point srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+          '        <gml:pos>34.12 2.09</gml:pos>' +
+          '      </gml:Point>' +
+          '    </topp:the_geom>' +
+          '    <topp:population>84683</topp:population>' +
+          '    <topp:country>Algeria</topp:country>' +
+          '    <topp:type>place</topp:type>' +
+          '    <topp:name>Aflu</topp:name>' +
+          '    <topp:empty></topp:empty>' +
+          '  </topp:gnis_pop>' +
+          '</gml:featureMembers>';
+      var config = {
+        'featureNS': 'http://www.openplans.org/topp',
+        'featureType': 'gnis_pop'
+      };
+      var features = new ol.format.GML(config).readFeatures(text);
+      var feature = features[0];
+      expect(feature.get('empty')).to.be(undefined);
+    });
+  });
+
   describe('when parsing TOPP states GML', function() {
 
     var features;
@@ -593,6 +622,57 @@ describe('ol.format.GML', function() {
       feature = features[0];
       expect(feature.get('STATE_NAME')).to.equal('Illinois');
       expect(feature.getGeometry()).to.be.an(ol.geom.MultiPolygon);
+    });
+
+  });
+
+  describe('when parsing more than one geometry', function() {
+
+    var features, feature;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/more-geoms.xml', function(xml) {
+        try {
+          var config = {
+            'featureNS': 'http://opengeo.org/#medford',
+            'featureType': 'zoning'
+          };
+          features = new ol.format.GML(config).readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('creates 2 geometries', function() {
+      var feature = features[0];
+      expect(feature.get('center')).to.be.a(ol.geom.Point);
+      expect(feature.get('the_geom')).to.be.a(ol.geom.MultiPolygon);
+    });
+
+  });
+
+  describe('when parsing an attribute name equal to featureType', function() {
+
+    var features, feature;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/repeated-name.xml', function(xml) {
+        try {
+          var config = {
+            'featureNS': 'http://opengeo.org/#medford',
+            'featureType': 'zoning'
+          };
+          features = new ol.format.GML(config).readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('creates the correct attribute value', function() {
+      var feature = features[0];
+      expect(feature.get('zoning')).to.equal('I-L');
     });
 
   });

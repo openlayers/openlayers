@@ -5,6 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
+goog.require('goog.string');
 goog.require('ol.Feature');
 goog.require('ol.extent');
 goog.require('ol.format.XML');
@@ -145,7 +146,11 @@ ol.format.GML.prototype.readFeature_ = function(node, objectStack) {
     if (n.childNodes.length === 0 ||
         (n.childNodes.length === 1 &&
         n.firstChild.nodeType === 3)) {
-      values[ol.xml.getLocalName(n)] = ol.xml.getAllTextContent(n, false);
+      var value = ol.xml.getAllTextContent(n, false);
+      if (goog.string.isEmpty(value)) {
+        value = undefined;
+      }
+      values[ol.xml.getLocalName(n)] = value;
     } else {
       geometryName = ol.xml.getLocalName(n);
       values[geometryName] = this.readGeometryFromNode(n);
