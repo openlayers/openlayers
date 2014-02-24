@@ -2,6 +2,7 @@
 
 goog.provide('ol.control.OverviewMap');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classes');
@@ -192,17 +193,20 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
     }
 
     var view = map.getView();
+    goog.asserts.assert(goog.isDef(view));
+    var view2D = view.getView2D();
+    goog.asserts.assert(goog.isDef(view2D));
 
     goog.events.listen(
-        view, ol.Object.getChangeEventType(ol.View2DProperty.CENTER),
+        view2D, ol.Object.getChangeEventType(ol.View2DProperty.CENTER),
         this.handleCenterChanged_, false, this);
 
     goog.events.listen(
-        view, ol.Object.getChangeEventType(ol.View2DProperty.RESOLUTION),
+        view2D, ol.Object.getChangeEventType(ol.View2DProperty.RESOLUTION),
         this.handleResolutionChanged_, false, this);
 
     goog.events.listen(
-        view, ol.Object.getChangeEventType(ol.View2DProperty.ROTATION),
+        view2D, ol.Object.getChangeEventType(ol.View2DProperty.ROTATION),
         this.handleRotationChanged_, false, this);
 
     goog.events.listen(
@@ -212,7 +216,7 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
     if (this.rotateBox_ == true) {
     // FIXME - support box rotation
     } else {
-      this.ovmap_.getView().bindTo(ol.View2DProperty.ROTATION, map.getView());
+      this.ovmap_.getView().bindTo(ol.View2DProperty.ROTATION, view2D);
     }
 
     this.ovmap_.updateSize();
