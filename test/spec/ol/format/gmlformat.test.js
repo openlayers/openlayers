@@ -1,5 +1,13 @@
 goog.provide('ol.test.format.GML');
 
+var readGeometry = function(format, text) {
+  var doc = ol.xml.load(text);
+  // we need an intermediate node for testing purposes
+  var node = goog.dom.createElement(goog.dom.TagName.PRE);
+  node.appendChild(doc.documentElement);
+  return format.readGeometryFromNode(node);
+};
+
 describe('ol.format.GML', function() {
 
   var format;
@@ -17,7 +25,7 @@ describe('ol.format.GML', function() {
             '    srsName="CRS:84">' +
             '  <gml:pos>1 2</gml:pos>' +
             '</gml:Point>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.Point);
         expect(g.getCoordinates()).to.eql([1, 2, 0]);
       });
@@ -32,7 +40,7 @@ describe('ol.format.GML', function() {
             '    srsName="CRS:84">' +
             '  <gml:posList>1 2 3 4</gml:posList>' +
             '</gml:LineString>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
       });
@@ -47,7 +55,7 @@ describe('ol.format.GML', function() {
             '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
             '  <gml:posList>-90 -180 90 180</gml:posList>' +
             '</gml:LineString>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.LineString);
         expect(g.getCoordinates()).to.eql([[-180, -90, 0], [180, 90, 0]]);
       });
@@ -58,7 +66,7 @@ describe('ol.format.GML', function() {
             '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
             '  <gml:pos>-90 -180</gml:pos>' +
             '</gml:Point>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.Point);
         expect(g.getCoordinates()).to.eql([-180, -90, 0]);
       });
@@ -73,7 +81,7 @@ describe('ol.format.GML', function() {
             '    srsName="CRS:84" srsDimension="3">' +
             '  <gml:posList>1 2 3 4 5 6</gml:posList>' +
             '</gml:LineString>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
       });
@@ -88,7 +96,7 @@ describe('ol.format.GML', function() {
             '    srsName="CRS:84">' +
             '  <gml:posList>1 2 3 4 5 6 1 2</gml:posList>' +
             '</gml:LinearRing>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.Polygon);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [3, 4, 0], [5, 6, 0], [1, 2, 0]]]);
@@ -118,7 +126,7 @@ describe('ol.format.GML', function() {
             '    </gml:LinearRing>' +
             '  </gml:interior>' +
             '</gml:Polygon>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.Polygon);
         expect(g.getCoordinates()).to.eql([[[1, 2, 0], [3, 2, 0], [3, 4, 0],
                 [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
@@ -153,7 +161,7 @@ describe('ol.format.GML', function() {
             '    </gml:PolygonPatch>' +
             '  </gml:patches>' +
             '</gml:Surface>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.Polygon);
         expect(g.getCoordinates()).to.eql([[[1, 2, 0], [3, 2, 0], [3, 4, 0],
                 [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
@@ -174,7 +182,7 @@ describe('ol.format.GML', function() {
             '    </gml:LineStringSegment>' +
             '  </gml:segments>' +
             '</gml:Curve>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
       });
@@ -190,7 +198,7 @@ describe('ol.format.GML', function() {
             '  <gml:lowerCorner>1 2</gml:lowerCorner>' +
             '  <gml:upperCorner>3 4</gml:upperCorner>' +
             '</gml:Envelope>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.eql([1, 2, 3, 4]);
       });
 
@@ -218,7 +226,7 @@ describe('ol.format.GML', function() {
             '    </gml:Point>' +
             '  </gml:pointMember>' +
             '</gml:MultiPoint>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.MultiPoint);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [2, 3, 0], [3, 4, 0]]);
       });
@@ -239,7 +247,7 @@ describe('ol.format.GML', function() {
             '    </gml:Point>' +
             '  </gml:pointMembers>' +
             '</gml:MultiPoint>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.MultiPoint);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [2, 3, 0], [3, 4, 0]]);
       });
@@ -263,7 +271,7 @@ describe('ol.format.GML', function() {
             '    </gml:LineString>' +
             '  </gml:lineStringMember>' +
             '</gml:MultiLineString>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
@@ -282,7 +290,7 @@ describe('ol.format.GML', function() {
             '    </gml:LineString>' +
             '  </gml:lineStringMembers>' +
             '</gml:MultiLineString>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
@@ -325,7 +333,7 @@ describe('ol.format.GML', function() {
             '    </gml:Polygon>' +
             '  </gml:polygonMember>' +
             '</gml:MultiPolygon>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
@@ -365,7 +373,7 @@ describe('ol.format.GML', function() {
             '    </gml:Polygon>' +
             '  </gml:polygonMembers>' +
             '</gml:MultiPolygon>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
@@ -393,7 +401,7 @@ describe('ol.format.GML', function() {
             '    </gml:LineString>' +
             '  </gml:curveMember>' +
             '</gml:MultiCurve>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
@@ -422,7 +430,7 @@ describe('ol.format.GML', function() {
             '    </gml:Curve>' +
             '  </gml:curveMember>' +
             '</gml:MultiCurve>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
@@ -465,7 +473,7 @@ describe('ol.format.GML', function() {
             '    </gml:Polygon>' +
             '  </gml:surfaceMember>' +
             '</gml:MultiSurface>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
@@ -507,7 +515,7 @@ describe('ol.format.GML', function() {
             '    </gml:Polygon>' +
             '  </gml:surfaceMembers>' +
             '</gml:MultiSurface>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
@@ -557,7 +565,7 @@ describe('ol.format.GML', function() {
             '    </gml:Surface>' +
             '  </gml:surfaceMember>' +
             '</gml:MultiSurface>';
-        var g = format.readGeometry(text);
+        var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
@@ -707,10 +715,13 @@ describe('ol.format.GML', function() {
 });
 
 
+goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('ol.format.GML');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPolygon');
+goog.require('ol.xml');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');

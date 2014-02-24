@@ -4,7 +4,6 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
-goog.require('goog.dom.TagName');
 goog.require('goog.string');
 goog.require('ol.Feature');
 goog.require('ol.extent');
@@ -94,22 +93,6 @@ ol.format.GML.prototype.readFeaturesFromNode = function(node) {
   } else {
     return [];
   }
-};
-
-
-/**
- * @inheritDoc
- */
-ol.format.GML.prototype.readGeometryFromDocument = function(doc) {
-  var node;
-  if (doc.nodeType == goog.dom.NodeType.DOCUMENT) {
-    // TODO intermediate element node - revisit later
-    node = goog.dom.createElement(goog.dom.TagName.PRE);
-    node.appendChild(doc.documentElement);
-  } else {
-    node = doc;
-  }
-  return this.readGeometryFromNode(node);
 };
 
 
