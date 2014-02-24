@@ -65,7 +65,7 @@ ol.format.GML.prototype.readFeaturesFromNode = function(node) {
   var features, n, fs;
   var localName = ol.xml.getLocalName(node);
   if (localName === this.featureType_) {
-    var feature = this.readFeature_(node, []);
+    var feature = this.readFeatureFromNode(node);
     if (goog.isDef(feature)) {
       return [feature];
     } else {
@@ -117,11 +117,9 @@ ol.format.GML.prototype.readGeometryFromNode = function(node) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {ol.Feature} Feature.
  */
-ol.format.GML.prototype.readFeature_ = function(node, objectStack) {
+ol.format.GML.prototype.readFeatureFromNode = function(node) {
   var n;
   var values = {}, geometryName;
   for (n = node.firstElementChild; !goog.isNull(n);
