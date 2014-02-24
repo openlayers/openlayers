@@ -439,26 +439,6 @@ describe('ol.Sphere', function() {
       haversineDistance: 0,
       initialBearing: 0,
       midpoint: [-90, -7.0164775638926606e-15]
-    },
-    {
-      c1: [90, -180],
-      c2: [90, -180],
-      cosineDistance: 0,
-      equirectangularDistance: 0,
-      finalBearing: 180,
-      haversineDistance: 0,
-      initialBearing: 0,
-      midpoint: [-90, -7.0164775638926606e-15]
-    },
-    {
-      c1: [90, -180],
-      c2: [90, -180],
-      cosineDistance: 0,
-      equirectangularDistance: 0,
-      finalBearing: 180,
-      haversineDistance: 0,
-      initialBearing: 0,
-      midpoint: [-90, -7.0164775638926606e-15]
     }
   ];
 
