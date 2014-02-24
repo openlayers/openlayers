@@ -305,6 +305,12 @@
  */
 
 /**
+ * @typedef {Object} olx.format.GMLOptions
+ * @property {string} featureNS Feature namespace.
+ * @property {string} featureType Feature type to parse.
+ */
+
+/**
  * @typedef {Object} olx.interaction.DoubleClickZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {number|undefined} delta The zoom delta applied on each double

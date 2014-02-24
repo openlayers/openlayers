@@ -5,6 +5,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
+goog.require('ol.Feature');
 goog.require('ol.extent');
 goog.require('ol.format.XML');
 goog.require('ol.geom.GeometryCollection');
@@ -20,10 +21,16 @@ goog.require('ol.xml');
 
 /**
  * @constructor
+ * @param {olx.format.GMLOptions=} opt_options
+ *     Optional configuration object.
  * @extends {ol.format.XML}
  * @todo stability experimental
  */
-ol.format.GML = function() {
+ol.format.GML = function(opt_options) {
+  var options = /** @type {olx.format.GMLOptions} */
+      (goog.isDef(opt_options) ? opt_options : {});
+  this.featureType_ = options.featureType;
+  this.featureNS_ = options.featureNS;
   goog.base(this);
 };
 goog.inherits(ol.format.GML, ol.format.XML);
@@ -37,6 +44,45 @@ goog.inherits(ol.format.GML, ol.format.XML);
 ol.format.GML.NAMESPACE_URIS_ = [
   'http://www.opengis.net/gml'
 ];
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.GML.prototype.readFeaturesFromNode = function(node) {
+  if (goog.array.indexOf(ol.format.GML.NAMESPACE_URIS_,
+      this.featureNS_) === -1) {
+    ol.format.GML.NAMESPACE_URIS_.push(this.featureNS_);
+  }
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  if (goog.array.indexOf(ol.format.GML.NAMESPACE_URIS_, node.namespaceURI) ==
+      -1) {
+    return [];
+  }
+  var features;
+  var localName = ol.xml.getLocalName(node);
+  if (localName === this.featureType_) {
+    var feature = this.readFeature_(node, []);
+    if (goog.isDef(feature)) {
+      return [feature];
+    } else {
+      return [];
+    }
+  } else if (localName == 'featureMembers') {
+    features = [];
+    var n;
+    for (n = node.firstElementChild; !goog.isNull(n);
+         n = n.nextElementSibling) {
+      var fs = this.readFeaturesFromNode(n);
+      if (goog.isDef(fs)) {
+        goog.array.extend(features, fs);
+      }
+    }
+    return features;
+  } else {
+    return [];
+  }
+};
 
 
 /**
@@ -70,6 +116,33 @@ ol.format.GML.prototype.readGeometryFromNode = function(node) {
     return new ol.geom.GeometryCollection(geometries);
   }
   return geometries[0];
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ * @return {ol.Feature} Feature.
+ */
+ol.format.GML.prototype.readFeature_ = function(node, objectStack) {
+  var n;
+  var values = {};
+  for (n = node.firstElementChild; !goog.isNull(n);
+      n = n.nextElementSibling) {
+    // Assume attribute elements have one child node and that the child
+    // is a text node.  Otherwise assume it is a geometry node.
+    if (n.childNodes.length === 0 ||
+        (n.childNodes.length === 1 &&
+        n.firstChild.nodeType === 3)) {
+      values[ol.xml.getLocalName(n)] = ol.xml.getAllTextContent(n, false);
+    } else {
+      values[ol.xml.getLocalName(n)] = this.readGeometryFromNode(n);
+    }
+  }
+  var feature = new ol.Feature();
+  feature.setValues(values);
+  return feature;
 };
 
 

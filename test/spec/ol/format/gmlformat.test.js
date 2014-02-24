@@ -543,6 +543,30 @@ describe('ol.format.GML', function() {
 
   });
 
+  describe('when parsing TOPP states GML', function() {
+
+    var features;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/topp-states-gml.xml', function(xml) {
+        try {
+          var config = {
+            'featureNS': 'http://www.openplans.org/topp',
+            'featureType': 'states'
+          };
+          features = new ol.format.GML(config).readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('creates 10 features', function() {
+      expect(features).to.have.length(10);
+    });
+
+  });
+
 });
 
 
