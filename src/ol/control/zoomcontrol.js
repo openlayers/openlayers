@@ -37,7 +37,7 @@ ol.control.Zoom = function(opt_options) {
   var zoomOutLabel = goog.isDef(options.zoomOutLabel) ?
       options.zoomOutLabel : '\u2212';
 
-  var zoomInTipLabel = goog.isDef(options.zoomTipLabel) ?
+  var zoomInTipLabel = goog.isDef(options.zoomInTipLabel) ?
       options.zoomInTipLabel : 'Zoom in';
   var zoomOutTipLabel = goog.isDef(options.zoomOutTipLabel) ?
       options.zoomOutTipLabel : 'Zoom out';
