@@ -14,6 +14,7 @@ goog.require('ol.BrowserFeature');
 goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.extent');
+goog.require('ol.extent.Relationship');
 goog.require('ol.geom.flat');
 goog.require('ol.geom.simplify');
 goog.require('ol.render.IReplayGroup');
@@ -133,12 +134,38 @@ ol.render.canvas.Replay = function(tolerance, maxExtent) {
  */
 ol.render.canvas.Replay.prototype.appendFlatCoordinates =
     function(flatCoordinates, offset, end, stride, close) {
+
   var myEnd = this.coordinates.length;
-  var i;
-  for (i = offset; i < end; i += stride) {
-    this.coordinates[myEnd++] = flatCoordinates[i];
-    this.coordinates[myEnd++] = flatCoordinates[i + 1];
+  var extent = this.maxExtent;
+  var lastCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
+  var nextCoord = [NaN, NaN];
+  var skipped = true;
+
+  var i, lastRel, nextRel;
+  for (i = offset + stride; i < end; i += stride) {
+    nextCoord[0] = flatCoordinates[i];
+    nextCoord[1] = flatCoordinates[i + 1];
+    nextRel = ol.extent.coordinateRelationship(extent, nextCoord);
+    if (nextRel !== lastRel) {
+      if (skipped) {
+        this.coordinates[myEnd++] = lastCoord[0];
+        this.coordinates[myEnd++] = lastCoord[1];
+      }
+      this.coordinates[myEnd++] = nextCoord[0];
+      this.coordinates[myEnd++] = nextCoord[1];
+      skipped = false;
+    } else if (nextRel === ol.extent.Relationship.INTERSECTING) {
+      this.coordinates[myEnd++] = nextCoord[0];
+      this.coordinates[myEnd++] = nextCoord[1];
+      skipped = false;
+    } else {
+      skipped = true;
+    }
+    lastCoord[0] = nextCoord[0];
+    lastCoord[1] = nextCoord[1];
+    lastRel = nextRel;
   }
+
   if (close) {
     this.coordinates[myEnd++] = flatCoordinates[offset];
     this.coordinates[myEnd++] = flatCoordinates[offset + 1];
