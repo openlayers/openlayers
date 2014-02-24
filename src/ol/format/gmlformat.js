@@ -42,7 +42,8 @@ goog.inherits(ol.format.GML, ol.format.XML);
  * @type {Array.<string>}
  */
 ol.format.GML.NAMESPACE_URIS_ = [
-  'http://www.opengis.net/gml'
+  'http://www.opengis.net/gml',
+  'http://www.opengis.net/wfs'
 ];
 
 
@@ -59,7 +60,7 @@ ol.format.GML.prototype.readFeaturesFromNode = function(node) {
       -1) {
     return [];
   }
-  var features;
+  var features, n, fs;
   var localName = ol.xml.getLocalName(node);
   if (localName === this.featureType_) {
     var feature = this.readFeature_(node, []);
@@ -70,10 +71,19 @@ ol.format.GML.prototype.readFeaturesFromNode = function(node) {
     }
   } else if (localName == 'featureMembers') {
     features = [];
-    var n;
     for (n = node.firstElementChild; !goog.isNull(n);
          n = n.nextElementSibling) {
-      var fs = this.readFeaturesFromNode(n);
+      fs = this.readFeaturesFromNode(n);
+      if (goog.isDef(fs)) {
+        goog.array.extend(features, fs);
+      }
+    }
+    return features;
+  } else if (localName == 'FeatureCollection') {
+    features = [];
+    for (n = node.firstElementChild; !goog.isNull(n);
+         n = n.nextElementSibling) {
+      fs = this.readFeaturesFromNode(n);
       if (goog.isDef(fs)) {
         goog.array.extend(features, fs);
       }
@@ -140,9 +150,7 @@ ol.format.GML.prototype.readFeature_ = function(node, objectStack) {
       values[ol.xml.getLocalName(n)] = this.readGeometryFromNode(n);
     }
   }
-  var feature = new ol.Feature();
-  feature.setValues(values);
-  return feature;
+  return new ol.Feature(values);
 };
 
 
