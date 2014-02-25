@@ -372,14 +372,9 @@ ol.format.GML.readLineString_ = function(node, objectStack) {
 ol.format.GML.readPatch_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'patches');
-  var result = ol.xml.pushParseAndPop(
+  return ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
       ol.format.GML.PATCHES_PARSERS_, node, objectStack);
-  if (goog.isDef(result)) {
-    return result;
-  } else {
-    return undefined;
-  }
 };
 
 
@@ -392,14 +387,9 @@ ol.format.GML.readPatch_ = function(node, objectStack) {
 ol.format.GML.readSegment_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'segments');
-  var result = ol.xml.pushParseAndPop(
+  return ol.xml.pushParseAndPop(
       /** @type {Array.<number>} */ ([null]),
       ol.format.GML.SEGMENTS_PARSERS_, node, objectStack);
-  if (goog.isDef(result)) {
-    return result;
-  } else {
-    return undefined;
-  }
 };
 
 
@@ -412,14 +402,9 @@ ol.format.GML.readSegment_ = function(node, objectStack) {
 ol.format.GML.readPolygonPatch_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'PolygonPatch');
-  var result = ol.xml.pushParseAndPop(
+  return ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
       ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack);
-  if (goog.isDef(result)) {
-    return result;
-  } else {
-    return undefined;
-  }
 };
 
 
@@ -432,14 +417,9 @@ ol.format.GML.readPolygonPatch_ = function(node, objectStack) {
 ol.format.GML.readLineStringSegment_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   goog.asserts.assert(node.localName == 'LineStringSegment');
-  var result = ol.xml.pushParseAndPop(
+  return ol.xml.pushParseAndPop(
       /** @type {Array.<number>} */ ([null]),
       ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack);
-  if (goog.isDef(result)) {
-    return result;
-  } else {
-    return undefined;
-  }
 };
 
 
