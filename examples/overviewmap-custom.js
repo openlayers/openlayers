@@ -34,7 +34,7 @@ var setOverviewResolution = function() {
 overviewMap.bindTo('layergroup', map);
 
 // make the overview map view's center follow the main map view's center
-overviewMap.getView().bindTo('center', map.getView());
+overviewView.bindTo('center', mainView);
 
 // listen to the main map view's resolution change to adjust the overview
 // resolution accordingly
