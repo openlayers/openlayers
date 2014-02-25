@@ -73,8 +73,8 @@ ol.format.GML.readFeatures_ = function(node, objectStack) {
   var featureType = goog.object.get(context, 'featureType');
   var features;
   if (localName == 'FeatureCollection') {
-    ol.xml.parse(ol.format.GML.FEATURE_COLLECTION_PARSERS_, node, objectStack);
-    features = objectStack.pop();
+    features = ol.xml.pushParseAndPop(null,
+        ol.format.GML.FEATURE_COLLECTION_PARSERS_, node, objectStack);
   } else if (localName == 'featureMembers') {
     var parsers = {};
     var parsersNS = {};
