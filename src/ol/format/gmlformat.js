@@ -49,17 +49,6 @@ goog.inherits(ol.format.GML, ol.format.XML);
 
 
 /**
- * @const
- * @private
- * @type {Array.<string>}
- */
-ol.format.GML.NAMESPACE_URIS_ = [
-  'http://www.opengis.net/gml',
-  'http://www.opengis.net/wfs'
-];
-
-
-/**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Array.<ol.Feature>} Features.
