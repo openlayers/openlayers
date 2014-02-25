@@ -103,7 +103,7 @@ ol.format.GML.FEATURE_COLLECTION_PARSERS_ = {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.geom.Geometry} Geometry.
+ * @return {ol.geom.Geometry|undefined} Geometry.
  * @private
  */
 ol.format.GML.readGeometry_ = function(node, objectStack) {
@@ -116,7 +116,7 @@ ol.format.GML.readGeometry_ = function(node, objectStack) {
   if (goog.isDefAndNotNull(geometry)) {
     return geometry;
   } else {
-    return null;
+    return undefined;
   }
 };
 
@@ -996,7 +996,8 @@ ol.format.GML.FLAT_LINEAR_RING_PARSERS_ = {
  * @inheritDoc
  */
 ol.format.GML.prototype.readGeometryFromNode = function(node) {
-  return ol.format.GML.readGeometry_(node, [{}]);
+  var geometry = ol.format.GML.readGeometry_(node, [{}]);
+  return (goog.isDef(geometry)) ? geometry : null;
 };
 
 
