@@ -1,6 +1,6 @@
 goog.provide('ol.test.pointer.PointerEventHandler');
 
-describe('ol.test.pointer.PointerEventHandler', function() {
+describe('ol.pointer.PointerEventHandler', function() {
   var handler;
   var target;
   var eventSpy;
@@ -47,6 +47,8 @@ describe('ol.test.pointer.PointerEventHandler', function() {
       var pointerEvent = eventSpy.firstCall.args[0];
       expect(pointerEvent).to.be.a(ol.pointer.PointerEvent);
       expect(pointerEvent.type).to.be('pointerdown');
+      expect(pointerEvent.pointerId).to.be(1);
+      expect(pointerEvent.pointerType).to.be('mouse');
     });
   });
 

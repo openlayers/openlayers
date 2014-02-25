@@ -280,7 +280,7 @@ ol.pointer.TouchSource.prototype.findTouch_ = function(touchList, searchId) {
  */
 ol.pointer.TouchSource.prototype.vacuumTouches_ = function(inEvent) {
   var touchList = inEvent.getBrowserEvent().touches;
-  // pointermap.pointers() should be < touchList.length here,
+  // pointerMap.getCount() should be < touchList.length here,
   // as the touchstart has not been processed yet.
   if (this.pointerMap.getCount() >= touchList.length) {
     var d = [];
@@ -289,8 +289,7 @@ ol.pointer.TouchSource.prototype.vacuumTouches_ = function(inEvent) {
       // Touch identifiers are 2 smaller than their pointerId, which is the
       // index in pointermap.
       if (key !== 1 && !this.findTouch_(touchList, key - 2)) {
-        var p = value.out;
-        d.push(this.touchToPointer_(p));
+        d.push(value.out);
       }
     }, this);
     goog.array.forEach(d, goog.partial(this.cancelOut_, inEvent), this);
