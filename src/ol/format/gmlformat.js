@@ -4,6 +4,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
+goog.require('goog.object');
 goog.require('goog.string');
 goog.require('ol.Feature');
 goog.require('ol.extent');
@@ -43,11 +44,6 @@ ol.format.GML = function(opt_options) {
    */
   this.featureNS_ = options.featureNS;
 
-  /**
-   * @private
-   * @type {Array.<string>}
-   */
-  this.namespaceURIs_ = goog.array.clone(ol.format.GML.NAMESPACE_URIS_);
   goog.base(this);
 };
 goog.inherits(ol.format.GML, ol.format.XML);
@@ -65,58 +61,52 @@ ol.format.GML.NAMESPACE_URIS_ = [
 
 
 /**
- * @inheritDoc
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @return {Array.<ol.Feature>} Features.
+ * @private
  */
-ol.format.GML.prototype.readFeaturesFromNode = function(node) {
-  if (goog.array.indexOf(this.namespaceURIs_,
-      this.featureNS_) === -1) {
-    this.namespaceURIs_.push(this.featureNS_);
-  }
+ol.format.GML.readFeatures_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
-  if (goog.array.indexOf(this.namespaceURIs_, node.namespaceURI) ==
-      -1) {
-    return [];
-  }
-  var features, n, fs;
   var localName = ol.xml.getLocalName(node);
-  if (localName === this.featureType_) {
-    var feature = this.readFeatureFromNode(node);
-    if (goog.isDef(feature)) {
-      return [feature];
-    } else {
-      return [];
-    }
+  var context = objectStack[objectStack.length - 1];
+  goog.asserts.assert(goog.isObject(context));
+  var featureType = goog.object.get(context, 'featureType');
+  var features;
+  if (localName == 'FeatureCollection') {
+    ol.xml.parse(ol.format.GML.FEATURE_COLLECTION_PARSERS_, node, objectStack);
+    features = objectStack.pop();
   } else if (localName == 'featureMembers') {
-    features = [];
-    for (n = node.firstElementChild; !goog.isNull(n);
-         n = n.nextElementSibling) {
-      fs = this.readFeaturesFromNode(n);
-      if (goog.isDef(fs)) {
-        goog.array.extend(features, fs);
-      }
-    }
-    return features;
-  } else if (localName == 'FeatureCollection') {
-    features = [];
-    for (n = node.firstElementChild; !goog.isNull(n);
-         n = n.nextElementSibling) {
-      fs = this.readFeaturesFromNode(n);
-      if (goog.isDef(fs)) {
-        goog.array.extend(features, fs);
-      }
-    }
-    return features;
+    var parsers = {};
+    var parsersNS = {};
+    parsers[featureType] = ol.xml.makeArrayPusher(ol.format.GML.readFeature_);
+    parsersNS[goog.object.get(context, 'featureNS')] = parsers;
+    features = ol.xml.pushParseAndPop([], parsersNS, node, objectStack);
   } else {
-    return [];
+    features = [];
+  }
+  return /** @type {Array.<ol.Feature>} */ (features);
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, Object>>}
+ * @private
+ */
+ol.format.GML.FEATURE_COLLECTION_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'featureMembers': ol.xml.makeReplacer(ol.format.GML.readFeatures_)
   }
 };
 
 
 /**
- * @inheritDoc
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @return {ol.geom.Geometry} Geometry.
+ * @private
  */
-ol.format.GML.prototype.readGeometryFromNode = function(node) {
-  var objectStack = [];
+ol.format.GML.readGeometry_ = function(node, objectStack) {
   var geometries = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.Geometry>} */ ([]),
       ol.format.GML.GEOMETRY_PARSERS_, node, objectStack);
@@ -132,9 +122,11 @@ ol.format.GML.prototype.readGeometryFromNode = function(node) {
 
 /**
  * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
  * @return {ol.Feature} Feature.
+ * @private
  */
-ol.format.GML.prototype.readFeatureFromNode = function(node) {
+ol.format.GML.readFeature_ = function(node, objectStack) {
   var n;
   var values = {}, geometryName;
   for (n = node.firstElementChild; !goog.isNull(n);
@@ -151,7 +143,7 @@ ol.format.GML.prototype.readFeatureFromNode = function(node) {
       values[ol.xml.getLocalName(n)] = value;
     } else {
       geometryName = ol.xml.getLocalName(n);
-      values[geometryName] = this.readGeometryFromNode(n);
+      values[geometryName] = ol.format.GML.readGeometry_(n, objectStack);
     }
   }
   var feature = new ol.Feature(values);
@@ -980,3 +972,23 @@ ol.format.GML.FLAT_LINEAR_RING_PARSERS_ = ol.xml.makeParsersNS(
     ol.format.GML.NAMESPACE_URIS_, {
       'posList': ol.xml.makeReplacer(ol.format.GML.readFlatPosList_)
     });
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.GML.prototype.readGeometryFromNode = function(node) {
+  return ol.format.GML.readGeometry_(node, []);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.GML.prototype.readFeaturesFromNode = function(node) {
+  var objectStack = [{
+    'featureType': this.featureType_,
+    'featureNS': this.featureNS_
+  }];
+  return ol.format.GML.readFeatures_(node, objectStack);
+};
