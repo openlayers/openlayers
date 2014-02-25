@@ -71,6 +71,29 @@ describe('ol.format.GML', function() {
         expect(g.getCoordinates()).to.eql([-180, -90, 0]);
       });
 
+      it('can read multi surface geometry with right axis order', function() {
+        var text =
+            '<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml" ' +
+            '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+            '  <gml:surfaceMember>' +
+            '    <gml:Polygon>' +
+            '      <gml:exterior>' +
+            '        <gml:LinearRing>' +
+            '          <gml:posList>38.9661 -77.0081 38.9931 -77.0421 ' +
+            '          38.9321 -77.1221 38.9151 -77.0781 38.8861 -77.0671 ' +
+            '          38.8621 -77.0391 38.8381 -77.0401 38.8291 -77.0451 ' +
+            '          38.8131 -77.0351 38.7881 -77.0451' +
+            '          38.8891 -76.9111 38.9661 -77.0081</gml:posList>' +
+            '        </gml:LinearRing>' +
+            '      </gml:exterior>' +
+            '    </gml:Polygon>' +
+            '  </gml:surfaceMember>' +
+            '</gml:MultiSurface>';
+        var g = readGeometry(format, text);
+        expect(g.getCoordinates()[0][0][0][0]).to.equal(-77.0081);
+        expect(g.getCoordinates()[0][0][0][1]).to.equal(38.9661);
+      });
+
     });
 
     describe('linestring 3D', function() {
