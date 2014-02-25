@@ -1,11 +1,9 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
 goog.require('ol.View2D');
 goog.require('ol.control.OverviewMap');
 goog.require('ol.interaction');
 goog.require('ol.interaction.DragRotateAndZoom');
 goog.require('ol.layer.Tile');
-goog.require('ol.source.MapQuestOpenAerial');
 goog.require('ol.source.OSM');
 
 
@@ -25,7 +23,7 @@ var createMap = function(divId, rotate) {
         source: new ol.source.OSM()
       })
     ],
-    renderers: ol.RendererHints.createFromQueryData(),
+    renderer: exampleNS.getRendererFromQueryString(),
     target: divId,
     view: new ol.View2D({
       center: [0, 0],
@@ -41,7 +39,10 @@ var createMap = function(divId, rotate) {
 };
 
 var map1 = createMap('map1', false);
-var overview1 = new ol.control.OverviewMap();
+var overview1 = new ol.control.OverviewMap({
+  // TODO - overviewmap fails to render unless maximized is set
+  maximized: true
+});
 map1.addControl(overview1);
 
 var map2 = createMap('map2', false);
@@ -53,9 +54,11 @@ map2.addControl(overview2);
 var map3 = createMap('map3', true);
 var overview3 = new ol.control.OverviewMap({
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.MapQuestOpenAerial()
-    })
+      new ol.layer.Tile({
+        source: new ol.source.OSM({
+         'url': '//{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
+        })
+      })
   ],
   maximized: true,
   maxRatio: 0.5,
