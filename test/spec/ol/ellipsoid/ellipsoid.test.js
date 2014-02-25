@@ -257,46 +257,11 @@ describe('ol.Ellipsoid', function() {
       vincentyDistance: 0
     },
     {
-      c1: [180, 90],
-      c2: [180, -90],
-      vincentyFinalBearing: 180,
-      vincentyInitialBearing: 180,
-      vincentyDistance: 20003931.458623584
-    },
-    {
-      c1: [180, 90],
-      c2: [-180, 90],
-      vincentyFinalBearing: 90,
-      vincentyInitialBearing: 90,
-      vincentyDistance: 9.565041537306137e-26
-    },
-    {
-      c1: [180, 90],
-      c2: [-180, 90],
-      vincentyFinalBearing: 90,
-      vincentyInitialBearing: 90,
-      vincentyDistance: 9.565041537306137e-26
-    },
-    {
       c1: [180, -90],
       c2: [180, -90],
       vincentyFinalBearing: 0,
       vincentyInitialBearing: 0,
       vincentyDistance: 0
-    },
-    {
-      c1: [180, -90],
-      c2: [-180, 90],
-      vincentyFinalBearing: 7.0164775638926606e-15,
-      vincentyInitialBearing: 7.0164775638926606e-15,
-      vincentyDistance: 20003931.458623584
-    },
-    {
-      c1: [180, -90],
-      c2: [-180, 90],
-      vincentyFinalBearing: 7.0164775638926606e-15,
-      vincentyInitialBearing: 7.0164775638926606e-15,
-      vincentyDistance: 20003931.458623584
     },
     {
       c1: [-180, 90],
