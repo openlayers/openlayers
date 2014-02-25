@@ -205,6 +205,95 @@ ol.xml.isNode = goog.userAgent.IE ? ol.xml.isNodeIE_ : ol.xml.isNode_;
  * @param {Node} node Node.
  * @param {?string} namespaceURI Namespace URI.
  * @param {string} name Attribute name.
+ * @return {string} Value
+ * @private
+ */
+ol.xml.getAttributeNS_ = function(node, namespaceURI, name) {
+  return node.getAttributeNS(namespaceURI, name) || '';
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {?string} namespaceURI Namespace URI.
+ * @param {string} name Attribute name.
+ * @return {string} Value
+ * @private
+ */
+ol.xml.getAttributeNSActiveX_ = function(node, namespaceURI, name) {
+  var attributeValue = '';
+  var attributeNode = ol.xml.getAttributeNodeNS(node, namespaceURI, name);
+  if (goog.isDef(attributeNode)) {
+    attributeValue = attributeNode.nodeValue;
+  }
+  return attributeValue;
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {?string} namespaceURI Namespace URI.
+ * @param {string} name Attribute name.
+ * @return {string} Value
+ */
+ol.xml.getAttributeNS =
+    (document.implementation && document.implementation.createDocument) ?
+        ol.xml.getAttributeNS_ : ol.xml.getAttributeNSActiveX_;
+
+
+/**
+ * @param {Node} node Node.
+ * @param {?string} namespaceURI Namespace URI.
+ * @param {string} name Attribute name.
+ * @return {?Node} Attribute node or null if none found.
+ * @private
+ */
+ol.xml.getAttributeNodeNS_ = function(node, namespaceURI, name) {
+  return node.getAttributeNodeNS(namespaceURI, name);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {?string} namespaceURI Namespace URI.
+ * @param {string} name Attribute name.
+ * @return {?Node} Attribute node or null if none found.
+ * @private
+ */
+ol.xml.getAttributeNodeNSActiveX_ = function(node, namespaceURI, name) {
+  var attributeNode = null;
+  var attributes = node.attributes;
+  var potentialNode, fullName;
+  for (var i = 0, len = attributes.length; i < len; ++i) {
+    potentialNode = attributes[i];
+    if (potentialNode.namespaceURI == namespaceURI) {
+      fullName = (potentialNode.prefix) ?
+          (potentialNode.prefix + ':' + name) : name;
+      if (fullName == potentialNode.nodeName) {
+        attributeNode = potentialNode;
+        break;
+      }
+    }
+  }
+  return attributeNode;
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {?string} namespaceURI Namespace URI.
+ * @param {string} name Attribute name.
+ * @return {?Node} Attribute node or null if none found.
+ */
+ol.xml.getAttributeNodeNS =
+    (document.implementation && document.implementation.createDocument) ?
+        ol.xml.getAttributeNodeNS_ : ol.xml.getAttributeNodeNSActiveX_;
+
+
+/**
+ * @param {Node} node Node.
+ * @param {?string} namespaceURI Namespace URI.
+ * @param {string} name Attribute name.
  * @param {string|number} value Value.
  * @private
  */
