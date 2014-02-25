@@ -652,6 +652,10 @@ describe('ol.format.GML', function() {
       expect(features).to.have.length(10);
     });
 
+    it('creates the right id for the feature', function() {
+      expect(features[0].getId()).to.equal('states.1');
+    });
+
   });
 
   describe('when parsing TOPP states GML from WFS', function() {
@@ -678,6 +682,7 @@ describe('ol.format.GML', function() {
 
     it('creates a polygon for Illinois', function() {
       feature = features[0];
+      expect(feature.getId()).to.equal('states.1');
       expect(feature.get('STATE_NAME')).to.equal('Illinois');
       expect(feature.getGeometry()).to.be.an(ol.geom.MultiPolygon);
     });

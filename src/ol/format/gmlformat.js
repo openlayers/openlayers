@@ -123,6 +123,8 @@ ol.format.GML.readGeometry_ = function(node, objectStack) {
  */
 ol.format.GML.readFeature_ = function(node, objectStack) {
   var n;
+  var fid = node.getAttribute('fid') ||
+      ol.xml.getAttributeNS(node, 'http://www.opengis.net/gml', 'id');
   var values = {}, geometryName;
   for (n = node.firstElementChild; !goog.isNull(n);
       n = n.nextElementSibling) {
@@ -145,6 +147,9 @@ ol.format.GML.readFeature_ = function(node, objectStack) {
   if (goog.isDef(geometryName)) {
     feature.setGeometryName(geometryName);
   }
+  if (!goog.isNull(fid)) {
+    feature.setId(fid);
+  }
   return feature;
 };
 
@@ -165,8 +170,6 @@ ol.format.GML.readPoint_ = function(node, objectStack) {
     goog.asserts.assert(flatCoordinates.length == 3);
     point.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
     return point;
-  } else {
-    return undefined;
   }
 };
 
@@ -185,8 +188,6 @@ ol.format.GML.readMultiPoint_ = function(node, objectStack) {
       ol.format.GML.MULTIPOINT_PARSERS_, node, objectStack);
   if (goog.isDefAndNotNull(coordinates)) {
     return new ol.geom.MultiPoint(coordinates);
-  } else {
-    return undefined;
   }
 };
 
@@ -652,7 +653,7 @@ ol.format.GML.readFlatPos_ = function(node, objectStack) {
   goog.asserts.assert(goog.isObject(context));
   var containerSrs = goog.object.get(context, 'srsName');
   var axisOrientation = 'enu';
-  if (containerSrs !== null) {
+  if (!goog.isNull(containerSrs)) {
     var proj = ol.proj.get(containerSrs);
     axisOrientation = proj.getAxisOrientation();
   }
@@ -683,7 +684,7 @@ ol.format.GML.readFlatPosList_ = function(node, objectStack) {
   var containerSrs = goog.object.get(context, 'srsName');
   var containerDimension = node.parentNode.getAttribute('srsDimension');
   var axisOrientation = 'enu';
-  if (containerSrs !== null) {
+  if (!goog.isNull(containerSrs)) {
     var proj = ol.proj.get(containerSrs);
     axisOrientation = proj.getAxisOrientation();
   }
@@ -691,7 +692,7 @@ ol.format.GML.readFlatPosList_ = function(node, objectStack) {
   // The "dimension" attribute is from the GML 3.0.1 spec.
   var dim = parseInt(node.getAttribute('srsDimension') ||
       node.getAttribute('dimension'), 10) ||
-      (containerDimension !== null) ?
+      (!goog.isNull(containerDimension)) ?
       parseInt(containerDimension, 10) : 2;
   var x, y, z;
   var flatCoordinates = [];
