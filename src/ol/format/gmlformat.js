@@ -188,6 +188,8 @@ ol.format.GML.readMultiPoint_ = function(node, objectStack) {
       ol.format.GML.MULTIPOINT_PARSERS_, node, objectStack);
   if (goog.isDefAndNotNull(coordinates)) {
     return new ol.geom.MultiPoint(coordinates);
+  } else {
+    return undefined;
   }
 };
 
@@ -456,7 +458,7 @@ ol.format.GML.interiorParser_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'interior');
   var flatLinearRing = ol.xml.pushParseAndPop(
       /** @type {Array.<number>|undefined} */ (undefined),
-      ol.format.GML.INTERIOR_PARSERS_, node, objectStack);
+      ol.format.GML.RING_PARSERS_, node, objectStack);
   if (goog.isDef(flatLinearRing)) {
     var flatLinearRings = /** @type {Array.<Array.<number>>} */
         (objectStack[objectStack.length - 1]);
@@ -477,7 +479,7 @@ ol.format.GML.exteriorParser_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'exterior');
   var flatLinearRing = ol.xml.pushParseAndPop(
       /** @type {Array.<number>|undefined} */ (undefined),
-      ol.format.GML.EXTERIOR_PARSERS_, node, objectStack);
+      ol.format.GML.RING_PARSERS_, node, objectStack);
   if (goog.isDef(flatLinearRing)) {
     var flatLinearRings = /** @type {Array.<Array.<number>>} */
         (objectStack[objectStack.length - 1]);
@@ -715,22 +717,23 @@ ol.format.GML.readFlatPosList_ = function(node, objectStack) {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'Point': ol.xml.makeReplacer(ol.format.GML.readPoint_),
-      'MultiPoint': ol.xml.makeReplacer(ol.format.GML.readMultiPoint_),
-      'LineString': ol.xml.makeReplacer(ol.format.GML.readLineString_),
-      'MultiLineString': ol.xml.makeReplacer(
-          ol.format.GML.readMultiLineString_),
-      'LinearRing' : ol.xml.makeReplacer(ol.format.GML.readLinearRing_),
-      'Polygon': ol.xml.makeReplacer(ol.format.GML.readPolygon_),
-      'MultiPolygon': ol.xml.makeReplacer(ol.format.GML.readMultiPolygon_),
-      'Surface': ol.xml.makeReplacer(ol.format.GML.readSurface_),
-      'MultiSurface': ol.xml.makeReplacer(ol.format.GML.readMultiSurface_),
-      'Curve': ol.xml.makeReplacer(ol.format.GML.readCurve_),
-      'MultiCurve': ol.xml.makeReplacer(ol.format.GML.readMultiCurve_),
-      'Envelope': ol.xml.makeReplacer(ol.format.GML.readEnvelope_)
-    });
+ol.format.GML.GEOMETRY_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'Point': ol.xml.makeReplacer(ol.format.GML.readPoint_),
+    'MultiPoint': ol.xml.makeReplacer(ol.format.GML.readMultiPoint_),
+    'LineString': ol.xml.makeReplacer(ol.format.GML.readLineString_),
+    'MultiLineString': ol.xml.makeReplacer(
+        ol.format.GML.readMultiLineString_),
+    'LinearRing' : ol.xml.makeReplacer(ol.format.GML.readLinearRing_),
+    'Polygon': ol.xml.makeReplacer(ol.format.GML.readPolygon_),
+    'MultiPolygon': ol.xml.makeReplacer(ol.format.GML.readMultiPolygon_),
+    'Surface': ol.xml.makeReplacer(ol.format.GML.readSurface_),
+    'MultiSurface': ol.xml.makeReplacer(ol.format.GML.readMultiSurface_),
+    'Curve': ol.xml.makeReplacer(ol.format.GML.readCurve_),
+    'MultiCurve': ol.xml.makeReplacer(ol.format.GML.readMultiCurve_),
+    'Envelope': ol.xml.makeReplacer(ol.format.GML.readEnvelope_)
+  }
+};
 
 
 /**
@@ -738,11 +741,12 @@ ol.format.GML.GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'pos': ol.xml.makeReplacer(ol.format.GML.readFlatPos_),
-      'posList': ol.xml.makeReplacer(ol.format.GML.readFlatPosList_)
-    });
+ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'pos': ol.xml.makeReplacer(ol.format.GML.readFlatPos_),
+    'posList': ol.xml.makeReplacer(ol.format.GML.readFlatPosList_)
+  }
+};
 
 
 /**
@@ -750,11 +754,12 @@ ol.format.GML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'interior': ol.format.GML.interiorParser_,
-      'exterior': ol.format.GML.exteriorParser_
-    });
+ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'interior': ol.format.GML.interiorParser_,
+    'exterior': ol.format.GML.exteriorParser_
+  }
+};
 
 
 /**
@@ -762,11 +767,12 @@ ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.MULTIPOINT_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'pointMember': ol.xml.makeArrayPusher(ol.format.GML.pointMemberParser_),
-      'pointMembers': ol.xml.makeArrayPusher(ol.format.GML.pointMemberParser_)
-    });
+ol.format.GML.MULTIPOINT_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'pointMember': ol.xml.makeArrayPusher(ol.format.GML.pointMemberParser_),
+    'pointMembers': ol.xml.makeArrayPusher(ol.format.GML.pointMemberParser_)
+  }
+};
 
 
 /**
@@ -774,13 +780,14 @@ ol.format.GML.MULTIPOINT_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.MULTILINESTRING_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'lineStringMember': ol.xml.makeArrayPusher(
-          ol.format.GML.lineStringMemberParser_),
-      'lineStringMembers': ol.xml.makeArrayPusher(
-          ol.format.GML.lineStringMemberParser_)
-    });
+ol.format.GML.MULTILINESTRING_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'lineStringMember': ol.xml.makeArrayPusher(
+        ol.format.GML.lineStringMemberParser_),
+    'lineStringMembers': ol.xml.makeArrayPusher(
+        ol.format.GML.lineStringMemberParser_)
+  }
+};
 
 
 /**
@@ -788,13 +795,14 @@ ol.format.GML.MULTILINESTRING_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.MULTICURVE_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'curveMember': ol.xml.makeArrayPusher(
-          ol.format.GML.curveMemberParser_),
-      'curveMembers': ol.xml.makeArrayPusher(
-          ol.format.GML.curveMemberParser_)
-    });
+ol.format.GML.MULTICURVE_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'curveMember': ol.xml.makeArrayPusher(
+        ol.format.GML.curveMemberParser_),
+    'curveMembers': ol.xml.makeArrayPusher(
+        ol.format.GML.curveMemberParser_)
+  }
+};
 
 
 /**
@@ -802,13 +810,14 @@ ol.format.GML.MULTICURVE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.MULTISURFACE_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'surfaceMember': ol.xml.makeArrayPusher(
-          ol.format.GML.surfaceMemberParser_),
-      'surfaceMembers': ol.xml.makeArrayPusher(
-          ol.format.GML.surfaceMemberParser_)
-    });
+ol.format.GML.MULTISURFACE_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'surfaceMember': ol.xml.makeArrayPusher(
+        ol.format.GML.surfaceMemberParser_),
+    'surfaceMembers': ol.xml.makeArrayPusher(
+        ol.format.GML.surfaceMemberParser_)
+  }
+};
 
 
 /**
@@ -816,13 +825,14 @@ ol.format.GML.MULTISURFACE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.MULTIPOLYGON_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'polygonMember': ol.xml.makeArrayPusher(
-          ol.format.GML.polygonMemberParser_),
-      'polygonMembers': ol.xml.makeArrayPusher(
-          ol.format.GML.polygonMemberParser_)
-    });
+ol.format.GML.MULTIPOLYGON_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'polygonMember': ol.xml.makeArrayPusher(
+        ol.format.GML.polygonMemberParser_),
+    'polygonMembers': ol.xml.makeArrayPusher(
+        ol.format.GML.polygonMemberParser_)
+  }
+};
 
 
 /**
@@ -830,11 +840,12 @@ ol.format.GML.MULTIPOLYGON_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.POINTMEMBER_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'Point': ol.xml.makeArrayPusher(
-          ol.format.GML.readFlatCoordinatesFromNode_)
-    });
+ol.format.GML.POINTMEMBER_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'Point': ol.xml.makeArrayPusher(
+        ol.format.GML.readFlatCoordinatesFromNode_)
+  }
+};
 
 
 /**
@@ -842,11 +853,12 @@ ol.format.GML.POINTMEMBER_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.LINESTRINGMEMBER_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'LineString': ol.xml.makeArrayPusher(
-          ol.format.GML.readLineString_)
-    });
+ol.format.GML.LINESTRINGMEMBER_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'LineString': ol.xml.makeArrayPusher(
+        ol.format.GML.readLineString_)
+  }
+};
 
 
 /**
@@ -854,11 +866,12 @@ ol.format.GML.LINESTRINGMEMBER_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.CURVEMEMBER_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'LineString': ol.xml.makeArrayPusher(ol.format.GML.readLineString_),
-      'Curve': ol.xml.makeArrayPusher(ol.format.GML.readCurve_)
-    });
+ol.format.GML.CURVEMEMBER_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'LineString': ol.xml.makeArrayPusher(ol.format.GML.readLineString_),
+    'Curve': ol.xml.makeArrayPusher(ol.format.GML.readCurve_)
+  }
+};
 
 
 /**
@@ -866,11 +879,12 @@ ol.format.GML.CURVEMEMBER_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.SURFACEMEMBER_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'Polygon': ol.xml.makeArrayPusher(ol.format.GML.readPolygon_),
-      'Surface': ol.xml.makeArrayPusher(ol.format.GML.readSurface_)
-    });
+ol.format.GML.SURFACEMEMBER_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'Polygon': ol.xml.makeArrayPusher(ol.format.GML.readPolygon_),
+    'Surface': ol.xml.makeArrayPusher(ol.format.GML.readSurface_)
+  }
+};
 
 
 /**
@@ -878,11 +892,12 @@ ol.format.GML.SURFACEMEMBER_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.POLYGONMEMBER_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'Polygon': ol.xml.makeArrayPusher(
-          ol.format.GML.readPolygon_)
-    });
+ol.format.GML.POLYGONMEMBER_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'Polygon': ol.xml.makeArrayPusher(
+        ol.format.GML.readPolygon_)
+  }
+};
 
 
 /**
@@ -890,10 +905,11 @@ ol.format.GML.POLYGONMEMBER_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.SURFACE_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'patches': ol.xml.makeReplacer(ol.format.GML.patchesParser_)
-    });
+ol.format.GML.SURFACE_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'patches': ol.xml.makeReplacer(ol.format.GML.patchesParser_)
+  }
+};
 
 
 /**
@@ -901,10 +917,11 @@ ol.format.GML.SURFACE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.CURVE_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'segments': ol.xml.makeReplacer(ol.format.GML.segmentsParser_)
-    });
+ol.format.GML.CURVE_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'segments': ol.xml.makeReplacer(ol.format.GML.segmentsParser_)
+  }
+};
 
 
 /**
@@ -912,11 +929,12 @@ ol.format.GML.CURVE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.ENVELOPE_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'lowerCorner': ol.xml.makeArrayPusher(ol.format.GML.readFlatPosList_),
-      'upperCorner': ol.xml.makeArrayPusher(ol.format.GML.readFlatPosList_)
-    });
+ol.format.GML.ENVELOPE_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'lowerCorner': ol.xml.makeArrayPusher(ol.format.GML.readFlatPosList_),
+    'upperCorner': ol.xml.makeArrayPusher(ol.format.GML.readFlatPosList_)
+  }
+};
 
 
 /**
@@ -924,10 +942,11 @@ ol.format.GML.ENVELOPE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.PATCHES_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'PolygonPatch': ol.xml.makeReplacer(ol.format.GML.polygonPatchParser_)
-    });
+ol.format.GML.PATCHES_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'PolygonPatch': ol.xml.makeReplacer(ol.format.GML.polygonPatchParser_)
+  }
+};
 
 
 /**
@@ -935,11 +954,12 @@ ol.format.GML.PATCHES_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.SEGMENTS_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'LineStringSegment': ol.xml.makeReplacer(
-          ol.format.GML.lineStringSegmentParser_)
-    });
+ol.format.GML.SEGMENTS_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'LineStringSegment': ol.xml.makeReplacer(
+        ol.format.GML.lineStringSegmentParser_)
+  }
+};
 
 
 /**
@@ -947,10 +967,11 @@ ol.format.GML.SEGMENTS_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.INTERIOR_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'LinearRing': ol.xml.makeReplacer(ol.format.GML.readFlatLinearRing_)
-    });
+ol.format.GML.RING_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'LinearRing': ol.xml.makeReplacer(ol.format.GML.readFlatLinearRing_)
+  }
+};
 
 
 /**
@@ -958,21 +979,11 @@ ol.format.GML.INTERIOR_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GML.EXTERIOR_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'LinearRing': ol.xml.makeReplacer(ol.format.GML.readFlatLinearRing_)
-    });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
- * @private
- */
-ol.format.GML.FLAT_LINEAR_RING_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.GML.NAMESPACE_URIS_, {
-      'posList': ol.xml.makeReplacer(ol.format.GML.readFlatPosList_)
-    });
+ol.format.GML.FLAT_LINEAR_RING_PARSERS_ = {
+  'http://www.opengis.net/gml' : {
+    'posList': ol.xml.makeReplacer(ol.format.GML.readFlatPosList_)
+  }
+};
 
 
 /**
