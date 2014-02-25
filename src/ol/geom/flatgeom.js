@@ -341,26 +341,36 @@ ol.geom.flat.lineStringCoordinateAtM =
     }
   }
   // FIXME use O(1) search
-  for (offset += stride; offset < end; offset += stride) {
-    var m1 = flatCoordinates[offset + stride - 1];
-    if (m < m1) {
-      var m0 = flatCoordinates[offset - 1];
-      var t = (m - m0) / (m1 - m0);
-      coordinate = [];
-      var i;
-      for (i = 0; i < stride - 1; ++i) {
-        coordinate.push((1 - t) * flatCoordinates[offset - stride + i] +
-            t * flatCoordinates[offset + i]);
-      }
-      coordinate.push(m);
-      goog.asserts.assert(coordinate.length == stride);
-      return coordinate;
-    } else if (m == m1) {
-      return flatCoordinates.slice(offset, offset + stride);
+  if (m == flatCoordinates[offset + stride - 1]) {
+    return flatCoordinates.slice(offset, offset + stride);
+  }
+  var lo = offset / stride;
+  var hi = end / stride;
+  while (lo < hi) {
+    var mid = (lo + hi) >> 1;
+    if (m < flatCoordinates[(mid + 1) * stride - 1]) {
+      hi = mid;
+    } else {
+      lo = mid + 1;
     }
   }
-  goog.asserts.fail();
-  return null;
+  var m0 = flatCoordinates[lo * stride - 1];
+  if (m == m0) {
+    return flatCoordinates.slice((lo - 1) * stride, (lo - 1) * stride + stride);
+  }
+  var m1 = flatCoordinates[(lo + 1) * stride - 1];
+  goog.asserts.assert(m0 < m);
+  goog.asserts.assert(m <= m1);
+  var t = (m - m0) / (m1 - m0);
+  coordinate = [];
+  var i;
+  for (i = 0; i < stride - 1; ++i) {
+    coordinate.push((1 - t) * flatCoordinates[(lo - 1) * stride + i] +
+        t * flatCoordinates[lo * stride + i]);
+  }
+  coordinate.push(m);
+  goog.asserts.assert(coordinate.length == stride);
+  return coordinate;
 };
 
 
