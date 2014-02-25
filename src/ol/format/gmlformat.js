@@ -81,10 +81,11 @@ ol.format.GML.readFeatures_ = function(node, objectStack) {
     parsers[featureType] = ol.xml.makeArrayPusher(ol.format.GML.readFeature_);
     parsersNS[goog.object.get(context, 'featureNS')] = parsers;
     features = ol.xml.pushParseAndPop([], parsersNS, node, objectStack);
-  } else {
+  }
+  if (!goog.isDef(features)) {
     features = [];
   }
-  return /** @type {Array.<ol.Feature>} */ (features);
+  return features;
 };
 
 
@@ -110,8 +111,13 @@ ol.format.GML.readGeometry_ = function(node, objectStack) {
   goog.asserts.assert(goog.isObject(context));
   goog.object.set(context, 'srsName',
       node.firstElementChild.getAttribute('srsName'));
-  return /** @type {ol.geom.Geometry} */ (ol.xml.pushParseAndPop(null,
-      ol.format.GML.GEOMETRY_PARSERS_, node, objectStack));
+  var geometry = ol.xml.pushParseAndPop(/** @type {ol.geom.Geometry} */(null),
+      ol.format.GML.GEOMETRY_PARSERS_, node, objectStack);
+  if (goog.isDefAndNotNull(geometry)) {
+    return geometry;
+  } else {
+    return null;
+  }
 };
 
 
@@ -147,7 +153,7 @@ ol.format.GML.readFeature_ = function(node, objectStack) {
   if (goog.isDef(geometryName)) {
     feature.setGeometryName(geometryName);
   }
-  if (!goog.isNull(fid)) {
+  if (fid) {
     feature.setId(fid);
   }
   return feature;
