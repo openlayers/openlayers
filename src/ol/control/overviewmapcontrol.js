@@ -15,6 +15,7 @@ goog.require('ol.Map');
 goog.require('ol.Object');
 goog.require('ol.Overlay');
 goog.require('ol.OverlayPositioning');
+goog.require('ol.View2D');
 goog.require('ol.View2DProperty');
 goog.require('ol.control.Control');
 goog.require('ol.coordinate');
@@ -196,6 +197,7 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
     goog.asserts.assert(goog.isDef(view));
     var view2D = view.getView2D();
     goog.asserts.assert(goog.isDef(view2D));
+    goog.asserts.assertInstanceOf(view2D, ol.View2D);
 
     goog.events.listen(
         view2D, ol.Object.getChangeEventType(ol.View2DProperty.CENTER),
