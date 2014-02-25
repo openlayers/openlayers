@@ -192,7 +192,7 @@ ol.format.GML.readMultiPoint_ = function(node, objectStack) {
   var coordinates = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([]),
       ol.format.GML.MULTIPOINT_PARSERS_, node, objectStack);
-  if (goog.isDefAndNotNull(coordinates)) {
+  if (goog.isDef(coordinates)) {
     return new ol.geom.MultiPoint(coordinates);
   } else {
     return undefined;
@@ -212,7 +212,7 @@ ol.format.GML.readMultiLineString_ = function(node, objectStack) {
   var lineStrings = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.LineString>} */ ([]),
       ol.format.GML.MULTILINESTRING_PARSERS_, node, objectStack);
-  if (goog.isDefAndNotNull(lineStrings)) {
+  if (goog.isDef(lineStrings)) {
     var multiLineString = new ol.geom.MultiLineString(null);
     multiLineString.setLineStrings(lineStrings);
     return multiLineString;
@@ -234,7 +234,7 @@ ol.format.GML.readMultiCurve_ = function(node, objectStack) {
   var lineStrings = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.LineString>} */ ([]),
       ol.format.GML.MULTICURVE_PARSERS_, node, objectStack);
-  if (goog.isDefAndNotNull(lineStrings)) {
+  if (goog.isDef(lineStrings)) {
     var multiLineString = new ol.geom.MultiLineString(null);
     multiLineString.setLineStrings(lineStrings);
     return multiLineString;
@@ -256,7 +256,7 @@ ol.format.GML.readMultiSurface_ = function(node, objectStack) {
   var polygons = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.Polygon>} */ ([]),
       ol.format.GML.MULTISURFACE_PARSERS_, node, objectStack);
-  if (goog.isDefAndNotNull(polygons)) {
+  if (goog.isDef(polygons)) {
     var multiPolygon = new ol.geom.MultiPolygon(null);
     multiPolygon.setPolygons(polygons);
     return multiPolygon;
@@ -278,7 +278,7 @@ ol.format.GML.readMultiPolygon_ = function(node, objectStack) {
   var polygons = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.Polygon>} */ ([]),
       ol.format.GML.MULTIPOLYGON_PARSERS_, node, objectStack);
-  if (goog.isDefAndNotNull(polygons)) {
+  if (goog.isDef(polygons)) {
     var multiPolygon = new ol.geom.MultiPolygon(null);
     multiPolygon.setPolygons(polygons);
     return multiPolygon;
@@ -544,7 +544,7 @@ ol.format.GML.readPolygon_ = function(node, objectStack) {
   var flatLinearRings = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
       ol.format.GML.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack);
-  if (goog.isDefAndNotNull(flatLinearRings) &&
+  if (goog.isDef(flatLinearRings) &&
       !goog.isNull(flatLinearRings[0])) {
     var polygon = new ol.geom.Polygon(null);
     var flatCoordinates = flatLinearRings[0];
@@ -575,7 +575,7 @@ ol.format.GML.readSurface_ = function(node, objectStack) {
   var flatLinearRings = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
       ol.format.GML.SURFACE_PARSERS_, node, objectStack);
-  if (goog.isDefAndNotNull(flatLinearRings) &&
+  if (goog.isDef(flatLinearRings) &&
       !goog.isNull(flatLinearRings[0])) {
     var polygon = new ol.geom.Polygon(null);
     var flatCoordinates = flatLinearRings[0];
@@ -606,7 +606,7 @@ ol.format.GML.readCurve_ = function(node, objectStack) {
   var flatCoordinates = ol.xml.pushParseAndPop(
       /** @type {Array.<number>} */ ([null]),
       ol.format.GML.CURVE_PARSERS_, node, objectStack);
-  if (goog.isDefAndNotNull(flatCoordinates)) {
+  if (goog.isDef(flatCoordinates)) {
     var lineString = new ol.geom.LineString(null);
     lineString.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
     return lineString;
