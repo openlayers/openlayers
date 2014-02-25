@@ -54,11 +54,11 @@ map2.addControl(overview2);
 var map3 = createMap('map3', true);
 var overview3 = new ol.control.OverviewMap({
   layers: [
-      new ol.layer.Tile({
-        source: new ol.source.OSM({
-         'url': '//{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
-        })
+    new ol.layer.Tile({
+      source: new ol.source.OSM({
+        'url': '//{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
       })
+    })
   ],
   maximized: true,
   maxRatio: 0.5,
