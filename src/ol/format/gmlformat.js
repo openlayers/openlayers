@@ -68,7 +68,7 @@ ol.format.GML.NAMESPACE_URIS_ = [
 ol.format.GML.readFeatures_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
   var localName = ol.xml.getLocalName(node);
-  var context = objectStack[objectStack.length - 1];
+  var context = objectStack[0];
   goog.asserts.assert(goog.isObject(context));
   var featureType = goog.object.get(context, 'featureType');
   var features;
@@ -106,9 +106,12 @@ ol.format.GML.FEATURE_COLLECTION_PARSERS_ = {
  * @private
  */
 ol.format.GML.readGeometry_ = function(node, objectStack) {
-  objectStack = [{srsName: node.firstElementChild.getAttribute('srsName')}];
-  ol.xml.parse(ol.format.GML.GEOMETRY_PARSERS_, node, objectStack);
-  return objectStack.pop();
+  var context = objectStack[0];
+  goog.asserts.assert(goog.isObject(context));
+  goog.object.set(context, 'srsName',
+      node.firstElementChild.getAttribute('srsName'));
+  return /** @type {ol.geom.Geometry} */ (ol.xml.pushParseAndPop(null,
+      ol.format.GML.GEOMETRY_PARSERS_, node, objectStack));
 };
 
 
@@ -645,7 +648,9 @@ ol.format.GML.readFlatCoordinatesFromNode_ = function(node, objectStack) {
 ol.format.GML.readFlatPos_ = function(node, objectStack) {
   var s = ol.xml.getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
   var flatCoordinates = goog.array.map(s.split(/\s+/), parseFloat);
-  var containerSrs = objectStack[0].srsName;
+  var context = objectStack[0];
+  goog.asserts.assert(goog.isObject(context));
+  var containerSrs = goog.object.get(context, 'srsName');
   var axisOrientation = 'enu';
   if (containerSrs !== null) {
     var proj = ol.proj.get(containerSrs);
@@ -673,7 +678,9 @@ ol.format.GML.readFlatPos_ = function(node, objectStack) {
  */
 ol.format.GML.readFlatPosList_ = function(node, objectStack) {
   var s = ol.xml.getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
-  var containerSrs = objectStack[0].srsName;
+  var context = objectStack[0];
+  goog.asserts.assert(goog.isObject(context));
+  var containerSrs = goog.object.get(context, 'srsName');
   var containerDimension = node.parentNode.getAttribute('srsDimension');
   var axisOrientation = 'enu';
   if (containerSrs !== null) {
@@ -971,7 +978,7 @@ ol.format.GML.FLAT_LINEAR_RING_PARSERS_ = ol.xml.makeParsersNS(
  * @inheritDoc
  */
 ol.format.GML.prototype.readGeometryFromNode = function(node) {
-  return ol.format.GML.readGeometry_(node, []);
+  return ol.format.GML.readGeometry_(node, [{}]);
 };
 
 
