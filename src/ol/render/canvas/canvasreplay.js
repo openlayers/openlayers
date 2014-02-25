@@ -1817,6 +1817,15 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
 ol.render.canvas.ReplayGroup.prototype.replay_ = function(
     zs, context, extent, pixelRatio, transform, viewRotation,
     renderGeometryFunction) {
+
+  var pixelExtent = ol.geom.flat.transform2D(this.maxExtent_, 2, transform);
+  var width = pixelExtent[2] - pixelExtent[0];
+  var height = pixelExtent[1] - pixelExtent[3];
+  context.save();
+  context.beginPath();
+  context.rect(pixelExtent[0], pixelExtent[3], width, height);
+  context.clip();
+
   var i, ii, j, jj, replays, replayType, replay, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     replays = this.replaysByZIndex_[zs[i].toString()];
@@ -1832,6 +1841,8 @@ ol.render.canvas.ReplayGroup.prototype.replay_ = function(
       }
     }
   }
+
+  context.restore();
   return undefined;
 };
 
